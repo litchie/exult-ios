@@ -533,7 +533,8 @@ void Patrol_schedule::now_what
 	Tile_coord d = path->get_abs_tile_coord();
     	if (!npc->walk_path_to_tile(d, 250, rand()%1000))
 		{			// Look for free tile within 1 square.
-		d = Game_object::find_unblocked_tile(d, 1, 4);
+		d = Map_chunk::find_spot(d, 1, npc->get_shapenum(),
+						npc->get_framenum(), 1);
 		if (d.tx == -1 || !npc->walk_path_to_tile(d, 250, rand()%1000))
 			{		// Failed.  Later.
 			npc->start(200, 2000);
@@ -839,9 +840,9 @@ void Wander_schedule::now_what
 		pos.ty = center.ty + dist;
 	else if (center.ty - pos.ty > dist)
 		pos.ty = center.ty - dist;
-	Tile_coord dest(-1, -1, -1);	// Find a free spot.
-	for (int i = 0; i < 4 && dest.tx == -1; i++)
-		dest = npc->find_unblocked_tile(pos, i, 4);
+					// Find a free spot.
+	Tile_coord dest = Map_chunk::find_spot(pos, 4, npc->get_shapenum(), 0,
+									1);
 	if (dest.tx == -1 || !npc->walk_path_to_tile(dest, 250, rand()%2000))
 					// Failed?  Try again a little later.
 		npc->start(250, rand()%3000);
@@ -968,9 +969,14 @@ void Sleep_schedule::ending
 	if (bed &&			// Locate free spot.
 	    (npc->get_framenum()&0xf) == Actor::sleep_frame)
 
-		{		//++++++Got to look on floor.
-		for (int dist = 1; dist < 8 && floorloc.tx == -1; dist++)
-			floorloc = npc->find_unblocked_tile(dist, 4);
+		{
+		if (floorloc.tx == -1)
+			{		// Want spot on floor.
+			Tile_coord pos = npc->get_abs_tile_coord();
+			pos.tz -= pos.tz%5;
+			floorloc = Map_chunk::find_spot(pos, 6,
+				npc->get_shapenum(), (int) Actor::standing, 0);
+			}
 					// Make bed.
 		int frnum = bed->get_framenum();
 		Actor_vector occ;	// Unless there's another occupant.
@@ -1390,8 +1396,8 @@ void Lab_schedule::now_what
 			}
 		else			// Create potion if spot is empty.
 			{
-			Tile_coord t = Game_object::find_unblocked_tile(
-					spot_on_table, 0);
+			Tile_coord t = Map_chunk::find_spot(spot_on_table, 0,
+							340, 0, 0);
 			if (t.tx != -1 && t.tz == spot_on_table.tz)
 				{
 				int nframes = gwin->get_shape_num_frames(340);
@@ -1501,7 +1507,8 @@ void Waiter_schedule::get_customer
 	if (prep_tables.size())	// Walk to a 'prep' table.
 	{
 		Game_object *table = prep_tables[rand()%prep_tables.size()];
-		Tile_coord pos = table->find_unblocked_tile(1, 3);
+		Tile_coord pos = Map_chunk::find_spot(
+			table->get_abs_tile_coord(), 1, npc);
 		if (pos.tx != -1 &&
 		    npc->walk_path_to_tile(pos, 200, 1000 + rand()%1000))
 			return;
@@ -1679,13 +1686,11 @@ void Waiter_schedule::now_what
 		Game_object *food = new Ireg_game_object(377, frame, 0, 0, 0);
 		npc->add_readied(food, Actor::lhand);
 		}
-	for (int i = 1; i < 3; i++)
-		{
-		Tile_coord dest = customer->find_unblocked_tile(i, 3);
-		if (dest.tx != -1 && npc->walk_path_to_tile(dest, 250,
-								rand()%1000))
-			return;			// Walking there.
-		}
+	Tile_coord dest = Map_chunk::find_spot(customer->get_abs_tile_coord(),
+					3, npc);
+	if (dest.tx != -1 && npc->walk_path_to_tile(dest, 250, rand()%1000))
+		return;				// Walking there.
+
 	npc->start(200, 2000 + rand()%4000);	// Failed so try again later.
 	}
 
@@ -1783,7 +1788,8 @@ void Sew_schedule::now_what
 		break;
 	case get_thread:
 		{
-		Tile_coord t = spinwheel->find_unblocked_tile(1);
+		Tile_coord t = Map_chunk::find_spot(
+				spinwheel->get_abs_tile_coord(), 1, 654, 0);
 		if (t.tx != -1)		// Space to create thread?
 			{
 			spindle = new Ireg_game_object(654, 0, 0, 0);
@@ -1820,7 +1826,8 @@ void Sew_schedule::now_what
 		}
 	case get_cloth:
 		{
-		Tile_coord t = loom->find_unblocked_tile(1);
+		Tile_coord t = Map_chunk::find_spot(loom->get_abs_tile_coord(),
+							1, 851, 0);
 		if (t.tx != -1)		// Space to create it?
 			{
 			cloth = new Ireg_game_object(851, rand()%2, 0, 0);
@@ -1835,7 +1842,7 @@ void Sew_schedule::now_what
 	case to_work_table:
 		{
 		work_table = npc->find_closest(971);
-		if (!work_table)
+		if (!work_table || !cloth)
 			{
 			state = get_wool;
 			break;

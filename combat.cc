@@ -879,9 +879,8 @@ void Duel_schedule::now_what
 		Tile_coord pos = start;
 		pos.tx += rand()%24 - 12;
 		pos.ty += rand()%24 - 12;
-		Tile_coord dest(-1, -1, -1);	// Find a free spot.
-		for (int i = 0; i < 4 && dest.tx == -1; i++)
-			dest = npc->find_unblocked_tile(pos, i, 4);
+					// Find a free spot.
+		Tile_coord dest = Map_chunk::find_spot(pos, 3, npc, 1);
 		if (dest.tx == -1 || 
 			!npc->walk_path_to_tile(dest, 250, rand()%2000))
 					// Failed?  Try again a little later.

@@ -332,11 +332,7 @@ int Path_walking_actor_action::open_door
 			dir = 2;
 			}
 		}
-	Tile_coord tmp = Game_object::find_unblocked_tile(past, 0, 3);
-	if (tmp.tx != -1)
-		past = tmp;
-	else
-		past = Game_object::find_unblocked_tile(past, 1, 3);
+	Tile_coord tmp = Map_chunk::find_spot(past, 1, actor, 1);
 	if (past.tx != -1)		// Succeeded.  Walk past and close it.
 		{
 		cout << "Path_walking_actor_action::open_door()" << endl;

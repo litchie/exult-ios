@@ -2188,9 +2188,9 @@ void Game_window::teleport_party
 		if (person && !person->is_dead())
 			{
 			person->set_action(0);
-			Tile_coord t1(-1, -1, -1);
-			for (int dist = 1; dist < 8 && t1.tx == -1; dist++)
-				t1 = main_actor->find_unblocked_tile(dist, 3);
+			Tile_coord t1 = Map_chunk::find_spot(t, 8,
+				person->get_shapenum(), person->get_framenum(),
+									1);
 			if (t1.tx != -1)
 				person->move(t1);
 			}
@@ -2902,9 +2902,8 @@ void Game_window::theft
 		main_actor->get_cx() + 8, main_actor->get_cy() + 8, 0, 0, 0);
 	add_nearby_npc(guard);
 	Tile_coord actloc = main_actor->get_abs_tile_coord();
-	Tile_coord dest(-1, -1, -1);
-	for (int i = 2; i < 6 && dest.tx == -1; i++)
-		dest = Game_object::find_unblocked_tile(actloc, i, 3);
+	Tile_coord dest = Map_chunk::find_spot(actloc, 5, 
+			guard->get_shapenum(), guard->get_framenum(), 1);
 	if (dest.tx != -1)
 		{
 		int dir = Get_direction(dest.ty - actloc.ty,

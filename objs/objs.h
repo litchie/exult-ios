@@ -231,6 +231,7 @@ public:
 							int dist = 24);
 	Game_object *find_closest(int shapenum, int dist = 24)
 		{ return find_closest(&shapenum, 1, dist); }
+#if 0	/* +++Going away. */
 					// Find nearby unblocked tile.
 	static Tile_coord find_unblocked_tile(Tile_coord pos,
 				int dist, int height = 1,
@@ -239,6 +240,7 @@ public:
 				const int move_flags = MOVE_WALK)
 		{ return find_unblocked_tile(get_abs_tile_coord(), dist, 
 						height, move_flags); }
+#endif
 	Rectangle get_footprint();	// Get tile footprint.
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);

@@ -536,6 +536,8 @@ Game_object *Game_object::find_closest
 	return (closest);
 	}
 
+#if 0	/* +++Going away. */
+
 /*
  *	Find a free tile within given distance.
  *
@@ -565,7 +567,7 @@ Tile_coord Game_object::find_unblocked_tile
 			}
 	return Tile_coord(-1, -1, -1);
 	}
-
+#endif
 /*
  *	Get footprint in absolute tiles.
  */

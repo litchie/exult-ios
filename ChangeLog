@@ -1,3 +1,7 @@
+2001-09-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* several:  Map_chunk::find_spot() replaces find_unblocked_tile().
+
 2001-09-11  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* Take our own advice and clear streams between attempted
