@@ -22,7 +22,9 @@ libmididrv_la_SOURCES =	\
 	fmopl_midi.cc		\
 	fmopl_midi.h		\
 	fmopldrv.cc		\
-	fmopldrv.h
+	fmopldrv.h		\
+	win_midiout.cc		\
+	win_midiout.h
 
 EXTRA_DIST = 		\
 	README

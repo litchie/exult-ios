@@ -1,3 +1,6 @@
+2004-02-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* audio/midi_drivers/Makefile.am: add win_midiout.*
+
 2004-02-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mouse.cc: fixed dead actors causing movement slowdowns and/or crashes
 	* data/bg/musket.shp: musket paperdoll art (by servus)
