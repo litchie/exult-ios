@@ -2172,16 +2172,14 @@ int Actor::add
 		
 	if (index < 0)			// No free spot?  Look for a bag.
 	{
-		if (!dont_check) {
-			if (spots[back] && spots[back]->drop(obj))
-				return (1);
-			if (spots[belt] && spots[belt]->drop(obj))
-				return (1);
-			if (spots[lhand] && spots[lhand]->drop(obj))
-				return (1);
-			if (spots[rhand] && spots[rhand]->drop(obj))
-				return (1);
-		}
+		if (spots[back] && spots[back]->drop(obj))
+			return (1);
+		if (spots[belt] && spots[belt]->drop(obj))
+			return (1);
+		if (spots[lhand] && spots[lhand]->drop(obj))
+			return (1);
+		if (spots[rhand] && spots[rhand]->drop(obj))
+			return (1);
 		return dont_check ? Container_game_object::add(obj, dont_check)
 					: 0;
 	}
