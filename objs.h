@@ -42,6 +42,7 @@ class Vga_file;
 class Game_window;
 class Npc_actor;
 class Rectangle;
+class Container_game_object;
 
 /*
  *	Sizes:
@@ -180,6 +181,10 @@ public:
 	void set_quality(int q)
 		{ quality = q; }
 	int get_quantity();		// Like # of coins.
+					// Add/remove to/from quantity.
+	int modify_quantity(Container_game_object *owner, int delta);
+					// Remove/delete this object.
+	void remove(Container_game_object *owner);
 					// Set shape coord. within chunk.
 	void set_shape_pos(unsigned int shapex, unsigned int shapey)
 		{ shape_pos = (shapex << 4) + shapey; }
@@ -237,14 +242,21 @@ public:
 	virtual int is_egg()		// An egg?
 		{ return 0; }
 					// Count contained objs.
-	virtual int count_objects(int shapenum)
+	virtual int count_objects(int shapenum, int framenum = -359)
 		{ return 0; }
 					// Get contained objs.
-	virtual int get_objects(Vector& vec, int shapenum)
+	virtual int get_objects(Vector& vec, int shapenum, 
+						int framenum = -359)
 		{ return 0; }
 					// Add an object.
 	virtual int add(Game_object *obj)
 		{ return 0; }
+	virtual int add_quantity(int delta, int shapenum, int qual,
+					int framenum, int dontcreate = 0)
+		{ return delta; }
+	virtual int remove_quantity(int delta, int shapenum, int qual,
+								int framenum)
+		{ return delta; }
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord()
 		{ return get_abs_tile_coord(); }
@@ -293,14 +305,19 @@ public:
 		{ return last_object ? last_object->get_next() : 0; }
 					// Add an object.
 	virtual int add(Game_object *obj);
+	virtual int add_quantity(int delta, int shapenum, int qual,
+					int framenum, int dontcreate = 0);
+	virtual int remove_quantity(int delta, int shapenum, int qual,
+								int framenum);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 					// Count contained objs.
-	virtual int count_objects(int shapenum);
+	virtual int count_objects(int shapenum, int framenum = -359);
 					// Get contained objs.
-	virtual int get_objects(Vector& vec, int shapenum);
+	virtual int get_objects(Vector& vec, int shapenum, 
+							int framenum = -359);
 	};
 
 /*
