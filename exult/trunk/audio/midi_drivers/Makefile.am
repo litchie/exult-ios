@@ -16,7 +16,13 @@ libmididrv_la_SOURCES =	\
 	mac_midi.cc		\
 	mac_midi.h		\
 	amiga_midi.cc		\
-	amiga_midi.h
+	amiga_midi.h		\
+	fmopl.cc		\
+	fmopl.h			\
+	fmopl_midi.cc		\
+	fmopl_midi.h		\
+	fmopldrv.cc		\
+	fmopldrv.h
 
 EXTRA_DIST = 		\
 	README
