@@ -181,8 +181,9 @@ EXTRA_DIST = 	\
 	msvcstuff/exconfig/resource.h \
 	msvcstuff/exconfig/StdAfx.cpp \
 	msvcstuff/exconfig/StdAfx.h \
-	headers/gamma.h		\
-	headers/exceptions.h
+	headers/common_types.h \
+	headers/exceptions.h \
+	headers/gamma.h
 
 win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
 	-mkdir win32
