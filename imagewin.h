@@ -476,6 +476,7 @@ class Image_window : public Image_buffer
 					// Create new SDL surface.
 	void create_surface(unsigned int w, unsigned int h);
 	void free_surface();		// Free it.
+
 public:
 	Image_window(unsigned int w, unsigned int h);
 	virtual ~Image_window();
@@ -500,6 +501,9 @@ public:
 					// Resize event occurred.
 	void resized(unsigned int neww, unsigned int nehh);
 	void show();			// Repaint entire window.
+
+	void toggle_fullscreen();
+
 	};
 
 #endif	/* INCL_IMAGEWIN	*/
