@@ -164,27 +164,27 @@ long get_file_size(const char *fname)
 	return len;
 }
 
-#if 0 // BROKEN
+
+// This getline() accepts any kind of endline on any platform
+// (So it will accept windows linefeeds in linux, and vice versa)
 void getline(ifstream& file, char* buf, int size)
 {
 	int i = 0;
 	char c;
 	file.get(c);
 
-	while (i < size-1 && c != '\r' && c != '\n') {
+	while (i < size-1 && (c>=' ' || c=='\t') && file.good()) {
 		buf[i++] = c;
 		file.get(c);
 	}
 	buf[i] = '\0'; // terminator
 
-	while ((file.peek() == '\r' || file.peek() == '\n') && file.good())
+	while (!(file.peek()>=' ' || file.peek()=='\t') && file.good())
 		file.get(c);
 }
-#endif
 
 
 #ifdef MACOS
-static char line_delimiter='\r';
 
 int mac_main(int argc, char **argv);
 
@@ -222,7 +222,6 @@ int main()
 
 int mac_main(int argc, char **argv)
 #else
-static char line_delimiter='\n';
 int main(int argc, char **argv)
 #endif
 {
@@ -261,7 +260,7 @@ int main(int argc, char **argv)
 					}
 					
 					// Read the output file name
-					respfile.getline(temp, 1024,line_delimiter);
+					getline(respfile, temp, 1024);
 					strncpy(fname, path_prefix, 1024);
 					strncat(fname, temp, 1024);
 
@@ -274,7 +273,8 @@ int main(int argc, char **argv)
 					strip_path (hprefix);
 					make_uppercase (hprefix);
 
-					while(respfile.getline(temp, 1024,line_delimiter)) {
+					while(respfile.good()) {
+						getline(respfile, temp, 1024);
 						if(strlen(temp)>0) {
 							char temp2[1024];
 							strncpy(temp2, path_prefix,1024);
