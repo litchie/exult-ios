@@ -95,7 +95,7 @@ KMIDI::KMIDI()
 		}
 
 	// This is probably not right for anyone but me
-	kMidSetDevice(5);
+	kMidSetDevice(0);
 }
 
 KMIDI::~KMIDI()
@@ -107,7 +107,7 @@ void	KMIDI::start_track(const char * name,int repeats)
 	if(is_playing())
 		stop_track();
 #if DEBUG
-	cerr << "Starting midi sequence with KMIDI" << endl;
+	cerr << "Starting midi sequence with KMIDI: " << name << endl;
 #endif
 
 	KMidSimpleAPI::kMidLoad(name);
