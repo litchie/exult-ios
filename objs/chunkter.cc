@@ -106,7 +106,8 @@ inline void Chunk_terrain::paint_tile
 Chunk_terrain::Chunk_terrain
 	(
 	unsigned char *data		// Chunk data.
-	) : rendered_flats(0), num_clients(0), render_queue_next(0),
+	) : undo_shapes(0),
+	    rendered_flats(0), num_clients(0), render_queue_next(0),
 	    render_queue_prev(0), modified(false)
 	{
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
@@ -125,7 +126,8 @@ Chunk_terrain::Chunk_terrain
 Chunk_terrain::Chunk_terrain
 	(
 	const Chunk_terrain& c2
-	) : rendered_flats(0), num_clients(0), render_queue_next(0),
+	) : undo_shapes(0),
+	    rendered_flats(0), num_clients(0), render_queue_next(0),
 	    render_queue_prev(0), modified(true)
 	{
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
@@ -141,6 +143,7 @@ Chunk_terrain::~Chunk_terrain
 	(
 	)
 	{
+	delete [] undo_shapes;
 	delete rendered_flats;
 	remove_from_queue();
 	}
@@ -186,8 +189,49 @@ void Chunk_terrain::set_flat
 	ShapeID id
 	)
 	{
+	if (!undo_shapes)		// Create backup.
+		{
+		undo_shapes = new ShapeID[256];
+		memcpy((char *) undo_shapes, (char *) &shapes[0],
+							sizeof(shapes));
+		}
 	shapes[16*tiley + tilex] = id;
 	modified = true;
+	}
+
+/*
+ *	Commit changes.
+ *
+ *	Output:	True if this was edited, else false.
+ */
+
+bool Chunk_terrain::commit_edits
+	(
+	)
+	{
+	if (!undo_shapes)
+		return false;
+	delete [] undo_shapes;
+	undo_shapes = 0;
+	return true;
+	}
+
+/*
+ *	Undo changes.   Note:  We don't clear 'modified', since this could
+ *	still have been moved to a different position.
+ */
+
+void Chunk_terrain::abort_edits
+	(
+	)
+	{
+	if (undo_shapes)
+		{
+		memcpy((char *) &shapes[0], (char *) undo_shapes,
+							sizeof(shapes));
+		delete [] undo_shapes;
+		undo_shapes = 0;
+		}
 	}
 
 /*

@@ -38,6 +38,7 @@ class Chunk_terrain
 					//   rendered here, the others are
 					//   turned into Game_objects in the
 					//   chunks that point to us.
+	ShapeID *undo_shapes;		// Set to prev. values when editing.
 	int num_clients;		// # of Chunk's that point to us.
 	bool modified;			// Changed (by map-editor).
 	Image_buffer8 *rendered_flats;	// Flats rendered for entire chunk.
@@ -80,6 +81,9 @@ public:
 
 					// Set tile's shape.
 	void set_flat(int tilex, int tiley, ShapeID id);
+	bool commit_edits();		// Commit changes.  Rets. true if
+					//   edited.
+	void abort_edits();		// Undo changes.
 	Image_buffer8 *get_rendered_flats()
 		{
 		if (render_queue != this)// Not already first in queue?
