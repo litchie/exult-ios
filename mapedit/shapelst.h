@@ -88,6 +88,8 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void tell_server_shape();	// Tell Exult what shape is selected.
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
+	virtual void set_background_color(guint32 c)
+		{ Shape_draw::set_background_color(c); }
 	void render_frames();		// Show all frames.
 	void scroll_to_frame();		// Scroll so sel. frame is visible.
 	int next_row(int start);	// Down/up 1 row.

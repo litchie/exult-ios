@@ -74,7 +74,7 @@ void Shape_draw::draw_shape_centered
 	int framenum
 	)
 	{
-	iwin->fill8(0);			// ++++Which color?
+	iwin->fill8(255);		// Background (transparent) color.
 	if (shapenum < 0 || shapenum >= ifile->get_num_shapes())
 		return;
 	Shape_frame *shape = ifile->get_shape(shapenum, framenum);
@@ -128,7 +128,21 @@ void Shape_draw::render
 	)
 	{
 	}
-	
+
+/*
+ *	Set background color and repaint.
+ */
+
+void Shape_draw::set_background_color
+	(
+	guint32 c
+	)
+	{
+	palette->colors[255] = c;
+	render();
+	show();
+	}
+
 /*
  *	Configure the viewing window.
  */

@@ -1409,11 +1409,13 @@ Shape_chooser::Shape_chooser
 	{
 	row_indices.reserve(40);
 	row_indices.push_back(0);	// First row is 0.
+#if 0	/* Done in shapedraw.cc */
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
 		colors[i] = (palbuf[3*i]<<16)*4 + (palbuf[3*i+1]<<8)*4 + 
 							palbuf[3*i+2]*4;
 	palette = gdk_rgb_cmap_new(colors, 256);
+#endif
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	set_widget(vbox); // This is our "widget"

@@ -80,6 +80,8 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 			draw->allocation.width, draw->allocation.height);}
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
+	virtual void set_background_color(guint32 c)
+		{ Shape_draw::set_background_color(c); }
 	virtual int get_selected_id()
 		{ return selected < 0 ? -1 : info[selected].num; }
 	unsigned char *get_chunk(int chunknum);
