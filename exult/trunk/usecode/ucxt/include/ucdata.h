@@ -5,6 +5,9 @@
 #include <string>
 #include <cstdio>
 #include <fstream>
+
+class UCData;
+
 #include "ucfunc.h"
 
 class UCc;

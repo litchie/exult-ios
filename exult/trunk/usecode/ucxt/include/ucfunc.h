@@ -9,6 +9,7 @@
 #include <fstream>
 #include "ucc.h"
 
+//#define DEBUG_GOTOSET
 const unsigned int SIZEOF_USHORT = 2;
 
 class FlagData
@@ -90,20 +91,104 @@ class UCNode
 		vector<UCNode *> nodelist;
 };
 
+#include "opcodes.h"
+
+class GotoSet
+{
+	public:
+		GotoSet() : _offset(0) {};
+		GotoSet(const unsigned int offset, UCc *ucc)
+		       : _offset(offset)
+		{
+			add(ucc);
+		};
+		GotoSet(UCc *ucc) : _offset(ucc->_offset) { add(ucc); };
+
+		vector<pair<UCc *, bool> > &operator()() { return _uccs; };
+		
+		UCc &operator[](const unsigned int i) { return *(_uccs[i].first); };
+		unsigned int size() const { return _uccs.size(); };
+
+		void add(UCc *ucc, bool gc=false)
+		{
+			_uccs.push_back(pair<UCc *, bool>(ucc, gc));
+		};
+
+		/* Just a quick function to remove all the Uccs in _uccs marked for
+		   garbage collection. */
+		void gc()
+		{
+			for(GotoSet::iterator j=_uccs.begin(); j!=_uccs.end();)
+			{
+				#ifdef DEBUG_GOTOSET
+				cout << "OP: " << opcode_table_data[j->first->_id].ucs_nmo << '\t' << j->second;
+				#endif
+				if(j->second==true)
+				{
+					/* ok, we need to take into consideration that the
+					   iterator we're removing might ==_uccs.begin() */
+					bool begin=false;
+					if(j==_uccs.begin()) begin=true;
+					
+					#ifdef DEBUG_GOTOSET
+					cout << "\tremoved";
+					#endif
+					
+					GotoSet::iterator rem(j);
+					
+					if(begin==false) j--;
+					
+					_uccs.erase(rem);
+					
+					if(begin==true) j=_uccs.begin();
+					else            j++;
+					
+					if(j==_uccs.end()) cout << "POTENTIAL PROBLEM" << endl;
+				}
+				else
+					j++;
+				
+				#ifdef DEBUG_GOTOSET
+				cout << endl;
+				#endif
+			}
+		};
+		
+		unsigned int offset() const { return _offset; };
+
+		typedef vector<pair<UCc *, bool> >::iterator iterator;
+		
+	private:
+		unsigned int _offset;
+		vector<pair<UCc *, bool> > _uccs;
+};
+
+class UCOpcodeData;
+
 class UCFunc
 {
 	public:
 		UCFunc() : _offset(0), _funcid(0), _funcsize(0), _bodyoffset(0), _datasize(0),
 		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0) {};
 
+		// temp passing UCData, probably shouldn't need it.
 		void output_ucs(ostream &o, bool gnubraces=false);
 		void output_ucs_node(ostream &o, UCNode* ucn, unsigned int indent);
+		void output_ucs_data(ostream &o, unsigned int indent);
+		void output_ucs_opcode(ostream &o, const vector<UCOpcodeData> &optab, const UCc &op, unsigned int);
 		
 		void parse_ucs();
 		void parse_ucs_pass1(vector<UCNode *> &nodes);
+		void parse_ucs_pass1a(vector<UCNode *> &nodes);
+		void parse_ucs_pass2a(vector<GotoSet> &gotoset);
+		vector<UCc *> parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current,
+		                               vector<pair<UCc *, bool> >::reverse_iterator end,
+		                               vector<pair<UCc *, bool> > &vec, unsigned int opsneeded);
 
 //	private:
 	
+		vector<GotoSet> gotoset;
+		
 		streampos      _offset;      // offset to start of function
 		unsigned short _funcid;      // the id of the function
 		unsigned short _funcsize;    // the size of the function (bytes)
@@ -128,8 +213,6 @@ class UCFunc
 		vector<FlagData *>   _flagcount;
 		UCNode node;
 };
-
-class UCData;
 
 void readbin_UCFunc(ifstream &f, UCFunc &ucf);
 void print_asm(UCFunc &ucf, ostream &o, const UCData &uc);

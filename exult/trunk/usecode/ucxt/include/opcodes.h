@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include "Configuration.h"
-#include "ucdata.h"
+//#include "ucdata.h"
 
 #define MAX_NO_OPCODES 256
 
@@ -125,6 +125,8 @@ class UCOpcodeData
 			ucs_nmo = v[5];
 			num_bytes = strtol(v[6].c_str(), 0, 0);
 			param_types = qnd_ocsplit(v[7]);
+			num_pop = strtol(v[8].c_str(), 0, 0);
+			num_push = strtol(v[9].c_str(), 0, 0);
 			
 		};
 		
@@ -135,7 +137,8 @@ class UCOpcodeData
 		string         ucs_nmo;
 		unsigned int   num_bytes;
 		vector<string> param_types;
-		
+		unsigned int   num_pop;
+		unsigned int   num_push;
 };
 
 extern vector<UCOpcodeData> opcode_table_data;
@@ -144,7 +147,8 @@ extern map<unsigned int, string> bg_uc_intrinsics;
 extern map<unsigned int, string> si_uc_intrinsics;
 
 void init_static_usecodetables(const Configuration &config);
-void init_usecodetables(const Configuration &config, const UCData &uc);
+void init_usecodetables(const Configuration &config, bool noconf, bool verbose);
+//void init_usecodetables(const Configuration &config, const UCData &uc);
 
 #endif
 

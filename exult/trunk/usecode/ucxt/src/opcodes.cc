@@ -39,13 +39,13 @@ void init_static_usecodetables(const Configuration &config)
 }
 
 /* constructs the usecode tables from datafiles in the /ucxt hierachy */
-void init_usecodetables(const Configuration &config, const UCData &uc)
+void init_usecodetables(const Configuration &config, bool noconf, bool verbose)//const UCData &uc)
 {
 	string ucxtroot;
-	if(uc.noconf() == false) config.value("config/ucxt/root", ucxtroot);
-  if(uc.verbose()) cout << "ucxtroot: " << ucxtroot << endl;
-  if(ucxtroot.size() && ucxtroot[ucxtroot.size()-1]!='/' && ucxtroot[ucxtroot.size()-1]!='\\') ucxtroot+='/';
-  ucxtroot+= "Docs/opcodes.txt";
+	if(noconf == false) config.value("config/ucxt/root", ucxtroot);
+	if(verbose) cout << "ucxtroot: " << ucxtroot << endl;
+	if(ucxtroot.size() && ucxtroot[ucxtroot.size()-1]!='/' && ucxtroot[ucxtroot.size()-1]!='\\') ucxtroot+='/';
+	ucxtroot+= "Docs/opcodes.txt";
 
 	ifstream file;
 

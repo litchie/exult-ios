@@ -1,3 +1,7 @@
+2001-12-01  Patrick Burke <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*: Changes and bugfixes to get something that looks
+	  vaguely like Jeff's usecode script outputted. Very vaguely like. ;)
+
 2001-11-30  Tristan Tarrant <nadir@users.sourceforge.net>
 	* exult.spec.in: added tools subpackage
 	* tools/Makefile.am: expack is an installable binary

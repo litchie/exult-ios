@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+class UCc;
+
 class UCc
 {
 	public:
@@ -20,6 +22,11 @@ class UCc
 		vector<unsigned int>  _params_parsed;
 		bool                  _tagged;
 		vector<unsigned int>  _jump_offsets;
+		
+		/* A temporary array to hold the items this opcode theoretically popped
+		   from the stack. This should probably go in it's own wrapper class with
+		   the current UCc. */
+		vector<UCc *>         _popped;
 };
 
 #endif
