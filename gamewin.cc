@@ -1133,7 +1133,7 @@ bool Game_window::init_gamedat(bool create)
 		out.close();
 		}
 					//++++Maybe just test for IDENTITY+++:
-	else if (!U7exists(U7NBUF_DAT) && !U7exists(NPC_DAT) &&
+	else if ((U7exists(U7NBUF_DAT) || !U7exists(NPC_DAT)) &&
 							!Game::is_editing())
 		{
 		return false;
