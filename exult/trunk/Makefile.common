@@ -53,8 +53,6 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 USECODE_OBJS=stackframe.o ucfunction.o ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 	useval.o conversation.o keyring.o ucdisasm.o
 
-SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
-
 OBJS+=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS)
 
 EXULT_FLX = data/exult.flx data/exult_flx.h
