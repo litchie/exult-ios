@@ -1,4 +1,8 @@
 2001-08-07  Max Horn <max@quendi.de>
+	* bggame.cc: butterfly & "static" are now steered via proper timers, thus should
+	  have the same speed regardless of your scaler and the speed of your machine
+
+2001-08-07  Max Horn <max@quendi.de>
 	* ibuf16.cc: needed to include cstdlib but didn't
 	* autoarray.h: needed to include exult_types.h but didn't
 	* bggame.cc: added #include <memory>; fixed butterfly path for higher resolutions
