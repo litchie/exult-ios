@@ -61,7 +61,7 @@ public:
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 					// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift);
+	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 					// Add an object.
 	virtual bool add(Game_object *obj, bool dont_check = false,
 							bool combine = false);

@@ -62,7 +62,8 @@ void Ireg_game_object::move
 	(
 	int newtx, 
 	int newty, 
-	int newlift
+	int newlift,
+	int newmap
 	)
 	{
 	if (owner)			// Watch for this.
@@ -70,7 +71,7 @@ void Ireg_game_object::move
 		owner->remove(this);
 		set_invalid();		// So we can safely move it back.
 		}
-	Game_object::move(newtx, newty, newlift);
+	Game_object::move(newtx, newty, newlift, newmap);
 	}
 
 /*

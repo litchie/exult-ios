@@ -91,7 +91,9 @@ void Actor::read
 
 	int schunk = nfile->read1();	// Superchunk #.
 					// For multi-map:
-	int map_num = fix_first ? 0 : nfile->read1();
+	int map_num = nfile->read1();
+	if (fix_first)
+		map_num = 0;
 	Game_map *npcmap = gwin->get_map(map_num);
 	int usefun = nfile->read2();	// Get usecode function #.
 	set_lift(usefun >> 12);		// Lift is high 4 bits.
@@ -404,11 +406,13 @@ void Actor::read
 	if (olist && !is_dead() &&	// Valid & alive?  Put into chunk list.
 	    !unused)
 		{
-#if 0	/* Old way -- Didn't get correct map. */
+#if 1
 		move((scx + cx)*c_tiles_per_chunk + tilex,
-		     (scy + cy)*c_tiles_per_chunk + tiley, get_lift());
-#endif
+		     (scy + cy)*c_tiles_per_chunk + tiley, 
+			get_lift(), map_num);
+#else
 		olist->add(this);
+#endif
 		if (this == gwin->get_main_actor())
 			gwin->set_map(map_num);
 		}
