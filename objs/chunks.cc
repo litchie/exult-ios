@@ -1024,6 +1024,17 @@ void Chunk_object_list::setup_dungeon_bits
 		memset(dungeon_bits, 0xff, 256/8);
 		return;
 		}
+
+	if (Game::get_game_type() == SERPENT_ISLE &&
+					// Silver Seed:
+			cx >= 144 && cx <= 192 && cy >= 156 && cy <= 192) {
+		// Set whole thing.
+		if (!dungeon_bits)
+			dungeon_bits = new unsigned char[256/8];
+		memset(dungeon_bits, 0xff, 256/8);
+		return;
+	}
+
 	Object_iterator next(objects);
 	Game_object *each;
 	while ((each = next.get_next()) != 0)
