@@ -1,13 +1,14 @@
 Exult Studio Documentation
-last changed: 08 August 2003(GMT)
+last changed: 06 February 2004(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/studio.php
 
 
 0. Changes to the Documentation
-0.1. - 08 August 2003
-0.2. - 04 May 2003
-0.3. - 28 October 2002
+0.1. - 06 February 2004
+0.2. - 08 August 2003
+0.3. - 04 May 2003
+0.4. - 28 October 2002
 
 1. Introduction
 1.1. What is Exult Studio?
@@ -59,7 +60,12 @@ The latest version of this document can be found at http://exult.sourceforge.net
 6.13. Button eggs
 
 7. NPC editing
-7.1. How to edit an NPC
+7.1. Editing an existing NPC
+7.2. Creating a new NPC
+7.3. Basic NPC settings
+7.4. NPC Properties
+7.5. NPC Flags
+7.6. NPC Schedules
 
 8. Basic map editing
 8.1. Learning the basics of map editing
@@ -88,19 +94,28 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 08 August 2003
+0.1. - 06 February 2004
+* 1.3. Terms we use in regard to Exult and Ultima 7 some corrections by Willem.
+* 2.3. Step-by-step instructions to run Exult Studio some corrections.
+* 2.2. Running Exult Studio some corrections.
+* 3.3. Map files More right click options.
+* 7. NPC editing finally took on that task.
+
+
+
+0.2. - 08 August 2003
 * 2.1. Installation only use latest snapshots not latest release.
 * 2.3. Step-by-step instructions to run Exult Studio you need to set up the patch path in exult.cfg.
 * 9.6. Known Bugs with the Win32 portExult Studio now works on all Win32 platforms.
 
 
 
-0.2. - 04 May 2003
+0.3. - 04 May 2003
 * 9.6. Known Bugs with the Win32 port two bugs fixed in the win32 port.
 
 
 
-0.3. - 28 October 2002
+0.4. - 28 October 2002
 * 1.3. Terms we use in regard to Exult and Ultima 7 added NPC schedules.
 * 2.2. Running Exult Studio the -d command line arg is now -gGAME.
 * 2.4. What you can do at the moment 'Paint with chunk' added.
@@ -131,8 +146,8 @@ Of course the terms explained in ReadMe.txt are also used in this Documentation 
 * world: 12x12 superchunks
 * NPC schedules: NPCs can have schedules which make them do certain things at certain times.
 * BG, SI, FoV or SS: we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle" as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.
-* eggs: these are trip-wires that cause monsters to spawn, execute scripts, play music, change weather, trigger traps, teleport when you get near them.
-* flex files: or flexes are used by the original to store the data files. Also when you choose not use compressed save games (see save_compression_level in ReadMe.txt) our save games are also "flexed".
+* eggs: these are trip-wires that can cause monsters to spawn, execute scripts, play music, change weather, trigger traps or teleport when you get near them.
+* flex files: also known as flexes, these are used by the original to store the data files. Also when you choose to not use compressed save games (see save_compression_level in ReadMe.txt) our save games are also "flexed".
 * gumps: the windows used in the game interface for containers, characters, menus, etc..
 * paperdoll: when pressing 'i' you get the inventory display. It's the picture of your characters body (or the bodies of your party members) onto which you can drag all kinds of equipment. The way this is displayed in SI is what we call paperdoll. We integrated this for BG as well. (see FAQ.txt).
 * shapes: shape files are the format used for storage of all graphics elements (from UI buttons to terrain features) of the games Exult supports. Shapes may contain one or more frames (a frame is a single image).
@@ -147,7 +162,7 @@ Of course the terms explained in ReadMe.txt are also used in this Documentation 
 
 2. Configurations
 2.1. Installation
-* You need Exult and you need to install it properly (see ReadMe.txt). Also make sure that you are using the latest snapshot of the 1.1.x branch of Exult. Exult Studio only works with the latest snapshot, not the latest release.
+* You need Exult and you need to install it properly (see ReadMe.txt). Also make sure that you are using the latest snapshot of Exult. Exult Studioonly works with the latest snapshot, not the latest release.
 * For U*ix platforms you need to build Exult Studio from the source available from our source snapshot at http://exult.sourceforge.net/download.php. You will also need the GTK+ library installed as well as libglade.
 * For Win32 platforms (Win9x,ME,2k,XP) you need to download http://exult.sourceforge.net/snapshots/ExultStudio.exe and install it in the same directory where you installed Exult.
 
@@ -156,10 +171,11 @@ Of course the terms explained in ReadMe.txt are also used in this Documentation 
 2.2. Running Exult Studio
 You can run Exult Studio all by itself, but it isn't useful that way, as it uses Exult as a server. What you really want to do is:
 * Put 'exult_studio.glade' in the Exult 'data' directory.
-* Be sure 'exult_studio' is in your path. (on Win32 'exult_studio.exe' needs to be in the same directory as exult.exe)
+* Be sure 'exult_studio' is in your path. (on Windows 'exult_studio.exe' needs to be in the same directory as exult.exe)
 * On U*ix platforms you need to be running Exult on X.
 * Run Exult in windowed mode (not fullscreen).
-* Press 'alt+ctrl+m' to go into 'map-editor' mode. If all is set up correctly, exult_studio will start up, and will have a list of files on the left side of its window (you need to have cheats enabled in Exult, see the ReadMe.txt).
+* Enable the Exult cheat mode (see ReadMe.txt).
+* Press 'alt+ctrl+m' to go into 'map-editor' mode. If all is set up correctly, exult_studio will start up, and will have a list of files on the left side of its window.
 
 Starting up one or the other separately will reconnect them:
 * If Exult isn't running, start it up. Then, in Exult Studio, use the 'File' menu to choose the static directory (for the game you're playing).
@@ -171,12 +187,13 @@ You can also reconnect by selecting File-Connect in Exult Studio's menus.
 2.3. Step-by-step instructions to run Exult Studio
 The above instructions may still be too technical for everybody. You have to make sure all these steps are taken care of before you're going to get very far with your world building.
 1. While it is not explicitly needed it is useful to have a working copy of either BG or SI properly installed onto your computer.
-2. Next, you need to have the Exult 1.1x snapshot and the SDL mixer installed properly onto your computer and working correctly. If you are currently playing either BG or SI on your machine this is probably done right. To make sure you have the correct version, ensure that it says 1.10 CVS during Exult's start-up screen.
-3. You need to make sure the newest version of Exult Studio is installed properly onto your computer as well. Exult Studio should be installed in the same directory as the Exult 1.10x snapshot.
+2. Next, you need to have the latest Exult snapshot and the SDL mixer installed properly onto your computer and working correctly. If you are currently playing either BG or SI on your machine this is probably done right. To make sure you have the correct version, ensure that it says X.XX CVS (X.XX stands for some version number) during Exult's start-up screen (for example see http://exult.sourceforge.net/images/screenshots/mainmenu.png).
+3. You need to make sure the newest version of Exult Studio is installed properly onto your computer as well. Exult Studio should be installed in the same directory as the Exult snapshot.
 4. You need to set up the path for the patch to save any changes to existing games. See 2.4. What you can do at the moment on how to change exult.cfg accordingly.
 5. In order for Exult Studio to work properly, you need to have Exult running in windowed mode. If you can see your desktop while playing, then you're doing it right.
-6. Make sure you have Cheats enabled. This can be enabled in the Gameplay options of the Game menu.
+6. Make sure you have Cheats enabled. This can be enabled in the Gameplay options of the Game see (see ReadMe.txt).
 7. While running Exult in windowed mode, hit 'ctrl+alt+m' to enter map-editing mode. Exult Studio should open up if you did everything correctly. In map-editing mode the world is frozen, but you are still able to move your characters around in order to place objects. You're now ready to start your world editing. You should be seeing something like this:
+
 
 
 
@@ -225,7 +242,7 @@ You can change the settings of Exult Studio either with the preferences dialog o
       </height>
     </main>
     <default_game>
-    gamename
+    gamename 
 				** default game to edit (games must be specified in
 				<game> part of exult.cfg)
     </default_game>
@@ -279,6 +296,7 @@ These files contain so called chunks that serve as templates in the final map. T
 
 Right clicking on a chunk gives you another two options (also the File-save/revert option):
 * New... Empty Creates a new chunk. Drag the new chunk onto the game and edit it by dragging shapes on it. Duplicate Duplicates a chunk. Drag the duplicate chunk onto the map to edit it.
+* Delete Deletes that chunk. Be very careful with this option.
 
 
 
@@ -386,8 +404,8 @@ When you right click on a shape in the Shape browser (e.g. Files-Shapes.vga) you
 * Edit...: Brings up your image-editor on the chosen frame. When you save in the image-editor, ES will read the changes back within 5 seconds. This is especially convenient if you have 'gimp-remote', as it will open a window for the frame in an already-running gimp.
 * Edit tiled: This is only for 'flat' (8x8) shapes. It forms an image from all the frames and brings it up in the image-editor. This is really handy for making lots of terrain frames like grass. A dialog lets you choose the dimensions.
 * New frame: Creates a new frame after the currently-selected one. The 'insert' key also does this (and the 'del' key deletes a frame, though it's buggy if there's just one frame left).
-* New shape: Gives you a dialog for choosing the shape #, as well as the initial # of frames. You can also create a new font shape from TrueType or Type1 font files. It's mainly a convenience for someone creating a whole new game, as their only single-colored. Maybe in the future we'll have some functions to create two-colored fonts like the main one in U7, although it might take hand-editing to make the letters look that nice.
 * Import/Export frame: Let's you import a single frame from a .png file or export to a .png.
+* New shape: Gives you a dialog for choosing the shape #, as well as the initial # of frames. You can also create a new font shape from TrueType or Type1 font files. It's mainly a convenience for someone creating a whole new game, as their only single-colored. Maybe in the future we'll have some functions to create two-colored fonts like the main one in U7, although it might take hand-editing to make the letters look that nice.
 
 Note:Edit... doesn't work on Windows system. It stores the shape as PNG file in GAMEDIR/itmp/ (e.g. blackgate/itmp). If you manually open the file with an image editor of your liking and then save it, ES doesn't read the changes back.
 
@@ -397,7 +415,7 @@ Create 'combination shapes', like a fence or an entire roof by selecting "Tools-
 
 
 5.3. Custom Usecode
-As hinted at (see ReadMe.txt) Usecode is actually what runs Ultima 7 and therefore any game created with Exult Studio. As of yet we do not have a Usecode editor/debugger. So writing your own Usecode is not that easy.
+As hinted at (see 1.3.) Usecode is actually what runs Ultima 7 and therefore any game created with Exult Studio. As of yet we do not have a Usecode editor/debugger. So writing your own Usecode is not that easy.
 For an example of how Usecode may look like download our experimental patch for BG at http://exult.sourceforge.net/snapshots/patch.zip. In that zip you'll find a readme.txt which tells you how to run it. You will also see two files called usecode.uc and usecode.
 Usecode.uc is the usecode script that will help you understand our usecode language. When you run ucc (see 9.1.) with that file (e.g. "ucc -o usecode usecode.uc") you will get the file called usecode. This file 'usecode' should be the same as the one in the zip file.
 Someone does have to write extensive documentation for this but I (Dominus) am not really up for that task. Pertex has written some documentation at http://www.sophen.de/exult/ that might be able help you.
@@ -495,8 +513,83 @@ The button egg has the interesting ability to activate all eggs in the immediate
 --------------------------------------------------------------------------------
 
 7. NPC editing
-7.1. How to edit an NPC
-Sorry to disappoint but this section is not yet done...
+7.1. Editing an existing NPC
+To edit an NPC with Exult Studio you need to be running a game in Exult and of course Exult Studio. Enable map editing and double click the NPC you want to edit. The Exult Studio NPC window will pop up with all the stats of the NPC.
+
+
+7.2. Creating a new NPC
+If you want to create a new NPC you have to select Create NPC in the edit menu. This will pop up the same NPC window as when you double click an NPC. Now enter all the properties of the new NPC as will be described in the following text. When you are satisfied with your new NPC hit Apply and you will be asked to choose a spot in Exult to place the NPC.
+
+
+7.3. Basic NPC settings
+* Face # Drag and drop a face from Faces.vga in the main Exult Studio window to the face field in the NPC window.
+* Name Choose a name for your NPC.
+* Usecode Here you enter the usecode that is associated with the NPC.
+* NPC # This cannot be changed.
+* Ident I (Dominus) have no idea what this means.
+* Shape # Either drag and drop a shape from shapes.vga into the line (or the black box to the right of it) or enter a shape number.
+* Frame # The frame of the above given shape the NPC starts with.
+* Alignment Any NPC set to a neutral alignment will ignore the Avatar and friends, following their schedule until attacked. Any NPC set to hostile will immediately be attacked by the Avatar when you go into combat mode. Some NPCs will not talk to you or will even attack you on sight when set to hostile.
+* Attack Mode You can choose the mode in which the NPC attacks when it goes into combat. Choose between Nearest, Weakest, Strongest, Berserk, Protect, Defend, Flank, Flee Random and Manual. I don't advice using Manual as for most NPCs you will not be able to actually change the attack mode manually.
+
+
+
+7.4. NPC Properties
+The vital properties of an NPC are set in the Properties tab of the NPC Window.
+* Strength
+* Dexterity
+* Intelligence
+* Health
+* Combat
+* Mana How much mana you have left for casting spells. Only useful for members of the party and if the game allows party members casting spells.
+* Max. Mana Maximum amount of mana you can have. Only useful for members of the party and if the game allows party members casting spells.
+* Training How much Training points the NPC has left and can use at trainers. Only useful for party members.
+* Experience
+* Food Level How hungry is the NPC. Only relevant for party members. Normal NPCs don't starve and need to be fed.
+
+
+
+7.5. NPC Flags
+Here you can set special properties of NPCs. Some are only set for special NPCs, party members or just the Avatar. A lot are also only available in SI. Here a brief listing of the flags and when needed a short description.
+* Asleep
+* Confused
+* Dancing
+* Fly
+* In motion
+* Invisible
+* No Magic
+* Petra
+* Protection When you cast the protection spell on an NPC this flag gets set.
+* Swim
+* Tremor
+* Bleeding The NPC looses blood, and leaves a trail of blood when he moves.
+* Conjured
+* Don't move
+* Freeze The NPC is cold and needs warmer clothing.
+* In party The NPC is a member of the party.
+* Met The Avatar has previously spoken to the NPC.
+* Okay to land
+* Poisoned
+* Tattooed
+* Walk
+* Charmed
+* Cursed
+* Ethereal This makes it possible for the NPC to behave like a ghost (walk through walls, walk on water...)
+* In action
+* Naked
+* Paralyzed
+* Polymorph
+* Summoned
+* Tournament In combat this NPC is unable to die.
+* Zombie
+
+
+
+7.6. NPC Schedules
+In this Tab you can set the schedule the NPC follows normally.
+* Activity With the button Set you can choose the schedule. Keep in mind that some schedules also require items, e.g. for the Blacksmith activity you need a smithy to work in. If there is no such item near the location you set, the NPC will use the next near item in the vicinity, for example the sleep activity will have the NPC wander to the next available bed. To clear the activity set it to --None--.
+* Location Enter the x and y coordinates of the place you want the NPC to follow his schedule at. Unfortunately you cannot (yet) set the z coordinate (on which floor of a house the schedule begins). By placing the Avatar at the spot for the scheduled activity and pressing the Game button, Exult Studio will fill out the coordinates. Also by pressing 'F2' at a place, the cheat screen will show you the coordinates in hex and decimal and you can use either system to enter the location.
+
 
 
 
