@@ -950,11 +950,20 @@ bool Game_window::init_gamedat(bool create)
 			restore_gamedat(INITGAME);
 			}
 		ofstream out;
+					// Editing, and no IDENTITY?
+		if (Game::is_editing() && !U7exists(IDENTITY))
+			{
+			U7open(out, IDENTITY);
+			out << Game::get_gametitle().c_str() << endl;
+			out.close();
+			}
 		U7open(out, GNEWGAMEVER);
 		getVersionInfo(out);
 		out.close();
 		}
-	else if (!U7exists(U7NBUF_DAT) && !U7exists(NPC_DAT))
+					//++++Maybe just test for IDENTITY+++:
+	else if (!U7exists(U7NBUF_DAT) && !U7exists(NPC_DAT) &&
+							!Game::is_editing())
 		{
 		return false;
 		}
@@ -965,7 +974,8 @@ bool Game_window::init_gamedat(bool create)
 			char gamedat_identity[256];
 			identity_file.read(gamedat_identity, 256);
 			char *ptr = gamedat_identity;
-			for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
+			for(; (*ptr!=0x1a && *ptr!=0x0d &&
+							*ptr != 0x0a); ptr++)
 				;
 			*ptr = 0;
 			cout << "Gamedat identity " << gamedat_identity << endl;
