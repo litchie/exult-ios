@@ -114,7 +114,7 @@ void Shapes_vga_file::write_info
 	weapon.put(cnt);
 	for (i = 0; i < num_shapes; i++)
 		if (info[i].weapon)
-			info[i].weapon->write(weapon, bg);
+			info[i].weapon->write(i, weapon, bg);
 	weapon.close();	
 
 	ofstream ammo;
@@ -126,7 +126,7 @@ void Shapes_vga_file::write_info
 	ammo.put(cnt);
 	for (i = 0; i < num_shapes; i++)
 		if (info[i].ammo)
-			info[i].ammo->write(ammo);
+			info[i].ammo->write(i, ammo);
 	ammo.close();
 
 	// Write data about drawing the weapon in an actor's hand
@@ -153,7 +153,7 @@ void Shapes_vga_file::write_info
 	mfile.put(cnt);
 	for (i = 0; i < num_shapes; i++)
 		if (info[i].monstinf)
-			info[i].monstinf->write(mfile);
+			info[i].monstinf->write(i, mfile);
 	mfile.close();
 
 	U7open(mfile, EQUIP_PATCH);	// Write 'equip.dat'.
@@ -185,3 +185,94 @@ void Shapes_vga_file::write_info
 		}
 	occ.write((char *)occbits, sizeof(occbits));
 	}
+
+/*
+ *	Write out a weapon-info entry to 'weapons.dat'.
+ */
+
+void Weapon_info::write
+	(
+	int shapenum,
+	std::ostream& out,		// Write to here.
+	bool bg
+	)
+	{
+	uint8 buf[21];			// Entry length.
+	uint8 *ptr = buf;
+	Write2(ptr, shapenum);		// Bytes 0-1.
+	Write2(ptr, ammo);
+	Write2(ptr, projectile);
+	*ptr++ = damage;
+	unsigned char flags0 = (damage_type<<4) |
+				((m_explodes ? 1 : 0)<<1);
+	*ptr++ = flags0;
+	*ptr++ = (range<<3) | (uses<<1);
+	unsigned char flags1 = m_returns ? 1 : 0;
+	*ptr++ = flags1;
+	*ptr++ = 0;			// Unknown.
+	*ptr++ = powers;
+	*ptr++ = 0;			// ??
+	Write2(ptr, usecode);
+					// BG:  Subtracted 1 from each sfx.
+	int sfx_delta = bg ? -1 : 0;
+	Write2(ptr, sfx - sfx_delta);
+	Write2(ptr, hitsfx + sfx_delta);
+					// Last 2 bytes unknown/unused.
+	Write2(ptr, 0);
+	out.write((char *) buf, sizeof(buf));
+	}
+
+/*
+ *	Write out an amm-info entry to 'amms.dat'.
+ */
+
+void Ammo_info::write
+	(
+	int shapenum,
+	std::ostream& out		// Write to here.
+	)
+	{
+	uint8 buf[13];			// Entry length.
+	uint8 *ptr = buf;
+	Write2(ptr, shapenum);
+	Write2(ptr, shapenum);
+	Write2(ptr, type2);
+	*ptr++ = damage;
+	Write2(ptr, 0);			// Unknown.
+	*ptr++ = damage_type<<4;
+	*ptr++ = powers;
+	Write2(ptr, 0);			// Unknown.
+	out.write((char *) buf, sizeof(buf));
+	}
+
+/*
+ *	Write out monster info. to 'monsters.dat'.
+ */
+
+int Monster_info::write
+	(
+	int shapenum,
+	std::ostream& out
+	)
+	{
+	uint8 buf[25];		// Entry length.
+	memset(&buf[0], 0, sizeof(buf));
+	uint8 *ptr = buf;
+	Write2(ptr, shapenum);
+	*ptr++ = strength << 2;
+	*ptr++ = dexterity << 2;
+	*ptr++ = (intelligence << 2) | (m_poison_safe ? 1 : 0);
+	*ptr++ = (combat << 2) | alignment;
+	*ptr++ = (armor << 4) | (m_splits ? 1 : 0) | (m_cant_die ? 2 : 0);
+	*ptr++ = 0;			// Unknown.
+	*ptr++ = (weapon << 4) | reach;
+	*ptr++ = flags;			// Byte 9.
+	*ptr++ = vulnerable;
+	*ptr++ = immune;
+	*ptr++ = (m_cant_yell ? (1<<5) : 0) |
+		 (m_cant_bleed ? (1<<6) : 0);
+	*ptr++ = 0;			// Unknown.
+	*ptr++ = equip_offset;
+	out.write((char *) buf, sizeof(buf));
+	}
+
