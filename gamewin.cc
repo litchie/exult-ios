@@ -731,12 +731,12 @@ void Game_window::paint
 		paint_text_box(0, buf, 
 				x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
 		}
-					// Draw text.
-	for (Text_object *txt = texts; txt; txt = txt->next)
-		paint_text_object(txt);
 					// Draw gumps.
 	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
 		gmp->paint(this);
+					// Draw text.
+	for (Text_object *txt = texts; txt; txt = txt->next)
+		paint_text_object(txt);
 	win->clear_clip();
 	painted = 1;
 	}
@@ -1368,7 +1368,7 @@ void Game_window::show_face
 	Rectangle actbox;		// Gets box where face goes.
 					// See if already on screen.
 	for (int i = 0; i < num_faces; i++)
-		if (face_info[i]->shape == shape)
+		if (face_info[i] && face_info[i]->shape == shape)
 			{
 			info = face_info[i];
 			last_face_shown = i;
@@ -1422,7 +1422,7 @@ void Game_window::remove_face
 	{
 	int i;				// See if already on screen.
 	for (i = 0; i < num_faces; i++)
-		if (face_info[i]->shape == shape)
+		if (face_info[i] && face_info[i]->shape == shape)
 			break;
 	if (i == num_faces)
 		return;			// Not found.
@@ -1466,7 +1466,7 @@ int Game_window::is_npc_text_pending
 	)
 	{
 	for (int i = 0; i < num_faces; i++)
-		if (face_info[i]->text_pending)
+		if (face_info[i] && face_info[i]->text_pending)
 			return (1);
 	return (0);
 	}

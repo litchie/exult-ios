@@ -426,6 +426,44 @@ void Patrol_schedule::now_what
 	}
 
 /*
+ *	Schedule change for 'talk':
+ */
+
+void Talk_schedule::now_what
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Usecode_machine *umachine = gwin->get_usecode();
+	switch (phase)
+		{
+	case 0:				// Start by approaching Avatar.
+		npc->follow(gwin->get_main_actor());
+		phase++;
+		return;
+	case 1:				// Wait a second.
+	case 2:
+		{
+		int dx = 1 - 2*(rand()%2);
+		npc->walk_to_tile(npc->get_abs_tile_coord() +
+			Tile_coord(dx, -dx, 0), 200, 300);
+					// Wait til conversation is over.
+		if (gwin->get_num_faces_on_screen() == 0)
+			phase++;
+		return;
+		}
+	case 3:				// Talk.
+		npc->activate(gwin->get_usecode());
+		gwin->set_mode(Game_window::normal);
+		gwin->paint();
+		phase++;
+		return;
+	default:
+		break;
+		}
+	}
+
+/*
  *	Set a schedule.
  */
 
@@ -516,7 +554,6 @@ void Npc_actor::set_schedule_type
 	schedule_type = new_schedule_type;
 	delete schedule;		// Done with the old.
 	schedule = 0;
-#if 1
 	switch ((Schedule::Schedule_types) schedule_type)
 		{
 	case Schedule::horiz_pace:
@@ -528,13 +565,15 @@ void Npc_actor::set_schedule_type
 	case Schedule::patrol:
 		schedule = new Patrol_schedule(this);
 		break;
+	case Schedule::talk:
+		schedule = new Talk_schedule(this);
+		break;
 		}
 	if (schedule)			// Try to start it.
 		{
 		dormant = 0;
 		schedule->now_what();
 		}
-#endif
 	}
 
 Patrol_schedule::~Patrol_schedule()
@@ -666,7 +705,8 @@ void Npc_actor::follow
 	int dist = 2 + Npc_actor::get_party_id()/3;
 	Tile_coord goal = leader->get_abs_tile_coord();
 	Tile_coord pos = get_abs_tile_coord();
-	if (goal.distance(pos) < dist)	// Already close enough?
+	int goaldist = goal.distance(pos);	// Tiles to goal.
+	if (goaldist < dist)		// Already close enough?
 		return;
 					// Figure where to aim.
 	int newtx = Approach(pos.tx, goal.tx, dist);
@@ -678,6 +718,29 @@ void Npc_actor::follow
 	if (!speed)			// Not moving?
 		speed = 125;
 	speed += 10 - rand()%50;	// Let's try varying it a bit.
+#if 1
+	if (goaldist > 32 &&		// Getting kind of far away?
+	    get_party_id() >= 0)	// And a member of the party.
+		{			// Teleport.
+		int pixels = goaldist*tilesize;
+		Game_window *gwin = Game_window::get_game_window();
+		if (pixels > gwin->get_width() + 16)
+			{
+			Chunk_object_list *oldchunk = gwin->get_objects(
+				get_cx(), get_cy());
+			move(newtx, newty, goal.tz);
+			Chunk_object_list *newchunk = gwin->get_objects(
+				get_cx(), get_cy());
+			if (oldchunk != newchunk)
+				switched_chunks(oldchunk, newchunk);
+			Rectangle box = gwin->get_shape_rect(this);
+			gwin->add_text("Thou shan't lose me so easily!", 
+							box.x, box.y);
+			gwin->paint();
+			return;
+			}
+		}
+#endif
 	walk_to_tile(newtx, newty, goal.tz, speed);
 	}
 

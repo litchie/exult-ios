@@ -91,9 +91,9 @@ void Game_clock::handle_event
 			gwin->schedule_npcs(hour/3);
 		}
 #if 1
-	else if (first_day &&		// Set 6am schedules after intro.
+	else if (first_day &&		// Set 6am schedules after start.
 		 gwin->get_usecode()->get_global_flag(
-					Usecode_machine::did_first_scene))
+					Usecode_machine::found_stable_key))
 		{
 		first_day = 0;
 		gwin->schedule_npcs(hour/3);
