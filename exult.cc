@@ -1116,3 +1116,24 @@ int Modal_gump
 	return (!escaped);
 	}
 
+/*
+ *	Prompt for a numeric value using a slider.
+ *
+ *	Output:	Value, or 0 if user hit ESC.
+ */
+
+int Prompt_for_number
+	(
+	int minval, int maxval,		// Range.
+	int step,
+	int defval			// Default to start with.
+	)
+	{
+	Slider_gump_object *slider = new Slider_gump_object(minval, maxval,
+							step, defval);
+	int ok = Modal_gump(slider, Mouse::hand);
+	int ret = !ok ? 0 : slider->get_val();
+	delete slider;
+	return (ret);
+	}
+
