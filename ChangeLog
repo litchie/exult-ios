@@ -1,3 +1,6 @@
+2002-02-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* imagewin/ibuf8.cc: used memcpy() on Solaris for ibuf8::copy8
+
 2002-02-22  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamemap.cc (Game_map): Always look through all the terrains to
