@@ -79,7 +79,9 @@ protected:
 
 	Attack_mode attack_mode;
 					// A frame sequence for each dir.:
-	static Frames_sequence *frames[8];
+	static Frames_sequence *avatar_frames[4];
+	static Frames_sequence *npc_frames[4];
+	Frames_sequence **frames;
 					// Draw weapon in hand
 	void paint_weapon(Game_window *gwin);
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
@@ -130,8 +132,8 @@ public:
 					// Increment/decrement temperature.
 	void check_temperature(bool freeze);
 					// Get frame seq. for given dir.
-	static Frames_sequence *get_frames(int dir)
-		{ return frames[dir]; }
+	Frames_sequence *get_frames(int dir)
+		{ return frames[dir/2]; }
 					// Get attack frames.
 	int get_attack_frames(int dir, char *frames) const;
 	enum Alignment {		// Describes alignment field.
@@ -472,7 +474,7 @@ class Main_actor : public Actor
 public:
 	Main_actor(const std::string &nm, int shapenum, int num = -1, int uc = -1)
 		: Actor(nm, shapenum, num, uc)
-		{  }
+		{  frames = &avatar_frames[0]; }
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 	void get_followers();		// Get party to follow.
