@@ -77,13 +77,13 @@ int main(int argc, char **argv)
 #endif
 {
 	Arch_mode mode = NONE;
-	char *fname = 0;
+	char fname[1024];
 	char ext[] = "u7o";
 	int index;
 	vector<string>	file_names;
   
 	if(argc>2) {
-		fname = argv[2];
+		strcpy(fname, argv[2]);
 		if((argv[1][0]=='-')&&(strlen(argv[1])==2)) {
 			switch(argv[1][1]) {
 			case 'i':
@@ -104,7 +104,6 @@ int main(int argc, char **argv)
 					U7open(respfile, fname);
 					
 					// Read the output file name
-					fname = new char[1024];
 					respfile.getline(temp, 1024);
 					strcpy(fname, path_prefix);
 					strcat(fname, temp);
