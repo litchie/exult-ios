@@ -17,21 +17,16 @@
 	* Weather eggs:  Clouds.
 	* Weather eggs:  Storm.
 
-2000-06-07  Jeff Freedman  <jeff@amy.nerble.net>
-
-	* Rewrote egg handling.
-	* VERY simple combat.  (1 hit = death!)
-
 2000-06-08  Coder Infidel  <coder_infidel@hotmail.com>
 
 	* actors.cc: Fixed warning
 	* exult.cc, mouse.cc, mouse.h: use red mouse pointer in combat mode
 	* gamewin.cc: added config to skip splash screen
 
-2000-06-06  Jeff Freedman  <jeff@amy.nerble.net>
+2000-06-07  Jeff Freedman  <jeff@amy.nerble.net>
 
-	* gumps.cc: Fixed initial object placement.
-	* drag.cc: Handle 'quantity' objects.
+	* Rewrote egg handling.
+	* VERY simple combat.  (1 hit = death!)
 
 2000-06-07  Coder Infidel  <coder_infidel@hotmail.com>
 
@@ -39,6 +34,11 @@
 	* actors.h: updated some comments about NPC frames
 	* Makefile.win32: added schedule.o
 	* objs.h, schedule.h: fixed compile error for Win32
+
+2000-06-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gumps.cc: Fixed initial object placement.
+	* drag.cc: Handle 'quantity' objects.
 
 2000-06-05  Jeff Freedman  <jeff@amy.nerble.net>
 
@@ -216,7 +216,7 @@
 
 2000-05-08  Tristan Tarrant  <tarrant_tristan@emc.com>
 
-	* flic/*: Implement flic-playing library
+	* flic.*: Implement flic-playing library
 	* gamewin.cc: stuff for flics.
 
 2000-05-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>

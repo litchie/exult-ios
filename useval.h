@@ -26,14 +26,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifdef MACOS
-#include <iostream>
-using namespace std;
-
-#else
-class istream;
-class ostream;
-#endif
+#include <iosfwd>
 
 #include <vector>	// STL container
 #include <deque>	// STL container

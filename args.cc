@@ -2,6 +2,11 @@
 
 #include "args.h"
 
+using std::cerr;
+using std::endl;
+using std::string;
+using std::strtol;
+using std::strtoul;
 
 void	Args::declare(const char *s,bool *b,bool defval)
 {

@@ -23,8 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 
-
 #include "XMLEntity.h"
+
+using std::string;
+using std::vector;
 
 XMLEntity::XMLEntity() : id(""),content("") {}
 XMLEntity::~XMLEntity() {}

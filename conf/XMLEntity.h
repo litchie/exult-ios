@@ -31,14 +31,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 #include <vector>
 
-using namespace std;
-
 
 class	XMLEntity
 	{
 public:
-	string	id;
-	string	content;
+	std::string	id;
+	std::string	content;
 	XMLEntity &operator =(const XMLEntity &x) { id=x.id; content=x.content; return *this; }
 	XMLEntity(const XMLEntity &e) : id(e.id),content(e.content)
 		{  }
@@ -51,9 +49,9 @@ class	XMLnode
 	{
 public:
 	XMLEntity	entity;
-	vector<XMLnode>	nodelist;
-	string	&reference(string &,bool &);
-	XMLnode *subtree(string &);
+	std::vector<XMLnode>	nodelist;
+	std::string	&reference(std::string &,bool &);
+	XMLnode *subtree(std::string &);
 	XMLnode &operator=(const XMLnode &n) { entity=n.entity; nodelist=n.nodelist; return *this; }
 	XMLnode(const XMLnode &n) : entity(n.entity),nodelist(n.nodelist)
 		{  }

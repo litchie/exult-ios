@@ -29,6 +29,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "effects.h"
 
+#include <math.h>
+
 /*
  *	Create an egg from IREG data.
  */
@@ -139,13 +141,13 @@ int Egg_object::is_active
 static	inline int	distance_between_points(int ax,int ay,int az,int bx,int by,int bz)
 {
 	int	dx(abs(ax-bx)),dy(abs(ay-by)),dz(abs(az-bz));
-	return	(int)sqrt(dx*dx+dy*dy+dz*dz);
+	return	(int)sqrt(float(dx*dx+dy*dy+dz*dz));	// the cast to float is required to prevent ambiguity!
 }
 
 static	inline int	distance_between_points(int ax,int ay,int bx,int by)
 {
 	int	dx(abs(ax-bx)),dy(abs(ay-by));
-	return	(int)sqrt(dx*dx+dy*dy);
+	return	(int)sqrt(float(dx*dx+dy*dy));			// the cast to float is required to prevent ambiguity!
 }
 
 #if 0	/* +++++Going away. */

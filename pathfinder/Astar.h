@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class	Astar: public virtual PathFinder
 	{
-	vector<Tile_coord> path;		// Coords. to goal.
+	std::vector<Tile_coord> path;		// Coords. to goal.
 	int pathlen;			// Length of path.
 	int dir;			// 1 or -1.
 	int stop;			// Index to stop at.
