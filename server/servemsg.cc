@@ -6,7 +6,7 @@
  **/
 
 /*
-Copyright (C) 2000-2001 The Exult Team
+Copyright (C) 2000-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -66,7 +66,8 @@ int Send_data
 	buf[2] = datalen&0xff;		// Data length.
 	buf[3] = (datalen>>8)&0xff;
 	buf[4] = id;
-	std::memcpy(&buf[5], data, datalen);	// The data itself.
+	if (datalen > 0)
+		std::memcpy(&buf[5], data, datalen);	// The data itself.
 	int len = datalen + hdrlength;
 
 	return (write(socket, buf, len) == len ? 0 : -1);
