@@ -99,6 +99,7 @@ class Usecode_machine
 	unsigned long timers[20];	// Each has time in hours when set.
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
+	int speech_track;		// Set/read by some intrinsics.
 	Text_gump *book;		// Book/scroll being displayed.
 	Game_object *caller_item;	// Item this is being called on.
 	Game_object *last_created;	// Last item created with intrins. x24.
@@ -255,11 +256,12 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(get_timer);
 	USECODE_INTRINSIC_DECL(set_timer);
 	USECODE_INTRINSIC_DECL(mouse_exists);
-	USECODE_INTRINSIC_DECL(guardian_speech);
+	USECODE_INTRINSIC_DECL(get_speech_track);
 	USECODE_INTRINSIC_DECL(flash_mouse);
 	USECODE_INTRINSIC_DECL(get_container);
 	USECODE_INTRINSIC_DECL(remove_item);
 	USECODE_INTRINSIC_DECL(get_equipment_list);
+	USECODE_INTRINSIC_DECL(start_speech);
 	USECODE_INTRINSIC_DECL(nap_time);
 	USECODE_INTRINSIC_DECL(advance_time);
 	USECODE_INTRINSIC_DECL(in_usecode);
