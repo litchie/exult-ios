@@ -421,6 +421,30 @@ Uc_array_expression::~Uc_array_expression
 	}
 
 /*
+ *	Concatenate another expression, or its values if an array, onto this.
+ *	If the expression is an array, it's deleted after its elements are
+ *	taken.
+ */
+
+void Uc_array_expression::concat
+	(
+	Uc_expression *e
+	)
+	{
+	Uc_array_expression *arr = dynamic_cast<Uc_array_expression *> (e);
+	if (!arr)
+		add(e);			// Singleton?  Just add it.
+	else
+		{
+		for (std::vector<Uc_expression *>::iterator it = 
+			arr->exprs.begin(); it != arr->exprs.end(); it++)
+			add(*it);
+		arr->exprs.clear();	// Don't want to delete elements.
+		delete arr;		// But this array is history.
+		}
+	}
+
+/*
  *	Generate code to evaluate expression and leave result on stack.
  */
 
