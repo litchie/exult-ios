@@ -125,15 +125,15 @@ void Egg_object_io
 int Egg_object_out
 	(
 	int fd,				// Socket.
-	unsigned long& addr,		// Address.
-	int& tx, int& ty, int& tz,	// Absolute tile coords.
-	int& shape, int& frame,
-	int& criteria,
-	int& probability,
-	int& distance,
-	bool& nocturnal,
-	bool& once,
-	bool& auto_reset
+	unsigned long addr,		// Address.
+	int tx, int ty, int tz,	// Absolute tile coords.
+	int shape, int frame,
+	int criteria,
+	int probability,
+	int distance,
+	bool nocturnal,
+	bool once,
+	bool auto_reset
 	)
 	{
 	unsigned char buf[Exult_server::maxlength];

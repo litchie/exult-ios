@@ -1,5 +1,5 @@
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../shapes -I$(srcdir)/../imagewin \
-	-I$(srcdir)/../files \
+	-I$(srcdir)/../files -I$(srcdir)/../server \
 	$(GTK_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 if GIMP_PLUGIN
@@ -42,6 +42,7 @@ shapetest_LDADD = \
 	../files/libu7file.la		\
 	../imagewin/libimagewin.la	\
 	../shapes/libshapes.la 		\
+	../server/libserver.la		\
 	$(GTK_LIBS) $(SYSLIBS) $(x_libraries)
 
 paltest_LDADD = $(shapetest_LDADD)
