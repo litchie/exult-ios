@@ -73,7 +73,7 @@ int Receive_data
 	int datalen
 	)
 	{
-	unsigned char buf[maxlength];
+	unsigned char buf[hdrlength];
 	int len = read(socket, buf, 2);	// Get magic.
 	if (!len)			// Closed?
 		{
@@ -103,7 +103,7 @@ int Receive_data
 		//+++++++++Eat the chars.
 		return 0;
 		}
-	datalen = read(socket, buf, dlen);	// Read data.
+	datalen = read(socket, data, dlen);	// Read data.
 	if (datalen < dlen)
 		{
 		cout << "Failed to read all " << dlen << " bytes" << endl;
