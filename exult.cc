@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <cctype>
 #endif
 
-#include <unistd.h>
+//#include <unistd.h>
 
 #include "SDL.h"
 
@@ -307,7 +307,7 @@ static void Init
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << endl;
 		exit(-1);
 	}
-	atexit(SDL_Quit);
+	std::atexit(SDL_Quit);
 	
 	SDL_SysWMinfo info;		// Get system info.
         SDL_GetWMInfo(&info);
@@ -318,16 +318,16 @@ static void Init
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
 
-	int w, h, sc;
+	int w, h, sc, sclr;
 
 
 #ifdef BLACKGATE_DIGITAL_CAMERA
 	// create 2048x2048 screenshots of the full Ultima 7 map.
 	// WARNING!! Takes up lots of memory and diskspace!
 
-	h = w = c_tilesize * c_tiles_per_schunk; sc = 1;
+	h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
 	Image_window8::set_gamma(1, 1, 1);
-	gwin = new Game_window(w, h, sc);
+	gwin = new Game_window(w, h, sc, sclr);
 	current_res = find_resolution(w, h, sc);
 	Game::create_game(BLACK_GATE);
 	gwin->init_files();	
@@ -358,18 +358,25 @@ static void Init
 	w = 320;
 	h = 200;
 	sc = 2;
+	sclr = Image_window::SaI;
 
 	int sw, sh, scaleval;
-	string gr, gg, gb;
+	string gr, gg, gb, scaler;
 	config->value("config/video/width", sw, w);
 	config->value("config/video/height", sh, h);
-	config->value("config/video/scale", scaleval, sc);
+	config->value("config/video/scale_method", scaler, "---");
 	config->value("config/video/gamma/red", gr, "1.0");
 	config->value("config/video/gamma/green", gg, "1.0");
 	config->value("config/video/gamma/blue", gb, "1.0");
 
+	config->value("config/video/scale", scaleval, sc);
+	if (scaler == "bilinear") sclr = Image_window::bilinear;
+	else if (scaler == "interlaced") sclr = Image_window::interlaced;
+	else if (scaler == "point") sclr = Image_window::point;
+	else config->set("config/video/scale_method","2xSaI",true);
+
 	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));	
-	gwin = new Game_window(sw, sh, scaleval);
+	gwin = new Game_window(sw, sh, scaleval, sclr);
 	current_res = find_resolution(sw, sh, scaleval);
 	Audio::get_ptr();
 
@@ -456,7 +463,6 @@ static int Filter_intro_events
 	const SDL_Event *event
 	)
 	{
-	
 	if (gwin->get_mode() == Game_window::conversation)
 		{
 		SDL_SetEventFilter(0);	// Intro. conversation started.
@@ -929,10 +935,11 @@ int get_resolution (void)
 void set_resolution (int new_res, bool save)
 {
 	if(new_res>=0 && new_res<num_res) {
+		int scaler = gwin->get_win()->get_scaler();
 		current_res = new_res;
 		gwin->resized(res_list[current_res].x,
 			res_list[current_res].y,
-			res_list[current_res].scale);
+			res_list[current_res].scale, scaler);
 		scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 		if(save) {
 			char val[20];
@@ -942,6 +949,16 @@ void set_resolution (int new_res, bool save)
 			config->set("config/video/height",val,true);
 			snprintf(val, 20, "%d", res_list[current_res].scale);
 			config->set("config/video/scale",val,true);
+
+			// Scaler
+			if (scaler == Image_window::bilinear)
+				config->set("config/video/scale_method","bilinear",true);
+			else if (scaler == Image_window::interlaced)
+				config->set("config/video/scale_method","interlaced",true);
+			else if (scaler == Image_window::point)
+				config->set("config/video/scale_method","point",true);
+			else
+				config->set("config/video/scale_method","2xSaI",true);
 		}
 	}
 }

@@ -185,6 +185,13 @@ void Image_buffer8::copy8
 	int destx, int desty
 	)
 	{
+
+	if (!src_pixels)
+	{
+		cerr << "WTF! src_pixels in Image_buffer8::copy8 was 0!" << endl;
+		return;
+	}
+
 	int srcx = 0, srcy = 0;
 	int src_width = srcw;		// Save full source width.
 					// Constrain to window's space.

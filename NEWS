@@ -1,3 +1,25 @@
+02/12/01	v0.91 alpha 2
+
+		Multiple scalers can now be used. Use config/video/scale_method
+		set to ethier "2xSaI", "bilinear", "point", "interlaced".
+		"2xSaI" is the new scaler, "bilinear" is the old one, "point"
+		duplicates the pixels, "interlaced" is the same as "point"
+		except misses every other line.
+
+		New cheat_screen (F2) similar to the originals.
+		Currently allows for some level of NPC editing.
+
+		Pick Pocket cheat (Ctrl-Alt-P). Forces all actors to display
+		inventory.
+
+		Grab Actor cheat (Ctrl-Alt-G). Default Enabled. When enabled
+		clicking on a NPC will make it the defualt NPC in the cheat
+		screen. The default NPC is edited by not entering a npc number.
+
+		NPC Numbers cheat (Ctrl-N). When enabled, clicking an a NPC
+		will display their number instead of their name.
+
+
 02/08/01	v0.91 alpha 2
 
 		Dynamic keybindings. Use config/disk/game/(gametitle)/keys

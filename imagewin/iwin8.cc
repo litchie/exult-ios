@@ -45,9 +45,9 @@ GammaTable<uint8> Image_window8::GammaBlue(256);
 GammaTable<uint8> Image_window8::GammaGreen(256);
 
 Image_window8::Image_window8(unsigned int w, unsigned int h, 
-				int scl, bool fs)
+				int scl, bool fs, int sclr)
 	: Image_window(new Image_buffer8(w, h, (Image_buffer *) 0), 
-	  scl, fs)
+	  scl, fs, sclr)
 {
 	ib8 = (Image_buffer8 *) ibuf;
 }

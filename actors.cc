@@ -135,8 +135,6 @@ int Monster_info::equip_cnt = 0;
 Monster_actor *Monster_actor::in_world = 0;
 int Monster_actor::in_world_cnt = 0;
 
-extern Cheat cheat;
-
 /*
  *	Get/create timers.
  */
@@ -574,6 +572,7 @@ void Actor::start
 		{
 		if (delay)
 			gwin->get_tqueue()->remove(this);
+
 		uint32 curtime = SDL_GetTicks();
 		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
 		}
@@ -1321,10 +1320,9 @@ void Actor::activate
 	// We are serpent if we can use serpent isle paperdolls
 	int serpent = Game::get_game_type()==SERPENT_ISLE||(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
 	
-					// In gump mode?  Or Avatar?
-	if (!npc_num && !serpent)	// Avatar?
+	if (!npc_num && !serpent)	// Avatar No paperdolls
 		gwin->show_gump(this, ACTOR_FIRST_GUMP);
-	else if (!npc_num && serpent)	// Avatar?
+	else if (!npc_num && serpent)	// Avatar Paperdolls
 		gwin->show_gump(this, 123);
 					// Gump/combat mode?
 	else if ((gwin->get_mode() == Game_window::gump || gwin->in_combat())&&
@@ -1336,9 +1334,20 @@ void Actor::activate
 		 get_party_id() >= 0 && serpent)
 					// Show companions' pictures. (SI)
 			gwin->show_gump(this, 123);
+					// Pickpocket Cheat Female no paperdolls
+	else if (cheat.in_pickpocket() && !serpent && Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
+		gwin->show_gump(this, 66);
+					// Pickpocket Cheat Male no paperdolls
+	else if (cheat.in_pickpocket() && !serpent && !Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
+		gwin->show_gump(this, 65);
+					// Pickpocket Cheat paperdolls
+	else if (cheat.in_pickpocket() && serpent)
+		gwin->show_gump(this, 123);
+					// Asleep.
 	else if (get_schedule_type() == (int) Schedule::sleep ||
 		 get_flag(Obj_flags::asleep))
-		return;			// Asleep.
+		return;
+					// Usecode
 	else if (usecode == -1)
 		umachine->call_usecode(get_shapenum(), this,
 			(Usecode_machine::Usecode_events) event);
@@ -1383,6 +1392,15 @@ string Actor::get_npc_name
 	{
 	return name.empty() ? Game_object::get_name() : name;
 	}
+
+/*
+ *	Set npc name.
+ */
+
+void Actor::set_npc_name(const char *n)
+{
+	name = n;
+}
 
 /*
  *	Set property.
@@ -2440,6 +2458,8 @@ void Main_actor::die
  */
 void Actor::set_actor_shape()
 {
+	cerr << "Told to set Shape. Num " << get_npc_num() << " Polymorph " << get_siflag (polymorph) << endl;
+
 	if (get_npc_num() != 0 || get_siflag (polymorph))
 		return;
 
@@ -2465,6 +2485,8 @@ void Actor::set_actor_shape()
 	else
 		sn = 721;
 
+	cerr << "Setting Shape to " << sn << endl;
+
 	set_shape (sn, get_framenum());
 }
 
@@ -2474,6 +2496,10 @@ void Actor::set_polymorph (int shape)
 	// Polymorph is only SI
 	if (Game::get_game_type() != SERPENT_ISLE) return;
 
+	cerr << "Setting polymorph for " << get_npc_num() << endl;
+	cerr << "Shape " << shape << endl;
+	cerr << "Save shape " << shape_save << endl;
+	
 	// Want to set to Avatar
 	if (shape == 721)
 	{
@@ -2495,13 +2521,13 @@ void Actor::set_polymorph (int shape)
 		clear_siflag(polymorph);
 		return;
 	}
-	if (shape_save != -1) shape_save = get_shapenum();
+	if (shape_save == -1) shape_save = get_shapenum();
 	set_shape (shape, get_framenum());
 	set_siflag (polymorph);
 }
 
 // Sets polymorph shape to defaults based on flags and npc num
-void Actor::set_polymorph_defualt()
+void Actor::set_polymorph_default()
 {
 	// Polymorph is only SI
 	if (Game::get_game_type() != SERPENT_ISLE || !get_siflag(polymorph)
@@ -2563,6 +2589,113 @@ void Npc_actor::set_schedules
 	num_schedules = cnt;
 	}
 
+/*
+ *	Set schedule type.
+ */
+
+void Npc_actor::set_schedule_time_type (int time, int type)
+{
+	Tile_coord tile;
+	int i;
+
+	for (i = 0; i < num_schedules; i++) if (schedules[i].get_time() == time) break;
+	
+	if (i == num_schedules)	// Didn't find it
+	{
+		Schedule_change *scheds = new Schedule_change[num_schedules+1];
+
+		for (i = 0; i < num_schedules; i++)
+		{
+			tile = schedules[i].get_pos();
+			scheds[i].set(tile.tx, tile.ty, schedules[i].get_type(), schedules[i].get_time());
+		}
+
+		scheds[num_schedules].set(0, 0, (unsigned char) type, (unsigned char) time);
+		set_schedules(scheds, num_schedules+1);
+	}
+	else	// Did find it
+	{
+		tile = schedules[i].get_pos();
+		schedules[i].set(tile.tx, tile.ty, (unsigned char) type, (unsigned char) time);
+	}
+}
+
+/*
+ *	Set schedule location.
+ */
+
+void Npc_actor::set_schedule_time_location (int time, int x, int y)
+{
+	int i;
+
+	for (i = 0; i < num_schedules; i++) if (schedules[i].get_time() == time) break;
+	
+	if (i == num_schedules)	// Didn't find it
+	{
+		Tile_coord tile;
+		Schedule_change *scheds = new Schedule_change[num_schedules+1];
+
+		for (i = 0; i < num_schedules; i++)
+		{
+			tile = schedules[i].get_pos();
+			scheds[i].set(tile.tx, tile.ty, schedules[i].get_type(), schedules[i].get_time());
+		}
+
+		scheds[num_schedules].set(x, y, 0, (unsigned char) time);
+		set_schedules(scheds, num_schedules+1);
+	}
+	else	// Did find it
+	{
+		schedules[i].set(x, y, schedules[i].get_type(), (unsigned char) time);
+	}
+}
+
+/*
+ *	Remove schedule
+ */
+
+void Npc_actor::remove_schedule (int time)
+{
+	int i;
+
+	for (i = 0; i < num_schedules; i++) if (schedules[i].get_time() == time) break;
+	
+	if (i != num_schedules)	// Found it
+	{
+		Tile_coord tile;
+		Schedule_change *scheds = new Schedule_change[num_schedules-1];
+
+		for (i = 0; i < num_schedules; i++)
+		{
+			if (schedules[i].get_time() == time) break;
+
+			tile = schedules[i].get_pos();
+			scheds[i].set(tile.tx, tile.ty, schedules[i].get_type(), schedules[i].get_time());
+		}
+
+		for (; i < num_schedules; i++)
+		{
+			tile = schedules[i-1].get_pos();
+			scheds[i].set(tile.tx, tile.ty, schedules[i-1].get_type(), schedules[i-1].get_time());
+		}
+
+		set_schedules(scheds, num_schedules-1);
+	}
+}
+
+/*
+ *	Set schedule list.
+ */
+
+void Npc_actor::get_schedules
+	(
+	Schedule_change *&list, 
+	int &cnt
+	)
+	{
+	list = schedules;
+	cnt = num_schedules;
+	}
 /*
  *	Move and change frame.
  */
@@ -2626,8 +2759,10 @@ void Npc_actor::update_schedule
 			i = find_schedule_change((--hour3 + 8)%8);
 		if (i < 0)
 			return;
-		if (schedule_type == schedules[i].get_type())
-			return;		// Already in it.
+		// This is bad, not always true
+		// location might be different
+		//if (schedule_type == schedules[i].get_type())
+		//	return;		// Already in it.
 		}
 	stop();				// Stop moving.
 	if (schedule)			// End prev.
@@ -2802,6 +2937,7 @@ void Npc_actor::remove_this
 	set_action(0);
 	delete schedule;
 	schedule = 0;
+	num_schedules = 0;
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
 					// Store old chunk list.
 	Chunk_object_list *olist = gwin->get_objects_safely(

@@ -278,6 +278,7 @@ public:
 	virtual int drop(Game_object *obj);
 	virtual std::string get_name() const;
 	std::string get_npc_name() const;
+	void set_npc_name(const char *n);
 	virtual void set_property(int prop, int val);
 	void reduce_health(int delta);	// Lose HP's and check for death.
 	virtual int get_property(int prop) const
@@ -299,7 +300,7 @@ public:
 	int get_type_flag(int flag) const;
 	void set_type_flags(unsigned short tflags);
 	int get_skin_color () const { return skin_color; }
-	void set_skin_color (int color) { skin_color = color;}
+	void set_skin_color (int color) { skin_color = color; set_actor_shape();}
 	virtual int get_type_flags() const
 		{ return type_flags; }
 
@@ -356,10 +357,19 @@ public:
 	void write(std::ostream& nfile);		// Write out (to 'npc.dat').
 	void set_actor_shape(); 			// Set shape based on sex and skin color
 	void set_polymorph(int shape);			// Set a polymorph shape
-	void set_polymorph_defualt();			// Set the default shape
+	void set_polymorph_default();			// Set the default shape
 	int get_polymorph () { return shape_save; }	// Get the polymorph shape
 	inline int get_shape_real()			// Get the non polymorph shape
 	{ return shape_save!=-1?shape_save:get_shapenum(); }
+
+	// Set schedule list.
+	virtual void set_schedules(Schedule_change *list, int cnt) { }
+	virtual void set_schedule_time_type(int time, int type) { }
+	virtual void set_schedule_time_location(int time, int x, int y) { }
+	virtual void remove_schedule(int time) { }
+	virtual void get_schedules(Schedule_change *&list, int &cnt)
+	{ list = NULL, cnt = 0; }
+
 	};
 
 /*
@@ -432,7 +442,11 @@ public:
 	bool is_nearby() const
 		{ return nearby; }
 					// Set schedule list.
-	void set_schedules(Schedule_change *list, int cnt);
+	virtual void set_schedules(Schedule_change *list, int cnt);
+	virtual void set_schedule_time_type(int time, int type);
+	virtual void set_schedule_time_location(int time, int x, int y);
+	virtual void remove_schedule(int time);
+	virtual void get_schedules(Schedule_change *&list, int &cnt);
 					// Move and change frame.
 	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);

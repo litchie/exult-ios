@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "contain.h"
 #include "gamewin.h"
 #include "chunks.h"
+#include "cheat.h"
 
 using std::ostream;
 
@@ -74,7 +75,10 @@ void Ireg_game_object::remove_this
 			chunk->remove(this);
 		}
 	if (!nodel)
+	{
+		cheat.set_grabbed_actor(0);	// Could be an actor
 		delete this;
+	}
 	}
 
 /*

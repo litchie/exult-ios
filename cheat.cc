@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "browser.h"
 #include "soundtest.h"
+#include "cheat_screen.h"
 
 using std::cout;
 using std::endl;
@@ -48,6 +49,8 @@ Cheat::Cheat() {
   wizard_mode = false;
   map_editor = false;
   infravision = false;
+  pickpocket = false;
+  grab_actor = true;
 
   browser = NULL;
   tester = NULL;
@@ -58,6 +61,8 @@ Cheat::~Cheat() {
     delete browser;
   if (tester)
     delete tester;
+  if (cscreen)
+	  delete cscreen;
 }
 
 void Cheat::init (void) {
@@ -74,6 +79,7 @@ void Cheat::finish_init (void) {
 
   browser = new ShapeBrowser();
   tester = new SoundTester();
+  cscreen = new CheatScreen();
 
   if (enabled)
     cout << "Cheats enabled." << endl;
@@ -129,6 +135,17 @@ void Cheat::toggle_infravision (void) {
     gwin->set_palette(0);
   } else
     gwin->center_text("Infravision Disabled");	
+}
+
+void Cheat::toggle_pickpocket (void) {
+  if (!enabled) return;
+
+  pickpocket = !pickpocket;
+  if (pickpocket) {
+    gwin->center_text("Pick Pocket Enabled");
+    gwin->set_palette(0);
+  } else
+    gwin->center_text("Pick Pocket Disabled");	
 }
 
 void Cheat::change_gender (void) const {
@@ -386,3 +403,36 @@ void Cheat::sound_tester (void) const {
 }
 
 
+void Cheat::cheat_screen (void) const {
+	if (!enabled) return;
+
+	cscreen->show_screen();
+	gwin->set_all_dirty();
+	gwin->paint();
+}
+
+void Cheat::toggle_grab_actor (void) {
+	if (!enabled) return;
+
+	grab_actor = !grab_actor;
+	if (grab_actor)
+		gwin->center_text("NPC Tool Actor Grabbing Enabled");
+	else
+		gwin->center_text("NPC Tool Actor Grabbing Disabled");
+}
+
+void Cheat::set_grabbed_actor (Actor *actor) const {
+	if (!enabled) return;
+
+	cscreen->SetGrabbedActor(actor);	
+}
+
+void Cheat::toggle_number_npcs (void) {
+	if (!enabled) return;
+
+	npc_numbers = !npc_numbers;
+	if (npc_numbers)
+		gwin->center_text("NPC Numbers Enabled");
+	else
+		gwin->center_text("NPC Numbers Disabled");
+}

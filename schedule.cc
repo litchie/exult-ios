@@ -1250,6 +1250,41 @@ void Schedule_change::set
 	}
 
 /*
+ *	Get a schedule.
+ */
+
+void Schedule_change::get
+	(
+	unsigned char *entry		// 4 bytes to write to schedule.dat.
+	)
+	{
+	entry[0] = time&7;
+	entry[0] |= (type&31) << 3;
+	entry[1] = x;
+	entry[2] = y;
+	entry[3] = superchunk;
+	}
+
+/*
+ *	Set a schedule.
+ */
+
+void Schedule_change::set
+	(
+	int ax,
+	int ay,
+	unsigned char stype,
+	unsigned char stime
+	)
+	{
+	time = stime;
+	type = stype;
+	x = (unsigned char) (ax%c_tiles_per_schunk);
+	y = (unsigned char) (ay%c_tiles_per_schunk);
+	superchunk = (unsigned char)  ((ay/c_tiles_per_schunk)*12 + (ax/c_tiles_per_schunk));
+	}
+
+/*
  *	Get position.
  */
 
