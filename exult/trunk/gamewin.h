@@ -311,9 +311,9 @@ public:
 	Actor *get_camera_actor()
 		{ return camera_actor; }
 					// Scroll if necessary.
-	int scroll_if_needed(Tile_coord t);
-	int scroll_if_needed(Actor *a, Tile_coord t)
-		{ if (a == camera_actor) scroll_if_needed(t); }
+	bool scroll_if_needed(Tile_coord t);
+	bool scroll_if_needed(Actor *a, Tile_coord t)
+		{ if (a == camera_actor) return scroll_if_needed(t); else return false; }
 #if 1
 					// Show abs. location of mouse.
 	void show_game_location(int x, int y);

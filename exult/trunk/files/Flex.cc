@@ -35,13 +35,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exceptions.h"
 #include "utils.h"
 
-using std::string;
-
 using std::cerr;
 using std::endl;
 using std::FILE;
+using std::memset;
 using std::fread;
 using std::size_t;
+using std::string;
+using std::strncpy;
 
 
 Flex::Flex(const string &n) : U7file(n)
