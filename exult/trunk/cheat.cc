@@ -24,8 +24,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "actors.h"
 #include "mouse.h"
+#include "browser.h"
 
 extern Configuration* config;
+extern int scale;
+extern ShapeBrowser* browser;
 
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 
@@ -98,6 +101,30 @@ void Cheat::toggle_infravision (void) {
     gwin->center_text("Infravision Disabled");	
 }
 
+void Cheat::change_gender (void) {
+  if (!enabled) return;
+
+  if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex)) {
+    gwin->get_main_actor()->clear_type_flag(Actor::tf_sex);
+    gwin->center_text("Avatar is now male");
+  } else {
+    gwin->get_main_actor()->set_type_flag(Actor::tf_sex);
+    gwin->center_text("Avatar is now female");
+  } 
+  gwin->set_all_dirty();
+}
+
+void Cheat::toggle_eggs (void) {
+  if (!enabled) return;
+
+  gwin->paint_eggs = !gwin->paint_eggs;
+  if(gwin->paint_eggs)
+    gwin->center_text("Eggs display enabled");
+  else
+    gwin->center_text("Eggs display disabled");
+  gwin->paint();
+}
+
 void Cheat::toggle_Petra (void) {
   if (!enabled || (Game::get_game_type() != SERPENT_ISLE)) return;
 
@@ -128,6 +155,28 @@ void Cheat::change_skin (void) {
   color = (color + 4) %3;
   gwin->get_main_actor()->set_skin_color(color);
   gwin->set_all_dirty();
+}
+
+void Cheat::fake_time_period (void) {
+  if (!enabled) return;
+
+  gwin->fake_next_period();
+  gwin->center_text("Game clock incremented");
+}
+
+void Cheat::dec_skip_lift (void) {
+  if (!enabled) return;
+
+  if (gwin->skip_lift == 16)
+    gwin->skip_lift = 11;
+  else
+    gwin->skip_lift--;
+  if (gwin->skip_lift <= 0)
+    gwin->skip_lift = 16;
+#if DEBUG
+  cout << "Skip_lift = " << gwin->skip_lift << endl;
+#endif
+  gwin->paint();
 }
 
 void Cheat::map_teleport (void) {
@@ -166,4 +215,52 @@ void Cheat::map_teleport (void) {
   Tile_coord t(tx,ty,0);
   gwin->teleport_party(t);
   gwin->center_text("Teleport!!!");
+}
+
+void Cheat::cursor_teleport (void) {
+  if (!enabled) return;
+
+  int x, y;
+  SDL_GetMouseState(&x, &y);
+  x = x>>scale;
+  y = y>>scale;
+  Tile_coord t(gwin->get_scrolltx() + x/tilesize,
+	       gwin->get_scrollty() + y/tilesize, 0);
+  gwin->teleport_party(t);
+  gwin->center_text("Teleport!!!");
+}
+
+void Cheat::create_coins (void) {
+  if (!enabled) return;
+
+  gwin->get_main_actor()->add_quantity(100, 644);
+  gwin->center_text("Added 100 gold coins");
+}
+
+
+void Cheat::create_last_shape (void) {
+  if (!enabled) return;
+
+  int current_shape = 0;
+  int current_frame = 0;
+  if(browser->get_shape(current_shape, current_frame)) {
+    gwin->get_main_actor()->add(new Ireg_game_object(current_shape, current_frame, 0, 0), 1);
+    gwin->center_text("Object created");
+  } else
+    gwin->center_text("Can only create from 'shapes.vga'");
+}
+
+void Cheat::delete_object (void) {
+  if (!enabled) return;
+
+  int x, y;
+  SDL_GetMouseState(&x, &y);
+  x = x>>scale;
+  y = y>>scale;
+  Game_object *obj = gwin->find_object(x, y);
+  if (obj) {
+    obj->remove_this();
+    gwin->center_text("Object deleted");
+    gwin->paint();
+  }
 }

@@ -51,11 +51,22 @@ public:
   void toggle_hack_mover (void);
   void toggle_infravision (void);
 
+  void toggle_eggs (void);
+  void change_gender (void);
+
   void toggle_Petra (void);
   void toggle_naked (void);
   void change_skin (void);
 
+  void fake_time_period (void);
+  void dec_skip_lift (void);
+
   void map_teleport (void);
+  void cursor_teleport (void);
+
+  void create_coins (void);
+  void create_last_shape (void);
+  void delete_object (void);
 };
 
 #endif
