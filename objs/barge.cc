@@ -640,6 +640,11 @@ void Barge_object::move
 	int newmap
 	)
 	{
+	if (!chunk)			// Not currently on map?
+		{	// UNTIL drag-n-drop does the gather properly.
+		Container_game_object::move(newtx, newty, newlift, newmap);
+		return;
+		}
 	if (!gathered)			// Happens in SI with turtle.
 		gather();
 					// Want to repaint old position.
@@ -738,7 +743,24 @@ void Barge_object::paint
 					// DON'T paint barge shape itself.
 					// The objects are in the chunk too.
 	if(gwin->paint_eggs)
+		{
 		Container_game_object::paint();
+		int pix = sman->get_special_pixel(CURSED_PIXEL);
+		int rx, by, lx, ty;	// Right, bottom, left, top.
+		gwin->get_shape_location(this, rx, by);
+		lx = rx - xtiles*c_tilesize + 1;
+		ty = by - ytiles*c_tilesize + 1;
+					// Little square at lower-right.
+		gwin->get_win()->fill8(pix, 4, 4, rx-2, by-2);
+					// Little square at top.
+		gwin->get_win()->fill8(pix, 4, 4, lx-1, ty-1);
+					// Horiz. line along top, bottom.
+		gwin->get_win()->fill8(pix, xtiles*c_tilesize, 1, lx, ty);
+		gwin->get_win()->fill8(pix, xtiles*c_tilesize, 1, lx, by);
+					// Vert. line to left, right.
+		gwin->get_win()->fill8(pix, 1, ytiles*c_tilesize, lx, ty);
+		gwin->get_win()->fill8(pix, 1, ytiles*c_tilesize, rx, ty);
+		}
 	}
 
 /*
