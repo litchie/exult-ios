@@ -760,7 +760,9 @@ void Game_window::clear_world
 	clear_dirty();
 	removed->flush();		// Delete.
 	Usecode_script::clear();	// Clear out all scheduled usecode.
-	map->clear();
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		(*it)->clear();
 	Monster_actor::delete_all();	// To be safe, del. any still around.
 	main_actor = 0;
 	camera_actor = 0;
@@ -1003,6 +1005,14 @@ void Game_window::show_game_location
 
 Rectangle Game_window::get_shape_rect(Game_object *obj)
 {
+	if (!obj->get_chunk())		// Not on map?
+		{
+		Gump *gump = gump_man->find_gump(obj);
+		if (gump)
+			return gump->get_shape_rect(obj);
+		else
+			return Rectangle(0, 0, 0, 0);
+		}
 	Shape_frame *s = obj->get_shape();
 	if(!s)
 	{
@@ -1192,7 +1202,9 @@ void Game_window::write
 	shape_man->paint_text(0, "Saving Game", centre_x-text_width/2, 
 							centre_y-text_height);
 	show(true);
-	map->write_ireg();		// Write ireg files.
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		(*it)->write_ireg();	// Write ireg files.
 	write_npcs();			// Write out npc.dat.
 	usecode->write();		// Usecode.dat (party, global flags).
 	write_gwin();			// Write our data.
@@ -1327,7 +1339,9 @@ void Game_window::write_map
 	(
 	)
 	{
-	map->write_static();		// Write ifix, map files.
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		(*it)->write_static();		// Write ifix, map files.
 	write();			// Write out to 'gamedat' too.
 	save_gamedat(PATCH_INITGAME, "Saved map");
 	}
@@ -1342,6 +1356,23 @@ void Game_window::read_map
 	{
 	init_gamedat(true);		// Unpack 'initgame.dat'.
 	read();				// This does the whole restore.
+	}
+
+/*
+ *	Read any map.  (This is for "multimap" games, not U7.)
+ */
+
+Game_map *Game_window::get_map
+	(
+	int num				// Should be > 0.
+	)
+	{
+	if (num >= maps.size() || maps[num] == 0)
+		{
+		maps[num] = new Game_map(num);
+		maps[num]->init();
+		}
+	return maps[num];
 	}
 
 /*
@@ -2571,7 +2602,9 @@ void Game_window::setup_game
 	(
 	)
 	{
-	map->init();
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		(*it)->init();
 				// Init. current 'tick'.
 	Game::set_ticks(SDL_GetTicks());
 	init_actors();		// Set up actors if not already done.

@@ -399,6 +399,7 @@ public:
 	void read_gwin();		// Read gamedat/gamewin.dat.
 	void write_map();		// Write map data to <PATCH> dir.
 	void read_map();		// Reread initial game map.
+	Game_map *get_map(int num);	// Read in additional map.
 	void reload_usecode();		// Reread (patched) usecode.
 	void init_actors();		// Place actors in the world.
 	void init_files(bool cycle=true);	// Load all files
