@@ -28,10 +28,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cassert>
 #include <fstream>
+#include <gdk/gdkkeysyms.h>
 #include "shapegroup.h"
 #include "Flex.h"
 #include "utils.h"
 #include "exceptions.h"
+#include "studio.h"
 
 /*
  *	Create an empty group.
@@ -51,7 +53,7 @@ Shape_group::Shape_group
 
 Shape_group_file::Shape_group_file
 	(
-	char *nm			// Basename.
+	const char *nm			// Basename.
 	) : name(nm), modified(false)
 	{
 	Flex *flex = 0;
@@ -155,4 +157,106 @@ void Shape_group_file::write
 	if (!result)			// ++++Better error system needed??
 		throw file_write_exception(patchname.c_str());
 	out.close();
+	}
+
+/*
+ *	Group buttons:
+ */
+C_EXPORT void
+on_groups_add_clicked			(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	ExultStudio::get_instance()->add_group();
+}
+
+C_EXPORT void
+on_groups_del_clicked			(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	ExultStudio::get_instance()->del_group();
+}
+
+C_EXPORT gboolean
+on_groups_new_name_key_press		(GtkEntry	*entry,
+					 GdkEventKey	*event,
+					 gpointer	 user_data)
+{
+	if (event->keyval == GDK_Return)
+		{
+		ExultStudio::get_instance()->add_group();
+		return TRUE;
+		}
+	return FALSE;			// Let parent handle it.
+}
+
+/*
+ *	Initialize the list of shape groups for the file being shown in the
+ *	browser.
+ */
+
+void ExultStudio::setup_groups
+	(
+	const char *fname		// Base filename.
+	)
+	{
+	string name(fname);		// Start with shapes filename.
+	name += ".grp";
+	delete groups;			// Delete old & create new.
+	groups = new Shape_group_file(name.c_str());
+	GtkCList *clist = GTK_CLIST(
+				glade_xml_get_widget(app_xml, "group_list"));
+
+	gtk_clist_clear(clist);		// Clear out list.
+	gtk_clist_freeze(clist);
+	int cnt = groups->size();	// Add groups from file.
+	for (int i = 0; i < cnt; i++)
+		{
+		Shape_group *grp = groups->get(i);
+		char *nm0 = g_strdup(grp->get_name());
+		gtk_clist_append(clist, &nm0);
+		g_free(nm0);
+		}
+	gtk_clist_thaw(clist);
+	setup_group_controls();		// Enable/disable the controls.
+	}
+
+/*
+ *	Enable/disable the controls based on whether there's a selection.
+ */
+
+void ExultStudio::setup_group_controls
+	(
+	)
+	{
+//	GtkCList *clist = GTK_CLIST(
+//				glade_xml_get_widget(app_xml, "group_list"));
+	//+++++++++
+	}
+
+/*
+ *	Add/delete a new group.
+ */
+
+void ExultStudio::add_group
+	(
+	)
+	{
+	GtkCList *clist = GTK_CLIST(
+				glade_xml_get_widget(app_xml, "group_list"));
+	char *nm = get_text_entry("groups_new_name");
+	if (nm)
+		{
+		groups->add(new Shape_group(nm, groups));
+		gtk_clist_append(clist, &nm);
+		}
+	set_entry("groups_new_name", "");
+	}
+
+void ExultStudio::del_group
+	(
+	)
+	{
+//	GtkCList *clist = GTK_CLIST(
+//				glade_xml_get_widget(app_xml, "group_list"));
+	//++++++++++
 	}
