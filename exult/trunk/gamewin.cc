@@ -795,10 +795,12 @@ int Game_window::read
 	)
 	{
 	clear_world();			// Wipe clean.
+	if (!read_gwin())		// Read our data.
+		return (0);
+	main_actor_inside = 0;
+	end_gump_mode();		// Kill gumps, and paint new data.
 	read_npcs();			// Read in NPC's, monsters.
 	if (!usecode->read())		// Usecode.dat (party, global flags).
-		return (0);
-	if (!read_gwin())		// Read our data.
 		return (0);
 	clock.set_palette();		// Set palette for time-of-day.
 	return (1);
