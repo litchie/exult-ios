@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using	std::cout;
 using	std::endl;
 using EStudio::Add_menu_item;
+using EStudio::Alert;
 
 /*
  *	Find highest map #.
@@ -103,6 +104,32 @@ void ExultStudio::new_map_dialog
 	set_toggle("newmap_copy_fixed", false);
 	set_toggle("newmap_copy_ireg", false);
 	gtk_widget_show(win);
+	}
+
+/*
+ *	Create new map.
+ */
+C_EXPORT void on_newmap_ok_clicked
+	(
+	GtkMenuItem     *menuitem,
+        gpointer         user_data
+	)
+	{
+	char fname[128], sname[128];
+	ExultStudio *studio = ExultStudio::get_instance();
+	GtkWidget *win = glade_xml_get_widget(studio->get_xml(), 
+							"newmap_dialog");
+	int num = studio->get_spin("newmap_num");
+
+	if (U7exists(Get_mapped_name("<PATCH>/", num, fname)) ||
+	    U7exists(Get_mapped_name("<STATIC>/", num, sname)))
+		{
+		EStudio::Alert("Map %02x already exists", num);
+		return;			// Leave dialog open.
+		}
+	U7mkdir(fname, 0755);		// Create map directory in 'patch'.
+	// ++++++FINISH
+	gtk_widget_hide(win);
 	}
 
 /*
