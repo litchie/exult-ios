@@ -1299,15 +1299,18 @@ void Game_window::show_face
 		int text_height = win->get_text_height(font12);
 					// Figure starting y-coord.
 		int starty = prev ? prev->text_rect.y + prev->text_rect.h +
-					3*text_height : 16;
+					2*text_height : 16;
 		actbox = Rectangle(16, starty,
 			face->get_width() + 4, face->get_height() + 4);
+					// Clip to screen.
+		actbox = sbox.intersect(actbox);
 		info->face_rect = actbox;
 					// This is where NPC text will go.
 		info->text_rect = Rectangle(actbox.x + actbox.w + 16,
 				actbox.y,
 				sbox.w - actbox.x - actbox.w - 32,
 				8*text_height);
+		info->text_rect = sbox.intersect(info->text_rect);
 		}
 	else
 		actbox = info->face_rect;

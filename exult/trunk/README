@@ -8,6 +8,10 @@ create the "gamedat" directory and files the first time you run it.  And al-
 though I've tried to be safe about this, I don't recommend trying it on a
 game which you're actually in the middle of playing.
 
+Starting with version 0.12, Exult uses the multiplatform library SDL by Sam
+Lantinga of LokiGames.  SDL provides low-level graphics, timing and sound
+capabilities, so a Windows (or Be or Mac) port should be much easier now.
+
 Version 0.10 has a "usecode" interpreter.  The "usecode" file is a compiled
 script that drives the plot and conversations of the game.  My interpreter is
 missing many of the builtin functions which are not yet known, so things do
