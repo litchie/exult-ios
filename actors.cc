@@ -653,11 +653,13 @@ void Actor::follow
 					// Get his speed.
 	int speed = leader->get_frame_time();
 	if (!speed)			// Not moving?
+		{
 		speed = 100;
-	if (goaldist < leaderdist)	// Closer than leader?
-					// Delay a bit.
-		delay = (1 + leaderdist - goaldist)*100;
-	else if (goaldist - leaderdist >= 5)
+		if (goaldist < leaderdist)	// Closer than leader?
+					// Delay a bit IF not moving.
+			delay = (1 + leaderdist - goaldist)*100;
+		}
+	if (goaldist - leaderdist >= 5)
 		speed -= 20;		// Speed up if too far.
 	if (goaldist > 32 &&		// Getting kind of far away?
 	    get_party_id() >= 0 &&	// And a member of the party.
@@ -703,6 +705,8 @@ void Actor::follow
 		else
 			cout << "... but failed to find path." << endl;
 		}
+					// NOTE:  Avoid delay when moving,
+					//  as it creates jerkiness.
 	walk_to_tile(goal, speed, delay);
 	}
 
