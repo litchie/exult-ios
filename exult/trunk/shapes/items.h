@@ -53,6 +53,8 @@ const int first_will_help = 0x434;
 const int last_will_help = 0x436;
 const int first_to_battle = 0x439;
 const int last_to_battle = 0x43b;
+const int first_farmer = 0x43f, last_farmer = 0x441;
+const int first_miner = 0x442, last_miner = 0x444;
 const int first_flee = 0x448;
 const int last_flee = 0x44e;
 const int first_lamp_on = 0x463;
