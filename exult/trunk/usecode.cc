@@ -691,11 +691,10 @@ Usecode_value Usecode_machine::call_intrinsic
 		//+++++++++++Show crosshair cursor.
 		break;
 	case 0x38:			// Return. game time hour (0-23).
-		//++++++++++
-		return Usecode_value(12);
+		return Usecode_value(gwin->get_hour());
 		break;
 	case 0x39:			// Return minute (0-59).
-		//++++++++
+		return Usecode_value(gwin->get_minute());
 		break;
 	case 0x40:			// Show str. near item (item, str).
 		//+++++++++

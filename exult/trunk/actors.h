@@ -83,6 +83,10 @@ class Schedule
 	unsigned char superchunk;	// 0-143.
 public:
 	Schedule(unsigned char *ent);	// Create from 5-byte entry.
+	int get_type()
+		{ return type; }
+	int get_time()
+		{ return time; }
 	enum Schedule_types {		// Here are the types:
 		combat = 0,	horiz_pace = 1,
 		vert_pace = 2,	talk = 3,

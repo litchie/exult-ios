@@ -112,23 +112,31 @@ void Game_window::read_schedules
 	)
 	{
 #if 1
-	ifstream sched;
-	u7open(sched, SCHEDULE_DAT);
-	int num_npcs = Read4(sched);	// # of NPC's, not include Avatar.
+	ifstream sfile;
+	u7open(sfile, SCHEDULE_DAT);
+	int num_npcs = Read4(sfile);	// # of NPC's, not include Avatar.
 	short *offsets = new short[num_npcs];
 	int i;				// Read offsets with list of scheds.
 	for (i = 0; i < num_npcs; i++)
-		offsets[i] = Read2(sched);
-	for (i = 1; i < num_npcs; i++)	// Do each NPC.
+		offsets[i] = Read2(sfile);
+	for (i = 0; i < num_npcs; i++)	// Do each NPC.
 		{
-		Npc_actor *npc = (Npc_actor *) npcs[i];
-		int cnt = offsets[i + 1] - offsets[i]; //+++++Correct.
+					// Avatar isn't included here.
+		Npc_actor *npc = (Npc_actor *) npcs[i + 1];
+		int cnt = offsets[i + 1] - offsets[i];
+#if 0
+		cout << "Schedule for " << npc->get_name() << ":\n";
+#endif
 					// Read each schedule. ++++++Store.
 		for (int j = 0; j < cnt; j++)
 			{
-			unsigned char ent[5];
-			sched.read(ent, 5);
+			unsigned char ent[4];
+			sfile.read(ent, 4);
 			Schedule *sched = new Schedule(ent);
+#if 0
+			cout << "    " << sched->get_type() << 
+				", time = " << sched->get_time() << '\n';
+#endif
 			// +++++Store in npc.
 			}
 		}

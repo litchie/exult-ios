@@ -46,6 +46,7 @@ Game_window::Game_window
 	int width, int height		// Window dimensions.
 	) : chunkx(0), chunky(0), painted(0), focus(1),
 	    brightness(100), 
+	    hour(12), minute(0), day(0), lasttime(0),
 	    skip_lift(16), debug(0), shapewin(0),
 	    script(0),
 		main_actor(0),
@@ -1020,6 +1021,25 @@ void Game_window::animate
 	{
 	if (!focus || mode == conversation)
 		return;			// We're dormant.
+					// Figure passage of time.
+	int seconds_passed = time.tv_sec >= lasttime ?
+		(time.tv_sec - lasttime)
+					// Watch for midnight.
+			: (24*60*60 - lasttime) + time.tv_sec;
+	if (seconds_passed >= 60)	// 1 minute?  Incr. by 12 minutes.
+		{
+		if ((minute += 12) >= 60)
+			{
+			minute -= 60;
+			if (++hour >= 24)
+				{
+				hour -= 24;
+				day++;
+				}
+			}
+		cout << "Clock updated to " << hour << ':' << minute << '\n';
+		lasttime = time.tv_sec;
+		}
 	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
 	int frame;
 	int repaint_all = 0;		// Flag to repaint window.
