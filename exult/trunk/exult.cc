@@ -849,8 +849,9 @@ static void Handle_events
 			gwin->get_tqueue()->activate(ticks);
 
 		// Moved this out of the animation loop, since we want movement to be
-		// more responsive
-		if (!gwin->is_moving())
+		// more responsive. Also, if the step delta is only 1 tile,
+		// always check every loop
+		if (!gwin->is_moving() || gwin->get_step_tile_delta() == 1)
 			{
 			int x, y;// Check for 'stuck' Avatar.
 			int ms = SDL_GetMouseState(&x, &y);

@@ -28,6 +28,16 @@ private:
 	std::size_t	size_;
 	T *data_;
 public:
+#ifdef HAVE_NO_EXCEPTIONS
+	inline static range_error(const std::string& what_arg) {
+		std::cerr << "Range Error: " << what_arg << std::endl;
+#ifdef DEBUG
+		*((int *)(0)) = 0;
+#else
+		std::exit(-1);
+#endif
+	}
+#else
 	class range_error : public std::exception
 		{
 		std::string	what_;
@@ -36,11 +46,16 @@ public:
 		 const char *what(void) const throw () { return what_.c_str(); }
 		 virtual ~range_error() throw () { }
 		};
+#endif
 	autoarray() : size_(0), data_(0) 
 		{  }
 	autoarray(std::size_t n) : size_(n),data_(n?new T[n]:0)
 		{  }
+#ifdef HAVE_NO_EXCEPTIONS
+	T &operator[](sint32 i)
+#else
 	T &operator[](sint32 i)	 throw(range_error)
+#endif
 		{
 		if(i>=(sint32)size_ || i < 0)
 			throw range_error("out of bounds");

@@ -255,7 +255,7 @@ static int Figure_queue_size
 	int cw = (w + c_chunksize - 1)/c_chunksize,
 	    ch = (h + c_chunksize - 1)/c_chunksize;
 					// Add extra in each dir.
-	return (cw + 3)*(ch + 3);
+	return 6;//(cw + 3)*(ch + 3);
 	}
 
 /*
