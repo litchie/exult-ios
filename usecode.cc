@@ -551,12 +551,11 @@ Tile_coord Usecode_machine::get_position
 	Usecode_value& itemval
 	)
 	{
-					// An object?
-	Game_object *obj = get_item(itemval);
-	if (obj)
-		return obj->get_abs_tile_coord();
+	Game_object *obj;		// An object?
+	if ((itemval.get_array_size() == 1 || !itemval.get_array_size()) && (obj = get_item(itemval)))
+			return obj->get_abs_tile_coord();
+	else if (itemval.get_array_size() == 3)
 					// An array of coords.?
-	if (itemval.get_array_size() == 3)
 		return Tile_coord(itemval.get_elem(0).get_int_value(),
 				itemval.get_elem(1).get_int_value(),
 				itemval.get_elem(2).get_int_value());
