@@ -874,7 +874,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 				snprintf(disp_name, max_len+2, "%s_", npc_name);
 			else
 				snprintf(disp_name, max_len+2, "%s", npc_name);
-			font->draw_text(ibuf, topx+50, menuy+10, disp_name);
+			font->draw_text(ibuf, topx+60, menuy+10, disp_name);
 			pal.apply();
 			redraw = false;
 		}
