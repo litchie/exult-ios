@@ -2,42 +2,42 @@ An ExScript is an Exult driven method for scripting the parts
 of Ultima which are not driven by Usecode (intros, endgames, menus...)
 
 Palette
-	P("filename",res,0);
+	palette("filename",res,0);
 	
 	Set palette from resource file "filename" index "res".
 	If the third parameter is 0, just set, if it's 1, fade in.
 
 Black
-	B(0);
+	black(0);
 	
 	Set palette to black. If param is 1, then fade out.
 
 Flic
-	F("filename",res);
+	flic("filename",res);
 	
 	Play specified flic file
 
 Voc
-	V("filename",res);
+	voc("filename",res);
 	
 	Play specified VOC file
 
 Image
-	I("filename",res,x,y);
+	image("filename",res,x,y);
 	
 	Show specified image at the x,y coords
 
 Wait
-	W(del);
+	wait(del);
 
 	Wait for del seconds.
 
 Text
-	T("text",x,y)
+	text("text",x,y)
 
 	Show specified text at x,y coords
 
 Music
-	M("filename",res);
+	music("filename",res);
 
 	Play specified MIDI file
