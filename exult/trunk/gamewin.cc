@@ -174,6 +174,7 @@ Game_window::~Game_window
 	)
 	{
 	clear_world();			// Delete all objects, chunks.
+	delete tqueue;
 	delete win;
 	delete dragging_save;
 	delete pal;
