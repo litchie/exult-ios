@@ -74,6 +74,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	virtual void show()
 		{ Chunk_chooser::show(0, 0, 
 			draw->allocation.width, draw->allocation.height);}
+	void tell_server();
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
 	virtual void set_background_color(guint32 c)

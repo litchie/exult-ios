@@ -382,7 +382,7 @@ static void Handle_client_message
 	case Exult_server::set_edit_mode:
 		{
 		int md = Read2(ptr);
-		if (md >= 0 && md <= 2)
+		if (md >= 0 && md <= 3)
 			cheat.set_edit_mode((Cheat::Map_editor_mode) md);
 		break;
 		}
@@ -441,6 +441,10 @@ static void Handle_client_message
 				sel.back()->edit();
 		break;
 		}
+	case Exult_server::set_edit_chunknum:
+		cheat.set_edit_chunknum((short) Read2(ptr));
+		break;
+
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:
 		Handle_debug_message(&data[0], datalen);

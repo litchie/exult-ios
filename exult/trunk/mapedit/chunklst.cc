@@ -76,6 +76,24 @@ void Chunk_chooser::show
 	}
 
 /*
+ *	Send selected chunk# to Exult.
+ */
+
+void Chunk_chooser::tell_server
+	(
+	)
+	{
+	if (selected < 0)
+		return;
+	unsigned char buf[Exult_server::maxlength];
+	unsigned char *ptr = &buf[0];
+	Write2(ptr, selected);
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->send_to_server(Exult_server::set_edit_chunknum, 
+							buf, ptr - buf);
+	}
+
+/*
  *	Select an entry.  This should be called after rendering
  *	the chunk.
  */
@@ -88,6 +106,7 @@ void Chunk_chooser::select
 	if (new_sel < 0 || new_sel >= info_cnt)
 		return;			// Bad value.
 	selected = new_sel;
+	tell_server();			// Tell Exult.
 	enable_controls();
 	int chunknum = info[selected].num;
 					// Remove prev. selection msg.
