@@ -14,6 +14,8 @@
 #  include <cstring>
 #endif
 
+#include "exult_types.h"
+
 using std::memcpy;
 
 /** 
@@ -751,142 +753,146 @@ void test()
 //
 void Scale_point
 (
-         unsigned char *source,          // ->source pixels.
-         int srcx, int srcy,             // Start of rectangle within src.
-         int srcw, int srch,             // Dims. of rectangle.
-         int sline_pixels,               // Pixels (words)/line for source.
-         int sheight,                    // Source height.
-         unsigned char *dest,            // ->dest pixels.
-         int dline_pixels,               // Pixels (words)/line for dest.
-         int factor                      // Scale factor
+	const unsigned char *source,	// ->source pixels.
+	const int srcx, const int srcy,	// Start of rectangle within src.
+	const int srcw, const int srch,	// Dims. of rectangle.
+	const int sline_pixels,		// Pixels (words)/line for source.
+	const int sheight,		// Source height.
+	unsigned char *dest,		// ->dest pixels.
+	const int dline_pixels,		// Pixels (words)/line for dest.
+	const int factor		// Scale factor
 )
 {
-	int x, y, off_x, off_y;
+	source += srcy*sline_pixels + srcx;
+	dest += srcy*factor*dline_pixels + srcx*factor;
+
 	char data;
-	unsigned char *dest2, *source2;
-
-	srch+=srcy;
-	srcw+=srcx;
-
-	if (srch>sheight) srch = sheight;
-	if (srcw>sline_pixels) srcw = sline_pixels;
+	unsigned char *dest2;
+	const unsigned char *source2;
+	const unsigned char * limit_y = source + srch*sline_pixels;
+	const unsigned char * limit_x = source + srcw;
 
 	if (factor == 2) {
-		source += srcy*sline_pixels + srcx;
-		dest += (srcy*2)*dline_pixels + srcx*2;
-		for (y = srcy; y < srch; ++y)
+		uint16 *dest16;
+		uint16 *dest16_2;
+		uint16 data16;
+		
+		while (source < limit_y)
 		{
-			dest2 = dest;
 			source2 = source;
-			for (x = srcx; x < srcw; ++x)
+
+			dest16 = (uint16*) dest;
+			dest += dline_pixels;
+			dest16_2 = (uint16*) dest;
+
+			while (source2 < limit_x)
 			{
-				data = *source2++;
-				*dest2++ = data;
-				*dest2++ = data;
+				data16 = *source2++;
+				data16 |= data16 << 8;
+				*dest16++ = data16;
+				*dest16_2++ = data16;
 			}
 			dest += dline_pixels;
-
-			dest2 = dest;
-			source2 = source;
-			for (x = srcx; x < srcw; ++x)
-			{
-				data = *source2++;
-				*dest2++ = data;
-				*dest2++ = data;
-			}
-			dest += dline_pixels;
-
+			limit_x += sline_pixels;
 			source += sline_pixels;
 		}
 	} else {
-		source += srcy*sline_pixels + srcx;
-		dest += (srcy*factor)*dline_pixels + srcx*factor;
-		for (y = srcy; y < srch; ++y)
+		const unsigned int y2_pixels = dline_pixels*factor;
+		const unsigned char * limit_y2 = dest;
+		const unsigned char * limit_x2;
+
+		while (source < limit_y)
 		{
-			for (off_y = 0; off_y < factor; ++off_y)
+			limit_y2 += y2_pixels;
+			while (dest < limit_y2)
 			{
-				dest2 = dest;
+				limit_x2 = dest2 = dest;
 				source2 = source;
-				for (x = srcx; x < srcw; ++x)
+				while (source2 < limit_x)
 				{
 					data = *source2++;
-					for (off_x = 0; off_x < factor; ++off_x)
+					limit_x2 += factor;
+					while (dest2 < limit_x2)
 						*dest2++ = data;
 				}
 				dest += dline_pixels;
 			}
+			limit_x += sline_pixels;
 			source += sline_pixels;
 		}
 	}
 }
-
-
 
 //
 // Interlaced Point Sampling Scaler
 //
 void Scale_interlace
 (
-	unsigned char *source,		// ->source pixels.
-	int srcx, int srcy,		// Start of rectangle within src.
-	int srcw, int srch,		// Dims. of rectangle.
-	int sline_pixels,		// Pixels (words)/line for source.
-	int sheight,			// Source height.
+	const unsigned char *source,	// ->source pixels.
+	const int srcx, const int srcy,	// Start of rectangle within src.
+	const int srcw, const int srch,	// Dims. of rectangle.
+	const int sline_pixels,		// Pixels (words)/line for source.
+	const int sheight,		// Source height.
 	unsigned char *dest,		// ->dest pixels.
-	int dline_pixels,		// Pixels (words)/line for dest.
-	int factor			// Scale factor
+	const int dline_pixels,		// Pixels (words)/line for dest.
+	const int factor		// Scale factor
 )
 {
-	int x, y, ss, off_x, off_y;
+	source += srcy*sline_pixels + srcx;
+	dest += srcy*factor*dline_pixels + srcx*factor;
+
 	char data;
-	unsigned char *dest2, *source2;
-
-	srch+=srcy;
-	srcw+=srcx;
-
-	if (srch>sheight) srch = sheight;
-	if (srcw>sline_pixels) srcw = sline_pixels;
+	unsigned char *dest2;
+	const unsigned char *source2;
+	const unsigned char * limit_y = source + srch*sline_pixels;
+	const unsigned char * limit_x = source + srcw;
 
 	if (factor == 2) {
-		source += srcy*sline_pixels + srcx;
-		dest += (srcy*2)*dline_pixels + srcx*2;
-		for (y = srcy; y < srch; ++y)
+		uint16 *dest16;
+		uint16 data16;
+		
+		while (source < limit_y)
 		{
-			dest2 = dest;
 			source2 = source;
-			for (x = srcx; x < srcw; ++x)
+			dest16 = (uint16*) dest;
+			while (source2 < limit_x)
 			{
-				data = *source2++;
-				*dest2++ = data;
-				*dest2++ = data;
+				data16 = *source2++;
+				data16 |= data16 << 8;
+				*dest16++ = data16;
 			}
 			dest += dline_pixels;
 			dest += dline_pixels;
-
+			limit_x += sline_pixels;
 			source += sline_pixels;
 		}
 	} else {
 		bool visible_line = ((srcy * factor) % 2 == 0);
-		source += srcy*sline_pixels + srcx;
-		dest += (srcy*factor)*dline_pixels + srcx*factor;
-		for (y = srcy; y < srch; ++y)
+		const unsigned int y2_pixels = dline_pixels*factor;
+		const unsigned char * limit_y2 = dest;
+		const unsigned char * limit_x2;
+
+		while (source < limit_y)
 		{
-			for (off_y = 0; off_y < factor; ++off_y)
+			limit_y2 += y2_pixels;
+			while (dest < limit_y2)
 			{
 				if (visible_line)
 				{
-					dest2 = dest;
+					limit_x2 = dest2 = dest;
 					source2 = source;
-					for (x = srcx; x < srcw; ++x)
+					while (source2 < limit_x)
 					{
 						data = *source2++;
-						for (off_x = 0; off_x < factor; ++off_x)
+						limit_x2 += factor;
+						while (dest2 < limit_x2)
 							*dest2++ = data;
 					}
 				}
 				dest += dline_pixels;
 				visible_line = !visible_line;
 			}
+			limit_x += sline_pixels;
 			source += sline_pixels;
 		}
 	}

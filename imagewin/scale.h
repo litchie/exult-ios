@@ -53,27 +53,27 @@ void Scale_2xBilinear
 // Point Sampling Scaler
 void Scale_point
 (
-	unsigned char *source,		// ->source pixels.
-	int srcx, int srcy,		// Start of rectangle within src.
-	int srcw, int srch,		// Dims. of rectangle.
-	int sline_pixels,		// Pixels (words)/line for source.
-	int sheight,			// Source height.
-	unsigned char  *dest,		// ->dest pixels.
-	int dline_pixels,		// Pixels (words)/line for dest.
-	int factor			// Scale factor
+	const unsigned char *source,	// ->source pixels.
+	const int srcx, const int srcy,	// Start of rectangle within src.
+	const int srcw, const int srch,	// Dims. of rectangle.
+	const int sline_pixels,		// Pixels (words)/line for source.
+	const int sheight,		// Source height.
+	unsigned char *dest,		// ->dest pixels.
+	const int dline_pixels,		// Pixels (words)/line for dest.
+	const int factor		// Scale factor
 );
 
 // Interlaced Point Sampling Scaler
 void Scale_interlace
 (
-	unsigned char *source,		// ->source pixels.
-	int srcx, int srcy,		// Start of rectangle within src.
-	int srcw, int srch,		// Dims. of rectangle.
-	int sline_pixels,		// Pixels (words)/line for source.
-	int sheight,			// Source height.
-	unsigned char  *dest,		// ->dest pixels.
-	int dline_pixels,		// Pixels (words)/line for dest.
-	int factor			// Scale factor
+	const unsigned char *source,	// ->source pixels.
+	const int srcx, const int srcy,	// Start of rectangle within src.
+	const int srcw, const int srch,	// Dims. of rectangle.
+	const int sline_pixels,		// Pixels (words)/line for source.
+	const int sheight,		// Source height.
+	unsigned char *dest,		// ->dest pixels.
+	const int dline_pixels,		// Pixels (words)/line for dest.
+	const int factor		// Scale factor
 );
 
 #include "scale.cc"		/* Seems to be needed. */
