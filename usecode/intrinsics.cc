@@ -481,6 +481,8 @@ USECODE_INTRINSIC(create_new_object)
 		Monster_actor *monster = Monster_actor::create(shapenum,
 			Tile_coord(-1, -1, -1), Schedule::wait, 
 					(int) Actor::neutral, true, false);
+					// FORCE it to be neutral (dec04,01).
+		monster->set_alignment((int) Actor::neutral);
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
