@@ -969,8 +969,8 @@ static Tile_coord *Get_square
 	{
 	Tile_coord *square = new Tile_coord[8*dist];
 					// Upper left corner:
-	square[0] = Tile_coord(SUB_TILE(pos.tx, dist), SUB_TILE(pos.ty, dist),
-								pos.tz);
+	square[0] = Tile_coord(DECR_TILE(pos.tx, dist), 
+					DECR_TILE(pos.ty, dist), pos.tz);
 	int i;				// Start with top row.
 	int len = 2*dist + 1;
 	int out = 1;
@@ -993,6 +993,25 @@ static Tile_coord *Get_square
 	}
 
 /*
+ *	Check a spot against the 'where' paramater to find_spot.
+ *
+ *	Output:	true if it passes.
+ */
+
+inline bool Check_spot
+	(
+	Map_chunk::Find_spot_where where,
+	int tx, int ty, int tz
+	)
+	{
+	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
+	Map_chunk *chunk = 
+		Game_window::get_game_window()->get_chunk_safely(cx, cy);
+	return (where == Map_chunk::inside) == 
+				(chunk->is_roof(tx, ty, tz) < 31);
+	}
+
+/*
  *	Find a free area for an object of a given shape, looking outwards.
  *
  *	Output:	Tile if successful, else (-1, -1, -1).
@@ -1006,8 +1025,9 @@ Tile_coord Map_chunk::find_spot
 	int shapenum,			// Shape, frame to find spot for.
 	int framenum,
 	int max_drop,			// Allow to drop by this much.
-	int dir				// Preferred direction (0-7), or -1 for
+	int dir,			// Preferred direction (0-7), or -1 for
 					//   random.
+	Find_spot_where where		// Inside/outside.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -1037,7 +1057,9 @@ Tile_coord Map_chunk::find_spot
 			Tile_coord& p = square[index%square_cnt];
 			if (!Map_chunk::is_blocked(zs, p.tz, p.tx - xs + 1,
 				p.ty - ys + 1, xs, ys, new_lift, mflags,
-								max_drop))
+								max_drop) &&
+			    (where == anywhere || 
+				  Check_spot(where, p.tx, p.ty, new_lift)))
 				{	// Use tile before deleting.
 				Tile_coord ret(p.tx, p.ty, new_lift);
 				delete [] square;
@@ -1062,14 +1084,15 @@ Tile_coord Map_chunk::find_spot
 	int dist,			// Distance to look outwards.  (0 means
 					//   only check 'pos'.
 	Game_object *obj,		// Object that we want to move.
-	int max_drop			// Allow to drop by this much.
+	int max_drop,			// Allow to drop by this much.
+	Find_spot_where where		// Inside/outside.
 	)
 	{
 	Tile_coord t2 = obj->get_abs_tile_coord();
 					// Get direction from pos. to object.
 	int dir = (int) Get_direction(pos.ty - t2.ty, t2.tx - pos.tx);
 	return find_spot(pos, dist, obj->get_shapenum(), obj->get_framenum(),
-			max_drop, dir);
+			max_drop, dir, where);
 	}
 
 /*

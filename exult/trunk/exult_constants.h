@@ -65,7 +65,8 @@ extern const std::string c_empty_string;
 #define INCR_CHUNK(x) (((x) + 1)%c_num_chunks)
 #define DECR_CHUNK(x) (((x) - 1 + c_num_chunks)%c_num_chunks)
 #define INCR_TILE(x) (((x) + 1)%c_num_tiles)
-#define DECR_TILE(x) (((x) - 1 + c_num_tiles)%c_num_tiles)
+inline int DECR_TILE(int x, int amt = 1)
+	{ return (x - amt + c_num_tiles)%c_num_tiles; }
 				// Return x - y with wrapping.
 inline int SUB_TILE(int x, int y)
 	{

@@ -740,6 +740,7 @@ void Actor::follow
 					// Delay a bit IF not moving.
 			delay = (1 + leaderdist - goaldist)*100;
 		}
+	Game_window *gwin = Game_window::get_game_window();
 	if (goaldist - leaderdist >= 5)
 		speed -= 20;		// Speed up if too far.
 	if (goaldist > 32 &&		// Getting kind of far away?
@@ -747,7 +748,6 @@ void Actor::follow
 	    !leaderpath)		// But leader is not following path.
 		{			// Approach, or teleport.
 		int pixels = goaldist*c_tilesize;
-		Game_window *gwin = Game_window::get_game_window();
 		if (pixels > gwin->get_width() + 16)
 			{		// Try to approach from offscreen.
 			if (approach_another(leader))
@@ -781,7 +781,12 @@ void Actor::follow
 					// Don't try again for a second.
 		next_path_time = SDL_GetTicks() + 1000;
 					// Find a free spot within 3 tiles.
-		goal = Map_chunk::find_spot(goal, 3, this);
+		Map_chunk::Find_spot_where where = Map_chunk::anywhere;
+					// And try to be inside/outside.
+		if (leader == gwin->get_main_actor())
+			where = gwin->is_main_actor_inside() ?
+					Map_chunk::inside : Map_chunk::outside;
+		goal = Map_chunk::find_spot(goal, 3, this, 0, where);
 		if (goal.tx == -1)	// No free spot?  Give up.
 			{
 			cout << "... but is blocked." << endl;
