@@ -493,15 +493,23 @@ void Patrol_schedule::now_what
 				}
 			}
 		if (path)		// Save it.
+			{
+			failures = 0;	// Found marker.
 			paths.put(pathnum, path);
+			}
 		else			// Turn back if at end.
 			{
+			failures++;
 			dir = 1;
 			if (pathnum == 0)	// At start?  Retry.
 				{
-				pathnum = -1;
-				npc->start(200, 500);
-				return;
+				if (failures < 4)
+					{
+					pathnum = -1;
+					npc->start(200, 500);
+					return;
+					}
+					// After 4, fall through.
 				}
 			else		// At end, go back to start.
 				{
@@ -513,9 +521,10 @@ void Patrol_schedule::now_what
 			{
 					// Wiggle a bit.
 			Tile_coord pos = npc->get_abs_tile_coord();
-			Tile_coord delta = Tile_coord(rand()%3 - 1,
-					rand()%3 - 1, 0);
-			npc->walk_to_tile(pos + delta, 250, 500);
+			int dist = failures + 2;
+			Tile_coord delta = Tile_coord(rand()%dist - dist/2,
+					rand()%dist - dist, 0);
+			npc->walk_to_tile(pos + delta, 250, failures*300);
 			int pathcnt = paths.size();
 			pathnum = rand()%(pathcnt < 4 ? 4 : pathcnt);
 			return;
