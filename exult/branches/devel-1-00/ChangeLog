@@ -1,4 +1,7 @@
 2002-07-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs.cc: even more item names for SI
+
+2002-07-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs.cc: more item names for SI
 
 2002-06-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
