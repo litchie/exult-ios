@@ -2173,6 +2173,17 @@ void Game_window::show_items
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))
 			cout << "ASLEEP" << endl;
+#if 0
+		int dcnt = obj->get_dependency_count();
+		if (dcnt)
+			{
+			cout << "Dependencies:" << endl;
+			for (int i = 0; i < dcnt; i++)
+				cout << "    " << 
+					(void *) obj->get_dependency(i)
+							<< endl;
+			}
+#endif
 		}
 	else				// Obj==0
 		{

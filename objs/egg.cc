@@ -284,7 +284,8 @@ int Egg_object::is_active
 	int from_tx, int from_ty	// Tile stepped from.
 	)
 	{
-	if (flags & (1 << (int) hatched))
+	if ((flags & (1 << (int) hatched)) &&
+			!(flags & (1 << (int) auto_reset)))
 		return (0);		// For now... Already hatched.
 	Game_window *gwin = Game_window::get_game_window();
 	if (flags & (1 << (int) nocturnal))
@@ -296,11 +297,19 @@ int Egg_object::is_active
 	Egg_criteria cri = (Egg_criteria) get_criteria();
 
 	int deltaz = tz - get_lift();
-//	deltaz = deltaz < 0 ? -deltaz : deltaz;
+	int absdeltaz = deltaz < 0 ? -deltaz : deltaz;
 	switch (cri)
 		{
 	case cached_in:			// Anywhere in square.
-		return area.has_point(tx, ty);
+		{
+		if (obj != gwin->get_main_actor() || !area.has_point(tx, ty))
+			return 0;	// Not in square.
+		if (!(flags & (1 << (int) hatched)))
+			return 1;	// First time.
+					// Must have autoreset.
+					// Just activate when reentering.
+		return !area.has_point(from_tx, from_ty);
+		}
 	case party_near:
 		return (obj->get_party_id() >= 0 || 
 					obj == gwin->get_main_actor()) &&
@@ -309,8 +318,10 @@ int Egg_object::is_active
 					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
 		return obj == gwin->get_main_actor() && 
-			(deltaz == 0 || deltaz == 1 || Game::get_game_type() ==
-						SERPENT_ISLE ||
+			(deltaz == 0 || deltaz == 1 || 
+					// Using trial&error here:
+			 (Game::get_game_type() == SERPENT_ISLE &&
+				(type != teleport || absdeltaz <= 3)) ||
 				(type == missile && tz/5 == get_lift()/5)) &&
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty);
@@ -392,35 +403,9 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	int roll = must ? 0 : 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
-	if ((flags & (1 << (int) auto_reset)) == 0)
-					// Flag it as done if not auto-reset.
-		flags |= (1 << (int) hatched);
+					// Flag it as done.
+	flags |= (1 << (int) hatched);
 	Game_window *gwin = Game_window::get_game_window();
-#if 0	/* +++++Almost sure this block should go away. */
-					// Taking a guess:
-	if (criteria == external_criteria && !(flags & (1 << (int) once)))
-		{			// Look for nearby eggs.
-		Vector eggs;
-		int cnt = find_nearby(eggs, get_shapenum(), 8, 16);
-		Egg_object *best = 0;	// Find closest.
-		int best_dist = 10000;
-		for (int i = 0; i < cnt; i++)
-			{
-			Egg_object *egg = (Egg_object *) eggs.get(i);
-			int dist = Game_object::distance(egg);
-			if (egg != this &&
-			    dist <= best_dist &&
-/*			    egg->criteria == external_criteria && */
-			    !(egg->flags & ((1<<hatched)|(1<<auto_reset))))
-				{
-				best = egg;
-				best_dist = dist;
-				}
-			}
-		if (best)
-			best->activate(umachine, obj, 0);
-		}
-#endif
 	switch(type)
 		{
 		case jukebox:
