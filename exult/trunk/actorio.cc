@@ -152,11 +152,9 @@ Actor::Actor
 
 	set_property((int) Actor::intelligence, intel_val & 0x1F);
 	if ((intel_val >> 5) & 1) set_siflag (Actor::read);
-					// Tournament = !si_killable.
+					// Tournament.
 	if ((intel_val >> 6) & 1) 
-		clear_flag (Obj_flags::si_killable);
-	else
-		set_flag(Obj_flags::si_killable);
+		set_flag (Obj_flags::si_tournament);
 	if ((intel_val >> 7) & 1) set_siflag (Actor::polymorph);
 
 
@@ -397,8 +395,8 @@ void Actor::write
 	
 	iout = get_property(Actor::intelligence);
 	if (get_siflag (Actor::read)) iout |= 1 << 5;
-					// Tournament = !si_killable.
-	if (!get_flag (Obj_flags::si_killable)) iout |= 1 << 6;
+					// Tournament
+	if (get_flag (Obj_flags::si_tournament)) iout |= 1 << 6;
 	if (get_siflag (Actor::polymorph)) iout |= 1 << 7;
 	nfile.put(iout);
 
