@@ -1,3 +1,8 @@
+2002-06-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/studio.cc,etc:  Send a 'Server version' # in the 'info'
+	message and check that Exult and ES match.
+
 2002-06-01  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gumps/Paperdoll_gump.cc: Show selected items in gumps.

@@ -219,6 +219,8 @@ public:
 				unsigned char *data = 0, int datalen = 0);
 	void read_from_server();
 	bool connect_to_server();
+					// Message from Exult.
+	void info_received(unsigned char *data, int datalen);
 					// Preferences.
 	static void background_color_okay(GtkWidget *dlg, gpointer data);
 	void open_preferences();

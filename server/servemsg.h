@@ -41,6 +41,7 @@ namespace Exult_server
 const unsigned short magic = 0xf381;
 const int maxlength = 600;		// Big enough to hold a 'terrain'.
 const int hdrlength = 5;
+const int version = 0;			// Sent with 'info' message.
 
 enum Msg_type
 	{
