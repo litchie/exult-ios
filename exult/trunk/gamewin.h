@@ -35,6 +35,14 @@
 #include <string>	// STL string
 #include "vec.h"
 
+#define RED_PLASMA	1
+
+#ifdef RED_PLASMA
+#define	CYCLE_RED_PLASMA()	cycle_load_palette()
+#else
+#define	CYCLE_RED_PLASMA()
+#endif
+
 class Actor;
 class Barge_object;
 class Map_chunk;
@@ -160,6 +168,12 @@ class Game_window
 	bool bg_paperdolls;		// True if paperdolls are wanted in BG
 	Vga_file bg_serpgumps;		// "gumps.vga" - from serpent isle 
 					//   for BG Paperdolls
+
+#ifdef RED_PLASMA
+	// Red plasma animation during game load
+	uint32 load_palette_timer;
+#endif
+	
 public:
 	int skip_lift;			// Skip objects with lift > 0.
 	bool paint_eggs;
@@ -270,7 +284,7 @@ public:
 	void add_special_light(int minutes);
 					// Handle 'stop time' spell.
 	void set_time_stopped(long ticks);
-private:
+protected:
 	long check_time_stopped();
 public:
 	long is_time_stopped()
@@ -308,21 +322,15 @@ public:
 		{ painted = 1; }
 	inline bool was_painted()
 		{ return painted; }
-	bool show()			// Returns true if blit occurred.
+	bool show(bool force = false)			// Returns true if blit occurred.
 		{
-		if (painted)
+		if (painted || force)
 			{
 			win->show();
 			painted = false;
 			return true;
 			}
 		return false;
-		}
-	bool show(int)
-		{
-		win->show();
-		painted = false;
-		return true;
 		}
 	void center_view(Tile_coord t);	// Center view around t.
 	void set_camera_actor(Actor *a);
@@ -639,7 +647,7 @@ public:
 	int get_text_height(int fontnum);
 	int get_text_baseline(int fontnum);
 	Font *get_font(int fontnum);
-private:
+protected:
 	void drop(int x, int y);
 public:
 	bool drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
@@ -683,8 +691,12 @@ public:
 	Gump_manager *get_gump_man() { return gump_man; }
 	Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
 
-private:
+protected:
 	void start_actor_alt (int winx, int winy, int speed);
 
+#ifdef RED_PLASMA
+	void setup_load_palette();
+	void cycle_load_palette();
+#endif
 	};
 #endif
