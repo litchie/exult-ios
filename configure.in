@@ -2,8 +2,8 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(exult.cc)
 
 PACKAGE=exult
-MAJOR=Alpha
-RELNUM=01
+MAJOR=0.90
+RELNUM=alpha1
 VERSION=$MAJOR.$RELNUM
 
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION,no-define)

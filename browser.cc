@@ -18,6 +18,7 @@
 #include "gamewin.h"
 #include "game.h"
 #include "browser.h"
+#include "font.h"
 	
 ShapeBrowser::ShapeBrowser()
 	{
@@ -56,9 +57,8 @@ void ShapeBrowser::browse_shapes()
 	{
 		
 		Game_window *gwin = Game_window::get_game_window();
-		//Image_window8 *win = gwin->get_win();
-		//int topx = (gwin->get_width()-320)/2;
-		//int topy = (gwin->get_height()-200)/2;
+		Font *font = fontManager.get_font("MENU_FONT");
+
 		int centerx = gwin->get_width()/2;
 		int centery = gwin->get_height()/2;
 		Palette pal;
@@ -94,23 +94,23 @@ void ShapeBrowser::browse_shapes()
 				else
 					pal.load(pal_tuple.str,pal_tuple.num);
 				sprintf(buf,"VGA File: '%s'", fname);
-				gwin->paint_text(MAINSHP_FONT1, buf, 0, 170);
+				font->draw_text(gwin, 0, 170, buf);
 				num_shapes = shapes->get_num_shapes();
 				sprintf(buf,"Shape: %3d/%3d", current_shape, num_shapes-1);
-				gwin->paint_text(MAINSHP_FONT1, buf, 0, 180);
+				font->draw_text(gwin, 0, 180, buf);
 			
 			        num_frames = shapes->get_num_frames(current_shape);
 				sprintf(buf,"Frame: %3d/%3d", current_frame, num_frames-1);
-				gwin->paint_text(MAINSHP_FONT1, buf, 160, 180);
+				font->draw_text(gwin, 160, 180, buf);
 				sprintf(buf,"Palette: %s, %d", pal_tuple.str, pal_tuple.num);
-				gwin->paint_text(MAINSHP_FONT1, buf, 0, 190);
+				font->draw_text(gwin, 0, 190, buf);
 
 			        if (num_frames) {
 				        Shape_frame *frame = shapes->get_shape(
 					        current_shape, current_frame);
  				        if (frame) {
 					        sprintf(buf,"%d x %d", frame->get_width(), frame->get_height());
-					        gwin->paint_text(MAINSHP_FONT1, buf, 32, 32);
+					        font->draw_text(gwin, 32, 32, buf);
   					        
 						//draw outline
 						gwin->get_win()->fill8(255, 
@@ -126,9 +126,9 @@ void ShapeBrowser::browse_shapes()
 					        gwin->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
 
 				        } else
-					        gwin->paint_text(MAINSHP_FONT1, "No Shape", centerx-20, centery-5);
+					        font->draw_text(gwin, centerx-20, centery-5, "No Shape");
  			        } else
-				        gwin->paint_text(MAINSHP_FONT1, "No Shape", centerx-20, centery-5);
+				        font->draw_text(gwin, centerx-20, centery-5, "No Shape");
  	
 			        pal.apply();
 				redraw = false;
