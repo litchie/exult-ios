@@ -138,7 +138,9 @@ void Shape_draw::configure
 	GtkWidget *widget		// The view window.
 	)
 	{
-	if (!iwin)		// First time?
+	if (!widget->window)
+		return;			// Not ready yet.
+	if (!iwin)			// First time?
 		{
 		drawgc = gdk_gc_new(widget->window);
 					// Foreground = yellow.
