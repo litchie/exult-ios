@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Tqueue.h - A queue of time-based events for animation.
  **
  **	Written: 2/15/00 - JSF
@@ -7,41 +8,13 @@
 #ifndef INCL_TQUEUE
 #define INCL_TQUEUE	1
 
-#include <sys/time.h>
-
-/*
- *	Compare times.
- */
-inline int operator<(timeval &t1, timeval& t2)
-	{
-					// Check secs.
-	return (t1.tv_sec < t2.tv_sec) ||
-		(t1.tv_sec == t2.tv_sec && t1.tv_usec < t2.tv_usec);
-	}
-
-/*
- *	Add a given # of microseconds to a time.
- */
-inline timeval Add_usecs
-	(
-	timeval t,
-	int usecs
-	)
-	{
-	timeval result;
-	result.tv_usec = t.tv_usec + usecs;
-	result.tv_sec = t.tv_sec + result.tv_usec/1000000;
-	result.tv_usec %= 1000000;
-	return result;
-	}
-
 /*
  *	An interface for entries in the queue:
  */
 class Time_sensitive
 	{
 public:
-	virtual void handle_event(timeval curtime, long udata) = 0;
+	virtual void handle_event(unsigned long curtime, long udata) = 0;
 	};
 
 /*
@@ -50,11 +23,11 @@ public:
 class Queue_entry
 	{
 	Queue_entry *next, *prev;	// Next, prev. in queue.
-	timeval time;			// Time when this is due.
+	unsigned long time;			// Time when this is due.
 	Time_sensitive *handler;	// Object to activate.
 	long udata;			// Data to pass to handler.
 	friend class Time_queue;
-	void set(timeval t, Time_sensitive *h, long ud)
+	void set(unsigned long t, Time_sensitive *h, long ud)
 		{
 		time = t;
 		handler = h;
@@ -70,7 +43,8 @@ class Time_queue
 	{
 	Queue_entry *head;		// Head of queue.  Head->prev = tail.
 	Queue_entry *free_entries;	// ->list of freed entries.
-	void activate0(timeval curtime);// Activate head + any others due.
+					// Activate head + any others due.
+	void activate0(unsigned long curtime);
 	void add_freed(Queue_entry *ent)
 		{
 		ent->next = free_entries;
@@ -100,10 +74,11 @@ public:
 	Time_queue() : head(0), free_entries(0)
 		{  }
 					// Add an entry.
-	void add(timeval t, Time_sensitive *obj, long ud);
+	void add(unsigned long t, Time_sensitive *obj, long ud);
 					// Remove object's entry.
 	void remove(Time_sensitive *obj);
-	void activate(timeval curtime)	// Activate entries that are 'due'.
+					// Activate entries that are 'due'.
+	void activate(unsigned long curtime)
 		{
 		if (head && !(curtime < head->time))
 			activate0(curtime);

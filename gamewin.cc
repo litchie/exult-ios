@@ -1,3 +1,4 @@
+// -*-mode: Fundamental; tab-width: 8; -*-
 /**
  **	Gamewin.cc - X-windows Ultima7 map browser.
  **
@@ -33,10 +34,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "usecode.h"
 #include "npcnear.h"
-
-#if !(defined(XWIN) || defined(DOS)) //avoid crash in WIN32
-void gettimeofday(timeval* tv, int x); //in objs.cpp
-#endif
 
 /*
  *	Create game window.
@@ -83,17 +80,15 @@ Game_window::Game_window
 					// Set title.
 	win->set_title("Exult Ultima7 Engine");
 
-	struct timeval timer;
-	gettimeofday(&timer, 0);	// Get time of day.
-	srand(timer.tv_usec);		// Use it to seed rand. generator.
-	timer.tv_sec = 0;		// Force clock to start.
+	unsigned long timer = SDL_GetTicks();
+	srand(timer);			// Use time to seed rand. generator.
+					// Force clock to start.
 	tqueue->add(timer, &clock, (long) this);
 					// Clear object lists, flags.
 	memset((char *) objects, 0, sizeof(objects));
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
 	get_palette(0);			// Try first palette.
 	brighten(20);			// Brighten 20%.
-//++++++	win->map();			// Now display window.
 	}
 
 /*
@@ -900,7 +895,7 @@ void Game_window::repaint_sprite
 
 void Game_window::animate
 	(
-	timeval& time			// Current time of day.
+	unsigned long time		// Current time of day.
 	)
 	{
 	if (!focus || mode == conversation)
@@ -992,7 +987,7 @@ void Game_window::start_actor
 		return;
 					// Move every 1/8 sec.
 	main_actor->start(this,
-		chunkx*chunksize + winx, chunky*chunksize + winy, 125000);
+		chunkx*chunksize + winx, chunky*chunksize + winy, 125);
 	}
 
 /*
@@ -1137,10 +1132,9 @@ void Game_window::add_text
 	if (txt->next)
 		txt->next->prev = txt;
 	texts = txt;
-	timeval curval;			// Show for a couple seconds.
-	gettimeofday(&curval, 0);
-	curval.tv_sec += 2;
-	tqueue->add(curval, txt, (long) this);
+					// Show for a couple seconds.
+	unsigned long curval = SDL_GetTicks();
+	tqueue->add(curval + 2000, txt, (long) this);
 	}
 
 /*
@@ -1450,8 +1444,7 @@ void Game_window::add_nearby_npcs
 	int stop_cx, int stop_cy	// Go up to, but not including, these.
 	)
 	{
-	timeval curtime;
-	gettimeofday(&curtime, 0);
+	unsigned long curtime = SDL_GetTicks();
 	for (int cy = from_cy; cy != stop_cy; cy++)
 		for (int cx = from_cx; cx != stop_cx; cx++)
 			for (Npc_actor *npc = get_objects(cx, cy)->get_npcs();
