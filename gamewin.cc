@@ -23,10 +23,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstring>
+#include <cstdarg>
+#include <cstdio>
 #include "gamewin.h"
 #include "game.h"
 #include "egg.h"
@@ -54,18 +54,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 #include "mouse.h"
 
-#include "Actor_Gump.h"
-#include "Paperdoll_Gump.h"
+#include "Actor_gump.h"
+#include "Paperdoll_gump.h"
 #include "Spellbook_gump.h"
-#include "Stats_Gump.h"
+#include "Stats_gump.h"
 
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::exit;
 using std::istream;
 using std::ifstream;
 using std::ofstream;
+using std::rand;
 using std::string;
+using std::srand;
 using std::vector;
 
 extern	Configuration *config;
@@ -161,7 +164,7 @@ void Game_window::abort
 	...
 	)
 	{
-	va_list ap;
+	std::va_list ap;
 	va_start(ap, msg);
 	char buf[512];
 	vsprintf(buf, msg, ap);		// Format the message.
