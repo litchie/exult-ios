@@ -18,6 +18,8 @@ Ctrl-down	move_selected	 0  1  0
 Ctrl-up		move_selected	 0 -1  0
 Ctrl-pageup	move_selected	 0  0  1
 Ctrl-pagedown	move_selected	 0  0 -1
+Ctrl-x		cut
+Ctrl-v		paste
 
 F2		cheat_screen
 F3		map_teleport

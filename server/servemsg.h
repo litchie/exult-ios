@@ -73,6 +73,9 @@ enum Msg_type
 	reload_shapes = 23,		// Reload a .vga file.
 	unused_shapes = 24,		// Find unused shapes in game.
 	locate_shape = 25,		// Find shape in world.
+	cut = 26,			// Cut/copy.
+	paste = 27,			// ... from clipboard.
+	select_status = 28,		// Flags:  selection, clipboard avail.
 	usecode_debugging = 128
 	};
 

@@ -418,6 +418,12 @@ static void Handle_client_message
 			Exult_server::locate_shape, data, ptr - data);
 		break;
 		}
+	case Exult_server::cut:		// Cut/copy.
+		cheat.cut(*ptr != 0);
+		break;
+	case Exult_server::paste:
+		cheat.paste();
+		break;
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:
 		Handle_debug_message(&data[0], datalen);

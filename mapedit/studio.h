@@ -221,6 +221,7 @@ public:
 	bool connect_to_server();
 					// Message from Exult.
 	void info_received(unsigned char *data, int datalen);
+	void set_edit_menu(bool sel, bool clip);
 					// Preferences.
 	static void background_color_okay(GtkWidget *dlg, gpointer data);
 	void open_preferences();
