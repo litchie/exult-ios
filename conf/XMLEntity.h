@@ -49,6 +49,7 @@ public:
 	vector<XMLnode>	nodelist;
 	string	&reference(string &,bool &);
 	XMLnode *subtree(string &);
+	XMLnode operator=(const XMLnode &n) { entity=n.entity; nodelist=n.nodelist; return *this; }
 	XMLnode();
 	~XMLnode();
 	};
