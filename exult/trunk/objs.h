@@ -138,6 +138,10 @@ public:
 		} 
 	virtual int get_usecode();	// Get usecode function to run.
 	virtual char *get_name();
+	virtual void set_property(int prop, int val)
+		{  }
+	virtual int get_property(int prop)
+		{ return 0; }
 	};
 
 /*

@@ -137,6 +137,24 @@ class Usecode_function
 
 const int max_funs = 1500;
 const int max_answers = 40;
+const int answer_stack_size = 10;
+
+/*
+ *	A set of answers:
+ */
+class Answers
+	{
+	friend class Usecode_machine;
+	char *answers[max_answers];	// What we can click on.
+	int num_answers;
+	Answers() : num_answers(0)
+		{  }
+	void add_answer(char *str);	// Add to the list.
+	void add_answer(Usecode_value& val);
+	void remove_answer(Usecode_value& val);
+	void operator=(Answers& cpy);	// Shallow copy.
+	};	
+
 /*
  *	Here's our virtual machine for running usecode.
  */
@@ -150,6 +168,7 @@ class Usecode_machine
 	int party_count;		// # of NPC's in party.
 	Game_object *caller_item;	// Item this is being called on.
 	char *user_choice;		// String user clicked on.
+	int user_choice_num;		// User choice # (0 if first).
 	char *string;			// The single string register.
 	void append_string(char *txt);	// Append to string.
 	void say_string();		// "Say" the string.
@@ -186,15 +205,12 @@ class Usecode_machine
 		Usecode_value val = pop();
 		return (val.get_str_value());
 		}
-	char *answers[max_answers];	// What we can click on.
-	int num_answers;
+	Answers answers;		// What user can click on.
+	int saved_answers;		// # of 'saved' answer sets.
+	Answers *answer_stack[answer_stack_size];
 	/*
 	 *	Built-in usecode functions:
 	 */
-	void add_answer(char *str);	// Add to the list.
-					// Intrinsics:
-	void add_answer(Usecode_value& val);
-	void remove_answer(Usecode_value& val);
 	void show_npc_face(Usecode_value& arg1, Usecode_value& arg2);
 	void remove_npc_face(Usecode_value& arg1);
 	void set_item_shape(Usecode_value& item_arg, Usecode_value& shape_arg);
@@ -210,7 +226,7 @@ class Usecode_machine
 	 */
 					// Call instrinsic function.
 	Usecode_value call_intrinsic(int intrinsic, int num_parms);
-	void get_user_choice();		// Get user's choice.
+	int get_user_choice();		// Get user's choice.
 					// Run the function.
 	void run(Usecode_function *fun, int event);
 					// Call desired function.

@@ -38,6 +38,7 @@ class Actor : public Sprite
 	char *name;			// Its name.
 	int usecode;			// # of usecode function.
 	int face_shapenum;		// Portrait shape #, or -1.
+	short properties[12];		// Properties set/used in 'usecode'.
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
@@ -56,9 +57,16 @@ public:
 		next = a;
 		}
 	Actor *get_next()
-		{ return next; }			
+		{ return next; }
 	virtual int get_usecode();	// Get usecode function to run.
 	virtual char *get_name();
+	virtual void set_property(int prop, int val)
+		{
+		if (prop >= 0 && prop < 12)
+			properties[prop] = (short) val;
+		}
+	virtual int get_property(int prop)
+		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
 	};
 
 /*
