@@ -965,7 +965,6 @@ int Actor::move_aside
 	int stepdir = i;		// This is the direction.
 	if (to.tx < 0)			// Failed?
 		return (0);
-	Game_window *gwin = Game_window::get_game_window();
 					// Step, and face direction.
 	step(to, get_dir_framenum(stepdir, (int) Actor::standing));
 	Tile_coord newpos = get_abs_tile_coord();

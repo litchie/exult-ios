@@ -90,7 +90,7 @@ add the following to the <video> section of .exult.cfg:
 
 AUDIO
 -----
-Exult can now play the Guardian's sound-bites through SDL, and it's own
+Exult can now play the Guardian's sound-bites through SDL, and its own
 internal mixer. Configuration is managed through Exult's configuration file.
 
 MIDI
