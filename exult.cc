@@ -83,7 +83,7 @@ int main
 	)
 	{
 	bool	needhelp=false;
-	string	gamename;
+	string	gamename("default");
         Args    parameters;
 
 	// Declare everything from the commandline that we're interested in.
@@ -116,9 +116,12 @@ int main
 	{
 	// Select the data directory
 	string	data_directory;
-	vector<string> vs=config->listkeys("config/disk/game",1);
+	vector<string> vs=config->listkeys("config/disk/game",false);
 	if(vs.size()==0)
 		{
+#if DEBUG
+		cerr << "No game keys. Converting..." << endl;
+#endif
 		// Convert from the older format
 		config->value("config/disk/u7path",data_directory,".");
 		config->set("config/disk/game/blackgate",data_directory,true);
@@ -129,6 +132,9 @@ int main
 		{
 		// If the user didn't specify, start up the first game we can find.
 		gamename=vs[0];
+#if DEBUG
+		cerr << "Setting default game to " << gamename << endl;
+#endif
 		}
 	string d("config/disk/game/");
 	d+=gamename;
