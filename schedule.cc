@@ -1015,6 +1015,11 @@ void Sleep_schedule::now_what
 		static int bedshapes[2] = {696, 1011};
 		Stand_up(npc);
 		bed = npc->find_closest(bedshapes, 2);
+		if (!bed && GAME_BG)	// Check for Gargoyle beds.
+			{
+			static int gbeds[2] = {363, 312};
+			bed = npc->find_closest(gbeds, 2);
+			}
 		}
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) == Actor::sleep_frame)
@@ -1063,7 +1068,8 @@ void Sleep_schedule::now_what
 	case 1:				// Go to bed.
 		{
 		npc->stop();		// Just to be sure.
-		int dir = bed->get_shapenum() == 696 ? west : north;
+		int bedshape = bed->get_shapenum();
+		int dir = (bedshape == 696 || bedshape == 363) ? west : north;
 		npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
 					// Get bed info.
 		Shape_info& info = gwin->get_info(bed);
