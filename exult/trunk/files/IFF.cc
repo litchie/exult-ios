@@ -29,19 +29,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 #include <iostream>
 
-// For ntohl and friends
-#ifdef XWIN
-#include <netinet/in.h>
-#else
 
 //Own implementation of ntohl.
 //convert MSB -> LSB
 long ntohl(long x) {
-  return ((x & 0xFF) << 24) | ((x & 0xFF00) << 8) |
-    ((x & 0xFF0000) >> 8) | ((x & 0xFF000000) >> 24);
+  static unsigned long _test_=0x01020304;
+  if(*(char *)&_test_==0x01)
+	{
+	// We are big-endian
+	return x;
+	}
+  else
+	{
+	  return ((x & 0xFF) << 24) | ((x & 0xFF00) << 8) |
+	    ((x & 0xFF0000) >> 8) | ((x & 0xFF000000) >> 24);
+	}
 }
 
-#endif
 
 
 IFF::IFF(const char *n) : U7file(n)
