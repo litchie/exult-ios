@@ -1,3 +1,7 @@
+2001-12-17  Patrick Burke <takhisisii@yahoo.com.au>
+	* conf/Configuration.[cc|h]: Updated from FILE *'s to fstreams.
+	* usecode/ucxt/*: Updated to use U7open() rather then fstream.open().
+
 2001-12-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Fiddling with combat formulae.  Combat skill counts

@@ -6,20 +6,6 @@
 #include <string>
 #include <vector>
 #include "Configuration.h"
-//#include "ucdata.h"
-
-#define MAX_NO_OPCODES 256
-
-/* Opcode descriptor */
-//typedef struct _opcode_desc
-//{
-  /* Mnemonic - NULL if not known yet */
-//  char* mnemonic;
-  /* Number of operand bytes */
-//  int nbytes;
-  /* Type flags */
-//  unsigned long effect;
-//} opcode_desc;
 
 #define EFF_RELATIVE_JUMP 0x0001
 #define EFF_PUSH          0x0002
@@ -149,7 +135,6 @@ extern map<unsigned int, string> si_uc_intrinsics;
 
 void init_static_usecodetables(const Configuration &config);
 void init_usecodetables(const Configuration &config, bool noconf, bool verbose);
-//void init_usecodetables(const Configuration &config, const UCData &uc);
 
 #endif
 
