@@ -286,6 +286,8 @@ void Barge_object::gather
 			{		// Look at each object.
 			if (obj == this)
 				continue;
+			if (obj->is_egg()) // don't pick up eggs
+				continue;
 			Tile_coord t = obj->get_abs_tile_coord();
 			Shape_info& info = gwin->get_info(obj);
 					// Above barge, within 5-tiles up?

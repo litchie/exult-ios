@@ -1,3 +1,6 @@
+2001-10-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* barge.cc: barges no longer pick up eggs
+
 2001-10-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* combat.cc (Combat_schedule): Camera actor should never give up.
