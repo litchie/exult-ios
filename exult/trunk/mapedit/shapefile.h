@@ -30,6 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Vga_file;
 class Shape_group_file;
+class ifstream;
+class Object_browser;
 
 /*
  *	A shape file:
@@ -38,20 +40,26 @@ class Shape_file_info
 	{
 	std::string pathname;		// Full pathname.
 	Vga_file *ifile;		// Contains the images.
+	std::ifstream *file;		// For 'chunks'; ifile is NULL.
 	Shape_group_file *groups;	// Groups within ifile.
 public:
 	friend class Shape_file_set;
 					// We will own ifile and groups.
-	Shape_file_info(const char *nm, Vga_file *i, Shape_group_file *g)
-		: pathname(nm), ifile(i), groups(g)
+	Shape_file_info(const char *nm, Vga_file *i, std::ifstream *f,
+							Shape_group_file *g)
+		: pathname(nm), ifile(i), file(f), groups(g)
 		{  }
 	~Shape_file_info();
 	const char *get_pathname()
 		{ return pathname.c_str(); }
 	Vga_file *get_ifile()
 		{ return ifile; }
+	std::ifstream *get_file()
+		{ return file; }
 	Shape_group_file *get_groups()
 		{ return groups; }
+	Object_browser *create_browser(Shape_file_info *vgafile, char **names,
+						unsigned char *palbuf);
 	};
 
 /*
