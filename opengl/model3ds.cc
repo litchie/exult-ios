@@ -48,6 +48,7 @@ static int Read_material_chunk(Model3d *model,
 static int Read_object_chunk(Model3d *model,
 				istream& in, int top_len, Object3d *obj);
 static int Read_vertices_chunk(istream& in, int top_len, Object3d *obj);
+static int Read_texture_vertices_chunk(istream& in, int top_len,Object3d *obj);
 static int Read_faces_chunk(istream& in, int top_len, Object3d *obj);
 static int Read_object_material_chunk(Model3d *model,
 				istream& in, int top_len, Object3d *obj);
@@ -347,6 +348,9 @@ static int Read_object_chunk
 			read += Read_object_material_chunk(model, 
 								in, len, obj);
 			break;
+		case OBJECT_UV:		// UV texture coordinates.
+			read += Read_texture_vertices_chunk(in, len, obj);
+			break;
 		default:		// Don't care.
 			in.seekg(len - read, ios::cur);
 			read = len;
@@ -381,6 +385,34 @@ static int Read_vertices_chunk
 		obj->get_vertex(i).z = Read_float(in);
 		obj->get_vertex(i).y = Read_float(in);
 		top_read += 3*4;
+		}
+	assert (top_read == top_len);
+	return top_read - CHUNK_HEADER_LENGTH;
+	}
+
+/*
+ *	Read in a list of texture vertices.
+ *
+ *	Output:	# bytes read.
+ */
+
+static int Read_texture_vertices_chunk
+	(
+	istream& in, 			// Header already read.
+	int top_len,			// Total length of this chunk.
+	Object3d *obj			// New object to set up.
+	)
+	{
+	int top_read = CHUNK_HEADER_LENGTH;
+	int cnt = Read2(in);		// Get # vertices.
+	top_read += 2;
+	obj->init_tex_vertices(cnt);	// Set vector size.
+	for (int i = 0; i < cnt; i++)
+		{
+		obj->get_tex_vertex(i).x = Read_float(in);
+					// 3DS has Y/Z flipped!
+		obj->get_tex_vertex(i).y = Read_float(in);
+		top_read += 2*4;
 		}
 	assert (top_read == top_len);
 	return top_read - CHUNK_HEADER_LENGTH;
