@@ -639,6 +639,7 @@ if test x$enable_gimp_plugin = xyes; then
 				AM_CONDITIONAL(GIMP_PLUGIN, true)
 				CPPFLAGS="$save_cppflags"
 				GIMP_PLUGIN_PREFIX=`gimptool --gimpplugindir`
+				GIMP_PLUGIN_PREFIX="$GIMP_PLUGIN_PREFIX/plug-ins"
 				AC_SUBST(GIMP_PLUGIN_PREFIX)
 				AC_DEFINE(HAVE_GIMP)
 				GIMP_INCLUDES=`gimptool --cflags`
