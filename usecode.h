@@ -78,10 +78,10 @@ public:
 		if (type == (unsigned char) array_type)
 			delete [] value.array;
 		}
-	void operator=(const Usecode_value& v2)
+	Usecode_value &operator=(const Usecode_value& v2)
 		{
 		if (&v2 == this)
-			return;
+			return *this;
 		if (type == (int) array_type)
 			delete [] value.array;
 		type = v2.type;		// Assign new values.
@@ -98,6 +98,7 @@ public:
 			while (value.array[i++].type != 
 						(int) end_of_array_type);
 			}
+		return *this;
 		}
 					// Copy ctor.
 	Usecode_value(const Usecode_value& v2) : type((unsigned char) int_type)
