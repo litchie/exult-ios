@@ -29,6 +29,7 @@ SI_Game::SI_Game()
 		add_shape("gumps/fntext",4);
 		add_shape("gumps/loadbtn",5);
 		add_shape("gumps/savebtn",6);
+		add_shape("gumps/halo",7);
 		add_shape("gumps/disk",19);
 		add_shape("gumps/heart",20);
 		add_shape("gumps/statatts",23);
@@ -44,6 +45,12 @@ SI_Game::SI_Game()
 		add_shape("gumps/nobtn",53);
 		add_shape("gumps/book",27);
 		add_shape("gumps/scroll",49);
+		add_shape("gumps/combat_stats",91);
+		add_shape("gumps/combatmode",12);
+		add_shape("gumps/slider",14);
+		add_shape("gumps/slider_diamond",15);
+		add_shape("gumps/slider_right",16);
+		add_shape("gumps/slider_left",17);
 
 		add_shape("gumps/box", 0);
 		add_shape("gumps/crate", 1);

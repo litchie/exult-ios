@@ -44,8 +44,8 @@ Actor::Actor
 	    two_handed(0),
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
 	    light_sources(0),
-	    usecode_dir(0), siflags(0), type_flags(0), action(0), 
-	    frame_time(0), next_path_time(0), timers(0), ident(0)
+	    usecode_dir(0), siflags(0), type_flags(0), ident(0),
+	    action(0), frame_time(0), next_path_time(0), timers(0)
 	{
 	init();				// Clear rest of stuff.
 	unsigned locx = Read1(nfile);	// Get chunk/tile coords.

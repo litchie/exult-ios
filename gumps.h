@@ -43,6 +43,7 @@ class Disk_gump_button;
 class Combat_gump_button;
 class Halo_gump_button;
 class Combat_mode_gump_button;
+class Cstats_gump_button;
 class Yesno_gump_button;
 class Slider_gump_button;
 
@@ -100,7 +101,7 @@ class Gump_object : public ShapeID
 	{
 	UNREPLICATABLE_CLASS(Gump_object);
 protected:
-	Gump_object() : ShapeID() {   };
+	Gump_object() : ShapeID(), paperdoll_shape (false) {   };
 	Gump_object *next;		// ->next to draw.
 	Container_game_object *container;// What this gump shows.
 	int x, y;			// Location on screen.
@@ -109,9 +110,11 @@ protected:
 					// Where the 'checkmark' goes.
 	Checkmark_gump_button *check_button;
 	void initialize();		// Initialize object_area.
+	void initialize2();		// Initialize object_area (paperdoll).
+	bool paperdoll_shape;
 public:
 	Gump_object(Container_game_object *cont, int initx, int inity, 
-								int shnum);
+								int shnum, bool pdoll = false);
 					// Create centered.
 	Gump_object(Container_game_object *cont, int shnum);
 	virtual ~Gump_object();
@@ -151,6 +154,8 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Close (and delete).
 	virtual void close(Game_window *gwin);
+					// Use the paperdoll shapes?
+	bool is_paperdoll() const { return paperdoll_shape; }
 	};
 
 /*
@@ -189,11 +194,36 @@ public:
 	virtual void paint(Game_window *gwin);
 	};
 
-class Paperdoll_gump_object : public Actor_gump_object 
+class Paperdoll_gump_object : public Gump_object 
 	{
+	UNREPLICATABLE_CLASS(Paperdoll_gump_object);
+	Heart_gump_button *heart_button;// For bringing up stats.
+	Disk_gump_button *disk_button;	// For bringing up 'save' box.
+	Combat_gump_button *combat_button;
+	Cstats_gump_button *cstats_button;
+	static short coords[24];	// Coords. of where to draw things,
+					//   indexed by spot # (0-11).
+	static int spotx(int i) { return coords[2*i]; }
+	static int spoty(int i) { return coords[2*i + 1]; }
+					// Find index of closest spot.
+	int find_closest(int mx, int my, int only_empty = 0);
+	void set_to_spot(Game_object *obj, int index);
+	static short diskx, disky;	// Where to show 'diskette' button.
+	static short heartx, hearty;	// Where to show 'stats' button.
+	static short combatx, combaty;	// Combat button.
+	static short cstatx, cstaty;	// Combat mode.
 public:
 	Paperdoll_gump_object(Container_game_object *cont, int initx, int inity, 
 								int shnum);
+
+	~Paperdoll_gump_object();
+					// Is a given point on a button?
+	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
+					// Add object.
+	virtual int add(Game_object *obj, int mx = -1, int my = -1,
+						int sx = -1, int sy = -1);
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
 	};
 
 /*
