@@ -65,7 +65,8 @@ Game_window::Game_window
 	    endshape(ENDSHAPE_FLX),
 	    main_actor(0), skip_above_actor(31), npcs(0),
 	    monster_info(0), 
-	    chunkx(64), chunky(136), 	// Start in Trinsic (BG).
+	    scrolltx(64*tiles_per_chunk), 
+	    scrollty(136*tiles_per_chunk), 	// Start in Trinsic (BG).
 	    palette(-1), brightness(100), faded_out(0),
 	    dragging(0), dragging_save(0),
 	    skip_lift(16), paint_eggs(1), debug(0)
@@ -237,6 +238,22 @@ int Game_window::u7open
 	}
 
 /*
+ *	Set the scroll boundaries.
+ */
+
+void Game_window::set_scroll_bounds
+	(
+	)
+	{
+					// Let's try 6x6 tiles.
+	scroll_bounds.w = scroll_bounds.h = 6;
+	scroll_bounds.x = scrolltx + 
+			(get_width()/tilesize - scroll_bounds.w)/2;
+	scroll_bounds.y = scrollty + 
+			(get_height()/tilesize - scroll_bounds.h)/2;
+	}
+
+/*
  *	Clear out world's contents.  Should be used during a 'restore'.
  */
 
@@ -272,18 +289,54 @@ void Game_window::center_view
 	Tile_coord t
 	)
 	{
-	int cx = t.tx/tiles_per_chunk;	// For now, do it in chunks.
-	int cy = t.ty/tiles_per_chunk;
-	int cw = get_width()/chunksize;
-	int ch = get_height()/chunksize;
-	chunkx = cx - cw/2;
-	chunky = cy - ch/2;
-	if (chunkx < 0)
-		chunkx = 0;
-	if (chunky < 0)
-		chunky = 0;
-					// ++++++Check right edge too.
+					// Figure in tiles.
+	int tw = get_width()/tilesize, th = get_height()/tilesize;
+	scrolltx = t.tx - tw/2;
+	scrollty = t.ty - th/2;
+	if (scrolltx < 0)
+		scrolltx = 0;
+	if (scrollty < 0)
+		scrollty = 0;
+	if (scrolltx + tw > num_chunks*tiles_per_chunk)
+		scrolltx = num_chunks*tiles_per_chunk - tw - 1;
+	if (scrollty + th > num_chunks*tiles_per_chunk)
+		scrollty = num_chunks*tiles_per_chunk - th - 1;
+	set_scroll_bounds();		// Set scroll-control.
 	paint();
+	}
+
+/*
+ *	Scroll if necessary.
+ *
+ *	Output:	1 if scrolled (screen updated).
+ */
+
+int Game_window::scroll_if_needed
+	(
+	Tile_coord t
+	)
+	{
+	if (t.tx == scroll_bounds.x - 1)
+		{
+		view_left();
+		return (1);
+		}
+	if (t.tx == scroll_bounds.x + scroll_bounds.w)
+		{
+		view_right();
+		return (1);
+		}
+	if (t.ty == scroll_bounds.y - 1)
+		{
+		view_up();
+		return (1);
+		}
+	if (t.ty == scroll_bounds.y + scroll_bounds.h)
+		{
+		view_down();
+		return (1);
+		}
+	return (0);
 	}
 
 /*
@@ -874,8 +927,8 @@ int Game_window::read_gwin
 	if (!U7open(gin, GWINDAT))	// Gamewin.dat.
 		return (0);
 					// Start with scroll coords (in tiles).
-	chunkx = Read2(gin)/tiles_per_chunk;
-	chunky = Read2(gin)/tiles_per_chunk;
+	scrolltx = Read2(gin);
+	scrollty = Read2(gin);
 					// Read clock.
 	clock.set_day(Read2(gin));
 	clock.set_hour(Read2(gin));
@@ -984,6 +1037,27 @@ void Game_window::paint
 			return;
 		}
 	int light_sources = 0;		// Count light sources found.
+	int scrolltx = get_scrolltx(), scrollty = get_scrollty();
+					// Get chunks to start with, starting
+					//   1 tile left/above.
+	int start_chunkx = (scrolltx + x/tilesize - 1)/tiles_per_chunk;
+	if (start_chunkx < 0)
+		start_chunkx = 0;
+	int start_chunky = (scrollty + y/tilesize - 1)/tiles_per_chunk;
+	if (start_chunky < 0)
+		start_chunky = 0;
+					// End 8 tiles to right.
+	int stop_chunkx = 1 + (scrolltx + (x + w + tilesize - 2)/tilesize + 
+					tiles_per_chunk/2)/tiles_per_chunk;
+	int stop_chunky = 1 + (scrollty + (y + h + tilesize - 2)/tilesize + 
+					tiles_per_chunk/2)/tiles_per_chunk;
+	if (stop_chunkx > num_chunks)
+		stop_chunkx = num_chunks;
+	if (stop_chunky > num_chunks)
+		stop_chunky = num_chunks;
+
+
+#if 0	/* +++++Old way. */
 					// Which chunks to start with:
 					// Watch for shapes 1 chunk to left.
 	int start_chunkx = chunkx + x/chunksize - 1;
@@ -1003,7 +1077,7 @@ void Game_window::paint
 						(stopy%chunksize != 0) + 1;
 	if (stop_chunky > num_chunks)
 		stop_chunky = num_chunks;
-	int cx, cy;			// Chunk #'s.
+#endif
 #if 0	/*+++++++Done in read_map_data().  Called from paint(void). */
 					// Read in "map", "ifix" objects for
 					//  all visible superchunks.
@@ -1040,6 +1114,7 @@ void Game_window::paint
 		cy += num_chunks_y;
 		}
 #endif
+	int cx, cy;			// Chunk #'s.
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy < stop_chunky; cy++)
 		for (cx = start_chunkx; cx < stop_chunkx; cx++)
@@ -1311,74 +1386,94 @@ void Game_window::view_right
 	(
 	)
 	{
-	if (chunkx + get_width()/chunksize >= num_chunks - 1)
+	if (scrolltx + get_width()/tilesize >= num_chunks*tiles_per_chunk - 1)
 		return;
-	chunkx++;			// Increment offset.
+	int w = get_width(), h = get_height();
+					// Get current rightmost chunk.
+	int old_rcx = (scrolltx + (w - 1)/tilesize)/tiles_per_chunk;
+	scrolltx++;			// Increment offset.
+	scroll_bounds.x++;
 	if (mode == gump)		// Gump on screen?
 		{
 		paint();
 		return;
 		}
 	read_map_data();		// Be sure objects are present.
-	int w = get_width(), h = get_height();
 					// Shift image to left.
-	win->copy(chunksize, 0, w - chunksize, h, 0, 0);
+	win->copy(tilesize, 0, w - tilesize, h, 0, 0);
 					// Paint 1 column to right.
-	paint(w - chunksize, 0, chunksize, h);
+//	paint(w - tilesize, 0, tilesize, h);
+	add_dirty(Rectangle(w - tilesize, 0, tilesize, h));
 					// Find newly visible NPC's.
-	int from_cx = chunkx + (w + chunksize - 1)/chunksize - 1;
-	add_nearby_npcs(from_cx, chunky, from_cx + 1, 
-			chunky + (h + chunksize - 1)/chunksize);
+	int new_rcx = (scrolltx + (w - 1)/tilesize)/tiles_per_chunk;
+	if (new_rcx != old_rcx)
+		add_nearby_npcs(new_rcx, scrollty/tiles_per_chunk, 
+			new_rcx + 1, 
+		    (scrollty + (h + tilesize - 1)/tilesize)/tiles_per_chunk);
 	}
 void Game_window::view_left
 	(
 	)
 	{
-	if (chunkx <= 0)
+	if (scrolltx <= 0)
 		return;
-	chunkx--;
+	scrolltx--;
+	scroll_bounds.x--;
 	if (mode == gump)		// Gump on screen?
 		{
 		paint();
 		return;
 		}
 	read_map_data();		// Be sure objects are present.
-	win->copy(0, 0, get_width() - chunksize, get_height(), chunksize, 0);
+	win->copy(0, 0, get_width() - tilesize, get_height(), tilesize, 0);
 	int h = get_height();
-	paint(0, 0, chunksize, h);
+#if 0
+	paint(0, 0, tilesize, h);
+#else	/* +++++Experiment. */
+	add_dirty(Rectangle(0, 0, tilesize, h));
+#endif
 					// Find newly visible NPC's.
-	add_nearby_npcs(chunkx, chunky, chunkx + 1, 
-			chunky + (h + chunksize - 1)/chunksize);
+	int new_lcx = scrolltx/tiles_per_chunk;
+	if (new_lcx != (scrolltx + 1)/tiles_per_chunk)
+		add_nearby_npcs(new_lcx, scrollty/tiles_per_chunk, 
+			new_lcx + 1, 
+		    (scrollty + (h + tilesize - 1)/tilesize)/tiles_per_chunk);
 	}
 void Game_window::view_down
 	(
 	)
 	{
-	if (chunky + get_height()/chunksize >= num_chunks - 1)
+	if (scrollty + get_height()/tilesize >= num_chunks*tiles_per_chunk - 1)
 		return;
-	chunky++;
+	int w = get_width(), h = get_height();
+					// Get current bottomost chunk.
+	int old_bcy = (scrollty + (h - 1)/tilesize)/tiles_per_chunk;
+	scrollty++;
+	scroll_bounds.y++;
 	if (mode == gump)		// Gump on screen?
 		{
 		paint();
 		return;
 		}
 	read_map_data();		// Be sure objects are present.
-	int w = get_width(), h = get_height();
-	win->copy(0, chunksize, w, h - chunksize, 0, 0);
-	paint(0, h - chunksize, w, chunksize);
+	win->copy(0, tilesize, w, h - tilesize, 0, 0);
+//	paint(0, h - tilesize, w, tilesize);
+	add_dirty(Rectangle(0, h - tilesize, w, tilesize));
 					// Find newly visible NPC's.
-	int from_cy = chunky + (h + chunksize - 1)/chunksize - 1;
-	add_nearby_npcs(chunkx, from_cy, 
-			chunkx + (w + chunksize - 1)/chunksize,
-			from_cy + 1);
+	int new_bcy = (scrollty + (h - 1)/tilesize)/tiles_per_chunk;
+	if (new_bcy != old_bcy)
+	add_nearby_npcs(scrolltx/tiles_per_chunk, new_bcy, 
+		    (scrolltx + (w + tilesize - 1)/tilesize)/tiles_per_chunk,
+			new_bcy + 1);
 	}
 void Game_window::view_up
 	(
 	)
 	{
-	if (chunky <= 0)
+	if (scrollty <= 0)
 		return;
-	chunky--;
+	scrollty--;
+	scroll_bounds.y--;
 	if (mode == gump)		// Gump on screen?
 		{
 		paint();
@@ -1386,11 +1481,15 @@ void Game_window::view_up
 		}
 	read_map_data();		// Be sure objects are present.
 	int w = get_width();
-	win->copy(0, 0, w, get_height() - chunksize, 0, chunksize);
-	paint(0, 0, w, chunksize);
+	win->copy(0, 0, w, get_height() - tilesize, 0, tilesize);
+//	paint(0, 0, w, tilesize);
+	add_dirty(Rectangle(0, 0, w, tilesize));
 					// Find newly visible NPC's.
-	add_nearby_npcs(chunkx, chunky, 
-			chunkx + (w + chunksize - 1)/chunksize, chunky + 1);
+	int new_tcy = scrollty/tiles_per_chunk;
+	if (new_tcy != (scrollty + 1)/tiles_per_chunk)
+		add_nearby_npcs(scrolltx/tiles_per_chunk, new_tcy,
+		    (scrolltx + (w + tilesize - 1)/tilesize)/tiles_per_chunk,
+								new_tcy + 1);
 	}
 
 /*
