@@ -132,7 +132,7 @@ void Game_window::paint_text_box
 int Game_window::paint_text
 	(
 	int fontnum,			// 0-9, from fonts.vga.
-	char *text,			// What to draw, 0-delimited.
+	const char *text,			// What to draw, 0-delimited.
 	int xoff, int yoff		// Upper-left corner of where to start.
 	)
 	{
@@ -158,7 +158,7 @@ int Game_window::paint_text
 int Game_window::paint_text
 	(
 	int fontnum,			// Font # in fonts.vga (0-9).
-	char *text,			// What to draw.
+	const char *text,			// What to draw.
 	int textlen,			// Length of text.
 	int xoff, int yoff		// Upper-left corner of where to start.
 	)
@@ -182,7 +182,7 @@ int Game_window::paint_text
 int Game_window::get_text_width
 	(
 	int fontnum,
-	char *text
+	const char *text
 	)
 	{
 	int width = 0;
@@ -199,7 +199,7 @@ int Game_window::get_text_width
 int Game_window::get_text_width
 	(
 	int fontnum,
-	char *text,
+	const char *text,
 	int textlen			// Length of text.
 	)
 	{

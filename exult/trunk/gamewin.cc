@@ -736,7 +736,7 @@ void Game_window::paint_text_object
 	Text_object *txt
 	)
 	{
-	char *msg = txt->msg;
+	const char *msg = txt->msg;
 	if (*msg == '@')
 		msg++;
 	int len = strlen(msg);
@@ -1193,7 +1193,7 @@ void Game_window::show_items
 
 void Game_window::add_text
 	(
-	char *msg,
+	const char *msg,
 	int x, int y			// Pixel coord. on screen.
 	)
 	{
