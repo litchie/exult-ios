@@ -33,6 +33,18 @@ class ifstream;
 class ofstream;
 #endif
 
+#include <exception>
+#include <string>
+        class replication_error : public exception
+                {
+                string  what_;
+                public:
+		 replication_error (const char *what_arg): what_ (what_arg) {  }
+                 replication_error (const string& what_arg): what_ (what_arg) {  }
+                 const char *what(void) { return what_.c_str(); }
+                };
+
+
 /*
  *	Read a 1-byte value.
  */
