@@ -39,6 +39,7 @@ class Spellbook_gump : public Gump_object
 					//   available reagants make possible.
 	int page;			// Starting with 0 (= circle #).
 	Spellbook_object *book;		// Book this shows.
+	Game_object *book_owner;	// Top-owner of book.
 					// Page turners:
 	Gump_button *leftpage, *rightpage;
 	Gump_button *spells[9*8];	// ->spell 'buttons'.
