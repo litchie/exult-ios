@@ -715,8 +715,9 @@ void Actor::stand_at_rest
 	)
 	{
 	rest_time = 0;			// Reset timer.
-	if ((get_framenum()&0xf) == standing)
-		return;			// Already standing.
+	int frame = get_framenum()&0xff;// Base frame #.
+	if (frame == standing || frame == sit_frame || frame == sleep_frame)
+		return;			// Already standing/sitting/sleeping.
 	if (!is_dead() && schedule_type == Schedule::follow_avatar &&
 	    !get_flag(Obj_flags::asleep))
 		change_frame(get_dir_framenum(standing));
