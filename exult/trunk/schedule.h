@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Game_object;
 class Actor;
 class Rectangle;
+class Actor_action;
 
 /*
  *	A Schedule controls the NPC it is assigned to.
@@ -45,6 +46,10 @@ class Schedule
 protected:
 	Actor *npc;			// Who this controls.
 	Tile_coord blocked;		// Tile where actor was blocked.
+					// Set actor to walk somewhere, then
+					//   do something.
+	static void set_action_sequence(Actor *actor, Tile_coord dest,
+						Actor_action *when_there);
 public:
 	Schedule(Actor *n) : npc(n), blocked(-1, -1, -1)
 		{  }
