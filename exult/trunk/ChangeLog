@@ -1,3 +1,7 @@
+2001-11-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* gump_utils.cc, Modal_gump.h, Newfile_gump.*: added mousewheel support
+	to new file gump (mousewheel = scroll lines, alt-mousewheel = pages)
+
 2001-11-02  Christian Ohm  <chr.ohm@gmx.net>
 
 	* exult.cc, gamewin.cc/h, gumps/GameplayOptions_gump.cc/h

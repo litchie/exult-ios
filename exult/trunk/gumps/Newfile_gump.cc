@@ -26,6 +26,7 @@
 #endif 
 
 #include "SDL_events.h"
+#include "SDL_keyboard.h"
 
 #include "exult_flx.h"
 
@@ -688,6 +689,24 @@ void Newfile_gump::mouse_up
 			pushed->activate(gwin);
 		pushed = 0;
 	}
+}
+
+void Newfile_gump::mousewheel_up()
+{
+	SDLMod mod = SDL_GetModState();
+	if (mod & KMOD_ALT)
+		scroll_page(-1);
+	else
+		scroll_line(-1);
+}
+
+void Newfile_gump::mousewheel_down()
+{
+	SDLMod mod = SDL_GetModState();
+	if (mod & KMOD_ALT)
+		scroll_page(1);
+	else
+		scroll_line(1);
 }
 
 /*
