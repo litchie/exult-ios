@@ -49,3 +49,8 @@ T+D = Umm.. the Silver Serpent (Python)
 S+T+D = ?? I dunno...Motorola, or the internet or somesuch, I guess.
 
 The opposite would be Microsoft, obviously.
+
+another item could be added:
+the special item called the "the secret decoder ring", you will only get it if you have Tseramed in your party once you get to sourceforge island.
+He will say something like:  "Avatar, I´ve been to this island before and stole that ring from the evil gods"
+Properties of that ring: perm read flag and/or  identify things like potions or weapon values
