@@ -214,7 +214,7 @@ void ActionUseItem(int *params)
 	if (params[1] == -1) params[1] = c_any_framenum;
 	if (params[2] == -1) params[2] = c_any_qual;
 	gwin->activate_item(params[0], params[1], params[2]);
-	if (gwin->showing_gumps())
+	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
 		Mouse::mouse->set_shape(Mouse::hand);
 
 }
@@ -236,7 +236,7 @@ void ActionTarget(int *params)
 	if (!Get_click(x, y, Mouse::greenselect))
 		return;
 	gwin->double_clicked(x, y);
-	if (gwin->showing_gumps())
+	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
 		Mouse::mouse->set_shape(Mouse::hand);
 }
 
@@ -265,7 +265,7 @@ void ActionInventory(int *params)
 		actor->activate(gwin->get_usecode(), 1, true); //force showing inv.
 	}
 
-	if (gwin->showing_gumps())
+	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
 		Mouse::mouse->set_shape(Mouse::hand);
 }
 
@@ -321,7 +321,7 @@ void ActionStats(int *params)
 	Actor *actor = Get_party_member(stats_page);
 	if (actor)
 		gwin->show_gump(actor, game->get_shape("gumps/statsdisplay"));
-	if (gwin->showing_gumps())
+	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
 		Mouse::mouse->set_shape(Mouse::hand);
 }
 

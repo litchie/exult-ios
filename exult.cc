@@ -672,7 +672,8 @@ static void Handle_event
 				dragging = false;
 				gwin->double_clicked(event.button.x >> scale, 
 						event.button.y >> scale);
-				if (gwin->showing_gumps())
+				if (gwin->showing_gumps() && gwin->find_gump(event.motion.x >> scale, 
+						event.motion.y >> scale))
 					Mouse::mouse->set_shape(Mouse::hand);
 				break;
 				}
@@ -688,8 +689,13 @@ static void Handle_event
 		{
 		Mouse::mouse->move(event.motion.x >> scale, 
 						event.motion.y >> scale);
-		if (!gwin->showing_gumps() && !dragging)
+		if (!(gwin->showing_gumps() && gwin->find_gump(event.motion.x >> scale, 
+						event.motion.y >> scale)) && !dragging)
 			Set_mouse_and_speed(event.motion.x, event.motion.y);
+		else if ((gwin->showing_gumps() && gwin->find_gump(event.motion.x >> scale, 
+						event.motion.y >> scale)) || dragging)
+					Mouse::mouse->set_shape(Mouse::hand);
+
 		Mouse::mouse_update = true;	// Need to blit mouse.
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))

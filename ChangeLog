@@ -1,4 +1,8 @@
 2001-06-08  Ryan Nunn <triforce@merlin.net.au>
+	* exult.cc, keyactions.cc, mouse.h: When gumps are open, the cursor
+	  will now only be the hand when the mouse is actually over a gump.
+
+2001-06-08  Ryan Nunn <triforce@merlin.net.au>
 	* audio/xmidi.cc : Volume curve now modifies Volume Controller events as
 	  well as Note On Velocity values. Volume Curve now has a greater
 	  impact and works "better". The difference is anything but subtle in
