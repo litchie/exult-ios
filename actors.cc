@@ -186,19 +186,41 @@ void Actor::ready_best_weapon
 
 /*
  *	Add dirty rectangle(s).
+ *
+ *	Output:	0 if not on screen.
  */
-inline void Actor::add_dirty
+inline int Actor::add_dirty
 	(
-	Game_window *gwin
+	Game_window *gwin,
+	int figure_rect			// Recompute weapon rectangle.
 	)
 	{
-	gwin->add_dirty(this);
+	if (!gwin->add_dirty(this))
+		return 0;
+	int weapon_x, weapon_y, weapon_frame;
+	if (figure_rect)
+		if (figure_weapon_pos(weapon_x, weapon_y, weapon_frame))
+			{
+			Game_object * weapon = spots[lhand];
+			int shnum = weapon->get_shapenum();
+			Shape_frame *wshape = gwin->get_shape(
+							shnum, weapon_frame);
+					// Set dirty area rel. to NPC.
+			weapon_rect = gwin->get_shape_rect(wshape, 
+							weapon_x, weapon_y);
+			}
+		else
+			weapon_rect.w = 0;
 	if (weapon_rect.w > 0)		// Repaint weapon area too.
 		{
 		Rectangle r = weapon_rect;
-		r.enlarge(5);
+		int xoff, yoff;
+		gwin->get_shape_location(this, xoff, yoff);
+		r.shift(xoff, yoff);
+		r.enlarge(4);
 		gwin->add_dirty(gwin->clip_to_win(r));
 		}
+	return 1;
 	}
 
 /*
@@ -855,47 +877,72 @@ void Actor::paint_weapon
 	Game_window *gwin
 	)
 	{
-	unsigned char actor_x, actor_y;
-	unsigned char weapon_x, weapon_y;
-	Game_object * weapon = spots[lhand];
-	weapon_rect.w = 0;
+	int weapon_x, weapon_y, weapon_frame;
+	if (figure_weapon_pos(weapon_x, weapon_y, weapon_frame))
+		{
+		Game_object * weapon = spots[lhand];
+		int shnum = weapon->get_shapenum();
+		Shape_frame *wshape = gwin->get_shape(shnum, weapon_frame);
+					// Set dirty area rel. to NPC.
+		weapon_rect = gwin->get_shape_rect(wshape, weapon_x, weapon_y);
+		// Paint the weapon shape using the actor's coordinates
+		int xoff, yoff;
+		gwin->get_shape_location(this, xoff, yoff);
+		xoff += weapon_x;
+		yoff += weapon_y;
+		if (flags & (1L<<invisible))
+			gwin->paint_invisible(xoff, yoff, shnum, weapon_frame);
+		else
+			gwin->paint_shape(xoff, yoff, wshape);
+		}
+	else
+		weapon_rect.w = 0;
+	}
 
+/*
+ *	Figure weapon drawing info.  We need this in advance to set the dirty
+ *	rectangle.
+ *
+ *	Output:	0 if don't need to paint weapon.
+ */
+
+int Actor::figure_weapon_pos
+	(
+	int& weapon_x, int& weapon_y,	// Pos. rel. to NPC.
+	int& weapon_frame
+	)
+	{
+	unsigned char actor_x, actor_y;
+	unsigned char wx, wy;
+	Game_object * weapon = spots[lhand];
 	if(weapon == 0)
-		return;
+		return 0;
+	Game_window *gwin = Game_window::get_game_window();
 	// Get offsets for actor shape
 	gwin->get_info(this).get_weapon_offset(get_framenum() & 0x1f, actor_x,
 			actor_y);
 	// Get offsets for weapon shape
 	// NOTE: when combat is implemented, weapon frame should depend on
 	// actor's current attacking frame
-	int weapon_frame = 1;
-	gwin->get_info(weapon).get_weapon_offset(weapon_frame, weapon_x,
-			weapon_y);
+	weapon_frame = 1;
+	gwin->get_info(weapon).get_weapon_offset(weapon_frame, wx,
+			wy);
 	// actor_x will be 255 if (for example) the actor is lying down
-	// weapon_x will be 255 if the actor is not holding a proper weapon
-	if(actor_x != 255 && weapon_x != 255)
-		{
+	// wx will be 255 if the actor is not holding a proper weapon
+	if(actor_x != 255 && wx != 255)
+		{			// Store offsets rel. to NPC.
+		weapon_x = wx - actor_x;
+		weapon_y = wy - actor_y;
 		// Need to swap offsets if actor's shape is reflected
 		if(get_framenum() & 32)
-		{
-			swap(actor_x, actor_y);
+			{
 			swap(weapon_x, weapon_y);
 			weapon_frame |= 32;
+			}
+		return 1;
 		}
-		// Paint the weapon shape using the actor's coordinates
-		int xoff, yoff;
-		gwin->get_shape_location(this, xoff, yoff);
-		xoff += -actor_x + weapon_x;
-		yoff += -actor_y + weapon_y;
-		int shnum = weapon->get_shapenum();
-		Shape_frame *wshape = gwin->get_shape(shnum, weapon_frame);
-					// Set area to mark dirty.
-		weapon_rect = gwin->get_shape_rect(wshape, xoff, yoff);
-		if (flags & (1L<<invisible))
-			gwin->paint_invisible(xoff, yoff, shnum, weapon_frame);
-		else
-			gwin->paint_shape(xoff, yoff, wshape);
-		}
+	else
+		return 0;
 	}
 
 /*
@@ -1811,7 +1858,7 @@ int Main_actor::step
 	Tile_coord oldtile = get_abs_tile_coord();
 					// Move it.
 	Actor::movef(olist, nlist, tx, ty, frame, new_lift);
-	gwin->add_dirty(this);		// Set to update new.
+	add_dirty(gwin, 1);		// Set to update new.
 					// In a new chunk?
 	if (olist != nlist)
 		switched_chunks(olist, nlist);
@@ -2249,7 +2296,7 @@ int Npc_actor::step
 					// Move it.
 	movef(olist, nlist, tx, ty, frame, new_lift);
 					// Offscreen, but not in party?
-	if (!gwin->add_dirty(this) && Npc_actor::get_party_id() < 0 &&
+	if (!add_dirty(gwin, 1) && Npc_actor::get_party_id() < 0 &&
 	    get_schedule_type() != Schedule::talk)
 		{			// No longer on screen.
 		stop();
@@ -2554,7 +2601,7 @@ int Monster_actor::step
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
 					// Move it.
 	movef(olist, nlist, tx, ty, frame, -1);
-	if (!gwin->add_dirty(this))
+	if (!add_dirty(gwin, 1))
 		{			// No longer on screen.
 		stop();
 		dormant = 1;
