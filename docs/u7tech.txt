@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.8 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.9 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -405,6 +405,15 @@ ENDSHAPE.FLX: flex file with various objects used in intro (Black Gate only)
   $18       "It has opened gateways to Britannia in the past"
   $19       "Behind your house lies the circle of stones"
   $1A       "Why is a Moongate already there?"
+  $1B       Empty
+  $1C       "You have but one path to the answer"
+  $1D       Small intro screen 
+  $1E	    Guardian's mouth
+  $1F       Guardian's forehead
+  $20       Guardian's eyes
+  $21       Guardian "emerging 1"
+  $22       Guardian "emerging 2"
+  $23       Guardian "emerging 3 (final)"
   
 ENDGAME.DAT
   $0        FLIC with guardian coming into Black Gate
