@@ -174,7 +174,7 @@ class Uc_function_symbol : public Uc_symbol
 					//   assign automatically.
 public:
 					// Keep track of #'s used.
-	typedef std::map<int, Uc_symbol *> Sym_nums;
+	typedef std::map<int, Uc_function_symbol *> Sym_nums;
 private:
 	static Sym_nums nums_used;
 					// Note:  offset = Usecode fun. #.
@@ -182,6 +182,8 @@ private:
 	int usecode_num;		// Usecode function #.
 public:
 	Uc_function_symbol(char *nm, int num, std::vector<char *>& p);
+	static Uc_function_symbol *create(char *nm, int num, 
+						std::vector<char *>& p);
 	const std::vector<char *>& get_parms()
 		{ return parms; }
 	int get_usecode_num()
