@@ -1,3 +1,8 @@
+2002-04-05  Dominik Reichardt <gigdr@tesionmail.de>
+	* tools/shp2pcx.txt, splitshp.txt, textpack.txt added, expack.txt updated.
+  	  According to Robert Bihlmeyer's manuals
+	* docs/exultstudio.txt added.  First draft based on Robert Bihlmeyer's manual
+
 2002-04-04  Darke <darkepaw@users.sourceforge.net>
 	* conf/Configuration.cc conf/xmain.cc: Added some #define-able tracing
 	code, fixed a few bugs in confregress.
