@@ -58,7 +58,7 @@ public:
 	void reset()
 		{ cur = first; stop = 0; }
 	T_Object_iterator(T_Object_list<T>& objects) 
-		: T_Safe_object_iterator(objects), first(objects.first)
+		: T_Safe_object_iterator<T>(objects), first(objects.first)
 		{ reset(); }
 	T get_next()
 		{
@@ -84,7 +84,7 @@ public:
 	void reset()
 		{ cur = nonflats; stop = 0; }
 	T_Nonflat_object_iterator(T_Object_list<T>& objects, T first_nonflat)
-		: T_Object_iterator(objects), nonflats(first_nonflat)
+		: T_Object_iterator<T>(objects), nonflats(first_nonflat)
 		{ reset(); }
 	};
 
@@ -104,7 +104,7 @@ public:
 	void reset()
 		{ cur = first; stop = 0; }
 	T_Flat_object_iterator(T_Object_list<T>& objects, T first_nonflat)
-		: T_Safe_object_iterator(objects)
+		: T_Safe_object_iterator<T>(objects)
 		{
 		first = objects.first == first_nonflat ? 0 :
 							objects.first;
@@ -138,7 +138,7 @@ public:
 	void reset()
 		{ cur = first; stop = 0; }
 	T_Object_iterator_backwards(T_Object_list<T>& objects, T first_nonflat) 
-		: T_Safe_object_iterator(objects),
+		: T_Safe_object_iterator<T>(objects),
 		  first(objects.first)
 		{ reset(); }
 	T get_next()
