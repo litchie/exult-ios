@@ -95,3 +95,23 @@ int Read_text_msg_file
 	return first == NONEFOUND ? -1 : (int) first;
 	}
 
+/*
+ *	Same as above, but store in given list, and set given count.
+ */
+
+int Read_text_msg_file
+	(
+	istream& in,
+	char **& strings,		// Strings returned here, each
+					//   allocated on heap.
+	int& count
+	)
+	{
+	vector<char *> txtlist;
+	int first = Read_text_msg_file(in, txtlist);
+	count = txtlist.size();
+	strings = new char *[count];
+	for (int i = 0; i < count; ++i)
+		strings[i] = txtlist[i];
+	return first;
+	}
