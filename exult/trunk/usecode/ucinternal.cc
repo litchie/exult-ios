@@ -1410,7 +1410,9 @@ int Usecode_internal::run
 	{
 	call_depth++;
 	int abort = 0;			// Flag if ABRT executed.
+#if 0
 	unsigned char *catch_ip = 0;	// IP for catching an ABRT.
+#endif
 					// Save/set function.
 	Usecode_function *save_fun = cur_function;
 	cur_function = fun;
@@ -1458,7 +1460,7 @@ int Usecode_internal::run
 	int offset;			// Gets offset parm.
 	int sval;			// Get value from top-of-stack.
 	unsigned char *code = ip;	// Save for debugging.
-	int set_ret_value = 0;		// >=1 when return value is set.
+	bool set_ret_value = false;		// return value set?
 	Usecode_value ret_value;	// Gets return value.
 	/*
 	 *	Main loop.
@@ -1481,15 +1483,11 @@ int Usecode_internal::run
 #endif
 		switch (opcode)
 			{
-		case 0x04:		// CATCH - Catch 'ABRT'.
-			offset = (short) Read2(ip);
-			catch_ip = ip + offset;
-					// ++++++Not sure if this is needed:
-			if (set_ret_value || !conv->get_num_answers() || abort)
-				{
-				ip = catch_ip;
-				user_choice = 0;
-				}
+		case 0x04:  // start conversation
+			get_user_choice();
+			found_answer = false;
+			ip += 2; // what does this parameter do???
+
 			break;
 		case 0x05:		// JNE.
 			{
@@ -1503,28 +1501,25 @@ int Usecode_internal::run
 			offset = (short) Read2(ip);
 			ip += offset;
 			break;
-		case 0x07:		// Guessing CMPS.
-			{		// Skip out if ABRT in effect.
-				//+++++Still necessary?  Try with Dell:nothing.
-				// ++++Trying set_ret_value:  7/24/00
-			if (/* abort || */ set_ret_value || !get_user_choice())
-				user_choice = "";
-			int cnt = Read2(ip);	// # strings.
-			offset = (short) Read2(ip);
-			bool matched = false;
-			while (!matched && cnt-- > 0)
-				{
-				Usecode_value s = pop();
-				const char *str = s.get_str_value();
-				if (!user_choice||!*user_choice)
-					break;
-				if (str && strcmp(str, user_choice) == 0)
-					matched = true;
+		case 0x07:		// CMPS.
+			{
+				int cnt = Read2(ip);	// # strings.
+				offset = (short) Read2(ip);
+				bool matched = false;
+
+				// only try to match if we haven't found an answer yet
+				while (!matched && !found_answer && cnt-- > 0) {
+					Usecode_value s = pop();
+					const char *str = s.get_str_value();
+					if (str && strcmp(str, user_choice) == 0) {
+						matched = true;
+						found_answer = true;
+					}
 				}
-			while (cnt-- > 0)	// Pop rest of stack.
-				pop();
-			if (!matched)		// Jump if no match.
-				ip += offset;
+				while (cnt-- > 0)	// Pop rest of stack.
+					pop();
+				if (!matched)		// Jump if no match.
+					ip += offset;
 			}
 			break;
 		case 0x09:		// ADD.
@@ -1655,9 +1650,11 @@ int Usecode_internal::run
 					sp - save_sp))
 				{	// Catch ABRT.
 				abort = 1;
+#if 0
 				if (catch_ip)
 					ip = catch_ip;
 				else	// No catch?  I think we should exit.
+#endif
 					{
 					sp = save_sp;
 					ip = endp;
@@ -1705,8 +1702,11 @@ int Usecode_internal::run
 			{
 			Usecode_value r = pop();
 					// But 1st takes precedence.
-			if (!set_ret_value)
-				ret_value = r;
+
+			//			if (!set_ret_value)
+
+			ret_value = r;
+
 #if 0	/* ++++Looks like BG does too.  Need to for gangplank test. */
 					// Looks like SI rets. here.
 			if (Game::get_game_type() == SERPENT_ISLE ||
@@ -1718,7 +1718,7 @@ int Usecode_internal::run
 				push(ret_value);
 				ip = endp;
 				}
-			set_ret_value++;
+			set_ret_value = true;
 			break;
 			}
 		case 0x2e:		// Looks like a loop.
@@ -1784,7 +1784,15 @@ int Usecode_internal::run
 			break;
 			}
 		case 0x31:		// Unknown.
-			ip += 4;
+			// this opcode only occurs in the 'audition' usecode function (BG)
+			// not sure what it's supposed to do, but this function results
+			// in the same behaviour as the original
+			ip += 2;
+			offset = (short)Read2(ip);
+			if (!found_answer)
+				found_answer = true;
+			else
+				ip += offset;
 			break;
 		case 0x32:		// RTS: Push return value & ret. 
 					//   from function.
@@ -1818,9 +1826,8 @@ int Usecode_internal::run
 			sp = save_sp;	// Restore stack.
 			abort = 1;
 			break;
-		case 0x40:		// CATCH jmps here.
-			abort = 0;	// ++++Experiment 7/26/00.
-			catch_ip = 0;
+		case 0x40:		// end conversation
+			found_answer = true;
 			break;
 		case 0x42:		// PUSHF.
 			offset = Read2(ip);
@@ -1861,9 +1868,11 @@ int Usecode_internal::run
 								sp - save_sp))
 				{	// Catch ABRT.
 				abort = 1;
+#if 0
 				if (catch_ip)
 					ip = catch_ip;
 				else	// No catch?  I think we should exit.
+#endif
 					{
 					sp = save_sp;
 					ip = endp;

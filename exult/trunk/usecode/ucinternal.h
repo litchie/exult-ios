@@ -98,6 +98,7 @@ class Usecode_internal : public Usecode_machine
 	Game_object *caller_item;	// Item this is being called on.
 	Game_object *last_created;	// Last item created with intrins. x24.
 	const char *user_choice;	// String user clicked on.
+	bool found_answer;          // Did we already handle the conversation option?
 	Tile_coord saved_pos;		// For a couple SI intrinsics.
 	char *String;			// The single string register.
 	void append_string(const char *txt);	// Append to string.
