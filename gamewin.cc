@@ -678,6 +678,7 @@ void Game_window::clear_world
 	bodies.resize(0);
 	moving_barge = 0;		// Get out of barge mode.
 	special_light = 0;		// Clear out light spells.
+	remove_all_effects(false);
 					// Clear 'read' flags.
 	// No casting _should_ be necessary at this point.
 	// Who needs this?
@@ -2751,6 +2752,7 @@ void Game_window::remove_effect
 
 void Game_window::remove_all_effects
 	(
+	 bool repaint
 	)
 	{
 	if (!effects)
@@ -2760,7 +2762,8 @@ void Game_window::remove_all_effects
 		tqueue->remove(effects);// Remove from time queue if there.
 		remove_effect(effects);
 		}
-	paint();			// Just paint whole screen.
+	if (repaint)
+		paint();			// Just paint whole screen.
 	}
 
 /*
