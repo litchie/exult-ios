@@ -1618,6 +1618,7 @@ void Game_window::start_actor
 	)
 	{
 	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
+	    main_actor->Actor::get_flag(Obj_flags::paralyzed) ||
 	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
 	if (main_actor_dont_move() || (gump_man->gump_mode() && !gump_man->gumps_dont_pause_game()))
@@ -1668,6 +1669,7 @@ void Game_window::start_actor_along_path
 	)
 	{
 	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
+	    main_actor->Actor::get_flag(Obj_flags::paralyzed) ||
 	    main_actor->get_schedule_type() == Schedule::sleep ||
 	    moving_barge)		// For now, don't do barges.
 		return;			// Zzzzz....
