@@ -122,6 +122,7 @@ private:
 	unsigned long special_light;	// Game minute when light spell ends.
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
+	long last_restore_hour;		// Hour in game of last restore.
 					// Dragging info:
 	Game_object *dragging;		// What's being dragged.
 	Gump_object *dragging_gump;
