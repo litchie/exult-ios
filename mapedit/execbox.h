@@ -90,13 +90,13 @@ class Exec_process
 class Exec_box
 	{
 	Exec_process *executor;		// Handles child process.
-	GtkText *box;			// Where we show responses.
+	GtkTextView *box;		// Where we show responses.
 	GtkStatusbar *status;		// For showing status.
 	guint status_ctx;		// Context for status.
 	Exec_done_fun done_fun;		// Called when child has exited.
 	gpointer user_data;		// Passed to done_fun.
 public:
-	Exec_box(GtkText *b, GtkStatusbar *s, Exec_done_fun dfun = 0,
+	Exec_box(GtkTextView *b, GtkStatusbar *s, Exec_done_fun dfun = 0,
 							gpointer udata = 0);
 	~Exec_box();
 	void show_status(const char *msg);	// Set status bar.

@@ -50,7 +50,7 @@ using EStudio::Alert;
 
 Shape_group::Shape_group
 	(
-	char *nm,			// Name.  Copied.
+	const char *nm,			// Name.  Copied.
 	Shape_group_file *f
 	) : name(nm), file(f)
 	{
@@ -363,13 +363,13 @@ void ExultStudio::add_group
 		return;
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
-	char *nm = get_text_entry("groups_new_name");
+	const char *nm = get_text_entry("groups_new_name");
 	Shape_group_file *groups = curfile->get_groups();
 					// Make sure name isn't already there.
 	if (nm && *nm && groups->find(nm) < 0)
 		{
 		groups->add(new Shape_group(nm, groups));
-		gtk_clist_append(clist, &nm);
+		gtk_clist_append(clist, (gchar **)&nm);
 		}
 	set_entry("groups_new_name", "");
 	}
@@ -511,7 +511,7 @@ void ExultStudio::open_group_window
 	int row = (int) list->data;
 	Shape_group_file *groups = curfile->get_groups();
 	Shape_group *grp = groups->get(row);
-	GladeXML *xml = glade_xml_new(glade_path, "group_window");
+	GladeXML *xml = glade_xml_new(glade_path, "group_window", NULL);
 	glade_xml_signal_autoconnect(xml);
 	GtkWidget *grpwin = glade_xml_get_widget(xml, "group_window");
 	Object_browser *chooser = curfile->create_browser(vgafile,palbuf, grp);

@@ -159,7 +159,7 @@ void File_selector_ok
 	{
 	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_widget_get_toplevel(
 					GTK_WIDGET(btn)));
-	char *fname = gtk_file_selection_get_filename(fsel);
+	const char *fname = gtk_file_selection_get_filename(fsel);
 	File_sel_okay_fun fun = (File_sel_okay_fun)
 				gtk_object_get_user_data(GTK_OBJECT(fsel));
 	if (fname && *fname && fun)
