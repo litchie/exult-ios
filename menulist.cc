@@ -18,6 +18,7 @@
 #include "gamewin.h"
 #include "menulist.h"
 #include "mouse.h"
+#include "rect.h"
 
 MenuEntry::MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos)
 {
@@ -31,10 +32,19 @@ MenuEntry::MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos)
 	x2 = x1+max_width;
 	y2 = y1+max_height;
 	selected = false;
+	dirty = true;
 }	
 
 void MenuEntry::paint(Game_window *gwin)
 {
+        if (!dirty) return;
+	dirty = false;
+
+	Rectangle d(x1,y1,x2-x1+1,y2-y1+1);
+	gwin->add_dirty(d);
+
+	//	cerr << "Dirty, repainting" << endl;
+
 	Shape_frame *shape;
 	if(selected)
 		shape = frame_on;
@@ -78,11 +88,18 @@ void MenuChoice::add_choice(char *s)
 
 void MenuChoice::paint(Game_window *gwin)
 {
+        if (!dirty) return;
+	dirty = false;
+
+	Rectangle d(x1,y1,x2-x1+1,y2-y1+1);
+	gwin->add_dirty(d);
+
 	Shape_frame *shape;
 	if(selected)
 		shape = frame_on;
 	else
 		shape = frame_off;
+
 	gwin->paint_shape(x-shape->get_width(), y, shape);
 	if(choice>=0) {
 		gwin->get_win()->fill8(0, x+32+max_choice_width, y+font->get_text_height(), x+32, y);
@@ -165,41 +182,44 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 {
 	int count = entries->size();
 	bool exit_loop = false;
-	bool redraw = true;
 	int scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 	SDL_Event event;
 	mouse->show();
+	gwin->show(1);
+	gwin->clear_dirty();
 	do {
-		if (redraw) {
 			mouse->hide();
 			for(int i=0; i<count; i++) {
 				MenuObject *entry = (*entries)[i];
 				entry->paint(gwin);
 			}
-			gwin->get_win()->show();
-			mouse->show();
-			mouse->blit_dirty();
-			redraw = false;
-		}
+			gwin->show_dirty();
+		        mouse->show();
+		        mouse->blit_dirty();
+			//			gwin->clear_dirty();
+
 		SDL_WaitEvent(&event);
 		if(event.type==SDL_MOUSEMOTION) {
 			mouse->hide();
 			mouse->move(event.motion.x >> scale, 
 					event.motion.y >> scale);
-			redraw = set_selected(event.motion.x >> scale, 
+			set_selected(event.motion.x >> scale, 
 					event.motion.y >> scale); 
 			mouse->show();
 			mouse->blit_dirty();
+//		} else if(event.type==SDL_MOUSEBUTTONDOWN) {
+//		        if (!mouse->is_onscreen()){
+//			        mouse->show();
+//				mouse->blit_dirty();
+//			}
 		} else if(event.type==SDL_MOUSEBUTTONUP) {
 		        MenuObject *entry = (*entries)[selected];
 			if (entry->is_mouse_over(
 					   event.button.x >> scale, 
 					   event.button.y >> scale)) {
 			        exit_loop = entry->handle_event(event);
-			        redraw = true;
 			}			
 		} else if(event.type==SDL_KEYDOWN) {
-		        redraw = true;
 		        mouse->hide();
 			switch(event.key.keysym.sym) {
 			case SDLK_x:
