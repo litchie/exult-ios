@@ -82,6 +82,7 @@ private:
 
 public:
 	static void		Init(void);
+	static void		Destroy(void);
 	static Audio*	get_ptr(void);
 
 	// Given BG sfx, get SI if playing SI.

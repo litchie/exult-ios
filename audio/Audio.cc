@@ -130,6 +130,11 @@ void Audio::Init(void)
 	}
 }
 
+void Audio::Destroy(void)
+{
+	delete self;
+	self = 0;
+}
 
 Audio	*Audio::get_ptr(void)
 {
