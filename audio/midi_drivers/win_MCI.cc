@@ -130,19 +130,19 @@ void Windows_MCI::callback(WPARAM wParam, HWND hWnd)
   cerr << "Entering MCI_callback: ";
   switch(wParam) {
   case MCI_NOTIFY_ABORTED:
-    cerr << "MCI_NOTIFY_ABORTED\n";
+    cerr << "MCI_NOTIFY_ABORTED" << endl;
     break;
   case MCI_NOTIFY_FAILURE:
-    cerr << "MCI_NOTIFY_FAILURE\n";
+    cerr << "MCI_NOTIFY_FAILURE" << endl;
     break;
   case MCI_NOTIFY_SUCCESSFUL:
-    cerr << "MCI_NOTIFY_SUCCESFUL\n";
+    cerr << "MCI_NOTIFY_SUCCESFUL" << endl;
     break;
   case MCI_NOTIFY_SUPERSEDED:
-    cerr << "MCI_NOTIFY_SUPERSEDED\n";
+    cerr << "MCI_NOTIFY_SUPERSEDED" << endl;
     break;
   default:
-    cerr << "Unknown flag!\n";
+    cerr << "Unknown flag!" << endl;
   }
 #endif
   
@@ -151,7 +151,7 @@ void Windows_MCI::callback(WPARAM wParam, HWND hWnd)
       //music stopped playing, so start over
 
 #if DEBUG
-      cerr << "Starting repeated MIDI playback\n";
+      cerr << "Starting repeated MIDI playback" << endl;
 #endif
       
       MCI_Command("seek u7midi to start", 0, 0, 0);  //rewind
