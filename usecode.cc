@@ -223,10 +223,22 @@ void Scheduled_usecode::handle_event
 		case 0x2d:		// Remove itemref.
 			usecode->remove_item(obj);
 			break;
-#if 0
 		case 0x39:		// Rise?  (For flying carpet.
+			{
+			Tile_coord t = obj->get_abs_tile_coord();
+			if (t.tz < 11)
+				t.tz++;
+			obj->move(t);
+			break;
+			}
 		case 0x38:		// Descend?
-#endif
+			{
+			Tile_coord t = obj->get_abs_tile_coord();
+			if (t.tz > 0)
+				t.tz--;
+			obj->move(t);
+			break;
+			}
 		case 0x46:
 			{		// Set frame.
 			Usecode_value& fval = arrval.get_elem(++i);
@@ -288,7 +300,7 @@ void Scheduled_usecode::handle_event
 				usecode->set_item_frame(objval, v);
 				}
 					// ++++Guessing:
-			else if (opcode >= 0x30 && opcode <= 0x38)
+			else if (opcode >= 0x30 && opcode < 0x38)
 				{	// Step in dir. opcode&7.????
 				static short offset[16] = {
 					-1,0, -1,1, 1,0, 1,-1, 0,-1,

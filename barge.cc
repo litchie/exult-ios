@@ -307,9 +307,10 @@ int Barge_object::step
 	)
 	{
 	Tile_coord cur = get_abs_tile_coord();
-					// Blocked? (Assume ht.=5, for now.)
-	if (Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
-								5, cur, t))
+					// Blocked? (Assume ht.=4, for now.)
+	if (cur.tz < 11 && 		// But don't check flying carpet.
+            Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
+								4, cur, t))
 		{
 		return (0);		// Done.
 		}
