@@ -43,7 +43,8 @@ public:
 	virtual	int	GetNextStep(Tile_coord& n);
 	// Set to retrieve in opposite order.
 	virtual int set_backwards();
-
+	virtual int following_smart_path()	// Astar?
+		{ return 1; }
 	virtual ~Astar();
 	};
 

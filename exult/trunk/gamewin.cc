@@ -1109,20 +1109,44 @@ void Game_window::read_map_data
 	}	
 
 /*
- *	Paint a rectangle in the window by pulling in vga chunks.
+ *	Paint just the map with given top-left-corner tile.
  */
 
-void Game_window::paint
+void Game_window::paint_map_at_tile
+	(
+	int toptx, int topty,
+	int skip_above			// Don't display above this lift.
+	)
+	{
+	int savescrolltx = scrolltx, savescrollty = scrollty;
+	int saveskip = skip_lift;
+	scrolltx = toptx;
+	scrollty = topty;
+	skip_lift = skip_above;
+	read_map_data();		// Gather in all objs., etc.
+	win->set_clip(0, 0, get_width(), get_height());
+	paint_map(0, 0, get_width(), get_height());
+	win->clear_clip();
+	scrolltx = savescrolltx;
+	scrollty = savescrollty;
+	skip_lift = saveskip;
+	}
+
+/*
+ *	Paint just the map and its objects (no gumps, effects).
+ *	(The caller should set/clear clip area.)
+ *
+ *	Output:	# light-sources found.
+ */
+
+int Game_window::paint_map
 	(
 	int x, int y, int w, int h	// Rectangle to cover.
 	)
 	{
-	if (!win->ready())
-		return;
+
 	render_seq++;			// Increment sequence #.
-	win->set_clip(x, y, w, h);	// Clip to this area.
 	int light_sources = 0;		// Count light sources found.
-	int scrolltx = get_scrolltx(), scrollty = get_scrollty();
 					// Get chunks to start with, starting
 					//   1 tile left/above.
 	int start_chunkx = (scrolltx + x/tilesize - 1)/tiles_per_chunk;
@@ -1141,7 +1165,6 @@ void Game_window::paint
 	if (stop_chunky > num_chunks)
 		stop_chunky = num_chunks;
 
-
 	int cx, cy;			// Chunk #'s.
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy < stop_chunky; cy++)
@@ -1157,7 +1180,23 @@ void Game_window::paint
 		for (int dx = cx, dy = stop_chunky - 1; 
 			dx < stop_chunkx && dy >= start_chunky; dx++, dy--)
 			light_sources += paint_chunk_objects(dx, dy);
+	painted = 1;
+	return light_sources;
+	}
 
+/*
+ *	Paint a rectangle in the window by pulling in vga chunks.
+ */
+
+void Game_window::paint
+	(
+	int x, int y, int w, int h	// Rectangle to cover.
+	)
+	{
+	if (!win->ready())
+		return;
+	win->set_clip(x, y, w, h);	// Clip to this area.
+	int light_sources = paint_map(x, y, w, h);
 					// Draw gumps.
 	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
 		gmp->paint(this);
@@ -1179,7 +1218,6 @@ void Game_window::paint
 			// Set palette for lights.
 		clock.set_light_source(carried_light + (light_sources > 0));
 		}
-	painted = 1;
 	}
 
 /*

@@ -55,6 +55,8 @@ public:
 	// Set to retrieve in opposite order.
 	virtual int set_backwards()
 		{ return 0; }		// Default: Can't do it.
+	virtual int following_smart_path()	// Astar?
+		{ return 0; }
 	virtual ~PathFinder();
 	};
 
