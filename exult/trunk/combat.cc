@@ -423,7 +423,7 @@ void Combat_schedule::im_dormant
 	)
 	{
 	if (npc->get_alignment() == Npc_actor::friendly && 
-			prev_schedule != combat && npc->is_monster())
+		prev_schedule != npc->get_schedule_type() && npc->is_monster())
 					// Friendly, so end combat.
 		npc->set_schedule_type(prev_schedule);
 	}
@@ -450,4 +450,74 @@ Game_object *Combat_schedule::get_opponent
 	)
 	{
 	return opponent;
+	}
+
+/*
+ *	Create duel schedule.
+ */
+
+Duel_schedule::Duel_schedule
+	(
+	Actor *n
+	) : Combat_schedule(n, duel), start(n->get_abs_tile_coord()),
+		attacks(0)
+	{
+	started_battle = 1;		// Avoid playing music.
+	}
+
+/*
+ *	Find dueling opponents.
+ */
+
+void Duel_schedule::find_opponents
+	(
+	)
+	{
+	opponents.clear();
+	Vector vec;			// Find all nearby NPC's.
+	int cnt = npc->find_nearby(vec, -359, 24, 0);
+	for (int i = 0; i < cnt; i++)
+		{
+		Actor *opp = (Actor *) vec.get(i);
+		Game_object *oppopp = opp->get_opponent();
+		if (opp != npc && opp->get_schedule_type() == duel &&
+		    (!oppopp || oppopp == npc))
+			if (rand()%2)
+				opponents.append(opp);
+			else
+				opponents.insert(opp);
+		}
+	}
+
+/*
+ *	Previous action is finished.
+ */
+
+void Duel_schedule::now_what
+	(
+	)
+	{
+	if (state == strike || state == fire)
+		attacks++;
+	else
+		{
+		Combat_schedule::now_what();
+		return;
+		}
+	if (attacks%8 == 0)		// Time to break off.
+		{
+		opponent = 0;
+		Tile_coord pos = start;
+		pos.tx += rand()%24 - 12;
+		pos.ty += rand()%24 - 12;
+		Tile_coord dest(-1, -1, -1);	// Find a free spot.
+		for (int i = 0; i < 4 && dest.tx == -1; i++)
+			dest = npc->find_unblocked_tile(pos, i, 4);
+		if (dest.tx == -1 || 
+			!npc->walk_path_to_tile(dest, 250, rand()%2000))
+					// Failed?  Try again a little later.
+			npc->start(250, rand()%3000);
+		}
+	else
+		Combat_schedule::now_what();
 	}

@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "items.h"
 #include "game.h"
+#include "paths.h"
 
 /*
  *	Set up an action to get an actor to a location (via pathfinding), and
@@ -345,6 +346,46 @@ void Loiter_schedule::now_what
 	}
 
 /*
+ *	Schedule change for kid games.
+ */
+
+void Kid_games_schedule::now_what
+	(
+	)
+	{
+	Tile_coord pos = npc->get_abs_tile_coord();
+	Actor *kid;			// Get a kid to chase.
+					// But don't run too far.
+	while ((kid = (Actor *) kids.remove_first()) != 0 &&
+						npc->distance(kid) >= 16)
+		;
+	if (kid)
+		{
+		Fast_pathfinder_client cost(1);
+		PathFinder *path = new Astar();
+		if (path->NewPath(pos, kid->get_abs_tile_coord(), &cost))
+			{
+			npc->set_action(new Path_walking_actor_action(
+								path, 0));
+			npc->start(100, 250);// Run.
+			return;
+			}
+		}
+	else				// No more kids?  Search.
+		{
+		Vector vec;
+		int cnt = npc->find_nearby(vec, -359, 16, 0);
+		for (int i = 0; i < cnt; i++)
+			{
+			Actor *act = (Actor *) vec.get(i);
+			if (act->get_schedule_type() == kid_games)
+				kids.append(act);
+			}
+		}
+	Loiter_schedule::now_what();	// Wander around the start.
+	}
+
+/*
  *	Schedule change for 'dance':
  */
 
@@ -390,7 +431,7 @@ void Tool_schedule::now_what
 		if (!npc->add_readied(tool, Actor::lrhand))
 			npc->add_readied(tool, Actor::lhand);
 		}
-	if (rand()%2)			// 1/2 time, walk somewhere.
+	if (rand()%4 == 0)		// 1/4 time, walk somewhere.
 		{
 		Loiter_schedule::now_what();
 		return;
@@ -410,7 +451,8 @@ void Tool_schedule::ending
 	int
 	)
 	{
-	tool->remove_this();		// Should safely remove from NPC.
+	if (tool)
+		tool->remove_this();	// Should safely remove from NPC.
 	}
 
 /*
@@ -438,7 +480,7 @@ void Wander_schedule::now_what
 	Tile_coord dest(-1, -1, -1);	// Find a free spot.
 	for (int i = 0; i < 4 && dest.tx == -1; i++)
 		dest = npc->find_unblocked_tile(pos, i, 4);
-	if (dest.tx != -1 || !npc->walk_path_to_tile(dest, 250, rand()%2000))
+	if (dest.tx == -1 || !npc->walk_path_to_tile(dest, 250, rand()%2000))
 					// Failed?  Try again a little later.
 		npc->start(250, rand()%3000);
 	}
