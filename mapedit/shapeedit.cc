@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapeinf.h"
 #include "monstinf.h"
 #include "u7drag.h"
+#include "shapefile.h"
 
 using	std::cout;
 using	std::endl;
@@ -346,7 +347,8 @@ void ExultStudio::open_equip_window
 		equipwin = glade_xml_get_widget( app_xml, "equip_window" );
 		GtkWidget *table = glade_xml_get_widget(app_xml,
 								"equip_table");
-		Setup_equip(GTK_TABLE(table), vgafile, palbuf, equip_rows);
+		Setup_equip(GTK_TABLE(table), vgafile->get_ifile(), 
+							palbuf, equip_rows);
 		}
 					// This will cause the data to be set:
 	set_spin("equip_recnum", recnum, 1, ecnt);

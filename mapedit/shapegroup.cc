@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "exceptions.h"
 #include "studio.h"
-
+#include "shapefile.h"
 
 using std::vector;
 using std::ios;
@@ -258,11 +258,9 @@ void ExultStudio::setup_groups
 	{
 	string name(fname);		// Start with shapes filename.
 	name += ".grp";
-	delete groups;			// Delete old & create new.
-	groups = new Shape_group_file(name.c_str());
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
-
+	Shape_group_file *groups = curfile->get_groups();
 	gtk_clist_clear(clist);		// Clear out list.
 	gtk_clist_freeze(clist);
 	int cnt = groups->size();	// Add groups from file.
@@ -316,13 +314,14 @@ void ExultStudio::add_group
 	(
 	)
 	{
-	if (!groups)
+	if (!curfile)
 		return;
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
 	char *nm = get_text_entry("groups_new_name");
 	if (nm)
 		{
+		Shape_group_file *groups = curfile->get_groups();
 		groups->add(new Shape_group(nm, groups));
 		gtk_clist_append(clist, &nm);
 		}
@@ -348,11 +347,12 @@ void ExultStudio::move_group
 	int dest_row
 	)
 	{
-	if (!groups)
+	if (!curfile)
 		return;
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
 //	cout << "Row " << src_row << " moved to row " << dest_row << endl;
+	Shape_group_file *groups = curfile->get_groups();
 	Shape_group *grp = groups->get(src_row);
 	groups->remove(src_row, false);	// Remove from old pos.
 	groups->insert(grp, dest_row);	// Put into new spot.
