@@ -1505,7 +1505,7 @@ int Map_chunk::get_obj_actors(Game_object_vector &removes, Actor_vector &actors)
 		Actor *actor = each->as_actor();
 
 		// Normal objects and monsters
-		if (actor == 0 || each->is_monster()) {
+		if (actor == 0 || (each->is_monster() && each->get_flag(Obj_flags::is_temporary))) {
 			removes.push_back(each);
 			int ireg_size = each->get_ireg_size();
 
