@@ -493,7 +493,7 @@ Map_chunk::Map_chunk
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
 	) : objects(0), terrain(0), first_nonflat(0), ice_dungeon(0x00),
-	    dungeon_levels(0), npcs(0), cache(0), roof(0), light_sources(0),
+	    dungeon_levels(0), cache(0), roof(0), light_sources(0),
 	    cx(chunkx), cy(chunky), from_below(0), from_right(0),
 	    from_below_right(0)
 	{

@@ -3599,7 +3599,7 @@ Npc_actor::Npc_actor
 	int shapenum, 
 	int num, 
 	int uc
-	) : Actor(nm, shapenum, num, uc), next(0), nearby(false),
+	) : Actor(nm, shapenum, num, uc), nearby(false),
 		num_schedules(0),
 		schedules(0)
 	{
@@ -4006,32 +4006,7 @@ void Npc_actor::switched_chunks
 	Map_chunk *nlist	// New chunk, or null.
 	)
 	{
-	if (olist && olist->npcs)	// Remove from old list.
-		{
-		if (this == olist->npcs)
-			olist->npcs = next;
-		else
-			{
-			Npc_actor *each, *prev = olist->npcs;
-			while ((each = prev->next) != 0)
-				if (each == this)
-					{
-					prev->next = next;
-					assert(prev->next != prev);
-					break;
-					}
-				else
-					prev = each;
-			}
-		}
-	if (nlist)			// Add to new list.
-		{
-		next = nlist->npcs;
-		assert(next != this);
-		nlist->npcs = this;
-		}
-	else
-		next = 0;
+	//++++++++++No longer needed.  Maybe it should go away.
 	}
 
 /*
