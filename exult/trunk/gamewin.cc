@@ -1106,6 +1106,51 @@ void Game_window::paint_object
 	}
 
 /*
+ *	Fade the current palette in or out.
+ *	Note:  If pal_num != -1, the current palette is set to it.
+ */
+
+void Game_window::fade_palette
+	(
+	int cycles,			// Length of fade.
+	int inout,			// 1 to fade in, 0 to fade to black.
+	int pal_num			// 0-11, or -1 for current.
+	)
+	{
+	if (cycles < 1)
+		return;
+	if (pal_num != -1)
+		palette = pal_num;
+	ifstream pal;
+	u7open(pal, PALETTES_FLX);
+	pal.seekg(256 + 3*256*palette);	// Get to desired palette.
+	unsigned char colors[3*256];	// Read it in.	
+	pal.read(colors, sizeof(colors));
+	int dir, start, stop;
+	if (inout > 0)			// Fading in?
+		{
+		dir = 1;
+		start = 0;
+		stop = cycles + 1;
+		}
+	else
+		{
+		dir = -1;
+		start = cycles;
+		stop = -1;
+		}
+	unsigned char fade_pal[3*256];	// Animate.
+	for (int i = start; i != stop; i += dir)
+		{
+		for(int c=0; c < 3*256; c++)
+			fade_pal[c] = (colors[c]*i)/cycles;
+		win->set_palette(fade_pal, 63);
+		win->show();
+		SDL_Delay(20);
+		}
+	}
+
+/*
  *	Read in a palette.
  */
 
