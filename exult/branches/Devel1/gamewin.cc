@@ -360,6 +360,12 @@ void Game_window::get_chunk_objects
 			{
 			ShapeID id(data[0], data[1]);
 			Shape_frame *shape = get_shape(id);
+			if (!shape)
+				{
+				cout << "Chunk shape is null!\n";
+				data += 2;
+				continue;
+				}
 			if (shape->rle)
 				{
 				int shapenum = id.get_shapenum();
