@@ -5,6 +5,7 @@
 	* ??game.*, gamewin.*, intrinsics.*, Face_button.cc, Paperdoll_gump*.*:
 	exultbg_flx to gameflx. (exult_bg.flx for BG, exult_si.flx for SI)
 	* cheat.cc: use real maps for the teleport cheat
+	* intrinsics.cc, cheat.cc: tweaked map markers
 
 2001-06-15  Jeff Freedman  <jeff@amy.nerble.net>
 

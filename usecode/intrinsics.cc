@@ -1034,16 +1034,16 @@ USECODE_INTRINSIC(display_map)
 		int tx, ty, z, xx, yy;
 		gwin->get_main_actor()->get_abs_tile(tx, ty, z);
 
-		// these may need some tweaking for SI
-		int border = (Game::get_game_type()==SERPENT_ISLE ? 12 : 5);
-		const int worldsize = c_tiles_per_chunk * c_num_chunks;
-		int correction = (Game::get_game_type()==SERPENT_ISLE ? 0 : 1);
-		int correctx = (Game::get_game_type()==SERPENT_ISLE ? 9 : 0);
-		int correcty = (Game::get_game_type()==SERPENT_ISLE ? 0 : 0);
-		int correctscale = (Game::get_game_type()==SERPENT_ISLE ? 10 : 0);
-		
-		xx = ((tx * (map->get_width() - border*2 + correctscale)) / worldsize) + (border + x - map->get_xleft()) + correction + correctx;
-		yy = ((ty * (map->get_height() - border*2 + correctscale)) / worldsize) + (border + y - map->get_yabove()) + correction + correcty;
+		if (Game::get_game_type()==BLACK_GATE) {
+			xx = (int)(tx/16.05 + 5 + 0.5);
+			yy = (int)(ty/15.95 + 4 + 0.5);
+		} else if (Game::get_game_type()==SERPENT_ISLE) {
+			xx = (int)(tx/16.0 + 18 + 0.5);
+			yy = (int)(ty/16.0 + 9.4 + 0.5);
+		}
+
+		xx += x - map->get_xleft();
+		yy += y - map->get_yabove();
 
 		gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
 		gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
