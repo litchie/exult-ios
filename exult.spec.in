@@ -26,6 +26,14 @@ Docdir: %{prefix}/doc
 %description
 Exult: an implementation of the Ultima VII engine for modern Operating Systems.
 
+%package tools
+Summary: Tools and utilities for playing with Exult/Ultima VII data files
+Group: Amusements/Games
+
+%description tools
+Exult Tools: a set of utilities for playing with Exult/Ultima VII data files.
+Included in the tools are: expack
+
 %changelog
 
 * Thu Nov 29 2001  Tristan Tarrant <nadir@users.sourceforge.net>
@@ -64,7 +72,7 @@ Exult: an implementation of the Ultima VII engine for modern Operating Systems.
 if [ ! -f configure ]; then
   ./autogen.sh
 fi
-CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --bindir=%bindir --datadir=%datadir --sysconfdir=$RPM_BUILD_ROOT/etc --disable-gimp-plugin --disable-exult-studio-support --disable-tools 
+CFLAGS="$RPM_OPT_FLAGS" CXXFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%prefix --bindir=%bindir --datadir=%datadir --sysconfdir=$RPM_BUILD_ROOT/etc --disable-gimp-plugin --disable-exult-studio-support --enable-tools
 
 if [ "$SMP" != "" ]; then
   (make "MAKE=make -k -j $SMP"; exit 0)
@@ -83,9 +91,13 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-, root, root)
 %doc AUTHORS COPYING ChangeLog NEWS README FAQ README.1ST
-%{bindir}/*
+%{bindir}/exult
 %{datadir}/exult/exult_bg.flx
 %{datadir}/exult/exult_si.flx
 %{datadir}/exult/midisfx.flx
 %{datadir}/exult/exult.flx
 
+%files tools
+%defattr(-, root, root)
+%doc tools/expack.txt
+%{bindir}/expack

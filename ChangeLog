@@ -1,3 +1,7 @@
+2001-11-30  Tristan Tarrant <nadir@users.sourceforge.net>
+	* exult.spec.in: added tools subpackage
+	* tools/Makefile.am: expack is an installable binary
+
 2001-11-29  Tristan Tarrant <nadir@users.sourceforge.net>
 	* exult.spec.in: allow setting of bindir and datadir, build exult 
 	only (will be fixed with the addition of subpackages), added README.1ST,
