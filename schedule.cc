@@ -2361,6 +2361,12 @@ void Bake_schedule::now_what()
 	}
 	case display_wares:
 	{
+		if (!dough_in_oven) {
+			// try again
+			delay = 2500;
+			state = to_flour;
+			break;
+		}
 		displaytable = npc->find_closest(633);
 		if (!displaytable) {
 			// uh-oh...
@@ -2495,7 +2501,16 @@ void Bake_schedule::ending(int new_type)
 	}
 }
 
-
+/*
+ *	Notify that an object is no longer present.
+ */
+void Bake_schedule::notify_object_gone(Game_object *obj)
+{
+	if (obj == dough)		// Someone stole the dough!
+		dough = 0;
+	if (obj == dough_in_oven)
+		dough_in_oven = 0;
+}
 
 
 /*
