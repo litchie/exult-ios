@@ -333,10 +333,15 @@ std::FILE* U7open
 	const char *mode			// File access mode.
 	);
 #endif
+void U7remove(
+	const char *fname
+	);
 
 int Log2
 	(
 	unsigned int n
 	);
+
+void add_system_path(const char *key, const char *value);
 
 #endif

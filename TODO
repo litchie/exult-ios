@@ -1,0 +1,28 @@
+Improve startup procedure
+-------------------------
+The problem at the moment (4th September 2000) is that Game_window is the main
+class which takes care of most initialization. Unfortunately it tries to load
+files from the "static" directory at construction, which is not good if we
+want to use it for an "Exult menu".
+This is how initialization of Exult should go:
+
+	- Parse command line parameters
+	- Read in configuration file
+	- Init audio
+	- Create Image_window()
+	- Show Exult banner
+	- Show Exult menu
+		PLAY "ULTIMA VII - THE BLACK GATE" (only if setup)
+		PLAY "ULTIMA VII PART 2 - SERPENT ISLE" (only if setup)
+		SETUP EXULT -> PATHS, RES, AUDIO, etc.
+		EXULT CREDITS
+		EXULT QUOTES
+		EXIT
+	- Create game-dependent Game()
+	- Create Game_window() applied on above Image_window
+	- Go on as usual
+
+Change font handling
+--------------------
+Font handling should be moved in a separate Font class
+

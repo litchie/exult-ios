@@ -4357,7 +4357,7 @@ int Usecode_machine::read
 	ifstream in;
 	if (!U7open(in, FLAGINIT))	// Read global flags.
 					// +++++Eventually, remove this:
-		if (!U7open(in, "static/flaginit.dat"))
+		if (!U7open(in, "<STATIC>/flaginit.dat"))
 			return (0);
 	in.read((char*)gflags, sizeof(gflags));
 	in.close();
