@@ -480,22 +480,22 @@ void Usecode_machine::set_item_frame
 	//				<< ", " << frame << endl;
 					// (Don't mess up rotated frames.)
 	if ((frame&0xf) < gwin->get_shape_num_frames(item->get_shapenum()))
-		item->set_frame(frame);
-	if (item->get_owner())		// Inside a container?
 		{
-		Gump *gump = gwin->find_gump(item);
-		if (gump)
+		if (item->get_owner())	// Inside a container?
 			{
 			item->set_frame(frame);
-			gump->paint(gwin);
+			Gump *gump = gwin->find_gump(item);
+			if (gump)
+				gwin->set_all_dirty();
+			}
+		else
+			{		// Figure area to repaint.
+			gwin->add_dirty(item);
+			item->set_frame(frame);
+			gwin->add_dirty(item);
 			}
 		}
-	else
-		{			// Figure area to repaint.
-		gwin->add_dirty(item);
-		item->set_frame(frame);
-		gwin->add_dirty(item);
-		}
+	gwin->set_painted();		// Make sure paint gets done.
 //	gwin->show();
 	}
 
