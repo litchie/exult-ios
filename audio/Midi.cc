@@ -101,13 +101,17 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 			{
 				//Convert credit/quote tracks
 				if(num == 30)
-					s = get_system_path("<DATA>/music/") + "endcr01.ogg";
+					s = "endcr01.ogg";
 				else
-					s = get_system_path("<DATA>/music/") + "endcr02.ogg";
+					s = "endcr02.ogg";
 			}
 			else
-				s = get_system_path("<DATA>/music/") + bgconvmusic[num] + ".ogg";
+			{
+				s = bgconvmusic[num];
+				s = s + ".ogg";
+			}
 
+			s = get_system_path("<DATA>/music/" + s);
 			strcpy(filename, s.c_str());
 		}
 		else
@@ -120,20 +124,21 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 			{
 				//Convert credit/quotes tracks
 				if(num == 4)
-					s = get_system_path("<DATA>/music/") + "endcr01.ogg";
+					s = "endcr01.ogg";
 				else
-					s = get_system_path("<DATA>/music/") + "endcr02.ogg";
+					s = "endcr02.ogg";
 			}
 			else
-				s = get_system_path("<DATA>/music/%02dbg.ogg");
+				s = "%02dbg.ogg";
 
+			s = get_system_path("<DATA>/music/" + s);
 			strcpy(outputstr, s.c_str());
 			sprintf(filename, outputstr, num);
 		}
 
 		if(num == 99)		//Play the Exult theme tune
 		{
-			s = get_system_path("<DATA>/music/") + "exult.ogg";
+			s = get_system_path("<DATA>/music/exult.ogg");
 			strcpy(filename, s.c_str());
 		}
 
@@ -230,8 +235,8 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 		s2 = get_system_path("<DATA>/music/" + s2);
 		strcpy(filename, s2.c_str());
 
-	    oggmusic = Mix_LoadMUS(filename);
-	    Mix_PlayMusic(oggmusic, repeat);
+	    	oggmusic = Mix_LoadMUS(filename);
+	    	Mix_PlayMusic(oggmusic, repeat);
 		Mix_VolumeMusic(MIX_MAX_VOLUME);
 
 		return;		//We don't want to continue with Midi conversions!!
@@ -319,7 +324,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
   #include "midi_drivers/forked_player.h"
 #endif
 #ifdef WIN32
-  #include "midi_drivers/mixer_midiout.h"
+  #include "midi_drivers/win_midiout.h"
 #endif
 #ifdef BEOS
   #include "midi_drivers/be_midi.h"
@@ -469,7 +474,7 @@ bool MyMidiPlayer::init_device(void)
 	else
 	{
 #ifdef WIN32
-	TRY_MIDI_DRIVER(Mixer_MidiOut)
+	TRY_MIDI_DRIVER(Windows_MidiOut)
 #endif
 #ifdef BEOS
 	TRY_MIDI_DRIVER(Be_midi)

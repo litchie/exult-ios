@@ -63,7 +63,7 @@ PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o
 # unused: xmain.o
 
-MIDI_DRV_OBJS=mixer_midiout.o
+MIDI_DRV_OBJS=win_midiout.o
 # unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o 
 
 AUDIO_OBJS=Audio.o conv.o Midi.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
