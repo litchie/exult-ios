@@ -26,10 +26,6 @@ Requires: SDL >= 1.1.7
 Exult: an implementation of the Ultima VII engine for modern Operating Systems.
 
 %changelog
-* Fri Feb 9 2000  Tristan Tarrant <nadir@users.sourceforge.net>
-
-- Disable GIMP plugin by default.
-- Include FAQ
 
 * Tue Nov 7 2000  Tristan Tarrant <nadir@users.sourceforge.net>
 
@@ -43,6 +39,10 @@ Exult: an implementation of the Ultima VII engine for modern Operating Systems.
 
 - Created the .spec file
 
+* Fri Feb 9 2000  Tristan Tarrant <nadir@users.sourceforge.net>
+
+- Disable GIMP plugin by default.
+- Include FAQ
 %prep
 %setup
 
