@@ -130,7 +130,7 @@ void InitGL
 	glEnable(GL_DEPTH_TEST);	// Enable depth-testing.
 	glDepthFunc(GL_LEQUAL);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	// ??
-#if 1
+#if 0
 					// Ambient light.
 	static GLfloat ambient[] = {.5, .5, .5, 1.0};
 	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
@@ -142,6 +142,8 @@ void InitGL
 	glEnable(GL_LIGHT1);
 	glEnable(GL_LIGHTING);		// Enable lighting.
 #endif
+	glEnable(GL_BLEND);		// !These two calls do the trick.
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 /*
@@ -156,18 +158,16 @@ void Draw_sprite
 	{
 	glPushMatrix();
 	glTranslatef(x, y, z);
-	glEnable(GL_BLEND);		// !These two calls do the trick.
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	glEnable(GL_TEXTURE_2D);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 					// Choose texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBegin(GL_QUADS);
 		{
+//		glColor4f(1, 1, 0, 1);
 		glTexCoord2f(0, 0);		glVertex3f(0, 0, 0);
-		glTexCoord2f(0, 1);		glVertex3f(0, 0, h);
-		glTexCoord2f(1, 1);		glVertex3f(w, 0, h);
+		glTexCoord2f(0, 1);		glVertex3f(0, h, 0);
+		glTexCoord2f(1, 1);		glVertex3f(w, h, 0);
 		glTexCoord2f(1, 0);		glVertex3f(w, 0, 0);
 		}
 	glEnd();
@@ -188,17 +188,17 @@ void Draw_block
 	{
 	glPushMatrix();
 	glTranslatef(x, y, z);
-	glDisable(GL_BLEND);
+//	glDisable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);	// Enable texture-mapping.
-	glEnable(GL_LIGHTING);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+//	glEnable(GL_LIGHTING);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 					// Choose texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
 					// Texture dims.:
 	float texx = 1, texy = 1, texz = 1;
 	glBegin(GL_QUADS);
 		{
-					// TOP:
+		glColor3f(0, 1, 0);	// TOP:  Green.
 		glTexCoord2f(texx, texy); 	glVertex3f(width, depth, ht);
 		glTexCoord2f(0, texy);		glVertex3f(0, depth, ht);
 		glTexCoord2f(0, 0);		glVertex3f(0, 0, ht);
@@ -208,7 +208,7 @@ void Draw_block
 		glVertex3f(0, depth, 0);
 		glVertex3f(0, 0, 0);
 		glVertex3f(width, 0, 0);
-					// FRONT: 
+		glColor3f(1, 0, 0);	// FRONT:  Red.
 		glTexCoord2f(0, 0);		glVertex3f(0, 0, 0);
 		glTexCoord2f(0, texz);		glVertex3f(0, 0, ht);
 		glTexCoord2f(texx, texz);	glVertex3f(width, 0, ht);
@@ -223,7 +223,7 @@ void Draw_block
 		glVertex3f(0, depth, ht);
 		glVertex3f(0, depth, 0);
 		glVertex3f(0, 0, 0);
-					// RIGHT:
+		glColor3f(1, 0, 1);	// RIGHT: Violet.
 		glTexCoord2f(0, texz);		glVertex3f(width, 0, ht);
 		glTexCoord2f(texy, texz);	glVertex3f(width, depth, ht);
 		glTexCoord2f(texy, 0);		glVertex3f(width, depth, 0);
@@ -276,8 +276,9 @@ void Render
 	Draw_block(0, 1, 0, 1, 4, 5, texture);	// Verticals.
 	Draw_block(7, 1, 0, 1, 4, 5, texture);
 #endif
-	Draw_sprite(-6, 0, 0, 4, 4, texture);	// A 'sprite'.
-	Draw_sprite(-5, 0, 0, 4, 4, texture);	// A 'sprite'.
+	glLoadIdentity();
+	Draw_sprite(-8, 0, 0, 4, 4, texture);	// A 'sprite'.
+	Draw_sprite(-10, 0, 0, 4, 4, texture);	// A 'sprite'.
 	SDL_GL_SwapBuffers();		// Blit.
 	}
 

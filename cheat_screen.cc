@@ -1690,10 +1690,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 		
 		case 'z':	// Zombie
-		if (actor->get_siflag(Actor::zombie))
-			actor->clear_siflag(Actor::zombie);
+		if (actor->get_flag(Obj_flags::si_zombie))
+			actor->clear_flag(Obj_flags::si_zombie);
 		else
-			actor->set_siflag(Actor::zombie);
+			actor->set_flag(Obj_flags::si_zombie);
 		break;
 
 		case 'w':	// Freeze
