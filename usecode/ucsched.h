@@ -47,6 +47,8 @@ public:
 	Usecode_script(Game_object *o, Usecode_value *cd = 0);
 	~Usecode_script();
 	void start(long delay = 1);	// Start after 'delay' msecs.
+	long get_delay() const
+		{ return delay; }
 	void halt()			// Stop executing.
 		{
 		if (!no_halt)
@@ -66,7 +68,8 @@ public:
 	static int get_count()
 		{ return count; }
 					// Find for given item.
-	static Usecode_script *find(Game_object *srch);
+	static Usecode_script *find(Game_object *srch, 
+					Usecode_script *last_found = 0);
 	static void clear();		// Delete all.
 #if 0
 					// Activate itemref eggs.
@@ -79,6 +82,7 @@ public:
 	int save(unsigned char *buf, int buflen);
 	static Usecode_script *restore(Game_object *item,
 					unsigned char *buf, int buflen);
+	void print(ostream& out);	// Print values.
 	};
 
 

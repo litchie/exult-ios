@@ -834,6 +834,8 @@ void Egg_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;
 	Write2(ptr, data2);
 	out.write((char*)buf, sizeof(buf));
+					// Write scheduled usecode.
+	Game_window::write_scheduled(out, this);	
 	}
 
 /*

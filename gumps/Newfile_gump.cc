@@ -194,7 +194,7 @@ Newfile_gump::Newfile_gump
 	newname[0] = 0;
 
 	Game_window *gwin = Game_window::get_game_window();
-
+	gwin->get_tqueue()->pause(SDL_GetTicks());
 	back = gwin->get_win()->create_buffer(gwin->get_width(), gwin->get_height());
 	gwin->get_win()->get(back, 0, 0);
 
@@ -221,6 +221,8 @@ Newfile_gump::~Newfile_gump
 	(
 	)
 {
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->get_tqueue()->resume(SDL_GetTicks());
 	size_t i;
 	for (i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		delete buttons[i];

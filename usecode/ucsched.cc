@@ -125,11 +125,11 @@ Usecode_script::~Usecode_script()
 
 void Usecode_script::start
 	(
-	long delay			// Start after this many msecs.
+	long d			// Start after this many msecs.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->get_tqueue()->add(delay + Game::get_ticks(), this,
+	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
 					(long) gwin->get_usecode());
 	}
 
@@ -171,10 +171,12 @@ void Usecode_script::add(int *vals, int c)
 
 Usecode_script *Usecode_script::find
 	(
-	Game_object *srch
+	Game_object *srch,
+	Usecode_script *last_found	// Find next after this.
 	)
 	{
-	for (Usecode_script *each = first; each; each = each->next)
+	Usecode_script *start = last_found ? last_found->next : first;
+	for (Usecode_script *each = start; each; each = each->next)
 		if (each->obj == srch)
 			return each;	// Found it.
 	return (0);
@@ -539,10 +541,15 @@ int Usecode_script::save
 	int buflen
 	)
 	{
+					// Get delay to when due.
+	long when = Game_window::get_game_window()->get_tqueue()->find_delay(
+							this, SDL_GetTicks());
+	if (when < 0)
+		return -1;
 	uint8 *ptr = buf;
-	int remaining = cnt - i;
-	Write2(ptr, remaining);		// # of values we'll store.
-	for (int j = i; j < cnt; j++)
+	Write2(ptr, cnt);		// # of values we'll store.
+	Write2(ptr, i);			// Current spot.
+	for (int j = 0; j < cnt; j++)
 		{
 		Usecode_value& val = code->get_elem(j);
 		int len = val.save(ptr, buflen - (ptr - buf));
@@ -550,11 +557,11 @@ int Usecode_script::save
 			return -1;
 		ptr += len;
 		}
-	if (ptr - buf < 8)		// Enough room left?
+	if (buflen - (ptr - buf) < 8)	// Enough room left?
 		return -1;
 	Write2(ptr, frame_index);
 	Write2(ptr, no_halt);
-	Write4(ptr, delay);
+	Write4(ptr, when);
 	return (ptr - buf);
 	}
 
@@ -574,6 +581,7 @@ Usecode_script *Usecode_script::restore
 	{
 	uint8 *ptr = buf;
 	int cnt = Read2(ptr);		// Get # instructions.
+	int curindex = Read2(ptr);	// Where it is.
 					// Create empty array.
 	Usecode_value *code = new Usecode_value(cnt, 0);
 	for (int i = 0; i < cnt; i++)
@@ -585,7 +593,7 @@ Usecode_script *Usecode_script::restore
 			return 0;
 			}
 		}
-	if (ptr - buf < 8)		// Enough room left?
+	if (buflen - (ptr - buf) < 8)	// Enough room left?
 		{
 		delete code;
 		return 0;
@@ -593,6 +601,29 @@ Usecode_script *Usecode_script::restore
 	int frame_index = Read2(ptr);
 	int no_halt = Read2(ptr);
 	int delay = Read4(ptr);
-	return new Usecode_script(item, code, frame_index, no_halt, delay);
+	Usecode_script *scr =
+		new Usecode_script(item, code, frame_index, no_halt, delay);
+	scr->i = curindex;		// Set index.
+	return scr;
 	}
 
+/*
+ *	Print for debugging.
+ */
+
+void Usecode_script::print
+	(
+	ostream& out
+	)
+	{
+	out << hex << "Obj = 0x" << setfill((char)0x30) << setw(2)
+		<< (void *) obj << ": " "(";
+	for (int i = 0; i < cnt; i++)
+		{
+		if (i > 0)
+			out << ", ";
+		code->get_elem(i).print(out);
+		}
+	out <<") = ";
+	out << dec;
+	}

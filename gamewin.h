@@ -480,10 +480,15 @@ public:
 					// Get "ifix" objs. for given chunk.
 	void get_ifix_chunk_objects(std::ifstream& ifix, long filepos, int cnt,
 							int cx, int cy);
+					// Write scheduled script for obj.
+	static void write_scheduled(std::ostream& ireg, Game_object *obj,
+						bool write_mark = false);
 					// Write moveable objects to file.
 	void write_ireg_objects(int schunk);
 					// Get moveable objects.
 	void get_ireg_objects(int schunk);
+					// Read scheduled script(s) for obj.
+	void read_special_ireg(std::istream& ireg, Game_object *obj);
 	void read_ireg_objects(std::istream& ireg, int scx, int scy,
 					Game_object *container = 0,
 //			unsigned long flags = (1<<11));

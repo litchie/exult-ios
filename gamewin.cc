@@ -650,8 +650,7 @@ void Game_window::clear_world
 	tqueue->clear();		// Remove all entries.
 	clear_dirty();
 	removed->flush();		// Delete.
-//+++++Enable this when saving/restoring of sched. usecode is written:
-//	Schedule_usecode::clear();	// Clear out all scheduled usecode.
+	Usecode_script::clear();	// Clear out all scheduled usecode.
 					// Delete all chunks (& their objs).
 	for (int y = 0; y < c_num_chunks; y++)
 		for (int x = 0; x < c_num_chunks; x++)
@@ -1065,6 +1064,46 @@ void Game_window::get_ifix_chunk_objects
 	}
 
 /*
+ *	Constants for IREG files:
+ */
+#define IREG_SPECIAL	255		// Precedes special entries.
+#define IREG_UCSCRIPT	1		// Saved Usecode_script for object.
+#define IREG_ENDMARK	2		// Just an 'end' mark.
+
+/*
+ *	Write out scheduled usecode for an object.
+ */
+
+void Game_window::write_scheduled
+	(
+	ostream& ireg,
+	Game_object *obj,
+	bool write_mark			// Write an IREG_ENDMARK if true.
+	)
+	{
+	for (Usecode_script *scr = Usecode_script::find(obj); scr;
+					scr = Usecode_script::find(obj, scr))
+		{
+		unsigned char buf[256];
+		int len = scr->save(buf, sizeof(buf));
+		if (len < 0)
+			cerr << "Error saving Usecode script" << endl;
+		else if (len > 0)
+			{
+			ireg.put(IREG_SPECIAL);
+			ireg.put(IREG_UCSCRIPT);
+			Write2(ireg, len);	// Store length.
+			ireg.write(buf, len);
+			}
+		}
+	if (write_mark)
+		{
+		ireg.put(IREG_SPECIAL);
+		ireg.put(IREG_ENDMARK);
+		}
+	}
+
+/*
  *	Write out one of the "u7ireg" files.
  *
  *	Output:	0 if error, which is reported.
@@ -1133,6 +1172,63 @@ void Game_window::get_ireg_objects
 	}
 
 /*
+ *	Read in a 'special' IREG entry (one starting with 255).
+ */
+
+void Read_special_ireg
+	(
+	istream& ireg,
+	Game_object *obj		// Last object read.
+	)
+	{
+	int type = Read1(ireg);		// Get type.
+	int len = Read2(ireg);		// Length of rest.
+	unsigned char *buf = new unsigned char[len];
+	ireg.read(buf, len);
+	if (type == IREG_UCSCRIPT)	// Usecode script?
+		{
+		Usecode_script *scr = Usecode_script::restore(obj, buf, len);
+		if (scr)
+			{
+			scr->start(scr->get_delay());
+			COUT("Restored script for '" << 
+				item_names[obj->get_shapenum()]
+							<< "'" << endl);
+#if DEBUG
+			scr->print(cout); cout << endl;
+#endif
+			}
+		}
+	else
+		cerr << "Unknown special IREG entry: " << type << endl;
+	delete [] buf;
+	}
+
+/*
+ *	Read in a 'special' IREG entry (one starting with 255).
+ */
+
+void Game_window::read_special_ireg
+	(
+	istream& ireg,
+	Game_object *obj		// Last object read.
+	)
+	{
+	unsigned char entlen;
+	while ((entlen = ireg.peek()) == IREG_SPECIAL && !ireg.eof())
+		{
+		Read1(ireg);		// Eat the IREG_SPECIAL.
+		unsigned char type = ireg.peek();
+		if (type == IREG_ENDMARK)
+			{		// End of list.
+			Read1(ireg);
+			return;
+			}
+		Read_special_ireg(ireg, obj);
+		}
+	}
+
+/*
  *	Read a list of ireg objects.  They are either placed in the desired
  *	game chunk, or added to their container.
  */
@@ -1147,6 +1243,7 @@ void Game_window::read_ireg_objects
 	{
 	int entlen;			// Gets entry length.
 	sint8 index_id = -1;
+	Game_object *last_obj = 0;	// Last one read in this call.
 					// Go through entries.
 	while (((entlen = Read1(ireg), ireg.good())))
 		{
@@ -1166,10 +1263,15 @@ void Game_window::read_ireg_objects
 			index_id = (sint8) Read2 (ireg);
 			continue;
 		}
-
+		else if (entlen == IREG_SPECIAL)
+			{
+			Read_special_ireg(ireg, last_obj);
+			continue;
+			}
 					// Get copy of flags.
 		unsigned long oflags = flags & ~(1<<Obj_flags::is_temporary);
-		if (entlen != 6 && entlen != 10 && entlen != 12 && entlen != 18)
+		if (entlen != 6 && entlen != 10 && entlen != 12 && 
+								entlen != 18)
 			{
 			long pos = ireg.tellg();
 			cout << "Unknown entlen " << entlen << " at pos. " <<
@@ -1209,6 +1311,7 @@ void Game_window::read_ireg_objects
 						shnum == 305);
 			Egg_object *egg = create_egg(entry, anim);
 			get_chunk(scx + cx, scy + cy)->add_egg(egg);
+			last_obj = egg;
 			continue;
 			}
 		else if (entlen == 6 || entlen == 10)	// Simple entry?
@@ -1265,23 +1368,22 @@ void Game_window::read_ireg_objects
 					tilex, tiley, lift, entry[10]);
 				}
 			else if (Game::get_game_type() == SERPENT_ISLE && 
-					 shnum == 400 && frnum == 8 && quality == 1)
+				 shnum == 400 && frnum == 8 && quality == 1)
 				// Gwenno. Ugly hack to fix bug without having to start
 				// a new game. Remove someday... (added 20010820)
 				{
-					obj = new Dead_body(400, 8, tilex, tiley, lift, 149);
-					if (bodies.size() <= 149) bodies.resize(150);
-					bodies[149] = obj;
+				obj = new Dead_body(400, 8, tilex, tiley, 
+								lift, 149);
+				set_body(149, obj);
 				}
 			else if (quality == 1 && 
 					 (entry[8] >= 0x80 || 
-					  Game::get_game_type() == SERPENT_ISLE)) 
+				  Game::get_game_type() == SERPENT_ISLE)) 
 				{		// NPC's body.
-					int npc_num = (entry[8] - 0x80) & 0xFF;
-					obj = new Dead_body(shnum, frnum, tilex, tiley, lift,
-										npc_num);
-					if (bodies.size() <= npc_num) bodies.resize(npc_num+1);
-					bodies[npc_num] = obj;
+				int npc_num = (entry[8] - 0x80) & 0xFF;
+				obj = new Dead_body(shnum, frnum, tilex, 
+						tiley, lift, npc_num);
+				set_body(npc_num, obj);
 				}
 			else if (Is_body(shnum)) {
 				obj = new Dead_body(
@@ -1314,18 +1416,17 @@ void Game_window::read_ireg_objects
 			}
 		obj->set_quality(quality);
 		obj->set_flags(oflags);
+		last_obj = obj;		// Save as last read.
 					// Add, but skip volume check.
-
 		if (container)
-		{
-			if (index_id != -1 && container->add_readied(obj, index_id, 1, 1))
+			{
+			if (index_id != -1 && 
+			    container->add_readied(obj, index_id, 1, 1))
 				continue;
 			else if (container->add(obj, 1))
 				continue;
-		}
-
-		Map_chunk *chunk = get_chunk(
-				scx + cx, scy + cy);
+			}
+		Map_chunk *chunk = get_chunk(scx + cx, scy + cy);
 		if (is_egg)
 			chunk->add_egg((Egg_object *) obj);
 		else
@@ -3026,6 +3127,8 @@ void Game_window::setup_game
 	(
 	)
 	{
+				// Init. current 'tick'.
+	Game::set_ticks(SDL_GetTicks());
 	init_actors();		// Set up actors if not already done.
 				// This also sets up initial 
 				// schedules and positions.

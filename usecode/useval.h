@@ -170,7 +170,7 @@ public:
 	void print(std::ostream& out);	// Print in ASCII.
 					// Save/restore.
 	int save(unsigned char *buf, int len);
-	bool restore(unsigned char *buf, int len);
+	bool restore(unsigned char *& ptr, int len);
 	};
 
 #endif

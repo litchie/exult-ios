@@ -575,6 +575,8 @@ void Container_game_object::write_ireg
 		 ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
 	out.write((char*)buf, sizeof(buf));
 	write_contents(out);		// Write what's contained within.
+					// Write scheduled usecode.
+	Game_window::write_scheduled(out, this);	
 	}
 
 /*
