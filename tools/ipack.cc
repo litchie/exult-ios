@@ -260,16 +260,46 @@ static void Write_frame
 	sprintf(fullname, "%s%02d.png", basename, frnum);
 	cout << "Writing " << fullname << endl;
 	int w = frame->get_width(), h = frame->get_height();
-	int xoff = frame->get_xleft(), yoff = frame->get_yabove();
 	Image_buffer8 img(w, h);	// Render into a buffer.
-	frame->paint(&img, xoff, yoff);
+	frame->paint(&img, frame->get_xleft(), frame->get_yabove());
+	int xoff = 0, yoff = 0;
+	if (frame->is_rle())
+		{
+		xoff = -frame->get_xright();
+		yoff = -frame->get_ybelow();
+		}
 					// Write out to the .png.
-//+++++++++
-//	xoff = yoff = 0;
 	if (!Export_png8(fullname, w, h, w, xoff, yoff, img.get_bits(),
 					palette, 256))
 		throw file_write_exception(fullname);
 	delete fullname;
+	}
+
+/*
+ *	Write out a palette.
+ */
+
+void Write_palette
+	(
+	char *palname, 
+	unsigned char *palette, 	// 3 bytes for each color.
+	int palsize			// # entries.
+	)
+	{
+	unsigned char palbuf[3*256];	// We always write 256 colors.
+	memset(&palbuf[0], 0, sizeof(palbuf));
+	if (palsize > 256)		// Shouldn't happen.
+		palsize = 256;
+					// Convert 0-255 to 0-63 for Exult.
+	for (int i = 0; i < 3*palsize; i++)
+		palbuf[i] = palette[i]/4;
+	ofstream out;
+	U7open(out, palname);		// May throw exception.
+	Flex_writer writer(out, "Exult palette by Ipack", 1);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+	if (!writer.close())
+		throw file_write_exception(palname);
 	}
 
 /*
@@ -281,7 +311,8 @@ static void Write_exult
 	ostream& out,			// What to write to.
 	char *basename,			// Base filename for files to read.
 	int nframes,			// # frames.
-	bool flat			// Store as 8x8 flats.
+	bool flat,			// Store as 8x8 flats.
+	char *palname			// Store palette with here if !0.
 	)
 	{
 	char *fullname = new char[strlen(basename) + 30];
@@ -316,8 +347,11 @@ static void Write_exult
 			}
 		else			// Encode.
 			{
+			int xright = -xoff, ybelow = -yoff;
+			int xleft = w - xright - 1,
+			    yabove = h - ybelow - 1;
 			unsigned char *rle = Shape_frame::encode_rle(pixels,
-						w, h, xoff, yoff, datalen);
+						w, h, xleft, yabove, datalen);
 			delete pixels;
 			pixels = rle;
 					// Get position of frame.
@@ -325,14 +359,16 @@ static void Write_exult
 			out.seekp(startpos + (frnum + 1)*4);
 			Write4(out, pos - startpos);	// Store pos.
 			out.seekp(pos);			// Get back.
-			Write2(out, w - xoff - 1);	// Xright.
-			Write2(out, xoff);		// Xleft.
-			Write2(out, yoff);		// Yabove.
-			Write2(out, h - yoff - 1);	// Ybelow.
+			Write2(out, xright);
+			Write2(out, xleft);
+			Write2(out, yabove);
+			Write2(out, ybelow);
 			}
 		out.write(pixels, datalen);	// The frame data.
 		delete pixels;
-		delete palette;		//+++++++Save this in palettes.flx???
+		if (palname)
+			Write_palette(palname, palette, palsize);
+		delete palette;
 		}
 	if (!flat)
 		{
@@ -351,10 +387,21 @@ static void Write_exult
 static void Create
 	(
 	char *imagename,		// Image archive name.
+	char *palname,			// Palettes file (palettes.flx).
 	Shape_specs& specs,		// List of things to extract.
 	const char *title		// For storing in Flex file.
 	)
 	{
+	if (U7exists(palname))		// Palette?
+		{
+		cout << "Palette file '" << palname << 
+			"' exists, so we won't overwrite it" << endl;
+		palname = 0;
+		}
+	else
+		cout << "Creating new palette file '" << palname <<
+			"' using first file's palette" << endl;
+
 	ofstream out;
 	U7open(out, imagename);		// May throw exception.
 	Flex_writer writer(out, title, specs.size());
@@ -363,8 +410,12 @@ static void Create
 		{
 		int shnum = it - specs.begin();
 		char *basename = (*it).filename;
-		if (basename)		// Empty?
-			Write_exult(out, basename, (*it).nframes, (*it).flat);
+		if (basename)		// Not empty?
+			{
+			Write_exult(out, basename, (*it).nframes, (*it).flat,
+								palname);
+			palname = 0;	// Only write 1st palette.
+			}
 		writer.mark_section_done();
 		}
 	if (!writer.close())
@@ -464,7 +515,7 @@ int main
 		{
 	case 'c':			// Create.
 		try {
-			Create(imagename, specs, "Exult image file");
+			Create(imagename, palname, specs, "Exult image file");
 		} catch (exult_exception& e){
 			cerr << e.what() << endl;
 			exit(1);
