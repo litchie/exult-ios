@@ -293,8 +293,10 @@ private:
 		{
 		SDL_mutexV(mutex);
 		}
-	bool	producing,consuming;
 public:
+	static	int	counter;
+	int	mycounter;
+	bool	producing,consuming;
 	Uint32	id;
 	void	produce(const void *p,size_t l)
 		{
@@ -328,14 +330,18 @@ public:
 		return l?l:(producing?0:-1);
 		}
 	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),producing(true),consuming(true),id(0),window(2048)
-		{  }
+		{
+		 mycounter=++counter;
+		cerr << "Created PCB " << mycounter <<endl;
+		 }
 	~ProducerConsumerBuf()
 		{
+		cerr << "::"<<mycounter<<" ProducerConsumerBuf going away" << endl;
 		SDL_DestroyMutex(mutex);
 		}
 	void	end_production(void)
 		{
-		cerr << " end_production" << endl;
+		cerr << "::" << mycounter << " end_production" << endl;
 		lock();
 		producing=false;
 		if(!consuming)
@@ -345,7 +351,7 @@ public:
 		}
 	void	end_consumption(void)
 		{
-		cerr << " end_consumption" << endl;
+		cerr << "::"<<mycounter<<" end_consumption" << endl;
 		lock();
 		consuming=false;
 		if(!producing)

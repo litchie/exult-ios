@@ -5,3 +5,4 @@
 
 
 // Stub
+int	ProducerConsumerBuf::counter=0;
