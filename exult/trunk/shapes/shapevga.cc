@@ -237,7 +237,7 @@ void Shapes_vga_file::read_info
 	ifstream(occ);			// Read flags from occlude.dat.
 	U7open(occ, OCCLUDE);
 	unsigned char occbits[128];	// 1024 bit flags.
-	occ.read(&occbits[0], sizeof(occbits));
+	occ.read((char *)occbits, sizeof(occbits));
 	for (i = 0; i < sizeof(occbits); i++)
 		{
 		unsigned char bits = occbits[i];

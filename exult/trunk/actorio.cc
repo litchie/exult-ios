@@ -60,6 +60,12 @@ Actor::Actor
 	    action(0), frame_time(0), next_path_time(0), timers(0),
 	    weapon_rect(0, 0, 0, 0)
 	{
+
+	// This is used to get around parts of the files that we don't know
+	// what the uses are. 'fix_first' is used fix issues in the originals
+	// files that cause problems for the extra info we save.
+	bool fix_first = Game::is_new_game();
+					
 	init();				// Clear rest of stuff.
 	unsigned locx = Read1(nfile);	// Get chunk/tile coords.
 	unsigned locy = Read1(nfile);
@@ -105,8 +111,8 @@ Actor::Actor
 		set_flag (Obj_flags::on_moving_barge);
 	alignment = (rflags >> 3)&3;
 
-	// Unknown, using for is_temporary
-	if ((rflags >> 0x6) & 1) set_flag (Obj_flags::is_temporary);
+	// Unknown, using for is_temporary (only when not fix_first)
+	if ((rflags >> 0x6) & 1 && !fix_first) set_flag (Obj_flags::is_temporary);
 
 	/*	Not used by exult
 	if ((rflags >> 0xF) & 1) set_flag (Obj_flags::dead);
@@ -224,8 +230,7 @@ Actor::Actor
 	int tflags = Read2 (nfile);
 
 	// First time round, all the flags are garbage
-	int first_time = Game::is_new_game();
-	if (first_time)
+	if (fix_first)
 		set_type_flags (1 << Actor::tf_walk);
 	else
 		set_type_flags (tflags);
@@ -251,11 +256,13 @@ Actor::Actor
 
 	// 16 Bit Shape Numbers, allows for shapes > 1023
 	shnum = Read2(nfile);
-	if (!first_time && shnum)
+	if (!fix_first && shnum)
 	{
 		set_shape(shnum);		// 16 Bit Shape Number
 		shnum = (sint16) Read2(nfile);	// 16 Bit Polymorph Shape Number
 		if (get_siflag (polymorph)) set_polymorph(shnum);
+
+
 	}
 	else
 	{
@@ -263,13 +270,34 @@ Actor::Actor
 		set_polymorph_default();
 	}
 
-	// Skip 25
-	nfile.seekg (25, ios::cur);
+	// More Exult stuff
+	if (!fix_first)
+	{
+		uint32	f;
+
+		// Flags low dword
+		f = Read4(nfile);
+		flags |= f;
+
+		// Flags high dword
+		f = Read4(nfile);
+		siflags |= f;
+	}
+	else
+	{
+		// Flags low dword
+		nfile.seekg (4, ios::cur);
+
+		// Flags high dword
+		nfile.seekg (4, ios::cur);
+	}
+
+	// Skip 17
+	nfile.seekg (17, ios::cur);
 
 					// Get (signed) food level.
 	int food_read = (int) (char) Read1(nfile);
-	if (first_time)
-		food_read = 18;
+	if (fix_first) food_read = 18;
 	set_property((int) Actor::food_level, food_read);
 
 	// Skip 7
@@ -504,8 +532,14 @@ void Actor::write
 		Write2 (nfile, 0);		// 16 Bit Polymorph Shape
 	}
 
-	// Skip 25
-	for (i = 0; i < 25; i++)
+	// Flags low dword
+	Write4(nfile, flags);
+
+	// Flags high dword
+	Write4(nfile, siflags);
+
+	// Skip 17
+	for (i = 0; i < 17; i++)
 		nfile.put(0);
 	
 	// Food
