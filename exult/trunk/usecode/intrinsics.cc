@@ -725,12 +725,12 @@ USECODE_INTRINSIC(npc_nearby)
 {
 	// NPC nearby? (item).
 	Game_object *npc = get_item(parms[0]);
-	int near = (npc != 0 && 
+	int is_near = (npc != 0 && 
 		npc->get_tile().distance(gwin->get_main_actor()->get_tile()) 
 								< 12 &&
 					// FALSE if asleep.
 		!npc->get_flag(Obj_flags::asleep));
-	Usecode_value u(near);
+	Usecode_value u(is_near);
 	return(u);
 }
 
