@@ -1,52 +1,38 @@
-??/??/??	v1.2???
+??/??/??	v1.1.x
 
 		Party Formation
-
-		Exult Studio ported to GTK+2
-
+		Improved combat system with pausing, hit display and targeting
+		Spellbook improvements
+		Exult Studio improvements and porting to GTK+2
 		Support for arrow/keypad walking and running
-
-		Can use OpenGL for scaling/rendering
-
-		New OGG Vorbis music system
-
-		New paperdoll art (SB-X, Oblivious)
-
+		Optional OpenGL scaling/rendering
+		OGG Vorbis music system
+		FM Synth emulator
+		Additional paperdoll art (SB-X, Oblivious)
+		Scale2X scaler (Andrea Mazzoleni)
+		Ported to the Zaurus (Artaxerxes)
 		Tons of bugfixes (see ChangeLog for details)
 
 06/05/02	v0.99 RC 2
 
 		Support for 32 bit usecode (for large usecode functions)
-
 		Many changes to Exult Studio (tiles, combos, freetype fonts, etc.)
-		
 		Improvements to UCC (conversations, etc.)
-	
 		SFX improvements (thanks to Simon Quinn)
-
 		Tons of bugfixes (see ChangeLog for details)
 
 03/12/02	v0.98 RC 1
 
 		UCC, Exult's Usecode compiler works again
-
 		UCXT, Exult's Usecode decompiler, is now included
-
 		Subpackages for Linux distributions can be built (RPM, Debian)
-		
 		Exult's data files have a CRC now, so it is easier to 
 		detect a mismatch between them and the main executable
-	
 		Gumps can be dragged even in target mode
-
 		SI's intro and ending are complete
-
 		Music looping is user-configurable
-
 		New scaler from Kreed: BilinearPlus
-
 		Configurable combat difficulty
-
 		Tons of bugfixes (see ChangeLog for details)
 		
 
