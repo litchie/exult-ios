@@ -229,6 +229,25 @@ void Shape_group_file::write
 	}
 
 /*
+ *	Get the tree row # (assuming just a simple list) for a given tree-
+ *	model position.
+ */
+
+static int Get_tree_row
+	(
+	GtkTreeModel *model,
+	GtkTreeIter *iter		// Position we want.
+	)
+	{
+	GtkTreePath *path = gtk_tree_model_get_path(model, iter);
+	gchar *str = gtk_tree_path_to_string(path);
+	int row = atoi(str);
+	g_free(str);
+	gtk_tree_path_free(path);
+	return row;
+	}
+
+/*
  *	Group buttons:
  */
 C_EXPORT void
@@ -266,28 +285,6 @@ on_group_list_cursor_changed		(GtkTreeView	*tview)
 {
 	ExultStudio::get_instance()->setup_group_controls();
 }
-
-#if 0
-C_EXPORT gboolean
-on_group_list_select_row		(GtkCList	*clist,
-					 gint		row,
-					 gint		column,
-					 GdkEventButton	*event,
-					 gpointer	 user_data)
-{
-	ExultStudio::get_instance()->setup_group_controls();
-}
-
-C_EXPORT gboolean
-on_group_list_unselect_row		(GtkCList	*clist,
-					 gint		row,
-					 gint		column,
-					 GdkEventButton	*event,
-					 gpointer	 user_data)
-{
-	ExultStudio::get_instance()->setup_group_controls();
-}
-#endif
 
 C_EXPORT void
 on_group_list_row_move			(GtkCList	*clist,
@@ -437,14 +434,17 @@ void ExultStudio::del_group
 	{
 	if (!curfile)
 		return;
-//++++++Rewrite.
-	Shape_group_file *groups = curfile->get_groups();
-	GtkCList *clist = GTK_CLIST(
+	GtkTreeView *tview = GTK_TREE_VIEW(
 				glade_xml_get_widget(app_xml, "group_list"));
-	GList *list = clist->selection; 
-	if (!list)			// Selection?
+	GtkTreeSelection *list = gtk_tree_view_get_selection(tview);
+	if (!list)
 		return;
-	int row = (int) list->data;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	if (!gtk_tree_selection_get_selected(list, &model, &iter))
+		return;
+	int row = Get_tree_row(model, &iter);
+	Shape_group_file *groups = curfile->get_groups();
 	Shape_group *grp = groups->get(row);
 	string msg("Delete group '");
 	msg += grp->get_name();
@@ -453,7 +453,7 @@ void ExultStudio::del_group
 	if (choice != 0)		// Yes?
 		return;
 	groups->remove(row, true);
-	gtk_clist_remove(clist, row);
+	gtk_tree_store_remove(GTK_TREE_STORE(model), &iter);
 					// Close the group's windows.
 	vector<GtkWindow*> toclose;
 	vector<GtkWindow*>::const_iterator it;
@@ -553,7 +553,6 @@ on_group_shape_remove_clicked		(GtkToggleButton *button,
 		}
 }
 
-
 /*
  *	Open a 'group' window for the currently selected group.
  */
@@ -571,15 +570,7 @@ void ExultStudio::open_group_window
 	GtkTreeIter iter;
 	if (!gtk_tree_selection_get_selected(list, &model, &iter))
 		return;
-//++++++Rewrite.
-#if 0	/* ++++FINISH */
-	gchar *str = gtk_tree_path_to_string(path);
-	++++Get row # from path.
-	g_free(path);
-#endif
-
-//	int row = (int) list->data;
-	int row = 0;	//+++++++++
+	int row = Get_tree_row(model, &iter);
 	Shape_group_file *groups = curfile->get_groups();
 	Shape_group *grp = groups->get(row);
 	GladeXML *xml = glade_xml_new(glade_path, "group_window", NULL);
