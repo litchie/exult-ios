@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucexpr.h"
 #include "ucstmt.h"
 #include "opcodes.h"
+#include "ucscriptop.h"
 
 using std::strcpy;
 using std::strcat;
@@ -43,6 +44,10 @@ using std::strlen;
 
 void yyerror(char *);
 extern int yylex();
+static Uc_array_expression *Create_array(int, Uc_expression *);
+static Uc_array_expression *Create_array(int, Uc_expression *, 
+							Uc_expression *);
+
 
 #define YYERROR_VERBOSE 1
 
@@ -74,6 +79,15 @@ static Uc_function *function = 0;	// Current function being parsed.
 %token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN BREAK GOTO
 %token VAR INT CONST STRING
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE
+%token SCRIPT AFTER TICKS
+
+/*
+ *	Script keywords:
+ */
+					/* Script commands. */
+%token CONTINUE REPEAT NOP NOHALT WAIT REMOVE RISE DESCEND FRAME HATCH
+%token NEXT PREVIOUS CYCLE STEP MUSIC CALL SPEECH SFX FACE HIT HOURS
+%token NORTH SOUTH EAST WEST NE NW SE SW
 
 /*
  *	Other tokens:
@@ -99,8 +113,9 @@ static Uc_function *function = 0;	// Current function being parsed.
 /*
  *	Production types:
  */
-%type <expr> expression primary declared_var_value
-%type <intval> opt_int
+%type <expr> expression primary declared_var_value opt_script_delay item
+%type <expr> script_command
+%type <intval> opt_int eventid direction
 %type <sym> declared_sym
 %type <var> declared_var
 %type <funsym> function_proto function_decl
@@ -108,11 +123,11 @@ static Uc_function *function = 0;	// Current function being parsed.
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
 %type <stmt> array_loop_statement var_decl var_decl_list declaration
-%type <stmt> break_statement converse_statement
+%type <stmt> break_statement converse_statement script_statement
 %type <stmt> label_statement goto_statement
 %type <block> statement_list
 %type <arrayloop> start_array_loop
-%type <exprlist> opt_expression_list expression_list
+%type <exprlist> opt_expression_list expression_list script_command_list
 %type <funcall> function_call
 
 %%
@@ -187,6 +202,7 @@ statement:
 	| return_statement
 	| statement_block
 	| converse_statement
+	| script_statement
 	| break_statement
 	| label_statement
 	| goto_statement
@@ -361,6 +377,125 @@ return_statement:
 converse_statement:
 	CONVERSE statement
 		{ $$ = new Uc_converse_statement($2); }
+	;
+
+script_statement:			/* Yes, this could be an intrinsic. */
+	SCRIPT item script_command opt_script_delay ';'
+		{ $$ = 0; /* ++++++++++++ */ }
+	;
+
+item:					/* Any object, NPC.	*/
+	expression
+	;
+
+script_command_list:
+	script_command_list script_command ';'
+		{ $$->add($2); }	/* ++++Maybe need concat? */
+	| script_command ';'
+		{
+		$$ = new Uc_array_expression();
+		$$->add($1);	/* ++++Maybe need concat? */
+		}
+	;
+
+script_command:
+	CONTINUE			/* Continue script without painting. */
+		{ $$ = new Uc_int_expression(Ucscript::cont); }
+	| REPEAT expression script_command
+		{ $$ = 0; /* +++++FINISH */ }
+					/* REPEAT2? */
+	| NOP
+		{ $$ = new Uc_int_expression(Ucscript::nop); }
+	| NOHALT
+		{ $$ = new Uc_int_expression(Ucscript::dont_halt); }
+	| WAIT expression		/* Ticks. */
+		{ $$ = Create_array(Ucscript::delay_ticks, $2); }
+	| WAIT expression HOURS		/* Game hours. */
+		{ $$ = Create_array(Ucscript::delay_hours, $2); }
+	| REMOVE			/* Remove item. */
+		{ $$ = new Uc_int_expression(Ucscript::remove); }
+	| RISE				/* For flying barges. */
+		{ $$ = new Uc_int_expression(Ucscript::rise); }
+	| DESCEND
+		{ $$ = new Uc_int_expression(Ucscript::descend); }
+	| FRAME expression
+		{ $$ = Create_array(Ucscript::frame, $2); }
+	| HATCH				/* Assumes item is an egg. */
+		{ $$ = new Uc_int_expression(Ucscript::egg); }
+	| NEXT FRAME			/* Next, but stop at last. */
+		{ $$ = new Uc_int_expression(Ucscript::next_frame_max); }
+	| NEXT FRAME CYCLE		/* Next, or back to 0. */
+		{ $$ = new Uc_int_expression(Ucscript::next_frame); }
+	| PREVIOUS FRAME		/* Prev. but stop at 0. */
+		{ $$ = new Uc_int_expression(Ucscript::prev_frame_min); }
+	| PREVIOUS FRAME CYCLE
+		{ $$ = new Uc_int_expression(Ucscript::prev_frame); }
+	| SAY expression
+		{ $$ = Create_array(Ucscript::say, $2); }
+	| STEP expression		/* Step in given direction (0-7). */
+	/*++++++++  Might be a 2nd parm, diff in lift! */
+		{ $$ = Create_array(Ucscript::step, $2); }
+	| STEP direction
+		{ $$ = new Uc_int_expression(Ucscript::step_n + $2); }
+	| MUSIC expression
+		{ $$ = Create_array(Ucscript::music, $2); }
+	| CALL expression
+		{ $$ = Create_array(Ucscript::usecode, $2); }
+	| CALL expression ',' eventid
+		{ $$ = Create_array(Ucscript::usecode2, $2, 
+				new Uc_int_expression($4)); }
+	| SPEECH expression
+		{ $$ = Create_array(Ucscript::speech, $2); }
+	| SFX expression
+		{ $$ = Create_array(Ucscript::sfx, $2); }
+	| FACE expression
+		{ $$ = Create_array(Ucscript::face_dir, $2); }
+	| HIT expression		/* 2nd parm unknown. */
+		{ $$ = Create_array(Ucscript::hit, $2); }
+
+/*
+		default:
+					// Frames with dir.  U7-verified!
+			if (opcode >= 0x61 && opcode <= 0x70)
+				{	// But don't show empty frames.
+				int v = obj->get_dir_framenum(
+					obj->get_usecode_dir(), 
+					opcode - 0x61);
+				usecode->set_item_frame(obj, v, 1, 1);
+				}
+*/
+	| '{' script_command_list '}'
+		{ $$ = $2; }
+	;
+
+direction:
+	NORTH
+		{ $$ = 0; }
+	NE
+		{ $$ = 1; }
+	EAST
+		{ $$ = 2; }
+	SE
+		{ $$ = 3; }
+	SOUTH
+		{ $$ = 4; }
+	SW
+		{ $$ = 5; }
+	WEST
+		{ $$ = 6; }
+	NW
+		{ $$ = 7; }
+	;
+
+eventid:
+	INT_LITERAL
+	;
+
+opt_script_delay:
+	AFTER expression TICKS
+		{ $$ = $2; }
+	|
+		{ $$ = 0; }
 	;
 
 break_statement:
@@ -560,3 +695,31 @@ declared_sym:
 
 %%
 
+/*
+ *	Create an array with an integer as the first element.
+ */
+
+static Uc_array_expression *Create_array
+	(
+	int e1,
+	Uc_expression *e2
+	)
+	{
+	Uc_array_expression *arr = new Uc_array_expression();
+	arr->add(new Uc_int_expression(e1));
+	arr->add(e2);
+	return arr;
+	}
+static Uc_array_expression *Create_array
+	(
+	int e1,
+	Uc_expression *e2,
+	Uc_expression *e3
+	)
+	{
+	Uc_array_expression *arr = new Uc_array_expression();
+	arr->add(new Uc_int_expression(e1));
+	arr->add(e2);
+	arr->add(e3);
+	return arr;
+	}

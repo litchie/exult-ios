@@ -148,10 +148,45 @@ converse	return CONVERSE;
 say		return SAY;
 message		return MESSAGE;
 response	return RESPONSE;
+script		return SCRIPT;
+after		return AFTER;
+ticks		return TICKS;
+hours		return HOURS;
 event		return EVENT;
 gflags		return FLAG;
 item		return ITEM;
 goto		return GOTO;
+
+					/* Script commands. */
+continue	return CONTINUE;
+repeat		return REPEAT;
+nop		return NOP;
+nohalt		return NOHALT;
+wait		return WAIT;
+remove		return REMOVE;
+rise		return RISE;
+descent		return DESCEND;
+frame		return FRAME;
+hatch		return HATCH;
+next		return NEXT;
+previous	return PREVIOUS;
+cycle		return CYCLE;
+step		return STEP;
+music		return MUSIC;
+call		return CALL;
+speech		return SPEECH;
+sfx		return SFX;
+face		return FACE;
+hit		return HIT;
+
+north		return NORTH;
+south		return SOUTH;
+east		return EAST;
+west		return WEST;
+nw		return NW;
+ne		return NE;
+sw		return SW;
+se		return SE;
 
 "&&"		return AND;
 "||"		return OR;
