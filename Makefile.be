@@ -75,7 +75,8 @@ EXULT_FLX_OBJECTS = \
 	data/midi_conversion.shp \
 	data/sfx_conversion.shp \
 	data/palette_fades.shp \
-	data/default.key
+	data/defaultkeys.txt \
+	data/flx.in
 
 $(EXEC) : Makefile data/exult.flx $(OBJS) beos/exult.rsrc
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)

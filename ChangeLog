@@ -1,3 +1,11 @@
+2001-02-08  Ryan Nunn <triforce@merlin.net.au>
+	* tools/expack.cc: Added .txt file detection to fix some bugs caused 
+	  by "stupid dos conventions".
+	* files/utils.cc: I removed the "bad code" ;)
+	* Makefile.*, data/defaultkeys.txt, data/flx.in, data/Makefile.am:
+	  Renamed "data/default.key" to "data/defaultkeys.txt"
+	* Makefile.cygwin: make install will now create data dir
+	  
 2001-02-07  Christoph Reichenbach  <jameson@linuxgames.com>
 	* files/utils.h: #ifndef'd inclusion of iosfwd
 	* shapes/items.h: #ifndef'd inclusion of iosfwd
