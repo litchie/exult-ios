@@ -4,6 +4,9 @@ Exult Release Checklist
 * make sure all version numbers are up to date
   - configure.ac
   - Makefile.common
+  - win32/exultico.rc, win32/exultstudioico.rc (PRODUCTVERSION, "FileVersion" and "ProductVersion")
+  - msvcstuff\msvc_kludges.h
+  - win32\exconfig\exconfig.rc
 
 * update NEWS; make sure version and date are correct
 
