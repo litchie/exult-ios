@@ -1,6 +1,7 @@
 2000-09-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Schedules:  Duel, kid_games, wander, mine, farm.
+	* Dragging:  Don't drag until mouse has moved > 2 pixels.
 
 2000-09-06  Jeff Freedman  <jeff@patches.simutech.com>
 

@@ -544,7 +544,7 @@ public:
 	void read_schedules();		// Read npc's schedules.
 					// Start dragging.
 	int start_dragging(int x, int y);
-	void drag(int x, int y);	// During dragging.
+	int drag(int x, int y);		// During dragging.
 	void drop_dragged(int x, int y, int moved);// Done dragging.
 					// Paint text using "fonts.vga".
 	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
