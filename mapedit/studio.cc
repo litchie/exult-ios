@@ -203,7 +203,12 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 			}
 
 	char path[256];			// Set up paths.
-	strcpy(path, xmldir ? xmldir : ".");
+	if(xmldir)
+		strcpy(path, xmldir);
+	else if(U7exists(EXULT_DATADIR"/exult_studio.glade"))
+		strcpy(path,EXULT_DATADIR);
+	else
+		strcpy(path,".");
 	strcat(path, "/exult_studio.glade");
 	// Load the Glade interface
 	app_xml = glade_xml_new(path, NULL);

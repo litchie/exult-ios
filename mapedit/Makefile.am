@@ -1,6 +1,6 @@
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../shapes -I$(srcdir)/../imagewin \
 	-I$(srcdir)/../files -I$(srcdir)/../server \
-	$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+	$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
 if GIMP_PLUGIN
 GIMP_PLUGINS=u7shp
