@@ -122,6 +122,12 @@ public:
 		: ShapeID(l, h), shape_pos((shapex << 4) + shapey), 
 					lift(lft), quality(0), cx(255), cy(255)
 		{  }
+	Game_object(int shapenum, int framenum, unsigned int tilex, 
+				unsigned int tiley, unsigned int lft = 0)
+		: ShapeID(shapenum, framenum),
+				shape_pos((tilex << 4) + tiley),
+				lift(lft), quality(0), cx(255), cy(255)
+		{  }
 	Game_object() : ShapeID()	// Create fake entry.
 		{  }
 	int get_tx()			// Get tile (0-15) within chunk.

@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objs.h"
 #include "gamewin.h"
 #include "usecode.h"
+#include "Audio.h"
 #include <string.h>
 
 /*
@@ -250,12 +251,26 @@ void Egg_object::activate
 	Usecode_machine *umachine
 	)
 	{
-//+++++++++Check probability, etc.  (But not distance.)
+	int roll = 1 + rand()%100;
+	if (roll > probability)
+		return;			// Out of luck.
 cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
-		", distance = " << (int) distance << ", once = " <<
+		", distance = " << (int) distance << ", crit = " <<
+		(int) criteria << ", once = " <<
 	((flags & (1<<(int)once) != 0)) << ", areset = " <<
 	((flags & (1<<(int)auto_reset) != 0)) << '\n';
-	if (type == (int) usecode)	// Data2 is the usecode function.
+//TESTING:
+	static int cnt = 0;
+//	audio.start_speech(cnt++);//++++++++++++
+        if (type == jukebox)
+                {
+                audio.start_music((data1)&0xff);
+                }
+    	else if (type == voice)
+                {
+                audio.start_speech(data1);
+                }
+	else if (type == (int) usecode)	// Data2 is the usecode function.
 		umachine->call_usecode(data2, this,
 					Usecode_machine::egg_proximity);
 	}

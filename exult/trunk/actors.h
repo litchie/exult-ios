@@ -40,6 +40,7 @@ class Actor : public Sprite
 	int usecode;			// # of usecode function.
 	int npc_num;			// # in Game_window::npcs list, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
+protected:
 	unsigned long flags;		// 32 flags used in 'usecode'.
 public:
 	void set_default_frames();	// Set usual frame sequence.
@@ -76,7 +77,9 @@ class Main_actor : public Actor
 public:
 	Main_actor(char *nm, int shapenum, int num = -1, int uc = -1)
 		: Actor(nm, shapenum, num, uc)
-		{  }
+		{ 
+		flags |= 1L<<16;	// Gets into starting usecode seq.
+		}
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 	};

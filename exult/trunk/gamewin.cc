@@ -551,7 +551,11 @@ Egg_object *Game_window::create_egg
 	unsigned char hatched = (type >> 9) & 1;
 	unsigned short distance = (type & (0x1f << 10)) >> 10;
 	unsigned char auto_reset = (type >> 15) & 1;
-
+#if 0
+printf("Egg has type %02x, crit=%d, once=%d, ar=%d\n", type, (int) criteria,
+		(int) once,
+			(int) auto_reset);
+#endif
 	Egg_object *obj = new Egg_object(entry[2], entry[3], 
 		entry[0]&0xf, entry[1]&0xf, lift, type, prob,
 		data1, data2);
@@ -1632,8 +1636,7 @@ void Game_window::end_intro
 		paint();
 					// Start with Iolo.
 		mode = conversation;
-		usecode->call_usecode(0x401, npcs[1], 
-					Usecode_machine::game_start);
+		// ++++++Test for 1st egg here?
 		paint();
 		mode = normal;
 					// Want to run proximity usecode on
@@ -1641,5 +1644,6 @@ void Game_window::end_intro
 		add_nearby_npcs(chunkx, chunky, 
 			chunkx + (get_width() + chunksize - 1)/chunksize,
 			chunky + (get_height() + chunksize - 1)/chunksize);
+//++++??		schedule_npcs(2);	//++++++Test??
 		}
 	}
