@@ -1,5 +1,8 @@
 2002-02-10  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* files/Flex.*,gamedat.cc,mapedit/shapegroup.cc:  Flex_writer
+	class added.
+
 	* mapedit/paledit.cc (Palette_edit): Show the different palettes
 	within palettes.flx.
 	* files/U7file.*:  Added 'number_of_objects()' to U7object class.
