@@ -188,7 +188,7 @@ bool	Configuration::read_config_file(const char *n)
         char    buf[4096];
         string  sbuf;
 
-#ifdef XWIN
+#if ((defined XWIN) || (defined BEOS))
 	const char *f1=getenv("HOME");
 	if(f1)
 		{
@@ -198,7 +198,7 @@ bool	Configuration::read_config_file(const char *n)
 		filename+=n;
 		}
 	else
-		filename="n";
+		filename=n;
 #endif
 #ifdef WIN32
 	// Probably something to do with deteriming the username
@@ -206,10 +206,6 @@ bool	Configuration::read_config_file(const char *n)
 
         // For now, just read file from current directory
 	filename=n;
-#endif
-#ifdef BEOS
-	// get home dir or something... (find out how first)
-        filename=n;
 #endif
 	FILE	*fp=fopen(filename.c_str(),"r");
 

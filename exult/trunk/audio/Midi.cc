@@ -103,8 +103,9 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
                 no_device=false;
                 cerr << midi_device->copyright() << endl;
                 }
-#else
+#endif
 
+#ifdef XWIN
 	if(no_device)
 		{
 		try {
