@@ -932,8 +932,10 @@ static void Handle_keystroke
 				if (alt && !ctrl) {		// Alt-p : Toggle Petra mode
 					cheat.toggle_Petra();
 
-				} else if (!alt && !ctrl) {	// p : Rerender screen
+				} else if (!alt && ctrl) {	// Ctrl-p : Rerender screen
 					gwin->paint();
+				} else if (!alt && !ctrl) {	// p : use lockpick
+					gwin->activate_item(627);
 				}
 				break;
 		#ifdef MACOS
@@ -1393,7 +1395,8 @@ void show_help (void)
 	scroll->add_text("i - Show inventory\n");
 	scroll->add_text("k - Try keys\n");
 	scroll->add_text("m - Show map\n");
-	scroll->add_text("p - Repaint screen\n");
+	scroll->add_text("p - Use lockpick\n");
+	scroll->add_text("ctrl-p - Repaint screen\n");
 	scroll->add_text("ctrl-s - Quick Save\n");
 	scroll->add_text("ctrl-r - Restore\n");
 	scroll->add_text("s - Show save box\n");
