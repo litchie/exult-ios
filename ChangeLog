@@ -5,6 +5,8 @@
 	additional assembler output options; old-ucs format "works" extremely
 	brokenly rather then assert() failing; can now output entire
 	USECODE file; squished obscure crash bug.
+	* (quick update) usecode/ucxt/*: removed imbedded intrinsic table,
+	now stealing it from ??intriniscs.h
 
 2001-08-14  Jeff Freedman  <jeff@amy.nerble.net>
 

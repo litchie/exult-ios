@@ -103,7 +103,7 @@ typedef struct _opcode_desc
 
 //76, 113
 extern const opcode_desc opcode_table[76];
-extern const char* bg_func_table[113];
+//extern const char* bg_func_table[113];
 
 vector<string> qnd_ocsplit(const string &s);
 
