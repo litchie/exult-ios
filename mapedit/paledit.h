@@ -48,7 +48,8 @@ class Palette_edit: public Object_browser
 	bool modified;
 	GtkColorSelectionDialog *colorsel;// Open color selector.
 	GtkWidget *sbar;		// Status bar.
-	GtkAdjustment *palnum_adj;	// Spin btn. for palette #.
+	GtkWidget *pspin;		// Spin button for palette #.
+	GtkAdjustment *palnum_adj;	// For palette #.
 	guint sbar_sel;			// Status bar context for selection.
 	Rectangle selected_box;		// Location of selected color.
 	GtkWidget *insert_btn, *remove_btn, *up_btn, *down_btn;
@@ -78,6 +79,7 @@ public:
 					// About to close this browser.
 	virtual bool closing(bool can_cancel = false);
 	void save();			// Write them out.
+	void move_palette(bool up);
 					// Configure when created/resized.
 	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
 							gpointer data);
