@@ -935,9 +935,8 @@ static void Handle_event
 		Okay_to_quit();
 		break;
 	case SDL_KEYDOWN:		// Keystroke.
-			//+++++++++TESTING:
-//		Audio::get_ptr()->playwave("/home/jeff/exult/test.wav", false);
-		keybinder->HandleEvent(event);
+		if (!dragging)		// ESC while dragging causes crashes.
+			keybinder->HandleEvent(event);
 		break;
 #ifdef USE_EXULTSTUDIO
 #ifndef WIN32
