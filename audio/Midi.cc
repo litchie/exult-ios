@@ -98,7 +98,7 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 		}
 	if(s=="no")
 		{
-		cout << "Config says no midi. MIDI disabled";
+		cout << "Config says no midi. MIDI disabled" << endl;
 		no_device=false;
 		}
 	config.set("config/audio/midi/enabled",s,true);
