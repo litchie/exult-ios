@@ -99,10 +99,12 @@ protected:
 	unsigned long next_path_time;	// Next time we're allowed to use
 					//   pathfinding to follow leader.
 	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
+	Rectangle weapon_rect;		// Screen area weapon was drawn in.
 	void init();			// Clear stuff during construction.
 					// Move and change frame.
 	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
+	void add_dirty(Game_window *gwin);// Force repaint of area taken.
 					// Read from file.
 	Actor(istream& nfile, int num, int has_usecode);
 public:

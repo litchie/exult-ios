@@ -144,6 +144,23 @@ void Actor::ready_best_weapon
 	}
 
 /*
+ *	Add dirty rectangle(s).
+ */
+inline void Actor::add_dirty
+	(
+	Game_window *gwin
+	)
+	{
+	gwin->add_dirty(this);
+	if (weapon_rect.w > 0)		// Repaint weapon area too.
+		{
+		Rectangle r = weapon_rect;
+		r.enlarge(5);
+		gwin->add_dirty(gwin->clip_to_win(r));
+		}
+	}
+
+/*
  *	Move an object, and possibly change its shape too.
  */
 inline void Actor::movef
@@ -180,7 +197,8 @@ Actor::Actor
 	    alignment(0),
 	    two_handed(0), two_fingered(false), light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), action(0), 
-	    frame_time(0), next_path_time(0), timers(0)
+	    frame_time(0), next_path_time(0), timers(0),
+	    weapon_rect(0, 0, 0, 0)
 	{
 	set_shape(shapenum, 0); 
 	init();
@@ -394,7 +412,7 @@ void Actor::stop
 	if (action)
 		{
 		action->stop(this);
-		Game_window::get_game_window()->add_dirty(this);
+		add_dirty(Game_window::get_game_window());
 		}
 	frame_time = 0;
 	}
@@ -799,6 +817,7 @@ void Actor::paint_weapon
 	unsigned char actor_x, actor_y;
 	unsigned char weapon_x, weapon_y;
 	Game_object * weapon = spots[lhand];
+	weapon_rect.w = 0;
 
 	if(weapon == 0)
 		return;
@@ -828,10 +847,13 @@ void Actor::paint_weapon
 		xoff += -actor_x + weapon_x;
 		yoff += -actor_y + weapon_y;
 		int shnum = weapon->get_shapenum();
+		Shape_frame *wshape = gwin->get_shape(shnum, weapon_frame);
+					// Set area to mark dirty.
+		weapon_rect = gwin->get_shape_rect(wshape, xoff, yoff);
 		if (flags & (1L<<invisible))
 			gwin->paint_invisible(xoff, yoff, shnum, weapon_frame);
 		else
-			gwin->paint_shape(xoff, yoff, shnum, weapon_frame);
+			gwin->paint_shape(xoff, yoff, wshape);
 		}
 	}
 
@@ -1574,7 +1596,7 @@ void Actor::die
 			return;
 		}
 	properties[(int) health] = -50;
-	gwin->add_dirty(this);		// Want to repaint area.
+	add_dirty(gwin);		// Want to repaint area.
 	remove_this(1);			// Remove (but don't delete this).
 	cx = cy = 0xff;			// Set to invalid chunk coords.
 	int frnum;			// Lookup body shape/frame.
@@ -1728,7 +1750,7 @@ int Main_actor::step
 		Actor::set_flag((int) Actor::poisoned);
 					// Check for scrolling.
 	gwin->scroll_if_needed(t);
-	gwin->add_dirty(this);		/// Set to update old location.
+	add_dirty(gwin);		/// Set to update old location.
 					// Get old chunk, old tile.
 	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
 	Tile_coord oldtile = get_abs_tile_coord();
@@ -2163,7 +2185,7 @@ int Npc_actor::step
 		}
 	if (poison)
 		Actor::set_flag((int) Actor::poisoned);
-	gwin->add_dirty(this);		// Set to repaint old area.
+	add_dirty(gwin);		// Set to repaint old area.
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
 					// Move it.
@@ -2469,7 +2491,7 @@ int Monster_actor::step
 			dormant = 1;	// Off-screen.
 		return (0);		// Done.
 		}
-	gwin->add_dirty(this);		// Set to repaint old area.
+	add_dirty(gwin);		// Set to repaint old area.
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
 					// Move it.
