@@ -74,8 +74,12 @@ public:
 		{ return groups.size(); }
 	Shape_group *get(int i)
 		{ return groups[i]; }
+	void clear()			// Clears list (but doesn't delete).
+		{ groups.resize(0); }
 	void add(Shape_group *grp)	// Add a new group.
 		{ groups.push_back(grp); modified = true; }
+	void set(Shape_group *grp, int i)
+		{ groups[i] = grp; modified = true; }
 	void insert(Shape_group *grp, int i)
 		{ groups.insert(groups.begin() + i, grp); modified = true; }
 	bool is_modified()

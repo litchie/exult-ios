@@ -168,7 +168,8 @@ public:
 	void setup_group_controls();
 	void add_group();
 	void del_group();
-	void move_group(int from_row, int to_row);
+	void groups_changed(GtkTreeModel *model, GtkTreePath *path,
+					GtkTreeIter *loc, bool value = false);
 	void open_group_window();
 	void close_group_window(GtkWidget *gtkwin);
 	void save_groups();
