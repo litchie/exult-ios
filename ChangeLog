@@ -1,3 +1,6 @@
+2000-12-05  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* cheat.cc: heal party also cures poison and removes hunger
+
 2000-12-05  Tristan Tarrant <nadir@users.sourceforge.net>
 	* INSTALL: more details
 	* TODO: a few ideas
