@@ -65,12 +65,16 @@ inline void Check_file
 
 /*
  *	Create a new frame by reflecting across a line running NW to SE.
+ *
+ *	May return 0.
  */
 
 Shape_frame *Shape_frame::reflect
 	(
 	)
 	{
+	if (!data)
+		return 0;
 	int w = get_width(), h = get_height();
 	if (w < h)
 		w = h;
@@ -634,14 +638,14 @@ Shape_frame *Shape::reflect
 	if (!reflected)
 		return (0);
 	framenum |= 32;			// Put back 'reflect' flag.
-	if (framenum >= num_frames - 1)	// Expand list if necessary.
+	if (framenum >= frames_size - 1)// Expand list if necessary.
 		{
 		Shape_frame **newframes = new Shape_frame *[framenum + 1];
 		int i;
-		for (i = 0; i < num_frames; i++)
+		for (i = 0; i < frames_size; i++)
 			newframes[i] = frames[i];
-		num_frames = framenum + 1;
-		for ( ; i < num_frames; i++)
+		frames_size = framenum + 1;
+		for ( ; i < frames_size; i++)
 			newframes[i] = 0;
 		delete [] frames;
 		frames = newframes;
@@ -651,7 +655,7 @@ Shape_frame *Shape::reflect
 	}
 
 /*
- *	Call this to set num_frames and create 'frames' list.
+ *	Call this to set num_frames, frames_size and create 'frames' list.
  */
 
 inline void Shape::create_frames_list
@@ -659,9 +663,9 @@ inline void Shape::create_frames_list
 	int nframes
 	)
 	{
-	num_frames = nframes;
-	frames = new Shape_frame *[num_frames];
-	memset((char *) frames, 0, num_frames * sizeof(Shape_frame *));
+	num_frames = frames_size = nframes;
+	frames = new Shape_frame *[frames_size];
+	memset((char *) frames, 0, frames_size * sizeof(Shape_frame *));
 	}
 
 /*
@@ -712,10 +716,10 @@ Shape_frame *Shape::store_frame
 	int framenum			// It's frame #.
 	)
 	{
-	if (framenum >= num_frames)	// Something fishy?
+	if (framenum >= frames_size)	// Something fishy?
 		{
 		delete frame;
-		cerr << "Shape::store_frame:  framenum >= num_frames"
+		cerr << "Shape::store_frame:  framenum >= frames_size"
 								<< endl;
 		return (0);
 		}
@@ -731,7 +735,7 @@ Shape_frame *Shape::store_frame
 
 Shape::Shape(Shape_frame* fr)
 {
-	num_frames = 1;
+	num_frames = frames_size = 1;
 	frames = new Shape_frame*[1];
 	frames[0] = fr;
 }
@@ -740,13 +744,13 @@ void Shape::reset()
 	{
 	if (frames)
 		{
-		for(int i = 0; i < num_frames; i++)
+		for(int i = 0; i < frames_size; i++)
 			delete frames[i];
 		delete [] frames;
 		}
-	else if (num_frames)
-		cerr << "Shape::~Shape():  'frames' is null, while num_frames="
-				<< (int) num_frames << endl;
+	else if (frames_size)
+		cerr << "Shape::~Shape(): 'frames' is null, while frames_size="
+				<< (int) frames_size << endl;
 	}
 
 Shape::~Shape()
