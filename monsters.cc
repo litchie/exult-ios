@@ -473,7 +473,6 @@ void Slime_actor::update_frames
 	{
 	Tile_coord neighbors[4];	// Gets surrounding spots for slimes.
 	int dir;			// Get direction of neighbor.
-	Game_window *gwin = Game_window::get_instance();
 	Game_object_vector nearby;		// Get nearby slimes.
 	if (src.tx != -1)
 		if (dest.tx != -1)	// Assume within 2 tiles.
@@ -495,10 +494,8 @@ void Slime_actor::update_frames
 				int ndir = (dir+2)%4;
 					// Turn off bit (1<<ndir)*2, and set
 					//   bit 0 randomly.
-				gwin->add_dirty(slime);
-				slime->set_frame((slime->get_framenum()&
+				slime->change_frame((slime->get_framenum()&
 					~(((1<<ndir)*2)|1)) |(rand()%2));
-				gwin->add_dirty(slime);
 				}
 			}
 		}
@@ -515,17 +512,13 @@ void Slime_actor::update_frames
 				{	// In a neighboring spot?
 				frnum |= (1<<dir)*2;
 				int ndir = (dir+2)%4;
-				gwin->add_dirty(slime);
 					// Turn on bit (1<<ndir)*2, and set
 					//   bit 0 randomly.
-				slime->set_frame((slime->get_framenum()&~1)|
+				slime->change_frame((slime->get_framenum()&~1)|
 						((1<<ndir)*2)|(rand()%2));
-				gwin->add_dirty(slime);
 				}
 			}
-		gwin->add_dirty(this);
-		set_frame(frnum|(rand()%2));
-		gwin->add_dirty(this);
+		change_frame(frnum|(rand()%2));
 		}
 	}
 

@@ -162,6 +162,7 @@ public:
 	virtual void move(int newtx, int newty, int newlift);
 	void move(Tile_coord t)
 		{ move(t.tx, t.ty, t.tz); }
+	void change_frame(int frnum);	// Change frame & set to repaint.
 					// Swap positions.
 	int swap_positions(Game_object *obj2);
 	int get_dependency_count()	// Get objs. to paint first.

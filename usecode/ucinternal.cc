@@ -712,11 +712,7 @@ void Usecode_internal::set_item_frame
 				gwin->set_all_dirty();
 			}
 		else
-			{		// Figure area to repaint.
-			gwin->add_dirty(item);
-			item->set_frame(frame);
-			gwin->add_dirty(item);
-			}
+			item->change_frame(frame);
 		}
 	gwin->set_painted();		// Make sure paint gets done.
 	}
