@@ -165,8 +165,9 @@ Egg_object::Egg_object
 	unsigned char do_once = (itype >> 8) & 1;
 					// Missile eggs can be rehatched
 	unsigned char htch = (type == missile) ? 0 : ((itype >> 9) & 1);
-	solid_area = (criteria == something_on || criteria == cached_in) ? 1 
-									: 0;
+	solid_area = (criteria == something_on || criteria == cached_in ||
+					// Teleports need solid area.
+						type == teleport) ? 1 : 0;
 	unsigned char ar = (itype >> 15) & 1;
 	flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
@@ -325,10 +326,12 @@ int Egg_object::is_active
 		}
 	case party_near:
 	case avatar_near:		// New tile is in, old is out.
+		if (type == teleport)	// Teleports:  Any tile, exact lift.
+			return absdeltaz == 0 && area.has_point(tx, ty);
 		if (!((absdeltaz <= 1 || 
 					// Using trial&error here:
 			 (Game::get_game_type() == SERPENT_ISLE &&
-				(type != teleport || absdeltaz <= 4)) ||
+							absdeltaz <= 4) ||
 				(type == missile && tz/5 == get_lift()/5)) &&
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty)))
