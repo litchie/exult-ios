@@ -1188,7 +1188,7 @@ void Container_game_object::write_ireg
 	}
 
 /*
- *	Write contents.
+ *	Write contents (if there is any).
  */
 
 void Container_game_object::write_contents
@@ -1205,8 +1205,8 @@ void Container_game_object::write_contents
 			obj->write_ireg(out);
 			}
 		while (obj != last_object);
+		out.put(0x01);		// A 01 terminates the list.
 		}
-	out.put(0x01);			// A 01 terminates the list.
 	}
 
 /*
