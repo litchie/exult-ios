@@ -444,10 +444,12 @@ void BG_Game::play_intro()
 
 	// start speech
 	for(int i=0; i<14*20; i++) {
-		gwin->paint_shape(centerx,centery-12,
-				  shapes.get_shape(0x20,1 + i % 9));
+		// convoluted mess to get eye movement acceptable
+		gwin->paint_shape(centerx,centery-12, shapes.get_shape(0x20,
+	           1 + 3*((i/12) % 4) + ((i%50>47&&(i/12)%4!=3)?i%50-47:0)));
+
 		gwin->paint_shape(centerx,centery,
-				  shapes.get_shape(0x1E,1 + i % 14));
+				  shapes.get_shape(0x1E,1 + i % 13));
 
 		if ((i % 20) == 0) {
 			txt_ptr = next_txt;
