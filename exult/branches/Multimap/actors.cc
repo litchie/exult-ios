@@ -1345,7 +1345,7 @@ void Actor::restore_schedule
 	)
 	{
 					// Make sure it's in valid chunk.
-	Map_chunk *olist = gmap->get_chunk_safely(get_cx(), get_cy());
+	Map_chunk *olist = get_chunk();
 					// Activate schedule if not in party.
 	if (olist && party_id < 0)
 		{
@@ -3132,7 +3132,7 @@ void Actor::die
 		{			// Exec. usecode before dying.
 		ucmachine->call_usecode(shnum, this, 
 					Usecode_machine::internal_exec);
-		if (get_cx() == 255)	// Invalid now?
+		if (is_pos_invalid())	// Invalid now?
 			return;
 		}
 	properties[static_cast<int>(health)] = -50;
@@ -3419,7 +3419,7 @@ int Main_actor::step
 	gwin->scroll_if_needed(this, t);
 	add_dirty();			// Set to update old location.
 					// Get old chunk, old tile.
-	Map_chunk *olist = gmap->get_chunk(get_cx(), get_cy());
+	Map_chunk *olist = get_chunk();
 	Tile_coord oldtile = get_tile();
 					// Move it.
 	Actor::movef(olist, nlist, tx, ty, frame, t.tz);
@@ -3519,11 +3519,10 @@ void Main_actor::move
 	)
 	{
 					// Store old chunk list.
-	Map_chunk *olist = gmap->get_chunk_safely(
-						get_cx(), get_cy());
+	Map_chunk *olist = get_chunk();
 					// Move it.
 	Actor::move(newtx, newty, newlift);
-	Map_chunk *nlist = gmap->get_chunk(get_cx(), get_cy());
+	Map_chunk *nlist = get_chunk();
 	if (nlist != olist)
 		Main_actor::switched_chunks(olist, nlist);
 	int tx = get_tx(), ty = get_ty();
@@ -4013,11 +4012,11 @@ int Npc_actor::step
 	int frame			// New frame #.
 	)
 	{
-	if (get_flag(Obj_flags::paralyzed))
+	if (get_flag(Obj_flags::paralyzed) || chunk->get_map() != gmap)
 		return 0;
-					// Store old chunk.
 	Tile_coord oldtile = get_tile();
-	int old_cx = get_cx(), old_cy = get_cy();
+					// Get old chunk.
+	Map_chunk *olist = get_chunk();
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get rel. tile coords.
@@ -4048,8 +4047,6 @@ int Npc_actor::step
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
 	add_dirty();			// Set to repaint old area.
-					// Get old chunk.
-	Map_chunk *olist = gmap->get_chunk(old_cx, old_cy);
 					// Move it.
 	movef(olist, nlist, tx, ty, frame, t.tz);
 
@@ -4089,12 +4086,9 @@ void Npc_actor::remove_this
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	gwin->remove_nearby_npc(this);	// Remove from nearby list.
 					// Store old chunk list.
-	Map_chunk *olist = gmap->get_chunk_safely(get_cx(), get_cy());
+	Map_chunk *olist = get_chunk();
 	Actor::remove_this(1);	// Remove, but don't ever delete an NPC
 	Npc_actor::switched_chunks(olist, 0);
-#if 0	/* ++++I think not necessary (jsf - 1/30/04) */
-	cx = cy = 0xff;			// Set to invalid chunk coords.
-#endif
 	if (!nodel && npc_num > 0)	// Really going?
 		unused = true;		// Mark unused if a numbered NPC.
 	}
@@ -4124,10 +4118,10 @@ void Npc_actor::move
 	)
 	{
 					// Store old chunk list.
-	Map_chunk *olist = gmap->get_chunk_safely(get_cx(), get_cy());
+	Map_chunk *olist = get_chunk();
 					// Move it.
 	Actor::move(newtx, newty, newlift);
-	Map_chunk *nlist = gmap->get_chunk_safely(get_cx(), get_cy());
+	Map_chunk *nlist = get_chunk();
 	if (nlist != olist)
 		{
 		Npc_actor::switched_chunks(olist, nlist);

@@ -49,8 +49,9 @@ class Game_map
 	{
 	int num;			// Map #.  Index in gwin->maps.
 					// Flat chunk areas:
-	Exult_vector<Chunk_terrain *> chunk_terrains;
-	bool read_all_terrain;		// True if we've read them all.
+	static Exult_vector<Chunk_terrain *> *chunk_terrains;
+	static std::ifstream *chunks;	// "u7chunks" file.
+	static bool read_all_terrain;	// True if we've read them all.
 	bool map_modified;		// True if any map changes from
 					//   map-editing.
 					// Chunk_terrain index for each chunk:
@@ -61,7 +62,6 @@ class Game_map
 	bool schunk_modified[144];	// Flag for modified "ifix".
 	char *schunk_cache[144];
 	int  schunk_cache_sizes[144];
-	std::ifstream *chunks;		// "u7chunks" file.
 	Map_patch_collection *map_patches;
 
 	Map_chunk *create_chunk(int cx, int cy);
@@ -71,7 +71,9 @@ class Game_map
 public:
 	Game_map(int n);
 	~Game_map();
+	static void init_chunks();
 	void init();			// Set up map.
+	static void clear_chunks();
 	void clear();			// Clear out old map.
 	void read_map_data();		// Read in 'ifix', 'ireg', etc.
 	int get_num() const
@@ -118,11 +120,11 @@ public:
 					// Get desired terrain.
 	Chunk_terrain *get_terrain(int tnum)
 		{
-		Chunk_terrain *ter = chunk_terrains[tnum];
+		Chunk_terrain *ter = (*chunk_terrains)[tnum];
 		return ter ? ter : read_terrain(tnum);
 		}
 	inline int get_num_chunk_terrains() const
-		{ return chunk_terrains.size(); }
+		{ return chunk_terrains->size(); }
 					// Set new terrain chunk.
 	void set_chunk_terrain(int cx, int cy, int chunknum);
 	char *get_mapped_name(char *from, char *to);
