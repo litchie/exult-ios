@@ -44,17 +44,14 @@ public:
 	int operator!=(Tile_coord t2)
 		{ return !(*this == t2); }
 	int distance(Tile_coord t2)	// Distance to another tile?
-		{
-		int dy = t2.ty - ty;
-		int dx = t2.tx - tx;
-		if (dy < -c_num_tiles/2)// World-wrapping.
-			dy += c_num_tiles;
-		else if (dy < 0)	// Just take longer abs. value.
-			dy = -dy;
-		if (dx < -c_num_tiles/2)
-			dx += c_num_tiles;
-		else if (dx < 0)
-			dx = -dx;
+		{			// Handle wrapping round the world.
+		int dy = (t2.ty - ty + c_num_tiles)%c_num_tiles;
+		int dx = (t2.tx - tx + c_num_tiles)%c_num_tiles;
+		if (dy >= c_num_tiles/2)// World-wrapping.
+			dy = c_num_tiles - dy;
+		if (dx >= c_num_tiles/2)
+			dx = c_num_tiles - dx;
+					// Take larger abs. value.
 		return (dy > dx ? dy : dx);
 		}
 					// Get neighbor in given dir (0-7).
@@ -63,6 +60,12 @@ public:
 			(tx + neighbors[2*dir] + c_num_tiles)%c_num_tiles,
 			(ty + neighbors[2*dir + 1] + c_num_tiles)%c_num_tiles,
 								 tz); }
+	static bool gte(int t1, int t2)	// Ret. t1 >= t2 with wrapping.
+		{
+		int diff = t1 - t2;
+		return diff >= 0 ? (diff < c_num_tiles/2) :
+						diff < -c_num_tiles/2;
+		}		
 	};
 					// Add two coords.
 inline Tile_coord operator+(Tile_coord a, Tile_coord b)
