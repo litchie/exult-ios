@@ -227,6 +227,8 @@ public:
 	int find_nearby(Game_object_vector& vec, int shapenum, int delta, int mask,
 			int qual = c_any_qual, int framenum = c_any_framenum) const;
 
+	Game_object *find_closest(Game_object_vector& vec,
+				int *shapenums, int num_shapes, int dist = 24);
 	Game_object *find_closest(int *shapenums, int num_shapes, 
 							int dist = 24);
 	Game_object *find_closest(int shapenum, int dist = 24)
