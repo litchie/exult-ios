@@ -34,6 +34,7 @@
 #  include <cstdlib>
 #endif
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include "Flex.h"
 #include "utils.h"
@@ -55,6 +56,8 @@ using std::size_t;
 using std::strdup;
 using std::strlen;
 using std::strncmp;
+using std::strcpy;
+using std::strcat;
 using std::vector;
 
 /*
@@ -286,6 +289,8 @@ void Write_palette
 	int palsize			// # entries.
 	)
 	{
+	cout << "Creating new palette file '" << palname <<
+			"' using first file's palette" << endl;
 	unsigned char palbuf[3*256];	// We always write 256 colors.
 	memset(&palbuf[0], 0, sizeof(palbuf));
 	if (palsize > 256)		// Shouldn't happen.
@@ -300,6 +305,29 @@ void Write_palette
 	writer.mark_section_done();
 	if (!writer.close())
 		throw file_write_exception(palname);
+					// Write out as (Gimp) text.
+	char *txtpal = new char[strlen(palname) + 10];
+	strcpy(txtpal, palname);
+	strcat(txtpal, ".txt");
+	cout << "Creating text (Gimp) palette '" << txtpal << "'" << endl;
+	ofstream pout(txtpal);		// OKAY that it's a 'text' file.
+	pout << "Palette from Exult's Ipack" << endl;
+	int i;				// Skip 0's at end.
+	for (i = palsize - 1; i > 0; i--)
+		if (palette[3*i] != 0 || palette[3*i+1] != 0 || 
+							palette[3*i+2] != 0)
+			break;
+	int last_color = i;
+	for (i = 0; i <= last_color; i++)
+		{
+		int r = palette[3*i],
+		    g = palette[3*i + 1],
+		    b = palette[3*i + 2];
+		pout << setw(3) << r << ' ' << setw(3) << g << ' ' << 
+						setw(3) << b << endl;
+		}
+	pout.close();
+	delete txtpal;
 	}
 
 /*
@@ -367,7 +395,10 @@ static void Write_exult
 		out.write(pixels, datalen);	// The frame data.
 		delete pixels;
 		if (palname)
+			{
 			Write_palette(palname, palette, palsize);
+			palname = 0;
+			}
 		delete palette;
 		}
 	if (!flat)
@@ -398,10 +429,6 @@ static void Create
 			"' exists, so we won't overwrite it" << endl;
 		palname = 0;
 		}
-	else
-		cout << "Creating new palette file '" << palname <<
-			"' using first file's palette" << endl;
-
 	ofstream out;
 	U7open(out, imagename);		// May throw exception.
 	Flex_writer writer(out, title, specs.size());
