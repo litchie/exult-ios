@@ -42,6 +42,19 @@ int Walking_actor_action::handle_event
 	}
 
 /*
+ *	Create action to follow a path.
+ */
+Path_walking_actor_action::Path_walking_actor_action
+	(
+	PathFinder *p			// Controls pathfinding.
+	) : path(p), frame_index(0)
+	{
+	Tile_coord src = p->get_src(), dest = p->get_dest();
+	original_dir = (int) Get_direction4(
+				src.ty - dest.ty, dest.tx - src.tx);
+	}
+
+/*
  *	Delete.
  */
 Path_walking_actor_action::~Path_walking_actor_action
@@ -65,8 +78,11 @@ int Path_walking_actor_action::handle_event
 	Tile_coord t;
 	if (!path->GetNextStep(t))
 		return (0);
-					// ++++++Figure new frame.+++++++++++
-	return actor->step(t, actor->get_framenum());
+					// ++++For now, just use original dir.
+	Frames_sequence *frames = actor->get_frames(original_dir);
+					// Get frame (updates frame_index).
+	int frame = frames->get_next(frame_index);
+	return actor->step(t, frame);
 	}
 
 /*

@@ -58,9 +58,10 @@ public:
 class Path_walking_actor_action : public Actor_action
 	{
 	PathFinder *path;		// Allocated pathfinder.
+	int original_dir;		// From src. to dest. (0-7).
+	int frame_index;		// Index within frame sequence.
 public:
-	Path_walking_actor_action(PathFinder *p) : path(p)
-		{  }
+	Path_walking_actor_action(PathFinder *p);
 	~Path_walking_actor_action();
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
