@@ -561,6 +561,12 @@ void Shape_chooser::goto_index
 		index0 = row_indices[row0];
 		info_cnt = 0;
 		}
+					// Get to right spot again!
+	GtkAdjustment *adj = gtk_range_get_adjustment(
+						GTK_RANGE(shape_vscroll));
+	if (row0 >= adj->value)		// Beyond apparent end?
+		adjust_vscrollbar();	// Needs updating.
+	gtk_adjustment_set_value(adj, row0);
 	}
 
 /*
@@ -581,13 +587,9 @@ gint Shape_chooser::configure
 	chooser->info_cnt = 0;
 	int i0 = chooser->index0;	// Get back to where we were.
 	chooser->index0 = 0;
-	chooser->render();		// This also adjusts scrollbar.
 	chooser->goto_index(i0);	// Now goto where we were.
+	chooser->render();		// This also adjusts scrollbar.
 	chooser->adjust_hscrollbar(-1);
-					// Get to right spot again!
-	GtkAdjustment *adj = gtk_range_get_adjustment(
-					GTK_RANGE(chooser->shape_vscroll));
-	gtk_adjustment_set_value(adj, chooser->row0);
 					// Set handler for shape dropped here,
 					//   BUT not more than once.
 	if (chooser->drop_callback != Shape_dropped_here)
@@ -1833,7 +1835,6 @@ void Shape_chooser::frame_changed
 	)
 	{
 	Shape_chooser *chooser = (Shape_chooser *) data;
-cout << "Frame changed to " << adj->value << '\n';
 	gint newframe = (gint) adj->value;
 	if (chooser->selected >= 0)
 		{
@@ -1866,8 +1867,16 @@ void Shape_chooser::all_frames_toggled
 		gtk_widget_show(chooser->shape_hscroll);
 	else
 		gtk_widget_hide(chooser->shape_hscroll);
-	chooser->render();
-	chooser->show();
+	chooser->row_indices.resize(1);	// Start over with row info.
+	chooser->row0 = 0;
+	chooser->info_cnt = 0;
+					// Make selection visible.
+	int indx = chooser->selected >= 0 ? 
+		chooser->info[chooser->selected].index : chooser->index0;
+	chooser->index0 = 0;
+	chooser->goto_index(indx);
+//	chooser->render();
+//	chooser->show();
 	}
 
 /*
@@ -2039,11 +2048,6 @@ void Shape_chooser::search
 	if (i == stop)
 		return;			// Not found.
 	goto_index(i);
-	GtkAdjustment *adj = gtk_range_get_adjustment(
-						GTK_RANGE(shape_vscroll));
-	if (row0 >= adj->value)		// Beyond apparent end?
-		adjust_vscrollbar();	// Needs updating.
-	gtk_adjustment_set_value(adj, row0);
 	int newsel;			// Get new selection index.
 	if (!frames_mode)		// Easy if showing 1 shape/spot.
 		newsel = i - row_indices[row0];
