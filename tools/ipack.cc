@@ -69,8 +69,11 @@ public:
 	char *filename;			// Should be allocated.
 	int nframes;			// # frames in shape.
 	bool flat;			// A 'flat' shape.
+	bool bycol;			// If dim0_tiles > 0, go down first.
+	int dim0_tiles;			// File consists of 8x8 (flat) tiles.
 public:
-	Shape_spec() : filename(0), nframes(0), flat(false)
+	Shape_spec() : filename(0), nframes(0), flat(false), bycol(false),
+					dim0_tiles(0)
 		{  }
 	~Shape_spec()
 		{ delete filename; }
@@ -102,6 +105,27 @@ static char *Find_space
 	{
 	while (*ptr && !isspace(*ptr))
 		ptr++;
+	return ptr;
+	}
+
+/*
+ *	Pass a filename spec. which can have a "(nnn xxx)" at its end.
+ */
+
+static char *Pass_file_spec
+	(
+	char *ptr
+	)
+	{
+	int paren_depth = 0;
+	while (*ptr && (paren_depth > 0 || !isspace(*ptr)))
+		{
+		if (*ptr == '(')
+			paren_depth++;
+		else if (*ptr == ')')
+			paren_depth--;
+		ptr++;
+		}
 	return ptr;
 	}
 
@@ -165,6 +189,12 @@ static char *Get_token
  *		'nnn/fff:filename' indicates shape #nnn will consist of fff
  *			frames in files "filename-iii.png", where iii is the
  *			frame #.
+ *		'nnn/fff:filename(cc across)' indicates filename is a .png
+ *			consisting of 8x8 flat tiles, to be taken rowwise with
+ *			each row having cc columns.
+ *		'nnn/fff:filename(rr down)' indicates filename is a .png
+ *			consisting of 8x8 flat tiles, to be taken columnwise
+ *			with each column having rr rows.
  *		Filename may be followed by 'flat' to indicate 8x8 non-RLE
  *			shape.
  */
@@ -228,7 +258,7 @@ static void Read_script
 			exit(1);
 			}
 		ptr = Skip_space(endptr + 1);
-		endptr = Find_space(ptr);
+		endptr = Pass_file_spec(ptr);
 		if (endptr == ptr)
 			{
 			cerr << "Line #" << linenum <<
@@ -240,9 +270,26 @@ static void Read_script
 		*endptr = 0;
 		if (shnum >= specs.size())
 			specs.resize(shnum + 1);
-		specs[shnum].filename = strdup(ptr);
-		specs[shnum].nframes = nframes;
 		specs[shnum].flat = (strncmp(past_end, "flat", 4) == 0);
+		specs[shnum].nframes = nframes;
+		char fname[300], dir[300];
+		int dim0_cnt;		// See if it's a tiles spec.
+		if (sscanf(ptr, "%[^(](%d %s)", &fname[0], &dim0_cnt, &dir[0])
+							== 3)
+			{
+			if (!specs[shnum].flat)
+				{
+				cerr << "Line #" << linenum <<
+					":  Tiled file not specified 'flat'"
+								<< endl;
+				exit(1);
+				}
+			specs[shnum].dim0_tiles = dim0_cnt;
+			specs[shnum].bycol = strncmp(dir, "down", 4) == 0;
+			specs[shnum].filename = strdup(fname);
+			}
+		else
+			specs[shnum].filename = strdup(ptr);
 		}
 	}
 
@@ -701,8 +748,14 @@ static void Create
 		char *basename = (*it).filename;
 		if (basename)		// Not empty?
 			{
-			Write_exult(out, basename, (*it).nframes, (*it).flat,
-								palname);
+			int dim0_cnt = (*it).dim0_tiles;
+			if (dim0_cnt > 0)
+				Write_exult_from_tiles(out, basename,
+					(*it).nframes, (*it).bycol,
+					(*it).dim0_tiles, palname);
+			else			
+				Write_exult(out, basename, (*it).nframes, 
+						(*it).flat, palname);
 			palname = 0;	// Only write 1st palette.
 			}
 		writer.mark_section_done();
