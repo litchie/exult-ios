@@ -1124,7 +1124,7 @@ void Map_chunk::gravity
 	int lift			// Lift where tiles are free.
 	)
 	{
-	Game_object_vector dropped(20);		// Gets list of objs. that dropped.
+	Game_object_vector dropped(20);	// Gets list of objs. that dropped.
 	Game_window *gwin = Game_window::get_game_window();
 					// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(area);
@@ -1136,8 +1136,9 @@ void Map_chunk::gravity
 		Object_iterator objs(chunk->objects);
 		Game_object *obj;
 		while ((obj = objs.get_next()) != 0)
-			{
-			if (!obj->is_dragable())
+			{		// We DO want NPC's to fall.
+			if (!obj->is_dragable() && 
+						!gwin->get_info(obj).is_npc())
 				continue;
 			Tile_coord t = obj->get_abs_tile_coord();
 					// Get footprint.
