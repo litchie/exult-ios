@@ -172,7 +172,11 @@ void Main_actor::handle_event
 			return;
 			}
 		if (new_lift != get_lift())
+#if DEBUG
 			cout << "New lift is " << new_lift << '\n';
+#else
+			;
+#endif
 					// Add back to queue for next time.
 		gwin->get_tqueue()->add(curtime + frame_time,
 							this, udata);
@@ -269,7 +273,9 @@ void Npc_actor::update_schedule
 							get_cx(), get_cy());
 			int new_cx, new_cy, tx, ty;
 			schedules[i].get_pos(new_cx, new_cy, tx, ty);
+#if DEBUG
 cout << "Npc " << get_name() << " has new schedule " << schedule << '\n';
+#endif
 			Chunk_object_list *nlist = 
 					gwin->get_objects(new_cx, new_cy);
 					// Move it.

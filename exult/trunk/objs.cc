@@ -361,11 +361,13 @@ void Egg_object::activate
 	int roll = 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
+#if DEBUG
 cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		", distance = " << (int) distance << ", crit = " <<
 		(int) criteria << ", once = " <<
 	((flags & (1<<(int)once) != 0)) << ", areset = " <<
 	((flags & (1<<(int)auto_reset) != 0)) << '\n';
+#endif
 //TESTING:
 	static int cnt = 0;
 //	audio.start_speech(cnt++);//++++++++++++
