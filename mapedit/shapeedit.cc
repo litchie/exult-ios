@@ -578,7 +578,8 @@ void ExultStudio::init_shape_notebook
 			winfo->is_thrown() ? 3 : 1;	// 1 == "None".
 		set_optmenu("shinfo_weapon_ammo", ammo_use);
 		set_spin("shinfo_weapon_ammo_shape", ammo, ammo > 0);
-		set_spin("shinfo_weapon_proj", winfo->get_projectile());
+		set_spin("shinfo_weapon_proj", winfo->get_projectile(),
+								0, 1023);
 		set_optmenu("shinfo_weapon_uses", winfo->get_uses());
 		set_spin("shinfo_weapon_sfx", winfo->get_sfx());
 		set_spin("shinfo_weapon_hitsfx", winfo->get_hitsfx());
