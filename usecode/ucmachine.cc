@@ -983,6 +983,28 @@ Usecode_value Usecode_machine::click_on_item
 	}
 
 /*
+ *	Find an unblocked tile within a distance of 3 from a given point.
+ *
+ *	Output:	Returns tile, or original if not found.
+ */
+
+static Tile_coord Find_unblocked
+	(
+	Tile_coord dest			// Where to go.
+	)
+	{
+	Tile_coord start = dest;
+	dest.tx = -1;			// Look outwards.
+	for (int i = 0; dest.tx == -1 && i < 3; i++)
+		dest = Game_object::find_unblocked_tile(start, i);
+	if (dest.tx == -1)
+		return start;
+	else
+		return dest;
+	}
+
+
+/*
  *	Have an NPC walk somewhere and then execute usecode.
  *
  *	Output:	1 if successful, else 0.
@@ -995,8 +1017,7 @@ int Usecode_machine::path_run_usecode
 	Usecode_value& useval,		// Usecode #.
 	Usecode_value& itemval,		// Use as itemref in Usecode fun.
 	Usecode_value& eventval,	// Eventid.
-	int find_free			// Not sure.  For SI.  We'll also
-					//   interpret as 'don't fail'.
+	int find_free			// Not sure.  For SI.  
 	)
 	{
 	Actor *npc = as_actor(get_item(npcval));
@@ -1013,21 +1034,26 @@ int Usecode_machine::path_run_usecode
 	int dx = locval.get_elem(0).get_int_value();
 	int dy = locval.get_elem(1).get_int_value();
 	int dz = locval.get_elem(2).get_int_value();
+	cout << endl << "Path_run_usecode:  first walk to (" << 
+			dx << ", " << dy << ", " << dz << ")" << endl;
 	Tile_coord dest(dx, dy, dz);
 	if (find_free)
 		{
-		Tile_coord start = dest;
-		dest.tx = -1;		// Look outwards.
-		for (int i = 0; dest.tx == -1 && i < 3; i++)
-			dest = Game_object::find_unblocked_tile(start, i);
-		if (dest.tx == -1)
-			dest = start;
+		dest = Find_unblocked(dest);
+		if (src != dest && !npc->walk_path_to_tile(dest))
+			{		// Try again at npc's level.
+			dest.tz = src.tz;
+			dest = Find_unblocked(dest);
+			if (src != dest && !npc->walk_path_to_tile(dest))
+				{
+				cout << "Failed to find path" << endl;
+				return 0;
+				}
+			}
 		}
-	cout << endl << "Path_run_usecode:  first walk to (" << 
-			dx << ", " << dy << ", " << dz << ")" << endl;
-	if (src != dest &&
-	    !npc->walk_path_to_tile(dest) && !find_free)
-		{			// Failed to find path.  Return 0.
+	else if (src != dest &&		// Just try once.
+	    !npc->walk_path_to_tile(dest))
+		{			// Failed to find path.
 		cout << "Failed to find path" << endl;
 		return 0;
 		}
