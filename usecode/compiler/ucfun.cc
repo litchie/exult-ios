@@ -47,7 +47,7 @@ Uc_function::Uc_function
 	Uc_function_symbol *p
 	) : top(0), proto(p), cur_scope(&top), num_parms(0),
 	    num_locals(0), text_data(0), text_data_size(0),
-	    statement(0)
+	    statement(0), reloffset(0)
 	{
 	char *nm = (char *) proto->get_name();
 	add_global_function_symbol(proto);// Add prototype to globals.
@@ -79,6 +79,10 @@ Uc_function::~Uc_function
 	{
 	delete statement;
 	delete proto;
+
+	std::map<std::string, Uc_label*>::iterator iter;
+	for (iter = labels.begin(); iter != labels.end(); ++iter)
+		delete iter->second;
 	}
 
 /*
@@ -103,6 +107,21 @@ bool Uc_function::is_dup
 		}
 	return false;
 	}
+
+/*
+ *  Find a label in this function
+ *
+ *  Output: label, or 0 if not found
+ */
+
+Uc_label *Uc_function::search_label(char *nm)
+{
+	std::map<std::string,Uc_label*>::iterator iter;
+	iter = labels.find(nm);
+	if (iter != labels.end())
+		return iter->second;
+	return 0;
+}
 
 /*
  *	Add a new variable to the current scope.
@@ -286,6 +305,24 @@ int Uc_function::link
 	return offset;
 	}
 
+
+void Uc_function::link_labels(vector<char>& code)
+{
+	std::map<std::string, Uc_label*>::iterator iter;
+	for (iter = labels.begin(); iter != labels.end(); ++iter) {
+		Uc_label *label = iter->second;
+		if (label->is_valid()) {
+			int target = label->get_offset(); 
+			std::vector<int>& references = label->get_references();
+			std::vector<int>::iterator i;
+			for (i = references.begin(); i != references.end(); ++i) {
+				int offset = (*i) + 1;
+				Write2(code, offset, target - (offset + 2));
+			}
+		}
+	}
+}
+
 /*
  *	Generate Usecode.
  */
@@ -302,6 +339,7 @@ void Uc_function::gen
 	if (statement)
 		statement->gen(code, this);
 	code.push_back((char) UC_RET);	// Always end with a RET.
+	link_labels(code);
 	int codelen = code.size();	// Get its length.
 	int num_links = links.size();
 					// Total: text_data_size + data + 

@@ -34,6 +34,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "ucfun.h"
 
+using std::vector;
+using std::string;
+
 /*
  *	Delete.
  */
@@ -195,8 +198,11 @@ void Uc_while_statement::gen
 	vector<char> stmt_code;
 	stmt_code.reserve(4000);
 	fun->start_breakable(this);
-	if (stmt)
+	if (stmt) {
+		fun->adjust_reloffset(out.size() + 3);
 		stmt->gen(stmt_code, fun);	// Generate statement's code.
+		fun->adjust_reloffset(-out.size() - 3);
+	}
 	int stmtlen = stmt_code.size();
 					// Get distance back to top, including
 					//   a JNE and a JMP.
@@ -270,7 +276,9 @@ void Uc_arrayloop_statement::gen
 	vector<char> stmt_code;
 	stmt_code.reserve(4000);
 	fun->start_breakable(this);
+	fun->adjust_reloffset(out.size() + 2);
 	stmt->gen(stmt_code, fun);	// Generate statement's code.
+	fun->adjust_reloffset(-out.size() - 2);
 					// Back to top includes JMP at end.
 	int dist = testlen + stmt_code.size() + 3;
 	stmt_code.push_back((char) UC_JMP);	// Generate JMP back to top.
@@ -332,6 +340,40 @@ void Uc_break_statement::gen
 	}
 
 
+void Uc_label_statement::gen
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+{
+	// use reloffset to compensate for jumps to points in separately
+	// generated blocks of code
+	label->set_offset(out.size() + fun->get_reloffset());
+
+	// no code
+}
+
+
+void Uc_goto_statement::gen
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+{
+	Uc_label *l = fun->search_label(label);
+	if (l) {
+		// use reloffset to compensate for jumps to points in separately
+		// generated blocks of code
+		l->add_reference(out.size() + fun->get_reloffset());
+		out.push_back((char) UC_JMP);
+		Write2(out, 0); // will be filled in later
+	} else {
+		char buf[255];
+		snprintf(buf, 255, "Undeclared label: '%s'", label);
+		error(buf);
+	}
+}
+
 /*
  *	Delete.
  */
@@ -356,8 +398,11 @@ void Uc_converse_statement::gen
 	long top = out.size();		// Get current position.
 	vector<char> stmt_code;
 	fun->start_breakable(this);
-	if (stmt)
+	if (stmt) {
+		fun->adjust_reloffset(out.size() + 3);
 		stmt->gen(stmt_code, fun);	// Generate statement's code.
+		fun->adjust_reloffset(-out.size() - 3);
+	}
 	int stmtlen = stmt_code.size();
 					// Get distance back to top, including
 					//   a CONVERSE & JMP back to top.
