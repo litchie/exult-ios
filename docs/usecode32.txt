@@ -40,3 +40,11 @@ Extra opcodes: (0x80 + old opcode. See original opcodes for details)
 
 0xCD: INIT32
 0xCD <32 bit data offset><32 bit data offset>
+
+
+
+Changes to wud/wuc:
+
+wuc will output an extended function header if there is a '.ext32' keyword
+directly between the .funcnumber and .data lines.
+wud will output this keyword automatically.
