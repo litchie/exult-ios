@@ -967,6 +967,36 @@ Usecode_value	Usecode_machine::UI_select_from_menu2(int event,int intrinsic,Usec
 	return val;
 }
 
+Usecode_value	Usecode_machine::UI_input_numeric_value(int event,int intrinsic,Usecode_value parms[12])
+{
+	// Ask for # (min, max, step, default).
+	// (Show slider.)
+	//+++++++++++++
+	return Usecode_value(parms[0].get_int_value() + 1);
+}
+
+Usecode_value	Usecode_machine::UI_set_item_shape(int event,int intrinsic,Usecode_value parms[12])
+{
+	// Set item shape.
+	set_item_shape(parms[0], parms[1]);
+	return no_ret;
+}
+
+Usecode_value	Usecode_machine::UI_die_roll(int event,int intrinsic,Usecode_value parms[12])
+{
+	// Rand. # within range.
+	int low = parms[0].get_int_value();
+	int high = parms[1].get_int_value();
+	if (low > high)
+		{
+		int tmp = low;
+		low = high;
+		high = tmp;
+		}
+	int val = (rand() % (high - low + 1)) + low;
+	return (Usecode_value(val));
+}
+
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,Usecode_value parms[12]);
 
 UsecodeIntrinsicFn intrinsic_table[]=
@@ -983,9 +1013,14 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	&Usecode_machine::UI_UNKNOWN, // 9
 	&Usecode_machine::UI_select_from_menu, // 0x0a
 	&Usecode_machine::UI_select_from_menu2, // 0x0b
+	&Usecode_machine::UI_input_numeric_value, // 0xc
+	&Usecode_machine::UI_set_item_shape, // 0xd
+	&Usecode_machine::UI_UNKNOWN, // 0xe
+	&Usecode_machine::UI_UNKNOWN, // 0xf
+	&Usecode_machine::UI_die_roll, // 0x10
 	};
 
-int	max_bundled_intrinsics=0xb;	// Index of the last intrinsic in this table
+int	max_bundled_intrinsics=0x10;	// Index of the last intrinsic in this table
 
 /*
  *	Call an intrinsic function.
@@ -1012,27 +1047,6 @@ Usecode_value Usecode_machine::call_intrinsic
 	else
 	switch (intrinsic)
 		{
-	case 0xc:			// Ask for # (min, max, step, default).
-					// (Show slider.)
-		//+++++++++++++
-		return Usecode_value(parms[0].get_int_value() + 1);
-		break;
-	case 0xd:			// Set item shape.
-		set_item_shape(parms[0], parms[1]);
-		break;
-	case 0x10:			// Rand. # within range.
-		{
-		int low = parms[0].get_int_value();
-		int high = parms[1].get_int_value();
-		if (low > high)
-			{
-			int tmp = low;
-			low = high;
-			high = tmp;
-			}
-		int val = (rand() % (high - low + 1)) + low;
-		return (Usecode_value(val));
-		}
 	case 0x11:			// Get item shape.
 		return (Usecode_value(get_item_shape(parms[0])));
 	case 0x12:			// Get item frame.
