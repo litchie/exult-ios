@@ -1,3 +1,8 @@
+2000-10-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Include weapon area in add_dirty(); cleans up
+	graphics left behind when large weapon is carried.
+
 2000-10-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Straightened out virtue stones.
