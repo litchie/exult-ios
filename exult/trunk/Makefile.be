@@ -143,7 +143,7 @@ data/exult_bg.flx: tools/expack $(EXULT_BG_FLX_OBJECTS)
 	tools/expack -i data/bg/flx.in
 
 data/exult_si.flx: tools/expack $(EXULT_SI_FLX_OBJECTS)
-
+	tools/expack -i data/si/flx.in
 
 imagescl.o: imagewin/imagescl.cc scale.cc
 	$(CXX) $(CPPFLAGS) -O3 -c imagewin/imagescl.cc -o imagescl.o
