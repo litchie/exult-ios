@@ -173,7 +173,7 @@ void Shape_manager::load
 			uint8 *data = (uint8*)xf.retrieve(i, len);
 			memcpy(xforms[nxforms - 1 - i].colors, data,
 						sizeof(xforms[0].colors));
-			delete data;
+			delete[] data;
 			}
 		}
 	else				// Create algorithmically.

@@ -1,3 +1,7 @@
+2002-07-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mouse.cc: fixed uninitialized variables (box,dirty)
+	* shapeid.cc: delete -> delete[]
+
 2002-07-31  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gumps/Spellbook_gump.cc,objs/spellbook.cc:  Move functionality
