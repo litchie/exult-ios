@@ -592,6 +592,7 @@ void Usecode_machine::show_pending_text
 		while (book->show_next_page(gwin) && 
 						Get_click(x, y, Mouse::hand))
 			;
+		gwin->paint();
 		}
 					// Normal conversation:
 	else if (gwin->is_npc_text_pending())
@@ -623,12 +624,12 @@ void Usecode_machine::say_string
 	user_choice = 0;		// Clear user's response.
 	if (!String)
 		return;
-	show_pending_text();		// Make sure prev. text was seen.
 	if (book)			// Displaying a book?
 		{
 		show_book();
 		return;
 		}
+	show_pending_text();		// Make sure prev. text was seen.
 	char *str = String;
 	while (*str)			// Look for stopping points ("~~").
 		{
@@ -1777,7 +1778,10 @@ USECODE_INTRINSIC(display_map)
 USECODE_INTRINSIC(book_mode)
 	// Display book or scroll.
 	Text_gump *gump;
-	if (parms[0].get_int_value() == 797)
+	Game_object *obj = get_item(parms[0]);
+	if (!obj)
+		return;
+	if (obj->get_shapenum() == 797)
 		gump = new Scroll_gump();
 	else
 		gump = new Book_gump();

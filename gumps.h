@@ -43,10 +43,13 @@ const int SLIDERRIGHT = 16;
 const int SLIDERLEFT = 17;
 const int DISK = 24;			// Diskette shape #.
 const int HEART = 25;			// Stats button shape #.
+const int BOOK = 32;
+const int SPELLBOOK = 43;
 const int DOVE = 46;
 const int STATSDISPLAY = 47;
-const int BOOK = 20;			// +++++++++++guessing.
-const int SCROLL = 21;			// ++++++++++++++
+const int SCROLL = 55;
+const int YESNOBOX = 69;
+const int YESBTN = 70, NOBTN = 71;
 
 /*
  *	A pushable button on a gump:
