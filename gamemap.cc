@@ -1231,14 +1231,25 @@ void Game_map::abort_terrain_edits
 
 void Game_map::find_unused_shapes
 	(
+	unsigned char *found,		// Bits set for shapes found.
+	int foundlen			// # bytes.
 	)
 	{
-	unsigned char found[1024];	// All possible shapes (for now).
-	memset(found, 0, sizeof(found));
+	memset(found, 0, foundlen);
+	Game_window *gwin = Game_window::get_game_window();
+	cout << "Reading all chunks";
 					// Read in EVERYTHING!
 	for (int sc = 0; sc < c_num_schunks*c_num_schunks; sc++)
+		{
+		cout << '.';
+		cout.flush();
 		if (!schunk_read[sc])
 			get_superchunk_objects(sc);
+		}
+	cout << endl;
+	int maxbits = foundlen*8;	// Total #bits in 'found'.
+	if (maxbits > gwin->get_num_shapes())
+		maxbits = gwin->get_num_shapes();
 					// Go through chunks.
 	for (int cy = 0; cy < c_num_chunks; cy++)
 		for (int cx = 0; cx < c_num_chunks; cx++)
@@ -1249,12 +1260,18 @@ void Game_map::find_unused_shapes
 			while ((obj = all.get_next()) != 0)
 				{
 				int shnum = obj->get_shapenum();
-				if (shnum >= 0 && shnum < sizeof(found))
-					found[shnum] = 1;
+				if (shnum >= 0 && shnum < maxbits)
+					found[shnum/8] |= (1<<(shnum%8));
 				}
 			}
-//++++NOTE:  Got to get possible monster shapes.
-	for (int i = 0; i < sizeof(found); i++)
-		if (!found[i])
+	int i;
+	for (i = 0; i < maxbits; i++)	// Add all possible monsters.
+		{
+		Monster_info *minf = gwin->get_info(i).get_monster_info();
+		if (minf)
+			found[i/8] |= (1<<(i&8));
+		}
+	for (i = 0x96; i < maxbits; i++)	// Ignore flats (<0x96).
+		if (!(found[i/8]&(1<<(i%8))))
 			cout << "Shape " << i << " not found in game" << endl;
 	}
