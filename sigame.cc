@@ -1388,6 +1388,12 @@ bool SI_Game::new_game(Vga_file &shapes)
 bool SI_Game::is_installed()
 {
 	std::string buf("<SERPENTISLE_STATIC>/sispeech.spc");
-	std::cout << "is_installed: " << buf << std::endl;
-	return U7exists(buf) && U7exists("<DATA>/exult_si.flx");
+	std::cout << "is_installed: '" << get_system_path(buf);
+	bool found = U7exists(buf) && U7exists("<DATA>/exult_si.flx");
+	if (found)
+		std::cout << "' : yes" << std::endl;
+	else
+		std::cout << "' : no" << std::endl;
+
+	return found;
 }
