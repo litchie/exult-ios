@@ -108,6 +108,12 @@ void	Configuration::set(string &key,string &value,bool write_out)
 
 	// We must also properly encode the value before writing it out.
 	// Must remember that.
+	if(xmltree.entity.id.length()==0)
+		{
+		string k;
+		k=key.substr(0,key.find('/'));
+		xmltree.entity.id=k;
+		}
 	xmlassign(walk,k,value);
 	if(write_out)
 		write_back();
