@@ -14,7 +14,7 @@
 // The index is the MT32 Patch nubmer and the value is the GM Patch
 // This is only suitable for music that doesn'tdo timbre changes
 // XMIDIs that contain Timbre changes will not convert properly
-unsigned char XMIDI::mt32asgm[128] = {
+const char XMIDI::mt32asgm[128] = {
 	0,	// 0	Piano 1
 	1,	// 1	Piano 2
 	2,	// 2	Piano 3 (synth)
@@ -142,13 +142,145 @@ unsigned char XMIDI::mt32asgm[128] = {
 	123,	// 124	BirdTweet
 	94,	// 125	Big Notes Pad no equiv, set to halo pad (94)
 	98,	// 126	Water Bell set to Crystal Pad(98)
-	121,	// 127	Jungle Tune set to Breath Noise
+	121	// 127	Jungle Tune set to Breath Noise
 };
 
+// Same as above, except include patch changes
+// so GS instruments can be used
+const char XMIDI::mt32asgs[256] = {
+	0, 0,	// 0	Piano 1
+	1, 0,	// 1	Piano 2
+	2, 0,	// 2	Piano 3 (synth)
+	4, 0,	// 3	EPiano 1
+	4, 0,	// 4	EPiano 2
+	5, 0,	// 5	EPiano 3
+	5, 0,	// 6	EPiano 4
+	3, 0,	// 7	Honkytonk
+	16, 0,	// 8	Organ 1
+	17, 0,	// 9	Organ 2
+	18, 0,	// 10	Organ 3
+	16, 0,	// 11	Organ 4
+	19, 0,	// 12	Pipe Organ 1
+	19, 0,	// 13	Pipe Organ 2
+	19, 0,	// 14	Pipe Organ 3
+	21, 0,	// 15	Accordion
+	6, 0,	// 16	Harpsichord 1
+	6, 0,	// 17	Harpsichord 2
+	6, 0,	// 18	Harpsichord 3
+	7, 0,	// 19	Clavinet 1
+	7, 0,	// 20	Clavinet 2
+	7, 0,	// 21	Clavinet 3
+	8, 0,	// 22	Celesta 1
+	8, 0,	// 23	Celesta 2
+	62, 0,	// 24	Synthbrass 1 (62)
+	63, 0,	// 25	Synthbrass 2 (63)
+	62, 0,	// 26	Synthbrass 3 Bank 8
+	63, 0,	// 27	Synthbrass 4 Bank 8
+	38, 0,	// 28	Synthbass 1
+	39, 0,	// 29	Synthbass 2
+	38, 0,	// 30	Synthbass 3 Bank 8
+	39, 0,	// 31	Synthbass 4 Bank 8
+	88, 0,	// 32	Fantasy
+	90, 0,	// 33	Harmonic Pan - No equiv closest is polysynth(90) :(
+	52, 0,	// 34	Choral ?? Currently set to SynthVox(54). Should it be ChoirAhhs(52)???
+	92, 0,	// 35	Glass
+	97, 0,	// 36	Soundtrack
+	99, 0,	// 37	Atmosphere
+	14, 0,	// 38	Warmbell, sounds kind of like crystal(98) perhaps Tubular Bells(14) would be better. It is!
+	54, 0,	// 39	FunnyVox, sounds alot like Bagpipe(109) and Shania(111)
+	98, 0,	// 40	EchoBell, no real equiv, sounds like Crystal(98)
+	96, 0,	// 41	IceRain
+	68, 0,	// 42	Oboe 2001, no equiv, just patching it to normal oboe(68)
+	95, 0,	// 43	EchoPans, no equiv, setting to SweepPad
+	81, 0,	// 44	DoctorSolo Bank 8
+	87, 0,	// 45	SchoolDaze, no real equiv
+	112, 0,	// 46	Bell Singer
+	80, 0,	// 47	SquareWave
+	48, 0,	// 48	Strings 1
+	48, 0,	// 49	Strings 2 - should be 49
+	44, 0,	// 50	Strings 3 (Synth) - Experimental set to Tremollo Strings - should be 50
+	45, 0,	// 51	Pizzicato Strings
+	40, 0,	// 52	Violin 1
+	40, 0,	// 53	Violin 2 ? Viola
+	42, 0,	// 54	Cello 1
+	42, 0,	// 55	Cello 2
+	43, 0,	// 56	Contrabass
+	46, 0,	// 57	Harp 1
+	46, 0,	// 58	Harp 2
+	24, 0,	// 59	Guitar 1 (Nylon)
+	25, 0,	// 60	Guitar 2 (Steel)
+	26, 0,	// 61	Elec Guitar 1
+	27, 0,	// 62	Elec Guitar 2
+	104, 0,	// 63	Sitar
+	32, 0,	// 64	Acou Bass 1
+	32, 0,	// 65	Acou Bass 2
+	33, 0,	// 66	Elec Bass 1
+	34, 0,	// 67	Elec Bass 2
+	36, 0,	// 68	Slap Bass 1
+	37, 0,	// 69	Slap Bass 2
+	35, 0,	// 70	Fretless Bass 1
+	35, 0,	// 71	Fretless Bass 2
+	73, 0,	// 72	Flute 1
+	73, 0,	// 73	Flute 2
+	72, 0,	// 74	Piccolo 1
+	72, 0,	// 75	Piccolo 2
+	74, 0,	// 76	Recorder
+	75, 0,	// 77	Pan Pipes
+	64, 0,	// 78	Sax 1
+	65, 0,	// 79	Sax 2
+	66, 0,	// 80	Sax 3
+	67, 0,	// 81	Sax 4
+	71, 0,	// 82	Clarinet 1
+	71, 0,	// 83	Clarinet 2
+	68, 0,	// 84	Oboe
+	69, 0,	// 85	English Horn (Cor Anglais)
+	70, 0,	// 86	Bassoon
+	22, 0,	// 87	Harmonica
+	56, 0,	// 88	Trumpet 1
+	56, 0,	// 89	Trumpet 2
+	57, 0,	// 90	Trombone 1
+	57, 0,	// 91	Trombone 2
+	60, 0,	// 92	French Horn 1
+	60, 0,	// 93	French Horn 2
+	58, 0,	// 94	Tuba	
+	61, 0,	// 95	Brass Section 1
+	61, 0,	// 96	Brass Section 2
+	11, 0,	// 97	Vibes 1
+	11, 0,	// 98	Vibes 2
+	99, 0,	// 99	Syn Mallet Bank 1
+	112, 0,	// 100	WindBell no real equiv Set to TinkleBell(112)
+	9, 0,	// 101	Glockenspiel
+	14, 0,	// 102	Tubular Bells
+	13, 0,	// 103	Xylophone
+	12, 0,	// 104	Marimba
+	107, 0,	// 105	Koto
+	111, 0,	// 106	Sho?? set to Shanai(111)
+	77, 0,	// 107	Shakauhachi
+	78, 0,	// 108	Whistle 1
+	78, 0,	// 109	Whistle 2
+	76, 0,	// 110	Bottle Blow
+	76, 0,	// 111	Breathpipe no real equiv set to bottle blow(76)
+	47, 0,	// 112	Timpani
+	117, 0,	// 113	Melodic Tom
+	116, 0,	// 114	Deap Snare no equiv, set to Taiko(116)
+	118, 0,	// 115	Electric Perc 1
+	118, 0,	// 116	Electric Perc 2
+	116, 0,	// 117	Taiko
+	115, 0,	// 118	Taiko Rim, no real equiv, set to Woodblock(115)
+	119, 0,	// 119	Cymbal, no real equiv, set to reverse cymbal(119)
+	115, 0,	// 120	Castanets, no real equiv, in GM set to Woodblock(115)
+	112, 0,	// 121	Triangle, no real equiv, set to TinkleBell(112)
+	55, 0,	// 122	Orchestral Hit
+	124, 0,	// 123	Telephone
+	123, 0,	// 124	BirdTweet
+	94, 0,	// 125	Big Notes Pad no equiv, set to halo pad (94)
+	98, 0,	// 126	Water Bell set to Crystal Pad(98)
+	121, 0	// 127	Jungle Tune set to Breath Noise
+};
 // Constructor
-XMIDI::XMIDI(DataSource *source, bool pconvert) : events(NULL),timing(NULL),fixed(NULL)
+XMIDI::XMIDI(DataSource *source, int pconvert) : events(NULL),timing(NULL),
+						convert_from_mt32(pconvert),fixed(NULL)
 {
-	convert_from_mt32 = pconvert;
 	ExtractTracks (source);
 }
 

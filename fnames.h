@@ -60,6 +60,7 @@
 #define ENDGAME		"<STATIC>/endgame.dat"
 #define ENDSCORE_XMI	"<STATIC>/endscore.xmi"
 #define MIDITMPFILE     "u7midi"
+#define MIDISFXFILE     "u7sfx"
 #define SAVENAME	"game%02d.u7"
 #define INTROSND	"<STATIC>/introsnd.dat"
 #define ARMOR		"<STATIC>/armor.dat"

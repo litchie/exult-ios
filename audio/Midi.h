@@ -41,12 +41,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class	MidiAbstract
 {
 public:
-#ifndef WIN32
-	virtual void	start_track(const char *,bool repeat)=0;
-#else
-	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat)=0;
-	virtual void	start_sfx(midi_event *evntlist, int ppqn)=0;
-#endif
+	// Do we accept events, default no
+	virtual bool	accepts_events(void) { return false; }
+
+	// Non Event based methods
+	virtual void	start_track(const char *,bool repeat) { };
+	virtual void	start_sfx(const char *) { };
+	// Event based methods
+	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat) { };
+	virtual void	start_sfx(midi_event *evntlist, int ppqn) { };
+	
 	virtual void	stop_track(void)=0;
 	virtual	bool	is_playing(void)=0;
 	virtual	const	char *copyright(void)=0;
