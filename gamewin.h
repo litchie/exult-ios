@@ -619,6 +619,7 @@ public:
 	void get_nearby_npcs(Actor_queue& list);
 					// Update NPCs' schedules.
 	void schedule_npcs(int hour3, int backwards = 0);
+	void mend_npcs();		// Restore HP's each hour.
 	void theft();			// Handle thievery.
 	void attack_avatar(int num_guards = 0);
 	void get_focus();		// Get/lose focus.

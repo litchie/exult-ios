@@ -140,6 +140,8 @@ void Game_clock::check_hunger
 
 /*
  *	Increment clock.
+ *
+ *	FOR NOW, skipping call to mend_npcs().  Not sure...
  */
 
 void Game_clock::increment
@@ -199,6 +201,7 @@ void Game_clock::handle_event
 			day++;
 		}
 		set_time_palette();
+		gwin->mend_npcs();	// Restore HP's each hour.
 		if (hour%3 == 0)	// New 3-hour period?
 		{
 			check_hunger();	// Use food, and print complaints.
@@ -228,6 +231,7 @@ void Game_clock::fake_next_period
 	set_time_palette();
 	check_hunger();
 	gwin->schedule_npcs(hour/3);
+	gwin->mend_npcs();		// Just do it once, cheater.
 	COUT("The hour is now " << hour);
 }
 

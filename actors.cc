@@ -2628,6 +2628,38 @@ void Actor::die
 	}
 
 /*
+ *	Restore HP's on the hour.
+ */
+
+void Actor::mend_hourly
+	(
+	)
+	{
+	if (dead)
+		return;
+	int maxhp = properties[(int) strength];
+	int hp = properties[(int) health];
+	if (maxhp > 0 && hp < maxhp)
+		{
+		hp += 1 + rand()%(maxhp/3);
+		if (hp > maxhp)
+			hp = maxhp;
+		properties[(int) health] = hp;
+					// ??If asleep & hps now >= 0, should
+					//   we awaken?
+		}
+					// Restore some mana also.
+	int maxmana = properties[(int) magic];
+	int curmana = properties[(int) mana];
+	if (maxmana > 0 && curmana < maxmana)
+		{
+		curmana += 1 + rand()%(maxmana/3);
+		properties[(int) mana] = curmana <= maxmana ? curmana 
+								: maxmana;
+		}
+	}
+
+/*
  *	Restore from body.  It must not be owned by anyone.
  *
  *	Output:	->actor if successful, else 0.

@@ -399,6 +399,7 @@ public:
 					int ammo_shape = 0);
 	virtual void die();		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
+	void mend_hourly();		// Restore HP's hourly.
 					// Don't write out to IREG file.
 	virtual void write_ireg(std::ostream& out)
 		{  }
