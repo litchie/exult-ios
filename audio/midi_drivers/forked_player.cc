@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2001,2005  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ using std::endl;
 // NB: This function doesn't return unless execlp fails!
 static  void    playFJmidifile(const char *name)
 {
-	execlp("playmidi","-v","-v","-e",name,0);
+	execlp("playmidi","playmidi","-v","-v","-e",name,0);
 }
 
 forked_player::forked_player() : forked_job(-1)
