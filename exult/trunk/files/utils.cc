@@ -486,3 +486,16 @@ int Log2
 		result++;
 	return result;
 }
+
+/*
+ *	Replacement for non-standard strdup function.
+ */
+
+char *newstrdup(const char *s)
+{
+	if(!s)
+		throw std::invalid_argument("NULL pointer passed to newstrdup");
+	char *ret=new char[std::strlen(s)+1];
+	std::strcpy(ret,s);
+	return ret;
+}

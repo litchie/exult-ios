@@ -24,6 +24,9 @@
 #  pragma implementation
 #endif
 
+#ifndef ALPHA_LINUX_CXX
+#  include <cassert>
+#endif
 #include "common_types.h"
 #include "XMLEntity.h"
 #include <iostream>

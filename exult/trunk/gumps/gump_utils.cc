@@ -224,12 +224,3 @@ void Paint_num
   	snprintf(buf, 20, "%d", num);
 	gwin->paint_text(font, buf, x - gwin->get_text_width(font, buf), y);
 }
-
-char *newstrdup(const char *s)
-{
-	if(!s)
-		throw std::invalid_argument("NULL pointer passed to newstrdup");
-	char *ret=new char[std::strlen(s)+1];
-	std::strcpy(ret,s);
-	return ret;
-}

@@ -1,5 +1,10 @@
+2002-03-08  Max Horn  <max@quendi.de>
+	* files/util.*, gumps/gump_util.*: moved newstrdup to files/util.cc
+	* audio/xmidi.cc, conf/Configuration.cc, conf/XMLEntity.cc, game.cc,
+	  gamemap.h, sigame.cc: fixed namespace issues, added #include cassert, cleanup
+
 2002-03-08  Dominik Reichardt <gigdr@tesionmail.de>
-	* FAQ,ReadMe updated
+	* FAQ, ReadMe updated
 	* docs/FAQ.html and ReadMe.html updated
 	* docs/xml: makefile, makefile.win32 renames docs.html to ReadMe.html
 	* docs/xml: faq.xml, docs.xml updated
@@ -45,7 +50,7 @@
 2002-02-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Spark is NOT a ghost.
-	* actors.cc,gamewin.cc:  Combat_difficulty used.
+	* actors.cc, gamewin.cc:  Combat_difficulty used.
 
 2002-02-26  Jeff Freedman  <jeff@amy.nerble.net>
 

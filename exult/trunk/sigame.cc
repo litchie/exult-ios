@@ -976,12 +976,7 @@ bool ExCineVoc::play_it(Image_window *win, int t)
 void SI_Game::end_game(bool success) 
 {
 	int	next = 0;
-	size_t	flisize;
-	char	*fli_b;
-	uint8	*buffer;
-	size_t	size;
-	size_t	shapesize;
-	int	i,j;
+
 	Font	*font = fontManager.get_font("MENU_FONT");
 	Font	*sifont = fontManager.get_font("SIINTRO_FONT");
 
