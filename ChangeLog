@@ -1,3 +1,7 @@
+2000-11-08  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Trying to fix weapon clipping.
+
 2000-11-08  Tristan Tarrant <nadir@users.sourceforge.net>
 
 	* configure.in, tools/Makefile.am: only build the GIMP plugin if we

@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.17 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.18 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -485,7 +485,8 @@ WEAPONS.DAT:  weapons enumeration (jsf)
 	      10 == fire?
 	      20 == magic?
 	      38 == breaks?
-  type??      1 byte, guessing:
+  type??      New guess:  High nibble >looks< like the range in tiles.
+	      1 byte, guessing:
 	      0x01 == flamestrike.
 	      0x02 == flaming oil.
 	      0x04 == starburst
