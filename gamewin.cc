@@ -75,6 +75,7 @@
 #include "ucsched.h"			/* Only used to flush objects. */
 #include "utils.h"
 #include "virstone.h"
+#include "mappatch.h"
 
 using std::cerr;
 using std::cout;
@@ -191,7 +192,8 @@ Game_window::Game_window
 	    background_noise(new Background_noise(this)),
 	    bg_paperdolls_allowed(false), bg_paperdolls(false),
 	    removed(new Deleted_objects()), 
-	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0)
+	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0),
+	    map_patches(new Map_patch_collection)
 #ifdef RED_PLASMA
 	    ,load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0)
 #endif
@@ -254,7 +256,7 @@ Game_window::~Game_window
 	(
 	)
 	{
-    gump_man->close_all_gumps(true);
+    	gump_man->close_all_gumps(true);
 	clear_world();			// Delete all objects, chunks.
 	int i;	// Blame MSVC
 	for (i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
@@ -272,6 +274,7 @@ Game_window::~Game_window
 	delete usecode;
 	delete removed;
 	delete fonts;
+	delete map_patches;
 	}
 
 /*
@@ -1559,6 +1562,7 @@ void Game_window::get_superchunk_objects
 	get_ireg_objects(schunk);	// Get moveable objects.
 	CYCLE_RED_PLASMA();
 	schunk_read[schunk] = 1;	// Done this one now.
+	map_patches->apply(schunk);	// Move/delete objects.
 	}
 
 /*

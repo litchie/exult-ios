@@ -36,6 +36,7 @@
 #include "font.h"
 #include "txtscroll.h"
 #include "exult_types.h"
+#include "mappatch.h"
 
 using std::cout;
 using std::endl;
@@ -137,6 +138,18 @@ SI_Game::SI_Game()
 		
 		fontManager.add_font("MENU_FONT", MAINSHP_FLX, 9, 1);
 		fontManager.add_font("SIINTRO_FONT", "<STATIC>/intro.dat", 14, 0);
+		Map_patch_collection *mp = gwin->get_map_patches();
+					// Egg by "PC pirate" in forest:
+		mp->add(new Map_patch_remove(Object_spec(
+				Tile_coord(647, 1899, 0), 275, 7, 1)));
+					// Carpets above roof in Monitor:
+		mp->add(new Map_patch_remove(Object_spec(
+				Tile_coord(1035, 2572, 8), 483, 1, 0), true));
+		mp->add(new Map_patch_remove(Object_spec(
+				Tile_coord(1034, 2571, 6), 483, 1, 0)));
+		mp->add(new Map_patch_remove(Object_spec(
+				Tile_coord(1034, 2571, 5), 483, 1, 0), true));
+
 	}
 
 SI_Game::~SI_Game()
