@@ -17,7 +17,7 @@ ucc_SOURCES = ucparse.yy uclex.ll ucmain.cc \
 	ucsym.cc	\
 	ucsym.h
 
-if BUILD_TOOLS
+if BUILD_COMPILER
 bin_PROGRAMS = ucc
 endif
 
