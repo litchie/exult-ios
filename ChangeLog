@@ -1,3 +1,6 @@
+2001-11-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* configure.in: fixed broken test on non-MacOSX platforms
+	
 2001-11-17  Max Horn  <max@quendi.de>
 
 	* Makefile.am, configure.in: made sure MacOS X specific Makefile changes
