@@ -697,7 +697,7 @@ inline unsigned int charnum2uint(const char c)
 // FIXME: Remove the passed &params value. Get it from op._params_parsed
 string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output)
 {
-	std::sstream str;
+	std::stringstream str;
 	str << std::setfill('0') << std::setbase(16);
 	str.setf(ios::uppercase);
 	size_t	len=asmstr.length();
@@ -903,11 +903,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 	
 	if(ucs_output && opcode_table_data[op._id].flag_paren) str << ')';
 	
-	str << std::ends;
-	
-	string tstr(str.str());
-	str.freeze(false);
-	return tstr;
+	return str.str();
 }
 
 void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)
