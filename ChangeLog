@@ -1,3 +1,11 @@
+2001-09-19  Ryan Nunn <triforce@merlin.net.au>
+	* actorio.cc : Finally save all flags for actors
+	* exult.cc : Improved rendering timing and palette cycling timing
+	* objs/animate.cc : Improved Frame_animator timing
+	* gumps/gump_utils.h : Changed delay to 1/100 sec from 1/50 sec
+	* gamewin.cc,  usecode/ucsched.cc, usecode/ucsched.h,
+	  msvcstuff/msvc_kludges.h : Misc changes.
+
 2001-09-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/contain.cc (Container_game_object): Fixed bug in

@@ -82,7 +82,7 @@ public:
 	int save(unsigned char *buf, int buflen);
 	static Usecode_script *restore(Game_object *item,
 					unsigned char *buf, int buflen);
-	void print(ostream& out);	// Print values.
+	void print(std::ostream& out);	// Print values.
 	};
 
 

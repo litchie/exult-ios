@@ -439,7 +439,7 @@ void Frame_animator::handle_event
 	unsigned long curtime,		// Current time of day.
 	long udata			// Game window.
 	)
-	{
+{
 	unsigned int ticks = Game::get_ticks();
 
 	Game_window *gwin = (Game_window *) udata;
@@ -462,8 +462,11 @@ void Frame_animator::handle_event
 		Object_sfx::play(obj, sfxnum);
 					// Add back to queue for next time.
 	if (animating)
-		gwin->get_tqueue()->add(curtime + delay/5, this, udata);
+	{
+		// Ensure all animations are synced
+		gwin->get_tqueue()->add(ticks  + delay- (ticks%delay), this, udata);
 	}
+}
 
 /*
  *	Create a field frame animator.
