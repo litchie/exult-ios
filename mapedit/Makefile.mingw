@@ -39,7 +39,7 @@ FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o Table.o U7file.o utils.o
 
 IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 
-SHAPES_OBJS=font.o fontvga.o items.o monstinf.o shapeinf.o shapevga.o u7drag.o vgafile.o
+SHAPES_OBJS=font.o fontvga.o items.o monstinf.o shapeinf.o shapevga.o shapewrite.o u7drag.o vgafile.o
 
 OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS)
 

@@ -48,6 +48,7 @@ public:
 	virtual ~Shapes_vga_file();
 					// Read additional data files.
 	void read_info(bool bg, bool editing = false);
+	void write_info(bool bg);	// Write them back out.
 	Shape_info& get_info(int shapenum)
 	{
 		// Shapes 1024 -> 1035 in SI are alternative player chars.

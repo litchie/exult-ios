@@ -74,6 +74,8 @@ public:
 	friend class Shape_info;
 	Weapon_info() {  }
 	int read(std::istream& mfile, bool bg);	// Read in from file.
+					// Write out.
+	void write(int shapenum, std::ostream& mfile, bool bg);
 	int get_damage() const
 		{ return damage; }
 	int get_damage_type() const
@@ -112,6 +114,7 @@ public:
 class Ammo_info
 	{
 	int family_shape;		// I.e., burst-arrow's is 'arrow'.
+	unsigned short type2;		// ?? A shape.
 	unsigned char damage;		// Extra damage points.
 	unsigned char powers;		// Same as for weapons.
 	unsigned char damage_type;	// Same as for weapons.
@@ -121,6 +124,8 @@ public:
 	Ammo_info()
 		{  }
 	int read(std::istream& mfile);	// Read in from file.
+					// Write out.
+	void write(int shapenum, std::ostream& mfile);
 	int get_family_shape()
 		{ return family_shape; }
 	int get_damage()
@@ -142,6 +147,8 @@ public:
 	friend class Shape_info;
 	Armor_info() {  }
 	int read(std::istream& mfile);	// Read in from file.
+					// Write out.
+	void write(int shapenum, std::ostream& mfile);
 	unsigned char get_prot() const
 		{ return prot; }
 	unsigned char get_immune() const

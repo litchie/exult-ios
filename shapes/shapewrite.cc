@@ -24,7 +24,7 @@
 #  include <config.h>
 #endif
 
-#include <iomanip>			/* For debugging only. */
+#include "shapevga.h"
 #include "shapeinf.h"
 #include "monstinf.h"
 #include "utils.h"
@@ -98,12 +98,7 @@ void Shapes_vga_file::write_info
 	armor.put(cnt);
 	for (i = 0; i < num_shapes; i++)
 		if (info[i].armor != 0)
-			{
-			Write2(armor, i);
-			armor.put(armor);//+++Points for now.
-			for (int j = 0; j < 7; j++) //++++++
-				armor.put(0);
-			}
+			info[i].armor->write(i, armor);
 	armor.close();
 	ofstream weapon;
 	U7open(weapon, PATCH_WEAPONS);
@@ -134,7 +129,6 @@ void Shapes_vga_file::write_info
 	U7open(wihh, PATCH_WIHH);
 	cnt = 0;			// Keep track of actual entries.
 	for (i = 0; i < 1024; i++)
-		{
 		if (info[i].weapon_offsets == 0)
 			Write2(wihh, 0);// None for this shape.
 		else			// Write where it will go.
@@ -145,7 +139,7 @@ void Shapes_vga_file::write_info
 			wihh.write(info[i].weapon_offsets, 64);
 	wihh.close();
 	ofstream mfile;			// Now get monster info.
-	U7open(mfile, MONSTERS_PATCH);
+	U7open(mfile, PATCH_MONSTERS);
 	cnt = 0;
 	for (i = 0; i < num_shapes; i++)
 		if (info[i].monstinf)
@@ -156,23 +150,26 @@ void Shapes_vga_file::write_info
 			info[i].monstinf->write(i, mfile);
 	mfile.close();
 
-	U7open(mfile, EQUIP_PATCH);	// Write 'equip.dat'.
-	mfile.put(Monster_info::equip_cnt);
-	for (i = 0; i < Monster_info::equip_cnt; i++)
+	U7open(mfile, PATCH_EQUIP);	// Write 'equip.dat'.
+	cnt = Monster_info::get_equip_cnt();
+	mfile.put(cnt);
+	for (i = 0; i < cnt; i++)
 		{
-		Equip_record& rec = Monster_info::equip[i];
+		Equip_record& rec = Monster_info::get_equip(i);
 					// 10 elements/record.
 		for (int elem = 0; elem < 10; elem++)
 			{
-			write2(mfile, rec.elements[i].shapenum);
-			mfile.put(rec.elements[i].probability);
-			mfile.put(rec.elements[i].quantity);
+			Equip_element& elem = rec.get(i);
+			Write2(mfile, elem.get_shapenum());
+			mfile.put(elem.get_probability());
+			mfile.put(elem.get_quantity());
 			Write2(mfile, 0);
 			}
+		}
 	mfile.close();
 
 	ofstream(occ);			// Write occlude.dat.
-	U7open(occ, OCCLUDE_PATCH);
+	U7open(occ, PATCH_OCCLUDE);
 	unsigned char occbits[128];	// 1024 bit flags.
 	for (i = 0; i < sizeof(occbits); i++)
 		{
@@ -249,7 +246,7 @@ void Ammo_info::write
  *	Write out monster info. to 'monsters.dat'.
  */
 
-int Monster_info::write
+void Monster_info::write
 	(
 	int shapenum,
 	std::ostream& out
