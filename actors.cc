@@ -901,7 +901,8 @@ void Sleep_schedule::now_what
 	Shape_info& info = Game_window::get_game_window()->get_info(bed);
 	Tile_coord bedloc = bed->get_abs_tile_coord();
 					// Put NPC on top of bed.
-	npc->move(bedloc.tx, bedloc.ty, bedloc.tz + info.get_3d_height() + 1);
+	npc->Npc_actor::move(
+		bedloc.tx, bedloc.ty, bedloc.tz + info.get_3d_height() + 1);
 	}
 
 /*
@@ -945,14 +946,24 @@ void Sit_schedule::set_action
 	Game_object *chairobj
 	)
 	{
-#if 0	/* +++++No. */
+#if 0	/* +++++Enable when tested. */
 					// Get chair info.
 	Shape_info& info = Game_window::get_game_window()->get_info(chairobj);
 	Tile_coord chairloc = chairobj->get_abs_tile_coord();
+	switch (chairobj->get_framenum()%4)
+		{			// Figure where to sit.
+	case 0:				// North.
+		chairloc.ty--; break;
+	case 1:				// East.
+		chairloc.tx++; break;
+	case 2:				// South.
+		chairloc.ty++; break;
+	case 3:				// West.
+		chairloc.tx--; break;
+		}
 					// +++++++Walk path to chair?
-					// Put NPC on top of chair.
-	actor->move(chairloc.tx, chairloc.ty, 
-				chairloc.tz + 1);
+					// Put NPC in front of chair.
+	actor->move(chairloc.tx, chairloc.ty, chairloc.tz);
 #endif
 	char frames[2];
 					// Frame 0 faces N, 1 E, etc.
@@ -1060,7 +1071,7 @@ void Walk_to_schedule::now_what
 		}
 	if (legs >= 8 || retries >= 2)	// Trying too hard?
 		{			// Going to jump there.
-		npc->move(dest.tx, dest.ty, dest.tz);
+		npc->Npc_actor::move(dest.tx, dest.ty, dest.tz);
 		npc->set_schedule_type(new_schedule);
 		return;
 		}
@@ -1391,7 +1402,7 @@ void Npc_actor::follow
 		Game_window *gwin = Game_window::get_game_window();
 		if (pixels > gwin->get_width() + 16)
 			{
-			move(newtx, newty, goal.tz);
+			Npc_actor::move(newtx, newty, goal.tz);
 			Rectangle box = gwin->get_shape_rect(this);
 			gwin->add_text("Thou shan't lose me so easily!", 
 							box.x, box.y);
@@ -1450,10 +1461,8 @@ void Npc_actor::move
 	Game_window *gwin = Game_window::get_game_window();
 					// Store old chunk list.
 	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
-	gwin->add_dirty(this);		// Want to repaint old area.
 					// Move it.
 	Game_object::move(newtx, newty, newlift);
-	gwin->add_dirty(this);		// And repaint new area.
 	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
 	if (nlist != olist)
 		switched_chunks(olist, nlist);
