@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "egg.h"
 #include "gamewin.h"
 #include "actors.h"
+#include "animate.h"
 #include "Audio.h"
 #include "usecode.h"
 #include "useval.h"
@@ -380,6 +381,29 @@ void Egg_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;	// Low bits?++++++
 	Write2(ptr, data2);
 	out.write((char*)buf, sizeof(buf));
+	}
+
+/*
+ *	Create from IREG data.
+ */
+Animated_egg_object::Animated_egg_object
+	(
+	unsigned char l, unsigned char h, 
+	unsigned int shapex,
+	unsigned int shapey, unsigned int lft, 
+	unsigned short itype,
+	unsigned char prob, short d1, short d2
+	) : Egg_object(l, h, shapex, shapey, lft, itype, prob, d1, d2)
+	{ 
+	animator = new Frame_animator(this, 1); 
+	}
+
+/*
+ *	Delete.
+ */
+Animated_egg_object::~Animated_egg_object()
+	{ 
+	delete animator; 
 	}
 
 /*

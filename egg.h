@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class	Egg_object;
 class	Animated_egg_object;
+class	Animator;
 
 #include "objs.h"
 
@@ -122,11 +123,8 @@ public:
 		unsigned int shapex,
 		unsigned int shapey, unsigned int lft, 
 		unsigned short itype,
-		unsigned char prob, short d1, short d2)
-		: Egg_object(l, h, shapex, shapey, lft, itype, prob, d1, d2)
-		{ animator = new Frame_animator(this, 1); }
-	virtual ~Animated_egg_object()
-		{ delete animator; }
+		unsigned char prob, short d1, short d2);
+	virtual ~Animated_egg_object();
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.

@@ -15,6 +15,8 @@ exult_SOURCES =	\
 	actors.cc	\
 	actors.h	\
 	alloc.cc	\
+	animate.cc	\
+	animate.h	\
 	args.cc		\
 	args.h		\
 	autoarray.h	\
