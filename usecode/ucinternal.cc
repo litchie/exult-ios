@@ -1986,15 +1986,58 @@ int Usecode_internal::run
 
 					// Get array to loop over.
 			Usecode_value& arr = locals[local4];
+			int next = locals[local1].get_int_value();
 			if (opcode == 0x2e || opcode == 0xae)
-				{	// Initialize loop.
+			{	// Initialize loop.
 				int cnt = arr.is_array() ?
 					arr.get_array_size() : 1;
 				locals[local2] = Usecode_value(cnt);
 				locals[local1] = Usecode_value(0);
+				next = 0;
+			} else if (GAME_SI) {
+
+				// in SI, the loop-array can be modified in-loop, it seems
+				// (conv. with Spektran, 044D:00BE)
+				
+				// so, check for changes of the array size, and adjust
+				// total count and next value accordingly.
+				
+				int cnt = arr.is_array() ? arr.get_array_size() : 1;
+				
+				// only support changes of size 1, for now
+				if (abs(cnt - locals[local2].get_int_value()) > 1) {
+					std::cerr << "Error: internal usecode interpreter "
+							  << "error (loop array changed). Please "
+							  << "report this bug." << std::endl;
+					assert(abs(cnt - locals[local2].get_int_value()) <= 1);
 				}
-			int next = locals[local1].get_int_value();
-					// End of loop?
+				
+				if (cnt != locals[local2].get_int_value()) {
+					
+					// update new total count
+					locals[local2] = Usecode_value(cnt);
+					
+					Usecode_value& curval = arr.is_array() ?
+						arr.get_elem(next - 1) : arr;
+					
+					if (curval != locals[local3]) {
+						if (cnt > locals[local2].get_int_value()) {
+							// array got bigger, it seems
+							// addition occured before the current value
+							next++;
+						} else {
+							// array got smaller
+							// deletion occured before the current value
+							next--;
+						}
+					} else {
+						// addition/deletion was after the current value
+						// so don't need to update 'next'
+					}
+				}
+			}
+			
+			// End of loop?
 			if (next >= locals[local2].get_int_value())
 				ip += offset;
 			else		// Get next element.
