@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "compile.h"
 #include "fnames.h"
 #include "usecode.h"
+#include "npcnear.h"
 
 #if !(defined(XWIN) || defined(DOS)) //avoid crash in WIN32
 void gettimeofday(timeval* tv, int x); //in objs.cpp
@@ -48,6 +49,7 @@ Game_window::Game_window
 	    brightness(100), 
 	    skip_lift(16), debug(0), shapewin(0),
 	    tqueue(new Time_queue()), clock(tqueue),
+		npc_prox(new Npc_proximity_handler(this)),
 	    main_actor(0),
 	    conv_choices(0),
 	    main_actor_inside(0), mode(intro), showing_item(0), npcs(0),

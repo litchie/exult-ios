@@ -32,6 +32,7 @@ class Slist;
 class Usecode_machine;
 class Actor;
 class Time_queue;
+class Npc_proximity_handler;
 
 /*
  *	The main game window:
@@ -55,6 +56,7 @@ private:
 	Game_mode mode;			// Mode we'er in.
 	Time_queue *tqueue;		// Time-based queue.
 	Game_clock clock;		// Keeps track of time.
+	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
 	char *showing_item;		// Item we're showing the name of.
 	Rectangle showing_rect;		// Rectangle item text is shown in.
 	Rectangle npc_text_rect;	// Rectangle NPC statement is shown in.
