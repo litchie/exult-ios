@@ -447,7 +447,7 @@ C_EXPORT gboolean on_main_window_focus_in_event
 	)
 	{
 	Shape_chooser::check_editing_files();
-	return TRUE;
+	return FALSE;
 	}
 
 
