@@ -33,7 +33,8 @@ EXULT_FLX_OBJECTS = \
 	magicgorget.shp		\
 	cleaver.shp		\
 	faces.shp		\
-	faces2.shp
+	faces2.shp		\
+	amulets.shp
 
 flexdir = $(datadir)/exult
 
