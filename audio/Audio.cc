@@ -261,13 +261,6 @@ void Audio::Init(int _samplerate,int _channels)
 	if(SDL_open)
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 
-#ifdef WIN32
-	string s;
-	config->value("config/audio/force_waveout",s,"yes");
-
-	if (s == "yes")  SDL_AudioInit("waveout");
-	else
-#endif
 	// Init the SDL audio system
 	SDL_InitSubSystem(SDL_INIT_AUDIO);
 
