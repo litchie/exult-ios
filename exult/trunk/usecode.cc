@@ -1605,11 +1605,13 @@ USECODE_INTRINSIC(mouse_exists)
 	USECODE_RETURN(u);
 }
 
-USECODE_INTRINSIC(mystery_2)
-	// Takes itemref, returns obj???
-	//+++++++++++++++
-	// Maybe it's obj's container???
-	USECODE_RETURN(no_ret);
+USECODE_INTRINSIC(get_container)
+	// Takes itemref, returns container.
+	Game_object *obj = get_item(parms[0].get_int_value());
+	Usecode_value u(0);
+	if (obj)
+		u = Usecode_value((long) obj->get_owner());
+	USECODE_RETURN(u);
 }
 
 USECODE_INTRINSIC(remove_item)
@@ -1750,7 +1752,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x34
 	USECODE_INTRINSIC_PTR(find_nearby), // 0x35
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x36
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x37
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x37 +++++++It is is_dead(npc).
 	USECODE_INTRINSIC_PTR(game_hour), // 0x38
 	USECODE_INTRINSIC_PTR(game_minute), // 0x39
 	USECODE_INTRINSIC_PTR(get_npc_number),	// 0x3a
@@ -1805,7 +1807,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6b
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6c
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6d
-	USECODE_INTRINSIC_PTR(mystery_2),	// 0x6e
+	USECODE_INTRINSIC_PTR(get_container),	// 0x6e
 	USECODE_INTRINSIC_PTR(remove_item),	// 0x6f
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x70
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x71
