@@ -30,7 +30,7 @@
 
 Usecode_machine::Usecode_machine
 	(
-	) : call_depth(0), keyring(0), conv(0), party_count(0),
+	) : keyring(0), conv(0), party_count(0),
 	    dead_party_count(0)
 	{
 					// Clear global flags.

@@ -430,6 +430,8 @@ public:
 							Usecode_events event);
 	virtual void update_party_status(Actor *npc);
 	virtual void do_speech(int num);// Start speech, or show text.
+	virtual int in_usecode()	// Currently in a usecode function?
+		{ return !call_stack.empty(); }
 	virtual void write();		// Write out 'gamedat/usecode.dat'.
 	virtual void read();		// Read in 'gamedat/usecode.dat'.
 
