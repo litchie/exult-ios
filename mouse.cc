@@ -39,7 +39,7 @@ Mouse::Mouse
 	(
 	Game_window *gw			// Where to draw.
 	) : pointers(POINTERS), gwin(gw), backup(0), cur(0), mousex(-1),
-	    mousey(-1), iwin(gwin->get_win())
+	    mousey(-1), iwin(gwin->get_win()), cur_framenum(0)
 	{
 					// Get max. backup size.
 	int cnt = pointers.get_num_frames();
@@ -90,14 +90,16 @@ void Mouse::show
 	}
 
 /*
- *	Set to new shape.
+ *	Set to new shape.  Should be called after checking that frame #
+ *	actually changed.
  */
 
-void Mouse::set_shape
+void Mouse::set_shape0
 	(
 	int framenum
 	)
 	{
+	cur_framenum = framenum;
 	cur = pointers.get_frame(framenum); 
 					// Set backup box to cover mouse.
 	box.x = mousex - cur->get_xleft();
