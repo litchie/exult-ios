@@ -194,6 +194,20 @@ Ammo_info *Shape_info::set_ammo_info(bool tf)
 		}
 	return ammo;
 	}
+Armor_info *Shape_info::set_armor_info(bool tf)
+	{
+	if (!tf)
+		{
+		delete armor;
+		armor = 0;
+		}
+	else
+		{
+		if (!armor)
+			armor = new Armor_info();
+		}
+	return armor;
+	}
 Monster_info *Shape_info::set_monster_info(bool tf)
 	{
 	if (!tf)
