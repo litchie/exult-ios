@@ -156,7 +156,7 @@ bool Model3d::import3ds
 		}
 	if (Read_chunk(this, in, length) < 0)
 		return false;
-	// ??Normals.
+	compute_normals();		// Set vertex normals.
 	return true;
 	}
 

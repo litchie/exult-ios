@@ -28,6 +28,22 @@ public:
 	};
 
 /*
+ *	Vector operations:
+ */
+Vector3 Cross(Vector3 a, Vector3 b)
+	{ return Vector3(a.y*b.z - a.z*b.y, 
+			 a.z*b.x - a.x*b.z,
+			 a.x*b.y - a.y*b.x); }
+float Dot(Vector3 a, Vector3 b)
+	{ return a.x*b.x + a.y*b.y + a.z*b.z; }
+Vector3 operator-(Vector3 a, Vector3 b)
+	{ return Vector3(a.x - b.x, a.y - b.y, a.z - b.z); }
+Vector3 operator+(Vector3 a, Vector3 b)
+	{ return Vector3(a.x + b.x, a.y + b.y, a.z + b.z); }
+Vector3 operator/(Vector3 a, float b)
+	{ return Vector3(a.x/b, a.y/b, a.z/b); }
+
+/*
  *	2D vector.
  */
 class Vector2
@@ -47,10 +63,14 @@ class Material
 	{
 	string name;			// Name of material.
 	string texture_filename;	// For a texture, if non-empty.
+	unsigned int texture_id;	// OpenGL texture ID.
+	bool texture_loaded;		// True if texture_id is valid.
 	unsigned char r, g, b;		// Color components, 0-255.
 public:
 	friend class Model3d;
-	Material() : r(0), g(0), b(0)  {  }
+	friend class Object3d;
+	Material() : r(0), g(0), b(0), texture_id(0), texture_loaded(false)
+		{  }
 	void set_name(const char *nm)
 		{ name = nm; }
 	void set_texture_filename(const char *nm)
@@ -67,6 +87,8 @@ class Face
 public:
 	int vertex_indices[3];		// Indices into vertex list.
 	int texture_indices[3];		// Texture indices.
+					// Return (non-unit) normal.
+	Vector3 normal(vector<Vector3>& vertices) const;
 	};
 
 /*
@@ -75,13 +97,13 @@ public:
 class Object3d
 	{
 	string name;			// Object's name.
-	int material;			// Index of material in list, or -1.
+	Material *material;		// Material in model's list.
 	vector<Vector3> vertices;	// All vertices.
-	vector<Vector3> normals;	// All normal vectors.
+	vector<Vector3> normals;	// Normal vector to each vertex.
 	vector<Vector2> tex_vertices;	// Texture coords.
 	vector<Face> faces;		// All faces.
 public:
-	Object3d() : material(-1)
+	Object3d() : material(0)
 		{  }
 	~Object3d();
 	void init_vertices(int cnt)	// Init. to given size.
@@ -102,8 +124,12 @@ public:
 		{ return !name.empty(); }
 	void set_name(const char *nm)
 		{ name = nm; }
-	void set_material(int mid)
-		{ material = mid; }
+	void set_material(Material *m)
+		{ material = m; }
+	void compute_normals();		// Create normals after all vertices 
+					//   and faces have been added.
+					// OPENGL methods:
+	void render();
 	};
 
 /*
@@ -123,7 +149,11 @@ public:
 	void add_object(Object3d *o)
 		{ objects.push_back(o); }
 					// Find material by name.
-	int find_material(const char *nm);
+	Material *find_material(const char *nm);
+	void compute_normals();		// Create normals after all vertices
+					//   and faces have been added.
+					// OPENGL methods:
+	void render();
 	};
 
 }; // Exult3d namespace.
