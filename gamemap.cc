@@ -558,7 +558,7 @@ void Game_map::get_ifix_chunk_objects
 		Ifix_game_object *obj;
 		int shnum = ent[2]+256*(ent[3]&3);
 		Shape_info& info = ShapeID::get_info(shnum);
-		if (info.is_animated())
+		if (info.is_animated() || info.has_sfx())
 			obj = new Animated_ifix_object(ent);
 		else
 			obj = new Ifix_game_object(ent);
@@ -914,10 +914,12 @@ void Game_map::read_ireg_objects
 		
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
-			bool anim = info.is_animated() ||
+			bool anim = info.is_animated() || info.has_sfx();
+#if 0	/* ++++Should be handled by has_sfx(). */
 					// Watch for BG itself.
 				(Game::get_game_type() == BLACK_GATE &&
 						shnum == 305);
+#endif
 			Egg_object *egg = Create_egg(entry, anim);
 			get_chunk(scx + cx, scy + cy)->add_egg(egg);
 			last_obj = egg;
@@ -1079,7 +1081,7 @@ Ireg_game_object *Game_map::create_ireg_object
 			return new Field_object(shnum, frnum, tilex, tiley,
 					lift, Egg_object::caltrops_field);
 		}
-	if (info.is_animated())
+	if (info.is_animated() || info.has_sfx())
 		return new Animated_ireg_object(
 				   shnum, frnum, tilex, tiley, lift);
 	if (shnum == 607)		// Path.

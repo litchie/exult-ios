@@ -917,7 +917,7 @@ Animated_egg_object::Animated_egg_object
 	) : Egg_object(shapenum, framenum, 
 				tilex, tiley, lft, itype, prob, d1, d2)
 	{ 
-	animator = new Frame_animator(this, 1); 
+	animator = new Frame_animator(this); 
 	}
 
 /*
