@@ -386,8 +386,8 @@ Actor::Actor
 	) : Container_game_object(), name(nm),usecode(uc), 
 	    npc_num(num), face_num(num), party_id(-1), shape_save(-1), 
 	    oppressor(-1), target(0), attack_mode(nearest),
-	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
-	    dead(false), hit(false), combat_protected(false), 
+	    schedule_type((int) Schedule::loiter), schedule(0),
+	    dormant(true), dead(false), hit(false), combat_protected(false), 
 	    user_set_attack(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), ident(0),
@@ -2613,6 +2613,7 @@ void Main_actor::handle_event
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+
 	if (action)			// Doing anything?
 		{			// Do what we should.
 		int delay = action->handle_event(this);
@@ -2717,12 +2718,12 @@ int Main_actor::step
 	int roof_height = nlist->is_roof (tx, ty, new_lift);
 	if (gwin->set_above_main_actor (roof_height))
 		{
-		gwin->set_in_dungeon(nlist->has_dungeon() &&
-					nlist->in_dungeon(tx, ty));
+		gwin->set_in_dungeon(nlist->has_dungeon()?
+					nlist->is_dungeon(tx, ty):0);
 		gwin->set_all_dirty();
 		}
-	else if (roof_height < 31 && gwin->set_in_dungeon(nlist->has_dungeon()
- 					&& nlist->in_dungeon(tx, ty)))
+	else if (roof_height < 31 && gwin->set_in_dungeon(nlist->has_dungeon()?
+ 					nlist->is_dungeon(tx, ty):0))
 		gwin->set_all_dirty();
 					// Near an egg?  (Do this last, since
 					//   it may teleport.)
@@ -2816,8 +2817,8 @@ void Main_actor::move
 		switched_chunks(olist, nlist);
 	int tx = get_tx(), ty = get_ty();
 	if (gwin->set_above_main_actor(nlist->is_roof(tx, ty, newlift)))
-		gwin->set_in_dungeon(nlist->has_dungeon() &&
-				nlist->in_dungeon(tx, ty));
+		gwin->set_in_dungeon(nlist->has_dungeon()?
+		nlist->is_dungeon(tx, ty):0);
 
 	}
 
@@ -2966,7 +2967,7 @@ Npc_actor::Npc_actor
 	int num, 
 	int uc
 	) : Actor(nm, shapenum, num, uc), next(0), nearby(false),
-		num_schedules(0), 
+		num_schedules(0), force_update(false),
 		schedules(0)
 	{
 	}
@@ -3156,6 +3157,7 @@ void Npc_actor::update_schedule
 	int delay			// Delay in msecs, or -1 for random.
 	)
 	{
+	force_update = false;
 	int i = find_schedule_change(hour3);
 	if (i < 0)
 		{			// Not found?  Look at prev.?
@@ -3175,6 +3177,23 @@ void Npc_actor::update_schedule
 	set_schedule_and_loc (schedules[i].get_type(), schedules[i].get_pos(),
 								delay);
 	}
+
+/*
+ *	Update schedule at a 3-hour time change.
+ */
+
+bool Npc_actor::update_forced_schedule()
+{
+	if (force_update)
+	{
+		Game_window *gwin = Game_window::get_game_window();
+		update_schedule(gwin, gwin->get_hour()/3, 7);
+		force_update = false;
+		return true;
+	}
+	return false;
+}
+
 
 /*
  *	Render.
@@ -3236,6 +3255,9 @@ void Npc_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
+	if (update_forced_schedule())
+		return;
+
 	if (!action)			// Not doing anything?
 		{
 		if (schedule)

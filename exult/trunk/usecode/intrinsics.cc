@@ -2372,7 +2372,11 @@ USECODE_INTRINSIC(run_schedule)
 	Npc_actor *actor = as_npcactor(get_item(parms[0]));
 	
 	if (actor)
-		actor->update_schedule(gwin, gwin->get_hour()/3, 7);
+	{
+		actor->set_force_update();
+
+		gwin->get_tqueue()->add(SDL_GetTicks() + 1, actor, 0);
+	}
 
 	return no_ret;
 }

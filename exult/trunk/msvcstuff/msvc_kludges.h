@@ -67,8 +67,9 @@ namespace std {
 	using ::fwrite;
 	using ::remove;
 	
-	// Win32 doesn't have snprintf, and even if it did, it would be in
-	// stdio, so I'll make my own using _vsnprintf 
+	// Win32 doesn't have snprintf as such. It's got _snprintf, 
+	// but it's in stdio. I'll make my own using _vsnprintf 
+#if 1
 	inline int snprintf(char *out, size_t len, const char *format, ...)
 	{
 		va_list	argptr;
@@ -77,7 +78,17 @@ namespace std {
 		va_end (argptr);
 		return ret;
 	}
+#else
+
+#define snprintf _snprintf
+	using ::snprintf;
+
+#endif
+
 }
+
+// We've got snprintf
+#define HAVE_SNPRINTF
 
 // These get put in std when they otherwise should be, or are required by other headers
 using std::memcmp;
@@ -141,6 +152,8 @@ using std::tm;
 
 // Don't want SDL Parachute
 #define NO_SDL_PARACHUTE
+
+#define CHUNK_OBJ_DUMP
 
 #endif /* !MSVC_KLUDGES_H */
 

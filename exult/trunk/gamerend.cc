@@ -117,10 +117,8 @@ int Game_window::paint_map
 		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
 			{
 			int xoff = Figure_screen_offset(cx, scrolltx);
-			if (in_dungeon)
-				paint_dungeon_chunk_flats(cx, cy, xoff, yoff);
-			else
-				paint_chunk_flats(cx, cy, xoff, yoff);
+			paint_chunk_flats(cx, cy, xoff, yoff);
+
 			if (cheat.in_map_editor())
 				{	// Show lines around chunks.
 				win->fill8(hit_pixel, c_chunksize, 1, 
@@ -152,6 +150,11 @@ int Game_window::paint_map
 				dx = INCR_CHUNK(dx), dy = DECR_CHUNK(dy))
 			light_sources += paint_chunk_objects(dx, dy);
 		}
+
+	/// Dungeon Blackness (but disable in map editor mode)
+	if (in_dungeon >= skip_above_actor && !cheat.in_map_editor())
+		paint_blackness (start_chunkx, start_chunky, stop_chunkx, stop_chunky);
+
 	if (cheat.in_map_editor() && cheat.show_tile_grid())
 		{			// Paint grid at edit height.
 		int xtiles = get_width()/c_tilesize,
@@ -231,43 +234,6 @@ void Game_window::paint_chunk_flats
 	}
 
 /*
- *	Paint the flat (non-rle) shapes in a chunk when inside a dungeon.
- */
-
-void Game_window::paint_dungeon_chunk_flats
-	(
-	int cx, int cy,			// Chunk coords (0 - 12*16).
-	int xoff, int yoff		// Pixel offset of top-of-screen.
-	)
-	{
-	Map_chunk *olist = get_chunk(cx, cy);
-	if (!olist->has_dungeon())	// No dungeon in this chunk?
-		{
-		const int w = c_tilesize*c_tiles_per_chunk;
-		win->fill8(0, w, w, xoff, yoff);
-		return;
-		}
-					// Paint flat tiles.
-	Image_buffer8 *cflats = olist->get_rendered_flats();
-	if (cflats)
-		win->copy8(cflats->get_bits(), c_chunksize, c_chunksize, 
-								xoff, yoff);
-					// Paint tiles outside dungeon black.
-	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
-		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
-			if (!olist->in_dungeon(tilex, tiley))
-				win->fill8(0, c_tilesize, c_tilesize, 
-					xoff + tilex*c_tilesize, 
-					yoff + tiley*c_tilesize);
-
-	Flat_object_iterator next(olist);// Now do flat RLE objects.
-	Game_object *obj;
-	while ((obj = next.get_next()) != 0)
-		if (olist->in_dungeon(obj))
-			obj->paint(this);
-	}
-
-/*
  *	Paint a chunk's objects, left-to-right, top-to-bottom.
  *
  *	Output:	# light sources found.
@@ -280,8 +246,6 @@ int Game_window::paint_chunk_objects
 	{
 	Game_object *obj;
 	Map_chunk *olist = get_chunk(cx, cy);
-	if (in_dungeon && !olist->has_dungeon())
-		return 0;		// Totally outside dungeon.
 	int light_sources = 0;		// Also check for light sources.
 //	if (is_main_actor_inside() && olist->is_roof()) +++++Correct??
 		light_sources += olist->get_light_sources();
@@ -289,17 +253,11 @@ int Game_window::paint_chunk_objects
 	if (skip_above_actor < skip_lift)
 		skip_lift = skip_above_actor;
 	Nonflat_object_iterator next(olist);
-	if (in_dungeon)
-		{
-		while ((obj = next.get_next()) != 0)
-			if (obj->render_seq != render_seq &&
-			    olist->in_dungeon(obj))
-				paint_dungeon_object(olist, obj);
-		}
-	else
-		while ((obj = next.get_next()) != 0)
-			if (obj->render_seq != render_seq)
-				paint_object(obj);
+
+	while ((obj = next.get_next()) != 0)
+		if (obj->render_seq != render_seq)
+			paint_object(obj);
+
 	skip_lift = save_skip;
 	return light_sources;
 	}
@@ -328,32 +286,6 @@ void Game_window::paint_object
 	}
 
 /*
- *	Same thing as above, but when inside a dungeon.
- */
-
-void Game_window::paint_dungeon_object
-	(
-	Map_chunk *olist,	// Chunk being rendered.
-	Game_object *obj
-	)
-	{
-	int lift = obj->get_lift();
-	if (lift >= skip_lift)
-		return;
-	obj->render_seq = render_seq;
-	int cnt = obj->get_dependency_count();
-	for (int i = 0; i < cnt; i++)
-		{
-		Game_object *dep = obj->get_dependency(i);
-		if (dep && dep->render_seq != render_seq &&
-		    olist->in_dungeon(dep))
-			paint_dungeon_object(olist, dep);
-		}
-	obj->paint(this);		// Finally, paint this one.
-	}
-
-
-/*
  *	Paint 'dirty' rectangle.
  */
 
@@ -367,4 +299,85 @@ void Game_window::paint_dirty()
 		paint(box);	// (Could create new dirty rects.)
 
 	clear_dirty();
+}
+
+/*
+ *	Dungeon Blacking
+ *
+ *	This is really simple. If there is a dungeon roof over our head	we
+ *	black out every tile on screen that doens't have a roof at the height
+ *	of the roof that is directly over our head. The tiles are blacked out
+ *	at the height of the the roof. 
+ *
+ *	I've done some simple optimizations. Generally all the blackness will
+ *	cover entire chunks. So, instead of drawing each tile individually, I
+ *	work out home many tiles in a row that need to be blacked out, and then
+ *	black them all out at the same time.
+ */
+
+void Game_window::paint_blackness(int start_chunkx, int start_chunky, int stop_chunkx, int stop_chunky)
+{
+	// Calculate the offset due to the lift (4x the lift).
+	const int off = skip_above_actor << 2;//in_dungeon << 2;
+
+	// For each chunk that might be renderable
+	for (int cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
+	{
+		for (int cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
+		{
+			// Coord of the left edge
+			const int xoff = Figure_screen_offset(cx, scrolltx) - off;
+			// Coord of the top edge 
+			int y = Figure_screen_offset(cy, scrollty) - off;
+
+			// Need the chunk cache (needs to be setup!)
+			Map_chunk *mc = get_chunk(cx, cy);
+			mc->setup_cache();
+			Chunk_cache *chunk = mc->need_cache();
+
+			// For each line in the chunk
+			for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
+			{
+				// Start and width of the area to black out
+				int x = xoff;
+				int w = 0;
+
+				// For each tile in the line
+				for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
+				{
+					// If the tile is blocked by 'roof'
+					if (!chunk->is_blocked_fast(tilex, tiley, skip_above_actor))
+					{
+						// Add to the width of the area
+						w += c_tilesize;
+					}
+					// If not blocked and have area,
+					else if (w)
+					{
+						// Draw blackness
+						win->fill8(0, w, c_tilesize, x, y);	
+
+						// Set the start of the area to the next tile
+						x += w + c_tilesize;
+
+						// Clear the width
+						w = 0;	
+					}
+					// Not blocked, and no area
+					else
+					{
+						// Increment the start of the area to the next tile
+						x += c_tilesize;
+					}
+
+				}
+
+				// If we have an area, paint it.
+				if (w) win->fill8(0, w, c_tilesize, x, y);
+
+				// Increment the y coord for the next line
+				y += c_tilesize;
+			}
+		}
+	}
 }

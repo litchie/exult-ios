@@ -84,6 +84,8 @@ public:
 		{ return shapefile; }
 	inline Shape_frame *get_shape()
 		{ return (shape!=0)?shape:cache_shape(); }
+	inline void set_translucent(int trans)
+		{ has_trans=trans; }
 	inline bool is_translucent()
 		{ if (shape==0) cache_shape(); return has_trans!=0; }
 					// Set to given shape.
