@@ -56,6 +56,18 @@ Actor_action *Actor_action::walk_to_tile
 	}
 
 /*
+ *	Null action.
+ */
+
+int Null_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	return 0;
+	}
+
+/*
  *	Create action to follow a path.
  */
 

@@ -99,6 +99,7 @@ protected:
 	unsigned char num_frames;	// # of frames.
 					// Create reflected frame.
 	Shape_frame *reflect(DataSource& shapes, int shnum, int frnum);
+	void create_frames_list(int nframes);
 					// Read in shape/frame.
 	Shape_frame *read(DataSource& shapes, int shnum, int frnum);
 					// Store shape that was read.

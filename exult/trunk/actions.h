@@ -51,6 +51,16 @@ public:
 	};
 
 /*
+ *	A null action just returns 0 the first time.
+ */
+class Null_action : public Actor_action
+	{
+public:
+	Null_action() {  }
+	virtual int handle_event(Actor *actor);
+	};
+
+/*
  *	Follow a path.
  */
 class Path_walking_actor_action : public Actor_action
