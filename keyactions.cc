@@ -429,32 +429,68 @@ void ActionScrollDown(int *params)
 		gwin->view_down();
 }
 
-//  { ActionWalkLeft, 0, "Walk left", true, true, NONE },
-void ActionWalkLeft(int *params)
+//  { ActionWalkWest, 0, "Walk west", true, false, NONE },
+void ActionWalkWest(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2);
+	int speed = params[0]<0?166:50;
+	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2,speed);
 }
 
-//  { ActionWalkRight, 0, "Walk right", true, true, NONE },
-void ActionWalkRight(int *params)
+//  { ActionWalkEast, 0, "Walk east", true, false, NONE },
+void ActionWalkEast(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2);
+	int speed = params[0]<0?166:50;
+	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2, speed);
 }
 
-//  { ActionWalkUp, 0, "Walk up", true, true, NONE },
-void ActionWalkUp(int *params)
+//  { ActionWalkNorth, 0, "Walk north", true, false, NONE },
+void ActionWalkNorth(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2-50);
+	int speed = params[0]<0?166:50;
+	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2-50, speed);
 }
 
-//  { ActionWalkDown, 0, "Walk down", true, true, NONE },
-void ActionWalkDown(int *params)
+//  { ActionWalkSouth, 0, "Walk south", true, false, NONE },
+void ActionWalkSouth(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
-	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2+50);
+	int speed = params[0]<0?166:50;
+	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2+50, speed);
+}
+
+//  { ActionWalkNorthEast, 0, "Walk north-east", true, false, NONE },
+void ActionWalkNorthEast(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	int speed = params[0]<0?166:50;
+	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2-50, speed);
+}
+
+//  { ActionWalkSouthEast, 0, "Walk south-east", true, false, NONE },
+void ActionWalkSouthEast(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	int speed = params[0]<0?166:50;
+	gwin->start_actor(gwin->get_width()/2+50, gwin->get_height()/2+50, speed);
+}
+
+//  { ActionWalkNorthWest, 0, "Walk north-west", true, false, NONE },
+void ActionWalkNorthWest(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	int speed = params[0]<0?166:50;
+	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2-50, speed);
+}
+
+//  { ActionWalkSouthWest, 0, "Walk south-west", true, false, NONE },
+void ActionWalkSouthWest(int *params)
+{
+	Game_window *gwin = Game_window::get_instance();
+	int speed = params[0]<0?166:50;
+	gwin->start_actor(gwin->get_width()/2-50, gwin->get_height()/2+50, speed);
 }
 
 //  { ActionStopWalking, 0, "Stop Walking", true, true, NONE },
