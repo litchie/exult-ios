@@ -1,3 +1,7 @@
+2001-08-29  Max Horn <max@quendi.de>
+	* audio/midi_drivers/mac_midi.cc: OS X build via makefile fixed
+	* macosx/exult.icns: added icon file for OS X
+
 2001-08-28  Ryan Nunn <triforce@merlin.net.au>
 	* audio/midi_drivers/win_midiout.cc : Fixed new hanging note problem
 
