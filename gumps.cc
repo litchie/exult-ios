@@ -25,6 +25,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "gumps.h"
 #include "gamewin.h"
+#include "mouse.h"
+
+/*
+ *	Some gump shape numbers:
+ */
+const int CHECKMARK = 2;		// Shape # in gumps.vga for checkmark.
+const int FILEIO = 3;			// Main load/save box.
+const int FNTEXT = 4;			// Filename text field.
+const int LOADBTN = 5;
+const int SAVEBTN = 6;
+const int HALO = 7;
+const int SLIDER = 14;
+const int SLIDERDIAMOND = 15;
+const int SLIDERRIGHT = 16;
+const int SLIDERLEFT = 17;
+const int DISK = 24;			// Diskette shape #.
+const int HEART = 25;			// Stats button shape #.
+const int MUSICBTN = 29;
+const int SPEECHBTN = 30;
+const int SOUNDBTN = 31;
+const int BOOK = 32;
+const int SPELLBOOK = 43;
+const int DOVE = 46;
+const int SCROLL = 55;
+const int QUITBTN = 56;
+const int YESNOBOX = 69;
+const int YESBTN = 70, NOBTN = 71;
 
 /*
  *	Statics:
@@ -49,11 +76,150 @@ short Slider_gump_object::diamondy = 6;
 short Slider_gump_object::xmin = 35;	// Min., max. positions of diamond.
 short Slider_gump_object::xmax = 93;
 
+short File_gump_object::btn_rows[2] = {50, 60};	//++++++++++Guessing blind.
+short File_gump_object::btn_cols[3] = {10, 40, 70};
+short File_gump_object::textx = 4, File_gump_object::texty = 4,
+      File_gump_object::texth = 10;
+
+
 /*
- *	Is a given screen point on this button?
+ *	An editable text field:
+ */
+class Gump_text : public Gump_widget
+	{
+	char *text;			// Holds text, 0-delimited.
+	int max_size;			// Size (max) of text.
+	int length;			// Current # chars.
+	int textx, texty;		// Where to show text rel. to this.
+	int cursor;			// Index of char. cursor is before.
+	int focus;			// Use frame 1 if focused, else 0.
+public:
+	Gump_text(Gump_object *par, int shnum, int px, int py, int maxsz,
+						int tx, int ty)
+		: Gump_widget(par, shnum, px, py), text(new char[maxsz + 1]),
+		  max_size(maxsz), length(0), textx(tx), texty(ty),
+		  cursor(0), focus(0)
+		{
+		text[0] = 0;
+		}
+	~Gump_text()
+		{ delete text; }
+	int get_length()
+		{ return length; }
+	void paint()			// Paint.
+		{
+		Game_window *gwin = Game_window::get_game_window();
+		gwin->paint_gump(parent->get_x() + x, 
+				parent->get_y() + y, shapenum, focus);
+					// Show text.
+		gwin->paint_text(2, text, parent->get_x() + x + textx,
+						parent->get_y() + y + texty);
+		}
+					// Handle mouse click.
+	int mouse_clicked(Game_window *gwin, int mx, int my);
+	void lose_focus()
+		{
+		focus = 0;
+		paint();
+		}
+	};
+
+/*
+ *	A checkmark for closing its parent:
+ */
+class Checkmark_gump_button : public Gump_button
+	{
+public:
+	Checkmark_gump_button(Gump_object *par, int px, int py)
+		: Gump_button(par, CHECKMARK, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	A 'heart' button for bringing up stats.
+ */
+class Heart_gump_button : public Gump_button
+	{
+public:
+	Heart_gump_button(Gump_object *par, int px, int py)
+		: Gump_button(par, HEART, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	A diskette for bringing up the 'save' box.
+ */
+class Disk_gump_button : public Gump_button
+	{
+public:
+	Disk_gump_button(Gump_object *par, int px, int py)
+		: Gump_button(par, DISK, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	One of the two arrow button on the slider:
+ */
+class Slider_gump_button : public Gump_button
+	{
+public:
+	Slider_gump_button(Gump_object *par, int px, int py, int shapenum)
+		: Gump_button(par, shapenum, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	Load or save button.
+ */
+class Load_save_gump_button : public Gump_button
+	{
+public:
+	Load_save_gump_button(Gump_object *par, int px, int py, int shapenum)
+		: Gump_button(par, shapenum, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	Quit button.
+ */
+class Quit_gump_button : public Gump_button
+	{
+public:
+	Quit_gump_button(Gump_object *par, int px, int py)
+		: Gump_button(par, QUITBTN, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	Sound 'toggle' buttons.
+ */
+class Sound_gump_button : public Gump_button
+	{
+public:
+	Sound_gump_button(Gump_object *par, int px, int py, int shapenum)
+		: Gump_button(par, shapenum, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	Is a given screen point on this widget?
  */
 
-int Gump_button::on_button
+int Gump_widget::on_widget
 	(
 	Game_window *gwin,
 	int mx, int my			// Point in window.
@@ -63,6 +229,30 @@ int Gump_button::on_button
 	my -= parent->get_y() + y;
 	Shape_frame *cshape = gwin->get_gump_shape(shapenum, 0);
 	return (cshape->has_point(mx, my));
+	}
+
+/*
+ *	Handle click on text object.
+ *
+ *	Output:	1 if point is within text object, else 0.
+ */
+
+int Gump_text::mouse_clicked
+	(
+	Game_window *gwin,
+	int mx, int my			// Mouse position on screen.
+	)
+	{
+	mx -= parent->get_x() + x;	// Get point rel. to gump.
+	my -= parent->get_y() + y;
+	Shape_frame *cshape = gwin->get_gump_shape(shapenum, 0);
+	if (!cshape->has_point(mx, my))
+		return (0);
+	focus = 1;			// We have focus now.
+			//++++++++Figure cursor.
+	paint();
+	gwin->set_painted();
+	return (1);
 	}
 
 /*
@@ -126,7 +316,10 @@ void Disk_gump_button::activate
 	Game_window *gwin
 	)
 	{
-	cout << "Diskette clicked.\n";
+	extern int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
+	File_gump_object *fileio = new File_gump_object();
+	Modal_gump(fileio, Mouse::hand);
+	delete fileio;
 	}
 
 /*
@@ -139,6 +332,45 @@ void Slider_gump_button::activate
 	)
 	{
 	((Slider_gump_object *) parent)->clicked_arrow(this);
+	}
+
+/*
+ *	Clicked a 'load' or 'save' button.
+ */
+
+void Load_save_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+	if (shapenum == LOADBTN)
+		((File_gump_object *) parent)->load();
+	else
+		((File_gump_object *) parent)->save();
+	}
+
+/*
+ *	Clicked on 'quit'.
+ */
+
+void Quit_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+	((File_gump_object *) parent)->quit();
+	}
+
+/*
+ *	Clicked on one of the sound options.
+ */
+
+void Sound_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+	//+++++++Later.
 	}
 
 /*
@@ -248,6 +480,17 @@ Gump_object::Gump_object
 	}
 
 /*
+ *	Delete gump.
+ */
+
+Gump_object::~Gump_object
+	(
+	)
+	{
+	delete check_button; 
+	}
+
+/*
  *	Add this gump to the end of a chain.
  */
 
@@ -352,7 +595,7 @@ Gump_button *Gump_object::on_button
 	}
 
 /*
- *	Repaint checkmark.
+ *	Repaint checkmark, etc.
  */
 
 void Gump_object::paint_button
@@ -521,6 +764,18 @@ Actor_gump_object::Actor_gump_object
 	}
 
 /*
+ *	Delete actor display.
+ */
+
+Actor_gump_object::~Actor_gump_object
+	(
+	)
+	{
+	delete heart_button;
+	delete disk_button;
+	}
+
+/*
  *	Is a given screen point on one of our buttons?
  *
  *	Output: ->button if so.
@@ -623,6 +878,17 @@ void Actor_gump_object::paint
 					// Paint buttons.
 	paint_button(gwin, heart_button);
 	paint_button(gwin, disk_button);
+	}
+
+/*
+ *	Create stats display.
+ */
+Stats_gump_object::Stats_gump_object
+	(
+	Container_game_object *cont, 
+	int initx, int inity
+	) : Gump_object(cont, initx, inity, STATSDISPLAY)
+	{
 	}
 
 /*
@@ -849,6 +1115,16 @@ int Text_gump::show_next_page
 	}
 
 /*
+ *	Create book display.
+ */
+
+Book_gump::Book_gump
+	(
+	) : Text_gump(BOOK)
+	{
+	}
+
+/*
  *	Paint book.  Updates curend.
  */
 
@@ -863,6 +1139,16 @@ void Book_gump::paint
 	curend = paint_page(gwin, Rectangle(36, 10, 122, 130), curtop);
 					// Paint right page.
 	curend = paint_page(gwin, Rectangle(174, 10, 122, 130), curend);
+	}
+
+/*
+ *	Create scroll display.
+ */
+
+Scroll_gump::Scroll_gump
+	(
+	) : Text_gump(SCROLL)
+	{  
 	}
 
 /*
@@ -919,6 +1205,18 @@ cout << "Slider:  " << min_val << " to " << max_val << " by " << step << '\n';
 								SLIDERRIGHT);
 					// Init. to middle value.
 	set_val(defval);
+	}
+
+/*
+ *	Delete slider.
+ */
+
+Slider_gump_object::~Slider_gump_object
+	(
+	)
+	{
+	delete left_arrow;
+	delete right_arrow;
 	}
 
 /*
@@ -1058,3 +1356,185 @@ void Slider_gump_object::mouse_drag
 		val = newval;
 	paint(Game_window::get_game_window());
 	}
+
+/*
+ *	Create the load/save box.
+ */
+
+File_gump_object::File_gump_object
+	(
+	) : Modal_gump_object(0, FILEIO), pushed_text(0), focus(0)
+	{
+	int i;
+	int ty = texty, texth;
+	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++, ty += texth)
+		names[i] = new Gump_text(this, FNTEXT, textx, ty, 20, 6, 2);
+					// First row of buttons:
+	buttons[0] = buttons[1] = 0;	// No load/save until name chosen.
+	buttons[2] = new Quit_gump_button(this, btn_rows[0], btn_cols[2]);
+					// 2nd row.
+	buttons[3] = new Sound_gump_button(this, btn_rows[1], btn_cols[0],
+					MUSICBTN);
+	buttons[4] = new Sound_gump_button(this, btn_rows[1], btn_cols[2],
+					SPEECHBTN);
+	buttons[5] = new Sound_gump_button(this, btn_rows[1], btn_cols[3],
+					SOUNDBTN);
+					// +++++Init. the above.
+	}
+
+/*
+ *	Delete the load/save box.
+ */
+
+File_gump_object::~File_gump_object
+	(
+	)
+	{
+	int i;
+	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++)
+		delete names[i];
+	for (i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
+		delete buttons[i];
+	}
+
+/*
+ *	'Load' clicked.
+ */
+
+void File_gump_object::load
+	(
+	)
+	{
+	if (!focus)			// This would contain the name.
+		return;
+//++++++++++
+	}
+
+/*
+ *	'Save' clicked.
+ */
+
+void File_gump_object::save
+	(
+	)
+	{
+	if (!focus)			// This would contain the name.
+		return;
+//+++++++++
+	}
+
+/*
+ *	'Quit' clicked.
+ */
+
+void File_gump_object::quit
+	(
+	)
+	{
+	extern unsigned char quitting_time;
+					// ++++++++Is he sure?
+	quitting_time = 1;
+	done = 1;
+	}
+
+/*
+ *	Paint on screen.
+ */
+
+void File_gump_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	Gump_object::paint(gwin);	// Paint gump & objects.
+					// Paint text objects.
+	int i;
+	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++)
+		if (names[i])
+			names[i]->paint();
+	for (i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
+		if (buttons[i])
+			paint_button(gwin, buttons[i]);
+	}
+
+/*
+ *	Handle mouse-down events.
+ */
+
+void File_gump_object::mouse_down
+	(
+	int mx, int my			// Position in window.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	pushed = 0;
+	pushed_text = 0;
+					// First try checkmark.
+	Gump_button *btn = Gump_object::on_button(gwin, mx, my);
+	if (btn)
+		pushed = btn;
+	else				// Try buttons at bottom.
+		for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
+			if (buttons[i] && buttons[i]->on_button(gwin, mx, my))
+				{
+				pushed = buttons[i];
+				break;
+				}
+	if (pushed)			// On a button?
+		{
+		pushed->push(gwin);
+		return;
+		}
+					// See if on text field.
+	for (int i = 0; i < sizeof(names)/sizeof(names[0]); i++)
+		if (names[i]->on_widget(gwin, mx, my))
+			{
+			pushed_text = names[i];
+			break;
+			}
+	}
+
+/*
+ *	Handle mouse-up events.
+ */
+
+void File_gump_object::mouse_up
+	(
+	int mx, int my			// Position in window.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (pushed)			// Pushing a button?
+		{
+		pushed->unpush(gwin);
+		if (pushed->on_button(gwin, mx, my))
+			pushed->activate(gwin);
+		}
+	else if (pushed_text && pushed_text->mouse_clicked(gwin, mx, my))
+		{			// Clicked on text.
+		if (focus)		// Another had focus?
+			focus->lose_focus();
+		focus = pushed_text;
+					// Need load/save buttons?
+		int have_ls = (buttons[0] != 0);
+		if (focus->get_length() && !have_ls)
+			{
+			buttons[0] = new Load_save_gump_button(this,
+				btn_rows[0], btn_cols[0], LOADBTN);
+			buttons[1] = new Load_save_gump_button(this,
+				btn_rows[0], btn_cols[1], SAVEBTN);
+			}
+		else if (!focus->get_length() && have_ls)
+			{		// No name yet.
+			delete buttons[0];
+			delete buttons[1];
+			buttons[0] = buttons[1] = 0;
+			}
+		if (have_ls != (buttons[0] != 0))
+			paint(gwin);	// Repaint if changed.
+		gwin->set_painted();
+		}
+	pushed = 0;
+	pushed_text = 0;
+	}
+

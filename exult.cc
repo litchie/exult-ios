@@ -411,10 +411,6 @@ static void Handle_event
 			break;
 		if (event.button.button == 1)
 			{
-#if DEBUG
-cout << "Mouse down at (" << event.button.x << ", " <<
-	event.button.y << ")\n";
-#endif
 			dragging = gwin->start_dragging(event.button.x,
 							event.button.y);
 			dragged = 0;
@@ -880,6 +876,8 @@ static int Handle_gump_event
 	switch (event.type)
 		{
 	case SDL_MOUSEBUTTONDOWN:
+cout << "(x,y) rel. to gump is (" << (event.button.x - gump->get_x()) << 
+	", " <<	(event.button.y - gump->get_y()) << ")\n";
 		if (event.button.button == 1)
 			gump->mouse_down(event.button.x, event.button.y);
 		break;
