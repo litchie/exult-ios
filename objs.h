@@ -110,6 +110,7 @@ protected:
 					//   gump's rectangle.
 public:
 	friend class Chunk_object_list;
+	friend class Barge_object;
 	friend class Gump_object;
 	friend class Actor_gump_object;
 					// Create from ifix record.
@@ -178,6 +179,8 @@ public:
 	void move(int newtx, int newty, int newlift);
 					// Find nearby objects.
 	int find_nearby(Vector& vec, int shapenum, int quality, int mask);
+					// Render.
+	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	virtual int get_schedule()	// Return NPC schedule.
@@ -204,6 +207,9 @@ public:
 					// Get contained objs.
 	virtual int get_objects(Vector& vec, int shapenum)
 		{ return 0; }
+					// Add an object.
+	virtual int add(Game_object *obj)
+		{ return 0; }
 	};
 
 /*
@@ -228,6 +234,7 @@ public:
  */
 class Container_game_object : public Ireg_game_object
 	{
+protected:
 	Game_object *last_object;	// ->last obj., which pts. to first.
 public:
 	Container_game_object(unsigned char l, unsigned char h, 
@@ -237,12 +244,13 @@ public:
 		  last_object(0)
 		{  }
 	Container_game_object() : last_object(0) {  }
-	void add(Game_object *obj);
 	void remove(Game_object *obj);
 	Game_object *get_last_object()
 		{ return last_object; }
 	Game_object *get_first_object()	// Get first inside.
 		{ return last_object ? last_object->get_next() : 0; }
+					// Add an object.
+	virtual int add(Game_object *obj);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 					// Drop another onto this.
@@ -251,6 +259,27 @@ public:
 	virtual int count_objects(int shapenum);
 					// Get contained objs.
 	virtual int get_objects(Vector& vec, int shapenum);
+	};
+
+/*
+ *	A 'barge', such as a ship or horse-and-cart.  +++++For now, the
+ *	objects aren't really added or kept track of, since they have to
+ *	be rendered in the outside world.+++++
+ */
+class Barge_object : public Ireg_game_object
+	{
+public:
+	Barge_object(unsigned char l, unsigned char h, 
+				unsigned int shapex,
+				unsigned int shapey, unsigned int lft = 0)
+		: Ireg_game_object(l, h, shapex, shapey, lft)
+		{  }
+	Barge_object() : Ireg_game_object()
+		{  }
+					// Add an object.
+	virtual int add(Game_object *obj);
+					// Render.
+	virtual void paint(Game_window *gwin);
 	};
 
 /*
