@@ -520,7 +520,7 @@ Font::~Font()
 	if(font_data)
 		delete font_data;
 	if(font_buf)
-		delete font_buf;
+		delete [] font_buf;
 }
 
 int Font::load(const char *fname, int index, int hlead, int vlead)
