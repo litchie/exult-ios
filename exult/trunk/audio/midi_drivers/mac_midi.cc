@@ -529,12 +529,6 @@ UInt32 *BuildTuneHeader(int part_poly_max[32], int part_to_inst[32], int numPart
 		if (myErr != noErr)
 			goto bail;
 		
-#if DEBUG
-		char instrumentName[256];
-		CopyPascalStringToC(myNoteRequest->tone.instrumentName,instrumentName);
-		COUT("Part " << part << ": max polyphony " << part_poly_max[part] << ", instrument '" << instrumentName << "'");
-#endif
-
 		// move pointer to beginning of next event
 		myPos1 += kNoteRequestEventLength;
 	}

@@ -328,8 +328,12 @@ private:
 					//   observer to sound source.
 	inline 	void	lock(void)
 		{
+#ifdef MACOS
+		SDL_mutexP(mutex);
+#else
 		if(SDL_mutexP(mutex)!=0)
 			std::cerr << "ProducerConsumerBuf::lock() failed" << std::endl;
+#endif
 		}
 	inline 	void	unlock(void)
 		{

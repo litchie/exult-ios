@@ -172,6 +172,7 @@ class Game_window
 #ifdef RED_PLASMA
 	// Red plasma animation during game load
 	uint32 load_palette_timer;
+    int plasma_start_color, plasma_cycle_range;
 #endif
 	
 public:

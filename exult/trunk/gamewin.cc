@@ -188,7 +188,7 @@ Game_window::Game_window
 	    removed(new Deleted_objects()), 
 	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0)
 #ifdef RED_PLASMA
-	    ,load_palette_timer(0)
+	    ,load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0)
 #endif
 	{
 	game_window = this;		// Set static ->.
@@ -3185,26 +3185,37 @@ Shape_file* Game_window::create_mini_screenshot()
 
 #ifdef RED_PLASMA
 
-#define	PLASMA_START_COLOR	128
-#define	PLASMA_CYCLE_RANGE	77
+#define	BG_PLASMA_START_COLOR	128
+#define	BG_PLASMA_CYCLE_RANGE	80
+
+#define	SI_PLASMA_START_COLOR	16
+#define	SI_PLASMA_CYCLE_RANGE	96
+
 void Game_window::setup_load_palette()
 {
 	if (load_palette_timer != 0)
 		return;
 
-	// Put up the plasma to the screen
-	plasma(get_width(), get_height(), 0, 0, PLASMA_START_COLOR, PLASMA_START_COLOR+PLASMA_CYCLE_RANGE+1);
+	if (Game::get_game_type()==BLACK_GATE)
+    {
+        plasma_start_color = BG_PLASMA_START_COLOR;
+        plasma_cycle_range = BG_PLASMA_CYCLE_RANGE;
+    }
+	else if (Game::get_game_type()==SERPENT_ISLE)
+    {
+        plasma_start_color = SI_PLASMA_START_COLOR;
+        plasma_cycle_range = SI_PLASMA_CYCLE_RANGE;
+    }
+    
+    // Put up the plasma to the screen
+    plasma(get_width(), get_height(), 0, 0, plasma_start_color, plasma_start_color+plasma_cycle_range-1);
 
-	// Load the palette
+     // Load the palette
 	if (Game::get_game_type()==BLACK_GATE)
 		pal->load("<STATIC>/intropal.dat",2);
 	else if (Game::get_game_type()==SERPENT_ISLE)
-	{
-		// both of the following two palettes are useable for plasma
-		//set_palette(9);
 		pal->load(MAINSHP_FLX,1);
-		// TODO - SI should have blue plasma I think
-	}
+
 	pal->apply();
 	load_palette_timer = SDL_GetTicks();
 }
@@ -3217,7 +3228,7 @@ void Game_window::cycle_load_palette()
 	if(ticks > load_palette_timer+100)
 	{
 		for(int i = 0; i < 4; ++i)
-			get_win()->rotate_colors(PLASMA_START_COLOR, PLASMA_CYCLE_RANGE, 1);
+			get_win()->rotate_colors(plasma_start_color, plasma_cycle_range, 1);
 		show(true);
 
 		// We query the timer here again, as the blit can take easily 50 ms and more

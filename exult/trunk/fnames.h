@@ -26,10 +26,8 @@
 // depending on the OS
 #define	USER_CONFIGURATION_FILE	"exult.cfg"
 
-#ifdef MACOS
+#if (defined(MACOS) || defined(MACOSX)) && !defined(EXULT_DATADIR)
 #define EXULT_DATADIR	"data"
-#elif defined(MACOSX)
-#define EXULT_DATADIR	exult_datadir
 #endif
 
 /*
