@@ -23,6 +23,8 @@ libobjs_la_SOURCES = \
 	flags.h \
 	iregobjs.cc \
 	iregobjs.h \
+	mappatch.cc \
+	mappatch.h \
 	objiter.h \
 	objlist.h \
 	objs.cc \

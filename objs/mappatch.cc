@@ -22,9 +22,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include "mappatch.h"
 #include "gamewin.h"
 #include "objs.h"
+#include "vec.h"
 
 /*
  *	Find (first) matching object.
@@ -35,7 +40,7 @@ Game_object *Map_patch::find
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Object_vector vec;		// Pass mask=0xb0 to get any object.
+	Game_object_vector vec;		// Pass mask=0xb0 to get any object.
 	Game_object::find_nearby(vec, spec.loc, spec.shapenum, 0, 0xb0,
 					spec.quality, spec.framenum);
 	return vec.empty() ? 0 : vec.front();
@@ -51,11 +56,16 @@ bool Map_patch_remove::apply
 	(
 	)
 	{
-	Game_object *obj = find();
-	if (!obj)
-		return false;
-	obj->remove_this();
-	return true;
+	bool found = false;
+	Game_object *obj;
+	while ((obj = find()) != 0)
+		{
+		obj->remove_this();
+		found = true;
+		if (!all)		// Just one?
+			return true;
+		}		
+	return found;
 	}
 
 /*
@@ -91,12 +101,16 @@ Map_patch_collection::~Map_patch_collection
 	(
 	)
 	{
-	for (map<int, list<Map_patch *>>::iterator it1 = patches.begin();
+	for (map<int, list<Map_patch *> >::iterator it1 = patches.begin();
 						it1 != patches.end(); it1++)
 		{
 		list<Map_patch *>& lst = (*it1).second;
 		while (!lst.empty())
-			delete lst.pop_front();
+			{
+			Map_patch *patch = lst.front();
+			delete patch;
+			lst.pop_front();
+			}
 		}
 	}
 
@@ -114,12 +128,24 @@ void Map_patch_collection::add
 	    sy = p->spec.loc.ty/c_tiles_per_schunk;
 					// Get superchunk # (0-143).
 	int schunk = sy*c_num_schunks + sx;
-	map<int, list<Map_patch *>>::iterator it1 = patches.find(schunk);
+	patches[schunk].push_back(p);
+	}
+
+/*
+ *	Apply all patches for a superchunk.
+ */
+
+void Map_patch_collection::apply
+	(
+	int schunk
+	)
+	{
+	map<int, list<Map_patch *> >::iterator it1 = patches.find(schunk);
 	if (it1 != patches.end())	// Found list for superchunk?
 		{
 		list<Map_patch *>& lst = (*it1).second;
 		for (list<Map_patch *>::const_iterator it2 = lst.begin();
-					it2 != lst.end(); it2++)
-		(*it2)->apply();	// Apply each one in list.
+						it2 != lst.end(); it2++)
+			(*it2)->apply();	// Apply each one in list.
 		}
 	}

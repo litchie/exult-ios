@@ -66,6 +66,7 @@ class Deleted_objects;
 class Gump_manager;
 struct SaveGame_Details;
 struct SaveGame_Party;
+class Map_patch_collection;
 
 /*
  *	The main game window:
@@ -126,6 +127,7 @@ class Game_window
 	Deleted_objects *removed;	// List of 'removed' objects.
 	bool schunk_read[144]; 		// Flag for reading in each "ifix".
 	bool schunk_modified[144];	// Flag for modified "ifix".
+	Map_patch_collection *map_patches;
 	int scrolltx, scrollty;		// Top-left tile of screen.
 	Actor *camera_actor;		// What to center view around.
 	Rectangle scroll_bounds;	// Walking outside this scrolls.
@@ -210,6 +212,8 @@ public:
 		{ return scrolltx; }
 	inline int get_scrollty() const
 		{ return scrollty; }
+	inline Map_patch_collection *get_map_patches()
+		{ return map_patches; }
 	inline Usecode_machine *get_usecode() const
 		{ return usecode; }
 	inline Rectangle get_win_rect() const	// Get window's rectangle.
