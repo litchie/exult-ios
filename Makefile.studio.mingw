@@ -35,7 +35,7 @@ EXP_FILE=exult_studio.exp
 SERVER_OBJS=objserial.o servemsg.o servewin32.o
 
 MAPEDIT_OBJS=chunklst.o dirbrowser.o eggedit.o exult_studio.o npcedit.o \
-	objbrowse.o objedit.o paledit.o shapedraw.o shapegroup.o \
+	objbrowse.o objedit.o paledit.o shapedraw.o shapefile.o shapegroup.o \
 	shapeedit.o shapelst.o \
 	studio.o
 
