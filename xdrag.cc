@@ -24,12 +24,15 @@
 
 #ifdef USE_EXULTSTUDIO
 
-#include <iostream.h>			/* Debugging messages */
+#include <iostream>			/* Debugging messages */
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include "xdrag.h"
 #include "u7drag.h"
+
+using std::cout;
+using std::endl;
 
 /*
  *	Get a window's screen coords.

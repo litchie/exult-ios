@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#include <fstream.h>
+#include <fstream>
 #include <unistd.h>
 #include <stdio.h>
 #include <string>
@@ -118,7 +118,7 @@ int main
 	if (errs > 0)			// Check for errors.
 		return errs;
 					// Open output.
-	ofstream out(outname, ios::binary|ios::out);
+	std::ofstream out(outname, ios::binary|ios::out);
 	for (std::vector<Uc_function *>::iterator it = functions.begin();
 					it != functions.end(); it++)
 		{

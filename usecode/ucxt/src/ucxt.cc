@@ -40,7 +40,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
-#include <strstream>
 #include <iomanip>
 #include <vector>
 #include <stack>
