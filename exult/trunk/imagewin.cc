@@ -110,10 +110,9 @@ void Image_buffer8::rotate_colors
 	)
 	{
 	int cnt = num - 1;		// Shift downward.
-	SDL_Color c0 = colors[first];
-	for (int i = first; cnt; i++, cnt--)
-		colors[i] = colors[i + 1];
-	colors[first + num - 1] = c0;	// Shift 1st to end.
+	SDL_Color c0 = colors[first+num-1];
+	memmove(colors+first+1,colors+first,sizeof(SDL_Color)*cnt);
+	colors[first ] = c0;	// Shift 1st to end.
 	if (upd)			// Take effect now?
 		SDL_SetColors(surface, colors, 0, 256);
 	}
