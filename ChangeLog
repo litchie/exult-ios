@@ -1,3 +1,8 @@
+2001-01-24  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* SI:  You can now start the Knight's Test (but you'll get stuck
+	after entering).
+
 2001-01-25  Ryan Nunn <triforce@merlin.net.au>
 	* mingw_kuldges.h: Added so Exult can once again be compiled in Win32
 	* makefile.win32, makefile.cygwin: -include mingw_kludges.h

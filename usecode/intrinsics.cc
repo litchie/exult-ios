@@ -730,13 +730,13 @@ USECODE_INTRINSIC(find_nearby)
 
 USECODE_INTRINSIC(give_last_created)
 {
-	// Think it's give_last_created_to_npc(npc).
-	Game_object *npc = get_item(parms[0]);
+	// Think it's give_last_created(container).
+	Game_object *cont = get_item(parms[0]);
 	int ret = 0;
-	if (npc && last_created)
+	if (cont && last_created)
 		{			// Remove, but don't delete, last.
 		last_created->remove_this(1);
-		ret = npc->add(last_created);
+		ret = cont->add(last_created);
 		}
 	Usecode_value u(ret);
 	return(u);

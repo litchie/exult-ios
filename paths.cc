@@ -77,7 +77,9 @@ int Actor_pathfinder_client::get_step_cost
 		Game_object *block = Game_object::find_blocking(to);
 		if (!block)
 			return -1;
-		if (!block->is_closed_door())
+		if (!block->is_closed_door() ||
+					// Can't get past locked doors.
+		    block->get_framenum()%4 >= 2)
 			return -1;
 		new_lift = to.tz;	// We can open doors.
 		cost++;			// But try to avoid them.
