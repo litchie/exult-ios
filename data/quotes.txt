@@ -76,3 +76,9 @@
 \C"Uh oh, Iolo is upset at me
 \Cfor moving a tree."
 \L- Willem Jan
+
+\C"You guys rule !!!"
+\L- Chimera on ##exult
+
+\C"Yeah, we do :-)"
+\L- Willem Jan on ##exult
