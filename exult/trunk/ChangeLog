@@ -1,3 +1,15 @@
+2002-08-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* monsters.cc (Monster_actor): When using monster itself as
+	weapon, return the shape.  Should fix problem where slimes weren't
+	doing any damage.
+	* combat.cc:  Remove dead NPC's from opponents list.  Fixes
+	problem where party stands around not attacking remaining monsters.
+
+	* usecode/intrinsics.cc: To make combat spell-casting work,
+	click_on_item now takes the target of the caller_item.  Let me
+	know if this breaks anything.
+
 2002-07-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mouse.cc: fixed uninitialized variables (box,dirty)
 	* shapeid.cc: delete -> delete[]

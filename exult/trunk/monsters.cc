@@ -395,8 +395,11 @@ Weapon_info *Monster_actor::get_weapon
 		shape = 0;
 		winf = get_info().get_weapon_info();
 		if (winf)
+			{
+			shape = get_shapenum();
 			points = winf->get_damage();
-		else if (inf)		// Guessing:
+			}
+		else if (inf)		// Builtin (claws?):
 			points = inf->weapon;
 		}
 	return winf;
