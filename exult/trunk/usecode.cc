@@ -415,7 +415,12 @@ void Usecode_machine::set_item_shape
 	cout << "Set_item_shape: " << val << ", " << shape << '\n';
 	Game_object *item = get_item(val);
 	if (item != 0)
+		{
+		Chunk_object_list *chunk = gwin->get_objects(item);
+		chunk->remove(item);	// Remove and add to update cache.
 		item->set_shape(shape);
+		chunk->add(item);
+		}
 	}
 
 /*
@@ -556,13 +561,7 @@ void Usecode_machine::item_say
 	char *str = strval.get_str_value();
 	if (obj && str && *str)
 		{
-		int cx, cy;		// Need chunk coords.
-		if (!obj->get_chunk(cx, cy))
-			{		// Unknown?  Use main char.
-			obj = gwin->get_main_actor();
-			obj->get_chunk(cx, cy);
-			}
-		Rectangle box = gwin->get_shape_rect(obj, cx, cy);
+		Rectangle box = gwin->get_shape_rect(obj);
 		gwin->add_text(str, box.x, box.y);
 		}
 	}

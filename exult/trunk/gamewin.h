@@ -121,6 +121,8 @@ public:
 			list = objects[cx][cy] = new Chunk_object_list(cx, cy);
 		return (list);
 		}
+	Chunk_object_list *get_objects(Game_object *obj)
+		{ return get_objects(obj->get_cx(), obj->get_cy()); }
 	Actor *get_main_actor()
 		{ return main_actor; }
 	int check_main_actor_inside()	// See if main actor moved in/out-side.
@@ -182,9 +184,10 @@ public:
 		{ return get_shape(id.get_shapenum(), id.get_framenum()); }
 					// Get screen area used by object in
 					//   given chunk.
-	Rectangle get_shape_rect(Game_object *obj, int cx, int cy)
+	Rectangle get_shape_rect(Game_object *obj)
 		{
 		Shape_frame *s = get_shape(*obj);
+		int cx = obj->get_cx(), cy = obj->get_cy();
 		int lft = 4*obj->get_lift();
 		return Rectangle(
 			(cx - chunkx)*chunksize +
@@ -198,10 +201,6 @@ public:
 			);
 		}
 
-					// Get screen area used by sprite.
-	Rectangle get_shape_rect(Sprite *sprite)
-		{ return get_shape_rect(sprite, sprite->get_cx(),
-							sprite->get_cy()); }
 					// Paint shape in window.
 	void paint_shape(Image_window *iwin, int xoff, int yoff, 
 							Shape_frame *shape);

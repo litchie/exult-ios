@@ -102,19 +102,21 @@ class Game_object : public ShapeID
 	short quality;			// Some sort of game attribute.
 	Game_object *next;		// ->next in chunk list.
 protected:
+	unsigned char cx, cy;		// (Absolute) chunk coords.
 	void set_lift(int l)
 		{ lift = l; }
 public:
 	friend class Chunk_object_list;
-	Game_object(unsigned char *ifix)// Create from ifix record.
+					// Create from ifix record.
+	Game_object(unsigned char *ifix)
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
-			  lift(ifix[1] & 0xf), quality(0)
+			  lift(ifix[1] & 0xf), quality(0), cx(255), cy(255)
 		{  }
 					// Create from ireg. data.
 	Game_object(unsigned char l, unsigned char h, unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
 		: ShapeID(l, h), shape_pos((shapex << 4) + shapey), 
-					lift(lft), quality(0)
+					lift(lft), quality(0), cx(255), cy(255)
 		{  }
 	Game_object() : ShapeID()	// Create fake entry.
 		{  }
@@ -143,13 +145,15 @@ public:
 			(y < y2 || (y == y2 && 
 				get_shape_pos_x() < obj2.get_shape_pos_x()))));
 		} 
+					// Return chunk coords.
+	int get_cx()
+		{ return cx; }
+	int get_cy()
+		{ return cy; }
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	virtual int get_schedule()	// Return NPC schedule.
 		{ return 11; }		// Loiter.
-					// Return chunk coords.
-	virtual int get_chunk(int &cxret, int& cyret)
-		{ return 0; }		// We don't know them.
 	virtual char *get_name();
 	virtual void set_property(int prop, int val)
 		{  }
@@ -412,7 +416,6 @@ public:
  */
 class Sprite : public Container_game_object, public Time_sensitive
 	{
-	int cx, cy;			// (Absolute) chunk coords.
 	Chunk_object_list *chunk;	// The chunk list we're on.
 	int major_frame_incr;		// # of pixels to move
 					//   along major axis for each frame.
@@ -437,31 +440,10 @@ public:
 	Sprite(int shapenum);
 	int in_world()			// Do we really exist?
 		{ return chunk != 0; }
-	int get_cx()			// Get chunk coords.
-		{ return cx; }
-	int get_cy()
-		{ return cy; }
 	int get_worldx()		// Get x-coord. within world.
 		{ return cx*chunksize + get_shape_pos_x()*8; }
 	int get_worldy()		// Get y-coord. within world.
 		{ return cy*chunksize + get_shape_pos_y()*8; }
-					// Move to new chunk, shape coords.
-	void move(int new_cx, int new_cy, Chunk_object_list *new_chunk, 
-			int new_sx, int new_sy, int new_frame, 
-			int new_lift = -1)
-		{
-		if (chunk)		// Remove from current chunk.
-			chunk->remove(this);
-		chunk = new_chunk;	// Add to new one.
-		cx = new_cx;
-		cy = new_cy;
-		set_shape_pos(new_sx, new_sy);
-		if (new_frame >= 0)
-			set_frame(new_frame);
-		if (new_lift >= 0)
-			set_lift(new_lift);
-		chunk->add(this);
-		}
 					// Set a frame seq. for a direction.
 	void set_frame_sequence(Direction dir, int cnt, unsigned char *seq)
 		{
@@ -474,19 +456,27 @@ public:
 		Frames_sequence *seq = frames[(int) dir];
 		return seq != 0 ? seq->get_resting() : -1;
 		}
+					// Move to new chunk, shape coords.
+	void move(int new_cx, int new_cy, Chunk_object_list *new_chunk, 
+			int new_sx, int new_sy, int new_frame, 
+			int new_lift = -1)
+		{
+		if (chunk)		// Remove from current chunk.
+			chunk->remove(this);
+		chunk = new_chunk;	// Add to new one.
+		set_shape_pos(new_sx, new_sy);
+		if (new_frame >= 0)
+			set_frame(new_frame);
+		if (new_lift >= 0)
+			set_lift(new_lift);
+		chunk->add(this);
+		}
 	int is_moving()
 		{ return x_dir != 0; }
 	void stop();			// Stop motion.
 					// Start moving.
 	void start(Game_window *gwin,
 			unsigned long destx, unsigned long desty, int speed);
-					// Return chunk coords.
-	virtual int get_chunk(int &cxret, int& cyret)
-		{
-		cxret = cx;
-		cyret = cy;
-		return 1;
-		}
 					// Figure next frame location.
 	virtual int next_frame(unsigned long time,
 		int& new_cx, int& new_cy, int& new_sx, int& new_sy,

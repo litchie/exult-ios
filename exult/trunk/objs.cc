@@ -310,6 +310,8 @@ void Chunk_object_list::add
 	Game_object *newobj		// Object to add.
 	)
 	{
+	newobj->cx = get_cx();		// Set object's chunk.
+	newobj->cy = get_cy();
 					// Get x,y of shape within chunk.
 	int x = newobj->get_shape_pos_x(), y = newobj->get_shape_pos_y();
 	int num_entries = 0;		// Need to count as we sort.
@@ -370,6 +372,7 @@ void Chunk_object_list::remove
 	{
 	if (cache)			// Remove from cache.
 		cache->update_object(this, remove, 0);
+	remove->cx = remove->cy = 255;	// Set to invalid chunk.
 	if (remove == objects)		// First one?
 		{
 		objects = remove->next;
@@ -404,7 +407,7 @@ Frames_sequence::Frames_sequence
 Sprite::Sprite
 	(
 	int shapenum
-	)  : Container_game_object(), cx(-1), cy(-1), chunk(0),
+	)  : Container_game_object(), chunk(0),
 		x_dir(0), major_frame_incr(8), frames_seq(0)
 	{
 	set_shape(shapenum, 0); 
