@@ -203,7 +203,7 @@ clean:
 
 
 install: $(EXEC)
-	strip $(EXEC) -o $(U7PATH)/$(EXEC)
+	strip $(EXEC) -o $(U7PATH)\$(EXEC)
 	if not exist $(U7PATH)\data md  $(U7PATH)\data
 	copy data\exult.flx  $(U7PATH)\data
 	copy data\exult_bg.flx $(U7PATH)\data
