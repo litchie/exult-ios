@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xmidi.h"
 #include "SDL_syswm.h"
 #include "mmsystem.h"
+#include "exceptions.h"
 
 class	Windows_MidiOut : virtual public MidiAbstract
 {
