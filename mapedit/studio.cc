@@ -190,7 +190,7 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), 
 	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
-	npc_ctx(0), objwin(0), obj_draw(0)
+	npc_ctx(0), objwin(0), obj_draw(0), shapewin(0), shape_draw(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -257,6 +257,10 @@ ExultStudio::~ExultStudio()
 		gtk_widget_destroy(npcwin);
 	delete npc_draw;
 	npcwin = 0;
+	if (shapewin)
+		gtk_widget_destroy(shapewin);
+	delete shape_draw;
+	shapewin = 0;
 	delete vgafile;
 	delete facefile;
 	delete chunkfile;

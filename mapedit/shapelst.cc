@@ -269,6 +269,14 @@ gint Shape_chooser::mouse_press
 				(*chooser->sel_changed)();
 			break;
 			}
+	if (chooser->selected == old_selected && old_selected >= 0)
+		{			// Same square.  Check for dbl-click.
+		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
+			{
+			ExultStudio *studio = ExultStudio::get_instance();
+			studio->open_shape_window(0, 0, 0);//++++++Finish.
+			}
+		}
 	return (TRUE);
 	}
 
