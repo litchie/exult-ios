@@ -6,6 +6,8 @@
 			<header>- 24 October 2002</header>
 			<body>
 				<ul>
+				<li><ref1 target="exult_config"/> settings in exult.cfg are the same on all OS.</li>
+				<li><ref1 target="path_config"/> same as above.</li>
 				<li><ref1 target="music"/> rewrote the FM synth emulation part a bit.</li>
 				<li><ref1 target="zaurus_install"/> quick guide where the necessary files can be found.</li>
 				</ul>
@@ -171,6 +173,10 @@
 					other operating systems will probably locate it as 'exult.cfg' in the same 
 					directory as the <Exult/> binary. However it is recommended that you edit this 
 					file by hand to achieve optimal results for your system.
+				</para>
+				<para>
+					<em>Note:</em> the settings in exult.cfg are the <strong>same</strong> on 
+					<strong>all</strong> operating systems (except when explicitly stated below).
 				</para>
 				<para>
 					The file uses a simple hierarchical XML-like syntax, which should be simple to
@@ -557,6 +563,11 @@
 				<para>
 					<em>Note:</em> Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\). 
 					Some people seem to have problems with that.
+				</para>
+				<para>
+					<em>Note:</em> path settings in exult.cfg are the <strong>same</strong> on 
+					<strong>all</strong> operating systems. Of course you need to make adjustments on UNIX 
+					based systems when you enter the absolute path.
 				</para>
 			</body>
 		</sub>
