@@ -1,3 +1,6 @@
+2004-05-10	Darke <darkepaw@users.sf.net>
+	* vec.h objs/objiter.h: gcc3.4 'fixes'.
+
 2004-04-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exulticon.h, exult.cc: set a window icon
 

@@ -40,9 +40,9 @@ public:
 #endif
 	void put(int i, T& v)		// Set i'th entry.
 		{
-			if (i >= (int)size())
+			if (i >= (int)this->size())
 				{
-				insert(begin() + size(), i - size(), 0);
+				insert(this->begin() + this->size(), i - this->size(), 0);
 				push_back(v);
 				}
 			else
@@ -52,14 +52,14 @@ public:
 		{
 			int i = find(0);
 			if (i < 0)
-				i = size();
+				i = this->size();
 			put(i, v);
 			return (i);
 		}
 	size_type	find( const T& obj ) const
 		{
 			size_type pos = 0;
-			for (const T *X = &*begin(); X != &*end(); ++X, ++pos)
+			for (const T *X = &*this->begin(); X != &*this->end(); ++X, ++pos)
 				{
 				if( *X == obj )
 					return pos;
@@ -70,13 +70,13 @@ public:
 	size_type	append( const T& obj )
 		{
 			push_back( obj );
-			return size() - 1;
+			return this->size() - 1;
 		}
 
 	void		remove( const T& obj )
 		{
 			// Correct way. An iterator isn't a pointer, necessarily
-			for(iterator X = begin(); X != end(); ++X)
+			for(iterator X = this->begin(); X != this->end(); ++X)
 			{
 				if( *X == obj )
 				{
