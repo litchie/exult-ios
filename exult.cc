@@ -176,7 +176,6 @@ static void Handle_event(SDL_Event& event);
 /*
  *	Statics:
  */
-static bool show_mouse = true;		// display mouse in main loop?
 static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
 static bool run_bg = false;		// skip menu and run bg
@@ -825,8 +824,11 @@ static void Handle_events
 					// Show animation every 1/20 sec.
 		if (ticks > last_repaint + 50 || gwin->was_painted())
 					// This avoids jumpy walking:
-			{
-			gwin->paint_dirty();
+			{		// OpenGL?  Repaint all each time.
+			if (GL_manager::get_instance())
+				gwin->paint();
+			else
+				gwin->paint_dirty();
 			while (ticks > last_repaint+50)last_repaint += 50;
 
 			int x, y;// Check for 'stuck' Avatar.
@@ -841,14 +843,14 @@ static void Handle_events
 				}
 			}
 
-		if (show_mouse)
-			Mouse::mouse->show();	// Re-display mouse.
+		Mouse::mouse->show();	// Re-display mouse.
 
 					// Rotate less often if scaling and 
 					//   not paletized.
 		int rot_speed = 100 << (gwin->get_win()->is_palettized() ||
 								scale==1?0:1);
-		if (ticks > last_rotate + rot_speed)
+		if (ticks > last_rotate + rot_speed &&
+		    !GL_manager::get_instance())	//++++Disable in OGL.
 			{		// (Blits in simulated 8-bit mode.)
 			gwin->get_win()->rotate_colors(0xf8, 4, 0);
 			gwin->get_win()->rotate_colors(0xf4, 4, 0);
@@ -862,7 +864,8 @@ static void Handle_events
 				gwin->set_painted();
 			}
 		if (!gwin->show() &&	// Blit to screen if necessary.
-		    Mouse::mouse_update)	// If not, did mouse change?
+		    Mouse::mouse_update &&	// If not, did mouse change?
+		    !GL_manager::get_instance())
 			Mouse::mouse->blit_dirty();
 		}
 	}
@@ -1244,7 +1247,8 @@ static int Get_click
 		Mouse::mouse->show();		// Turn on mouse.
 
 		if (!gwin->show() &&	// Blit to screen if necessary.
-		    Mouse::mouse_update)
+		    Mouse::mouse_update &&
+		    !GL_manager::get_instance())
 			Mouse::mouse->blit_dirty();
 		}
 	return (0);			// Shouldn't get here.
