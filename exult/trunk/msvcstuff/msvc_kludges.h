@@ -20,7 +20,6 @@
 #define SIZEOF_INT 4
 #define DONT_HAVE_HASH_SET
 #define DONT_HAVE_HASH_MAP
-#define MSVC_FIND_NEARBY_KLUDGE
 
 // Settings for debug builds
 #ifndef NDEBUG

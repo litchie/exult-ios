@@ -1,10 +1,22 @@
-#ifdef MSVC_FIND_NEARBY_KLUDGE
-
-// This is so the Compiler wont crash when attempting to compile Objs.cc
-//
-// Yes, you read right... CRASH!
-//
-// The damn thing will crash because it doesn't like <T*>
+/*
+ *	find_nearby.h - Header for defining static Game_object::find_nearby()
+ *
+ *  Copyright (C) 2001-2002 The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifndef FN_VECTOR
 #error(Can't Include find_nearby.h if FN_VECTOR is not #define'd)
@@ -85,5 +97,3 @@ int Game_object::find_nearby
 #undef FN_VECTOR
 #undef FN_OBJECT
 #undef FN_CAST
-
-#endif

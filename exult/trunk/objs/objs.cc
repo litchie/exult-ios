@@ -369,110 +369,10 @@ static int Check_mask
  *	Output:	# found, appended to vec.
  */
 
-
-#ifndef MSVC_FIND_NEARBY_KLUDGE
-
-template <class T>
-#ifdef ALPHA_LINUX_CXX
-int Game_object::find_nearby_static
-#else
-int Game_object::find_nearby
-#endif
-	(
-	Exult_vector<T*>& vec,	// Objects appended to this.
-	Tile_coord pos,			// Look near this point.
-	int shapenum,			// Shape to look for.  
-					//   -1=any (but always use mask?),
-					//   c_any_shapenum=any.
-	int delta,			// # tiles to look in each direction.
-	int mask,			// See Check_mask() above.
-	int qual,			// Quality, or c_any_qual for any.
-	int framenum			// Frame #, or c_any_framenum for any.
-	)
-	{
-	if (delta < 0)			// +++++Until we check all old callers.
-		delta = 24;
-	if (shapenum > 0 && mask == 4)	// Ignore mask=4 if shape given!
-		mask = 0;
-	int vecsize = vec.size();
-	Game_window *gwin = Game_window::get_instance();
-	Game_map *gmap = gwin->get_map();
-	Rectangle tiles(pos.tx - delta, pos.ty - delta, 1 + 2*delta, 1 + 
-								2*delta);
-					// Stay within world.
-	Rectangle world(0, 0, c_num_chunks*c_tiles_per_chunk, 
-					c_num_chunks*c_tiles_per_chunk);
-	tiles = tiles.intersect(world);
-					// Figure range of chunks.
-	int start_cx = tiles.x/c_tiles_per_chunk,
-	    end_cx = (tiles.x + tiles.w - 1)/c_tiles_per_chunk;
-	int start_cy = tiles.y/c_tiles_per_chunk,
-	    end_cy = (tiles.y + tiles.h - 1)/c_tiles_per_chunk;
-					// Go through all covered chunks.
-	for (int cy = start_cy; cy <= end_cy; cy++)
-		for (int cx = start_cx; cx <= end_cx; cx++)
-			{		// Go through objects.
-			Map_chunk *chunk = gmap->get_chunk(cx, cy);
-			Object_iterator next(chunk->get_objects());
-			Game_object *obj;
-			while ((obj = next.get_next()) != 0)
-				{	// Check shape.
-				if (shapenum >= 0)
-					{
-					if (obj->get_shapenum() != shapenum)
-						continue;
-					}
-				if (qual != c_any_qual && obj->get_quality() 
-								!= qual)
-					continue;
-				if (framenum !=  c_any_framenum &&
-					obj->get_framenum() != framenum)
-					continue;
-				if (!Check_mask(gwin, obj, mask))
-					continue;
-				Tile_coord t = obj->get_tile();
-				if (tiles.has_point(t.tx, t.ty)) {
-					T* castobj = dynamic_cast<T*>(obj);
-					if (castobj)
-						vec.push_back(castobj);
-				}
-				}
-			}
-					// Return # added.
-	return (vec.size() - vecsize);
-	}
- 
-#ifdef ALPHA_LINUX_CXX
-#define DEFINE_FIND_NEARBY(decl_type, decl_conttype) \
-int Game_object::find_nearby(decl_type vec, Tile_coord pos, int shapenum, int delta, int mask, int qual, int framenum) \
-{  \
-  return find_nearby_static(vec, pos, shapenum, delta, mask, qual, framenum); \
-}
-
-DEFINE_FIND_NEARBY(Egg_vector&);
-DEFINE_FIND_NEARBY(Actor_vector&);
-DEFINE_FIND_NEARBY(Game_object_vector&);
-#endif //ALPHA_LINUX_CXX
-
-
-#else //MSVC_FIND_NEARBY_KLUDGE
-
 #define FN_VECTOR Egg_vector
 #define FN_OBJECT Egg_object
 #define FN_CAST ->as_egg()
 #include "find_nearby.h"
-
-#define FN_VECTOR Game_object_vector
-#define FN_OBJECT Game_object
-#define FN_CAST
-#include "find_nearby.h"
-
-#define FN_VECTOR Actor_vector
-#define FN_OBJECT Actor
-#define FN_CAST ->as_actor()
-#include "find_nearby.h"
-
-#endif //MSVC_FIND_NEARBY_KLUDGE
 
 int Game_object::find_nearby_eggs
 	(
@@ -487,6 +387,11 @@ int Game_object::find_nearby_eggs
 					delta, 16, qual, frnum);
 	}
 
+#define FN_VECTOR Actor_vector
+#define FN_OBJECT Actor
+#define FN_CAST ->as_actor()
+#include "find_nearby.h"
+
 int Game_object::find_nearby_actors
 	(
 	Actor_vector& vec,
@@ -497,6 +402,11 @@ int Game_object::find_nearby_actors
 	return Game_object::find_nearby(vec, get_tile(), shapenum,
 						delta, 8, c_any_qual, c_any_framenum);
 	}
+
+#define FN_VECTOR Game_object_vector
+#define FN_OBJECT Game_object
+#define FN_CAST
+#include "find_nearby.h"
 
 int Game_object::find_nearby
 	(
