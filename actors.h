@@ -233,7 +233,8 @@ public:
 	void stop();			// Stop animation.
 	void follow(Actor *leader);	// Follow the leader.
 					// Get info. about tile to step onto.
-	static void get_tile_info(Game_window *gwin, Chunk_object_list *nlist,
+	static void get_tile_info(Actor *actor,
+		Game_window *gwin, Chunk_object_list *nlist,
 				int tx, int ty, int& water, int& poison);
 					// Set combat opponent.
 	void set_opponent(Game_object *obj);
