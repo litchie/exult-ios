@@ -47,11 +47,7 @@ TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp
 	shapes = shp;
 	U7object txtobj(archive, index);
 	size_t len;
-#ifdef MACOS
-	const char	CR = '\n', LF = '\r';
-#else
 	const char	CR = '\r', LF = '\n';
-#endif
 		
 	char *txt, *ptr, *end;
 	txt = txtobj.retrieve(len);
@@ -209,7 +205,7 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 				incr = 120;
 				next_time = SDL_GetTicks();
 				break;
-			case SDL_MOUSEBUTTONDOWN:
+			case SDL_MOUSEBUTTONUP:
 				looping = false;
 				break;
 			default:

@@ -14,6 +14,8 @@
 #  include <cstring>
 #endif
 
+using std::memcpy;
+
 /** 
  ** 2xSaI scaling filter source code adapted for Exult
  ** August 29 2000, originally written in May 1999

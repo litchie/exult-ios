@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //#include "items.h"			/* Debugging only */
 
 using std::cerr;
+using std::cout;
 using std::endl;
 using std::ifstream;
 using std::ios;

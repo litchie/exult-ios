@@ -31,7 +31,11 @@ Boston, MA  02111-1307, USA.
 #include "ibuf8.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <string>
+#  include <iostream>
 #endif
+
+using std::cerr;
+using std::endl;
 
 /*
  *	Copy an area of the image within itself.
