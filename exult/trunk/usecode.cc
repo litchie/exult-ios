@@ -869,7 +869,7 @@ Usecode_value Usecode_machine::get_party
 		if (!obj)
 			continue;
 		Usecode_value val((long) obj);
-		arr.put_elem(num_added, val);
+		arr.put_elem(num_added++, val);
 		}
 	// cout << "Party:  "; arr.print(cout); cout << endl;
 	return arr;
