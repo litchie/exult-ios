@@ -74,13 +74,14 @@ void Combat_schedule::start_battle
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
+	if (started_battle)
+		return;
 					// But only if Avatar is main char.
 	if (gwin->get_camera_actor() != gwin->get_main_actor())
 		return;
 	unsigned long curtime = Game::get_ticks();
 					// .5 minute since last start?
-	if (!started_battle && curtime - battle_time >= 30000)
+	if (curtime - battle_time >= 30000)
 		{
 		Audio::get_ptr()->start_music_combat(rand()%2 ? 
 					CSAttacked1 : CSAttacked2, 0);
@@ -390,10 +391,7 @@ Game_object *Combat_schedule::find_foe
 		break;
 		}
 	if (new_opponent)
-		{
 		opponents.remove(new_opponent);
-		start_battle();
-		}
 	return new_opponent;
 	}
 
@@ -444,6 +442,7 @@ void Combat_schedule::approach_foe
 	if (Can_teleport(npc) && rand()%4 == 0 &&	// Try 1/4 to teleport.
 	    teleport())
 		{
+		start_battle();
 		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
 		return;
 		}
@@ -484,6 +483,7 @@ void Combat_schedule::approach_foe
 			}
 		}
 	failures = 0;			// Clear count.  We succeeded.
+	start_battle();			// Music if first time.
 	cout << npc->get_name() << " is pursuing " << opponent->get_name() <<
 		endl;
 					// First time (or 256th), visible?
@@ -618,10 +618,12 @@ void Combat_schedule::start_strike
 			{		// Blocked.  Find another spot.
 			pos.tx += rand()%7 - 3;
 			pos.ty += rand()%7 - 3;
-			npc->walk_to_tile(pos, 100, 0);
+			npc->walk_to_tile(pos, gwin->get_std_delay(), 0);
 			state = approach;
 			return;
 			}
+		if (!started_battle)
+			start_battle();	// Play music if first time.
 		state = fire;		// Clear to go.
 		}
 	cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
@@ -666,7 +668,7 @@ void Combat_schedule::run_away
 	Tile_coord pos = npc->get_tile();
 	pos.tx += dirx*(8 + rx%8);
 	pos.ty += diry*(8 + ry%8);
-	npc->walk_to_tile(pos, 100, 0);
+	npc->walk_to_tile(pos, gwin->get_std_delay(), 0);
 	if (fleed == 1 && rand()%3 && gwin->add_dirty(npc))
 		{
 		yelled++;
@@ -987,7 +989,8 @@ void Combat_schedule::now_what
 		if (npc->get_party_id() >= 0)
 			{		// Party member.
 			npc->walk_to_tile(
-				gwin->get_main_actor()->get_tile());
+				gwin->get_main_actor()->get_tile(),
+						gwin->get_std_delay());
 					// WARNING:  Destroys ourself.
 			npc->set_schedule_type(Schedule::follow_avatar);
 			}
@@ -1200,8 +1203,8 @@ void Duel_schedule::now_what
 		pos.ty += rand()%24 - 12;
 					// Find a free spot.
 		Tile_coord dest = Map_chunk::find_spot(pos, 3, npc, 1);
-		if (dest.tx == -1 || 
-			!npc->walk_path_to_tile(dest, 250, rand()%2000))
+		if (dest.tx == -1 || !npc->walk_path_to_tile(dest, 
+					gwin->get_std_delay(), rand()%2000))
 					// Failed?  Try again a little later.
 			npc->start(250, rand()%3000);
 		}
