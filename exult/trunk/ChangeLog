@@ -1,3 +1,6 @@
+2001-12-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* usecode/ucxt/src/ucfunc.cc: fixed intrinsic bug, re-used opcode bug 
+
 2001-12-24  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Removed bugs from debugging statements.
 
