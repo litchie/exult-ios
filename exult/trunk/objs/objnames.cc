@@ -27,7 +27,14 @@
 #include "items.h"
 
 using std::string;
+#ifndef HAVE_SNPRINTF
+extern int snprintf(char *, size_t, const char *, /*args*/ ...);
+namespace std {
+using ::snprintf;
+}
+#else
 using std::snprintf;
+#endif
 using std::strchr;
 
 /*
