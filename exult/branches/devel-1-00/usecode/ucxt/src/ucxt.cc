@@ -46,7 +46,7 @@
 #include <map>
 
 #include "ucc.h"
-#include "opcodes.h"
+#include "ops.h"
 #include "ucdata.h"
 #include "ucfunc.h"
 #include "files/utils.h"

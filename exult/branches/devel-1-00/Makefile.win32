@@ -1,4 +1,4 @@
-# Exult makefile for use in Windows with mingw 1.0 or later
+# Exult makefile for use in Windows with mingw using gcc 3.1
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
@@ -25,22 +25,22 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 ### Zip File support. Comment out if ZLib isn't installed
 ### Modify paths, if required
-ZIP_CFLAGS=-I$(SRC)/zlib-1.1.3 -DHAVE_ZIP_SUPPORT 
-ZIP_LIBS=-L$(SRC)/zlib-1.1.3 -lZ
+ZIP_CFLAGS=-I$(SRC)/zlib-1.1.4 -DHAVE_ZIP_SUPPORT 
+ZIP_LIBS=-L$(SRC)/zlib-1.1.4 -lZ
 
 # Leave this option empty
 EXTRA_OPTIONS=
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw automatically defines WIN32
-CPPFLAGS=-DVERSION=\"0.99.1RC2\" -DEXULT_DATADIR=\"data\" -DDEBUG \
+CPPFLAGS=-DVERSION=\"0.99.2cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
 	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
-	$(SDL_CFLAGS) -DHAVE_SNPRINTF -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
+	$(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
-CXXFLAGS=-O2 -Wno-long-long -fvtable-thunks -Dsnprintf=_snprintf
+CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DNEED_SNPRINTF_ONLY -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -finline-limit-1000
 CXX=g++
 
 LFLAGS=-mwindows
@@ -71,7 +71,7 @@ AUDIO_OBJS=Audio.o conv.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o soundtest.o
 
 FLIC_OBJS=playfli.o
 
-FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o
+FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o snprintf.o
 
 # Zipfile support objs
 ZIP_OBJS=zip.o unzip.o
@@ -228,7 +228,7 @@ wud.exe : wud.o uctools.h bgintrinsics.h siintrinsics.h
 wuc.exe : wuc.o
 	$(CXX) $(LFLAGS) -o wuc.exe wuc.o -mconsole
 
-UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o opcodes.o
+UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o ops.o
 
 ucxt.exe : $(UCXT_OBJS)
 	$(CXX) $(LFLAGS) -o ucxt.exe $(UCXT_OBJS) -mconsole
