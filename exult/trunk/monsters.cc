@@ -188,12 +188,9 @@ Monster_actor *Monster_actor::create
 
 	// Set temporary
 	if (temporary) monster->set_flag (Obj_flags::is_temporary);
-					// Place in world.
-	Map_chunk *olist = gwin->get_chunk_safely(chunkx, chunky);
-	if (olist)
-		monster->movef(0, olist, tilex, tiley, 0, lift);
-	else
-		monster->set_invalid();
+	monster->set_invalid();		// Place in world.
+	monster->move(chunkx*c_tiles_per_chunk + tilex,
+		      chunky*c_tiles_per_chunk + tiley, lift);
 	if (equipment) {
 					// Get equipment.
 		int equip_offset = inf->equip_offset;
@@ -382,8 +379,6 @@ void Monster_actor::die
 	in_world_cnt--;			// So... Decrement 'live' count here.
 	}
 
-#if 0	/* ++++Developing: */
-
 /*
  *	Get the tiles where slimes adjacent to one in a given position should
  *	be found.
@@ -396,10 +391,10 @@ static void Get_slime_neighbors
 	)
 	{
 					// Offsets to neighbors 2 tiles away.
-	static int neighbors[8] = {0,-2, 2,0, 0,2, -2,0};
-	for (ind dir = 0; dir < 4; dir++)
-		neighbors[dir] = pos +Tile_coord(neighbors[2*dir],
-						    neighbors[2*dir + 1], 0);
+	static int offsets[8] = {0,-2, 2,0, 0,2, -2,0};
+	for (int dir = 0; dir < 4; dir++)
+		neighbors[dir] = pos +Tile_coord(offsets[2*dir],
+						    offsets[2*dir + 1], 0);
 	}
 
 /*
@@ -439,18 +434,18 @@ void Slime_actor::update_frames
 	Tile_coord neighbors[4];	// Gets surrounding spots for slimes.
 	int dir;			// Get direction of neighbor.
 	Game_window *gwin = Game_window::get_game_window();
-	Actor_vector nearby;		// Get nearby slimes.
+	Game_object_vector nearby;		// Get nearby slimes.
 	if (src.tx != -1)
 		if (dest.tx != -1)	// Assume within 2 tiles.
-			Game_object::find_nearby_actors(nearby, src, 529, 4);
+			Game_object::find_nearby(nearby, dest, 529, 4, 8);
 		else
-			Game_object::find_nearby_actors(nearby, src, 529, 2);
+			Game_object::find_nearby(nearby, src, 529, 2, 8);
 	else				// Assume they're both not invalid.
-		Game_object::find_nearby_actors(nearby, dest, 529, 2);
+		Game_object::find_nearby(nearby, dest, 529, 2, 8);
 	if (src.tx != -1)		// Update neighbors we moved from.
 		{
 		Get_slime_neighbors(src, neighbors);
-		for (Actor_vector::const_iterator it = nearby.begin();
+		for (Game_object_vector::const_iterator it = nearby.begin();
 						it != nearby.end(); ++it)
 			{
 			Game_object *slime = *it;
@@ -460,6 +455,7 @@ void Slime_actor::update_frames
 				int ndir = (dir+2)%4;
 					// Turn off bit (1<<ndir)*2, and set
 					//   bit 0 randomly.
+				gwin->add_dirty(slime);
 				slime->set_frame((slime->get_framenum()&
 					~(((1<<ndir)*2)|1)) |(rand()%2));
 				gwin->add_dirty(slime);
@@ -470,7 +466,7 @@ void Slime_actor::update_frames
 		{
 		int frnum = 0;		// Figure our new frame too.
 		Get_slime_neighbors(dest, neighbors);
-		for (Actor_vector::const_iterator it = nearby.begin();
+		for (Game_object_vector::const_iterator it = nearby.begin();
 						it != nearby.end(); ++it)
 			{
 			Game_object *slime = *it;
@@ -479,6 +475,7 @@ void Slime_actor::update_frames
 				{	// In a neighboring spot?
 				frnum |= (1<<dir)*2;
 				int ndir = (dir+2)%4;
+				gwin->add_dirty(slime);
 					// Turn on bit (1<<ndir)*2, and set
 					//   bit 0 randomly.
 				slime->set_frame((slime->get_framenum()&~1)|
@@ -486,11 +483,11 @@ void Slime_actor::update_frames
 				gwin->add_dirty(slime);
 				}
 			}
+		gwin->add_dirty(this);
 		set_frame(frnum|(rand()%2));
 		gwin->add_dirty(this);
 		}
 	}
-#endif
 
 /*
  *	Step onto an adjacent tile.
@@ -502,11 +499,50 @@ void Slime_actor::update_frames
 int Slime_actor::step
 	(
 	Tile_coord t,			// Tile to step onto.
-	int frame			// New frame #.
+	int /* frame */			// New frame # (ignored).
 	)
 	{
-		//+++++++Figure frame.
-	int ret = Monster_actor::step(t, frame);
-		// ++++++Create trail.
+					// Save old pos.
+	Tile_coord pos = get_abs_tile_coord();
+	int ret = Monster_actor::step(t, -1);
+					// Update surrounding frames (& this).
+	update_frames(pos, get_abs_tile_coord());
 	return ret;
+	}
+
+/*
+ *	Remove an object from its container, or from the world.
+ *	The object is deleted.
+ */
+
+void Slime_actor::remove_this
+	(
+	int nodel			// 1 to not delete.
+	)
+	{
+	Tile_coord pos = get_abs_tile_coord();
+	Monster_actor::remove_this(nodel);
+					// Update surrounding slimes.
+	update_frames(pos, Tile_coord(-1, -1, -1));
+	}
+
+/*
+ *	Move (teleport) to a new spot.  I assume slimes only use this when
+ *	being added to the world.
+ */
+
+void Slime_actor::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift
+	)
+	{
+					// Save old pos.
+	Tile_coord pos = get_abs_tile_coord();
+	if (get_cx() == 255)		// Invalid?
+		pos = Tile_coord(-1, -1, -1);
+	Monster_actor::move(newtx, newty, newlift);
+					// Update surrounding frames (& this).
+	update_frames(pos, get_abs_tile_coord());
 	}
