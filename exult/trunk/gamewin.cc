@@ -3079,6 +3079,11 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 		(*it)->delete_contents();  // first delete item's contents
 		(*it)->remove_this(0);
 		}
+
+		get_map()->cache_out(newx, newy);
+
+		// Could cause some problems
+		removed->flush();
 	}
 
 // Tests to see if a move goes out of range of the actors superchunk

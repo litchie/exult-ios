@@ -150,7 +150,6 @@ public:
 
 				// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
-
 	};
 
 /*

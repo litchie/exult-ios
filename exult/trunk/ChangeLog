@@ -1,3 +1,15 @@
+2002-06-22  Ryan Nunn  <triforce@merlin.net.au>
+	* LOTS OF FILES : Added code to do caching out to memory. However, it's
+	  disabled for the moment. Need to #define WANT_MAP_CACHE_OUT to enable
+	  it. Added lots of get_ireg_size() methods that return the size
+	  required to save the ireg of each object.
+	* gumps/Paperdoll_gump*.* : Fixing up various paperdoll related problems
+	* actors.h, objs/*.*, msvcstuff/find_nearby.h, usecode/intrinsics.cc : 
+	  Cleanup removing dynamic_casts.
+	* windrag.* : Is now windows only, and is only compiled if actually
+	  compiling with Exult studio support.
+	* various other files: Fixing misc compiling problems
+
 2002-06-21  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* gamerend.h:  Helper-class added to do rendering.

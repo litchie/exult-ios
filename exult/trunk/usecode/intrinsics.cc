@@ -972,9 +972,8 @@ USECODE_INTRINSIC(move_object)
 					// Close?  Add to 'nearby' list.
 		else if (ava->distance(act) < gwin->get_width()/c_tilesize)
 			{
-			Npc_actor *npc = dynamic_cast<Npc_actor *>(act);
-			if (npc)
-				gwin->add_nearby_npc(npc);
+			Npc_actor *npc = act->as_npc();
+			if (npc) gwin->add_nearby_npc(npc);
 			}
 		}
 	return(no_ret);

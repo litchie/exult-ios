@@ -14,6 +14,10 @@
 #error(Can't Include find_nearby.h if FN_OBJECT is not #define'd)
 #endif
 
+#ifndef FN_CAST
+#error(Can't Include find_nearby.h if FN_CAST is not #define'd)
+#endif
+
 int Game_object::find_nearby
 	(
 	FN_VECTOR& vec,			// Objects appended to this.
@@ -22,11 +26,7 @@ int Game_object::find_nearby
 					//   -1=any (but always use mask?),
 					//   c_any_shapenum=any.
 	int delta,			// # tiles to look in each direction.
-	int mask,			// Guessing+++:
-					//   4 == party members only???
-					//   8 == all NPC's.
-					//  16 == egg or barge.
-					//  32 == ???
+	int mask,			// See Check_mask() above.
 	int qual,			// Quality, or c_any_qual for any.
 	int framenum			// Frame #, or c_any_framenum for any.
 	)
@@ -37,11 +37,12 @@ int Game_object::find_nearby
 		mask = 0;
 	int vecsize = vec.size();
 	Game_window *gwin = Game_window::get_instance();
+	Game_map *gmap = gwin->get_map();
 	Rectangle tiles(pos.tx - delta, pos.ty - delta, 1 + 2*delta, 1 + 
 								2*delta);
 					// Stay within world.
 	Rectangle world(0, 0, c_num_chunks*c_tiles_per_chunk, 
-						c_num_chunks*c_tiles_per_chunk);
+					c_num_chunks*c_tiles_per_chunk);
 	tiles = tiles.intersect(world);
 					// Figure range of chunks.
 	int start_cx = tiles.x/c_tiles_per_chunk,
@@ -52,7 +53,7 @@ int Game_object::find_nearby
 	for (int cy = start_cy; cy <= end_cy; cy++)
 		for (int cx = start_cx; cx <= end_cx; cx++)
 			{		// Go through objects.
-			Map_chunk *chunk = gwin->get_chunk(cx, cy);
+			Map_chunk *chunk = gmap->get_chunk(cx, cy);
 			Object_iterator next(chunk->get_objects());
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)
@@ -65,20 +66,15 @@ int Game_object::find_nearby
 				if (qual != c_any_qual && obj->get_quality() 
 								!= qual)
 					continue;
-				if ((mask || shapenum == -1 ||
-					// c_any_shape added 6/17/01 for SI.
-				    shapenum == c_any_shapenum) && 
-						!Check_mask(gwin, obj, mask))
-					continue;
 				if (framenum !=  c_any_framenum &&
 					obj->get_framenum() != framenum)
 					continue;
+				if (!Check_mask(gwin, obj, mask))
+					continue;
 				Tile_coord t = obj->get_tile();
-					// +++++Check tz too?
 				if (tiles.has_point(t.tx, t.ty)) {
-					FN_OBJECT* castobj = dynamic_cast<FN_OBJECT*>(obj);
-					if (castobj)
-						vec.push_back(castobj);
+					FN_OBJECT* castobj = obj FN_CAST;
+					if (castobj) vec.push_back(castobj);
 				}
 				}
 			}
@@ -88,5 +84,6 @@ int Game_object::find_nearby
 
 #undef FN_VECTOR
 #undef FN_OBJECT
+#undef FN_CAST
 
 #endif

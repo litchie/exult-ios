@@ -268,8 +268,11 @@ public:
 	virtual int get_type_flag(int flag) const { return 0; }
 
 	virtual Actor *as_actor() { return 0; }
+	virtual Npc_actor *as_npc() { return 0; }
 	virtual Barge_object *as_barge() { return 0; }
 	virtual Terrain_game_object *as_terrain() { return 0; }
+	virtual Container_game_object *as_container() { return 0; }
+	virtual Egg_object *as_egg() { return 0; }
 	virtual int is_egg() const	// An egg?
 		{ return 0; }
 					// Count contained objs.
@@ -317,6 +320,9 @@ public:
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out)
 		{  }
+				// Get size of IREG. Returns -1 if can't write to buffer
+	virtual int get_ireg_size()
+		{ return 0; }
 					// Write out IFIX, CHUNKS.
 	virtual void write_ifix(DataSource* ifix)
 		{  }

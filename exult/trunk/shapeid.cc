@@ -43,7 +43,7 @@ Shape_manager::Shape_manager
 	{
 	assert(instance == 0);
 	instance = this;
-	string str;
+	std::string str;
 	config->value("config/gameplay/bg_paperdolls", str, "yes");
 	if (str == "yes")
 		bg_paperdolls = true;
@@ -84,18 +84,18 @@ void Shape_manager::load
 			    files[SF_BG_SIGUMP_FLX].is_good() && 
 			    files[SF_BG_SISHAPES_VGA].is_good())
 				{
-				cout << "Found Serpent Isle 'paperdol.vga', 'gumps.vga' and 'shapes.vga'." << endl << "Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' ENABLED." << endl;
+				std::cout << "Found Serpent Isle 'paperdol.vga', 'gumps.vga' and 'shapes.vga'." << std::endl << "Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' ENABLED." << std::endl;
 				bg_paperdolls_allowed = true;
 				bg_multiracial_allowed = true;
 				}
 			else
-				cout << "Found Serpent Isle 'paperdol.vga', 'gumps.vga' and 'shapes.vga' but one or more as bad." << endl << "Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' DISABLED." << endl;
+				std::cout << "Found Serpent Isle 'paperdol.vga', 'gumps.vga' and 'shapes.vga' but one or more as bad." << std::endl << "Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' DISABLED." << std::endl;
 			}
 		catch (const exult_exception &e)	
 			{
-			cerr << "Exception attempting to load Serpent Isle 'paperdol.vga', 'gumps.vga' or 'shapes.vga'"<< endl <<
-				"Do you have Serpent Isle and is the correct path set in the config for Serpent Isle?" << endl <<
-				"Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' DISABLED." << endl;
+			std::cerr << "Exception attempting to load Serpent Isle 'paperdol.vga', 'gumps.vga' or 'shapes.vga'"<< std::endl <<
+				"Do you have Serpent Isle and is the correct path set in the config for Serpent Isle?" << std::endl <<
+				"Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' DISABLED." << std::endl;
 			}
 
 		}
@@ -103,7 +103,7 @@ void Shape_manager::load
 	files[SF_FACES_VGA].load(FACES_VGA, PATCH_FACES);
 	files[SF_EXULT_FLX].load("<DATA>/exult.flx");
 	const char* gamedata = game->get_resource("files/gameflx").str;
-	cout << "Loading " << gamedata << "..." << endl;
+	std::cout << "Loading " << gamedata << "..." << std::endl;
 	files[SF_GAME_FLX].load(gamedata);
 	}
 
@@ -144,7 +144,7 @@ Shape_frame *ShapeID::cache_shape()
 
 }
 
-void ShapeID::paint_shape(int xoff, int yoff, bool force_trans = false)
+void ShapeID::paint_shape(int xoff, int yoff, bool force_trans)
 { 
 	Shape_frame *s = get_shape();
 	Game_window::get_instance()->paint_shape(

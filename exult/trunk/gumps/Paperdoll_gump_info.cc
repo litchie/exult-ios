@@ -866,12 +866,15 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// CLOAKS
 	
 	// Grey Cloak
+	{     285,  0, Actor::neck,         OT_Normal,  false, SF_GAME_FLX,      EXULT_BG_FLX_GREYCLOAK_SHP,    0,     -1 },
 	{     285,  0, Actor::cloak_spot,   OT_Normal,  false, SF_GAME_FLX,      EXULT_BG_FLX_GREYCLOAK_SHP,    0,     -1 },
 	{     285,  0, Actor::special_spot, OT_Normal,   true, SF_GAME_FLX,      EXULT_BG_FLX_GREYCLOAK_SHP,    1,     -1 },
 	// Green Cloak
+	{     285,  1, Actor::neck,         OT_Normal,  false, SF_GAME_FLX,      EXULT_BG_FLX_GREENCLOAK_SHP,    0,     -1 },
 	{     285,  1, Actor::cloak_spot,   OT_Normal,  false, SF_GAME_FLX,      EXULT_BG_FLX_GREENCLOAK_SHP,    0,     -1 },
 	{     285,  1, Actor::special_spot, OT_Normal,   true, SF_GAME_FLX,      EXULT_BG_FLX_GREENCLOAK_SHP,    1,     -1 },
 	// Cloak
+	{     285,  2, Actor::neck,         OT_Normal,  false, SF_PAPERDOL_VGA,       8,    0,     -1 },
 	{     285,  2, Actor::cloak_spot,   OT_Normal,  false, SF_PAPERDOL_VGA,       8,    0,     -1 },
 	{     285,  2, Actor::special_spot, OT_Normal,   true, SF_PAPERDOL_VGA,       8,    1,     -1 },
 
@@ -896,6 +899,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     666, -1,      Actor::torso,   OT_Shield,   true, SF_PAPERDOL_VGA,      2,     0,      2,   4,  6 },
 	// Antique (shape is different)
 	{     836, -1,      Actor::torso,   OT_Shield,   true, SF_PAPERDOL_VGA,      1,     0,      2,   4,  6 },
+	// Avatar Costume **NEEDS ART**
+	{     838, -1,      Actor::torso,   OT_Shield,   true, SF_PAPERDOL_VGA,     -1,     0,      2,   4,  6 },
 
 
 	// HELMS

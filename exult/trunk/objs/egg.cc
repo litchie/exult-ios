@@ -36,8 +36,9 @@
 #include "npctime.h"
 #include "paths.h"
 #include "ucmachine.h"
-#include "ucsched.h"
 #include "ucscriptop.h"
+#include "ucsched.h"
+#include "Gump_manager.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -881,6 +882,16 @@ void Egg_object::write_ireg
 	Game_map::write_scheduled(out, this);	
 	}
 
+// Get size of IREG. Returns -1 if can't write to buffer
+int Egg_object::get_ireg_size()
+{
+	// These shouldn't ever happen, but you never know
+	if (Game_window::get_instance()->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+		return -1;
+
+	return 13;
+}
+
 /*
  *	Create from IREG data.
  */
@@ -1060,6 +1071,12 @@ void Field_object::write_ireg
 	Ireg_game_object::write_ireg(out);
 	}
 
+// Get size of IREG. Returns -1 if can't write to buffer
+int Field_object::get_ireg_size()
+{
+	return Ireg_game_object::get_ireg_size();
+}
+
 
 /*
  *	It's a Mirror
@@ -1151,4 +1168,9 @@ void Mirror_object::write_ireg(DataSource *out)
 	Ireg_game_object::write_ireg(out);
 }
 
-
+// Get size of IREG. Returns -1 if can't write to buffer
+int Mirror_object::get_ireg_size()
+{
+	// TODO!!!!!!!
+	return Ireg_game_object::get_ireg_size();
+}

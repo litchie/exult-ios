@@ -108,6 +108,8 @@ public:
 	virtual int step(Tile_coord t, int frame = -1);
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
+				// Get size of IREG. Returns -1 if can't write to buffer
+	virtual int get_ireg_size();
 	virtual void elements_read();	// Called when all member items read.
 	};
 

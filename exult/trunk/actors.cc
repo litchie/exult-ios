@@ -1120,6 +1120,7 @@ void Actor::get_prefered_slots
 				
 			case torso_armor:
 			prefered = torso;
+			alternate = neck;	// This is a hack for cloaks. It shouldn't cause problems
 			break;
 				
 			case ammunition:
@@ -1433,6 +1434,18 @@ void Actor::set_schedule_type
 		schedule->now_what();
 		}
 	}
+
+/*
+ *  Cache out an actor. 
+ *  Resets the schedule, and makes the actor dormant
+ */
+void Actor::cache_out()
+{
+	// This is a bit of a hack, but it works well enough
+	if (get_schedule_type() != Schedule::walk_to_schedule)
+		set_schedule_type(get_schedule_type());
+}
+
 
 /*
  *	Set new schedule by type AND location.
@@ -3072,10 +3085,10 @@ void Actor::die
 		else			// No body?  Drop on ground.
 			{
 			item->set_flag_recursively(Obj_flags::okay_to_take);
-			Tile_coord pos = Map_chunk::find_spot(pos, 5,
+			Tile_coord pos2 = Map_chunk::find_spot(pos, 5,
 				item->get_shapenum(), item->get_framenum(), 1);
 			if (pos.tx != -1)
-				item->move(pos);
+				item->move(pos2);
 			else		// No room anywhere.
 				tooheavy.push_back(item);
 			}
