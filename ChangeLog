@@ -1,3 +1,8 @@
+2001-12-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/intrinsics.cc: Fixed set_item_quantity() so it returns
+	correct value, and doesn't delete items not in world.
+
 2001-12-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* shapes/vgafile.cc: fixed broken debugging output
 
