@@ -496,11 +496,11 @@ USECODE_INTRINSIC(create_new_object)
 	}
 
 	Game_object *obj;		// Create to be written to Ireg.
-	Monster_info *inf = gwin->get_monster_info(shapenum);
+	Monster_info *inf = gwin->get_info(shapenum).get_monster_info();
 
 	if (inf)
 	{
-		Monster_actor *monster = inf->create(
+		Monster_actor *monster = Monster_actor::create(shapenum,
 			cx, cy, tx, ty, lift);
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
@@ -1074,7 +1074,7 @@ USECODE_INTRINSIC(summon)
 	// summon(shape, flag??).  Create monster of desired shape.
 
 	int shapenum = parms[0].get_int_value();
-	Monster_info *info = gwin->get_monster_info(shapenum);
+	Monster_info *info = gwin->get_info(shapenum).get_monster_info();
 	if (!info)
 		return Usecode_value(0);
 	Tile_coord start = gwin->get_main_actor()->get_abs_tile_coord();
@@ -1083,7 +1083,8 @@ USECODE_INTRINSIC(summon)
 		dest = Game_object::find_unblocked_tile(start, i);
 	if (dest.tx == -1)
 		return Usecode_value(0);
-	Monster_actor *monst = info->create(dest.tx/c_tiles_per_chunk,
+	Monster_actor *monst = Monster_actor::create(shapenum,
+		dest.tx/c_tiles_per_chunk,
 		dest.ty/c_tiles_per_chunk, dest.tx%c_tiles_per_chunk,
 		dest.ty%c_tiles_per_chunk, dest.tz,
 		Schedule::combat, Actor::friendly);

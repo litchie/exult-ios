@@ -48,7 +48,8 @@ GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	Jawbone_gump.o VideoOptions_gump.o Face_stats.o Gump_manager.o 
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o
-SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o
+SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o \
+	monstinf.o
 OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 	contain.o egg.o iregobjs.o objs.o \
 	spellbook.o virstone.o jawbone.o

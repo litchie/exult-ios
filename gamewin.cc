@@ -178,7 +178,7 @@ Game_window::Game_window
 	    teleported(false), in_dungeon(0), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0),
-	    monster_info(0), chunk_terrains(0), num_chunk_terrains(0),
+	    chunk_terrains(0), num_chunk_terrains(0),
 	    palette(-1), brightness(100), user_brightness(100), 
 	    faded_out(false), fades_enabled(true),
 	    special_light(0), last_restore_hour(6),
@@ -242,8 +242,6 @@ Game_window::~Game_window
 	for (i = 0; i < nxforms; i++)
 		delete [] xforms[nxforms - 1 - i];
 	delete [] invis_xform;
-	if(monster_info)
-		delete [] monster_info;
 	delete gump_man;
 	delete background_noise;
 	delete tqueue;
@@ -493,21 +491,6 @@ long Game_window::check_time_stopped
 		return delay;
 	time_stopped = 0;		// Done.
 	return 0;
-	}
-
-/* 
- *	Get monster info for a given shape.
- */
-
-Monster_info *Game_window::get_monster_info
-	(
-	int shapenum
-	)
-	{
-	for (int i = 0; i < num_monsters; i++)
-		if (shapenum == monster_info[i].get_shapenum())
-			return &monster_info[i];
-	return (0);
 	}
 
 /*
@@ -2844,33 +2827,27 @@ void Game_window::theft
 		}
 	closest_npc->say(first_call_guards, last_call_guards);
 					// Show guard running up.
-	Monster_info *inf = get_monster_info(0x3b2);
-	if (inf)
-		{			// Create it off-screen.
-		Monster_actor *guard = inf->create(
-			main_actor->get_cx() + 8, 
-			main_actor->get_cy() + 8, 0, 0, 0);
-		add_nearby_npc(guard);
-		Tile_coord actloc = main_actor->get_abs_tile_coord();
-		Tile_coord dest(-1, -1, -1);
-		for (int i = 2; i < 6 && dest.tx == -1; i++)
-			dest = Game_object::find_unblocked_tile(actloc, i, 3);
-		if (dest.tx != -1)
-			{
-			int dir = Get_direction(dest.ty - actloc.ty,
+					// Create it off-screen.
+	Monster_actor *guard = Monster_actor::create(0x3b2,
+		main_actor->get_cx() + 8, main_actor->get_cy() + 8, 0, 0, 0);
+	add_nearby_npc(guard);
+	Tile_coord actloc = main_actor->get_abs_tile_coord();
+	Tile_coord dest(-1, -1, -1);
+	for (int i = 2; i < 6 && dest.tx == -1; i++)
+		dest = Game_object::find_unblocked_tile(actloc, i, 3);
+	if (dest.tx != -1)
+		{
+		int dir = Get_direction(dest.ty - actloc.ty,
 						actloc.tx - dest.tx);
 					
-			char frames[2];	// Use frame for starting attack.
-			frames[0] = guard->get_dir_framenum(dir,
-							Actor::standing);
-			frames[1] = guard->get_dir_framenum(dir, 3);
-			Actor_action *action = new Sequence_actor_action(
+		char frames[2];		// Use frame for starting attack.
+		frames[0] = guard->get_dir_framenum(dir, Actor::standing);
+		frames[1] = guard->get_dir_framenum(dir, 3);
+		Actor_action *action = new Sequence_actor_action(
 				new Frames_actor_action(frames, 2),
 				new Usecode_actor_action(0x625, main_actor,
 					Usecode_machine::double_click));
-			Schedule::set_action_sequence(guard, dest, action, 
-									true);
-			}
+		Schedule::set_action_sequence(guard, dest, action, true);
 		}
 	}
 
@@ -2883,13 +2860,10 @@ void Game_window::attack_avatar
 	int create_guards		// # of extra guards to create.
 	)
 	{
-	Monster_info *inf = get_monster_info(0x3b2);
 	while (create_guards--)
 		{
-		if (!inf)
-			break;		// (Shouldn't happen.)
 					// Create it off-screen.
-		Monster_actor *guard = inf->create(
+		Monster_actor *guard = Monster_actor::create(0x3b2,
 			main_actor->get_cx() + 8, 
 			main_actor->get_cy() + 8, 0, 0, 0);
 		add_nearby_npc(guard);
