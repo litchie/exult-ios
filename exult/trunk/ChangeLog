@@ -1,3 +1,7 @@
+2002-01-08  Patrick Burke  <takhisisii@yahoo.com.au>
+	* audio/midi_drivers/forked_player.cc, conf/XMLEntity.cc: Fixed
+	namespace related errors.
+
 2002-01-07  Jeff Freedman  <jeff@amy.nerble.net>
 	* paths.cc: Fixed Offscreen pathfinder bug (that I caused) when
 	'best' was far away.

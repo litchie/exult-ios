@@ -26,6 +26,7 @@
 
 #include "exult_constants.h"
 #include "XMLEntity.h"
+#include <iostream>
 
 using std::string;
 using std::vector;
