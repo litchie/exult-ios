@@ -12,18 +12,12 @@ else
 GIMP_PLUGINS=
 endif
 
-noinst_PROGRAMS = txt2cc expack wuc wud mklink rip ucdump $(UCC) $(GIMP_PLUGINS)
+noinst_PROGRAMS = expack wuc wud mklink rip ucdump $(UCC) $(GIMP_PLUGINS)
 
 expack_SOURCES = \
 	expack.cc
 
 expack_LDADD = \
-	../files/libu7file.la
-
-txt2cc_SOURCES = \
-	txt2cc.cc
-
-txt2cc_LDADD = \
 	../files/libu7file.la
 
 wuc_SOURCES = \
@@ -66,3 +60,6 @@ EXTRA_DIST = \
 	u7bgflag.txt \
 	u7siflag.txt \
 	ucformat.txt
+
+CLEANFILES = \
+	u7shpload

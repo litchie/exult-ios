@@ -146,13 +146,7 @@ int main
 		exit(1);
 		}
 
-	cout << "Exult V" << VERSION << "." << endl <<
-	    "Copyright (C) 2000 J. S. Freedman, Dancer Vesperman, " << endl <<
-	    "                   Willem Jan Palenstijn, Tristan Tarrant, " << endl <<
-	    "                   Max Horn, Luke Dunstan, Ryan Nunn" << endl;
-	cout << "Low level graphics use the 'SDL' library."<< endl;
-	cout << "2xSaI scaling filter contributed by Derek Liauw Kie Fa."
-								<< endl;
+	cout << "Exult V" << VERSION << "." << endl;
         config = new Configuration;	// Create configuration object
 	config->read_config_file(USER_CONFIGURATION_FILE);
 	audio = new Audio;

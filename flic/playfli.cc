@@ -22,6 +22,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#if !AUTOCONFIGURED
+#include "../autoconfig.h"
+#endif
+
 #include <string.h>
 #include <iostream.h>
 #include "databuf.h"
@@ -60,12 +64,13 @@ void playfli::initfli()
 
 void playfli::info(fliinfo *fi)
 {
+#if DEBUG
     cout << "Frame count : " << fli_frames << endl;
     cout << "Width :       " << fli_width << endl;
     cout << "Height :      " << fli_height << endl;
     cout << "Depth :       " << fli_depth << endl;
     cout << "Speed :       " << fli_speed << endl;
-    
+#endif    
     if (fi)
     {
     	fi->frames = fli_frames;
@@ -76,9 +81,6 @@ void playfli::info(fliinfo *fi)
     }
 }
 
-// How to use th
-//
-//
 int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned long ticks, int brightness)
 {
     int frame_size;

@@ -21,8 +21,6 @@
 #include "game.h"
 #include "palette.h"
 #include "databuf.h"
-#include "data/credits.h"
-#include "data/quotes.h"
 
 Game *game = 0;
 static Exult_Game game_type = BLACK_GATE;
@@ -309,9 +307,9 @@ void Game::scroll_text(vector<char *> *text)
 
 void Game::banner()
 {
-	Shape_file exult_logo("data/exult_logo.shp");
-	gwin->paint_shape(topx,topy,exult_logo.get_frame(0));
-	pal.load("static/intropal.dat",0);
+	Vga_file exult_flx("data/exult.flx");
+	gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 0));
+	pal.load("data/exult.flx",5);
 	pal.fade_in(30);
 	wait_delay(2000);
 	pal.fade_out(30);
@@ -320,9 +318,8 @@ void Game::banner()
 
 void Game::show_menu()
 	{
+		Vga_file exult_flx("data/exult.flx");
 		int menuy = topy+110;
-		Shape_file exult_credits("data/exult_credits.shp");
-		Shape_file exult_quotes("data/exult_quotes.shp");
 
 		top_menu();
 		
@@ -340,9 +337,9 @@ void Game::show_menu()
 				        for(int i=0; i<num_choices; i++) {
 						Shape_frame *shape = 0;
 					        if(menuchoices[i]==-1) {
-						        shape = exult_credits.get_frame(i==selected);
+						        shape = exult_flx.get_shape(1, i==selected);
 					        } else if(menuchoices[i]==-2) {
-						        shape = exult_quotes.get_frame(i==selected);
+						        shape = exult_flx.get_shape(0, i==selected);
 					        } else {
 						         shape = menushapes.get_shape(menuchoices[i],i==selected);
 						}
@@ -496,17 +493,15 @@ void Game::clear_avskin ()
 
 void Game::show_exult_credits()
 	{
-		
-		vector<char *> *text = get_exult_credits();
+		vector<char *> *text = load_text("data/exult.flx", 0x03);
 		scroll_text(text);
-		delete text; // Different way, because text is static
+		destroy_text(text);
 	}
 
 void Game::show_exult_quotes()
 	{
-		
-		vector<char *> *text = get_exult_quotes();
+		vector<char *> *text = load_text("data/exult.flx", 0x02);
 		scroll_text(text);
-		delete text; // Different way, because text is static
+		destroy_text(text);
 	}
 
