@@ -47,7 +47,7 @@ Game_window::Game_window
 	int width, int height		// Window dimensions.
 	) : chunkx(0), chunky(0), painted(0), focus(1),
 	    brightness(100), 
-	    skip_lift(16), debug(0), shapewin(0),
+	    skip_lift(16), debug(0),
 	    tqueue(new Time_queue()), clock(tqueue),
 		npc_prox(new Npc_proximity_handler(this)),
 	    main_actor(0),
@@ -93,7 +93,7 @@ Game_window::Game_window
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
 	get_palette(0);			// Try first palette.
 	brighten(20);			// Brighten 20%.
-	win->map();			// Now display window.
+//++++++	win->map();			// Now display window.
 	}
 
 /*
@@ -116,33 +116,7 @@ Game_window::~Game_window
 		   //Only happens when CreateDIBSection() has been called.
 		   //crash after last instruction of ~image_window
 	delete win;
-	delete shapewin;
 	delete [] conv_choices;
-	}
-
-/*
- *	Create a window for showing individual shapes.
- */
-
-void Game_window::open_shape_window
-	(
-	)
-	{
-#ifndef DOS
-	if (shapewin)
-		return;			// Already done.
-					// Make it 128x128.
-	shapewin = new Image_window(128, 128);
-					// Indicate events we want.
-#ifdef XWIN
-	shapewin->select_input(ExposureMask |
-		ButtonPressMask | StructureNotifyMask);
-#endif
-					// Set title.
-	shapewin->set_title("Exult Shapes");
-	shapewin->map();		// Show it on screen.
-	get_palette(0, brightness);	// Re-read palette.
-#endif
 	}
 
 /*
@@ -170,22 +144,12 @@ void Game_window::abort
 
 void Game_window::resized
 	(
-	Window xwin,
 	unsigned int neww, 
 	unsigned int newh
 	)
 	{			
-					// Pick right window.
-	if (shapewin && xwin == shapewin->get_win())
-		{
-		shapewin->resized(neww, newh);
-		shapewin_paint(shapewin_cur);
-		}
-	else
-		{
-		win->resized(neww, newh);
-		paint();
-		}
+	win->resized(neww, newh);
+	paint();
 	}
 
 /*
@@ -211,8 +175,6 @@ int Game_window::u7open
 	return (1);
 	}
 
-#if 1
-
 /*
  *	Show the absolute game location, where each coordinate is of the
  *	8x8 shape box clicked on.
@@ -228,132 +190,6 @@ void Game_window::show_game_location
 	cout << "Game location is (" << x << ", " << y << ")\n";
 	}
 
-/*
- *	Show the shape the mouse was clicked on.
- */
-
-void Game_window::debug_shape
-	(
-	Window xwin,			// Which window.
-	int x, int y			// Point on screen.
-	)
-	{
-					// Clicked in shapes window?
-	if (shapewin && xwin == shapewin->get_win())
-		{			// Show next shape in list.
-		shapewin_paint(shapewin_cur + 1);
-		shapewin->show();
-		return;
-		}
-	cout << "Mouse is at " << x << ',' << y << '\n';
-	shapewin_cur = 0;
-	for (int lift = 0; lift < 16; lift ++)
-		find_debug_shapes(lift, x, y);
-					// Set EOL entry.
-	shapewin_objs[shapewin_cur] = Game_object();
-	shapewin_cur = 0;
-	if (!shapewin)			// Open if first time.
-		open_shape_window();
-	else
-		{
-		shapewin_paint(0);	// Already open, so update it.
-		shapewin->show();
-		}
-	}
-
-/*
- *	Find objects at a given position on the screen with a given lift.
- *
- *	Output: Objects are stored in shapewin_objs list.
- */
-
-void Game_window::find_debug_shapes
-	(
-	int lift,			// Look for objs. with this lift.
-	int x, int y			// Pos. on screen.
-	)
-	{
-
-
-	x += 4*lift;			// Look for given lift.
-	y += 4*lift;
-	int cx = x/chunksize;		// Figure chunk #'s within window.
-	int cy = y/chunksize;
-	int xoff = cx*chunksize;
-	int yoff = cy*chunksize;
-					// Figure shape within chunk.
-	int sx = (x - xoff)/8;
-	int sy = (y - yoff)/8;
-	cx += chunkx;			// Figure abs. chunk coords.
-	cy += chunky;
-	Game_object *obj;
-	Chunk_object_list *olist = objects[cx][cy];
-	if (!olist)
-		return;
-	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
-		{
-		if (obj->get_lift() != lift)
-			continue;
-		int shapex = obj->get_shape_pos_x();
-		int shapey = obj->get_shape_pos_y();
-		if (shapex != sx || shapey != sy)
-			continue;
-		int shapenum = obj->get_shapenum();
-		int framenum = obj->get_framenum();
-					// Get data from shpdims.dat.
-		int dimw = shapes.dims[(shapenum-150)*2];
-		int dimh = shapes.dims[(shapenum-150)*2 + 1];
-		cout << "\tShape " << shapenum << 
-				", frame " << framenum <<
-				" at chunk coord (" << cx << ',' <<
-				cy <<
-				"), shape coord (" << shapex << ',' <<
-				shapey << "), lift " << 
-				obj->get_lift() << ", shpdims = (" <<
-				dimw << ',' << dimh << ')'
-				<< '\n';
-		Shape_frame *shape = get_shape(shapenum, framenum);
-		if (shape)
-			{
-			Rectangle r = get_shape_rect(obj, cx, cy);
-			cout << "\t\t(w0,w1,h0,h1) = (" << shape->xleft << 
-				',' <<
-				shape->xright  << ',' << shape->yabove << 
-				',' <<
-				shape->ybelow << ")";
-			cout << "  Rect = (" << r.x << ',' << r.y << ',' <<
-				r.w << ',' << r.h << ")\n";
-			}
-					// Store shapes in list.
-		shapewin_objs[shapewin_cur++] = *obj;
-		}
-	}
-
-/*
- *	Set the shape in the shape window.
- */
-
-void Game_window::shapewin_paint
-	(
-	int num				// Number within list to show.
-	)
-	{
-	shapewin_cur = num;
-					// Watch for end of list.
-	if (num >= sizeof(shapewin_objs)/sizeof(shapewin_objs[0]) ||
-	    shapewin_objs[num].is_eol())
-		shapewin_cur = 0;
-	Game_object *obj = &shapewin_objs[shapewin_cur];
-	if (obj->is_eol())
-		return;			// Nothing's valid.
-	char title[120];		// Set title.
-	sprintf(title, "Shape %d, frame %d", obj->get_shapenum(),
-						obj->get_framenum());
-	shapewin->set_title(title);
-	shapewin->fill8(0);		// Fill (with black).
-	paint_shape(shapewin, 64, 64, obj->get_shapenum(), obj->get_framenum());
-	}
-#endif
 
 /*
  *	Get a shape onto the screen.
@@ -949,8 +785,6 @@ void Game_window::get_palette
 	pal.read(colors, sizeof(colors));
 					// They use 6 bits.
 	win->set_palette(colors, 63, brightness);
-	if (shapewin)
-		shapewin->set_palette(colors, 63, brightness);
 	}
 
 /*
@@ -1351,12 +1185,9 @@ void Game_window::remove_all_text
 
 void Game_window::double_clicked
 	(
-	Window xwin,			// Window it occurred in.
 	int x, int y			// Coords in window.
 	)
 	{
-	if (xwin != win->get_win())
-		return;			// Not the main window.
 	Game_object *found[100];
 	int cnt = 0;
 					// See what was clicked on.
