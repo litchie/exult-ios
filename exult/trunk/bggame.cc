@@ -969,6 +969,8 @@ bool BG_Game::new_game(Vga_file &shapes)
 							npc_name[len] = chr;
 							npc_name[len+1] = 0;
 						}
+					} else {
+					        redraw = false;
 					}
 					}
 					break;
