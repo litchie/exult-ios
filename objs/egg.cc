@@ -331,7 +331,7 @@ int Egg_object::is_active
 		if (!((absdeltaz <= 1 || 
 					// Using trial&error here:
 			 (Game::get_game_type() == SERPENT_ISLE &&
-							absdeltaz <= 4) ||
+						type != missile) ||
 				(type == missile && tz/5 == get_lift()/5)) &&
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty)))

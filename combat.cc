@@ -477,7 +477,8 @@ void Combat_schedule::start_strike
 					// But not if it's a party member.
 	if (opp && !opp->get_target() && opp != gwin->get_main_actor() &&
 	    opp->get_party_id() < 0)
-		opp->set_target(npc, true);
+		opp->set_target(npc, 
+				npc->get_schedule_type() != Schedule::duel);
 	}
 
 /*
