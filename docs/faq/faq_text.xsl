@@ -89,10 +89,10 @@
 	 |   we first store the result tree fragment (RTF) in a variable, then
 	 |   we can apply normalize-space to this variable. Nifty, hu? ;)
 	 +-->
-	<xsl:variable name = "spaced_text">
+	<xsl:variable name = "data">
 		<xsl:apply-templates/>
 	</xsl:variable> 
-	<xsl:value-of select="normalize-space($spaced_text)"/>
+	<xsl:value-of select="normalize-space($data)"/>
 </xsl:template>
 
 

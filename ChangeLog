@@ -1,3 +1,9 @@
+2001-08-19  Max Horn <max@quendi.de>
+	* exult.cc: no more "exception caught" upon a normal quite
+	* keys.cc: no keys except for quit are handled when dont_move flag is set
+	* shapeid.h: added virtual destructor to make compiler happy
+	* various files: fixed compiler warnings, cleanup
+
 2001-08-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.*, exult.cc: fixed -buildmap option
 

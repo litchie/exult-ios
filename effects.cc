@@ -62,7 +62,7 @@ Sprites_effect::Sprites_effect
 	int num,			// Index.
 	Tile_coord p,			// Position within world.
 	int dx, int dy			// Add to offset for each frame.
-	) : sprite_num(num), frame_num(0), pos(p), actor(0), xoff(0), yoff(0),
+	) : sprite_num(num), frame_num(0), actor(0), pos(p), xoff(0), yoff(0),
 						deltax(dx), deltay(dy)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -234,7 +234,6 @@ void Projectile_effect::init
 		Shape_info& info = gwin->get_info(attacker);
 					// Try for around the heat.
 		pos.tz += info.get_3d_height() - 1;
-		int frnum = attacker->get_framenum();
 		if (d.tx < pos.tx)	// Start on proper side.
 			pos.tx -= info.get_3d_xtiles();
 		else
@@ -459,7 +458,6 @@ void Death_vortex::handle_event
 	long udata
 	)
 	{
-	const int delay = 100;		// Delay between frames.
 	Game_window *gwin = Game_window::get_game_window();
 	int width = add_dirty(gwin);	// Repaint old area.
 	if (target && !target->is_dead())	// Follow target.

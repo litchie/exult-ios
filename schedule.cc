@@ -148,8 +148,8 @@ Street_maintenance_schedule::Street_maintenance_schedule
 	Actor *n, 
 	Actor_action *p, 
 	Game_object *o
-	) : Schedule(n), paction(p), obj(o), shapenum(o->get_shapenum()),
-				framenum(o->get_framenum())
+	) : Schedule(n), obj(o), shapenum(o->get_shapenum()),
+				framenum(o->get_framenum()), paction(p)
 	{
 	}
 
@@ -403,7 +403,6 @@ void Patrol_schedule::now_what
 			return;		// We no longer exist.
 	const int PATH_SHAPE = 607;
 	Game_object *path;
-	Game_window *gwin = Game_window::get_game_window();
 	if (pathnum >= 0 &&		// Arrived at path?
 	    pathnum < paths.size() && (path = paths[pathnum]) != 0 &&
 	    npc->distance(path) < 2)
@@ -450,6 +449,7 @@ void Patrol_schedule::now_what
 			scr->start();	// Start next tick.
 #if 0
 			Actor *safenpc = npc;
+            Game_window *gwin = Game_window::get_game_window();
 			safenpc->activate(gwin->get_usecode(),
 					Usecode_machine::npc_proximity);
 			if (safenpc->get_schedule() != this)
@@ -1705,9 +1705,9 @@ void Waiter_schedule::ending
 Sew_schedule::Sew_schedule
 	(
 	Actor *n
-	) : Schedule(n), state(get_wool), spindle(0), cloth(0),
-	    sew_clothes_cnt(0), bale(0), chair(0), spinwheel(0),
-	    loom(0), work_table(0), wares_table(0)
+	) : Schedule(n), state(get_wool), bale(0), spinwheel(0),
+        chair(0), spindle(0), loom(0), cloth(0), work_table(0),
+        wares_table(0), sew_clothes_cnt(0)
 	{
 	}
 

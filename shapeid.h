@@ -70,6 +70,8 @@ public:
 	ShapeID() : shapenum(-1), has_trans(false), shapefile(SF_SHAPES_VGA), shape(0)
 		{  }
 
+    virtual ~ShapeID()
+        {  }
 					// End-of-list or invalid?
 	int is_invalid() const
 		{ return shapenum == -1; }
