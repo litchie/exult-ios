@@ -2739,6 +2739,8 @@ void Game_window::add_nearby_npcs
 	int stop_cx, int stop_cy	// Go up to, but not including, these.
 	)
 	{
+	stop_cx %= c_num_chunks;	// Watch out for end.
+	stop_cy %= c_num_chunks;
 	unsigned long curtime = SDL_GetTicks();
 	for (int cy = from_cy; cy != stop_cy; cy = INCR_CHUNK(cy))
 		for (int cx = from_cx; cx != stop_cx; cx = INCR_CHUNK(cx))
