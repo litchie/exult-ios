@@ -1,3 +1,7 @@
+2001-10-15  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.h (public): Fix for 'training' bug.
+
 2001-10-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* drag.cc: Watch for objects dropped when on a barge.
