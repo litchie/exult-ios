@@ -319,14 +319,17 @@ void Game_window::drop
 			else if (found && !heavy && 
 				(lift = found->get_lift() +
 				get_info(found).get_3d_height()) <= max_lift &&
-				drop_at_lift(to_drop, lift))
+				drop_at_lift(to_drop, dragging_paintx,
+						      dragging_painty, lift))
 				dropped = true;
 			else if (!heavy)
 				{	// Find where to drop it.
 				Game_object *outer = dragging->get_outermost();
 				for (lift = outer->get_lift(); 
 					!dropped && lift <= max_lift; lift++)
-					dropped = drop_at_lift(to_drop, lift);
+					dropped = drop_at_lift(to_drop, 
+						dragging_paintx, 
+						dragging_painty, lift);
 				if (!dropped)
 					Mouse::mouse->flash_shape(Mouse::blocked);
 				}
@@ -362,7 +365,8 @@ void Game_window::drop
 	}
 
 /*
- *	Try to drop at a given lift.
+ *	Try to drop at a given lift.  Note:  None of the drag state variables
+ *	may be used here, as it's also called from the outside.
  *
  *	Output:	true if successful.
  */
@@ -370,12 +374,12 @@ void Game_window::drop
 bool Game_window::drop_at_lift
 	(
 	Game_object *to_drop,
+	int x, int y,			// Pixel coord. in window.
 	int at_lift
 	)
 	{
-					// Take lift into account, round.
-	int x = dragging_paintx + at_lift*4 - 1; // + tilesize/2;
-	int y = dragging_painty + at_lift*4 - 1; // + tilesize/2;
+	x += at_lift*4 - 1;		// Take lift into account, round.
+	y += at_lift*4 - 1;
 	int tx = scrolltx + x/tilesize;
 	int ty = scrollty + y/tilesize;
 	int cx = (scrolltx + x/tilesize)/tiles_per_chunk;
