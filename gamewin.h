@@ -225,6 +225,7 @@ public:
 		if (cy >= 0 && cy < num_chunks)
 			chunky = cy;
 		}
+	void center_view(Tile_coord t);	// Center view around t.
 #if 1
 					// Show abs. location of mouse.
 	void show_game_location(int x, int y);

@@ -170,6 +170,24 @@ void Scheduled_usecode::handle_event
 				}
 			break;
 			}
+#if 0
+		case 0x0c:		// Loop with 3 parms.???
+			{		// Loop(offset, cnt1, cnt2?).
+			do_another = 1;
+			Usecode_value& cntval = arrval.get_elem(i + 2);
+			int cnt = cntval.get_int_value();
+			if (cnt <= 0)
+					// Done.
+				i += 3;
+			else
+				{	// Decr. and loop.
+				cntval = Usecode_value(cnt - 1);
+				Usecode_value& offval = arrval.get_elem(i + 1);
+				i += offval.get_int_value() - 1;
+				}
+			break;
+			}
+#endif
 		case 0x23:		// ??
 			break;
 		case 0x27:		// ?? 1 parm. Guessing:
@@ -645,10 +663,37 @@ Game_object *Usecode_machine::get_item
 	else if (val < gwin->get_num_npcs())
 		obj = gwin->get_npc(val);
 					// Special case:  palace guards.
-	else if (val < 0x400 && caller_item && 
-					val == caller_item->get_shapenum())
-		obj = caller_item;
+	else if (val < 0x400)		// Looks like a shape #?
+		{
+		if (!itemref.is_array() &&
+ 		    caller_item && val == caller_item->get_shapenum())
+			obj = caller_item;
+		else
+			return 0;	// Can't be an object.
+		}
 	return obj ? obj : (Game_object *) val;
+	}
+
+/*
+ *	Get a position.
+ */
+
+Tile_coord Usecode_machine::get_position
+	(
+	Usecode_value& itemval
+	)
+	{
+					// An object?
+	Game_object *obj = get_item(itemval);
+	if (obj)
+		return obj->get_abs_tile_coord();
+					// An array of coords.?
+	if (itemval.get_array_size() == 3)
+		return Tile_coord(itemval.get_elem(0).get_int_value(),
+				itemval.get_elem(1).get_int_value(),
+				itemval.get_elem(2).get_int_value());
+	else				// Else assume caller_item.
+		return caller_item->get_abs_tile_coord();
 	}
 
 /*
@@ -1084,18 +1129,10 @@ Usecode_value Usecode_machine::find_direction
 	)
 	{
 	unsigned angle;			// Gets angle 0-7 (north - northwest)
-	Game_object *o1 = get_item(from);
-	Game_object *o2 = get_item(to);
-	if (!o1)
-		o1 = caller_item;
-	if (!o2)
-		o2 = caller_item;
-					// Figure angle from positions.
-	int x1, y1, z1, x2, y2, z2;
-	o1->get_abs_tile(x1, y1, z1);
-	o2->get_abs_tile(x2, y2, z2);
+	Tile_coord t1 = get_position(from);
+	Tile_coord t2 = get_position(to);
 					// Treat as cartesian coords.
-	angle = (int) Get_direction(y1 - y2, x2 - x1);
+	angle = (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
 	return Usecode_value(angle);
 	}
 
@@ -1979,6 +2016,34 @@ USECODE_INTRINSIC(set_alignment)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(move_object)
+{
+	// move_object(obj(-357=party), (tx, ty, tz)).
+	Usecode_value& p = parms[1];
+	Tile_coord tile(p.get_elem(0).get_int_value(),
+			p.get_elem(1).get_int_value(),
+			p.get_elem(2).get_int_value());
+	if (parms[0].get_int_value() == -357)
+		{			// Move whole party.
+		Usecode_value party = get_party();
+		int cnt = party.get_array_size();
+		for (int i = 0; i < cnt; i++)
+			{
+			Game_object *obj = get_item(party.get_elem(i));
+			if (obj)
+				obj->move(tile.tx, tile.ty, tile.tz);
+			}
+		}
+	else
+		{
+		Game_object *obj = get_item(parms[0]);
+		if (obj)
+			obj->move(tile.tx, tile.ty, tile.tz);
+		}
+	gwin->center_view(tile);	// Make new loc. visible.
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(item_say)
 {
 	// Show str. near item (item, str).
@@ -2151,8 +2216,10 @@ USECODE_INTRINSIC(run_usecode)
 		cout << endl << "Run_usecode:  first walk to (" << dx << ", " <<
 				dy << ", " << dz << ")" << endl;
 		if (!gwin->get_main_actor()->walk_path_to_tile(dest))
-					// Failed to find path.  Return 0.
+			{		// Failed to find path.  Return 0.
+			cout << "Failed to find path" << endl;
 			return(u);
+			}
 		}
 	else
 		{	//++++++Not sure about this.
@@ -2168,6 +2235,30 @@ USECODE_INTRINSIC(run_usecode)
 		u = Usecode_value(1);	// Success.
 		}
 	return(u);
+}
+
+USECODE_INTRINSIC(is_not_blocked)
+{
+	// Is_not_blocked(tile, shape, frame (or -359).
+	Usecode_value fail(0);
+					// Parm. 0 should be tile coords.
+	Usecode_value& pval = parms[0];
+	if (pval.get_array_size() < 3)
+		return fail;
+	Tile_coord tile(pval.get_elem(0).get_int_value(),
+			pval.get_elem(1).get_int_value(),
+			pval.get_elem(2).get_int_value());
+	int shapenum = parms[1].get_int_value(),
+	    framenum = parms[2].get_int_value();
+					// Find out about given shape.
+	Shape_info& info = gwin->get_info(shapenum);
+	int new_lift;
+	int blocked = Chunk_object_list::is_blocked(
+		info.get_3d_height(), tile.tz, 
+		tile.tx - info.get_3d_xtiles() - 1,
+		tile.ty - info.get_3d_ytiles() - 1,
+		info.get_3d_xtiles(), info.get_3d_ytiles(), new_lift);
+	return Usecode_value(!blocked && new_lift == tile.tz);
 }
 
 USECODE_INTRINSIC(direction_from)
@@ -2311,7 +2402,7 @@ struct
 	USECODE_INTRINSIC_PTR(part_of_day),	// 0x3b
 	USECODE_INTRINSIC_PTR(get_alignment),	// 0x3c
 	USECODE_INTRINSIC_PTR(set_alignment),	// 0x3d
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3e
+	USECODE_INTRINSIC_PTR(move_object),	// 0x3e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f
 	USECODE_INTRINSIC_PTR(item_say),	// 0x40
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x41++++++++Some kind of animation?
@@ -2386,7 +2477,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x82
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x83
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x85+++++is_room?((tx,ty,tz), sh, fr).
+	USECODE_INTRINSIC_PTR(is_not_blocked),	// 0x85
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x86  +++++A sound??  Animation??
 	USECODE_INTRINSIC_PTR(direction_from),	// 0x87
 	USECODE_INTRINSIC_PTR(get_npc_flag),	// 0x88
