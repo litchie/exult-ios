@@ -172,7 +172,7 @@ ipack$(EXEEXT) : $(IPACK_OBJS)
 mklink$(EXEEXT) : mklink.o
 	$(CXX) $(LFLAGS) -o $(@) $+
 
-mockup$(EXEEXT): main.o
+mockup$(EXEEXT): main.o $(SDL_IMAGE_CFLAGS)
 	$(CC) $(LFLAGS) -o $(@) $+ $(SDL_IMAGE_LIBS)
 
 rip$(EXEEXT) : rip.o
@@ -231,6 +231,9 @@ head2data.test:
 	head2data data/u7bgintrinsics.data data/u7siintrinsics.data
 
 all: $(EXEC)
+
+clean:
+	rm -f $(OBJS) expack.o $(EXEC) expack$(EXEEXT) data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
 
 tools:  expack$(EXEEXT) cmanip$(EXEEXT) ipack$(EXEEXT) mklink$(EXEEXT) mockup$(EXEEXT) rip$(EXEEXT) shp2pcx$(EXEEXT) smooth$(EXEEXT) splitshp$(EXEEXT) textpack$(EXEEXT) wuc$(EXEEXT) wud$(EXEEXT) u7voice2syx$(EXEEXT) ucc$(EXEEXT) ucxt$(EXEEXT) head2data$(EXEEXT) head2data.test
 
