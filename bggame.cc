@@ -45,6 +45,20 @@ BG_Game::BG_Game()
 		add_shape("gumps/book",32);
 		add_shape("gumps/scroll",55);
 
+		add_shape("gumps/box", 0);
+		add_shape("gumps/crate", 1);
+		add_shape("gumps/barrel", 8);
+		add_shape("gumps/bag", 9);
+		add_shape("gumps/backpack", 10);
+		add_shape("gumps/basket", 11);
+		add_shape("gumps/chest", 22);
+		add_shape("gumps/shipshold", 26);
+		add_shape("gumps/drawer", 27);
+		add_shape("gumps/woodsign", 49);
+		add_shape("gumps/tombstone", 50);
+		add_shape("gumps/goldsign", 51);
+		add_shape("gumps/body", 53);
+
 		add_resource("files/shapes/count", 0, 6);
 		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
 		add_resource("files/shapes/1", "<STATIC>/faces.vga", 0);

@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #include "dir.h"
 #include "citerate.h"
+#include "game.h"
 #include <string.h>
 
 					// Offset to each neighbor, dir=0-7.
@@ -1587,15 +1588,15 @@ void Container_game_object::activate
 	switch(shnum)			// Watch for gumps.
 		{
 	case 405:			// Ship's hold
-		gwin->show_gump(this, 26);
+		gwin->show_gump(this, Game::get_game()->get_shape("gumps/shipshold"));
 		return;
 	case 406:			// Nightstand.
-		gwin->show_gump(this, 27);
-		return;
 	case 407:			// Desk.
 	case 283:
 	case 203:
-		gwin->show_gump(this, 27);
+	case 416:			// Chest of drawers.
+	case 679:
+		gwin->show_gump(this, Game::get_game()->get_shape("gumps/drawer"));
 		return;
 	case 400:			// Bodies.
 	case 414:
@@ -1603,32 +1604,28 @@ void Container_game_object::activate
 	case 778:
 	case 892:
 	case 507: 			// Bones
-		gwin->show_gump(this, 53);
-		return;
-	case 416:			// Chest of drawers.
-	case 679:
-		gwin->show_gump(this, 27);
+		gwin->show_gump(this, Game::get_game()->get_shape("gumps/body"));
 		return;
 	case 800:			// Chest.
-		gwin->show_gump(this, 22);	// ???Guessing.
+		gwin->show_gump(this, Game::get_game()->get_shape("gumps/chest"));	// ???Guessing.
 		return;
 	case 801:			// Backpack.
-		gwin->show_gump(this, 10);
+		gwin->show_gump(this, Game::get_game()->get_shape("gumps/backpack"));
 		return;
 	case 799:			// Unsealed box
-		gwin->show_gump(this, 0);
+		gwin->show_gump(this, Game::get_game()->get_shape("gumps/box"));
 		return;
 	case 802:			// Bag.
-		gwin->show_gump(this, 9);
+		gwin->show_gump(this, Game::get_game()->get_shape("gumps/bag"));
 		return;
 	case 803:			// Basket.
-		gwin->show_gump(this, 11);
+		gwin->show_gump(this, Game::get_game()->get_shape("gumps/basket"));
 		return;
 	case 804:			// Crate.
-		gwin->show_gump(this, 1);
+		gwin->show_gump(this, Game::get_game()->get_shape("gumps/crate"));
 		return;
 	case 819:			// Barrel.
-		gwin->show_gump(this, 8);
+		gwin->show_gump(this, Game::get_game()->get_shape("gumps/barrel"));
 		return;
 		}
 					// Try to run normal usecode fun.
@@ -2243,6 +2240,7 @@ void Chunk_object_list::add_dependencies
 	Nonflat_object_iterator next(this);
 	while ((obj = next.get_next()) != 0)
 		{
+		//cout << "Here " << __LINE__ << " " << obj << endl;
 		int cmp = Game_object::lt(newinfo, obj);
 		if (!cmp)		// Bigger than this object?
 			{
