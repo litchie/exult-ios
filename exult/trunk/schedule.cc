@@ -2787,7 +2787,7 @@ void Walk_to_schedule::now_what
 		}
 					// Get screen rect. in tiles.
 	Rectangle screen = gwin->get_win_tile_rect();
-	screen.enlarge(1);		// Enlarge in all dirs.
+	screen.enlarge(4);		// Enlarge in all dirs.
 					// Might do part of it first.
 	Tile_coord from = npc->get_abs_tile_coord(),
 		   to = dest;
