@@ -241,17 +241,20 @@ public:
 	void set_statusbar(char *name, int context, char *msg);
 	void set_button(char *name, const char *text);
 	void set_visible(char *name, bool vis);
-	static GtkWidget *add_menu_item(GtkWidget *menu, const char *label = 0,
-			GtkSignalFunc func = 0, gpointer func_data = 0);
 	void set_sensitive(char *name, bool vis);
 	int prompt(const char *msg, const char *choice0, 
 			const char *choice1 = 0,const char *choice2 = 0);
 };
 
+					// Utilities:
 namespace EStudio {
 int Prompt(const char *msg, const char *choice0, 
 			const char *choice1 = 0,const char *choice2 = 0);
 void Alert(const char *msg, ...);
+GtkWidget *Add_menu_item(GtkWidget *menu, const char *label = 0,
+			GtkSignalFunc func = 0, gpointer func_data = 0);
+GtkWidget *Create_arrow_button(GtkArrowType dir, GtkSignalFunc clicked,
+							gpointer func_data);
 }
 
 #endif

@@ -51,6 +51,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cout;
 using std::endl;
 using std::strlen;
+using EStudio::Create_arrow_button;
 
 const int border = 2;			// Border at bottom, sides of each
 					//   chunk.
@@ -713,27 +714,13 @@ GtkWidget *Chunk_chooser::create_controls
 	gtk_widget_show (bbox);
 	gtk_container_add (GTK_CONTAINER (frame), bbox);
 
-	loc_chunk_down = gtk_button_new();
-	gtk_widget_show (loc_chunk_down);
+	loc_chunk_down = Create_arrow_button(GTK_ARROW_DOWN,
+		GTK_SIGNAL_FUNC (on_loc_chunk_down_clicked), this);
 	gtk_box_pack_start (GTK_BOX (bbox), loc_chunk_down, FALSE, FALSE, 0);
-	GTK_WIDGET_SET_FLAGS (loc_chunk_down, GTK_CAN_DEFAULT);
-	GtkWidget *arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
-	gtk_widget_show(arrow);
-	gtk_container_add(GTK_CONTAINER(loc_chunk_down), arrow);
 
-	loc_chunk_up = gtk_button_new();
-	gtk_widget_show (loc_chunk_up);
+	loc_chunk_up = Create_arrow_button(GTK_ARROW_UP,
+                      GTK_SIGNAL_FUNC (on_loc_chunk_up_clicked), this);
 	gtk_box_pack_start (GTK_BOX (bbox), loc_chunk_up, FALSE, FALSE, 0);
-	GTK_WIDGET_SET_FLAGS (loc_chunk_up, GTK_CAN_DEFAULT);
-	arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_OUT);
-	gtk_widget_show(arrow);
-	gtk_container_add(GTK_CONTAINER(loc_chunk_up), arrow);
-	gtk_signal_connect (GTK_OBJECT (loc_chunk_down), "clicked",
-                      GTK_SIGNAL_FUNC (on_loc_chunk_down_clicked),
-                      this);
-	gtk_signal_connect (GTK_OBJECT (loc_chunk_up), "clicked",
-                      GTK_SIGNAL_FUNC (on_loc_chunk_up_clicked),
-                      this);
 	if (group != 0)			// Filtering?  Skip the rest.
 		return topframe;
 
@@ -775,27 +762,13 @@ GtkWidget *Chunk_chooser::create_controls
 	gtk_widget_show (bbox);
 	gtk_container_add (GTK_CONTAINER (frame), bbox);
 
-	move_chunk_down = gtk_button_new();
-	gtk_widget_show (move_chunk_down);
+	move_chunk_down = Create_arrow_button(GTK_ARROW_DOWN,
+			GTK_SIGNAL_FUNC (on_move_chunk_down_clicked), this);
 	gtk_box_pack_start (GTK_BOX (bbox), move_chunk_down, FALSE, FALSE, 0);
-	GTK_WIDGET_SET_FLAGS (move_chunk_down, GTK_CAN_DEFAULT);
-	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
-	gtk_widget_show(arrow);
-	gtk_container_add(GTK_CONTAINER(move_chunk_down), arrow);
 
-	move_chunk_up = gtk_button_new();
-	gtk_widget_show (move_chunk_up);
+	move_chunk_up = Create_arrow_button(GTK_ARROW_UP,
+			GTK_SIGNAL_FUNC (on_move_chunk_up_clicked), this);
 	gtk_box_pack_start (GTK_BOX (bbox), move_chunk_up, FALSE, FALSE, 0);
-	GTK_WIDGET_SET_FLAGS (move_chunk_up, GTK_CAN_DEFAULT);
-	arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_OUT);
-	gtk_widget_show(arrow);
-	gtk_container_add(GTK_CONTAINER(move_chunk_up), arrow);
-	gtk_signal_connect (GTK_OBJECT (move_chunk_down), "clicked",
-			GTK_SIGNAL_FUNC (on_move_chunk_down_clicked),
-			this);
-	gtk_signal_connect (GTK_OBJECT (move_chunk_up), "clicked",
-			GTK_SIGNAL_FUNC (on_move_chunk_up_clicked),
-			this);
 
 	return topframe;
 	}

@@ -8,6 +8,8 @@
 #include "studio.h"
 #include "exceptions.h"
 
+using EStudio::Add_menu_item;
+
 Object_browser::Object_browser(Shape_group *grp, Shape_file_info *fi) 
 	: group(grp), file_info(fi), popup(0),
 	selected(-1)
@@ -78,7 +80,7 @@ void Object_browser::add_group_submenu
 	if (gcnt > 1 ||			// Groups besides ours?
 	    (gcnt == 1 && !group))
 		{
-		GtkWidget *mitem = ExultStudio::add_menu_item(popup,
+		GtkWidget *mitem = Add_menu_item(popup,
 				"Add to group...");
 		GtkWidget *group_menu = gtk_menu_new();
 		gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), group_menu);
@@ -87,7 +89,7 @@ void Object_browser::add_group_submenu
 			Shape_group *grp = groups->get(i);
 			if (grp == group)
 				continue;// Skip ourself.
-			GtkWidget *gitem = ExultStudio::add_menu_item(
+			GtkWidget *gitem = Add_menu_item(
 				group_menu, grp->get_name(),
 				GTK_SIGNAL_FUNC (
 			   Object_browser::on_browser_group_add),
@@ -203,12 +205,12 @@ GtkWidget *Object_browser::create_popup
 		gtk_widget_destroy(popup);
 	popup = gtk_menu_new();		// Create popup menu.
 					// Add "File" submenu.
-	GtkWidget *mitem = ExultStudio::add_menu_item(popup, "File...");
+	GtkWidget *mitem = Add_menu_item(popup, "File...");
 	GtkWidget *file_menu = gtk_menu_new();
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), file_menu);
-	ExultStudio::add_menu_item(file_menu, "Save",
+	Add_menu_item(file_menu, "Save",
 				GTK_SIGNAL_FUNC(on_browser_file_save), this);
-	ExultStudio::add_menu_item(file_menu, "Revert",
+	Add_menu_item(file_menu, "Revert",
 				GTK_SIGNAL_FUNC(on_browser_file_revert), this);
 	if (selected >= 0)		// Item selected?  Add groups.
 		add_group_submenu(popup);
