@@ -1,3 +1,9 @@
+2002-01-02  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/data/opcodes.txt: Fixed a bug introduced on the
+	2001-12-16, opcode parameters were around the right way, it's the
+	documentation that wasn't. Docs updated, and APUT and POPEID opcodes
+	updated.
+
 2002-01-02  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* NEWS: updated
 
