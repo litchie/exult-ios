@@ -51,6 +51,14 @@ public:
 		else
 			(*this)[i] = v;
 		}
+	int put(T& v)			// Put in a free spot & return it.
+		{
+		int i = find(0);
+		if (i < 0)
+			i = size();
+		put(i, v);
+		return (i);
+		}
 	size_type	find( const T obj ) const
 		{
 			size_type pos = 0;
