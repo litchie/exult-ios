@@ -231,7 +231,7 @@
 	USECODE_INTRINSIC_PTR(get_party_ids),			// 0xaa
 
 	USECODE_INTRINSIC_PTR(in_combat),			// 0xab
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xac +++Something(pos).  Only used when fishing!
+	USECODE_INTRINSIC_PTR(is_water),			// 0xac
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xad UNUSED
 	USECODE_INTRINSIC_PTR(set_camera),			// 0xae
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xaf UNUSED

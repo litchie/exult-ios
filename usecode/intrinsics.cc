@@ -1510,6 +1510,29 @@ USECODE_INTRINSIC(start_speech)
 	return(Usecode_value(okay ? 1 : 0));
 }
 
+USECODE_INTRINSIC(is_water)
+{
+	// Is_water(pos).
+	int size = parms[0].get_array_size();
+	if (size >= 3)
+		{
+		Tile_coord t(parms[0].get_elem(0).get_int_value(),
+			     parms[0].get_elem(1).get_int_value(),
+			     parms[0].get_elem(2).get_int_value());
+					// Didn't click on an object?
+		int x = (t.tx - gwin->get_scrolltx())*c_tilesize,
+		    y = (t.ty - gwin->get_scrollty())*c_tilesize;
+		if (t.tz != 0 || gwin->find_object(x, y))
+			return Usecode_value(0);
+		ShapeID sid = gwin->get_objects(t.tx/c_tiles_per_chunk,
+				t.ty/c_tiles_per_chunk)->get_flat(
+			t.tx%c_tiles_per_chunk, t.ty%c_tiles_per_chunk);
+		Shape_info& info = gwin->get_info(sid.get_shapenum());
+		return Usecode_value(info.is_water());
+		}
+	return Usecode_value(0);
+}
+
 USECODE_INTRINSIC(run_endgame)
 {
 	game->end_game(parms[0].get_int_value() != 0);
