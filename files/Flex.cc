@@ -191,16 +191,32 @@ bool Flex::is_flex(const char *fname)
 Flex_writer::Flex_writer
 	(
 	std::ofstream& o,			// Where to write.
-	const char *title,		// Flex title.
-	int cnt				// #entries we'll write.
-	) : out(&o), count(cnt), index(0)
+	const char *title,			// Flex title.
+	int cnt,				// #entries we'll write.
+	Flex::Flex_vers vers
+	) : out(&o), dout(0), count(cnt), index(0)
 	{
 					// Write out header.
 	StreamDataSource ds(out);
-	Flex::write_header(&ds, title, count);
+	Flex::write_header(&ds, title, count, vers);
 					// Create table.
 	tptr = table = new uint8[2*count*4];
 	cur_start = out->tellp();	// Store start of 1st entry.
+	}
+
+Flex_writer::Flex_writer
+	(
+	DataSource *o,				// Where to write.
+	const char *title,			// Flex title.
+	int cnt,				// #entries we'll write.
+	Flex::Flex_vers vers
+	) : out(0), dout(o), count(cnt), index(0)
+	{
+					// Write out header.
+	Flex::write_header(dout, title, count, vers);
+					// Create table.
+	tptr = table = new uint8[2*count*4];
+	cur_start = dout->getPos();	// Store start of 1st entry.
 	}
 
 /*
@@ -222,7 +238,8 @@ void Flex_writer::mark_section_done
 	(
 	)
 	{
-	long pos = out->tellp();	// Location past end of section.
+					// Location past end of section.
+	long pos = out ? (long) out->tellp() : (long) dout->getPos();
 	Write4(tptr, cur_start);	// Store start of section.
 	Write4(tptr, pos - cur_start);	// Store length.
 	cur_start = pos;
@@ -240,11 +257,22 @@ bool Flex_writer::close
 	{
 	if (!table)
 		return true;		// Already done.
-	out->seekp(0x80, ios::beg);	// Write table.
-	out->write(reinterpret_cast<char*>(table), 2*count*4);
-	out->flush();
-	bool ok = out->good();
-	out->close();
+	bool ok;
+	if (out)
+		{
+		out->seekp(0x80, ios::beg);	// Write table.
+		out->write(reinterpret_cast<char*>(table), 2*count*4);
+		out->flush();
+		ok = out->good();
+		out->close();
+		}
+	else
+		{
+		dout->seek(0x80);		// Write table.
+		dout->write(reinterpret_cast<char*>(table), 2*count*4);
+		dout->flush();
+		ok = dout->good();
+		}
 	delete table;
 	table = 0;
 	return ok;
