@@ -1702,6 +1702,27 @@ void Terrain_game_object::paint_terrain
 	}
 
 /*
+ *	Move to a new absolute location.  This should work even if the old
+ *	location is invalid (cx=cy=255).
+ */
+
+void Ifix_game_object::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift
+	)
+	{
+	Game_object::move(newtx, newty, newlift);
+					// Mark superchunk as 'modified'.
+	int cx = get_cx(), cy = get_cy();
+	if (cx >= 0 && cx < c_num_chunks &&
+	    cy >= 0 && cy < c_num_chunks)
+		Game_window::get_game_window()->get_map()->
+					set_ifix_modified(cx, cy);
+	}
+
+/*
  *	Remove an object from the world.
  *	The object is deleted.
  */

@@ -1784,9 +1784,6 @@ static void Drop_dragged_shape
 			if (gwin->drop_at_lift(newobj, x, y, lift))
 				{	// Success.
 				cheat.append_selected(newobj);
-				if (!ireg)
-					gwin->get_map()->set_ifix_modified(
-					   newobj->get_cx(), newobj->get_cy());
 				gwin->set_all_dirty();	// For now, until we
 					//    clear out grid we're painting.
 				return;
