@@ -26,5 +26,11 @@ adder1 0x481 (a, b)
 	c = UcItem;
 	UcEvent = UcEvent + 7;
 	c = UI_get_item_flag(UcItem, 10);
+	c = UI_get_party_list();
+	for (actor in c with i to max)
+		{
+		UcMessage("Hello, ");
+		UcMessage(UI_get_npc_name(actor));
+		}
 	return adder(a, 3);
 	}

@@ -53,6 +53,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 	class Uc_statement *stmt;
 	class vector<char *> *strvec;
 	class Uc_block_statement *block;
+	class Uc_arrayloop_statement *arrayloop;
 	class Uc_array_expression *exprlist;
 	int intval;
 	char *strval;
@@ -61,7 +62,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 /*
  *	Keywords:
  */
-%token IF ELSE RETURN WHILE FOR IN
+%token IF ELSE RETURN WHILE FOR IN WITH TO
 %token VAR STRING
 %token SAY MESSAGE EVENT FLAG ITEM UCTRUE UCFALSE
 
@@ -96,7 +97,9 @@ static Uc_function *function = 0;	// Current function being parsed.
 %type <strvec> identifier_list opt_identifier_list
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
+%type <stmt> array_loop_statement
 %type <block> statement_list
+%type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list
 %type <funcall> function_call
 
@@ -159,7 +162,6 @@ statement:
 	| if_statement
 	| while_statement
 	| array_loop_statement
-		{ $$ = 0; /* ++++++++ */ }
 	| function_call_statement
 	| return_statement
 	| statement_block
@@ -202,7 +204,42 @@ while_statement:
 	;
 
 array_loop_statement:
-	FOR '(' IDENTIFIER IN declared_var ')' statement
+	start_array_loop ')' statement
+		{
+		$1->set_statement($3);
+		$1->finish(function);
+		function->pop_scope();
+		}
+	| start_array_loop WITH IDENTIFIER 
+		{ $1->set_index(function->add_symbol($3)); }
+					')' statement
+		{
+		$1->set_statement($6);
+		$1->finish(function);
+		function->pop_scope();
+		}
+	| start_array_loop WITH IDENTIFIER 
+		{ $1->set_index(function->add_symbol($3)); }
+				TO IDENTIFIER 
+		{ $1->set_array_size(function->add_symbol($6)); }
+						')' statement
+		{
+		$1->set_statement($9);
+		function->pop_scope();
+		}
+	;
+
+start_array_loop:
+	start_for IDENTIFIER IN declared_var
+		{
+		Uc_var_symbol *var = function->add_symbol($2);
+		$$ = new Uc_arrayloop_statement(var, $4);
+		}
+	;
+
+start_for:
+	FOR '('
+		{ function->push_scope(); }
 	;
 
 function_call_statement:
