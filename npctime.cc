@@ -125,21 +125,25 @@ public:
 	};
 
 /*
- *	Might timer.
+ *	Timer for flags that don't need any other checks.
  */
-class Npc_might_timer : public Npc_timer
+class Npc_flag_timer : public Npc_timer
 	{
+	int flag;			// Flag # in Obj_flags.
 	uint32 end_time;		// Time when it wears off.
+	Npc_flag_timer **listloc;	// Where it's stored in Npc_timer_list.
 public:
-	Npc_might_timer(Npc_timer_list *l) : Npc_timer(l)
+	Npc_flag_timer(Npc_timer_list *l, int f, Npc_flag_timer **loc) 
+		: Npc_timer(l), flag(f), listloc(loc)
 		{			// Lasts 60-120 seconds..
 		end_time = Game::get_ticks() + 60000 + rand()%60000;
 		}
-	virtual ~Npc_might_timer()
-		{ list->might = 0; }
+	virtual ~Npc_flag_timer()
+		{ *listloc = 0; }
 					// Handle events:
 	void handle_event(unsigned long curtime, long udata);
 	};
+
 
 /*
  *	Delete list.
@@ -155,6 +159,7 @@ Npc_timer_list::~Npc_timer_list
 	delete invisibility;
 	delete protection;
 	delete might;
+	delete curse;
 	}
 
 /*
@@ -232,7 +237,20 @@ void Npc_timer_list::start_might
 	{
 	if (might)			// Remove old one.
 		delete might;
-	might = new Npc_might_timer(this);
+	might = new Npc_flag_timer(this, Obj_flags::might, &might);
+	}
+
+/*
+ *	Start curse.
+ */
+
+void Npc_timer_list::start_curse
+	(
+	)
+	{
+	if (curse)			// Remove old one.
+		delete curse;
+	curse = new Npc_flag_timer(this, Obj_flags::cursed, &curse);
 	}
 
 /*
@@ -490,10 +508,10 @@ void Npc_protection_timer::handle_event
 	}
 
 /*
- *	Might wore off.
+ *	Might/curse wore off.
  */
 
-void Npc_might_timer::handle_event
+void Npc_flag_timer::handle_event
 	(
 	unsigned long curtime, 
 	long udata
@@ -502,9 +520,9 @@ void Npc_might_timer::handle_event
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||	// Long enough?  Or cleared.
-	    npc->get_flag(Obj_flags::might) == 0)
+	    npc->get_flag(flag) == 0)
 		{
-		npc->clear_flag(Obj_flags::might);
+		npc->clear_flag(flag);
 		delete this;
 		}
 	else				// Check again in 10 secs.
