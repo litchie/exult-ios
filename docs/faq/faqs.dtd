@@ -1,6 +1,6 @@
 <!-- block and inline elements -->
 
-<!ENTITY % inline "br|em|extref|Exult|kbd|key|q|ref|strong" >
+<!ENTITY % inline "br|em|extref|Exult|kbd|key|q|ref|strong|ref1|ref2|Studio" >
 
 <!ENTITY % lists "ul|ol" >
 
@@ -27,6 +27,8 @@
 <!ELEMENT em (#PCDATA)>
 
 <!ELEMENT ref (#PCDATA)>
+<!ELEMENT ref1 (#PCDATA)>
+<!ELEMENT ref2 (#PCDATA)>
 <!ELEMENT extref (#PCDATA)>
 
 <!-- Empty elements -->
@@ -52,4 +54,6 @@
 <!ATTLIST	keydesc		name	CDATA	"">
 
 <!ATTLIST	ref		target	CDATA	#REQUIRED>
+<!ATTLIST	ref1		target	CDATA	#REQUIRED>
+<!ATTLIST	ref2		target	CDATA	#REQUIRED>
 <!ATTLIST	extref		target	CDATA	#REQUIRED>
