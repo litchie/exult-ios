@@ -10,7 +10,6 @@
 	
 	$LBClueless = TRUE;
 */
-#define HAVE_CONFIG_H
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -47,7 +46,9 @@ UCData uc;
 int main(int argc, char** argv)
 {
 	cout << "Ultima 7 usecode disassembler v0.6.2" << endl
+	#ifdef HAVE_CONFIG_H
 	     << "    compiled with " << PACKAGE << " " << VERSION << endl
+	#endif
 	     << endl;
 	
 	// Tends to make life easier

@@ -1,3 +1,8 @@
+2001-12-15  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/opcodes.txt: Updated opcodes callis and calli to output
+	intrinsic names
+	* usecode/ucxt/: Code cleanup and commenting.
+
 2001-12-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/intrinsics.cc: Fixed set_item_quantity() so it returns
