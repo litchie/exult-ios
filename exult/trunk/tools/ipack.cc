@@ -313,6 +313,7 @@ void Write_palette
 	strcat(txtpal, ".txt");
 	cout << "Creating text (Gimp) palette '" << txtpal << "'" << endl;
 	ofstream pout(txtpal);		// OKAY that it's a 'text' file.
+	pout << "GIMP palette" << endl;	// MUST be this for Gimp to use.
 	pout << "Palette from Exult's Ipack" << endl;
 	int i;				// Skip 0's at end.
 	for (i = palsize - 1; i > 0; i--)
