@@ -1,3 +1,6 @@
+2001-03-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* keys.h: fixed 'double help' when using custom keybindings
+
 2001-03-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SI - Lots of usecode intrinsics added/verified/commented.
