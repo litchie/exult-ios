@@ -1585,7 +1585,7 @@ void Game_window::teleport_party
 		{
 		int party_member=usecode->get_party_member(i);
 		Actor *person = get_npc(party_member);
-		if (person)
+		if (person && !person->is_dead_npc())
 			{
 			person->set_action(0);
 			Tile_coord t1(-1, -1, -1);
