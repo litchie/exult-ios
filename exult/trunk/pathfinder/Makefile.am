@@ -10,9 +10,9 @@ CXXFLAGS += $(DEBUG_FLAGS)
 
 
 
-OFILES=	PathFinder.o Astar.o Zombie.o
+OFILES=	PathFinder.o Astar.o Zombie.o path.o
 
-SOURCES= PathFinder.cc PathFinder.h Astar.h Astar.cc Zombie.h Zombie.cc
+SOURCES= PathFinder.cc PathFinder.h Astar.h Astar.cc Zombie.h Zombie.cc path.cc
 
 libpathfinder.a:	$(OFILES)
 	ar rs libpathfinder.a $(OFILES)
