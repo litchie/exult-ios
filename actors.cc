@@ -1335,6 +1335,23 @@ int Monster_actor::step
 	}
 
 /*
+ *	Add an object.
+ *
+ *	Output:	1, meaning object is completely contained in this,
+ *		0 if not enough space.
+ */
+
+int Monster_actor::add
+	(
+	Game_object *obj,
+	int dont_check			// 1 to skip volume check.
+	)
+	{
+					// Just add anything.
+	return Container_game_object::add(obj, 1);
+	}
+
+/*
  *	Create an instance of a monster.
  */
 
@@ -1357,7 +1374,6 @@ Monster_actor *Monster_info::create
 	monster->move(0, chunkx, chunky, olist, tilex, tiley, 0, lift);
 					// ++++++For now:
 	monster->set_schedule_type(Schedule::loiter);
-#if 1	/* +++++++Enable when tested. */
 					// Get equipment.
 	if (!equip_offset || equip_offset - 1 >= equip_cnt)
 		return (monster);	// Out of range.
@@ -1369,9 +1385,10 @@ Monster_actor *Monster_info::create
 		Equip_element& elem = rec.elements[i];
 		if (!elem.shapenum || 1 + rand()%100 > elem.probability)
 			continue;	// You lose.
-		monster->add_quantity(elem.quantity, elem.shapenum);
+		int frnum = 0;		// Frame #???
+		monster->add_quantity(elem.quantity, elem.shapenum, -359,
+								frnum);
 		}
-#endif
 	return (monster);
 	}
 

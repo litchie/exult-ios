@@ -388,6 +388,8 @@ public:
 	static void delete_all();	// Delete all monsters.
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
+					// Add an object.
+	virtual int add(Game_object *obj, int dont_check = 0);
 	};
 
 /*
