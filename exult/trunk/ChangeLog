@@ -1,5 +1,8 @@
 2002-07-10  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamewin.cc,paths.cc:  Removed limit on finding/dragging items on
+	different lift from Avatar.
+
 	* objs/egg.cc (Egg_object): Party_near + auto_reset ==
 	avatar_near; avoids too much monster spawning.
 

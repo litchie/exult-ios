@@ -1925,9 +1925,9 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 	
 	int cnt = 0;
 	int actor_lift = main_actor->get_lift();
-//	int start = actor_lift > 0 ? -1 : 0;
-					// Look downward at most one 'floor'.
-	int start = actor_lift >= 5 ?  actor_lift - 5 : 0;
+//					// Look downward at most one 'floor'.
+//	int start = actor_lift >= 5 ?  actor_lift - 5 : 0;
+	int start = 0;
 	int not_above = skip_lift;
 	if (skip_above_actor < not_above)
 		not_above = skip_above_actor;
