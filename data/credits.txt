@@ -27,7 +27,7 @@
 
 
 \CMax Horn <max@quendi.de>
-\CPorting to MacOS
+\CPorting to MacOS, C++ standard lib conformance
 
 
 \CCoder Infidel <coder_infidel@hotmail.com>
