@@ -37,6 +37,8 @@ public:
 	string	id;
 	string	content;
 	XMLEntity &operator =(const XMLEntity &x) { id=x.id; content=x.content; return *this; }
+	XMLEntity(const XMLEntity &e) : id(e.id),content(e.content)
+		{  }
 	XMLEntity();
 	~XMLEntity();
 	};
@@ -50,6 +52,8 @@ public:
 	string	&reference(string &,bool &);
 	XMLnode *subtree(string &);
 	XMLnode operator=(const XMLnode &n) { entity=n.entity; nodelist=n.nodelist; return *this; }
+	XMLnode(const XMLnode &n) : entity(n.entity),nodelist(n.nodelist)
+		{  }
 	XMLnode();
 	~XMLnode();
 	};
