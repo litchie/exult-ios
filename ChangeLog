@@ -1,3 +1,8 @@
+2002-06-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* */Makefile.am: cleaning up distro stuff
+	* exult.spec.in: fixed
+	* usecode/ucxt/head2data.cc: removed utils.cc dependency
+
 2002-06-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: typo
 
