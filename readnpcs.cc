@@ -96,6 +96,8 @@ void Game_window::read_npcs
 	}
 	catch(...)
 	{
+	cerr << "Error reading saved monsters.  Clearing list." << endl;
+	Monster_actor::give_up();
 	}
 	if (moving_barge)		// Gather all NPC's on barge.
 		{
