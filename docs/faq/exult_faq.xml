@@ -641,8 +641,8 @@
 			<question>Known Compile Issues</question>
 			<answer>
 				<ul>
-					<li>Max is working to make Exult compile on all Unix systems but currently it requires
-						SDL 1.2.3. When that works there will be compile instructions in the source.</li>
+					<li>Max is working to make Exult compile like it does on all Unix systems but currently
+						it requires the not-yet released SDL 1.2.3.</li>
 					<li>There is a bug/incompatibility with the flex bundled Linux distributions 
 						(RH7.0, for example) that breaks compilation. Upgrading to a more recent version 
 						of flex should fix it.</li>
