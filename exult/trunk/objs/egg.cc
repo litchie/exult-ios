@@ -577,7 +577,9 @@ void Egg_object::activate
 			Monster_info *inf = 
 			      gwin->get_info(shnum).get_monster_info();
 			if (inf)
-				{
+				{	// Armageddon spell cast?
+				if (gwin->armageddon)
+					break;
 				int sched = data1>>8;
 				int align = data1&3;
 				int cnt = (data1&0xff)>>2;
