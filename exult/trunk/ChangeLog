@@ -1,3 +1,10 @@
+2001-04-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Lots of changes to Patrol schedule.  It always uses pathfinding
+	now, and uses quality for Usecode test in SI.
+	* Fixed ship rotation in SI.
+	* Set 'killable' for all monsters when they're created.
+
 2001-04-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/quotes.txt: new quote
 	* gumps/Paperdoll_gump_info.cc: use correct fellowship amulet shape

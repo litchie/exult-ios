@@ -408,40 +408,59 @@ void Patrol_schedule::now_what
 		if (try_street_maintenance())
 			return;		// We no longer exist.
 	const int PATH_SHAPE = 607;
+	Game_object *path;
+					// SI:  Special scenes.
+	if (Game::get_game_type() == SERPENT_ISLE && pathnum >= 0 &&
+					// Arrived at path with qual==0xf?
+	    pathnum < paths.size() && (path = paths[pathnum]) != 0 &&
+	    path->get_quality() == 0xf && npc->distance(path) < 2)
+		{
+		Game_window *gwin = Game_window::get_game_window();
+		Actor *safenpc = npc;	// Next stmt. can delete 'this'!
+		safenpc->activate(gwin->get_usecode(), 
+					Usecode_machine::npc_proximity);
+		if (safenpc->get_schedule() != this)
+			return;		// We're gone.
+		}
 	pathnum++;			// Find next path.
 					// Already know its location?
-	Game_object *path =  pathnum < paths.size() ? paths[pathnum] : 0;
-	bool at_end = false;
+	path =  pathnum < paths.size() ? paths[pathnum] : 0;
 	if (!path)			// No, so look around.
 		{
 		Game_object_vector nearby;
-		npc->find_nearby(nearby, PATH_SHAPE, 26, 0);
+		npc->find_nearby(nearby, PATH_SHAPE, 25, 0);
+		int best_dist = 1000;	// Find closest.
 		for (Game_object_vector::const_iterator it = nearby.begin();
 						it != nearby.end(); ++it)
 			{
 			Game_object *obj = *it;
 			int framenum = obj->get_framenum();
-					// Cache it.
-			paths.put(framenum, obj);
-			if (framenum == pathnum)
+			int dist;
+			if (framenum == pathnum && 
+			    (dist = obj->distance(npc)) < best_dist)
 				{	// Found it.
 				path = obj;
-				break;
+				best_dist = dist;
 				}
 			}
-		if (!path)		// Turn back if at end.
+		if (path)		// Save it.
+			paths.put(pathnum, path);
+		else			// Turn back if at end.
 			{
-			pathnum = 0;
-			at_end = true;
-			path = paths.size() ? paths[0] : 0;
+			if (pathnum == 0)	// At start?  Retry.
+				{
+				pathnum = -1;
+				npc->start(200, 500);
+				return;
+				}
+			else		// At end, go back to start.
+				{
+				pathnum = 0;
+				path = paths.size() ? paths[0] : 0;
+				}
 			}
-		if (!path)
+		if (!path)		// Still failed?
 			{
-#if 0
-			cout << "Couldn't find patrol path " << pathnum
-				<< " for obj. shape " << npc->get_shapenum()
-								<< endl;
-#endif
 					// Wiggle a bit.
 			Tile_coord pos = npc->get_abs_tile_coord();
 			Tile_coord delta = Tile_coord(rand()%3 - 1,
@@ -452,40 +471,15 @@ void Patrol_schedule::now_what
 			return;
 			}
 		}
-	bool usepath = false;		// Serpent Isle needs path-following.
-	if (Game::get_game_type() == SERPENT_ISLE)
-		{
-		Tile_coord d = path->get_abs_tile_coord();
-		usepath = true;
-	    	if (!npc->walk_path_to_tile(d, 250, rand()%1000))
-			{		// Look for free tile within 1 square.
-			d = Game_object::find_unblocked_tile(d, 1, 4);
-			if (d.tx == -1 || !npc->walk_path_to_tile(d, 250,
-								rand()%1000))
-				usepath = false;
+	Tile_coord d = path->get_abs_tile_coord();
+    	if (!npc->walk_path_to_tile(d, 250, rand()%1000))
+		{			// Look for free tile within 1 square.
+		d = Game_object::find_unblocked_tile(d, 1, 4);
+		if (d.tx == -1 || !npc->walk_path_to_tile(d, 250, rand()%1000))
+			{		// Failed.  Later.
+			npc->start(200, 2000);
+			return;
 			}
-		}
-	if (!usepath)
-		{
-					// This works for passion play:
-	// +++++++Try using walk_path_to_tile() for BG & get rid of this!+++++
-		npc->set_lift(path->get_lift());
-		npc->walk_to_tile(path->get_abs_tile_coord(), 250, rand()%2000);
-		}
-	Game_window *gwin = Game_window::get_game_window();
-					// SI:  Special scenes.
-//	if (npc == gwin->get_camera_actor())
-	if (Game::get_game_type() == SERPENT_ISLE)
-		{
-		if (npc->get_shapenum() == 0x12b)	// Cantra?
-			{
-			if (pathnum)	// Don't do it right away.
-				npc->activate(gwin->get_usecode(), 0);
-			}
-		else if (!pathnum)	// At start/end?
-					// Do cat at both start and end.
-			if (npc->get_shapenum() == 0x1ef || at_end)
-				npc->activate(gwin->get_usecode(), 0);
 		}
 	}
 
