@@ -279,8 +279,13 @@ void Conversation::remove_last_face
 	(
 	)
 	{
+#if 0	/* Causes crashes. */
 	if (last_face_shown >= 0 && face_info[last_face_shown])
 		remove_face(face_info[last_face_shown]->shape);
+#else	/* Maybe it's just slot 1 always. */
+	if (last_face_shown > 0 && face_info[last_face_shown])
+		remove_face(face_info[last_face_shown]->shape);
+#endif
 	}
 
 /*
