@@ -1,4 +1,8 @@
 2002-05-03  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/exult_studio.* updated
+	* docs/xml/exult_studio.xml updated
+
+2002-05-03  Dominik Reichardt <gigdr@tesionmail.de>
 	* tools/*.1: finally added Robert Bihlmeyer man pages. Added them 
 	to /tools as the *txt files are there too.
 
