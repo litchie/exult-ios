@@ -795,6 +795,7 @@ void Game_window::clear_world
 	for (Exult_vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
 		(*it)->clear();
+	set_map(0);			// Back to main map.
 	Monster_actor::delete_all();	// To be safe, del. any still around.
 	main_actor = 0;
 	camera_actor = 0;
@@ -1359,6 +1360,24 @@ void Game_window::read_gwin
 	}
 
 /*
+ *	Was any map modified?
+ */
+
+bool Game_window::was_map_modified
+	(
+	)
+	{
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		{
+		Game_map *map = *it;
+		if (map && map->was_map_modified())
+			return true;
+		}
+	return false;
+	}
+
+/*
  *	Write out map data (IFIXxx, U7CHUNKS, U7MAP) to static, and also
  *	save 'gamedat' to <PATCH>/initgame.dat.
  *
@@ -1373,7 +1392,11 @@ void Game_window::write_map
 	{
 	for (Exult_vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
-		(*it)->write_static();		// Write ifix, map files.
+		{
+		Game_map *map = *it;
+		if (map && map->was_map_modified())
+			map->write_static();	// Write ifix, map files.
+		}
 	write();			// Write out to 'gamedat' too.
 	save_gamedat(PATCH_INITGAME, "Saved map");
 	}

@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.22 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.22.4.1 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -763,9 +763,9 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   frequency = byte
 
   for teleport egg (7):
-  data1     = quality, mapNum
+  data1     = quality, schunk
   quality   = byte
-  mapNum    = byte
+  schunk    = byte
   data2     = x, y (coordinates inside region)
   x         = byte
   y         = byte
@@ -789,6 +789,13 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   area      = byte  (area of effect)
   data2     = 0000
 
+  for intermap egg (11) (Exult only):
+  data1     = map, schunk
+  map	    = byte
+  schunk    = byte
+  data2     = x, y (coordinates inside region)
+  x         = byte
+  y         = byte
 
 ITEMNODE.DAT:
   itemnode = first_free, free_count, 0000?, chunks1, ..., chunks4,

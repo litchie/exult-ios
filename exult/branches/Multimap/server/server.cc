@@ -253,7 +253,7 @@ static void Handle_client_message
 			gwin->skip_lift,
 			cheat.in_map_editor(),
 			cheat.show_tile_grid(),
-			gwin->get_map()->was_map_modified(),
+			gwin->was_map_modified(),
 			(int) cheat.get_edit_mode());
 		break;
 		}
