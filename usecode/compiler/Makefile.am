@@ -26,4 +26,5 @@ ucc_LDADD = 			\
 
 
 
-CLEANFILES = *~ uclex.cc ucparse.cc
+CLEANFILES = *~
+MAINTAINERCLEANFILES = uclex.cc ucparse.cc
