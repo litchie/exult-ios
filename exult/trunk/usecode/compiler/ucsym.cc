@@ -36,6 +36,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::strcmp;
 
+int Uc_function_symbol::last_num = -1;
+Uc_function_symbol::Sym_nums Uc_function_symbol::nums_used;
+
 /*
  *	Assign value on stack.
  *
@@ -224,6 +227,32 @@ int Uc_intrinsic_symbol::gen_call
 	Write2(out, intrinsic_num);	// Intrinsic # is 2 bytes.
 	out.push_back((char) parmcnt);	// Parm. count is 1.
 	return 1;
+	}
+
+/*
+ *	Create new function.
+ */
+
+Uc_function_symbol::Uc_function_symbol
+	(
+	char *nm, 
+	int num, 			// Function #, or -1 to assign
+					//  1 + last_num.
+	std::vector<char *>& p
+	) :  Uc_symbol(nm), parms(p), usecode_num(num)
+	{
+	last_num = usecode_num = num >= 0 ? num : (last_num + 1);
+					// Keep track of #'s used.
+	Sym_nums::const_iterator it = nums_used.find(usecode_num);
+	if (it == nums_used.end())	// Unused?  That's good.
+		nums_used[usecode_num] = this;
+	else
+		{
+		char buf[256];
+		sprintf(buf, "Function 0x%x already used for '%s'.",
+				usecode_num, ((*it).second)->get_name());
+		Uc_location::yyerror(buf);
+		}
 	}
 
 /*
