@@ -141,6 +141,7 @@ private:
 	int npc_in_party(Game_object *npc);
 	Usecode_value get_party();
 	void item_say(Usecode_value& objval, Usecode_value& strval);
+	void activate_cached(Tile_coord pos);
 	Usecode_value find_nearby(Usecode_value& objval,
 		Usecode_value& shapeval, Usecode_value& qval,
 							Usecode_value& mval);

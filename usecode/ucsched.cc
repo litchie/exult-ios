@@ -57,30 +57,6 @@ Scheduled_usecode *Scheduled_usecode::find
 	}
 
 
-/*
- *	Activate all cached-in usecode eggs near a given spot.
- */
-
-static void Activate_cached
-	(
-	Usecode_machine *uc,
-	Tile_coord pos
-	)
-	{
-	if (Game::get_game_type() != BLACK_GATE)
-		return;			// ++++Since we're not sure about it.
-	const int dist = 16;
-	Egg_vector vec;			// Find all usecode eggs.
-	Game_object::find_nearby(vec, pos, 275, dist, 16, c_any_qual, 7);
-	for (Egg_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
-		{
-		Egg_object *egg = *it;
-		if (egg->get_criteria() == Egg_object::cached_in)
-			egg->activate(uc);
-		}
-	}
-
-
 inline void Scheduled_usecode::activate_egg(Usecode_machine *usecode,
 				     Game_object *e, int type)
 {
@@ -346,7 +322,7 @@ void Scheduled_usecode::handle_event
 		}
 	if (count == 1 &&		// Last one?  GUESSING:
 	    objpos.tx != -1)		// And valid pos.
-		Activate_cached(usecode, objpos);
+		usecode->activate_cached(objpos);
 	delete this;			// Hope this is safe.
 	}
 

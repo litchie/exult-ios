@@ -601,6 +601,29 @@ void Usecode_machine::item_say
 	}
 
 /*
+ *	Activate all cached-in usecode eggs near a given spot.
+ */
+
+void Usecode_machine::activate_cached
+	(
+	Tile_coord pos
+	)
+	{
+	if (Game::get_game_type() != BLACK_GATE)
+		return;			// ++++Since we're not sure about it.
+	const int dist = 16;
+	Egg_vector vec;			// Find all usecode eggs.
+	Game_object::find_nearby(vec, pos, 275, dist, 16, c_any_qual, 7);
+	for (Egg_vector::const_iterator it = vec.begin(); it != vec.end(); 
+									++it)
+		{
+		Egg_object *egg = *it;
+		if (egg->get_criteria() == Egg_object::cached_in)
+			egg->activate(this);
+		}
+	}
+
+/*
  *	Return an array of nearby objects.
  */
 
