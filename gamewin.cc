@@ -55,7 +55,7 @@ Game_window::Game_window
 	    open_gumps(0),
 	    main_actor_inside(0), mode(intro), npcs(0),
 	    shapes(), dragging(0), dragging_save(0),
-	    faces(FACES_VGA), gumps(GUMPS_VGA)
+	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA)
 	{
 	game_window = this;		// Set static ->.
 	if (!shapes.is_good())
@@ -64,6 +64,8 @@ Game_window::Game_window
 		abort("Can't open 'faces.vga' file.");
 	if (!gumps.is_good())
 		abort("Can't open 'gumps.vga' file.");
+	if (!fonts.is_good())
+		abort("Can't open 'fonts.vga' file.");
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);
 	ifstream ucfile;		// Read in usecode.
@@ -214,6 +216,32 @@ void Game_window::paint_shape
 	else
 					// Get compressed data.
 		paint_rle_shape(*shape, xoff, yoff);
+	}
+
+/*
+ *	Paint text using font from "fonts.vga".
+ *
+ *	Output:	Width in pixels of what was painted.
+ */
+
+int Game_window::paint_text
+	(
+	int xoff, int yoff, 		// Upper-left corner.
+	char *text, 
+	int fontnum			// 0-9.
+	)
+	{
+	int x = xoff;
+	Shape_frame *shape;		// Gets each glyph.
+	while (*text)
+		{
+		shape = fonts.get_shape(fontnum, (int) *text++);
+		if (!shape)
+			continue;
+		paint_rle_shape(*shape, x, yoff + shape->get_yabove());
+		x += shape->get_width();
+		}
+	return (x - xoff);
 	}
 
 /*
@@ -692,7 +720,7 @@ void Game_window::paint
 		}
 					// Draw text.
 	for (Text_object *txt = texts; txt; txt = txt->next)
-		paint_text(txt);
+		paint_text_object(txt);
 					// Draw gumps.
 	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
 		gmp->paint(this);
@@ -704,7 +732,7 @@ void Game_window::paint
  *	Paint a text object.
  */
 
-void Game_window::paint_text
+void Game_window::paint_text_object
 	(
 	Text_object *txt
 	)
@@ -1135,7 +1163,7 @@ void Game_window::add_text
 		(x%chunksize)/tilesize, (y%chunksize)/tilesize,
 				8 + win->get_text_width(font12, msg),
 				8 + win->get_text_height(font12));
-	paint_text(txt);		// Draw it.
+	paint_text_object(txt);		// Draw it.
 	txt->next = texts;		// Insert into chain.
 	txt->prev = 0;
 	if (txt->next)

@@ -71,6 +71,7 @@ private:
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
+	Vga_file fonts;			// "fonts.vga" file.
 	ifstream u7map;			// "u7map" file.
 	Actor *main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
@@ -161,6 +162,8 @@ public:
 		{ return faces.get_num_shapes(); }
 	int get_num_gumps()
 		{ return gumps.get_num_shapes(); }
+	int get_num_fonts()
+		{ return fonts.get_num_shapes(); }
 	void set_mode(Game_mode md)
 		{ mode = md; }
 	Game_mode get_mode()
@@ -257,6 +260,8 @@ public:
 		if (shape)
 			paint_shape(xoff, yoff, shape);
 		}
+					// Paint text using "fonts.vga".
+	int paint_text(int xoff, int yoff, char *text, int fontnum);
 					// Read encoded show into window.
 					// Read encoded show into window.
 	void paint_rle_shape(Shape_frame& shape, int xoff, int yoff);
@@ -285,7 +290,7 @@ public:
 	void paint()			// Paint whole image.
 		{ paint(0, 0, get_width(), get_height()); }
 					// Paint a bit of text.
-	void paint_text(Text_object *txt);
+	void paint_text_object(Text_object *txt);
 					// Paint "flat" scenery in a chunk.
 	void paint_chunk_flats(int cx, int cy, int xoff, int yoff);
 					// Paint objects in given chunk at

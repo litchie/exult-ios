@@ -221,6 +221,8 @@ class Stats_gump_object : public Gump_object
 	{
 	Actor *get_actor()
 		{ return (Actor *) container; }
+	static short textx;		// X-coord. of where to write.
+	static short texty[10];		// Y-coords.
 public:
 	Stats_gump_object(Container_game_object *cont, int initx, int inity)
 		: Gump_object(cont, initx, inity, STATSDISPLAY)
