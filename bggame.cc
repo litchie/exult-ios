@@ -1614,7 +1614,8 @@ bool BG_Game::is_installed()
 		std::cout << "exult_bg.flx : found" << std::endl;
 	else
 		std::cout << "exult_bg.flx : not found (" 
-				  << get_system_path("<DATA>/exult_bg.flx") << std::endl;
+				  << get_system_path("<DATA>/exult_bg.flx")
+				  << ")" << std::endl;
 
 	return (foundbg && foundbgflx);
 }

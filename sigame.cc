@@ -1426,7 +1426,8 @@ bool SI_Game::is_installed()
 		std::cout << "exult_si.flx : found" << std::endl;
 	else
 		std::cout << "exult_si.flx : not found (" 
-				  << get_system_path("<DATA>/exult_si.flx") << std::endl;
+				  << get_system_path("<DATA>/exult_si.flx")
+				  << ")" << std::endl;
 
 	return (foundsi && foundsiflx);
 }
