@@ -73,17 +73,19 @@ short Yesno_gump_object::yesx = 63;
 short Yesno_gump_object::yesnoy = 45;
 short Yesno_gump_object::nox = 84;
 
+// Paperdoll is completely different to Actor
 short Paperdoll_gump_object::diskx = 123, Paperdoll_gump_object::disky = 137;
 short Paperdoll_gump_object::heartx = 98, Paperdoll_gump_object::hearty = 137;
 short Paperdoll_gump_object::combatx = 51, Paperdoll_gump_object::combaty = 142;
 short Paperdoll_gump_object::cstatx = 73, Paperdoll_gump_object::cstaty = 137;
-short Paperdoll_gump_object::coords[24] = {
-	114, 10,	/* head */	115, 24,	/* back */
-	115, 37,	/* belt */	115, 55,	/* lhand */
+short Paperdoll_gump_object::coords[26] = {
+	114, 10,	/* ears */	115, 24,	/* back */
+	115, 37,	/* belt */	37, 56,		/* lhand */
 	115, 71,	/* lfinger */	114, 85,	/* legs */
 	76, 98,		/* feet */	35, 70,		/* rfinger */
-	37, 56,		/* rhand */	37, 37,		/* torso */
-	37, 24,		/* neck */	37, 11		/* ammo */
+	115, 55,	/* rhand */	37, 37,		/* torso */
+	37, 24,		/* head */	37, 11,		/* ammo */
+	57, 51		/* back2 */
 	};
 
 
@@ -218,7 +220,7 @@ class Combat_mode_gump_button : public Gump_button
 	Actor *actor;			// Who this represents.
 public:
 	Combat_mode_gump_button(Gump_object *par, int px, int py, Actor *a)
-		: Gump_button(par, Game::get_game()->get_shape("gumps/combatmode	"), px, py), actor(a)
+		: Gump_button(par, Game::get_game()->get_shape("gumps/combatmode"), px, py), actor(a)
 		{
 		framenum = (int) actor->get_attack_mode();
 		}
