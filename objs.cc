@@ -374,8 +374,9 @@ Game_object *Game_object::find_blocking
 		if (!ztiles || !info.is_solid())
 			continue;	// Skip if not an obstacle.
 					// Occupies desired tile?
-		if (tile.tx > tx - info.get_3d_xtiles() &&
-		    tile.ty > ty - info.get_3d_ytiles() &&
+		int frame = obj->get_framenum();
+		if (tile.tx > tx - info.get_3d_xtiles(frame) &&
+		    tile.ty > ty - info.get_3d_ytiles(frame) &&
 		    tile.tz < tz + ztiles)
 			return (obj);	// Found it.
 		}
@@ -788,6 +789,7 @@ int Game_object::lt
 		return (-1);		// No overlap on screen.
 	Shapes_vga_file& shapes = gwin->get_shapes();
 	int shapenum1 = get_shapenum(), shapenum2 = obj2.get_shapenum();
+	int framenum1 = get_framenum(), framenum2 = obj2.get_framenum();
 	Shape_info& info1 = shapes.get_info(shapenum1);
 	Shape_info& info2 = shapes.get_info(shapenum2);
 					// Get absolute tile positions.
@@ -798,8 +800,10 @@ int Game_object::lt
 #ifdef DEBUGLT
 	Debug_lt(atx1, aty1, atx2, aty2);
 #endif
-	x1 = info1.get_3d_xtiles(), x2 = info2.get_3d_xtiles();
-	y1 = info1.get_3d_ytiles(), y2 = info2.get_3d_ytiles();
+	x1 = info1.get_3d_xtiles(framenum1);
+	x2 = info2.get_3d_xtiles(framenum2);
+	y1 = info1.get_3d_ytiles(framenum1); 
+	y2 = info2.get_3d_ytiles(framenum2);
 	z1 = info1.get_3d_height(), z2 = info2.get_3d_height();
 	int result = -1;		// Watch for conflicts.
 	if (atz1 != atz2)		// Is one obj. on top of another?
@@ -905,6 +909,22 @@ int Game_object::get_rotated_frame
 	int curframe = get_framenum();
 	switch (get_shapenum())		// Wish I knew a better way...
 		{
+	case 251:			// Sails.  Wind direction?
+		{
+		static char swaps180[8] = {3, 2, 1, 0, 7, 6, 5, 4};
+		int subframe = curframe&7;
+		switch (quads)
+			{
+		case 1:			// 90 right.
+			return (curframe&32) ? swaps180[subframe]
+					: (curframe|32);
+		case 3:			// 90 left.
+			return (curframe&32) ? subframe
+					: (swaps180[subframe]|32);
+		case 2:			// 180.
+			return swaps180[subframe] | (curframe&32);
+			}
+		}
 	case 292:			// Seat.  Sequential frames for dirs.
 		{
 		int dir = curframe%4;	// Current dir (0-3).
@@ -917,6 +937,23 @@ int Game_object::get_rotated_frame
 		int dir = (4 + dirs[subframe] - ((curframe>>5)&1) + quads)%4;
 		static int subframes[4] = {0, 33, 1, 32};
 		return ((curframe - subframe)&31) + subframes[dir];
+		}
+	case 700:			// Deck.
+		{
+		static char swaps180[12] = {2, 0, 0, 1, 5, 4, 7, 6, 8, 9, 
+								10, 11};
+		int subframe = curframe&15;
+		switch (quads)
+			{
+		case 1:			// 90 left.
+			return (curframe&32) ? (curframe&31) :
+				(swaps180[subframe]|32);
+		case 3:			// 90 right.
+			return (curframe&32) ? swaps180[subframe] :
+				(subframe|32);
+		case 2:			// 180.  Flip around.
+			return swaps180[subframe]|(curframe&32);
+			}
 		}
 	case 775:			// Ship rails.
 		{
@@ -944,11 +981,41 @@ int Game_object::get_rotated_frame
 			}
 		}
 	case 781:			// Gang plank.  Odd frames are rot.
-	case 791:			// Ship.+++++++Not right.
 	case 1017:			// Ship.
 		{
 		int newframe = (curframe + quads)%4;
 		return newframe | ((newframe&1)<<5);
+		}
+	case 791:			// Ship.
+		{
+		static char swaps180[4] = {2, 3, 0, 1};
+		static char swaps90r[4] = {1, 0, 3, 2};
+		int subframe = curframe&3;
+		switch (quads)
+			{
+		case 3:			// 90 left.
+			subframe = swaps180[subframe];
+					// FALL through.
+		case 1:			// 90 right.
+			{
+			int swapped = swaps90r[subframe];
+			return (curframe&32) ? swaps180[swapped]
+					     : (swapped|32);
+			}
+		case 2:
+		default:
+			return swaps180[subframe]|(curframe&32);
+			}
+		}
+	case 796:			// Draft horse.
+		{
+					// Groups of 4:  0, 3 are N, 1, 2 S.
+		int subframe = curframe&3;
+		int curdir = (4 + 2*(((subframe>>1)&1)^(subframe&1)) -
+							((curframe>>5)&1))%4;
+		int newdir = (curdir + quads)%4;
+		static char frames[4] = {0, 33, 1, 32};
+		return (curframe&31) - subframe + frames[newdir];
 		}
 	case 840:			// Magic carpet.
 		{
@@ -1868,9 +1935,9 @@ void Chunk_cache::update_object
 					// Get lower-right corner of obj.
 	int endx = obj->get_tx();
 	int endy = obj->get_ty();
-					// Get footprint dimensions.
-	int xtiles = info.get_3d_xtiles();
-	int ytiles = info.get_3d_ytiles();
+	int frame = obj->get_framenum();// Get footprint dimensions.
+	int xtiles = info.get_3d_xtiles(frame);
+	int ytiles = info.get_3d_ytiles(frame);
 	int lift = obj->get_lift();
 	if (xtiles == 1 && ytiles == 1)	// Simplest case?
 		{
