@@ -1,3 +1,7 @@
+2000-11-27  Tristan Tarrant <nadir@users.sourceforge.net>
+	* tools/u7shpload.c: applied patch from Mark Winterrowd which
+	  fixes bugs with loading shapes with negative offsets.
+
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
 	* A quotable quote.
 
