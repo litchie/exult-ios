@@ -526,7 +526,7 @@ void Spellbook_gump::paint
 				}
 			else if (num >= 1000)	// Fake an 'infinity'.
 				{
-				strcpy(text, "oo");
+				std::strcpy(text, "oo");
 				int px = x + spell->x + numx + 2 -
 						sman->get_text_width(4, text);
 				sman->paint_text(4, text + 1, px,

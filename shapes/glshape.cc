@@ -71,6 +71,12 @@ void GL_texshape::create
 					// Linear filtering.
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// Enable texture clamping. This will get rid of all the lines everywhere
+	// -Colourless
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP);
+
 	}
 
 /*
@@ -180,12 +186,27 @@ GL_manager::GL_manager
 	glShadeModel(GL_SMOOTH);	// Smooth shading.
 	glClearColor(1, 1, 1, 0);	// Background is white.
 	glClearDepth(1);
+/*
 	glEnable(GL_DEPTH_TEST);	// Enable depth-testing.
 	glDepthFunc(GL_LEQUAL);
+*/
+	// I'm disabling depth buffer because it's not needed, at the moment.
+	// It's also causing problems. Not being cleared perhaps? or bad depth
+	// values for each object. Anyway, I'm disabling both testing and writing
+	// -Colourless
+	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	// ??
 	glEnable(GL_BLEND);		// !These two calls do the trick.
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_TEXTURE_2D);	// Enable texture-mapping.
+
+	// Just a note for Jeff, You are using Alpha Blending, but you should
+	// perhaps think about using Alpha Testing. 
+	// The functions are glAlphaFunc() and glEnable(GL_ALPHA_TEST).
+	// Normally a glAlphaFunc(GL_GEQUAL, 127) will do the trick for you
+	// -Colourless
 	}
 
 /*
