@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="07 March 2002(GMT)">
+<readme title="Exult" changed="07 April 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="07042002">
+			<header>- 07 April 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="whatis_exult"/> somehow we didn't mention Serpent Isle.</li>
+				<li><ref1 target="terms"/> added so people know what we are actually talking about.</li>
+				<li><ref1 target="exult_config"/> fixed error with save_compression_level.</li>				
+				<li><ref1 target="path_config"/> warned of spaces in paths.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="07032002">
 			<header>- 07 March 2002</header>
 			<body>
@@ -32,7 +43,7 @@
 				<ul>
 				<li><ref1 target="exult_config"/> added &lt;save_compression_level&gt; to zip up savegames,
 					&lt;waves&gt; no longer needs path set if in data dir.</li>
-				<li><ref1 target="wave_sfx"/> no longer needs paths for sfx pack (if in data dir).</li>				
+				<li><ref1 target="wave_sfx"/> no longer needs paths for sfx pack (if in data dir).</li>
 				<li><ref1 target="scaler"/> updated link To Derek Liauw's scaler page.</li>
 				</ul>
 			</body>
@@ -63,9 +74,51 @@
 					<Exult/> aims to let those people who own Ultima 7 (copyright 1993)
 					play the game on modern hardware, in as close to (or perhaps even surpassing)
 					its original splendor as is possible. You need to <strong>own</strong>
-					"Ultima 7: The Black Gate" in order to use <Exult/>, and we encourage
-					you to buy a legal copy.
+					"Ultima 7: The Black Gate" "Ultima 7: Serpent Isle" and all the add-ons in order 
+					to use <Exult/>, and we encourage you to buy a legal copy.
 				</para>
+			</body>
+		</sub>
+		<sub name="terms">
+			<header>Terms we use in regard to Exult and Ultima 7</header>
+			<body>
+				<para>
+					We are using many terms in this documentation, the FAQ and other documentation 
+					files that people may have difficulties to understand. Here we will try to give
+					some explanations.
+				</para>
+				<ul>
+					<li><strong>BG</strong>, <strong>SI</strong>, <strong>FoV</strong> 
+					or <strong>SS</strong>:<br/>
+						we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle"
+						as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.</li>
+					<li><strong>eggs</strong>:<br/>
+						these are trip-wires that cause monsters to spawn,execute scripts,play music, 
+						change weather, trigger traps, teleport when you get near them.</li>
+					<li><strong>flex files</strong>:<br/>
+						or flexes are used by the original to store the data files.
+						Also when you choose not use compressed savegames (see save_compression_level in
+						<ref target="exult_config"/>) our savegames are also "flexed".</li>
+					<li><strong>gumps</strong>:<br/>
+						the windows used in the game interface for containers, characters, menus, etc..</li>
+					<li><strong>paperdoll</strong>:<br/>
+						when pressing <key>i</key> you get the inventory display. It's the picture of your 
+						characters body (or the bodies of your party memebrs) onto which you can drag all 
+						kinds of equipment. The way this is displayed in SI is what we call 
+						<strong>paperdoll</strong>. We integrated this for BG as well. 
+						(see <extref1 target="improvements"/>).</li>
+					<li><strong>shapes</strong>:<br/>
+						shape files are the format used for storage of all graphics elements (from UI buttons 
+						to terrain features) of the games Exult supports. Shapes may contain one or more 
+						frames (a frame is a single image).</li>
+					<li><strong>snapshot</strong>:<br/>
+						see <extref1 target="whatis_snapshot"/>.</li>
+					<li><strong>usecode</strong>:<br/>
+						that's the scripting language that drives all of U7 (conversations, objects...).</li>
+					<li><strong>Exult data directory</strong>:<br/>
+						that's the directory where Exult stores its data files (exult.flx, exult_bg.flx and 
+						exult_si.flx).</li>
+				</ul>
 			</body>
 		</sub>
 	</section>	
@@ -134,8 +187,8 @@
 					<line>&lt;disk&gt;</line>
 					<line>&lt;save_compression_level&gt;</line>
 					<line>1
-						<comment>**Savegames are now compressed as zip files. 1 enables compression,
-						2 disables it.
+						<comment>**Savegames are now compressed as zip files. 0 disables compression,
+						1 enables it, 2 compresses even a bit better. Default is 1.
 						</comment></line>
 					<line>&lt;/save_compression_level&gt;</line>
 					<line>&lt;data_path&gt;</line>
@@ -411,7 +464,11 @@
 				<para>
 				    You can either use the relative (./blackgate) or absolute (c:\ultima\blackgate) path 
 				    to point to the correct directory.
-				</para>				
+				</para>
+				<para>
+					<em>Note:</em> Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\). 
+					Some people seem to have problems with that.
+				</para>
 			</body>
 		</sub>
 		<sub name="command_line">
@@ -436,7 +493,7 @@
 						don't know what you are doing.</li>
 					<li>--buildmap x<br/>
 						x = 0 shows all roofs, x = 2 pops them all.<br/>
-						You have to specify the game first (Example: exult --bg buildmap 0).<br/>						
+						You have to specify the game first (Example: exult --bg buildmap 0).<br/>
 						Builds the map of the game specified.The map is <strong>huge</strong> and in pcx 
 						format, you will need a lot of ram to even look at this map once it is build 
 						(and even that requires a lot of patience)<br/>
@@ -496,8 +553,8 @@
 					<li><strong>gm</strong></li>
 				</ol>
 				<para>
-					<strong>NOTE:</strong> Currently the conversion to GS and GS127 is not finished and the notes
-					are only mapped to General Midi.
+					<strong>NOTE:</strong> Currently the conversion to GS and GS127 is not finished and 
+					the notes are only mapped to General Midi.
 				</para>
 			</body>
 		</sub>

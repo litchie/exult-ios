@@ -1,3 +1,10 @@
+2002-04-08  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/xml: added exult_studio.xml (ExultStudio Documentation)
+		    updated docs.xml, faq.xml, docs.dtd, *.xsl
+	* docs/ReadMe.html, FAQ.html, exult_studio.txt updated.
+	  added exult_studio.html
+	* FAQ, Readme updated
+
 2002-04-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* game.cc: applied patch by Paul Hebble:
 	'savegame_path', 'static_path' and 'gamedat_path' in exult.cfg
