@@ -64,10 +64,10 @@ clean:
 install: $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
-	cp exult_studio.glade $(U7PATH)/data/exult_studio.glade
+	cp mapedit/exult_studio.glade $(U7PATH)/data/exult_studio.glade
 
 dist: $(EXEC)
 	mkdir -p $(STUDIOPATH)
 	strip $(EXEC) -o  $(STUDIOPATH)/$(EXEC)
 	mkdir -p $(STUDIOPATH)/data
-	cp exult_studio.glade $(STUDIOPATH)/data/exult_studio.glade
+	cp mapedit/exult_studio.glade $(STUDIOPATH)/data/exult_studio.glade
