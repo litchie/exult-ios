@@ -50,7 +50,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapevga.h"
 #include "Flex.h"
 #include "studio.h"
-// #include "dirbrowser.h"
 #include "utils.h"
 #include "u7drag.h"
 #include "shapegroup.h"
@@ -828,22 +827,11 @@ void ExultStudio::choose_game_path()
 			return;
 			}
 		}
-#if 0
-	GtkWidget *dirbrowser = xmms_create_dir_browser(
-					"Select game directory",
-					cwd, GTK_SELECTION_SINGLE,
-					on_choose_directory);
-	gtk_signal_connect(GTK_OBJECT(dirbrowser), "destroy", 
-		GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dirbrowser);
-        gtk_window_set_transient_for(GTK_WINDOW(dirbrowser), GTK_WINDOW(app));
-	gtk_widget_show (dirbrowser);
-#else
 	GtkFileSelection *fsel = Create_file_selection(
 					"Select game directory",
 			(File_sel_okay_fun) on_choose_directory, 0L);
 	gtk_file_selection_set_filename(fsel, cwd);
 	gtk_widget_show(GTK_WIDGET(fsel));
-#endif
 	delete [] cwd;	// Prevent leakage
 }
 
@@ -1015,10 +1003,6 @@ void ExultStudio::setup_file_list
 	)
 	{
 	GtkWidget *file_list = glade_xml_get_widget( app_xml, "file_list" );
-	
-	gtk_clist_clear( GTK_CLIST( file_list ) );
-	
-	gtk_clist_freeze( GTK_CLIST( file_list ) );
 	
 	GtkCTreeNode *shapefiles = Create_subtree( GTK_CTREE( file_list ),
 						   0,
