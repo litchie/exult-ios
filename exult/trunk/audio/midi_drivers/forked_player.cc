@@ -38,6 +38,7 @@
 using std::cerr;
 using std::endl;
 
+// NB: This function doesn't return unless execlp fails!
 static  void    playFJmidifile(const char *name)
 {
 	execlp("playmidi","-v","-v","-e",name,0);
@@ -73,28 +74,36 @@ bool	forked_player::is_playing(void)
 
 void	forked_player::start_track(XMIDIEventList *event_list,bool repeat)
 {
-	const char *name = MIDITMPFILE;
+	static char *name = 0;
+
+	if (name == 0) {
+		name = new char[19];
+		strcpy(name, "/tmp/u7midi_XXXXXX");
+		close(mkstemp(name));
+		// TODO: delete this file on exit
+	}
+
 	event_list->Write(name);
 
 	repeat_=repeat;
 #if DEBUG
 	cerr << "Starting midi sequence with forked_player" << endl;
 #endif
-        if(forked_job!=-1)
-                {
+	if(forked_job!=-1)
+	{
 #if DEBUG
-	cerr << "Stopping any running track" << endl;
+		cerr << "Stopping any running track" << endl;
 #endif
 		stop_track();
-                }
-        forked_job=fork();
-        if(!forked_job)
-                {
-		do {
-			playFJmidifile(name);
-		   } while(repeat);
-		raise(SIGKILL);
-                }
+	}
+
+	forked_job=fork();
+	if(!forked_job)
+	{
+		playFJmidifile(name); // this doesn't return if it started correctly
+		cerr << "Starting forked player failed" << endl;
+		exit(-1);
+	}
 }
 
 const	char *forked_player::copyright(void)
