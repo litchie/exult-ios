@@ -1761,6 +1761,7 @@ USECODE_INTRINSIC(center_view)
 		{
 		Tile_coord t = obj->get_abs_tile_coord();
 		gwin->center_view(t);
+		activate_cached(t);	// Mar-10-01 - For Test of Love.
 		}
 	return no_ret;
 }
