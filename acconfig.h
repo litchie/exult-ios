@@ -58,6 +58,9 @@
 /* Do we have gtk development files? */
 #undef HAVE_GTK
 
+/* Do we have zlib? (for compressed savegames) */
+#undef HAVE_ZIP_SUPPORT
+
 @BOTTOM@
 
 #ifdef ALPHA_LINUX_CXX
