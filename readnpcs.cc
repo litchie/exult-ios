@@ -43,7 +43,8 @@ void Game_window::read_npcs
 	int cnt1 = Read2(nfile);		// Get counts.
 	int cnt2 = Read2(nfile);
 cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
-	int num_npcs = cnt1 + cnt2;
+	num_npcs = cnt1 + cnt2;
+	npcs = new Actor *[num_npcs];
 	for (int i = 0; i < num_npcs; i++)
 		{
 					// Not sure about these.
@@ -88,6 +89,7 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		else			// Create NPC.
 			actor = new Npc_actor(namebuf, 
 				shape[0] + 256*(shape[1]&0x3), i, usecode);
+		npcs[i] = actor;	// Store in list.
 		actor->move(scx + cx, scy + cy, 
 				get_objects(scx + cx, scy + cy),
 				shapex, shapey, (shape[1]>>2) & 0x1f, lift);

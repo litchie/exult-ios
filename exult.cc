@@ -317,6 +317,8 @@ static void Handle_event
 #define XK_b		'b'
 #define XK_f		'f'
 #define XK_F		'F'
+#define XK_g		'g'
+#define XK_G		'G'
 #define XK_q		'q'
 #define XK_l		'l'
 #define XK_p		'p'
@@ -444,8 +446,9 @@ static void Handle_keystroke
 	int ch
 	)
 	{
-	static int shape_cnt = 254, shape_frame = 0;
+	static int shape_cnt = 0x310, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
+	static int gump_cnt = -1, gump_frame = 0;
 	gwin->end_intro();
 	switch (ch)
 		{
@@ -475,7 +478,7 @@ static void Handle_keystroke
 		gwin->paint();
 		break;
 	case XK_s:		// Show next shape.
-#if 1
+#if 0
 		shape_frame = 0;
 		if (++shape_cnt == gwin->get_num_shapes())
 			shape_cnt = 0;
@@ -484,13 +487,14 @@ static void Handle_keystroke
 		gwin->paint_shape(gwin->get_win(),
 			200, 200, shape_cnt, shape_frame);
 #else
-		face_frame = 0;
-		if (++face_cnt == gwin->get_num_faces())
-			face_cnt = 0;
-		cout << "Painting face " << face_cnt << '\n';
+		cout << "Num. gumps = " << gwin->get_num_gumps() << '\n';
+		gump_frame = 0;
+		if (++gump_cnt == gwin->get_num_gumps())
+			gump_cnt = 0;
+		cout << "Painting gump " << gump_cnt << '\n';
 		gwin->paint();
-		gwin->paint_face(gwin->get_win(),
-			200, 200, face_cnt, face_frame);
+		gwin->paint_gump(gwin->get_win(),
+			200, 200, gump_cnt, gump_frame);
 #endif
 		break;
 	case XK_S:		// Show prev. shape.

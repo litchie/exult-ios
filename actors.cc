@@ -37,9 +37,9 @@ Actor::Actor
 	(
 	char *nm, 
 	int shapenum, 
-	int fshape,
+	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
-	) : Sprite(shapenum), face_shapenum(fshape), usecode(uc)
+	) : Sprite(shapenum), npc_num(num), usecode(uc)
 	{
 	next = prev = this;
 	set_default_frames();

@@ -208,6 +208,7 @@ class Usecode_machine
 	Answers answers;		// What user can click on.
 	int saved_answers;		// # of 'saved' answer sets.
 	Answers *answer_stack[answer_stack_size];
+	Game_object *get_item(long val);// Get ->obj. from 'itemref'.
 	/*
 	 *	Built-in usecode functions:
 	 */
