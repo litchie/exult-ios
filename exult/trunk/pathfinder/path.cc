@@ -266,7 +266,7 @@ public:
 			bpos |= tb.ty;
 			/* Because #(short x short) is <= #int, we can define an injective projection,
 			** which is all we need. */
-			return apos - bpos;
+			return apos < bpos;
 		}
 	};
 
