@@ -115,7 +115,7 @@ inline void Paint_chunk_outline
 static void Paint_grid
 	(
 	Game_window *gwin,
-	Xform_palette& xform		// For transparency.
+	Xform_palette xform		// For transparency.
 	)
 	{
 	Image_window8 *win = gwin->get_win();
@@ -163,7 +163,7 @@ void Game_render::paint_terrain_only
 		}
 					// Paint tile grid if desired.
 	if (cheat.show_tile_grid())
-		Paint_grid(gwin, gwin->xforms[10]);
+		Paint_grid(gwin, Shape_manager::get_instance()->get_xform(10));
 	}
 
 /*
@@ -263,7 +263,7 @@ int Game_render::paint_map
 		}
 					// Paint tile grid if desired.
 	if (cheat.in_map_editor() && cheat.show_tile_grid())
-		Paint_grid(gwin, gwin->xforms[10]);
+		Paint_grid(gwin, Shape_manager::get_instance()->get_xform(10));
 	return light_sources;
 	}
 

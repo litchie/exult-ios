@@ -652,7 +652,7 @@ void Game_object::paint
 	{
 	int x, y;
 	gwin->get_shape_location(this, x, y);
-	gwin->paint_shape(x, y, get_shape(), is_translucent());
+	paint_shape(x, y);
 	}
 
 /*

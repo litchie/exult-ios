@@ -54,6 +54,7 @@ class Shape_frame
 	
 public:
 	friend class Game_window;
+	friend class Shape_manager;
 	friend class Shape;
 	friend class Shape_file;
 	Shape_frame() : data(0), datalen(0)

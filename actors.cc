@@ -1484,7 +1484,7 @@ void Actor::paint
 		int xoff, yoff;
 		gwin->get_shape_location(this, xoff, yoff);
 		if (flags & (1L << Obj_flags::invisible))
-			gwin->paint_invisible(xoff, yoff, get_shape());
+			paint_invisible(xoff, yoff);
 		else 
 			paint_shape(xoff, yoff);
 
@@ -1535,7 +1535,7 @@ void Actor::paint_weapon
 		yoff += weapon_y;
 
 		if (flags & (1L<<Obj_flags::invisible))
-			wsid.paint_shape(xoff, yoff, true);
+			wsid.paint_invisible(xoff, yoff);
 		else
 			wsid.paint_shape(xoff, yoff);
 		}

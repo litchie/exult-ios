@@ -224,7 +224,7 @@ bool Dragging_info::moved
 	if (obj)
 		{
 		if (obj->get_flag(Obj_flags::invisible))
-			gwin->paint_invisible(paintx, painty,obj->get_shape());
+			obj->paint_invisible(paintx, painty);
 		else
 			obj->paint_shape(paintx, painty);
 		}

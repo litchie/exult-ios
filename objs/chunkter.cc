@@ -322,7 +322,7 @@ void Chunk_terrain::render_all
 				int x, y;
 				Tile_coord tile(ctx + tilex, cty + tiley, 0);
 				gwin->get_shape_location(tile, x, y);
-				gwin->paint_shape(x, y, shape);
+				sman->paint_shape(x, y, shape);
 				}
 			}
 	}
