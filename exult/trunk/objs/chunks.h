@@ -170,8 +170,6 @@ public:
 					: ShapeID(); }
 	Image_buffer8 *get_rendered_flats()
 		{ return terrain ? terrain->get_rendered_flats() : 0; }
-					// Write out to chunk.++++++++??
-	void write_flats(unsigned char *chunk_data);
 					// Get/create cache.
 	Chunk_cache *need_cache()
 		{ 

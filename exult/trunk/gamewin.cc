@@ -920,15 +920,13 @@ char *Game_window::get_schunk_file_name
 	}
 
 /*
- *	Write out one of the "u7ifix" files, along with the given schunk in
- *	the "chunks" file.
+ *	Write out one of the "u7ifix" files.
  *
  *	Output:	Errors reported.
  */
 
-void Game_window::write_map_objects
+void Game_window::write_ifix_objects
 	(
-	std::ostream& ochunks,		// U7CHUNKS.
 	int schunk			// Superchunk # (0-143).
 	)
 	{
@@ -949,33 +947,22 @@ void Game_window::write_map_objects
 					// Store file position in table.
 			long start = ifix.tellp();
 			Write4(tptr, start);
-			unsigned char chunk_data[512];
 			Chunk_object_list *chunk = get_objects(scx + cx,
 							       scy + cy);
-					// Fill chunk with (flat) terrain.
-			chunk->write_flats(&chunk_data[0]);
 					// Restore original order (sort of).
 			Object_iterator_backwards next(chunk);
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)
-				obj->write_map(ifix, chunk_data);
-					// Write out chunk.++++++++?????
-			int chunk_num = terrain_map[cx][cy];
-			ochunks.seekp(chunk_num*512);
-			ochunks.write((char *) chunk_data, sizeof(chunk_data));
+				obj->write_ifix(ifix);
 					// Store IFIX data length.
 			Write4(tptr, ifix.tellp() - start);
 			}
 	ifix.seekp(0x80, std::ios::beg);	// Write table.
 	ifix.write((char*) &table[0], sizeof(table));
 	ifix.flush();
-	ochunks.flush();
 	int result = ifix.good();
 	if (!result)
 		throw file_write_exception(fname);
-	result = ochunks.good();
-	if (!result)
-		throw file_write_exception(U7CHUNKS);
 	}
 
 /*
@@ -1623,9 +1610,8 @@ void Game_window::read_gwin
 	}
 
 /*
- *	Write out map data (IFIXxx, U7CHUNKS) to static.
+ *	Write out map data (IFIXxx, U7CHUNKS, U7MAP) to static.
  *	Note:  This is for map-editing.
- *	++++U7MAP??
  *
  *	Output:	Errors are reported.
  */
@@ -1637,14 +1623,45 @@ void Game_window::write_map
 	U7mkdir(STATICDAT, 0755);	// Create dir if not already there.
 		// ++++Okay to have this open twice?  Or should we close
 		// 'chunks', then reopen after writing?
-	ofstream ochunks;		// Open file for chunks data.
-	U7open(ochunks, U7CHUNKS);
-					// Write each superchunk to 'static'.
-	for (int schunk = 0; schunk < 12*12 - 1; schunk++)
+	int schunk;			// Write each superchunk to 'static'.
+	for (schunk = 0; schunk < 12*12 - 1; schunk++)
 					// Only write what we've read.
 		if (schunk_read[schunk])
-			write_map_objects(ochunks, schunk);
+			write_ifix_objects(schunk);
+	ofstream ochunks;		// Open file for chunks data.
+	U7open(ochunks, U7CHUNKS);
+	int cnt = chunk_terrains.size();
+	for (int i = 0; i < cnt; i++)
+		{			// Write modified ones.
+		Chunk_terrain *ter = chunk_terrains[i];
+		if (ter && ter->is_modified())
+			{
+			ochunks.seekp(i*512);
+			unsigned char data[512];
+			ter->write_flats(data);
+			ochunks.write(data, 512);
+			}
+		}
+	if (!ochunks.good())
+		throw file_write_exception(U7CHUNKS);
 	ochunks.close();
+	std::ofstream u7map;		// Write out map.
+	U7open(u7map, U7MAP);
+	for (schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
+		{
+		int scy = 16*(schunk/12);// Get abs. chunk coords.
+		int scx = 16*(schunk%12);
+		unsigned char buf[16*16*2];
+		unsigned char *mapdata = buf;
+					// Go through chunks.
+		for (int cy = 0; cy < 16; cy++)
+			for (int cx = 0; cx < 16; cx++)
+				Write2(mapdata, terrain_map[scx+cx][scy+cy]);
+		u7map.write((char*)buf, sizeof(buf));
+		}
+	if (!u7map.good())
+		throw file_write_exception(U7MAP);
+	u7map.close();
 	}
 
 /*

@@ -1134,26 +1134,6 @@ void Chunk_object_list::gravity
 	}
 
 /*
- *	Write out to a chunk.
- */
-	
-void Chunk_object_list::write_flats
-	(
-	unsigned char *chunk_data
-	)
-	{
-	for (int ty = 0; ty < c_tiles_per_chunk; ty++)
-		for (int tx = 0; tx < c_tiles_per_chunk; tx++)
-			{
-			ShapeID id = get_flat(tx, ty);
-			int shapenum = id.get_shapenum(), 
-			    framenum = id.get_framenum();
-			*chunk_data++ = shapenum&0xff;
-			*chunk_data++ = ((shapenum>>8)&3) | (framenum<<2);
-			}
-	}
-
-/*
  *  Finds if there is a 'roof' above lift in tile (tx, ty)
  *  of the chunk. Point is taken 4 above lift
  *

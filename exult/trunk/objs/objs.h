@@ -357,7 +357,8 @@ public:
 	virtual void write_ireg(std::ostream& out)
 		{  }
 					// Write out IFIX, CHUNKS.
-	virtual void write_map(std::ostream& ifix, unsigned char *chunk_data);
+	virtual void write_ifix(std::ostream& ifix)
+		{  }
 	virtual void elements_read()	// Called when all member items read.
 		{  }
 					// Write common IREG data.
@@ -384,7 +385,7 @@ public:
 					// Create from ifix record.
 	Ifix_game_object(unsigned char *ifix) : Game_object(ifix)
 		{  }
-	virtual void write_map(std::ostream& ifix, unsigned char *chunk_data);
+	virtual void write_ifix(std::ostream& ifix);
 	};
 
 #endif
