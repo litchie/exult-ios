@@ -34,6 +34,7 @@
 #include "Gump_manager.h"
 #include "game.h"
 #include "Gump.h"
+#include "egg.h"
 
 #include "SDL_timer.h"
 
@@ -1540,5 +1541,53 @@ void Earthquake::handle_event
 		delete this;
 		}
 
+	}
+
+/*
+ *	Create a fire field that will last for about 4 seconds.
+ */
+
+Fire_field_effect::Fire_field_effect
+	(
+	Tile_coord t			// Where to create it.
+	)
+	{
+	field = gmap->create_ireg_object(895, 0);
+	field->set_flag(Obj_flags::is_temporary);
+	field->move(t.tx, t.ty, t.tz);
+	gwin->get_tqueue()->add(Game::get_ticks() + 3000 + rand()%2000, this,
+								0L);
+	}
+
+/*
+ *	Remove the field.
+ */
+
+void Fire_field_effect::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata
+	)
+	{
+	int frnum = field->get_framenum();
+	if (frnum == 0)			// All done?
+		{
+		field->remove_this();
+		eman->remove_effect(this);
+		}
+	else
+		{
+		if (frnum > 3)		// Starting to wind down?
+			{
+			((Animated_egg_object *) field)->stop_animation();
+			frnum = 3;
+			}
+		else
+			frnum--;
+		gwin->add_dirty(field);
+		field->set_frame(frnum);
+		gwin->get_tqueue()->add(curtime + gwin->get_std_delay(), 
+								this, udata);
+		}
 	}
 

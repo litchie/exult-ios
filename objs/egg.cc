@@ -977,6 +977,18 @@ void Animated_egg_object::activate
 	}
 
 /*
+ *	Stop animation.
+ */
+
+void Animated_egg_object::stop_animation
+	(
+	)
+	{
+	delete animator;
+	animator = 0;
+	}
+
+/*
  *	Apply field.
  *
  *	Output:	True to delete field.
