@@ -553,12 +553,20 @@ USECODE_INTRINSIC(update_last_created)
 		Tile_coord dest(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
 			  arr.get_elem(2).get_int_value());
+					// Skip 'blocked' check if it looks
+					//   structural. (For SI maze).
+		Shape_info& info = gwin->get_info(last_created);
 		Tile_coord pos = dest;	// Something there?
-		while (Chunk_object_list::is_blocked(pos) &&
+		while (info.get_3d_height() < 5 &&
+			Chunk_object_list::is_blocked(pos) &&
 			Game_object::find_blocking(dest) != last_created)
 			{		// Try up to ceiling.
 			if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
+				{
+//				cerr << " Failed to find space" << endl;
+				gwin->delete_object(last_created);
 				return Usecode_value(0);
+				}
 			dest.tz++;
 			pos.tz = dest.tz;
 			}
@@ -2388,4 +2396,28 @@ USECODE_INTRINSIC(a_or_an)
 	else
 		return (Usecode_value("an"));
 
+}
+
+USECODE_INTRINSIC(remove_from_area)
+{
+	// Remove_from_area(shapenum, framenum, [x,y]from, [x,y]to).
+	int shnum = parms[0].get_int_value(), frnum = parms[1].get_int_value();
+	int fromx = parms[2].get_elem(0).get_int_value(),
+	    fromy = parms[2].get_elem(1).get_int_value(),
+	    tox   = parms[3].get_elem(0).get_int_value(),
+	    toy   = parms[3].get_elem(1).get_int_value();
+	Rectangle area(fromx, fromy, tox - fromx + 1, toy - fromy + 1);
+	if (area.w <= 0 || area.h <= 0)
+		return no_ret;
+	Game_object_vector vec;		// Find objects.
+	Chunk_object_list::find_in_area(vec, area, shnum, frnum);
+					// Remove them.
+	for (Game_object_vector::iterator it = vec.begin(); it != vec.end();
+								it++)
+		{
+		Game_object *obj = *it;
+		gwin->add_dirty(obj);
+		gwin->delete_object(obj);
+		}
+	return no_ret;
 }

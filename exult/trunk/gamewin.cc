@@ -1239,7 +1239,8 @@ Ireg_game_object *Game_window::create_ireg_object
 	{
 	if (info.is_field())		// (These are all animated.)
 		{			// Check shapes.
-		if (shnum == 895)	// Fire.
+		if (shnum == 895 ||	// Fire.
+		    shnum == 561)	// SI - blue flame.
 			return new Field_object(shnum, frnum, tilex, tiley,
 					lift, Egg_object::fire_field);
 		else if (shnum == 900)	// Poison.
