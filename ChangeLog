@@ -1,3 +1,9 @@
+2001-11-23  Dominik Reichardt <gigdr@tesionmail.de>
+	* Faq, Readme deleted
+	* docs/ added FAQ.html and ReadMe.html
+	* docs/images/ added back.gif and exult_logo.gif for the html files
+	* docs/xml: updated faq.xml, docs.xml, html.xsl, text.xsl
+
 2001-11-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Midi.h: is_track_playing didn't check if midi_device == NULL (Thanks Michael Z.)
 
