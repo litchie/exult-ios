@@ -27,15 +27,15 @@
 #include <string>
 #include <vector>
 #ifdef MACOS
-  #include "utils.h"
   using Metrowerks::hash_map;
-#else
-  #include "files/utils.h"
 #endif
-#include "imagebuf.h"
-#include "objs.h"
+
+#include "utils.h"
+#include "exult_constants.h"
 #include "palette.h"
 #include "vgafile.h"
+
+extern const int tiles_per_chunk;
 
 class Game_window;
 class Image_window8;
@@ -48,20 +48,10 @@ struct str_int_pair
 	int  num;
 };
 
-class ExultMenu {
-private:
-	Game_window *gwin;
-	Image_buffer8 *ibuf;
-	Vga_file exult_flx;
-	Palette pal;
-	int topx, topy, centerx, centery, menuy;
-	void calc_win();
-	Mouse *menu_mouse;
-public:
-	ExultMenu(Game_window *gw);
-	~ExultMenu();
-	Exult_Game run();
-	void setup();
+enum Exult_Game {
+	NONE,
+	BLACK_GATE,
+	SERPENT_ISLE
 };
 
 class Game {

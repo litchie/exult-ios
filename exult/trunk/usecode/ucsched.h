@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tqueue.h"
 #include "objs.h"
 #include "egg.h"
-#include "gamewin.h"
+//#include "gamewin.h"
 #include "actors.h"
 
 /*
@@ -84,13 +84,9 @@ public:
 		}
 	int is_activated()		// Started already?
 		{ return i > 0; }
-	void activate_egg(Usecode_machine *usecode, Game_object *e, int type)
-		{
-		if (e && e->is_egg() && (type == -1 || 
-				((Egg_object *) e)->get_type() == type))
-			((Egg_object *) e)->activate(usecode,
-				usecode->gwin->get_main_actor(), 1);
-		}
+	inline void activate_egg(Usecode_machine *usecode, 
+				 Game_object *e, int type);
+
 	static int get_count()
 		{ return count; }
 					// Find for given item.

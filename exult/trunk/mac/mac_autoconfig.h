@@ -36,9 +36,6 @@
 /* Was debugging selected from configure? */
 #define DEBUG 1
 
-/* Multiple inclusion preventer. Is there a cleaner way to do this in autconf files? */
-#define AUTOCONFIGURED 1
-
 /* Do we appear to have a runnable copy of Timidity in our path? */
 /* #undef HAVE_TIMIDITY_BIN */
 

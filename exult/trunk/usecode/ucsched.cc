@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "barge.h"
 #include "game.h"
 #include "frameseq.h"
+#include "gamewin.h"
 
 #include <iostream>
 #include <iomanip>
@@ -78,6 +79,15 @@ static void Activate_cached
 		}
 	}
 
+
+inline void Scheduled_usecode::activate_egg(Usecode_machine *usecode,
+				     Game_object *e, int type)
+{
+	if (e && e->is_egg() && (type == -1 || 
+			((Egg_object *) e)->get_type() == type))
+		((Egg_object *) e)->activate(usecode,
+			usecode->gwin->get_main_actor(), 1);
+}
 
 /*
  *	Execute eggs.

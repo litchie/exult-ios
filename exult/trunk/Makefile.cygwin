@@ -14,7 +14,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw32 automatically defines WIN32
-CPPFLAGS=-DVERSION=\"0.90alpha1\" -DEXULT_DATADIR=\"data\" -g3 -DDEBUG -DAUTOCONFIGURED -DNO_INTRO \
+CPPFLAGS=-DVERSION=\"0.90alpha1\" -DEXULT_DATADIR=\"data\" -g3 -DDEBUG
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf \
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
@@ -31,7 +31,7 @@ LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
 EXEC=exult.exe
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	args.o bggame.o browser.o cheat.o  \
-	combat.o delobjs.o dir.o drag.o effects.o exult.o \
+	combat.o delobjs.o dir.o drag.o effects.o exult.o exultmenu.o \
 	game.o gameclk.o gamedat.o gamerend.o gamewin.o \
 	menulist.o mouse.o npcnear.o npctime.o palette.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
