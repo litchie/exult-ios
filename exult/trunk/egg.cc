@@ -292,7 +292,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			switch (data1&0xff)
 				{
 			case 0:		// Back to normal.
-				gwin->remove_all_effects(); // For now.
+				gwin->remove_weather_effects();
 				break;
 			case 2:		// Storm.
 				gwin->add_effect(new Storm_effect(len));

@@ -484,6 +484,7 @@ public:
 					// Remove text item & delete it.
 	void remove_effect(Special_effect *txt);
 	void remove_all_effects();
+	void remove_weather_effects();	// Remove just the weather.
 					// Handle a double-click in window.
 	void double_clicked(int x, int y);
 	void init_faces();		// Clear out face list.
