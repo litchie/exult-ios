@@ -279,7 +279,8 @@ public:
 	virtual void set_schedule_type(int new_schedule_type, 
 						Schedule *newsched = 0);
 					// Change to new schedule at loc
-	virtual void set_schedule_and_loc(int new_schedule_type, Tile_coord dest);
+	virtual void set_schedule_and_loc(int new_schedule_type, 
+					Tile_coord dest, int delay = -1);
 	virtual int get_schedule_type() const
 		{ return schedule_type; }
 					// Get/set 'alignment'.
@@ -468,7 +469,8 @@ public:
 	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
 					// Update schedule for new 3-hour time.
-	void update_schedule(Game_window *gwin, int hour3, int backwards = 0);
+	void update_schedule(Game_window *gwin, int hour3, int backwards = 0,
+							int delay = -1);
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.

@@ -1653,9 +1653,13 @@ USECODE_INTRINSIC(nap_time)
 			show_npc_face(actval, frval);
 			conv->show_npc_message(msgs[rand()%nummsgs]);
 			remove_npc_face(actval);
+			gwin->get_main_actor()->set_schedule_type(
+						Schedule::follow_avatar);
 			return no_ret;
 			}
 		}
+					// Give him a chance to get there.
+	Wait_for_arrival(gwin->get_main_actor(), bed->get_abs_tile_coord());
 	call_usecode(0x622, bed, double_click);
 	return(no_ret);
 }

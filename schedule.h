@@ -269,6 +269,8 @@ class Sleep_schedule : public Schedule
 	{
 	Tile_coord floorloc;		// Where NPC was standing before.
 	Game_object *bed;		// Bed being slept on, or 0.
+	int state;
+	int spread0, spread1;		// Range of bedspread frames.
 public:
 	Sleep_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
@@ -462,7 +464,8 @@ class Walk_to_schedule : public Schedule
 					// Set to walk off screen.
 	void walk_off_screen(Rectangle& screen, Tile_coord& goal);
 public:
-	Walk_to_schedule(Actor *n, Tile_coord d, int new_sched);
+	Walk_to_schedule(Actor *n, Tile_coord d, int new_sched,
+							int delay = -1);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void im_dormant();	// Just went dormant.
 	};
