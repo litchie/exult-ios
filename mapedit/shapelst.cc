@@ -831,7 +831,7 @@ time_t Shape_chooser::export_tiled_png
 		Shape_frame *frame = shape->get_frame(f);
 		if (!frame)
 			continue;	// We'll just leave empty ones blank.
-		if (!frame->is_rle() || frame->get_width() != 8 ||
+		if (frame->is_rle() || frame->get_width() != 8 ||
 					frame->get_height() != 8)
 			{
 			Alert("Can only tile 8x8 flat shapes");
@@ -905,6 +905,8 @@ void Shape_chooser::edit_shape
 	if (!tiles)			// One frame?
 		{
 		mtime = export_png(fname);
+		if (!mtime)
+			return;
 					// Store info. about file.
 		editing_files.push_back(new Editing_file(
 		    file_info->get_basename(), fname, mtime, shnum, frnum));
@@ -912,6 +914,8 @@ void Shape_chooser::edit_shape
 	else
 		{
 		mtime = export_tiled_png(fname, tiles, bycols);
+		if (!mtime)
+			return;
 		editing_files.push_back(new Editing_file(
 			file_info->get_basename(), fname, mtime, shnum,
 						tiles, bycols));
@@ -1279,7 +1283,8 @@ void Shape_chooser::new_shape
 	int shnum = selected >= 0 ? info[selected].shapenum : 0,
 	    frnum = selected >= 0 ? info[selected].framenum : 0;
 	GtkWidget *spin = glade_xml_get_widget(xml, "new_shape_num");
-	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(spin));
+	GtkAdjustment *adj = gtk_spin_button_get_adjustment(
+						GTK_SPIN_BUTTON(spin));
 	adj->upper = 2047;		// Just a big number.
 	gtk_adjustment_changed(adj);
 	Vga_file *ifile = file_info->get_ifile();
@@ -1298,7 +1303,7 @@ void Shape_chooser::new_shape
 		}
 	gtk_adjustment_set_value(adj, shstart);
 	spin = glade_xml_get_widget(xml, "new_shape_nframes");
-	adj = gtk_range_get_adjustment(GTK_RANGE(spin));
+	adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(spin));
 	bool flat = shnum < 0x96 && file_info == studio->get_vgafile();
 	if (flat)
 		adj->upper = 31;
@@ -1671,6 +1676,33 @@ void Shape_chooser::on_shapes_popup_edit_activate
 	((Shape_chooser *) udata)->edit_shape();
 	}
 
+void Shape_chooser::on_shapes_popup_edtiles_activate
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	Shape_chooser *ch = (Shape_chooser *) udata;
+	if (ch->selected < 0)
+		return;			// Shouldn't happen.
+	ExultStudio *studio = ExultStudio::get_instance();
+	GladeXML *xml = studio->get_xml();
+	GtkWidget *win = glade_xml_get_widget(xml, "export_tiles_window");
+	gtk_window_set_modal(GTK_WINDOW(win), true);
+	gtk_object_set_user_data(GTK_OBJECT(win), ch);
+					// Get current selection.
+	int shnum = ch->info[ch->selected].shapenum;
+	Vga_file *ifile = ch->file_info->get_ifile();
+	int nframes = ifile->get_num_frames(shnum);
+	GtkWidget *spin = glade_xml_get_widget(xml, "export_tiles_count");
+	GtkAdjustment *adj = gtk_spin_button_get_adjustment(
+						GTK_SPIN_BUTTON(spin));
+	adj->lower = 1;
+	adj->upper = nframes;
+	gtk_adjustment_changed(adj);
+	gtk_widget_show(win);
+	}
+
 static void on_shapes_popup_import
 	(
 	GtkMenuItem *item,
@@ -1711,6 +1743,23 @@ static void on_shapes_popup_new_shape
 	{
 	((Shape_chooser *) udata)->new_shape();
 	}
+
+/*
+ *	Callback for edit-tiles 'okay'.
+ */
+C_EXPORT void
+on_export_tiles_okay_clicked           (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(button));
+	Shape_chooser *chooser = (Shape_chooser *)
+				gtk_object_get_user_data(GTK_OBJECT(win));
+	ExultStudio *studio = ExultStudio::get_instance();
+	int tiles = studio->get_spin("export_tiles_count");
+	bool bycol = studio->get_toggle("tiled_by_columns");
+	chooser->edit_shape(tiles, bycol);
+	gtk_widget_hide(win);
+}
 
 /*
  *	Handle a shape dropped on our draw area.
@@ -1835,6 +1884,7 @@ GtkWidget *Shape_chooser::create_popup
 	(
 	)
 	{
+	ExultStudio *studio = ExultStudio::get_instance();
 	if (popup)			// Clean out old.
 		gtk_widget_destroy(popup);
 	popup = gtk_menu_new();		// Create popup menu.
@@ -1846,7 +1896,7 @@ GtkWidget *Shape_chooser::create_popup
 	add_group_submenu(popup);
 	if (selected >= 0)		// Add editing choices.
 		{
-		if (ExultStudio::get_instance()->get_image_editor())
+		if (studio->get_image_editor())
 			{
 			mitem = gtk_menu_item_new_with_label("Edit...");
 			gtk_widget_show(mitem);
@@ -1854,6 +1904,18 @@ GtkWidget *Shape_chooser::create_popup
 			gtk_signal_connect(GTK_OBJECT(mitem), "activate",
 				GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate),
 								 this);
+			if (info[selected].shapenum < 0x96 && 
+					file_info == studio->get_vgafile())
+				{
+				mitem = gtk_menu_item_new_with_label(
+							"Edit tiled...");
+				gtk_widget_show(mitem);
+				gtk_menu_append(GTK_MENU(popup), mitem);
+				gtk_signal_connect(GTK_OBJECT(mitem), 
+					"activate", GTK_SIGNAL_FUNC(
+					on_shapes_popup_edtiles_activate),
+								this);
+				}
 			}
 					// Separator.
 		mitem = gtk_menu_item_new();
