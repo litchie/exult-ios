@@ -1,3 +1,6 @@
+2001-02-03  Max Horn  <max@quendi.de>
+	* actors.cc: "fixed" Marsten crash (teleport code was buggy)
+
 2001-02-01  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Mass-death spell now works.
