@@ -147,6 +147,7 @@ class Map_chunk : public Game_singletons
 					// # light sources in chunk.
 	unsigned char dungeon_lights, non_dungeon_lights;
 	unsigned char cx, cy;		// Absolute chunk coords. of this.
+	bool selected;			// For 'select_chunks' mode.
 	void add_dungeon_levels(Rectangle& tiles, unsigned int lift);
 	void add_dependencies(Game_object *newobj,
 					class Ordering_info& newinfo);
@@ -180,6 +181,10 @@ public:
 		{ return cx; }
 	int get_cy() const
 		{ return cy; }
+	void set_selected(bool tf)
+		{ selected = tf; }
+	bool is_selected() const
+		{ return selected; }
 	int get_dungeon_lights() const	// Get #lights.
 		{ return dungeon_lights; }
 	int get_non_dungeon_lights() const

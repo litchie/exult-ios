@@ -272,6 +272,8 @@ void Mouse::set_speed_cursor()
 #endif
 	case Cheat::combo_pick:
 	    cursor = greenselect; break;
+	case Cheat::select_chunks:
+	    cursor = greenselect; break;	// Nice to have somethin else.
 	}
     }
     else if (Combat::is_paused())

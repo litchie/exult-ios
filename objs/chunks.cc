@@ -616,7 +616,7 @@ Map_chunk::Map_chunk
 	    dungeon_levels(0), cache(0), roof(0),
 	    dungeon_lights(0), non_dungeon_lights(0),
 	    cx(chunkx), cy(chunky), from_below(0), from_right(0),
-	    from_below_right(0)
+	    from_below_right(0), selected(false)
 	{
 	}
 
