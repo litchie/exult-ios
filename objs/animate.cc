@@ -120,7 +120,8 @@ void Object_sfx::set_obj
 
 					// Start playing, and repeat.
 		sfx = Audio::get_ptr()->play_sound_effect(sfxnum, MIX_MAX_VOLUME, dir, -1);
-		Mix_Volume(sfx, volume);
+		if(sfx >= 0)
+			Mix_Volume(sfx, volume);
 		}
 	else				// Set new volume, position.
 		{
