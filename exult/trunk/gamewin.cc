@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "usecode.h"
 #include "npcnear.h"
+#include "gumps.h"
 
 					// THE game window:
 Game_window *Game_window::game_window = 0;
@@ -685,7 +686,7 @@ void Game_window::paint
 		paint_text(txt);
 					// Draw gumps.
 	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
-		paint_gump(gmp);
+		gmp->paint(this);
 	win->clear_clip();
 	painted = 1;
 	}
@@ -709,20 +710,6 @@ void Game_window::paint_text
 			(txt->cx - chunkx)*chunksize + txt->sx*tilesize,
 		        (txt->cy - chunky)*chunksize + txt->sy*tilesize);
 	painted = 1;
-	}
-
-/*
- *	Paint a gump and its contents.
- */
-
-void Game_window::paint_gump
-	(
-	Gump_object *gmp
-	)
-	{
-	paint_gump(win, gmp->get_x(), gmp->get_y(),
-				gmp->get_shapenum(), gmp->get_framenum());
-	//+++++++++++++++elements
 	}
 
 /*
@@ -1248,11 +1235,11 @@ void Game_window::double_clicked
 		{
 		Game_object *obj = found[i];
 cout << "Object name is " << obj->get_name() << '\n';
-		enum Game_mode save_mode = mode;
 		init_faces();		// Be sure face list is empty.
 		obj->activate(usecode);
 		npc_prox->wait(4);	// Delay "barking" for 4 secs.
-		mode = save_mode;
+		if (mode == conversation)
+			mode = normal;
 		paint();//????Not sure+++++++++
 		}
 	}
@@ -1500,27 +1487,52 @@ int Game_window::conversation_choice
 
 void Game_window::show_gump
 	(
-	Game_object *obj,		// Container gump represents.
+	Container_game_object *obj,	// Container gump represents.
 	int shapenum			// Shape # in 'gumps.vga'.
 	)
 	{
-	extern void Gump_events();
-	int x = get_width()/2, y = get_height()/2;
+	static int cnt = 0;		// For staggering them.
+	Gump_object *gmp;		// See if already open.
+	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
+		if (gmp->get_container() == obj)
+			break;
+	if (gmp)			// Found it?
+		{			// Move it to end.
+		if (gmp->get_next())
+			{
+			gmp->remove_from_chain(open_gumps);
+			gmp->append_to_chain(open_gumps);
+			}
+		paint();
+		return;
+		}
+	int x = (1 + cnt)*get_width()/10, 
+	    y = (1 + cnt)*get_height()/10;
 	Gump_object *new_gump = new Gump_object(obj, x, y, shapenum);
 					// Paint new one last.
 	new_gump->append_to_chain(open_gumps);
+	if (++cnt == 8)
+		cnt = 0;
 	paint();			// Show everything.
-	if (open_gumps == new_gump)	// First one?
+	mode = gump;			// Special mode.
+	}
+
+/*
+ *	End gump mode.
+ */
+
+void Game_window::end_gump_mode
+	(
+	)
+	{
+	while (open_gumps)		// Remove all gumps.
 		{
-		Game_mode savemode = mode;
-		mode = gump;
-		Gump_events();		// Go into gump mode.
-					// For now, this seems right...
-		new_gump->remove_from_chain(open_gumps);
-		paint();
-		mode = savemode;
+		Gump_object *gmp = open_gumps;
+		open_gumps = gmp->get_next();
+		delete gmp;
 		}
-					// Else we're already in it.
+	mode = normal;
+	paint();
 	}
 
 /*

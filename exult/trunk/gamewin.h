@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vgafile.h"
 #include "gameclk.h"
 
+class Gump_object;
 class Font_face;
 class Slist;
 class Usecode_machine;
@@ -229,6 +230,8 @@ public:
 		if (shape)
 			paint_shape(iwin, xoff, yoff, shape);
 		}
+	void paint_shape(int xoff, int yoff, int shapenum, int framenum)
+		{ paint_shape(win, xoff, yoff, shapenum, framenum); }
 					// A "face" is used in conversations.
 	void paint_face(Image_window *iwin, int xoff, int yoff,
 						int shapenum, int framenum)
@@ -238,12 +241,11 @@ public:
 			paint_shape(iwin, xoff, yoff, shape);
 		}
 					// A "gump" is an open container.
-	void paint_gump(Image_window *iwin, int xoff, int yoff,
-						int shapenum, int framenum)
+	void paint_gump(int xoff, int yoff, int shapenum, int framenum)
 		{
 		Shape_frame *shape = gumps.get_shape(shapenum, framenum);
 		if (shape)
-			paint_shape(iwin, xoff, yoff, shape);
+			paint_shape(win, xoff, yoff, shape);
 		}
 					// Read encoded show into window.
 					// Read encoded show into window.
@@ -275,8 +277,6 @@ public:
 		{ paint(0, 0, get_width(), get_height()); }
 					// Paint a bit of text.
 	void paint_text(Text_object *txt);
-					// Paint an open container.
-	void paint_gump(Gump_object *gmp);
 					// Paint "flat" scenery in a chunk.
 	void paint_chunk_flats(int cx, int cy, int xoff, int yoff);
 					// Paint objects in given chunk at
@@ -318,7 +318,8 @@ public:
 	void show_avatar_choices(int num_choices, char **choices);
 					// User clicked on a choice.
 	int conversation_choice(int x, int y);
-	void show_gump(Game_object *obj, int shapenum);
+	void show_gump(Container_game_object *obj, int shapenum);
+	void end_gump_mode();		// Remove gumps from screen.
 					// Queue up npcs in range of chunks.
 	void add_nearby_npcs(int from_cx, int from_cy,
 						int stop_cx, int stop_cy);
