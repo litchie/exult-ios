@@ -1368,7 +1368,10 @@ int Actor::drop
 	Game_object *obj
 	)
 	{
-	return (add(obj));		// We'll take it.
+	if (get_party_id() >= 0)	// In party?
+		return (add(obj));	// We'll take it.
+	else
+		return 0;
 	}
 
 /*
@@ -3405,40 +3408,27 @@ Monster_actor *Monster_info::create
 	Game_window *gwin = Game_window::get_game_window();
 	Chunk_object_list *olist = gwin->get_objects(chunkx, chunky);
 	monster->movef(0, olist, tilex, tiley, 0, lift);
-#if 0
-					// ++++++For now:
-	if (flags & ((1<<walk)|(1<<fly)|(1<<swim)|(1<<ethereal)))
+					// Get equipment.
+	if (equip_offset && equip_offset - 1 < equip_cnt)
 		{
-		Game_object_vector paths;
-					// Want to set initial 'bunny'.
-		if (Game::get_game_type() == SERPENT_ISLE &&
-		    monster->find_nearby(paths, 607, 8, 0) > 0)
-			monster->set_schedule_type(Schedule::patrol);
-		else
-			monster->set_schedule_type(Schedule::loiter);
+		Equip_record& rec = equip[equip_offset - 1];
+		for (size_t i = 0;
+			i < sizeof(equip->elements)/sizeof(equip->elements[0]);
+							i++)
+			{		// Give equipment.
+			Equip_element& elem = rec.elements[i];
+			if (!elem.shapenum || 1 + rand()%100 > 
+							elem.probability)
+				continue;// You lose.
+			int frnum = (elem.shapenum == 377) ? 
+					Find_monster_food(shapenum) : 0;
+			monster->add_quantity(elem.quantity, elem.shapenum, 
+						c_any_qual, frnum);
+			}
 		}
-	else				// For the wounded men in bed:
-		monster->set_schedule_type(Schedule::wait);
-#endif
-	if (sched < 0)
+	if (sched < 0)			// Set sched. AFTER equipping.
 		sched = (int) Schedule::loiter;
 	monster->set_schedule_type(sched);
-					// Get equipment.
-	if (!equip_offset || equip_offset - 1 >= equip_cnt)
-		return (monster);	// Out of range.
-	Equip_record& rec = equip[equip_offset - 1];
-	for (size_t i = 0;
-			i < sizeof(equip->elements)/sizeof(equip->elements[0]);
-			i++)
-		{			// Give equipment.
-		Equip_element& elem = rec.elements[i];
-		if (!elem.shapenum || 1 + rand()%100 > elem.probability)
-			continue;	// You lose.
-		int frnum = (elem.shapenum == 377) ? 
-					Find_monster_food(shapenum) : 0;
-		monster->add_quantity(elem.quantity, elem.shapenum, c_any_qual,
-								frnum);
-		}
 	return (monster);
 	}
 /*

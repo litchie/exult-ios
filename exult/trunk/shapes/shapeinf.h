@@ -58,12 +58,12 @@ public:
 	int get_ammo_consumed()
 		{ return ammo > 0 ? ammo : 0; }
 	int is_thrown()
-		{ return ammo == -3; }
+		{ return ammo == -3 && (range2&7) != 0; }
 	int get_striking_range()
 		{ return range1 < 3 ? range1 : 0; }
 	int get_projectile_range()
 		{ return range1 >= 3 ? (range1 + 3) 
-			: (is_thrown() ? (range2 + 3) : 0); }
+			: (is_thrown() ? ((range2&7) + 8 + 3) : 0); }
 	int get_projectile()
 		{ return projectile; }
 	int get_usecode()

@@ -212,6 +212,7 @@ void Combat_schedule::approach_foe
 	if (!opponent && !(opponent = find_foe()))
 		{
 		failures++;
+		npc->set_action(new Null_action());
 		npc->start(200, 200);	// Try again in 1/5 sec.
 		return;			// No one left to fight.
 		}
@@ -249,6 +250,7 @@ void Combat_schedule::approach_foe
 				pos, opponent->get_abs_tile_coord(), &cost))
 			{
 			delete path;	// Really failed.  Try again in .5 sec.
+			npc->set_action(new Null_action());
 			npc->start(200, 500);
 			failures++;
 			return;
@@ -331,6 +333,7 @@ void Combat_schedule::start_strike
 			if (Swap_weapons(npc))
 				set_weapon_info();
 			state = approach;
+			npc->set_action(new Null_action());
 			npc->start(200, 500);
 			return;
 			}
@@ -377,7 +380,8 @@ void Combat_schedule::set_weapon_info
 	if (!info)
 		{
 		projectile_shape = ammo_shape = 0;
-		projectile_range = strike_range = 0;
+		projectile_range = 0;
+		strike_range = 1;	// Can always bite.
 		is_thrown = false;
 		}
 	else
@@ -477,6 +481,7 @@ static bool Boomerangs
 	)
 	{
 	if (shapenum == 552 ||		// Magic axe.
+	    shapenum == 555 ||		// Hawk.
 	    shapenum == 605 ||		// Boomerang.
 	    shapenum == 557)		// Juggernaut hammer.
 		return true;
@@ -497,6 +502,7 @@ void Combat_schedule::now_what
 		return;
 	if (npc->get_flag(Obj_flags::asleep))
 		{
+		npc->set_action(new Null_action());
 		npc->start(200, 1000);	// Check again in a second.
 		return;
 		}
@@ -547,6 +553,7 @@ void Combat_schedule::now_what
 				}
 			}
 		state = approach;
+		npc->set_action(new Null_action());
 		npc->start(200);	// Back into queue.
 		break;
 	case fire:			// Range weapon.
@@ -572,6 +579,7 @@ void Combat_schedule::now_what
 			gwin->add_effect(new Projectile_effect(npc, opponent,
 				ashape, weapon_shape));
 		state = approach;
+		npc->set_action(new Null_action());
 		npc->start(200);	// Back into queue.
 		break;
 		}
