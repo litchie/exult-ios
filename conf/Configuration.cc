@@ -32,19 +32,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
-#ifdef HAVE_SSTREAM
-	#include <sstream>
-	using std::ostringstream;
-#else
-	#include <strstream>
-	using std::ends;
-	using std::ostrstream;
-	typedef ostrstream ostringstream;
-	// NOTE: strstreams need to be 'ends' terminated, whilst stringstreams don't.
-#endif
-
-
+using std::ostringstream;
 using std::atoi;
 using std::cerr;
 using std::endl;
