@@ -159,6 +159,8 @@ static void set_resolution (int new_res, bool save);
 #ifdef USE_EXULTSTUDIO
 static void Move_dragged_shape(int shape, int frame, int x, int y,
 				int prevx, int prevy, bool show);
+static void Move_dragged_combo(int xtiles, int ytiles, int tiles_right,
+	int tiles_below, int x, int y, int prevx, int prevy, bool show);
 static void Drop_dragged_shape(int shape, int frame, int x, int y, void *d);
 static void Drop_dragged_chunk(int chunknum, int x, int y, void *d);
 static void Drop_dragged_combo(int cnt, U7_combo_data *combo, 
@@ -658,7 +660,7 @@ static void Init
         xfd = ConnectionNumber(info.info.x11.display);
 	Server_init();			// Initialize server (for map-editor).
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
-		info.info.x11.window, Move_dragged_shape, 
+		info.info.x11.window, Move_dragged_shape, Move_dragged_combo,
 				Drop_dragged_shape, Drop_dragged_chunk, 
 							Drop_dragged_combo);
 #else
@@ -1581,15 +1583,17 @@ void BuildGameMap()
 #ifdef USE_EXULTSTUDIO
 
 /*
- *	Show where a shape dragged from a shape-chooser will go.
+ *	Show a grid being dragged.
  */
 
-static void Move_dragged_shape
+static void Move_grid
 	(
-	int shape, int frame,		// What to create.
 	int x, int y,			// Mouse coords. within window.
 	int prevx, int prevy,		// Prev. coords, or -1.
-	bool show			// Blit window.
+	bool ireg,			// A single IREG object?
+	int xtiles, int ytiles,		// Dimension of grid to show.
+	int tiles_right, int tiles_below// # tiles to show to right of and
+					//   below (x, y).
 	)
 	{
 	int scale = gwin->get_win()->get_scale();
@@ -1600,10 +1604,8 @@ static void Move_dragged_shape
 	y += lift*4 - 1;
 	int tx = x/c_tilesize;		// Figure tile on ground.
 	int ty = y/c_tilesize;
-	Shape_info& info = gwin->get_info(shape);
-					// Get footprint in tiles.
-	int xtiles = info.get_3d_xtiles(frame),
-	    ytiles = info.get_3d_ytiles(frame);
+	tx += tiles_right;
+	ty += tiles_below;
 	if (prevx != -1)		// See if moved to a new tile.
 		{
 		prevx /= scale;
@@ -1623,10 +1625,6 @@ static void Move_dragged_shape
 		gwin->add_dirty(r);
 		gwin->paint_dirty();
 		}
-	int sclass = info.get_shape_class();
-					// Is it an ireg (changeable) obj?
-	bool ireg = (sclass != Shape_info::unusable &&
-		     sclass != Shape_info::building);
 					// First see if it's a gump.
 	if (ireg && gwin->get_gump_man()->find_gump(x, y))
 		return;			// Skip if so.
@@ -1644,6 +1642,49 @@ static void Move_dragged_shape
 				(tx + X)*c_tilesize, ty*c_tilesize);
 	win->clear_clip();
 	gwin->set_painted();
+	}
+
+/*
+ *	Show where a shape dragged from a shape-chooser will go.
+ */
+
+static void Move_dragged_shape
+	(
+	int shape, int frame,		// What to create.
+	int x, int y,			// Mouse coords. within window.
+	int prevx, int prevy,		// Prev. coords, or -1.
+	bool show			// Blit window.
+	)
+	{
+	Shape_info& info = gwin->get_info(shape);
+					// Get footprint in tiles.
+	int xtiles = info.get_3d_xtiles(frame),
+	    ytiles = info.get_3d_ytiles(frame);
+	int sclass = info.get_shape_class();
+					// Is it an ireg (changeable) obj?
+	bool ireg = (sclass != Shape_info::unusable &&
+		     sclass != Shape_info::building);
+	Move_grid(x, y, prevx, prevy, ireg, xtiles, ytiles, 0, 0);
+	if (show)
+		gwin->show();
+	}
+
+/*
+ *	Show where a shape dragged from a shape-chooser will go.
+ */
+
+static void Move_dragged_combo
+	(
+	int xtiles, int ytiles,		// Dimensions in tiles.
+	int tiles_right,		// Tiles right of & below hot-spot.
+	int tiles_below,
+	int x, int y,			// Mouse coords. within window.
+	int prevx, int prevy,		// Prev. coords, or -1.
+	bool show			// Blit window.
+	)
+	{
+	Move_grid(x, y, prevx, prevy, false, xtiles, ytiles, tiles_right,
+							tiles_below);
 	if (show)
 		gwin->show();
 	}
@@ -1786,6 +1827,9 @@ void Drop_dragged_combo
 		cheat.toggle_map_editor();
 	x /= scale;			// Watch for scaled window.
 	y /= scale;
+	int at_lift = cheat.get_edit_lift();
+	x += at_lift*4 - 1;		// Take lift into account, round.
+	y += at_lift*4 - 1;
 					// Figure tile at mouse pos.
 	int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles,
 	    ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
@@ -1795,7 +1839,7 @@ void Drop_dragged_combo
 					// Figure new tile coord.
 		int ntx = (tx + elem.tx)%c_num_tiles, 
 		    nty = (ty + elem.ty)%c_num_tiles, 
-		    ntz = cheat.get_edit_lift() + elem.tz;
+		    ntz = at_lift + elem.tz;
 		if (ntz < 0)
 			ntz = 0;
 		ShapeID sid(elem.shape, elem.frame);
@@ -1807,7 +1851,6 @@ void Drop_dragged_combo
 			Chunk_terrain *ter = chunk->get_terrain();
 			ntx %= c_tiles_per_chunk; nty %= c_tiles_per_chunk;
 			ter->set_flat(ntx, nty, sid);
-			gwin->set_all_dirty();
 			continue;
 			}
 		bool ireg;		// Create object.
@@ -1816,6 +1859,7 @@ void Drop_dragged_combo
 		newobj->set_invalid();	// Not in world.
 		newobj->move(ntx, nty, ntz);
 		}
+	gwin->set_all_dirty();		// For now, until we clear out grid.
 	}
 
 #endif
