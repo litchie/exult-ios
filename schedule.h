@@ -183,9 +183,10 @@ class Waiter_schedule : public Schedule
 	Tile_coord startpos;		// Starting position.
 	Actor *customer;		// Current customer.
 	Slist customers;		// List of customers.
-	Vector tables;			// Prep. tables.
+	Vector prep_tables;		// Prep. tables.
+	Vector eating_tables;		// Tables with chairs around them.
 	void get_customer();
-	void find_prep_table(int shapenum);
+	void find_tables(int shapenum);
 	int find_serving_spot(Tile_coord& spot);
 public:
 	Waiter_schedule(Actor *n);
