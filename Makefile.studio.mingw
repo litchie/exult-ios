@@ -47,8 +47,8 @@ EXP_FILE=exult_studio.exp
 
 SERVER_OBJS=objserial.o servemsg.o servewin32.o
 
-MAPEDIT_OBJS=chunklst.o combo.o eggedit.o compile.o execbox.o exult_studio.o locator.o npcedit.o \
-	objbrowse.o objedit.o paledit.o shapedraw.o shapefile.o shapegroup.o \
+MAPEDIT_OBJS=chunklst.o combo.o eggedit.o compile.o execbox.o exult_studio.o locator.o maps.o \
+	npcedit.o objbrowse.o objedit.o paledit.o shapedraw.o shapefile.o shapegroup.o \
 	shapeedit.o shapelst.o studio.o
 
 FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o msgfile.o Table.o U7file.o utils.o
