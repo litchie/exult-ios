@@ -390,11 +390,11 @@ item:					/* Any object, NPC.	*/
 
 script_command_list:
 	script_command_list script_command ';'
-		{ $$->add($2); }	/* ++++Maybe need concat? */
+		{ $$->concat($2); }
 	| script_command ';'
 		{
 		$$ = new Uc_array_expression();
-		$$->add($1);	/* ++++Maybe need concat? */
+		$$->concat($1);
 		}
 	;
 
