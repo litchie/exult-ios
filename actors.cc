@@ -68,9 +68,9 @@ Actor::Actor
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
 	) : Container_game_object(), usecode(uc), npc_num(num), party_id(-1),
-	    schedule(0), schedule_type((int) Schedule::loiter), two_handed(0), 
-	    two_fingered(false), light_sources(0), usecode_dir(0), flags(0),
-	    action(0), dormant(1), frame_time(0)
+	    schedule_type((int) Schedule::loiter), schedule(0), dormant(1),
+	    two_handed(0), two_fingered(false), light_sources(0),
+	    usecode_dir(0), flags(0), action(0), frame_time(0)
 	{
 	name = nm == 0 ? 0 : strdup(nm);
 	set_shape(shapenum, 0); 
