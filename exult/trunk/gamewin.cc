@@ -216,6 +216,7 @@ void Game_window::init_files()
 		usecode->read_usecode(file);
 		file.close();
 		}
+	exult_flx.load("<DATA>/exult.flx");
 	faces.load(FACES_VGA);
 	gumps.load(GUMPS_VGA);
 	if (!fonts)
@@ -279,7 +280,7 @@ void Game_window::init_files()
 			else
 				cout << "Found Serpent Isle 'paperdol.vga' and 'gumps.vga' but one was bad." << endl << "Support for 'Serpent Isle' Paperdolls in 'Black Gate' DISABLED." << endl;
 		}
-		catch (...)
+		catch (exult_exception e)
 		{
 			cerr << "Exception attempting to load Serpent Isle 'paperdol.vga' or 'gumps.vga" << endl <<
 				"Do you have Serpent Isle and is an absolute path set in the config for Serpent Isle?" << endl <<

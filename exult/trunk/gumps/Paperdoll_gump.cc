@@ -571,7 +571,10 @@ void Paperdoll_gump::paint_object
 		
 	if (item->gender && !info->is_female) f++;
 
-	gwin->paint_gump (box.x + sx, box.y + sy, item->shape, f, true);
+	if (item->file == exult_flx)
+		gwin->paint_exult_shape (box.x + sx, box.y + sy, item->shape, f);
+	else if (item->file == paperdoll)
+		gwin->paint_gump (box.x + sx, box.y + sy, item->shape, f, true);
 }
 
 /*
@@ -651,7 +654,10 @@ void Paperdoll_gump::paint_head
 	if (item && item->type == OT_Helm)
 		f = info->head_frame_helm;
 
-	gwin->paint_gump (box.x + headx, box.y + heady, info->head_shape, f, true);
+	if (info->file == exult_flx)
+		gwin->paint_exult_shape  (box.x + headx, box.y + heady, info->head_shape, f);
+	else if (info->file == paperdoll)
+		gwin->paint_gump  (box.x + headx, box.y + heady, info->head_shape, f, true);
 }
 
 /*
@@ -925,7 +931,7 @@ Game_object * Paperdoll_gump::check_object
 		if (!obj->get_cx() && !obj->get_cy()) set_to_spot(obj, spot);
 		
 		if (check_shape (gwin, mx - obj->get_cx(), my - obj->get_cy(),
-			obj->get_shapenum(), obj->get_framenum(), true))
+			obj->get_shapenum(), obj->get_framenum(), shapes))
 		{
 			return obj;
 		}
@@ -956,7 +962,7 @@ Game_object * Paperdoll_gump::check_object
 		
 	if (item->gender && !info->is_female) f++;
 
-	if (check_shape (gwin, mx - sx, my - sy, item->shape, f))
+	if (check_shape (gwin, mx - sx, my - sy, item->shape, f, item->file))
 	{
 		Shape_frame *shape = gwin->get_shape(*obj);
 		int w = shape->get_width(), h = shape->get_height();
@@ -1007,7 +1013,7 @@ bool Paperdoll_gump::check_body
 	Paperdoll_npc *info
 	)
 {
-	return check_shape (gwin, mx - bodyx, my - bodyy, info->body_shape, info->body_frame);
+	return check_shape (gwin, mx - bodyx, my - bodyy, info->body_shape, info->body_frame, paperdoll);
 }
 
 /*
@@ -1020,8 +1026,8 @@ bool Paperdoll_gump::check_belt
 	Paperdoll_npc *info
 	)
 {
-	if (info->is_female) return check_shape (gwin, mx - beltfx, my - beltfy, 10, 0);
-	else return check_shape (gwin, mx - beltmx, my - beltmy, 10, 1);
+	if (info->is_female) return check_shape (gwin, mx - beltfx, my - beltfy, 10, 0, paperdoll);
+	else return check_shape (gwin, mx - beltmx, my - beltmy, 10, 1, paperdoll);
 
 	return false;
 }
@@ -1046,7 +1052,7 @@ bool Paperdoll_gump::check_head
 	if (item && item->type == OT_Helm)
 		f = info->head_frame_helm;
 
-	return check_shape (gwin, mx - headx, my - heady, info->head_shape, f);
+	return check_shape (gwin, mx - headx, my - heady, info->head_shape, f, info->file);
 }
 
 /*
@@ -1067,13 +1073,13 @@ bool Paperdoll_gump::check_arms
 	switch (get_arm_type())
 	{
 		default:
-		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame);
+		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame, paperdoll);
 
 		case OT_Double:
-		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame_2h);
+		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame_2h, paperdoll);
 
 		case OT_Staff:
-		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame_staff);
+		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame_staff, paperdoll);
 	}
 	return false;
 }
@@ -1086,13 +1092,14 @@ bool Paperdoll_gump::check_shape
 	Game_window *gwin,
 	int px, int py,
 	int shape, int frame,
-	bool notpd
+	Paperdoll_file file
 	)
 {
 	Shape_frame *s;
 	
-	if (notpd) s = gwin->get_shape(shape, frame);
-	else s = gwin->get_gump_shape(shape, frame, true);
+	if (file == paperdoll) s = gwin->get_gump_shape(shape, frame, true);
+	else if (file == shapes) s = gwin->get_shape(shape, frame);
+	else if (file == exult_flx) s = gwin->get_exult_shape(shape, frame);
 	
 	// If no shape, return
 	if (!s) return false;
