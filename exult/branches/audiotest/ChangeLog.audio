@@ -1,22 +1,18 @@
+2002-06-03 Simon Quinn <email@simonquinn.co.uk>
+	* Play different SFX track at night and crickets
+	* Add config option <audio/disablepause> to toggle the pausing of
+    	  the audio when game pauses. (yes or no)
+
 2002-05-29 Simon Quinn <email@simonquinn.co.uk>
-	* Work around for Usecode bug where track 0 is played at Intro Earthquake
+	* Work around for Usecode bug where track 0 is played at 
+	  Intro Earthquake.
 
 2002-05-28 Simon Quinn <email@simonquinn.co.uk>
-	* Converted Windows MIDI out to use SDL_mixer, i.e. uses a Generic MidiOut
-	* Changed MP3 references to DigitalMusic/OGG, now called "DigitalMusic" in 
-	  the audio settings
+	* Converted Windows MIDI out to use SDL_mixer, i.e. uses a 
+ 	  Generic MidiOut.
+	* Changed MP3 references to DigitalMusic/OGG, now called 
+	  "DigitalMusic" in the audio settings.
 
 2002-05-27 Simon Quinn <email@simonquinn.co.uk>
-	* Implemented SDL_mixer/OGG changes into 'audiotest' branch of CVS
+	* Implemented SDL_mixer/OGG changes into 'audiotest' branch of CVS.
 
-
-
-Issues Remaining with Audio Code
---------------------------------
-* Night time crashes?
-* Add crickets at night with MP3.
-* Quick repeating of waves SFX when moving, need to turn off repeat instead of stopping dead
-* Guardian voice clicks
-* BG Guardian Intro & Ending animation out of sync with Music/SFX
-* Find out when background SFX tracks change in original U7, only currently using 2 out of 5 possible
-* Implement config option for pause audio/music (on/off)
