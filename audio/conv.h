@@ -1,117 +1,119 @@
+// sfx with ??? are converted to sfx #135 so you can tell
+// it´s wrong. Some I suspect to be something so it´s not set 135
 int bgconv[] = {
-	0,			//FIX Bow Twang 
-	12,			//Missile   
-	9,			//Blade     
-	9,			//Blunt     
-	11,			//Hit       
-	125,			//Graze     
-	61,			//Rotating  
-	92,			//Explos #1 
-	5,			//Explos #2 
-	40,			//Explos #3 
-	41,			//Whip pta  
-	116,			//Thunder   
-	0,			//FIX Fireball  
-	0,			//FIX Torches   
-	94,			//Gumps!!!!!
-	94,			//Gavel     
-	56,			//Treadle   
-	121,			//Clock tick
-	0,			//FIX Clock tock
-	117,			//Chime     
-	42,			//Fire 1    
-	45,			//Fire 2    
-	46,			//Fire 3    
-	16,			//Bell Ding 
-	28,			//Bell Dong 
-	30,			//Log Saw   
-	72,			//Mill Stone
-	78,			//Key       
-	68,			//Lever     
-	0,			//FIX Roulette  
+	12,			//Bow Twang 
+	0,			//Missile ??
+	9,			//Blade    
+	80,			//Blunt    
+	125,			//Hit       
+	61,			//Graze     
+	92,			//Rotating 
+	40,			//Explos #1 
+	41,			//Explos #2
+	42,			//Explos #3
+	127,			//Whip pta  
+	71,			//Thunder 
+	39,			//Fireball  
+	65,			//Torches   
+	1,			//Gumps!!!!!
+	56,			//Gavel     
+	121,			//Treadle   
+	117,			//Clock tick
+	118,			//Clock tock
+	16,			//Chime  
+	47,			//Fire 1  
+	47,			//Fire 2  
+	47,			//Fire 3 
+	28,			//Bell Ding 
+	30,			//Bell Dong 
+	72,			//Log Saw   
+	78,			//Mill Stone
+	68,			//Key       
+	70,			//Lever     
+	135,			//Roulette  
 	32,			//Creeeeaack
-	31,			//FIX Creeeeaack
-	70,			//Portcullis
-	88,			//Portcullis
+	31,			//Creeeeaack
+	89,			//Portcullis
+	88,			//Portcullis close
 	34,			//Drawbridge
 	35,			//Drawbridge
-	0,			//FIX Fuse      
-	0,			//FIX Shadoobie 
-	95,			//Splash    
-	99,			//W. Anchor 
-	126,			//D. Anchor 
-	0,			//FIX Creeeeaack
-	0,			//FIX Creeeeaack
+	135,			//Fuse  ???    
+	95,			//Shadoobie 
+	99,			//Splash    
+	126,			//W. Anchor 
+	79,			//D. Anchor 
+	32,			//Creeeeaack
+	31,			//Creeeeaack
 	2,			//gumpster  
-	17,			//gumpster  
-	1,			//Forge     
-	33,			//Douce     
-	47,			//Bellows   
-	33,			//Fountain  
-	7,			//Surf's up 
-	31,			//Stream    
-	109,			//Waterfall 
-	69,			//Wind      
-	0,			//FIX Rainman   
-	133,			//Swamp 1   
+	1,			//gumpster  
+	49,			//Forge     
+	33,			//Douse
+	7,			//Bellows   
+	107,			//Fountain  
+	109,			//Surf's up 
+	50,			//Stream    
+	104,			//Waterfall
+	133,			//Wind    ???  
+	50,			//Rainman  ??? 
+	114,			//Swamp 1   
 	110,			//Swamp 2   
 	111,			//Swamp 3   
 	112,			//Swamp 4   
 	113,			//Swamp 5   
-	114,			//Waterwheel
-	132,			//Eruption  
-	107,			//Crickets  
-	127,			//Thunder   
-	39,			//Whirlpool 
-	22,			//Heal      
-	71,			//Spell     
-	105,			//Spell     
-	67,			//Wizard    
-	130,			//General   
-	57,			//Fizzle    
-	48,			//New Spell 
-	84,			//MPdrain   
-	82,			//MPgain    
-	98,			//Footstep L
-	0,			//FIX Footstep R
-	83,			//Success   
-	108,			//Failure   
-	43,			//Moongate  
-	55,			//Moongate B
+	132,			//Waterwheel
+	135,			//Eruption ???
+	22,			//Crickets  
+	116,			//Thunder  
+	128,			//Whirlpool 
+	64,			//Heal      
+	20,			//Spell     
+	67,			//Spell
+	135,			//Wizard   ??? 
+	57,			//General   
+	48,			//Fizzle    
+	84,			//New Spell 
+	82,			//MPdrain   
+	83,			//MPgain    
+	0,			//Footstep L
+	0,			//Footstep R
+	108,			//Success   
+	43,			//Failure   
+	55,			//Moongate  
+	54,			//Moongate B
 	26,			//Entity Hum
-	54,			//Entity Hum
 	101,			//Entity Hum
-	115,			//Shreik    
-	0,			//FIX Slap      
-	0,			//FIX Oooffff   
-	0,			//FIX Whaahh    
-	96,			//Blocked !!
-	10,			//Furl      
-	52,			//Unfurl    
-	0,			//MISSING
-	36,			//Drink     
-	38,			//Eat       
-	0,			//FIX Whip ptb  
+	115,			//Entity Hum
+	96,			//Shreik    
+	135,			//Slap      ???
+	135,			//Oooffff   ???
+	0,			//Whaahh    ???
+	10,			//Blocked !!
+	52,			//Furl      
+	124,			//Unfurl    
+	135,			//MISSING
+	36,			//Drink ???     
+	38,			//Eat   ??? 
+	135,			//Whip ptb  
 	32,			//Doorslam  
 	89,			//Portcullis
-	0,			//FIX Drawbridge
-	18,			//Closed    
-	38,			//SpinnWheel
-	79,			//Minning   
-	100,			//Minning   
-	59,			//Shutter   
-	0,			//FIX 1armbandit
-	93,			//Loom      
-	73,			//Stalags   
-	103,			//MagicWeap 
-	75,			//Poison    
+	88,			//Drawbridge
+	11,			//Closed
+	100,			//SpinnWheel
+	135,			//Minning   ???
+	19,			//Minning   ???
+	9,			//Shutters 
+	135,			//1armbandit ???
+	73,			//Loom      
+	103,			//Stalags   
+	75,			//MagicWeap 
+	86,			//Poison    
 	65,			//Ignite    
-	65,			//Yo yo LA  
-	62,			//Wind Spell
-	131,			//Protect   
-	90,			//PoisonSpel
+	62,			//Yo yo LA ??? 
+	131,			//Wind Spell
+	90,			//Protect   
+	135,			//PoisonSpel ???
 	91,			//IgniteSpel
-	66,			//CradleRock
-	36,			//Beeezzzzz 
-	21,			//Machines  
+	21,			//CradleRock
+	5,			//Beeezzzzz 
+	74,			//Machines  
 };
