@@ -370,6 +370,7 @@ public:
 	bool reduce_health(int delta, Actor *attacker = 0);
 	int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
+	int get_effective_prop(int prop) const;
 	bool is_dying() const		// Dead when health below -1/3 str.
 		{ return properties[(int) health] < 
 					-(properties[(int) strength]/3); }
