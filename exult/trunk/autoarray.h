@@ -19,6 +19,8 @@
 #include <exception>
 #include <string>
 
+#include "exult_types.h"
+
 template<class T>
 class autoarray
 	{
