@@ -702,7 +702,7 @@ void Game_window::paint_text_object
 	int len = strlen(msg);
 	if (msg[len - 1] == '@')
 		len--;
-	paint_text(2, msg, len,
+	paint_text(0, msg, len,
 			(txt->cx - chunkx)*chunksize + txt->sx*tilesize,
 		        (txt->cy - chunky)*chunksize + txt->sy*tilesize);
 	painted = 1;
@@ -1103,8 +1103,13 @@ void Game_window::show_items
 			info.get_3d_xtiles() << ", " <<
 			info.get_3d_ytiles() << ", " <<
 			info.get_3d_height() << '\n';
+		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << '\n';
 		if (info.is_animated())
 			cout << "Object is ANIMATED\n";
+		if (info.is_transparent())
+			cout << "Object is TRANSPARENT\n";
+		if (info.is_light_source())
+			cout << "Object is LIGHT_SOURCE\n";
 #endif
 		}
 #endif
@@ -1123,8 +1128,8 @@ void Game_window::add_text
 	Text_object *txt = new Text_object(msg,
 		chunkx + x/chunksize, chunky + y/chunksize,
 		(x%chunksize)/tilesize, (y%chunksize)/tilesize,
-				8 + get_text_width(2, msg),
-				8 + get_text_height(2));
+				8 + get_text_width(0, msg),
+				8 + get_text_height(0));
 	paint_text_object(txt);		// Draw it.
 	txt->next = texts;		// Insert into chain.
 	txt->prev = 0;

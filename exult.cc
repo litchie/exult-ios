@@ -485,6 +485,9 @@ static void Handle_keystroke
 				gwin->get_height()/2, font_cnt, font_frame);
 #endif
 		break;
+	case SDLK_t:			// Fake out time period change.
+		gwin->fake_next_period();
+		break;
 	case SDLK_RIGHT:
 		gwin->view_right();
 		break;

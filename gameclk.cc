@@ -36,3 +36,18 @@ void Game_clock::handle_event
 	curtime += 60*1000;		// Do it again in 60 seconds.
 	tqueue->add(curtime, this, udata);
 	}
+
+/*
+ *	Fake an update to the next 3-hour period.
+ */
+
+void Game_clock::fake_next_period
+	(
+	)
+	{
+	minute = 0;
+	hour = ((hour/3 + 1)*3)%24;
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->schedule_npcs(hour/3);
+	cout << "The hour is now " << hour << '\n';
+	}

@@ -27,6 +27,7 @@ public:
 	int get_day()
 		{ return day; }
 	virtual void handle_event(unsigned long curtime, long udata);
+	void fake_next_period();	// For debugging.
 	};
 
 #endif	/* INCL_GAMECLK */
