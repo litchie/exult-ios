@@ -282,6 +282,27 @@ public:
 	virtual void paint(Game_window *gwin);
 	};
 
+#if 1
+/*
+ *	An object that cycles through its frames.
+ */
+class Animated_object : public Ireg_game_object, public Time_sensitive
+	{
+	int cycles;			// # cycles to do, or 0 if no limit.
+	int cycle_num;			// Cycle # we're doing.
+	unsigned char frames;		// # of frames.
+	unsigned char animating;	// 1 if animation turned on.
+public:
+	Animated_object(unsigned char l, unsigned char h, 
+				unsigned int shapex,
+				unsigned int shapey, unsigned int lft = 0);
+					// Render.
+	virtual void paint(Game_window *gwin);
+					// For Time_sensitive:
+	virtual void handle_event(unsigned long time, long udata);
+	};
+#endif
+
 /*
  *	An "egg" is a special object that activates under certain
  *	circumstances.
@@ -585,24 +606,6 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 	};
-#if 0
-/*
- *	A sprite that cycles through its frames.
- */
-class Frame_cycle_sprite : public Game_object, public Time_sensitive
-	{
-	int cycles;			// # cycles to do, or 0 if no limit.
-	int cycle_num;			// Cycle # we're doing.
-	unsigned char frames;		// # of frames.
-public:
-					// (tx, ty) = abs. tile coords.
-	Frame_cycle_sprite(Game_window *gwin,
-			int shapenum, int tx, int ty, int lft, int cycs);
-					// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
-	};
-#endif
-
 /*
  *	A rectangle:
  */
