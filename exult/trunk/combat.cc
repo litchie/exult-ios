@@ -623,8 +623,15 @@ void Combat_schedule::now_what
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-//	if (npc->get_attack_mode() == Actor::manual)
-//		return;
+	if (state == initial)		// Do NOTHING in initial state so
+		{			//   usecode can, e.g., set opponent.
+					// Way far away (50 tiles)?
+		if (npc->distance(gwin->get_camera_actor()) > 50)
+			return;		// Just go dormant.
+		state = approach;
+		npc->start(200, 200);
+		return;
+		}
 	if (npc->get_flag(Obj_flags::asleep))
 		{
 		npc->start(200, 1000);	// Check again in a second.
@@ -645,16 +652,11 @@ void Combat_schedule::now_what
 	if (Need_new_opponent(gwin, npc->get_target()))
 		{
 		npc->set_target(0);
-		if (state != initial)
-			state = approach;
+		state = approach;
 		}
 	Game_object *opponent = npc->get_target();
 	switch (state)			// Note:  state's action has finished.
 		{
-	case initial:			// Way far away (50 tiles)?
-		if (npc->distance(gwin->get_camera_actor()) > 50)
-			return;		// Just go dormant.
-		state = approach;	// FALL THROUGH.
 	case approach:
 		if (opponent)
 			{

@@ -1779,9 +1779,12 @@ void Actor::reduce_health
 					// SI 'tournament'?
 		    get_flag(Obj_flags::si_tournament))
 			{
-					// Only if attacker is party member:
-			if (attacker && 
-				    attacker->get_flag(Obj_flags::in_party))
+					// Only if one or other is in party:
+			Actor *c = gwin->get_camera_actor();
+			if (get_flag(Obj_flags::in_party) || this == c ||
+				(attacker && 
+				 (attacker->get_flag(Obj_flags::in_party) ||
+							attacker == c)))
 				gwin->get_usecode()->call_usecode(
 					usecode, this, Usecode_machine::died);
 
