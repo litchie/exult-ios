@@ -1,3 +1,7 @@
+2001-12-13  Tristan Tarrant <nadir@users.sourceforge.net>
+	* configure.in, Makefile.am, debian/Makefile.am: fixes for make dist
+	to include new debian stuff
+
 2001-12-13  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* drag.cc,drag.h (Dragging_info): New class to handle dragging.
