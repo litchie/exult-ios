@@ -1,5 +1,9 @@
 2001-09-11  Dancer Vesperman  <dancer@users.sourceforge.net>
 
+	* mapedit/studio.cc: More reliable getcwd. Prevent crashes if cancelling 'open static'
+
+2001-09-11  Dancer Vesperman  <dancer@users.sourceforge.net>
+
 	* mapedit/(studio files). G++ v3 compilation: Standards and
 		namespaces. Recast unsigned char* to char*
 

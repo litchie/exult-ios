@@ -360,14 +360,30 @@ Object_browser *ExultStudio::create_palette_browser(const char *fname)
 
 void ExultStudio::choose_static_path()
 {
-	char cwd[1024];
-	getcwd(cwd, 1024);
+	size_t	bufsize=128;
+	char * cwd(new char[bufsize]);
+	while(!getcwd(cwd,bufsize))
+		{
+		if(errno==ERANGE)
+			{
+			bufsize+=128;
+			delete [] cwd;
+			cwd=new char[bufsize];
+			}
+		else
+			{
+			// Ooops. getcwd() has failed
+			delete [] cwd;	// Prevent leakage
+			return;
+			}
+		}
 	GtkWidget *dirbrowser = xmms_create_dir_browser("Select static directory",
 							cwd, GTK_SELECTION_SINGLE,
 							on_choose_directory);
 	gtk_signal_connect(GTK_OBJECT(dirbrowser), "destroy", GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dirbrowser);
         gtk_window_set_transient_for(GTK_WINDOW(dirbrowser), GTK_WINDOW(app));
 	gtk_widget_show (dirbrowser);
+	delete [] cwd;	// Prevent leakage
 }
 
 GtkCTreeNode *create_subtree( GtkCTree *ctree,
