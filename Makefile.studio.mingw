@@ -5,6 +5,7 @@
 U7PATH=C:/Ultima7
 # Only used for snapshots
 STUDIOPATH=C:/Studio
+TOOLSPATH=C:/GimpPlugin
 
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
@@ -74,12 +75,18 @@ clean:
 install: $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
-	cp mapedit/exult_studio.glade $(U7PATH)/data/exult_studio.glade
+	cp mapedit/exult_studio.glade $(U7PATH)/data
 
 tools: u7shp.exe
+
+toolsdist: tools
+	mkdir -p $(TOOLSPATH)
+	strip u7shp.exe -o $(TOOLSPATH)/u7shp.exe
+	cp mapedit/gimpwin32.txt $(TOOLSPATH)
+	u2d $(TOOLSPATH)/*.txt
 
 dist: $(EXEC)
 	mkdir -p $(STUDIOPATH)
 	strip $(EXEC) -o  $(STUDIOPATH)/$(EXEC)
 	mkdir -p $(STUDIOPATH)/data
-	cp mapedit/exult_studio.glade $(STUDIOPATH)/data/exult_studio.glade
+	cp mapedit/exult_studio.glade $(STUDIOPATH)/data
