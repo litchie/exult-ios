@@ -659,7 +659,7 @@ void Usecode_machine::exec_array
 		case 0x23:		// ??
 			break;
 		case 0x27:		// ?? 1 parm. Pure guess:
-			{		// ++++++set frame?
+			{		// ++++++set frame?  Perhaps not++++
 			Usecode_value& fval = arrayval.get_elem(++i);
 			set_item_frame(objval, fval);
 			break;
@@ -672,7 +672,8 @@ cout << "0x2d:  Deleting itemref\n";
 			obj = 0;
 			gwin->paint();
 			break;
-		case 0x46:		// ?? 1 parm.
+		case 0x46:		// ?? 1 parm. This IS a frame.
+					// +++++Implement&remove 0x27 code.
 			i++;
 			break;
 		case 0x50:		// ??
