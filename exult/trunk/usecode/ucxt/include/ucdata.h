@@ -37,25 +37,26 @@ class UCData
 		string output_redirect() const { return _output_redirect; };
 		string input_usecode_file() const { return _input_usecode_file; };
 		
-		bool noconf()      const { return _noconf;      };
-		bool rawops()      const { return _rawops;      };
-		bool autocomment() const { return _autocomment; };
+		bool noconf()       const { return _noconf;      };
+		bool rawops()       const { return _rawops;      };
+		bool autocomment()  const { return _autocomment; };
 		bool uselesscomment() const { return _uselesscomment; };
-		bool verbose()     const { return _verbose;     };
-		bool ucdebug()     const { return _ucdebug;     };
+		bool verbose()      const { return _verbose;     };
+		bool ucdebug()      const { return _ucdebug;     };
+		bool basic()        const { return _basic;       };
 		
- 		unsigned int mode() const { return _mode; };
-		unsigned int game() const { return _game; };
+ 		unsigned int mode() const { return _mode;        };
+		unsigned int game() const { return _game;        };
 		
-		bool output_list() const { return _output_list; };
-		bool output_asm()  const { return _output_asm;  };
-		bool output_ucs()  const { return _output_ucs;  };
-		bool output_ucz()  const { return _output_ucz;  };
+		bool output_list()  const { return _output_list; };
+		bool output_asm()   const { return _output_asm;  };
+		bool output_ucs()   const { return _output_ucs;  };
+		bool output_ucz()   const { return _output_ucz;  };
 		
-		bool mode_all()    const { return _mode_all;    };
-		bool mode_dis()    const { return _mode_dis;    };
+		bool mode_all()     const { return _mode_all;    };
+		bool mode_dis()     const { return _mode_dis;    };
 		
-		bool fail() const { return _file.fail(); };
+		bool fail()         const { return _file.fail(); };
 	
 		const map<unsigned short, UCFuncSet> &funcmap() { return _funcmap; };	
 		
@@ -74,6 +75,7 @@ class UCData
 		bool _uselesscomment;
 		bool _verbose;
 		bool _ucdebug;
+		bool _basic;
 		
 		unsigned int _mode;
 		unsigned int _game;

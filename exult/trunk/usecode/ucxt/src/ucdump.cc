@@ -273,9 +273,9 @@ void usage()
 	     << "\t\t-ofile\t- output to the specified file" << endl
 	     << "\t\t-ifile\t- load the usecode file specified by the filename" << endl
 	     << "\t\t-ro\t- output the raw opcodes in addition to the -f format" << endl
-	     << "\t\t-ac\t- output an automatically generated comment" << endl
-	     << "\t\t-uc\t- output an automatically generated useless comment" << endl
-	     << "\t\t\t  in addition to the -f format" << endl
+	     << "\t\t-ac\t- output automatically generated comments" << endl
+	     << "\t\t-uc\t- output automatically generated 'useless' comments" << endl
+	     << "\t\t-b\t- only do 'basic' optimisations" << endl
 	     << "\t\t-dbg\t- output debugging information if present in USECODE." << endl
 	     << "\tGame Specifier Flags (only one of these):" << endl
 	     << "\t\t-bg\t- select the black gate usecode file" << endl
