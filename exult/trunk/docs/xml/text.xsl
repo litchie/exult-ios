@@ -43,7 +43,7 @@
 
 <xsl:template match="faqs">
 	<xsl:value-of select="@title"/>
-	<xsl:text>F.A.Q. (frequently asked questions)&#xA;</xsl:text>
+	<xsl:text> F.A.Q. (frequently asked questions)&#xA;</xsl:text>
 	<xsl:text>last changed: </xsl:text>
 	<xsl:value-of select="@changed"/>
 	<xsl:text>&#xA;&#xA;</xsl:text>
@@ -62,11 +62,30 @@
 <!-- Readme Templates -->
 <xsl:template match="readme">
 	<xsl:value-of select="@title"/>
-	<xsl:text>Documentation&#xA;</xsl:text>
+	<xsl:text> Documentation&#xA;</xsl:text>
 	<xsl:text>last changed: </xsl:text>
 	<xsl:value-of select="@changed"/>
 	<xsl:text>&#xA;&#xA;</xsl:text>	
 	<xsl:text>The latest version of this document can be found at http://exult.sourceforge.net/docs.php&#xA;</xsl:text>	
+	<xsl:text>&#xA;&#xA;</xsl:text>	
+
+	<!-- BEGIN TOC -->
+	<xsl:call-template name="TOC"/>
+	<!-- END TOC -->
+
+	<!-- BEGIN CONTENT -->
+	<xsl:apply-templates select="section"/>
+	<!-- END CONTENT -->
+</xsl:template>
+
+<!-- Studio Docs Templates -->
+<xsl:template match="studiodoc">
+	<xsl:value-of select="@title"/>
+	<xsl:text> Studio Documentation&#xA;</xsl:text>
+	<xsl:text>last changed: </xsl:text>
+	<xsl:value-of select="@changed"/>
+	<xsl:text>&#xA;&#xA;</xsl:text>	
+	<xsl:text>The latest version of this document can be found at http://exult.sourceforge.net/studio.php&#xA;</xsl:text>	
 	<xsl:text>&#xA;&#xA;</xsl:text>	
 
 	<!-- BEGIN TOC -->
@@ -170,13 +189,17 @@
 	</xsl:choose>
 </xsl:template>
 
-<!-- External Link Template to link between the FAQ/Readme -->
+<!-- External Link Template to link between the FAQ/Readme/Studio docs -->
 <xsl:template match="extref1">
 	<a><xsl:text>FAQ.txt</xsl:text></a>
 </xsl:template>
 
 <xsl:template match="extref2">
 	<a><xsl:text>ReadMe.txt</xsl:text></a>
+</xsl:template>
+
+<xsl:template match="extref3">
+	<a><xsl:text>exult_studio.txt</xsl:text></a>
 </xsl:template>
 
 <!--================-->
