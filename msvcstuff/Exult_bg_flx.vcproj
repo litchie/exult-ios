@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="Exult_bg_flx"
+	SccProjectName=""
+	SccLocalPath=""
+	Keyword="MakeFileProj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\Exult_bg_flx___Win32_Release0"
+			IntermediateDirectory=".\."
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\bg"
+				ReBuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\bg "
+				CleanCommandLine="del ..\data\exult_bg_flx.h ..\data\exult_bg.flx"
+				Output="..\data\exult_bg_flx.h;..\data\exult_bg.flx"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\Exult_bg_flx___Win32_Debug"
+			IntermediateDirectory=".\."
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\bg"
+				ReBuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\bg "
+				CleanCommandLine="del ..\data\exult_bg_flx.h ..\data\exult_bg.flx"
+				Output="..\data\exult_bg_flx.h;..\data\exult_bg.flx"/>
+		</Configuration>
+		<Configuration
+			Name="Release Install|Win32"
+			OutputDirectory=".\Exult_bg_flx___Win32_Release_Install"
+			IntermediateDirectory=".\."
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data"
+				ReBuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data "
+				CleanCommandLine="del ..\data\exult_bg_flx.h ..\data\exult_bg.flx"
+				Output="..\data\exult_bg_flx.h;..\data\exult_bg.flx"/>
+		</Configuration>
+		<Configuration
+			Name="Debug Install|Win32"
+			OutputDirectory=".\Exult_bg_flx___Win32_Debug_Install"
+			IntermediateDirectory=".\."
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data"
+				ReBuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data "
+				CleanCommandLine="del ..\data\exult_bg_flx.h ..\data\exult_bg.flx"
+				Output="..\data\exult_bg_flx.h;..\data\exult_bg.flx"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Shapes"
+			Filter="shp">
+			<File
+				RelativePath="..\data\bg\BGmap.shp">
+			</File>
+			<Filter
+				Name="Faces"
+				Filter="">
+				<File
+					RelativePath="..\data\bg\dupre_face.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\faces.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\faces2.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\fem_av_face.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\iolo_face.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\male_av_face.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\shamino_face.shp">
+				</File>
+			</Filter>
+			<Filter
+				Name="Paperdolls"
+				Filter="">
+				<File
+					RelativePath="..\data\bg\amulets.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\bgfiredoom.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\caddellite_helmet.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\cleaver.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\fellowshipstaff.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\gorget.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\great_dagger.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\greaves.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\hoe_of_destruction.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\magic_boomerang.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\magicgorget.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\spiked_shield.shp">
+				</File>
+			</Filter>
+			<Filter
+				Name="Multiracial"
+				Filter="">
+				<File
+					RelativePath="..\data\bg\mr_faces.shp">
+				</File>
+				<File
+					RelativePath="..\data\bg\mr_intro.shp">
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Misc"
+			Filter="">
+			<File
+				RelativePath="..\data\bg\defaultkeys.txt">
+			</File>
+		</Filter>
+		<File
+			RelativePath="..\data\bg\flx.in">
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

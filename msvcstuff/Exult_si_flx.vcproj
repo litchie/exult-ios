@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="Exult_si_flx"
+	SccProjectName=""
+	SccLocalPath=""
+	Keyword="MakeFileProj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\Exult_si_flx___Win32_Release"
+			IntermediateDirectory=".\Exult_si_flx___Win32_Release"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\si"
+				ReBuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\si "
+				CleanCommandLine="del ..\data\exult_si_flx.h ..\data\exult_si.flx"
+				Output="..\data\exult_si_flx.h;..\data\exult_si.flx"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\Exult_si_flx___Win32_Debug0"
+			IntermediateDirectory=".\Exult_si_flx___Win32_Debug0"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\si"
+				ReBuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\si "
+				CleanCommandLine="del ..\data\exult_si_flx.h ..\data\exult_si.flx"
+				Output="..\data\exult_si_flx.h;..\data\exult_si.flx"/>
+		</Configuration>
+		<Configuration
+			Name="Release Install|Win32"
+			OutputDirectory=".\Release Install"
+			IntermediateDirectory=".\Release Install"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\si .. ..\data\exult_si.flx data"
+				ReBuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\si .. ..\data\exult_si.flx data "
+				CleanCommandLine="del ..\data\exult_si_flx.h ..\data\exult_si.flx"
+				Output="..\data\exult_si_flx.h;..\data\exult_si.flx"/>
+		</Configuration>
+		<Configuration
+			Name="Debug Install|Win32"
+			OutputDirectory=".\Debug Install"
+			IntermediateDirectory=".\Debug Install"
+			ConfigurationType="0"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\si .. ..\data\exult_si.flx data"
+				ReBuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\si .. ..\data\exult_si.flx data "
+				CleanCommandLine="del ..\data\exult_si_flx.h ..\data\exult_si.flx"
+				Output="..\data\exult_si_flx.h;..\data\exult_si.flx"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Shapes"
+			Filter="shp">
+			<File
+				RelativePath="..\data\si\SImap.shp">
+			</File>
+		</Filter>
+		<Filter
+			Name="Misc"
+			Filter="">
+			<File
+				RelativePath="..\data\si\defaultkeys.txt">
+			</File>
+		</Filter>
+		<File
+			RelativePath="..\data\si\flx.in">
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

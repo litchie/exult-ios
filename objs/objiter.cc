@@ -31,12 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunks.h"
 
 /*
-#ifdef _MSC_VER
-#pragma optimize("t", off)
-#endif
-*/
-
-/*
  *	Create to start after/before a given object within a chunk.
  */
 

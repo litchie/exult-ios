@@ -393,10 +393,6 @@ void Image_buffer8::copy_transparent8
 		}
 	}
 
-#ifdef _MSC_VER
-#pragma optimize("t", off)
-#endif
-
 // Slightly Optimized RLE Painter
 void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *inptr)
 {
@@ -554,10 +550,6 @@ void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *inptr)
 		}
 	}
 }
-
-#ifdef _MSC_VER
-#pragma optimize("t", on)
-#endif
 
 /*
  *	Convert this image to 32-bit RGBA and return the allocated buffer.
