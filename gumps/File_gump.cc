@@ -499,6 +499,8 @@ int File_gump::toggle_option
 	{
 		bool effects = !Audio::get_ptr()->are_effects_enabled();
 		Audio::get_ptr()->set_effects_enabled(effects);
+		if (!effects)		// Off?  Stop what's playing.
+			Audio::get_ptr()->stop_sound_effects();
 		string s = effects ? "yes" : "no";
 					// Write option out.
 		config->set("config/audio/effects/enabled", s, true);

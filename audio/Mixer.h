@@ -52,6 +52,7 @@ public:
 
 //---- Mixer -----------------------------------------------------------
 
+static const int Mixer_Sample_Magic_Number=0x55443322;
 #define MAX_AUDIO_STREAMS  6
 
 class Mixer 

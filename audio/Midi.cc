@@ -495,3 +495,8 @@ void    MyMidiPlayer::start_sound_effect(int num)
 		}
 }
 
+void    MyMidiPlayer::stop_sound_effects()
+{
+	if (midi_device)
+		midi_device->stop_sfx();
+}
