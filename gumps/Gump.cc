@@ -111,8 +111,8 @@ Rectangle Gump::get_shape_rect
 	Shape_frame *s = obj->get_shape();
 	if (!s)
 		return Rectangle(0, 0, 0, 0);
-	return Rectangle(x + object_area.x + obj->get_cx() - s->get_xleft(), 
-			 y + object_area.y + obj->get_cy() - s->get_yabove(), 
+	return Rectangle(x + object_area.x + obj->get_tx() - s->get_xleft(), 
+			 y + object_area.y + obj->get_ty() - s->get_yabove(), 
 				 s->get_width(), s->get_height());
 }
 
@@ -126,8 +126,8 @@ void Gump::get_shape_location
 	int& ox, int& oy
 	)
 {
-	ox = x + object_area.x + obj->get_cx(),
-	oy = y + object_area.y + obj->get_cy();
+	ox = x + object_area.x + obj->get_tx(),
+	oy = y + object_area.y + obj->get_ty();
 }
 
 /*
@@ -245,7 +245,7 @@ int Gump::add
 					// Not a valid spot?
 	if (sx == -1 && sy == -1 && mx == -1 && my == -1)
 					// Let paint() set spot.
-		obj->set_chunk(255, 255);
+		obj->set_shape_pos(255, 255);
 					// -2's mean cx, cy are already set.
 	else if (sx != -2 && sy != -2 && mx != -2 && my != -2)
 	{			// Put it where desired.
@@ -261,7 +261,7 @@ int Gump::add
 			sy = shape->get_yabove();
 		else if (sy + shape->get_ybelow() > object_area.h)
 			sy = object_area.h - shape->get_ybelow();
-		obj->set_chunk(sx, sy);
+		obj->set_shape_pos(sx, sy);
 	}
 	return (1);
 }
@@ -317,9 +317,9 @@ void Gump::paint
 		Shape_frame *shape = obj->get_shape();
 		if (!shape)
 			continue;
-		int objx = obj->get_cx() - shape->get_xleft() + 
+		int objx = obj->get_tx() - shape->get_xleft() + 
 							1 + object_area.x;
-		int objy = obj->get_cy() - shape->get_yabove() + 
+		int objy = obj->get_ty() - shape->get_yabove() + 
 							1 + object_area.y;
 					// Does obj. appear to be placed?
 		if (!object_area.has_point(objx, objy) ||
@@ -332,7 +332,7 @@ void Gump::paint
 				px = endx;
 			if (py > endy)
 				py = endy;
-			obj->set_chunk(px - shape->get_xright(),
+			obj->set_shape_pos(px - shape->get_xright(),
 					py - shape->get_ybelow());
 					// Mostly avoid overlap.
 			curx += shape->get_width() - 1;
@@ -344,7 +344,7 @@ void Gump::paint
 					cury = 2*(++loop);
 			}
 		}
-		obj->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy());
+		obj->paint_shape(box.x + obj->get_tx(),box.y + obj->get_ty());
 		obj = obj->get_next();
 	}
 					// Outline selections in this gump.

@@ -537,10 +537,13 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 			exit(1);
 			}
 		string pd = d + "/patch";	// Look up patch dir. too.
-		string ptchstr;
+		string ptchstr, gdatstr;
 		config->value(pd.c_str(), ptchstr, "");
-		set_game_path(dirstr.c_str(), ptchstr == "" ? 0 
-						: ptchstr.c_str());
+		gd = d + "/gamedat";		// Then gamedat.
+		config->value(gd.c_str(), gdatstr, "");
+		set_game_path(dirstr.c_str(), 
+			ptchstr == "" ? 0 : ptchstr.c_str(),
+			gdatstr == "" ? 0 : gdatstr.c_str());
 		}
 	string iedit;			// Get image-editor command.
 	config->value("config/estudio/image_editor", iedit, "gimp-remote -n");
@@ -561,6 +564,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 		gtk_check_menu_item_set_active(
 				GTK_CHECK_MENU_ITEM(item), i == 0);
 		}
+	setup_maps_list();		// Init. 'maps' menu.
 }
 
 ExultStudio::~ExultStudio()
@@ -814,11 +818,7 @@ void ExultStudio::create_new_game
 				continue;
 			string src = esdir + '/' + fname;
 			string dest = static_path + '/' + fname;
-			try {
-				U7copy(src.c_str(), dest.c_str());
-			} catch (exult_exception& e) {
-				EStudio::Alert(e.what());
-			}
+			EStudio::Copy_file(src.c_str(), dest.c_str());
 			}
 		closedir(dirrd);
 		}
@@ -877,7 +877,8 @@ void ExultStudio::choose_game_path()
 /*
  *	Note:	Patchpath may be NULL,in which case gamepath/patch is used.
  */
-void ExultStudio::set_game_path(const char *gamepath, const char *patchpath)
+void ExultStudio::set_game_path(const char *gamepath, const char *patchpath,
+						const char *gdatpath)
 {
 					// Finish up external edits.
 	Shape_chooser::clear_editing_files();
@@ -894,6 +895,10 @@ void ExultStudio::set_game_path(const char *gamepath, const char *patchpath)
 	if (!U7exists(patch_path))	// Create patch if not there.
 		U7mkdir(patch_path, 0755);
 	g_free(patch_path);
+	char *gamedat_path = gdatpath? g_strdup(gdatpath) :
+				g_strdup_printf("%s/gamedat", gamepath);
+	add_system_path("<GAMEDAT>", gamedat_path);
+	g_free(gamedat_path);
 					// Clear file cache!
 	U7FileManager::get_ptr()->reset();
 	delete palbuf;			// Delete old.
@@ -1882,11 +1887,15 @@ GtkWidget *Add_menu_item
 	GtkWidget *menu,		// Menu to add to.
 	const char *label,		// What to put.  NULL for separator.
 	GtkSignalFunc func,		// Handle menu choice.
-	gpointer func_data		// Data passed to func().
+	gpointer func_data,		// Data passed to func().
+	GSList *group			// If a radio menu item is wanted.
 	)
 	{
-	GtkWidget *mitem = label ? gtk_menu_item_new_with_label(label) :
-				gtk_menu_item_new();
+	GtkWidget *mitem = group ? 
+		(label ? gtk_radio_menu_item_new_with_label(group, label)
+				: gtk_radio_menu_item_new(group))
+		: (label ? gtk_menu_item_new_with_label(label) :
+				gtk_menu_item_new());
 	gtk_widget_show(mitem);
 	gtk_menu_append(GTK_MENU(menu), mitem);
 	if (!label)			// Want separator?
@@ -1908,14 +1917,40 @@ GtkWidget *Create_arrow_button
 	gpointer func_data		// Passed to 'clicked'.
 	)
 	{
+#if 1
+	GtkWidget *btn = gtk_button_new_from_stock(
+		dir == GTK_ARROW_UP ? GTK_STOCK_GO_UP 
+					: GTK_STOCK_GO_DOWN);
+	gtk_widget_show(btn);
+#else
 	GtkWidget *btn = gtk_button_new();
 	gtk_widget_show(btn);
 	GTK_WIDGET_SET_FLAGS(btn, GTK_CAN_DEFAULT);
 	GtkWidget *arrow = gtk_arrow_new(dir, GTK_SHADOW_OUT);
 	gtk_widget_show(arrow);
 	gtk_container_add(GTK_CONTAINER(btn), arrow);
+#endif
 	gtk_signal_connect(GTK_OBJECT(btn), "clicked", clicked, func_data);
 	return btn;
+	}
+
+/*
+ *	Copy a file and show an alert box if unsuccessful.
+ */
+
+bool Copy_file
+	(
+	const char *src,
+	const char *dest
+	)
+	{
+	try {
+		U7copy(src, dest);
+	} catch (exult_exception& e) {
+		EStudio::Alert(e.what());
+		return false;
+	}
+	return true;
 	}
 
 } // namespace EStudio

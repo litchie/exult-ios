@@ -396,5 +396,7 @@ std::string to_uppercase(const std::string &str);
 int Log2(uint32 n);
 
 char *newstrdup(const char *s);
+char *Get_mapped_name(char *from, int num, char *to);
+int Find_next_map(int start, int maxtry);
 
 #endif	/* _UTILS_H_ */

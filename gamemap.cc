@@ -78,6 +78,11 @@ using std::srand;
 using std::vector;
 #endif
 
+Exult_vector<Chunk_terrain *> *Game_map::chunk_terrains = 0;
+std::ifstream *Game_map::chunks = 0;
+bool Game_map::read_all_terrain = false;
+bool Game_map::chunk_terrains_modified = false;
+
 /*
  *	Create a chunk.
  */
@@ -87,7 +92,7 @@ Map_chunk *Game_map::create_chunk
 	int cx, int cy
 	)
 	{
-	return (objects[cx][cy] = new Map_chunk(cx, cy));
+	return (objects[cx][cy] = new Map_chunk(this, cx, cy));
 	}
 
 /*
@@ -99,12 +104,12 @@ Chunk_terrain *Game_map::read_terrain
 	int chunk_num			// Want this one from u7chunks.
 	)
 	{
-	assert(chunk_num >= 0 && chunk_num < chunk_terrains.size());
+	assert(chunk_num >= 0 && chunk_num < chunk_terrains->size());
 	unsigned char buf[16*16*2];	
 	chunks->seekg(chunk_num * 512);
 	chunks->read(reinterpret_cast<char*>(buf), sizeof(buf));
 	Chunk_terrain *ter = new Chunk_terrain(&buf[0]);
-	chunk_terrains.put(chunk_num, ter);
+	chunk_terrains->put(chunk_num, ter);
 	return ter;
 	}
 
@@ -114,10 +119,11 @@ Chunk_terrain *Game_map::read_terrain
 
 Game_map::Game_map
 	(
+	int n
 	) : 
-            chunk_terrains(0), read_all_terrain(false), 
+            num(n), 
 	    map_modified(false),
-	    map_patches(new Map_patch_collection), chunks(0)
+	    map_patches(new Map_patch_collection)
 	{
 	}
 
@@ -135,10 +141,10 @@ Game_map::~Game_map
 	}
 
 /*
- *	Initialize for new/restored game.
+ *	Init. the static data.
  */
 
-void Game_map::init
+void Game_map::init_chunks
 	(
 	)
 	{
@@ -171,16 +177,34 @@ void Game_map::init
 					// 2 bytes/tile.
 	num_chunk_terrains = chunks->tellg()/
 				(c_tiles_per_chunk*c_tiles_per_chunk*2);
+	if (!chunk_terrains)
+		chunk_terrains = new Exult_vector<Chunk_terrain*>();
 					// Resize list to hold all.
-	chunk_terrains.resize(num_chunk_terrains);
-	read_all_terrain = map_modified = false;
+	chunk_terrains->resize(num_chunk_terrains);
+	read_all_terrain = false;
+	}
+
+/*
+ *	Initialize for new/restored game.
+ */
+
+void Game_map::init
+	(
+	)
+	{
+	char fname[128];
+
+	if (num == 0)
+		init_chunks();
+	map_modified = false;
 	std::ifstream u7map;		// Read in map.
 	bool nomap = false;
-	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_U7MAP))
-		U7open(u7map, PATCH_U7MAP);
+	if (is_system_path_defined("<PATCH>") && 
+			U7exists(get_mapped_name(PATCH_U7MAP, fname)))
+		U7open(u7map, fname);
 	else try 
 		{
-		U7open(u7map, U7MAP);
+		U7open(u7map, get_mapped_name(U7MAP, fname));
 		}
 	catch(const file_exception & f)
 		{
@@ -217,6 +241,27 @@ void Game_map::init
 	}
 
 /*
+ *	Clear the static data.
+ */
+
+void Game_map::clear_chunks
+	(
+	)
+	{
+	if (chunk_terrains)
+		{
+		int cnt = chunk_terrains->size();
+		for (int i = 0; i < cnt; i++)
+			delete (*chunk_terrains)[i];
+		delete chunk_terrains;
+		chunk_terrains = 0;
+		}
+	delete chunks;			// Close 'u7chunks'.
+	chunks = 0;
+	read_all_terrain = false;
+	}
+
+/*
  *	Clear out world's contents.  Should be used during a 'restore'.
  */
 
@@ -224,6 +269,8 @@ void Game_map::clear
 	(
 	)
 	{
+	if (num == 0)
+		clear_chunks();
 					// Delete all chunks (& their objs).
 	for (int y = 0; y < c_num_chunks; y++)
 		for (int x = 0; x < c_num_chunks; x++)
@@ -231,20 +278,13 @@ void Game_map::clear
 			delete objects[x][y];
 			objects[x][y] = 0;
 			}
-	int cnt = chunk_terrains.size();
-	int i;
-	for (i = 0; i < cnt; i++)
-		delete chunk_terrains[i];
-	chunk_terrains.resize(0);
-	delete chunks;			// Close 'u7chunks'.
-	chunks = 0;
 	map_modified = false;
 					// Clear 'read' flags.
 	memset(reinterpret_cast<char*>(schunk_read), 0, sizeof(schunk_read));
 	memset(reinterpret_cast<char*>(schunk_modified), 0, 
 						sizeof(schunk_modified));
 
-	for (i = 0; i < 144; i++) delete [] schunk_cache[i];
+	for (int i = 0; i < 144; i++) delete [] schunk_cache[i];
 	memset(schunk_cache, 0, sizeof (schunk_cache));
 	memset(schunk_cache_sizes, -1, sizeof(schunk_cache_sizes));
 
@@ -330,9 +370,9 @@ void Game_map::get_all_terrain
 	{
 	if (read_all_terrain)
 		return;			// Already done.
-	int num_chunk_terrains = chunk_terrains.size();
+	int num_chunk_terrains = chunk_terrains->size();
 	for (int i = 0; i < num_chunk_terrains; i++)
-		if (!chunk_terrains[i])
+		if (!(*chunk_terrains)[i])
 			read_terrain(i);
 	read_all_terrain = true;
 	}
@@ -349,6 +389,22 @@ void Game_map::set_chunk_terrain
 	{
 	terrain_map[cx][cy] = chunknum;	// Set map.
 	get_chunk_objects(cx, cy);	// Set chunk to it.
+	map_modified = true;
+	}
+
+/*
+ *	Build a file name with the map directory before it; ie,
+ *		get_mapped_name("<GAMEDAT>/ireg, 3, to) will store
+ *			"<GAMEDAT>/map03/ireg".
+ */
+
+char *Game_map::get_mapped_name
+	(
+	char *from, 
+	char *to
+	)
+	{
+	return Get_mapped_name(from, num, to);
 	}
 
 /*
@@ -364,7 +420,7 @@ char *Game_map::get_schunk_file_name
 	char *fname			// Name is stored here.
 	)
 	{
-	strcpy(fname, prefix);
+	get_mapped_name(prefix, fname);
 	int len = strlen(fname);
 	fname[len] = '0' + schunk/16;
 	int lb = schunk%16;
@@ -374,26 +430,18 @@ char *Game_map::get_schunk_file_name
 	}
 
 /*
- *	Write out the 'static' map files.
+ *	Write out the chunks descriptions.
  */
 
-void Game_map::write_static
+void Game_map::write_chunk_terrains
 	(
 	)
 	{
-	U7mkdir("<PATCH>", 0755);		// Create dir if not already there. Don't
-									// use PATCHDAT define cause it has a
-									// trailing slash
-
-	int schunk;			// Write each superchunk to 'static'.
-	for (schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
-					// Only write what we've modified.
-		if (schunk_modified[schunk])
-			write_ifix_objects(schunk);
-	int cnt = chunk_terrains.size();
+	int cnt = chunk_terrains->size();
 	int i;				// Any terrains modified?
 	for (i = 0; i < cnt; i++)
-		if (chunk_terrains[i] && chunk_terrains[i]->is_modified())
+		if ((*chunk_terrains)[i] && 
+					(*chunk_terrains)[i]->is_modified())
 			break;
 	if (i < cnt)			// Got to update.
 		{
@@ -403,7 +451,7 @@ void Game_map::write_static
 		U7open(ochunks, PATCH_U7CHUNKS);
 		for (i = 0; i < cnt; i++)
 			{
-			Chunk_terrain *ter = chunk_terrains[i];
+			Chunk_terrain *ter = (*chunk_terrains)[i];
 			unsigned char data[512];
 			if (ter)
 				{
@@ -422,8 +470,31 @@ void Game_map::write_static
 			throw file_write_exception(U7CHUNKS);
 		ochunks.close();
 		}
+	chunk_terrains_modified = false;
+	}
+
+/*
+ *	Write out the 'static' map files.
+ */
+
+void Game_map::write_static
+	(
+	)
+	{
+	char fname[128];
+	U7mkdir("<PATCH>", 0755);	// Create dir if not already there. 
+					//  Don't use PATCHDAT define cause 
+					//  it has a trailing slash
+
+	int schunk;			// Write each superchunk to 'static'.
+	for (schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
+					// Only write what we've modified.
+		if (schunk_modified[schunk])
+			write_ifix_objects(schunk);
+	if (chunk_terrains_modified)
+		write_chunk_terrains();
 	std::ofstream u7map;		// Write out map.
-	U7open(u7map, PATCH_U7MAP);
+	U7open(u7map, get_mapped_name(PATCH_U7MAP, fname));
 	for (schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
 		{
 		int scy = 16*(schunk/12);// Get abs. chunk coords.
@@ -1218,25 +1289,35 @@ bool Game_map::swap_terrains
 	int tnum			// Swap tnum and tnum + 1.
 	)
 	{
-	if (tnum < 0 || tnum >= chunk_terrains.size() - 1)
+	if (tnum < 0 || tnum >= chunk_terrains->size() - 1)
 		return false;		// Out of bounds.
-	map_modified = true;
 					// Swap in list.
 	Chunk_terrain *tmp = get_terrain(tnum);
 	tmp->set_modified();
-	chunk_terrains[tnum] = get_terrain(tnum + 1);
-	chunk_terrains[tnum]->set_modified();
-	chunk_terrains[tnum + 1] = tmp;
-					// Update terrain map.
-	for (int cy = 0; cy < c_num_chunks; cy++)
-		for (int cx = 0; cx < c_num_chunks; cx++)
-			{
-			if (terrain_map[cx][cy] == tnum)
-				terrain_map[cx][cy]++;
-			else if (terrain_map[cx][cy] == tnum + 1)
-				terrain_map[cx][cy]--;
-			}
-	Game_window::get_instance()->set_all_dirty();
+	(*chunk_terrains)[tnum] = get_terrain(tnum + 1);
+	(*chunk_terrains)[tnum]->set_modified();
+	(*chunk_terrains)[tnum + 1] = tmp;
+	chunk_terrains_modified = true;
+					// Update terrain maps.
+	Game_window *gwin = Game_window::get_instance();
+	const Exult_vector<Game_map*>& maps = gwin->get_maps();
+	for (Exult_vector<Game_map*>::const_iterator it = maps.begin();
+						it != maps.end(); ++it)
+		{
+		Game_map *map = *it;
+		if (!map)
+			continue;
+		for (int cy = 0; cy < c_num_chunks; cy++)
+			for (int cx = 0; cx < c_num_chunks; cx++)
+				{
+				if (map->terrain_map[cx][cy] == tnum)
+					map->terrain_map[cx][cy]++;
+				else if (map->terrain_map[cx][cy] == tnum + 1)
+					map->terrain_map[cx][cy]--;
+				}
+		map->map_modified = true;
+		}
+	gwin->set_all_dirty();
 	return true;
 	}
 
@@ -1254,14 +1335,13 @@ bool Game_map::insert_terrain
 	bool dup			// If true, duplicate #tnum.
 	)
 	{
-	if (tnum < -1 || tnum >= chunk_terrains.size())
+	if (tnum < -1 || tnum >= chunk_terrains->size())
 		return false;		// Invalid #.
 	get_all_terrain();		// Need all of 'u7chunks' read in.
-	map_modified = true;
 	unsigned char buf[16*16*2];	// Set up buffer with shape #'s.
 	if (dup && tnum >= 0)
 		{			// Want to duplicate given terrain.
-		Chunk_terrain *ter = chunk_terrains[tnum];
+		Chunk_terrain *ter = (*chunk_terrains)[tnum];
 		unsigned char *data = &buf[0];
 		for (int ty = 0; ty < c_tiles_per_chunk; ty++)
 			for (int tx = 0; tx < c_tiles_per_chunk; tx++)
@@ -1276,21 +1356,30 @@ bool Game_map::insert_terrain
 		memset(reinterpret_cast<char*>(buf), 0, sizeof(buf));
 	Chunk_terrain *new_terrain = new Chunk_terrain(&buf[0]);
 					// Insert in list.
-	chunk_terrains.insert(chunk_terrains.begin() + tnum + 1, new_terrain);
+	chunk_terrains->insert(chunk_terrains->begin() + tnum + 1,new_terrain);
 					// Indicate terrains are modified.
-	int num_chunk_terrains = chunk_terrains.size();
+	int num_chunk_terrains = chunk_terrains->size();
 	for (int i = tnum + 1; i < num_chunk_terrains; i++)
-		chunk_terrains[i]->set_modified();
+		(*chunk_terrains)[i]->set_modified();
+	chunk_terrains_modified = true;
 	if (tnum + 1 == num_chunk_terrains - 1)
 		return true;		// Inserted at end of list.
 					// Update terrain map.
-	for (int cy = 0; cy < c_num_chunks; cy++)
-		for (int cx = 0; cx < c_num_chunks; cx++)
-			{
-			if (terrain_map[cx][cy] > tnum)
-				terrain_map[cx][cy]++;
-			}
-	Game_window::get_instance()->set_all_dirty();
+	Game_window *gwin = Game_window::get_instance();
+	const Exult_vector<Game_map*>& maps = gwin->get_maps();
+	for (Exult_vector<Game_map*>::const_iterator it = maps.begin();
+						it != maps.end(); ++it)
+		{
+		Game_map *map = *it;
+		if (!map)
+			continue;
+		for (int cy = 0; cy < c_num_chunks; cy++)
+			for (int cx = 0; cx < c_num_chunks; cx++)
+				if (map->terrain_map[cx][cy] > tnum)
+					map->terrain_map[cx][cy]++;
+		map->map_modified = true;
+		}
+	gwin->set_all_dirty();
 	return true;
 	}
 
@@ -1305,26 +1394,34 @@ bool Game_map::delete_terrain
 	int tnum
 	)
 	{
-	if (tnum < 0 || tnum >= chunk_terrains.size())
+	if (tnum < 0 || tnum >= chunk_terrains->size())
 		return false;		// Out of bounds.
-	map_modified = true;
-	int sz = chunk_terrains.size();
-	delete chunk_terrains[tnum];
+	int sz = chunk_terrains->size();
+	delete (*chunk_terrains)[tnum];
 	for (int i = tnum + 1; i < sz; i++)
 		{			// Move the rest downwards.
 		Chunk_terrain *tmp = get_terrain(i);
 		tmp->set_modified();
-		chunk_terrains[i - 1] = tmp;
+		(*chunk_terrains)[i - 1] = tmp;
 		}
-	chunk_terrains.resize(sz - 1);
+	chunk_terrains->resize(sz - 1);
+	chunk_terrains_modified = true;
 					// Update terrain map.
-	for (int cy = 0; cy < c_num_chunks; cy++)
-		for (int cx = 0; cx < c_num_chunks; cx++)
-			{
-			if (terrain_map[cx][cy] >= tnum)
-				terrain_map[cx][cy]--;
-			}
-	Game_window::get_instance()->set_all_dirty();
+	Game_window *gwin = Game_window::get_instance();
+	const Exult_vector<Game_map*>& maps = gwin->get_maps();
+	for (Exult_vector<Game_map*>::const_iterator it = maps.begin();
+						it != maps.end(); ++it)
+		{
+		Game_map *map = *it;
+		if (!map)
+			continue;
+		for (int cy = 0; cy < c_num_chunks; cy++)
+			for (int cx = 0; cx < c_num_chunks; cx++)
+				if (map->terrain_map[cx][cy] >= tnum)
+					map->terrain_map[cx][cy]--;
+		map->map_modified = true;
+		}
+	gwin->set_all_dirty();
 	return true;
 	}
 
@@ -1336,24 +1433,35 @@ void Game_map::commit_terrain_edits
 	(
 	)
 	{
-	int num_terrains = chunk_terrains.size();
+	int num_terrains = chunk_terrains->size();
 					// Create list of flags.
 	unsigned char *ters = new unsigned char[num_terrains];
 	memset(ters, 0, num_terrains);
 					// Commit edits.
 	for (int i = 0; i < num_terrains; i++)
-		if (chunk_terrains[i] && chunk_terrains[i]->commit_edits())
+		if ((*chunk_terrains)[i] && 
+					(*chunk_terrains)[i]->commit_edits())
 			ters[i] = 1;
 					// Update terrain map.
-	for (int cy = 0; cy < c_num_chunks; cy++)
-		for (int cx = 0; cx < c_num_chunks; cx++)
-			{
-			Map_chunk *chunk = objects[cx][cy];
-			if (chunk && ters[terrain_map[cx][cy]] != 0 &&
-			    chunk->get_terrain())
+	Game_window *gwin = Game_window::get_instance();
+	const Exult_vector<Game_map*>& maps = gwin->get_maps();
+	for (Exult_vector<Game_map*>::const_iterator it = maps.begin();
+						it != maps.end(); ++it)
+		{
+		Game_map *map = *it;
+		if (!map)
+			continue;
+		for (int cy = 0; cy < c_num_chunks; cy++)
+			for (int cx = 0; cx < c_num_chunks; cx++)
+				{
+				Map_chunk *chunk = map->objects[cx][cy];
+				if (chunk && ters[map->terrain_map[cx][cy]] 
+						!= 0 && chunk->get_terrain())
 					// Reload objects.
-				chunk->set_terrain(chunk->get_terrain());
-			}
+					chunk->set_terrain(
+							chunk->get_terrain());
+				}
+		}
 	delete [] ters;
 	}
 
@@ -1365,11 +1473,11 @@ void Game_map::abort_terrain_edits
 	(
 	)
 	{
-	int num_terrains = chunk_terrains.size();
+	int num_terrains = chunk_terrains->size();
 					// Abort edits.
 	for (int i = 0; i < num_terrains; i++)
-		if (chunk_terrains[i])
-			chunk_terrains[i]->abort_edits();
+		if ((*chunk_terrains)[i])
+			(*chunk_terrains)[i]->abort_edits();
 	}
 
 /*
@@ -1519,7 +1627,8 @@ Game_object *Game_map::locate_shape
 	}
 
 /*
- *	Do a cache out. (x, y) is the center
+ *	Do a cache out. (x, y) is the center.
+ *	If x == -1, cache out whole map.
  */
 
 void Game_map::cache_out(int cx, int cy)
@@ -1529,25 +1638,31 @@ void Game_map::cache_out(int cx, int cy)
 	bool chunk_flags[12][12];
 
 #ifdef DEBUG
-	std::cout << "Want to cache out around super chunk: " << (sy*12 + sx) << " = "  << sx << ", " << sy << std::endl;
+	if (cx == -1)
+		std::cout << "Want to cache out entire map #" <<
+				get_num() << std::endl;
+	else
+		std::cout << "Want to cache out around super chunk: " << 
+		(sy*12 + sx) << " = "  << sx << ", " << sy << std::endl;
 #endif
 
 	std::memset(chunk_flags, 0, sizeof(chunk_flags));
 
 	// We cache out all but the 9 directly around the pov
+	if (cx != -1 && cy != -1)
+		{
+		chunk_flags[(sy+11)%12][(sx+11)%12] = true;
+		chunk_flags[(sy+11)%12][sx] = true;
+		chunk_flags[(sy+11)%12][(sx+1)%12] = true;
 
-	chunk_flags[(sy+11)%12][(sx+11)%12] = true;
-	chunk_flags[(sy+11)%12][sx] = true;
-	chunk_flags[(sy+11)%12][(sx+1)%12] = true;
+		chunk_flags[sy][(sx+11)%12] = true;
+		chunk_flags[sy][sx] = true;
+		chunk_flags[sy][(sx+1)%12] = true;
 
-	chunk_flags[sy][(sx+11)%12] = true;
-	chunk_flags[sy][sx] = true;
-	chunk_flags[sy][(sx+1)%12] = true;
-
-	chunk_flags[(sy+1)%12][(sx+11)%12] = true;
-	chunk_flags[(sy+1)%12][sx] = true;
-	chunk_flags[(sy+1)%12][(sx+1)%12] = true;
-
+		chunk_flags[(sy+1)%12][(sx+11)%12] = true;
+		chunk_flags[(sy+1)%12][sx] = true;
+		chunk_flags[(sy+1)%12][(sx+1)%12] = true;
+		}
 	for (sy = 0; sy < 12; sy++) for (sx = 0; sx < 12; sx++) {
 		if (chunk_flags[sy][sx]) continue;
 

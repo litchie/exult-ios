@@ -77,6 +77,7 @@ public:
 		weather = 8,
 		path = 9,
 		button = 10,
+		intermap = 11,
 					// Our own:
 		fire_field = 128,
 		sleep_field = 129,

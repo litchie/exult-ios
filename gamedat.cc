@@ -330,8 +330,11 @@ void Game_window::save_gamedat
 
 	ofstream out;
 	U7open(out, fname);
-					// Doing all IREG's + what's listed.
-	int count = 12*12 + numsavefiles;
+	Exult_vector<Game_map*>::iterator it;
+	int count = numsavefiles;	// Count up #files to write.
+	for (it = maps.begin(); it != maps.end(); ++it)
+		if (*it)
+			count += 12*12;	// IREG's for each map.
 					// Use samename for title.
 	Flex_writer flex(out, savename, count);
 	int i;				// Start with listed files.
@@ -341,12 +344,17 @@ void Game_window::save_gamedat
 		flex.mark_section_done();
 		}
 					// Now the Ireg's.
-	for (int schunk = 0; schunk < 12*12; schunk++, i++)
+	for (it = maps.begin(); it != maps.end(); ++it)
 		{
-		char iname[80];
-		Savefile(out, map->get_schunk_file_name(U7IREG,
+		if (!*it)
+			continue;
+		for (int schunk = 0; schunk < 12*12; schunk++, i++)
+			{
+			char iname[128];
+			Savefile(out, (*it)->get_schunk_file_name(U7IREG,
 							schunk, iname));
-		flex.mark_section_done();
+			flex.mark_section_done();
+			}
 		}
 	bool result = flex.close();	// Write it all out.
 	if (!result)			// ++++Better error system needed??
@@ -1127,6 +1135,7 @@ bool Game_window::save_gamedat_zip
 	const char *savename			// User's savegame name.
 	)
 {
+	char iname[128];
 	// If no compression return
 	if (save_compression < 1) return false;
 
@@ -1135,6 +1144,7 @@ bool Game_window::save_gamedat_zip
 			bgnumsavefiles : sinumsavefiles;
 	const char **savefiles = (Game::get_game_type() == BLACK_GATE) ?
 			bgsavefiles : sisavefiles;	
+	Exult_vector<Game_map*>::iterator it;
 
 	// Name
 	{
@@ -1157,12 +1167,15 @@ bool Game_window::save_gamedat_zip
 			Save_level1(zipfile, savefiles[i]);
 
 		// Now the Ireg's.
-		for (int schunk = 0; schunk < 12*12; schunk++)
-		{
-			char iname[80];
-			Save_level1(zipfile, 
-			    map->get_schunk_file_name(U7IREG, schunk, iname));
-		}
+		for (it = maps.begin(); it != maps.end(); ++it)
+			{
+			if (!*it)
+				continue;
+			for (int schunk = 0; schunk < 12*12; schunk++)
+				Save_level1(zipfile, 
+					(*it)->get_schunk_file_name(U7IREG, 
+							schunk, iname));
+			}
 	}
 	// Level 2 Compression
 	else
@@ -1179,12 +1192,15 @@ bool Game_window::save_gamedat_zip
 			Save_level2(zipfile, savefiles[i]);
 
 		// Now the Ireg's.
-		for (int schunk = 0; schunk < 12*12; schunk++)
-		{
-			char iname[80];
-			Save_level2(zipfile, map->get_schunk_file_name(
+		for (it = maps.begin(); it != maps.end(); ++it)
+			{
+			if (!*it)
+				continue;
+			for (int schunk = 0; schunk < 12*12; schunk++)
+				Save_level2(zipfile, 
+					(*it)->get_schunk_file_name(
 						U7IREG, schunk, iname));
-		}
+			}
 
 		End_level2(zipfile);
 	}

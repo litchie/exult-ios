@@ -1,3 +1,9 @@
+2004-06-26    <jeff@mini.nerble.net>
+
+	* Merged in multiple-map support.
+	* Merged in use of dexterity and wand charges.
+	* Merged in builtin groups in ExultStudio.
+
 2004-06-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/Makefile.am, ucxt/data/Makefile.am: fixed makefile problems
 
@@ -70,6 +76,14 @@
 	* desktop/*: put .desktop file in /usr/share/applications,
 	icon in /usr/share/icons.
 
+2004-02-24    <jeff@mini.nerble.net>
+
+	* mapedit/shapegroup.cc: Show builtin groups (monsters, ammo, etc.)
+
+2004-02-19    <jeff@mini.nerble.net>
+
+	* combat.cc (Combat_schedule): Use dexterity during combat.
+
 2004-02-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/studio.cc: fixed main_window not getting toplevel_focus
 
@@ -79,6 +93,10 @@
 
 2004-02-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* audio/midi_drivers/Makefile.am: add win_midiout.*
+
+2004-02-16    <jeff@mini.nerble.net>
+
+	* combat.cc,etc:  Keep track of wand charges.
 
 2004-02-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mouse.cc: fixed dead actors causing movement slowdowns and/or crashes

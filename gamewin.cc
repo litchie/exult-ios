@@ -305,7 +305,7 @@ Game_window::Game_window
 	(
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
-	    win(0), map(new Game_map()), pal(0),
+	    win(0), map(new Game_map(0)), pal(0),
 	    usecode(0), combat(false), armageddon(false), 
 	    walk_in_formation(false),
             tqueue(new Time_queue()), time_stopped(0),
@@ -333,6 +333,7 @@ Game_window::Game_window
 	game_window = this;		// Set static ->.
 	clock = new Game_clock(tqueue);
 	shape_man = new Shape_manager();// Create the single instance.
+	maps.push_back(map);		// Map #0.
 					// Create window.
 	string	fullscreenstr;		// Check config. for fullscreen mode.
 	config->value("config/video/fullscreen",fullscreenstr,"no");
@@ -425,7 +426,9 @@ Game_window::~Game_window
 	delete win;
 	delete dragging;
 	delete pal;
-	delete map;
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		delete *it;
 	delete usecode;
 	delete removed;
 	delete clock;
@@ -528,6 +531,38 @@ void Game_window::init_files(bool cycle)
 		fps = 5;
 	std_delay = 1000/fps;		// Convert to msecs. between frames.
 }
+
+/*
+ *	Read any map.  (This is for "multimap" games, not U7.)
+ */
+
+Game_map *Game_window::get_map
+	(
+	int num				// Should be > 0.
+	)
+	{
+	if (num >= maps.size() || maps[num] == 0)
+		{
+		maps.put(num, new Game_map(num));
+		maps[num]->init();
+		}
+	return maps[num];
+	}
+
+/*
+ *	Set current map to given #.
+ */
+
+void Game_window::set_map
+	(
+	int num
+	)
+	{
+	map = get_map(num);
+	if (!map)
+		abort("Map #d doesn't exist", num);
+	Game_singletons::gmap = map;
+	}
 
 /*
  *	Get map patch list.
@@ -759,7 +794,10 @@ void Game_window::clear_world
 	clear_dirty();
 	removed->flush();		// Delete.
 	Usecode_script::clear();	// Clear out all scheduled usecode.
-	map->clear();
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		(*it)->clear();
+	set_map(0);			// Back to main map.
 	Monster_actor::delete_all();	// To be safe, del. any still around.
 	main_actor = 0;
 	camera_actor = 0;
@@ -933,8 +971,8 @@ void Game_window::set_camera_actor
 	    (camera_actor->get_cx() != main_actor->get_cx() ||
 	     camera_actor->get_cy() != main_actor->get_cy()))
 	    				// Cache out temp. objects.
-		emulate_cache(camera_actor->get_cx(), camera_actor->get_cy(),
-			main_actor->get_cx(), main_actor->get_cy());
+		emulate_cache(camera_actor->get_chunk(),
+						main_actor->get_chunk());
 	camera_actor = a;
 	Tile_coord t = a->get_tile();
 	set_scrolls(t);			// Set scrolling around position,
@@ -1002,6 +1040,14 @@ void Game_window::show_game_location
 
 Rectangle Game_window::get_shape_rect(Game_object *obj)
 {
+	if (!obj->get_chunk())		// Not on map?
+		{
+		Gump *gump = gump_man->find_gump(obj);
+		if (gump)
+			return gump->get_shape_rect(obj);
+		else
+			return Rectangle(0, 0, 0, 0);
+		}
 	Shape_frame *s = obj->get_shape();
 	if(!s)
 	{
@@ -1191,7 +1237,9 @@ void Game_window::write
 	shape_man->paint_text(0, "Saving Game", centre_x-text_width/2, 
 							centre_y-text_height);
 	show(true);
-	map->write_ireg();		// Write ireg files.
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		(*it)->write_ireg();	// Write ireg files.
 	write_npcs();			// Write out npc.dat.
 	usecode->write();		// Usecode.dat (party, global flags).
 	write_gwin();			// Write our data.
@@ -1314,6 +1362,26 @@ void Game_window::read_gwin
 	}
 
 /*
+ *	Was any map modified?
+ */
+
+bool Game_window::was_map_modified
+	(
+	)
+	{
+	if (Game_map::was_chunk_terrain_modified())
+		return true;
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		{
+		Game_map *map = *it;
+		if (map && map->was_map_modified())
+			return true;
+		}
+	return false;
+	}
+
+/*
  *	Write out map data (IFIXxx, U7CHUNKS, U7MAP) to static, and also
  *	save 'gamedat' to <PATCH>/initgame.dat.
  *
@@ -1326,7 +1394,13 @@ void Game_window::write_map
 	(
 	)
 	{
-	map->write_static();		// Write ifix, map files.
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		{
+		Game_map *map = *it;
+		if (map && map->was_map_modified())
+			map->write_static();	// Write ifix, map files.
+		}
 	write();			// Write out to 'gamedat' too.
 	save_gamedat(PATCH_INITGAME, "Saved map");
 	}
@@ -1739,19 +1813,35 @@ void Game_window::stop_actor
 void Game_window::teleport_party
 	(
 	Tile_coord t,			// Where to go.
-	bool skip_eggs			// Don't activate eggs at dest.
+	bool skip_eggs,			// Don't activate eggs at dest.
+	int new_map			// New map #, or -1 for same map.
 	)
 	{
 	Tile_coord oldpos = main_actor->get_tile();
 	main_actor->set_action(0);	// Definitely need this, or you may
 					//   step back to where you came from.
 	moving_barge = 0;		// Calling 'done()' could be risky...
+	int i, cnt = party_man->get_count();
+	if (new_map != -1)
+		{			// Remove all from old map.
+#if 0
+		main_actor->remove_this(true);
+		for (i = 0; i < cnt; i++)
+			{
+			int party_member=party_man->get_member(i);
+			Actor *person = get_npc(party_member);
+			if (person && !person->is_dead() && 
+			    person->get_schedule_type() != Schedule::wait)
+				person->remove_this(true);
+			}
+#endif
+		set_map(new_map);
+		}
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
 	center_view(t);			// Bring pos. into view, and insure all
 					//   objs. exist.
 
-	int cnt = party_man->get_count();
-	for (int i = 0; i < cnt; i++)
+	for (i = 0; i < cnt; i++)
 		{
 		int party_member=party_man->get_member(i);
 		Actor *person = get_npc(party_member);
@@ -1989,9 +2079,13 @@ void Game_window::show_items
 			npc->get_alignment() << ", npcnum = " <<
 			npc->get_npc_num();
 		cout << endl;
-		Tile_coord t = obj->get_tile();
-		cout << "tx = " << t.tx << ", ty = " << t.ty << ", tz = " <<
-			t.tz << ", quality = " <<
+		if (obj->get_chunk())
+			{
+			Tile_coord t = obj->get_tile();
+			cout << "tx = " << t.tx << ", ty = " << t.ty <<
+				", tz = " << t.tz << ", ";
+			}
+		cout << "quality = " <<
 			obj->get_quality() << 
 			", okay_to_take = " <<
 			static_cast<int>(obj->get_flag(Obj_flags::okay_to_take)) <<
@@ -2550,7 +2644,9 @@ void Game_window::setup_game
 	(
 	)
 	{
-	map->init();
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		(*it)->init();
 				// Init. current 'tick'.
 	Game::set_ticks(SDL_GetTicks());
 	init_actors();		// Set up actors if not already done.
@@ -2646,53 +2742,62 @@ void Game_window::plasma(int w, int h, int x, int y, int startc, int endc)
  *	Chunk caching emulation:  swap out chunks which are now at least
  *	3 chunks away.
  */
-void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
+void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist)
 {
-	if (oldx == -1 || oldy == -1)
+	if (!olist)
 		return;			// Seems like there's nothing to do.
 					// Cancel weather from eggs that are
 					//   far away.
 	effects->remove_weather_effects(120);
+	int newx = nlist->get_cx(), newy = nlist->get_cy(),
+	    oldx = olist->get_cx(), oldy = nlist->get_cy();
+	Game_map *omap = olist->get_map(), *nmap = nlist->get_map();
 					// Cancel scripts 4 chunks from this.
 	Usecode_script::purge(Tile_coord(newx*c_tiles_per_chunk,
 			newy*c_tiles_per_chunk, 0), 4*c_tiles_per_chunk);
 	int nearby[5][5];		// Chunks within 3.
-	// Set to 0
-	// No casting _should_ be necessary at this point.
-	// Who needs this?
-	memset(reinterpret_cast<char*>(nearby), 0, sizeof(nearby));
+	int x, y;
 					// Figure old range.
 	int old_minx = c_num_chunks + oldx - 2, 
 	    old_maxx = c_num_chunks + oldx + 2;
 	int old_miny = c_num_chunks + oldy - 2, 
 	    old_maxy = c_num_chunks + oldy + 2;
-					// Figure new range.
-	int new_minx = c_num_chunks + newx - 2, 
-	    new_maxx = c_num_chunks + newx + 2;
-	int new_miny = c_num_chunks + newy - 2, 
-	    new_maxy = c_num_chunks + newy + 2;
-	// Now we write what we are now near
-	int x, y;
-	for (y = new_miny; y <= new_maxy; y++) 
+	if (nlist == olist)		// Same map?
 		{
-		if (y > old_maxy)
-			break;		// Beyond the end.
-		int dy = y - old_miny;
-		if (dy < 0)
-			continue;
-		assert(dy < 5);
-		for (x = new_minx; x <= new_maxx; x++)
+		// Set to 0
+		// No casting _should_ be necessary at this point.
+		// Who needs this?
+		memset(reinterpret_cast<char*>(nearby), 0, sizeof(nearby));
+					// Figure new range.
+		int new_minx = c_num_chunks + newx - 2, 
+		    new_maxx = c_num_chunks + newx + 2;
+		int new_miny = c_num_chunks + newy - 2, 
+		    new_maxy = c_num_chunks + newy + 2;
+		// Now we write what we are now near
+		for (y = new_miny; y <= new_maxy; y++) 
 			{
-			if (x > old_maxx)
-				break;
-			int dx = x - old_minx;
-			if (dx >= 0)
+			if (y > old_maxy)
+				break;		// Beyond the end.
+			int dy = y - old_miny;
+			if (dy < 0)
+				continue;
+			assert(dy < 5);
+			for (x = new_minx; x <= new_maxx; x++)
 				{
-				assert(dx < 5);
-				nearby[dx][dy] = 1;
+				if (x > old_maxx)
+					break;
+				int dx = x - old_minx;
+				if (dx >= 0)
+					{
+					assert(dx < 5);
+					nearby[dx][dy] = 1;
+					}
 				}
 			}
 		}
+	else				// New map, so cache out all of old.
+		memset(reinterpret_cast<char*>(nearby), 1, sizeof(nearby));
+
 	// Swap out chunks no longer nearby (0).
 	Game_object_vector removes;
 	for (y = 0; y < 5; y++)
@@ -2700,7 +2805,7 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 			{
 			if (nearby[x][y] != 0)
 				continue;
-			Map_chunk *list = map->get_chunk_safely(
+			Map_chunk *list = omap->get_chunk_safely(
 				(old_minx + x)%c_num_chunks,
 				(old_miny + y)%c_num_chunks);
 			if (!list) continue;
@@ -2727,10 +2832,12 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 		(*it)->remove_this(0);
 		}
 
-		get_map()->cache_out(newx, newy);
-
+	if (omap == nmap)
+		omap->cache_out(newx, newy);
+	else					// Going to new map?
+		omap->cache_out(-1, -1);	// Cache out whole of old map.
 		// Could cause some problems
-		removed->flush();
+	removed->flush();
 	}
 
 // Tests to see if a move goes out of range of the actors superchunk
