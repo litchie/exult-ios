@@ -81,6 +81,7 @@ private:
 	static void	fill_audio(void *udata, uint8 *stream, int len);
 
 public:
+	friend class Tired_of_compiler_warnings;
 	static void		Init(void);
 	static void		Destroy(void);
 	static Audio*	get_ptr(void);

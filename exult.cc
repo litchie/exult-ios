@@ -138,6 +138,7 @@ int exult_main(void);
 static void Init();
 static int Play();
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
+int Put_click(int x, int y, int button = 1);
 void increase_resolution (void);
 void decrease_resolution (void);
 int find_resolution(int w, int h, int s);
@@ -856,6 +857,20 @@ int Get_click
 	int ret = Get_click(x, y, chr);
 	Mouse::mouse->set_shape(saveshape);
 	return (ret);
+	}
+
+int Put_click
+	(
+	int x, int y, int button
+	)
+	{
+	SDL_Event e;
+	e.type = SDL_MOUSEBUTTONUP;
+	e.button.button = button;
+	int scale = gwin->get_win()->get_scale();
+	e.button.x = x * scale;
+	e.button.y = y * scale;
+	return !SDL_PushEvent(&e);
 	}
 
 /*
