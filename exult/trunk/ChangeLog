@@ -1,3 +1,6 @@
+2001-12-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Makefile.am: really fixed subdir order now... (data depends on tools)
+
 2001-12-21  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* drag.cc (Dragging_info): Use remove_this(true) to remove obj.
@@ -13,6 +16,7 @@
 	* GameplayOptions_gump.cc: added support for custom framerates	
 	* Gump_ToggleTextButton.h: minor bug fix
 	* Makefile.am: removed --all-static from link line
+	* data/sav*.shp: replaced wrong black by right black
 
 2001-12-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/u7shp.c: use new and improved palette in gimp plugin
