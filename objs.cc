@@ -32,6 +32,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "citerate.h"
 #include <string.h>
+
+					// Offset to each neighbor, dir=0-7.
+short Tile_coord::neighbors[16] = {0,-1, 1,-1, 1,0, 1,1, 0,1,
+							-1,1, -1,0, -1,-1 };
+
 					// Bit 5=S, Bit6=reflect. on diag.
 unsigned char Game_object::rotate[8] = { 0, 0, 48, 48, 16, 16, 32, 32};
 
