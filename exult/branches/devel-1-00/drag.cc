@@ -129,6 +129,7 @@ bool Dragging_info::start
 			{
 			Mouse::mouse->flash_shape(Mouse::tooheavy);
 			obj = 0;
+			gump = 0;
 			return (false);
 			}
 		Game_object *owner = obj->get_outermost();

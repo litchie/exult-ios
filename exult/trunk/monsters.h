@@ -70,7 +70,7 @@ public:
 	virtual Weapon_info *get_weapon(int& points, int& shape);
 	virtual int is_monster()
 		{ return 1; }
-	virtual void die();		// We're dead.
+	virtual void die(Actor *attacker);		// We're dead.
 	void write(DataSource* nfile);// Write out (to 'monsnpc.dat').
 	};
 

@@ -411,10 +411,14 @@ Weapon_info *Monster_actor::get_weapon
 
 void Monster_actor::die
 	(
+	Actor *attacker
 	)
 	{
-	Actor::die();
-	Audio::get_ptr()->start_music_combat ( CSVictory, 0);
+	Actor::die(attacker);
+					// Party defeated an evil monster?
+	if (attacker && attacker->is_in_party() &&
+	    get_alignment() != neutral && get_alignment() != friendly)
+		Audio::get_ptr()->start_music_combat ( CSVictory, 0);
 					// Got to delete this somewhere, but
 					//   doing it here crashes.
 	}

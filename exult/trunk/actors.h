@@ -451,7 +451,7 @@ public:
 					// Under attack.
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
-	virtual void die();		// We're dead.
+	virtual void die(Actor *attacker);		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
 	Monster_actor *clone();		// Create another nearby to this.
 	void mend_hourly();		// Restore HP's hourly.
@@ -524,7 +524,7 @@ public:
 					Map_chunk *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
-	virtual void die();		// We're dead.
+	virtual void die(Actor *attacker);		// We're dead.
 	};
 
 /*
