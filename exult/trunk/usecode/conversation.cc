@@ -655,4 +655,5 @@ void Conversation::pop_answers()
 {
   answers=answer_stack.front();
   answer_stack.pop_front();
+  gwin->paint();			// Really just need to figure tbox.
 }
