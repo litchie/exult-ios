@@ -199,24 +199,30 @@ bool	Configuration::read_config_file(const char *n)
         char    buf[4096];
         string  sbuf;
 
-#if ((defined XWIN) || (defined BEOS))
-	const char *f1=getenv("HOME");
-	if(f1)
-		{
-		// User has a home directory
-		filename=f1;
-		filename+="/.";
-		filename+=n;
-		}
-	else
-		filename=n;
-#else
-	// Probably something to do with deteriming the username
-	// and generating a filename in their personal setup area.
-
-        // For now, just read file from current directory
 	filename=n;
+	// Don't frob the filename if it starts with a dot and
+	// a slash.
+	if(filename.find("./")!=0)
+		{
+#if ((defined XWIN) || (defined BEOS))
+		const char *f1=getenv("HOME");
+		if(f1)
+			{
+			// User has a home directory
+			filename=f1;
+			filename+="/.";
+			filename+=n;
+			}
+		else
+			filename=n;
+#else
+		// Probably something to do with deteriming the username
+		// and generating a filename in their personal setup area.
+
+		// For now, just read file from current directory
+		filename=n;
 #endif
+		}
 	FILE	*fp=U7open(filename.c_str(),"r");
 
 	is_file=true; // set to file, even if file not found

@@ -1,5 +1,7 @@
 INCLUDES = -I.. -I../files $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
+bin_PROGRAMS = confregress
+
 lib_LTLIBRARIES = libconf.la
 
 libconf_la_SOURCES =	\
@@ -9,6 +11,13 @@ libconf_la_SOURCES =	\
 	XMLEntity.h		\
 	xmldump.cc		\
 	xmlparse.cc
+
+confregress_SOURCES =	\
+	xmain.cc
+
+confregress_LDADD =	\
+	libconf.la	\
+	../files/libu7file.la 
 
 EXTRA_DIST = 		\
 	config.xml	\
