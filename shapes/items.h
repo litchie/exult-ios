@@ -32,10 +32,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern char **item_names;		// The game items' names.
 extern int num_item_names;
 
-void Setup_item_names (std::ifstream& items);
+void Setup_item_names (std::ifstream& items, std::ifstream& msgs);
 
 /*
- *	Some offsets in text.flx:
+ *	Some offsets in text.flx and exultmsg.txt:
  */
 const int first_move_aside = 0x400;	// For guards when blocked.
 const int last_move_aside = 0x402;
@@ -68,6 +68,9 @@ const int first_starving = 0x47b;	// Starving.
 const int heard_something = 0x495;
 const int first_awakened = 0x495;
 const int last_awakened = 0x49a;
+
+//	Messages in exultmsg.txt:
+const int first_chair_thief = 2800, last_chair_thief = 2804;
 
 #endif
 
