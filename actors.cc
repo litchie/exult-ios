@@ -413,23 +413,31 @@ void Actor::follow
 					// How close to aim for.
 	int dist = 3 + Actor::get_party_id()/3;
 	Tile_coord leaderpos = leader->get_abs_tile_coord();
-					// Aim for leader's dest.
-	Tile_coord goal = leader->is_moving() ? leader->get_dest() : leaderpos;
 	Tile_coord pos = get_abs_tile_coord();
+	Tile_coord goal;
+	if (leader->is_moving())	// Figure where to aim.
+		{			// Aim for leader's dest.
+		goal = leader->get_dest();
+		goal.tx = Approach(pos.tx, goal.tx, dist);
+		goal.ty = Approach(pos.ty, goal.ty, dist);
+		}
+	else				// Leader stopped?
+		{
+		goal = leaderpos;	// Aim for leader.
+//		cout << "Follow:  Leader is stopped" << endl;
+		goal.tx += 1 - rand()%3;// Jiggle a bit.
+		goal.ty += 1 - rand()%3;
+		}
+					// Already aiming along a path?
+	if (is_moving() && action && action->following_smart_path() &&
+						goal.distance(get_dest()) <= 3)
+		return;
 					// Tiles to goal.
 	int goaldist = goal.distance(pos);
 	if (goaldist < dist)		// Already close enough?
 		return;
 					// Get leader's distance from goal.
 	int leaderdist = goal.distance(leaderpos);
-					// Figure where to aim.
-	goal.tx = Approach(pos.tx, goal.tx, dist);
-	goal.ty = Approach(pos.ty, goal.ty, dist);
-	if (!leader->is_moving())	// Leader stopped?
-		{
-		goal.tx += 1 - rand()%3;// Jiggle a bit.
-		goal.ty += 1 - rand()%3;
-		}
 					// Get his speed.
 	int speed = leader->get_frame_time();
 	if (!speed)			// Not moving?
@@ -469,7 +477,8 @@ void Actor::follow
 	      get_party_id() >= 0 && 
 	      (!is_moving() || !action || !action->following_smart_path()))
 		{			// A little stuck?
-		cout << get_name() << " trying to catch up." << endl;
+		cout << get_name() << " at distance " << dist2lead 
+				<< " trying to catch up." << endl;
 					// Don't try again for a few seconds.
 		next_path_time = SDL_GetTicks() + 4000;
 		if (Chunk_object_list::is_blocked(goal, 3, get_type_flags()))

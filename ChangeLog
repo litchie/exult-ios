@@ -1,3 +1,7 @@
+2000-09-18  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc (Actor): Trying to speed up followers.
+
 2000-09-17  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Got all the way through Forge, and banished Dark Core!
