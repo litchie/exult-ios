@@ -45,6 +45,220 @@ int Cloud::randcnt = 0;
 int Lightning_effect::active = 0;
 
 /*
+ *	Clean up.
+ */
+
+Effects_manager::~Effects_manager()
+	{ 
+	remove_all_effects(false);
+	}
+
+/*
+ *	Add text over a given item.
+ */
+
+void Effects_manager::add_text
+	(
+	const char *msg,
+	Game_object *item		// Item text ID's, or null.
+	)
+	{
+	if (!msg)			// Happens with edited games.
+		return;
+					// Don't duplicate for item.
+	for (Special_effect *each = effects; each; each = each->next)
+		if (each->is_text(item))
+			return;		// Already have text on this.
+	Text_effect *txt = new Text_effect(msg, item);
+//	txt->paint(this);		// Draw it.
+//	painted = 1;
+	add_effect(txt);
+	}
+
+/*
+ *	Add a text object at a given spot.
+ */
+
+void Effects_manager::add_text
+	(
+	const char *msg,
+	int x, int y			// Pixel coord. on screen.
+	)
+	{
+	Text_effect *txt = new Text_effect(msg,
+		gwin->get_scrolltx() + x/c_tilesize, 
+		gwin->get_scrollty() + y/c_tilesize);
+	add_effect(txt);
+	}
+
+/*
+ *	Add a text object in the center of the screen
+ */
+
+void Effects_manager::center_text
+	(
+	const char *msg
+	)
+	{
+	remove_text_effects();
+	add_text(msg, (gwin->get_width()-gwin->get_text_width(0,msg))/2,
+			 gwin->get_height()/2);
+	}
+
+/*
+ *	Add an effect at the start of the chain.
+ */
+
+void Effects_manager::add_effect
+	(
+	Special_effect *effect
+	)
+	{
+	effect->next = effects;		// Insert into chain.
+	effect->prev = 0;
+	if (effect->next)
+		effect->next->prev = effect;
+	effects = effect;
+	}
+
+/*
+ *	Remove a given object's text effect.
+ */
+
+void Effects_manager::remove_text_effect
+	(
+	Game_object *item		// Item text was added for.
+	)
+	{
+	for (Special_effect *each = effects; each; each = each->next)
+		if (each->is_text(item))
+			{		// Found it.
+			remove_effect(each);
+			gwin->paint();
+			return;
+			}
+	}
+
+/*
+ *	Remove a text item/sprite from the chain and delete it.
+ */
+
+void Effects_manager::remove_effect
+	(
+	Special_effect *effect
+	)
+	{
+	if (effect->in_queue())
+		gwin->get_tqueue()->remove(effect);
+	if (effect->next)
+		effect->next->prev = effect->prev;
+	if (effect->prev)
+		effect->prev->next = effect->next;
+	else				// Head of chain.
+		effects = effect->next;
+	delete effect;
+	}
+
+/*
+ *	Remove all text items.
+ */
+
+void Effects_manager::remove_all_effects
+	(
+	 bool repaint
+	)
+	{
+	if (!effects)
+		return;
+	while (effects)
+		remove_effect(effects);
+	if (repaint)
+		gwin->paint();		// Just paint whole screen.
+	}
+
+/*
+ *	Remove text effects.
+ */
+
+void Effects_manager::remove_text_effects
+	(
+	)
+	{
+	Special_effect *each = effects;
+	while (each)
+		{
+		Special_effect *next = each->next;
+		if (each->is_text())
+			remove_effect(each);
+		each = next;
+		}
+	gwin->set_all_dirty();
+	}
+
+
+/*
+ *	Remove weather effects.
+ */
+
+void Effects_manager::remove_weather_effects
+	(
+	int dist			// Only remove those from eggs at
+					//   least this far away.
+	)
+	{
+	Actor *main_actor = gwin->get_main_actor();
+	Tile_coord apos = main_actor ? main_actor->get_tile()
+				: Tile_coord(-1, -1, -1);
+	Special_effect *each = effects;
+	while (each)
+		{
+		Special_effect *next = each->next;
+					// See if we're far enough away.
+		if (each->is_weather() && (!dist ||
+		    ((Weather_effect *) each)->out_of_range(apos, dist)))
+			remove_effect(each);
+		each = next;
+		}
+	gwin->set_all_dirty();
+	}
+
+/*
+ *	Find last numbered weather effect added.
+ */
+
+int Effects_manager::get_weather
+	(
+	)
+	{
+	Special_effect *each = effects;
+	while (each)
+		{
+		Special_effect *next = each->next;
+		if (each->is_weather())
+			{
+			Weather_effect *weather = (Weather_effect *) each;
+			if (weather->get_num() >= 0)
+				return weather->get_num();
+			}
+		each = next;
+		}
+	return 0;
+	}
+
+/*
+ *	Paint them all.
+ */
+
+void Effects_manager::paint
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_instance();
+	for (Special_effect *txt = effects; txt; txt = txt->next)
+		txt->paint(gwin);
+	}
+
+/*
  *	Some special effects may not need painting.
  */
 
@@ -130,7 +344,7 @@ void Sprites_effect::handle_event
 					//   match usecode animations.
 	if (frame_num == frames)	// At end?
 		{			// Remove & delete this.
-		gwin->remove_effect(this);
+		gwin->get_effects()->remove_effect(this);
 		gwin->set_all_dirty();
 		return;
 		}
@@ -390,6 +604,7 @@ void Projectile_effect::handle_event
 	int delay = gwin->get_std_delay()/2;
 	add_dirty(gwin);		// Force repaint of old pos.
 	Tile_coord epos = pos;		// Save pos.
+	Effects_manager *eman = gwin->get_effects();
 	if (!path->GetNextStep(pos) ||	// Get next spot.
 					// If missile egg, detect target.
 			(!target && (target = Find_target(gwin, pos)) != 0))
@@ -397,16 +612,16 @@ void Projectile_effect::handle_event
 		switch (projectile_shape)
 			{
 		case 287:		// Swordstrike.
-			gwin->add_effect(new Sprites_effect(23, epos));
+			eman->add_effect(new Sprites_effect(23, epos));
 			break;
 		case 554:		// Burst arrow.
-			gwin->add_effect(new Sprites_effect(19, epos));
+			eman->add_effect(new Sprites_effect(19, epos));
 			break;
 		case 565:		// Starburst.
-			gwin->add_effect(new Sprites_effect(18, epos));
+			eman->add_effect(new Sprites_effect(18, epos));
 			break;
 		case 639:		// Death Vortex.
-			gwin->add_effect(new Death_vortex(target, epos));
+			eman->add_effect(new Death_vortex(target, epos));
 			target = 0;	// Takes care of attack.
 			break;
 		case 78:		// Explosion.
@@ -414,7 +629,7 @@ void Projectile_effect::handle_event
 		case 621:		//    "       "
 		case 702:		// Cannon.
 		case 704:		// Powder keg.
-			gwin->add_effect(new Explosion_effect(epos, 0));
+			eman->add_effect(new Explosion_effect(epos, 0));
 			target = 0;	// Takes care of attack.
 			break;
 			}
@@ -430,16 +645,16 @@ void Projectile_effect::handle_event
 			    epos.distance(attacker->get_tile() ) < 50)
 				{ 	// not teleported away
 				Weapon_info *winf = 
-				    ShapeID::get_info(weapon).get_weapon_info();
+				   ShapeID::get_info(weapon).get_weapon_info();
 				if (winf && winf->returns())
-					gwin->add_effect(new Projectile_effect(
+					eman->add_effect(new Projectile_effect(
 						pos, attacker, weapon, weapon,
 									true));
 				}
 			}
 		add_dirty(gwin);
 		pos.tx = -1;		// Signal we're done.
-		gwin->remove_effect(this);
+		gwin->get_effects()->remove_effect(this);
 		return;
 		}
 	add_dirty(gwin);		// Paint new spot/frame.
@@ -550,7 +765,7 @@ void Death_vortex::handle_event
 	else
 		{
 		gwin->set_all_dirty();
-		gwin->remove_effect(this);
+		gwin->get_effects()->remove_effect(this);
 		}
 	}
 
@@ -667,7 +882,7 @@ void Text_effect::handle_event
 	if (++num_ticks == 10)		// About 1-2 seconds.
 		{			// All done.
 		add_dirty();
-		gwin->remove_effect(this);// Remove & delete this.
+		gwin->get_effects()->remove_effect(this);
 		return;
 		}
 					// Back into queue.
@@ -855,7 +1070,7 @@ void Rain_effect::handle_event
 	else
 		{
 		gwin->set_all_dirty();
-		gwin->remove_effect(this);
+		gwin->get_effects()->remove_effect(this);
 		}
 	}
 
@@ -912,7 +1127,7 @@ void Lightning_effect::handle_event
 		active = false;
 		if (curtime >= stop_time)
 			{		// Time to stop.
-			gwin->remove_effect(this);
+			gwin->get_effects()->remove_effect(this);
 			return;
 			}
 		if (r%5 == 0)		// Occassionally flash again.
@@ -946,10 +1161,10 @@ Storm_effect::Storm_effect
 	Game_window *gwin = Game_window::get_instance();
 					// Start raining soon.
 	int rain_delay = 20 + rand()%1000;
-	gwin->add_effect(new Rain_effect(duration - 1, rain_delay));
+	Effects_manager *eman = gwin->get_effects();
+	eman->add_effect(new Rain_effect(duration - 1, rain_delay));
 	int lightning_delay = rain_delay + rand()%500;
-	gwin->add_effect(new Lightning_effect(
-					duration - 1, lightning_delay));
+	eman->add_effect(new Lightning_effect(duration - 1, lightning_delay));
 	}
 
 /*
@@ -971,7 +1186,7 @@ void Storm_effect::handle_event
 		gwin->get_tqueue()->add(stop_time, this, udata);
 		}
 	else				// Must be time to stop.
-		gwin->remove_effect(this);
+		gwin->get_effects()->remove_effect(this);
 	}
 
 /*
@@ -1017,7 +1232,7 @@ void Sparkle_effect::handle_event
 	else
 		{
 		gwin->set_all_dirty();
-		gwin->remove_effect(this);
+		gwin->get_effects()->remove_effect(this);
 		}
 	}
 
@@ -1193,7 +1408,7 @@ void Clouds_effect::handle_event
 	Game_window *gwin = Game_window::get_instance();
 	if (curtime >= stop_time)
 		{			// Time to stop.
-		gwin->remove_effect(this);
+		gwin->get_effects()->remove_effect(this);
 		gwin->set_all_dirty();
 		return;
 		}

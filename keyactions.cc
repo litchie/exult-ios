@@ -39,7 +39,7 @@
 #include "Newfile_gump.h"
 #include "Face_stats.h"
 #include "Gump_manager.h"
-
+#include "effects.h"
 
 /*
  *	Get the i'th party member, with the 0'th being the Avatar.
@@ -94,10 +94,10 @@ void ActionQuicksave(int *params)
 		gwin->write();
 	}
 	catch(exult_exception &e) {
-		gwin->center_text("Saving game failed!");
+		gwin->get_effects()->center_text("Saving game failed!");
 		return;
 	}
-	gwin->center_text("Game saved");
+	gwin->get_effects()->center_text("Game saved");
 }
 
 //  { ActionQuickrestore, 0, "Quick-restore", true, false, NONE },
@@ -108,10 +108,10 @@ void ActionQuickrestore(int *params)
 		gwin->read();
 	}
 	catch(exult_exception &e) {
-		gwin->center_text("Restoring game failed!");
+		gwin->get_effects()->center_text("Restoring game failed!");
 		return;
 	}
-	gwin->center_text("Game restored");
+	gwin->get_effects()->center_text("Game restored");
 	gwin->paint();
 }
 
@@ -454,7 +454,7 @@ void ActionCreateShape(int *params)
 		if (params[2] == -1) params[2] = 1;
 		if (params[3] == -1) params[3] = c_any_qual;
 		gwin->get_main_actor()->add_quantity(params[2], params[0], params[3], params[1]);
-		gwin->center_text("Object created");
+		gwin->get_effects()->center_text("Object created");
 	}
 }
 

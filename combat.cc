@@ -807,8 +807,9 @@ void Combat_schedule::now_what
 			ashape = ashape ? Use_ammo(npc, ashape, pshape)
 				: (pshape ? pshape : wshape);
 		if (ashape > 0)
-			gwin->add_effect(new Projectile_effect(npc, opponent,
-				ashape, wshape));
+			gwin->get_effects()->add_effect(
+				new Projectile_effect(npc, opponent,
+							ashape, wshape));
 		npc->start(gwin->get_std_delay(), delay);
 		break;
 		}

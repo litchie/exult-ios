@@ -272,7 +272,8 @@ Game_window::Game_window
             tqueue(new Time_queue()), clock(tqueue), time_stopped(0),
 	    std_delay(c_std_delay),
 	    npc_prox(new Npc_proximity_handler(this)),
-	    effects(0), gump_man(new Gump_manager), render(new Game_render),
+	    effects(new Effects_manager(this)), 
+	    gump_man(new Gump_manager), render(new Game_render),
 	    painted(false), focus(true), 
 	    teleported(false), in_dungeon(0), ice_dungeon(false), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
@@ -795,7 +796,7 @@ void Game_window::resized
 		paint();
 		char msg[80];
 		snprintf(msg, 80, "%dx%dx%d", neww, newh, newsc);
-		center_text(msg);
+		effects->center_text(msg);
 	}
 	}
 
@@ -838,7 +839,6 @@ void Game_window::clear_world
 	bodies.resize(0);
 	moving_barge = 0;		// Get out of barge mode.
 	special_light = 0;		// Clear out light spells.
-	remove_all_effects(false);
 	}
 
 /*
@@ -859,16 +859,16 @@ bool Game_window::locate_shape
 	Game_object *start = sel.size() ? sel[0] : 0;
 	char msg[80];
 	snprintf(msg, sizeof(msg), "Searching for shape %d", shapenum);
-	center_text(msg);
+	effects->center_text(msg);
 	paint();
 	show();
 	Game_object *obj = map->locate_shape(shapenum, upwards, start);
 	if (!obj)
 		{
-		center_text("Not found");
+		effects->center_text("Not found");
 		return false;		// Not found.
 		}
-	remove_text_effects();
+	effects->remove_text_effects();
 	cheat.clear_selected();		// Select obj.
 	cheat.append_selected(obj);
 					//++++++++Got to show it.
@@ -2136,18 +2136,18 @@ void Game_window::show_items
 		char str[64];
 		snprintf (str, 64, "(%i) %s", npc->get_npc_num(), 
 				  obj->get_name().c_str());
-		add_text(str, obj);
+		effects->add_text(str, obj);
 	}
 	else if (obj)
 					// Show name.
-		add_text(obj->get_name().c_str(), obj);
+		effects->add_text(obj->get_name().c_str(), obj);
 	else if (cheat.in_map_editor() && skip_lift > 0)
 		{			// Show flat, but not when editing ter.
 		ShapeID id = get_flat(x, y);
 		char str[12];
 		snprintf(str, 12, "Flat %d:%d", id.get_shapenum(), 
 						id.get_framenum());
-		add_text(str, x, y);
+		effects->add_text(str, x, y);
 		}
 	// If it's an actor and we want to grab the actor, grab it.
 	if (npc && cheat.grabbing_actor() && 
@@ -2274,207 +2274,6 @@ void Game_window::delete_object
 	}
 
 /*
- *	Add text over a given item.
- */
-
-void Game_window::add_text
-	(
-	const char *msg,
-	Game_object *item		// Item text ID's, or null.
-	)
-	{
-	if (!msg)			// Happens with edited games.
-		return;
-					// Don't duplicate for item.
-	for (Special_effect *each = effects; each; each = each->next)
-		if (each->is_text(item))
-			return;		// Already have text on this.
-	Text_effect *txt = new Text_effect(msg, item);
-//	txt->paint(this);		// Draw it.
-//	painted = 1;
-	add_effect(txt);
-	}
-
-/*
- *	Add a text object at a given spot.
- */
-
-void Game_window::add_text
-	(
-	const char *msg,
-	int x, int y			// Pixel coord. on screen.
-	)
-	{
-	Text_effect *txt = new Text_effect(msg,
-		get_scrolltx() + x/c_tilesize, get_scrollty() + y/c_tilesize);
-//	txt->paint(this);		// Draw it.
-//	painted = 1;
-	add_effect(txt);
-	}
-
-/*
- *	Add a text object in the center of the screen
- */
-
-void Game_window::center_text
-	(
-	const char *msg
-	)
-	{
-		remove_text_effects();
-		add_text(msg, (get_width()-get_text_width(0,msg))/2,
-			 get_height()/2);
-	}
-
-/*
- *	Add an effect at the start of the chain.
- */
-
-void Game_window::add_effect
-	(
-	Special_effect *effect
-	)
-	{
-	effect->next = effects;		// Insert into chain.
-	effect->prev = 0;
-	if (effect->next)
-		effect->next->prev = effect;
-	effects = effect;
-	}
-
-/*
- *	Remove a given object's text effect.
- */
-
-void Game_window::remove_text_effect
-	(
-	Game_object *item		// Item text was added for.
-	)
-	{
-	for (Special_effect *each = effects; each; each = each->next)
-		if (each->is_text(item))
-			{		// Found it.
-			tqueue->remove(each);
-			remove_effect(each);
-			paint();
-			return;
-			}
-	}
-
-/*
- *	Remove a text item/sprite from the chain and delete it.
- *	Note:  It better not still be in the time queue.
- */
-
-void Game_window::remove_effect
-	(
-	Special_effect *effect
-	)
-	{
-	if (effect->next)
-		effect->next->prev = effect->prev;
-	if (effect->prev)
-		effect->prev->next = effect->next;
-	else				// Head of chain.
-		effects = effect->next;
-	delete effect;
-	}
-
-/*
- *	Remove all text items.
- */
-
-void Game_window::remove_all_effects
-	(
-	 bool repaint
-	)
-	{
-	if (!effects)
-		return;
-	while (effects)
-		{
-		tqueue->remove(effects);// Remove from time queue if there.
-		remove_effect(effects);
-		}
-	if (repaint)
-		paint();			// Just paint whole screen.
-	}
-
-/*
- *	Remove text effects.
- */
-
-void Game_window::remove_text_effects
-	(
-	)
-	{
-	Special_effect *each = effects;
-	while (each)
-		{
-		Special_effect *next = each->next;
-		if (each->is_text())
-			{
-			tqueue->remove(each);
-			remove_effect(each);
-			}
-		each = next;
-		}
-	set_all_dirty();
-	}
-
-
-/*
- *	Remove weather effects.
- */
-
-void Game_window::remove_weather_effects
-	(
-	int dist			// Only remove those from eggs at
-					//   least this far away.
-	)
-	{
-	Tile_coord apos = main_actor ? main_actor->get_tile()
-				: Tile_coord(-1, -1, -1);
-	Special_effect *each = effects;
-	while (each)
-		{
-		Special_effect *next = each->next;
-					// See if we're far enough away.
-		if (each->is_weather() && (!dist ||
-		    ((Weather_effect *) each)->out_of_range(apos, dist)))
-			{
-			tqueue->remove(each);
-			remove_effect(each);
-			}
-		each = next;
-		}
-	set_all_dirty();
-	}
-
-/*
- *	Find last numbered weather effect added.
- */
-
-int Game_window::get_weather
-	(
-	)
-	{
-	Special_effect *each = effects;
-	while (each)
-		{
-		Special_effect *next = each->next;
-		if (each->is_weather())
-			{
-			Weather_effect *weather = (Weather_effect *) each;
-			if (weather->get_num() >= 0)
-				return weather->get_num();
-			}
-		each = next;
-		}
-	return 0;
-	}
-
-/*
  *	A sign or plaque?
  */
 
@@ -2590,7 +2389,7 @@ void Game_window::double_clicked
 			return;
 			}
 		}
-	remove_text_effects();		// Remove text msgs. from screen.
+	effects->remove_text_effects();	// Remove text msgs. from screen.
 #ifdef DEBUG
 	cout << "Object name is " << obj->get_name() << endl;
 #endif
@@ -3008,8 +2807,9 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 {
 	if (oldx == -1 || oldy == -1)
 		return;			// Seems like there's nothing to do.
-	remove_weather_effects(120);	// Cancel weather from eggs that are
+					// Cancel weather from eggs that are
 					//   far away.
+	effects->remove_weather_effects(120);
 					// Cancel scripts 4 chunks from this.
 	Usecode_script::purge(Tile_coord(newx*c_tiles_per_chunk,
 			newy*c_tiles_per_chunk, 0), 4*c_tiles_per_chunk);
