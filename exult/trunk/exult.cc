@@ -216,6 +216,7 @@ static void Handle_events
 	unsigned char *stop
 	)
 	{
+	long last_repaint = 0;		// For insuring animation repaints.
 	/*
 	 *	Main event loop.
 	 */
@@ -230,10 +231,15 @@ static void Handle_events
 			Handle_event(event);
 					// Get current time.
 		unsigned long ticks = SDL_GetTicks();
-					// Animate unless modal or dormant.
-		if (gwin->have_focus() && gwin->get_mode() == 
-							Game_window::normal)
+					// Animate unless dormant.
+		if (gwin->have_focus())
 			gwin->get_tqueue()->activate(ticks);
+					// Show animation every 1/10 sec.
+		if (ticks > last_repaint + 100)
+			{
+			gwin->paint_dirty();
+			last_repaint = ticks;
+			}
 #ifdef MOUSE
 		mouse->show();		// Re-display mouse.
 #endif

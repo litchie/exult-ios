@@ -1470,7 +1470,7 @@ void Usecode_machine::run
 				ip += offset;
 			}
 			break;
-		case 0x09:		// ADD.
+		case 0x09:		// ADD.+++++Handle strings here.
 			pushi(popi() + popi());
 			break;
 		case 0x0a:		// SUB.

@@ -887,10 +887,7 @@ void Game_window::repaint_sprite
 	Rectangle newrect = get_shape_rect(sprite);
 					// Merge them.
 	Rectangle sum = oldrect.add(newrect);
-	sum.x -= 4;			// Make a little bigger.
-	sum.y -= 4;
-	sum.w += 8;
-	sum.h += 8;
+	sum.enlarge(4);			// Make a little bigger.
 					// Intersect with screen.
 	sum = clip_to_win(sum);
 	if (sum.w > 0 && sum.h > 0)	// Watch for negatives.
@@ -1106,7 +1103,8 @@ void Game_window::show_items
 		cout << "Object " << shnum << " has 3d tiles (x, y, z): " <<
 			info.get_3d_xtiles() << ", " <<
 			info.get_3d_ytiles() << ", " <<
-			info.get_3d_height() << ", lift = " << obj->get_lift()
+			info.get_3d_height() << ", sched = " <<
+			obj->get_schedule()
 			<< '\n';
 		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << '\n';
 		cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << '\n';
@@ -1597,7 +1595,7 @@ void Game_window::end_intro
 		init_actors();		// Set up actors if not already done.
 		paint();
 					// Start with Iolo.
-		mode = conversation;
+		// mode = conversation;
 		// ++++++Test for 1st egg here?
 		paint();
 		mode = normal;
@@ -1608,6 +1606,6 @@ void Game_window::end_intro
 			chunkx + (get_width() + chunksize - 1)/chunksize,
 			chunky + (get_height() + chunksize - 1)/chunksize);
 #endif
-//++++??		schedule_npcs(2);	//++++++Test??
+//+++++not here		schedule_npcs(2);	//++++++Test??
 		}
 	}
