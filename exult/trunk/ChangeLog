@@ -1,3 +1,9 @@
+2002-02-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* palettes.h: Define palette names here.
+	* tools/ipack.cc (public): Algorithmically create 
+	palettes 1-10 used by the Exult engine.
+
 2002-02-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* exult.cc: Single-click also sets tile when terrain-editing.

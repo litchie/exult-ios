@@ -247,6 +247,125 @@ static void Read_script
 	}
 
 /*
+ *	Modify a palette by fixed amounts and/or percentages.
+ */
+
+static void Modify_palette
+	(
+	unsigned char *from,		// Rgb values to start with,
+					//   each range 0-255.
+	unsigned char *to,		// Result stored here.
+	int palsize,			// 0-256.
+	int roff, int goff, int boff,	// Add these offsets first.
+	int r256, int g256, int b256	// Modify by x/256.
+	)
+	{
+	int cnt = 3*palsize;
+	for (int i = 0; i < 3*palsize; )
+		{
+		int r = from[i] + roff;	// First the offsets.
+					// Then percentage.
+		r += (r*r256)/256;
+		if (r < 0)
+			r = 0;
+		if (r > 255)
+			r = 255;
+		to[i++] = r;
+		int g = from[i] + goff;
+		g += (g*g256)/256;
+		if (g < 0)
+			g = 0;
+		if (g > 255)
+			g = 255;
+		to[i++] = g;
+		int b = from[i] + boff;
+		b += (b*b256)/256;
+		if (b < 0)
+			b = 0;
+		if (b > 255)
+			b = 255;
+		to[i++] = b;
+		}
+	}
+
+/*
+ *	Modify a palette by removing all color.
+ */
+
+static void Greyify_palette
+	(
+	unsigned char *from,		// Rgb values to start with,
+					//   each range 0-255.
+	unsigned char *to,		// Result stored here.
+	int palsize			// 0-256.
+	)
+	{
+	for (int i = 0; i < palsize; i++)
+		{
+		int ind = i*3;
+					// Take average.
+		int ave = (from[ind] + from[ind + 1] + from[ind + 2])/3;
+		to[ind] = to[ind + 1] = to[ind + 2] = ave;
+		}
+	}
+
+/*
+ *	Convert a palette to values 0-63.
+ */
+
+static void Convert_palette63
+	(
+	unsigned char *from,		// 3*palsize, values 0-255.
+	unsigned char *to,		// 3*256.  Values 0-63 returned, with
+					//   colors > palsize 0-filled.
+	int palsize			// # entries.
+	)
+	{
+	int i;				// Convert 0-255 to 0-63 for Exult.
+	for (i = 0; i < 3*palsize; i++)
+		to[i] = from[i]/4;
+	memset(to + i, 0, 3*256 - i);	// 0-fill the rest.
+
+	}
+
+/*
+ *	Write out a palette as text.
+ */
+
+static void Write_text_palette
+	(
+	char *palname,			// Base name.  '.txt' is appended.
+	unsigned char *palette,		// RGB's, 0-255.
+	int palsize			// # colors in palette
+	)
+	{
+					// Write out as (Gimp) text.
+	char *txtpal = new char[strlen(palname) + 10];
+	strcpy(txtpal, palname);
+	strcat(txtpal, ".txt");
+	cout << "Creating text (Gimp) palette '" << txtpal << "'" << endl;
+	ofstream pout(txtpal);		// OKAY that it's a 'text' file.
+	pout << "GIMP palette" << endl;	// MUST be this for Gimp to use.
+	pout << "Palette from Exult's Ipack" << endl;
+	int i;				// Skip 0's at end.
+	for (i = palsize - 1; i > 0; i--)
+		if (palette[3*i] != 0 || palette[3*i+1] != 0 || 
+							palette[3*i+2] != 0)
+			break;
+	int last_color = i;
+	for (i = 0; i <= last_color; i++)
+		{
+		int r = palette[3*i],
+		    g = palette[3*i + 1],
+		    b = palette[3*i + 2];
+		pout << setw(3) << r << ' ' << setw(3) << g << ' ' << 
+						setw(3) << b << endl;
+		}
+	pout.close();
+	delete txtpal;
+	}
+
+/*
  *	Write out one frame as a .png.
  */
 
@@ -281,10 +400,12 @@ static void Write_frame
 	}
 
 /*
- *	Write out a palette.
+ *	Write out palettes.  The first is the one given, and the rest are
+ *	automatically generated to work with the Exult engine (see
+ *	palettes.h for definitions).
  */
 
-void Write_palette
+void Write_palettes
 	(
 	char *palname, 
 	unsigned char *palette, 	// 3 bytes for each color.
@@ -294,43 +415,67 @@ void Write_palette
 	cout << "Creating new palette file '" << palname <<
 			"' using first file's palette" << endl;
 	unsigned char palbuf[3*256];	// We always write 256 colors.
-	memset(&palbuf[0], 0, sizeof(palbuf));
 	if (palsize > 256)		// Shouldn't happen.
 		palsize = 256;
-					// Convert 0-255 to 0-63 for Exult.
-	for (int i = 0; i < 3*palsize; i++)
-		palbuf[i] = palette[i]/4;
 	ofstream out;
 	U7open(out, palname);		// May throw exception.
-	Flex_writer writer(out, "Exult palette by Ipack", 1);
+	Flex_writer writer(out, "Exult palette by Ipack", 11);
+					// Entry 0 (DAY):
+	Convert_palette63(palette, &palbuf[0], palsize);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+					// Entry 1 (DUSK):
+	Modify_palette(palette, palbuf, palsize, 0, 0, 0, -64, -64, -64);
+	Convert_palette63(palbuf, palbuf, palsize);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+					// Entry 2 (NIGHT):
+	Modify_palette(palette, palbuf, palsize, 0, 0, 0, -128, -128, -128);
+	Convert_palette63(palbuf, palbuf, palsize);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+					// Entry 3 (INVISIBLE):
+	Greyify_palette(palette, palbuf, palsize);
+	Convert_palette63(palbuf, palbuf, palsize);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+					// Entry 4 (unknown):
+	Convert_palette63(palette, palbuf, palsize);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+					// Entry 5 (HAZE):
+	Modify_palette(palette, palbuf, palsize, 184, 184, 184, -32, -32, -32);
+	Convert_palette63(palbuf, palbuf, palsize);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+					// Entry 6 (a bit brighter than 2):
+	Modify_palette(palette, palbuf, palsize, 0, 0, 0, -96, -96, -96);
+	Convert_palette63(palbuf, palbuf, palsize);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+					// Entry 7 (a bit warmer):
+	Modify_palette(palette, palbuf, palsize, 30, 0, 0, -96, -96, -96);
+	Convert_palette63(palbuf, palbuf, palsize);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+					// Entry 8 (hit in combat):
+	Modify_palette(palette, palbuf, palsize, 64, 0, 0, 384, -20, -20);
+	Convert_palette63(palbuf, palbuf, palsize);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+					// Entry 9 (unknown):
+	Convert_palette63(palette, palbuf, palsize);
+	out.write(&palbuf[0], sizeof(palbuf));
+	writer.mark_section_done();
+					// Entry 10 (LIGHTNING):
+	Modify_palette(palette, palbuf, palsize, 32, 32, 0, 256, 256, -20);
+	Convert_palette63(palbuf, palbuf, palsize);
 	out.write(&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 	if (!writer.close())
 		throw file_write_exception(palname);
-					// Write out as (Gimp) text.
-	char *txtpal = new char[strlen(palname) + 10];
-	strcpy(txtpal, palname);
-	strcat(txtpal, ".txt");
-	cout << "Creating text (Gimp) palette '" << txtpal << "'" << endl;
-	ofstream pout(txtpal);		// OKAY that it's a 'text' file.
-	pout << "GIMP palette" << endl;	// MUST be this for Gimp to use.
-	pout << "Palette from Exult's Ipack" << endl;
-	int i;				// Skip 0's at end.
-	for (i = palsize - 1; i > 0; i--)
-		if (palette[3*i] != 0 || palette[3*i+1] != 0 || 
-							palette[3*i+2] != 0)
-			break;
-	int last_color = i;
-	for (i = 0; i <= last_color; i++)
-		{
-		int r = palette[3*i],
-		    g = palette[3*i + 1],
-		    b = palette[3*i + 2];
-		pout << setw(3) << r << ' ' << setw(3) << g << ' ' << 
-						setw(3) << b << endl;
-		}
-	pout.close();
-	delete txtpal;
+					// Write out in Gimp format.
+	Write_text_palette(palname, palette, palsize);
 	}
 
 /*
@@ -400,7 +545,7 @@ static void Write_exult
 		delete pixels;
 		if (palname)
 			{
-			Write_palette(palname, palette, palsize);
+			Write_palettes(palname, palette, palsize);
 			palname = 0;
 			}
 		delete palette;
