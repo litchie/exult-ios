@@ -484,9 +484,7 @@ void Npc_actor::handle_event
 				schedule->now_what();
 			return;
 			}
-					// Get old rectangle.
-		Rectangle rect = gwin->clip_to_win(gwin->get_shape_rect(this));
-		gwin->add_dirty(rect);	// Force repaint.
+		gwin->add_dirty(this);	// Set to repaint old area.
 					// Move it.
 		move(cx, cy, nlist, sx, sy, frame, new_lift);
 					// In new chunk?
@@ -496,19 +494,14 @@ void Npc_actor::handle_event
 				gwin->get_objects(old_cx, old_cy);
 			switched_chunks(olist, nlist);
 			}
-		rect = gwin->clip_to_win(gwin->get_shape_rect(this));
-					// No longer on screen?
-		if (rect.w <= 0 || rect.h <= 0)
-			{
+		if (!gwin->add_dirty(this))
+			{		// No longer on screen.
 			stop();
 			dormant = 1;
 			}
-		else			// Force paint.
-			{		// Add back to queue for next time.
+		else			// Add back to queue for next time.
 			gwin->get_tqueue()->add(curtime + frame_time,
 							this, udata);
-			gwin->add_dirty(rect);
-			}
 		}
 	else
 		dormant = 1;		// Not moving.
@@ -548,6 +541,33 @@ void Npc_actor::switched_chunks
 		nlist->npcs = this;
 		}
 	}
+
+/*
+ *	Create an instance of a monster.
+ */
+
+Npc_actor *Monster_info::create
+	(
+	int chunkx, int chunky,		// Chunk to place it in.
+	int tilex, int tiley,		// Tile within chunk.
+	int lift			// Lift.
+	)
+	{
+	Npc_actor *monster = new Npc_actor(0, shapenum);
+	monster->set_property(Actor::strength, strength);
+	monster->set_property(Actor::dexterity, dexterity);
+	monster->set_property(Actor::intelligence, intelligence);
+	monster->set_property(Actor::combat, combat);
+					// ++++Armor?
+					// Place in world.
+	Game_window *gwin = Game_window::get_game_window();
+	Chunk_object_list *olist = gwin->get_objects(chunkx, chunky);
+	monster->move(chunkx, chunky, olist, tilex, tiley, 0, lift);
+					// Put in chunk's NPC list.
+	monster->switched_chunks(0, olist);
+	return (monster);
+	}
+
 #if 0
 /*
  *	Figure where the sprite will be in the next frame.

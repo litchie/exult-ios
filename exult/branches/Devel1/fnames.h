@@ -42,6 +42,7 @@
 #define	XMIDI_MT	"static/xmidi.mt"
 #define U7SPEECH	"static/u7speech.spc"
 #define XFORMTBL       	"static/xform.tbl"
+#define MONSTERS	"static/monsters.dat"
 
 #endif
 #ifdef WIN32
@@ -73,6 +74,7 @@
 #define	XMIDI_MT	"static\\xmidi.mt"
 #define U7SPEECH	"static\\u7speech.spc"
 #define XFORMTBL       	"static\\xform.tbl"
+#define MONSTERS	"static\\monsters.dat"
 
 #endif
 

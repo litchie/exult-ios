@@ -668,6 +668,19 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		case voice:
 			audio->start_speech((data1)&0xff);
 			break;
+		case monster:
+			{
+			Game_window *gwin = Game_window::get_game_window();
+			Monster_info *inf = gwin->get_monster_info(data2);
+			if (inf)
+				{
+				Npc_actor *monster = inf->create(get_cx(),
+					get_cy(), get_tx(), get_ty(),
+								get_lift());
+				monster->set_allignment(data1&3);
+				gwin->add_dirty(monster);
+				}
+			}
 		case usecode:
 			// Data2 is the usecode function.
 			umachine->call_usecode(data2, this,
