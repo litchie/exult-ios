@@ -8,7 +8,7 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/imagewin -I$(srcdir)/shapes \
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
 SUBDIRS =  files tools data conf flic audio pathfinder gumps docs \
-	desktop shapes imagewin usecode objs server mapedit
+	desktop shapes imagewin usecode objs server mapedit debian
 
 bin_PROGRAMS = exult
 
@@ -147,12 +147,6 @@ EXTRA_DIST = 	\
 	mac/mac_autoconfig.h \
 	mac/mac_prefix.h \
 	macosx/exult.icns \
-	debian/changelog \
-	debian/control \
-	debian/copyright \
-	debian/dirs \
-	debian/README.debian \
-	debian/rules \
 	msvcstuff/All.dsp \
 	msvcstuff/expack.dsp \
 	msvcstuff/Exult.dsp \
