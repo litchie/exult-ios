@@ -1,14 +1,15 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 24 October 2002 (GMT)
+last changed: 03 November 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 24 October 2002
-0.2. - 11 September 2002
-0.3. - 24 July 2002
-0.4. - 18 June 2002
+0.1. - 03 November 2002
+0.2. - 24 October 2002
+0.3. - 11 September 2002
+0.4. - 24 July 2002
+0.5. - 18 June 2002
 
 1. Introduction
 1.1. Why is it called Exult - what is the meaning of this name?
@@ -75,14 +76,18 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 24 October 2002
+0.1. - 03 November 2002
+Version number of actual version of Exult is now 1.00!
+
+
+0.2. - 24 October 2002
 * 3.7. What should I do when Exult keeps crashing when I try to save? Don't save on scripted scenes.
 * 3.14. Why can't I get the scrifice in Skara Brae to work? Some people still run into this problem.
 * 4.3. Broken by Design walking style revisited.
 
 
 
-0.2. - 11 September 2002
+0.3. - 11 September 2002
 * 1.12. On what platform does Exult run? changed location of Zaurus package.
 * 3.6. Why is the party formation different? rewrote that a bit.
 * 3.16. Why can't I summon the Great Hierophant (SI)? not an issue with Exult actually.
@@ -90,14 +95,14 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 24 July 2002
+0.4. - 24 July 2002
 * 1.12. On what platform does Exult run? the Amiga port has been integrated ages ago and we have a Zaurus port now.
 * 3.2. Why can't I move my party with the arrow keys? Nadir implemented arrow walking now.
 * 4.5. Known Compile Issues makefile.cygwin no longer exists.
 
 
 
-0.4. - 18 June 2002
+0.5. - 18 June 2002
 * 1.9. Why are there now two different snapshots? same as on our main page, also some explanation for the different FAQ/Docs.
 * 4.2. How do I submit a proper bug report? SourceForge requires registration for attaching files.
 
@@ -153,7 +158,7 @@ Also this FAQ mainly addresses the snapshots as people use them and ask question
 
 1.9. Why are there now two different snapshots?
 If you checked our download page recently, you may have noticed that we have two sets of development snapshots now: a 1.0.x (stable) snapshot, and a 1.1.x (unstable) snapshot.
-The 1.0.x branch will become our 1.0 release soon, hopefully, and we will mainly be fixing any remaining bugs in this branch. We recommend using the 1.0.x snapshots for playing and testing Exult.
+The 1.0.x branch has developed into our 1.0 release and we will mainly be fixing any remaining bugs in this branch. We recommend using the 1.0.x snapshots for playing and testing Exult.
 The 1.1.x branch is meant mostly as a 'developer playground' at the moment. We are making some very destabilizing changes to this branch, like a rewritten usecode interpreter and new audio code. We do not recommend using the 1.1.x snapshots for normal playing.
 This also means that the documentation and the FAQ needs to be different. You will find the description of the 1.1.x branch features only in the snapshot and the source and not on our homepage.
 
@@ -163,9 +168,8 @@ The source code snapshots contain a file called "README.OS" (like Readme.win32, 
 
 
 1.11. What is the latest version of Exult?
-The current official release is V0.99.1 RC 2 (Release Candidate 2). See also 1.7. to learn where to get the latest version.
+The current official release is V1.00. See also 1.7. to learn where to get the latest version.
 To find out which version you are running, press 'v' while in game.
-And if you are wondering about our strange version numbering, we can't help you as we have no clue about it as well.
 
 
 1.12. On what platform does Exult run?
@@ -286,7 +290,7 @@ You never could do this in the original as well. You have to use the Virtue Ston
 
 3.14. Why can't I get the scrifice in Skara Brae to work?
 SPOILER ALERT
-I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice. The solution to this is that Rowenna and Trent are standing too far apart. When you reunited the pair you initiated the conversation with Trent from too far away (this happens when you run at a higher resolution than the original one). Now you can either reload a game from before you reunited them or you have to hackmove Rowenna closer to Trent. After that the two will talk to you about sacrifice.
+"I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice." The solution to this is that Rowenna and Trent are standing too far apart. When you reunited the pair you initiated the conversation with Trent from too far away (this happens when you run at a higher resolution than the original one). Now you can either reload a game from before you reunited them or you have to hackmove Rowenna closer to Trent. After that the two will talk to you about sacrifice.
 
 
 3.15. Where is the pikeman that lets you train in Monitor (SI)?
@@ -368,7 +372,7 @@ So if you want to have a bug fixed follow these steps!
 Exult often behaves and works differently than the original Ultima 7. These behaviors are sometimes features that just differ from the way the original worked. Some are bugs that the development team consider to have almost no detrimental effect to the enjoyment/running of the game, but would require a large amount of time and effort to fix. Please don't bother the team about those as some of these will be fixed in the future, others will only be fixed when someone who thinks it should be done differently sits down and codes it. The following are such 'features' of Exult:
 * Birds and animals open doors and such, like the human and sentient creatures of Britannia do.
 * Party members don't walk lockstep with the Avatar like they do in BG/SI. Please see 3.6. Why is the party formation different?.
-* The way the Avatar and the companions walk. Is it 2 frames or 3 frames? This has been changed a lot as this was disputed almost every four weeks. Fianlly it works like the original and the Avatar uses two frames and the companions use three frames.
+* The way the Avatar and the companions walk. Is it 2 frames or 3 frames? This has been changed a lot as this was disputed almost every four weeks. Finally it works like the original and the Avatar uses two frames and the companions use three frames.
 * Combat works differently. We don't have any hard data or formulae that tell us how combat worked in BG/SI, so Dr.Code put something together. If you have any information you've worked out related to this, please tell either the forum or the exult-general mailing list. Recently Jeff added an option to change the combat difficulty in exult.cfg. See the ReadMe.txt.
 * Negative health and unconsciousness. Yes, it may look weird to have people walking around with negative health, but that's the way it currently works.
 * Some music loops endlessly in Exult. This is actually a correction of a bug in the original. We respects the midi looping flag as set by U7's original data files but the original didn't. Users who prefer the original (broken) are able to choose so in the Game menu.
