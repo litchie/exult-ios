@@ -45,7 +45,7 @@ SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o \
 
 OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 	contain.o egg.o iregobjs.o mappatch.o objs.o objiter.o \
-	spellbook.o virstone.o jawbone.o
+	spellbook.o virstone.o jawbone.o objnames.o
 
 USECODE_OBJS=stackframe.o ucfunction.o ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 	useval.o conversation.o keyring.o ucdisasm.o
