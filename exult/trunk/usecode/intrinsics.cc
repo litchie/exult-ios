@@ -2949,7 +2949,7 @@ USECODE_INTRINSIC(printf)
 		{
 		const char *spec = strchr(fmt, '%');
 		if (!spec)
-			spec = fmt + strlen(fmt);
+			spec = fmt + std::strlen(fmt);
 		cout.write(fmt, spec - fmt);
 		if (*spec == '%')
 			{
