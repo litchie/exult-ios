@@ -63,7 +63,7 @@ static const int Mixer_Sample_Magic_Number=0x55443322;
 
 Mixer::Mixer(uint32 __buffer_size,uint32 channels, uint8 silence_value) : audio_streams(),stream_mutex(SDL_CreateMutex())
 {
-	buffer_length=__buffer_size*channels;
+	buffer_length=__buffer_size;
 	silence=silence_value;
 	
 	temp_buffer=new uint8[buffer_length];
@@ -128,9 +128,14 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 	cout << "fill_audio_func: " << len << endl;
 	// cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
 #endif
-	if( len > buffer_length )
-		return;		// This should never happen, but just to keep on the safe side we check anyway...
-	
+	if( len > buffer_length ) {
+#if DEBUG
+		cerr << "Audio callback length too big! (" << len << ">" 
+		     << buffer_length << ")" << endl;
+#endif
+		return;		// This should never happen, but just to 
+		                // keep on the safe side we check anyway...
+	}
 	stream_lock();
 	if(audio_streams.size()==0)
 	{
