@@ -34,5 +34,10 @@ int	main(int argc,char **argv)
 	config.value("config/audio/midi_device",n,-1);
 	cout << "Returned from reference. Got '" << n << "'" << endl;
 
+	config.set("config/something/something/else","wibble");
+
+	string	out=config.dump();
+	cout << out << endl;
+
 	return 0;
 }

@@ -39,9 +39,17 @@ public:
 	bool	read_config_file(const char *);
 	void	value(const char *key,string &ret,const char *defaultvalue="");
 	void	value(const char *key,int &ret,int defaultvalue=0);
+	void    set(const char *key,const char *value,bool write_to_file);
+	void    set(const char *key,const string &value,bool write_to_file);
+
+	string	dump(void); // Assembles a readable representation
+
+	void	write_back(void);
+
+
 private:
 	string	&value(const char *key,bool &exists);
-	void    set(string &key,string &value);
+	void    set(string &key,string &value,bool write_to_file);
 	XMLnode xmltree;
 	string	filename;
 };

@@ -1,6 +1,14 @@
 <config>
 	<audio>
-		<midi_device> 5 </midi_device>
+		<enabled> yes </enabled>
+		<speech>
+			<enabled> yes </enabled>
+			<device> /dev/dsp </device>
+		</speech>
+		<midi>
+			<enabled> yes </enabled>
+			<device> 5 </device>
+		</midi>
 	</audio>
 	<disk>
 		<u7path>/home/dancer/projects/u7/</u7path>
