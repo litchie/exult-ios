@@ -1,5 +1,6 @@
 2001-02-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* mapedit/u7shp.c: check if image is indexed before saving. (fixes crash)
+	* mapedit/uniquepal.c: little tool to 'uniquify' a palette. (not included in main build)
 
 2001-02-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/great_dagger.shp, data/magic_boomerang.shp: added some more art
