@@ -4,6 +4,7 @@ Exult Release Checklist
 * make sure all version numbers are up to date
   - configure.ac
   - Makefile.common
+  - Info.plist.in
 
 * update NEWS; make sure version and date are correct
 
