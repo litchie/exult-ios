@@ -1070,7 +1070,12 @@ USECODE_INTRINSIC(add_spell)
 	Game_object *obj = get_item(parms[2]);
 	if (!obj)
 		return Usecode_value(0);
-	Spellbook_object *book = (Spellbook_object *) obj;
+	Spellbook_object *book = dynamic_cast<Spellbook_object *> (obj);
+	if (!book)
+		{
+		cout << "Add_spell - Not a spellbook!" << endl;
+		return Usecode_value(0);
+		}
 	return Usecode_value(book->add_spell(parms[0].get_int_value()));
 }
 
