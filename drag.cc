@@ -293,8 +293,10 @@ int Game_window::drop_at_lift
 	int lift;			// Can we put it here?
 	Shape_info& info = shapes.get_info(to_drop->get_shapenum());
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
+					// Allow drop up to 5.
 	if (!Chunk_object_list::is_blocked(info.get_3d_height(), at_lift,
-		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, lift)) // &&
+		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, 
+					lift, 5)) // &&
 #if 0	/* ++++++Test this. */
 					// Check for path to location.
 	    Fast_pathfinder_client::is_grabable(
