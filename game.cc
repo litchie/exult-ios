@@ -121,6 +121,8 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 	else
 		clear_system_path("<PATCH>");
 
+	U7mkdir("<SAVEGAME>", 0755); // make sure savegame directory exists
+
 	// Discover the game we are running (BG, SI, ...)
 	// We do this, because we don't really trust config :-)
 	if (game_type != EXULT_DEVEL_GAME) {
