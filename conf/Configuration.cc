@@ -244,9 +244,6 @@ void Configuration::clear(std::string new_root)
 
 void Configuration::getsubkeys(KeyTypeList &ktl, const string basekey)
 {
-	/*if(basekey.size()==0)
-		xmltree->selectpairs(ktl, string());
-	else*/
 	xmltree->searchpairs(ktl, basekey, string(), 0);
 }
 
