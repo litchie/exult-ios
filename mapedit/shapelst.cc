@@ -1291,7 +1291,52 @@ on_new_shape_okay_clicked              (GtkButton       *button,
 	chooser->create_new_shape();
 	gtk_widget_hide(win);
 }
+					// Toggled 'From font' button:
+C_EXPORT void on_new_shape_font_toggled
+	(
+	GtkToggleButton *btn,
+        gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(btn));
+	Shape_chooser *chooser = (Shape_chooser *)
+				gtk_object_get_user_data(GTK_OBJECT(win));
+	chooser->from_font_toggled(on);
+	}
 
+/*
+ *	Font file was selected.
+ */
+
+static void font_file_chosen
+	(
+	char *fname,
+	gpointer user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->set_entry("new_shape_font_name", fname);
+	studio->set_spin("new_shape_nframes", 128);
+	}
+
+/*
+ *	'From font' toggled in 'New shape' dialog.
+ */
+
+void Shape_chooser::from_font_toggled
+	(
+	bool on
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->set_sensitive("new_shape_font_name", on);
+	if (!on)
+		return;
+	GtkFileSelection *fsel = Create_file_selection(
+				"Choose font file", font_file_chosen, 0L);
+	gtk_widget_show(GTK_WIDGET(fsel));
+	}
 
 /*
  *	Add a new shape.
@@ -1378,7 +1423,7 @@ void Shape_chooser::create_new_shape
 	use_font = use_font && (fontname != 0) && *fontname != 0;
 	if (use_font)
 		{
-		if (!Gen_font_shape(shape, fontname,
+		if (!Gen_font_shape(shape, fontname, nframes,
 					// +++++height, fg, bg:
 						12, 1, 0))
 			Alert("Error loading font file '%s'", fontname);
@@ -2170,7 +2215,7 @@ Shape_chooser::Shape_chooser
 					GTK_SIGNAL_FUNC(vscrolled), this);
 	gtk_widget_show(shape_vscroll);
 					// Horizontal scrollbar.
-	shape_adj = gtk_adjustment_new(0, 0, 640, 8, 16, 16);
+	shape_adj = gtk_adjustment_new(0, 0, 1600, 8, 16, 16);
 	shape_hscroll = gtk_hscrollbar_new(GTK_ADJUSTMENT(shape_adj));
 					// Update window when it stops.
 	gtk_range_set_update_policy(GTK_RANGE(shape_hscroll),

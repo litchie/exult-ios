@@ -45,6 +45,7 @@ bool Gen_font_shape
 	(
 	Shape *shape,			// Shape to set frames.
 	const char *fontfile,		// Filename of font.
+	int nframes,			// # frames to generate, starting at 0.
 	int pixels_ht,			// Desired height in pixels.
 	unsigned char fg,		// Foreground color index.
 	unsigned char bg		// Background color index.
@@ -63,8 +64,8 @@ bool Gen_font_shape
 	FT_GlyphSlot glyph = face->glyph;
 	if (error)
 		return false;
-	shape->resize(128);		// Make it big enough.
-	for (int chr = 0; chr < 128; chr++)
+	shape->resize(nframes);		// Make it big enough.
+	for (int chr = 0; chr < nframes; chr++)
 		{			// Get each glyph.
 		error = FT_Load_Char(face, chr, 
 				FT_LOAD_RENDER|FT_LOAD_MONOCHROME);

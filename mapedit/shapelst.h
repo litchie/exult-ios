@@ -162,6 +162,7 @@ public:
 	static void export_frame(char *fname, gpointer user_data);
 	static void import_frame(char *fname, gpointer user_data);
 	void new_frame();		// Add/del.
+	void from_font_toggled(bool on);
 	void new_shape();
 	void create_new_shape();
 	void del_frame();
