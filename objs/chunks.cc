@@ -800,7 +800,7 @@ void Map_chunk::remove_egg
 
 /*
  *	Remove a game object from this list.  The object's cx and cy fields
- *	are left set to this chunk.
+ *	are set to invalid #'s (255,255).
  */
 
 void Map_chunk::remove
@@ -840,6 +840,7 @@ void Map_chunk::remove
 			first_nonflat = 0;
 		}
 	objects.remove(remove);		// Remove from list.
+	remove->set_invalid();		// No longer part of world.
 	}
 
 /*

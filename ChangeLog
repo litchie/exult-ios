@@ -1,5 +1,8 @@
 2003-02-15  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* drag.cc,objs/objs.cc,objs/chunks.cc:  A removed object now has
+	its chunk coords set to (255, 255).
+
 	* objs/chunks.cc (Chunk_cache): Rewrote 'blocking' code.  Now a
 	0-3 element count is maintained.
 
