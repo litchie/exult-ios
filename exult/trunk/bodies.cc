@@ -30,6 +30,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #include <hash_set>
 #endif
 
+using std::hash_set;
+using std::size_t;
+
 /*
  *	Each triple here is <live shape>, <body shape>, <body frame>.
  */
