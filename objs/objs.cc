@@ -840,6 +840,26 @@ int Game_object::get_max_weight
 	}
 
 /*
+ *	Add an object to this one by combining.
+ *
+ *	Output:	1, meaning object is completely combined to this.  Obj. is
+ *			deleted in this case.
+ *		0 otherwise, although obj's quantity may be
+ *			reduced if combine==true.
+ */
+
+bool Game_object::add
+	(
+	Game_object *obj,
+	bool dont_check,		// 1 to skip volume/recursion check.
+	bool combine			// True to try to combine obj.  MAY
+					//   cause obj to be deleted.
+	)
+	{
+	return combine ? drop(obj) : false;
+	}
+
+/*
  *	Drop another onto this.
  *
  *	Output:	0 to reject, 1 to accept.
