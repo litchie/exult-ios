@@ -199,7 +199,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
         unsigned char mouse_visible;
 	int count = entries->size();
 	bool exit_loop = false;
-	int scale = gwin->get_win()->get_scale();
+	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 	SDL_Event event;
 
 	for(int i=0; i<count; i++)

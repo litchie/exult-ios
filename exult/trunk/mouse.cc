@@ -52,8 +52,8 @@ Mouse::Mouse
 	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0),avatar_speed(slow_speed)
 {
 	SDL_GetMouseState(&mousex, &mousey);
-	mousex /= iwin->get_scale();
-	mousey /= iwin->get_scale();
+	mousex /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
+	mousey /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
 	pointers.load(POINTERS);
 	Init();
 	set_shape(get_short_arrow(east));		// +++++For now.
@@ -66,8 +66,8 @@ Mouse::Mouse
 	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0),avatar_speed(slow_speed) 
 {
 	SDL_GetMouseState(&mousex, &mousey);
-	mousex /= iwin->get_scale();
-	mousey /= iwin->get_scale();
+	mousex /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
+	mousey /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
 	pointers.load(&shapes);
 	Init();
 	set_shape0(0);
@@ -127,6 +127,33 @@ void Mouse::show
 					// Paint new location.
 		cur->paint_rle(iwin->get_ib8(), mousex, mousey);
 	}
+}
+
+/*
+ *	Move cursor
+ */
+
+void Mouse::move(int x, int y) {
+	bool warp = false;
+	if (x >= gwin->get_width()) {
+		x = gwin->get_width() - 1;
+		warp = true;
+	}
+	if (y >= gwin->get_height()) {
+		y = gwin->get_height() - 1;
+		warp = true;
+	}
+	if (warp)
+		SDL_WarpMouse(x, y);
+#ifdef DEBUG
+	if (onscreen)
+		std::cerr << "Trying to move mouse while onscreen!" << std::endl;
+#endif
+	// Shift to new position.
+	box.shift(x - mousex, y - mousey);
+	dirty = dirty.add(box);	// Enlarge dirty area.
+	mousex = x;
+	mousey = y;
 }
 
 /*

@@ -68,6 +68,9 @@ public:
 
 	virtual Game_object *find_actor(int mx, int my);
 
+	static int get_state() {
+		return self ? mode : -1;
+	}
 	static void CreateGump();
 	static void RemoveGump();
 	static void AdvanceState();

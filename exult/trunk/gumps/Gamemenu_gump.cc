@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gamemenu_gump.h"
 #include "AudioOptions_gump.h"
 #include "VideoOptions_gump.h"
+#include "GameplayOptions_gump.h"
 #include "Gump_button.h"
 #include "Yesno_gump.h"
 #include "gamewin.h"
@@ -130,6 +131,9 @@ void Gamemenu_gump::audio_options()
 
 void Gamemenu_gump::gameplay_options()
 {
+	GameplayOptions_gump *gp_opts = new GameplayOptions_gump();
+	Do_Modal_gump(gp_opts, Mouse::hand);
+	delete gp_opts;
 }
 
 void Gamemenu_gump::paint(Game_window* gwin)

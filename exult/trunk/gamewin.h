@@ -170,6 +170,9 @@ class Game_window
 	Vga_file bg_serpgumps;		// "gumps.vga" - from serpent isle 
 					//   for BG Paperdolls
 
+	bool mouse3rd;			// use third (middle) mouse button
+	bool fastmouse;
+
 #ifdef RED_PLASMA
 	// Red plasma animation during game load
 	uint32 load_palette_timer;
@@ -190,6 +193,14 @@ public:
 		
 	void set_window_size(int w, int h, int s, int sclr);
 	void abort(const char *msg, ...);	// Fatal error.
+	bool get_mouse3rd()
+		{ return mouse3rd; }
+	void set_mouse3rd(bool m)
+		{ mouse3rd = m; }
+	bool get_fastmouse()
+		{ return get_win()->is_fullscreen() ? fastmouse : false; }
+	void set_fastmouse(bool f)
+		{ fastmouse = f; }
 	int get_width()
 		{ return win->get_width(); }
 	int get_height()
