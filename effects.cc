@@ -311,7 +311,6 @@ Sprites_effect::Sprites_effect
 
 inline void Sprites_effect::add_dirty
 	(
-	Game_window *gwin,
 	int frnum
 	)
 	{
@@ -346,13 +345,13 @@ void Sprites_effect::handle_event
 		gwin->set_all_dirty();
 		return;
 		}
-	add_dirty(gwin, frame_num - 1);	// Clear out old.
+	add_dirty(frame_num - 1);	// Clear out old.
 	gwin->set_painted();
 	if (item)			// Following actor?
 		pos = item->get_tile();
 	xoff += deltax;			// Add deltas.
 	yoff += deltay;
-	add_dirty(gwin, frame_num);	// Want to paint new frame.
+	add_dirty(frame_num);		// Want to paint new frame.
 	frame_num++;			// Next frame.
 	sprite.set_frame(frame_num);
 					// Add back to queue for next time.
@@ -408,11 +407,11 @@ void Explosion_effect::handle_event
 		// this was in ~Explosion_effect before
 		if (explode)
 			{
-				Game_window::get_instance()->add_dirty(explode);
-				explode->remove_this();
-				explode = 0;
+			Game_window::get_instance()->add_dirty(explode);
+			explode->remove_this();
+			explode = 0;
 			}
-		Game_object_vector vec;			// Find objects near explosion.
+		Game_object_vector vec;	// Find objects near explosion.
 		Game_object::find_nearby(vec, pos, c_any_shapenum, 5, 0);
 		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 			{
@@ -553,7 +552,6 @@ Projectile_effect::~Projectile_effect
 
 inline void Projectile_effect::add_dirty
 	(
-	Game_window *gwin
 	)
 	{
 	if (pos.tx == -1 || sprite.get_framenum() == -1)
@@ -599,7 +597,7 @@ void Projectile_effect::handle_event
 	{
 	Game_window *gwin = Game_window::get_instance();
 	int delay = gwin->get_std_delay()/2;
-	add_dirty(gwin);		// Force repaint of old pos.
+	add_dirty();			// Force repaint of old pos.
 	Tile_coord epos = pos;		// Save pos.
 	if (!path->GetNextStep(pos) ||	// Get next spot.
 					// If missile egg, detect target.
@@ -648,12 +646,12 @@ void Projectile_effect::handle_event
 									true));
 				}
 			}
-		add_dirty(gwin);
+		add_dirty();
 		pos.tx = -1;		// Signal we're done.
 		eman->remove_effect(this);
 		return;
 		}
-	add_dirty(gwin);		// Paint new spot/frame.
+	add_dirty();			// Paint new spot/frame.
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
@@ -702,7 +700,6 @@ Death_vortex::Death_vortex
 
 inline int Death_vortex::add_dirty
 	(
-	Game_window *gwin
 	)
 	{
 	Shape_frame *shape = vortex.get_shape();
@@ -724,7 +721,7 @@ void Death_vortex::handle_event
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	int width = add_dirty(gwin);	// Repaint old area.
+	int width = add_dirty();	// Repaint old area.
 	if (target && !target->is_dead())	// Follow target.
 		{
 		Tile_coord tpos = target->get_tile();
@@ -754,7 +751,7 @@ void Death_vortex::handle_event
 			}
 		}
 	vortex.set_frame((vortex.get_framenum() + 1)%frames);
-	add_dirty(gwin);		// Paint new.
+	add_dirty();			// Paint new.
 	if (curtime < stop_time)	// Keep going?
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
