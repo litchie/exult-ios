@@ -1,3 +1,8 @@
+2002-06-27  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* objs.h:  Added get_chunk().
+	* gamewin.h,etc:  get_chunk* removed (it's in Game_map).
+
 2002-06-27  Max Horn  <max@quendi.de>
 	* objs/objiter.cc: Fixed compilation with CodeWarrior 7 (MacOS Classic)
 

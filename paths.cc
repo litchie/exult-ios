@@ -26,6 +26,7 @@
 #include "Astar.h"
 #include "Zombie.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "actors.h"
 
 /*
@@ -74,7 +75,7 @@ int Actor_pathfinder_client::get_step_cost
 	{
 	Game_window *gwin = Game_window::get_instance();
 	int cx = to.tx/c_tiles_per_chunk, cy = to.ty/c_tiles_per_chunk;
-	Map_chunk *olist = gwin->get_chunk(cx, cy);
+	Map_chunk *olist = gwin->get_map()->get_chunk(cx, cy);
 	int tx = to.tx%c_tiles_per_chunk;	// Get tile within chunk.
 	int ty = to.ty%c_tiles_per_chunk;
 	int cost = 1;
@@ -375,7 +376,7 @@ int Fast_pathfinder_client::get_step_cost
 	{
 	Game_window *gwin = Game_window::get_instance();
 	int cx = to.tx/c_tiles_per_chunk, cy = to.ty/c_tiles_per_chunk;
-	Map_chunk *olist = gwin->get_chunk(cx, cy);
+	Map_chunk *olist = gwin->get_map()->get_chunk(cx, cy);
 	int tx = to.tx%c_tiles_per_chunk;	// Get tile within chunk.
 	int ty = to.ty%c_tiles_per_chunk;
 	olist->setup_cache();		// Make sure cache is valid.

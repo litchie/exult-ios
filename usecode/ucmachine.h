@@ -34,16 +34,16 @@ class Game_object;
 class Actor;
 
 #include "exceptions.h"
+#include "singles.h"
 
 /*
  *	Here's our virtual machine for running usecode.  The actual internals
  *	are in Usecode_internal.
  */
-class Usecode_machine
+class Usecode_machine : public Game_singletons
 	{
 	UNREPLICATABLE_CLASS(Usecode_machine);
 protected:
-	Game_window *gwin;		// Game window.
 	int call_depth;			// How far deep we are.
 	unsigned char gflags[1024];	// Global flags.
 	Keyring* keyring;
@@ -56,8 +56,8 @@ protected:
 public:
 	friend class Usecode_script;
 					// Create Usecode_internal.
-	static Usecode_machine *create(Game_window *gw);
-	Usecode_machine(Game_window *gw);
+	static Usecode_machine *create();
+	Usecode_machine();
 	virtual ~Usecode_machine();
 					// Read in usecode functions.
 	virtual void read_usecode(std::istream& file) = 0;

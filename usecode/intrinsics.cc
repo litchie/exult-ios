@@ -36,6 +36,7 @@
 #include "exult.h"
 #include "game.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "keyring.h"
 #include "mouse.h"
 #include "rect.h"
@@ -2629,7 +2630,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cx = (sx+i)/c_tiles_per_chunk;
 		tx = (sx+i)%c_tiles_per_chunk;
 
-		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
+		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2651,7 +2652,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cy = (sy+i)/c_tiles_per_chunk;
 		ty = (sy+i)%c_tiles_per_chunk;
 
-		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
+		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2673,7 +2674,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cx = (ex-i)/c_tiles_per_chunk;
 		tx = (ex-i)%c_tiles_per_chunk;
 
-		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
+		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{
@@ -2695,7 +2696,7 @@ USECODE_INTRINSIC(add_removed_npc)
 		cy = (ey-i)/c_tiles_per_chunk;
 		ty = (ey-i)%c_tiles_per_chunk;
 
-		Map_chunk *clist = gwin->get_chunk_safely(cx, cy);
+		Map_chunk *clist = gmap->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		if (!clist->is_blocked (height, 0, tx, ty, nlift, actor->get_type_flags(), 1))
 		{

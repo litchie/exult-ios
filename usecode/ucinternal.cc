@@ -645,7 +645,7 @@ void Usecode_internal::set_item_shape
 //	Rectangle rect = gwin->get_shape_rect(item);
 	gwin->add_dirty(item);
 					// Get chunk it's in.
-	Map_chunk *chunk = gwin->get_chunk(item);
+	Map_chunk *chunk = item->get_chunk();
 	chunk->remove(item);		// Remove and add to update cache.
 	item->set_shape(shape);
 	chunk->add(item);
@@ -1615,10 +1615,9 @@ int Usecode_internal::get_user_choice_num
 
 Usecode_machine *Usecode_machine::create
 	(
-	Game_window *gw
 	)
 	{
-	return new Usecode_internal(gw);
+	return new Usecode_internal();
 	}
 
 /*
@@ -1627,8 +1626,7 @@ Usecode_machine *Usecode_machine::create
 
 Usecode_internal::Usecode_internal
 	(
-	Game_window *gw
-	) : Usecode_machine(gw), cur_function(0),
+	) : Usecode_machine(), cur_function(0),
 	    book(0), caller_item(0),
 	    path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),

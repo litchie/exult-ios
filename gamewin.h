@@ -235,10 +235,6 @@ public:
 		{ clock.set_palette(); }
 	void reload_shapes(int dragtype);	// Reload a shape file.
 	Map_patch_collection *get_map_patches();
-					// Get/create objs. list for a chunk.
-	Map_chunk *get_chunk(int cx, int cy);
-	Map_chunk *get_chunk(Game_object *obj);
-	Map_chunk *get_chunk_safely(int cx, int cy);
 	inline Barge_object *get_moving_barge() const
 		{ return moving_barge; }
 	void set_moving_barge(Barge_object *b);

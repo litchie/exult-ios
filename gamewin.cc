@@ -442,7 +442,7 @@ void Game_window::init_files(bool cycle)
 		setup_load_palette();
 #endif
 
-	usecode = Usecode_machine::create(this);
+	usecode = Usecode_machine::create();
 	Game_singletons::init(this);	// Everything should exist here.
 
 	CYCLE_RED_PLASMA();
@@ -578,22 +578,6 @@ void Game_window::reload_shapes
 Map_patch_collection *Game_window::get_map_patches()
 {
 	return map->get_map_patches();
-}
-
-/*
- *	Get desired chunk.
- */
-Map_chunk *Game_window::get_chunk(int cx, int cy)
-{
-	return map->get_chunk(cx, cy);
-}
-Map_chunk *Game_window::get_chunk(Game_object *obj)
-{
-	return map->get_chunk(obj->get_cx(), obj->get_cy());
-}
-Map_chunk *Game_window::get_chunk_safely(int cx, int cy)
-{
-	return map->get_chunk_safely(cx, cy);
 }
 
 /*
@@ -938,7 +922,7 @@ void Game_window::set_scrolls
 		}
 					// Set where to skip rendering.
 	int cx = camera_actor->get_cx(), cy = camera_actor->get_cy();	
-	Map_chunk *nlist = get_chunk(cx, cy);
+	Map_chunk *nlist = map->get_chunk(cx, cy);
 	nlist->setup_cache();					 
 	int tx = camera_actor->get_tx(), ty = camera_actor->get_ty();
 	set_above_main_actor(nlist->is_roof (tx, ty,
@@ -1699,7 +1683,7 @@ void Game_window::start_actor_alt
 		int cx = dest.tx/c_tiles_per_chunk, cy = dest.ty/c_tiles_per_chunk;
 		int tx = dest.tx%c_tiles_per_chunk, ty = dest.ty%c_tiles_per_chunk;
 
-		Map_chunk *clist = get_chunk_safely(cx, cy);
+		Map_chunk *clist = map->get_chunk_safely(cx, cy);
 		clist->setup_cache();
 		blocked[dir] = clist->is_blocked (height, 
 			main_actor->get_lift(), tx, ty, nlift, 
@@ -2202,7 +2186,7 @@ void Game_window::show_items
 			shnum << ':' << id.get_framenum() << endl;
 
 #ifdef CHUNK_OBJ_DUMP
-		Map_chunk *chunk = get_chunk_safely(x/c_tiles_per_chunk, y/c_tiles_per_chunk);
+		Map_chunk *chunk = map->get_chunk_safely(x/c_tiles_per_chunk, y/c_tiles_per_chunk);
 		Object_iterator it(chunk->get_objects());
 		Game_object *each;
 		cout << "Chunk Contents: " << endl;
@@ -2245,7 +2229,7 @@ ShapeID Game_window::get_flat
 	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
 	tx = tx%c_tiles_per_chunk;
 	ty = ty%c_tiles_per_chunk;
-	Map_chunk *chunk = get_chunk(cx, cy);
+	Map_chunk *chunk = map->get_chunk(cx, cy);
 	ShapeID id = chunk->get_flat(tx, ty);
 	return id;
 	}
@@ -2444,7 +2428,7 @@ void Game_window::add_nearby_npcs
 	unsigned long curtime = Game::get_ticks();
 	for (int cy = from_cy; cy != stop_cy; cy = INCR_CHUNK(cy))
 		for (int cx = from_cx; cx != stop_cx; cx = INCR_CHUNK(cx))
-			for (Npc_actor *npc = get_chunk(cx, cy)->get_npcs();
+			for (Npc_actor *npc = map->get_chunk(cx, cy)->get_npcs();
 						npc; npc = npc->get_next())
 				{
 				if (!npc->is_nearby())
@@ -2730,8 +2714,7 @@ void Game_window::setup_game
 //+++++The below wasn't prev. done by ::read(), so maybe it should be
 //+++++controlled by a 'first-time' flag.
 				// Want to activate first egg.
-	Map_chunk *olist = get_chunk(
-			main_actor->get_cx(), main_actor->get_cy());
+	Map_chunk *olist = main_actor->get_chunk();
 	olist->setup_cache();
 
 	Tile_coord t = main_actor->get_tile();
@@ -2856,7 +2839,7 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 			{
 			if (nearby[x][y] != 0)
 				continue;
-			Map_chunk *list = get_chunk_safely(
+			Map_chunk *list = map->get_chunk_safely(
 				(old_minx + x)%c_num_chunks,
 				(old_miny + y)%c_num_chunks);
 			if (!list) continue;

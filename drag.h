@@ -21,10 +21,12 @@
 #ifndef INCL_DRAG_H
 #define INCL_DRAG_H
 
+#include "singles.h"
+
 /*
  *	Data needed when dragging an object.
  */
-class Dragging_info
+class Dragging_info : public Game_singletons
 	{
 	Game_object *obj;		// What's being dragged.
 	bool is_new;			// Object was newly created.

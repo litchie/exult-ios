@@ -3990,10 +3990,10 @@ void Npc_actor::move
 	)
 	{
 					// Store old chunk list.
-	Map_chunk *olist = gwin->get_chunk_safely(get_cx(), get_cy());
+	Map_chunk *olist = gmap->get_chunk_safely(get_cx(), get_cy());
 					// Move it.
 	Actor::move(newtx, newty, newlift);
-	Map_chunk *nlist = gwin->get_chunk_safely(get_cx(), get_cy());
+	Map_chunk *nlist = gmap->get_chunk_safely(get_cx(), get_cy());
 	if (nlist != olist)
 		{
 		Npc_actor::switched_chunks(olist, nlist);
