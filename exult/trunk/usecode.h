@@ -181,7 +181,8 @@ struct Usecode_machine
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
 	Game_object *caller_item;	// Item this is being called on.
-	const char *user_choice;		// String user clicked on.
+	Game_object *last_created;	// Last item created with intrins. x24.
+	const char *user_choice;	// String user clicked on.
 	char *String;			// The single string register.
 	void append_string(const char *txt);	// Append to string.
 	void say_string();		// "Say" the string.
