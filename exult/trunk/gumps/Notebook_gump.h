@@ -28,13 +28,30 @@ class One_note
 {
 	int day, hour;			// Game time when note was written.
 	int lat, lng;			// Latitute, longitude where written.
-	char *text;			// Text, len.
-	int textlen;
+	char *text;			// Text, 0-delimited.
+	int textlen;			// Length, not counting ending NULL.
 public:
 	friend class Notebook_gump;
-	One_note(int d, int h, int la, int ln, char *txt = 0, int len = 0);
+	One_note() : day(0), hour(0), lat(0), lng(0), text(0), textlen(0)
+		{  }
+	void set(int d, int h, int la, int ln, char *txt = 0);
+	One_note(int d, int h, int la, int ln, char *txt = 0) : text(0)
+		{ set(d, h, la, ln, txt); }
 	~One_note()
 		{ delete [] text; }
+};
+
+/*
+ *	Info. for top left page.
+ */
+class Notebook_top_left
+{
+	int notenum;
+	int offset;
+public:
+	friend class Notebook_gump;
+	Notebook_top_left(int n = 0, int o = 0) : notenum(n), offset(o)
+		{  }
 };
 
 /*
@@ -43,10 +60,12 @@ public:
 class Notebook_gump : public Gump
 {
 	UNREPLICATABLE_CLASS(Notebook_gump);
-	static vector<One_note> notes;	// The text.
+	static vector<One_note *> notes;// The text.
+					// Indexed by page#/2:
+	static vector<Notebook_top_left> page_info;
 	static bool initialized;
-	int curnote;			// Current note at top of left page.
-	int curoff;			// Offset within curnote at top.
+	int curpage;			// Page # of current top-left.
+	int paint_page(Rectangle box, One_note *note, int start);
 public:
 	Notebook_gump();
 	~Notebook_gump() {  }
