@@ -35,7 +35,11 @@ class Locator
 	GdkGC *drawgc;			// For drawing in 'draw'.
 	GtkAdjustment *hadj, *vadj;	// For horiz., vert. scales.
 	int tx, ty, txs, tys, scale;	// Current Exult win. info. in tiles.
+	GdkRectangle viewbox;		// Where view box was last drawn.
+	bool dragging;			// True if dragging view box.
+	int drag_relx, drag_rely;	// Mouse pos. rel to view box.
 	void send_location();		// Send location/size to Exult.
+	void goto_mouse(int mx, int my);// Set view to mouse location.
 public:
 	Locator();
 	~Locator();
@@ -48,6 +52,9 @@ public:
 					// Handle scrollbar.
 	static void vscrolled(GtkAdjustment *adj, gpointer data);
 	static void hscrolled(GtkAdjustment *adj, gpointer data);
+					// Handle mouse.
+	gint mouse_press(GdkEventButton *event);
+	gint mouse_motion(GdkEventMotion *event);
 	};
 
 #endif
