@@ -80,6 +80,7 @@ private:
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
 	int chunkx, chunky;		// Chunk coord. of window within world.
 	int brightness;			// Palette brightness.
+	Rectangle dirty;		// Dirty rectangle.
 					// Dragging info:
 	Game_object *dragging;		// What's being dragged.
 	Gump_object *dragging_gump;
@@ -286,7 +287,20 @@ public:
 	void paint(Rectangle& r)
 		{ paint(r.x, r.y, r.w, r.h); }
 	void paint()			// Paint whole image.
-		{ paint(0, 0, get_width(), get_height()); }
+		{
+		paint(0, 0, get_width(), get_height());
+		clear_dirty();
+		}
+	void clear_dirty()		// Clear dirty rectangle.
+		{ dirty.w = 0; }
+	void paint_dirty()		// Paint 'dirty' rectangle.
+		{
+		if (dirty.w > 0)
+			paint(dirty);
+		clear_dirty();
+		}
+	void add_dirty(Rectangle r)	// Add rectangle to dirty area.
+		{ dirty = dirty.w > 0 ? dirty.add(r) : r; }
 					// Paint a bit of text.
 	void paint_text_object(Text_object *txt);
 					// Paint "flat" scenery in a chunk.

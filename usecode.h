@@ -105,6 +105,8 @@ public:
 		{ return type == (int) array_type ? count_array(*this) : 0; }
 	int is_array()
 		{ return type == (int) array_type; }
+	int is_int()
+		{ return type == (int) int_type; }
 	unsigned int get_int_value()	// Get integer value.
 		{ return (type == (int) int_type ? value.intval : 0); }
 					// Get string value.
