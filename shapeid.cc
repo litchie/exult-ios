@@ -30,6 +30,7 @@
 #include "utils.h"
 #include "segfile.h"
 #include "u7drag.h"
+#include "U7file.h"
 
 using std::cerr;
 using std::cout;
@@ -199,6 +200,7 @@ void Shape_manager::reload_shapes
 	int dragtype			// Type from u7drag.h.
 	)
 	{
+	U7FileManager::get_ptr()->reset();	// Cache no longer valid.
 	switch (dragtype)
 		{
 	case U7_SHAPE_SHAPES:
