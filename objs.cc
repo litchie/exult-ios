@@ -445,7 +445,7 @@ Game_object *Game_object::get_outermost
 
 void Game_object::say
 	(
-	char *text
+	const char *text
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();

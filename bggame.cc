@@ -389,7 +389,7 @@ void BG_Game::end_game(bool success)
 		audio->play (buffer+8, size-8, false);
 		delete [] buffer;
 
-		char 	*message = "No. You cannot do that! You must not!";
+		const char 	*message = "No. You cannot do that! You must not!";
 		int	height = topy+200 - gwin->get_text_height(ENDGAME_FONT2) * 2;
 		int	width = (gwin->get_width() - gwin->get_text_width(ENDGAME_FONT2,message)) / 2;
 
