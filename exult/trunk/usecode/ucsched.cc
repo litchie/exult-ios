@@ -346,6 +346,11 @@ void Usecode_script::handle_event
 					(1 + obj->get_framenum())%nframes);
 			break;
 			}
+		case prev_frame_min:
+			if (obj->get_framenum() > 0)
+				usecode->set_item_frame(obj, 
+						obj->get_framenum() - 1);
+			break;
 		case prev_frame:
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
