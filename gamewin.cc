@@ -979,7 +979,7 @@ void Game_window::view_up
 	(
 	)
 	{
-	if (chunky < 0)
+	if (chunky <= 0)
 		return;
 	int w = get_width();
 	win->copy(0, 0, w, get_height() - chunksize, 0, chunksize);
