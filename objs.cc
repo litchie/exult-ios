@@ -1134,6 +1134,7 @@ void Container_game_object::activate
 		gwin->show_gump(this, 53);
 		return;
 	case 416:			// Chest of drawers.
+	case 679:
 		gwin->show_gump(this, 27);
 		return;
 	case 800:			// Chest.

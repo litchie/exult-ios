@@ -531,7 +531,7 @@ void Gump_object::initialize
 		checkx = 8; checky = 66;
 		break;
 	case 10:			// Backpack.
-		object_area = Rectangle(36, 36, 72, 40);
+		object_area = Rectangle(36, 36, 85, 40);
 		checkx = 8; checky = 62;
 		break;
 	case 11:			// Basket.
@@ -539,7 +539,7 @@ void Gump_object::initialize
 		checkx = 8; checky = 56;
 		break;
 	case 22:			// Chest.
-		object_area = Rectangle(40, 20, 60, 32);
+		object_area = Rectangle(40, 18, 60, 37);
 		checkx = 8; checky = 46;
 		break;
 	case 27:			// Drawer.
@@ -765,13 +765,14 @@ int Gump_object::add
 	if (onobj && onobj != obj && onobj->drop(obj))
 		return (1);
 	container->add(obj);
-	sx -= x + object_area.x;	// Get point rel. to object_area.
-	sy -= y + object_area.y;
-	if (sx < 0)			// Not a valid spot?
+					// Not a valid spot?
+	if (sx == -1 && sy == -1 && mx == -1 && my == -1)
 					// Let paint() set spot.
 		obj->cx = obj->cy = 255;	
 	else
 		{			// Put it where desired.
+		sx -= x + object_area.x;// Get point rel. to object_area.
+		sy -= y + object_area.y;
 		Shape_frame *shape = Game_window::get_game_window()->get_shape(
 									*obj);
 					// But shift within range.
@@ -1786,21 +1787,22 @@ void File_gump_object::key_down
 		{
 		int old_length = focus->get_length();
 		focus->insert(chr);
+		Game_window *gwin = Game_window::get_game_window();
 					// Added first character?  Need 
 					//   'Save' button.
 		if (!old_length && focus->get_length() && !buttons[1])
 			{
 			buttons[1] = new Load_save_gump_button(this,
 					btn_cols[1], btn_rows[0], SAVEBTN);
-			paint_button(Game_window::get_game_window(),
-								buttons[1]);
+			paint_button(gwin, buttons[1]);
 			}
 		if (buttons[0])		// Can't load now.
 			{
 			delete buttons[0];
 			buttons[0] = 0;
-			paint(Game_window::get_game_window());
+			paint(gwin);
 			}
+		gwin->set_painted();
 		}
 	}
 

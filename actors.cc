@@ -580,18 +580,12 @@ int Main_actor::step
 	if (olist != nlist)
 		{
 		switched_chunks(olist, nlist);
-#if 1	/* +++++++OLD */
-		if (gwin->check_main_actor_inside())
-#else	/* +++++++NEW */
-		if (set_above_main_actor(nlist->is_roof(), new_lift))
-#endif
+		if (gwin->set_above_main_actor(nlist->is_roof(), new_lift))
 			gwin->paint();	// Repaint all.
 		}
-#if 0	/* NEW+++++++ */
 	else if (old_lift != new_lift &&
-		 set_above_main_actor(nlist->is_roof(), new_lift))
+		 gwin->set_above_main_actor(nlist->is_roof(), new_lift))
 			gwin->paint();
-#endif
 	return (frame_time);		// Add back to queue for next time.
 	}
 
