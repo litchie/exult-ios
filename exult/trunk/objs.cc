@@ -131,6 +131,7 @@ int Game_object::get_volume
 
 /*
  *	Add or remove from object's 'quantity', and delete if it goes to 0.
+ *	Also, this sets the correct frame, even if delta == 0.
  *
  *	Output:	Delta decremented/incremented by # added/removed.
  *		Container's volume_used field is updated.
@@ -138,11 +139,9 @@ int Game_object::get_volume
 
 int Game_object::modify_quantity
 	(
-	int delta			// >0 to add, <0 to remove.
+	int delta			// >=0 to add, <0 to remove.
 	)
 	{
-	if (!delta)
-		return (delta);
 	if (!Has_quantity(get_shapenum()))
 		{			// Can't do quantity here.
 		if (delta > 0)
@@ -154,7 +153,7 @@ int Game_object::modify_quantity
 	if (!quant)
 		quant = 1;		// Might not be set.
 	int newquant = quant + delta;
-	if (delta > 0)			// Adding?
+	if (delta >= 0)			// Adding?
 		{			// Too much?
 		if (newquant > MAX_QUANTITY)
 			newquant = MAX_QUANTITY;
@@ -170,8 +169,11 @@ int Game_object::modify_quantity
 					// Set appropriate shape.
 	int num_frames = gwin->get_shapes().get_num_frames(shapenum);
 	int new_frame = newquant - 1;
+	if (new_frame > 7)		// Range is 0-7.
+		new_frame = 7;
 	if (shapenum != 842)		// ++++Kludge:  reagants.
-		set_frame(new_frame < num_frames ? new_frame : num_frames - 1);
+					// Guessing:  Works for ammo, arrows.
+		set_frame(num_frames == 32 ? 24 + new_frame : new_frame);
 	Shape_info& info = gwin->get_info(shapenum);
 	int objvol = info.get_volume();
 	Container_game_object *owner = get_owner();

@@ -219,9 +219,12 @@ void Game_window::drop
 	extern int Prompt_for_number(int, int, int, int);
 	int dropped = 0;		// 1 when dropped.
 	Game_object *to_drop = dragging;// If quantity, split it off.
+					// First see if it's a gump.
+	Gump_object *on_gump = find_gump(x, y);
 					// Check for quantity.
 	int dragging_quantity = dragging->get_quantity();
-	if (dragging_quantity == 1 ||
+					// Don't prompt if within same gump.
+	if (dragging_quantity == 1 || (on_gump && on_gump == dragging_gump) ||
 	      (dragging_quantity = Prompt_for_number(0, 
 			dragging_quantity, 1, dragging_quantity)) > 0)
 		{
@@ -231,9 +234,7 @@ void Game_window::drop
 					to_drop->get_framenum(), 0, 0, 0);
 			to_drop->modify_quantity(dragging_quantity - 1);
 			}
-					// First see if it's a gump.
-		Gump_object *on_gump = find_gump(x, y);
-		if (on_gump)
+		if (on_gump)		// Dropping on a gump?
 			{
 			if (!(dropped = on_gump->add(to_drop, x, y,
 					dragging_paintx, dragging_painty)))
@@ -262,7 +263,7 @@ void Game_window::drop
 		else			// Subtract quantity moved.
 			dragging->modify_quantity(-dragging_quantity);
 	if (dragging_gump)		// Put back remaining/orig. piece.
-		dragging_gump->add(dragging);
+		dragging_gump->add(dragging, -2, -2, -2, -2);
 	else
 		get_objects(dragging->get_cx(), 
 				dragging->get_cy())->add(dragging);
