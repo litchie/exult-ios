@@ -1,3 +1,6 @@
+2001-02-13  Ryan Nunn  <triforce@merlin.net.au>
+	* cheat_screen.cc : Fixed text issue in Schedule screen
+
 2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* cheat.cc: repeat with me: "I will test my fixes before
 	  committing them".
