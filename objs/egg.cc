@@ -49,6 +49,8 @@ using std::endl;
 using std::rand;
 using std::ostream;
 
+Egg_object *Egg_object::editing = 0;
+
 /*
  *	Timer for a missile egg (type-6 egg).
  */
@@ -383,6 +385,7 @@ void Egg_object::activate
 #ifdef XWIN
 	if (client_socket >= 0)		// Talking to ExultStudio?
 		{
+		editing = 0;
 		Tile_coord t = get_abs_tile_coord();
 		unsigned long addr = (unsigned long) this;
 		if (Egg_object_out(client_socket, addr, t.tx, t.ty, t.tz,
@@ -391,13 +394,72 @@ void Egg_object::activate
 			(flags>>nocturnal)&1, (flags>>once)&1, 
 			(flags>>hatched)&1, (flags>>auto_reset)&1, 
 			data1, data2))
+			{
 			cout << "Sent egg data to ExultStudio" << endl;
+			editing = this;
+			}
 		else
 			cout << "Error sending egg data to ExultStudio" <<endl;
 		return;
 		}
 #endif
 	activate(umachine, 0, 0);
+	}
+
+/*
+ *	Message to update from ExultStudio.
+ */
+
+void Egg_object::update_from_studio
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+	unsigned long addr;
+	int tx, ty, tz;
+	int shape, frame;
+	int type;
+	int criteria;
+	int probability;
+	int distance;
+	bool nocturnal, once, hatched, auto_reset;
+	int data1, data2;
+	if (!Egg_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
+		type, criteria, probability, distance, 
+		nocturnal, once, hatched, auto_reset,
+		data1, data2))
+		{
+		cout << "Error decoding egg" << endl;
+		return;
+		}
+	Egg_object *egg = (Egg_object *) addr;
+	if (egg != editing)
+		{
+		cout << "Egg from ExultStudio is not being edited" << endl;
+		return;
+		}
+	Game_window *gwin = Game_window::get_game_window();
+	egg->type = type;
+	if (shape != -1)
+		egg->set_shape(shape);
+	if (frame != -1)
+		egg->set_frame(frame);
+	gwin->add_dirty(egg);
+	egg->criteria = criteria&7;
+	egg->distance = distance&31;
+	egg->probability = probability;
+	egg->flags = ((nocturnal?1:0)<<Egg_object::nocturnal) +
+		((once?1:0)<<Egg_object::once) +
+		((hatched?1:0)<<Egg_object::hatched) +
+		((auto_reset?1:0)<<Egg_object::auto_reset);
+	egg->data1 = data1;
+	egg->data2 = data2;
+	Chunk_object_list *chunk = 
+			gwin->get_objects_safely(egg->get_cx(), egg->get_cy());
+	chunk->remove_egg(egg);		// Got to add it back.
+	chunk->add_egg(egg);
+	cout << "Egg updated" << endl;
 	}
 
 /*
@@ -412,14 +474,7 @@ void Egg_object::activate
 	)
 	{
 #if DEBUG
-cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
-		", distance = " << (int) distance << ", crit = " <<
-		(int) criteria << ", once = " <<
-	((flags & (1<<(int)once)) != 0) << ", hatched = " <<
-	((flags & (1<<(int)hatched)) != 0) <<
-	", areset = " <<
-	((flags & (1<<(int)auto_reset)) != 0) << ", data1 = " << data1
-		<< ", data2 = " << data2 << endl;
+	print_debug();
 #endif
 	int roll = must ? 0 : 1 + rand()%100;
 	if (roll > probability)
@@ -556,6 +611,25 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
                 }
 	if (flags & (1 << (int) once))
 		remove_this();		// All done, so go away.
+	}
+
+/*
+ *	Print debug information.
+ */
+
+void Egg_object::print_debug
+	(
+	)
+	{
+	cout << "Egg type is " << (int) type << ", prob = " << 
+		(int) probability <<
+		", distance = " << (int) distance << ", crit = " <<
+		(int) criteria << ", once = " <<
+	((flags & (1<<(int)once)) != 0) << ", hatched = " <<
+	((flags & (1<<(int)hatched)) != 0) <<
+	", areset = " <<
+	((flags & (1<<(int)auto_reset)) != 0) << ", data1 = " << data1
+		<< ", data2 = " << data2 << endl;
 	}
 
 /*

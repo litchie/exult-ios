@@ -58,6 +58,7 @@ public:
  */
 class Egg_object : public Egglike_game_object
 	{
+	static Egg_object *editing;	// Egg being edited by ExultStudio.
 protected:
 	unsigned char type;		// One of the below types.
 	unsigned char probability;	// 1-100, chance of egg activating.
@@ -132,8 +133,11 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
+					// Saved from ExultStudio.
+	static void update_from_studio(unsigned char *data, int datalen);
 	virtual void activate(Usecode_machine *umachine, Game_object *obj,
 							int must = 0);
+	void print_debug();
 	static void set_weather(Game_window *gwin, int weather, int len = 15,
 						Game_object *egg = 0);
 					// Remove/delete this object.
