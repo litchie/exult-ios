@@ -415,13 +415,19 @@ AC_MSG_CHECKING(whether to build the GTK+ interface)
 if test x$enable_gtk_interface = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_PATH_PROG(GTKCONFIG, gtk-config)
-	AM_CONDITIONAL(GTK_INTERFACE, true)
+	AM_CONDITIONAL(HAVE_GTK, true)
 	GTK_INCLUDES=`gtk-config --cflags`
 	GTK_LIBS=`gtk-config --libs`
 	AC_SUBST(GTK_INCLUDES)
 	AC_SUBST(GTK_LIBS)
+	AC_PATH_PROG(GLADECONFIG, libglade-config)
+	if test -n "$GLADECONFIG"; then
+		AM_CONDITIONAL(HAVE_GLADE, true)
+		LIBGLADE_LIBS=`libglade-config --libs`
+		AC_SUBST(LIBGLADE_LIBS)
+	fi
 else
-	AM_CONDITIONAL(GTK_INTERFACE, false)
+	AM_CONDITIONAL(HAVE_GTK, false)
 	AC_MSG_RESULT(no)
 fi
 
