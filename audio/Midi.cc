@@ -106,7 +106,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 				s = s + ".ogg";
 			}
 
-			s = get_system_path("<DATA>/music/" + s);
+			s = get_system_path("<MUSIC>/" + s);
 			strcpy(filename, s.c_str());
 		}
 		else
@@ -126,14 +126,14 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 			else
 				s = "%02dbg.ogg";
 
-			s = get_system_path("<DATA>/music/" + s);
+			s = get_system_path("<MUSIC>/" + s);
 			strcpy(outputstr, s.c_str());
 			sprintf(filename, outputstr, num);
 		}
 
 		if(num == 99)		//Play the Exult theme tune
 		{
-			s = get_system_path("<DATA>/music/exult.ogg");
+			s = get_system_path("<MUSIC>/exult.ogg");
 			strcpy(filename, s.c_str());
 		}
 
@@ -235,7 +235,7 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 			return;
 
 		string s2 = filename;
-		s2 = get_system_path("<DATA>/music/" + s2);
+		s2 = get_system_path("<MUSIC>/" + s2);
 		strcpy(filename, s2.c_str());
 
 	    	oggmusic = Mix_LoadMUS(filename);
