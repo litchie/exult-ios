@@ -894,6 +894,12 @@ string Game_object::get_name
 		case 0x2a3:			// Desk items
 			name = item_names[0x52d + frnum];
 			break;
+		case 0x390:         // "Blood"
+			if (frnum < 4)
+				name = item_names[0x390];
+			else
+				name = 0;
+			break;
 		default:
 			name = item_names[shnum];
 			break;
@@ -906,6 +912,12 @@ string Game_object::get_name
 		
 		switch (shnum)			// More special cases!
 		{
+		case 0x390:         // "Blood"
+			if (frnum < 4)
+				name = item_names[0x390];
+			else
+				name = 0;
+			break;
 		case 0x34a:			// Reagents
 			name = item_names[0x500 + frnum];
 			break;
@@ -1088,8 +1100,10 @@ string Game_object::get_name
 		name = item_names[shnum];
 	}
 
-	if(name == 0)
-		return "?";
+	if(name == 0) {
+		return "";
+//		return "?";
+	}
 
 	if (Has_quantity(shnum))
 		quantity = quality & 0x7f;
