@@ -1209,23 +1209,50 @@ int Game_object::is_dragable
 	}
 
 /*
- *	Get weight in 1/10 stones.  0 means infinite.
+ *	Static method to get shape's weight in 1/10 stones.  0 means infinite.
+ */
+
+int Game_object::get_weight
+	(
+	int shnum,			// Shape #,
+	int quant			// Quantity.
+	)
+	{
+	int wt = quant *
+		Game_window::get_game_window()->get_info(shnum).get_weight();
+					// Special case:  reagents, coins.
+	if (shnum == 842 || shnum == 644 || 
+	    (Game::get_game_type() == SERPENT_ISLE &&
+					// Monetari/guilders/filari:
+	     (shnum == 951 || shnum == 952 || shnum == 948)))
+		wt /= 10;
+	return wt > 0 ? wt : 1;
+	}
+
+/* 
+ *	Get weight of object in 1/10 stones.
  */
 
 int Game_object::get_weight
 	(
 	)
 	{
-	int quant = get_quantity();
-	int wt = quant *
-		Game_window::get_game_window()->get_info(this).get_weight();
-	int shnum = get_shapenum();	// Special case:  reagents, coins.
-	if (shnum == 842 || shnum == 644 || 
-	    (Game::get_game_type() == SERPENT_ISLE &&
-					// Monetari/guilders/filari:
-	     (shnum == 951 || shnum == 952 || shnum == 948)))
-		wt /= 10;
-	return wt;
+	return get_weight(get_shapenum(), get_quantity());
+	}
+
+/*
+ *	Get maximum weight in stones that can be held.
+ *
+ *	Output:	Max. allowed, or 0 if no limit (i.e., not carried by an NPC).
+ */
+
+int Game_object::get_max_weight
+	(
+	)
+	{
+					// Looking outwards for NPC.
+	Container_game_object *own = get_owner();
+	return own ? own->get_max_weight() : 0;
 	}
 
 /*

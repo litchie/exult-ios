@@ -282,7 +282,9 @@ public:
 		{ return 0; }
 	virtual void set_owner(Container_game_object *o)
 		{  }
+	static int get_weight(int shnum, int quant = 1);
 	virtual int get_weight();
+	virtual int get_max_weight();	// Get max. weight allowed.
 	virtual int is_dragable() const;// Can this be dragged?
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);

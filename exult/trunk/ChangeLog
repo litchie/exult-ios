@@ -3,6 +3,8 @@
 	* objs/contain.cc (Container_game_object): Fixed add_quantity() so
 	it deals correctly with volume, quality.  (Still doesn't check
 	weight, though.)
+	* objs/contain.cc: add_quantity() checks weight.
+
 	* shapes/shapeinf.h:  has_quantity(), has_quality() added.
 
 2001-09-05  Tristan Tarrant <nadir@users.sourceforge.net>
