@@ -2,6 +2,9 @@
 	* configure.in, various Makefile.am: added --disable-tools and
 	--disable-data configure switches
 	* tools/.cvsignore: removed 'txt2cc'
+	* palette.cc/h: added Palette::show() to dump palette onscreen
+	* gamewin.cc/h: added Game_window::plasma() function (needs work)
+	* bggame.cc: fixed up Guardian speech (show right shapes, show plasma)
 
 2000-12-31  Jeff Freedman  <jeff@amy.nerble.net>
 

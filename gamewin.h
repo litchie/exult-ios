@@ -621,6 +621,8 @@ public:
 	void save_gamedat(const char *fname, const char *savename);
 	void save_gamedat(int num, const char *savename);
 	int find_roof(int cx, int cy);
+
+	void plasma(int w, int h, int x, int y, int startc, int endc);
 	
 private:
 	void start_actor_alt (int winx, int winy, int speed);
