@@ -803,6 +803,9 @@ string Game_object::get_name
 	case 0x2a3:			// Desk item.
 		name = item_names[0x52d + (si ? 5 : 0) + frnum];
 		break;
+	case 0x32a:			// Bucket (SI).
+		name = si ? item_names[0x55b + frnum] : item_names[shnum];
+		break;
 	default:
 		name = item_names[shnum];
 		break;

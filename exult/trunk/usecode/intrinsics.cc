@@ -980,12 +980,19 @@ USECODE_INTRINSIC(summon)
 
 	int shapenum = parms[0].get_int_value();
 	Monster_info *info = gwin->get_monster_info(shapenum);
-	if (info)
-		{
-		//+++++++Create monster & find free spot near Avatar.
-		// return Usecode_value(monst);
-		}
-	return Usecode_value(0);
+	if (!info)
+		return Usecode_value(0);
+	Tile_coord start = gwin->get_main_actor()->get_abs_tile_coord();
+	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
+	for (int i = 0; dest.tx == -1 && i < 5; i++)
+		dest = Game_object::find_unblocked_tile(start, i);
+	if (dest.tx == -1)
+		return Usecode_value(0);
+	Monster_actor *monst = info->create(dest.tx/c_tiles_per_chunk,
+		dest.ty/c_tiles_per_chunk, dest.tx%c_tiles_per_chunk,
+		dest.ty%c_tiles_per_chunk, dest.tz,
+		Schedule::combat, Actor::friendly);
+	return Usecode_value(monst);
 }
 
 USECODE_INTRINSIC(display_map)

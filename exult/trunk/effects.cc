@@ -446,13 +446,33 @@ Weather_effect::Weather_effect
 	(
 	int duration,			// Length in game minutes.
 	int delay,			// Delay before starting.
-	int n				// Weather number.
+	int n,				// Weather number.
+	Game_object *egg		// Egg that started it, or null.
 	) : num(n)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	if (egg)
+		eggloc = egg->get_abs_tile_coord();
+	else
+		eggloc = Tile_coord(-1, -1, -1);
 	stop_time = SDL_GetTicks() + delay + 1000*((duration*60)/time_factor);
 					// Start immediately.
 	gwin->get_tqueue()->add(SDL_GetTicks() + delay, this, 0L);
+	}
+
+/*
+ *	Are we far enough away from this to cancel it?
+ */
+
+int Weather_effect::out_of_range
+	(
+	Tile_coord& avpos,		// Avatar's position.
+	int dist			// Distance in tiles to cancel at.
+	)
+	{
+	if (eggloc.tx == -1)		// Not created by an egg?
+		return 0;
+	return eggloc.distance(avpos) >= dist;
 	}
 
 /*
@@ -662,8 +682,9 @@ void Lightning_effect::handle_event
 Storm_effect::Storm_effect
 	(
 	int duration,			// In game minutes.
-	int delay			// In msecs.
-	) : Weather_effect(duration, delay, 2), start(1)
+	int delay,			// In msecs.
+	Game_object *egg		// Egg that caused it, or null.
+	) : Weather_effect(duration, delay, 2, egg), start(1)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Start raining soon.
@@ -872,8 +893,9 @@ void Cloud::paint
 Clouds_effect::Clouds_effect
 	(
 	int duration,			// In game minutes.
-	int delay			// In msecs.
-	) : Weather_effect(duration, delay, 6)
+	int delay,			// In msecs.
+	Game_object *egg		// Egg that caused it, or null.
+	) : Weather_effect(duration, delay, 6, egg)
 	{
 	num_clouds = 2 + rand()%5;	// Pick #.
 	clouds = new Cloud *[num_clouds];

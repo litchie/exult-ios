@@ -513,7 +513,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			}
 		case weather:
 			{
-			set_weather(gwin, data1&0xff, data1>>8);
+			set_weather(gwin, data1&0xff, data1>>8, this);
 			break;
 			}
 		case button:		// Set off all in given area.
@@ -546,11 +546,12 @@ void Egg_object::set_weather
 	(
 	Game_window *gwin,
 	int weather,			// 0-6.
-	int len				// In game minutes (I think).
+	int len,			// In game minutes (I think).
+	Game_object *egg		// Egg this came from, or null.
 	)
 	{
-	if (!len)			// ???Not sure about this.
-		len = 15;
+	if (!len)			// Means continuous.
+		len = 120;		// How about a couple game hours?
 	int cur = gwin->get_weather();
 	cout << "Current weather is " << cur << "; setting " << weather
 							<< endl;
@@ -561,14 +562,14 @@ void Egg_object::set_weather
 		break;
 	case 2:		// Storm.
 		if (cur != weather)
-			gwin->add_effect(new Storm_effect(len));
+			gwin->add_effect(new Storm_effect(len, 0, egg));
 		break;
 	case 3:		// (On Ambrosia).
 		gwin->remove_weather_effects();
-		gwin->add_effect(new Sparkle_effect(len));
+		gwin->add_effect(new Sparkle_effect(len, 0, egg));
 		break;
 	case 6:		// Clouds.
-		gwin->add_effect(new Clouds_effect(len));
+		gwin->add_effect(new Clouds_effect(len, 0, egg));
 		break;
 	default:
 		break;

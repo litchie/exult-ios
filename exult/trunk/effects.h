@@ -153,10 +153,13 @@ class Weather_effect : public Special_effect
 protected:
 	uint32 stop_time;		// Time in 1/1000 secs. to stop.
 	int num;			// Weather ID (0-6), or -1.
+	Tile_coord eggloc;		// Location of egg that started this.
 public:
-	Weather_effect(int duration, int delay, int n);
+	Weather_effect(int duration, int delay, int n, Game_object *egg = 0);
 	virtual ~Weather_effect()
 		{  }
+					// Avatar out of range?
+	int out_of_range(Tile_coord& avpos, int dist);
 	virtual int is_weather()
 		{ return 1; }
 	int get_num() { return num; }
@@ -193,8 +196,8 @@ protected:
 	int num_drops;			// # to actually use.
 public:
 	Rain_effect(int duration, int delay = 0, 
-			int ndrops = MAXDROPS, int n = -1)
-		: Weather_effect(duration, delay, n),
+		int ndrops = MAXDROPS, int n = -1, Game_object *egg = 0)
+		: Weather_effect(duration, delay, n, egg),
 		  num_drops(ndrops)
 		{  }
 					// Execute when due.
@@ -227,7 +230,7 @@ class Storm_effect : public Weather_effect
 	{
 	int start;			// 1 to start storm.
 public:
-	Storm_effect(int duration, int delay = 0);
+	Storm_effect(int duration, int delay = 0, Game_object *egg = 0);
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
 	virtual ~Storm_effect();
@@ -239,9 +242,9 @@ public:
 class Sparkle_effect : public Rain_effect
 	{
 public:
-	Sparkle_effect(int duration, int delay = 0) 
+	Sparkle_effect(int duration, int delay = 0, Game_object *egg = 0) 
 					// Weather #3.
-		: Rain_effect(duration, delay, 50, 3)
+		: Rain_effect(duration, delay, 50, 3, egg)
 		{  }
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
@@ -275,7 +278,7 @@ class Clouds_effect : public Weather_effect
 	int num_clouds;
 	Cloud **clouds;			// ->clouds.
 public:
-	Clouds_effect(int duration, int delay = 0);
+	Clouds_effect(int duration, int delay = 0, Game_object *egg = 0);
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Render.
