@@ -104,8 +104,7 @@ private:
 	int ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size);
 	int ConvertSystemMessage (const int time, const unsigned char status, DataSource *source);
 
-	int ConvertEVNTtoList (DataSource *source);
-	int ConvertMTrktoList (DataSource *source);
+	int ConvertFiletoList (DataSource *source, bool is_xmi);
 	uint32 ConvertListToMTrk (DataSource *dest, midi_event *mlist);
 
 	int ExtractTracksFromXmi (DataSource *source);

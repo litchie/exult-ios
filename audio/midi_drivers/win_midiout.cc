@@ -289,6 +289,10 @@ static void thread_play ()
 				playing = false;
 			}
 			
+			// Reset pitch wheel
+			for (int i = 0; i < 16; i++)
+				midiOutShortMsg (midi_port, i | 0xE0 | (0x2000 << 2));
+			
 			// Make sure that the data exists
 			while (!thread_data) SDL_Delay(1);
 			

@@ -278,13 +278,6 @@ void    MyMidiPlayer::start_sound_effect(int num)
         
         cout << "Real num " << real_num << endl;
 
-	// Lets check if the file exists.
-        // I'm only doing this because I don't trust U7Object
-	FILE *ft = fopen ("sfx.dat", "r");
-	if (!ft) return;
-	fclose (ft);
-	
-
 	U7object	track("sfx.dat",real_num);
 
 	if (!midi_device)
