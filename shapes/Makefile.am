@@ -33,5 +33,3 @@ libshapes_la_SOURCES = \
 
 CLEANFILES = *~
 
-# Don't add local copy of png.h.
-OMIT_DEPENDENCIES = png.h
