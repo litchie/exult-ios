@@ -764,9 +764,14 @@ static int Get_click
 		// Mouse scale factor
 		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 
+		static bool rightclick;
 		while (SDL_PollEvent(&event))
 			switch (event.type)
 				{
+			case SDL_MOUSEBUTTONDOWN:
+				if (event.button.button == 3)
+					rightclick = true;
+				break;
 			case SDL_MOUSEBUTTONUP:
 				if (event.button.button == 1)
 					{
@@ -779,8 +784,10 @@ static int Get_click
 				else if (event.button.button == 3) {
 					// Just stop.  Don't get followers!
 					gwin->get_main_actor()->stop();
-					if (gwin->get_mouse3rd())
+					if (gwin->get_mouse3rd() && rightclick) {
+						rightclick = false;
 						return 0;
+					}
 				}
 				break;
 			case SDL_MOUSEMOTION:
