@@ -531,18 +531,18 @@ void Game_map::write_ifix_objects
 	StreamDataSource ifix(&ifix_stream);
 					// +++++Use game title.
 	const int count = c_chunks_per_schunk*c_chunks_per_schunk;
-	Flex::write_header(&ifix, "Exult",  count);
-	uint8 table[2*count*4];
-	uint8 *tptr = &table[0];
+	int u7nshapes = GAME_SI ? 1036 : 1024;
+	int nshapes = 
+		Shape_manager::get_instance()->get_shapes().get_num_shapes();
+	Flex::Flex_vers vers = nshapes <= u7nshapes ? Flex::orig
+							: Flex::exult_v2;
+	Flex_writer writer(&ifix, "Exult",  count, vers);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.
 	for (int cy = 0; cy < 16; cy++)
 		for (int cx = 0; cx < 16; cx++)
 			{
-					// Store file position in table.
-			long start = ifix.getPos();
-			Write4(tptr, start);
 			Map_chunk *chunk = get_chunk(scx + cx,
 							       scy + cy);
 					// Restore original order (sort of).
@@ -550,14 +550,9 @@ void Game_map::write_ifix_objects
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)
 				obj->write_ifix(&ifix);
-					// Store IFIX data length.
-			Write4(tptr, ifix.getPos() - start);
+			writer.mark_section_done();
 			}
-	ifix.seek(0x80);	// Write table.
-	ifix.write(reinterpret_cast<char *>(&table[0]), sizeof(table));
-	ifix_stream.flush();
-	int result = ifix_stream.good();
-	if (!result)
+	if (!writer.close())
 		throw file_write_exception(fname);
 	schunk_modified[schunk] = false;
 	return;
