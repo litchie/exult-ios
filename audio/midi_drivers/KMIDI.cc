@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../../fnames.h"
 
 #include "Configuration.h"
-extern	Configuration	config;
+extern	Configuration	*config;
 
 
 
@@ -67,7 +67,7 @@ KMIDI::KMIDI()
 	int	devnum;
 	bool	changed=false;
 
-	config.value("config/audio/midi/kmidi/device",devnum,-2);
+	config->value("config/audio/midi/kmidi/device",devnum,-2);
 	if(devnum==-1)
 		{
 		// kmidi is disabled
@@ -81,14 +81,14 @@ KMIDI::KMIDI()
 			{
 			// User disabled kmidi
 			devnum=-2;
-			config.set("config/audio/midi/kmidi/device",devnum,true);
+			config->set("config/audio/midi/kmidi/device",devnum,true);
 			throw 0;
 			}
 		}
 	kMidSetDevice(devnum);
 	if(changed)
 		{
-		config.set("config/audio/midi/kmidi/device",devnum,true);
+		config->set("config/audio/midi/kmidi/device",devnum,true);
 		}
 }
 
