@@ -814,7 +814,21 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Bag (Belt)
 	{     802, -1,       Actor::belt,   OT_Normal,  false, SF_PAPERDOL_VGA,     89,     0 },
 	// Bag (Behind back) **NEEDS ART**
-	//{     802, -1,       Actor::back,   OT_Normal,  false, SF_PAPERDOL_VGA,     -1,     0 },
+	{     802, -1,       Actor::back,   OT_Normal,  false, SF_PAPERDOL_VGA,     -1,     0 },
+	// Barrel (Behind back) **NEEDS ART**
+	{     819, -1,       Actor::back,   OT_Normal,  false, SF_PAPERDOL_VGA,     -1,     0 },
+	// Sealed Box (Behind back) **NEEDS ART**
+	{     798, -1,       Actor::back,   OT_Normal,  false, SF_PAPERDOL_VGA,     -1,     0 },
+	// Box (Behind back) **NEEDS ART**
+	{     799, -1,       Actor::back,   OT_Normal,  false, SF_PAPERDOL_VGA,     -1,     0 },
+	// Locked Chest (Behind back) **NEEDS ART**
+	{     522, -1,       Actor::back,   OT_Normal,  false, SF_PAPERDOL_VGA,     -1,     0 },
+	// Chest (Behind back) **NEEDS ART**
+	{     800, -1,       Actor::back,   OT_Normal,  false, SF_PAPERDOL_VGA,     -1,     0 },
+	// Basket (Behind back) **NEEDS ART**
+	{     803, -1,       Actor::back,   OT_Normal,  false, SF_PAPERDOL_VGA,     -1,     0 },
+	// Crate (Behind back) **NEEDS ART**
+	{     804, -1,       Actor::back,   OT_Normal,  false, SF_PAPERDOL_VGA,     -1,     0 },
 
 
 	// AMULETS and COLLARS

@@ -11,11 +11,10 @@
 #ifndef MSVC_KLUDGES_H
 #define MSVC_KLUDGES_H
 
-#define USE_EXULTSTUDIO
 #define HAVE_SSTREAM 1
 
 // Fisrtly some things that need to be defined
-#define VERSION "0.99cvs"
+#define VERSION "0.99.1RC2"
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
@@ -23,10 +22,18 @@
 #define DONT_HAVE_HASH_MAP
 #define MSVC_FIND_NEARBY_KLUDGE
 
+// Settings for debug builds
 #ifndef NDEBUG
+
+#define USE_EXULTSTUDIO
 #define ENABLE_MIDISFX
 #define COLOURLESS_REALLY_HATES_THE_BG_SFX
 #define FORCE_44KHZ
+
+#ifndef DEBUG
+#define DEBUG 1
+#endif
+
 #endif
 
 // Don't need everything in the windows headers
@@ -82,7 +89,6 @@ namespace std {
 	using ::fwrite;
 	using ::remove;
 	using ::printf;
-
 	
 	// Win32 doesn't have snprintf as such. It's got _snprintf, 
 	// but it's in stdio. I'll make my own using _vsnprintf 
@@ -132,10 +138,6 @@ using std::isspace;
 #define SDL_main main
 #endif
 
-#ifndef DEBUG
-#define DEBUG 1
-#endif
-
 // Some often used headers that could be included in out precompiled header
 #include <fstream>
 #include <exception>
@@ -179,6 +181,7 @@ using std::isspace;
 #define HAVE_ZIP_SUPPORT
 #endif
 
+#ifdef USING_PRECOMPILED_HEADER
 #include <SDL.h>
 
 #include "../actions.h"
@@ -304,10 +307,13 @@ using std::isspace;
 #include "../shapes/u7drag.h"
 #include "../shapes/vgafile.h"
 
+#endif //USING_PRECOMPILED_HEADER
+
 //#include "../files/zip/zip_u7file.h"
 #endif
 
 // We will probably always want these
+#ifdef USING_PRECOMPILED_HEADER
 #include "../files/databuf.h"
 #include "../files/Flat.h"
 #include "../files/Flex.h"
@@ -317,7 +323,7 @@ using std::isspace;
 #include "../files/U7file.h"
 #include "../files/utils.h"
 #include "../files/crc.h"
-
+#endif //USING_PRECOMPILED_HEADER
 // Don't want SDL Parachute
 #define NO_SDL_PARACHUTE
 

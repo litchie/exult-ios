@@ -16,7 +16,9 @@ libmididrv_la_SOURCES =	\
 	be_midi.cc		\
 	be_midi.h		\
 	mac_midi.cc		\
-	mac_midi.h
+	mac_midi.h		\
+	amiga_midi.cc		\
+	amiga_midi.h
 
 EXTRA_DIST = 		\
 	README

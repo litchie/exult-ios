@@ -71,6 +71,8 @@ int Send_data
 	int len = datalen + hdrlength;
 
 	return (write(socket, buf, len) == len ? 0 : -1);
+#else  /* USE_EXULTSTUDIO */
+	return -1;
 #endif  /* USE_EXULTSTUDIO */
 	}
 
@@ -127,6 +129,8 @@ int Receive_data
 		return -1;
 		}
 	return datalen;
+#else  /* USE_EXULTSTUDIO */
+	return -1;
 #endif  /* USE_EXULTSTUDIO */
 	}
 
@@ -134,7 +138,7 @@ int Receive_data
 
 bool wait_for_response(int socket, int ms)
 {
-#ifdef WIN32
+#if defined(WIN32) && defined(USE_EXULTSTUDIO)
 	int ticks = GetTickCount();
 	while(GetTickCount() < ticks+ms) {
 		if (peek_pipe() > 0) return true;
