@@ -1,0 +1,26 @@
+What the hell am I?
+
+I'm a simple XML syntax parser. Not a real XML parser. Nothing to do with DTD's.
+Really speaking, what we do here is not XML. If it's anything it's a DDL (Data
+Description Language).
+
+In short the base syntactical rules are the same as XML, giving us a
+hierarchical file-structure of key-value pairs (just like the Windows(tm)
+registry). As a bonus, it's human-readable, and human editable as well as
+being a doddle to handle programmatically
+
+This lends itself very nicely to configuration files, and that's _exactly_
+what we're doing here.
+
+
+** Warning **
+Just at the moment, I'm not supporting:
+
+* XML empty tags (I did, but I'm not right now)
+	- Update: empty tags are back
+* Spaces,tabs,carriage returns, line-feeds inside entities (just because)
+	- Update: I'm now supporting whitespace within the entity, but not
+		leading or trailing whitespace
+* modifiers inside tags (eg: <something mod1="blah" colour="blue"> )
+  (and honestly, I'm not at all sure what we would do with them if we supported
+   them anyway)

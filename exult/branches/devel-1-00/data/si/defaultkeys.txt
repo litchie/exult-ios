@@ -1,0 +1,91 @@
+# default key bindings
+
+Alt-KP+		resolution_increase
+Alt-KP- 	resolution_decrease
+KP+		brighter
+KP- 		darker
+Esc		close_or_menu
+right		scroll_right
+left		scroll_left
+up		scroll_up
+down		scroll_down
+home		center_screen
+
+Del		delete_selected
+Ctrl-right	move_selected	 1  0  0
+Ctrl-left	move_selected	-1  0  0
+Ctrl-down	move_selected	 0  1  0
+Ctrl-up		move_selected	 0 -1  0
+Ctrl-pageup	move_selected	 0  0  1
+Ctrl-pagedown	move_selected	 0  0 -1
+Ctrl-x		cut
+Ctrl-v		paste
+
+F2		cheat_screen
+F3		map_teleport
+F4		toggle_fullscreen
+F10		show_endgame
+F11		show_si_intro
+Alt-F4		quit
+Alt-Enter	toggle_fullscreen
+Alt-1		sound_tester
+Ctrl-B		shape_browser
+B		useitem			761	# Show spellbook
+Ctrl-C		create_item		-1	# Create last shape
+C		toggle_combat
+Ctrl-D		delete_object
+E		toggle_eggs
+F		useitem			377	# Feed
+G		useitem			675	11	# Use abacus
+Alt-G		toggle_god_mode
+Ctrl-G		change_gender
+H		help
+Alt-H		toggle_hack_mover
+Ctrl-H		cheat_help
+Ctrl-Alt-H	party_heal
+Alt-I		toggle_infravision
+I		inventory
+J		useitem			555	# Show Jawbone
+K		useitem			485	# Use keyring
+Alt-K		try_keys
+Ctrl-L		party_increase_level
+Alt-L		skiplift_decrement
+L		combat_stats
+Ctrl-Alt-M	toggle_map_editor
+Ctrl-M		create_item		644 -1 100	# Create gold
+Shift-Alt-M	play_music		-2	# Previous song
+Alt-M		play_music		-1	# Next song
+M		useitem			178 0	# Show map
+Alt-N		toggle_naked
+Alt-P		toggle_petra
+Ctrl-P		repaint
+P		useitem			627	# Use lockpick
+Alt-Q		quit
+Ctrl-R		quickrestore
+R		face_stats
+Ctrl-Alt-S	screenshot
+Ctrl-S		quicksave
+Alt-S		change_skin
+S		save_restore
+Ctrl-Alt-T	map_teleport
+Ctrl-T		next_time_period
+Alt-T		cursor_teleport
+T		target_mode
+V		about
+Alt-W		toggle_wizard_mode
+W		useitem			675 21	# Use watch
+Alt-X		quit
+Z		stats
+
+Ctrl-Alt-G	grab_actor
+Ctrl-Alt-P	pick_pocket
+Ctrl-N		npc_numbers
+
+1	inventory	0	# Show inventory for Avatar
+2	inventory	1	# Show inventory for character 2
+3	inventory	2	# Show inventory for character 3
+4	inventory	3	# Show inventory for character 4
+5	inventory	4	# Show inventory for character 5
+6	inventory	5	# Show inventory for character 6
+7	inventory	6	# Show inventory for character 7
+8	inventory	7	# Show inventory for character 8
