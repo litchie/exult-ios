@@ -17,7 +17,7 @@ CPPFLAGS=-DVERSION=\\\"0.90alpha1\\\" -DEXULT_DATADIR=\\\"data\\\" -g3 -DDEBUG -
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/usecode \
 	$(SDL_INCLUDES)
 
-CXXFLAGS=-g -mwindows -Wall -pedantic -Wno-long-long
+CXXFLAGS=-02 -mwindows -Wno-long-long
 
 LFLAGS=-g3 -mwindows
 LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
@@ -86,9 +86,6 @@ data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
 
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres win32/exultico.rc exultico.o
-
-imagescl.o: imagescl.cc scale.cc
-	$(CXX) $(CPPFLAGS) -O3 -c imagescl.cc -o imagescl.o
 
 clean:
 	del $(OBJS) tools\expack.exe expack\txt2cc.o $(EXEC) data\exult.flx
