@@ -87,6 +87,7 @@ EXULT_FLX_OBJECTS = \
 	data/faces.shp \
 	data/faces2.shp \
 	data/amulets.shp \
+	data/bgfiredoom.shp \
 	data/flx.in
 
 $(EXEC) : Makefile data/exult.flx $(OBJS) beos/exult.rsrc
