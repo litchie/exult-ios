@@ -39,6 +39,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "Audio.h"
 
+using std::cerr;
+using std::endl;
 
 
 #include "Configuration.h"
@@ -109,7 +111,7 @@ static	void copy_to_name(std::string name1,std::string name2)
 	copy_to_fh(name1,fh);
 }
 
-int	timidity_play(string filename, bool repeat, string &newfilename, pid_t &pid)
+int	timidity_play(std::string filename, bool repeat, std::string &newfilename, pid_t &pid)
 {
 #if HAVE_MKSTEMP
         char newfn[128];
@@ -131,7 +133,7 @@ int	timidity_play(string filename, bool repeat, string &newfilename, pid_t &pid)
 #endif
 	char nbuf[32];
 	snprintf(nbuf,32,"%lu", Audio::get_ptr()->actual.freq);
-	string repstr = "-id";
+	std::string repstr = "-id";
 	if(repeat)
 		repstr += "l";
 	int pdes[2];
@@ -166,7 +168,7 @@ void	Timidity_binary::player(void)
 	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream(
 					Timidity_binary_magic);
 	char buf[4096];
-	string newfilename;
+	std::string newfilename;
 	pid_t timidity_pid;
 	int fd = timidity_play(filename, do_repeat, newfilename, timidity_pid);
 	for (;;)
@@ -189,7 +191,7 @@ void	Timidity_binary::sfxplayer(void)
 	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream(
 						Timidity_binary_magic_sfx);
 	char buf[4096];
-	string newfilename;
+	std::string newfilename;
 	pid_t timidity_pid;
 	int fd = timidity_play(sfxname, false, newfilename, timidity_pid);
 	for (;;)

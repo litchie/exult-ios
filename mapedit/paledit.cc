@@ -32,10 +32,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Flex.h"
 #include "paledit.h"
 #include "u7drag.h"
+#include <iostream>
 
 /*
  *	Blit onto screen.
  */
+
+using	std::cout;
+using	std::endl;
 
 inline void Palette_edit::show
 	(
