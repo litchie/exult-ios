@@ -42,9 +42,9 @@
 <!ELEMENT Studio (#PCDATA)>
 <!ELEMENT Pentagram (#PCDATA)>
 
-<!ELEMENT configdesc (line*)>
-<!ELEMENT line (#PCDATA|comment)*>
+<!ELEMENT configdesc (configtag*)>
 <!ELEMENT comment (#PCDATA|ref|key|q)*>
+<!ELEMENT configtag (#PCDATA|configtag|comment)*>
 
 <!ELEMENT keytable (keydesc*)>
 <!ELEMENT keydesc (#PCDATA)>
@@ -70,3 +70,6 @@
 <!ATTLIST	extref		doc	(faq|docs|studio)	#IMPLIED>
 <!ATTLIST	img		src 	CDATA	#REQUIRED>
 <!ATTLIST	img		alt 	CDATA	#REQUIRED>
+
+<!ATTLIST	configtag	name	CDATA	#REQUIRED>
+<!ATTLIST	configtag	closing-tag (yes|no) "yes">
