@@ -51,7 +51,7 @@ Game_window::Game_window
 	    tqueue(new Time_queue()), clock(tqueue),
 		npc_prox(new Npc_proximity_handler(this)),
 	    main_actor(0),
-	    conv_choices(0), texts(0),
+	    conv_choices(0), texts(0), num_faces(0),
 	    main_actor_inside(0), mode(intro), npcs(0),
 	    shapes(SHAPES_VGA),
 	    faces(FACES_VGA),
@@ -81,7 +81,7 @@ Game_window::Game_window
 					// Get 12-point font.
 	font12 = win->open_font(AVATAR_TTF, 12);
 					// Set title.
-	win->set_title("Exult Ultima7 Viewer");
+	win->set_title("Exult Ultima7 Engine");
 
 	struct timeval timer;
 	gettimeofday(&timer, 0);	// Get time of day.
@@ -656,6 +656,11 @@ void Game_window::read_ireg_objects
 			type = entry[4] + 256*entry[5];
 			lift = entry[9] >> 4;
 			quality = 0;
+#if 0
+cout << item_names[entry[2]+256*(entry[3]&3)] << ": ";
+cout << "ents 6, 7, 8 = " << (void *) entry[6] << ' ' <<
+	(void *) entry[7] << ' ' << (void *) entry[8] << '\n';
+#endif
 			Container_game_object *cobj = 
 				new Container_game_object(
 				entry[2], entry[3], shapex, shapey, lift);
@@ -739,11 +744,6 @@ void Game_window::init_actors
 	if (main_actor)			// Already done?
 		return;
 	read_npcs();			// Read in all U7 NPC's.
-					// Want to run proximity usecode on
-					//   the visible ones.
-	add_nearby_npcs(chunkx, chunky, 
-			chunkx + (get_width() + chunksize - 1)/chunksize,
-			chunky + (get_height() + chunksize - 1)/chunksize);
 	}
 
 
@@ -1369,6 +1369,7 @@ void Game_window::double_clicked
 		Game_object *obj = found[i];
 cout << "Object name is " << obj->get_name() << '\n';
 		enum Game_mode save_mode = mode;
+		init_faces();		// Be sure face list is empty.
 		obj->activate(usecode);
 		npc_prox->wait(4);	// Delay "barking" for 4 secs.
 		mode = save_mode;
@@ -1377,8 +1378,37 @@ cout << "Object name is " << obj->get_name() << '\n';
 	}
 
 /*
+ *	Store information about an NPC's face and text on the screen during
+ *	a conversation:
+ */
+class Npc_face_info
+	{
+	int shape;			// NPC's shape #.
+	Rectangle face_rect;		// Rectangle where face is shown.
+	Rectangle text_rect;		// Rectangle NPC statement is shown in.
+	friend class Game_window;
+	Npc_face_info(int sh) : shape(sh)
+		{  }
+	};
+
+/*
+ *	Initialize face list.
+ */
+
+void Game_window::init_faces
+	(
+	)
+	{
+	for (int i = 0; i < num_faces; i++)
+		{
+		delete face_info[i];
+		face_info[i] = 0;
+		}
+	num_faces = 0;
+	}
+
+/*
  *	Show a "face" on the screen.  Npc_text_rect is also set.
- *	+++++++Got to handle more than one.
  */
 
 void Game_window::show_face
@@ -1387,24 +1417,76 @@ void Game_window::show_face
 	int frame
 	)
 	{
-					// Get screen rectangle.
-	Rectangle sbox = get_win_rect();
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
+	if (num_faces == max_faces)
+		{
+		cout << "Can't show more than " << max_faces << " faces\n";
+		return;
+		}
 					// Get character's portrait.
 	Shape_frame *face = faces.get_shape(shape, frame);
-					// Draw at top of screen.
-	Rectangle actbox(16, 16,
+	Npc_face_info *info = 0;
+	Rectangle actbox;		// Gets box where face goes.
+					// See if already on screen.
+	for (int i = 0; i < num_faces; i++)
+		if (face_info[i]->shape == shape)
+			{
+			info = face_info[i];
+			break;
+			}
+//++++++Really should look for empty slot & use it.
+	if (!info)			// New one?
+		{
+					// Get last one shown.
+		Npc_face_info *prev = num_faces ? face_info[num_faces - 1] : 0;
+		info = new Npc_face_info(shape);
+		face_info[num_faces++] = info;
+					// Get screen rectangle.
+		Rectangle sbox = get_win_rect();
+					// Get text height.
+		int text_height = win->get_text_height(font12);
+					// Figure starting y-coord.
+		int starty = prev ? prev->text_rect.y + prev->text_rect.h +
+					3*text_height : 16;
+		actbox = Rectangle(16, starty,
 			face->get_width() + 4, face->get_height() + 4);
+		info->face_rect = actbox;
+					// This is where NPC text will go.
+		info->text_rect = Rectangle(actbox.x + actbox.w + 16,
+				actbox.y + 8,
+				sbox.w - actbox.x - actbox.w - 32,
+				6*text_height);
+		}
+	else
+		actbox = info->face_rect;
 					// Draw whom we're talking to.
 					// Put a black box w/ white bdr.
 	win->fill8(1, actbox.w + 4, actbox.h + 4, actbox.x - 2, actbox.y - 2);
 	win->fill8(0, actbox.w, actbox.h, actbox.x, actbox.y);
 	paint_shape(win, actbox.x + actbox.w - 2 - 8, 
 			actbox.y + actbox.h - 2 - 8, face);
-					// This is where NPC text will go.
-	npc_text_rect = Rectangle(actbox.x + actbox.w + 16,
-				actbox.y + 8,
-				sbox.w - actbox.x - actbox.w - 32,
-				6*win->get_text_height(font12));
+	}
+
+/*
+ *	Remove face from screen.
+ */
+
+void Game_window::remove_face
+	(
+	int shape
+	)
+	{
+	int i;				// See if already on screen.
+	for (i = 0; i < num_faces; i++)
+		if (face_info[i]->shape == shape)
+			break;
+	if (i == num_faces)
+		return;			// Not found.
+	paint(face_info[i]->face_rect);
+	paint(face_info[i]->text_rect);
+	delete face_info[i];
+	face_info[i] = 0;
+	num_faces--;
 	}
 
 /*
@@ -1416,9 +1498,14 @@ void Game_window::show_npc_message
 	char *msg
 	)
 	{
-	paint(npc_text_rect);		// Clear what was there before.
-	win->draw_text_box(font12, msg, npc_text_rect.x, npc_text_rect.y,
-					npc_text_rect.w, npc_text_rect.h);
+	if (!num_faces)
+		return;
+	Rectangle& box = face_info[num_faces - 1]->text_rect;
+	paint(box);			// Clear what was there before.
+	win->draw_text_box(font12, msg, box.x, box.y,
+					box.w, box.h);
+	painted = 1;
+	show();
 	}
 
 /*
@@ -1440,7 +1527,8 @@ void Game_window::show_avatar_choices
 					// Get main actor's portrait.
 	Shape_frame *face = faces.get_shape(main_actor->get_face_shapenum());
 
-	Rectangle mbox(16, npc_text_rect.y + npc_text_rect.h + 6*height,
+	Rectangle mbox(16, sbox.h - face->get_height() - 3*height,
+//npc_text_rect.y + npc_text_rect.h + 6*height,
 			face->get_width() + 4, face->get_height() + 4);
 	win->fill8(1, mbox.w + 4, mbox.h + 4, mbox.x - 2, mbox.y - 2);
 	win->fill8(0, mbox.w, mbox.h, mbox.x, mbox.y);
@@ -1542,9 +1630,15 @@ void Game_window::end_intro
 		mode = normal;
 		paint();
 					// Start with Iolo.
-#if 0	/*+++++++Doesn't work yet. */
+		mode = conversation;
 		usecode->call_usecode(0x401, npcs[1], 
 					Usecode_machine::game_start);
-#endif
+		paint();
+		mode = normal;
+					// Want to run proximity usecode on
+					//   the visible ones.
+		add_nearby_npcs(chunkx, chunky, 
+			chunkx + (get_width() + chunksize - 1)/chunksize,
+			chunky + (get_height() + chunksize - 1)/chunksize);
 		}
 	}

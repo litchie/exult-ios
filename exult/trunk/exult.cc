@@ -237,7 +237,11 @@ static void Handle_event
 		break;
 	case ButtonRelease:
 		if (event.xbutton.button == 3)
+			{
+			if (gwin->get_mode() != Game_window::normal)
+				break;
 			gwin->stop_actor();
+			}
 		else if (event.xbutton.button == 1)
 			{
 			if (gwin->get_mode() == Game_window::conversation)
@@ -259,6 +263,8 @@ static void Handle_event
 			}
 		break;
 	case MotionNotify:		// Moving with right button down.
+		if (gwin->get_mode() != Game_window::normal)
+			break;
 		while (XCheckMaskEvent(display, Button3MotionMask, &event))
 			;
 		if (XQueryPointer(display, event.xmotion.window, &root,
@@ -452,7 +458,7 @@ static void Handle_keystroke
 	{
 	static int shape_cnt = 0x310, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
-	static int gump_cnt = -1, gump_frame = 0;
+	static int gump_cnt = 4, gump_frame = 0;
 	gwin->end_intro();
 	switch (ch)
 		{
