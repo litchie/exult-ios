@@ -2047,38 +2047,23 @@ USECODE_INTRINSIC(move_object)
 	if (parms[0].get_int_value() == -357)
 		{			// Move whole party.
 		gwin->teleport_party(tile);
-#if 0	/* ++++Old way. */
-		Usecode_value party = get_party();
-		int cnt = party.get_array_size();
-		for (int i = 0; i < cnt; i++)
-			{
-			Game_object *obj = get_item(party.get_elem(i));
-			if (!obj)
-				continue;
-			obj->move(tile.tx, tile.ty, tile.tz);
-					// Fixes moongate bug:
-			moved_avatar |= (obj == ava);
-			Actor *act = as_actor(obj);
-			if (act)
-				act->set_action(0);
-			}
-#endif
+		return (no_ret);
 		}
-	else
+	Game_object *obj = get_item(parms[0]);
+	if (!obj)
+		return (no_ret);
+	Tile_coord oldpos = obj->get_abs_tile_coord();
+	obj->move(tile.tx, tile.ty, tile.tz);
+	Actor *act = as_actor(obj);
+	if (act)
 		{
-		Game_object *obj = get_item(parms[0]);
-		if (obj)
-			{
-			obj->move(tile.tx, tile.ty, tile.tz);
-			Actor *act = as_actor(obj);
-			if (act)
-				{
-				act->set_action(0);
-				if (act == ava)
-					// Teleported Avatar?
-					// Make new loc. visible.
-					gwin->center_view(tile);
-				}
+		act->set_action(0);
+		if (act == ava)
+			{		// Teleported Avatar?
+					// Make new loc. visible, test eggs.
+			gwin->center_view(tile);
+			Chunk_object_list::try_all_eggs(ava, tile.tx, 
+				tile.ty, tile.tz, oldpos.tx, oldpos.ty);
 			}
 		}
 	return(no_ret);
@@ -2372,6 +2357,47 @@ USECODE_INTRINSIC(get_array_size)
 		cnt = 1;
 	Usecode_value u(cnt);
 	return(u);
+}
+
+USECODE_INTRINSIC(mark_virtue_stone)
+{
+	Game_object *obj = get_item(parms[0]);
+	int frnum;
+	if (obj && obj->get_shapenum() == 330 &&
+	    (frnum = obj->get_framenum()) < 8)
+		virtue_stones[frnum] = 
+				obj->get_outermost()->get_abs_tile_coord();
+	return no_ret;
+}
+
+USECODE_INTRINSIC(recall_virtue_stone)
+{
+	Game_object *obj = get_item(parms[0]);
+	int frnum;
+	if (obj && obj->get_shapenum() == 330 &&
+	    (frnum = obj->get_framenum()) < 8)
+		{
+					// Pick it up if necessary.
+		Game_object *owner = obj->get_outermost();
+		if (!npc_in_party(owner))
+			{		// Go through whole party.
+			obj->remove_this(1);
+			Usecode_value party = get_party();
+			int cnt = party.get_array_size();
+			for (int i = 0; i < cnt; i++)
+				{
+				Game_object *npc = get_item(party.get_elem(i));
+				if (npc && npc->add(obj))
+					break;
+				}
+			if (i == cnt)	// Failed?  Force it on Avatar.
+				gwin->get_main_actor()->add(obj, 1);
+			}
+		Tile_coord t = virtue_stones[frnum];
+		if (t.tx > 0 || t.ty > 0)
+			gwin->teleport_party(t);
+		}
+	return no_ret;
 }
 
 USECODE_INTRINSIC(is_pc_inside)
@@ -2894,8 +2920,8 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(halt_scheduled),	// 0x5c
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5d  +++++CauseBlackout (ucdump.c)
 	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5f  ++++mark(virtue-stone)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x60  ++++recall(virtue-stone)
+	USECODE_INTRINSIC_PTR(mark_virtue_stone),	// 0x5f
+	USECODE_INTRINSIC_PTR(recall_virtue_stone),	// 0x60
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x61
 	USECODE_INTRINSIC_PTR(is_pc_inside),	// 0x62
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63     SetOrreryState (ucdump.c)
@@ -4192,6 +4218,12 @@ int Usecode_machine::write
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		Write4(out, timers[t]);
+	for (size_t i = 0; i < 8; i++)	// Virtue stones.
+		{
+		Write2(out, virtue_stones[i].tx);
+		Write2(out, virtue_stones[i].ty);
+		Write2(out, virtue_stones[i].tz);
+		}
 	out.flush();
 	return out.good();
 	}
@@ -4219,10 +4251,19 @@ int Usecode_machine::read
 	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		party[i] = Read2(in);
 	link_party();
-	int result = in.good();		// ++++Just added timers.
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		timers[t] = Read4(in);
+	int result = in.good();		// ++++Just added timers.
+	for (size_t i = 0; i < 8; i++)	// Virtue stones.
+		{
+		virtue_stones[i].tx = Read2(in);
+		virtue_stones[i].ty = Read2(in);
+		virtue_stones[i].tz = Read2(in);
+		}
+	if (!in.good())			// Failed.+++++Can remove this later.
+		for (size_t i = 0; i < 8; i++)
+			virtue_stones[i] = Tile_coord(0, 0, 0);
 	return result;
 	}
 

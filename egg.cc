@@ -131,7 +131,9 @@ void Egg_object::set_area
 		break;
 	default:
 		{
-		int width = distance ? 2*distance : 1;
+		int width = 2*distance;
+		if (distance <= 1)	// Small?
+			width++;
 		area = Rectangle(tx - distance, ty - distance, 
 					width, width);
 		break;

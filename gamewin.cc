@@ -1356,7 +1356,8 @@ void Game_window::set_palette
 		brightness = new_brightness;
 	if (faded_out)
 		return;			// In the black.
-	pal->load(PALETTES_FLX, palette);
+	if (!pal->load(PALETTES_FLX, palette))
+		abort("Error reading '%s'.", PALETTES_FLX);
 	pal->set_brightness(brightness);
 	pal->apply();
 	}
@@ -1712,6 +1713,7 @@ void Game_window::teleport_party
 	Tile_coord t			// Where to go.
 	)
 	{
+	Tile_coord oldpos = main_actor->get_abs_tile_coord();
 	main_actor->set_action(0);	// I think this is right.
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
 	paint();			// Show first.
@@ -1733,6 +1735,9 @@ void Game_window::teleport_party
 		}
 	center_view(t);			// Bring pos. into view.
 	main_actor->get_followers();
+					// Check all eggs around new spot.
+	Chunk_object_list::try_all_eggs(main_actor, t.tx, t.ty, t.tz,
+					oldpos.tx, oldpos.ty);
 	teleported = 1;
 	}
 

@@ -30,7 +30,7 @@ public:
 		Palette();
 		~Palette();
 		void apply();
-		void load(const char *fname, int index);
+		int load(const char *fname, int index);
 		void set_brightness(int bright);
 		int get_brightness();
 		void brighten(int percent);
