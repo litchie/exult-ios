@@ -79,5 +79,17 @@ public:
 	void paint(Shape_frame *frame, int px, int py);
 	};
 
+
+#else
+
+class GL_manager
+{
+ public:
+	static GL_manager *get_instance()
+		{ return 0; }
+};
+
 #endif	/* HAVE_OPENGL */
+
+
 #endif	/* GLSHAPE_H */
