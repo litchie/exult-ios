@@ -621,119 +621,130 @@ void Egg_object::activate
 	flags |= (1 << (int) hatched);
 	switch(type)
 		{
-		case jukebox:
+	case jukebox:
 #ifdef DEBUG
-			cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0x01) << endl;
+		cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0x01) << endl;
 #endif
-			Audio::get_ptr()->start_music((data1)&0xff,(data1>>8)&0x01);
-			break;
-		case voice:
-			ucmachine->do_speech(data1&0xff);
-			break;
-		case monster:		// Also creates other objects.
+		Audio::get_ptr()->start_music((data1)&0xff,(data1>>8)&0x01);
+		break;
+	case soundsfx:
+		{
+		int dir = 0;
+		if (obj)		// Get direction from obj. to egg.
 			{
-			int shnum = data2&1023;
-			int frnum = data2>>10;
-			Monster_info *inf = 
-			      ShapeID::get_info(shnum).get_monster_info();
-			if (inf)
-				{	// Armageddon spell cast?
-				if (gwin->armageddon)
-					break;
-				int sched = data1>>8;
-				int align = data1&3;
-				int cnt = (data1&0xff)>>2;
-				if (cnt > 1)	// Randomize.
-					cnt = 1 + (rand()%cnt);
-				while (cnt--)
-					Create_monster(gwin, this, shnum, inf,
+			Tile_coord epos = get_tile(), opos = obj->get_tile();
+			dir = Get_direction16(opos.ty - epos.ty, 
+							epos.tx - opos.tx);
+			}
+		Audio::get_ptr()->play_sound_effect(
+			Audio::game_sfx(data1&0xff), SDL_MIX_MAXVOLUME, dir,
+								(data1>>8)&1);
+		break;
+		}
+	case voice:
+		ucmachine->do_speech(data1&0xff);
+		break;
+	case monster:			// Also creates other objects.
+		{
+		int shnum = data2&1023;
+		int frnum = data2>>10;
+		Monster_info *inf = 
+				ShapeID::get_info(shnum).get_monster_info();
+		if (inf)
+			{		// Armageddon spell cast?
+			if (gwin->armageddon)
+				break;
+			int sched = data1>>8;
+			int align = data1&3;
+			int cnt = (data1&0xff)>>2;
+			if (cnt > 1)	// Randomize.
+				cnt = 1 + (rand()%cnt);
+			while (cnt--)
+				Create_monster(gwin, this, shnum, inf,
 							sched, align);
-				}
-			else		// Create item.
-				{
-				Shape_info& info = ShapeID::get_info(shnum);
-				Game_object *nobj =
-					gmap->create_ireg_object(info,
-						shnum, frnum, get_tx(),
-						get_ty(), get_lift());
-				Map_chunk *chunk = 
+			}
+		else			// Create item.
+			{
+			Shape_info& info = ShapeID::get_info(shnum);
+			Game_object *nobj =gmap->create_ireg_object(info,
+				shnum, frnum, get_tx(), get_ty(), get_lift());
+			Map_chunk *chunk = 
 					gmap->get_chunk(get_cx(), get_cy());
-				if (nobj->is_egg())
-					chunk->add_egg((Egg_object *) nobj);
-				else
-					chunk->add(nobj);
-				gwin->add_dirty(nobj);
-				nobj->set_flag(Obj_flags::okay_to_take);
-					// Objects are created temporary
-				nobj->set_flag(Obj_flags::is_temporary);
-				}
-			break;
-			}
-		case usecode:
-			{		// Data2 is the usecode function.
-			if (must)	// From script?  Do immediately.
-				ucmachine->call_usecode(data2, this,
-					Usecode_machine::egg_proximity);
-			else		// Do on next animation frame.
-				{
-				Usecode_script *scr = new Usecode_script(this);
-				scr->add(Ucscript::usecode, data2);
-				if (flags & (1<<(int)once))
-					{// Don't remove until done.
-					scr->add(Ucscript::remove);
-					flags &= ~(1<<(int)once);
-					}
-				scr->start(gwin->get_std_delay());
-				}
-			break;
-			}
-		case missile:
-			{
-					// Get data.  Not sure about delay.
-			int weapon = data1, dir = data2&0xff, delay = data2>>8;
-			cout << "Missile egg:  " << item_names[weapon]
-				<< endl;
-			Shape_info& info = ShapeID::get_info(weapon);
-			Weapon_info *winf = info.get_weapon_info();
-			int proj;
-			if (winf && winf->get_projectile())
-				proj = winf->get_projectile();
+			if (nobj->is_egg())
+				chunk->add_egg((Egg_object *) nobj);
 			else
-				proj = 856;// Fireball.  Shouldn't get here.
-			if (!launcher)
-				launcher = new Missile_launcher(this, weapon,
-				    proj, dir, gwin->get_std_delay()*delay);
-			if (!launcher->in_queue())
-				gwin->get_tqueue()->add(0L, launcher, 0);
-			break;
+				chunk->add(nobj);
+			gwin->add_dirty(nobj);
+			nobj->set_flag(Obj_flags::okay_to_take);
+					// Objects are created temporary
+			nobj->set_flag(Obj_flags::is_temporary);
 			}
-		case teleport:
-			activate_teleport(obj);
-			break;
-		case weather:
+		break;
+		}
+	case usecode:
+		{			// Data2 is the usecode function.
+		if (must)		// From script?  Do immediately.
+			ucmachine->call_usecode(data2, this,
+					Usecode_machine::egg_proximity);
+		else			// Do on next animation frame.
 			{
-			set_weather(data1&0xff, data1>>8, this);
-			break;
-			}
-		case button:		// Set off all in given area.
-			{
-			int dist = data1&0xff;
-			Egg_vector eggs;
-			find_nearby_eggs(eggs, 275, dist);
-			for (Egg_vector::const_iterator it = eggs.begin();
-					it != eggs.end(); ++it)
-				{
-				Egg_object *egg = *it;
-				if (egg != this &&
-				    egg->criteria == external_criteria && 
-				    !(egg->flags & (1 << (int) hatched))) // Experimental attempting to fix problem in Silver Seed
-					egg->activate(obj, 0);
+			Usecode_script *scr = new Usecode_script(this);
+			scr->add(Ucscript::usecode, data2);
+			if (flags & (1<<(int)once))
+				{	// Don't remove until done.
+				scr->add(Ucscript::remove);
+				flags &= ~(1<<(int)once);
 				}
-			break;
+			scr->start(gwin->get_std_delay());
 			}
-		default:
-			cout << "Egg not actioned" << endl;
-                }
+		break;
+		}
+	case missile:
+		{
+					// Get data.  Not sure about delay.
+		int weapon = data1, dir = data2&0xff, delay = data2>>8;
+		cout << "Missile egg:  " << item_names[weapon] << endl;
+		Shape_info& info = ShapeID::get_info(weapon);
+		Weapon_info *winf = info.get_weapon_info();
+		int proj;
+		if (winf && winf->get_projectile())
+			proj = winf->get_projectile();
+		else
+			proj = 856;	// Fireball.  Shouldn't get here.
+		if (!launcher)
+			launcher = new Missile_launcher(this, weapon,
+			    proj, dir, gwin->get_std_delay()*delay);
+		if (!launcher->in_queue())
+			gwin->get_tqueue()->add(0L, launcher, 0);
+		break;
+		}
+	case teleport:
+		activate_teleport(obj);
+		break;
+	case weather:
+		{
+		set_weather(data1&0xff, data1>>8, this);
+		break;
+		}
+	case button:		// Set off all in given area.
+		{
+		int dist = data1&0xff;
+		Egg_vector eggs;
+		find_nearby_eggs(eggs, 275, dist);
+		for (Egg_vector::const_iterator it = eggs.begin();
+					it != eggs.end(); ++it)
+			{
+			Egg_object *egg = *it;
+			if (egg != this &&
+			    egg->criteria == external_criteria && 
+			    !(egg->flags & (1 << (int) hatched))) // Experimental attempting to fix problem in Silver Seed
+				egg->activate(obj, 0);
+			}
+		break;
+		}
+	default:
+		cout << "Egg not actioned" << endl;
+		}
 	if (flags & (1 << (int) once))
 		remove_this(0);
 	}
