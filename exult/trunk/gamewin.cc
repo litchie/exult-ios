@@ -2118,6 +2118,7 @@ void Game_window::end_splash
 					// This also sets up initial 
 					//   schedules and positions.
 		paint();
+		audio->cancel();
 					// Want to activate first egg.
 #if 0
 		main_actor->walk_to_tile(1075, 2214, 0);
