@@ -527,7 +527,8 @@ Game_object *Game_object::find_closest
 	Game_object_vector vec;			// Gets objects found.
 	int i;
 	for (i = 0; i < num_shapes; i++)
-		find_nearby(vec, shapenums[i], dist, 0);
+					// 0xb0 mask finds anything.
+		find_nearby(vec, shapenums[i], dist, 0xb0);
 	int cnt = vec.size();
 	if (!cnt)
 		return (0);
@@ -695,8 +696,7 @@ void Game_object::say
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Rectangle box = gwin->get_shape_rect(this);
-	gwin->add_text(text, box.x, box.y);
+	gwin->add_text(text, this);
 	}
 
 /*
@@ -1662,7 +1662,7 @@ int Game_object::attack_object
 			attacker->get_property((int) Actor::strength);
 	return wpoints;
 	}
-
+#if 0	/* ++++++++NOT USED */
 /*
  *	Get all connected pieces of an object.
  */
@@ -1689,6 +1689,7 @@ static void Get_connected
 			}
 		}
 	}
+#endif
 
 /*
  *	Being attacked.

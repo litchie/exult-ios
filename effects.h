@@ -147,15 +147,17 @@ public:
  */
 class Text_effect : public Special_effect
 	{
-	std::string msg;			// What to print.
+	std::string msg;		// What to print.
 	Game_object *item;		// Item text is on.  May be null.
-	short tx, ty;			// Tile coords. within world of upper-
-					//   left corner.
+	Tile_coord pos;			// Position to display it at.
 	short width, height;		// Dimensions of rectangle.
+	int num_ticks;			// # ticks passed.
+	void add_dirty();
+	void init();
 public:
 	friend class Game_window;
-	Text_effect(const std::string &m, Game_object *it,
-					int t_x, int t_y, int w, int h);
+	Text_effect(const std::string &m, Game_object *it);
+	Text_effect(const std::string &m, int t_x, int t_y);
 					// At timeout, remove from screen.
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Render.

@@ -1,3 +1,9 @@
+2001-09-20  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/objs.cc: Set mask to find any obj. in find_closest(); fixes
+	barge bug.
+	* effects.cc:  Text effect follows object when it moves.
+
 2001-09-19  Ryan Nunn <triforce@merlin.net.au>
 	* actorio.cc : Finally save all flags for actors
 	* exult.cc : Improved rendering timing and palette cycling timing

@@ -2517,11 +2517,11 @@ void Game_window::show_items
 	{
 		char str[8];
 		snprintf (str, 8, "%i\n", obj->get_npc_num());
-		add_text(str, x, y, obj);
+		add_text(str, obj);
 	}
 	else if (obj)
 					// Show name.
-		add_text(obj->get_name().c_str(), x, y, obj);
+		add_text(obj->get_name().c_str(), obj);
 
 	// If it's an actor and we want to grab the actor, grab it.
 	if (obj && cheat.grabbing_actor() && (obj->get_npc_num() || obj==main_actor))
@@ -2630,32 +2630,41 @@ void Game_window::delete_object
 	}
 
 /*
+ *	Add text over a given item.
+ */
+
+void Game_window::add_text
+	(
+	const char *msg,
+	Game_object *item		// Item text ID's, or null.
+	)
+	{
+					// Don't duplicate for item.
+	for (Special_effect *each = effects; each; each = each->next)
+		if (each->is_text(item))
+			return;		// Already have text on this.
+
+	Text_effect *txt = new Text_effect(msg, item);
+//	txt->paint(this);		// Draw it.
+//	painted = 1;
+	add_effect(txt);
+	}
+
+/*
  *	Add a text object at a given spot.
  */
 
 void Game_window::add_text
 	(
 	const char *msg,
-	int x, int y,			// Pixel coord. on screen.
-	Game_object *item		// Item text ID's, or null.
+	int x, int y			// Pixel coord. on screen.
 	)
 	{
-	if (item)			// Don't duplicate for item.
-		for (Special_effect *each = effects; each; each = each->next)
-			if (each->is_text(item))
-				return;	// Already have text on this.
-
-	Text_effect *txt = new Text_effect(msg, item,
-		get_scrolltx() + x/c_tilesize, get_scrollty() + y/c_tilesize,
-				8 + get_text_width(0, msg),
-				8 + get_text_height(0));
-	txt->paint(this);		// Draw it.
-	painted = 1;
+	Text_effect *txt = new Text_effect(msg,
+		get_scrolltx() + x/c_tilesize, get_scrollty() + y/c_tilesize);
+//	txt->paint(this);		// Draw it.
+//	painted = 1;
 	add_effect(txt);
-					// Show for a couple seconds.
-	unsigned long curval = Game::get_ticks();
-//	tqueue->add(curval + 2000, txt, (long) this);
-	tqueue->add(curval + 10*std_delay, txt, (long) this);
 	}
 
 /*
