@@ -1,3 +1,10 @@
+2001-12-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* paths.cc (Offscreen_pathfinder_client), actions.cc: Added 'best'
+	location to aim for when finding a path off the screen.
+	* actors.cc (approach_another):  Fiddled with speed/delay.
+	* schedule.cc (Hound_schedule):  Speed it up a bit.
+
 2001-12-23  Ryan Nunn  <triforce@merlin.net.au>
 	* gumps/AudioOptions_gump.cc, gumps/GameplayOptions_gump.cc,
 	  gumps/VideoOptions_gump.cc : Errors, Errors, Errors
