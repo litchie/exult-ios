@@ -435,7 +435,7 @@ ExultStudio::~ExultStudio()
 	Shape_chooser::clear_editing_files();
 	config->set("config/estudio/main/width", w, true);
 	config->set("config/estudio/main/height", h, true);
-	if(names) {
+	if(names && vgafile) {
 		int num_shapes = vgafile->get_ifile()->get_num_shapes();
 		for (int i = 0; i < num_shapes; i++)
 			delete names[i];
@@ -657,7 +657,7 @@ void ExultStudio::create_new_game
 	d = gameconfig + "/patch";
 	config->set(d.c_str(), patch_path, false);
 	d = gameconfig + "/editing";	// We are editing.
-	config->set(d.c_str(), true, true);
+	config->set(d.c_str(), "yes", true);
 	string esdir;			// Get dir. for new files.
 	config->value("config/disk/data_path", esdir, EXULT_DATADIR);
 	esdir += "/estudio/new";
@@ -675,12 +675,19 @@ void ExultStudio::create_new_game
 					// Ignore case of extension.
 			if(!strcmp(fname, ".") || !strcmp(fname,".."))
 				continue;
-			//+++++++Copy files into static.
-			cout << "New file:  " << fname << endl;
+			string src = esdir + '/' + fname;
+			string dest = static_path + '/' + fname;
+			try {
+				U7copy(src.c_str(), dest.c_str());
+			} catch (exult_exception& e) {
+				EStudio::Alert(e.what());
+				break;
+			}
 			}
 		closedir(dirrd);
 		}
 	set_game_path(dir);		// Open as current game.
+	write_shape_info();		// Create initial .dat files.
 	}
 
 /*
@@ -839,6 +846,8 @@ void ExultStudio::set_game_path(const char *gamepath)
 	char *patch_path = g_strdup_printf("%s/patch", gamepath);
 	add_system_path("<PATCH>", patch_path);
 	g_free(patch_path);
+					// Clear file cache!
+	U7FileManager::get_ptr()->reset();
 	delete palbuf;			// Delete old.
 	string palname("<PATCH>/");	// 1st look in patch for palettes.
 	palname += "palettes.flx";

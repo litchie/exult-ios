@@ -1,3 +1,10 @@
+2002-04-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/studio.cc (ExultStudio): Copy files from
+	'data/estudio/new' to new game's 'static' directory.
+
+	* files/utils.{cc,h}:  U7copy copies a file.
+
 2002-04-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* monsters.{cc,h}:  In_world linking rewritten.
