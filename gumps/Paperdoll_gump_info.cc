@@ -982,8 +982,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 
 	// BOOTS
 	
-	// Shoes **NEEDS ART**
-	{     585, 0,         Actor::feet,   OT_Normal,   true, SF_PAPERDOL_VGA,     -1,     0 },
+	// Shoes
+	{     585, 0,         Actor::feet,   OT_Normal,   true, SF_GAME_FLX,     EXULT_BG_FLX_SHOES_SHP,     0 },
 	// Leather
 	{     587, 0,         Actor::feet,   OT_Normal,   true, SF_PAPERDOL_VGA,     58,     0 },
 	// Magic
@@ -1034,7 +1034,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Magic Axe
 	{     552, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     77,     0 },
 	{     552, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     77,     1 },
-	// Hawk **NEEDS ART**
+	// Hawk
 	{     555, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_HAWK_SHP,     0 },
 	{     555, -1,       Actor::back2h_spot,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_HAWK_SHP,     1 },
 	// Magebane
@@ -1140,7 +1140,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Juggernaught Hammer
 	{     557, -1,      Actor::lhand,   OT_Double,  false, SF_PAPERDOL_VGA,     53,     0 },
 	{     557, -1,Actor::back2h_spot,   OT_Double,  false, SF_PAPERDOL_VGA,     53,     1 },
-	// Death Scythe **NEEDS ART**
+	// Death Scythe
 	{     562, -1,      Actor::lhand,    OT_Staff,  false, SF_GAME_FLX,     EXULT_BG_FLX_DEATH_SCYTHE_SHP,     0 },
 	{     562, -1,Actor::back2h_spot,    OT_Staff,  false, SF_GAME_FLX,    EXULT_BG_FLX_DEATH_SCYTHE_SHP,     1 },
 	// Pitchfork
@@ -1199,8 +1199,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     598, -1,      Actor::lhand, OT_Crossbow,  false, SF_PAPERDOL_VGA,      32,    0 },
 	{     598, -1,       Actor::belt, OT_Crossbow,  false, SF_PAPERDOL_VGA,      32,    1 },
 	// Triple Crossbow **NEEDS ART**
-	{     647, -1,      Actor::lhand, OT_Crossbow,  false, SF_PAPERDOL_VGA,      32,    0 },
-	{     647, -1,       Actor::belt, OT_Crossbow,  false, SF_PAPERDOL_VGA,      32,    1 },
+	{     647, -1,      Actor::lhand, OT_Crossbow,  false, SF_GAME_FLX,      EXULT_BG_FLX_TRIPLE_XBOW_SHP,    0 },
+	{     647, -1,       Actor::belt, OT_Crossbow,  false, SF_GAME_FLX,       EXULT_BG_FLX_TRIPLE_XBOW_SHP,    1 },
 	// Bolts
 	{     723, 25,       Actor::ammo, OT_Crossbow,  false, SF_PAPERDOL_VGA,     132,    2,      2, 0 },
 	{     723, 26,       Actor::ammo, OT_Crossbow,  false, SF_PAPERDOL_VGA,     132,    3,      2, 0 },
@@ -1288,8 +1288,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Musket **NEEDS ART**
 	{     278, -1,      Actor::lhand,   OT_Musket,  false, SF_PAPERDOL_VGA,     -1,     0 },
 	{     278, -1,Actor::back2h_spot,   OT_Musket,  false, SF_PAPERDOL_VGA,     -1,     1 },
-	// Ammunition **NEEDS ART**
-	{     581, -1,       Actor::ammo,   OT_Musket,  false, SF_PAPERDOL_VGA,     -1,    2,      1, 0 },
+	// Ammunition
+	{     581, -1,       Actor::ammo,   OT_Musket,  false, SF_GAME_FLX,     EXULT_BG_FLX_MUSKET_AMMO_SHP,    0,      1, 1 },
 
 	// Terminator
 	{ 0 }

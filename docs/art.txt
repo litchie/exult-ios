@@ -41,7 +41,7 @@ Greaves			353		Oblivious
 Brown pants		738/0,1		-
 Green pants		738/2,4		-
 Brownish pants		738/3,5		-
-Shoes			585		-
+Shoes			585		Willem Jan
 Spiked Shield		578		Oblivious
 Magic boomerang		550		Willem Jan
 Fire sword		551		Oblivious
@@ -56,7 +56,7 @@ Hoe of destruction	548		Tristan
 Firedoom staff		553		Adam
 Death Scythe		562		Willem Jan
 Fellowship staff	885		Willem Jan
-Triple crossbow		647		-
+Triple crossbow		647		Willem Jan
 Musket			278		-
-Musket ammo		581		-
+Musket ammo		581		WishStone Dragon
 Fire wand		630		Willem Jan
