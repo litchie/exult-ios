@@ -46,8 +46,9 @@ static char *To_upper
 	}
 
 /*
- *	Open a file, trying the original name (lower case), and the upper
- *	case version of the name.  
+ *	Open a file for input, 
+ *	trying the original name (lower case), and the upper case version 
+ *	of the name.  
  *
  *	Output: 0 if couldn't open.
  */
@@ -69,6 +70,36 @@ int U7open
 		char upper[512];
 		in.open(To_upper(strcpy(upper, fname)), mode);
 		if (!in.good())
+			return (0);
+		}
+	return (1);
+	}
+
+/*
+ *	Open a file for output,
+ *	trying the original name (lower case), and the upper case version 
+ *	of the name.  
+ *
+ *	Output: 0 if couldn't open.
+ */
+
+int U7open
+	(
+	ofstream& out,			// Output stream to open.
+	char *fname			// May be converted to upper-case.
+	)
+	{
+#ifndef XWIN
+	int mode = ios::out | ios::trunc | ios::binary;
+#else
+	int mode = ios::out | ios::trunc;
+#endif
+	out.open(fname, mode);		// Try to open original name.
+	if (!out.good())		// No good?  Try upper-case.
+		{
+		char upper[512];
+		out.open(To_upper(strcpy(upper, fname)), mode);
+		if (!out.good())
 			return (0);
 		}
 	return (1);

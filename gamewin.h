@@ -322,6 +322,8 @@ public:
 					// Get "ifix" objs. for given chunk.
 	void get_ifix_chunk_objects(ifstream& ifix, long filepos, int cnt,
 							int cx, int cy);
+					// Write moveable objects to file.
+	int write_ireg_objects(int schunk);
 					// Get moveable objects.
 	void get_ireg_objects(int schunk);
 	void read_ireg_objects(ifstream& ireg, int scx, int scy,

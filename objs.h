@@ -53,6 +53,7 @@ const int tilesize = 8;			// A tile (shape) is 8x8 pixels.
 const int tiles_per_chunk = 16;		// A chunk is 16x16 tiles.
 const int chunksize = 16 * 8;		// A chunk has 16 8x8 shapes.
 const int num_chunks = 12*16;		// Total # of chunks in each dir.
+const int chunks_per_schunk = 16;	// # chunks in each superchunk.
 					// Total # tiles in each dir.:
 const int num_tiles = tiles_per_chunk*num_chunks;
 
