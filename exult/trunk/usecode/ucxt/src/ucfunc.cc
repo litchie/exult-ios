@@ -32,8 +32,8 @@ const string VARNAME = "uvar";
 const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
 
-void print_asm_opcode(ostream &o, UCFunc &ucf, const vector<UCOpcodeData> &optab, const UCc &op);
-string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op);
+void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op);
+string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op);
 
 /* Assumption the 'var's are in their 'zeroed' state on initialization,
    unless something else is assigned to them. */
@@ -59,7 +59,7 @@ inline ostream &tab_indent(const unsigned int indent, ostream &o)
 	return o;
 }
 
-void UCFunc::output_ucs(ostream &o, bool gnubraces)
+void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, bool gnubraces)
 {
 	unsigned int indent=0;
 	// output the "function name"
@@ -73,12 +73,12 @@ void UCFunc::output_ucs(ostream &o, bool gnubraces)
 	// start of func
 	tab_indent(indent++, o) << '{' << endl;
 	
-	output_ucs_data(o, indent);
+	output_ucs_data(o, funcmap, indent);
 	
 	tab_indent(--indent, o) << '}' << endl;
 }
 
-void UCFunc::output_ucs_data(ostream &o, unsigned int indent)
+void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, unsigned int indent)
 {
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
 	{
@@ -98,12 +98,12 @@ void UCFunc::output_ucs_data(ostream &o, unsigned int indent)
 			{
 				if(opcode.name=="NULL") // print the basic assembler for it
 				{
-					output_ucs_opcode(o, opcode_table_data, ucc, indent);
+					output_ucs_opcode(o, funcmap, opcode_table_data, ucc, indent);
 				}
 				else // print the proper decompiled usecode-script
 				{
 					// FIXME: Needs to point to the ucs versions in the future.
-					output_ucs_opcode(o, opcode_table_data, ucc, indent);
+					output_ucs_opcode(o, funcmap, opcode_table_data, ucc, indent);
 				}
 			}
 		}
@@ -112,35 +112,35 @@ void UCFunc::output_ucs_data(ostream &o, unsigned int indent)
 	}
 }
 
-void UCFunc::output_ucs_opcode(ostream &o, const vector<UCOpcodeData> &optab, const UCc &op, unsigned int indent)
+void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, unsigned int indent)
 {
-	tab_indent(indent, o) << demunge_ocstring(*this, optab[op._id].ucs_nmo, optab[op._id].param_types, op._params_parsed, op) << endl;
+	tab_indent(indent, o) << demunge_ocstring(*this, funcmap, optab[op._id].ucs_nmo, optab[op._id].param_types, op._params_parsed, op) << endl;
 	
 	#ifdef DEBUG_PRINT
 	for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end(); i++)
 	{
 		if((*i)->_popped.size())
-			output_ucs_opcode(o, opcode_table_data, **i, indent+1);
+			output_ucs_opcode(o, funcmap, opcode_table_data, **i, indent+1);
 		else
-			tab_indent(indent+1, o) << demunge_ocstring(*this, optab[(*i)->_id].ucs_nmo, optab[(*i)->_id].param_types, op._params_parsed, **i) << endl;
+			tab_indent(indent+1, o) << demunge_ocstring(*this, funcmap, optab[(*i)->_id].ucs_nmo, optab[(*i)->_id].param_types, op._params_parsed, **i) << endl;
 	}
 	#endif
 }
 
-void UCFunc::output_ucs_node(ostream &o, UCNode* ucn, unsigned int indent)
+void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, unsigned int indent)
 {
 	//if(gnubraces) o << '\t';
 	if(!ucn->nodelist.empty()) tab_indent(indent, o) << '{' << endl;
 	
 	//assert(ucn->ucc!=0);
 	if(ucn->ucc!=0)
-		print_asm_opcode(tab_indent(indent, o), *this, opcode_table_data, *(ucn->ucc));
+		print_asm_opcode(tab_indent(indent, o), *this, funcmap, opcode_table_data, *(ucn->ucc));
 	
 	if(ucn->nodelist.size())
 		for(vector<UCNode *>::iterator i=ucn->nodelist.begin(); i!=ucn->nodelist.end(); i++)
 		{
 			//tab_indent(indent, o);
-			output_ucs_node(o, *i, indent+1);
+			output_ucs_node(o, funcmap, *i, indent+1);
 		}
 			
 	// end of func
@@ -160,13 +160,13 @@ inline void gc_gotoset(vector<GotoSet> &gotoset)
 	}
 }
 
-void UCFunc::parse_ucs()
+void UCFunc::parse_ucs(const FuncMap &funcmap)
 {
 	for(vector<UCc>::iterator i=_opcodes.begin(); i!=_opcodes.end(); i++)
 		node.nodelist.push_back(new UCNode(i));
 	
 	parse_ucs_pass1a(node.nodelist);
-	parse_ucs_pass2a(gotoset);
+	parse_ucs_pass2a(gotoset, funcmap);
 	gc_gotoset(gotoset);
 	
 	#ifdef DEBUG_PARSE2
@@ -177,12 +177,13 @@ void UCFunc::parse_ucs()
 		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); j++)
 		{
 			cout << '\t' << setw(4) << j->first->_offset << '\t' << j->first->_id << endl;
-		
 		}
 	}
 	#endif
 }
 
+/* Pass 1 turns the 1-dimentional vector of opcodes, into a 2-dimentional array
+   consisting of all the opcodes within two 'goto target offsets'. */
 void UCFunc::parse_ucs_pass1a(vector<UCNode *> &nodes)
 {
 	vector<unsigned int> jumps;
@@ -216,86 +217,85 @@ void UCFunc::parse_ucs_pass1a(vector<UCNode *> &nodes)
 	}
 }
 
-void UCFunc::parse_ucs_pass2a(vector<GotoSet> &gotoset)
+/* In Pass 2 we convert our 2-dimensional 'GotoSet' array into an array with
+   each UCc, having it's parameters sitting in it's UCc::_popped vector. Elements
+   that are parameters are flagged for removal (Gotoset::()[i]->second=true) from
+   the original GotoSet. */
+void UCFunc::parse_ucs_pass2a(vector<GotoSet> &gotoset, const FuncMap &funcmap)
 {
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
 	{
-		//o << "//" << uccs[i]._offset << endl;
-
-		parse_ucs_pass2b((*i)().rbegin(), (*i)().rend(), (*i)(), 0);
-		// we don't want to output the first "jump" (the start of the function)
-//		if(i!=gotoset.begin())
-//			tab_indent(indent++, o) << setbase(16) << "label" << setw(4) << _funcid << "_" << setw(4) << i->offset() << ":" << endl;
-
-/*		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); j++)
-		{
-			const UCc &ucc = **j;
-			const UCOpcodeData &opcode = opcode_table_data[ucc._id];
-			
-		}*/
-//		if(i!=gotoset.begin()) --indent; //decrement it again to skip the label statement.
-		
+		parse_ucs_pass2b((*i)().rbegin(), (*i)().rend(), (*i)(), 0, funcmap);
 	}
 }
 
-void remvec(vector<UCc *> &vec, const UCc &remucc)
-{
-	for(vector<UCc *>::iterator i=vec.begin(); i!=vec.end(); i++)
-		if((*i)->_offset==remucc._offset)
-			vec.erase(i);
-			
-}
-
-vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> >::reverse_iterator end, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded)
+vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current, vector<pair<UCc *, bool> >::reverse_iterator end, vector<pair<UCc *, bool> > &vec, unsigned int opsneeded, const FuncMap &funcmap)
 {
 	vector<UCc *> vucc;
 	unsigned int opsfound=0;
 	
 	#ifdef DEBUG_PARSE2
-	print_asm_opcode(tab_indent(4, cout), *this, opcode_table_data, *(current->first));
+	print_asm_opcode(tab_indent(4, cout), *this, funcmap, opcode_table_data, *(current->first));
 	#endif
 	
 	for(;current!=end; current++)
 	{
 		#ifdef DEBUG_PARSE2
-		print_asm_opcode(tab_indent(3, cout), *this, opcode_table_data, *(current->first));
+		print_asm_opcode(tab_indent(3, cout), *this, funcmap, opcode_table_data, *(current->first));
 		#endif
 		
 		/* Include proper munging of opsneeded, it has special effects for numbers
 		   greater then 0x7F. Currently we just 'ignore' it. */
-		if((opcode_table_data[current->first->_id].num_pop!=0) && (opcode_table_data[current->first->_id].num_pop<0x7F))
+		if((opcode_table_data[current->first->_id].num_pop!=0) || (opcode_table_data[current->first->_id].call_effect!=0))
 		{
-			#ifdef DEBUG_PARSE2
-			print_asm_opcode(tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-"), *this, opcode_table_data, *(current->first));
-			tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-") << opcode_table_data[current->first->_id].num_pop << endl;
-			#endif
-			
-			/* save the 'current' value as the return value and increment it so it's
-			   pointing at the 'next' current value */
-			vector<pair<UCc *, bool> >::reverse_iterator ret(current++);
-			ret->first->_popped = parse_ucs_pass2b(current, end, vec, opcode_table_data[ret->first->_id].num_pop);
+			if(opcode_table_data[current->first->_id].num_pop<0x7F)
+			{
+				#ifdef DEBUG_PARSE2
+				print_asm_opcode(tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-"), *this, funcmap, opcode_table_data, *(current->first));
+				tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-") << opcode_table_data[current->first->_id].num_pop << endl;
+				#endif
+				
+				if(opcode_table_data[current->first->_id].call_effect!=0)
+				{
+					#ifdef DEBUG_PARSE2
+					cout << "CALL EFFECT: " << current->first->_id << endl;
+					#endif
+					assert(current->first->_params_parsed.size()>=1);
+					assert(_externs.size()>=current->first->_params_parsed[0]);
+					FuncMap::const_iterator fmp = funcmap.find(_externs[current->first->_params_parsed[0]]);
+					#ifdef DEBUG_PARSE2
+					cout << "CALL: " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
+					#endif
+					
+					/* save the 'current' value as the return value and increment it so it's
+					   pointing at the 'next' current value */
+					if(fmp->second.num_args>0)
+					{
+						vector<pair<UCc *, bool> >::reverse_iterator ret(current++);
+						ret->first->_popped = parse_ucs_pass2b(current, end, vec, fmp->second.num_args, funcmap);
+					}
+				}
+				else
+				{
+					/* save the 'current' value as the return value and increment it so it's
+					   pointing at the 'next' current value */
+					vector<pair<UCc *, bool> >::reverse_iterator ret(current++);
+					ret->first->_popped = parse_ucs_pass2b(current, end, vec, opcode_table_data[ret->first->_id].num_pop, funcmap);
+				}
+			}
 		}
 		if(opsneeded!=0)
 		{
 			// if it's a 'push' opcode and we need items to return that we've popped off the stack...
 			if(opcode_table_data[current->first->_id].num_push!=0)
 			{
-				/* we need an ::iterator to pass to vector<>::erase(), rather then the
-				   ::reverse_iterator we have at the moment. I have no idea, why you just
-				   can't get this as a function of ::reverse_iterator, rather then have to go
-				   through this. */
-				//vector<pair<UCc *, bool> >::iterator rem(current.base());
-				//--rem;
-				
 				#ifdef DEBUG_PARSE2
-				print_asm_opcode(tab_indent(4, cout << "P-"), *this, opcode_table_data, *(current->first));
-				//print_asm_opcode(tab_indent(4, cout << "R-"), *this, opcode_table_data, *(rem->first));
+				print_asm_opcode(tab_indent(4, cout << "P-"), *this, funcmap, opcode_table_data, *(current->first));
 				#endif
 				
 				opsfound+=opcode_table_data[current->first->_id].num_push;
 				vucc.push_back(current->first);
 				current->second=true;
-				//vec.erase(rem);
 			}
 			// if we've found all the ops we were searching for, return them
 			if(opsfound>=opsneeded)
@@ -305,123 +305,6 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 	return vucc;
 }
 
-/* Pass 1 involves turning the 'list' of opcodes into a tree-like structure
-   based around the the splitting of it into goto opcode -- goto opcode target
-   'pairs'. These are considered the boundaries of 'if...else' and 'for'
-   statements. */
-void UCFunc::parse_ucs_pass1(vector<UCNode *> &nodes)
-{
-	#ifdef DEBUG_PARSE
-	UCNode *begin(*nodes.begin());
-	UCNode *end(nodes[nodes.size()-1]);
-	
-	/* This section will produce debug output that looks similar to:
-		PASS1Split(239): 0000-0662
-			239 is the number of entries in the entire list of nodes
-			0000 is the 'starting' offset of the first opcode in the nodelist
-			0662 is the 'starting' offset of the last opcode in the nodelist
-	*/
-	cout << "PASS1Split(" << nodes.size() << "): "
-	     << setw(4) << begin->ucc->_offset << '-'
-	     << setw(4) << end->ucc->_offset << endl;
-	#endif
-	
-	vector<UCNode *>::iterator first;
-	vector<UCNode *>::iterator last;
-	for(vector<UCNode *>::iterator i(nodes.begin()); i!=nodes.end(); ++i)
-	{
-		first = nodes.end();
-		last  = nodes.end();
-		
-		/* Get the 'first' node which has an opcode attached to it,
-		   which has a jump-to address within it (it's a 'jump' statment) */
-		assert((*i)->ucc!=0); // no ucc's should be null
-		if((*i)->ucc->_id==0x05) // TODO: primitive checking for the moment, something more generic needs to be done later
-		{
-			first = i;
-			assert((*first)->ucc->_params_parsed.size()==1);
-		}
-		else if((*i)->ucc->_id==0x06) // TODO: primitive checking for the moment, something more generic needs to be done later
-		{
-			first = i;
-			assert((*first)->ucc->_params_parsed.size()==1);
-		}
-		
-		/* If we've found a node that fulfuls the above conditions,
-		   then we need to find it's jump-to target opcode. The 'last'
-		   node */
-		if(first!=nodes.end())
-		{
-			#ifdef DEBUG_PARSE
-			cout << "first: " << setw(4) << (*first)->ucc->_offset << "\t"
-			     << setw(2) << (*first)->ucc->_id << "\t"
-			     << setw(4) << (*first)->ucc->_params_parsed[0] << endl;
-			#endif
-			
-			for(vector<UCNode *>::iterator j(nodes.begin()); j!=nodes.end(); ++j)
-			{
-				assert((*j)->ucc!=0); // no ucc's should be null.
-				if((*j)->ucc->_offset == (*first)->ucc->_params_parsed[0])
-				{
-					last = j;
-					break;
-				}
-			}
-		}
-		
-		/* If we've got a first and a last node, then the 'fun' starts. <grin>
-		   We need to copy first...last to a new node, remove (first+1)...last
-		   from the original nodelist, and replace first with the new node,
-		   which contains the new nodelist. Make sense? */
-		if((last!=nodes.end()) && (first!=nodes.end()))
-		{
-			#ifdef DEBUG_PARSE
-			cout << " last: " << setw(4) << (*last)->ucc->_offset << "\t"
-			     << setw(2) << (*last)->ucc->_id << "\t"
-			     << setw(1) << (*last)->ucc->_params_parsed.size() << endl;
-			#endif
-			
-			// ok, we shouldn't have a node 'jumping-to' itself
-			assert(first!=last);
-			
-			/* Lets do the iterator dance. <grin> The range we have is begin...end
-			   inclusive, however all the iterator related functions require begin
-			   inclusive and end exclusive. So we increment the end of the potential
-			   new vector before we create it.
-			
-			   Secondly we need to erase begin+1...end inclusive from the original
-			   vector, and add this range to the node.nodelist pointed to by begin. */
-			vector<UCNode *>::iterator orig;
-			
-			if(first<last)
-			{
-				orig=first;
-				(*orig)->nodelist.insert(0, ++first, last);
-				nodes.erase(first, last);
-			}
-			else
-			{
-				orig=last;
-				(*orig)->nodelist.insert(0, ++last, first);
-				nodes.erase(last, first);
-			}
-			
-			#ifdef DEBUG_PARSE
-			for(vector<UCNode *>::iterator j((*orig)->nodelist.begin()); j!=(*orig)->nodelist.end(); ++j)
-			{
-				cout << "\t" << setw(4) << (*j)->ucc->_offset << "\t"
-				     << setw(2) << (*j)->ucc->_id << "\t"
-				     << setw(1) << (*j)->ucc->_params_parsed.size() << endl;
-				
-			}
-			
-			cout << "Size: " << setw(2) << (*orig)->nodelist.size() << endl;
-			#endif
-			
-			parse_ucs_pass1((*orig)->nodelist);
-		}	
-	}
-}
 
 /* Prints module's data segment */
 /*void UCFunc::process_data_seg()
@@ -1191,11 +1074,11 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 
 
 void print_asm_data(UCFunc &ucf, ostream &o);
-void print_asm_opcodes(ostream &o, UCFunc &ucf, const vector<UCOpcodeData> &optab);
+void print_asm_opcodes(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab);
 
 /* prints the "assembler" output of the usecode, currently trying to duplicate
    the output of the original ucdump... */
-void print_asm(UCFunc &ucf, ostream &o, const UCData &uc)
+void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const UCData &uc)
 {
 	if(uc.verbose()) cout << "Printing function..." << endl;
 
@@ -1219,7 +1102,7 @@ void print_asm(UCFunc &ucf, ostream &o, const UCData &uc)
 	//o << "-----" << endl;
     //_opcodes[i]->print_asm(cout);
 	for(vector<UCc>::iterator op=ucf._opcodes.begin(); op!=ucf._opcodes.end(); op++)
-		print_asm_opcode(o, ucf, opcode_table_data, *op);
+		print_asm_opcode(o, ucf, funcmap, opcode_table_data, *op);
 }
 
 void print_asm_data(UCFunc &ucf, ostream &o)
@@ -1249,7 +1132,7 @@ void output_raw_opcodes(ostream &o, const UCc &op);
 
 extern UCData uc;
 
-void print_asm_opcode(ostream &o, UCFunc &ucf, const vector<UCOpcodeData> &optab, const UCc &op)
+void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op)
 {
 	// offset
 	o << setw(4) << op._offset << ':';
@@ -1257,10 +1140,10 @@ void print_asm_opcode(ostream &o, UCFunc &ucf, const vector<UCOpcodeData> &optab
 	if(uc.rawops()) output_raw_opcodes(o, op);
 	else            o << '\t';
 
-	o << demunge_ocstring(ucf, optab[op._id].asm_nmo, optab[op._id].param_types, op._params_parsed, op);
+	o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_nmo, optab[op._id].param_types, op._params_parsed, op);
 
 	if(uc.autocomment())
-		o << demunge_ocstring(ucf, optab[op._id].asm_comment, optab[op._id].param_types, op._params_parsed, op);
+		o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_comment, optab[op._id].param_types, op._params_parsed, op);
 
 	o << endl;
 }
@@ -1291,7 +1174,7 @@ void output_raw_opcodes(ostream &o, const UCc &op)
 		o << "\t\t\t";
 }
 
-string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op)
+string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op)
 {
 	strstream str;
 	str << setfill('0') << setbase(16);
@@ -1306,6 +1189,8 @@ string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> 
 
 	while(!finished&&i<len)
 	{
+		bool special_call(false); // FIXME: <sigh> temporary exception handling for call (0x24)
+		
 		char c = asmstr[i];
 		switch(c)
 		{
@@ -1358,6 +1243,33 @@ string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> 
 						str << s;
 						break;
 					}
+					// if it's external function name we want
+					else if(c=='f')
+					{
+								//assert(op._params_parsed.size()>=1);
+								//assert(ucf._externs.size()>=op._params_parsed[0]);
+								//FuncMap::const_iterator fmp = funcmap.find(ucf._externs[op._params_parsed[0]]);
+								//cout << "CALL: " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
+						i++; c = asmstr[i];
+						unsigned int t=0;
+						switch(c)
+						{
+							case '1': assert(ucf._externs.size()>=1); t=1; break;
+							case '2': assert(ucf._externs.size()>=2); t=2; break;
+							case '3': assert(ucf._externs.size()>=3); t=3; break;
+							case '4': assert(ucf._externs.size()>=4); t=4; break;
+							case '5': assert(ucf._externs.size()>=5); t=5; break;
+							case '6': assert(ucf._externs.size()>=6); t=6; break;
+							case '7': assert(ucf._externs.size()>=7); t=7; break;
+							case '8': assert(ucf._externs.size()>=8); t=8; break;
+							case '9': assert(ucf._externs.size()>=9); t=9; break;
+							default:   // we'll silently drop errors... it's the only "clean" way
+								str << '%' << c;
+						}
+						assert(t!=0);
+						str << "Func" << setw(4) << ucf._externs[op._params_parsed[t-1]];
+						break;
+					}
 					// if it's the character representation of a text data string we want
 					else if(c=='p')
 					{
@@ -1374,36 +1286,59 @@ string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> 
 							case '7': t=7; break;
 							case '8': t=8; break;
 							case '9': t=9; break;
+							case ',': // FIXME: this is the special 'call' case, it may be a good idea to make more general
+							{
+								special_call=true;
+								//assert(op._params_parsed.size()>=1);
+								//assert(ucf._externs.size()>=op._params_parsed[0]);
+								//FuncMap::const_iterator fmp = funcmap.find(ucf._externs[op._params_parsed[0]]);
+								//cout << "CALL: " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
+								
+								for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end();)
+								{
+									str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*i)->_id].ucs_nmo, opcode_table_data[(*i)->_id].param_types, (*i)->_params_parsed, **i);
+//									++i;
+									if(++i!=op._popped.end())
+										str << ", ";
+								}
+							}
+							break;
 							default:   // we'll silently drop errors... it's the only "clean" way
 								str << '%' << c;
 						}
-						assert(t!=0);
-						if(t>op._popped.size())
-							str << "SOMETHING_GOES_HERE()";
-						else
+						
+						if(t!=0)
 						{
-							UCc &ucc(*op._popped[t-1]);
-							str << demunge_ocstring(ucf, opcode_table_data[ucc._id].ucs_nmo, opcode_table_data[ucc._id].param_types, ucc._params_parsed, ucc);
+							if(t>op._popped.size())
+								str << "SOMETHING_GOES_HERE()";
+							else
+							{
+								UCc &ucc(*op._popped[t-1]);
+								str << demunge_ocstring(ucf, funcmap, opcode_table_data[ucc._id].ucs_nmo, opcode_table_data[ucc._id].param_types, ucc._params_parsed, ucc);
+							}
 						}
 						break;
 					}
 					// width defaults to 4 if it's not specified
 					else            width=4;
 					
-					switch(c)
+					if(special_call!=true)
 					{
-						case '%': str << '%'; break;
-						case '1': assert(params.size()>=1); str << setw(width) << params[0]; break;
-						case '2': assert(params.size()>=2); str << setw(width) << params[1]; break;
-						case '3': assert(params.size()>=3); str << setw(width) << params[2]; break;
-						case '4': assert(params.size()>=4); str << setw(width) << params[3]; break;
-						case '5': assert(params.size()>=5); str << setw(width) << params[4]; break;
-						case '6': assert(params.size()>=6); str << setw(width) << params[5]; break;
-						case '7': assert(params.size()>=7); str << setw(width) << params[6]; break;
-						case '8': assert(params.size()>=8); str << setw(width) << params[7]; break;
-						case '9': assert(params.size()>=9); str << setw(width) << params[8]; break;
-						default:   // we'll silently drop errors... it's the only "clean" way
-							str << '%' << c;
+						switch(c)
+						{
+							case '%': str << '%'; break;
+							case '1': assert(params.size()>=1); str << setw(width) << params[0]; break;
+							case '2': assert(params.size()>=2); str << setw(width) << params[1]; break;
+							case '3': assert(params.size()>=3); str << setw(width) << params[2]; break;
+							case '4': assert(params.size()>=4); str << setw(width) << params[3]; break;
+							case '5': assert(params.size()>=5); str << setw(width) << params[4]; break;
+							case '6': assert(params.size()>=6); str << setw(width) << params[5]; break;
+							case '7': assert(params.size()>=7); str << setw(width) << params[6]; break;
+							case '8': assert(params.size()>=8); str << setw(width) << params[7]; break;
+							case '9': assert(params.size()>=9); str << setw(width) << params[8]; break;
+							default:   // we'll silently drop errors... it's the only "clean" way
+								str << '%' << c;
+						}
 					}
 				}
 				break;
