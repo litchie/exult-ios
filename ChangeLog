@@ -1,3 +1,6 @@
+2002-06-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* ucxt/src/ucfunc.cc: fixed compile error if HAVE_SSTREAM defined
+
 2002-06-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Better body placement.

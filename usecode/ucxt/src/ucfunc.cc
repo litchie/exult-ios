@@ -914,7 +914,9 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 	str << std::ends;
 	
 	string tstr(str.str());
+#ifndef HAVE_SSTREAM
 	str.freeze(false);
+#endif
 	return tstr;
 }
 
