@@ -283,7 +283,7 @@ void Game_window::init_files()
 	protect_pixel = pal->find_color(62, 62, 55);
 					// Red for hit in battle.
 	hit_pixel = pal->find_color(63, 4, 4);
-	usecode = new Usecode_machine(this);
+	usecode = Usecode_machine::create(this);
 	cerr << "Loading exult.flx..." << endl;
 	exult_flx.load("<DATA>/exult.flx");
 
