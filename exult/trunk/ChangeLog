@@ -1,3 +1,10 @@
+2004-01-19  Ryan Nunn  <colourles@users.sourceforge.net>
+	* actors.h : Added get_sexed_coloured_shape() for fixing paperdolls and 
+	  face stats always having white skin colour in serpent bond mode.
+	* gumps/Paperdoll_gump.cc, gumps/Face_button.cc : Fixing serpent bond 
+	  bug
+	* files/utils.* : Made U7exists() return type bool.
+
 2004-01-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* shapeid.cc: don't corrupt game palette to get special colours
 	* palette.*, various: replaced update() by apply(false)

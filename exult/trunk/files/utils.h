@@ -355,11 +355,11 @@ void U7remove(
 	const char *fname
 	);
 
-int U7exists(
+bool U7exists(
 	const char *fname
 	);
 
-inline int U7exists(std::string fname) { return U7exists(fname.c_str()); }
+inline bool U7exists(std::string fname) { return U7exists(fname.c_str()); }
 
 
 int U7mkdir(

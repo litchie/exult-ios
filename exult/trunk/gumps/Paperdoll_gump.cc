@@ -365,6 +365,7 @@ void Paperdoll_gump::paint
 	// Get the information required about ourself
 	Actor *actor = container->as_actor();
 	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
+	if (!info) info = GetCharacterInfo (actor->get_sexed_coloured_shape());
 	if (!info) info = GetCharacterInfo (actor->get_shape_real());
 	if (!info && Game::get_game_type() != BLACK_GATE) info = Characters;
 	else if (!info) info = Characters_BG;
@@ -738,6 +739,7 @@ Game_object * Paperdoll_gump::find_object
 	// Get the information required about ourself
 	Actor *actor = container->as_actor();
 	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
+	if (!info) info = GetCharacterInfo (actor->get_sexed_coloured_shape());
 	if (!info) info = GetCharacterInfo (actor->get_shape_real());
 	if (!info && Game::get_game_type() != BLACK_GATE) info = Characters;
 	else if (!info) info = Characters_BG;
