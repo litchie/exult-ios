@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/.. $(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../headers $(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 		$(DEBUG_FLAGS) $(CPPFLAGS)
 
 SUBDIRS = zip

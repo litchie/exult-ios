@@ -37,10 +37,11 @@ using std::string;
 
 const std::string c_empty_string;
 
-Configuration	config;
 using std::cout;
 using std::cerr;
 using std::endl;
+
+Configuration *config;
 
 void	dump_stringvec(std::vector<std::string> &vs,int expect=-2)
 {
@@ -55,60 +56,60 @@ void	dump_stringvec(std::vector<std::string> &vs,int expect=-2)
 
 void	test1(void)
 {
-	config.read_config_file("./config.xml");
+	config->read_config_file("./config->xml");
 
 	int	n;
 	std::string	r;
 	
-	config.dump(cout, "\t");
+	config->dump(cout, "\t");
 	cout << endl;
 	
 	std::string test_device("config/audio/midi/device");
-	config.value(test_device, n, -1);
+	config->value(test_device, n, -1);
 	cout << "Returned from reference, \"" << test_device << "\". Got '" << n << "'" << endl;
 	assert(n==5);
 	
 	std::string test_enabled("config/audio/midi/enabled");
-	config.value(test_enabled, r, "--nil--");
+	config->value(test_enabled, r, "--nil--");
 	cout << "Returned from reference, \"" << test_enabled << "\". Got '" << r << "'" << endl;
 	assert(r=="yes");
 
 	std::string test_spaces("config/disk/u7path_with_spaces");
-	config.value(test_spaces, r, "--nil--");
+	config->value(test_spaces, r, "--nil--");
 	cout << "Returned from reference, \"" << test_spaces << "\". Got '" << r << "'" << endl;
 	assert(r=="d:\\ultima series\\ultima vii - the serpent isle");
 	
-	config.set("config/something/something/else", "wibble", false);
+	config->set("config/something/something/else", "wibble", false);
 
-	std::string	out=config.dump();
+	std::string	out=config->dump();
 	cout << out << endl;
 
 	std::vector<std::string> vs;
 
-	vs=config.listkeys("config");
+	vs=config->listkeys("config");
 	dump_stringvec(vs,6);
 
-	vs=config.listkeys("config/audio");
+	vs=config->listkeys("config/audio");
 	dump_stringvec(vs,4);
 
-	vs=config.listkeys("config/something",false);
+	vs=config->listkeys("config/something",false);
 	dump_stringvec(vs,1);
 
-	vs=config.listkeys("config/somenonexistantthing");
+	vs=config->listkeys("config/somenonexistantthing");
 	dump_stringvec(vs,0);
 
-	config.clear();
-	//cout << endl << config.dump() << endl;
-	assert(config.dump()=="<config>\n</config>\n");
+	config->clear();
+	//cout << endl << config->dump() << endl;
+	assert(config->dump()=="<config>\n</config>\n");
 	
 	Configuration config_slash(string(""), string("root"));
 	//cout << endl << config_slash.dump() << endl;
 	assert(config_slash.dump()=="<root>\n</root>\n");
 	
-	config.clear("foo");
-	assert(config.dump()=="<foo>\n</foo>\n");
+	config->clear("foo");
+	assert(config->dump()=="<foo>\n</foo>\n");
 	
-	Configuration confnew("./config.xml", "config");
+	Configuration confnew("./config->xml", "config");
 	
 	Configuration::KeyTypeList ktl;
 	string basekey("config/audio");
@@ -124,8 +125,8 @@ void	test1(void)
 
 void test2(void)
 {
-	config.read_config_file("exult.cfg");
-	config.dump(cout, "\t") << endl;
+	config->read_config_file("exult.cfg");
+	config->dump(cout, "\t") << endl;
 }
 
 int	main(int argc, char *argv[])
