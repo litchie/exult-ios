@@ -37,10 +37,6 @@ class Shape;
 class Shape_frame
 	{
 	unsigned char rle;		// 1 if run-length encoded.
-#if 0
-	unsigned char framenum;		// Frame #.
-	unsigned short shapenum;	// Shape #.
-#endif
 	unsigned char *data;		// The actual data.
 	short xleft;			// Extent to left of origin.
 	short xright;			// Extent to right.
@@ -86,11 +82,13 @@ protected:
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
 public:
 	friend class Vga_file;
-	Shape() : frames(0)
+	Shape() : frames(0), num_frames(0)
 		{  }
 	Shape_frame *get(ifstream& shapes, int shnum, int frnum)
-		{ return (frames && frames[frnum]) ? frames[frnum] 
-					: read(shapes, shnum, frnum); }
+		{ 
+		return (frames && frnum < num_frames && frames[frnum]) ? 
+			frames[frnum] : read(shapes, shnum, frnum); 
+		}
 	};
 
 /*
@@ -133,7 +131,6 @@ public:
 		get_shape(shapenum, 0);	// Force it into memory.
 		return shapes[shapenum].num_frames;
 		}
-	unsigned char *dims;	//+++++++++++++Debugging.
 	};
 
 /*
