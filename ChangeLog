@@ -1,5 +1,6 @@
 2001-08-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* game.cc: fixed 'return to menu' after 'start new game' bug
+	* configure.in, acconfig.h: define VER_MAJOR, VER_MINOR, VER_EXTRA 
 
 2001-08-04  Jeff Freedman  <jeff@amy.nerble.net>
 

@@ -6,6 +6,9 @@
       
 #undef PACKAGE
 #undef VERSION
+#undef VER_MAJOR
+#undef VER_MINOR
+#undef VER_EXTRA
 
 /* Was debugging selected from configure? */
 #undef DEBUG
