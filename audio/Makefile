@@ -45,7 +45,7 @@ AUTOCONF = autoconf
 AUTOMAKE = automake
 AUTOHEADER = autoheader
 
-INSTALL = /usr/bin/install -c
+INSTALL = /usr/bin/ginstall -c
 INSTALL_PROGRAM = ${INSTALL} $(AM_INSTALL_PROGRAM_FLAGS)
 INSTALL_DATA = ${INSTALL} -m 644
 INSTALL_SCRIPT = ${INSTALL_PROGRAM}
@@ -65,10 +65,10 @@ CPP = gcc -E
 CXX = g++
 DLLTOOL = @DLLTOOL@
 EXEEXT = 
-FREETYPE_DIR = /usr/include/freetype
+FREETYPE_DIR = /usr/include
 HAVE_SDL_CONFIG = yes
-KMID_INCLUDES = -I/usr/local/include/libkmid
-KMID_LIBS = -L/usr/local/lib -lkmid
+KMID_INCLUDES = -I/usr/include/libkmid
+KMID_LIBS = -L/usr/lib -lkmid
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIBTOOL_DEPS = ./ltconfig ./ltmain.sh
 LN_S = ln -s
@@ -78,8 +78,8 @@ OBJEXT = o
 PACKAGE = exult
 RANLIB = ranlib
 RELNUM = 12
-SDL_INCLUDES = -I/usr/include/SDL -D_REENTRANT
-SDL_LIBS = -L/usr/lib -lSDL -lpthread
+SDL_INCLUDES = -I/usr/local/include -I/usr/local/include/SDL -D_REENTRANT
+SDL_LIBS = -L/usr/local/lib -lSDL -lpthread
 STRIP = strip
 VERSION = $MAJOR.$RELNUM
 WINDOWING_SYSTEM = -DXWIN
@@ -128,7 +128,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

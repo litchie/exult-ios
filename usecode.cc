@@ -483,12 +483,14 @@ void Usecode_machine::set_item_frame
 	{
 	Game_object *item = get_item(item_arg.get_int_value());
 	int frame = frame_arg.get_int_value();
-	if (item != 0)
+	cout << "Set_item_frame: " << item->get_shapenum() 
+					<< ", " << frame << '\n';
+	if (item != 0 && 
+	    frame < gwin->get_shape_num_frames(item->get_shapenum()))
 		item->set_frame(frame);
 //+++++Testing
 	gwin->paint();
 	gwin->show();
-	cout << "Set_item_frame: " << item << ", " << frame << '\n';
 	}
 
 /*
@@ -1159,6 +1161,25 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x40:			// Show str. near item (item, str).
 		item_say(parms[0], parms[1]);
 		break;
+	case 0x42:			// ?? Guessing rets. lift(item).
+		{
+		Game_object *obj = get_item(parms[0].get_int_value());
+		return obj ? Usecode_value(obj->get_lift())
+						: Usecode_value(0);
+		}
+	case 0x43:			// ?? Guessing setlift(item, lift).
+		{
+		Game_object *obj = get_item(parms[0].get_int_value());
+		if (obj)
+			{
+			int x, y, z;
+			obj->get_abs_tile(x, y, z);
+			obj->move(x, y, parms[1].get_int_value());
+			gwin->paint();
+			gwin->show();
+			}
+		break;
+		}
 	case 0x48:			// Display map.
 		//++++++++++++
 		Unhandled(intrinsic, num_parms, parms);
@@ -1301,6 +1322,7 @@ Usecode_machine::Usecode_machine
 	memset((char *) &party[0], 0, sizeof(party));
 	party_count = 0;
 //	gflags[0x1b3] = 1;		// Testing Ferryman.
+	gflags[0x3d] = 1;	//+++++Password to leave Trinsic.
 	file.seekg(0, ios::end);
 	int size = file.tellg();	// Get file size.
 	file.seekg(0);

@@ -50,7 +50,7 @@ class Shape_frame
 	void get_rle_shape(ifstream& shapes, long filepos);
 public:
 	friend class Game_window;
-	Shape_frame() /* : shapenum((unsigned short) -1) */
+	Shape_frame() : data(0)
 		{  }
 					// Read in shape/frame.
 	unsigned char read(ifstream& shapes, int shnum, int frnum);

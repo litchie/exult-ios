@@ -58,6 +58,9 @@ echo "Wondering what our windowing system is... "
 if test -d "/etc/X11" ; then
 	WINDOWING_SYSTEM="-DXWIN"
 fi
+if test -d "/usr/X11" ; then
+	WINDOWING_SYSTEM="-DXWIN"
+fi
 if test "$WINDOWING_SYSTEM" = "-DXWIN"; then
 	echo "Smells like X11"
 else

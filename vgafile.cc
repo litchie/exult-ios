@@ -55,7 +55,10 @@ unsigned char Shape_frame::read
 	unsigned long datalen = Read4(shapes);
 	unsigned long hdrlen = Read4(shapes);
 	if (datalen == shapelen)
-		{
+		{			// Figure # frames.
+		int nframes = (hdrlen - 4)/4;
+		if (framenum >= nframes)// Bug out if bad frame #.
+			return (nframes);
 					// Get frame offset.
 		unsigned long frameoff;
 		if (framenum == 0)
@@ -68,7 +71,7 @@ unsigned char Shape_frame::read
 					// Get compressed data.
 		get_rle_shape(shapes, shapeoff + frameoff);
 					// Return # frames.
-		return ((hdrlen - 4)/4);
+		return (nframes);
 		}
 	xleft = yabove = 8;
 	xright= ybelow = 0;

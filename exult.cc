@@ -332,7 +332,7 @@ static void Handle_keystroke
 	int shift
 	)
 	{
-	static int shape_cnt = 0x28a, shape_frame = 0;
+	static int shape_cnt = 270, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = -1, gump_frame = 0;
 	gwin->end_intro();
@@ -371,7 +371,9 @@ static void Handle_keystroke
 		shape_frame = 0;
 		if (++shape_cnt == gwin->get_num_shapes())
 			shape_cnt = 0;
-		cout << "Painting shape " << shape_cnt << '\n';
+		cout << "Painting shape " << shape_cnt;
+		cout << ", # frames = " << 
+			gwin->get_shape_num_frames(shape_cnt) << '\n';
 		gwin->paint();
 		gwin->paint_shape(gwin->get_win(),
 			200, 200, shape_cnt, shape_frame);
