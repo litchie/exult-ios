@@ -51,6 +51,7 @@ class Actor : public Container_game_object, public Time_sensitive
 protected:
 	std::string name;			// Its name.
 	int usecode;			// # of usecode function.
+	bool usecode_assigned;		// Usecode # explicitly assigned.
 	short npc_num;			// # in Game_window::npcs list, or -1.
 	short face_num;			// Which shape for conversations.
 	short party_id;			// Index in party, or -1.
