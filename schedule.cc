@@ -1837,15 +1837,339 @@ void Sew_schedule::ending
 		}
 	}
 
-Forge_schedule::Forge_schedule(Actor *n) : Schedule(n), 
-	state(put_sword_on_firepit), tongs(0), hammer(0), blank(0),
-	firepit(0), anvil(0), trough(0), bellows(0)
+
+/*
+ *	Bake bread/pastries
+ */
+
+Bake_schedule::Bake_schedule(Actor *n) : Schedule(n),
+	state(to_flour), oven(0), worktable(0), displaytable(0),
+	flourbag(0), dough(0), dough_in_oven(0), baked_count(0)
 	{ }
+
+void Bake_schedule::now_what()
+{
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord npcpos = npc->get_abs_tile_coord();
+	Actor_pathfinder_dist_client cost(1);
+	int delay = 100;
+
+	switch (state) {
+	case to_flour:
+	{
+		Game_object_vector items;
+		npc->find_nearby(items, npcpos, 863, -1, 0, c_any_qual, 0);
+		npc->find_nearby(items, npcpos, 863, -1, 0, c_any_qual, 13);
+		npc->find_nearby(items, npcpos, 863, -1, 0, c_any_qual, 14);
+
+		if (items.empty()) {
+			state = to_table;
+			break;
+		}
+
+		int nr = rand()%items.size();
+		flourbag = items[nr];
+
+		Tile_coord tpos = flourbag->get_abs_tile_coord();
+		Actor_action *pact = Path_walking_actor_action::create_path(
+					npcpos, tpos, cost);
+		if (pact) {
+			npc->set_action(pact);
+		} else {
+			// just ignore it
+			state = to_table;
+			break;
+		}
+
+		state = get_flour;
+		break;
+	}
+	case get_flour:
+	{
+		if (!flourbag) {
+			// what are we doing here then? back to start
+			state = to_flour;
+			break;
+		}
+
+		int dir = npc->get_direction(flourbag);
+		npc->add_dirty(gwin);
+		npc->set_frame(npc->get_dir_framenum(dir,Actor::to_sit_frame));
+		npc->add_dirty(gwin);
+
+		if (flourbag->get_framenum() != 0) {
+			flourbag->set_frame(0);
+			gwin->add_dirty(flourbag);
+		}
+
+		delay = 750;
+		state = to_table;
+		break;
+	}
+	case to_table:
+	{
+		Game_object *table1 = npc->find_closest(1003);
+		Game_object *table2 = npc->find_closest(1018);
+
+		if (!table1)
+			worktable = table2;
+		else if (!table2)
+			worktable = table1;
+		else if (table1->distance(npc) < table2->distance(npc))
+			worktable = table1;
+		else
+			worktable = table2;
+
+		if (!worktable)
+			worktable = npc->find_closest(1018);
+		if (!worktable) {
+			// problem... try again in a few seconds
+			delay = 2500;
+			state = to_flour;
+			break;
+		}
+
+					// Find where to put dough.
+		Rectangle foot = worktable->get_footprint();
+		Shape_info& info = gwin->get_info(worktable);
+		Tile_coord cpos(foot.x + rand()%foot.w, foot.y + rand()%foot.h,
+			worktable->get_lift() + info.get_3d_height());
+		Tile_coord tablepos = cpos;
+		cpos.tz = 0;
+
+		Actor_action *pact = Path_walking_actor_action::create_path(
+					npcpos, cpos, cost);
+		if (pact) {
+			if (dough) {
+				dough->remove_this();
+				dough = 0;
+			}
+			dough = new Ireg_game_object(658, 0, 0, 0);
+			npc->set_action(new Sequence_actor_action(pact,
+				new Pickup_actor_action(dough,tablepos,250)));
+		} else {
+			// not good... try again
+			delay = 2500;
+			state = to_flour;
+			break;
+		}
+
+		state = make_dough;
+		break;
+	}
+	case make_dough:
+	{
+		if (!dough) {
+			// better try again...
+			delay = 2500;
+			state = to_table;
+			break;
+		}
+
+		int dir = npc->get_direction(dough);
+		char fr[2];
+		fr[0] = npc->get_dir_framenum(dir, 3);
+		fr[1] = npc->get_dir_framenum(dir, 0);
+		npc->set_action(new Sequence_actor_action(
+				new Frames_actor_action(fr, 2, 500),
+				new Frames_actor_action("\x01", 1, 250, dough),
+				new Frames_actor_action(fr, 2, 500),
+				new Frames_actor_action("\x02", 1, 250, dough)
+				));
+		
+		state = remove_from_oven;
+		break;
+	}
+	case remove_from_oven:
+	{
+		if (!dough_in_oven) {
+			// nothing in oven yet
+			state = get_dough;
+			break;
+		}
+
+		oven = npc->find_closest(831);
+		if (!oven) {
+			// this really shouldn't happen...
+			dough_in_oven->remove_this();
+			dough_in_oven = 0;
+
+			delay = 2500;
+			state = to_table;
+			break;
+		}
+
+		gwin->add_dirty(dough_in_oven);
+		dough_in_oven->set_shape(377);
+		dough_in_oven->set_frame(rand()%7);
+		gwin->add_dirty(dough_in_oven);
+
+		Tile_coord tpos = oven->get_abs_tile_coord() + 
+						Tile_coord(1, 1, 0);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+					npcpos, tpos, cost);
+		if (pact) {
+			npc->set_action(new Sequence_actor_action(
+				pact,
+				new Pickup_actor_action(dough_in_oven, 250)));
+		} else {
+			// just pick it up
+			npc->set_action(
+				new Pickup_actor_action(dough_in_oven, 250));
+		}
+
+		state = display_wares;
+		break;
+	}
+	case display_wares:
+	{
+		displaytable = npc->find_closest(633);
+		if (!displaytable) {
+			// uh-oh...
+			dough_in_oven->remove_this();
+			dough_in_oven = 0;
+
+			delay = 2500;
+			state = to_flour;
+			break;
+		}
+
+		baked_count++;
+
+		Tile_coord tpos = displaytable->get_abs_tile_coord();
+		Actor_action *pact = Path_walking_actor_action::create_path(
+					npcpos, tpos, cost);
+					// Find where to put cloth.
+		Rectangle foot = displaytable->get_footprint();
+		Shape_info& info = gwin->get_info(displaytable);
+		Tile_coord cpos(foot.x + rand()%foot.w, foot.y + rand()%foot.h,
+			displaytable->get_lift() + info.get_3d_height());
+		if (pact) {
+			if (baked_count <= 5) {
+				npc->set_action(new Sequence_actor_action(pact,
+					new Pickup_actor_action(dough_in_oven,
+							 cpos, 250)));
+			} else {
+				npc->set_action(pact);
+				dough_in_oven->remove_this();
+			}
+			dough_in_oven = 0;
+		} else {
+			// just make it vanish
+			dough_in_oven->remove_this();
+			dough_in_oven = 0;
+		}
+
+		state = get_dough;
+		break;
+	}
+	case get_dough:
+	{
+		if (!dough) {
+			// try again
+			delay = 2500;
+			state = to_flour;
+			break;
+		}
+
+		oven = npc->find_closest(831);
+		if (!oven) {
+			// wait a while
+			delay = 2500;
+			state = to_flour;
+			break;
+		}
+
+		Tile_coord tpos = dough->get_abs_tile_coord();
+		Actor_action *pact = Path_walking_actor_action::create_path(
+					npcpos, tpos, cost);
+		if (pact) {
+			npc->set_action(new Sequence_actor_action(
+				pact,
+				new Pickup_actor_action(dough, 250)));
+		} else {
+			// just pick it up
+			npc->set_action(new Pickup_actor_action(dough, 250));
+		}
+
+		state = put_in_oven;
+		break;
+	}
+	case put_in_oven:
+	{
+		if (!dough) {
+			// try again
+			delay = 2500;
+			state = to_flour;
+			break;
+		}
+
+		oven = npc->find_closest(831);
+		if (!oven) {
+			// oops... retry
+			dough->remove_this();
+			dough = 0;
+
+			delay = 2500;
+			state = to_table;
+			break;
+		}
+
+		Tile_coord tpos = oven->get_abs_tile_coord() + 
+						Tile_coord(1, 1, 0);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+					npcpos, tpos, cost);
+
+		Rectangle foot = oven->get_footprint();
+		Shape_info& info = gwin->get_info(oven);
+		Tile_coord cpos(foot.x + 1, foot.y,
+				oven->get_lift() + info.get_3d_height());
+
+		if (pact) {
+			npc->set_action(new Sequence_actor_action(
+				pact,
+				new Pickup_actor_action(dough, cpos, 250)));
+
+			dough_in_oven = dough;
+			dough = 0;
+		} else {
+			dough->remove_this();
+			dough = 0;
+		}
+
+		state = to_flour;
+		break;
+	}
+	}
+	npc->start(250, delay);		// Back in queue.
+}
+
+void Bake_schedule::ending(int new_type)
+{
+	if (dough) {
+		dough->remove_this();
+		dough = 0;
+	}
+
+	if (dough_in_oven) {
+		dough_in_oven->remove_this();
+		dough_in_oven = 0;
+	}
+}
+
+
 
 
 /*
  *	Blacksmith.
+ *
+ * Note: the original kept the tongs & hammer, and put them on a nearby table
  */
+
+Forge_schedule::Forge_schedule(Actor *n) : Schedule(n), 
+	state(put_sword_on_firepit), tongs(0), hammer(0), blank(0),
+	firepit(0), anvil(0), trough(0), bellows(0)
+	{ }
 
 void Forge_schedule::now_what
 	(
@@ -1909,7 +2233,7 @@ void Forge_schedule::now_what
 		Actor_action *pact = Path_walking_actor_action::create_path(
 				npcpos, tpos, cost);
 
-		Actor_action **a = new Actor_action*[38];
+		Actor_action **a = new Actor_action*[35];
 		a[0] = pact;
 		a[1] = new Face_pos_actor_action(bellows, 250);
 		a[2] = new Frames_actor_action("\x2b", 1, 0);
@@ -1934,20 +2258,17 @@ void Forge_schedule::now_what
 		a[21] = new Frames_actor_action("\x2b", 1, 0);
 		a[22] = new Object_animate_actor_action(bellows, 3, 1, 300);
 		a[23] = new Frames_actor_action("\x20", 1, 0);
-		a[24] = new Frames_actor_action("\x05", 1, 0, blank);
-		a[25] = new Frames_actor_action("\x2b", 1, 0);
-		a[26] =	new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[27] = new Frames_actor_action("\x20", 1, 0);
-		a[28] = new Frames_actor_action("\x06", 1, 0, blank);
-		a[29] = new Frames_actor_action("\x2b", 1, 0);
-		a[30] = new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[31] = new Frames_actor_action("\x20", 1, 0);
-		a[32] = new Frames_actor_action("\x07", 1, 0, blank);
-		a[33] = new Frames_actor_action("\x2b", 1, 0);
-		a[34] = new Object_animate_actor_action(bellows, 3, 1, 300);
-		a[35] = new Frames_actor_action("\x20", 1, 0);
-		a[36] = new Frames_actor_action("\x00", 1, 0, bellows);
-		a[37] = 0;
+		a[24] = new Frames_actor_action("\x2b", 1, 0);
+		a[25] =	new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[26] = new Frames_actor_action("\x20", 1, 0);
+		a[27] = new Frames_actor_action("\x2b", 1, 0);
+		a[28] = new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[29] = new Frames_actor_action("\x20", 1, 0);
+		a[30] = new Frames_actor_action("\x2b", 1, 0);
+		a[31] = new Object_animate_actor_action(bellows, 3, 1, 300);
+		a[32] = new Frames_actor_action("\x20", 1, 0);
+		a[33] = new Frames_actor_action("\x00", 1, 0, bellows);
+		a[34] = 0;
 
 
 		npc->set_action(new Sequence_actor_action(a));
@@ -2227,6 +2548,10 @@ void Forge_schedule::ending
 	if (bellows && bellows->get_framenum() != 0) {
 		bellows->set_frame(0);
 		gwin->add_dirty(bellows);
+	}
+	if (blank && blank->get_framenum() != 0) {
+		blank->set_frame(0);
+		gwin->add_dirty(blank);
 	}
 
 	}

@@ -1,3 +1,6 @@
+2001-04-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* schedule.*, actors.cc: added Bake_schedule
+
 2001-04-16  Max Horn  <max@quendi.de>
 	* README.MacOS, mac/mac_autoconfig.h: updated for Alpha 3
 	* Paperdoll_gump.cc, intrinsics.cc, Flex.cc

@@ -391,6 +391,34 @@ public:
 	};
 
 /*
+ *	Bake schedule
+ */
+class Bake_schedule : public Schedule
+{
+	Game_object *oven;
+	Game_object *worktable;
+	Game_object *displaytable;
+	Game_object *flourbag;
+	Game_object *dough;
+	Game_object *dough_in_oven;
+	int baked_count;
+	enum {
+		to_flour,
+		get_flour,
+		to_table,
+		make_dough,
+		remove_from_oven,
+		display_wares,
+		get_dough,
+		put_in_oven
+	} state;
+public:
+	Bake_schedule(Actor *n);
+	virtual void now_what();
+	virtual void ending(int newtype);
+};
+
+/*
  *	Blacksmith schedule
  */
 class Forge_schedule : public Schedule
