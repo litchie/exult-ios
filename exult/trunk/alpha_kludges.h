@@ -85,6 +85,7 @@ namespace std{
 	using ::cout;
 	using ::cin;
 	using ::cerr;
+	using ::clog;
 	using ::endl;
 	using ::ios;
 	using ::vector;

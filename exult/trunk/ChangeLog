@@ -1,3 +1,8 @@
+2001-02-10  Christoph Reichenbach  <jameson@linuxgames.com>
+	* alpha_kludges.h: Added clog to the std:: namespace
+	* usecode/compiler/ucsym.cc: Explicitly specified String_compare in
+	  template; fixes cxx (also in my version of 0.91Alpha2)
+
 2001-02-09  Max Horn  <max@quendi.de>
 	* keys.cc: fixed bug in KeyBinder::ParseText on MacOS; changed some cerr to clog
 
