@@ -529,6 +529,8 @@ void Shape_chooser::goto_index
 	)
 	{
 	int total = get_count();	// Total #entries.
+	if (!total)
+		return;			// Empty.
 	assert (index >= 0 && index < total);
 	if (index < index0)		// Above current view?
 		{
