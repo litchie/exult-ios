@@ -1,4 +1,9 @@
 2002-06-22  Ryan Nunn  <triforce@merlin.net.au>
+	* actors.cc : Fixed a problem when reusing a variable name. Using the
+	  other variable with the same name and an initializer of the new one
+	  is a bad idea.
+
+2002-06-22  Ryan Nunn  <triforce@merlin.net.au>
 	* gamemap.cc : Fixing the 12*12-1 bug
 	* gumps/Paperdoll_gump*.* : Fixing up various paperdoll related problems
 	* Makefile.win32 : Removed Exult studio support from Win32 builds.
