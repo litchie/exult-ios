@@ -1297,6 +1297,7 @@ void Actor::die
 	if (body->Dead_body::get_live_npc_num() != -1)
 		body->set_quality(1);	// Flag for dead body of NPC.
 	body->move(pos);
+	body->set_flag(okay_to_take);	// Okay to take its contents.
 	Game_object *item;		// Move all the items.
 	while ((item = get_first_object()) != 0)
 		{
@@ -2199,6 +2200,39 @@ void Monster_actor::die
 	}
 
 /*
+ *	Another set of constants that should be in a data file (or that's
+ *	probably already in one of the U7 data files), this one correlating
+ *	a 'monster' shape with the food frame you get when you kill it.
+ */
+static int Monster_food[] = {
+	498, 10,			// Chicken.
+	500,  9,			// Cow - beef steaks.
+	502,  14,			// Deer - meat.
+	509, 12,			// Fish.
+	811, 14,			// Rabbit - small leg.
+	970, 8,				// Sheep - mutton.
+	727, 23				// Horse - ribs.
+	};
+
+/*
+ *	Find food frame for given monster shape.
+ *
+ *	Output:	Frame if found, else a random frame (0-31).
+ */
+
+static int Find_monster_food
+	(
+	int shnum			// Monster shape.
+	)
+	{
+	const int cnt = sizeof(Monster_food)/(2*sizeof(Monster_food[0]));
+	for (int i = 0; i < cnt; i++)
+		if (Monster_food[2*i] == shnum)
+			return Monster_food[2*i + 1];
+	return rand()%32;
+	}
+
+/*
  *	Create an instance of a monster.
  */
 
@@ -2263,7 +2297,8 @@ Monster_actor *Monster_info::create
 		Equip_element& elem = rec.elements[i];
 		if (!elem.shapenum || 1 + rand()%100 > elem.probability)
 			continue;	// You lose.
-		int frnum = 0;		// Frame #???
+		int frnum = (elem.shapenum == 377) ? 
+					Find_monster_food(shapenum) : 0;
 		monster->add_quantity(elem.quantity, elem.shapenum, -359,
 								frnum);
 		}

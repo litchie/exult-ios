@@ -406,6 +406,11 @@ public:
 	virtual void set_owner(Container_game_object *o)
 		{ owner = o; }
 	virtual int is_dragable() const;// Can this be dragged?
+	virtual void set_flag(int flag)
+		{
+		if (flag >= 0 && flag < 32)
+			flags |= ((unsigned long) 1 << flag);
+		}
 	virtual void clear_flag(int flag)
 		{
 		if (flag >= 0 && flag < 32)
