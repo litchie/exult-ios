@@ -515,6 +515,16 @@ USECODE_INTRINSIC(create_new_object)
 	return(u);
 }
 
+USECODE_INTRINSIC(create_new_object2)
+{
+	// create_new_object(shapenum, loc).
+	Usecode_value ret = UI_create_new_object(event, intrinsic, 1, parms);
+	if (ret == 0)
+		return ret;		// Failed.
+	UI_update_last_created(event, intrinsic, 1, &parms[1]);
+	return ret;
+}
+
 USECODE_INTRINSIC(set_last_created)
 {
 	// Take itemref off map and set last_created to it.

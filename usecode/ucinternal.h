@@ -219,6 +219,7 @@ class Usecode_internal : public Usecode_machine
         USECODE_INTRINSIC_DECL(get_avatar_ref);
         USECODE_INTRINSIC_DECL(get_party_list);
         USECODE_INTRINSIC_DECL(create_new_object);
+        USECODE_INTRINSIC_DECL(create_new_object2);
         USECODE_INTRINSIC_DECL(set_last_created);
         USECODE_INTRINSIC_DECL(update_last_created);
         USECODE_INTRINSIC_DECL(get_npc_name);

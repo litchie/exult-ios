@@ -3809,7 +3809,8 @@ Monster_actor *Monster_actor::create
 	Map_chunk *olist = gwin->get_chunk_safely(chunkx, chunky);
 	if (olist)
 		monster->movef(0, olist, tilex, tiley, 0, lift);
-
+	else
+		monster->set_invalid();
 	if (equipment) {
 					// Get equipment.
 		int equip_offset = inf->equip_offset;
