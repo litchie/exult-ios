@@ -1067,26 +1067,6 @@ void Chunk_object_list::setup_dungeon_bits
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-					// Special SI weirdness:
-	if (Game::get_game_type() == SERPENT_ISLE &&
-					// Knight's Test dungeon:
-	    cx >= 54 && cx <= 60 && cy >= 134 && cy <= 139)
-		{			// Set whole thing.
-		if (!dungeon_bits)
-			dungeon_bits = new unsigned char[256/8];
-		memset(dungeon_bits, 0xff, 256/8);
-		return;
-		}
-
-	if (Game::get_game_type() == SERPENT_ISLE &&
-					// Silver Seed:
-			cx >= 144 && cx <= 192 && cy >= 156 && cy <= 192) {
-		// Set whole thing.
-		if (!dungeon_bits)
-			dungeon_bits = new unsigned char[256/8];
-		memset(dungeon_bits, 0xff, 256/8);
-		return;
-	}
 
 	Object_iterator next(objects);
 	Game_object *each;
@@ -1095,7 +1075,9 @@ void Chunk_object_list::setup_dungeon_bits
 		int shnum = each->get_shapenum();
 					// Test for mountain-tops.
 		if (shnum == 983 || shnum == 969 || shnum == 183 ||
-		    shnum == 182 || shnum == 180 || shnum == 324)
+		    shnum == 182 || shnum == 180 || shnum == 324 || 
+		    (Game::get_game_type() == SERPENT_ISLE &&
+		     (shnum == 394 || shnum == 941)))
 			{
 			Rectangle area = each->get_footprint();
 					// Try to fix Courage Test:
