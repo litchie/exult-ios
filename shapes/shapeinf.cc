@@ -6,6 +6,7 @@
 
 /*
 Copyright (C) 1998  Jeffrey S. Freedman
+Copyright (C) 1999-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -155,6 +156,7 @@ Shape_info::~Shape_info()
 	{
 	delete weapon;
 	delete ammo;
+	delete armor;
 	if(weapon_offsets)
 		delete [] weapon_offsets;
 	delete monstinf;
