@@ -1,3 +1,7 @@
+2003-02-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* configure.ac: renamed configure.in to configure.ac; updated for
+	autoconf 2.53+; removed acconfig.h
+
 2003-02-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* version.cc: output HAVE_OPENGL setting
 	* imagewin.h: disable OpenGL in the video options if not HAVE_OPENGL

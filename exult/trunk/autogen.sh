@@ -51,8 +51,8 @@ rm -f config.status aclocal.m4
 rm -f `find . -name 'Makefile.in'`
 rm -f `find . -name 'Makefile'`
 
-# touch the configure.in file to force rebuilding configure
-touch configure.in
+# touch the configure.ac file to force rebuilding configure
+touch configure.ac
 
 # Regenerate everything
 aclocal $aclocalincludes
