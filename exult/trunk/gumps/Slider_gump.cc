@@ -104,10 +104,15 @@ Slider_gump::Slider_gump
 #ifdef DEBUG
 	cout << "Slider:  " << min_val << " to " << max_val << " by " << step << endl;
 #endif
-	left_arrow = new Slider_button(this, leftbtnx, btny, game->get_shape("gumps/slider_left"));
+	left_arrow = new Slider_button(this, leftbtnx, btny, 
+				       game->get_shape("gumps/slider_left"));
 	right_arrow = new Slider_button(this, rightbtnx, btny, 
-								game->get_shape("gumps/slider_right"));
+					game->get_shape("gumps/slider_right"));
 					// Init. to middle value.
+	if (defval < min_val)
+	  defval = min_val;
+	else if (defval > max_val)
+	  defval = max_val;
 	set_val(defval);
 }
 
