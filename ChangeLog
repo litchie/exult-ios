@@ -1,3 +1,9 @@
+2002-02-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/shapelst.cc: Optional 'Frames' view shows all the frames
+	for all shapes, one shape per row.  (Might still need to add a
+	horiz. scrollbar for this.)
+
 2002-02-03  Max Horn  <max@quendi.de>
 	* audio, conf, files: replaced local versions with those from common module
 	* usecode/ucxt/Makefile.am: fixed (head2data.test isn't an app target)
