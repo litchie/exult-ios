@@ -79,10 +79,16 @@ bool Gen_font_shape
 		unsigned char *pixels = new unsigned char[cnt];
 		memset(pixels, bg, cnt);// Fill with background.
 					// I believe this is 1 bit/pixel:
-		unsigned char *monobits = glyph->bitmap.buffer;
-		for (int b = 0; b < cnt; b++)
-			if (monobits[b/8]&(0x80>>(b%8)))
-				pixels[b] = fg;
+		unsigned char *src = glyph->bitmap.buffer;
+		unsigned char *dest = pixels;
+		for (int row = 0; row < h; row++)
+			{
+			for (int b = 0; b < w; b++)
+				if (src[b/8]&(0x80>>(b%8)))
+					dest[b] = fg;
+			dest += w;	// Advance to next row.
+			src += glyph->bitmap.pitch;
+			}
 					// Not sure about dims here+++++
 		Shape_frame *frame = new Shape_frame(pixels,
 			w, h, glyph->bitmap_left, glyph->bitmap_top, true);
