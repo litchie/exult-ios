@@ -36,7 +36,9 @@ using ::snprintf;
 }
 #else
 #endif
+#ifndef UNDER_CE
 using std::strchr;
+#endif
 
 /*
  *	For objects that can have a quantity, the name is in the format:

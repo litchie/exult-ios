@@ -35,6 +35,7 @@
 #include "useval.h"
 #include "utils.h"
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::dec;
@@ -45,6 +46,7 @@ using std::setfill;
 using std::setw;
 using std::strcmp;
 using std::strlen;
+#endif
 
 
 

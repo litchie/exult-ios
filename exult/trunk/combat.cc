@@ -42,9 +42,11 @@
 #include "Gump_manager.h"
 #include "spellbook.h"
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::rand;
+#endif
 
 unsigned long Combat_schedule::battle_time = (unsigned long) (-30000);
 unsigned long Combat_schedule::battle_end_time = 0;

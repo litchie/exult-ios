@@ -105,7 +105,7 @@ public:
 		if (in) in->seekg(pos);
 		else out->seekp(pos);
 	};
-	
+
 	virtual void skip(int pos) { in->seekg(pos, std::ios::cur); };
 	
 	virtual unsigned int getSize()

@@ -47,10 +47,12 @@
 #include "servemsg.h"
 #endif
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::rand;
 using std::ostream;
+#endif
 
 Egg_object *Egg_object::editing = 0;
 

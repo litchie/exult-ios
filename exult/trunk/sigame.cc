@@ -39,11 +39,13 @@
 #include "mappatch.h"
 #include "shapeid.h"
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::rand;
 using std::strlen;
 using std::toupper;
+#endif
 
 SI_Game::SI_Game()
 	{

@@ -81,6 +81,8 @@
 // Now put the headers that should be in std into the std namespace
 namespace std {
 
+extern "C" {
+
 	#include <wchar.h>
 	#include <sys/types.h>
 	//#include <sys/stat.h>
@@ -94,6 +96,7 @@ namespace std {
 	#include <cstdarg>
 	#include <malloc.h>
 
+};
 	// Kludge to make Exult think that size_t has been put into the
 	// std namespace
 	typedef ::size_t size_t2;

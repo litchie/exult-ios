@@ -22,7 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #ifndef ALPHA_LINUX_CXX
+#ifndef UNDER_CE
 #  include <csignal>
+#endif
 #  include <iostream>
 #endif
 #include <unistd.h>
@@ -42,12 +44,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../conf/Configuration.h"
 extern	Configuration	*config;
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::cout;
 using std::endl;
 using std::string;
 using std::strcpy;
-
+#endif
 
 static Mix_Music *oggmusic;
 
@@ -549,7 +552,7 @@ bool MyMidiPlayer::init_device(void)
 		TRY_MIDI_DRIVER(FMOpl_Midi);
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(UNDER_CE)
 	TRY_MIDI_DRIVER(Windows_MidiOut);
 #endif
 #ifdef BEOS

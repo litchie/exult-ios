@@ -52,6 +52,7 @@
 #include "servemsg.h"
 #endif
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -61,6 +62,7 @@ using std::rand;
 using std::ostream;
 using std::strchr;
 using std::string;
+#endif
 
 					// Offset to each neighbor, dir=0-7.
 short Tile_coord::neighbors[16] = {0,-1, 1,-1, 1,0, 1,1, 0,1,

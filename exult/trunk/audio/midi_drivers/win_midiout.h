@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef WIN_MIDIOUT_H
 #define WIN_MIDIOUT_H
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(UNDER_CE)
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN

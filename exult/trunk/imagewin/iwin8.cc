@@ -37,7 +37,9 @@ Boston, MA  02111-1307, USA.
 #include "gamma.h"
 #include <limits.h>
 
+#ifndef UNDER_CE
 using std::memmove;
+#endif
 
 GammaTable<uint8> Image_window8::GammaRed(256);
 GammaTable<uint8> Image_window8::GammaBlue(256);

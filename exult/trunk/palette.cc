@@ -32,10 +32,12 @@
 
 #include "SDL_timer.h"
 
+#ifndef UNDER_CE
 using std::memcpy;
 using std::memset;
 using std::size_t;
 using std::string;
+#endif
 
 Palette::Palette()
 	: win(Game_window::get_instance()->get_win()), 

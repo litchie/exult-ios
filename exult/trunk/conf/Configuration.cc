@@ -36,15 +36,19 @@
 #include <sstream>
 #endif
 
+#ifndef UNDER_CE
 using std::atoi;
 using std::cerr;
 using std::endl;
 using std::string;
 using std::ostream;
+#endif
 
 // isspace could be a macro
+#ifndef UNDER_CE
 #ifndef isspace
 using std::isspace;
+#endif
 #endif
 
 #define TRACE_CONF 0

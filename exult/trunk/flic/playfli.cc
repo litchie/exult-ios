@@ -38,11 +38,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "SDL_timer.h"
 
+#ifndef UNDER_CE
 using std::ifstream;
 using std::memset;
 using std::size_t;
 using std::cout;
 using std::endl;
+#endif
 
 playfli::playfli(const char *fli_name)
 {

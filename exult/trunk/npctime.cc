@@ -30,7 +30,9 @@
 #include "schedule.h"
 #include "game.h"
 
+#ifndef UNDER_CE
 using std::rand;
+#endif
 
 extern bool god_mode;
 

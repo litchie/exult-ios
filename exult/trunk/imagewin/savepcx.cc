@@ -38,10 +38,12 @@ It has been partly rewritten to use an SDL surface as input.
 #include "SDL_endian.h"
 #include <iostream>
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::free;
 using std::malloc;
+#endif
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
 #define qtohl(x) (x)

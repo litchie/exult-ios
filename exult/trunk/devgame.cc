@@ -37,8 +37,10 @@
 #include "txtscroll.h"
 #include "exult_types.h"
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::rand;
 using std::strlen;
 using std::toupper;
+#endif

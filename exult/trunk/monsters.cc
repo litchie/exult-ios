@@ -33,7 +33,9 @@
 #include "game.h"
 #include "effects.h"
 
+#ifndef UNDER_CE
 using std::rand;
+#endif
 
 /*
  *	Slimes move differently.
