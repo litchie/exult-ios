@@ -334,8 +334,7 @@ public:
 	void add_nearby_npcs(int from_cx, int from_cy,
 						int stop_cx, int stop_cy);
 	void schedule_npcs(int hour3);	// Update NPCs' schedules.
-	void get_focus()		// Get/lose focus.
-		{ focus = 1; }
+	void get_focus();		// Get/lose focus.
 	void lose_focus()
 		{ focus = 0; }
 	int have_focus()

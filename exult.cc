@@ -330,7 +330,7 @@ static void Handle_keystroke
 	int shift
 	)
 	{
-	static int shape_cnt = 0x9c, shape_frame = 0;
+	static int shape_cnt = 720, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = -1, gump_frame = 0;
 	gwin->end_intro();
