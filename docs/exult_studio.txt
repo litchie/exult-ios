@@ -600,7 +600,6 @@ The next things to be implemented are:
 9.6. Known Bugs with the Win32 port
 Exult Studio is of course far from perfect and the Win32 port still has some bugs:
 * Windows NT4 and Windows 2k don't work at the moment as there is some strange connection problem between Exult and Exult Studio. We have not yet been able to figure out the problem.
-* If you start Exult Studio from an SI game Exult Studio defaults to the BG data files. You have to change the game dir manually from the files menu.
 * When you change the game directory you can't select a different drive than the one Exult Studio is running from.
 
 
