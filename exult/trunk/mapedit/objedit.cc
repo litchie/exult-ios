@@ -237,9 +237,12 @@ int ExultStudio::init_obj_window
 					// Store name. (Not allowed to change.)
 	set_entry("obj_name", name.c_str(), false);
 					// Shape/frame, quality.
-	set_entry("obj_shape", shape);
-	set_entry("obj_frame", frame);
-	set_entry("obj_quality", quality);
+//	set_entry("obj_shape", shape);
+//	set_entry("obj_frame", frame);
+//	set_entry("obj_quality", quality);
+	set_spin("obj_shape", shape);
+	set_spin("obj_frame", frame);
+	set_spin("obj_quality", quality);
 	set_spin("obj_x", tx);		// Position.
 	set_spin("obj_y", ty);
 	set_spin("obj_z", tz);
@@ -274,9 +277,13 @@ int ExultStudio::save_obj_window
 	int tx = get_spin("obj_x"), ty = get_spin("obj_y"), 
 	    tz = get_spin("obj_z");
 	std::string name(get_text_entry("obj_name"));
-	int shape = get_num_entry("obj_shape");
-	int frame = get_num_entry("obj_frame");
-	int quality = get_num_entry("obj_quality");
+//	int shape = get_num_entry("obj_shape");
+//	int frame = get_num_entry("obj_frame");
+//	int quality = get_num_entry("obj_quality");
+	int shape = get_spin("obj_shape");
+	int frame = get_spin("obj_frame");
+	int quality = get_spin("obj_quality");
+	
 	if (Object_out(server_socket, Exult_server::obj, addr, tx, ty, tz, 
 					shape, frame, quality, name) == -1)
 		{
