@@ -65,13 +65,14 @@ BG_Game::BG_Game()
 		add_shape("gumps/goldsign", 51);
 		add_shape("gumps/body", 53);
 
-		add_resource("files/shapes/count", 0, 6);
+		add_resource("files/shapes/count", 0, 7);
 		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
 		add_resource("files/shapes/1", "<STATIC>/faces.vga", 0);
 		add_resource("files/shapes/2", "<STATIC>/gumps.vga", 0);
 		add_resource("files/shapes/3", "<STATIC>/sprites.vga", 0);
 		add_resource("files/shapes/4", "<STATIC>/mainshp.flx", 0);
 		add_resource("files/shapes/5", "<STATIC>/endshape.flx", 0);
+		add_resource("files/shapes/6", "<STATIC>/fonts.vga", 0);
 	
 		add_resource("palettes/count", 0, 18);
 		add_resource("palettes/0", "<STATIC>/palettes.flx", 0);
