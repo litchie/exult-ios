@@ -1,6 +1,7 @@
 #include "ucdefs.h"
 
 extern adder 0x480(a, b);	// Declaration.
+const int const13 = 13;
 
 /*
  *	Return sum.
@@ -28,7 +29,7 @@ adder1 0x481 (a, b)
 		return;
 				// This is nonsense:
 	c = a[7];
-	a[13] = 46;
+	a[const13] = 46;
 	c = UcItem;
 	UcEvent = UcEvent + 7;
 	c = UI_get_item_flag(UcItem, 10);

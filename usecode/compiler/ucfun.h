@@ -72,7 +72,8 @@ public:
 		Uc_symbol *sym = cur_scope->search_up(nm);
 		return (sym ? sym : globals.search(nm));
 		}
-	bool is_dup(char *nm);		// Already declared?
+					// Already declared?
+	static bool is_dup(Uc_scope *scope, char *nm);
 	Uc_var_symbol *add_symbol(char *nm);// Add var. to current scope.
 	int add_function_symbol(Uc_function_symbol *fun)
 		{ return cur_scope->add_function_symbol(fun); }
@@ -82,8 +83,7 @@ public:
 	Uc_symbol *add_string_symbol(char *nm, char *text);
 					// Add int constant.
 	Uc_symbol *add_int_const_symbol(char *nm, int value);
-//	Uc_symbol *add_global_int_const_symbol(char *nm, int val)
-//		{ return globals.add_int_const_symbol(nm, val); }
+	static Uc_symbol *add_global_int_const_symbol(char *nm, int val);
 	int add_string(char *text);
 					// Link external function.
 	int link(Uc_function_symbol *fun);

@@ -247,9 +247,8 @@ const_int:
 			if (function)
 				function->add_int_const_symbol($1, val);
 			else		// Global.
-//+++finish				Uc_function::add_global_int_const_symbol(
-//								($1, val));
-				;
+				Uc_function::add_global_int_const_symbol(
+								$1, val);
 		}
 	;
 
