@@ -131,7 +131,7 @@ static long Savefile
 	ifstream in;
 	if (!U7open(in, fname))
 		{
-		cerr << "Exult: Can't read '" << fname << "'\n";
+		cerr << "Exult: Can't read '" << fname << "'"<<endl;
 		return (0);
 		}
 	in.seekg(0, ios::end);		// Get to end so we can get length.
@@ -153,7 +153,7 @@ static long Savefile
 	out.write(buf, len);
 	delete buf;
 	if (!in.good())
-		cerr << "Exult: Error reading '" << fname << "'\n";
+		cerr << "Exult: Error reading '" << fname << "'"<<endl;
 	return len + 13;		// Include filename.
 	}
 
@@ -173,7 +173,7 @@ int Game_window::save_gamedat
 	if (!U7open(out, fname))
 		{			// +++++Better error???
 		cerr << "Exult:  Error opening '" << fname <<
-				"' for writing\n";
+				"' for writing"<<endl;
 		return (0);
 		}
 	char title[0x50];		// Use savename for title.
@@ -214,7 +214,7 @@ int Game_window::save_gamedat
 	int result = out.good();
 	if (!result)			// ++++Better error system needed??
 		{
-		cerr << "Exult:  Error writing '" << fname << "'\n";
+		cerr << "Exult:  Error writing '" << fname << "'"<<endl;
 		return (0);
 		}
 	out.close();
@@ -295,7 +295,7 @@ char *Game_window::get_game_identity
 	  continue;
 	in.seekg(finfo[2*i]);	// Get to it.
 	char fname[50];		// Set up name.
-	in.read(&fname, 13);
+	in.read(fname, 13);
 	if (!strcmp("identity",fname))
 	    {
       	      game_identity = new char[len];

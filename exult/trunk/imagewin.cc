@@ -835,7 +835,7 @@ void Image_window::create_surface
 		{
 		cout << "Couldn't set video mode (" << w << ", " << h <<
 			") at " << ibuf->depth << " bpp depth: " <<
-			SDL_GetError() << '\n';
+			SDL_GetError() << endl;
 		exit(-1);
 		}
 	ibuf->bits = (unsigned char *) surface->pixels;
@@ -898,10 +898,10 @@ void Image_window::toggle_fullscreen() {
         h = surface->h;
         bpp = surface->format->BitsPerPixel;
         if ( surface->flags & SDL_FULLSCREEN ) {
-		cout << "Switching to windowed mode.\n";
+		cout << "Switching to windowed mode."<<endl;
                 flags = surface->flags & ~SDL_FULLSCREEN;
         } else {
-		cout << "Switching to fullcsreen mode.\n";
+		cout << "Switching to fullcsreen mode."<<endl;
                 flags = surface->flags | SDL_FULLSCREEN;
         }
         if ( SDL_VideoModeOK(w, h, bpp, flags) ) {

@@ -110,10 +110,10 @@ int main
 		exit(1);
 		}
 
-	cout << "Exult V0." << RELNUM << ".\n" <<
-	    "Copyright (C) 2000 J. S. Freedman, Dancer Vesperman, \n" <<
-	    "                   Willem Jan Palenstijn, Tristan Tarrant\n";
-	cout << "Low level graphics use the 'SDL' library.\n";
+	cout << "Exult V0." << RELNUM << "." << endl <<
+	    "Copyright (C) 2000 J. S. Freedman, Dancer Vesperman, " << endl <<
+	    "                   Willem Jan Palenstijn, Tristan Tarrant"<< endl;
+	cout << "Low level graphics use the 'SDL' library."<< endl;
 
         config = new Configuration;	// Create configuration object
 	config->read_config_file(USER_CONFIGURATION_FILE);
@@ -218,7 +218,7 @@ static void Init
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER|
 						SDL_INIT_AUDIO) < 0)
 		{
-		cerr << "Unable to initialize SDL: " << SDL_GetError() << '\n';
+		cerr << "Unable to initialize SDL: " << SDL_GetError() << endl;
 		exit(-1);
 		}
 	atexit(SDL_Quit);
@@ -414,7 +414,7 @@ static void Handle_event
 	{
 					// For detecting double-clicks.
 	static unsigned long last_b1_click = 0;
-//cout << "Event " << (int) event.type << " received\n";
+//cout << "Event " << (int) event.type << " received"<<endl;
 	switch (event.type)
 		{
 	case SDL_MOUSEBUTTONDOWN:
@@ -554,7 +554,7 @@ static void Handle_event
 //		printf("SYSWMEVENT received, %x\n", event.syswm.msg->msg);
 		if (event.syswm.msg->msg == MM_MCINOTIFY) {
 #if DEBUG
-			cerr << "MM_MCINOTIFY message received\n";
+			cerr << "MM_MCINOTIFY message received"<<endl;
 #endif
 			((Windows_MCI*)(audio->get_midi()))->callback(event.syswm.msg->wParam, 
 							event.syswm.msg->hwnd);
@@ -685,7 +685,7 @@ static void Handle_keystroke
 		mouse->set_shape(++mcur);
 		gwin->set_painted();
 #if DEBUG
-		cout << "Mouse cursor:  " << mcur << '\n';
+		cout << "Mouse cursor:  " << mcur << endl;
 #endif
 #endif
 		break;
@@ -698,7 +698,7 @@ static void Handle_keystroke
 		if (gwin->skip_lift == 0)
 			gwin->skip_lift = 16;
 #if DEBUG
-		cout << "Skip_lift = " << gwin->skip_lift << '\n';
+		cout << "Skip_lift = " << gwin->skip_lift << endl;
 #endif
 					// FALL THROUGH.
 	case SDLK_p:			// Rerender image.
@@ -725,7 +725,7 @@ static void Handle_keystroke
 		if (ctrl)		// Restore from 'gamedat'.
 			{
 			if (gwin->read())
-				cout << "Restore from 'gamedat' successful\n";
+				cout << "Restore from 'gamedat' successful"<<endl;
 			gwin->paint();
 			break;
 			}
@@ -734,7 +734,7 @@ static void Handle_keystroke
 		if (ctrl)		// Save to 'gamedat'.
 			{
 			if (gwin->write())
-				cout << "Save to 'gamedat' successful\n";
+				cout << "Save to 'gamedat' successful"<<endl;
 			break;
 			}
 					// Show next shape.
@@ -933,7 +933,7 @@ static int Handle_gump_event
 		{
 	case SDL_MOUSEBUTTONDOWN:
 cout << "(x,y) rel. to gump is (" << (event.button.x - gump->get_x()) << 
-	", " <<	(event.button.y - gump->get_y()) << ")\n";
+	", " <<	(event.button.y - gump->get_y()) << ")"<<endl;
 		if (event.button.button == 1)
 			gump->mouse_down(event.button.x, event.button.y);
 		break;

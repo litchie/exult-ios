@@ -227,7 +227,7 @@ int Game_window::write_npcs
 	if (!U7open(nfile, NPC_DAT))
 		{			// +++++Better error???
 		cerr << "Exult:  Error opening '" << NPC_DAT <<
-				"' for writing\n";
+				"' for writing"<<endl;
 		return (0);
 		}
 	Write2(nfile, num_npcs1);	// Start with counts.
@@ -239,7 +239,7 @@ int Game_window::write_npcs
 	int result = nfile.good();
 	if (!result)			// ++++Better error system needed??
 		{
-		cerr << "Exult:  Error writing '" << NPC_DAT << "'\n";
+		cerr << "Exult:  Error writing '" << NPC_DAT << "'"<<endl;
 		return (0);
 		}
 	nfile.close();
@@ -247,7 +247,7 @@ int Game_window::write_npcs
 	if (!U7open(nfile, MONSNPCS))
 		{			// +++++Better error???
 		cerr << "Exult:  Error opening '" << MONSNPCS <<
-				"' for writing\n";
+				"' for writing"<<endl;
 		return (0);
 		}
 					// Start with count.
@@ -260,7 +260,7 @@ int Game_window::write_npcs
 	result = nfile.good();
 	if (!result)			// ++++Better error system needed??
 		{
-		cerr << "Exult:  Error writing '" << MONSNPCS << "'\n";
+		cerr << "Exult:  Error writing '" << MONSNPCS << "'"<<endl;
 		return (0);
 		}
 	return (result);
@@ -287,7 +287,7 @@ void Game_window::read_schedules
 		Npc_actor *npc = (Npc_actor *) npcs[i + 1];
 		int cnt = offsets[i + 1] - offsets[i];
 #if 0
-		cout << "Schedule for " << npc->get_name() << ":\n";
+		cout << "Schedule for " << npc->get_name() << ":"<<endl;
 #endif
 					// Read schedules into this array.
 		Schedule_change *schedules = new Schedule_change[cnt];
@@ -298,7 +298,7 @@ void Game_window::read_schedules
 			schedules[j].set(ent);
 #if 0
 			cout << "    " << sched->get_type() << 
-				", time = " << sched->get_time() << '\n';
+				", time = " << sched->get_time() << endl;
 #endif
 			}
 					// Store in NPC.

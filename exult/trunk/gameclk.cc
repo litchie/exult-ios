@@ -147,7 +147,7 @@ void Game_clock::handle_event
 		gwin->schedule_npcs(hour/3);
 		}
 #endif
-	cout << "Clock updated to " << hour << ':' << minute << '\n';
+	cout << "Clock updated to " << hour << ':' << minute << endl;
 	curtime += 60*1000;		// Do it again in 60 seconds.
 	tqueue->add(curtime, this, udata);
 	}
@@ -165,5 +165,5 @@ void Game_clock::fake_next_period
 	Game_window *gwin = Game_window::get_game_window();
 	set_time_palette();
 	gwin->schedule_npcs(hour/3);
-	cout << "The hour is now " << hour << '\n';
+	cout << "The hour is now " << hour << endl;
 	}

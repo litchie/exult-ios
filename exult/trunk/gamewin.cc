@@ -98,7 +98,7 @@ Game_window::Game_window
 	if (stat(U7NBUF_DAT, &sbuf) != 0 &&
 	    stat(NPC_DAT, &sbuf) != 0)
 		{
-		cout << "Creating 'gamedat' files.\n";
+		cout << "Creating 'gamedat' files."<<endl;
 		restore_gamedat(INITGAME);
 		}
 	else
@@ -117,7 +117,7 @@ Game_window::Game_window
 			if(strcmp(static_identity, gamedat_identity))
 				{
 					cout << " ->BAD" << endl;
-					cout << "Creating 'gamedat' files.\n";
+					cout << "Creating 'gamedat' files."<<endl;
 					restore_gamedat(INITGAME);
 				}
 			else
@@ -173,7 +173,7 @@ void Game_window::abort
 	va_start(ap, msg);
 	char buf[512];
 	vsprintf(buf, msg, ap);		// Format the message.
-	cerr << "Exult (fatal): " << buf << '\n';
+	cerr << "Exult (fatal): " << buf << endl;
 	delete this;
 	exit(-1);
 	}
@@ -269,7 +269,7 @@ void Game_window::show_game_location
 	{
 	x = get_scrolltx() + x/tilesize;
 	y = get_scrollty() + y/tilesize;
-	cout << "Game location is (" << x << ", " << y << ")\n";
+	cout << "Game location is (" << x << ", " << y << ")"<<endl;
 	}
 
 /*
@@ -450,7 +450,7 @@ void Game_window::get_chunk_objects
 			Shape_frame *shape = get_shape(id);
 			if (!shape)
 				{
-				cout << "Chunk shape is null!\n";
+				cout << "Chunk shape is null!"<<endl;
 				data += 2;
 				continue;
 				}
@@ -573,7 +573,7 @@ int Game_window::write_ireg_objects
 	if (!U7open(ireg, get_ireg_name(schunk, fname)))
 		{			// +++++Better error???
 		cerr << "Exult:  Error opening '" << fname <<
-				"' for writing\n";
+				"' for writing"<<endl;
 		return (0);
 		}
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
@@ -592,7 +592,7 @@ int Game_window::write_ireg_objects
 	ireg.flush();
 	int result = ireg.good();
 	if (!result)			// ++++Better error system needed??
-		cerr << "Exult:  Error writing '" << fname << "'\n";
+		cerr << "Exult:  Error writing '" << fname << "'"<<endl;
 	return (result);
 	}
 
@@ -640,7 +640,7 @@ void Game_window::read_ireg_objects
 			{
 			long pos = ireg.tellg();
 			cout << "Unknown entlen " << entlen << " at pos. " <<
-					pos << '\n';
+					pos << endl;
 			ireg.seekg(pos + entlen);
 			continue;	// Only know these two types.
 			}
@@ -1349,7 +1349,7 @@ Game_object *Game_window::find_object
 	)
 	{
 cout << "Clicked at tile (" << get_scrolltx() + x/tilesize << ", " <<
-		get_scrollty() + y/tilesize << ")\n";
+		get_scrollty() + y/tilesize << ")"<<endl;
 	Game_object *found[100];
 	int cnt = 0;
 	int actor_lift = main_actor->get_lift();
@@ -1479,29 +1479,29 @@ void Game_window::show_items
 			info.get_3d_ytiles() << ", " <<
 			info.get_3d_height() << ", sched = " <<
 			obj->get_schedule_type()
-			<< '\n';
+			<< endl;
 		int tx, ty, tz;
 		obj->get_abs_tile(tx, ty, tz);
 		cout << "tx = " << tx << ", ty = " << ty << ", tz = " <<
 			tz << ", quality = " <<
-			obj->get_quality() << '\n';
-		cout << "Volume = " << info.get_volume() << '\n';
-		cout << "obj = " << (void *) obj << '\n';
+			obj->get_quality() << endl;
+		cout << "Volume = " << info.get_volume() << endl;
+		cout << "obj = " << (void *) obj << endl;
 #if 1
-		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << '\n';
-		cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << '\n';
-		cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << '\n';
+		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << endl;
+		cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << endl;
+		cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << endl;
 #endif
 		if (info.is_animated())
-			cout << "Object is ANIMATED\n";
+			cout << "Object is ANIMATED" << endl;
 		if (info.has_translucency())
-			cout << "Object has TRANSLUCENCY\n";
+			cout << "Object has TRANSLUCENCY" << endl;
 		if (info.is_transparent())
-			cout << "Object is TRANSPARENT\n";
+			cout << "Object is TRANSPARENT" << endl;
 		if (info.is_light_source())
-			cout << "Object is LIGHT_SOURCE\n";
+			cout << "Object is LIGHT_SOURCE" << endl;
 		if (info.is_door())
-			cout << "Object is a DOOR\n";
+			cout << "Object is a DOOR" << endl;
 #endif
 		}
 	else				// Obj==0
@@ -1514,7 +1514,7 @@ void Game_window::show_items
 		Chunk_object_list *chunk = get_objects(cx, cy);
 		ShapeID id = chunk->get_flat(tx, ty);
 		cout << "Clicked on flat shape " << 
-			id.get_shapenum() << ':' << id.get_framenum() << '\n';
+			id.get_shapenum() << ':' << id.get_framenum() << endl;
 		}
 	}
 
@@ -1599,7 +1599,7 @@ void Game_window::double_clicked
 	remove_all_text();		// Remove text msgs. from screen.
 	if (obj)
 		{
-		cout << "Object name is " << obj->get_name() << '\n';
+		cout << "Object name is " << obj->get_name() << endl;
 		init_faces();		// Be sure face list is empty.
 		Game_mode savemode = mode;
 		obj->activate(usecode);
@@ -1658,7 +1658,7 @@ void Game_window::show_face
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 	if (num_faces == max_faces)
 		{
-		cout << "Can't show more than " << max_faces << " faces\n";
+		cout << "Can't show more than " << max_faces << " faces" << endl;
 		return;
 		}
 					// Get character's portrait.

@@ -101,9 +101,9 @@ Actor::Actor
 cout << i << " Creating " << namebuf << ", shape = " << 
 	actor->get_shapenum() <<
 	", frame = " << actor->get_framenum() << ", usecode = " <<
-				usefun << '\n';
+				usefun << endl;
 cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
-	<< lift << '\n';
+	<< lift << endl;
 #endif
 	}
 
