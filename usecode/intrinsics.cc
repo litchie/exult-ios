@@ -598,6 +598,7 @@ USECODE_INTRINSIC(get_npc_name)
 {
 	// Get NPC name(s).  Works on arrays, too.
 	static const char *unknown = "??name??";
+	Actor *npc;
 	int cnt = parms[0].get_array_size();
 	if (cnt)
 		{			// Do array.
@@ -605,7 +606,9 @@ USECODE_INTRINSIC(get_npc_name)
 		for (int i = 0; i < cnt; i++)
 			{
 			Game_object *obj = get_item(parms[0].get_elem(i));
-			std::string namestr = obj->get_name();
+			npc = as_actor(obj);
+			std::string namestr = npc ? npc->get_npc_name()
+						  : obj->get_name();
 			Usecode_value v(namestr.c_str());
 			arr.put_elem(i, v);
 			}
@@ -614,7 +617,10 @@ USECODE_INTRINSIC(get_npc_name)
 	Game_object *obj = get_item(parms[0]);
 	std::string namestr;
 	if (obj)
-		namestr = obj->get_name();
+		{
+		npc = as_actor(obj);
+		namestr = npc ? npc->get_npc_name() : obj->get_name();
+		}
 	else
 		namestr = unknown;
 	Usecode_value u(namestr.c_str());
