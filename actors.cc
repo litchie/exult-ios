@@ -109,7 +109,10 @@ void Actor::ready_best_weapon
 			continue;	// Not a weapon.
 					// +++Might be a class to check.
 		int damage = winf->get_damage();
-		if (damage > best_damage)
+		int ammo = winf->get_ammo();
+		if (damage > best_damage &&
+					// Check for ammo.
+		    (!ammo || find_item(ammo, -359, -359)))
 			{
 			best = obj;
 			best_damage = damage;
@@ -926,6 +929,8 @@ void Actor::reduce_health
 			gwin->flash_palette_red();
 	if (Actor::is_dead_npc())
 		die();
+	else if (val < 0 && !get_flag(Actor::asleep))
+		set_flag(Actor::asleep);
 	}
 
 /*

@@ -100,7 +100,6 @@ protected:
 					//   pathfinding to follow leader.
 	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
 	void init();			// Clear stuff during construction.
-	void ready_best_weapon();	// Find best weapon and ready it.
 					// Move and change frame.
 	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
@@ -110,6 +109,7 @@ public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
 	~Actor();
+	void ready_best_weapon();	// Find best weapon and ready it.
 	void use_food();		// Decrement food level.
 					// Get frame seq. for given dir.
 	static Frames_sequence *get_frames(int dir)

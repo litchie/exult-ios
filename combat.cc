@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #include "effects.h"
 #include "Audio.h"
+#include "ready.h"
 
 unsigned long Combat_schedule::battle_time = 0;
 
@@ -245,6 +246,41 @@ void Combat_schedule::approach_foe
 	}
 
 /*
+ *	Swap weapon with the one in the belt.
+ *
+ *	Output:	1 if successful.
+ */
+
+static int Swap_weapons
+	(
+	Actor *npc
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Game_object *bobj = npc->get_readied(Actor::belt);
+	if (!bobj)
+		return 0;
+	Shape_info& info = gwin->get_info(bobj);
+	Weapon_info *winf = info.get_weapon_info();
+	if (!winf)
+		return 0;		// Not a weapon.
+	int ammo = winf->get_ammo();
+	if (ammo && !npc->find_item(ammo, -359, -359))
+		return 0;		// No ammo.
+	if (info.get_ready_type() == two_handed_weapon &&
+	    npc->get_readied(Actor::rhand) != 0)
+		return 0;		// Needs two free hands.
+	Game_object *oldweap = npc->get_readied(Actor::lhand);
+	if (oldweap)
+		npc->remove(oldweap);
+	npc->remove(bobj);
+	npc->add(bobj, 1);		// Should go into weapon hand.
+	if (oldweap)
+		npc->add(oldweap, 1);	
+	return 1;
+	}
+
+/*
  *	Begin a strike at the opponent.
  */
 
@@ -254,6 +290,16 @@ void Combat_schedule::start_strike
 	{
 	if (ammo_shape)			// Firing?
 		{
+#if 0  /* Can't enable this until we know which ammo is unlimited. */
+		if (!npc->find_item(ammo_shape, -359, -359))
+			{		// Out of ammo.
+			if (Swap_weapons(npc))
+				set_weapon_info();
+			state = approach;
+			npc->start(200, 500);
+			return;
+			}
+#endif
 		Tile_coord pos = npc->get_abs_tile_coord();
 		if (!Fast_pathfinder_client::is_straight_path(pos,
 					opponent->get_abs_tile_coord()))
@@ -347,6 +393,11 @@ void Combat_schedule::now_what
 	Game_window *gwin = Game_window::get_game_window();
 	if (npc->get_attack_mode() == Actor::manual)
 		return;
+	if (npc->get_flag(Actor::asleep))
+		{
+		npc->start(200, 1000);	// Check again in a second.
+		return;
+		}
 					// Check if opponent still breathes.
 	if (Need_new_opponent(gwin, opponent))
 		{
@@ -383,8 +434,10 @@ void Combat_schedule::now_what
 		npc->start(200);	// Back into queue.
 		break;
 	case fire:			// Range weapon.
-				//++++Decrement ammo count.
-		gwin->add_effect(new Projectile_effect(npc, opponent,
+#if 0  /* Can't enable this until we know which ammo is unlimited. */
+		if (npc->remove_quantity(1, ammo_shape, -359, -359) == 0)
+#endif
+			gwin->add_effect(new Projectile_effect(npc, opponent,
 						ammo_shape, weapon_shape));
 		state = approach;
 		npc->start(200);	// Back into queue.
