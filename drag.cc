@@ -25,10 +25,10 @@
 #include <iostream>	/* Debugging */
 #include "gamewin.h"
 #include "gamemap.h"
+#include "mouse.h"
 #include "drag.h"
 #include "Gump_button.h"
 #include "Gump.h"
-#include "mouse.h"
 #include "paths.h"
 #include "actors.h"
 #include "cheat.h"
@@ -53,6 +53,7 @@ Dragging_info::Dragging_info
 	    old_foot(0, 0, 0, 0), old_lift(-1), quantity(obj->get_quantity()),
 	    paintx(-1000), painty(-1000),
 	    readied_index(-1), mousex(-1), mousey(-1), rect(0, 0, 0, 0),
+	    mouse_shape(Mouse::mouse->get_shape()),
 	    save(0), okay(true), possible_theft(false)
 	{
 	rect = gwin->get_shape_rect(obj);
@@ -71,6 +72,7 @@ Dragging_info::Dragging_info
 	) : obj(0), is_new(false), gump(0), button(0), old_pos(-1, -1, -1),
 	    old_foot(0, 0, 0, 0), old_lift(-1), quantity(0),
 	    readied_index(-1), mousex(x), mousey(y), rect(0, 0, 0, 0),
+	    mouse_shape(Mouse::mouse->get_shape()),
 	    save(0), okay(false), possible_theft(false)
 	{
 					// First see if it's a gump.
@@ -174,6 +176,7 @@ bool Dragging_info::start
 				}
 			}
 		}
+	Mouse::mouse->set_shape(Mouse::hand);
 					// Store original pos. on screen.
 	rect = gump ? (obj ? gump->get_shape_rect(obj) : gump->get_dirty())
 					: gwin->get_shape_rect(obj);
@@ -270,6 +273,7 @@ bool Dragging_info::drop
 	)
 	{
 	bool handled = moved;
+	Mouse::mouse->set_shape(mouse_shape);
 	if (button)
 		{
 		button->unpush();

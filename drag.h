@@ -40,6 +40,7 @@ class Dragging_info : public Game_singletons
 	int readied_index;		// If it was a 'readied' item.
 					// Last mouse, paint positions:
 	int mousex, mousey, paintx, painty;
+	Mouse::Mouse_shapes mouse_shape;// Save starting mouse shape.
 	Rectangle rect;			// Rectangle to repaint.
 	Image_buffer *save;		// Image below dragged object.
 	bool okay;			// True if drag constructed okay.
