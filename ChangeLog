@@ -1,5 +1,7 @@
 2002-07-27  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* combat.cc: Call ready_ammo() if NPC needs it.
+
 	* objs/barge.cc (Barge_object): Exit barge mode when you go into
 	combat, and lower sails when you exit barge mode.
 
