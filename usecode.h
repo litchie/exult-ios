@@ -43,6 +43,7 @@ class Actor;
 class Usecode_value;
 
 #include "tiles.h"
+#include "utils.h"
 #include <vector>	// STL container
 #include <deque>	// STL container
 #include <string>	// STL string
@@ -89,6 +90,8 @@ struct Answers
  */
 class Usecode_machine
 	{
+	Usecode_machine(const Usecode_machine &u) { throw replication_error("Cannot replicate Usecode_machine"); };
+	Usecode_machine &operator =(const Usecode_machine &u) { throw replication_error("Cannot replicate Usecode_machine"); return *this; };
 	Game_window *gwin;		// Game window.
 	Vector *funs;			// I'th entry contains funs for ID's
 					//    256*i + n.
