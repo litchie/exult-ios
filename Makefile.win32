@@ -2,7 +2,7 @@
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
-U7PATH=C:\Ultima7
+U7PATH=C:\\UC\\Ultima7
 
 CC=gcc
 # Base of the exult source
@@ -74,6 +74,7 @@ USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
 
+EXULT_FLX = data/exult.flx data/exult_flx.h
 EXULT_FLX_OBJECTS = \
 	data/exult_quotes.shp \
 	data/exult_credits.shp \
@@ -129,6 +130,7 @@ EXULT_FLX_OBJECTS = \
 	data/videooptions.shp \
 	data/flx.in
 
+EXULT_BG_FLX = data/exult_bg.flx data/exult_bg_flx.h
 EXULT_BG_FLX_OBJECTS = \
 	data/bg/hoe_of_destruction.shp \
 	data/bg/caddellite_helmet.shp \
@@ -146,24 +148,27 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/defaultkeys.txt \
 	data/bg/flx.in
 
+EXULT_SI_FLX = data/exult_si.flx data/exult_si_flx.h 
 EXULT_SI_FLX_OBJECTS = \
 	data/si/SImap.shp \
 	data/si/defaultkeys.txt \
 	data/si/flx.in
 
-$(EXEC) : $(OBJS) data/exult.flx data/exult_bg.flx data/exult_si.flx
+FLEXES = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX)
+
+$(EXEC) : $(FLEXES) $(OBJS) 
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
 tools/expack.exe : tools/expack.o $(FILE_OBJS) 
 	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) -mconsole
 
-data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
+$(EXULT_FLX): tools/expack.exe $(EXULT_FLX_OBJECTS)
 	tools/expack.exe -i data/flx.in
 
-data/exult_bg.flx: tools/expack.exe $(EXULT_BG_FLX_OBJECTS)
+$(EXULT_BG_FLX): tools/expack.exe $(EXULT_BG_FLX_OBJECTS)
 	tools/expack.exe -i data/bg/flx.in
 
-data/exult_si.flx: tools/expack.exe $(EXULT_SI_FLX_OBJECTS)
+$(EXULT_SI_FLX): tools/expack.exe $(EXULT_SI_FLX_OBJECTS)
 	tools/expack.exe -i data/si/flx.in
 
 exultico.o: win32/exultico.rc win32/exult.ico
@@ -204,7 +209,7 @@ clean:
 
 
 install: $(EXEC)
-	strip $(EXEC) -o $(U7PATH)\$(EXEC)
+	strip $(EXEC) -o $(U7PATH)\\$(EXEC)
 	if not exist $(U7PATH)\data md  $(U7PATH)\data
 	copy data\exult.flx  $(U7PATH)\data
 	copy data\exult_bg.flx $(U7PATH)\data
