@@ -61,7 +61,8 @@ Configuration *config;
 Game_window *gwin = 0;
 unsigned char quitting_time = 0;	// Time to quit.
 Mouse *mouse = 0;
-bool	usecode_trace=false;	// Do we trace Usecode-intrinsics?
+int scale = 0;				// 1 if scaling X2.
+bool	usecode_trace=false;		// Do we trace Usecode-intrinsics?
 #if USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
 #endif
@@ -419,7 +420,8 @@ static void Handle_events
 					if ((SDL_BUTTON(3) & ms) &&
 					 gwin->get_usecode()->get_global_flag(
 					   Usecode_machine::did_first_scene))
-						gwin->start_actor(x, y, 
+						gwin->start_actor(x >> scale, 
+								y >> scale, 
 								avatar_speed);
 					}
 				}
@@ -459,16 +461,17 @@ static void Handle_event
 			break;
 		if (event.button.button == 1)
 			{
-			dragging = gwin->start_dragging(event.button.x,
-							event.button.y);
+			dragging = gwin->start_dragging(
+					event.button.x >> scale,
+					event.button.y >> scale);
 			dragged = 0;
 			}
 					// Move sprite toward mouse
 					//  when right button pressed.
 		if (event.button.button == 3 && 
 		    gwin->get_mode() == Game_window::normal)
-			gwin->start_actor(event.button.x, event.button.y, 
-								avatar_speed);
+			gwin->start_actor(event.button.x >> scale, 
+				event.button.y >> scale, avatar_speed);
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 3)
@@ -484,14 +487,14 @@ static void Handle_event
 			{
 			unsigned long curtime = SDL_GetTicks();
 			if (dragging)
-				gwin->drop_dragged(event.button.x, 
-						event.button.y, dragged);
+				gwin->drop_dragged(event.button.x >> scale, 
+					event.button.y >> scale, dragged);
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500)
 				{
 				dragging = 0;
-				gwin->double_clicked(event.button.x, 
-							event.button.y);
+				gwin->double_clicked(event.button.x >> scale, 
+						event.button.y >> scale);
 				if (gwin->get_mode() == Game_window::gump)
 					mouse->set_shape(Mouse::hand);
 				break;
@@ -499,21 +502,22 @@ static void Handle_event
 			last_b1_click = curtime;
 			if (!dragged)
 					// Identify item(s) clicked on.
-				gwin->show_items(event.button.x, 
-							event.button.y);
+				gwin->show_items(event.button.x >> scale, 
+						event.button.y >> scale);
 			dragging = 0;
 			}
 		break;
 	case SDL_MOUSEMOTION:
 		{
 #ifdef MOUSE
-		mouse->move(event.motion.x, event.motion.y);
+		mouse->move(event.motion.x >> scale, event.motion.y >> scale);
 		if (gwin->get_mode() == Game_window::normal)
 			{
 			int ax, ay;	// Get Avatar screen location.
 			gwin->get_shape_location(gwin->get_main_actor(), 
 								ax, ay);
-			int dy = ay - event.motion.y, dx = event.motion.x - ax;
+			int dy = ay - (event.motion.y >> scale), 
+			    dx = (event.motion.x >> scale) - ax;
 			Direction dir = Get_direction(dy, dx);
 			int dist = dy*dy + dx*dx;
 			if (dist < 48*48)
@@ -550,16 +554,19 @@ static void Handle_event
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
 			{
-			gwin->drag(event.motion.x, event.motion.y);
+			gwin->drag(event.motion.x >> scale, 
+						event.motion.y >> scale);
 			dragged = 1;
 			}
 					// Dragging with right?
 		if (event.motion.state & SDL_BUTTON(3))
-			gwin->start_actor(event.motion.x, event.motion.y,
-								avatar_speed);
+			gwin->start_actor(event.motion.x >> scale, 
+					event.motion.y >> scale, avatar_speed);
 		break;
 		}
 	case SDL_ACTIVEEVENT:
+					// Get scale factor for mouse.
+		scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 #ifdef MOUSE
 		if (event.active.state & SDL_APPMOUSEFOCUS)
 			{
@@ -567,7 +574,7 @@ static void Handle_event
 				{
 				int x, y;
 				SDL_GetMouseState(&x, &y);
-				mouse->set_location(x, y);
+				mouse->set_location(x >> scale, y >> scale);
 				}
 			gwin->set_painted();
 			}
@@ -928,14 +935,15 @@ static int Get_click
 			case SDL_MOUSEBUTTONUP:
 				if (event.button.button == 1)
 					{
-					x = event.button.x;
-					y = event.button.y;
+					x = event.button.x >> scale;
+					y = event.button.y >> scale;
 					return (1);
 					}
 				break;
 			case SDL_MOUSEMOTION:
 #ifdef MOUSE
-				mouse->move(event.motion.x, event.motion.y);
+				mouse->move(event.motion.x >> scale, 
+						event.motion.y >> scale);
 				mouse_update = 1;
 #endif
 				break;
@@ -1009,6 +1017,7 @@ void Wait_for_arrival
 		Delay();		// Wait a fraction of a second.
 #ifdef MOUSE
 		mouse->hide();		// Turn off mouse.
+		mouse_update = 0;
 #endif
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
@@ -1016,8 +1025,9 @@ void Wait_for_arrival
 				{
 			case SDL_MOUSEMOTION:
 #ifdef MOUSE
-				mouse->move(event.motion.x, event.motion.y);
-				gwin->set_painted();
+				mouse->move(event.motion.x >> scale,
+						 event.motion.y >> scale);
+				mouse_update = 1;
 #endif
 				break;
 				}
@@ -1034,7 +1044,9 @@ void Wait_for_arrival
 #ifdef MOUSE
 		mouse->show();		// Re-display mouse.
 #endif
-		gwin->show();		// Blit to screen if necessary.
+		if (!gwin->show() &&	// Blit to screen if necessary.
+		    mouse_update)	// If not, did mouse change?
+			mouse->blit_dirty();
 		}
 
 	if (!os)
@@ -1056,23 +1068,26 @@ static int Handle_gump_event
 	switch (event.type)
 		{
 	case SDL_MOUSEBUTTONDOWN:
-cout << "(x,y) rel. to gump is (" << (event.button.x - gump->get_x()) << 
-	", " <<	(event.button.y - gump->get_y()) << ")"<<endl;
+cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
+	 << ", " <<	((event.button.y>>scale) - gump->get_y()) << ")"<<endl;
 		if (event.button.button == 1)
-			gump->mouse_down(event.button.x, event.button.y);
+			gump->mouse_down(event.button.x >> scale, 
+						event.button.y >> scale);
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 1)
-			gump->mouse_up(event.button.x, 	event.button.y);
+			gump->mouse_up(event.button.x >> scale,
+						event.button.y >> scale);
 		break;
 	case SDL_MOUSEMOTION:
 #ifdef MOUSE
-		mouse->move(event.motion.x, event.motion.y);
-		gwin->set_painted();
+		mouse->move(event.motion.x >> scale, event.motion.y >> scale);
+		mouse_update = 1;
 #endif
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
-			gump->mouse_drag(event.motion.x, event.motion.y);
+			gump->mouse_drag(event.motion.x >> scale,
+						event.motion.y >> scale);
 		break;
 	case SDL_QUIT:
 		quitting_time = 1;
@@ -1141,6 +1156,7 @@ int Modal_gump
 		Delay();		// Wait a fraction of a second.
 #ifdef MOUSE
 		mouse->hide();		// Turn off mouse.
+		mouse_update = 0;
 #endif
 		SDL_Event event;
 		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
@@ -1148,7 +1164,9 @@ int Modal_gump
 #ifdef MOUSE
 		mouse->show();		// Re-display mouse.
 #endif
-		gwin->show();		// Blit to screen if necessary.
+		if (!gwin->show() &&	// Blit to screen if necessary.
+		    mouse_update)	// If not, did mouse change?
+			mouse->blit_dirty();
 		}
 	while (!gump->is_done() && !escaped);
 	mouse->hide();

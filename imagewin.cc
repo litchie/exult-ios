@@ -949,7 +949,7 @@ void Image_window::show
 	if (!ready())
 		return;
 	if (show_scaled)		// 2X scaling?
-		(this->*show_scaled)();
+		(this->*show_scaled)(0, 0, ibuf->width, ibuf->height);
 	else
 		SDL_UpdateRect(surface, 0, 0, ibuf->width, ibuf->height);
 	}
@@ -969,7 +969,7 @@ void Image_window::show
 	if (!ibuf->clip(srcx, srcy, w, h, x, y))
 		return;
 	if (show_scaled)		// 2X scaling?
-		(this->*show_scaled)();	//+++++Not implemented yet.
+		(this->*show_scaled)(x, y, w, h);
 	else
 		SDL_UpdateRect(surface, x, y, w, h);
 	}
