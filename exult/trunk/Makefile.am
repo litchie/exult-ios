@@ -134,6 +134,7 @@ noinst_HEADERS = \
 	alpha_kludges.h
 
 EXTRA_DIST = 	\
+	autogen.sh \
 	README.1ST \
 	README \
 	FAQ \
@@ -217,5 +218,8 @@ Exult_app: ${EXE_TARGET}
 install-exec-local: Exult_app
 	mkdir -p $(DESTDIR)/Applications/
 	cp -r $(bundle_name) $(DESTDIR)/Applications/
+
+else
+install-exec-local:
 
 endif
