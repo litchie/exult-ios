@@ -1595,7 +1595,6 @@ int Sprite::is_dragable
 
 int Sprite::next_frame
 	(
-	unsigned long time,		// Current time.
 	int& new_cx, int& new_cy,	// New chunk coords. returned.
 	int& new_tx, int& new_ty,	// New tile coords. returned.
 	int& next_frame			// Next frame # returned.
@@ -1639,7 +1638,7 @@ void Sprite::handle_event
 	Game_window *gwin = (Game_window *) udata;
 	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
 	int frame;
-	if (next_frame(curtime, cx, cy, sx, sy, frame))
+	if (next_frame(cx, cy, sx, sy, frame))
 		{
 					// Add back to queue for next time.
 		gwin->get_tqueue()->add(curtime + frame_time,

@@ -154,6 +154,76 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
+#if 0	/* +++++++Not sure about this yet. */
+/*
+ *	This class controls the current actions of an actor:
+ */
+class Actor_action
+	{
+public:
+					// Handle time event.
+	virtual int handle_event(unsigned long curtime, Actor *actor) = 0;
+	};
+
+/*
+ *	Walk an actor towards a goal.
+ */
+class Walking_actor_action : public Actor_animator
+	{
+public:
+	virtual ~Walking_actor_action()
+		{  }
+					// Handle time event.
+	virtual int handle_event(unsigned long curtime, Actor *actor)
+		{ return actor->walk(); }
+	};
+
+/*
+ *	Follow a path.
+ */
+class Path_walking_actor_action : public Actor_animator
+	{
+	Tile_coord *path;		// Path to follow (allocated).  End of
+					//   path is (-1, -1, -1).
+	int index;			// Index into path.
+public:
+	Path_walking_actor_animator(Tile_coord *p) : path(p), index(0)
+		{  }
+	~Path_walking_actor_animator()
+		{ delete [] path; }
+					// Handle time event.
+	virtual int handle_event(unsigned long curtime, Actor *actor)
+		{ return actor->step(path[index++]); }
+	};
+
+/*
+ *	Do a sequence of actions.
+ */
+class Sequence_actor_action : public Actor_action
+	{
+	Actor_action **actions		// List of actions, ending with null.
+	int index;			// Index into list.
+public:
+	Sequence_actor_action(Actor_action **act) : actions(act), index(0)
+		{  }
+	~Sequence_actor_action();
+					// Handle time event.
+	virtual int handle_event(unsigned long curtime, Actor *actor)
+		{
+		if (!actions[index])	// Done?
+			return (0);
+					// Do current action.
+		int delay = actions[index]->handle_event(curtime, actor);
+		if (!delay)
+			{
+			index++;	// That one's done now.
+			delay = 100;	// 1/10 second.
+			}
+		return (delay);
+		}
+	};
+
+#endif
 
 /*
  *	A Schedule controls the NPC it is assigned to.
