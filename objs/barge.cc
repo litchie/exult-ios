@@ -362,7 +362,8 @@ void Barge_object::add_dirty
 
 void Barge_object::finish_move
 	(
-	Tile_coord *positions		// New positions.  Deleted when done.
+	Tile_coord *positions,		// New positions.  Deleted when done.
+	int newmap			// Map #, or -1 for current.
 	)
 	{
 	set_center();			// Update center.
@@ -372,7 +373,7 @@ void Barge_object::finish_move
 		Game_object *obj = get_object(i);
 		if (i < perm_count)	// Restore us as owner.
 			obj->set_owner(this);
-		obj->move(positions[i]);
+		obj->move(positions[i], newmap);
 		}
 	delete [] positions;
 					// Check for scrolling.
@@ -622,7 +623,8 @@ void Barge_object::move
 	(
 	int newtx, 
 	int newty, 
-	int newlift
+	int newlift,
+	int newmap
 	)
 	{
 	if (!gathered)			// Happens in SI with turtle.
@@ -631,8 +633,10 @@ void Barge_object::move
 	add_dirty();
 					// Get current location.
 	Tile_coord old = get_tile();
+	if (newmap != -1 && chunk)
+		newmap = chunk->get_map()->get_num();
 					// Move the barge itself.
-	Container_game_object::move(newtx, newty, newlift);
+	Container_game_object::move(newtx, newty, newlift, newmap);
 					// Get deltas.
 	int dx = newtx - old.tx, dy = newty - old.ty, dz = newlift - old.tz;
 	int cnt = objects.size();	// We'll move each object.
@@ -662,7 +666,7 @@ void Barge_object::move
 			break;
 			}
 		}
-	finish_move(positions);		// Add back & del. positions.
+	finish_move(positions, newmap);	// Add back & del. positions.
 	}
 
 /*

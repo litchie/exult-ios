@@ -1510,12 +1510,14 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 	stop();				// Stop moving.
 	if (schedule)			// End prev.
 		schedule->ending(new_schedule_type);
-
-	if (!gmap->is_chunk_read(get_cx(), get_cy()) &&
-	    !gmap->is_chunk_read(dest.tx/c_tiles_per_chunk,
-						dest.ty/c_tiles_per_chunk))
-		{			// Src, dest. are off the screen.
-		move(dest.tx, dest.ty, dest.tz);
+	int mapnum = chunk ? chunk->get_map()->get_num() : gmap->get_num();
+	if ((mapnum != gmap->get_num()) ||
+	    (!gmap->is_chunk_read(get_cx(), get_cy()) &&
+	     !gmap->is_chunk_read(dest.tx/c_tiles_per_chunk,
+						dest.ty/c_tiles_per_chunk)))
+		{			// Not on current map, or
+					//   src, dest. are off the screen.
+		move(dest.tx, dest.ty, dest.tz, mapnum);
 		set_schedule_type(new_schedule_type);
 		return;
 		}
@@ -3520,13 +3522,14 @@ void Main_actor::move
 	(
 	int newtx, 
 	int newty, 
-	int newlift
+	int newlift,
+	int newmap
 	)
 	{
 					// Store old chunk list.
 	Map_chunk *olist = get_chunk();
 					// Move it.
-	Actor::move(newtx, newty, newlift);
+	Actor::move(newtx, newty, newlift, newmap);
 	Map_chunk *nlist = get_chunk();
 	if (nlist != olist)
 		Main_actor::switched_chunks(olist, nlist);
@@ -4121,13 +4124,14 @@ void Npc_actor::move
 	(
 	int newtx, 
 	int newty, 
-	int newlift
+	int newlift,
+	int newmap
 	)
 	{
 					// Store old chunk list.
 	Map_chunk *olist = get_chunk();
 					// Move it.
-	Actor::move(newtx, newty, newlift);
+	Actor::move(newtx, newty, newlift, newmap);
 	Map_chunk *nlist = get_chunk();
 	if (nlist != olist)
 		{

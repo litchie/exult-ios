@@ -53,7 +53,7 @@ public:
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 					// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift);
+	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	};
 
 /*
@@ -375,10 +375,11 @@ void Monster_actor::move
 	(
 	int newtx, 
 	int newty, 
-	int newlift
+	int newlift,
+	int newmap
 	)
 	{
-	Npc_actor::move(newtx, newty, newlift);
+	Npc_actor::move(newtx, newty, newlift, newmap);
 	link_in();			// Insure it's in global list.
 	}
 
@@ -590,7 +591,8 @@ int Slime_actor::step
 	    !find_nearby(blood, oldpos, 912, 1, 0))
 		{
 					// Frames 4-11 are green.
-		Game_object *b = gmap->create_ireg_object(912, 4 + rand()%8);
+		Game_object *b = chunk->get_map()->create_ireg_object(
+						912, 4 + rand()%8);
 		b->set_flag(Obj_flags::is_temporary);
 		b->move(oldpos);
 		}
@@ -622,14 +624,15 @@ void Slime_actor::move
 	(
 	int newtx, 
 	int newty, 
-	int newlift
+	int newlift,
+	int newmap
 	)
 	{
 					// Save old pos.
 	Tile_coord pos = get_tile();
 	if (is_pos_invalid())		// Invalid?
 		pos = Tile_coord(-1, -1, -1);
-	Monster_actor::move(newtx, newty, newlift);
+	Monster_actor::move(newtx, newty, newlift, newmap);
 					// Update surrounding frames (& this).
 	update_frames(pos, get_tile());
 	}

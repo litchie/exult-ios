@@ -139,7 +139,7 @@ public:
 	static void set_weather(int weather, int len = 15,
 						Game_object *egg = 0);
 					// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift);
+	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual int is_egg() const	// An egg?
