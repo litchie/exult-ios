@@ -124,8 +124,12 @@ public:
 	void walk_to_point(unsigned long destx, unsigned long desty, 
 								int speed);
 					// Get there, avoiding obstacles.
-	int walk_path_to_tile(Tile_coord dest, 
+	int walk_path_to_tile(Tile_coord src, Tile_coord dest, 
 					int speed = 250, int delay = 0);
+	int walk_path_to_tile(Tile_coord dest, 
+					int speed = 250, int delay = 0)
+		{ return walk_path_to_tile(get_abs_tile_coord(), dest,
+							speed, delay); }
 	void stop();			// Stop walking.
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
@@ -359,6 +363,8 @@ class Walk_to_schedule : public Schedule
 	int legs;			// # times restarted walk.
 					// Open door blocking NPC.
 	void open_door(Game_object *door);
+					// Set to walk off screen.
+	void walk_off_screen(Rectangle& screen, Tile_coord& goal);
 public:
 	Walk_to_schedule(Npc_actor *n, Tile_coord d, int new_sched);
 	virtual void now_what();	// Now what should NPC do?

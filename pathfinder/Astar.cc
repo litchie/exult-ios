@@ -26,18 +26,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int Astar::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *client)
 {
 	extern Tile_coord *Find_path(Tile_coord, Tile_coord,
-						Pathfinder_client *client);
+					Pathfinder_client *client, int& plen);
 	src = s;			// Store start, destination.
 	dest = d;
 	delete [] path;			// Clear out old path, if there.
-	path = Find_path(s, d, client);
+	path = Find_path(s, d, client, pathlen);
 	next_index = 0;
-	if (path == 0)			// Failed?  Put in fake.
-		{
-		path = new Tile_coord(-1, -1, -1);
-		return (0);
-		}
-	return (1);
+	dir = 1;
+	stop = pathlen;
+	return (pathlen != 0);
 }
 
 /*
@@ -47,12 +44,27 @@ int Astar::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *client)
  */
 int Astar::GetNextStep(Tile_coord& n)
 {
-	if (path[next_index] == Tile_coord(-1, -1, -1))
+	if (next_index == stop)
 		return (0);
 	n = path[next_index];
 	next_index++;
 	return 1;
 }
+
+/*
+ *	Set to traverse backwards.
+ *
+ *	Output:	1 always (we succeeded).
+ */
+int Astar::set_backwards
+	(
+	)
+	{
+	dir = -1;
+	stop = -1;
+	next_index = pathlen - 1;
+	return 1;
+	}
 
 /*
  *	Delete.
