@@ -72,8 +72,8 @@ using std::vector;
 Audio::~Audio()
 {
 	stop_music();
-	SDL::CloseAudio();		// 14-jan-2001 - jsf experiment. Gets
-					//   rid of crash at end.
+	SDL::QuitSubSystem(SDL_INIT_AUDIO); // SDL 1.1 lets us diddle with
+						// subsystems
 	if(mixer)
 		{
 		cancel_streams();
@@ -381,9 +381,10 @@ void Audio::Init(int _samplerate,int _channels)
          wanted.userdata = NULL;
 
 	// Avoid closing SDL audio. This seems to trigger a segfault
-	// if(SDL_open)
-		// SDL::CloseAudio();
+	if(SDL_open)
+		SDL::QuitSubSystem(SDL_INIT_AUDIO);
 
+	SDL::InitSubSystem(SDL_INIT_AUDIO);
          /* Open the audio device, forcing the desired format */
          if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
                  fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());

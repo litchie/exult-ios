@@ -1,9 +1,15 @@
+exult (0.99-cvs-1) unstable; urgency=low
+
+  * Irregular synchronisation with source-tree
+
+ -- Dancer <dancer@blackrock.internal.simegen.com>  Fri, 23 Feb 2001 12:01:25 +1100
+
 exult (0.90-alpha1-8) unstable; urgency=low
 
-  * Incorporate the gnome desktop files Irregular synchronisation with
-    source-tree
+  * Incorporate the gnome desktop files
+  * Irregular synchronisation with source-tree
 
- -- Dancer Vesperman <dancer@users.sourceforge.net>  Tue, 21 Nov 2000 09:17:59 +1100
+ -- Dancer <dancer@blackrock.internal.simegen.com>  Fri, 23 Feb 2001 12:01:25 +1100
 
 exult (0.90-alpha1-7) unstable; urgency=low
 

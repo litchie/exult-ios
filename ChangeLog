@@ -1,3 +1,9 @@
+2001-02-24 Dancer Vesperman <dancer@users.sourceforge.net>
+	* SDL 1.1 allows us to selectively initialise and terminate
+	  subsystems. Make use of that for the audio system initially.
+	* Some extended output for caught exceptions, to make them simpler
+	  to read.
+
 2001-02-22  Max Horn  <max@quendi.de>
 	* tons of fixes I already made days ago and forgot to commit :(
 	* files/utils.cc: added fix to U7open to prevent certain problems
