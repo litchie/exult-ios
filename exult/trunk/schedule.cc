@@ -518,8 +518,10 @@ void Preach_schedule::now_what
 			{
 			if (rand()%3)
 				state = exhort;
-			else
+			else if ((GAME_SI) || rand()%3)
 				state = visit;
+			else
+				state = find_icon;
 			npc->start(gwin->get_std_delay(), 2000 + rand()%2000);
 			}
 		return;
@@ -576,6 +578,48 @@ void Preach_schedule::now_what
 		npc->say(first_preach2, last_preach2);
 		npc->start(250, 2000);
 		return;
+	case find_icon:
+		{
+		state = find_podium;		// In case we fail.
+		npc->start(2*gwin->get_std_delay());
+		Game_object *icon = npc->find_closest(724);
+		if (!icon)
+			return;
+		Tile_coord pos = icon->get_tile();
+		pos.tx += 2;
+		pos.ty -= 1;
+		Actor_pathfinder_client cost(npc, 0);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+			npc->get_tile(), pos, cost);
+		if (pact)
+			{
+			static char f[] = {Actor::standing, Actor::bow_frame, 
+				Actor::kneel_frame, Actor::kneel_frame,
+				Actor::kneel_frame, Actor::kneel_frame,
+				Actor::bow_frame, Actor::standing};
+			npc->set_action(pact);
+			state = pray;
+			}
+		return;
+		}
+	case pray:
+		{
+		Usecode_script *scr = new Usecode_script(npc);
+		(*scr) << Ucscript::face_dir << 6	// Face west.
+			<< (Ucscript::npc_frame + Actor::standing)
+			<< (Ucscript::npc_frame + Actor::bow_frame)
+			<< Ucscript::delay_ticks << 3
+			<< (Ucscript::npc_frame + Actor::kneel_frame);
+		scr->add(Ucscript::say, item_names[first_amen + rand()%2]);
+		(*scr)	<< Ucscript::delay_ticks << 5
+			<< (Ucscript::npc_frame + Actor::bow_frame)
+			<< Ucscript::delay_ticks << 3
+			<< (Ucscript::npc_frame + Actor::standing);
+			scr->start();	// Start next tick.
+		state = find_podium;
+		npc->start(2*gwin->get_std_delay(), 4000);
+		return;
+		}
 	default:
 		state = find_podium;
 		npc->start(250);
