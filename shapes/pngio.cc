@@ -263,7 +263,6 @@ int Export_png8
 	return (1);
 	}
 
-#if 0	/* ++++++ Returns 32-bit data. */
 /*
  *	Read in a .png file.  Each pixel returned is 4 bytes: RGBA,
  *	where A is the alpha channel (0 = transparent, 255 = opaque).
@@ -271,12 +270,15 @@ int Export_png8
  *	Output:	0 if failed.
  */
 
-int Image_file::import_png
+int Import_png32
 	(
-	char *pngname,
+	const char *pngname,
 	int& width, int& height,	// Image dimensions returned.
 	int& rowbytes,			// # bytes/row returned.  (Should be
 					//   4*width.)
+	int& xoff, int& yoff,		// (X,Y) offsets from top-left of
+					//   image returned.  (0,0) if not
+					//   specified in file.
 	unsigned char *& pixels		// ->(allocated) pixels returned.
 	)
 	{
@@ -318,6 +320,16 @@ int Image_file::import_png
 		&interlace, 0, 0);
 	width = (int) w;
 	height = (int) h;
+	png_int_32 pngxoff, pngyoff;	// Get offsets.
+	int utype;
+	if (png_get_oFFs(png, info, &pngxoff, &pngyoff, &utype) &&
+	    utype == PNG_OFFSET_PIXEL)
+		{
+		xoff = pngxoff;
+		yoff = pngyoff;
+		}
+	else
+		xoff = yoff = 0;
 	png_set_strip_16(png);		// Want 8 bits/color.
 	if (color == PNG_COLOR_TYPE_PALETTE)
 		png_set_expand(png);	// Expand if paletted.
@@ -341,7 +353,6 @@ int Image_file::import_png
 	fclose(fp);
 	return (1);
 	}
-#endif
 
 #endif	/* HAVE_PNG_H */
 
