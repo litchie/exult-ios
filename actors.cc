@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 const char Actor::attack_frames1[4] = {3, 4, 5, 6};
 const char Actor::attack_frames2[4] = {3, 7, 8, 9};
+Dead_body *Dead_body::in_world = 0;
 Equip_record *Monster_info::equip = 0;
 int Monster_info::equip_cnt = 0;
 Monster_actor *Monster_actor::in_world = 0;
@@ -1500,6 +1501,73 @@ void Npc_actor::move
 	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
 	if (nlist != olist)
 		switched_chunks(olist, nlist);
+	}
+
+/*
+ *	Link body into global list.
+ */
+
+void Dead_body::link
+	(
+	)
+	{
+	if (in_world)
+		in_world->next_body = this;
+	prev_body = in_world;
+	next_body = 0;
+	in_world = this;
+	}
+
+/*
+ *	Delete.
+ */
+
+Dead_body::~Dead_body
+	(
+	)
+	{
+					// Remove from chain.
+	if (next_body)
+		next_body->prev_body = prev_body;
+	else				// We're at end of list.
+		in_world = prev_body;
+	if (prev_body)
+		prev_body->next_body = next_body;
+	}
+
+/*
+ *	Find all dead companions' bodies.
+ *
+ *	Output:	# found.  ->bodies returned in 'list'.
+ */
+
+int Dead_body::find_dead_companions
+	(
+	Dead_body *list[]		// List with at least 8 spots.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int cnt = 0;			// # found.
+	for (Dead_body *each = in_world; each && cnt < 8; 
+							each = each->prev_body)
+		{
+		Actor *npc = gwin->get_npc(each->npc_num);
+		if (npc->get_party_id() >= 0)
+			list[cnt++] = each;
+		}
+	return cnt;
+	}
+
+/*
+ *	Delete all bodies.  (Should only be called after deleting chunks.)
+ */
+
+void Dead_body::delete_all
+	(
+	)
+	{
+	while (in_world)
+		delete in_world;
 	}
 
 /*
