@@ -232,7 +232,7 @@ void Gump_manager::add_gump
 	int paperdoll = 0;
 	
 	if (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP
-		&& Game::get_game_type() == BLACK_GATE)
+		&& Game::get_game_type() != SERPENT_ISLE)
 		paperdoll = 1;
 
 	// overide for paperdolls
