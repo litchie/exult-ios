@@ -1,4 +1,8 @@
 2002-11-03  Max Horn  <max@quendi.de>
+	* audio/xmidi.cc, gumps/Actor_gump.cc, gumps/Paperdoll_gump.cc, gumps/Spellbook_gump.cc,
+	  objs/objs.cc, usecode/useval.cc: CodeWarrior has snprintf incorrectly in std::
+	* gumps/Spellbook_gump.cc: added 'using std::strcpy' for CodeWarrior
+	* usecode/ucinternal.cc: added 'using std::abs' for CodeWarrior
 	* tools/expack.cc: fixed compilation with Metrowerks CodeWarrior
 
 2002-11-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>

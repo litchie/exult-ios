@@ -46,6 +46,9 @@ using std::setfill;
 using std::setw;
 using std::strcmp;
 using std::strlen;
+#ifdef __MWERKS__	// Bug in CodeWarrior 7: it incorrectly has snprintf in namespace std
+using std::snprintf;
+#endif
 
 
 
