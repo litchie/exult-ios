@@ -318,6 +318,7 @@ public:
 		did_first_scene = 0x3b,	// Went through 1st scene with Iolo.
 		have_trinsic_password = 0x3d,
 		found_stable_key = 0x48,
+		left_trinsic = 0x57,
 		avatar_is_thief = 0x2eb
 		};
 	int get_global_flag(int i)	// Get/set ith flag.

@@ -63,25 +63,13 @@ void Combat_schedule::find_opponents
 	Slist_iterator next(nearby);
 	while ((actor = (Actor *) next()) != 0)
 		if (actor->is_monster() && !actor->is_dead_npc())
+			{
 			opponents.append(actor);
-#if 0
-	//+++++Switch to using gwin->get_nearby_npcs(opponents);
-					// Get top-left chunk.
-	int startcx = npc->get_cx() - 1, startcy = npc->get_cy() - 1;
-	if (startcx < 0)
-		startcx = 0;
-	if (startcy < 0)
-		startcy = 0;
-					// Get bottom-right.
-	int endcx = npc->get_cx() + 1, endcy = npc->get_cy() + 1;
-	if (endcx >= num_chunks)
-		endcx = num_chunks - 1;
-	if (endcy >= num_chunks)
-		endcy = num_chunks - 1;
-	for (int cy = startcy; cy <= endcy; cy++)
-		for (int cx = startcx; cx <= endcx; cx++)
-			find_monsters(gwin->get_objects(cx, cy));
-#endif
+					// And set hostile monsters.
+			if (actor->get_alignment() == Npc_actor::hostile &&
+			    actor->get_schedule_type() != Schedule::combat)
+				actor->set_schedule_type(Schedule::combat);
+			}
 	}		
 
 /*
@@ -241,6 +229,10 @@ void Combat_schedule::start_strike
 	int cnt = npc->get_attack_frames(dir, frames);
 	npc->set_action(new Frames_actor_action(frames, cnt));
 	npc->start();			// Get back into time queue.
+					// Have them attack back.
+	Actor *opp = dynamic_cast<Actor *> (opponent);
+	if (opp && !opp->get_opponent())
+		opp->set_opponent(npc);
 	}
 
 /*
@@ -395,3 +387,13 @@ void Combat_schedule::set_opponent
 	state = approach;
 	}
 
+/*
+ *	Get opponent.
+ */
+
+Game_object *Combat_schedule::get_opponent
+	(
+	)
+	{
+	return opponent;
+	}
