@@ -389,7 +389,7 @@ class Waiter_schedule : public Schedule
 	Game_object_vector eating_tables;		// Tables with chairs around them.
 	void get_customer();
 	void find_tables(int shapenum);
-	int find_serving_spot(Tile_coord& spot);
+	Game_object *find_serving_spot(Tile_coord& spot);
 public:
 	Waiter_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
