@@ -132,6 +132,43 @@ public:
 	};
 
 /*
+ *	Boolean value.
+ */
+class Uc_bool_expression : public Uc_expression
+	{
+	bool tf;
+public:
+	Uc_bool_expression(bool t) : tf(t)
+		{  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
+	};
+
+/*
+ *	Eventid (a special int variable passed to each function):
+ */
+class Uc_event_expression : public Uc_expression
+	{
+public:
+	Uc_event_expression() {  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
+					// Gen. to assign from stack.
+	virtual void gen_assign(ostream& out);
+	};
+
+/*
+ *	Item (a special ptr. variable passed to each function):
+ */
+class Uc_item_expression : public Uc_expression
+	{
+public:
+	Uc_item_expression() {  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
+	};
+
+/*
  *	String value.
  */
 class Uc_string_expression : public Uc_expression
