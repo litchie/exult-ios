@@ -328,10 +328,10 @@ int Game_window::drop_at_lift
 					// Allow drop up to 5.
 	if (!Chunk_object_list::is_blocked(info.get_3d_height(), at_lift,
 		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, 
-					lift, MOVE_FLY, 5) &&
+					lift, MOVE_FLY, 5) && (hack_mover ||
 					// Check for path to location.
 	    Fast_pathfinder_client::is_grabable(
-		main_actor->get_abs_tile_coord(), Tile_coord(tx, ty, lift)))
+		main_actor->get_abs_tile_coord(), Tile_coord(tx, ty, lift))))
 		{
 		to_drop->set_lift(lift);
 		int rtx = tx%tiles_per_chunk, rty = ty%tiles_per_chunk;
