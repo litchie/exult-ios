@@ -1998,15 +1998,15 @@ void Game_window::show_face
 			starty += 2*text_height;
 			}
 		else
-			starty = 2;
+			starty = 1;
 		actbox = clip_to_win(Rectangle(8, starty,
 			face->get_width() + 4, face->get_height() + 4));
 		info->face_rect = actbox;
 					// This is where NPC text will go.
 		info->text_rect = clip_to_win(Rectangle(
-			actbox.x + actbox.w + 6, actbox.y + 6,
+			actbox.x + actbox.w + 6, actbox.y,
 			get_width() - actbox.x - actbox.w - 18,
-							9*text_height));
+							10*text_height));
 		info->last_text_height = info->text_rect.h;
 		}
 	else
@@ -2034,10 +2034,6 @@ void Game_window::remove_face
 	if (i == num_faces)
 		return;			// Not found.
 	Npc_face_info *info = face_info[i];
-#if 0
-	paint(info->face_rect.x - 8, info->face_rect.y - 8,
-		info->face_rect.w + 16, info->face_rect.h + 16);
-#endif
 	paint(info->face_rect);
 	paint(info->text_rect);
 	delete face_info[i];
@@ -2113,10 +2109,6 @@ void Game_window::show_avatar_choices
 	int space_width = get_text_width(0, "   ");
 					// Get main actor's portrait.
 	Shape_frame *face = faces.get_shape(main_actor->get_face_shapenum());
-#if 0	/* Old way. */
-	Rectangle mbox(16, sbox.h - face->get_height() - 3*height,
-			face->get_width() + 4, face->get_height() + 4);
-#else
 					// Get last one shown.
 	Npc_face_info *prev = num_faces ? face_info[num_faces - 1] : 0;
 	int fx = prev ? prev->face_rect.x + prev->face_rect.w + 4 : 16;
@@ -2126,21 +2118,20 @@ void Game_window::show_avatar_choices
 	else
 		{
 		fy = prev->text_rect.y + prev->last_text_height;
-		if (fy < prev->face_rect.x + prev->face_rect.h)
-			fy = prev->face_rect.x + prev->face_rect.h;
+		if (fy < prev->face_rect.y + prev->face_rect.h)
+			fy = prev->face_rect.y + prev->face_rect.h;
 		fy += height;
 		}
 	Rectangle mbox(fx, fy, face->get_width(), face->get_height());
 	mbox = mbox.intersect(sbox);
-#endif
-				
 	avatar_face = mbox;		// Repaint entire width.
 					// Draw portrait.
 	paint_shape(mbox.x + face->xleft, mbox.y + face->yabove, face);
 					// Set to where to draw sentences.
-	Rectangle tbox(mbox.x + mbox.w + 16, mbox.y + 8,
-				sbox.w - mbox.x - mbox.w - 32,
+	Rectangle tbox(mbox.x + mbox.w + 16, mbox.y + 4,
+				sbox.w - mbox.x - mbox.w - 16,
 				sbox.h - mbox.y - 16);
+	tbox = tbox.intersect(sbox);
 	paint(tbox);			// Paint background.
 	delete [] conv_choices;		// Set up new list of choices.
 	conv_choices = new Rectangle[num_choices + 1];
@@ -2156,6 +2147,7 @@ void Game_window::show_avatar_choices
 					// Store info.
 		conv_choices[i] = Rectangle(tbox.x + x, tbox.y + y,
 					width, height);
+		conv_choices[i] = conv_choices[i].intersect(sbox);
 		avatar_face = avatar_face.add(conv_choices[i]);
 		paint_text(0, text, tbox.x + x, tbox.y + y);
 		x += width + space_width;
