@@ -228,6 +228,15 @@ inline uint32 Read4high
 #endif
 
 /*
+ *	Write a 1-byte value.
+ */
+
+inline void Write1(std::ostream& out, uint16 val)
+{
+	out.put(static_cast<char> (val&0xff));
+}
+
+/*
  *	Write a 2-byte value, lsb first.
  */
 
@@ -239,6 +248,20 @@ inline void Write2
 	{
 	out.put(static_cast<char> (val&0xff));
 	out.put(static_cast<char> ((val>>8)&0xff));
+	}
+
+/*
+ *	Write a 2-byte value, msb first.
+ */
+
+inline void Write2high
+	(
+	std::ostream& out,
+	uint16 val
+	)
+	{
+	out.put(static_cast<char> ((val>>8)&0xff));
+	out.put(static_cast<char> (val&0xff));
 	}
 
 /*
@@ -269,6 +292,22 @@ inline void Write4
 	out.put(static_cast<char> ((val>>8)&0xff));
 	out.put(static_cast<char> ((val>>16)&0xff));
 	out.put(static_cast<char> ((val>>24)&0xff));
+	}
+
+/*
+ *	Write a 4-byte value, msb first.
+ */
+
+inline void Write4high
+	(
+	std::ostream& out,
+	uint32 val
+	)
+	{
+	out.put(static_cast<char> ((val>>24)&0xff));
+	out.put(static_cast<char> ((val>>16)&0xff));
+	out.put(static_cast<char> ((val>>8)&0xff));
+	out.put(static_cast<char> (val&0xff));
 	}
 
 /*
