@@ -33,14 +33,18 @@ class GL_texshape;
  */
 class GL_texshape
 	{
-	Shape_frame *frame;		// Source for this.
+	Shape_frame *frame;		// Source for this (or null if it came
+					//   from someplace else).
 	unsigned int texture;		// Texture ID.
 	unsigned int texsize;		// Width/ht of texture (power of 2).
 					// Least-recently used chain:
 	GL_texshape *lru_next, *lru_prev;
+					// Create from this source.
+	void create(Image_buffer8 *src, unsigned char *pal);
 public:
 	friend class GL_manager;
 	GL_texshape(Shape_frame *f, unsigned char *pal);
+	GL_texshape(Image_buffer8 *src, unsigned char *pal);
 	~GL_texshape();
 	void paint(int px, int py);	// Render at given position.
 	};
@@ -50,17 +54,25 @@ public:
  */
 class GL_manager
 	{
+	static GL_manager *instance;	// One one of these.
 	GL_texshape *shapes;		// Shapes in LRU chain.
 	int num_shapes;
 	unsigned char *palette;		// 3*256 bytes (rgb).
 public:
 	GL_manager();
 	~GL_manager();
+	static GL_manager *get_instance()
+		{ return instance; }
 	void set_palette(unsigned char *pal)
 		{ palette = pal; }
+					// Create from src (but don't add to
+					//   chain).
+	GL_shape *create(Image_buffer8 *src)
+		{ return new GL_shape(src, palette); }
 					// Window was resized.
 	void resized(int new_width, int new_height);
-					// Paint a shape.
+					// Paint a shape & create GL_shape
+					//   for it if necessary.
 	void paint(Shape_frame *frame, int px, int py);
 	};
 
