@@ -68,6 +68,11 @@ int listen_socket = -1;			// Listen here for map-editor.
 int client_socket = -1;			// Socket to the map-editor.
 int highest_fd = -1;			// Largest fd + 1.
 
+#ifdef __sun__
+// Solaris doesn't know PF_LOCAL
+#define PF_LOCAL PF_UNIX
+#endif
+
 /*
  *	Set the 'highest_fd' value to 1 + <largest fd>.
  */
