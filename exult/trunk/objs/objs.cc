@@ -1395,6 +1395,197 @@ int Game_object::lt
 	return (-1);
 	}
 
+#if 0	/* ++++++Attempt to rewrite... */
+
+/*
+ *	Compare ranges along a given dimension.
+ */
+inline void Compare_ranges
+	(
+	int from1, int to1,		// First object's range.
+	int from2, int to2,		// Second object's range.
+					// Returns:
+	int& cmp,			// -1 if 1st < 2nd, 1 if 1st > 2nd,
+					//   0 if equal.
+	bool& overlap			// true returned if they overlap.
+	)
+	{
+	if (to1 < from2)
+		{
+		overlap = false;
+		cmp = -1;
+		}
+	else if (to2 < from1)
+		{
+		overlap = false;
+		cmp = 1;
+		}
+	else				// X's overlap.
+		{
+		overlap = true;
+		if (from1 < from2)
+			cmp = -1;
+		else if (from1 > from2)
+			cmp = 1;
+		else if (to1 - from1 < to2 - from2)
+			cmp = -1;
+		else if (to1 - from1 > to2 - from2)
+			cmp = 1;
+		else
+			cmp = 0;
+		}
+	}
+
+/*
+ *	Compare two objects.
+ *
+ *	Output:	-1 if 1st < 2nd, 0 if dont_care, 1 if 1st > 2nd.
+ */
+
+int Game_object::lt
+	(
+	Ordering_info& inf1,		// Info. for object 1.
+	Game_object *obj2
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// See if there's no overlap.
+	Rectangle r2 = gwin->get_shape_rect(obj2);
+	if (!inf1.area.intersects(r2))
+		return (0);		// No overlap on screen.
+	Ordering_info inf2(Game_window::get_game_window(), obj2, r2);
+#ifdef DEBUGLT
+	Debug_lt(inf1.tx, inf1.ty, inf2.tx, inf2.ty);
+#endif
+	int xcmp, ycmp, zcmp;		// Comparisons for a given dimension:
+					//   -1 if o1<o2, 0 if o1==o2,
+					//    1 if o1>o2.
+	bool xover, yover, zover;	// True if dim's overlap.
+	Compare_ranges(inf1.xleft, inf1.xright, inf2.xleft, inf2.xright,
+							xcmp, xover);
+	Compare_ranges(inf1.yfar, inf1.ynear, inf2.yfar, inf2.ynear,
+							ycmp, yover);
+	// ++++NOte: if zs == 0, make bottom 1 tile lower.
+	Compare_ranges(inf1.zbot, inf1.ztop, inf2.zbot, inf2.zbot,
+							zcmp, zover);
+					// ++++Experiment:
+//	if (!xover && !yover && !zover)
+//		return 0;		// No overlap, so don't care.
+	if (xcmp >= 0 && ycmp >= 0 && zcmp >= 0)
+		return 1;		// GTE in all dimensions.
+	if (xcmp <= 0 && ycmp <= 0 && zcmp <= 0)
+		return -1;		// LTE in all dimensions.
+	if (yover)			// Y's overlap.
+		if (xover)		// X's too?
+			return zcmp;
+		else if (zover)		// Y's and Z's?
+			return xcmp;
+		else
+++++++++++++++++++++++
+	if (inf1.tz != inf2.tz)		// Is one obj. on top of another?
+		{
+		if (inf1.tz + inf1.zs <= inf2.tz)
+			{		// It's above us.
+			if (inf1.zs >= 4)	// Like roof/statue?
+				return 1;
+			result = 1;
+			}
+		else if (inf2.tz + inf2.zs <= inf1.tz)
+			{		// We're above.
+			if (inf2.zs >= 4)	// Like roof/statue?
+				return 0;
+			result = 0;
+			}
+		}
+	if (inf1.ty != inf2.ty)		// Is one obj. in front of the other?
+		{
+		if (inf1.ty <= inf2.ty - inf2.ys)
+			{		// Obj2 is in front.
+			if (result == 0)// Conflict, so return 'neither'.
+				return -1;
+			result = 1;
+			}
+		else if (inf2.ty <= inf1.ty - inf1.ys)
+			{		// We're in front.
+			if (result == 1)
+				return -1;
+			result = 0;
+			}
+		}
+	if (inf1.tx != inf2.tx)		// Is one obj. to right of the other?
+		{
+		if (inf1.tx <= inf2.tx - inf2.xs)
+			{		// Obj2 is to right of us.
+			if (result == 0)
+				return -1;
+			result = 1;
+			}
+		if (inf2.tx <= inf1.tx - inf1.xs)
+			{		// We're to the right.
+			if (result == 1)
+				return -1;
+			result = 0;
+			}
+		}
+	if (result != -1)		// Consistent result?
+		return result;
+	if (!inf1.zs && inf1.tz <= inf2.tz)	// We're flat and below?
+		return (1);
+	if (!inf2.zs && inf2.tz <= inf1.tz)	// It's below us?
+		return (0);
+					// Handle intersecting objects.
+	if (inf1.tx == inf2.tx &&	// Watch for paintings on NS walls.
+//	    inf1.xs == inf2.xs)
+	    inf1.xs >= inf2.xs)		// Also pillar/button in SI.
+		if (inf1.ys < inf2.ys)	// Take narrower 2nd.
+			return (0);
+		else if (inf2.ys > inf1.ys)
+			return (1);
+		else if (inf1.zs < inf2.zs)// The shorter one?
+			return (0);
+		else if (inf1.zs > inf2.zs)
+			return (1);
+					// Item on table?
+	if (inf1.zs > 1 && inf2.tz == inf1.tz + inf1.zs - 1 &&
+	    inf2.tx - inf2.xs >= inf1.tx - inf1.xs && inf2.tx <= inf1.tx &&
+	    inf2.ty - inf2.ys >= inf1.ty - inf1.ys && inf2.ty <= inf1.ty)
+		return 1;
+	if (inf2.zs > 1 && inf1.tz == inf2.tz + inf2.zs - 1 &&
+	    inf1.tx - inf1.xs >= inf2.tx - inf2.xs && inf1.tx <= inf2.tx &&
+	    inf1.ty - inf1.ys >= inf2.ty - inf2.ys && inf1.ty <= inf2.ty)
+		return 0;
+					// If x's overlap, see if in front.
+	if ((inf1.tx > inf2.tx - inf2.xs && inf1.tx <= inf2.tx) ||
+	    (inf2.tx > inf1.tx - inf1.xs && inf2.tx <= inf1.tx))
+		{
+		if (inf1.ty < inf2.ty)
+			return (1);
+		else if (inf1.ty > inf2.ty)
+			return (0);
+		else if (inf1.zs < inf2.zs)// The shorter one?
+			return (0);
+		else if (inf1.zs > inf2.zs)
+			return (1);
+		else if (inf1.xs < inf2.xs)// Take the narrower one as greater.
+			return (0);
+		else if (inf1.xs > inf2.xs)
+			return (1);
+		}
+					// If y's overlap, see if to left.
+	if ((inf1.ty > inf2.ty - inf2.ys && inf1.ty <= inf2.ty) ||
+	    (inf2.ty > inf1.ty - inf1.ys && inf2.ty <= inf1.ty))
+		{
+		if (inf1.tx < inf2.tx)
+			return (1);
+		else if (inf1.tx > inf2.tx)
+			return (0);
+		}
+	return (-1);
+	}
+
+
+#endif
+
 /*
  *	Should this object be rendered before obj2?
  *	NOTE:  This older interface isn't as efficient.
