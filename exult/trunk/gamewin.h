@@ -118,8 +118,10 @@ class Game_window
 	int num_npcs1;			// Number of type1 NPC's.
 	Actor_vector npcs;		// Array of NPC's + the Avatar.
 	Game_object_vector bodies;	// Corresponding Dead_body's.
+#if 0	/* +++++SHould be going away. */
 					// Path eggs, indexed by 'quality'.
 	Exult_vector<Egg_object *> path_eggs;
+#endif
 	Deleted_objects *removed;	// List of 'removed' objects.
 	int scrolltx, scrollty;		// Top-left tile of screen.
 	Actor *camera_actor;		// What to center view around.
@@ -311,9 +313,11 @@ public:
 		{ return bodies[npc_num]; }
 	inline bool was_teleported()
 		{ return teleported; }
+#if 0
 	Egg_object *get_path_egg(int q)	// Get path egg by quality.
 		{ return q < path_eggs.size() ? path_eggs[q] : 0; }
 	void add_path_egg(Egg_object *egg);
+#endif
 	int get_num_npcs()
 		{ return npcs.size(); }
 	int get_num_shapes()

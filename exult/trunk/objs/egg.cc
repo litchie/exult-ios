@@ -174,8 +174,10 @@ Egg_object::Egg_object
 			(htch << hatched) + (ar << auto_reset);
 	if (type == usecode || type == teleport || type == path)
 		set_quality(data1&0xff);
+#if 0	/* +++++The old way. */
 	if (type == path)		// Store paths.
 		Game_window::get_game_window()->add_path_egg(this);
+#endif
 	}
 
 /*
@@ -541,6 +543,44 @@ static void Create_monster
 	}
 
 /*
+ *	Handle a teleport egg.
+ */
+
+void Egg_object::activate_teleport
+	(
+	Game_object *obj		// Object (actor) that came near it.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord pos(-1, -1, -1);	// Get position to jump to.
+	int qual = get_quality();
+	if (qual == 255)
+		{			// Jump to coords.
+		int schunk = data1 >> 8;
+		pos = Tile_coord(
+			(schunk%12)*c_tiles_per_schunk + (data2&0xff), 
+			(schunk/12)*c_tiles_per_schunk + (data2>>8), 0);
+		}
+	else
+		{
+		Egg_vector vec;		// Look for dest. egg (frame == 6).
+		if (find_nearby_eggs(vec, 275, 256, qual, 6))
+			{
+			Egg_object *path = vec[0];
+			pos = path->get_tile();
+			}
+		}
+	cout << "Should teleport to (" << pos.tx << ", " <<
+					pos.ty << ')' << endl;
+	if (pos.tx != -1 && obj && (obj == gwin->get_main_actor() ||
+					obj->get_party_id() >= 0))
+					// Teleport everyone!!!
+		gwin->teleport_party(pos);
+					// Can keep doing it.
+	flags &= ~((1 << (int) hatched));
+	}
+
+/*
  *	Hatch egg.
  */
 
@@ -649,35 +689,8 @@ void Egg_object::activate
 			break;
 			}
 		case teleport:
-			{		// Get position to jump to.
-			Tile_coord pos(-1, -1, -1);	
-			if (get_quality() == 255)
-				{	// Jump to coords.
-				int schunk = data1 >> 8;
-				pos = Tile_coord(
-					(schunk%12)*c_tiles_per_schunk +
-								(data2&0xff), 
-					(schunk/12)*c_tiles_per_schunk +
-								(data2>>8), 0);
-				}
-			else
-				{
-				Egg_object *path =
-					gwin->get_path_egg(get_quality());
-				if (path)
-					pos = path->get_tile();
-				}
-			cout << "Should teleport to (" << pos.tx << ", " <<
-					pos.ty << ')' << endl;
-			if (pos.tx != -1 &&
-				obj && (obj == gwin->get_main_actor() ||
-					obj->get_party_id() >= 0))
-					// Teleport everyone!!!
-				gwin->teleport_party(pos);
-					// Can keep doing it.
-			flags &= ~((1 << (int) hatched));
+			activate_teleport(obj);
 			break;
-			}
 		case weather:
 			{
 			set_weather(gwin, data1&0xff, data1>>8, this);

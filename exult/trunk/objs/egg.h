@@ -64,6 +64,7 @@ protected:
 	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
 	Missile_launcher *launcher;	// For missile eggs.
 	void init_field(unsigned char ty);
+	void activate_teleport(Game_object *obj);	// Handle teleport egg.
 public:
 	enum Egg_types {		// Types of eggs:
 		monster = 1,

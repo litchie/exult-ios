@@ -209,10 +209,13 @@ public:
 			int qual = c_any_qual, int framenum = c_any_framenum);
 #endif //ALPHA_LINUX_CXX
 
-	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta) const;
-	int find_nearby_eggs(Egg_vector& vec, int shapenum, int delta) const;
-	int find_nearby(Game_object_vector& vec, int shapenum, int delta, int mask,
-			int qual = c_any_qual, int framenum = c_any_framenum) const;
+	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta) 
+									const;
+	int find_nearby_eggs(Egg_vector& vec, int shapenum, int delta,
+		int qual = c_any_qual, int frnum = c_any_framenum) const;
+	int find_nearby(Game_object_vector& vec, int shapenum, int delta, 
+		int mask, int qual = c_any_qual, 
+					int framenum = c_any_framenum) const;
 
 	Game_object *find_closest(Game_object_vector& vec,
 				int *shapenums, int num_shapes, int dist = 24);
