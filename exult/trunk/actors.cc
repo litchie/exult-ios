@@ -1029,6 +1029,7 @@ void Actor::set_property
 		cheat.in_god_mode() && val < properties[prop])
 		return;
 	if (prop >= 0 && prop < 12)
+		{
 		if (prop == (int) exp)
 			{		// Experience?  Check for new level.
 			int old_level = get_level();
@@ -1039,6 +1040,10 @@ void Actor::set_property
 			}
 		else
 			properties[prop] = (short) val;
+		Game_window *gwin = Game_window::get_game_window();
+		if (gwin->get_mode() == Game_window::gump)
+			gwin->set_all_dirty();
+		}
 	}
 
 /*
@@ -1112,6 +1117,9 @@ void Actor::set_flag
 		need_timers()->start_invisibility();
 		gwin->set_palette();
 		}
+					// Update stats if open.
+	if (gwin->get_mode() == Game_window::gump)
+		gwin->set_all_dirty();
 	set_actor_shape();
 	}
 
