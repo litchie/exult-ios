@@ -29,9 +29,6 @@
 #include "cheat.h"
 #include "game.h"
 
-using std::cout;
-using std::endl;
-
 extern Cheat cheat;
 
 /*
@@ -56,7 +53,7 @@ void Game_clock::set_time_palette
 	Actor *main_actor = gwin->get_main_actor();
 	int new_palette;
 	if (main_actor && main_actor->get_flag(Obj_flags::invisible))
-		{
+	{
 		gwin->set_palette(PALETTE_INVISIBLE);
 		return;
 		}
@@ -97,10 +94,10 @@ void Game_clock::set_time_palette
 void Game_clock::set_palette
 	(
 	)
-	{
-					// Update palette to new time.
+{
+	// Update palette to new time.
 	set_time_palette();
-	}
+}
 
 /*
  *	Set the palette for a changed light source level.
@@ -110,10 +107,10 @@ void Game_clock::set_light_source_level
 	(
 	int lev
 	)
-	{
+{
 	light_source_level = lev;
 	set_time_palette();
-	}
+}
 
 /*
  *	Storm ending/starting.
@@ -123,10 +120,10 @@ void Game_clock::set_storm
 	(
 	bool onoff
 	)
-	{
+{
 	storm += (onoff ? 1 : -1);
 	set_time_palette();		// Update palette.
-	}
+}
 
 /*
  *	Decrement food level and check hunger of the party members.
@@ -135,13 +132,13 @@ void Game_clock::set_storm
 void Game_clock::check_hunger
 	(
 	)
-	{
+{
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *party[9];		// Get party + Avatar.
 	int cnt = gwin->get_party(party, 1);
 	for (int i = 0; i < cnt; i++)
 		party[i]->use_food();
-	}
+}
 
 /*
  *	Increment clock.
@@ -151,26 +148,31 @@ void Game_clock::increment
 	(
 	int num_minutes			// # of minutes to increment.
 	)
-	{
+{
 	Game_window *gwin = Game_window::get_game_window();
-	int old_3hour = hour/3;		// Remember current 3-hour period.
+	int new_3hour, old_3hour, delta_3hour;
+	long new_min;
+	
+	old_3hour = hour/3;		// Remember current 3-hour period.
 	num_minutes += time_factor/2;	// Round to nearest 15 minutes.
 	num_minutes -= num_minutes%time_factor;
-	long new_min = minute + num_minutes;
+	new_min = minute + num_minutes;
 	hour += new_min/60;		// Update hour.
 	minute = new_min%60;
 	day += hour/24;			// Update day.
 	hour %= 24;
-					// Update palette to new time.
+	
+	// Update palette to new time.
 	set_time_palette();
-	int new_3hour = hour/3;		// New 3-hour period.
-	int delta_3hour = new_3hour - old_3hour;
+	new_3hour = hour/3;		// New 3-hour period.
+	delta_3hour = new_3hour - old_3hour;
 	if (delta_3hour != 0)		// In a new period?
-		{			// Update NPC schedules.
-		if (Game::get_game_type() == SERPENT_ISLE) delta_3hour = 8;
+	{			// Update NPC schedules.
+		if (Game::get_game_type() == SERPENT_ISLE)
+			delta_3hour = 8;
 		gwin->schedule_npcs(new_3hour, (delta_3hour +7)%8);
-		}
 	}
+}
 
 /*
  *	Advance clock.
@@ -181,16 +183,9 @@ void Game_clock::handle_event
 	unsigned long curtime,		// Current time of day.
 	long udata			// ->game window.
 	)
-	{
-	//static int first = 1;		// For starting SI schedules.
+{
 	Game_window *gwin = (Game_window *) udata;
-	//if (first)
-	//	{
-	//	first = 0;
-	//				// Start SI schedules immediately.
-	//	if (!day && hour == 6 && Game::get_game_type() == SERPENT_ISLE)
-	//		gwin->schedule_npcs(hour, 7);
-	//	}
+
 	int min_old = minute;
 	int hour_old = hour;
 				// Time stopped?  Don't advance.
@@ -198,26 +193,26 @@ void Game_clock::handle_event
 		minute += time_rate;
 
 	while (minute >= 60)	// advance to the correct hour (and day)
-		{
+	{
 		minute -= 60;
 		if (++hour >= 24)
-			{
+		{
 			hour -= 24;
 			day++;
-			}
+		}
 		set_time_palette();
 		if (hour%3 == 0)	// New 3-hour period?
-			{
+		{
 			check_hunger();	// Use food, and print complaints.
 					// Update NPC schedules.
 			gwin->schedule_npcs(hour/3);
-			}
 		}
+	}
 	if ((hour != hour_old) || (minute/15 != min_old/15))
-		cout << "Clock updated to " << hour << ':' << minute << endl;
+		COUT("Clock updated to " << hour << ':' << minute);
 	curtime += 60*1000/time_factor;		// 15 changes per minute
 	tqueue->add(curtime, this, udata);
-	}
+}
 
 /*
  *	Fake an update to the next 3-hour period.
@@ -226,7 +221,7 @@ void Game_clock::handle_event
 void Game_clock::fake_next_period
 	(
 	)
-	{
+{
 	minute = 0;
 	hour = ((hour/3 + 1)*3);
 	day += hour/24;			// Update day.
@@ -235,6 +230,6 @@ void Game_clock::fake_next_period
 	set_time_palette();
 	check_hunger();
 	gwin->schedule_npcs(hour/3);
-	cout << "The hour is now " << hour << endl;
-	}
+	COUT("The hour is now " << hour);
+}
 

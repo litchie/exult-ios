@@ -101,10 +101,10 @@ public:
 	void	mixfile(const char *fname);
 	bool	playing(void);
 	void	clear(uint8 *,int);
-	bool	start_music(int num,bool continuous,int bank=0);
+	void	start_music(int num,bool continuous,int bank=0);
 	void	start_music(const char *fname,int num,bool continuous);
 	void	start_music(XMIDI *midfile,bool continuous);
-	bool	start_music_combat(Combat_song song,bool continuous,int bank=0);
+	void	start_music_combat(Combat_song song,bool continuous,int bank=0);
 	void	stop_music();
 	AudioID	play_sound_effect (int num, int volume = SDL_MIX_MAXVOLUME,
 					int dir = 0, bool repeat = false);
@@ -112,8 +112,6 @@ public:
 					int dir = 0, bool repeat = false);
 	void	stop_sound_effects();
 	bool	start_speech(int num,bool wait=false);
-	void	set_external_signal(int);
-	void	terminate_external_signal(void);
 	bool	is_speech_enabled() const { return speech_enabled; }
 	void	set_speech_enabled(bool ena) { speech_enabled = ena; }
 	bool	is_music_enabled() const { return music_enabled; }
