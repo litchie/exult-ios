@@ -332,6 +332,15 @@ void ActionCombatStats(int* params)
 	gwin->show_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }
 
+//  { ActionJawbone, 0, "Show Jawbone", true, false, SERPENT_ISLE }
+void ActionJawbone(int *params)
+{
+	gwin->activate_item(555, 0);
+	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
+		Mouse::mouse->set_shape(Mouse::hand);
+	
+}	
+
 //  { ActionSIIntro, 0,  "Show SI intro", true, true, SERPENT_ISLE },
 void ActionSIIntro(int *params)
 {

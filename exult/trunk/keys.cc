@@ -94,6 +94,7 @@ const struct Action {
 	{ "STATS", ActionStats, "Show stats", true, false, NONE },
 	{ "COMBAT_STATS",
 	  ActionCombatStats, "Show combat stats", true, false, SERPENT_ISLE },
+	{ "JAWBONE", ActionJawbone, "Show Jawbone", true, false, SERPENT_ISLE },
 	  
 	
 	{ "SHOW_SI_INTRO",

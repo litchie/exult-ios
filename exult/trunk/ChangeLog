@@ -3,6 +3,7 @@
 	* gamewin.cc, gumps/Gump.cc, objs/contain.cc: use new gump
 	* Makefile.*: build new gump
 	* objs/jawbone.*: Jawbone_object
+	* keys.cc, keyactions.*, defaultkeys.txt: 'j' = show jawbone
 
 2001-06-17  Jeff Freedman  <jeff@amy.nerble.net>
 
