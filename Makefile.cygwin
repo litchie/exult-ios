@@ -194,7 +194,7 @@ tools/wuc.exe : tools/wuc.o
 
 # This should work with the Cygwin rm
 clean:
-	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx data/exult_bg.flx data/exult_si.flx
+	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx data\exult_flx.h data/exult_bg.flx data\exult_bg_flx.h data/exult_si.flx data\exult_si_flx.h
 
 install: $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
