@@ -355,7 +355,9 @@ bool wait_delay(int ms)
 		loops = ms/delay;
 	}
 	for(int i=0; i<loops; i++) {
-		if(SDL_PollEvent(&event)) {
+
+	        // this may be a bit risky... How fast can events be generated?
+		while(SDL_PollEvent(&event)) {
 			if((event.type==SDL_KEYDOWN)||(event.type==SDL_MOUSEBUTTONUP))
 				return true;
 		}
