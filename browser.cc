@@ -22,6 +22,7 @@
 #include "browser.h"
 #include "font.h"
 #include "items.h"
+#include "SDL_events.h"
 	
 ShapeBrowser::ShapeBrowser()
 	{

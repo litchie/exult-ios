@@ -29,7 +29,7 @@ Boston, MA  02111-1307, USA.
 
 #include "imagewin.h"
 #include "ibuf8.h"
-#include "SDL.h"
+#include "SDL_video.h"
 
 template <class T> class GammaTable;
 

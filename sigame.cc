@@ -32,6 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "txtscroll.h"
 #include "exult_types.h"
 
+#include "SDL_events.h"
+
 using std::cout;
 using std::endl;
 using std::rand;

@@ -22,6 +22,8 @@
 #include "Scroll_gump.h"
 #include "mouse.h"
 #include "font.h"
+
+#include "SDL_events.h"
  
 SoundTester::SoundTester() : song(0), sfx(0), voice(0), active(0), repeat(true)
 	{
