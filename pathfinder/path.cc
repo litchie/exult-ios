@@ -266,7 +266,7 @@ public:
      	bool operator() (const Search_node *a, const Search_node *b) const
      		{
 			Tile_coord ta = a->get_tile(), tb = b->get_tile();
-			int apos = ta.tx << 16, bpos = tb.tx << 16;
+			uint32 apos = ta.tx << 16, bpos = tb.tx << 16;
 			apos |= ta.ty << 4;
 			bpos |= tb.ty << 4;
 			apos |= ta.tz;
