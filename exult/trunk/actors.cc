@@ -2120,7 +2120,7 @@ int Actor::get_effective_prop
 	case Actor::combat:
 	case Actor::strength:
 		if (get_flag(Obj_flags::might))
-			val *= 2;	// Mighty.
+			val += (val < 15 ? val : 15);	// Add up to 15.
 		if (get_flag(Obj_flags::cursed))
 			val /= 2;
 		break;
@@ -2143,33 +2143,45 @@ void Actor::set_flag
 		flags |= ((uint32) 1 << flag);
 	else if (flag >= 32 && flag < 64)
 		flags2 |= ((uint32) 1 << (flag-32));
+	switch (flag)
+		{
+	case Obj_flags::asleep:
 					// Check sched. to avoid waking
 					//   Penumbra.
-	if (flag == Obj_flags::asleep && schedule_type != Schedule::sleep)
-		{			// Set timer to wake in a few secs.
+		if (schedule_type == Schedule::sleep)
+			break;
+					// Set timer to wake in a few secs.
 		need_timers()->start_sleep();
 		if ((get_framenum()&0xf) != Actor::sleep_frame &&
 					// Watch for slimes.
 		    !get_info().has_strange_movement() &&
-		    get_shapenum() > 0)	// (Might not be initialized yet.)
+		    get_shapenum() > 0)	// (In case not initialized.)
 					// Lie down.
 			change_frame(Actor::sleep_frame + ((rand()%4)<<4));
 		set_action(0);		// Stop what you're doing.
-		}
-	if (flag == Obj_flags::poisoned)
+		break;
+	case Obj_flags::poisoned:
 		need_timers()->start_poison();
-	if (flag == Obj_flags::protection)
+		break;
+	case Obj_flags::protection:
 		need_timers()->start_protection();
-	if (flag == Obj_flags::might)
+		break;
+	case Obj_flags::might:
 		need_timers()->start_might();
-	if (flag == Obj_flags::cursed)
+		break;
+	case Obj_flags::cursed:
 		need_timers()->start_curse();
-	if (flag == Obj_flags::paralyzed)
+		break;
+	case Obj_flags::paralyzed:
 		need_timers()->start_paralyze();
-	if (flag == Obj_flags::invisible)
-		{
+		break;
+	case Obj_flags::invisible:
 		need_timers()->start_invisibility();
 		gclock->set_palette();
+		break;
+	case Obj_flags::dont_move:
+		stop();			// Added 7/6/03.
+		break;
 		}
 					// Update stats if open.
 	if (gumpman->showing_gumps())
@@ -2879,6 +2891,10 @@ bool Actor::figure_hit_points
 		Get_effective_prop(this, dexterity, 10);
 	if (get_flag(Obj_flags::protection))// Defender is protected?
 		prob -= (40 + rand()%20);
+	if (prob < 4)			// Always give some chance.
+		prob = 4;
+	else if (prob > 96)
+		prob = 96;
 					// Attacked by Vesculio in SI?
 	if (GAME_SI && attacker && attacker->npc_num == 294)
 		{

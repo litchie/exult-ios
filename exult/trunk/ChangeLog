@@ -1,3 +1,10 @@
+2003-07-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc (public): Dont_move flag stops Avatar.  Also rewrote
+	the flags tests as a 'case' statement.
+	Always give at least a small possibility of a 'hit' in combat.
+	* objs/contain.cc:  Don't let user add items to a locked chest.
+
 2003-06-25  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* items.{cc,h},msgfile.{cc,h}:  Adding support for an
