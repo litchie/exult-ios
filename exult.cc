@@ -380,6 +380,20 @@ static int Filter_splash_events
 	}
 
 /*
+ *	Statics used below:
+ */
+static int show_mouse = 0;		// 1 to display mouse in main loop.
+static int dragging = 0;		// Object or gump being moved.
+static int dragged = 0;			// Flag for when obj. moved.
+static int mouse_update = 0;		// Mouse moved/changed.
+static unsigned int altkeys = 0;	// SDL doesn't seem to handle ALT
+					//   right, so we'll keep track.
+					// 1/6, 1/10, 1/20 frame rates.
+const int slow_speed = 166, medium_speed = 100, fast_speed = 50;
+static int avatar_speed = slow_speed;	// Avatar speed (frame delay in
+					//    1/1000 secs.)
+
+/*
  *	Filter out events during the intro. sequence.
  */
 static int Filter_intro_events
@@ -391,12 +405,14 @@ static int Filter_intro_events
 	if (gwin->get_mode() == Game_window::conversation)
 		{
 		SDL_SetEventFilter(0);	// Intro. conversation started.
+		show_mouse = 1;
 		return 1;
 		}
 	if (gwin->get_usecode()->get_global_flag(
 					Usecode_machine::did_first_scene))
 		{
 		SDL_SetEventFilter(0);	// Intro. is done.
+		show_mouse = 1;
 		return 0;
 		}
 	switch (event->type)
@@ -410,19 +426,6 @@ static int Filter_intro_events
 		}
 	return (1);
 	}
-
-/*
- *	Statics used below:
- */
-static int dragging = 0;		// Object or gump being moved.
-static int dragged = 0;			// Flag for when obj. moved.
-static int mouse_update = 0;		// Mouse moved/changed.
-static unsigned int altkeys = 0;	// SDL doesn't seem to handle ALT
-					//   right, so we'll keep track.
-					// 1/6, 1/10, 1/20 frame rates.
-const int slow_speed = 166, medium_speed = 100, fast_speed = 50;
-static int avatar_speed = slow_speed;	// Avatar speed (frame delay in
-					//    1/1000 secs.)
 
 /*
  *	Handle events until a flag is set.
@@ -480,7 +483,8 @@ static void Handle_events
 				}
 			}
 
-		mouse->show();		// Re-display mouse.
+		if (show_mouse)
+			mouse->show();	// Re-display mouse.
 
 		if (rotate)
 			{		// (Blits in simulated 8-bit mode.)
