@@ -39,7 +39,7 @@ using std::vector;
 using std::string;
 using std::pair;
 
-enum DoOps { DoAdd, DoRem };
+enum DoOps { DoAdd, DoRem, DoGet };
 
 typedef pair<DoOps, vector<string> > DoListPair;
 
@@ -66,6 +66,8 @@ void usage(unsigned int i)
 	     << "\t\t\t- adds the <value> to the <key> in the <conffile>" << endl
 	     << "\t[-r | rem | remove | rm | del] <key>" << endl
 	     << "\t\t\t- removes the <key> from the <conffile>" << endl
+	     << "\t[-x | get | extract | rd | see | read] <key>" << endl
+	     << "\t\t\t- extracts the value set for <key> from the <conffile> or \"unknown\"" << endl
 	     << "\t[-v | verbose]\t- print verbose output to stderr" << endl
 	     << endl
 	     << "examples:" << endl
@@ -115,6 +117,21 @@ void read_params(const int argc, char *argv[])
 			
 			DoListPair dlp;
 			dlp.first = DoRem;
+			dlp.second.push_back(argv[i+1]);
+			dolist.push_back(dlp);
+			i++;
+		}
+		/* Added by Artaxerxes. Extracts the values for a given path. Do not change anything. Just read.*/
+		else if((s=="extract") || (s=="read") || (s=="rd") || (s=="see") || (s=="get") || (s=="-x"))
+		{
+			if(i+1>=argc)
+			{
+				cout << "error: insufficient parameters supplied for '" << s << "'" << endl;
+				usage(1);
+			}
+			
+			DoListPair dlp;
+			dlp.first = DoGet;
 			dlp.second.push_back(argv[i+1]);
 			dolist.push_back(dlp);
 			i++;
@@ -171,6 +188,25 @@ void process_ops()
 			if(verbose)
 				cerr << "Removed " << i->second[0] << endl;
 		}
+		if(i->first==DoGet)
+		{
+			assert(i->second.size()==1);
+			if(verbose)
+			{
+			        string s;
+				assert(config!=0);
+				config->value(i->second[0].c_str(),s,"unknown");
+				cerr << "Return value for " << i->second[0] << " is " << s << endl;
+			
+			}
+			
+			assert(config!=0);
+			//config->set(i->second[0].c_str(), "", false);
+			string s;
+			config->value(i->second[0].c_str(),s,"unknown");
+			cout << s << endl;
+			
+		}
     }
 }
 
@@ -186,7 +222,7 @@ int main(int argc, char *argv[])
 		cerr << "Operations:" << endl;
 		for(DoList::iterator i=dolist.begin(); i!=dolist.end(); i++)
 		{
-			cerr << '\t' << ((i->first==DoAdd) ? "add" : ((i->first==DoRem) ? "rem" : "unknown")) << '\t';
+			cerr << '\t' << ((i->first==DoAdd) ? "add" : ((i->first==DoRem) ? "rem" : ((i->first==DoGet) ? "get" : "unknown"))) << '\t';
 			for(vector<string>::iterator j=i->second.begin(); j!=i->second.end(); j++)
 				cerr << *j << '\t';
 			cerr << endl;
