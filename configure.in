@@ -54,6 +54,8 @@ AC_PROG_INSTALL
 AM_PROG_LEX
 AC_PROG_YACC
 
+AM_CONDITIONAL(LEXYACC, test -n "$YACC")
+
 echo "Wondering what our windowing system is... "
 
 dnl this is for win32 for now at least

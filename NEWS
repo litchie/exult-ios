@@ -1,3 +1,9 @@
+x/y/00:		Better introduction sequence. Can be interrupted by
+		keypress.
+
+		...
+
+
 7/6/00:		Scrolling works like the original.  Same for conversations.
 
 		First attempt at combat:  You can attack/kill monsters, but
