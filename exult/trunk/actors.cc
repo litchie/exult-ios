@@ -1740,7 +1740,8 @@ void Clear_hit::handle_event(unsigned long curtime, long udata)
 
 void Actor::reduce_health
 	(
-	int delta			// # points to lose.
+	int delta,			// # points to lose.
+	Actor *attacker			// Attacker, or null.
 	)
 	{
 	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
@@ -1774,13 +1775,15 @@ void Actor::reduce_health
 		}
 	if (Actor::is_dying())
 		{
-#if 1	/* ++++++This seems much better!! */
 		if (Game::get_game_type() == SERPENT_ISLE && usecode >= 0 &&
 					// SI 'tournament'?
 		    get_flag(Obj_flags::si_tournament))
 			{
-			gwin->get_usecode()->call_usecode(
-				usecode, this, Usecode_machine::died) != -1;
+					// Only if attacker is party member:
+			if (attacker && 
+				    attacker->get_flag(Obj_flags::in_party))
+				gwin->get_usecode()->call_usecode(
+					usecode, this, Usecode_machine::died);
 					// Still 'tournament'?  Set hp = 1.
 			if (get_flag(Obj_flags::si_tournament) &&
 			    get_property((int) health) < 1)
@@ -1789,26 +1792,6 @@ void Actor::reduce_health
 		else
 			die();
 
-#else
-		if (Game::get_game_type() == SERPENT_ISLE && usecode >= 0)
-			{
-			bool was_killable = get_flag(Obj_flags::si_killable);
-			int execed = gwin->get_usecode()->call_usecode(
-				usecode, this, Usecode_machine::died) != -1;
-					// No longer killable.  Time to die.
-			if (!execed ||
-					// For now, check for special cases:
-			   usecode == 0x175 ||	// Mummy
-			   usecode == 0x16b ||	// Magic gremlin.
-			   (was_killable && !get_flag(Obj_flags::si_killable)))
-				die();
-					// Else restore health.
-			else if (get_property((int) health) < 1)
-				set_property((int) health, 1);
-			}
-		else			// Black-gate, or monsters.
-			die();
-#endif
 		}
 	else if (val < 0 && !get_flag(Obj_flags::asleep))
 		set_flag(Obj_flags::asleep);
@@ -2390,7 +2373,7 @@ int Actor::figure_hit_points
 		else
 			say(first_ouch, last_ouch);
 
-	reduce_health(hp);
+	reduce_health(hp, attacker);
 	
 	string name = "<trap>";
 	if (attacker)
