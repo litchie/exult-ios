@@ -21,9 +21,7 @@
 #  include <cstdio>
 #  include <cstring>
 #endif
-#ifdef MACOS
-#  include <cassert>
-#endif
+#include <cassert>
 #include <fstream>
 #include <iomanip>
 #include "U7file.h"
