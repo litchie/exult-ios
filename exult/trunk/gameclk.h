@@ -46,6 +46,8 @@ public:
 		{ day = d; }
 	unsigned long get_total_hours()	// Get total # hours.
 		{ return day*24 + hour; }
+	unsigned long get_total_minutes()
+		{ return get_total_hours()*60 + minute; }
 	void set_palette();		// Set palette for current hour.
 					// Set light source.  MUST be fast,
 					//   since it's called during paint().

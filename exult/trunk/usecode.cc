@@ -2384,6 +2384,14 @@ USECODE_INTRINSIC(book_mode)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(cause_light)
+{
+	// Cause_light(game_minutes??)
+
+	gwin->add_special_light(parms[0].get_int_value());
+	return no_ret;
+}
+
 USECODE_INTRINSIC(get_barge)
 {
 	// get_barge(obj) - returns barge object is part of or lying on.
@@ -3051,8 +3059,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(book_mode),// 0x55
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.
                            // StopTime (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x57 ++++?Light_source(time)?
-                           //CauseLight (ucdump.c)
+	USECODE_INTRINSIC_PTR(cause_light),	// 0x57 CauseLight (ucdump.c)
 	USECODE_INTRINSIC_PTR(get_barge),// 0x58
 	USECODE_INTRINSIC_PTR(earthquake),	// 0x59
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a

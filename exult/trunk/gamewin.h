@@ -87,6 +87,7 @@ private:
 	unsigned char focus;		// Do we have focus?
 	unsigned char poison_pixel;	// For rendering poisoned actors.
 	unsigned char teleported;	// 1 if just teleported.
+	unsigned char in_dungeon;	// 1 if inside a dungeon.
 	ifstream chunks;		// "u7chunks" file.
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
@@ -102,7 +103,6 @@ private:
 	Barge_object *moving_barge;	// ->cart/ship that's moving, or 0.
 	Main_actor *main_actor;		// Main sprite to move around.
 	int skip_above_actor;		// Level above actor to skip rendering.
-	unsigned char in_dungeon;	// 1 if inside a dungeon.
 	int num_npcs, num_npcs1;	// Numbers of NPC's, type1 NPC's.
 	Actor **npcs;			// List of NPC's + the Avatar.
 	int num_monsters;		// Number of monster types.
@@ -117,6 +117,7 @@ private:
 	int brightness;			// Palette brightness.
 	int user_brightness;		// User's setting for brightness.
 	unsigned char faded_out;	// 1 if faded palette to black.
+	unsigned long special_light;	// Game minute when light spell ends.
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
 					// Dragging info:
@@ -222,6 +223,10 @@ public:
 		{ in_dungeon = tf; }
 	inline int is_in_dungeon()
 		{ return in_dungeon; }
+	inline int is_special_light()	// Light spell in effect?
+		{ return special_light != 0; }
+					// Light spell.
+	void add_special_light(int minutes);
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < num_npcs) ? 
 				npcs[npc_num] : 0; }

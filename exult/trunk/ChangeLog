@@ -1,5 +1,6 @@
 2000-09-09  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* Light spells (glimmer, etc.) work now.
 	* gamewin.cc: Set palette for dungeons, also lighten palette for
 	gump mode.
 	* Set dimensions for ship's hold gump.

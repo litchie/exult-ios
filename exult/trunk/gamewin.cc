@@ -70,11 +70,12 @@ Game_window::Game_window
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
 	    conv_choices(0), render_seq(0), painted(0), focus(1), 
-	    teleported(0), 
+	    teleported(0), in_dungeon(0), 
 	    moving_barge(0), main_actor(0), skip_above_actor(31), 
-	    in_dungeon(0), npcs(0),
+	    npcs(0),
 	    monster_info(0), 
 	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
+	    special_light(0),
 	    dragging(0), dragging_save(0),
 	    skip_lift(16), paint_eggs(0), debug(0)
 	{
@@ -234,6 +235,23 @@ int Game_window::is_moving
 			    : main_actor->is_moving();
 	}
 
+/*
+ *	Add time for a light spell.
+ */
+
+void Game_window::add_special_light
+	(
+	int minutes
+	)
+	{
+	if (!special_light)		// Nothing in effect now?
+		{
+		special_light = clock.get_total_minutes();
+		clock.set_palette();
+		}
+	special_light += minutes;	// Figure ending time.
+	}
+
 /* 
  *	Get monster info for a given shape.
  */
@@ -371,6 +389,7 @@ void Game_window::clear_world
 	num_npcs = num_npcs1 = 0;
 	delete [] npcs;			// NPC's already deleted above.
 	moving_barge = 0;		// Get out of barge mode.
+	special_light = 0;		// Clear out light spells.
 		//++++++++Clear monsters list when we have it.
 					// Clear 'read' flags.
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
@@ -1100,6 +1119,7 @@ int Game_window::write_gwin
 	Write2(gout, clock.get_day());
 	Write2(gout, clock.get_hour());
 	Write2(gout, clock.get_minute());
+	Write4(gout, special_light);	// Write spell expiration minute.
 	gout.flush();
 	return (gout.good());
 	}
@@ -1125,6 +1145,9 @@ int Game_window::read_gwin
 	clock.set_hour(Read2(gin));
 	clock.set_minute(Read2(gin));
 	int okay = gin.good();		// Next ones were added recently.
+	special_light = Read4(gin);
+	if (!gin.good())
+		special_light = 0;
 	return (okay);
 	}
 
