@@ -1,0 +1,5 @@
+EXPORTS
+	GetExultGamePaths = GetExultGamePaths@16
+	SetExultGamePaths = SetExultGamePaths@12
+	VerifyBGDirectory = VerifyBGDirectory@4
+	VerifySIDirectory = VerifySIDirectory@4
