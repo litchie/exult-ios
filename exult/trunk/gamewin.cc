@@ -49,7 +49,7 @@ Game_window::Game_window
 	(
 	int width, int height		// Window dimensions.
 	) : chunkx(0), chunky(0), painted(0), focus(1),
-	    brightness(100), 
+	    palette(0), brightness(100), 
 	    skip_lift(16), debug(0),
 	    tqueue(new Time_queue()), clock(tqueue),
 		npc_prox(new Npc_proximity_handler(this)),
@@ -99,7 +99,7 @@ Game_window::Game_window
 					// Clear object lists, flags.
 	memset((char *) objects, 0, sizeof(objects));
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
-	get_palette(0);			// Try first palette.
+	set_palette(palette);		// Try first palette.
 	brighten(20);			// Brighten 20%.
 	}
 
@@ -841,12 +841,13 @@ void Game_window::paint_object
  *	Read in a palette.
  */
 
-void Game_window::get_palette
+void Game_window::set_palette
 	(
 	int pal_num,			// 0-11.
 	int brightness			// Brightness % (100 = normal).
 	)
 	{
+	palette = pal_num;		// Store #.
 	ifstream pal;
 	u7open(pal, PALETTES_FLX);
 	pal.seekg(256 + 3*256*pal_num); // Get to desired palette.
@@ -868,7 +869,7 @@ void Game_window::brighten
 	brightness += per;
 	if (brightness < 20)		// Have a min.
 		brightness = 20;
-	get_palette(0, brightness);
+	set_palette(palette, brightness);
 	paint();
 	}
 

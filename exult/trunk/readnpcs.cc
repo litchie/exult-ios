@@ -87,7 +87,7 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 				new Main_actor(namebuf, 
 				shape[0] + 256*(shape[1]&0x3), i, usecode);
 					// +++++Start out invisible.
-			main_actor->set_flag(Actor::dont_render);
+//+++++			main_actor->set_flag(Actor::dont_render);
 			}
 		else			// Create NPC.
 			actor = npc_actor = new Npc_actor(namebuf, 

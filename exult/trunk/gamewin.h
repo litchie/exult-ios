@@ -84,6 +84,7 @@ private:
 	Chunk_object_list *objects[num_chunks][num_chunks];
 	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
 	int chunkx, chunky;		// Chunk coord. of window within world.
+	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
 	Rectangle dirty;		// Dirty rectangle.
 					// Dragging info:
@@ -327,8 +328,8 @@ public:
 	void paint_chunk_objects(int at_lift, int cx, int cy, int flat_only);
 					// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj, int at_lift, int flat_only);
-					// Get desired palette.
-	void get_palette(int pal_num, int brightness = 100);
+					// Set desired palette.
+	void set_palette(int pal_num, int brightness = 100);
 	void brighten(int per);		// Brighten/darken by percentage.
 	void view_right();		// Move view 1 chunk to right.
 	void view_left();		// Move view left by 1 chunk.
