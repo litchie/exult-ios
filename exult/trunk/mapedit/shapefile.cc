@@ -59,13 +59,14 @@ Object_browser *Shape_file_info::create_browser
 	(
 	Shape_file_info *vgafile,	// THE 'shapes.vga' file.
 	char **names,			// Names for shapes.vga entries.
-	unsigned char *palbuf		// Palette for displaying.
+	unsigned char *palbuf,		// Palette for displaying.
+	Shape_group *g			// Group, or 0.
 	)
 	{
 	if (file)			// Must be 'u7chunks' (for now).
 		return new Chunk_chooser(vgafile->get_ifile(), *file, palbuf, 
-								400, 64);
-	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64);
+								400, 64, g);
+	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64, g);
 	int len = pathname.length();	// Fonts?  Show 'A' as the default.
 	if (len >= 9 && strcasecmp(pathname.c_str() - 9, "fonts.vga") == 0)
 		chooser->set_framenum0('A');

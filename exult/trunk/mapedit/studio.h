@@ -59,7 +59,6 @@ private:
 	Shape_file_info		*curfile;	// Current browser file info.
 	Shape_file_info		*vgafile;	// Main 'shapes.vga'.
 	Shape_file_info		*facefile;	// 'faces.vga'.
-	std::ifstream		*chunkfile;	// 'u7chunks'.
 	char			**names;
 	Object_browser		*browser;
 	unsigned char 		*palbuf;
@@ -111,9 +110,7 @@ public:
 	void set_browser(const char *name, Object_browser *obj);
 
 	void choose_static_path();
-	Object_browser  *create_shape_browser(const char *fname);
-	Object_browser  *create_chunk_browser(const char *fname);
-	void delete_chunk_browser();
+	Object_browser  *create_browser(const char *fname);
 	Object_browser  *create_palette_browser(const char *fname);
 	void set_static_path(const char *path);
 	void write_map();

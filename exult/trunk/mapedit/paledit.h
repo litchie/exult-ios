@@ -49,7 +49,7 @@ class Palette_edit: public Object_browser
 	void show()
 		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
 	void select(int new_sel);	// Show new selection.
-	void render();			// Draw list.
+	virtual void render();		// Draw list.
 					// Handle color-selector buttons.
 	static int color_closed(GtkWidget *widget, GdkEvent *event, 
 							gpointer data);
