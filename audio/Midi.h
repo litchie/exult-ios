@@ -41,8 +41,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class	MidiAbstract
 {
 public:
+#ifndef WIN32
 	virtual void	start_track(const char *,bool repeat)=0;
-#ifdef WIN32
+#else
 	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat)=0;
 #endif
 	virtual void	stop_track(void)=0;
