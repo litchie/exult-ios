@@ -22,7 +22,7 @@ C		toggle_combat
 Ctrl-D		delete_object
 E		toggle_eggs
 F		useitem			377	# Feed
-G		useitem			675	# Use abacus
+G		useitem			675	11	# Use abacus
 Alt-G		toggle_god_mode
 Ctrl-G		change_gender
 H		help
