@@ -543,8 +543,19 @@ void Game_object::activate
 					// !!!Special case:  books in BG.
 	if (usefun == 0x282 && get_quality() >= 100)
 		usefun = 0x638;
-	umachine->call_usecode(usefun, this,
+	if (umachine->call_usecode(usefun, this,
+			(Usecode_machine::Usecode_events) event) != -1)
+		return;			// It was found.
+#if 0	/* ++++I don't think this does any good. */
+	if (Game::get_game_type() != BLACK_GATE)
+		return;
+	Vector barges;			// Look for nearby barge.
+	if (!find_nearby(barges, 961, 16, 0))
+		return;
+					// Special usecode for barge pieces:
+	umachine->call_usecode(0x634, this, 
 				(Usecode_machine::Usecode_events) event);
+#endif
 	}
 
 /*
