@@ -2953,7 +2953,7 @@ Usecode_machine::Usecode_machine
 	(
 	istream& file,
 	Game_window *gw
-	) : gwin(gw), call_depth(0), book(0), caller_item(0), cur_function(0),
+	) : gwin(gw), call_depth(0), cur_function(0), book(0), caller_item(0),
 	    last_created(0), removed(new Deleted_objects()), user_choice(0),
 	    String(0), stack(new Usecode_value[1024])
 	{
