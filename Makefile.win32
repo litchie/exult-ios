@@ -51,14 +51,14 @@ EXULT_FLX_OBJECTS = \
 	data/exult_logo.shp \
 	data/exult0.pal
 
-$(EXEC) : $(OBJS) exult.flx
+$(EXEC) : $(OBJS) data/exult.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
 tools/expack.exe : tools/expack.o $(FILE_OBJS) utils.o 
 	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o utils.o $(FILE_OBJS) $(LIBS)
 
-exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
-	tools/expack -c exult.flx $(EXULT_FLX_OBJECTS)
+data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
+	tools/expack -c data/exult.flx $(EXULT_FLX_OBJECTS)
 
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres win32/exultico.rc exultico.o
@@ -71,7 +71,8 @@ clean:
 
 install: $(EXEC)
 	strip $(EXEC) -o c:/ultima7/$(EXEC)
-	copy exult.flx c:\ultima7
+	md c:\ultima7\data
+	copy data\exult.flx c:\ultima7\data
 
 run:
 	start $(EXEC)
