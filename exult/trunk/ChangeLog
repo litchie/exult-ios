@@ -1,3 +1,6 @@
+2002-04-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* game.cc, exult.cc: fixed setting the PATCH directory
+
 2002-04-16  Ryan Nunn  <triforce@merlin.net.au>
 	* game.cc : Don't pass trailing slashes in calls to get_system_path
 	  when setting up static, gamedat, savegame and patch paths.

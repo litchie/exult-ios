@@ -167,11 +167,11 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		get_system_path("<" + system_path_tag + "_GAMEDAT>"));
 	add_system_path("<SAVEGAME>",
 		get_system_path("<" + system_path_tag + "_SAVEGAME>"));
-	if (is_system_path_defined(system_path_tag + "_PATCH"))
+	if (is_system_path_defined("<" + system_path_tag + "_PATCH>"))
 		add_system_path("<PATCH>",
 						get_system_path("<" + system_path_tag + "_PATCH>"));
 	else
-		clear_system_path("PATCH");
+		clear_system_path("<PATCH>");
 
 	// Discover the game we are running (BG, SI, ...)
 	// We do this, because we don't really trust config :-)
@@ -202,6 +202,16 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 	default:
 		game = 0;
 	}
+
+	std::cout << "Current path settings:" << std::endl;
+	std::cout << "Static  : " << get_system_path("<STATIC>") << std::endl;
+	std::cout << "Gamedat : " << get_system_path("<GAMEDAT>") << std::endl;
+	std::cout << "Savegame: " << get_system_path("<SAVEGAME>") << std::endl;
+	if (is_system_path_defined("<PATCH>"))
+		std::cout << "Patch   : " << get_system_path("<PATCH>") << std::endl;
+	else
+		std::cout << "Patch   : none" << std::endl;
+	std::cout << std::endl;
 
 	return game;
 }

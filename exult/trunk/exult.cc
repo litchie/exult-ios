@@ -458,28 +458,36 @@ void get_game_paths(const string &gametitle)
 	config->value(config_path.c_str(), data_directory, ".");
 	if (data_directory == ".")
 		config->set(config_path.c_str(), data_directory, true);
+#if 0
 	cout << "setting " << gametitle
 		<< " game directories to: " << data_directory << endl;
+#endif
 
 	config_path = "config/disk/game/" + gametitle + "/static_path";
 	default_dir = data_directory + "/static";
 	config->value(config_path.c_str(), static_dir, default_dir.c_str());
 	add_system_path("<" + system_path_tag + "_STATIC>", static_dir);
+#if 0
 	cout << "setting " << gametitle
 		<< " static directory to: " << static_dir << endl;
+#endif
 
 	config_path = "config/disk/game/" + gametitle + "/gamedat_path";
 	default_dir = data_directory + "/gamedat";
 	config->value(config_path.c_str(), gamedat_dir, default_dir.c_str());
 	add_system_path("<" + system_path_tag + "_GAMEDAT>", gamedat_dir);
+#if 0
 	cout << "setting " << gametitle
 		<< " gamedat directory to: " << gamedat_dir << endl;
+#endif
 
 	config_path = "config/disk/game/" + gametitle + "/savegame_path";
 	config->value(config_path.c_str(), savegame_dir, data_directory.c_str());
 	add_system_path("<" + system_path_tag + "_SAVEGAME>", savegame_dir);
+#if 0
 	cout << "setting " << gametitle
 		<< " savegame directory to: " << savegame_dir << endl;
+#endif
 
 	// A patch directory is optional.
 	config_path = "config/disk/game/" + gametitle + "/patch";
