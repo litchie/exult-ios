@@ -86,9 +86,9 @@ public:
 	bool	start_music_combat(Combat_song song,bool continuous,int bank=0);
 	void	stop_music();
 	AudioID	play_sound_effect (int num, int volume = SDL_MIX_MAXVOLUME,
-								int dir = 0);
+					int dir = 0, bool repeat = false);
 	AudioID	play_wave_sfx(int num, int volume = SDL_MIX_MAXVOLUME,
-								int dir = 0);
+					int dir = 0, bool repeat = false);
 	bool	start_speech(int num,bool wait=false);
 	void	set_external_signal(int);
 	void	terminate_external_signal(void);

@@ -64,7 +64,7 @@ static const int Mixer_Sample_Magic_Number=0x55443322;
 //---- AudioID ---------------------------------------------------------
 
 /*
- *	Set volume, direction.
+ *	Set volume, direction, repeat.
  */
 void AudioID::set_volume
 	(
@@ -81,6 +81,14 @@ void AudioID::set_dir
 	{
 	if (pcb && pcb->get_seq() == seq)
 		pcb->set_dir(d);
+	}
+void AudioID::set_repeat
+	(
+	bool rep
+	)
+	{
+	if (pcb && pcb->get_seq() == seq)
+		pcb->set_repeat(rep);
 	}
 
 
@@ -244,7 +252,8 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 	stream_unlock();
 }
 
-AudioID	Mixer::play(uint8 *sound_data,uint32 len, int volume, int dir)
+AudioID	Mixer::play(uint8 *sound_data,uint32 len, int volume, int dir,
+							bool repeat)
 {
 	ProducerConsumerBuf *audiostream=Create_Audio_Stream(
 						Mixer_Sample_Magic_Number);
@@ -256,6 +265,7 @@ AudioID	Mixer::play(uint8 *sound_data,uint32 len, int volume, int dir)
 	SDL::LockAudio();
 	audiostream->set_volume(volume);
 	audiostream->set_dir(dir);
+	audiostream->set_repeat(repeat);
 	audiostream->produce(sound_data,len);
 	audiostream->end_production();
 	AudioID id(audiostream, audiostream->get_seq());

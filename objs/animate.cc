@@ -30,11 +30,116 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "animate.h"
 #include "gamewin.h"
 #include "SDL_timer.h"
-
+#include "Audio.h"
+#include "actors.h"			/* Only need this for Object_sfx. */
+#include "dir.h"
+#include <map>
 
 using std::ostream;
 using std::rand;
 
+/*
+ *	A class for playing sound effects when certain objects are nearby.
+ */
+class Object_sfx
+	{
+	int sfxnum;			// Sound effect #.
+	AudioID sfx;			// ID of sound effect being played.
+	Game_object *obj;		// Object that caused the sound.
+	int distance;			// Distance in tiles from Avatar.
+	int dir;			// Direction (0-15) from Avatar.
+public:
+					// Create & start playing sound.
+	Object_sfx(int snum, Game_object *o) : sfxnum(snum)
+		{ set_obj(o); }
+	bool is_active()		// Is sound still active?
+		{ return sfx.is_active(); }
+	int get_sfxnum()
+		{ return sfxnum; }
+	int get_distance()
+		{ return distance; }
+	void set_obj(Game_object *o);	// Set to new object.
+					// Get sfx to play for given shape.
+	static int get_shape_sfx(int shapenum);
+	};
+
+/*
+ *	Set to new object.
+ */
+void Object_sfx::set_obj
+	(
+	Game_object *o
+	)
+	{
+	obj = o;
+	dir = 0;
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord apos = gwin->get_main_actor()->get_abs_tile_coord();
+	Tile_coord opos = obj->get_abs_tile_coord();
+	distance = apos.distance(opos);
+	int volume = SDL_MIX_MAXVOLUME;	// Set volume based on distance.
+	if (distance)
+		{			// 160/8 = 20 tiles. 20*20=400.
+		volume = (SDL_MIX_MAXVOLUME*64)/(distance*distance);
+		if (volume < 8)
+			volume = 8;
+		else if (volume > SDL_MIX_MAXVOLUME)
+			volume = SDL_MIX_MAXVOLUME;
+		dir = Get_direction16(apos.ty - opos.ty, opos.tx - apos.tx);
+		}
+	if (!sfx.is_active())		// First time?
+					// Start playing, and repeat.
+		sfx = Audio::get_ptr()->play_wave_sfx(sfxnum, volume,
+								dir, true);
+	else				// Set new volume, position.
+		{
+		sfx.set_volume(volume);
+		sfx.set_dir(dir);
+		sfx.set_repeat(true);
+		}
+	}
+
+/*
+ *	Get the sound-effect # for a given shape, or -1 if not found.
+ */
+
+int Object_sfx::get_shape_sfx
+	(
+	int shapenum
+	)
+	{
+	static map<int, int> table;
+	static int first = 0;
+
+	if (first)			// First time?
+		{
+		first = 0;
+					// Surf: (47 or 49)
+		table[612] = 49;
+		table[613] = 49;
+		table[632] = 49;
+		table[736] = 49;
+		table[737] = 49;
+		table[751] = 49;
+		table[808] = 49;
+		table[834] = 49;
+		table[875] = 49;
+		table[907] = 49;
+		table[911] = 49;
+		table[918] = 49;
+		table[1012] = 49;
+		table[1020] = 49;
+		table[1022] = 49;
+					// Bubbles: (54, 56).
+		table[334] = 56;
+		table[335] = 56;
+		table[780] = 56;
+					// Fountains:
+		table[893] = 36;
+		}
+	map<int, int>::iterator it = table.find(shapenum);
+	return it == table.end() ? -1 : (*it).second;
+	}
 
 /*
  *	Create appropriate animator.

@@ -39,10 +39,13 @@ class AudioID
 	uint32 seq;			// PCB sequence #.
 public:
 	friend class Mixer;
+	AudioID() : pcb(0), seq(0)	// Empty, inactive.
+		{  }
 	AudioID(ProducerConsumerBuf *p, uint32 s) : pcb(p), seq(s)
 		{  }
 	void set_volume(int v);		// 0-128.
 	void set_dir(int d);		// 0-15
+	void set_repeat(bool rep);
 	bool is_active()
 		{ return pcb && pcb->get_seq() == seq && pcb->is_active(); }
 	};
@@ -72,7 +75,7 @@ public:
 	void	modify_stereo16(sint16 *data, int cnt, int dir16);
 	void fill_audio_func(void *, uint8 *, int);
 	AudioID play(uint8 *, uint32, int volume = SDL_MIX_MAXVOLUME,
-							int dir = 0);
+					int dir = 0, bool repeat = false);
 	ProducerConsumerBuf *Create_Audio_Stream(uint32 type);
 	void	Destroy_Audio_Stream(uint32 type);
 	void	cancel_streams(void);
