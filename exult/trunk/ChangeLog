@@ -1,3 +1,9 @@
+2003-05-04 Dominik Reichardt <dominus@users.sourceforge.net>
+	* docs/xml/*.xml: updated
+	* docs/*.html, exult_studio.txt: updated
+	* docs/usecode_bugs.txt: added SI-SS pillars bug
+	* FAQ, ReadMe : updated and spellchecked
+	
 2003-04-26  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/objedit.cc: properly load/save shape/frame/quality for objs
 	* palette.cc: removed unnecessary palette changes
@@ -156,7 +162,7 @@
 2003-02-05 Aurelien Marchand <artaxerxes@users.sourceforge.net>
 	* README.Qtopia: few changes to match the current compile method
 	* configure.in: reverted the zaurus/embeddix $host_vendor variable
-	
+
 2003-01-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: When resurrecting, set schedule to something reasonable.
@@ -332,14 +338,14 @@
 
 2002-08-26  Aurelien Marchand  <artaxerxes@users.sf.net>
 
-	* configure.in: Added -FMOPL and disabled debug in configure.in for the zaurus. 
+	* configure.in: Added -FMOPL and disabled debug in configure.in for the zaurus.
 	* audio/Midi.cc: Make it work on the zaurus
 	* imagewin/imagewin.cc: prevent fullscreen at all cost for the zaurus or it would crash
 
 2002-08-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucinternal.h: Fixed "in_usecode()" so it works with new
-	stack-frames. 
+	stack-frames.
 	* usecode/ucsched.cc (Usecode_script): Don't purge script if it
 	has already started.
 
@@ -359,7 +365,7 @@
 2002-08-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.h,usecode/intrinsics.cc:  Always use bed that was
-	double-clicked. 
+	double-clicked.
 	* schedule.cc:  Bug in getting tz.
 	* usecode/conversation.cc:  Repaint when you pop_answers().
 
@@ -377,7 +383,7 @@
 2002-08-07  Ryan Nunn  <triforce@merlin.net.au>
 	* cheat_screen.cc : Added missing tqueue header.
 
-	* exultmenu.cc, audio/Midi.cc, audio/xmidi.h, 
+	* exultmenu.cc, audio/Midi.cc, audio/xmidi.h,
 	  gumps/AudioOptions_gump.cc : Added 'Music Conversion' option to
 	  enable the FM Synth. Requires a restart of Exult once it has been
 	  set in order for it to work.
@@ -464,7 +470,7 @@
 	* gamerend.cc:  Show sprites below gumps, text over them.
 
 2002-07-28  Ryan Nunn  <triforce@merlin.net.au>
-	* pathfinder/path.cc : Fixed seriously broken non hash pathfinding (z 
+	* pathfinder/path.cc : Fixed seriously broken non hash pathfinding (z
 	  coord was being ignored in comparisons of nodes). This fixes the
 	  Monitor Training problem. Probably fixes countless other pathfinding
 	  problems too.
@@ -496,18 +502,18 @@
 	* imagewin/ibuf8.cc: added a test to prevent fast copy on the zaurus
 	* configure.in: added test for $host_vendor under the linux clause
 	* shapes/monstinf.*: renamed "arm" into "armur" as "arm" is reserved
-	
+
 2002-07-24  Dominik Reichardt  <dominus@users.sourceforge.net>
 	* docs/xml/exult_studio.xml: updated
 	* docs/exult_studio.html, exult_studio.txt: updated
-	
+
 2002-07-24  Dominik Reichardt  <dominus@users.sourceforge.net>
-	* exult.cc: little correction of the --help screen (--bg, --si instead of 
+	* exult.cc: little correction of the --help screen (--bg, --si instead of
 	  -bg -si)
 	* Readme, FAQ: updated.
 	* docs/xml/docs.xml, faq.xml: updated
 	* docs/readme.html, faq.html: updated
-	
+
 2002-07-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapeid.cc,vgafile.h,glshape.cc:  Translucent shapes supported
@@ -664,7 +670,7 @@
 	* ucinternal.cc: allow small changes to loop-array in mid-loop in SI
 	* useval.*: added operator!= (and changed operator== to return bool)
 	* objnames.cc: fixed "x's ashes" code for teleported urn at start
-	
+
 2002-07-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapeinf.{cc,h}:  Figured out 'actor frame' flags in Weapon_info.
@@ -804,7 +810,7 @@
 	  it. Added lots of get_ireg_size() methods that return the size
 	  required to save the ireg of each object.
 	* gumps/Paperdoll_gump*.* : Fixing up various paperdoll related problems
-	* actors.h, objs/*.*, msvcstuff/find_nearby.h, usecode/intrinsics.cc : 
+	* actors.h, objs/*.*, msvcstuff/find_nearby.h, usecode/intrinsics.cc :
 	  Cleanup removing dynamic_casts.
 	* windrag.* : Is now windows only, and is only compiled if actually
 	  compiling with Exult studio support.
@@ -816,7 +822,7 @@
 
 	* gamewin.h,shapeid.h, etc: ShapeID::paint_shape() replaces one of the
 	paint_shape()'s in Game_window, and gamewin.h no longer includes
-	shapeid.h. 
+	shapeid.h.
 
 2002-06-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Paperdoll_gump.cc: fixed bug when displaying usecode container
@@ -852,7 +858,7 @@
 	* data/bg/*, gumps/Paperdoll_gump_info.cc: new art by Oblivious
 
 2002-06-18  Dominik Reichardt <gigdr@tesionmail.de>
-	* data/bg/defaultkeys.txt: mapped ctrl-c to copy and 
+	* data/bg/defaultkeys.txt: mapped ctrl-c to copy and
 	  INSERT to "create item
 	* data/si/defaultkeys.txt: the same
 	* docs/xml/docs.xml, faq.xml : updated
@@ -912,7 +918,7 @@
 2002-06-08  Darke <darkepaw@users.sourceforge.net>
 	* usecode/ucxt/src/ucfunc.cc: Removed the 'fix' we needed for
 	strstreams.
-	
+
 	* usecode/ucxt/*: Updated a few things to avoid name collisions between
 	ucxt/include/opcodes.h and usecode/opcodes.h.
 
@@ -943,13 +949,13 @@
 >    	  the audio when game pauses. (yes or no)
 >
 > 2002-05-29 Simon Quinn <email@simonquinn.co.uk>
->	* Work around for Usecode bug where track 0 is played at 
+>	* Work around for Usecode bug where track 0 is played at
 >	  Intro Earthquake.
 >
 > 2002-05-28 Simon Quinn <email@simonquinn.co.uk>
->	* Converted Windows MIDI out to use SDL_mixer, i.e. uses a 
+>	* Converted Windows MIDI out to use SDL_mixer, i.e. uses a
 > 	  Generic MidiOut.
->	* Changed MP3 references to DigitalMusic/OGG, now called 
+>	* Changed MP3 references to DigitalMusic/OGG, now called
 >	  "DigitalMusic" in the audio settings.
 >
 > 2002-05-27 Simon Quinn <email@simonquinn.co.uk>
@@ -1053,14 +1059,14 @@
 	* content/data/penguin00.png: Penguin statue for the church of Open Source
 	* content/data/faces, shapes: scripts for ipack to build the vga files for
 	  the patch dir
-	* makefile.win32, makefile.cygwin: added instruction on how to handle 
+	* makefile.win32, makefile.cygwin: added instruction on how to handle
 	  content/data/*.* for the patch options.
 
 2002-05-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/vgafile.cc (Vga_file): Constructor takes optional patch name.
-	
-	
+
+
 	* gamewin.cc,etc: Accept ES message to reload shape files.
 	* mapedit/shapelst.cc: Don't create 1st shape for flex-shape files.
 
@@ -1158,7 +1164,7 @@
 2002-05-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/studio.cc: catch usecode debugging messages
 	* shapes/shapeinf.cc: memory leak
-	
+
 2002-05-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucinternal.cc: After executing Usecode, tell barge to
@@ -1207,7 +1213,7 @@
 	* docs/xml/exult_studio.xml updated
 
 2002-05-03  Dominik Reichardt <gigdr@tesionmail.de>
-	* tools/*.1: finally added Robert Bihlmeyer man pages. Added them 
+	* tools/*.1: finally added Robert Bihlmeyer man pages. Added them
 	to /tools as the *txt files are there too.
 
 2002-05-01  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
@@ -1284,7 +1290,7 @@
 2002-04-14  Ryan Nunn  <triforce@merlin.net.au>
 	* exult.cc : Fixed a path problem
 	* palette.cc : std namespace stuff
-	* game.cc : DON'T write the savegame config setting by default at the 
+	* game.cc : DON'T write the savegame config setting by default at the
 	  moment. Though really the damage this may do, has already been done.
 	* files/utils.cc : Changed things so get_system_path() will attemp to
 	  convert long filenames in Windows to short filenames. This is an
@@ -1457,7 +1463,7 @@
 
 2002-03-15  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
-	* shapes/vgafile.{cc,h}:  New methods for constructing, modifying 
+	* shapes/vgafile.{cc,h}:  New methods for constructing, modifying
 	shapes and writing them out.
 	* tools/ipack.cc: Use new methods in Shape class for writing.
 
@@ -1487,7 +1493,7 @@
 	* docs/FAQ.html and ReadMe.html updated
 	* docs/xml: makefile, makefile.win32 renames docs.html to ReadMe.html
 	* docs/xml: faq.xml, docs.xml updated
-	* docs/xml: *.xsl, docs.dtd with extref1,extref2 you can link 
+	* docs/xml: *.xsl, docs.dtd with extref1,extref2 you can link
 	  between the FAQ and Documentation
 
 2002-03-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
@@ -1504,7 +1510,7 @@
 	* exult.cc, exultmenu.cc, gumps/VideoOptions_gump.cc,
 	  imagewin/imagescl.cc, imagewin/imagewin.*, imagewin/scale.* :
 	  Added Kreed's BilinearPlus scaler. Also added some utility functions
-	  and an array to get the scalers names, and the scaler number of a 
+	  and an array to get the scalers names, and the scaler number of a
 	  name. Should simplify adding or removing scalers in the future.
 	  Updated all the various parts of Exult to use the new funcs.
 
@@ -1543,7 +1549,7 @@
 	Wait nn game hours.
 
 	* palettes.h: Define palette names here.
-	* tools/ipack.cc (public): Algorithmically create 
+	* tools/ipack.cc (public): Algorithmically create
 	palettes 1-10 used by the Exult engine.
 
 2002-02-24  Jeff Freedman  <jeff@amy.nerble.net>
@@ -1552,7 +1558,7 @@
 
 2002-02-22  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
-	* shapes/pngio.cc: Rewrote transparency handling; still trying to 
+	* shapes/pngio.cc: Rewrote transparency handling; still trying to
 	get it right.
 
 2002-02-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
@@ -1583,7 +1589,7 @@
 	* tools/ipack.cc:  Coding 'Create()'.
 
 2002-02-20  Ryan Nunn  <triforce@merlin.net.au>
-	* actors.cc : Fixing Serpent Isle change of portrait bug. Polymorphing 
+	* actors.cc : Fixing Serpent Isle change of portrait bug. Polymorphing
 	  to 721 or 989 will now polymorph to the Avatar's actual shape.
 	* gumps/Face_stats.cc : No stat bars for non 'party' npcs. Fixes the
 	  Forsythe status bar crash.
@@ -1601,7 +1607,7 @@
 2002-02-17  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* exult.cc: Allow dragging and closing gumps when selecting with
-	the green cross-hair mouse. 
+	the green cross-hair mouse.
 
 	* objs/barge.cc (Barge_object): Recheck for boat in 'gather',
 	since it sometimes gets called before the boat is properly placed.
@@ -1614,12 +1620,12 @@
 	* palette.cc (Palette): create_trans_table().
 
 2002-02-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
-	* exultmenu.cc: only display SFX icons for a game in the main menu 
+	* exultmenu.cc: only display SFX icons for a game in the main menu
 	if the game is actually installed
 
 2002-02-14  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
-	* tools/textpack.cc:  A tool for creating 'text.flx' more 
+	* tools/textpack.cc:  A tool for creating 'text.flx' more
 	conveniently from a single text file.  Can also extract.
 
 2002-02-13  Jeff Freedman  <jeff@amy.nerble.net>
@@ -1628,7 +1634,7 @@
 	to fix carpet-landing bug.
 
 	* gamewin.h,game.*:  Allow MAINSHP.FLX to not exist for newly
-	developed games.  A new game is created automatically with Avatar 
+	developed games.  A new game is created automatically with Avatar
 	named "Newbie" and shape=721 (for now).
 
 2002-02-11  Jeff Freedman  <jeff@amy.nerble.net>
@@ -1657,7 +1663,7 @@
 	* game.cc : Namespace stuff
 	* gamemap.cc : Compiling error
 	* msvcstuff/msvc_kludges.h : Headers dir
-	* audio/xmidi.*, audio/midi_drivers/mac_midi.cc, 
+	* audio/xmidi.*, audio/midi_drivers/mac_midi.cc,
 	  audio/midi_drivers/win_midiout.cc : Fixing up a memory leak that
 	  was occuring for all the builds except Win32 and Mac.
 
@@ -1693,7 +1699,7 @@
 	  these because now everyone needs to use headers
 
 	* Makefile.cygwin, Makefile.win32,  msvcstuff/*.dsp : Setting things up
-	  to use the files in headers dir. 
+	  to use the files in headers dir.
 
 	* conf/*.*, files/*.*, audio/*.*: Changes so thing will compile for
 	  Pentagram. Note that PENTRAGRAM must be defined when compiling
@@ -1707,7 +1713,7 @@
 
 2002-02-08  Ryan Nunn  <triforce@merlin.net.au>
 	* server/servewin32.cc : Fixed the GetLongPathName issue. Exult and
-	  Exult Studio both need to be recompiled, because this effects 
+	  Exult Studio both need to be recompiled, because this effects
 	  communications.
 
 2002-02-07  Jeff Freedman  <jeff@amy.nerble.net>
@@ -1844,7 +1850,7 @@
 	  mapedit/chunklst.cc, mapedit/eggedit.cc, mapedit/npcedit.cc
 	  mapedit/objedit.cc, mapedit/shapedraw.cc: More Win32 Drag and Drop.
 
-	* Makefile.cygwin, Makefile.win32, mapedit/Makefile.mingw, 
+	* Makefile.cygwin, Makefile.win32, mapedit/Makefile.mingw,
 	  mapedit/studio.*, server/servemsg.* server/server.cc,
 	  server/servewin32.*, msvcstuff/Exult.dsp : Added commincations for
 	  WinNT, Win2K and WinXP Only! Win9x/Me ARE NOT SUPPORTED!
@@ -1973,9 +1979,9 @@
 	* vec.h: explicity typename
 
 2002-01-14  Tristan Tarrant  <nadir@users.sourceforge.net>
-	* Makefile.MorphOS, README.AmigaOS, README.MorphOS, 
+	* Makefile.MorphOS, README.AmigaOS, README.MorphOS,
 	  audio/midi_drivers/amiga_midi.*, cheat_screen.cc,
-	  files/listfiles.cc, files/utils.cc, version.cc, fnames.h, 
+	  files/listfiles.cc, files/utils.cc, version.cc, fnames.h,
 	  audio/Midi.cc: changes by Ruediger Hanke for MorphOS/AmigaOS support
 	* data/credits.txt: credit where credit is due
 	* configure.in: search for ext/hash_set and ext/hash_map
@@ -1992,7 +1998,7 @@
 
 2002-01-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* conf/XMLEntity.*: fixed uninitialized no_close
-	
+
 2002-01-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamemap.cc,shapes/shapeinf.h: quality_flags, okay_to_take.
@@ -2028,7 +2034,7 @@
 	xmltree, rather then the default 'config', also cleaned up some of the
 	external interface to Configuration, and added an additional way of
 	accessing the file data through Configuration::getpairs.
-	
+
 2002-01-08  Patrick Burke  <takhisisii@yahoo.com.au>
 	* audio/midi_drivers/forked_player.cc, conf/XMLEntity.cc: Fixed
 	namespace related errors.
@@ -2230,7 +2236,7 @@
 	* mapedit/*.{cc,h} (Chunk_chooser): 'Locate' is somewhat working.
 
 2001-12-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
-	* server.cc, gumps_utils.h: some minor changes for AIX 
+	* server.cc, gumps_utils.h: some minor changes for AIX
 	* shapeinf.h: removed static var from inlined function
 
 2001-12-28  Jeff Freedman  <jeff@amy.nerble.net>
@@ -2269,7 +2275,7 @@
 2001-12-26  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/data/opcodes.txt: Cleaned up callis and calli output
 	under -fz. Fixed a 'bug' with the output of the binary math/comparison
-	output functions' parameters' being around the wrong way. 
+	output functions' parameters' being around the wrong way.
 
 2001-12-25  Patrick Burke  <takhisisi@yahoo.com.au>
 	* usecode/ucxt/*: Added 'return' flag to opcodes.txt, better error
@@ -2282,7 +2288,7 @@
 	('\\' and '\"') in the 'full text' output strings.
 
 2001-12-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
-	* usecode/ucxt/src/ucfunc.cc: fixed intrinsic bug, re-used opcode bug 
+	* usecode/ucxt/src/ucfunc.cc: fixed intrinsic bug, re-used opcode bug
 
 2001-12-24  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Removed bugs from debugging statements.
@@ -2329,7 +2335,7 @@
 	* gumps/Enabled_button.*: Text button for picking enabled/disabled
 	* AudioOptions_gump.cc, VideoOptions_gump.cc, GameplayOptions_gump.cc, Newfile_gump.cc: use Text_button instead of text button shapes.
 	* VideoOptions_gump.cc: added support for custom resolutions
-	* GameplayOptions_gump.cc: added support for custom framerates	
+	* GameplayOptions_gump.cc: added support for custom framerates
 	* Gump_ToggleTextButton.h: minor bug fix
 	* Makefile.am: removed --all-static from link line
 	* data/sav*.shp: replaced wrong black by right black
@@ -2411,7 +2417,7 @@
 	* data/audiooptions.shp: made 10 pixels taller
 	* audio/Audio.*: allow user-configurable music looping
 	* gumps/AudioOptions_gump.*: UI for above
-	* Makefile.am: alpha_kludges.h and mingw_kludges.h should be in 
+	* Makefile.am: alpha_kludges.h and mingw_kludges.h should be in
 	noinst_HEADERS, not in EXTRA_DIST
 	* debian/.cvsignore: usual stuff
 
@@ -2463,7 +2469,7 @@
 
 2001-12-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* usecode/ucxt/src/Makefile.am: fixed include dirs
-	
+
 2001-12-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* readnpcs.cc: BG NPC's 293-297 are not valid and should be skipped.
@@ -2491,9 +2497,9 @@
 
 2001-12-05  Tristan Tarrant <nadir@users.sourceforge.net>
 	* configure.in: added ucxt directories
-	* exult.spec.in: added ucc, ucxt, splitshp and shp2pcx to tools 
+	* exult.spec.in: added ucc, ucxt, splitshp and shp2pcx to tools
 	subpackage
-	* tools/Makefile.am: install splitshp and shp2pcx. Removed references 
+	* tools/Makefile.am: install splitshp and shp2pcx. Removed references
 	to ucc
 	* tools/ucclex.l, tools/uccparse.y: removed
 	* usecode/ucxt/*: many changes to automake/autoconf logic. Made ucxt
@@ -2501,7 +2507,7 @@
 
 2001-12-05  Ryan Nunn <triforce@merlin.net.au>
 	* gamewin.cc, objs/egg.cc, objs/egg.h : Polishing Mirrors
-	* Actors.cc : NPC Actors can now kind of activate eggs (only when 
+	* Actors.cc : NPC Actors can now kind of activate eggs (only when
 	  stepping). A more global solution is required to all types of Actors
 	  will activate fields and mirrors when they move.
 	* ChangeLog : Fixing the date on Patrick's last addition
@@ -2557,7 +2563,7 @@
 	* schedule.cc: fix dancing Naga (missing frames)
 	* barge.cc, animate.cc, actors.cc, contain.cc: call inherited functions
 	of direct parent, not Game_object
-	
+
 2001-12-03  Ryan Nunn <triforce@merlin.net.au>
 	* objs/animate.cc : Fixed Minoc millsaw animation. Requires new game to
 	  work 100% properly.
@@ -2596,7 +2602,7 @@
 	* tools/Makefile.am: expack is an installable binary
 
 2001-11-29  Tristan Tarrant <nadir@users.sourceforge.net>
-	* exult.spec.in: allow setting of bindir and datadir, build exult 
+	* exult.spec.in: allow setting of bindir and datadir, build exult
 	only (will be fixed with the addition of subpackages), added README.1ST,
 	optimizer flags should be set for CXXFLAGS too
 	* mapedit/Makefile.am: paltest and shapetest are non-installable
@@ -2630,8 +2636,8 @@
 
 2001-11-25 Ryan Nunn <triforce@merlin.net.au>
 	 * version.cc : Will this ever end... Windows and MSC stuff
-	 * msvcstuff/Exult.dsp : Add in the version files to the project 
-	 * msvcstuff/msvc_kludges.h : Finally updated version to 0.95cvs 
+	 * msvcstuff/Exult.dsp : Add in the version files to the project
+	 * msvcstuff/msvc_kludges.h : Finally updated version to 0.95cvs
 	 * audio/Audio.cc : Also search for SFX flexes in the <DATA> directory.
 
 2001-11-25  Max Horn  <max@quendi.de>
@@ -2713,7 +2719,7 @@
 
 2001-11-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.in: fixed broken test on non-MacOSX platforms
-	
+
 2001-11-17  Max Horn  <max@quendi.de>
 
 	* Makefile.am, configure.in: made sure MacOS X specific Makefile changes
@@ -2766,7 +2772,7 @@
 	* files/zip/(un)?zip.c: include config.h
 	* configure.in: re-aligned ./configure --help options
 	* configure.in: check for zlib headers instead of library
-	
+
 2001-11-09  Ryan Nunn  <triforce@merlin.net.au>
 	* gumps/Newfile_gump.* : Added "File" field to Save game info display.
 	  Fixed crash on delete.
@@ -2784,7 +2790,7 @@
 	* Makefile.win32, Makefile.cygwin, gamewin.h, gamedat.cc, exult.cc
 	  files/zip/*.* : Zipped savegame support. Zlib headers and library are
 	  required to use it. HAVE_ZIP_SUPPORT needs to be defined. Config key
-	  "config/disk/save_compression_level" is used to control save game 
+	  "config/disk/save_compression_level" is used to control save game
 	  compression. Valid values are 0 (normal flex saves), 1 (normal zip,
 	  default) and 2 (zip with combined files).
 
@@ -2857,7 +2863,7 @@
 	* rearranged layout of gameoptions window
 	* added 'doubleclick closes gumps'-option
 	* added 'walk after teleport'-option for si
-	  
+
 2001-11-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.cc (public): Check for chair being moved.
@@ -2896,10 +2902,10 @@
 	* gamewin.cc: Don't teleport party members in 'wait' state.
 	* actorio.cc: Try to fix messed-up polymorph flag.
 	* actors.cc:  Automatons & 'waiting' NPC's shouldn't get cold.
-	
+
 	* gamewin.cc: Create Jawbone in create_ireg_object();
 	* jawbone.cc: Removed extraneous get_next()'s.
-	
+
 	* usecode/intrinsics.cc: Find_in_owner replaced by find_object.
 	Fixes switch-teleports beneath Sleeping Bull.
 
@@ -2972,8 +2978,8 @@
 
 2001-10-20  Jeff Freedman  <jeff@amy.nerble.net>
 
-	* ucinternal.cc:  Major 'global flag' kludge for SI/Monk Isle endlessly 
-	looping Usecode 
+	* ucinternal.cc:  Major 'global flag' kludge for SI/Monk Isle endlessly
+	looping Usecode
 	* gamewin.cc: Emulate_cacheout() terminates scripts.
 	* usecode/ucsched.h (public): Purge() terminates scripts for
 	objs. that are too far away.
@@ -3024,7 +3030,7 @@
 
 	* shapes/monstinf.h (public): Immunity, vulnerability.
 	* shapes/shapeinf.h: Damage_type.
-	
+
 	* objs/contain.cc (Container_game_object): Fixed dumb goof I made
 	when I added the weight check.
 	* actors.cc: Don't let Avatar die more than once, or let party be
@@ -3120,14 +3126,14 @@
 
 2001-10-12  Tristan Tarrant <nadir@users.sourceforge.net>
 	More patches from Christian Ohm <chr.ohm@gmx.net>
-	mouse.patch, gumps/Gameplay_options.* : Implement GameplayOptions 
+	mouse.patch, gumps/Gameplay_options.* : Implement GameplayOptions
 	menu and add fast mouse and middle mouse button support
 	data/credits.txt: credit where credit is due :)
 
 2001-10-12  Tristan Tarrant <nadir@users.sourceforge.net>
 	Patch from Christian Ohm <chr.ohm@gmx.net>
 	abacus.patch: add a keyboard shortcut ('g') to use the
-	abacus. 
+	abacus.
 
 2001-10-11  Jeff Freedman  <jeff@amy.nerble.net>
 
@@ -3238,7 +3244,7 @@
 	* tools/Makefile.am: fixed make warning
 	* Paperdoll_gump.cc: option for showing non-readied objects
 	* exult_constants.h: made the CERR/COUT macro's 'if'-safe
-	
+
 2001-09-29  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/siintrinsics.cc: Reduce_health added (x87).
@@ -3275,14 +3281,14 @@
 	things get dropped into walls, and (hopefully!) doesn't break anything.
 
 2001-09-26  Ryan Nunn <triforce@merlin.net.au>
-	* actorio.cc, actors.h, cheat_screen.cc, gumps/Book_gump.*, 
+	* actorio.cc, actors.h, cheat_screen.cc, gumps/Book_gump.*,
 	  gumps/Scroll_gump.* gumps/Sign_gump.*, gumps/Text_gump.*,
 	  objs/flags.h, usecode/intrinsics.cc :
 	  Implimented Serpentine Signs, books and scrolls. Also Implimented
 	  Serpent Isle 'read' flag. Can also be enabled in BG by using cheats.
 	* gumps/Gump.cc, gumps/Gump.h : Added method to center a gump on sreen
 	  after it's already been created.
-	* shapes/font.cc, shapes/font.h, shapes/fontvga.cc : Changes to use 
+	* shapes/font.cc, shapes/font.h, shapes/fontvga.cc : Changes to use
 	  Serpentine fonts in SI.
 	* msvcstuff/msvc_kludges.h, usecode/ucdisasm.cc : Change to compile
 	  with MSVC
@@ -3362,7 +3368,7 @@
 	* Configuration.cc, keyring.cc: added missing #include
 	* objs/contain.cc: save correct dead-body-npc-number in SI
 	* readnpcs.cc: only skip SI NPCs >= 233 (instead of >= 231)
-	
+
 2001-09-20  Ryan Nunn <triforce@merlin.net.au>
 	* audio/Midi.h : Fixed the crash when saving a game with midi disabled
 	* keyactions.cc, readnpcs.cc, conf/Configuration.cc,
@@ -3445,7 +3451,7 @@
 	  Added Game::get_ticks() method to get the ticks at the start of this
 	  iteration of the main game loop. The idea is to improve general game
 	  syncronization. If possible Game::get_ticks() should be used instead
-	  of SDL_GetTicks().	  
+	  of SDL_GetTicks().
 	* gamewin.cc, objs/animate.cc, objs/animate.h : Rewrote much of the
 	  Frame_animator to ensure that animated shapes always remain
 	  syncronized. Added new Animated_ifix_object. Fixed LOTS of broken SI
@@ -3611,7 +3617,7 @@
 	* worked on the configure system, re-added various files back to CVS,
 	like config.guess, config.sub etc. Those will be re-generated by
 	autogen.sh if needed, but the supplied version should be just fine usually
-	
+
 2001-09-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/chunks.cc:  Rewrote part of is_blocked() to handle the way
@@ -3632,7 +3638,7 @@
 	* Info.plist.in: updated to match configure.in
 
 2001-09-03  Dominik Reichardt <gigdr@tesionmail.de>
-	* FAQ and docs/faq/exult_faq.xml: updated FAQ	
+	* FAQ and docs/faq/exult_faq.xml: updated FAQ
 	* README and docs/readme/readme.xml: Updated Documentation
 
 2001-09-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
@@ -3751,7 +3757,7 @@
 2001-08-21  Max Horn <max@quendi.de>
 	* audio/Midi.cc: enabled MIDI driver on OS X
 	* audio/midi_drivers/mac_midi.*: enabled MIDI driver on OS X
-	
+
 2001-08-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: fixed Gwenno bug. (also accept NPCnums < 0x80 for bodies)
 	* contain.cc: fixed infinite-volume containers (eg. hollow tree)
@@ -3784,7 +3790,7 @@
 2001-08-20  Max Horn <max@quendi.de>
 	* keys.cc: key handling during dont_move is now properly restricted;
 	  each key Action now has a flag determing if it can be used during dont_move
-	
+
 2001-08-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/shapeinf.h,shapevga.cc:  Read in 'occludes.dat' & set
@@ -3853,7 +3859,7 @@
 	method for doing that).
 	* usecode/ucinternal.cc: SI crystal balls working again.
 	* usecode/intrinsics.cc: run_usecode() replaced by set_path_failure().
-	
+
 2001-08-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actions.cc (If_else_path_actor_action): New action type.
@@ -3892,7 +3898,7 @@
 
 2001-08-13  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
-	* Lots:  Moved Monster_info to its own files in the shapes directory. 
+	* Lots:  Moved Monster_info to its own files in the shapes directory.
 	The ptrs. to these are now stored in Shape_info.
 
 2001-08-12  Jeff Freedman  <jeff@amy.nerble.net>
@@ -3941,11 +3947,11 @@
 	* contain.*: extract items inside container when destroying it
 	* gamewin.cc: destroy contents of container before culling it
 	* objs.cc, contain.cc: fix attacking containers (see yesterday's log)
-	* gamewin.cc, objs/various: you can now no longer call 
+	* gamewin.cc, objs/various: you can now no longer call
 	gwin::delete_object to delete an item, use Game_object::remove_this
 
 2001-08-10  Tristan Tarrant <nadir@users.sourceforge.net>
-	* gamewin.cc, keyactions.cc, gumps/Face_stats.*: save/restore face 
+	* gamewin.cc, keyactions.cc, gumps/Face_stats.*: save/restore face
 	status
 	* NEWS: updated
 
@@ -3962,12 +3968,12 @@
 	tested in Usecode.
 	* actors.cc,intrinsics.cc:  Update_forced_schedule() caused Iolo
 	bug in Purity Test; disabled.
-	* ucsched.cc,ucscriptop.h: Usecode2 script for fixing Zorkhas 
+	* ucsched.cc,ucscriptop.h: Usecode2 script for fixing Zorkhas
 	Bridge crash.
 
 2001-08-10  Dominik Reichardt <gigdr@tesionmail.de>
 	* FAQ and docs/faq/exult_faq.xml: updated FAQ
-	* docs/faq/faq_text.xsl: link to html FAQ updated 
+	* docs/faq/faq_text.xsl: link to html FAQ updated
 	* docs/readme/makefile.*: generate docs.dat instead of doc.dat
 	* README and docs/readme/readme.xml: Updated with MacOS midi and Status bar
 	* docs/readme/*.xsl: some changes
@@ -3982,7 +3988,7 @@
 
 2001-08-09  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* shapeinf.h: added the 'has_hp' object type
-	* objs.*: use the has_hp object type to determine if objects are 
+	* objs.*: use the has_hp object type to determine if objects are
 	destroyable. (doors are exception). Also call intrinsic 0x626 if
 	object is destroyed.
 	TODO: do the same for containers. (using the 'resistance' field)
@@ -4019,7 +4025,7 @@
 	  crash in Serpent Isle.
 	* shapeid.cc, shapeid.h: Now possible to force a shape from any file to be
 	  drawn translucent.
-	* gamerend.cc, gamewin.cc, gamewin.h, objs/chunks.cc, objs/chunks.h: New 
+	* gamerend.cc, gamewin.cc, gamewin.h, objs/chunks.cc, objs/chunks.h: New
 	  dungeon rendering method. Should hopefully be almost perfect.
 	* gumps/Paperdoll_gump.cc: Tweak to hand rendering offsets
 	* win32/exult.ico: Updated Icon for Windows
@@ -4163,7 +4169,7 @@
 
 2001-08-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* game.cc: fixed 'return to menu' after 'start new game' bug
-	* configure.in, acconfig.h: define VER_MAJOR, VER_MINOR, VER_EXTRA 
+	* configure.in, acconfig.h: define VER_MAJOR, VER_MINOR, VER_EXTRA
 
 2001-08-04  Jeff Freedman  <jeff@amy.nerble.net>
 
@@ -4197,8 +4203,8 @@
 	* many many files: added/updated/unified legal header
 
 2001-07-03  Dominik Reichardt <gigdr@tesionmail.de>
-	* docs/faq/ and docs/readme/ : added makefile.win32 as Unix uses ':' 
-	  as seperator and Win32 uses ';'. Changed makefile to output *.dat 
+	* docs/faq/ and docs/readme/ : added makefile.win32 as Unix uses ':'
+	  as seperator and Win32 uses ';'. Changed makefile to output *.dat
 	  instead of *.inc
 
 2001-08-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
@@ -4246,7 +4252,7 @@
 2001-07-31  Tristan Tarrant <nadir@users.sourceforge.net>
 	* game.h, bggame.cc, sigame.cc: add methods for discovering valid
 	  path settings.
-	* exultmenu.cc: show only valid game entries in menu or warning if 
+	* exultmenu.cc: show only valid game entries in menu or warning if
 	  none available.
 
 2001-07-31  Jeff Freedman  <jeff@amy.nerble.net>
@@ -4256,7 +4262,7 @@
 	* intrinsics.cc:  okay_to_flay=>on_barge.  Turtle in SI now works.
 
 2001-07-30 Ryan Nunn <triforce@merlin.net.au>
-	* cheat_screen.cc, gamewin.h, shapeid.cc, shapeid.h, gumps/Gump.cc: 
+	* cheat_screen.cc, gamewin.h, shapeid.cc, shapeid.h, gumps/Gump.cc:
 	  ShapeID now also can specify if a shape is translucent. This fixes
 	  some problems where translucent objects weren't drawn as translucent.
 	* gumps/Paperdoll_gump_info.cc: Fixed crash when using status bars and
@@ -4274,23 +4280,23 @@
 2001-07-30 Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: made it compile on Linux again
 	* cheat.cc: heal-party now also restores mana
-	
+
 2001-07-30 Ryan Nunn <triforce@merlin.net.au>
 
 	*.* :
 
-	Can now specify the flex file for ShapeIDs. Added Shape_frame 
+	Can now specify the flex file for ShapeIDs. Added Shape_frame
 	*ShapeID::get_shape() to be used as a universal method to get a shape
 	for an object. Added Game_window::paint_shape(int x, int y, ShapeID &s)
 	Removed some of the Game_window::paint_???_shape() method because
-	paint_shape(int x, int y, Shape_frame *shape) or 
+	paint_shape(int x, int y, Shape_frame *shape) or
 	paint_shape(int x, int y, ShapeID &shape) can be used instead.
 
 	Added Face Stats for on screen display of stats. Added some shapes for
 	the Face Stats. Gump_widget now inherit ShapeID. Made lots of changes
 	to the Gumps to  use the new ShapeID::get_shape(). All gumps that use
 	custom shapes use the expack generatedheaders.
-	
+
 	Added Gump_manager class to manage gumps and to remove gump management
 	code from Game_window. Note, some of the method names have changed for
 	Gump_manager compared to Game_window. Added call to
@@ -4349,7 +4355,7 @@
 2001-07-26  Tristan Tarrant <nadir@users.sourceforge.net>
 	* exult.cc, game.cc, game.h: implement "Return to menu" functionality
 	* files/IFF.cc, files/utils.cc: clean up some printouts
-	* gumps/VideoOptions_gump.cc: converted to use the expack-generated 
+	* gumps/VideoOptions_gump.cc: converted to use the expack-generated
 	EXULT_FLX_* constants
 	* shapes/font.*: release memory on deallocation of fonts
 	* shapes/vgafile.*: allow reuse of shape objects for different files
@@ -4500,14 +4506,14 @@
 
 	* actions.cc, actors.cc: Start schedule even if NPC is not within
 	world.  Fixes SI Moonshade-kidnap bug.
-	
+
 	* Exult Studio now has a 'save map' option.  Files are stored in
 	the <PATCH> directory (specified in 'exult.cfg'.
 
 2001-07-11  Max Horn <max@quendi.de>
 	* data/quotes.txt: new quote ;)
 	* various files: removed the emacs header that force the fundamental mode to be used
-	
+
 2001-07-11  Ryan Nunn <triforce@merlin.net.au>
 	* objs/chunks.cc : Added shapes 394 and 941 as mountain types for
 	  dungeon checking in Serpent Isle. Removed the per Superchuck dungeon
@@ -4598,7 +4604,7 @@
 	* imagewin/ibuf8.cc, imagewin/ibuf8.h, shapes/vgafile.cc: Improved RLE
 	  drawing code. Almost completely rewrote paint_rle(), and moved it to
 	  Image_buffer8
-	* imagewin/scale.cc, imagewin/scale.h: Slightly improved Point and 
+	* imagewin/scale.cc, imagewin/scale.h: Slightly improved Point and
 	  Interlaced scalers.
 	* msvcstuff/msvc_kludges.h: Tweak
 
@@ -4621,7 +4627,7 @@
 
 2001-07-05  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* server.cc: removed double config.h, added #ifdef HAVE_CONFIG_H
-	
+
 2001-07-05  Jeff Freedman  <jeff@amy.nerble.net>
 	* Pre-render flat areas for each chunk.
 
@@ -4638,7 +4644,7 @@
 	* exult_faq.xml: updated URL to Travis' snapshots page
 	* scale.cc: new, fast Point & Interlaced scalers (mostly by Max)
 	* ibuf8.cc: new & improved copy8 (mostly by Ryan :-) )
-	
+
 2001-06-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* tools/splitshp.cc: implemented merging shapes
 	* mapedit/PhotoshopShapePlugin.zip: .shp plugin for Adobe Photoshop
@@ -4667,7 +4673,7 @@
 
 2001-06-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* actors.cc: put reduce_health() call back in combat :-)
-	
+
 2001-06-24  Ryan Nunn <triforce@merlin.net.au>
 	* objs/animate.*: Removed unrequired write_ireg() method.
 
@@ -4691,7 +4697,7 @@
 	  object. The object is the same as 6 byte object, except it has
 	  4 bytes added to the end for flags. 1 bit of the first new byte is
 	  being used to write the Temporary Item flag.
-	  
+
 	  This will cause all new save games to be incompatible with older
 	  versions of Exult.
 
@@ -4706,7 +4712,7 @@
 
 	* usecode/useval.cc: #include <cstdio> disabled on ALPHA_LINUX_CXX
 
-	* audio/midi_drivers/Timidity_binary.h: 
+	* audio/midi_drivers/Timidity_binary.h:
 	* audio/midi_drivers/Timidity_binary.cc: Now honors std:: namespace for
 	string
 
@@ -4735,7 +4741,7 @@
 	* data/bg/amulets.shp, Paperdoll_gump_info.cc: added FoV amulets
 
 2001-06-22  Ryan Nunn <triforce@merlin.net.au>
-	* actors.cc: Fixing a variety of bugs to do the add_readied code. 
+	* actors.cc: Fixing a variety of bugs to do the add_readied code.
 	* gumps/Paperdoll_gump.cc: Fixed problem with items being hidden in BG
 	  when using Paperdoll.
 	* gumps/Paperdoll_gump.h, gumps/Paperdoll_gump_info.cc: Changes for
@@ -4846,7 +4852,7 @@
 	* gumps/gump_types.h: extracted Gumpshapefile to a header file
 	* gamewin.cc, gumps/Gump.cc, gumps/Gump_widget.*, gumps/gump_types.h:
 	added paperdol.vga to the Gumpshapefile enum
-	* gumps/Gump_button.h, gumps/Face_button.*: a face that opens 
+	* gumps/Gump_button.h, gumps/Face_button.*: a face that opens
 	inventory when double clicked
 	* gumps/Gump.cc, gumps/CombatStats_gump.*: the SI combat stats gump
 	* keyactions.*, keys.*, defaultkeys.txt: 'L' = show combat stats
@@ -4854,7 +4860,7 @@
 	* gumps/Gump_ToggleButton.h: made toggle() purely virtual
 	* gumps/Paperdoll_gump.h: made GetCharacterInfo, GetItemInfo public
 	* gumps/misc_buttons.cc: implemented the combat stats button
-	
+
 
 2001-06-08  Ryan Nunn <triforce@merlin.net.au>
 	* exult.cc, keyactions.cc, mouse.h: When gumps are open, the cursor
@@ -4898,7 +4904,7 @@
 	* keyactions.cc: fixed '1'-'8' inventory shortcuts
 	* defaultkeys.txt: small fix to make sure the correct map is displayed
 	* SDL_mapping.*: undo change for recent SDL's, because it breaks older ones...
-	
+
 2001-06-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* You can drop a shape onto the shape area of the Egg-monster page
@@ -4931,7 +4937,7 @@
 	* readnpcs.cc:  Kludge to avoid unneeded automatons.
 	* gamewin.cc:  Risky change:  Reset all eggs in
 	emulate_swapout().  Needed to recreate List Field manager (crit = 2).
-	
+
 2001-05-29  Ryan Nunn <triforce@merlin.net.au>
 	* audio/midi_drivers/win_midiout.cc : Fixed a spelling error
 	* gumps/AudioOptions_gump.cc : Fixed reverb & chorus config problem
@@ -4979,7 +4985,7 @@
 
 2001-05-25  Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* exult.cc: Added 400x300 to resolution cycler as requested on 
+	* exult.cc: Added 400x300 to resolution cycler as requested on
 	Jackchaos
 
 2001-05-25  Jeff Freedman  <jeff@amy.nerble.net>
@@ -5027,7 +5033,7 @@
 2001-05-17  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* sigame.cc: allow splash screen to be interrupted
-	* gamewin.cc, audio/Audio.cc, audio/Mixer.cc, 
+	* gamewin.cc, audio/Audio.cc, audio/Mixer.cc,
 	  audio/midi_drivers/Timidity_binary.cc, actors.cc,
 	  schedule.cc:
 	  be verbose only when compiled with debugging
@@ -5040,7 +5046,7 @@
 	* actors.h: In SI Knight's Test, the Usecode for the invisible
 	pikeman stops repeating when you kill him.
 	* animate.cc:  Fixed body parts animation on Erstam's island.
-	
+
 2001-05-16  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in: fixed checks for getaddrinfo() and mkstemp()
 
@@ -5059,10 +5065,10 @@
 
 2001-05-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* tools/Makefile.am, tools/splitshp.cc: split a shape into its frames
-	
+
 2001-05-13  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.spec.in: added exult_bg.flx... ouch!
-	
+
 2001-05-12  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gump_utils.cc: ctrl-alt-s takes screenshots in Modal_gump mode
 
@@ -5096,23 +5102,23 @@
 	directory, and be sure data_path is set in .exult.cfg.  Then,
 	hitting ctrl-alt-m (map-editor mode) will run Exult Studio
 	(assuming it's in your PATH), already set up for the game you're
-	playing. 
+	playing.
 
 2001-05-09  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keyactions.cc: applied Telemachos' patches for showing inventory
 
 2001-05-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* objs.cc: added a ton of special item names for SI
-	
+
 2001-05-08  Ryan Nunn <triforce@merlin.net.au>
-	* gamewin.h, gamedat.cc, Gumps/Newfile_gump.h: Fixed byte ordering 
+	* gamewin.h, gamedat.cc, Gumps/Newfile_gump.h: Fixed byte ordering
 	  problem with savegame info for Savegump. Savegame info is now cross
 	  platform compatible.
 
 2001-05-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* objs/objs.cc: add special name for gold sextant (TODO: same for SI)
 	* ucsched.cc: guessing at 0x0c opcode. probably used for nesting loops.
-	
+
 2001-05-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* ucsched.cc: changed 0x0b, 0x0c and 0x4d scheduled opcodes (fixing SI gates & wells)
 
@@ -5130,7 +5136,7 @@
 
 2001-05-03  Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* exult.cc: Chnaged from "X-windows Ultima 7 map browser" to 
+	* exult.cc: Chnaged from "X-windows Ultima 7 map browser" to
 	  "Multiplatform Ultima 7 game engine" :)
 
 2001-05-03  Jeff Freedman  <jeff@amy.nerble.net>
@@ -5144,14 +5150,14 @@
 	* docs/faq/exult_faq.xml: FAQ updated see FAQ for details
 	* FAQ: updated
 	* my first CVS commit
-	
+
 2001-05-02  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gumps/gump_utils.cc: undo end_gump_mode with a modal gump
 	* mapedit/Makefile.studio.cygwin: committed Travis' changes
 
 2001-04-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/flx.in, Makefile.*, data/aud*.shp: audio options gump shapes
-	* Makefile.*, gumps/Gump_ToggleButton.*: a button which toggles 
+	* Makefile.*, gumps/Gump_ToggleButton.*: a button which toggles
 	between multiple selections
 	* Makefile.*, gumps/Gump.cc, gumps/AudioOptions_gump.*: audio options
 	* gumps/Gamemenu_gump.*: activate audio options gump
@@ -5170,8 +5176,8 @@
 
 	* usecode/compiler/ucparse.yy: Included config.h
 
-	* usecode/compiler/ucfun.h: 
-	* usecode/compiler/ucmain.cc: 
+	* usecode/compiler/ucfun.h:
+	* usecode/compiler/ucmain.cc:
 	* usecode/compiler/ucfun.h: Removed iosfwd include on Alpha/Linux/cxx
 
 2001-04-29  Jeff Freedman  <jeff@amy.nerble.net>
@@ -5222,7 +5228,7 @@
 2001-04-22  Ryan Nunn <triforce@merlin.net.au>
 	* Makefiles.* : Added files/listfiles.* and gumps/Newfile_gump.*
 	* actorio.cc : Made a change to the size of the array used when reading
-	  a NPC name from npc.dat. 
+	  a NPC name from npc.dat.
 	* bggame.cc, sigame.cc : Added exult.flx and exultbg.flx to list of
 	  resources so they can be viewed in the shape browser.
 	* fnames.h : Added #defines used by new file gump.
@@ -5296,7 +5302,7 @@
 	* actions.*:	animate action: complete full cycle
 			frames action: allow setting frames of other objects
 			animate action: allow setting length of cycle
-	
+
 2001-04-16  Dancer Vesperman <dancer@users.sourceforge.net>
 	* Upgrade for g++ 3.0
 		- Repair a throw specification in exceptions.h
@@ -5323,7 +5329,7 @@
 	* data/*.shp, data/flx.in, Makefile.*: added lots of shapes for new game menu
 	* Gump.*, Gump_widget.*, Gump_button.h, Modal_gump.h: added support for shapes from exult.flx
 	* gumps/Gamemenu_gump.*, Makefile.*: added a game menu gump
-	
+
 2001-04-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/*.shp, data/flx.in, Makefile.*: added lots of shapes for new savegame gump
 	* configure.in, Makefile.*: increased version to 0.93cvs
@@ -5361,7 +5367,7 @@
 
 2001-04-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode/: SI intrinsic 0xB2 returns 'a' or 'an' depending on argument
-	
+
 2001-04-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Put deleted monsters in a table for later actual deletion.
@@ -5386,7 +5392,7 @@
 
 	* Scheduled usecode:  Figured out opcode 0x01.  Fixes drawbridge
 	animation.
-	* Draw weapons with translucency if necessary.	
+	* Draw weapons with translucency if necessary.
 
 2001-04-02  Ryan Nunn <triforce@merlin.net.au>
 	* actor*.*: Also fixed rare bug that would occur when saving and a NPC
@@ -5526,7 +5532,7 @@
 2001-03-17  Christoph Reichenbach  <jameson@linuxgames.com>
 
 	* game.cc (get_game_identity): long -> sint32 fix
-	* cheat_screen.cc: 
+	* cheat_screen.cc:
 	  tools/shp2pcx.cc: Appropriate #ifndefs for Alpha/Linux/cxx
 
 2001-03-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
@@ -5680,7 +5686,7 @@
 	* configure.in, acconfig.h: configure changes for OpenBSD support
 	* utils.cc, gump_utils.cc: attempt at OpenBSD support. (thanks to Alex Botero-Lowry)
 	* Midi.cc: disable forked_player in OpenBSD
-	
+
 2001-02-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Npc_actor::handle_event always looks for schedule.
@@ -5703,7 +5709,7 @@
 	* keys.c: removed a static (caused compile error on ANSI complian C++ compilers <g>)
 	  and added using std::strlen
 	* bggame.cc: removed some warnings
-	
+
 
 2001-02-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keys.*: applied Grant's patch
@@ -5712,13 +5718,13 @@
 2001-02-20  Ryan Nunn  <triforce@merlin.net.au>
 	* exult.cc, exultmenu.cc imagewin/*.*: Added in Derek Liauw Kie Fa's
 	  SuperEagle scaler.
-	  	
+
 2001-02-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc: cleaned up 'build game map' code. Now accessible using a
 	cmdline parameter. (-buildmap 0|1|2), where 0,1,2 determines skiplift
 
 2001-02-16  Ryan Nunn  <triforce@merlin.net.au>
-	* actor*.*, gamewin.*, objs/eggs.*, objs/objs.h: Caching system of the 
+	* actor*.*, gamewin.*, objs/eggs.*, objs/objs.h: Caching system of the
 	  originals is now emulated by Exult. This solves the Army of Darkness
 	  Bug as well as many of the bugs in SI related to cached in Usecode
 	  eggs.
@@ -5736,7 +5742,7 @@
 	* data/caddellite_helmet.shp: attempt at a caddellite helmet
 	* gumps/Paperdoll_gump_info.cc: added caddellite helmet
 	* data/flx.in, Makefile.*: added caddellite_helmet.shp
-	
+
 2001-02-14  Ryan Nunn  <triforce@merlin.net.au>
 	* paperdoll_gump_info.cc: Hoe of Destruction no longer marked as
 	  needing art.
@@ -5814,7 +5820,7 @@
 	* NEWS, cheat.*, key*.*, data/defaultkeys.txt : New cheats (cheat
 	  screen, pick pocket, grab npc, npc number)
 	* cheat_screen.* : Cheat screen for advanced options. Includes NPC
-	  schedules changes, flag modifying, info, time rate/set. 
+	  schedules changes, flag modifying, info, time rate/set.
 	* fnames.cc, gamedat.cc, readnpc.cc : Schedule.dat in GAMEDAT dir
 	* gameclk.cc : Schedules in SI always search back
 	* gamewin.* : SI Schedule
@@ -5824,7 +5830,7 @@
 	* usecode/*.* : More SI Intrinsic work
 
 2001-02-11  Tristan Tarrant  <nadir@users.sourceforge.net>
-	* data/black_gate.shp, data/serpent_isle.shp: updated menu entries 
+	* data/black_gate.shp, data/serpent_isle.shp: updated menu entries
 	  like someone requested a loooong time ago
 	* exultmenu.cc: updated for above
 
@@ -5876,24 +5882,24 @@
 	  and also did some namespace std:: fixing
 
 2001-02-07  Ryan Nunn <triforce@merlin.net.au>
-	* tools/expack.cc : Finally fixed the Win32 End of Line problem. 
+	* tools/expack.cc : Finally fixed the Win32 End of Line problem.
 
 2001-02-07  Tristan Tarrant  <nadir@users.sourceforge.net>
-	* Makefile.be, Makefile.win32, Makefile.cygwin, configure.in: 
+	* Makefile.be, Makefile.win32, Makefile.cygwin, configure.in:
 	  set version to 0.91alpha2
 
 2001-02-07  Christoph Reichenbach  <jameson@linuxgames.com>
 	* files/utils.cc (U7open): Explicitly exported two U7open functions
 
 2001-02-08  Ryan Nunn <triforce@merlin.net.au>
-	* tools/expack.cc: Added .txt file detection to fix some bugs caused 
+	* tools/expack.cc: Added .txt file detection to fix some bugs caused
 	  by "stupid dos conventions".
 	* files/utils.cc: I removed the "bad code" ;)
 
 	* Makefile.*, data/defaultkeys.txt, data/flx.in, data/Makefile.am:
 	  Renamed "data/default.key" to "data/defaultkeys.txt"
 	* Makefile.cygwin: make install will now create data dir
-	  
+
 2001-02-07  Christoph Reichenbach  <jameson@linuxgames.com>
 	* files/utils.h: #ifndef'd inclusion of iosfwd
 	* shapes/items.h: #ifndef'd inclusion of iosfwd
@@ -5906,7 +5912,7 @@
 2001-02-07  Ryan Nunn <triforce@merlin.net.au>
 	* tools/expack.cc, files/utils.*: Removed the Win32 fix and replaced it
 	  with text file reading modes.
-	  
+
 2001-02-06  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* FAQ: added Dominik's FAQ to the distribution
 	* */Makefile.am, configure.in: get "make dist" to work
@@ -6008,7 +6014,7 @@
 	* mapedit/objbrowse.*: added framework for generic browsers
 	* mapedit/paledit.*: made it conform to Object_browser
 	* mapedit/shapelst.*: ditto
-	* mapedit/studio.cc: Use a tree instead of a list for the files, categorize the 
+	* mapedit/studio.cc: Use a tree instead of a list for the files, categorize the
 	  files by type, use the directory browser to select the static path
 
 2001-01-26  Tristan Tarrant <nadir@users.sourceforge.net>
@@ -6026,8 +6032,8 @@
 2001-01-25  Tristan Tarrant <nadir@users.sourceforge.net>
 	* configure.in: check for libglade
 	* mapedit/*: general hacking resulting in a libglade'ified ExultStudio.
-	  Caveat: it is very picky about where it looks for stuff. 
-	
+	  Caveat: it is very picky about where it looks for stuff.
+
 2001-01-24  Jeff Freedman  <jeff@amy.nerble.net>
 	* SI:  You can now start the Knight's Test (but you'll get stuck
 	after entering).
@@ -6048,7 +6054,7 @@
 	* tools/Makefile.am, tools/u7shp.c: removed GIMP plugin from here
 	* mapedit/Makefile.am, mapedit/u7shp.c: moved here
 	* mapedit/*: librarized properly
-	* mapedit/exultstudio.cc: Beginnings of "ExultStudio", a GIMP 
+	* mapedit/exultstudio.cc: Beginnings of "ExultStudio", a GIMP
 	  extension for managing shapes and palettes
 
 2001-01-22  Jeff Freedman  <jeff@amy.nerble.net>
@@ -6059,9 +6065,9 @@
 	does a RTS as well in BLACK GATE.  This fixes the test for blocked
 	gangplank.
 
-	
+
 2001-01-22  Max Horn  <max@quendi.de>
-	* utils.c: fixed switch_slashes() on MacOS to properly work with absolute path's; 
+	* utils.c: fixed switch_slashes() on MacOS to properly work with absolute path's;
 	  changed U7mkdir() to call switch_slashes()
 	* ucmachine.cc: changed printf to cout
 	* lots-of-files: changed sprintf to snprintf (to prevent potential overflow bugs)
@@ -6076,14 +6082,14 @@
 
 2001-01-21  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* cheat.cc, intrinsics.cc: fixed SI map. (somewhat)
-	
+
 2001-01-20  Jeff Freedman  <jeff@amy.nerble.net>
 	* gamewin.cc: Bug fixes:  Theft, right-double-click, crash after
 	Alagnar is killed
 
 2001-01-19  Tristan Tarrant <nadir@users.sourceforge.net>
-	* tools/u7shp.c: renamed. As per Ryan's request, the plugin now uses 
-	  guides to identify the hotspot. Caveat: only the hotspot of the first 
+	* tools/u7shp.c: renamed. As per Ryan's request, the plugin now uses
+	  guides to identify the hotspot. Caveat: only the hotspot of the first
 	  frame is considered
 
 2001-01-19  Ryan Nunn <triforce@merlin.net.au>
@@ -6112,7 +6118,7 @@
 2001-01-14  Jeff Freedman  <jeff@amy.nerble.net>
 	* Bugs fixed:  Crash (out of memory) at end, guards, walking in
 	sleep.
-	
+
 	* gamewin.cc (Game_window): "userusecode" entry in .exult.cfg
 	allows for custom Usecode functions.
 	* npcnear.cc: Faster response for SI's rabbit, and storms cleaned
@@ -6132,7 +6138,7 @@
 2001-01-13  Jeff Freedman  <jeff@amy.nerble.net>
 	* Found 1 memory corruption (my fault:-( ).
 	* Fixed crash at start of monks' encounter.
-	
+
 2001-01-12  Tristan Tarrant <nadir@users.sourceforge.net>
 	* NEWS: updated
 	* gamma.h: added newline at the end to keep gcc happy
@@ -6146,7 +6152,7 @@
 	  dont_move SI flag.
 	* Actorsio.cc : In actor constructor only call ready_best_weapon for
 	  Avatar and Iolo when creating the game in Black Gate. Never gets called
-	  at any other time. 
+	  at any other time.
 	* gamewin.cc : If dont_move SI flag is set, stop the Avatar and don't let
 	  them move.
 	* audio/midi_drivers/win_midiout.cc : Fixed bug with SFX playing. Fixed
@@ -6165,7 +6171,7 @@
 	* hash_utils.h: contains hash_set/hash_map stuff
 	* files/utils.h: moved hash related stuff to hash_utils.h
 	* bodies.cc: #include hash_utils.h instead of files/utils.h
-	* delobjs.h: 
+	* delobjs.h:
 	* font.h: #include hash_utils.h instead of files/utils.h; removed the std:: from std::hash_map
 	  since hash_map is *not* part of the standard C++ lib and should not be part of std::
 	* game.h: #include hash_utils.h instead of files/utils.h; removed unneeded
@@ -6199,7 +6205,7 @@
 
 	* Serpent Isle conversations improved.
 	* Monster eggs - Finally discovered 'schedule' field.
-	
+
 2001-01-11  Dancer Vesperman <dancer@users.sourceforge.net>
 	* No more chipmunk VOC's for SI. Another false sample rate
 
@@ -6208,7 +6214,7 @@
 	* Weather intrinsics implemented, also 'Ambrosia' rain.
 	* Update all timers upon game pause/resume.
 	* Removed delay from Talk_schedule.
-	
+
 2001-01-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* files/utils.cc: always #include <unistd.h> (not just on MacOS)
 
@@ -6267,7 +6273,7 @@
 	* objs/objlist.h: added, contains Object_list -> enables us to remove more dependencies
 	* audio/Mixer.cc/h: made temp_buffer (from fill_audio_func) a class member and pre-allocate it
 	  two reasons for this: 1) more efficient 2) no more crash on MacOS
-	
+
 2001-01-08  Tristan Tarrant <nadir@users.sourceforge.net>
 	* NEWS: updated
 	* audio/midi_drivers/Timidity_binary.cc: tiny useless fixes
@@ -6286,7 +6292,7 @@
 2001-01-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gamewin.cc/h, usecode/conversation.cc/h: moved part of Game_window
 	to a new Conversation class
-	* schedule.cc, usecode/ucmachine.cc/h, usecode/intrinsics.cc: 
+	* schedule.cc, usecode/ucmachine.cc/h, usecode/intrinsics.cc:
 	changed to use new Conversation class
 	* usecode/Makefile.am, Makefile.*: build conversation.o
 
@@ -6374,7 +6380,7 @@
 	* usecode/compiler/Makefile.am: don't build ucc with --disable-tools
 	* usecode/compiler/.cvsignore: added
 	* bggame.cc: fixed crash in 'arm hits screen' scene
-	
+
 2001-01-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* More usecode-compiler coding:  Symbols.
@@ -6535,7 +6541,7 @@
 
 2000-12-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* menulist.cc: handle SDL_QUIT event in menus
-	
+
 2000-12-06  Jeff Freedman  <jeff@amy.nerble.net>
 	* Restore mode after 'p' for 'lockpicking'.
 	* If flags/properties change while gumps are open, repaint.
@@ -6613,7 +6619,7 @@
 	* args.*: added proper GPL header
 	* various files: added missing "using std::xyz" statments
 	* expack.cc: don't use strdup anymore
-	
+
 2000-11-30  Jeff Freedman  <jeff@amy.nerble.net>
 	* Broke off chunks.{cc,h} and ordinfo.h from objs.{cc,h}.
 
@@ -6634,17 +6640,17 @@
 	  the meaningless %ul
 
 2000-11-29  Max Horn  <max@quendi.de>
-	* lots-o-files: changed #include <something.h> to the C++ version: 
+	* lots-o-files: changed #include <something.h> to the C++ version:
 	  include <csomething>
 	* exult.cc: removed Mouse *mouse and bool mouse_enabled
-	* Mouse.h/cc: added static Mouse *Mouse::mouse and 
+	* Mouse.h/cc: added static Mouse *Mouse::mouse and
           bool Mouse::mouse_enabled
 	* various files: adapted to new class members of Mouse
 
 2000-11-29  Max Horn  <max@quendi.de>
-	* Makefile.be/win32/cygwin: fixed to properly support new dirs gumps/, 
+	* Makefile.be/win32/cygwin: fixed to properly support new dirs gumps/,
 	  shapes/, usecode/
-	* shapes/shapevga.cc: added some using std:: to make it compile on 
+	* shapes/shapevga.cc: added some using std:: to make it compile on
 	  MacOS
 
 2000-11-29  Tristan Tarrant  <nadir@users.sourceforge.net>
@@ -6656,7 +6662,7 @@
 2000-11-29  Max Horn  <max@quendi.de>
 	* gumps/*: split up gumps.cc/h and spells.cc/h into separate files
 	* autoarray.h: std:: changes
-	* game.h: made sure this file can be included before gamewin.h 
+	* game.h: made sure this file can be included before gamewin.h
 	  (previously, you would get errors)
 	* exult.cc: moved some gump-related stuff to gumps/gump_utils.cc/h
 	* various: adapted to gumps changes
@@ -6668,7 +6674,7 @@
 	* various: changed includes
 
 2000-11-28  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* usecode.h: in usecode macros: '## NAME ## (int...' to 
+	* usecode.h: in usecode macros: '## NAME ## (int...' to
 	  '## NAME (int...'
 	* Makefile.be: adapted somewhat because of new imagewin directory
 
@@ -6676,20 +6682,20 @@
 	* configure.in: I mistakenly used target instead of host. fixed.
 
 2000-11-27  Max Horn  <max@quendi.de>
-	* files/*.cc: changed retrieve() to return a char* instead of taking 
+	* files/*.cc: changed retrieve() to return a char* instead of taking
 	  a char**
-	* various files: changed Uint? to uint? (so we are less dependant 
+	* various files: changed Uint? to uint? (so we are less dependant
 	  on SDL)
-	* imagewin/imagebuf.h: fixed ~Image_buffer to use delete [] instead 
+	* imagewin/imagebuf.h: fixed ~Image_buffer to use delete [] instead
 	  of delete
-	* actions.cc: fixed ~Sequence_actor_action to use delete [] instead 
+	* actions.cc: fixed ~Sequence_actor_action to use delete [] instead
 	  of delete
 	* gumps.cc: fixed ~Gump_text to use delete [] instead of delete
-	* bggame.cc: added tab key to work like arrow down in the new game 
+	* bggame.cc: added tab key to work like arrow down in the new game
 	  screen; space works like return
 	* files/common_types.h: removed
 	* exult_types.h: added as replacment for common_types.h
-	* various files: changed Uint? to uint? (so we are less dependant 
+	* various files: changed Uint? to uint? (so we are less dependant
 	  on SDL)
 
 2000-11-27  Tristan Tarrant <nadir@users.sourceforge.net>
@@ -6717,19 +6723,19 @@
 	* SDL palette methods moved to Image_window8 from Image_buffer8.
 
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
-	* Some people are having trouble including pthread_alloc. Include 
+	* Some people are having trouble including pthread_alloc. Include
 	  cstring as an alternative
 
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
-	* Never call the mixer object through it's pointer without verifying 
-	  the validity of that pointer. Should fix occasional segfault at 
+	* Never call the mixer object through it's pointer without verifying
+	  the validity of that pointer. Should fix occasional segfault at
 	  shutdown
 
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
-	* Create newstrdup() in gumps.cc as an interim solution. Goal is to 
-	  encapsulate all char arrays into an efficient storage unit 
-	  (coming soon. Be patient). For now we lose strdup to avoid the 
-	  mixed memory models. newstrdup() will throw std::invalid_argument() 
+	* Create newstrdup() in gumps.cc as an interim solution. Goal is to
+	  encapsulate all char arrays into an efficient storage unit
+	  (coming soon. Be patient). For now we lose strdup to avoid the
+	  mixed memory models. newstrdup() will throw std::invalid_argument()
 	  if handed a NULL.
 	* Change all strdup()'s to newstrdup()
 	* Change free() for all strdup'ed() blocks to delete []
@@ -6738,13 +6744,13 @@
 
 2000-11-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* README.BeOS: added
-	* README.win32: added (temporarily unavailable) to cross-compiling 
-	  instructions	
+	* README.win32: added (temporarily unavailable) to cross-compiling
+	  instructions
 	* Makefile.be: added 'make bindist' option to automate distributing
 	* actors.cc: removed an inline in BeOS. (won't compile otherwise...)
 
 2000-11-26  Max Horn  <max@quendi.de>
-	* files/utils.cc: fixed a bug in get_system_path (it sometimes 
+	* files/utils.cc: fixed a bug in get_system_path (it sometimes
 	  "forgot" to call switch_slashes)
 
 2000-11-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
@@ -6755,11 +6761,11 @@
 	* mouse.cc: mouse is now positioned correctly directly after creation
 
 2000-11-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* gamewin.cc: fixed problem with "journey onward" right after 
+	* gamewin.cc: fixed problem with "journey onward" right after
 	  "create new game"
 
 2000-11-26  Max Horn  <max@quendi.de>
-	* effects.cc, gamedat.cc, gumps.cc, imagewin.h, usecode.cc, useval.cc: 
+	* effects.cc, gamedat.cc, gumps.cc, imagewin.h, usecode.cc, useval.cc:
 	  fixed incorrect uses of delete/delete[]
 	* txtscroll.cc: TextScroller::text change to vector of std::strings
 	* effects.cc: Text_effect::msg changed to std::string
@@ -6774,19 +6780,19 @@
 	* exult.cc: added try/catch block to the new main()
 	* gameclk.cc: added GPL header (should be in every source/header file)
 	* gamewin.cc: u7open removed in favor of U7open
-	* files/utils.cc: U7open throws an file_open_exception if it fails; 
+	* files/utils.cc: U7open throws an file_open_exception if it fails;
 	  does not return an int anmore
-	* files/utils.cc: U7exists now also checks upper case variant of the 
+	* files/utils.cc: U7exists now also checks upper case variant of the
 	  name
 	* files/utils.cc: fixed a MacOS only bug in switch_slashes
-	* *.cc: changed all calls to U7open to correctly handle exceptions 
+	* *.cc: changed all calls to U7open to correctly handle exceptions
 	  if appropriate
 
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc/usecode.cc: added config/debug/trace/usecode (yes/no) option
 
 2000-11-26  Dancer Vesperman <dancer@users.sourceforge.net>
-	* audio/Audio.h: Eliminate a warning by making the Audio constructor 
+	* audio/Audio.h: Eliminate a warning by making the Audio constructor
 	  protected, rather than private.
 	* actors.cc: const police
 	* audio/xmidi.cc: Initialise status
@@ -6802,7 +6808,7 @@
 	* gamewin.h: const police
 	* gamewin.cc: const police
 	* browsers.cc: const police
-	* audio/midi_drivers/Timidity_binary.cc: maybe dynamic instrument 
+	* audio/midi_drivers/Timidity_binary.cc: maybe dynamic instrument
 	  loading is not as good as it seems
 
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
@@ -6810,32 +6816,32 @@
 	* gamedat.cc,readnpcs.cc: more int->bool
 
 2000-11-25  Max Horn  <max@quendi.de>
-	* files/utils.cc: changed path_map to be a map of strings instead of a 
+	* files/utils.cc: changed path_map to be a map of strings instead of a
 	  hash_map of char*
 	* files/utils.cc: made sure functions are named like some_noun
 	* files/utils.cc: get_system_path now implicitly calls switch_slashes
 	* changed most uses of char* to string
 
 2000-11-25  Dancer Vesperman <dancer@users.sourceforge.net>
-	* audio/Audio.cc: Don't call SDL::CloseAudio(). Bad things seem to 
+	* audio/Audio.cc: Don't call SDL::CloseAudio(). Bad things seem to
 	  happen in there.
 
 2000-11-24  Jeff Freedman  <jeff@amy.nerble.net>
 	* Write out correct count for 'monsnpcs.dat'.
 
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* gamewin.h/cc, palette.cc, exult.cc: new config/video/disable_fades 
+	* gamewin.h/cc, palette.cc, exult.cc: new config/video/disable_fades
 	  (yes/no) option
 
 2000-11-25  Max Horn  <max@quendi.de>
 	* changed a lot vars from unsigned char to bool (and 0->false, 1->true)
-	* objs.cc: static find_nearby() now properly uses dynamic_cast instead 
+	* objs.cc: static find_nearby() now properly uses dynamic_cast instead
 	  of C-style cast
-	* exult.cc: activated Unicode mapping for key, used that to improve 
+	* exult.cc: activated Unicode mapping for key, used that to improve
 	  Handle_keystroke()
-	
+
 2000-11-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* drag.cc,exult.cc,gamewin.h: fixed gump buttons passing clicks to 
+	* drag.cc,exult.cc,gamewin.h: fixed gump buttons passing clicks to
 	  underlying items
 	* cheat.h/cc: made most member functions const
 
@@ -6899,17 +6905,17 @@
 
 2000-11-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 
-	* menulist.cc/h: only redraw changed items (huge speedup), 
+	* menulist.cc/h: only redraw changed items (huge speedup),
 	  make mouse disappear on keypress.
 
 2000-11-22  Max Horn  <max@quendi.de>
 
 	* added a lot of C++ std namespace code
-	* moved mac port to use CodeWarrior Pro 6 
+	* moved mac port to use CodeWarrior Pro 6
 
 2000-11-22  Tristan Tarrant <nadir@users.sourceforge.net>
 
-	* data/extras.shp, data/midi_conversion.shp, data/sfx_conversion.shp: 
+	* data/extras.shp, data/midi_conversion.shp, data/sfx_conversion.shp:
 	  new shapes
 	* data/Makefile.am, tools/expack.cc, data/README,
 	  Makefile.cygwin, Makefile.win32, Makefile.be: update all
@@ -6948,7 +6954,7 @@
 2000-11-17  Tristan Tarrant <nadir@users.sourceforge.net>
 
 	* exult.cc: Game_window::splash is not needed now, so I've
-	removed the check in Handle_events. 
+	removed the check in Handle_events.
 
 2000-11-17  Tristan Tarrant <nadir@users.sourceforge.net>
 
@@ -6963,7 +6969,7 @@
 	* files/databuf: Implemented an ExultDataSource which encapsulates
 	all actions needed to create a BufferDataSource from a U7object
 	* mouse.h, mouse.cc: Allow the use of a different shape file
-	* exult.cc, game.cc, game.h, menulist.cc, menulist.h: Make use of 
+	* exult.cc, game.cc, game.h, menulist.cc, menulist.h: Make use of
 	the above to have a mouse pointer in the menus
 
 2000-11-16  Tristan Tarrant <nadir@users.sourceforge.net>
@@ -7036,15 +7042,15 @@
 	* data/*.shp: some new shapes for the menu
 
 2000-11-06  Tristan Tarrant <nadir@users.sourceforge.net>
-	
-	* font.cc, font.h: beginnings of independent font class and font 
+
+	* font.cc, font.h: beginnings of independent font class and font
 	  manager
 	* menulist.cc, menulist.h: menu implementation
 	* txtscroll.cc, txtscroll.h: extracted from game.cc
         * game.cc: use font manager, implement Exult menu
 	* exult.cc, gamewin.cc: clean up initialization sequence
-	* vgafile.h: implemented extract_shape() in Vga_file, moved some 
-	  methods from Shape_file to its parent class, because they should 
+	* vgafile.h: implemented extract_shape() in Vga_file, moved some
+	  methods from Shape_file to its parent class, because they should
 	  really be there.
 	* data/meditown.mid: This is the MIDI I wanted to use for our menu
 	* data/exult_logo.shp: Add dimmed frame
@@ -7059,7 +7065,7 @@
 	  "config/audio/sfx/convert" accepts none or gs. Default GS
 
 2000-11-05  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* actors.cc, cheat.cc, drag.cc, exult.cc, gameclk.cc, spells.cc: 
+	* actors.cc, cheat.cc, drag.cc, exult.cc, gameclk.cc, spells.cc:
 	moved cheats to new class
 
 2000-11-04  Jeff Freedman  <jeff@amy.nerble.net>
@@ -7197,7 +7203,7 @@
 	* vgafile.cc, vgafile.h: fixed (xleft, yabove, xright, ybelow)
 
 2000-09-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	
+
 	* actors.cc: fixed bug in godmode: poison/hunger do no damage in GM now
 	* bodies.cc: added/changed body shape/frames (from Jackchaos forum)
 
@@ -7233,7 +7239,7 @@
 
 2000-09-12  Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* tools/u7shpload.c: Load 8x8 tiles (no save). Still crashes on some 
+	* tools/u7shpload.c: Load 8x8 tiles (no save). Still crashes on some
 	shapes (fonts???)
 	* data/black_gate.shp, data/serpent_isle.shp: Menu entries for the two
 	games
@@ -7267,7 +7273,7 @@
 
 2000-09-08  Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* vgafile.*: Allow empty initialization constructor and implement 
+	* vgafile.*: Allow empty initialization constructor and implement
 	load() methods for most classes
 	* autoarray.h: Implement a set_size() method and an empty constructor
 	* gamewin.cc: Moved all file loading/initialization from constructor
@@ -7326,14 +7332,14 @@
 
 	* Cleaning up Ireg constructors, working on 'fields'.
 	* First support for fields.  More body shapes added.
-	
+
 2000-08-30  Jeff Freedman  <jeff@patches.simutech.com>
 
 	* Actually from Derek Liauw Kie Fa:  New 2X scaling code.
 
 2000-08-30  Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* data/exult_credits.shp, 
+	* data/exult_credits.shp,
 	  data/exult_quotes.shp,
 	  data/exult_logo.shp: Two shapes for the main menu and a logo
 	* game.cc: use the above shapes, instead of using the MAINSHP font
@@ -7461,7 +7467,7 @@
 
 2000-08-04  Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* game.h, bggame.cc, sigame.cc: add some resources, namely palettes 
+	* game.h, bggame.cc, sigame.cc: add some resources, namely palettes
 	and shape files. Removed the silly get_extra_shape_file()
 	* exult.cc, browser.*, gamewin.*: implement a better shape browser.
 	Better help screen
@@ -7475,7 +7481,7 @@
 2000-08-03  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* bggame.cc: Failed endgame
-	* usecode.cc: Show credits after successful endgame. Quit after 
+	* usecode.cc: Show credits after successful endgame. Quit after
 	endgame.
 
 2000-08-03  Tristan Tarrant  <nadir@users.sourceforge.net>
@@ -7485,7 +7491,7 @@
 2000-08-03  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* bggame.cc, sigame.cc: Implement main menu (SI's is incomplete)
-	* gamewin.cc: move creation of 'gamedat' to separate function to 
+	* gamewin.cc: move creation of 'gamedat' to separate function to
 	be invoked by main menu
 
 2000-08-01  Jeff Freedman  <jeff@amy.nerble.net>
@@ -7494,15 +7500,15 @@
 
 2000-08-01  Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* game.h, gamewin.cc: if in BG we show ENDSHAPE.FLX, if in SI we show 
+	* game.h, gamewin.cc: if in BG we show ENDSHAPE.FLX, if in SI we show
 	PAPERDOL.VGA
-	* exult.cc: Default resolution is 320x200 with 2x filter. This is to 
+	* exult.cc: Default resolution is 320x200 with 2x filter. This is to
 	be as close as possible to the original.
 
 2000-08-01  Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* gamewin.*, exult.cc, usecode.cc: decided to not store the Game 
-	object inside gamewin, but use the static get_game of the Game 
+	* gamewin.*, exult.cc, usecode.cc: decided to not store the Game
+	object inside gamewin, but use the static get_game of the Game
 	class instead. "There can be only one" (TM)
 
 2000-08-01  Tristan Tarrant  <nadir@users.sourceforge.net>
@@ -7520,7 +7526,7 @@
 	separate files with an abstract Game class.
 	* exult.cc, gamewin.*, usecode.cc: modified to take the above into
 	account
-	* files/Flat.*: added a new filetype, which is for simple files 
+	* files/Flat.*: added a new filetype, which is for simple files
 	(e.g. The palettes in Serpent Isle)
 
 2000-07-31  Tristan Tarrant  <nadir@users.sourceforge.net>
@@ -7542,7 +7548,7 @@
 	* Fixed nasty stack bug in Usecode.  Penumbra/blackrock now works.
 
 2000-07-28 Tristan Tarrant  <nadir@users.sourceforge.net>
-	
+
 	* gamewin.cc, gametxt.cc, titles.cc: move initialization of endgame
 	fonts to endgame.
 
@@ -7558,8 +7564,8 @@
 	* Added ctrl-c cheat to create items.
 
 2000-07-27 Tristan Tarrant  <nadir@users.sourceforge.net>
-	
-	* titles.cc: use Infidel's real name, correct some spelling mistakes, 
+
+	* titles.cc: use Infidel's real name, correct some spelling mistakes,
 	put the "Damn you..." in the correct position even in unscaled 640x480.
 
 2000-07-26  Jeff Freedman  <jeff@amy.nerble.net>
@@ -7577,10 +7583,10 @@
 
 2000-07-20 Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* files/databuf.h: implemented an abstract DataSource class and Buffer, 
-	Stream and File derivatives of it to enable reading data from any of 
+	* files/databuf.h: implemented an abstract DataSource class and Buffer,
+	Stream and File derivatives of it to enable reading data from any of
 	these.
-	* vgafile.h, vgafile.cc: use new DataSource classes. More classes 
+	* vgafile.h, vgafile.cc: use new DataSource classes. More classes
 	should do this.
 
 2000-07-18  Jeff Freedman  <jeff@amy.nerble.net>
@@ -7588,7 +7594,7 @@
 	* Flying carpet rotates correctly.
 
 2000-07-17  Tristan Tarrant  <nadir@users.sourceforge.net>
-	
+
 	* *: Moved utils.* here where it should have been all along.
 	Rearranged everything else to take this into account.
 	* tools/expack.cc: The beginnings of a U7 archiver. More soon.
@@ -7613,14 +7619,14 @@
 
 2000-07-13  Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* palette.cc, palette.h: New files which handle palette functions. 
+	* palette.cc, palette.h: New files which handle palette functions.
 	Now it is possible to use palettes from different data files.
 	* exult.spec.in: simple spec file for creating RPM packages
 	* titles.cc, titles.h: Moved intro, endgame and other bits and pieces
-	in here. Introduction is nearly complete. 
+	in here. Introduction is nearly complete.
 	* flic/playfli.cc: Center flic on display
 	* exult.cc: rearchitected the way the intro stuff is done
-	* gamewin.cc: expunged most of the palette and intro junk. Some more 
+	* gamewin.cc: expunged most of the palette and intro junk. Some more
 	cleanups required however.
 	* audio/Audio.h, audio/Audio.cc: allow bank choice in start_music
 	* audio/Midi.cc: include another MIDI bank (the intro music).
@@ -7819,14 +7825,14 @@
 	  SDL and Windows header files contain long-long's
 
 2000-05-21  Willem Jan Palenstijn <palenstijn@wanandoo.nl>
-	* exult.cc, mouse.h: Wait_for_arrival() didn't restore on-screen 
+	* exult.cc, mouse.h: Wait_for_arrival() didn't restore on-screen
 	state of the mouse
 	* configure.in: --enable-warnings turns on ALL warnings, in addition
 	to everything --enable-debug does
 	* usecode.cc: added a guess to intrinsic 0x4F
-	
+
 2000-05-20  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* lots_of_files: changed most #ifndef WIN32 to #ifdef XWIN since 
+	* lots_of_files: changed most #ifndef WIN32 to #ifdef XWIN since
 	that's what they were supposed to mean
 	* gamedat.cc, Configuration.cc: some preliminary BEOS things
 
@@ -7854,10 +7860,10 @@
 2000-05-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode.cc: defined __STRING if not yet defined (e.g. in mingw32)
 	* configure.in: added flic library to windows section
-	
+
 2000-05-16  Tristan Tarrant  <nadir@users.sourceforge.net>
 
-	* gamewin.cc: Load correct palettes for intro. Implement palette fade 
+	* gamewin.cc: Load correct palettes for intro. Implement palette fade
 	out/in
 
 2000-05-13  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
@@ -7894,7 +7900,7 @@
 	double-clicking on a bucket.  Works, but needs refinement.
 
 2000-05-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* objs.cc: attempt at synching animations 
+	* objs.cc: attempt at synching animations
 
 2000-05-03  Tristan Tarrant  <nadir@users.sourceforge.net>
 
@@ -7902,7 +7908,7 @@
 
 	* exult.cc: you can now press 'i' to show the npc's inventories just
 	like the real U7. Needs improvement.
-	New shape browser: PgUp/PgDn selects file, sS selects shape, fF 
+	New shape browser: PgUp/PgDn selects file, sS selects shape, fF
 	selects frame. Also 'q' quits and ESC only closes gumps.
 
 2000-05-02  Jeff Freedman  <jeff@patches.simutech.com>
@@ -7945,8 +7951,8 @@
 
 	* exult.cc: Implement 'h' key to show a simple help page
 	* .cvsignore: added cvsignore files everywhere
-	* ChangeLog: started changelog using standard GNU notation. Emacs 
+	* ChangeLog: started changelog using standard GNU notation. Emacs
 	has a major mode which enables easy editing of this beast.
 	* autogen.sh: script which generates automake/autoconf stuff.
-	* configure.in: should not use acinclude.m4 as AC_INIT. Use exult.cc 
+	* configure.in: should not use acinclude.m4 as AC_INIT. Use exult.cc
 	instead.
