@@ -1,6 +1,15 @@
 ExultStudio TODO
 ================
+======Feb. 7, 2002 (jsf):=========
 
+ExultStudio creates most of the .dat files now, but it (or other tools) still
+need to create the following in 'static':
+
+FACES.VGA     GUMPS.VGA     PAPERDOL.VGA  SHAPES.VGA    XFORM.TBL
+FONT0000.VGA  MAINSHP.FLX   POINTERS.SHP  SPRITES.VGA
+FONTS.VGA     PALETTES.FLX  SCHEDULE.DAT  TEXT.FLX 
+
+===========================
 This is a braindump of what I want to do with ExultStudio.
 
 I think the app should behave in a similar way to the Gimp, with a master 
