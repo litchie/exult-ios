@@ -1347,7 +1347,8 @@ void Map_chunk::setup_dungeon_levels
 					// Test for mountain-tops.
 		if (shnum == 983 || shnum == 969 || shnum == 183 ||
 		    shnum == 182 || shnum == 180 || shnum == 324 || 
-		    (shnum == 941 && Game::get_game_type() == SERPENT_ISLE))
+		    ((shnum == 941 || shnum == 394) && 
+					Game::get_game_type() == SERPENT_ISLE))
 		{
 			// SI shape 941, frame 0 => do whole chunk (I think).
 			Rectangle area = 

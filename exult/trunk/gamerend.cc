@@ -517,8 +517,7 @@ void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 						tilex, tiley,
 						gwin->skip_above_actor))
 #else
-					if (mc->is_dungeon(tilex, tiley)
-						< gwin->skip_above_actor)
+					if (!mc->is_dungeon(tilex, tiley))
 #endif
 					{
 						// Add to the width of the area
