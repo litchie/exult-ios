@@ -1,7 +1,8 @@
 /**
  **	Ipack.cc - Create/extract image Flex files using the .png format.
  **
- **	Written: 2/19/2002 - JSF
+ **	Written: 2/19/2002 - JSF, with lots of code borrowed from Tristan's
+		 *		Gimp Plugin.
  **/
 
 /*
@@ -37,7 +38,7 @@
 #include "Flex.h"
 #include "utils.h"
 #include "exceptions.h"
-//#include "vgafile.h"
+#include "vgafile.h"
 
 using std::atoi;
 using std::cerr;
@@ -62,8 +63,9 @@ class Shape_spec
 public:
 	char *filename;			// Should be allocated.
 	int nframes;			// # frames in shape.
+	bool flat;			// A 'flat' shape.
 public:
-	Shape_spec() : filename(0), nframes(0)
+	Shape_spec() : filename(0), nframes(0), flat(false)
 		{  }
 	~Shape_spec()
 		{ delete filename; }
@@ -135,11 +137,11 @@ static long Get_number
 static void Read_script
 	(
 	istream& in,
-	char *& archname,		// Archive name returned.
+	char *& imagename,		// Archive name returned.
 	Shape_specs& specs		// Shape specs. returned here.
 	)
 	{
-	archname = 0;
+	imagename = 0;
 	specs.resize(0);		// Initialize.
 	specs.reserve(1200);
 	char buf[1024];
@@ -162,10 +164,10 @@ static void Read_script
 			continue;	// Comment.
 		if (strncmp(ptr, "archive", 7) == 0)
 			{		// Archive name.
-			if (archname)
+			if (imagename)
 				{
 				cerr << "Line #" << linenum << 
-					":  Archname already given" << endl;
+					":  Imagename already given" << endl;
 				exit(1);
 				}
 			ptr = Skip_space(ptr + 7);
@@ -177,7 +179,7 @@ static void Read_script
 				exit(1);
 				}
 			*endptr = 0;
-			archname = strdup(ptr);
+			imagename = strdup(ptr);
 			continue;
 			}
 		char *endptr;		// Get shape# in decimal, hex, or oct.
@@ -206,11 +208,69 @@ static void Read_script
 				":  Missing filename" << endl;
 			exit(1);
 			}
+					// Get ->past filename.
+		char *past_end = *endptr ? Skip_space(endptr + 1) : endptr;
 		*endptr = 0;
 		if (shnum >= specs.size())
 			specs.resize(shnum + 1);
 		specs[shnum].filename = strdup(ptr);
 		specs[shnum].nframes = nframes;
+		specs[shnum].flat = (strncmp(past_end, "flat", 4) == 0);
+		}
+	}
+
+/*
+ *	Write out one frame as a .png.
+ */
+
+static void Write_frame
+	(
+	char *basename,			// Base filename to write.
+	int frnum,			// Frame #.
+	Shape_frame *frame		// What to write.
+	)
+	{
+	char *fullname = new char[strlen(basename) + 30];
+	sprintf(fullname, "%s_%02d.png", basename, frnum);
+	cout << "Writing " << fullname << endl;
+	//++++++++++++++
+	delete fullname;
+	}
+
+/*
+ *	Extract from the archive.  May throw an exception.
+ */
+
+static void Extract
+	(
+	char *imagename,			// Image archive name.
+	Shape_specs& specs		// List of things to extract.
+	)
+	{
+	Vga_file ifile(imagename);	// May throw an exception.
+	for (Shape_specs::const_iterator it = specs.begin();
+						it != specs.end();  ++it)
+		{
+		char *basename = (*it).filename;
+		if (!basename)		// Empty?
+			continue;
+		int shnum = it - specs.begin();
+		if (shnum >= ifile.get_num_shapes())
+			{
+			cerr << "Shape #" << shnum << " > #shapes in file" <<
+								endl;
+			continue;
+			}
+					// Read in all frames.
+		Shape *shape = ifile.extract_shape(shnum);
+		int nframes = shape->get_num_frames();
+		if (nframes != (*it).nframes)
+			cerr << "Warning: # frames (" << (*it).nframes <<
+				") given for shape " << shnum <<
+				" doesn't match actual count (" << nframes <<
+				")" << endl;
+		for (int f = 0; f < nframes; f++)
+			Write_frame(basename, f, shape->get_frame(f));
 		}
 	}
 
@@ -237,7 +297,7 @@ int main
 	if (argc < 3 || argv[1][0] != '-')
 		Usage();		// (Exits.)
 	char *scriptname = argv[2];
-	char *flexname = 0;
+	char *imagename = 0;
 	Shape_specs specs;		// Shape specs. stored here.
 	ifstream specin;
 	try {
@@ -246,14 +306,14 @@ int main
 		cerr << e.what() << endl;
 		exit(1);
 	}
-	Read_script(specin, flexname, specs);
+	Read_script(specin, imagename, specs);
 	specin.close();
 	switch (argv[1][1])		// Which function?
 		{
 	case 'c':			// Create.
 #if 0
 		try {
-			Write_flex(flexname, "Flex created by Exult", strings);
+			Write_flex(imagename, "Flex created by Exult", strings);
 		} catch (exult_exception& e){
 			cerr << e.what() << endl;
 			exit(1);
@@ -261,27 +321,12 @@ int main
 #endif
 		break;
 	case 'x':			// Extract .png files.
-#if 0
 		try {
-			Read_flex(flexname, strings);
+			Extract(imagename, specs);
 		} catch (exult_exception& e){
 			cerr << e.what() << endl;
 			exit(1);
 		}
-		if (argc >= 4)		// Text file given?
-			{
-			ofstream out;
-			try {
-				U7open(out, argv[3],  true);
-			} catch(exult_exception& e) {
-				cerr << e.what() << endl;
-				exit(1);
-			}
-			Write_text(out, strings);
-			}
-		else
-			Write_text(cout, strings);
-#endif
 		break;
 	default:
 		Usage();
