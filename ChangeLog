@@ -1,5 +1,6 @@
 2000-12-01  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* Create 'objs' subdirectory.
 	* Intrinsic 0x8f also seems to be start_speech().
 
 2000-12-01  Willem Jan Palenstijn <palenstijn@wanadoo.nl>

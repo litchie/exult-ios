@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_button.h"
 #include "misc_buttons.h"
 #include "Paperdoll_gump.h"
+#include "contain.h"
 
 /*
  *
