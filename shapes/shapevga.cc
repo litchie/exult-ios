@@ -117,7 +117,7 @@ void Shapes_vga_file::read_info
 		Read1(weapon);		// Skip (0).
 		short usecode = Read2(weapon);
 		unsigned char unk6[6];
-		weapon.read(unk6, sizeof(unk6));
+		weapon.read((char *)unk6, sizeof(unk6));
 #if 0
 		cout << "Damage = " << damage << ", flags0 = " << hex
 			<< " 0x" << setfill('0') << 

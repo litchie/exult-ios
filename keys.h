@@ -35,7 +35,7 @@ typedef void(*ActionFunc)(int*);
 
 struct Action {
   ActionFunc func;
-  std::string desc;
+  char* desc;
   bool show;
   bool cheat;
   Exult_Game game;

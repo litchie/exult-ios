@@ -6,8 +6,10 @@
 #  include <cstdio>
 #  include <cstdlib>
 #endif
-#include "U7file.h"
 #include <iostream>
+#include <vector>
+#include <string>
+#include "U7file.h"
 #include "utils.h"
 #include "databuf.h"
 
@@ -21,7 +23,10 @@ using std::ifstream;
 using std::ofstream;
 using std::size_t;
 using std::snprintf;
+using std::strcpy;
 using std::strlen;
+using std::vector;
+using std::string;
 
 enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD, RESPONSE };
 
@@ -34,7 +39,7 @@ void set_mode(Arch_mode &mode, Arch_mode new_mode)
 		mode = new_mode;
 }
 
-long get_file_size(char *fname)
+long get_file_size(const char *fname)
 {
 	FILE *fp = U7open (fname, "rb");
 	if (!fp) {
@@ -73,9 +78,7 @@ int main(int argc, char **argv)
 	char *fname = 0;
 	char ext[] = "u7o";
 	int index;
-	char **file_names;
-	int  file_count;
-	int  file_skip;
+	vector<string>	file_names;
   
 	if(argc>2) {
 		fname = argv[2];
@@ -83,28 +86,20 @@ int main(int argc, char **argv)
 			switch(argv[1][1]) {
 			case 'i':
 				{
-				set_mode(mode,RESPONSE);
-				ifstream respfile;
-				U7open(respfile, fname);
-				char *temp = new char[1024];
-				file_count = file_skip = 0;
-				while(!respfile.eof()) {
-					respfile.getline(temp, 1024);
-					if(strlen(temp)>0)
-						++file_count;
-				}
-				--file_count; // Skip the first line
-				respfile.close();
-				U7open(respfile, fname);
-				fname = new char[1024];
-				// Now read the output file name
-				respfile.getline(fname, 1024);
-				file_names = new char *[file_count];
-				for(int i=0;i<file_count;i++) {
-					file_names[i] = new char[1024];
-					respfile.getline(file_names[i], 1024);
-				}
-				respfile.close();
+					char temp[1024];
+					ifstream respfile;
+
+					set_mode(mode,RESPONSE);
+					U7open(respfile, fname);
+					// Read the output file name
+					fname = new char[1024];
+					respfile.getline(fname, 1024);
+					while(!respfile.eof()) {
+						respfile.getline(temp, 1024);
+						if(strlen(temp)>0)
+							file_names.push_back(temp);
+					}
+					respfile.close();
 				}
 				break;
 			case 'l':
@@ -114,9 +109,9 @@ int main(int argc, char **argv)
 				set_mode(mode,EXTRACT);
 				break;
 			case 'c':
-				file_count = argc-3;
-				file_names = argv;
-				file_skip = 3;
+				for(int i=0;i<argc-3;i++) {
+					file_names.push_back(argv[i]);
+				}
 				set_mode(mode,CREATE);
 				break;
 			case 'a':
@@ -175,7 +170,7 @@ int main(int argc, char **argv)
 	case RESPONSE:
 	case CREATE:
 		{
-			if(file_count<1) {
+			if(file_names.size()<1) {
 				cerr << "No files specified" << endl;
 				exit(1);
 			}
@@ -184,9 +179,9 @@ int main(int argc, char **argv)
 			U7open(flex, fname);
 			StreamDataSource fs(&flex);
 			
-			int *sizes = new int[file_count];
-			for(int i=0; i<file_count; i++)
-				sizes[i] = get_file_size(file_names[i+file_skip]);
+			vector<int>	file_sizes;
+			for(vector<string>::const_iterator X = file_names.begin(); X != file_names.end(); ++X)
+				file_sizes.push_back(get_file_size(X->c_str()));
 			
 			// The FLEX title
 			char title[0x50];
@@ -195,33 +190,33 @@ int main(int argc, char **argv)
 			// The FLEX magic
 			fs.write4(0xFFFF1A00);
 			// The archive size
-			fs.write4(file_count);
+			fs.write4(file_names.size());
 			// More FLEX magic :-)
 			fs.write4(0xCC);
 			// Some blank stuff ???
 			for(int i=0; i<9; i++)
 				fs.write4(0x0);
 			// The reference table
-			int data_start = 128+8*file_count;
-			for(int i=0; i<file_count; i++) {
-				if(sizes[i]) {
+			int data_start = 128+8*file_names.size();
+			for(vector<int>::const_iterator X = file_sizes.begin(); X != file_sizes.end(); ++X) {
+				if(*X) {
 					fs.write4(data_start);
-					fs.write4(sizes[i]);
-					data_start += sizes[i];
+					fs.write4(*X);
+					data_start += *X;
 				} else {
 					fs.write4(0x0);
 					fs.write4(0x0);
 				}
 			}
 			// The files
-			for(int i=0; i<file_count; i++) {
-				if(sizes[i]) {
+			for(int i=0; i<file_names.size(); i++) {
+				if(file_sizes[i]) {
 					ifstream infile;
-					U7open(infile, file_names[i+file_skip]);
+					U7open(infile, file_names[i].c_str());
 					StreamDataSource ifs(&infile);
-					char *buf = new char[sizes[i]];
-					ifs.read(buf, sizes[i]);
-					fs.write(buf, sizes[i]);
+					char *buf = new char[file_sizes[i]];
+					ifs.read(buf, file_sizes[i]);
+					fs.write(buf, file_sizes[i]);
 					delete [] buf;
 					infile.close();
 				}
