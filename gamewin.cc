@@ -662,6 +662,8 @@ void Game_window::toggle_combat
 				act->set_target(0);
 			}
 		}
+	else				// Ending combat.
+		Combat::resume();	// Make sure not still paused.
 	}
 
 /*
