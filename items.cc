@@ -60,6 +60,6 @@ void Setup_item_names (ifstream& items) {
 		items.seekg(itemoffs);
 		item_names[i] = new char[itemlen];
 		items.read(item_names[i], itemlen);
-//		cout << i << "\t" << item_names[i] << '\n';
+//		cout << i << "\t" << item_names[i] << endl;
 	}
 } 

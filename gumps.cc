@@ -1342,7 +1342,7 @@ Slider_gump_object::Slider_gump_object
 	    min_val(mival), max_val(mxval), step_val(step),
 	    val(defval), dragging(0), prev_dragx(0)
 	{
-cout << "Slider:  " << min_val << " to " << max_val << " by " << step << '\n';
+cout << "Slider:  " << min_val << " to " << max_val << " by " << step << endl;
 	left_arrow = new Slider_gump_button(this, leftbtnx, btny, SLIDERLEFT);
 	right_arrow = new Slider_gump_button(this, rightbtnx, btny, 
 								SLIDERRIGHT);
@@ -1606,7 +1606,7 @@ void File_gump_object::save
 			return;
 	if (gwin->write() &&		// First flush to 'gamedat'.
 	    gwin->save_gamedat(num, focus->get_text()))
-		cout << "Saved game #" << num << " successfully.\n";
+		cout << "Saved game #" << num << " successfully."<<endl;
 	}
 
 /*

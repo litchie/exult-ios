@@ -847,7 +847,7 @@ void Patrol_schedule::now_what
 #if 0
 			cout << "Couldn't find patrol path " << pathnum
 				<< " for obj. shape " << npc->get_shapenum()
-								<< '\n';
+								<< endl;
 #endif
 					// Wiggle a bit.
 			Tile_coord pos = npc->get_abs_tile_coord();
@@ -873,7 +873,7 @@ void Talk_schedule::now_what
 	(
 	)
 	{
-	cout << "REWRITE Talk_schedule!\n";
+	cout << "REWRITE Talk_schedule!"<<endl;
 #if 1	/* ++++++++++++++Rewrite so it's only active when Av is near. */
 	Game_window *gwin = Game_window::get_game_window();
 	switch (phase)
@@ -1149,12 +1149,12 @@ void Walk_to_schedule::now_what
 					// Try to open it.
 			open_door(door);
 		}
-	cout << "Finding path to schedule for " << npc->get_name() << '\n';
+	cout << "Finding path to schedule for " << npc->get_name() << endl;
 					// Create path to dest., delaying
 					//   0 to 2 seconds.
 	if (!npc->walk_path_to_tile(from, to, 200, rand()%2000))
 		{			// Wait 1/3 sec., then try again.
-		cout << "Failed to find path for " << npc->get_name() << '\n';
+		cout << "Failed to find path for " << npc->get_name() << endl;
 		npc->walk_to_tile(dest, 200, 300);
 		retries++;		// Failed.  Try again next tick.
 		}

@@ -250,7 +250,8 @@ void Scheduled_usecode::handle_event
 #endif
 				}
 			else
-				printf("Unhanded sched. opcode %02x\n",opcode);
+			        cout << "Unhandled sched. opcode " << hex << "0x" << setfill(0x30) << setw(2) << opcode << endl;
+
 			break;
 			}
 		}
@@ -734,9 +735,9 @@ void Usecode_machine::stack_error
 	)
 	{
 	if (under)
-		cerr << "Stack underflow.\n";
+		cerr << "Stack underflow." << endl;
 	else
-		cerr << "Stack overflow.\n";
+		cerr << "Stack overflow." << endl;
 	exit(1);
 	}
 
@@ -836,7 +837,7 @@ void Usecode_machine::set_item_frame
 		return;
 	int frame = frame_arg.get_int_value();
 	// cout << "Set_item_frame: " << item->get_shapenum() 
-	//				<< ", " << frame << '\n';
+	//				<< ", " << frame << endl;
 	if (frame < gwin->get_shape_num_frames(item->get_shapenum()))
 		item->set_frame(frame);
 	if (item->get_owner())		// Inside a container?
@@ -926,7 +927,7 @@ void Usecode_machine::add_to_party
 	npc->set_party_id(party_count);
 	party[party_count++] = npc->get_npc_num();
 
-// cout << "NPC " << npc->get_npc_num() << " added to party.\n";
+// cout << "NPC " << npc->get_npc_num() << " added to party." << endl;
 	}
 
 /*
@@ -945,7 +946,7 @@ void Usecode_machine::remove_from_party
 		return;
 	if (party[id] != npc->get_npc_num())
 		{
-		cout << "Party mismatch!!\n";
+		cout << "Party mismatch!!" << endl;
 		return;
 		}
 					// Shift the rest down.
@@ -982,7 +983,7 @@ Usecode_value Usecode_machine::get_party
 		Usecode_value val((long) obj);
 		arr.put_elem(num_added, val);
 		}
-	// cout << "Party:  "; arr.print(cout); cout << '\n';
+	// cout << "Party:  "; arr.print(cout); cout << endl;
 	return arr;
 	}
 
@@ -1151,7 +1152,7 @@ Usecode_value Usecode_machine::get_objects
 	Vector vec;			// Gets list.
 	int cnt = obj->get_objects(vec, shapenum, framenum);
 
-//	cout << "Container objects found:  " << cnt << '\n';
+//	cout << "Container objects found:  " << cnt << << endl;
 	Usecode_value within(cnt, 0);	// Create return array.
 	for (int i = 0; i < cnt; i++)
 		{
@@ -1360,7 +1361,7 @@ USECODE_INTRINSIC(get_random)
 
 USECODE_INTRINSIC(execute_usecode_array)
 {
-	cout << "Executing intrinsic 1\n";
+	cout << "Executing intrinsic 1" << endl;
 	gwin->get_tqueue()->add(SDL_GetTicks() + 100,
 		new Scheduled_usecode(this, parms[0], parms[1]), (long) this);
 	return(no_ret);
@@ -1373,7 +1374,7 @@ USECODE_INTRINSIC(delayed_execute_usecode_array)
 	gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
 		new Scheduled_usecode(this, parms[0], parms[1]),
 							(long) this);
-	cout << "Executing intrinsic 2\n";
+	cout << "Executing intrinsic 2" << endl;
 	return(no_ret);
 }
 
@@ -2147,15 +2148,15 @@ USECODE_INTRINSIC(run_usecode)
 		int dy = loc.get_elem(1).get_int_value();
 		int dz = loc.get_elem(2).get_int_value();
 		Tile_coord dest(dx, dy, dz);
-		cout << "\nRun_usecode:  first walk to (" << dx << ", " <<
-				dy << ", " << dz << ")\n";
+		cout << endl << "Run_usecode:  first walk to (" << dx << ", " <<
+				dy << ", " << dz << ")" << endl;
 		if (!gwin->get_main_actor()->walk_path_to_tile(dest))
 					// Failed to find path.  Return 0.
 			return(u);
 		}
 	else
-		{
-		cout << "0x7d Location not a 3-int array\n";
+		{	//++++++Not sure about this.
+		cout << "0x7d Location not a 3-int array" << endl;
 		return(u);	// Return 0.
 		}
 	Wait_for_arrival(gwin->get_main_actor());
@@ -2851,7 +2852,7 @@ void Usecode_machine::run
 			Usecode_value val = pop();
 			if (offset < 0 || offset >= num_locals)
 				cerr << "Local #" << offset << 
-							"out of range\n";
+							"out of range" << endl;
 			else
 				locals[offset] = val;
 			}
@@ -2940,7 +2941,7 @@ void Usecode_machine::run
 			if (offset < 0 || offset >= num_locals)
 				{
 				cerr << "Local #" << offset << 
-							"out of range\n";
+							"out of range" << endl;
 				pushi(0);
 				break;
 				}
@@ -2962,7 +2963,7 @@ void Usecode_machine::run
 			break;
 		case 0x2e:		// Looks like a loop.
 			if (*ip++ != 2)
-				cout << "2nd byte in loop isn't a 2!\n";
+				cout << "2nd byte in loop isn't a 2!"<<endl;
 					// FALL THROUGH.
 		case 0x02:		// 2nd byte of loop.
 			{
@@ -3103,7 +3104,7 @@ void Usecode_machine::run
 			event = popi();
 			break;
 		default:
-			cout << "Opcode " << opcode << " not known.\n";
+			cout << "Opcode " << opcode << " not known." << endl;
 			break;
 			}
 		}
@@ -3139,7 +3140,7 @@ int Usecode_machine::call_usecode_function
 				     : 0;
 	if (!fun)
 		{
-		cout << "Usecode " << id << " not found.\n";
+		cout << "Usecode " << id << " not found."<<endl;
 		return (0);
 		}
 	if (parm0)

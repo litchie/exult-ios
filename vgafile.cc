@@ -39,7 +39,7 @@ inline void Check_file
 	{
 	if (!shapes.good())
 		{
-		cout << "VGA file is bad!\n";
+		cout << "VGA file is bad!" << endl;
 		shapes.clear();
 		}
 	}
