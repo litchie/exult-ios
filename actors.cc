@@ -76,7 +76,8 @@ Actor::Actor
 	    npc_num(num), party_id(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(1),
 	    two_handed(0), two_fingered(false), light_sources(0),
-	    usecode_dir(0), flags(0), action(0), frame_time(0)
+	    usecode_dir(0), flags(0), action(0), frame_time(0),
+	    next_path_time(0)
 	{
 	set_shape(shapenum, 0); 
 	init();
@@ -106,11 +107,18 @@ void Actor::use_food
 	food--;
 	set_property((int) food_level, food);
 	if (food <= 0)			// Really low?
-		say(first_starving, first_starving + 2);
+		{
+		if (rand()%4)
+			say(first_starving, first_starving + 2);
+		}
 	else if (food <= 4)
-		say(first_needfood, first_needfood + 2);
+		{
+		if (rand()%3)
+			say(first_needfood, first_needfood + 2);
+		}
 	else if (food <= 8)
-		say(first_hunger, first_hunger + 2);
+		if (rand()%2)
+			say(first_hunger, first_hunger + 2);
 	}
 
 /*
@@ -331,7 +339,7 @@ void Actor::follow
 	{
 	if (schedule_type == Schedule::combat)
 		return;			// Not when fighting.
-	int delay = 50;
+	int delay = 0;
 					// How close to aim for.
 	int dist = 3 + Actor::get_party_id()/3;
 	Tile_coord leaderpos = leader->get_abs_tile_coord();
@@ -376,19 +384,15 @@ void Actor::follow
 			return;
 			}
 		}
-	if (pos.distance(leaderpos) >= 8 && get_party_id() >= 0)
+	unsigned long curtime = SDL_GetTicks();
+	if (pos.distance(leaderpos) >= 8 && get_party_id() >= 0 &&
+	    curtime >= next_path_time)
 		{			// A little stuck?
-		static long lasttime = 0;
-		long curtime=0;
-					// Leader stopped?
-		if (!leader->is_moving() ||
-					// Or 3 seconds since last time?
-		    (curtime = SDL_GetTicks()) - lasttime > 3000)
-			{
-			walk_path_to_tile(goal, speed - speed/10);
-			lasttime = curtime;
+		cout << get_name() << " trying to catch up." << endl;
+					// Don't try again for a few seconds.
+		next_path_time = SDL_GetTicks() + 4000;
+		if (walk_path_to_tile(goal, speed - speed/20, 0))
 			return;
-			}
 		}
 	walk_to_tile(goal, speed, delay);
 	}
@@ -969,6 +973,8 @@ void Main_actor::handle_event
 				schedule->now_what();
 			}
 		}
+	else if (schedule)
+		schedule->now_what();
 #if 0
 					// Not doing an animation?
 	if (!gwin->get_usecode()->in_usecode())

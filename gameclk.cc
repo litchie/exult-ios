@@ -83,8 +83,6 @@ void Game_clock::check_hunger
 	(
 	)
 	{
-	int forceawarning;	//+++++Remove.
-	return;			//+++++Remove when we can test this.
 	Game_window *gwin = Game_window::get_game_window();
 	Usecode_machine *uc = gwin->get_usecode();
 	int cnt = uc->get_party_count();
@@ -190,6 +188,7 @@ void Game_clock::fake_next_period
 	hour = ((hour/3 + 1)*3)%24;
 	Game_window *gwin = Game_window::get_game_window();
 	set_time_palette();
+	check_hunger();
 	gwin->schedule_npcs(hour/3);
 	cout << "The hour is now " << hour << endl;
 	}

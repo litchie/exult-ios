@@ -243,7 +243,9 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	int roll = 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
-	flags |= (1 << (int) hatched);	// Flag it as done.
+	if ((flags & (1 << (int) auto_reset)) == 0)
+					// Flag it as done if not auto-reset.
+		flags |= (1 << (int) hatched);
 	Game_window *gwin = Game_window::get_game_window();
 	switch(type)
 		{

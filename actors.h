@@ -86,6 +86,8 @@ protected:
 	Actor_action *action;		// Controls current animation.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   actor not moving.
+	unsigned long next_path_time;	// Next time we're allowed to use
+					//   pathfinding to follow leader.
 	void init();			// Clear stuff during construction.
 					// Read from file.
 	Actor(istream& nfile, int num, int has_usecode);

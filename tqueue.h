@@ -25,8 +25,7 @@ public:
 	friend class Time_queue;
 	Time_sensitive() : queue_cnt(0)
 		{  }
-	virtual ~Time_sensitive()
-		{ }
+	virtual ~Time_sensitive();
 	int in_queue()
 		{ return queue_cnt > 0; }
 	virtual void handle_event(unsigned long curtime, long udata) = 0;
