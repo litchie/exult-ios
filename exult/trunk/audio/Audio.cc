@@ -827,4 +827,18 @@ AudioID Audio::play_wave_sfx
 	return mixer->play(cvt.buf, cvt.len_cvt, volume, dir, repeat);
 	}
 
+/*
+ *	Halt sound effects.
+ */
+
+void Audio::stop_sound_effects
+	(
+	)
+	{
+	if (sfx_file != 0)		// .Wav's?
+		mixer->Destroy_Audio_Stream(Mixer_Sample_Magic_Number);
+	else if (midi)
+		midi->stop_sound_effects();
+	}
+
 

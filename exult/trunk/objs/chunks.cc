@@ -920,6 +920,8 @@ void Chunk_object_list::try_all_eggs
 				Egg_object *egg = (Egg_object *) each;
 					// Music eggs are causing problems.
 				if (egg->get_type() != Egg_object::jukebox &&
+					// And don't teleport a 2nd time.
+				    egg->get_type() != Egg_object::teleport &&
 			    	    egg->is_active(obj,
 						tx, ty, tz, from_tx, from_ty))
 					eggs.push_back(egg);
