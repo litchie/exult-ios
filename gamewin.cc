@@ -720,8 +720,9 @@ void Game_window::set_scrolls
 	{
 					// Figure in tiles.
 	int tw = get_width()/c_tilesize, th = get_height()/c_tilesize;
-	scrolltx = cent.tx - tw/2;
-	scrollty = cent.ty - th/2;
+	scrolltx = DECR_TILE(cent.tx, tw/2);
+	scrollty = DECR_TILE(cent.ty, th/2);
+#if 0
 	if (scrolltx < 0)
 		scrolltx = 0;
 	if (scrollty < 0)
@@ -730,6 +731,7 @@ void Game_window::set_scrolls
 		scrolltx = c_num_chunks*c_tiles_per_chunk - tw - 1;
 	if (scrollty + th > c_num_chunks*c_tiles_per_chunk)
 		scrollty = c_num_chunks*c_tiles_per_chunk - th - 1;
+#endif
 	set_scroll_bounds();		// Set scroll-control.
 	Barge_object *old_active_barge = moving_barge;
 	read_map_data();		// This pulls in objects.
@@ -1891,17 +1893,17 @@ void Game_window::read_map_data
 	    firstsy = (scrollty - 1)/c_tiles_per_schunk;
 					// End 8 tiles to right.
 	int lastsx = (scrolltx + (w + c_tilesize - 2)/c_tilesize + 
-					c_tiles_per_chunk/2)/c_tiles_per_schunk;
+				c_tiles_per_chunk/2)/c_tiles_per_schunk;
 	int lastsy = (scrollty + (h + c_tilesize - 2)/c_tilesize + 
-					c_tiles_per_chunk/2)/c_tiles_per_schunk;
-	if (lastsx >= 12)		// Don't go past end.
-		lastsx = 11;
-	if (lastsy >= 12)
-		lastsy = 11;
+				c_tiles_per_chunk/2)/c_tiles_per_schunk;
+					// Watch for wrapping.
+	int stopsx = (lastsx + 1)%c_num_schunks,
+	    stopsy = (lastsy + 1)%c_num_schunks;
 					// Read in "map", "ifix" objects for
 					//  all visible superchunks.
-	for (int sy = firstsy; sy <= lastsy; sy++)
-		for (int sx = firstsx; sx <= lastsx; sx++)
+	for (int sy = firstsy; sy != stopsy; sy = (sy + 1)%c_num_schunks)
+		for (int sx = firstsx; sx != stopsx; 
+						sx = (sx + 1)%c_num_schunks)
 			{
 					// Figure superchunk #.
 			int schunk = 12*sy + sx;
