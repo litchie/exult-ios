@@ -57,6 +57,7 @@ protected:
 	Actor_action *action;		// Controls current animation.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   actor not moving.
+	void init();			// Clear stuff during construction.
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
@@ -196,6 +197,7 @@ public:
 					// Don't write out to IREG file.
 	virtual void write_ireg(ostream& out)
 		{  }
+	void write(ostream& nfile);	// Write out (to 'npc.dat').
 	};
 
 /*
