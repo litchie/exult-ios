@@ -6,7 +6,13 @@ else
 UCC=
 endif
 
-noinst_PROGRAMS = txt2cc expack wuc wud mklink rip ucdump $(UCC)
+if HAVE_GIMPTOOL
+GIMP_PLUGINS=u7shpload
+else
+GIMP_PLUGINS=
+endif
+
+noinst_PROGRAMS = txt2cc expack wuc wud mklink rip ucdump $(UCC) $(GIMP_PLUGINS)
 
 expack_SOURCES = \
 	expack.cc
@@ -47,6 +53,11 @@ uccparse.o: ucclex.c uccparse.c
 ucc: uccparse.o
 	$(LINK) uccparse.o
 
+u7shpload: u7shpload.c
+	gimptool --build $<
+
+install-exec-local:
+	gimptool --install-bin u7shpload
 
 EXTRA_DIST = \
 	intrins1.txt \
