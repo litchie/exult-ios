@@ -1,3 +1,7 @@
+2001-08-18  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/objs.cc: Experimental render-orderer 'compare()'.  Not enabled.
+
 2001-08-17  Max Horn <max@quendi.de>
 	* audio/pcb.*: fixed possible crash on MacOS, some clean up
 	* audio/midi_drivers/mac_midi.*: compiles again on classic MacOS

@@ -589,7 +589,14 @@ void Map_chunk::add_dependencies
 	while ((obj = next.get_next()) != 0)
 		{
 		//cout << "Here " << __LINE__ << " " << obj << endl;
+#ifdef TESTNEWCMP	/* Just #define it to use the new one. */
+//++++Experimenting:
+		/* Compare returns -1 if lt, 0 if dont_care, 1 if gt. */
+		int newcmp = Game_object::compare(newinfo, obj);
+		int cmp = newcmp == -1 ? 1 : newcmp == 1 ? 0 : -1;
+#else
 		int cmp = Game_object::lt(newinfo, obj);
+#endif
 		if (!cmp)		// Bigger than this object?
 			{
 			newobj->dependencies.put(obj);
@@ -659,8 +666,13 @@ void Map_chunk::add
 			add_outside_dependencies(INCR_CHUNK(cx), 
 					INCR_CHUNK(cy), newobj, ord);
 					// See if newobj extends outside.
+#if 0
 		bool ext_left = (newobj->get_tx() - ord.xs) < -1 && cx > 0;
 		bool ext_above = (newobj->get_ty() - ord.ys) < -1 && cy > 0;
+#else	/* Let's try boundary. */
+		bool ext_left = (newobj->get_tx() - ord.xs) < 0 && cx > 0;
+		bool ext_above = (newobj->get_ty() - ord.ys) < 0 && cy > 0;
+#endif
 		if (ext_left)
 			{
 			add_outside_dependencies(DECR_CHUNK(cx), cy, 
@@ -687,22 +699,6 @@ void Map_chunk::add
 		}
 	}
 
-#if 0
-/*
- *	Add a flat, fixed object.
- */
-
-void Map_chunk::add_flat
-	(
-	Game_object *newobj		// Should be 0 height, lift=0.
-	)
-	{
-	newobj->cx = get_cx();		// Set object's chunk.
-	newobj->cy = get_cy();
-					// Just put in front.
-	objects = newobj->insert_in_chain(objects);
-	}
-#endif
 /*
  *	Add an egg.
  */
@@ -750,8 +746,13 @@ void Map_chunk::remove
 					// See if it extends outside.
 	int frame = remove->get_framenum(), tx = remove->get_tx(),
 					ty = remove->get_ty();
+#if 0
 	bool ext_left = (tx - info.get_3d_xtiles(frame)) < -1 && cx > 0;
 	bool ext_above = (ty - info.get_3d_ytiles(frame)) < -1 && cy > 0;
+#else	/* Let's try boundary. */
+	bool ext_left = (tx - info.get_3d_xtiles(frame)) < 0 && cx > 0;
+	bool ext_above = (ty - info.get_3d_ytiles(frame)) < 0 && cy > 0;
+#endif
 	if (ext_left)
 		{
 		gwin->get_chunk(cx - 1, cy)->from_below_right--;
