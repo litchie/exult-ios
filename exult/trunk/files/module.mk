@@ -5,7 +5,7 @@ LPATH := files
 LSRC := $(wildcard $(LPATH)/*.cc)
 LPRODUCTS := rwregress
 
-rwregress_SRC := rwregress.o
+rwregress_OBJ := rwregress.o
 
 # Common rules
 include common.mk
