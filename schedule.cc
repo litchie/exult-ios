@@ -436,7 +436,7 @@ void Patrol_schedule::now_what
 			break;		//++++++++
 		case 3:			// Sit.
 			Sit_schedule::set_action(npc, 0);
-			dir = 0;
+			dir = 0;	// Flag sitting.
 			return;
 		case 4:			// Kneel at tombstone.+++++++
 		case 5:			// Kneel+++++++++++
