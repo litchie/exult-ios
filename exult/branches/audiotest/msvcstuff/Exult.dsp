@@ -96,7 +96,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /G6 /MD /W3 /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
 # ADD CPP /nologo /G6 /MD /W3 /GR /GX /Zi /O2 /Ob0 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
-# SUBTRACT CPP /FA<none> /Fr
+# SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -107,9 +107,9 @@ LINK32=link.exe
 # SUBTRACT BASE LINK32 /pdb:none
 # ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.99 /subsystem:windows /pdb:none /debug /debugtype:both /machine:I386 /nodefaultlib:"libc.lib"
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
-TargetPath=\UC\exult\Exult.exe
+TargetPath=\exult\Exult.exe
 TargetName=Exult
-InputPath=\UC\exult\Exult.exe
+InputPath=\exult\Exult.exe
 SOURCE="$(InputPath)"
 
 "$(EXULT_INSTALL_PATH)\$(TargetName).exe" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -141,12 +141,12 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /incremental:no /map
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.99 /subsystem:console /debug /machine:I386 /nodefaultlib:"libc.lib" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDL_mixer.lib winmm.lib libz.lib /nologo /version:0.99 /subsystem:console /debug /machine:I386 /nodefaultlib:"libc.lib" /pdbtype:sept
 # SUBTRACT LINK32 /incremental:no /map
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
-TargetPath=\UC\exult\Exult.exe
+TargetPath=\exult\Exult.exe
 TargetName=Exult
-InputPath=\UC\exult\Exult.exe
+InputPath=\exult\Exult.exe
 SOURCE="$(InputPath)"
 
 "$(EXULT_INSTALL_PATH)\$(TargetName).exe" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -383,18 +383,6 @@ SOURCE=..\audio\Makefile.am
 # Begin Source File
 
 SOURCE=..\audio\Midi.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\Mixer.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\pcb.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\SDL_mapping.cc
 # End Source File
 # Begin Source File
 
@@ -1050,8 +1038,8 @@ SOURCE=..\server\servewin32.h
 # Begin Source File
 
 SOURCE=..\win32\exultico.rc
-# ADD BASE RSC /l 0xc09 /i "\UC\exult\win32"
-# ADD RSC /l 0xc09 /i "\UC\exult\win32" /i "..\win32"
+# ADD BASE RSC /l 0xc09 /i "\exult\win32" /i "\UC\exult\win32"
+# ADD RSC /l 0xc09 /i "\exult\win32" /i "\UC\exult\win32" /i "..\win32"
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -1103,18 +1091,6 @@ SOURCE=..\audio\conv.h
 # Begin Source File
 
 SOURCE=..\audio\Midi.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\Mixer.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\pcb.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\SDL_mapping.h
 # End Source File
 # Begin Source File
 

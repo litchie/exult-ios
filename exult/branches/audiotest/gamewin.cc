@@ -114,9 +114,12 @@ class Background_noise : public Time_sensitive
 	int repeats;			// Repeats in quick succession.
 	int last_sound;			// # of last sound played.
 	Game_window *gwin;
+	int laststate;			// Last state for SFX music tracks, 
+							// 1 outside, 2 dungeon
+
 public:
 	Background_noise(Game_window *gw) : repeats(0), last_sound(-1),
-					gwin(gw)
+					gwin(gw), laststate(0)
 		{ gwin->get_tqueue()->add(5000, this, 0L); }
 	virtual ~Background_noise()
 		{ gwin->get_tqueue()->remove(this); }
@@ -135,44 +138,97 @@ void Background_noise::handle_event
 	{
 	Main_actor *ava = gwin->get_main_actor();
 	unsigned long delay = 8000;
+	int currentstate = 0;
 
-#ifndef COLOURLESS_REALLY_HATES_THE_BG_SFX
-					// Only if outside.
-	if (ava && !gwin->is_main_actor_inside() &&
-					// +++++SI SFX's don't sound right.
-	    Game::get_game_type() == BLACK_GATE)
+//#ifdef COLOURLESS_REALLY_HATES_THE_BG_SFX
+	if(gwin->is_in_dungeon())
+		currentstate = 2;
+	else
+		currentstate = 1;
+
+	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
+	if (player->music_conversion == XMIDI_CONVERT_MP3)
+	{
+		delay = 1500;	//Quickly get back to this function check
+		//We've got MP3 so play the background SFX tracks
+
+		int curr_track = player->get_current_track();
+
+		if((curr_track == -1 || laststate != currentstate ) && Audio::get_ptr()->is_music_enabled())
 		{
-		int sound;		// BG SFX #.
-		static unsigned char bgnight[] = {61, 255, 255}, 
-				     bgday[] = {82, 85, 85};
-		if (repeats > 0)	// Repeating?
-			sound = last_sound;
-		else
+			if(curr_track == -1 || (curr_track >=4 && curr_track <=8) || curr_track == 52)		//Not already playing music
 			{
-			int hour = gwin->get_hour();
-			if (hour < 6 || hour > 20)
-				sound = bgnight[rand()%sizeof(bgnight)];
-			else
-				sound = bgday[rand()%sizeof(bgday)];
-					// Translate BG to SI #'s.
-			sound = Audio::game_sfx(sound);
-			last_sound = sound;
-			}
-		Audio::get_ptr()->play_sound_effect(sound);
-		repeats++;		// Count it.
-		if (rand()%(repeats + 1) == 0)
-					// Repeat.
-			delay = 500 + rand()%1000;
-		else
-			{
-			delay = 4000 + rand()%3000;
-			repeats = 0;
+				int tracknum=255;
+
+				if(gwin->is_in_dungeon())
+				{
+					//Start the SFX music track then
+					if(Game::get_game_type() == BLACK_GATE)
+						Audio::get_ptr()->start_music(52,1);
+					else
+						Audio::get_ptr()->start_music(42,1);	//It converts back to SFX track later on
+					laststate = 2;
+				}
+				else				
+				{
+					//Start the SFX music track then
+					if(Game::get_game_type() == BLACK_GATE)
+						Audio::get_ptr()->start_music(6,1);
+					else
+						Audio::get_ptr()->start_music(67,1);	//It converts back to SFX track later on
+					laststate = 1;
+				}
 			}
 		}
-#endif
+	}
+	else
+	{
+		
+		//Tests to see if track is playing the SFX tracks, possible when the game has been restored
+		//and the Audio option was changed from MP3 to something else
+		if(player->get_current_track() >=4 && player->get_current_track() <= 8)
+			player->stop_music();
+
+
+		//Not MP3 so play the SFX sounds manually
+					// Only if outside.
+		if (ava && !gwin->is_main_actor_inside()  &&
+						// +++++SI SFX's don't sound right.
+			Game::get_game_type() == BLACK_GATE )
+		{
+			int sound;		// BG SFX #.
+			static unsigned char bgnight[] = {61, 61, 255},
+						 bgday[] = {82, 85, 85};
+			if (repeats > 0)	// Repeating?
+				sound = last_sound;
+			else
+			{
+				int hour = gwin->get_hour();
+				if (hour < 6 || hour > 20)
+					sound = bgnight[rand()%sizeof(bgnight)];
+				else
+					sound = bgday[rand()%sizeof(bgday)];
+						// Translate BG to SI #'s.
+				sound = Audio::game_sfx(sound);
+				last_sound = sound;
+			}
+			Audio::get_ptr()->play_sound_effect(sound);
+			repeats++;		// Count it.
+			if (rand()%(repeats + 1) == 0)
+						// Repeat.
+				delay = 500 + rand()%1000;
+			else
+			{
+				delay = 4000 + rand()%3000;
+				repeats = 0;
+			}
+		}
+	}
+//#endif
 
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
-	}
+}
+
 //
 /*
  *	Create game window.
@@ -488,7 +544,9 @@ void Game_window::init_files(bool cycle)
 
 	CYCLE_RED_PLASMA();
 	// initialize .wav SFX pack
-	Audio::get_ptr()->Init_sfx();
+
+//This is now run from exult.cc
+//	Audio::get_ptr()->Init_sfx();
 	int fps;			// Init. animation speed.
 	config->value("config/video/fps", fps, 5);
 	if (fps <= 0)
@@ -2673,6 +2731,7 @@ void Game_window::get_focus
 	)
 	{
 	cout << "Game resumed" << endl;
+	Audio::get_ptr()->resume_audio();
 	focus = 1; 
 	tqueue->resume(Game::get_ticks());
 	}
@@ -2681,6 +2740,7 @@ void Game_window::lose_focus
 	)
 	{
 	cout << "Game paused" << endl;
+	Audio::get_ptr()->pause_audio();
 	focus = false; 
 	tqueue->pause(Game::get_ticks());
 	}

@@ -23,9 +23,9 @@
 #define DONT_HAVE_HASH_MAP
 #define MSVC_FIND_NEARBY_KLUDGE
 
-#define ENABLE_MIDISFX
-#define COLOURLESS_REALLY_HATES_THE_BG_SFX
-#define FORCE_44KHZ
+//#define ENABLE_MIDISFX
+//#define COLOURLESS_REALLY_HATES_THE_BG_SFX
+//#define FORCE_44KHZ
 
 // Don't need everything in the windows headers
 #define WIN32_LEAN_AND_MEAN
@@ -245,9 +245,6 @@ using std::isspace;
 #include "../audio/Audio.h"
 #include "../audio/conv.h"
 #include "../audio/Midi.h"
-#include "../audio/Mixer.h"
-#include "../audio/pcb.h"
-#include "../audio/SDL_mapping.h"
 #include "../audio/soundtest.h"
 #include "../audio/xmidi.h"
 #include "../gumps/Actor_gump.h"
