@@ -1,3 +1,8 @@
+2001-12-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* drag.cc: Use old lift when activating eggs object was moved away
+	from.
+
 2001-12-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Allow talking to NPC in combat if NPC is friendly or
