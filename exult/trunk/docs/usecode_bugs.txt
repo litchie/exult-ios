@@ -40,8 +40,24 @@ Date:   12-14-01 10:12
 1. Between 12 and 1 o clock in the afternoon, the time is listed as 'am' not
 'pm'
 
-[Note: this has been fixed in SI's usecode]
+[Note: this has been fixed in SI's usecode.]
 
+
+(BG,french) Dupre accent confusion:
+====================================
+
+The French BG's usecode mixes up Dupre with and without an accent on the e.
+This way some conversation options are unreachable.
+
+[Note: fixed by jhoeksma. Need to disassemble fix to include here.]
+
+(BG) liquer conversation bug:
+==============================
+
+BG has a conversation in which there are two conversation options named
+'liquer'. This prevents the second one from being chosen.
+
+[Note: fixed by jhoeksma. Need to disassemble fix to include here.]
 
 
 
