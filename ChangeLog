@@ -1,3 +1,6 @@
+2001-11-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: 'fixed' Spark's palette-cycling pants
+
 2001-11-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc (Actor): Restored old walking frames, as they look
@@ -55,7 +58,6 @@
 	  accordingly and updated exult_faq.xml/readme.xml
 	* Faq, Readme updated
 
->>>>>>> 1.1128
 2001-10-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Don't teleport party members in 'wait' state.
