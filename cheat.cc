@@ -39,6 +39,7 @@
 
 #ifdef USE_EXULTSTUDIO  /* Only needed for exult studio. */
 #include "server.h"
+#include "servemsg.h"
 
 #ifdef WIN32
 #ifndef WIN32_LEAN_AND_MEAN
@@ -361,10 +362,29 @@ void Cheat::set_skip_lift (int skip) const {
 }
 
 /*
+ *	Tell EStudio whether there's a selection and clipboard.
+ */
+void Cheat::send_select_status()
+	{
+#ifdef USE_EXULTSTUDIO
+	if (client_socket >= 0)
+		{
+		unsigned char msg[2];
+		msg[0] = selected.empty() ? 0 : 1;
+		msg[1] = clipboard.empty() ? 0 : 1;
+		Exult_server::Send_data(client_socket, 
+				Exult_server::select_status, &msg[0], 2);
+		}
+#endif
+	}
+
+/*
  *	Add an object to the selected list without checking.
  */
 void Cheat::append_selected(Game_object *obj) {
 	selected.push_back(obj);
+	if (selected.size() == 1)	// First one?
+		send_select_status();
 }
 
 /*
@@ -381,9 +401,13 @@ void Cheat::toggle_selected(Game_object *obj) {
 		if (*it == obj)
 			{		// Yes, so remove it.
 			selected.erase(it);
+			if (selected.empty())	// Last one?
+				send_select_status();
 			return;
 			}
 	selected.push_back(obj);	// No, so add it.
+	if (selected.size() == 1)	// 1st one?
+		send_select_status();
 }
 
 /*
@@ -402,12 +426,15 @@ void Cheat::clear_selected() {
 			gwin->set_all_dirty();
 		}
 	selected.clear();
+	send_select_status();
 }
 
 /*
  *	Delete all selected objects.
  */
 void Cheat::delete_selected() {
+	if (selected.empty())
+		return;
 	while (!selected.empty())
 		{
 		Game_object *obj = selected.back();
@@ -418,6 +445,7 @@ void Cheat::delete_selected() {
 			gwin->set_all_dirty();
 		obj->remove_this();
 		}
+	send_select_status();
 }
 
 /*
@@ -487,6 +515,9 @@ public:
  */
 void Cheat::cut(bool copy)
 	{
+	if (selected.empty())
+		return;			// Nothing selected.
+	bool clip_was_empty = clipboard.empty();
 	Game_object_vector::iterator it;
 					// Clear out old clipboard.
 	for (it = clipboard.begin(); it != clipboard.end(); ++it)
@@ -514,6 +545,10 @@ void Cheat::cut(bool copy)
 		}
 					// Sort.
 	std::sort(selected.begin(), selected.end(), Clip_compare());
+	if (!copy)			// Cut?  Remove selection.
+		clear_selected();	// (This will send status.)
+	else if (clip_was_empty)	// First clipboard object?
+		send_select_status();
 	}
 
 /*
@@ -524,10 +559,10 @@ void Cheat::paste
 	int mx, int my			// Mouse position.
 	)
 	{
-	if (selected.empty())
+	if (clipboard.empty())
 		return;			// Nothing there.
 					// Use lowest/south/east for position.
-	Tile_coord hot = selected[0]->get_tile();
+	Tile_coord hot = clipboard[0]->get_tile();
 	clear_selected();		// Remove old selected.
 					// First see if spot is in a gump.
 	Gump *on_gump = gwin->get_gump_man()->find_gump(mx, my);
@@ -555,6 +590,19 @@ void Cheat::paste
 			delete obj;
 		}
 	gwin->set_all_dirty();		// Just repaint all.
+	}
+
+/*
+ *	Prompt for spot to paste to.
+ */
+
+void Cheat::paste()
+	{
+	if (clipboard.empty())
+		return;
+	int x, y;		// Allow dragging while here:
+	if (Get_click(x, y, Mouse::greenselect, 0, true))
+		paste(x, y);
 	}
 
 void Cheat::map_teleport (void) const {

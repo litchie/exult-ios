@@ -626,6 +626,24 @@ void ActionGrabActor(int *params)
 		cheat.set_grab_actor(params[0] != 0);
 }
 
+//  { ActionCut, "Cut Selected Objects", true, false, NONE, true},
+void ActionCut(int *params)
+{
+	cheat.cut(false);
+}
+
+//  { ActionCopy, "Copy Selected Objects", true, false, NONE, true},
+void ActionCopy(int *params)
+{
+	cheat.cut(true);
+}
+
+//  { ActionPaste, "Paste Selected Objects", true, false, NONE, true},
+void ActionPaste(int *params)
+{
+	cheat.paste();
+}
+
 //  { ActionPlayMusic, 1, "Play song", false, true, NONE },
 // params[0] = song nr., or -1 for next, -2 for previous
 void ActionPlayMusic(int *params)

@@ -65,6 +65,7 @@ private:
 
   bool enabled;
 
+  void send_select_status();
 public:
   bool operator() (void) const { return enabled; }
   void set_enabled(bool en);
@@ -124,6 +125,7 @@ public:
 
   void cut(bool copy = false);
   void paste(int mx, int my);
+  void paste();
   const Game_object_vector& get_clipboard() const
 	{ return clipboard; }
 
