@@ -1,3 +1,6 @@
+2003-03-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.cc: fixed --buildmap
+
 2003-03-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* imagewin/scale.cc,etc.: Added Andrea Mazzoleni "Scale2X" scaler.
