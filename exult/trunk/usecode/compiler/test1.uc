@@ -2,9 +2,9 @@
 
 extern adder 0x480(a, b);	// Declaration.
 
-//
-//	Return sum.
-//
+/*
+ *	Return sum.
+ */
 
 adder1 0x481 (a, b)
 	{
