@@ -29,6 +29,7 @@ class istream;
 class ostream;
 class Game_window;
 class Game_object;
+class Vector;
 
 /*
  *	A value that we store can be an integer, string, or array.
@@ -138,7 +139,6 @@ class Usecode_function
 		{ delete code; }
 	};
 
-const int max_funs = 1500;
 const int max_answers = 40;
 const int answer_stack_size = 10;
 
@@ -164,8 +164,8 @@ class Answers
 class Usecode_machine
 	{
 	Game_window *gwin;		// Game window.
-	Usecode_function *funs[max_funs];// List of functions.+++++Hash table.
-	int num_funs;			// # in list.
+	Vector *funs;			// I'th entry contains funs for ID's
+					//    256*i + n.
 	unsigned char gflags[1024];	// Global flags.
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
