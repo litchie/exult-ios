@@ -61,7 +61,6 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	GtkWidget *shape_scroll;	// Vertical scrollbar.
 	GtkWidget *find_text;		// For searching.
 	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
-	GtkWidget *popup;		// Popup menu in draw area.
 	int index0;			// Index of top-leftmost in
 					//   displayed list.
 	int framenum0;			// Default frame # to display.
@@ -71,12 +70,15 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	int selected;			// Index of user-selected entry.
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
-	void show(int x, int y, int w, int h);
-	void show()
-		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
+	virtual void show(int x, int y, int w, int h);
+	virtual void show()
+		{ Shape_chooser::show(0, 0, 
+			draw->allocation.width, draw->allocation.height);}
 	void tell_server_shape();	// Tell Exult what shape is selected.
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
+	virtual int get_selected_id()
+		{ return selected < 0 ? -1 : info[selected].shapenum; }
 	void scroll(int newindex);	// Scroll.
 	void adjust_scrollbar();	// Set new scroll amounts.
 	GtkWidget *create_search_controls();
@@ -136,8 +138,6 @@ public:
 #endif
 					// Menu items:
 	static void on_shapes_popup_info_activate(
-					GtkMenuItem *item, gpointer udata);
-	static void on_shapes_popup_add2group_activate(
 					GtkMenuItem *item, gpointer udata);
 	};
 

@@ -74,11 +74,14 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 		  *move_chunk_down, *move_chunk_up;
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
-	void show(int x, int y, int w, int h);
-	void show()
-		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
+	virtual void show(int x, int y, int w, int h);
+	virtual void show()
+		{ Chunk_chooser::show(0, 0, 
+			draw->allocation.width, draw->allocation.height);}
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
+	virtual int get_selected_id()
+		{ return selected < 0 ? -1 : info[selected].num; }
 	unsigned char *get_chunk(int chunknum);
 	void set_chunk(unsigned char *data, int datalen);
 	void render_chunk(int chunknum, int xoff, int yoff);
@@ -101,6 +104,7 @@ public:
 		{ sel_changed = fun; }
 	int get_selected()		// Get selected chunk, or return -1.
 		{ return selected >= 0 ? info[selected].num : -1; }
+	int get_count();		// Get # chunks we can display.
 					// Configure when created/resized.
 	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
 							gpointer data);
