@@ -323,8 +323,10 @@ void Conversation::remove_slot_face
 	if (slot >= max_faces || !face_info[slot])
 		return;			// Invalid.
 	Npc_face_info *info = face_info[slot];
-	gwin->paint(info->face_rect);
-	gwin->paint(info->text_rect);
+					// These are needed in case conversa-
+					//   tion is done.
+	gwin->add_dirty(info->face_rect);
+	gwin->add_dirty(info->text_rect);
 	delete face_info[slot];
 	face_info[slot] = 0;
 	num_faces--;
@@ -350,8 +352,9 @@ void Conversation::show_npc_message(const char *msg)
 	Npc_face_info *info = face_info[last_face_shown];
 	info->cur_text = "";
 	Rectangle& box = info->text_rect;
-	gwin->paint(box);		// Clear what was there before.
-	paint_faces();
+//	gwin->paint(box);		// Clear what was there before.
+//	paint_faces();
+	gwin->paint();
 	int height;			// Break at punctuation.
 	while ((height = sman->paint_text_box(0, msg, box.x,box.y,box.w,box.h, 
 								-1, 1, gwin->get_text_bg())) < 0)
@@ -359,7 +362,8 @@ void Conversation::show_npc_message(const char *msg)
 		info->cur_text = string(msg, -height);
 		int x, y; char c;
 		Get_click(x, y, Mouse::hand, &c, false, this);
-		gwin->paint(box);	// Clear area again.
+//		gwin->paint(box);	// Clear area again.
+		gwin->paint();
 		msg += -height;
 		}
 					// All fit?  Store height painted.
@@ -367,7 +371,7 @@ void Conversation::show_npc_message(const char *msg)
 	info->cur_text = msg;
 	info->text_pending = 1;
 	gwin->set_painted();
-	gwin->show();
+//	gwin->show();
 }
 
 
@@ -492,7 +496,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 //				sbox.h - mbox.y - 16);
 				5*height);// Try 5 lines.
 	tbox = tbox.intersect(sbox);
-	gwin->paint(tbox);              // Paint background.
+//	gwin->paint(tbox);              // Paint background.
 					// Draw portrait.
 	sman->paint_shape(mbox.x + face->get_xleft(), 
 			  mbox.y + face->get_yabove(), face);
@@ -547,7 +551,7 @@ void Conversation::show_avatar_choices()
 
 void Conversation::clear_avatar_choices()
 {
-	gwin->paint(avatar_face);	// Paint over face and answers.
+//	gwin->paint(avatar_face);	// Paint over face and answers.
 	avatar_face.w = 0;
 }
 
