@@ -1479,18 +1479,34 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value(obj ? 
 			obj->get_flag(parms[1].get_int_value())	: 0);
 		}
-	case 0x89:		// Set npc flag(item, flag#).
+	case 0x89:			// Set npc flag(item, flag#).
 		{
 		Game_object *obj = get_item(parms[0].get_int_value());
+		int flag = parms[1].get_int_value();
 		if (obj)
-			obj->set_flag(parms[1].get_int_value());
+			{
+			obj->set_flag(flag);
+			if (flag == Actor::dont_render)
+				{	// Show change in status.
+				gwin->paint();
+				gwin->show();
+				}
+			}
 		break;
 		}
 	case 0x8a:		// Clear npc flag(item, flag#).
 		{
 		Game_object *obj = get_item(parms[0].get_int_value());
+		int flag = parms[1].get_int_value();
 		if (obj)
-			obj->clear_flag(parms[1].get_int_value());
+			{
+			obj->clear_flag(flag);
+			if (flag == Actor::dont_render)
+				{	// Show change in status.
+				gwin->paint();
+				gwin->show();
+				}
+			}
 		break;
 		}
 	case 0x8d:		// ?? Returns party?
