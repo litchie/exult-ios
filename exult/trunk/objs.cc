@@ -197,11 +197,13 @@ void Game_object::move
 	Chunk_object_list *newchunk = gwin->get_objects_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
-	gwin->add_dirty(this);		// Want to repaint old area.
 					// Remove from old.
 	Chunk_object_list *oldchunk = gwin->get_objects_safely(cx, cy);
 	if (oldchunk)
+		{
+		gwin->add_dirty(this);	// Want to repaint old area.
 		oldchunk->remove(this);
+		}
 	set_lift(newlift);		// Set new values.
 	shape_pos = ((newtx%tiles_per_chunk) << 4) + newty%tiles_per_chunk;
 	newchunk->add(this);		// Updates cx, cy.
@@ -1611,7 +1613,9 @@ void Container_game_object::write_ireg
 	Write2(ptr, tword);
 	*ptr++ = 0;			// Unknown.
 	*ptr++ = get_quality();
-	*ptr++ = 0;			// Quantity+++++
+	int npc = get_live_npc_num();	// If body, get source.
+	int quant = (npc >= 0 && npc <= 127) ? (npc + 0x80) : 0;
+	*ptr++ = quant&0xff;		// "Quantity".
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = 0;			// Resistance+++++
 	*ptr++ = 0;			// Flags++++++

@@ -277,6 +277,8 @@ public:
 		{  }
 					// Write common IREG data.
 	void write_common_ireg(unsigned char *buf);
+	virtual int get_live_npc_num()
+		{ return -1; }
 	};
 
 /*
