@@ -1608,7 +1608,7 @@ int Actor::figure_hit_points
 	int maxhealth = properties[(int) strength];
 
 	if (instant_death)		//instant death
-		hp = properties[(int) health] + properties[(int) strength];
+		hp = properties[(int) health] + properties[(int) strength] + 1;
 	int newhp = oldhealth - hp;	// Subtract from health.
 
 	if (oldhealth >= maxhealth/2 && newhp < maxhealth/2 && rand()%3 != 0)
