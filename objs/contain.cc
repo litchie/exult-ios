@@ -73,7 +73,7 @@ int Container_game_object::add
 	int dont_check			// 1 to skip volume/recursion check.
 	)
 	{
-	if (obj->get_shapenum() == get_shapenum())
+	if (obj->get_shapenum() == get_shapenum() && !dont_check)
 		return (0);		// Can't put a bag in a bag.
 	int objvol = obj->get_volume();
 

@@ -53,6 +53,7 @@
 #include "ready.h"
 #include "ucmachine.h"
 #include "monstinf.h"
+#include "exult_constants.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -2218,8 +2219,21 @@ int Actor::add
 			return (1);
 		if (spots[rhand] && spots[rhand]->drop(obj))
 			return (1);
-		return dont_check ? Container_game_object::add(obj, dont_check)
-					: 0;
+		if (!dont_check)
+			return 0;
+
+		// try again without checking volume/weight
+		if (spots[back] && spots[back]->add(obj, 1))
+			return (1);
+		if (spots[belt] && spots[belt]->add(obj, 1))
+			return (1);
+		if (spots[lhand] && spots[lhand]->add(obj, 1))
+			return (1);
+		if (spots[rhand] && spots[rhand]->add(obj, 1))
+			return (1);
+		
+		CERR("Warning: adding object (" << obj << ", sh. " << obj->get_shapenum() << ", " << obj->get_name() << ") to actor container"); 
+		return Container_game_object::add(obj, dont_check);
 	}
 					// Add to ourself.
 	if (!Container_game_object::add(obj, 1))

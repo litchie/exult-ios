@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Paperdoll_gump.h"
 #include "contain.h"
 #include "actors.h"
+#include "objiter.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
@@ -37,6 +38,8 @@ using std::endl;
 using std::size_t;
 using std::snprintf;
 
+//#define SHOW_USECODE_CONTAINER
+//#define SHOW_NONREADIED_OBJECTS
 
 /*
  *
@@ -349,6 +352,8 @@ void Paperdoll_gump::paint
 	Game_window *gwin
 	)
 {
+	Game_object *obj;
+
 	// Paint Objects
 	Rectangle box = object_area;	// Paint objects inside.
 	box.shift(x, y);		// Set box to screen location.
@@ -430,13 +435,12 @@ void Paperdoll_gump::paint
 		paint_object      (gwin, box, info, Actor::rhand,       rhandx, rhandy);
 
 		// if debugging show usecode container
-		#ifdef SHOW_USECODE_CONTAINER
-		paint_object      (gwin, box, info, Actor::ucont_spot,  0,      0 );
-		#endif
+#ifdef SHOW_USECODE_CONTAINER
+		paint_object      (gwin, box, info, Actor::ucont_spot,  20,      20 );
+#endif
 	}
 	else
 	{
-		Game_object *obj;
 		Paperdoll_item *item1, *item2;
 
 		paint_object      (gwin, box, info, Actor::belt,       shieldx,shieldy, 0, Actor::shield_spot);
@@ -481,6 +485,13 @@ void Paperdoll_gump::paint
 		paint_object      (gwin, box, info, Actor::ammo,        ahandx, ahandy, 2, -1, Actor::lhand);
 		paint_object      (gwin, box, info, Actor::rhand,       rhandx, rhandy);
 	}
+	
+#ifdef SHOW_NONREADIED_OBJECTS
+	Object_iterator iter(container->get_objects());
+	while ((obj = iter.get_next()) != 0)
+		if (actor->find_readied(obj) == -1)
+			gwin->paint_shape(box.x, box.y, *obj);
+#endif
 
 
 	// Paint buttons.
@@ -776,10 +787,10 @@ Game_object * Paperdoll_gump::find_object
 	if (Game::get_game_type() != BLACK_GATE)
 	{
 		// if debugging show usecode container
-		#ifdef SHOW_USECODE_CONTAINER
+#ifdef SHOW_USECODE_CONTAINER
 		if (obj = check_object      (gwin, mx, my, info, Actor::ucont_spot,  0,      0 ))
 			return obj;
-		#endif
+#endif
 
 		if ((obj = check_object      (gwin, mx, my, info, Actor::rhand,       rhandx, rhandy)))
 			return obj;

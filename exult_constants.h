@@ -77,11 +77,11 @@ inline int SUB_TILE(int x, int y)
 
 // Debug
 #ifdef DEBUG
-#  define COUT(x)		std::cout << x << std::endl; std::cout.flush()
-#  define CERR(x)		std::cerr << x << std::endl; std::cerr.flush()
+#  define COUT(x)		do { std::cout << x << std::endl; std::cout.flush(); } while (0)
+#  define CERR(x)		do { std::cerr << x << std::endl; std::cerr.flush(); } while (0)
 #else
-#  define COUT(x)		
-#  define CERR(x)		
+#  define COUT(x)		do { } while(0)
+#  define CERR(x)		do { } while(0)
 #endif
 
 // Two very useful macros that one should use instead of pure delete; they will additionally

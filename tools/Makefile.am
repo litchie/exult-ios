@@ -46,7 +46,7 @@ ucc_SOURCES = \
 	ucclex.l \
 	uccparse.y
 
-ucc: uccparse.o
+ucc$(EXEEXT): uccparse.o
 	$(LINK) uccparse.o
 
 uccparse.o: ucclex.c
