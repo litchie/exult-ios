@@ -27,17 +27,17 @@ To build in Windows using MinGW
 -----------------------------------
 (Thanks to Travis Howell)
 
-Download MinGW and install it:
+Download and install MinGW from:
 http://prdownloads.sourceforge.net/mingw/MinGW-2.0.0-3.exe
 
-Download MSYS and install it:
+Download and install MSYS from:
 http://prdownloads.sourceforge.net/mingw/MSYS-1.0.8.exe
 
-Get the SDL binaries & headers from:
+Download the SDL binaries & headers from:
 http://exult.sourceforge.net/snapshots/exult_sdl_win32.zip
 Unzip this file into the main directory of Exult source code. (it should add a SDL subdirectory)
 
-Get the other required developer tools from:
+Download the other required developer tools from:
 http://exult.sourceforge.net/snapshots/exult_dev_win32.zip
 Unzip this file into the MinGW directory.
 
@@ -45,10 +45,10 @@ If you want to compile Exult Studio get the additional required developer tools 
 http://exult.sourceforge.net/snapshots/exult_studio_dev_win32.zip
 Unzip this file into the MinGW directory.
 
-Open MSYS
+Start MSYS
 
 Change to the directory where you unpacked the Exult source code.
-(cd C:/exult)
+(ie cd C:/exult )
 
 Open makefile.mingw from the Exult directory in a text editor and change C:/Ultima7 to the directory you want Exult to be installed to.
 (ie C:/Games/Ultima7 )
@@ -61,8 +61,8 @@ Type 'make -f makefile.mingw install' without quotes to compile and install Exul
 
 Type 'make -f makefile.mingw toolsinstall' without quotes to compile and install the Exult Tools for Windows
 
-Type 'make_-f makefile.studio.mingw ' without quotes to compile and install Exult Studio for Windows
-Then copy over the required library files (*.dll) from the lib directory of MinGW to the installation directory of Exult Studio
+Type 'make -f makefile.studio.mingw' without quotes to compile and install Exult Studio for Windows
+Copy over the required library files (*.dll) from the lib directory of MinGW to the installation directory of Exult Studio
 
 Once compile has finished and been installed exit MSYS
 
