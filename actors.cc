@@ -2782,7 +2782,7 @@ bool Actor::figure_hit_points
 		properties[static_cast<int>(health)] << " remaining" << endl;
 //	cout << "Attack damage was " << hp << " hit points, leaving " << 
 //		properties[(int) health] << " remaining" << endl;
-	if (!defeated && minf->splits() && rand()%2 == 0 && 
+	if (!defeated && minf && minf->splits() && rand()%2 == 0 && 
 	    properties[(int) health] > 0)
 		clone();
 
