@@ -1,3 +1,8 @@
+2000-05-24  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* usecode.cc: call endgame
+	* exult.cc: press F10 to see the endgame sequence
+
 2000-05-23  Jeff Freedman  <jeff@patches.simutech.com>
 
 	* Support for lighting (torches, lamps, etc)
