@@ -1,3 +1,6 @@
+2001-02-07  Christoph Reichenbach  <jameson@linuxgames.com>
+	* files/utils.cc (U7open): Explicitly exported two U7open functions
+
 2001-02-08  Ryan Nunn <triforce@merlin.net.au>
 	* tools/expack.cc: Added .txt file detection to fix some bugs caused 
 	  by "stupid dos conventions".

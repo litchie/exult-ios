@@ -299,7 +299,7 @@ void Actor::unready_weapon
  *
  *	Output:	0 if not on screen.
  */
-#ifndef BEOS
+#if !(defined(BEOS) || defined(ALPHA_LINUX_CXX))
 inline 
 #endif
 int Actor::add_dirty
