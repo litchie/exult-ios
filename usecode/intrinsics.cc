@@ -506,14 +506,12 @@ USECODE_INTRINSIC(create_new_object)
 		if (Is_body(shapenum))
 		{
 			obj = new Dead_body(shapenum, 0, 0, 0, 0, -1);
-			cout << " body " << endl;
 		}
 		else
 		{
 			obj = gmap->create_ireg_object(shapenum, 0);
 					// Be liberal about taking stuff.
 			obj->set_flag(Obj_flags::okay_to_take);
-			cout << " ireg object " << endl;
 		}
 	}
 	obj->set_invalid();		// Not in world yet.

@@ -1,5 +1,6 @@
 2004-01-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: fix check for original gamedat
+	* various: cleaned up some output
 
 2004-01-17  Ryan Nunn  <colourles@users.sourceforge.net>
 	* audio/midi_drivers/fmopldrv.cc : 'Fixing' hanging note problem
