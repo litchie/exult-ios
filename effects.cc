@@ -180,6 +180,21 @@ void Projectile_effect::init
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_shape_num_frames(shape_num);
 	pos = s;			// Get starting position.
+	if (attacker)			// Try to set start better.
+		{
+		Shape_info& info = gwin->get_info(attacker);
+					// Try for around the heat.
+		pos.tz += info.get_3d_height() - 1;
+		int frnum = attacker->get_framenum();
+		if (d.tx < pos.tx)	// Start on proper side.
+			pos.tx -= info.get_3d_xtiles();
+		else
+			pos.tx++;
+		if (d.ty < pos.ty)
+			pos.ty -= info.get_3d_ytiles();
+		else
+			pos.ty++;
+		}
 	path = new Zombie();		// Create simple pathfinder.
 					// Find path.  Should never fail.
 	path->NewPath(pos, d, 0);

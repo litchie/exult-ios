@@ -3193,12 +3193,15 @@ Monster_actor *Monster_info::create
 	int chunkx, int chunky,		// Chunk to place it in.
 	int tilex, int tiley,		// Tile within chunk.
 	int lift,			// Lift.
-	int sched			// Schedule type.
+	int sched,			// Schedule type.
+	int align			// Alignment.
 	)
 	{
 	Monster_actor *monster = new Monster_actor("", shapenum);
 	monster->set_info(this);
-	
+	if (align != -1)
+		monster->set_alignment(align);
+
 	cout << monster->get_name() << " flags ";
 	
 	// Movement flags

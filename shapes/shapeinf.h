@@ -40,10 +40,16 @@ class Weapon_info
 					//   -3 = throw weapon itself.
 	short projectile;		// Projectile shape, or 0.
 	short usecode;			// Usecode function, or 0.
+	unsigned char range1;		// 1st possible range (striking for
+					//   weapons with 2 uses; i.e.,
+					//   daggers.
+	unsigned char range2;		// Throwing range for i.e., daggers.
 public:
 	friend class Shape_info;
-	Weapon_info(char d, unsigned char sp, short am, short pr, short uc) 
-		: damage(d), special_atts(sp), ammo(am), projectile(pr),
+	Weapon_info(char d, unsigned char r1, unsigned char r2,
+			unsigned char sp, short am, short pr, short uc) 
+		: damage(d), range1(r1), range2(r2),
+		  special_atts(sp), ammo(am), projectile(pr),
 		  usecode(uc)
 		{  }
 	int get_damage()
@@ -54,6 +60,11 @@ public:
 		{ return ammo > 0 ? ammo : 0; }
 	int is_thrown()
 		{ return ammo == -3; }
+	int get_striking_range()
+		{ return range1 < 3 ? range1 : 0; }
+	int get_projectile_range()
+		{ return range1 >= 3 ? (range1 + 3) 
+			: (is_thrown() ? (range2 + 3) : 0); }
 	int get_projectile()
 		{ return projectile; }
 	int get_usecode()
