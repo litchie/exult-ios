@@ -50,7 +50,7 @@ void printdataseg(FILE* f, unsigned int ds)
 // Return number of bytes to advance the code pointer
 // Prints first characters of strings referenced
 unsigned int print_opcode(unsigned char* ptrc, unsigned int coffset,
-	unsigned char* pdataseg,unsigned int* pextern,
+	unsigned char* pdataseg,unsigned short* pextern,
 	unsigned int externsize, const char **func_table, int funsize)
 {
 	unsigned int nbytes;
