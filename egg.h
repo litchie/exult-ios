@@ -104,6 +104,8 @@ public:
 		{ return distance; }
 	int get_criteria() const
 		{ return criteria; }
+	int get_type() const
+		{ return type; }
 	void monster_died();		// Monster this created just died.
 					// Can it be activated?
 	int is_active(Game_object *obj,
