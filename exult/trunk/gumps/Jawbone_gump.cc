@@ -38,10 +38,10 @@ Jawbone_gump::Jawbone_gump
 	(
 	Jawbone_object *cont,	// Jawbone it represents.
 	int initx, int inity 		// Coords. on screen.
-	) : Gump(cont, initx, inity, game->get_shape("gumps/jawbone"), false),
+	) : Gump(cont, initx, inity, game->get_shape("gumps/jawbone")),
 		jawbone(cont)
 {
-
+	set_object_area(Rectangle(0, 0, 138, 116), 10, 109);
 }
 
 
@@ -55,10 +55,10 @@ int Jawbone_gump::add(Game_object *obj, int mx, int my,	int sx, int sy,
 void Jawbone_gump::paint(Game_window *gwin)
 {
 	// Paint gump itself
-	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+	gwin->paint_shape(x, y, get_shape());
 
 	// Paint red "checkmark".
-	paint_button(gwin, check_button);
+	check_button->paint(gwin);
 
 	jawbone->find_teeth();
 

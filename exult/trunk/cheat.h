@@ -102,6 +102,7 @@ public:
   void create_last_shape (void) const;
   void delete_object (void) const;
   void shape_browser (void) const;
+  bool get_browser_shape (int &shape, int &frame) const;
   void sound_tester (void) const;
 
   void cheat_screen (void) const;

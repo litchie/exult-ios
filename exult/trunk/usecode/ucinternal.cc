@@ -59,6 +59,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "vec.h"
 #include "keyring.h"
+#include "Gump_manager.h"
 
 using std::cerr;
 using std::cout;
@@ -389,9 +390,10 @@ void Usecode_internal::show_npc_face
 	int frame = arg2.get_int_value();
 	if (!conv->get_num_faces_on_screen())
 		gwin->remove_text_effects();
-	if (gwin->showing_gumps())
+	// Only non persitent
+	if (gwin->get_gump_man()->showing_gumps(true))
 		{
-		gwin->end_gump_mode();
+		gwin->get_gump_man()->close_all_gumps();
 		gwin->set_all_dirty();
 		init_conversation();	// jsf-Added 4/20/01 for SI-Lydia.
 		}
@@ -443,7 +445,7 @@ void Usecode_internal::set_item_shape
 			gwin->paint();	// Repaint finds all lights.
 		else
 			{
-			Gump *gump = gwin->find_gump(item);
+			Gump *gump = gwin->get_gump_man()->find_gump(item);
 			if (gump)
 				gump->paint(gwin);
 			}
@@ -498,7 +500,7 @@ void Usecode_internal::set_item_frame
 		if (item->get_owner())	// Inside a container?
 			{
 			item->set_frame(frame);
-			Gump *gump = gwin->find_gump(item);
+			Gump *gump = gwin->get_gump_man()->find_gump(item);
 			if (gump)
 				gwin->set_all_dirty();
 			}
@@ -528,7 +530,7 @@ void Usecode_internal::remove_item
 		last_created = 0;
 	if (obj->get_owner())		// Inside a container?
 		{			// Paint gump if open.
-		Gump *gump = gwin->find_gump(obj);
+		Gump *gump = gwin->get_gump_man()->find_gump(obj);
 		if (gump)
 			gump->paint(gwin);
 		}
@@ -610,7 +612,7 @@ void Usecode_internal::item_say
 	if (obj && str && *str)
 		{
 					// See if it's in a gump.
-		Gump *gump = gwin->find_gump(obj);
+		Gump *gump = gwin->get_gump_man()->find_gump(obj);
 		Rectangle box;
 		if (gump)
 			box = gump->get_shape_rect(obj);

@@ -169,11 +169,11 @@ Game *Game::create_game(Exult_Game mygame)
 	
 	switch(game_type) {
 	case BLACK_GATE:
-		cerr << "Starting a BLACK GATE game" << endl;
+		cout << "Starting a BLACK GATE game" << endl;
 		game = new BG_Game();
 		break;
 	case SERPENT_ISLE:
-		cerr << "Starting a SERPENT ISLE game" << endl;
+		cout << "Starting a SERPENT ISLE game" << endl;
 		game = new SI_Game();
 		break;
 	default:

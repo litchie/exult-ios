@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cheat.h"
 #include "chunks.h"
 #include "Audio.h"
+#include "Gump_manager.h"
 
 using std::cout;
 using std::endl;
@@ -63,7 +64,7 @@ bool Game_window::start_dragging
 	delete dragging_save;
 	dragging_save = 0;
 					// First see if it's a gump.
-	dragging_gump = find_gump(x, y);
+	dragging_gump = gump_man->find_gump(x, y);
 	if (dragging_gump)
 		{
 		dragging = dragging_gump->find_object(x, y);
@@ -74,18 +75,28 @@ bool Game_window::start_dragging
 				dragging_gump->on_button(this, x, y)) != 0)
 			{
 			dragging_gump = 0;
+			if (!dragging_button->is_draggable())
+			{
+				dragging_button = 0;
+				return false;
+			}
 			dragging_button->push(this);
 					// Pushed button, so make noise.
 			Audio::get_ptr()->play_sound_effect(
 					Audio::game_sfx(96));
 			painted = true;
 			}
-		else
+		else if (dragging_gump->is_draggable())
 			{		// Dragging whole gump.
 			dragging_paintx = dragging_gump->get_x();
 			dragging_painty = dragging_gump->get_y();
 cout << "(x,y) rel. to gump is (" << (x-dragging_paintx) << ", " <<
 		(y-dragging_painty) << ")"<<endl;
+			}
+		else // the gump isn't draggable
+			{
+			dragging_gump = 0;
+			return false;
 			}
 		}
 	else if (!dragging)		// Not found in gump?
@@ -150,8 +161,7 @@ bool Game_window::drag
 			if (dragging)
 				dragging_gump->remove(dragging);
 			else
-				dragging_gump->remove_from_chain(
-							open_gumps);
+				gump_man->remove_gump(dragging_gump);
 		else {
 			get_chunk(dragging->get_cx(), 
 				dragging->get_cy())->remove(dragging);
@@ -218,8 +228,8 @@ bool Game_window::drop_dragged
 		if (!dragging_gump)
 			return handled;
 		if (!moved)		// A click just raises it to the top.
-			dragging_gump->remove_from_chain(open_gumps);
-		dragging_gump->append_to_chain(open_gumps);
+			gump_man->remove_gump(dragging_gump);
+		gump_man->add_gump(dragging_gump);
 		}
 	else if (!moved)		// For now, if not moved, leave it.
 		return handled;
@@ -291,7 +301,7 @@ void Game_window::drop
 	int old_top = dragging->get_lift() + 
 					get_info(dragging).get_3d_height();
 					// First see if it's a gump.
-	Gump *on_gump = find_gump(x, y);
+	Gump *on_gump = gump_man->find_gump(x, y);
 					// Check for quantity.
 	int dragging_quantity = dragging->get_quantity();
 					// Don't prompt if within same gump.

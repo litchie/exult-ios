@@ -54,9 +54,9 @@ class Special_effect;
 class Time_queue;
 class Usecode_machine;
 class Deleted_objects;
+class Gump_manager;
 struct SaveGame_Details;
 struct SaveGame_Party;
-
 /*
  *	The main game window:
  */
@@ -72,7 +72,7 @@ class Game_window
 	long time_stopped;		// For 'stop time' spell.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
 	Special_effect *effects;	// Text snippets, sprite effects.
-	Gump *open_gumps;	// Open containers on screen.
+	Gump_manager *gump_man;		// Open containers on screen.
 	unsigned long render_seq;	// For marking rendered objects.
 	bool painted;			// true if we updated image buffer.
 	bool focus;			// Do we have focus?
@@ -298,8 +298,6 @@ public:
 		{ return gumps.get_num_shapes(); }
 	int get_num_sprites()
 		{ return sprites.get_num_shapes(); }
-	inline bool showing_gumps() const
-		{ return open_gumps != 0; }
 	inline int in_combat()		// In combat mode?
 		{ return combat; }
 	void toggle_combat();
@@ -360,18 +358,23 @@ public:
 		}
 					// Get screen area used by object.
 	Rectangle get_shape_rect(const Game_object *obj);
-	Shape_frame *get_gump_shape(int shapenum, int framenum, bool paperdoll = false)
-		{ return paperdoll ? paperdolls.get_shape(shapenum, framenum) : gumps.get_shape(shapenum, framenum); }
-	Shape_frame *get_exult_shape(int shapenum, int framenum)
+
+	inline Shape_frame *get_gump_shape(int shapenum, int framenum)
+		{ return gumps.get_shape(shapenum, framenum); }
+	inline Shape_frame *get_paperdoll_shape(int shapenum, int framenum)
+		{ return paperdolls.get_shape(shapenum, framenum); }
+	inline Shape_frame *get_exult_shape(int shapenum, int framenum)
 		{ return exult_flx.get_shape(shapenum, framenum); }
-	Shape_frame *get_gameflx_shape(int shapenum, int framenum)
+	inline Shape_frame *get_gameflx_shape(int shapenum, int framenum)
 		{ return gameflx.get_shape(shapenum, framenum); }
-					// Get screen area of a gump.
-					//   for painting it.
-	Rectangle get_gump_rect(Gump *gump);
-					// Get sprites shape.
-	Shape_frame *get_sprite_shape(int shapenum, int framenum)
+	inline Shape_frame *get_sprite_shape(int shapenum, int framenum)
 		{ return sprites.get_shape(shapenum, framenum); }
+	inline Shape_frame *get_face(int shapenum, int framenum)
+		{ return faces.get_shape(shapenum, framenum); }
+	inline Shape_frame *get_bg_sigump_shape(int shapenum, int framenum)
+		{ return (!bg_paperdolls_allowed || !bg_paperdolls) ? 0:
+			bg_serpgumps.get_shape(shapenum, framenum); }
+
 					// Get screen loc. of object.
 	void get_shape_location(Game_object *obj, int& x, int& y);
 					// Paint shape in window.
@@ -393,6 +396,10 @@ public:
 					xoff, yoff, xforms, 
 					sizeof(xforms)/sizeof(xforms[0]));
 		}
+
+	inline void paint_shape(int xoff, int yoff, ShapeID &shape, int translucent = 0)
+		{ paint_shape(xoff, yoff, shape.get_shape(), translucent); }
+
 	void paint_shape(int xoff, int yoff, int shapenum, int framenum)
 		{
 		paint_shape(xoff, yoff, get_shape(shapenum, framenum),
@@ -420,22 +427,6 @@ public:
 		{ paint_outline(xoff, yoff, shnum, frnum, protect_pixel); }
 	void paint_hit_outline(int xoff, int yoff, int shnum, int frnum)
 		{ paint_outline(xoff, yoff, shnum, frnum, hit_pixel); }
-					// A "gump" is an open container.
-	void paint_gump(int xoff, int yoff, int shapenum, int framenum, bool paperdoll = false)
-		{
-		Shape_frame *shape = paperdoll ? paperdolls.get_shape(shapenum & 0xFFF, framenum) :
-				gumps.get_shape(shapenum, framenum);
-		if (shape)
-			paint_shape(xoff, yoff, shape);
-		}
-	// ONLY USE this in BG if the following are true
-	void paint_bg_serpgump(int xoff, int yoff, int shapenum, int framenum)
-		{
-		if (!bg_paperdolls_allowed || !bg_paperdolls) return;
-		Shape_frame *shape = bg_serpgumps.get_shape(shapenum, framenum);
-		if (shape)
-			paint_shape(xoff, yoff, shape);
-		}
 	void paint_exult_shape(int xoff, int yoff, int shapenum, int framenum)
 		{
 		Shape_frame *shape = exult_flx.get_shape(shapenum, framenum);
@@ -446,15 +437,11 @@ public:
 		Shape_frame *shape = gameflx.get_shape(shapenum, framenum);
 		if (shape) paint_shape(xoff, yoff, shape);
 	}
-	Shape_frame *get_face(int shapenum, int framenum) {
-		return faces.get_shape(shapenum, framenum);
-	}
 	void paint_face(int xoff, int yoff, int shapenum, int framenum) {
 		Shape_frame *shape = faces.get_shape(shapenum, framenum);
 		if (shape)
 			paint_shape(xoff, yoff, shape);
 	}
-
 	void paint_sprite(int xoff, int yoff, int shapenum, int framenum)
 		{
 		Shape_frame *shape = sprites.get_shape(shapenum, framenum);
@@ -598,11 +585,7 @@ public:
 	int get_party(Actor **list, int avatar_too = 0);
 	void activate_item(int shnum, int frnum=c_any_framenum,
 			   int qual=c_any_qual); // Activate item in party.
-					// Find gump (x, y) is in.
-	Gump *find_gump(int x, int y);
-					// Find gump object is in.
-	Gump *find_gump(Game_object *obj);
-					// Find top object that (x,y) is in.
+					// Find object (x, y) is in.
 	Game_object *find_object(int x, int y);
 	int find_objects(int lift, int x, int y, Game_object **list);
 	void show_items(int x, int y);	// Show names of items clicked on.
@@ -622,10 +605,6 @@ public:
 	int get_weather();		// Get # of last weather added.
 					// Handle a double-click in window.
 	void double_clicked(int x, int y);
-	void show_gump(Game_object *obj, int shapenum);
-	void end_gump_mode();		// Remove gumps from screen.
-					// Remove a gump from screen.
-	void remove_gump(Gump *gump);
 					// Add npc to 'nearby' list.
 	void add_nearby_npc(Npc_actor *npc);
 	void remove_nearby_npc(Npc_actor *npc);
@@ -702,6 +681,13 @@ public:
 	bool emulate_is_move_allowed(int tx, int ty);
 	// Swapping a superchunk to disk emulation
 	void emulate_swapout (int scx, int scy);
+
+	unsigned char get_poison_pixel() { return poison_pixel;}
+	unsigned char get_protect_pixel() { return protect_pixel; }
+	unsigned char get_hit_pixel() { return hit_pixel; }
+
+	Gump_manager *get_gump_man() { return gump_man; }
+	Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
 
 private:
 	void start_actor_alt (int winx, int winy, int speed);

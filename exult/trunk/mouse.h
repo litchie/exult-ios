@@ -57,6 +57,15 @@ protected:
 	void Init();
 
 public:
+	// Avatar speed (frame delay in 1/1000 secs.)
+	enum Avatar_Speeds
+	{
+		slow_speed	= 166,
+		medium_speed	= 100,
+		fast_speed	= 50
+	};
+	int avatar_speed;
+
 	static bool mouse_update;
 	static Mouse* mouse;
 
@@ -115,25 +124,28 @@ public:
 					// Flash desired shape for 1/2 sec.
 	void flash_shape(Mouse_shapes flash);
 					// Set to short arrow.
-	void set_short_arrow(Direction dir)
-		{ set_shape(short_arrows[(int) dir]); }
+	int get_short_arrow(Direction dir)
+		{ return (short_arrows[(int) dir]); }
 					// Set to medium arrow.
-	void set_medium_arrow(Direction dir)
-		{ set_shape(med_arrows[(int) dir]); }
+	int get_medium_arrow(Direction dir)
+		{ return (med_arrows[(int) dir]); }
 					// Set to long arrow.
-	void set_long_arrow(Direction dir)
-		{ set_shape(long_arrows[(int) dir]); }
+	int get_long_arrow(Direction dir)
+		{ return (long_arrows[(int) dir]); }
 					// Set to short combat mode arrow.
-	void set_short_combat_arrow(Direction dir)
-		{ set_shape(short_combat_arrows[(int) dir]); }
+	int get_short_combat_arrow(Direction dir)
+		{ return (short_combat_arrows[(int) dir]); }
 					// Set to medium combat mode arrow.
-	void set_medium_combat_arrow(Direction dir)
-		{ set_shape(med_combat_arrows[(int) dir]); }
+	int get_medium_combat_arrow(Direction dir)
+		{ return (med_combat_arrows[(int) dir]); }
 
 	unsigned char is_onscreen() { return onscreen; }
 
-	inline const int get_mousex() const { return mousex; }
-	inline const int get_mousey() const { return mousey; }
+	//inline const int get_mousex() const { return mousex; }
+	//inline const int get_mousey() const { return mousey; }
+
+	// Sets hand or speed cursors
+	void set_speed_cursor();
 };
 
 #endif

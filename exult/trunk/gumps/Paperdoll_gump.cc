@@ -184,8 +184,10 @@ Paperdoll_gump::Paperdoll_gump
 	Container_game_object *cont,	// Container it represents.
 	int initx, int inity, 		// Coords. on screen.
 	int shnum			// Shape #.
-	) : Gump(cont, initx, inity, 123, true)
+	) : Gump(cont, initx, inity, 123, SF_PAPERDOL_VGA)
 {
+	set_object_area(Rectangle(26, 0, 104, 140), 6, 145);
+
 	// Create Heart button
 	heart_button = new Heart_button(this, heartx, hearty);
 	Actor *actor = (Actor *) cont;
@@ -347,17 +349,17 @@ void Paperdoll_gump::paint
 	Rectangle box = object_area;	// Paint objects inside.
 	box.shift(x, y);		// Set box to screen location.
 
-	// Paint the gump itself.
-	gwin->paint_gump(x, y, get_shapenum(), get_framenum(), is_paperdoll());
-	
+	gwin->paint_shape(x, y, get_shape());
+
 	// Paint red "checkmark".
-	paint_button(gwin, check_button);
+	check_button->paint(gwin);
 
 	// Get the information required about ourself
 	Actor *actor = dynamic_cast<Actor *> (container);
 	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
 	if (!info) info = GetCharacterInfo (actor->get_shape_real());
-	if (!info) info = Characters;
+	if (!info && Game::get_game_type() != BLACK_GATE) info = Characters;
+	else if (!info) info = Characters_BG;
 
 	// Spots that are female/male specific
 	int	shieldx, shieldy,
@@ -478,18 +480,12 @@ void Paperdoll_gump::paint
 
 
 	// Paint buttons.
-	if (heart_button)
-		paint_button(gwin, heart_button);
-	if (disk_button)
-		paint_button(gwin, disk_button);
-	if (combat_button)
-		paint_button(gwin, combat_button);
-	if (cstats_button)
-		paint_button(gwin, cstats_button);
-	if (halo_button)
-		paint_button(gwin, halo_button);
-	if (cmode_button)
-		paint_button(gwin, cmode_button);
+	if (heart_button) heart_button->paint(gwin);
+	if (disk_button) disk_button->paint(gwin);
+	if (combat_button) combat_button->paint(gwin);
+	if (cstats_button) cstats_button->paint(gwin);
+	if (halo_button) halo_button->paint(gwin);
+	if (cmode_button) cmode_button->paint(gwin);
 
 					// Show weight.
 	int max_weight = 2*container->get_property(Actor::strength);
@@ -533,20 +529,13 @@ void Paperdoll_gump::paint_object
 
 		set_to_spot(obj, spot);
 	
-		if (Game::get_game_type() == BLACK_GATE)
-		{
-			gwin->paint_bg_serpgump (box.x + coords_blue[spot*2],
-					box.y + coords_blue[spot*2+1],
-					shapes_blue[spot*2],
-					shapes_blue[spot*2+1]);
-		}
-		else
-		{
-			gwin->paint_gump (box.x + coords_blue[spot*2],
-					box.y + coords_blue[spot*2+1],
-					shapes_blue[spot*2],
-					shapes_blue[spot*2+1]);
-		}
+		ShapeID s(shapes_blue[spot*2], shapes_blue[spot*2+1], SF_GUMPS_VGA);
+
+		if (Game::get_game_type() == BLACK_GATE) s.set_file(SF_BG_SIGUMP_FLX);
+
+		gwin->paint_shape(box.x + coords_blue[spot*2],
+				box.y + coords_blue[spot*2+1],
+				s.get_shape());
 
 		gwin->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy(), 
 			obj->get_shapenum(), obj->get_framenum());
@@ -576,20 +565,9 @@ void Paperdoll_gump::paint_object
 		f = item->frame4;
 		
 	if (item->gender && !info->is_female) f++;
-
-	switch (item->file) {
-	case exult_flx:
-		gwin->paint_exult_shape (box.x + sx, box.y + sy, item->shape, f);
-		break;
-	case gameflx:
-		gwin->paint_gameflx_shape (box.x + sx, box.y + sy, item->shape, f);
-		break;
-	case paperdoll:
-		gwin->paint_gump (box.x + sx, box.y + sy, item->shape, f, true);
-		break;
-	default:
-		std::cerr << "Paperdolling: wrong file specified!" << std::endl;
-	}
+ 
+	ShapeID s(item->shape, f, item->file);
+	gwin->paint_shape(box.x + sx, box.y + sy, s.get_shape());
 }
 
 /*
@@ -632,7 +610,8 @@ void Paperdoll_gump::paint_body
 	Paperdoll_npc *info
 	)
 {
-	gwin->paint_gump (box.x + bodyx, box.y + bodyy, info->body_shape, info->body_frame, true);
+	ShapeID s(info->body_shape, info->body_frame, SF_PAPERDOL_VGA);
+	gwin->paint_shape (box.x + bodyx, box.y + bodyy, s.get_shape());
 }
 
 /*
@@ -645,8 +624,9 @@ void Paperdoll_gump::paint_belt
 	Paperdoll_npc *info
 	)
 {
-	if (info->is_female) gwin->paint_gump (box.x + beltfx, box.y + beltfy, 10, 0, true);
-	else gwin->paint_gump (box.x + beltmx, box.y + beltmy, 10, 1, true);
+	ShapeID s(10, 0, SF_PAPERDOL_VGA);
+	if (!info->is_female) s.set_frame(1);
+	gwin->paint_shape (box.x + beltmx, box.y + beltmy, s);
 }
 
 /*
@@ -669,19 +649,8 @@ void Paperdoll_gump::paint_head
 	if (item && item->type == OT_Helm)
 		f = info->head_frame_helm;
 
-	switch (info->file) {
-	case exult_flx:
-		gwin->paint_exult_shape(box.x + headx, box.y + heady, info->head_shape, f);
-		break;
-	case gameflx:
-		gwin->paint_gameflx_shape(box.x + headx, box.y + heady, info->head_shape, f);
-		break;
-	case paperdoll:
-		gwin->paint_gump (box.x + headx, box.y + heady, info->head_shape, f, true);
-		break;
-	default:
-		std::cerr << "Paperdolling: wrong shapefile specified!" << std::endl;
-	}
+	ShapeID s(info->head_shape, f, info->file);
+	gwin->paint_shape(box.x + headx, box.y + heady, s.get_shape());
 }
 
 /*
@@ -699,20 +668,23 @@ void Paperdoll_gump::paint_arms
 	Paperdoll_item *item = NULL;
 	if (obj) item = GetItemInfo (obj->get_shapenum(), obj->get_framenum());
 
+	ShapeID s(info->arms_shape, info->arms_frame, SF_PAPERDOL_VGA);
+
 	switch (get_arm_type())
 	{
-		default:
-		gwin->paint_gump (box.x + bodyx, box.y + bodyy, info->arms_shape, info->arms_frame, true);
-		return;
-
 		case OT_Double:
-		gwin->paint_gump (box.x + bodyx, box.y + bodyy, info->arms_shape, info->arms_frame_2h, true);
-		return;
+		s.set_frame(info->arms_frame_2h);
+		break;
 
 		case OT_Staff:
-		gwin->paint_gump (box.x + bodyx, box.y + bodyy, info->arms_shape, info->arms_frame_staff, true);
-		return;
+		s.set_frame(info->arms_frame_staff);
+		break;
+
+		default:
+		break;
 	}
+
+	gwin->paint_shape (box.x + bodyx, box.y + bodyy, s);
 }
 
 
@@ -757,7 +729,8 @@ Game_object * Paperdoll_gump::find_object
 	Actor *actor = dynamic_cast<Actor *> (container);
 	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
 	if (!info) info = GetCharacterInfo (actor->get_shape_real());
-	if (!info) info = Characters;
+	if (!info && Game::get_game_type() != BLACK_GATE) info = Characters;
+	else if (!info) info = Characters_BG;
 
 	int	shieldx, shieldy,
 		back2x,  back2y,
@@ -955,7 +928,7 @@ Game_object * Paperdoll_gump::check_object
 		if (!obj->get_cx() && !obj->get_cy()) set_to_spot(obj, spot);
 		
 		if (check_shape (gwin, mx - obj->get_cx(), my - obj->get_cy(),
-			obj->get_shapenum(), obj->get_framenum(), shapes))
+			obj->get_shapenum(), obj->get_framenum(), obj->get_shapefile()))
 		{
 			return obj;
 		}
@@ -1037,7 +1010,7 @@ bool Paperdoll_gump::check_body
 	Paperdoll_npc *info
 	)
 {
-	return check_shape (gwin, mx - bodyx, my - bodyy, info->body_shape, info->body_frame, paperdoll);
+	return check_shape (gwin, mx - bodyx, my - bodyy, info->body_shape, info->body_frame, SF_PAPERDOL_VGA);
 }
 
 /*
@@ -1050,8 +1023,8 @@ bool Paperdoll_gump::check_belt
 	Paperdoll_npc *info
 	)
 {
-	if (info->is_female) return check_shape (gwin, mx - beltfx, my - beltfy, 10, 0, paperdoll);
-	else return check_shape (gwin, mx - beltmx, my - beltmy, 10, 1, paperdoll);
+	if (info->is_female) return check_shape (gwin, mx - beltfx, my - beltfy, 10, 0, SF_PAPERDOL_VGA);
+	else return check_shape (gwin, mx - beltmx, my - beltmy, 10, 1, SF_PAPERDOL_VGA);
 
 	return false;
 }
@@ -1097,13 +1070,13 @@ bool Paperdoll_gump::check_arms
 	switch (get_arm_type())
 	{
 		default:
-		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame, paperdoll);
+		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame, SF_PAPERDOL_VGA);
 
 		case OT_Double:
-		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame_2h, paperdoll);
+		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame_2h, SF_PAPERDOL_VGA);
 
 		case OT_Staff:
-		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame_staff, paperdoll);
+		return check_shape (gwin, mx - bodyx, my - bodyy, info->arms_shape, info->arms_frame_staff, SF_PAPERDOL_VGA);
 	}
 	return false;
 }
@@ -1116,28 +1089,12 @@ bool Paperdoll_gump::check_shape
 	Game_window *gwin,
 	int px, int py,
 	int shape, int frame,
-	Paperdoll_file file
+	ShapeFile file
 	)
 {
-	Shape_frame *s;
+	ShapeID sid(shape, frame, file);
+	Shape_frame *s = sid.get_shape();
 	
-	switch (file) {
-	case exult_flx:
-		s = gwin->get_exult_shape(shape, frame);
-		break;
-	case gameflx:
-		s = gwin->get_gameflx_shape(shape, frame);
-		break;
-	case paperdoll:
-		s = gwin->get_gump_shape(shape, frame, true);
-		break;
-	case shapes:
-		s = gwin->get_shape(shape, frame);
-		break;
-	default:
-		std::cerr << "Paperdolling: wrong shapefile specified!" << std::endl;
-	}
-
 	// If no shape, return
 	if (!s) return false;
 
@@ -1150,4 +1107,9 @@ bool Paperdoll_gump::check_shape
 	if (!s->has_point (px, py)) return false;
 	
 	return true;
+}
+
+Game_object *Paperdoll_gump::find_actor(int mx, int my)
+{
+	return container;
 }

@@ -30,16 +30,16 @@ class Gump_ToggleButton : public Gump_button
  public:
 	Gump_ToggleButton(Gump *par, int px, int py, int shapenum,
 						   int selectionnum, int numsel)
-		: Gump_button(par, shapenum, px, py, GSF_EXULT_FLX), 
+		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX), 
 		numselections(numsel)
 	 {
-		 framenum = 2 * selectionnum;
+		 set_frame(2 * selectionnum);
 	 }
 
 	virtual void activate(Game_window *gwin);
 	virtual void toggle(int state)=0;
 
-	int getselection() const { return framenum/2; }
+	int getselection() const { return get_framenum()/2; }
 
  private:
 	int numselections;

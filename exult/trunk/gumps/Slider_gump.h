@@ -45,6 +45,8 @@ protected:
 	static short leftbtnx, rightbtnx, btny;
 	static short xmin, xmax;
 
+	ShapeID	diamond;		// Diamond
+
 public:
 	Slider_gump(int mival, int mxval, int step, int defval);
 	~Slider_gump();

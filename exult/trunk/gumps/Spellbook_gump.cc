@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Spellbook_gump.h"
 #include "spellbook.h"
 #include "game.h"
+#include "Gump_manager.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
@@ -196,11 +197,11 @@ public:
 	Spell_button(Gump *par, int px, int py, int sp, int shnum, int frnum)
 		: Gump_button(par, shnum, px, py), spell(sp)
 		{
-		framenum = frnum;	// Frame # is circle.
+		set_frame(frnum);	// Frame # is circle.
 		}
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
-	virtual void double_clicked(Game_window *gwin);
+	virtual void double_clicked(Game_window *gwin, int x, int y);
 	};
 
 /*
@@ -221,7 +222,8 @@ void Spell_button::activate
 
 void Spell_button::double_clicked
 	(
-	Game_window *gwin
+	Game_window *gwin,
+	int x, int y
 	)
 	{
 	((Spelltype_gump *) parent)->do_spell(spell);
@@ -298,6 +300,8 @@ Spellbook_gump::Spellbook_gump
 	Spellbook_object *b
 	) : Spelltype_gump(SPELLBOOK), page(0), book(b)
 {
+	set_object_area(Rectangle(36, 28, 102, 66), 7, 54);
+
 					// Where to paint page marks:
 	const int lpagex = 38, rpagex = 142, lrpagey = 25;
 					// Get book's top owner.
@@ -390,7 +394,7 @@ void Spellbook_gump::do_spell
 					book_owner->remove_quantity(1, 
 						REAGENTS, c_any_qual, r);
 		}
-		gwin->remove_gump(this);// Note:  We're deleted!!
+		gwin->get_gump_man()->close_gump(this);// Note:  We're deleted!!
 		gwin->paint();
 		gwin->get_usecode()->call_usecode(Get_usecode(spell),
 			gwin->get_main_actor(), Usecode_machine::double_click);
@@ -477,7 +481,7 @@ void Spellbook_gump::paint_button
 	Gump_button *btn
 	)
 {
-	gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, btn->framenum);
+	gwin->paint_shape(x + btn->x, y + btn->y, get_shape());
 }
 
 /*
@@ -530,7 +534,8 @@ void Spellbook_gump::paint
 		Shape_frame *bshape = gwin->get_gump_shape(BOOKMARK, 0);
 		bx += bshape->get_xleft();
 		int by = object_area.y - 14 + bshape->get_yabove();
-		gwin->paint_gump(x + bx, y + by, BOOKMARK, 1 + s%4);
+		ShapeID bm(BOOKMARK, 1 + s%4, SF_GUMPS_VGA);
+		gwin->paint_shape(x + bx, y + by, bm);
 	}
 	gwin->set_painted();
 }
@@ -544,6 +549,8 @@ Spellscroll_gump::Spellscroll_gump
 	Game_object *s
 	) : Spelltype_gump(65), scroll(s), spell(0)
 	{
+	set_object_area(Rectangle(30, 29, 50, 29), 8, 68);
+
 	Game_window *gwin = Game_window::get_game_window();
 					// Get dims. of a spell.
 	Shape_frame *spshape = gwin->get_gump_shape(SCROLLSPELLS, 0);
@@ -629,7 +636,7 @@ void Spellscroll_gump::paint_button
 	Gump_button *btn
 	)
 	{
-	gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, btn->framenum);
+	gwin->paint_shape(x + btn->x, y + btn->y, get_shape());
 	}
 
 /*

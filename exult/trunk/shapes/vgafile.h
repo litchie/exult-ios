@@ -67,7 +67,7 @@ public:
 	Shape_frame() : data(0), datalen(0)
 		{  }
 	unsigned char *get_data() { return data; }
-	bool is_rle() const { return rle; }
+	bool is_rle() const { return rle != 0; }
 					// Read in shape/frame.
 	unsigned char read(DataSource& shapes, uint32 shapeoff,
 					uint32 shapelen, int frnum);

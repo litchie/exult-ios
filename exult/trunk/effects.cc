@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "chunks.h"
 #include "Audio.h"
+#include "Gump_manager.h"
 
 #include "SDL_timer.h"
 
@@ -715,7 +716,7 @@ void Rain_effect::paint
 	Game_window *gwin
 	)
 	{
-	if (gwin->is_main_actor_inside() || gwin->showing_gumps())
+	if (gwin->is_main_actor_inside() || gwin->get_gump_man()->showing_gumps())
 		return;			// Inside.
 					// Get transform table.
 	Xform_palette xform = gwin->get_xform(8);//++++Experiment.
@@ -1064,7 +1065,7 @@ void Clouds_effect::paint
 	Game_window *gwin
 	)
 	{
-	if (!gwin->is_main_actor_inside() && !gwin->showing_gumps())
+	if (!gwin->is_main_actor_inside() && !gwin->get_gump_man()->showing_gumps())
 		for (int i = 0; i < num_clouds; i++)
 			clouds[i]->paint(gwin);
 	}

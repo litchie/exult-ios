@@ -478,6 +478,12 @@ void Cheat::shape_browser (void) const {
 	gwin->set_palette(-1,-1);
 }
 
+bool Cheat::get_browser_shape (int &shape, int &frame) const {
+	if (!enabled) return false;
+
+	return browser->get_shape(shape, frame);
+}
+
 void Cheat::sound_tester (void) const {
 	if (!enabled) return;
 

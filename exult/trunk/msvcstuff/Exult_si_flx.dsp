@@ -45,6 +45,7 @@ CFG=Exult_si_flx - Win32 Debug Install
 # PROP Intermediate_Dir "Exult_si_flx___Win32_Release"
 # PROP Cmd_Line "buildflx.bat ..\data\si"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_si_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -65,6 +66,7 @@ CFG=Exult_si_flx - Win32 Debug Install
 # PROP Intermediate_Dir "Exult_si_flx___Win32_Debug0"
 # PROP Cmd_Line "buildflx.bat ..\data\si"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_si_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -85,6 +87,7 @@ CFG=Exult_si_flx - Win32 Debug Install
 # PROP Intermediate_Dir "Release Install"
 # PROP Cmd_Line "buildflx_inst.bat ..\data\si .. ..\data\exult_si.flx data"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_si_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -105,6 +108,7 @@ CFG=Exult_si_flx - Win32 Debug Install
 # PROP Intermediate_Dir "Debug Install"
 # PROP Cmd_Line "buildflx_inst.bat ..\data\si .. ..\data\exult_si.flx data"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_si_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 

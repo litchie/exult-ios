@@ -28,7 +28,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	game.o gameclk.o gamedat.o gamerend.o gamewin.o keys.o keyactions.o \
 	menulist.o mouse.o npcnear.o npctime.o palette.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
-	cheat_screen.o
+	cheat_screen.o shapeid.o 
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
@@ -45,7 +45,7 @@ GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	Spellbook_gump.o Stats_gump.o Text_gump.o  Yesno_gump.o \
 	Gamemenu_gump.o Newfile_gump.o Gump_ToggleButton.o \
 	AudioOptions_gump.o Face_button.o CombatStats_gump.o \
-	Jawbone_gump.o VideoOptions_gump.o
+	Jawbone_gump.o VideoOptions_gump.o Face_stats.o Gump_manager.o 
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o
 SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o

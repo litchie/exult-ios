@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Modal_gump.h"
 #include "mouse.h"
 #include "ucmachine.h"
-
+#include "Gump_manager.h"
 
 /*
  *	A checkmark for closing its parent:
@@ -69,7 +69,7 @@ void Heart_button::activate
 	Game_window *gwin
 	)
 {
-	gwin->show_gump(parent->get_container(), game->get_shape("gumps/statsdisplay"));
+	gwin->get_gump_man()->add_gump(parent->get_container(), game->get_shape("gumps/statsdisplay"));
 }
 
 /*
@@ -165,7 +165,7 @@ Combat_mode_button::Combat_mode_button(Gump *par, int px, int py, Actor *a)
 	: Gump_button(par, game->get_shape("gumps/combatmode"), px, py), 
 	  actor(a)
 {
-	framenum = (int) actor->get_attack_mode();
+	set_frame((int) actor->get_attack_mode());
 }
 
 /*
@@ -179,9 +179,9 @@ void Combat_mode_button::activate
 {
 					// Only Avatar gets last frame (manual)
 	int nframes = actor == gwin->get_main_actor() ? 10 : 9;
-	framenum = (framenum + 1)%nframes;
-	actor->set_attack_mode((Actor::Attack_mode) framenum);
-	parent->paint_button(gwin, this);
+	set_frame((get_framenum() + 1)%nframes);
+	actor->set_attack_mode((Actor::Attack_mode) get_framenum());
+	paint(gwin);
 	gwin->set_painted();
 }
 
@@ -206,5 +206,5 @@ void Cstats_button::activate
 	)
 {
 	int cnt = gwin->get_usecode()->get_party_count();
-	gwin->show_gump(0, game->get_shape("gumps/cstats/1") + cnt);
+	gwin->get_gump_man()->add_gump(0, game->get_shape("gumps/cstats/1") + cnt);
 }

@@ -48,14 +48,6 @@ public:
 		OT_Musket = 8
 	};
 
-	enum Paperdoll_file
-	{
-		paperdoll = 0,
-		exult_flx = 1,
-		gameflx = 2,
-		shapes = 3
-	};
-
 	// This contains info on how to render an item when it's in a certain spot
 	struct Paperdoll_item
 	{
@@ -67,7 +59,7 @@ public:
 		
 		bool			gender;				// Is this object gender specific
 
-		Paperdoll_file		file;				// Which  VGA file is the shape in
+		ShapeFile		file;				// Which  VGA file is the shape in
 		int			shape;				// The shape (if -1 use world shape and frame)
 		int			frame;				// The frame
 		int			frame2;				// Second Frame (if used)
@@ -80,7 +72,7 @@ public:
 	{
 		int			npc_shape;			// Choose the NPC based on shape, not NPC number
 		bool			is_female;			// Is the NPC Female (or more specifically not male)
-		Paperdoll_file		file;				// Which VGA file the head shape is in
+		ShapeFile		file;				// Which VGA file the head shape is in
 
 		// Body info
 		int			body_shape;			// Body Shape
@@ -180,9 +172,10 @@ public:
 		{ return GetItemInfo(shape, frame, spot)!=NULL?true:false; }
 
 	inline static bool IsNPCFemale(int shape)
-	{ return GetCharacterInfo(shape)?GetCharacterInfo(shape)->is_female:true; }
+	{ return GetCharacterInfo(shape)?GetCharacterInfoSafe(shape)->is_female:true; }
 
 	// Retrieve info about an item or NPC
+	static Paperdoll_npc *GetCharacterInfoSafe(int shape);
 	static Paperdoll_npc *GetCharacterInfo(int shape);
 	static Paperdoll_item *GetItemInfo(int shape, int frame = -1, int spot = -1);
 
@@ -249,8 +242,9 @@ public:
 	bool check_arms (Game_window *gwin, int mx, int my, Paperdoll_npc *info);
 
 	// Generic Method to check a shape
-	bool check_shape (Game_window *gwin, int px, int py, int shape, int frame, Paperdoll_file file);
+	bool check_shape (Game_window *gwin, int px, int py, int shape, int frame, ShapeFile file);
 
+	virtual Game_object *find_actor(int mx, int my);
 };
 
 #endif

@@ -81,6 +81,7 @@ exult_SOURCES =	\
 	schedule.h	\
 	segfile.cc	\
 	segfile.h	\
+	shapeid.o	\
 	shapeid.h	\
 	sigame.cc	\
 	tiles.h		\

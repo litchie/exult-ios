@@ -48,6 +48,7 @@ Ctrl-P		repaint
 P		useitem			627	# Use lockpick
 Alt-Q		quit
 Ctrl-R		quickrestore
+R		face_stats
 Ctrl-Alt-S	screenshot
 Ctrl-S		quicksave
 Alt-S		change_skin

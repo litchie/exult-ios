@@ -108,13 +108,14 @@ Actor::Actor
 	if ((rflags >> 0xA) & 1) set_flag (Obj_flags::on_moving_barge);
 	alignment = (rflags >> 3)&3;
 
+	// Unknown, using for is_temporary
+	if ((rflags >> 0x6) & 1) set_flag (Obj_flags::is_temporary);
 
 	/*	Not used by exult
 	if ((rflags >> 0xF) & 1) set_flag (Obj_flags::dead);
 
 	Unknown in U7tech
 	if ((rflags >> 0x5) & 1) set_flag (Obj_flags::unknown);
-	if ((rflags >> 0x6) & 1) set_flag (Obj_flags::unknown);
 */
 	
 					// Get char. atts.
@@ -165,8 +166,6 @@ Actor::Actor
 	set_property((int) Actor::combat, combat_val & 0x7F);
 	if ((combat_val << 7) & 1) set_flag (Obj_flags::petra);
 
-	set_polymorph_default();	// We now have enought info to set the polymorph shape
-
 	schedule_type = Read1(nfile);
 	int amode = Read1(nfile);	// Default attack mode
 					// Just stealing a spare bit:
@@ -198,8 +197,7 @@ Actor::Actor
 		set_ident(magic_val&0x1F);
 		if ((mana_val >> 0) & 1) set_flag (Obj_flags::met);
 		if ((mana_val >> 1) & 1) set_siflag (Actor::no_spell_casting);
-		if ((mana_val >> 2) & 1) 
-			set_siflag (Actor::zombie);
+		if ((mana_val >> 2) & 1) set_siflag (Actor::zombie);
 	}
 
 
@@ -253,13 +251,30 @@ Actor::Actor
 	nfile.seekg (2, ios::cur);	// V1 ????? (refer to U7tech.txt)
 	nfile.seekg (2, ios::cur);	// V2 ????? (refer to U7tech.txt)
 
-	nfile.seekg (29, ios::cur);
+	// 16 Bit Shape Numbers, allows for shapes > 1023
+	shnum = Read2(nfile);
+	if (!first_time && shnum)
+	{
+		set_shape(shnum);		// 16 Bit Shape Number
+		shnum = (sint16) Read2(nfile);	// 16 Bit Polymorph Shape Number
+		if (get_siflag (polymorph)) set_polymorph(shnum);
+	}
+	else
+	{
+		nfile.seekg (2, ios::cur);
+		set_polymorph_default();
+	}
+
+	// Skip 25
+	nfile.seekg (25, ios::cur);
 
 					// Get (signed) food level.
 	int food_read = (int) (char) Read1(nfile);
 	if (first_time)
 		food_read = 18;
 	set_property((int) Actor::food_level, food_read);
+
+	// Skip 7
 	nfile.seekg(7, ios::cur);
 
 	char namebuf[17];
@@ -387,6 +402,10 @@ void Actor::write
 	// Guess
 	if (get_flag (Obj_flags::on_moving_barge)) iout |= 1 << 0xA;
 					// Alignment is bits 3-4.
+
+	// Unknownm using for is_temp
+	if (get_flag (Obj_flags::is_temporary)) iout |= 1 << 0x6;
+
 	iout |= ((alignment&3) << 3);
 
 	Write2(nfile, iout);
@@ -470,8 +489,20 @@ void Actor::write
 	Write2(nfile,0);	// Skip 2
 	Write2(nfile,0);	// Skip 2
 
-	// Skip 29
-	for (i = 0; i < 29; i++)
+	// 16 Bit Shapes
+	if (get_siflag (polymorph))
+	{
+		Write2 (nfile, shape_save);	// 16 Bit Shape Num
+		Write2 (nfile, get_shapenum());	// 16 Bit Polymorph Shape
+	}
+	else
+	{
+		Write2 (nfile, get_shapenum());	// 16 Bit Shape Num
+		Write2 (nfile, 0);		// 16 Bit Polymorph Shape
+	}
+
+	// Skip 25
+	for (i = 0; i < 25; i++)
 		nfile.put(0);
 	
 	// Food

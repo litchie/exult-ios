@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Sign_gump.h"
 #include "gamewin.h"
+#include "game.h"
 
 
 /*
@@ -34,6 +35,19 @@ Sign_gump::Sign_gump
 	int nlines			// # of text lines.
 	) : Gump(0, shapenum), num_lines(nlines)
 {
+	if(shapenum==game->get_shape("gumps/woodsign"))
+	{
+		set_object_area(Rectangle(0, 4, 196, 92));
+	}
+	else if(shapenum==game->get_shape("gumps/tombstone"))
+	{
+		set_object_area(Rectangle(0, 8, 200, 112));
+	}
+	else if(shapenum==game->get_shape("gumps/goldsign"))
+	{
+		set_object_area(Rectangle(0, 4, 232, 96));
+	}
+
 	lines = new std::string[num_lines];
 }
 
@@ -80,7 +94,7 @@ void Sign_gump::paint
 					// Get space between lines.
 	int lspace = (object_area.h - num_lines*lheight)/(num_lines + 1);
 					// Paint the gump itself.
-	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+	gwin->paint_shape(x, y, *this);
 	int ypos = y + object_area.y;	// Where to paint next line.
 	for (int i = 0; i < num_lines; i++)
 	{

@@ -99,7 +99,7 @@ void CheatScreen::show_screen()
 
 	// Start the loop
 	NormalLoop();
-
+	gwin->set_palette();
 }
 
 
@@ -185,6 +185,10 @@ void CheatScreen::SharedPrompt (char *input, const Cheat_Prompt &mode)
 		font->paint_text_fixedwidth(ibuf, "Name Changed. Hit a key.", 0, maxy-9, 8);
 		break;
 
+		case CP_WrongShapeFile:
+		font->paint_text_fixedwidth(ibuf, "Wrong shape file. Must be SHAPES.VGA. Hit a key.", 0, maxy-9, 8);
+		break;
+
 
 		case CP_ChooseNPC:
 		font->paint_text_fixedwidth(ibuf, "Which NPC? (-1 to cancel.)", 0, maxy-9, 8);
@@ -207,7 +211,7 @@ void CheatScreen::SharedPrompt (char *input, const Cheat_Prompt &mode)
 		break;
 
 		case CP_Shape:
-		font->paint_text_fixedwidth(ibuf, "Enter Shape. (-1 to cancel.)", 0, maxy-9, 8);
+		font->paint_text_fixedwidth(ibuf, "Enter Shape (B=Browse or -1=Cancel)", 0, maxy-9, 8);
 		break;
 
 		case CP_Activity:
@@ -289,6 +293,14 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 	}
 	else if (mode >= CP_ChooseNPC)	// Need to grab numerical input
 	{
+		// Browse shape
+		if (mode == CP_Shape && !input[0] && event.key.keysym.sym == 'b')
+		{
+			cheat.shape_browser();
+			input[0] = 'b';
+			activate = true;
+		}
+
 		// Activate (if possible)
 		if (event.key.keysym.sym == SDLK_RETURN)
 		{
@@ -948,7 +960,7 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 		actor->get_abs_tile(x, y, z);
 	
 		// Paint the actors shape
-		Shape_frame *shape = gwin->get_shape (actor->get_shapenum(), actor->get_framenum());
+		Shape_frame *shape = actor->get_shape();
 		if (shape) gwin->paint_shape (shape->get_xright()+240, shape->get_yabove(), shape); 
 
 		// Now the info
@@ -971,6 +983,12 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 
 		std::snprintf (buf, 512, "Training: %2i  Health: %2i", actor->get_property(Actor::training), actor->get_property(Actor::health));
 		font->paint_text_fixedwidth(ibuf, buf, 0, 54, 8);
+
+		if (actor->get_polymorph() != -1)
+		{
+			std::snprintf (buf, 512, "Polymorphed from %04i", actor->get_polymorph());
+			font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
+		}
 	}
 	else
 	{
@@ -1092,11 +1110,20 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		break;
 
 		case 'c':	// Change shape
+		if (input[0] == 'b')	// Browser
+		{
+			int n;
+			if (!cheat.get_browser_shape(i, n))
+			{
+				mode = CP_WrongShapeFile;
+				break;
+			}
+		}
+
 		if (i == -1) mode = CP_Canceled;
 		else if (i < 0) mode = CP_InvalidShape;
-		else if (Game::get_game_type() != SERPENT_ISLE && i > 1023) mode = CP_InvalidShape;
-		else if (i > 1035) mode = CP_InvalidShape;
-		else 
+		else if (i >= gwin->get_num_shapes()) mode = CP_InvalidShape;
+		else if (input[0] && (input[0] != '-' || input[1]))
 		{
 			actor->set_shape(i);
 			mode = CP_ShapeSet;
@@ -1582,6 +1609,29 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 		
 		case '2':	// Polymorph
+
+		// Clear polymorph
+		if (actor->get_polymorph() != -1)
+		{
+			actor->set_polymorph(actor->get_polymorph());
+			break;
+		}
+
+		if (input[0] == 'b')	// Browser
+		{
+			int n;
+			if (!cheat.get_browser_shape(i, n))
+			{
+				mode = CP_WrongShapeFile;
+				break;
+			}
+		}
+
+		if (i == -1) mode = CP_Canceled;
+		else if (i < 0) mode = CP_InvalidShape;
+		else if (i >= gwin->get_num_shapes()) mode = CP_InvalidShape;
+		else if (input[0] && (input[0] != '-' || input[1])) actor->set_polymorph(i);
+
 		break;
 
 		default:
@@ -1623,8 +1673,16 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 
 		// Value
 		case '2':	// Polymorph
-		mode = CP_NotAvail;
-		input[0] = command;
+		if (actor->get_polymorph() == -1)
+		{
+			mode = CP_Shape;
+			input[0] = 0;
+		}
+		else
+		{
+			activate = true;
+			input[0] = command;
+		}
 		break;
 
 

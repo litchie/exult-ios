@@ -27,6 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "SDL_events.h"
 
+#include "exult_flx.h"
+
 #include "Audio.h"
 #include "Configuration.h"
 #include "Newfile_gump.h"
@@ -61,7 +63,7 @@ extern Configuration *config;
 /*
  *	Macros:
  */
-
+/*
 #define NEWFILE_SHAPE_LOAD	26
 #define NEWFILE_SHAPE_SAVE	27
 #define NEWFILE_SHAPE_DELETE	28
@@ -72,7 +74,7 @@ extern Configuration *config;
 #define NEWFILE_SHAPE_PGUP	33
 #define NEWFILE_SHAPE_SLIDER	34
 #define NEWFILE_SHAPE_SELECTED	35
-
+*/
 /*
  *	Statics:
  */
@@ -136,7 +138,7 @@ class Newfile_button : public Gump_button
 {
 public:
 	Newfile_button(Gump *par, int px, int py, int shapenum)
-		: Gump_button(par, shapenum, px, py, GSF_EXULT_FLX)
+		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -152,21 +154,22 @@ void Newfile_button::activate
 	Game_window *gwin
 	)
 {
-	if (shapenum == NEWFILE_SHAPE_LOAD)
+	int shapenum = get_shapenum();
+	if (shapenum == EXULT_FLX_SAV_LOAD_SHP)
 		((Newfile_gump *) parent)->load();
-	else if (shapenum == NEWFILE_SHAPE_SAVE)
+	else if (shapenum == EXULT_FLX_SAV_SAVE_SHP)
 		((Newfile_gump *) parent)->save();
-	else if (shapenum == NEWFILE_SHAPE_DELETE)
+	else if (shapenum == EXULT_FLX_SAV_DELETE_SHP)
 		((Newfile_gump *) parent)->delete_file();
-	else if (shapenum == NEWFILE_SHAPE_CANCEL)
+	else if (shapenum == EXULT_FLX_SAV_CANCEL_SHP)
 		parent->close(gwin);
-	else if (shapenum == NEWFILE_SHAPE_PGDN)
+	else if (shapenum == EXULT_FLX_SAV_DOWNDOWN_SHP)
 		((Newfile_gump *) parent)->scroll_page(1);
-	else if (shapenum == NEWFILE_SHAPE_DOWN)
+	else if (shapenum == EXULT_FLX_SAV_DOWN_SHP)
 		((Newfile_gump *) parent)->scroll_line(1);
-	else if (shapenum == NEWFILE_SHAPE_UP)
+	else if (shapenum == EXULT_FLX_SAV_UP_SHP)
 		((Newfile_gump *) parent)->scroll_line(-1);
-	else if (shapenum == NEWFILE_SHAPE_PGUP)
+	else if (shapenum == EXULT_FLX_SAV_UPUP_SHP)
 		((Newfile_gump *) parent)->scroll_page(-1);
 }
 
@@ -179,7 +182,7 @@ Newfile_gump::Newfile_gump
 	(
 	) : Modal_gump(0, Game_window::get_game_window()->get_width()/2-160,
 			Game_window::get_game_window()->get_height()/2-100,
-			25, GSF_EXULT_FLX),
+			EXULT_FLX_SAVEGUMP_SHP, SF_EXULT_FLX),
 		restored(0), games(0), num_games(0), first_free(0),
 		cur_shot(0), cur_details(0), cur_party(0),
 		gd_shot(0), gd_details(0), gd_party(0),
@@ -187,6 +190,8 @@ Newfile_gump::Newfile_gump
 		list_position(-2), selected(-3), cursor(0), slide_start(-1)
 
 {
+	set_object_area(Rectangle(0,0,320,200), -22, 190);//+++++ ???
+
 	newname[0] = 0;
 
 	Game_window *gwin = Game_window::get_game_window();
@@ -198,13 +203,13 @@ Newfile_gump::Newfile_gump
 	buttons[0] = buttons[1] = buttons[2] = 0;
 
 	// Cancel
-	buttons[3] = new Newfile_button(this, btn_cols[3], btn_rows[0], NEWFILE_SHAPE_CANCEL);
+	buttons[3] = new Newfile_button(this, btn_cols[3], btn_rows[0], EXULT_FLX_SAV_CANCEL_SHP);
 
 	// Scrollers.
-	buttons[4] = new Newfile_button(this, btn_cols[4], btn_rows[1], NEWFILE_SHAPE_PGUP);
-	buttons[5] = new Newfile_button(this, btn_cols[4], btn_rows[2], NEWFILE_SHAPE_UP);
-	buttons[6] = new Newfile_button(this, btn_cols[4], btn_rows[3], NEWFILE_SHAPE_DOWN);
-	buttons[7] = new Newfile_button(this, btn_cols[4], btn_rows[4], NEWFILE_SHAPE_PGDN);
+	buttons[4] = new Newfile_button(this, btn_cols[4], btn_rows[1], EXULT_FLX_SAV_UPUP_SHP);
+	buttons[5] = new Newfile_button(this, btn_cols[4], btn_rows[2], EXULT_FLX_SAV_UP_SHP);
+	buttons[6] = new Newfile_button(this, btn_cols[4], btn_rows[3], EXULT_FLX_SAV_DOWN_SHP);
+	buttons[7] = new Newfile_button(this, btn_cols[4], btn_rows[4], EXULT_FLX_SAV_DOWNDOWN_SHP);
 
 	LoadSaveGameDetails();
 }
@@ -407,7 +412,7 @@ void Newfile_gump::PaintSaveName (int line)
 	if (selected == actual_game) gwin->paint_exult_shape (
 					x+fieldx+iconx,
 					y+fieldy+icony+line*(fieldh+fieldgap),
-					NEWFILE_SHAPE_SELECTED,
+					EXULT_FLX_SAV_SELECTED_SHP,
 					0);
 
 }
@@ -432,7 +437,7 @@ void Newfile_gump::paint
 
 	// Paint Buttons
 	for (i = 0; i < 8; i++) if (buttons[i])
-		paint_button(gwin, buttons[i]);
+		buttons[i]->paint(gwin);
 
 	// Paint scroller
 
@@ -443,7 +448,7 @@ void Newfile_gump::paint
 	// Now work out the position
 	int pos = ((scrollh-sliderh)*(list_position+2))/num_pos;
 
-	gwin->paint_exult_shape(x+scrollx , y+scrolly+pos, NEWFILE_SHAPE_SLIDER, 0);
+	gwin->paint_exult_shape(x+scrollx , y+scrolly+pos, EXULT_FLX_SAV_SLIDER_SHP, 0);
 
 	// Now paint the savegame details
 	if (screenshot) gwin->paint_shape(x + 222, y + 2, screenshot->get_frame(0));
@@ -610,7 +615,7 @@ void Newfile_gump::mouse_down
 	if (!buttons[0] && want_load) buttons[0] = new Newfile_button(this,
 							btn_cols[1],
 							btn_rows[0],
-							NEWFILE_SHAPE_LOAD);
+							EXULT_FLX_SAV_LOAD_SHP);
 	else if (buttons[0] && !want_load)
 	{
 		delete buttons[0];
@@ -620,7 +625,7 @@ void Newfile_gump::mouse_down
 	if (!buttons[1] && want_save) buttons[1] = new Newfile_button(this,
 							btn_cols[0],
 							btn_rows[0],
-							NEWFILE_SHAPE_SAVE);
+							EXULT_FLX_SAV_SAVE_SHP);
 	else if (buttons[1] && !want_save)
 	{
 		delete buttons[1];
@@ -630,7 +635,7 @@ void Newfile_gump::mouse_down
 	if (!buttons[2] && want_delete) buttons[2] = new Newfile_button(this,
 							btn_cols[2],
 							btn_rows[0],
-							NEWFILE_SHAPE_DELETE);
+							EXULT_FLX_SAV_DELETE_SHP);
 	else if (buttons[2] && !want_delete)
 	{
 		delete buttons[2];
@@ -799,8 +804,8 @@ void Newfile_gump::key_down
 				// Added first character?  Need 'Save' button.
 				if (newname[0] && !buttons[1])
 				{
-					buttons[1] = new Newfile_button(this, btn_cols[0], btn_rows[0], NEWFILE_SHAPE_SAVE);
-					paint_button(gwin, buttons[1]);
+					buttons[1] = new Newfile_button(this, btn_cols[0], btn_rows[0], EXULT_FLX_SAV_SAVE_SHP);
+					buttons[1]->paint(gwin);
 				}
 
 				// Remove Load and Delete Button
