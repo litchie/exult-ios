@@ -15,7 +15,8 @@ EXULT_FLX_OBJECTS = \
 	full_screen.shp		\
 	cheating.shp		\
 	ok.shp			\
-	cancel.shp
+	cancel.shp		\
+	pointers.shp
 
 flexdir = $(datadir)/exult
 
