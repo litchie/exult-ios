@@ -980,7 +980,8 @@ void Game_window::paint
 					// Complete repaint?
 	if (!x && !y && w == get_width() && h == get_height())
 		{			// Look for lights.
-		int carried_light = main_actor->has_light_source();
+		int carried_light = main_actor ? 
+					main_actor->has_light_source() : 0;
 #if 0	/* +++++Uncomment when tested. */
 		int cnt = usecode->get_party_count();
 		for (int i = 0; !carried_light && i < cnt; i++)
