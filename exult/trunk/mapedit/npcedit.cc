@@ -327,10 +327,10 @@ void ExultStudio::open_npc_window
 			int len = Exult_server::Receive_data(server_socket, 
 						id, data, sizeof(data));
 			unsigned char *ptr = &data[0];
-			int npcs, edlift, hdlift;
+			int vers, npcs, edlift, hdlift, edmode;
 			bool editing, grid, mod;
-			if (Game_info_in(data, len, npcs, edlift, hdlift,
-							editing, grid, mod))
+			if (Game_info_in(data, len, vers, npcs, edlift, hdlift,
+						editing, grid, mod, edmode))
 				npc_num = npcs;
 			set_entry("npc_num_entry", npc_num, true, false);
 					// Usually, face = npc_num.

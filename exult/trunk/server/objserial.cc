@@ -369,16 +369,18 @@ template <class Serial>
 void Game_info_io
 	(
 	Serial &io,			// Where to store data.
+	int& version,			// Server/client version.
 	int& num_npcs,			// # in game.
 	int& edit_lift,			// Lift being edited.
 	int& hide_lift,			// Lift being hidden.
 	bool& map_editing,		// In 'map-editing' mode.
 	bool& tile_grid,		// Showing tile grid.
-	bool& map_modified		// Map was changed.
+	bool& map_modified,		// Map was changed.
+	int& edit_mode			// Mode we're in.
 	)
 	{
-	io << num_npcs << edit_lift << hide_lift << map_editing << tile_grid <<
-							map_modified;
+	io << version << num_npcs << edit_lift << hide_lift << 
+			map_editing << tile_grid << map_modified << edit_mode;
 	}
 
 /*
@@ -390,19 +392,21 @@ void Game_info_io
 int Game_info_out
 	(
 	int fd,				// Socket.
+	int version,			// Server/client version.
 	int num_npcs,			// # in game.
 	int edit_lift,			// Lift being edited.
 	int hide_lift,			// Lift being hidden.
 	bool map_editing,		// In 'map-editing' mode.
 	bool tile_grid,			// Showing tile grid.
-	bool map_modified		// Map was changed.
+	bool map_modified,		// Map was changed.
+	int edit_mode			// Mode we're in.
 	)
 	{
 	static unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
 	Serial_out io(ptr);
-	Game_info_io(io, num_npcs, edit_lift, hide_lift, 
-					map_editing, tile_grid, map_modified);
+	Game_info_io(io, version, num_npcs, edit_lift, hide_lift, 
+			map_editing, tile_grid, map_modified, edit_mode);
 	return Exult_server::Send_data(fd, Exult_server::info, buf, ptr - buf);
 	}
 
@@ -416,18 +420,20 @@ int Game_info_in
 	(
 	unsigned char *data,		// Data that was read.
 	int datalen,			// Length of data.
+	int& version,			// Server/client version.
 	int& num_npcs,			// # in game.
 	int& edit_lift,			// Lift being edited.
 	int& hide_lift,			// Lift being hidden.
 	bool& map_editing,		// In 'map-editing' mode.
 	bool& tile_grid,		// Showing tile grid.
-	bool& map_modified		// Map was changed.
+	bool& map_modified,		// Map was changed.
+	int& edit_mode			// Mode we're in.
 	)
 	{
 	unsigned char *ptr = data;
 	Serial_in io(ptr);
-	Game_info_io(io, num_npcs, edit_lift, hide_lift, map_editing, 
-						tile_grid, map_modified);
+	Game_info_io(io, version, num_npcs, edit_lift, hide_lift, map_editing, 
+					tile_grid, map_modified, edit_mode);
 	return (ptr - data) == datalen;
 	}
 

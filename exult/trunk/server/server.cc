@@ -247,12 +247,14 @@ static void Handle_client_message
 		{
 		unsigned char data[Exult_server::maxlength];
 		unsigned char *ptr = &data[0];
-		Game_info_out(client_socket, gwin->get_num_npcs(),
+		Game_info_out(client_socket, Exult_server::version, 
+			gwin->get_num_npcs(),
 			cheat.get_edit_lift(),
 			gwin->skip_lift,
 			cheat.in_map_editor(),
 			cheat.show_tile_grid(),
-			gwin->get_map()->was_map_modified());
+			gwin->get_map()->was_map_modified(),
+			(int) cheat.get_edit_mode());
 		break;
 		}
 	case Exult_server::write_map:
