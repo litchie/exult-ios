@@ -1,3 +1,6 @@
+2002-07-09  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* ucinternal.cc: allow (but ignore) large changes to loop arrays
+
 2002-07-08  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* actors.cc,monsters.cc:  Bare hands weapon gets 1 damage point.
