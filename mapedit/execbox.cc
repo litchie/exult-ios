@@ -36,26 +36,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *	Create.
  */
 
-Exec_box::Exec_box
+Exec_process::Exec_process
 	(
-	GtkText *b,
-	GtkStatusbar *s,
-	Exec_done_fun dfun,		// Called when child exits.
-	gpointer udata			// Passed to dfun.
-	) : box(b), status(s), done_fun(dfun), user_data(udata),
-	    child_stdin(-1), child_stdout(-1), child_stderr(-1),
-	    child_pid(-1), stdout_tag(-1), stderr_tag(-1)
+	) : child_stdin(-1), child_stdout(-1), child_stderr(-1),
+	    child_pid(-1), reader(0),
+	    stdout_tag(-1), stderr_tag(-1)
 	{
-	status_ctx = gtk_statusbar_get_context_id(status, "execstatus");
-					// Keep one msg. always on stack.
-	gtk_statusbar_push(status, status_ctx, "");
 	}
 
 /*
- *	Close.
+ *	Clean up.
  */
 
-Exec_box::~Exec_box
+Exec_process::~Exec_process
 	(
 	)
 	{
@@ -66,7 +59,7 @@ Exec_box::~Exec_box
  *	End process and close pipes.
  */
 
-void Exec_box::kill_child
+void Exec_process::kill_child
 	(
 	)
 	{
@@ -85,6 +78,41 @@ void Exec_box::kill_child
 	child_pid = child_stdin = child_stdout = child_stderr = 
 	stdout_tag = stderr_tag = -1;
 	}
+
+/*
+ *	Read from child & call client routine.
+ */
+
+static void Read_from_child
+	(
+	gpointer data,			// ->Exex_process
+	gint id,			// Pipe ID.
+	GdkInputCondition condition
+	)
+	{
+	Exec_process *ex = (Exec_process *) data;
+	ex->read_from_child(id);
+	}
+void Exec_process::read_from_child
+	(
+	int id				// Pipe to read from.
+	)
+	{
+	char buf[1024];
+	int len;
+	while ((len = read(id, buf, sizeof(buf))) > 0)
+		if (reader)
+			(*reader)(buf, len, 0, reader_data);
+	int exit_code;
+	if (!check_child(exit_code))	// Child done?
+		{
+		kill_child();		// Clean up.
+		if (reader)		// Tell client.
+			(*reader)(0, 0, exit_code, reader_data);
+		}
+	}
+
+
 
 /*
  *	Close a pipe.
@@ -114,117 +142,26 @@ static void Close_pipes
 	}
 
 /*
- *	Show status.
- */
-
-void Exec_box::show_status
-	(
-	const char *msg
-	)
-	{
-	gtk_statusbar_pop(status, status_ctx);
-	gtk_statusbar_push(status, status_ctx, msg);
-	}
-
-/*
- *	See if child is still alive.
- *
- *	Output:	True if child is still running.
- *		If false, exit code is returned in 'exit_code'.
- */
-
-bool Exec_box::check_child
-	(
-	int& exit_code			// Exit code returned.
-	)
-	{
-	if (child_pid < 0)
-		return false;		// No child.
-	int status;
-					// Don't wait.
-	int ret = waitpid(child_pid, &status, WNOHANG);
-	if (ret != child_pid)
-		return true;		// Still running.
-	else
-		{
-		cout << "Exec_box:  Child done." << endl;
-		exit_code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
-		return false;
-		}
-	}
-
-/*
- *	Read from child & display in the text box.
- */
-
-static void Read_from_child
-	(
-	gpointer data,			// ->Exex_box
-	gint id,			// Pipe ID.
-	GdkInputCondition condition
-	)
-	{
-	Exec_box *box = (Exec_box *) data;
-	box->read_from_child(id);
-	}
-void Exec_box::read_from_child
-	(
-	int id				// Pipe to read from.
-	)
-	{
-	char buf[1024];
-	int len;
-	gtk_text_freeze(box);		// Looks better this way.
-	while ((len = read(id, buf, sizeof(buf))) > 0)
-		gtk_text_insert(box, NULL, NULL, NULL, buf, len);
-
-	gtk_text_thaw(box);
-	int exit_code;
-	if (!check_child(exit_code))	// Child done?
-		{
-		kill_child();		// Clean up.
-		if (exit_code == 0)
-			show_status("Done:  Success");
-		else
-			show_status("Done:  Errors occurred");
-		if (done_fun)
-			done_fun(exit_code, this, user_data);
-		}
-	}
-
-/*
- *	Add a message to the box.
- */
-
-void Exec_box::add_message
-	(
-	const char *txt
-	)
-	{
-	gtk_text_freeze(box);		// Looks better this way.
-	gtk_text_insert(box, NULL, NULL, NULL, txt, strlen(txt));
-	gtk_text_thaw(box);
-	}
-
-/*
  *	Execute a new process.
  *
  *	Output:	False if failed.
  */
 
-bool Exec_box::exec
+bool Exec_process::exec
 	(
 	const char *file, 		// PATH will be searched.
-	char *argv[]			// Args.  1st is filename, last is 0.
+	char *argv[],			// Args.  1st is filename, last is 0.
+	Reader_fun rfun,		// Called when child writes, exits.
+	void *udata			// User_data for rfun.
 	)
 	{
+	reader = rfun;			// Store callback.
+	reader_data = udata;
 					// Pipes for talking to child:
 	int stdin_pipe[2], stdout_pipe[2], stderr_pipe[2];
 	stdin_pipe[0] = stdin_pipe[1] = stdout_pipe[0] = stdout_pipe[1] = 
 	stderr_pipe[0] = stderr_pipe[1] = -1;
 	kill_child();			// Kill running process.
-	gtk_text_set_point(box, 0);	// Clear out old text.
-	gtk_text_forward_delete(box, gtk_text_get_length(box));
 					// Create pipes.
 	if (pipe(stdin_pipe) != 0 || pipe(stdout_pipe) != 0 ||
 	    pipe(stderr_pipe) != 0)
@@ -265,8 +202,156 @@ cout << "Child_stdout is " << child_stdout << ", Child_stderr is " <<
 			GDK_INPUT_READ, Read_from_child, this);
 	stderr_tag = gdk_input_add(child_stderr,
 			GDK_INPUT_READ, Read_from_child, this);
-	string msg = string("Executing '") + file + "'";
-	show_status(msg.c_str());
 	return true;
+	}
+
+/*
+ *	See if child is still alive.
+ *
+ *	Output:	True if child is still running.
+ *		If false, exit code is returned in 'exit_code'.
+ */
+
+bool Exec_process::check_child
+	(
+	int& exit_code			// Exit code returned.
+	)
+	{
+	if (child_pid < 0)
+		return false;		// No child.
+	int status;
+					// Don't wait.
+	int ret = waitpid(child_pid, &status, WNOHANG);
+	if (ret != child_pid)
+		return true;		// Still running.
+	else
+		{
+		cout << "Exec_box:  Child done." << endl;
+		exit_code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+		return false;
+		}
+	}
+
+/*
+ *	Create.
+ */
+
+Exec_box::Exec_box
+	(
+	GtkText *b,
+	GtkStatusbar *s,
+	Exec_done_fun dfun,		// Called when child exits.
+	gpointer udata			// Passed to dfun.
+	) : box(b), status(s), done_fun(dfun), user_data(udata)
+	{
+	executor = new Exec_process;
+	status_ctx = gtk_statusbar_get_context_id(status, "execstatus");
+					// Keep one msg. always on stack.
+	gtk_statusbar_push(status, status_ctx, "");
+	}
+
+/*
+ *	Close.
+ */
+
+Exec_box::~Exec_box
+	(
+	)
+	{
+	delete executor;		// Kills child.
+	}
+
+/*
+ *	Show status.
+ */
+
+void Exec_box::show_status
+	(
+	const char *msg
+	)
+	{
+	gtk_statusbar_pop(status, status_ctx);
+	gtk_statusbar_push(status, status_ctx, msg);
+	}
+
+/*
+ *	Read from child & display in the text box.
+ */
+
+static void Exec_callback
+	(
+	char *data,			// Data read, or NULL.
+	int datalen,			// Length, or 0 if child exited.
+	int exit_code,			// Exit code if datalen = 0.
+	void *user_data			// ->Exex_box
+	)
+	{
+	Exec_box *box = (Exec_box *) user_data;
+	box->read_from_child(data, datalen, exit_code);
+	}
+void Exec_box::read_from_child
+	(
+	char *data,			// Data read, or NULL.
+	int datalen,			// Length, or 0 if child exited.
+	int exit_code			// Exit code if datalen = 0.
+	)
+	{
+	if (datalen > 0)
+		{
+		gtk_text_freeze(box);	// Looks better this way.
+		gtk_text_insert(box, NULL, NULL, NULL, data, datalen);
+		gtk_text_thaw(box);
+		return;
+		}
+	if (exit_code == 0)		// Child is done, so check result.
+		show_status("Done:  Success");
+	else
+		show_status("Done:  Errors occurred");
+	if (done_fun)
+		done_fun(exit_code, this, user_data);
+	}
+
+/*
+ *	Add a message to the box.
+ */
+
+void Exec_box::add_message
+	(
+	const char *txt
+	)
+	{
+	gtk_text_freeze(box);		// Looks better this way.
+	gtk_text_insert(box, NULL, NULL, NULL, txt, strlen(txt));
+	gtk_text_thaw(box);
+	}
+
+/*
+ *	Execute a new process.
+ *
+ *	Output:	False if failed.
+ */
+
+bool Exec_box::exec
+	(
+	const char *file, 		// PATH will be searched.
+	char *argv[]			// Args.  1st is filename, last is 0.
+	)
+	{
+	gtk_text_set_point(box, 0);	// Clear out old text.
+	gtk_text_forward_delete(box, gtk_text_get_length(box));
+	if (!executor->exec(file, argv, Exec_callback, this))
+		return false;
+	return true;
+	}
+
+/*
+ *	End process.
+ */
+
+void Exec_box::kill_child
+	(
+	)
+	{
+	executor->kill_child();
 	}
 
