@@ -19,12 +19,12 @@ EXULT_FLX_OBJECTS = \
 
 flexdir = $(datadir)/exult
 
-flex_DATA = exult.flx
+flex_DATA = exult.flx midisfx.flx
 
 CLEANFILES = \
 	exult.flx *~
 
-EXTRA_DIST = $(EXULT_FLX_OBJECTS)
+EXTRA_DIST = $(EXULT_FLX_OBJECTS) midisfx.flx
 
 all-local: exult.flx
 

@@ -1,4 +1,4 @@
-INCLUDES = -I. -I../files $(DEBUG_FLAGS) $(CPPFLAGS) -DRELNUM=$(RELNUM) 
+INCLUDES = -I. -I../files $(DEBUG_FLAGS) $(CPPFLAGS)
 
 if LEXYACC
 UCC= ucc
@@ -50,8 +50,10 @@ ucc: uccparse.o
 u7shpload: u7shpload.c
 	gimptool --build $<
 
+if HAVE_GIMPTOOL
 install-exec-local:
-	gimptool --install-bin u7shpload
+	gimptool --install-admin-bin u7shpload
+endif
 
 EXTRA_DIST = \
 	intrins1.txt \

@@ -1,6 +1,6 @@
 INCLUDES = -I.. $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
-lib_LTLIBRARIES = libpathfinder.la
+noinst_LTLIBRARIES = libpathfinder.la
 
 libpathfinder_la_SOURCES =	\
 	Astar.cc		\

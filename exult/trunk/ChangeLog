@@ -1,5 +1,14 @@
 2000-11-07  Tristan Tarrant <nadir@users.sourceforge.net>
 
+	* configure.in: try harder to find ligimp/gimp.h
+	* */Makefile.am: make libraries non-installable
+	* tools/Makefile.am: don't try to install GIMP plugin if we haven't
+	  built it
+	* data/Makefile.am: install midisfx.flx
+	* exult.spec.in: It now works (no devel package yet)
+
+2000-11-07  Tristan Tarrant <nadir@users.sourceforge.net>
+
 	* cheat.cc, cheat.h: implement set_enabled() which saves into config
 	* exult.cc: the all-important about scroll (ctrl-v), resolution
 	  things

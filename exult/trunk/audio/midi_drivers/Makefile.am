@@ -1,6 +1,6 @@
 INCLUDES = -I.. -I../../files $(SDL_INCLUDES) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -I../../conf -I../../files
 
-lib_LTLIBRARIES = libmididrv.la
+noinst_LTLIBRARIES = libmididrv.la
 
 libmididrv_la_SOURCES =	\
 	KMIDI.cc	\

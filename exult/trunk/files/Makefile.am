@@ -1,6 +1,6 @@
 INCLUDES = -I.. $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
-lib_LTLIBRARIES = libu7file.la
+noinst_LTLIBRARIES = libu7file.la
 
 libu7file_la_SOURCES =	\
 	Flat.cc		\

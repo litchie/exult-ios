@@ -2,7 +2,7 @@ INCLUDES = -I.. -I../files $(SDL_INCLUDES) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWI
 
 SUBDIRS = midi_drivers
 
-lib_LTLIBRARIES = libaudio.la
+noinst_LTLIBRARIES = libaudio.la
 
 libaudio_la_SOURCES =	\
 	Audio.cc	\
