@@ -126,6 +126,20 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 #ifdef BEOS
   #include "midi_drivers/be_midi.h"
 #endif
+#ifdef MACOS
+  #include "midi_drivers/mac_midi.h"
+#endif
+
+#define	TRY_MIDI_DRIVER(CLASS_NAME)	\
+	if(no_device) {	\
+		try {	\
+			midi_device=new CLASS_NAME();	\
+			no_device=false;	\
+			cerr << midi_device->copyright() << endl;	\
+		} catch(...) {	\
+			no_device=true;	\
+		}	\
+	}
 
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 {
@@ -150,66 +164,22 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 	config->set("config/audio/midi/enabled",s,true);
 
 #ifdef WIN32
-	if(no_device)
-	        {
-                midi_device=new Windows_MCI();
-
-                no_device=false;
-                cerr << midi_device->copyright() << endl;
-                }
+	TRY_MIDI_DRIVER(Windows_MCI)
 #endif
 #ifdef BEOS
-	if(no_device)
-		{
-		midi_device=new Be_midi();
-
-		no_device=false;
-		cerr << midi_device->copyright() << endl;
-		}
+	TRY_MIDI_DRIVER(Be_midi)
+#endif
+#if HAVE_TIMIDITY_BIN
+	TRY_MIDI_DRIVER(Timidity_binary)
+#endif
+#if HAVE_LIBKMIDI
+	TRY_MIDI_DRIVER(KMIDI)
 #endif
 #ifdef XWIN
-	if(no_device)
-		{
-		try {
-#if HAVE_TIMIDITY_BIN
-		midi_device=new Timidity_binary();
-#else
-		throw 0;
+	TRY_MIDI_DRIVER(forked_player)
 #endif
-		no_device=false;
-		cerr << midi_device->copyright() << endl;
-		} catch(...)
-			{
-			no_device=true;
-			}
-		}
-	if(no_device)
-		{
-		try {
-#if HAVE_LIBKMIDI
-		midi_device=new KMIDI();
-#else
-		throw 0;
-#endif
-		no_device=false;
-		cerr << midi_device->copyright() << endl;
-		} catch(...)
-			{
-			no_device=true;
-			}
-		}
-
-	if(no_device)
-		{
-		try {
-			midi_device=new forked_player();
-			no_device=false;
-			cerr << midi_device->copyright() << endl;
-			} catch(...)
-			{
-			no_device=true;
-			}
-		}
+#ifdef MACOS
+	TRY_MIDI_DRIVER(Mac_QT_midi)
 #endif
 
 	if(no_device)
