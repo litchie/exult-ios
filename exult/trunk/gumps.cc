@@ -431,13 +431,7 @@ void Disk_gump_button::activate
 	extern int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
 	File_gump_object *fileio = new File_gump_object();
 	Modal_gump(fileio, Mouse::hand);
-					// Did user restore a game?
-	int restored = fileio->restored_game();
 	delete fileio;
-#if 0
-	if (restored)
-		parent->close(gwin);	// If so, close gump.
-#endif
 	}
 
 /*
@@ -1333,7 +1327,6 @@ void Slider_gump_object::set_val
 		}
 	else
 		diamondx = xmin + ((val - min_val)*xdist)/(max_val - min_val);
-	Game_window *gwin = Game_window::get_game_window();
 	}
 
 /*

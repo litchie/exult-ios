@@ -238,7 +238,7 @@ public:
 	virtual Game_object *clone()	// Create a copy.
 		{ return new Game_object(*this); }
 					// Remove/delete this object.
-	virtual void remove(int nodel = 0);
+	virtual void remove_this(int nodel = 0);
 	virtual void set_property(int prop, int val)
 		{  }
 	virtual int get_property(int prop)
@@ -331,7 +331,7 @@ public:
 	virtual Game_object *clone()	// Create a copy.
 		{ return new Ireg_game_object(*this); }
 					// Remove/delete this object.
-	virtual void remove(int nodel = 0);
+	virtual void remove_this(int nodel = 0);
 	virtual Container_game_object *get_owner()
 		{ return owner; }
 	virtual void set_owner(Container_game_object *o)

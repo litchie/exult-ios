@@ -131,7 +131,7 @@ int Game_object::modify_quantity
 		{			// Can't do quantity here.
 		if (delta > 0)
 			return (delta);
-		remove();		// Remove from container (or world).
+		remove_this();		// Remove from container (or world).
 		return (delta + 1);
 		}
 	int quant = quality&0x7f;	// Get current quality.
@@ -143,7 +143,7 @@ int Game_object::modify_quantity
 		}
 	else if (newquant <= 0)		// Subtracting.
 		{
-		remove();		// We're done for.
+		remove_this();		// We're done for.
 		return (delta + quant);
 		}
 	quality = 0x80|(char) newquant;	// Store new value.
@@ -380,7 +380,7 @@ char *Game_object::get_name
  *	The object is deleted.
  */
 
-void Game_object::remove
+void Game_object::remove_this
 	(
 	int nodel			// 1 to not delete.
 	)
@@ -424,7 +424,7 @@ int Game_object::drop
 	if (total_quant > MAX_QUANTITY)	// Too much?
 		return (0);
 	modify_quantity(objq);		// Add to our quantity.
-	obj->remove();			// It's been used up.
+	obj->remove_this();		// It's been used up.
 	return (1);
 	}
 
@@ -539,7 +539,7 @@ void Game_object::write_common_ireg
  *	The object is deleted.
  */
 
-void Ireg_game_object::remove
+void Ireg_game_object::remove_this
 	(
 	int nodel			// 1 to not delete.
 	)
@@ -1635,9 +1635,6 @@ void Chunk_object_list::add
 	{
 	newobj->cx = get_cx();		// Set object's chunk.
 	newobj->cy = get_cy();
-					// Get x,y of shape within chunk.
-	int x = newobj->get_tx(), y = newobj->get_ty();
-	int num_entries = 0;		// Need to count as we sort.
 	Game_object *obj;
 	Game_object *prev = 0;
 					// Just sort by lift.

@@ -54,7 +54,7 @@ void Game_window::read_npcs
 		int cnt = Read2(nfile);
 		while (cnt--)
 			{		// (Placed automatically.)
-			Monster_actor *mact = new Monster_actor(nfile, -1, 1);
+			new Monster_actor(nfile, -1, 1);
 			}
 		}
 
