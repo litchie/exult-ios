@@ -599,6 +599,11 @@ External
 	      <class>GtkEntry</class>
 	      <name>monst_shape</name>
 	      <can_focus>True</can_focus>
+	      <signal>
+		<name>focus_out_event</name>
+		<handler>on_monst_shape_focus_out_event</handler>
+		<last_modification_time>Mon, 04 Jun 2001 07:36:00 GMT</last_modification_time>
+	      </signal>
 	      <editable>True</editable>
 	      <text_visible>True</text_visible>
 	      <text_max_length>0</text_max_length>

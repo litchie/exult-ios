@@ -32,6 +32,7 @@ class Vga_file;
 class Shape_frame;
 class Image_buffer8;
 
+typedef void (*Drop_callback)(void *udata, int shapenum, int framenum);
 
 /*
  *	This class can draw shapes from a .vga file.
@@ -46,6 +47,9 @@ protected:
 	GdkGC *drawgc;			// For drawing in 'draw'.
 	Image_buffer8 *iwin;		// What we render into.
 	GdkRgbCmap *palette;		// For gdk_draw_indexed_image().
+public:
+	Shape_draw(Vga_file *i, unsigned char *palbuf, GtkWidget *drw);
+	virtual ~Shape_draw();
 					// Blit onto screen.
 	void show(GdkDrawable *drawable, int x, int y, int w, int h);
 	void show(int x, int y, int w, int h)
@@ -54,15 +58,17 @@ protected:
 		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
 	void draw_shape(Shape_frame *shape, int x, int y);
 	void draw_shape_centered(int shapenum, int framenum);
-public:
-	Shape_draw(Vga_file *i, unsigned char *palbuf, GtkWidget *drw);
-	virtual ~Shape_draw();
 	void set_shape_names(char **nms)
 		{ names = nms; }
-	virtual void render() = 0;	// Update what gets shown.
+	virtual void render();		// Update what gets shown.
 					// Configure when created/resized.
-	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
-							gpointer data);
+	void configure(GtkWidget *widget);
+	void configure()
+		{ configure(draw); }
+					// Handler for drop.
+	static gboolean drag_drop(GtkWidget *widget, 
+		GdkDragContext *context, gint x, gint y, guint time);
+	void set_drag_dest(Drop_callback callback, void *udata);
 	};
 
 #endif
