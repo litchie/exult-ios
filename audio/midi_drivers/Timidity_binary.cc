@@ -56,14 +56,14 @@ T max(T x,T y)
 
 
 
-static	int	sub_process(void *p)
+static	void	*midi_process(void *p)
 {
 	Timidity_binary *ptr=static_cast<Timidity_binary *>(p);
 	ptr->player();
 	return 0;
 }
 
-static	int	sfx_process(void *p)
+static	void	*sfx_process(void *p)
 {
 	Timidity_binary *ptr=static_cast<Timidity_binary *>(p);
 	ptr->sfxplayer();
@@ -102,13 +102,8 @@ static	void copy_to_name(std::string name1,std::string name2)
 	copy_to_fh(name1,fh);
 }
 
-void	Timidity_binary::player(void)
+int	timidity_play(string filename, bool repeat, string &newfilename, pid_t &pid)
 {
-#if DEBUG
-	cout << "Timidity_binary::player() starting up" << endl;
-#endif
-	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
-	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
 #if HAVE_MKSTEMP
         char newfn[128];
         strcpy(newfn,"/tmp/u7_midi_fileXXXXXX");
@@ -116,106 +111,95 @@ void	Timidity_binary::player(void)
         if(dfh==-1)
                 {
                 perror("mkstemp");
-                return; // Abort
+                return -1;
                 }
         copy_to_fh(filename,dfh);
 	unlink(filename.c_str());
-	string	newfilename=newfn;
+	newfilename=newfn;
 #else
 	char newfn[L_tmpnam];
-	string	newfilename=tmpnam(newfn);
+	newfilename=tmpnam(newfn);
 	copy_to_name(filename,newfilename);
 	unlink(filename.c_str());
 #endif
-
-	audiostream->id=Timidity_binary_magic;
 	char nbuf[32];
-	sprintf(nbuf,"%lu",Audio::get_ptr()->actual.freq);
-	string	s="timidity -Oru8S -id";
-	if(do_repeat)
-		s+="l";
-	s+=" -s ";
-	s+=nbuf;
-	s+=" -o- ";
-	s+=newfilename;
-#ifndef DEBUG
-	s+=" 2>/dev/null";	// Swallow extraneous output if !debug
-#endif
-	__sighandler_t oldhandler=signal(SIGPIPE,SIG_DFL);
-	FILE *data=popen(s.c_str(),"r");
-	signal(SIGPIPE,oldhandler);
-	if(!data)
-		return;
-	char	buf[1024];
-	while(!feof(data))
-		{
-		if(!audiostream->consuming)
+	sprintf(nbuf,"%lu", Audio::get_ptr()->actual.freq);
+	string repstr = "-id";
+	if(repeat)
+		repstr += "l";
+	int pdes[2];
+	pipe(pdes);
+	switch(pid = fork())
+	{
+		case -1:
+		close(pdes[0]);
+		close(pdes[1]);
+		break;
+		
+		case 0:
+		dup2(pdes[1], STDOUT_FILENO);
+		close(pdes[1]);
+		close(pdes[0]);
+		close(STDERR_FILENO);
+		execlp("timidity","timidity","-Oru8S",repstr.c_str(),"-s",nbuf,"-o-",newfilename.c_str(),0); 
+		_exit(127);
+		
+		default:
 			{
-			break;
+			close(pdes[1]);
+			return pdes[0];
 			}
-		size_t	x=fread(buf,1,sizeof(buf),data);
+	}
+	return -1;
+}
+
+void	Timidity_binary::player(void)
+{
+	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
+	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
+	audiostream->id=Timidity_binary_magic;
+	char buf[4096];
+	string newfilename;
+	pid_t timidity_pid;
+	int fd = timidity_play(filename, do_repeat, newfilename, timidity_pid);
+	for (;;)
+		{
+		size_t	x=read(fd, buf, sizeof(buf));
+		if(x<=0 || !audiostream->consuming)
+			break;
 		audiostream->produce(buf,x);
 		}
-	pclose(data);
+	close(fd);
+	kill(timidity_pid, SIGKILL);
 	unlink(newfilename.c_str());
 	audiostream->end_production();
 	audiostream=0;
-	cerr << "Timidity cleaned up" << endl;
 }
 
 void	Timidity_binary::sfxplayer(void)
 {
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic_sfx);
 	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
-#if HAVE_MKSTEMP
-	char newfn[128];
-	strcpy(newfn,"/tmp/u7_midi_fileXXXXXX");
-	int	dfh=mkstemp(newfn);
-	if(dfh==-1)
-		{
-		perror("mkstemp");
-		return;	// Abort
-		}
-	copy_to_fh(sfxname,dfh);
-	unlink(sfxname.c_str());
-	string newfilename=newfn;
-#else
-	char newfn[L_tmpnam];
-	string	newfilename=tmpnam(newfn);
-	copy_to_name(sfxname,newfilename);
-	unlink(sfxname.c_str());
-#endif
-
 	audiostream->id=Timidity_binary_magic_sfx;
-	char nbuf[32];
-	sprintf(nbuf,"%lu",Audio::get_ptr()->actual.freq);
-	string	s="timidity -Oru8S -id -s ";
-	s+=nbuf;
-	s+=" -o- ";
-	s+=newfilename;
-#ifndef DEBUG
-	s+=" 2>/dev/null";	// Swallow extraneous output if !debug
-#endif
-	FILE *data=popen(s.c_str(),"r");
-	if(!data)
-		return;
-	char	buf[1024];
-	while(!feof(data))
+	char buf[4096];
+	string newfilename;
+	pid_t timidity_pid;
+	int fd = timidity_play(sfxname, false, newfilename, timidity_pid);
+	for (;;)
 		{
-		if(!audiostream->consuming)
-			{
+		size_t	x=read(fd, buf, sizeof(buf));
+		if(x<=0 || !audiostream->consuming)
 			break;
-			}
-		size_t	x=fread(buf,1,sizeof(buf),data);
 		audiostream->produce(buf,x);
 		}
-	pclose(data);
+	close(fd);
+	kill(timidity_pid, SIGKILL);
 	unlink(newfilename.c_str());
 	audiostream->end_production();
 	audiostream=0;
 }
 
-Timidity_binary::Timidity_binary() : my_thread(0),filename()
+Timidity_binary::Timidity_binary() : midi_thread(0), sfx_thread(0), filename()
 	{
 		// Figure out if the binary is where we expect it to be.
 		
@@ -231,11 +215,13 @@ Timidity_binary::~Timidity_binary()
 void	Timidity_binary::stop_track(void)
 	{
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
+	pthread_join(midi_thread, 0);
 	}
 
 void	Timidity_binary::stop_sfx(void)
 	{
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic_sfx);
+	pthread_join(sfx_thread, 0);
 	}
 
 bool	Timidity_binary::is_playing(void)
@@ -261,7 +247,8 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 #endif
 	filename=name;
 	do_repeat=repeat;
-	my_thread=SDL_CreateThread(sub_process,this);
+	fprintf(stderr, "Creating new player thread\n");
+	pthread_create(&midi_thread, 0, midi_process, this);
 }
 
 
@@ -280,7 +267,7 @@ void	Timidity_binary::start_sfx(const char *name)
 	cerr << "Starting to play " << name << endl;
 #endif
 	sfxname=name;
-	sfx_thread=SDL_CreateThread(sfx_process,this);
+	pthread_create(&sfx_thread, 0, sfx_process, this);
 }
 
 const	char *Timidity_binary::copyright(void)
