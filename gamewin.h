@@ -65,7 +65,6 @@ class Game_window
 	static Game_window *game_window;// There's just one.
 	Image_window8 *win;		// Window to display into.
 	Palette *pal;
-private:
 	Usecode_machine *usecode;	// Drives game plot.
 	bool combat;			// true if in combat.
 	Time_queue *tqueue;		// Time-based queue.
@@ -84,7 +83,8 @@ private:
 	bool in_dungeon;		// true if inside a dungeon.
 	std::ifstream chunks;		// "u7chunks" file.
 	Vga_file exult_flx;		// "<data>/exult.flx"
-	Vga_file gameflx;		// "<data>/exult_bg.flx" or "<data>/exult_si.flx"
+	Vga_file gameflx;		// "<data>/exult_bg.flx" or 
+					//   "<data>/exult_si.flx"
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	Vga_file paperdolls;		// "paperdoll.vga" - paperdolls in SI
@@ -93,7 +93,6 @@ private:
 	Shape_file *extra_fonts[5];	// extra font shapes
 	Vga_file sprites;		// "sprites.vga" file.
 	Vga_file mainshp;
-	std::ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
 	Xform_palette invis_xform;	// For showing invisible NPC's.
@@ -108,7 +107,10 @@ private:
 	std::vector<Egg_object *> path_eggs;// Path eggs, indexed by 'quality'.
 					// Flat chunk areas:
 	Exult_vector<Chunk_terrain *> chunk_terrains;
-					// A list of objects in each chunk.
+	int num_chunk_terrains;		// Total #.
+					// Chunk_terrain index for each chunk:
+	short terrain_map[c_num_chunks][c_num_chunks];
+					// A list of objects in each chunk:
 	Chunk_object_list *objects[c_num_chunks][c_num_chunks];
 	Deleted_objects *removed;	// List of 'removed' objects.
 	bool schunk_read[144]; 		// Flag for reading in each "ifix".
@@ -455,7 +457,7 @@ public:
 					// Get "map" superchunk objs/scenery.
 	void get_map_objects(int schunk);
 					// Get "chunk" objects/scenery.
-	void get_chunk_objects(int cx, int cy, int chunk_num);
+	void get_chunk_objects(int cx, int cy);
 					// Get ifixxxx/iregxx name.
 	static char *get_schunk_file_name(char *prefix,
 						int schunk, char *fname);

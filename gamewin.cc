@@ -178,7 +178,7 @@ Game_window::Game_window
 	    teleported(false), in_dungeon(false), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0),
-	    monster_info(0), chunk_terrains(0),
+	    monster_info(0), chunk_terrains(0), num_chunk_terrains(0),
 	    palette(-1), brightness(100), user_brightness(100), 
 	    faded_out(false), fades_enabled(true),
 	    special_light(0), last_restore_hour(6),
@@ -313,7 +313,24 @@ void Game_window::init_files()
 	shapes.init();
 
 	U7open(chunks, U7CHUNKS);
+	chunks.seekg(0, ios::end);	// Get to end so we can get length.
+					// 2 bytes/tile.
+	num_chunk_terrains = chunks.tellg()/(c_tiles_per_chunk*2);
+	std::ifstream u7map;		// Read in map.
 	U7open(u7map, U7MAP);
+	for (int schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
+		{			// Read in the chunk #'s.
+		unsigned char buf[16*16*2];
+		u7map.read((char*)buf, sizeof(buf));
+		int scy = 16*(schunk/12);// Get abs. chunk coords.
+		int scx = 16*(schunk%12);
+		unsigned char *mapdata = buf;
+					// Go through chunks.
+		for (int cy = 0; cy < 16; cy++)
+			for (int cx = 0; cx < 16; cx++)
+				terrain_map[scx+cx][scy+cy] = Read2(mapdata);
+		}
+	u7map.close();
 	ifstream textflx;	
   	U7open(textflx, TEXT_FLX);
 	Setup_item_names(textflx);	// Set up list of item names.
@@ -825,21 +842,12 @@ void Game_window::get_map_objects
 	int schunk			// Superchunk # (0-143).
 	)
 	{
-	u7map.seekg(schunk * 16*16*2);	// Get to desired chunk.
-	unsigned char buf[16*16*2];
-	u7map.read((char*)buf, sizeof(buf));	// Read in the chunk #'s.
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
-	unsigned char *mapdata = buf;
 					// Go through chunks.
 	for (int cy = 0; cy < 16; cy++)
 		for (int cx = 0; cx < 16; cx++)
-			{
-					// Get chunk #.
-			int chunk_num = *mapdata++;
-			chunk_num += (*mapdata++) << 8;
-			get_chunk_objects(scx + cx, scy + cy, chunk_num);
-			}
+			get_chunk_objects(scx + cx, scy + cy);
 	}
 
 /*
@@ -848,12 +856,12 @@ void Game_window::get_map_objects
 
 void Game_window::get_chunk_objects
 	(
-	int cx, int cy,			// Chunk index within map.
-	int chunk_num			// Desired chunk # within file.
+	int cx, int cy			// Chunk index within map.
 	)
 	{
 					// Get list we'll store into.
 	Chunk_object_list *chunk = get_objects(cx, cy);
+	int chunk_num = terrain_map[cx][cy];
 					// Already have this one?
 	Chunk_terrain *ter = chunk_num < chunk_terrains.size() ?
 					chunk_terrains[chunk_num] : 0;
@@ -933,11 +941,6 @@ void Game_window::write_map_objects
 	uint8 *tptr = &table[0];
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
-	u7map.seekg(schunk * 16*16*2);	// Get to desired chunk.
-					// Need to get actual chunk #'s.
-	unsigned char chunknums[16*16*2];
-	u7map.read((char*)chunknums, sizeof(chunknums));
-	unsigned char *chunknumsptr = &chunknums[0];
 					// Go through chunks.
 	for (int cy = 0; cy < 16; cy++)
 		for (int cx = 0; cx < 16; cx++)
@@ -955,8 +958,8 @@ void Game_window::write_map_objects
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)
 				obj->write_map(ifix, chunk_data);
-					// Write out chunk.
-			int chunk_num = Read2(chunknumsptr);
+					// Write out chunk.++++++++?????
+			int chunk_num = terrain_map[cx][cy];
 			ochunks.seekp(chunk_num*512);
 			ochunks.write((char *) chunk_data, sizeof(chunk_data));
 					// Store IFIX data length.
