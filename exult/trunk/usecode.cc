@@ -306,8 +306,12 @@ Game_object *Usecode_machine::get_item
 	)
 	{
 	Game_object *obj = 0;
+	if (val == -356)		// +++++Avatar.  Define in .h file.
+		return gwin->get_main_actor();
 	if (val < 0)
 		obj = gwin->get_npc(-val);
+	else if (val < gwin->get_num_npcs())
+		obj = gwin->get_npc(val);
 	return obj ? obj : (Game_object *) val;
 	}
 
@@ -543,6 +547,8 @@ Usecode_value Usecode_machine::call_intrinsic
 		}
 	case 1:				// ??Animate (itemref, array).+++++++
 		break;
+	case 2:				// ??(npc, array, ??)
+		break;
 	case 3:				// Show NPC face.
 		show_npc_face(parms[0], parms[1]);
 		break;
@@ -681,12 +687,14 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 	case 0x38:			// Return. game time hour (0-23).
 		//++++++++++
+		return Usecode_value(12);
 		break;
 	case 0x39:			// Return minute (0-59).
 		//++++++++
 		break;
 	case 0x40:			// Show str. near item (item, str).
 		//+++++++++
+cout << "Say '" << parms[1].get_str_value() << "' near an item.\n";
 		break;
 	case 0x48:			// Display map.
 		//++++++++++++
@@ -699,6 +707,20 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value(parms[0].get_array_size());
 	case 0x68:			// Returns 1 if mouse exists.
 		return Usecode_value(1);
+	case 0x88:		// Get npc flag(item, flag#).
+		//+++++++++++++++
+	case 0x89:		// Set npc flag(item, flag#).
+		//+++++++++++++
+	case 0x8a:		// Clear npc flag(item, flag#).
+		//++++++++++++++ Not sure if item is always an NPC.
+		{
+		extern char *item_names[];
+		Game_object *obj = get_item(parms[0].get_int_value());
+		if (obj)
+		cout << "Flag intrinsic called for " <<
+				obj->get_shapenum() << '\n';
+		break;
+		}
 	default:
 		{
 		printf("Unhandled intrinsic 0x%03x called with %d parms: ",
@@ -831,7 +853,7 @@ void Usecode_machine::run
 	int event			// Event (??) that caused this call.
 	)
 	{
-	printf("Running usecode %04x\n", fun->id);
+	printf("Running usecode %04x with event %d\n", fun->id, event);
 	Usecode_value *save_sp = sp;	// Save TOS.
 	Answers save_answers;		// Save answers list.
 	save_answers = answers;
