@@ -1245,7 +1245,7 @@ void Main_actor::get_followers
 /*
  *	Step onto an adjacent tile.
  *
- *	Output:	Delay for next frame, or 0 to stop.
+ *	Output:	0 if blocked.
  */
 
 int Main_actor::step
@@ -1267,7 +1267,10 @@ int Main_actor::step
 	Game_object *block;		// Just assume height==3.
 	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift) &&
 	   (!(block = Game_object::find_blocking(t)) || block == this
-	                     || !block->move_aside(get_direction(block))))
+					// Try to get blocker to move aside.
+	                     || !block->move_aside(get_direction(block)) ||
+					// If okay, try one last time.
+   			nlist->is_blocked(3, old_lift, tx, ty, new_lift)))
 		{
 		stop();
 		return (0);
@@ -1301,7 +1304,7 @@ int Main_actor::step
 	else if (old_lift != new_lift &&
 		 gwin->set_above_main_actor(new_lift))
 			gwin->set_all_dirty();
-	return (frame_time);		// Add back to queue for next time.
+	return (1);
 	}
 
 /*
@@ -1524,7 +1527,7 @@ void Npc_actor::handle_event
 /*
  *	Step onto an adjacent tile.
  *
- *	Output:	Delay for next frame, or 0 to stop.
+ *	Output:	0 if blocked.
  *		Dormant is set if off screen.
  */
 
@@ -1554,6 +1557,9 @@ int Npc_actor::step
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);
 		stop();
+					// Offscreen, but not in party?
+		if (!gwin->add_dirty(this) && Npc_actor::get_party_id() < 0)
+			dormant = 1;	// Go dormant.
 		return (0);		// Done.
 		}
 	if (poison)
@@ -1571,7 +1577,7 @@ int Npc_actor::step
 		dormant = 1;
 		return (0);
 		}
-	return (frame_time);		// Add back to queue for next time.
+	return (1);			// Add back to queue for next time.
 	}
 
 /*
@@ -1780,7 +1786,7 @@ void Monster_actor::delete_all
 /*
  *	Step onto an adjacent tile.
  *
- *	Output:	Delay for next frame, or 0 to stop.
+ *	Output:	0 if blocked.
  *		Dormant is set if off screen.
  */
 
@@ -1806,6 +1812,8 @@ int Monster_actor::step
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);
 		stop();
+		if (!gwin->add_dirty(this))
+			dormant = 1;	// Off-screen.
 		return (0);		// Done.
 		}
 	gwin->add_dirty(this);		// Set to repaint old area.
@@ -1819,7 +1827,7 @@ int Monster_actor::step
 		dormant = 1;
 		return (0);
 		}
-	return (frame_time);		// Add back to queue for next time.
+	return (1);			// Add back to queue for next time.
 	}
 
 /*
