@@ -389,13 +389,13 @@ bool Party_manager::step
 		}
 	int destdir = npc->get_direction(dest);
 					// Try next/prev dir.
-	if (npc->step(pos.get_neighbor((dir + 1)%8), frame))
+	if (npc->step(pos.get_neighbor((destdir + 1)%8), frame))
 		return true;
-	if (npc->step(pos.get_neighbor((dir + 7)%8), frame))
+	if (npc->step(pos.get_neighbor((destdir + 7)%8), frame))
 		return true;
-	if (npc->step(pos.get_neighbor((dir + 2)%8), frame))
+	if (npc->step(pos.get_neighbor((destdir + 2)%8), frame))
 		return true;
-	if (npc->step(pos.get_neighbor((dir + 6)%8), frame))
+	if (npc->step(pos.get_neighbor((destdir + 6)%8), frame))
 		return true;
 	frames->decrement(step_index);	// We didn't take the step.
 	return false;
