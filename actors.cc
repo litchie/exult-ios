@@ -607,7 +607,10 @@ void Actor::follow
  *	Get information about a tile that an actor is about to step onto.
  */
 
-inline void Actor::get_tile_info
+#ifndef BEOS
+inline
+#endif
+void Actor::get_tile_info
 	(
 	Actor *actor,			// May be 0 if not known.
 	Game_window *gwin,
