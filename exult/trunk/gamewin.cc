@@ -432,10 +432,9 @@ void Game_window::center_view
 	Chunk_object_list *nlist = get_objects(cx, cy);
 	nlist->setup_cache();					 
 	int tx = main_actor->get_tx(), ty = main_actor->get_ty();
-	if (set_above_main_actor(nlist->is_roof (tx, ty,
-						main_actor->get_lift())))
-		set_in_dungeon(nlist->has_dungeon() &&
-						nlist->in_dungeon(tx, ty));
+	set_above_main_actor(nlist->is_roof (tx, ty,
+						main_actor->get_lift()));
+	set_in_dungeon(nlist->has_dungeon() && nlist->in_dungeon(tx, ty));
 	paint();
 					// See who's nearby.
 	add_nearby_npcs(scrolltx/tiles_per_chunk, scrollty/tiles_per_chunk,
