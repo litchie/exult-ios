@@ -1,15 +1,12 @@
 Exult Documentation
-last changed: 15 April 2002(GMT)
+last changed: 19 May 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 15 April 2002
-0.2. - 07 April 2002
-0.3. - 07 March 2002
-0.4. - 07 January 2002
-0.5. - 25 November 2001
+0.1. - 19 May 2002
+0.2. - 15 April 2002
 
 1. Introduction
 1.1. What is Exult?
@@ -28,6 +25,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 3.4. Digital Wave Sound Effects
 3.5. Speech
 3.6. Turn off Audio
+3.7. Linux and Audio
 
 4. Video
 4.1. Resolution
@@ -58,41 +56,17 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 15 April 2002
+0.1. - 19 May 2002
+* 3.4. Digital Wave Sound Effects added selection move keys.
+* 3.7. Linux and Audio we advice using ALSA instead of OSS.
+* 5.3. Cheat keys added selection move keys.
+
+
+
+0.2. - 15 April 2002
 * 1.1. What is Exult? the Add-ons are NOT required for Exult to run.
 * 2.2. Settings in exult.cfg added Hebble's changes to set different paths.
 * 2.3. Path-Settings example for Hebble's changes.
-
-
-
-0.2. - 07 April 2002
-* 1.1. What is Exult? somehow we didn't mention Serpent Isle.
-* 1.2. Terms we use in regard to Exult and Ultima 7 added so people know what we are actually talking about.
-* 2.2. Settings in exult.cfg fixed error with save_compression_level.
-* 2.3. Path-Settings warned of spaces in paths.
-
-
-
-0.3. - 07 March 2002
-* 2.2. Settings in exult.cfg added <combat><difficulty> and <right_click_closes_gumps>.
-* 2.4. Command line options buildmap requires Exult to run in windowed mode.
-* 4.2. Scaler BillinearPlus.
-* 6.5. Gameplay Options Right click closes Gump added.
-
-
-
-0.4. - 07 January 2002
-* 2.2. Settings in exult.cfg added <force_wavout> and <looping>.
-* 2.4. Command line options Some parameters for whoever dares to use them.
-* 6.4. Audio Options looping added.
-* 6.6. Quit to Menu removed in snapshots.
-
-
-
-0.5. - 25 November 2001
-* 2.2. Settings in exult.cfg added <save_compression_level> to zip up savegames, <waves> no longer needs path set if in data dir.
-* 3.4. Digital Wave Sound Effects no longer needs paths for sfx pack (if in data dir).
-* 4.2. Scaler updated link To Derek Liauw's scaler page.
 
 
 
@@ -505,7 +479,7 @@ with the device you want to use.
 3.4. Digital Wave Sound Effects
 Exult needs the so called sfx packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI: In combat the sfx may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. Also Exult doesn't yet playback all the sfx that the orignal did.
 Note that configuring your soundfonts is not needed for digital wave sfx.
-The sfx pack made by Joseph Morris can be found at http://prdownloads.sourceforge.net/exult/jmsfx.zip (~4.55 MB) for "The Black Gate" and http://prdownloads.sourceforge.net/exult/jmsfxsi.zip (~6.01 MB) for "Serpent Isle". J.Morris recorded the original sfx used in BG and SI which meant a lot of work. Don't complain that the sfx sounds strange, instead load up the original and you will find that it sounds the same. Enjoy!
+We curently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on our download page at http://exult.sourceforge.net/download.php.
 Extract the zip files into your Exult data directory and write down the name of the pack in your exult.cfg file (see 2.2.). You don't need to set correct paths anymore if the pack is in the data directory. An example of how the relevant part of exult.cfg looks with these packs:
 <blackgate>
 <waves>
@@ -525,6 +499,10 @@ Exult can play the Ultima VII's speech through SDL, and its own internal mixer. 
 
 3.6. Turn off Audio
 Press 'Esc' to turn on/off Music, Speech and SoundFX or change the settings in exult.cfg - see 2.2..
+
+
+3.7. Linux and Audio
+Apparently Exult has some problem with OSS (Open Sound System - a commercial product that comes included with many Linux distributions). Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture) found at http://www.alsa-project.org. ALSA is going to replace OSS in the upcoming 2.5 Kernel anyway. We are sorry for this.
 
 
 
@@ -616,6 +594,8 @@ Cheat commands
 Alt-+/- : Switch resolution( you may have to use the keypad)
 Arrow keys : Scroll map
 Home : Recenter map
+Ctrl-Arrow keys : move selection (x,y coordinates)
+Ctrl-Page keys : move selection (z coordinates)
 F2 : Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat options
 F3 : Map teleport
 F10 : Show endgame

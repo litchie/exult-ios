@@ -1,3 +1,9 @@
+2002-05-19  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/*.html : updated
+	* docs/exult_studio.txt : updated
+	* docs/xml/*.xml : updated
+	* readme, faq : updated
+
 2002-05-17  Tristan Tarrant  <nadir@users.sf.net>
 	* schedule.cc: #include "SDL_timer.h" to appease gcc
 
