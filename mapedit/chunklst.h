@@ -91,7 +91,7 @@ public:
 							int w, int h);
 	virtual ~Chunk_chooser();
 	virtual bool server_response(int id, unsigned char *data, int datalen);
-	
+	virtual void end_terrain_editing();
 					// Turn off selection.
 	void unselect(bool need_render = true);
 	int is_selected()		// Is a chunk selected?

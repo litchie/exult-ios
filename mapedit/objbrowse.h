@@ -34,6 +34,7 @@ public:
 	
 	GtkWidget *get_widget();
 	virtual bool server_response(int id, unsigned char *data, int datalen);
+	virtual void end_terrain_editing();
 };
 
 #endif

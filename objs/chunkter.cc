@@ -213,6 +213,7 @@ bool Chunk_terrain::commit_edits
 		return false;
 	delete [] undo_shapes;
 	undo_shapes = 0;
+	render_flats();			// Update with new data.
 	return true;
 	}
 

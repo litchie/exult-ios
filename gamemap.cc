@@ -1149,7 +1149,8 @@ void Game_map::commit_terrain_edits
 		for (int cx = 0; cx < c_num_chunks; cx++)
 			{
 			Map_chunk *chunk = objects[cx][cy];
-			if (chunk && ters[terrain_map[cx][cy]] != 0)
+			if (chunk && ters[terrain_map[cx][cy]] != 0 &&
+			    chunk->get_terrain())
 					// Reload objects.
 				chunk->set_terrain(chunk->get_terrain());
 			}

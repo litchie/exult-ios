@@ -1854,8 +1854,8 @@ void Game_window::show_items
 	else if (obj)
 					// Show name.
 		add_text(obj->get_name().c_str(), obj);
-	else if (cheat.in_map_editor())	// Show flat.
-		{
+	else if (cheat.in_map_editor() && skip_lift > 0)
+		{			// Show flat, but not when editing ter.
 		ShapeID id = get_flat(x, y);
 		char str[12];
 		snprintf(str, 12, "Flat %d:%d", id.get_shapenum(), 
