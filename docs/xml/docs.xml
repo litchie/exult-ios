@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="24 July 2002(GMT)">
+<readme title="Exult" changed="24 October 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="24102002">
+			<header>- 24 October 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="zaurus_install"/> quick guide where the necessary files can be found.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="24072002">
 			<header>- 24 July 2002</header>
 			<body>
@@ -1054,6 +1062,23 @@
 		</sub>								
 	</section>	  	
   	<section title="OS specific notes">		
+		<sub name="zaurus_install">
+			<header>How to get the Zaurus port working</header>
+			<body>	
+				<para>
+					Some people were confused where to put the <Exult/> and U7 files and
+					this is a quick guide.
+				</para>
+				<ul>
+					<li>BG and SI are expected to be installed in <strong>/mnt/cf/exult-data/bg</strong>
+						and <strong>/mnt/cf/exult-data/si</strong></li>
+					<li><Exult/> binary is in <strong>/opt/QtPalmtop/bin/</strong></li>
+					<li>the shared files (like exult_bg.flx) go into 
+						<strong>/opt/QtPalmtop/share/exult/</strong></li>
+					<li>exult.cfg is can be found as <strong>/home/root/.exult.cfg</strong></li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="error_log">
 			<header>Error Log</header>
 			<body>	

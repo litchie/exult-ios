@@ -1,6 +1,6 @@
 <!-- block and inline elements -->
 
-<!ENTITY % inline "#PCDATA|br|em|extref|Exult|kbd|key|q|ref|ref1|section_ref|strong|Studio|Pentagram" >
+<!ENTITY % inline "#PCDATA|br|em|extref|Exult|kbd|key|q|ref|ref1|section_ref|strong|Studio|Pentagram|img" >
 
 <!ENTITY % lists "ul|ol" >
 
@@ -31,6 +31,8 @@
 <!ELEMENT ref1 (#PCDATA)>
 <!ELEMENT section_ref (#PCDATA)>
 <!ELEMENT extref (#PCDATA)>
+
+<!ELEMENT img (#PCDATA)>
 
 <!ELEMENT q (#PCDATA)>
 
@@ -66,3 +68,5 @@
 <!ATTLIST	section_ref		target	CDATA	#REQUIRED>
 <!ATTLIST	extref		target	CDATA	#REQUIRED>
 <!ATTLIST	extref		doc	(faq|docs|studio)	#IMPLIED>
+<!ATTLIST	img		src 	CDATA	#REQUIRED>
+<!ATTLIST	img		alt 	CDATA	#REQUIRED>
