@@ -1,5 +1,7 @@
 2002-06-21  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
+	* gamerend.h:  Helper-class added to do rendering.
+
 	* gamewin.h,shapeid.h, etc: ShapeID::paint_shape() replaces one of the
 	paint_shape()'s in Game_window, and gamewin.h no longer includes
 	shapeid.h. 

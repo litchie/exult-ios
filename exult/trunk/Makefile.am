@@ -59,6 +59,7 @@ exult_SOURCES =	\
 	gamemap.cc	\
 	gamemap.h	\
 	gamerend.cc	\
+	gamerend.h	\
 	gamewin.cc	\
 	gamewin.h	\
 	hash_utils.h	\
