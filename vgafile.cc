@@ -813,8 +813,7 @@ void Shape_file::load
 	)
 	{
 	ifstream file;
-	if (!U7open(file, nm))
-		return;
+	U7open(file, nm);
 	Shape_frame *frame = new Shape_frame();
 	StreamDataSource shape_source(&file);
 	unsigned long shapelen = shape_source.read4();
@@ -892,8 +891,7 @@ void Vga_file::load
 	const char *nm			// Path to file.
 	)
 	{
-	if (!U7open(file, nm))
-		return;
+	U7open(file, nm);		// throws an error if it fails
 	shape_source = new StreamDataSource(&file);
 	shape_source->seek(0x54);		// Get # of shapes.
 	num_shapes = shape_source->read4();
@@ -912,13 +910,12 @@ Vga_file::~Vga_file()
  *	Output:	0 if error.
  */
 
-int Shapes_vga_file::read_info
+void Shapes_vga_file::read_info
 	(
 	)
 	{
 	ifstream shpdims;
-	if (!U7open(shpdims, SHPDIMS))
-		return (0);
+	U7open(shpdims, SHPDIMS);
 					// Starts at 0x96'th shape.
 	for (int i = 0x96; i < num_shapes; i++)
 		{
@@ -926,16 +923,14 @@ int Shapes_vga_file::read_info
 		shpdims.get((char&) info[i].shpdims[1]);
 		}
 	ifstream wgtvol;
-	if (!U7open(wgtvol, WGTVOL))
-		return (0);
+	U7open(wgtvol, WGTVOL);
 	for (int i = 0; i < num_shapes; i++)
 		{
 		wgtvol.get((char&) info[i].weight);
 		wgtvol.get((char&) info[i].volume);
 		}
 	ifstream tfa;
-	if (!U7open(tfa, TFA))
-		return (0);
+	U7open(tfa, TFA);
 	for (int i = 0; i < num_shapes; i++)
 		{
 		tfa.read((char*)&info[i].tfa[0], 3);
@@ -948,8 +943,7 @@ int Shapes_vga_file::read_info
 		info[i].set_tfa_data();
 		}
 	ifstream ready;
-	if (!U7open(ready, READY))
-		return (0);
+	U7open(ready, READY);
 	int cnt = Read1(ready);		// Get # entries.
 	for (int i = 0; i < cnt; i++)
 		{
@@ -960,8 +954,7 @@ int Shapes_vga_file::read_info
 		}
 	ready.close();
 	ifstream armor;
-	if (!U7open(armor, ARMOR))
-		return (0);
+	U7open(armor, ARMOR);
 	cnt = Read1(armor);
 	for (int i = 0; i < cnt; i++)
 		{
@@ -972,8 +965,7 @@ int Shapes_vga_file::read_info
 		}
 	armor.close();
 	ifstream weapon;
-	if (!U7open(weapon, WEAPONS))
-		return (0);
+	U7open(weapon, WEAPONS);
 	cnt = Read1(weapon);
 	for (int i = 0; i < cnt; i++)
 		{
@@ -1025,8 +1017,7 @@ int Shapes_vga_file::read_info
 	info[606].set_ammo_consumed();	// Magic bow.	
 	info[647].set_ammo_consumed();	// Triple crossbow.
 	ifstream ammo;
-	if (!U7open(ammo, AMMO))
-		return (0);
+	U7open(ammo, AMMO);
 	cnt = Read1(ammo);
 	Ammo_info::table = new Ammo_table;
 	for (int i = 0; i < cnt; i++)
@@ -1044,8 +1035,7 @@ int Shapes_vga_file::read_info
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;
 	unsigned short offsets[1024];
-	if (!U7open(wihh, WIHH))
-		return (0);
+	U7open(wihh, WIHH);
 	for (int i = 0; i < 1024; i++)
 		offsets[i] = Read2(wihh);
 	for (int i = 0; i < 1024; i++)
@@ -1070,7 +1060,6 @@ int Shapes_vga_file::read_info
 				info[i].weapon_offsets[j * 2 + 1] = y;
 				}
 			}
-	return (1);
 	}
 
 Shape_info::~Shape_info()

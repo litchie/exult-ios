@@ -44,8 +44,6 @@ Flat::Flat(const string &n) : U7file(n)
 {
 	// Making it safe
 	FILE *fp=U7open(filename.c_str(),"rb");
-	if(!fp)
-		throw file_not_found_error(filename);
 
 	fclose (fp);
 }
@@ -55,8 +53,6 @@ void     Flat::retrieve(int objnum,char **c,size_t *len)
 { 
 	FILE	*fp;
 	fp=U7open(filename.c_str(),"rb");
-	if(!fp)
-		throw file_not_found_error(filename);
 
 	fseek(fp,0,SEEK_END);
 	*len = ftell(fp);

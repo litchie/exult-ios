@@ -34,7 +34,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #include <sys/stat.h>
 #endif
 
+#include "exceptions.h"
 #include "utils.h"
+
 
 using std::string;
 
@@ -50,6 +52,10 @@ void add_system_path(const string& key, const string& value)
 {
 	path_map[key] = value;
 }
+
+/*
+ *  Convert an exult path (e.g. "<DATA>/exult.flx") into a system path
+ */
 
 string get_system_path(const string &path)
 {
@@ -81,38 +87,40 @@ static void to_uppercase
 	(
 	string &str
 	)
-	{
+{
 	for(string::iterator X = str.begin(); X != str.end(); ++X)
-		{
+	{
 #ifndef BEOS
 		*X = std::toupper(*X);
 #else
 //sigh...
         if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #endif         
-		}
 	}
+}
 
 static void switch_slashes(
 	string & name
 	)
-	{
+{
 #ifdef WIN32
-		for(string::iterator X = name.begin(); X != name.end(); ++X)
-			{
-			if(*X == '/' )
-				*X =  '\\';
-			}
+	for(string::iterator X = name.begin(); X != name.end(); ++X)
+	{
+		if(*X == '/' )
+			*X =  '\\';
+	}
 #elif defined(MACOS)
-		for(string::iterator X = name.begin(); X != name.end(); ++X)
-			{
-			if(*X == '/' )
-				*X =  ':';
-			}
+	name = ":" + name;
+	for(string::iterator X = name.begin(); X != name.end(); ++X)
+	{
+		if(*X == '/' )
+			*X =  ':';
+	}
 #else
 	// do nothing
 #endif
-	}
+}
+
 /*
  *	Open a file for input, 
  *	trying the original name (lower case), and the upper case version 
@@ -121,12 +129,12 @@ static void switch_slashes(
  *	Output: 0 if couldn't open.
  */
 
-int U7open
+void U7open
 	(
 	std::ifstream& in,			// Input stream to open.
 	const char *fname			// May be converted to upper-case.
 	)
-	{
+{
 #ifdef MACOS
 	std::ios_base::openmode mode = std::ios::in | std::ios::binary;
 #elif defined(XWIN)
@@ -138,14 +146,13 @@ int U7open
 
 	in.open(name.c_str(), mode);		// Try to open original name.
 	if (!in.good())			// No good?  Try upper-case.
-		{
+	{
 		to_uppercase(name);
 		in.open(name.c_str(), mode);
 		if (!in.good())
-			return (0);
-		}
-	return (1);
+			throw file_open_exception(name);
 	}
+}
 
 /*
  *	Open a file for output,
@@ -155,12 +162,12 @@ int U7open
  *	Output: 0 if couldn't open.
  */
 
-int U7open
+void U7open
 	(
 	std::ofstream& out,			// Output stream to open.
 	const char *fname			// May be converted to upper-case.
 	)
-	{
+{
 #ifdef MACOS
 	std::ios_base::openmode mode = std::ios::out | std::ios::trunc | std::ios::binary;
 #elif defined(XWIN)
@@ -172,14 +179,13 @@ int U7open
 
 	out.open(name.c_str(), mode);		// Try to open original name.
 	if (!out.good())		// No good?  Try upper-case.
-		{
+	{
 		to_uppercase(name);
 		out.open(name.c_str(), mode);
 		if (!out.good())
-			return (0);
-		}
-	return (1);
+			throw file_open_exception(name);
 	}
+}
 
 /*
  *	Open a file with the access rights specified in mode,
@@ -193,19 +199,19 @@ std::FILE* U7open
 	const char *fname,			// May be converted to upper-case.
 	const char *mode			// File access mode.
 	)
-	{
+{
 	string name = get_system_path(fname);
 
 	std::FILE *f = std::fopen(name.c_str(), mode);
 	if (!f)				// No good?  Try upper-case.
-		{
+	{
 		to_uppercase(name);
 		f = std::fopen(name.c_str(), mode);
-		if (!f)
-			return (0);
-		}
-	return (f);
 	}
+	if (!f)
+		throw file_open_exception(name);
+	return (f);
+}
 
 /*
  *	Remove a file taking care of paths etc.
@@ -216,11 +222,11 @@ void U7remove
 	(
 	const char *fname			// May be converted to upper-case.
 	)
-	{
+{
 	string name = get_system_path(fname);
 
 	std::remove(name.c_str());
-	}
+}
 
 /*
  *	See if a file exists.
@@ -230,12 +236,20 @@ int U7exists
 	(
 	const char *fname			// May be converted to upper-case.
 	)
-	{
-	string name = get_system_path(fname);
-
+{
+	bool	exists;
 	struct stat sbuf;
-	return (stat(name.c_str(), &sbuf) == 0);
+	
+	string name = get_system_path(fname);
+	
+	exists = (stat(name.c_str(), &sbuf) == 0);
+	if( !exists )
+	{
+		to_uppercase(name);
+		exists = (stat(name.c_str(), &sbuf) == 0);
 	}
+	return exists;
+}
 
 /*
  *	Take log2 of a number.
@@ -247,9 +261,9 @@ int Log2
 	(
 	unsigned int n
 	)
-	{
+{
 	int result = 0;
 	for (n = n>>1; n; n = n>>1)
 		result++;
 	return result;
-	}
+}

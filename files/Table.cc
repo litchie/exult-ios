@@ -51,8 +51,6 @@ void	Table::IndexTableFile(void)
 	Table	&ret=*this;
 	FILE	*fp;
 	fp=U7open(ret.filename.c_str(),"rb");
-	if(!fp)
-		throw file_not_found_error(ret.filename);
 	fseek(fp,0,SEEK_END);
 	size_t file_size=ftell(fp);
 	fseek(fp,0,SEEK_SET);
@@ -67,7 +65,7 @@ void	Table::IndexTableFile(void)
 		f.offset = Read4(fp);
 //		fread(&f.offset,sizeof(uint32),1,fp);
 		if(f.size>file_size||f.offset>file_size)
-			throw wrong_file_type_error();
+			throw wrong_file_type_exception(filename,"Table");
 #if 0
 		cout << "Item " << i << ": " << f.size << " @ " << f.offset << endl;
 #endif

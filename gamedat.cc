@@ -37,8 +37,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <stdio.h>
 
-#include "gamewin.h"
+#include "exceptions.h"
 #include "fnames.h"
+#include "gamewin.h"
 #include "utils.h"
 
 using std::cerr;
@@ -59,7 +60,7 @@ void Game_window::restore_gamedat
 	)
 	{
 	ifstream in;
-	u7open(in, fname);		// Open file & abort if error.
+	U7open(in, fname);		// Open file; throws an exception in case of an error.
 #ifdef WIN32
 	mkdir("gamedat");
 #else
@@ -154,11 +155,7 @@ static long Savefile
 	)
 	{
 	ifstream in;
-	if (!U7open(in, fname))
-		{
-		cerr << "Exult: Can't read '" << fname << "'"<<endl;
-		return (0);
-		}
+	U7open(in, fname);
 	in.seekg(0, ios::end);		// Get to end so we can get length.
 	long len = in.tellg();
 	in.seekg(0, ios::beg);
@@ -188,19 +185,14 @@ static long Savefile
  *	Output:	0 if error (reported).
  */
 
-bool Game_window::save_gamedat
+void Game_window::save_gamedat
 	(
 	const char *fname,			// File to create.
 	const char *savename			// User's savegame name.
 	)
 	{
 	ofstream out;
-	if (!U7open(out, fname))
-		{			// +++++Better error???
-		cerr << "Exult:  Error opening '" << fname <<
-				"' for writing"<<endl;
-		return (false);
-		}
+	U7open(out, fname);
 	char title[0x50];		// Use savename for title.
 	memset(title, 0, sizeof(title));
 	strncpy(title, savename, sizeof(title) - 1);
@@ -238,12 +230,8 @@ bool Game_window::save_gamedat
 	out.flush();
 	bool result = out.good();
 	if (!result)			// ++++Better error system needed??
-		{
-		cerr << "Exult:  Error writing '" << fname << "'"<<endl;
-		return (false);
-		}
+		throw file_write_exception(fname);
 	out.close();
-	return (result);
 	}
 
 /*
@@ -252,7 +240,7 @@ bool Game_window::save_gamedat
  *	Output:	false if error (reported).
  */
 
-bool Game_window::save_gamedat
+void Game_window::save_gamedat
 	(
 	int num,			// 0-9, currently.
 	const char *savename			// User's savegame name.
@@ -260,11 +248,9 @@ bool Game_window::save_gamedat
 	{
 	char fname[50];			// Set up name.
 	sprintf(fname, SAVENAME, num);
-	if (!save_gamedat(fname, savename))
-		return (false);
+	save_gamedat(fname, savename);
 	delete save_names[num];		// Update name.
 	save_names[num] = strdup(savename);
-	return (true);
 	}
 
 /*
@@ -273,20 +259,27 @@ bool Game_window::save_gamedat
 void Game_window::read_save_names
 	(
 	)
-	{
+{
 	for (size_t i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
-		{
+	{
 		char fname[50];		// Set up name.
 		sprintf(fname, SAVENAME, i);
 		ifstream in;
-		U7open(in, fname);
-		char buf[0x50];		// It's at start of file.
-		memset(buf, 0, sizeof(buf));
-		in.read(buf, sizeof(buf) - 1);
-		if (in.good())		// Okay if file not there.
-			save_names[i] = strdup(buf);
-		else
+		try
+		{
+			U7open(in, fname);
+			char buf[0x50];		// It's at start of file.
+			memset(buf, 0, sizeof(buf));
+			in.read(buf, sizeof(buf) - 1);
+			if (in.good())		// Okay if file not there.
+				save_names[i] = strdup(buf);
+			else
+				save_names[i] = strdup("");
+			in.close();
+		}
+		catch(...)
+		{
 			save_names[i] = strdup("");
-		in.close();
 		}
 	}
+}

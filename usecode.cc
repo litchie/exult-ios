@@ -4492,17 +4492,15 @@ int Usecode_machine::call_usecode
  *	Output:	0 if error.
  */
 
-int Usecode_machine::write
+void Usecode_machine::write
 	(
 	)
 	{
 	ofstream out;
-	if (!U7open(out, FLAGINIT))	// Write global flags.
-		return (0);
+	U7open(out, FLAGINIT);	// Write global flags.
 	out.write((char*)gflags, sizeof(gflags));
 	out.close();
-	if (!U7open(out, USEDAT))
-		return (0);
+	U7open(out, USEDAT);
 	Write2(out, party_count);	// Write party.
 	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		Write2(out, party[i]);
@@ -4517,7 +4515,8 @@ int Usecode_machine::write
 		Write2(out, virtue_stones[i].tz);
 		}
 	out.flush();
-	return out.good();
+	if( !out.good() )
+		throw file_write_exception(USEDAT);
 	}
 
 /*
@@ -4526,19 +4525,30 @@ int Usecode_machine::write
  *	Output:	0 if error.
  */
 
-int Usecode_machine::read
+void Usecode_machine::read
 	(
 	)
 	{
 	ifstream in;
-	if (!U7open(in, FLAGINIT))	// Read global flags.
-					// +++++Eventually, remove this:
-		if (!U7open(in, "<STATIC>/flaginit.dat"))
-			return (0);
+	try
+	{
+		U7open(in, FLAGINIT);	// Read global flags.
+	}
+	catch(...)
+	{
+		// +++++Eventually, remove this:
+		U7open(in, "<STATIC>/flaginit.dat");
+	}
 	in.read((char*)gflags, sizeof(gflags));
 	in.close();
-	if (!U7open(in, USEDAT))
-		return (1);		// Not an error if no saved game yet.
+	try
+	{
+		U7open(in, USEDAT);
+	}
+	catch(...)
+	{
+		return;		// Not an error if no saved game yet.
+	}
 	party_count = Read2(in);	// Read party.
 	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		party[i] = Read2(in);
@@ -4546,7 +4556,9 @@ int Usecode_machine::read
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		timers[t] = Read4(in);
-	int result = in.good();
+	if (!in.good())
+		throw file_read_exception(USEDAT);
+
 					// +++++No longer needed:
 	for (size_t i = 0; i < 8; i++)	// Virtue stones.
 		{
@@ -4557,7 +4569,6 @@ int Usecode_machine::read
 	if (!in.good())			// Failed.+++++Can remove this later.
 		for (size_t i = 0; i < 8; i++)
 			virtue_stones[i] = Tile_coord(0, 0, 0);
-	return result;
 	}
 
 /*

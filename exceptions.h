@@ -19,24 +19,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 
+#include <cerrno>
 #include <exception>
 #include <string>
 
 /*
- * Base class of all our exceptions, providing a storage for the error message
+ *  Base class of all our exceptions, providing a storage for the error message
  */
 
 class	exult_exception : public std::exception {
 	std::string  what_;
+	int errno_;
 public:
-	exult_exception (const char *what_arg): what_ (what_arg) {  }	
-	exult_exception (const std::string& what_arg): what_ (what_arg) {  }
-	const char *what(void) { return what_.c_str(); }
+	exult_exception (const char *what_arg): what_ (what_arg), errno_(errno) {  }	
+	exult_exception (const std::string& what_arg): what_ (what_arg), errno_(errno) {  }
+	const char *what(void) const { return what_.c_str(); }
+	int get_errno(void) const { return errno_; }
 };
 
 
 /*
- * Classes which should not be replicatable throw an replication_exception
+ *  Classes which should not be replicatable throw an replication_exception
  */
 
 class replication_exception : public exult_exception
@@ -56,18 +59,30 @@ public:
 
 
 /*
- * File errors
+ *  File errors
  */
 
-class	file_not_found_error : public exult_exception {
+class	file_open_exception : public exult_exception {
 	static const std::string  prefix_;
 public:
-	file_not_found_error (const std::string& what_arg): exult_exception("Unable to find/open U7file "+what_arg) {  }
+	file_open_exception (const std::string& file): exult_exception("Error opening file "+file) {  }
 };
 
-class	wrong_file_type_error : public exult_exception {
+class	file_write_exception : public exult_exception {
+	static const std::string  prefix_;
 public:
-	wrong_file_type_error (): exult_exception("Wrong file type") {  }
+	file_write_exception(const std::string& file): exult_exception("Error writing to file "+file) {  }
+};
+
+class	file_read_exception : public exult_exception {
+	static const std::string  prefix_;
+public:
+	file_read_exception(const std::string& file): exult_exception("Error reading from file "+file) {  }
+};
+
+class	wrong_file_type_exception : public exult_exception {
+public:
+	wrong_file_type_exception (const std::string& file, const std::string& type): exult_exception("File "+file+"is not of type "+type) {  }
 };
 
 
