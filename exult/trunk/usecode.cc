@@ -758,7 +758,7 @@ void Usecode_machine::set_item_shape
 	chunk->add(item);
 	rect = gwin->get_shape_rect(item).add(rect);
 	rect.enlarge(8);
-	gwin->clip_to_win(rect);
+	rect = gwin->clip_to_win(rect);
 	gwin->paint(rect);		// Not sure...
 	gwin->show();		// +++++++
 	}
@@ -791,7 +791,7 @@ void Usecode_machine::set_item_frame
 		{			// Figure area to repaint.
 		Rectangle rect = gwin->get_shape_rect(item);
 		rect.enlarge(8);
-		gwin->clip_to_win(rect);
+		rect = gwin->clip_to_win(rect);
 		gwin->paint(rect);
 		}
 //+++++Testing
