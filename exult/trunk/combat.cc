@@ -65,7 +65,8 @@ void Combat_schedule::find_opponents
 	Actor *actor;
 	Slist_iterator next(nearby);
 	while ((actor = (Actor *) next()) != 0)
-		if (actor->is_monster() && !actor->is_dead_npc())
+		if (actor->is_monster() && !actor->is_dead_npc() &&
+		    actor->get_alignment() != Npc_actor::friendly)
 			{
 			opponents.append(actor);
 					// And set hostile monsters.
@@ -73,6 +74,14 @@ void Combat_schedule::find_opponents
 			    actor->get_schedule_type() != Schedule::combat)
 				actor->set_schedule_type(Schedule::combat);
 			}
+					// None found?  Use Avatar's.
+	if (!opponents.get_last() && npc->get_party_id() >= 0 &&
+	    npc != gwin->get_main_actor())
+		{
+		Game_object *opp = gwin->get_main_actor()->get_opponent();
+		if (opp && opp != npc)
+			opponents.append(opp);
+		}
 	}		
 
 /*
@@ -179,7 +188,8 @@ void Combat_schedule::approach_foe
 					// Find opponent.
 	if (!opponent && !(opponent = find_foe()))
 		{
-		failures = 100;
+		failures++;
+		npc->start(200, 200);	// Try again in 1/5 sec.
 		return;			// No one left to fight.
 		}
 	Actor::Attack_mode mode = npc->get_attack_mode();
