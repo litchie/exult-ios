@@ -11,9 +11,10 @@
 # Column 7: data types of bytes
 
 # DataType Notes:
-#   flag == extoffset == dataoffset == varoffset == offset == short == 2 bytes
-#   byte == 1 byte
+# flag == extoffset == dataoffset == varoffset == offset == short == 2 bytes
+# byte == 1 byte
 
+# offset is calculated from the relative offset it
 # A "false" value is defined as integer 0, a null string, or an empty array.
 # (stateing obvious) Logically a "true" value would be the opposite of this.
 
@@ -44,16 +45,16 @@ TODO: To be done...
 Display the Avatar's conversation options and ask for the user's input.
 It jumps to {offset} if there is no conversation answers available.
 
-> 0x05	JNE	"jne\t%r1"	"\t\t\t;"	"jne()"	2	{offset}
+> 0x05	JNE	"jne\t%1"	"\t\t\t;"	"jne()"	2	{offset}
 
 Pops a value from the stack, tests if it's false, if it's false jumps to
 the relative {offset}.
 
-> 0x06	JMP	"jmp\t%r1"	"\t\t\t;"	"jmp()"	2	{offset}
+> 0x06	JMP	"jmp\t%1"	"\t\t\t;"	"jmp()"	2	{offset}
 
 Jumps to the relative {offset} provided.
 
-> 0x07	CMPS	"cmps\t%1H, %r2"	"\t\t\t;"	"cmps()"		4	{short,offset}
+> 0x07	CMPS	"cmps\t%1H, %2"	"\t\t\t;"	"cmps()"		4	{short,offset}
 
 Pop {short} number of values from the stack, compare each one to the
 last response from the user, and jumps to the {offset} if it's not found,
@@ -235,7 +236,7 @@ then pop v2) test if any of the elements inside the array v1 are equal to
 the element v2 (v2 cannot be an array), and pushes the resulting truth value
 on the stack.
 
-> 0x31	SMTH	"smth\t%1 %r2"	"\t\t\t;"	"smth()"	4	{short,offset}
+> 0x31	SMTH	"smth\t%1 %2"	"\t\t\t;"	"smth()"	4	{short,offset}
 
 Does something related to conversations. Only occurs (2x) in the usecode
 function handling the 'audition' in Britain. Current implementation

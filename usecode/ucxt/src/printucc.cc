@@ -139,12 +139,12 @@ bool print_uccs(ostream &o, const vector<UCc> &uccs, const unsigned int &uc_func
     {
 
       const UCc &ucc = uccs_gotoset[i][j];
-      const opcode_desc &opcode = opcode_table[ucc._id];
+      const UCOpcodeData &opcode = opcode_table_data[ucc._id];
 
       //if we've already done this
       if(ucc._tagged!=true)
       {
-        if(opcode.mnemonic==0)
+        if(opcode.name=="NULL")
         {
           indent(o);
           o << "// unknown function = ";
@@ -153,28 +153,28 @@ bool print_uccs(ostream &o, const vector<UCc> &uccs, const unsigned int &uc_func
         }
         else
         {
-          if(opcode.effect & EFF_PUSH)
-            stackp.push(ucc);
-          else if(opcode.effect & EFF_POP)
+//          if(opcode.effect & EFF_PUSH)
+//            stackp.push(ucc);
+//          else if(opcode.effect & EFF_POP)
+//            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
+//          else if(opcode.effect & EFF_CMP)
+//            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
+//          else if(opcode.effect & EFF_RELATIVE_JUMP)
+//            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
+//          else if(opcode.effect & EFF_BIMATH)
+//            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
+//          else if(opcode.effect & EFF_UNIMATH)
+//            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
+//          else if(opcode.effect & EFF_SINGLELINE)
+//            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
+//          else if(opcode.effect & EFF_STUPIDEFF)
+//            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
+//          else
+//          {
+//            indent(o);
             print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
-          else if(opcode.effect & EFF_CMP)
-            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
-          else if(opcode.effect & EFF_RELATIVE_JUMP)
-            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
-          else if(opcode.effect & EFF_BIMATH)
-            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
-          else if(opcode.effect & EFF_UNIMATH)
-            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
-          else if(opcode.effect & EFF_SINGLELINE)
-            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
-          else if(opcode.effect & EFF_STUPIDEFF)
-            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
-          else
-          {
-            indent(o);
-            print_ucc(o, ucc, uc_funcid, uc_externs, uc_data, return_val);
-            o << endl;
-          }
+//            o << endl;
+//          }
         }
       }
     } // end for j
@@ -205,6 +205,18 @@ void print_ucc(ostream &o, const UCc &ucc, const unsigned int &uc_funcid,
 {
   switch(ucc._id)
   {
+		// pushes
+		case 0x13:
+		case 0x14:
+		case 0x1F:
+		case 0x21:
+		case 0x3E:
+		case 0x42:
+		case 0x44:
+		case 0x48:
+			stackp.push(ucc);
+			break;
+
     // comparisons
     case UCC_CMPGT:
     case UCC_CMPLT:
@@ -522,6 +534,9 @@ string itos(unsigned int i)
   return ss.str();
 }
 
+/* FIXME: This is not going to work because of the lack of implemented .effect
+          in the new UCOpcodeData
+          Fixed the lack of .effect... now there obviously is other problems... */
 void populate_gotoset(vector<GotoSet_old> &gotoset, const vector<UCc> &uccs)
 {
   vector<unsigned int> jumps;
@@ -529,10 +544,11 @@ void populate_gotoset(vector<GotoSet_old> &gotoset, const vector<UCc> &uccs)
   // collect jump references
   for(unsigned int i=0; i<uccs.size(); i++)
   {
-    if(opcode_table[uccs[i]._id].effect & EFF_RELATIVE_JUMP)
+    //if(opcode_table_data[uccs[i]._id].effect & EFF_RELATIVE_JUMP)
+		if(!uccs[i]._jump_offsets.empty())
     {
-      assert(uccs[i]._params.size()>=2);
-      jumps.push_back(calc_reljump_offset(uccs[i]));
+      //assert(uccs[i]._params.size()>=2);
+      jumps.insert(jumps.end(), uccs[i]._jump_offsets.begin(), uccs[i]._jump_offsets.end());
     }
   }
 
