@@ -1,3 +1,8 @@
+2002-02-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucinternal.cc (public): Find_nearby() now handles case
+	where parm. 0 is a 4-elem. array.  Fixes 'destroy trap' spell.
+
 2002-02-25  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucsched.cc (Usecode_script): Handle sched. opcode 0x29:

@@ -701,8 +701,17 @@ Usecode_value Usecode_internal::find_nearby
 		
 					// It might be (tx, ty, tz).
 	int arraysize = objval.get_array_size();
-	if (arraysize >= 3 && objval.get_elem(0).get_int_value() < c_num_tiles)
+	if (arraysize == 4)		// Passed result of click_on_item.
 		{
+		Game_object::find_nearby(vec, 
+			Tile_coord(objval.get_elem(1).get_int_value(),
+				   objval.get_elem(2).get_int_value(),
+				   objval.get_elem(3).get_int_value()),
+			shapenum,
+			distval.get_int_value(), mval.get_int_value());
+		}
+	else if (arraysize == 3 || arraysize == 5)
+		{			// Coords(x,y,z) [qual, frame]
 					// Qual is 4th if there.
 		int qual = arraysize == 5 ? objval.get_elem(3).get_int_value()
 							: c_any_qual;
