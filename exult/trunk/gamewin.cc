@@ -727,7 +727,10 @@ void Game_window::read_ireg_objects
 				    entry[2], entry[3], tilex, tiley, lift);
 					// Read container's objects.
 			if (type)	// ???Don't understand this yet.
+				{
 				read_ireg_objects(ireg, scx, scy, obj);
+				obj->elements_read();
+				}
 			}
 		else			// Length 18 means it's a spellbook.
 			{		// Get all 9 spell bytes.
@@ -1540,7 +1543,7 @@ void Game_window::view_up
 void Game_window::start_actor
 	(
 	int winx, int winy, 		// Mouse position to aim for.
-	int speed = 125			// Msecs. between frames.
+	int speed			// Msecs. between frames.
 	)
 	{
 	// +++++++++++Check for moving_barge.

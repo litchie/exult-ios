@@ -282,6 +282,8 @@ public:
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out)
 		{  }
+	virtual void elements_read()	// Called when all member items read.
+		{  }
 					// Write common IREG data.
 	void write_common_ireg(unsigned char *buf);
 	virtual int get_live_npc_num()
@@ -432,6 +434,7 @@ class Barge_object : public Container_game_object
 					//   which proceed those placed on it.
 	unsigned char xtiles, ytiles;	// Tiles covered (when vert?).
 	unsigned char horizontal;	// Flag:  1 if horizontal.
+	unsigned char complete;		// Flag:  all members have been read.
 	Game_object *get_object(int i)
 		{ return (Game_object *) objects.get(i); }
 public:
@@ -440,7 +443,8 @@ public:
 			int xt, int yt, int horiz)
 		: Container_game_object(l, h, shapex, shapey, lft),
 			perm_count(0),
-			xtiles(xt), ytiles(yt), horizontal(horiz)
+			xtiles(xt), ytiles(yt), horizontal(horiz),
+			complete(0)
 		{  }
 #if 0
 	Barge_object() : Ireg_game_object()
@@ -448,6 +452,7 @@ public:
 #endif
 	virtual ~Barge_object()
 		{  }
+	void gather();			// Gather up objects on barge.
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
 					// Remove an object.
@@ -460,6 +465,7 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
+	virtual void elements_read();	// Called when all member items read.
 	};
 
 /*
