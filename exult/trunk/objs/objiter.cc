@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 #include "contain.h"
 #include "gamewin.h"
-#include "gamemap.h"
+#include "chunks.h"
 
 // Make linker happy.
 
