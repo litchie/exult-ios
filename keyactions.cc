@@ -556,5 +556,10 @@ void ActionSkinColour(int *params)
 //  { ActionSoundTester, 0, "Sound tester", false, true, NONE }
 void ActionSoundTester(int *params)
 {
-  cheat.sound_tester();
+	cheat.sound_tester();
+}
+
+void ActionTest(int *params)
+{
+	cerr << "Test!" << endl;
 }

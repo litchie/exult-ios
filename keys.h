@@ -31,116 +31,117 @@ class Scroll_gump;
 const int c_maxparams = 4;
 
 enum ActionCode {
-        ACTION_NOTHING = -1,
-        // Game Shell Actions (Save, Restore, Quit)
-        ACTION_QUIT,
-        ACTION_SAVE_RESTORE,
-        ACTION_QUICKSAVE,
-        ACTION_QUICKRESTORE,
-        ACTION_ABOUT,
-        ACTION_HELP,
-        ACTION_CLOSE_GUMPS,
-        ACTION_SCREENSHOT,
-
-        // Game Viewport manipulation
-        ACTION_REPAINT,
-        ACTION_RESOLUTION_INCREASE,
-        ACTION_RESOLUTION_DECREASE,
-        ACTION_BRIGHTER,
+	ACTION_NOTHING = -1,
+	// Game Shell Actions (Save, Restore, Quit)
+	ACTION_QUIT,
+	ACTION_SAVE_RESTORE,
+	ACTION_QUICKSAVE,
+	ACTION_QUICKRESTORE,
+	ACTION_ABOUT,
+	ACTION_HELP,
+	ACTION_CLOSE_GUMPS,
+	ACTION_SCREENSHOT,
+	
+	// Game Viewport manipulation
+	ACTION_REPAINT,
+	ACTION_RESOLUTION_INCREASE,
+	ACTION_RESOLUTION_DECREASE,
+	ACTION_BRIGHTER,
 	ACTION_DARKER,
-        ACTION_TOGGLE_FULLSCREEN,
-
-        // In-game actions
-        ACTION_USEITEM,
-        ACTION_TOGGLE_COMBAT,
-        ACTION_TARGET_MODE,
-        ACTION_INVENTORY,
-        ACTION_TRY_KEYS,
-        ACTION_STATS,
-
-        // Cheats!
-        ACTION_SHOW_SI_INTRO,
-        ACTION_SHOW_ENDGAME,
-        ACTION_SCROLL_LEFT,
-        ACTION_SCROLL_RIGHT,
-        ACTION_SCROLL_UP,
-        ACTION_SCROLL_DOWN,
-        ACTION_CENTER_SCREEN,
-        ACTION_SHAPE_BROWSER,
-        ACTION_CREATE_SHAPE,
-        ACTION_DELETE_OBJECT,
-        ACTION_TOGGLE_EGGS,
-        ACTION_TOGGLE_GOD_MODE,
-        ACTION_CHANGE_GENDER,
-        ACTION_CHEAT_HELP,
-        ACTION_TOGGLE_INFRAVISION,
-        ACTION_SKIPLIFT_DECREMENT,
-        ACTION_TOGGLE_MAP_EDITOR,
-        ACTION_MAP_TELEPORT,
-        ACTION_CURSOR_TELEPORT,
-        ACTION_NEXT_TIME_PERIOD,
-        ACTION_TOGGLE_WIZARD_MODE,
-        ACTION_PARTY_HEAL,
-        ACTION_PARTY_INCREASE_LEVEL,
+	ACTION_TOGGLE_FULLSCREEN,
+	
+	// In-game actions
+	ACTION_USEITEM,
+	ACTION_TOGGLE_COMBAT,
+	ACTION_TARGET_MODE,
+	ACTION_INVENTORY,
+	ACTION_TRY_KEYS,
+	ACTION_STATS,
+	
+	// Cheats!
+	ACTION_SHOW_SI_INTRO,
+	ACTION_SHOW_ENDGAME,
+	ACTION_SCROLL_LEFT,
+	ACTION_SCROLL_RIGHT,
+	ACTION_SCROLL_UP,
+	ACTION_SCROLL_DOWN,
+	ACTION_CENTER_SCREEN,
+	ACTION_SHAPE_BROWSER,
+	ACTION_CREATE_SHAPE,
+	ACTION_DELETE_OBJECT,
+	ACTION_TOGGLE_EGGS,
+	ACTION_TOGGLE_GOD_MODE,
+	ACTION_CHANGE_GENDER,
+	ACTION_CHEAT_HELP,
+	ACTION_TOGGLE_INFRAVISION,
+	ACTION_SKIPLIFT_DECREMENT,
+	ACTION_TOGGLE_MAP_EDITOR,
+	ACTION_MAP_TELEPORT,
+	ACTION_CURSOR_TELEPORT,
+	ACTION_NEXT_TIME_PERIOD,
+	ACTION_TOGGLE_WIZARD_MODE,
+	ACTION_PARTY_HEAL,
+	ACTION_PARTY_INCREASE_LEVEL,
 	ACTION_CHEAT_SCREEN,
 	ACTION_PICK_POCKET,
 	ACTION_NPC_NUMBERS,
 	ACTION_GRAB_ACTOR,
-
-        // Test actions
-        ACTION_PLAY_MUSIC,
-        ACTION_TOGGLE_NAKED,
-        ACTION_TOGGLE_PETRA,
-        ACTION_CHANGE_SKIN,
-        ACTION_SOUND_TESTER
+	
+	// Test actions
+	ACTION_PLAY_MUSIC,
+	ACTION_TOGGLE_NAKED,
+	ACTION_TOGGLE_PETRA,
+	ACTION_CHANGE_SKIN,
+	ACTION_SOUND_TESTER,
+	ACTION_TEST
 };
 
 struct ActionType {
-        ActionCode code;
-        int params[c_maxparams];
+	ActionCode code;
+	int params[c_maxparams];
 };
 
 struct ltSDLkeysym
 {
-        bool operator()(SDL_keysym k1, SDL_keysym k2) const
-        {
-                if (k1.sym == k2.sym)
-                        return k1.mod < k2.mod;
-                else
-                        return k1.sym < k2.sym;
-        }
+	bool operator()(SDL_keysym k1, SDL_keysym k2) const
+	{
+		if (k1.sym == k2.sym)
+			return k1.mod < k2.mod;
+		else
+			return k1.sym < k2.sym;
+	}
 };
 
 typedef std::map<SDL_keysym, ActionType, ltSDLkeysym>   KeyMap;
 
 class KeyBinder {
-private:
-        KeyMap bindings;
-
+ private:
+	KeyMap bindings;
+	
 	std::vector<std::string> keyhelp;
 	std::vector<std::string> cheathelp;
-public:
-        KeyBinder();
-        ~KeyBinder();
-        /* Add keybinding */
-        void AddKeyBinding(SDLKey sym, int mod, ActionCode action,
-			   int nparams, int* params);
-
-        /* Delete keybinding */
-        void DelKeyBinding(SDLKey sym, int mod);
-
-        /* Other methods */
-        void Flush() { bindings.clear(); keyhelp.clear(); cheathelp.clear(); }
-        bool DoAction(ActionType action);
-        bool HandleEvent(SDL_Event &ev);
-
+ public:
+	KeyBinder();
+	~KeyBinder();
+	/* Add keybinding */
+	void AddKeyBinding(SDLKey sym, int mod, ActionCode action,
+					   int nparams, int* params);
+	
+	/* Delete keybinding */
+	void DelKeyBinding(SDLKey sym, int mod);
+	
+	/* Other methods */
+	void Flush() { bindings.clear(); keyhelp.clear(); cheathelp.clear(); }
+	bool DoAction(ActionType action);
+	bool HandleEvent(SDL_Event &ev);
+	
 	void LoadFromFile(const char* filename);
 	void LoadDefaults();
-
+	
 	void ShowHelp();
 	void ShowCheatHelp();
-
-private:
+	
+ private:
 	void ParseText(char *text);
 	void ParseLine(char *line);
 	void FillParseMaps();
