@@ -388,6 +388,24 @@ bool Dragging_info::drop_on_gump
 	}
 
 /*
+ *	See if there's something blocking an object at a given point.
+ */
+
+static bool Is_inaccessible
+	(
+	Game_window *gwin,
+	Game_object *obj,
+	int x, int y
+	)
+	{
+	Game_object *block = gwin->find_object(x, y);
+	if (block && block != obj && !block->is_dragable())
+		return true;
+	else
+		return false;
+	}
+
+/*
  *	Drop object onto the map.
  *
  *	Output:	False if not (all) of object was dropped.
@@ -411,13 +429,16 @@ bool Dragging_info::drop_on_map
 	int lift;
 					// Was it dropped on something?
 	Game_object *found = gwin->find_object(x, y);
-	bool dropped = false;	// 1 when dropped.
+	int dropped = 0;		// 1 when dropped.
 	if (found && found != obj)
 		{
 		if (!Check_weight(gwin, to_drop, found))
 			return false;
 		if (found->drop(to_drop))
-			dropped = possible_theft = true;
+			{
+			dropped = 1;
+			possible_theft = true;
+			}
 					// Try to place on 'found'.
 		else if ((lift = found->get_lift() +
 			     found->get_info().get_3d_height()) <= max_lift)
@@ -430,10 +451,12 @@ bool Dragging_info::drop_on_map
 			return false;
 			}
 		}
-					// Find where to drop it.
+					// Find where to drop it, but stop if
+					//   it will end up hidden (-1).
 	for (lift = old_lift; !dropped && lift <= max_lift; lift++)
 		dropped = gwin->drop_at_lift(to_drop, posx, posy, lift);
-	if (!dropped)
+
+	if (dropped <= 0)
 		{
 		Mouse::mouse->flash_shape(Mouse::blocked);
 		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(76));
@@ -584,10 +607,12 @@ bool Game_window::drop_dragged
  *	Try to drop at a given lift.  Note:  None of the drag state variables
  *	may be used here, as it's also called from the outside.
  *
- *	Output:	true if successful.
+ *	Output:	1 if successful.
+ *		0 if blocked
+ *		-1 if it would end up hidden by a non-moveable object.
  */
 
-bool Game_window::drop_at_lift
+int Game_window::drop_at_lift
 	(
 	Game_object *to_drop,
 	int x, int y,			// Pixel coord. in window.
@@ -610,7 +635,7 @@ bool Game_window::drop_at_lift
 		max_drop = at_lift - cheat.get_edit_lift();
 //		max_drop = max_drop < 0 ? 0 : max_drop;
 		if (max_drop < 0)	// Below lift we're editing?
-			return false;
+			return 0;
 		move_flags = MOVE_WALK|MOVE_MAPEDIT;
 		}
 	else
@@ -618,30 +643,41 @@ bool Game_window::drop_at_lift
 		max_drop = 5;
 		move_flags = MOVE_WALK;
 		}
-	if (!Map_chunk::is_blocked(info.get_3d_height(), at_lift,
+	if (Map_chunk::is_blocked(info.get_3d_height(), at_lift,
 		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, 
-			lift, move_flags, max_drop) && 
-	   (cheat.in_hack_mover() ||
+			lift, move_flags, max_drop) ||
+	   (!cheat.in_hack_mover() &&
 					// Check for path to location.
-	    Fast_pathfinder_client::is_grabable(
+	    !Fast_pathfinder_client::is_grabable(
 		main_actor->get_tile(), Tile_coord(tx, ty, lift))))
+		return 0;
+
+	to_drop->set_invalid();
+	to_drop->move(tx, ty, lift);
+	Rectangle rect = get_shape_rect(to_drop);
+					// Avoid dropping behind walls.
+	if (Is_inaccessible(this, to_drop, rect.x, rect.y) &&
+	    Is_inaccessible(this, to_drop, 
+				rect.x + rect.w - 1, rect.y) &&
+	    Is_inaccessible(this, to_drop, 
+				rect.x, rect.y + rect.h - 1) &&
+	    Is_inaccessible(this, to_drop, 
+				rect.x + rect.w - 1, rect.y + rect.h - 1))
 		{
-		to_drop->set_invalid();
-		to_drop->move(tx, ty, lift);
+		to_drop->remove_this(true);
+		return -1;
+		}
 #ifdef DEBUG
-		cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
+	cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
 			 << ")"<<endl;
 #endif
 					// On an egg?
-		chunk->activate_eggs(to_drop, tx, ty, lift, tx, ty);
+	chunk->activate_eggs(to_drop, tx, ty, lift, tx, ty);
 
-		if (to_drop == main_actor) {
-			center_view(to_drop->get_tile());
-			paint();
-		}
-
-		return (true);
-		}
-	return (false);
+	if (to_drop == main_actor) {
+		center_view(to_drop->get_tile());
+		paint();
+	}
+	return (1);
 	}
 

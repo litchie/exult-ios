@@ -1,3 +1,8 @@
+2004-08-06    <jeff@mini.nerble.net>
+
+	* drag.cc (Dragging_info): Avoid dropping an object where it is no
+	longer accessible.
+
 2004-08-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Spellbook_gump.cc: use real infinity symbol in SI
 	* Spellbook_gump.cc: show infinity (in SI) or 99 (in BG) in wizard mode
