@@ -3550,6 +3550,11 @@ Manual
 	  <class>GtkButton</class>
 	  <name>button2</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_npc_set_sched</handler>
+	    <last_modification_time>Sat, 09 Jun 2001 22:47:30 GMT</last_modification_time>
+	  </signal>
 	  <label>Set</label>
 	  <child>
 	    <left_attach>2</left_attach>
@@ -3571,6 +3576,11 @@ Manual
 	  <class>GtkButton</class>
 	  <name>button3</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_npc_set_sched</handler>
+	    <last_modification_time>Sat, 09 Jun 2001 22:47:49 GMT</last_modification_time>
+	  </signal>
 	  <label>Set</label>
 	  <child>
 	    <left_attach>2</left_attach>
@@ -3592,6 +3602,11 @@ Manual
 	  <class>GtkButton</class>
 	  <name>button4</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_npc_set_sched</handler>
+	    <last_modification_time>Sat, 09 Jun 2001 22:49:56 GMT</last_modification_time>
+	  </signal>
 	  <label>Set</label>
 	  <child>
 	    <left_attach>2</left_attach>
@@ -3613,6 +3628,11 @@ Manual
 	  <class>GtkButton</class>
 	  <name>button5</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_npc_set_sched</handler>
+	    <last_modification_time>Sat, 09 Jun 2001 22:49:15 GMT</last_modification_time>
+	  </signal>
 	  <label>Set</label>
 	  <child>
 	    <left_attach>2</left_attach>
@@ -3634,6 +3654,11 @@ Manual
 	  <class>GtkButton</class>
 	  <name>button6</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_npc_set_sched</handler>
+	    <last_modification_time>Sat, 09 Jun 2001 22:48:44 GMT</last_modification_time>
+	  </signal>
 	  <label>Set</label>
 	  <child>
 	    <left_attach>2</left_attach>
@@ -3655,6 +3680,11 @@ Manual
 	  <class>GtkButton</class>
 	  <name>button7</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_npc_set_sched</handler>
+	    <last_modification_time>Sat, 09 Jun 2001 22:49:01 GMT</last_modification_time>
+	  </signal>
 	  <label>Set</label>
 	  <child>
 	    <left_attach>2</left_attach>
@@ -3676,6 +3706,11 @@ Manual
 	  <class>GtkButton</class>
 	  <name>button8</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_npc_set_sched</handler>
+	    <last_modification_time>Sat, 09 Jun 2001 22:49:29 GMT</last_modification_time>
+	  </signal>
 	  <label>Set</label>
 	  <child>
 	    <left_attach>2</left_attach>
@@ -3697,6 +3732,11 @@ Manual
 	  <class>GtkButton</class>
 	  <name>button9</name>
 	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>on_npc_set_sched</handler>
+	    <last_modification_time>Sat, 09 Jun 2001 22:49:41 GMT</last_modification_time>
+	  </signal>
 	  <label>Set</label>
 	  <child>
 	    <left_attach>2</left_attach>
@@ -3814,7 +3854,7 @@ Manual
 
     <widget>
       <class>GtkTable</class>
-      <name>table6</name>
+      <name>sched_btns</name>
       <rows>11</rows>
       <columns>3</columns>
       <homogeneous>True</homogeneous>
@@ -3828,7 +3868,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button14</name>
+	<name>sched00</name>
 	<can_focus>True</can_focus>
 	<label>Combat</label>
 	<child>
@@ -3849,7 +3889,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button15</name>
+	<name>sched01</name>
 	<can_focus>True</can_focus>
 	<label>Horiz. Pace</label>
 	<child>
@@ -3870,7 +3910,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button16</name>
+	<name>sched02</name>
 	<can_focus>True</can_focus>
 	<label>Vert. Pace</label>
 	<child>
@@ -3891,7 +3931,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button46</name>
+	<name>sched32</name>
 	<can_focus>True</can_focus>
 	<label>--None--</label>
 	<child>
@@ -3912,7 +3952,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button17</name>
+	<name>sched03</name>
 	<can_focus>True</can_focus>
 	<label>Talk</label>
 	<child>
@@ -3933,7 +3973,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button44</name>
+	<name>sched30</name>
 	<can_focus>True</can_focus>
 	<label>Desk Work</label>
 	<child>
@@ -3954,7 +3994,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button42</name>
+	<name>sched27</name>
 	<can_focus>True</can_focus>
 	<label>Duel</label>
 	<child>
@@ -3975,7 +4015,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button41</name>
+	<name>sched24</name>
 	<can_focus>True</can_focus>
 	<label>Special</label>
 	<child>
@@ -3996,7 +4036,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button35</name>
+	<name>sched21</name>
 	<can_focus>True</can_focus>
 	<label>Lab Work</label>
 	<child>
@@ -4017,7 +4057,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button34</name>
+	<name>sched18</name>
 	<can_focus>True</can_focus>
 	<label>Bake</label>
 	<child>
@@ -4038,7 +4078,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button29</name>
+	<name>sched15</name>
 	<can_focus>True</can_focus>
 	<label>Wait</label>
 	<child>
@@ -4059,7 +4099,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button28</name>
+	<name>sched12</name>
 	<can_focus>True</can_focus>
 	<label>Wander</label>
 	<child>
@@ -4080,7 +4120,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button23</name>
+	<name>sched09</name>
 	<can_focus>True</can_focus>
 	<label>Hound</label>
 	<child>
@@ -4101,7 +4141,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button20</name>
+	<name>sched06</name>
 	<can_focus>True</can_focus>
 	<label>Farm</label>
 	<child>
@@ -4122,7 +4162,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button45</name>
+	<name>sched31</name>
 	<can_focus>True</can_focus>
 	<label>Follow</label>
 	<child>
@@ -4143,7 +4183,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button43</name>
+	<name>sched28</name>
 	<can_focus>True</can_focus>
 	<label>Preach</label>
 	<child>
@@ -4164,7 +4204,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button40</name>
+	<name>sched25</name>
 	<can_focus>True</can_focus>
 	<label>Kid Games</label>
 	<child>
@@ -4185,7 +4225,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button36</name>
+	<name>sched22</name>
 	<can_focus>True</can_focus>
 	<label>Thief</label>
 	<child>
@@ -4206,7 +4246,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button33</name>
+	<name>sched19</name>
 	<can_focus>True</can_focus>
 	<label>Sew</label>
 	<child>
@@ -4227,7 +4267,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button30</name>
+	<name>sched16</name>
 	<can_focus>True</can_focus>
 	<label>Sit</label>
 	<child>
@@ -4248,7 +4288,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button27</name>
+	<name>sched13</name>
 	<can_focus>True</can_focus>
 	<label>Blacksmith</label>
 	<child>
@@ -4269,7 +4309,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button24</name>
+	<name>sched10</name>
 	<can_focus>True</can_focus>
 	<label>Stand</label>
 	<child>
@@ -4290,7 +4330,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button21</name>
+	<name>sched07</name>
 	<can_focus>True</can_focus>
 	<label>Tend Shop</label>
 	<child>
@@ -4311,7 +4351,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button18</name>
+	<name>sched04</name>
 	<can_focus>True</can_focus>
 	<label>Dance</label>
 	<child>
@@ -4332,7 +4372,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button19</name>
+	<name>sched05</name>
 	<can_focus>True</can_focus>
 	<label>Eat</label>
 	<child>
@@ -4353,7 +4393,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button22</name>
+	<name>sched08</name>
 	<can_focus>True</can_focus>
 	<label>Miner</label>
 	<child>
@@ -4374,7 +4414,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button25</name>
+	<name>sched11</name>
 	<can_focus>True</can_focus>
 	<label>Loiter</label>
 	<child>
@@ -4395,7 +4435,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button26</name>
+	<name>sched14</name>
 	<can_focus>True</can_focus>
 	<label>Sleep</label>
 	<child>
@@ -4416,7 +4456,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button31</name>
+	<name>sched17</name>
 	<can_focus>True</can_focus>
 	<label>Graze</label>
 	<child>
@@ -4437,7 +4477,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button32</name>
+	<name>sched20</name>
 	<can_focus>True</can_focus>
 	<label>Shy</label>
 	<child>
@@ -4458,7 +4498,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button37</name>
+	<name>sched23</name>
 	<can_focus>True</can_focus>
 	<label>Waiter</label>
 	<child>
@@ -4479,7 +4519,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button39</name>
+	<name>sched26</name>
 	<can_focus>True</can_focus>
 	<label>Eat at Inn</label>
 	<child>
@@ -4500,7 +4540,7 @@ Manual
 
       <widget>
 	<class>GtkButton</class>
-	<name>button38</name>
+	<name>sched29</name>
 	<can_focus>True</can_focus>
 	<label>Patrol</label>
 	<child>

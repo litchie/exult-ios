@@ -214,3 +214,71 @@ void ExultStudio::set_npc_shape
 	set_entry("npc_frame", frame);
 	show_npc_shape();
 	}
+
+/*
+ *	A choice was clicked in the 'schedule' dialog.
+ */
+
+void ExultStudio::schedule_btn_clicked
+	(
+	GtkWidget *btn,
+	gpointer data			// Label to store result in.
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+					// Get name assigned in Glade.
+	const char *name = glade_get_widget_name(btn);
+	const char *numptr = name + 5;	// Past "sched".
+	int num = atoi(numptr);
+	GtkLabel *label = (GtkLabel *) data;
+	//+++++++++
+	cout << "Chose schedule " << num << endl;
+	gtk_widget_hide(glade_xml_get_widget(studio->get_xml(), 
+							"schedule_dialog"));
+	}
+
+/*
+ *	Set signal handler for each schedule button.
+ */
+
+static void Set_sched_btn
+	(
+	GtkWidget *btn,
+	gpointer data			// Label to store result in.
+	)
+	{
+	gtk_signal_connect(GTK_OBJECT(btn), "clicked",
+		GTK_SIGNAL_FUNC(ExultStudio::schedule_btn_clicked), data);
+	}
+
+/*
+ *	Bring up dialog to choose schedule.
+ */
+
+static void Choose_schedule
+	(
+	GtkWidget *label		// Label to store result in.
+	)
+	{
+	GladeXML *xml = ExultStudio::get_instance()->get_xml();
+	GtkContainer *btns = GTK_CONTAINER(
+				glade_xml_get_widget(xml, "sched_btns"));
+	GtkWidget *schedwin = glade_xml_get_widget(xml, "schedule_dialog");
+	if (!btns || !schedwin)
+		return;
+	gtk_container_foreach(btns, Set_sched_btn, label);
+	gtk_widget_show(schedwin);
+	}
+
+/*
+ *	Npc window's "set schedule" button.
+ */
+extern "C" void on_npc_set_sched
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	Choose_schedule(0);	//++++++Label.
+	}
+
