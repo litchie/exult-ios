@@ -64,7 +64,7 @@ void Schedule::set_action_sequence
 	Actor *actor,			// Whom to activate.
 	Tile_coord dest,		// Where to walk to.
 	Actor_action *when_there,	// What to do when he gets there.
-	int from_off_screen,		// Have actor walk from off-screen.
+	bool from_off_screen,		// Have actor walk from off-screen.
 	int delay			// Msecs. to delay.
 	)
 	{
@@ -1019,7 +1019,7 @@ void Sit_schedule::set_action
 	frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
 	Actor_action *act = new Frames_actor_action(frames, sizeof(frames));
 					// Walk there, then sit.
-	set_action_sequence(actor, chairloc, act, 0, delay);
+	set_action_sequence(actor, chairloc, act, false, delay);
 	}
 
 /*
