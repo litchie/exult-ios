@@ -1,4 +1,4 @@
-2002-07-07  Willem Jan Palensitjn <wjpalenstijn@users.sourceforge.net>
+2002-07-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ucinternal.cc: allow small changes to loop-array in mid-loop in SI
 
 2002-07-05  Jeff Freedman  <jeff@amy.nerble.net>
