@@ -1565,7 +1565,14 @@ int Game_object::compare
 	Compare_ranges(inf1.zbot, inf1.ztop, inf2.zbot, inf2.ztop,
 							zcmp, zover);
 	if (!xcmp && !ycmp && !zcmp)
-		return 0;		// Equal.
+					// Same space?
+					// Paint biggest area sec. (Fixes 
+					//   plaque at Penumbra's.)
+		return (inf1.area.w < inf2.area.w  && 
+			inf1.area.h < inf2.area.h) ? -1 : 
+			(inf1.area.w > inf2.area.w &&
+			inf1.area.h > inf2.area.h) ? 1 : 0;
+//		return 0;		// Equal.
 	if (xover & yover & zover)	// Complete overlap?
 		if (!inf1.zs)		// Flat one is always drawn first.
 			return !inf2.zs ? 0 : -1;
