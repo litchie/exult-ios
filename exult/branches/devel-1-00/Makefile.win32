@@ -217,9 +217,6 @@ splitshp.exe : splitshp.o
 textpack.exe : textpack.o $(FILE_OBJS) 
 	$(CXX) $(LFLAGS) -o textpack.exe textpack.o $(FILE_OBJS) -mconsole
 
-ucdump.exe : ucdump.o
-	$(CXX) $(LFLAGS) -o ucdump.exe ucdump.o -mconsole
-
 wud.exe : wud.o uctools.h bgintrinsics.h siintrinsics.h 
 	$(CXX) $(LFLAGS) -o wud.exe wud.o -mconsole
 
