@@ -53,8 +53,7 @@ int Actor_pathfinder_client::get_step_cost
 	Actor::get_tile_info(gwin, olist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 					// For now, assume height=3.
-	if (olist->is_blocked(3, to.tz, tx, ty, new_lift) ||
-	    (water && new_lift == 0))
+	if (olist->is_blocked(3, to.tz, tx, ty, new_lift, get_move_flags()))
 		{			// Blocked, but check for a door.
 		Game_object *block = Game_object::find_blocking(to);
 		if (!block)
@@ -196,15 +195,15 @@ int Fast_pathfinder_client::get_step_cost
 	olist->setup_cache();		// Make sure cache is valid.
 	int new_lift;			// Might climb/descend.
 					// For now, look at 1 tile's height.
-	if (olist->is_blocked(1, to.tz, tx, ty, new_lift))
+	if (olist->is_blocked(1, to.tz, tx, ty, new_lift, get_move_flags()))
 		{
 		int i;			// Look upwards a bit.
 		for (i = to.tz + 1; i < to.tz + 3; i++)
-			if (!olist->is_blocked(1, i, tx, ty, new_lift))
+			if (!olist->is_blocked(1, i, tx, ty, new_lift, get_move_flags()))
 				return 1;
 					// Look downwards a bit.
 		for (i = to.tz - 1; i >= 0 && i >= to.tz - 3; i--) 
-			if (!olist->is_blocked(1, i, tx, ty, new_lift))
+			if (!olist->is_blocked(1, i, tx, ty, new_lift, get_move_flags()))
 				return 1;
 		return -1;
 		}
@@ -248,7 +247,7 @@ int Fast_pathfinder_client::is_grabable
 	)
 	{
 //No.	from.tz = to.tz;		// Just look along dest's lift.
-	Fast_pathfinder_client client(1);
+	Fast_pathfinder_client client(1, Game_window::get_game_window()->get_main_actor()->get_type_flags());
 	Astar path;
 	return path.NewPath(from, to, &client);
 	}
@@ -271,6 +270,7 @@ Combat_pathfinder_client::Combat_pathfinder_client
 	aztiles = info1.get_3d_height();
 	if (!opponent)
 		return;			// Means this isn't usable.
+	set_move_flags(attacker->get_type_flags());
 	Shape_info& info2 = gwin->get_info(opponent);
 	Tile_coord opos = opponent->get_abs_tile_coord();
 	int oxtiles = info2.get_3d_xtiles(), oytiles = info2.get_3d_ytiles();
@@ -309,9 +309,8 @@ int Monster_pathfinder_client::get_step_cost
 					//   field may be modified.
 	)
 	{
-	int terrain;			// Gets 1=land, 2=sea, 3=both.++++Use
 	if (Chunk_object_list::is_blocked(axtiles, aytiles, aztiles,
-							from, to, terrain))
+							from, to, get_move_flags()))
 		return -1;
 	else
 		return 1;

@@ -42,6 +42,10 @@ U7file  *U7FileManager::get_file_object(const string &s)
 	TRY_FILE_TYPE(uf,Table);
 	TRY_FILE_TYPE(uf,Flat);
 
+	// Failed
+	if (!uf)
+		cout << "Unable to find/open U7file " << s << endl;
+
 	return uf;
 }
 

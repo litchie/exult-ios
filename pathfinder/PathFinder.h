@@ -12,6 +12,8 @@
  */
 class Pathfinder_client
 	{
+private:
+	int		move_flags;
 public:
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
@@ -21,6 +23,9 @@ public:
 	virtual int estimate_cost(Tile_coord& from, Tile_coord& to) = 0;
 					// Is tile at the goal?
 	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
+
+	int get_move_flags() { return move_flags; }
+	void set_move_flags(int m) { move_flags = m;}
 	};
 
 /*

@@ -40,7 +40,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Actor_action *Actor_action::walk_to_tile
 	(
 	Tile_coord src,
-	Tile_coord dest
+	Tile_coord dest,
+	int move_flags
 	)
 	{
 	Zombie *path = new Zombie();
@@ -150,7 +151,8 @@ void Path_walking_actor_action::stop
 Actor_action *Path_walking_actor_action::walk_to_tile
 	(
 	Tile_coord src,			// tx=-1 or ty=-1 means don't care.
-	Tile_coord dest			// Same here.
+	Tile_coord dest,		// Same here.
+	int move_flags
 	)
 	{
 	blocked = 0;			// Clear 'blocked' count.
@@ -158,14 +160,14 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 					// Don't care about 1 coord.?
 	if (dest.tx == -1 || dest.ty == -1)
 		{
-		Onecoord_pathfinder_client cost;
+		Onecoord_pathfinder_client cost(move_flags);
 		if (!path->NewPath(src, dest, &cost))
 			return (0);
 		}
 					// How about from source?
 	else if (src.tx == -1 || src.ty == -1)
 		{			// Figure path in opposite dir.
-		Onecoord_pathfinder_client cost;
+		Onecoord_pathfinder_client cost(move_flags);
 		if (!path->NewPath(dest, src, &cost))
 			return (0);
 					// Set to go backwards.
@@ -174,7 +176,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 		}
 	else
 		{
-		Actor_pathfinder_client cost;
+		Actor_pathfinder_client cost(move_flags);
 		if (!path->NewPath(src, dest, &cost))
 			return (0);
 		}

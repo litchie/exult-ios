@@ -2483,7 +2483,7 @@ USECODE_INTRINSIC(is_not_blocked)
 		info.get_3d_height(), tile.tz, 
 		tile.tx - info.get_3d_xtiles() - 1,
 		tile.ty - info.get_3d_ytiles() - 1,
-		info.get_3d_xtiles(), info.get_3d_ytiles(), new_lift);
+		info.get_3d_xtiles(), info.get_3d_ytiles(), new_lift, MOVE_ALL_TERRAIN);
 	return Usecode_value(!blocked && new_lift == tile.tz);
 }
 
