@@ -25,13 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMLEntity.h"
 #include <iostream>
 
-using std::string;
 
-using std::size_t;
-using std::strlen;
-
-
-static	void	trim(string &s)
+static	void	trim(std::string &s)
 {
 	// Clean off leading whitespace
 	while(s.length()&&s[0]<=32)
@@ -45,33 +40,33 @@ static	void	trim(string &s)
 		}
 }
 
-static	bool	grab_entity(string &s,size_t &pos,const char *ent)
+static	bool	grab_entity(std::string &s,std::size_t &pos,const char *ent)
 {
-	string	t(s.substr(pos));
+	std::string	t(s.substr(pos));
 	if(t.find(ent)==0)
 		{
-		pos+=strlen(ent)+1;
+		pos+=std::strlen(ent)+1;
 		return true;
 		}
 	return false;
 }
 
-static	string	entity_decode(string &s,size_t &pos)
+static	std::string	entity_decode(std::string &s,std::size_t &pos)
 {
 	// This is ugly and slow
 	++pos;	// Advance past amp
 	if(grab_entity(s,pos,"amp"))
-		return string("&");
+		return std::string("&");
 	else
 	if(grab_entity(s,pos,"gt"))
-		return string(">");
+		return std::string(">");
 	else
 	if(grab_entity(s,pos,"lt"))
-		return string("<");
-	return string("&");
+		return std::string("<");
+	return std::string("&");
 }
 
-void	xmlparse(string &s,size_t &pos,XMLnode *x)
+void	xmlparse(std::string &s,std::size_t &pos,XMLnode *x)
 {
 	bool	intag=true;
 	while(pos<s.length())
