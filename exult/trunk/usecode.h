@@ -46,11 +46,11 @@ class Vector;
  */
 class Usecode_value
 	{
-protected:
+public:
 	enum Val_type			// The types:
 		{
 		int_type = 0,
-		string_type = 1,
+		string_type = 1,	// Allocated string.
 		array_type = 2,
 		end_of_array_type = 3	// Marks end of array.
 		};
@@ -69,8 +69,7 @@ public:
 		{ value.intval = 0; }
 	Usecode_value(int ival) : type((unsigned char) int_type)
 		{ value.intval = ival; }
-	Usecode_value(const char *s) : type((unsigned char) string_type)
-		{ value.str = s; }
+	Usecode_value(const char *s);
 					// Create array with 1st element.
 	Usecode_value(int size, Usecode_value *elem0) 
 			: type((unsigned char) array_type)
@@ -84,34 +83,17 @@ public:
 		{
 		if (type == (unsigned char) array_type)
 			delete [] value.array;
+		else if (type == (unsigned char) string_type)
+			delete value.str;
 		}
-	Usecode_value &operator=(const Usecode_value& v2)
-		{
-		if (&v2 == this)
-			return *this;
-		if (type == (int) array_type)
-			delete [] value.array;
-		type = v2.type;		// Assign new values.
-		if (type == (int) int_type)
-			value.intval = v2.value.intval;
-		else if (type == (int) string_type)
-			value.str = v2.value.str;
-		else if (type == (int) array_type)
-			{
-			value.array = new Usecode_value[1+count_array(v2)];
-			int i = 0;
-			do
-				value.array[i] = v2.value.array[i];
-			while (value.array[i++].type != 
-						(int) end_of_array_type);
-			}
-		return *this;
-		}
+	Usecode_value &operator=(const Usecode_value& v2);
 					// Copy ctor.
 	Usecode_value(const Usecode_value& v2) : type((unsigned char) int_type)
 		{ *this = v2; }
 					// Comparator.
 	int operator==(const Usecode_value& v2);
+	Val_type get_type()
+		{ return (Val_type) type; }
 	int get_array_size()		// Get size of array.
 		{ return type == (int) array_type ? count_array(*this) : 0; }
 	int is_array()
@@ -214,11 +196,6 @@ struct Usecode_machine
 		{
 		Usecode_value val(s);
 		push(val);
-		}
-	const char *pops()
-		{
-		Usecode_value val = pop();
-		return (val.get_str_value());
 		}
 	Answers answers;		// What user can click on.
 	deque< Answers > answer_stack;

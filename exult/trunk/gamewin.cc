@@ -1149,7 +1149,17 @@ void Game_window::show_items
 					// Show name.
 		char *item_name = obj->get_name();
 		if (item_name)
-			add_text(item_name, x, y);
+			{
+			int qual = obj->get_quality();
+			if (!qual)	// Just one?
+				add_text(item_name, x, y);
+			else		// Show quantity.
+				{
+				char buf[50];
+				sprintf(buf, "%d %s", qual&0x7f, item_name);
+				add_text(buf, x, y);
+				}
+			}
 //++++++++Testing
 #if 1
 		int shnum = obj->get_shapenum();
