@@ -1,3 +1,6 @@
+2002-10-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mapedit/exult_studio.glade: East is a direction too :-)
+
 2002-10-10  Max Horn  <max@quendi.de>
 
 	* Info.plist.in: No .nib file used anymore
