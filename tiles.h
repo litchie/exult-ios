@@ -35,7 +35,7 @@ public:
 	short tx, ty, tz;		// Coords. within world. tz=lift.
 	Tile_coord(int x, int y, int z) : tx(x), ty(y), tz(z)
 		{  }
-	Tile_coord() { }
+	Tile_coord(): tx(0),ty(0),tz(0) { }
 	int operator==(Tile_coord t2)
 		{ return t2.tx == tx && t2.ty == ty && t2.tz == tz; }
 	int operator!=(Tile_coord t2)
