@@ -1,5 +1,7 @@
 INCLUDES = -I.. -I../files -I../imagewin -I../shapes -I../objs -I../audio -I../gumps $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
+SUBDIRS = compiler ucxt
+
 noinst_LTLIBRARIES = libusecode.la
 
 libusecode_la_SOURCES = \

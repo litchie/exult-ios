@@ -4,12 +4,14 @@ INCLUDES = -I.. -I../../files \
 YFLAGS = -d				# Want ucparse.h.
 
 ucc_SOURCES = ucparse.yy uclex.ll ucmain.cc \
+	opcodes.h	\
 	ucexpr.cc	\
 	ucexpr.h	\
 	ucfun.cc	\
 	ucfun.h		\
 	ucloc.cc	\
 	ucloc.h		\
+	ucparse.h	\
 	ucstmt.cc	\
 	ucstmt.h	\
 	ucsym.cc	\
@@ -24,3 +26,4 @@ ucc_LDADD = 			\
 
 
 
+CLEANFILES = *~ uclex.cc ucparse.cc
