@@ -1,3 +1,6 @@
+2002-01-21  Ryan Nunn  <triforce@merlin.net.au>
+	* windrag.* : Don't need GDK
+
 2002-01-20  Ryan Nunn  <triforce@merlin.net.au>
 	* data/credits.txt : Added Mark Siewert to credits for Win32 Exult
 	  studio.
