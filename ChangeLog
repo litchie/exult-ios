@@ -1,3 +1,8 @@
+2001-01-02  Ryan Nunn <triforce@merlin.net.au>
+	* Makefile.cygwin: Should fixed crash on exit problem expirenced by Dominik on JackChaos
+                           Added U7PATH to specify where Ultima 7 is installed (for make install)
+	* Makefile.win32: Also Added U7PATH to this as well
+
 2001-01-01  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* palette.cc: fixed fades when fades are disabled, added set_color()
 	* bggame.cc: still working on intro
