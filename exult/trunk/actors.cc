@@ -753,7 +753,200 @@ int Actor::find_best_spot
 	Shape_info& info = 
 		Game_window::get_game_window()->get_info(obj);
 
-	if (Game::get_game_type() != SERPENT_ISLE)
+	if (Game::get_game_type() == BLACK_GATE)	// New way for Black Gate
+	{
+		Ready_type type = (Ready_type) info.get_ready_type();
+		
+		switch (type)
+		{
+			default:
+			#ifdef DEBUG
+			cerr << "NPC " << get_npc_num() << ":  Unknown ready type: " << type << "  Name: " << item_names[obj->get_shapenum()] << endl;
+			cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
+			cerr << endl;
+			#endif //DEBUG
+			return free_hand();
+
+			
+			case spell:
+			case other_spell:
+			case one_handed_weapon:
+			case tongs:
+
+			// First check for preferences
+			if (!two_handed && !spots[lhand] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), lhand))
+				return lhand;
+			else if (!two_handed && !spots[rhand] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), rhand))
+				return rhand;
+						
+			// Ok, no spot found, now check for free hand
+			if (free_hand() != -1) return free_hand();
+				
+			// Still, no spot found, lastly check for secondary places
+			if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), belt))
+				return belt;
+			else if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), shield_spot))
+				return belt;
+			
+			return -1;
+
+
+			case two_handed_weapon:
+
+			// First check hands
+			if (!spots[lhand] && !spots[rhand]) return lrhand;
+				
+			// Check storage
+			if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), belt))
+				return belt;
+			else if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back2h_spot))
+				return belt;
+
+			return -1;
+
+
+			case other:
+
+			if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back2h_spot))
+				return belt;
+			else if (!spots[back] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back))
+				return back;
+			else if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), belt))
+				return belt;
+		
+			return free_hand();
+
+
+			case neck_armor:
+			return !spots[neck] ? neck : free_hand();
+				
+			case torso_armor:
+			return !spots[torso] ? torso : free_hand();
+				
+			case ring:
+			return (free_finger() != -1 ? free_finger() : free_hand());
+				
+			case gloves:
+			return (!spots[lfinger] && !spots[rfinger]) ? lrfinger : free_hand();
+
+			case ammunition:
+			return !spots[ammo] ? ammo : free_hand();
+			
+			case head_armor:
+			return !spots[head] ? head : free_hand();
+				
+			case leg_armor:
+			return !spots[legs] ? legs : free_hand();
+				
+			case foot_armor:
+			return !spots[feet] ? feet : free_hand();
+		}
+	}
+	else if (Game::get_game_type() == SERPENT_ISLE)	// Serpent Isle Types
+	{
+		Ready_type_SI type = (Ready_type_SI) info.get_ready_type();
+		
+		switch (type)
+		{
+			default:
+			#ifdef DEBUG
+			cerr << "NPC " << get_npc_num() << ":  Unknown ready type: " << type << "  Name: " << item_names[obj->get_shapenum()] << endl;
+			cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
+			cerr << endl;
+			#endif //DEBUG
+			return free_hand();
+
+			
+			case spell_si:
+			case other_spell_si:
+			case one_handed_si:
+
+			// First check for preferences
+			if (!two_handed && !spots[lhand] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), lhand))
+				return lhand;
+			else if (!two_handed && !spots[rhand] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), rhand))
+				return rhand;
+						
+			// Ok, no spot found, now check for free hand
+			if (free_hand() != -1) return free_hand();
+				
+			// Still, no spot found, lastly check for secondary places
+			if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), belt))
+				return belt;
+			else if (!spots[shield_spot] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), shield_spot))
+				return shield_spot;
+			
+			return -1;
+			
+		
+			
+			case two_handed_si:
+			
+			// First check hands
+			if (!spots[lhand] && !spots[rhand]) return lrhand;
+				
+			// Check storage
+			if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), belt))
+				return belt;
+			else if (!spots[back2h_spot] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back2h_spot))
+				return back2h_spot;
+				
+			return -1;
+
+
+			case other:
+
+			if (!spots[back2h_spot] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back2h_spot))
+				return back2h_spot;
+			else if (!spots[back] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back))
+				return back;
+			else if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), belt))
+				return belt;
+						
+			return free_hand();
+
+
+			case cloak_si:
+			return !spots[cloak_spot] ? cloak_spot : free_hand();
+			
+			case amulet_si:
+			return !spots[neck] ? neck : free_hand();
+
+			case helm_si:
+			return !spots[head] ? head : free_hand();
+
+			case gloves_si:
+			return !spots[hands2_spot] ? hands2_spot : free_hand();
+
+			case usecode_container_si:
+			return !spots[ucont_spot] ? ucont_spot : -1;	// don't put in hands
+			
+			case ring_si:
+			return (free_finger() != -1 ? free_finger() : free_hand());
+
+			case earrings_si:
+			return !spots[ears_spot] ? ears_spot : free_hand();
+
+			case ammo_si:
+			return !spots[ammo] ? ammo : free_hand();
+			
+			case belt_si:
+			return !spots[belt] ? belt : free_hand();
+			
+			case armour_si:
+			return !spots[torso] ? torso : free_hand();
+			
+			case boots_si:
+			return !spots[feet] ? feet : free_hand();
+			
+			case leggings_si:
+			return !spots[legs] ? legs : free_hand();
+			
+			case backpack_si:
+			return !spots[back] ? back : free_hand();
+		}
+	}
+	else
 	{
 		if (info.get_shape_class() == Shape_info::container)
 			return !spots[back] ? back : free_hand();
@@ -801,109 +994,6 @@ int Actor::find_best_spot
 			return (!spots[lfinger] && !spots[rfinger]) ? lrfinger : free_hand();
 			case other:
 			return free_hand();
-
-			default:
-			#ifdef DEBUG
-			cerr << "NPC " << get_npc_num() << ":  Unknown ready type: " << type << "  Name: " << item_names[obj->get_shapenum()] << endl;
-			cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
-			cerr << endl;
-			#endif //DEBUG
-			return free_hand();
-		}
-	}
-	else	// Serpent Isle Types
-	{
-		Ready_type_SI type = (Ready_type_SI) info.get_ready_type();
-		
-		switch (type)
-		{
-			case spell_si:
-			case other_spell_si:
-			case one_handed_si:
-
-			// First check for preferences
-			if (!two_handed && !spots[lhand] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), lhand))
-				return lhand;
-			else if (!two_handed && !spots[rhand] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), rhand))
-				return rhand;
-						
-			// Ok, no spot found, now check for free hand
-			if (free_hand() != -1) return free_hand();
-				
-			// Still, no spot found, lastly check for secondary places
-			if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), belt))
-				return belt;
-			else if (!spots[shield_spot] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), shield_spot))
-				return shield_spot;
-			
-			return -1;
-			
-
-			case cloak_si:
-			return !spots[cloak_spot] ? cloak_spot : free_hand();
-			
-			case amulet_si:
-			return !spots[neck] ? neck : free_hand();
-
-			case helm_si:
-			return !spots[head] ? head : free_hand();
-
-			case gloves_si:
-			return !spots[hands2_spot] ? hands2_spot : free_hand();
-
-			case usecode_container_si:
-			return !spots[ucont_spot] ? ucont_spot : -1;	// don't put in hands
-			
-			case ring_si:
-			return (free_finger() != -1 ? free_finger() : free_hand());
-
-			case earrings_si:
-			return !spots[ears_spot] ? ears_spot : free_hand();
-
-			case ammo_si:
-			return !spots[ammo] ? ammo : free_hand();
-			
-			case belt_si:
-			return !spots[belt] ? belt : free_hand();
-			
-			case armour_si:
-			return !spots[torso] ? torso : free_hand();
-			
-			case boots_si:
-			return !spots[feet] ? feet : free_hand();
-			
-			case leggings_si:
-			return !spots[legs] ? legs : free_hand();
-			
-			case backpack_si:
-			return !spots[back] ? back : free_hand();
-		
-			
-			case two_handed_si:
-			
-			// First check hands
-			if (!spots[lhand] && !spots[rhand]) return lrhand;
-				
-			// Check storage
-			if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), belt))
-				return belt;
-			else if (!spots[back2h_spot] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back2h_spot))
-				return back2h_spot;
-				
-			return -1;
-
-
-			case other:
-			
-			if (obj->get_shapenum() == 802 && !spots[belt])			// Bag
-				return belt;
-			else if (obj->get_shapenum() == 583 && !spots[back2h_spot])	// Bed roll
-				return back2h_spot;
-			else if (obj->get_shapenum() == 583 && !spots[back])		// Bed roll
-				return back;
-		
-			return free_hand();
-
 
 			default:
 			#ifdef DEBUG
@@ -1158,9 +1248,11 @@ void Actor::activate
 	int event
 	)
 	{
-	int serpent = (Game::get_game_type()==SERPENT_ISLE);
-	
 	Game_window *gwin = Game_window::get_game_window();
+
+	// We are serpent if we can use serpent isle paperdolls
+	int serpent = Game::get_game_type()==SERPENT_ISLE||(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
+	
 					// In gump mode?  Or Avatar?
 	if (!npc_num && !serpent)	// Avatar?
 		gwin->show_gump(this, ACTOR_FIRST_GUMP);
@@ -1210,8 +1302,18 @@ string Actor::get_name
 	(
 	) const
 	{
-	return (name.empty() || 
-		!get_flag (Obj_flags::met)) ? Game_object::get_name() : name;
+	return !get_flag(Obj_flags::met)?Game_object::get_name():get_npc_name();
+	}
+
+/*
+ *	Get npc name.
+ */
+
+string Actor::get_npc_name
+	(
+	) const
+	{
+	return name.empty() ? Game_object::get_name() : name;
 	}
 
 /*
@@ -1580,7 +1682,7 @@ int Actor::add_readied
 	Game_object *obj,
 	int index			// Spot #.
 	)
-	{
+{
 
 	if (index < 0 || index >= (int)(sizeof(spots)/sizeof(spots[0])))
 		return (0);		// Out of range.
@@ -1593,19 +1695,17 @@ int Actor::add_readied
 		return (0);
 
 #ifdef DEBUG
-	if (Game::get_game_type() == SERPENT_ISLE)
-	{
-		cerr << "NPC " << get_npc_num() << "  Name: " << item_names[obj->get_shapenum()] << endl;
-		cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
-		cerr << "Index: " << index << "  Best Index: " << best_index << endl;
-	}
+	cerr << "NPC " << get_npc_num() << "  Name: " << item_names[obj->get_shapenum()] << endl;
+	cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
+	cerr << "Index: " << index << "  Best Index: " << best_index << endl;
 #endif //DEBUG
 
-	// If it's a two handed weapon and put on a hand change to lhand
-	if (best_index == lrhand && index == rhand) index = lhand;
-
-	// Special Serpent Isle Code for if something is not going in a hand
-	if (Game::get_game_type() == SERPENT_ISLE && index != best_index)
+	// If it's a two handed weapon and put on a rhand, change it to lhand
+	if (best_index == lrhand && index == rhand)
+		index = lhand;
+	else if (best_index == lrfinger && index == rfinger)
+		index = lfinger;
+	else if (Game::get_game_type() == SERPENT_ISLE && index != best_index)
 	{
 		Shape_info& info =  Game_window::get_game_window()->get_info(obj);
 		Ready_type_SI type = (Ready_type_SI) info.get_ready_type();
@@ -1616,23 +1716,38 @@ int Actor::add_readied
  			best_index = index;
 		else if (best_index == lrhand)
 			index = lhand;
+		else if (best_index == lrfinger)
+			index = lfinger;
 		else if (type != spell_si && type != other_spell_si)
+			index = best_index;
+	}
+	else if (Game::get_game_type() == BLACK_GATE && index != best_index)
+	{
+		Shape_info& info =  Game_window::get_game_window()->get_info(obj);
+		Ready_type type = (Ready_type) info.get_ready_type();
+
+		// Can it go where we want? If so set best index to this
+		// Otherwise set this to best index
+		if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), index) && index != lhand && index != rhand)
+ 			best_index = index;
+		else if (best_index == lrhand)
+			index = lhand;
+		else if (best_index == lrfinger)
+			index = lfinger;
+		else if (type != spell && type != other_spell)
 			index = best_index;
 	}
 
 #ifdef DEBUG
-	if (Game::get_game_type() == SERPENT_ISLE)
-	{
-		cerr << "Index2: " << index << "  Best Index2: " << best_index << endl;
-		cerr << endl;
-	}
+	cerr << "Index2: " << index << "  Best Index2: " << best_index << endl;
+	cerr << endl;
 #endif //DEBUG
 
-	if (index == best_index || (!two_handed && index == lhand)
-			|| (!two_handed && index == rhand
-				&& best_index != lrhand) ||
-	   (index == belt && Belt_okay(obj)))
-		{			// Okay.
+	if (index == best_index
+		|| (!two_handed && index == lhand)
+		|| (!two_handed && index == rhand && best_index != lrhand)
+		|| (index == belt && Belt_okay(obj)))
+	{			// Okay.
 		if (!Container_game_object::add(obj))
 			return (0);	// No room, or too heavy.
 		spots[index] = obj;
@@ -1648,9 +1763,9 @@ int Actor::add_readied
 		if (gwin->get_info(obj).is_light_source())
 			light_sources++;
 		return (1);
-		}
-	return (0);
 	}
+	return (0);
+}
 
 /*
  *	Find index of spot where an object is readied.

@@ -108,7 +108,8 @@ Game_window::Game_window
 	    special_light(0), last_restore_hour(6),
 	    dragging(0), dragging_save(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
-	    skip_lift(16), paint_eggs(false), debug(0), fades_enabled(true)
+	    skip_lift(16), paint_eggs(false), debug(0), fades_enabled(true),
+	    bg_paperdolls_allowed(false), bg_paperdolls(false)
 	{
 	game_window = this;		// Set static ->.
 
@@ -245,11 +246,36 @@ void Game_window::init_files()
 	scrollty = game->get_start_tile_y();
 		
 	if (Game::get_game_type()==SERPENT_ISLE)
-		{
+	{
 		paperdolls.load(PAPERDOL);
 		if (!paperdolls.is_good())
 			abort("Can't open 'paperdol.vga' file.");
+	}
+	else
+	{
+		try
+		{
+			paperdolls.load("<SERPENT_STATIC>/paperdol.vga");
+			bg_serpgumps.load("<SERPENT_STATIC>/gumps.vga");
+
+			if (paperdolls.is_good() && bg_serpgumps.is_good())
+			{
+				cout << "Found Serpent Isle 'paperdol.vga' and 'gumps.vga'." << endl << "Support for 'Serpent Isle' Paperdolls in 'Black Gate' ENABLED." << endl;
+				bg_paperdolls_allowed = true;
+				bg_paperdolls = true;
+			}
+			else
+				cout << "Found Serpent Isle 'paperdol.vga' and 'gumps.vga' but one was bad." << endl << "Support for 'Serpent Isle' Paperdolls in 'Black Gate' DISABLED." << endl;
 		}
+		catch (...)
+		{
+			cerr << "Exception attempting to load Serpent Isle 'paperdol.vga' or 'gumps.vga" << endl <<
+				"Do you have Serpent Isle and is an absolute path set in the config for Serpent Isle?" << endl <<
+				"Support for 'Serpent Isle' Paperdolls in 'Black Gate' DISABLED." << endl;
+		}
+
+	}
+
 	}
 	
 
@@ -2270,7 +2296,8 @@ void Game_window::show_gump
 	int paperdoll = (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP);
 
 	// overide for paperdolls
-	if (Game::get_game_type() == SERPENT_ISLE && shapenum == 123)
+	if (shapenum == 123 && (Game::get_game_type() == SERPENT_ISLE ||
+		(can_use_paperdolls() && get_bg_paperdolls())))
 		paperdoll=2;
 	else if (paperdoll && obj == main_actor)
 		shapenum += main_actor->get_type_flag(Actor::tf_sex);

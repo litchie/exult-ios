@@ -179,7 +179,11 @@ void Game_clock::handle_event
 		if (!day && hour == 6 && Game::get_game_type() == SERPENT_ISLE)
 			gwin->schedule_npcs(hour, 6);
 		}
-	if ((minute += time_factor) >= 60)// 1 real minute = 15 game minutes.
+	int min_old = minute;
+	int hour_old = hour;
+	minute += time_rate;
+
+	while (minute >= 60)	// advance to the correct hour (and day)
 		{
 		minute -= 60;
 		if (++hour >= 24)
@@ -196,8 +200,9 @@ void Game_clock::handle_event
 			gwin->schedule_npcs(hour/3);
 			}
 		}
-	cout << "Clock updated to " << hour << ':' << minute << endl;
-	curtime += 60*1000;		// Do it again in 60 seconds.
+	if ((hour != hour_old) || (minute/15 != min_old/15))
+		cout << "Clock updated to " << hour << ':' << minute << endl;
+	curtime += 60*1000/time_factor;		// 15 changes per minute
 	tqueue->add(curtime, this, udata);
 	}
 

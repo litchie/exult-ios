@@ -26,6 +26,7 @@ class Disk_button;
 class Combat_button;
 class Halo_button;
 class Cstats_button;
+class Combat_mode_button;
 
 //
 // For best viewing use Tab size = 4
@@ -52,15 +53,15 @@ public:
 	// This contains info on how to render an item when it's in a certain spot
 	struct Paperdoll_item
 	{
-		int			world_shape;		// Shape in the world
-		int			world_frame;		// Frame in the world (-1 for all)
+		int			world_shape;			// Shape in the world
+		int			world_frame;			// Frame in the world (-1 for all)
 		int			spot;				// Spot placed in
 
-		Object_type	type;				// What type of object is this
+		Object_type		type;				// What type of object is this
 		
-		bool		gender;				// Is this object gender specific
+		bool			gender;				// Is this object gender specific
 
-		int			shape;				// The shape
+		int			shape;				// The shape (if -1 use world shape and frame)
 		int			frame;				// The frame
 		int			frame2;				// Second Frame (if used)
 		int			frame3;				// Second Frame (if used)
@@ -71,7 +72,7 @@ public:
 	struct  Paperdoll_npc
 	{
 		int			npc_shape;			// Choose the NPC based on shape, not NPC number
-		bool		is_female;			// Is the NPC Female (or more specifically not male)
+		bool			is_female;			// Is the NPC Female (or more specifically not male)
 
 		// Body info
 		int			body_shape;			// Body Shape
@@ -91,30 +92,39 @@ protected:
 
 	// Statics
 
+	// Serpent Isle
 	static Paperdoll_npc Characters[];	// NPC information
 	static Paperdoll_item Items[];		// Item Information
 
-	static short coords[36];			// Coords. of where to draw things,
-										// indexed by spot # (0-17).
+	// Black Gate (it's a hack I tell you)
+	static Paperdoll_npc Characters_BG[];	// NPC information
+	static Paperdoll_item Items_BG[];	// Item Information
+
+	static short coords[36];		// Coords. of where to draw things,
+	static short coords_blue[36];		// indexed by spot # (0-17).
+	static short shapes_blue[36];
+	static short coords_hot[36];		// Hot spots
 		
-	static short diskx, disky;			// Where to show 'diskette' button.
+	static short diskx, disky;		// Where to show 'diskette' button.
 	static short heartx, hearty;		// Where to show 'stats' button.
 	static short combatx, combaty;		// Combat button.
 	static short cstatx, cstaty;		// Combat mode.
+	static short halox, haloy;	// "Protected" halo.
+	static short cmodex, cmodey;	// Combat mode.
 
-	static short bodyx, bodyy;			// Body
-	static short headx, heady;			// Head
+	static short bodyx, bodyy;		// Body
+	static short headx, heady;		// Head
 	static short beltfx, beltfy;		// Female Belt
 	static short neckfx, neckfy;		// Female Neck
 	static short beltmx, beltmy;		// Male Belt
 	static short neckmx, neckmy;		// Male Neck
-	static short legsx, legsy;			// Legs
-	static short feetx, feety;			// Feet
+	static short legsx, legsy;		// Legs
+	static short feetx, feety;		// Feet
 	static short handsx, handsy;		// Hands
 	static short lhandx, lhandy;		// Left Hand
 	static short rhandx, rhandy;		// Right Hand
 	static short ahandx, ahandy;		// Ammo in Left Hand
-	static short ammox, ammoy;			// Quiver
+	static short ammox, ammoy;		// Quiver
 
 	static short backfx, backfy;		// Female Back
 	static short backmx, backmy;		// Male Back
@@ -126,10 +136,12 @@ protected:
 
 	// Non Statics
 
-	Heart_button *heart_button;			// For bringing up stats.
-	Disk_button *disk_button;			// For bringing up 'save' box. (Avatar Only)
+	Heart_button *heart_button;		// For bringing up stats.
+	Disk_button *disk_button;		// For bringing up 'save' box. (Avatar Only)
 	Combat_button *combat_button;		// Combat Toggle (Avatar Only)
-	Cstats_button *cstats_button;		// Combat Modes
+	Cstats_button *cstats_button;		// Combat Stats (Not BG)
+	Halo_button *halo_button;		// Halo (protection) (BG Only)
+	Combat_mode_button *cmode_button;	// Combat Modes (BG Only)
 
 
 	// Statics

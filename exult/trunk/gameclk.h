@@ -25,12 +25,13 @@ class Game_clock : public Time_sensitive
 	short hour, minute;		// Time (0-23, 0-59).
 	int day;			// Keep track of days played.
 	int light_source_level;		// Light source level.
+	unsigned short time_rate;
 	void set_time_palette();
 	void set_light_source_level(int lev);
 	void check_hunger();
 public:
 	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0),
-			light_source_level(0)
+			light_source_level(0), time_rate(1)
 		{ }
 	int get_hour()
 		{ return hour; }
@@ -59,6 +60,8 @@ public:
 	void increment(int num_minutes);// Increment clock.
 	virtual void handle_event(unsigned long curtime, long udata);
 	void fake_next_period();	// For debugging.
+	int get_time_rate() { return time_rate; }
+	void set_time_rate(int i) { time_rate=i>0?i:1; }
 	};
 
 #endif	/* INCL_GAMECLK */
