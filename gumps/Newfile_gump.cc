@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2001-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -816,10 +816,7 @@ void Newfile_gump::mouse_drag
  *	Handle character that was typed.
  */
 
-void Newfile_gump::key_down
-	(
-	int chr
-	)
+void Newfile_gump::text_input(int chr, int unicode)
 {
 	bool update_details = false;
 	int repaint = false;
@@ -897,6 +894,11 @@ void Newfile_gump::key_down
 		break;
 
 	default:
+		if ((unicode & 0xFF80) == 0 )
+			chr = unicode & 0x7F;
+		else
+			chr = 0;
+
 		if (chr < ' ')
 			return;			// Ignore other special chars.
 
