@@ -446,8 +446,11 @@ int Game_object::find_nearby
 				if (!Check_mask(gwin, obj, mask))
 					continue;
 				Tile_coord t = obj->get_tile();
-				if (tiles.has_point(t.tx, t.ty))
-					vec.push_back(dynamic_cast<T*>(obj));
+				if (tiles.has_point(t.tx, t.ty)) {
+					T* castobj = dynamic_cast<T*>(obj);
+					if (castobj)
+						vec.push_back(castobj);
+				}
 				}
 			}
 					// Return # added.
