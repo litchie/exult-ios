@@ -24,10 +24,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class	Astar: public virtual PathFinder
 	{
-	Tile_coord *path;		// Coords. to goal, ending with -1's.
+	Tile_coord *path;		// Coords. to goal.
+	int pathlen;			// Length of path.
+	int dir;			// 1 or -1.
+	int stop;			// Index to stop at.
 	int next_index;			// Index of next tile to return.
 public:
-	Astar() : path(0), next_index(0)
+	Astar() : path(0), pathlen(0), next_index(0)
 		{  }
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
@@ -37,6 +40,8 @@ public:
 
 	// Retrieve the coordinates of the next step on the path
 	virtual	int	GetNextStep(Tile_coord& n);
+	// Set to retrieve in opposite order.
+	virtual int set_backwards();
 
 	virtual ~Astar();
 	};

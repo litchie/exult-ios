@@ -159,6 +159,8 @@ void Actor::walk_to_tile
 
 int Actor::walk_path_to_tile
 	(
+	Tile_coord src,			// Our location, or an off-screen
+					//   location to try path from.
 	Tile_coord dest,		// Destination.
 	int speed,			// Time between frames (msecs).
 	int delay			// Delay before starting (msecs) (only
@@ -166,7 +168,7 @@ int Actor::walk_path_to_tile
 	)
 	{
 	set_action(new Path_walking_actor_action(new Astar()));
-	set_action(action->walk_to_tile(get_abs_tile_coord(), dest));
+	set_action(action->walk_to_tile(src, dest));
 	if (action)			// Successful at setting path?
 		{
 		frame_time = speed;
@@ -845,6 +847,40 @@ void Walk_to_schedule::open_door
 	}
 
 /*
+ *	Modify goal to walk off the screen.
+ */
+
+void Walk_to_schedule::walk_off_screen
+	(
+	Rectangle& screen,		// In tiles, area slightly larger than
+					//   actual screen.
+	Tile_coord& goal		// Modified for path offscreen.
+	)
+	{
+					// Destination.
+	if (goal.tx >= screen.x + screen.w)
+		{
+		goal.tx = screen.x + screen.w - 1;
+		goal.ty = -1;
+		}
+	else if (goal.tx < screen.x)
+		{
+		goal.tx = screen.x;
+		goal.ty = -1;
+		}
+	else if (goal.ty >= screen.y + screen.h)
+		{
+		goal.ty = screen.y + screen.h - 1;
+		goal.tx = -1;
+		}
+	else if (goal.ty < screen.y)
+		{
+		goal.ty = screen.y;
+		goal.tx = -1;
+		}
+	}
+
+/*
  *	Create schedule for walking to the next schedule's destination.
  */
 
@@ -882,19 +918,25 @@ void Walk_to_schedule::now_what
 			gwin->get_chunky()*tiles_per_chunk,
 			1 + gwin->get_width()/tilesize,
 			1 + gwin->get_height()/tilesize);
-	screen.enlarge(4);		// Enlarge in all dirs.
+	screen.enlarge(1);		// Enlarge in all dirs.
+					// Might do part of it first.
+	Tile_coord from = npc->get_abs_tile_coord(),
+		   to = dest;
 					// Destination off the screen?
-	if (!screen.has_point(dest.tx, dest.ty))
+	if (!screen.has_point(to.tx, to.ty))
 		{
-		Tile_coord cur = npc->get_abs_tile_coord();
-		if (!screen.has_point(cur.tx, cur.ty))
+		if (!screen.has_point(from.tx, from.ty))
 			{		// Force teleport on next tick.
 			retries = 100;
 			npc->walk_to_tile(dest, 200, 100);
 			return;
 			}
-				// ++++Want to just walk off screen?
+					// Modify 'dest'. to walk off.
+		walk_off_screen(screen, to);
 		}
+	else if (!screen.has_point(from.tx, from.ty))
+					// Modify src. to walk from off-screen.
+		walk_off_screen(screen, from);
 	Game_object *bobj;		// Blocked by a door?
 	if (legs > 0 && !retries &&
 	    npc->get_abs_tile_coord().distance(blocked) == 1 &&
@@ -906,7 +948,7 @@ void Walk_to_schedule::now_what
 	cout << "Finding path to schedule for " << npc->get_name() << '\n';
 					// Create path to dest., delaying
 					//   0 to 2 seconds.
-	if (!npc->walk_path_to_tile(dest, 200, rand()%2000))
+	if (!npc->walk_path_to_tile(from, to, 200, rand()%2000))
 		{			// Wait 1/3 sec., then try again.
 		cout << "Failed to find path for " << npc->get_name() << '\n';
 		npc->walk_to_tile(dest, 200, 300);

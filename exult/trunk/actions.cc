@@ -282,14 +282,34 @@ void Path_walking_actor_action::stop
 
 Actor_action *Path_walking_actor_action::walk_to_tile
 	(
-	Tile_coord src,
-	Tile_coord dest
+	Tile_coord src,			// tx=-1 or ty=-1 means don't care.
+	Tile_coord dest			// Same here.
 	)
 	{
-	Actor_pathfinder_client cost;
 					// Set up new path.
-	if (!path->NewPath(src, dest, &cost))
-		return (0);
+					// Don't care about 1 coord.?
+	if (dest.tx == -1 || dest.ty == -1)
+		{
+		Onecoord_pathfinder_client cost;
+		if (!path->NewPath(src, dest, &cost))
+			return (0);
+		}
+					// How about from source?
+	else if (src.tx == -1 || src.ty == -1)
+		{			// Figure path in opposite dir.
+		Onecoord_pathfinder_client cost;
+		if (!path->NewPath(dest, src, &cost))
+			return (0);
+					// Set to go backwards.
+		if (!path->set_backwards())
+			return (0);
+		}
+	else
+		{
+		Actor_pathfinder_client cost;
+		if (!path->NewPath(src, dest, &cost))
+			return (0);
+		}
 					// Reset direction (but not index).
 	original_dir = (int) Get_direction4(
 				src.ty - dest.ty, dest.tx - src.tx);

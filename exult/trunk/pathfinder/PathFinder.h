@@ -38,8 +38,10 @@ public:
 	Tile_coord get_dest()
 		{ return dest; }
 	// Retrieve the coordinates of the next step on the path
-	virtual	int	GetNextStep(Tile_coord& n)=0;
-
+	virtual	int GetNextStep(Tile_coord& n)=0;
+	// Set to retrieve in opposite order.
+	virtual int set_backwards()
+		{ return 0; }		// Default: Can't do it.
 	virtual ~PathFinder();
 	};
 

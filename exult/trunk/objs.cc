@@ -631,9 +631,11 @@ void Animated_object::handle_event
 	if (frames > 1)			// Going through frames?
 		{		
 		int framenum;
+#if 1
 		if (ireg)		// +++Another experiment -JSF
 			framenum = get_framenum() + 1;
 		else			// Want fixed shapes synchronized.
+#endif
 					// Testing -WJP
 			framenum = (curtime / 100);
 		set_frame(framenum % frames);
