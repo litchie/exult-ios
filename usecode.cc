@@ -2858,11 +2858,9 @@ int Usecode_machine::get_user_choice_num
 		{
 		char chr;		// Allow '1', '2', etc.
 		int result=Get_click(x, y, Mouse::hand, &chr);
-#if 0	/* ++++Too many problems. */
-		if (result<=0)
-			return (-1);
-#endif
-		if (chr >= '1' && chr <= '9')
+		if (result<=0)		// Ignore ESC, and keep going.
+			choice_num = -1;
+		else if (chr >= '1' && chr <= '9')
 			choice_num = chr - '1';
 		else
 			choice_num = gwin->conversation_choice(x, y);

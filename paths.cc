@@ -299,7 +299,6 @@ int Monster_pathfinder_client::get_step_cost
 					//   field may be modified.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
 	if (Chunk_object_list::is_blocked(axtiles, aytiles, aztiles,
 							from, to))
 		return -1;

@@ -331,7 +331,6 @@ Tile_coord Game_object::find_unblocked_tile
 	int height			// Height to check for unblocked.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord pos = get_abs_tile_coord();
 					// Get box to go through.
 	Rectangle box(pos.tx - dist, pos.ty - dist, 2*dist + 1, 2*dist + 1);

@@ -1283,7 +1283,7 @@ void Stats_gump_object::paint
   	Paint_num(gwin, act->get_property(Actor::training),
 						x + textx, y + texty[9]);
 					// Now show atts. at bottom.
-	const int attsy = 130, attsx0 = 29, atsw = 100;
+	const int attsy = 130, attsx0 = 29;
 	int attsx = attsx0;
 	if (act->get_flag(Actor::asleep))
 		attsx += Show_atts(gwin, x + attsx, y + attsy, ASLEEP);
