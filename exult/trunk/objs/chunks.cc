@@ -743,8 +743,7 @@ int Chunk_object_list::is_blocked
 
 /*
  *	This one is used to see if an object of dims. possibly > 1X1 can
- *	step onto an adjacent square.  For now, changes in lift aren't
- *	allowed.
+ *	step onto an adjacent square.
  */
 
 int Chunk_object_list::is_blocked
@@ -752,7 +751,7 @@ int Chunk_object_list::is_blocked
 					// Object dims:
 	int xtiles, int ytiles, int ztiles,
 	Tile_coord from,		// Stepping from here.
-	Tile_coord to,			// Stepping to here.
+	Tile_coord& to,			// Stepping to here.  Tz updated.
 	const int move_flags,
 	int max_drop			// Max drop allowed.
 	)
@@ -794,20 +793,25 @@ int Chunk_object_list::is_blocked
 		verty0++;		// Includes top of vert. area.
 		}
 	int x, y;			// Go through horiz. part.
+	int new_lift = from.tz;
+	int new_lift0 = -1;		// All lift changes must be same.
 	for (y = horizy0; y <= horizy1; y++)
 		{			// Get y chunk, tile-in-chunk.
 		int cy = y/c_tiles_per_chunk, rty = y%c_tiles_per_chunk;
 		for (x = horizx0; x <= horizx1; x++)
 			{
-			int new_lift;
 			Chunk_object_list *olist = gwin->get_objects(
 					x/c_tiles_per_chunk, cy);
 			olist->setup_cache();
 			int rtx = x%c_tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
-					new_lift, move_flags, max_drop) ||
-			    new_lift != from.tz)
-				return (1);
+					new_lift, move_flags, max_drop))
+				return 1;
+			if (new_lift != from.tz)
+				if (new_lift0 == -1)
+					new_lift0 = new_lift;
+				else if (new_lift != new_lift0)
+					return (1);
 			}
 		}
 					// Do vert. block.
@@ -816,17 +820,21 @@ int Chunk_object_list::is_blocked
 		int cx = x/c_tiles_per_chunk, rtx = x%c_tiles_per_chunk;
 		for (y = verty0; y <= verty1; y++)
 			{
-			int new_lift;
 			Chunk_object_list *olist = gwin->get_objects(
 					cx, y/c_tiles_per_chunk);
 			olist->setup_cache();
 			int rty = y%c_tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
-					new_lift, move_flags, max_drop) ||
-			    new_lift != from.tz)
-				return (1);
+					new_lift, move_flags, max_drop))
+				return 1;
+			if (new_lift != from.tz)
+				if (new_lift0 == -1)
+					new_lift0 = new_lift;
+				else if (new_lift != new_lift0)
+					return (1);
 			}
 		}
+	to.tz = new_lift;
 	return (0);			// All clear.
 	}
 
