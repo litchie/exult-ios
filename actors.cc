@@ -2277,6 +2277,8 @@ int Actor::figure_hit_points
 		else
 			say(first_ouch, last_ouch);
 
+	reduce_health(hp);
+	
 	string name = "<trap>";
 	if (attacker)
 		name = attacker->get_name();
