@@ -165,9 +165,9 @@ void Gump::initialize
 	else if (shapefile == GSF_EXULT_FLX) {
 		switch (shnum) {
 			case 35: // game menu
-				object_area = Rectangle(0,0,0,0); //+++++ need to be adjusted
+				object_area = Rectangle(0,0,0,0); //+++++ ???
 				checkx = 8;
-				checky = 64;
+				checky = 82;
 				break;
 		}
 	}
