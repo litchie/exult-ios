@@ -69,13 +69,13 @@ static char *get_pipe_name(const char *static_path, const char * const pipe_name
 		return std::strcpy(path, static_path);
 	}
 
-	int num_chars = GetLongPathName(static_path, NULL, 0);
+	int num_chars = GetShortPathName(static_path, NULL, 0);
 	int head_len = std::strlen(pipe_name);
 	char *actual_path;
 
 	if (num_chars) {
 		char *temp = new char[num_chars+1];
-		GetLongPathName(static_path, temp, num_chars+1);
+		GetShortPathName(static_path, temp, num_chars+1);
 		num_chars = GetFullPathName(temp, 0, NULL, NULL);
 		actual_path = new char[num_chars+head_len+1];
 		char *temp2;

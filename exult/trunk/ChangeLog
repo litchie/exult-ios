@@ -1,3 +1,8 @@
+2002-02-08  Ryan Nunn  <triforce@merlin.net.au>
+	* server/servewin32.cc : Fixed the GetLongPathName issue. Exult and
+	  Exult Studio both need to be recompiled, because this effects 
+	  communications.
+
 2002-02-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucinternal.cc: Removed open of static/flaginit.dat.
