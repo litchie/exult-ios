@@ -645,7 +645,7 @@ void Game_window::read_ireg_objects
 			}
 		else if (entlen == 12)	// Container?
 			{
-			type = entry[4] + (entry[5]<<8);
+			type = entry[4] + 256*entry[5];
 			lift = entry[9] >> 4;
 			quality = 0;
 			Container_game_object *cobj = 
@@ -655,6 +655,8 @@ void Game_window::read_ireg_objects
 			read_ireg_objects(ireg, scx, scy, cobj);
 			obj = cobj;
 			}
+		else
+			return;		// FOR NOW.
 		obj->set_quality(quality);
 		if (!container)
 			get_objects(scx + cx, scy + cy)->add(obj);
@@ -682,7 +684,7 @@ Game_object *Game_window::create_egg
 	unsigned char *entry		// 1-byte ireg entry.
 	)
 	{
-	unsigned short type = entry[4] + (entry[5]<<8);
+	unsigned short type = entry[4] + 256*entry[5];
 	int prob = entry[6];		// Probability (1-100).
 	int data1 = entry[7] + 256*entry[8];
 	int lift = entry[9] >> 4;
@@ -696,9 +698,10 @@ Game_object *Game_window::create_egg
 	unsigned short distance = (type & (0x1f << 10)) >> 10;
 	unsigned char auto_reset = (type >> 15) & 1;
 
-	return new Egg_object(entry[2], entry[3], 
+	Egg_object *obj = new Egg_object(entry[2], entry[3], 
 		entry[0]&0xf, entry[1]&0xf, lift, egg_type, prob,
 		data1, data2);
+	return (obj);
 	}
 
 /*
@@ -1237,7 +1240,7 @@ void Game_window::double_clicked
 		Game_object *obj = found[i];
 cout << "Object name is " << obj->get_name() << '\n';
 		enum Game_mode save_mode = mode;
-		usecode->call_usecode(obj->get_usecode(), obj);
+		obj->activate(usecode);
 		mode = save_mode;
 		paint();//????Not sure+++++++++
 		}

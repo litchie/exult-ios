@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "lists.h"
+#include "usecode.h"
 
 class Vga_file;
 
@@ -138,7 +139,8 @@ public:
 			(y < y2 || (y == y2 && 
 				get_shape_pos_x() < obj2.get_shape_pos_x()))));
 		} 
-	virtual int get_usecode();	// Get usecode function to run.
+					// Run usecode function.
+	virtual void activate(Usecode_machine *umachine);
 	virtual char *get_name();
 	virtual void set_property(int prop, int val)
 		{  }
@@ -205,7 +207,7 @@ public:
 		{
 		type = itype&0xf;
 		criteria = (itype & (7<<4)) >> 4;
-		distance = (itype & (0x1f << 10)) >> 10;
+		distance = (itype >> 10) & 0x1f;
 		unsigned char noct = (itype >> 7) & 1;
 		unsigned char do_once = (itype >> 8) & 1;
 		unsigned char htch = (itype >> 9) & 1;
@@ -213,6 +215,8 @@ public:
 		flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
 		}
+					// Run usecode function.
+	virtual void activate(Usecode_machine *umachine);
 	};
 
 /*
@@ -224,10 +228,13 @@ class Chunk_object_list
 	ShapeID flats[256];		// Flat (non-RLE) shapes.  The unused
 					//   are "invalid" entries.
 	Game_object *objects;		// ->first in ordered list.
+	Egg_object **egg_objects;	// ->eggs in chunk.
+	int num_eggs;
+	unsigned char eggs[256];	// For each (x,y), index of egg in
+					//  egg_objects, or -1 if no egg there.
 	unsigned char roof;		// 1 if a roof present.
 public:
-	Chunk_object_list() : objects(0), roof(0)
-		{  }
+	Chunk_object_list();
 	void add(Game_object *obj);	// Add an object.
 	void remove(Game_object *obj);	// Remove an object.
 	void set(Game_object *objs)	// Set to (already sorted) list.
