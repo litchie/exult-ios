@@ -454,7 +454,7 @@ void Actor::set_opponent
 #endif
 	if (schedule)
 		schedule->set_opponent(obj);
-	//+++++ schedule->now_what(); ?????
+	start(100);			// Get going if not already.
 	}
 
 /*
@@ -1274,6 +1274,8 @@ void Main_actor::die
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	if (gwin->in_combat())
+		gwin->toggle_combat();	// Hope this is safe....
 					// Special function for dying:
 	gwin->get_usecode()->call_usecode(
 				0x60e, this, Usecode_machine::weapon);

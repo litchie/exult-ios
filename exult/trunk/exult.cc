@@ -469,6 +469,46 @@ static void Handle_events
 	}
 
 /*
+ *	Set mouse and speed.
+ */
+
+inline void Set_mouse_and_speed
+	(
+	int mousex, int mousey		// Physical mouse location.
+	)
+	{
+	int ax, ay;			// Get Avatar screen location.
+	gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
+	int dy = ay - (mousey >> scale), dx = (mousex >> scale) - ax;
+	Direction dir = Get_direction(dy, dx);
+	int dist = dy*dy + dx*dx;
+	if (dist < 48*48)
+		{
+		if(gwin->in_combat())
+			mouse->set_short_combat_arrow(dir);
+		else
+			mouse->set_short_arrow(dir);
+		avatar_speed = slow_speed;
+		}
+	else if (dist < 180*180)
+		{
+		if(gwin->in_combat())
+			mouse->set_medium_combat_arrow(dir);
+		else
+			mouse->set_medium_arrow(dir);
+		avatar_speed = medium_speed;
+		}
+	else
+		{		// No long arrow in combat: use medium
+		if(gwin->in_combat())
+			mouse->set_medium_combat_arrow(dir);
+		else
+			mouse->set_long_arrow(dir);
+		avatar_speed = fast_speed;
+		}
+	}
+
+/*
  *	Handle an event.  This should work for all platforms.
  */
 
@@ -536,45 +576,10 @@ static void Handle_event
 		break;
 	case SDL_MOUSEMOTION:
 		{
-#ifdef MOUSE
 		mouse->move(event.motion.x >> scale, event.motion.y >> scale);
 		if (gwin->get_mode() == Game_window::normal)
-			{
-			int ax, ay;	// Get Avatar screen location.
-			gwin->get_shape_location(gwin->get_main_actor(), 
-								ax, ay);
-			int dy = ay - (event.motion.y >> scale), 
-			    dx = (event.motion.x >> scale) - ax;
-			Direction dir = Get_direction(dy, dx);
-			int dist = dy*dy + dx*dx;
-			if (dist < 48*48)
-				{
-				if(gwin->in_combat())
-					mouse->set_short_combat_arrow(dir);
-				else
-					mouse->set_short_arrow(dir);
-				avatar_speed = slow_speed;
-				}
-			else if (dist < 180*180)
-				{
-				if(gwin->in_combat())
-					mouse->set_medium_combat_arrow(dir);
-				else
-					mouse->set_medium_arrow(dir);
-				avatar_speed = medium_speed;
-				}
-			else
-				{
-				// No long arrow in combat: use medium
-				if(gwin->in_combat())
-					mouse->set_medium_combat_arrow(dir);
-				else
-					mouse->set_long_arrow(dir);
-				avatar_speed = fast_speed;
-				}
-			}
+			Set_mouse_and_speed(event.motion.x, event.motion.y);
 		mouse_update = 1;	// Need to blit mouse.
-#endif
 		if (gwin->get_mode() != Game_window::normal &&
 		    gwin->get_mode() != Game_window::gump)
 			break;
@@ -781,9 +786,14 @@ static void Handle_keystroke
 		break;
 		}
 	case SDLK_c:
+		{
 		gwin->toggle_combat();	// Go into combat mode
 		gwin->paint();
+		int mx, my;		// Update mouse.
+		SDL_GetMouseState(&mx, &my);
+		Set_mouse_and_speed(mx, my);
 		break;
+		}
 	case SDLK_h:
 		{
 		char buf[512];

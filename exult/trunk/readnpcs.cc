@@ -56,7 +56,6 @@ void Game_window::read_npcs
 	int i;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
-	center_view(main_actor->get_abs_tile_coord());
 	nfile.close();
 	if (u7open(nfile, MONSNPCS, 1))	// Monsters.
 		{			// (Won't exist the first time.)
@@ -66,7 +65,7 @@ void Game_window::read_npcs
 			new Monster_actor(nfile, -1, 1);
 			}
 		}
-
+	center_view(main_actor->get_abs_tile_coord());
 					// Set where to skip rendering.
 	set_above_main_actor(get_objects(main_actor->get_cx(),
 				main_actor->get_cy())->is_roof(),

@@ -1498,7 +1498,19 @@ USECODE_INTRINSIC(find_direction)
 
 USECODE_INTRINSIC(get_npc_object)
 {
-	// Takes -npc.  Returns object.++++++Should operate on an array, too.
+	// Takes -npc.  Returns object, or array of objects.
+	Usecode_value& v = parms[0];
+	if (v.is_array())		// Do it for each element of array.
+		{
+		int sz = v.get_array_size();
+		Usecode_value ret(sz, 0);
+		for (int i = 0; i < sz; i++)
+			{
+			Usecode_value elem((long) get_item(v.get_elem(i)));
+			ret.put_elem(i, elem);
+			}
+		return ret;
+		}
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u((long) obj);
 	return(u);
@@ -1895,6 +1907,8 @@ USECODE_INTRINSIC(move_object)
 	Tile_coord tile(p.get_elem(0).get_int_value(),
 			p.get_elem(1).get_int_value(),
 			p.get_elem(2).get_int_value());
+	int moved_avatar = 0;
+	Actor *ava = gwin->get_main_actor();
 	if (parms[0].get_int_value() == -357)
 		{			// Move whole party.
 		Usecode_value party = get_party();
@@ -1906,6 +1920,7 @@ USECODE_INTRINSIC(move_object)
 				continue;
 			obj->move(tile.tx, tile.ty, tile.tz);
 					// Fixes moongate bug:
+			moved_avatar |= (obj == ava);
 			Actor *act = as_actor(obj);
 			if (act)
 				act->set_action(0);
@@ -1917,12 +1932,20 @@ USECODE_INTRINSIC(move_object)
 		if (obj)
 			{
 			obj->move(tile.tx, tile.ty, tile.tz);
+			moved_avatar |= (obj == ava);
 			Actor *act = as_actor(obj);
 			if (act)
 				act->set_action(0);
 			}
 		}
-	gwin->center_view(tile);	// Make new loc. visible.
+	if (moved_avatar)		// Teleported Avatar?
+		{			// Make new loc. visible.
+		gwin->center_view(tile);
+		Chunk_object_list *nlist = gwin->get_objects(ava->get_cx(),
+								ava->get_cy());
+		if (gwin->set_above_main_actor(nlist->is_roof(), tile.tz))
+			gwin->set_all_dirty();
+		}
 	return(no_ret);
 }
 
