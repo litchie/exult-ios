@@ -47,6 +47,10 @@ public:
 		{ return name.c_str(); }
 	void set_name(char *nm)
 		{ name = nm; }
+	int size()
+		{ return std::vector<int>::size(); }
+	int operator[](int i)
+		{ return std::vector<int>::operator[](i); }
 	void add(int id);		// Add ID, checking for duplicate 1st.
 	};
 
@@ -58,7 +62,7 @@ public:
 class Shape_group_file
 	{
 	std::string name;		// Base filename.
-	std::vector<Shape_group *> groups;	// List of groups from the file.
+	std::vector<Shape_group *> groups;// List of groups from the file.
 	bool modified;			// Changed since last save.
 public:
 	Shape_group_file(const char *nm);

@@ -63,7 +63,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	GtkWidget *shape_scroll;	// Vertical scrollbar.
 	GtkWidget *find_text;		// For searching.
 	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
-	int shapenum0;			// Shape, frame # of leftmost in
+	int index0;			// Index of top-leftmost in
 					//   displayed list.
 	int framenum0;			// Default frame # to display.
 	Shape_entry *info;		// An entry for each shape drawn.
@@ -82,14 +82,15 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void adjust_scrollbar();	// Set new scroll amounts.
 	GtkWidget *create_search_controls();
 public:
-	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h);
+	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
+					Shape_group *g = 0);
 	virtual ~Shape_chooser();
 	void set_shapes_file(Shapes_vga_file *sh)
 		{ shapes_file = sh; }	
-	void set_group(Shape_group *g)
-		{ group = g; }
 	void set_framenum0(int f)
 		{ framenum0 = f; }
+	void shape_dropped_here(int file, int shapenum, int framenum);
+	int get_count();		// Get # shapes we can display.
 	void search(char *srch, int dir);
 					// Turn off selection.
 	void unselect(bool need_render = true);
