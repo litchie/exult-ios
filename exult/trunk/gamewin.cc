@@ -1263,7 +1263,7 @@ void Game_window::flash_palette_red
 	)
 	{
 	int savepal = palette;
-	set_palette(8);			// Palette 8 is the red one.
+	set_palette(PALETTE_RED);		// Palette 8 is the red one.
 	win->show();
 	SDL_Delay(100);
 	set_palette(savepal);
