@@ -44,6 +44,12 @@ in		return IN;
 var		return VAR;
 string		return STRING;
 
+UcSay		return SAY;
+UcMessage	return MESSAGE;
+UcEvent		return EVENT;
+UcFlag		return FLAG;
+UcItem		return ITEM;
+
 "&&"		return AND;
 "||"		return OR;
 "!"		return NOT;
@@ -64,6 +70,11 @@ string		return STRING;
 			yylval.intval = strtol(yytext + 2, 0, 16);
 			return INT_LITERAL;
 			}
+
+"=="			{ return EQUALS; }
+"!="			{ return NEQUALS; }
+"<="			{ return LTEQUALS; }
+">="			{ return GTEQUALS; }
 
 [ \t]+						/* Ignore spaces. */
 "//".*						/* Comments. */

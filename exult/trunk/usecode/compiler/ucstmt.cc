@@ -210,3 +210,30 @@ void Uc_return_statement::gen
 		out.put((char) UC_RET);
 	}
 
+/*
+ *	Generate code.
+ */
+
+void Uc_say_statement::gen
+	(
+	ostream& out
+	)
+	{
+	out.put((char) UC_SAY);
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_message_statement::gen
+	(
+	ostream& out
+	)
+	{
+	if (!msg)
+		return;
+
+//+++++++++++++	out.put((char) UC_SAY);
+	}
+
