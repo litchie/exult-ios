@@ -39,8 +39,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Mixer 
 {
 private:
+	typedef std::list<ProducerConsumerBuf *>	pcb_list;
 	Mixer(const Mixer &m);	// Cannot call me
-	std::list<ProducerConsumerBuf *>	audio_streams;
+	pcb_list	audio_streams;
 public:
 	Mixer();
 	Mixer(uint32, uint32, uint8);
