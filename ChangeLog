@@ -1,3 +1,7 @@
+2001-08-07  Tristan Tarrant <nadir@users.sourceforge.net>
+	* server/objserial.h: add an #include <string>
+	* imagewin/scale.cc: copyright of 2xSaI is GPL
+
 2001-08-07  Max Horn <max@quendi.de>
 	* bggame.cc: butterfly & "static" are now steered via proper timers, thus should
 	  have the same speed regardless of your scaler and the speed of your machine

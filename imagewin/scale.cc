@@ -21,7 +21,7 @@ using std::memcpy;
  ** 2xSaI scaling filter source code adapted for Exult
  ** August 29 2000, originally written in May 1999
  ** by Derek Liauw Kie Fa (derek-liauw@usa.net)
- ** Use of this source is free for non-commercial use
+ ** This source is made available under the terms of the GNU GPL
  ** I'd appreciate it I am given credit in the program or documentation 
  **/
 
