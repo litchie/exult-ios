@@ -250,6 +250,14 @@ public:
 		size = len;
 	};
 	
+	void load(char *data, unsigned int len)
+	{
+		// data can be NULL if len is also 0
+		assert(data!=0 || len==0);
+		buf = buf_ptr = reinterpret_cast<unsigned char*>(data);
+		size = len;
+	};
+	
 	virtual ~BufferDataSource() {};
 	
 	virtual unsigned int read1() 
@@ -416,6 +424,10 @@ class StackBufferDataSource : protected BufferDataSource
 		}
 
 		virtual unsigned int getSP() { return getPos(); };
+
+		inline void moveSP(unsigned int pos) {
+			seek(pos);
+		}
 
 		/* temp debugging */
 		inline std::ostream &print(std::ostream &o, uint32 bp)
