@@ -3,6 +3,13 @@
 
 2001-12-21  Max Horn  <max@quendi.de>
 
+	* Makefile.am: fixed subdirs order to allow building from scratch
+
+	* config.h.in, configure.in, conf/Configuration.cc: only use sstream on systems
+	where this header is actually present
+
+	* files/zip/unzip.c: fixed compiler warnings (ambigious 'else' statments)
+
 	* configure.in: fixed output at end of configure run to do what it is
 	supposed to (e.g. print out the SDL version instead of "sdl-config --version").
 
