@@ -1409,6 +1409,22 @@ Game_object *Actor::attacked
 	}
 
 /*
+ *	There's probably a smarter way to do this, but this routine checks
+ *	for the dragon Draco.
+ */
+
+static int Is_draco
+	(
+	Actor *dragon
+	)
+	{
+	Vector vec;			// Gets list.
+					// Should have a special scroll.
+	int cnt = dragon->get_objects(vec, 797, 241, 4);
+	return cnt > 0;
+	}
+
+/*
  *	We're dead.  We're removed from the world, but not deleted.
  */
 
@@ -1417,9 +1433,15 @@ void Actor::die
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+					// Get location.
+	Tile_coord pos = get_abs_tile_coord();
+	set_action(0);
+	delete schedule;
+	schedule = 0;
+	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	int shnum = get_shapenum();
 					// Special case:  Hook, Dracothraxus.
-	if ((shnum == 0x1fa || shnum == 0x1f8) && 
+	if ((shnum == 0x1fa || (shnum == 0x1f8 && Is_draco(this))) && 
 	    Game::get_game_type() == BLACK_GATE)
 		{			// Exec. usecode before dying.
 		gwin->get_usecode()->call_usecode(
@@ -1431,12 +1453,6 @@ void Actor::die
 		}
 	properties[(int) health] = -50;
 	gwin->add_dirty(this);		// Want to repaint area.
-					// Get location.
-	Tile_coord pos = get_abs_tile_coord();
-	set_action(0);
-	delete schedule;
-	schedule = 0;
-	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	remove_this(1);			// Remove (but don't delete this).
 	cx = cy = 0xff;			// Set to invalid chunk coords.
 	int frnum;			// Lookup body shape/frame.

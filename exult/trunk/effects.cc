@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 
 int Cloud::randcnt = 0;
+int Lightning_effect::count = 0;
 
 /*
  *	Some special effects may not need painting.
@@ -500,6 +501,21 @@ void Rain_effect::paint
 	}
 
 /*
+ *	End of lightning.
+ */
+
+Lightning_effect::~Lightning_effect
+	(
+	)
+	{
+	if (save_brightness > 0 &&	// Be sure palette is restored.
+	    save_brightness < 300)
+		Game_window::get_game_window()->set_palette(
+						-1, save_brightness);
+	count--;
+	}
+
+/*
  *	Lightning.
  */
 
@@ -514,7 +530,8 @@ void Lightning_effect::handle_event
 	int delay = 100;		// Delay for next time.
 	if (save_brightness > 0)	// Just turned white?  Restore.
 		{
-		gwin->set_palette(-1, save_brightness);
+		if (save_brightness < 300)
+			gwin->set_palette(-1, save_brightness);
 		save_brightness = -1;
 		gwin->show(1);
 		if (curtime >= stop_time)
@@ -551,10 +568,12 @@ Storm_effect::Storm_effect
 					// Start raining soon.
 	int rain_delay = 20 + rand()%1000;
 	gwin->add_effect(new Rain_effect(duration - 1, rain_delay));
-					// Then lightning.
-	int lightning_delay = rain_delay + rand()%500;
-	gwin->add_effect(new Lightning_effect(
-			duration - 1, lightning_delay));
+	if (!Lightning_effect::count)	// Then lightning (but only 1).
+		{
+		int lightning_delay = rain_delay + rand()%500;
+		gwin->add_effect(new Lightning_effect(
+					duration - 1, lightning_delay));
+		}
 	}
 
 /*
