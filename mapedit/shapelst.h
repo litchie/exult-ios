@@ -56,11 +56,13 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
 	GtkWidget *fspin;		// Spin button for frame #.
+	GtkWidget *shape_scroll;	// Vertical scrollbar.
 	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
 	int shapenum0;			// Shape, frame # of leftmost in
 					//   displayed list.
 	Shape_info *info;		// An entry for each shape drawn.
 	int info_cnt;			// # entries in info.
+	int num_per_row;		// Average # painted per line.
 	int selected;			// Index of user-selected entry.
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
@@ -70,6 +72,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
 	void scroll(int newindex);	// Scroll.
+	void adjust_scrollbar();	// Set new scroll amounts.
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h);
 	virtual ~Shape_chooser();
