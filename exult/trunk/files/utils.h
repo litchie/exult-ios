@@ -34,7 +34,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #include <sys/stat.h>
   #include <iosfwd>
 #endif
-#include <exception>
 #include <hash_map>
 #include <string>
 #ifdef MACOS
@@ -65,27 +64,6 @@ struct eqstr
 		return std::strcmp(s1, s2) == 0;
 	}
 };
-
-/*
- * For classes which should not be replicatable
- */
-
-
-class replication_error : public std::exception
-{
-	std::string  what_;
-public:
-	replication_error (const char *what_arg): what_ (what_arg) {  }	
-	replication_error (const std::string& what_arg): what_ (what_arg) {  }
-	const char *what(void) { return what_.c_str(); }
-};
-
-#define	UNREPLICATABLE_CLASS(NAME)	NAME(const NAME &) { throw replication_error( #NAME " cannot be replicated"); }; \
-					NAME &operator=(const NAME &) { throw replication_error( #NAME " cannot be replicated"); return *this; }
-
-#define	UNREPLICATABLE_CLASS_I(NAME,INIT)	NAME(const NAME &) : INIT { throw replication_error( #NAME " cannot be replicated"); }; \
-					NAME &operator=(const NAME &) { throw replication_error( #NAME " cannot be replicated"); return *this; }
-
 
 /*
  *	Read a 1-byte value.

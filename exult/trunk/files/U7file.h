@@ -1,9 +1,10 @@
 
-#ifndef	_u7file_h_
-#define	_u7file_h_
+#ifndef	U7FILE_H
+#define	U7FILE_H
 
-#include <string>
+#include <exception>
 #include <map>
+#include <string>
 
 
 
@@ -12,8 +13,7 @@ class	U7file
 protected:
 	std::string	filename;
 public:
-	// Exceptions to throw
-	class	file_error {};
+
 	class	exclusive {};
 
 	U7file() {};
@@ -22,8 +22,7 @@ public:
 		{  }
 	U7file &operator=(const U7file &u) { filename=u.filename; return *this; }
 	virtual	int	number_of_objects(const char *)=0;
-	virtual	int	retrieve(int objnum,char **,std::size_t *len)=0; // To a memory block
-	virtual	int	retrieve(int objnum,const char *)=0;	// To a file
+	virtual	void	retrieve(int objnum,char **,std::size_t *len)=0; // To a memory block
 
 	virtual const char *get_archive_type()=0;
 	virtual	~U7file();
@@ -55,8 +54,8 @@ protected:
 	std::string	filename;
 	int	objnumber;
 public:
-	virtual	int retrieve(char **,std::size_t &len);	// Retrieve to a memory block
-	virtual int retrieve(const char *);		// Retrieve to a filename
+	virtual	void retrieve(char **,std::size_t &len);	// Retrieve to a memory block
+	virtual void retrieve(const char *);		// Retrieve to a filename
 
 	U7object(const char *file,int objnum);
 	virtual	~U7object();

@@ -5,9 +5,8 @@
 #include "Flat.h"
 #include <cstdio>
 #include <iostream>
+#include "exceptions.h"
 #include "utils.h"
-
-using std::string;
 
 using std::cerr;
 using std::endl;
@@ -15,6 +14,7 @@ using std::size_t;
 using std::FILE;
 using std::fclose;
 using std::fwrite;
+using std::string;
 
 
 #define	TRY_FILE_TYPE(uf,CLASS_NAME)	\
@@ -44,10 +44,10 @@ U7file  *U7FileManager::get_file_object(const string &s)
 
 	// Failed
 	if (!uf)
+	{
 		std::cerr << "Unable to find/open U7file " << s << endl;
-
-	if(!uf)
-		throw U7file::file_error();
+		throw file_not_found_error(s);
+	}
 	return uf;
 }
 
@@ -85,36 +85,39 @@ U7object::U7object(const char *f,int o)	:	filename(f),objnumber(o) {}
 U7object::~U7object()	{}
 
 
-int	U7object::retrieve(char **buf,size_t &len)
+void	U7object::retrieve(char **buf,size_t &len)
 {
 	U7file *uf=U7FileManager::get_ptr()->get_file_object(filename);
+#if 0
+	// This code here can not possible be reached since get_file_object *NEVER* returns NULL
 	if(!uf)
 		{
 		throw U7file::file_error();
 		return 0;
 		}
-	return uf->retrieve(objnumber,buf,&len);
+#endif
+	uf->retrieve(objnumber,buf,&len);
 }
 
-int	U7object::retrieve(const char *fname)
+void	U7object::retrieve(const char *fname)
 {
 	FILE	*fp=U7open(fname,"wb");
 	if(!fp)
-		{
-		throw U7file::file_error();
-		return 0;
-		}
+		throw file_not_found_error(fname);
 
 	char	*n;
 	size_t	l;
 
-	if(!retrieve(&n,l))
-		{
+	try
+	{
+		retrieve(&n,l);
+	}
+	catch( const std::exception & err )
+	{
 		fclose(fp);
-		return 0;
-		}
+		throw err;
+	}
 	fwrite(n,l,1,fp);	// &&&& Should check return value
 	fclose(fp);
 	delete [] n;
-	return !0;
 }

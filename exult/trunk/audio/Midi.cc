@@ -64,8 +64,14 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	size_t		size;
 	DataSource 	*mid_data;
 	
-	if(!track.retrieve(&buffer, size))
-	        return;
+	try
+	{
+		track.retrieve(&buffer, size);
+	}
+	catch( const std::exception & err )
+	{
+		return;
+	}
 
 	// Read the data into the XMIDI class
 	mid_data = new BufferDataSource(buffer, size);
@@ -415,8 +421,14 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	size_t		size;
 	DataSource 	*mid_data;
 	
-	if(!track.retrieve(&buffer, size))
-	        return;
+	try
+	{
+		track.retrieve(&buffer, size);
+	}
+	catch( const std::exception & err )
+	{
+		return;
+	}
 
 	// Read the data into the XMIDI class
 	mid_data = new BufferDataSource(buffer, size);
