@@ -777,7 +777,7 @@ static void Update
 	ofstream out;
 	U7open(out, imagename);		// May throw exception.
 	int newcnt = oldcnt > specs.size() ? oldcnt : specs.size();
-	Flex_writer writer(out, title, specs.size());
+	Flex_writer writer(out, title, newcnt);
 	for (i = 0; i < newcnt; i++)	// Write out new entries.
 		{
 					// New entry for this shape?
