@@ -214,15 +214,17 @@ Rectangle Game_window::get_gump_rect
 void Game_window::paint_shape
 	(
 	Image_window *iwin,		// Window to display it in.
-	int xoff, int yoff,		// Where to draw in window.
+	int xoff, int yoff,		// Where to draw in window (bottom
+					//   right of tile where it goes).
 	Shape_frame *shape		// What to paint.
 	)
 	{
 	if (!shape->rle)		// Not RLE?
-		iwin->copy8(shape->data, 8, 8, xoff, yoff);
+		iwin->copy8(shape->data, 8, 8, xoff - tilesize, 
+						yoff - tilesize);
 	else
 					// Get compressed data.
-		get_rle_shape(iwin, *shape, xoff + 8, yoff + 8);
+		get_rle_shape(iwin, *shape, xoff, yoff);
 	}
 
 /*
@@ -744,10 +746,12 @@ void Game_window::paint_chunk_flats
 			{
 			ShapeID id = olist->get_flat(shapex, shapey);
 			if (!id.is_invalid())
-					// Draw shape.
-				paint_shape(win, xoff + shapex*8,
-					yoff + shapey*8,
-					id.get_shapenum(), id.get_framenum());
+				{	// Draw flat.
+				Shape_frame *shape = get_shape(id);
+				win->copy8(shape->data, 8, 8, 
+					xoff + shapex*8,
+					yoff + shapey*8);
+				}
 			}
 	}
 
@@ -788,8 +792,8 @@ void Game_window::paint_chunk_objects
 		int shapenum = obj->get_shapenum();
 		int framenum = obj->get_framenum();
 					// Draw shape.
-		paint_shape(win, xoff + shapex*8 - 4*lift, 
-				yoff + shapey*8 - 4*lift,
+		paint_shape(win, xoff + (1 + shapex)*tilesize - 4*lift, 
+				yoff + (1 + shapey)*tilesize - 4*lift,
 					shapenum, framenum);
 		}
 	}
@@ -1377,8 +1381,8 @@ void Game_window::show_face
 					// Put a black box w/ white bdr.
 	win->fill8(1, actbox.w + 4, actbox.h + 4, actbox.x - 2, actbox.y - 2);
 	win->fill8(0, actbox.w, actbox.h, actbox.x, actbox.y);
-	paint_shape(win, actbox.x + actbox.w - 2 - 8, 
-			actbox.y + actbox.h - 2 - 8, face);
+	paint_shape(win, actbox.x + actbox.w - 2, 
+			actbox.y + actbox.h - 2, face);
 	}
 
 /*
@@ -1467,8 +1471,8 @@ void Game_window::show_avatar_choices
 	win->fill8(1, mbox.w + 4, mbox.h + 4, mbox.x - 2, mbox.y - 2);
 	win->fill8(0, mbox.w, mbox.h, mbox.x, mbox.y);
 					// Draw portrait.
-	paint_shape(win, mbox.x + mbox.w - 2 - 8, 
-				mbox.y + mbox.h - face->ybelow - 2 - 8, 
+	paint_shape(win, mbox.x + mbox.w - 2, 
+				mbox.y + mbox.h - face->ybelow - 2, 
 				face);
 					// Set to where to draw sentences.
 	Rectangle tbox(mbox.x + mbox.w + 16, mbox.y + 8,

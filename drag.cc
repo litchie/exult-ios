@@ -209,13 +209,13 @@ int Game_window::drop_at_lift
 	int at_lift
 	)
 	{
-					// Take lift into account & round.
+					// Take lift into account, round.
 	int x = dragging_paintx + at_lift*4 + tilesize/2;
 	int y = dragging_painty + at_lift*4 + tilesize/2;
 	int cx = chunkx + x/chunksize;
 	int cy = chunky + y/chunksize;
-	int tx = (x/tilesize)%tiles_per_chunk;
-	int ty = (y/tilesize)%tiles_per_chunk;
+	int tx = (x/tilesize)%tiles_per_chunk - 1;
+	int ty = (y/tilesize)%tiles_per_chunk - 1;
 	Chunk_object_list *chunk = get_objects(cx, cy);
 	chunk->setup_cache();		// Be sure cache is set up.
 	int lift;			// Can we put it here?

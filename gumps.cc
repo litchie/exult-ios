@@ -119,10 +119,8 @@ Rectangle Gump_object::get_shape_rect
 	)
 	{
 	Shape_frame *s = Game_window::get_game_window()->get_shape(*obj);
-	return Rectangle(x + object_area.x + obj->cx + tilesize - 
-							s->get_xleft(), 
-			 y + object_area.y + obj->cy + tilesize - 
-							s->get_yabove(), 
+	return Rectangle(x + object_area.x + obj->cx - s->get_xleft(), 
+			 y + object_area.y + obj->cy - s->get_yabove(), 
 				 s->get_width(), s->get_height());
 	}
 
@@ -181,8 +179,8 @@ void Gump_object::paint
 		{
 		obj = obj->get_next();
 		Shape_frame *shape = gwin->get_shape(*obj);
-		int objx = obj->cx - shape->get_xleft() + tilesize;
-		int objy = obj->cy - shape->get_yabove() + tilesize;
+		int objx = obj->cx - shape->get_xleft();
+		int objy = obj->cy - shape->get_yabove();
 					// Does obj. appear to be placed?
 		if (!object_area.has_point(objx, objy) ||
 		    !object_area.has_point(objx + shape->get_width() - 2,
