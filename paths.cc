@@ -463,8 +463,8 @@ int Monster_pathfinder_client::get_max_cost
 	int scost = ((3*gwin->get_width())/4)/c_tilesize;
 	if (max_cost > scost)
 		max_cost = scost;
-	if (max_cost < 10)		// But not too small.
-		max_cost = 10;
+	if (max_cost < 14)		// But not too small.
+		max_cost = 14;
 	return max_cost;
 	}
 
