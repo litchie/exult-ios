@@ -4,8 +4,16 @@
 #include "utils.h"
 #include "xmidi.h"
 
+// This is used to correct incorrect patch, vol and pan changes in midi files
+// The bias is just a value to used to work out if a vol and pan belong with a 
+// patch change. This is to ensure that the default state of a midi file is with
+// the tracks centred, unless the first patch change says otherwise.
+#define PATCH_VOL_PAN_BIAS	5
+
 // This is a default set of patches to convert from MT32 to GM
 // The index is the MT32 Patch nubmer and the value is the GM Patch
+// This is only suitable for music that doesn'tdo timbre changes
+// XMIDIs that contain Timbre changes will not convert properly
 unsigned char XMIDI::mt32asgm[128] = {
 	0,	// 0	Piano 1
 	1,	// 1	Piano 2
@@ -31,8 +39,8 @@ unsigned char XMIDI::mt32asgm[128] = {
 	7,	// 21	Clavinet 3
 	8,	// 22	Celesta 1
 	8,	// 23	Celesta 2
-	62,	// 24	Synthbrass 1
-	63,	// 25	Synthbrass 2
+	62,	// 24	Synthbrass 1 (62)
+	63,	// 25	Synthbrass 2 (63)
 	62,	// 26	Synthbrass 3 Bank 8
 	63,	// 27	Synthbrass 4 Bank 8
 	38,	// 28	Synthbass 1
@@ -46,7 +54,7 @@ unsigned char XMIDI::mt32asgm[128] = {
 	97,	// 36	Soundtrack
 	99,	// 37	Atmosphere
 	14,	// 38	Warmbell, sounds kind of like crystal(98) perhaps Tubular Bells(14) would be better. It is!
-	109,	// 39	FunnyVox, sounds alot like Bagpipe(109) and Shania(111)
+	54,	// 39	FunnyVox, sounds alot like Bagpipe(109) and Shania(111)
 	98,	// 40	EchoBell, no real equiv, sounds like Crystal(98)
 	96,	// 41	IceRain
 	68,	// 42	Oboe 2001, no equiv, just patching it to normal oboe(68)
@@ -57,7 +65,7 @@ unsigned char XMIDI::mt32asgm[128] = {
 	80,	// 47	SquareWave
 	48,	// 48	Strings 1
 	48,	// 49	Strings 2 - should be 49
-	48,	// 50	Strings 3 (Synth) - Experimental set to Strings 1 - should be 50
+	44,	// 50	Strings 3 (Synth) - Experimental set to Tremollo Strings - should be 50
 	45,	// 51	Pizzicato Strings
 	40,	// 52	Violin 1
 	40,	// 53	Violin 2 ? Viola
@@ -438,9 +446,22 @@ void XMIDI::MovePatchVolAndPan (int channel)
 		else current = list;
 	}
 
-	// Got none of them, assume empty track
+	// Got none of them, do nothing
 	if (!vol && !patch && !pan) return;
 
+	if (!patch)
+	{
+		patch = new midi_event;
+		patch->status = channel + 0xC0;
+		patch->data[0] = 0;
+		patch->len = 0;
+		patch->buffer = NULL;
+	}
+
+	if (vol && (vol->time > patch->time+PATCH_VOL_PAN_BIAS || vol->time < patch->time-PATCH_VOL_PAN_BIAS))
+	{
+		vol = NULL;
+	}
 	if (!vol)
 	{
 		vol = new midi_event;
@@ -449,6 +470,11 @@ void XMIDI::MovePatchVolAndPan (int channel)
 		vol->data[1] = 64;
 		vol->len = 0;
 		vol->buffer = NULL;
+	}
+
+	if (pan && (pan->time > patch->time+PATCH_VOL_PAN_BIAS || pan->time < patch->time-PATCH_VOL_PAN_BIAS))
+	{
+		pan = NULL;
 	}
 	if (!pan)
 	{
@@ -459,14 +485,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 		pan->len = 0;
 		pan->buffer = NULL;
 	}
-	if (!patch)
-	{
-		patch = new midi_event;
-		patch->status = channel + 0xC0;
-		patch->data[0] = 0;
-		patch->len = 0;
-		patch->buffer = NULL;
-	}
+
 	
 	vol->time = 0;
 	pan->time = 0;
@@ -476,7 +495,6 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	pan->next = patch;
 	patch->next = list;
 	list = vol;
-
 }
 
 // DuplicateAndMerge
@@ -582,6 +600,68 @@ void XMIDI::DuplicateAndMerge (int num)
 // size 3 is XMI Note on
 // Returns bytes converted
 
+static const char *event_type[] = 
+{
+	"note off",
+	"note on",
+	"after touch",
+	"control change",
+	"patch change",
+	"channel pressure",
+	"pitch wheel",
+	"NME"
+};
+
+void *load_global_timbre(FILE *GTL, int bank, int patch)
+{
+   unsigned char *timb_ptr;
+   static unsigned len;
+
+   char GTL_hdr_patch;
+   char GTL_hdr_bank;
+   unsigned long GTL_hdr_offset;
+
+   if (GTL==NULL) return NULL;    // if no GTL, return failure
+
+   rewind(GTL);                   // else rewind to GTL header
+   do                             // search file for requested timbre
+      {
+      GTL_hdr_patch = getc (GTL);
+      GTL_hdr_bank = getc (GTL);
+      GTL_hdr_offset = Read4 (GTL);
+      if (GTL_hdr_bank == -1) 
+         return NULL;             // timbre not found, return NULL
+      }
+   while ((GTL_hdr_bank != bank) ||
+          (GTL_hdr_patch != patch));       
+
+   fseek(GTL,GTL_hdr_offset,SEEK_SET);    
+   //fread(&len,2,1,GTL);           // timbre found, read its length
+   len = Read2 (GTL);
+   timb_ptr = (unsigned char *) malloc(len);     // allocate memory for timbre ..
+                                  // and load it
+   fread(timb_ptr,len-2,1,GTL);       
+   *timb_ptr = len;         
+                                  // and load it
+   fread((timb_ptr+1),len-2,1,GTL);       
+
+   FILE *fout = fopen ("temp", "wb");
+   fwrite ((timb_ptr+1),len-2,1,fout);
+   fclose (fout);
+
+   if (ferror(GTL))               // return NULL if any errors
+      return NULL;                // occurred
+   else
+      return timb_ptr;            // else return pointer to timbre
+}
+
+int timbre[16] = {
+	0,0,0,0,
+	0,0,0,0,
+	0,0,0,0,
+	0,0,0,0
+};
+
 int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size)
 {
 	uint32	delta = 0;
@@ -596,10 +676,32 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 	if (((status >> 4) == 0xC) && convert_from_mt32) 
 		current->data[0] = mt32asgm[current->data[0]];
 
+#if 0
+	if ((status >> 4) == 0xC && timbre[(status&0xF)])
+	{
+		FILE *tfile = U7open ("c:/uc/serpent/static/xmidi.mt", "rb");
+		if (tfile)
+		{
+			char *timb = (char *) load_global_timbre(tfile, timbre[(status&0xF)], current->data[0]);
+
+			if (timb)
+			{
+				timb[13] = 0;
+				cout << timb+3 << endl;
+				free (timb);
+			}
+		}
+	}
+#endif 
+	
 	if (size == 1)
 		return 1;
 
 	current->data[1] = source->read1();
+
+	// XMIDI Bank change
+	if ((status >> 4) == 0xB && current->data[0] == 114)
+		timbre[(status&0xF)]=current->data[1];
 
 	if (size == 2)
 		return 2;

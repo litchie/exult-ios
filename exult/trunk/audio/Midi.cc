@@ -30,6 +30,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../files/U7file.h"
 #include "utils.h"
 #include "xmidi.h"
+#include "gamewin.h"
+#include "game.h"
+#include "conv.h"
 
 #include "Configuration.h"
 extern	Configuration	*config;
@@ -261,3 +264,62 @@ MyMidiPlayer::~MyMidiPlayer()
 	if(midi_device&&midi_device->is_playing())
 		midi_device->stop_track();
 }
+
+
+void    MyMidiPlayer::start_sound_effect(int num)
+{
+  #if DEBUG
+        cout << "Audio subsystem request: sound effect # " << num << endl;
+  #endif
+        int real_num = num;
+
+        if (Game::get_game_type() == BLACK_GATE)
+        	real_num = bgconv[num];
+        
+        cout << "Real num " << real_num << endl;
+
+	// Lets check if the file exists.
+        // I'm only doing this because I don't trust U7Object
+	FILE *ft = fopen ("sfx.dat", "r");
+	if (!ft) return;
+	fclose (ft);
+	
+
+	U7object	track("sfx.dat",real_num);
+
+	if (!midi_device)
+	        return;
+
+//Not needed anymore
+//#ifdef WIN32
+//	//stop track before writing to temp. file
+//	midi_device->stop_track();
+//#endif
+	
+	char		*buffer;
+	size_t		size;
+	DataSource 	*mid_data;
+	
+	if(!track.retrieve(&buffer, size))
+	        return;
+
+	// Read the data into the XMIDI class
+	mid_data = new BufferDataSource(buffer, size);
+
+	// It's already GM, so dont convert
+	XMIDI		midfile(mid_data, false);
+	
+	delete mid_data;
+	delete [] buffer;
+
+	// Now get the data out of the XMIDI class and play it
+	
+#ifdef WIN32
+	midi_event	*eventlist;
+	int		ppqn;
+	
+	if (midfile.retrieve(0, &eventlist, ppqn))
+		midi_device->start_sfx(eventlist, ppqn);
+#endif
+}
+
