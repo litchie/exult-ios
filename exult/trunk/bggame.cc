@@ -1469,7 +1469,12 @@ void BG_Game::show_credits()
 			menushapes.extract_shape(0x14)
 			);
 	pal.load("<STATIC>/intropal.dat",6);
-	credits.run(gwin,pal);
+	if(credits.run(gwin,pal)) {	// Watched through the entire sequence?
+		std::ofstream quotesflg;
+		U7open(quotesflg, "<SAVEGAME>/quotes.flg");
+		quotesflg.close();
+	}
+		
 	pal.load("<STATIC>/intropal.dat",0);
 }
 

@@ -1,3 +1,11 @@
+2001-09-05  Tristan Tarrant <nadir@users.sourceforge.net>
+	* game.cc, bggame.cc, sigame.cc, usecode/intrinsics.cc, txtscroll.*:
+	do not show quotes entry until user has watched through entire credits
+	sequence. Also do not show endgame entry until user has successfully
+	completed the game. Uses the same quotes.flg and endgame.flg method
+	as the original, but puts them in the SAVEGAME directories instead
+	of STATIC.
+
 2001-09-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc:fixed crash on transferring items from leaving party member
 

@@ -1,3 +1,12 @@
+??/??/01	next release
+
+		Endgame and Quotes entries in the menus are now only visible
+		when appropriate
+
+		Allow choice of MIDI device in Win32
+
+		Tons of bugfixes (see ChangeLog for details)
+
 08/25/01	v0.94 alpha 5
 
 		Colourless' amazing stats display (press "r" to toggle the 
