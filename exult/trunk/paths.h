@@ -121,11 +121,14 @@ class Monster_pathfinder_client : public Fast_pathfinder_client
 	{
 	Rectangle destbox;		// Got to intersect this box.
 	int axtiles, aytiles, aztiles;	// NPC's dims. in tiles.
+	int intelligence;		// NPC's intelligence.
 public:
 	Monster_pathfinder_client(Actor *npc, Tile_coord dest, int dist);
 					// For combat:
 	Monster_pathfinder_client(Actor *attacker, int reach,
 						Game_object *opponent);
+					// Figure when to give up.
+	virtual int get_max_cost(int cost_to_goal);
 					// Is tile at the goal?
 	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
 					// Figure cost for a single step.

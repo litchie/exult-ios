@@ -397,6 +397,7 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	int dist
 	) : Fast_pathfinder_client(dist), destbox(dest.tx, dest.ty, 0, 0)
 	{
+	intelligence = npc->get_property(Actor::intelligence);
 	Game_window *gwin = Game_window::get_game_window();
 	Shape_info& info1 = gwin->get_info(npc);
 	axtiles = info1.get_3d_xtiles();
@@ -417,6 +418,7 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	Game_object *opponent
 	) : Fast_pathfinder_client(reach), destbox(0, 0, 0, 0)
 	{
+	intelligence = attacker->get_property(Actor::intelligence);
 	Game_window *gwin = Game_window::get_game_window();
 	Shape_info& info1 = gwin->get_info(attacker);
 	axtiles = info1.get_3d_xtiles();
@@ -431,6 +433,29 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	destbox = Rectangle(opos.tx - oxtiles + 1, opos.ty - oytiles + 1,
 							oxtiles, oytiles);
 	destbox.enlarge(reach);		// This is how close we need to get.
+	}
+
+/*
+ *	Figure when to give up.
+ */
+
+int Monster_pathfinder_client::get_max_cost
+	(
+	int cost_to_goal		// From estimate_cost().
+	)
+	{
+	int max_cost = 2*cost_to_goal;	// Don't try to hard.
+	int icost = 2*intelligence;	// Limit by intelligence.
+	if (max_cost > icost)		// Note: intel. ranges from 0 to 30.
+		max_cost = icost;
+	Game_window *gwin = Game_window::get_game_window();
+					// Limit to 3/4 screen width.
+	int scost = ((3*gwin->get_width())/4)/c_tilesize;
+	if (max_cost > scost)
+		max_cost = scost;
+	if (max_cost < 10)		// But not too small.
+		max_cost = 10;
+	return max_cost;
 	}
 
 /*

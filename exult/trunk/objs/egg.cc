@@ -523,23 +523,18 @@ static void Create_monster
 	int align
 	)
 	{
-	int ht = gwin->get_info(shnum).get_3d_height();
-	for (int i = 1; i < 5; i++)	// Look outward.
+	Tile_coord dest = Map_chunk::find_spot(
+				egg->get_abs_tile_coord(), 5, shnum, 0, 1);
+	if (dest.tx != -1)
 		{
-		Tile_coord dest = egg->find_unblocked_tile(i, ht);
-		if (dest.tx != -1)
-			{
-			Monster_actor *monster = 
-				Monster_actor::create(shnum,
-					dest.tx/c_tiles_per_chunk,
-					dest.ty/c_tiles_per_chunk,
-					dest.tx%c_tiles_per_chunk,
-					dest.ty%c_tiles_per_chunk,
-					dest.tz, sched, align);
-			gwin->add_dirty(monster);
-			gwin->add_nearby_npc(monster);
-			return;
-			}
+		Monster_actor *monster = Monster_actor::create(shnum,
+				dest.tx/c_tiles_per_chunk,
+				dest.ty/c_tiles_per_chunk,
+				dest.tx%c_tiles_per_chunk,
+				dest.ty%c_tiles_per_chunk,
+				dest.tz, sched, align);
+		gwin->add_dirty(monster);
+		gwin->add_nearby_npc(monster);
 		}
 	}
 
