@@ -38,6 +38,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include <Audio.h>
 
+#define	TRACE_INTRINSIC_CALLS 1
+
 /*
  *	A class for executing usecode at a scheduled time:
  */
@@ -858,6 +860,26 @@ cout << "0x2d:  Deleting itemref\n";
  *	Report unhandled intrinsic.
  */
 
+static void Usecode_Trace
+	(
+	const char *name,
+	int intrinsic,
+	int num_parms,
+	Usecode_value parms[12]
+	)
+	{
+#if TRACE_INTRINSIC_CALLS
+	printf("Intrinsic %s(0x%03x) called with %d parms: ",
+					name, intrinsic, num_parms);
+	for (int i = 0; i < num_parms; i++)
+		{
+		parms[i].print(cout);
+		cout << ' ';
+		}
+	cout << endl;
+#endif
+	}
+
 static void Unhandled
 	(
 	int intrinsic,
@@ -872,23 +894,20 @@ static void Unhandled
 		parms[i].print(cout);
 		cout << ' ';
 		}
-	cout << '\n';
+	cout << endl;
 	}
 
 static Usecode_value	no_ret;
 USECODE_FUNCTION(NOP)
-{
 	return no_ret;
 }
 
 USECODE_FUNCTION(UNKNOWN)
-{
 	Unhandled(intrinsic, num_parms, parms);
 	return no_ret;
 }
 
 USECODE_FUNCTION(get_random)
-{
 	int range = parms[0].get_int_value();
 	if (range == 0)
 		return Usecode_value(0);
@@ -896,14 +915,13 @@ USECODE_FUNCTION(get_random)
 }
 
 USECODE_FUNCTION(execute_usecode_array)
-{
 	cout << "Executing intrinsic 1\n";
 	exec_array(parms[0], parms[1]);
 	return no_ret;
 }
 
 USECODE_FUNCTION(delayed_execute_usecode_array)
-{			// Delay = .20 sec.?
+	// Delay = .20 sec.?
 	int delay = parms[2].get_int_value();
 	gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
 		new Scheduled_usecode(parms[0], parms[1]),
@@ -913,38 +931,32 @@ USECODE_FUNCTION(delayed_execute_usecode_array)
 }
 
 USECODE_FUNCTION(show_npc_face)
-{
 	show_npc_face(parms[0], parms[1]);
 	return no_ret;
 }
 
 USECODE_FUNCTION(remove_npc_face)
-{
 	remove_npc_face(parms[0]);
 	return no_ret;
 }
 
 USECODE_FUNCTION(add_answer)
-{
 	answers.add_answer(parms[0]);
 	return no_ret;
 }
 
 USECODE_FUNCTION(remove_answer)
-{
 	answers.remove_answer(parms[0]);
 	return no_ret;
 }
 
 USECODE_FUNCTION(push_answers)
-{
 	answer_stack.push_front(answers);
 	answers.clear();
 	return no_ret;
 }
 
 USECODE_FUNCTION(pop_answers)
-{
 	if(answer_stack.size())
 		{
 		answers=answer_stack.front();
@@ -954,7 +966,6 @@ USECODE_FUNCTION(pop_answers)
 }
 
 USECODE_FUNCTION(select_from_menu)
-{
 	user_choice = 0;
 	const char *choice = get_user_choice();
 	user_choice = 0;
@@ -962,7 +973,7 @@ USECODE_FUNCTION(select_from_menu)
 }
 
 USECODE_FUNCTION(select_from_menu2)
-{			// Return index (1-n) of choice.
+	// Return index (1-n) of choice.
 	user_choice = 0;
 	Usecode_value val(get_user_choice_num() + 1);
 	user_choice = 0;
@@ -970,7 +981,6 @@ USECODE_FUNCTION(select_from_menu2)
 }
 
 USECODE_FUNCTION(input_numeric_value)
-{
 	// Ask for # (min, max, step, default).
 	// (Show slider.)
 	//+++++++++++++
@@ -978,14 +988,12 @@ USECODE_FUNCTION(input_numeric_value)
 }
 
 USECODE_FUNCTION(set_item_shape)
-{
 	// Set item shape.
 	set_item_shape(parms[0], parms[1]);
 	return no_ret;
 }
 
 USECODE_FUNCTION(die_roll)
-{
 	// Rand. # within range.
 	int low = parms[0].get_int_value();
 	int high = parms[1].get_int_value();
@@ -1000,28 +1008,24 @@ USECODE_FUNCTION(die_roll)
 }
 
 USECODE_FUNCTION(get_item_shape)
-{
 	return (Usecode_value(get_item_shape(parms[0])));
 }
+
 USECODE_FUNCTION(get_item_frame)
-{
 	return (Usecode_value(get_item_frame(parms[0])));
 }
 
 USECODE_FUNCTION(set_item_frame)
-{
 	set_item_frame(parms[0], parms[1]);
 	return no_ret;
 }
 
 USECODE_FUNCTION(get_item_quality)
-{
 	Game_object *obj = get_item(parms[0].get_int_value());
 	return Usecode_value(obj ? obj->get_quality() : 0);
 }
 
 USECODE_FUNCTION(set_item_quality)
-{
 	// Guessing it's 
 	//  set_quality(item, value).
 	Game_object *obj = get_item(parms[0].get_int_value());
@@ -1031,7 +1035,6 @@ USECODE_FUNCTION(set_item_quality)
 }
 
 USECODE_FUNCTION(count_npc_inventory)
-{
 	// Get # of items in NPC??????
 	//   Count(item, -npc).
 	//+++++++++++++
@@ -1040,7 +1043,6 @@ USECODE_FUNCTION(count_npc_inventory)
 }
 
 USECODE_FUNCTION(set_npc_inventory_count)
-{
 	// Set # of items??? (item, newcount).
 	//+++++++++++++
 	Unhandled(intrinsic, num_parms, parms);
@@ -1048,7 +1050,6 @@ USECODE_FUNCTION(set_npc_inventory_count)
 }
 
 USECODE_FUNCTION(get_object_position)
-{
 	// Takes itemref.  ?Think it rets.
 	//  hotspot coords: (x, y, z, obj).
 	int tx, ty, tz;		// Get tile coords.
@@ -1063,6 +1064,45 @@ USECODE_FUNCTION(get_object_position)
 	arr.put_elem(2, vz);
 	arr.put_elem(3, vobj);
 	return arr;
+}
+
+USECODE_FUNCTION(find_direction)
+	// Direction from parm[0] -> parm[1].
+	// Rets. 0-7.  Is 0 east?
+	return find_direction(parms[0], parms[1]);
+}
+
+USECODE_FUNCTION(get_npc_object)
+	// Takes -npc.  Returns object.
+	Game_object *obj = get_item(parms[0].get_int_value());
+	return Usecode_value((long) obj);
+}
+
+USECODE_FUNCTION(get_schedule_type)
+	// GetSchedule(npc).  Rets. schedtype.
+	Game_object *obj = get_item(parms[0].get_int_value());
+	return Usecode_value(obj ? obj->get_schedule() : 0);
+}
+
+USECODE_FUNCTION(set_schedule_type)
+	// SetSchedule?(npc, schedtype).
+	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
+	// 'bNum' field in schedules.
+	Unhandled(intrinsic, num_parms, parms);
+	//+++++++++++++++++++++
+	return no_ret;
+}
+
+USECODE_FUNCTION(add_to_party)
+	// NPC joins party.
+	add_to_party(get_item(parms[0].get_int_value()));
+	return no_ret;
+}
+
+USECODE_FUNCTION(remove_from_party)
+	// NPC leaves party.
+	remove_from_party(get_item(parms[0].get_int_value()));
+	return no_ret;
 }
 
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
@@ -1095,9 +1135,15 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_FUNCTION_PTR(set_npc_inventory_count), // 0x17
 	USECODE_FUNCTION_PTR(get_object_position), // 0x18
 	USECODE_FUNCTION_PTR(UNKNOWN), // 0x19
+	USECODE_FUNCTION_PTR(find_direction), // 0x1a
+	USECODE_FUNCTION_PTR(get_npc_object), // 0x1b
+	USECODE_FUNCTION_PTR(get_schedule_type), // 0x1c
+	USECODE_FUNCTION_PTR(set_schedule_type), // 0x1d
+	USECODE_FUNCTION_PTR(add_to_party), // 0x1e
+	USECODE_FUNCTION_PTR(remove_from_party), // 0x1f
 	};
 
-int	max_bundled_intrinsics=0x19;	// Index of the last intrinsic in this table
+int	max_bundled_intrinsics=0x1f;	// Index of the last intrinsic in this table
 
 /*
  *	Call an intrinsic function.
@@ -1124,31 +1170,6 @@ Usecode_value Usecode_machine::call_intrinsic
 	else
 	switch (intrinsic)
 		{
-	case 0x1a:			// Direction from parm[0] -> parm[1].
-					// Rets. 0-7.  Is 0 east?
-		return find_direction(parms[0], parms[1]);
-	case 0x1b:			// Takes -npc.  Returns object.
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		return Usecode_value((long) obj);
-		}
-	case 0x1c:			// GetSchedule(npc).  Rets. schedtype.
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		return Usecode_value(obj ? obj->get_schedule() : 0);
-		}
-	case 0x1d:			// SetSchedule?(npc, schedtype).
-	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
-	// 'bNum' field in schedules.
-		Unhandled(intrinsic, num_parms, parms);
-		//+++++++++++++++++++++
-		break;
-	case 0x1e:			// NPC joins party.
-		add_to_party(get_item(parms[0].get_int_value()));
-		break;
-	case 0x1f:			// NPC leaves party.
-		remove_from_party(get_item(parms[0].get_int_value()));
-		break;
 	case 0x20:			// Get NPC prop (item, prop_id).
 					//   (9 is food level).
 		{
