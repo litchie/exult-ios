@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Fnames.h - Names of data files for Exult.
  **
  **	Written: 6/4/99 - JSF
@@ -48,6 +49,7 @@
 #define U7SPEECH	"static/u7speech.spc"
 #define XFORMTBL       	"static/xform.tbl"
 #define MONSTERS	"static/monsters.dat"
+#define EQUIP		"static/equip.dat"
 #define READY		"static/ready.dat"
 #define IDENTITY	"gamedat/identity"
 #define ENDGAME		"static/endgame.dat"

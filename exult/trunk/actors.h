@@ -520,21 +520,78 @@ public:
 	};
 
 /*
+ *	An element from 'equip.dat', describing a monster's equipment:
+ */
+class Equip_element
+	{
+	unsigned short shapenum;	// What to create, or 0 for nothing.
+	unsigned char probability;	// 0-100:  probabilit of creation.
+	unsigned char quantity;		// # to create.
+public:
+	friend class Monster_info;
+	Equip_element()
+		{  }
+	void set(int shnum, int prob, int quant)
+		{
+		shapenum = shnum;
+		probability = prob;
+		quantity = quant;
+		}
+	};
+
+/*
+ *	A record from 'equip.dat' consists of 10 elements.
+ */
+class Equip_record
+	{
+	Equip_element elements[10];
+public:
+	friend class Monster_info;
+	Equip_record()
+		{  }
+					// Set i'th element.
+	void set(int i, int shnum, int prob, int quant)
+		{ elements[i].set(shnum, prob, quant); }
+	};
+
+/*
  *	Monster info. from 'monsters.dat':
  */
 class Monster_info
 	{
+	static Equip_record *equip;	// ->equipment info.
+	static int equip_cnt;		// # entries in equip.
 	int shapenum;			// Shape #.
 	unsigned char strength;		// Attributes.
 	unsigned char dexterity;
 	unsigned char intelligence;
 	unsigned char combat;
 	unsigned char armor;
+	unsigned short flags;		// Defined below.
+	unsigned char equip_offset;	// Offset in 'equip.dat'.
 public:
 	Monster_info() {  }
+					// Done by Game_window:
+	static void set_equip(Equip_record *eq, int cnt)
+		{
+		equip = eq;
+		equip_cnt = cnt;
+		}
+	enum Flags {
+		fly = 0,
+		swim = 1,
+		walk = 2,
+		ethereal = 3,		// Can walk through walls.
+					// 5:  gazer, hook only.
+		magic_only = 7,		// Can only be hurt by magic weapons.
+					// 8:  bat only.
+		slow = 9		// E.g., slime, corpser.
+					// 10:  skeleton only.
+		};
 	int get_shapenum()
 		{ return shapenum; }
-	void set(int sh, int str, int dex, int intel, int comb, int ar)
+	void set(int sh, int str, int dex, int intel, int comb, int ar,
+						int flgs, int eqoff)
 		{
 		shapenum = sh;
 		strength = str;
@@ -542,6 +599,8 @@ public:
 		intelligence = intel;
 		combat = comb;
 		armor = ar;
+		flags = flgs;
+		equip_offset = eqoff;
 		}
 					// Create an instance.
 	Npc_actor *create(int chunkx, int chunky, int tilex, int tiley, 

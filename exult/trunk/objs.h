@@ -281,8 +281,8 @@ public:
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0)
 		{ return 0; }
-	virtual int add_quantity(int delta, int shapenum, int qual,
-					int framenum, int dontcreate = 0)
+	virtual int add_quantity(int delta, int shapenum, int qual = -359,
+				int framenum = -359, int dontcreate = 0)
 		{ return delta; }
 	virtual int create_quantity(int delta, int shapenum, int qual,
 								int framenum)
@@ -378,8 +378,8 @@ public:
 	virtual Game_object *get_readied(int index)
 		{ return 0; }
 					// Add/remove quantities of objs.
-	virtual int add_quantity(int delta, int shapenum, int qual,
-					int framenum, int dontcreate = 0);
+	virtual int add_quantity(int delta, int shapenum, int qual = -359,
+				int framenum = -359, int dontcreate = 0);
 	virtual int create_quantity(int delta, int shapenum, int qual,
 							int framenum);
 	virtual int remove_quantity(int delta, int shapenum, int qual,
