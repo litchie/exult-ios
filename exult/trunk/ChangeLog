@@ -1,6 +1,7 @@
 2002-01-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* tools/expack.cc: properly report errors if opening a file failed
 	* Makefile.win32/cygwin: removed deleted ucxt files
+	* tools/expack.cc: accept any kind of \r \n combination in indexfile
 
 2002-01-03  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Removed obsolete -fs option and all relevant code.

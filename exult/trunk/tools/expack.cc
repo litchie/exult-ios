@@ -164,6 +164,23 @@ long get_file_size(const char *fname)
 	return len;
 }
 
+void getline(ifstream& file, char* buf, int size)
+{
+	int i = 0;
+	char c;
+	file.get(c);
+
+	while (i < size-1 && c != '\r' && c != '\n') {
+		buf[i++] = c;
+		file.get(c);
+	}
+	buf[i] = '\0'; // terminator
+
+	while ((file.peek() == '\r' || file.peek() == '\n') && file.good())
+		file.get(c);
+}
+
+
 #ifdef MACOS
 int mac_main(int argc, char **argv);
 
@@ -239,7 +256,7 @@ int main(int argc, char **argv)
 					}
 					
 					// Read the output file name
-					respfile.getline(temp, 1024);
+					getline(respfile, temp, 1024);
 					strncpy(fname, path_prefix, 1024);
 					strncat(fname, temp, 1024);
 
@@ -253,7 +270,7 @@ int main(int argc, char **argv)
 					make_uppercase (hprefix);
 
 					while(!respfile.eof()) {
-						respfile.getline(temp, 1024);
+						getline(respfile, temp, 1024);
 						if(strlen(temp)>0) {
 							char temp2[1024];
 							strncpy(temp2, path_prefix,1024);
