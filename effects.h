@@ -198,7 +198,7 @@ class Cloud
 	short deltax, deltay;		// How to move.
 	int count;			// Counts down to 0.
 	int max_count;
-	int start_time;			// When to start.
+	unsigned long start_time;	// When to start.
 	void set_start_pos(Shape_frame *shape, int w, int h, int& x, int& y);
 public:
 	Cloud(short dx, short dy);

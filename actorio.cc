@@ -185,8 +185,8 @@ Npc_actor::Npc_actor
 	istream& nfile,			// 'npc.dat', generally.
 	int num,			// NPC #.
 	int has_usecode			// 1 if a 'type1' NPC.
-	) : Actor(nfile, num, has_usecode), num_schedules(0), 
-		schedules(0), alignment(0), nearby(0)
+	) : Actor(nfile, num, has_usecode), nearby(0), num_schedules(0), 
+		schedules(0), alignment(0)
 	{
 	Chunk_object_list *olist = Game_window::get_game_window()->
 				get_objects(get_cx(), get_cy());
