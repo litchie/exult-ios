@@ -32,9 +32,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "shapeinf.h"
 #include "monstinf.h"
+#include "u7drag.h"
 
 using	std::cout;
 using	std::endl;
+
+/*
+ *	Widgets in one row of the 'equipment' dialog:
+ */
+struct Equip_row_widgets
+	{
+	Shape_draw *draw;		// Where the shape is drawn.
+	GtkWidget *shape, *name, *chance, *count;
+	};
+					// Holds widgets from equip. dialog.
+static Equip_row_widgets equip_rows[10] = {0};
 
 /*
  *	Equip window's Okay, Apply buttons.
@@ -89,7 +101,6 @@ C_EXPORT gboolean on_equip_window_delete_event
 C_EXPORT gboolean on_equip_recnum_changed
 	(
 	GtkWidget *widget,
-	GdkEventFocus *event,
 	gpointer user_data
 	)
 	{
@@ -98,16 +109,60 @@ C_EXPORT gboolean on_equip_recnum_changed
 	ExultStudio::get_instance()->init_equip_window(recnum);
 	return TRUE;
 	}
+/*
+ *	Draw shape in one of the Equip dialog rows.
+ */
+C_EXPORT gboolean on_equip_draw_expose_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventExpose *event,
+	gpointer data			// ->row.
+	)
+	{
+	ExultStudio::get_instance()->show_equip_shape(
+		(Equip_row_widgets *) data,
+		event->area.x, event->area.y, event->area.width,
+							event->area.height);
+	return (TRUE);
+	}
+/*
+ *	Shape # on one of the rows was changed.
+ */
+C_EXPORT gboolean on_equip_shape_changed
+	(
+	GtkWidget *widget,
+	gpointer data			// ->row info.
+	)
+	{
+	Equip_row_widgets *eq = (Equip_row_widgets *) data;
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->show_equip_shape(eq);
+	int shape = gtk_spin_button_get_value_as_int(
+				GTK_SPIN_BUTTON(eq->shape));
+	const char *nm = studio->get_shape_name(shape);
+	gtk_label_set_text(GTK_LABEL(eq->name), nm ? nm : "");
+	return (TRUE);
+	}
 
 /*
- *	Widgets in one row of the 'equipment' dialog:
+ *	Callback for when a shape is dropped on one of the Equip draw areas.
  */
-struct Equip_row_widgets
-	{
-	GtkWidget *draw, *shape, *name, *chance, *count;
-	};
 
-static Equip_row_widgets equip_rows[10];// Holds widgets from equip. dialog.
+static void Equip_shape_dropped
+	(
+	int file,			// U7_SHAPE_SHAPES.
+	int shape,
+	int frame,
+	void *udata			// ->row.
+	)
+	{
+	Equip_row_widgets *eq = (Equip_row_widgets *) udata;
+	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < 1024)
+		{			// Set shape #.
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(eq->shape), shape);
+		}
+	}
+
 
 /*
  *	Set up 'equipment' dialog's table, which has 10 identical rows.
@@ -116,6 +171,8 @@ static Equip_row_widgets equip_rows[10];// Holds widgets from equip. dialog.
 static void Setup_equip
 	(
 	GtkTable *table,		// Table to fill.
+	Vga_file *vgafile,		// Shapes.
+	unsigned char *palbuf,		// Palette for drawing shapes.
 	Equip_row_widgets rows[10]	// Filled in.
 	)
 	{
@@ -166,10 +223,20 @@ static void Setup_equip
 		gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
 
 		GtkWidget *drawingarea = gtk_drawing_area_new ();
-		rows[row].draw = drawingarea;
 		gtk_widget_show (drawingarea);
 		gtk_container_add (GTK_CONTAINER(frame), drawingarea);
 		gtk_widget_set_usize (drawingarea, 20, 40);
+		if (vgafile && palbuf)
+			{
+			rows[row].draw = new Shape_draw(vgafile, palbuf, 
+								drawingarea);
+			gtk_signal_connect(GTK_OBJECT(drawingarea), 
+				"expose-event", 
+				GTK_SIGNAL_FUNC(on_equip_draw_expose_event),
+							&rows[row]);
+			rows[row].draw->enable_drop(Equip_shape_dropped, 
+							&rows[row]);
+			}
 					// Shape #:
   		GtkWidget *spin = gtk_spin_button_new (GTK_ADJUSTMENT(
 			gtk_adjustment_new (1, 0, 1023, 1, 50, 50)), 1, 0);
@@ -178,6 +245,9 @@ static void Setup_equip
 		gtk_table_attach (table, spin, 1, 2, row + 2, row + 3,
                 		    (GtkAttachOptions) (GTK_FILL),
 		                    (GtkAttachOptions) (0), 0, 0);
+		gtk_signal_connect(GTK_OBJECT(spin), "changed",
+				GTK_SIGNAL_FUNC(on_equip_shape_changed),
+								&rows[row]);
 					// Name:
 		label = gtk_label_new("label1");
 		rows[row].name = label;
@@ -276,21 +346,10 @@ void ExultStudio::open_equip_window
 		equipwin = glade_xml_get_widget( app_xml, "equip_window" );
 		GtkWidget *table = glade_xml_get_widget(app_xml,
 								"equip_table");
-		Setup_equip(GTK_TABLE(table), equip_rows);
+		Setup_equip(GTK_TABLE(table), vgafile, palbuf, equip_rows);
 		}
 					// This will cause the data to be set:
 	set_spin("equip_recnum", recnum, 1, ecnt);
-#if 0
-	if (shape_draw)			// Ifile might have changed.
-		delete shape_draw;
-	shape_draw = 0;
-	if (ifile && palbuf)
-		{
-		shape_draw = new Shape_draw(ifile, palbuf,
-			    glade_xml_get_widget(app_xml, "shinfo_draw"));
-//		shape_draw->enable_drop(Shape_shape_dropped, this);
-		}
-#endif
 	gtk_widget_show(equipwin);
 //	show_shinfo_shape();		// Be sure picture is updated.
 	}
@@ -305,6 +364,31 @@ void ExultStudio::close_equip_window
 	{
 	if (equipwin)
 		gtk_widget_hide(equipwin);
+	}
+
+/*
+ *	Paint the shape in one row of the Equip window draw area.
+ */
+
+void ExultStudio::show_equip_shape
+	(
+	Equip_row_widgets *eq,
+	int x, int y, int w, int h	// Rectangle. w=-1 to show all.
+	)
+	{
+	if (!eq->draw)
+		return;
+	eq->draw->configure();
+	int shnum = gtk_spin_button_get_value_as_int(
+						GTK_SPIN_BUTTON(eq->shape));
+
+	if (!shnum)			// Don't draw shape 0.
+		shnum = -1;
+	eq->draw->draw_shape_centered(shnum, 0);
+	if (w != -1)
+		eq->draw->show(x, y, w, h);
+	else
+		eq->draw->show();
 	}
 
 /*

@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Shape_info;
 class Shapes_vga_file;
-
+class Equip_row_widgets;
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
@@ -81,6 +81,8 @@ public:
 		{ return app_xml; }
 	int get_server_socket() const
 		{ return server_socket; }
+	char *get_shape_name(int shnum)
+		{ return names ? names[shnum] : 0; }
 
 	void set_browser(const char *name, Object_browser *obj);
 
@@ -128,6 +130,8 @@ public:
 	void save_equip_window();
 	void open_equip_window(int recnum);
 	void close_equip_window();
+	void show_equip_shape(Equip_row_widgets *eq,
+			int x = 0, int y = 0, int w = -1, int h = -1);
 	void init_shape_notebook(Shape_info& info, GtkWidget *book, 
 							int shnum, int frnum);
 	void save_shape_notebook(Shape_info& info, int shnum, int frnum);
