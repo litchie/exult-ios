@@ -60,6 +60,11 @@ BG has a conversation in which there are two conversation options named
 [Note: fixed by jhoeksma. Need to disassemble fix to include here.]
 
 
+(SI) disappearing pikeman:
+===========================
+
+The first part of the banquet usecode in Monitor accidently deletes the
+List Field's pikeman egg when you're too close to that egg.
 
 
 
