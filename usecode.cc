@@ -750,6 +750,42 @@ Usecode_value Usecode_machine::find_nearby
 	}
 
 /*
+ *	Return object of given shape nearest given obj.
+ */
+
+Usecode_value Usecode_machine::find_nearest
+	(
+	Usecode_value& objval,		// Find near this.
+	Usecode_value& shapeval,	// Shape to find
+	Usecode_value& unknown		// Might be distance??
+	)
+	{
+	Game_object *obj = get_item(objval.get_int_value());
+	if (!obj)
+		return Usecode_value(0);
+	Vector vec;			// Gets list.
+	int cnt = obj->find_nearby(vec, shapeval.get_int_value(), -359, 0);
+	Game_object *closest = 0;
+	unsigned long bestdist = 100000;// Distance-squared in tiles.
+	int x1, y1, z1;
+	obj->get_abs_tile(x1, y1, z1);
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *each = (Game_object *) vec.get(i);
+		int x2, y2, z2;
+		each->get_abs_tile(x2, y2, z2);
+		int dx = x1 - x2, dy = y1 - y2, dz = z1 - z2;
+		long dist = dx*dx + dy*dy + dz*dz;
+		if (dist < bestdist)
+			{
+			bestdist = dist;
+			closest = each;
+			}
+		}
+	return Usecode_value((long) closest);
+	}
+
+/*
  *	Find the angle (0-7) from one object to another.
  *	++++++Not sure which dir.  0 represents.  Assuming East for now.
  */
@@ -1173,6 +1209,12 @@ USECODE_INTRINSIC(set_item_shape)
 	USECODE_RETURN(no_ret);
 }
 
+USECODE_INTRINSIC(find_nearest)
+	// Think it rets. nearest obj. near parm0.
+	Usecode_value u(find_nearest(parms[0], parms[1], parms[2]));
+	USECODE_RETURN(u);
+}
+
 USECODE_INTRINSIC(die_roll)
 	// Rand. # within range.
 	int low = parms[0].get_int_value();
@@ -1439,6 +1481,23 @@ USECODE_INTRINSIC(npc_in_party)
 	USECODE_RETURN(u);
 }
 
+USECODE_INTRINSIC(find_nearby_avatar)
+	// Find objs. with given shape near Avatar?
+	Usecode_value av((long) gwin->get_main_actor());
+	Usecode_value qual(-359), mask(0);
+	Usecode_value u(find_nearby(av, parms[0], qual, mask));
+	USECODE_RETURN(u);
+}
+
+USECODE_INTRINSIC(is_npc)
+	// Is item an NPC?
+	Game_object *obj = get_item(parms[0].get_int_value());
+					// ++++In future, check for monsters.
+	Usecode_value u(obj == gwin->get_main_actor() ||
+			obj->get_npc_num() > 0);
+	USECODE_RETURN(u);
+}
+
 USECODE_INTRINSIC(display_runes)
 	// Display sign (gump #, text).
 	//+++++++++++++
@@ -1654,7 +1713,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(select_from_menu2), // 0x0b
 	USECODE_INTRINSIC_PTR(input_numeric_value), // 0xc
 	USECODE_INTRINSIC_PTR(set_item_shape), // 0xd
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xe
+	USECODE_INTRINSIC_PTR(find_nearest), // 0xe
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xf
 	USECODE_INTRINSIC_PTR(die_roll), // 0x10
 	USECODE_INTRINSIC_PTR(get_item_shape), // 0x11
@@ -1685,11 +1744,11 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(get_cont_items), // 0x2a
 	USECODE_INTRINSIC_PTR(remove_party_items), // 0x2b
 	USECODE_INTRINSIC_PTR(add_party_items), // 0x2c
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x2d
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x2d UNUSED.
 	USECODE_INTRINSIC_PTR(play_music), // 0x2e
 	USECODE_INTRINSIC_PTR(npc_in_party), // 0x2f
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x30
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x31
+	USECODE_INTRINSIC_PTR(find_nearby_avatar), // 0x30
+	USECODE_INTRINSIC_PTR(is_npc),  // 0x31
 	USECODE_INTRINSIC_PTR(display_runes), // 0x32
 	USECODE_INTRINSIC_PTR(click_on_item), // 0x33
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x34
