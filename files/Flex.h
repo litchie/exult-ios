@@ -60,7 +60,8 @@ public:
    virtual uint32	number_of_objects(void) { return object_list.size(); };
    virtual	char *	retrieve(uint32 objnum,std::size_t &len); // To a memory block
 	virtual const char *get_archive_type() { return "FLEX"; };
-
+					// Write header for a Flex file.
+	static void write_header(ostream& out, const char *title, int count);
 private:
 	Flex();	// No default constructor
 	void IndexFlexFile(void);

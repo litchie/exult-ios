@@ -40,6 +40,48 @@ int Scheduled_usecode::count = 0;
 Scheduled_usecode *Scheduled_usecode::first = 0;
 
 /*
+ *	Create.
+ */
+
+Scheduled_usecode::Scheduled_usecode
+	(
+	Usecode_machine *usecode,
+	Usecode_value& oval, 
+	Usecode_value& aval
+	) : objval(oval), arrval(aval), i(0), frame_index(0), no_halt(0)
+	{
+	cnt = arrval.get_array_size();
+	obj = usecode->get_item(objval);
+					// Pure kludge for SI wells:
+	if (objval.get_array_size() == 2 && 
+	    Game::get_game_type() == SERPENT_ISLE &&
+	    obj && obj->get_shapenum() == 470 && obj->get_lift() == 0)
+		{			// We want the TOP of the well.
+		Usecode_value v2 = objval.get_elem(1);
+		Game_object *o2 = usecode->get_item(v2);
+		if (o2->get_shapenum() == obj->get_shapenum() && 
+		    o2->get_lift() == 2)
+			{
+			objval = v2;
+			obj = o2;
+			}
+		}
+	objpos = obj ? obj->get_abs_tile_coord() : Tile_coord(-1, -1, -1);
+					// Not an array?
+	if (!cnt && !arrval.is_array())
+		cnt = 1;		// Get_elem(0) works for non-arrays.
+	count++;			// Keep track of total.
+	next = first;			// Put in chain.
+	prev = 0;
+	if (first)
+		first->prev = this;
+	first = this;
+	int opval0 = arrval.get_elem(0).get_int_value();
+	if (opval0 == 0x23)		// PURE GUESS:
+		no_halt = 1;
+	}
+
+/*
  *	Search list for one for a given item.
  *
  *	Output:	->Scheduled_usecode if found, else 0.
@@ -122,10 +164,9 @@ void Scheduled_usecode::handle_event
 			break;
 		case 0x0b:		// ?? 2 parms, 1st one < 0.
 			{		// Loop(offset, cnt).
-			do_another = 1;
 			Usecode_value& cntval = arrval.get_elem(i + 2);
 			int cnt = cntval.get_int_value();
-			if (cnt <= 0)
+			if (cnt <= 1)	// Already did the body once!
 					// Done.
 				i += 2;
 			else
@@ -133,6 +174,7 @@ void Scheduled_usecode::handle_event
 				cntval = Usecode_value(cnt - 1);
 				Usecode_value& offval = arrval.get_elem(i + 1);
 				i += offval.get_int_value() - 1;
+				do_another = 1;
 				}
 			break;
 			}

@@ -170,6 +170,8 @@ public:
 		{ flats[16*tiley + tilex] = id; }
 	ShapeID get_flat(int tilex, int tiley) const
 		{ return flats[16*tiley + tilex]; }
+					// Write out to chunk.
+	void write_flats(unsigned char *chunk_data);
 					// Get/create cache.
 	Chunk_cache *need_cache()
 		{ 
