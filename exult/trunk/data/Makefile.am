@@ -35,6 +35,7 @@ EXULT_FLX_OBJECTS = \
 	sav_upup.shp		\
 	sav_slider.shp		\
 	sav_selected.shp	\
+	gameplayoptions.shp	\
 	gamemenu.shp		\
 	gam_loadsave.shp	\
 	gam_audio.shp		\
@@ -52,7 +53,8 @@ EXULT_FLX_OBJECTS = \
 	vid_right.shp		\
 	vid_resolution.shp	\
 	vid_scaling.shp		\
-	hp_bar.shp
+	hp_bar.shp		\
+	sfx_icon.shp
 
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in			\
@@ -76,7 +78,10 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/male_av_face.shp		\
 	bg/shamino_face.shp		\
 	bg/greaves.shp			\
-	bg/spiked_shield.shp
+	bg/spiked_shield.shp		\
+	bg/mr_faces.shp			\
+	bg/mr_intro.shp
+
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\
