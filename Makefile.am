@@ -159,10 +159,8 @@ bundle_name = Exult.app
 Exult_app: ${EXE_TARGET}
 	mkdir -p $(bundle_name)/Contents/MacOS
 	mkdir -p $(bundle_name)/Contents/Resources
-	mkdir -p $(bundle_name)/Contents/Resources/SDLMain.nib
 	echo "APPL????" > $(bundle_name)/Contents/PkgInfo
 	$(INSTALL_DATA) Info.plist $(bundle_name)/Contents/
-	$(INSTALL_DATA) SDLMain.nib/*.nib $(bundle_name)/Contents/Resources/
 	$(INSTALL_PROGRAM) $< $(bundle_name)/Contents/MacOS/
 	$(INSTALL_DATA) macosx/exult.icns $(bundle_name)/Contents/Resources/
 
