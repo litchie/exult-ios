@@ -386,23 +386,6 @@ gint Palette_edit::mouse_press
 		paled->render();
 		paled->show();
 		}
-#if 0
-					// Indicate we can drag.
-			GtkTargetEntry tents[1];
-			tents[0].target = U7_TARGET_SHAPEID_NAME;
-			tents[0].flags = 0;
-			tents[0].info = U7_TARGET_SHAPEID;
-			gtk_drag_source_set (paled->draw, 
-				GDK_BUTTON1_MASK, tents, 1,GDK_ACTION_DEFAULT);
-			paled->selected = i;
-			paled->render();
-			paled->show();
-					// Tell client.
-			if (paled->sel_changed)
-				(*paled->sel_changed)();
-			break;
-			}
-#endif
 	if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(paled->create_popup()), 
 				0, 0, 0, 0, event->button, event->time);
@@ -474,49 +457,7 @@ gint Palette_edit::drag_begin
 	{
 	cout << "In DRAG_BEGIN" << endl;
 	Palette_edit *paled = (Palette_edit *) data;
-#if 0
-	if (paled->selected < 0)
-		return FALSE;		// ++++Display a halt bitmap.
-					// Get ->shape.
-	Shape_info& shinfo = paled->info[paled->selected];
-	Shape_frame *shape = paled->ifile->get_shape(shinfo.shapenum, 
-							shinfo.framenum);
-	if (!shape)
-		return FALSE;
-	int w = shape->get_width(), h = shape->get_height(),
-		xright = shape->get_xright(), ybelow = shape->get_ybelow();
-	Image_buffer8 tbuf(w, h);	// Create buffer to render to.
-	tbuf.fill8(0xff);		// Fill with 'transparent' pixel.
-	unsigned char *tbits = tbuf.get_bits();
-	shape->paint(&tbuf, w - 1 - xright, h - 1 - ybelow);
-					// Put shape on a pixmap.
-	GdkPixmap *pixmap = gdk_pixmap_new(widget->window, w, h, -1);
-	gdk_draw_indexed_image(pixmap, paled->drawgc, 0, 0, w, h,
-			GDK_RGB_DITHER_NORMAL, tbits,
-			tbuf.get_line_width(), paled->palette);
-	int mask_stride = (w + 7)/8;	// Round up to nearest byte.
-	char *mdata = new char[mask_stride*h];
-	for (int y = 0; y < h; y++)	// Do each row.
-					// Do each byte.
-		for (int b = 0; b < mask_stride; b++)
-			{
-			char bits = 0;
-			unsigned char *vals = tbits + y*w + b*8;
-			for (int i = 0; i < 8; i++)
-				if (vals[i] != 0xff)
-					bits |= (1<<i);
-			mdata[y*mask_stride + b] = bits;
-			}
-	GdkBitmap *mask = gdk_bitmap_create_from_data(widget->window,
-							mdata, w, h);
-	delete mdata;
-					// This will be the shape dragged.
-	gtk_drag_set_icon_pixmap(context,
-			gdk_window_get_colormap(widget->window), pixmap, mask,
-					w - 2 - xright, h - 2 - ybelow);
-	gdk_pixmap_unref(pixmap);
-	gdk_bitmap_unref(mask);
-#endif
+	// Maybe someday.
 	return TRUE;
 	}
 
@@ -884,7 +825,6 @@ void Palette_edit::unselect
 	if (selected >= 0)
 		{
 		selected = -1;
-		gtk_drag_source_unset(draw);
 		if (need_render)
 			{
 			render();
