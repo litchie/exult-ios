@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma interface
 #endif
 
+#ifndef WIN32
+
 #if !AUTOCONFIGURED
 #include "../autoconfig.h"
 #endif
@@ -71,5 +73,14 @@ private:
 	MidiAbstract	*midi_device;
 
 };
+
+#else
+
+class MyMidiPlayer
+{
+public:
+  void start_music(int num,int repeats=0, int bank=0) {}
+};
+#endif
 
 #endif

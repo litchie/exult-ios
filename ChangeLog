@@ -1,3 +1,7 @@
+2000-04-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Re-enabled sound in Windows (where did it go??)
+	* added some more #ifndef WIN32 to the pragma's
+
 2000-04-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Use correct frames for East-West walking animation.

@@ -17,7 +17,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 
-#if __GNUG__ >= 2
+#if (__GNUG__ >= 2) && (!defined WIN32)
 #  pragma implementation
 #endif
 
@@ -33,7 +33,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef WIN32
 #include <netinet/in.h>
 #else
-#include <winsock.h>
+
+//Own implementation of ntohl.
+//convert MSB -> LSB
+long ntohl(long x) {
+  return ((x & 0xFF) << 24) | ((x & 0xFF00) << 8) |
+    ((x & 0xFF0000) >> 8) | ((x & 0xFF000000) >> 24);
+}
+
+
 #endif
 
 

@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
+#ifndef WIN32
 
 #include "forked_player.h"
 
@@ -92,3 +93,4 @@ const	char *forked_player::copyright(void)
 }
 
 
+#endif
