@@ -1,3 +1,6 @@
+2001-10-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Makefile.be: fixed typo
+
 2001-10-05  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* actors.cc: Cast conversions
