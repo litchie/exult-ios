@@ -1,6 +1,7 @@
 2002-07-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ucinternal.cc: allow small changes to loop-array in mid-loop in SI
-
+	* useval.*: added operator!= (and changed operator== to return bool)
+	
 2002-07-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapeinf.{cc,h}:  Figured out 'actor frame' flags in Weapon_info.
