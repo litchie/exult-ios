@@ -314,7 +314,7 @@ public:
 	virtual void write_ireg(ostream& out)
 		{  }
 	void write(ostream& nfile);	// Write out (to 'npc.dat').
-	virtual int get_shapenum() const; 	// Get shape based on sex and color and petra flag
+	void set_actor_shape(); 	// Set shape based on sex and color and petra flag
 	};
 
 /*

@@ -54,10 +54,12 @@ void Game_window::read_npcs
 		main_actor->clear_flag(Actor::dont_render);
 	else
 		main_actor->set_flag(Actor::dont_render);
+
 	int i;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
 	nfile.close();
+	main_actor->set_actor_shape();
 	if (u7open(nfile, MONSNPCS, 1))	// Monsters.
 		{			// (Won't exist the first time.)
 		int cnt = Read2(nfile);
