@@ -809,6 +809,226 @@
 			      <property name="spacing">0</property>
 
 			      <child>
+				<widget class="GtkFrame" id="builtin_groups">
+				  <property name="visible">True</property>
+				  <property name="label_xalign">0</property>
+				  <property name="label_yalign">0.5</property>
+				  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+
+				  <child>
+				    <widget class="GtkHBox" id="hbox45">
+				      <property name="border_width">2</property>
+				      <property name="visible">True</property>
+				      <property name="homogeneous">False</property>
+				      <property name="spacing">0</property>
+
+				      <child>
+					<widget class="GtkOptionMenu" id="optionmenu1">
+					  <property name="border_width">2</property>
+					  <property name="visible">True</property>
+					  <property name="can_focus">True</property>
+					  <property name="history">0</property>
+
+					  <child>
+					    <widget class="GtkMenu" id="menu1">
+
+					      <child>
+						<widget class="GtkMenuItem" id="ammo1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Ammo</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="armour1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Armour</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="monsters1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Monsters</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="weapons1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Weapons</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="separator8">
+						  <property name="visible">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="unusable1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Unusable</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="quality1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Quality</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="quantity1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Quantity</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="breakable1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Breakable</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="quality_flags1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Quality Flags</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="container1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Container</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="hatchable1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Hatchable</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="spellbook1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Spellbook</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="barge1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Barge</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="virtue_stone1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Virtue Stone</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="monster1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Monster</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="human1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Human</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+
+					      <child>
+						<widget class="GtkMenuItem" id="building1">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">Building</property>
+						  <property name="use_underline">True</property>
+						</widget>
+					      </child>
+					    </widget>
+					  </child>
+					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">True</property>
+					  <property name="fill">True</property>
+					</packing>
+				      </child>
+
+				      <child>
+					<widget class="GtkButton" id="open_builtin_group">
+					  <property name="border_width">2</property>
+					  <property name="visible">True</property>
+					  <property name="can_focus">True</property>
+					  <property name="label" translatable="yes">Open</property>
+					  <property name="use_underline">True</property>
+					  <property name="relief">GTK_RELIEF_NORMAL</property>
+					  <signal name="clicked" handler="on_open_builtin_group_clicked" last_modification_time="Mon, 23 Feb 2004 03:09:49 GMT"/>
+					</widget>
+					<packing>
+					  <property name="padding">0</property>
+					  <property name="expand">False</property>
+					  <property name="fill">False</property>
+					</packing>
+				      </child>
+				    </widget>
+				  </child>
+
+				  <child>
+				    <widget class="GtkLabel" id="label176">
+				      <property name="visible">True</property>
+				      <property name="label" translatable="yes">Builtin</property>
+				      <property name="use_underline">False</property>
+				      <property name="use_markup">False</property>
+				      <property name="justify">GTK_JUSTIFY_LEFT</property>
+				      <property name="wrap">False</property>
+				      <property name="selectable">False</property>
+				      <property name="xalign">0.5</property>
+				      <property name="yalign">0.5</property>
+				      <property name="xpad">0</property>
+				      <property name="ypad">0</property>
+				    </widget>
+				    <packing>
+				      <property name="type">label_item</property>
+				    </packing>
+				  </child>
+				</widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			      </child>
+
+			      <child>
 				<widget class="GtkScrolledWindow" id="scrolledwindow4">
 				  <property name="visible">True</property>
 				  <property name="hscrollbar_policy">GTK_POLICY_ALWAYS</property>
