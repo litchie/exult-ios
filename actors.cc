@@ -609,8 +609,10 @@ void Actor::paint
 	)
 	{
 	if (!(flags & (1L << dont_render)))
+		{
 		Container_game_object::paint(gwin);
-	paint_weapon(gwin);
+		paint_weapon(gwin);
+		}
 	}
 
 // Utility function for paint_weapon()
