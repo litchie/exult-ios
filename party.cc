@@ -548,7 +548,7 @@ static bool Take_best_step
 	if (best_cost >= max_cost)
 		return false;
 	if (!best_in_way)		// Nobody in way?
-		return npc->step(best, frame);
+		return npc->step(best, frame)!=0;
 	best = best_in_way->get_tile();	// Swap positions.
 	npc->remove_this(true);
 	best_in_way->remove_this(true);

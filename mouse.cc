@@ -35,7 +35,9 @@
 #include "combat_opts.h"
 #include "schedule.h" /* To get Schedule::combat */
 
+#ifndef _MSC_VER
 using std::max;
+#endif
 
 short Mouse::short_arrows[8] = {8, 9, 10, 11, 12, 13, 14, 15};
 short Mouse::med_arrows[8] = {16, 17, 18, 19, 20, 21, 22, 23};
