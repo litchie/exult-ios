@@ -128,6 +128,9 @@ private:
 	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
 	Rectangle dragging_rect;	// Rectangle to repaint.
 	Image_buffer *dragging_save;	// Image below dragged object.
+					// Theft info:
+	int theft_warnings;		// # times warned in current chunk.
+	short theft_cx, theft_cy;	// Chunk where warnings occurred.
 					// Open a U7 file.
 	int u7open(ifstream& in, const char *fname, int dont_abort = 0);
 	void set_scroll_bounds();	// Set scroll-controller.
@@ -558,6 +561,7 @@ public:
 					// Get all nearby NPC's.
 	void get_nearby_npcs(Slist& list);
 	void schedule_npcs(int hour3);	// Update NPCs' schedules.
+	void theft();			// Handle thievery.
 	void get_focus();		// Get/lose focus.
 	inline void lose_focus()
 		{ focus = 0; }
