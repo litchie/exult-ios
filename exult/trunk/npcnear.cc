@@ -69,7 +69,7 @@ void Npc_proximity_handler::handle_event
 		npc->say(first_awakened, last_awakened);
 		}
 					// Hostile?  ATTACK!
-	else if (npc->get_alignment() >= Npc_actor::hostile &&
+	else if (npc->get_alignment() == Npc_actor::hostile &&
 		npc->get_schedule_type() != (int) Schedule::combat)
 		{
 		npc->set_schedule_type(Schedule::combat);

@@ -379,7 +379,9 @@ public:
 	enum Alignment {		// Describes alignment field.
 		friendly = 0,
 		neutral = 1,
-		hostile = 2 };
+		hostile = 2,
+		unknown_align = 3 };	// Bees have this, & don't attack until
+					//   Usecode tells them to.
 	Npc_actor *get_next()
 		{ return next; }
 	void set_nearby()		// Set/clear/test 'nearby' flag.

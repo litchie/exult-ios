@@ -1,3 +1,7 @@
+2000-08-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gametxt.cc: Fixed bee combat mode, also smokebombs.
+
 2000-08-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 
 	* exult.cc/spells.cc: implemented archwizard mode cheat
