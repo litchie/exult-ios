@@ -9,7 +9,7 @@ VPATH=$(SRC):$(SRC)/files:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio
 SDL_INCLUDES=-I/boot/develop/tools/gnupro/include/SDL
 SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
-CPPFLAGS=-DVERSION=\"Alpha.01\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
+CPPFLAGS=-DVERSION=\"0.90alpha1\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
 	-DNO_INTRO -DAUTOCONFIGURED -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
 	$(SDL_INCLUDES)
