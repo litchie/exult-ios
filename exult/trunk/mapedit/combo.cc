@@ -39,6 +39,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Flex.h"
 #include "u7drag.h"
 
+using std::cout;
+using std::cin;
+using std::endl;
+
 const int border = 2;			// Border at bottom, sides of each
 					//   combo in browser.
 const int maxtiles = 32;		// Max. width/height in tiles.
@@ -261,7 +265,7 @@ Combo::Combo
 	    startty(c2.startty), 
 	    hot_index(c2.hot_index), name(c2.name), tilefoot(c2.tilefoot)
 	{
-	for (vector<Combo_member *>::const_iterator it = c2.members.begin();
+	for (std::vector<Combo_member *>::const_iterator it = c2.members.begin();
 					it != c2.members.end(); ++it)
 		{
 		Combo_member *m = *it;
@@ -278,7 +282,7 @@ Combo::~Combo
 	(
 	)
 	{
-	for (vector<Combo_member *>::iterator it = members.begin();
+	for (std::vector<Combo_member *>::iterator it = members.begin();
 					it != members.end(); ++it)
 		delete *it;
 	}
@@ -294,7 +298,7 @@ void Combo::add
 	)
 	{
 					// Look for identical shape, pos.
-	for (vector<Combo_member *>::iterator it = members.begin();
+	for (std::vector<Combo_member *>::iterator it = members.begin();
 					it != members.end(); ++it)
 		{
 		Combo_member *m = *it;
@@ -352,13 +356,13 @@ void Combo::remove
 	if (i < 0 || i >= members.size())
 		return;
 					// Get and remove i'th entry.
-	vector<Combo_member *>::iterator it = members.begin() + i;
+	std::vector<Combo_member *>::iterator it = members.begin() + i;
 	Combo_member *m = *it;
 	members.erase(it);
 	delete m;
 	hot_index = -1;			// Figure new hot-spot, footprint.
 	tilefoot = Rectangle(0, 0, 0, 0);
-	for (vector<Combo_member *>::iterator it = members.begin();
+	for (std::vector<Combo_member *>::iterator it = members.begin();
 						it != members.end(); ++it)
 		{
 		Combo_member *m = *it;
@@ -391,7 +395,7 @@ void Combo::draw
 	{
 	int selx = -1000, sely = -1000;
 	bool selfound = false;
-	for (vector<Combo_member *>::iterator it = members.begin();
+	for (std::vector<Combo_member *>::iterator it = members.begin();
 					it != members.end(); ++it)
 		{
 		Combo_member *m = *it;

@@ -1,3 +1,8 @@
+2002-05-23  Tristan Tarrant  <nadir@users.sf.net>
+
+	* Namespace issues with G++ 3.1. We also nead to use sstream instead
+	  of strstream.
+
 2002-05-23  Max Horn  <max@quendi.de>
 
 	* actors.cc, audio/xmidi.cc: added missing std::

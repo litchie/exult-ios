@@ -1106,7 +1106,7 @@ void ExultStudio::write_shape_info
 		{
 		shape_names_modified = false;
 		int cnt = names.size();
-		ofstream out;
+		std::ofstream out;
 		U7open(out, "<PATCH>/text.flx");
 		Flex_writer writer(out, "Text created by ExultStudio", cnt);
 		for (int i = 0; i < cnt; i++)

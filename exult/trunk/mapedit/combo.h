@@ -58,7 +58,7 @@ public:
 class Combo
 	{
 	Shapes_vga_file *shapes_file;	// Where shapes come from.
-	vector<Combo_member *> members;	// Members of this combination.
+	std::vector<Combo_member *> members;	// Members of this combination.
 	short hot_index;		// Index of obj. whose 'hot spot' we'll
 					//   use.
 	short starttx, startty;		// Offset represented by top-left.
@@ -144,7 +144,7 @@ class Combo_info
 class Combo_chooser: public Object_browser, public Shape_draw
 	{
 	Flex_file_info *flex_info;	// Where file data is stored.
-	vector<Combo *> combos;		// List of all combination-objects.
+	std::vector<Combo *> combos;		// List of all combination-objects.
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
 	GtkWidget *combo_scroll;	// Vertical scrollbar.
