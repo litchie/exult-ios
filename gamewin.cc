@@ -770,7 +770,7 @@ void Game_window::write_ireg_objects
 							       scy + cy);
 			Game_object *obj;
 					// Restore original order (sort of).
-			Object_iterator_backwards next(chunk->get_objects(), chunk->get_first_nonflat());
+			Object_iterator_backwards next(chunk);
 			while ((obj = next.get_next()) != 0)
 				obj->write_ireg(ireg);
 			Write2(ireg, 0);// End with 2 0's.
@@ -1277,13 +1277,13 @@ void Game_window::read_map_data
 	int scrolltx = get_scrolltx(), scrollty = get_scrollty();
 	int w = get_width(), h = get_height();
 					// Start one tile to left.
-	int firstsx = (scrolltx - 1)/c_fade_out_time, 
-	    firstsy = (scrollty - 1)/c_fade_out_time;
+	int firstsx = (scrolltx - 1)/c_tiles_per_schunk, 
+	    firstsy = (scrollty - 1)/c_tiles_per_schunk;
 					// End 8 tiles to right.
 	int lastsx = (scrolltx + (w + c_tilesize - 2)/c_tilesize + 
-					c_tiles_per_chunk/2)/c_fade_out_time;
+					c_tiles_per_chunk/2)/c_tiles_per_schunk;
 	int lastsy = (scrollty + (h + c_tilesize - 2)/c_tilesize + 
-					c_tiles_per_chunk/2)/c_fade_out_time;
+					c_tiles_per_chunk/2)/c_tiles_per_schunk;
 	if (lastsx >= 12)		// Don't go past end.
 		lastsx = 11;
 	if (lastsy >= 12)

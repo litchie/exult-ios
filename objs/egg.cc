@@ -532,9 +532,9 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			if (get_quality() == 255)
 				{	// Jump to coords.
 				int schunk = data1 >> 8;
-				pos = Tile_coord((schunk%12)*c_fade_out_time +
+				pos = Tile_coord((schunk%12)*c_tiles_per_schunk +
 								(data2&0xff), 
-					(schunk/12)*c_fade_out_time +
+					(schunk/12)*c_tiles_per_schunk +
 								(data2>>8), 0);
 				}
 			else

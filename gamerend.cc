@@ -187,7 +187,7 @@ void Game_window::paint_chunk_flats
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			paint_tile(olist, tilex, tiley, xoff, yoff);
 
-	Flat_object_iterator next(olist->get_objects(), olist->get_first_nonflat());// Now do flat RLE objects.
+	Flat_object_iterator next(olist);// Now do flat RLE objects.
 	Game_object *obj;
 	while ((obj = next.get_next()) != 0)
 		obj->paint(this);
@@ -221,7 +221,7 @@ void Game_window::paint_dungeon_chunk_flats
 					xoff + tilex*c_tilesize,
 					yoff + tiley*c_tilesize);
 
-	Flat_object_iterator next(olist->get_objects(), olist->get_first_nonflat());// Now do flat RLE objects.
+	Flat_object_iterator next(olist);// Now do flat RLE objects.
 	Game_object *obj;
 	while ((obj = next.get_next()) != 0)
 		if (olist->in_dungeon(obj))
@@ -249,7 +249,7 @@ int Game_window::paint_chunk_objects
 	int save_skip = skip_lift;
 	if (skip_above_actor < skip_lift)
 		skip_lift = skip_above_actor;
-	Nonflat_object_iterator next(olist->get_objects(), olist->get_first_nonflat());
+	Nonflat_object_iterator next(olist);
 	if (in_dungeon)
 		{
 		while ((obj = next.get_next()) != 0)
