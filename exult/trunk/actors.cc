@@ -110,11 +110,11 @@ void Actor::ready_best_weapon
 
 Actor::Actor
 	(
-	char *nm, 
+	const std::string &nm, 
 	int shapenum, 
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
-	) : Container_game_object(), name(nm==0?0:strdup(nm)),usecode(uc), 
+	) : Container_game_object(), name(nm),usecode(uc), 
 	    npc_num(num), party_id(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(1),
 	    two_handed(0), two_fingered(false), light_sources(0),
@@ -133,7 +133,6 @@ Actor::~Actor
 	(
 	)
 	{
-	delete name;
 	delete action;
 	}
 
@@ -701,7 +700,7 @@ string Actor::get_name
 	(
 	) const
 	{
-	return name ? string(name) : Game_object::get_name();
+	return name.empty() ? Game_object::get_name() : name;
 	}
 
 /*
@@ -1301,7 +1300,7 @@ void Main_actor::die
 
 Npc_actor::Npc_actor
 	(
-	char *nm, 			// Name.  A copy is made.
+	const std::string &nm, 			// Name.  A copy is made.
 	int shapenum, 
 	int fshape, 
 	int uc
