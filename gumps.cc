@@ -509,6 +509,10 @@ void Gump_object::initialize
 	int shnum = get_shapenum();
 	switch (shnum)			// Different shapes.
 		{
+	case 0:				// Unsealed box
+		object_area = Rectangle(46, 28, 74, 32);
+		checkx = 8; checky = 56;
+		break;
 	case 1:				// Crate.
 		object_area = Rectangle(50, 20, 80, 24);
 		checkx = 8; checky = 64;
