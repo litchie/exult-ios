@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 #include "mouse.h"
 
+extern Mouse *mouse;
+
 /*
  *	Begin a possible drag when the mouse button is depressed.  Also detect
  *	if the 'close' checkmark on a gump is being depressed.
@@ -40,7 +42,6 @@ int Game_window::start_dragging
 	int x, int y			// Position in window.
 	)
 	{
-	extern Mouse *mouse;
 	dragging = 0;
 	dragging_gump = 0;
 	dragging_gump_button = 0;
@@ -83,23 +84,6 @@ cout << "(x,y) rel. to gump is (" << (x-dragging_paintx) << ", " <<
 		if (!cnt)
 			return (0);
 		dragging = found[cnt - 1];
-					// Don't want to move walls.
-		if (!dragging->is_dragable())	
-			{
-			Mouse::Mouse_shapes saveshape = mouse->get_shape();
-			mouse->hide();
-			mouse->set_shape(Mouse::tooheavy);
-			mouse->show();
-			painted = 1;
-			show();
-			SDL_Delay(600);
-			mouse->hide();
-			paint();
-			mouse->set_shape(saveshape);
-			painted = 1;
-			dragging = 0;
-			return (0);
-			}
 					// Get coord. where painted.
 		get_shape_location(dragging, dragging_paintx, dragging_painty);
 		}
@@ -119,6 +103,23 @@ void Game_window::drag
 		return;
 	if (dragging_rect.w == 0)
 		{			// First motion.
+					// Don't want to move walls.
+		if (dragging && !dragging->is_dragable())	
+			{
+			Mouse::Mouse_shapes saveshape = mouse->get_shape();
+			mouse->hide();
+			mouse->set_shape(Mouse::tooheavy);
+			mouse->show();
+			painted = 1;
+			show();
+			SDL_Delay(600);
+			mouse->hide();
+			paint();
+			mouse->set_shape(saveshape);
+			painted = 1;
+			dragging = 0;
+			return;
+			}
 					// Store original pos. on screen.
 		dragging_rect = dragging_gump ?
 			(dragging ? dragging_gump->get_shape_rect(dragging)
