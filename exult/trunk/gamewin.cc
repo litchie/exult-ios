@@ -87,6 +87,12 @@ Game_window::Game_window
 	for (int i=0; i<5; i++)
 		extra_fonts[i] = NULL;
 	
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
+	for (int i = 0; i < max_faces; i++)
+		{
+		face_info[i] = 0;
+		}
+
 	set_window_size(width, height, scale);
 
 	}
@@ -2168,7 +2174,8 @@ void Game_window::init_faces
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 	for (int i = 0; i < max_faces; i++)
 		{
-		delete face_info[i];
+		if( face_info[i] )
+			delete face_info[i];
 		face_info[i] = 0;
 		}
 	num_faces = 0;
