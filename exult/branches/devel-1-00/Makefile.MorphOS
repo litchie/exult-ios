@@ -4,7 +4,7 @@
 # Base of the exult source
 SRC=.
 
-VERSION=0.99.2cvs
+VERSION=1.00
 
 ### Modify these paths
 SDL_CFLAGS=-I/gg/os-include/sdl
