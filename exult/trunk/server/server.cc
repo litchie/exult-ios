@@ -69,6 +69,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamemap.h"
 #include "chunkter.h"
 #include "cheat.h"
+#include "objserial.h"
 
 #ifdef WIN32
 #include "servewin32.h"
@@ -227,13 +228,15 @@ static void Handle_client_message
 	case Exult_server::npc:
 		Actor::update_from_studio(&data[0], datalen);
 		break;
-	case Exult_server::num_npcs:
+	case Exult_server::info:
 		{
-		unsigned char data[16];
+		unsigned char data[Exult_server::maxlength];
 		unsigned char *ptr = &data[0];
-		Write2(ptr, gwin->get_num_npcs());
-		Exult_server::Send_data(client_socket, Exult_server::num_npcs, data,
-							ptr - data);
+		Game_info_out(client_socket, gwin->get_num_npcs(),
+			cheat.get_edit_lift(), 
+			cheat.in_map_editor(),
+			cheat.show_tile_grid(),
+			gwin->get_map()->was_map_modified());
 		break;
 		}
 	case Exult_server::write_map:

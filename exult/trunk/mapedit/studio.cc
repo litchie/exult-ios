@@ -61,6 +61,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "paledit.h"
 #include "locator.h"
 #include "Configuration.h"
+#include "objserial.h"
 
 using std::cerr;
 using std::cout;
@@ -434,6 +435,16 @@ bool ExultStudio::okay_to_close
 	}
 
 /*
+ *	See if given window has focus (experimental).
+ */
+
+inline bool Window_has_focus(GtkWindow *win)
+	{
+	return (win->focus_widget != 0 &&
+		GTK_WIDGET_HAS_FOCUS(win->focus_widget));
+	}
+
+/*
  *	Do we have focus?  Currently only checks main window and group
  *	windows.
  */
@@ -442,12 +453,12 @@ bool ExultStudio::has_focus
 	(
 	)
 	{
-	if (GTK_WINDOW(app)->window_has_focus)
+	if (Window_has_focus(GTK_WINDOW(app)))
 		return true;		// Main window.
 					// Group windows:
 	vector<GtkWindow*>::const_iterator it;
 	for (it = group_windows.begin(); it != group_windows.end(); ++it)
-		if ((*it)->window_has_focus)
+		if (Window_has_focus(*it))
 			return true;
 	return false;
 	}
@@ -765,7 +776,23 @@ bool ExultStudio::need_to_save
 		return true;
 	if (shape_info_modified)
 		return true;
-//++++++++++++map
+					// Ask Exult about the map.
+	if (Send_data(server_socket, Exult_server::info) != -1)
+		{			// Should get immediate answer.
+		unsigned char data[Exult_server::maxlength];
+		Exult_server::Msg_type id;
+		Exult_server::wait_for_response(server_socket, 100);
+		int len = Exult_server::Receive_data(server_socket, 
+						id, data, sizeof(data));
+		unsigned char *ptr = &data[0];
+		int npcs, edlift;
+		bool editing, grid, mod;
+		if (id == Exult_server::info &&
+		    Game_info_in(data, len, npcs, edlift, editing, grid, mod)&&
+		    mod == true)
+			return true;
+		}
+	return false;
 	}
 
 /*

@@ -1585,6 +1585,7 @@ static void Drop_dragged_shape
 		for (int lift = edit_lift; lift <= 11; lift++)
 			if (gwin->drop_at_lift(newobj, x, y, lift))
 				{	// Success.
+				gwin->get_map()->set_map_modified();
 				if (!ireg)
 					gwin->get_map()->set_ifix_modified(
 					   newobj->get_cx(), newobj->get_cy());
