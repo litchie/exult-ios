@@ -1,6 +1,7 @@
 2001-11-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gump_utils.cc, Modal_gump.h, Newfile_gump.*: added mousewheel support
 	to new file gump (mousewheel = scroll lines, alt-mousewheel = pages)
+	* Slider_gump.*: mousewheel for Slider_gump (alt-wheel = 10 steps)
 
 2001-11-02  Christian Ohm  <chr.ohm@gmx.net>
 

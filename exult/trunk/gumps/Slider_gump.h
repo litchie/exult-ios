@@ -54,6 +54,9 @@ public:
 		{ return val; }
 					// An arrow was clicked on.
 	void clicked_arrow(Slider_button *arrow);
+
+	void move_diamond(int dir);
+
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	virtual void close(Game_window *gwin)
@@ -63,6 +66,9 @@ public:
 	virtual void mouse_up(int mx, int my);
 	virtual void mouse_drag(int mx, int my);
 	virtual void key_down(int chr);	// Character typed.
+
+	virtual void mousewheel_up();
+	virtual void mousewheel_down();
 };
 
 #endif
