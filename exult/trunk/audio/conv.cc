@@ -22,7 +22,7 @@ int bgconv[] = {
 	12,			//Bow Twang 
 	0,			//Missile ??
 	9,			//Blade    
-	80,			//Blunt    
+	11,			//Blunt    
 	125,			//Hit       
 	61,			//Graze     
 	92,			//Rotating 
@@ -115,7 +115,7 @@ int bgconv[] = {
 	32,			//Doorslam  
 	89,			//Portcullis
 	88,			//Drawbridge
-	11,			//Closed
+	80,			//Closed
 	100,			//SpinnWheel
 	135,			//Minning   ???
 	19,			//Minning   ???
