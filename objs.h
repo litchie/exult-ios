@@ -229,6 +229,7 @@ public:
 		flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
 		}
+	int within_distance(int abs_tx, int abs_ty);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	};
@@ -242,6 +243,14 @@ class Chunk_cache
 	unsigned char setup_done;	// Already setup.
 	unsigned short blocked[256];	// For each tile, a bit for each lift
 					//   level if it's blocked by an obj.
+					// In the process of implementing:+++++
+	Egg_object **egg_objects;	// ->eggs which influence this chunk.
+	short num_eggs;
+	unsigned short eggs[256];	// Bit #i (0-14) set means that the
+					//   tile is within egg_object[i]'s
+					//   influence.  Bit 15 means it's 1 or
+					//   more of 
+					//   egg_objects[15-(num_eggs-1)].
 	friend class Chunk_object_list;
 	Chunk_cache();			// Create empty one.
 	~Chunk_cache();
@@ -266,7 +275,16 @@ class Chunk_cache
 					~(((1 << ztiles) - 1) << lift);
 		}
 					// Is a spot occupied?
-	int is_blocked(int lift, int tilex, int tiley, int& new_lift);
+	int is_blocked(int lift, int tx, int ty, int& new_lift);
+					// Activate eggs nearby.
+	void activate_eggs(Chunk_object_list *chunk,
+				int tx, int ty, unsigned short eggbits);
+	void activate_eggs(Chunk_object_list *chunk, int tx, int ty)
+		{
+		unsigned short eggbits = eggs[ty*tiles_per_chunk + tx];
+		if (eggbits)
+			activate_eggs(chunk, tx, ty, eggbits);
+		}
 	};
 
 /*
@@ -338,8 +356,10 @@ public:
 		{ need_cache()->set_blocked(startx, starty, endx, endy,
 							lift, ztiles, set); }
 					// Is a spot occupied?
-	int is_blocked(int lift, int tilex, int tiley, int& new_lift)
-		{ return cache->is_blocked(lift, tilex, tiley, new_lift); }
+	int is_blocked(int lift, int tx, int ty, int& new_lift)
+		{ return cache->is_blocked(lift, tx, ty, new_lift); }
+	void activate_eggs(int tx, int ty)
+		{ need_cache()->activate_eggs(this, tx, ty); }
 	};
 
 /*
