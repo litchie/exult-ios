@@ -2807,4 +2807,18 @@ Monster_actor *Monster_info::create
 		}
 	return (monster);
 	}
+/*
+ *	Create a sequence of frames.
+ */
+
+Frames_sequence::Frames_sequence
+	(
+	int cnt,			// # of frames.
+	unsigned char *f		// List of frames.
+	) : num_frames(cnt)
+	{
+	frames = new unsigned char[cnt];
+	memcpy(frames, f, cnt);		// Copy in the list.
+	}
+
 
