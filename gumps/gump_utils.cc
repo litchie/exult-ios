@@ -118,6 +118,8 @@ int Do_Modal_gump
 	Mouse::Mouse_shapes shape	// Mouse shape to use.
 	)
 {
+	Game_window::Game_mode save_mode = gwin->get_mode();
+	gwin->set_mode(Game_window::gump);
 	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		Mouse::mouse->set_shape(shape);
@@ -155,6 +157,7 @@ int Do_Modal_gump
 	delete back;
 	Mouse::mouse->set_shape(saveshape);
 					// Leave mouse off.
+	gwin->set_mode(save_mode);	// Restore prev. mode.
 	gwin->show(1);
 	return (!escaped);
 }

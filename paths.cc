@@ -389,10 +389,31 @@ int Fast_pathfinder_client::is_straight_path
 	}
 
 /*
+ *	Create client for getting within a desired distance of a
+ *	destination.
+ */
+
+Monster_pathfinder_client::Monster_pathfinder_client
+	(
+	Actor *npc,			// 'Monster'.
+	Tile_coord dest,
+	int dist
+	) : Fast_pathfinder_client(dist), destbox(dest.tx, dest.ty, 0, 0)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info1 = gwin->get_info(npc);
+	axtiles = info1.get_3d_xtiles();
+	aytiles = info1.get_3d_ytiles();
+	aztiles = info1.get_3d_height();
+	set_move_flags(npc->get_type_flags());
+	destbox.enlarge(dist);		// How close we need to get.
+	}
+
+/*
  *	Create client for combat pathfinding.
  */
 
-Combat_pathfinder_client::Combat_pathfinder_client
+Monster_pathfinder_client::Monster_pathfinder_client
 	(
 	Actor *attacker,
 	int reach,			// Weapon reach in tiles.
@@ -415,12 +436,11 @@ Combat_pathfinder_client::Combat_pathfinder_client
 	destbox.enlarge(reach);		// This is how close we need to get.
 	}
 
-
 /*
  *	Is tile at goal?
  */
 
-int Combat_pathfinder_client::at_goal
+int Monster_pathfinder_client::at_goal
 	(
 	Tile_coord& tile,
 	Tile_coord& goal
@@ -446,7 +466,7 @@ int Monster_pathfinder_client::get_step_cost
 	)
 	{
 	if (Chunk_object_list::is_blocked(axtiles, aytiles, aztiles,
-							from, to, get_move_flags()))
+						from, to, get_move_flags()))
 		return -1;
 	else
 		return 1;
