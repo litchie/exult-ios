@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="21 July 2003(GMT)">
+<faqs title="Exult" changed="08 August 2003(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="08082003">
+			<header>- 08 August 2003</header>
+			<body>
+				<ul>
+				<li>Why are there now two different snapshots? was deleted as we
+					no longer have two sanpshots.</li>
+				<li><ref1 target="latest_version"/> is now 1.1.beta2.</li>
+				<li><ref1 target="known_issues"/> item descriptions in SI standalone.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="21072003">
 			<header>- 21 July 2003</header>
 			<body>
@@ -197,32 +208,6 @@
 				</para>
 			</body>
 		</sub>
-		<sub name="different_snapshot">
-			<header>Why are there now two different snapshots?</header>
-			<body>
-			    <para>
-			    	If you checked our download page recently, you may have noticed that we have
-			    	two sets of development snapshots now: a 1.0.x (stable) snapshot, and a
-			    	1.1.x (unstable) snapshot.
-			    </para>
-			    <para>
-					The 1.0.x branch has developed into our 1.0 release and we will mainly
-					be fixing any remaining bugs in this branch. We recommend using the 1.0.x
-					snapshots for playing and testing Exult.
-				</para>
-				<para>
-					The 1.1.x branch is meant mostly as a 'developer playground' at the moment.
-					We are making some very destabilizing changes to this branch, like a rewritten
-					usecode interpreter and new audio code. We do not recommend using the 1.1.x
-					snapshots for normal playing.
-				</para>
-				<para>
-			    	This also means that the documentation and the FAQ needs to be different. You will
-			    	find the description of the 1.1.x branch features only in the snapshot and the source
-			    	and not on our homepage.
-			    </para>
-			</body>
-		</sub>
 		<sub name="compile_snapshot">
 			<header>How do I compile a source code snapshot for my OS?</header>
 			<body>
@@ -236,7 +221,7 @@
 			<header>What is the latest version of <Exult/>?</header>
 			<body>
 				<para>
-					The current official release is V1.1beta1
+					The current official release is V1.1beta2
 					See also <ref target="whereis_exult"/>
 					to learn where to get the latest version.
 				</para>
@@ -783,6 +768,9 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
+					<li>Recently we found out that item descriptions in SI without SS may be a
+						bit off the mark. This is most likely caused by some little differences
+						between the versions and effects both the English and Spanish version.</li>
 					<li>There might be a bug when you have any of the games installed in a
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>

@@ -1,13 +1,13 @@
 Exult Documentation
-last changed: 04 May 2003(GMT)
+last changed: 08 August 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 04 May 2003
-0.2. - 04 March 2003
-0.3. - 24 October 2002
+0.1. - 08 August 2003
+0.2. - 04 May 2003
+0.3. - 04 March 2003
 
 1. Introduction
 1.1. Important Notice
@@ -53,31 +53,42 @@ The latest version of this document can be found at http://exult.sourceforge.net
 7.1. How to get the Zaurus port working
 7.2. Error Log
 
-8. Credits and Contact
-8.1. Thanks
-8.2. Contacting us
+8. Zaurus Guide
+8.1. Author of this Guide
+8.2. Sharp Zaurus
+8.3. Zaurus SL5x00 and ROMs
+8.4. Exult and Zaurus
+8.5. Installing new packages
+8.6. Using the standard ROM
+8.7. Installing the non-required packages
+8.8. Using the latest ROM
+8.9. Solving the problems with the latest ROM
+8.10. Useful tidbits
+
+9. Credits and Contact
+9.1. Thanks
+9.2. Contacting us
 
 
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 04 May 2003
+0.1. - 08 August 2003
+* 8. Zaurus Guide added Artaxerxes' guide.
+* 9.1. Thanks added Artaxerxes for his guide.
+
+
+
+0.2. - 04 May 2003
 * 2.2. Settings in exult.cfg option for "original" party formation added.
 
 
 
-0.2. - 04 March 2003
+0.3. - 04 March 2003
 * 1.1. Important Notice this doc is for 1.1.x and not for 1.0 anymore.
 * 2.2. Settings in exult.cfg added more combat options and Scale2x.
 * 4.2. Scaler added Scale2x and information on it.
 * 6.6. Combat Options Some explanations for the combat options.
-
-
-
-0.3. - 24 October 2002
-* 2.2. Settings in exult.cfg settings in exult.cfg are the same on all OS.
-* 2.3. Path-Settings same as above.
-* 3.1. Music rewrote the FM synth emulation part a bit.
 
 
 
@@ -160,12 +171,12 @@ blackgate
 </savegame_path>
 <static_path>
 ./blackgate
-						**optional. See <save_path>.
+						**optional. See <savegame_path>.
 						
 </static_path>
 <gamedat_path>
 ./blackgate
-						**optional. See <save_path>.
+						**optional. See <savegame_path>.
 						
 </gamedat_path>
 <keys>
@@ -285,7 +296,7 @@ original
 </mode>
 <show_hits>
 no
-						**no is default. With yes you see the hitpoints of NPCs in brackets 
+						**no is default. With yes you see the hitpoints of NPCs in brackets
 						after their name.
 						
 </show_hits>
@@ -797,7 +808,7 @@ Exits Exult.
 
 7. OS specific notes
 7.1. How to get the Zaurus port working
-Some people were confused where to put the Exult and U7 files and this is a quick guide.
+Some people were confused where to put the Exult and U7 files and this is a quick guide. The long guide is in the next section.
 * BG and SI are expected to be installed in /mnt/cf/exult-data/bg and /mnt/cf/exult-data/si
 * Exult binary is in /opt/QtPalmtop/bin/
 * the shared files (like exult_bg.flx) go into /opt/QtPalmtop/share/exult/
@@ -814,16 +825,69 @@ Some people were confused where to put the Exult and U7 files and this is a quic
 
 --------------------------------------------------------------------------------
 
-8. Credits and Contact
-8.1. Thanks
+8. Zaurus Guide
+8.1. Author of this Guide
+This file was written by Artaxerxes (Aurelien Marchand). I can be contacted at artaxerxes2 at iname dot com. Please ask if you want to send attachments no matter what their size.
+
+
+8.2. Sharp Zaurus
+Introduced in April 2002, this PDA is really a pico-computer (one degree of magnitude less than micro). It runs a version of Linux on the ARM processor. It is possible to use cross-compilers to create programs that will run on the Zaurus, even if compiling from a x86 machine. This is notably the case for the Zaurus port of Exult. More information about the Zaurus can be gleaned on http://www.myZaurus.com.
+
+
+8.3. Zaurus SL5x00 and ROMs
+Sharp occasionnally releases new versions of its ROM for Zaurus. Consider a new ROM like a new Linux distribution: new packages, new look, new kernel etc. It is possible to update the ROM thanks to information found on the Zaurus web site mentioned earlier. The current exult package for the Zaurus is created for the stock SL-5500 ROM v2.12. It has been reported to work on the SL5000-D (the earlier and less capable version). However, it has been reported that the package will not run properly using the latest ROM (no matter what version of the Zaurus you use). More detailed information on how to fix this problem will be found further down this document.
+
+
+8.4. Exult and Zaurus
+Exult uses SDL for multimedia access to the computer (music and video in particular). In order to play Exult on your Zaurus, you need to install the SDL library as well as the SDL-mixer library. Do not use the stock versions found on http://www.libsdl.org. Rather, use thespecially prepared versions for Zaurus found on http://www.gnurou.org. These versions support more features and are the only tested ones.
+
+
+8.5. Installing new packages
+The first step to install a new package is to have the package downloaded and accessible from your Zaurus. I use a method I am comfortable with. If you have your own method and if it works, please keep using it! To copy packages on my Zaurus, I plug the cradle via USB to my Linux machine (Mandrake 8.2). I've changed the modules.usbmap file so that inserting the Zaurus on the cradle will automatically use the usbdnet module to access the Zaurus via USB-over-ethernet. Search the net to find out how. Once the connection is done, I upload the file via FTP to /mnt/cf/Documents/application/ipkg/. Then I start the add/remove package, select add new package and choose the file I just uploaded.
+
+
+8.6. Using the standard ROM
+If like me you still use the standard ROM, simply install the SDL, SDL-mixer and Exult packages. You will also have to transfer the U7 data files to the Zaurus. I chose to install the data files on my Compact Flash card (/mnt/cf/) on the /mnt/cf/exult-data/si/static directory. Simply copy the content of your U7's static/ dir to this dir and you'll be done. The previous example is for Serpent Isle ("si" as you can see in the file path). For Black Gate, you would put "bg" instead of "si". Only the static dir is relevant. You can copy everything if you want to but it will space for nothing.
+
+
+8.7. Installing the non-required packages
+Two additional packages exist and are not required. They hold the new musics for Exult and thus can be found on the Exult's download page. If you choose to install them as well, simply copy them to the Zaurus (see 5.1) and install them normally.
+
+
+8.8. Using the latest ROM
+As mentioned earlier, Exult won't run properly on the latest ROM (v3.10 as of 20030801). There are a few reason why. First, since I haven't installed this ROM, I cannot test it. Then, I know they have changed the default user to be "zaurus" instead of "root", which mess up the paths and the config file. Indeed, by default, Exult reads its config file on ~/.exult.cfg which gets expanded to /home/root/.exult.cfg on the default ROM but to /home/zaurus/.exult.cfg on the newest ROM. Since the package installs all user-related files to /home/root, Exult won't find them on the latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/ which contains the gamedat (current runing game) and the savegames. Finally, the files' owner is set to "root" so the user "zaurus" won't be able to alter files and directories.
+
+
+8.9. Solving the problems with the latest ROM
+In order to play, you'll have to change the location of the files installed by the package to /home/zaurus/ instead of /home/root/. I have not done this, but I expect you'd have to "su" to be able to change it. "su" is a command to become superuser (root). Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but you also want to edit the ~/.exult.cfg so that every occurence of /home/root/ is replaced with /home/zaurus. Please remember I have not done nor tested this, but here are the commands I suppose you'd have to type. First, open a terminal (install one if you don't have one).
+From the terminal, verify who you are by typing ($ is the prompt): $ cd ~/ $ whoami $ pwd
+The "whoami" command should return "zaurus". The "pwd" command should return "/home/zaurus/". Then copy the exult files: $ cp /home/root/.exult* ~/ -rf
+And change ownership to yourself. You might have to become root to do so: $ su # chown zaurus:zaurus /home/zaurus/.exult* -R # chown zaurus:zaurus /opt/QtPalmtop/share/exult -R # chown zaurus:zaurus /opt/QtPalmtop/bin/exult* -R # chown zaurus:zaurus /opt/QtPalmtop/pics/exult.png -R # chown zaurus:zaurus /opt/QtPalmtop/apps/Games/exult.desktop -R # exit
+The # is the root's prompt. The "exit" command will stop the "su" command and make you return to the "zaurus" user. It is now time to edit the .exult.cfg. A fast way to do it: $ sed -e 's/root/zaurus/' ~/.exult.cfg ~/.exult.cfg_new $ mv ~/.exult.cfg_new ~/.exult.cfg
+Normally, you should be able to start and play the game normally. Let me know if I am missing anything.
+
+
+8.10. Useful tidbits
+The key mappings are found in the files /opt/QtPalmtop/share/exult/keys_bg.txt and /opt/QtPalmtop/share/exult/keys_si.txt
+The Application keys are mapped this way: 'Calendar' = 'F9' = inventory (like pressing 'I' ) 'Address Book' = 'F10' = target mode (like pressing 'T' ) 'Home' = 'F12' = combat mode (like pressing 'C' ) 'Menu Popup' = 'F11' = use all keys (like pressing 'K' or 'Alt-K' ) 'Email' = 'F13' = spellbook (like pressing 'B' )
+Save often. I have not had a crash since I'm using the latest SDL packages but you never know.
+Report any problem to the Exult forum at http://exult.sf.net/forum/ or email me (see 8.1.).
+
+
+
+--------------------------------------------------------------------------------
+
+9. Credits and Contact
+9.1. Thanks
 * The paper by Gary Thompson on the structure of the U7 data files was crucial to the early development of Exult.
 * Work by Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag made the "usecode" interpreter possible.
 * Olivier Marcoux's technical document was also crucial in understanding some data files.
 * Thanks also go to the person who wrote u7items.txt and the contributor of the "avatar.ttf" font.
+* Aurelien Marchand (Artaxerxes) for his extensive guide for the Zaurus.
 
 
 
-8.2. Contacting us
+9.2. Contacting us
 You can contact the Exult team and/or get more information from: http://exult.sourceforge.net/ or http://sourceforge.net/projects/exult/
 
 
