@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tqueue.h"
 #include "gumps.h"
 #include "mouse.h"
-#include "Astar.h"
 #include <Audio.h>
 #include <iomanip>
 
@@ -154,6 +153,10 @@ void Scheduled_usecode::handle_event
 		case 0x01:		// ??
 			break;
 		case 0x0b:		// ?? 2 parms, 1st one < 0.
+			printf(
+	"Unhanded sched. opcode %02x with parms %d, %d\n",opcode,
+		arrval.get_elem(i+1).get_int_value(),
+		arrval.get_elem(i+2).get_int_value());
 			i += 2;
 			break;
 		case 0x23:		// ??
@@ -2887,7 +2890,8 @@ void Usecode_machine::run
 		case 0x30:		// IN.  Is a val. in an array?
 			{
 			Usecode_value arr = pop();
-			Usecode_value val = pop();
+					// If an array, use 1st elem.
+			Usecode_value val = pop().get_elem(0);
 			pushi(arr.find_elem(val) >= 0);
 			break;
 			}

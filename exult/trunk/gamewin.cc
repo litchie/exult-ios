@@ -263,7 +263,9 @@ void Game_window::paint_rle_shape
 	int xoff, int yoff		// Where to show in iwin.
 	)
 	{
+#if 0	/* It does work, but the real problem is in Game_object::paint(). */
 	xoff--; yoff--;  // !!!!!!!!!!!!! Seems to work, but WHY?
+#endif
 	unsigned char *in = shape.data; // Point to data.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0)
