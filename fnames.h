@@ -61,5 +61,10 @@
 #define ARMOR		"static/armor.dat"
 #define WEAPONS		"static/weapons.dat"
 
+#define ENDGAME_FONT1	32
+#define ENDGAME_FONT2	33
+#define ENDGAME_FONT3	34
+#define ENDGAME_FONT4	35
+
 #endif
 

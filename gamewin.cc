@@ -50,7 +50,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "titles.h"
 #include "barge.h"
 #include "actors.h"
-
+#include "dir.h"
+#include "paths.h"
+#include "Astar.h"
 extern	Configuration *config;
 					// THE game window:
 Game_window *Game_window::game_window = 0;
@@ -90,6 +92,8 @@ Game_window::Game_window
 		abort("Can't open 'fonts.vga' file.");
 	if (!sprites.is_good())
 		abort("Can't open 'sprites.vga' file.");
+	if (!setup_endgame_fonts())
+		abort ("Unable to setup fonts from 'endgame.dat' file.");
 	
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);
@@ -332,8 +336,8 @@ void Game_window::set_scroll_bounds
 	(
 	)
 	{
-					// Let's try 4x4 tiles.
-	scroll_bounds.w = scroll_bounds.h = 4;
+					// Let's try 2x2 tiles.
+	scroll_bounds.w = scroll_bounds.h = 2;
 	scroll_bounds.x = scrolltx + 
 			(get_width()/tilesize - scroll_bounds.w)/2;
 	scroll_bounds.y = scrollty + 
@@ -1389,6 +1393,150 @@ void Game_window::view_up
 	}
 
 /*
+ *	Alternative start actor function
+ *	Placed in an alternative function to prevent breaking barges
+ */
+void Game_window::start_actor_alt
+	(
+	int winx, int winy, 		// Mouse position to aim for.
+	int speed			// Msecs. between frames.
+	)
+	{
+	int ax, ay;
+	
+	get_shape_location(main_actor, ax, ay);
+
+	Direction dir = Get_direction (ay - winy, winx - ax);
+
+	if (dir % 2)
+		{
+		Tile_coord start = main_actor->get_abs_tile_coord();
+		Tile_coord dest = start;
+		Tile_coord n = start;
+		Tile_coord s = start;
+		Tile_coord e = start;
+		Tile_coord w = start;
+
+		PathFinder *path = new Astar();
+		Fast_pathfinder_client	pclient;
+			
+		switch (dir)
+			{
+			case northeast:
+			dest.ty -= 1;
+			dest.tx += 1;
+			break;
+
+			case southeast:
+			dest.ty += 1;
+			dest.tx += 1;
+			break;
+
+			case southwest:
+			dest.ty += 1;
+			dest.tx -= 1;
+			break;
+
+			case northwest:
+			dest.ty -= 1;
+			dest.tx -= 1;
+			break;
+				
+			default:
+			return;
+			}
+
+		n.ty -= 1;
+		s.ty += 1;
+		e.tx += 1;
+		w.tx -= 1;
+			
+		if (!(path->NewPath(start, dest, &pclient)))
+			{
+			if ((dir == northeast || dir == northwest) && (path->NewPath(start, n, &pclient)))
+				{
+				dir = north;			
+				}
+			else if ((dir == southeast || dir == southwest) && (path->NewPath(start, s, &pclient)))
+				{
+				dir = south;			
+				}
+			else if ((dir == northeast || dir == southeast) && (path->NewPath(start, e, &pclient)))
+				{
+				dir = east;			
+				}
+			else if ((dir == southwest || dir == northwest) && (path->NewPath(start, w, &pclient)))
+				{
+				dir = west;			
+				}
+			else
+				{
+				delete path;
+				return;
+				}
+			}
+
+
+		delete path;
+		}
+		
+	switch (dir)
+		{
+		case north:
+		//cout << "NORTH" << endl;
+		ay -= tilesize;
+		break;
+
+		case northeast:
+		//cout << "NORTH EAST" << endl;
+		ay -= tilesize;
+		ax += tilesize;
+		break;
+
+		case east:
+		//cout << "EAST" << endl;
+		ax += tilesize;
+		break;
+
+		case southeast:
+		//cout << "SOUTH EAST" << endl;
+		ay += tilesize;
+		ax += tilesize;
+		break;
+
+		case south:
+		//cout << "SOUTH" << endl;
+		ay += tilesize;
+		break;
+
+		case southwest:
+		//cout << "SOUTH WEST" << endl;
+		ay += tilesize;
+		ax -= tilesize;
+		break;
+
+		case west:
+		//cout << "WEST" << endl;
+		ax -= tilesize;
+		break;
+
+		case northwest:
+		//cout << "NORTH WEST" << endl;
+		ay -= tilesize;
+		ax -= tilesize;
+		break;
+		}
+
+	int lift = main_actor->get_lift();
+	int liftpixels = 4*lift;	// Figure abs. tile.
+	int tx = get_scrolltx() + (ax + liftpixels)/tilesize,
+	    ty = get_scrollty() + (ay + liftpixels)/tilesize;
+
+	main_actor->walk_to_tile(tx, ty, lift, speed, 0);
+	main_actor->get_followers();
+	}
+
+/*
  *	Start the actor.
  */
 
@@ -1412,8 +1560,13 @@ void Game_window::start_actor
 		}
 	else
 		{
+		/*
 		main_actor->walk_to_tile(tx, ty, lift, speed, 0);
 		main_actor->get_followers();
+		*/
+
+		// Going to use the alternative function for this at the moment
+		start_actor_alt (winx, winy, speed);
 		}
 	}
 
