@@ -27,8 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_MOUSE 1
 
 #include "objs.h"
-#include "vgafile.h"
 #include "imagewin.h"
+#include "vgafile.h"
 
 /*
  *	Handle custom mouse pointers.
@@ -37,7 +37,7 @@ class Mouse
 	{
 	Shape_file pointers;		// Pointers from 'pointers.shp'.
 	Game_window *gwin;		// Where to draw.
-	Image_window *iwin;		// From gwin.
+	Image_window8 *iwin;		// From gwin.
 	Image_buffer *backup;		// Stores image below mouse shape.
 	Rectangle box;			// Area backed up.
 	int mousex, mousey;		// Last place where mouse was.

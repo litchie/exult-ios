@@ -536,6 +536,8 @@ public:
 		{
 		ib8 = (Image_buffer8 *) ibuf;
 		}
+	Image_buffer8 *get_ib8() const
+		{ return ib8; }
 	/*
 	 *	8-bit color methods:
 	 */

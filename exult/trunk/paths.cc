@@ -190,8 +190,8 @@ int Fast_pathfinder_client::get_step_cost
 	int cost = 1;
 	olist->setup_cache();		// Make sure cache is valid.
 	int new_lift;			// Might climb/descend.
-					// For now, assume height=3.
-	if (olist->is_blocked(3, to.tz, tx, ty, new_lift))
+					// For now, look at 1 tile's height.
+	if (olist->is_blocked(1, to.tz, tx, ty, new_lift))
 		return -1;
 	else
 		return 1;
