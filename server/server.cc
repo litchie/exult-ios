@@ -394,7 +394,7 @@ static void Handle_client_message
 		break;
 		}
 	case Exult_server::reload_shapes:
-		gwin->reload_shapes(Read2(ptr));
+		Shape_manager::get_instance()->reload_shapes(Read2(ptr));
 		break;
 	case Exult_server::unused_shapes:
 		{			// Send back shapes not used in game.

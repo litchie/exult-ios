@@ -236,7 +236,6 @@ public:
 	/*
 	 *	ExultStudio support:
 	 */
-	void reload_shapes(int dragtype);	// Reload a shape file.
 	Map_patch_collection *get_map_patches();
 					// Locate shape (for EStudio).
 	bool locate_shape(int shapenum, bool upwards);

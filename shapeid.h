@@ -77,6 +77,7 @@ public:
 		{ return instance; }
 	void set_ibuf(Image_buffer8 *ib) { ibuf = ib; }
 	void load();			// Read in files.
+	void reload_shapes(int dragtype);	// Reload a shape file.
 	Vga_file& get_file(enum ShapeFile f)
 		{ return files[(int) f]; };
 	Shapes_vga_file& get_shapes()
