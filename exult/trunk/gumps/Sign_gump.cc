@@ -47,7 +47,8 @@ Sign_gump::Sign_gump
 	{
 		set_object_area(Rectangle(0, 4, 232, 96));
 	}
-
+	else if (shapenum==game->get_shape("gumps/scroll"))
+		set_object_area(Rectangle(48, 30, 146, 118));
 	lines = new std::string[num_lines];
 }
 
