@@ -48,6 +48,8 @@ EXEC=Exult.exe
 EXEEXT=.exe
 
 FILE_OBJS = snprintf.o
+MIDI_DRV_OBJS=win_midiout.o
+# unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o 
 SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
 OBJS	= exultico.o
 
