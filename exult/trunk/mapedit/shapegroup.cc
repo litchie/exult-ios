@@ -189,6 +189,26 @@ on_groups_new_name_key_press		(GtkEntry	*entry,
 	return FALSE;			// Let parent handle it.
 }
 
+C_EXPORT gboolean
+on_group_list_select_row		(GtkCList	*clist,
+					 gint		row,
+					 gint		column,
+					 GdkEventKey	*event,
+					 gpointer	 user_data)
+{
+	ExultStudio::get_instance()->setup_group_controls();
+}
+
+C_EXPORT gboolean
+on_group_list_unselect_row		(GtkCList	*clist,
+					 gint		row,
+					 gint		column,
+					 GdkEventKey	*event,
+					 gpointer	 user_data)
+{
+	ExultStudio::get_instance()->setup_group_controls();
+}
+
 /*
  *	Initialize the list of shape groups for the file being shown in the
  *	browser.
@@ -228,9 +248,24 @@ void ExultStudio::setup_group_controls
 	(
 	)
 	{
-//	GtkCList *clist = GTK_CLIST(
-//				glade_xml_get_widget(app_xml, "group_list"));
-	//+++++++++
+	GtkCList *clist = GTK_CLIST(
+				glade_xml_get_widget(app_xml, "group_list"));
+	GList *list = clist->selection; 
+	if (list)
+		{
+		int row = (int) list->data;
+		set_sensitive("groups_open", true);
+		set_sensitive("groups_del", true);
+		set_sensitive("groups_up_arrow", row > 0);
+		set_sensitive("groups_down_arrow", row < clist->rows);
+		}
+	else
+		{
+		set_sensitive("groups_open", false);
+		set_sensitive("groups_del", false);
+		set_sensitive("groups_up_arrow", false);
+		set_sensitive("groups_down_arrow", false);
+		}
 	}
 
 /*
