@@ -28,8 +28,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <vector>
 
-#include "ucsym.h"
+#include "ucfun.h"
 #include "ucexpr.h"
+#include "ucstmt.h"
 #include "opcodes.h"
 
 void yyerror(char *);
@@ -37,13 +38,18 @@ extern int yylex();
 
 #define YYERROR_VERBOSE 1
 
+Uc_function *function = 0;		// Current function being parsed.
+
 %}
 
 %union
 	{
+	class Uc_symbol *sym;
 	class Uc_expression *expr;
 	class Uc_function_symbol *funsym;
+	class Uc_statement *stmt;
 	class vector<char *> *strvec;
+	class vector<Uc_statement *> *stmtvec;
 	int intval;
 	char *strval;
 	}
@@ -79,9 +85,11 @@ extern int yylex();
  */
 %type <expr> expression primary function_call
 %type <intval> opt_int
+%type <sym> declared_var
 %type <funsym> function_proto
-%type <strval> identifier
 %type <strvec> identifier_list opt_identifier_list
+%type <stmt> statement assignment_statement
+%type <stmtvec> statement_list statement_block
 
 %%
 
@@ -91,8 +99,14 @@ design:
 	;
 
 function:
-	function_proto statement_block
-		{  }
+	function_proto 
+		{ function = new Uc_function($1); }
+		statement_block
+		{ 
+		//+++++++++Generate code.
+		delete function;
+		function = 0;
+		}
 	;
 
 					/* Opt_int assigns function #. */
@@ -104,11 +118,6 @@ function_proto:
 		}
 	;
 
-decl_type:
-	VAR
-	| STRING
-	;
-
 opt_int:
 	INT_LITERAL
 	|				/* Empty. */
@@ -116,33 +125,58 @@ opt_int:
 	;
 
 statement_block:
-	'{' statement_list '}'
+	'{' 
+		{ function->push_scope(); }
+	statement_list '}'
+		{
+		$$ = $3;
+		function->pop_scope();
+		}
 	;
 
 statement_list:
 	statement_list statement
+		{ $$->push_back($2); }
 	|				/* Empty. */
+		{ $$ = new vector<Uc_statement *>; }
 	;
 
 statement:
 	declaration
+		{ $$ = 0; }
 	| assignment_statement
 	| if_statement
+		{ $$ = 0; /* ++++++++ */ }
 	| while_statement
+		{ $$ = 0; /* ++++++++ */ }
 	| array_loop_statement
+		{ $$ = 0; /* ++++++++ */ }
 	| function_call_statement
+		{ $$ = 0; /* ++++++++ */ }
 	| return_statement
+		{ $$ = 0; /* ++++++++ */ }
 	| statement_block
+		{ $$ = 0; /* ++++++++ */ }
 	| ';'				/* Null statement */
+		{ $$ = 0; }
 	;
 
 declaration:
-	decl_type identifier_list ';'
+	VAR identifier_list ';'
+		{
+		for (vector<char*>::const_iterator it = $2->begin();
+					it != $2->end(); it++)
+			function->add_symbol(*it);
+		}
+	| STRING IDENTIFIER '=' STRING_LITERAL ';'
+		{
+		function->add_string_symbol($2, $4);
+		}
 	;
 
 assignment_statement:
 	expression '=' expression ';'
-		{  }			/* ++++++++ */
+		{ $$ = new Uc_assignment_statement($1, $3); }
 	;
 
 if_statement:
@@ -155,7 +189,7 @@ while_statement:
 	;
 
 array_loop_statement:
-	FOR '(' IDENTIFIER IN identifier ')' statement
+	FOR '(' IDENTIFIER IN declared_var ')' statement
 	;
 
 function_call_statement:
@@ -185,13 +219,13 @@ expression:
 	| expression OR expression
 		{ $$ = new Uc_binary_expression(UC_OR, $1, $3); }
 	| '-' primary
-		{ $$ = 0; /* ++++++ */ }
+		{ $$ = new Uc_binary_expression(UC_SUB,
+				new Uc_int_expression(0), $2); }
 	| NOT primary
 		{ $$ = new Uc_unary_expression(UC_NOT, $2); }
 	| '[' expression_list ']'	/* Concat. into an array. */
 		{ $$ = 0; /* ++++++ */ }
-	| STRING_LITERAL
-		{ $$ = 0; /* ++++++ */ }
+/*	| STRING_LITERAL  For now require string constants. */
 	;
 
 opt_expression_list:
@@ -208,9 +242,9 @@ expression_list:
 primary:
 	INT_LITERAL
 		{ $$ = new Uc_int_expression($1); }
-	| identifier
+	| declared_var
 		{ $$ = 0; /* ++++++ */ }
-	| identifier '[' expression ']'
+	| declared_var '[' expression ']'
 		{ $$ = 0; /* ++++++ */ }
 	| function_call
 	| '(' expression ')'
@@ -218,7 +252,7 @@ primary:
 	;
 
 function_call:
-	identifier '(' opt_expression_list ')'
+	IDENTIFIER '(' opt_expression_list ')'
 		{ $$ = 0; /* ++++++++ */ }
 	;
 
@@ -229,18 +263,28 @@ opt_identifier_list:
 	;
 
 identifier_list:
-	identifier_list ',' identifier
+	identifier_list ',' IDENTIFIER
 		{ $1->push_back($3); }
-	| identifier
+	| IDENTIFIER
 		{
 		$$ = new vector<char *>;
 		$$->push_back($1);
 		}
 	;
 
-identifier:
+declared_var:
 	IDENTIFIER
-	;
+		{
+		Uc_symbol *var = function->search_up($1);
+		if (!var)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' not declared", $1);
+			yyerror(buf);
+			var = function->add_symbol($1);
+			}
+		$$ = var;
+		}
 
 %%
 

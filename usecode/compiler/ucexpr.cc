@@ -23,7 +23,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <iostream.h>
+#include <stdio.h>
 #include "ucexpr.h"
+#include "ucsym.h"
 #include "utils.h"
 #include "opcodes.h"
 
@@ -37,6 +39,40 @@ void Uc_expression::gen_assign
 	)
 	{
 	error("Can't assign to this expression");
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_var_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	char buf[150];
+	if (!var->gen_value(out))
+		{
+		sprintf(buf, "Can't use value of '%s'", var->get_name());
+		error(buf);
+		}
+	}
+
+/*
+ *	Generate assignment to this variable.
+ */
+
+void Uc_var_expression::gen_assign
+	(
+	ostream& out
+	)
+	{
+	char buf[150];
+	if (!var->gen_assign(out))
+		{
+		sprintf(buf, "Can't assign to '%s'", var->get_name());
+		error(buf);
+		}
 	}
 
 /*
