@@ -110,7 +110,7 @@ bindist: finishedbinary
 	mkdir exult-$(VERSION)/doc
 	mkdir exult-$(VERSION)/lib
 	cp $(EXEC) exult-$(VERSION)
-	cp README README.BeOS COPYING NEWS AUTHORS ChangeLog exult-$(VERSION)/doc
+	cp README FAQ README.BeOS COPYING NEWS AUTHORS ChangeLog exult-$(VERSION)/doc
 	cp data/exult.flx data/midisfx.flx exult-$(VERSION)/data
 	cp $(HOME)/lib/libSDL.so $(HOME)/lib/README-SDL.txt exult-$(VERSION)/lib
 	rm -f exult-$(VERSION).x86.beos.zip
