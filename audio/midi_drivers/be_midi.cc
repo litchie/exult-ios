@@ -58,11 +58,25 @@ bool	Be_midi::is_playing(void)
 
 void Be_midi::start_track(const char *name,bool repeat)
 {
+#if DEBUG
+  cerr << "Stopping any running track" << endl;
+#endif
+  stop_track();
+
+#if DEBUG
+  cerr << "Starting midi sequence with Be_midi, repeat = " 
+       << (repeat?"true":"false") << endl;
+#endif
+
+  //open file
   get_ref_for_path(name, &midiRef);
   midiSynthFile.LoadFile(&midiRef);
+  FileOpen = true;
 
+  //set repeating
   midiSynthFile.EnableLooping(repeat);
 
+  //play file
   midiSynthFile.Start();
 }
 
