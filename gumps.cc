@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 short Actor_gump_object::diskx = 122, Actor_gump_object::disky = 132;
 short Actor_gump_object::heartx = 122, Actor_gump_object::hearty = 114;
-short Stats_gump_object::textx = 112;
+short Stats_gump_object::textx = 123;
 short Stats_gump_object::texty[10] = {17, 26, 35, 46, 55, 67, 76, 86,
 							95, 104};
 
@@ -567,6 +567,24 @@ void Actor_gump_object::paint
 	}
 
 /*
+ *	Show a number.
+ */
+
+static void Paint_num
+	(
+	Game_window *gwin,
+	int num,
+	int x,				// Coord. of right edge of #.
+	int y				// Coord. of top of #.
+	)
+	{
+	const int font = 2;
+	char buf[20];
+  	sprintf(buf, "%d", num);
+	gwin->paint_text(font, buf, x - gwin->get_text_width(font, buf), y);
+	}
+
+/*
  *	Paint on screen.
  */
 
@@ -580,24 +598,23 @@ void Stats_gump_object::paint
 					// Paint red "checkmark".
 	paint_button(gwin, check_button);
 	Actor *act = get_actor();	// Show statistics.
-	char buf[20];
-	const int font = 2;
-  	sprintf(buf, "%d", act->get_property(Actor::strength));
-	gwin->paint_text(font, buf, x + textx, y + texty[0]);
-  	sprintf(buf, "%d", act->get_property(Actor::dexterity));
-	gwin->paint_text(font, buf, x + textx, y + texty[1]);
-  	sprintf(buf, "%d", act->get_property(Actor::intelligence));
-	gwin->paint_text(font, buf, x + textx, y + texty[2]);
-  	sprintf(buf, "%d", act->get_property(Actor::combat));
-	gwin->paint_text(font, buf, x + textx, y + texty[3]);
-  	sprintf(buf, "%d", act->get_property(Actor::magic));
-	gwin->paint_text(font, buf, x + textx, y + texty[4]);
-  	sprintf(buf, "%d", act->get_property(Actor::health));
-	gwin->paint_text(font, buf, x + textx, y + texty[5]);
-  	sprintf(buf, "%d", act->get_property(Actor::mana));
-	gwin->paint_text(font, buf, x + textx, y + texty[6]);
-	//++++Experience?
+	Paint_num(gwin, act->get_property(Actor::strength),
+						x + textx, y + texty[0]);
+	Paint_num(gwin, act->get_property(Actor::dexterity),
+						x + textx, y + texty[1]);
+	Paint_num(gwin, act->get_property(Actor::intelligence),
+						x + textx, y + texty[2]);
+  	Paint_num(gwin, act->get_property(Actor::combat),
+						x + textx, y + texty[3]);
+  	Paint_num(gwin, act->get_property(Actor::magic),
+						x + textx, y + texty[4]);
+  	Paint_num(gwin, act->get_property(Actor::health),
+						x + textx, y + texty[5]);
+  	Paint_num(gwin, act->get_property(Actor::mana),
+						x + textx, y + texty[6]);
+  	Paint_num(gwin, act->get_property(Actor::exp),
+						x + textx, y + texty[7]);
 	//++++Level?
-  	sprintf(buf, "%d", act->get_property(Actor::training));
-	gwin->paint_text(font, buf, x + textx, y + texty[9]);
+  	Paint_num(gwin, act->get_property(Actor::training),
+						x + textx, y + texty[9]);
 	}
