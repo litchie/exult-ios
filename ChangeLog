@@ -1,6 +1,8 @@
 2000-11-17  Max Horn  <max@quendi.de>
 
-	* Added Cmd-Q which quits exult (MacOS only) 
+	* exult.cc, menulist.cc: Added Cmd-Q which quits exult (MacOS only)
+	* gamewin.cc: fixes (crashing) bug realted to Game_window::init_faces() / face_info
+	* fixed Makefile.[win32|cygwin|be]
 
 2000-11-17  Tristan Tarrant <nadir@users.sourceforge.net>
 
