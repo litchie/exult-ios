@@ -129,6 +129,7 @@ C_EXPORT void on_newmap_ok_clicked
 		}
 	U7mkdir(fname, 0755);		// Create map directory in 'patch'.
 	// ++++++FINISH
+	studio->setup_maps_list();
 	gtk_widget_hide(win);
 	}
 
@@ -145,6 +146,7 @@ void ExultStudio::setup_maps_list
 	GList *items = gtk_container_get_children(GTK_CONTAINER(maps));
 	GList *each = g_list_last(items);
 	GSList *group = NULL;
+	int curmap = 0;
 
 	while (each)
 		{
@@ -155,13 +157,19 @@ void ExultStudio::setup_maps_list
 			{
 			group = gtk_radio_menu_item_get_group(
 				GTK_RADIO_MENU_ITEM(item));
-			gtk_check_menu_item_set_active(
-				GTK_CHECK_MENU_ITEM(item), TRUE);
+			gtk_object_set_user_data(GTK_OBJECT(item),
+							(gpointer) 0);
+			if (curmap == 0)
+				gtk_check_menu_item_set_active(
+					GTK_CHECK_MENU_ITEM(item), TRUE);
 			break;
 			}
+		if (gtk_check_menu_item_get_active(
+					GTK_CHECK_MENU_ITEM(item)))
+			curmap = (int) gtk_object_get_user_data(
+							GTK_OBJECT(item));
 		GList *prev = g_list_previous(each);
-		g_list_remove(items, each->data);
-		gtk_widget_unref(GTK_WIDGET(item));
+		gtk_container_remove(GTK_CONTAINER(maps), GTK_WIDGET(item));
 		each = prev;
 		}
 	int num = 0;
@@ -169,8 +177,15 @@ void ExultStudio::setup_maps_list
 		{
 		char name[40];
 		sprintf(name, "Map #%02x", num);
-		Add_menu_item(maps, name, GTK_SIGNAL_FUNC(on_map_activate), 
+		GtkWidget *item = 
+		   Add_menu_item(maps, name, GTK_SIGNAL_FUNC(on_map_activate), 
 						(gpointer) num, group);
+		gtk_object_set_user_data(GTK_OBJECT(item), (gpointer) num);
+		if (curmap == num)
+			gtk_check_menu_item_set_active(
+					GTK_CHECK_MENU_ITEM(item), TRUE);
+		group = gtk_radio_menu_item_get_group(
+						GTK_RADIO_MENU_ITEM(item));
 		}
 	}
 
