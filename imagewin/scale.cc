@@ -1352,6 +1352,10 @@ void Scale2x_noblur
 			++src0; ++src1; ++src2;
 			dest0 += 2; dest1 += 2;
 			}
+		src0 += sline_pixels - srcw;
+		src1 += sline_pixels - srcw;
+		src2 += sline_pixels - srcw;
+		dest1 += dline_pixels - 2*srcw;
 		if (src0 == src1)	// End of first row?
 			src0 -= sline_pixels;
 		limit_x += sline_pixels;
