@@ -1124,6 +1124,8 @@ int Game_object::attack_object
 					Usecode_machine::weapon);
 	if (!wpoints && winf)
 		wpoints = winf->get_damage();
+	if (!wpoints)			// Telekenesis should NOT destroy!
+		return 0;
 	if (attacker)
 		wpoints += attacker->get_level() +
 			attacker->get_property((int) Actor::strength);

@@ -24,6 +24,7 @@
 
 #include "tqueue.h"
 #include <algorithm>
+#include <SDL_timer.h>
 
 /*
  *	Be sure no copies are still in queue when deleted.
@@ -73,6 +74,9 @@ void Time_queue::add
 	{
 	obj->queue_cnt++;		// It's going in, no matter what.
 	Queue_entry	newent;
+	if (paused)			// Paused?
+					// Messy, but we need to fix time.
+		t -= SDL_GetTicks() - pause_time;
 	newent.set(t,obj,ud);
 	if(!data.size())
 		{
