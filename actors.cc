@@ -3286,6 +3286,8 @@ Monster_actor::Monster_actor
 	    animator(0)
 	{
 	init();
+	if (Game::get_game_type() == SERPENT_ISLE)
+		set_flag(Obj_flags::si_killable);
 	}
 
 /*

@@ -226,6 +226,8 @@ public:
 		{ return npc_num; }	// It's the NPC's #.
 	int get_usecode() const
 		{ return usecode; }
+	const Schedule *get_schedule() const
+		{ return schedule; }
 	int get_frame_time() const	// Return frame time if moving.
 		{ return frame_time; }
 	void set_frame_time(int ftime)	// Set walking speed.
