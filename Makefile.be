@@ -42,7 +42,8 @@ GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	gump_utils.o  Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
 	Scroll_gump.o Sign_gump.o  Slider_gump.o  Spellbook_gump.o  Stats_gump.o  \
 	Text_gump.o  Yesno_gump.o
-IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o
+IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
+	savepcx.o
 SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o
 OBJS_OBJS=animate.o barge.o chunks.o contain.o egg.o iregobjs.o objs.o \
 	spellbook.o virstone.o
