@@ -26,8 +26,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_DELOBJS
 #define INCL_DELOBJS	1
 
-#include <hash_set>
-
+#ifdef MACOS
+  #include <hashset.h>
+#else
+  #include <hash_set>
+#endif
 /*
  *	Hash function for game objects:
  */

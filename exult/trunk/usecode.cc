@@ -302,7 +302,7 @@ void Scheduled_usecode::handle_event
 				}
 			else
 			        cout << "Unhandled sched. opcode " << hex << 
-			"0x" << setfill(0x30) << setw(2) << opcode << endl;
+			"0x" << setfill((char)0x30) << setw(2) << opcode << endl;
 
 			break;
 			}
@@ -1191,7 +1191,7 @@ static void Usecode_Trace
 	Usecode_value parms[12]
 	)
 	{
-	cout << hex << "[0x" << setfill(0x30) << setw(2)
+	cout << hex << "[0x" << setfill((char)0x30) << setw(2)
 		<< intrinsic << "]: " << name << "(";
 	for (int i = 0; i < num_parms; i++)
 		{

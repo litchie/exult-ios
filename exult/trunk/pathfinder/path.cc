@@ -24,7 +24,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <iostream>
-#include <hash_set>
+#ifdef MACOS
+  #include <hashset.h>
+#else
+  #include <hash_set>
+#endif
 #include "PathFinder.h"
 #include "../objs.h"
 
