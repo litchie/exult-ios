@@ -324,7 +324,6 @@ public:
 		{
 		if(!l)
 			return producing?0:-1;
-//		unsigned char *data=(unsigned char *)p;
 		lock();
 		l=Buffer.pop_front((char *)p,l);
 		unlock();

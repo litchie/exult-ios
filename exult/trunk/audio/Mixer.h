@@ -66,11 +66,12 @@ public:
 	SDL_mutex	*stream_mutex;
 	void	stream_lock(void) { SDL_mutexP(stream_mutex); };
 	void	stream_unlock(void) { SDL_mutexV(stream_mutex); };
-	void	cancel(void);
+	void	cancel_raw(void);
 	void fill_audio_func(void *, Uint8 *, int);
 	void play(Uint8 *, unsigned int);
 	ProducerConsumerBuf *Create_Audio_Stream(void);
 	void	Destroy_Audio_Stream(Uint32 id);
+	void	cancel_streams(void);
 	bool	is_playing(Uint32 id);
 
 	// void	set_auxilliary_audio(int);

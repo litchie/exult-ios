@@ -2393,7 +2393,8 @@ void Game_window::setup_game
 				// This also sets up initial 
 				//   schedules and positions.
 	paint();
-	audio->cancel();
+	audio->cancel_raw();
+	audio->cancel_streams();
 				// Want to activate first egg.
 	Chunk_object_list *olist = get_objects(
 			main_actor->get_cx(), main_actor->get_cy());
