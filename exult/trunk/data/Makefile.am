@@ -25,10 +25,6 @@ EXULT_FLX_OBJECTS = \
 	palette_fades.shp	\
 	scaling_method.shp	\
 	savegump.shp		\
-	sav_load.shp		\
-	sav_save.shp		\
-	sav_delete.shp		\
-	sav_cancel.shp		\
 	sav_downdown.shp	\
 	sav_down.shp		\
 	sav_up.shp		\
@@ -37,22 +33,8 @@ EXULT_FLX_OBJECTS = \
 	sav_selected.shp	\
 	gameplayoptions.shp	\
 	gamemenu.shp		\
-	gam_loadsave.shp	\
-	gam_audio.shp		\
-	gam_video.shp		\
-	gam_gameplay.shp	\
-	gam_quitmenu.shp	\
-	gam_quit.shp		\
 	audiooptions.shp	\
-	aud_enabled.shp 	\
-	aud_conversion.shp	\
-	aud_cancel.shp		\
-	aud_ok.shp		\
 	videooptions.shp	\
-	vid_left.shp		\
-	vid_right.shp		\
-	vid_resolution.shp	\
-	vid_scaling.shp		\
 	hp_bar.shp		\
 	sfx_icon.shp
 

@@ -21,6 +21,7 @@
 #endif
 
 #include <iostream>
+#include <cstring>
 
 #include "SDL_events.h"
 
@@ -36,6 +37,8 @@
 #include "mouse.h"
 #include "cheat.h"
 #include "Face_stats.h"
+#include "Text_button.h"
+#include "Enabled_button.h"
 
 using std::cerr;
 using std::endl;
@@ -44,10 +47,25 @@ using std::string;
 static const int rowy[] = { 5, 18, 31, 44, 57, 70, 83, 96, 109, 122, 146 };
 static const int colx[] = { 35, 50, 120, 195, 192 };
 
-class GameplayOptions_button : public Gump_button {
+static const char* oktext = "OK";
+static const char* canceltext = "CANCEL";
+
+static int framerates[] = { 2, 4, 6, 8, 10, -1 };
+ // -1 is placeholder for custom framerate
+static int num_default_rates = sizeof(framerates)/sizeof(framerates[0]) - 1;
+
+
+static string framestring(int fr)
+{
+	char buf[100];
+	sprintf(buf, "%i fps", fr);
+	return buf;
+}
+
+class GameplayOptions_button : public Text_button {
 public:
-	GameplayOptions_button(Gump *par, int px, int py, int shapenum)
-		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX)
+	GameplayOptions_button(Gump *par, string text, int px, int py)
+		: Text_button(par, text, px, py, 59, 11)
 		{ }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -55,38 +73,39 @@ public:
 
 void GameplayOptions_button::activate(Game_window *gwin)
 {
-	switch (get_shapenum()) {
-	case EXULT_FLX_AUD_CANCEL_SHP:
+	if (text == canceltext) {
 		((GameplayOptions_gump*)parent)->cancel();
-		break;
-	case EXULT_FLX_AUD_OK_SHP:
+	} else if (text == oktext) {
 		((GameplayOptions_gump*)parent)->close(gwin);
-		break;
 	}
 }
 
-class GameplayToggle : public Gump_ToggleButton {
-public:
-	GameplayToggle(Gump* par, int px, int py, int shapenum, int selectionnum, int numsel)
-		: Gump_ToggleButton(par, px, py, shapenum, selectionnum, numsel) { }
-
-	friend class GameplayOptions_gump;
-	virtual void toggle(int state) { 
-		((GameplayOptions_gump*)parent)->toggle((Gump_button*)this, state);
-	}
-};
-
-
 class GameplayTextToggle : public Gump_ToggleTextButton {
 public:
-	GameplayTextToggle(Gump* par, std::string *s, int px, int py, int width, int selectionnum, int numsel)
-		: Gump_ToggleTextButton(par, s, selectionnum, numsel, px, py, width) { }
+	GameplayTextToggle(Gump* par, std::string *s, int px, int py, int width,
+					   int selectionnum, int numsel)
+		: Gump_ToggleTextButton(par, s, selectionnum, numsel, px, py, width)
+	{ }
 
 	friend class GameplayOptions_gump;
 	virtual void toggle(int state) { 
 		((GameplayOptions_gump*)parent)->toggle((Gump_button*)this, state);
 	}
 };
+
+class GameplayEnabledToggle : public Enabled_button {
+public:
+	GameplayEnabledToggle(Gump* par, int px, int py, int width, 
+						  int selectionnum)
+		: Enabled_button(par, selectionnum, px, py, width)
+	{ }
+
+	friend class GameplayOptions_gump;
+	virtual void toggle(int state) {
+		((GameplayOptions_gump*)parent)->toggle((Gump_button*)this, state);
+	}
+};	
+
 void GameplayOptions_gump::close(Game_window* gwin)
 {
 	save_settings();
@@ -122,17 +141,68 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 
 void GameplayOptions_gump::build_buttons()
 {
-	buttons[0] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59, facestats, 4);
-	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-21, rowy[1], 80, text_bg, 12);
+#if 0
+	std::string *enabledtext1 = new std::string[2];
+	enabledtext1[0] = "Disabled";
+	enabledtext1[1] = "Enabled";
+
+	std::string *enabledtext2 = new std::string[2];
+	enabledtext2[0] = "Disabled";
+	enabledtext2[1] = "Enabled";
+
+	std::string *enabledtext3 = new std::string[2];
+	enabledtext3[0] = "Disabled";
+	enabledtext3[1] = "Enabled";
+
+	std::string *enabledtext4 = new std::string[2];
+	enabledtext4[0] = "Disabled";
+	enabledtext4[1] = "Enabled";
+
+	std::string *enabledtext5 = new std::string[2];
+	enabledtext5[0] = "Disabled";
+	enabledtext5[1] = "Enabled";
+#endif
+
+	std::string *stats = new std::string[4];
+	stats[0] = "Disabled";
+	stats[1] = "Left";
+	stats[2] = "Middle";
+	stats[3] = "Right";
+
+	std::string *textbgcolor = new std::string[12];
+	textbgcolor[0] = "Disabled";
+	textbgcolor[1] = "Purple";
+	textbgcolor[2] = "Orange";
+	textbgcolor[3] = "Light Gray";
+	textbgcolor[4] = "Green";
+	textbgcolor[5] = "Yellow";
+	textbgcolor[6] = "Pale Blue";
+	textbgcolor[7] = "Dark Green";
+	textbgcolor[8] = "Red";
+	textbgcolor[9] = "Bright White";
+	textbgcolor[10] = "Dark gray";
+	textbgcolor[11] = "White";
+
+	buttons[0] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59,
+										 facestats, 4);
+	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-21, 
+										 rowy[1], 80, text_bg, 12);
 	if (GAME_BG)
-		buttons[5] = new GameplayToggle(this, colx[3], rowy[2], EXULT_FLX_AUD_ENABLED_SHP, paperdolls, 2);
+		buttons[5] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59,
+											   paperdolls);
 	else if (GAME_SI)
-		buttons[7] = new GameplayToggle(this, colx[3], rowy[2], EXULT_FLX_AUD_ENABLED_SHP, walk_after_teleport, 2);
-	buttons[1] = new GameplayToggle(this, colx[3], rowy[3], EXULT_FLX_AUD_ENABLED_SHP, fastmouse, 2);
-	buttons[2] = new GameplayToggle(this, colx[3], rowy[4], EXULT_FLX_AUD_ENABLED_SHP, mouse3rd, 2);
-	buttons[3] = new GameplayToggle(this, colx[3], rowy[5], EXULT_FLX_AUD_ENABLED_SHP, doubleclick, 2);
-	buttons[4] = new GameplayToggle(this, colx[3], rowy[7], EXULT_FLX_AUD_ENABLED_SHP, cheats, 2);
-	buttons[8] = new GameplayTextToggle(this, framenums, colx[3], rowy[8], 59, frames, 5);
+		buttons[7] = new GameplayEnabledToggle(this, colx[3], rowy[2], 59, 
+											   walk_after_teleport);
+	buttons[1] = new GameplayEnabledToggle(this, colx[3], rowy[3],
+										   59, fastmouse);
+	buttons[2] = new GameplayEnabledToggle(this, colx[3], rowy[4],
+										   59, mouse3rd);
+	buttons[3] = new GameplayEnabledToggle(this, colx[3], rowy[5],
+										   59, doubleclick);
+	buttons[4] = new GameplayEnabledToggle(this, colx[3], rowy[7],
+										   59, cheats);
+	buttons[8] = new GameplayTextToggle(this, frametext, colx[3], rowy[8], 
+										59, frames, num_framerates);
 }
 
 void GameplayOptions_gump::load_settings()
@@ -149,12 +219,26 @@ void GameplayOptions_gump::load_settings()
 	paperdolls = gwin->get_bg_paperdolls();
 	doubleclick = gwin->get_double_click_closes_gumps();
 	text_bg = gwin->get_text_bg()+1;
-	frames = 1000/gwin->get_std_delay();
-	if (frames < 2)
-		frames = 2;
-	if (frames > 10)
-		frames = 10;
-	frames = frames/2 - 1;		// 2,4,6,8,10 are the choices.
+	int realframes = 1000/gwin->get_std_delay();
+
+    frames = -1;
+	framerates[num_default_rates] = realframes;
+	for (int i=0; i < num_default_rates; i++) {
+		if (realframes == framerates[i]) {
+			frames = i;
+			break;
+		}
+	}
+
+	num_framerates = num_default_rates;
+	if (frames == -1) {
+		num_framerates++;
+		frames = num_default_rates;
+	}
+	frametext = new string[num_framerates];
+	for (int i=0; i < num_framerates; i++) {
+		frametext[i] = framestring(framerates[i]);
+	}
 }
 
 GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX)
@@ -163,40 +247,16 @@ GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYO
 
 	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		buttons[i] = 0;
-	stats = new std::string[4];
-	stats[0] = "Disabled";
-	stats[1] = "Left";
-	stats[2] = "Middle";
-	stats[3] = "Right";
-	textbgcolor = new std::string[12];
-	textbgcolor[0] = "Disabled";
-	textbgcolor[1] = "Purple";
-	textbgcolor[2] = "Orange";
-	textbgcolor[3] = "Light Gray";
-	textbgcolor[4] = "Green";
-	textbgcolor[5] = "Yellow";
-	textbgcolor[6] = "Pale Blue";
-	textbgcolor[7] = "Dark Green";
-	textbgcolor[8] = "Red";
-	textbgcolor[9] = "Bright White";
-	textbgcolor[10] = "Dark gray";
-	textbgcolor[11] = "White";
-
-	framenums = new std::string[5];
-	framenums[0] = "2 fps";
-	framenums[1] = "4 fps";
-	framenums[2] = "6 fps";
-	framenums[3] = "8 fps";
-	framenums[4] = "10 fps";
 
 	load_settings();
 	
 	build_buttons();
 
 	// Ok
-	buttons[9] = new GameplayOptions_button(this, colx[0], rowy[10], EXULT_FLX_AUD_OK_SHP);
+	buttons[9] = new GameplayOptions_button(this, oktext, colx[0], rowy[10]);
 	// Cancel
-	buttons[10] = new GameplayOptions_button(this, colx[4], rowy[10], EXULT_FLX_AUD_CANCEL_SHP);
+	buttons[10] = new GameplayOptions_button(this, canceltext, 
+											 colx[4], rowy[10]);
 }
 
 GameplayOptions_gump::~GameplayOptions_gump()
@@ -204,12 +264,6 @@ GameplayOptions_gump::~GameplayOptions_gump()
 	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		if (buttons[i])
 			delete buttons[i];
-
-#if 0
-	// For some reason these crash Exult
-	delete[] stats;
-	delete[] textbgcolor;
-#endif
 }
 
 void GameplayOptions_gump::save_settings()
@@ -217,7 +271,7 @@ void GameplayOptions_gump::save_settings()
 	Game_window *gwin = Game_window::get_game_window();
 	gwin->set_text_bg(text_bg-1);
 	config->set("config/gameplay/textbackground", text_bg-1, true);
-	int fps = 2*(frames + 1);
+	int fps = framerates[frames];
 	gwin->set_std_delay(1000/fps);
 	config->set("config/video/fps", fps, true);
 	gwin->set_fastmouse(fastmouse!=false);
@@ -225,16 +279,19 @@ void GameplayOptions_gump::save_settings()
 	gwin->set_mouse3rd(mouse3rd!=false);
 	config->set("config/gameplay/mouse3rd", mouse3rd ? "yes" : "no", true);
 	gwin->set_walk_after_teleport(walk_after_teleport!=false);
-	config->set("config/gameplay/walk_after_teleport", walk_after_teleport ? "yes" : "no", true);
+	config->set("config/gameplay/walk_after_teleport", 
+				walk_after_teleport ? "yes" : "no", true);
 	gwin->set_double_click_closes_gumps(doubleclick!=false);
-	config->set("config/gameplay/double_click_closes_gumps", doubleclick ? "yes" : "no", true);
+	config->set("config/gameplay/double_click_closes_gumps", 
+				doubleclick ? "yes" : "no", true);
 	cheat.set_enabled(cheats!=false);
 	while (facestats != Face_stats::get_state() + 1)
 		Face_stats::AdvanceState();
 	Face_stats::save_config(config);
 	if (GAME_BG && gwin->can_use_paperdolls())
 		gwin->set_bg_paperdolls(paperdolls!=false);
-	config->set("config/gameplay/bg_paperdolls", paperdolls ? "yes" : "no", true);
+	config->set("config/gameplay/bg_paperdolls", 
+				paperdolls ? "yes" : "no", true);
 }
 
 void GameplayOptions_gump::paint(Game_window* gwin)

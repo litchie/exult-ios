@@ -64,6 +64,8 @@ libgumps_la_SOURCES = \
 	Face_stats.h	\
 	Face_stats.cc	\
 	Text_button.h	\
-	Text_button.cc
+	Text_button.cc \
+	Enabled_button.h \
+	Enabled_button.cc
 
 CLEANFILES = *~

@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _GAMEPLAYOPTIONS_GUMP_H
 
 #include "Modal_gump.h"
+#include <string>
 
 class Gump_button;
 
@@ -39,9 +40,9 @@ class GameplayOptions_gump : public Modal_gump
 	int paperdolls;
 	int text_bg;
 	int frames;
-	std::string *stats;
-	std::string *textbgcolor;
-	std::string *framenums;
+
+	std::string* frametext;
+	int num_framerates;
 
  public:
 	GameplayOptions_gump();

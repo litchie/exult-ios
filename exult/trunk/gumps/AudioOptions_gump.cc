@@ -35,6 +35,7 @@
 #include "gump_utils.h"
 #include "mouse.h"
 #include "xmidi.h"
+#include "Enabled_button.h"
 
 using std::cerr;
 using std::endl;
@@ -47,10 +48,13 @@ static const int rowy[] = { 5,
 			    135, 156 };
 static const int colx[] = { 35, 55, 130 };
 
-class AudioOptions_button : public Gump_button {
+static const char* oktext = "OK";
+static const char* canceltext = "CANCEL";
+
+class AudioOptions_button : public Text_button {
 public:
-	AudioOptions_button(Gump *par, int px, int py, int shapenum)
-		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX)
+	AudioOptions_button(Gump *par, string text, int px, int py)
+		: Text_button(par, text, px, py, 59, 11)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -58,21 +62,19 @@ public:
 
 void AudioOptions_button::activate(Game_window *gwin)
 {
-	switch (get_shapenum()) {
-	case EXULT_FLX_AUD_CANCEL_SHP: // cancel
+	if (text == canceltext) {
 		((AudioOptions_gump*)parent)->cancel();
-		break;
-	case EXULT_FLX_AUD_OK_SHP: // ok
+	} else if (text == oktext) {
 		((AudioOptions_gump*)parent)->close(gwin);
-		break;
 	}
 }
 
-class AudioToggle : public Gump_ToggleButton {
+class AudioTextToggle : public Gump_ToggleTextButton {
 public:
-	AudioToggle(Gump* par, int px, int py, int shapenum, 
-				int selectionnum, int numsel)
-		: Gump_ToggleButton(par, px, py, shapenum, selectionnum, numsel) {}
+	AudioTextToggle(Gump* par, std::string *s, int px, int py, int width,
+					   int selectionnum, int numsel)
+		: Gump_ToggleTextButton(par, s, selectionnum, numsel, px, py, width)
+	{ }
 
 	friend class AudioOptions_gump;
 	virtual void toggle(int state) { 
@@ -80,6 +82,18 @@ public:
 	}
 };
 
+
+class AudioEnabledToggle : public Enabled_button {
+public:
+	AudioEnabledToggle(Gump* par, int px, int py, int selectionnum)
+		: Enabled_button(par, selectionnum, px, py, 59)
+	{ }
+
+	friend class AudioOptions_gump;
+	virtual void toggle(int state) {
+		((AudioOptions_gump*)parent)->toggle((Gump_button*)this, state);
+	}
+};	
 
 void AudioOptions_gump::close(Game_window* gwin)
 {
@@ -136,12 +150,8 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 #ifdef ENABLE_MIDISFX
 	} else if (btn == buttons[7]) { // sfx conversion
 		if (state == 1) {
-			buttons[7]->set_frame(4);
-//			((AudioToggle*)buttons[7])->framenum = 4;
 			sfx_conversion = XMIDI_CONVERT_GS127_TO_GS;
 		} else {
-			buttons[6]->set_frame(0);
-//			((AudioToggle*)buttons[7])->framenum = 0;
 			sfx_conversion = XMIDI_CONVERT_NOCONVERSION;
 		}
 #endif
@@ -153,43 +163,58 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 void AudioOptions_gump::build_buttons()
 {
 	// audio on/off
-    buttons[0] = new AudioToggle(this, colx[2], rowy[0], EXULT_FLX_AUD_ENABLED_SHP, audio_enabled, 2);
+    buttons[0] = new AudioEnabledToggle(this, colx[2], rowy[0], audio_enabled);
 
 	if (audio_enabled) {
 
 		// midi on/off
-		buttons[1] = new AudioToggle(this, colx[2], rowy[2],EXULT_FLX_AUD_ENABLED_SHP,midi_enabled,2);
+		buttons[1] = new AudioEnabledToggle(this, colx[2], rowy[2], 
+											midi_enabled);
 		if (midi_enabled)
 			build_midi_buttons();
 
 		// sfx on/off
-		buttons[6] = new AudioToggle(this, colx[2], rowy[8], EXULT_FLX_AUD_ENABLED_SHP,sfx_enabled,2);
+		buttons[6] = new AudioEnabledToggle(this, colx[2], rowy[8],
+											sfx_enabled);
 		if (sfx_enabled)
 			build_sfx_buttons();
 
 		// speech on/off
-		buttons[8] =new AudioToggle(this,colx[2],rowy[11],EXULT_FLX_AUD_ENABLED_SHP,speech_enabled,2);
+		buttons[8] =new AudioEnabledToggle(this,colx[2],rowy[11],
+										   speech_enabled);
 	}
 }
 
 void AudioOptions_gump::build_midi_buttons()
 {
+	std::string* midi_conversiontext = new std::string[4];
+	midi_conversiontext[0] = "None";
+	midi_conversiontext[1] = "GM";
+	midi_conversiontext[2] = "GS";
+	midi_conversiontext[3] = "GS127";
+
 	// midi conversion
-	buttons[2] = new AudioToggle(this, colx[2], rowy[3], EXULT_FLX_AUD_CONVERSION_SHP,midi_conversion,4);
+	buttons[2] = new AudioTextToggle(this, midi_conversiontext, 
+									 colx[2], rowy[3], 59, midi_conversion, 4);
 	// reverb on/off
-	buttons[3] = new AudioToggle(this, colx[2], rowy[4], EXULT_FLX_AUD_ENABLED_SHP, midi_reverb, 2);
+	buttons[3] = new AudioEnabledToggle(this, colx[2], rowy[4], midi_reverb);
 	// chorus on/off
-	buttons[4] = new AudioToggle(this, colx[2], rowy[5], EXULT_FLX_AUD_ENABLED_SHP, midi_chorus, 2);
+	buttons[4] = new AudioEnabledToggle(this, colx[2], rowy[5], midi_chorus);
 	// looping on/off
-	buttons[5] = new AudioToggle(this, colx[2], rowy[6], EXULT_FLX_AUD_ENABLED_SHP, midi_looping, 2);
+	buttons[5] = new AudioEnabledToggle(this, colx[2], rowy[6], midi_looping);
 
 }
 
 void AudioOptions_gump::build_sfx_buttons()
 {
 #ifdef ENABLE_MIDISFX
+	std::string* sfx_conversiontext = new std::string[2];
+	sfx_conversion[0] = "None";
+	sfx_conversion[2] = "GS";
+
 	// sfx conversion
-	buttons[7] = new AudioToggle(this, colx[2], rowy[9],EXULT_FLX_AUD_CONVERSION_SHP,sfx_conversion/2,2);
+	buttons[7] = new AudioTextToggle(this, sfx_conversion, colx[2], rowy[9],
+									 59, sfx_conversion/4,2);
 #endif
 }
 
@@ -251,9 +276,9 @@ AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SH
 	build_buttons();
 
 	// Ok
-	buttons[9] = new AudioOptions_button(this, colx[0], rowy[12], EXULT_FLX_AUD_OK_SHP);
+	buttons[9] = new AudioOptions_button(this, oktext, colx[0], rowy[12]);
 	// Cancel
-	buttons[10] = new AudioOptions_button(this, colx[2], rowy[12], EXULT_FLX_AUD_CANCEL_SHP);
+	buttons[10] = new AudioOptions_button(this, canceltext, colx[2], rowy[12]);
 }
 
 AudioOptions_gump::~AudioOptions_gump()
