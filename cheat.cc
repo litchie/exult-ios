@@ -178,6 +178,32 @@ void Cheat::change_skin (void) const {
   gwin->set_all_dirty();
 }
 
+void Cheat::levelup_party (void) const {
+  if (!enabled) return;
+
+  Actor* party[9];
+  int level, newexp;
+  bool leveledup = false;
+
+  // get party, including Avatar
+  int cnt = gwin->get_party(party, 1);
+
+  for (int i=0; i<cnt; i++) {
+    level = party[i]->get_level();
+    if (level < 10) {
+      leveledup = true;
+      newexp = 25 * (2 << level); // one level higher
+      party[i]->set_property(Actor::exp, newexp);
+    }
+  }  
+
+  if (leveledup) {
+    gwin->center_text("Level up!");
+  } else {
+    gwin->center_text("Maximum level reached");
+  }
+}
+
 void Cheat::fake_time_period (void) const {
   if (!enabled) return;
 
