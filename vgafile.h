@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+**
  **	Handle access to one of the xxx.vga files.
  **
  **	Written: 4/29/99 - JSF
@@ -53,6 +54,7 @@ public:
 		{  }
 					// Read in shape/frame.
 	unsigned char read(ifstream& shapes, int shnum, int frnum);
+	int has_point(int x, int y);	// Is a point within the shape?
 	int get_width()			// Get dimensions.
 		{ return xleft + xright; }
 	int get_height()
