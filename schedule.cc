@@ -266,7 +266,8 @@ void Follow_avatar_schedule::now_what
 	{
 	bool is_blocked = blocked.tx != -1;
 	blocked = Tile_coord(-1, -1, -1);
-	if (npc->get_flag(Obj_flags::asleep) || npc->is_dead())
+	if (npc->get_flag(Obj_flags::asleep) || npc->is_dead() ||
+	    gwin->main_actor_dont_move())	// Under Usecode control.
 		return;			// Disabled.
 #if 0
 	cout << npc->get_name() << " in Follow_avatar::now_what()" << endl;
