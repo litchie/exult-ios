@@ -16,7 +16,6 @@
 	  so reverb and chorus can be enabled/disabled. Default is "no".
 	* audio/midi_drivers/win_midiout.*: Set reverb and chorus defaults to 0.
 
->>>>>>> 1.536
 2001-03-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Timidity - Fixed bug that Willem Jan figured out.
