@@ -369,9 +369,10 @@ Actor::Actor
 	) : Container_game_object(), name(nm),usecode(uc), 
 	    npc_num(num), party_id(-1), shape_save(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
-	    alignment(0),
+	    dead(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
-	    usecode_dir(0), siflags(0), type_flags(0), skin_color(-1), action(0), 
+	    usecode_dir(0), siflags(0), type_flags(0), skin_color(-1), 
+	    action(0), 
 	    frame_time(0), next_path_time(0), timers(0),
 	    weapon_rect(0, 0, 0, 0)
 	{
@@ -625,7 +626,7 @@ void Actor::follow
 					"Thou shan't lose me so easily!",
 					"Ah, there thou art!",
 					"Found ye!" };
-	if (Actor::is_dead_npc())
+	if (Actor::is_dead())
 		return;			// Not when dead.
 	int delay = 0;
 					// How close to aim for.
@@ -1461,7 +1462,7 @@ void Actor::reduce_health
 					// Flash red if Avatar badly hurt.
 		if (rand()%2)
 			gwin->flash_palette_red();
-	if (Actor::is_dead_npc())
+	if (Actor::is_dying())
 		die();
 	else if (val < 0 && !get_flag(Obj_flags::asleep))
 		set_flag(Obj_flags::asleep);
@@ -2090,6 +2091,7 @@ int Actor::figure_hit_points
 			say("\"Cheater!\"");
 		else
 			say(first_ouch, last_ouch);
+#if 0
 	if (Game::get_game_type() == SERPENT_ISLE &&
 	    (get_flag(Obj_flags::zombie) ||	// Can't kill zombies.
 					// A guess for SI's Cantra-vs-Batlin.
@@ -2099,6 +2101,7 @@ int Actor::figure_hit_points
 					this != gwin->get_main_actor())))
 		if (newhp < 1)		// Don't go < 1.
 			hp = oldhealth - 1;
+#endif
 	reduce_health(hp);
 	cout << "Attack damage was " << hp << " hit points, leaving " << 
 		properties[(int) health] << " remaining" << endl;
@@ -2121,7 +2124,7 @@ Game_object *Actor::attacked
 	if (attacker && attacker->get_schedule_type() == Schedule::duel)
 		return this;			// Just play-fighting.
 	figure_hit_points(attacker, weapon_shape, ammo_shape);
-	if (attacker && is_dead_npc())
+	if (attacker && is_dead())
 		{
 					// Experience gained = strength???
 		int expval = get_property((int) strength);
@@ -2165,6 +2168,7 @@ void Actor::die
 	delete schedule;
 	schedule = 0;
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
+	dead = true;
 	int shnum = get_shapenum();
 					// Special case:  Hook, Dracothraxus.
 	if (((shnum == 0x1fa || (shnum == 0x1f8 && Is_draco(this))) && 
@@ -2291,7 +2295,7 @@ void Main_actor::get_followers
 		Npc_actor *npc = (Npc_actor *) gwin->get_npc(
 						uc->get_party_member(i));
 		if (!npc || npc->get_flag(Obj_flags::asleep) ||
-		    npc->Actor::is_dead_npc())
+		    npc->is_dead())
 			continue;
 		int sched = npc->get_schedule_type();
 					// Skip if in combat or set to 'wait'.
@@ -2762,7 +2766,7 @@ int Npc_actor::find_schedule_change
 	int hour3			// 0=midnight, 1=3am, etc.
 	)
 	{
-	if (Npc_actor::get_party_id() >= 0 || Npc_actor::is_dead_npc())
+	if (Npc_actor::get_party_id() >= 0 || is_dead())
 		return (-1);		// Fail if a party member or dead.
 	for (int i = 0; i < num_schedules; i++)
 		if (schedules[i].get_time() == hour3)
@@ -3258,7 +3262,7 @@ Monster_actor::~Monster_actor
 		prev_monster->next_monster = next_monster;
 	else				// We're at start of list.
 		in_world = next_monster;
-	if (!Actor::is_dead_npc())	// Dying decrements count.
+	if (!is_dead())			// Dying decrements count.
 		in_world_cnt--;
 	}
 

@@ -70,7 +70,7 @@ void Combat_schedule::find_opponents
 	{
 		Actor *actor = *it;
 		if (actor->get_alignment() >= Npc_actor::hostile &&
-		    !actor->is_dead_npc())
+		    !actor->is_dead())
 		{
 			opponents.push(actor);
 					// And set hostile monsters.
@@ -83,7 +83,7 @@ void Combat_schedule::find_opponents
 	Slist_iterator next(nearby);
 	while ((actor = (Actor *) next()) != 0)
 		if (actor->get_alignment() >= Npc_actor::hostile &&
-		    !actor->is_dead_npc())
+		    !actor->is_dead())
 		{
 			opponents.push(actor);
 					// And set hostile monsters.
@@ -410,8 +410,10 @@ inline int Need_new_opponent
 	Game_object *opponent
 	)
 	{
+	Actor *act;
 					// Nonexistent or dead?
-	if (!opponent || opponent->is_dead_npc() ||
+	if (!opponent || 
+	    ((act = dynamic_cast<Actor*>(opponent)) != 0 && act->is_dead()) ||
 					// Or invisible?
 	    opponent->get_flag(Obj_flags::invisible))
 		return 1;

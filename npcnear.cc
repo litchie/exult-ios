@@ -75,7 +75,7 @@ void Npc_proximity_handler::handle_event
 	int tx, ty, tz;
 	npc->get_abs_tile(tx, ty, tz);
 	if (!tiles.has_point(tx, ty) ||	// No longer visible?
-	    npc->Actor::is_dead_npc())	// Or no longer living?
+	    npc->is_dead())		// Or no longer living?
 		{
 		npc->clear_nearby();
 		return;

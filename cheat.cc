@@ -371,7 +371,7 @@ void Cheat::heal_party (void) const {
   Actor* party[9];
   count = gwin->get_party(party, 1);
   for (int i = 0; i < count; i++) {
-    if (!party[i]->is_dead_npc()) {
+    if (!party[i]->is_dead()) {
       // heal
       party[i]->set_property(Actor::health, party[i]->get_property(Actor::strength));
       // cure poison

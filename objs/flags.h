@@ -41,7 +41,7 @@ namespace  Obj_flags
 		confused = 25,		// ??Guessing.
 		in_motion = 26,		// ??Guessing (cart, boat)??
 		met = 28,			// Has the npc been met
-		zombie = 29,		// Can't kill this one.
+		si_killable = 29,	// SI-Must be set to be killable.
 		// Flags > 31
 		tattooed = 33,			// Guess (SI).
 		petra = 35			// Guess
