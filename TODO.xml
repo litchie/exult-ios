@@ -29,18 +29,6 @@
 </project>
 <project>
 	<description>
-		Finish up implementation of Video Options menu with RGB gamma 
-		correction sliders
-	</description>
-	<difficulty>
-		Easy
-	</difficulty>
-	<owner>
-		Tristan Tarrant
-	</owner>
-</project>
-<project>
-	<description>
 		Implement a Journal which logs all conversations
 	</description>
 	<difficulty>
@@ -117,6 +105,19 @@
 	</description>
 	<difficulty>
 		Medium
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+<project>
+	<description>
+		Implement a mechanism for having a system-wide installation of
+		the static directories, whilst having per-user gamedat and 
+		savegame directories.
+	</description>
+	<difficulty>
+		Easy
 	</difficulty>
 	<owner>
 		Nobody

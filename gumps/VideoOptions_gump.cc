@@ -38,7 +38,7 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 5, 20, 35, 50, 65, 80, 95, 146 };
+static const int rowy[] = { 5, 20, 35, 50, 80 };
 static const int colx[] = { 35, 50, 120, 127, 130 };
 
 class VideoOptions_button : public Gump_button {
@@ -156,7 +156,7 @@ void VideoOptions_gump::load_settings()
 
 VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SHP, SF_EXULT_FLX)
 {
-	set_object_area(Rectangle(0,0,0,0), 8, 162);//++++++ ???
+	set_object_area(Rectangle(0,0,0,0), 8, 95);//++++++ ???
 
 	for (int i=0; i<10; i++) buttons[i] = 0;
 
@@ -165,9 +165,9 @@ VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SH
 	build_buttons();
 
 	// Ok
-	buttons[8] = new VideoOptions_button(this, colx[0], rowy[7], EXULT_FLX_AUD_OK_SHP);
+	buttons[8] = new VideoOptions_button(this, colx[0], rowy[4], EXULT_FLX_AUD_OK_SHP);
 	// Cancel
-	buttons[9] = new VideoOptions_button(this, colx[4], rowy[7], EXULT_FLX_AUD_CANCEL_SHP);
+	buttons[9] = new VideoOptions_button(this, colx[4], rowy[4], EXULT_FLX_AUD_CANCEL_SHP);
 }
 
 VideoOptions_gump::~VideoOptions_gump()
@@ -250,9 +250,6 @@ void VideoOptions_gump::paint(Game_window* gwin)
 	gwin->paint_text(2, "Scaling:", x + colx[0], y + rowy[1] + 1);
 	gwin->paint_text(2, "Scaler:", x + colx[0], y + rowy[2] + 1);
 	gwin->paint_text(2, "Full Screen:", x + colx[0], y + rowy[3] + 1);
-	gwin->paint_text(2, "Gamma R:", x + colx[0], y + rowy[4] + 1);
-	gwin->paint_text(2, "Gamma G:", x + colx[0], y + rowy[5] + 1);
-	gwin->paint_text(2, "Gamma B:", x + colx[0], y + rowy[6] + 1);
 	gwin->set_painted();
 }
 

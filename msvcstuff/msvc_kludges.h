@@ -12,7 +12,7 @@
 #define MSVC_KLUDGES_H
 
 // Fisrtly some things that need to be defined
-#define VERSION "0.96beta1"
+#define VERSION "0.97cvs"
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
