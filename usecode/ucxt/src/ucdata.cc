@@ -147,14 +147,14 @@ void UCData::disassamble()
 			
 			if(options.output_ucs)
 			{
-				_funcs[i]->parse_ucs(_funcmap, ((options.game_si()) ? si_uc_intrinsics : bg_uc_intrinsics), options);
-				_funcs[i]->output_ucs(cout, _funcmap, ((options.game_si()) ? si_uc_intrinsics : bg_uc_intrinsics), options);
+				_funcs[i]->parse_ucs(_funcmap, uc_intrinsics, options);
+				_funcs[i]->output_ucs(cout, _funcmap, uc_intrinsics, options);
 				_func_printed=true;
 			}
 
 			// if we haven't printed one by now, we'll print an asm output.
 			if(options.output_asm || (_func_printed==false))
-				print_asm(*_funcs[i], cout, _funcmap, ((options.game_si()) ? si_uc_intrinsics : bg_uc_intrinsics), *this);
+				print_asm(*_funcs[i], cout, _funcmap, uc_intrinsics, options);
 		}
 	}
 
@@ -262,7 +262,7 @@ void UCData::load_funcs()
 		UCFunc *ucfunc = new UCFunc();
 
 		if(options.game_bg() || options.game_si())
-			readbin_U7UCFunc(_file, *ucfunc);
+			readbin_U7UCFunc(_file, *ucfunc, options);
 		else if(options.game_u8())
 			readbin_U8UCFunc(_file, *ucfunc);
 		else
@@ -282,7 +282,6 @@ void UCData::load_funcs()
 	}
 /*	for(map<unsigned short, UCFuncSet>::iterator i=_funcmap.begin(); i!=_funcmap.end(); i++)
 		cout << i->first << "\t" << i->second.num_args << endl;*/
-		
 }
 
 void UCData::output_extern_header(ostream &o)

@@ -39,6 +39,38 @@ static inline std::string strip_backticks(const std::string &s)
 	return s;
 }
 
+/* Just a basic class to tie together half a dozen initialisation routines. */
+class ucxtInit
+{
+	public:
+		ucxtInit(const std::string &new_ucxtdata=std::string("ucxt.data"))
+			: ucxtdata(new_ucxtdata)
+		{ };
+		void init(const Configuration &config, const UCOptions &options);
+		
+	private:
+		std::string get_datadir(const Configuration &config, const UCOptions &options);
+		void misc();
+		void opcodes();
+		void intrinsics(const std::string &intrinsics_data, const std::string &intrinsics_root);
+		
+		const std::string ucxtdata;
+		std::string datadir;
+		
+		std::string opcodes_data;
+		std::string opcodes_root;
+		
+		std::string misc_data;
+		std::string misc_root;
+		
+		std::string bg_intrinsics_data;
+		std::string bg_intrinsics_root;
+		
+		std::string si_intrinsics_data;
+		std::string si_intrinsics_root;
+		
+};
+
 class UCOpcodeData
 {
 	public:
@@ -152,10 +184,10 @@ class UCOpcodeData
 		};
 		
 		unsigned int   opcode;
-		std::string         name;
-		std::string         asm_nmo;
-		std::string         asm_comment;
-		std::string         ucs_nmo;
+		std::string    name;
+		std::string    asm_nmo;
+		std::string    asm_comment;
+		std::string    ucs_nmo;
 		unsigned int   num_bytes;
 		
 		unsigned int   num_pop;
@@ -177,11 +209,7 @@ class UCOpcodeData
 extern std::vector<UCOpcodeData> opcode_table_data;
 extern std::vector<std::pair<unsigned int, unsigned int> > opcode_jumps;
 
-extern std::map<unsigned int, std::string> bg_uc_intrinsics;
-extern std::map<unsigned int, std::string> si_uc_intrinsics;
-
-void init_static_usecodetables();
-void init_usecodetables(const Configuration &config, const UCOptions &options);
+extern std::map<unsigned int, std::string> uc_intrinsics;
 
 #endif
 

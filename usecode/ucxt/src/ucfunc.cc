@@ -65,7 +65,7 @@ const string VARNAME = "var";
 const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
 
-void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const map<unsigned int, string> &intrinsics, const UCc &op);
+void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const map<unsigned int, string> &intrinsics, const UCc &op, const UCOptions &options);
 string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output);
 
 /* Assumption the 'var's are in their 'zeroed' state on initialization,
@@ -219,18 +219,18 @@ void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<
 	#endif
 }
 
-void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, const map<unsigned int, string> &intrinsics, unsigned int indent)
+void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, const map<unsigned int, string> &intrinsics, unsigned int indent, const UCOptions &options)
 {
 	if(!ucn->nodelist.empty()) tab_indent(indent, o) << '{' << endl;
 	
 	if(ucn->ucc!=0)
-		print_asm_opcode(tab_indent(indent, o), *this, funcmap, opcode_table_data, intrinsics, *(ucn->ucc));
+		print_asm_opcode(tab_indent(indent, o), *this, funcmap, opcode_table_data, intrinsics, *(ucn->ucc), options);
 	
 	if(ucn->nodelist.size())
 		for(vector<UCNode *>::iterator i=ucn->nodelist.begin(); i!=ucn->nodelist.end(); i++)
 		{
 			//tab_indent(indent, o);
-			output_ucs_node(o, funcmap, *i, intrinsics, indent+1);
+			output_ucs_node(o, funcmap, *i, intrinsics, indent+1, options);
 		}
 			
 	// end of func
@@ -525,9 +525,9 @@ void print_asm_opcodes(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const ma
 
 /* prints the "assembler" output of the usecode, currently trying to duplicate
    the output of the original ucdump... */
-void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCData &uc)
+void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCOptions &options)
 {
-	if(uc.options.verbose) cout << "Printing function..." << endl;
+	if(options.verbose) cout << "Printing function..." << endl;
 
 	o << "Function at file offset " << std::setw(8) << ucf._offset << "H" << endl;
 	o << "\t.funcnumber  " << std::setw(4) << ucf._funcid << "H" << endl;
@@ -549,7 +549,7 @@ void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const map<unsign
 		o << '\t' << "  .extern    " << std::setw(4) << ucf._externs[i] << "H" << endl;
 
 	for(vector<UCc>::iterator op=ucf._opcodes.begin(); op!=ucf._opcodes.end(); op++)
-		print_asm_opcode(o, ucf, funcmap, opcode_table_data, intrinsics, *op);
+		print_asm_opcode(o, ucf, funcmap, opcode_table_data, intrinsics, *op, options);
 }
 
 void print_asm_data(UCFunc &ucf, ostream &o)
@@ -600,19 +600,19 @@ void output_raw_opcodes(ostream &o, const UCc &op)
 		o << "\t\t";
 }
 
-extern UCData uc;
+//extern UCData uc;
 
-void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const map<unsigned int, string> &intrinsics, const UCc &op)
+void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const map<unsigned int, string> &intrinsics, const UCc &op, const UCOptions &options)
 {
 	// offset
 	o << std::setw(4) << op._offset << ':';
 
-	if(uc.options.rawops) output_raw_opcodes(o, op);
+	if(options.rawops) output_raw_opcodes(o, op);
 	else            o << '\t';
 
 	o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_nmo, op._params_parsed, intrinsics, op, false);
 
-	if(uc.options.autocomment)
+	if(options.autocomment)
 		o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_comment, op._params_parsed, intrinsics, op, false);
 
 	o << endl;
@@ -844,7 +844,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 	return str.str();
 }
 
-void readbin_U7UCFunc(ifstream &f, UCFunc &ucf)
+void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)
 {
 
 	// offset to start of function
@@ -947,7 +947,7 @@ void readbin_U7UCFunc(ifstream &f, UCFunc &ucf)
 			/* if we're a function debugging opcode, set the debuging flag, and
 				assign the variable name string offset
 				TODO: Add this to opcodes.txt */
-			if((uc.options.game_bg() || uc.options.game_si()) && ucop._id==0x4D)
+			if((options.game_bg() || options.game_si()) && (ucop._id==0x4D))
 			{
 				ucf.debugging_info=true;
 				assert(ucop._params_parsed.size()>=2);
