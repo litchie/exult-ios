@@ -1957,7 +1957,9 @@ int File_gump_object::toggle_option
 		{
 		bool effects = !audio->are_effects_enabled();
 		audio->set_effects_enabled(effects);
-					// +++++When we support effects.
+		string s = effects ? "yes" : "no";
+					// Write option out.
+		config->set("config/audio/effects/enabled", s, true);
 		return effects ? 1 : 0;
 		}
 	return false;			// Shouldn't get here.

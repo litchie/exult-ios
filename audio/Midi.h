@@ -72,7 +72,7 @@ public:
 	void	start_sound_effect(int num);
 
 	void	stop_music();
-
+	
 	bool	add_midi_bank(const char *s);
 
 
@@ -84,6 +84,7 @@ private:
 	int	current_track;
 	MidiAbstract	*midi_device;
 
+	bool	init_device();
 };
 
 #endif

@@ -1,6 +1,7 @@
 Exult instructions for Windows
 ------------------------------------
 
+
 To play
 ---------
 Copy exult.exe into your Ultima 7 directory.
@@ -9,6 +10,22 @@ If you are currently playing a game of Ultima 7, be sure
  it up first...)
 Run exult.exe
 Have fun!
+
+
+SFX
+---
+The Windows version on Exult has support for Midi Sound Effects.
+There are numerous limitions with them.
+
+A Roland GS compatible sound card with Bank 127 set to
+MT32 capital tones is required. 
+
+The sound effects are NOT the original ones from Ultima 7. They
+are Serpent Isle ones which have been converted from MT32. This
+means that they may not be 100% correct.
+
+Read the unofficial Exult FAQ for more SFX informtion
+http://www.unet.univie.ac.at/~a9848357/exult/exult_faq.htm
 
 
 Notes
@@ -23,6 +40,7 @@ these files can help.
 
 * If you're interested in building Exult for windows yourself, 
 there are two sections below describing how.
+
 
 To build in Windows using Mingw32
 -----------------------------------
