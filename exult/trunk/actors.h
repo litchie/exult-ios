@@ -37,15 +37,17 @@ class Actor : public Sprite
 	Actor *next, *prev;		// Next, prev. in vicinity.
 	char *name;			// Its name.
 	int usecode;			// # of usecode function.
-	int face_shapenum;		// Portrait shape #, or -1.
+	int npc_num;			// # in Game_window::npcs list, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
 public:
 	void set_default_frames();	// Set usual frame sequence.
-	Actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
+	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
 	~Actor()
 		{ delete name; }
+	int get_npc_num()		// Get its ID.
+		{ return npc_num; }
 	int get_face_shapenum()		// Get "portrait" shape #.
-		{ return face_shapenum; }
+		{ return npc_num; }	// It's the NPC's #.
 	void add_after_this(Actor *a)	// Add another actor after this.
 		{
 					// Remove from current chain.

@@ -289,7 +289,26 @@ void Usecode_machine::append_string
 		delete string;
 		string = strcat(newstr, str);
 		}
-	string = strcpy(newstr, str);
+	else
+		string = strcpy(newstr, str);
+	}
+
+/*
+ *	Get a game object from an "itemref", which might be the actual
+ *	pointer, or might be -(npc number).
+ *
+ *	Output:	->game object.
+ */
+
+Game_object *Usecode_machine::get_item
+	(
+	long val
+	)
+	{
+	Game_object *obj = 0;
+	if (val < 0)
+		obj = gwin->get_npc(-val);
+	return obj ? obj : (Game_object *) val;
 	}
 
 /*
@@ -365,11 +384,12 @@ void Usecode_machine::set_item_shape
 	Usecode_value& shape_arg
 	)
 	{
-	Game_object *item = (Game_object *) item_arg.get_int_value();
+	int val = item_arg.get_int_value();
 	int shape = shape_arg.get_int_value();
+	cout << "Set_item_shape: " << val << ", " << shape << '\n';
+	Game_object *item = get_item(val);
 	if (item != 0)
 		item->set_shape(shape);
-	cout << "Set_item_shape: " << item << ", " << shape << '\n';
 	}
 
 /*
@@ -382,7 +402,7 @@ void Usecode_machine::set_item_frame
 	Usecode_value& frame_arg
 	)
 	{
-	Game_object *item = (Game_object *) item_arg.get_int_value();
+	Game_object *item = get_item(item_arg.get_int_value());
 	int frame = frame_arg.get_int_value();
 	if (item != 0)
 		item->set_frame(frame);
@@ -398,7 +418,7 @@ int Usecode_machine::get_item_shape
 	Usecode_value& item_arg
 	)
 	{
-	Game_object *item = (Game_object *) item_arg.get_int_value();
+	Game_object *item = get_item(item_arg.get_int_value());
 	return (item == 0 ? 0 : item->get_shapenum());
 	}
 
@@ -411,7 +431,7 @@ int Usecode_machine::get_item_frame
 	Usecode_value& item_arg
 	)
 	{
-	Game_object *item = (Game_object *) item_arg.get_int_value();
+	Game_object *item = get_item(item_arg.get_int_value());
 	return (item == 0 ? 0 : item->get_framenum());
 	}
 
@@ -577,8 +597,11 @@ Usecode_value Usecode_machine::call_intrinsic
 		set_item_frame(parms[0], parms[1]);
 		break;
 	case 0x14:			// Get item quality.
-		//++++++++++++++++++
+		{
+		Game_object *obj = get_item(parms[0].get_int_value());
+		return Usecode_value(obj ? obj->get_quality() : 0);
 		break;
+		}
 	case 0x16:			// Get # of items in NPC??????
 					//   Count(item, -npc).
 		//+++++++++++++
@@ -604,14 +627,14 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x20:			// Get NPC prop (item, prop_id).
 					//   (9 is food level).
 		{
-		Game_object *obj = (Game_object *) parms[0].get_int_value();
+		Game_object *obj = get_item(parms[0].get_int_value());
 		return Usecode_value(obj ? 
 			obj->get_property(parms[1].get_int_value()) : 0);
 		break;
 		}
 	case 0x21:			// Set NPC prop (item, prop_id, value).
 		{
-		Game_object *obj = (Game_object *) parms[0].get_int_value();
+		Game_object *obj = get_item(parms[0].get_int_value());
 		if (obj)
 			obj->set_property(parms[1].get_int_value(),
 						parms[2].get_int_value());
@@ -623,7 +646,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		return (get_party());
 	case 0x27:			// Get player name.
 		{
-		Game_object *obj = (Game_object *) parms[0].get_int_value();
+		Game_object *obj = get_item(parms[0].get_int_value());
 		return Usecode_value(obj ? obj->get_name() : "player");
 		}
 	case 0x28:			// How many 
@@ -648,7 +671,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 	case 0x2f:			// NPC in party? (item).
 		return (Usecode_value(npc_in_party(
-					-parms[0].get_int_value())));
+					parms[0].get_int_value())));
 	case 0x32:			// Display sign (gump #, text).
 		//+++++++++++++
 		break;

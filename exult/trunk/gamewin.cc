@@ -50,14 +50,17 @@ Game_window::Game_window
 	    script(0),
 		main_actor(0),
 	    conv_choices(0),
-	    main_actor_inside(0), mode(intro), showing_item(0),
+	    main_actor_inside(0), mode(intro), showing_item(0), npcs(0),
 	    shapes(SHAPES_VGA),
-	    faces(FACES_VGA)
+	    faces(FACES_VGA),
+	    gumps(GUMPS_VGA)
 	{
 	if (!shapes.is_good())
 		abort("Can't open 'shapes.vga' file.");
 	if (!faces.is_good())
 		abort("Can't open 'faces.vga' file.");
+	if (!gumps.is_good())
+		abort("Can't open 'gumps.vga' file.");
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);
 	ifstream ucfile;		// Read in usecode.
@@ -643,6 +646,7 @@ void Game_window::read_ireg_objects
 					// Create obj.
 		Game_object *obj = new Game_object(
 				entry[2], entry[3], shapex, shapey, lift);
+		obj->set_quality(quality);
 		if (!container)
 			get_objects(scx + cx, scy + cy)->add(obj);
 		if (type)		// Read container objects.

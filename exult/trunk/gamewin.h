@@ -61,10 +61,13 @@ private:
 	ifstream chunks;		// "u7chunks" file.
 	Vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
+	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	ifstream u7map;			// "u7map" file.
 	Script_compiler *script;	// Compiled NPC script.
 	Actor *main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
+	int num_npcs;			// Number of NPC's.
+	Actor **npcs;			// List of NPC's + the Avatar.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];
 					// Get/create objs. list for a chunk.
@@ -111,10 +114,14 @@ public:
   }
 	Actor *get_main_actor()
 		{ return main_actor; }
+	Actor *get_npc(int npc_num)
+		{ return npc_num < num_npcs ? npcs[npc_num] : 0; }
 	int get_num_shapes()
 		{ return shapes.get_num_shapes(); }
 	int get_num_faces()
 		{ return faces.get_num_shapes(); }
+	int get_num_gumps()
+		{ return gumps.get_num_shapes(); }
 	void set_mode(Game_mode md)
 		{ mode = md; }
 	Game_mode get_mode()
@@ -188,6 +195,7 @@ public:
 		if (shape)
 			paint_shape(iwin, xoff, yoff, shape);
 		}
+					// A "face" is used in conversations.
 	void paint_face(Image_window *iwin, int xoff, int yoff,
 						int shapenum, int framenum)
 		{
@@ -195,6 +203,15 @@ public:
 		if (shape)
 			paint_shape(iwin, xoff, yoff, shape);
 		}
+					// A "gump" is an open container.
+	void paint_gump(Image_window *iwin, int xoff, int yoff,
+						int shapenum, int framenum)
+		{
+		Shape_frame *shape = gumps.get_shape(shapenum, framenum);
+		if (shape)
+			paint_shape(iwin, xoff, yoff, shape);
+		}
+					// Read encoded show into window.
 					// Read encoded show into window.
 	void get_rle_shape(Image_window *iwin,
 				Shape_frame& shape, int xoff, int yoff);
