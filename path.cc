@@ -346,8 +346,12 @@ Tile_coord *Find_path
 	)
 	{
 	A_star_queue nodes;		// The priority queue & hash table.
+	int max_cost = Cost_to_goal(start, goal);
 					// Create start node.
-	nodes.add(new Search_node(start, 0, Cost_to_goal(start, goal), 0));
+	nodes.add(new Search_node(start, 0, max_cost, 0));
+	max_cost *= 3;			// Don't try forever.
+	if (max_cost < 64)
+		max_cost = 64;
 	Search_node *node;		// Try 'best' node each iteration.
 	while ((node = nodes.pop()) != 0)
 		{
@@ -366,12 +370,14 @@ Tile_coord *Find_path
 					// Get cost from start to ntile.
 			int new_cost = node->get_start_cost() + step_cost;
 					// See if next tile already seen.
-			int open_index, closed_index = -1;
 			Search_node *next = nodes.find(ntile);
 					// Already there, and cheaper?
 			if (next && next->get_start_cost() < new_cost)
 				continue;
 			int new_goal_cost = Cost_to_goal(ntile, goal);
+					// Skip nodes too far away.
+			if (new_goal_cost >= max_cost)
+				continue;
 			if (!next)	// Create if necessary.
 				{
 				next = new Search_node(ntile, new_cost,

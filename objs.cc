@@ -1384,6 +1384,39 @@ void Chunk_object_list::remove
 		obj->next = remove->next;
 	}
 
+#if 0	/* +++++ May use this for pathfinding. */
+/*
+ *	Find a closed door occupying a given tile 
+ *	(which may not be in this chunk).
+ *
+ *	Output:	->object found, or 0.
+ */
+
+Game_object *Chunk_object_list::find_closed_door
+	(
+	int tx, int ty, int tz		// Absolute tile coords.
+	)
+	{
+	Game_object *obj;
+	for (obj = get_first(); obj; obj = get_next(obj))
+		{
+		int shnum = obj->get_shapenum();
+		// if closed-door, continue.+++++++++++
+		int ox, oy, oz;		// Get object's lower-right point.
+		obj->get_abs_tile(ox, oy, oz);
+		if (oz > tz || ox < tx || oy < ty)
+			continue;	// Above, or left of, or back of pt.
+		Shape_info& info = shapes.get_info(shnum);
+		if (tz >= oz + info.get_3d_height() ||
+		    tx <= ox - info.get_3d_xtiles() ||
+		    ty <= oy - info.get_3d_ytiles())
+			continue;
+		return (obj);
+		}
+	return (0);
+	}
+#endif
+
 /*
  *	Create a sequence of frames.
  */
