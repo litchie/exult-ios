@@ -66,10 +66,12 @@ void ExultMenu::setup()
 {
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	MenuList menu;
+
+	int menuypos = menuy-44;
 	
 	MenuChoice *scalemethod = new MenuChoice(exult_flx.get_shape(0x18,1),
 			      exult_flx.get_shape(0x18,0),
-			      centerx, menuy-44, font);
+			      centerx, menuypos, font);
 	scalemethod->add_choice("Point");
 	scalemethod->add_choice("Bilinear");
 	scalemethod->add_choice("Interlaced");
@@ -77,22 +79,27 @@ void ExultMenu::setup()
 	scalemethod->add_choice("Super Eagle");
 	scalemethod->set_choice(gwin->get_win()->get_scaler());
 	menu.add_entry(scalemethod);
+	menuypos+=11;
 	
 	MenuChoice *palfades = new MenuChoice(exult_flx.get_shape(0x16,1),
 			      exult_flx.get_shape(0x16,0),
-			      centerx, menuy-33, font);
+			      centerx, menuypos, font);
 	palfades->add_choice("Off");
 	palfades->add_choice("On");
 	palfades->set_choice(gwin->get_fades_enabled()?1:0);
 	menu.add_entry(palfades);
+	menuypos+=11;
 
-	MenuChoice *midiconv = 0, *sfxconv = 0;
+	MenuChoice *midiconv = 0;
+#ifdef ENABLE_MIDISFX
+	MenuChoice *sfxconv = 0;
+#endif
 
 
 	if (Audio::get_ptr()->get_midi()) {
 	  midiconv = new MenuChoice(exult_flx.get_shape(0x14,1),
 				  exult_flx.get_shape(0x14,0),
-				  centerx, menuy-22, font);
+				  centerx, menuypos, font);
 	  midiconv->add_choice("None");
 
 	  midiconv->add_choice("GM");
@@ -100,49 +107,59 @@ void ExultMenu::setup()
 	  midiconv->add_choice("GS127");
 	  midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
 	  menu.add_entry(midiconv);
-	
+	  menuypos+=11;
+
+#ifdef ENABLE_MIDISFX	
 	  MenuChoice *sfxconv = new MenuChoice(exult_flx.get_shape(0x15,1),
 					     exult_flx.get_shape(0x15,0),
-					     centerx, menuy-11, font);
+					     centerx, menuypos, font);
 	  sfxconv->add_choice("None");
 	  sfxconv->add_choice("GS");
 	  sfxconv->set_choice(Audio::get_ptr()->get_midi()->get_effects_conversion()==XMIDI_CONVERT_GS127_TO_GS?1:0);
 
 	  menu.add_entry(sfxconv);
+	  menuypos+=11;
+#endif
 	}
 	
 	MenuChoice *playintro = new MenuChoice(exult_flx.get_shape(0x0B,1),
 			      exult_flx.get_shape(0x0B,0),
-			      centerx, menuy, font);
+			      centerx, menuypos, font);
 	playintro->add_choice("Off");
 	playintro->add_choice("On");
 	playintro->set_choice(get_play_intro()?1:0);
 	menu.add_entry(playintro);
+	menuypos+=11;
+
 	
 	MenuChoice *playscene = new MenuChoice(exult_flx.get_shape(0x12,1),
 			      exult_flx.get_shape(0x12,0),
-			      centerx, menuy+11, font);
+			      centerx, menuypos, font);
 	playscene->add_choice("Off");
 	playscene->add_choice("On");
 	playscene->set_choice(get_play_1st_scene()?1:0);
 	menu.add_entry(playscene);
+	menuypos+=11;
+
 
 	MenuChoice *fullscreen = new MenuChoice(exult_flx.get_shape(0x0C,1),
 			      exult_flx.get_shape(0x0C,0),
-			      centerx, menuy+22, font);
+			      centerx, menuypos, font);
 	fullscreen->add_choice("Off");
 	fullscreen->add_choice("On");
 	fullscreen->set_choice(gwin->get_win()->is_fullscreen()?1:0);
 	menu.add_entry(fullscreen);
-	
+	menuypos+=11;
+
 	MenuChoice *cheating = new MenuChoice(exult_flx.get_shape(0x0D,1),
 				      exult_flx.get_shape(0x0D,0),
-				      centerx, menuy+33, font);
+				      centerx, menuypos, font);
 	cheating->add_choice("Off");
 	cheating->add_choice("On");
 	cheating->set_choice(cheat()?1:0);
 	menu.add_entry(cheating);
-	
+	menuypos+=11;
+
 	MenuEntry *ok = new MenuEntry(exult_flx.get_shape(0x0E,1),
 		      exult_flx.get_shape(0x0E,0),
 		      centerx-64, menuy+55);
@@ -198,10 +215,12 @@ void ExultMenu::setup()
 			    // Midi Conversion
 			    Audio::get_ptr()->get_midi()->set_music_conversion(midiconv->get_choice());
 			  }
+#ifdef ENABLE_MIDISFX
 			  if (sfxconv) {
 			  // SFX Conversion
 			    Audio::get_ptr()->get_midi()->set_effects_conversion(sfxconv->get_choice()==1?XMIDI_CONVERT_GS127_TO_GS:XMIDI_CONVERT_NOCONVERSION);
 			  }
+#endif
 			}
 			// Play Intro
 			set_play_intro(playintro->get_choice()==1);

@@ -1,5 +1,6 @@
 2001-06-12  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gumps/AudioOptions_gump.cc: removed SFX conversion option
+	* exultmenu.cc: same for Exult setup menu
 
 2001-06-12  Ryan Nunn <triforce@merlin.net.au>
 	* audio/xmidi.cc, audio/midi_drivers/win_midiout.cc : Changes to make
