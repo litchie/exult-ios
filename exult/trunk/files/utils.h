@@ -337,6 +337,10 @@ void U7remove(
 	const char *fname
 	);
 
+int U7exists(
+	const char *fname
+	);
+
 int Log2
 	(
 	unsigned int n
