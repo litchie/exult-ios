@@ -483,15 +483,15 @@
 					<li><strong>SuperEagle</strong> by Derek Liauw. Only 2x.</li>
 					<li><strong>Super2xSai</strong> by Derek Liauw. Only 2x.</li>
 					<li><strong>2xSaI</strong> by Derek Liauw. Only 2x.</li>
-					<li><strong>bilinear</strong>bilinear interpolation to smooth the result. 
+					<li><strong>bilinear</strong> bilinear interpolation to smooth the result. 
 						Slower, but looks better. Only 2x.</li>
-					<li><strong>point</strong> simplest but also very fast scaler. simply duplicates 
-						pixels. can be used for arbitrary integer scales (2x, 3x, 4x...).</li>
+					<li><strong>point</strong> simple but very fast scaler. Only duplicates pixels, no 
+						fancy interpolation. Can be used for arbitrary integer scales (2x, 3x, 4x...).</li>
 					<li><strong>interlaced</strong> identical to <strong>point</strong> except that 
 						it skips every other line to be even faster</li>
 				</ul>
 				<para>
-					The scalers by Derek Liauw are slower but much better looking. Try out yourself 
+					The scalers by Derek Liauw are slower but look much better. Try out yourself 
 					which one you like most.
 				</para>
 				<para>

@@ -288,10 +288,10 @@ The scalers also work with higher resolutions than 320x200. To change the scalin
   * SuperEagle by Derek Liauw. Only 2x. 
   * Super2xSai by Derek Liauw. Only 2x. 
   * 2xSaI by Derek Liauw. Only 2x. 
-  * bilinearbilinear interpolation to smooth the result. Slower, but looks better. Only 2x. 
-  * point simplest but also very fast scaler. simply duplicates pixels. can be used for arbitrary integer scales (2x, 3x, 4x...). 
+  * bilinear bilinear interpolation to smooth the result. Slower, but looks better. Only 2x. 
+  * point simple but very fast scaler. Only duplicates pixels, no fancy interpolation. Can be used for arbitrary integer scales (2x, 3x, 4x...). 
   * interlaced identical to point except that it skips every other line to be even faster 
-The scalers by Derek Liauw are slower but much better looking. Try out yourself which one you like most. 
+The scalers by Derek Liauw are slower but look much better. Try out yourself which one you like most. 
 
 More information on the excellent scaling engines by Derek Liauw is available at http://members.xoom.com/derek_liauw/. 
 ------------------------------------
