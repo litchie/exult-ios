@@ -1,3 +1,10 @@
+2001-01-23  Tristan Tarrant <nadir@users.sourceforge.net>
+	* tools/Makefile.am, tools/u7shp.c: removed GIMP plugin from here
+	* mapedit/Makefile.am, mapedit/u7shp.c: moved here
+	* mapedit/*: librarized properly
+	* mapedit/exultstudio.cc: Beginnings of "ExultStudio", a GIMP 
+	  extension for managing shapes and palettes
+
 2001-01-22  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Add 'teleport' intrinsic to SI; Shamino now appears.
