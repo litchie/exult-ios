@@ -102,6 +102,7 @@ SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS)
 
 EXULT_FLX = data/exult.flx data/exult_flx.h
+
 EXULT_FLX_OBJECTS = \
 	data/exult_quotes.shp \
 	data/exult_credits.shp \
@@ -277,7 +278,7 @@ dist:   $(EXEC)
 	copy SDL\README-SDL.txt $(U7PATH)\Exult\README-SDL.txt
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult\SDL.dll
 
-tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe ucdump.exe wuc.exe wud.exe ucc.exe
+tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe
 
 toolsclean:
 	del mklink.o mklink.exe 
