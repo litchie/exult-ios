@@ -33,6 +33,7 @@
 #include "utils.h"
 #include "Gump_manager.h"
 #include "databuf.h"
+#include "ucsched.h"
 
 using std::rand;
 using std::ostream;
@@ -692,6 +693,33 @@ void Container_game_object::write_ireg
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
+
+// Get size of IREG. Returns -1 if can't write to buffer
+int Container_game_object::get_ireg_size()
+{
+	// These shouldn't ever happen, but you never know
+	if (Game_window::get_instance()->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+		return -1;
+
+	int total_size = 13;
+
+	// Now what's inside.
+	if (!objects.is_empty())
+	{
+		Game_object *obj;
+		Object_iterator next(objects);
+		while ((obj = next.get_next()) != 0) {
+			int size = obj->get_ireg_size();
+
+			if (size < 0) return -1;
+
+			total_size += size;
+		}
+		total_size += 1;
+	}
+
+	return total_size;
+}
 
 /*
  *	Write contents (if there is any).

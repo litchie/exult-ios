@@ -96,6 +96,8 @@ public:
 
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
+				// Get size of IREG. Returns -1 if can't write to buffer
+	virtual int get_ireg_size();
 	int	lowlift;
 	int highshape;
 	virtual int get_high_shape() const { return highshape; };

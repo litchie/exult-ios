@@ -57,11 +57,15 @@ class Game_map
 	Map_chunk *objects[c_num_chunks][c_num_chunks];
 	bool schunk_read[144]; 		// Flag for reading in each "ifix".
 	bool schunk_modified[144];	// Flag for modified "ifix".
+	char *schunk_cache[144];
+	int  schunk_cache_sizes[144];
 	std::ifstream *chunks;		// "u7chunks" file.
 	Map_patch_collection *map_patches;
 
 	Map_chunk *create_chunk(int cx, int cy);
 	Chunk_terrain *read_terrain(int chunk_num);
+
+	void cache_out_schunk(int schunk);
 public:
 	Game_map();
 	~Game_map();
@@ -134,6 +138,8 @@ public:
 	void write_ireg();		// Write modified ireg files.
 					// Write moveable objects to file.
 	void write_ireg_objects(int schunk);
+					// Write moveable objects to datasource.
+	void write_ireg_objects(int schunk, DataSource *ireg);
 					// Get moveable objects.
 	void get_ireg_objects(int schunk);
 					// Read scheduled script(s) for obj.
@@ -158,6 +164,8 @@ public:
 					// Locate shape (for EStudio).
 	Game_object *locate_shape(int shapenum, bool upwards, 
 							Game_object *start);
+					// Do a cache out. (cx, cy) is the center
+	void cache_out(int cx, int cy);
 	};
 
 #endif

@@ -62,10 +62,10 @@ short Paperdoll_gump::halox = 123, Paperdoll_gump::haloy = 120;
 
 short Paperdoll_gump::coords[36] = {
 	76, 20,		/* head */	115, 27,	/* back */
-	92,  61,	/* belt */	38, 55,		/* lhand */
+	105, 65,	/* belt */	38, 55,		/* lhand */
 	55, 62,		/* lfinger */	80, 80,		/* legs */
 	84, 105,	/* feet */	90, 50,		/* rfinger */
-	117, 55,	/* rhand */	83, 43,		/* torso */
+	117, 55,	/* rhand */	45, 35,		/* torso */
 	44, 26,		/* neck */	69, 59,		/* ammo */
 	59, 19,		/* back2 */	94, 20,		/* back 3 (shield) */
 	76, 26,		/* ears */	76, 33,		/* cloak */
@@ -73,10 +73,10 @@ short Paperdoll_gump::coords[36] = {
 };
 short Paperdoll_gump::coords_blue[36] = {
 	76, 20,		/* head */	64, 27,		/* back */
-	84, 61,		/* belt */	30, 58,		/* lhand */
+	54, 56,		/* belt */	30, 58,		/* lhand */
 	55, 62,		/* lfinger */	80, 80,		/* legs */
 	84, 105,	/* feet */	90, 50,		/* rfinger */
-	68, 50,		/* rhand */	83, 43,		/* torso */
+	68, 50,		/* rhand */	45, 37,		/* torso */
 	22, 26,		/* neck */	69, 59,		/* ammo */
 	59, 19,		/* back2 */	94, 20,		/* back 3 (shield) */
 	76, 26,		/* ears */	76, 33,		/* cloak */
@@ -87,7 +87,7 @@ short Paperdoll_gump::shapes_blue[36] = {
 	54, 0,		/* belt */	55, 0,		/* lhand */
 	55, 0,		/* lfinger */	54, 0,		/* legs */
 	54, 0,		/* feet */	54, 0,		/* rfinger */
-	54, 0,		/* rhand */	54, 0,		/* torso */
+	54, 0,		/* rhand */	55, 0,		/* torso */
 	54, 0,		/* neck */	54, 0,		/* ammo */
 	55, 0,		/* back2 */	54, 0,		/* back 3 (shield) */
 	54, 0,		/* ears */	54, 0,		/* cloak */
@@ -449,21 +449,21 @@ void Paperdoll_gump::paint
 		paint_object      (gwin, box, info, Actor::belt,       shieldx,shieldy, 0, Actor::shield_spot);
 		paint_object      (gwin, box, info, Actor::belt,        back2x, back2y, 0, Actor::back2h_spot);
 		paint_object      (gwin, box, info, Actor::back,        backx,  backy);
-		paint_object      (gwin, box, info, Actor::torso,       bodyx,  bodyy,  0, Actor::cloak_spot);
+		paint_object      (gwin, box, info, Actor::neck,        bodyx,  bodyy,  0, Actor::cloak_spot);
 		paint_body        (gwin, box, info);
 		paint_object      (gwin, box, info, Actor::legs,        legsx,  legsy);
 		paint_object      (gwin, box, info, Actor::feet,        feetx,  feety);		
 		paint_object      (gwin, box, info, Actor::ammo,        ammox,  ammoy);
 
-		obj = container->get_readied(Actor::torso);
+		paint_object      (gwin, box, info, Actor::torso,       bodyx,  bodyy);
+		paint_belt        (gwin, box, info);
+		paint_head        (gwin, box, info);
+
+		obj = container->get_readied(Actor::neck);
 		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::cloak_spot);
 		item2 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::special_spot);
 		if (!item1 && !item2)
-			paint_object      (gwin, box, info, Actor::torso,       bodyx,  bodyy);
-		
-		paint_belt        (gwin, box, info);
-		paint_head        (gwin, box, info);
-		paint_object      (gwin, box, info, Actor::neck,        neckx,  necky);
+			paint_object      (gwin, box, info, Actor::neck,        neckx,  necky);
 
 		obj = container->get_readied(Actor::belt);
 		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::shield_spot);
@@ -474,7 +474,7 @@ void Paperdoll_gump::paint
 		paint_arms        (gwin, box, info);
 		paint_object_arms (gwin, box, info, Actor::torso,       bodyx,  bodyy, 1, Actor::torso);
 		paint_object      (gwin, box, info, Actor::head,        headx,  heady);
-		paint_object      (gwin, box, info, Actor::torso,       bodyx,  bodyy, 0, Actor::special_spot);
+		paint_object      (gwin, box, info, Actor::neck,        bodyx,  bodyy, 0, Actor::special_spot);
 		paint_object_arms (gwin, box, info, Actor::rfinger,     lhandx, lhandy, 0);
 
 		obj = container->get_readied(Actor::lfinger);
@@ -869,7 +869,7 @@ Game_object * Paperdoll_gump::find_object
 
 		if ((obj = check_object_arms (gwin, mx, my, info, Actor::rfinger,     lhandx, lhandy, 0)))
 			return obj;
-		if ((obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy,  0, Actor::special_spot)))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::neck,        bodyx,  bodyy,  0, Actor::special_spot)))
 			return obj;
 		if ((obj = check_object      (gwin, mx, my, info, Actor::head,        headx,  heady)))
 			return obj;
@@ -884,17 +884,17 @@ Game_object * Paperdoll_gump::find_object
 		if (!item1 && !item2 && (obj = check_object      (gwin, mx, my, info, Actor::belt,        beltx,  belty)))
 			return obj;
 
-		if ((obj = check_object      (gwin, mx, my, info, Actor::neck,        neckx,  necky)))
+		obj = container->get_readied(Actor::neck);
+		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::cloak_spot);
+		item2 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::special_spot);
+		if (!item1 && !item2 && (obj = check_object      (gwin, mx, my, info, Actor::neck,        neckx,  necky)))
 			return obj;
+
 		if (check_head              (gwin, mx, my, info))
 			return NULL;
 		if (check_belt              (gwin, mx, my, info))
 			return NULL;
-
-		obj = container->get_readied(Actor::torso);
-		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::cloak_spot);
-		item2 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::special_spot);
-		if (!item1 && !item2 && (obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy)))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy)))
 			return obj;
 
 		if ((obj = check_object      (gwin, mx, my, info, Actor::ammo,        ammox,  ammoy)))
@@ -907,7 +907,7 @@ Game_object * Paperdoll_gump::find_object
 		if (check_body        (gwin, mx, my, info))
 			return NULL;
 			
-		if ((obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy, 0, Actor::cloak_spot)))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::neck,       bodyx,  bodyy, 0, Actor::cloak_spot)))
 			return obj;
 		if ((obj = check_object      (gwin, mx, my, info, Actor::back,        backx,  backy)))
 			return obj;

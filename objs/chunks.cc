@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "animate.h"
 #include "dir.h"
+#include "actors.h"
 
 using std::memset;
 using std::rand;
@@ -1362,3 +1363,46 @@ int Map_chunk::is_roof(int tx, int ty, int lift)
 	return height;
 }
 
+void Map_chunk::kill_cache()
+{
+	// Get rid of terrain
+	if (terrain) terrain->remove_client();
+	terrain = 0;
+
+	// Now remove the cachce
+	delete cache;
+	cache = 0;
+
+	// Delete dungeon bits
+	delete [] dungeon_levels;
+	dungeon_levels = 0;
+}
+
+int Map_chunk::get_obj_actors(Game_object_vector &removes, Actor_vector &actors)
+{
+	int buf_size = 0;
+	bool failed = false;
+
+	// Separate scope for Object_iterator.
+	Object_iterator it(get_objects());
+	Game_object *each;
+	while ((each = it.get_next()) != 0)
+	{
+		Actor *actor = each->as_actor();
+
+		// Normal objects and monsters
+		if (actor == 0 || each->is_monster()) {
+			removes.push_back(each);
+			int ireg_size = each->get_ireg_size();
+
+			if (ireg_size < 0) failed = true;
+			else buf_size += ireg_size;
+		}
+			// Actors/NPCs here
+		else {
+			actors.push_back(actor);
+		}
+	}
+
+	return failed?-1:buf_size;
+}

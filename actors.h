@@ -434,8 +434,8 @@ public:
 	void read(DataSource* nfile, int num, bool has_usecode,
 							bool& fix_unused);
 					// Don't write out to IREG file.
-	virtual void write_ireg(DataSource* out)
-		{  }
+	virtual void write_ireg(DataSource* out) {  }
+	virtual int get_ireg_size() { return 0; }
 	void write(DataSource* nfile);// Write out (to 'npc.dat').
 	virtual void write_contents(DataSource* out);	// Write contents
 	void set_actor_shape(); 	// Set shape based on sex, skin color
@@ -457,6 +457,9 @@ public:
 	int inventory_shapenum();
 
 	bool was_hit() { return hit; }
+
+	// Should be virtual???
+	void cache_out();
 	};
 
 /*
@@ -551,6 +554,8 @@ public:
 					Map_chunk *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
+
+	virtual Npc_actor *as_npc() { return this; }
 	};
 
 /*

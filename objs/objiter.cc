@@ -83,8 +83,7 @@ template<class D> Game_object *D_Recursive_object_iterator<D>::get_next
 	if (!obj)
 		return 0;		// All done.
 					// Is it a container?
-	Container_game_object *c = 
-			dynamic_cast<Container_game_object *> (obj);
+	Container_game_object *c = obj->as_container();
 	if (c)				// Container?  Set to go through it.
 		child = new D_Recursive_object_iterator<D>(
 							c->get_objects());

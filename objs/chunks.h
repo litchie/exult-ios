@@ -260,6 +260,11 @@ public:
 		return ice_dungeon == 0x0F;//0 != ((ice_dungeon >> ( (tx>>3) + 2*(ty>>3) ) )&1);
 		}
 
+					// Kill the items and the cache
+	void kill_cache();
+					// Get all objects and actors for use when writing memory cache.
+					// returns size require to save
+	int get_obj_actors(Game_object_vector &removes, Actor_vector &actors);
 
 	};
 
