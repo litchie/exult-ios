@@ -44,6 +44,56 @@ using std::strlen;
 #include "utils.h"
 #include "listfiles.h"
 
+#if defined(MACOS) || defined(BEOS)
+
+/*
+ *	Match a string with a given pattern (DOS like syntax, using * and ?)
+ */
+
+static bool MatchString( const char *str, const std::string& inPat );
+static bool MatchString( const char *str, const std::string& inPat )
+{
+	const char *pat = inPat.c_str();
+
+	const char *p = NULL;
+	const char *q = NULL;
+	
+	for(;;)
+	{
+		switch(*pat)
+		{
+		case '*':
+			p = ++pat;
+			q = str;
+			break;
+
+		default:
+			if(*pat != *str)
+			{
+				if(p)
+				{
+					pat = p;
+					str = ++q;
+					if(!*str)
+						return !*pat;
+					break;
+				}
+				else
+					return false;
+			}
+			// fallthrough
+		case '?':
+			if(!*str)
+				return !*pat;
+			pat++;
+			str++;
+		}
+	}
+}
+
+#endif
+
+
 // System Specific Code for Windows
 #if defined(WIN32)
 
@@ -94,50 +144,6 @@ int U7ListFiles(const std::string mask, FileList& files)
 #include <Files.h>
 #include <TextUtils.h>
 
-/*
- *	Match a string with a given pattern (DOS like syntax, using * and ?)
- */
-
-bool	MatchString( const char *str, const std::string& inPat );
-bool	MatchString( const char *str, const std::string& inPat )
-{
-	const char *pat = inPat.c_str();
-
-	const char *p = NULL;
-	const char *q = NULL;
-	
-	for(;;)
-	{
-		switch(*pat)
-		{
-		case '*':
-			p = ++pat;
-			q = str;
-			break;
-
-		default:
-			if(*pat != *str)
-			{
-				if(p)
-				{
-					pat = p;
-					str = ++q;
-					if(!*str)
-						return !*pat;
-					break;
-				}
-				else
-					return false;
-			}
-			// fallthrough
-		case '?':
-			if(!*str)
-				return !*pat;
-			pat++;
-			str++;
-		}
-	}
-}
 
 OSErr GetCatInfoNoName(short vRefNum,
 							   long dirID,
@@ -233,6 +239,56 @@ int U7ListFiles(const std::string pathMask, FileList& files)
 	
 	return err;
 }
+
+#elif defined(BEOS)
+
+#include <be/storage/Directory.h>
+#include <be/storage/Entry.h>
+
+int U7ListFiles(const std::string pathMask, FileList& files)
+{
+	char filename[255];
+	string path(get_system_path(pathMask));
+	string mask;
+	string::size_type pos;
+	
+	pos = path.rfind('/');
+	if(pos == string::npos)
+	{
+		mask = path;
+		path = "";
+	}
+	else
+	{
+		mask = path.substr(pos+1);
+		path = path.substr(0,pos);
+	}
+
+	BDirectory dir(path.c_str());
+
+	if (dir.InitCheck() != B_OK)
+		return -1;
+
+	do {
+		BEntry entry;
+		if (dir.GetNextEntry(&entry, true) == B_ENTRY_NOT_FOUND)
+			break; // done
+			
+		// is it a regular file? (symlinks have already been traversed)
+		if (!entry.IsFile())
+			continue;
+
+		entry.GetName(filename);
+		if (MatchString(filename, mask)) {
+			cout << "Filename: " << filename << endl;
+ 			files.push_back(filename);				
+		}
+	} while (true);
+	
+	return 0;
+}
+
+
 
 #else	// This system has glob.h
 
