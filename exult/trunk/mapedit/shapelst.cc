@@ -125,6 +125,7 @@ void Shape_chooser::render
 	info_cnt = 0;			// Count them.
 	int curr_y = 0;
 	int row_h = 0;
+	int rows = 0;			// Count rows.
 	do {
 		while (shapenum<num_shapes) {
 			if(shape) {
@@ -160,11 +161,14 @@ void Shape_chooser::render
 		}
 		curr_y += row_h + border;
 		x = 0;
+		rows++;
 	} while(shapenum<num_shapes && (curr_y + 36 < winh));
+	num_per_row = info_cnt/rows;		// Figure average.
 	if (new_selected == -1)
 		unselect(false);
 	else
 		select(new_selected);
+	adjust_scrollbar();		// Set new scroll values.
 }
 	
 /*
@@ -181,9 +185,9 @@ gint Shape_chooser::configure
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	chooser->Shape_draw::configure(widget);
 	chooser->render();
+	chooser->adjust_scrollbar();	// Figure new scroll amounts.
 	return (TRUE);
 	}
-
 
 /*
  *	Handle an expose event.
@@ -368,6 +372,21 @@ void Shape_chooser::scroll
 	}
 
 /*
+ *	Adjust scroll amounts.
+ */
+
+void Shape_chooser::adjust_scrollbar
+	(
+	)
+	{	
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(shape_scroll));
+	adj->step_increment = num_per_row ? num_per_row : 1;
+	adj->page_increment = info_cnt;
+	adj->page_size = info_cnt;
+	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+	}
+
+/*
  *	Handle a scrollbar event.
  */
 
@@ -419,7 +438,8 @@ Shape_chooser::Shape_chooser
 	int w, int h			// Dimensions.
 	) : Shape_draw(i, palbuf, gtk_drawing_area_new()),
 		shapenum0(0),
-		info(0), info_cnt(0), selected(-1), sel_changed(0)
+		info(0), info_cnt(0), num_per_row(0), 
+		selected(-1), sel_changed(0)
 	{
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
@@ -470,8 +490,7 @@ Shape_chooser::Shape_chooser
 	GtkObject *shape_adj = gtk_adjustment_new(0, 0, 
 				num_shapes, 1, 
 				4, 1.0);
-	GtkWidget *shape_scroll = gtk_vscrollbar_new(
-					GTK_ADJUSTMENT(shape_adj));
+	shape_scroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(shape_adj));
 					// Update window when it stops.
 	gtk_range_set_update_policy(GTK_RANGE(shape_scroll),
 					GTK_UPDATE_DELAYED);
