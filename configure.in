@@ -63,8 +63,18 @@ if test -d "/usr/X11" ; then
 fi
 if test "$WINDOWING_SYSTEM" = "-DXWIN"; then
 	echo "Smells like X11"
+	TOP_LEVEL_SUBDIRS="audio conf"
+	AUDIO_LIBRARY="-Laudio -laudio"
+	AUDIO_INCLUDES="-Iaudio"
+	EXE_TARGET="exult"
 else
 	echo "Umm. Doesn't seem to be X11."
+	echo "Let's assume it's Windows as an alternative."
+	WINDOWING_SYSTEM="-DWIN32"
+	TOP_LEVEL_SUBDIRS="conf"
+	AUDIO_LIBRARY=""
+	AUDIO_INCLUDES=""
+	EXE_TARGET="exult.exe"
 fi
 
 dnl Just for record-keeping
@@ -179,6 +189,10 @@ AC_SUBST(KMID_INCLUDES)
 AC_SUBST(KMID_LIBS)
 AC_SUBST(PEDANTIC)
 AC_SUBST(HAVE_TIMIDITY_BIN)
+AC_SUBST(TOP_LEVEL_SUBDIRS)
+AC_SUBST(AUDIO_LIBRARY)
+AC_SUBST(AUDIO_INCLUDES)
+AC_SUBST(EXE_TARGET)
 
 dnl Checks for header files.
 AC_HEADER_DIRENT

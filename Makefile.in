@@ -60,12 +60,15 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+AUDIO_INCLUDES = @AUDIO_INCLUDES@
+AUDIO_LIBRARY = @AUDIO_LIBRARY@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
 DEBUG_FLAGS = @DEBUG_FLAGS@
 DLLTOOL = @DLLTOOL@
 EXEEXT = @EXEEXT@
+EXE_TARGET = @EXE_TARGET@
 FREETYPE_DIR = @FREETYPE_DIR@
 HAVE_SDL_CONFIG = @HAVE_SDL_CONFIG@
 HAVE_TIMIDITY_BIN = @HAVE_TIMIDITY_BIN@
@@ -84,12 +87,13 @@ RELNUM = @RELNUM@
 SDL_INCLUDES = @SDL_INCLUDES@
 SDL_LIBS = @SDL_LIBS@
 STRIP = @STRIP@
+TOP_LEVEL_SUBDIRS = @TOP_LEVEL_SUBDIRS@
 VERSION = @VERSION@
 WINDOWING_SYSTEM = @WINDOWING_SYSTEM@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = audio conf
+SUBDIRS = $(TOP_LEVEL_SUBDIRS)
 
 OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o 	gametxt.o 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o 	tqueue.o gameclk.o mouse.o items.o lists.o vec.o
 
@@ -102,9 +106,10 @@ SOURCES = $(HFILES) $(OBJECTS:%.o=%.cc)
 EXTRA_DIST = CHANGELOG
 
 SUFFIXES = .cc .h
-INCLUDES =  -I. -Iaudio -Iconf $(SDL_INCLUDES) $(KMID_INCLUDES)
-LIBS =  $(SDL_LIBS) -Laudio -Lconf  $(KMID_LIBS) -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -laudio -lconf
+INCLUDES =  -I. $(AUDIO_INCLUDES) -Iconf $(SDL_INCLUDES) $(KMID_INCLUDES)
+LIBS =  $(SDL_LIBS) -Lconf  $(KMID_LIBS) $(AUDIO_LIBRARY) -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -lconf $(AUDIO_LIBRARY)
 CXXFLAGS =  $(PEDANTIC) -DRELNUM=$(RELNUM) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS)
+
 LFLAGS =  -g -L /usr/X11R6/lib -L /usr/local/lib
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -397,11 +402,12 @@ maintainer-clean
 %.o : %.cc
 	$(CXX) $(CXXFLAGS) -c $< $(INCLUDES)
 
-				# X-windows.
+all-local: $(EXE_TARGET)
 
-all-local: exult
+exult: $(OBJECTS)
+	$(CXX) $(LFLAGS) -o $@ $(OBJECTS) $(STATIC) $(LIBS)
 
-exult: $(OBJECTS) audio/libaudio.a
+exult.exe: $(OBJECTS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJECTS) $(STATIC) $(LIBS)
 
 tar:	exult
