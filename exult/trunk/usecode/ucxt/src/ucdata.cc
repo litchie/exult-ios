@@ -36,16 +36,10 @@ using std::endl;
 using std::vector;
 using std::setbase;
 using std::setfill;
+using std::string;
+using std::ostream;
 
-UCData::UCData() : _noconf(false), _rawops(false),
-                   _autocomment(false), _uselesscomment(false),
-                   _verbose(false), _ucdebug(false),
-                   _basic(false), _game(GAME_BG),
-                   _output_list(false), _output_asm(false),
-                   _output_ucz(false), _output_flag(false),
-                   _mode_all(false), _mode_dis(false),
-                   _search_opcode(-1),
-                   _search_intrinsic(-1)
+UCData::UCData() : _search_opcode(-1), _search_intrinsic(-1)
 {
 }
 
@@ -61,24 +55,25 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 	/* Parse command line */
 	for(unsigned int i=1; i<argc; i++)
 	{
-		if     (strcmp(argv[i], "-si" )==0) _game    = GAME_SI;
-		else if(strcmp(argv[i], "-bg" )==0) _game    = GAME_BG;
+		if     (strcmp(argv[i], "-si" )==0) options._game = UCOptions::GAME_SI;
+		else if(strcmp(argv[i], "-bg" )==0) options._game = UCOptions::GAME_BG;
+		else if(strcmp(argv[i], "-u8" )==0) options._game = UCOptions::GAME_U8;
 
-		else if(strcmp(argv[i], "-a"  )==0) { _mode_all=true; }
+		else if(strcmp(argv[i], "-a"  )==0) options.mode_all=true;
 
-		else if(strcmp(argv[i], "-nc" )==0) _noconf  = true;
-		else if(strcmp(argv[i], "-ro" )==0) _rawops  = true;
-		else if(strcmp(argv[i], "-ac" )==0) _autocomment = true;
-		else if(strcmp(argv[i], "-uc" )==0) _uselesscomment = true;
-		else if(strcmp(argv[i], "-v"  )==0) _verbose = true;
-		else if(strcmp(argv[i], "-dbg")==0) _ucdebug = true;
-		else if(strcmp(argv[i], "-b"  )==0) _basic = true;
+		else if(strcmp(argv[i], "-nc" )==0) options.noconf  = true;
+		else if(strcmp(argv[i], "-ro" )==0) options.rawops  = true;
+		else if(strcmp(argv[i], "-ac" )==0) options.autocomment = true;
+		else if(strcmp(argv[i], "-uc" )==0) options.uselesscomment = true;
+		else if(strcmp(argv[i], "-v"  )==0) options.verbose = true;
+		else if(strcmp(argv[i], "-dbg")==0) options.ucdebug = true;
+		else if(strcmp(argv[i], "-b"  )==0) options.basic = true;
 
-		else if(strcmp(argv[i], "-fl" )==0) _output_list = true;
-		else if(strcmp(argv[i], "-fa" )==0) _output_asm  = true;
-		else if(strcmp(argv[i], "-fz" )==0) _output_ucz  = true;
-		else if(strcmp(argv[i], "-fs" )==0) _output_ucz  = true;
-		else if(strcmp(argv[i], "-ff" )==0) _output_flag = true;
+		else if(strcmp(argv[i], "-fl" )==0) options.output_list = true;
+		else if(strcmp(argv[i], "-fa" )==0) options.output_asm  = true;
+		else if(strcmp(argv[i], "-fz" )==0) options.output_ucs  = true;
+		else if(strcmp(argv[i], "-fs" )==0) options.output_ucs  = true;
+		else if(strcmp(argv[i], "-ff" )==0) options.output_flag = true;
 
 		else if(strcmp(argv[i], "--extern-header" )==0) options.output_extern_header = true;
 		
@@ -93,19 +88,19 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 			else
 			{
 				search_funcs.push_back(search_func);
-				if(verbose()) cout << "Disassembling Function: " << search_func << endl;
-				_mode_dis = true;
+				if(options.verbose) cout << "Disassembling Function: " << search_func << endl;
+				options.mode_dis = true;
 			}
 		}
 		else if((string(argv[i]).size()>2) && string(argv[i]).substr(0, 2)=="-o")
 		{
 			_output_redirect = string(argv[i]).substr(2, string(argv[i]).size()-2);
-			if(verbose()) cout << "Outputting to filename: " << _output_redirect << endl;
+			if(options.verbose) cout << "Outputting to filename: " << _output_redirect << endl;
 		}
 		else if((string(argv[i]).size()>2) && string(argv[i]).substr(0, 2)=="-i")
 		{
 			_input_usecode_file = string(argv[i]).substr(2, string(argv[i]).size()-2);
-			if(verbose()) cout << "Inputting from file: " << _input_usecode_file << endl;
+			if(options.verbose) cout << "Inputting from file: " << _input_usecode_file << endl;
 		}
 		else
 		{
@@ -126,40 +121,40 @@ void UCData::disassamble()
 {
 	load_funcs();
 
-	if(verbose())
+	if(options.verbose)
 	{
 		for(vector<unsigned int>::iterator i=search_funcs.begin(); i!=search_funcs.end(); i++)
 			cout << "Looking for function number " << setw(8) << (*i) << endl;
 		cout << endl;
 	}
 	
-	if(output_list())
-		cout << "Function       offset    size  data  code" << (ucdebug() ? " funcname" : "") << endl;
+	if(options.output_list)
+		cout << "Function       offset    size  data  code" << (options.ucdebug ? " funcname" : "") << endl;
 
 	bool _foundfunc=false; //did we find and print the function?
 	for(unsigned int i=0; i<_funcs.size(); i++)
 	{
-		if(mode_all() || (mode_dis() && count(search_funcs.begin(), search_funcs.end(), _funcs[i]->_funcid)))
+		if(options.mode_all || (options.mode_dis && count(search_funcs.begin(), search_funcs.end(), _funcs[i]->_funcid)))
 		{
 			_foundfunc=true;
 			bool _func_printed=false; // to test if we've actually printed a function ouput
 
-			if(output_list())
+			if(options.output_list)
 			{
-				_funcs[i]->output_list(cout, i, ucdebug());
+				_funcs[i]->output_list(cout, i, options);
 				_func_printed=true;
 			}
 			
-			if(output_ucz())
+			if(options.output_ucs)
 			{
-				_funcs[i]->parse_ucs(_funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), _basic);
-				_funcs[i]->output_ucs(cout, _funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), uselesscomment());
+				_funcs[i]->parse_ucs(_funcmap, ((options.game_si()) ? si_uc_intrinsics : bg_uc_intrinsics), options);
+				_funcs[i]->output_ucs(cout, _funcmap, ((options.game_si()) ? si_uc_intrinsics : bg_uc_intrinsics), options);
 				_func_printed=true;
 			}
 
 			// if we haven't printed one by now, we'll print an asm output.
-			if(output_asm() || (_func_printed==false))
-				print_asm(*_funcs[i], cout, _funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), *this);
+			if(options.output_asm || (_func_printed==false))
+				print_asm(*_funcs[i], cout, _funcmap, ((options.game_si()) ? si_uc_intrinsics : bg_uc_intrinsics), *this);
 		}
 	}
 
@@ -171,7 +166,7 @@ void UCData::disassamble()
 		printf("Functions: %d\n", _funcs.size());
 	}
 
-	if(output_list())
+	if(options.output_list)
 		cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
 	
 	cout << endl;
@@ -181,7 +176,7 @@ void UCData::disassamble()
 	with 'variables' in the opcodes.txt file, that signify if it's a pop/push and a flag */
 void UCData::dump_flags(ostream &o)
 {
-	if(!(game_bg() || game_si()))
+	if(!(options.game_bg() || options.game_si()))
 	{
 		o << "This option only works for U7:BG and U7:SI" << endl;
 		return;
@@ -266,21 +261,16 @@ void UCData::load_funcs()
 	{
 		UCFunc *ucfunc = new UCFunc();
 
-/*    if( ( ( uc._search_func == -1 )
-        || ( uc.mode() == MODE_OPCODE_SCAN ) )
-       && ( uc._search_opcode == -1 ) && ( uc._search_intrinsic == -1 ) )
-      cout << "#" << std::setbase(10) << std::setw(3) << func.size() * current function number* << std::setbase(16) << ": ";*/
-
-		readbin_UCFunc(_file, *ucfunc);
+		if(options.game_bg() || options.game_si())
+			readbin_U7UCFunc(_file, *ucfunc);
+		else if(options.game_u8())
+			readbin_U8UCFunc(_file, *ucfunc);
+		else
+			exit(-1); // can't happen
 		
-//    if( ( ( uc.mode() != MODE_OPCODE_SEARCH ) && ( uc.mode() !=MODE_INTRINSIC_SEARCH ) ) || found )
-//      num_functions++;
-//    if( ( uc.mode() == MODE_OPCODE_SEARCH ) || ( uc.mode() == MODE_INTRINSIC_SEARCH ) )
-//      found = 0;
-
 		_funcs.push_back(ucfunc);
 		{
-   	 	_file.get();
+			_file.get();
 			eof = _file.eof();
 			_file.unget();
 		}
@@ -297,6 +287,11 @@ void UCData::load_funcs()
 
 void UCData::output_extern_header(ostream &o)
 {
+	if(!(options.game_bg() || options.game_si()))
+	{
+		o << "This option only works for U7:BG and U7:SI" << endl;
+		return;
+	}
 	load_funcs();
 
 	for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); func++)

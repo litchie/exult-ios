@@ -64,6 +64,11 @@ void open_usecode_file(UCData &uc, const Configuration &config);
 UCData uc;
 
 using std::setw;
+using std::cerr;
+using std::cout;
+using std::ios;
+using std::string;
+using std::endl;
 
 int main(int argc, char** argv)
 {
@@ -73,14 +78,14 @@ int main(int argc, char** argv)
 
 	// get the parameters
 	uc.parse_params(argc, argv);
-	if(uc.verbose()) cout << "Parameters parsed..." << endl;
+	if(uc.options.verbose) cout << "Parameters parsed..." << endl;
 
 	Configuration config;
 	
 	// attempt to find an exult.cfg file... _somewhere_
-	if(uc.noconf() == false)
+	if(uc.options.noconf == false)
 	{
-		if(uc.verbose()) cout << "Loading exult configuration file..." << endl;
+		if(uc.options.verbose) cout << "Loading exult configuration file..." << endl;
 		if(config.read_config_file("exult.cfg") == false)
 		{
 			cout << "Failed to locate exult.cfg. Run exult before running ucxt or use the -nc switch. Exiting." << endl;
@@ -89,12 +94,12 @@ int main(int argc, char** argv)
 	}
 	
 	// init the compile time tables
-	if(uc.verbose()) cout << "Initing static tables..." << endl;
+	if(uc.options.verbose) cout << "Initing static tables..." << endl;
 	init_static_usecodetables();
 
 	// init the run time tables
-	if(uc.verbose()) cout << "Initing runtime tables..." << endl;
-	init_usecodetables(config, uc.noconf(), uc.verbose());
+	if(uc.options.verbose) cout << "Initing runtime tables..." << endl;
+	init_usecodetables(config, uc.options);
 	
 	#if 0
 	{
@@ -158,11 +163,11 @@ int main(int argc, char** argv)
 	{
 		uc.output_extern_header(cout);
 	}
-	else if     ( uc.mode_dis() || uc.mode_all() )
+	else if     ( uc.options.mode_dis || uc.options.mode_all )
 	{
 		uc.disassamble();
 	}
-	else if( uc.output_flag() )
+	else if( uc.options.output_flag )
 	{
 		uc.dump_flags(cout);
 	}
@@ -181,9 +186,11 @@ int main(int argc, char** argv)
 void open_usecode_file(UCData &uc, const Configuration &config)
 {
 	string bgpath;
-	if(uc.noconf() == false) config.value("config/disk/game/blackgate/path", bgpath);
+	if(uc.options.noconf == false) config.value("config/disk/game/blackgate/path", bgpath);
 	string sipath;
-	if(uc.noconf() == false) config.value("config/disk/game/serpentisle/path", sipath);
+	if(uc.options.noconf == false) config.value("config/disk/game/serpentisle/path", sipath);
+	string u8path;
+	if(uc.options.noconf == false) config.value("config/disk/game/pagan/path", u8path);
 	
 	/* ok, to find the usecode file we search: (where $PATH=bgpath or sipath)
 		$PATH/static/usecode
@@ -211,49 +218,65 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 	
 	/* The capitilisation configurations: (yes, going overkill, typos are BAD!) */
 	
+	// These 4 are only specific to BG && SI
 	string mucc_sl("static");
 	string mucc_sc("STATIC");
 	string mucc_ul("usecode");
 	string mucc_uc("USECODE");
-	string mucc_bgl("ultima7");
-	string mucc_bgc("ULTIMA7");
-	string mucc_sil("serpent");
-	string mucc_sic("SERPENT");
 	
-	/* The four mystical usecode configurations: */
+	const string mucc_bgl("ultima7");
+	const string mucc_bgc("ULTIMA7");
+	const string mucc_sil("serpent");
+	const string mucc_sic("SERPENT");
+	const string mucc_u8l("pagan");
+	const string mucc_u8c("PAGAN");
 	
-	string mucc_ll(string("/") + mucc_sl + "/" + mucc_ul);
-	string mucc_cl(string("/") + mucc_sc + "/" + mucc_ul);
-	string mucc_lc(string("/") + mucc_sl + "/" + mucc_uc);
-	string mucc_cc(string("/") + mucc_sc + "/" + mucc_uc);
-	
-	string path, ucspecial, mucc_u7l, mucc_u7c;
-	if(uc.game_bg())
+	string path, ucspecial, mucc_l, mucc_c;
+	if(uc.options.game_bg())
 	{
-		if(uc.verbose()) cout << "Configuring for bg." << endl;
+		if(uc.options.verbose) cout << "Configuring for bg." << endl;
 		path      = bgpath;
 		ucspecial = "usecode.bg";
-		mucc_u7l  = mucc_bgl;
-		mucc_u7c  = mucc_bgc;
+		mucc_l  = mucc_bgl;
+		mucc_c  = mucc_bgc;
 	}
-	else if(uc.game_si())
+	else if(uc.options.game_si())
 	{
-		if(uc.verbose()) cout << "Configuring for si." << endl;
+		if(uc.options.verbose) cout << "Configuring for si." << endl;
 		path      = sipath;
 		ucspecial = "usecode.si";
-		mucc_u7l  = mucc_sil;
-		mucc_u7c  = mucc_sic;
+		mucc_l  = mucc_sil;
+		mucc_c  = mucc_sic;
+	}
+	else if(uc.options.game_u8())
+	{
+		if(uc.options.verbose) cout << "Configuring for u8." << endl;
+		path      = u8path;
+		ucspecial = "usecode.u8";
+		mucc_l  = mucc_u8l;
+		mucc_c  = mucc_u8c;
+		mucc_sl = "usecode";
+		mucc_sc = "USECODE";
+		mucc_ul = "eusecode.flx";
+		mucc_uc = "EUSECODE.FLX";
 	}
 	else
 	{
-		std::cerr << "Error: uc.game() was not set to GAME_U7 or GAME_SI this can't happen" << endl;
+		cerr << "Error: uc.game() was not set to GAME_U7 or GAME_SI or GAME_U8 this can't happen" << endl;
 		assert(false); exit(1); // just incase someone decides to compile without asserts;
 	}
+	
+	/* The four mystical usecode configurations: */
+	
+	const string mucc_ll(string("/") + mucc_sl + "/" + mucc_ul);
+	const string mucc_cl(string("/") + mucc_sc + "/" + mucc_ul);
+	const string mucc_lc(string("/") + mucc_sl + "/" + mucc_uc);
+	const string mucc_cc(string("/") + mucc_sc + "/" + mucc_uc);
 	
 	// an icky exception chain for those who don't use .exult.cfg
 	if(uc.input_usecode_file().size())
 		uc.open_usecode(uc.input_usecode_file());
-	else if(uc.noconf()==false)
+	else if(uc.options.noconf==false)
 	{
 		uc.open_usecode(path + mucc_ll);
 		if(uc.fail())
@@ -263,25 +286,25 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 		if(uc.fail())
 			uc.open_usecode(path + mucc_cc);
 		if(uc.fail())
-			uc.open_usecode(mucc_u7l + mucc_ll);
+			uc.open_usecode(mucc_l + mucc_ll);
 	}
 	else
-		uc.open_usecode(mucc_u7l + mucc_ll);
+		uc.open_usecode(mucc_l + mucc_ll);
 		
 	if(uc.fail())
-		uc.open_usecode(mucc_u7l + mucc_cl);
+		uc.open_usecode(mucc_l + mucc_cl);
 	if(uc.fail())
-		uc.open_usecode(mucc_u7l + mucc_lc);
+		uc.open_usecode(mucc_l + mucc_lc);
 	if(uc.fail())
-		uc.open_usecode(mucc_u7l + mucc_cc);
+		uc.open_usecode(mucc_l + mucc_cc);
 	if(uc.fail())
-		uc.open_usecode(mucc_u7c + mucc_ll);
+		uc.open_usecode(mucc_c + mucc_ll);
 	if(uc.fail())
-		uc.open_usecode(mucc_u7c + mucc_cl);
+		uc.open_usecode(mucc_c + mucc_cl);
 	if(uc.fail())
-		uc.open_usecode(mucc_u7c + mucc_lc);
+		uc.open_usecode(mucc_c + mucc_lc);
 	if(uc.fail())
-		uc.open_usecode(mucc_u7c + mucc_cc);
+		uc.open_usecode(mucc_c + mucc_cc);
 	if(uc.fail())
 		uc.open_usecode(mucc_ll);
 	if(uc.fail())
@@ -308,7 +331,7 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 
 void usage()
 {
-	cout << "Ultima 7 usecode disassembler v0.6.2" << endl
+	cout << "Ultima 7/8 usecode disassembler v0.6.3" << endl
 	#ifdef HAVE_CONFIG_H
 	     << "    compiled with " << PACKAGE << " " << VERSION << endl
 	#endif
@@ -339,6 +362,7 @@ void usage()
 	     << "\tGame Specifier Flags (only one of these):" << endl
 	     << "\t\t-bg\t- select the black gate usecode file" << endl
 	     << "\t\t-si\t- select the serpent isle usecode file" << endl
+	     << "\t\t-u8\t- select the ultima 8/pagan usecode file (experimental)" << endl
 	     << "\tOutput Format Flags (only one of these):" << endl
 	     << "\t\t-fl\t- output using brief \"list\" format" << endl
 	     << "\t\t-fa\t- output using \"assembler\" format (default)" << endl
