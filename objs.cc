@@ -1578,6 +1578,9 @@ void Container_game_object::activate
 	Game_window *gwin = Game_window::get_game_window();
 	switch(shnum)			// Watch for gumps.
 		{
+	case 405:			// Ship's hold
+		gwin->show_gump(this, 26);
+		return;
 	case 406:			// Nightstand.
 		gwin->show_gump(this, 27);
 		return;

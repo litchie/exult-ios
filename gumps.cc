@@ -664,6 +664,10 @@ void Gump_object::initialize
 		object_area = Rectangle(40, 18, 60, 37);
 		checkx = 8; checky = 46;
 		break;
+	case 26:			// Ship's hold.
+		object_area = Rectangle(0, 0, 0, 0);
+		checkx = 0; checky = 0;
+		break;
 	case 27:			// Drawer.
 		object_area = Rectangle(38, 12, 70, 26);
 		checkx = 8; checky = 46;
