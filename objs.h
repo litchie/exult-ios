@@ -84,9 +84,9 @@ class Game_object : public ShapeID
 	unsigned char lift;		// Raise by 4* this number.
 	short quality;			// Some sort of game attribute.
 	Game_object *next, *prev;	// ->next in chunk list or container.
-	Vector dependencies;		// Objects which must be painted before
+	GOVector dependencies;		// Objects which must be painted before
 					//   this can be rendered.
-	Vector dependors;		// Objects which must be painted after.
+	GOVector dependors;		// Objects which must be painted after.
 	static unsigned char rotate[8];	// For getting rotated frame #.
 public:
 	unsigned long render_seq;	// Render sequence #.
@@ -211,15 +211,15 @@ public:
 					// Swap positions.
 	int swap_positions(Game_object *obj2);
 	int get_dependency_count()	// Get objs. to paint first.
-		{ return dependencies.get_cnt(); }
+		{ return dependencies.size(); }
 	Game_object *get_dependency(int i)
-		{ return (Game_object *) dependencies.get(i); }
+		{ return dependencies.at(i); }
 	void clear_dependencies();	// Remove all dependencies.
 					// Find nearby objects.
-	static int find_nearby(Vector& vec, Tile_coord pos,
+	static int find_nearby(GOVector& vec, Tile_coord pos,
 			int shapenum, int delta, int mask, 
 			int qual = -359, int framenum = -359);
-	int find_nearby(Vector& vec, int shapenum, int delta, int mask,
+	int find_nearby(GOVector& vec, int shapenum, int delta, int mask,
 			int qual = -359, int framenum = -359)
 		{ return find_nearby(vec, get_abs_tile_coord(), shapenum,
 						delta, mask, qual, framenum); }
@@ -308,7 +308,7 @@ public:
 							int framenum = -359)
 		{ return 0; }
 					// Get contained objs.
-	virtual int get_objects(Vector& vec, int shapenum, int qual,
+	virtual int get_objects(GOVector& vec, int shapenum, int qual,
 						int framenum)
 		{ return 0; }
 					// Add an object.
@@ -578,7 +578,7 @@ public:
 	virtual int count_objects(int shapenum, int qual = -359,
 							int framenum = -359);
 					// Get contained objs.
-	virtual int get_objects(Vector& vec, int shapenum, int qual,
+	virtual int get_objects(GOVector& vec, int shapenum, int qual,
 						int framenum);
 					// Under attack.
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
@@ -600,7 +600,7 @@ class Chunk_cache
 	unsigned short blocked[256];	// For each tile, a bit for each lift
 					//   level if it's blocked by an obj.
 					// In the process of implementing:+++++
-	Vector egg_objects;		// ->eggs which influence this chunk.
+	EggVector egg_objects;		// ->eggs which influence this chunk.
 	unsigned short eggs[256];	// Bit #i (0-14) set means that the
 					//   tile is within egg_object[i]'s
 					//   influence.  Bit 15 means it's 1 or
@@ -610,17 +610,17 @@ class Chunk_cache
 	Chunk_cache();			// Create empty one.
 	~Chunk_cache();
 	int get_num_eggs()
-		{ return egg_objects.get_cnt(); }
+		{ return egg_objects.size(); }
 					// Set/unset blocked region.
 	void set_blocked(int startx, int starty, int endx, int endy,
-						int lift, int ztiles, int set);
+						int lift, int ztiles, bool set);
 					// Add/remove object.
 	void update_object(Chunk_object_list *chunk,
-						Game_object *obj, int add);
+						Game_object *obj, bool add);
 					// Set area within egg's influence.
-	void set_egged(Egg_object *egg, Rectangle& tiles, int add);
+	void set_egged(Egg_object *egg, Rectangle& tiles, bool add);
 					// Add egg.
-	void update_egg(Chunk_object_list *chunk, Egg_object *egg, int add);
+	void update_egg(Chunk_object_list *chunk, Egg_object *egg, bool add);
 					// Set up with chunk's data.
 	void setup(Chunk_object_list *chunk);
 					// Set blocked tile's bits.
@@ -723,7 +723,7 @@ public:
 		}
 					// Set/unset blocked region.
 	void set_blocked(int startx, int starty, int endx, int endy,
-						int lift, int ztiles, int set)
+						int lift, int ztiles, bool set)
 		{ need_cache()->set_blocked(startx, starty, endx, endy,
 							lift, ztiles, set); }
 					// Get highest lift blocked.
@@ -747,7 +747,7 @@ public:
 	static int is_blocked(int xtiles, int ytiles, int ztiles,
 			Tile_coord from, Tile_coord to, const int move_flags);
 					// Set area within egg's influence.
-	void set_egged(Egg_object *egg, Rectangle& tiles, int add)
+	void set_egged(Egg_object *egg, Rectangle& tiles, bool add)
 		{ need_cache()->set_egged(egg, tiles, add); }
 	void activate_eggs(Game_object *obj, int tx, int ty, int tz,
 						int from_tx, int from_ty)

@@ -223,27 +223,17 @@ void Game_object::clear_dependencies
 	(
 	)
 	{
-	int cnt = dependencies.get_cnt();// First do those we depend on.
-	int i;
-	for (i = 0; i < cnt; i++)
-		{
-		Game_object *dep = (Game_object *) dependencies.get(i);
-		if (dep)
-			{
-			dependencies.put(i, 0);
-			dep->dependors.remove(this);
-			}
-		}
-	cnt = dependors.get_cnt();	// Now those who depend on this.
-	for (i = 0; i < cnt; i++)
-		{
-		Game_object *dep = (Game_object *) dependors.get(i);
-		if (dep)
-			{
-			dependors.put(i, 0);
-			dep->dependencies.remove(this);
-			}
-		}
+	GOVector::const_iterator	X;
+	
+	// First do those we depend on.
+	for(X = dependencies.begin(); X != dependencies.end(); ++X )
+		(**X).dependors.remove(this);
+	dependencies.clear();
+	
+	// Now those who depend on us.
+	for(X = dependors.begin(); X != dependors.end(); ++X )
+		(**X).dependencies.remove(this);
+	dependors.clear();
 	}
 
 /*
@@ -287,7 +277,7 @@ static int Check_mask
 
 int Game_object::find_nearby
 	(
-	Vector& vec,			// Objects appended to this.
+	GOVector& vec,			// Objects appended to this.
 	Tile_coord pos,			// Look near this point.
 	int shapenum,			// Shape to look for.  
 					//   -1=any (but always use mask?),
@@ -306,7 +296,7 @@ int Game_object::find_nearby
 		delta = 24;
 	if (shapenum > 0 && mask == 4)	// Ignore mask=4 if shape given!
 		mask = 0;
-	int vecsize = vec.get_cnt();
+	int vecsize = vec.size();
 	Game_window *gwin = Game_window::get_game_window();
 	Rectangle tiles(pos.tx - delta, pos.ty - delta, 1 + 2*delta, 1 + 
 								2*delta);
@@ -351,11 +341,11 @@ int Game_object::find_nearby
 				obj->get_abs_tile(tx, ty, tz);
 					// +++++Check tz too?
 				if (tiles.has_point(tx, ty))
-					vec.append(obj);
+					vec.push_back(obj);
 				}
 			}
 					// Return # added.
-	return (vec.get_cnt() - vecsize);
+	return (vec.size() - vecsize);
 	}
 
 /*
@@ -370,7 +360,7 @@ Game_object *Game_object::find_closest
 	int num_shapes			// Size of shapenums.
 	)
 	{
-	Vector vec;			// Gets objects found.
+	GOVector vec;			// Gets objects found.
 	int cnt = 0;
 	int i;
 	for (i = 0; i < num_shapes; i++)
@@ -383,7 +373,7 @@ Game_object *Game_object::find_closest
 	Tile_coord loc = get_abs_tile_coord();
 	for (i = 0; i < cnt; i++)
 		{
-		Game_object *obj = (Game_object *) vec.get(i);
+		Game_object *obj = vec.at(i);
 		int dist = obj->get_abs_tile_coord().distance(loc);
 		if (dist < best_dist)
 			{
@@ -1852,13 +1842,13 @@ int Container_game_object::count_objects
 
 int Container_game_object::get_objects
 	(
-	Vector& vec,			// Objects returned here.
+	GOVector& vec,			// Objects returned here.
 	int shapenum,			// Shape#, or -359 for any.
 	int qual,			// Quality, or -359 for any.
 	int framenum			// Frame#, or -359 for any.
 	)
 	{
-	int vecsize = vec.get_cnt();
+	int vecsize = vec.size();
 	Game_object *obj;
 	Object_iterator next(objects);
 	while ((obj = next.get_next()) != 0)
@@ -1866,11 +1856,11 @@ int Container_game_object::get_objects
 		if ((shapenum == -359 || obj->get_shapenum() == shapenum) &&
 		    (qual == -359 || obj->get_quality() == qual) &&
 		    (framenum == -359 || obj->get_framenum() == framenum))
-			vec.append(obj);
+			vec.push_back(obj);
 					// Search recursively.
 		obj->get_objects(vec, shapenum, qual, framenum);
 		}
-	return (vec.get_cnt() - vecsize);
+	return (vec.size() - vecsize);
 	}
 
 /*
@@ -1974,7 +1964,7 @@ void Container_game_object::write_contents
 
 Chunk_cache::Chunk_cache
 	(
-	) : setup_done(0), egg_objects(0, 4)
+	) : setup_done(0), egg_objects(4)
 	{
 	memset((char *) &blocked[0], 0, sizeof(blocked));
 	memset((char *) &eggs[0], 0, sizeof(eggs));
@@ -1999,7 +1989,7 @@ void Chunk_cache::set_blocked
 	int startx, int starty,		// Starting tile #'s.
 	int endx, int endy,		// Ending tile #'s.
 	int lift, int ztiles,		// Lift, height info.
-	int set				// 1 to add, 0 to remove.
+	bool set				// 1 to add, 0 to remove.
 	)
 	{
 	if (set)
@@ -2024,7 +2014,7 @@ void Chunk_cache::update_object
 	(
 	Chunk_object_list *chunk,
 	Game_object *obj,
-	int add				// 1 to add, 0 to remove.
+	bool add				// 1 to add, 0 to remove.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -2069,7 +2059,7 @@ void Chunk_cache::set_egged
 	(
 	Egg_object *egg,
 	Rectangle& tiles,		// Range of tiles within chunk.
-	int add				// 1 to add, 0 to remove.
+	bool add				// 1 to add, 0 to remove.
 	)
 	{
 					// Egg already there?
@@ -2077,25 +2067,25 @@ void Chunk_cache::set_egged
 	if (add)
 		{
 		if (eggnum < 0)		// No, so add it.
-			eggnum = egg_objects.put(egg);
+			eggnum = egg_objects.append(egg);
 		if (eggnum > 15)	// We only have 16 bits.
 			eggnum = 15;
 		short mask = (1<<eggnum);
 		int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
-		for (int ty = tiles.y; ty < stopy; ty++)
-			for (int tx = tiles.x; tx < stopx; tx++)
+		for (int ty = tiles.y; ty < stopy; ++ty)
+			for (int tx = tiles.x; tx < stopx; ++tx)
 				eggs[ty*tiles_per_chunk + tx] |= mask;
 		}
 	else				// Remove.
 		{
 		if (eggnum < 0)
 			return;		// Not there.
-		egg_objects.put(eggnum, 0);
+		egg_objects.at(eggnum) = NULL;
 		if (eggnum >= 15)	// We only have 16 bits.
 			{		// Last one at 15 or above?
 			int num_eggs = get_num_eggs();
 			for (int i = 15; i < num_eggs; i++)
-				if (egg_objects.get(i))
+				if (egg_objects.at(i))
 					// No, so leave bits alone.
 					return;
 			eggnum = 15;
@@ -2116,7 +2106,7 @@ void Chunk_cache::update_egg
 	(
 	Chunk_object_list *chunk,
 	Egg_object *egg,
-	int add				// 1 to add, 0 to remove.
+	bool add				// 1 to add, 0 to remove.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -2394,16 +2384,16 @@ void Chunk_cache::activate_eggs
 						i++, eggbits = eggbits >> 1)
 		{
 		Egg_object *egg;
-		if ((eggbits&1) && (egg = (Egg_object *) egg_objects.get(i)) &&
+		if ((eggbits&1) && (egg = egg_objects.at(i)) &&
 		    egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
 			egg->activate(usecode, obj);
 		}
 	if (eggbits)			// Check 15th bit.
 		{
-		int num_eggs = egg_objects.get_cnt();
+		int num_eggs = egg_objects.size();
 		for ( ; i < num_eggs; i++)
 			{
-			Egg_object *egg = (Egg_object *) egg_objects.get(i);
+			Egg_object *egg = egg_objects.at(i);
 			if (egg && egg->is_active(obj,
 						tx, ty, tz, from_tx, from_ty))
 				egg->activate(usecode, obj);
@@ -2456,14 +2446,14 @@ void Chunk_object_list::add_dependencies
 			{
 			if (newobj->cx == obj->cx && newobj->cy == obj->cy)
 				{
-				newobj->dependencies.put(obj);
-				obj->dependors.put(newobj);
+				newobj->dependencies.append(obj);
+				obj->dependors.append(newobj);
 				}
 			}
 		else if (cmp == 1)	// Smaller than?
 			{
-			obj->dependencies.put(newobj);
-			newobj->dependors.put(obj);
+			obj->dependencies.append(newobj);
+			newobj->dependors.append(obj);
 			}
 		}
 	}
@@ -2772,7 +2762,7 @@ void Chunk_object_list::try_all_eggs
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;		// (Ignored).
 	int eachcx, eachcy;
-	Vector eggs(0, 40);		// Get them here first, as activating
+	EggVector eggs(40);		// Get them here first, as activating
 					//   an egg could affect chunk's list.
 	while (next_chunk.get_next(tiles, eachcx, eachcy))
 		{
@@ -2791,13 +2781,13 @@ void Chunk_object_list::try_all_eggs
 				if (egg->get_type() != Egg_object::jukebox &&
 			    	    egg->is_active(obj,
 						tx, ty, tz, from_tx, from_ty))
-					eggs.append(egg);
+					eggs.push_back(egg);
 				}
 		}
-	int eggcnt = eggs.get_cnt();
+	int eggcnt = eggs.size();
 	for (int i = 0; i < eggcnt; i++)
 		{
-		Egg_object *egg = (Egg_object *) eggs.get(i);
+		Egg_object *egg = eggs.at(i);
 		egg->activate(gwin->get_usecode(), obj);
 		}
 	norecurse--;
@@ -2870,7 +2860,7 @@ void Chunk_object_list::gravity
 	int lift			// Lift where tiles are free.
 	)
 	{
-	Vector list(0, 20);		// Gets list of objs. that dropped.
+	GOVector dropped(20);		// Gets list of objs. that dropped.
 	Game_window *gwin = Game_window::get_game_window();
 					// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(area);
@@ -2896,15 +2886,15 @@ void Chunk_object_list::gravity
 					foot.w, foot.h, new_lift,
 						MOVE_ALL_TERRAIN, 100))
 				{	// Save it, and drop it.
-				list.append(obj);
+				dropped.push_back(obj);
 				obj->move(t.tx, t.ty, new_lift);
 				}
 			}
 		}
-	int cnt = list.get_cnt();	// Get # objs. that dropped.
+	int cnt = dropped.size();	// Get # objs. that dropped.
 	for (int i = 0; i < cnt; i++)	// Recurse on each one.
 		{
-		Game_object *obj = (Game_object *) list.get(i);
+		Game_object *obj = dropped.at(i);
 					// Get footprint.
 		Rectangle foot = obj->get_footprint();
 		gravity(foot, obj->get_lift() +
