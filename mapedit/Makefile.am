@@ -18,6 +18,7 @@ endif
 u7shp_SOURCES = u7shp.c
 
 exult_studio_SOURCES = \
+	bargeedit.cc \
 	chunklst.cc \
 	chunklst.h \
 	combo.cc \

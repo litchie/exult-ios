@@ -451,11 +451,12 @@ C_EXPORT gboolean on_main_window_focus_in_event
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
 	glade_path(0), shape_info_modified(false),
 	shape_names_modified(false),
-	vgafile(0), facefile(0), eggwin(0), 
+	vgafile(0), facefile(0), eggwin(0), egg_ctx(0), egg_monster_draw(0),
+	egg_status_id(0),
+	bargewin(0), barge_ctx(0), barge_status_id(0),
 	server_socket(-1), server_input_tag(-1), 
 	static_path(0), image_editor(0), default_game(0), background_color(0),
-	browser(0), palbuf(0), egg_monster_draw(0), 
-	egg_ctx(0),
+	browser(0), palbuf(0), 
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), npc_status_id(0),
 	objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
@@ -2221,6 +2222,9 @@ void ExultStudio::read_from_server
 		{
 	case Exult_server::obj:
 		open_obj_window(data, datalen);
+		break;
+	case Exult_server::barge:
+		open_barge_window(data, datalen);
 		break;
 	case Exult_server::egg:
 		open_egg_window(data, datalen);

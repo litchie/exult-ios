@@ -193,6 +193,7 @@ void ExultStudio::open_egg_window
 					// Make 'apply' sensitive.
 	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
 						"egg_apply_btn"), true);
+	remove_statusbar("egg_status", egg_ctx, egg_status_id);
 	if (data)
 		{
 		if (!init_egg_window(data, datalen))
@@ -481,7 +482,7 @@ int ExultStudio::save_egg_window
 	cout << "Sent egg data to server" << endl;
 	if (!addr)
 		{
-		set_statusbar("egg_status", egg_ctx,
+		egg_status_id = set_statusbar("egg_status", egg_ctx,
 					"Click on map at place to insert egg");
 					// Make 'apply' insensitive.
 		gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 

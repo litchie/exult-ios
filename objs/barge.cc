@@ -38,8 +38,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "databuf.h"
 #include "ucsched.h"
+#include "cheat.h"
+#include "exult.h"
+
+#ifdef USE_EXULTSTUDIO
+#include "server.h"
+#include "objserial.h"
+#include "mouse.h"
+#include "servemsg.h"
+#endif
 
 using std::ostream;
+using std::cout;
+using std::endl;
+
+Barge_object *Barge_object::editing = 0;
 
 /*
  *	Rotate a point 90 degrees to the right around a point.
@@ -726,6 +739,120 @@ void Barge_object::paint
 					// The objects are in the chunk too.
 	if(gwin->paint_eggs)
 		Container_game_object::paint();
+	}
+
+/*
+ *	Edit in ExultStudio.
+ */
+
+void Barge_object::activate
+	(
+	int /* event */
+	)
+	{
+	edit();
+	}
+
+/*
+ *	Edit in ExultStudio.
+ *
+ *	Output:	True if map-editing & ES is present.
+ */
+
+bool Barge_object::edit
+	(
+	)
+	{
+#ifdef USE_EXULTSTUDIO
+	if (client_socket >= 0 &&	// Talking to ExultStudio?
+	    cheat.in_map_editor())
+		{
+		editing = 0;
+		Tile_coord t = get_tile();
+		unsigned long addr = (unsigned long) this;
+		if (Barge_object_out(client_socket, addr, t.tx, t.ty, t.tz,
+			get_shapenum(), get_framenum(), 
+			xtiles, ytiles, dir) != -1)
+			{
+			cout << "Sent barge data to ExultStudio" << endl;
+			editing = this;
+			}
+		else
+			cout << "Error sending barge data to ExultStudio" <<
+									endl;
+		return true;
+		}
+#endif
+	return false;
+	}
+
+
+/*
+ *	Message to update from ExultStudio.
+ */
+
+void Barge_object::update_from_studio
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+#ifdef USE_EXULTSTUDIO
+	unsigned long addr;
+	int tx, ty, tz;
+	int shape, frame;
+	int xtiles, ytiles, dir;
+	if (!Barge_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
+		xtiles, ytiles, dir))
+		{
+		cout << "Error decoding barge" << endl;
+		return;
+		}
+	Barge_object *barge = (Barge_object *) addr;
+	if (barge && barge != editing)
+		{
+		cout << "Barge from ExultStudio is not being edited" << endl;
+		return;
+		}
+	editing = 0;
+	if (!barge)			// Create a new one?
+		{
+		int x, y;
+		if (!Get_click(x, y, Mouse::hand, 0))
+			{
+			if (client_socket >= 0)
+				Exult_server::Send_data(client_socket, 
+							Exult_server::cancel);
+			return;
+			}
+		if (shape == -1)
+			shape = 961;	// FOR NOW.
+					// Create.  Gets initialized below.
+		barge = new Barge_object(shape, 0, 0, 0, 0, 0, 0, 0);
+		int lift;		// Try to drop at increasing hts.
+		for (lift = 0; lift < 12; lift++)
+			if (gwin->drop_at_lift(barge, x, y, lift))
+				break;
+		if (lift == 12)
+			{
+			if (client_socket >= 0)
+				Exult_server::Send_data(client_socket, 
+							Exult_server::cancel);
+			delete barge;
+			return;
+			}
+		if (client_socket >= 0)
+			Exult_server::Send_data(client_socket, 
+						Exult_server::user_responded);
+		}
+	barge->xtiles = xtiles;
+	barge->ytiles = ytiles;
+	barge->dir = dir;
+	if (shape != -1)
+		barge->set_shape(shape);
+	gwin->add_dirty(barge);
+	cout << "Barge updated" << endl;
+#endif
 	}
 
 /*

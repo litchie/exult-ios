@@ -70,10 +70,15 @@ private:
 	Shape_file_info		*facefile;	// 'faces.vga'.
 	Object_browser		*browser;
 	unsigned char 		*palbuf;	// 3*256 rgb's, each 0-63.
+					// Barge editor:
+	GtkWidget		*bargewin;// Barge window.
+	int			barge_ctx;
+	guint			barge_status_id;
 					// Egg editor:
 	GtkWidget		*eggwin;// Egg window.
 	Shape_draw		*egg_monster_draw;
 	int			egg_ctx;
+	guint			egg_status_id;
 					// Npc editor:
 	GtkWidget		*npcwin;
 	Shape_draw		*npc_draw, *npc_face_draw;
@@ -186,6 +191,11 @@ public:
 	int save_obj_window();
 	void show_obj_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_obj_shape(int shape, int frame);
+					// Barges:
+	void open_barge_window(unsigned char *data = 0, int datalen = 0);
+	void close_barge_window();
+	int init_barge_window(unsigned char *data, int datalen);
+	int save_barge_window();
 					// Eggs:
 	void open_egg_window(unsigned char *data = 0, int datalen = 0);
 	void close_egg_window();
