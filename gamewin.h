@@ -266,6 +266,12 @@ public:
 		{ return shapes.get_num_frames(shapenum); }
 	int get_sprite_num_frames(int shapenum)
 		{ return sprites.get_num_frames(shapenum); }
+					// Get screen area of shape at pt.
+	Rectangle get_shape_rect(const Shape_frame *s, int x, int y)
+		{
+		return Rectangle(x - s->xleft, y - s->yabove,
+				s->get_width(), s->get_height());
+		}
 					// Get screen area used by object.
 	Rectangle get_shape_rect(const Game_object *obj)
 		{
@@ -282,6 +288,10 @@ public:
 		int tx, ty, tz;		// Get tile coords.
 		obj->get_abs_tile(tx, ty, tz);
 		int lftpix = 4*tz;
+		return get_shape_rect(s,
+			(tx + 1 - get_scrolltx())*tilesize - 1 - lftpix,
+			(ty + 1 - get_scrollty())*tilesize - 1 - lftpix);
+#if 0
 		return Rectangle(
 			(tx + 1 - get_scrolltx())*tilesize - 1 -
 							s->xleft - lftpix,
@@ -290,7 +300,7 @@ public:
 			s->get_width(),
 			s->get_height()
 			);
-
+#endif
 		}
 	Shape_frame *get_gump_shape(int shapenum, int framenum)
 		{ return gumps.get_shape(shapenum, framenum); }

@@ -58,9 +58,9 @@ public:
 	unsigned char read(ifstream& shapes, unsigned long shapeoff,
 					unsigned long shapelen, int frnum);
 	int has_point(int x, int y);	// Is a point within the shape?
-	int get_width()			// Get dimensions.
+	int get_width() const		// Get dimensions.
 		{ return xleft + xright; }
-	int get_height()
+	int get_height() const
 		{ return yabove + ybelow; }
 	int get_xleft()
 		{ return xleft; }

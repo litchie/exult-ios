@@ -298,7 +298,8 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				gwin->add_effect(new Storm_effect(len));
 				break;
 			case 6:		// Clouds.
-				break;	//+++++++++++++++
+				gwin->add_effect(new Clouds_effect(len));
+				break;
 			default:
 				break;
 				}

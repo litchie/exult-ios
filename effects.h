@@ -33,6 +33,7 @@ class PathFinder;
 class Game_object;
 class Game_window;
 class Image_window8;
+class Shape_frame;
 
 /*
  *	Base class for special-effects:
@@ -181,6 +182,42 @@ public:
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
 	virtual ~Storm_effect();
+	};
+
+/*
+ *	A single cloud (sprite shape 2):
+ */
+class Cloud
+	{
+	int frame;			// Frame #.
+	long wx, wy;			// Position within world.
+	short deltax, deltay;		// How to move.
+	int count;			// Counts down to 0.
+	int max_count;
+	int start_time;			// When to start.
+	void set_start_pos(Shape_frame *shape, int w, int h, int& x, int& y);
+public:
+	Cloud(short dx, short dy);
+					// Move to next position & paint.
+	void next(Game_window *gwin, unsigned long curtime, int w, int h);
+	void paint(Game_window *gwin);
+	};
+
+/*
+ *	Clouds.
+ */
+class Clouds_effect : public Weather_effect
+	{
+	int num_clouds;
+	Cloud **clouds;			// ->clouds.
+public:
+	Clouds_effect(int duration, int delay = 0);
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
+					// Render.
+	virtual void paint(Game_window *gwin);
+	virtual ~Clouds_effect()
+		{ delete [] clouds; }
 	};
 
 /*
