@@ -44,12 +44,15 @@ class Combat_schedule : public Schedule
 		flee = 2,		// Run away!
 		strike = 3,		// In the process of striking.
 		parry = 4,		// In the process of parrying a blow.
-		stunned = 5		// Just been hit.
+		stunned = 5,		// Just been hit.
+		fire = 6		// In process of firing range weapon.
 		} state;
 	Schedule_types prev_schedule;	// Before going into combat.
 	Slist opponents;		// Possible opponents.
 	Game_object *opponent;		// Current opponent.
+	int weapon_shape;		// Weapon's shape in shapes.vga.
 	int max_reach;			// Max. weapon reach in tiles.
+	int ammo_shape;			// If required, else 0.
 	unsigned char yelled;		// Yell when first opponent targeted.
 	int failures;			// # failures to find opponent.
 #if 0	/* ++++Going away. */
@@ -61,12 +64,13 @@ class Combat_schedule : public Schedule
 	Actor *find_foe();
 	void approach_foe();		// Approach foe.
 	void start_strike();		// Start to hit.
+	void set_weapon_info();		// Set 'max_reach' of weapon.
 public:
 	Combat_schedule(Actor *n, Schedule_types prev_sched) 
 		: Schedule(n), state(approach), prev_schedule(prev_sched),
-			opponent(0),
-			max_reach(1), yelled(0), failures(0)
-		{  }
+			opponent(0), weapon_shape(0),
+			max_reach(1), ammo_shape(0), yelled(0), failures(0)
+		{ set_weapon_info(); }
 	virtual void now_what();	// Npc calls this when it's done
 	virtual void im_dormant();	// Npc calls this when it goes dormant.
 					// Set opponent in combat.
