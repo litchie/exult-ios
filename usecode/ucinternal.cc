@@ -381,10 +381,18 @@ void Usecode_internal::show_npc_face
 	Actor *npc = as_actor(get_item(arg1));
 	if (!npc)
 		return;
-	if (Game::get_game_type() == BLACK_GATE && npc->get_npc_num() != -1) 
-		npc->set_flag (Obj_flags::met);
 	int shape = npc->get_face_shapenum();
 	int frame = arg2.get_int_value();
+	if (Game::get_game_type() == BLACK_GATE)
+		{
+		if (npc->get_npc_num() != -1) 
+			npc->set_flag (Obj_flags::met);
+		}
+	else if (Game::get_game_type() == SERPENT_ISLE)
+		{			// Special case: Nightmare Smith.
+		if (npc->get_npc_num() == 296)
+			shape = -1;
+		}
 	if (!conv->get_num_faces_on_screen())
 		gwin->remove_text_effects();
 	// Only non persitent
