@@ -90,11 +90,19 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 	if(auxilliary_audio!=-1)
 		{
 #if DEBUG
-		cerr << "Mixing auxilliary data" << endl;
+		//cerr << "Mixing auxilliary data" << endl;
 #endif
 		Uint8	*temp_buffer=new Uint8[len];
+		size_t	sofar=0;
 		memset(temp_buffer,silence,len);
-		if(read(auxilliary_audio,temp_buffer,len)==-1)
+		while((len-sofar))
+			{
+			int ret=read(auxilliary_audio,temp_buffer+sofar,len-sofar);
+			if(ret==-1)
+				break;
+			sofar+=ret;
+			}
+		if(len-sofar)
 			{
 			perror("read");
 			close(auxilliary_audio);

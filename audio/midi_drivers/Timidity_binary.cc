@@ -45,13 +45,14 @@ static  void    playTBmidifile(const char *name)
 {
 	const char	*args[]= {
 			"timidity",
-			"-Or",
+			"-Oru8",
 			"-id",
 			"-o-",
 			name,
 			0 };
         // execlp("timidity","-Or","-id","-o-",name,0);
 	execvp("timidity",args);
+	exit(0);	// Just in case
 }
 
 template<class T>
@@ -86,19 +87,19 @@ static	pid_t	sub_process(const char *midi_file_name)
 
 	if(s_infd!=-1)
 		{
-		s_infd=-1;
 		close(s_infd);
+		s_infd=-1;
 		}
 	if(s_outfd!=-1)
 		{
-		s_outfd=-1;
 		close(s_outfd);
+		s_outfd=-1;
 		}
 	
 	pipe(pipe1);
 	pipe(pipe2);
 
-	if((childpid==fork())==0)
+	if((childpid=fork())==0)
 		{
 		// Child
 		close(pipe1[1]);
