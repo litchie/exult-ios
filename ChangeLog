@@ -1,3 +1,9 @@
+2002-02-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/paledit.cc (Palette_edit): Show the different palettes
+	within palettes.flx.
+	* files/U7file.*:  Added 'number_of_objects()' to U7object class.
+
 2002-02-10  Darke  <darkwpaw@users.sourceforge.net>
 	* audio/xmidi.cc: Fixed const.
 	* mapedit/studio.cc: Fixed namespaces.
