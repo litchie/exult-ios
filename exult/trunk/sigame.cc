@@ -157,7 +157,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 				case SDLK_SPACE:
 					if(selected==1)
 						++sex;
-					if(sex>4)
+					if(sex>5)
 						sex = 0;
 					break;
 				case SDLK_ESCAPE:
@@ -208,7 +208,12 @@ bool SI_Game::new_game(Vga_file &shapes)
 			}
 		} while(editing);
 		if(ok)
-			gwin->init_gamedat(true);  // FIXME: we need to set the player's name/sex
+		{
+			set_avname (npc_name);
+			set_avsex (1-(sex%2));
+			set_avskin (sex/2);
+			gwin->init_gamedat(true);
+		}
 		win->fill8(0,gwin->get_width(),90,0,menuy);
 		return ok;
 	}

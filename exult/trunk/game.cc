@@ -23,7 +23,11 @@
 #include "databuf.h"
 
 Game *game = 0;
-Exult_Game game_type = BLACK_GATE;
+static Exult_Game game_type = BLACK_GATE;
+
+static char av_name[17] = "";
+static int av_sex = -1;
+static int av_skin = -1;
 
 Game::Game() : menushapes(MAINSHP_FLX)
 {
@@ -362,3 +366,53 @@ void Game::show_menu()
 		clear_screen();
 		audio->stop_music();
 	}
+	
+	
+const char *Game::get_avname ()
+{
+	if (av_name[0])
+		return av_name;
+	else
+		return NULL;
+}
+
+int Game::get_avsex ()
+{
+	return av_sex;
+}
+int Game::get_avskin ()
+{
+	return av_skin;
+}
+
+// Assume safe
+void Game::set_avname (char *name)
+{
+	strcpy (av_name, name);
+}
+
+void Game::set_avsex (int sex)
+{
+	av_sex = sex;
+}
+
+void Game::set_avskin (int skin)
+{
+	av_skin = skin;
+}
+
+void Game::clear_avname ()
+{
+	av_name[0] = 0;
+}
+
+void Game::clear_avsex ()
+{
+	av_sex = -1;
+}
+
+void Game::clear_avskin ()
+{
+	av_skin = -1;
+}
+

@@ -804,9 +804,9 @@ bool BG_Game::new_game(Vga_file &shapes)
 	{
 		int menuy = topy+110;
 		
-		char npc_name[9];
+		char npc_name[17];
 		char disp_name[10];
-		int max_len = 8;
+		int max_len = 16;
 		npc_name[0] = 0;
 		int sex = 0;
 		int selected = 0;
@@ -884,7 +884,11 @@ bool BG_Game::new_game(Vga_file &shapes)
 			}
 		} while(editing);
 		if(ok)
-			gwin->init_gamedat(true);  // FIXME: we need to set the player's name/sex
+		{
+			set_avname (npc_name);
+			set_avsex (sex);
+			gwin->init_gamedat(true);
+		}
 		win->fill8(0,gwin->get_width(),90,0,menuy);
 		return ok;
 	}

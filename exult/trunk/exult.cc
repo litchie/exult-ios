@@ -712,11 +712,16 @@ static void shape_showcase(
 	gwin->paint();
 	// First of all draw the shape
 	Vga_file *shape_file = gwin->get_shape_file_data(current_file);
-	Shape_frame *frame = shape_file->get_shape(
-						current_shape, current_frame);
-	if (frame)			// Paint with translucency.
-		gwin->paint_shape(
-			gwin->get_width()/2, gwin->get_height()/2, frame, 1);
+	
+	if (shape_file->get_num_frames(current_shape))
+	{
+		Shape_frame *frame = shape_file->get_shape(
+							current_shape, current_frame);
+		if (frame)			// Paint with translucency.
+			gwin->paint_shape(
+				gwin->get_width()/2, gwin->get_height()/2, frame, 1);
+	}
+	
 	// Then show some info about it
 	sprintf(buf, "Shape file: \"%s\"", gwin->get_shape_file_name(current_file));
 	gwin->paint_text_box(2, buf, 
@@ -925,6 +930,17 @@ static void Handle_keystroke
 #endif
 					// FALL THROUGH.
 	case SDLK_p:			// Rerender image.
+		// Toggle petra mode
+		if(alt && cheat && (Game::get_game_type() != BLACK_GATE))
+		{
+			if (gwin->get_main_actor()->get_siflag(Actor::petra))
+				gwin->get_main_actor()->clear_siflag(Actor::petra);
+			else
+				gwin->get_main_actor()->set_siflag(Actor::petra);
+			gwin->set_all_dirty();
+			break;
+		}
+
 		gwin->paint();
 		break;
 	case SDLK_e:
@@ -952,6 +968,15 @@ static void Handle_keystroke
 		}
 		shape_showcase(current_file, current_shape, current_frame);
 		break;
+	case SDLK_g:		// Change Avatars gender
+		if(!cheat)
+			break;
+		if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex))
+			gwin->get_main_actor()->clear_type_flag(Actor::tf_sex);
+		else
+			gwin->get_main_actor()->set_type_flag(Actor::tf_sex);
+		gwin->set_all_dirty();
+		break;
 	case SDLK_r:
 		if (ctrl)		// Restore from 'gamedat'.
 			{
@@ -966,6 +991,16 @@ static void Handle_keystroke
 			{
 			if (gwin->write())
 				gwin->center_text("Game saved");
+			}
+		else if (alt)		// Change skin color
+			{
+			int color = gwin->get_main_actor()->get_skin_color();
+
+			if (color < 0 || color > 2)
+				break;
+			color = (color + 4) %3;
+			gwin->get_main_actor()->set_skin_color(color);
+			gwin->set_all_dirty();
 			}
 		else
 			{
