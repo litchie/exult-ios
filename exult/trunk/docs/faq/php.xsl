@@ -7,13 +7,13 @@
 	indent="no"/>
 
 <!-- Keys -->
-<xsl:key name="faq_ref" match="faq" use="@name"/>
+<xsl:key name="sub_ref" match="sub" use="@name"/>
 <xsl:key name="section_ref" match="section" use="@title"/>
 
 <xsl:strip-space elements="*"/>
 
 
-<!-- Templates -->
+<!-- FAQ Templates -->
 <xsl:template match="faqs">
 <test>
 	<p>last changed: <xsl:value-of select="@changed"/></p>
@@ -34,14 +34,14 @@
 				<xsl:value-of select="@title"/>
 		</a>
 		<br/>
-		<xsl:for-each select="faq">
-			<a href="#{generate-id(key('faq_ref',@name))}">
+		<xsl:for-each select="sub">
+			<a href="#{generate-id(key('sub_ref',@name))}">
 				<xsl:number level="multiple"
-							count="section|faq"
+							count="section|sub"
 							format="1."
 							value="count(ancestor::section/preceding-sibling::section)"/>									
 				<xsl:number format="1. "/>
-				<xsl:apply-templates select="question"/>
+				<xsl:apply-templates select="header"/>
 			</a>
 			<br/>
 		</xsl:for-each>
@@ -55,7 +55,46 @@
 </test>
 </xsl:template>
 
-<!-- FAQ Group Template -->
+<!-- Readme Template -->
+<xsl:template match="readme">
+<test>
+	<p>last changed: <xsl:value-of select="@changed"/></p>
+	<hr/>
+	<br/>
+	
+	<!-- BEGIN TOC -->
+	<xsl:for-each select="section">
+		<p>
+		<a href="#{generate-id(key('section_ref',@title))}">
+			<xsl:number level="multiple"
+						count="section"
+						format="1. "
+						value="position() -1"/>
+				<xsl:value-of select="@title"/>
+		</a>
+		<br/>
+		<xsl:for-each select="sub">
+			<a href="#{generate-id(key('sub_ref',@name))}">
+				<xsl:number level="multiple"
+							count="section|sub"
+							format="1."
+							value="count(ancestor::section/preceding-sibling::section)"/>									
+				<xsl:number format="1. "/>
+				<xsl:apply-templates select="header"/>
+			</a>
+			<br/>
+		</xsl:for-each>
+		</p>
+	</xsl:for-each>
+	<!-- END TOC -->
+	
+	<!-- BEGIN CONTENT -->
+	<xsl:apply-templates select="section"/>
+	<!-- END CONTENT -->
+</test>
+</xsl:template>
+
+<!-- Group Template -->
 <xsl:template match="section">
 	<hr width="100%"/>
 	<table width="100%">
@@ -66,13 +105,13 @@
 				<xsl:value-of select="@title"/>
 			</a>
 		</th></tr>
-		<xsl:apply-templates select="faq"/>
+		<xsl:apply-templates select="sub"/>
 	</table>
 </xsl:template>
 
 
-<!-- FAQ Entry Template -->
-<xsl:template match="faq">
+<!-- Entry Template -->
+<xsl:template match="sub">
 	<xsl:variable name = "num_idx">
 		<xsl:number level="single"
 					count="section"					
@@ -84,14 +123,14 @@
 	<tr><td><strong>
 		<a name="{generate-id()}">
 			<xsl:value-of select="$num_idx"/>
-			<xsl:apply-templates select="question"/>
+			<xsl:apply-templates select="header"/>
 		</a>
 	</strong></td></tr>
-	<tr><td><xsl:apply-templates select="answer"/></td></tr>
+	<tr><td><xsl:apply-templates select="body"/></td></tr>
 </xsl:template>
 
 
-<xsl:template match="question">
+<xsl:template match="header">
 <!--
 	<xsl:variable name = "data">
 		<xsl:apply-templates/>
@@ -102,7 +141,7 @@
 </xsl:template>
 
 
-<xsl:template match="answer">
+<xsl:template match="body">
 <!--
 	<xsl:variable name = "data">
 		<xsl:apply-templates/>
@@ -115,15 +154,15 @@
 
 <!-- Internal Link Templates -->
 <xsl:template match="ref">
-	<a href="#{generate-id(key('faq_ref',@target))}">
+	<a href="#{generate-id(key('sub_ref',@target))}">
 	<xsl:choose>
 		<xsl:when test="count(child::node())>0">
 				<xsl:value-of select="."/>
 		</xsl:when>
 		<xsl:otherwise>
-			<xsl:value-of select="count(key('faq_ref',@target)/parent::section/preceding-sibling::section)"/>
+			<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)"/>
 			<xsl:text>.</xsl:text>
-			<xsl:value-of select="count(key('faq_ref',@target)/preceding-sibling::faq)+1"/>
+			<xsl:value-of select="count(key('sub_ref',@target)/preceding-sibling::sub)+1"/>
 			<xsl:text>.</xsl:text>					
 		</xsl:otherwise>
 	</xsl:choose>
@@ -132,12 +171,12 @@
 
 
 <xsl:template match="ref1">		
-	<a href="#{generate-id(key('faq_ref',@target))}">		
-		<xsl:value-of select="count(key('faq_ref',@target)/parent::section/preceding-sibling::section)"/>
+	<a href="#{generate-id(key('sub_ref',@target))}">		
+		<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)"/>
 		<xsl:text>.</xsl:text>
-		<xsl:value-of select="count(key('faq_ref',@target)/preceding-sibling::faq)+1"/>
+		<xsl:value-of select="count(key('sub_ref',@target)/preceding-sibling::sub)+1"/>
 		<xsl:text>. </xsl:text>
-		<xsl:apply-templates select="key('faq_ref',@target)/child::question"/>
+		<xsl:apply-templates select="key('sub_ref',@target)/child::header"/>
 	</a>
 </xsl:template>
 
@@ -176,12 +215,11 @@
 </xsl:template>
 
 <xsl:template match="cite">
-		<p>
-		<xsl:value-of select="@name"/>:<br/>
-		<cite><xsl:value-of select="."/></cite>
-		</p>
+                <p>
+                <xsl:value-of select="@name"/>:<br/>
+                <cite><xsl:apply-templates/></cite>
+                </p>
 </xsl:template>
-
 
 <xsl:template match="para">
 	<p><xsl:apply-templates/></p>
