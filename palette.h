@@ -48,6 +48,9 @@ public:
 		void show();
 
 		void set_color(int nr, int r, int g, int b);
+		unsigned char get_red(int nr) { return pal1[3*nr]; }
+		unsigned char get_green(int nr) { return pal1[3*nr + 1]; }
+		unsigned char get_blue(int nr) { return pal1[3*nr + 2]; }
 		void set_palette (unsigned char palnew[768]);
 		void update();
 	};
