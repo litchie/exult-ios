@@ -50,7 +50,7 @@ using std::ofstream;
 void Game_window::read_npcs
 	(
 	)
-	{
+{
 	ifstream nfile;
 	U7open(nfile, NPC_DAT);
 	num_npcs1 = Read2(nfile);	// Get counts.
@@ -67,13 +67,14 @@ void Game_window::read_npcs
 					// SI: 231-255 are bogus automatons(?).
 	int skip = Game::get_game_type() == SERPENT_ISLE ? 231 : 10000;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
-		{
+	{
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
 		if (i >= skip && i < 256)
 			npcs[i]->remove_this(1);
 		else
 			npcs[i]->restore_schedule();
-		}
+		CYCLE_RED_PLASMA();
+	}
 	nfile.close();
 	main_actor->set_actor_shape();
 	try
@@ -85,29 +86,30 @@ void Game_window::read_npcs
 		int okay = nfile.good();
 		nfile.seekg(-1, ios::cur);
 		while (okay && cnt--)
-			{		// (Placed automatically.)
+		{		// (Placed automatically.)
 			Monster_actor *act = new Monster_actor(nfile, -1, 1);
 					// Watch for corrupted file.
 			if (get_shape_num_frames(act->get_shapenum()) < 16)
 				act->remove_this();
 			else
 				act->restore_schedule();
-			}
+			CYCLE_RED_PLASMA();
+		}
 	}
 	catch(...)
 	{
-	cerr << "Error reading saved monsters.  Clearing list." << endl;
-	Monster_actor::give_up();
+		cerr << "Error reading saved monsters.  Clearing list." << endl;
+		Monster_actor::give_up();
 	}
 	if (moving_barge)		// Gather all NPC's on barge.
-		{
+	{
 		Barge_object *b = moving_barge;
 		moving_barge = 0;
 		set_moving_barge(b);
-		}
+	}
 	read_schedules();		// Now get their schedules.
 	center_view(main_actor->get_abs_tile_coord());
-	}
+}
 
 /*
  *	Write NPC (and monster) data back out.
@@ -201,6 +203,7 @@ void Game_window::read_schedules
 			npc->set_schedules(schedules, cnt);
 		else
 			delete schedules;
+		CYCLE_RED_PLASMA();
 		}
 	delete [] offsets;		// Done with this.
 	cout.flush();
