@@ -2178,7 +2178,7 @@ void Game_window::show_items
 			", okay_to_take = " <<
 			static_cast<int>(obj->get_flag(Obj_flags::okay_to_take)) <<
 			", flag0x1d = " << static_cast<int>(obj->get_flag(0x1d)) <<
-			", hp = " << obj->get_obj_hp()
+			", hp = " << obj->get_obj_hp() << ", weight = "<< obj->get_weight()
 			<< endl;
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))

@@ -1,5 +1,7 @@
 2002-06-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Paperdoll_gump.cc: fixed bug when displaying usecode container
+	* objs.cc: zero-weight fix
+	* gamewin.cc: display object weight
 
 2002-06-21  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
