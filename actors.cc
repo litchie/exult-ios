@@ -2590,10 +2590,14 @@ Game_object *Actor::attacked
 	if (attacker && defeated)
 		{
 					// Experience gained = strength???
-		int expval = get_property((int) strength);
-		if (is_monster())
+		int expval = get_property((int) strength) +
+				get_property((int) combat)/4 +
+				get_property((int) dexterity)/4 +
+				get_property((int) intelligence)/4;
+		if (!is_dead())		// Tournament win (List Field)?
+			expval /= 2;
 					// Attacker gains experience.
-			attacker->set_property((int) exp,
+		attacker->set_property((int) exp,
 				attacker->get_property((int) exp) + expval);
 		return 0;
 		}
