@@ -48,7 +48,7 @@ class Npc_face_info;
 class Game_window
 	{
 	static Game_window *game_window;// There's just one.
-	Image_window *win;		// Window to display into.
+	Image_window8 *win;		// Window to display into.
 public:
 	enum Game_mode {		// Can be in different modes.
 		splash,			// Splash screen.

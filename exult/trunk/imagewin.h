@@ -46,11 +46,10 @@ protected:
 	int pixel_size;			// # bytes/pixel.
 	unsigned char *bits;		// Allocated image buffer.
 	unsigned int line_width;	// # words/scan-line.
-
+private:
 	int clipx, clipy, clipw, cliph; // Clip rectangle.
 					// Clip.  Rets. 0 if nothing to draw.
-	int clip(int& srcx, int& srcy, int& srcw, int& srch, 
-							int& destx, int& desty)
+	int clip_xinternal(int& srcx, int& srcw, int& destx)
 		{
 		if (destx < clipx)
 			{
@@ -59,21 +58,17 @@ protected:
 			srcx -= (destx - clipx);
 			destx = clipx;
 			}
-		if (desty < clipy)
-			{
-			if ((srch += (desty - clipy)) <= 0)
-				return (0);
-			srcy -= (desty - clipy);
-			desty = clipy;
-			}
 		if (destx + srcw > (clipx + clipw))
 			if ((srcw = ((clipx + clipw) - destx)) <= 0)
 				return (0);
-		if (desty + srch > (clipy + cliph))
-			if ((srch = ((clipy + cliph) - desty)) <= 0)
-				return (0);
 		return (1);
 		}
+protected:
+	int clip_x(int& srcx, int& srcw, int& destx, int desty)
+		{ return desty < clipy || desty >= clipy + cliph ? 0
+					: clip_xinternal(srcx, srcw, destx); }
+	int clip(int& srcx, int& srcy, int& srcw, int& srch, 
+						int& destx, int& desty);
 	Image_buffer_base(unsigned int w, unsigned int h, int dpth);
 public:
 	friend class Image_buffer8;
@@ -355,6 +350,8 @@ public:
 		{ return ibuf->width; }
 	int get_height()
 		{ return ibuf->height; }
+	int ready()			// Ready to draw?
+		{ return (ibuf->bits != 0); }
 					// Create a compatible image buffer.
 	Image_buffer *create_buffer(int w, int h);
 	/*
@@ -478,14 +475,13 @@ class Image_window : public Image_buffer
 	void free_surface();		// Free it.
 
 public:
+					// Create to match hardware depth.
 	Image_window(unsigned int w, unsigned int h);
+					// Create with given depth.
+	Image_window(unsigned int w, unsigned int h, int dpth)
+		: Image_buffer(w, h, dpth), surface(0)
+		{ create_surface(w, h); }
 	virtual ~Image_window();
-	unsigned int get_width()	// Get dims.
-		{ return ibuf->width; }
-	unsigned int get_height()
-		{ return ibuf->height; }
-	int ready()			// Ready to draw?
-		{ return (ibuf->bits != 0); }
 					// Set title.
 	void set_title(const char *title)
 		{
@@ -504,6 +500,62 @@ public:
 
 	void toggle_fullscreen();
 
+	};
+
+/*
+ *	Here's an 8-bit color-depth window (faster than the generic).
+ */
+class Image_window8 : public Image_window
+	{
+	Image_buffer8 *ib8;		// Cast to 8-bit buffer.
+public:
+	Image_window8(unsigned int w, unsigned int h)
+		: Image_window(w, h, 8)
+		{
+		ib8 = (Image_buffer8 *) ibuf;
+		}
+	/*
+	 *	8-bit color methods:
+	 */
+					// Fill with given (8-bit) value.
+	void fill8(unsigned char val)
+		{ ib8->Image_buffer8::fill8(val); }
+					// Fill rect. wth pixel.
+	void fill8(unsigned char val, int srcw, int srch,
+						int destx, int desty)
+		{ ib8->Image_buffer8::fill8(val, srcw, srch, destx, desty); }
+					// Fill line with pixel.
+	void fill_line8(unsigned char val, int srcw,
+						int destx, int desty)
+		{ ib8->Image_buffer8::fill_line8(val, srcw, destx, desty); }
+					// Copy rectangle into here.
+	void copy8(unsigned char *src_pixels,
+				int srcw, int srch, int destx, int desty)
+		{ ib8->Image_buffer8::copy8(src_pixels, srcw, srch, 
+							destx, desty); }
+					// Copy line to here.
+	void copy_line8(unsigned char *src_pixels, int srcw,
+						int destx, int desty)
+		{ ib8->Image_buffer8::copy_line8(src_pixels, srcw, 
+							destx, desty); }
+					// Copy with translucency table.
+	void copy_line_translucent8(
+		unsigned char *src_pixels, int srcw,
+		int destx, int desty, int first_translucent,
+		int last_translucent, Xform_palette *xforms)
+		{ ib8->Image_buffer8::copy_line_translucent8(src_pixels, srcw,
+			destx, desty,
+				first_translucent, last_translucent, xforms); }
+					// Apply translucency to a line.
+	void fill_line_translucent8(unsigned char val,
+			int srcw, int destx, int desty, Xform_palette xform)
+		{ ib8->Image_buffer8::fill_line_translucent8(val, 
+					srcw, destx, desty, xform); }
+					// Copy rect. with transp. color.
+	void copy_transparent8(unsigned char *src_pixels, int srcw,
+					int srch, int destx, int desty)
+		{ ib8->Image_buffer8::copy_transparent8(src_pixels, srcw, srch,
+							destx, desty); }
 	};
 
 #endif	/* INCL_IMAGEWIN	*/

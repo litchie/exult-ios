@@ -32,6 +32,35 @@ Boston, MA  02111-1307, USA.
 extern	Configuration *config;
 
 /*
+ *	Clip to current clip rectangle.
+ *
+ *	Output:	0 if completely outside boundaries.
+ */
+
+inline int Image_buffer_base::clip
+	(
+	int& srcx, int& srcy, 
+	int& srcw, int& srch, 
+	int& destx, int& desty
+	)
+	{
+					// Start with x-dim.
+	if (!clip_xinternal(srcx, srcw, srch))
+		return (0);
+	if (desty < clipy)
+		{
+		if ((srch += (desty - clipy)) <= 0)
+			return (0);
+		srcy -= (desty - clipy);
+		desty = clipy;
+		}
+	if (desty + srch > (clipy + cliph))
+		if ((srch = ((clipy + cliph) - desty)) <= 0)
+			return (0);
+	return (1);
+	}
+
+/*
  *	Create buffer.
  */
 
@@ -264,9 +293,9 @@ void Image_buffer8::fill_line8
 	int destx, int desty
 	)
 	{
-	int srcx = 0, srcy = 0, srch = 1;
+	int srcx = 0;
 					// Constrain to window's space.
-	if (!clip(srcx, srcy, srcw, srch, destx, desty))
+	if (!clip_x(srcx, srcw, destx, desty))
 		return;
 	unsigned char *pixels = (unsigned char *) bits + 
 						desty*line_width + destx;
@@ -313,9 +342,9 @@ void Image_buffer8::copy_line8
 	int destx, int desty
 	)
 	{
-	int srcx = 0, srcy = 0, srch = 1;
+	int srcx = 0;
 					// Constrain to window's space.
-	if (!clip(srcx, srcy, srcw, srch, destx, desty))
+	if (!clip_x(srcx, srcw, destx, desty))
 		return;
 	unsigned char *to = bits + desty*line_width + destx;
 	unsigned char *from = src_pixels + srcx;
@@ -338,9 +367,9 @@ void Image_buffer8::copy_line_translucent8
 					//    first_translucent + 1).
 	)
 	{
-	int srcx = 0, srcy = 0, srch = 1;
+	int srcx = 0;
 					// Constrain to window's space.
-	if (!clip(srcx, srcy, srcw, srch, destx, desty))
+	if (!clip_x(srcx, srcw, destx, desty))
 		return;
 	unsigned char *to = (unsigned char *) bits + desty*line_width + destx;
 	unsigned char *from = src_pixels + srcx;
@@ -367,9 +396,9 @@ void Image_buffer8::fill_line_translucent8
 	Xform_palette xform		// Transform table.
 	)
 	{
-	int srcx = 0, srcy = 0, srch = 1;
+	int srcx = 0;
 					// Constrain to window's space.
-	if (!clip(srcx, srcy, srcw, srch, destx, desty))
+	if (!clip_x(srcx, srcw, destx, desty))
 		return;
 	unsigned char *pixels = (unsigned char *) bits + 
 						desty*line_width + destx;
@@ -752,9 +781,6 @@ Image_buffer::Image_buffer
 	int dpth			// Color depth (bits/pixel).
 	)
 	{
-#if 1	/* +++++Let's see what SDL can do. */
-	ibuf = new Image_buffer8(w, h, this);
-#else
 	switch (dpth)			// What depth?
 		{
 	case 8: 
@@ -770,7 +796,6 @@ Image_buffer::Image_buffer
 	default:
 		ibuf = 0;		// Later.
 		}
-#endif
 	}
 
 /*
@@ -787,7 +812,7 @@ static int Get_best_depth
 	}
 
 /*
- *	Create window.
+ *	Create window with best color depth to match screen.
  */
 
 Image_window::Image_window
