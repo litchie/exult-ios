@@ -187,7 +187,6 @@ int Fast_pathfinder_client::get_step_cost
 	Chunk_object_list *olist = gwin->get_objects(cx, cy);
 	int tx = to.tx%tiles_per_chunk;	// Get tile within chunk.
 	int ty = to.ty%tiles_per_chunk;
-	int cost = 1;
 	olist->setup_cache();		// Make sure cache is valid.
 	int new_lift;			// Might climb/descend.
 					// For now, look at 1 tile's height.
