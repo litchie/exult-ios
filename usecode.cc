@@ -1207,6 +1207,97 @@ USECODE_FUNCTION(update_last_created)
 	USECODE_RETURN(u);
 }
 
+USECODE_FUNCTION(get_npc_name)
+	// Get NPC name.
+	// +++++Make this work on array of NPC's.
+	static char *unknown = "player";
+	Game_object *obj = get_item(parms[0].get_int_value());
+	Usecode_value u(obj ? obj->get_name() : unknown);
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(count_objects)
+	// How many?
+	// ((npc?-357==party, -356=avatar), 
+	//   item, quality?, quality?).
+	// Quality -359 means any?
+	Usecode_value u(count_objects(parms[0], parms[1]));
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(get_cont_items)
+        // Get cont. items(item, type, qual,?).
+        Usecode_value u(get_objects(parms[0], parms[1]));
+	USECODE_RETURN(u);
+}
+
+
+USECODE_FUNCTION(remove_items)
+
+	// Remove items(quantity, item, 
+	//   -x?, -x?, T/F).  Often -359.???
+	//+++++++++++
+	Usecode_value u(1);
+	USECODE_RETURN(u);	// ++++Pretend we did it.
+}
+
+USECODE_FUNCTION(add_items)
+	// Add items(num, item, ??, ??, T/F).
+	//++++++++++
+	return no_ret;
+}
+
+USECODE_FUNCTION(play_music)
+	// Play music(item, songnum).
+	// ??Show notes by item?
+#if DEBUG
+	cout << "Music request in usecode" << endl;
+	cout << "Parameter data follows" << endl;
+	cout << "0: " << ((parms[0].get_int_value()>>8)&0xff) << " " <<  ((parms[0].get_int_value())&0xff) << endl;
+	cout << "1: " << ((parms[1].get_int_value()>>8)&0xff) << " " <<  ((parms[1].get_int_value())&0xff) << endl;
+#endif
+	audio.start_music(parms[0].get_int_value()&0xff,(parms[0].get_int_value()>>8)&0xff);
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(npc_in_party)
+	// NPC in party? (item).
+	Usecode_value u(npc_in_party(get_item(parms[0].get_int_value())));
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(display_runes)
+	// Display sign (gump #, text).
+	//+++++++++++++
+	// Render text into runes for signs, tombstones, plaques and the like
+	return no_ret;
+}
+
+USECODE_FUNCTION(click_on_item)
+	// Doesn't ret. until user single-
+	//   clicks on an item.  Rets. item.
+	Usecode_value u(click_on_item());
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(find_nearby)
+	// Think it rets. objs. near parm0.
+	Usecode_value u(find_nearby(parms[0], parms[1], parms[2], parms[3]));
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(game_hour)
+	// Return. game time hour (0-23).
+	Usecode_value u(gwin->get_hour());
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(game_minute)
+	// Return minute (0-59).
+	Usecode_value u(gwin->get_minute());
+	USECODE_RETURN(u);
+}
+
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
 UsecodeIntrinsicFn intrinsic_table[]=
@@ -1250,9 +1341,28 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_FUNCTION_PTR(create_new_object), // 0x24
 	USECODE_FUNCTION_PTR(mystery_1), // 0x25
 	USECODE_FUNCTION_PTR(update_last_created), // 0x26
+	USECODE_FUNCTION_PTR(get_npc_name), // 0x27
+	USECODE_FUNCTION_PTR(count_objects), // 0x28
+	USECODE_FUNCTION_PTR(UNKNOWN), // 0x29
+	USECODE_FUNCTION_PTR(get_cont_items), // 0x2a
+	USECODE_FUNCTION_PTR(remove_items), // 0x2b
+	USECODE_FUNCTION_PTR(add_items), // 0x2c
+	USECODE_FUNCTION_PTR(UNKNOWN), // 0x2d
+	USECODE_FUNCTION_PTR(play_music), // 0x2e
+	USECODE_FUNCTION_PTR(npc_in_party), // 0x2f
+	USECODE_FUNCTION_PTR(UNKNOWN), // 0x30
+	USECODE_FUNCTION_PTR(UNKNOWN), // 0x31
+	USECODE_FUNCTION_PTR(display_runes), // 0x32
+	USECODE_FUNCTION_PTR(click_on_item), // 0x33
+	USECODE_FUNCTION_PTR(UNKNOWN), // 0x34
+	USECODE_FUNCTION_PTR(find_nearby), // 0x35
+	USECODE_FUNCTION_PTR(UNKNOWN), // 0x36
+	USECODE_FUNCTION_PTR(UNKNOWN), // 0x37
+	USECODE_FUNCTION_PTR(game_hour), // 0x38
+	USECODE_FUNCTION_PTR(game_minute), // 0x39
 	};
 
-int	max_bundled_intrinsics=0x26;	// Index of the last intrinsic in this table
+int	max_bundled_intrinsics=0x39;	// Index of the last intrinsic in this table
 
 /*
  *	Call an intrinsic function.
@@ -1279,56 +1389,6 @@ Usecode_value Usecode_machine::call_intrinsic
 	else
 	switch (intrinsic)
 		{
-	case 0x27:			// Get NPC name.
-		{	// +++++Make this work on array of NPC's.
-		static char *unknown = "player";
-		Game_object *obj = get_item(parms[0].get_int_value());
-		return Usecode_value(obj ? obj->get_name() : unknown);
-		}
-	case 0x28:			// How many?
-					// ((npc?-357==party, -356=avatar), 
-					//   item, quality?, quality?).
-					// Quality -359 means any?
-		return count_objects(parms[0], parms[1]);
-	case 0x2a:			// Get cont. items(item, type, qual,?).
-		return get_objects(parms[0], parms[1]);
-	case 0x2b:			// Remove items(quantity, item, 
-					//   -x?, -x?, T/F).  Often -359.???
-		//+++++++++++
-		Unhandled(intrinsic, num_parms, parms);
-		return Usecode_value(1);	// ++++Pretend we did it.
-	case 0x2c:			// Add items(num, item, ??, ??, T/F).
-		//++++++++++
-		Unhandled(intrinsic, num_parms, parms);
-		break;
-	case 0x2e:			// Play music(item, songnum).
-					// ??Show notes by item?
-#if DEBUG
-		cout << "Music request in usecode" << endl;
-		cout << "Parameter data follows" << endl;
-		cout << "0: " << ((parms[0].get_int_value()>>8)&0xff) << " " <<  ((parms[0].get_int_value())&0xff) << endl;
-		cout << "1: " << ((parms[1].get_int_value()>>8)&0xff) << " " <<  ((parms[1].get_int_value())&0xff) << endl;
-		(parms[1].get_int_value()&0xff);
-#endif
-		audio.start_music(parms[0].get_int_value()&0xff,(parms[0].get_int_value()>>8)&0xff);
-		break;
-	case 0x2f:			// NPC in party? (item).
-		return (Usecode_value(npc_in_party(
-					get_item(parms[0].get_int_value()))));
-	case 0x32:			// Display sign (gump #, text).
-		//+++++++++++++
-		// Render text into runes for signs, tombstones, plaques and the like
-		Unhandled(intrinsic, num_parms, parms);
-		break;
-	case 0x33:			// Doesn't ret. until user single-
-					//   clicks on an item.  Rets. item.
-		return click_on_item();
-	case 0x35:			// Think it rets. objs. near parm0.
-		return (find_nearby(parms[0], parms[1], parms[2], parms[3]));
-	case 0x38:			// Return. game time hour (0-23).
-		return Usecode_value(gwin->get_hour());
-	case 0x39:			// Return minute (0-59).
-		return Usecode_value(gwin->get_minute());
 	case 0x3a:			// Returns NPC# of item. (-356 =
 					//   avatar).
 		{

@@ -289,6 +289,19 @@ public:
         USECODE_FUNCTION_DECL(create_new_object);
         USECODE_FUNCTION_DECL(mystery_1);
         USECODE_FUNCTION_DECL(update_last_created);
+        USECODE_FUNCTION_DECL(get_npc_name);
+        USECODE_FUNCTION_DECL(count_objects);
+        USECODE_FUNCTION_DECL(get_cont_items);
+        USECODE_FUNCTION_DECL(remove_items);
+        USECODE_FUNCTION_DECL(add_items);
+        USECODE_FUNCTION_DECL(play_music);
+        USECODE_FUNCTION_DECL(npc_in_party);
+        USECODE_FUNCTION_DECL(display_runes);
+        USECODE_FUNCTION_DECL(click_on_item);
+        USECODE_FUNCTION_DECL(find_nearby);
+        USECODE_FUNCTION_DECL(game_hour);
+        USECODE_FUNCTION_DECL(game_minute);
+
 
 
 

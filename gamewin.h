@@ -347,7 +347,7 @@ public:
 	int find_objects(int lift, int x, int y, Game_object **list);
 	void show_items(int x, int y);	// Show names of items clicked on.
 					// Add text item.
-	void add_text(char *msg, int x, int y);
+	void add_text(const char *msg, int x, int y);
 					// Remove text item & delete it.
 	void remove_text(Text_object *txt);
 	void remove_all_text();
@@ -388,12 +388,12 @@ public:
 					// Paint text using "fonts.vga".
 	void paint_text_box(int fontnum, char *text, int x, int y, int w, 
 								int h);
-	int paint_text(int fontnum, char *text, int xoff, int yoff);
-	int paint_text(int fontnum, char *text, int textlen, 
+	int paint_text(int fontnum, const char *text, int xoff, int yoff);
+	int paint_text(int fontnum, const char *text, int textlen, 
 							int xoff, int yoff);
 					// Get text width.
-	int get_text_width(int fontnum, char *text);
-	int get_text_width(int fontnum, char *text, int textlen);
+	int get_text_width(int fontnum, const char *text);
+	int get_text_width(int fontnum, const char *text, int textlen);
 					// Get text height.
 	int get_text_height(int fontnum);
 private:
