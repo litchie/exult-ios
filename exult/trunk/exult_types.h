@@ -19,14 +19,46 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef	_EXULT_TYPES_H_
 #define	_EXULT_TYPES_H_
 
+#if !AUTOCONFIGURED
+#  include "autoconfig.h"
+#endif
 
-typedef	unsigned char	uint8;
-typedef	unsigned short	uint16;
-typedef	unsigned long	uint32;
 
-typedef	signed char		sint8;
-typedef	signed short	sint16;
-typedef	signed long		sint32;
+#ifndef EX_TYPE_INT8
+#  define EX_TYPE_INT8 char /* guaranteed by ISO */
+#endif
+ 
+#ifndef EX_TYPE_INT16
+#  if (SIZEOF_SHORT == 2)
+#    define EX_TYPE_INT16 short
+#  elif (SIZEOF_INT == 2)
+#    define EX_TYPE_INT16 int
+#  else
+#    error "Please make sure a 16 bit type is provided by exult_types.h"
+#  endif
+#endif /* !EX_TYPE_INT16 */
+
+
+#ifndef EX_TYPE_INT32
+#  if (SIZEOF_INT == 4)
+#    define EX_TYPE_INT32 int
+#  elif (SIZEOF_LONG == 4)
+#    define EX_TYPE_INT32 long
+#  elif (SIZEOF_LONG_LONG == 4)
+#    define EX_TYPE_INT32 long long
+#  else
+#    error "Please make sure a 32 bit type is provided by exult_types.h"
+#  endif
+#endif /* !EX_TYPE_INT32 */
+
+
+typedef	unsigned EX_TYPE_INT8	uint8;
+typedef	unsigned EX_TYPE_INT16	uint16;
+typedef	unsigned EX_TYPE_INT32	uint32;
+
+typedef	signed EX_TYPE_INT8		sint8;
+typedef	signed EX_TYPE_INT16	sint16;
+typedef	signed EX_TYPE_INT32	sint32;
 
 
 #endif

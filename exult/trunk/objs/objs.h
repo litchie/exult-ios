@@ -30,6 +30,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define Rectangle RECTX
 #endif
 
+#ifdef MACOS
+#  include "exult_types.h"
+#else
+#  include "../exult_types.h"
+#endif
 #include <string>	// STL string
 #include "shapeid.h"
 #include "rect.h"
@@ -91,7 +96,7 @@ class Game_object : public ShapeID
 	Game_object_vector dependors;		// Objects which must be painted after.
 	static unsigned char rotate[8];	// For getting rotated frame #.
 public:
-	unsigned long render_seq;	// Render sequence #.
+	uint32 render_seq;	// Render sequence #.
 protected:
 	unsigned char cx, cy;		// (Absolute) chunk coords., or if this
 					//   is in a container, coords. within
@@ -222,10 +227,29 @@ public:
 	void clear_dependencies();	// Remove all dependencies.
 
 					// Find nearby objects.
+#ifdef __DECCXX
+	template<class T>
+	static int find_nearby_static(Exult_vector<T*>& vec, Tile_coord pos,
+			int shapenum, int delta, int mask, 
+			int qual = -359, int framenum = -359);
+
+#define HDR_DECLARE_FIND_NEARBY(decl_type) \
+	static int find_nearby(decl_type vec, Tile_coord pos, \
+			int shapenum, int delta, int mask,  \
+			int qual = -359, int framenum = -359)
+
+	HDR_DECLARE_FIND_NEARBY(Egg_vector&);
+	HDR_DECLARE_FIND_NEARBY(Actor_vector&);
+	HDR_DECLARE_FIND_NEARBY(Game_object_vector&);
+
+#undef HDR_DECLARE_FIND_NEARBY
+
+#else
 	template<class T>
 	static int find_nearby(Exult_vector<T*>& vec, Tile_coord pos,
 			int shapenum, int delta, int mask, 
 			int qual = -359, int framenum = -359);
+#endif
 
 	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta) const;
 	int find_nearby_eggs(Egg_vector& vec, int shapenum, int delta) const;

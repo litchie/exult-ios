@@ -21,11 +21,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <csignal>
+#  include <iostream>
+#endif
+
 #include "Midi.h"
 
 #include <unistd.h>
-#include <csignal>
-#include <iostream>
 #include "../fnames.h"
 #include "../files/U7file.h"
 #include "utils.h"

@@ -23,7 +23,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <cstring>
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <cstring>
+#endif
 #include "utils.h"
 #include "rect.h"
 #include "ibuf8.h"
@@ -284,8 +288,8 @@ void Shape_frame::create_rle
 unsigned char Shape_frame::read
 	(
 	DataSource& shapes,		// Shapes data source to read.
-	unsigned long shapeoff,		// Offset of shape in file.
-	unsigned long shapelen,		// Length expected for detecting RLE.
+	uint32 shapeoff,		// Offset of shape in file.
+	uint32 shapelen,		// Length expected for detecting RLE.
 	int frnum			// Frame #.
 	)
 	{
@@ -294,15 +298,15 @@ unsigned char Shape_frame::read
 	if (!shapelen && !shapeoff) return 0;
 					// Get to actual shape.
 	shapes.seek(shapeoff);
-	unsigned long datalen = shapes.read4();
-	unsigned long hdrlen = shapes.read4();
+	uint32 datalen = shapes.read4();
+	uint32 hdrlen = shapes.read4();
 	if (datalen == shapelen)
 		{			// Figure # frames.
 		int nframes = (hdrlen - 4)/4;
 		if (framenum >= nframes)// Bug out if bad frame #.
 			return (nframes);
 					// Get frame offset, lengeth.
-		unsigned long frameoff, framelen;
+		uint32 frameoff, framelen;
 		if (framenum == 0)
 			{
 			frameoff = hdrlen;
@@ -688,11 +692,11 @@ Shape_frame *Shape::read
 	{
 	Shape_frame *frame = new Shape_frame();
 					// Figure offset in "shapes.vga".
-	unsigned long shapeoff = 0x80 + shapenum*8;
+	uint32 shapeoff = 0x80 + shapenum*8;
 	shapes.seek(shapeoff);
 					// Get location, length.
 	shapeoff = shapes.read4();
-	unsigned long shapelen = shapes.read4();
+	uint32 shapelen = shapes.read4();
 					// Read it in and get frame count.
 	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
@@ -781,7 +785,7 @@ void Shape_file::load
 	U7open(file, nm);
 	Shape_frame *frame = new Shape_frame();
 	StreamDataSource shape_source(&file);
-	unsigned long shapelen = shape_source.read4();
+	uint32 shapelen = shape_source.read4();
 					// Read frame 0 & get frame count.
 	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
 	store_frame(frame, 0);
@@ -811,7 +815,7 @@ void Shape_file::load
 	)
 	{
 	Shape_frame *frame = new Shape_frame();
-	unsigned long shapelen = shape_source.read4();
+	uint32 shapelen = shape_source.read4();
 					// Read frame 0 & get frame count.
 	create_frames_list(frame->read(shape_source, 0L, shapelen, 0));
 	store_frame(frame, 0);

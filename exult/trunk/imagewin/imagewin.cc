@@ -25,10 +25,19 @@ Boston, MA  02111-1307, USA.
 */
 
 #include "imagewin.h"
-#include <cstring>
-#include <cstdlib>
-#include <iostream>
-#include <string>
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <cstring>
+#  include <cstdlib>
+#  include <iostream>
+#  include <string>
+#endif
+#ifdef MACOS
+#  include "exult_types.h"
+#else
+#  include "../exult_types.h"
+#endif
 
 using std::cout;
 using std::endl;
@@ -105,7 +114,7 @@ void Image_window::create_surface
 							8, 0, 0, 0, 0)) != 0)
 			{			// Get color mask info.
 			SDL_PixelFormat *fmt = scaled_surface->format;
-			unsigned long r = fmt->Rmask, g=fmt->Gmask, 
+			uint32 r = fmt->Rmask, g=fmt->Gmask, 
 								b=fmt->Bmask;
 			if (hwdepth == 16)
 				show_scaled = 

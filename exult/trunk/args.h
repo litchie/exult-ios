@@ -22,7 +22,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Handy argument processor. I'm certain the implementation could be better
 // but it suffices quite well at the moment.
 
-#include <string>
+#include "exult_types.h"
+
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#  undef declare
+#else
+#  include <string>
+#endif
 #include <vector>
 
 class	Args
@@ -33,12 +40,12 @@ class	Args
 		bool	*bval;
 		std::string  *sval;
 		int	*ival;
-		unsigned long *uval;
+		uint32 *uval;
 
 		bool	dbval;
 		std::string	dsval;
 		int	dival;
-		unsigned long duval;
+		uint32 duval;
 		enum { no_type=0,type_bool,type_string,type_int,type_unsigned } valuetype;
 		Opts() :option(""),valuetype(no_type) {};
 		~Opts() {};
@@ -50,7 +57,7 @@ class	Args
 	void	declare(const char *s,bool *b,bool defval=true);
 	void	declare(const char *s,std::string *b,const char *defval=0);
 	void	declare(const char *s,int *b,int defval=0);
-	void	declare(const char *s,unsigned long *b,unsigned long defval=0);
+	void	declare(const char *s,uint32 *b,uint32 defval=0);
 	void	process(int argc,char **argv);
 };
 

@@ -1,0 +1,91 @@
+/***************************************************************************
+ alpha_kludges.h Copyright (C) 2000 Christoph Reichenbach
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+***************************************************************************/
+/* System-specific kludges */
+
+
+#ifndef ALPHA_KLUDGES_H
+#define ALPHA_KLUDGES_H
+
+/*------------------------*/
+/* DEC cxx on Alpha/Linux */
+/*------------------------*/
+#ifdef __DECCXX
+
+
+
+namespace std {
+#include <sys/types.h>
+}
+
+typedef std::size_t size_t;
+
+namespace std {
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <string.h>
+#include <ctype.h>
+#include <wchar.h>
+#include <wctype.h>
+#include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
+}
+#include <iomanip>
+#include <fstream>
+#include <assert.h>
+
+using std::FILE;
+//using std::iostream;
+
+
+#include <iostream>
+#include <vector>
+
+namespace std{
+	using ::ostream;
+	using ::istream;
+	using ::ofstream;
+	using ::ifstream;
+	using ::cout;
+	using ::cin;
+	using ::cerr;
+	using ::endl;
+	using ::ios;
+	using ::vector;
+	using ::dec;
+	using ::hex;
+	using ::setfill;
+	using ::setw;
+};
+
+
+//using std::strcmp;
+//using std::FILE;
+
+
+#endif /* __DECCXX */
+
+#endif /* !ALPHA_KLUDGES_H */
+
+

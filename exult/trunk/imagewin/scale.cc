@@ -6,7 +6,9 @@
  **/
 
 #include "SDL.h"
-#include <cstring>
+#ifndef __DECCXX
+#  include <cstring>
+#endif
 
 
 /** 

@@ -31,13 +31,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #include <iostream>
   // it is not sufficient to #include <iosfwd> here since Read1() etc.
   // call methods of class istream
+#elif defined(__DECCXX)
+  #include "../alpha_kludges.h"
 #else
   #include <iosfwd>
 #endif
-#include <hash_map>
 #include <string>
-#ifdef MACOS
-  using Metrowerks::hash_map;
+
+#ifdef HAVE_HASH_MAP
+#  include <hash_map>
+#  ifdef MACOS
+    using Metrowerks::hash_map;
+#  endif
 #endif
 #include "exult_types.h"
 
@@ -49,8 +54,8 @@ struct hashstr
 {
 	long operator() (const char *str) const
 	{
-		const unsigned long m = 4294967291u;
-		unsigned long result = 0;
+		const uint32 m = 4294967291u;
+		uint32 result = 0;
 		for (; *str != '\0'; ++str)
 			result = ((result << 8) + *str) % m;
 		return long(result);
@@ -64,6 +69,15 @@ struct eqstr
 {
 	bool operator()(const char* s1, const char* s2) const {
 		return std::strcmp(s1, s2) == 0;
+	}
+};
+
+/*
+ *	For testing if a string is "less" than another:
+ */
+struct ltstr {
+	bool operator()(const char* s1, const char* s2) const {
+		return (std::strcmp(s1, s2) < 0);
 	}
 };
 
@@ -93,7 +107,7 @@ inline uint16 Read2
 	uint8 b0, b1;
 	in.get((char&) b0);
 	in.get((char&) b1);
-	return (b0 + (b1 << 8));
+	return (b0 | (b1 << 8));
 	}
 
 /*
@@ -107,7 +121,7 @@ inline uint16 Read2
 	{
 	uint8 b0 = *in++;
 	uint8 b1 = *in++;
-	return (b0 + (b1 << 8));
+	return (b0 | (b1 << 8));
 	}
 
 #ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
@@ -123,7 +137,7 @@ inline uint16 Read2
 	uint8 b0, b1;
 	fread(&b0,sizeof(uint8),1,in);
 	fread(&b1,sizeof(uint8),1,in);
-	return (b0 + (b1 << 8));
+	return (b0 | (b1 << 8));
 	}
 #endif
 
@@ -139,7 +153,7 @@ inline uint16 Read2high
 	uint8 b0, b1;
 	in.get((char&) b0);
 	in.get((char&) b1);
-	return ((b0 << 8) + b1);
+	return ((b0 << 8) | b1);
 	}
 
 /*
@@ -153,7 +167,7 @@ inline uint16 Read2high
 	{
 	uint8 b0 = *in++;
 	uint8 b1 = *in++;
-	return ((b0 << 8) + b1);
+	return ((b0 << 8) | b1);
 	}
 
 #ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
@@ -169,7 +183,7 @@ inline uint16 Read2high
 	uint8 b0, b1;
 	fread(&b0,sizeof(uint8),1,in);
 	fread(&b1,sizeof(uint8),1,in);
-	return ((b0 << 8) + b1);
+	return ((b0 << 8) | b1);
 	}
 #endif
 
@@ -187,7 +201,7 @@ inline uint32 Read4
 	in.get((char&) b1);
 	in.get((char&) b2);
 	in.get((char&) b3);
-	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	}
 
 /*
@@ -203,7 +217,7 @@ inline uint32 Read4
 	uint8 b1 = *in++;
 	uint8 b2 = *in++;
 	uint8 b3 = *in++;
-	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	}
 
 #ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
@@ -221,7 +235,7 @@ inline uint32 Read4
 	fread(&b1,sizeof(uint8),1,in);
 	fread(&b2,sizeof(uint8),1,in);
 	fread(&b3,sizeof(uint8),1,in);
-	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	}
 #endif
 /*
@@ -238,7 +252,7 @@ inline uint32 Read4high
 	in.get((char&) b1);
 	in.get((char&) b2);
 	in.get((char&) b3);
-	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
+	return ((b0<<24) | (b1<<16) | (b2<<8) | b3);
 	}
 
 /*
@@ -254,7 +268,7 @@ inline uint32 Read4high
 	uint8 b1 = *in++;
 	uint8 b2 = *in++;
 	uint8 b3 = *in++;
-	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
+	return ((b0<<24) | (b1<<16) | (b2<<8) | b3);
 	}
 
 #ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
@@ -272,7 +286,7 @@ inline uint32 Read4high
 	fread(&b1,sizeof(uint8),1,in);
 	fread(&b2,sizeof(uint8),1,in);
 	fread(&b3,sizeof(uint8),1,in);
-	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
+	return ((b0<<24) | (b1<<16) | (b2<<8) | b3);
 	}
 #endif
 

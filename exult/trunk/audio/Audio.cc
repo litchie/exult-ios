@@ -29,8 +29,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 extern	Configuration *config;
 
-#include <cstdio>
-#include <cstdlib>
+#ifndef __DECCXX
+#  include <csignal>
+#  include <cstdio>
+#  include <cstdlib>
+#  include <cstring>
+#  include <iostream>
+#endif
 #include <unistd.h>
 
 #define	TRAILING_VOC_SLOP 32
@@ -38,7 +43,6 @@ extern	Configuration *config;
 
 #include <SDL_audio.h>
 #include <SDL_timer.h>
-#include <csignal>
 #if defined(MACOS)
   #include <stat.h>
 #else
@@ -120,10 +124,6 @@ static	void resample(uint8 *sourcedata,uint8 **destdata,size_t sourcelen,size_t 
 		}
 	cerr << "End resampling. Resampled " << sourcelen << " bytes to " << *destlen << " bytes" << endl;
 }
-
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
 
 void	Audio::mix_audio(void)
 {
