@@ -536,6 +536,7 @@ void Game_map::write_ifix_objects
 		Shape_manager::get_instance()->get_shapes().get_num_shapes();
 	Flex::Flex_vers vers = nshapes <= u7nshapes ? Flex::orig
 							: Flex::exult_v2;
+	bool v2 = vers == Flex::exult_v2;
 	Flex_writer writer(&ifix, "Exult",  count, vers);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
@@ -549,7 +550,7 @@ void Game_map::write_ifix_objects
 			Object_iterator_backwards next(chunk);
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)
-				obj->write_ifix(&ifix);
+				obj->write_ifix(&ifix, v2);
 			writer.mark_section_done();
 			}
 	if (!writer.close())

@@ -1,3 +1,8 @@
+2004-09-06    <jeff@mini.nerble.net>
+
+	* gamemap.cc,Flex.cc,Flex.h: Write Vers2 u7ifix files, so that
+	shapes >1023 are supported.
+
 2004-09-05    <jeff@mini.nerble.net>
 
 	* gamemap.cc: Added code to read Vers.2 entries (although we don't

@@ -183,7 +183,7 @@ public:
 			Tile_coord(-animator->get_deltax(), 
 				   -animator->get_deltay(), 0); }
 
-	virtual void write_ifix(DataSource* ifix);
+	virtual void write_ifix(DataSource* ifix, bool v2);
 
 	};
 #endif

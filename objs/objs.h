@@ -295,7 +295,7 @@ public:
 	virtual int get_ireg_size()
 		{ return 0; }
 					// Write out IFIX, CHUNKS.
-	virtual void write_ifix(DataSource* ifix)
+	virtual void write_ifix(DataSource* ifix, bool v2)
 		{  }
 	virtual void elements_read()	// Called when all member items read.
 		{  }
@@ -335,7 +335,7 @@ public:
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual void paint_terrain() {  }
-	virtual void write_ifix(DataSource* ifix);
+	virtual void write_ifix(DataSource* ifix, bool v2);
 	};
 
 #endif
