@@ -574,12 +574,12 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		case button:		// Set off all in given area.
 			{
 			int dist = data1&0xff;
-			GOVector eggs;
-			find_nearby(eggs, 275, dist, 16);
-			for (GOVector::const_iterator it = eggs.begin();
+			EggVector eggs;
+			find_nearby_eggs(eggs, 275, dist);
+			for (EggVector::const_iterator it = eggs.begin();
 					it != eggs.end(); ++it)
 				{
-				Egg_object *egg = (Egg_object *) *it;
+				Egg_object *egg = *it;
 				if (egg != this &&
 				    egg->criteria == external_criteria)
 					egg->activate(umachine, obj, 0);

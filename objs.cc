@@ -282,9 +282,10 @@ static int Check_mask
  *	Output:	# found, appended to vec.
  */
 
+template <class T>
 int Game_object::find_nearby
 	(
-	GOVector& vec,			// Objects appended to this.
+	FeatureVector<T*>& vec,	// Objects appended to this.
 	Tile_coord pos,			// Look near this point.
 	int shapenum,			// Shape to look for.  
 					//   -1=any (but always use mask?),
@@ -348,11 +349,47 @@ int Game_object::find_nearby
 				obj->get_abs_tile(tx, ty, tz);
 					// +++++Check tz too?
 				if (tiles.has_point(tx, ty))
-					vec.push_back(obj);
+					vec.push_back((T*)obj);
 				}
 			}
 					// Return # added.
 	return (vec.size() - vecsize);
+	}
+
+int Game_object::find_nearby_actors
+	(
+	ActorVector& vec,
+	int shapenum,
+	int delta
+	) const
+	{
+	return Game_object::find_nearby(vec, get_abs_tile_coord(), shapenum,
+						delta, 8, -359, -359);
+	}
+
+int Game_object::find_nearby_eggs
+	(
+	EggVector& vec,
+	int shapenum,
+	int delta
+	) const
+	{
+	return Game_object::find_nearby(vec, get_abs_tile_coord(), shapenum,
+						delta, 16, -359, -359);
+	}
+
+int Game_object::find_nearby
+	(
+	GOVector& vec,
+	int shapenum,
+	int delta,
+	int mask,
+	int qual,
+	int framenum
+	) const
+	{
+	return Game_object::find_nearby(vec, get_abs_tile_coord(), shapenum,
+					delta, mask, qual, framenum);
 	}
 
 /*
