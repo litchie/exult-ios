@@ -99,6 +99,11 @@ bool usecode_trace = false;		// Do we trace Usecode-instruction?
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
 #endif
 
+// Cmdline arguments:
+string arg_gamename = "default";
+int arg_buildmap = -1;
+
+
 struct resolution {
 	int x;
 	int y;
@@ -137,6 +142,7 @@ void set_play_intro (bool);
 void make_screenshot (bool silent = false);
 void change_gamma (bool down);
 static void Drop_dragged_shape(int shape, int frame, int x, int y);
+static void BuildGameMap();
 
 /*
  *	A handy breakpoint.
@@ -160,26 +166,30 @@ int main
 	)
 {
 	bool	needhelp=false;
-	string	gamename("default");
-	Args    parameters;
 	int		result;
+	Args    parameters;
 
 	// Declare everything from the commandline that we're interested in.
 	parameters.declare("-h",&needhelp,true);
 	parameters.declare("--help",&needhelp,true);
 	parameters.declare("/?",&needhelp,true);
 	parameters.declare("/h",&needhelp,true);
-	parameters.declare("-game",&gamename,"default");
+	parameters.declare("-game",&arg_gamename,"default");
+	parameters.declare("-buildmap",&arg_buildmap,-1);
 
 	// Process the args
 	parameters.process(argc,argv);
 
 	if(needhelp)
 	{
-		cerr << "Usage: exult [--help|-h|/?|/h] [-game GAMENAME] " << endl <<
+		cerr << "Usage: exult [--help|-h|/?|/h] [-game GAMENAME] [-buildmap 0|1|2]" << endl <<
 			"--help\t\tShow this information" << endl <<
 			"-game GAMENAME\tSet the game data name to play" << endl <<
-			"\t(refer to the documentation)" << endl;
+			"\t(refer to the documentation)" << endl <<
+			"-buildmap\tCreate a fullsize map of the game world in u7map??.pcx" << endl <<
+			"\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl <<
+			"\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl;
+			
 		exit(1);
 	}
 	
@@ -321,30 +331,6 @@ static void Init
 
 	int w, h, sc, sclr;
 
-
-#ifdef BLACKGATE_DIGITAL_CAMERA
-	// create 2048x2048 screenshots of the full Ultima 7 map.
-	// WARNING!! Takes up lots of memory and diskspace!
-
-	h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
-	Image_window8::set_gamma(1, 1, 1);
-	gwin = new Game_window(w, h, sc, sclr);
-	current_res = find_resolution(w, h, sc);
-	Game::create_game(BLACK_GATE);
-	gwin->init_files();	
-	for (int x = 0; x < c_num_chunks / c_chunks_per_schunk; x++) {
-		for (int y = 0; y < c_num_chunks / c_chunks_per_schunk; y++) {
-			gwin->paint_map_at_tile(0,0,w,h,x * c_tiles_per_schunk, y * c_tiles_per_schunk, 15);
-			char fn[15];
-			snprintf(fn, 15, "u7map%x%x.pcx", x, y);
-			SDL_RWops *dst = SDL_RWFromFile(fn, "wb");
-			cerr << x << "," << y << ": ";
-			gwin->get_win()->screenshot(dst);
-		}
-	}
-	exit(0);
-#endif
-
 	// create keybinder with default bindings from exult.flx
 	keybinder = new KeyBinder;
 	try {
@@ -385,6 +371,10 @@ static void Init
 	config->value("config/video/disable_fades", disable_fades, "no");
 	if (disable_fades == "yes")
 		gwin->set_fades_enabled(false);
+
+
+	if (arg_buildmap >= 0)
+		BuildGameMap();
 
 	SDL_SetEventFilter(0);
 	// Show the banner
@@ -1057,6 +1047,43 @@ void change_gamma (bool down)
 	snprintf (text, 256, "Gamma Set to R: %01.2f G: %01.2f B: %01.2f", r, g, b);
 	gwin->center_text(text);	
 }
+
+void BuildGameMap()
+{
+	int w, h, sc, sclr;
+
+	// create 2048x2048 screenshots of the full Ultima 7 map.
+	// WARNING!! Takes up lots of memory and diskspace!
+	if (arg_buildmap >= 0) {
+		int maplift = 16;
+		Exult_Game gametype = BLACK_GATE;
+		switch(arg_buildmap) {
+			case 0: maplift = 16; break;
+			case 1: maplift = 10; break;
+			case 2: maplift = 5; break;
+		}
+		if (arg_gamename == "serpentisle")
+			gametype = SERPENT_ISLE;
+		h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
+		Image_window8::set_gamma(1, 1, 1);
+		gwin = new Game_window(w, h, sc, sclr);
+		current_res = find_resolution(w, h, sc);
+		Game::create_game(gametype);
+		gwin->init_files();	
+		for (int x = 0; x < c_num_chunks / c_chunks_per_schunk; x++) {
+			for (int y = 0; y < c_num_chunks / c_chunks_per_schunk; y++) {
+				gwin->paint_map_at_tile(0,0,w,h,x * c_tiles_per_schunk, y * c_tiles_per_schunk, maplift);
+				char fn[15];
+				snprintf(fn, 15, "u7map%x%x.pcx", x, y);
+				SDL_RWops *dst = SDL_RWFromFile(fn, "wb");
+				cerr << x << "," << y << ": ";
+				gwin->get_win()->screenshot(dst);
+			}
+		}
+		exit(0);
+	}
+}
+
 
 #ifdef XWIN
 /*
