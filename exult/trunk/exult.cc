@@ -622,7 +622,7 @@ static void Drop_in_map_editor
 	if (mod & KMOD_ALT)		// ALT?  Pick random frame.
 		{
 		ShapeID id(shnum, 0);
-		frnum = rand()%id.get_num_frames();
+		frnum = std::rand()%id.get_num_frames();
 		}
 	else if (mod & KMOD_CTRL)	// Cycle through frames.
 		{
@@ -733,6 +733,11 @@ static void Handle_event
 	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 	bool dont_move_mode = gwin->main_actor_dont_move();
 
+	// We want this
+	Gump_manager *gump_man = gwin->get_gump_man();
+	static bool right_on_gump = false;
+	Gump *gump = 0;
+
 					// For detecting double-clicks.
 	static uint32 last_b1_click = 0, last_b3_click = 0;
 	//cout << "Event " << (int) event.type << " received"<<endl;
@@ -767,11 +772,23 @@ static void Handle_event
 				{
 					ActionTarget(0);
 				}
-		if (event.button.button == 3)
-			{		// Try removing old queue entry.
+		if (event.button.button == 3) {
+			
+			// Try removing old queue entry.
 			gwin->get_tqueue()->remove(gwin->get_main_actor());
-			gwin->start_actor(x, y, Mouse::mouse->avatar_speed);
+
+			if (gump_man->can_right_click_close() &&
+					gump_man->gump_mode() && 
+					gump_man->find_gump(event.motion.x / scale, 
+										event.motion.y / scale,
+										false)) {
+				gump = 0;
+				right_on_gump = true;
 			}
+			else 
+				gwin->start_actor(x, y, Mouse::mouse->avatar_speed);
+
+		}
 		if (event.button.button == 4 || event.button.button == 5) 
 			{
 			if (!cheat()) break;
@@ -800,6 +817,16 @@ static void Handle_event
 				gwin->start_actor_along_path(
 					event.button.x / scale, 
 					event.button.y / scale, Mouse::mouse->avatar_speed);
+			else if (right_on_gump && (gump = gump_man->find_gump(
+										event.motion.x / scale, 
+										event.motion.y / scale,
+										false))) {
+				Rectangle dirty = gump->get_dirty();
+				gwin->add_dirty(dirty);
+				gump_man->close_gump(gump);
+				gump = 0;
+				right_on_gump = false;
+			}
 			else
 				gwin->stop_actor();
 			last_b3_click = curtime;
@@ -836,6 +863,7 @@ static void Handle_event
 						event.motion.y / scale);
 		Mouse::mouse->set_speed_cursor();
 		Mouse::mouse_update = true;	// Need to blit mouse.
+		right_on_gump = false;
 
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
