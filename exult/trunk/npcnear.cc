@@ -93,7 +93,10 @@ void Npc_proximity_handler::handle_event
 					// Hostile monster?  ATTACK!
 	else if (npc->get_alignment() == Npc_actor::hostile &&
 		npc->is_monster() &&
-		npc->get_schedule_type() != (int) Schedule::combat)
+		npc->get_schedule_type() != (int) Schedule::combat &&
+					// jsf-Trying to fix mage in
+					// Test of Courage:
+		npc->get_schedule_type() != (int) Schedule::wait)
 		{
 		npc->set_schedule_type(Schedule::combat);
 		}
