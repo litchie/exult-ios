@@ -185,6 +185,7 @@ public:
 	Image_buffer8 *get_rendered_flats()
 		{ return terrain ? terrain->get_rendered_flats() : 0; }
 					// Get/create/setup cache.
+	Chunk_cache *get_cache() const { return cache; }
 	Chunk_cache *need_cache()
 		{ 
 		if (!cache)
