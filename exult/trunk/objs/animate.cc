@@ -113,8 +113,10 @@ void Frame_animator::handle_event
 		return;
 		}
 	int framenum;
-	if (ireg)			// +++Another experiment -JSF
-		framenum = obj->get_framenum() + 1;
+	if (ireg)			// For IREG, increment frames.
+					// Sundial is a special case.
+		framenum = obj->get_shapenum() == 284 ? gwin->get_hour()
+				: obj->get_framenum() + 1;
 	else				// Want fixed shapes synchronized.
 					// Testing -WJP
 		framenum = (curtime / 100);
