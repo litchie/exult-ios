@@ -118,7 +118,9 @@ EXTRA_DIST = 	\
 	Makefile.be \
 	exult.spec
 
-exultico.o: win32/exultico.rc win32/exult.ico
-	windres $(srcdir)/win32/exultico.rc $(srcdir)/exultico.o
+win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
+	-mkdir win32
+	cp $(srcdir)/win32/exult.ico win32
+	windres $(srcdir)/win32/exultico.rc win32/exultico.o
 
 CLEANFILES = *~
