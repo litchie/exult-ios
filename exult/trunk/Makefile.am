@@ -123,7 +123,7 @@ EXULTLIBS = \
 exult_LDADD = \
 	$(EXULTLIBS) \
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE) \
-	$(ZLIB_LIBS)
+	$(ZLIB_LIBS) $(OPENGL_LIBS)
 
 exult_DEPENDENCIES = $(ICON_FILE) $(EXULTLIBS)
 
