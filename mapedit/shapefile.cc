@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapevga.h"
 #include "shapelst.h"
 #include "chunklst.h"
+#include "utils.h"
 
 using std::vector;
 using std::string;
@@ -98,10 +99,21 @@ Shape_file_set::~Shape_file_set
 
 Shape_file_info *Shape_file_set::create
 	(
-	const char *basename,		// Like 'shapes.vga'.
-	const char *fullname		// Like '.../static/shapes.vga'.
+	const char *basename		// Like 'shapes.vga'.
 	)
 	{
+	const char *fullname;
+	string fullstr("<PATCH>/");	// First look in 'patch'.
+	fullstr += basename;
+	if (U7exists(fullstr.c_str()))
+		fullname = fullstr.c_str();
+	else
+		{
+		fullstr = "<STATIC>/";
+		fullstr += basename;
+		fullname = fullstr.c_str();
+		assert(U7exists(fullname));
+		}
 	for (vector<Shape_file_info *>::iterator it = files.begin(); 
 					it != files.end(); ++it)
 		if (strcasecmp((*it)->pathname.c_str(), fullname) == 0)
@@ -124,8 +136,10 @@ Shape_file_info *Shape_file_set::create
 	else if (strcasecmp(basename, "sprites.vga") == 0)
 		u7drag_type = U7_SHAPE_SPRITES;
 	else if (strcasecmp(basename, "u7chunks") == 0)
-		file = new std::ifstream(fullname, 
-						std::ios::in|std::ios::binary);
+		{
+		file = new std::ifstream;
+		U7open(*file, fullname);// Automatically does binary.
+		}
 	if (!ifile && !file)		// Not handled above?
 					// Get image file for this path.
 		ifile = new Vga_file(fullname, u7drag_type);
