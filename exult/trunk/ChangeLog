@@ -1,6 +1,8 @@
 2000-11-28  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode/*: split up usecode.cc/h into separate files
 	* configure.in, Makefile.am: changed to reflect this
+	* Makefile.win32, Makefile.Be, Makefile.cygwin: changed too
+	* various: changed includes
 
 2000-11-28  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode.h: in usecode macros: '## NAME ## (int...' to '## NAME (int...'
