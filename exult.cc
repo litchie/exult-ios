@@ -637,7 +637,9 @@ static void Handle_keystroke
 		if (gwin->get_mode() == Game_window::gump)
 			gwin->end_gump_mode();
 		else			// For now, quit.
-			quitting_time = 1;
+			if (Yesno_gump_object::ask(
+					"Do you really want to quit?"))
+				quitting_time = 1;
 		break;
 	case SDLK_m:			// Show next mouse cursor.
 		{
@@ -711,6 +713,11 @@ static void Handle_keystroke
 				current_shape = vga_file->get_num_shapes()-1;
 		}
 		shape_showcase(current_file, current_shape, current_frame);
+		break;
+	case SDLK_x:			// Alt-x means quit.
+		if (alt && Yesno_gump_object::ask(
+						"Do you really want to quit?"))
+			quitting_time = 1;
 		break;
 	case SDLK_PAGEUP:
 		current_shape=0;
