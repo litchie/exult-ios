@@ -1783,12 +1783,41 @@ USECODE_INTRINSIC(get_dead_party)
 USECODE_INTRINSIC(play_sound_effect)
 {
 	if (num_parms < 1) return(no_ret);
-	// Play music(item, songnum).
-	// ??Show notes by item?
+	// Play music(isongnum).
 #if DEBUG
 	cout << "Sound effect " << parms[0].get_int_value() << " request in usecode" << endl;
 #endif
 	Audio::get_ptr()->play_sound_effect (parms[0].get_int_value());
+	return(no_ret);
+}
+
+USECODE_INTRINSIC(play_sound_effect2)
+{
+	if (num_parms < 2) return(no_ret);
+	// Play music(songnum, item).
+	Game_object *obj = get_item(parms[1]);
+	int volume;			// Set volume based on distance.
+	if (obj)
+		{
+		int dist = obj->distance(gwin->get_main_actor());
+		if (!dist)
+			volume = SDL_MIX_MAXVOLUME;
+		else
+			{		// 160/8 = 20 tiles. 20*20=400.
+			volume = (SDL_MIX_MAXVOLUME*64)/(dist*dist);
+			if (volume < 8)
+				volume = 8;
+			else if (volume > SDL_MIX_MAXVOLUME)
+				volume = SDL_MIX_MAXVOLUME;
+			}
+		}
+	else
+		volume = SDL_MIX_MAXVOLUME;
+#if DEBUG
+	cout << "Sound effect(2) " << parms[0].get_int_value() << 
+		" request in usecode with volume = " << volume << endl;
+#endif
+	Audio::get_ptr()->play_sound_effect (parms[0].get_int_value(), volume);
 	return(no_ret);
 }
 
