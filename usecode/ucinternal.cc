@@ -1671,7 +1671,7 @@ int Usecode_internal::run
 			Usecode_value val = pop();
 			if (offset < 0 || offset >= num_locals)
 				cerr << "Local #" << offset << 
-							"out of range" << endl;
+							" out of range" << endl;
 			else
 				locals[offset] = val;
 			}
@@ -1773,13 +1773,18 @@ int Usecode_internal::run
 			sval--;		// It's 1 based.
 					// Get # of local to index.
 			offset = Read2(ip);
-			if (sval < 0 || offset < 0 || offset >= num_locals)
+			if (offset < 0 || offset >= num_locals)
 				{
 				cerr << "Local #" << offset << 
-							"out of range" << endl;
+							" out of range" << endl;
 				pushi(0);
 				break;
 				}
+			if (sval < 0) {
+				cerr << "Negative array index: " << sval << endl;
+				pushi(0);
+				break;
+			}
 			Usecode_value& val = locals[offset];
 
 			if (val.is_array()) {
@@ -1787,8 +1792,7 @@ int Usecode_internal::run
 			} else if (sval == 0) {
 				push(val); // needed for SS keyring (among others, probably)
 			} else {
-				Usecode_value zero(0); // guessing... probably unnecessary
-				push(zero);
+				pushi(0);  // guessing... probably unnecessary
 			}
 			break;
 			}
