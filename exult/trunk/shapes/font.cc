@@ -504,11 +504,11 @@ static const char *Pass_word
 	}
 #endif
 
-Font::Font(): font_shapes(0)
+Font::Font(): font_shapes(0), font_data(0), font_buf(0)
 {
 }
 
-Font::Font(const char *fname, int index, int hlead, int vlead): font_shapes(0)
+Font::Font(const char *fname, int index, int hlead, int vlead): font_shapes(0), font_data(0), font_buf(0)
 {
 	load(fname, index, hlead, vlead);
 }
@@ -517,19 +517,22 @@ Font::~Font()
 {
 	if(font_shapes)
 		delete font_shapes;
+	if(font_data)
+		delete font_data;
+	if(font_buf)
+		delete font_buf;
 }
 
 int Font::load(const char *fname, int index, int hlead, int vlead)
 {
 	if(font_shapes)
 		delete font_shapes;
-	char *font_buf;
 	size_t len;
 	U7object font_obj(fname, index);
 	font_buf = font_obj.retrieve(len);
 	if(!strncmp(font_buf,"font",4))	// If it's an IFF archive...
 		font_buf += 8;		// Skip first 8 bytes
-	BufferDataSource *font_data = new BufferDataSource(font_buf, len);
+	font_data = new BufferDataSource(font_buf, len);
 	font_shapes = new Shape_file(*font_data);
 	hor_lead = hlead;
 	ver_lead = vlead;
@@ -585,16 +588,14 @@ FontManager::FontManager()
 FontManager::~FontManager()
 {
 	// FIXME: free all fonts
+	fonts.clear();
 }
 
 void FontManager::add_font(const char *name, const char *archive, int index, int hlead, int vlead)
 {
-#if DEBUG
-	if(fonts[name]!=0)
-		cout << "font " << name << " already here" << endl;
-	else
-		cout << "adding font " << name << endl;
-#endif
+	if(fonts[name]!=0)		// If a font is already here, delete it
+		delete fonts[name];
+
 	Font *font = new Font(archive, index, hlead, vlead);
 	
 	fonts[name] = font;
