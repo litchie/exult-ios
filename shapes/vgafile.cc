@@ -269,7 +269,7 @@ void Shape_frame::create_rle
 				}
 			}
 	Write2(out, 0);			// End with 0 length.
-	int datalen = out - buf;	// Create buffer of correct size.
+	datalen = out - buf;		// Create buffer of correct size.
 #ifdef DEBUG
 	if(datalen > w*h*2 + 16*h)
 		cout << "create_rle: datalen: " << datalen << " w: " << w
@@ -334,6 +334,7 @@ unsigned char Shape_frame::read
 	xright= ybelow = -1;
 	shapes.seek(shapeoff + framenum*64);
 	data = new unsigned char[64];	// Read in 8x8 pixels.
+	datalen = 64;
 	shapes.read((char *) data, 64);
 	return (shapelen/64);		// That's how many frames.
 	}
@@ -356,6 +357,7 @@ void Shape_frame::get_rle_shape
 	ybelow = shapes.read2();
 	len -= 8;			// Subtract what we just read.
 	data = new unsigned char[len + 2];	// Allocate and read data.
+	datalen = len+2;
 	shapes.read((char*)data, len);
 	data[len] = 0;			// 0-delimit.
 	data[len + 1] = 0;
@@ -756,6 +758,14 @@ Shape_frame *Shape::store_frame
 	return (frame);
 	}
 
+
+Shape::Shape(Shape_frame* fr)
+{
+	num_frames = 1;
+	frames = new Shape_frame*[1];
+	frames[0] = fr;
+}
+
 Shape::~Shape()
 	{
 	if (frames)
@@ -845,6 +855,40 @@ void Shape_file::load
 		store_frame(frame, i);
 		}
 	}
+
+
+
+// NOTE: Only works on shapes other than the special 8x8 tile-shapes
+int Shape_file::get_size()
+{
+	int size = 4;
+	for (int i=0; i<num_frames; i++)
+		size += frames[i]->get_size() + 4 + 8;
+	return size;
+}
+
+// NOTE: Only works on shapes other than the special 8x8 tile-shapes
+void Shape_file::save(DataSource& shape_source)
+{
+	int* offsets = new int[num_frames];
+	int size;
+	offsets[0] = 4 + num_frames * 4;
+	for (int i=1; i<num_frames; i++)
+		offsets[i] = offsets[i-1] + frames[i-1]->get_size() + 8;
+	size = offsets[num_frames-1] + frames[num_frames-1]->get_size() + 8;
+	shape_source.write4(size);
+	for (int i=0; i<num_frames; i++)
+		shape_source.write4(offsets[i]);
+	for (int i=0; i<num_frames; i++) {
+		shape_source.write2(frames[i]->xright);
+		shape_source.write2(frames[i]->xleft);
+		shape_source.write2(frames[i]->yabove);
+		shape_source.write2(frames[i]->ybelow);
+		shape_source.write((char*)(frames[i]->data), frames[i]->get_size());
+	}
+	delete [] offsets;
+}
+
 
 
 

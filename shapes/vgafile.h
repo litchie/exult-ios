@@ -50,6 +50,7 @@ class Shape_frame
 	{
 	unsigned char rle;		// 1 if run-length encoded.
 	unsigned char *data;		// The actual data.
+	int datalen;
 	short xleft;			// Extent to left of origin.
 	short xright;			// Extent to right.
 	short yabove;			// Extent above origin.
@@ -63,7 +64,8 @@ class Shape_frame
 public:
 	friend class Game_window;
 	friend class Shape;
-	Shape_frame() : data(0)
+	friend class Shape_file;
+	Shape_frame() : data(0), datalen(0)
 		{  }
 					// Read in shape/frame.
 	unsigned char read(DataSource& shapes, uint32 shapeoff,
@@ -90,6 +92,8 @@ public:
 		{ return yabove; }
 	int get_ybelow()
 		{ return ybelow; }
+	int get_size()
+		{ return datalen; }
 	int is_empty()
 		{ return data[0] == 0 && data[1] == 0; }
 	virtual ~Shape_frame()
@@ -116,6 +120,7 @@ public:
 	
 	Shape() : frames(0), num_frames(0)
 		{  }
+	Shape(Shape_frame* fr);
 	virtual ~Shape();
 	Shape_frame *get(DataSource& shapes, int shnum, int frnum)
 		{ 
@@ -136,11 +141,14 @@ class Shape_file : public Shape
 	{
 public:
 	Shape_file(const char *nm);
+	Shape_file(Shape_frame *fr): Shape(fr) {}
 	Shape_file(DataSource& shape_source);
 	Shape_file();
 	virtual ~Shape_file() {}
 	void load(const char *nm);
 	void load(DataSource& shape_source);
+	int get_size();
+	void save(DataSource& shape_source);
 	};
 
 /*
