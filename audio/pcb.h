@@ -174,8 +174,8 @@ class ByteBuffer
 
 		high += len;
 		}
-
-	size_t	pop_front(char *buf, size_t len)    // Pull block off the front
+					// Pull block off the front
+	size_t	pop_front(char *buf, size_t len, bool repeat = false)
 		{
 		if (!data)
 			return 0;
@@ -191,7 +191,10 @@ class ByteBuffer
 
 		if (low == high)
 			{
-			low = high = 0;
+			if (repeat)	// Rewind?
+				low = 0;
+			else		// All done.
+				low = high = 0;
 			}
 		return len;
 		}
@@ -316,6 +319,7 @@ private:
 	SDL_mutex	*mutex;
 	size_t	window;
 	bool	producing,consuming;
+	bool	repeat;			// Keep consuming forever.
 	uint32	type;			// 'Magic' # identifying type.
 	uint32  seq;			// Sequence # assigned.
 	int	volume;				// 0-128.
@@ -367,7 +371,7 @@ public:
 		if(!l)
 			return producing?0:-1;
 		lock();
-		l=Buffer.pop_front((char *)p,l);
+		l=Buffer.pop_front((char *)p, l, repeat);
 		unlock();
 		return l?l:(producing?0:-1);
 		}
@@ -380,6 +384,7 @@ public:
 		volume = SDL_MIX_MAXVOLUME;
 		dir = 0;
 		producing = consuming = true;
+		repeat = false;
 		Buffer.clear();
 		unlock();
 		return seq;
@@ -392,8 +397,11 @@ public:
 		{ return dir; }
 	void set_dir(int d)		// Should be 0-15.
 		{ dir = d; }
+	void set_repeat(bool rep)
+		{ repeat = rep; }
 	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),
 			window(32768),producing(false),consuming(false),
+			repeat(false),
 			type(0), seq(0), volume(SDL_MIX_MAXVOLUME), dir(0)
 		{
 #if DEBUG
