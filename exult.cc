@@ -687,7 +687,7 @@ static void Handle_event
 	case SDL_KEYDOWN:		// Keystroke.
 		Handle_keystroke(event.key.keysym.sym,
 			event.key.keysym.mod & KMOD_SHIFT,
-			(event.key.keysym.mod & KMOD_ALT) || altkeys,
+			(event.key.keysym.mod & KMOD_ALT), // || altkeys,
 			event.key.keysym.mod & KMOD_CTRL);
 		break;
 	case SDL_KEYUP:			// Key released.
@@ -791,40 +791,6 @@ static void Handle_keystroke
 		} else			// Open spellbook.
 			gwin->activate_item(761);
 		break;
-	case SDLK_f:			// Feed food.
-		gwin->activate_item(377);	// +++++Black gate.
-		break;
-	case SDLK_i:
-		{
-		// Show Inventory
-		if (gwin->get_mode() != Game_window::gump)
-			inventory_page = stats_page = -1;
-		if(inventory_page<gwin->get_usecode()->get_party_count())
-			++inventory_page;
-		else
-			inventory_page = 0;
-		Actor *actor = Get_party_member(inventory_page);
-		if (actor)
-			actor->activate(gwin->get_usecode());
-		if (gwin->get_mode() == Game_window::gump)
-			mouse->set_shape(Mouse::hand);
-		break;
-		}
-	case SDLK_z:			// Show stats.
-		{
-		if (gwin->get_mode() != Game_window::gump)
-			stats_page = -1;
-		if (stats_page < gwin->get_usecode()->get_party_count())
-			++stats_page;
-		else
-			stats_page = 0;
-		Actor *actor = Get_party_member(stats_page);
-		if (actor)
-			gwin->show_gump(actor, Game::get_game()->get_shape("gumps/statsdisplay"));
-		if (gwin->get_mode() == Game_window::gump)
-			mouse->set_shape(Mouse::hand);
-		break;
-		}
 	case SDLK_c:
 		{
 		if (ctrl)		// Create last shape viewed.
@@ -863,6 +829,38 @@ static void Handle_keystroke
 			}
 		break;
 		}
+	case SDLK_e:
+		if(!cheat)
+			break;
+		gwin->paint_eggs = !gwin->paint_eggs;
+		if(gwin->paint_eggs)
+			gwin->center_text("Eggs display enabled");
+		else
+			gwin->center_text("Eggs display disabled");
+		gwin->paint();
+		break;
+	case SDLK_f:			// Feed food.
+		gwin->activate_item(377);	// +++++Black gate.
+		break;
+	case SDLK_g:
+		if (alt) {	// toggle god-mode
+			if (cheat) {
+				god_mode = !god_mode;
+				if (god_mode)
+					gwin->center_text("God Mode Enabled");
+				else
+					gwin->center_text("God Mode Disabled");
+			}
+		} else {	// Change Avatars gender
+			if(!cheat)
+				break;
+			if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex))
+				gwin->get_main_actor()->clear_type_flag(Actor::tf_sex);
+			else
+				gwin->get_main_actor()->set_type_flag(Actor::tf_sex);
+			gwin->set_all_dirty();
+		}
+		break;
 	case SDLK_h:	// Help keys, ctrl = cheat keys
 		{
 		char buf[1024];
@@ -887,10 +885,12 @@ static void Handle_keystroke
 			{
 			sprintf(buf, "Cheat commands\n"
 				"  Arrow keys - scroll map\n"
+				"  Home - recenter map\n"
 				"  alt-+/- - Switch resolution\n"
 				"  ctrl-b - Shape Browser\n"
 				"  ctrl-c - Create Object\n"
 				"  ctrl-d - Delete Object\n"
+				"  e - Toggle Egg display\n"
 				"  alt-g - Toggle God Mode\n"
 				"  g - Change Avatar gender\n"
 				"  ctrl-m - Get 100 gold coins\n"
@@ -910,12 +910,35 @@ static void Handle_keystroke
 		gwin->get_win()->show();
 		break;
 		}
-	case SDLK_ESCAPE:		// ESC key.
-		inventory_page = stats_page = -1;
+	case SDLK_i:
+		{
+		// Show Inventory
+		if (gwin->get_mode() != Game_window::gump)
+			inventory_page = stats_page = -1;
+		if(inventory_page<gwin->get_usecode()->get_party_count())
+			++inventory_page;
+		else
+			inventory_page = 0;
+		Actor *actor = Get_party_member(inventory_page);
+		if (actor)
+			actor->activate(gwin->get_usecode());
 		if (gwin->get_mode() == Game_window::gump)
-			gwin->end_gump_mode();
-		else			// For now, quit.
-			Okay_to_quit();
+			mouse->set_shape(Mouse::hand);
+		break;
+		}
+	case SDLK_l:			// Decrement skip_lift.
+		if(!cheat)
+			break;
+		if (gwin->skip_lift == 16)
+			gwin->skip_lift = 11;
+		else
+			gwin->skip_lift--;
+		if (gwin->skip_lift <= 0)
+			gwin->skip_lift = 16;
+#if DEBUG
+		cout << "Skip_lift = " << gwin->skip_lift << endl;
+#endif
+		gwin->paint();
 		break;
 	case SDLK_m:
 		if (ctrl&&cheat) {	// CTRL-m:  get 100 gold coins!
@@ -931,19 +954,15 @@ static void Handle_keystroke
 		} else			// Show map.
 			gwin->activate_item(178);	//++++Black gate.
 		break;
-	case SDLK_l:			// Decrement skip_lift.
-		if(!cheat)
+	case SDLK_n:		// Toggle Naked flag
+		if(!cheat || (Game::get_game_type() == BLACK_GATE))
 			break;
-		if (gwin->skip_lift == 16)
-			gwin->skip_lift = 11;
+		if (gwin->get_main_actor()->get_siflag(Actor::naked))
+			gwin->get_main_actor()->clear_siflag(Actor::naked);
 		else
-			gwin->skip_lift--;
-		if (gwin->skip_lift <= 0)
-			gwin->skip_lift = 16;
-#if DEBUG
-		cout << "Skip_lift = " << gwin->skip_lift << endl;
-#endif
-					// FALL THROUGH.
+			gwin->get_main_actor()->set_siflag(Actor::naked);
+		gwin->set_all_dirty();
+		break;
 	case SDLK_p:			// Rerender image.
 		// Toggle petra mode
 		if(alt && cheat && (Game::get_game_type() != BLACK_GATE))
@@ -957,44 +976,6 @@ static void Handle_keystroke
 		}
 
 		gwin->paint();
-		break;
-	case SDLK_e:
-		if(!cheat)
-			break;
-		gwin->paint_eggs = !gwin->paint_eggs;
-		if(gwin->paint_eggs)
-			gwin->center_text("Eggs display enabled");
-		else
-			gwin->center_text("Eggs display disabled");
-		gwin->paint();
-		break;
-	case SDLK_g:
-		if (alt) {	// toggle god-mode
-			if (cheat) {
-				god_mode = !god_mode;
-				if (god_mode)
-					gwin->center_text("God Mode Enabled");
-				else
-					gwin->center_text("God Mode Disabled");
-			}
-		} else {	// Change Avatars gender
-			if(!cheat)
-				break;
-			if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex))
-				gwin->get_main_actor()->clear_type_flag(Actor::tf_sex);
-			else
-				gwin->get_main_actor()->set_type_flag(Actor::tf_sex);
-			gwin->set_all_dirty();
-		}
-		break;
-	case SDLK_n:		// Toggle Naked flag
-		if(!cheat || (Game::get_game_type() == BLACK_GATE))
-			break;
-		if (gwin->get_main_actor()->get_siflag(Actor::naked))
-			gwin->get_main_actor()->clear_siflag(Actor::naked);
-		else
-			gwin->get_main_actor()->set_siflag(Actor::naked);
-		gwin->set_all_dirty();
 		break;
 	case SDLK_r:
 		if (ctrl)		// Restore from 'gamedat'.
@@ -1111,6 +1092,28 @@ static void Handle_keystroke
 		break;
 	case SDLK_x:			// Alt-x means quit.
 		if (alt)
+			Okay_to_quit();
+		break;
+	case SDLK_z:			// Show stats.
+		{
+		if (gwin->get_mode() != Game_window::gump)
+			stats_page = -1;
+		if (stats_page < gwin->get_usecode()->get_party_count())
+			++stats_page;
+		else
+			stats_page = 0;
+		Actor *actor = Get_party_member(stats_page);
+		if (actor)
+			gwin->show_gump(actor, Game::get_game()->get_shape("gumps/statsdisplay"));
+		if (gwin->get_mode() == Game_window::gump)
+			mouse->set_shape(Mouse::hand);
+		break;
+		}
+	case SDLK_ESCAPE:		// ESC key.
+		inventory_page = stats_page = -1;
+		if (gwin->get_mode() == Game_window::gump)
+			gwin->end_gump_mode();
+		else			// For now, quit.
 			Okay_to_quit();
 		break;
 	case SDLK_RIGHT:
