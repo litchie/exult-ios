@@ -119,8 +119,6 @@ protected:
 	unsigned char cx, cy;		// (Absolute) chunk coords., or if this
 					//   is in a container, coords. within
 					//   gump's rectangle.
-					// Write common IREG data.
-	void write_common_ireg(unsigned char *buf);
 public:
 	friend class Chunk_object_list;
 	friend class Barge_object;
@@ -293,6 +291,8 @@ public:
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out)
 		{  }
+					// Write common IREG data.
+	void write_common_ireg(unsigned char *buf);
 	};
 
 /*

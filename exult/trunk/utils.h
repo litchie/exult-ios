@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Utils.h - Common utility routines.
  **
  **	Written: 10/1/98 - JSF
@@ -86,6 +87,20 @@ inline unsigned long Read4
 	in.get((char&) b2);
 	in.get((char&) b3);
 	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	}
+
+/*
+ *	Write a 2-byte value, lsb first.
+ */
+
+inline void Write2
+	(
+	ostream& out,
+	int val
+	)
+	{
+	out.put((char) (val&0xff));
+	out.put((char) ((val>>8)&0xff));
 	}
 
 /*

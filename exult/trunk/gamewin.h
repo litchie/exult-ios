@@ -80,7 +80,7 @@ private:
 					//   0xf4 through 0xfe.
 	Main_actor *main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
-	int num_npcs;			// Number of NPC's.
+	int num_npcs, num_npcs1;	// Numbers of NPC's, type1 NPC's.
 	Actor **npcs;			// List of NPC's + the Avatar.
 	int num_monsters;		// Number of monster types.
 	Monster_info *monster_info;	// Array from 'monsters.dat'.
@@ -430,8 +430,9 @@ public:
 	int have_focus()
 		{ return focus; }
 	void end_splash();		// End splash screen.
-	void read_npcs();		// Read in npc's & schedules.
-	void read_schedules();
+	void read_npcs();		// Read in npc's.
+	int write_npcs();		// Write them back.
+	void read_schedules();		// Read npc's schedules.
 					// Start dragging.
 	int start_dragging(int x, int y);
 	void drag(int x, int y);	// During dragging.

@@ -723,8 +723,9 @@ int Game_window::write
 	)
 	{
 					// Write each superchunk to Iregxx.
-	for (int i = 0; i < 12*12 - 1; i++)
-		if (!write_ireg_objects(i))
+	for (int schunk = 0; schunk < 12*12 - 1; schunk++)
+					// Only write what we've read.
+		if (schunk_read[schunk] && !write_ireg_objects(schunk))
 			return (0);
 	// +++++Write npc.dat, party,  +++++Write global flags to???
 	return (1);
