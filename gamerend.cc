@@ -91,7 +91,10 @@ int Game_window::paint_map
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy < stop_chunky; cy++)
 		for (cx = start_chunkx; cx < stop_chunkx; cx++)
-			paint_chunk_flats(cx, cy);
+			if (in_dungeon)
+				paint_dungeon_chunk_flats(cx, cy);
+			else
+				paint_chunk_flats(cx, cy);
 					// Draw the chunks' objects
 					//   diagonally NE.
 	for (cy = start_chunky; cy < stop_chunky; cy++)
@@ -140,6 +143,27 @@ void Game_window::paint
 	}
 
 /*
+ *	Paint a flat tile.
+ */
+
+inline void Game_window::paint_tile
+	(
+	Chunk_object_list *olist,
+	int tilex, int tiley,		// Tile within chunk.
+	int xoff, int yoff		// Offset of chunk within window.
+	)
+	{
+	ShapeID id = olist->get_flat(tilex, tiley);
+	if (!id.is_invalid())
+		{			// Draw flat.
+		Shape_frame *shape = get_shape(id);
+		win->copy8(shape->data, tilesize, tilesize, 
+					xoff + tilex*tilesize,
+					yoff + tiley*tilesize);
+		}
+	}
+
+/*
  *	Paint the flat (non-rle) shapes in a chunk.
  */
 
@@ -154,20 +178,41 @@ void Game_window::paint_chunk_flats
 					// Go through array of tiles.
 	for (int tiley = 0; tiley < tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < tiles_per_chunk; tilex++)
-			{
-			ShapeID id = olist->get_flat(tilex, tiley);
-			if (!id.is_invalid())
-				{	// Draw flat.
-				Shape_frame *shape = get_shape(id);
-				win->copy8(shape->data, tilesize, tilesize, 
-					xoff + tilex*tilesize,
-					yoff + tiley*tilesize);
-				}
-			}
+			paint_tile(olist, tilex, tiley, xoff, yoff);
+
 	Flat_object_iterator next(olist);// Now do flat RLE objects.
 	Game_object *obj;
 	while ((obj = next.get_next()) != 0)
 		obj->paint(this);
+	}
+
+/*
+ *	Paint the flat (non-rle) shapes in a chunk when inside a dungeon.
+ */
+
+void Game_window::paint_dungeon_chunk_flats
+	(
+	int cx, int cy			// Chunk coords (0 - 12*16).
+	)
+	{
+	int xoff = (cx*tiles_per_chunk - get_scrolltx())*tilesize;
+	int yoff = (cy*tiles_per_chunk - get_scrollty())*tilesize;
+	Chunk_object_list *olist = get_objects(cx, cy);
+					// Go through array of tiles.
+	for (int tiley = 0; tiley < tiles_per_chunk; tiley++)
+		for (int tilex = 0; tilex < tiles_per_chunk; tilex++)
+			if (olist->in_dungeon(tilex, tiley))
+				paint_tile(olist, tilex, tiley, xoff, yoff);
+			else		// Paint black if outside dungeon.
+				win->fill8(0, tilesize, tilesize, 
+					xoff + tilex*tilesize,
+					yoff + tiley*tilesize);
+
+	Flat_object_iterator next(olist);// Now do flat RLE objects.
+	Game_object *obj;
+	while ((obj = next.get_next()) != 0)
+		if (olist->in_dungeon(obj))
+			obj->paint(this);
 	}
 
 /*
@@ -183,16 +228,24 @@ int Game_window::paint_chunk_objects
 	{
 	Game_object *obj;
 	Chunk_object_list *olist = get_objects(cx, cy);
+	if (in_dungeon && !olist->has_dungeon())
+		return 0;		// Totally outside dungeon.
 	int light_sources = 0;		// Also check for light sources.
-//	if (is_main_actor_inside() && olist->is_roof())
+//	if (is_main_actor_inside() && olist->is_roof()) +++++Correct??
 		light_sources += olist->get_light_sources();
 	int save_skip = skip_lift;
 	if (skip_above_actor < skip_lift)
 		skip_lift = skip_above_actor;
 	Nonflat_object_iterator next(olist);
-	while ((obj = next.get_next()) != 0)
-		if (obj->render_seq != render_seq)
-			paint_object(obj);
+	if (in_dungeon)
+		while ((obj = next.get_next()) != 0)
+			if (obj->render_seq != render_seq &&
+			    olist->in_dungeon(obj))
+				paint_dungeon_object(olist, obj);
+	else
+		while ((obj = next.get_next()) != 0)
+			if (obj->render_seq != render_seq)
+				paint_object(obj);
 	skip_lift = save_skip;
 	return light_sources;
 	}
@@ -216,6 +269,31 @@ void Game_window::paint_object
 		Game_object *dep = obj->get_dependency(i);
 		if (dep && dep->render_seq != render_seq)
 			paint_object(dep);
+		}
+	obj->paint(this);		// Finally, paint this one.
+	}
+
+/*
+ *	Same thing as above, but when inside a dungeon.
+ */
+
+void Game_window::paint_dungeon_object
+	(
+	Chunk_object_list *olist,	// Chunk being rendered.
+	Game_object *obj
+	)
+	{
+	int lift = obj->get_lift();
+	if (lift >= skip_lift)
+		return;
+	obj->render_seq = render_seq;
+	int cnt = obj->get_dependency_count();
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *dep = obj->get_dependency(i);
+		if (dep && dep->render_seq != render_seq &&
+		    olist->in_dungeon(dep))
+			paint_dungeon_object(olist, dep);
 		}
 	obj->paint(this);		// Finally, paint this one.
 	}

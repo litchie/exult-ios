@@ -101,6 +101,7 @@ private:
 	Barge_object *moving_barge;	// ->cart/ship that's moving, or 0.
 	Main_actor *main_actor;		// Main sprite to move around.
 	int skip_above_actor;		// Level above actor to skip rendering.
+	unsigned char in_dungeon;	// 1 if inside a dungeon.
 	int num_npcs, num_npcs1;	// Numbers of NPC's, type1 NPC's.
 	Actor **npcs;			// List of NPC's + the Avatar.
 	int num_monsters;		// Number of monster types.
@@ -461,12 +462,16 @@ public:
 	inline char *get_save_name(int i) const	// Get ->saved-game name.
 		{ return save_names[i]; }
 					// Paint "flat" scenery in a chunk.
+	void paint_tile(Chunk_object_list *olist, int tilex, int tiley,
+							int xoff, int yoff);
 	void paint_chunk_flats(int cx, int cy);
+	void paint_dungeon_chunk_flats(int cx, int cy);
 					// Paint objects in given chunk at
 					//   given lift.
 	int paint_chunk_objects(int cx, int cy);
 					// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj);
+	void paint_dungeon_object(Chunk_object_list *olist, Game_object *obj);
 					// Fade palette in/out.
 	void fade_palette(int cycles, int inout, int pal_num = -1);
 	int is_palette_faded_out()
