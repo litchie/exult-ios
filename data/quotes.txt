@@ -33,3 +33,7 @@
 \C"Paladin reproduces infinitely"
 \L- Dominik
 \C(on Jackchaos)
+
+\C"Oh Wow. Boom!
+\CIt crashed good an proper for me."
+\L- Colourless
