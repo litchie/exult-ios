@@ -1,5 +1,7 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *	exult_constants.h - Some constants/macros that are used all over the code.
+ *
+ *  Copyright (C) 2000-2001  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,8 +18,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _EXULT_CONSTANTS_H
-#define _EXULT_CONSTANTS_H
+#ifndef EXULT_CONSTANTS_H
+#define EXULT_CONSTANTS_H
 
 /*
  *	Sizes:
@@ -57,4 +59,14 @@ const int c_any_framenum = -359;
 #define DECR_CHUNK(x) ((x - 1 + c_num_chunks)%c_num_chunks)
 #define INCR_TILE(x) ((x + 1)%c_num_tiles)
 #define DECR_TILE(x) ((x - 1 + c_num_tiles)%c_num_tiles)
+
+// Debug
+#if DEBUG
+#  define COUT(x)		cout << x << endl; cout.flush()
+#  define CERR(x)		cerr << x << endl; cerr.flush()
+#else
+#  define COUT(x)		
+#  define CERR(x)		
+#endif
+
 #endif
