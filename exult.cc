@@ -355,6 +355,7 @@ static int Filter_intro_events
 	case SDL_MOUSEBUTTONUP:
 	case SDL_MOUSEBUTTONDOWN:
 	case SDL_KEYDOWN:
+	case SDL_MOUSEMOTION:
 	case SDL_KEYUP:
 		return 0;		// The intro. is running.
 		}
@@ -413,7 +414,9 @@ static void Handle_events
 				if (!gwin->get_main_actor()->is_moving())
 					{
 					int ms = SDL_GetMouseState(&x, &y);
-					if (SDL_BUTTON(3) & ms)
+					if ((SDL_BUTTON(3) & ms) &&
+					 gwin->get_usecode()->get_global_flag(
+					   Usecode_machine::did_first_scene))
 						gwin->start_actor(x, y, 
 								avatar_speed);
 					}
