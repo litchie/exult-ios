@@ -198,18 +198,13 @@ public:
 	int is_moving();		// Is Avatar (or barge) moving?
 	inline Main_actor *get_main_actor() const
 		{ return main_actor; }
-	int set_above_main_actor(int inside, int lift)
-		{			// Use ht=4, round to nearest 5.
-		int new_skip = !inside ? 31 : ((lift + 4 + 2)/5)*5;
-		return (new_skip == skip_above_actor ? 0
-				: ((skip_above_actor = new_skip), 1));
-		}
 	int is_main_actor_inside()
 		{ return skip_above_actor < 31 ; }
-	int set_above_main_actor(int lift)// Use this if chunk didn't change.
+	int set_above_main_actor(int lift)// Returns if skip_above_actor changed!
 		{
-		return !is_main_actor_inside() ? 0 : 
-			((skip_above_actor = ((lift + 4 + 2)/5)*5), 1);
+		if (skip_above_actor == lift) return false;
+		skip_above_actor = lift;
+		return true;
 		}
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < num_npcs) ? 

@@ -32,7 +32,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 #include "citerate.h"
 #include <string.h>
-
 					// Bit 5=S, Bit6=reflect. on diag.
 unsigned char Game_object::rotate[8] = { 0, 0, 48, 48, 16, 16, 32, 32};
 
@@ -2105,6 +2104,40 @@ int Chunk_cache::get_highest_blocked
 	}
 
 /*
+ *	Get highest blocked lift below a given level for a given tile.
+ *
+ *	Output:	Highest lift that's blocked by an object, or -1 if none.
+ */
+
+inline int Chunk_cache::get_lowest_blocked
+	(
+	int lift,			// Look above this lift.
+	unsigned short tflags		// Flags for desired tile.
+	)
+	{
+	int i;				// Look upward.
+	for (i = lift; i < 16 && !(tflags & (1<<i)); i++)
+		;
+	if (i == 16) return -1;
+	return i;
+	}
+
+/*
+ *	Get lowest blocked lift above a given level for a given tile.
+ *
+ *	Output:	Lowest lift that's blocked by an object, or -1 if none.
+ */
+
+int Chunk_cache::get_lowest_blocked
+	(
+	int lift,			// Look below this lift.
+	int tx, int ty			// Square to test.
+	)
+	{
+	return get_lowest_blocked(lift, blocked[ty*tiles_per_chunk + tx]);
+	}
+
+/*
  *	Is a given square occupied at a given lift?
  *
  *	Output: 1 if so, else 0.
@@ -2542,6 +2575,23 @@ Game_object *Chunk_object_list::find_closed_door
 	return (0);
 	}
 #endif
+
+/*
+ *  Finds if there is a 'roof' above lift in tile (tx, ty)
+ *  of the chunk. Point is taken 4 above lift
+ *
+ *  Roof can be any object, not just a literal roof
+ *
+ *  Output: height of the roof.
+ *  A return of 31 means no roof
+ *
+ */
+int Chunk_object_list::is_roof(int tx, int ty, int lift)
+{
+	int height = get_lowest_blocked (lift+4, tx, ty);
+	if (height == -1) return 31;
+	return height;
+}
 
 /*
  *	Create a sequence of frames.
