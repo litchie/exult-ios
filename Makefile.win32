@@ -17,7 +17,7 @@ CPPFLAGS=-DVERSION=\\\"0.90alpha1\\\" -DEXULT_DATADIR=\\\"data\\\" -g3 -DDEBUG -
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/usecode \
 	$(SDL_INCLUDES)
 
-CXXFLAGS=-02 -mwindows -Wno-long-long
+CXXFLAGS=-O2 -mwindows -Wno-long-long
 
 LFLAGS=-g3 -mwindows
 LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
