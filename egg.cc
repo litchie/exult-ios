@@ -413,6 +413,29 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 					// Flag it as done if not auto-reset.
 		flags |= (1 << (int) hatched);
 	Game_window *gwin = Game_window::get_game_window();
+					// Taking a guess:
+	if (criteria == external_criteria)
+		{			// Look for nearby eggs.
+		Vector eggs;
+		int cnt = find_nearby(eggs, get_shapenum(), 8, 16);
+		Egg_object *best = 0;	// Find closest.
+		int best_dist = 10000;
+		for (int i = 0; i < cnt; i++)
+			{
+			Egg_object *egg = (Egg_object *) eggs.get(i);
+			int dist = Game_object::distance(egg);
+			if (egg != this &&
+			    dist <= best_dist &&
+/*			    egg->criteria == external_criteria && */
+			    !(egg->flags & ((1<<hatched)|(1<<auto_reset))))
+				{
+				best = egg;
+				best_dist = dist;
+				}
+			}
+		if (best)
+			best->activate(umachine, obj, 0);
+		}
 	switch(type)
 		{
 		case jukebox:
@@ -538,26 +561,23 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				}
 			break;
 			}
+		case button:		// Set off all in given area.
+			{
+			int dist = data1&0xff;
+			Vector eggs;
+			int cnt = find_nearby(eggs, get_shapenum(), dist, 16);
+			for (int i = 0; i < cnt; i++)
+				{
+				Egg_object *egg = (Egg_object *) eggs.get(i);
+				if (egg != this &&
+				    egg->criteria == external_criteria)
+					egg->activate(umachine, obj, 0);
+				}
+			break;
+			}
 		default:
 			cout << "Egg not actioned" << endl;
                 }
-					// Taking a guess:
-	if (criteria == external_criteria)
-		{			// Look for nearby eggs.
-		Vector eggs;
-		int cnt = find_nearby(eggs, get_shapenum(), 8, 0);
-		for (int i = 0; i < cnt; i++)
-			{
-			Egg_object *egg = (Egg_object *) eggs.get(i);
-			if (egg != this &&
-			    egg->criteria == external_criteria &&
-			    !(egg->flags & ((1<<hatched)|(1<<auto_reset))))
-				{	// Just do the 1st.
-				egg->activate(umachine, obj, 0);
-				break;
-				}
-			}
-		}
 	if (flags & (1 << (int) once))
 		remove_this();		// All done, so go away.
 	else if (criteria == cached_in  && solid_area )

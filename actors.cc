@@ -1613,11 +1613,19 @@ void Actor::die
 	body->move(pos);
 	body->set_flag(okay_to_take);	// Okay to take its contents.
 	Game_object *item;		// Move all the items.
+	Vector tooheavy;		// Some shouldn't be moved.
 	while ((item = get_first_object()) != 0)
 		{
 		remove(item);
-		body->add(item, 1);	// Always succeed at adding.
+		if (item->is_dragable())
+			body->add(item, 1);// Always succeed at adding.
+		else
+			tooheavy.append(item);
 		}
+					// Put the heavy ones back.
+	int cnt = tooheavy.get_cnt();
+	for (int i = 0; i < cnt; i++)
+		add((Game_object *) tooheavy.get(i), 1);
 	gwin->add_dirty(body);
 	}
 

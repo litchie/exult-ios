@@ -187,7 +187,7 @@ static void Activate_cached
 	{
 	if (Game::get_game_type() != BLACK_GATE)
 		return;			// ++++Since we're not sure about it.
-	const int dist = 8;
+	const int dist = 16;
 	Vector vec;			// Find all usecode eggs.
 	int cnt = Game_object::find_nearby(vec, pos, 275, dist, 16, -359, 7);
 	for (int i = 0; i < cnt; i++)
@@ -630,7 +630,7 @@ Game_object *Usecode_machine::get_item
 		else
 			return 0;	// Can't be an object.
 		}
-	return obj ? obj : (Game_object *) val;
+	return obj ? obj : val > 0x1000 ? (Game_object *) val : 0;
 	}
 
 /*
@@ -1125,8 +1125,12 @@ Usecode_value Usecode_machine::find_nearest
 		return Usecode_value(0);
 	Vector vec;			// Gets list.
 	obj = obj->get_outermost();	// Might be inside something.
-	int cnt = obj->find_nearby(vec, shapeval.get_int_value(), 
-						distval.get_int_value(), 0);
+	int dist = distval.get_int_value();
+	int shnum = shapeval.get_int_value();
+					// Kludge for Test of Courage:
+	if (cur_function->id == 0x70a && shnum == 0x9a && dist == 0)
+		dist = 16;		// Mage may have wandered.
+	int cnt = obj->find_nearby(vec, shnum, dist, 0);
 	Game_object *closest = 0;
 	unsigned long bestdist = 100000;// Distance-squared in tiles.
 	int x1, y1, z1;
