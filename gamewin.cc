@@ -203,27 +203,25 @@ Rectangle Game_window::get_gump_rect
 
 void Game_window::paint_shape
 	(
-	Image_window *iwin,		// Window to display it in.
 	int xoff, int yoff,		// Where to draw in window (bottom
 					//   right of tile where it goes).
 	Shape_frame *shape		// What to paint.
 	)
 	{
 	if (!shape->rle)		// Not RLE?
-		iwin->copy8(shape->data, 8, 8, xoff - tilesize, 
+		win->copy8(shape->data, 8, 8, xoff - tilesize, 
 						yoff - tilesize);
 	else
 					// Get compressed data.
-		get_rle_shape(iwin, *shape, xoff, yoff);
+		paint_rle_shape(*shape, xoff, yoff);
 	}
 
 /*
  *	Show a Run-Length_Encoded shape.
  */
 
-void Game_window::get_rle_shape
+void Game_window::paint_rle_shape
 	(
-	Image_window *iwin,		// Window to draw it in.
 	Shape_frame& shape,		// Shape to display.
 	int xoff, int yoff		// Where to show in iwin.
 	)
@@ -239,7 +237,7 @@ void Game_window::get_rle_shape
 		short scany = Read2(in);
 		if (!encoded)		// Raw data?
 			{
-			iwin->copy_line8(in, scanlen,
+			win->copy_line8(in, scanlen,
 					xoff + scanx, yoff + scany);
 			in += scanlen;
 			continue;
@@ -253,12 +251,12 @@ void Game_window::get_rle_shape
 			if (repeat)
 				{
 				unsigned char pix = *in++;
-				iwin->fill_line8(pix, bcnt,
+				win->fill_line8(pix, bcnt,
 					xoff + scanx + b, yoff + scany);
 				}
 			else		// Get that # of bytes.
 				{
-				iwin->copy_line8(in, bcnt,
+				win->copy_line8(in, bcnt,
 					xoff + scanx + b, yoff + scany);
 				in += bcnt;
 				}
@@ -786,7 +784,7 @@ void Game_window::paint_chunk_objects
 		int shapenum = obj->get_shapenum();
 		int framenum = obj->get_framenum();
 					// Draw shape.
-		paint_shape(win, xoff + (1 + tilex)*tilesize - 4*lift, 
+		paint_shape(xoff + (1 + tilex)*tilesize - 4*lift, 
 				yoff + (1 + tiley)*tilesize - 4*lift,
 					shapenum, framenum);
 		}
@@ -1301,7 +1299,7 @@ void Game_window::show_face
 					// Put a black box w/ white bdr.
 	win->fill8(1, actbox.w + 4, actbox.h + 4, actbox.x - 2, actbox.y - 2);
 	win->fill8(0, actbox.w, actbox.h, actbox.x, actbox.y);
-	paint_shape(win, actbox.x + actbox.w - 2, 
+	paint_shape(actbox.x + actbox.w - 2, 
 			actbox.y + actbox.h - 2, face);
 	}
 
@@ -1391,7 +1389,7 @@ void Game_window::show_avatar_choices
 	win->fill8(1, mbox.w + 4, mbox.h + 4, mbox.x - 2, mbox.y - 2);
 	win->fill8(0, mbox.w, mbox.h, mbox.x, mbox.y);
 					// Draw portrait.
-	paint_shape(win, mbox.x + mbox.w - 2, 
+	paint_shape(mbox.x + mbox.w - 2, 
 				mbox.y + mbox.h - face->ybelow - 2, 
 				face);
 					// Set to where to draw sentences.

@@ -32,6 +32,7 @@
 #define SHPDIMS_DAT	"static/shpdims.dat"
 #define INITGAME	"static/initgame.dat"
 #define USECODE		"static/usecode"
+#define POINTERS	"static/pointers.shp"
 
 #else
 
@@ -55,6 +56,7 @@
 #define SHPDIMS_DAT	"static\\shpdims.dat"
 #define INITGAME	"static\\initgame.dat"
 #define USECODE		"static\\usecode"
+#define POINTERS	"static/pointers.shp"
 
 #endif
 
