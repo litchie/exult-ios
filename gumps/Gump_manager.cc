@@ -316,8 +316,9 @@ void Gump_manager::close_all_gumps
 		Gump_list *gump = next;
 		next = gump->next;
 
-		// Don't delete if persistant
-		if (!gump->gump->is_persistent() || pers)
+		// Don't delete if persistant or modal.
+		if ((!gump->gump->is_persistent() || pers) &&
+		    !gump->gump->is_modal())
 		{
 			if (prev) prev->next = gump->next;
 			else open_gumps = gump->next;
@@ -510,6 +511,7 @@ int Gump_manager::do_modal_gump
 					// Save background.
 	gwin->get_win()->get(back, box.x, box.y);
 	gump->paint();			// Paint gump.
+	add_gump(gump);
 	Mouse::mouse->show();
 	gwin->show();
 	do
@@ -520,6 +522,8 @@ int Gump_manager::do_modal_gump
 		SDL_Event event;
 		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
 			escaped = !handle_modal_gump_event(gump, event);
+		if (GL_manager::get_instance())
+			gwin->paint();	// OpenGL?  Paint each cycle.
 		Mouse::mouse->show();		// Re-display mouse.
 		if (!gwin->show() &&	// Blit to screen if necessary.
 		    Mouse::mouse_update)	// If not, did mouse change?
@@ -527,6 +531,7 @@ int Gump_manager::do_modal_gump
 	}
 	while (!gump->is_done() && !escaped);
 	Mouse::mouse->hide();
+	remove_gump(gump);
 					// Restore background, if wanted.
 	if (gump->want_restore_background())
 		gwin->get_win()->put(back, box.x, box.y);
