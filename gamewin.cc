@@ -2168,8 +2168,10 @@ Game_object *Game_window::find_object
 	int x, int y			// Pos. on screen.
 	)
 	{
+#ifdef DEBUG
 cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 		get_scrollty() + y/c_tilesize << ")"<<endl;
+#endif
 	Game_object *found[100];
 	int cnt = 0;
 	int actor_lift = main_actor->get_lift();
@@ -2287,7 +2289,7 @@ void Game_window::show_items
 		cheat.set_grabbed_actor (static_cast<Actor *>(obj));
 
 	//++++++++Testing
-#if 1
+#ifdef DEBUG
 	int shnum, frnum;
 	if (obj)
 		{
@@ -2312,17 +2314,6 @@ void Game_window::show_items
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))
 			cout << "ASLEEP" << endl;
-#if 0
-		int dcnt = obj->get_dependency_count();
-		if (dcnt)
-			{
-			cout << "Dependencies:" << endl;
-			for (int i = 0; i < dcnt; i++)
-				cout << "    " << 
-					(void *) obj->get_dependency(i)
-							<< endl;
-			}
-#endif
 		}
 	else				// Obj==0
 		{
@@ -2340,11 +2331,9 @@ void Game_window::show_items
 			return;
 		}
 	Shape_info& info = shapes.get_info(shnum);
-#if 1
 	cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << endl;
 	cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << endl;
 	cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << endl;
-#endif
 	if (info.is_animated())
 		cout << "Object is ANIMATED" << endl;
 	if (info.has_translucency())
@@ -2621,7 +2610,9 @@ void Game_window::double_clicked
 			return;
 			}
 		remove_text_effects();	// Remove text msgs. from screen.
+#ifdef DEBUG
 		cout << "Object name is " << obj->get_name() << endl;
+#endif
 		usecode->init_conversation();
 		Game_mode savemode = mode;
 		obj->activate(usecode);

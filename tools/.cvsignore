@@ -17,4 +17,5 @@ ucclex.c
 uccparse.c
 expack
 shp2pcx
+splitshp
 *.tab.c

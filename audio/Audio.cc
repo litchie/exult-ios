@@ -98,18 +98,28 @@ Audio::~Audio()
 		return;
 	}
 
+#ifdef DEBUG
 cerr << "~Audio:  about to stop_music()" << endl; cerr.flush();
+#endif
 	stop_music();
+#ifdef DEBUG
 cerr << "~Audio:  about to quit subsystem" << endl; cerr.flush();
+#endif
 	SDL::QuitSubSystem(SDL_INIT_AUDIO); // SDL 1.1 lets us diddle with
 						// subsystems
+#ifdef DEBUG
 cerr << "~Audio:  closed audio" << endl; cerr.flush();
+#endif
 	if(mixer)
 		{
+#ifdef DEBUG
 cerr << "~Audio:  about to cancel_streams()" << endl; cerr.flush();
+#endif
 		cancel_streams();
 		delete mixer;
+#ifdef DEBUG
 cerr << "~Audio:  deleted mixer" << endl; cerr.flush();
+#endif
 		mixer=0;
 		}
 	if(midi)
@@ -124,7 +134,9 @@ cerr << "~Audio:  deleted mixer" << endl; cerr.flush();
 		delete todel;
 		}
 	delete sfx_file;
+#ifdef DEBUG
 cerr << "~Audio:  deleted midi" << endl; cerr.flush();
+#endif
 	// Avoid closing SDL audio. This seems to trigger a segfault
 	// SDL::CloseAudio();
 	SDL_open=false;
