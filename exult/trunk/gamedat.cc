@@ -22,14 +22,18 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "alpha_kludges.h"
+
 #ifdef WIN32
 #include <io.h>
 #endif
 
-#include <fstream>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#ifndef ALPHA_LINUX_CXX
+#  include <fstream>
+#  include <cstdio>
+#  include <cstdlib>
+#  include <cstring>
+#endif
 
 #if (defined(XWIN) || defined(BEOS))
 #include <sys/stat.h>

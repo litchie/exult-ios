@@ -1,9 +1,13 @@
+#include "../alpha_kludges.h"
+
+#ifndef ALPHA_LINUX_CXX
+#  include <unistd.h>
+#  include <fstream>
+#  include <cstdio>
+#  include <cstdlib>
+#endif
 #include "U7file.h"
-#include <unistd.h>
 #include <iostream>
-#include <fstream>
-#include <cstdio>
-#include <cstdlib>
 #include "utils.h"
 #include "databuf.h"
 

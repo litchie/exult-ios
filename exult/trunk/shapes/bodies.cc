@@ -23,8 +23,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "../alpha_kludges.h"
+
 #include "bodies.h"
-#include <hash_set>
+#ifndef DONT_HAVE_HASH_SET
+#  include <hash_set>
+#else
+#  include <set>
+#endif
 
 #ifdef MACOS
 using Metrowerks::hash_set;
@@ -194,6 +200,16 @@ public:
 	};
 
 /*
+ *	For testing whether one shape is less than another
+ */
+class Less_shapes
+	{
+public:
+     	bool operator() (const short *a, const short *b) const
+     		{ return a[0] < b[0]; }
+	};
+
+/*
  *	Lookup a shape's body.
  *
  *	Output:	0 if not found.
@@ -206,11 +222,19 @@ int Body_lookup::find
 	int& deadframe			// Dead frame returned.
 	)
 	{
+#ifndef DONT_HAVE_HASH_SET
 	static hash_set<short *, Hash_shapes, Equal_shapes> *htable = 0;
+#else
+	static set<short *, Less_shapes> *htable = 0;
+#endif
 
 	if (!htable)			// First time?
 		{
+#ifndef DONT_HAVE_HASH_SET
 		htable = new hash_set<short *, Hash_shapes, Equal_shapes>(300);
+#else
+		htable = new set<short *, Less_shapes>();
+#endif
 		int cnt = sizeof(table)/(3*sizeof(table[0]));
 		short *ptr = &table[0];	// Add values.
 		while (cnt--)
@@ -220,8 +244,12 @@ int Body_lookup::find
 			}
 		}
 	short key = (short) liveshape;
+#ifndef DONT_HAVE_HASH_SET
 	hash_set<short *, Hash_shapes, Equal_shapes>::iterator it =
 							htable->find(&key);
+#else
+	set<short *, Less_shapes>::iterator it = htable->find(&key);
+#endif
 	if (it != htable->end())
 		{
 		short *triple = *it;

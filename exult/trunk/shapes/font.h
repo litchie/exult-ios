@@ -17,12 +17,18 @@
 #ifndef FONT_H
 #define FONT_H
 
+#include "../alpha_kludges.h"
+
 #include "files/utils.h"
 
 #ifdef MACOS
   #include <hashmap.h>
 #else
-  #include <hash_map>
+#  ifndef DONT_HAVE_HASH_MAP
+#    include <hash_map>
+#  else
+#    include <map>
+#  endif
 #endif
 
 class Image_buffer8;
@@ -71,7 +77,11 @@ public:
 class FontManager
 {
 private:
+#ifndef DONT_HAVE_HASH_MAP
 	std::hash_map<const char*, Font*, hashstr, eqstr> fonts;
+#else
+	std::map<const char*, Font*, ltstr> fonts;
+#endif
 public:
 	FontManager();
 	~FontManager();

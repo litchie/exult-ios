@@ -1,33 +1,45 @@
-/***************************************************************************
- alpha_kludges.h Copyright (C) 2000 Christoph Reichenbach
-
- This program is free software; you can redistribute it and/or
- modify it under the terms of the GNU General Public License
- as published by the Free Software Foundation; either version 2
- of the License, or (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-***************************************************************************/
+/*
+ * alpha_kludges.h Copyright (C) 2000 The Exult Team
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ */
 /* System-specific kludges */
+/* OK, right now AXP-Linux-cxx specific kludges only */
 
 
 #ifndef ALPHA_KLUDGES_H
 #define ALPHA_KLUDGES_H
 
+#ifdef HAVE_CONFIG_H
+#  include "autoconfig.h"
+#  ifndef HAVE_HASH_MAP
+#    define DONT_HAVE_HASH_MAP
+#  endif
+#  ifndef HAVE_HASH_SET
+#    define DONT_HAVE_HASH_SET
+#  endif
+#endif
+
+
 /*------------------------*/
 /* DEC cxx on Alpha/Linux */
 /*------------------------*/
-#ifdef __DECCXX
+#if defined(__DECCXX) && defined(__linux__)
 
-
+#define ALPHA_LINUX_CXX
 
 namespace std {
 #include <sys/types.h>

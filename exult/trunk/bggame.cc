@@ -14,6 +14,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "alpha_kludges.h"
+
 #include "files/U7file.h"
 #include "flic/playfli.h"
 #include "gamewin.h"
@@ -23,8 +25,11 @@
 #include "databuf.h"
 #include "font.h"
 #include "txtscroll.h"
-#include <cctype>
-#include <cstring>
+
+#ifndef ALPHA_LINUX_CXX
+#  include <cctype>
+#  include <cstring>
+#endif
 
 using std::toupper;
 

@@ -24,9 +24,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define	DEBUGFLEX 0
 
+#include "../alpha_kludges.h"
+
 #include "Flex.h"
 
-#include <cstdio>
+#ifndef ALPHA_LINUX_CXX
+#  include <cstdio>
+#endif
 #include <iostream>
 #include "exceptions.h"
 #include "utils.h"

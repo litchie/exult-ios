@@ -5,8 +5,10 @@
  **	Written: 6/14/00 - JSF
  **/
 
+#include "../alpha_kludges.h"
+
 #include "SDL.h"
-#ifndef __DECCXX
+#ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #endif
 

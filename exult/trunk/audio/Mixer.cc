@@ -20,19 +20,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
+#include "../alpha_kludges.h"
+
 #include "Mixer.h"
 
 #include <SDL_audio.h>
 #include <SDL_error.h>
 
-#include <cstdio>
 #include <unistd.h>
 
 #define	TRAILING_VOC_SLOP 32
 
+#ifndef ALPHA_LINUX_CXX
+#  include <cstdio>
+#  include <iostream>
+#  include <cstdlib>
+#  include <cstring>
+#  include <csignal>
+#endif
+
 #include <SDL_audio.h>
 #include <SDL_timer.h>
-#include <csignal>
 #if defined(MACOS)
   #include <stat.h>
 #else
@@ -40,9 +48,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #include <sys/types.h>
 #endif
 #include <fcntl.h>
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
 
 #include "Audio.h"
 

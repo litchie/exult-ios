@@ -14,6 +14,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "alpha_kludges.h"
+
 #include "files/U7file.h" 
 #include "gamewin.h"
 #include "game.h"

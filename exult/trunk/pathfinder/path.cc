@@ -23,8 +23,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "../alpha_kludges.h"
+
+#ifndef DONT_HAVE_HASH_SET
+#  include <hash_set>
+#else
+#  include <set>
+#endif /* !HAVE_HASH_SET */
+
 #include <iostream>
-#include <hash_set>
 #include "PathFinder.h"
 #include "objs.h"
 
@@ -246,6 +253,24 @@ public:
 	};
 
 /*
+ *	"Less than" relation for nodes
+ */
+class Less_nodes
+	{
+public:
+     	bool operator() (const Search_node *a, const Search_node *b) const
+     		{
+			Tile_coord ta = a->get_tile(), tb = b->get_tile();
+			int apos = ta.tx << 16, bpos = tb.tx << 16;
+			apos |= ta.ty;
+			bpos |= tb.ty;
+			/* Because #(short x short) is <= #int, we can define an injective projection,
+			** which is all we need. */
+			return apos - bpos;
+		}
+	};
+
+/*
  *	The priority queue for the A* algorithm:
  */
 class A_star_queue
@@ -254,9 +279,17 @@ class A_star_queue
 					//   is a ->last node in chain.
 	int best;			// Index of 1st non-null ent. in open.
 					// For finding each tile's node:
+#ifndef DONT_HAVE_HASH_SET
 	hash_set<Search_node *, Hash_node, Equal_nodes> lookup;
+#else
+	set<Search_node *, Less_nodes> lookup;
+#endif
 public:
+#ifndef DONT_HAVE_HASH_SET
 	A_star_queue() : open(256), lookup(1000)
+#else
+	A_star_queue() : open(256), lookup()
+#endif
 		{
 		open.insert(open.begin(), 256, (Search_node *) 0);
 		best = open.size();	// Best is past end.
@@ -324,8 +357,13 @@ public:
 	Search_node *find(Tile_coord tile)
 		{
 		Search_node key(tile);
+#ifndef DONT_HAVE_HASH_SET
 		hash_set<Search_node *, Hash_node, Equal_nodes>::iterator it =
 							lookup.find(&key);
+#else
+		set<Search_node *, Less_nodes>::iterator it =
+			lookup.find(&key);
+#endif
 		if (it != lookup.end())
 			return *it;
 		else
