@@ -230,6 +230,7 @@ static void Handle_events
 	 */
 	while (!*stop)
 		{
+		int rotate = 0;		// 1 to rotate colors.
 		Delay();		// Wait a fraction of a second.
 #ifdef MOUSE
 		mouse->hide();		// Turn off mouse.
@@ -247,10 +248,16 @@ static void Handle_events
 			{
 			gwin->paint_dirty();
 			last_repaint = ticks;
+			rotate = 1;
 			}
 #ifdef MOUSE
 		mouse->show();		// Re-display mouse.
 #endif
+		if (rotate)
+			{		// (Blits in simulated 8-bit mode.)
+			gwin->get_win()->rotate_colors(0xe8, 8, 0);
+			gwin->get_win()->rotate_colors(0xe0, 8, 1);
+			}
 		gwin->show();		// Blit to screen if necessary.
 		}
 	}
