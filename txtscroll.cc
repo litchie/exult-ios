@@ -27,6 +27,7 @@
 #include "exult_types.h"
 #include "files/U7file.h"
 #include "gamewin.h"
+#include "shapeid.h"
 #include "txtscroll.h"
 #include "font.h"
 #include "game.h"
@@ -80,6 +81,8 @@ TextScroller::~TextScroller()
 
 int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int index)
 {
+	Shape_manager *sman = Shape_manager::get_instance();
+
 	//The texts used in the main menu contains backslashed sequences that
 	//indicates the output format of the lines:
 	// \Px   include picture number x (frame nr. of shape passed to constructor)
@@ -107,7 +110,7 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 			ptr +=3;
 			Shape_frame *frame = shapes->get_frame(pix);
 			if (frame) {
-			        gwin->paint_shape(center-frame->get_width()/2,
+			        sman->paint_shape(center-frame->get_width()/2,
 						  ypos, frame);
 				ypos += frame->get_height()+vspace;
 			}

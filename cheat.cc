@@ -648,15 +648,16 @@ void Cheat::map_teleport (void) const {
 	// display map
 
 #if 0
-	map = ShapeID(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA).get_shape();
+	ShapeID mapid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
 #else
-	map = ShapeID(game->get_shape("sprites/cheatmap"), 1, SF_GAME_FLX).get_shape();
+	ShapeID mapid(game->get_shape("sprites/cheatmap"), 1, SF_GAME_FLX);
 #endif
+	map = mapid.get_shape();
 
 	// Get coords. for centered view.
 	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
 	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
-	gwin->paint_shape(x, y, map, 1);
+	mapid.paint_shape(x, y, 1);
   
 	// mark current location
 	int xx, yy;

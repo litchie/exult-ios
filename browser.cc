@@ -79,6 +79,7 @@ void ShapeBrowser::browse_shapes()
 	{
 		
 		Game_window *gwin = Game_window::get_instance();
+		Shape_manager *sman = Shape_manager::get_instance();
 		Image_buffer8 *ibuf = gwin->get_win()->get_ib8();
 		Font *font = fontManager.get_font("MENU_FONT");
 
@@ -166,7 +167,7 @@ void ShapeBrowser::browse_shapes()
 						    gwin->get_height()/2 - frame->get_yabove()-1);
 
 						//draw shape
-					        gwin->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
+					        sman->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
 
 				        } else
 					        font->draw_text(ibuf, centerx-20, centery-5, "No Shape");

@@ -26,6 +26,7 @@
 #include "exult_constants.h"
 #include "palette.h"
 #include "vgafile.h"
+#include "singles.h"
 
 class Game_window;
 class Image_window8;
@@ -48,7 +49,7 @@ enum Exult_Game {
 #define GAME_BG (Game::get_game_type() == BLACK_GATE)
 #define GAME_SI (Game::get_game_type() == SERPENT_ISLE)
 
-class Game {
+class Game : public Game_singletons {
 private:
 	static bool new_game_flag;
 	static Exult_Game game_type;

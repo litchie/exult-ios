@@ -290,7 +290,7 @@ void BG_Game::scene_lord_british()
 
 	// Lord British presents...  (sh. 0x11)
 	pal.load("<STATIC>/intropal.dat",3);
-	gwin->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
+	sman->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
 	
 	// insert our own intro text
 	font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
@@ -311,7 +311,7 @@ void BG_Game::scene_lord_british()
 #define	BUTTERFLY(x,y,frame,delay)	do {	\
 		win->get(backup, topx + (x) - butterfly->get_xleft(),	\
 				topy + (y) - butterfly->get_yabove());	\
-		gwin->paint_shape(topx + x, topy + y, shapes.get_shape(butterfly_shp, frame));	\
+		sman->paint_shape(topx + x, topy + y, shapes.get_shape(butterfly_shp, frame));	\
 		win->show();	\
 		WAITDELAY(delay);	\
 		win->put(backup, topx + (x) - butterfly->get_xleft(),	\
@@ -381,8 +381,8 @@ void BG_Game::scene_butterfly()
 		play_midi(bird_song_midi);
 
 		// trees with "Ultima VII" on top of 'em
-		gwin->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
-		gwin->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
+		sman->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
+		sman->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
 		
 		// again display our own text
 		font->center_text(ibuf, centerx, centery+50, txt_msg);
@@ -395,8 +395,8 @@ void BG_Game::scene_butterfly()
 		WAITDELAY(12500);
 
 		// clear 'Exult' text
-		gwin->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
-		gwin->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
+		sman->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
+		sman->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
 		win->show();
 
 		//
@@ -464,7 +464,7 @@ void BG_Game::scene_butterfly()
 }
 
 #define	FLASH_SHAPE(x,y,shape,frame, delay)	do {	\
-		gwin->paint_shape(x,y,shapes.get_shape(shape,frame));	\
+		sman->paint_shape(x,y,shapes.get_shape(shape,frame));	\
 		win->show();	\
 		WAITDELAYCYCLE(delay);	\
 		win->put(backup,(x)-s->get_xleft(),(y)-s->get_yabove());	\
@@ -587,7 +587,7 @@ void BG_Game::scene_guardian()
 		cbackup = win->create_buffer(s->get_width(), s->get_height());
 
 		win->get(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
-		gwin->paint_shape(centerx,centery,s); // frame 0 is static background
+		sman->paint_shape(centerx,centery,s); // frame 0 is static background
 		win->get(backup, centerx- s->get_xleft(), centery- s->get_yabove());
 		for(i=1; i<16; i++)
 		{
@@ -609,7 +609,7 @@ void BG_Game::scene_guardian()
 		backup = win->create_buffer(s->get_width(), s->get_height());
 		cbackup = win->create_buffer(s->get_width(), s->get_height());
 		win->get(cbackup, centerx - s->get_xleft(), centery - s->get_yabove());
-		gwin->paint_shape(centerx,centery,s); // frame 0 is background
+		sman->paint_shape(centerx,centery,s); // frame 0 is background
 		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
 		// eyes
 		s2 = shapes.get_shape(guardian_eyes_shp,0);
@@ -617,7 +617,7 @@ void BG_Game::scene_guardian()
 		cbackup2 = win->create_buffer(s2->get_width(), s2->get_height());
 		win->get(cbackup2, centerx - s2->get_xleft(),
 			 centery-EYES_DIST - s2->get_yabove());
-		gwin->paint_shape(centerx,centery-EYES_DIST,s2); // frame 0 is background
+		sman->paint_shape(centerx,centery-EYES_DIST,s2); // frame 0 is background
 		win->get(backup2, centerx - s2->get_xleft(),
 			 centery-EYES_DIST - s2->get_yabove());
 		// forehead
@@ -625,7 +625,7 @@ void BG_Game::scene_guardian()
 		cbackup3 = win->create_buffer(s3->get_width(), s3->get_height());
 		win->get(cbackup3, centerx - s3->get_xleft(),
 			 centery-FORHEAD_DIST - s3->get_yabove());
-	       	gwin->paint_shape(centerx,centery-FORHEAD_DIST,s3); // forehead isn't animated
+	       	sman->paint_shape(centerx,centery-FORHEAD_DIST,s3); // forehead isn't animated
 
 		// prepare Guardian speech
 		Font *font = fontManager.get_font("END3_FONT");
@@ -653,10 +653,10 @@ void BG_Game::scene_guardian()
 			{
 				// convoluted mess to get eye movement acceptable
 				int eye_frame = 1 + 3*((i/12) % 4) + ((i%50>47&&(i/12)%4!=3)?i%50-47:0);
-				gwin->paint_shape(centerx,centery-EYES_DIST,
+				sman->paint_shape(centerx,centery-EYES_DIST,
 						shapes.get_shape(guardian_eyes_shp, eye_frame));
 		
-				gwin->paint_shape(centerx,centery,
+				sman->paint_shape(centerx,centery,
 						  shapes.get_shape(guardian_mouth_shp,1 + i % 13));
 		
 				if (i == 0)
@@ -702,7 +702,7 @@ void BG_Game::scene_guardian()
 		backup = win->create_buffer(s->get_width(), s->get_height());
 		cbackup = win->create_buffer(s->get_width(), s->get_height());
 		win->get(cbackup, centerx- s->get_xleft(), centery- s->get_yabove());
-		gwin->paint_shape(centerx,centery,s); // frame 0 is background
+		sman->paint_shape(centerx,centery,s); // frame 0 is background
 		win->get(backup, centerx - s->get_xleft(), centery - s->get_yabove());
 		for(i=15; i>0; i--)
 		{
@@ -762,13 +762,13 @@ void BG_Game::scene_desk()
 		pal.apply();
 
 		// draw monitor (sh. 0x07, 0x08, 0x09, 0x0A: various parts of monitor)
-		gwin->paint_shape(centerx, centery, shapes.get_shape(0x07,0));
-		gwin->paint_shape(centerx, centery, shapes.get_shape(0x09,0));
-		gwin->paint_shape(centerx, centery, shapes.get_shape(0x08,0));
-		gwin->paint_shape(centerx, centery, shapes.get_shape(0x0A,0));
+		sman->paint_shape(centerx, centery, shapes.get_shape(0x07,0));
+		sman->paint_shape(centerx, centery, shapes.get_shape(0x09,0));
+		sman->paint_shape(centerx, centery, shapes.get_shape(0x08,0));
+		sman->paint_shape(centerx, centery, shapes.get_shape(0x0A,0));
 
 		// draw white dot in center of monitor (sh. 0x14)
-		gwin->paint_shape(centerx+12, centery-22, shapes.get_shape(0x14,0));
+		sman->paint_shape(centerx+12, centery-22, shapes.get_shape(0x14,0));
 
 		// draw arm hitting pc (sh. 0x0C)
 		s = shapes.get_shape(0x0C, 0);
@@ -776,7 +776,7 @@ void BG_Game::scene_desk()
 		for (i=0; i<9; i++) {
 			win->get(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
 				 centery+100 - s->get_yabove());
-			gwin->paint_shape(centerx-96-30*abs(i%4-2), centery+100, s);
+			sman->paint_shape(centerx-96-30*abs(i%4-2), centery+100, s);
 			win->show();
 			win->put(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
 				 centery+100 - s->get_yabove());
@@ -784,12 +784,12 @@ void BG_Game::scene_desk()
 		}
 
 		// screen comes back up (sh. 0x1D)
-		gwin->paint_shape(centerx+12, centery-22, shapes.get_shape(0x1D,0));
+		sman->paint_shape(centerx+12, centery-22, shapes.get_shape(0x1D,0));
 		win->show();
 		FORGET_OBJECT(backup);
 
 		// "Something is obviously amiss"
-		gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x15,0));
+		sman->paint_shape(centerx, centery+50, shapes.get_shape(0x15,0));
 		win->show();
 		WAITDELAY(4000);
 
@@ -797,17 +797,17 @@ void BG_Game::scene_desk()
 
 		// scroll right (sh. 0x06: map to the right of the monitor)
 		for(i=0;i<194;i+=4) {
-			gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x07,0));
-			gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x09,0));
-			gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x08,0));
-			gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x0A,0));
-			gwin->paint_shape(centerx-i+12, centery-22, 
+			sman->paint_shape(centerx-i,centery, shapes.get_shape(0x07,0));
+			sman->paint_shape(centerx-i,centery, shapes.get_shape(0x09,0));
+			sman->paint_shape(centerx-i,centery, shapes.get_shape(0x08,0));
+			sman->paint_shape(centerx-i,centery, shapes.get_shape(0x0A,0));
+			sman->paint_shape(centerx-i+12, centery-22, 
 					  shapes.get_shape(0x1D,0));
-			gwin->paint_shape(topx+320-i,topy, shapes.get_shape(0x06,0));
+			sman->paint_shape(topx+320-i,topy, shapes.get_shape(0x06,0));
 
 			if (i > 20 && i < 175) {
 				// "It has been a long time..."
-				gwin->paint_shape(centerx, centery+50, 
+				sman->paint_shape(centerx, centery+50, 
 						  shapes.get_shape(0x16,0));
 			}
 			win->show();
@@ -816,37 +816,37 @@ void BG_Game::scene_desk()
 
 		// scroll down (sh. 0x0B: mouse + orb of moons, below map)
 		for(i=0;i<=50;i+=2) {
-			gwin->paint_shape(centerx-194, centery-i,
+			sman->paint_shape(centerx-194, centery-i,
 					  shapes.get_shape(0x07,0));
-			gwin->paint_shape(centerx-194, centery-i,
+			sman->paint_shape(centerx-194, centery-i,
 					  shapes.get_shape(0x09,0));
-			gwin->paint_shape(centerx-194, centery-i,
+			sman->paint_shape(centerx-194, centery-i,
 					  shapes.get_shape(0x08,0));
-			gwin->paint_shape(centerx-194, centery-i,
+			sman->paint_shape(centerx-194, centery-i,
 					  shapes.get_shape(0x0A,0));
-			gwin->paint_shape(centerx-194+12, centery-22-i,
+			sman->paint_shape(centerx-194+12, centery-22-i,
 					  shapes.get_shape(0x1D,0));
-			gwin->paint_shape(topx+319-194, topy-i,
+			sman->paint_shape(topx+319-194, topy-i,
 					  shapes.get_shape(0x06,0));
-			gwin->paint_shape(topx+319, topy+199-i,
+			sman->paint_shape(topx+319, topy+199-i,
 					  shapes.get_shape(0x0B,0));
 			// "The mystical Orb beckons you"
-			gwin->paint_shape(centerx, topy, shapes.get_shape(0x17,0));
+			sman->paint_shape(centerx, topy, shapes.get_shape(0x17,0));
 
 			win->show();
 			WAITDELAYCYCLE2(50);
 		}
 		WAITDELAYCYCLE2(1000);
 
-		gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x07,0));
-		gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x09,0));
-		gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x08,0));
-		gwin->paint_shape(centerx-194, centery-50, shapes.get_shape(0x0A,0));
-		gwin->paint_shape(centerx-182, centery-72, shapes.get_shape(0x1D,0));
-		gwin->paint_shape(topx+319-194, topy-50, shapes.get_shape(0x06,0));
-		gwin->paint_shape(topx+319, topy+149, shapes.get_shape(0x0B,0));
+		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x07,0));
+		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x09,0));
+		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x08,0));
+		sman->paint_shape(centerx-194, centery-50, shapes.get_shape(0x0A,0));
+		sman->paint_shape(centerx-182, centery-72, shapes.get_shape(0x1D,0));
+		sman->paint_shape(topx+319-194, topy-50, shapes.get_shape(0x06,0));
+		sman->paint_shape(topx+319, topy+149, shapes.get_shape(0x0B,0));
 		// "It has opened gateways to Britannia in the past"
-		gwin->paint_shape(centerx, topy, shapes.get_shape(0x18,0));
+		sman->paint_shape(centerx, topy, shapes.get_shape(0x18,0));
 		win->show();
 
 		WAITDELAYCYCLE2(3000);
@@ -872,7 +872,7 @@ void BG_Game::scene_moongate()
 	pal.apply();
 
 	// "Behind your house is the circle of stones"
-	gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x19,0));
+	sman->paint_shape(centerx, centery+50, shapes.get_shape(0x19,0));
 	win->show();
 
 	// TODO: fade in screen while text is onscreen
@@ -881,31 +881,31 @@ void BG_Game::scene_moongate()
 
 	// TODO: misaligned?
 	for(i=120;i>=-170;i-=6) {
-		gwin->paint_shape(centerx+1,centery+1,
+		sman->paint_shape(centerx+1,centery+1,
 				  shapes.get_shape(0x02,0));
-		gwin->paint_shape(centerx+1,centery+1,
+		sman->paint_shape(centerx+1,centery+1,
 				  shapes.get_shape(0x03,0));
-		gwin->paint_shape(centerx+1,centery+1,
+		sman->paint_shape(centerx+1,centery+1,
 				  shapes.get_shape(0x04,0));
-		gwin->paint_shape(centerx+1,centery+1,
+		sman->paint_shape(centerx+1,centery+1,
 				  shapes.get_shape(0x05,0));
 
-		gwin->paint_shape(centerx+i,topy, shapes.get_shape(0x00,0));
-		gwin->paint_shape(centerx-i,topy, shapes.get_shape(0x01,0));
+		sman->paint_shape(centerx+i,topy, shapes.get_shape(0x00,0));
+		sman->paint_shape(centerx-i,topy, shapes.get_shape(0x01,0));
 
 		// "Why is a moongate already there?"
-		gwin->paint_shape(centerx,centery+50,shapes.get_shape(0x1A,0));
+		sman->paint_shape(centerx,centery+50,shapes.get_shape(0x1A,0));
 		win->show();
 		WAITDELAYCYCLE3(50);
 	}
 
-	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x02,0));
-	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x03,0));
-	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x04,0));
-	gwin->paint_shape(centerx+1, centery+1, shapes.get_shape(0x05,0));
+	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x02,0));
+	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x03,0));
+	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x04,0));
+	sman->paint_shape(centerx+1, centery+1, shapes.get_shape(0x05,0));
 
 	// "You have but one path to the answer"
-	gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x1C,0));
+	sman->paint_shape(centerx, centery+50, shapes.get_shape(0x1C,0));
 	win->show();
 
 	// TODO: zoom (run) into moongate
@@ -921,7 +921,7 @@ void BG_Game::top_menu()
 {
 	play_midi(menu_midi, true);
 		
-	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	pal.load("<STATIC>/intropal.dat",0);
 	pal.fade_in(60);	
 }
@@ -929,7 +929,7 @@ void BG_Game::top_menu()
 void BG_Game::show_journey_failed()
 {
 	pal.fade_out(50);
-	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	journey_failed_text();
 }
 	
@@ -1525,33 +1525,33 @@ bool BG_Game::new_game(Vga_file &shapes)
 		if (redraw)
 		{
 			win->fill8(0,gwin->get_width(),90,0,menuy);
-			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
+			sman->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
 
 			Shape_frame *sex_shape = shapes.get_shape(0xA, selected==1?1:0);
-			gwin->paint_shape(topx+10,menuy+25,sex_shape);
+			sman->paint_shape(topx+10,menuy+25,sex_shape);
 			int sex_width = sex_shape->get_width()+10;
 			if (sex_width > 35) sex_width += 25; 
 			else sex_width = 60;
 
 			if (si_installed)
 			{
-				gwin->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex%2));
+				sman->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex%2));
 
 				if (sex >= 2)
 				{
-					gwin->paint_shape(topx+250,menuy+10,faces_shape.get_frame(7-sex));
+					sman->paint_shape(topx+250,menuy+10,faces_shape.get_frame(7-sex));
 				}
 				else
-					gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
+					sman->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
 			}
 			else
 			{
-				gwin->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex));
-				gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
+				sman->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex));
+				sman->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
 			}
 
-			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
-			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
+			sman->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
+			sman->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
 			if(selected==0)
 				snprintf(disp_name, max_name_len+2, "%s_", npc_name);
 			else

@@ -609,7 +609,7 @@ void SI_Game::play_intro()
 				sf = gshape.get_frame(0);
 
 			if (sf)
-				gwin->paint_shape (centerx-36, centery, sf);
+				sman->paint_shape (centerx-36, centery, sf);
 
 			if (j < 100 && jive)
 			{
@@ -652,7 +652,7 @@ void SI_Game::play_intro()
 		{
 			next = fli4.play(win, 0, 0, next, j*5);
 			if (sf)
-				gwin->paint_shape (centerx-36, centery, sf);
+				sman->paint_shape (centerx-36, centery, sf);
 
 			win->show();
 			if (wait_delay (0))
@@ -817,7 +817,7 @@ void SI_Game::play_intro()
 void SI_Game::top_menu()
 {
 	play_midi(28, true);
-	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	pal.load(MAINSHP_FLX,26);
 	pal.fade_in(60);	
 }
@@ -825,7 +825,7 @@ void SI_Game::top_menu()
 void SI_Game::show_journey_failed()
 {
 	pal.fade_out(50);
-	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	journey_failed_text();
 }
 
@@ -1257,13 +1257,13 @@ bool SI_Game::new_game(Vga_file &shapes)
 		if (redraw)
 		{
 			gwin->clear_screen();
-			gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
-			gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
+			sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+			sman->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
+			sman->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
 			Shape_frame *sh = faces_vga.get_shape(0,sex);
-			gwin->paint_shape(topx+300,menuy+50,sh);
-			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
-			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
+			sman->paint_shape(topx+300,menuy+50,sh);
+			sman->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
+			sman->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
 			if(selected==0)
 				snprintf(disp_name, max_len+2, "%s_", npc_name);
 			else
@@ -1371,7 +1371,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 	while(editing);
 
 	gwin->clear_screen();
-	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
+	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 
 	if(ok)
 	{
