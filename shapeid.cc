@@ -84,6 +84,19 @@ void Shape_manager::load
 	)
 	{
 	ibuf = gwin->get_win()->get_ib8();// Assume this exists now.
+	// Determine some colors based on the default palette
+	Palette *pal = gwin->get_pal();
+	pal->load(PALETTES_FLX, 0);	// could throw!
+					// Get a bright green.
+	special_pixels[POISON_PIXEL] = pal->find_color(4, 63, 4);
+					// Get a light gray.
+	special_pixels[PROTECT_PIXEL] = pal->find_color(62, 62, 55);
+					// Yellow for cursed.
+	special_pixels[CURSED_PIXEL] = pal->find_color(62, 62, 5);
+					// Red for hit in battle.
+	special_pixels[HIT_PIXEL] = pal->find_color(63, 4, 4);
+	// What about charmed/cursed/paralyzed?
+
 	shapes.init();
 	shapes.read_info(GAME_BG);	// Read in shape dimensions.
 	files[SF_GUMPS_VGA].load(GUMPS_VGA);

@@ -72,10 +72,6 @@ class Shape_info;
 class Game_render;
 class Effects_manager;
 
-					// Special pixels.
-enum Pixel_colors {POISON_PIXEL = 0, PROTECT_PIXEL, CURSED_PIXEL, HIT_PIXEL,
-			NPIXCOLORS};
-
 /*
  *	The main game window:
  */
@@ -98,7 +94,6 @@ class Game_window
 	Game_render *render;		// Helps with rendering.
 	bool painted;			// true if we updated image buffer.
 	bool focus;			// Do we have focus?
-	unsigned char special_pixels[NPIXCOLORS];	// Special colors.
 	bool teleported;		// true if just teleported.
 	unsigned int in_dungeon;	// true if inside a dungeon.
 	bool ice_dungeon;		// true if inside ice dungeon
@@ -319,17 +314,6 @@ public:
 					// Get screen loc. of object.
 	void get_shape_location(Game_object *obj, int& x, int& y);
 	void get_shape_location(Tile_coord t, int& x, int& y);
-					// Paint shape in window.
-					// ++++Maybe get rid of this:
-					// Paint outline around a shape.
-	inline void paint_outline(int xoff, int yoff, Shape_frame *shape, 
-							Pixel_colors pix)
-		{
-		if (shape) shape->paint_rle_outline(win->get_ib8(), 
-					xoff, yoff, special_pixels[(int) pix]);
-		}
-	unsigned char get_special_pixel(Pixel_colors pix)
-		{ return special_pixels[(int) pix]; }
 	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
 			int frnum, int tilex, int tiley, int lift);
 	Ireg_game_object *create_ireg_object(int shnum, int frnum);

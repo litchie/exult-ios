@@ -1490,20 +1490,16 @@ void Actor::paint
 
 		paint_weapon();
 		if (hit)		// Want a momentary red outline.
-			gwin->paint_outline(xoff, yoff, get_shape(),
-								HIT_PIXEL);
+			paint_outline(xoff, yoff, HIT_PIXEL);
 		else if (flags & ((1L<<Obj_flags::protection) | 
 		    (1L << Obj_flags::poisoned) | (1 << Obj_flags::cursed)))
 			{
 			if (flags & (1L << Obj_flags::poisoned))
-				gwin->paint_outline(xoff, yoff, get_shape(),
-								POISON_PIXEL);
+				paint_outline(xoff, yoff, POISON_PIXEL);
 			else if (flags & (1L << Obj_flags::cursed))
-				gwin->paint_outline(xoff, yoff, get_shape(),
-								CURSED_PIXEL);
+				paint_outline(xoff, yoff, CURSED_PIXEL);
 			else
-				gwin->paint_outline(xoff, yoff, get_shape(),
-								PROTECT_PIXEL);
+				paint_outline(xoff, yoff, PROTECT_PIXEL);
 			}
 		}
 	}
