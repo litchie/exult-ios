@@ -573,6 +573,7 @@ static void Handle_event
 		case SDLK_LMETA:
 			altkeys &= ~2;
 			break;
+		default: break;
 			}
 		break;
 #ifdef WIN32
@@ -1025,6 +1026,7 @@ cout << "(x,y) rel. to gump is (" << (event.button.x - gump->get_x()) <<
 		case SDLK_LMETA:
 			altkeys &= ~2;
 			break;
+		default: break;
 			}
 		break;
 		}
