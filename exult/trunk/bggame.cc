@@ -398,11 +398,12 @@ void BG_Game::scene_butterfly()
 		//
 		frame = 0;
 		Sint32 delay = BUTTERFLY_FRAME_DURATION;
-		Uint32 ticks = SDL_GetTicks();
+		Sint32 ticks = SDL_GetTicks();
 		for(i=0; i < butterfly_num_coords-1; ++i)
 		{
 			for(j=0; j < BUTTERFLY_SUB_FRAMES; ++j)
 			{
+
 				ticks = SDL_GetTicks();
 				int x = butterfly_x[i] + j*(butterfly_x[i+1] - butterfly_x[i])/BUTTERFLY_SUB_FRAMES;
 				int y = butterfly_y[i] + j*(butterfly_y[i+1] - butterfly_y[i])/BUTTERFLY_SUB_FRAMES;
@@ -410,7 +411,7 @@ void BG_Game::scene_butterfly()
 
 				// Flap the wings; but not always, so that the butterfly "glides" from time to time
 				BUTTERFLY_FLAP();
-				
+
 				// Calculate the difference between the time we wanted to spent and the time
 				// we actually spent; then adjust 'delay' accordingly
 				ticks = SDL_GetTicks() - ticks;
