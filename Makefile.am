@@ -36,6 +36,7 @@ exult_SOURCES =	\
 	gamewin.h	\
 	gumps.cc	\
 	gumps.h		\
+	imagescl.cc	\
 	imagewin.cc	\
 	imagewin.h	\
 	items.cc	\
@@ -52,6 +53,8 @@ exult_SOURCES =	\
 	paths.h		\
 	readnpcs.cc	\
 	ready.h		\
+	scale.cc	\
+	scale.h		\
 	schedule.cc	\
 	schedule.h	\
 	segfile.cc	\

@@ -475,7 +475,16 @@ public:
  */
 class Image_window : public Image_buffer
 	{
+	int scale;			// Only 1 or 2 for now.
 	SDL_Surface *surface;		// Represents window in memory.
+	SDL_Surface *scaled_surface;	// 2X surface if scaling, else 0.
+					// Method to blit scaled:
+	void (Image_window::*show_scaled)();
+	/*
+	 *	Scaled blits:
+	 */
+	void show_scaled8to16();	// Scale 8-bits to 16-bits.
+	void show_scaled8to32();	// Scale 8-bits to 32-bits.
 	/*
 	 *	Image info.
 	 */
@@ -487,8 +496,9 @@ public:
 					// Create to match hardware depth.
 	Image_window(unsigned int w, unsigned int h);
 					// Create with given depth.
-	Image_window(unsigned int w, unsigned int h, int dpth)
-		: Image_buffer(w, h, dpth), surface(0)
+	Image_window(unsigned int w, unsigned int h, int dpth, int scl = 1)
+		: Image_buffer(w, h, dpth), surface(0), scaled_surface(0),
+		  scale(scl), show_scaled(0)
 		{ create_surface(w, h); }
 	virtual ~Image_window();
 					// Is rect. visible within clip?

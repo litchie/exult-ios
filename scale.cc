@@ -7,7 +7,6 @@
 
 #include "SDL.h"
 #include <string.h>
-#include "scale.h"
 
 /*
  *	Going horizontally, split one pixel into two.
@@ -88,27 +87,7 @@ void Scale2x
 	memcpy(to, from0, dwidth*sizeof(*from0));
 	}
 
-#if 1	/* Testing */
-/*
- *	Manipulate from 16-bit to 16-bit pixels.
- */
-class Manip16to16
-	{
-public:
-	static void copy(unsigned short& dest, unsigned short src)
-		{ dest = src; }
-	static void split(unsigned short pix, unsigned short& r,
-					unsigned short& g, unsigned short& b)
-		{
-		r = (pix>>10)&0x1f;
-		g = (pix>>5)&0x1f;
-		b = pix&0x1f;
-		}
-	static unsigned short rgb(unsigned short r, unsigned short g,
-							unsigned short b)
-		{ return ((r&0x1f)<<10) | ((g&0x1f)<<5) | (b&0x1f); }
-	};
-
+#if 0	/* Testing */
 void test()
 	{
 	unsigned short *src, *dest;
