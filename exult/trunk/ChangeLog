@@ -1,3 +1,8 @@
+2000-06-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gumps.cc: Fixed initial object placement.
+	* drag.cc: Handle 'quantity' objects.
+
 2000-06-07  Coder Infidel  <coder_infidel@hotmail.com>
 
 	* actors.cc: remove unused variable

@@ -135,6 +135,8 @@ int Game_object::modify_quantity
 		return (delta + 1);
 		}
 	int quant = quality&0x7f;	// Get current quality.
+	if (!quant)
+		quant = 1;		// Might not be set.
 	int newquant = quant + delta;
 	if (delta > 0)			// Adding?
 		{			// Too much?
