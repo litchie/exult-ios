@@ -2,10 +2,6 @@
 # It may require a little tweaking. (paths)
 
 
-# NOTE: This is a Unix style makefile so you might need to set the
-# environment variable MAKE_MODE=UNIX for it to work. This also means that
-# you need a Unix shell (e.g. Cygwin bash).
-
 # Base of the exult source (I'm building in a subdir called 'debug')
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers
@@ -16,23 +12,24 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw32 automatically defines WIN32
-CPPFLAGS=-DVERSION=\\\"0.35\\\" -DDEBUG -DAUTOCONFIGURED -I$(SRC)/files \
+CPPFLAGS=-DVERSION=\\\"0.35\\\" -g3 -DDEBUG -DAUTOCONFIGURED -DNO_INTRO -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
 	$(SDL_INCLUDES)
-CXXFLAGS= -O2 -mwindows -Wall
 
-LFLAGS= -mwindows
+CXXFLAGS=-g -mwindows -Wall -pedantic -Wno-long-long
+
+LFLAGS=-g3 -mwindows
 LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
 
 EXEC=exult2.exe
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
-	args.o barge.o bodies.o browser.o\
+	args.o barge.o bodies.o \
 	combat.o delobjs.o dir.o drag.o effects.o egg.o exult.o \
 	gameclk.o gamedat.o gametxt.o gamewin.o \
 	gumps.o imagescl.o imagewin.o items.o lists.o mouse.o \
 	npcnear.o objs.o palette.o paths.o readnpcs.o scale.o schedule.o \
-	segfile.o spells.o tqueue.o usecode.o npctime.o \
-        useval.o utils.o vec.o vgafile.o game.o sigame.o bggame.o
+	segfile.o spells.o tqueue.o usecode.o game.o bggame.o sigame.o \
+        useval.o utils.o vec.o vgafile.o browser.o npctime.o exultico.o
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
@@ -49,7 +46,7 @@ OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OB
 $(EXEC) : $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
-data/credits.h: data/credits.txt tools/txt2cc.exe
+da3ta/credits.h: data/credits.txt tools/txt2cc.exe
 	tools/txt2cc data/credits.txt data/credits.h get_exult_credits
 
 data/quotes.h: data/quotes.txt tools/txt2cc.exe
@@ -61,12 +58,16 @@ tools/txt2cc.exe : tools/txt2cc.o $(FILE_OBJS) utils.o
 game.o : game.cc data/credits.h data/quotes.h
 	$(CXX) $(CPPFLAGS) -c game.cc -o game.o
 
-# This should work with the Cygwin rm
-clean:
-	rm -f $(OBJS) tools/txt2cc.o $(EXEC) tools/txt2cc.exe
-	rm -f data/credits.h data/quotes.h
+exultico.o: win32/exultico.rc win32/exult.ico
+	windres win32/exultico.rc exultico.o
 
-install:
+imagescl.o: imagescl.cc scale.cc
+	$(CXX) $(CPPFLAGS) -O3 -c imagescl.cc -o imagescl.o
+
+clean:
+	del $(OBJS) tools\txt2cc.exe tools\txt2cc.o $(EXEC)
+
+install: $(EXEC)
 	strip $(EXEC) -o c:/ultima7/$(EXEC)
 
 run:
