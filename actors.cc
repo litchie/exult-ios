@@ -2425,8 +2425,10 @@ int Actor::add
 			return (1);
 		if (spots[rhand] && spots[rhand]->add(obj, 1))
 			return (1);
-		
-		CERR("Warning: adding object (" << obj << ", sh. " << obj->get_shapenum() << ", " << obj->get_name() << ") to actor container"); 
+
+		if (party_id != -1 || npc_num==0) {
+			CERR("Warning: adding object (" << obj << ", sh. " << obj->get_shapenum() << ", " << obj->get_name() << ") to actor container (npc " << npc_num << ")"); 
+		}
 		return Container_game_object::add(obj, dont_check);
 	}
 					// Add to ourself.
