@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "../alpha_kludges.h"
 
+#include <iomanip.h>			/* For debugging only. */
 #include "shapevga.h"
 #include "utils.h"
 
@@ -98,40 +99,34 @@ void Shapes_vga_file::read_info
 	for (int i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(weapon);
-		/* short unknown = */ Read2(weapon);
+		short unk0 = Read2(weapon);
 		short ammoshape = Read2(weapon);
+#if 0
+		extern char **item_names;
+		cout << dec << "Weapon " << item_names[shapenum] << endl;
+		cout << "ammo = " << ammoshape << ", bytes1-2 = " << unk0
+				<< endl;
+#endif
 					// +++++Wonder what ammo < 0 means.
 		if (ammoshape == shapenum || ammoshape < 0)
 			ammoshape = 0;
 		int damage = Read1(weapon);
-#if 0
-		cout << "Weapon '" << item_names[shapenum] << 
-			"': -chance-to-hit?? = "
-			<< dec << points << ", damage = " 
-				<< damage << endl;
-		for (int j = 0; j < 14; j++)
-			if (j == 6)
-				{
-				j++;
-				cout << endl << "Usecode = " << hex << 
-					" 0x" << setw(4) << Read2(weapon)
-					<< endl << 
-					"                            ";
-				}
-			else
-				cout << hex << 
-				" 0x" << setfill(0x30) << setw(2) 
-					<< (int) Read1(weapon);
-		cout << endl;
-#else
-		weapon.seekg(4, ios::cur);
-		unsigned char special = Read1(weapon);
-		Read1(weapon);		// Skip.
+		unsigned short flags0 = Read1(weapon);
+		unsigned short range = Read1(weapon);	// High nibble.
+		unsigned short unk1 = Read2(weapon);
+		unsigned short special = Read1(weapon);
+		Read1(weapon);		// Skip (0).
 		short usecode = Read2(weapon);
-		weapon.seekg(6, ios::cur);	// Skip unknown.
+#if 0
+		cout << "Damage = " << damage << ", flags0 = " << hex
+			<< " 0x" << setw(2) << flags0 << ", range?? = " <<
+			hex << "0x" << range << hex << ", unk1 = " << setw(2)
+			<< "0x" << unk1 << endl;
+		cout << "Special flags = " << "0x" << special <<
+			", usecode = 0x" << usecode << endl;
+		cout << endl;
 #endif
-//		cout << "Read weapon '" << item_names[shapenum] <<
-//			"' with damage " << damage << endl;
+		weapon.seekg(6, ios::cur);	// Skip unknown.
 		info[shapenum].weapon = new Weapon_info(damage, special,
 							ammoshape, usecode);
 		}

@@ -1,3 +1,8 @@
+2000-12-29  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Bugs fixed:  Can break glass counters.  Don't ready torches.
+	Show sundials correctly.
+
 2000-12-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* various: renamed hack-mover to map-editor
 
