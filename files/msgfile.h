@@ -16,4 +16,11 @@ int Read_text_msg_file
 	vector<char *>& strings		// Strings returned here, each
 					//   allocated on heap.
 	);
+int Read_text_msg_file
+	(
+	istream& in,
+	char **& strings,		// Strings returned here, each
+					//   allocated on heap.
+	int& count
+	);
 #endif

@@ -111,3 +111,44 @@ void Setup_item_names (ifstream& items, ifstream& msgs) {
 		text_msgs[i - num_item_names] = msglist[i];
 	num_text_msgs = total_msgs - num_item_names;
 } 
+
+/*
+ *	This sets up item names and messages from Exult's new set of files,
+ *	"shapes.txt", "msgs.txt", and "miscnms.txt".
+ */
+
+void Setup_text
+	(
+	ifstream& shfile,		// Shapes.
+	ifstream& msgfile,		// Msgs.
+	ifstream& miscfile		// Frames, etc.
+	)
+	{
+	Read_text_msg_file(shfile, item_names, num_item_names);
+	Read_text_msg_file(msgfile, text_msgs, num_text_msgs);
+	Read_text_msg_file(miscfile, misc_names, num_misc_names);
+	}
+#if 0
+/*
+ *	Setup item names and text messages.
+ */
+
+void Setup_text()
+	{
+	ifstream textflx, exultmsg;	
+
+					// Exult new-style messages?
+	if (U7exists(SHAPESTXT) || U7exists(PATCH_SHAPESTXT)
+		{
+		ifstream shfile, msgfile, miscfile;
+
+		if 
+
+	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_TEXT))
+		U7open(textflx, PATCH_TEXT);
+	else
+  		U7open(textflx, TEXT_FLX);
+	if (U7exists(EXULTMSG))
+		U7open(exultmsg, EXULTMSG, true);
+	Setup_item_names(textflx, exultmsg);	// Set up list of item names.
+#endif
