@@ -1088,8 +1088,8 @@ void Game_window::paint_chunk_flats
 	int cx, int cy			// Chunk coords (0 - 12*16).
 	)
 	{
-	int xoff = (cx - chunkx)*chunksize;
-	int yoff = (cy - chunky)*chunksize;
+	int xoff = (cx*tiles_per_chunk - get_scrolltx())*tilesize;
+	int yoff = (cy*tiles_per_chunk - get_scrollty())*tilesize;
 	Chunk_object_list *olist = get_objects(cx, cy);
 					// Go through array of tiles.
 	for (int tiley = 0; tiley < tiles_per_chunk; tiley++)
@@ -1529,10 +1529,15 @@ int Game_window::find_objects
 	)
 	{
 					// Figure chunk #'s.
+	int start_cx = (get_scrolltx() + 
+				(x + 4*lift)/tilesize)/tiles_per_chunk;
+	int start_cy = (get_scrollty() + 
+				(y + 4*lift)/tilesize)/tiles_per_chunk;
+
+#if 0
 	int start_cx = chunkx + (x + 4*lift)/chunksize;
 	int start_cy = chunky + (y + 4*lift)/chunksize;
 
-#if 0
         // Prevent the selection of indoor items through roofs
         // unless the player is inside, of course
         // ... Dang. This prevents doors and wall-mounted things

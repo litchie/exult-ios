@@ -1,5 +1,6 @@
 2000-06-03  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamewin.cc: read_map_data() pulls in superchunks.
 	* Show correct names for food items, reagants, etc.
 
 2000-06-02  Jeff Freedman  <jeff@amy.nerble.net>
