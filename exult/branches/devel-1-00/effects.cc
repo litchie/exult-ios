@@ -177,13 +177,6 @@ Explosion_effect::Explosion_effect
 	int delay                 // Delay before starting (msecs).
 	) : Sprites_effect(1, p, 0, 0, delay), explode(exp)
 {
-	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord apos = gwin->get_main_actor()->get_tile();
-	int dir = Get_direction16(apos.ty - p.ty, p.tx - apos.tx);
-					// Max. volume, with stereo position.
-	Audio::get_ptr()->play_sound_effect(
-		Audio::game_sfx(9), SDL_MIX_MAXVOLUME, dir);
-
 	if (exp && exp->get_shapenum() == 704) { // powderkeg
 		exp->set_quality(1); // mark as detonating
 	}
@@ -196,7 +189,15 @@ void Explosion_effect::handle_event
 	long udata
 	)
 {
-	if (sprite.get_framenum()== frames/4) {
+	int frnum = sprite.get_framenum();
+	if (!frnum) // Max. volume, with stereo position.
+	{
+		Tile_coord apos = Game_window::get_game_window()->get_main_actor()->get_tile();
+		int dir = Get_direction16(apos.ty - pos.ty, pos.tx - apos.tx);
+		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(9),
+											SDL_MIX_MAXVOLUME, dir);
+	}
+	if (frnum == frames/4) {
 		// this was in ~Explosion_effect before
 		if (explode)
 			{
