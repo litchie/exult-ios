@@ -60,6 +60,7 @@ public:
 	size_t ring_size;
 	void	advance(void);
 	Uint8	silence;
+	void	cancel(void);
 	void fill_audio_func(void *, Uint8 *, int);
 	void play(Uint8 *, unsigned int);
 

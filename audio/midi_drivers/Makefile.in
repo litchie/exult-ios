@@ -94,7 +94,7 @@ INCLUDES = -I.. $(SDL_INCLUDES) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) 
 
 lib_LTLIBRARIES = libmididrv.la
 
-libmididrv_la_SOURCES =  	KMIDI.cc		KMIDI.h			Timidity_binary.cc		Timidity_binary.h		forked_player.cc		forked_player.h			win_MCI.cc			win_MCI.h
+libmididrv_la_SOURCES =  	KMIDI.cc		KMIDI.h			Timidity_binary.cc		Timidity_binary.h		forked_player.cc		forked_player.h			win_MCI.cc			win_MCI.h			be_midi.cc			be_midi.h
 
 
 EXTRA_DIST =  	README
@@ -111,7 +111,7 @@ LIBS = @LIBS@
 libmididrv_la_LDFLAGS = 
 libmididrv_la_LIBADD = 
 libmididrv_la_OBJECTS =  KMIDI.lo Timidity_binary.lo forked_player.lo \
-win_MCI.lo
+win_MCI.lo be_midi.lo
 CXXFLAGS = @CXXFLAGS@
 CXXCOMPILE = $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -129,8 +129,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = tar
 GZIP_ENV = --best
-DEP_FILES =  .deps/KMIDI.P .deps/Timidity_binary.P .deps/forked_player.P \
-.deps/win_MCI.P
+DEP_FILES =  .deps/KMIDI.P .deps/Timidity_binary.P .deps/be_midi.P \
+.deps/forked_player.P .deps/win_MCI.P
 SOURCES = $(libmididrv_la_SOURCES)
 OBJECTS = $(libmididrv_la_OBJECTS)
 
