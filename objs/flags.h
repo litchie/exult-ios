@@ -44,6 +44,6 @@ namespace  Obj_flags
 		// Flags > 31
 		petra = 35			// Guess
 	};
-};
+}
 
 #endif
