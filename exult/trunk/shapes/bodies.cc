@@ -428,7 +428,7 @@ int Body_lookup::find
 #ifndef DONT_HAVE_HASH_SET
 	static hash_set<short *, Hash_shapes, Equal_shapes> *htable = 0;
 #else
-	static set<short *, Less_shapes> *htable = 0;
+	static std::set<short *, Less_shapes> *htable = 0;
 #endif
 
 	if (!htable)			// First time?
@@ -436,7 +436,7 @@ int Body_lookup::find
 #ifndef DONT_HAVE_HASH_SET
 		htable = new hash_set<short *, Hash_shapes, Equal_shapes>(300);
 #else
-		htable = new set<short *, Less_shapes>();
+		htable = new std::set<short *, Less_shapes>();
 #endif
 		short *ptr;
 		int cnt;
@@ -461,7 +461,7 @@ int Body_lookup::find
 	hash_set<short *, Hash_shapes, Equal_shapes>::iterator it =
 							htable->find(&key);
 #else
-	set<short *, Less_shapes>::iterator it = htable->find(&key);
+	std::set<short *, Less_shapes>::iterator it = htable->find(&key);
 #endif
 	if (it != htable->end())
 		{

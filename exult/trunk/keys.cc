@@ -235,9 +235,10 @@ void KeyBinder::AddKeyBinding( SDLKey key, int mod, const Action* action,
 	k.mod      = (SDLMod) mod;
 	k.unicode  = 0;
 	a.action    = action;
-	for (int i = 0; i < c_maxparams && i < nparams; i++)
+	int i;	// For MSVC
+	for (i = 0; i < c_maxparams && i < nparams; i++)
 		a.params[i] = params[i];
-	for (int i = nparams; i < c_maxparams; i++)
+	for (i = nparams; i < c_maxparams; i++)
 		a.params[i] = -1;
 	
 	bindings[k] = a;
@@ -289,7 +290,7 @@ void KeyBinder::ShowHelp()
 	Scroll_gump *scroll;
 	scroll = new Scroll_gump();
 	
-	vector<string>::iterator iter;
+	std::vector<string>::iterator iter;
 	
 	for (iter = keyhelp.begin(); iter != keyhelp.end(); iter++)
 		scroll->add_text(iter->c_str());
@@ -309,7 +310,7 @@ void KeyBinder::ShowCheatHelp()
 	Scroll_gump *scroll;
 	scroll = new Scroll_gump();
 	
-	vector<string>::iterator iter;
+	std::vector<string>::iterator iter;
 	
 	for (iter = cheathelp.begin(); iter != cheathelp.end(); iter++)
 		scroll->add_text(iter->c_str());
@@ -537,9 +538,10 @@ void KeyBinder::LoadDefaults()
 // codes used in keybindings-files. (use uppercase here)
 void KeyBinder::FillParseMaps()
 {
-	for (int i = 0; strlen(SDLKeyStringTable[i].s) > 0; i++)
+	int i;	// For MSVC
+	for (i = 0; strlen(SDLKeyStringTable[i].s) > 0; i++)
 		keys[SDLKeyStringTable[i].s] = SDLKeyStringTable[i].k;
 	
-	for (int i = 0; strlen(ExultActions[i].s) > 0; i++)
+	for (i = 0; strlen(ExultActions[i].s) > 0; i++)
 		actions[ExultActions[i].s] = &(ExultActions[i]);
 }

@@ -59,7 +59,7 @@ public:
 		{ return special_atts; }
 	int get_ammo_consumed()
 		{ return ammo > 0 ? ammo : 0; }
-	int is_thrown()
+	bool is_thrown()
 		{ return ammo == -3 && (range2&7) != 0; }
 	int get_striking_range()
 		{ return range1 < 3 ? range1 : 0; }

@@ -86,6 +86,7 @@ class Newfile_gump : public Modal_gump
 {
 	UNREPLICATABLE_CLASS_I(Newfile_gump,Modal_gump(0,0,0,0));
 
+public:
 	struct SaveInfo {
 
 		int			num;

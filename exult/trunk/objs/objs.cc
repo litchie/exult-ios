@@ -317,6 +317,9 @@ static int Check_mask
  *	Output:	# found, appended to vec.
  */
 
+
+#ifndef MSVC_FIND_NEARBY_KLUDGE
+
 template <class T>
 #ifdef ALPHA_LINUX_CXX
 int Game_object::find_nearby_static
@@ -402,7 +405,35 @@ int Game_object::find_nearby(decl_type vec, Tile_coord pos, int shapenum, int de
 DEFINE_FIND_NEARBY(Egg_vector&);
 DEFINE_FIND_NEARBY(Actor_vector&);
 DEFINE_FIND_NEARBY(Game_object_vector&);
-#endif
+#endif //ALPHA_LINUX_CXX
+
+
+#else //MSVC_FIND_NEARBY_KLUDGE
+
+#define FN_VECTOR Egg_vector
+#define FN_OBJECT Egg_object
+#include "find_nearby.h"
+
+#define FN_VECTOR Game_object_vector
+#define FN_OBJECT Game_object
+#include "find_nearby.h"
+
+#define FN_VECTOR Actor_vector
+#define FN_OBJECT Actor
+#include "find_nearby.h"
+
+#endif //MSVC_FIND_NEARBY_KLUDGE
+
+int Game_object::find_nearby_eggs
+	(
+	Egg_vector& vec,
+	int shapenum,
+	int delta
+	) const
+	{
+	return Game_object::find_nearby (vec, get_abs_tile_coord(), shapenum,
+						delta, 16, c_any_qual, c_any_framenum);
+	}
 
 int Game_object::find_nearby_actors
 	(
@@ -413,17 +444,6 @@ int Game_object::find_nearby_actors
 	{
 	return Game_object::find_nearby(vec, get_abs_tile_coord(), shapenum,
 						delta, 8, c_any_qual, c_any_framenum);
-	}
-
-int Game_object::find_nearby_eggs
-	(
-	Egg_vector& vec,
-	int shapenum,
-	int delta
-	) const
-	{
-	return Game_object::find_nearby(vec, get_abs_tile_coord(), shapenum,
-						delta, 16, c_any_qual, c_any_framenum);
 	}
 
 int Game_object::find_nearby
@@ -831,7 +851,7 @@ string Game_object::get_name
 			name = item_names[0x500 + frnum];
 			break;
 		case 0x32a:			// Bucket
-			if (frnum == 1 && qual >= 10 & qual <= 15)
+			if (frnum == 1 && qual >= 10 && qual <= 15)
 				name = item_names[0x55b + qual];
 			else if (frnum == 2 && qual == 9)
 				name = item_names[0x55b + qual];

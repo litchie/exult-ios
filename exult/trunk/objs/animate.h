@@ -44,7 +44,7 @@ public:
 	Animator(Game_object *o, int snum = -1) 
 		: obj(o), deltax(0), deltay(0), animating(false), sfxnum(snum)
 		{  }
-	static Animator *create(Game_object *ob, int ireg);
+	static Animator *create(Game_object *ob, bool ireg);
 	~Animator();
 	void want_animation()		// Want animation on.
 		{

@@ -512,6 +512,7 @@ void Combat_schedule::set_weapon_info
 		ammo_shape = info->get_ammo_consumed();
 		strike_range = info->get_striking_range();
 		projectile_range = info->get_projectile_range();
+
 		is_thrown = info->is_thrown();
 		}
 	max_range = projectile_range > strike_range ? projectile_range

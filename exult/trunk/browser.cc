@@ -26,6 +26,8 @@
 #include "font.h"
 #include "items.h"
 
+using std::snprintf;
+
 extern void make_screenshot(bool silent=false);
 	
 ShapeBrowser::ShapeBrowser()

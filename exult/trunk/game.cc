@@ -44,6 +44,7 @@ using std::strcmp;
 using std::strcpy;
 using std::strncmp;
 using std::string;
+using std::snprintf;
 
 Game *game = 0;
 extern Configuration *config;

@@ -206,19 +206,21 @@ static	uint8 *chunks_to_block(vector<Chunk> &chunks)
 	size_t	aggregate_length=0;
 	size_t	working_offset=0;
 	
-	for(vector<Chunk>::iterator it=chunks.begin();
+	for(std::vector<Chunk>::iterator it=chunks.begin();
 		it!=chunks.end(); ++it)
 		{
 		aggregate_length+=it->length;
 		}
 	unified_block=new uint8[aggregate_length];
-	for(vector<Chunk>::iterator it=chunks.begin();
-		it!=chunks.end(); ++it)
-		{
-		memcpy(unified_block+working_offset,it->data,it->length);
-		working_offset+=it->length;
-		delete [] it->data; it->data=0; it->length=0;
-		}
+	{
+		for(std::vector<Chunk>::iterator it=chunks.begin();
+			it!=chunks.end(); ++it)
+			{
+			memcpy(unified_block+working_offset,it->data,it->length);
+			working_offset+=it->length;
+			delete [] it->data; it->data=0; it->length=0;
+			}
+	}
 	
 	return unified_block;
 }
@@ -240,19 +242,19 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 		switch(old_data[data_offset]&0xff)
 			{
 			case 0:
-#if DEBUG
+#ifdef DEBUG
 				cout << "Terminator" << endl;
 #endif
 				last_chunk=true;
 				continue;
 			case 1:
-#if DEBUG
+#ifdef DEBUG
 				cout << "Sound data" << endl;
 #endif
 				l=(old_data[3+data_offset]&0xff)<<16;
 				l|=(old_data[2+data_offset]&0xff)<<8;
 				l|=(old_data[1+data_offset]&0xff);
-#if DEBUG
+#ifdef DEBUG
 				cout << "Chunk length appears to be " << l << endl;
 #endif
 				sample_rate=1000000/(256-(old_data[4+data_offset]&0xff));
@@ -271,7 +273,7 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 						sample_rate=11025;	// Assume 11111 is a lie.
 					}
 #endif
-#if DEBUG
+#ifdef DEBUG
 				cout << "Sample rate ("<< sample_rate<<") = _real_rate"<<endl;
 				cout << "compression type " << (old_data[5+data_offset]&0xff) << endl;
 				cout << "Channels " << (old_data[6+data_offset]&0xff) << endl;
@@ -279,7 +281,7 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 				chunk_length=l+4;
 				break;
 			case 2:
-#if DEBUG
+#ifdef DEBUG
 				cout << "Sound continues" << endl;
 #endif
 				l=(old_data[3+data_offset]&0xff)<<16;
@@ -289,7 +291,7 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 				chunk_length=l+4;
 				break;
 			case 3:
-#if DEBUG
+#ifdef DEBUG
 				cout << "Silence" << endl;
 #endif
 				chunk_length=0;
@@ -444,14 +446,14 @@ void Audio::Init(int _samplerate,int _channels)
          cout << "Each buffer in the mixing ring is " << _buffering_unit <<" bytes." << endl;
 #endif
 	SDL_open=true;
-#if DEBUG
+#ifdef DEBUG
 	cout << "Audio system assembled. Audio buffer at "<<_buffering_unit<<endl;
 #endif
 	SDL::LockAudio();
 	midi=new MyMidiPlayer();
 	mixer=new Mixer(this, _buffering_unit,_channels,actual.silence);
 	SDL::UnlockAudio();
-#if DEBUG
+#ifdef DEBUG
 	cout << "Audio initialisation OK" << endl;
 #endif
 
@@ -704,6 +706,7 @@ bool	Audio::start_speech(int num,bool wait)
 	}
 	catch( const std::exception & err )
 	{
+		err;
 		return false;
 	}
 	play((uint8*)buf,len,wait);

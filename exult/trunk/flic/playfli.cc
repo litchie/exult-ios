@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #endif
-#include <iostream.h>
+#include <iostream>
 #include "databuf.h"
 #include "playfli.h"
 #include "utils.h"
@@ -41,6 +41,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::ifstream;
 using std::memset;
 using std::size_t;
+using std::cout;
+using std::endl;
 
 playfli::playfli(const char *fli_name)
 {
@@ -79,7 +81,7 @@ void playfli::initfli()
 
 void playfli::info(fliinfo *fi)
 {
-#if DEBUG
+#ifdef DEBUG
 	cout << "Frame count : " << fli_frames << endl;
 	cout << "Width :       " << fli_width << endl;
 	cout << "Height :      " << fli_height << endl;

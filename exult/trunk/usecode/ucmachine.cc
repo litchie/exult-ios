@@ -1419,7 +1419,7 @@ Usecode_machine::~Usecode_machine
 	delete book;
 	}
 
-#if DEBUG
+#ifdef DEBUG
 int debug = 2;				// 2 for more stuff.
 static int ucbp_fun = -1, ucbp_ip = -1;	// Breakpoint.
 void Setbreak(int fun, int ip)
@@ -1469,7 +1469,7 @@ int Usecode_machine::run
 		Usecode_value val = pop();
 		locals[num_args - i - 1] = val;
 		}
-#if DEBUG
+#ifdef DEBUG
 	if (debug >= 0)
 		{
 		cout << "Running usecode " << hex << setfill((char)0x30) 
@@ -1499,7 +1499,7 @@ int Usecode_machine::run
 	while (ip < endp)
 		{
 		int opcode = *ip++;
-#if DEBUG
+#ifdef DEBUG
 		if (usecode_trace)
 			{
 			int curip = ip - 1 - code;
@@ -1916,7 +1916,7 @@ int Usecode_machine::run
 			}
 		}
 	delete [] locals;
-#if DEBUG
+#ifdef DEBUG
 	if (debug >= 1)
 		{
 		cout << "RETurning ";
@@ -2016,13 +2016,14 @@ void Usecode_machine::write
 	out.close();
 	U7open(out, USEDAT);
 	Write2(out, party_count);	// Write party.
-	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
+	size_t i;	// Blame MSVC
+	for (i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		Write2(out, party[i]);
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		Write4(out, timers[t]);
 					// +++++No longer needed.
-	for (size_t i = 0; i < 8; i++)	// Virtue stones.
+	for (i = 0; i < 8; i++)	// Virtue stones.
 		{
 		Write2(out, virtue_stones[i].tx);
 		Write2(out, virtue_stones[i].ty);
@@ -2069,7 +2070,8 @@ void Usecode_machine::read
 		return;		// Not an error if no saved game yet.
 	}
 	party_count = Read2(in);	// Read party.
-	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
+	size_t i;	// Blame MSVC
+	for (i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		party[i] = Read2(in);
 	link_party();
 					// Timers.
@@ -2079,7 +2081,7 @@ void Usecode_machine::read
 		throw file_read_exception(USEDAT);
 
 					// +++++No longer needed:
-	for (size_t i = 0; i < 8; i++)	// Virtue stones.
+	for (i = 0; i < 8; i++)	// Virtue stones.
 		{
 		virtue_stones[i].tx = Read2(in);
 		virtue_stones[i].ty = Read2(in);

@@ -62,10 +62,11 @@ void Jawbone_gump::paint(Game_window *gwin)
 
 	jawbone->find_teeth();
 
-	for (int i=0; i<9; i++)
+	int i;	// Blame MSVC
+	for (i=0; i<9; i++)
 		if (jawbone->teeth[i])
 			paint_tooth(gwin, i);
-	for (int i=17; i>8; i--)
+	for (i=17; i>8; i--)
 		if (jawbone->teeth[i])
 			paint_tooth(gwin, i);
 }
@@ -91,14 +92,16 @@ Game_object *Jawbone_gump::find_object(int mx, int my)
 	mx -= x;
 	my -= y;
 
+	int i;	// Blame MSVC
+
 	// reverse of drawing order
-	for (int i=9; i<18; i++)
+	for (i=9; i<18; i++)
 		if (jawbone->teeth[i] && on_tooth(mx, my, i)) {
 			// set correct position (otherwise tooth won't be on mouse cursor)
 			set_to_spot(jawbone->teeth[i], mx, my);
 			return jawbone->teeth[i];
 		}
-	for (int i=8; i>=0; i--)
+	for (i=8; i>=0; i--)
 		if (jawbone->teeth[i] && on_tooth(mx, my, i)) {
 			// set correct position (otherwise tooth won't be on mouse cursor)
 			set_to_spot(jawbone->teeth[i], mx, my);

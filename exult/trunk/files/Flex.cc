@@ -39,7 +39,6 @@ using std::cerr;
 using std::endl;
 using std::FILE;
 using std::memset;
-using std::fread;
 using std::size_t;
 using std::string;
 using std::strncpy;
@@ -54,7 +53,7 @@ void	Flex::IndexFlexFile(void)
 {
 	FILE	*fp;
 	fp=U7open(filename.c_str(),"rb");
-	fread(title,sizeof(title),1,fp);
+	std::fread(title,sizeof(title),1,fp);
 	magic1 = Read4(fp);
 	count = Read4(fp);
 	magic2 = Read4(fp);
@@ -70,13 +69,13 @@ void	Flex::IndexFlexFile(void)
 
 	// We should already be there.
 	fseek(fp,128,SEEK_SET);
-	for(uint32 i=0;i<count;i++)
+	for(uint32 c=0;c<count;c++)
 	{
 		Flex::Reference f;
 		f.offset = Read4(fp);
 		f.size = Read4(fp);
 #if DEBUGFLEX
-		cout << "Item " << i << ": " << f.size << " bytes @ " << f.offset << endl;
+		cout << "Item " << c << ": " << f.size << " bytes @ " << f.offset << endl;
 #endif
 		object_list.push_back(f);
 	}
@@ -95,7 +94,7 @@ char *	Flex::retrieve(uint32 objnum, size_t &len)
 	fseek(fp, object_list[objnum].offset, SEEK_SET);
 	len = object_list[objnum].size;
 	buffer = new char[len];
-	fread(buffer, len, 1, fp);
+	std::fread(buffer, len, 1, fp);
 	fclose(fp);
 	
 	return buffer;

@@ -50,8 +50,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #ifdef WIN32
-#include <mmsystem.h>   //for MM_MCINOTIFY message
-#include "audio/midi_drivers/win_MCI.h"
+//#include <mmsystem.h>   //for MM_MCINOTIFY message
+//#include "audio/midi_drivers/win_MCI.h"
 #endif
 
 #include "gamewin.h"
@@ -82,6 +82,7 @@ using std::exit;
 using std::toupper;
 using std::string;
 using std::vector;
+using std::snprintf;
 
 Configuration *config;
 KeyBinder *keybinder;

@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#include <iomanip.h>			/* For debugging only. */
+#include <iomanip>			/* For debugging only. */
 #include "shapevga.h"
 #include "utils.h"
 
@@ -48,21 +48,22 @@ void Shapes_vga_file::read_info
 	ifstream shpdims;
 	U7open(shpdims, SHPDIMS);
 					// Starts at 0x96'th shape.
-	for (int i = 0x96; i < num_shapes; i++)
+	int i; // Blame MSVC
+	for (i = 0x96; i < num_shapes; i++)
 		{
 		shpdims.get((char&) info[i].shpdims[0]);
 		shpdims.get((char&) info[i].shpdims[1]);
 		}
 	ifstream wgtvol;
 	U7open(wgtvol, WGTVOL);
-	for (int i = 0; i < num_shapes; i++)
+	for (i = 0; i < num_shapes; i++)
 		{
 		wgtvol.get((char&) info[i].weight);
 		wgtvol.get((char&) info[i].volume);
 		}
 	ifstream tfa;
 	U7open(tfa, TFA);
-	for (int i = 0; i < num_shapes; i++)
+	for (i = 0; i < num_shapes; i++)
 		{
 		tfa.read((char*)&info[i].tfa[0], 3);
 		info[i].set_tfa_data();
@@ -70,7 +71,7 @@ void Shapes_vga_file::read_info
 	ifstream ready;
 	U7open(ready, READY);
 	int cnt = Read1(ready);		// Get # entries.
-	for (int i = 0; i < cnt; i++)
+	for (i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(ready);
 		unsigned char type = Read1(ready);
@@ -81,7 +82,7 @@ void Shapes_vga_file::read_info
 	ifstream armor;
 	U7open(armor, ARMOR);
 	cnt = Read1(armor);
-	for (int i = 0; i < cnt; i++)
+	for (i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(armor);
 		unsigned char points = Read1(armor);
@@ -92,7 +93,7 @@ void Shapes_vga_file::read_info
 	ifstream weapon;
 	U7open(weapon, WEAPONS);
 	cnt = Read1(weapon);
-	for (int i = 0; i < cnt; i++)
+	for (i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(weapon);
 					// This is ammo family, or a neg. #.
@@ -147,7 +148,7 @@ void Shapes_vga_file::read_info
 	U7open(ammo, AMMO);
 	cnt = Read1(ammo);
 	Ammo_info::create();		// Create table.
-	for (int i = 0; i < cnt; i++)
+	for (i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(ammo);
 		unsigned short family = Read2(ammo);
@@ -163,9 +164,9 @@ void Shapes_vga_file::read_info
 	ifstream wihh;
 	unsigned short offsets[1024];
 	U7open(wihh, WIHH);
-	for (int i = 0; i < 1024; i++)
+	for (i = 0; i < 1024; i++)
 		offsets[i] = Read2(wihh);
-	for (int i = 0; i < 1024; i++)
+	for (i = 0; i < 1024; i++)
 		// A zero offset means there is no record
 		if(offsets[i] == 0)
 			info[i].weapon_offsets = 0;

@@ -65,7 +65,7 @@ public:
 			xtiles(xt), ytiles(yt), dir(d),
 			complete(0), boat(-1), frame_time(0), path(0)
 		{  }
-	int is_moving()
+	bool is_moving()
 		{ return frame_time > 0; }
 	int get_xtiles()		// Dims. in tiles.
 		{ return xtiles; }

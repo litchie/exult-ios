@@ -91,6 +91,7 @@ using std::string;
 using std::strlen;
 using std::srand;
 using std::vector;
+using std::snprintf;
 
 extern	Configuration *config;
 					// THE game window:
@@ -229,10 +230,11 @@ Game_window::~Game_window
 	)
 	{
 	clear_world();			// Delete all objects, chunks.
-	for (int i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
+	int i;	// Blame MSVC
+	for (i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
 		delete [] save_names[i];
 	int nxforms = sizeof(xforms)/sizeof(xforms[0]);
-	for (int i = 0; i < nxforms; i++)
+	for (i = 0; i < nxforms; i++)
 		delete [] xforms[nxforms - 1 - i];
 	delete [] invis_xform;
 	if(monster_info)
@@ -1194,7 +1196,7 @@ void Game_window::read_ireg_objects
 		
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
-			int anim = info.is_animated() ||
+			bool anim = info.is_animated() ||
 					// Watch for BG itself.
 				(Game::get_game_type() == BLACK_GATE &&
 						shnum == 305);
@@ -1259,7 +1261,7 @@ void Game_window::read_ireg_objects
 							entry[8] - 0x80, 1);
 			else if (Is_body(shnum))
 				{	// Qual==2 for monsters killed.
-				int decay = (quality == 2);
+				bool decay = (quality == 2);
 				if (decay &&
 				    clock.get_total_hours() - last_restore_hour
 								> 3)
@@ -1599,6 +1601,7 @@ void Game_window::read_gwin
 		U7open(gin, GWINDAT);	// Gamewin.dat.
 	} catch (const file_open_exception& e)
 	{
+		e;
 		return;
 	}
 	

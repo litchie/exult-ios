@@ -182,7 +182,7 @@ public:
 		Shape_frame *r=(shapes[shapenum].get(*shape_source, shapenum, framenum));
 		if(!r)
 			{
-#if DEBUG
+#ifdef DEBUG
 				std::cerr << "get_shape(" <<
 					shapenum << "," <<
 					framenum << ") -> NULL" << std::endl;

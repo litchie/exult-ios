@@ -155,7 +155,7 @@ int Object_sfx::get_shape_sfx
 		table[776] = 77;
 		table[777] = 77;
 		}
-	map<int, int>::iterator it = table.find(shapenum);
+	std::map<int, int>::iterator it = table.find(shapenum);
 	if (it == table.end())
 		return -1;
 	int sfx = (*it).second;
@@ -177,7 +177,7 @@ void Object_sfx::play
 					// Play a given sfx only once.
 	static map<int, Object_sfx*> play_table;
 					// Already playing?
-	map<int, Object_sfx*>::iterator it = play_table.find(snum);
+	std::map<int, Object_sfx*>::iterator it = play_table.find(snum);
 	if (it == play_table.end())	// No.
 		{			// Start new SFX for it.
 		if (!stop)
@@ -198,7 +198,7 @@ void Object_sfx::play
 Animator *Animator::create
 	(
 	Game_object *ob,		// Animated object.
-	int ireg			// 1 if an IREG object.
+	bool ireg			// 1 if an IREG object.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();

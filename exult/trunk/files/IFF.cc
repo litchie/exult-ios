@@ -41,7 +41,6 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::FILE;
-using std::fread;
 using std::memcmp;
 using std::memset;
 using std::size_t;
@@ -56,16 +55,16 @@ void	IFF::IndexIFFFile(void)
 	FILE	*fp;
 	char	ckid[4];
 	fp=U7open(filename.c_str(),"rb");
-	fread(ckid,4,1,fp);
+	std::fread(ckid,4,1,fp);
 	if(memcmp(ckid,"FORM",4))
 		throw wrong_file_type_exception(filename,"IFF");	// Not an IFF file we recognise
 
-#if DEBUG
+#ifdef DEBUG
 	cout << "Okay. It looks like an IFF file chunk" << endl;
 #endif
 	long	full_length;
 	full_length = Read4high(fp);
-#if DEBUG
+#ifdef DEBUG
 	cout << "length looks like: " << full_length << endl;
 #endif
 	fseek(fp,4,SEEK_CUR);	// We don't really need to know what the general data type is
@@ -89,7 +88,7 @@ void	IFF::IndexIFFFile(void)
 		char	type[5];
 		memset(type,0,sizeof(type));
 
-		fread(type,4,1,fp);	// 4 bytes of type
+		std::fread(type,4,1,fp);	// 4 bytes of type
 		if(type[0]<32)
 		{
 			// We've missed the target. Try to correct
@@ -102,7 +101,7 @@ void	IFF::IndexIFFFile(void)
 		
 		if(r.size==0||r.offset==0)
 			break;
-#if DEBUG	
+#ifdef DEBUG	
 		cout << "Object type: " << type << " at position " << r.offset << " with length of " << r.size << endl;
 #endif
 		object_list.push_back(r);
@@ -124,7 +123,7 @@ char *	IFF::retrieve(uint32 objnum, size_t &len)
 	fseek(fp, object_list[objnum].offset, SEEK_SET);
 	len = object_list[objnum].size;
 	buffer = new char[len];
-	fread(buffer, len, 1, fp);
+	std::fread(buffer, len, 1, fp);
 	fclose(fp);
 
 	return buffer;

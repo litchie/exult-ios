@@ -173,7 +173,7 @@ void Mixer::modify_stereo16
 		128,50,     128,70,     128,90,    128,110
 	};
 	int lfact = factors[dir16*2], rfact = factors[dir16*2 + 1];
-#if 0 && DEBUG && !defined(MACOS)
+#if 0 && defined(DEBUG) && !defined(MACOS)
 	cout << "Mixer::modify_stereo16:  lfact = " << lfact <<
 		", rfact = " << rfact << endl;
 #endif
@@ -205,7 +205,7 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 	// cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
 #endif
 	if( len > buffer_length ) {
-#if DEBUG && !defined(MACOS)
+#if defined(DEBUG) && !defined(MACOS)
 		cerr << "Audio callback length too big! (" << len << ">" 
 		     << buffer_length << ")" << endl;
 #endif

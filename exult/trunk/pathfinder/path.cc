@@ -299,7 +299,7 @@ class A_star_queue
 #ifndef DONT_HAVE_HASH_SET
 	typedef	hash_set<Search_node *, Hash_node, Equal_nodes> Lookup_set;
 #else
-	typedef	set<Search_node *, Less_nodes> Lookup_set;
+	typedef	std::set<Search_node *, Less_nodes> Lookup_set;
 #endif
 	Lookup_set lookup;
 public:
@@ -393,7 +393,7 @@ public:
 		hash_set<Search_node *, Hash_node, Equal_nodes>::iterator it =
 							lookup.find(&key);
 #else
-		set<Search_node *, Less_nodes>::iterator it =
+		std::set<Search_node *, Less_nodes>::iterator it =
 			lookup.find(&key);
 #endif
 		if (it != lookup.end())

@@ -50,8 +50,8 @@ private:
 	hash_map<const char*, int, hashstr, eqstr> shapes;
 	hash_map<const char*, str_int_pair, hashstr, eqstr> resources;
 #else /* !HAVE_HASH_MAP */
-	map<const char*, int, ltstr> shapes;
-	map<const char*, str_int_pair, ltstr> resources;
+	std::map<const char*, int, ltstr> shapes;
+	std::map<const char*, str_int_pair, ltstr> resources;
 #endif
 	Mouse *menu_mouse;
 protected:
