@@ -60,12 +60,15 @@ POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
 AS = @AS@
+AUDIO_INCLUDES = @AUDIO_INCLUDES@
+AUDIO_LIBRARY = @AUDIO_LIBRARY@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
 DEBUG_FLAGS = @DEBUG_FLAGS@
 DLLTOOL = @DLLTOOL@
 EXEEXT = @EXEEXT@
+EXE_TARGET = @EXE_TARGET@
 FREETYPE_DIR = @FREETYPE_DIR@
 HAVE_SDL_CONFIG = @HAVE_SDL_CONFIG@
 HAVE_TIMIDITY_BIN = @HAVE_TIMIDITY_BIN@
@@ -84,6 +87,7 @@ RELNUM = @RELNUM@
 SDL_INCLUDES = @SDL_INCLUDES@
 SDL_LIBS = @SDL_LIBS@
 STRIP = @STRIP@
+TOP_LEVEL_SUBDIRS = @TOP_LEVEL_SUBDIRS@
 VERSION = @VERSION@
 WINDOWING_SYSTEM = @WINDOWING_SYSTEM@
 
@@ -133,7 +137,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
