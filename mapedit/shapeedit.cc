@@ -472,6 +472,23 @@ C_EXPORT void on_open_equip_button_clicked
 	}
 
 /*
+ *	Frame # in shape-info window:
+ */
+C_EXPORT void
+on_shinfo_frame_changed			(GtkSpinButton *button,
+					 gpointer	  user_data)
+{
+	ExultStudio *s = ExultStudio::get_instance();
+	s->set_shape_notebook_frame(
+				gtk_spin_button_get_value_as_int(button));
+					// Force repaint of shape.
+	gtk_widget_queue_draw(glade_xml_get_widget(s->get_xml(), 
+							"shinfo_draw"));
+}
+
+
+
+/*
  *	Special-shapes toggles:
  */
 C_EXPORT void on_shinfo_weapon_check_toggled
@@ -512,6 +529,27 @@ C_EXPORT void on_shinfo_monster_check_toggled
 	}
 
 /*
+ *	Set frame-dependent fields in the shape-editing notebook.
+ */
+
+void ExultStudio::set_shape_notebook_frame
+	(
+	int frnum			// Frame # to set.
+	)
+	{
+	Shape_info *info = (Shape_info *)
+			gtk_object_get_user_data(GTK_OBJECT(shapewin));
+	if (!info)
+		return;
+	set_spin("shinfo_xtiles", info->get_3d_xtiles(frnum));
+	set_spin("shinfo_ytiles", info->get_3d_ytiles(frnum));
+	unsigned char wx, wy;		// Weapon-in-hand offset.
+	info->get_weapon_offset(frnum, wx, wy);
+	set_spin("shinfo_wihx", wx, 0, 255);	// Negative???
+	set_spin("shinfo_wihy", wy, 0, 255);
+	}
+
+/*
  *	Fill in the shape-editing notebook.
  */
 
@@ -529,8 +567,7 @@ void ExultStudio::init_shape_notebook
 	int shclass = (unsigned int) info.get_shape_class();
 	set_optmenu("shinfo_shape_class", shclass < numclasses ?
 					classes[shclass] : 0);
-	set_spin("shinfo_xtiles", info.get_3d_xtiles());
-	set_spin("shinfo_ytiles", info.get_3d_ytiles());
+	set_shape_notebook_frame(frnum);
 	set_spin("shinfo_ztiles", info.get_3d_height());
 	int spot = info.get_ready_type();
 	if (spot < 0)
@@ -542,10 +579,6 @@ void ExultStudio::init_shape_notebook
 	set_optmenu("shinfo_ready_spot", spot);
 	set_spin("shinfo_weight", info.get_weight(), 0, 255);
 	set_spin("shinfo_volume", info.get_volume(), 0, 255);
-	unsigned char wx, wy;		// Weapon-in-hand offset.
-	info.get_weapon_offset(frnum, wx, wy);
-	set_spin("shinfo_wihx", wx, 0, 255);	// Negative???
-	set_spin("shinfo_wihy", wy, 0, 255);
 					// Bunch of flags:
 	set_toggle("shinfo_sfx_check", info.has_sfx());
 	set_toggle("shinfo_strange_check", info.has_strange_movement());
@@ -854,10 +887,11 @@ void ExultStudio::open_shape_window
 	gtk_object_set_data(GTK_OBJECT(shapewin), "file_info", file_info);
 					// Shape/frame.
 	set_entry("shinfo_shape", shnum, false, false);
-	set_entry("shinfo_frame", frnum);
+	int nframes = ifile->get_num_frames(shnum);
+	set_spin("shinfo_frame", frnum, 0, nframes - 1);
 					// Store name, #frames.
 	set_entry("shinfo_name", shname ? shname : "");
-	set_spin("shinfo_num_frames", ifile->get_num_frames(shnum));
+//	set_spin("shinfo_num_frames", nframes);
 					// Show xright, ybelow.
 	Shape_frame *shape = ifile->get_shape(shnum, frnum);
 	set_spin("shinfo_originx", shape->get_xright(), 0,
