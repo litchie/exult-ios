@@ -54,11 +54,15 @@ enum Ucscript_ops
 	prev_frame =	0x50,		// Prev. frame, but wrap.
 	say =		0x52,		// Say(string).
 	music =		0x54,		// Play(track#).
-	usecode =	0x55,		// Call usecode.
+	usecode =	0x55,		// Call usecode(fun).
 	speech =	0x56,		// Speech(track#).
 	sfx =		0x58,		// Sound_effect(#).
 	face_dir =	0x59,		// Face_dir(dir), dir=0-7, 0=north.
-	hit =		0x78		// Hit(hps, ??).  Item attacked.
+	hit =		0x78,		// Hit(hps, ??).  Item attacked.
+	/*
+	 *	These are (I think) not in the original: 
+	 */
+	usecode2 =	0x80		// Call usecode(fun, eventid).
 	};
 }
 #endif

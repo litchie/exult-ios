@@ -407,6 +407,14 @@ void Usecode_script::handle_event
 			usecode->call_usecode(fun, obj, ev);
 			break;
 			}
+		case Ucscript::usecode2:// Call(fun, eventid).
+			{
+			Usecode_value& val = code->get_elem(++i);
+			int evid = code->get_elem(++i).get_int_value();
+			usecode->call_usecode(val.get_int_value(), obj, 
+				(Usecode_internal::Usecode_events) evid);
+			break;
+			}
 		case speech:		// Play speech track.
 			{
 			Usecode_value& val = code->get_elem(++i);
