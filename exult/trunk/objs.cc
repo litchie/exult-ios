@@ -70,12 +70,149 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	}
 
 /*
+ *	Create the cached data storage for a chunk.
+ */
+
+Chunk_cache::Chunk_cache
+	(
+	) : setup_done(0)
+	{
+	memset((char *) &blocked[0], 0, sizeof(blocked));
+	}
+
+/*
+ *	Delete cache.
+ */
+
+Chunk_cache::~Chunk_cache
+	(
+	)
+	{
+	}
+
+/*
+ *	Set the blocked flags in a region.
+ */
+
+void Chunk_cache::set_blocked
+	(
+	int startx, int starty,		// Starting tile #'s.
+	int endx, int endy,		// Ending tile #'s.
+	int lift, int ztiles		// Lift, height info.
+	)
+	{
+	for (int y = starty; y <= endy; y++)
+		for (int x = startx; x <= endx; x++)
+			set_blocked_tile(x, y, lift, ztiles);
+	}
+
+/*
+ *	Create the cached data for a chunk.
+ */
+
+void Chunk_cache::setup
+	(
+	Game_window *gwin,
+	int cx, int cy,			// This chunk's (absolute) coords.
+	Chunk_object_list *chunk
+	)
+	{
+	Shapes_vga_file& shapes = gwin->get_shapes();
+					// Set 'blocked' tiles.
+	for (Game_object *obj = chunk->get_first(); obj; 
+						obj = chunk->get_next(obj))
+		{
+		int shnum = obj->get_shapenum();
+		Shape_info& info = shapes.get_info(shnum);
+		int ztiles = info.get_3d_height(); 
+		if (!ztiles)
+			continue;	// Skip if not an obstacle.
+					// Get lower-right corner of obj.
+		int endx = obj->get_shape_pos_x();
+		int endy = obj->get_shape_pos_y();
+					// Get footprint dimensions.
+		int xtiles = info.get_3d_xtiles();
+		int ytiles = info.get_3d_ytiles();
+		int lift = obj->get_lift();
+					// Simplest case?
+		if (xtiles == 1 && ytiles == 1)
+			{
+			set_blocked_tile(endx, endy, lift, ztiles);
+			continue;
+			}
+		int startx = endx - xtiles + 1, starty = endy - ytiles + 1;
+					// First this chunk.
+		int this_startx = startx < 0 ? 0 : startx;
+		int this_starty = starty < 0 ? 0 : starty;
+		set_blocked(this_startx, this_starty, endx, endy, 
+								lift, ztiles);
+					// Overlaps chunk to the left?
+		if (startx < 0 && cx > 0)
+			{
+			gwin->get_objects(cx - 1, cy)->set_blocked(
+				startx + tiles_per_chunk,
+				this_starty, 15, endy, lift, ztiles);
+					// Chunk to left and above?
+			if (starty < 0 && cy > 0)
+				gwin->get_objects(cx - 1, cy - 1)->set_blocked(
+					startx + tiles_per_chunk,
+					starty + tiles_per_chunk, 
+					15, 15, lift, ztiles);
+			}
+					// Chunk directly above?
+		if (starty < 0 && cy > 0)
+			gwin->get_objects(cx, cy - 1)->set_blocked(
+				this_startx,
+				starty + tiles_per_chunk, endx, 15,
+				lift, ztiles);
+
+		}
+	}
+
+/*
+ *	Is a given square occupied at a given lift?
+ *
+ *	Output: 1 if so, else 0.
+ *		If 0 (tile is free), new_lift contains the new height that
+ *		   an actor will be at if he walks onto the tile.
+ */
+
+int Chunk_cache::is_blocked
+	(
+	int lift,			// Given lift.
+	int tilex, int tiley,		// Square to test.
+	int& new_lift			// New lift returned.
+	)
+	{
+#if 0			/* ++++++Until we get the right footprint dims. */
+	new_lift = lift;
+	return (0);
+#else
+					// Get bits.
+	unsigned short tflags = blocked[tiley*tiles_per_chunk + tilex];
+	if (tflags & (1<<lift))		// Something there?
+		{
+		new_lift = lift + 1;	// Maybe we can step up.
+		if (new_lift > 15 || (tflags & (1<<new_lift)))
+			return (1);	// Nope, next lift is blocked.
+		else
+			return (0);
+		}
+	int i;				// See if we're going down.
+	for (i = lift - 1; i >= 0 && !(tflags & (1<<lift)); i--)
+		;
+	new_lift = i;
+	return (0);
+#endif
+	}
+
+/*
  *	Create list for a given chunk.
  */
 
 Chunk_object_list::Chunk_object_list
 	(
-	) : objects(0), roof(0), egg_objects(0), num_eggs(0), npcs(0)
+	) : objects(0), roof(0), egg_objects(0), num_eggs(0), npcs(0), cache(0)
 	{
 	memset((char *) &eggs[0], 0xff, sizeof(eggs));
 	}
@@ -155,47 +292,6 @@ void Chunk_object_list::remove
 		;
 	if (obj)			// This is before it.
 		obj->next = remove->next;
-	}
-
-/*
- *	Is a given square occupied at a given lift?
- *
- *	Output: 1 if so, else 0.
- */
-
-int Chunk_object_list::is_occupied
-	(
-	Vga_file& shapes,		// For getting dims.  (May go away).
-	Game_object *dont_count,	// But don't count this object.
-	int at_lift,			// Given lift.
-	int at_sx, int at_sy		// Square to test.
-	)
-	{
-#if 1			/* ++++++Until we get the right footprint dims. */
-	return (0);
-#else
-	Game_object *obj;		// Just run through them all.
-					// (Could be faster!!!)
-	for (obj = objects; obj; obj = obj->next)
-		{
-		if (obj == dont_count || obj->lift != at_lift)
-			continue;
-		int shnum = obj->get_shapenum();
-		if (!shapes.is_obstacle(shnum))
-			continue;	// Can walk over it.
-		int y = obj->get_shape_pos_y();
-		if (y < at_sy)
-			continue;
-		int x = obj->get_shape_pos_x();
-		if (x < at_sx)
-			continue;
-		int w, h;		// Get dims.
-		shapes.get_dim(shnum, w, h);
-		if (y - h < at_sy && x - w < at_sx)
-			return (1);
-		}
-	return (0);
-#endif
 	}
 
 /*

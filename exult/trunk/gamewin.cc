@@ -1108,6 +1108,15 @@ void Game_window::show_items
 		char *item_name = obj->get_name();
 		if (item_name)
 			add_text(item_name, x, y);
+//++++++++Testing
+#if 1
+		int shnum = obj->get_shapenum();
+		Shape_info& info = shapes.get_info(shnum);
+		cout << "Object " << shnum << " has 3d tiles (x, y, z): " <<
+			info.get_3d_xtiles() << ", " <<
+			info.get_3d_ytiles() << ", " <<
+			info.get_3d_height() << '\n';
+#endif
 		}
 #endif
 	}
