@@ -122,6 +122,8 @@ bool	MatchString( const char *str, const std::string& inPat )
 				{
 					pat = p;
 					str = ++q;
+					if(!*str)
+						return !*pat;
 					break;
 				}
 				else
@@ -137,8 +139,31 @@ bool	MatchString( const char *str, const std::string& inPat )
 	}
 }
 
+OSErr GetCatInfoNoName(short vRefNum,
+							   long dirID,
+							   std::string name,
+							   CInfoPBPtr pb)
+{
+	Str255 tempName;
+	OSErr err;
+	
+	CopyCStringToPascal(name.c_str(), tempName);
 
-int U7ListFiles(const std::string mask, FileList& files)
+	if (tempName[0] == 0)
+		pb->dirInfo.ioFDirIndex = -1;	/* use ioDirID */
+	else
+		pb->dirInfo.ioFDirIndex = 0;	/* use ioNamePtr and ioDirID */
+
+	pb->dirInfo.ioNamePtr = tempName;
+	pb->dirInfo.ioVRefNum = vRefNum;
+	pb->dirInfo.ioDrDirID = dirID;
+	err = PBGetCatInfoSync(pb);
+	pb->dirInfo.ioNamePtr = NULL;
+	return err;
+}
+
+
+int U7ListFiles(const std::string pathMask, FileList& files)
 {
 	CInfoPBRec		cPB;			// the parameter block used for PBGetCatInfo calls
 	Str63			itemName;		// the name of the current item
@@ -147,25 +172,44 @@ int U7ListFiles(const std::string mask, FileList& files)
 	short			vRefNum;
 	long			dirID;
 	char			filename[256];
+	string			path(get_system_path(pathMask));
+	string			mask;
+	string::size_type pos;
+	
+	pos = path.rfind(':');
+	if(pos == string::npos)
+	{
+		mask = path;
+		path.clear();
+	}
+	else
+	{
+		mask = path.substr(pos+1);
+		path = path.substr(0,pos);
+	}
 	
 	err = HGetVol( NULL, &vRefNum, &dirID );
 	if (err != noErr)
 		return err;
 
+	err = GetCatInfoNoName(vRefNum,dirID,path,&cPB);
+	if (err != noErr)
+		return err;
+	dirID = cPB.dirInfo.ioDrDirID;
+
 	itemName[0] = 0;
 	cPB.hFileInfo.ioNamePtr = (StringPtr)&itemName;
-	cPB.hFileInfo.ioVRefNum = vRefNum;
 
 	do
 	{
 		// Get next source item at the current directory level
-
+		
 		++index;
 		cPB.dirInfo.ioFDirIndex = index;
 		cPB.dirInfo.ioDrDirID = dirID;
 		err = PBGetCatInfoSync(&cPB);		
 
-		if ( err == noErr )
+		if (err == noErr)
 		{
 			// Is it a file (i.e. not a directory)?
 			if ( (cPB.hFileInfo.ioFlAttrib & kioFlAttribDirMask) == 0 )
