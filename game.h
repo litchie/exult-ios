@@ -163,7 +163,7 @@ public:
 };
 
 extern Game *game;
-extern bool wait_delay(int ms);
+extern bool wait_delay(int ms, int startcol = 0, int ncol = 0);
 extern Exult_Game exult_menu(Game_window *gwin);
 	
 #endif

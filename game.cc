@@ -51,6 +51,7 @@ extern void set_play_intro(bool);
 extern bool get_play_1st_scene(void);
 extern void set_play_1st_scene(bool);
 static Exult_Game game_type = BLACK_GATE;
+extern void make_screenshot(bool silent = false);
 
 static char av_name[17] = "";
 static int av_sex = -1;
@@ -352,26 +353,64 @@ void Game::clear_avskin ()
 }
 
 
-bool wait_delay(int ms)
+// wait ms milliseconds, while cycling colours startcol to startcol+ncol-1
+bool wait_delay(int ms, int startcol, int ncol)
 {
 	SDL_Event event;
 	int delay;
 	int loops;
-	if(ms<=100) {
+
+	int loopinterval = (ncol == 0) ? 50 : 10;
+
+	if(ms <= 2*loopinterval) {
 		delay = ms;
 		loops = 1;
 	} else {
-		delay = 50;
+		delay = loopinterval;
 		loops = ms/delay;
 	}
-	for(int i=0; i<loops; i++) {
 
+	for(int i=0; i<loops; i++) {
+		unsigned long ticks1 = SDL_GetTicks();
 	        // this may be a bit risky... How fast can events be generated?
 		while(SDL_PollEvent(&event)) {
-			if((event.type==SDL_KEYDOWN)||(event.type==SDL_MOUSEBUTTONUP))
+			switch (event.type) {
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.sym) {
+				case SDLK_RSHIFT: case SDLK_LSHIFT:
+				case SDLK_RCTRL: case SDLK_LCTRL:
+				case SDLK_RALT: case SDLK_LALT:
+				case SDLK_RMETA: case SDLK_LMETA:
+				case SDLK_RSUPER: case SDLK_LSUPER:
+				case SDLK_NUMLOCK: case SDLK_CAPSLOCK:
+				case SDLK_SCROLLOCK:
+					break;
+				case SDLK_s:
+					if ((event.key.keysym.mod&KMOD_ALT) &&
+					    (event.key.keysym.mod&KMOD_CTRL))
+						make_screenshot(true);
+					break;
+				default:
+					return true;
+				}
+				break;
+			case SDL_MOUSEBUTTONUP:
 				return true;
+			default:
+				break;
+			}
 		}
-		SDL_Delay(delay);
+		if (ncol > 0) {
+			Game_window::get_game_window()->get_win()
+				->rotate_colors(startcol, ncol, 1);
+			if (ms > 250)
+			  Game_window::get_game_window()->get_win()->show();
+		}
+		unsigned long ticks2 = SDL_GetTicks();
+		if (ticks2 - ticks1 > delay)
+			i+= (ticks2 - ticks1) / delay - 1;
+		else
+			SDL_Delay(delay - (ticks2 - ticks1));
 	}
 	return false;
 }
