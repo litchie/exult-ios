@@ -1,3 +1,8 @@
+2001-09-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actorio.cc,flags.h,etc:  Flag 4 = 'dead'.  Removed separate
+	'dead' flag.
+
 2001-09-25  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* sigame.cc: Use a std::string instead of a fixed-length buffer

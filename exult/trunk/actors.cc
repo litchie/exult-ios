@@ -386,7 +386,7 @@ Actor::Actor
 	    npc_num(num), face_num(num), party_id(-1), shape_save(-1), 
 	    oppressor(-1), target(0), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0),
-	    dormant(true), dead(false), hit(false), combat_protected(false), 
+	    dormant(true), hit(false), combat_protected(false), 
 	    user_set_attack(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), ident(0),
@@ -2635,7 +2635,7 @@ void Actor::die
 	delete schedule;
 	schedule = 0;
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
-	dead = true;
+	Actor::set_flag(Obj_flags::dead);
 	int shnum = get_shapenum();
 					// Special case:  Hook, Dracothraxus.
 	if (((shnum == 0x1fa || (shnum == 0x1f8 && Is_draco(this))) && 
@@ -2702,7 +2702,7 @@ void Actor::mend_hourly
 	(
 	)
 	{
-	if (dead)
+	if (is_dead())
 		return;
 	int maxhp = properties[(int) strength];
 	int hp = properties[(int) health];
@@ -2760,7 +2760,7 @@ Actor *Actor::resurrect
 	move(pos);			// Move back to life.
 					// Restore health to max.
 	properties[(int) health] = properties[(int) strength];
-	dead = false;
+	Actor::clear_flag(Obj_flags::dead);
 	return (this);
 	}
 
