@@ -254,7 +254,14 @@ void Sleep_schedule::now_what
 	static int bedshapes[2] = {696, 1011};
 	Game_object *bed = npc->find_closest(bedshapes, 2);
 	if (!bed)
+		{			// Just lie down at current spot.
+		Game_window *gwin = Game_window::get_game_window();
+		gwin->add_dirty(npc);
+		int dirbits = npc->get_framenum()&(0x30);
+		npc->set_frame(Actor::sleep_frame|dirbits);
+		gwin->add_dirty(npc);
 		return;
+		}
 	int dir = bed->get_shapenum() == 696 ? west : north;
 	npc->set_frame(npc->get_dir_framenum(dir, Actor::sleep_frame));
 					// Get bed info.
@@ -273,6 +280,9 @@ void Sleep_schedule::ending
 	(
 	)
 	{
+					// Locate free spot.
+	for (int dist = 1; dist < 8 && floorloc.tx == -1; dist++)
+		floorloc = npc->find_unblocked_tile(dist, 4);
 	if (floorloc.tx >= 0)		// Get back on floor.
 		{
 		npc->move(floorloc);

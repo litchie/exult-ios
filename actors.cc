@@ -748,6 +748,8 @@ void Actor::set_flag
 	{
 	if (flag >= 0 && flag < 32)
 		flags |= ((unsigned long) 1 << flag);
+	if (flag == asleep)
+		set_schedule_type(Schedule::sleep);
 	}
 
 /*
@@ -761,6 +763,8 @@ void Actor::clear_flag
 	{
 	if (flag >= 0 && flag < 32)
 		flags &= ~((unsigned long) 1 << flag);
+	if (flag == asleep)
+		set_schedule_type(Schedule::stand);
 	}
 
 /*
