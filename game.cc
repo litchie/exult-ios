@@ -29,6 +29,13 @@ Game::Game()
 {
 	gwin = Game_window::get_game_window();
 	win = gwin->get_win();
+	topx = (gwin->get_width()-320)/2;
+	topy = (gwin->get_height()-200)/2;
+	centerx = gwin->get_width()/2;
+	centery = gwin->get_height()/2;
+	
+	if (!gwin->setup_mainshp_fonts())
+			gwin->abort ("Unable to setup fonts from 'mainshp.flx' file.");
 }
 
 Game::~Game()
@@ -122,3 +129,139 @@ int Game::get_shape(const char *name)
 {
 	return shapes[name];
 }
+
+void Game::add_resource(const char *name, const char *str, int num) 
+{
+	resources[name].str = str;
+	resources[name].num = num;
+}
+
+str_int_pair Game::get_resource(const char *name)
+{
+	return resources[name];
+}
+
+void Game::show_text_line(int x, int y, const char *s)
+{
+	// FIXME:
+	//The texts used in the main menu contains backslashed sequences that
+	//indicates the output format of the lines:
+	// \Px   include picture number x (frame of MAINSHP.FLX shape 14h)
+	// \C    center line
+	// \L    left-aligned line
+}
+
+vector<char *> *Game::load_text(const char *archive, int index)
+{
+	U7object txtobj(archive, index);
+	size_t len;
+		
+	char *txt, *ptr, *end;
+	txtobj.retrieve(&txt, len);
+	ptr = txt;
+	end = ptr+len;
+
+	vector<char *> *text = new vector<char *>();
+	while(ptr<end) {
+		char *start = ptr;
+		ptr = strchr(ptr, '\r');
+		*ptr = 0;
+		text->push_back(strdup(start));
+		ptr += 2;
+	}
+	delete [] txt;
+	for(int i=0; i<text->size(); i++)
+		printf("%d - %s\n", i, (*text)[i]);
+	return text;
+}
+
+void Game::destroy_text(vector<char *> *text)
+{
+	for(int i=0; i<text->size(); i++)
+		delete [] (*text)[i];
+	delete text;
+}
+
+void Game::show_menu()
+	{
+		Vga_file menushapes(MAINSHP_FLX);
+
+		int menuy = topy+110;
+
+		top_menu(menushapes);
+		
+		int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12 };
+		int num_choices = sizeof(menuchoices)/sizeof(int);
+		int selected = 2;
+		SDL_Event event;
+		char npc_name[16];
+		sprintf(npc_name, "God");
+		do {
+			bool exit_loop = false;
+			do {
+				for(int i=0; i<6; i++) {
+					Shape_frame *shape = menushapes.get_shape(menuchoices[i],i==selected);
+					gwin->paint_shape(centerx-shape->get_width()/2,menuy+i*10,shape);
+				}		
+				win->show();
+				SDL_WaitEvent(&event);
+				if(event.type==SDL_KEYDOWN) {
+					switch(event.key.keysym.sym) {
+					case SDLK_ESCAPE:
+						exit(0);
+						break;
+					case SDLK_UP:
+						--selected;
+						if(selected<0)
+							selected = num_choices-1;
+						continue;
+					case SDLK_DOWN:
+						++selected;
+						if(selected==num_choices)
+							selected = 0;
+						continue;
+					case SDLK_RETURN:
+						exit_loop = true;
+						break;
+					}
+				}
+			} while(!exit_loop);
+			bool created = false;
+			switch(selected) {
+			case 0: // Intro
+				play_intro();
+				top_menu(menushapes);
+				break;
+			case 2: // Journey Onwards
+				created = gwin->init_gamedat(false);
+				if(!created)
+					break;
+				// else fall through
+			case 1: // New Game
+				if(!created) {
+					if(new_game(menushapes))
+						selected = 2;
+				} else
+					selected = 2; // This will start the game
+				break;
+			case 3: // Credits
+				show_credits();
+				top_menu(menushapes);
+				break;
+			case 4: // Quotes
+				show_quotes();
+				top_menu(menushapes);
+				break;
+			case 5: // End Game
+				end_game(true);
+				top_menu(menushapes);
+				break;
+			default:
+				break;
+			}
+		} while(selected!=2);
+		pal.fade_out(30);
+		
+		clear_screen();
+		audio->stop_music();
+	}

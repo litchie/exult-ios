@@ -44,9 +44,10 @@ Boston, MA  02111-1307, USA.
  *	Horizontal leads, by fontnum:
  *
  *	This must include the Endgame fonts (currently 32-35)!!
+ *      And the MAINSHP font (36)
  *	However, their values are set elsewhere
  */
-static int hlead[36] = {-1, 0, 1, 0, 1, 0, 0, -1, 0, 0};
+static int hlead[NUM_FONTS] = {-1, 0, 1, 0, 1, 0, 0, -1, 0, 0};
 
 /*
  *	Pass space.
@@ -269,60 +270,74 @@ int Game_window::get_text_baseline
 	return A->get_yabove();
 	}
 
+static Shape_file *load_extra_font(const char *archive, int index, int skip)
+{
+	U7object s_in(archive,index);
+
+	char	*buffer;
+	size_t	len;
+	if (!s_in.retrieve (&buffer, len))
+		return false;
+		
+	FILE	*tmpfile = fopen ("endfont.tmp", "wb");
+	
+	if(!tmpfile) {
+		delete [] buffer;
+		return false;
+	}
+	
+	fwrite (buffer+skip, len-skip, 1, tmpfile);
+	delete [] buffer;
+	fclose (tmpfile);
+
+	Shape_file *shapes = new Shape_file ("endfont.tmp");
+
+	remove ("endfont.tmp");
+
+	return shapes;
+}
+
 bool Game_window::setup_endgame_fonts ()
 {
 	static bool setup_done = false;
 
 	if(setup_done)
 		return true;
-	for (int i = 0; i < 4; i++)
-	{
-		U7object s_in(ENDGAME,i+3);
-
-		char	*buffer;
-		size_t	len;
-		if (!s_in.retrieve (&buffer, len))
+	for (int i = 0; i < 4; i++) {
+		extra_fonts[i] = load_extra_font(ENDGAME, i+3, 8);
+		if (!extra_fonts[i]->get_num_frames())
 			return false;
-			
-		FILE	*tmpfile = fopen ("endfont.tmp", "wb");
-		
-		if(!tmpfile)
-		{
-			delete [] buffer;
-			return false;
-		}
-	
-		fwrite (buffer+8, len-8, 1, tmpfile);
-		delete [] buffer;
-		fclose (tmpfile);
-
-		end_fonts[i] = new Shape_file ("endfont.tmp");
-
-		remove ("endfont.tmp");
-	
-		if (!end_fonts[i]->get_num_frames())
-			return false;
-			
 	}
 
 	hlead[ENDGAME_FONT1] = 0;
-	hlead[ENDGAME_FONT2] = 0;
+	hlead[ENDGAME_FONT2] = 0;	
 	hlead[ENDGAME_FONT3] = 0;
 	hlead[ENDGAME_FONT4] = 0;
 	setup_done = true;
 	return true;
 }
 
+bool Game_window::setup_mainshp_fonts ()
+{
+	static bool setup_done = false;
+
+	if(setup_done)
+		return true;
+	
+	extra_fonts[MAINSHP_FONT1-EXTRA_FONTS] = load_extra_font("static/mainshp.flx", 9, 0);
+	if (!extra_fonts[MAINSHP_FONT1-EXTRA_FONTS]->get_num_frames()) {
+			cerr << "Error loading mainshp font" << endl;
+	}
+
+	hlead[MAINSHP_FONT1] = 2;
+	setup_done = true;
+	return true;
+}
+
 Shape_frame *Game_window::font_get_shape (int fontnum, int framenum)
 {
-	if (fontnum == ENDGAME_FONT1)
-		return end_fonts[0]->get_frame (framenum);
-	else if (fontnum == ENDGAME_FONT2)
-		return end_fonts[1]->get_frame (framenum);
-	else if (fontnum == ENDGAME_FONT3)
-		return end_fonts[2]->get_frame (framenum);
-	else if (fontnum == ENDGAME_FONT4)
-		return end_fonts[3]->get_frame (framenum);
+	if (fontnum >= EXTRA_FONTS)
+		return extra_fonts[fontnum-EXTRA_FONTS]->get_frame (framenum);
 	
 	return fonts.get_shape(fontnum, framenum);
 }

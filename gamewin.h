@@ -91,7 +91,7 @@ private:
 	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	Vga_file fonts;			// "fonts.vga" file.
-	Shape_file *end_fonts[4];	// fonts from "endgame.dat" file
+	Shape_file *extra_fonts[5];	// extra font shapes
 	Vga_file sprites;		// "sprites.vga" file.
 	Vga_file mainshp;
 	Vga_file *xtrashapes;		
@@ -554,11 +554,13 @@ public:
 	int get_text_height(int fontnum);
 	int get_text_baseline(int fontnum);
 	bool setup_endgame_fonts();	// Read the fonts from "endgame.dat" file
+	bool setup_mainshp_fonts();
 	Shape_frame *font_get_shape (int fontnum, int framenum);
 private:
 	void drop(int x, int y);
 	int drop_at_lift(Game_object *to_drop, int at_lift);
 public:
+	bool init_gamedat(bool force); // Initialize gamedat directory
 	void restore_gamedat(const char *fname);// Explode a savegame into "gamedat".
 	void restore_gamedat(int num);
 					// Save "gamedat".
