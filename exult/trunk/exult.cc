@@ -328,6 +328,33 @@ static void Init
 	
 	int w, h, sc;
 
+
+#ifdef BLACKGATE_DIGITAL_CAMERA
+	// create 2048x2048 screenshots of the full Ultima 7 map.
+	// WARNING!! Takes up lots of memory and diskspace!
+
+	h = w = c_tilesize * c_tiles_per_schunk; sc = 1;
+	Image_window8::set_gamma(1, 1, 1);
+	gwin = new Game_window(w, h, sc);
+	current_res = find_resolution(w, h, sc);
+	Game::create_game(BLACK_GATE);
+	gwin->init_files();	
+	for (int x = 0; x < c_num_chunks / c_chunks_per_schunk; x++) {
+		for (int y = 0; y < c_num_chunks / c_chunks_per_schunk; y++) {
+			gwin->paint_map_at_tile(0,0,w,h,x * c_tiles_per_schunk, y * c_tiles_per_schunk, 15);
+			char fn[15];
+			sprintf(fn, "u7map%x%x.pcx", x, y);
+			SDL_RWops *dst = SDL_RWFromFile(fn, "wb");
+			cerr << x << "," << y << ": ";
+			gwin->get_win()->screenshot(dst);
+		}
+	}
+	exit(0);
+#endif
+
+
+
+
 	// Default resolution is 320x200 with 2x scaling
 	w = 320;
 	h = 200;
