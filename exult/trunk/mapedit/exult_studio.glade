@@ -176,6 +176,18 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
+	    <name>save_shape_info1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_save_shape_info1_activate</handler>
+	      <last_modification_time>Sat, 19 Jan 2002 01:33:26 GMT</last_modification_time>
+	    </signal>
+	    <label>Save shape info</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
 	    <name>reload_usecode_menu</name>
 	    <signal>
 	      <name>activate</name>
@@ -9714,6 +9726,11 @@ Random
 	<can_default>True</can_default>
 	<has_default>True</has_default>
 	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_shinfo_okay_clicked</handler>
+	  <last_modification_time>Sat, 19 Jan 2002 01:31:58 GMT</last_modification_time>
+	</signal>
 	<label>Okay</label>
       </widget>
 
@@ -9722,6 +9739,11 @@ Random
 	<name>shinfo_apply</name>
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_shinfo_apply_clicked</handler>
+	  <last_modification_time>Sat, 19 Jan 2002 01:32:09 GMT</last_modification_time>
+	</signal>
 	<label>Apply</label>
       </widget>
 
@@ -9875,17 +9897,27 @@ Random
 
       <widget>
 	<class>GtkButton</class>
-	<name>button32</name>
+	<name>equip_okay</name>
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_equip_okay_clicked</handler>
+	  <last_modification_time>Sat, 19 Jan 2002 01:31:02 GMT</last_modification_time>
+	</signal>
 	<label>Okay</label>
       </widget>
 
       <widget>
 	<class>GtkButton</class>
-	<name>button33</name>
+	<name>equip_apply</name>
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_equip_apply_clicked</handler>
+	  <last_modification_time>Sat, 19 Jan 2002 01:31:18 GMT</last_modification_time>
+	</signal>
 	<label>Apply</label>
       </widget>
 

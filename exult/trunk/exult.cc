@@ -42,7 +42,9 @@
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
-//#include "xdrag.h"
+#ifdef XWIN
+#include "xdrag.h"
+#endif
 #include "server.h"
 #include "chunks.h"
 #include "chunkter.h"

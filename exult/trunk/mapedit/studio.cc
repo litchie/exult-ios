@@ -124,6 +124,13 @@ on_read_map_menu_activate              (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
+on_save_shape_info1_activate           (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->write_shape_info();
+}
+
+C_EXPORT void
 on_reload_usecode_menu_activate        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -486,6 +493,9 @@ void ExultStudio::set_static_path(const char *path)
 		g_free(static_path);
 	static_path = g_strdup(path);	// Set up palette for showing shapes.
 	add_system_path("<STATIC>", static_path);
+	char *patch = g_strdup_printf("%s../%s", static_path, "patch");
+	add_system_path("<PATCH>", patch);
+	g_free(patch);
 	char *palname = g_strdup_printf("%s%s", static_path, "palettes.flx");
 	U7object pal(palname, 0);
 	g_free(palname);
@@ -555,6 +565,18 @@ void ExultStudio::read_map
 	)
 	{
 	send_to_server(Exult_server::read_map);
+	}
+
+/*
+ *	Write out shape info.
+ */
+
+void ExultStudio::write_shape_info
+	(
+	)
+	{
+	if (vgafile)
+		((Shapes_vga_file *) vgafile)->write_info(false);//++++BG?
 	}
 
 /*
@@ -657,6 +679,22 @@ void ExultStudio::set_toggle
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
 	if (btn)
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(btn), val);
+	}
+
+/*
+ *	Get an 8-bit set of flags from a group of toggles.
+ */
+
+unsigned char ExultStudio::get_bit_toggles
+	(
+	char **names,			// Names for bit 0, 1, 2,...
+	int num				// # of names/bits.
+	)
+	{
+	unsigned char bits = 0;
+	for (int i = 0; i < num; i++)
+		bits |= (get_toggle(names[i]) ? 1 : 0) << i;
+	return bits;
 	}
 
 /*
