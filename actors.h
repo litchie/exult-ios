@@ -116,6 +116,24 @@ public:
 	};
 
 /*
+ *	Actor frame descriptions:
+	0	Standing N.
+	1	Walk N.
+	2	Walk N.
+	3-4	Walk NW
+	5-6	Walk NE.
+	9	Facing N, hands raised.
+	10	Sitting down N.
+	11-13	Lying down N.
+	16	Standing S.
+	17,18	Walking S.
+	19,20	Walking SW.
+	21,22	Walking SE.
+	26	Sitting S.
+	27-29	Lying down S.
+ */
+
+/*
  *	The main actor.
  */
 class Main_actor : public Actor

@@ -331,7 +331,8 @@ int Gump_object::add
 		return (0);		// Full.
 					// Dropping on same thing?
 	Game_object *onobj = find_object(mx, my);
-	if (onobj && onobj->drop(obj))	// If possible, combine.
+					// If possible, combine.
+	if (onobj && onobj != obj && onobj->drop(obj))
 		return (1);
 	container->add(obj);
 	mx -= x + object_area.x;	// Get point rel. to object_area.

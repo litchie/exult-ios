@@ -58,9 +58,8 @@ Mixer::~Mixer()
  
 void fill_audio(void *udata, Uint8 *stream, int len)
  {
-	 extern	Audio	audio;
 	// cerr << "fill_audio: " << len << endl;
-	 audio.mixer->fill_audio_func(udata,stream,len);
+	 audio->mixer->fill_audio_func(udata,stream,len);
 }
 
 void	Mixer::advance(void)

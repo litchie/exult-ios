@@ -30,8 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <Audio.h>
 
-extern	Audio audio;
-
 static int Has_quantity
 	(
 	int shnum			// Shape number.
@@ -990,9 +988,6 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	int roll = 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
-//TESTING:
-	static int cnt = 0;
-//	audio.start_speech(cnt++);//++++++++++++
 	flags |= (1 << (int) hatched);	// Flag it as done.
 	switch(type)
 		{
@@ -1000,10 +995,10 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 #if DEBUG
 			cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0xff) << endl;
 #endif
-			audio.start_music((data1)&0xff,(data1>>8)&0xff);
+			audio->start_music((data1)&0xff,(data1>>8)&0xff);
 			break;
 		case voice:
-			audio.start_speech((data1)&0xff);
+			audio->start_speech((data1)&0xff);
 			break;
 		case usecode:
 			// Data2 is the usecode function.

@@ -87,6 +87,6 @@ public:
 
 #endif
 
-extern	Audio audio;
+extern	Audio *audio;
 
 #endif

@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 #include "segfile.h"
 #include "Audio.h"
-extern	Audio	audio;
 
 					// THE game window:
 Game_window *Game_window::game_window = 0;
@@ -537,7 +536,7 @@ void Game_window::read_ireg_objects
 			{
 			type = entry[4] + 256*entry[5];
 			lift = entry[9] >> 4;
-			quality = 0;
+			quality = entry[7];
 			if (shapeid == 961)
 				obj = new Barge_object(
 				    entry[2], entry[3], tilex, tiley, lift);
