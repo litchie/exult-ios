@@ -1005,7 +1005,7 @@ string Game_object::get_name
 			name = item_names[0x5b8 + frnum];
 			break;
 		case 0x377:			// More rings
-			name = item_names[0x5bd - frnum];
+			name = item_names[0x5bc + frnum];
 			break;
 		case 0x2b4:			// Lute
 			if (frnum == 2)
