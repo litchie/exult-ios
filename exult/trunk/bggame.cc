@@ -155,7 +155,7 @@ BG_Game::BG_Game()
 	
 	fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 1);
 	fontManager.add_font("END2_FONT", "<STATIC>/endgame.dat", 4, 0);
-	fontManager.add_font("END3_FONT", "<STATIC>/endgame.dat", 5, -3);
+	fontManager.add_font("END3_FONT", "<STATIC>/endgame.dat", 5, -2);
 }
 
 BG_Game::~BG_Game()
@@ -170,8 +170,6 @@ void BG_Game::play_intro()
 	Font *font = fontManager.get_font("END2_FONT");
 
 	Audio::get_ptr()->stop_music();
-
-	//TODO: next screen doesn't show up somehow
 
 	// Lord British presents...
 	pal.load("<STATIC>/intropal.dat",3);
@@ -258,6 +256,7 @@ void BG_Game::play_intro()
 		pal.fade_out(30);
 		return;	
 	}
+
 
 	//TODO: show plasma first, then a bit of static
         //TODO: text is wrong font
@@ -408,11 +407,11 @@ void BG_Game::play_intro()
        	gwin->paint_shape(centerx,centery-49,s3);
 
 	// start speech
-	for(int i=0; i<14*40; i++) {
+	for(int i=0; i<14*30; i++) {
 		gwin->paint_shape(centerx,centery-12,shapes.get_shape(0x20,1 + i % 9));
 		gwin->paint_shape(centerx,centery,shapes.get_shape(0x1E,1 + i % 14));
 
-		if ((i % 40) == 0) {
+		if ((i % 30) == 0) {
 			txt_ptr = next_txt;
 			txt_end = std::strchr(txt_ptr, '\r');
 			*txt_end = '\0';

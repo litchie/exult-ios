@@ -1,3 +1,7 @@
+2001-01-01  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* palette.c: fixed fades when fades are disabled
+	* bggame.cc: still working on intro
+
 2000-12-31  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in, various Makefile.am: added --disable-tools and
 	--disable-data configure switches
