@@ -68,7 +68,7 @@ public:
 		{ return yabove; }
 	int get_ybelow()
 		{ return ybelow; }
-	~Shape_frame()
+	virtual ~Shape_frame()
 		{ delete [] data; }
 	};
 
@@ -90,7 +90,7 @@ public:
 	friend class Vga_file;
 	Shape() : frames(0), num_frames(0)
 		{  }
-	~Shape();
+	virtual ~Shape();
 	Shape_frame *get(ifstream& shapes, int shnum, int frnum)
 		{ 
 		return (frames && frnum < num_frames && frames[frnum]) ? 
@@ -110,6 +110,8 @@ public:
 		{ return num_frames; }
 	Shape_frame *get_frame(int framenum)
 		{ return framenum < num_frames ? frames[framenum] : 0; }
+	virtual ~Shape_file()
+		{  }
 	};
 
 /*
@@ -123,7 +125,7 @@ protected:
 	Shape *shapes;			// List of ->'s to shapes' lists
 public:
 	Vga_file(const char *nm);
-	~Vga_file();
+	virtual ~Vga_file();
 	int get_num_shapes()
 		{ return num_shapes; }
 	int is_good()
@@ -180,7 +182,7 @@ public:
 	Shape_info() : xtiles(0), ytiles(0), ztiles(0), weight(0), volume(0),
 		ready_type(0), weapon_offsets(0)
 		{ tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0; }
-	~Shape_info();
+	virtual ~Shape_info();
 	int get_weight()		// Get weight, volume.
 		{ return weight; }
 	int get_volume()
@@ -262,7 +264,7 @@ class Shapes_vga_file : public Vga_file
 public:
 	Shapes_vga_file() : Vga_file(SHAPES_VGA)
 		{ info = new Shape_info[num_shapes]; }
-	~Shapes_vga_file();
+	virtual ~Shapes_vga_file();
 	int read_info();		// Read additional data files.
 	Shape_info& get_info(int shapenum)
 		{ return info[shapenum]; }
