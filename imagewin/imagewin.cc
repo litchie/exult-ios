@@ -36,6 +36,7 @@ Boston, MA  02111-1307, USA.
 #  include <string>
 #endif
 #include "exult_types.h"
+#include "utils.h"
 
 #include "SDL_video.h"
 #include "SDL_error.h"
