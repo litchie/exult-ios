@@ -840,12 +840,11 @@ void Combat_schedule::now_what
 				prev_schedule != combat)
 					// Return to normal schedule.
 			{
-			Npc_actor *nact = dynamic_cast<Npc_actor*>(npc);
-			if (nact)
-				nact->update_schedule(gwin, 
-						gwin->get_hour()/3, 7);
+			npc->update_schedule(gwin, gwin->get_hour()/3, 7);
+#if 0	/* I think this isn't needed. */
 			else
 				npc->set_schedule_type(prev_schedule);
+#endif
 			}
 		}
 	}

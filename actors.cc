@@ -3231,8 +3231,7 @@ void Main_actor::get_followers
 	int cnt = uc->get_party_count();
 	for (int i = 0; i < cnt; i++)
 		{
-		Npc_actor *npc = dynamic_cast<Npc_actor*>(gwin->get_npc(
-						uc->get_party_member(i)));
+		Actor *npc = gwin->get_npc(uc->get_party_member(i));
 		if (!npc || npc->get_flag(Obj_flags::asleep) ||
 		    npc->is_dead())
 			continue;
@@ -3572,7 +3571,7 @@ Npc_actor::Npc_actor
 	int num, 
 	int uc
 	) : Actor(nm, shapenum, num, uc), next(0), nearby(false),
-		num_schedules(0), force_update(false),
+		num_schedules(0),
 		schedules(0)
 	{
 	}
@@ -3765,7 +3764,6 @@ void Npc_actor::update_schedule
 	int delay			// Delay in msecs, or -1 for random.
 	)
 	{
-	force_update = false;
 	int i = find_schedule_change(hour3);
 	if (i < 0)
 		{			// Not found?  Look at prev.?
@@ -3785,23 +3783,6 @@ void Npc_actor::update_schedule
 	set_schedule_and_loc (schedules[i].get_type(), schedules[i].get_pos(),
 								delay);
 	}
-
-/*
- *	Update schedule at a 3-hour time change.
- */
-
-bool Npc_actor::update_forced_schedule()
-{
-	if (force_update)
-	{
-		Game_window *gwin = Game_window::get_instance();
-		update_schedule(gwin, gwin->get_hour()/3, 7);
-		force_update = false;
-		return true;
-	}
-	return false;
-}
-
 
 /*
  *	Render.
@@ -3866,10 +3847,6 @@ void Npc_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
-#if 0	/* ++++Causes Iolo bug in Fire&Ice test. */
-	if (update_forced_schedule())
-		return;
-#endif
 	if (!action)			// Not doing anything?
 		{
 		if (schedule)

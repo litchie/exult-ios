@@ -1360,9 +1360,9 @@ USECODE_INTRINSIC(add_spell)
 	// add_spell(spell# (0-71), ??, spoolbook).
 	// Returns 0 if book already has that spell.
 	Game_object *obj = get_item(parms[2]);
-	if (!obj)
+	if (!obj || obj->get_info().get_shape_class() != Shape_info::spellbook)
 		return Usecode_value(0);
-	Spellbook_object *book = dynamic_cast<Spellbook_object *> (obj);
+	Spellbook_object *book = (Spellbook_object *) (obj);
 	if (!book)
 		{
 		cout << "Add_spell - Not a spellbook!" << endl;
@@ -1536,18 +1536,20 @@ USECODE_INTRINSIC(get_array_size)
 USECODE_INTRINSIC(mark_virtue_stone)
 {
 	Game_object *obj = get_item(parms[0]);
-	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *> (obj);
-	if (vs)
+	if (obj->get_info().get_shape_class() == Shape_info::virtue_stone)
+		{
+		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
 		vs->set_pos(obj->get_outermost()->get_tile());
+		}
 	return no_ret;
 }
 
 USECODE_INTRINSIC(recall_virtue_stone)
 {
 	Game_object *obj = get_item(parms[0]);
-	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *> (obj);
-	if (vs)
+	if (obj->get_info().get_shape_class() == Shape_info::virtue_stone)
 		{
+		Virtue_stone_object *vs = (Virtue_stone_object *) (obj);
 		gwin->get_gump_man()->close_all_gumps();
 					// Pick it up if necessary.
 		if (!obj->get_owner())
@@ -2496,7 +2498,7 @@ USECODE_INTRINSIC(set_new_schedules)
 	//			[x1,y1, x2, y2, ...] )
 	//
 
-	Npc_actor *actor = as_npcactor(get_item(parms[0]));
+	Actor *actor = as_actor(get_item(parms[0]));
 
 	// If no actor return
 	if (!actor) return no_ret;
@@ -2532,7 +2534,7 @@ USECODE_INTRINSIC(revert_schedule)
 	// Reverts the schedule of the npc to the saved state in
 	// <STATIC>/schedule.dat
 
-	Npc_actor *actor = as_npcactor(get_item(parms[0]));
+	Actor *actor = as_actor(get_item(parms[0]));
 	if (actor) gwin->revert_schedules(actor);
 
 	return no_ret;
@@ -2543,15 +2545,10 @@ USECODE_INTRINSIC(run_schedule)
 	// run_schedule(npc)
 	// I think this is actually reset activity to current
 	// scheduled activity - Colourless
-	Npc_actor *actor = as_npcactor(get_item(parms[0]));
+	Actor *actor = as_actor(get_item(parms[0]));
 	
 	if (actor)
 	{
-#if 0	/* ++++Causes Iolo bug in Fire&Ice test. */
-		actor->set_force_update();
-
-		gwin->get_tqueue()->add(SDL_GetTicks() + 1, actor, 0);
-#endif
 		actor->update_schedule(gwin, gwin->get_hour()/3, 7);
 
 	}

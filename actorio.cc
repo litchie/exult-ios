@@ -528,9 +528,6 @@ void Actor::write
 	if (get_flag (Obj_flags::petra)) iout |= 1 << 7;
 	nfile->write1(iout);
 	
-	// Make sure schedule is correct
-	update_forced_schedule();
-
 	nfile->write1(get_schedule_type());
 	unsigned char amode = attack_mode | 
 		(combat_protected ? (1<<4) : 0) |
