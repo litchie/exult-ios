@@ -21,7 +21,7 @@
 #ifndef DELOBJS_H
 #define DELOBJS_H	1
 
-#include <set>
+#include <map>
 
 /*
  *	"Less than" relation for objects
@@ -35,15 +35,19 @@ public:
 		}
 	};
 
+#define DELOBJ_DELAY 	(1000*60*3)	/* 3 minutes. */
 
 /*
- *	A pool of removed game objects, waiting to be deleted:
+ *	A pool of removed game objects, waiting to be deleted, each with a
+ *	timestamp.
  */
-class Deleted_objects : public std::set<Game_object *, Less_objs>
+class Deleted_objects : public std::map<Game_object *, unsigned int, Less_objs>
 	{
 public:
-	Deleted_objects() : std::set<Game_object *, Less_objs> ()
+	Deleted_objects() : std::map<Game_object *, unsigned int, Less_objs> ()
 		{  }
+	void insert(Game_object *obj)
+		{ (*this)[obj] = SDL_GetTicks() + DELOBJ_DELAY; }
 
 	void flush();			// Delete them now.
 	~Deleted_objects()
