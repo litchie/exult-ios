@@ -1,5 +1,9 @@
 2001-09-17  Dancer Vesperman  <dancer@users.sourceforge.net>
 
+	* Here's a bit of joy: WIN32 isn't SMP safe if we use operator new and delete. On the other hand, nothing else is thread-safe if we use malloc()/free(). So, we wrap the implementations and use malloc()/calloc()/free() for WIN32, and the C++ thread-safe allocator for other platforms.
+
+2001-09-17  Dancer Vesperman  <dancer@users.sourceforge.net>
+
 	* Watch and learn. C++ _does_ have semantic eqivalents to malloc() and free(). They are ::operator new() and ::operator delete() (which are not the same as new and delete). This ensures we end up using the same thread-safe allocators. calloc() and malloc() semantics and type-casts are all bound up in two simple inline templates.
 
 2001-09-16  Dancer Vesperman  <dancer@users.sourceforge.net>
