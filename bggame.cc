@@ -94,7 +94,7 @@ void BG_Game::play_intro()
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
 		const char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
 				"Willem Jan Palenstijn, Tristan Tarrant,", 
-				"Max Horn, Luke Dunstan, Ryan Nunn",
+				"Max Horn, Luke Dunstan, Ryan Nunn, Derek Liauw Kie Fa",
 				"Driven by the Exult game engine V" VERSION };
 		for(int i=0; i<3; i++) {
 			gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
