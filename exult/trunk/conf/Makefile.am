@@ -26,6 +26,12 @@ test: libconf.a xmain.o
 %.o : %.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
 
+rebuild_master_dependencies:
+	makedepend -f Makefile.am -Y $(CXXFLAGS) -I. -I.. -I../audio -I../pathfinder -I../files -I../flic - -- *.cc
+
+
+# DO NOT DELETE
+
 Configuration.o: Configuration.h XMLEntity.h
 XMLEntity.o: XMLEntity.h
 xmain.o: Configuration.h XMLEntity.h

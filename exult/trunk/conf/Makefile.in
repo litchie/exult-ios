@@ -94,13 +94,14 @@ WINDOWING_SYSTEM = @WINDOWING_SYSTEM@
 AUTOMAKE_OPTIONS = foreign
 CXXFLAGS =  $(INCDIRS) -Wall $(WINDOWING_SYSTEM) $(DEBUG_FLAGS)
 
-OFILES = PathFinder.o Astar.o Zombie.o path.o
+OFILES = xmlparse.o xmldump.o XMLEntity.o Configuration.o
 
-SOURCES = PathFinder.cc PathFinder.h Astar.h Astar.cc Zombie.h Zombie.cc path.cc
+SOURCES = Configuration.cc Configuration.h XMLEntity.cc XMLEntity.h 		xmain.cc xmldump.cc xmlparse.cc
+
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../autoconfig.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  README Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -110,7 +111,7 @@ GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:
 $(srcdir)/Makefile.in: Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
-	cd $(top_srcdir) && $(AUTOMAKE) --foreign pathfinder/Makefile
+	cd $(top_srcdir) && $(AUTOMAKE) --foreign conf/Makefile
 
 Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status $(BUILT_SOURCES)
 	cd $(top_builddir) \
@@ -122,14 +123,14 @@ TAGS:
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)/$(subdir)
 
-subdir = pathfinder
+subdir = conf
 
 distdir: $(DISTFILES)
 	here=`cd $(top_builddir) && pwd`; \
 	top_distdir=`cd $(top_distdir) && pwd`; \
 	distdir=`cd $(distdir) && pwd`; \
 	cd $(top_srcdir) \
-	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign pathfinder/Makefile
+	  && $(AUTOMAKE) --include-deps --build-dir=$$here --srcdir-name=$(top_srcdir) --output-dir=$$top_distdir --foreign conf/Makefile
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
@@ -202,27 +203,30 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-all-local:	libpathfinder.a 
+all-local:	libconf.a 
 
-libpathfinder.a:	$(OFILES)
-	ar rs libpathfinder.a $(OFILES)
+libconf.a:	$(OFILES)
+	ar rs libconf.a $(OFILES)
 
 clean:
-	rm -f libpathfinder.a core $(OFILES)
+	rm -f libconf.a core $(OFILES)
+
+test: libconf.a xmain.o
+	g++ -L. xmain.o -o test $(OFILES)
 
 %.o : %.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
 
 rebuild_master_dependencies:
-	makedepend -f Makefile.am -Y $(CXXFLAGS) -I. -I.. -I../conf -I../audio -I../files -I../flic - -- *.cc
+	makedepend -f Makefile.am -Y $(CXXFLAGS) -I. -I.. -I../audio -I../pathfinder -I../files -I../flic - -- *.cc
 
 # DO NOT DELETE
 
-Astar.o: Astar.h PathFinder.h ../tiles.h
-PathFinder.o: PathFinder.h ../tiles.h
-Zombie.o: Zombie.h PathFinder.h ../tiles.h
-path.o: PathFinder.h ../tiles.h ../objs.h ../vec.h ../usecode.h ../tqueue.h
-path.o: ../tiles.h
+Configuration.o: Configuration.h XMLEntity.h
+XMLEntity.o: XMLEntity.h
+xmain.o: Configuration.h XMLEntity.h
+xmldump.o: XMLEntity.h
+xmlparse.o: XMLEntity.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
