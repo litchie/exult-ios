@@ -161,7 +161,7 @@ void Sign_gump::paint
 	else if (serpentine)
 		font = 8;
 					// Get height of 1 line.
-	int lheight = gwin->get_text_height(font);
+	int lheight = sman->get_text_height(font);
 					// Get space between lines.
 	int lspace = (object_area.h - num_lines*lheight)/(num_lines + 1);
 					// Paint the gump itself.
@@ -172,10 +172,10 @@ void Sign_gump::paint
 		ypos += lspace;
 		if (lines[i].empty())
 			continue;
-		gwin->paint_text(font, lines[i].c_str(),
+		sman->paint_text(font, lines[i].c_str(),
 			x + object_area.x + 
 				(object_area.w - 
-				    gwin->get_text_width(font, lines[i].c_str()))/2,
+			sman->get_text_width(font, lines[i].c_str()))/2,
 			ypos);
 		ypos += lheight;
 	}

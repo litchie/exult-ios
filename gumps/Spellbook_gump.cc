@@ -505,9 +505,9 @@ void Spellbook_gump::paint
 			char text[6];
 			snprintf(text, 6, "%d", num);
 			if (num > 0 && num < 1000)
-				gwin->paint_text(4, text,
+				sman->paint_text(4, text,
 					x + spell->x + numx -
-						gwin->get_text_width(4, text),
+						sman->get_text_width(4, text),
 					y + spell->y + numy);
 		}
 	if (page > 0 ||			// Paint circle.
@@ -515,10 +515,10 @@ void Spellbook_gump::paint
 	{
 		char *circ = item_names[CIRCLE];
 		char *cnum = item_names[CIRCLENUM + page];
-		gwin->paint_text(4, cnum, x + 40 + 
-			(44 - gwin->get_text_width(4, cnum))/2, y + 20);
-		gwin->paint_text(4, circ, x + 92 +
-			(44 - gwin->get_text_width(4, circ))/2, y + 20);
+		sman->paint_text(4, cnum, x + 40 + 
+			(44 - sman->get_text_width(4, cnum))/2, y + 20);
+		sman->paint_text(4, circ, x + 92 +
+			(44 - sman->get_text_width(4, circ))/2, y + 20);
 	}
 	if (book->bookmark >= 0 &&	// Bookmark?
 	    book->bookmark/8 == page)

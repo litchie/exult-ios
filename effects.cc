@@ -101,7 +101,8 @@ void Effects_manager::center_text
 	)
 	{
 	remove_text_effects();
-	add_text(msg, (gwin->get_width()-gwin->get_text_width(0,msg))/2,
+	Shape_manager *sman = Shape_manager::get_instance();
+	add_text(msg, (gwin->get_width()-sman->get_text_width(0,msg))/2,
 			 gwin->get_height()/2);
 	}
 
@@ -821,8 +822,8 @@ void Text_effect::init
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
-	width = 8 + gwin->get_text_width(0, msg.c_str());
-	height = 8 + gwin->get_text_height(0);
+	width = 8 + sman->get_text_width(0, msg.c_str());
+	height = 8 + sman->get_text_height(0);
 	add_dirty();			// Force first paint.
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
@@ -900,7 +901,7 @@ void Text_effect::paint
 	{
 	const char *ptr = msg.c_str();
 	int len = strlen(ptr);
-	gwin->paint_text(0, ptr, len, 
+	sman->paint_text(0, ptr, len, 
 		(pos.tx - gwin->get_scrolltx())*c_tilesize,
 				(pos.ty - gwin->get_scrollty())*c_tilesize);
 	}

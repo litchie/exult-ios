@@ -242,10 +242,10 @@ void VideoOptions_gump::paint()
 		if (buttons[i])
 			buttons[i]->paint();
 
-	gwin->paint_text(2, "Resolution:", x + colx[0], y + rowy[0] + 1);
-	gwin->paint_text(2, "Scaling:", x + colx[0], y + rowy[1] + 1);
-	gwin->paint_text(2, "Scaler:", x + colx[0], y + rowy[2] + 1);
-	gwin->paint_text(2, "Full Screen:", x + colx[0], y + rowy[3] + 1);
+	sman->paint_text(2, "Resolution:", x + colx[0], y + rowy[0] + 1);
+	sman->paint_text(2, "Scaling:", x + colx[0], y + rowy[1] + 1);
+	sman->paint_text(2, "Scaler:", x + colx[0], y + rowy[2] + 1);
+	sman->paint_text(2, "Full Screen:", x + colx[0], y + rowy[3] + 1);
 	gwin->set_painted();
 }
 

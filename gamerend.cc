@@ -105,7 +105,7 @@ inline void Paint_chunk_outline
 	gwin->get_win()->fill8(pixel, 1, c_chunksize, xoff, yoff);
 	char text[40];			// Show chunk #.
 	snprintf(text, sizeof(text), "(%d,%d)T%d", cx, cy, tnum);
-	gwin->paint_text(2, text, xoff + 2, yoff + 2);
+	Shape_manager::get_instance()->paint_text(2, text, xoff + 2, yoff + 2);
 	}
 
 /*

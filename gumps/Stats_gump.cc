@@ -102,8 +102,8 @@ void Stats_gump::paint
 	check_button->paint();
 					// Show statistics.
 	std::string nm = act->get_name();
-	gwin->paint_text(2, nm.c_str(), x + namex +
-		(namew - gwin->get_text_width(2, nm.c_str()))/2, y + namey);
+	sman->paint_text(2, nm.c_str(), x + namex +
+		(namew - sman->get_text_width(2, nm.c_str()))/2, y + namey);
 	Paint_num(act->get_property(Actor::strength),
 						x + textx, y + texty[0]);
 	Paint_num(act->get_property(Actor::dexterity),

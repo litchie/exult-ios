@@ -41,7 +41,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Flex.h"
 #include "u7drag.h"
 #include "exult_constants.h"
-#include "shapeid.h"
 #include "studio.h"
 #include "utils.h"
 #include "shapegroup.h"
@@ -260,9 +259,11 @@ void Chunk_chooser::render_chunk
 		for (int tx = 0; tx < c_tiles_per_chunk; tx++,
 							x += c_tilesize)
 			{
-			ShapeID id(data);
-			Shape_frame *s = ifile->get_shape(id.get_shapenum(),
-							id.get_framenum());
+			unsigned char l = *data++;
+			unsigned char h = *data++;
+			int shapenum = l + 256*(h&0x3);
+			int framenum = h >> 2;
+			Shape_frame *s = ifile->get_shape(shapenum, framenum);
 			if (s)
 				s->paint(iwin, xoff + x - 1, yoff + y -1);
 			}

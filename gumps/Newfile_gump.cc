@@ -406,14 +406,14 @@ void Newfile_gump::PaintSaveName (int line)
 	else
 		text = newname;
 
-	gwin->paint_text (2, text, 
+	sman->paint_text (2, text, 
 		x + fieldx + textx,
 		y + fieldy + texty + line*(fieldh + fieldgap));
 
 	// Being Edited? If so paint cursor
 	if (selected == actual_game && cursor != -1)
-		gwin->get_win()->fill8(0, 1, gwin->get_text_height(2),
-			x + fieldx + textx + gwin->get_text_width(2, text, cursor),
+		gwin->get_win()->fill8(0, 1, sman->get_text_height(2),
+			x + fieldx + textx + sman->get_text_width(2, text, cursor),
 				y + fieldy + texty + line*(fieldh + fieldgap));
 
 	// If selected, show selected icon
@@ -527,7 +527,7 @@ void Newfile_gump::paint
 
 		}
 
-		gwin->paint_text_box (4, info, x+infox, y+infoy, infow, infoh);
+		sman->paint_text_box (4, info, x+infox, y+infoy, infow, infoh);
 
 	}
 	else
@@ -549,18 +549,18 @@ void Newfile_gump::paint
 				}
 			}
 			std::strncat (info, filename+offset, 64);
-			gwin->paint_text_box (4, info, x+infox, y+infoy, infow, infoh);
+			sman->paint_text_box (4, info, x+infox, y+infoy, infow, infoh);
 
 		}
 
 		if (!is_readable)
 		{
-			gwin->paint_text (2, "Unreadable", x+infox+(infow-gwin->get_text_width(2, "Unreadable"))/2, y+infoy+(infoh-18)/2);
-			gwin->paint_text (2, "Savegame", x+infox+(infow-gwin->get_text_width(2, "Savegame"))/2, y+infoy+(infoh)/2);
+			sman->paint_text (2, "Unreadable", x+infox+(infow-sman->get_text_width(2, "Unreadable"))/2, y+infoy+(infoh-18)/2);
+			sman->paint_text (2, "Savegame", x+infox+(infow-sman->get_text_width(2, "Savegame"))/2, y+infoy+(infoh)/2);
 		}
 		else 
 		{
-			gwin->paint_text (4, "No Info", x+infox+(infow-gwin->get_text_width(4, "No Info"))/2, y+infoy+(infoh-gwin->get_text_height(4))/2);
+			sman->paint_text (4, "No Info", x+infox+(infow-sman->get_text_width(4, "No Info"))/2, y+infoy+(infoh-sman->get_text_height(4))/2);
 		}
 	}
 	gwin->set_painted();
@@ -966,7 +966,7 @@ int Newfile_gump::AddCharacter(char c)
 	strcat (text, newname+cursor);
 
 	//Now check the width of the text
-	if (gwin->get_text_width(2, text) >= textw)
+	if (sman->get_text_width(2, text) >= textw)
 		return 0;
 
 	cursor++;
