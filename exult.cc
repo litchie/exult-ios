@@ -298,6 +298,11 @@ static void Init
 	current_res = find_resolution(sw, sh, scaleval);
 	Audio::get_ptr();
 
+	string disable_fades;
+	config->value("config/video/disable_fades", disable_fades, "no");
+	if (disable_fades == "yes")
+		gwin->set_fades_enabled(false);
+
 #ifdef WIN32
 	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
 	//(for MIDI repeats)

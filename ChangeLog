@@ -1,3 +1,6 @@
+2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* gamewin.h/cc, palette.cc, exult.cc: new config/video/disable_fades (yes/no) option
+
 2000-11-25  Max Horn  <max@quendi.de>
 	* changed a lot vars from unsigned char to bool (and 0->false, 1->true)
 	* objs.cc: static find_nearby() now properly uses dynamic_cast instead of C-style cast
