@@ -227,7 +227,8 @@
 //	USECODE_INTRINSIC_PTR(run_usecode),			// 0xa7 
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xa7 
 	USECODE_INTRINSIC_PTR(fade_palette),			// 0xa8
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xa9
+	// This one is used just for sleeping:
+	USECODE_INTRINSIC_PTR(fade_palette),			// 0xa9
 	USECODE_INTRINSIC_PTR(get_party_ids),			// 0xaa
 
 	USECODE_INTRINSIC_PTR(in_combat),			// 0xab
