@@ -68,7 +68,7 @@ Game_window::Game_window
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
 	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
 	    endshape(ENDSHAPE_FLX),
-	    main_actor(0), skip_above_actor(31), npcs(0),
+	    moving_barge(0), main_actor(0), skip_above_actor(31), npcs(0),
 	    monster_info(0), 
 	    scrolltx(64*tiles_per_chunk), 
 	    scrollty(136*tiles_per_chunk), 	// Start in Trinsic (BG).
@@ -1531,6 +1531,22 @@ void Game_window::view_up
 		add_nearby_npcs(scrolltx/tiles_per_chunk, new_tcy,
 		    (scrolltx + (w + tilesize - 1)/tilesize)/tiles_per_chunk,
 								new_tcy + 1);
+	}
+
+/*
+ *	Start the actor.
+ */
+
+void Game_window::start_actor
+	(
+	int winx, int winy, 		// Mouse position to aim for.
+	int speed = 125			// Msecs. between frames.
+	)
+	{
+	// +++++++++++Check for moving_barge.
+	main_actor->walk_to_point(get_scrolltx()*tilesize + winx, 
+				get_scrollty()*tilesize + winy, speed);
+	main_actor->get_followers();
 	}
 
 /*

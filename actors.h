@@ -148,7 +148,7 @@ public:
 		dead = 7,		// Not sure...
 		poisoned = 8,
 		protection = 9,
-		unknown3 = 10,		// In_motion (cart)??
+		on_moving_barge = 10,	// ??Guessing.
 		okay_to_take = 11,	// Okay to take??
 		tremor = 12,		// ??Earthquake??
 		dancing = 15,		// ??Not sure.

@@ -382,6 +382,50 @@ Game_object *Game_object::find_blocking
 	}
 
 /*
+ *	Find the highest object beneath this one's hot spot.  For now, we
+ *	just look in the one chunk.
+ *
+ *	Output:	->object, or 0 if not found.
+ */
+
+Game_object *Game_object::find_beneath
+	(
+	)
+	{
+	Game_object *found = 0;
+	int highest = -1;
+					// Get position to look at.
+	Tile_coord tile = get_abs_tile_coord();
+	Game_window *gwin = Game_window::get_game_window();
+	Chunk_object_list *chunk = gwin->get_objects(tile.tx/tiles_per_chunk,
+						     tile.ty/tiles_per_chunk);
+	for (Game_object *obj = chunk->get_first(); obj;
+						obj = chunk->get_next(obj))
+		{
+		if (obj == this)
+			continue;	// Obviously don't want this.
+		int tx, ty, tz;		// Get object's coords.
+		obj->get_abs_tile(tx, ty, tz);
+		if (tx < tile.tx || ty < tile.ty || tz > tile.tz)
+			continue;	// Out of range.
+		Shape_info& info = gwin->get_info(obj);
+		int ztiles = info.get_3d_height(); 
+					// Occupies desired tile?
+		if (tile.tx > tx - info.get_3d_xtiles() &&
+		    tile.ty > ty - info.get_3d_ytiles() &&
+					// Below given object?
+		    tile.tz >= tz + ztiles &&
+					// But higher than prev?
+		    tz + ztiles > highest)
+			{
+			found = obj;
+			highest = tz + ztiles;
+			}
+		}
+	return (found);
+	}
+
+/*
  *	Is this a closed door?
  */
 
@@ -1467,7 +1511,7 @@ Game_object *Container_game_object::remove_and_return
 	(
 	int shapenum,			// Shape #.
 	int qual,			// Quality, or -359 for any. ???+++++
-	int framenum			// Frame, or -359 for any. ???+++++++
+	int framenum			// Frame, or -359 for any.
 	)
 	{
 	if (!last_object)
@@ -1576,6 +1620,7 @@ int Container_game_object::drop
 int Container_game_object::count_objects
 	(
 	int shapenum,			// Shape#, or -359 for any.
+	int qual,			// Quality, or -359 for any.
 	int framenum			// Frame#, or -359 for any.
 	)
 	{
@@ -1587,13 +1632,14 @@ int Container_game_object::count_objects
 		{
 		obj = obj->get_next();
 		if ((shapenum == -359 || obj->get_shapenum() == shapenum) &&
-		    (framenum == -359 || obj->get_framenum() == framenum))
+		    (framenum == -359 || obj->get_framenum() == framenum) &&
+		    (qual == -359 || obj->get_quality() == qual))
 			{		// Check quantity.
 			int quant = obj->get_quantity();
 			total += quant;
 			}
 					// Count recursively.
-		total += obj->count_objects(shapenum, framenum);
+		total += obj->count_objects(shapenum, qual, framenum);
 		}
 	while (obj != last_object);
 	return (total);
