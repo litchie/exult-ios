@@ -2,7 +2,7 @@ INCLUDES = -I. $(DEBUG_FLAGS) $(CPPFLAGS) -DRELNUM=$(RELNUM)
 
 bin_PROGRAMS = wuc wud mklink rip ucdump
 
-wuc_SOURCES = wuc.c
+wuc_SOURCES = wuc.c uctools.h
 
 wud_SOURCES = wud.c
 
