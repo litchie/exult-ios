@@ -92,7 +92,7 @@ CXXFLAGS =  $(INCDIRS) -Wall  $(PEDANTIC) $(DEBUG_FLAGS)
 
 #LIBS +=  -L/usr/X11R6/lib/ -lc -lstdc++ -lgcc -lm -lXi -lXext -lX11 
 
-OFILES = Mixer.o Midi.o Audio.o Flex.o IFF.o SDL_mapping.o
+OFILES = Mixer.o Midi.o Audio.o Flex.o Table.o IFF.o SDL_mapping.o
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../autoconfig.h
 CONFIG_CLEAN_FILES = 
