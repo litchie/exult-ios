@@ -1,3 +1,11 @@
+2002-07-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/egg.cc (Egg_object): Party_near + auto_reset ==
+	avatar_near; avoids too much monster spawning.
+
+	* drag.cc (Dragging_info): Calling unreadied-usecode AFTER the
+	drop should only be done for the SI black sword.
+
 2002-07-09  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ucinternal.cc: allow (but ignore) large changes to loop arrays
 

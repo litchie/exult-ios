@@ -451,7 +451,8 @@ bool Dragging_info::drop
 		gmap->get_chunk(oldcx, oldcy)->activate_eggs(obj,
 			    old_pos.tx, old_pos.ty, old_pos.tz, 
 					old_pos.tx, old_pos.ty);
-	else if (readied_index >= 0)
+					// Special:  BlackSword in SI.
+	else if (readied_index >= 0 && obj->get_shapenum() == 806)
 					// Do 'unreadied' usecode.
 		gump->get_cont_or_actor(x,y)->call_readied_usecode(
 			readied_index, obj, Usecode_machine::unreadied);
