@@ -188,6 +188,8 @@ public:
 					// Find nearby objects.
 	int find_nearby(Vector& vec, int shapenum, int quality, int mask);
 	Game_object *find_closest(int *shapenums, int num_shapes);
+					// Find nearby unblocked tile.
+	Tile_coord find_unblocked_tile(int dist, int height = 1);
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
 	int is_closed_door() const;	// Checking for a closed door.
@@ -649,7 +651,7 @@ public:
 	static int is_blocked(int height, int lift, int startx, int starty,
 					int xtiles, int ytiles, int& new_lift);
 					// Check absolute tile.
-	static int is_blocked(Tile_coord& tile);
+	static int is_blocked(Tile_coord& tile, int height = 1);
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles, int add)
 		{ need_cache()->set_egged(egg, tiles, add); }

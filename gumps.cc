@@ -43,6 +43,9 @@ const int SLIDERRIGHT = 16;
 const int SLIDERLEFT = 17;
 const int DISK = 24;			// Diskette shape #.
 const int HEART = 25;			// Stats button shape #.
+const int STATATTS = 28;		// Little symbols on stats display:
+	const int ASLEEP = 0, POISONED = 1, CHARMED = 2, HUNGRY = 3,
+		  PROTECTED = 4, CURSED = 5, PARALYZED = 6;
 const int MUSICBTN = 29;
 const int SPEECHBTN = 30;
 const int SOUNDBTN = 31;
@@ -1220,6 +1223,25 @@ static void Paint_num
 	}
 
 /*
+ *	Show one of the atts.
+ *
+ *	Output:	Amount to increment x-pos for the next one.
+ */
+
+static int Show_atts
+	(
+	Game_window *gwin,
+	int x, int y,			// Pos. on screen.
+	int framenum
+	)
+	{
+	Shape_frame *s = gwin->get_gump_shape(STATATTS, framenum);
+	gwin->paint_shape(x + s->get_xleft(),
+				 y + s->get_ybelow(), s, 1);
+	return s->get_width() + 2;
+	}
+
+/*
  *	Paint on screen.
  */
 
@@ -1237,7 +1259,7 @@ void Stats_gump_object::paint
 	Actor *act = get_actor();	// Show statistics.
 	std::string nm = act->get_name();
 	gwin->paint_text(2, nm.c_str(), x + namex +
-			(namew - gwin->get_text_width(2, nm.c_str()))/2, y + namey);
+		(namew - gwin->get_text_width(2, nm.c_str()))/2, y + namey);
 	Paint_num(gwin, act->get_property(Actor::strength),
 						x + textx, y + texty[0]);
 	Paint_num(gwin, act->get_property(Actor::dexterity),
@@ -1257,6 +1279,25 @@ void Stats_gump_object::paint
 	Paint_num(gwin, act->get_level(), x + textx, y + texty[8]);
   	Paint_num(gwin, act->get_property(Actor::training),
 						x + textx, y + texty[9]);
+					// Now show atts. at bottom.
+	const int attsy = 130, attsx0 = 29, atsw = 100;
+	int attsx = attsx0;
+	if (act->get_flag(Actor::asleep))
+		attsx += Show_atts(gwin, x + attsx, y + attsy, ASLEEP);
+	if (act->get_flag(Actor::poisoned))
+		attsx += Show_atts(gwin, x + attsx, y + attsy, POISONED);
+	if (act->get_flag(Actor::charmed))
+		attsx += Show_atts(gwin, x + attsx, y + attsy, CHARMED);
+	if (act->get_property((int) Actor::food_level) <= 4)
+		attsx += Show_atts(gwin, x + attsx, y + attsy, HUNGRY);
+	if (act->get_flag(Actor::protection))
+		attsx += Show_atts(gwin, x + attsx, y + attsy, PROTECTED);
+	if (act->get_flag(Actor::cursed))
+		attsx += Show_atts(gwin, x + attsx, y + attsy, CURSED);
+#if 0	/* ++++Need to figure out which flag. */
+	if (act->get_flag(Actor::paralyzed))
+		attsx += Show_atts(gwin, x + attsx, y + attsy, PARALYZED);
+#endif
 	}
 
 /*
