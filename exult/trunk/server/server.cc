@@ -429,6 +429,13 @@ static void Handle_client_message
 		Exult_server::Send_data(client_socket, Exult_server::npc_info,
 							data, ptr - data);
 		break;
+	case Exult_server::edit_selected:
+		{
+		const Game_object_vector& sel = cheat.get_selected();
+		if (!sel.empty())
+			sel.back()->edit();
+		break;
+		}
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:
 		Handle_debug_message(&data[0], datalen);
