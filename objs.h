@@ -186,40 +186,6 @@ public:
 		{ return next; }
 	Game_object *get_prev()
 		{ return prev; }
-#if 0
-					// Insert, and return new first.
-	Game_object *insert_in_chain(Game_object *first)
-		{
-		if (!first)		// First one.
-			next = prev = this;
-		else
-			{
-			next = first;
-			prev = first->prev;
-			first->prev->next = this;
-			first->prev = this;
-			}
-		return this;
-		}
-					// Insert before given obj.
-	Game_object *insert_before(Game_object *first, Game_object *before)
-		{
-		next = before;
-		prev = before->prev;
-		before->prev->next = this;
-		before->prev = this;
-		return before == first ? this : first;
-		}
-					// Append, and return new first.
-	Game_object *append_to_chain(Game_object *first)
-		{ return insert_in_chain(first)->next; }
-	void remove_from_chain()
-		{
-		next->prev = prev;
-		prev->next = next;
-		}
-	void delete_chain();		// Delete chain this is head of.
-#endif
 	static int lt(class Ordering_info& inf1, Game_object *obj2);
 	int lt(Game_object& obj2) const;// Is this less than another in pos.?
 					// Return chunk coords.
@@ -305,6 +271,7 @@ public:
 		{ return 0; }
 	virtual void set_owner(Container_game_object *o)
 		{  }
+	virtual int get_weight();
 	virtual int is_dragable() const;// Can this be dragged?
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
@@ -600,6 +567,7 @@ public:
 	virtual Game_object *find_item(int shapenum, int qual, int framenum);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual int get_weight();
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 					// Count contained objs.

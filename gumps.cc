@@ -1263,6 +1263,14 @@ void Actor_gump_object::paint
 	if (combat_button) paint_button(gwin, combat_button);
 	if (halo_button) paint_button(gwin, halo_button);
 	if (cmode_button) paint_button(gwin, cmode_button);
+					// Show weight.
+	int max_weight = 2*container->get_property(Actor::strength);
+	int weight = container->get_weight()/10;
+	char text[20];
+	sprintf(text, "%d/%d", weight, max_weight);
+	int twidth = gwin->get_text_width(2, text);
+	const int boxw = 102;
+	gwin->paint_text(2, text, x + 28 + (boxw - twidth)/2, y + 120);
 	}
 
 /*
@@ -1307,7 +1315,8 @@ static int Show_atts
 	int framenum
 	)
 	{
-	Shape_frame *s = gwin->get_gump_shape(Game::get_game()->get_shape("gumps/statatts"), framenum);
+	Shape_frame *s = gwin->get_gump_shape(Game::get_game()->get_shape(
+						"gumps/statatts"), framenum);
 	gwin->paint_shape(x + s->get_xleft(),
 				 y + s->get_ybelow(), s, 1);
 	return s->get_width() + 2;
