@@ -73,6 +73,9 @@ libmapedit_la_SOURCES = \
 u7shp: u7shp.c
 	gimptool --build $<
 
+EXTRA_DIST=	\
+	exult_studio.glade
+
 if GIMP_PLUGIN
 install-exec-local:
 	gimptool --install-admin-bin u7shp
