@@ -157,7 +157,9 @@ UcItem		return ITEM;
 			return IDENTIFIER;
 			}
 \"[^"]*\"		{
-			yylval.strval = strdup(yytext);
+					// Remove ending quote.
+			yylval.strval = strdup(yytext + 1);
+			yylval.strval[strlen(yylval.strval) - 1] = 0;
 			return STRING_LITERAL;
 			}
 [0-9]+			{
