@@ -1,4 +1,4 @@
-# Exult makefile for use in Windows with mingw using GCC 3.1
+# Exult makefile for use in Windows with mingw using gcc 3.1
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
@@ -15,12 +15,12 @@ $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/s
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
-SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL -lSDL_mixer
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDLmain -lSDL
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
 ### of a hack.
-#SDL_LIBS=-L$(SRC)/sdl/lib -lSDL -mconsole
+#SDL_LIBS=-L$(SRC)/sdl/lib -lSDL_mixer -lSDL -mconsole
 #SDL_CFLAGS=-I$(SRC)/sdl/include -DSDL_main=main
 
 ### Zip File support. Comment out if ZLib isn't installed
@@ -294,7 +294,6 @@ dist:   $(EXEC)
 	copy data\si\defaultkeys.txt $(U7PATH)\Exult\sidefaultkeys.txt
 	copy SDL\README-SDL.txt $(U7PATH)\Exult
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult
-	copy SDL\lib\SDL_mixer.dll $(U7PATH)\Exult
 	u2d $(U7PATH)/Exult/*.txt
 
 tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucc.exe ucdump.exe wuc.exe wud.exe ucxt.exe head2data.exe head2data.test
