@@ -238,8 +238,8 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb0 UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb1
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb2 Gets some sort of string.
-	USECODE_INTRINSIC_PTR(set_polymorph),			// 0xb3    Set Polymorph
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb4
+	USECODE_INTRINSIC_PTR(set_polymorph),			// 0xb3 Set Polymorph
+	USECODE_INTRINSIC_PTR(revert_schedule),			// 0xb4 Reverts to static schedule
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb5
 	USECODE_INTRINSIC_PTR(set_new_schedules),		// 0xb6 Set New Schedules
 	USECODE_INTRINSIC_PTR(run_schedule),			// 0xb7 Run the scheduled activity

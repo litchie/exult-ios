@@ -1598,7 +1598,7 @@ void CheatScreen::BusinessDisplay (Actor *actor)
 	
 
 	// Avatar can't have schedules
-	if (actor->get_npc_num())
+	if (actor->get_npc_num() > 0)
 	{
 		font->paint_text_fixedwidth(ibuf, "Schedules:", 0, 28, 8);
 
@@ -1643,7 +1643,8 @@ void CheatScreen::BusinessMenu (Actor *actor)
 {
 	// Left Column
 
-	if (actor->get_npc_num())
+	// Might break on monster npcs?
+	if (actor->get_npc_num() > 0)
 	{
 		font->paint_text_fixedwidth(ibuf, "12 AM: [A] Set  [I] Location  [1] Clear", 0, maxy-96, 8);
 		font->paint_text_fixedwidth(ibuf, " 3 AM: [B] Set  [J] Location  [2] Clear", 0, maxy-88, 8);
@@ -1653,10 +1654,11 @@ void CheatScreen::BusinessMenu (Actor *actor)
 		font->paint_text_fixedwidth(ibuf, " 3 PM: [F] Set  [N] Location  [6] Clear", 0, maxy-56, 8);
 		font->paint_text_fixedwidth(ibuf, " 6 PM: [G] Set  [O] Location  [7] Clear", 0, maxy-48, 8);
 		font->paint_text_fixedwidth(ibuf, " 9 PM: [H] Set  [P] Location  [8] Clear", 0, maxy-40, 8);
-	}
 
-	// Exit
-        font->paint_text_fixedwidth(ibuf, "[S]et Current Activity [X]it", 0, maxy-30, 8);
+	       font->paint_text_fixedwidth(ibuf, "[S]et Current Activity [X]it [R]evert", 0, maxy-30, 8);
+	}
+	else
+	        font->paint_text_fixedwidth(ibuf, "[S]et Current Activity [X]it", 0, maxy-30, 8);
 }
 
 void CheatScreen::BusinessActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor, int &time, int &prev)
@@ -1733,6 +1735,11 @@ void CheatScreen::BusinessActivate (char *input, int &command, Cheat_Prompt &mod
 		break;
 
 
+		case 'r':	// Revert
+		Game_window::get_game_window()->revert_schedules(actor);
+		break;
+
+
 		default:
 		break;
 	}
@@ -1742,7 +1749,8 @@ void CheatScreen::BusinessActivate (char *input, int &command, Cheat_Prompt &mod
 // Checks the input
 bool CheatScreen::BusinessCheck (char *input, int &command, Cheat_Prompt &mode, bool &activate, Actor *actor, int &time)
 {
-	if (actor->get_npc_num()) switch(command)
+	// Might break on monster npcs?
+	if (actor->get_npc_num() > 0) switch(command)
 	{
 		case 'a':
 		case 'b':
@@ -1780,6 +1788,11 @@ bool CheatScreen::BusinessCheck (char *input, int &command, Cheat_Prompt &mode, 
 		case '8':
 		time = command -'1';
 		command = '1';
+		activate = true;
+		return true;
+
+		case 'r':
+		command = 'r';
 		activate = true;
 		return true;
 

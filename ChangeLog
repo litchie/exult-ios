@@ -1,3 +1,14 @@
+2001-04-02  Ryan Nunn <triforce@merlin.net.au>
+	* actor*.*: Also fixed rare bug that would occur when saving and a NPC
+	  that had it's activity set to 'move to schedule'. Using S-Vr and Acty
+	  save fields to do this.
+	* gamewin.*, readnpcs.cc, usecode/*: Added SI Intrinsic 0xb4 Revert
+	  Schedules. I also changed paint() to set_all_dirty() is
+	  Game_window::center_view. center_view is also now called twice in
+	  Game_window::read_npcs.
+	* cheat_screen.cc: Added 'revert' to cheat screen schedule changer.
+	  Also prevented setting schedules on monster npc's.
+
 2001-04-01  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Rendering-order changes.

@@ -602,7 +602,7 @@ void Game_window::center_view
 	)
 	{
 	set_scrolls(t);
-	paint();
+	set_all_dirty();
 					// See who's nearby.
 	add_nearby_npcs(scrolltx/c_tiles_per_chunk, scrollty/c_tiles_per_chunk,
 		(scrolltx + get_width()/c_tilesize)/c_tiles_per_chunk,
