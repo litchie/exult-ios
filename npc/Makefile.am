@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS=foreign
 
 OBJECTS = convers.o fsm.o npc.o cond.o vec.o event.o hash.o lists.o
 
-CXXFLAGS += -g
+CXXFLAGS += $(DEBUG_FLAGS)
 
 all-local: test2
 

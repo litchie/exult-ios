@@ -63,6 +63,7 @@ AS = @AS@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
+DEBUG_FLAGS = @DEBUG_FLAGS@
 DLLTOOL = @DLLTOOL@
 EXEEXT = @EXEEXT@
 FREETYPE_DIR = @FREETYPE_DIR@
@@ -91,7 +92,7 @@ AUTOMAKE_OPTIONS = foreign
 
 OBJECTS = convers.o fsm.o npc.o cond.o vec.o event.o hash.o lists.o
 
-CXXFLAGS =  -g
+CXXFLAGS =  $(DEBUG_FLAGS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../autoconfig.h
 CONFIG_CLEAN_FILES = 
