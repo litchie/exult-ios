@@ -53,6 +53,7 @@ class Game_map
 					// Flat chunk areas:
 	static Exult_vector<Chunk_terrain *> *chunk_terrains;
 	static std::ifstream *chunks;	// "u7chunks" file.
+	static bool v2_chunks;		// True if 3 bytes/entry.
 	static bool read_all_terrain;	// True if we've read them all.
 	static bool chunk_terrains_modified;
 	bool map_modified;		// True if any map changes from
@@ -79,6 +80,8 @@ public:
 	static void clear_chunks();
 	void clear();			// Clear out old map.
 	void read_map_data();		// Read in 'ifix', 'ireg', etc.
+	static bool is_v2_chunks()
+		{ return v2_chunks; }
 	int get_num() const
 		{ return num; }
 	inline short get_terrain_num(int cx, int cy) const
@@ -91,6 +94,8 @@ public:
 		{ return map_modified; }
 	static bool was_chunk_terrain_modified()
 		{ return chunk_terrains_modified; }
+	static void set_chunk_terrains_modified()
+		{ chunk_terrains_modified = true; }
 	bool is_chunk_read(int cx, int cy)
 		{ return cx < c_num_chunks && cy < c_num_chunks &&
 			schunk_read[12*(cy/c_chunks_per_schunk) +
