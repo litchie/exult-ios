@@ -87,6 +87,7 @@ public:
 	void open_npc_window(unsigned char *data = 0, int datalen = 0);
 	void close_npc_window();
 	int init_npc_window(unsigned char *data, int datalen);
+	void set_schedule_line(int time, int type, int tx, int ty, int tz = 0);
 	void show_npc_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_npc_shape(int shape, int frame);
 	static void schedule_btn_clicked(GtkWidget *btn, gpointer data);
