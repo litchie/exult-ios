@@ -2,7 +2,7 @@
  *	gamerend.cc - Rendering methods.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2003  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -298,8 +298,8 @@ void Game_window::paint
 
 	effects->paint();		// Draw sprites.
 					// Draw gumps unless in dont_move mode.
-	if (!main_actor_dont_move())
-        	gump_man->paint();
+	if (!main_actor_dont_move() || gump_man->modal_gump_mode())
+		gump_man->paint();
 	effects->paint_text();		// Draw text.
 	if (dragging)
 		dragging->paint();	// Paint what user is dragging.
