@@ -29,7 +29,8 @@ Boston, MA  02111-1307, USA.
 
 #include "imagewin.h"
 #include "ibuf8.h"
-#include "SDL_video.h"
+
+struct SDL_Color;
 
 template <class T> class GammaTable;
 
@@ -38,7 +39,7 @@ template <class T> class GammaTable;
  */
 class Image_window8 : public Image_window
 	{
-	SDL_Color colors[256];		// Palette.
+	SDL_Color *colors;		// Palette.
 	Image_buffer8 *ib8;		// Cast to 8-bit buffer.
 
 	static GammaTable<unsigned char>	GammaRed;
@@ -46,12 +47,9 @@ class Image_window8 : public Image_window
 	static GammaTable<unsigned char>	GammaBlue;
 public:
 	Image_window8(unsigned int w, unsigned int h, int scl = 1, 
-							bool fs = false)
-		: Image_window(new Image_buffer8(w, h, (Image_buffer *) 0), 
-		  scl, fs)
-		{
-		ib8 = (Image_buffer8 *) ibuf;
-		}
+							bool fs = false);
+	~Image_window8();
+
 	Image_buffer8 *get_ib8() const
 		{ return ib8; }
 					// Set palette.
