@@ -44,6 +44,15 @@ const int first_starving = 0x47b;	// Starving.
 const int first_awakened = 0x495;
 const int last_awakened = 0x49a;
 
+/*
+ *	Music:
+ */
+#define BATTLE_OVER	9
+#define ATTACKED1	11
+#define ATTACKED2	12
+#define VICTORY 	15
+#define RUN_AWAY	16
+
 #endif
 
 

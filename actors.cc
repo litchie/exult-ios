@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #include "egg.h"
 #include "bodies.h"
+#include "Audio.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 const char Actor::attack_frames1[4] = {3, 4, 5, 6};
@@ -1543,6 +1544,8 @@ void Npc_actor::paint
 		gwin->get_tqueue()->remove(this);
 		schedule->now_what();	// Ask scheduler what to do.
 		}
+	if (!nearby)			// Make sure we're in 'nearby' list.
+		gwin->add_nearby_npc(this);
 	}
 
 /*
@@ -1975,6 +1978,7 @@ void Monster_actor::die
 	Actor::die();
 	if (creator)
 		creator->monster_died();
+	audio->start_music(VICTORY, 0);
 	}
 
 /*
