@@ -233,7 +233,8 @@ int exult_main(void)
 	}
 	add_system_path("<STATIC>", "static");
 	add_system_path("<GAMEDAT>", "gamedat");
-	add_system_path("<SAVEGAME>", "savegame");
+//	add_system_path("<SAVEGAME>", "savegame");
+	add_system_path("<SAVEGAME>", ".");
 
 	// Convert from old format if needed
 	vector<string> vs=config->listkeys("config/disk/game",false);

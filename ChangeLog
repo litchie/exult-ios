@@ -1,3 +1,10 @@
+2001-02-12  Ryan Nunn <triforce@merlin.net.au>
+	* exult.cc : <SAVEGAME> default set to "."
+	* fnames.h : SAVENAME change to "<SAVEGAME>/game%02d.u7"
+	* game.cc : Removed U7chdir and replaced it with added the gamepath to
+	  <STATIC>, <GAMEDAT>, and <SAVEGAME>
+	* readnpcs.cc : Changed exception handling in read_schedules
+
 2001-02-12  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keys.h, imagewin/imagewin.h, usecode/intrinsics.cc: fixed warnings
 	* cheat_screen.cc: include config.h

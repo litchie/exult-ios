@@ -138,12 +138,16 @@ Game *Game::create_game(Exult_Game mygame)
 	
 	string d = "config/disk/game/"+gametitle+"/path";
 	config->value(d.c_str(),data_directory,".");
-	if(data_directory==".")
-		config->set(d.c_str(),data_directory,true);
-	cout << "chdir to " << data_directory << endl;
-	U7chdir(data_directory.c_str());
+	if(data_directory==".") config->set(d.c_str(),data_directory,true);
+
+	cout << "setting game directories to: " << data_directory << endl;
+	string static_dir = data_directory + "/static";
+	string gamedat_dir = data_directory + "/gamedat";
 	
-	add_system_path("<STATIC>", "static");
+	add_system_path("<STATIC>", static_dir.c_str());
+	add_system_path("<GAMEDAT>", gamedat_dir.c_str());
+	add_system_path("<SAVEGAME>", data_directory.c_str());
+
 	// Discover the game we are running (BG, SI, ...)
 	// We do this, because we don't really trust config :-)
 	char *static_identity = get_game_identity(INITGAME);

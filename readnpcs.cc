@@ -198,9 +198,12 @@ void Game_window::read_schedules
 	{
 		U7open(sfile, GSCHEDULE);
 	}
-	catch(...)
+	catch(exult_exception e)
 	{
-		cerr << "Couldn't Open "<< GSCHEDULE << ", trying " << SCHEDULE_DAT << endl;
+		
+		cerr << "Exult Exception: "<< e.what() << 
+		endl << "Trying " << SCHEDULE_DAT << endl;
+
 		U7open(sfile, SCHEDULE_DAT);
 	}
 
