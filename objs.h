@@ -136,6 +136,10 @@ public:
 		{ return shape_pos & 0xf; }
 	int get_lift()
 		{ return lift; }
+	int get_worldx()		// Get x-coord. within world.
+		{ return cx*chunksize + get_tx()*tilesize; }
+	int get_worldy()		// Get y-coord. within world.
+		{ return cy*chunksize + get_ty()*tilesize; }
 					// Get location in abs. tiles.
 	void get_abs_tile(int& atx, int& aty, int& atz)
 		{
@@ -510,10 +514,6 @@ public:
 	Sprite(int shapenum);
 	int in_world()			// Do we really exist?
 		{ return chunk != 0; }
-	int get_worldx()		// Get x-coord. within world.
-		{ return cx*chunksize + get_tx()*8; }
-	int get_worldy()		// Get y-coord. within world.
-		{ return cy*chunksize + get_ty()*8; }
 					// Set a frame seq. for a direction.
 	void set_frame_sequence(Direction dir, int cnt, unsigned char *seq)
 		{
