@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Shape_info;
 class Shapes_vga_file;
 class Equip_row_widgets;
+class Shape_group_file;
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
@@ -49,10 +50,11 @@ private:
 	GladeXML		*app_xml;
 	char 			*static_path;
 	static ExultStudio	*self;
-	Vga_file		*ifile;
+	Vga_file		*ifile;		// Shown in shape browser.
 	Vga_file		*vgafile;	// Main 'shapes.vga'.
 	Vga_file		*facefile;	// 'faces.vga'.
 	std::ifstream		*chunkfile;	// 'u7chunks'.
+	Shape_group_file	*groups;	// Groups for 'ifile'.
 	char			**names;
 	Object_browser		*browser;
 	unsigned char 		*palbuf;
@@ -118,6 +120,11 @@ public:
 	void set_tile_grid(gboolean grid);
 	void set_edit_lift(int lift);
 	void set_edit_terrain(gboolean terrain);
+					// Groups:
+	void setup_groups(const char *fname);
+	void setup_group_controls();
+	void add_group();
+	void del_group();
 					// Objects:
 	void open_obj_window(unsigned char *data, int datalen);
 	void close_obj_window();
