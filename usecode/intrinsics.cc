@@ -433,8 +433,9 @@ USECODE_INTRINSIC(set_npc_prop)
 		int prop = parms[1].get_int_value();
 		obj->set_property(prop, obj->get_property(prop) +
 						parms[2].get_int_value());
+		return Usecode_value(1);// SI needs return.
 		}
-	return(no_ret);
+	return Usecode_value(0);
 }
 
 USECODE_INTRINSIC(get_avatar_ref)
@@ -1559,6 +1560,8 @@ static int Get_spot(int ucspot)
 		spot = Actor::rfinger; break;
 	case 9:
 		spot = Actor::head; break; 
+	case 11:
+		spot = Actor::belt; break;
 	default:
 		cerr << "Readied: spot #" << ucspot <<
 						" not known yet" << endl;
@@ -1605,6 +1608,7 @@ USECODE_INTRINSIC(get_readied)
 	//   6=one finger, 
 	//   7=other finger,
 	//   9=head
+	//  11=belt
 	//  20=???
 
 	Actor *npc = as_actor(get_item(parms[0]));
@@ -2512,6 +2516,18 @@ USECODE_INTRINSIC(remove_from_area)
 		Game_object *obj = *it;
 		gwin->add_dirty(obj);
 		gwin->delete_object(obj);
+		}
+	return no_ret;
+}
+
+USECODE_INTRINSIC(infravision)
+{
+	// infravision(npc, onoff)
+	Game_object *npc = get_item(parms[0]);
+	if (npc == gwin->get_main_actor())
+		{
+		bool wanton = parms[0].get_int_value() != 0;
+		//+++++++++++Finish.  It's in cheat.h.
 		}
 	return no_ret;
 }
