@@ -12,44 +12,27 @@
 
 class Game_window;
 class Actor;
+class Npc_hunger_timer;
+class Npc_poison_timer;
 
 /*
- *	Base class for keeping track of things like poison, protection, hunger.
+ *	List of references to timers for an NPC.
  */
-class Npc_timer : public Time_sensitive
+class Npc_timer_list
 	{
-protected:
-	Actor *npc;			// Character affected.
-	unsigned long get_minute();	// Get game minutes.
+	Actor *npc;
+	Npc_hunger_timer *hunger;
+	Npc_poison_timer *poison;
 public:
-	Npc_timer(Actor *n);
-	virtual ~Npc_timer();
-	};
-
-/*
- *	Handle starvation.
- */
-class Npc_hunger_timer : public Npc_timer
-	{
-	unsigned long last_time;	// Last game minute when penalized.
-public:
-	Npc_hunger_timer(Actor *n) : Npc_timer(n)
-		{ last_time = get_minute(); }
-					// Handle events:
-	void handle_event(unsigned long curtime, long udata);
-	};
-
-/*
- *	Handle poison.
- */
-class Npc_poison_timer : public Npc_timer
-	{
-	unsigned long end_time;		// Time when it wears off.
-	unsigned long last_time;	// Last game minute when penalized.
-public:
-	Npc_poison_timer(Actor *n);
-					// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	friend class Npc_hunger_timer;
+	friend class Npc_poison_timer;
+	Npc_timer_list(Actor *n) : npc(n), hunger(0), poison(0)
+		{  }
+	~Npc_timer_list();
+	void start_hunger();
+	void end_hunger();
+	void start_poison();
+	void end_poison();
 	};
 
 #endif	/* INCL_NPCTIME */

@@ -38,6 +38,7 @@ class Schedule_change;
 class Monster_info;
 class Weapon_info;
 class Dead_body;
+class Npc_timer_list;
 
 					// The range of actors' rect. gumps:
 const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
@@ -93,6 +94,8 @@ protected:
 					//   actor not moving.
 	unsigned long next_path_time;	// Next time we're allowed to use
 					//   pathfinding to follow leader.
+	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
+	Npc_timer_list *need_timers();
 	void init();			// Clear stuff during construction.
 	void ready_best_weapon();	// Find best weapon and ready it.
 					// Move and change frame.
@@ -292,27 +295,6 @@ public:
 	virtual int move_aside(int dir);// Move out of the way.
 					// Get frame if rotated clockwise.
 	virtual int get_rotated_frame(int quads);
-#if 0	/* ++++++ Trying to init. 1st-day schedules in gameclk.cc. */
-	struct	{
-		int cx;
-		int cy;
-		Chunk_object_list *chunk;
-		int sx;
-		int sy;
-		int frame;
-		int lift;
-		} initial_location;
-	void set_initial_location(int new_cx,int new_cy,Chunk_object_list *new_chunk,int new_sx,int new_sy,int new_frame,int new_lift=-1)
-		{
-		initial_location.cx=new_cx;
-		initial_location.cy=new_cy;
-		initial_location.chunk=new_chunk;
-		initial_location.sx=new_sx;
-		initial_location.sy=new_sy;
-		initial_location.frame=new_frame;
-		initial_location.lift=new_lift;
-		};
-#endif
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
 	virtual Weapon_info *get_weapon(int& points, int& shape);	
