@@ -139,7 +139,8 @@ public:
 		unknown1 = 18,		// ??Used for Usecode-created items.
 		okay_to_land = 21,	// Used for flying-carpet.
 		confused = 25,		// ??Guessing.
-		in_motion = 26		// ??Guessing (cart, boat)??
+		in_motion = 26,		// ??Guessing (cart, boat)??
+		met = 28			// Met flag from Serpent Isle
 		};
 	int get_tx() const		// Get tile (0-15) within chunk.
 		{ return (shape_pos >> 4) & 0xf; }
@@ -263,7 +264,7 @@ public:
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Set new NPC schedule.
 	virtual void set_schedule_type(int new_schedule_type,
 						Schedule *newsched = 0)

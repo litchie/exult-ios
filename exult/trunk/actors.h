@@ -155,7 +155,6 @@ public:
 		tournament = 2,
 		polymorph = 3,
 		petra = 4,
-		met = 5,
 		no_spell_casting = 6,
 		zombie = 7,
 		naked = 8
@@ -239,7 +238,7 @@ public:
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine);
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 	virtual string get_name() const;

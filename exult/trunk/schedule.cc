@@ -210,7 +210,7 @@ void Talk_schedule::now_what
 		npc->set_frame(npc->get_dir_framenum(npc->get_direction(
 				gwin->get_main_actor()), Actor::standing));
 		gwin->add_dirty(npc);
-		npc->activate(gwin->get_usecode());
+		npc->activate(gwin->get_usecode(), 9);
 		gwin->set_mode(Game_window::normal);
 		gwin->paint();
 		phase++;
