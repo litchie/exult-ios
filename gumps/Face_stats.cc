@@ -95,6 +95,8 @@ void Stat_bar::paint
 
 	if (width > 0)
 	{
+		if (width > 32) width = 32;
+
 		int px = x;
 		int py = y;
 
@@ -104,7 +106,7 @@ void Stat_bar::paint
 			py += parent->get_y();
 		}
 
-		if (width > 0) gwin->get_win()->fill8(colour, width, 3, px, py);
+		gwin->get_win()->fill8(colour, width, 3, px, py);
 	}
 }
 

@@ -231,8 +231,8 @@ int Game_window::paint_map
 						stop_chunky, ice_dungeon?73:0);
 
 					// Outline selected objects.
-	const vector<Game_object *>& sel = cheat.get_selected();
-	for (vector<Game_object *>::const_iterator it = sel.begin();
+	const std::vector<Game_object *>& sel = cheat.get_selected();
+	for (std::vector<Game_object *>::const_iterator it = sel.begin();
 						it != sel.end(); ++it)
 		{
 		Game_object *obj = *it;

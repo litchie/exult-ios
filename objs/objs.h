@@ -310,7 +310,7 @@ public:
 		{ return false; }
 					// Add to NPC 'ready' spot.
 	virtual int add_readied(Game_object *obj, int index, int dont_check = 0, int force_pos = 0)
-		{ return add(obj, dont_check); }
+		{ return add(obj, dont_check!=0); }
 	virtual int add_quantity(int delta, int shapenum, int qual = c_any_qual,
 				int framenum = c_any_framenum, int dontcreate = 0)
 		{ return delta; }
