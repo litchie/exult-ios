@@ -677,7 +677,7 @@ int Main_actor::step
 		return (0);
 		}
 					// Check for scrolling.
-	int scrolled = gwin->scroll_if_needed(t);
+	gwin->scroll_if_needed(t);
 	gwin->add_dirty(this);		/// Set to update old location.
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());

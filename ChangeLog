@@ -1,3 +1,10 @@
+2000-06-07  Coder Infidel  <coder_infidel@hotmail.com>
+
+	* actors.cc: remove unused variable
+	* actors.h: updated some comments about NPC frames
+	* Makefile.win32: added schedule.o
+	* objs.h, schedule.h: fixed compile error for Win32
+
 2000-06-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Trying to gain speed by skipping the rendering of objects
