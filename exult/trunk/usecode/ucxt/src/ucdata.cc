@@ -13,19 +13,19 @@
 
 UCData::UCData()  : _search_opcode((unsigned long) -1),
                     _search_intrinsic((unsigned long) -1),
-                    _search_func((unsigned long)-1), _mode(0), 
-                    _filesize(0)
+                    _search_func((unsigned long)-1), _mode(0), _game(GAME_BG),
+                    _filesize(0), _fail(false)
 
 {
-  memset(_opcode_buf, 0, MAX_OPCODE_BUF);
-  memset(_intrinsic_buf, 0, MAX_INTRINSIC_BUF);
+	memset(_opcode_buf, 0, MAX_OPCODE_BUF);
+	memset(_intrinsic_buf, 0, MAX_INTRINSIC_BUF);
 }
 
 UCData::~UCData()
 {
-  fclose(_file);
-  for(unsigned int i=0; i<_funcs.size(); i++)
-    delete _funcs[i];
+	fclose(_file);
+	for(unsigned int i=0; i<_funcs.size(); i++)
+		delete _funcs[i];
 }
 
 void UCData::dump_unknowns()
@@ -72,7 +72,34 @@ void UCData::dump_unknowns()
 
 void UCData::parse_params(const int argc, char **argv)
 {
-  /* Parse command line */
+	/* Parse command line */
+	for(unsigned int i=1; i<argc; i++)
+	{
+		if(strcmp(argv[i], "-l")==0)
+			_mode = MODE_LIST;
+		else if(strcmp(argv[i], "-a")==0)
+			_mode = MODE_DISASSEMBLE_ALL;
+		else if(strcmp(argv[i], "-si")==0)
+			_game = GAME_SI;
+		else if(strcmp(argv[i], "-bg")==0)
+			_game = GAME_BG;
+		else if(strcmp(argv[1], "-f")==0)
+			_mode = MODE_FLAG_DUMP;
+/*		else if( !strcmp(argv[1], "-c") )
+			// Opcode scan mode
+			_mode = MODE_OPCODE_SCAN;*/
+		else
+		{
+			char* stopstr;
+			/* Disassembly mode */
+			_search_func = strtoul(argv[i], &stopstr, 16);
+			if( stopstr - argv[i] < strlen(argv[i]) )
+				/* Invalid number */
+				_search_func = (unsigned long) -1;
+			else
+				_mode = MODE_DISASSEMBLY;
+		}
+	}
 /*  if( argc == 3 )
   {
     if( !strcmp(argv[1], "-o") )
@@ -99,44 +126,21 @@ void UCData::parse_params(const int argc, char **argv)
     }
   }
   else*/
-  if( argc == 2 )
-  {
-    if(!strcmp(argv[1], "-l")) // List mode
-      _mode = MODE_LIST;
-    if(!strcmp(argv[1], "-a")) // List mode
-      _mode = MODE_DISASSEMBLE_ALL;
-    /*else if( !strcmp(argv[1], "-c") )
-      // Opcode scan mode
-      _mode = MODE_OPCODE_SCAN;*/
-    else if(!strcmp(argv[1], "-f"))
-      _mode = MODE_FLAG_DUMP;
-    else
-    {
-      char* stopstr;
-      /* Disassembly mode */
-      _search_func = strtoul(argv[1], &stopstr, 16);
-      if( stopstr - argv[1] < strlen(argv[1]) )
-        /* Invalid number */
-        _search_func = (unsigned long) -1;
-      else
-        _mode = MODE_DISASSEMBLY;
-    }
-  }
 }
 
 void UCData::open_usecode(const string &filename)
 {
-  /* Open a usecode file */
-  _file = fopen(filename.c_str(), "rb");
-  if( _file == NULL )
-  {
-    cout << "Failed to open usecode file: " << filename << endl << endl;
-    exit(-2);
-  }
-  fseek(_file, 0, SEEK_END);
-  _filesize = ftell(_file);
-  fseek(_file, 0, SEEK_SET);
-
+	_fail=false;
+	/* Open a usecode file */
+	_file = fopen(filename.c_str(), "rb");
+	if( _file == NULL )
+	{
+		_fail=true;
+		return;
+	}
+	fseek(_file, 0, SEEK_END);
+	_filesize = ftell(_file);
+	fseek(_file, 0, SEEK_SET);
 }
 
 void UCData::disassamble(const char **func_table)

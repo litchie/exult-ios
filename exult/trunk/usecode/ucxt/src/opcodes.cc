@@ -1,9 +1,10 @@
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+	#include <config.h>
 #endif
 
 #include "opcodes.h"
 #include <cstdlib>
+#include <iomanip>
 
 /* Opcode table - common to BG & SI */
 const opcode_desc opcode_table[] =
@@ -630,3 +631,76 @@ const char* bg_func_table[] =
     Sets flag to false
     */
 };
+
+map<unsigned int, string> bg_uc_intrinsics;
+map<unsigned int, string> si_uc_intrinsics;
+
+void init_usecodetables()
+{
+	#define	USECODE_INTRINSIC_PTR(NAME)	string(__STRING(NAME))
+	string bgut[] = 
+	{
+	#include "bgintrinsics.h"
+	};
+	string siut[] = 
+	{
+	#include "siintrinsics.h"
+	};
+	#undef USECODE_INTRINSIC_PTR
+	
+	for(unsigned int i=0; i<0x100; i++)
+		bg_uc_intrinsics.insert(pair<unsigned int, string>(bg_uc_intrinsics.size(), bgut[i]));
+	
+	for(unsigned int i=0; i<0x100; i++)
+		si_uc_intrinsics.insert(pair<unsigned int, string>(si_uc_intrinsics.size(), siut[i]));
+}
+
+vector<string> str2vec(const string &s)
+{
+	vector<string> vs;
+	unsigned int lasti=0;
+
+	// if it's empty return null
+	if(s.size()==0) return vs;
+
+	bool indquote=false;
+	for(unsigned int i=0; i<s.size(); i++)
+	{
+		if(s[i]=='"')
+			indquote = !indquote;
+		else if(isspace(s[i]) && (!indquote))
+		{
+			if(lasti!=i)
+			{
+				if((s[lasti]=='"') && (s[i-1]=='"'))
+				{
+					if((lasti+1)!=(lasti-1))
+						vs.push_back(s.substr(lasti+1, i-lasti-2));
+				}
+				else
+					vs.push_back(s.substr(lasti, i-lasti));
+			}
+
+			lasti=i+1;
+		}
+		if(i==s.size())
+			if(lasti!=i)
+			{
+				if((s[lasti]=='"') && (s[i]=='"'))
+				{
+					if((lasti+1)!=(lasti-1))
+						vs.push_back(s.substr(lasti+1, i-lasti-2));
+				}
+				else
+					vs.push_back(s.substr(lasti, i-lasti));
+			}
+	}
+
+	#if 0 //test
+	for(unsigned int i=0; i<vs.size(); i++)
+		cout << "\t\"" << vs[i] << "\"" << endl;
+	#endif ///test
+
+	return vs;
+}
+
