@@ -184,6 +184,10 @@ void U7open
 	if (!is_text) mode |= ios::binary;
 #endif
 	string name = get_system_path(fname);
+	
+	// We first "clear" the stream object. This is done to prevent
+	// problems when re-using stream objects
+	in.clear();
 
 	in.open(name.c_str(), mode);		// Try to open original name.
 	if (!in.good())			// No good?  Try upper-case.
@@ -234,6 +238,10 @@ void U7open
 	if (!is_text) mode |= ios::binary;
 #endif
 	string name = get_system_path(fname);
+	
+	// We first "clear" the stream object. This is done to prevent
+	// problems when re-using stream objects
+	out.clear();
 
 	out.open(name.c_str(), mode);		// Try to open original name.
 	if (!out.good())		// No good?  Try upper-case.
