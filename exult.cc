@@ -428,8 +428,12 @@ static int Play()
 	while (quitting_time == 2);
 	delete gwin;
 	delete Mouse::mouse;
+cerr << "About to delete Audio" << endl;
+cerr.flush();
 	delete Audio::get_ptr();	// Follow not this pointer, now, for
 					// that way lies madness.
+cerr << "Deleted Audio" << endl;
+cerr.flush();
 	delete config;
 	return (0);
 }
