@@ -300,9 +300,10 @@ int exult_main(void)
 	// Enable tracing of UC-instructions?
 	string uctrace;
 	config->value("config/debug/trace/usecode", uctrace, "no");
-	if (uctrace == "yes")
+	to_uppercase(uctrace);
+	if (uctrace == "YES")
 		usecode_trace = 1;
-	else if (uctrace == "verbose")
+	else if (uctrace == "VERBOSE")
 		usecode_trace = 2;
 	else
 		usecode_trace = 0;
