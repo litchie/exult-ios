@@ -85,6 +85,21 @@ A flex file is a collection of objects, it is composed of:
 -the objects data (in the same order as declared in the table)
   the format depends on the object type
 
+struct	flex_hdr
+	{
+	char	title[80];
+	uint32	magic1;
+	uint32	count;
+	uint32	magic2;
+	uint32	padding[9];
+	};
+
+struct	flex_reference_entry
+	{
+	uint32	offset;
+	uint32	size;
+	};
+
 U7 games use also IFF files. (Interchange File Format)
 An IFF file is a collection of file associated with their type/name.
 It is composed of:
@@ -101,6 +116,24 @@ It is composed of:
   object  = name, data
   name    = 8 chars (filled with 0s)
   data    = the data of the object
+
+struct	IFFhdr
+	{
+	char	form_magic[4];
+	uint32	size;
+	char	data_type[4];
+	};
+struct	IFFobject
+	{
+	char	type[4];
+	uint32	size;
+	char	even;
+	};
+struct	u7IFFobj
+	{
+	char	name[8];
+	char	data[];	// Variable
+	};
 
 U7 games use also table files.
 A table file is a collection of object of the same type. It is composed of:
@@ -214,6 +247,10 @@ This contains a vocal waveform that share the same format as a .VOC file
 These speeches can be extracted and saved as a .VOC file to be heared
   for example with WinAmp
 The format of such file is beyond the scope of this document
+There's an internet FAQ on this file format. Unusually, the 'number of channels'
+field seems to contain bogus data, and there seems to be some crud at the
+beginning and end of each VOC. Trimming 32 bytes off each end eliminates
+the crackle that it causes,
 
 * Drivers
 This is used to store various drivers in a flex file, for example sound
