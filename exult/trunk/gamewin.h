@@ -339,7 +339,7 @@ public:
 	void paint_shape(int xoff, int yoff, Shape_frame *shape,
 						int translucent = 0)
 		{
-		if (!shape)
+		if (!shape || !shape->data)
 			{
 				std::cout << "NULL SHAPE!!!" << std::endl;
 				return;
