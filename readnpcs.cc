@@ -61,6 +61,8 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 					// Lift is high 4 bits.
 		int lift = usecode >> 12;
 		usecode &= 0xfff;
+		if (i >= cnt1)		// Type2?
+			usecode = -1;	// Let's try this.
 		nfile.seekg(4, ios::cur);// Skip 4 bytes.
 					// Another inventory flag.
 		int iflag2 = Read2(nfile);
@@ -92,7 +94,8 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 #if 0
 cout << i << " Creating " << namebuf << ", shape = " << 
 	actor->get_shapenum() <<
-	", frame = " << actor->get_framenum() << '\n';
+	", frame = " << actor->get_framenum() << ", usecode = " <<
+				usecode << '\n';
 cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 	<< lift << '\n';
 #endif

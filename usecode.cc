@@ -110,7 +110,7 @@ int Usecode_value::find_elem
 	if (type != array_type)
 		return (-1);		// Not an array.
 	int i;
-	for (i = 0; val.value.array[i].type != (int) end_of_array_type; i++)
+	for (i = 0; value.array[i].type != (int) end_of_array_type; i++)
 		if (value.array[i] == val)
 			return (i);
 	return (-1);
@@ -413,9 +413,14 @@ int Usecode_machine::npc_in_party
 	int npc				// NPC #.
 	)
 	{
+cout << "Is npc " << npc << " in party?  ";
 	for (int i = 0; i < PARTY_MAX; i++)
 		if (party[i] == npc)
+			{
+			cout << "Yes\n";
 			return (1);
+			}
+	cout << "No\n";
 	return (0);
 	}
 
@@ -435,6 +440,7 @@ void Usecode_machine::add_to_party
 			{
 			party[i] = npc;
 			party_count++;
+cout << "NPC " << npc << " added to party.\n";
 			break;
 			}
 	}
@@ -473,6 +479,7 @@ Usecode_value Usecode_machine::get_party
 			Usecode_value val(party[i]);
 			arr.put_elem(num_added, val);
 			}
+	cout << "Party:  "; arr.print(cout); cout << '\n';
 	return arr;
 	}
 
@@ -563,7 +570,8 @@ Usecode_value Usecode_machine::call_intrinsic
 		return arr;
 		}
 	case 0x1b:			// Takes -npc.  Returns index?
-		return parms[0];	// Just return -npc for now.
+					// Just return -npc for now.++++++
+		return Usecode_value(-parms[0].get_int_value());
 	case 0x1e:			// NPC joins party.
 		add_to_party(-parms[0].get_int_value());
 		break;
@@ -577,11 +585,15 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x21:			// Set NPC prop (item, prop_id, value).
 		//+++++++++++++
 		break;
+	case 0x22:			// Guessing it's Avatar's itemref.
+		return Usecode_value((long) gwin->get_main_actor());
 	case 0x23:			// Return array with party members.
 		return (get_party());
 	case 0x27:			// Get player name.
-		return Usecode_value(
-		    ((Game_object *) parms[0].get_int_value())->get_name());
+		{
+		Game_object *obj = (Game_object *) parms[0].get_int_value();
+		return Usecode_value(obj ? obj->get_name() : "player");
+		}
 	case 0x2a:			// Get cont. items(item, type, qual,?).
 		//++++++++++++
 		break;
@@ -624,7 +636,8 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value(1);
 	default:
 		{
-		printf("Unhandled intrinsic 0x%03x called with %d parms: ");
+		printf("Unhandled intrinsic 0x%03x called with %d parms: ",
+					intrinsic, num_parms);
 		for (int i = 0; i < num_parms; i++)
 			{
 			parms[i].print(cout);
