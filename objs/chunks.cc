@@ -990,7 +990,8 @@ void Chunk_object_list::gravity
 					// Unblocked below itself?  Let drop.
 			    !is_blocked(1, t.tz - 1, foot.x, foot.y,
 					foot.w, foot.h, new_lift,
-						MOVE_ALL_TERRAIN, 100))
+						MOVE_ALL_TERRAIN, 100) &&
+			    new_lift < t.tz)
 				{	// Save it, and drop it.
 				dropped.push_back(obj);
 				obj->move(t.tx, t.ty, new_lift);
