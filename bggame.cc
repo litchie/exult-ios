@@ -42,6 +42,7 @@ using std::rand;
 using std::strchr;
 using std::strlen;
 using std::toupper;
+using std::snprintf;
 
 void create_static(Image_buffer8* ib, int w, int h, int x, int y,
 		   int black, int gray, int white) {
@@ -71,7 +72,7 @@ bool wait_delay_cycle(int ms, int startcol, int ncol)
 		delay = 10;
 		loops = ms/delay;
 	}
-	for(int i=0; i<loops; i++) {
+	for(i=0; i<loops; i++) {
 		unsigned long ticks1 = SDL_GetTicks();
 	        // this may be a bit risky... How fast can events be generated?
 		while(SDL_PollEvent(&event)) {
@@ -232,6 +233,8 @@ BG_Game::~BG_Game()
 
 void BG_Game::play_intro()
 {
+	int i;	// for MSVC
+
 	Vga_file shapes(ENDSHAPE_FLX);
 	bool skip = false;
 	Palette pal;
@@ -293,7 +296,8 @@ void BG_Game::play_intro()
 	// Butterfly, fast entrance
 	// Aim is to be at topx+130,centery-130/5
 	// But to get there quickly
-	for(int i=0; i<10; i++) {
+
+	for(i=0; i<10; i++) {
 		win->get(backup,topx+(i*3) - s->get_xleft(), 
 			 centery-(i*3)/5 - s->get_yabove());
 		gwin->paint_shape(topx+(i*3), centery-(i*3)/5,
@@ -304,7 +308,7 @@ void BG_Game::play_intro()
 			 centery-(i*3)/5 - s->get_yabove());		
 	}
 	// And wait.....
-	for(int i=10; i<30; i++) {
+	for(i=10; i<30; i++) {
 		win->get(backup,topx+(50) - s->get_xleft(),
 			 centery-(50)/5 - s->get_yabove());
 		gwin->paint_shape(topx+(50), centery-(50)/5,
@@ -315,7 +319,7 @@ void BG_Game::play_intro()
 			 centery-(50)/5 - s->get_yabove());
 	}
 	// Butterfly, final flight
-	for(int i=25; i<135; i++) {
+	for(i=25; i<135; i++) {
 		win->get(backup, topx+(i*2) - s->get_xleft(),
 			 centery-(i*2)/5 - s->get_yabove());
 		gwin->paint_shape(topx+(i*2), centery-(i*2)/5,
@@ -325,7 +329,7 @@ void BG_Game::play_intro()
 		win->put(backup, topx+(i*2) - s->get_xleft(),
 			 centery-(i*2)/5 - s->get_yabove());
 	}
-	for(int i=1; i<13; i++) {
+	for(i=1; i<13; i++) {
 		win->get(backup, 270 - s->get_xleft(),
 			 centery-54 - s->get_yabove());
 		gwin->paint_shape(270,centery-54, shapes.get_shape(0x0E, i%4));
@@ -377,7 +381,7 @@ void BG_Game::play_intro()
 	s = shapes.get_shape(0x21, 0);
 	backup = win->create_buffer(s->get_width(), s->get_height());
 	win->get(backup, centerx-53-s->get_xleft(), centery-68-s->get_yabove());
-	for(int i=8; i>=-8; i--) {
+	for(i=8; i>=-8; i--) {
 		gwin->paint_shape(centerx-53,centery-68,
 				  shapes.get_shape(0x21,1+abs(i)));
 		win->show();
@@ -391,7 +395,7 @@ void BG_Game::play_intro()
 	s = shapes.get_shape(0x22, 0);
 	backup = win->create_buffer(s->get_width(), s->get_height());
 	win->get(backup, centerx- s->get_xleft(), centery-45- s->get_yabove());
-	for(int i=9; i>=-9; i--) {
+	for(i=9; i>=-9; i--) {
 		gwin->paint_shape(centerx,centery-45,
 				  shapes.get_shape(0x22,9-abs(i)));
 		win->show();
@@ -409,7 +413,7 @@ void BG_Game::play_intro()
 	win->get(cbackup, centerx- s->get_xleft(), centery-1- s->get_yabove());
 	gwin->paint_shape(centerx,centery-1,s); // frame 0 is static background
 	win->get(backup, centerx- s->get_xleft(), centery-1- s->get_yabove());
-	for(int i=1; i<16; i++) {
+	for(i=1; i<16; i++) {
 		gwin->paint_shape(centerx,centery-1,shapes.get_shape(0x23,i));
 		win->show();
 		WAITDELAYCYCLE(70);
@@ -461,7 +465,7 @@ void BG_Game::play_intro()
        	gwin->paint_shape(centerx,centery-49,s3); // forehead isn't animated
 
 	// start speech
-	for(int i=0; i<14*20; i++) {
+	for(i=0; i<14*20; i++) {
 		// convoluted mess to get eye movement acceptable
 		gwin->paint_shape(centerx,centery-12, shapes.get_shape(0x20,
 	           1 + 3*((i/12) % 4) + ((i%50>47&&(i/12)%4!=3)?i%50-47:0)));
@@ -517,7 +521,7 @@ void BG_Game::play_intro()
 	win->get(cbackup, centerx- s->get_xleft(), centery-1- s->get_yabove());
 	gwin->paint_shape(centerx,centery-1,s); // frame 0 is background
 	win->get(backup, centerx- s->get_xleft(), centery-1- s->get_yabove());
-	for(int i=15; i>0; i--) {
+	for(i=15; i>0; i--) {
 		gwin->paint_shape(centerx,centery-1,shapes.get_shape(0x23,i));
 		win->show();
 		if(wait_delay(70, 16, 95)) {
@@ -557,7 +561,7 @@ void BG_Game::play_intro()
 	// draw arm hitting pc (sh. 0x0C)
 	s = shapes.get_shape(0x0C, 0);
 	backup = win->create_buffer(s->get_width(), s->get_height());
-	for (int i=0; i<9; i++) {
+	for (i=0; i<9; i++) {
 		win->get(backup, centerx-96-30*abs(i%4-2) - s->get_xleft(),
 			 centery+100 - s->get_yabove());
 		gwin->paint_shape(centerx-96-30*abs(i%4-2), centery+100, s);
@@ -580,7 +584,7 @@ void BG_Game::play_intro()
 	// TODO: misaligned?
 
 	// scroll right (sh. 0x06: map to the right of the monitor)
-	for(int i=0;i<194;i+=4) {
+	for(i=0;i<194;i+=4) {
 		gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x07,0));
 		gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x09,0));
 		gwin->paint_shape(centerx-i,centery, shapes.get_shape(0x08,0));
@@ -599,7 +603,7 @@ void BG_Game::play_intro()
 	}
 
 	// scroll down (sh. 0x0B: mouse + orb of moons, below map)
-	for(int i=0;i<=50;i+=2) {
+	for(i=0;i<=50;i+=2) {
 		gwin->paint_shape(centerx-194, centery-i,
 				  shapes.get_shape(0x07,0));
 		gwin->paint_shape(centerx-194, centery-i,
@@ -652,7 +656,7 @@ void BG_Game::play_intro()
 	WAITDELAY(3000);
 
 	// TODO: misaligned?
-	for(int i=120;i>=-170;i-=6) {
+	for(i=120;i>=-170;i-=6) {
 		gwin->paint_shape(centerx+1,centery+1,
 				  shapes.get_shape(0x02,0));
 		gwin->paint_shape(centerx+1,centery+1,

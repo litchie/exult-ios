@@ -37,8 +37,6 @@ using std::cerr;
 using std::endl;
 using std::size_t;
 using std::FILE;
-using std::fclose;
-using std::fwrite;
 using std::string;
 
 
@@ -48,7 +46,7 @@ using std::string;
 		uf=new CLASS_NAME(s);	\
 	} catch(const wrong_file_type_exception &e)	\
 		{	\
-		;	\
+		e;	\
 		}
 
 U7file  *U7FileManager::get_file_object(const string &s)
@@ -115,10 +113,10 @@ void	U7object::retrieve(const char *fname)
 	}
 	catch( const std::exception & err )
 	{
-		fclose(fp);
+		std::fclose(fp);
 		throw err;
 	}
-	fwrite(n,l,1,fp);	// &&&& Should check return value
-	fclose(fp);
+	std::fwrite(n,l,1,fp);	// &&&& Should check return value
+	std::fclose(fp);
 	delete [] n;
 }

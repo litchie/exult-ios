@@ -86,7 +86,7 @@ private:
 	mid_data sdata;
 
 	// Methods
-	static DWORD thread_start(void *data);
+	static DWORD __stdcall thread_start(void *data);
 	void init_device();
 	DWORD thread_main();
 	void thread_play ();

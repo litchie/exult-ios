@@ -39,6 +39,7 @@ using std::strlen;
 using std::strrchr;
 using std::strcpy;
 using std::memcpy;
+using std::exit;
 
 struct u7frame {
 	bool tile;

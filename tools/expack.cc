@@ -191,11 +191,13 @@ int main(int argc, char **argv)
 				set_mode(mode,EXTRACT);
 				break;
 			case 'c':
+				{
 				for(int i=0;i<argc-3;i++) {
 					file_names.push_back(argv[i+3]);
 				}
 				set_mode(mode,CREATE);
 				break;
+				}
 			case 'a':
 				set_mode(mode,ADD);
 				break;
@@ -261,8 +263,8 @@ int main(int argc, char **argv)
 			U7open(flex, fname);
 			StreamDataSource fs(&flex);
 			
-			vector<int>	file_sizes;
-			for(vector<string>::const_iterator X = file_names.begin(); X != file_names.end(); ++X)
+			std::vector<int>	file_sizes;
+			for(std::vector<string>::const_iterator X = file_names.begin(); X != file_names.end(); ++X)
 				file_sizes.push_back(get_file_size(X->c_str()));
 			
 			// The FLEX title
@@ -280,27 +282,31 @@ int main(int argc, char **argv)
 				fs.write4(0x0);
 			// The reference table
 			int data_start = 128+8*file_names.size();
-			for(vector<int>::const_iterator X = file_sizes.begin(); X != file_sizes.end(); ++X) {
-				if(*X) {
-					fs.write4(data_start);
-					fs.write4(*X);
-					data_start += *X;
-				} else {
-					fs.write4(0x0);
-					fs.write4(0x0);
+				{
+				for(std::vector<int>::const_iterator X = file_sizes.begin(); X != file_sizes.end(); ++X) {
+					if(*X) {
+						fs.write4(data_start);
+						fs.write4(*X);
+						data_start += *X;
+					} else {
+						fs.write4(0x0);
+						fs.write4(0x0);
+					}
 				}
 			}
 			// The files
-			for(int i=0; i<file_names.size(); i++) {
-				if(file_sizes[i]) {
-					ifstream infile;
-					U7open(infile, file_names[i].c_str(), is_text_file(file_names[i].c_str()));
-					StreamDataSource ifs(&infile);
-					char *buf = new char[file_sizes[i]];
-					ifs.read(buf, file_sizes[i]);
-					fs.write(buf, file_sizes[i]);
-					delete [] buf;
-					infile.close();
+				{
+				for(int i=0; i<file_names.size(); i++) {
+					if(file_sizes[i]) {
+						ifstream infile;
+						U7open(infile, file_names[i].c_str(), is_text_file(file_names[i].c_str()));
+						StreamDataSource ifs(&infile);
+						char *buf = new char[file_sizes[i]];
+						ifs.read(buf, file_sizes[i]);
+						fs.write(buf, file_sizes[i]);
+						delete [] buf;
+						infile.close();
+					}
 				}
 			}
 			flex.close();

@@ -341,6 +341,7 @@ void Actor::write
 	ostream& nfile			// Generally 'npc.dat'.
 	)
 	{
+	int i;
 	unsigned char buf4[4];		// Write coords., shape, frame.
 
 	int old_shape = get_shapenum();	// Backup shape because we might change it
@@ -466,14 +467,14 @@ void Actor::write
 	Write2(nfile,0);	// Skip 2
 
 	// Skip 29
-	for (int i = 0; i < 29; i++)
+	for (i = 0; i < 29; i++)
 		nfile.put(0);
 	
 	// Food
 	nfile.put(get_property (Actor::food_level));
 
 	// Skip 7
-	for (int i = 0; i < 7; i++)
+	for (i = 0; i < 7; i++)
 		nfile.put(0);
 
 	char namebuf[17];		// Write 16-byte name.

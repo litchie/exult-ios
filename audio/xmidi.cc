@@ -40,7 +40,6 @@ using std::free;
 using std::malloc;
 using std::memcmp;
 using std::memcpy;
-using std::snprintf;
 using std::string;
 
 #include "gamma.h"
@@ -1284,7 +1283,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 	config->value("config/audio/midi/volume_curve",s,"---");
 	if (s == "---") config->value("config/audio/midi/gamma",s,"1");
 	VolumeCurve.set_gamma (atof(s.c_str()));
-	snprintf (buf, 32, "%f", VolumeCurve.get_gamma ());
+	std::snprintf (buf, 32, "%f", VolumeCurve.get_gamma ());
 	config->set("config/audio/midi/volume_curve",buf,true);
 	
 

@@ -1,3 +1,7 @@
+2001-07-05  Ryan Nunn <triforce@merlin.net.au>
+	* msvcstuff: Files required to compile Exult with MSVC++ 6
+	* Most files: Changes to get Exult to compile with MSVC++ 6
+
 2001-07-05  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* server.cc: removed double config.h, added #ifdef HAVE_CONFIG_H
 	

@@ -1208,7 +1208,7 @@ void Perimeter::get
 		return;
 		}
 					// Bad index if here.
-	return get(i%sz, ptile, atile);
+	get(i%sz, ptile, atile);
 	}
 
 /*
@@ -1341,6 +1341,7 @@ void Lab_schedule::now_what
 		break;
 		}
 	case stand_up:
+		{
 		if (book && npc->distance(book) < 4)
 			{		// Close book.
 			gwin->add_dirty(book);
@@ -1349,7 +1350,9 @@ void Lab_schedule::now_what
 			gwin->add_dirty(book);
 			}
 		state = start;
-	walk_to_table:
+		break;
+		}
+	case walk_to_table:
 		{
 		state = start;		// In case we fail.
 		int ntables = tables.size();
@@ -1562,31 +1565,36 @@ int Waiter_schedule::find_serving_spot
 		}
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord cpos = customer->get_abs_tile_coord();
-					// Go through tables.
-	for (Game_object_vector::const_iterator it = eating_tables.begin();
-					it != eating_tables.end(); ++it)
-		{
-		Game_object *table = *it;
-		Rectangle foot = table->get_footprint();
-		if (foot.distance(cpos.tx, cpos.ty) <= 2)
-			{		// Found it.
-			spot = cpos;	// Start here.
-					// East/West of table?
-			if (cpos.ty >= foot.y && cpos.ty < foot.y + foot.h)
-				spot.tx = cpos.tx <= foot.x ? foot.x
-							: foot.x + foot.w - 1;
-			else		// North/south.
-				spot.ty = cpos.ty <= foot.y ? foot.y
-							: foot.y + foot.h - 1;
-			if (foot.has_point(spot.tx, spot.ty))
-				{	// Passes test.
-				Shape_info& info = gwin->get_info(table);
-				spot.tz = table->get_lift() +
-						info.get_3d_height();
-				return 1;
+	
+	// Blame MSVC
+	{
+		// Go through tables.
+
+		for (Game_object_vector::const_iterator it = eating_tables.begin();
+						it != eating_tables.end(); ++it)
+			{
+			Game_object *table = *it;
+			Rectangle foot = table->get_footprint();
+			if (foot.distance(cpos.tx, cpos.ty) <= 2)
+				{		// Found it.
+				spot = cpos;	// Start here.
+						// East/West of table?
+				if (cpos.ty >= foot.y && cpos.ty < foot.y + foot.h)
+					spot.tx = cpos.tx <= foot.x ? foot.x
+								: foot.x + foot.w - 1;
+				else		// North/south.
+					spot.ty = cpos.ty <= foot.y ? foot.y
+								: foot.y + foot.h - 1;
+				if (foot.has_point(spot.tx, spot.ty))
+					{	// Passes test.
+					Shape_info& info = gwin->get_info(table);
+					spot.tz = table->get_lift() +
+							info.get_3d_height();
+					return 1;
+					}
 				}
 			}
-		}
+	}
 	return 0;			// Failed.
 	}
 

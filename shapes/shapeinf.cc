@@ -55,7 +55,7 @@ class Ammo_table
 #ifndef DONT_HAVE_HASH_MAP
 	hash_map<int, Ammo_info> my_map;
 #else
-	map<int, Ammo_info> my_map;
+	std::map<int, Ammo_info> my_map;
 #endif
 public:
 
@@ -71,7 +71,7 @@ public:
 #ifndef DONT_HAVE_HASH_MAP
 		hash_map<int, Ammo_info>::iterator it = my_map.find(shnum);
 #else
-		map<int, Ammo_info>::iterator it = my_map.find(shnum);
+		std::map<int, Ammo_info>::iterator it = my_map.find(shnum);
 #endif
 		return it == my_map.end() ? 0 : &((*it).second);
 		}

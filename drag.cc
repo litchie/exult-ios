@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#include <iostream.h>	/* Debugging */
+#include <iostream>	/* Debugging */
 #include "gamewin.h"
 #include "Gump_button.h"
 #include "Gump.h"
@@ -37,6 +37,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cheat.h"
 #include "chunks.h"
 #include "Audio.h"
+
+using std::cout;
+using std::endl;
 
 extern Cheat cheat;
 
@@ -308,7 +311,7 @@ void Game_window::drop
 			if (Check_weight(this, to_drop, 
 						on_gump->get_container()) &&
 			    !(dropped = on_gump->add(to_drop, x, y,
-					dragging_paintx, dragging_painty)))
+					dragging_paintx, dragging_painty) != 0))
 				Mouse::mouse->flash_shape(Mouse::wontfit);
 			}
 		else

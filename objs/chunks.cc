@@ -883,7 +883,7 @@ int Chunk_object_list::is_blocked
 	int x, y;			// Go through horiz. part.
 	int new_lift = from.tz;
 	int new_lift0 = -1;		// All lift changes must be same.
-#if DEBUG
+#ifdef DEBUG
 	assert(Tile_coord::gte(horizy1, horizy0));
 	assert(Tile_coord::gte(horizx1, horizx0));
 	assert(Tile_coord::gte(verty1, verty0));

@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "browser.h"
 #include "soundtest.h"
 #include "cheat_screen.h"
-#ifdef XWIN
+#ifdef XWIN  /* Only needed in XWIN. */
 #include "server.h"
 #endif
 
@@ -286,7 +286,7 @@ void Cheat::dec_skip_lift (void) const {
 		gwin->skip_lift--;
 	if (gwin->skip_lift <= 0)
 		gwin->skip_lift = 16;
-#if DEBUG
+#ifdef DEBUG
 	cout << "Skip_lift = " << gwin->skip_lift << endl;
 #endif
 	gwin->paint();
@@ -297,7 +297,7 @@ void Cheat::set_skip_lift (int skip) const {
 
 	if ((skip >= 1 && skip <= 11) || skip == 16)
 		gwin->skip_lift = skip;
-#if DEBUG
+#ifdef DEBUG
 	cout << "Skip_lift = " << gwin->skip_lift << endl;
 #endif
 	gwin->paint();
@@ -407,10 +407,12 @@ void Cheat::delete_object (void) const {
 void Cheat::heal_party (void) const {
 	if (!enabled) return;
 
+	int	i;	// for MSVC
+
 	// resurrect dead party members
 	Dead_body *bodies[9];
 	int count = Dead_body::find_dead_companions(bodies);
-	for (int i = 0; i < count; i++) {
+	for (i = 0; i < count; i++) {
 		int npc_num = bodies[i]->get_live_npc_num();
 		if (npc_num < 0)
 			continue;
@@ -422,7 +424,7 @@ void Cheat::heal_party (void) const {
 	// heal everyone
 	Actor* party[9];
 	count = gwin->get_party(party, 1);
-	for (int i = 0; i < count; i++) {
+	for (i = 0; i < count; i++) {
 		if (!party[i]->is_dead()) {
 			// heal
 			party[i]->set_property(Actor::health, party[i]->get_property(Actor::strength));

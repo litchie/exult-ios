@@ -152,6 +152,7 @@ void Image_window8::rotate_colors
 //a nearest-average-colour 1/3 scaler
 unsigned char* Image_window8::mini_screenshot()
 {
+	int i;
 	if (!surface) return 0;
 
 	unsigned char* pixels = ibuf->get_bits();
@@ -169,7 +170,7 @@ unsigned char* Image_window8::mini_screenshot()
 		{
 			//calculate average colour
 			int r=0, g=0, b=0;
-			for (int i=0; i<3; i++)
+			for (i=0; i<3; i++)
 				for (int j=0; j<3; j++) {
 					r+=colors[0 + 3*pixels[
 				pitch * (j + y + (get_height()-h)/2) +
@@ -185,7 +186,7 @@ unsigned char* Image_window8::mini_screenshot()
 
 			//find nearest-colour in non-rotating palette
 			int bestdist = INT_MAX, bestindex = -1;
-			for (int i=0; i<224; i++) {
+			for (i=0; i<224; i++) {
 				int dist = (colors[0+3*i]-r)*(colors[0+3*i]-r)+
 					(colors[1+3*i]-g)*(colors[1+3*i]-g)+
 					(colors[2+3*i]-b)*(colors[2+3*i]-b);

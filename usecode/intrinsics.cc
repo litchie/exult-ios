@@ -583,7 +583,7 @@ USECODE_INTRINSIC(update_last_created)
 		last_created->remove_this();
 		last_created = 0;
 		}
-#if DEBUG
+#ifdef DEBUG
 	else
 		{
 		cout << " { Intrinsic 0x26:  "; arr.print(cout); cout << endl << "} ";
@@ -686,7 +686,7 @@ USECODE_INTRINSIC(play_music)
 {
 	// Play music(item, songnum).
 	// ??Show notes by item?
-#if DEBUG
+#ifdef DEBUG
 	cout << "Music request in usecode" << endl;
 	cout << "Parameter data follows" << endl;
 	cout << "0: " << ((parms[0].get_int_value()>>8)&0xff) << " " <<  ((parms[0].get_int_value())&0xff) << endl;
@@ -727,7 +727,7 @@ USECODE_INTRINSIC(is_npc)
 					// ++++In future, check for monsters.
 	if(!obj)
 		{
-#if DEBUG
+#ifdef DEBUG
 		cerr << "is_npc: get_item returned a NULL pointer" << endl;
 #endif
 		Usecode_value u((Game_object*) NULL);
@@ -2003,7 +2003,7 @@ USECODE_INTRINSIC(play_sound_effect)
 {
 	if (num_parms < 1) return(no_ret);
 	// Play music(isongnum).
-#if DEBUG
+#ifdef DEBUG
 	cout << "Sound effect " << parms[0].get_int_value() << " request in usecode" << endl;
 #endif
 	Audio::get_ptr()->play_sound_effect (parms[0].get_int_value());
@@ -2033,7 +2033,7 @@ USECODE_INTRINSIC(play_sound_effect2)
 						opos.tx - apos.tx);
 			}
 		}
-#if DEBUG
+#ifdef DEBUG
 	cout << "Sound effect(2) " << parms[0].get_int_value() << 
 		" request in usecode with volume = " << volume 
 		<< ", dir = " << dir << endl;

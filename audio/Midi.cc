@@ -58,7 +58,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	        return;
 
 
-  #if DEBUG
+  #ifdef DEBUG
         cout << "Audio subsystem request: Music track # " << num << endl;
   #endif
 	// -1 and 255 are stop tracks
@@ -86,6 +86,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	}
 	catch( const std::exception & err )
 	{
+		err;	// stops a warning
 		return;
 	}
 
@@ -128,7 +129,7 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	if (!fname || (!midi_device && !init_device()))
 	        return;
 
-  #if DEBUG
+  #ifdef DEBUG
         cout << "Audio subsystem request: Music track # " << num << " in file "<< fname << endl;
   #endif
 
@@ -186,7 +187,7 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 void    MyMidiPlayer::start_track(XMIDI *midfile, bool repeat)
 {
 
-  #if DEBUG
+  #ifdef DEBUG
         cout << "Audio subsystem request: Custom Music track" << endl;
   #endif
 	if (!midi_device && !init_device())
@@ -258,7 +259,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 #if HAVE_LIBKMIDI
   #include "midi_drivers/KMIDI.h"
 #endif
-#ifndef MACOS
+#if !defined(MACOS) && !defined(WIN32)
   #include "midi_drivers/forked_player.h"
 #endif
 #ifdef WIN32
@@ -435,7 +436,7 @@ MyMidiPlayer::~MyMidiPlayer()
 
 void    MyMidiPlayer::start_sound_effect(int num)
 {
-  #if DEBUG
+  #ifdef DEBUG
         cout << "Audio subsystem request: sound effect # " << num << endl;
   #endif
         int real_num = num;
@@ -460,6 +461,7 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	}
 	catch( const std::exception & err )
 	{
+		err;	// stops a warning
 		return;
 	}
 

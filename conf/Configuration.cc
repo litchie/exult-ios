@@ -38,8 +38,7 @@ using std::atoi;
 using std::cerr;
 using std::endl;
 using std::FILE;
-using std::perror;
-using std::size_t;
+//using std::size_t;
 using std::snprintf;
 
 Configuration::Configuration() : xmltree(),filename(""),is_file(false)
@@ -175,12 +174,12 @@ void	Configuration::set(const char *key,int value,bool write_out)
 
 
 
-extern	void	xmlparse(std::string &s,size_t &pos,XMLnode *x);
+extern	void	xmlparse(std::string &s,std::size_t &pos,XMLnode *x);
 
 bool	Configuration::read_config_string(const std::string &s)
 {
 	std::string	sbuf(s);
-	size_t		nn=1;
+	std::size_t	nn=1;
 	xmlparse(sbuf,nn,&xmltree);
 	is_file=false;
 	return true;
@@ -260,7 +259,7 @@ void	Configuration::write_back(void)
 	FILE *fp=U7open(filename.c_str(),"w");
 	if(!fp)
 	{
-		perror("Failed to write configuration file");
+		std::perror("Failed to write configuration file");
 		return;
 	}
 	fwrite(s.c_str(),s.size(),1,fp);

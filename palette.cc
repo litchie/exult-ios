@@ -71,6 +71,7 @@ void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 				}
 			}
 			catch( const std::exception & err ) {
+				err;
 				xindex = -1;
 			}
 			delete [] xbuf;

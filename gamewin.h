@@ -239,7 +239,7 @@ public:
 		skip_above_actor = lift;
 		return true;
 		}
-	inline bool set_in_dungeon(int tf)
+	inline bool set_in_dungeon(bool tf)
 		{ 
 		if (in_dungeon == tf)
 			return false;
