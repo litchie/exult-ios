@@ -272,6 +272,8 @@ public:
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
 		{ return get_abs_tile_coord(); }
+	virtual int move_aside(int dir)	// Move out of the way.
+		{ return 0; }		// For now.
 					// Under attack.
 	virtual void attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);

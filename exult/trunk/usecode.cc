@@ -2069,6 +2069,16 @@ USECODE_INTRINSIC(kill_npc)
 	return (no_ret);
 }
 
+USECODE_INTRINSIC(set_attack_mode)
+{
+	// set_attack_mode(npc, mode).
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc)
+		npc->set_attack_mode((Actor::Attack_mode) 
+					parms[1].need_int_value());
+	return (no_ret);
+}
+
 USECODE_INTRINSIC(set_opponent)
 {
 	// set_opponent(npc, new_opponent).
@@ -2572,7 +2582,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(display_map),	// 0x48
 	USECODE_INTRINSIC_PTR(kill_npc),// 0x49
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4a
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4b     SetNPCAttackMode (ucdump.c)
+	USECODE_INTRINSIC_PTR(set_attack_mode),	// 0x4b
 	USECODE_INTRINSIC_PTR(set_opponent),	// 0x4c
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d     CloneNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e UNUSED

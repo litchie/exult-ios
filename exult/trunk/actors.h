@@ -265,6 +265,7 @@ public:
 		}
 					// Change member shape.
 	virtual void change_member_shape(Game_object *obj, int newshape);
+	virtual int move_aside(int dir);// Move out of the way.
 #if 0	/* ++++++ Trying to init. 1st-day schedules in gameclk.cc. */
 	struct	{
 		int cx;
@@ -486,6 +487,8 @@ public:
 	static int get_num_in_world()
 		{ return in_world_cnt; }
 	static void delete_all();	// Delete all monsters.
+	virtual int move_aside(int dir)	// Move out of the way.
+		{ return 0; }		// Monsters don't move aside.
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
 					// Add an object.

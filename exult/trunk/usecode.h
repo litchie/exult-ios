@@ -246,6 +246,7 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(summon);
 	USECODE_INTRINSIC_DECL(display_map);
 	USECODE_INTRINSIC_DECL(kill_npc);
+	USECODE_INTRINSIC_DECL(set_attack_mode);
 	USECODE_INTRINSIC_DECL(set_opponent);
 	USECODE_INTRINSIC_DECL(resurrect);
 	USECODE_INTRINSIC_DECL(add_spell);
