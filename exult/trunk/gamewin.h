@@ -218,7 +218,12 @@ public:
 	Rectangle get_shape_rect(Game_object *obj)
 		{
 		Shape_frame *s = get_shape(*obj);
-		assert(s!=0);
+		if(!s)
+			{
+			// This is probably fatal.
+			cerr << "DEATH! get_shape() returned a NULL pointer: " << __FILE__ << ":" << __LINE__ << endl;
+			return Rectangle(0,0,0,0);
+			}
 		int cx = obj->get_cx(), cy = obj->get_cy();
 		int lft = 4*obj->get_lift();
 		return Rectangle(
