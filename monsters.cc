@@ -32,7 +32,6 @@
 #include "gamemap.h"
 #include "game.h"
 #include "effects.h"
-#include "combat.h"
 
 using std::rand;
 
@@ -456,10 +455,6 @@ void Monster_actor::die
 	)
 	{
 	Actor::die(attacker);
-					// Party defeated an evil monster?
-	if (attacker && attacker->is_in_party() &&
-	    get_alignment() != neutral && get_alignment() != friendly)
-		Combat_schedule::monster_died();
 					// Got to delete this somewhere, but
 					//   doing it here crashes.
 	}

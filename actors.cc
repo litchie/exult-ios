@@ -3078,7 +3078,7 @@ static int Is_draco
 
 void Actor::die
 	(
-	Actor * /* attacker */
+	Actor *attacker
 	)
 	{
 					// Get location.
@@ -3168,6 +3168,11 @@ void Actor::die
 		gwin->add_dirty(body);
 	add_dirty();			// Want to repaint area.
 	delete_contents();		// remove what's left of inventory
+					// Is this a bad guy?
+					// Party defeated an evil monster?
+	if (attacker && attacker->is_in_party() && !is_in_party() && 
+	    alignment != neutral && alignment != friendly)
+		Combat_schedule::monster_died();
 					// Move party member to 'dead' list.
 	ucmachine->update_party_status(this);
 	}
