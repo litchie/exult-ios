@@ -373,7 +373,8 @@ void Gump_manager::set_kbd_focus
 	else
 		{
 		kbd_focus = 0;
-		SDL_EnableUNICODE(0);
+		if (!modal_gump_count)
+			SDL_EnableUNICODE(0);
 		}
 	}
 
