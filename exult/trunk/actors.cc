@@ -1877,7 +1877,8 @@ void Actor::reduce_health
 			die();
 
 		}
-	else if (val < 0 && !get_flag(Obj_flags::asleep))
+	else if (val < 0 && !get_flag(Obj_flags::asleep) &&
+					!get_flag(Obj_flags::si_tournament))
 		set_flag(Obj_flags::asleep);
 	}
 

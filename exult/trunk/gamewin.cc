@@ -751,6 +751,7 @@ void Game_window::set_camera_actor
 	Tile_coord t = a->get_abs_tile_coord();
 	set_scrolls(t);			// Set scrolling around position,
 					//   and read in map there.
+	set_all_dirty();
 	}
 
 /*
