@@ -268,6 +268,39 @@ void Flex_file_info::set
 	}
 
 /*
+ *	Swap the i'th and i+1'th entries.
+ */
+
+void Flex_file_info::swap
+	(
+	int i
+	)
+	{
+	assert (i >= 0 && i < entries.size() - 1);
+	char *tmpent = entries[i];
+	int tmplen = lengths[i];
+	entries[i] = entries[i + 1];
+	lengths[i] = lengths[i + 1];
+	entries[i + 1] = tmpent;
+	lengths[i + 1] = tmplen;
+	}
+
+/*
+ *	Remove i'th entry.
+ */
+
+void Flex_file_info::remove
+	(
+	int i
+	)
+	{
+	assert (i >= 0 && i < entries.size());
+	delete entries[i];		// Free memory.
+	entries.erase(entries.begin() + i);
+	lengths.erase(lengths.begin() + i);
+	}
+
+/*
  *	Create a browser for our data.
  */
 
@@ -324,7 +357,6 @@ Shape_file_set::~Shape_file_set
 	(
 	)
 	{
-	flush();			// Do any writing needed.
 	for (vector<Shape_file_info *>::iterator it = files.begin(); 
 					it != files.end(); ++it)
 		delete (*it);
@@ -412,8 +444,6 @@ void Shape_file_set::flush
 	(
 	)
 	{
-	//++++++Problem this gets called by dtor even if user did NOT want
-	//+++++to save.  Doesn't seem right...
 	for (vector<Shape_file_info *>::iterator it = files.begin(); 
 					it != files.end(); ++it)
 		(*it)->flush();

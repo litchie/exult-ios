@@ -87,7 +87,12 @@ class Combo_editor : public Shape_draw
 	Combo *combo;			// Combo being edited.
 	int selected;			// Index of selected item in combo.
 	bool setting_controls;		// To avoid callbacks when setting.
+	int file_index;			// Entry # in 'combos.flx', or -1 if
+					//   new.
+					// Set to edit existing combo.
+	void set_combo(Combo *newcombo, int findex);
 public:
+	friend class Combo_chooser;
 	Combo_editor(Shapes_vga_file *svga, unsigned char *palbuf);
 	~Combo_editor();
 	void show(bool tf);		// Show/hide.
@@ -171,7 +176,9 @@ public:
 		{ sel_changed = fun; }
 	int get_selected()		// Get selected combo, or return -1.
 		{ return selected >= 0 ? info[selected].num : -1; }
-	void add(Combo *newcombo);	// Add new combo.
+	int add(Combo *newcombo, int index);	// Add new combo.
+	void remove();			// Remove selected.
+	void edit();			// Edit selected.
 					// Configure when created/resized.
 	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
 							gpointer data);
