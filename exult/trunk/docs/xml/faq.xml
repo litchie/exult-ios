@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="18 October 2003(GMT)">
+<faqs title="Exult" changed="12 December 2003(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="12122003">
+			<header>- 12 December 2003</header>
+			<body>
+				<ul>
+				<li><ref1 target="skarabrae_sacrifice"/> Stuart told me another workaround.</li>
+				<li><ref1 target="howto_get_answers"/> still used the old invalid address for irc and #exultlog 
+					(thanks Lars).</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="18102003">
 			<header>- 18 October 2003</header>
 			<body>
 				<ul>
-				<li><ref1 target="exult_version"/> note Exult version.</li>
+				<li><ref1 target="exult_version"/> note <Exult/> version.</li>
 				</ul>
 			</body>
 		</sub>
@@ -17,51 +27,6 @@
 				<li>Some spell checking done.</li>
 				<li><ref1 target="pentagram"/> changed location of snapshots.</li>
 				<li><ref1 target="latest_version"/> is now 1.1.beta3.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="08082003">
-			<header>- 08 August 2003</header>
-			<body>
-				<ul>
-				<li>Why are there now two different snapshots? was deleted as we
-					no longer have two snapshots.</li>
-				<li><ref1 target="latest_version"/> is now 1.1.beta2.</li>
-				<li><ref1 target="known_issues"/> item descriptions in SI standalone.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="21072003">
-			<header>- 21 July 2003</header>
-			<body>
-				<ul>
-				<li><ref1 target="latest_version"/> is now 1.1.beta1.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="04052003">
-			<header>- 04 May 2003</header>
-			<body>
-				<ul>
-				<li><ref1 target="saves_compatibility"/> don't use 1.1.x saves with 1.0.</li>
-				<li><ref1 target="party_formation"/> Jeff changed the behaviour of it.</li>
-				<li><ref1 target="skarabrae_forsythe"/> added.</li>
-				<li><ref1 target="demon_gem"/> added.</li>
-				<li><ref1 target="pillars_fort"/> added.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="04032003">
-			<header>- 04 March 2003</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_version"/> this faq is for 1.1.x and not for 1.0 anymore.</li>
-				<li><ref1 target="pentagram"/> here is the link to Pentagram and some more info.</li>
-				<li><ref1 target="saves_compatibility"/> Savegames are platform independent.</li>
-				<li><ref1 target="by_design"/> linked to Combat Options in the Menu.</li>
-				<li><ref1 target="known_issues"/> changed a bit, added issue with Nvidia 40.x reference drivers.</li>
-				<li><section_ref target="Gameplay FAQ"/> Not everytime you are stuck in the
-					game is it a bug. Maybe this section can help you.</li>
 				</ul>
 			</body>
 		</sub>
@@ -159,7 +124,7 @@
 				</para>
 				<para>
 					Seriously <Pentagram/> is slowly progressing and you can find snapshots of the code and
-					Win32 binaries for it on the <Pentagram/> 
+					Win32 binaries for it on the <Pentagram/>
 					<extref target="http://pentagram.sourceforge.net/snapshots/">snapshots page</extref>.
 				</para>
 				<para>
@@ -468,7 +433,7 @@
 				</para>
 				<para>
 					Recently Jeff added an optional formation that behaves way more like in the
-					original game. The default is still the "loose" Exult formation.
+					original game. The default is still the "loose" <Exult/> formation.
 					See <extref doc="docs" target="exult_config"/>.
 				</para>
 				<cite name="Jeff">
@@ -483,8 +448,8 @@
 			<header>What should I do when Exult keeps crashing when I try to save?</header>
 			<body>
 				<para>
-					This is <strong>not</strong> normal behavior for Exult. Normally when you restart
-					and "Journey Onward"  Exult will actually restore to the point you saved.
+					This is <strong>not</strong> normal behavior for <Exult/>. Normally when you restart
+					and "Journey Onward" <Exult/> will actually restore to the point you saved.
 				</para>
 				<para>
 					<em>Please do not play further</em> at this point. You should restore to an earlier
@@ -545,10 +510,10 @@
 			<header>Why does my monitor stay black when I try to run <Exult/>?</header>
 			<body>
 				<para>
-					The most common reason for this is that you try to run Exult full screen in a
+					The most common reason for this is that you try to run <Exult/> full screen in a
 					resolution that isn't supported by either your monitor or your graphics card.
 					Edit your exult.cfg (see <extref doc="docs" target="exult_config"/>) to disable
-					full screen. If Exult now runs fine in a window you have to select a different
+					full screen. If <Exult/> now runs fine in a window you have to select a different
 					resolution (also editable in exult.cfg) to run it full screen.<br/>
 					If it still doesn't run contact us.
 				</para>
@@ -754,7 +719,7 @@
 					Please don't bother the team about those as some of these will be fixed in the
 					future, others will only be fixed when someone who thinks it should be done
 					differently sits down and codes it.<br/>
-					The following are such 'features' of Exult:
+					The following are such 'features' of <Exult/>:
 				</para>
 				<ul>
 					<li>Birds and animals open doors and such, like the human and sentient
@@ -816,8 +781,8 @@
 					We added a config file option for Windows "config/audio/force_waveout"
 					that when set to "yes" will force SDL to use waveout rather than attempting to use
 					DirectSound. Using this option may fix problems some people have with sound in
-	  				Exult under Windows. Additionally it seems to fix the popping sound when starting
-	  				Exult in Win9x/ME/2k.<br/>
+	  				<Exult/> under Windows. Additionally it seems to fix the popping sound when starting
+	  				<Exult/> in Win9x/ME/2k.<br/>
 	  				This setting is now the default setting so downloading the latest snapshot is the
 	  				only thing you need to do.
 				</para>
@@ -879,6 +844,10 @@
 					(this happens when you run at a higher resolution than the original one).<br/>
 					Now you can either reload a game from before you reunited them or you have to hackmove
 					Rowenna closer to Trent. After that the two will talk to you about sacrifice.
+				</para>
+				<para>
+					Stuart Hillman told me of another way around this bug: Stand next to Trent when talking to Rowenna
+					and next to her when talking to Trent.
 				</para>
 			</body>
 		</sub>
@@ -995,10 +964,10 @@
 					way from there (this is an online Ultima fan club)
 				</para>
 				<para>
-					Some <Exult/> developers like to hang out on IRC on irc.openprojects.net,
+					Some <Exult/> developers like to hang out on IRC on irc.freenode.net,
 					channel #exult.<br/>
 					The logs of #exult can be found at
-					<extref target="http://www.math.leidenuniv.nl/~wpalenst/exultlog.php3"/>.
+					<extref target="http://www.math.leidenuniv.nl/~wpalenst/exultlog.php"/>.
 				</para>
 			</body>
 		</sub>
