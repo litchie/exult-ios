@@ -59,6 +59,32 @@ Once compile has finished and been installed exit the Command Prompt or MS-DOS P
 Run Exult.exe and enjoy the game :-)
 
 
+
+To build in Windows using MSVC 6.0
+----------------------------------
+
+1) Download SDL and ZLib for Win32/MSVC6. Add their Include and Library
+directories to MSVC's Search Directories (Tools->Options->Directories).
+
+SDL: http://www.libsdl.org/
+ZLib: http://www.gzip.org/zlib/
+
+2) Set The environment variable EXULT_INSTALL_PATH to the directory where you
+want the Exult binaries to be copied to when doing an Install Build. This is
+optional and only required when doing an Install build.
+
+3) Load the Exult Project Workspace "msvcstuff/Exult.dws" in MSVC 6.0
+(File->Load Workspace)
+
+4) If required, enter the correct "Working Directory" in the "Debug tab" of the
+Exult project settings for all Configurations.
+
+5) Select and Build Exult using one of the 4 Configuration (Win32 Debug,
+Win32 Release, Win32 Debug Install or Win32 Release Install).
+
+6) Have Fun!
+
+
 To cross-build from Linux
 ---------------------------
 (Note: this hasn't been tested recently, and may or may not work)
@@ -91,3 +117,4 @@ If you are currently playing a game of Ultima 7, be sure
 to make a backup of the gamedat directory.
  
 4) Have fun :-)
+

@@ -147,7 +147,38 @@ EXTRA_DIST = 	\
 	debian/copyright \
 	debian/dirs \
 	debian/README.debian \
-	debian/rules
+	debian/rules \
+	msvcstuff/All.dsp \
+	msvcstuff/expack.dsp \
+	msvcstuff/Exult.dsp \
+	msvcstuff/Exult.dsw \
+	msvcstuff/Exult.rc \
+	msvcstuff/Exult_bg_flx.dsp \
+	msvcstuff/Exult_flx.dsp \
+	msvcstuff/Exult_si_flx.dsp \
+	msvcstuff/Exult_Tools.dsp \
+	msvcstuff/find_nearby.h \
+	msvcstuff/Flexes.dsp \
+	msvcstuff/mklink.dsp \
+	msvcstuff/msvc_kludges.cc \
+	msvcstuff/msvc_kludges.h \
+	msvcstuff/resource.h \
+	msvcstuff/rip.dsp \
+	msvcstuff/shp2pcx.dsp \
+	msvcstuff/splitshp.dsp \
+	msvcstuff/ucdump.dsp \
+	msvcstuff/unistd.h \
+	msvcstuff/wuc.dsp \
+	msvcstuff/wud.dsp \
+	msvcstuff/Zip.dsp \
+	msvcstuff/exconfig\exconfig.cpp \
+	msvcstuff/exconfig\exconfig.def \
+	msvcstuff/exconfig\exconfig.dsp \
+	msvcstuff/exconfig\exconfig.h \
+	msvcstuff/exconfig\exconfig.rc \
+	msvcstuff/exconfig\resource.h \
+	msvcstuff/exconfig\StdAfx.cpp \
+	msvcstuff/exconfig\StdAfx.h
 
 win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
 	-mkdir win32
