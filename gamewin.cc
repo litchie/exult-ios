@@ -1886,6 +1886,9 @@ void Game_window::start_actor_alt
 	int liftpixels = 4*lift;	// Figure abs. tile.
 	int tx = get_scrolltx() + (ax + liftpixels)/c_tilesize,
 	    ty = get_scrollty() + (ay + liftpixels)/c_tilesize;
+					// Wrap:
+	tx = (tx + c_num_tiles)%c_num_tiles;
+	ty = (ty + c_num_tiles)%c_num_tiles;
 
 	main_actor->walk_to_tile(tx, ty, lift, speed, 0);
 	main_actor->get_followers();
@@ -1911,12 +1914,15 @@ void Game_window::start_actor
 		}
 
 	teleported = 0;
-	int lift = main_actor->get_lift();
-	int liftpixels = 4*lift;	// Figure abs. tile.
-	int tx = get_scrolltx() + (winx + liftpixels)/c_tilesize,
-	    ty = get_scrollty() + (winy + liftpixels)/c_tilesize;
 	if (moving_barge)
 		{			// Want to move center there.
+		int lift = main_actor->get_lift();
+		int liftpixels = 4*lift;	// Figure abs. tile.
+		int tx = get_scrolltx() + (winx + liftpixels)/c_tilesize,
+		    ty = get_scrollty() + (winy + liftpixels)/c_tilesize;
+					// Wrap:
+		tx = (tx + c_num_tiles)%c_num_tiles;
+		ty = (ty + c_num_tiles)%c_num_tiles;
 		Tile_coord atile = moving_barge->get_center(),
 			   btile = moving_barge->get_abs_tile_coord();
 					// Go faster than walking.
