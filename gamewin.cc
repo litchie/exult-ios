@@ -2505,7 +2505,7 @@ void Game_window::theft
 	if (!witness)
 		{
 		if (closest_npc && rand()%2)
-			closest_npc->say(item_names[heard_something]);
+			closest_npc->say(heard_something);
 		return;			// Didn't get caught.
 		}
 	int dir = witness->get_direction(main_actor);

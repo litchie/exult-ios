@@ -202,6 +202,7 @@ public:
 	int is_closed_door() const;	// Checking for a closed door.
 	Game_object *get_outermost();	// Get top 'owner' of this object.
 	void say(const char *text);		// Put text up by item.
+	void say(int msgnum);		// Show given text msg.
 	void say(int from, int to);	// Show random msg. from 'text.flx'.
 					// Render.
 	virtual void paint();
