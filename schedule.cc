@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #include "game.h"
 #include "paths.h"
+#include "usecode.h"
 
 /*
  *	Set up an action to get an actor to a location (via pathfinding), and
@@ -623,7 +624,35 @@ void Sit_schedule::now_what
 	{
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) == Actor::sit_frame)
-		return;			// Already sitting.
+		{			// Already sitting.
+					// Seat on barge?
+		if (!chair || chair->get_shapenum() != 292)
+			return;
+		Game_window *gwin = Game_window::get_game_window();
+		if (gwin->get_moving_barge())
+			return;		// Already moving.
+		if (npc->get_party_id() < 0 && npc != gwin->get_main_actor())
+			return;		// Not a party member.
+		Actor *party[9];	// See if all sitting.
+		int cnt = gwin->get_party(&party[0], 1);
+		for (int i = 0; i < cnt; i++)
+			if ((party[i]->get_framenum()&0xf) != Actor::sit_frame)
+				return;	// Nope.
+		int bargeshape = 961;	// Find barge.
+		Game_object *barge = chair->find_closest(&bargeshape, 1);
+		if (!barge)
+			return;
+		Vector fman;		// See if Ferryman nearby.
+		int usefun = 0x634;	// I hate using constants like this.
+		if (chair->find_nearby(fman, 155, 8, 0) == 1)
+			{
+			usefun = 0x61c;
+			}
+					// Special usecode for barge pieces:
+		gwin->get_usecode()->call_usecode(usefun, barge,
+					Usecode_machine::double_click);
+		return;
+		}
 	static int chairs[] = {873,292};
 	if (!chair)			// Find chair if not given.
 		if (!(chair = npc->find_closest(chairs, 
