@@ -327,6 +327,61 @@ int Combo::find
 	}
 
 /*
+ *	Write out.
+ *
+ *	Output:	Allocated buffer containing result.
+ */
+
+unsigned char *Combo::write
+	(
+	int& datalen			// Actual length of data in buf. is
+					//   returned here.
+	)
+	{
+					// Room for our data + members.
+	unsigned char *buf = new unsigned char[7*4 + members.size()*(5*4)];
+	unsigned char *ptr = buf;
+	Serial_out out(ptr);
+	out << hot_index << starttx << startty << xtiles << ytiles << ztiles;
+	out << (short) members.size();	// # members to follow.
+	for (std::vector<Combo_member *>::const_iterator it = members.begin();
+					it != members.end(); ++it)
+		{
+		Combo_member *m = *it;
+		out << m->tx << m->ty << m->tz << m->shapenum <<
+						m->framenum;
+		}
+	datalen = ptr - buf;		// Return actual length.
+	return buf;
+	}
+
+/*
+ *	Read in.
+ *
+ *	Output:	->past actual data read.
+ */
+
+unsigned char *Combo::read
+	(
+	unsigned char *buf,
+	int bufsize
+	)
+	{
+	unsigned char *ptr = buf;
+	Serial_in in(ptr);
+	in << hot_index << starttx << startty << xtiles << ytiles << ztiles;
+	short cnt;
+	in << cnt;			// # members to follow.
+	for (int i = 0; i < cnt; i++)
+		{
+		short tx, ty, tz, shapenum, framenum;
+		in << tx << ty << tz << shapenum << framenum;
+		add(tx, ty, tz, shapenum, framenum);
+		}
+	return ptr;
+	}
+
+/*
  *	Create combo editor.
  */
 
@@ -885,9 +940,9 @@ Combo_chooser::Combo_chooser
 	for (int i = 0; i < num_combos; i++)
 		{
 		size_t len;
-		char *buf = cfile->retrieve(i, len);
+		unsigned char *buf = (unsigned char *) cfile->retrieve(i, len);
 		Combo *combo = new Combo(svga);
-		// ++++++++++Get data from buf.
+		combo->read(buf, len);
 		combos[i] = combo;	// Store in list.
 		delete buf;
 		}
