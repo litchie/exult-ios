@@ -49,6 +49,8 @@ using std::toupper;
 
 SI_Game::SI_Game()
 	{
+	if (!read_game_xml())
+		{
 		add_shape("gumps/check",2);
 		add_shape("gumps/fileio",3);
 		add_shape("gumps/fntext",4);
@@ -137,22 +139,22 @@ SI_Game::SI_Game()
 		add_resource("palettes/12", PALETTES_FLX, 12);
 		add_resource("palettes/13", MAINSHP_FLX, 1);
 		add_resource("palettes/14", MAINSHP_FLX, 26);
-		
-		fontManager.add_font("MENU_FONT", MAINSHP_FLX, 9, 1);
-		fontManager.add_font("SIINTRO_FONT", "<STATIC>/intro.dat", 14, 0);
-		Map_patch_collection *mp = gwin->get_map_patches();
+		}		
+	fontManager.add_font("MENU_FONT", MAINSHP_FLX, 9, 1);
+	fontManager.add_font("SIINTRO_FONT", "<STATIC>/intro.dat", 14, 0);
+	Map_patch_collection *mp = gwin->get_map_patches();
 					// Egg by "PC pirate" in forest:
-		mp->add(new Map_patch_remove(Object_spec(
+	mp->add(new Map_patch_remove(Object_spec(
 				Tile_coord(647, 1899, 0), 275, 7, 1)));
 					// Carpets above roof in Monitor:
-		mp->add(new Map_patch_remove(Object_spec(
+	mp->add(new Map_patch_remove(Object_spec(
 				Tile_coord(1035, 2572, 8), 483, 1, 0), true));
-		mp->add(new Map_patch_remove(Object_spec(
+	mp->add(new Map_patch_remove(Object_spec(
 				Tile_coord(1034, 2571, 6), 483, 1, 0)));
-		mp->add(new Map_patch_remove(Object_spec(
+	mp->add(new Map_patch_remove(Object_spec(
 				Tile_coord(1034, 2571, 5), 483, 1, 0), true));
 					// Neyobi under a fur:
-		mp->add(new Map_patch_modify(Object_spec(
+	mp->add(new Map_patch_modify(Object_spec(
 				Tile_coord(1012, 873, 0), 867, 13, 0), 
 					Object_spec(
 				Tile_coord(1013, 873, 1), 867, 13, 0)));
