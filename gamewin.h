@@ -180,6 +180,7 @@ public:
 					//   means 'terrain-editing' mode.
 	bool paint_eggs;
 	bool armageddon;		// Spell was cast.
+	int combat_difficulty;		// 0=normal, >0 harder, <0 easier.
 	int debug;
 	Game_window(int width = 0, int height = 0, int scale = 1, 
 							int scaler = 0);

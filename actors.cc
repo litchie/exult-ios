@@ -1975,7 +1975,8 @@ bool Actor::reduce_health
 		return false;
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
-				gwin->get_info(this).has_translucency())
+			gwin->get_info(this).has_translucency() &&
+			party_id < 0)	// Don't include Spark here!!
 		return false;
 	bool defeated = false;
 	int oldhp = properties[static_cast<int>(health)];
@@ -2740,18 +2741,21 @@ bool Actor::figure_hit_points
 	int ammo_shape
 	)
 	{
-
+	bool were_party = party_id != -1 || npc_num == 0;
 	// godmode effects:
-	if (((party_id != -1) || (npc_num == 0)) && cheat.in_god_mode())
+	if (were_party && cheat.in_god_mode())
 		return false;
 	Game_window *gwin = Game_window::get_game_window();
 	Monster_info *minf = gwin->get_info(this).get_monster_info();
 	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
 		return false;
-	bool instant_death = (cheat.in_god_mode() && attacker &&
-		((attacker->party_id != -1) || (attacker->npc_num == 0)));
-
-	int armor = get_armor_points();
+	bool theyre_party = attacker &&
+			(attacker->party_id != -1 || attacker->npc_num == 0);
+	bool instant_death = (cheat.in_god_mode() && theyre_party);
+					// Modify using combat difficulty.
+	int bias = were_party ? gwin->combat_difficulty :
+			(theyre_party ? -gwin->combat_difficulty : 0);
+	int armor = get_armor_points() - bias;
 	int wpoints;
 	Weapon_info *winf;
 	if (weapon_shape > 0)
@@ -2787,7 +2791,7 @@ bool Actor::figure_hit_points
 	if (!wpoints && !powers)
 		return false;		// No harm can be done.
 
-	int prob = 55 +
+	int prob = 55 + 8*bias +
 		2*Get_effective_prop(attacker, combat, 10) +
 		Get_effective_prop(attacker, dexterity, 10) -
 		2*Get_effective_prop(this, combat, 10) -
@@ -2831,6 +2835,7 @@ bool Actor::figure_hit_points
 					// Compute hit points to lose.
 	int attacker_str = Get_effective_prop(attacker, strength, 8);
 	int hp;
+	wpoints += 2*bias;		// Apply user's preference.
 	if (wpoints > 0)		// Some ('curse') do no damage.
 		{
 		if (wpoints == 127)	// Glass sword?
@@ -2949,7 +2954,8 @@ Game_object *Actor::attacked
 		}
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
-				gwin->get_info(this).has_translucency())
+		gwin->get_info(this).has_translucency() && 
+			party_id < 0)	// But don't include Spark!!
 		return this;
 	bool defeated = figure_hit_points(attacker, weapon_shape, ammo_shape);
 	if (attacker && defeated)
