@@ -28,7 +28,7 @@ public:
 	~U7FileManager();
 
 	U7file	*get_file_object(const string &s);
-	static U7FileManager *get_ptr(void) { return self; };
+	static U7FileManager *get_ptr(void);
 	};
 
 class	U7object

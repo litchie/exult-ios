@@ -8,8 +8,6 @@
 
 
 
-U7FileManager	u7fm;
-
 int	main(void)
 {
 	chdir("/home/dancer2/projects/u7");
