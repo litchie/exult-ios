@@ -1,3 +1,7 @@
+2002-01-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* args.cc: fixed bug with missing arguments
+	* exult.cc: more minor commandline syntax changes/fixes
+
 2002-01-06  Ryan Nunn  <triforce@merlin.net.au>
 	* Makefile.win32, Makefile.cygwin : Just added some stuff to allow
 	  people to compile Exult as a console win32 application. Read the
