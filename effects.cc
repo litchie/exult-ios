@@ -28,6 +28,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Zombie.h"
 
 /*
+ *	Some special effects may not need painting.
+ */
+
+void Special_effect::paint
+	(
+	Game_window *
+	)
+	{
+	}
+
+/*
  *	Create an animation from the 'sprites.vga' file.
  */
 
@@ -226,10 +237,14 @@ void Text_effect::paint
 
 Weather_effect::Weather_effect
 	(
-	int duration			// Length in game minutes.
+	int duration,			// Length in game minutes.
+	int delay			// Delay before starting.
 	)
 	{
-	stop_time = SDL_GetTicks() + 1000*((duration*60)/time_factor);
+	Game_window *gwin = Game_window::get_game_window();
+	stop_time = SDL_GetTicks() + delay + 1000*((duration*60)/time_factor);
+					// Start immediately.
+	gwin->get_tqueue()->add(SDL_GetTicks() + delay, this, 0L);
 	}
 
 /*
@@ -296,7 +311,7 @@ void Rain_effect::handle_event
 	if (curtime < stop_time)	// Keep going?
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
-		delete this;
+		gwin->remove_effect(this);
 	}
 
 /*
@@ -321,7 +336,7 @@ cout << "Lightning:  curtime = " << curtime << ", stop_time = " <<
 		gwin->show(1);
 		if (curtime >= stop_time)
 			{		// Time to stop.
-			delete this;
+			gwin->remove_effect(this);
 			return;
 			}
 		if (r%5 < 2)		// Occassionally flash again.
@@ -337,6 +352,64 @@ cout << "Lightning:  curtime = " << curtime << ", stop_time = " <<
 		delay = (1 + r%3)*50;
 		}
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
+ *	Start a storm.
+ */
+
+Storm_effect::Storm_effect
+	(
+	int duration,			// In game minutes.
+	int delay			// In msecs.
+	) : Weather_effect(duration, delay), start(1)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Start raining soon.
+	int rain_delay = 20 + rand()%1000;
+	gwin->add_effect(new Rain_effect(duration - 1, rain_delay));
+					// Then lightning.
+	int lightning_delay = rain_delay + rand()%500;
+	gwin->add_effect(new Lightning_effect(
+			duration - 1, lightning_delay));
+	}
+
+/*
+ *	Start/end of storm.
+ */
+void Storm_effect::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (start)
+		{
+		start = 0;
+					// Darken sky.
+		int brightness = gwin->get_brightness();
+		brightness -= 20 + rand()%30;
+		if (brightness < 20)
+			brightness = 20;
+		gwin->set_palette(-1, brightness);
+					// Nothing more to do but end.
+		gwin->get_tqueue()->add(stop_time, this, udata);
+		}
+	else				// Must be time to stop.
+		gwin->remove_effect(this);
+	}
+
+/*
+ *	Storm ended.
+ */
+
+Storm_effect::~Storm_effect
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->restore_users_brightness();
 	}
 
 /*

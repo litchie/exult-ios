@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "Audio.h"
 #include "usecode.h"
+#include "effects.h"
 
 /*
  *	Create an egg from IREG data.
@@ -283,6 +284,24 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			//+++++if (obj) obj->move(pos);
 					// Can keep doing it.
 			flags &= ~((1 << (int) hatched));
+			break;
+			}
+		case weather:
+			{
+			int len = data1>>8;
+			switch (data1&0xff)
+				{
+			case 0:		// Back to normal.
+				gwin->remove_all_effects(); // For now.
+				break;
+			case 2:		// Storm.
+				gwin->add_effect(new Storm_effect(len));
+				break;
+			case 6:		// Clouds.
+				break;	//+++++++++++++++
+			default:
+				break;
+				}
 			break;
 			}
 		default:
