@@ -81,7 +81,6 @@ Stats_gump::Stats_gump
 
 void Stats_gump::paint
 	(
-	Game_window *gwin
 	)
 {
 					// Area to print name in.
@@ -100,7 +99,7 @@ void Stats_gump::paint
 					// Paint the gump itself.
 	paint_shape(x, y);
 					// Paint red "checkmark".
-	check_button->paint(gwin);
+	check_button->paint();
 					// Show statistics.
 	std::string nm = act->get_name();
 	gwin->paint_text(2, nm.c_str(), x + namex +

@@ -47,7 +47,6 @@ int Gump_widget::on_widget
 
 void Gump_widget::paint
 	(
-	Game_window *gwin
 	)
 {
 	int px = 0;

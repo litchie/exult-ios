@@ -88,7 +88,7 @@ public:
 						bool combine = false);
 	virtual void remove(Game_object *obj);
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Close (and delete).
 	virtual void close(Game_window *gwin);
 					// update the gump, if required

@@ -130,7 +130,7 @@ void Sound_button::activate
 	)
 {
 	pushed = ((File_gump *) parent)->toggle_option(this);
-	parent->paint(gwin);
+	parent->paint();
 }
 
 
@@ -178,7 +178,7 @@ public:
 				refresh();
 			}
 		}
-	void paint(Game_window *gwin);			// Paint.
+	void paint();			// Paint.
 					// Handle mouse click.
 	int mouse_clicked(Game_window *gwin, int mx, int my);
 	void insert(int chr);		// Insert a character.
@@ -189,7 +189,7 @@ public:
 protected:
 	void refresh()
 		{
-			paint(gwin);
+			paint();
 		}
 };
 
@@ -199,7 +199,6 @@ protected:
 
 void Gump_text::paint
 	(
-	Game_window *gwin
 	)
 	{
 	gwin->paint_shape(parent->get_x() + x, parent->get_y() + y, get_shape());
@@ -399,7 +398,7 @@ void File_gump::remove_focus
 	buttons[0] = 0;
 	delete buttons[1];
 	buttons[1] = 0;
-	paint(gwin);
+	paint();
 	}
 
 /*
@@ -514,18 +513,17 @@ int File_gump::toggle_option
 
 void File_gump::paint
 	(
-	Game_window *gwin
 	)
 {
-	Gump::paint(gwin);	// Paint gump & objects.
+	Gump::paint();			// Paint gump & objects.
 					// Paint text objects.
 	size_t i;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++)
 		if (names[i])
-			names[i]->paint(gwin);
+			names[i]->paint();
 	for (i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		if (buttons[i])
-			buttons[i]->paint(gwin);
+			buttons[i]->paint();
 }
 
 /*
@@ -586,7 +584,7 @@ void File_gump::mouse_up
 	if (!pushed_text->mouse_clicked(gwin, mx, my) ||
 	    pushed_text == focus)	// Same field already selected?
 	{
-		pushed_text->paint(gwin);
+		pushed_text->paint();
 		pushed_text = 0;
 		return;
 	}
@@ -612,7 +610,7 @@ void File_gump::mouse_up
 		delete buttons[1];
 		buttons[0] = buttons[1] = 0;
 	}
-	paint(gwin);			// Repaint.
+	paint();			// Repaint.
 	gwin->set_painted();
 }
 
@@ -650,7 +648,7 @@ void File_gump::key_down
 			delete buttons[0];
 			delete buttons[1];
 			buttons[0] = buttons[1] = 0;
-			paint(gwin);
+			paint();
 		}
 		return;
 	case SDLK_DELETE:
@@ -664,7 +662,7 @@ void File_gump::key_down
 			delete buttons[0];
 			delete buttons[1];
 			buttons[0] = buttons[1] = 0;
-			paint(gwin);
+			paint();
 		}
 		return;
 	case SDLK_LEFT:
@@ -692,13 +690,13 @@ void File_gump::key_down
 		{
 			buttons[1] = new Load_save_button(this,
 					btn_cols[1], btn_rows[0], game->get_shape("gumps/savebtn"));
-			buttons[1]->paint(gwin);
+			buttons[1]->paint();
 		}
 		if (buttons[0])		// Can't load now.
 		{
 			delete buttons[0];
 			buttons[0] = 0;
-			paint(gwin);
+			paint();
 		}
 		gwin->set_painted();
 	}

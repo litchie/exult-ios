@@ -469,8 +469,7 @@ void Usecode_internal::show_pending_text
 	if (book)			// Book mode?
 		{
 		int x, y;
-		while (book->show_next_page(gwin) && 
-						Get_click(x, y, Mouse::hand))
+		while (book->show_next_page() && Get_click(x, y, Mouse::hand))
 			;
 		gwin->paint();
 		}
@@ -638,7 +637,7 @@ void Usecode_internal::set_item_shape
 			{
 			Gump *gump = gwin->get_gump_man()->find_gump(item);
 			if (gump)
-				gump->paint(gwin);
+				gump->paint();
 			}
 		return;
 		}
@@ -720,7 +719,7 @@ void Usecode_internal::remove_item
 		{			// Paint gump if open.
 		Gump *gump = gwin->get_gump_man()->find_gump(obj);
 		if (gump)
-			gump->paint(gwin);
+			gump->paint();
 		}
 	else
 		gwin->add_dirty(obj);

@@ -255,7 +255,6 @@ void Actor_gump::set_to_spot
 
 void Actor_gump::paint
 	(
-	Game_window *gwin
 	)
 {
 					// Watch for any newly added objs.
@@ -266,7 +265,7 @@ void Actor_gump::paint
 			set_to_spot(obj, i);
 	}
 
-	Gump::paint(gwin);	// Paint gump & objects.
+	Gump::paint();			// Paint gump & objects.
 
 	// Paint over blue lines for 2 handed
 	Actor *actor = container->as_actor();
@@ -285,11 +284,11 @@ void Actor_gump::paint
 		}
 	}
 					// Paint buttons.
-	if (heart_button) heart_button->paint(gwin);
-	if (disk_button) disk_button->paint(gwin);
-	if (combat_button) combat_button->paint(gwin);
-	if (halo_button) halo_button->paint(gwin);
-	if (cmode_button) cmode_button->paint(gwin);
+	if (heart_button) heart_button->paint();
+	if (disk_button) disk_button->paint();
+	if (combat_button) combat_button->paint();
+	if (halo_button) halo_button->paint();
+	if (cmode_button) cmode_button->paint();
 					// Show weight.
 	int max_weight = container->get_max_weight();
 	int weight = container->get_weight()/10;

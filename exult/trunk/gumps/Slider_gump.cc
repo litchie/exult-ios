@@ -157,7 +157,7 @@ void Slider_gump::move_diamond(int dir)
 		newval = max_val;
 
 	set_val(newval);
-	paint(gwin);
+	paint();
 	gwin->set_painted();
 }
 
@@ -168,17 +168,16 @@ void Slider_gump::move_diamond(int dir)
 
 void Slider_gump::paint
 	(
-	Game_window *gwin
 	)
 {
 	const int textx = 128, texty = 7;
 					// Paint the gump itself.
 	paint_shape(x, y);
 					// Paint red "checkmark".
-	check_button->paint(gwin);
+	check_button->paint();
 					// Paint buttons.
-	left_arrow->paint(gwin);
-	right_arrow->paint(gwin);
+	left_arrow->paint();
+	right_arrow->paint();
 					// Paint slider diamond.
 	diamond.paint_shape(x + diamondx, y + diamondy);
 					// Print value.
@@ -231,7 +230,7 @@ void Slider_gump::mouse_down
 		int newval = min_val + delta;
 		if (newval != val)		// Set value.
 			val = newval;
-		paint(gwin);
+		paint();
 	}
 }
 
@@ -247,7 +246,7 @@ void Slider_gump::mouse_up
 	if (dragging)			// Done dragging?
 	{
 		set_val(val);		// Set diamond in correct pos.
-		paint(gwin);
+		paint();
 		gwin->set_painted();
 		dragging = 0;
 	}
@@ -283,7 +282,7 @@ void Slider_gump::mouse_drag
 	int newval = min_val + delta;
 	if (newval != val)		// Set value.
 		val = newval;
-	paint(gwin);
+	paint();
 }
 
 /*

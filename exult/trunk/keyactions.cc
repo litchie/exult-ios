@@ -128,11 +128,11 @@ void ActionAbout(int *params)
 	scroll->add_text("GNU General Public License\n\n");
 	scroll->add_text("http://exult.sourceforge.net\n");
 	
-	scroll->paint(gwin);
+	scroll->paint();
 	do {
 		int x, y;
 		Get_click(x,y, Mouse::hand);
-	} while (scroll->show_next_page(gwin));
+	} while (scroll->show_next_page());
 	gwin->paint();
 	delete scroll;
 }

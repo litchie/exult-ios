@@ -69,7 +69,7 @@ void SoundTester::test_sound()
 		     
 			scroll = new Scroll_gump();
 			scroll->add_text(" ~");
-			scroll->paint(gwin);
+			scroll->paint();
 
 			line = first_line;
 			font->paint_text_fixedwidth(ibuf, "Sound Tester", left, line, width);

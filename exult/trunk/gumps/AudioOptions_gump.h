@@ -45,7 +45,7 @@ class AudioOptions_gump : public Modal_gump
 	~AudioOptions_gump();
 
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	virtual void close(Game_window *gwin);
 
  					// Handle events:

@@ -41,7 +41,7 @@ public:
 						bool combine = false)
 		{ return 0; }		// Can't drop onto it.
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 
 private:

@@ -126,7 +126,7 @@ void Gamemenu_gump::video_options()
 	if (!vid_opts->want_restore_background()) {
 		// resolution could have changed, so recenter & repaint menu.
 		set_pos();
-		paint(gwin);
+		paint();
 		restore_background = false;
 	}
 	delete vid_opts;
@@ -148,12 +148,12 @@ void Gamemenu_gump::gameplay_options()
 	delete gp_opts;
 }
 
-void Gamemenu_gump::paint(Game_window* gwin)
+void Gamemenu_gump::paint()
 {
-	Gump::paint(gwin);
+	Gump::paint();
 	for (int i=0; i<6; i++)
 		if (buttons[i])
-			buttons[i]->paint(gwin);
+			buttons[i]->paint();
 	gwin->set_painted();
 }
 

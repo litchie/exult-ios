@@ -416,7 +416,7 @@ void Spellbook_gump::change_page
 		page = 0;
 	else if (page > 8)
 		page = 8;
-	paint(gwin);
+	paint();
 }
 
 /*
@@ -431,7 +431,7 @@ void Spellbook_gump::select_spell
 	if (spells[spell])
 	{
 		book->bookmark = spell;
-		paint(gwin);
+		paint();
 	}
 }
 
@@ -478,11 +478,10 @@ Gump_button *Spellbook_gump::on_button
 
 void Spellbook_gump::paint_button
 	(
-	Game_window *gwin,
 	Gump_button *btn
 	)
 {
-	btn->paint(gwin);
+	btn->paint();
 }
 
 /*
@@ -491,22 +490,21 @@ void Spellbook_gump::paint_button
 
 void Spellbook_gump::paint
 	(
-	Game_window *gwin
 	)
 {
 	const int numx = 1, numy = -4;// Where to draw numbers on spells,
 					//   with numx being the right edge.
-	Gump::paint(gwin);	// Paint outside & checkmark.
+	Gump::paint();			// Paint outside & checkmark.
 	if (page > 0)			// Not the first?
-		paint_button(gwin, leftpage);
+		paint_button(leftpage);
 	if (page < 8)			// Not the last?
-		paint_button(gwin, rightpage);
+		paint_button(rightpage);
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Paint spells.
 		if (spells[spindex + s])
 		{
 			Gump_button *spell = spells[spindex + s];
-			paint_button(gwin, spell);
+			paint_button(spell);
 			int num = avail[spindex + s];
 			char text[6];
 			snprintf(text, 6, "%d", num);
@@ -631,11 +629,10 @@ Gump_button *Spellscroll_gump::on_button
 
 void Spellscroll_gump::paint_button
 	(
-	Game_window *gwin,
 	Gump_button *btn
 	)
 	{
-	btn->paint(gwin);
+	btn->paint();
 	}
 
 /*
@@ -644,12 +641,11 @@ void Spellscroll_gump::paint_button
 
 void Spellscroll_gump::paint
 	(
-	Game_window *gwin
 	)
 	{
-	Gump::paint(gwin);		// Paint outside & checkmark.
+	Gump::paint();			// Paint outside & checkmark.
 	if (spell)
-		paint_button(gwin, spell);
+		paint_button(spell);
 	gwin->set_painted();
 	}
 

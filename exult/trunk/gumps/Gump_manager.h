@@ -58,7 +58,7 @@ public:
 	Gump *find_gump(Game_object *obj, int shapenum);	// Find gump for object obj
 
 	void update_gumps(Game_window *gwin);
-	void paint(Game_window *gwin);
+	void paint();
 
 	bool double_clicked(int x, int y, Game_object *&obj);
 

@@ -102,14 +102,13 @@ Yesno_gump::~Yesno_gump
 
 void Yesno_gump::paint
 	(
-	Game_window *gwin
 	)
 {
 					// Paint the gump itself.
 	paint_shape(x, y);
 					// Paint buttons.
-	yes_button->paint(gwin);
-	no_button->paint(gwin);
+	yes_button->paint();
+	no_button->paint();
 					// Paint text.
 	gwin->paint_text_box(2, text.c_str(), x + object_area.x, y + object_area.y,
 			object_area.w, object_area.h, 2);

@@ -65,9 +65,9 @@ public:
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.
-	virtual void paint_button(Game_window *gwin, Gump_button *btn);
+	virtual void paint_button(Gump_button *btn);
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	};
 
 /*
@@ -88,9 +88,9 @@ public:
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.
-	virtual void paint_button(Game_window *gwin, Gump_button *btn);
+	virtual void paint_button(Gump_button *btn);
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	};
 
 #endif
