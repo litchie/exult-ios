@@ -134,9 +134,12 @@ protected:
 	Rectangle object_area;		// Area to paint objects in, rel. to
 					// Where the 'checkmark' goes.
 	Checkmark_gump_button *check_button;
+	void initialize();		// Initialize object_area.
 public:
 	Gump_object(Container_game_object *cont, int initx, int inity, 
 								int shnum);
+					// Create centered.
+	Gump_object(Container_game_object *cont, int shnum);
 	virtual ~Gump_object()
 		{ delete check_button; }
 	int get_x()			// Get coords.
@@ -257,6 +260,22 @@ public:
 	};
 
 /*
+ *	A sign showing runes.
+ */
+class Sign_gump : public Gump_object
+	{
+	char **lines;			// Lines of text.
+	int num_lines;
+public:
+	Sign_gump(int shapenum, int nlines);
+	~Sign_gump();
+					// Set a line of text.
+	void add_text(int line, const char *txt);
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
  *	A modal gump object represents a 'dialog' that grabs the mouse until
  *	the user clicks okay.
  */
@@ -269,6 +288,10 @@ public:
 	Modal_gump_object(Container_game_object *cont, int initx, int inity, 
 								int shnum)
 		: Gump_object(cont, initx, inity, shnum), done(0), pushed(0)
+		{  }
+					// Create centered.
+	Modal_gump_object(Container_game_object *cont, int shnum)
+		: Gump_object(cont, shnum), done(0), pushed(0)
 		{  }
 	int is_done()
 		{ return done; }
@@ -297,8 +320,7 @@ class Slider_gump_object : public Modal_gump_object
 	static short leftbtnx, rightbtnx, btny;
 	static short xmin, xmax;
 public:
-	Slider_gump_object(int initx, int inity, int mival, int mxval,
-					int step, int defval);
+	Slider_gump_object(int mival, int mxval, int step, int defval);
 	~Slider_gump_object()
 		{
 		delete left_arrow;
