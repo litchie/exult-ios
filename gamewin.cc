@@ -2614,6 +2614,10 @@ void Game_window::double_clicked
 			combat = 0;
 			toggle_combat();
 			main_actor->set_opponent(obj);
+					// Being a bully?
+			if (obj->get_npc_num() > 0 && obj->get_alignment() ==
+							Actor::friendly)
+				attack_avatar(1 + rand()%3);
 			return;
 			}
 		remove_text_effects();	// Remove text msgs. from screen.
@@ -2929,17 +2933,8 @@ void Game_window::attack_avatar
 			main_actor->get_cx() + 8, 
 			main_actor->get_cy() + 8, 0, 0, 0);
 		add_nearby_npc(guard);
-		Tile_coord dest = main_actor->get_abs_tile_coord();
 		guard->set_opponent(main_actor);
-		Actor_action *act = new Path_walking_actor_action();
-		if (!act->walk_to_tile(Tile_coord(-1, -1, 0), dest,
-						guard->get_type_flags()))
-			delete act;
-		else			
-			{
-			guard->set_action(act);
-			guard->start(150);	// Walk fairly fast.
-			}
+		guard->approach_another(main_actor);
 		}
 
 	Actor_vector npcs;		// See if someone is nearby.

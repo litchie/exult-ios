@@ -1,3 +1,7 @@
+2001-05-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* NPC's (along with guards) attack you if you attack them.
+
 2001-05-15  Ryan Nunn <triforce@merlin.net.au>
 	* audio/xmidi.cc: Amazing optimization. 2 Lines of code added,
 	  potential 100x speed increase when reading .xmi files.

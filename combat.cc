@@ -46,6 +46,25 @@ using std::rand;
 unsigned long Combat_schedule::battle_time = 0;
 
 /*
+ *	Start music if battle has recently started.
+ */
+
+void Combat_schedule::start_battle
+	(
+	)
+	{
+	unsigned long curtime = SDL_GetTicks();
+					// .5 minute since last start?
+	if (!started_battle && curtime - battle_time >= 30000)
+		{
+		Audio::get_ptr()->start_music_combat(rand()%2 ? 
+					CSAttacked1 : CSAttacked2, 0);
+		battle_time = curtime;
+		}
+	started_battle = 1;
+	}
+
+/*
  *	Find nearby opponents in the 9 surrounding chunks.
  */
 
@@ -178,15 +197,7 @@ Actor *Combat_schedule::find_foe
 	if (new_opponent)
 		{
 		opponents.remove(new_opponent);
-		unsigned long curtime = SDL_GetTicks();
-					// .5 minute since last start?
-		if (!started_battle && curtime - battle_time >= 30000)
-			{
-			Audio::get_ptr()->start_music_combat(rand()%2 ? 
-					CSAttacked1 : CSAttacked2, 0);
-			battle_time = curtime;
-			}
-		started_battle = 1;
+		start_battle();
 		}
 	return new_opponent;
 	}
@@ -240,6 +251,12 @@ void Combat_schedule::approach_foe
 		pos.tx += dirx*(8 + rx%8);
 		pos.ty += diry*(8 + ry%8);
 		npc->walk_to_tile(pos, 100, 0);
+		if (!yelled && gwin->add_dirty(npc))
+			{
+			yelled++;
+			if (!npc->is_monster())
+				npc->say(first_flee, last_flee);
+			}
 		return;
 		}
 	PathFinder *path = new Astar();
@@ -377,8 +394,8 @@ void Combat_schedule::start_strike
 	npc->start();			// Get back into time queue.
 					// Have them attack back.
 	Actor *opp = dynamic_cast<Actor *> (opponent);
-					// But only if it's a monster.
-	if (opp && !opp->get_opponent() && opp->is_monster())
+					// But only if it's a monster.????Why??
+	if (opp && !opp->get_opponent() /* +++Why?? && opp->is_monster() */)
 		opp->set_opponent(npc);
 	}
 
@@ -624,8 +641,16 @@ void Combat_schedule::now_what
 			npc->set_dormant();
 			}
 		else if (npc->get_alignment() == Npc_actor::friendly &&
-						prev_schedule != combat)
-			npc->set_schedule_type(prev_schedule);
+				prev_schedule != combat)
+					// Return to normal schedule.
+			{
+			Npc_actor *nact = dynamic_cast<Npc_actor*>(npc);
+			if (nact)
+				nact->update_schedule(gwin, 
+						gwin->get_hour()/3, 7);
+			else
+				npc->set_schedule_type(prev_schedule);
+			}
 		}
 	}
 
@@ -673,6 +698,7 @@ void Combat_schedule::set_opponent
 	{
 	opponent = obj;
 	state = approach;
+	start_battle();			// Play music.
 	}
 
 /*
