@@ -621,6 +621,9 @@ void Actor::follow
 	int goaldist = goal.distance(pos);
 	if (goaldist < dist)		// Already close enough?
 		return;
+					// Is leader following a path?
+	bool leaderpath = leader->action && 
+				leader->action->following_smart_path();
 					// Get leader's distance from goal.
 	int leaderdist = goal.distance(leaderpos);
 					// Get his speed.
@@ -633,7 +636,8 @@ void Actor::follow
 	else if (goaldist - leaderdist >= 5)
 		speed -= 20;		// Speed up if too far.
 	if (goaldist > 32 &&		// Getting kind of far away?
-	    get_party_id() >= 0)	// And a member of the party.
+	    get_party_id() >= 0 &&	// And a member of the party.
+	    !leaderpath)		// But leader is not following path.
 		{			// Teleport.
 		int pixels = goaldist*c_tilesize;
 		Game_window *gwin = Game_window::get_game_window();
@@ -656,7 +660,7 @@ void Actor::follow
 	int dist2lead;
 	if ((((dist2lead = pos.distance(leaderpos)) >= 5 &&
 						curtime >= next_path_time) ||
-	     (dist2lead >= 4 && !leader->is_moving())) && 
+	     (dist2lead >= 4 && !leader->is_moving()) || leaderpath) && 
 	      get_party_id() >= 0 && 
 	      (!is_moving() || !action || !action->following_smart_path()))
 		{			// A little stuck?
@@ -2545,7 +2549,7 @@ void Npc_actor::update_schedule
 	int backwards			// Extra periods to look backwards.
 	)
 	{
-	if (!gwin->get_objects(get_cx(), get_cy()))
+	if (!gwin->get_objects_safely(get_cx(), get_cy()))
 		return;			// Not on the map.
 	int i = find_schedule_change(hour3);
 	if (i < 0)

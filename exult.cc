@@ -616,7 +616,7 @@ static void Handle_event
 	)
 	{
 					// For detecting double-clicks.
-	static uint32 last_b1_click = 0;
+	static uint32 last_b1_click = 0, last_b3_click = 0;
 	//cout << "Event " << (int) event.type << " received"<<endl;
 	switch (event.type)
 		{
@@ -649,7 +649,15 @@ static void Handle_event
 			    gwin->get_mode() != Game_window::gump)
 				break;
 #endif
-			gwin->stop_actor();
+			uint32 curtime = SDL_GetTicks();
+					// Last click within .5 secs?
+			if (curtime - last_b3_click < 500)
+				gwin->start_actor_along_path(
+					event.button.x >> scale, 
+					event.button.y >> scale, avatar_speed);
+			else
+				gwin->stop_actor();
+			last_b3_click = curtime;
 			}
 		else if (event.button.button == 1)
 			{
