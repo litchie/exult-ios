@@ -30,9 +30,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <stdio.h>
 #include <string>
 #include <vector>
-#include <iosfwd>
 #include "ucloc.h"
 #include "ucfun.h"
+
+#ifndef ALPHA_LINUX_CXX
+#  include <iosfwd>
+#endif
 
 extern std::vector<Uc_function *> functions;	// THIS is what the parser produces.
 
