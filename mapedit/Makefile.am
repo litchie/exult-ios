@@ -75,6 +75,8 @@ u7shp: u7shp.c
 if GIMP_PLUGIN
 install-exec-local:
 	gimptool --install-admin-bin u7shp
+else
+install-exec-local:
 endif
 
 CLEANFILES = *~ u7shp
