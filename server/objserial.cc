@@ -161,6 +161,7 @@ void Npc_actor_io
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
 	int& shape, int& frame,
 	std::string& name,
+	short& npc_num,
 	short& ident,
 	int& usecode,
 	short *properties,		// Must have room for 12.
@@ -175,7 +176,7 @@ void Npc_actor_io
 	{
 	Serial io(buf);
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
-	io << name << ident << usecode;
+	io << name << npc_num << ident << usecode;
 	for (int i = 0; i < 12; i++)
 		io << properties[i];
 	io << attack_mode << alignment << oflags << siflags << type_flags;
@@ -261,6 +262,7 @@ int Npc_actor_out
 	int tx, int ty, int tz,		// Absolute tile coords.
 	int shape, int frame,
 	std::string name,
+	short npc_num,
 	short ident,
 	int usecode,
 	short properties[12],
@@ -276,7 +278,8 @@ int Npc_actor_out
 	unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
 	Npc_actor_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame,
-		name, ident, usecode, properties, attack_mode, alignment,
+		name, npc_num, ident, usecode, 
+		properties, attack_mode, alignment,
 		oflags, siflags, type_flags,
 		num_schedules, schedules);
 	return Exult_server::Send_data(fd, Exult_server::npc, buf, ptr - buf);
@@ -296,6 +299,7 @@ int Npc_actor_in
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
 	int& shape, int& frame,
 	std::string& name,
+	short& npc_num,
 	short& ident,
 	int& usecode,
 	short properties[12],
@@ -310,7 +314,8 @@ int Npc_actor_in
 	{
 	unsigned char *ptr = data;
 	Npc_actor_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame,
-		name, ident, usecode, properties, attack_mode, alignment,
+		name, npc_num, ident, usecode, 
+		properties, attack_mode, alignment,
 		oflags, siflags, type_flags,
 		num_schedules, schedules);
 	return (ptr - data) == datalen;

@@ -52,7 +52,8 @@ enum Msg_type
 	egg = 1,			// Egg_object.
 	npc = 2,			// Editing an NPC.
 	user_responded = 3,		// User performed requested action.
-	cancel = 4			// Cancel operation.
+	cancel = 4,			// Cancel operation.
+	num_npcs = 5			// Get/return # of NPC's.
 	};
 
 // I/O routines:

@@ -1467,7 +1467,7 @@ void Actor::activate
 			}
 		if (Npc_actor_out(client_socket, addr, t.tx, t.ty, t.tz,
 			get_shapenum(), get_framenum(), 
-			name, ident, usecode, properties, attack_mode,
+			name, npc_num, ident, usecode, properties, attack_mode,
 			alignment, flags, siflags, type_flags,
 				num_schedules, schedules) != -1)
 			{
@@ -1524,7 +1524,7 @@ void Actor::update_from_studio
 	int tx, ty, tz;
 	int shape, frame;
 	std::string name;
-	short ident;
+	short npc_num, ident;
 	int usecode;
 	short properties[12];
 	short attack_mode, alignment;
@@ -1534,7 +1534,8 @@ void Actor::update_from_studio
 	short num_schedules;
 	Serial_schedule schedules[8];
 	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame,
-		name, ident, usecode, properties, attack_mode, alignment,
+		name, npc_num, ident, usecode, 
+			properties, attack_mode, alignment,
 			oflags, siflags, type_flags, num_schedules, schedules))
 		{
 		cout << "Error decoding npc" << endl;
@@ -1560,7 +1561,6 @@ void Actor::update_from_studio
 			}
 					// Create.  Gets initialized below.
 		npc = new Npc_actor(name, shape, frame, usecode);
-		npc->npc_num = -1;	// For now++++++++++
 		npc->set_invalid();	// Set to invalid position.
 		int lift;		// Try to drop at increasing hts.
 		for (lift = 0; lift < 12; lift++)
@@ -1573,6 +1573,9 @@ void Actor::update_from_studio
 			delete npc;
 			return;
 			}
+		npc->npc_num = gwin->add_npc(npc);
+		if (npc->npc_num != npc_num)
+			cerr << "New NPC was assigned a different #" << endl;
 		if (client_socket >= 0)
 			Send_data(client_socket, Exult_server::user_responded);
 		}

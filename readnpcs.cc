@@ -60,9 +60,8 @@ void Game_window::read_npcs
 	U7open(nfile, NPC_DAT);
 	num_npcs1 = Read2(nfile);	// Get counts.
 	int cnt2 = Read2(nfile);
-	num_npcs = num_npcs1 + cnt2;
-	npcs = new Actor *[num_npcs];
-	memset(npcs, 0, num_npcs*sizeof(npcs[0]));
+	int num_npcs = num_npcs1 + cnt2;
+	npcs.resize(num_npcs);
 					// Create main actor.
 	camera_actor = npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
 	int i;
@@ -163,6 +162,7 @@ void Game_window::write_npcs
 	(
 	)
 	{
+	int num_npcs = npcs.size();
 	ofstream nfile;
 	U7open(nfile, NPC_DAT);
 	Write2(nfile, num_npcs1);	// Start with counts.
@@ -265,7 +265,7 @@ void Game_window::write_schedules ()
 	int num;
 
 	// So do I allow for all NPCs (type1 and type2) - Yes i will
-	num = num_npcs;
+	num = npcs.size();
 
 	U7open(sfile, GSCHEDULE);
 
