@@ -404,11 +404,13 @@ void Actor::read
 	if (olist && !is_dead() &&	// Valid & alive?  Put into chunk list.
 	    !unused)
 		{
-		// +++++TODO:  Got to move to proper map.
+#if 0	/* Old way -- Didn't get correct map. */
 		move((scx + cx)*c_tiles_per_chunk + tilex,
 		     (scy + cy)*c_tiles_per_chunk + tiley, get_lift());
-//		olist->add(this);
-//		switched_chunks(0, olist);	// Put in chunk's NPC list.
+#endif
+		olist->add(this);
+		if (this == gwin->get_main_actor())
+			gwin->set_map(map_num);
 		}
 	// Only do ready best weapon if we are in BG, this is the first time
 	// and we are the Avatar or Iolo
