@@ -1,3 +1,7 @@
+2000-09-17  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode.cc: Can forge Black Sword (but Love test broken).
+
 2000-09-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Improved conversation rendering.

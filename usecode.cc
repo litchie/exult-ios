@@ -133,6 +133,8 @@ public:
 		if (!no_halt)
 			i = cnt;
 		}
+	int is_activated()		// Started already?
+		{ return i > 0; }
 	void activate_egg(Usecode_machine *usecode, Game_object *e, int type)
 		{
 		if (e && e->is_egg() && (type == -1 || 
@@ -262,7 +264,9 @@ void Scheduled_usecode::handle_event
 			{		//   delay before next instruction.
 			Usecode_value& delayval = arrval.get_elem(++i);
 					// ?? Guessing at time.
-			delay = 200*(delayval.get_int_value());
+//			delay = 200*(delayval.get_int_value()); 9/17/00:
+// NOTE: Changing this can have a major impact!
+			delay = 400*(delayval.get_int_value());
 			break;		
 			}
 #if 0
@@ -1436,6 +1440,14 @@ USECODE_INTRINSIC(get_random)
 USECODE_INTRINSIC(execute_usecode_array)
 {
 	cout << "Executing intrinsic 1" << endl;
+					// 9/17/00:  New guess to make it
+					//   possible to heat Black sword.
+	Game_object *item = get_item(parms[0]);
+	Scheduled_usecode *uc;
+	if (item && (uc = Scheduled_usecode::find(item)) != 0 &&
+	    uc->is_activated())
+		uc->halt();		// Stop current one.
+
 	gwin->get_tqueue()->add(SDL_GetTicks() + 1,
 		new Scheduled_usecode(this, parms[0], parms[1]), (long) this);
 	return(no_ret);
@@ -2733,15 +2745,16 @@ USECODE_INTRINSIC(path_run_usecode)
 	int sz = loc.get_array_size();
 	if (sz == 3)			// Looks like tile coords.
 		{
-		int sx, sy, sz;		// Get source, dest.
-		gwin->get_main_actor()->get_abs_tile(sx, sy, sz);
+					// Get source, dest.
+		Tile_coord src = gwin->get_main_actor()->get_abs_tile_coord();
 		int dx = loc.get_elem(0).get_int_value();
 		int dy = loc.get_elem(1).get_int_value();
 		int dz = loc.get_elem(2).get_int_value();
 		Tile_coord dest(dx, dy, dz);
 		cout << endl << "Paty_run_usecode:  first walk to (" << 
 			dx << ", " << dy << ", " << dz << ")" << endl;
-		if (!gwin->get_main_actor()->walk_path_to_tile(dest))
+		if (src != dest &&
+		    !gwin->get_main_actor()->walk_path_to_tile(dest))
 			{		// Failed to find path.  Return 0.
 			cout << "Failed to find path" << endl;
 			return(u);
@@ -2783,11 +2796,18 @@ USECODE_INTRINSIC(is_not_blocked)
 	Usecode_value& pval = parms[0];
 	if (pval.get_array_size() < 3)
 		return fail;
+	Tile_coord lcpos(-1, -1, -1);	// Don't let last_created block.
+	if (last_created)
+		{
+		lcpos = last_created->get_abs_tile_coord();
+		last_created->remove_this(1);
+		last_created->set_invalid();
+		}
 	Tile_coord tile(pval.get_elem(0).get_int_value(),
 			pval.get_elem(1).get_int_value(),
 			pval.get_elem(2).get_int_value());
 	int shapenum = parms[1].get_int_value();
-#if 0					// Unused
+#if 0	/* Unused for now. */
 	int framenum = parms[2].get_int_value();
 #endif
 					// Find out about given shape.
@@ -2799,7 +2819,9 @@ USECODE_INTRINSIC(is_not_blocked)
 		tile.ty - info.get_3d_ytiles() + 1,
 		info.get_3d_xtiles(), info.get_3d_ytiles(), 
 		new_lift, MOVE_ALL_TERRAIN);
-// Problem with bedroll	return Usecode_value(!blocked && new_lift == tile.tz);
+	blocked = (blocked || new_lift != tile.tz);
+	if (last_created)		// Put back last_created.
+		last_created->move(lcpos);
 	return Usecode_value(!blocked);
 }
 
