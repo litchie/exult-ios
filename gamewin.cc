@@ -626,6 +626,7 @@ void Game_window::toggle_combat
 		main_actor->set_schedule_type(newsched);
 	if (combat)			// Get rid of flee modes.
 		{
+		set_moving_barge(0);	// And get out of barge mode.
 		Actor *all[9];
 		int cnt = get_party(all, 1);
 		for (int i = 0; i < cnt; i++)
