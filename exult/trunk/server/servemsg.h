@@ -70,6 +70,7 @@ enum Msg_type
 	combo_pick = 21,		// Sending shape to add to combo.
 	hide_lift = 22,			// Lift passed: 1-16.
 	reload_shapes = 23,		// Reload a .vga file.
+	unused_shapes = 24,		// Find unused shapes in game.
 	usecode_debugging = 128
 	};
 
