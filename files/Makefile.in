@@ -94,9 +94,9 @@ WINDOWING_SYSTEM = @WINDOWING_SYSTEM@
 
 AUTOMAKE_OPTIONS = foreign
 
-OBJECTS = Flex.o Table.o U7file.o 
+OBJECTS = Flex.o Table.o U7file.o IFF.o
 
-HFILES = Flex.h  Table.h  U7file.h  common_types.h
+HFILES = Flex.h  Table.h  U7file.h  common_types.h IFF.h
 
 SOURCES = $(HFILES) $(OBJECTS:%.o=%.cc)
 
@@ -144,7 +144,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
