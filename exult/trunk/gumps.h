@@ -362,6 +362,8 @@ public:
 	void load();			// 'Load' was clicked.
 	void save();			// 'Save' was clicked.
 	void quit();			// 'Quit' was clicked.
+					// Handle one of the toggles.
+	int toggle_option(Gump_button *btn);
 	int restored_game()		// 1 if user restored.
 		{ return restored; }
 					// Paint it and its contents.
