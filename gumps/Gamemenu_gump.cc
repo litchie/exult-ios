@@ -42,7 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::string;
 
-static const int rowy[6] = { 4, 18, 30, 42, 56, 68 };
+static const int rowy[6] = { 4, 17, 30, 43, 56, 69 };
 static const int colx = 31;
 
 static const char* loadsavetext = "Load/Save Game";
