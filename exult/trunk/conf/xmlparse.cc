@@ -86,9 +86,9 @@ void	xmlparse(std::string &s,std::size_t &pos,XMLnode *x)
 //					cout << "End of entity(1) '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
 					return;
 					}
-				XMLnode t;
+				XMLnode *t = new XMLnode;
 				++pos;
-				xmlparse(s,pos,&t);
+				xmlparse(s,pos,t);
 				x->nodelist.push_back(t);
 				break;
 				}

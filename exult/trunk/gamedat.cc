@@ -84,7 +84,7 @@ void Game_window::restore_gamedat
 					// Watch for names ending in '.'.
 		if (fname[namelen - 1] == '.')
 			fname[namelen - 1] = 0;
-		ofstream out(fname, ios::out + ios::trunc + ios::binary);
+		ofstream out(fname, ios_base::openmode(ios::out + ios::trunc + ios::binary));
 					// Now read the file.
 		char *buf = new char[len];
 		in.read(buf, len);
