@@ -1,634 +1,339 @@
-       Exult F.A.Q. (frequently asked questions)
-       last changed: 19 July 2001(GMT)
-
-       An html version can be found at http://exult.sourceforge.net/faq.shtml
-
-
-       0. Changes to the FAQ
-       0.1. - 19 July 2001
-
-       1. Introduction
-       1.1. Why is it called Exult - what is the meaning of this name?
-       1.2. Is Exult free ?
-       1.3. Does Origin support Exult?
-       1.4. Will Exult support other Ultimas?
-       1.5. Where do I find Exult?
-       1.6. What is a snapshot? Are these screen shots or what?
-       1.7. How do I compile a source code snapshot under Linux?
-       1.8. How do I compile a source code snapshot under Win 9x?
-       1.9. What is the latest version of Exult?
-       1.10. On what platform does Exult run?
-
-       2. Exult and Ultima 7
-       2.1. Do I need Ultima 7?
-       2.2. Does Exult work on all versions of the game?
-       2.3. How about Serpent Isle?
-       2.4. Do the Add-Ons work?
-       2.5. Can you play through U7 yet?
-       2.6. Do savegames from the original work in Exult?
-       2.7. Where do I find Ultima 7 on the net to download?
-
-       3. Miscellaneous
-       3.1. Do the various cheat rooms work?
-       3.2. Where Do I find them
-       3.3. Do the carriages, ships and the magic carpet work?
-       3.4. Why is the party formation different?
-       3.5. Serpent Isle had many more improvements over Black Gate
-       (keyring, better paperdoll...). Will these be implemented? 
-       3.6. Any other improvements/features?
-       3.7. How do I disable all improvements? 
-       3.8. I heard that Exult is meant to be a game engine. Can I make
-       my own game with Exult? 
-
-       4. Exult Studio
-       4.1. What is it?
-       4.2. Who came up with the cool name?
-       4.3. What do you need to run it?
-       4.4. When will it be ported to other platforms?
-       4.5. How do you run it?
-       4.6. What can you do at the moment?
-       4.7. What's next?
-       4.8. What's with this client/server stuff?
-
-       5. Bugs, known issues, and not yet implemented features
-       5.1. Bugs
-       5.2. Known Issues
-       5.3. Not yet implemented
-
-       6. Questions and Answers, Bugreports
-       6.1. How can I get answers concerning Ultima 7/Exult? Where should
-       I send Bugreports? 
-       6.2. How do I contact the author of this FAQ?
-
-       7. Links and Thanks
-       7.1. Important Links
-       7.2. Thanks
-
---------------------------------------------------------------------------------
-
-       0. Changes to the FAQ
-
-
-       0.1. - 19 July 2001
-
-
-          *With the updated ReadMe parts of the FAQ are no longer
-           necessary and thus left out. So see the ReadMe for all your
-           configuration problems
-
---------------------------------------------------------------------------------
-
-
-       1. Introduction
-
-
-       1.1. Why is it called Exult - what is the meaning of this name?
-       Jeff wrote on the Boards:
-       I originally wrote it [Exult] solely for X-windows, so that's
-       where the 'X' comes from. The "ult", of course, comes from Ultima.
-       It was only about 6 months ago [02/29/2000] that I replaced the X
-       code with SDL, which is multiplatform. Then Arthuris ported it to
-       Win32 (and to BeOS). He had also ported the earlier version, but
-       it was much harder to maintain that way. 
-
-
-       Ibrahim Holtzmann:
-       I'd like to point out that "exult" is also an English verb that
-       means "to rejoice, to exhibit great happiness". 
-
-
-       1.2. Is Exult free ?
-       Exult is more than free: it's Free (notice the caps). Exult is
-       released under the GNU GPL (General Public License). This means
-       that the source code for Exult is freely available and you can do
-       whatever you want with it. However, if you make modifications to
-       any of Exult's components and publicly redistribute your work you
-       are required to make the source freely available in turn.
-       Obviously the Exult team would be very grateful if any
-       modifications you make are contributed back to the main code, so
-       that everyone can benefit from them. If you want to work on Exult
-       just send an e-mail to the team.
-       More information on the GNU GPL at 
-       http://www.gnu.org/copyleft/gpl.html. 
-
-
-       1.3. Does Origin support Exult?
-
-       First of all, Origin has been owned by EA for a long time now and
-       from recent developements it seems that Origin only exists now to
-       maintain Ultima Online. Furthermore, Origin and/or people that
-       worked for Origin claim that the source code for Ultima 7 (BG/SI)
-       has been lost for some time. So there is no chance for the Exult
-       team to have a look at the actual code. 
-
-       Also the team tried to contact some people from Origin earlier but
-       got no positive or negative response on the Exult project. So far
-       it seems that both Origin and EA have decided to ignore Exult. 
-
-
-       1.4. Will Exult support other Ultimas?
-
-       Exult supports only Ultima 7 (BG/SI and the add-ons). It will
-       never support any other Ultima nor do members of the team plan to
-       develop something similar. The reasons for this are that no other
-       Ultima is similar to Ultima 7 in the internal workings and also
-       the team is quite sick of reverse engineering a game allready. 
-
-
-       1.5. Where do I find Exult?
-       The latest official version is found on
-       http://exult.sourceforge.net/
-       Daily snapshots of the Win32 binary and of the CVS source tree can
-       be found at http://exult.on.openave.net/
-
-
-       1.6. What is a snapshot? Are these screen shots or what?
-
-       The snapshot is the newest source code of the program. It is
-       updated almost daily, sometimes twice a day. There is information
-       on how to build your own binary of the source but there is also
-       the newest pre-compiled Windows binary. 
-
-
-       1.7. How do I compile a source code snapshot under Linux?
-
-
-        1. Install the latest version of SDL (http://www.libsdl.org)
-
-        2. Extract the Exult source code archive to ~/exult:
-           unzip exult.zip -d ~
-        3. Create a fresh install of U7. I'll assume that you've
-
-           installed U7 in ~/ultima7
-        4. Run autogen.sh to create a configure script, then compile
-           Exult:
-           cd ~/exult; chmod u+x autogen.sh; ./autogen.sh; ./configure;
-           make
-
-        5. Install Exult and the Exult data file:
-           cp exult ~/ultima7; mkdir ~/ultima7/data; cp ./data/exult.flx
-           ~/ultima7/data
-
-        6. Run Exult:
-           cd ~/ultima7; ./exult
-
-
-
-
-       1.8. How do I compile a source code snapshot under Win 9x?
-       The source code snapshots contain a file called "README.win32"
-       that explains everything. 
-
-
-       1.9. What is the latest version of Exult?
-
-       The current official release is V0.93 Alpha4. See also 1.5. to
-       learn where to get the latest version. 
-
-       To find out which version you are running, press 'v' while in
-       game. 
-
-
-       1.10. On what platform does Exult run?
-
-       Exult should be able to be compiled (with minor modifications) on
-       any platform that SDL supports. Right now the source can be
-       compiled in Linux/i386, Linux/Alpha, MacOS, OpenBSD, FreeBSD,
-       Solaris, BeOS and Win32 (Windows 9x/ME/NT/2000). 
-
---------------------------------------------------------------------------------
-
-       2. Exult and Ultima 7
-
-
-       2.1. Do I need Ultima 7?
-
-       Yes. Exult won't work without the original files. 
-
-
-       2.2. Does Exult work on all versions of the game?
-       It seems to run most of the available versions of the game. The
-       most common ones nowadays with the included Add-Ons (Forge of
-       Virtue and Silver Seed) runs for sure. 
-
-
-       However there are reported problems with the localized versions of
-       the game (French, German and Spanish). Conversation threads don't
-       seem to skip to the next line in the proper places and therefore
-       are unreadable in some cases. SI was only published in English so
-       no localization problems with that one. 
-
-       V0.91 Alpha2 adds fixes for the french version, which should work
-       now. No work has been done for the german version, due to lack of
-       testers. If you have the German or Spanish version, and want it to
-       run, contact us. 
-
-
-       2.3. How about Serpent Isle?
-
-       The team is working on it. It is not yet fully playable but you
-       can walk around, talk to some people, finish some quests...
-       Plotwise you will get quite far but you certainly won't be able to
-       play through it yet. 
-
-       Old quotes on this topic from the time when SI wasn't playable at
-       all in Exult. 
-
-
-       Colourless:
-       I can't say much about the what will happen except that a
-       completely working Serpent Isle will be an annoying task to
-       complete. It is close to BG in some ways, but very different in
-       others. 
-
-       Jeff:
-       My feelings about SI are the same as Colourless, who has done all
-       the work so far on it. I'd much prefer to add enhancements to BG
-       (which would apply to SI as well), and perhaps write a new RPG.
-       Now, if EA would provide us with information about SI's internals,
-       that would change things. And also, since Exult is open-source, it
-       would be fine if anyone wants to volunteer to work on SI. 
-
-
-       2.4. Do the Add-Ons work?
-
-       "Forge of Virtue" (Add-On to Black Gate) is supported. Even though
-       SI is not yet fully running the same holds true for "The Silver
-       Seed". 
-
-
-       2.5. Can you play through U7 yet?
-       You can play through the Black Gate/Forge of Virtue without
-       cheating and plotholes.
-       SI is partially playable since V0.91 Alpha2. 
-
-
-       2.6. Do savegames from the original work in Exult?
-
-       Savegames that were made with the original Ultima 7 or U7Run don't
-       work with Exult. You have to start a new game when you begin
-       playing with Exult. Sorry! 
-
-
-       2.7. Where do I find Ultima 7 on the net to download?
-
-       Don't! You may be able to find it on the net but it would be
-       pirating the game and the Exult team doesn't support pirates. Look
-       for the Ultima Collection in stores or on Ebay
-       (http://www.ebay.com). 
-
-
-       Don't ask the team for copies. 
+ExultF.A.Q. (frequently asked questions)
+last changed: 19 July 2001(GMT)
+
+A html version can be found at http://exult.sourceforge.net/faq.shtml
+
+
+0. Changes to the FAQ
+0.1. - 19 July 2001
+
+1. Introduction
+1.1. Why is it called Exult - what is the meaning of this name?
+1.2. Is Exult free ?
+1.3. Does Origin support Exult?
+1.4. Will Exult support other Ultimas?
+1.5. Where do I find Exult?
+1.6. What is a snapshot? Are these screen shots or what?
+1.7. How do I compile a source code snapshot under Linux?
+1.8. How do I compile a source code snapshot under Win 9x?
+1.9. What is the latest version of Exult?
+1.10. On what platform does Exult run?
+
+2. Exult and Ultima 7
+2.1. Do I need Ultima 7?
+2.2. Does Exult work on all versions of the game?
+2.3. How about Serpent Isle?
+2.4. Do the Add-Ons work?
+2.5. Can you play through U7 yet?
+2.6. Do savegames from the original work in Exult?
+2.7. Where do I find Ultima 7 on the net to download?
+
+3. Miscellaneous
+3.1. Do the various cheat rooms work?
+3.2. Where Do I find them
+3.3. Do the carriages, ships and the magic carpet work?
+3.4. Why is the party formation different?
+3.5. Serpent Isle had many more improvements over Black Gate (keyring, better paperdoll...). Will these be implemented?
+3.6. Any other improvements/features?
+3.7. How do I disable all improvements?
+3.8. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+
+4. Exult Studio
+4.1. What is it?
+4.2. Who came up with the cool name?
+4.3. What do you need to run it?
+4.4. When will it be ported to other platforms?
+4.5. How do you run it?
+4.6. What can you do at the moment?
+4.7. What's next?
+4.8. What's with this client/server stuff?
+
+5. Bugs, known issues, and not yet implemented features
+5.1. Bugs
+5.2. Known Issues
+5.3. Not yet implemented
+
+6. Questions and Answers, Bugreports
+6.1. How can I get answers concerning Ultima 7/Exult? Where should I send Bugreports?
+6.2. How do I contact the author of this FAQ?
+
+7. Links and Thanks
+7.1. Important Links
+7.2. Thanks
 
 
 --------------------------------------------------------------------------------
 
-       3. Miscellaneous
-
-
-       3.1. Do the various cheat rooms work?
-       Yes. 
-
-
-       3.2. Where Do I find them
-
-       Just keep on looking for them :-) 
-
-
-       3.3. Do the carriages, ships and the magic carpet work?
-       Yes. The sail of ships look odd sometimes but otherwise these
-       means of transportations work quite well. 
-
-
-       3.4. Why is the party formation different?
-
-       In Exult the party (the Avatar and his companions) move quite
-       differently than they do in the original. This is actually not a
-       bug but a disliking of the old style. 
-
-       Jeff:
-       It's not a bug, it's a feature! I like it that way. Everyone is
-       sensitive to different things, and I always though the
-       formation-walking in the original U7 looked really stupid.
-       Eventually, someone may add the original type of walking to Exult,
-       probably as an option. 
-
-
-       3.5. Serpent Isle had many more improvements over Black Gate
-       (keyring, better paperdoll...). Will these be implemented? 
-
-       Right now the main goal is to get the Black Gate 100% working.
-       After that it could be that some more things will be improved as
-       far as it is possible to implement these. 
-
-       The keyring is not in Black Gate but there is the 'k' key which
-       tries all the keys in the inventory to open a lock. 
-
-
-       Recently Ryan added paperdoll support in Black Gate. Though it is
-       still buggy (some items disappear to Neverneverland) it is
-       beautiful to look at. Very impressive. For this you need to have
-       Serpent Isle installed on your hard drive and you must set the
-       path to it in exult.cfg (see 0.1.). If an item seems to have
-       disappeared press 'F2' to activate the cheat menu and disable
-       Paperdolls. Now you should find that missing item in your
-       inventory. 
-
-
-       3.6. Any other improvements/features?
-       Since the Alpha 4 release a new game menu was added with an
-       improved sound settings box and a very much improved (awesome)
-       savegame box. This allows you much more savegames than the
-       original (you should run out of disc space before you run out of
-       savegame slots), shows a screenshot of the location you saved at,
-       the members of your party, your stats, game time and the date you
-       actually saved. The game menu is opened via 'Esc' and the save
-       game box is opened either via the game menu or the 's' key. 
-
-
-       In Exult, you can still move your party even if there is a
-       box/body/stats open/on. In the original, the world was kind of
-       frozen. Now it is only frozen if you hit the 't' or 's' key. 
-
-
-       3.7. How do I disable all improvements? 
-       To get an Ultima 7 that looks and behaves as close to the original
-       as possible there are several things to do (though I wonder why
-       you'd want to do that): 
-
-
-          *make custom keybindings files (see 0.1.) in which you disable
-           all the keys that were not in the original for Black Gate and
-           Serpents Isle. Since the Alpha 4 release you have to assign 
-           's' to old_file_gump to enable the old savegame menu (the line
-           in your custom keybindings file should look like: S
-           old_file_gump)
-
-          *Edit the exult.cfg file to point to those custom keys.
-
-          *Don't set the path to the Serpent Isle files (see 0.1.) and
-           put SI and a second copy of Exult in a seperate directory
-           (note: you can no longer launch both BG and SI from the same
-           exult.exe). This disables SI paperdolls in BG.
-
-          *Alternatively you can leave the cheat menu binding in the
-           keybindings file ( 'F2' ) and disable "Paperdolls" each time
-           you run Exult.
-           Edit the exult.cfg to use the resolution of 320x200, to run in
-          *
-           full screen and disable scalers.
-           The disc icon in the Avatar paperdoll opens the new game menu.
-          *As of now this cannot be altered. Sorry!
+0. Changes to the FAQ
+0.1. - 19 July 2001
+* With the updated ReadMe parts of the FAQ are no longer necessary and thus left out. So see the ReadMe for all your configuration problems
 
 
 
-
-       3.8. I heard that Exult is meant to be a game engine. Can I make
-       my own game with Exult? 
-       Work has begun on "Exult Studio" which is aimed to be an editor
-       for all kinds of files that are used by Ultima 7. As of now there
-       is already a Gimp plug-in to edit shapes. 
-
-
-       For much more information "Exult Studio" see 4. Exult Studio. 
-
-       Jeff:
-       As for the future, my main plan is to add editing capabilities,
-       with the long-range goal of writing an original RPG. 
 
 --------------------------------------------------------------------------------
 
-       4. Exult Studio
+1. Introduction
+1.1. Why is it called Exult - what is the meaning of this name?
+Jeff wrote on the Boards:
+I originally wrote it [Exult] solely for X-windows, so that's where the 'X' comes from. The "ult", of course, comes from Ultima. It was only about 6 months ago [02/29/2000] that I replaced the X code with SDL, which is multiplatform. Then Arthuris ported it to Win32 (and to BeOS). He had also ported the earlier version, but it was much harder to maintain that way.
+
+Ibrahim Holtzmann:
+I'd like to point out that "exult" is also an English verb that means "to rejoice, to exhibit great happiness".
 
 
-       4.1. What is it?
-       Exult Studio is a map-editor for Exult, allowing you to modify the
-       map of a game and, eventually, to create a completely new
-       landscape for a new game. 
+1.2. Is Exult free ?
+Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exult's components and publicly redistribute your work you are required to make the source freely available in turn. Obviously the Exult team would be very grateful if any modifications you make are contributed back to the main code, so that everyone can benefit from them. If you want to work on Exult just send an e-mail to the team. More information on the GNU GPL at http://www.gnu.org/copyleft/gpl.html.
 
 
-       4.2. Who came up with the cool name?
-
-       Tristan 
-
-
-       4.3. What do you need to run it?
-       Currently, you need to be running Exult on X (Linux, Unix, etc.),
-       with Exult set to run in a window (not fullscreen). You also need
-       the GTK+ library installed. 
+1.3. Does Origin support Exult?
+First of all, Origin has been owned by EA for a long time now and from recent developements it seems that Origin only exists now to maintain Ultima Online. Furthermore, Origin and/or people that worked for Origin claim that the source code for Ultima 7 (BG/SI) has been lost for some time. So there is no chance for the Exult team to have a look at the actual code.
+Also the team tried to contact some people from Origin earlier but got no positive or negative response on the Exult project. So far it seems that both Origin and EA have decided to ignore Exult.
 
 
-       4.4. When will it be ported to other platforms?
-
-       That depends on when someone volunteers to do the work :-) There
-       are three issues: 
-
-           GTK has to be ported to the platform. I think this is already
-          *
-           true for Win32.
-           Exult Studio uses sockets to communicate with Exult. This also
-          *shouldn't be a problem for Win32.
-
-          *X drag-n-drop is used to put new objects on the landscape. The
-           'drop' part of this will have to be rewritten for Win32 Exult,
-           OR, drag-n-drop could be an enhancement to SDL someday.
+1.4. Will Exult support other Ultimas?
+Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any other Ultima nor do members of the team plan to develop something similar. The reasons for this are that no other Ultima is similar to Ultima 7 in the internal workings and also the team is quite sick of reverse engineering a game allready.
 
 
+1.5. Where do I find Exult?
+The latest official version is found on http://exult.sourceforge.net/ Daily snapshots of the Win32 binary and of the CVS source tree can be found at http://exult.on.openave.net/
 
 
-       4.5. How do you run it?
-       You can run Exult Studio all by itself, but it isn't useful that
-       way, as it uses Exult as a server. What you really want to do is: 
+1.6. What is a snapshot? Are these screen shots or what?
+The snapshot is the newest source code of the program. It is updated almost daily, sometimes twice a day. There is information on how to build your own binary of the source but there is also the newest pre-compiled Windows binary.
 
 
-          *Put 'exult_studio.glade' in the Exult 'data' directory.
-
-          *Be sure 'exult_studio' is in your path.
-
-          *Run Exult.
-
-          *Press 'alt-ctrl-m' to go into 'map-editor' mode. If all is set
-           up correctly, exult_studio will start up, and will have a list
-           of files on the left side of its window.
-
-       You can also start up one or the other separately, and they'll
-       reconnect: 
-
-
-          *If Exult isn't running, start it up. Then, in Exult Studio,
-           use the 'File' menu to choose the static directory (for the
-           game you're playing).
-
-          *If Exult Studio isn't running start it up with: exult_studio
-           -x (path to dir containing exult_studio.glade) -d (path to
-           game directory)
+1.7. How do I compile a source code snapshot under Linux?
+1. Install the latest version of SDL (http://www.libsdl.org)
+2. Extract the Exult source code archive to ~/exult: unzip exult.zip -d ~
+3. Create a fresh install of U7. I'll assume that you've installed U7 in ~/ultima7
+4. Run autogen.sh to create a configure script, then compile Exult: cd ~/exult; chmod u+x autogen.sh; ./autogen.sh; ./configure; make
+5. Install Exult and the Exult data file: cp exult ~/ultima7; mkdir ~/ultima7/data; cp ./data/exult.flx ~/ultima7/data
+6. Run Exult: cd ~/ultima7; ./exult
 
 
 
-       4.6. What can you do at the moment?
+1.8. How do I compile a source code snapshot under Win 9x?
+The source code snapshots contain a file called "README.win32" that explains everything.
 
 
-          *You can browse shapes in the main window.
-
-          *You can drag a shape from the shape browser to Exult, and that
-           object will be placed in the game. (Note: Not all such objects
-           are saved with the game yet; saving things like buildings will
-           be implemented soon.)
-
-          *You can edit an 'egg' by double-clicking on it. An edit box
-           should appear.
-
-          *You can create a new 'egg' using the pull-down menu in Exult
-           Studio. In the Egg edit box, after you hit 'Apply', you'll be
-           prompted to click in Exult where you want the egg to appear.
-
-          *If editing a 'monster' egg, you can set the monster by
-           dragging the shape from the browser to the area that displays
-           the monster.
+1.9. What is the latest version of Exult?
+The current official release is V0.93 Alpha4. See also 1.5. to learn where to get the latest version.
+To find out which version you are running, press 'v' while in game.
 
 
-
-       4.7. What's next?
-
-       The next things to be implemented are: 
-
-           An NPC editor, similar to the one for Eggs (but with lots more
-          *
-           stuff to set).
-           A simple object editor, that lets you modify an object's
-          *'quality', 'quantity' and flags.
-
-          *A 'save-map' function in Exult to save the whole map (not just
-           the moveable objects that 'save-game' stores).
+1.10. On what platform does Exult run?
+Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT/2000).
 
 
-
-
-       4.8. What's with this client/server stuff?
-       A map-editor needs to provide the ability to display the game,
-       place objects on the map, and move objects around. That
-       functionality is already in Exult, and it makes sense to reuse it.
-       So we could have made Exult a part of Exult Studio. However, Exult
-       is already a huge program, and is getting unwieldy to work on. 
-
-
-       With this architecture, Exult Studio can have all the messy code
-       for displaying/editing dialog boxes, while Exult only needs a
-       little bit of work to handle requests. 
-
-       Also, I (Jeff) wanted to get a little experience programming with
-       sockets:-) 
 
 --------------------------------------------------------------------------------
 
-       5. Bugs, known issues, and not yet implemented features
+2. Exult and Ultima 7
+2.1. Do I need Ultima 7?
+Yes. Exult won't work without the original files.
 
 
-       5.1. Bugs
-       To see a list of open bugs and bugreports go to 
-       http://sourceforge.net/bugs/?group_id=2335
+2.2. Does Exult work on all versions of the game?
+It seems to run most of the available versions of the game. The most common ones nowadays with the included Add-Ons (Forge of Virtue and Silver Seed) runs for sure.
+However there are reported problems with the localized versions of the game (French, German and Spanish). Conversation threads don't seem to skip to the next line in the proper places and therefore are unreadable in some cases. SI was only published in English so no localization problems with that one.
+V0.91 Alpha2 adds fixes for the french version, which should work now. No work has been done for the german version, due to lack of testers. If you have the German or Spanish version, and want it to run, contact us.
 
 
-       5.2. Known Issues
+2.3. How about Serpent Isle?
+The team is working on it. It is not yet fully playable but you can walk around, talk to some people, finish some quests... Plotwise you will get quite far but you certainly won't be able to play through it yet.
+Old quotes on this topic from the time when SI wasn't playable at all in Exult.
+
+Colourless:
+I can't say much about the what will happen except that a completely working Serpent Isle will be an annoying task to complete. It is close to BG in some ways, but very different in others.
+
+Jeff:
+My feelings about SI are the same as Colourless, who has done all the work so far on it. I'd much prefer to add enhancements to BG (which would apply to SI as well), and perhaps write a new RPG. Now, if EA would provide us with information about SI's internals, that would change things. And also, since Exult is open-source, it would be fine if anyone wants to volunteer to work on SI.
 
 
-           Movement is sometimes jerky or slow.
-          *
-          *We don't know what all the data in 'weapons.dat' and
-           'ammo.dat' means, so hit points and damage don't work as well
-           as in the original game.
-
-          *Sound effects in SI are sometimes odd with the wave pack as
-           some sounds were coded in Exult to correspond to the sfx
-           number in BG. This is a bug and will be addressed in due time.
-
-          *In Fellowship meetings some NPCs appear not to attend these
-           though they should and sometimes even speak there. This is due
-           to a bug in Exult which makes NPCs sit on already taken seats
-           and only the top most NPC can be seen. Moving the top most via
-           Hackmover makes the others visible.
-
-          *If you run a resolution higher than the original (320x200)
-           some NPCs that are further away from the Avatar may seem to
-           disappear and reappear when you get away or closer to them.
-
-          *With scalers enabled you might encounter slow downs of the
-           game. The team is working on this right now and it is already
-           a lot faster.
-
-          *The speech in the intro is out of synch with the lips
-           animations. But now it matches the speed of the text.
-
-          *There are reported problems with digital sound effects or
-           speech when using Vortex series sound cards under Win9x/ME.
-           It's not sure if this is a driver or Exult issue.
+2.4. Do the Add-Ons work?
+"Forge of Virtue" (Add-On to Black Gate) is supported. Even though SI is not yet fully running the same holds true for "The Silver Seed".
 
 
+2.5. Can you play through U7 yet?
+You can play through the Black Gate/Forge of Virtue without cheating and plotholes. SI is partially playable since V0.91 Alpha2.
 
-       5.3. Not yet implemented
 
-       A few magic spells don't work yet. 
+2.6. Do savegames from the original work in Exult?
+Savegames that were made with the original Ultima 7 or U7Run don't work with Exult. You have to start a new game when you begin playing with Exult. Sorry!
+
+
+2.7. Where do I find Ultima 7 on the net to download?
+Don't! You may be able to find it on the net but it would be pirating the game and the Exult team doesn't support pirates. Look for the Ultima Collection in stores or on Ebay (http://www.ebay.com).
+Don't ask the team for copies.
+
+
 
 --------------------------------------------------------------------------------
 
-       6. Questions and Answers, Bugreports
+3. Miscellaneous
+3.1. Do the various cheat rooms work?
+Yes.
 
 
-       6.1. How can I get answers concerning Ultima 7/Exult? Where should
-       I send Bugreports? 
-
-       The best way to get answers to questions is to go to the Online
-       discussion forum at:
-       http://exult.sourceforge.net/forum/
-
-       The best way to submit bugreports is to use Sourceforge's bug
-       database at:
-       http://sourceforge.net/bugs/?group_id=2335
+3.2. Where Do I find them
+Just keep on looking for them :-)
 
 
-       To get answers concerning Ultima 7 in general go to the Ultima
-       newsgroup:
-       news://rec.games.computer.ultima.series
-
-       Or go to the Ultima Dragons homepage http://www.udic.org and find
-       your way from there (this is an online Ultima fanclub) 
+3.3. Do the carriages, ships and the magic carpet work?
+Yes. The sail of ships look odd sometimes but otherwise these means of transportations work quite well.
 
 
-       Some Exult developers like to hang out on IRC on
-       irc.openprojects.net, channel #exult. 
+3.4. Why is the party formation different?
+In Exult the party (the Avatar and his companions) move quite differently than they do in the original. This is actually not a bug but a disliking of the old style.
+
+Jeff:
+It's not a bug, it's a feature! I like it that way. Everyone is sensitive to different things, and I always though the formation-walking in the original U7 looked really stupid. Eventually, someone may add the original type of walking to Exult, probably as an option.
 
 
-       6.2. How do I contact the author of this FAQ?
-       This FAQ is maintained by Dominus Dragon of the UDIC aka Dominik
-       Reichardt. Feel free to contact me with improvements or complaints
-       regarding the FAQ. I recently became part of the Exult Team though
-       I only write the FAQ and don't code at all. 
+3.5. Serpent Isle had many more improvements over Black Gate (keyring, better paperdoll...). Will these be implemented?
+Right now the main goal is to get the Black Gate 100% working. After that it could be that some more things will be improved as far as it is possible to implement these.
+The keyring is not in Black Gate but there is the 'k' key which tries all the keys in the inventory to open a lock.
+Recently Ryan added paperdoll support in Black Gate. Though it is still buggy (some items disappear to Neverneverland) it is beautiful to look at. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see 0.1.). If an item seems to have disappeared press 'F2' to activate the cheat menu and disable Paperdolls. Now you should find that missing item in your inventory.
+
+
+3.6. Any other improvements/features?
+Since the Alpha 4 release a new game menu was added with an improved sound settings box and a very much improved (awesome) savegame box. This allows you much more savegames than the original (you should run out of disc space before you run out of savegame slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The game menu is opened via 'Esc' and the save game box is opened either via the game menu or the 's' key.
+In Exult, you can still move your party even if there is a box/body/stats open/on. In the original, the world was kind of frozen. Now it is only frozen if you hit the 't' or 's' key.
+
+
+3.7. How do I disable all improvements?
+To get an Ultima 7 that looks and behaves as close to the original as possible there are several things to do (though I wonder why you'd want to do that):
+* make custom keybindings files (see 0.1.) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. Since the Alpha 4 release you have to assign 's' to old_file_gump to enable the old savegame menu (the line in your custom keybindings file should look like: S old_file_gump)
+* Edit the exult.cfg file to point to those custom keys.
+* Don't set the path to the Serpent Isle files (see 0.1.) and put SI and a second copy of Exult in a seperate directory (note: you can no longer launch both BG and SI from the same exult.exe). This disables SI paperdolls in BG.
+* Alternatively you can leave the cheat menu binding in the keybindings file ( 'F2' ) and disable "Paperdolls" each time you run Exult.
+* Edit the exult.cfg to use the resolution of 320x200, to run in full screen and disable scalers.
+* The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot be altered. Sorry!
+
+
+
+3.8. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+Work has begun on "" which is aimed to be an editor for all kinds of files that are used by Ultima 7. As of now there is already a Gimp plug-in to edit shapes.
+For much more information "" see 4. Exult Studio.
+
+Jeff:
+As for the future, my main plan is to add editing capabilities, with the long-range goal of writing an original RPG.
+
+
 
 --------------------------------------------------------------------------------
 
-       7. Links and Thanks
+4. Exult Studio
+4.1. What is it?
+is a map-editor for Exult, allowing you to modify the map of a game and, eventually, to create a completely new landscape for a new game.
 
 
-       7.1. Important Links
-       Exult homepage at http://exult.sourceforge.net/
-       Daily code snapshot at http://exult.on.openave.net/
-       Message board at http://exult.sourceforge.net/forum/
-       Bugreports to http://sourceforge.net/bugs/?group_id=2335
+4.2. Who came up with the cool name?
+Tristan
 
 
-       7.2. Thanks
-
-       Of course big thanks go to the Exult Team for breathing life back
-       into this jewel of a game. 
-
-       Max Horn deserves my gratitude for making the FAQ easier to
-       maintain via XML/XSL. 
+4.3. What do you need to run it?
+Currently, you need to be running Exult on X (Linux, Unix, etc.), with Exult set to run in a window (not fullscreen). You also need the GTK+ library installed.
 
 
-       Thanks to all those I stole comments from without quoting them,
-       those that sent me improvements and don't get quoted and so on. If
-       you helped me in some way feel my gratitude without being
-       mentioned. 
+4.4. When will it be ported to other platforms?
+That depends on when someone volunteers to do the work :-) There are three issues:
+* GTK has to be ported to the platform. I think this is already true for Win32.
+* uses sockets to communicate with Exult. This also shouldn't be a problem for Win32.
+* X drag-n-drop is used to put new objects on the landscape. The 'drop' part of this will have to be rewritten for Win32 Exult, OR, drag-n-drop could be an enhancement to SDL someday.
 
-       Thanks go to Matt0 who really got me thinking about doing this FAQ
-       (though he just did it to tease me). 
+
+
+4.5. How do you run it?
+You can run all by itself, but it isn't useful that way, as it uses Exult as a server. What you really want to do is:
+* Put 'exult_studio.glade' in the Exult 'data' directory.
+* Be sure 'exult_studio' is in your path.
+* Run Exult.
+* Press 'alt-ctrl-m' to go into 'map-editor' mode. If all is set up correctly, exult_studio will start up, and will have a list of files on the left side of its window.
+
+You can also start up one or the other separately, and they'll reconnect:
+* If Exult isn't running, start it up. Then, in , use the 'File' menu to choose the static directory (for the game you're playing).
+* If isn't running start it up with: exult_studio -x (path to dir containing exult_studio.glade) -d (path to game directory)
+
+
+
+4.6. What can you do at the moment?
+* You can browse shapes in the main window.
+* You can drag a shape from the shape browser to Exult, and that object will be placed in the game. (Note: Not all such objects are saved with the game yet; saving things like buildings will be implemented soon.)
+* You can edit an 'egg' by double-clicking on it. An edit box should appear.
+* You can create a new 'egg' using the pull-down menu in . In the Egg edit box, after you hit 'Apply', you'll be prompted to click in Exult where you want the egg to appear.
+* If editing a 'monster' egg, you can set the monster by dragging the shape from the browser to the area that displays the monster.
+
+
+
+4.7. What's next?
+The next things to be implemented are:
+* An NPC editor, similar to the one for Eggs (but with lots more stuff to set).
+* A simple object editor, that lets you modify an object's 'quality', 'quantity' and flags.
+* A 'save-map' function in Exult to save the whole map (not just the moveable objects that 'save-game' stores).
+
+
+
+4.8. What's with this client/server stuff?
+A map-editor needs to provide the ability to display the game, place objects on the map, and move objects around. That functionality is already in Exult, and it makes sense to reuse it. So we could have made Exult a part of . However, Exult is already a huge program, and is getting unwieldy to work on.
+With this architecture, can have all the messy code for displaying/editing dialog boxes, while Exult only needs a little bit of work to handle requests.
+Also, I (Jeff) wanted to get a little experience programming with sockets:-)
+
+
+
+--------------------------------------------------------------------------------
+
+5. Bugs, known issues, and not yet implemented features
+5.1. Bugs
+To see a list of open bugs and bugreports go to http://sourceforge.net/bugs/?group_id=2335
+
+
+5.2. Known Issues
+* Movement is sometimes jerky or slow.
+* We don't know what all the data in 'weapons.dat' and 'ammo.dat' means, so hit points and damage don't work as well as in the original game.
+* Sound effects in SI are sometimes odd with the wave pack as some sounds were coded in Exult to correspond to the sfx number in BG. This is a bug and will be addressed in due time.
+* In Fellowship meetings some NPCs appear not to attend these though they should and sometimes even speak there. This is due to a bug in Exult which makes NPCs sit on already taken seats and only the top most NPC can be seen. Moving the top most via Hackmover makes the others visible.
+* If you run a resolution higher than the original (320x200) some NPCs that are further away from the Avatar may seem to disappear and reappear when you get away or closer to them.
+* With scalers enabled you might encounter slow downs of the game. The team is working on this right now and it is already a lot faster.
+* The speech in the intro is out of synch with the lips animations. But now it matches the speed of the text.
+* There are reported problems with digital sound effects or speech when using Vortex series sound cards under Win9x/ME. It's not sure if this is a driver or Exult issue.
+
+
+
+5.3. Not yet implemented
+
+				A few magic spells don't work yet.
+			
+
+
+--------------------------------------------------------------------------------
+
+6. Questions and Answers, Bugreports
+6.1. How can I get answers concerning Ultima 7/Exult? Where should I send Bugreports?
+The best way to get answers to questions is to go to the Online discussion forum at: http://exult.sourceforge.net/forum/
+The best way to submit bugreports is to use Sourceforge's bug database at: http://sourceforge.net/bugs/?group_id=2335
+To get answers concerning Ultima 7 in general go to the Ultima newsgroup: news://rec.games.computer.ultima.series
+Or go to the Ultima Dragons homepage http://www.udic.org and find your way from there (this is an online Ultima fanclub)
+Some Exult developers like to hang out on IRC on irc.openprojects.net, channel #exult.
+
+
+6.2. How do I contact the author of this FAQ?
+This FAQ is maintained by Dominus Dragon of the UDIC aka Dominik Reichardt. Feel free to contact me with improvements or complaints regarding the FAQ. I recently became part of the Exult Team though I only write the FAQ and don't code at all.
+
+
+
+--------------------------------------------------------------------------------
+
+7. Links and Thanks
+7.1. Important Links
+Exult homepage at http://exult.sourceforge.net/ Daily code snapshot at http://exult.on.openave.net/ Message board at http://exult.sourceforge.net/forum/ Bugreports to http://sourceforge.net/bugs/?group_id=2335
+
+
+7.2. Thanks
+Of course big thanks go to the Exult Team for breathing life back into this jewel of a game.
+Max Horn deserves my gratitude for making the FAQ easier to maintain via XML/XSL.
+Thanks to all those I stole comments from without quoting them, those that sent me improvements and don't get quoted and so on. If you helped me in some way feel my gratitude without being mentioned.
+Thanks go to Matt0 who really got me thinking about doing this FAQ (though he just did it to tease me).
+
+
