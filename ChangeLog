@@ -1,3 +1,8 @@
+2001-07-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc,intrinsics.cc: SI/SS goodies should work now (although I
+	haven't tested the Blink Ring or Reagants Ring).
+
 2001-07-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: BeOS: get exult path on startup
 
