@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../../fnames.h"
 
 #include "Configuration.h"
-extern	Configuration	config;
+extern	Configuration *config;
 
 static  void    playFJmidifile(const char *name)
 {
