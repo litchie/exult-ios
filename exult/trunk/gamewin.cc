@@ -779,6 +779,13 @@ void Game_window::set_camera_actor
 	Actor *a
 	)
 	{
+	if (a == main_actor &&		// Setting back to main actor?
+	    camera_actor &&		// Change in chunk?
+	    (camera_actor->get_cx() != main_actor->get_cx() ||
+	     camera_actor->get_cy() != main_actor->get_cy()))
+	    				// Cache out temp. objects.
+		emulate_cache(camera_actor->get_cx(), camera_actor->get_cy(),
+			main_actor->get_cx(), main_actor->get_cy());
 	camera_actor = a;
 	Tile_coord t = a->get_abs_tile_coord();
 	set_scrolls(t);			// Set scrolling around position,

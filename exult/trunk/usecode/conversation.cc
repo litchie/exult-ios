@@ -211,7 +211,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 			if (main_actor->get_flag(Obj_flags::tattooed))
 				shape = 299;
 
-			face_sid.set_shape(shape);
+			face_sid.set_shape(shape, frame);
 		}
 	}
 	// BG Multiracial Hack
