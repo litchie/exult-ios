@@ -94,6 +94,7 @@ private:
 	int chunkx, chunky;		// Chunk coord. of window within world.
 	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
+	unsigned char faded_out;	// 1 if faded palette to black.
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
 					// Dragging info:

@@ -277,7 +277,6 @@ void Scheduled_usecode::handle_event
 					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode <= 0x38)
 				{	// Step in dir. opcode&7.????
-#if 0	/* ++++++Uncomment when tested. */
 				static short offset[16] = {
 					-1,0, -1,1, 1,0, 1,-1, 0,-1,
 					-1,-1, -1,0, -1,1 };
@@ -292,7 +291,8 @@ void Scheduled_usecode::handle_event
 				  	Tile_coord(offset[2*dir],
 							offset[2*dir + 1], 0);
 				act->step(tile, frame);
-#endif
+				gwin->paint_dirty();
+				gwin->show();
 				}
 			else
 			        cout << "Unhandled sched. opcode " << hex << 
@@ -2269,6 +2269,15 @@ USECODE_INTRINSIC(get_equipment_list)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(nap_time)
+{
+	// nap_time(bed)
+	Game_object *bed = get_item(parms[0]);
+	if (bed)			// !!! Seems 622 handles sleeping.
+		call_usecode(0x622, bed, double_click);
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(advance_time)
 {
 	// Incr. clock by (parm[0]*.04min.).
@@ -2402,13 +2411,11 @@ USECODE_INTRINSIC(clear_npc_flag)
 
 USECODE_INTRINSIC(run_usecode)
 {
-#if 0	/* Turn on when we can test this.+++++++++++++ */
 	// run_usecode(fun, itemref, eventid)
 	Game_object *obj = get_item(parms[1]);
 	if (obj)
 		call_usecode(parms[0].get_int_value(), obj, 
 				(Usecode_events) parms[2].get_int_value());
-#endif
 	return(no_ret);
 }
 
@@ -2576,7 +2583,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x74
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x75     +++++ StartEndGame (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x76     FireCannon (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x77
+	USECODE_INTRINSIC_PTR(nap_time),	// 0x77
 	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x79
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a
