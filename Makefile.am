@@ -152,7 +152,6 @@ EXTRA_DIST = 	\
 	msvcstuff/expack.dsp \
 	msvcstuff/Exult.dsp \
 	msvcstuff/Exult.dsw \
-	msvcstuff/Exult.rc \
 	msvcstuff/Exult_bg_flx.dsp \
 	msvcstuff/Exult_flx.dsp \
 	msvcstuff/Exult_si_flx.dsp \
@@ -162,7 +161,6 @@ EXTRA_DIST = 	\
 	msvcstuff/mklink.dsp \
 	msvcstuff/msvc_kludges.cc \
 	msvcstuff/msvc_kludges.h \
-	msvcstuff/resource.h \
 	msvcstuff/rip.dsp \
 	msvcstuff/shp2pcx.dsp \
 	msvcstuff/splitshp.dsp \
