@@ -25,13 +25,12 @@ class Game_clock : public Time_sensitive
 	short hour, minute;		// Time (0-23, 0-59).
 	int day;			// Keep track of days played.
 	int light_source_level;		// Light source level.
-	int in_dungeon;			// 1 if in a dungeon.
 	void set_time_palette();
 	void set_light_source_level(int lev);
 	void check_hunger();
 public:
 	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0),
-			light_source_level(0), in_dungeon(0)
+			light_source_level(0)
 		{ }
 	int get_hour()
 		{ return hour; }
@@ -55,7 +54,6 @@ public:
 		if (lev != light_source_level)
 			set_light_source_level(lev);
 		}
-	void set_in_dungeon(int tf);
 	void increment(int num_minutes);// Increment clock.
 	virtual void handle_event(unsigned long curtime, long udata);
 	void fake_next_period();	// For debugging.
