@@ -35,6 +35,7 @@ class Vector;
 #include <string>	// STL string
 
 #define UTRACE(NAME) Usecode_Trace(NAME,intrinsic,num_parms,parms)
+#define	USECODE_RETURN(A) Usecode_TraceReturn(A); return (A)
 #define	USECODE_FUNCTION(NAME)	Usecode_value	Usecode_machine::UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12]) { UTRACE(#NAME);
 #define	USECODE_FUNCTION_DECL(NAME)	Usecode_value	UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 #define	USECODE_FUNCTION_PTR(NAME)	&Usecode_machine::UI_ ## NAME
@@ -281,6 +282,14 @@ public:
         USECODE_FUNCTION_DECL(set_schedule_type);
         USECODE_FUNCTION_DECL(add_to_party);
         USECODE_FUNCTION_DECL(remove_from_party);
+        USECODE_FUNCTION_DECL(get_npc_prop);
+        USECODE_FUNCTION_DECL(set_npc_prop);
+        USECODE_FUNCTION_DECL(get_avatar_ref);
+        USECODE_FUNCTION_DECL(get_party_list);
+        USECODE_FUNCTION_DECL(create_new_object);
+        USECODE_FUNCTION_DECL(mystery_1);
+        USECODE_FUNCTION_DECL(update_last_created);
+
 
 
 

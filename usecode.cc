@@ -870,19 +870,28 @@ static void Usecode_Trace
 	)
 	{
 #if TRACE_INTRINSIC_CALLS
-	printf("Intrinsic %s(0x%03x) called with %d parms: ",
-					name, intrinsic, num_parms);
+	cout << hex << "[0x" << setfill(0x30)
+		<< intrinsic << "]: " << name << "(";
 	for (int i = 0; i < num_parms; i++)
 		{
-		cout << "0x" << setfill(0x30);
-		cout << setw(4) << hex;
+		cout << setfill(0x30) << setw(4) << hex;
 		parms[i].print(cout);
-		cout << ' ';
+		if(i!=num_parms-1)
+			cout << ", ";
 		}
+	cout <<") = ";
 	cout << dec;
-	cout << endl;
 #endif
 	}
+
+static	void	Usecode_TraceReturn(Usecode_value &v)
+{
+#if TRACE_INTRINSIC_CALLS
+	cout << hex << setfill(0x30) << setw(4);
+	v.print(cout);
+	cout << dec << endl;
+#endif
+}
 
 static void Unhandled
 	(
@@ -896,25 +905,29 @@ static void Unhandled
 
 static Usecode_value	no_ret;
 USECODE_FUNCTION(NOP)
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(UNKNOWN)
 	Unhandled(intrinsic, num_parms, parms);
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(get_random)
 	int range = parms[0].get_int_value();
 	if (range == 0)
-		return Usecode_value(0);
-	return Usecode_value(1 + (rand() % range));
+		{
+		Usecode_value u(0);
+		USECODE_RETURN(u);
+		}
+	Usecode_value u=(1 + (rand() % range));
+	USECODE_RETURN(u);
 }
 
 USECODE_FUNCTION(execute_usecode_array)
 	cout << "Executing intrinsic 1\n";
 	exec_array(parms[0], parms[1]);
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(delayed_execute_usecode_array)
@@ -924,33 +937,33 @@ USECODE_FUNCTION(delayed_execute_usecode_array)
 		new Scheduled_usecode(parms[0], parms[1]),
 							(long) this);
 	cout << "Executing intrinsic 2\n";
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(show_npc_face)
 	show_npc_face(parms[0], parms[1]);
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(remove_npc_face)
 	remove_npc_face(parms[0]);
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(add_answer)
 	answers.add_answer(parms[0]);
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(remove_answer)
 	answers.remove_answer(parms[0]);
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(push_answers)
 	answer_stack.push_front(answers);
 	answers.clear();
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(pop_answers)
@@ -959,14 +972,15 @@ USECODE_FUNCTION(pop_answers)
 		answers=answer_stack.front();
 		answer_stack.pop_front();
 		}
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(select_from_menu)
 	user_choice = 0;
 	const char *choice = get_user_choice();
 	user_choice = 0;
-	return choice;
+	Usecode_value u(choice);
+	USECODE_RETURN(u);
 }
 
 USECODE_FUNCTION(select_from_menu2)
@@ -974,20 +988,21 @@ USECODE_FUNCTION(select_from_menu2)
 	user_choice = 0;
 	Usecode_value val(get_user_choice_num() + 1);
 	user_choice = 0;
-	return val;
+	USECODE_RETURN(val);
 }
 
 USECODE_FUNCTION(input_numeric_value)
 	// Ask for # (min, max, step, default).
 	// (Show slider.)
 	//+++++++++++++
-	return Usecode_value(parms[0].get_int_value() + 1);
+	Usecode_value u(parms[0].get_int_value() + 1);
+	USECODE_RETURN(u);
 }
 
 USECODE_FUNCTION(set_item_shape)
 	// Set item shape.
 	set_item_shape(parms[0], parms[1]);
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(die_roll)
@@ -1001,25 +1016,29 @@ USECODE_FUNCTION(die_roll)
 		high = tmp;
 		}
 	int val = (rand() % (high - low + 1)) + low;
-	return (Usecode_value(val));
+	Usecode_value u(val);
+	USECODE_RETURN(u);
 }
 
 USECODE_FUNCTION(get_item_shape)
-	return (Usecode_value(get_item_shape(parms[0])));
+	Usecode_value u(get_item_shape(parms[0]));
+	USECODE_RETURN(u);
 }
 
 USECODE_FUNCTION(get_item_frame)
-	return (Usecode_value(get_item_frame(parms[0])));
+	Usecode_value u(get_item_frame(parms[0]));
+	USECODE_RETURN(u);
 }
 
 USECODE_FUNCTION(set_item_frame)
 	set_item_frame(parms[0], parms[1]);
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(get_item_quality)
 	Game_object *obj = get_item(parms[0].get_int_value());
-	return Usecode_value(obj ? obj->get_quality() : 0);
+	Usecode_value u(obj ? obj->get_quality() : 0);
+	USECODE_RETURN(u);
 }
 
 USECODE_FUNCTION(set_item_quality)
@@ -1028,7 +1047,7 @@ USECODE_FUNCTION(set_item_quality)
 	Game_object *obj = get_item(parms[0].get_int_value());
 	if (obj)
 		obj->set_quality(parms[1].get_int_value());
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(count_npc_inventory)
@@ -1036,14 +1055,14 @@ USECODE_FUNCTION(count_npc_inventory)
 	//   Count(item, -npc).
 	//+++++++++++++
 	Unhandled(intrinsic, num_parms, parms);
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(set_npc_inventory_count)
 	// Set # of items??? (item, newcount).
 	//+++++++++++++
 	Unhandled(intrinsic, num_parms, parms);
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(get_object_position)
@@ -1060,25 +1079,28 @@ USECODE_FUNCTION(get_object_position)
 	arr.put_elem(1, vy);
 	arr.put_elem(2, vz);
 	arr.put_elem(3, vobj);
-	return arr;
+	USECODE_RETURN(arr);
 }
 
 USECODE_FUNCTION(find_direction)
 	// Direction from parm[0] -> parm[1].
 	// Rets. 0-7.  Is 0 east?
-	return find_direction(parms[0], parms[1]);
+	Usecode_value u=find_direction(parms[0], parms[1]);
+	USECODE_RETURN(u);
 }
 
 USECODE_FUNCTION(get_npc_object)
 	// Takes -npc.  Returns object.
 	Game_object *obj = get_item(parms[0].get_int_value());
-	return Usecode_value((long) obj);
+	Usecode_value u((long) obj);
+	USECODE_RETURN(u);
 }
 
 USECODE_FUNCTION(get_schedule_type)
 	// GetSchedule(npc).  Rets. schedtype.
 	Game_object *obj = get_item(parms[0].get_int_value());
-	return Usecode_value(obj ? obj->get_schedule() : 0);
+	Usecode_value u(obj ? obj->get_schedule() : 0);
+	USECODE_RETURN(u);
 }
 
 USECODE_FUNCTION(set_schedule_type)
@@ -1087,19 +1109,102 @@ USECODE_FUNCTION(set_schedule_type)
 	// 'bNum' field in schedules.
 	Unhandled(intrinsic, num_parms, parms);
 	//+++++++++++++++++++++
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(add_to_party)
 	// NPC joins party.
 	add_to_party(get_item(parms[0].get_int_value()));
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(remove_from_party)
 	// NPC leaves party.
 	remove_from_party(get_item(parms[0].get_int_value()));
-	return no_ret;
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(get_npc_prop)
+	// Get NPC prop (item, prop_id).
+	//   (9 is food level).
+	Game_object *obj = get_item(parms[0].get_int_value());
+	Usecode_value u(obj ? 
+		obj->get_property(parms[1].get_int_value()) : 0);
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(set_npc_prop)
+	// Set NPC prop (item, prop_id, value).
+	Game_object *obj = get_item(parms[0].get_int_value());
+	if (obj)
+		obj->set_property(parms[1].get_int_value(),
+				parms[2].get_int_value());
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_FUNCTION(get_avatar_ref)
+	// Guessing it's Avatar's itemref.
+	Usecode_value u((long) gwin->get_main_actor());
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(get_party_list)
+	// Return array with party members.
+	Usecode_value u(get_party());
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(create_new_object)
+	// Takes shape, rets. new obj?
+	// Show frames in seq.? (animate?)
+	int shapenum = parms[0].get_int_value();
+				// Guessing:
+	Game_object *at = caller_item;
+	if (!at)
+		at = gwin->get_main_actor();
+	Shape_info& info = gwin->get_shapes().get_info(shapenum);
+	Game_object *obj = (info.is_animated()) ?
+			new Animated_object(shapenum, 0,
+			  at->get_tx(), at->get_ty(), at->get_lift())
+			:new Game_object(shapenum, 0,
+			  at->get_tx(), at->get_ty(), at->get_lift());
+	gwin->get_objects(at->get_cx(), at->get_cy())->add(obj);
+	gwin->show();
+	last_created = obj;
+	Usecode_value u((long) obj);
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(mystery_1)
+	// Take itemref, rets. flag.
+	//++++++++++++++++++
+	Usecode_value u(1); //????
+	USECODE_RETURN(u);
+}
+
+USECODE_FUNCTION(update_last_created)
+	// Think it takes array from 0x18,
+	//   updates last-created object.
+	//   ??guessing??
+	if (!last_created)
+		{
+		Usecode_value u(0);
+		USECODE_RETURN(u);
+		}
+	Usecode_value& arr = parms[0];
+	int sz = arr.get_array_size();
+	Game_object *obj = 0;
+	if (sz == 3)
+		last_created->move(arr.get_elem(0).get_int_value(),
+			  arr.get_elem(1).get_int_value(),
+			  arr.get_elem(2).get_int_value());
+	else
+		{ cout << "Intrinsic 0x26:  "; arr.print(cout);
+			cout << '\n'; }
+	gwin->paint();
+	gwin->show();		// ??
+	Usecode_value u(1);// ??
+	USECODE_RETURN(u);
 }
 
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
@@ -1138,9 +1243,16 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_FUNCTION_PTR(set_schedule_type), // 0x1d
 	USECODE_FUNCTION_PTR(add_to_party), // 0x1e
 	USECODE_FUNCTION_PTR(remove_from_party), // 0x1f
+	USECODE_FUNCTION_PTR(get_npc_prop), // 0x20
+	USECODE_FUNCTION_PTR(set_npc_prop), // 0x21
+	USECODE_FUNCTION_PTR(get_avatar_ref), // 0x22
+	USECODE_FUNCTION_PTR(get_party_list), // 0x23
+	USECODE_FUNCTION_PTR(create_new_object), // 0x24
+	USECODE_FUNCTION_PTR(mystery_1), // 0x25
+	USECODE_FUNCTION_PTR(update_last_created), // 0x26
 	};
 
-int	max_bundled_intrinsics=0x1f;	// Index of the last intrinsic in this table
+int	max_bundled_intrinsics=0x26;	// Index of the last intrinsic in this table
 
 /*
  *	Call an intrinsic function.
@@ -1167,70 +1279,6 @@ Usecode_value Usecode_machine::call_intrinsic
 	else
 	switch (intrinsic)
 		{
-	case 0x20:			// Get NPC prop (item, prop_id).
-					//   (9 is food level).
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		return Usecode_value(obj ? 
-			obj->get_property(parms[1].get_int_value()) : 0);
-		break;
-		}
-	case 0x21:			// Set NPC prop (item, prop_id, value).
-		{
-		Game_object *obj = get_item(parms[0].get_int_value());
-		if (obj)
-			obj->set_property(parms[1].get_int_value(),
-						parms[2].get_int_value());
-		break;
-		}
-	case 0x22:			// Guessing it's Avatar's itemref.
-		return Usecode_value((long) gwin->get_main_actor());
-	case 0x23:			// Return array with party members.
-		return (get_party());
-	case 0x24:			// Takes shape, rets. new obj?
-					// Show frames in seq.? (animate?)
-		{
-		int shapenum = parms[0].get_int_value();
-					// Guessing:
-		Game_object *at = caller_item;
-		if (!at)
-			at = gwin->get_main_actor();
-		Shape_info& info = gwin->get_shapes().get_info(shapenum);
-		Game_object *obj = (info.is_animated()) ?
-				new Animated_object(shapenum, 0,
-				  at->get_tx(), at->get_ty(), at->get_lift())
-				:new Game_object(shapenum, 0,
-				  at->get_tx(), at->get_ty(), at->get_lift());
-		gwin->get_objects(at->get_cx(), at->get_cy())->add(obj);
-		gwin->show();
-		last_created = obj;
-		return Usecode_value((long) obj);
-		}
-	case 0x25:			// Take itemref, rets. flag.
-		//++++++++++++++++++
-		Unhandled(intrinsic, num_parms, parms);
-		return Usecode_value(1); //????
-		break;
-	case 0x26:			// Think it takes array from 0x18,
-					//   updates last-created object.
-					//   ??guessing??
-		{
-		if (!last_created)
-			return Usecode_value(0);
-		Usecode_value& arr = parms[0];
-		int sz = arr.get_array_size();
-		Game_object *obj = 0;
-		if (sz == 3)
-			last_created->move(arr.get_elem(0).get_int_value(),
-				  arr.get_elem(1).get_int_value(),
-				  arr.get_elem(2).get_int_value());
-		else
-			{ cout << "Intrinsic 0x26:  "; arr.print(cout);
-				cout << '\n'; }
-		gwin->paint();
-		gwin->show();		// ??
-		return Usecode_value(1);// ??
-		}
 	case 0x27:			// Get NPC name.
 		{	// +++++Make this work on array of NPC's.
 		static char *unknown = "player";
@@ -1383,7 +1431,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 		}
 	Usecode_value no_ret;				// Dummy return.
-	return (no_ret);
+	USECODE_RETURN(no_ret);
 	}
 
 /*
