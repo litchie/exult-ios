@@ -2690,7 +2690,7 @@ void Game_window::add_nearby_npcs
 
 void Game_window::get_nearby_npcs
 	(
-	Slist& list
+	Actor_queue& list
 	)
 	{
 	npc_prox->get_all(list);
@@ -2733,11 +2733,11 @@ void Game_window::theft
 		theft_cy = cy;
 		theft_warnings = 0;
 		}
-	ActorVector npcs;			// See if someone is nearby.
+	Actor_vector npcs;			// See if someone is nearby.
 	main_actor->find_nearby_actors(npcs, -359, 12);
 	Actor *closest_npc = 0;
 	int best_dist = 5000;
-	for (ActorVector::const_iterator it = npcs.begin(); it != npcs.end();++it)
+	for (Actor_vector::const_iterator it = npcs.begin(); it != npcs.end();++it)
 		{
 		Actor *npc = *it;
 		if (npc->is_monster() || npc == main_actor ||

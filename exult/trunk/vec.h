@@ -1,11 +1,5 @@
-/**
- **	Vec.h - A resizeable vector.
- **
- **	Written: 4/5/99 - JSF
- **/
-
 /*
-Copyright (C) 1999  Jeffrey S. Freedman
+Copyright (C) 2000 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,24 +16,26 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef INCL_VEC
-#define INCL_VEC 1
+#ifndef _VEC_H_
+#define _VEC_H_
 
 #include	<vector>
 
 template <class T>
-class FeatureVector : public std::vector<T>
+class Exult_vector : public std::vector<T>
 {
 private:
 	typedef	std::vector<T>	baseClass;
 	typedef typename		baseClass::size_type       size_type;
 public:
-	FeatureVector<T>() : baseClass()
+	Exult_vector<T>() : baseClass()
 		{}
-	FeatureVector<T>(size_type n) : baseClass()
+	Exult_vector<T>(size_type n) : baseClass()
 		{ reserve(n); }
 
+#ifndef MACOS /* should be something like PROPER_STD_CPP_LIB or so */
 	T& at(int i) { return (*this)[i]; }
+#endif
 	void put(int i, T& v)		// Set i'th entry.
 		{
 			if (i >= size())
@@ -59,7 +55,7 @@ public:
 			put(i, v);
 			return (i);
 		}
-	size_type	find( const T obj ) const
+	size_type	find( const T& obj ) const
 		{
 			size_type pos = 0;
 			for (const T *X = begin(); X != end(); ++X, ++pos)
@@ -70,13 +66,13 @@ public:
 			return -1;
 		}
 
-	size_type	append( T const obj )
+	size_type	append( const T& obj )
 		{
 			push_back( obj );
 			return size() - 1;
 		}
 
-	void		remove( const T obj )
+	void		remove( const T& obj )
 		{
 			for(T *X = begin(); X != end(); ++X)
 				if( *X == obj )
@@ -92,9 +88,9 @@ class	Game_object;
 class	Egg_object;
 class	Actor;
 
-typedef	FeatureVector<Game_object*>	GOVector;
-typedef	FeatureVector<Egg_object*>	EggVector;
-typedef	FeatureVector<Actor*>		ActorVector;
+typedef	Exult_vector<Game_object*>	Game_object_vector;
+typedef	Exult_vector<Egg_object*>	Egg_vector;
+typedef	Exult_vector<Actor*>		Actor_vector;
 
 
 #endif

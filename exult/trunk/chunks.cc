@@ -31,6 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 #include "ordinfo.h"
 
+using std::memset;
+
 /*
  *	Create the cached data storage for a chunk.
  */
@@ -156,7 +158,7 @@ void Chunk_cache::set_egged
 		egg_objects[eggnum] = NULL;
 		if (eggnum >= 15)	// We only have 16 bits.
 			{		// Last one at 15 or above?
-			for (EggVector::const_iterator it = 
+			for (Egg_vector::const_iterator it = 
 				egg_objects.begin() + 15; 
 					it != egg_objects.end(); ++it)
 				if (*it != 0)
@@ -465,7 +467,7 @@ void Chunk_cache::activate_eggs
 		}
 	if (eggbits)			// Check 15th bit.
 		{
-		for (EggVector::const_iterator it = egg_objects.begin() + i;
+		for (Egg_vector::const_iterator it = egg_objects.begin() + i;
 					it != egg_objects.end(); ++it)
 			{
 			Egg_object *egg = *it;
@@ -498,7 +500,7 @@ Chunk_object_list::~Chunk_object_list
 	)
 	{
 	delete cache;
-	delete dungeon_bits;
+	delete [] dungeon_bits;
 	}
 
 /*
@@ -837,7 +839,7 @@ void Chunk_object_list::try_all_eggs
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;		// (Ignored).
 	int eachcx, eachcy;
-	EggVector eggs(40);		// Get them here first, as activating
+	Egg_vector eggs(40);		// Get them here first, as activating
 					//   an egg could affect chunk's list.
 	while (next_chunk.get_next(tiles, eachcx, eachcy))
 		{
@@ -859,7 +861,7 @@ void Chunk_object_list::try_all_eggs
 					eggs.push_back(egg);
 				}
 		}
-	for (EggVector::const_iterator it = eggs.begin(); it != eggs.end();
+	for (Egg_vector::const_iterator it = eggs.begin(); it != eggs.end();
 									++it)
 		(*it)->activate(gwin->get_usecode(), obj);
 	norecurse--;
@@ -932,7 +934,7 @@ void Chunk_object_list::gravity
 	int lift			// Lift where tiles are free.
 	)
 	{
-	GOVector dropped(20);		// Gets list of objs. that dropped.
+	Game_object_vector dropped(20);		// Gets list of objs. that dropped.
 	Game_window *gwin = Game_window::get_game_window();
 					// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(area);
@@ -963,7 +965,7 @@ void Chunk_object_list::gravity
 				}
 			}
 		}
-	for (GOVector::const_iterator it = dropped.begin(); 
+	for (Game_object_vector::const_iterator it = dropped.begin(); 
 						it != dropped.end(); ++it)
 		{			// Recurse on each one.
 		Game_object *obj = *it;

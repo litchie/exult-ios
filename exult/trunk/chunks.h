@@ -39,7 +39,7 @@ class Chunk_cache
 	unsigned short blocked[256];	// For each tile, a bit for each lift
 					//   level if it's blocked by an obj.
 					// In the process of implementing:+++++
-	EggVector egg_objects;		// ->eggs which influence this chunk.
+	Egg_vector egg_objects;		// ->eggs which influence this chunk.
 	unsigned short eggs[256];	// Bit #i (0-14) set means that the
 					//   tile is within egg_object[i]'s
 					//   influence.  Bit 15 means it's 1 or

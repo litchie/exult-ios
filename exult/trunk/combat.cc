@@ -47,43 +47,57 @@ unsigned long Combat_schedule::battle_time = 0;
 void Combat_schedule::find_opponents
 	(
 	)
-	{
+{
 	opponents.clear();
 	Game_window *gwin = Game_window::get_game_window();
 	if (npc->get_alignment() >= Npc_actor::hostile)
-		{
+	{
 		Actor *party[9];
 		int cnt = gwin->get_party(party, 1);
 		for (int i = 0; i < cnt; i++)
 					// But ignore invisible ones.
 			if (!party[i]->get_flag(Actor::invisible))
-				opponents.append(party[i]);
+				opponents.push(party[i]);
 		return;
-		}
-	Slist nearby;			// Get all nearby NPC's.
+	}
+	Actor_queue nearby;			// Get all nearby NPC's.
 	gwin->get_nearby_npcs(nearby);
-	Actor *actor;
-	Slist_iterator next(nearby);
-	while ((actor = (Actor *) next()) != 0)
+	for (Actor_queue::const_iterator it = nearby.begin(); it != nearby.end(); ++it)
+	{
+		Actor *actor = *it;
 		if (actor->get_alignment() >= Npc_actor::hostile &&
 		    !actor->is_dead_npc())
-			{
-			opponents.append(actor);
+		{
+			opponents.push(actor);
 					// And set hostile monsters.
 			if (actor->get_alignment() >= Npc_actor::hostile &&
 			    actor->get_schedule_type() != Schedule::combat)
 				actor->set_schedule_type(Schedule::combat);
-			}
-					// None found?  Use Avatar's.
-	if (!opponents.get_last() && npc->get_party_id() >= 0 &&
-	    npc != gwin->get_main_actor())
+		}
+	}
+/*
+	Slist_iterator next(nearby);
+	while ((actor = (Actor *) next()) != 0)
+		if (actor->get_alignment() >= Npc_actor::hostile &&
+		    !actor->is_dead_npc())
 		{
+			opponents.push(actor);
+					// And set hostile monsters.
+			if (actor->get_alignment() >= Npc_actor::hostile &&
+			    actor->get_schedule_type() != Schedule::combat)
+				actor->set_schedule_type(Schedule::combat);
+		}
+*/
+					// None found?  Use Avatar's.
+	if (opponents.empty() && npc->get_party_id() >= 0 &&
+	    npc != gwin->get_main_actor())
+	{
 		Game_object *opp = gwin->get_main_actor()->get_opponent();
 		if (opp && opp != npc && (opp->get_npc_num() > 0 ||
 					opp->is_monster()))
-			opponents.append(opp);
-		}
-	}		
+			opponents.push((Actor *)opp);
+	}
+}		
 
 /*
  *	Find a foe.
@@ -95,75 +109,79 @@ Actor *Combat_schedule::find_foe
 	(
 	int mode			// Mode to use.
 	)
-	{
+{
 	cout << "'" << npc->get_name() << "' is looking for a foe" << endl;
-	Actor *opp;
-	if (!opponents.get_first())	// No more from last scan?
+	if (opponents.empty())	// No more from last scan?
 		find_opponents();	// Find all nearby.
 	Actor *new_opponent = 0;
-	Slist_iterator next(opponents);	// For going through list.
+//	Slist_iterator next(opponents);	// For going through list.
 	switch ((Actor::Attack_mode) mode)
-		{
+	{
 		case Actor::weakest:
-			{
+		{
 			int str, least_str = 100;
-			while ((opp = (Actor *) next()) != 0)
-				{
+			for (Actor_queue::const_iterator it = opponents.begin(); it != opponents.end(); ++it)
+			{
+				Actor *opp = *it;
 				str = opp->get_property(Actor::strength);
 				if (str < least_str)
-					{
+				{
 					least_str = str;
 					new_opponent = opp;
-					}
 				}
-			break;
 			}
+			break;
+		}
 		case Actor::strongest:
-			{
+		{
 			int str, best_str = -100;
-			while ((opp = (Actor *) next()) != 0)
-				{
+			for (Actor_queue::const_iterator it = opponents.begin(); it != opponents.end(); ++it)
+			{
+				Actor *opp = *it;
 				str = opp->get_property(Actor::strength);
 				if (str > best_str)
-					{
+				{
 					best_str = str;
 					new_opponent = opp;
-					}
 				}
-			break;
 			}
+			break;
+		}
 		case Actor::nearest:
-			{
+		{
 			int dist, best_dist = 4*tiles_per_chunk;
-			while ((opp = (Actor *) next()) != 0)
+			for (Actor_queue::const_iterator it = opponents.begin(); it != opponents.end(); ++it)
+			{
+				Actor *opp = *it;
 				if ((dist = npc->distance(opp)) < best_dist)
-					{
+				{
 					best_dist = dist;
 					new_opponent = opp;
-					}
-			break;
+				}
 			}
+			break;
+		}
 		case Actor::protect:		// ++++++For now, do random.
 		case Actor::random:
 		default:		// Default to random.
-			new_opponent = (Actor *) opponents.get_first();
+			new_opponent = opponents.empty() ? 0 : opponents.front();
 			break;
-		}
+	}
 	if (new_opponent)
-		{
+	{
 		opponents.remove(new_opponent);
 		unsigned long curtime = SDL_GetTicks();
 					// .5 minute since last start?
 		if (!started_battle && curtime - battle_time >= 30000)
-			{
+		{
 			Audio::get_ptr()->start_music(rand()%2 ? ATTACKED1 : ATTACKED2,
 									0);
 			battle_time = curtime;
-			}
-		started_battle = 1;
 		}
-	return new_opponent;
+		started_battle = 1;
 	}
+	return new_opponent;
+}
 
 /*
  *	Find a foe.
@@ -557,18 +575,18 @@ void Duel_schedule::find_opponents
 	)
 	{
 	opponents.clear();
-	ActorVector vec;			// Find all nearby NPC's.
+	Actor_vector vec;			// Find all nearby NPC's.
 	npc->find_nearby_actors(vec, -359, 24);
-	for (ActorVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Actor_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Actor *opp = *it;
 		Game_object *oppopp = opp->get_opponent();
 		if (opp != npc && opp->get_schedule_type() == duel &&
 		    (!oppopp || oppopp == npc))
 			if (rand()%2)
-				opponents.append(opp);
+				opponents.push(opp);
 			else
-				opponents.insert(opp);
+				opponents.push_front(opp);
 		}
 	}
 

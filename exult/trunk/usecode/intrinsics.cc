@@ -906,9 +906,9 @@ USECODE_INTRINSIC(sit_down)
 	Game_object *chair = get_item(parms[1]);
 	if (!chair)
 		return(no_ret);
-	GOVector vec;			// See if someone already there.
+	Game_object_vector vec;			// See if someone already there.
 	chair->find_nearby(vec, -359, 1, 8);
-	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
 		if ((obj->get_framenum()&0xf) == Actor::sit_frame)
@@ -1367,11 +1367,11 @@ USECODE_INTRINSIC(nap_time)
 	if (!bed)
 		return no_ret;
 					// !!! Seems 622 handles sleeping.
-	ActorVector npcs;			// See if bed is occupied by an NPC.
+	Actor_vector npcs;			// See if bed is occupied by an NPC.
 	int cnt = bed->find_nearby_actors(npcs, -359, 0);
 	if (cnt > 0)
 		{
-		ActorVector::const_iterator it;
+		Actor_vector::const_iterator it;
 		for (it = npcs.begin(); it != npcs.end(); ++it)
 			{
 			Game_object *npc = *it;
@@ -1415,9 +1415,9 @@ USECODE_INTRINSIC(in_usecode)
 USECODE_INTRINSIC(attack_avatar)
 {
 	// Attack thieving Avatar.
-	ActorVector npcs;			// See if someone is nearby.
+	Actor_vector npcs;			// See if someone is nearby.
 	gwin->get_main_actor()->find_nearby_actors(npcs, -359, 12);
-	for (ActorVector::const_iterator it = npcs.begin(); it != npcs.end();++it)
+	for (Actor_vector::const_iterator it = npcs.begin(); it != npcs.end();++it)
 		{
 		Actor *npc = (Actor *) *it;
 		if (!npc->is_monster() && npc != gwin->get_main_actor() &&

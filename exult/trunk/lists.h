@@ -1,13 +1,5 @@
-/**
- **	Lists.h - Various list classes.
- **
- **	Written: 5/20/99 - JSF
- **/
-
-#ifndef INCL_LISTS
-#define INCL_LISTS 1
 /*
-Copyright (C) 1999  Jeffrey S. Freedman
+Copyright (C) 2000 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -24,107 +16,84 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-/*
- *	An entry in a single-link list.
- */
-class Slist_entry
+#ifndef _LISTS_H_
+#define _LISTS_H_
+
+// TODO: merge lists.h and vec.h into one file?!
+
+#include <list>
+#include "exceptions.h"
+
+class Actor;
+
+template <class T>
+class Exult_queue
+{
+public:
+	typedef typename std::list<T>::size_type		size_type;
+	typedef typename std::list<T>::const_iterator	const_iterator;
+
+protected:
+	std::list<T> data;
+
+public:
+	// exception class for illegal operations on an empty queue
+	class empty_queue_exception : public exult_exception
 	{
-	Slist_entry *next;		// ->next in list.
-	void *ent;			// Entry.
-	friend class Slist;
-	friend class Slist_iterator;
-	Slist_entry(void *e) : ent(e)
-		{  }
+	public:
+		empty_queue_exception () : exult_exception("attempt to read an empty queue") {  }
 	};
 
-/*
- *	A single-link list:
- */
-class Slist
-	{
-	Slist_entry *last;		// ->end of list, or 0 if empty.
-public:
-	friend class Slist_iterator;
-	Slist() : last(0)
-		{  }
-	Slist(Slist& list2);		// Shallow copy.
-	void clear();			// Remove all entries.
-	~Slist()
-		{ clear(); }
-	void insert(void *e)		// Insert at head of list.
-		{
-		Slist_entry *se = new Slist_entry(e);
-		if (!last)		// First one?
-			last = se->next = se;
-		else
-			{
-			se->next = last->next;
-			last->next = se;
-			}
-		}
-	void append(void *e)		// Add to end of list.
-		{
-		Slist_entry *se = new Slist_entry(e);
-		if (!last)		// First one?
-			last = se->next = se;
-		else
-			{
-			se->next = last->next;
-			last->next = se;
-			last = se;
-			}
-		}
-	void *get_last()
-		{ return (last ? last->ent : 0); }
-	void *get_first()
-		{ return (last ? last->next->ent : 0); }
-	void *remove_first()		// Remove 1st and return it.
-		{
-		if (!last)		// Empty?
-			return (0);
-		else
-			{
-			Slist_entry *se = last->next;
-			void *e = se->ent;
-			if (se == last)
-				last = 0;
-			else
-				last->next = se->next;
-			delete se;
-			return (e);
-			}
-		}
-	int remove(void *e);		// Remove.
-	};
+	// number of elements
+	size_type size() const
+		{ return data.size(); }
 
-/*
- *	Iterate through a list.
- */
-class Slist_iterator
+	// queue empty?
+	bool empty() const
+		{ return data.empty(); }
+
+	// insert element into the queue
+	void push (const T& obj)
+		{ data.push_back(obj); }
+
+	// insert element at the front of the queue
+	void push_front (const T& obj)
+		{ data.push_front(obj); }
+
+	// pop element out of the queue and return its value
+	T pop ()
 	{
-	Slist *list;
-	Slist_entry *next;		// What to return next.
-public:
-	Slist_iterator(Slist *l) : list(l), 
-		next(l->last ? l->last->next : 0)
-		{  }
-	Slist_iterator(Slist& l) : list(&l), 
-		next(l.last ? l.last->next : 0)
-		{  }
-	void reset()			// Set back to start.
-		{ next = list->last ? list->last->next : 0; }
-	void *operator()()		// Get next.
-		{
-		void *data;
-		if (next)
-			{
-			data = next->ent;
-			next = next == list->last ? 0 : next->next;
-			}
-		else
-			data = 0;
-		return (data);
-		}
-	};
+		if (data.empty())
+			throw empty_queue_exception();
+		T obj(data.front());
+		data.pop_front();
+		return obj;
+	}
+
+	// return value of next element
+	T& front ()
+	{
+		if (data.empty())
+			throw empty_queue_exception();
+		return data.back();
+	}
+	
+	// remove an element from the queue
+	void remove(const T& obj)
+		{ data.remove(obj); }
+	
+	// clear the queue
+	void clear()
+		{ data.clear(); }
+
+	// iterators:
+	const_iterator         begin() const
+		{ return data.begin(); }
+	const_iterator         end() const
+		{ return data.end(); }
+};
+
+typedef Exult_queue<Actor*> Actor_queue;
+
 
 #endif
