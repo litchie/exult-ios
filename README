@@ -1,12 +1,13 @@
 Exult Documentation
-last changed: 24 July 2002(GMT)
+last changed: 24 October 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 24 July 2002
-0.2. - 05 June 2002
+0.1. - 24 October 2002
+0.2. - 24 July 2002
+0.3. - 05 June 2002
 
 1. Introduction
 1.1. What is Exult?
@@ -46,7 +47,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 6.7. Quit
 
 7. OS specific notes
-7.1. Error Log
+7.1. How to get the Zaurus port working
+7.2. Error Log
 
 8. Credits and Contact
 8.1. Thanks
@@ -56,12 +58,17 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 24 July 2002
+0.1. - 24 October 2002
+* 7.1. How to get the Zaurus port working quick guide where the necessary files can be found.
+
+
+
+0.2. - 24 July 2002
 * 2.4. Command line options added -c and fixed --buildmap.
 
 
 
-0.2. - 05 June 2002
+0.3. - 05 June 2002
 * 5.1. Movement no keyboard movement.
 * 5.2. Keyboard commands added cut/paste selection keys..
 
@@ -693,7 +700,16 @@ Exits Exult.
 --------------------------------------------------------------------------------
 
 7. OS specific notes
-7.1. Error Log
+7.1. How to get the Zaurus port working
+Some people were confused where to put the Exult and U7 files and this is a quick guide.
+* BG and SI are expected to be installed in /mnt/cf/exult-data/bg and /mnt/cf/exult-data/si
+* Exult binary is in /opt/QtPalmtop/bin/
+* the shared files (like exult_bg.flx) go into /opt/QtPalmtop/share/exult/
+* exult.cfg is can be found as /home/root/.exult.cfg
+
+
+
+7.2. Error Log
 * MacOS/Win32: Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help.
 * UNIX/UNIX clones: the above mentioned logs are shown in the console from which Exult is started. ./exult >&log will send both stderr and stdout to the file named "log".
 
