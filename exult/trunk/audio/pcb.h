@@ -331,7 +331,8 @@ public:
 	static	int	counter;
 	int	mycounter;
 #endif
-	bool is_active()
+	bool is_consuming() const { return consuming; }
+	bool is_active() const
 		{ return consuming || producing; }
 	void	produce(const void *p,size_t l)
 		{
