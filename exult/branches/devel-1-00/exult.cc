@@ -964,11 +964,13 @@ static void Handle_event
 				Mouse::mouse->set_speed_cursor();
 				break;
 				}
-			last_b1_click = curtime;
-			if (!click_handled)
+			if (!click_handled) {
+				last_b1_click = curtime;
+
 					// Identify item(s) clicked on.
 				gwin->show_items(x, y, 
 					(SDL_GetModState() & KMOD_CTRL) != 0);
+			}
 			dragging = false;
 			}
 		break;
