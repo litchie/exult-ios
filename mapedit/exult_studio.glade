@@ -7958,7 +7958,7 @@ Coordinates</property>
 		      <property name="update_policy">GTK_UPDATE_ALWAYS</property>
 		      <property name="snap_to_ticks">False</property>
 		      <property name="wrap">False</property>
-		      <property name="adjustment">0 0 1023 1 10 10</property>
+		      <property name="adjustment">0 0 8096 1 10 10</property>
 		      <signal name="changed" handler="on_obj_shape_changed"/>
 		    </widget>
 		  </child>
