@@ -110,6 +110,13 @@ static int Has_quantity
 	return info.get_shape_class() == Shape_info::has_quantity;
 	}
 
+static int Has_hitpoints(int shnum)
+{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(shnum);
+	return (info.get_shape_class() == Shape_info::has_hp);
+}
+
 const int MAX_QUANTITY = 100;		// Highest quantity possible.
 
 /*
@@ -129,6 +136,22 @@ int Game_object::get_quantity
 	else
 		return 1;
 	}
+
+int Game_object::get_obj_hp() const
+{
+	int shnum = get_shapenum();
+	if (Has_hitpoints(shnum))
+		return quality;
+	else
+		return 0;
+}
+
+void Game_object::set_obj_hp(int hp)
+{
+	int shnum = get_shapenum();
+	if (Has_hitpoints(shnum))
+		set_quality(hp);
+}
 
 /*
  *	Get the volume.
@@ -1265,6 +1288,8 @@ int Game_object::lt
 #ifdef DEBUGLT
 	Debug_lt(inf1.tx, inf1.ty, inf2.tx, inf2.ty);
 #endif
+
+
 	int result = -1;		// Watch for conflicts.
 	if (inf1.tz != inf2.tz)		// Is one obj. on top of another?
 		{
@@ -1420,177 +1445,6 @@ int Game_object::get_rotated_frame
 		return curframe ^ ((quads%2)<<5);
 	}
 
-#if 0	/* The old way ++++++++++*/
-	switch (get_shapenum())		// Wish I knew a better way...
-		{
-	case 251:			// Sails.  Wind direction?
-		{
-		static char swaps180[8] = {3, 2, 1, 0, 7, 6, 5, 4};
-		int subframe = curframe&7;
-		switch (quads)
-			{
-		case 1:			// 90 right.
-			return (curframe&32) ? swaps180[subframe]
-					: (curframe|32);
-		case 3:			// 90 left.
-			return (curframe&32) ? subframe
-					: (swaps180[subframe]|32);
-		case 2:			// 180.
-			return swaps180[subframe] | (curframe&32);
-			}
-		}
-	case 301:			// Step onto cart.
-		{
-		static char swaps180[4] = {2, 3, 0, 1};
-		int subframe = curframe&3;
-		switch (quads)
-			{
-		case 1:			// 90 right.
-			return (curframe&32) ? swaps180[subframe]
-					: (curframe|32);
-		case 3:			// 90 left.
-			return (curframe&32) ? subframe
-					: (swaps180[subframe]|32);
-		case 2:			// 180.
-			return swaps180[subframe] | (curframe&32);
-			}
-		}
-	case 292:			// Seat.  Sequential frames for dirs.
-		{
-		int dir = curframe%4;	// Current dir (0-3).
-		return (curframe - dir) + (dir + quads)%4;
-		}
-	case 665:			// Prow.  Frames 0,3 are N, 1,2 S.
-	case 1017:			// Ship.
-	case 248:			// SI prow.
-		{
-		static char dirs[4] = {0, 2, 2, 0};
-		int subframe = curframe%4;
-		int dir = (4 + dirs[subframe] - ((curframe>>5)&1) + quads)%4;
-		static int subframes[4] = {0, 33, 1, 32};
-		return ((curframe - subframe)&31) + subframes[dir];
-		}
-	case 700:			// Deck.
-		{
-		static char swaps180[12] = {2, 0, 0, 1, 5, 4, 7, 6, 8, 9, 
-								10, 11};
-		int subframe = curframe&15;
-		switch (quads)
-			{
-		case 1:			// 90 left.
-			return (curframe&32) ? (curframe&31) :
-				(swaps180[subframe]|32);
-		case 3:			// 90 right.
-			return (curframe&32) ? swaps180[subframe] :
-				(subframe|32);
-		case 2:			// 180.  Flip around.
-			return swaps180[subframe]|(curframe&32);
-			}
-		}
-	case 775:			// Ship rails.
-		{
-		static char swaps180[8] = {2, 3, 0, 1, 6, 7, 4, 5};
-		static char swaps90r[8] = {1, 0, 3, 2, 5, 4, 7, 6};
-		int subframe = curframe&7;
-		switch (quads)
-			{
-		case 1:			// 90 right?
-			{
-			int swapped = swaps90r[subframe];
-			return (curframe&32) ? swaps180[swapped]
-					     : (swapped|32);
-			}
-		case 3:			// 90 left?  Go 180 + 90 right.
-			{
-			int swapped = swaps90r[swaps180[subframe]];
-			return (curframe&32) ? swaps180[swapped]
-					     : (swapped|32);
-			}
-		case 2:			// 180?
-			return swaps180[subframe] | (curframe&32);
-		default:
-			return curframe;
-			}
-		}
-	case 781:			// Gang plank.  Odd frames are rot.
-//	case 1017:			// Ship.
-		{
-		int newframe = (curframe + quads)%4;
-		return newframe | ((newframe&1)<<5);
-		}
-	case 791:			// Ship.
-		{
-		static char swaps180[4] = {2, 3, 0, 1};
-		static char swaps90r[4] = {1, 0, 3, 2};
-		int subframe = curframe&3;
-		switch (quads)
-			{
-		case 3:			// 90 left.
-			subframe = swaps180[subframe];
-					// FALL through.
-		case 1:			// 90 right.
-			{
-			int swapped = swaps90r[subframe];
-			return (curframe&32) ? swaps180[swapped]
-					     : (swapped|32);
-			}
-		case 2:
-		default:
-			return swaps180[subframe]|(curframe&32);
-			}
-		}
-	case 660:
-	case 652:
-	case 757:			// Piece of the cart.
-		{			// Groups of 4.
-		static char swaps180[4] = {2, 3, 0, 1};
-		static char swaps90r[4] = {1, 0, 3, 2};
-		int subframe = curframe&3;
-		switch (quads)
-			{
-		case 3:			// 90 left.
-			subframe = swaps180[subframe];
-					// FALL through.
-		case 1:			// 90 right.
-			{
-			int swapped = swaps90r[subframe];
-			return (curframe&32) ? swaps180[swapped]
-					     : (swapped|32);
-			}
-		case 2:
-		default:
-			return swaps180[subframe]|(curframe&32);
-			}
-		}
-		
-	case 796:			// Draft horse.
-		{
-					// Groups of 4:  0, 3 are N, 1, 2 S.
-		int subframe = curframe&3;
-		int curdir = (4 + 2*(((subframe>>1)&1)^(subframe&1)) -
-							((curframe>>5)&1))%4;
-		int newdir = (curdir + quads)%4;
-		static char frames[4] = {0, 33, 1, 32};
-		return (curframe&31) - subframe + frames[newdir];
-		}
-	case 840:			// Magic carpet.
-		{
-		if (curframe >= 24)	// Plain square.
-			return curframe;
-		static char rot[24] = {	// Values for 90 degrees:
-		//      0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
-			7, 4, 5, 6, 3, 0, 1, 2,14,12,13,15,11, 8,10, 9,22,
-		//	17 18 19 20 21 22 23
-			20,21,23,16,19,17,18 };
-		while (quads--)
-			curframe = rot[curframe];
-		return curframe;
-		}
-	default:			// Reflect.  Bit 32==horizontal.
-		return curframe ^ ((quads%2)<<5);
-		}
-	}
-#endif
 
 /*
  *	Figure attack points against an object, and also run weapon's usecode.
@@ -1669,39 +1523,44 @@ Game_object *Game_object::attacked
 					attacker, weapon_shape, ammo_shape);
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
-	if (shnum == 518)		// Glass countertop?
-		{
-		if (rand()%4 >= wpoints)// Easy to break.
-			return this;
-		Game_object_vector objs;
-		Get_connected(this, objs);
-		for (Game_object_vector::const_iterator it = objs.begin();
-						it != objs.end(); ++it)
-			{
-			Game_object *obj = *it;
-			gwin->add_dirty(obj);
-			obj->remove_this();
-			}
-		gwin->theft();		// +++Shouldn't just be warning!
-		return 0;
-		}
-					// Door / debris?
-	if (shnum != 433 && shnum != 432 && shnum != 270 && shnum != 376 &&
-		!(shnum == 202 && (frnum%4)==0) )
-		return this;
-	if (wpoints < 4)		// Make it much harder.
-		return this;		// Fail.
-	if (wpoints < 16)
-		wpoints = wpoints/2;	// Unlikely.
-					// Guessing:
-	if (rand()%90 < wpoints)
-		{
-		gwin->add_dirty(this);
-		remove_this();
-		return 0;
-		}
-	return this;
+
+	int hp = 0;
+
+	if (Has_hitpoints(shnum)) {
+		hp = get_obj_hp();
+	} else {
+		// some special cases
+		// guessing these don't have hitpoints by default because
+		// doors need their 'quality' field for something else
+
+		if (shnum == 432 || shnum == 433) // doors
+			if (get_quality() == 0) // only 'normal' doors
+				if (frnum != 3 && frnum < 7) // no magic-locked or steel doors
+					hp = 6;
+	
+		if (shnum == 270 || shnum == 376) // more doors
+			if (get_quality() == 0) // only 'normal' doors
+				if (frnum < 3 || (frnum >= 8 && frnum <= 10) ||
+					(frnum >= 16 && frnum <= 18)) // no magic or steel doors
+					hp = 6;
 	}
+
+	if (hp == 0) // indestructible
+		return this;
+
+	if (wpoints >= hp) {
+		// object destroyed
+
+		gwin->get_usecode()->call_usecode(0x626, this,Usecode_machine::weapon);
+
+		return 0;
+	} else {
+		set_obj_hp(hp - wpoints);
+
+		return this;
+	}
+
+}
 
 /*
  *	Write the common IREG data for an entry.

@@ -1,4 +1,13 @@
-2001-08-07  Max Horn <max@quendi.de>
+2001-08-09  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* shapeinf.h: added the 'has_hp' object type
+	* objs.*: use the has_hp object type to determine if objects are 
+	destroyable. (doors are exception). Also call intrinsic 0x626 if
+	object is destroyed.
+	TODO: do the same for containers. (using the 'resistance' field)
+	unfortunately this implies that the remove_item intrinsic will also
+	have to extract the contents of a container...
+
+2001-08-09  Max Horn <max@quendi.de>
 	* audio/midi/mac_midi.*: mac midi driver now semi-working! It will assert
 	  for the BG menu MIDI (and for others, too), and still lacks some important
 	  stuff, but it is a beginning! Figured I better check this in before my HD

@@ -612,7 +612,7 @@ void Container_game_object::write_ireg
 	int quant = (npc >= 0 && npc <= 127) ? (npc + 0x80) : 0;
 	*ptr++ = quant&0xff;		// "Quantity".
 	*ptr++ = (get_lift()&15)<<4;	// Lift 
-	*ptr++ = resistance;		// Resistance.
+	*ptr++ = (unsigned char)resistance;		// Resistance.
 					// Flags:  B0=invis. B3=okay_to_take.
 	*ptr++ = get_flag((Obj_flags::invisible) != 0) +
 		 ((get_flag(Obj_flags::okay_to_take) != 0) << 3);
