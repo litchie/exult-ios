@@ -596,6 +596,8 @@ if test x$enable_exult_studio = xyes; then
 		AM_CONDITIONAL(HAVE_GLADE, true)
 		LIBGLADE_LIBS=`libglade-config --libs`
 		AC_SUBST(LIBGLADE_LIBS)
+		LIBGLADE_INCLUDES=`libglade-config --cflags`
+		AC_SUBST(LIBGLADE_INCLUDES)
 	fi
 else
 	AM_CONDITIONAL(HAVE_GLADE, false)
