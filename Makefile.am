@@ -48,6 +48,8 @@ exult_SOURCES =	\
 	npcnear.h	\
 	objs.cc		\
 	objs.h		\
+	paths.cc	\
+	paths.h		\
 	readnpcs.cc	\
 	ready.h		\
 	schedule.cc	\
