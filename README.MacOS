@@ -18,9 +18,6 @@ Now run ExultMac, and have fun!
 
 Notes
 ------
-* Exult Mac has no Audio/Midi support yet (exult in general
-has it, though).
-
 * Exult generates the files 'stdout.txt' and 'stderr.txt'.
 These may give you some idea of what is going on
 under the hood. When Exult suddenly quits, sometimes
