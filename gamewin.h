@@ -169,6 +169,11 @@ public:
 		return (new_skip == skip_above_actor ? 0
 				: ((skip_above_actor = new_skip), 1));
 		}
+	int set_above_main_actor(int lift)// Use this if chunk didn't change.
+		{
+		return !is_main_actor_inside() ? 0 : 
+			((skip_above_actor = ((lift + 4 + 4)/5)*5), 1);
+		}
 	int is_main_actor_inside()
 		{ return skip_above_actor < 31 ; }
 	Actor *get_npc(long npc_num)
