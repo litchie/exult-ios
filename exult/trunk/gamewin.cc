@@ -3122,7 +3122,80 @@ void Game_window::plasma(int w, int h, int x, int y, int startc, int endc)
 	}
 }
 
+#if 1	/* +++++++++Working on this: */
+/*
+ *	Chunk caching emulation:  swap out chunks which are now at least
+ *	3 chunks away.
+ */
+void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
+{
+	if (oldx == -1 || oldy == -1)
+		return;			// Seems like there's nothing to do.
+	remove_weather_effects(120);	// Cancel weather from eggs that are
+					//   far away.
+	int nearby[5][5];		// Chunks within 3.
+	// Set to 0
+	memset(nearby, 0, sizeof(nearby));
+					// Figure old range.
+	int old_minx = c_num_chunks + oldx - 2, 
+	    old_maxx = c_num_chunks + oldx + 2;
+	int old_miny = c_num_chunks + oldy - 2, 
+	    old_maxy = c_num_chunks + oldy + 2;
+					// Figure new range.
+	int new_minx = c_num_chunks + newx - 2, 
+	    new_maxx = c_num_chunks + newx + 2;
+	int new_miny = c_num_chunks + newy - 2, 
+	    new_maxy = c_num_chunks + newy + 2;
+	// Now we write what we are now near
+	int x, y;
+	for (y = new_miny; y <= new_maxy; y++) 
+		{
+		if (y > old_maxy)
+			break;		// Beyond the end.
+		int dy = y - old_miny;
+		if (dy < 0)
+			continue;
+		assert(dy < 5);
+		for (x = new_minx; x <= new_maxx; x++)
+			{
+			if (x > old_maxx)
+				break;
+			int dx = x - old_minx;
+			if (dx >= 0)
+				{
+				assert(dx < 5);
+				nearby[dx][dy] = 1;
+				}
+			}
+		}
+	// Swap out chunks no longer nearby (0).
+	Game_object_vector removes;
+	for (y = 0; y < 5; y++)
+		for (x = 0; x < 5; x++)
+			{
+			if (nearby[x][y] != 0)
+				continue;
+			Chunk_object_list *list = get_objects_safely(
+				(old_minx + x)%c_num_chunks,
+				(old_miny + y)%c_num_chunks);
+			if (!list) continue;
+			Object_iterator it(list->get_objects());
+			Game_object *each;
+			while ((each = it.get_next()) != 0)
+				{
+				if (each->is_egg())
+					((Egg_object *) each)->reset();
+				else if (each->get_npc_num() == -1)
+					removes.push_back(each);
+				}
+			}
+	for (Game_object_vector::const_iterator it=removes.begin(); 
+						it!=removes.end(); ++it)
+		delete_object(*it);	// Remove & schedule for deletion.
+	}
 
+#endif
+#if 0
 /*
  *	Superchunk Caching Emulation
  *
@@ -3171,6 +3244,8 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 	for (y = miny; y <= maxy; y++) for (x = minx; x <= maxx; x++)
 		schunks[x%c_num_schunks][y%c_num_schunks] += 2;
 
+//	if (oldx != -1 && oldy != -1)
+//		schunks[oldsx][oldsy] = 1;	// Do one we left. TESTING++++
 	// Swapout any superchanks that are no longer needed (set to 1)
 	for (y = aminy; y <= amaxy; y++) for (x = aminx; x <= amaxx; x++)
 		if (schunks[x%c_num_schunks][y%c_num_schunks] == 1) emulate_swapout(x%c_num_schunks, y%c_num_schunks);
@@ -3206,6 +3281,7 @@ void Game_window::emulate_swapout (int scx, int scy)
 		delete_object(*it);	// Remove & schedule for deletion.
 
 }
+#endif
 
 // Tests to see if a move goes out of range of the actors superchunk
 bool Game_window::emulate_is_move_allowed(int tx, int ty)
