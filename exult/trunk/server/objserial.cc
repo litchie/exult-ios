@@ -158,7 +158,7 @@ void Npc_actor_io
 	unsigned char *& buf,		// Where to store data.
 	unsigned long& addr,		// Address.
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
-	int& shape, int& frame,
+	int& shape, int& frame, int& face,
 	std::string& name,
 	short& npc_num,
 	short& ident,
@@ -175,7 +175,7 @@ void Npc_actor_io
 	{
 	Serial io(buf);
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
-	io << name << npc_num << ident << usecode;
+	io << face << name << npc_num << ident << usecode;
 	for (int i = 0; i < 12; i++)
 		io << properties[i];
 	io << attack_mode << alignment << oflags << siflags << type_flags;
@@ -259,7 +259,7 @@ int Npc_actor_out
 	int fd,				// Socket.
 	unsigned long addr,		// Address.
 	int tx, int ty, int tz,		// Absolute tile coords.
-	int shape, int frame,
+	int shape, int frame, int face,
 	std::string name,
 	short npc_num,
 	short ident,
@@ -276,7 +276,7 @@ int Npc_actor_out
 	{
 	unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
-	Npc_actor_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame,
+	Npc_actor_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame, face,
 		name, npc_num, ident, usecode, 
 		properties, attack_mode, alignment,
 		oflags, siflags, type_flags,
@@ -296,7 +296,7 @@ int Npc_actor_in
 	int datalen,			// Length of data.
 	unsigned long& addr,		// Address.
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
-	int& shape, int& frame,
+	int& shape, int& frame, int& face,
 	std::string& name,
 	short& npc_num,
 	short& ident,
@@ -312,7 +312,7 @@ int Npc_actor_in
 	)
 	{
 	unsigned char *ptr = data;
-	Npc_actor_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame,
+	Npc_actor_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame, face,
 		name, npc_num, ident, usecode, 
 		properties, attack_mode, alignment,
 		oflags, siflags, type_flags,

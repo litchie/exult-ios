@@ -1673,6 +1673,30 @@ Clouds
 	<spacing>0</spacing>
 
 	<widget>
+	  <class>GtkFrame</class>
+	  <name>npc_face_frame</name>
+	  <border_width>4</border_width>
+	  <label>Face #000</label>
+	  <label_xalign>0</label_xalign>
+	  <shadow_type>GTK_SHADOW_IN</shadow_type>
+	  <child>
+	    <padding>0</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkDrawingArea</class>
+	    <name>npc_face_draw</name>
+	    <signal>
+	      <name>expose_event</name>
+	      <handler>on_npc_face_draw_expose_event</handler>
+	      <last_modification_time>Sun, 15 Jul 2001 19:40:02 GMT</last_modification_time>
+	    </signal>
+	  </widget>
+	</widget>
+
+	<widget>
 	  <class>GtkVBox</class>
 	  <name>vbox16</name>
 	  <homogeneous>False</homogeneous>
@@ -1722,7 +1746,7 @@ Clouds
 	      <widget>
 		<class>GtkEntry</class>
 		<name>npc_name_entry</name>
-		<width>100</width>
+		<width>80</width>
 		<can_focus>True</can_focus>
 		<editable>True</editable>
 		<text_visible>True</text_visible>
@@ -1756,7 +1780,7 @@ Clouds
 	      <widget>
 		<class>GtkEntry</class>
 		<name>npc_usecode_entry</name>
-		<width>100</width>
+		<width>80</width>
 		<can_focus>True</can_focus>
 		<editable>True</editable>
 		<text_visible>True</text_visible>
@@ -1790,7 +1814,7 @@ Clouds
 	      <widget>
 		<class>GtkEntry</class>
 		<name>npc_ident_entry</name>
-		<width>100</width>
+		<width>80</width>
 		<can_focus>True</can_focus>
 		<editable>True</editable>
 		<text_visible>True</text_visible>
@@ -1824,7 +1848,7 @@ Clouds
 	      <widget>
 		<class>GtkEntry</class>
 		<name>npc_num_entry</name>
-		<width>100</width>
+		<width>80</width>
 		<sensitive>False</sensitive>
 		<can_focus>True</can_focus>
 		<editable>True</editable>
@@ -1907,7 +1931,7 @@ Clouds
 	    <widget>
 	      <class>GtkEntry</class>
 	      <name>npc_shape</name>
-	      <width>100</width>
+	      <width>80</width>
 	      <can_focus>True</can_focus>
 	      <signal>
 		<name>focus_out_event</name>
@@ -1946,7 +1970,7 @@ Clouds
 	    <widget>
 	      <class>GtkEntry</class>
 	      <name>npc_frame</name>
-	      <width>100</width>
+	      <width>80</width>
 	      <can_focus>True</can_focus>
 	      <editable>True</editable>
 	      <text_visible>True</text_visible>

@@ -71,7 +71,7 @@ int Npc_actor_out
 	int fd,				// Socket.
 	unsigned long addr,		// Address.
 	int tx, int ty, int tz,		// Absolute tile coords.
-	int shape, int frame,
+	int shape, int frame, int face,
 	std::string name,
 	short npc_num,
 	short ident,
@@ -91,7 +91,7 @@ int Npc_actor_in
 	int datalen,			// Length of data.
 	unsigned long& addr,		// Address.
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
-	int& shape, int& frame,
+	int& shape, int& frame, int& face,
 	std::string& name,
 	short& npc_num,
 	short& ident,

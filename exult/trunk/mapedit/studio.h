@@ -35,6 +35,7 @@ private:
 	static ExultStudio	*self;
 	Vga_file		*ifile;
 	Vga_file		*vgafile;	// Main 'shapes.vga'.
+	Vga_file		*facefile;	// 'faces.vga'.
 	ifstream		*chunkfile;	// 'u7chunks'.
 	char			**names;
 	Object_browser		*browser;
@@ -45,7 +46,7 @@ private:
 	int			egg_ctx;
 					// Npc editor:
 	GtkWidget		*npcwin;
-	Shape_draw		*npc_draw;
+	Shape_draw		*npc_draw, *npc_face_draw;
 	int			npc_ctx;
 					// Server data.
 	int			server_socket;
@@ -96,6 +97,8 @@ public:
 	int save_npc_window();
 	void show_npc_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_npc_shape(int shape, int frame);
+	void show_npc_face(int x = 0, int y = 0, int w = -1, int h = -1);
+	void set_npc_face(int shape, int frame);
 	static void schedule_btn_clicked(GtkWidget *btn, gpointer data);
 
 	void run();
