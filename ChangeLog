@@ -1,3 +1,8 @@
+2004-09-18    <jeff@mini.nerble.net>
+
+	* shapes/items.h,etc: Reorganized lists of text to prepare for
+	supporting >1024 shapes.
+
 2004-09-13    <jeff@mini.nerble.net>
 
 	* schedule.cc:  Support thief schedule.

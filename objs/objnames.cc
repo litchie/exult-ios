@@ -308,10 +308,10 @@ string Game_object::get_name
 			break;
 		case 0x152:         // lit light source
 			{
-			if (num_item_names <= 0x657)
+			if (num_misc_names <= 0x657 - misc_name0)
 				break;
-			string tmp = item_names[0x657]; // lit
-			tmp += item_names[0x646 + frnum];
+			string tmp = misc_names[0x657-misc_name0]; // lit
+			tmp += misc_names[0x646 - misc_name0 + frnum];
 			return tmp;
 			}
 			break;
@@ -641,14 +641,18 @@ string Game_object::get_name
 		case 0x392:         // urn
 			if (frnum <= 1) {
 				// when frame = 0,1, the quality is an NPC num
-				// the item name is then the name of that NPC + "'s ashes"
+				// the item name is then the name of that 
+				//   NPC + "'s ashes"
 				// (quality == 0,255: 'urn of ashes')
 				Actor* npc = gwin->get_npc(get_quality());
-				if (get_quality() > 0 && npc && !npc->is_unused()) {
+				if (get_quality() > 0 && npc && 
+							!npc->is_unused()) {
 					string tmp = npc->get_npc_name();
-					if (tmp != "" && num_item_names>0x65e) {
-						tmp += item_names[0x65e]; // 's ashes
-						return tmp;
+					if (tmp != "" && 
+					    num_misc_names>0x65e -misc_name0) {
+						tmp += misc_names[
+							0x65e - misc_name0]; 
+						return tmp;	// 's ashes
 					}
 				}
 				index = 0x632; // urn with ashes
@@ -698,10 +702,10 @@ string Game_object::get_name
 			break;
 		case 0x3e5:         // spent light source
 			{
-			if (num_item_names <= 0x658)
+			if (num_misc_names <= 0x658 - misc_name0)
 				break;
-			string tmp = item_names[0x658]; // spent
-			tmp += item_names[0x646 + frnum];
+			string tmp = misc_names[0x658-misc_name0]; // spent
+			tmp += misc_names[0x646 - misc_name0 + frnum];
 			return tmp;
 			}
 			break;
@@ -771,7 +775,13 @@ string Game_object::get_name
 		index = shnum;
 	}
 
-	const char *name = (index >= 0 && index < num_item_names) ?
+	const char *name;
+	if (index >= misc_name0 &&
+	    index < misc_name0 + num_misc_names && index != shnum)
+					// A frame name.
+		name = misc_names[index - misc_name0];
+	else
+		name = (index >= 0 && index < num_item_names) ?
 						item_names[index] : 0;
 	if(name == 0) {
 		return "";

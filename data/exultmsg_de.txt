@@ -1,18 +1,18 @@
 # These messages are used in the Exult engine, and follow the
 # game-specific ones.
-2800:Stell den Stuhl zurück!
-2801:Dieb!!
-2802:Du Schurke!!
-2803:Nicht lustig!
-2804:Wer hat meinen Stuhl bewegt??
-2805:Du siehst aus, als würde es dir gut gehn.
-2806:Alles klar?
-2807:Bereit für das Dessert?
-2808:Guten Appetit!
-2809:Spezialität des Hauses!
-2810:Avatar!  Benimm dich!
-2811:Hast Du bemerkt, daß schon jemand im Bett liegt?
-2812:Der Benutzer dieses Bettes wird wohl gerade keinen Wert auf Gesellschaft legen.
-2813:So einfach wirst du mich nicht los!
-2814:Ah, hier bist du!
-2815:Hab dich gefunden!
+0x500:Stell den Stuhl zurück!
+0x501:Dieb!!
+0x502:Du Schurke!!
+0x503:Nicht lustig!
+0x504:Wer hat meinen Stuhl bewegt??
+0x505:Du siehst aus, als würde es dir gut gehn.
+0x506:Alles klar?
+0x507:Bereit für das Dessert?
+0x508:Guten Appetit!
+0x509:Spezialität des Hauses!
+0x50a:Avatar!  Benimm dich!
+0x50b:Hast Du bemerkt, daß schon jemand im Bett liegt?
+0x50c:Der Benutzer dieses Bettes wird wohl gerade keinen Wert auf Gesellschaft legen.
+0x50d:So einfach wirst du mich nicht los!
+0x50e:Ah, hier bist du!
+0x50f:Hab dich gefunden!

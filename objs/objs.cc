@@ -704,7 +704,21 @@ void Game_object::say
 	}
 
 /*
- *	Show a random string from 'text.flx' by the object.
+ *	Show a message
+ *	(Msg. #'s start from 0, and are stored from 0x400 in 'text.flx'.)
+ */
+
+void Game_object::say
+	(
+	int msgnum
+	)
+	{
+	say(text_msgs[msgnum]);
+	}
+
+/*
+ *	Show a random msg. from 'text.flx' by the object.
+ *	(Msg. #'s start from 0, and are stored from 0x400 in 'text.flx'.)
  */
 
 void Game_object::say
@@ -714,8 +728,8 @@ void Game_object::say
 {
 	if (from > to) return;
 	int offset = rand()%(to - from + 1);
-	if (from + offset < num_item_names)
-		say(item_names[from + offset]);
+	if (from + offset < num_text_msgs)
+		say(text_msgs[from + offset]);
 }
 
 /*

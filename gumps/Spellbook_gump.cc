@@ -54,8 +54,8 @@ const int REAGENTS = 842;		// Shape #.
 /*
  *	And in 'text.flx':
  */
-#define CIRCLE (GAME_BG ? 0x545 : 0x551)
-#define CIRCLENUM (GAME_BG ? 0x545 : 0x552)
+#define CIRCLE ((GAME_BG ? 0x545 : 0x551) - misc_name0)
+#define CIRCLENUM ((GAME_BG ? 0x545 : 0x552) - misc_name0)
 
 /*
  *	Get circle, given a spell #.
@@ -480,8 +480,8 @@ void Spellbook_gump::paint
 		}
 	if (page > 0 ||	GAME_SI)		// Paint circle.
 	{
-		char *circ = item_names[CIRCLE];
-		char *cnum = item_names[CIRCLENUM + page];
+		char *circ = misc_names[CIRCLE];
+		char *cnum = misc_names[CIRCLENUM + page];
 		sman->paint_text(5, cnum, x + 40 + 
 			(44 - sman->get_text_width(5, cnum))/2, y + 20);
 		sman->paint_text(5, circ, x + 92 +

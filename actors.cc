@@ -2961,7 +2961,7 @@ bool Actor::figure_hit_points
 			{
 			prob -= (70 + rand()%20);
 			eman->remove_text_effect(attacker);
-			attacker->say(item_names[0x49b]);
+			attacker->say(magebane_struck);
 			}
 		}
 	if (instant_death)
