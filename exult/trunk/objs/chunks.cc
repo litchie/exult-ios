@@ -552,35 +552,38 @@ void Chunk_cache::activate_eggs
 	unsigned short eggbits,		// Eggs[tile].
 	bool now			// Do them immediately.
 	)
-	{
+{
 	int i;				// Go through eggs.
 	for (i = 0; i < 8*(int)sizeof(eggbits) - 1 && eggbits; 
 						i++, eggbits = eggbits >> 1)
-		{
+	{
 		Egg_object *egg;
 		if ((eggbits&1) && i < egg_objects.size() &&
 		    (egg = egg_objects[i]) &&
 		    egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
-			{
+		{
 			egg->activate(obj, now);
 			if (chunk->get_cache() != this)
 				return;	// A teleport could have deleted us!
-			}
 		}
+	}
 	if (eggbits)			// Check 15th bit.
-		{			// DON'T use an iterator here, since
+	{				// DON'T use an iterator here, since
 					//   the list can change as eggs are
 					//   activated, causing a CRASH!
 		int sz = egg_objects.size();
 		for (  ; i < sz; i++)
-			{
+		{
 			Egg_object *egg = egg_objects[i];
-			if (egg && egg->is_active(obj,
-						tx, ty, tz, from_tx, from_ty))
+			if (egg && egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
+			{
 				egg->activate(obj, now);
+				if (chunk->get_cache() != this)
+					return;	// A teleport could have deleted us!			
 			}
 		}
 	}
+}
 
 /*
  *	Find door blocking a given tile.
