@@ -1851,7 +1851,7 @@ Game_object *Game_object::attacked
 
 	if (wpoints >= hp) {
 		// object destroyed
-
+		gwin->remove_text_effect(this);	// Avoids crash.
 		gwin->get_usecode()->call_usecode(0x626, this,Usecode_machine::weapon);
 
 		return 0;
