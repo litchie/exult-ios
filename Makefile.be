@@ -22,8 +22,10 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
 	args.o barge.o bodies.o\
 	combat.o delobjs.o dir.o drag.o effects.o egg.o\
 	exult.o gameclk.o gamedat.o \
-	gametxt.o gamewin.o gumps.o imagescl.o imagewin.o items.o lists.o mouse.o \
-	npcnear.o objs.o palette.o paths.o readnpcs.o scale.o schedule.o \
+	gametxt.o gamewin.o gumps.o imagescl.o imagewin.o items.o \
+	lists.o mouse.o \
+	npcnear.o npctime.o objs.o palette.o paths.o readnpcs.o \
+	scale.o schedule.o \
 	segfile.o spells.o titles.o tqueue.o usecode.o \
 	useval.o utils.o vec.o vgafile.o game.o sigame.o bggame.o
 # unused: npctest.o
