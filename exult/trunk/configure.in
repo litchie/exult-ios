@@ -72,6 +72,12 @@ case "$host_os" in
 		SYSLIBS="-L/usr/X11R6/lib -lX11 -lXext -lXxf86vm -lXxf86dga"
 		EXE_TARGET="exult"
 		;;
+	solaris* )
+		WINDOWING_SYSTEM="-DXWIN"
+		AC_MSG_RESULT(X11 (Solaris))
+		SYSLIBS="-lsocket -lX"
+		EXE_TARGET="exult"
+		;;
 	darwin*)
 		dnl We have a problem here: both MacOS X and Darwin report the same
 		dnl signature "powerpc-apple-darwin*" - so we have to do more to
