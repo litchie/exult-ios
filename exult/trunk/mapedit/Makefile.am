@@ -63,7 +63,11 @@ exult_studio_LDFLAGS = -export-dynamic		# For libglade 2.x
 
 mapeditdir = $(datadir)/exult
 
+if BUILD_STUDIO
 mapedit_DATA = exult_studio.glade
+else
+mapedit_DATA =
+endif
 
 u7shp$(EXEEXT): u7shp.c
 	$(GIMPTOOL) --build $<
