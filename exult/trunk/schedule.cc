@@ -149,6 +149,18 @@ int Schedule::try_street_maintenance
 	}
 
 /*
+ *	Get actual schedule (for Usecode intrinsic).
+ */
+
+int Schedule::get_actual_type
+	(
+	Actor *npc
+	)
+	{
+	return npc->get_schedule_type();
+	}
+
+/*
  *	Create schedule to turn lamps on/off, open/close shutters.
  */
 
@@ -231,6 +243,18 @@ void Street_maintenance_schedule::now_what
 	Npc_actor *nnpc = dynamic_cast<Npc_actor *> (npc);
 	if (nnpc)
 		nnpc->update_schedule(gwin, period, 7, 0);
+	}
+
+/*
+ *	Get actual schedule (for Usecode intrinsic).
+ */
+
+int Street_maintenance_schedule::get_actual_type
+	(
+	Actor * /* npc */
+	)
+	{
+	return prev_type;
 	}
 
 /*
@@ -2957,6 +2981,18 @@ void Walk_to_schedule::im_dormant
 	)
 	{
 	Walk_to_schedule::now_what();	// Get there by any means.
+	}
+
+/*
+ *	Get actual schedule (for Usecode intrinsic).
+ */
+
+int Walk_to_schedule::get_actual_type
+	(
+	Actor * /* npc */
+	)
+	{
+	return new_schedule;
 	}
 
 /*

@@ -1962,6 +1962,10 @@ int Usecode_internal::run
 		case 0x43:		// POPF.
 			offset = Read2(ip);
 			gflags[offset] = (unsigned char) popi();
+					// ++++KLUDGE for Monk Isle:
+			if (offset == 0x272 && Game::get_game_type() ==
+							SERPENT_ISLE)
+				gflags[offset] = 0;
 			break;
 		case 0x44:		// PUSHB.
 			pushi(*ip++);
