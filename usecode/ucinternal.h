@@ -155,8 +155,6 @@ class Usecode_internal : public Usecode_machine
 		Usecode_value& shapeval, Usecode_value& qualval,
 			Usecode_value& frameval, Usecode_value& flagval);
 
-	Usecode_value click_on_item();
-
 	int path_run_usecode(Usecode_value& npcval, Usecode_value& locval,
 		Usecode_value& useval, Usecode_value& itemval,
 				Usecode_value& eventval, int find_free = 0);

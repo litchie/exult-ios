@@ -981,43 +981,6 @@ Usecode_value Usecode_internal::remove_cont_items
 	}
 
 /*
- *	Have the user choose an object/spot with the mouse.
- *
- *	Output:	4-elem array:  (Ref. to item, or 0; tx, ty, tz)
- */
-
-Usecode_value Usecode_internal::click_on_item
-	(
-	)
-	{
-	int x, y;
-	if (!Get_click(x, y, Mouse::greenselect))
-		return Usecode_value(0);
-					// Get abs. tile coords. clicked on.
-	int tx = gwin->get_scrolltx() + x/c_tilesize;
-	int ty = gwin->get_scrollty() + y/c_tilesize;
-	int tz = 0;
-					// Look for obj. in open gump.
-	Gump *gump = gwin->find_gump(x, y);
-	Game_object *obj;
-	if (gump)
-		obj = gump->find_object(x, y);
-	else				// Search rest of world.
-		{
-		obj = gwin->find_object(x, y);
-		if (obj)		// Found object?  Use its coords.
-			obj->get_abs_tile(tx, ty, tz);
-		}
-	Usecode_value oval(obj);	// Ret. array with obj as 1st elem.
-	Usecode_value ret(4, &oval);
-	Usecode_value xval(tx), yval(ty), zval(tz);
-	ret.put_elem(1, xval);
-	ret.put_elem(2, yval);
-	ret.put_elem(3, zval);
-	return (ret);
-	}
-
-/*
  *	Find an unblocked tile within a distance of 3 from a given point.
  *
  *	Output:	Returns tile, or original if not found.
