@@ -50,6 +50,7 @@ class Time_queue;
 class Npc_proximity_handler;
 class Npc_face_info;
 class Egg_object;
+class Fonts_vga_file;
 
 /*
  *	The main game window:
@@ -93,8 +94,8 @@ private:
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
-	Vga_file paperdolls;	// "paperdoll.vga" - paperdolls in SI
-	Vga_file fonts;			// "fonts.vga" file.
+	Vga_file paperdolls;		// "paperdoll.vga" - paperdolls in SI
+	Fonts_vga_file *fonts;		// "fonts.vga" file.
 	Shape_file *extra_fonts[5];	// extra font shapes
 	Vga_file sprites;		// "sprites.vga" file.
 	Vga_file mainshp;
@@ -261,8 +262,6 @@ public:
 		{ return faces.get_num_shapes(); }
 	int get_num_gumps()
 		{ return gumps.get_num_shapes(); }
-	int get_num_fonts()
-		{ return fonts.get_num_shapes(); }
 	int get_num_sprites()
 		{ return sprites.get_num_shapes(); }
 	inline void set_mode(Game_mode md)
@@ -606,7 +605,6 @@ public:
 					// Get text height, baseline.
 	int get_text_height(int fontnum);
 	int get_text_baseline(int fontnum);
-	Shape_frame *font_get_shape (int fontnum, int framenum);
 private:
 	void drop(int x, int y);
 	bool drop_at_lift(Game_object *to_drop, int at_lift);

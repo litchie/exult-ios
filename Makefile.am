@@ -42,15 +42,12 @@ exult_SOURCES =	\
 	egg.h		\
 	exult.cc	\
 	fnames.h	\
-	font.cc		\
-	font.h		\
 	game.cc		\
 	game.h		\
 	gameclk.cc	\
 	gameclk.h	\
 	gamedat.cc	\
 	gamerend.cc	\
-	gametxt.cc	\
 	gamewin.cc	\
 	gamewin.h	\
 	lists.cc	\

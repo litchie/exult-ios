@@ -33,6 +33,7 @@
 
 class Game_window;
 class Image_window8;
+class Image_buffer8;
 class Mouse;
 
 struct str_int_pair
@@ -44,6 +45,7 @@ struct str_int_pair
 class ExultMenu {
 private:
 	Game_window *gwin;
+	Image_buffer8 *ibuf;
 	Vga_file exult_flx;
 	Palette pal;
 	int topx, topy, centerx, centery, menuy;
@@ -68,6 +70,7 @@ protected:
 public:
 	Game_window *gwin;
 	Image_window8 *win;
+	Image_buffer8 *ibuf;
 	Palette pal;
 
 	Game();

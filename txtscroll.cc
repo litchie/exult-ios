@@ -125,7 +125,8 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 				xpos = center-font->get_text_width(txt)/2;
 			else
 				xpos = center;
-			font->draw_text(gwin,xpos,ypos,txt);
+			font->draw_text(gwin->get_win()->get_ib8(),
+							xpos,ypos,txt);
 			if(*ptr!='|') ypos += font->get_text_height()+vspace;
 			txtptr = txt;	// Go to beginning of string
 			++ptr;

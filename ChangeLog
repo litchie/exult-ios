@@ -1,3 +1,7 @@
+2000-11-29  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Font-handling move to shapes directory.
+
 2000-11-29  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* audio/midi_drivers/Timidity_binary.cc: use %lu in sprintf instead of
 	  the meaningless %ul

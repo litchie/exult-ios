@@ -58,6 +58,7 @@ void ShapeBrowser::browse_shapes()
 	{
 		
 		Game_window *gwin = Game_window::get_game_window();
+		Image_buffer8 *ibuf = gwin->get_win()->get_ib8();
 		Font *font = fontManager.get_font("MENU_FONT");
 
 		int centerx = gwin->get_width()/2;
@@ -95,24 +96,24 @@ void ShapeBrowser::browse_shapes()
 				else
 					pal.load(pal_tuple.str,pal_tuple.num);
 				sprintf(buf,"VGA File: '%s'", fname);
-				font->draw_text(gwin, 0, 170, buf);
+				font->draw_text(ibuf, 0, 170, buf);
 				num_shapes = shapes->get_num_shapes();
 				sprintf(buf,"Shape: %3d/%3d", current_shape, num_shapes-1);
-				font->draw_text(gwin, 0, 180, buf);
+				font->draw_text(ibuf, 0, 180, buf);
 			
 			        num_frames = shapes->get_num_frames(current_shape);
 				sprintf(buf,"Frame: %3d/%3d", current_frame, num_frames-1);
-				font->draw_text(gwin, 160, 180, buf);
+				font->draw_text(ibuf, 160, 180, buf);
 				sprintf(buf,"Palette: %s, %d", pal_tuple.str, pal_tuple.num);
-				font->draw_text(gwin, 0, 190, buf);
+				font->draw_text(ibuf, 0, 190, buf);
 
 			        if (num_frames) {
 				        Shape_frame *frame = shapes->get_shape(
 					        current_shape, current_frame);
  				        if (frame) {
 					        sprintf(buf,"%d x %d", frame->get_width(), frame->get_height());
-					        font->draw_text(gwin, 32, 32, buf);
-  					        font->draw_text(gwin, 32, 24, item_names[current_shape]);
+					        font->draw_text(ibuf, 32, 32, buf);
+  					        font->draw_text(ibuf, 32, 24, item_names[current_shape]);
 						//draw outline
 						gwin->get_win()->fill8(255, 
 						    frame->get_width()+4, frame->get_height()+4, 
@@ -127,9 +128,9 @@ void ShapeBrowser::browse_shapes()
 					        gwin->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
 
 				        } else
-					        font->draw_text(gwin, centerx-20, centery-5, "No Shape");
+					        font->draw_text(ibuf, centerx-20, centery-5, "No Shape");
  			        } else
-				        font->draw_text(gwin, centerx-20, centery-5, "No Shape");
+				        font->draw_text(ibuf, centerx-20, centery-5, "No Shape");
  	
 			        pal.apply();
 				redraw = false;
