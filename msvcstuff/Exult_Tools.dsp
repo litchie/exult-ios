@@ -1,26 +1,26 @@
-# Microsoft Developer Studio Project File - Name="Exult Tools" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="Exult_Tools" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Generic Project" 0x010a
 
-CFG=Exult Tools - Win32 Debug Install
+CFG=Exult_Tools - Win32 Debug Install
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "Exult Tools.mak".
+!MESSAGE NMAKE /f "Exult_Tools.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "Exult Tools.mak" CFG="Exult Tools - Win32 Debug Install"
+!MESSAGE NMAKE /f "Exult_Tools.mak" CFG="Exult_Tools - Win32 Debug Install"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "Exult Tools - Win32 Release" (based on "Win32 (x86) Generic Project")
-!MESSAGE "Exult Tools - Win32 Debug" (based on "Win32 (x86) Generic Project")
-!MESSAGE "Exult Tools - Win32 Release Install" (based on "Win32 (x86) Generic Project")
-!MESSAGE "Exult Tools - Win32 Debug Install" (based on "Win32 (x86) Generic Project")
+!MESSAGE "Exult_Tools - Win32 Release" (based on "Win32 (x86) Generic Project")
+!MESSAGE "Exult_Tools - Win32 Debug" (based on "Win32 (x86) Generic Project")
+!MESSAGE "Exult_Tools - Win32 Release Install" (based on "Win32 (x86) Generic Project")
+!MESSAGE "Exult_Tools - Win32 Debug Install" (based on "Win32 (x86) Generic Project")
 !MESSAGE 
 
 # Begin Project
@@ -29,7 +29,7 @@ CFG=Exult Tools - Win32 Debug Install
 # PROP Scc_LocalPath ""
 MTL=midl.exe
 
-!IF  "$(CFG)" == "Exult Tools - Win32 Release"
+!IF  "$(CFG)" == "Exult_Tools - Win32 Release"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -42,7 +42,7 @@ MTL=midl.exe
 # PROP Intermediate_Dir ""
 # PROP Target_Dir ""
 
-!ELSEIF  "$(CFG)" == "Exult Tools - Win32 Debug"
+!ELSEIF  "$(CFG)" == "Exult_Tools - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -55,7 +55,7 @@ MTL=midl.exe
 # PROP Intermediate_Dir ""
 # PROP Target_Dir ""
 
-!ELSEIF  "$(CFG)" == "Exult Tools - Win32 Release Install"
+!ELSEIF  "$(CFG)" == "Exult_Tools - Win32 Release Install"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 0
@@ -68,7 +68,7 @@ MTL=midl.exe
 # PROP Intermediate_Dir ""
 # PROP Target_Dir ""
 
-!ELSEIF  "$(CFG)" == "Exult Tools - Win32 Debug Install"
+!ELSEIF  "$(CFG)" == "Exult_Tools - Win32 Debug Install"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
@@ -85,9 +85,9 @@ MTL=midl.exe
 
 # Begin Target
 
-# Name "Exult Tools - Win32 Release"
-# Name "Exult Tools - Win32 Debug"
-# Name "Exult Tools - Win32 Release Install"
-# Name "Exult Tools - Win32 Debug Install"
+# Name "Exult_Tools - Win32 Release"
+# Name "Exult_Tools - Win32 Debug"
+# Name "Exult_Tools - Win32 Release Install"
+# Name "Exult_Tools - Win32 Debug Install"
 # End Target
 # End Project
