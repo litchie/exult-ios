@@ -291,10 +291,11 @@ private:
 		{
 		SDL_mutexV(mutex);
 		}
+	bool	producing,consuming;
 public:
 	void	produce(const void *p,size_t l)
 		{
-		if(!l)
+		if(!l||!consuming)
 			return;	// No data? Do nothing
 		lock();
 		Buffer.push_back((const char *)p,l);
@@ -303,18 +304,34 @@ public:
 	size_t	consume(void *p,size_t l)
 		{
 		if(!l)
-			return 0;	// Nothing to be done
+			return producing?0:-1;
 		unsigned char *data=(unsigned char *)p;
 		lock();
 		l=Buffer.pop_front((char *)p,l);
 		unlock();
 		return l;
 		}
-	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex())
+	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),producing(true),consuming(true)
 		{  }
 	~ProducerConsumerBuf()
 		{
 		SDL_DestroyMutex(mutex);
+		}
+	void	end_production(void)
+		{
+		lock();
+		producing=false;
+		if(!consuming)
+			delete this;
+		unlock();
+		}
+	void	end_consumption(void)
+		{
+		lock();
+		consuming=false;
+		if(!producing)
+			delete this;
+		unlock();
 		}
 	};
 
