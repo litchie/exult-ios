@@ -924,6 +924,9 @@ USECODE_INTRINSIC(set_alignment)
 		npc->set_alignment(val);
 		if (oldalign != val)	// Changed?  Force search for new opp.
 			npc->set_target(0);
+					// For fixing List Field fleeing:
+		if (npc->get_attack_mode() == Actor::flee)
+			npc->set_attack_mode(Actor::nearest);
 		}
 	return(no_ret);
 }
