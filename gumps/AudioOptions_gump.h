@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2001 The Exult Team
+Copyright (C) 2003-2004 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -53,9 +53,10 @@ class AudioOptions_gump : public Modal_gump
 	virtual void mouse_up(int mx, int my);
 
 	void toggle(Gump_button* btn, int state);
-	void build_buttons();
-	void build_midi_buttons();
-	void build_sfx_buttons();
+	void rebuild_buttons();
+	void rebuild_midi_buttons();
+	void rebuild_mididriveroption_buttons();
+	void rebuild_sfx_buttons();
 
 	void load_settings();
 	void save_settings();
