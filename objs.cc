@@ -563,14 +563,14 @@ void Animated_object::handle_event
 		{
 		int framenum;
 					// Experiment:  A non-flat shape?
-		if (get_shapenum() >= 0x96)
+/*		if (get_shapenum() >= 0x96)
 			{		// Get next frame.
 			framenum = get_framenum() + 1;
 			if (framenum >= frames)	// End of cycle?
 				framenum = 0;
 			}
 		else			// Want flat shapes synchronized.
-			{		// Testing -WJP
+*/			{		// Testing -WJP
 			framenum = (curtime / 100) % frames;
 			}
 		set_frame(framenum);	// Set new frame.
