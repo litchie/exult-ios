@@ -1690,6 +1690,25 @@ static void Xselect_msg
 						')' << endl;
 		cout << "Create shape (" << shape << '/' << frame << ')' <<
 								endl;
+					// +++++For now:  Create object.
+		Game_object *newobj = gwin->create_ireg_object(
+			gwin->get_info(shape), shape, frame, 0, 0, 0);
+					// First see if it's a gump.
+		Gump *on_gump = gwin->find_gump(x, y);
+		if (on_gump)
+			{
+			if (!on_gump->add(newobj, x, y, x, y))
+				delete newobj;
+			else
+				on_gump->paint(gwin);
+			}
+		else			// Try to drop at increasing hts.
+			{
+			for (int lift = 0; lift <= 11; lift++)
+				if (gwin->drop_at_lift(newobj, x, y, lift))
+					return;
+			delete newobj;	// Failed.
+			}
 		}
 	}
 
