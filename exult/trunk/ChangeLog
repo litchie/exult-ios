@@ -1,3 +1,12 @@
+2001-04-32  Dancer Vesperman <dancer@users.sourceforge.net>
+	* g++ v3.0 can inline an implementation body....but that makes
+	  it invisible to other translation units (because it's inline and
+	  no longer exists as a seperate entity. Duh). Therefore, actors.cc:
+	  except add_dirty() from being inlined under G++ v3 and later.
+	  Same deal for get_tile_info()
+	  More on this in a later update.
+	* objs/objlist.h: Mark some members const to improve code-generation
+
 2001-04-22  Max Horn  <max@quendi.de>
 	* lots of namespace std:: changes, made it compile on MacOS again
 	  (still need to implement U7ListFiles)
