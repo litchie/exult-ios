@@ -29,18 +29,38 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tqueue.h"
 
 /*
+ *	Base class for special-effects:
+ */
+class Special_effect : public Time_sensitive
+	{
+	Special_effect *next, *prev;	// All of them are chained together in
+					//   Game_window.
+public:
+	friend class Game_window;
+	Special_effect() : next(0), prev(0)
+		{  }
+	virtual ~Special_effect()
+		{  }
+					// Render.
+	virtual void paint(Game_window *gwin) = 0;
+	};
+
+/*
  *	An animation from 'sprites.vga':
  */
-class Sprites_effect : public Time_sensitive
+class Sprites_effect : public Special_effect
 	{
 	int sprite_num;			// Which one.
 	int frame_num;			// Current frame.
 	int frames;			// # frames.
-	int x, y;			// Location on screen.
+	short tx, ty;			// Tile coords. within world of upper-
+					//   left corner.
 public:
 	Sprites_effect(int num, int xpos, int ypos);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
+					// Render.
+	virtual void paint(Game_window *gwin);
 	};
 
 /*
@@ -48,9 +68,8 @@ public:
  *	of seconds.  These are all kept in a single list, and managed by
  *	Game_window.
  */
-class Text_effect : public Time_sensitive
+class Text_effect : public Special_effect
 	{
-	Text_effect *next, *prev;	// All of them are chained together.
 	char *msg;			// What to print.
 	short tx, ty;			// Tile coords. within world of upper-
 					//   left corner.
@@ -62,6 +81,8 @@ public:
 		{ delete msg; }
 					// At timeout, remove from screen.
 	virtual void handle_event(unsigned long curtime, long udata);
+					// Render.
+	virtual void paint(Game_window *gwin);
 	};
 
 #endif
