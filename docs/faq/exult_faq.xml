@@ -2,7 +2,7 @@
 
 <!DOCTYPE faqs SYSTEM "faqs.dtd">
 
-<faqs title="Exult" changed="10 March 2001(GMT)">
+<faqs title="Exult" changed="21 March 2001(GMT)">
 
 	<section title="Introduction">
 
@@ -132,11 +132,15 @@
 
 			<answer>
 
+			    <para>
+
 				The snapshot is the newest source code of the program. It is updated almost
 
 				daily, sometimes twice a day. There is information on how to build your
 
 				own binary of the source but there is also the newest pre-compiled Windows binary.
+
+				</para>
 
 			</answer>
 
@@ -290,7 +294,15 @@
 
 			<question>Do I need Ultima 7?</question>
 
-			<answer>Yes. Exult won't work without the original files.</answer>
+			<answer>
+
+				<para>
+
+				Yes. Exult won't work without the original files.
+
+				</para>
+
+			</answer>
 
 		</faq>
 
@@ -492,6 +504,14 @@
 
 					<line>&lt;blackgate&gt;</line>
 
+					<line>&lt;waves&gt;</line>
+
+					<line>./data/jmsfx.flx
+
+						<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment></line>
+
+					<line>&lt;/waves&gt;</line>
+
 					<line>&lt;path&gt;</line>
 
 					<line>.</line>
@@ -515,6 +535,14 @@
 					<line>&lt;/blackgate&gt;</line>
 
 					<line>&lt;serpentisle&gt;</line>
+
+					<line>&lt;waves&gt;</line>
+
+					<line>./data/jmsfx.flx
+
+						<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment></line>
+
+					<line>&lt;/waves&gt;</line>
 
 					<line>&lt;path&gt;</line>
 
@@ -804,7 +832,7 @@
 
 				<para>
 
-				    You can either use the realtive (./Blackgate) or absolute (C:\Ultima\Blackgate) path 
+				    You can either use the relative (./Blackgate) or absolute (C:\Ultima\Blackgate) path 
 
 				    to point to the correct directory.
 
@@ -844,6 +872,8 @@
 
 		</faq>
 
+		
+
 		<faq name="sound_horrible">
 
 			<question>The sound effects sound horrible</question>
@@ -860,15 +890,19 @@
 
 				<para>
 
-					This due to the fact that the SFX is played using MIDI. For that to
+					This is due to the fact that the SFX is played using MIDI. For that to
 
 					work properly you need the proper soundfont selected for your card.
 
-					Not every soundcard supports soundfont-managing. Creative's AWE and
+					Not every soundcard supports soundfont-managing. If your card doesn't 
 
-					Live! series do support it. If you have on of those cards this is how
+					support soundfonts or you want to hear better sfx you are much better off 
 
-					you do it (description only for Win32):
+					when you select wave sfx. The next section <ref target="wave_sfx"/> covers that!
+
+					Creative's AWE and Live! series do support it. If you have on of those 
+
+					cards this is how you do it (description only for Win32):
 
 				</para>
 
@@ -917,6 +951,46 @@
 			</answer>
 
 		</faq>
+
+		<faq name="wave_sfx">
+
+			<question>How do I enable Exult to play wave Sfx?</question>
+
+			<answer>
+
+				<para>
+
+				You have to set a path to the sfx pack in the waves settings in exult.cfg (see <ref target="exult_config"/>).
+
+				If you leave this blank the sfx will be played through midi. For now there
+
+				is only one pack and as the sfx in BG and SI varies a bit it's probably better
+
+				if you don't configure SI to use it (leave the wave settings blank so the sfx
+
+				is played throug midi).
+
+				</para>
+
+				<para> 
+
+				The sfx pack made by Joseph Morris can be found at 
+
+				<extref target="http://ftp1.sourceforge.net/exult/jmsfx.zip"/> (4.55 MB).
+
+				He recorded the original 114 sfx used in Black Gate which must
+
+				have been a lot of work. If your soundcard doesn't support soundfonts
+
+				this pack is a <q>must-have</q>. Enjoy!
+
+				</para>
+
+			</answer>
+
+		</faq>
+
+				
 
 		<faq name="sound_turnoff">
 
@@ -1174,7 +1248,11 @@
 
 			<answer>
 
+				<para>
+
 				Yes.
+
+				</para>
 
 			</answer>
 
@@ -1186,7 +1264,11 @@
 
 			<answer>
 
+				<para>
+
 				Just keep on looking for them :-)
+
+				</para>
 
 			</answer>
 
@@ -1198,9 +1280,13 @@
 
 			<answer>
 
+				<para>
+
 				Yes. The sail of ships look odd sometimes but otherwise these means of
 
 				transportations work quite well.
+
+				</para>
 
 			</answer>
 
@@ -1290,7 +1376,7 @@
 
 				<para>
 
-				Work has begun on <q>Exult Studio</q> which is aimed to be a Editor for
+				Work has begun on <q>Exult Studio</q> which is aimed to be an editor for
 
 				all kinds of files that are used by Ultima 7. As of now there is already
 
@@ -1352,9 +1438,7 @@
 
 					game.</li>
 
-					<li>Soundeffects on soundcards that don't support soundfonts may not sound 
-
-					right. But that may change in the near future.</li>
+					
 
 				</ul>
 
@@ -1442,7 +1526,7 @@
 
 					the FAQ. I recently became part of the Exult Team though I only
 
-					write the FAQ and no code at all.
+					write the FAQ and don't code at all.
 
 				</para>
 

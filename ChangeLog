@@ -1,3 +1,6 @@
+2001-03-21  Max Horn  <max@quendi.de>
+	* FAQ, doc/faq/faq_html.xsl, doc/faq/exult_faq.xml: applied update made by Dominus
+
 2001-03-21  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/bgfiredoom.shp: more art by Adam
 	* data/flx.in, Makefile.*, gumps/Paperdoll_gump_info.cc: included art
