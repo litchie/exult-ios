@@ -76,7 +76,7 @@ public:
 					// Add an entry.
 	void add(unsigned long t, Time_sensitive *obj, long ud);
 					// Remove object's entry.
-	void remove(Time_sensitive *obj);
+	int remove(Time_sensitive *obj);
 					// Activate entries that are 'due'.
 	void activate(unsigned long curtime)
 		{
