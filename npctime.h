@@ -30,9 +30,7 @@ public:
 		{  }
 	~Npc_timer_list();
 	void start_hunger();
-	void end_hunger();
 	void start_poison();
-	void end_poison();
 	};
 
 #endif	/* INCL_NPCTIME */

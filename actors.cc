@@ -846,8 +846,6 @@ void Actor::clear_flag
 		flags &= ~((unsigned long) 1 << flag);
 	if (flag == asleep)
 		set_schedule_type(Schedule::stand);
-	else if (flag == poisoned)
-		need_timers()->end_poison();
 	}
 
 void Actor::clear_siflag

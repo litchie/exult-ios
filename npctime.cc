@@ -43,7 +43,6 @@ public:
 class Npc_poison_timer : public Npc_timer
 	{
 	unsigned long end_time;		// Time when it wears off.
-	unsigned long last_time;	// Last game minute when penalized.
 public:
 	Npc_poison_timer(Npc_timer_list *l);
 	virtual ~Npc_poison_timer();
@@ -76,21 +75,6 @@ void Npc_timer_list::start_hunger
 	}
 
 /*
- *	End hunger.
- */
-
-void Npc_timer_list::end_hunger
-	(
-	)
-	{
-	if (hunger)
-		{
-		delete hunger;
-		hunger = 0;
-		}
-	}
-
-/*
  *	Start poison.
  */
 
@@ -101,21 +85,6 @@ void Npc_timer_list::start_poison
 	if (poison)			// Remove old one.
 		delete poison;
 	poison = new Npc_poison_timer(this);
-	}
-
-/*
- *	End poison.
- */
-
-void Npc_timer_list::end_poison
-	(
-	)
-	{
-	if (poison)
-		{
-		delete poison;
-		poison = 0;
-		}
 	}
 
 /*
@@ -205,17 +174,6 @@ void Npc_hunger_timer::handle_event
 	}
 
 /*
- *	Done with poison timer.
- */
-
-Npc_poison_timer::~Npc_poison_timer
-	(
-	)
-	{
-	list->poison = 0;
-	}
-
-/*
  *	Initialize poison timer.
  */
 
@@ -224,8 +182,19 @@ Npc_poison_timer::Npc_poison_timer
 	Npc_timer_list *l
 	) : Npc_timer(l)
 	{
-	last_time = get_minute();	// Lasts 1-2 hours.
-	end_time = last_time + 60 + rand()%60;
+					// Lasts 1-3 minutes.
+	end_time = SDL_GetTicks() + 60000 + rand()%120000;
+	}
+
+/*
+ *	Done with poison timer.
+ */
+
+Npc_poison_timer::~Npc_poison_timer
+	(
+	)
+	{
+	list->poison = 0;
 	}
 
 /*
@@ -239,26 +208,21 @@ void Npc_poison_timer::handle_event
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	unsigned long minute = get_minute();
 	Actor *npc = list->npc;
-	if (minute >= end_time ||	// Long enough?  Or cured?
+	if (curtime >= end_time ||	// Long enough?  Or cured?
 	    npc->get_flag(Actor::poisoned) == 0)
 		{
 		npc->clear_flag(Actor::poisoned);
 		delete this;
 		return;
 		}
-					// Once per 20 minutes.
-	if (minute >= last_time + 20)
-		{
-		int health = npc->get_property((int) Actor::health);
-		health -= rand()%3;
-		npc->set_property((int) Actor::health, health);
-		if (rand()%4)
-			npc->say(first_ouch, last_ouch);
-		last_time = minute;
-		}
-					// Check again in 20 secs.
-	gwin->get_tqueue()->add(curtime + 20000, this, 0L);
+	int health = npc->get_property((int) Actor::health);
+	int penalty = rand()%3;
+	health -= penalty;
+	npc->set_property((int) Actor::health, health);
+	if (penalty && rand()%4)
+		npc->say(first_ouch, last_ouch);
+					// Check again in 10-20 secs.
+	gwin->get_tqueue()->add(curtime + 10000 + rand()%10000, this, 0L);
 	}
 
