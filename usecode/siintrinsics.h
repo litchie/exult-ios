@@ -196,7 +196,7 @@
 
 	USECODE_INTRINSIC_PTR(init_conversation),		// 0x85 Guess
 	USECODE_INTRINSIC_PTR(end_conversation),		// 0x86 Guess
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x87++++ Increments experience??
+	USECODE_INTRINSIC_PTR(reduce_health),			// 0x87 Guess
 	USECODE_INTRINSIC_PTR(is_readied),			// 0x88
 	USECODE_INTRINSIC_PTR(restart_game),			// 0x89
 	USECODE_INTRINSIC_PTR(start_speech),			// 0x8a

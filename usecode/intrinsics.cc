@@ -1685,7 +1685,7 @@ USECODE_INTRINSIC(remove_item)
 
 USECODE_INTRINSIC(reduce_health)
 {
-	// Reduce_health(npc, amount, ??property??0?).
+	// Reduce_health(npc, amount, ??property/flags??0?).
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)			// Dies if health goes too low.
 		npc->reduce_health(parms[1].get_int_value());
