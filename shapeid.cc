@@ -48,6 +48,7 @@ Shape_manager *Game_singletons::sman = 0;
 Usecode_machine *Game_singletons::ucmachine = 0;
 Game_clock *Game_singletons::gclock = 0;
 Palette *Game_singletons::pal = 0;
+Gump_manager *Game_singletons::gumpman = 0;
 
 void Game_singletons::init
 	(
@@ -61,6 +62,7 @@ void Game_singletons::init
 	ucmachine = g->get_usecode();
 	gclock = g->get_clock();
 	pal = g->get_pal();
+	gumpman = g->get_gump_man();
 	}
 
 /*

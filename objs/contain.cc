@@ -420,7 +420,7 @@ void Container_game_object::activate
 	if (edit())
 		return;			// Map-editing.
 	int shnum = get_shapenum();
-	Gump_manager *gump_man = gwin->get_gump_man();
+	Gump_manager *gump_man = gumpman;
 
 	if (Game::get_game_type() == BLACK_GATE)  switch(shnum)	// Watch for gumps.
 	{
@@ -696,7 +696,7 @@ void Container_game_object::write_ireg
 int Container_game_object::get_ireg_size()
 {
 	// These shouldn't ever happen, but you never know
-	if (gwin->get_gump_man()->find_gump(this) || Usecode_script::find(this))
+	if (gumpman->find_gump(this) || Usecode_script::find(this))
 		return -1;
 
 	int total_size = 13;

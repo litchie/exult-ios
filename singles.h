@@ -33,6 +33,7 @@ protected:
 	static class Usecode_machine *ucmachine;
 	static class Game_clock *gclock;
 	static class Palette *pal;
+	static class Gump_manager *gumpman;
 public:
 	static void init(Game_window *g);
 	};

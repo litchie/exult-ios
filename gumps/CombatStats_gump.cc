@@ -81,7 +81,7 @@ CombatStats_gump::~CombatStats_gump()
 
 void CombatStats_gump::paint()
 {
-	Gump_manager* gman = gwin->get_gump_man();
+	Gump_manager* gman = gumpman;
 
 	Gump::paint();
 

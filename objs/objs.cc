@@ -670,7 +670,7 @@ void Game_object::activate
 					// Serpent Isle spell scrolls:
 	if (usefun == 0x2cb && Game::get_game_type() == SERPENT_ISLE)
 		{
-		gwin->get_gump_man()->add_gump(this, 65);
+		gumpman->add_gump(this, 65);
 		return;
 		}
 					// !!!Special case:  books
