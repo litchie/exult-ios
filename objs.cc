@@ -88,9 +88,23 @@ int Game_object::get_quantity
 	}
 
 /*
+ *	Get the volume.
+ */
+
+int Game_object::get_volume
+	(
+	)
+	{
+	return (get_quantity() *
+		Game_window::get_game_window()->get_shapes().get_info(
+			get_shapenum()).get_volume());
+	}
+
+/*
  *	Add or remove from object's 'quantity', and delete if it goes to 0.
  *
  *	Output:	Delta decremented/incremented by # added/removed.
+ *		Container's volume_used field is updated.
  */
 
 int Game_object::modify_quantity
@@ -122,6 +136,10 @@ int Game_object::modify_quantity
 		return (delta + quant);
 		}
 	quality = 0x80|(char) newquant;	// Store new value.
+	int objvol = Game_window::get_game_window()->get_shapes().get_info(
+			get_shapenum()).get_volume();
+	if (owner)			// Update owner's volume.
+		owner->modify_volume_used(objvol*(newquant - quant));
 	return (delta - (newquant - quant));
 	}
 
@@ -653,6 +671,7 @@ void Container_game_object::remove
 		{
 		if (prev->get_next() == obj)
 			{		// Found it.
+			volume_used -= obj->get_volume();
 			if (prev == obj)
 				{	// Last one.
 				last_object = 0;
@@ -671,7 +690,8 @@ void Container_game_object::remove
 /*
  *	Add an object.
  *
- *	Output:	1, meaning object is completely contained in this.
+ *	Output:	1, meaning object is completely contained in this,
+ *		0 if not enough space.
  */
 
 int Container_game_object::add
@@ -679,6 +699,10 @@ int Container_game_object::add
 	Game_object *obj
 	)
 	{
+	int objvol = obj->get_volume();
+	if (objvol + volume_used > get_volume())
+		return (0);		// Doesn't fit.
+	volume_used += objvol;
 	if (!last_object)		// First one.
 		{
 		last_object = obj;
@@ -709,7 +733,11 @@ int Container_game_object::add_quantity
 	int dontcreate			// If 1, don't create new objs.
 	)
 	{
-					// ++++++Restrict by weight, volume.
+					// Get volume of 1 object.
+	int objvol = Game_window::get_game_window()->get_shapes().get_info(
+			shapenum).get_volume();
+	int roomfor = (get_volume() - volume_used)/objvol;
+	int todo = delta < roomfor ? delta : roomfor;
 	Game_object *obj = last_object;
 	do				// First try existing items.
 		{
@@ -717,24 +745,64 @@ int Container_game_object::add_quantity
 		if (obj->get_shapenum() == shapenum &&
 		    (framenum == -359 || obj->get_framenum() == framenum))
 					// ++++++Quality???
-			delta = obj->modify_quantity(this, delta);
-					// Do it recursively.
-		delta = obj->add_quantity(delta, shapenum, qual, framenum, 1);
+			delta -= todo - 
+				(todo = obj->modify_quantity(this, todo));
 		}
-	while (obj != last_object);
+	while (obj != last_object && todo);
+	obj = last_object;
+	do				// Now try recursively.
+		delta = obj->add_quantity(delta, shapenum, qual, framenum, 1);
+	while (obj != last_object && delta);
 	if (!delta || dontcreate)	// All added?
 		return (delta);
-	if (framenum == -359)
-		framenum = 0;
-	while (delta)			// Create them (here, for now+++).
+	else
+		return (create_quantity(delta, shapenum, qual,
+				framenum == -359 ? 0 : framenum));
+	}
+
+/*
+ *	Recursively create a quantity of an item.
+ *
+ *	Output:	Delta decremented # added.
+ */
+
+int Container_game_object::create_quantity
+	(
+	int delta,			// Quantity to add.
+	int shapenum,			// Shape #.
+	int qual,			// Quality, or -359 for any.
+	int framenum			// Frame.
+	)
+	{
+					// Get volume of 1 object.
+	int objvol = Game_window::get_game_window()->get_shapes().get_info(
+			shapenum).get_volume();
+	int roomfor = (get_volume() - volume_used)/objvol;
+	int todo = delta < roomfor ? delta : roomfor;
+	while (todo)			// Create them here first.
 		{
 		Game_object *newobj = new Game_object(shapenum, framenum,
 								0, 0, 0);
-		delta--;
-		if (delta > 0)
-			delta = newobj->modify_quantity(this, delta);
-		add(newobj);		// ++++++Could fail. Should check 1st.
+		if (!add(newobj))
+			{
+			delete newobj;
+			break;
+			}
+		todo--; delta--;
+		if (todo > 0)
+			delta -= todo -
+				(todo = newobj->modify_quantity(this, todo));
 		}
+	if (!delta)			// All done?
+		return (0);
+					// Now try those below.
+	Game_object *obj = last_object;
+	do
+		{
+		obj = obj->get_next();
+		delta = obj->create_quantity(delta, shapenum, qual, framenum);
+		}
+	while (obj != last_object && delta);
 	return (delta);
 	}		
 
@@ -826,8 +894,7 @@ int Container_game_object::drop
 	Game_object *obj
 	)
 	{
-	add(obj);			// We'll take it.
-	return (1);
+	return (add(obj));		// We'll take it.
 	}
 
 /*

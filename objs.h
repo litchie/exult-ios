@@ -181,6 +181,7 @@ public:
 	void set_quality(int q)
 		{ quality = q; }
 	int get_quantity();		// Like # of coins.
+	int get_volume();		// Get space taken.
 					// Add/remove to/from quantity.
 	int modify_quantity(Container_game_object *owner, int delta);
 					// Remove/delete this object.
@@ -254,6 +255,9 @@ public:
 	virtual int add_quantity(int delta, int shapenum, int qual,
 					int framenum, int dontcreate = 0)
 		{ return delta; }
+	virtual int create_quantity(int delta, int shapenum, int qual,
+								int framenum)
+		{ return delta; }
 	virtual int remove_quantity(int delta, int shapenum, int qual,
 								int framenum)
 		{ return delta; }
@@ -288,6 +292,7 @@ public:
  */
 class Container_game_object : public Ireg_game_object
 	{
+	int volume_used;		// Amount of volume occupied.
 protected:
 	Game_object *last_object;	// ->last obj., which pts. to first.
 public:
@@ -295,7 +300,7 @@ public:
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
 		: Ireg_game_object(l, h, shapex, shapey, lft),
-		  last_object(0)
+		  last_object(0), volume_used(0)
 		{  }
 	Container_game_object() : last_object(0) {  }
 	void remove(Game_object *obj);
@@ -303,10 +308,16 @@ public:
 		{ return last_object; }
 	Game_object *get_first_object()	// Get first inside.
 		{ return last_object ? last_object->get_next() : 0; }
+					// For when an obj's quantity changes:
+	void modify_volume_used(int delta)
+		{ volume_used += delta; }
 					// Add an object.
 	virtual int add(Game_object *obj);
+					// Add/remove quantities of objs.
 	virtual int add_quantity(int delta, int shapenum, int qual,
 					int framenum, int dontcreate = 0);
+	virtual int create_quantity(int delta, int shapenum, int qual,
+							int framenum);
 	virtual int remove_quantity(int delta, int shapenum, int qual,
 								int framenum);
 					// Run usecode function.
