@@ -25,6 +25,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include <cstdio>
 
+using std::size_t;
+using std::snprintf;
+
+
 /*
  *
  *	SERPENT ISLE PAPERDOLL GUMP
@@ -478,7 +482,7 @@ void Paperdoll_gump::paint
 	int max_weight = 2*container->get_property(Actor::strength);
 	int weight = container->get_weight()/10;
 	char text[20];
-	sprintf(text, "%d/%d", weight, max_weight);
+	snprintf(text, 20, "%d/%d", weight, max_weight);
 	int twidth = gwin->get_text_width(2, text);
 	const int boxw = 102;
 	gwin->paint_text(2, text, x + 84 - (twidth/2), y + 114);

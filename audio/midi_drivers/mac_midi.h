@@ -20,18 +20,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _MIDI_driver_macos_midi_h_
 #define _MIDI_driver_macos_midi_h_
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma interface
-#endif
-
 #ifdef MACOS
 
-#ifdef HAVE_CONFIG_H
-#include "../autoconfig.h"
-#endif
-
-#include <Movies.h>
-#include <TextUtils.h>
+//#include <Movies.h>
+//#include <TextUtils.h>
+#include <QuickTimeMusic.h>
 
 #include "Midi.h"
 #include "exceptions.h"
@@ -40,15 +33,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class	Mac_QT_midi : virtual public MidiAbstract
 {
 public:
-	virtual void start_track(const char *,bool repeat);
-	virtual void stop_track(void);
-	virtual bool is_playing(void);
+	// Do we accept events, default no
+	virtual bool	accepts_events(void) { return true; }
+
+	// Non Event based methods
+	virtual void	start_track(const char *,bool repeat);
+//	virtual void	start_sfx(const char *) { };
+	// Event based methods
+	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat);
+//	virtual void	start_sfx(midi_event *evntlist, int ppqn) { };
+	
+	virtual void	stop_track(void);
+	virtual void	stop_sfx(void);
+	virtual bool	is_playing(void);
 	virtual const char *copyright(void);
 
 	Mac_QT_midi();
 	virtual ~Mac_QT_midi();
+
 private:
-	bool	mRepeat;
+	void			idle(void);
+	
+private:
+	bool		mRepeat;
+	
+	TunePlayer	mTunePlayer;
 };
 
 #endif

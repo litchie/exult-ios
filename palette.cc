@@ -28,6 +28,7 @@
 
 using std::memcpy;
 using std::memset;
+using std::size_t;
 
 Palette::Palette()
 	{

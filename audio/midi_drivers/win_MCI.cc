@@ -113,7 +113,7 @@ void Windows_MCI::start_track(const char *name,bool repeat)
 #endif
 
   //open MCI device
-  sprintf(buf, "open %s type sequencer alias u7midi", name);
+  snprintf(buf, 512, "open %s type sequencer alias u7midi", name);
   MCI_Command(buf, NULL, 0, 0);
   device_open = true;
 

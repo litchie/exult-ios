@@ -76,7 +76,7 @@ void ShapeBrowser::browse_shapes()
 		str_int_pair pal_tuple, xform_tuple;
 		const char *fname;
 		
-		sprintf(buf,"files/shapes/%d",current_file);
+		snprintf(buf,255,"files/shapes/%d",current_file);
 		fname = game->get_resource(buf).str;
 		if(!shapes)
 			shapes = new Vga_file(fname);
@@ -88,12 +88,12 @@ void ShapeBrowser::browse_shapes()
 		do {
  		        if (redraw) {
 			        gwin->clear_screen();
-			        sprintf(buf,"palettes/%d",current_palette);
+			        snprintf(buf,255,"palettes/%d",current_palette);
 				pal_tuple = game->get_resource(buf);
 				char xfrsc[256];
 				if (current_xform > 0)
 					{
-					sprintf(xfrsc, "xforms/%d", 
+					snprintf(xfrsc, 255, "xforms/%d", 
 							current_xform);
 					xform_tuple = game->
 						get_resource(xfrsc);
@@ -104,21 +104,21 @@ void ShapeBrowser::browse_shapes()
 				else
 					pal.load(pal_tuple.str,pal_tuple.num);
 					
-				sprintf(buf,"VGA File: '%s'", fname);
+				snprintf(buf,255,"VGA File: '%s'", fname);
 				//font->draw_text(ibuf, 0, 170, buf);
 				font->paint_text_fixedwidth(ibuf, buf, 2, maxy-30, 8);
 				
 				num_shapes = shapes->get_num_shapes();
-				sprintf(buf,"Shape: %2d/%d", current_shape, num_shapes-1);
+				snprintf(buf,255,"Shape: %2d/%d", current_shape, num_shapes-1);
 				//font->draw_text(ibuf, 0, 180, buf);
 				font->paint_text_fixedwidth(ibuf, buf, 2, maxy-20, 8);
 			
-			        num_frames = shapes->get_num_frames(current_shape);
-				sprintf(buf,"Frame: %2d/%d", current_frame, num_frames-1);
+			    num_frames = shapes->get_num_frames(current_shape);
+				snprintf(buf,255,"Frame: %2d/%d", current_frame, num_frames-1);
 				//font->draw_text(ibuf, 160, 180, buf);
 				font->paint_text_fixedwidth(ibuf, buf, 162, maxy-20, 8);
 
-				sprintf(buf,"Palette: %s, %d", pal_tuple.str, pal_tuple.num);
+				snprintf(buf,255,"Palette: %s, %d", pal_tuple.str, pal_tuple.num);
 				//font->draw_text(ibuf, 0, 190, buf);
 				font->paint_text_fixedwidth(ibuf, buf, 2, maxy-10, 8);
 
@@ -127,14 +127,14 @@ void ShapeBrowser::browse_shapes()
 					        current_shape, current_frame);
 
  				        if (frame) {
-					        sprintf(buf,"%d x %d", frame->get_width(), frame->get_height());
+					        snprintf(buf,255,"%d x %d", frame->get_width(), frame->get_height());
 					        //font->draw_text(ibuf, 32, 32, buf);
 						font->paint_text_fixedwidth(ibuf, buf, 2, 22, 8);
 
 						Shape_info& info = 
 							Game_window::get_game_window()->get_info(current_shape);
 
-					        sprintf(buf,"class: %2i  ready_type: 0x%02x", info.get_shape_class(), info.get_ready_type());
+					        snprintf(buf,255,"class: %2i  ready_type: 0x%02x", info.get_shape_class(), info.get_ready_type());
 					        font->paint_text_fixedwidth(ibuf, buf, 2, 12, 8);
 
 					        //font->draw_text(ibuf, 32, 16, item_names[current_shape]);
@@ -175,7 +175,7 @@ void ShapeBrowser::browse_shapes()
 					current_shape = 0;
 					current_frame = 0;
 					delete shapes;
-					sprintf(buf,"files/shapes/%d",current_file);
+					snprintf(buf,255,"files/shapes/%d",current_file);
 					fname = game->get_resource(buf).str;
 					shapes = new Vga_file(fname);
 					break;
