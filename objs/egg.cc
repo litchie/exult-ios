@@ -174,10 +174,10 @@ Egg_object::Egg_object
 			(htch << hatched) + (ar << auto_reset);
 	if (type == usecode || type == teleport || type == path)
 		set_quality(data1&0xff);
-#if 0	/* +++++The old way. */
-	if (type == path)		// Store paths.
-		Game_window::get_game_window()->add_path_egg(this);
-#endif
+					// Party_near & auto_reset don't mix
+					//   well.
+	if (criteria == party_near && (flags&(1<<auto_reset)))
+		criteria = avatar_near;
 	}
 
 /*
