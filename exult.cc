@@ -901,6 +901,7 @@ static void Handle_keystroke
 				"  alt-s - Change skin color (SI)\n"
 				"  ctrl-t - Fake time period change\n"
 				"  alt-t  - Teleport\n"
+				"  ctrl-alt-t - Map Teleport\n"
 				"  ctrl-w - Test weather\n"
 			);
 			}
@@ -1030,6 +1031,28 @@ static void Handle_keystroke
 		break;
 	case SDLK_t:			// 'Target' mode.
 		{
+		if (ctrl && alt && cheat) {	// map teleport
+			// Display map.
+			Shape_frame *map = gwin->get_sprite_shape(22, 0);
+					// Get coords. for centered view.
+			int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
+			int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
+			gwin->paint_shape(x, y, map, 1);
+			gwin->show(1);
+			int xx, yy;
+			Get_click(xx, yy, Mouse::greenselect);
+			
+			int tx, ty;
+			
+			//the 5 and 10 below are the map-borders, 3072 dimensions of the world
+			tx = ((xx - (5 + x - map->get_xleft()))*3072) / (map->get_width() - 10);
+			ty = ((yy - (5 + y - map->get_yabove()))*3072) / (map->get_height() - 10);
+			cout << "Teleporting to " << tx << "," << ty << "!" << endl;
+			Tile_coord t(tx,ty,0);
+			gwin->teleport_party(t);
+			gwin->center_text("Teleport!!!");
+			break;
+		}
 		if (ctrl&&cheat)		// 'T':  Fake next time change.
 			{
 			gwin->fake_next_period();
