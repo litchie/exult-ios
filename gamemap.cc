@@ -373,7 +373,9 @@ void Game_map::write_static
 					// Only write what we've modified.
 		if (schunk_modified[schunk])
 			write_ifix_objects(schunk);
+#if 0	/* The following test should be removed: */
 	if (modified_terrain)		// Only if edited terrain.
+#endif
 		{
 		ofstream ochunks;	// Open file for chunks data.
 		U7open(ochunks, PATCH_U7CHUNKS);

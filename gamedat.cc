@@ -232,7 +232,13 @@ static long Savefile
 	)
 	{
 	ifstream in;
-	U7open(in, fname);
+	try {
+		U7open(in, fname);
+	} catch (exult_exception& e) {
+		if (Game::is_editing())
+			return 0;	// Newly developed game.
+		throw e;
+	}
 	in.seekg(0, ios::end);		// Get to end so we can get length.
 	long len = in.tellg();
 	in.seekg(0, ios::beg);
@@ -940,7 +946,14 @@ bool Game_window::restore_gamedat_zip
 static bool Save_level1 (zipFile zipfile, const char *fname)
 {
 	ifstream in;
-	U7open (in, fname);
+	try {
+		U7open (in, fname);
+	} catch (exult_exception& e) {
+		if (Game::is_editing())
+			return false;	// Newly developed game.
+		throw e;
+	}
+
 
 	StreamDataSource ds(&in);
 
@@ -968,7 +981,13 @@ static bool Begin_level2 (zipFile zipfile)
 static bool Save_level2 (zipFile zipfile, const char *fname)
 {
 	ifstream in;
-	U7open (in, fname);
+	try {
+		U7open (in, fname);
+	} catch (exult_exception& e) {
+		if (Game::is_editing())
+			return false;	// Newly developed game.
+		throw e;
+	}
 
 	StreamDataSource ds(&in);
 
