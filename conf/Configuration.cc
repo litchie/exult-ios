@@ -125,6 +125,16 @@ void	Configuration::set(const char *key,const string &value,bool write_out)
 	set(k,v,write_out);
 }
 
+void	Configuration::set(const char *key,int value,bool write_out)
+{
+	string	k(key),v;
+	char	buf[32];
+
+	sprintf(buf,"%d",value);
+	v=buf;
+	set(k,v,write_out);
+}
+
 
 
 extern	void    xmlparse(string &s,size_t &pos,XMLnode *x);

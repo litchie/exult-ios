@@ -4,6 +4,7 @@ all-local:	libaudio.a
 
 INCLUDES +=	$(SDL_INCLUDES)
 INCLUDES +=	$(KMID_INCLUDES)
+INCLUDES +=	-I../conf
 
 CXXFLAGS += $(INCDIRS) -Wall 
 
