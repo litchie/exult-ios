@@ -1,3 +1,8 @@
+2001-09-13  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.h,etc: Added get_std_delay() for standard frame delay.
+	FPS is read from config file ("config/video/fps").
+
 2001-09-14  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* gamewin.cc: Fixed spelling error in output text.
