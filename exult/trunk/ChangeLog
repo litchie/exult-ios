@@ -1,5 +1,11 @@
 2001-09-11  Dancer Vesperman  <dancer@users.sourceforge.net>
 
+	* Take our own advice and clear streams between attempted
+		file opens. Otherwise, we can succeed in opening
+		the file, and still throw a file-not-found. Duh.
+
+2001-09-11  Dancer Vesperman  <dancer@users.sourceforge.net>
+
 	* stdio.h doesn't declare snprintf in std::, but cstdio does.
 
 2001-09-11  Dancer Vesperman  <dancer@users.sourceforge.net>
