@@ -1,3 +1,7 @@
+2001-08-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* gamewin.cc: avoid possible crash
+	* gamewin.*, palette.h: added a 'bool repaint' to 'apply palette' funcs
+
 2001-08-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actorio.cc (Actor): Avatar's Usecode function is always 0x400.

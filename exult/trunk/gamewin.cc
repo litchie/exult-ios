@@ -1254,6 +1254,7 @@ void Game_window::read_ireg_objects
 				// a new game. Remove someday... (added 20010820)
 				{
 					obj = new Dead_body(400, 8, tilex, tiley, lift, 149);
+					if (bodies.size() <= 149) bodies.resize(150);
 					bodies[149] = obj;
 				}
 			else if (quality == 1 && 
@@ -1263,6 +1264,7 @@ void Game_window::read_ireg_objects
 					int npc_num = (entry[8] - 0x80) & 0xFF;
 					obj = new Dead_body(shnum, frnum, tilex, tiley, lift,
 										npc_num);
+					if (bodies.size() <= npc_num) bodies.resize(npc_num+1);
 					bodies[npc_num] = obj;
 				}
 			else if (Is_body(shnum)) {
@@ -1782,7 +1784,8 @@ void Game_window::flash_palette_red
 void Game_window::set_palette
 	(
 	int pal_num,			// 0-11, or -1 to leave unchanged.
-	int new_brightness		// New percentage, or -1.
+	int new_brightness,		// New percentage, or -1.
+	bool repaint
 	)
 	{
 	if (palette == pal_num && brightness == new_brightness)
@@ -1801,7 +1804,7 @@ void Game_window::set_palette
 		abort("Error reading '%s'.", PALETTES_FLX);
 #endif
 	pal->set_brightness(brightness);
-	pal->apply();
+	pal->apply(repaint);
 	}
 
 /*
