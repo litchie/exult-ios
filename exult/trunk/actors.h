@@ -324,7 +324,7 @@ public:
 	void set_npc_name(const char *n);
 	virtual void set_property(int prop, int val);
 					// Lose HP's and check for death.
-	void reduce_health(int delta, Actor *attacker = 0);
+	bool reduce_health(int delta, Actor *attacker = 0);
 	virtual int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
 	bool is_dying() const		// Dead when health below -1/3 str.
@@ -393,7 +393,7 @@ public:
 		{ int sh; return get_weapon(points, sh); }
 	static bool roll_to_win(int attacker, int defender);
 					// Hit-point algorithm:
-	int figure_hit_points(Actor *attacker, int weapon_shape, 
+	bool figure_hit_points(Actor *attacker, int weapon_shape, 
 							int ammo_shape);
 					// Under attack.
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
