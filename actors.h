@@ -531,7 +531,6 @@ public:
  */
 class Npc_actor : public Actor
 	{
-	Npc_actor *next;		// Next in same chunk.
 	unsigned char nearby;		// Queued as a 'nearby' NPC.  This is
 					//   to avoid being added twice.
 protected:
@@ -542,9 +541,6 @@ public:
 	Npc_actor(const std::string &nm, int shapenum, int num = -1, 
 								int uc = -1);
 	~Npc_actor();
-					//   Usecode tells them to.
-	Npc_actor *get_next()
-		{ return next; }
 	void set_nearby()		// Set/clear/test 'nearby' flag.
 		{ nearby = true; }
 	void clear_nearby()

@@ -134,8 +134,6 @@ class Map_chunk : public Game_singletons
 	unsigned char from_below, from_right, from_below_right;
 	unsigned char ice_dungeon;	// For SI, chunk split into 4 quadrants
 	unsigned char *dungeon_levels;	// A 'dungeon' level value for each tile (4 bit).
-	Npc_actor *npcs;		// List of NPC's in this chunk.
-					//   (Managed by Npc_actor class.)
 	Chunk_cache *cache;		// Data for chunks near player.
 	unsigned char roof;		// 1 if a roof present.
 	unsigned char light_sources;	// # light sources in chunk.
@@ -170,8 +168,6 @@ public:
 		{ return cx; }
 	int get_cy() const
 		{ return cy; }
-	Npc_actor *get_npcs()		// Get ->first npc in chunk.
-		{ return npcs; }
 	int get_light_sources() const	// Get #lights.
 		{ return light_sources; }
 	ShapeID get_flat(int tilex, int tiley) const

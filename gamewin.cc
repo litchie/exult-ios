@@ -851,10 +851,6 @@ void Game_window::center_view
 	{
 	set_scrolls(t);
 	set_all_dirty();
-					// See who's nearby.
-	add_nearby_npcs(scrolltx/c_tiles_per_chunk, scrollty/c_tiles_per_chunk,
-		(scrolltx + get_width()/c_tilesize)/c_tiles_per_chunk,
-		(scrollty + get_height()/c_tilesize)/c_tiles_per_chunk);
 	}
 
 /*
@@ -1323,17 +1319,11 @@ void Game_window::view_right
 					// Paint 1 column to right.
 //	add_dirty(Rectangle(w - c_tilesize, 0, c_tilesize, h));
 	paint(w - c_tilesize, 0, c_tilesize, h);
-					// Find newly visible NPC's.
+					// New chunk?
 	int new_rcx = ((scrolltx + (w - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks;
 	if (new_rcx != old_rcx)
-		{
-		add_nearby_npcs(new_rcx, scrollty/c_tiles_per_chunk, 
-			INCR_CHUNK(new_rcx), ((scrollty + 
-			(h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
-							c_num_chunks);
 		Send_location(this);
-		}
 	}
 void Game_window::view_left
 	(
@@ -1355,16 +1345,10 @@ void Game_window::view_left
 	int h = get_height();
 //	add_dirty(Rectangle(0, 0, c_tilesize, h));
 	paint(0, 0, c_tilesize, h);
-					// Find newly visible NPC's.
+					// New chunk?
 	int new_lcx = (scrolltx/c_tiles_per_chunk)%c_num_chunks;
 	if (new_lcx != old_lcx)
-		{
-		add_nearby_npcs(new_lcx, scrollty/c_tiles_per_chunk, 
-			INCR_CHUNK(new_lcx), 
-	((scrollty + (h + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
-							c_num_chunks);
 		Send_location(this);
-		}
 	}
 void Game_window::view_down
 	(
@@ -1387,17 +1371,11 @@ void Game_window::view_down
 	dirty = clip_to_win(dirty);
 //	add_dirty(Rectangle(0, h - c_tilesize, w, c_tilesize));
 	paint(0, h - c_tilesize, w, c_tilesize);
-					// Find newly visible NPC's.
+					// New chunk?
 	int new_bcy = ((scrollty + (h - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks;
 	if (new_bcy != old_bcy)
-		{
-		add_nearby_npcs(scrolltx/c_tiles_per_chunk, new_bcy, 
-	    ((scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
-							c_num_chunks,
-			INCR_CHUNK(new_bcy));
 		Send_location(this);
-		}
 	}
 void Game_window::view_up
 	(
@@ -1419,16 +1397,10 @@ void Game_window::view_up
 	dirty = clip_to_win(dirty);
 //	add_dirty(Rectangle(0, 0, w, c_tilesize));
 	paint(0, 0, w, c_tilesize);
-					// Find newly visible NPC's.
+					// New chunk?
 	int new_tcy = (scrollty/c_tiles_per_chunk)%c_num_chunks;
 	if (new_tcy != old_tcy)
-		{
-		add_nearby_npcs(scrolltx/c_tiles_per_chunk, new_tcy,
-	    ((scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
-							c_num_chunks,
-							INCR_CHUNK(new_tcy));
 		Send_location(this);
-		}
 	}
 
 /*
@@ -2156,35 +2128,6 @@ void Game_window::remove_nearby_npc
 	{
 	if (npc->is_nearby())
 		npc_prox->remove(npc);
-	}
-
-/*
- *	Add NPC's in a given range of chunk to the queue for nearby NPC's.
- */
-
-void Game_window::add_nearby_npcs
-	(
-	int from_cx, int from_cy,	// Starting chunk coord.
-	int stop_cx, int stop_cy	// Go up to, but not including, these.
-	)
-	{
-#if 0	/* ++++++I think this isn't needed at all */
-	/* And if not, we don't have to maintain chunks' NPC lists. */
-	stop_cx %= c_num_chunks;	// Watch out for end.
-	stop_cy %= c_num_chunks;
-	unsigned long curtime = Game::get_ticks();
-	for (int cy = from_cy; cy != stop_cy; cy = INCR_CHUNK(cy))
-		for (int cx = from_cx; cx != stop_cx; cx = INCR_CHUNK(cx))
-			for (Npc_actor *npc = map->get_chunk(cx, cy)->get_npcs();
-						npc; npc = npc->get_next())
-				{
-				if (!npc->is_nearby())
-					{
-					npc->set_nearby();
-					npc_prox->add(curtime, npc);
-					}
-				}
-#endif
 	}
 
 /*
