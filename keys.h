@@ -130,7 +130,7 @@ public:
         void DelKeyBinding(SDLKey sym, int mod);
 
         /* Other methods */
-        void Flush() { bindings.clear(); }
+        void Flush() { bindings.clear(); keyhelp.clear(); cheathelp.clear(); }
         bool DoAction(ActionType action);
         bool HandleEvent(SDL_Event &ev);
 
