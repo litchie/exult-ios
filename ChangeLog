@@ -1,3 +1,6 @@
+2002-06-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/bg/*, gumps/Paperdoll_gump_info.cc: new art by Oblivious
+
 2002-06-18  Dominik Reichardt <gigdr@tesionmail.de>
 	* data/bg/defaultkeys.txt: mapped ctrl-c to copy and 
 	  INSERT to "create item

@@ -62,8 +62,11 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/greaves.shp			\
 	bg/spiked_shield.shp		\
 	bg/mr_faces.shp			\
-	bg/mr_intro.shp
-
+	bg/mr_intro.shp			\
+	bg/firesword.shp		\
+	bg/greencloak.shp		\
+	bg/greycloak.shp		\
+	bg/ring_of_protection.shp
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\
