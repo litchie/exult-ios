@@ -28,7 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern Configuration* config;
 extern int scale;
-extern ShapeBrowser* browser;
 
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 
@@ -40,10 +39,13 @@ Cheat::Cheat() {
   wizard_mode = false;
   hack_mover = false;
   infravision = false;
+
+  browser = NULL;
 }
 
 Cheat::~Cheat() {
-
+  if (browser)
+    delete browser;
 }
 
 void Cheat::init (void) {
@@ -58,8 +60,10 @@ void Cheat::init (void) {
     cout << "Cheats enabled." << endl;
 }
 
-void Cheat::init_gwin (void) {
+void Cheat::finish_init (void) {
   gwin = Game_window::get_game_window();
+
+  browser = new ShapeBrowser();
 }
 
 

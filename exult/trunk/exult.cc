@@ -51,7 +51,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "effects.h"
 #include "args.h"
 #include "game.h"
-#include "browser.h"
 #include "barge.h"
 #include "cheat.h"
 
@@ -66,7 +65,6 @@ Game_window *gwin = 0;
 static string data_path;
 unsigned char quitting_time = 0;	// 1 = Time to quit, 2 = Restart.
 Mouse *mouse = 0;
-ShapeBrowser *browser;
 int scale = 0;				// 1 if scaling X2.
 
 bool	usecode_trace = false;		// Do we trace Usecode-intrinsics?
@@ -217,7 +215,7 @@ int main
 	
 	Init();				// Create main window.
 
-	cheat.init_gwin();
+	cheat.finish_init();
 
 	mouse = new Mouse(gwin);
 	mouse->set_shape(Mouse::hand);
@@ -323,7 +321,6 @@ static void Init
 	game->show_menu();
 	gwin->set_mode(Game_window::normal);
 	SDL_SetEventFilter(Filter_intro_events);
-	browser = new ShapeBrowser();
 	gwin->setup_game();		// This will start the scene.
 					// Get scale factor for mouse.
 	if (gwin->get_win())
@@ -342,7 +339,6 @@ static int Play()
 		Handle_events(&quitting_time);
 		}
 	while (quitting_time == 2 && gwin->read());	// Restart.
-	delete browser;
 	delete gwin;
 	delete mouse;
 	delete audio;
