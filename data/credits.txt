@@ -72,6 +72,11 @@
 \CSuperEagle scaler
 \CSuper2xSaI scaler
 
+\CChristian Ohm
+\C<chr.ohm@gmx.net>
+Gameplay Options menu, fast mouse, 
+middle mouse button support
+
 
 \COTHER CONTRIBUTORS
 

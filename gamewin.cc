@@ -181,7 +181,7 @@ Game_window::Game_window
 	    render_seq(0), painted(false), focus(true), 
 	    teleported(false), in_dungeon(0), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
-	    npcs(0), bodies(0),
+	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
 	    chunk_terrains(0), num_chunk_terrains(0),
 	    palette(-1), brightness(100), user_brightness(100), 
 	    faded_out(false), fades_enabled(true),
@@ -203,6 +203,19 @@ Game_window::Game_window
 
 	set_window_size(width, height, scale, scaler);
 	pal = new Palette();
+	string mousestr;
+	config->value("config/gameplay/mouse3rd", mousestr, "no");
+	if (mousestr == "yes")
+		mouse3rd = true;
+	config->set("config/gameplay/mouse3rd", mousestr, true);
+	config->value("config/gameplay/fastmouse", mousestr, "no");
+	if (mousestr == "yes")
+		fastmouse = true;
+	config->set("config/gameplay/fastmouse", mousestr, true);
+	config->value("config/gameplay/bg_paperdolls", mousestr, "no");
+	if (mousestr == "yes")
+		bg_paperdolls = true;
+	config->set("config/gameplay/bg_paperdolls", mousestr, true);
 	}
 
 void Game_window::set_window_size(int width, int height, int scale, int scaler)
