@@ -1,3 +1,8 @@
+2001-09-26  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* usecode/ucxt/src/ucfunc.cc: prevent overruns
+	* keys.cc: Streamline keybinder. Fix crashes.
+
 2001-09-25  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actorio.cc,flags.h,etc:  Flag 4 = 'dead'.  Removed separate
