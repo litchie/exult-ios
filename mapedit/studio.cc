@@ -102,15 +102,16 @@ enum
 };
 
 
-C_EXPORT void on_filelist_tree_select_row(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, gpointer data)
+static void Filelist_selection(GtkTreeView *treeview, GtkTreePath *path)
 {
 	int type = -1;
 	char *text;
 	GtkTreeIter iter;
 	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
-	
+
 	gtk_tree_model_get_iter(model, &iter, path);
-	gtk_tree_model_get(model, &iter, FILE_COLUMN, &text, DATA_COLUMN, &type,-1);
+	gtk_tree_model_get(model, &iter, FILE_COLUMN, &text, DATA_COLUMN, 
+								&type,-1);
 	printf("%s %d\n",text,type);
 	
 	ExultStudio *studio = ExultStudio::get_instance();
@@ -136,6 +137,23 @@ C_EXPORT void on_filelist_tree_select_row(GtkTreeView *treeview, GtkTreePath *pa
 	}
 	g_free(text);
 }                                     
+
+#if 0
+C_EXPORT void on_filelist_tree_select_row(GtkTreeView *treeview, 
+		GtkTreePath *path, GtkTreeViewColumn *column, gpointer data)
+{
+	Filelist_selection(treeview, path);
+}
+#endif
+
+C_EXPORT void on_filelist_tree_cursor_changed(GtkTreeView *treeview)
+{
+	GtkTreePath *path;
+	GtkTreeViewColumn *col;
+
+	gtk_tree_view_get_cursor(treeview, &path, &col);
+	Filelist_selection(treeview, path);
+}
 
 C_EXPORT void
 on_open_game_activate                  (GtkMenuItem     *menuitem,
