@@ -1,3 +1,8 @@
+2001-09-01  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc,chunks.cc:  Wrote find_spot(), a smarter finder of
+	free areas for things.  Still fiddling with it.
+
 2001-09-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: fixed divisions by zero
 
