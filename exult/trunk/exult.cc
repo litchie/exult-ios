@@ -182,11 +182,16 @@ static void Init
 #else
 	gwin = new Game_window(640, 480);
 #endif
-	string skip_intro;		// Skip intro. scene?
-	config.value("config/gameplay/skip_intro", skip_intro, "no");
-	if (skip_intro == "yes")
+	string yn;			// Skip intro. scene?
+	config.value("config/gameplay/skip_intro", yn, "no");
+	if (yn == "yes")
 		gwin->get_usecode()->set_global_flag(
 			Usecode_machine::did_first_scene, 1);
+					// Have Trinsic password?
+	config.value("config/gameplay/have_trinsic_password", yn, "no");
+	if (yn == "yes")
+		gwin->get_usecode()->set_global_flag(
+			Usecode_machine::have_trinsic_password, 1);
 	}
 
 /*
@@ -527,6 +532,7 @@ static void Handle_keystroke
 		gwin->paint();
 		break;
 	case SDLK_s:		// Show next shape.
+		if (!shift) {
 #if 1
 		shape_frame = 0;
 		if (++shape_cnt == gwin->get_num_shapes())
@@ -546,7 +552,8 @@ static void Handle_keystroke
 						gump_cnt, gump_frame);
 #endif
 		break;
-	case 'S':		// Show prev. shape.
+		} else {	// Upper case 'S':
+				// Show prev. shape.
 		shape_frame = 0;
 		if (--shape_cnt < 0)
 			shape_cnt = gwin->get_num_shapes() - 1;
@@ -556,6 +563,7 @@ static void Handle_keystroke
 		gwin->paint();
 		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
 		break;
+		}
 	case SDLK_f:			// Show next frame.
 		cout << "Frame # " << ++shape_frame << '\n';
 		gwin->paint();
@@ -600,10 +608,6 @@ static int Get_click
 		Delay();		// Wait a fraction of a second.
 #ifdef MOUSE
 		mouse->hide();		// Turn off mouse.
-#endif
-#if 0
-					// Let animations happen.
-		gwin->get_tqueue()->activate(SDL_GetTicks());
 #endif
 		while (SDL_PollEvent(&event))
 			switch (event.type)
@@ -658,7 +662,6 @@ int Get_click
 	return (ret);
 	}
 
-#if 1	/* ++++Working on this. */
 /*
  *	Wait for a click.
  *
@@ -747,7 +750,6 @@ int Modal_gump
 	return (!escaped);
 	}
 
-#endif
 
 #if 0
 // The old win32 code.

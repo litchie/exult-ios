@@ -265,7 +265,6 @@ Rectangle Gump_object::get_shape_rect
 
 Game_object *Gump_object::find_object
 	(
-	Game_window *gwin,
 	int mx, int my			// Mouse pos. on screen.
 	)
 	{
@@ -328,6 +327,12 @@ int Gump_object::add
 	int mx, int my			// Screen location.
 	)
 	{
+	if (!container->has_room(obj))
+		return (0);		// Full.
+					// Dropping on same thing?
+	Game_object *onobj = find_object(mx, my);
+	if (onobj && onobj->drop(obj))	// If possible, combine.
+		return (1);
 	container->add(obj);
 	mx -= x + object_area.x;	// Get point rel. to object_area.
 	my -= y + object_area.y;

@@ -351,7 +351,8 @@ public:
 		egg_proximity = 3
 		};
 	enum Global_flag_names {
-		did_first_scene = 0x3b	// Went through 1st scene with Iolo.
+		did_first_scene = 0x3b,	// Went through 1st scene with Iolo.
+		have_trinsic_password = 0x3d
 		};
 	int get_global_flag(int i)	// Get/set ith flag.
 		{ return gflags[i]; }

@@ -183,7 +183,7 @@ public:
 	int get_quantity();		// Like # of coins.
 	int get_volume();		// Get space taken.
 					// Add/remove to/from quantity.
-	int modify_quantity(Container_game_object *owner, int delta);
+	int modify_quantity(int delta);
 					// Set shape coord. within chunk.
 	void set_shape_pos(unsigned int shapex, unsigned int shapey)
 		{ shape_pos = (shapex << 4) + shapey; }
@@ -229,6 +229,8 @@ public:
 	virtual void set_property(int prop, int val)
 		{  }
 	virtual int get_property(int prop)
+		{ return 0; }
+	virtual Container_game_object *get_owner()
 		{ return 0; }
 	virtual void set_owner(Container_game_object *o)
 		{  }
@@ -288,6 +290,8 @@ public:
 	Ireg_game_object() : owner(0)	// Create fake entry.
 		{  }
 	virtual void remove();		// Remove/delete this object.
+	virtual Container_game_object *get_owner()
+		{ return owner; }
 	virtual void set_owner(Container_game_object *o)
 		{ owner = o; }
 	virtual int is_dragable();	// Can this be dragged?
@@ -317,6 +321,8 @@ public:
 					// For when an obj's quantity changes:
 	void modify_volume_used(int delta)
 		{ volume_used += delta; }
+	int has_room(Game_object *obj)	// Room for this object?
+		{ return obj->get_volume() + volume_used <= get_volume(); }
 					// Add an object.
 	virtual int add(Game_object *obj);
 					// Add/remove quantities of objs.
