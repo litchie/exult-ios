@@ -49,7 +49,8 @@ Container_game_object::~Container_game_object
 	}
 
 /*
- *	Remove an object.
+ *	Remove an object.  The object's (cx, cy) fields are set to invalid
+ *	#'s (255, 255).
  */
 
 void Container_game_object::remove
@@ -62,6 +63,7 @@ void Container_game_object::remove
 	volume_used -= obj->get_volume();
 	obj->set_owner(0);
 	objects.remove(obj);
+	obj->set_invalid();		// No longer part of world.
 	}
 
 /*
