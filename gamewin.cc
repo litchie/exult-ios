@@ -739,6 +739,11 @@ void Game_window::init_actors
 	if (main_actor)			// Already done?
 		return;
 	read_npcs();			// Read in all U7 NPC's.
+					// Want to run proximity usecode on
+					//   the visible ones.
+	add_nearby_npcs(chunkx, chunky, 
+			chunkx + (get_width() + chunksize - 1)/chunksize,
+			chunky + (get_height() + chunksize - 1)/chunksize);
 	}
 
 
@@ -952,11 +957,16 @@ void Game_window::view_right
 	{
 	if (chunkx + get_width()/chunksize >= num_chunks - 1)
 		return;
+	int w = get_width(), h = get_height();
 					// Shift image to left.
-	win->copy(chunksize, 0, get_width() - chunksize, get_height(), 0, 0);
+	win->copy(chunksize, 0, w - chunksize, h, 0, 0);
 	chunkx++;			// Increment offset.
 					// Paint 1 column to right.
-	paint(get_width() - chunksize, 0, chunksize, get_height());
+	paint(w - chunksize, 0, chunksize, h);
+					// Find newly visible NPC's.
+	int from_cx = chunkx + (w + chunksize - 1)/chunksize - 1;
+	add_nearby_npcs(from_cx, chunky, from_cx + 1, 
+			chunky + (h + chunksize - 1)/chunksize);
 	}
 void Game_window::view_left
 	(
@@ -966,7 +976,11 @@ void Game_window::view_left
 		return;
 	win->copy(0, 0, get_width() - chunksize, get_height(), chunksize, 0);
 	chunkx--;
-	paint(0, 0, chunksize, get_height());
+	int h = get_height();
+	paint(0, 0, chunksize, h);
+					// Find newly visible NPC's.
+	add_nearby_npcs(chunkx, chunky, chunkx + 1, 
+			chunky + (h + chunksize - 1)/chunksize);
 	}
 void Game_window::view_down
 	(
@@ -974,9 +988,15 @@ void Game_window::view_down
 	{
 	if (chunky + get_height()/chunksize >= num_chunks - 1)
 		return;
-	win->copy(0, chunksize, get_width(), get_height() - chunksize, 0, 0);
+	int w = get_width(), h = get_height();
+	win->copy(0, chunksize, w, h - chunksize, 0, 0);
 	chunky++;
-	paint(0, get_height() - chunksize, get_width(), chunksize);
+	paint(0, h - chunksize, w, chunksize);
+					// Find newly visible NPC's.
+	int from_cy = chunky + (h + chunksize - 1)/chunksize - 1;
+	add_nearby_npcs(chunkx, from_cy, 
+			chunkx + (w + chunksize - 1)/chunksize,
+			from_cy + 1);
 	}
 void Game_window::view_up
 	(
@@ -984,9 +1004,13 @@ void Game_window::view_up
 	{
 	if (chunky < 0)
 		return;
-	win->copy(0, 0, get_width(), get_height() - chunksize, 0, chunksize);
+	int w = get_width();
+	win->copy(0, 0, w, get_height() - chunksize, 0, chunksize);
 	chunky--;
-	paint(0, 0, get_width(), chunksize);
+	paint(0, 0, w, chunksize);
+					// Find newly visible NPC's.
+	add_nearby_npcs(chunkx, chunky, 
+			chunkx + (w + chunksize - 1)/chunksize, chunky + 1);
 	}
 
 /*
@@ -1373,4 +1397,27 @@ void Game_window::conversation_choice
 		;
 	if (conv_choices[i].w != 0)	// Found one?
 		usecode->chose_response(i);
+	}
+
+/*
+ *	Add NPC's in a given range of chunk to the queue for nearby NPC's.
+ */
+
+void Game_window::add_nearby_npcs
+	(
+	int from_cx, int from_cy,	// Starting chunk coord.
+	int stop_cx, int stop_cy	// Go up to, but not including, these.
+	)
+	{
+	timeval curtime;
+	gettimeofday(&curtime, 0);
+	for (int cy = from_cy; cy != stop_cy; cy++)
+		for (int cx = from_cx; cx != stop_cx; cx++)
+			for (Npc_actor *npc = get_objects(cx, cy)->get_npcs();
+						npc; npc = npc->get_next())
+				if (!npc->is_nearby())
+					{
+					npc->set_nearby();
+					npc_prox->add(curtime, npc);
+					}
 	}

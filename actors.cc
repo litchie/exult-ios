@@ -41,7 +41,6 @@ Actor::Actor
 	int uc				// Usecode #.
 	) : Sprite(shapenum), npc_num(num), usecode(uc), flags(0)
 	{
-	next = prev = this;
 	set_default_frames();
 	name = nm == 0 ? 0 : strdup(nm);
 	for (int i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
@@ -212,8 +211,7 @@ Npc_actor::Npc_actor
 	int shapenum, 
 	int fshape, 
 	int uc
-	) : Actor(nm, shapenum, fshape, uc)
-		
+	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0)
 	{
 	}
 
@@ -225,6 +223,66 @@ Npc_actor::~Npc_actor
 	(
 	)
 	{
+	}
+
+
+/*
+ *	Animation.
+ */
+
+void Npc_actor::handle_event
+	(
+	timeval curtime,		// Current time of day.
+	long udata			// Ignored.
+	)
+	{
+					// Store old chunk.
+	int old_cx = get_cx(), old_cy = get_cy();
+	Sprite::handle_event(curtime, udata);
+					// In new chunk?
+	if (get_cx() != old_cx || get_cy() != old_cy)
+		{
+		Game_window *gwin = (Game_window *) udata;
+		Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
+		Chunk_object_list *nlist = gwin->get_objects(get_cx(),
+								get_cy());
+		switched_chunks(olist, nlist);
+		}
+	}
+
+/*
+ *	Update chunks' npc lists after this has moved.
+ */
+
+void Npc_actor::switched_chunks
+	(
+	Chunk_object_list *olist,	// Old chunk, or null.
+	Chunk_object_list *nlist	// New chunk, or null.
+	)
+	{
+	Npc_actor *each;
+	if (olist)			// Remove from old list.
+		{
+		if (this == olist->npcs)
+			olist->npcs = next;
+		else
+			{
+			Npc_actor *each, *prev = olist->npcs;
+			while ((each = prev->next) != 0)
+				if (each == this)
+					{
+					prev->next = next;
+					break;
+					}
+				else
+					prev = each;
+			}
+		}
+	if (nlist)			// Add to new list.
+		{
+		next = nlist->npcs;
+		nlist->npcs = this;
+		}
 	}
 #if 0
 /*
