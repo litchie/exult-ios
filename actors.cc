@@ -2068,7 +2068,10 @@ int Actor::add_readied
 
 		// Can it go where we want? If so set best index to this
 		// Otherwise set this to best index
-		if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), index) && index != lhand && index != rhand)
+		if (Paperdoll_gump::IsObjectAllowed (
+			obj->get_shapenum(), obj->get_framenum(), index) ||
+					// ANYTHING can be held in a hand.
+				 index == lhand || index == rhand)
  			best_index = index;
 		else if (best_index == lrhand)
 			index = lhand;
