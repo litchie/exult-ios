@@ -948,7 +948,7 @@ void Newfile_gump::LoadSaveGameDetails()
 	char	mask[256];
 
 	snprintf(mask, 256, SAVENAME2, Game::get_game_type() == BLACK_GATE ? "bg" : "si");
-#if 1
+
 	FileList filenames;
 	U7ListFiles (mask, filenames);
 	num_games = filenames.size();
@@ -962,24 +962,6 @@ void Newfile_gump::LoadSaveGameDetails()
 		strcpy (games[i].filename, filenames[i].c_str());
 		games[i].SetSeqNumber();
 	}
-#else
-	char	**filenames = 0;
-
-	U7ListFiles (mask, filenames, num_games);
-
-	games = new SaveInfo[num_games];
-
-	// Setup basic details
-	for (i = 0; i<num_games; i++)
-	{
-		games[i].filename = new char[strlen(filenames[i])+1];
-		strcpy (games[i].filename, filenames[i]);
-		games[i].SetSeqNumber();
-	}
-
-	// Delete the filenames array cause it's not needed any more
-	U7FreeFileList(filenames, num_games);
-#endif
 
 	// First sort thet games so the will be sorted by number
 	// This is so I can work out the first free game
