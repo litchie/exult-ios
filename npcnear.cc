@@ -12,6 +12,7 @@
 #include "usecode.h"
 #include "schedule.h"
 #include "items.h"
+#include "lists.h"
 
 /*
  *	Add an npc to the time queue.
@@ -47,7 +48,8 @@ void Npc_proximity_handler::handle_event
 	Rectangle tiles = gwin->get_win_tile_rect();
 	int tx, ty, tz;
 	npc->get_abs_tile(tx, ty, tz);
-	if (!tiles.has_point(tx, ty))	// No longer visible?
+	if (!tiles.has_point(tx, ty) ||	// No longer visible?
+	    npc->Actor::is_dead_npc())	// Or no longer living?
 		{
 		npc->clear_nearby();
 		return;
@@ -83,3 +85,18 @@ void Npc_proximity_handler::wait
 	wait_until = SDL_GetTicks() + 1000*secs;
 	}
 
+/*
+ *	Fill a list with all the nearby NPC's.
+ */
+
+void Npc_proximity_handler::get_all
+	(
+	Slist& list			// They're appended to this.
+	)
+	{
+	Time_queue_iterator next(gwin->get_tqueue(), this);
+	Time_sensitive *obj;
+	long data;			// NPC is the data.
+	while (next(obj, data))
+		list.append((Npc_actor *) data);
+	}

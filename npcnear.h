@@ -13,6 +13,7 @@
 
 class Game_window;
 class Npc_actor;
+class Slist;
 
 /*
  *	This class keeps track of NPC's nearby, and randomly runs the Usecode
@@ -34,6 +35,7 @@ public:
 	void handle_event(unsigned long curtime, long udata);
 					// Wait before running more funs.
 	void wait(int secs);
+	void get_all(Slist& list);	// Fill list with nearby NPC's.
 	};
 
 #endif	/* INCL_NPCNEAR */

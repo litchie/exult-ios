@@ -2284,6 +2284,18 @@ void Game_window::add_nearby_npcs
 	}
 
 /*
+ *	Add all nearby NPC's to the given list.
+ */
+
+void Game_window::get_nearby_npcs
+	(
+	Slist& list
+	)
+	{
+	npc_prox->get_all(list);
+	}
+
+/*
  *	Tell all npc's to update their schedules at a new 3-hour period.
  */
 
