@@ -789,8 +789,8 @@ void Usecode_machine::set_item_shape
 			    gwin->get_info(shape).is_light_source();
 	if (item->get_owner())		// Inside something?
 		{
-		item->set_shape(shape);
-		if (light_changed)
+		item->get_owner()->change_member_shape(item, shape);
+		if (light_changed)	//+++++Maybe we should repaint all.
 			gwin->paint();	// Repaint finds all lights.
 		else
 			{

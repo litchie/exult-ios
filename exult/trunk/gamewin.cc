@@ -713,19 +713,6 @@ Egg_object *Game_window::create_egg
 	int data1 = entry[7] + 256*entry[8];
 	int lift = entry[9] >> 4;
 	int data2 = entry[10] + 256*entry[11];
-#if 0
-					// Get egg info. (debugging).
-	unsigned char egg_type = type&0xf;
-	unsigned char criteria = (type & (7<<4)) >> 4;
-	unsigned char nocturnal = (type >> 7) & 1;
-	unsigned char once = (type >> 8) & 1;
-	unsigned char hatched = (type >> 9) & 1;
-	unsigned short distance = (type & (0x1f << 10)) >> 10;
-	unsigned char auto_reset = (type >> 15) & 1;
-printf("Egg has type %02x, crit=%d, once=%d, ar=%d\n", type, (int) criteria,
-		(int) once,
-			(int) auto_reset);
-#endif
 	Egg_object *obj = new Egg_object(entry[2], entry[3], 
 		entry[0]&0xf, entry[1]&0xf, lift, type, prob,
 		data1, data2);
@@ -978,16 +965,13 @@ void Game_window::paint
 		paint_text_object(txt);
 	win->clear_clip();
 					// Complete repaint?
-	if (!x && !y && w == get_width() && h == get_height())
+	if (!x && !y && w == get_width() && h == get_height() && main_actor)
 		{			// Look for lights.
-		int carried_light = main_actor ? 
-					main_actor->has_light_source() : 0;
-#if 0	/* +++++Uncomment when tested. */
+		int carried_light = main_actor->has_light_source();
 		int cnt = usecode->get_party_count();
 		for (int i = 0; !carried_light && i < cnt; i++)
 			carried_light = get_npc(usecode->get_party_member(i))->
 							has_light_source();
-#endif
 					// Set palette for lights.
 		clock.set_light_source(carried_light + (light_sources > 0));
 		}

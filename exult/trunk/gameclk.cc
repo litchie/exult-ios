@@ -16,7 +16,7 @@
 const int PALETTE_DAY = 0;
 const int PALETTE_DUSK = 1;
 const int PALETTE_NIGHT = 2;
-const int PALETTE_DAWN = 3;
+const int PALETTE_DAWN = 1;		// Think this is it.
 
 /*
  *	Set palette.
