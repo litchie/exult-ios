@@ -19,9 +19,9 @@ public:
 		{  }
 	autoarray(std::size_t n) : size_(n),data_(n?new T[n]:0)
 		{  }
-	T &operator[](std::size_t i)	 throw(range_error)
+	T &operator[](sint32 i)	 throw(range_error)
 		{
-		if(i>=size_)
+		if(i>=size_ || i < 0)
 			throw range_error("out of bounds");
 		if(data_)
 			return data_[i];

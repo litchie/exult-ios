@@ -21,7 +21,7 @@
 #  include "../alpha_kludges.h"
 #endif
 
-#include "files/utils.h"
+#include "files/utils.h"	// included for hashstr/eqstr
 
 #ifdef MACOS
   #include <hashmap.h>

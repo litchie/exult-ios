@@ -87,11 +87,8 @@ Mixer::~Mixer()
 void fill_audio(void *udata, uint8 *stream, int len)
 {
 	Mixer *m = Audio::get_ptr()->mixer;
-#if MACOS
-#else
 	if( m )
 		m->fill_audio_func(udata,stream,len);
-#endif
 }
 
 void	compress_audio_sample(uint8 *buf,int len)

@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <map>
 #ifdef MACOS
   #include <stat.h>
+  #include <unistd.h>
 #else
   #include <sys/stat.h>
 #endif
@@ -64,7 +65,9 @@ void add_system_path(const string& key, const string& value)
 string get_system_path(const string &path)
 {
 	string new_path;
-	string::size_type pos = path.find('/');
+	string::size_type pos;
+	
+	pos = path.find('/');
 	// If there is no separator, return the path as is
 	if(pos == string::npos)
 		new_path = path;
@@ -117,11 +120,32 @@ static void switch_slashes(
 			*X =  '\\';
 	}
 #elif defined(MACOS)
+	const string c_up_dir("../");
+	const string c_cur_dir("./");
+	string::size_type pos;
+	
+	// 1. prepend with ":" 
 	name = ":" + name;
-	for(string::iterator X = name.begin(); X != name.end(); ++X)
+	// 2. replace all "../" with ":" 
+	pos = name.find(c_up_dir);
+	while( pos != string::npos )
 	{
-		if(*X == '/' )
-			*X =  ':';
+		name.replace(pos, 3, 1, ':' );
+		pos = name.find(c_up_dir, pos);
+	}
+	// 3. remove all "./"
+	pos = name.find(c_cur_dir);
+	while( pos != string::npos )
+	{
+		name.erase(pos, 2);
+		pos = name.find(c_cur_dir, pos);
+	}
+	// 4. replace all "/" with ":" 
+	pos = name.find('/');
+	while( pos != string::npos )
+	{
+		name.at(pos) = ':';
+		pos = name.find('/', pos);
 	}
 #else
 	// do nothing
@@ -256,6 +280,43 @@ int U7exists
 		exists = (stat(name.c_str(), &sbuf) == 0);
 	}
 	return exists;
+}
+
+/*
+ *	See if a file exists.
+ */
+
+int U7mkdir
+	(
+	const char *dirname,	// May be converted to upper-case.
+	int mode
+	)
+{
+#ifdef WIN32
+	return mkdir(dirname);
+#else
+	return mkdir(dirname, mode);		// Create dir. if not already there.
+#endif
+}
+
+/*
+ *	See if a file exists.
+ */
+
+int U7chdir
+	(
+	const char *dirname	// May be converted to upper-case.
+	)
+{
+#ifdef MACOS
+	char	name[256] = "";
+	if( dirname[0] != ':' )
+		std::strcpy(name, ":");
+	std::strncat(name, dirname, 254 );
+	return chdir(name);
+#else
+	return chdir(dirname);
+#endif
 }
 
 /*

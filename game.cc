@@ -136,7 +136,7 @@ Game *Game::create_game(Exult_Game mygame)
 	if(data_directory==".")
 		config->set(d.c_str(),data_directory,true);
 	cout << "chdir to " << data_directory << endl;
-	chdir(data_directory.c_str());
+	U7chdir(data_directory.c_str());
 	
 	add_system_path("<STATIC>", "static");
 	// Discover the game we are running (BG, SI, ...)

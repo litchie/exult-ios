@@ -376,6 +376,15 @@ int U7exists(
 	const char *fname
 	);
 
+int U7mkdir(
+	const char *dirname,
+	int mode
+	);
+
+int U7chdir(
+	const char *dirname
+	);
+
 int Log2
 	(
 	uint32 n

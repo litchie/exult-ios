@@ -36,6 +36,7 @@ using std::cerr;
 using std::endl;
 using std::memcmp;
 using std::memcpy;
+using std::sprintf;
 using std::string;
 
 #include "gamma.h"
