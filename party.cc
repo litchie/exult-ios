@@ -214,6 +214,8 @@ void Party_manager::link_party
 					// Now process them.
 	for (i = 0; i < tmp_party_count; i++)
 		{
+		if (party[i] <= 0)	// Fix corruption.
+			continue;
 		Actor *npc = gwin->get_npc(party[i]);
 		int oldid;
 		if (!npc ||		// Shouldn't happen!
