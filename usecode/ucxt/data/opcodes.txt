@@ -273,7 +273,7 @@ book, whatever). Has the side effect of clearing the string register.
 
 > 0x37	NULL	"null"	""	"null()"	0	{}	0	0	0
 
-> 0x38	CALLIS	"callis\t%i1@%b2"	"\t\t; %1"	"callis(%1, %p,)"	3	{short,byte}	0xFE 1	0
+> 0x38	CALLIS	"callis\t%i1@%b2"	"\t\t; %1"	"callis(%i1, %p,)"	3	{short,byte}	0xFE 1	0
 
 Calls the intrinsic {short} with {byte} number of parameters popped from the
 stack passed to it. Eg: if you were calling intrinsic 23 (short) with 3 (byte)
@@ -285,7 +285,7 @@ The intrinsic called will return a value on the stack.
 
 The intrinsic called also has the same "event" flag as the caller function.
 
-> 0x39	CALLI	"calli\t%i1@%b2"	"\t\t; %1"	"calli(%1, %p,)"	3	{short,byte}	0xFE	0	0
+> 0x39	CALLI	"calli\t%i1@%b2"	"\t\t; %1"	"calli(%i1, %p,)"	3	{short,byte}	0xFE	0	0
 
 Same as opcode CALLIS (0x38), except no return value.
 
