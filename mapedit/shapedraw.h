@@ -48,6 +48,7 @@ protected:
 	GdkRgbCmap *palette;		// For gdk_draw_indexed_image().
 	Drop_callback drop_callback;	// Called when a shape is dropped here.
 	void *drop_user_data;
+	bool dragging;			// Dragging from here.
 public:
 	Shape_draw(Vga_file *i, unsigned char *palbuf, GtkWidget *drw);
 	virtual ~Shape_draw();
@@ -75,6 +76,10 @@ public:
 		gpointer udata);
 	void enable_drop(Drop_callback callback, void *udata);
 	void set_drag_icon(GdkDragContext *context, Shape_frame *shape);
+					// Start/end dragging from here.
+	void start_drag(char *target, int id, GdkEvent *event);
+	void mouse_up()
+		{ dragging = false; }
 	};
 
 #endif
