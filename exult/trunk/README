@@ -1,8 +1,10 @@
 Exult - Documentation 
 
-last changed: 03 Septembre 2001(GMT)
+last changed: 28 Octobre 2001(GMT)
 ------------------------------------
 
+0. Changes to the Documentation
+0.1. - 28 Octobre 2001
 1. Introduction
 1.1. What is Exult?
 2. Configurations
@@ -23,11 +25,29 @@ last changed: 03 Septembre 2001(GMT)
 5.1. Movement
 5.2. Keyboard commands
 5.3. Cheat keys
-6. OS specific notes
-6.1. Error Log
-7. Credits and Contact
-7.1. Thanks
-7.2. Contacting us
+6. Game Menu
+6.1. Access to the Game menu
+6.2. Load/Save Game
+6.3. Video Options
+6.4. Audio Options
+6.5. Gameplay Options
+6.6. Quit to Menu
+6.7. Quit
+7. OS specific notes
+7.1. Error Log
+8. Credits and Contact
+8.1. Thanks
+8.2. Contacting us
+
+------------------------------------
+0. Changes to the Documentation
+ 
+0.1. - 28 Octobre 2001
+  * 0. Changes to the Documentation introduced. Don't know why I didn't add this from the beginning. 
+  * 2.2. Settings in exult.cfg added more gameplay options. 
+  * 5.1. Movement added comment on how to activate right mouse button on MacOS. 
+  * 5.2. Keyboard commands added 'g' for Abacus. 
+  * 6. Game Menu added to help people on how to use it. 
 
 ------------------------------------
 1. Introduction
@@ -50,7 +70,7 @@ Alternatively you can use a PC emulator to install it. The Ultima Collection alr
   * Run exult and enjoy the game :-) 
 Word of advice: Don't mix the files from BG and SI. 
 
-Important: Do not run Exult on an origina Ultima7 game which you're actually in the middle of playing, as Exult's saved files have a different format. There is no way to convert those original savegames and they will just crash Exult. 
+Important: Do not run Exult on an original Ultima7 game which you're actually in the middle of playing, as Exult's saved files have a different format. There is no way to convert those original savegames and they will just crash Exult. 
  
 2.2. Settings in exult.cfg
 Exult keeps a configuration file. You can specify where your Ultima 7 installation is, whether you want full-screen graphics, or windowed, and midi devices and midi settings. Some of these options can be set from the Setup menu when you run Exult or via the Game menu. 
@@ -98,7 +118,7 @@ blackgate
 <debug>
 <trace>
 <usecode>
-no   **enable/disable usecode-tracing for debuging (you shouldn't need this one)
+no   **options are yes/no/verbose. This is used to trace the executed Usecode (you shouldn't need this unless you are a programmer).
 </usecode>
 </trace>
 </debug>
@@ -115,6 +135,18 @@ no   **this skips the intro in BG when you started a new game; Iolo talks to Pet
 <skip_splash>
 no   **this skips the splash screen, the intro before you get to the game menu, disabling it brings you straight to the game menu
 </skip_splash>
+<facestats>
+0   activates the status faces and the position on the screen. -1 disable,0 right, 1 middle, 2 right.
+</facestats>
+<mouse3rd>
+no   yes enables using of the middle mouse button.
+</mouse3rd>
+<fastmouse>
+no   yes enables faster cursor movement in fullscreen mode.
+</fastmouse>
+<bg_paperdolls>
+no   yes enables SI style paperdolls in BG.
+</bg_paperdolls>
 </gameplay>
 <audio>
 <enabled>
@@ -303,6 +335,7 @@ More information on the excellent scaling engines by Derek Liauw is available at
   * Click on objects with left button to identify them. 
   * Double-click on characters to hold conversations. 
   * Double-click on doors, shutters with left button to open or close them. 
+Note that on MacOS you have to hold down the 'Cmd' key and the mouse button to have the functionality of a right mouse button. 
  
 5.2. Keyboard commands
 Starting with V0.91 Alpha2 all key commands can be changed. However, there is a default setting which closely follows the original with the addition of some improvements. 
@@ -316,6 +349,7 @@ F4     Toggle fullscreen
 b     Use spellbook
 c     Combat mode
 f     Use food
+g     Use Abacus
 h     Show list of keyboard commands
 i     Show inventory
 j     SI: Show jawbone
@@ -363,7 +397,7 @@ Ctrl-c     Create object
 Ctrl-d     Delete object
 e     Toggle egg display
 Alt-g     Toggle God mode
-Ctrl-g     SI: Change avatar gender
+Ctrl-g     Change avatar gender
 Ctrl-Alt-h     Resurrect, heal party, cure poison and still hunger
 Alt-i     Toggle infravision
 Ctrl-l     Level up party
@@ -385,9 +419,75 @@ Ctrl-Alt-g     Grab NPC for cheat screen
 Ctrl-Alt-p     Pick pocket cheat, when enabled double-clicking on a NPC displays the actors inventory
 Ctrl-n     NPC number, When enabled, clicking an a NPC will display their number instead of their name. Usefull for the cheat screen.
 ------------------------------------
-6. OS specific notes
+6. Game Menu
  
-6.1. Error Log
+6.1. Access to the Game menu
+You can access the Game menu either by pressing the disk icon in the Avatar's inventory screen or by pressing 'Esc' .
+You then have the following options. 
+ 
+6.2. Load/Save Game
+This on is pretty straightforward. You can load and save a game, delete a game and view some information of a savegame on the right side (a screenshot and some stats).
+Pressing Cancel exits the Load/Save options. 
+ 
+6.3. Video Options
+In this option screen you are able to determine how Exult displays the game. 
+  * Resolution
+lets you choose between various resolutions. You can choose between 320x200, 320x240, 400x300, 512x384 and 640x480. If you want higher resolutions edit the exult.cfg file as outlined in 2.2. Settings in exult.cfg. 
+  * Scaling
+choose between 1x and 2x. What it does is explained in 4.2. Scaler. 
+  * Scaler
+lets you choose your favourite scaling engine. Also look at 4.2. Scaler for an explanation. 
+  * Full Screen
+enable or disable running Exult in full screen. 
+  * OK/Cancel
+Ok accepts your changes, Cancel discards your changes. 
+ 
+6.4. Audio Options
+Look at 3. Audio to see explanation on the seetings. 
+  * Audio
+Enable or disable all Audio in Exult. 
+  * Music
+Enable or disable music. 
+  * Conversion
+choose between None, GM, GS, GS127. 
+  * Reverb
+alters the way the midi is played. Enable or disable to hear if you like it. 
+  * Chorus
+the same as Reverb 
+  * SFX
+Enable or disable digital sound effects. 
+  * Speech Options
+Enable or disable the speech in the games. 
+  * OK/Cancel
+Ok accepts your changes, Cancel discards your changes. 
+ 
+6.5. Gameplay Options
+  * Status Bars
+You can either disable the status bars or choose its position on the bottom of the screen (left, middle, right). 
+  * Fast Mouse
+makes the mouse cursor move faster in fullscreen modes. Enable or disable it. 
+  * Use middle mouse button
+In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't' ). For modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. the escape function is also available during most other actions like selecting a target or conversations. Enable or disable it. 
+  * Doubleclick closes gumps
+not implemented into the Gameplay Options yet, but can be enabled or disabled by editing the exult.cfg - see 2.2. Settings in exult.cfg. 
+  * Paperdolls
+only availlable in Black Gate. Enables or disable Paperdolls (inventory screen) in the style of Serpent Isle. 
+  * Cheats
+Enables or disables all the cheats that we implemented in Exult. See 5.3. Cheat keys what those cheats are. 
+  * Text Background
+shows a tinted background behind text in conversations to make it easier to read. Either disable it or choose between the clours purple, orange, light gray, green, yellow,pale blue, dark green. red, bright white, dark grey and white. 
+  * OK/Cancel
+Ok accepts your changes, Cancel discards your changes. 
+ 
+6.6. Quit to Menu
+This is not implented yet and just quits Exult. When it eventually works you will be back to the Exult menu where you choose which game you want to play. It is actually more dificult to implement than it sounds so don't expect it too soon. 
+ 
+6.7. Quit
+Exits Exult. 
+------------------------------------
+7. OS specific notes
+ 
+7.1. Error Log
   * MacOS/Win32:
 Exult generates the files 'stdout.txt' and 'stderr.txt'. These may give you some idea of what is going on under the hood. When Exult suddenly quits, sometimes these files can help. 
   * Unix/Unix clones:
@@ -396,15 +496,15 @@ the above mentioned logs are shown in the console from which Exult is started.
 will send both stderr and stdout to the file named "log". 
 
 ------------------------------------
-7. Credits and Contact
+8. Credits and Contact
  
-7.1. Thanks
+8.1. Thanks
   * The paper by Gary Thompson on the structure of the U7 data files was crucial to the early development of Exult. 
   * Work by Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag made the "usecode" interpreter possible. 
   * Olivier Marcoux's technical document was also crucial in understanding some data files. 
   * Thanks also go to the person who wrote u7items.txt and the contributor of the "avatar.ttf" font. 
  
-7.2. Contacting us
+8.2. Contacting us
 You can contact the Exult team and/or get more information from:
 http://exult.sourceforge.net/ or
 http://sourceforge.net/projects/exult/
