@@ -300,7 +300,6 @@ public:
 	virtual void paint(Game_window *gwin);
 	};
 
-#if 1
 /*
  *	An object that cycles through its frames.
  */
@@ -319,7 +318,24 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 	};
-#endif
+
+/*
+ *	A light source.  We'll try animated by playing with its translucent
+ *	pixels.
+ */
+class Lightsource_object : public Ireg_game_object, public Time_sensitive
+	{
+	unsigned char trans;		// 1 to use translucency on next frame.
+	unsigned char animating;	// 1 if animation turned on.
+public:
+	Lightsource_object(unsigned char l, unsigned char h, 
+				unsigned int shapex,
+				unsigned int shapey, unsigned int lft = 0);
+					// Render.
+	virtual void paint(Game_window *gwin);
+					// For Time_sensitive:
+	virtual void handle_event(unsigned long time, long udata);
+	};
 
 /*
  *	An "egg" is a special object that activates under certain

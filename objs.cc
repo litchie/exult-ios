@@ -301,7 +301,6 @@ int Ireg_game_object::is_dragable
 	return gwin->get_shapes().get_info(get_shapenum()).get_weight() > 0;
 	}
 
-#if 1
 /*
  *	Create an animated object.
  */
@@ -316,7 +315,6 @@ Animated_object::Animated_object
 		cycle_num(0), animating(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	int delay = 100;		// Delay between frames.
 	frames = gwin->get_shape_num_frames(get_shapenum());
 	}
 
@@ -374,7 +372,70 @@ void Animated_object::handle_event
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
 
-#endif
+/*
+ *	Create an animated object.
+ */
+
+Lightsource_object::Lightsource_object
+	(
+	unsigned char l, unsigned char h, 
+	unsigned int shapex,
+	unsigned int shapey,
+	unsigned int lft
+	) : Ireg_game_object(l, h, shapex, shapey, lft), trans(0), animating(0)
+	{
+	}
+
+/*
+ *	Render.
+ */
+
+void Lightsource_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	int xoff = (cx - gwin->get_chunkx())*chunksize;
+	int yoff = (cy - gwin->get_chunky())*chunksize;
+	Shape_frame *shape = gwin->get_shape(get_shapenum(), get_framenum());
+					// Paint with/without translucency.
+	gwin->paint_shape(xoff + (1 + get_tx())*tilesize - 4*get_lift(),
+				yoff + (1 + get_ty())*tilesize - 4*get_lift(),
+								shape, trans);
+	trans = !trans;			// Toggle translucency.
+	if (!animating)			// Turn on animation.
+		{
+		gwin->get_tqueue()->add(SDL_GetTicks() + 100, 
+							this, (long) gwin);
+		animating = 1;
+		}
+	}
+
+/*
+ *	Animation.
+ */
+
+void Lightsource_object::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata			// Game window.
+	)
+	{
+	int delay = 100;		// Delay between frames.
+	Game_window *gwin = (Game_window *) udata;
+					// Get area we're taking.
+	Rectangle rect = gwin->get_shape_rect(this);
+	rect = gwin->clip_to_win(rect);
+	if (rect.w <= 0 || rect.h <= 0)	// No longer on screen?
+		{
+		animating = 0;
+		return;
+		}
+	gwin->add_dirty(rect);		// Paint.
+					// Add back to queue for next time.
+	if (animating)
+		gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
 
 /*
  *	Is a given tile within this egg's influence?
