@@ -5,6 +5,17 @@
 #include <cstdio>
 #include <iostream>
 
+using std::string;
+
+using std::cerr;
+using std::endl;
+using std::size_t;
+using std::FILE;
+using std::fopen;
+using std::fclose;
+using std::fwrite;
+
+
 #define	TRY_FILE_TYPE(uf,CLASS_NAME)	\
 	if(!uf) \
 	try {	\

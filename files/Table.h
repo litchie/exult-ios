@@ -38,10 +38,10 @@ protected:
 		uint16 size;
 		Reference() : offset(0),size(0) {};
 		};
-	vector<Reference> object_list;
+	std::vector<Reference> object_list;
 public:
 	Table(const char *name);
-	Table(const string &name);
+	Table(const std::string &name);
 	Table(const Table &t) : object_list(t.object_list)
 		{  }
 	Table &operator=(const Table &t)
@@ -52,7 +52,7 @@ public:
 	virtual ~Table();
 
         virtual int     number_of_objects(const char *) { return object_list.size(); };
-        virtual int     retrieve(int objnum,char **,size_t *len); // To a memory block
+        virtual int     retrieve(int objnum,char **,std::size_t *len); // To a memory block
         virtual int     retrieve(int objnum,const char *);       // To a file
 private:
 	void IndexTableFile(void);

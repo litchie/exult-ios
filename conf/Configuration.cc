@@ -28,7 +28,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 #include <iostream>
 
+using std::string;
+using std::vector;
 
+using std::atoi;
+using std::cerr;
+using std::endl;
+using std::FILE;
+using std::fopen;
+using std::perror;
+using std::size_t;
+using std::sprintf;
 
 Configuration::Configuration() : xmltree(),filename(""),is_file(false)
 {}
