@@ -1,6 +1,9 @@
 2002-07-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/greentop.shp: new paperdoll art. Thanks sbx!
 	* usecode/ucxt/Makefile.am: fixed --disable-tools
+	* configure.in: install gnome things to $(datadir)
+	(instead of $(GNOMEDATADIR)). This allows non-root installs.
+	* data/Makefile.am: don't install estudio data when not building that
 
 2002-07-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Spellbook_gump.cc: fixed up offsets; fixed NULL shape error

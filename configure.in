@@ -646,8 +646,8 @@ fi
 AC_PATH_PROG(GNOMECONFIG, gnome-config)
 if test -n "$GNOMECONFIG"; then
 	AM_CONDITIONAL(GNOME_INSTALLED, true)
-	GNOMEDATADIR=`gnome-config --datadir`
-	AC_SUBST(GNOMEDATADIR)
+#	GNOMEDATADIR=`gnome-config --datadir`
+#	AC_SUBST(GNOMEDATADIR)
 else
 	AM_CONDITIONAL(GNOME_INSTALLED, false)
 fi
