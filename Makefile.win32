@@ -47,6 +47,7 @@ LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid
 EXEC=Exult.exe
 EXEEXT=.exe
 
+FILE_OBJS = snprintf.o
 OBJS	= exultico.o
 
 include Makefile.common
