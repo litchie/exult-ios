@@ -17,7 +17,8 @@ libaudio_la_SOURCES =	\
 	xmidi.cc	\
 	xmidi.h		\
 	soundtest.cc	\
-	soundtest.h
+	soundtest.h	\
+	convmusic.h
 
 EXTRA_DIST = 		\
 	README
