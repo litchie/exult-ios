@@ -485,6 +485,8 @@ class Image_window : public Image_buffer
 	 */
 					// Scale 8-bits to 16-bits.
 	void show_scaled8to16(int x, int y, int w, int h);
+	void show_scaled8to555(int x, int y, int w, int h);
+	void show_scaled8to565(int x, int y, int w, int h);
 					// Scale 8-bits to 32-bits.
 	void show_scaled8to32(int x, int y, int w, int h);	
 	/*

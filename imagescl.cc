@@ -33,6 +33,7 @@ Boston, MA  02111-1307, USA.
  */
 class Manip8to16
 	{
+protected:
 	SDL_Color *colors;		// Palette for source window.
 	SDL_PixelFormat *fmt;		// Format of dest. pixels.
 public:
@@ -42,13 +43,9 @@ public:
 	unsigned short rgb(unsigned int r, unsigned int g,
 							unsigned int b) const
 		{
-#if 0
-		return ((r>>3)<<10) | ((g>>3)<<5) | (b>>3);
-#else
 		return ((r>>fmt->Rloss)<<fmt->Rshift) |
 		       ((g>>fmt->Gloss)<<fmt->Gshift) |
 		       ((b>>fmt->Bloss)<<fmt->Bshift);
-#endif
 		}
 	void copy(unsigned short& dest, unsigned char src) const
 		{
@@ -66,15 +63,49 @@ public:
 	void split_dest(unsigned short pix, unsigned int& r,
 				unsigned int& g, unsigned int& b) const
 		{
-#if 0
-		r = (pix>>10)&0x1f;
-		g = (pix>>5)&0x1f;
-		b = pix&0x1f;
-#else
 		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
 		g = ((pix&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
 		b = ((pix&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
-#endif
+		}
+	};
+
+/*
+ *	Manipulate from 8-bit to 16-bit 555 format.
+ */
+class Manip8to555 : public Manip8to16
+	{
+public:
+	Manip8to555(SDL_Color *c) : Manip8to16(c, 0)
+		{  }
+	unsigned short rgb(unsigned int r, unsigned int g,
+							unsigned int b) const
+		{ return ((r>>3)<<10)|((g>>3)<<5)|(b>>3); }
+	void split_dest(unsigned short pix, unsigned int& r,
+				unsigned int& g, unsigned int& b) const
+		{
+		r = (((pix&0x7c00)>>10)<<3);
+		g = (((pix&0x03e0)>>5)<<3);
+		b = ((pix&0x001f)<<3);
+		}
+	};
+
+/*
+ *	Manipulate from 8-bit to 16-bit 565 format.
+ */
+class Manip8to565 : public Manip8to16
+	{
+public:
+	Manip8to565(SDL_Color *c) : Manip8to16(c, 0)
+		{  }
+	unsigned short rgb(unsigned int r, unsigned int g,
+							unsigned int b) const
+		{ return ((r>>3)<<11)|((g>>2)<<5)|(b>>3); }
+	void split_dest(unsigned short pix, unsigned int& r,
+				unsigned int& g, unsigned int& b) const
+		{
+		r = (((pix&0xf800)>>11)<<3);
+		g = (((pix&0x07e0)>>5)<<2);
+		b = ((pix&0x001f)<<3);
 		}
 	};
 
@@ -153,6 +184,38 @@ void Image_window::show_scaled8to16
 	Manip8to16 manip(surface->format->palette->colors,
 						scaled_surface->format);
 	Scale2x<unsigned char, unsigned short, Manip8to16>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (unsigned short *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	}
+
+void Image_window::show_scaled8to555
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	Manip8to555 manip(surface->format->palette->colors);
+	Scale2x<unsigned char, unsigned short, Manip8to555>
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
+		    (unsigned short *) scaled_surface->pixels, 
+			scaled_surface->pitch/
+				scaled_surface->format->BytesPerPixel,
+			manip);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
+	}
+
+void Image_window::show_scaled8to565
+	(
+	int x, int y, int w, int h	// Area to show.
+	)
+	{
+	Manip8to565 manip(surface->format->palette->colors);
+	Scale2x<unsigned char, unsigned short, Manip8to565>
 		(ibuf->get_bits(), x, y, w, h,
 		    ibuf->line_width, ibuf->height, 
 		    (unsigned short *) scaled_surface->pixels, 
