@@ -1,3 +1,7 @@
+2003-02-05 Aurelien Marchand <artaxerxes@users.sourceforge.net>
+	* README.Qtopia: few changes to match the current compile method
+	* configure.in: reverted the zaurus/embeddix $host_vendor variable
+	
 2003-01-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: When resurrecting, set schedule to something reasonable.
