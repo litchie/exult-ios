@@ -52,7 +52,8 @@ public:
 
 	void flush();			// Delete them now.
 	~Deleted_objects()
-		{ flush(); }
+// Problems		{ flush(); }
+		{  }
 	};
 
 #endif	/* DELOBJS_H */
