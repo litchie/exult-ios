@@ -753,8 +753,8 @@ static void Init
 
 		Audio::get_ptr()->Init_sfx();
 		
-		Setup_text(); //-DK-		
-		
+		Setup_text();
+
 					// Skip splash screen?
 		bool skip_splash;
 		config->value("config/gameplay/skip_splash", skip_splash);
