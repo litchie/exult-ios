@@ -2,9 +2,6 @@ AUTOMAKE_OPTIONS=foreign
 
 all-local:	libconf.a 
 
-INCLUDES +=	$(SDL_INCLUDES)
-INCLUDES +=	$(KMID_INCLUDES)
-
 CXXFLAGS += $(INCDIRS) -Wall 
 
 

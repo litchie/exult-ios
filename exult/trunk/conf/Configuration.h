@@ -38,6 +38,8 @@ public:
 
 	bool	read_config_file(const char *);
 	string	&value(const char *);
+	void	value(const char *,string &);
+	void	value(const char *,int &);
 private:
 	XMLnode xmltree;
 	string	filename;
