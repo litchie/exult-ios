@@ -88,10 +88,11 @@ Uc_function::~Uc_function
 
 bool Uc_function::is_dup
 	(
+	Uc_scope *scope,
 	char *nm
 	)
 	{
-	Uc_symbol *sym = search(nm);
+	Uc_symbol *sym = scope->search(nm);
 	if (sym)			// Already in scope?
 		{
 		char msg[180];
@@ -113,7 +114,7 @@ Uc_var_symbol *Uc_function::add_symbol
 	char *nm
 	)
 	{
-	if (is_dup(nm))
+	if (is_dup(cur_scope, nm))
 		return 0;
 					// Create & assign slot.
 	Uc_var_symbol *var = new Uc_var_symbol(nm, num_parms + num_locals++);
@@ -131,7 +132,7 @@ Uc_symbol *Uc_function::add_string_symbol
 	char *text
 	)
 	{
-	if (is_dup(nm))
+	if (is_dup(cur_scope, nm))
 		return 0;
 					// Create & assign slot.
 	Uc_symbol *sym = new Uc_string_symbol(nm, add_string(text));
@@ -151,11 +152,31 @@ Uc_symbol *Uc_function::add_int_const_symbol
 	int value
 	)
 	{
-	if (is_dup(nm))
+	if (is_dup(cur_scope, nm))
 		return 0;
 					// Create & assign slot.
 	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value);
 	cur_scope->add(var);
+	return var;
+	}
+
+/*
+ *	Add a new integer constant variable to the global scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_symbol *Uc_function::add_global_int_const_symbol
+	(
+	char *nm,
+	int value
+	)
+	{
+	if (is_dup(&globals, nm))
+		return 0;
+					// Create & assign slot.
+	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value);
+	globals.add(var);
 	return var;
 	}
 
