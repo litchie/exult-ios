@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::cout;
 using std::endl;
+using std::toupper;
 
 extern Game_window *gwin;	// from exult.cc - FIX ME!!!
 extern unsigned char quitting_time;	// from exult.cc - FIX ME!!!
@@ -93,7 +94,7 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
 				return (0);
 			int chr = event.key.keysym.sym;
 			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
-						? std::toupper(chr) : chr);
+						? toupper(chr) : chr);
 			break;
 		}
 	case SDL_KEYUP:			// Watch for ALT keys released.

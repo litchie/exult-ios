@@ -91,7 +91,7 @@ void Spellbook_object::write_ireg
 	{
 	unsigned char buf[19];		// 18-byte entry + length-byte.
 	buf[0] = 18;
-	unsigned char *ptr = &buf[1];	// To avoid confusion about offsets.
+	uint8 *ptr = &buf[1];	// To avoid confusion about offsets.
 	write_common_ireg(ptr);		// Fill in bytes 1-4.
 	ptr += 4;
 	memcpy(ptr, &circles[0], 5);	// Store the way U7 does it.
