@@ -198,7 +198,7 @@ void Gump_text::paint
 	(
 	)
 	{
-	gwin->paint_shape(parent->get_x() + x, parent->get_y() + y, get_shape());
+	paint_shape(parent->get_x() + x, parent->get_y() + y);
 					// Show text.
 	sman->paint_text(2, text, parent->get_x() + textx,
 						parent->get_y() + texty);

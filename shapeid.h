@@ -19,6 +19,7 @@
 #ifndef SHAPEID_H
 #define SHAPEID_H	1
 
+#include "exult_constants.h"
 #include "shapevga.h"
 #include "singles.h"
 
@@ -26,6 +27,7 @@ class Shape_frame;
 class Shape_info;
 class Fonts_vga_file;
 class Font;
+class Image_buffer8;
 
 enum ShapeFile {
 	SF_SHAPES_VGA = 0,	// <STATIC>/shapes.vga.  MUST be first.
@@ -50,9 +52,13 @@ enum ShapeFile {
 class Shape_manager : public Game_singletons
 	{
 	static Shape_manager *instance;	// There shall be only one.
+	Image_buffer8 *ibuf;		// Paint to this.
 	Shapes_vga_file shapes;		// Main 'shapes.vga' file.
 	Vga_file files[(int) SF_COUNT];	// The files we manage.
 	Fonts_vga_file *fonts;		// "fonts.vga" file.
+	Xform_palette xforms[11];	// Transforms translucent colors
+					//   0xf4 through 0xfe.
+	Xform_palette invis_xform;	// For showing invisible NPC's.
 	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
 					//   is found when playing BG
 	bool bg_paperdolls;		// True if paperdolls are wanted in BG
@@ -64,11 +70,14 @@ public:
 	~Shape_manager();
 	static Shape_manager *get_instance()
 		{ return instance; }
+	void set_ibuf(Image_buffer8 *ib) { ibuf = ib; }
 	void load();			// Read in files.
 	Vga_file& get_file(enum ShapeFile f)
 		{ return files[(int) f]; };
 	Shapes_vga_file& get_shapes()
 		{ return shapes; }
+	inline Xform_palette get_xform(int i) const
+		{ return xforms[i]; }
 	// BG Only
 	inline bool can_use_paperdolls() const
 	{ return bg_paperdolls_allowed; }
@@ -81,6 +90,26 @@ public:
 
 	inline bool can_use_multiracial() const
 	{ return bg_multiracial_allowed; }
+
+					// Paint shape in window.
+	void paint_shape(int xoff, int yoff, Shape_frame *shape,
+						int translucent = 0)
+		{
+		if (!shape || !shape->data)
+			CERR("NULL SHAPE!!!");
+		else if (!translucent)
+			shape->paint_rle(ibuf, xoff, yoff);
+		else
+			shape->paint_rle_translucent(ibuf,
+					xoff, yoff, xforms, 
+					sizeof(xforms)/sizeof(xforms[0]));
+		}
+
+	inline void paint_invisible(int xoff, int yoff, Shape_frame *shape)
+		{
+		if (shape) shape->paint_rle_transformed(ibuf,
+						xoff, yoff, invis_xform);
+		}
 
 					// Paint text using "fonts.vga".
 	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
@@ -168,7 +197,13 @@ public:
 	void set_file(ShapeFile shfile)	// Set to new flex
 		{ shapefile = shfile; shape = 0; }
 
-	void paint_shape(int xoff, int yoff, bool force_trans = false);
+	void paint_shape(int xoff, int yoff, bool force_trans = false)
+		{
+		sman->paint_shape(xoff, yoff, get_shape(), 
+						has_trans || force_trans);
+		}
+	void paint_invisible(int xoff, int yoff)
+		{ sman->paint_invisible(xoff, yoff, get_shape()); }
 	int get_num_frames() const;
 	Shape_info& get_info() const	// Get info. about shape.
 		{ return Shape_manager::instance->shapes.get_info(shapenum); }

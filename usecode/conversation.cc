@@ -496,7 +496,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	mbox = mbox.intersect(sbox);
 	avatar_face = mbox;		// Repaint entire width.
 					// Draw portrait.
-	gwin->paint_shape(mbox.x + face->get_xleft(), 
+	sman->paint_shape(mbox.x + face->get_xleft(), 
 			  mbox.y + face->get_yabove(), face);
 					// Set to where to draw sentences.
 	Rectangle tbox(mbox.x + mbox.w + 8, mbox.y + 4,
@@ -603,7 +603,7 @@ void Conversation::paint
 			face_xleft = face->get_xleft();
 			face_yabove = face->get_yabove();
 					// Use translucency.
-			gwin->paint_shape(
+			sman->paint_shape(
 				finfo->face_rect.x + face_xleft,
 				finfo->face_rect.y + face_yabove, face, 1);
 			}
