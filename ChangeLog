@@ -1,3 +1,6 @@
+2002-11-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: fixed division by zero
+
 2002-11-01  Ryan Nunn <colourles@users.sourceforge.net>
 	* imagewin/ibuf8.cc : Working round MSVC compiler bug.
 	* msvcstuff/*.* : Version updates
