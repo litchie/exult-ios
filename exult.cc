@@ -668,7 +668,9 @@ static void Init
 	Server_init();			// Initialize server (for map-editor).
 	hgwin = info.window;
         OleInitialize(NULL);
-	windnd = new Windnd(hgwin, Drop_dragged_shape, Drop_dragged_chunk);
+	windnd = new Windnd(hgwin, Move_dragged_shape, Move_dragged_combo,
+				Drop_dragged_shape, Drop_dragged_chunk,
+							Drop_dragged_combo);
 	if (FAILED(RegisterDragDrop(hgwin, windnd))) {
 	     cout << "Something's wrong with OLE2 ..." << endl;
 	};

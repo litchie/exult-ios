@@ -473,8 +473,7 @@ void Chunk_chooser::drag_data_get
 	cout << "Setting selection data (" << shinfo.num << ')' << endl;
 #ifdef WIN32
 	windragdata *wdata = (windragdata *)seldata;
-	wdata->data = buf;
-	wdata->id = info;
+	wdata->assign(info, len, buf);
 #else
 					// Make us owner of xdndselection.
 	gtk_selection_owner_set(widget, gdk_atom_intern("XdndSelection", 0),
