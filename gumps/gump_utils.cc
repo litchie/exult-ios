@@ -167,7 +167,7 @@ int Do_Modal_gump
 	Mouse::mouse->hide();			// Turn off mouse.
 					// Save background.
 	gwin->get_win()->get(back, box.x, box.y);
-	gump->paint(gwin);		// Paint gump.
+	gump->paint();			// Paint gump.
 	Mouse::mouse->show();
 	gwin->show();
 	do

@@ -41,7 +41,7 @@ class Jawbone_gump : public Gump {
 						bool combine = false);
 
 	// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 
  private:
 	void set_to_spot(Game_object *obj, int sx, int sy);

@@ -52,13 +52,13 @@ int Jawbone_gump::add(Game_object *obj, int mx, int my,	int sx, int sy,
 	return jawbone->add(obj, dont_check, combine);
 }
 
-void Jawbone_gump::paint(Game_window *gwin)
+void Jawbone_gump::paint()
 {
 	// Paint gump itself
 	paint_shape(x, y);
 
 	// Paint red "checkmark".
-	check_button->paint(gwin);
+	check_button->paint();
 
 	jawbone->find_teeth();
 

@@ -47,7 +47,7 @@ public:
 						bool combine = false)
 		{ return 0; }		// Can't drop onto it.
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 
 	virtual Game_object *find_object(int mx, int my)
 		{ return 0; }

@@ -118,7 +118,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		} else {
 			build_buttons();
 		}
-		paint(gwin);
+		paint();
 	} else if (btn == buttons[1]) {	// midi on/off 
 		midi_enabled = state;
 		if (state == 0) {
@@ -129,7 +129,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		} else {
 			build_midi_buttons();
 		}
-		paint(gwin);
+		paint();
 	} else if (btn == buttons[2]) { // midi conversion
 		midi_conversion = state;
 	} else if (btn == buttons[3]) { // midi reverb
@@ -146,7 +146,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		} else {
 			build_sfx_buttons();
 		}
-		paint(gwin);
+		paint();
 #ifdef ENABLE_MIDISFX
 	} else if (btn == buttons[7]) { // sfx conversion
 		if (state == 1) {
@@ -346,12 +346,12 @@ void AudioOptions_gump::save_settings()
 	}
 }
 
-void AudioOptions_gump::paint(Game_window* gwin)
+void AudioOptions_gump::paint()
 {
-	Gump::paint(gwin);
+	Gump::paint();
 	for (int i=0; i<11; i++)
 		if (buttons[i])
-			buttons[i]->paint(gwin);
+			buttons[i]->paint();
 
 	gwin->paint_text(2, "Audio:", x + colx[0], y + rowy[0] + 1);
 	if (audio_enabled) {

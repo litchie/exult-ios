@@ -64,7 +64,6 @@ void Text_gump::add_text
 
 int Text_gump::paint_page
 	(
-	Game_window *gwin,
 	Rectangle box,			// Display box rel. to gump.
 	int start			// Starting offset into text.
 	)
@@ -120,12 +119,11 @@ int Text_gump::paint_page
 
 int Text_gump::show_next_page
 	(
-	Game_window *gwin
 	)
 {
 	if (curend >= textlen)
 		return (0);		// That's all, folks.
 	curtop = curend;		// Start next page or pair of pages.
-	paint(gwin);			// Paint.  This updates curend.
+	paint();			// Paint.  This updates curend.
 	return (1);
 }

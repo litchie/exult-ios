@@ -64,7 +64,7 @@ public:
 			int sx = -1, int sy = -1, bool dont_check = false,
 						bool combine = false);
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 
 	virtual Container_game_object *find_actor(int mx, int my);
 };

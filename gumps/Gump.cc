@@ -293,14 +293,13 @@ void Gump::remove
 
 void Gump::paint
 	(
-	Game_window *gwin
 	)
 {
 		// Paint the gump itself.
 	paint_shape(x, y);
 		
 		// Paint red "checkmark".
-	if (check_button) check_button->paint(gwin);
+	if (check_button) check_button->paint();
 
 	if (!container)
 		return;			// Empty.

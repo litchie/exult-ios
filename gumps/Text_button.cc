@@ -67,7 +67,7 @@ void Text_button::init()
 	text_x = (width - text_width) >> 1;
 }
 
-void Text_button::paint(Game_window *gwin)
+void Text_button::paint()
 {
 	Image_window8 *iwin = gwin->get_win();
 

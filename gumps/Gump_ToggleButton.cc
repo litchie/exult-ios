@@ -29,7 +29,7 @@ void Gump_ToggleButton::activate(Game_window *gwin)
 	set_frame(get_framenum() + 2);
 	if (get_framenum() >= 2*numselections) set_frame(0);
 	toggle(get_framenum()/2);
-	paint(gwin);
+	paint();
 	gwin->set_painted();
 }
 
@@ -41,6 +41,6 @@ void Gump_ToggleTextButton::activate(Game_window *gwin)
 	text = selections[get_framenum()];
 	init();
 	toggle(get_framenum());
-	paint(gwin);
+	paint();
 	gwin->set_painted();
 }

@@ -317,7 +317,7 @@ void Newfile_gump::save()
 
 	FreeSaveGameDetails();
 	LoadSaveGameDetails();
-	paint(gwin);
+	paint();
 	gwin->set_painted();
 }
 
@@ -354,7 +354,7 @@ void Newfile_gump::delete_file()
 
 	FreeSaveGameDetails();
 	LoadSaveGameDetails();
-	paint(gwin);
+	paint();
 	gwin->set_painted();
 }
 
@@ -376,7 +376,7 @@ void Newfile_gump::scroll_line(int dir)
 	cout << "New list position " << list_position << endl;
 #endif
 
-	paint(gwin);
+	paint();
 	gwin->set_painted();
 }
 
@@ -434,10 +434,9 @@ void Newfile_gump::PaintSaveName (int line)
 
 void Newfile_gump::paint
 	(
-	Game_window *gwin
 	)
 {
-	Gump::paint(gwin);
+	Gump::paint();
 
 	// Paint text objects.
 	int i;
@@ -447,7 +446,7 @@ void Newfile_gump::paint
 
 	// Paint Buttons
 	for (i = 0; i < 8; i++) if (buttons[i])
-		buttons[i]->paint(gwin);
+		buttons[i]->paint();
 
 	// Paint scroller
 
@@ -610,14 +609,14 @@ void Newfile_gump::mouse_down
 		if (gy < pos+scrolly)
 		{
 			scroll_page(-1);
-			paint (gwin);
+			paint();
 			return;
 		}
 		// Pressed below it
 		else if (gy >= pos+scrolly+sliderh)
 		{
 			scroll_page(1);
-			paint (gwin);
+			paint();
 			return;
 		}
 		// Pressed on it
@@ -720,7 +719,7 @@ void Newfile_gump::mouse_down
 		buttons[2] = 0;
 	}
 
-	paint(gwin);			// Repaint.
+	paint();			// Repaint.
 	gwin->set_painted();
 					// See if on text field.
 }
@@ -800,7 +799,7 @@ void Newfile_gump::mouse_drag
 	if (new_pos != list_position)
 	{
 		list_position = new_pos;
-		paint(gwin);
+		paint();
 	}
 }
 
@@ -901,7 +900,7 @@ void Newfile_gump::key_down
 					buttons[1] = new Newfile_Textbutton(this, savetext,
 														btn_cols[0], 
 														btn_rows[0], 40);
-					buttons[1]->paint(gwin);
+					buttons[1]->paint();
 				}
 
 				// Remove Load and Delete Button
@@ -927,7 +926,7 @@ void Newfile_gump::key_down
 	}
 	if (repaint)
 	{
-		paint (gwin);
+		paint();
 		gwin->set_painted();
 	}
 }

@@ -194,7 +194,7 @@ public:
 	int restored_game()		// 1 if user restored.
 		{ return restored; }
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	virtual void close(Game_window *gwin)
 		{ done = 1; }
 					// Handle events:

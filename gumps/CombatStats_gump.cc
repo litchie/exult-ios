@@ -79,21 +79,21 @@ CombatStats_gump::~CombatStats_gump()
  *	Paint on screen.
  */
 
-void CombatStats_gump::paint(Game_window *gwin)
+void CombatStats_gump::paint()
 {
-	Gump::paint(gwin);
+	Gump::paint();
 
 	// stats for all party members
 	for (int i = 0; i < party_size; i++) {
-		face_btn[i]->paint(gwin);
+		face_btn[i]->paint();
 
 		Paint_num(gwin, party[i]->get_property(Actor::combat),
 				  x + colx + i*coldx, y + rowy[1]);		
 		Paint_num(gwin, party[i]->get_property(Actor::health),
 				  x + colx + i*coldx, y + rowy[2]);
 
-		halo_btn[i]->paint(gwin);
-		cmb_btn[i]->paint(gwin);
+		halo_btn[i]->paint();
+		cmb_btn[i]->paint();
 	}
 
 	// magic stats only for Avatar

@@ -33,6 +33,6 @@ void Enabled_button::activate(Game_window *gwin)
 	text = selections[get_framenum()];
 	init();
 	toggle(get_framenum());
-	paint(gwin);
+	paint();
 	gwin->set_painted();
 }

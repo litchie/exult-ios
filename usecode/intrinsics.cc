@@ -781,7 +781,7 @@ USECODE_INTRINSIC(display_runes)
 #endif
 			sign->add_text(i, str);
 		}
-	sign->paint(gwin);		// Paint it, and wait for click.
+	sign->paint();			// Paint it, and wait for click.
 	int x, y;
 	Get_click(x, y, Mouse::hand);
 	delete sign;

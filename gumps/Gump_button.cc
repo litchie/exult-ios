@@ -35,7 +35,7 @@ void Gump_button::push
 	)
 {
 	pushed = 1;
-	paint(gwin);
+	paint();
 	gwin->set_painted();
 }
 
@@ -49,7 +49,7 @@ void Gump_button::unpush
 	)
 {
 	pushed = 0;
-	paint(gwin);
+	paint();
 	gwin->set_painted();
 }
 
@@ -71,7 +71,6 @@ void Gump_button::double_clicked
 
 void Gump_button::paint
 	(
-	Game_window *gwin
 	)
 {
 	int px = 0;

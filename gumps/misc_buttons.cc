@@ -117,7 +117,7 @@ void Combat_button::activate
 {
 	gwin->toggle_combat();
 	pushed = gwin->in_combat();
-	parent->paint(gwin);
+	parent->paint();
 }
 
 /*
@@ -126,11 +126,10 @@ void Combat_button::activate
 
 void Combat_button::paint
 	(
-	Game_window *gwin
 	)
 	{
 	pushed = gwin->in_combat();
-	Gump_button::paint(gwin);
+	Gump_button::paint();
 	}
 
 /*
@@ -155,7 +154,7 @@ void Halo_button::activate
 					// Want to toggle it.
 	bool prot = !actor->is_combat_protected();
 	pushed = prot;
-	parent->paint(gwin);
+	parent->paint();
 	actor->set_combat_protected(prot);
 	if (!prot)			// Toggled off?
 		return;
@@ -195,7 +194,7 @@ void Combat_mode_button::activate
 	set_frame((get_framenum() + 1)%nframes);
 					// Flag that player set the mode.
 	actor->set_attack_mode((Actor::Attack_mode) get_framenum(), true);
-	paint(gwin);
+	paint();
 	gwin->set_painted();
 }
 

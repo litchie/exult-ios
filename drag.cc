@@ -234,7 +234,7 @@ bool Dragging_info::moved
 	else				// Obj whole gump.
 		{
 		gump->set_pos(paintx, painty);
-		gump->paint(gwin);
+		gump->paint();
 		}
 	gwin->set_painted();
 	return (true);

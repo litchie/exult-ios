@@ -43,13 +43,12 @@ Book_gump::Book_gump
 
 void Book_gump::paint
 	(
-	Game_window *gwin
 	)
 {
 					// Paint the gump itself.
 	gwin->paint_shape(x, y, get_shape());
 					// Paint left page.
-	curend = paint_page(gwin, Rectangle(36, 10, 122, 130), curtop);
+	curend = paint_page(Rectangle(36, 10, 122, 130), curtop);
 					// Paint right page.
-	curend = paint_page(gwin, Rectangle(174, 10, 122, 130), curend);
+	curend = paint_page(Rectangle(174, 10, 122, 130), curend);
 }

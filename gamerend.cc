@@ -283,7 +283,7 @@ void Game_window::paint
 
 					// Draw gumps unless in dont_move mode.
     if (!main_actor_dont_move())
-        gump_man->paint(this);
+        gump_man->paint();
 	effects->paint();		// Draw text, sprites.
 	win->clear_clip();
 					// Complete repaint?
