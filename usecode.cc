@@ -876,17 +876,17 @@ static void Unhandled
 	}
 
 static Usecode_value	no_ret;
-Usecode_value	Usecode_machine::UI_NOP( int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(NOP)
 {
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_UNKNOWN(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(UNKNOWN)
 {
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_get_random(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(get_random)
 {
 	int range = parms[0].get_int_value();
 	if (range == 0)
@@ -894,14 +894,14 @@ Usecode_value	Usecode_machine::UI_get_random(int event,int intrinsic,Usecode_val
 	return Usecode_value(1 + (rand() % range));
 }
 
-Usecode_value	Usecode_machine::UI_execute_usecode_array(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(execute_usecode_array)
 {
 	cout << "Executing intrinsic 1\n";
 	exec_array(parms[0], parms[1]);
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_delayed_execute_usecode_array(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(delayed_execute_usecode_array)
 {			// Delay = .20 sec.?
 	int delay = parms[2].get_int_value();
 	gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
@@ -911,37 +911,38 @@ Usecode_value	Usecode_machine::UI_delayed_execute_usecode_array(int event,int in
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_show_npc_face(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(show_npc_face)
 {
 	show_npc_face(parms[0], parms[1]);
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_remove_npc_face(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(remove_npc_face)
 {
 	remove_npc_face(parms[0]);
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_add_answer(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(add_answer)
 {
 	answers.add_answer(parms[0]);
 	return no_ret;
 }
-Usecode_value	Usecode_machine::UI_remove_answer(int event,int intrinsic,Usecode_value parms[12])
+
+USECODE_FUNCTION(remove_answer)
 {
 	answers.remove_answer(parms[0]);
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_push_answers(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(push_answers)
 {
 	answer_stack.push_front(answers);
 	answers.clear();
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_pop_answers(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(pop_answers)
 {
 	if(answer_stack.size())
 		{
@@ -951,7 +952,7 @@ Usecode_value	Usecode_machine::UI_pop_answers(int event,int intrinsic,Usecode_va
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_select_from_menu(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(select_from_menu)
 {
 	user_choice = 0;
 	const char *choice = get_user_choice();
@@ -959,7 +960,7 @@ Usecode_value	Usecode_machine::UI_select_from_menu(int event,int intrinsic,Useco
 	return choice;
 }
 
-Usecode_value	Usecode_machine::UI_select_from_menu2(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(select_from_menu2)
 {			// Return index (1-n) of choice.
 	user_choice = 0;
 	Usecode_value val(get_user_choice_num() + 1);
@@ -967,7 +968,7 @@ Usecode_value	Usecode_machine::UI_select_from_menu2(int event,int intrinsic,Usec
 	return val;
 }
 
-Usecode_value	Usecode_machine::UI_input_numeric_value(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(input_numeric_value)
 {
 	// Ask for # (min, max, step, default).
 	// (Show slider.)
@@ -975,14 +976,14 @@ Usecode_value	Usecode_machine::UI_input_numeric_value(int event,int intrinsic,Us
 	return Usecode_value(parms[0].get_int_value() + 1);
 }
 
-Usecode_value	Usecode_machine::UI_set_item_shape(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(set_item_shape)
 {
 	// Set item shape.
 	set_item_shape(parms[0], parms[1]);
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_die_roll(int event,int intrinsic,Usecode_value parms[12])
+USECODE_FUNCTION(die_roll)
 {
 	// Rand. # within range.
 	int low = parms[0].get_int_value();
@@ -1001,23 +1002,23 @@ typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intri
 
 UsecodeIntrinsicFn intrinsic_table[]=
 	{
-	&Usecode_machine::UI_get_random,	// 0
-	&Usecode_machine::UI_execute_usecode_array, // 1
-	&Usecode_machine::UI_delayed_execute_usecode_array, // 2
-	&Usecode_machine::UI_show_npc_face, // 3
-	&Usecode_machine::UI_remove_npc_face, // 4
-	&Usecode_machine::UI_add_answer, // 5
-	&Usecode_machine::UI_remove_answer, // 6
-	&Usecode_machine::UI_push_answers, // 7
-	&Usecode_machine::UI_pop_answers, // 8
-	&Usecode_machine::UI_UNKNOWN, // 9
-	&Usecode_machine::UI_select_from_menu, // 0x0a
-	&Usecode_machine::UI_select_from_menu2, // 0x0b
-	&Usecode_machine::UI_input_numeric_value, // 0xc
-	&Usecode_machine::UI_set_item_shape, // 0xd
-	&Usecode_machine::UI_UNKNOWN, // 0xe
-	&Usecode_machine::UI_UNKNOWN, // 0xf
-	&Usecode_machine::UI_die_roll, // 0x10
+	USECODE_FUNCTION_PTR(get_random),	// 0
+	USECODE_FUNCTION_PTR(execute_usecode_array), // 1
+	USECODE_FUNCTION_PTR(delayed_execute_usecode_array), // 2
+	USECODE_FUNCTION_PTR(show_npc_face), // 3
+	USECODE_FUNCTION_PTR(remove_npc_face), // 4
+	USECODE_FUNCTION_PTR(add_answer), // 5
+	USECODE_FUNCTION_PTR(remove_answer), // 6
+	USECODE_FUNCTION_PTR(push_answers), // 7
+	USECODE_FUNCTION_PTR(pop_answers), // 8
+	USECODE_FUNCTION_PTR(UNKNOWN), // 9
+	USECODE_FUNCTION_PTR(select_from_menu), // 0x0a
+	USECODE_FUNCTION_PTR(select_from_menu2), // 0x0b
+	USECODE_FUNCTION_PTR(input_numeric_value), // 0xc
+	USECODE_FUNCTION_PTR(set_item_shape), // 0xd
+	USECODE_FUNCTION_PTR(UNKNOWN), // 0xe
+	USECODE_FUNCTION_PTR(UNKNOWN), // 0xf
+	USECODE_FUNCTION_PTR(die_roll), // 0x10
 	};
 
 int	max_bundled_intrinsics=0x10;	// Index of the last intrinsic in this table

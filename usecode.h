@@ -34,6 +34,10 @@ class Vector;
 #include <deque>	// STL container
 #include <string>	// STL string
 
+#define	USECODE_FUNCTION(NAME)	Usecode_value	Usecode_machine::UI_ ## NAME ## (int event,int intrinsic,Usecode_value parms[12])
+#define	USECODE_FUNCTION_DECL(NAME)	Usecode_value	UI_ ## NAME ## (int event,int intrinsic,Usecode_value parms[12])
+#define	USECODE_FUNCTION_PTR(NAME)	&Usecode_machine::UI_ ## NAME
+
 /*
  *	A value that we store can be an integer, string, or array.
  */
@@ -245,6 +249,23 @@ public:
          *	Embedded intrinsics
 	 */
 
+	USECODE_FUNCTION_DECL(NOP);
+	USECODE_FUNCTION_DECL(UNKNOWN);
+	USECODE_FUNCTION_DECL(get_random);
+	USECODE_FUNCTION_DECL(execute_usecode_array);
+	USECODE_FUNCTION_DECL(delayed_execute_usecode_array);
+	USECODE_FUNCTION_DECL(show_npc_face);
+	USECODE_FUNCTION_DECL(remove_npc_face);
+	USECODE_FUNCTION_DECL(add_answer);
+	USECODE_FUNCTION_DECL(remove_answer);
+	USECODE_FUNCTION_DECL(push_answers);
+	USECODE_FUNCTION_DECL(pop_answers);
+	USECODE_FUNCTION_DECL(select_from_menu);
+	USECODE_FUNCTION_DECL(select_from_menu2);
+	USECODE_FUNCTION_DECL(input_numeric_value);
+	USECODE_FUNCTION_DECL(set_item_shape);
+	USECODE_FUNCTION_DECL(die_roll);
+#if 0
 	Usecode_value	UI_NOP(int event,int intrinsic,Usecode_value parms[12]);
 	Usecode_value	UI_UNKNOWN(int event,int intrinsic,Usecode_value parms[12]);
 	Usecode_value	UI_get_random(int event,int intrinsic,Usecode_value parms[12]);
@@ -261,6 +282,7 @@ public:
 	Usecode_value	UI_input_numeric_value(int event,int intrinsic,Usecode_value parms[12]);
 	Usecode_value	UI_set_item_shape(int event,int intrinsic,Usecode_value parms[12]);
 	Usecode_value	UI_die_roll(int event,int intrinsic,Usecode_value parms[12]);
+#endif
 
 
 
