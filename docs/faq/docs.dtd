@@ -9,10 +9,11 @@
 
 <!-- ****************** elements ****************** -->
 <!ELEMENT faqs (section*)>
-<!ELEMENT section (faq*)>
-<!ELEMENT faq (question, answer)>
-<!ELEMENT question (#PCDATA|Exult)*>
-<!ELEMENT answer (%block;)*>
+<!ELEMENT readme (section*)>
+<!ELEMENT section (sub*)>
+<!ELEMENT sub (header, body)>
+<!ELEMENT header (#PCDATA|Exult)*>
+<!ELEMENT body (%block;)*>
 
 <!ELEMENT para ( #PCDATA | %inline; )*>
 <!ELEMENT cite ( #PCDATA | %inline; )*>
@@ -47,9 +48,11 @@
 <!-- ****************** attributes ****************** -->
 <!ATTLIST	faqs		title	CDATA	#REQUIRED>
 <!ATTLIST	faqs		changed	CDATA	"">
+<!ATTLIST	readme		title	CDATA	#REQUIRED>
+<!ATTLIST	readme		changed	CDATA	"">
 <!ATTLIST	section		title	CDATA	#REQUIRED>
 
-<!ATTLIST	faq		name	CDATA	"">
+<!ATTLIST	sub		name	CDATA	"">
 <!ATTLIST	cite		name	CDATA	"">
 <!ATTLIST	keytable	title	CDATA	#REQUIRED>
 <!ATTLIST	keydesc		name	CDATA	"">

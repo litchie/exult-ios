@@ -6,11 +6,11 @@ CLASS = org.apache.xalan.xslt.Process
 all: html text php
 
 
-html: $(INPUT) faq_html.xsl
-	$(JAVA) -classpath $(CLASSPATH) $(CLASS) -IN $(INPUT) -XSL faq_html.xsl -OUT faq.html
+html: $(INPUT) html.xsl
+	$(JAVA) -classpath $(CLASSPATH) $(CLASS) -IN $(INPUT) -XSL html.xsl -OUT faq.html
 
-text: $(INPUT) faq_text.xsl
-	$(JAVA) -classpath $(CLASSPATH) $(CLASS) -IN $(INPUT) -XSL faq_text.xsl -OUT faq.txt
+text: $(INPUT) text.xsl
+	$(JAVA) -classpath $(CLASSPATH) $(CLASS) -IN $(INPUT) -XSL text.xsl -OUT faq.txt
 
-php: $(INPUT) faq_php.xsl
-	$(JAVA) -classpath $(CLASSPATH) $(CLASS) -IN $(INPUT) -XSL faq_php.xsl -OUT faq.dat
+php: $(INPUT) php.xsl
+	$(JAVA) -classpath $(CLASSPATH) $(CLASS) -IN $(INPUT) -XSL php.xsl -OUT faq.dat
