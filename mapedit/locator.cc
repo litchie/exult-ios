@@ -104,6 +104,9 @@ C_EXPORT gint on_loc_draw_configure_event
 	loc->configure(widget);
 	return TRUE;
 	}
+/*
+ *	Draw area needs a repain.
+ */
 C_EXPORT gint on_loc_draw_expose_event
 	(
 	GtkWidget *widget,		// The view window.
@@ -115,6 +118,44 @@ C_EXPORT gint on_loc_draw_expose_event
 		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
 	loc->render(&event->area);
 	return TRUE;
+	}
+/*
+ *	Mouse events in draw area.
+ */
+C_EXPORT gint on_loc_draw_button_press_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventButton *event,
+	gpointer data			// ->Chunk_chooser.
+	)
+	{
+	Locator *loc = (Locator *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	return loc->mouse_press(event);
+	}
+
+C_EXPORT gint on_loc_draw_button_release_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventButton *event,
+	gpointer data			// ->Chunk_chooser.
+	)
+	{
+	Locator *loc = (Locator *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	return loc->mouse_release(event);
+	}
+
+C_EXPORT gint on_loc_draw_motion_notify_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventMotion *event,
+	gpointer data			// ->Chunk_chooser.
+	)
+	{
+	Locator *loc = (Locator *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	return loc->mouse_motion(event);
 	}
 
 /*
@@ -130,6 +171,10 @@ Locator::Locator
 	win = glade_xml_get_widget(app_xml, "loc_window");
 	gtk_object_set_user_data(GTK_OBJECT(win), this);
 	draw = glade_xml_get_widget(app_xml, "loc_draw");
+					// Indicate the events we want.
+	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | 
+		GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
+		GDK_BUTTON1_MOTION_MASK);
 					// Set up scales.
 	GtkWidget *scale = glade_xml_get_widget(app_xml, "loc_hscale");
 	hadj = gtk_range_get_adjustment(GTK_RANGE(scale));
@@ -247,6 +292,8 @@ void Locator::view_changed
 	{
 	if (datalen < 4*4)
 		return;			// Bad length.
+	if (dragging)
+		return;		//+++++++Not sure about this.
 	tx = Read4(data);
 	ty = Read4(data);
 	txs = Read4(data);
@@ -259,6 +306,7 @@ void Locator::view_changed
 					// Update scrolls.
 	gtk_adjustment_set_value(hadj, cx);
 	gtk_adjustment_set_value(vadj, cy);
+	render();
 	}
 
 /*
@@ -275,10 +323,12 @@ void Locator::vscrolled			// For vertical scrollbar.
 	int oldty = loc->ty;
 	loc->ty = ((gint) adj->value)*c_tiles_per_chunk;
 	cout << "Vscrolled:  New ty is " << loc->ty << endl;
-	loc->render();
 	if (loc->ty != oldty)		// (Already equal if this event came
 					//   from Exult msg.).
+		{
+		loc->render();
 		loc->send_location();
+		}
 	}
 void Locator::hscrolled			// For horizontal scrollbar.
 	(
@@ -290,10 +340,12 @@ void Locator::hscrolled			// For horizontal scrollbar.
 	int oldtx = loc->tx;
 	loc->tx = ((gint) adj->value)*c_tiles_per_chunk;
 	cout << "Hscrolled:  New tx is " << loc->tx << endl;
-	loc->render();
 	if (loc->tx != oldtx)		// (Already equal if this event came
 					//   from Exult msg.).
+		{
+		loc->render();
 		loc->send_location();
+		}
 	}
 
 /*
@@ -324,18 +376,22 @@ void Locator::goto_mouse
 	int mx, int my			// Pixel coords. in draw area.
 	)
 	{
-	int newtx = (mx*c_num_tiles)/draw->allocation.width;
-	int newty = (my*c_num_tiles)/draw->allocation.height;
-	int cx = newtx/c_tiles_per_chunk, cy = newty/c_tiles_per_chunk;
+	int oldtx = tx, oldty = ty;
+					// Set tx,ty here so hscrolled() &
+					//   vscrolled() don't send to Exult.
+	tx = (mx*c_num_tiles)/draw->allocation.width;
+	ty = (my*c_num_tiles)/draw->allocation.height;
+	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
 	if (cx > c_num_chunks - 2)
 		cx = c_num_chunks - 2;
 	if (cy > c_num_chunks - 2)
 		cy = c_num_chunks - 2;
-					// Update scrolls.  This will result in
-					//   tx, ty being updated and Exult
-					//   getting the message.
+					// Update scrolls.
 	gtk_adjustment_set_value(hadj, cx);
 	gtk_adjustment_set_value(vadj, cy);
+					// Now we just send it once.
+	if (tx != oldtx || ty != oldty)
+		send_location();
 	}
 
 /*
@@ -372,6 +428,19 @@ gint Locator::mouse_press
 	}
 
 /*
+ *	Handle a mouse-release event.
+ */
+
+gint Locator::mouse_release
+	(
+	GdkEventButton *event
+	)
+	{
+	dragging = false;
+	return TRUE;
+	}
+
+/*
  *	Handle a mouse-motion event.
  */
 
@@ -380,10 +449,15 @@ gint Locator::mouse_motion
 	GdkEventMotion *event
 	)
 	{
-	if (!dragging || !(event->state & GDK_BUTTON1_MASK))
-		return FALSE;		// Not dragging with left button.
 	int mx = (int) event->x, my = (int) event->y;
 	cout << "Locator dragging: (" << mx << ',' << my << ')' << endl;
+	if (!dragging || !(event->state & GDK_BUTTON1_MASK))
+		return FALSE;		// Not dragging with left button.
+	if (gtk_events_pending())	//+++++Never seems to return TRUE.
+		{
+		cout << "Motion:  events pending" << endl;
+		return TRUE;		// Takes a while to set location.
+		}
 	goto_mouse(mx + drag_relx, my + drag_rely);
 	return TRUE;
 	}

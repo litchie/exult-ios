@@ -54,6 +54,7 @@ public:
 	static void hscrolled(GtkAdjustment *adj, gpointer data);
 					// Handle mouse.
 	gint mouse_press(GdkEventButton *event);
+	gint mouse_release(GdkEventButton *event);
 	gint mouse_motion(GdkEventMotion *event);
 	};
 
