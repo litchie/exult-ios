@@ -267,12 +267,12 @@ int Game_render::paint_map
 
 					// Outline selected objects.
 	const Game_object_vector& sel = cheat.get_selected();
+	int render_skip = gwin->get_render_skip_lift();
 	for (Game_object_vector::const_iterator it = sel.begin();
 						it != sel.end(); ++it)
 		{
 		Game_object *obj = *it;
-		if (!obj->get_owner() && obj->get_lift() < gwin->skip_lift &&
-				obj->get_lift() < gwin->skip_above_actor)
+		if (!obj->get_owner() && obj->get_lift() < render_skip)
 			obj->paint_outline(HIT_PIXEL);
 		}
 					// Paint tile grid if desired.
@@ -395,9 +395,7 @@ int Game_render::paint_chunk_objects
 	int light_sources = 0;		// Also check for light sources.
 //	if (is_main_actor_inside() && olist->is_roof()) +++++Correct??
 		light_sources += olist->get_light_sources();
-	skip = gwin->skip_lift;
-	if (gwin->skip_above_actor < skip)
-		skip = gwin->skip_above_actor;
+	skip = gwin->get_render_skip_lift();
 	Nonflat_object_iterator next(olist);
 
 	while ((obj = next.get_next()) != 0)
@@ -466,7 +464,6 @@ void Game_render::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 {
 	Game_window *gwin = Game_window::get_instance();
 	// Calculate the offset due to the lift (4x the lift).
-	//const int off = skip_above_actor << 2;//in_dungeon << 2;
 	const int off = gwin->in_dungeon << 2;
 
 	// For each chunk that might be renderable
