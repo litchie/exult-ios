@@ -2063,6 +2063,16 @@ USECODE_INTRINSIC(kill_npc)
 	return (no_ret);
 }
 
+USECODE_INTRINSIC(set_opponent)
+{
+	// set_opponent(npc, new_opponent).
+	Actor *npc = as_actor(get_item(parms[0]));
+	Game_object *opponent = get_item(parms[1]);
+	if (npc && opponent)
+		npc->set_opponent(opponent);
+	return (no_ret);
+}
+
 USECODE_INTRINSIC(resurrect)
 {
 	// resurrect(body).  Returns actor if successful.
@@ -2555,7 +2565,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(kill_npc),// 0x49
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4b     SetNPCAttackMode (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4c     SetTargetNPCToAttack (ucdump.c)
+	USECODE_INTRINSIC_PTR(set_opponent),	// 0x4c
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d     CloneNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4f ++++called when you dbl-click

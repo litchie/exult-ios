@@ -261,7 +261,7 @@ void Combat_schedule::start_strike
  *	See if we need a new opponent.
  */
 
-inline Need_new_opponent
+inline int Need_new_opponent
 	(
 	Game_window *gwin,
 	Game_object *opponent
