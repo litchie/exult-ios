@@ -863,6 +863,15 @@ USECODE_INTRINSIC(item_say)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(clear_item_say)
+{
+	// Clear str. near item (item).
+	Game_object *item = get_item(parms[0]);
+	if (item)
+		gwin->remove_text_effect(item);
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(projectile_effect)
 {
 	// animate(fromitem, toitem, anim_shape_in_shapesdotvga).

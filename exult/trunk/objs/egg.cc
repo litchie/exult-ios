@@ -308,9 +308,9 @@ int Egg_object::is_active
 			(deltaz == 0 || deltaz == 1) &&
 					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
-/*	case external_criteria:		// For now, just guessing.  */
 		return obj == gwin->get_main_actor() && 
-			(deltaz == 0 || deltaz == 1 ||
+			(deltaz == 0 || deltaz == 1 || Game::get_game_type() ==
+						SERPENT_ISLE ||
 				(type == missile && tz/5 == get_lift()/5)) &&
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty);
