@@ -1,4 +1,5 @@
-INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes -I$(srcdir)/../imagewin \
+INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes \
+	-I$(srcdir)/../imagewin -I$(srcdir)/../conf \
 	-I$(srcdir)/../files -I$(srcdir)/../server \
 	$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
@@ -45,6 +46,7 @@ noinst_PROGRAMS = $(GIMP_PLUGINS)
 
 exult_studio_LDADD = \
 	./libmapedit.la			\
+	../conf/libconf.la		\
 	../files/libu7file.la		\
 	../imagewin/libimagewin.la	\
 	../shapes/libshapes.la 		\
