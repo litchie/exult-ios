@@ -1,3 +1,10 @@
+2003-02-12  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/iregobjs.cc,gamemap.cc: Use 'invisible' flag from quality
+	byte.  Fixes 'caltrops not invisible' bug.
+	* gamerend.cc (using): Render all flat tiles before rendering the
+	RLE flats.  Fixes 'chopped-off' rocks in desert.
+
 2003-02-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* monsters.cc: Cyclops cause quakes when they walk.
