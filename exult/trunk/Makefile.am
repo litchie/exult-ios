@@ -63,7 +63,7 @@ exult_LDADD = 			\
 	flic/libflic.la		\
 	conf/libconf.la		\
 	files/libu7file.la	\
-	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS)
+	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries)
 
 EXTRA_DIST = 	\
 	README.win32 \
