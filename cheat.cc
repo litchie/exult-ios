@@ -264,3 +264,11 @@ void Cheat::delete_object (void) {
     gwin->paint();
   }
 }
+
+void Cheat::shape_browser (void) {
+  if (!enabled) return;
+
+  browser->browse_shapes();
+  gwin->paint();
+  gwin->set_palette(-1,-1);
+}

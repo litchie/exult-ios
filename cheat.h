@@ -67,6 +67,7 @@ public:
   void create_coins (void);
   void create_last_shape (void);
   void delete_object (void);
+  void shape_browser (void);
 };
 
 #endif
