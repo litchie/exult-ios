@@ -56,6 +56,17 @@ static void switch_slashes(string & name);
 // Ugly hack for supporting different paths
 
 static std::map<string, string> path_map;
+static std::map<string, string> stored_path_map;
+
+void store_system_paths()
+{
+	stored_path_map = path_map;
+}
+
+void reset_system_paths()
+{
+	path_map = stored_path_map;
+}
 
 void add_system_path(const string& key, const string& value)
 {

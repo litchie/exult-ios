@@ -67,6 +67,8 @@ public:
 	U7FileManager();
 	~U7FileManager();
 
+	void reset();
+
 	U7file	*get_file_object(const std::string &s);
 	static U7FileManager *get_ptr(void);
 };
