@@ -640,6 +640,13 @@ void Container_game_object::delete_contents()
 
 void Container_game_object::remove_this(int nodel)
 {
+					// Special case to avoid recursion.
+	if (Container_game_object::get_owner())
+		{			// First remove from owner.
+		Ireg_game_object::remove_this(1);
+		if (nodel)		// Not deleting?  Then done.
+			return;
+		}
 	if (!nodel)
 		extract_contents();
 
