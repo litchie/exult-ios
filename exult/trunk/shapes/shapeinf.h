@@ -163,6 +163,8 @@ public:
 		{ return dims[2]; }
 	unsigned char get_tfa(int i)	// For debugging:
 		{ return tfa[i]; }
+	int has_sfx()			// Has a sound effect (guessing).
+		{ return (tfa[0] & (1<<0)) != 0; }
 	int is_animated()
 		{ return (tfa[0] & (1<<2)) != 0; }
 	int is_solid()			// Guessing.  Means can't walk through.

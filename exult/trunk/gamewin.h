@@ -132,6 +132,7 @@ private:
 					// Theft info:
 	int theft_warnings;		// # times warned in current chunk.
 	short theft_cx, theft_cy;	// Chunk where warnings occurred.
+	Time_sensitive *background_noise;
 					// Open a U7 file, throw an
 					//    exception if failed
 	Chunk_object_list *create_chunk(int cx, int cy);
