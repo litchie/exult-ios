@@ -37,8 +37,8 @@ CXXFLAGS += $(DEBUG_FLAGS)
 
 
 
-LFLAGS += -g -L /usr/X11R6/lib -L /usr/local/lib
-LIBS += -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -lconf
+LFLAGS += -g 
+LIBS += $(SYSLIBS)
 LIBS += $(AUDIO_LIBRARY)
 
 all-local: $(EXE_TARGET)

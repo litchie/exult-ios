@@ -56,6 +56,10 @@ echo "Wondering what our windowing system is... "
 
 dnl this is for win32 for now at least
 AC_ARG_ENABLE(win32, [  --enable-win32          force exult build for windows [default no]],,enable_win32=no)
+
+dnl And kmid
+AC_ARG_ENABLE(kmid, [  --disable-kmid          force exult not to use kmid [default no]],,disable_kmid=no)
+
 if test x$enable_win32 = xno; then
   WINDOWING_SYSTEM=""
 if test -d "/etc/X11" ; then
@@ -74,14 +78,17 @@ if test "$WINDOWING_SYSTEM" = "-DXWIN"; then
 	AUDIO_LIBRARY="-Laudio -laudio"
 	AUDIO_INCLUDES="-Iaudio"
 	EXE_TARGET="exult"
+	SYSLIBS="-L /usr/X11R6/lib -L /usr/local/lib -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -Lconf -lconf"
 else
 	echo "Umm. Doesn't seem to be X11."
 	echo "Let's assume it's Windows as an alternative."
 	WINDOWING_SYSTEM="-DWIN32"
 	TOP_LEVEL_SUBDIRS="conf"
 	AUDIO_LIBRARY=""
-	AUDIO_INCLUDES=""
+	AUDIO_INCLUDES="-Iaudio"
 	EXE_TARGET="exult.exe"
+	disable_kmid="yes"
+	SYSLIBS="-Lconf -lconf"
 fi
 
 dnl Just for record-keeping
@@ -113,7 +120,6 @@ AC_MSG_RESULT(Now we know lots about how SDL is installed locally)
 
 
 dnl this is for kmid
-AC_ARG_ENABLE(kmid, [  --disable-kmid          force exult not to use kmid [default no]],,disable_kmid=no)
 AC_MSG_CHECKING(whether to disable kmid)
 if test x$disable_kmid = xno; then
   AC_MSG_RESULT(no)
@@ -200,6 +206,7 @@ AC_SUBST(TOP_LEVEL_SUBDIRS)
 AC_SUBST(AUDIO_LIBRARY)
 AC_SUBST(AUDIO_INCLUDES)
 AC_SUBST(EXE_TARGET)
+AC_SUBST(SYSLIBS)
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
