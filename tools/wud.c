@@ -118,7 +118,10 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 		break;
 	case RELATIVE_JUMP:
 		// Print jump desination
-		printf("\t%04X\n", *(short*)( ptrc + 1 ) + (short)coffset + 3);
+//		printf("\t%04X\n", *(short*)( ptrc + 1 ) + (short)coffset + 3);
+		printf("\t%04X\n", *(short*)( ptrc + nbytes - 2) + 
+				(short)coffset + nbytes);
+// debugging printf("nbytes=%d, coffset=%d\n", nbytes, coffset);
 		break;
 	case IMMED_AND_RELATIVE_JUMP:	/* JSF */
 		printf("\t%04XH, %04X\n", *(unsigned short*)( ptrc + 1 ),
