@@ -54,7 +54,7 @@ $(EXEC): exultstudioico.o exult_studio_win32.o
 	$(CXX) exultstudioico.o exult_studio_win32.o -o exult_studio.exe -L. -lexultstudio $(LIBS)
 
 clean:
-	rm -f $(OBJS) $(EXEC) *.a *.o *.exe
+	rm -f $(OBJS) $(DLL) $(EXEC) exult_studio.a exultstudioico.o exult_studio_win32.o
 
 install: $(DLL) $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
