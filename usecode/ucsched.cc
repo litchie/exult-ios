@@ -449,9 +449,12 @@ void Usecode_script::handle_event
 					// Watch for eggs:
 			Usecode_internal::Usecode_events ev = 
 					Usecode_internal::internal_exec;
-			if (obj && obj->is_egg() && 
-					((Egg_object *)obj)->get_type() ==
-			    				Egg_object::usecode)
+			if (obj && obj->is_egg() 
+#if 0
+				//removed 20011226, breaks serpent gates in SI without SS -wjp
+				&& ((Egg_object *)obj)->get_type() == Egg_object::usecode
+#endif
+				)
 				ev = Usecode_internal::egg_proximity;
 					// And for telekenesis spell fun:
 			else if (fun == usecode->telekenesis_fun)
