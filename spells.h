@@ -46,6 +46,11 @@ public:
 	~Spellbook_gump();
 	void do_spell(int spell);	// Perform spell.
 	void change_page(int delta);	// Page forward/backward.
+	void set_bookmark(int spell);	// Set bookmark.
+	virtual Game_object *get_owner()// Get object this belongs to.
+		{ return book; }
+					// Is a given point on a button?
+	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.
 	virtual void paint_button(Game_window *gwin, Gump_button *btn);
 					// Paint it and its contents.

@@ -100,7 +100,7 @@ class Spell_button : public Gump_button
 	int spell;			// Spell # (0 - 71).
 public:
 	Spell_button(Gump_object *par, int px, int py, int sp)
-		: Gump_button(par, SPELLS + sp%8, px, py)
+		: Gump_button(par, SPELLS + sp%8, px, py), spell(sp)
 		{
 		framenum = sp/8;	// Frame # is circle.
 		}
@@ -117,7 +117,15 @@ void Spell_button::activate
 	Game_window *gwin
 	)
 	{
-//+++++++++++++
+	static unsigned long lasttime = 0L;
+	unsigned long curtime = SDL_GetTicks();
+	cout << "Spell_button::activate:  curtime = " << curtime << endl;
+					// Last click within .5 secs?
+	if (curtime - lasttime < 500)
+		((Spellbook_gump *) parent)->do_spell(spell);
+	else
+		((Spellbook_gump *) parent)->set_bookmark(spell);
+	lasttime = curtime;
 	}
 
 /*
@@ -129,15 +137,13 @@ Spellbook_gump::Spellbook_gump
 	Spellbook_object *b
 	) : Gump_object(0, 43), page(0), book(b)
 	{
+					// Where to paint page marks:
+	const int lpagex = 38, rpagex = 142, lrpagey = 25;
 	Game_window *gwin = Game_window::get_game_window();
 	if (book->bookmark >= 0)	// Set to bookmarked page.
 		page = Get_circle(book->bookmark);
-	leftpage = new Page_button(this, 0, 0, 0);
-					// Figure loc. of right pageturner.
-	Shape_frame *bookshape = gwin->get_gump_shape(get_shapenum(), 0);
-	Shape_frame *rpshape = gwin->get_gump_shape(RIGHTPAGE, 0);
-	rightpage = new Page_button(this, 
-		bookshape->get_width() - rpshape->get_width(), 0, 1);
+	leftpage = new Page_button(this, lpagex, lrpagey, 0);
+	rightpage = new Page_button(this, rpagex, lrpagey, 1);
 					// Get dims. of a spell.
 	Shape_frame *spshape = gwin->get_gump_shape(SPELLS, 0);
 	spwidth = spshape->get_width();
@@ -150,10 +156,12 @@ Spellbook_gump::Spellbook_gump
 		for (int s = 0; s < 8; s++)
 			if (cflags & (1<<s))
 				spells[spindex + s] = new Spell_button(this,
-					s < 4 ? object_area.x
+					s < 4 ? object_area.x +
+						spshape->get_xleft()
 					: object_area.x + object_area.w - 
-								spwidth,
-					(spheight + vertspace)*(s%4),
+						spshape->get_xright(),
+					object_area.y + spshape->get_yabove() +
+						(spheight + vertspace)*(s%4),
 							spindex + s);
 			else
 				spells[spindex + s] = 0;
@@ -209,6 +217,51 @@ void Spellbook_gump::change_page
 	}
 
 /*
+ *	Set bookmark.
+ */
+
+void Spellbook_gump::set_bookmark
+	(
+	int spell
+	)
+	{
+	if (spells[spell])
+		{
+		book->bookmark = spell;
+		paint(Game_window::get_game_window());
+		}
+	}
+
+/*
+ *	Is a given screen point on one of our buttons?
+ *
+ *	Output: ->button if so.
+ */
+
+Gump_button *Spellbook_gump::on_button
+	(
+	Game_window *gwin,
+	int mx, int my			// Point in window.
+	)
+	{
+	Gump_button *btn = Gump_object::on_button(gwin, mx, my);
+	if (btn)
+		return btn;
+	else if (leftpage->on_button(gwin, mx, my))
+		return leftpage;
+	else if (rightpage->on_button(gwin, mx, my))
+		return rightpage;
+	int spindex = page*8;		// Index into list.
+	for (int s = 0; s < 8; s++)	// Check spells.
+		{
+		Gump_button *spell = spells[spindex + s];
+		if (spell && spell->on_button(gwin, mx, my))
+			return spell;
+		}
+	return 0;
+	}
+
+/*
  *	Our buttons are never drawn 'pushed'.
  */
 
@@ -245,7 +298,10 @@ void Spellbook_gump::paint
 		int s = book->bookmark%8;// Get # within circle.
 		int bx = s < 4 ? object_area.x + spwidth/2
 			: object_area.x + object_area.w - spwidth/2;
-		gwin->paint_gump(x + bx, y, BOOKMARK, 1 + s%4);
+		Shape_frame *bshape = gwin->get_gump_shape(BOOKMARK, 0);
+		bx += bshape->get_xleft();
+		int by = object_area.y - 12 + bshape->get_yabove();
+		gwin->paint_gump(x + bx, y + by, BOOKMARK, 1 + s%4);
 		}
 	gwin->set_painted();
 	}

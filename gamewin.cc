@@ -38,7 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "usecode.h"
 #include "npcnear.h"
-#include "gumps.h"
+#include "spells.h"
 #include "effects.h"
 #include "segfile.h"
 #include "Audio.h"
@@ -1980,14 +1980,14 @@ int Game_window::conversation_choice
 
 void Game_window::show_gump
 	(
-	Container_game_object *obj,	// Container gump represents.
+	Game_object *obj,		// Object gump represents.
 	int shapenum			// Shape # in 'gumps.vga'.
 	)
 	{
 	static int cnt = 0;		// For staggering them.
 	Gump_object *gmp;		// See if already open.
 	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
-		if (gmp->get_container() == obj &&
+		if (gmp->get_owner() == obj &&
 		    gmp->get_shapenum() == shapenum)
 			break;
 	if (gmp)			// Found it?
@@ -2002,12 +2002,25 @@ void Game_window::show_gump
 		}
 	int x = (1 + cnt)*get_width()/10, 
 	    y = (1 + cnt)*get_height()/10;
+	Shape_frame *shape = get_gump_shape(shapenum, 0);
+	if (x + shape->get_xright() > get_width() ||
+	    y + shape->get_ybelow() > get_height())
+		{
+		cnt = 0;
+		x = get_width()/10;
+		y = get_width()/10;
+		}
 	Gump_object *new_gump = (shapenum >= ACTOR_FIRST_GUMP &&
 		shapenum <= ACTOR_LAST_GUMP) ?
-			new Actor_gump_object(obj, x, y, shapenum)
+			new Actor_gump_object((Container_game_object *) obj, 
+							x, y, shapenum)
 			: shapenum == STATSDISPLAY ?
-				new Stats_gump_object(obj, x, y)
-			: new Gump_object(obj, x, y, shapenum);
+				new Stats_gump_object(
+					(Container_game_object *) obj, x, y)
+			: shapenum == SPELLBOOK ?
+				new Spellbook_gump((Spellbook_object *) obj)
+			: new Gump_object((Container_game_object *) obj, 
+							x, y, shapenum);
 					// Paint new one last.
 	new_gump->append_to_chain(open_gumps);
 	if (++cnt == 8)

@@ -132,6 +132,8 @@ public:
 		}
 					// Find obj. containing mouse point.
 	Game_object *find_object(int mx, int my);
+	virtual Game_object *get_owner()// Get object this belongs to.
+		{ return container; }
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Paint button.
