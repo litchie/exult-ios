@@ -553,7 +553,7 @@ void Lightning_effect::handle_event
 		else			// Otherwise, wait several secs.
 			delay = (4000 + r%4);
 		}
-	else				// Time to flash.
+	else if (!gwin->is_in_dungeon())// Time to flash.
 		{
 		save_brightness = gwin->get_brightness();
 		gwin->set_palette(-1, 400);
