@@ -23,7 +23,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <string>
 #include "ucparse.h"
+
+int uc_line_num = 0;			// Counts lines.
+string uc_source = "";			// Source filename.
 
 extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
 
@@ -52,6 +56,9 @@ array		return ARRAY;
 [0-9]+			return INT_LITERAL;
 0x[0-9a-f]+		return INT_LITERAL;
 
+[ \t]+						/* Ignore spaces. */
+"//".*						/* Comments. */
+\n			{ uc_line_num++; }
 .			return *yytext;		/* Being lazy. */
 
 

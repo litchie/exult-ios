@@ -24,9 +24,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <iostream.h>
+#include <stdlib.h>
+#include <string.h>
 
 void yyerror(char *);
 extern int yylex();
+
+#define YYERROR_VERBOSE 1
 
 %}
 
@@ -67,10 +71,24 @@ function:
 
 					/* Opt_int assigns function #. */
 function_proto:
-	return_type IDENTIFIER opt_int '(' identifier_list ')'
+	decl_type IDENTIFIER opt_int '(' opt_parm_decl_list ')'
 	;
 
-return_type:
+opt_parm_decl_list:
+	parm_decl_list
+	|
+	;
+
+parm_decl_list:
+	parm_decl_list ',' parm_decl
+	| parm_decl
+	;
+
+parm_decl:
+	decl_type IDENTIFIER
+	;
+
+decl_type:
 	VOID
 	| INT
 	| STRING
@@ -92,7 +110,8 @@ statement_list:
 	;
 
 statement:
-	assignment_statement
+	declaration
+	| assignment_statement
 	| if_statement
 	| while_statement
 	| array_loop_statement
@@ -100,6 +119,10 @@ statement:
 	| return_statement
 	| statement_block
 	| ';'				/* Null statement */
+	;
+
+declaration:
+	decl_type identifier_list ';'
 	;
 
 assignment_statement:
@@ -141,9 +164,14 @@ expression:
 	| STRING_LITERAL
 	;
 
+opt_expression_list:
+	expression_list
+	|
+	;
+
 expression_list:
 	expression_list ',' expression
-	|				/* Empty */
+	| expression
 	;
 
 primary:
@@ -155,12 +183,19 @@ primary:
 	;
 
 function_call:
-	identifier '(' expression_list ')'
+	identifier '(' opt_expression_list ')'
 	;
+
+/*
+opt_identifier_list:
+	identifier_list
+	|
+	;
+*/
 
 identifier_list:
 	identifier_list ',' identifier
-	|				/* Empty. */
+	| identifier
 	;
 
 identifier:
@@ -169,13 +204,3 @@ identifier:
 
 %%
 
-/*
- *	Report error.
- */
-void yyerror
-	(
-	char *s
-	)
-	{
-	cout << s << endl;
-	}
