@@ -243,7 +243,9 @@ gint Chunk_chooser::mouse_press
 				GDK_BUTTON1_MASK, tents, 1,
 			   (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE));
 			chooser->selected = i;
+			chooser->locate_cx = chooser->locate_cy = -1;
 			chooser->render();
+			chooser->enable_controls();
 			chooser->show();
 					// Tell client.
 			if (chooser->sel_changed)
@@ -419,12 +421,12 @@ GtkWidget *Chunk_chooser::create_controls
 							GTK_BUTTONBOX_START);
 	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
 
-	GtkWidget *loc_chunk_down = gtk_button_new_with_label ("Down");
+	loc_chunk_down = gtk_button_new_with_label ("Down");
 	gtk_widget_show (loc_chunk_down);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), loc_chunk_down);
 	GTK_WIDGET_SET_FLAGS (loc_chunk_down, GTK_CAN_DEFAULT);
 
-	GtkWidget *loc_chunk_up = gtk_button_new_with_label ("Up");
+	loc_chunk_up = gtk_button_new_with_label ("Up");
 	gtk_widget_show (loc_chunk_up);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), loc_chunk_up);
 	GTK_WIDGET_SET_FLAGS (loc_chunk_up, GTK_CAN_DEFAULT);
@@ -446,7 +448,7 @@ GtkWidget *Chunk_chooser::create_controls
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_chunk_new);
 	GTK_WIDGET_SET_FLAGS (insert_chunk_new, GTK_CAN_DEFAULT);
 
-	GtkWidget *insert_chunk_dup = gtk_button_new_with_label ("Dup");
+	insert_chunk_dup = gtk_button_new_with_label ("Dup");
 	gtk_widget_show (insert_chunk_dup);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_chunk_dup);
 	GTK_WIDGET_SET_FLAGS (insert_chunk_dup, GTK_CAN_DEFAULT);
@@ -463,12 +465,12 @@ GtkWidget *Chunk_chooser::create_controls
 							GTK_BUTTONBOX_START);
 	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
 
-	GtkWidget *move_chunk_down = gtk_button_new_with_label ("Down");
+	move_chunk_down = gtk_button_new_with_label ("Down");
 	gtk_widget_show (move_chunk_down);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_down);
 	GTK_WIDGET_SET_FLAGS (move_chunk_down, GTK_CAN_DEFAULT);
 
-	GtkWidget *move_chunk_up = gtk_button_new_with_label ("Up");
+	move_chunk_up = gtk_button_new_with_label ("Up");
 	gtk_widget_show (move_chunk_up);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_up);
 	GTK_WIDGET_SET_FLAGS (move_chunk_up, GTK_CAN_DEFAULT);
@@ -485,18 +487,44 @@ GtkWidget *Chunk_chooser::create_controls
 	}
 
 /*
+ *	Enable/disable controls after selection changed.
+ */
+
+void Chunk_chooser::enable_controls
+	(
+	)
+	{
+	if (selected == -1)		// No selection.
+		{
+		gtk_widget_set_sensitive(loc_chunk_down, false);
+		gtk_widget_set_sensitive(loc_chunk_up, false);
+		gtk_widget_set_sensitive(insert_chunk_dup, false);
+		gtk_widget_set_sensitive(move_chunk_down, false);
+		gtk_widget_set_sensitive(move_chunk_up, false);
+		return;
+		}
+	gtk_widget_set_sensitive(loc_chunk_down, true);
+	gtk_widget_set_sensitive(loc_chunk_up, true);
+	gtk_widget_set_sensitive(insert_chunk_dup, true);
+	gtk_widget_set_sensitive(move_chunk_down, 
+					info[selected].num < num_chunks - 1);
+	gtk_widget_set_sensitive(move_chunk_up, info[selected].num > 0);
+	}
+
+/*
  *	Create the list.
  */
 
 Chunk_chooser::Chunk_chooser
 	(
 	Vga_file *i,			// Where they're kept.
-	std::istream& cfile,			// Chunks file (512bytes/entry).
+	std::istream& cfile,		// Chunks file (512bytes/entry).
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h			// Dimensions.
 	) : Shape_draw(i, palbuf, gtk_drawing_area_new()),
 		chunkfile(cfile), chunknum0(0),
-		info(0), info_cnt(0), selected(-1), sel_changed(0)
+		info(0), info_cnt(0), selected(-1), sel_changed(0),
+		locate_cx(-1), locate_cy(-1)
 	{
 	chunkfile.seekg(0, std::ios::end);	// Figure total #chunks.
 	num_chunks = chunkfile.tellg()/(c_tiles_per_chunk*c_tiles_per_chunk*2);
@@ -596,6 +624,7 @@ void Chunk_chooser::unselect
 	if (selected >= 0)
 		{
 		selected = -1;
+		locate_cx = locate_cy = -1;
 		gtk_drag_source_unset(draw);
 		if (need_render)
 			{
@@ -605,6 +634,7 @@ void Chunk_chooser::unselect
 		if (sel_changed)	// Tell client.
 			(*sel_changed)();
 		}
+	enable_controls();		// Enable/disable controls.
 	char buf[150];			// Show new selection.
 	if (info_cnt > 0)
 		{
