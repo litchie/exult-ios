@@ -195,16 +195,17 @@ With the latest source you can
 * save the map using Exult Studio's "File-Save map" pulldown menu. In order to avoid writing over files inadvertently, the files that would normally go into the 'static' directory, will, instead, go into a 'patch' directory that you specify in your 'exult.cfg' file. Here's an example for editing BG:
 
 <game>
-  <path>
-  ./blackgate
-  </path>
-  <patch>
-  ./blackgate/patch
-  </patch>
-  <title>
-  blackgate
-  </title>
-</game>
+  <blackgate>
+    <title>
+    blackgate
+    </title>
+    <path>
+    ./blackgate
+    </path>
+    <patch>
+    ./blackgate/patch
+    </patch>
+  </blackgate>
 Exult will also read files from 'patch' if it exists on starting a new game.
 In any mode, you can add the currently selected shape by shift-clicking..
 
@@ -239,7 +240,6 @@ You can change the settings of Exult Studio either with the preferences dialog o
 				dialog of Exult Studio for this.
     </background_color>
   </estudio>
-</config>
 
 
 2.6. Command line options
