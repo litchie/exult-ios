@@ -342,6 +342,19 @@ int Usecode_value::count_array
 	}
 
 /*
+ *	Destructor
+ *
+ */
+
+Usecode_value::~Usecode_value()
+{
+	if (type == (unsigned char) array_type)
+		delete [] value.array;
+	else if (type == (unsigned char) string_type)
+		delete value.str;
+}
+
+/*
  *	Create a string value.
  */
 

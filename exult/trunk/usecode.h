@@ -87,13 +87,7 @@ public:
 		if (elem0)
 			value.array[0] = *elem0;
 		}
-	~Usecode_value()
-		{
-		if (type == (unsigned char) array_type)
-			delete [] value.array;
-		else if (type == (unsigned char) string_type)
-			delete value.str;
-		}
+	~Usecode_value();
 	Usecode_value &operator=(const Usecode_value& v2);
 					// Copy ctor.
 	inline Usecode_value(const Usecode_value& v2) : type((unsigned char) int_type)
