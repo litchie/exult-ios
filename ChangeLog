@@ -1,3 +1,15 @@
+2001-08-18  Ryan Nunn <triforce@merlin.net.au>
+	* gumps\Text_button.*, gumps\Gump_ToggleButton.* : New Text_button and
+	  Gump_ToggleTextButton button classes.
+	* gumps/VideoOptions_gump.cc, data/*.*, Makefile.* : Made the scaler
+	  button in the video options gump a Gump_ToggleTextButton. Removed the
+	  old no longer required scaler shape. Updated Makefiles.
+	* Misc files: Added Derek's new Super2xSaI scaler.
+	* data/credits.txt : Added Super2xSaI to Derek's credits.
+	* msvcstuff/Exult.rc : Added version table for MSVC compiled Exult.
+	* objs/barge.cc : Barge_object::get_tile_footprint can't be inlined
+	  like it is in MSVC.
+
 2001-08-18  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*.[cc|h]: Removed imbedded usecode table; which broke
 	old-ucs script output; fixed that (kinda); added more correct jump

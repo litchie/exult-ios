@@ -367,6 +367,7 @@ static void Init
 	else if (scaler == "interlaced") sclr = Image_window::interlaced;
 	else if (scaler == "point") sclr = Image_window::point;
 	else if (scaler == "SuperEagle") sclr = Image_window::SuperEagle;
+	else if (scaler == "Super2xSaI") sclr = Image_window::Super2xSaI;
 	else config->set("config/video/scale_method","2xSaI",true);
 
 	Image_window8::set_gamma(atof(gr.c_str()), atof(gg.c_str()), atof(gb.c_str()));	
@@ -908,6 +909,8 @@ void set_resolution (int new_res, bool save)
 				config->set("config/video/scale_method","SuperEagle",true);
 			else if (scaler == Image_window::point)
 				config->set("config/video/scale_method","point",true);
+			else if (scaler == Image_window::Super2xSaI)
+				config->set("config/video/scale_method","Super2xSaI",true);
 			else
 				config->set("config/video/scale_method","2xSaI",true);
 		}

@@ -51,7 +51,6 @@ EXULT_FLX_OBJECTS = \
 	vid_left.shp		\
 	vid_right.shp		\
 	vid_resolution.shp	\
-	vid_scaler.shp		\
 	vid_scaling.shp		\
 	hp_bar.shp
 
