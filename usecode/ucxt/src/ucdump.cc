@@ -63,6 +63,8 @@ void open_usecode_file(UCData &uc, const Configuration &config);
 
 UCData uc;
 
+using std::setw;
+
 int main(int argc, char** argv)
 {
 	// Tends to make life easier
@@ -86,14 +88,6 @@ int main(int argc, char** argv)
 		}
 	}
 	
-	#if 0
-	{
-		Configuration opdata("./data/u7opcodes.data", "opcodes");
-		
-		cout << opdata.dump() << endl;
-	}
-	#endif
-	
 	// init the compile time tables
 	if(uc.verbose()) cout << "Initing static tables..." << endl;
 	init_static_usecodetables();
@@ -101,6 +95,44 @@ int main(int argc, char** argv)
 	// init the run time tables
 	if(uc.verbose()) cout << "Initing runtime tables..." << endl;
 	init_usecodetables(config, uc.noconf(), uc.verbose());
+	
+	#if 0
+	{
+		cout << "<opcodes>" << endl;
+		
+		for(typeof(opcode_table_data.begin()) i=opcode_table_data.begin(); i!=opcode_table_data.end(); i++)
+		{
+			if(i->opcode!=0 && i->name!="NULL")
+			{
+				cout << "\t<0x" << setw(2) << i->opcode << '>' << endl;
+			
+				cout << "\t\t<name> " << i->name << " </>" << endl;
+				cout << "\t\t<asm_nmo> `" << i->asm_nmo << "` </>" << endl;
+				cout << "\t\t<asm_comment> `" << i->asm_comment << "` </>" << endl;
+				cout << "\t\t<ucs_nmo> `" << i->ucs_nmo << "` </>" << endl;
+				cout << "\t\t<num_bytes> " << i->num_bytes << " </>" << endl;
+				
+				cout << "\t\t<param_types> {";
+				for(typeof(i->param_types.begin()) j=i->param_types.begin(); j!=i->param_types.end(); j++)
+					cout << *j << ',';
+				cout << "} </>" << endl;
+				
+				cout << "\t\t<num_pop> " << i->num_pop << " </>" << endl;
+				cout << "\t\t<num_push> " << i->num_push << " </>" << endl;
+				cout << "\t\t<call_effect> " << i->call_effect << " </>" << endl;
+				if(i->flag_return) cout << "\t\t<return/>" << endl;
+				if(i->flag_paren) cout << "\t\t<paren/>" << endl;
+				if(i->flag_indent_inc) cout << "\t\t<indent_inc/>" << endl;
+				if(i->flag_indent_dec) cout << "\t\t<indent_dec/>" << endl;
+				if(i->flag_indent_tmpinc) cout << "\t\t<indent_tmpinc/>" << endl;
+				if(i->flag_indent_tmpdec) cout << "\t\t<indent_tmpdec/>" << endl;
+				
+				cout << "\t</>" << endl;
+			}
+		}
+		cout << "</>" << endl;
+	}
+	#endif
 	
 	// ICK! Don't try this at home kids...
 	// done because for some reason it started crashing upon piping or redirection to file... wierd.

@@ -118,7 +118,7 @@ void	test1(void)
 	
 	for(Configuration::KeyTypeList::iterator i=ktl.begin(); i!=ktl.end(); i++)
 		cout << "Key:\t" << i->first << endl << "Value:\t" << i->second << endl;
-	assert(ktl.size()==8);
+	assert(ktl.size()==7);
 	
 }
 

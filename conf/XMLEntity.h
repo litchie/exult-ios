@@ -50,7 +50,7 @@ public:
 	typedef std::pair<std::string, std::string> KeyType;
 	typedef std::vector<KeyType> KeyTypeList;
 	
-	void searchpairs(KeyTypeList &ktl, const std::string &basekey, const std::string currkey, const unsigned int pos);
+	bool searchpairs(KeyTypeList &ktl, const std::string &basekey, const std::string currkey, const unsigned int pos);
 	void selectpairs(KeyTypeList &ktl, const std::string currkey);
 	
 	std::string dump(int depth = 0);

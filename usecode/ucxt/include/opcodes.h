@@ -29,6 +29,15 @@ std::vector<std::string> qnd_ocsplit(const std::string &s);
 
 void map_type_size(const std::vector<std::string> &param_types, std::vector<std::pair<unsigned int, bool> > &param_sizes);
 
+static inline std::string strip_backticks(const std::string &s)
+{
+	if(s.size()==2 && s[0]=='`' && s[1]=='`')
+		return std::string();
+	else if(s[0]=='`' && s[s.size()-1]=='`')
+		return s.substr(1, s.size()-2);
+	return s;
+}
+
 class UCOpcodeData
 {
 	public:
@@ -38,6 +47,103 @@ class UCOpcodeData
 		                 flag_indent_dec(false), flag_indent_tmpinc(false),
 		                 flag_indent_tmpdec(false)
 		{};
+		UCOpcodeData(unsigned int op, const Configuration::KeyTypeList &ktl)
+		               : opcode(op), num_bytes(0), num_pop(0),
+		                 num_push(0), call_effect(0), flag_return(false),
+		                 flag_paren(false), flag_indent_inc(false),
+		                 flag_indent_dec(false), flag_indent_tmpinc(false),
+		                 flag_indent_tmpdec(false)
+		{
+			for(Configuration::KeyTypeList::const_iterator k=ktl.begin(); k!=ktl.end(); ++k)
+			{
+				switch(k->first[0])
+				{
+					case 'a':
+						if(k->first=="asm_nmo")            asm_nmo = strip_backticks(k->second);
+						else if(k->first=="asm_comment")    asm_comment = strip_backticks(k->second);
+						break;
+					case 'c':
+						if(k->first=="call_effect")    call_effect = strtol(k->second.c_str(), 0, 0);
+						break;
+					case 'i':
+						if(k->first=="indent_inc/")    flag_indent_inc=true;
+						else if(k->first=="indent_dec/")    flag_indent_dec=true;
+						else if(k->first=="indent_tmpinc/") flag_indent_tmpinc=true;
+						else if(k->first=="indent_tmpdec/") flag_indent_tmpdec=true;
+						break;
+					case 'n':
+						if(k->first=="name")                name = strip_backticks(k->second);
+						else if(k->first=="num_bytes")      num_bytes = strtol(k->second.c_str(), 0, 0);
+						else if(k->first=="num_pop")        num_pop = strtol(k->second.c_str(), 0, 0);
+						else if(k->first=="num_push")       num_push = strtol(k->second.c_str(), 0, 0);
+						break;
+					case 'p':
+						if(k->first=="param_types")    param_types = qnd_ocsplit(k->second);
+						else if(k->first=="paren/")         flag_paren=true;
+						break;
+					case 'r':
+						if(k->first=="return/")        flag_return=true;
+						break;
+					case 'u':
+						if(k->first=="ucs_nmo")        ucs_nmo = strip_backticks(k->second);
+						break;
+					case '!': // ignore, it's a comment or something.
+						break;
+					default:
+						std::cerr << "invalid key `" << k->first << "` value `" << k->second << "`" << std::endl;
+				}
+			}
+			map_type_size(param_types, param_sizes);
+		};
+/*		UCOpcodeData(unsigned int op, const Configuration::KeyTypeList &ktl)
+		               : opcode(op), num_bytes(0), num_pop(0),
+		                 num_push(0), call_effect(0), flag_return(false),
+		                 flag_paren(false), flag_indent_inc(false),
+		                 flag_indent_dec(false), flag_indent_tmpinc(false),
+		                 flag_indent_tmpdec(false)
+		{
+			for(typeof(ktl.begin()) k=ktl.begin(); k!=ktl.end(); ++k)
+			{
+				switch(k->first[0])
+				{
+					case 'a':
+						if(k->first=="asm_nmo")            asm_nmo = strip_backticks(k->second);
+						else if(k->first=="asm_comment")    asm_comment = strip_backticks(k->second);
+						break;
+					case 'c':
+						if(k->first=="call_effect")    call_effect = strtol(k->second.c_str(), 0, 0);
+						break;
+					case 'i':
+						if(k->first=="indent_inc/")    flag_indent_inc=true;
+						else if(k->first=="indent_dec/")    flag_indent_dec=true;
+						else if(k->first=="indent_tmpinc/") flag_indent_tmpinc=true;
+						else if(k->first=="indent_tmpdec/") flag_indent_tmpdec=true;
+						break;
+					case 'n':
+						if(k->first=="name")                name = strip_backticks(k->second);
+						else if(k->first=="num_bytes")      num_bytes = strtol(k->second.c_str(), 0, 0);
+						else if(k->first=="num_pop")        num_pop = strtol(k->second.c_str(), 0, 0);
+						else if(k->first=="num_push")       num_push = strtol(k->second.c_str(), 0, 0);
+						break;
+					case 'p':
+						if(k->first=="param_types")    param_types = qnd_ocsplit(k->second);
+						else if(k->first=="paren/")         flag_paren=true;
+						break;
+					case 'r':
+						if(k->first=="return/")        flag_return=true;
+						break;
+					case 'u':
+						if(k->first=="ucs_nmo")        ucs_nmo = strip_backticks(k->second);
+						break;
+					case '!': // ignore, it's a comment or something.
+						break;
+					default:
+						std::cerr << "invalid key `" << k->first << "` value `" << k->second << "`" << std::endl;
+				}
+			}
+			map_type_size(param_types, param_sizes);
+		};*/
+		
 		UCOpcodeData(const std::vector<std::string> &v)
 		{
 			if((v.size()==12)==false)
@@ -67,6 +173,29 @@ class UCOpcodeData
 			flag_indent_tmpinc = (v[11][4]=='0') ? false : true;
 			flag_indent_tmpdec = (v[11][5]=='0') ? false : true;
 			map_type_size(param_types, param_sizes);
+		};
+		
+		void dump(std::ostream &o)
+		{
+			o << "opcode: " << opcode << std::endl;
+			o << "name: " << name << std::endl;
+			o << "asm_nmo: " << asm_nmo << std::endl;
+			o << "asm_comment: " << asm_comment << std::endl;
+			o << "ucs_nmo: " << ucs_nmo << std::endl;
+			o << "num_bytes: " << num_bytes << std::endl;
+			o << "param_types: ";
+			for(typeof(param_types.begin()) i=param_types.begin(); i!=param_types.end(); i++)
+				o << *i << ',';
+			o << std::endl;
+			o << "num_pop: " << num_pop << std::endl;
+			o << "num_push: " << num_push << std::endl;
+			o << "call_effect: " << call_effect << std::endl;
+			o << "flag_return: " << flag_return << std::endl;
+			o << "flag_paren: " << flag_paren << std::endl;
+			o << "flag_indent_inc: " << flag_indent_inc << std::endl;
+			o << "flag_indent_dec: " << flag_indent_dec << std::endl;
+			o << "flag_indent_tmpinc: " << flag_indent_tmpinc << std::endl;
+			o << "flag_indent_tmpdec: " << flag_indent_tmpdec << std::endl;
 		};
 		
 		unsigned int   opcode;
