@@ -1,4 +1,7 @@
 2002-08-07  Ryan Nunn  <triforce@merlin.net.au>
+	* files/U7file.cc : 'Fixing' compile problem
+
+2002-08-07  Ryan Nunn  <triforce@merlin.net.au>
 	* cheat_screen.cc : Added missing tqueue header.
 
 	* exultmenu.cc, audio/Midi.cc, audio/xmidi.h, 
