@@ -1,3 +1,6 @@
+2001-04-22  Ryan Nunn <triforce@merlin.net.au>
+	* gumps/Newfile_gump.* : Changed Date format display.
+
 2001-04-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* imagewin/imagewin.*, iwin8.*: moved mini_screenshot to iwin8, use
 	a nearest average colour scaler

@@ -134,6 +134,8 @@ protected:
 	static const short infoh;	// Height of info box
 	static const char infostring[];	// Text format for info
 
+	static const char *months[12];	// Names of the months
+
 	unsigned char restored;		// Set to 1 if we restored a game.
 
 	Image_buffer	*back;

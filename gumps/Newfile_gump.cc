@@ -100,11 +100,24 @@ const char Newfile_gump::infostring[] =	"Avatar: %s\n"
 					"Int: %i  Trn: %i\n"
 					"\n"
 					"Game Day: %i\n"
-					"Game Time: %i:%02i\n"
+					"Game Time: %02i:%02i\n"
 					"\n"
 					"Save Count: %i\n"
-					"Save Date: %02i/%02i/%04i\n"
-					"Save Time: %2i:%02i";
+					"Date: %i%s %s %04i\n"
+					"Time: %02i:%02i";
+
+const char *Newfile_gump::months[12] = {"Jan",
+					"Feb",
+					"March",
+					"April",
+					"May",
+					"June",
+					"July",
+					"Aug",
+					"Sept",
+					"Oct",
+					"Nov",
+					"Dec" };
 
 /*
  *	One of our buttons.
@@ -437,13 +450,22 @@ void Newfile_gump::paint
 
 		char	info[256];
 
+		char	*suffix = "th";
+
+		if ((details->real_day%10) == 1 && details->real_day != 11)
+			suffix = "st";
+		else if ((details->real_day%10) == 2 && details->real_day != 12)
+			suffix = "nd";
+		else if ((details->real_day%10) == 3 && details->real_day != 13)
+			suffix = "rd";
+
 		snprintf (info, 256, infostring, party[0].name,
 			party[0].exp, party[0].health,
 			party[0].str, party[0].dext,
 			party[0].intel, party[0].training,
 			details->game_day, details->game_hour, details->game_minute,
 			details->save_count,
-			details->real_month, details->real_day, details->real_year,
+			details->real_day, suffix, months[details->real_month-1], details->real_year,
 			details->real_hour, details->real_minute);
 
 		gwin->paint_text_box (4, info, x+infox, y+infoy, infow, infoh);
