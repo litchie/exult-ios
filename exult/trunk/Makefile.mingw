@@ -34,7 +34,7 @@ CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" \
 	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
 	$(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
-CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DNEED_SNPRINTF_ONLY -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -DUSE_FMOPL_MIDI
+CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DHAVE_SNPRINTF -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -DUSE_FMOPL_MIDI
 CXX=g++
 
 LFLAGS=-mwindows
@@ -43,7 +43,6 @@ LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid
 EXEC=Exult.exe
 EXEEXT=.exe
 
-FILE_OBJS = snprintf.o
 MIDI_DRV_OBJS=fmopl.o fmopl_midi.o fmopldrv.o win_midiout.o
 # unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o 
 SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
