@@ -1,5 +1,6 @@
 2000-10-15  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* objs.cc: >Trying< to fix dungeon rendering bug in Courage Test.
 	* Restart game clock after a restore.
 
 2000-10-13  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
