@@ -221,7 +221,8 @@ void Actor::ready_best_weapon
 	Game_object *best = 0;
 	int best_damage = -20;
 	Ready_type wtype=other;
-	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Game_object_vector::const_iterator it = vec.begin(); 
+							it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
 		if (obj->get_shapenum() == 595)
@@ -263,6 +264,29 @@ void Actor::ready_best_weapon
 	if (remove2)
 		add(remove2, 1);
 	ready_ammo();			// Get appropriate ammo.
+	}
+
+/*
+ *	Try to store the weapon.
+ */
+
+void Actor::unready_weapon
+	(
+	int spot			// Lhand or rhand.
+	)
+	{
+	Game_object *obj = spots[spot];
+	if (!obj)
+		return;
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(obj);
+	if (!info.get_weapon_info())	// A weapon?
+		return;
+	if (!spots[belt])		// Belt free?
+		{
+		obj->remove_this(1);
+		add_readied(obj, belt);
+		}
 	}
 
 /*
@@ -1106,6 +1130,8 @@ void Actor::set_schedule_type
 			break;		//+++++++
 		case Schedule::thief:		// Just face north, for now.
 			gwin->add_dirty(this);
+			unready_weapon(lhand);	// For Krieg in Empath Abbey.
+			unready_weapon(rhand);
 			set_frame(get_dir_framenum(0, Actor::standing));
 			gwin->add_dirty(this);
 			break;
