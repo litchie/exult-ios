@@ -125,7 +125,7 @@ short Body_lookup::table[] = {
 	468,	400,	25,	// Male entertainer.
 	469,	400,	26,	// Female entertainer.
 	489,	414,	21,	// Spark.
-	506,	892,	19	// Hook.
+	506,	892,	19,	// Hook.
 	720,	400,	23,	// Guard.
 	805,	892,	4,	// Forksis.
 	881,	892,	2,	// Elizabeth.
