@@ -52,6 +52,8 @@ libgumps_la_SOURCES = \
 	CombatStats_gump.h	\
 	gump_types.h	\
 	Face_button.cc	\
-	Face_button.h
+	Face_button.h	\
+	Jawbone_gump.h	\
+	Jawbone_gump.cc
 
 CLEANFILES = *~
