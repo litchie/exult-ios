@@ -1687,7 +1687,6 @@ void Game_window::read
 					// DON'T do anything that might paint()
 					//   before calling read_npcs!!
 	setup_game();			// Read NPC's, usecode.
-	gump_man->close_all_gumps(true);		// Kill gumps.
 	}
 
 /*
@@ -3259,6 +3258,7 @@ void Game_window::setup_game
 	
 	// Force entire repaint.
 	set_all_dirty();
+	gump_man->close_all_gumps(true);		// Kill gumps.
 	Face_stats::load_config(config);
 
 	// Set palette for time-of-day.
