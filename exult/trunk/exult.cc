@@ -673,7 +673,8 @@ static void Handle_event
 		default: break;
 			}
 		break;
-#ifdef WIN32
+#if 0
+//#ifdef WIN32
 	case SDL_SYSWMEVENT:
 //		printf("SYSWMEVENT received, %x\n", event.syswm.msg->msg);
 		if (event.syswm.msg->msg == MM_MCINOTIFY) {
