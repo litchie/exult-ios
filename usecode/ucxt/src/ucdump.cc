@@ -8,6 +8,7 @@
 	
 	Original ucdump history, credits and stuff moved to Docs/ucxtread.txt
 	
+	$LBClueless = TRUE;
 */
 #define HAVE_CONFIG_H
 
@@ -76,7 +77,7 @@ int main(int argc, char** argv)
 
 	// init the run time tables
 	if(uc.verbose()) cout << "Initing runtime tables..." << endl;
-	init_usecodetables(config, uc);
+	init_usecodetables(config, uc.noconf(), uc.verbose());
 	
 	// ICK! Don't try this at home kids...
 	// done because for some reason it started crashing upon piping or redirection to file... wierd.
@@ -272,7 +273,7 @@ void usage()
 	     << "\t\t-fl\t- output using brief \"list\" format" << endl
 	     << "\t\t-fa\t- output using \"assembler\" format (default)" << endl
 	     << "\t\t-fs\t- output using \"old exult script\" format" << endl
-//	     << "\t\t-fz\t- output using \"exult script\" format" << endl
+	     << "\t\t-fz\t- output using \"exult script\" format" << endl
 	     ;
   exit(1);
 }

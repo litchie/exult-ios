@@ -48,21 +48,21 @@ TODO: To be done...
 
 > 0x03	NULL	"null"	"\t\t\t;"	"null()"	0	{}	0	0
 
-> 0x04	ASK	"ask\t%1"	"\t\t\t;"	"ask()"	2	{offset}	0	0
+> 0x04	ASK	"ask\t%1"	"\t\t\t;"	"UcAsk;"	2	{offset}	0	0
 
 Display the Avatar's conversation options and ask for the user's input.
 It jumps to {offset} if there is no conversation answers available.
 
-> 0x05	JNE	"jne\t%1"	"\t\t\t;"	"jne()"	2	{offset}	1	0
+> 0x05	JNE	"jne\t%1"	"\t\t\t;"	"jne(%p1)"	2	{offset}	1	0
 
 Pops a value from the stack, tests if it's false, if it's false jumps to
 the relative {offset}.
 
-> 0x06	JMP	"jmp\t%1"	"\t\t\t;"	"jmp()"	2	{offset}	0	0
+> 0x06	JMP	"jmp\t%1"	"\t\t\t;"	"goto labelFunc_%1:"	2	{offset}	0	0
 
 Jumps to the relative {offset} provided.
 
-> 0x07	CMPS	"cmps\t%1H, %2"	"\t\t\t;"	"cmps()"		4	{short,offset} 0xFF	0
+> 0x07	CMPS	"cmps\t%1H, %2"	"\t\t;"	"cmps()"		4	{short,offset} 0xFF	0
 
 Pop {short} number of values from the stack, compare each one to the
 last response from the user, and jumps to the {offset} if it's not found,
@@ -72,96 +72,96 @@ any of the previous CMPSs since the last ASK.
 
 > 0x08	NULL	"null"	"\t\t\t;"	"null()"	0	{}	0	0
 
-> 0x09	ADD	"add"	"\t\t\t\t;"	"add()"	0	{}	2	1
+> 0x09	ADD	"add"	"\t\t\t\t;"	"(%p2 + %p1)"	0	{}	2	1
 
 Pops two values from the stack (pop v2, then pop v1), adds them together
 (v1 + v2), and then pushes the result on the stack. Integers are added,
 strings are concatenated, collections are appended.
 
-> 0x0A	SUB	"sub"	"\t\t\t\t;"	"sub()"	0	{}	2	1
+> 0x0A	SUB	"sub"	"\t\t\t\t;"	"(%p2 - %p1)"	0	{}	2	1
 
 Pops two values from the stack (pop v2, then pop v1), subtracts them
 from each other (v1 - v2) then pushes the result to the stack. Only works
 with integers.
 
-> 0x0B	DIV	"div"	"\t\t\t\t;"	"div()"	0	{}	2	1
+> 0x0B	DIV	"div"	"\t\t\t\t;"	"(%p2 / %p1)"	0	{}	2	1
 
 Pops two values from the stack (pop v2, then pop v1), divides v1 by v2
 (v1 / v2), then pushes the result to the stack. Only works with integers.
 
-> 0x0C	MUL	"mul"	"\t\t\t\t;"	"mul()"	0	{}	2	1
+> 0x0C	MUL	"mul"	"\t\t\t\t;"	"(%p2 * %p1)"	0	{}	2	1
 
 Pops two elements from the stack, multiplies them and pushes them back on
 the stack (multiplication is commutative). Only works with integers.
 
-> 0x0D	MOD	"mod"	"\t\t\t\t;"	"mod()"	0	{}	2	1
+> 0x0D	MOD	"mod"	"\t\t\t\t;"	"(%p2 %% %p1)"	0	{}	2	1
 
 Pops two elements from the stack (pop v2, then pop v1), mods v1 by v2
 (v1 % v2), then pushes the result on the stack. Only works with integers.
 
-> 0x0E	AND	"and"	"\t\t\t\t;"	"and()"	0	{}	2	1
+> 0x0E	AND	"and"	"\t\t\t\t;"	"(%p2 && %p1)"	0	{}	2	1
 
 Pops two elements from the stack, converts them to true/false, logically
 "and"s the values, and pushes the resulting truth value back on the stack
 as a 1/0(true/false).
 
-> 0x0F	OR	"or"	"\t\t\t\t;"	"or()"	0	{}	2	1
+> 0x0F	OR	"or"	"\t\t\t\t;"	"(%p2 || %p1)"	0	{}	2	1
 
 The "logical or" counterpart the the "logical and" (opcode 0x0E). Refer to
 that opcode for more information.
 
-> 0x10	NOT	"not"	"\t\t\t\t;"	"not()"	0	{}	1	1
+> 0x10	NOT	"not"	"\t\t\t\t;"	"(!%p1)"	0	{}	1	1
 
 Pops one element from the stack converts it to a truth value, logically "not"s
 it, and then pushes the resulting truth value on the stack.
 
 > 0x11	NULL	"null"	"\t\t\t;"	"null()"	0	{}	0	0
 
-> 0x12	POP	"pop\t[%1]"	"\t\t\t;"	"pop()"	2	{varoffset}	1	0
+> 0x12	POP	"pop\t[%1]"	"\t\t\t;"	"var%1 = %p1"	2	{varoffset}	1	0
 
 Pops one element from the stack and assigns it to the local varitable pointed
 to by {varoffset}.
 MENTAL NOTE: assert(varoffset>=0 && varoffset<num_local_variables);
 
-> 0x13	PUSHT	"push\ttrue"	"\t\t\t;"	"pusht()"	0	{}	0	1
+> 0x13	PUSHT	"push\ttrue"	"\t\t\t;"	"true"	0	{}	0	1
 
 Pushes true onto the stack.
 
-> 0x14	PUSHF	"push\tfalse"	"\t\t\t;"	"pushf()"	0	{}	0	1
+> 0x14	PUSHF	"push\tfalse"	"\t\t\t;"	"false"	0	{}	0	1
 
 Pushes false onto the stack.
 
 > 0x15	NULL	"null"	"\t\t\t;"	"null()"	0	{}	0	0
 
-> 0x16	CMPGT	"cmpgt"	"\t\t\t\t;"	"cmpgt()"	0	{}	2	1
+> 0x16	CMPGT	"cmpgt"	"\t\t\t\t;"	"(%p2 > %p1)"	0	{}	2	1
 
 Pops two values from the stack (pop v2, then pop v1), perform the logical
 comparison "greater then" on them (v1 > v2), and push the resultant truth
 value back on the stack. Only works with integers.
 
-> 0x17	CMPLT	"cmplt"	"\t\t\t\t;"	"cmplt()"	0	{}	2	1
+> 0x17	CMPLT	"cmplt"	"\t\t\t\t;"	"(%p2 < %p1)"	0	{}	2	1
 
 As CMPGT, except using the "less than" comparison (<).
 
-> 0x18	CMPGE	"cmpge"	"\t\t\t\t;"	"cmpge()"	0	{}	2	1
+> 0x18	CMPGE	"cmpge"	"\t\t\t\t;"	"(%p2 >= %p1)"	0	{}	2	1
 
 As CMPGT, except using the "greater then or equal to" comparison (>=).
 
-> 0x19	CMPLE	"cmple"	"\t\t\t\t;"	"cmple()"	0	{}	2	1
+> 0x19	CMPLE	"cmple"	"\t\t\t\t;"	"(%p2 <= %p1)"	0	{}	2	1
 
 As CMPLE, except using the "less then or equal to" comparison (<=).
 
-> 0x1A	CMPNE	"cmpne"	"\t\t\t\t;"	"cmpne()"	0	{}	2	1
+> 0x1A	CMPNE	"cmpne"	"\t\t\t\t;"	"(%p2 != %p1)"	0	{}	2	1
 
 As CMPNE, except using the "not equal to" comparison (!=).
 
 > 0x1B	NULL	"null"	"\t\t\t;"	"null()"	0	{}	0	0
 
-> 0x1C	ADDSI	"addsi\t%1H"	"\t\t\t;"	"addsi()"	2	{dataoffset}	0	0
+> 0x1C	ADDSI	"addsi\t%1H"	"\t\t\t; %t1"	"UcMessage(\"%t1\")"	2	{dataoffset}	0	0
 
 Appends a string from the data segment {dataoffset} to the string register.
 
-> 0x1D	PUSHS	"pushs\t%1H"	"\t\t\t;"	"pushs()"	2	{dataoffset}	0	1
+> 0x1D	PUSHS	"pushs\t%1H"	"\t\t\t; %t1"	"\"%t1\""	2	{dataoffset}	0	1
 
 Pushes the string at {dataoffset} onto the stack.
 
@@ -173,24 +173,24 @@ them, first off the stack is the first appended to the end of the array
 1 would create an array of the form {1, 2, 3}). The created array is then
 appended to the stack.
 
-> 0x1F	PUSHI	"pushi\t%1H"	"\t\t\t;"	"pushi()"	2	{short}	0	1
+> 0x1F	PUSHI	"pushi\t%1H"	"\t\t\t;"	"pushi(%1)"	2	{short}	0	1
 
 Pushes the element {short} to the stack as a signed 16bit integer.
 
 > 0x20	NULL	"null"	"\t\t\t;"	"null()"	0	{}	0	0
 
-> 0x21	PUSH	"push\t[%1]"	"\t\t\t;"	"push()"	2	{varoffset}	0	1
+> 0x21	PUSH	"push\t[%1]"	"\t\t\t;"	"var%1"	2	{varoffset}	0	1
 
 Pushes the variable stored at {varoffset} onto the stack.
 
-> 0x22	CMPEQ	"cmpeq"	"\t\t\t\t;"	"cmpeq()"	0	{}	2	1
+> 0x22	CMPEQ	"cmpeq"	"\t\t\t\t;"	"(%p1 == %p2)"	0	{}	2	1
 
 Pops two elements off the stack (pop v1, then pop v2), tests if they are equal,
 and pushes the resulting truth value on the stack.
 
 > 0x23	NULL	"null"	"\t\t\t;"	"null()"	0	{}	0	0
 
-> 0x24	CALL	"call\textern:[%1]"	"\t\t\t;"	"call()"	2	{extoffset}	0	0
+> 0x24	CALL	"call\textern:[%1]"	"\t\t;"	"call()"	2	{extoffset}	0	0
 
 References the "external usecode function table" (Exult code calls this
 "externals"), with the {extoffset} value passed in the opcode call
@@ -203,7 +203,7 @@ Returns to the "caller" function, after showing any text remaining in the
 string buffer (Exult: say_string() buffer). Does not return any elements
 on the stack (ie: returns "void").
 
-> 0x26	AIDX	"aid\t[%1]"	"\t\t\t;"	"aidx()"	2	{varoffset}	1	1
+> 0x26	AIDX	"aid\t[%1]"	"\t\t\t;"	"var%1[%p1]"	2	{varoffset}	1	1
 
 Pops one (pop v1) element off the stack (the array index), and uses it as an
 index of the local variable {varoffset}. (varoffset[v1]) The element obtained
@@ -232,12 +232,12 @@ Pops the top most element off the stack and stores it in the return register.
 
 Part one of the two opcode for...each opcode loop. Details under opcode 0x02.
 
-> 0x2F	ADDSV	"addsv\t[%1]"	"\t\t\t;"	"addsv()"	2	{varoffset}	0	0
+> 0x2F	ADDSV	"addsv\t[%1]"	"\t\t\t;"	"UcMessage(var%1)"	2	{varoffset}	0	0
 
 Appends the local variable pointed to by {varoffset} onto the end of the
 string register.
 
-> 0x30	IN	"in"	"\t\t\t\t;"	"in()"	0	{}	2	1
+> 0x30	IN	"in"	"\t\t\t\t;"	"in(%p1, %p2)"	0	{}	2	1
 
 Tests if a value is in an array. Pops two elements from the stack (pop v1,
 then pop v2) test if any of the elements inside the array v1 are equal to
@@ -296,7 +296,7 @@ Same as opcode CALLIS (0x38), except no return value.
 
 > 0x3D	NULL	"null"	"\t\t\t;"	"null()"	0	{}	0	0
 
-> 0x3E	PUSHITM	"pushitm"	"\t\t\t;"	"pushitm()"	0	{}	0	1
+> 0x3E	PUSHITM	"pushitm"	"\t\t\t\t;"	"pushitm()"	0	{}	0	1
 
 (ucdump & exult call this "push itemref") Pushes the identifier of the item
 (for which the usecode event handler is called) onto the stack.
@@ -314,11 +314,11 @@ it means 'end conversation'.
 
 > 0x41	NULL	"null"	"\t\t\t;"	"null()"	0	{}	0	0
 
-> 0x42	PUSHF	"pushf\tflag:[%1]"	"\t\t\t;"	"pushf()"	2	{flag}	0	1
+> 0x42	PUSHF	"pushf\tflag:[%1]"	"\t\t\t;"	"UcFlag[%1]"	2	{flag}	0	1
 
 TODO: document
 
-> 0x43	POPF	"popf\tflag:[%1]"	"\t\t\t;"	"popf()"	2	{flag}	1	0
+> 0x43	POPF	"popf\tflag:[%1]"	"\t\t;"	"UcFlag[%1] = %p1"	2	{flag}	1	0
 
 TODO: document
 
@@ -340,7 +340,7 @@ TODO: document
 {short} == usecode function number to call
 TODO: document
 
-> 0x48	PUSHEID	"push\teventid"	"\t\t\t;"	"pusheid()"	0	{}	0	1
+> 0x48	PUSHEID	"push\teventid"	"\t\t\t;"	"UcEvent"	0	{}	0	1
 
 (ucdump & exult calles this "push eventid")
 TODO: document

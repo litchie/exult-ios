@@ -12,6 +12,7 @@
 #include <strstream>
 #include "stacki.h"
 #include "gotoset.h"
+#include "ucdata.h"
 
 //#define DEBUG(x) x
 #define DEBUG(x)
