@@ -2156,18 +2156,28 @@ int Chunk_cache::is_blocked
 	{
 					// Get bits.
 	unsigned short tflags = blocked[ty*tiles_per_chunk + tx];
+
+	int new_high;
 					// Something there?
-	if (tflags & (((1<<height) - 1) << lift))		
+	if (tflags & (1 << lift))		
 		{
 		new_lift = lift + 1;	// Maybe we can step up.
-		if (new_lift > 15 || 
-		    (tflags & (((1<<height) - 1) << new_lift)))
-			return (1);	// Nope, next lift is blocked.
+		new_high = get_lowest_blocked (new_lift, tflags);
+		if (new_lift > 15)
+			return (1);	// In sky
+		else if (tflags & (1 << new_lift))
+			return (1);	// Next step up also blocked
+		else if (new_high != -1 && new_high < (new_lift + height))
+			return (1);	// Blocked by something above
 		else
 			return (0);
 		}
 					// See if we're going down.
 	new_lift = get_highest_blocked(lift, tflags) + 1;
+	new_high = get_lowest_blocked (new_lift, tflags);
+	
+	if (new_high != -1 && new_high < (new_lift + height)) return 1;
+	
 					// Don't allow fall of > 1.
 	return (lift - new_lift > 1 ? 1 : 0);
 	}
