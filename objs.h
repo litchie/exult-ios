@@ -292,6 +292,9 @@ public:
 	virtual int remove_quantity(int delta, int shapenum, int qual,
 								int framenum)
 		{ return delta; }
+	virtual Game_object *remove_and_return(int shapenum, int qual,
+								int framenum)
+		{ return 0; }
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord()
 		{ return get_abs_tile_coord(); }
@@ -385,6 +388,8 @@ public:
 	virtual int create_quantity(int delta, int shapenum, int qual,
 							int framenum);
 	virtual int remove_quantity(int delta, int shapenum, int qual,
+								int framenum);
+	virtual Game_object *remove_and_return(int shapenum, int qual,
 								int framenum);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);

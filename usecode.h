@@ -300,6 +300,7 @@ public:
         USECODE_INTRINSIC_DECL(update_last_created);
         USECODE_INTRINSIC_DECL(get_npc_name);
         USECODE_INTRINSIC_DECL(count_objects);
+	USECODE_INTRINSIC_DECL(take_from_owner);
         USECODE_INTRINSIC_DECL(get_cont_items);
         USECODE_INTRINSIC_DECL(remove_party_items);
         USECODE_INTRINSIC_DECL(add_party_items);

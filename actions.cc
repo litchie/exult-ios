@@ -317,6 +317,43 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	}
 
 /*
+ *	Create sequence of frames.
+ */
+
+Frames_actor_action::Frames_actor_action
+	(
+	char *f,			// Frames.  -1 means don't change.
+	int c,				// Count.
+	int spd				// Frame delay in 1/1000 secs.
+	) : cnt(c), index(0), speed(spd)
+	{
+	frames = new char[cnt];
+	memcpy(frames, f, cnt);
+	}
+
+/*
+ *	Handle a time event.
+ *
+ *	Output:	0 if done with this action, else delay for next frame.
+ */
+
+int Frames_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	if (index == cnt)
+		return (0);		// Done.
+	int frnum = frames[index++];	// Get frame.
+	if (frnum >= 0)
+		{
+		actor->set_frame(frnum);
+		Game_window::get_game_window()->add_dirty(actor);
+		}
+	return (speed);
+	}
+
+/*
  *	Delete.
  */
 Sequence_actor_action::~Sequence_actor_action
