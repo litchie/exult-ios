@@ -1,3 +1,8 @@
+2001-05-03  Tristan Tarrant  <nadir@users.sourceforge.net>
+
+	* exult.cc: Chnaged from "X-windows Ultima 7 map browser" to 
+	  "Multiplatform Ultima 7 game engine" :)
+
 2001-05-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Fixed FoV and resurrection bugs.
