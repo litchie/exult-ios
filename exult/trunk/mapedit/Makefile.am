@@ -41,15 +41,15 @@ bin_PROGRAMS = $(LIBGLADE_APPS)
 
 noinst_PROGRAMS = $(GIMP_PLUGINS)
 
-shapetest_LDADD = \
+exult_studio_LDADD = \
 	./libmapedit.la			\
 	../files/libu7file.la		\
 	../imagewin/libimagewin.la	\
 	../shapes/libshapes.la 		\
 	../server/libserver.la		\
-	$(GTK_LIBS) $(SYSLIBS) $(x_libraries)
+	$(GTK_LIBS) $(SYSLIBS) $(x_libraries) \
+	$(LIBGLADE_LIBS)
 
-exult_studio_LDADD = $(shapetest_LDADD) $(LIBGLADE_LIBS)
 exult_studio_CFLAGS = $(LIBGLADE_INCLUDES)
 
 mapeditdir = $(datadir)/exult
