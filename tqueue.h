@@ -30,7 +30,7 @@ public:
 	virtual ~Time_sensitive();
 	int in_queue()
 		{ return queue_cnt > 0; }
-	virtual void handle_event(uint32 curtime, long udata) = 0;
+	virtual void handle_event(unsigned long curtime, long udata) = 0;
 	};
 
 class Time_queue;

@@ -41,7 +41,7 @@ public:
 		{ last_time = get_minute(); }
 	virtual ~Npc_hunger_timer();
 					// Handle events:
-	void handle_event(uint32 curtime, long udata);
+	void handle_event(unsigned long curtime, long udata);
 	};
 
 /*
@@ -54,7 +54,7 @@ public:
 	Npc_poison_timer(Npc_timer_list *l);
 	virtual ~Npc_poison_timer();
 					// Handle events:
-	void handle_event(uint32 curtime, long udata);
+	void handle_event(unsigned long curtime, long udata);
 	};
 
 /*
@@ -71,7 +71,7 @@ public:
 	virtual ~Npc_sleep_timer()
 		{ list->sleep = 0; }
 					// Handle events:
-	void handle_event(uint32 curtime, long udata);
+	void handle_event(unsigned long curtime, long udata);
 	};
 
 /*
@@ -88,7 +88,7 @@ public:
 	virtual ~Npc_invisibility_timer()
 		{ list->invisibility = 0; }
 					// Handle events:
-	void handle_event(uint32 curtime, long udata);
+	void handle_event(unsigned long curtime, long udata);
 	};
 
 /*
@@ -105,7 +105,7 @@ public:
 	virtual ~Npc_protection_timer()
 		{ list->protection = 0; }
 					// Handle events:
-	void handle_event(uint32 curtime, long udata);
+	void handle_event(unsigned long curtime, long udata);
 	};
 
 /*
@@ -245,7 +245,7 @@ Npc_hunger_timer::~Npc_hunger_timer
 
 void Npc_hunger_timer::handle_event
 	(
-	uint32 curtime, 
+	unsigned long curtime, 
 	long udata
 	)
 	{
@@ -305,7 +305,7 @@ Npc_poison_timer::~Npc_poison_timer
 
 void Npc_poison_timer::handle_event
 	(
-	uint32 curtime, 
+	unsigned long curtime, 
 	long udata
 	)
 	{
@@ -335,7 +335,7 @@ void Npc_poison_timer::handle_event
 
 void Npc_sleep_timer::handle_event
 	(
-	uint32 curtime, 
+	unsigned long curtime, 
 	long udata
 	)
 	{
@@ -389,7 +389,7 @@ inline int Wearing_ring
 
 void Npc_invisibility_timer::handle_event
 	(
-	uint32 curtime, 
+	unsigned long curtime, 
 	long udata
 	)
 	{
@@ -418,7 +418,7 @@ void Npc_invisibility_timer::handle_event
 
 void Npc_protection_timer::handle_event
 	(
-	uint32 curtime, 
+	unsigned long curtime, 
 	long udata
 	)
 	{
