@@ -83,7 +83,9 @@ Actor::Actor
 	int usefun = Read2(nfile);	// Get usecode function #.
 	set_lift(usefun >> 12);		// Lift is high 4 bits.
 	usecode = usefun & 0xfff;
-	if (!has_usecode || usecode == 0xfff)	// Type2?
+					// Watch for new NPC's added.
+	if ((!has_usecode && usecode != 0x400 + npc_num) || !npc_num ||
+	    usecode == 0xfff)
 		usecode = -1;		// Let's try this.
 					// Guessing:  !!  (Want to get signed.)
 	int health_val = (int) (char) Read1(nfile);
