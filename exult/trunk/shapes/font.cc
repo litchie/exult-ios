@@ -121,10 +121,7 @@ int Font::paint_text_box
 	while (*text)
 		{
 		if (text - start == coff)
-			{
-			cursor->x = curx;
-			cursor->y = cury;
-			}
+			cursor->set_found(curx, cury, cur_line);
 		switch (*text)		// Special cases.
 			{
 		case '\n':		// Next line.
@@ -151,11 +148,10 @@ int Font::paint_text_box
 				lines[cur_line].append(nsp, ' ');
 				if (coff > text - start &&
 				    coff < wrd - start)
-					{
-					cursor->x = curx + 
-					    (coff-(text-start))*space_width;
-					cursor->y = cury;
-					}
+					cursor->set_found(
+					    curx + 
+					    (coff-(text-start))*space_width,
+					     cury, cur_line);
 				curx += nsp*space_width;
 				}
 			text = wrd;
@@ -176,11 +172,9 @@ int Font::paint_text_box
 				break;	// No more room.
 			}
 		if (coff >= text - start && coff < ewrd - start)
-			{
-			cursor->x = curx + get_text_width(text, 
-						(coff-(text-start)));
-			cursor->y = cury;
-			}
+			cursor->set_found(curx + get_text_width(text, 
+						(coff-(text-start))),
+					cury, cur_line);
 					// Store word.
 		lines[cur_line].append(text, ewrd - text);
 		curx += width;
@@ -203,11 +197,10 @@ int Font::paint_text_box
 		last_punct_line = -1;
 		if (text - start == coff &&	// Cursor at very end?
 		    cur_line < max_lines)
-			{
-			cursor->x = curx;
-			cursor->y = cury;
-			}
+			cursor->set_found(curx, cury, cur_line);
 		}
+	if (cursor)
+		cursor->nlines = cur_line + (cur_line < max_lines);
 	cury = y;			// Render text.
 	for (int i = 0; i <= cur_line; i++)
 		{
