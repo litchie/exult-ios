@@ -105,7 +105,8 @@ void Barge_object::gather
 	objects.truncate(perm_count);	// Start fresh.
 					// Get footprint in tiles.
 	Tile_coord pos = get_abs_tile_coord();
-	Rectangle foot(pos.tx, pos.ty, get_xtiles(), get_ytiles());
+	int xts = get_xtiles(), yts = get_ytiles();
+	Rectangle foot(pos.tx - xts + 1, pos.ty - yts + 1, xts, yts);
 	Game_window *gwin = Game_window::get_game_window();
 					// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
@@ -117,10 +118,14 @@ void Barge_object::gather
 		for (Game_object *obj = chunk->get_first(); obj;
 						obj = chunk->get_next(obj))
 			{		// Look at each object.
+			if (obj == this)
+				continue;
 			Tile_coord t = obj->get_abs_tile_coord();
+			Shape_info& info = gwin->get_info(obj);
 					// Above barge, within 5-tiles up?
 			if (foot.has_point(t.tx, t.ty) &&
-			    t.tz >= pos.tz && t.tz < pos.tz + 5 &&
+			    t.tz + info.get_3d_height() > pos.tz && 
+			    (info.is_barge_part() || t.tz < pos.tz + 5) &&
 			    obj->get_owner() != this)
 				objects.append(obj);
 			}
@@ -199,10 +204,13 @@ void Barge_object::move
 		obj->get_abs_tile(ox, oy, oz);
 		positions[i] = Tile_coord(ox + dx, oy + dy, oz + dz);
 		obj->remove_this(1);	// Remove object from world.
+		obj->set_invalid();	// So it gets added back right.
 		}
 	for (i = 0; i < cnt; i++)	// Now add them back in new location.
 		{
 		Game_object *obj = get_object(i);
+		if (i < perm_count)	// Restore us as owner.
+			obj->set_owner(this);
 					// Move each object same distance.
 //+++++Way too simplistic.  May have to change orientation, animate frame.
 		obj->move(positions[i]);
@@ -219,8 +227,8 @@ void Barge_object::remove
 	Game_object *obj
 	)
 	{
-	//++++++++++++++
 	obj->set_owner(0);
+	obj->remove_this(1);		// Now remove from outside world.
 	}
 
 /*
@@ -236,11 +244,13 @@ int Barge_object::add
 	)
 	{
 	objects.append(obj);		// Add to list.
+#if 0
 	if (!complete)			// Permanent member?
 		{
 		perm_count++;
 		obj->set_owner(this);
 		}
+#endif
 	return (0);			// We want it added to the chunk.
 	}
 
@@ -339,7 +349,10 @@ void Barge_object::elements_read
 	(
 	)
 	{
+#if 0
 	perm_count = objects.get_cnt();
+#endif
+	perm_count = 0;			// ++++So we don't get haystack!
 	complete = 1;
 	}
 

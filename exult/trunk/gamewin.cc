@@ -362,6 +362,7 @@ void Game_window::clear_world
 	main_actor = 0;
 	num_npcs = num_npcs1 = 0;
 	delete [] npcs;			// NPC's already deleted above.
+	moving_barge = 0;		// Get out of barge mode.
 		//++++++++Clear monsters list when we have it.
 					// Clear 'read' flags.
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
