@@ -37,14 +37,14 @@ public:
 	DataSource() {};
 	virtual ~DataSource() {};
 	
-	virtual unsigned int read1() =0;
+	virtual uint32 read1() =0;
 	virtual uint16 read2() =0;
 	virtual uint16 read2high() =0;
 	virtual uint32 read4() =0;
 	virtual uint32 read4high() =0;
 	virtual void read(char *, int) =0;
 	
-	virtual void write1(unsigned int) =0;
+	virtual void write1(uint32) =0;
 	virtual void write2(uint16) =0;
 	virtual void write2high(uint16) =0;
 	virtual void write4(uint32) =0;
@@ -128,7 +128,7 @@ public:
 	
 	virtual ~FileDataSource() {};
 	
-	virtual unsigned int read1() 
+	virtual uint32 read1() 
 	{ 
 		unsigned char b0;
 		b0 = fgetc(f);
@@ -175,7 +175,7 @@ public:
 		fread(b, 1, len, f);
 	};
 	
-	virtual void write1(unsigned int val)
+	virtual void write1(uint32 val)
 	{
 		fputc(static_cast<char>(val&0xff),f);
 	};
@@ -260,7 +260,7 @@ public:
 	
 	virtual ~BufferDataSource() {};
 	
-	virtual unsigned int read1() 
+	virtual uint32 read1() 
 	{ 
 		unsigned char b0;
 		b0 = static_cast<unsigned char>(*buf_ptr++);
@@ -308,7 +308,7 @@ public:
 		buf_ptr += len;
 	};
 	
-	virtual void write1(unsigned int val)
+	virtual void write1(uint32 val)
 	{
 		*buf_ptr++ = val & 0xff;
 	};
@@ -474,9 +474,9 @@ class StackBufferDataSource : protected BufferDataSource
 		{
 			for(const unsigned char *c=buf_ptr; c!=buf+size; ++c) {
 				if (c != buf+bp)
-					printf(" %02X", static_cast<unsigned int>(*c));
+					std::printf(" %02X", static_cast<unsigned int>(*c));
 				else
-					printf(":%02X", static_cast<unsigned int>(*c));
+					std::printf(":%02X", static_cast<unsigned int>(*c));
 			}
 			return o;
 		}
