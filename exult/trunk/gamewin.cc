@@ -297,7 +297,7 @@ void Game_window::init_files(bool cycle)
 {
 	
 	// Determine some colors based on the default palette
-	set_palette(0);
+	set_palette(0, -1, false);
 					// Get a bright green.
 	poison_pixel = pal->find_color(4, 63, 4);
 					// Get a light gray.
@@ -1592,7 +1592,7 @@ void Game_window::init_actors
 	// Update gamedat if there was a change
 	if (changed)
 		{
-		schedule_npcs(2,7);
+		schedule_npcs(2,7,false);
 		write_npcs();
 		}
 
@@ -3016,7 +3016,8 @@ void Game_window::get_nearby_npcs
 void Game_window::schedule_npcs
 	(
 	int hour3,			// 0=midnight, 1=3am, 2=6am, etc.
-	int backwards			// Extra periods to look backwards.
+	int backwards,			// Extra periods to look backwards.
+	bool repaint
 	)
 	{
 					// Go through npc's, skipping Avatar.
@@ -3028,7 +3029,9 @@ void Game_window::schedule_npcs
 		if (npc && npc->get_schedule_type() != Schedule::wait)
 			npc->update_schedule(this, hour3, backwards);
 		}
-	paint();			// Repaint all.
+
+	if (repaint)
+		paint();			// Repaint all.
 	}
 
 /*

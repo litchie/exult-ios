@@ -148,6 +148,10 @@ void Game_window::restore_gamedat
 		}
 	delete [] finfo;
 	cout.flush();
+
+#ifdef RED_PLASMA
+	load_palette_timer = 0;
+#endif
 	}
 
 /*
