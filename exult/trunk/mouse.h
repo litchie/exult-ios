@@ -132,6 +132,9 @@ public:
 		{ set_shape(med_combat_arrows[(int) dir]); }
 
 	unsigned char is_onscreen() { return onscreen; }
+
+	inline const int get_mousex() const { return mousex; }
+	inline const int get_mousey() const { return mousey; }
 };
 
 #endif
