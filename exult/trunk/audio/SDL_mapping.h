@@ -49,7 +49,7 @@ extern	void (*Delay)(Uint32);
 extern	void (*PauseAudio)(int pause);
 extern	void (*UnlockAudio)(void);
 extern	void (*LockAudio)(void);
-extern	void (*MixAudio)(Uint8 *dst, Uint8 *src, Uint32 len,int);
+extern	void (*MixAudio)(Uint8 *dst, const Uint8 *src, Uint32 len,int);
 extern	void (*CloseAudio)(void);
 extern int (*OpenAudio)(SDL_AudioSpec *desired, SDL_AudioSpec *obtained);
 extern	void (*QuitSubSystem)(Uint32);
