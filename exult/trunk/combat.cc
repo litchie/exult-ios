@@ -280,7 +280,6 @@ void Combat_schedule::approach_foe
 		return;			// No one left to fight.
 		}
 	Actor::Attack_mode mode = npc->get_attack_mode();
-	Tile_coord pos = npc->get_abs_tile_coord();
 	Game_window *gwin = Game_window::get_game_window();
 					// Time to run?
 	if (mode == Actor::flee || 
@@ -288,29 +287,13 @@ void Combat_schedule::approach_foe
 		npc != gwin->get_main_actor() &&
 					npc->get_property(Actor::health) < 3))
 		{
-		if (npc->get_party_id() >= 0 && !fleed)
-			{
-			fleed = 1;
-			Audio::get_ptr()->start_music_combat(CSRun_Away, 0);
-			}
-		int rx = rand();	// Get random position away from here.
-		int ry = rand();
-		int dirx = 2*(rx%2) - 1;// Get 1 or -1.
-		int diry = 2*(ry%2) - 1;
-		pos.tx += dirx*(8 + rx%8);
-		pos.ty += diry*(8 + ry%8);
-		npc->walk_to_tile(pos, 100, 0);
-		if (!yelled && gwin->add_dirty(npc))
-			{
-			yelled++;
-			if (!npc->is_monster())
-				npc->say(first_flee, last_flee);
-			}
+		run_away();
 		return;
 		}
 	PathFinder *path = new Astar();
 					// Try this for now:
 	Monster_pathfinder_client cost(npc, max_range, opponent);
+	Tile_coord pos = npc->get_abs_tile_coord();
 	if (!path->NewPath(pos, opponent->get_abs_tile_coord(), &cost))
 		{			// Failed?  Try nearest opponent.
 		failures++;
@@ -446,6 +429,35 @@ void Combat_schedule::start_strike
 					// But only if it's a monster.????Why??
 	if (opp && !opp->get_opponent() /* +++Why?? && opp->is_monster() */)
 		opp->set_opponent(npc);
+	}
+
+/*
+ *	Run away.
+ */
+
+void Combat_schedule::run_away
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (npc->get_party_id() >= 0 && !fleed && gwin->in_combat())
+		Audio::get_ptr()->start_music_combat(CSRun_Away, 0);
+	fleed++;
+					// Might be nice to run from opp...
+	int rx = rand();		// Get random position away from here.
+	int ry = rand();
+	int dirx = 2*(rx%2) - 1;	// Get 1 or -1.
+	int diry = 2*(ry%2) - 1;
+	Tile_coord pos = npc->get_abs_tile_coord();
+	pos.tx += dirx*(8 + rx%8);
+	pos.ty += diry*(8 + ry%8);
+	npc->walk_to_tile(pos, 100, 0);
+	if (!yelled && gwin->add_dirty(npc))
+		{
+		yelled++;
+		if (!npc->is_monster())
+			npc->say(first_flee, last_flee);
+		}
 	}
 
 /*
@@ -591,6 +603,17 @@ void Combat_schedule::now_what
 	if (npc->get_flag(Obj_flags::asleep))
 		{
 		npc->start(200, 1000);	// Check again in a second.
+		return;
+		}
+					// Running away?
+	if (npc->get_attack_mode() == Actor::flee)
+		{			// If not in combat, stop running.
+		if (fleed > 2 && !gwin->in_combat() && 
+						npc->get_party_id() >= 0)
+					// WARNING:  Destroys ourself.
+			npc->set_schedule_type(Schedule::follow_avatar);
+		else
+			run_away();
 		return;
 		}
 					// Check if opponent still breathes.

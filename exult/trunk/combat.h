@@ -70,6 +70,7 @@ protected:
 	Actor *find_foe();
 	void approach_foe();		// Approach foe.
 	void start_strike(Rectangle& npctiles, Rectangle& opptiles);
+	void run_away();
 	void set_weapon_info();		// Set 'max_reach' of weapon.
 public:
 	Combat_schedule(Actor *n, Schedule_types prev_sched) 
