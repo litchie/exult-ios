@@ -41,6 +41,10 @@ using std::endl;
 using std::istream;
 using std::ostream;
 
+#ifdef _MSC_VER
+#pragma optimize("t", off)
+#endif
+
 /*
  *	Read in actor from a given file.
  */

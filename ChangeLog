@@ -1,3 +1,11 @@
+2002-06-06  Ryan Nunn  <triforce@merlin.net.au>
+	* browser.cc, gamerend.cc, gumps/gump_utils.cc : Fixing problems
+	  introduced by Kirben when getting Exult Exult to compile with GCC3.1
+	  in Windows.
+	* actorio.cc, objs/objiter.cc, msvcstuff/Exult.dsp : Some last minute
+	  changes for MSVC. Not required, but I though it would be a good idea
+	  since the CVS Tag is being moved to include Kirbens changes
+
 2002-06-05  Ryan Nunn  <triforce@merlin.net.au>
 	* actors.cc : Removed the allow any item in back slot code.
 	* gumps/Paperdoll_gump.cc : Fixed bug where items were in wrong places.

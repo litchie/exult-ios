@@ -1786,21 +1786,15 @@ SOURCE=..\audio\midi_drivers\Makefile.am
 
 !IF  "$(CFG)" == "Exult - Win32 Release"
 
-# PROP Exclude_From_Build 1
-
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
-
-# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
 
 # PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug Install"
 
 # PROP BASE Exclude_From_Build 1
-# PROP Exclude_From_Build 1
 
 !ENDIF 
 
