@@ -1,3 +1,7 @@
+2000-10-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Fixed (actually, worked-around) virtue-stone bug.
+
 2000-10-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Reagants bug & resolution-change bug fixed.
