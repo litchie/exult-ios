@@ -123,7 +123,7 @@ void ActionAbout(int *params)
 	scroll = new Scroll_gump();
 	
 	scroll->add_text("Exult V"VERSION"\n");
-	scroll->add_text("(C) 1998-2001 Exult Team\n\n");
+	scroll->add_text("(C) 1998-2002 Exult Team\n\n");
 	scroll->add_text("Available under the terms of the ");
 	scroll->add_text("GNU General Public License\n\n");
 	scroll->add_text("http://exult.sourceforge.net\n");
