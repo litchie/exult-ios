@@ -63,8 +63,9 @@ void set_mode(Arch_mode &mode, Arch_mode new_mode)
 long get_file_size(const char *fname)
 {
 	char *mode = "rb";
-	bool text;
-	if (text = is_text_file(fname)) mode = "r";
+	bool text = is_text_file(fname);
+	if (text)
+		mode = "r";
 
 	FILE *fp = U7open (fname, mode);
 	if (!fp) {

@@ -806,8 +806,6 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 
 void CheatScreen::NPCMenu (Actor *actor, int &num)
 {
-	char	buf[512];
-
 	// Left Column
 
 	// Attack Mode
@@ -1634,8 +1632,6 @@ void CheatScreen::BusinessDisplay (Actor *actor)
 
 void CheatScreen::BusinessMenu (Actor *actor)
 {
-	char	buf[512];
-
 	// Left Column
 
 	if (actor->get_npc_num())
