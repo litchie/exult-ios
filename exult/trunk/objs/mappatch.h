@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_MAPPATCH	1
 
 #include <map>
+#include <list>
 #include "tiles.h"
 
 class Game_object;
@@ -65,8 +66,9 @@ public:
  */
 class Map_patch_remove : public Map_patch
 	{
+	bool all;			// Delete all matching.
 public:
-	Map_patch_remove(Object_spec s) : Map_patch(s)
+	Map_patch_remove(Object_spec s, bool a = false) : Map_patch(s)
 		{  }
 	virtual bool apply();		// Perform action.
 	};
@@ -88,7 +90,7 @@ public:
  */
 class Map_patch_collection
 	{
-	map<int, list<Map_patch *>> patches;
+	map<int, list<Map_patch *> > patches;
 public:
 	Map_patch_collection()
 		{  }
