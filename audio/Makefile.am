@@ -1,7 +1,7 @@
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../imagewin -I$(srcdir)/../shapes \
 		-I$(srcdir)/../objs -I$(srcdir)/../files -I$(srcdir)/../gumps \
 		-I$(srcdir)/../conf \
- $(SDL_INCLUDES) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -I../files -I../conf
+ $(SDL_CFLAGS) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -I../files -I../conf
 
 SUBDIRS = midi_drivers
 

@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files $(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 		$(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libimagewin.la
@@ -15,8 +15,8 @@ libimagewin_la_SOURCES = \
 	imagewin.h \
 	iwin8.cc \
 	iwin8.h \
-	scale.cc \
 	scale.h \
 	savepcx.cc
 
-
+EXTRA_DIST = \
+	scale.cc \

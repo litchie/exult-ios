@@ -8,14 +8,14 @@ dnl ----------------------
 
 PACKAGE=exult
 VER_MAJOR=0
-VER_MINOR=94
-VER_EXTRA=alpha5
+VER_MINOR=95
+VER_EXTRA=cvs
 VERSION=$VER_MAJOR.$VER_MINOR$VER_EXTRA
 
 dnl check host/build systems. For now, only host is used
 dnl (build = system we're building on, host = system we're building for)
 AC_CANONICAL_HOST
-AC_CANONICAL_BUILD
+AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION,no-define)
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
@@ -33,6 +33,8 @@ dnl -------------------------
 
 SYSLIBS=""
 ICON_FILE=""
+EXE_TARGET="exult"
+EXULT_DATADIR="$datadir/exult"
 
 dnl determine windowing system from 'host'
 AC_MSG_CHECKING("windowing system")
@@ -40,12 +42,10 @@ case "$host_os" in
 	linux*)
 		WINDOWING_SYSTEM="-DXWIN"
 		AC_MSG_RESULT(X11 (GNU/Linux))
-		EXE_TARGET="exult"
 		;;
 	beos)
 		WINDOWING_SYSTEM="-DBEOS"
 		AC_MSG_RESULT(BeOS)
-		EXE_TARGET="exult"
 		SYSLIBS="-lbe -lmidi"
 		enable_kmid="no"
 		enable_timidity="no"
@@ -74,13 +74,11 @@ case "$host_os" in
 		AC_DEFINE(OPENBSD)
 		AC_MSG_RESULT(X11 (OpenBSD))
 		SYSLIBS="-L/usr/X11R6/lib -lX11 -lXext -lXxf86vm -lXxf86dga"
-		EXE_TARGET="exult"
 		;;
 	solaris* )
 		WINDOWING_SYSTEM="-DXWIN"
 		AC_MSG_RESULT(X11 (Solaris))
 		SYSLIBS="-lsocket -lX11"
-		EXE_TARGET="exult"
 		;;
 	darwin*)
 		dnl We have a problem here: both MacOS X and Darwin report the same
@@ -92,10 +90,11 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DCOCOA"
 		AC_DEFINE(MACOSX)
 		AC_MSG_RESULT(Cocoa (MacOS X))
-		EXE_TARGET="exult"
+		SYSLIBS="-lstdc++ -framework QuickTime"
+		CFLAGS="$CFLAGS -fpascal-strings"
+		EXULT_DATADIR="data"
 		;;
 	*)
-		EXE_TARGET="exult"
 		WINDOWING_SYSTEM="-DXWIN"
 		AC_MSG_RESULT(not sure... guessing X11)
 		;;
@@ -106,7 +105,6 @@ dnl Compilers and other tools
 dnl ----------------------------
 
 AC_PROG_CC
-AC_REQUIRE([AC_PROG_CPP])
 AC_PROG_CPP
 AC_PROG_INSTALL
 AM_PROG_LEX
@@ -130,8 +128,10 @@ if test -z "$CXX"; then AC_CHECK_PROG(CXX, xlC, xlC) fi
 if test -z "$CXX"; then AC_CHECK_PROG(CXX, DCC, DCC) fi
 test -z "$CXX" && AC_MSG_ERROR([no acceptable C++-compiler found in \$PATH])
 
-AC_PROG_CXX_WORKS
-AC_PROG_CXX_GNU
+# The following two are not existant anymore in autoconf 2.5
+#AC_PROG_CXX_WORKS
+#AC_PROG_CXX_GNU
+# instead check ac_cv_c_compiler_gnu !
 
 AM_DISABLE_SHARED
 
@@ -179,8 +179,15 @@ AC_LANG_C
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
+AC_C_INLINE
 AC_HEADER_TIME
 AC_STRUCT_TM
+
+dnl If this is a gnu compiler, pass -Wall
+if test $ac_cv_c_compiler_gnu = yes; then
+	CFLAGS="$CFLAGS -Wall"
+fi
+
 
 AC_MSG_CHECKING(for getaddrinfo())
 AC_TRY_COMPILE([
@@ -239,12 +246,6 @@ else
 	AM_CONDITIONAL(HAVE_SNPRINTF,false)
 fi
 
-dnl Check if C compiler supports inline
-AC_C_INLINE
-if test x$CC = xgcc; then
-	CFLAGS="$CFLAGS -Wall"
-fi
-
 dnl do we need special X11 libraries?
 AC_MSG_CHECKING(for special X11 libraries)
 if test x$x_libraries = xNONE; then
@@ -264,13 +265,19 @@ dnl This needs improving. Maybe steal it from the configure.in for the
 dnl SDL test programs?
 
 
-AC_CHECK_PROG(HAVE_SDL_CONFIG, sdl-config, found it, not found)
+#AC_CHECK_PROG(HAVE_SDL_CONFIG, sdl-config, found it, not found)
+#
+#if test "$HAVE_SDL_CONFIG" = "not found"; then
+#	AC_MSG_ERROR(You must have SDL installed.)
+#fi
+#SDL_CFLAGS=`sdl-config --cflags`
+#SDL_LIBS=`sdl-config --libs`
 
-if test "$HAVE_SDL_CONFIG" = "not found"; then
-	AC_MSG_ERROR(You must have SDL installed.)
-fi
-SDL_INCLUDES=`sdl-config --cflags`
-SDL_LIBS=`sdl-config --libs`
+SDL_VERSION=1.2.0
+AM_PATH_SDL($SDL_VERSION,
+	:,
+	AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
+)
 
 
 dnl ----------------------
@@ -616,18 +623,20 @@ dnl ------------------
 dnl Generate output
 dnl ------------------
 
-AC_SUBST(SDL_INCLUDES)
+AC_SUBST(SDL_CFLAGS)
 AC_SUBST(SDL_LIBS)
 AC_SUBST(WINDOWING_SYSTEM)
 AC_SUBST(KMID_INCLUDES)
 AC_SUBST(KMID_LIBS)
 AC_SUBST(EXE_TARGET)
+AC_SUBST(EXULT_DATADIR)
 AC_SUBST(SYSLIBS)
 AC_SUBST(ICON_FILE)
 AC_SUBST(DEBUG_FLAGS)
 
 AC_OUTPUT([
 exult.spec
+Info.plist
 Makefile
 audio/Makefile
 audio/midi_drivers/Makefile

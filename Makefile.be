@@ -5,17 +5,17 @@
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs
 
-VERSION=0.94alpha5
+VERSION=0.95cvs
 
 ### Modify these paths
-SDL_INCLUDES=-I/boot/develop/tools/gnupro/include/SDL
+SDL_CFLAGS=-I/boot/develop/tools/gnupro/include/SDL
 SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
 	-I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/data \
 	-I$(SRC)/files -I$(SRC) -I$(SRC)/audio -I$(SRC)/conf \
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
-	-DHAVE_SNPRINTF $(SDL_INCLUDES)
+	-DHAVE_SNPRINTF $(SDL_CFLAGS)
 CXXFLAGS=-O2 -Wall
 
 LFLAGS=
