@@ -1,5 +1,6 @@
 2001-12-22  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* npcnear.cc: Sleeping monsters shouldn't attack until awakened.
 	* usecode/intrinsics.cc,gamewin.cc,gamewin.h: Added 'armageddon' flag.
 
 2001-12-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
