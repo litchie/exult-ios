@@ -231,12 +231,10 @@ static int Check_mask
 	{
 	if (mask&8)			// Non-party NPCs.
 		{
-#if 0	/* ++++Later */
 		if (obj->is_monster())
 			return 1;
 		if (obj->get_npc_num() <= 0 || obj->get_party_id() >= 0)
 			return 0;	// Not an NPC || is a party member.
-#endif
 		return 1;
 		}
 	//++++++The rest.

@@ -365,6 +365,8 @@ public:
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame)
 		{ return 0; }
+	virtual int is_monster()
+		{ return 0; }
 					// Under attack.
 	virtual void attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
