@@ -117,18 +117,21 @@ public:
 	};
 
 /*
- *	Flex file (used for combos):
+ *	Flex file (used for combos, palettes):
  */
 class Flex_file_info : public Shape_file_info
 	{
 
-	Flex *flex;			// For 'combos.flx'.
-	std::vector<char *> entries;		// Entries are stored here.
-	std::vector<int> lengths;		// Lengths here.
+	Flex *flex;			// NULL if just 1 entry.
+	std::vector<char *> entries;	// Entries are stored here.
+	std::vector<int> lengths;	// Lengths here.
+	bool write_flat;		// Write flat file if just 1 entry.
 public:
 					// We will own flex.
 	Flex_file_info(const char *bnm, const char *pnm,
-						Flex *fl, Shape_group_file *g);
+				Flex *fl, Shape_group_file *g);
+					// Create for single-palette.
+	Flex_file_info(const char *bnm, const char *pnm, int size);
 	int size()			// Get # flex entries.
 		{ return entries.size(); }
 	char *get(int i, size_t& len);	// Get i'th entry.

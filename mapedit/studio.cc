@@ -47,7 +47,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdarg>
 
 #include "shapelst.h"
-#include "paledit.h"
 #include "shapevga.h"
 #include "Flex.h"
 #include "studio.h"
@@ -107,7 +106,7 @@ C_EXPORT void on_filelist_tree_select_row       (GtkCTree        *ctree,
 		break;
 	case PaletteFile:
 		studio->set_browser("Palette Browser", 
-					studio->create_palette_browser(text));
+					studio->create_browser(text));
 		break;
 	default:
 		break;
@@ -591,11 +590,7 @@ bool ExultStudio::has_focus
  */
 void ExultStudio::set_browser(const char *name, Object_browser *obj)
 {
-	if(browser)
-		{
-		browser->closing();
-		delete browser;
-		}
+	delete browser;
 	browser = obj;
 	
 	GtkWidget *browser_frame = glade_xml_get_widget( app_xml, "browser_frame" );
@@ -614,14 +609,8 @@ Object_browser *ExultStudio::create_browser(const char *fname)
 	if (!curfile)
 		return 0;
 	Object_browser *chooser = curfile->create_browser(vgafile, palbuf);
-	setup_groups(fname);		// Set up 'groups' page.
+	setup_groups();			// Set up 'groups' page.
 	return chooser;
-}
-
-Object_browser *ExultStudio::create_palette_browser(const char *fname)
-{
-	Palette_edit *paled = new Palette_edit(fname);
-	return paled;
 }
 
 /*
@@ -1015,8 +1004,6 @@ void ExultStudio::save_all
 	(
 	)
 	{
-	if (browser)
-		browser->save();	// Browser-owned files.
 	save_groups();			// Group files.
 	if (files)
 		{			// Get back any changed images.
@@ -1035,8 +1022,6 @@ bool ExultStudio::need_to_save
 	(
 	)
 	{
-	if (browser && browser->is_modified())
-		return true;
 	if (groups_modified())
 		return true;
 	if (files && files->is_modified())

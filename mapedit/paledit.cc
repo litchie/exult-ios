@@ -31,21 +31,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <gdk/gdkx.h>
 #endif
 #include <glib.h>
-#include "Flex.h"
 #include "paledit.h"
 #include "u7drag.h"
-#include "U7file.h"
 #include "utils.h"
-#include "exceptions.h"
 #include <iostream>
 #include <iomanip>
 #include <ctype.h>
 #include <stdio.h>
 #include "studio.h"
-
-/*
- *	Blit onto screen.
- */
+#include "shapefile.h"
 
 using	std::cout;
 using	std::endl;
@@ -57,6 +51,31 @@ using	std::setw;
 using	std::ifstream;
 using	EStudio::Prompt;
 using	EStudio::Alert;
+
+/*
+ *	Write out a single palette to a buffer.
+ */
+
+static void Write_palette
+	(
+	unsigned char *buf,		// 3*256 bytes.
+	GdkRgbCmap *pal			// Palette to write.
+	)
+	{
+	for (int i = 0; i < 256; i++)
+		{
+		int r = (pal->colors[i]>>16)&255,
+		    g = (pal->colors[i]>>8)&255,
+		    b = pal->colors[i]&255;
+		buf[3*i] = r/4;		// Range 0-63.
+		buf[3*i + 1] = g/4;
+		buf[3*i + 2] = b/4;
+		}
+	}
+
+/*
+ *	Blit onto screen.
+ */
 
 inline void Palette_edit::show
 	(
@@ -205,7 +224,8 @@ void Palette_edit::color_okay
 							paled->selected] = 
 							(r<<16) + (g<<8) + b;
 		gtk_widget_destroy(GTK_WIDGET(paled->colorsel));
-		paled->modified = true;
+					// Send to flex file.
+		paled->update_flex(paled->cur_pal);
 		paled->render();
 		paled->show();
 		}
@@ -736,10 +756,10 @@ void Palette_edit::setup
 	}
 
 /*
- *	Create a new palette.
+ *	Create/add a new palette.
  */
 
-static GdkRgbCmap *New_palette
+void Palette_edit::new_palette
 	(
 	)
 	{
@@ -748,7 +768,26 @@ static GdkRgbCmap *New_palette
 	colors[0] = 255<<16;
 	colors[1] = 255<<8;
 	colors[2] = 255;
-	return gdk_rgb_cmap_new(colors, 256);
+	GdkRgbCmap *newpal = gdk_rgb_cmap_new(colors, 256);
+	int index = palettes.size();	// Index of new palette.
+	palettes.push_back(newpal);
+	update_flex(index);		// Add to file.
+	}
+
+/*
+ *	Update palette entry in flex file.
+ */
+
+void Palette_edit::update_flex
+	(
+	int pnum			// Palette # to send to file.
+	)
+	{
+	unsigned char *buf = new unsigned char[3*256];
+	Write_palette(buf, palettes[pnum]);
+					// Update or append file data.
+	flex_info->set(pnum, (char *) buf, 3*256);
+	flex_info->set_modified();
 	}
 
 /*
@@ -757,43 +796,27 @@ static GdkRgbCmap *New_palette
 
 Palette_edit::Palette_edit
 	(
-	const char *bname		// Base filename.
-	) : image(0), width(0), height(0),
-		colorsel(0), modified(false),
-		basename(g_strdup(bname)), cur_pal(0)
+	Flex_file_info *flinfo		// Flex-file info.
+	) : flex_info(flinfo), image(0), width(0), height(0),
+		colorsel(0), cur_pal(0)
 	{
-	const char *file = 0;
-	string fname("<PATCH>/");	// First try 'patch' directory.
-	fname += basename;
-	if (U7exists(fname.c_str()))
-		file = fname.c_str();
+	int cnt = flex_info->size();
+	if (!cnt)			// No palettes?
+		new_palette();		// Create 1 blank palette.
 	else
 		{
-		fname = "<STATIC>/";
-		fname += basename;
-		file = fname.c_str();
-		}
-	if (!U7exists(file))		// File non-existent?
-					// Create 1 blank palette.
-		palettes.push_back(New_palette());
-	else
-		{
-		U7object pal(file, 0);
-		int count = pal.number_of_objects();
-		palettes.resize(count);	// Set size of list.
-		for (int pnum = 0; pnum < count; pnum++)
+		palettes.resize(cnt);	// Set size of list.
+		for (int pnum = 0; pnum < cnt; pnum++)
 			{
-			U7object pal(file, pnum);
 			size_t len;
-			unsigned char *buf;	// this may throw an exception
-			buf = (unsigned char *) pal.retrieve(len);
+			unsigned char *buf = (unsigned char *)
+						flex_info->get(pnum, len);
 			assert(len = 3*256);
 			guint32 colors[256];
 			for (int i = 0; i < 256; i++)
 				colors[i] = (buf[3*i]<<16)*4 + 
 					(buf[3*i+1]<<8)*4 + buf[3*i+2]*4;
 			palettes[pnum] = gdk_rgb_cmap_new(colors, 256);
-			delete buf;
 			}
 		}
 	setup();
@@ -807,7 +830,6 @@ Palette_edit::~Palette_edit
 	(
 	)
 	{
-	g_free(basename);
 	for (vector<GdkRgbCmap*>::iterator it = palettes.begin();
 					it != palettes.end(); ++it)
 		gdk_rgb_cmap_free(*it);
@@ -849,89 +871,6 @@ void Palette_edit::unselect
 	}
 
 /*
- *	About to delete this.
- *
- *	Output:	True if okay to delete.
- */
-
-bool Palette_edit::closing
-	(
-	bool can_cancel			// User allowed to cancel.
-	)
-	{
-	if (!modified)
-		return true;
-	int choice = Prompt("Palette(s) modified.  Save?",
-		"Yes", "No", can_cancel ? "Cancel" : 0);
-	if (choice == 2)		// Cancel?
-		return false;
-	if (choice == 0)
-		save();			// Write out changes.
-	return true;
-	}
-
-/*
- *	Write out a single palette.
- */
-
-static void Write_palette
-	(
-	ostream& out,
-	GdkRgbCmap *pal			// Palette to write.
-	)
-	{
-	unsigned char buf[3*256];	// 3 bytes/color.
-	for (int i = 0; i < 256; i++)
-		{
-		int r = (pal->colors[i]>>16)&255,
-		    g = (pal->colors[i]>>8)&255,
-		    b = pal->colors[i]&255;
-		buf[3*i] = r/4;		// Range 0-63.
-		buf[3*i + 1] = g/4;
-		buf[3*i + 2] = b/4;
-		}
-	out.write(reinterpret_cast<char *>(buf), sizeof(buf));
-	}
-
-/*
- *	Write out palette(s).
- */
-
-void Palette_edit::save
-	(
-	)
-	{
-	if (!modified)
-		return;
-	modified = false;
-	string fname("<PATCH>/");	// Write to 'patch' directory.
-	fname += basename;
-	ofstream out;
-	try {
-	U7open(out, fname.c_str());
-	} catch (exult_exception& e) {
-		Alert("Error creating '%s'.", fname.c_str());
-		return;
-	}
-	int cnt = palettes.size();
-	if (cnt <= 1)			// Simple file?
-		{
-		if (cnt == 1)
-			Write_palette(out, palettes[0]);
-		out.close();
-		return;
-		}
-	Flex_writer flex(out, "Exult palettes", cnt);
-	for (int i = 0; i < cnt; i++)
-		{
-		Write_palette(out, palettes[i]);
-		flex.mark_section_done();
-		}
-	if (!flex.close())
-		Alert("Error writing '%s'", fname.c_str());
-	}
-
-/*
  *	Move a palette within the list.
  */
 
@@ -951,6 +890,7 @@ void Palette_edit::move_palette
 			palettes[cur_pal - 1] = palettes[cur_pal];
 			palettes[cur_pal] = tmp;
 			cur_pal--;
+			flex_info->swap(cur_pal);// Update flex-file list.
 			}
 		}
 	else
@@ -960,10 +900,11 @@ void Palette_edit::move_palette
 			tmp = palettes[cur_pal + 1];
 			palettes[cur_pal + 1] = palettes[cur_pal];
 			palettes[cur_pal] = tmp;
+			flex_info->swap(cur_pal);// Update flex-file list.
 			cur_pal++;
 			}
 		}
-	modified = true;
+	flex_info->set_modified();
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(pspin), cur_pal);
 	}
 
@@ -989,8 +930,7 @@ void Palette_edit::add_palette
 	(
 	)
 	{
-	modified = true;
-	palettes.push_back(New_palette());
+	new_palette();
 	cur_pal = palettes.size() - 1;	// Set to display new palette.
 	Update_range_upper(palnum_adj, palettes.size() - 1);
 					// This will update the display:
@@ -1012,9 +952,10 @@ void Palette_edit::remove_palette
 		"Do you really want to delete the palette you're viewing?",
 							"Yes", "No") != 0)
 		return;
-	modified = true;
 	gdk_rgb_cmap_free(palettes[cur_pal]);
 	palettes.erase(palettes.begin() + cur_pal);
+	flex_info->remove(cur_pal);
+	flex_info->set_modified();
 	if (cur_pal >= palettes.size())
 		cur_pal = palettes.size() - 1;
 	Update_range_upper(palnum_adj, palettes.size() - 1);
@@ -1106,7 +1047,8 @@ void Palette_edit::import_palette
 			pal->colors[i++] = (r<<16) + (g<<8) + b;
 		}
 	in.close();
-	ed->modified = true;
+					// Add to file.
+	ed->update_flex(ed->cur_pal);
 	ed->render();
 	ed->show();
 	}
