@@ -1756,28 +1756,31 @@ Game_object *Game_object::attacked
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
 
-	int hp = 0;
-
-	if (Has_hitpoints(shnum)) {
-		hp = get_obj_hp();
-	} else {
+	int hp = get_obj_hp();		// Returns 0 if doesn't have HP's or is
+					//   indestructible,
+	if (!hp) {			//   with exceptions:
 		// some special cases
 		// guessing these don't have hitpoints by default because
 		// doors need their 'quality' field for something else
 
 		if (shnum == 432 || shnum == 433) // doors
+			{
 			if (get_quality() == 0) // only 'normal' doors
 				if (frnum != 3 && frnum < 7) // no magic-locked or steel doors
 					hp = 6;
-	
-		if (shnum == 270 || shnum == 376) // more doors
+			}
+		else if (shnum == 270 || shnum == 376) // more doors
+			{
 			if (get_quality() == 0) // only 'normal' doors
 				if (frnum < 3 || (frnum >= 8 && frnum <= 10) ||
 					(frnum >= 16 && frnum <= 18)) // no magic or steel doors
 					hp = 6;
-
+			}
+					// Serpent statue at end of SI:
+		else if (shnum == 743 && Game::get_game_type() == SERPENT_ISLE)
+			hp = 1;
 #if 0
-		if (shnum == 522 && frnum < 2) // locked normal chest
+		else if (shnum == 522 && frnum < 2) // locked normal chest
 			if (get_quality() == 0 || get_quality() == 255)
 				hp = 6;
 #endif
