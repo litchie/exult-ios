@@ -75,19 +75,46 @@ void	Mixer::advance(void)
 
 void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 {
-	// cout << "fill_audio_func: " << len << endl;
+#if DEBUG
+	cout << "fill_audio_func: " << len << endl;
+	cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
+#endif
 	advance();
-	if(buffers.begin()->num_samples==0)
+	if(buffers.begin()->num_samples==0&&auxilliary_audio==-1)
 		{
 #if DEBUG
-		cout << "No more audio data" << endl;
+		cerr << "No more audio data" << endl;
 #endif
 		SDL::PauseAudio(1);
 		return;
 		}
-	if((unsigned)len>buffers.front().length)
-		len=buffers.front().length;
-	SDL::MixAudio(stream, buffers.begin()->buffer, len, SDL_MIX_MAXVOLUME);
+	if(auxilliary_audio!=-1)
+		{
+#if DEBUG
+		cerr << "Mixing auxilliary data" << endl;
+#endif
+		Uint8	*temp_buffer=new Uint8[len];
+		memset(temp_buffer,silence,len);
+		if(read(auxilliary_audio,temp_buffer,len)==-1)
+			{
+			perror("read");
+			close(auxilliary_audio);
+			auxilliary_audio=-1;
+			delete [] temp_buffer;
+			return;
+			}
+		SDL::MixAudio(stream, temp_buffer, len, SDL_MIX_MAXVOLUME);
+		delete [] temp_buffer;
+		}
+	if(buffers.begin()->num_samples)
+		{
+#if DEBUG
+		cerr << "Mixing sample data" << endl;
+#endif
+		if((unsigned)len>buffers.front().length)
+			len=buffers.front().length;
+		SDL::MixAudio(stream, buffers.begin()->buffer, len, SDL_MIX_MAXVOLUME);
+		}
 }
 
 void	Mixer::play(Uint8 *sound_data,Uint32 len)
@@ -134,3 +161,12 @@ Mixer::Mixer(Uint32 __buffer_size,Uint32 ringsize,Uint8 silence_value) : auxilli
 }
 
 
+void	Mixer::set_auxilliary_audio(int fh)
+{
+	auxilliary_audio=fh;
+#if DEBUG
+	cout << "Auxilliary audio stream: " << auxilliary_audio << endl;
+#endif
+	SDL::PauseAudio(0);
+	SDL::UnlockAudio();
+}

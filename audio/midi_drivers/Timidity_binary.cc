@@ -27,21 +27,93 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #include <csignal>
 #include "../../fnames.h"
+#include "../Audio.h"
+extern	Audio	audio;
 
 #include "Configuration.h"
 extern	Configuration	config;
 
 
 
-#undef HAVE_TIMIDITY_BIN	// Damn. Can't do this while SDL has the audio device.
+// #undef HAVE_TIMIDITY_BIN	// Damn. Can't do this while SDL has the audio device.
 // New strategy - Tell timidity to output to stdout. Capture that via a pipe, and
 // introduce it back up to the mixing layer.
 #if HAVE_TIMIDITY_BIN
+#include "Timidity_binary.h"
 
 static  void    playTBmidifile(const char *name)
 {
-        execlp("timidity","-Oe","-idvvv",name,0);
+	const char	*args[]= {
+			"timidity",
+			"-Or",
+			"-id",
+			"-o-",
+			name,
+			0 };
+        // execlp("timidity","-Or","-id","-o-",name,0);
+	execvp("timidity",args);
 }
+
+template<class T>
+T max(T x,T y)
+	{
+	return (x>y)?x:y;
+	}
+
+
+static	int	s_outfd,s_infd;
+
+static void	run_server(int in_fd,int out_fd,const char *midi_file_name)
+{
+	close(0);	// Destroy stdin
+	close(1);	// Destroy stdout
+	
+	// Tie pipes to stdio
+	if(dup2(in_fd,0)==-1)
+		perror("dup2 stdin");
+	if(dup2(out_fd,1)==-1)
+		perror("dup2 stdout");
+
+	playTBmidifile(midi_file_name);
+	// Shouldn't get here
+	perror("execlp");
+}
+
+static	pid_t	sub_process(const char *midi_file_name)
+{
+	int	pipe1[2],pipe2[2];
+	pid_t	childpid;
+
+	if(s_infd!=-1)
+		{
+		s_infd=-1;
+		close(s_infd);
+		}
+	if(s_outfd!=-1)
+		{
+		s_outfd=-1;
+		close(s_outfd);
+		}
+	
+	pipe(pipe1);
+	pipe(pipe2);
+
+	if((childpid==fork())==0)
+		{
+		// Child
+		close(pipe1[1]);
+		close(pipe2[0]);
+		
+		run_server(pipe1[0],pipe2[1],midi_file_name);
+		exit(0);
+		}
+	close(pipe1[0]);
+	close(pipe2[1]);
+	s_outfd=pipe1[1];
+	s_infd=pipe2[0];
+	return childpid;
+}
+
 
 Timidity_binary::Timidity_binary() :forked_job(-1)
 	{
@@ -58,7 +130,13 @@ Timidity_binary::~Timidity_binary()
 void	Timidity_binary::stop_track(void)
 	{
 	if(forked_job!=-1)
+		{
+		close(s_infd);
+		close(s_outfd);
+		s_infd=s_outfd=-1;
+		audio.terminate_external_signal();
 		kill(forked_job,SIGKILL);
+		}
 	forked_job=-1;
 		
 		
@@ -87,15 +165,11 @@ void	Timidity_binary::start_track(const char *name,int repeats)
 #endif
 		stop_track();
                 }
-        forked_job=fork();
-        if(!forked_job)
-                {
 #if DEBUG
 	cerr << "Starting to play " << name << endl;
 #endif
-                playTBmidifile(name);
-                raise(SIGKILL);
-                }
+	forked_job=sub_process(name);
+	audio.set_external_signal(s_infd);
 }
 
 const	char *Timidity_binary::copyright(void)
