@@ -118,19 +118,15 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 
 void GameplayOptions_gump::build_buttons()
 {
-	std::string *stats = new std::string[4];
-	stats[0] = "Disabled";
-	stats[1] = "Left";
-	stats[2] = "Middle";
-	stats[3] = "Right";
+	
 	buttons[0] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59, facestats, 4);
 	buttons[1] = new GameplayToggle(this, colx[3], rowy[1], EXULT_FLX_AUD_ENABLED_SHP, fastmouse, 2);
 	buttons[2] = new GameplayToggle(this, colx[3], rowy[3], EXULT_FLX_AUD_ENABLED_SHP, mouse3rd, 2);
 //	buttons[3] = new GameplayToggle(this, colx[3], rowy[5], EXULT_FLX_AUD_ENABLED_SHP, doubleclick, 2);
 	buttons[4] = new GameplayToggle(this, colx[3], rowy[7], EXULT_FLX_AUD_ENABLED_SHP, cheats, 2);
-	if (Game::get_game_type() == BLACK_GATE)
+	if GAME_BG
 		buttons[5] = new GameplayToggle(this, colx[3], rowy[6], EXULT_FLX_AUD_ENABLED_SHP, paperdolls, 2);
-	buttons[6] = new GameplayToggle(this, colx[3], rowy[9], EXULT_FLX_AUD_ENABLED_SHP, text_bg, 2);
+	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-20, rowy[9], 80, text_bg, 12);
 }
 
 void GameplayOptions_gump::load_settings()
@@ -145,7 +141,7 @@ void GameplayOptions_gump::load_settings()
 	string pdolls;
 	paperdolls = gwin->get_bg_paperdolls();
 //	config->value("config/gameplay/double_click_closes_gumps", doubleclick);
-	text_bg = gwin->get_text_bg();
+	text_bg = gwin->get_text_bg()+1;
 }
 
 GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SHP, SF_EXULT_FLX)
@@ -154,6 +150,24 @@ GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTI
 
 	for (int i = 0; i < 10; i++)
 		buttons[i] = 0;
+	stats = new std::string[4];
+	stats[0] = "Disabled";
+	stats[1] = "Left";
+	stats[2] = "Middle";
+	stats[3] = "Right";
+	textbgcolor = new std::string[12];
+	textbgcolor[0] = "Disabled";
+	textbgcolor[1] = "Purple";
+	textbgcolor[2] = "Orange";
+	textbgcolor[3] = "Light Gray";
+	textbgcolor[4] = "Green";
+	textbgcolor[5] = "Yellow";
+	textbgcolor[6] = "Pale Blue";
+	textbgcolor[7] = "Dark Green";
+	textbgcolor[8] = "Red";
+	textbgcolor[9] = "Bright White";
+	textbgcolor[10] = "Dark gray";
+	textbgcolor[11] = "White";
 
 	load_settings();
 	
@@ -170,13 +184,19 @@ GameplayOptions_gump::~GameplayOptions_gump()
 	for (int i = 0; i < 10; i++)
 		if (buttons[i])
 			delete buttons[i];
+
+#if 0
+	// For some reason these crash Exult
+	delete[] stats;
+	delete[] textbgcolor;
+#endif
 }
 
 void GameplayOptions_gump::save_settings()
 {
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->set_text_bg(text_bg);
-	config->set("config/gameplay/textbackground", text_bg ? "yes" : "no", true);
+	gwin->set_text_bg(text_bg-1);
+	config->set("config/gameplay/textbackground", text_bg-1, true);
 	gwin->set_fastmouse(fastmouse);
 	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", true);
 	gwin->set_mouse3rd(mouse3rd);
