@@ -41,6 +41,7 @@ void    MyMidiPlayer::start_track(int num,int repeats,int bank)
   #endif
 	U7object	track(midi_bank[bank].c_str(),num);
 
+	//!!! Needs to be cleaned up.
 #ifndef WIN32
 	if(!track.retrieve("/tmp/u7midi"))
 		return;
