@@ -1971,7 +1971,7 @@ int Usecode_machine::run
 	int offset;			// Gets offset parm.
 	int sval;			// Get value from top-of-stack.
 	unsigned char *code = ip;	// Save for debugging.
-	int set_ret_value = 0;		// 1 when return value is set.
+	int set_ret_value = 0;		// >=1 when return value is set.
 	Usecode_value ret_value;	// Gets return value.
 	/*
 	 *	Main loop.
@@ -2238,22 +2238,20 @@ int Usecode_machine::run
 			ip = endp;	// End the loop.
 			break;
 		case 0x2d:		// Set return value (SETR).
-#if 0
-					// But 1st takes precedence.
-			if (!set_ret_value)
-				ret_value = pop();
-			set_ret_value = 1;
-			break;
-#else	/* +++++Try this: */
 			{
 			Usecode_value r = pop();
 					// But 1st takes precedence.
 			if (!set_ret_value)
 				ret_value = r;
-			set_ret_value = 1;
+			else if (set_ret_value > 40)
+				{	// Fix infinite loop (0x944) bug.
+				sp = save_sp;	// Restore stack, force ret.
+				push(ret_value);
+				ip = endp;
+				}
+			set_ret_value++;
 			break;
 			}
-#endif
 		case 0x2e:		// Looks like a loop.
 			if (*ip++ != 2)
 				cout << "2nd byte in loop isn't a 2!"<<endl;
