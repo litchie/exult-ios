@@ -3,6 +3,8 @@ INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes \
 	-I$(srcdir)/../files -I$(srcdir)/../server \
 	$(GLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
+SUBDIRS=tools
+
 if GIMP_PLUGIN
 GIMP_PLUGINS=u7shp
 else
@@ -78,8 +80,8 @@ EXTRA_DIST=	\
 
 if GIMP_PLUGIN
 install-exec-local:
-	install -d $(GIMP_PLUGIN_PREFIX)
-	install -c $(GIMP_PLUGINS) $(GIMP_PLUGIN_PREFIX)
+	install -d $(DESTDIR)$(GIMP_PLUGIN_PREFIX)
+	install -c $(DESTDIR)$(GIMP_PLUGINS) $(GIMP_PLUGIN_PREFIX)
 else
 install-exec-local:
 endif
