@@ -123,3 +123,25 @@ void Model3d::compute_normals
 				it != objects.end(); ++it)
 		(*it)->compute_normals();
 	}
+
+/*
+ *	Take the average of all the vertices for a rough notion of 'center'.
+ */
+
+Vector3 Model3d::find_center
+	(
+	) const
+	{
+	int total = 0;
+	Vector3 sum(0, 0, 0);
+	for (vector<Object3d *>::const_iterator it = objects.begin();
+				it != objects.end(); ++it)
+		{
+		Object3d *obj = *it;
+		int cnt = obj->vertices_size();
+		total += cnt;
+		for (int i = 0; i < cnt; i++)
+			sum = sum + obj->get_vertex(i);
+		}
+	return total ? sum/total : sum;
+	}
