@@ -39,6 +39,8 @@ libu7file_la_SOURCES =	\
 	listfiles.h	\
 	crc.cc		\
 	crc.h		\
+	msgfile.cc	\
+	msgfile.h	\
 	$(SNPRINTF)
 
 EXTRA_DIST = 		\

@@ -37,6 +37,7 @@
 #include "Flex.h"
 #include "utils.h"
 #include "exceptions.h"
+#include "msgfile.h"
 
 using std::atoi;
 using std::cerr;
@@ -102,62 +103,6 @@ static void Write_flex
 		}
 	if (!writer.close())
 		throw file_write_exception(filename);
-	}
-
-/*
- *	Read in text, where each line is of the form "nnn:sssss", where nnn is
- *	to be the Flex entry #, and anything after the ':' is the string to
- *	store.  
- *	NOTES:	Entry #'s may be skipped, and may be given in hex (0xnnn)
- *			or decimal.
- *		Max. text length is 1024.
- *		A line beginning with a '#' is a comment.
- */
-
-static void Read_text
-	(
-	istream& in,
-	vector<char *>& strings		// Strings returned here.
-	)
-	{
-	strings.resize(0);		// Initialize.
-	strings.reserve(1200);
-	char buf[1024];
-	int linenum = 0;
-	while (!in.eof())
-		{
-		++linenum;
-		in.get(buf, sizeof(buf));
-		char delim;		// Check for end-of-line.
-		in.get(delim);
-		if (delim != '\n' && !in.eof())
-			{
-			cerr << "Line #" << linenum << " is too long" << endl;
-			exit(1);
-			}
-		if (!buf[0])
-			continue;	// Empty line.
-		char *ptr = &buf[0];
-		char *endptr;		// Get line# in decimal, hex, or oct.
-		long index = strtol(ptr, &endptr, 0);
-		if (endptr == ptr)	// No #?
-			{
-			if (*ptr == '#')
-				continue;
-			cerr << "Line " << linenum <<
-					" doesn't start with a number" << endl;
-			exit(1);
-			}
-		if (*endptr != ':')
-			{
-			cerr << "Missing ':' in line " << linenum << 
-				".  Ignoring line" << endl;
-			continue;
-			}
-		if (index >= strings.size())
-			strings.resize(index + 1);
-		strings[index] = newstrdup(endptr + 1);
-		}
 	}
 
 /*
@@ -228,10 +173,12 @@ int main
 				cerr << e.what() << endl;
 				exit(1);
 			}
-			Read_text(in, strings);
+			if (Read_text_msg_file(in, strings) == -1)
+				exit(1);
 			}
 		else			// Default to stdin.
-			Read_text(cin, strings);
+			if (Read_text_msg_file(cin, strings) == -1)
+				exit(1);
 		try {
 			Write_flex(flexname, "Flex created by Exult", strings);
 		} catch (exult_exception& e){
