@@ -185,6 +185,11 @@ void Chunk_cache::update_object
 	)
 	{
 	Shape_info& info = obj->get_info();
+	if (info.is_door())		// Special door list.
+		if (add)
+			doors.append(obj);
+		else
+			doors.remove(obj);
 	int ztiles = info.get_3d_height(); 
 	if (!ztiles || !info.is_solid())
 		return;			// Skip if not an obstacle.
@@ -571,6 +576,22 @@ void Chunk_cache::activate_eggs
 				egg->activate(obj, now);
 			}
 		}
+	}
+
+/*
+ *	Find door blocking a given tile.
+ */
+
+Game_object *Chunk_cache::find_door
+	(
+	Tile_coord tile
+	)
+	{
+	for (Game_object_vector::iterator it = doors.begin();
+						it != doors.end(); ++it)
+		if ((*it)->blocks(tile))
+			return *it;	// Found it.
+	return 0;
 	}
 
 /*

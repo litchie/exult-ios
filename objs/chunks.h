@@ -57,6 +57,7 @@ class Chunk_cache : public Game_singletons
 					//   influence.  Bit 15 means it's 1 or
 					//   more of 
 					//   egg_objects[15-(num_eggs-1)].
+	Game_object_vector doors;	// Keep special list of doors.
 	friend class Map_chunk;
 	Chunk_cache();	
 	~Chunk_cache();
@@ -114,7 +115,8 @@ class Chunk_cache : public Game_singletons
 			activate_eggs(obj, chunk, tx, ty, tz,
 					from_tx, from_ty, eggbits, now);
 		}
-
+					// Find door blocking given tile.
+	Game_object *find_door(Tile_coord t);
 public:
 					// Quick is blocked
 	inline int is_blocked_fast(int tx, int ty, int lift)
@@ -236,6 +238,9 @@ public:
 				int from_tx, int from_ty, bool now = false)
 		{ need_cache()->activate_eggs(obj, 
 				this, tx, ty, tz, from_tx, from_ty, now);}
+					// Find door blocking given tile.
+	Game_object *find_door(Tile_coord t)
+		{ return need_cache()->find_door(t); }
 	static int find_in_area(Game_object_vector& vec, Rectangle area,
 					int shapenum, int framenum);
 					// Use this when teleported in.
