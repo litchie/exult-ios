@@ -27,26 +27,38 @@ http://exult.sourceforge.net
 How to compile on Mac OS X
 --------------------------
 
-Install these from Apple:
-December 2002 Mac OS X Developer Tools (or newer)
-Dec 2002 gcc Updater (gcc 3.3) (or newer)
+Make sure you have the Apple developer tools installed. They ship with
+Mac OS X, but have to be installed separately. You can also download the
+latest version for free from http://connect.apple.com
 
-Activate gcc 3.3 (from Apple's updater):
-sudo gcc_select 3.3
-
+In order to compiler Exult, you need to install several Unix packages.
+If you are an expert, you may want to install them manually; for all others,
+we recommend installing them via Fink (http://fink.sourceforge.net). In
+particular, you need these packages:
 Install these packages with Fink:
-sdl
-sdl-mixer
-automake1.7
-libtool14
+  sdl
+  sdl-mixer
 
-Create these symbolic links:
-sudo ln -s /sw/lib/libsmpeg-0.4.0.dylib /sw/lib/libsmpeg.dylib
-sudo ln -s /sw/lib/libvorbisfile.3.dylib /sw/lib/libvorbisfile.dylib
-sudo ln -s /sw/lib/libvorbis.0.dylib /sw/lib/libvorbis.dylib
-sudo ln -s /sw/lib/libogg.0.dylib /sw/lib/libogg.dylib
+If you are compiling the source code CVS, as opposed to the source of
+a released version, you also need to install these packages:
+  automake1.9
+  libtool14
+(for the experts: old versions of the automake package should also work,
+e.g. you could also use automake1.8 or automake1.7).
 
-Compile Exult:
-./autogen.sh
-./configure
-make
+Now you are ready to compiler Exult. If you are compiling from CVS, the
+first thing you have to run is this:
+  ./autogen.sh
+
+The next step is the same whether you compile a release version or CVS:
+  ./configure
+  make
+
+This will give you a "exult" binary in the current directory. If you want
+a nice Exult.app (double clickable from the Finder and all), enter this
+command:
+  make Exult_app
+
+Be warned, the binary created this way is not static linked, that means if
+you copy it to another machine it will most likely not work. So you can only
+use it on your own computer.
