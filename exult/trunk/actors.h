@@ -292,13 +292,17 @@ public:
 		{ return 0; }
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
-	virtual Weapon_info *get_weapon(int& points);	
+	virtual Weapon_info *get_weapon(int& points, int& shape);	
+	Weapon_info *get_weapon(int& points)
+		{ int sh; return get_weapon(points, sh); }
 	virtual int is_monster()
 		{ return 0; }
 					// Hit-point algorithm:
-	int figure_hit_points(Actor *attacker, int weapon_shape);
+	int figure_hit_points(Actor *attacker, int weapon_shape, 
+							int ammo_shape);
 					// Under attack.
-	virtual void attacked(Actor *attacker, int weapon_shape = 0);
+	virtual void attacked(Actor *attacker, int weapon_shape = 0,
+					int ammo_shape = 0);
 	virtual void die();		// We're dead.
 	Actor *resurrect(Dead_body *body);// Bring back to life.
 					// Don't write out to IREG file.
@@ -489,7 +493,7 @@ public:
 	virtual int add(Game_object *obj, int dont_check = 0);
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
-	virtual Weapon_info *get_weapon(int& points);	
+	virtual Weapon_info *get_weapon(int& points, int& shape);
 	virtual int is_monster()
 		{ return 1; }
 	virtual void die();		// We're dead.

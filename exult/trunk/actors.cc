@@ -914,7 +914,8 @@ int Actor::get_armor_points
 
 Weapon_info *Actor::get_weapon
 	(
-	int& points
+	int& points,
+	int& shape
 	)
 	{
 	points = 0;
@@ -923,7 +924,10 @@ Weapon_info *Actor::get_weapon
 	Game_object *weapon = spots[(int) lhand];
 	if (weapon)
 		if ((winf = gwin->get_info(weapon).get_weapon_info()) != 0)
+			{
 			points = winf->get_damage();
+			shape = weapon->get_shapenum();
+			}
 					// Try both hands.
 	weapon = spots[(int) rhand];
 	if (weapon)
@@ -934,6 +938,7 @@ Weapon_info *Actor::get_weapon
 			{
 			winf = rwinf;
 			points = rpoints;
+			shape = weapon->get_shapenum();
 			}
 		}
 	return winf;
@@ -948,7 +953,8 @@ Weapon_info *Actor::get_weapon
 int Actor::figure_hit_points
 	(
 	Actor *attacker,
-	int weapon_shape
+	int weapon_shape,
+	int ammo_shape
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -958,6 +964,11 @@ int Actor::figure_hit_points
 	if (weapon_shape > 0)
 		{
 		winf = gwin->get_info(weapon_shape).get_weapon_info();
+		wpoints = winf ? winf->get_damage() : 0;
+		}
+	else if (ammo_shape > 0)
+		{
+		winf = gwin->get_info(ammo_shape).get_weapon_info();
 		wpoints = winf ? winf->get_damage() : 0;
 		}
 	else
@@ -1003,10 +1014,11 @@ int Actor::figure_hit_points
 void Actor::attacked
 	(
 	Actor *attacker,
-	int weapon_shape		// Weapon shape, or 0 to use readied.
+	int weapon_shape,		// Weapon shape, or 0 to use readied.
+	int ammo_shape			// Also may be 0.
 	)
 	{
-	figure_hit_points(attacker, weapon_shape);
+	figure_hit_points(attacker, weapon_shape, ammo_shape);
 	if (is_dead_npc())
 		{
 		die();
@@ -1746,14 +1758,16 @@ int Monster_actor::get_armor_points
 
 Weapon_info *Monster_actor::get_weapon
 	(
-	int& points
+	int& points,
+	int& shape
 	)
 	{
 	Monster_info *inf = get_info();
 					// Kind of guessing here.
-	Weapon_info *winf = Actor::get_weapon(points);
+	Weapon_info *winf = Actor::get_weapon(points, shape);
 	if (!winf)			// No readied weapon?
 		{			// Look up monster itself.
+		shape = 0;
 		Game_window *gwin = Game_window::get_game_window();
 		winf = gwin->get_info(get_shapenum()).get_weapon_info();
 		if (winf)
