@@ -687,7 +687,7 @@ static void Handle_event
 	case SDL_KEYDOWN:		// Keystroke.
 		Handle_keystroke(event.key.keysym.sym,
 			event.key.keysym.mod & KMOD_SHIFT,
-			(event.key.keysym.mod & KMOD_ALT), // || altkeys,
+			(event.key.keysym.mod & KMOD_ALT) || altkeys,
 			event.key.keysym.mod & KMOD_CTRL);
 		break;
 	case SDL_KEYUP:			// Key released.
