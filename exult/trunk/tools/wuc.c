@@ -297,7 +297,7 @@ int main(int argc,char *argv[])
 													emit_byte(i);
 													read_token(fi);
 													label = get_label();
-													check_label_16(label);
+													check_data_label_16(label);
 													emit_word(label);
 													break;
 												case DATA_STRING32:
@@ -370,7 +370,7 @@ int main(int argc,char *argv[])
 													if (pass==1) {
 														//														printf("%x, %x, %x\n", get_label(), offset, get_label() - offset-2);
 														label = get_label() - offset - 2;
-														check_label_16(label);
+														check_jump_label_16(label);
 														emit_word(label);
 													} else
 														emit_word(-1);
@@ -392,7 +392,7 @@ int main(int argc,char *argv[])
 													read_token(fi);
 													if (pass==1) {
 														label = get_label() - offset - 2;
-														check_label_16(label);
+														check_jump_label_16(label);
 														emit_word(label);
 													} else
 														emit_word(-1);
@@ -433,7 +433,7 @@ int main(int argc,char *argv[])
 													sscanf(token,"%x",&word);
 													if (pass==1) {
 														label = get_label() - offset - 2;
-														check_label_16(label);
+														check_jump_label_16(label);
 														emit_word(label);
 													} else
 														emit_word(-1);
