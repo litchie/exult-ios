@@ -30,6 +30,17 @@ U7file  *U7FileManager::get_file_object(const string &s)
 
 	return uf;
 }
+
+U7FileManager	*U7FileManager::get_ptr(void)
+{
+	if(!self)
+		new U7FileManager();	// self gets the pointer, so it's okay
+					// This might look like it creates a
+					// leak, but this is a singleton object
+	return self;
+}
+	
+
 U7FileManager::~U7FileManager() {}
 
 U7FileManager   *U7FileManager::self=0;
@@ -45,6 +56,7 @@ U7FileManager::U7FileManager()
 
 U7file::~U7file()
 {}
+
 
 
 U7object::U7object(const char *f,int o)	:	filename(f),objnumber(o) {}
