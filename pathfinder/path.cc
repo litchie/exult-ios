@@ -334,11 +334,11 @@ public:
 
 Tile_coord *Find_path
 	(
-	Game_window *gwin,
 	Tile_coord start,		// Where to start from.
 	Tile_coord goal			// Where to end up.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	A_star_queue nodes;		// The priority queue & hash table.
 	int max_cost = Cost_to_goal(start, goal);
 					// Create start node.
