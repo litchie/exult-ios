@@ -748,11 +748,7 @@ static void Handle_keystroke
 	)
 	{
 	static int inventory_page = -1, stats_page = -1;
-	int stepping = 1;
-	
-	if(alt)
-		stepping = 10;	// If the user is pressing alt, use a
-				// larger stepping when cycling shapes
+
 	switch (sym)
 		{
 	case SDLK_RALT:			// Right alt.
