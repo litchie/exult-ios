@@ -249,10 +249,13 @@ void Locator::view_changed
 	txs = Read4(data);
 	tys = Read4(data);
 					// ++++Scale?  Later.
-//	render(&area);
+					// Do things by chunk.
+	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
+	tx = cx*c_tiles_per_chunk;
+	ty = cy*c_tiles_per_chunk;
 					// Update scrolls.
-	gtk_adjustment_set_value(hadj, tx/c_tiles_per_chunk);
-	gtk_adjustment_set_value(vadj, ty/c_tiles_per_chunk);
+	gtk_adjustment_set_value(hadj, cx);
+	gtk_adjustment_set_value(vadj, cy);
 	}
 
 /*
@@ -266,10 +269,13 @@ void Locator::vscrolled			// For vertical scrollbar.
 	)
 	{
 	Locator *loc = (Locator *) data;
+	int oldty = loc->ty;
 	loc->ty = ((gint) adj->value)*c_tiles_per_chunk;
 	cout << "Vscrolled:  New ty is " << loc->ty << endl;
 	loc->render();
-	loc->send_location();
+	if (loc->ty != oldty)		// (Already equal if this event came
+					//   from Exult msg.).
+		loc->send_location();
 	}
 void Locator::hscrolled			// For horizontal scrollbar.
 	(
@@ -278,10 +284,13 @@ void Locator::hscrolled			// For horizontal scrollbar.
 	)
 	{
 	Locator *loc = (Locator *) data;
+	int oldtx = loc->tx;
 	loc->tx = ((gint) adj->value)*c_tiles_per_chunk;
 	cout << "Hscrolled:  New tx is " << loc->tx << endl;
 	loc->render();
-	loc->send_location();
+	if (loc->tx != oldtx)		// (Already equal if this event came
+					//   from Exult msg.).
+		loc->send_location();
 	}
 
 /*
