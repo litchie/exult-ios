@@ -82,7 +82,7 @@ class Audio {
 public:
   void Init(int _samplerate, int _channels) {};
   void start_music(int num, int repetition) {};
-  viod start_speech(int num, bool wait=false) {};
+  void start_speech(int num, bool wait=false) {};
 };
 
 #endif
