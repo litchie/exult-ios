@@ -216,6 +216,33 @@ void Game_window::drop_dragged
 	}
 
 /*
+ *	Check weight.
+ *
+ *	Output:	0 if too heavy, with mouse flashed.
+ */
+
+static int Check_weight
+	(
+	Game_window *gwin,
+	Game_object *to_drop,
+	Game_object *owner		// Who the new owner will be.
+	)
+	{
+	if (!owner)
+		return 1;
+	owner = owner->get_outermost();
+	if (owner != gwin->get_main_actor() && owner->get_party_id() < 0)
+		return 1;		// Not a party member, so okay.
+	int wt = owner->get_weight() + to_drop->get_weight();
+	if (wt/10 > 2*owner->get_property(Actor::strength))
+		{
+		mouse->flash_shape(Mouse::tooheavy);
+		return 0;
+		}
+	return 1;
+	}
+
+/*
  *	Drop at given position.
  */
 
@@ -257,7 +284,9 @@ void Game_window::drop
 			}
 		if (on_gump)		// Dropping on a gump?
 			{
-			if (!(dropped = on_gump->add(to_drop, x, y,
+			if (Check_weight(this, to_drop, 
+						on_gump->get_container()) &&
+			    !(dropped = on_gump->add(to_drop, x, y,
 					dragging_paintx, dragging_painty)))
 				mouse->flash_shape(Mouse::wontfit);
 			}
@@ -266,14 +295,18 @@ void Game_window::drop
 			int max_lift = main_actor->get_lift() + 4;
 			int lift;
 			Game_object *found = find_object(x, y);
-			if (found && found != dragging && found->drop(to_drop))
+			int heavy = 0;
+			if (found && found != dragging &&
+			    !(heavy = !Check_weight(this, to_drop, found)) &&
+			    found->drop(to_drop))
 				dropped = dropped_in_something = 1;
 					// Try to place on 'found'.
-			else if (found && (lift = found->get_lift() +
+			else if (found && !heavy && 
+				(lift = found->get_lift() +
 				get_info(found).get_3d_height()) <= max_lift &&
 				drop_at_lift(to_drop, lift))
 				dropped = 1;
-			else
+			else if (!heavy)
 				{	// Find where to drop it.
 				Game_object *outer = dragging->get_outermost();
 				for (lift = outer->get_lift(); 
