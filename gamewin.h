@@ -121,7 +121,6 @@ class Game_window
 	unsigned long special_light;	// Game minute when light spell ends.
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
-	long last_restore_hour;		// Hour in game of last restore.
 	Dragging_info *dragging;	// Dragging info:
 					// Theft info:
 	int theft_warnings;		// # times warned in current chunk.
@@ -129,7 +128,6 @@ class Game_window
 	Time_sensitive *background_noise;
 
 	void set_scrolls(Tile_coord cent);
-	void set_scroll_bounds();	// Set scroll-controller.
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
 
