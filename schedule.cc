@@ -47,7 +47,7 @@ void Schedule::set_action_sequence
 	if (dest != actloc)		// Get to destination.
 		{
 		Actor_action *w = new Path_walking_actor_action(new Astar());
-		Actor_action *w2 = w->walk_to_tile(actloc, dest);
+		Actor_action *w2 = w->walk_to_tile(actloc, dest, actor->get_type_flags());
 		if (w2 != w)
 			delete w;
 		if (!w2)		// Failed?  Teleport.

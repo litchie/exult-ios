@@ -196,26 +196,26 @@ int Barge_object::okay_to_rotate
 					// Check area.  (No dropping allowed.)
 		if (Chunk_object_list::is_blocked(4, lift,
 			newfoot.x, newfoot.y, newfoot.w, foot.y - newfoot.y,
-							new_lift, 0))
+							new_lift, MOVE_ALL_TERRAIN, 0))
 			return 0;
 	if (foot.y + foot.h < newfoot.y + newfoot.h)
 					// A piece below old one.
 		if (Chunk_object_list::is_blocked(4, lift,
 			newfoot.x, foot.y + foot.h, newfoot.w, 
 				newfoot.y + newfoot.h - (foot.y + foot.h),
-							new_lift, 0))
+							new_lift, MOVE_ALL_TERRAIN, 0))
 			return 0;
 	if (newfoot.x < foot.x)		// Piece to the left?
 		if (Chunk_object_list::is_blocked(4, lift,
 			newfoot.x, newfoot.y, foot.x - newfoot.x, newfoot.h,
-							new_lift, 0))
+							new_lift, MOVE_ALL_TERRAIN, 0))
 			return 0;
 	if (foot.x + foot.w < newfoot.x + newfoot.w)
 					// Piece to the right.
 		if (Chunk_object_list::is_blocked(4, lift,
 			foot.x + foot.w, newfoot.y,
 			newfoot.x + newfoot.w - (foot.x + foot.w), newfoot.h,
-							new_lift, 0))
+							new_lift, MOVE_ALL_TERRAIN, 0))
 			return 0;
 	return 1;
 	}
@@ -656,10 +656,11 @@ int Barge_object::step
 					// Blocked? (Assume ht.=4, for now.)
 	if (cur.tz < 11) 		// But don't check flying carpet.
 		{
-		int terrain;		// Gets 1=land, 2=sea, 3=both.
+		int move_type;
+		if (boat) move_type = MOVE_SWIM;
+		else move_type = MOVE_WALK;
         	if (Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
-						4, cur, t, terrain) ||
-		    !(boat ? (terrain == 2) : (terrain == 1)))
+						4, cur, t, move_type))
 			return (0);	// Done.
 		}
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.

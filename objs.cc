@@ -1964,7 +1964,7 @@ inline void Check_terrain
 		{
 		if (gwin->get_info(flat.get_shapenum()).is_water())
 			terrain |= 2;
-		else
+		else if (!gwin->get_info(flat.get_shapenum()).is_solid())
 			terrain |= 1;
 		}
 
@@ -1985,25 +1985,24 @@ int Chunk_cache::is_blocked
 	int lift,			// Given lift.
 	int tx, int ty,			// Square to test.
 	int& new_lift,			// New lift returned.
-	int max_drop,			// Max. drop allowed.
-	int move_flags
+	const int move_flags,
+	int max_drop			// Max. drop allowed.
 	)
 {
 
 	// Ethereal beings always return not blocked
 	// and can only move horizontally
-	if (move_flags & (1 << Actor::tf_ethereal))
+	if (move_flags & MOVE_ETHEREAL)
 	{
 		new_lift = lift;
 		return 0;
 	}
-
 					// Get bits.
 	unsigned short tflags = blocked[ty*tiles_per_chunk + tx];
 
 	int new_high;
-					// Something there?
-	if (tflags & (1 << lift))		
+					// Something there? and we are not flying
+	if (tflags & (1 << lift) && !(move_flags & MOVE_FLY))		
 	{
 		new_lift = lift + 1;	// Maybe we can step up.
 		new_high = get_lowest_blocked (new_lift, tflags);
@@ -2013,6 +2012,19 @@ int Chunk_cache::is_blocked
 			return (1);	// Next step up also blocked
 		else if (new_high != -1 && new_high < (new_lift + height))
 			return (1);	// Blocked by something above
+	}
+	else if (tflags & (1 << lift))
+	{
+		new_lift = lift;
+		while (tflags & (1 << new_lift) && new_lift <= lift+max_drop)
+		{
+			new_lift++;		// Maybe we can step up.
+			new_high = get_lowest_blocked (new_lift, tflags);
+			if (new_lift > 15)
+				return (1);	// In sky
+			else if (new_high != -1 && new_high < (new_lift + height))
+				return (1);	// Blocked by something above
+		}
 	}
 	else
 	{
@@ -2038,27 +2050,27 @@ int Chunk_cache::is_blocked
 			
 		if (ter & 2)	// Water
 		{
-			if (move_flags & ((1 << Actor::tf_swim)|(1 << Actor::tf_fly)))
+			if (move_flags & (MOVE_FLY+MOVE_SWIM))
 				return 0;
 			else
 				return 1;
 		}
 		else if (ter & 1)	// Land
 		{
-			if (move_flags & ((1 << Actor::tf_walk)|(1 << Actor::tf_fly)))
+			if (move_flags & (MOVE_FLY|MOVE_WALK))
 				return 0;
 			else
 				return 1;
 		}
 		else	// Other
 		{
-			if (move_flags & (1 << Actor::tf_fly))
+			if (move_flags & MOVE_FLY)
 				return 0;
 			else
 				return 1;
 		}
 	}
-	else if (move_flags & ((1 << Actor::tf_walk)|(1 << Actor::tf_fly)))
+	else if (move_flags & (MOVE_FLY|MOVE_WALK))
 		return 0;
 
 	return 1;
@@ -2250,6 +2262,7 @@ int Chunk_object_list::is_blocked
 	int startx, int starty,		// Starting tile coords.
 	int xtiles, int ytiles,		// Width, height in tiles.
 	int& new_lift,			// New lift returned.
+	const int move_flags,
 	int max_drop			// Max. drop allowed.
 	)
 	{
@@ -2267,7 +2280,7 @@ int Chunk_object_list::is_blocked
 					tx/tiles_per_chunk, cy);
 			olist->setup_cache();
 			if (olist->is_blocked(height, lift, tx%tiles_per_chunk,
-						rty, this_lift, max_drop))
+						rty, this_lift, move_flags, max_drop))
 				return (1);
 					// Take highest one.
 			new_lift = this_lift > new_lift ?
@@ -2288,6 +2301,7 @@ int Chunk_object_list::is_blocked
 	(
 	Tile_coord& tile,
 	int height,			// Height in tiles to check.
+	const int move_flags,
 	int max_drop
 	)
 	{
@@ -2298,7 +2312,7 @@ int Chunk_object_list::is_blocked
 	chunk->setup_cache();		// Be sure cache is present.
 	int new_lift;			// Check it within chunk.
 	if (chunk->is_blocked(height, tile.tz, tile.tx%tiles_per_chunk,
-				tile.ty%tiles_per_chunk, new_lift, max_drop))
+				tile.ty%tiles_per_chunk, new_lift, move_flags, max_drop))
 		return (1);
 	tile.tz = new_lift;
 	return (0);
@@ -2316,11 +2330,9 @@ int Chunk_object_list::is_blocked
 	int xtiles, int ytiles, int ztiles,
 	Tile_coord from,		// Stepping from here.
 	Tile_coord to,			// Stepping to here.
-	int& terrain			// Returns: 1==land, 2==sea,
-					// 	    3==both.
+	const int move_flags
 	)
 	{
-	terrain = 0;
 	Game_window *gwin = Game_window::get_game_window();
 	int vertx0, vertx1;		// Get x-coords. of vert. block
 					//   to right/left.
@@ -2369,13 +2381,9 @@ int Chunk_object_list::is_blocked
 			olist->setup_cache();
 			int rtx = x%tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
-								new_lift) ||
+							new_lift, move_flags) ||
 			    new_lift != from.tz)
 				return (1);
-			if (new_lift == 0)
-				Check_terrain(gwin, olist, rtx, rty, terrain);
-			else
-				terrain |= 1;
 			}
 		}
 					// Do vert. block.
@@ -2390,13 +2398,9 @@ int Chunk_object_list::is_blocked
 			olist->setup_cache();
 			int rty = y%tiles_per_chunk;
 			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
-								new_lift) ||
+						new_lift, move_flags) ||
 			    new_lift != from.tz)
 				return (1);
-			if (new_lift == 0)
-				Check_terrain(gwin, olist, rtx, rty, terrain);
-			else
-				terrain |= 1;
 			}
 		}
 	return (0);			// All clear.
@@ -2436,7 +2440,8 @@ void Chunk_object_list::gravity
 			if (t.tz >= lift && foot.intersects(area) &&
 					// Unblocked below itself?  Let drop.
 			    !is_blocked(1, t.tz - 1, foot.x, foot.y,
-					foot.w, foot.h, new_lift, 100))
+					foot.w, foot.h, new_lift,
+						MOVE_ALL_TERRAIN, 100))
 				{	// Save it, and drop it.
 				list.append(obj);
 				obj->move(t.tx, t.ty, new_lift);

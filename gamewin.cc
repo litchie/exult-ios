@@ -1519,7 +1519,7 @@ void Game_window::start_actor_alt
 
 		Chunk_object_list *clist = get_objects_safely(cx, cy);
 		clist->setup_cache();
-		blocked[dir] = clist->is_blocked (height, main_actor->get_lift(), tx, ty, nlift, 1, main_actor->get_type_flags());
+		blocked[dir] = clist->is_blocked (height, main_actor->get_lift(), tx, ty, nlift, main_actor->get_type_flags(), 1);
 	}
 
 	dir = Get_direction (ay - winy, winx - ax);
