@@ -1,7 +1,8 @@
 2001-01-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Serpent Isle conversations improved.
-
+	* Monster eggs - Finally discovered 'schedule' field.
+	
 2001-01-11  Dancer Vesperman <dancer@users.sourceforge.net>
 	* No more chipmunk VOC's for SI. Another false sample rate
 
