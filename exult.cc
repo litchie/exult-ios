@@ -319,6 +319,7 @@ int main
 int exult_main(const char *runpath)
 {
 	string data_path;
+	string music_path;
 
 	// output version info
 	getVersionInfo(cout);
@@ -365,6 +366,9 @@ int exult_main(const char *runpath)
 			}
 		}
 	}
+	config->value("config/disk/music_path",music_path,EXULT_DATADIR "/music");
+	cout << "Music path = " << music_path << endl;
+	add_system_path("<MUSIC>", music_path);
 	add_system_path("<STATIC>", "static");
 	add_system_path("<GAMEDAT>", "gamedat");
 //	add_system_path("<SAVEGAME>", "savegame");
