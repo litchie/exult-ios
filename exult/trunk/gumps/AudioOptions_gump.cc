@@ -127,6 +127,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 			build_sfx_buttons();
 		}
 		paint(Game_window::get_game_window());
+#ifdef ENABLE_MIDISFX
 	} else if (btn == buttons[6]) { // sfx conversion
 		if (state == 1) {
 			((AudioToggle*)buttons[6])->framenum = 4;
@@ -135,6 +136,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 			((AudioToggle*)buttons[6])->framenum = 0;
 			sfx_conversion = XMIDI_CONVERT_NOCONVERSION;
 		}
+#endif
 	} else if (btn == buttons[7]) { // speech on/off
 		speech_enabled = state;
 	}
@@ -174,8 +176,10 @@ void AudioOptions_gump::build_midi_buttons()
 
 void AudioOptions_gump::build_sfx_buttons()
 {
+#ifdef ENABLE_MIDISFX
 	// sfx conversion
 	buttons[6] = new AudioToggle(this, colx[2], rowy[8],45,sfx_conversion/2,2);
+#endif
 }
 
 void AudioOptions_gump::load_settings()
@@ -188,7 +192,9 @@ void AudioOptions_gump::load_settings()
 
 	if (Audio::get_ptr()->get_midi()) {
 		midi_conversion = Audio::get_ptr()->get_midi()->get_music_conversion();
+#ifdef ENABLE_MIDISFX
 		sfx_conversion =Audio::get_ptr()->get_midi()->get_effects_conversion();
+#endif
 	} else {
 		config->value("config/audio/midi/convert",s,"gm");
 		if (s == "gs")
@@ -202,6 +208,7 @@ void AudioOptions_gump::load_settings()
 		else
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GM;
 
+#ifdef ENABLE_MIDISFX
 		config->value("config/audio/effects/convert",s,"gs");
 		if (s == "none")
 			sfx_conversion = XMIDI_CONVERT_NOCONVERSION;
@@ -209,6 +216,7 @@ void AudioOptions_gump::load_settings()
 			sfx_conversion = XMIDI_CONVERT_NOCONVERSION;
 		else
 			sfx_conversion = XMIDI_CONVERT_GS127_TO_GS;
+#endif
 	}
 
 	config->value("config/audio/midi/reverb/enabled",s,"no");
@@ -276,6 +284,7 @@ void AudioOptions_gump::save_settings()
 			break;
 		}
 
+#ifdef ENABLE_MIDISFX
 		switch(sfx_conversion) {
 		case XMIDI_CONVERT_NOCONVERSION:
 			config->set("config/audio/effects/convert","none",true);
@@ -284,6 +293,7 @@ void AudioOptions_gump::save_settings()
 			config->set("config/audio/effects/convert","gs",true);
 			break;
 		}
+#endif
 	}
 }
 
@@ -305,9 +315,11 @@ void AudioOptions_gump::paint(Game_window* gwin)
 		}
 		gwin->paint_text(2, "SFX options:", x + colx[0], y + rowy[6] + 1);
 		gwin->paint_text(2, "SFX", x + colx[1], y + rowy[7] + 1);
+#ifdef ENABLE_MIDISFX
 		if (sfx_enabled) {
 			gwin->paint_text(2, "conversion", x + colx[1], y + rowy[8] + 1);
 		}
+#endif
 		gwin->paint_text(2, "Speech options:", x + colx[0], y + rowy[9] + 1);
 		gwin->paint_text(2, "speech", x + colx[1], y + rowy[10] + 1);
 	}
