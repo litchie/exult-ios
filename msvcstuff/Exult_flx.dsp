@@ -297,6 +297,7 @@ SOURCE=..\data\gamemenu.shp
 # Begin Source File
 
 SOURCE=..\data\hp_bar.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
@@ -403,6 +404,7 @@ SOURCE=..\data\savegump.shp
 # Begin Source File
 
 SOURCE=..\data\scaling_method.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
@@ -425,22 +427,27 @@ SOURCE=..\data\sfx_conversion.shp
 # Begin Source File
 
 SOURCE=..\data\vid_left.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
 SOURCE=..\data\vid_resolution.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
 SOURCE=..\data\vid_right.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
 SOURCE=..\data\vid_scaling.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
 SOURCE=..\data\videooptions.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # End Group
 # Begin Source File
@@ -449,7 +456,6 @@ SOURCE=..\data\flx.in
 # PROP BASE Intermediate_Dir "."
 # PROP BASE Ignore_Default_Tool 1
 # PROP Intermediate_Dir "."
-# PROP Ignore_Default_Tool 1
 # End Source File
 # Begin Source File
 

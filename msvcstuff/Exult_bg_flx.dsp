@@ -42,7 +42,7 @@ CFG=Exult_bg_flx - Win32 Release
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Exult_bg_flx___Win32_Release0"
-# PROP Intermediate_Dir "Exult_bg_flx___Win32_Release0"
+# PROP Intermediate_Dir "."
 # PROP Cmd_Line "buildflx.bat ..\data\bg"
 # PROP Rebuild_Opt ""
 # PROP Target_File "..\data\exult_bg_flx.h"
@@ -63,7 +63,7 @@ CFG=Exult_bg_flx - Win32 Release
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Exult_bg_flx___Win32_Debug"
-# PROP Intermediate_Dir "Exult_bg_flx___Win32_Debug"
+# PROP Intermediate_Dir "."
 # PROP Cmd_Line "buildflx.bat ..\data\bg"
 # PROP Rebuild_Opt ""
 # PROP Target_File "..\data\exult_bg_flx.h"
@@ -84,7 +84,7 @@ CFG=Exult_bg_flx - Win32 Release
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Exult_bg_flx___Win32_Release_Install"
-# PROP Intermediate_Dir "Exult_bg_flx___Win32_Release_Install"
+# PROP Intermediate_Dir "."
 # PROP Cmd_Line "buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data"
 # PROP Rebuild_Opt ""
 # PROP Target_File "..\data\exult_bg_flx.h"
@@ -105,7 +105,7 @@ CFG=Exult_bg_flx - Win32 Release
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "Exult_bg_flx___Win32_Debug_Install"
-# PROP Intermediate_Dir "Exult_bg_flx___Win32_Debug_Install"
+# PROP Intermediate_Dir "."
 # PROP Cmd_Line "buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data"
 # PROP Rebuild_Opt ""
 # PROP Target_File "..\data\exult_bg_flx.h"
@@ -167,6 +167,7 @@ SOURCE=..\data\bg\cleaver.shp
 # Begin Source File
 
 SOURCE=..\data\bg\dupre_face.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
@@ -189,6 +190,7 @@ SOURCE=..\data\bg\fellowshipstaff.shp
 # Begin Source File
 
 SOURCE=..\data\bg\fem_av_face.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
@@ -211,6 +213,7 @@ SOURCE=..\data\bg\hoe_of_destruction.shp
 # Begin Source File
 
 SOURCE=..\data\bg\iolo_face.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
@@ -227,10 +230,12 @@ SOURCE=..\data\bg\magicgorget.shp
 # Begin Source File
 
 SOURCE=..\data\bg\male_av_face.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
 SOURCE=..\data\bg\shamino_face.shp
+# PROP Intermediate_Dir "."
 # End Source File
 # End Group
 # Begin Group "Misc"
@@ -246,8 +251,29 @@ SOURCE=..\data\bg\defaultkeys.txt
 # Begin Source File
 
 SOURCE=..\data\bg\flx.in
+
+!IF  "$(CFG)" == "Exult_bg_flx - Win32 Release"
+
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
+
+!ELSEIF  "$(CFG)" == "Exult_bg_flx - Win32 Debug"
+
+# PROP BASE Intermediate_Dir "."
+# PROP Intermediate_Dir "."
+
+!ELSEIF  "$(CFG)" == "Exult_bg_flx - Win32 Release Install"
+
+# PROP BASE Intermediate_Dir "."
+# PROP Intermediate_Dir "."
+
+!ELSEIF  "$(CFG)" == "Exult_bg_flx - Win32 Debug Install"
+
+# PROP BASE Intermediate_Dir "."
+# PROP Intermediate_Dir "."
+
+!ENDIF 
+
 # End Source File
 # End Target
 # End Project

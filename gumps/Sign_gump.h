@@ -32,6 +32,7 @@ class Sign_gump : public Gump
 protected:
 	std::string *lines;			// Lines of text.
 	int num_lines;
+	bool serpentine;
 
 public:
 	Sign_gump(int shapenum, int nlines);

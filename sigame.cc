@@ -104,7 +104,7 @@ SI_Game::SI_Game()
 		add_shape("gumps/jawbone", 56);
 		add_shape("gumps/tooth", 57);
 
-		add_resource("files/shapes/count", 0, 7);
+		add_resource("files/shapes/count", 0, 8);
 		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
 		add_resource("files/shapes/1", "<STATIC>/faces.vga", 0);
 		add_resource("files/shapes/2", "<STATIC>/gumps.vga", 0);
@@ -112,6 +112,7 @@ SI_Game::SI_Game()
 		add_resource("files/shapes/4", MAINSHP_FLX, 0);
 		add_resource("files/shapes/5", "<STATIC>/paperdol.vga", 0);
 		add_resource("files/shapes/6", "<DATA>/exult.flx", 0);
+		add_resource("files/shapes/7", "<STATIC>/fonts.vga", 0);
 
 		add_resource("files/gameflx", "<DATA>/exult_si.flx", 0);
 	

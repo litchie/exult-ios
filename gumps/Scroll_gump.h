@@ -29,7 +29,7 @@ class Scroll_gump : public Text_gump
 	UNREPLICATABLE_CLASS_I(Scroll_gump,Text_gump(0));
 
 public:
-	Scroll_gump();
+	Scroll_gump(bool serp = false);
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 };

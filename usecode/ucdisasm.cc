@@ -29,11 +29,10 @@
 #include <iostream>
 
 using std::strlen;
-using std::printf;
 using std::cout;
 
 #include "ucinternal.h"
-#include "uctools.h"
+#include "../tools/uctools.h"
 #include "utils.h"
 #include "useval.h"
 #include "game.h"
@@ -51,22 +50,22 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 	unsigned short varref;
 	unsigned short func;
 
-	printf("      %04X: ", func_ip);
+	std::printf("      %04X: ", func_ip);
 
-	printf("%s", pdesc->mnemonic);
+	std::printf("%s", pdesc->mnemonic);
 	if (strlen(pdesc->mnemonic) < 4)
-		printf("\t");
+		std::printf("\t");
 
 	if (pdesc->nbytes > 0) {
 		switch( pdesc->type )
 			{
 			case BYTE:
-				printf("\t%02x", *ip++);
+				std::printf("\t%02x", *ip++);
 				break;
 			case IMMED:
 				// Print immediate operand
 				immed = Read2(ip);
-				printf("\t%04XH\t\t; %d", immed, immed);
+				std::printf("\t%04XH\t\t; %d", immed, immed);
 				break;
 			case DATA_STRING:
 				{
@@ -78,18 +77,18 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 					len = strlen(pstr);
 					if( len > 20 )
 						len = 20 - 3;
-					printf("\tL%04X\t\t; ", offset);
+					std::printf("\tL%04X\t\t; ", offset);
 					for(int i = 0; i < len; i++ )
-						printf("%c", pstr[i]);
+						std::printf("%c", pstr[i]);
 					if( len < strlen(pstr) )
 						// String truncated
-						printf("...");
+						std::printf("...");
 				}
 				break;
 			case RELATIVE_JUMP:
 				// Print jump desination
 				offset = Read2(ip);
-				printf("\t%04X", offset + func_ip+1+pdesc->nbytes);
+				std::printf("\t%04X", offset + func_ip+1+pdesc->nbytes);
 				break;
 			case SLOOP:
 				if (pdesc->nbytes == 11)
@@ -99,14 +98,14 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				Read2(ip);
 				varref = Read2(ip);
 				offset = Read2(ip);
-				printf("\t[%04X], %04X\t= ", varref, 
+				std::printf("\t[%04X], %04X\t= ", varref, 
 					   offset +func_ip+1+pdesc->nbytes);
 				locals[varref].print(cout, true); // print value (short format)
 				break;
 			case IMMED_AND_RELATIVE_JUMP:
 				immed = Read2(ip);
 				offset = Read2(ip);
-				printf("\t%04XH, %04X", immed, 
+				std::printf("\t%04XH, %04X", immed, 
 					   offset + func_ip+1+pdesc->nbytes);
 				break;
 			case CALL:
@@ -116,31 +115,31 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 					const char **func_table = bg_intrinsic_table;
 					if (Game::get_game_type() == SERPENT_ISLE)
 						func_table = si_intrinsic_table;
-					printf("\t_%s@%d\t; %04X", func_table[func], immed, func);
+					std::printf("\t_%s@%d\t; %04X", func_table[func], immed, func);
 				}
 				break;
 			case EXTCALL:
 				{
 					// Print extern call
 					offset = Read2(ip);
-					printf("\t[%04X]\t\t; %04XH", offset,
+					std::printf("\t[%04X]\t\t; %04XH", offset,
 						   externals[2*offset] + 256*externals[2*offset + 1]);
 				}
 				break;
 			case VARREF:
 				// Print variable reference
 				varref = Read2(ip);
-				printf("\t[%04X]\t\t= ", varref);
+				std::printf("\t[%04X]\t\t= ", varref);
 				locals[varref].print(cout, true); // print value (short)
 				break;
 			case FLGREF:
 				// Print global flag reference
 				offset = Read2(ip);
-				printf("\tflag:[%04X]\t= ", offset);
+				std::printf("\tflag:[%04X]\t= ", offset);
 				if (gflags[offset])
-					printf("set");
+					std::printf("set");
 				else
-					printf("unset");
+					std::printf("unset");
 				break;
 			default:
 				// Unknown type
@@ -160,9 +159,9 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 				val = *(sp - 1); 
 
 			if (val.is_false())
-				printf("\t\t(jump taken)");
+				std::printf("\t\t(jump taken)");
 			else
-				printf("\t\t(jump not taken)");
+				std::printf("\t\t(jump not taken)");
 			break;
 		}
 
@@ -192,5 +191,5 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 		*/
 	}
 
-	printf("\n");
+	std::printf("\n");
 }

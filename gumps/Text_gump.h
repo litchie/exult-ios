@@ -33,10 +33,11 @@ protected:
 	int textlen;			// Length of text.
 	int curtop;			// Offset of top of current page.
 	int curend;			// Offset past end of current page(s).
+	bool serpentine;		// Serpentine text. SI ONLY!
 
 public:
-	Text_gump(int shapenum) : Gump(0, shapenum),
-				text(0), textlen(0), curtop(0), curend(0)
+	Text_gump(int shapenum, bool serp = false) : Gump(0, shapenum),
+				text(0), textlen(0), curtop(0), curend(0), serpentine(serp)
 		{  }
 	~Text_gump()
 		{ delete [] text; }
