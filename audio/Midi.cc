@@ -27,6 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #include <csignal>
 
+#include "Configuration.h"
+extern	Configuration	config;
+
 
 
 static  void    playmidifile(const char *name)
@@ -87,6 +90,24 @@ const	char *forked_player::copyright(void)
 
 #if HAVE_LIBKMIDI
 
+int	kmidi_device_selection(void)
+{
+	int	num_devices=kMidDevices();
+
+	if(!num_devices)
+		return -1;
+	cout << "Device\tType\tIdentity" << endl;
+	cout << "-1\tnone\tdisable kmidi" << endl;
+	for(int i=0;i<num_devices;i++)
+		{
+		cout << i <<"\t"<< kMidType(i) << "\t" << kMidName(i) << endl;
+		}
+	string	s;
+	cout << endl << "Select a device for kmidi to use.." << endl;
+	cin >> s;
+	return atoi(s.c_str());
+}
+
 KMIDI::KMIDI()
 {
 	if(KMidSimpleAPI::kMidInit())
@@ -95,7 +116,26 @@ KMIDI::KMIDI()
 		}
 
 	// This is probably not right for anyone but me
-	kMidSetDevice(1);
+
+	int	devnum;
+	bool	changed=false;
+
+	config.value("config/audio/midi/kmidi/device",devnum,-1);
+	if(devnum==-1)
+		{
+		devnum=kmidi_device_selection();
+		changed=true;
+		if(devnum==-1)
+			{
+			cerr << "No midi device set. Falling back.";
+			throw 0;
+			}
+		}
+	kMidSetDevice(devnum);
+	if(changed)
+		{
+		config.set("config/audio/midi/kmidi/device",devnum,true);
+		}
 }
 
 KMIDI::~KMIDI()

@@ -41,6 +41,7 @@ public:
 	void	value(const char *key,int &ret,int defaultvalue=0);
 	void    set(const char *key,const char *value,bool write_to_file);
 	void    set(const char *key,const string &value,bool write_to_file);
+	void    set(const char *key,int,bool write_to_file);
 
 	string	dump(void); // Assembles a readable representation
 
