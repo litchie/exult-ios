@@ -34,11 +34,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #endif
 
+#include <string>	// STL string
 #include "vec.h"
-#include "usecode.h"
 #include "tqueue.h"
 #include "tiles.h"
 
+class Usecode_machine;
 class Vga_file;
 class Game_window;
 class Npc_actor;
