@@ -328,8 +328,8 @@ public:
 	int find_roof(int cx, int cy);	// Find a "roof" in given chunk.
 					// Find gump (x, y) is in.
 	Gump_object *find_gump(int x, int y);
-					// Find objects that (x,y) is in.
-	int find_objects(int x, int y, Game_object **list);
+					// Find top object that (x,y) is in.
+	Game_object *find_object(int x, int y);
 	int find_objects(int lift, int x, int y, Game_object **list);
 	void show_items(int x, int y);	// Show names of items clicked on.
 					// Add text item.
