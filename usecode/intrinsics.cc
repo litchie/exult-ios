@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#include "ucmachine.h"
+#include "ucinternal.h"
 #include "ucsched.h"
 #include "useval.h"
 #include "gamewin.h"
@@ -56,7 +56,7 @@ extern Usecode_value no_ret;
 
 #define PARTY_MAX (sizeof(party)/sizeof(party[0]))
 
-#define	USECODE_INTRINSIC(NAME)	Usecode_value	Usecode_machine:: UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
+#define	USECODE_INTRINSIC(NAME)	Usecode_value	Usecode_internal:: UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 
 USECODE_INTRINSIC(NOP)
 {
