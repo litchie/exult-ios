@@ -46,7 +46,7 @@ UCData uc;
 
 int main(int argc, char** argv)
 {
-	cout << "Ultima 7 usecode disassembler v0.6.1" << endl
+	cout << "Ultima 7 usecode disassembler v0.6.2" << endl
 	     << "    compiled with " << PACKAGE << " " << VERSION << endl
 	     << endl;
 	

@@ -54,6 +54,8 @@ class UCData
 		
 		bool fail() const { return _file.fail(); };
 	
+		const map<unsigned short, UCFuncSet> &funcmap() { return _funcmap; };	
+		
 	private:
 		
 		void file_open(const string &filename);
@@ -86,6 +88,11 @@ class UCData
 		vector<UCc> _codes;
 		
 		vector<UCFunc *> _funcs;
+		
+		/* Just a quick mapping between funcs and basic data on them.
+		   Just something we can quickly pass to the parsing functions
+		   so we don't have to give them an entire function to play with. */
+		FuncMap _funcmap;
 		
 		long _search_opcode;
 		long _search_intrinsic;

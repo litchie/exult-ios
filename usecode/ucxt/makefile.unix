@@ -1,4 +1,3 @@
-#CXX = gpp
 CXX = g++
 SRC = src/
 IDIR   = -Iinclude -I../ -I../../ -I../../conf/ -I../../files/

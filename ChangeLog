@@ -1,3 +1,6 @@
+2001-12-03  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt: Added support for 'call' opcode.
+
 2001-12-03  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* Fix broken compiler compilation, by inserting some using std::vector statements.

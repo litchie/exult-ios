@@ -9,6 +9,21 @@
 #include <fstream>
 #include "ucc.h"
 
+class UCFuncSet
+{
+	public:
+		UCFuncSet(unsigned short new_funcid, unsigned short new_num_args)
+		         : funcid(new_funcid), num_args(new_num_args) {};
+		~UCFuncSet() {};
+		
+		unsigned short funcid;      // the id of the function
+		unsigned short num_args;    // the number of arguments
+		
+};
+
+typedef map<unsigned short, UCFuncSet> FuncMap;
+typedef pair<unsigned short, UCFuncSet> FuncMapPair;	
+
 //#define DEBUG_GOTOSET
 const unsigned int SIZEOF_USHORT = 2;
 
@@ -172,18 +187,19 @@ class UCFunc
 		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0) {};
 
 		// temp passing UCData, probably shouldn't need it.
-		void output_ucs(ostream &o, bool gnubraces=false);
-		void output_ucs_node(ostream &o, UCNode* ucn, unsigned int indent);
-		void output_ucs_data(ostream &o, unsigned int indent);
-		void output_ucs_opcode(ostream &o, const vector<UCOpcodeData> &optab, const UCc &op, unsigned int);
+		void output_ucs(ostream &o, const FuncMap &funcmap, bool gnubraces=false);
+		void output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, unsigned int indent);
+		void output_ucs_data(ostream &o, const FuncMap &funcmap, unsigned int indent);
+		void output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, unsigned int);
 		
-		void parse_ucs();
+		void parse_ucs(const FuncMap &funcmap);
 		void parse_ucs_pass1(vector<UCNode *> &nodes);
 		void parse_ucs_pass1a(vector<UCNode *> &nodes);
-		void parse_ucs_pass2a(vector<GotoSet> &gotoset);
+		void parse_ucs_pass2a(vector<GotoSet> &gotoset, const FuncMap &funcmap);
 		vector<UCc *> parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current,
 		                               vector<pair<UCc *, bool> >::reverse_iterator end,
-		                               vector<pair<UCc *, bool> > &vec, unsigned int opsneeded);
+		                               vector<pair<UCc *, bool> > &vec, unsigned int opsneeded,
+		                               const FuncMap &funcmap);
 
 //	private:
 	
@@ -215,7 +231,7 @@ class UCFunc
 };
 
 void readbin_UCFunc(ifstream &f, UCFunc &ucf);
-void print_asm(UCFunc &ucf, ostream &o, const UCData &uc);
+void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const UCData &uc);
 
 /*class UCFunc
 {
