@@ -158,12 +158,13 @@ int Game_window::paint_text
 	{
 	int x = xoff;
 	int chr;
+	yoff += get_text_baseline(fontnum);
 	while ((chr = *text++) != 0)
 		{
 		Shape_frame *shape = fonts.get_shape(fontnum, chr);
 		if (!shape)
 			continue;
-		paint_rle_shape(*shape, x, yoff + shape->get_yabove());
+		paint_rle_shape(*shape, x, yoff);
 		x += shape->get_width() + hlead[fontnum];
 		}
 	return (x - xoff);
@@ -184,12 +185,13 @@ int Game_window::paint_text
 	)
 	{
 	int x = xoff;
+	yoff += get_text_baseline(fontnum);
 	while (textlen--)
 		{
 		Shape_frame *shape = fonts.get_shape(fontnum, (int) *text++);
 		if (!shape)
 			continue;
-		paint_rle_shape(*shape, x, yoff + shape->get_yabove());
+		paint_rle_shape(*shape, x, yoff);
 		x += shape->get_width() + hlead[fontnum];
 		}
 	return (x - xoff);
@@ -243,5 +245,18 @@ int Game_window::get_text_height
 	Shape_frame *A = fonts.get_shape(fontnum, 'A');
 	Shape_frame *y = fonts.get_shape(fontnum, 'y');
 	return A->get_yabove() + y->get_ybelow();	
+	}
+
+/*
+ *	Get font baseline as the distance from the top.
+ */
+
+int Game_window::get_text_baseline
+	(
+	int fontnum
+	)
+	{
+	Shape_frame *A = fonts.get_shape(fontnum, 'A');
+	return A->get_yabove();
 	}
 
