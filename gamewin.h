@@ -28,6 +28,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vgafile.h"
 #include "gameclk.h"
 
+#include <string>	// STL string
+#include <vector>	// STL container
+
 class Gump_object;
 class Gump_button;
 class Slist;
@@ -345,6 +348,7 @@ public:
 	int is_npc_text_pending();	// Need to prompt user?
 					// Show what Avatar can say.
 	void show_avatar_choices(int num_choices, char **choices);
+	void show_avatar_choices(vector<string> &choices);
 					// User clicked on a choice.
 	int conversation_choice(int x, int y);
 	void show_gump(Container_game_object *obj, int shapenum);

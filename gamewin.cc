@@ -1473,6 +1473,28 @@ void Game_window::show_avatar_choices
 	painted = 1;
 	}
 
+void Game_window::show_avatar_choices
+	(
+	vector<string> &choices
+	)
+	{
+	char	**result;
+
+	result=new char *[choices.size()];
+	for(size_t i=0;i<choices.size();i++)
+		{
+		result[i]=new char[choices[i].size()+1];
+		strcpy(result[i],choices[i].c_str());
+		}
+	show_avatar_choices(choices.size(),result);
+	for(size_t i=0;i<choices.size();i++)
+		{
+		delete [] result[i];
+		}
+	delete result;
+	}
+
+
 /*
  *	User clicked during a conversation.
  *
