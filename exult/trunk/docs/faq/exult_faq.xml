@@ -181,7 +181,7 @@
 				<para>
 					The latest official version is found on <extref target="http://exult.sourceforge.net/"/><br/>
 					Daily snapshots of the Win32 binary and of the CVS source tree can be found at
-					<extref target="http://blake.prohosting.com/kirben/"/>
+					<extref target="http://exult.on.openave.net/"/>
 				</para>
 			</answer>
 		</faq>
@@ -1119,7 +1119,7 @@
 			<answer>
 				<para>
 					<Exult/> homepage at <extref target="http://exult.sourceforge.net/"/><br/>
-					Daily code snapshot at <extref target="http://blake.prohosting.com/kirben/"/><br/>
+					Daily code snapshot at <extref target="http://exult.on.openave.net/"/><br/>
 					Message board at <extref target="http://www.jackchaos.com/cgi-bin/UltraBoard/UltraBoard.pl?Action=ShowBoard&amp;Board=exult"/><br/>
 					Bugreports to <extref target="http://sourceforge.net/bugs/?group_id=2335"/>
 				</para>

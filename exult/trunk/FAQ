@@ -175,8 +175,8 @@ Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any 
   
 1.6. Where do I find Exult? 
 The latest official version is found on http://exult.sourceforge.net/
-Daily snapshots of the Win32 binary and of the CVS source tree can be found at http://blake.prohosting.com/kirben/ 
- 
+Daily snapshots of the Win32 binary and of the CVS source tree can be found at 
+http://exult.on.openave.net/ 
   
 1.7. What is a snapshot? Are these screen shots or what? 
 The snapshot is the newest source code of the program. It is updated almost daily, sometimes twice a day. There is information on how to build your own binary of the source but there is also the newest pre-compiled Windows binary. 
@@ -688,7 +688,7 @@ This FAQ is maintained by Dominus Dragon of the UDIC aka Dominik Reichardt (gigd
   
 8.1. Important Links 
 Exult homepage at http://exult.sourceforge.net/
-Daily code snapshot at http://blake.prohosting.com/kirben/
+Daily code snapshot at http://exult.on.openave.net/
 Message board at http://www.jackchaos.com/cgi-bin/UltraBoard/UltraBoard.pl?Action=ShowBoard&Board=exult
 Bugreports to http://sourceforge.net/bugs/?group_id=2335 
  
