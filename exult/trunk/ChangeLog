@@ -1,3 +1,6 @@
+2004-04-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exulticon.h, exult.cc: set a window icon
+
 2004-04-15    <jeff@mini.nerble.net>
 
 	* actors.cc (Npc_actor): Removed code to set initial schedules in
