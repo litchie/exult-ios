@@ -955,7 +955,8 @@ void Sleep_schedule::ending
 	int new_type			// New schedule.
 	)
 	{
-	if (new_type == (int) wait)	// Needed for Skara Brae.
+	if (new_type == (int) wait ||	// Needed for Skara Brae.
+	    new_type == (int) sleep)	// Not time to get up, Penumbra!
 		return;			// ++++Does this leave NPC's stuck?++++
 	if (bed &&			// Locate free spot.
 	    (npc->get_framenum()&0xf) == Actor::sleep_frame)
