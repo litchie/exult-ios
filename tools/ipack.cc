@@ -54,7 +54,6 @@ using std::istream;
 using std::ostream;
 using std::setw;
 using std::size_t;
-using std::strdup;
 using std::strlen;
 using std::strncmp;
 using std::strcpy;
@@ -175,7 +174,7 @@ static char *Get_token
 		}
 	char sav = *endptr;
 	*endptr = 0;
-	char *token = strdup(ptr);
+	char *token = newstrdup(ptr);
 	*endptr = sav;
 	return token;
 	}
@@ -629,7 +628,7 @@ static void Write_exult_from_tiles
 		unsigned char *src = pixels + w*8*y + 8*x;
 		for (int row = 0; row < 8; row++)
 			{		// Write it out.
-			out.write(src, 8);
+			out.write(reinterpret_cast<char *>(src), 8);
 			src += w;
 			}
 		}

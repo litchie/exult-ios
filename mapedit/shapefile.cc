@@ -40,6 +40,7 @@ using std::vector;
 using std::string;
 using std::cerr;
 using std::endl;
+using std::ofstream;
 
 /*
  *	Delete file and groups.

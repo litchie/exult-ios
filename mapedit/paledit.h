@@ -43,7 +43,7 @@ class Palette_edit: public Object_browser
 	int width, height;		// Dimensions of image.
 	GtkWidget *draw;		// GTK draw area to display them in.
 	GdkGC *drawgc;			// For drawing in 'draw'.
-	vector<GdkRgbCmap*> palettes;	// The palettes to display.
+	std::vector<GdkRgbCmap*> palettes;	// The palettes to display.
 	int cur_pal;			// Index of current palette.
 	bool modified;
 	GtkColorSelectionDialog *colorsel;// Open color selector.
