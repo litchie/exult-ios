@@ -1,5 +1,6 @@
 #include <new>
 #include <cstring>
+#include <iostream>
 #include "SDL_mapping.h"
 
 class ByteBuffer
@@ -283,6 +284,7 @@ class	ProducerConsumerBuf
 private:
 	ByteBuffer Buffer;
 	SDL_mutex	*mutex;
+	size_t	window;
 	inline 	void	lock(void)
 		{
 		SDL_mutexP(mutex);
@@ -302,7 +304,7 @@ public:
 			{
 			lock();
 			size_t	n=Buffer.size();
-			if(n>MAX_PCB_SIZE)
+			if(n>window)
 				{
 				unlock();
 				SDL::Delay(100);
@@ -321,9 +323,11 @@ public:
 		lock();
 		l=Buffer.pop_front((char *)p,l);
 		unlock();
-		return l;
+		if(l>0)
+			window+=l;
+		return l?l:(producing?0:-1);
 		}
-	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),producing(true),consuming(true),id(0)
+	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),producing(true),consuming(true),id(0),window(2048)
 		{  }
 	~ProducerConsumerBuf()
 		{
@@ -331,6 +335,7 @@ public:
 		}
 	void	end_production(void)
 		{
+		cerr << " end_production" << endl;
 		lock();
 		producing=false;
 		if(!consuming)
@@ -340,6 +345,7 @@ public:
 		}
 	void	end_consumption(void)
 		{
+		cerr << " end_consumption" << endl;
 		lock();
 		consuming=false;
 		if(!producing)
