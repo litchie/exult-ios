@@ -25,9 +25,38 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "schedule.h"
 #include "actors.h"
-
+#include "Astar.h"
 #include "gamewin.h"
 #include "actions.h"
+
+/*
+ *	Set up an action to get an actor to a location (via pathfinding), and
+ *	then execute another action when he gets there.
+ */
+
+void Schedule::set_action_sequence
+	(
+	Actor *actor,			// Whom to activate.
+	Tile_coord dest,		// Where to walk to.
+	Actor_action *when_there	// What to do when he gets there.
+	)
+	{
+	Actor_action *act = when_there;
+	Tile_coord actloc = actor->get_abs_tile_coord();
+	if (dest != actloc)		// Get to destination.
+		{
+		Actor_action *w = new Path_walking_actor_action(new Astar());
+		Actor_action *w2 = w->walk_to_tile(actloc, dest);
+		if (w2 != w)
+			delete w;
+		if (!w2)		// Failed?  Teleport.
+			w2 = new Move_actor_action(dest);
+					// Walk there, then do whatever.
+		act = new Sequence_actor_action(w2, act);
+		}
+	actor->set_action(act);
+	actor->start();			// Get into time queue.
+	}
 
 /*
  *	Create a horizontal pace schedule.
@@ -288,7 +317,6 @@ void Sit_schedule::set_action
 	Game_object *chairobj
 	)
 	{
-#if 1	/* +++++Enable when tested. */
 	Tile_coord chairloc = chairobj->get_abs_tile_coord();
 	switch (chairobj->get_framenum()%4)
 		{			// Figure where to sit.
@@ -301,17 +329,34 @@ void Sit_schedule::set_action
 	case 3:				// West.
 		chairloc.tx--; break;
 		}
-					// +++++++Walk path to chair?
-					// Put NPC in front of chair.
-	actor->move(chairloc.tx, chairloc.ty, chairloc.tz);
-#endif
 	char frames[2];
 					// Frame 0 faces N, 1 E, etc.
 	int dir = 2*(chairobj->get_framenum()%4);
 	frames[0] = actor->get_dir_framenum(dir, Actor::to_sit_frame);
 	frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
-	actor->set_action(new Frames_actor_action(frames, sizeof(frames)));
+	Actor_action *act = new Frames_actor_action(frames, sizeof(frames));
+					// Walk there, then sit.
+	set_action_sequence(actor, chairloc, act);
+#if 0
+	Tile_coord actloc = actor->get_abs_tile_coord();
+					// Put NPC in front of chair.
+					// Already there?
+	if (actloc.distance(chairloc) <= 1)
+		actor->move(chairloc.tx, chairloc.ty, chairloc.tz);
+	else
+		{			// Walk to chair.
+		Actor_action *w = new Path_walking_actor_action(new Astar());
+		Actor_action *w2 = w->walk_to_tile(actloc, chairloc);
+		if (w2 != w)
+			delete w;
+		if (!w2)		// Failed?
+			actor->move(chairloc.tx, chairloc.ty, chairloc.tz);
+		else			// Walk there, then sit.
+			act = new Sequence_actor_action(w2, act);
+		}
+	actor->set_action(act);
 	actor->start();			// Get into time queue.
+#endif
 	}
 
 /*
