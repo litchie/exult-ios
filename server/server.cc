@@ -248,7 +248,8 @@ static void Handle_client_message
 		unsigned char data[Exult_server::maxlength];
 		unsigned char *ptr = &data[0];
 		Game_info_out(client_socket, gwin->get_num_npcs(),
-			cheat.get_edit_lift(), 
+			cheat.get_edit_lift(),
+			gwin->skip_lift,
 			cheat.in_map_editor(),
 			cheat.show_tile_grid(),
 			gwin->get_map()->was_map_modified());
@@ -381,6 +382,13 @@ static void Handle_client_message
 		int md = Read2(ptr);
 		if (md >= 0 && md <= 4)
 			cheat.set_edit_mode((Cheat::Map_editor_mode) md);
+		break;
+		}
+	case Exult_server::hide_lift:
+		{
+		int lift = Read2(ptr);
+		gwin->skip_lift = lift;
+		gwin->set_all_dirty();
 		break;
 		}
 #ifdef USECODE_DEBUGGER

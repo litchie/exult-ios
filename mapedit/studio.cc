@@ -271,6 +271,14 @@ on_edit_lift_spin_changed		(GtkSpinButton *button,
 }
 
 C_EXPORT void
+on_hide_lift_spin_changed		(GtkSpinButton *button,
+					 gpointer	  user_data)
+{
+	ExultStudio::get_instance()->set_hide_lift(
+				gtk_spin_button_get_value_as_int(button));
+}
+
+C_EXPORT void
 on_edit_terrain_button_toggled		(GtkToggleButton *button,
 					 gpointer	  user_data)
 {
@@ -282,6 +290,21 @@ void on_choose_directory               (gchar *dir)
 {
 	ExultStudio::get_instance()->set_game_path(dir);
 }
+
+/*
+ *	Configure main window.
+ */
+C_EXPORT gint on_main_window_configure_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventConfigure *event,
+	gpointer data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+					// Configure "Hide lift" spin.
+	studio->set_spin("hide_lift_spin", 16, 1, 16);
+	}
 
 /*
  *	Main window's close button.
@@ -1022,10 +1045,11 @@ bool ExultStudio::need_to_save
 		int len = Exult_server::Receive_data(server_socket, 
 						id, data, sizeof(data));
 		unsigned char *ptr = &data[0];
-		int npcs, edlift;
+		int npcs, edlift, hdlift;
 		bool editing, grid, mod;
 		if (id == Exult_server::info &&
-		    Game_info_in(data, len, npcs, edlift, editing, grid, mod)&&
+		    Game_info_in(data, len, npcs, edlift, hdlift, editing, 
+								grid, mod) &&
 		    mod == true)
 			return true;
 		}
@@ -1148,6 +1172,21 @@ void ExultStudio::set_edit_lift
 	}
 
 /*
+ *	Tell Exult to hide objects at or above a given lift.
+ */
+
+void ExultStudio::set_hide_lift
+	(
+	int lift
+	)
+	{
+	unsigned char data[Exult_server::maxlength];
+	unsigned char *ptr = &data[0];
+	Write2(ptr, lift);
+	send_to_server(Exult_server::hide_lift, data, ptr - data);
+	}
+
+/*
  *	Tell Exult to enter/leave 'terrain-edit' mode.
  */
 
@@ -1161,8 +1200,15 @@ void ExultStudio::set_edit_terrain
 	Write2(ptr, terrain ? 1 : 0);	// NOTE:  Pass -1 to abort.  But I
 					//   haven't got an interface yet.
 	send_to_server(Exult_server::terrain_editing_mode, data, ptr - data);
-	if (browser && !terrain)
-		browser->end_terrain_editing();
+	if (!terrain)
+		{			// Turning it off.
+		if (browser)
+			browser->end_terrain_editing();
+					// FOR NOW, skip_lift is reset.
+		set_spin("hide_lift_spin", 16, true);
+		}
+	else				// Disable "Hide lift".
+		set_spin("hide_lift_spin", 16, false);
 					// Set edit-mode to paint.
 	GtkWidget *mitem = glade_xml_get_widget(app_xml, 
 						terrain ? "paint1" : "move1");
