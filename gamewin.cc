@@ -630,6 +630,8 @@ void Game_window::clear_world
 	tqueue->clear();		// Remove all entries.
 	clear_dirty();
 	removed->flush();		// Delete.
+//+++++Enable this when saving/restoring of sched. usecode is written:
+//	Schedule_usecode::clear();	// Clear out all scheduled usecode.
 					// Delete all chunks (& their objs).
 	for (int y = 0; y < c_num_chunks; y++)
 		for (int x = 0; x < c_num_chunks; x++)
