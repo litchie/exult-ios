@@ -604,11 +604,15 @@ static int Use_ammo
 	int actual_ammo = aobj->get_shapenum();
 	if (!Ammo_info::is_in_family(actual_ammo, ammo))
 		return 0;
-	npc->remove(aobj);		// Remove all.
-	int quant = aobj->get_quantity();
-	aobj->modify_quantity(-1);	// Reduce amount.
-	if (quant > 1)			// Still some left?  Put back.
-		npc->add_readied(aobj, Actor::ammo);
+					// Duelists don't use up ammo.
+	if (npc->get_schedule_type() != Schedule::duel)
+		{
+		npc->remove(aobj);		// Remove all.
+		int quant = aobj->get_quantity();
+		aobj->modify_quantity(-1);	// Reduce amount.
+		if (quant > 1)			// Still some left?  Put back.
+			npc->add_readied(aobj, Actor::ammo);
+		}
 					// Use actual shape unless a different
 					//   projectile was specified.
 	return ammo == proj ? actual_ammo : proj;
@@ -647,7 +651,7 @@ Combat_schedule::Combat_schedule
 		weapon_shape(0),
 		ammo_shape(0), projectile_shape(0), 
 		strike_range(0), projectile_range(0), max_range(0),
-		is_thrown(false), yelled(0), 
+		practice_target(0), is_thrown(false), yelled(0), 
 		started_battle(false), fleed(0), failures(0)
 	{
 	Combat_schedule::set_weapon();
@@ -890,6 +894,16 @@ void Duel_schedule::find_opponents
 	)
 	{
 	opponents.clear();
+	if (projectile_range > 2)	// First look for practice targets.
+					// Archery target:
+		practice_target = npc->find_closest(735);
+	else				// Fencing dummy:
+		practice_target = npc->find_closest(860);
+	if (practice_target && !rand()%4)
+		{
+		npc->set_target(practice_target);
+		return;			// Just use that.
+		}
 	Actor_vector vec;			// Find all nearby NPC's.
 	npc->find_nearby_actors(vec, c_any_shapenum, 24);
 	for (Actor_vector::const_iterator it = vec.begin(); it != vec.end();
@@ -904,6 +918,9 @@ void Duel_schedule::find_opponents
 			else
 				opponents.push_front(opp);
 		}
+	if (opponents.empty() && practice_target)
+					// No duelists?  Use dummy.
+		npc->set_target(practice_target);
 	}
 
 /*

@@ -1,3 +1,7 @@
+2001-12-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* combat.cc (Duel_schedule): Look for practice targets.
+
 2001-12-13  Patrick Burke <takhisisii@yahoo.com.au>
 	* usecode/ucxt/src/opcodes.cc: Included a 'fix' for undeclared __STRING
 	under solaris.
