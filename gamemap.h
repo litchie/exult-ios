@@ -48,7 +48,8 @@ class Game_map
 					// Flat chunk areas:
 	Exult_vector<Chunk_terrain *> chunk_terrains;
 	bool read_all_terrain;		// True if we've read them all.
-	bool modified_terrain;
+	bool map_modified;		// True if any map changes from
+					//   map-editing.
 					// Chunk_terrain index for each chunk:
 	short terrain_map[c_num_chunks][c_num_chunks];
 					// A list of objects in each chunk:
@@ -70,13 +71,20 @@ public:
 		{ return terrain_map[cx][cy]; }
 	inline Map_patch_collection *get_map_patches()
 		{ return map_patches; }
+	void set_map_modified()
+		{ map_modified = true; }
+	bool was_map_modified() const
+		{ return map_modified; }
 	bool is_chunk_read(int cx, int cy)
 		{ return cx < c_num_chunks && cy < c_num_chunks &&
 			schunk_read[12*(cy/c_chunks_per_schunk) +
 						cx/c_chunks_per_schunk]; }
 	void set_ifix_modified(int cx, int cy)
-		{ schunk_modified[12*(cy/c_chunks_per_schunk) +
-					cx/c_chunks_per_schunk] = true; }
+		{ 
+		map_modified = true;
+		schunk_modified[12*(cy/c_chunks_per_schunk) +
+					cx/c_chunks_per_schunk] = true;
+		}
 					// Get/create objs. list for a chunk.
 	Map_chunk *get_chunk(int cx, int cy)
 		{

@@ -319,7 +319,7 @@ void ExultStudio::open_npc_window
 	else				// Got to get what new NPC # will be.
 		{
 		int npc_num = -1;
-		if (Send_data(server_socket, Exult_server::num_npcs) != -1)
+		if (Send_data(server_socket, Exult_server::info) != -1)
 			{		// Should get immediate answer.
 			unsigned char data[Exult_server::maxlength];
 			Exult_server::Msg_type id;
@@ -327,8 +327,11 @@ void ExultStudio::open_npc_window
 			int len = Exult_server::Receive_data(server_socket, 
 						id, data, sizeof(data));
 			unsigned char *ptr = &data[0];
-			if (len > 0)
-				npc_num = Read2(ptr);
+			int npcs, edlift;
+			bool editing, grid, mod;
+			if (Game_info_in(data, len, npcs, edlift, editing,
+								grid, mod))
+				npc_num = npcs;
 			set_entry("npc_num_entry", npc_num, true, false);
 					// Usually, face = npc_num.
 			set_npc_face(npc_num, 0);

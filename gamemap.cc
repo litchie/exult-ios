@@ -112,7 +112,7 @@ Game_map::Game_map
 	(
 	) : 
             chunk_terrains(0), read_all_terrain(false), 
-	    modified_terrain(false),
+	    map_modified(false),
 	    map_patches(new Map_patch_collection), chunks(0)
 	{
 	}
@@ -169,7 +169,7 @@ void Game_map::init
 				(c_tiles_per_chunk*c_tiles_per_chunk*2);
 					// Resize list to hold all.
 	chunk_terrains.resize(num_chunk_terrains);
-	read_all_terrain = modified_terrain = false;
+	read_all_terrain = map_modified = false;
 	std::ifstream u7map;		// Read in map.
 	bool nomap = false;
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_U7MAP))
@@ -230,6 +230,7 @@ void Game_map::clear
 	chunk_terrains.resize(0);
 	delete chunks;			// Close 'u7chunks'.
 	chunks = 0;
+	map_modified = false;
 					// Clear 'read' flags.
 	memset(reinterpret_cast<char*>(schunk_read), 0, sizeof(schunk_read));
 	memset(reinterpret_cast<char*>(schunk_modified), 0, 
@@ -417,6 +418,7 @@ void Game_map::write_static
 	if (!u7map.good())
 		throw file_write_exception(U7MAP);
 	u7map.close();
+	map_modified = false;
 	}
 
 /*
@@ -1107,7 +1109,7 @@ bool Game_map::swap_terrains
 	{
 	if (tnum < 0 || tnum >= chunk_terrains.size() - 1)
 		return false;		// Out of bounds.
-	modified_terrain = true;
+	map_modified = true;
 					// Swap in list.
 	Chunk_terrain *tmp = get_terrain(tnum);
 	tmp->set_modified();
@@ -1144,7 +1146,7 @@ bool Game_map::insert_terrain
 	if (tnum < -1 || tnum >= chunk_terrains.size())
 		return false;		// Invalid #.
 	get_all_terrain();		// Need all of 'u7chunks' read in.
-	modified_terrain = true;
+	map_modified = true;
 	unsigned char buf[16*16*2];	// Set up buffer with shape #'s.
 	if (dup && tnum >= 0)
 		{			// Want to duplicate given terrain.

@@ -399,3 +399,70 @@ int Npc_actor_in
 	return (ptr - data) == datalen;
 	}
 
+/*
+ *	Game info. IO.
+ */
+
+template <class Serial> 
+void Game_info_io
+	(
+	Serial &io,			// Where to store data.
+	int& num_npcs,			// # in game.
+	int& edit_lift,			// Lift being edited.
+	bool& map_editing,		// In 'map-editing' mode.
+	bool& tile_grid,		// Showing tile grid.
+	bool& map_modified		// Map was changed.
+	)
+	{
+	io << num_npcs << edit_lift << map_editing << tile_grid <<
+							map_modified;
+	}
+
+/*
+ *	Send out game info.
+ *
+ *	Output:	-1 if unsuccessful.  0 if okay.
+ */
+
+int Game_info_out
+	(
+	int fd,				// Socket.
+	int num_npcs,			// # in game.
+	int edit_lift,			// Lift being edited.
+	bool map_editing,		// In 'map-editing' mode.
+	bool tile_grid,			// Showing tile grid.
+	bool map_modified		// Map was changed.
+	)
+	{
+	static unsigned char buf[Exult_server::maxlength];
+	unsigned char *ptr = &buf[0];
+	Serial_out io(ptr);
+	Game_info_io(io, num_npcs, edit_lift, map_editing, tile_grid,
+							map_modified);
+	return Exult_server::Send_data(fd, Exult_server::info, buf, ptr - buf);
+	}
+
+/*
+ *	Decode game info.
+ *
+ *	Output:	0 if unsuccessful.
+ */
+
+int Game_info_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	int& num_npcs,			// # in game.
+	int& edit_lift,			// Lift being edited.
+	bool& map_editing,		// In 'map-editing' mode.
+	bool& tile_grid,		// Showing tile grid.
+	bool& map_modified		// Map was changed.
+	)
+	{
+	unsigned char *ptr = data;
+	Serial_in io(ptr);
+	Game_info_io(io, num_npcs, edit_lift, map_editing, tile_grid,
+							map_modified);
+	return (ptr - data) == datalen;
+	}
+

@@ -50,7 +50,9 @@ enum Msg_type
 	npc = 3,			// Editing an NPC.
 	user_responded = 4,		// User performed requested action.
 	cancel = 5,			// Cancel operation.
-	num_npcs = 6,			// Get/return # of NPC's.
+//	num_npcs = 6,			// Get/return # of NPC's.
+	info = 6,			// Game info. request/response.  See
+					//   Game_info_xxx in objserial.h.
 	write_map = 7,			// Save map.
 	read_map = 8,			// Read map.
 	map_editing_mode = 9,		// 1 to turn it on, 0 for off.
