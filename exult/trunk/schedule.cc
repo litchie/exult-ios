@@ -427,13 +427,22 @@ void Patrol_schedule::now_what
 			return;
 			}
 		}
-					// This works for passion play:
-	npc->set_lift(path->get_lift());
 					// Delay up to 2 secs.
-	npc->walk_to_tile(path->get_abs_tile_coord(), 250, rand()%2000);
+					// Serpent Isle needs path-following.
+	if (Game::get_game_type() == BLACK_GATE ||
+	    !npc->walk_path_to_tile(path->get_abs_tile_coord(), 250, 
+								rand()%2000))
+		{
+					// This works for passion play:
+	// +++++++Try using walk_path_to_tile() for BG & get rid of this!+++++
+		if (Game::get_game_type() == BLACK_GATE)
+			npc->set_lift(path->get_lift());
+		npc->walk_to_tile(path->get_abs_tile_coord(), 250, rand()%2000);
+		}
 	Game_window *gwin = Game_window::get_game_window();
 					// SI:  Special scenes.
-	if (npc == gwin->get_camera_actor())
+//	if (npc == gwin->get_camera_actor())
+	if (Game::get_game_type() == SERPENT_ISLE)
 		{
 		if (npc->get_shapenum() == 0x12b)	// Cantra?
 			{

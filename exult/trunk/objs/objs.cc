@@ -297,8 +297,9 @@ static int Check_mask
 			return 0;	// Not an NPC & not the Avatar.
 		return 1;
 		}
-	if (mask == 16)			// Egg or barge.
-		return obj->is_egg() || obj->get_shapenum() == 0x3c1;
+	if (mask == 16)			// Egg or barge or path.
+		return obj->is_egg() || obj->get_shapenum() == 0x3c1 ||
+			obj->get_shapenum() == 607;
 	if (mask == 32)			// ??? Used in 'reveal' to find inv.
 					// objs, and to detect blocked gplank.
 		return 1;		// For now.+++++
