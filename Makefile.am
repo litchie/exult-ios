@@ -14,7 +14,7 @@ HFILES = args.h acconfig.h actions.h actors.h autoconfig.h fnames.h gameclk.h \
 
 SOURCES = $(HFILES) $(OBJECTS:%.o=%.cc)
 
-EXTRA_DIST = CHANGELOG
+EXTRA_DIST = 
 
 SUFFIXES=.cc .h
 
@@ -50,6 +50,12 @@ exult: $(OBJECTS)
 
 exult.exe: $(OBJECTS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJECTS) $(STATIC) $(LIBS)
+
+snapshot: dist
+	mv exult*.tar.gz exultsnap.tar.gz
+
+snapshotw: exult.exe
+	zip exultsnapw.zip exult.exe README.win32
 
 tar:	exult
 	strip exult

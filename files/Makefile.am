@@ -6,7 +6,7 @@ HFILES = Flex.h  Table.h  U7file.h  common_types.h IFF.h
 
 SOURCES = $(HFILES) $(OBJECTS:%.o=%.cc)
 
-EXTRA_DIST = CHANGELOG
+EXTRA_DIST = 
 
 SUFFIXES=.cc .h
 
