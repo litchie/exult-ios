@@ -2539,6 +2539,53 @@ int Chunk_object_list::is_blocked
 	}
 
 /*
+ *	Test all nearby eggs when you've teleported in.
+ */
+
+void Chunk_object_list::try_all_eggs
+	(
+	Game_object *obj,		// Object (actor) that's near.
+	int tx, int ty, int tz,		// Tile (absolute).
+	int from_tx, int from_ty	// Tile walked from.
+	)
+	{
+	static int norecurse = 0;	// NO recursion here.
+	if (norecurse)
+		return;
+	norecurse++;
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord pos = obj->get_abs_tile_coord();
+	const int dist = 32;		// See if this works okay.
+	Rectangle area(pos.tx - dist, pos.ty - dist, 2*dist, 2*dist);
+					// Go through interesected chunks.
+	Chunk_intersect_iterator next_chunk(area);
+	Rectangle tiles;		// (Ignored).
+	int eachcx, eachcy;
+	while (next_chunk.get_next(tiles, eachcx, eachcy))
+		{
+		Chunk_object_list *chunk = gwin->get_objects_safely(
+							eachcx, eachcy);
+		if (!chunk)
+			continue;
+		chunk->setup_cache();	// I think we should do this.
+		Object_iterator next(chunk);
+		Game_object *each;
+		while ((each = next.get_next()) != 0)
+			if (each->is_egg())
+				{
+				Egg_object *egg = (Egg_object *) each;
+					// Music eggs are causing problems.
+				if (egg->get_type() != Egg_object::jukebox &&
+			    	    egg->is_active(obj,
+						tx, ty, tz, from_tx, from_ty))
+					egg->activate(
+						gwin->get_usecode(), obj);
+				}
+		}
+	norecurse--;
+	}
+
+/*
  *	Recursively apply gravity over a given rectangle that is known to be
  *	unblocked below a given lift.
  */

@@ -97,6 +97,7 @@ class Usecode_machine
 	Usecode_function *cur_function;	// Current function being executed.
 	unsigned char gflags[1024];	// Global flags.
 	unsigned long timers[20];	// Each has time in hours when set.
+	Tile_coord virtue_stones[8];	// Location 'marked' for each stone.
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
 	int speech_track;		// Set/read by some intrinsics.
@@ -258,6 +259,8 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(is_pc_female);
 	USECODE_INTRINSIC_DECL(halt_scheduled);
 	USECODE_INTRINSIC_DECL(get_array_size);
+	USECODE_INTRINSIC_DECL(mark_virtue_stone);
+	USECODE_INTRINSIC_DECL(recall_virtue_stone);
 	USECODE_INTRINSIC_DECL(is_pc_inside);
 	USECODE_INTRINSIC_DECL(get_timer);
 	USECODE_INTRINSIC_DECL(set_timer);

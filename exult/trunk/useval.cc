@@ -153,12 +153,25 @@ int Usecode_value::operator==
 	{
 	if (&v2 == this)
 		return (1);		// Same object.
+#if 0
 	if (v2.type != type)
 		return (0);		// Wrong type.
+#endif
 	if (type == (int) int_type)
-		return (value.intval == v2.value.intval);
+		return v2.type == int_type ?
+					(value.intval == v2.value.intval)
+					// Okay if 0==empty array.
+			: v2.type == array_type &&
+					!value.intval && !v2.get_array_size();
+	else if (type == array_type)
+		{
+		if (v2.type == int_type)
+			return !get_array_size() && !v2.get_int_value();
+		return 0;		// +++++Should we compare arrays.
+		}
 	else if (type == (int) string_type)
-		return (strcmp(value.str, v2.value.str) == 0);
+		return (v2.type == string_type &&
+					strcmp(value.str, v2.value.str) == 0);
 	else
 		return (0);
 	}

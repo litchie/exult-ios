@@ -1395,11 +1395,6 @@ void Main_actor::handle_event
 		}
 	else if (schedule)
 		schedule->now_what();
-#if 0
-					// Not doing an animation?
-	if (!gwin->get_usecode()->in_usecode())
-		get_followers();	// Get party to follow.
-#endif
 	}
 
 /*
@@ -1420,8 +1415,9 @@ void Main_actor::get_followers
 		if (!npc)
 			continue;
 		int sched = npc->get_schedule_type();
-					// Skip if in combat.
-		if (sched != Schedule::combat)
+					// Skip if in combat or set to 'wait'.
+		if (sched != Schedule::combat &&
+		    sched != Schedule::wait)
 			{
 			if (sched != Schedule::follow_avatar)
 				npc->set_schedule_type(
