@@ -56,14 +56,22 @@ void	dump_stringvec(std::vector<std::string> &vs,int expect=-2)
 
 void	test1(void)
 {
-	config->read_config_file("./config->xml");
+	cerr << "Reading config file: ./config.xml" << endl;
+
+	config->read_config_file("./config.xml");
+
+	cerr << "Config file read." << endl;
 
 	int	n;
 	std::string	r;
 	
+	cerr << "Dumping config to stdout." << endl;
+
 	config->dump(cout, "\t");
 	cout << endl;
 	
+	cerr << "Testing: config/audio/midi/device" << endl;
+
 	std::string test_device("config/audio/midi/device");
 	config->value(test_device, n, -1);
 	cout << "Returned from reference, \"" << test_device << "\". Got '" << n << "'" << endl;
@@ -109,7 +117,7 @@ void	test1(void)
 	config->clear("foo");
 	assert(config->dump()=="<foo>\n</foo>\n");
 	
-	Configuration confnew("./config->xml", "config");
+	Configuration confnew("./config.xml", "config");
 	
 	Configuration::KeyTypeList ktl;
 	string basekey("config/audio");
@@ -131,6 +139,9 @@ void test2(void)
 
 int	main(int argc, char *argv[])
 {
+	config = new Configuration();
+	
+	cerr << "Starting tests..." << endl;
 	test1();
 	if(argc>1)
 		if(strcmp(argv[1], "--exult-cfg")==0)
