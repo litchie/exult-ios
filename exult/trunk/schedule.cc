@@ -2974,9 +2974,9 @@ void Schedule_change::set
 	{
 	time = stime;
 	type = stype;
-	x = (unsigned char) (ax%c_tiles_per_schunk);
-	y = (unsigned char) (ay%c_tiles_per_schunk);
-	superchunk = (unsigned char)  ((ay/c_tiles_per_schunk)*12 + (ax/c_tiles_per_schunk));
+	x = static_cast<unsigned char>(ax%c_tiles_per_schunk);
+	y = static_cast<unsigned char>(ay%c_tiles_per_schunk);
+	superchunk = static_cast<unsigned char>((ay/c_tiles_per_schunk)*12 + (ax/c_tiles_per_schunk));
 	}
 
 /*

@@ -364,7 +364,7 @@ void Game_window::init_files(bool cycle)
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
 					// Force clock to start.
-	tqueue->add(timer, &clock, (long) this);
+	tqueue->add(timer, &clock, reinterpret_cast<long>(this));
 
 					// Clear object lists, flags.
 	// No casting _should_ be necessary at this point.
@@ -1739,7 +1739,7 @@ void Game_window::read_gwin
 	clock.set_minute(Read2(gin));
 	last_restore_hour = clock.get_total_hours();
 	if (!clock.in_queue())		// Be sure clock is running.
-		tqueue->add(Game::get_ticks(), &clock, (long) this);
+		tqueue->add(Game::get_ticks(), &clock, reinterpret_cast<long>(this));
 	if (!gin.good())		// Next ones were added recently.
 		throw file_read_exception(GWINDAT);
 	special_light = Read4(gin);
