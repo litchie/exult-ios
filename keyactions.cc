@@ -33,7 +33,7 @@
 #include "File_gump.h"
 #include "Scroll_gump.h"
 #include "cheat.h"
-#include "combat.h"
+#include "combat_opts.h"
 #include "ucmachine.h"
 #include "Audio.h"
 #include "Gamemenu_gump.h"

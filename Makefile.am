@@ -33,6 +33,7 @@ exult_SOURCES =	\
 	cheat_screen.h	\
 	combat.cc	\
 	combat.h	\
+	combat_opts.h	\
 	delobjs.cc	\
 	delobjs.h	\
 	devgame.cc	\
