@@ -371,6 +371,7 @@
 		      <property name="label" translatable="yes">Paint</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
+		      <property name="group">move1</property>
 		      <signal name="activate" handler="on_paint1_activate"/>
 		    </widget>
 		  </child>
@@ -381,6 +382,7 @@
 		      <property name="label" translatable="yes">Paint with chunks</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
+		      <property name="group">move1</property>
 		      <signal name="activate" handler="on_paint_with_chunks1_activate"/>
 		    </widget>
 		  </child>
@@ -391,6 +393,7 @@
 		      <property name="label" translatable="yes">Pick for combo</property>
 		      <property name="use_underline">True</property>
 		      <property name="active">False</property>
+		      <property name="group">move1</property>
 		      <signal name="activate" handler="on_pick_for_combo1_activate"/>
 		    </widget>
 		  </child>
@@ -700,6 +703,7 @@
 
 	      <child>
 		<widget class="GtkFrame" id="frame120">
+		  <property name="width_request">200</property>
 		  <property name="visible">True</property>
 		  <property name="label_xalign">0</property>
 		  <property name="label_yalign">0.5</property>
@@ -713,6 +717,8 @@
 		      <property name="show_border">True</property>
 		      <property name="tab_pos">GTK_POS_TOP</property>
 		      <property name="scrollable">False</property>
+		      <property name="tab_hborder">2</property>
+		      <property name="tab_vborder">2</property>
 		      <property name="enable_popup">False</property>
 
 		      <child>
@@ -1382,6 +1388,8 @@
 	  <property name="show_border">True</property>
 	  <property name="tab_pos">GTK_POS_TOP</property>
 	  <property name="scrollable">True</property>
+	  <property name="tab_hborder">2</property>
+	  <property name="tab_vborder">2</property>
 	  <property name="enable_popup">False</property>
 
 	  <child>
@@ -3969,6 +3977,8 @@ Coordinates</property>
 	  <property name="show_border">True</property>
 	  <property name="tab_pos">GTK_POS_TOP</property>
 	  <property name="scrollable">False</property>
+	  <property name="tab_hborder">2</property>
+	  <property name="tab_vborder">2</property>
 	  <property name="enable_popup">False</property>
 
 	  <child>
@@ -7756,6 +7766,7 @@ Coordinates</property>
 
 	      <child>
 		<widget class="GtkFrame" id="frame59">
+		  <property name="width_request">64</property>
 		  <property name="visible">True</property>
 		  <property name="label_xalign">0</property>
 		  <property name="label_yalign">0.5</property>
@@ -8043,6 +8054,8 @@ Coordinates</property>
 	  <property name="show_border">True</property>
 	  <property name="tab_pos">GTK_POS_TOP</property>
 	  <property name="scrollable">False</property>
+	  <property name="tab_hborder">2</property>
+	  <property name="tab_vborder">2</property>
 	  <property name="enable_popup">False</property>
 
 	  <child>
