@@ -1,3 +1,6 @@
+2002-07-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* content/islefaq/usecode.uc: fixed some typos and spacing
+
 2002-07-22  Ryan Nunn <triforc@merlin.net.au>
 	* gumps/Gump_manager.cc, gumps/Spellbook_gump.cc, usecode/ucinternal.cc:
 	  std stuff.

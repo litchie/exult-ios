@@ -242,7 +242,7 @@ Dominik 0x565 ()
 		say("You wait while he looks on his desk.");
 		say("You wait a bit more while he hastily pulls out the drawers and peers in each.");
 		say("Finally, he turns back, looking markedly upset.");
-		say("It' gone!!  Where can it be?~",  
+		say("It's gone!!  Where can it be?~",  
 							"He turns to you.");
 		say("Avatar!  It's vital that the FAQ be recovered.",
 				"  Our users will be lost without it!");
@@ -251,7 +251,7 @@ Dominik 0x565 ()
 			{
 			gflags[WILL_FIND_FAQ] = true;
 			say("Thank you, Avatar!",
-					"  All Brittania awaits the recovery",
+					"  All Britannia awaits the recovery",
 					" of this vital document.");
 			}
 		else
@@ -261,7 +261,7 @@ Dominik 0x565 ()
 		say("I KNEW you would reconsider.",
 				"  Thank you, Avatar!");
 	case "Found the FAQ" (remove):
-		AVATAR->say("Thanks to Amy's sharp eyes, we hath found",
+		AVATAR->say("Thanks to Amy's sharp eyes, we have found",
 							" the missing FAQ.");
 		AVATAR->hide();
 		UI_remove_item(faq);
@@ -273,7 +273,7 @@ Dominik 0x565 ()
 		UI_set_npc_prop(AVATAR, 2, 3);	// Gain 3 intel. pts.
 		gflags[RETURNED_FAQ] = true;
 	case "Where is Pyro-X?" (remove):
-		say("As I wrote in the FAQ you have to ask Colourless!");
+		say("As I wrote in the FAQ, you have to ask Colourless!");
 		add("Who is Colourless?");
 		gflags[ASKED_WHERE_PYRO] = true;
 	case "Who is Colourless?" (remove):
@@ -442,14 +442,14 @@ Amy 0x568 ()
 	case "Name" (remove):
 		say("I'm Amy.");
 	case "Job" (remove):
-		say("I don't have a job. I'm just hanging out here and 
-			 give information about the people on this island");
+		say("I don't have a job. I'm just hanging out here and ",
+			"give information about the people on this island");
 		add("What is the name"*);
 		add("Who lives"*);
 		add("Are you happy here?");
 	case "What is the name of this Island?" (remove):
 		say("It is called SourceForge Island. To remember the ",
-			"smithy who provided them with their tools");
+			"smithy who provided us with our tools");
 	case "Are you happy here?" (remove):
 		say("It's okay...~", "...but I'd rather be more useful");
 		converse (["Join", "Good luck"])
@@ -579,8 +579,8 @@ Colourless 0x569 ()
 		else if (response == "Do you know Pyro-X?")
 			{
 			say("Yes, I know him. He's responsible for many explosions in Britania. ",
-			"To hide this he calls himself EsBee-Ex and says all those crimes were
-			 comitted by his so called Evil Twin,");
+			"To hide this he calls himself EsBee-Ex and says all those crimes were ",
+			 "comitted by his so called Evil Twin,");
 			gflags[ASKED_KNOW_PYRO] = true;
 			UI_remove_answer("Do you know Pyro-X?");
 		}
@@ -680,7 +680,7 @@ Darke 0x56A ()
 		else if (response == "Dr.Code?")
 			{
 			say("He got mad because he looked at the evil Usecode!",
-			"Don't believe what he says!");
+			"  Don't believe what he says!");
 			UI_remove_answer("Dr.Code");
 			break;
 			}
@@ -747,8 +747,9 @@ EsBee_Ex 0x56B ()
 		else if (response == "Pyro-X")
 			{
 			say("I've never seen him before, ", 
-			"but people blame him for all sorts of explosions and burnt houses. People say
-			 it's me but I say it is my evil twin.");
+			"but people blame him for all sorts of explosions ",
+			"and burnt houses. People say ",
+			"it's me but I say it is my evil twin.");
 			gflags[ASKED_ABOUT_PYRO] = true;
 			UI_remove_answer("Pyro-X");			
 			}
@@ -811,7 +812,7 @@ Nadir 0x56C ()
 	case "Job" (remove):
 		say("I guard the shrine of Free Software.  ",
 			"All who come, rich or poor, may gaze upon the ",
-			" source.");
+			"source.");
 		add("Source?");
 	case "Study?" (remove):
 		say("Gaze upon the mirror... ",
@@ -896,11 +897,11 @@ Kirben 0x56D ()
 			add("Open Church?");
 			add("Scribe?");
 		case "Sourceforge Island?" (remove):
-			say("Amy knows all about our island and its inhabitants",
-				"Ask her for more information.");
+			say("Amy knows all about our island and its inhabitants.",
+				" Ask her for more information.");
 		case "Open Church?" (remove):
 			say("In the Open Church of Sourceforge Island everyone ",
-				"can preach his believes as long as he makes them freely availlable ", 
+				"can preach his beliefs as long as he makes them freely available ", 
 				"to everyone. ");
 			say("Do you want to know more?");
 			if (Ask_yesno())
