@@ -122,6 +122,7 @@ class Npc_actor : public Actor
 	Npc_actor *next;		// Next in same chunk.
 	unsigned char nearby;		// Queued as a 'nearby' NPC.  This is
 					//   to avoid being added twice.
+	unsigned char schedule;		// Schedule type (Schedule_type).
 public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
 	~Npc_actor();
@@ -133,6 +134,8 @@ public:
 		{ nearby = 0; }
 	int is_nearby()
 		{ return nearby != 0; }
+	virtual int get_schedule()
+		{ return schedule; }
 					// For Time_sensitive:
 	virtual void handle_event(timeval curtime, long udata);
 					// Update chunks after NPC moved.

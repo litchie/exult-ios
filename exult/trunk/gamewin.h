@@ -313,14 +313,9 @@ public:
 		if (xwin == win->get_win())
 			focus = 0;
 		}
-	void end_intro()		// End splash screen.
-		{
-		if (mode == intro)
-			{
-			mode = normal;
-			paint();
-			}
-		}
+	int have_focus()
+		{ return focus; }
+	void end_intro();		// End splash screen.
 	void stop_showing_item()	// Turn off display of item name.
 		{
 		if (showing_item)
