@@ -31,7 +31,6 @@
 
 #include "ucc.h"
 #include "opcodes.h"
-#include "printucc.h"
 #include "ucdata.h"
 #include "ucfunc.h"
 #include "files/utils.h"
@@ -283,7 +282,7 @@ void usage()
 	     << "\tOutput Format Flags (only one of these):" << endl
 	     << "\t\t-fl\t- output using brief \"list\" format" << endl
 	     << "\t\t-fa\t- output using \"assembler\" format (default)" << endl
-	     << "\t\t-fs\t- output using \"old exult script\" format" << endl
+	     << "\t\t-fs\t- output using \"exult script\" format" << endl
 	     << "\t\t-fz\t- output using \"exult script\" format" << endl
 	     ;
   exit(1);
