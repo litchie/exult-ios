@@ -62,7 +62,7 @@ private:
 	unsigned char painted;		// 1 if we updated image buffer.
 	unsigned char focus;		// Do we have focus?
 	ifstream chunks;		// "u7chunks" file.
-	Vga_file shapes;		// "shapes.vga" file.
+	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	ifstream u7map;			// "u7map" file.
