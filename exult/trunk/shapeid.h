@@ -75,7 +75,8 @@ public:
 	~Shape_manager();
 	static Shape_manager *get_instance()
 		{ return instance; }
-	void set_ibuf(Image_buffer8 *ib) { ibuf = ib; }
+	void set_ibuf(Image_buffer8 *ib)
+		{ ibuf = ib; Shape_frame::set_to_render(ib, 0); }
 	void load();			// Read in files.
 	void reload_shapes(int dragtype);	// Reload a shape file.
 	Vga_file& get_file(enum ShapeFile f)
@@ -104,25 +105,24 @@ public:
 		if (!shape || !shape->data)
 			CERR("NULL SHAPE!!!");
 		else if (!shape->rle)
-			shape->paint(ibuf, xoff, yoff);
+			shape->paint(xoff, yoff);
 		else if (!translucent)
-			shape->paint_rle(ibuf, xoff, yoff);
+			shape->paint_rle(xoff, yoff);
 		else
-			shape->paint_rle_translucent(ibuf,
-					xoff, yoff, xforms, 
+			shape->paint_rle_translucent(xoff, yoff, xforms, 
 					sizeof(xforms)/sizeof(xforms[0]));
 		}
 
 	inline void paint_invisible(int xoff, int yoff, Shape_frame *shape)
 		{
-		if (shape) shape->paint_rle_transformed(ibuf,
+		if (shape) shape->paint_rle_transformed(
 						xoff, yoff, invis_xform);
 		}
 					// Paint outline around a shape.
 	inline void paint_outline(int xoff, int yoff, Shape_frame *shape, 
 							Pixel_colors pix)
 		{
-		if (shape) shape->paint_rle_outline(ibuf,
+		if (shape) shape->paint_rle_outline(
 					xoff, yoff, special_pixels[(int) pix]);
 		}
 	unsigned char get_special_pixel(Pixel_colors pix)

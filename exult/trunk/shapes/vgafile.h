@@ -34,6 +34,17 @@ class StreamDataSource;
 class Shape;
 class Image_buffer8;
 class GL_texshape;
+class GL_manager;
+
+#ifdef HAVE_OPENGL
+#include "glshape.h"
+
+#define GLRENDER	if (glman) glman->paint(this, px, py); else
+#define GLOUTLINE	if (glman) ; else
+#else
+#define GLRENDER
+#define GLOUTLINE
+#endif
 
 /*
  *	A shape from "shapes.vga":
@@ -50,6 +61,9 @@ class Shape_frame
 #ifdef HAVE_OPENGL
 	GL_texshape *glshape;		// OpenGL texture for painting this.
 #endif
+	static GL_manager *glman;	// One to rule them all.
+	static Image_buffer8 *scrwin;	// Screen window to render to.
+
 	Shape_frame *reflect();		// Create new frame, reflected.
 					// Create RLE data & store in frame.
 	void create_rle(unsigned char *pixels, int w, int h);
@@ -71,6 +85,8 @@ public:
 					// Create frame from data.
 	Shape_frame(unsigned char *pixels, int w, int h, int xoff, int yoff,
 								bool setrle);
+	static void set_to_render(Image_buffer8 *w, GL_manager *gl = 0)
+		{ scrwin = w; glman = gl; }
 	unsigned char *get_data() { return data; }
 	bool is_rle() const { return rle; }
 					// Convert raw image to RLE.
@@ -79,15 +95,30 @@ public:
 					// Read in shape/frame.
 	unsigned char read(DataSource* shapes, uint32 shapeoff,
 					uint32 shapelen, int frnum);
-					// Paint.
-	void paint_rle(Image_buffer8 *win, int xoff, int yoff);
-	void paint(Image_buffer8 *win, int xoff, int yoff);
-	void paint_rle_translucent(Image_buffer8 *win, int xoff, int yoff,
+					// Paint into given buffer.
+	void paint_rle(Image_buffer8 *win, int px, int py);
+	void paint(Image_buffer8 *win, int px, int py);
+	void paint_rle_translucent(Image_buffer8 *win, int px, int py,
 					Xform_palette *xforms, int xfcnt);
-	void paint_rle_transformed(Image_buffer8 *win, int xoff, int yoff,
+	void paint_rle_transformed(Image_buffer8 *win, int px, int py,
 					Xform_palette xform);
-	void paint_rle_outline(Image_buffer8 *win, int xoff, int yoff,
+	void paint_rle_outline(Image_buffer8 *win, int px, int py,
 							unsigned char color);
+					// Paint to screen.
+	void paint_rle(int px, int py)
+		{ GLRENDER  paint_rle(scrwin, px, py); }
+	void paint(int px, int py)
+		{ GLRENDER  paint_rle(scrwin, px, py); }
+					// ++++++GL versions of these needed:
+	void paint_rle_translucent(int px, int py,
+					Xform_palette *xforms, int xfcnt)
+		{ GLRENDER  paint_rle_translucent(
+					scrwin, px, py, xforms, xfcnt); }
+	void paint_rle_transformed(int px, int py, Xform_palette xform)
+		{ GLRENDER  paint_rle_transformed(scrwin, px, py, xform); }
+	void paint_rle_outline(int px, int py, unsigned char color)
+		{ GLOUTLINE  paint_rle_outline(scrwin, px, py, color); }
+
 	int has_point(int x, int y);	// Is a point within the shape?
 	int get_width() const		// Get dimensions.
 		{ return xleft + xright + 1; }
