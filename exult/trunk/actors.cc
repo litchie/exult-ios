@@ -625,7 +625,7 @@ void Actor::init_default_frames
 	{
 					// Set up actor's frame lists.
 					// These are rough guesses.
-#if 1
+#if 0
 	// Evil hack to allow "smooth" 3-frame walking
 	const int FRAME_NUM = 5;
 	uint8	north_frames[FRAME_NUM] = { 0,  1,  0,  2,  0},
