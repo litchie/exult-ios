@@ -2488,7 +2488,10 @@ Game_object *Game_window::find_object
 cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 		get_scrollty() + y/c_tilesize << ")"<<endl;
 #endif
-	Game_object *found[100];
+
+ 
+	Game_object_vector found;
+	
 	int cnt = 0;
 	int actor_lift = main_actor->get_lift();
 //	int start = actor_lift > 0 ? -1 : 0;
@@ -2499,21 +2502,22 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 		not_above = skip_above_actor;
 					// See what was clicked on.
 	for (int lift = start; lift < not_above; lift++)
-		cnt += find_objects(lift, x, y, &found[cnt]);
+		cnt += find_objects(lift, x, y, found);
 	if (!cnt)
 		return (0);		// Nothing found.
 					// Find 'best' one.
 	Game_object *obj = found[cnt - 1];
 					// Try to avoid 'transparent' objs.
 	int trans = shapes.get_info(obj->get_shapenum()).is_transparent();
-	for (int i = 0; i < cnt - 1; i++)
-		if (obj->lt(*found[i]) == 1 || trans)
+	Game_object_vector::iterator it;
+	for (it = found.begin(); it != found.end(); ++it)
+		if (obj->lt(*(*it)) == 1 || trans)
 			{
-			int ftrans = shapes.get_info(found[i]->get_shapenum()).
+			int ftrans = shapes.get_info((*it)->get_shapenum()).
 							is_transparent();
 			if (!ftrans || trans)
 				{
-				obj = found[i];
+				obj = *it;
 				trans = ftrans;
 				}
 			}
@@ -2530,9 +2534,9 @@ int Game_window::find_objects
 	(
 	int lift,			// Look for objs. with this lift.
 	int x, int y,			// Pos. on screen.
-	Game_object **list		// Objects found are stored here.
+	Game_object_vector& list		// Objects found are appended here.
 	)
-	{
+{
 					// Figure chunk #'s.
 	int start_cx = ((get_scrolltx() + 
 		(x + 4*lift)/c_tilesize)/c_tiles_per_chunk)%c_num_chunks;
@@ -2542,17 +2546,17 @@ int Game_window::find_objects
 	int cnt = 0;			// Count # found.
 					// Check 1 chunk down & right too.
 	for (int ycnt = 0; ycnt < 2; ycnt++)
-		{
+	{
 		int cy = (start_cy + ycnt)%c_num_chunks;
 		for (int xcnt = 0; xcnt < 2; xcnt++)
-			{
+		{
 			int cx = (start_cx + xcnt)%c_num_chunks;
 			Map_chunk *olist = objects[cx][cy];
 			if (!olist)
 				continue;
 			Object_iterator next(olist->get_objects());
 			while ((obj = next.get_next()) != 0)
-				{
+			{
 				if (obj->get_lift() != lift)
 					continue;
 				Rectangle r = get_shape_rect(obj);
@@ -2564,13 +2568,15 @@ int Game_window::find_objects
 				Shape_frame *s = obj->get_shape();
 				int ox, oy;
 				get_shape_location(obj, ox, oy);
-				if (s->has_point(x - ox, y - oy))
-					list[cnt++] = obj;
+				if (s->has_point(x - ox, y - oy)) {
+					list.push_back(obj);
+					++cnt;
 				}
 			}
 		}
-	return (cnt);
 	}
+	return (cnt);
+}
 
 /*
  *	Show the name of the item the mouse is clicked on.
@@ -2631,7 +2637,8 @@ void Game_window::show_items
 			obj->get_low_lift() << ", high shape = " <<
 			obj->get_high_shape () << ", okay_to_take = " <<
 			static_cast<int>(obj->get_flag(Obj_flags::okay_to_take)) <<
-			", flag0x1d = " << static_cast<int>(obj->get_flag(0x1d))
+			", flag0x1d = " << static_cast<int>(obj->get_flag(0x1d)) <<
+			", hp = " << obj->get_obj_hp()
 			<< endl;
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))

@@ -446,7 +446,7 @@ void Barge_object::turn_right
 	Tile_coord rot = Rotate90r(gwin, this, xtiles, ytiles, center);
 	if (!okay_to_rotate(rot))	// Check for blockage.
 		return;
-	Game_object::move(rot.tx, rot.ty, rot.tz);
+	Container_game_object::move(rot.tx, rot.ty, rot.tz);
 	swap_dims();			// Exchange xtiles, ytiles.
 	dir = (dir + 1)%4;		// Increment direction.
 	int cnt = objects.size();	// We'll move each object.
@@ -481,7 +481,7 @@ void Barge_object::turn_left
 	Tile_coord rot = Rotate90l(gwin, this, xtiles, ytiles, center);
 	if (!okay_to_rotate(rot))	// Check for blockage.
 		return;
-	Game_object::move(rot.tx, rot.ty, rot.tz);
+	Container_game_object::move(rot.tx, rot.ty, rot.tz);
 	swap_dims();			// Exchange xtiles, ytiles.
 	dir = (dir + 3)%4;		// Increment direction.
 	int cnt = objects.size();	// We'll move each object.
@@ -514,7 +514,7 @@ void Barge_object::turn_around
 	add_dirty(gwin);		// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate180(gwin, this, xtiles, ytiles, center);
-	Game_object::move(rot.tx, rot.ty, rot.tz);
+	Container_game_object::move(rot.tx, rot.ty, rot.tz);
 	dir = (dir + 2)%4;		// Increment direction.
 	int cnt = objects.size();	// We'll move each object.
 					// But 1st, remove & save new pos.
@@ -632,7 +632,7 @@ void Barge_object::move
 					// Get current location.
 	Tile_coord old = get_tile();
 					// Move the barge itself.
-	Game_object::move(newtx, newty, newlift);
+	Container_game_object::move(newtx, newty, newlift);
 					// Get deltas.
 	int dx = newtx - old.tx, dy = newty - old.ty, dz = newlift - old.tz;
 	int cnt = objects.size();	// We'll move each object.
@@ -720,7 +720,7 @@ void Barge_object::paint
 					// DON'T paint barge shape itself.
 					// The objects are in the chunk too.
 	if(gwin->paint_eggs)
-		Game_object::paint(gwin);
+		Container_game_object::paint(gwin);
 	}
 
 /*

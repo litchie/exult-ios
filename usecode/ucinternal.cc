@@ -330,7 +330,7 @@ void Usecode_internal::say_string
 	(
 	)
 	{
-	user_choice = 0;		// Clear user's response.
+		//	user_choice = 0;		// Clear user's response.
 	if (!String)
 		return;
 	if (book)			// Displaying a book?
@@ -1333,7 +1333,7 @@ void Usecode_internal::click_to_continue
 	if (!gwin->is_palette_faded_out())// If black screen, skip!
 		Get_click(xx, yy, Mouse::hand, &c);
 	conv->clear_text_pending();
-	user_choice = 0;		// Clear it.
+	//	user_choice = 0;		// Clear it.
 	}
 
 /*
@@ -1362,8 +1362,11 @@ const char *Usecode_internal::get_user_choice
 	{
 	if (!conv->get_num_answers())
 		return (0);		// This does happen (Emps-honey).
-	if (!user_choice)		// May have already been done.
-		get_user_choice_num();
+
+	//	if (!user_choice)		// May have already been done.
+	// (breaks conversation with Cyclops on Dagger Isle ('foul magic' option))
+
+	get_user_choice_num();
 	return (user_choice);
 	}
 

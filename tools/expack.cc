@@ -28,11 +28,13 @@
 #  include <cstring>
 #endif
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <string>
 #include "U7file.h"
 #include "utils.h"
 #include "databuf.h"
+#include "crc.h"
 
 using std::atoi;
 using std::cerr;
@@ -395,8 +397,14 @@ int main(int argc, char **argv)
 					}
 				}
 			}
-			header  << std::endl << "#endif" << std::endl << std::endl;
 			flex.close();
+
+			uint32 crc32val = crc32(fname);
+
+			header << std::endl << "#define\t" << hprefix << "_CRC32\t0x";
+			header << std::hex << crc32val << std::dec << "L" << std::endl;
+
+			header << std::endl << "#endif" << std::endl << std::endl;
 			header.close();
 			
 		}

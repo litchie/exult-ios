@@ -760,7 +760,8 @@ void Dance_schedule::now_what
 	char frames[4];
 	for (int i = 0; i < 4; i++)
 					// Spin with 'hands outstretched'.
-		frames[i] = npc->get_dir_framenum((2*(dir + i))%8, 9);
+		frames[i] = npc->get_dir_framenum((2*(dir + i))%8, 
+										  npc->get_shapenum() == 846 ? 15 : 9);
 					// Create action to walk.
 	Actor_action *walk = new Path_walking_actor_action(new Zombie());
 	walk->walk_to_tile(npc, cur, dest);

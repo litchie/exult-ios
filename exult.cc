@@ -68,6 +68,11 @@
 #include "utils.h"
 #include "version.h"
 
+#include "exult_flx.h"
+#include "exult_bg_flx.h"
+#include "exult_si_flx.h"
+#include "crc.h"
+
 using std::atof;
 using std::cerr;
 using std::cout;
@@ -94,6 +99,7 @@ int usecode_trace = 0;		// Do we trace Usecode-instructions?
 
 // Save game compression level
 int save_compression = 1;
+bool ignore_crc = false;
 
 const std::string c_empty_string;
 
@@ -207,6 +213,7 @@ int main
 	parameters.declare("--version",&showversion,true);
 	parameters.declare("-game",&arg_gamename,"default");
 	parameters.declare("-buildmap",&arg_buildmap,-1);
+	parameters.declare("-nocrc",&ignore_crc,true);
 
 	// Process the args
 	parameters.process(argc,argv);
@@ -311,6 +318,43 @@ int exult_main(const char *runpath)
 	add_system_path("<GAMEDAT>", "gamedat");
 //	add_system_path("<SAVEGAME>", "savegame");
 	add_system_path("<SAVEGAME>", ".");
+
+
+	// Check CRCs of our .flx files
+	bool crc_ok = true;
+	if (crc32_syspath("<DATA>/exult.flx") != EXULT_FLX_CRC32) {
+		crc_ok = false;
+		cerr << "exult.flx has a wrong checksum!" << endl;
+	}
+	if (U7exists("<DATA>/exult_bg.flx")) {
+		if (crc32_syspath("<DATA>/exult_bg.flx") != EXULT_BG_FLX_CRC32) {
+			crc_ok = false;
+			cerr << "exult_bg.flx has a wrong checksum!" << endl;
+		}
+	}
+	if (U7exists("<DATA>/exult_si.flx")) {
+		if (crc32_syspath("<DATA>/exult_si.flx") != EXULT_SI_FLX_CRC32) {
+			crc_ok = false;
+			cerr << "exult_si.flx has a wrong checksum!" << endl;
+		}
+	}
+
+	bool config_ignore_crc;
+	config->value("config/disk/no_crc",config_ignore_crc);
+	ignore_crc |= config_ignore_crc;
+
+	if (!ignore_crc && !crc_ok) {
+		cerr << "This usually means the file(s) mentioned above are"
+			 << "from a different version" << endl
+			 << "of Exult than this one. Please re-install Exult" << endl
+			 << endl
+			 << "(Note: if you modified the .flx files yourself, "
+			 << "you can skip this check" << endl
+			 << "by passing the -nocrc parameter.)" << endl;
+		
+		return 1;
+	}
+
 
 	// Convert from old format if needed
 	vector<string> vs=config->listkeys("config/disk/game",false);
