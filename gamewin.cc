@@ -1425,7 +1425,8 @@ void Game_window::start_actor_alt
 	int dir;
 	for (dir = 0; dir < 8; dir++)
 	{
-		Tile_coord dest = start;
+		Tile_coord dest = start.get_neighbor(dir);
+#if 0
 		switch (dir)
 		{
 			case north:
@@ -1464,6 +1465,7 @@ void Game_window::start_actor_alt
 			dest.tx -= 1;
 			break;
 		}
+#endif
 		int cx = dest.tx/tiles_per_chunk, cy = dest.ty/tiles_per_chunk;
 		int tx = dest.tx%tiles_per_chunk, ty = dest.ty%tiles_per_chunk;
 
