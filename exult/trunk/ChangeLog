@@ -1,3 +1,9 @@
+2001-10-24  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* combat.cc: Only auto-set hostile NPC's into combat mode (not
+	chaotic).
+	* gamewin.cc,objs/citerate.h,chunks.cc:  World-wrapping yet again.
+
 2001-10-24  Ryan Nunn <triforce@merlin.net.au>
 	* Too many files to even think about listing:
 	  Added support for BG multiracial and added shapes. SI Required!

@@ -115,7 +115,7 @@ void Combat_schedule::find_opponents
 		{
 			opponents.push(actor);
 					// And set hostile monsters.
-			if (actor->get_alignment() >= Npc_actor::hostile &&
+			if (actor->get_alignment() == Npc_actor::hostile &&
 			    actor->get_schedule_type() != Schedule::combat)
 				actor->set_schedule_type(Schedule::combat);
 		}

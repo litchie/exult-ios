@@ -121,9 +121,7 @@ void Chunk_cache::update_object
 			clear_blocked_tile(endx, endy, lift, ztiles);
 		return;
 		}
-	Tile_coord endpt = obj->get_abs_tile_coord();
-	Rectangle footprint(endpt.tx - xtiles + 1, endpt.ty - ytiles + 1, 
-							xtiles, ytiles);
+	Rectangle footprint = obj->get_footprint();
 					// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(footprint);
 	Rectangle tiles;

@@ -652,7 +652,9 @@ Rectangle Game_object::get_footprint
 	int xtiles = info.get_3d_xtiles(frame);
 	int ytiles = info.get_3d_ytiles(frame);
 	Tile_coord t = get_abs_tile_coord();
-	Rectangle foot(t.tx - xtiles + 1, t.ty - ytiles + 1, xtiles, ytiles);
+	Rectangle foot((t.tx - xtiles + 1 + c_num_tiles)%c_num_tiles, 
+		       (t.ty - ytiles + 1 + c_num_tiles)%c_num_tiles, 
+							xtiles, ytiles);
 	return foot;
 	}
 
