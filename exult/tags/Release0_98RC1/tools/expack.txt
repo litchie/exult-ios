@@ -1,0 +1,88 @@
+Expack Documentation
+====================
+By Marc Winterrowd
+
+Expack is a command-line utility that lets you extract and create Flex files.
+Flex files (which are, like directories, "containers" for other files) are used by Ultima 7 to store most of its data.
+Expack currently supports 5 modes of operation:
+
+
+Add
+===
+This command adds one or more files to the end of a Flex file.
+
+Syntax:
+expack -a flexfile input_file_1 ... input_file_n
+
+Examples:
+expack -a animals.flx bee.wav   (add 1 file)
+expack -a animals.flx hamster.wav rattlesnake.wav donkey.wav   (add 3 files)
+
+
+Create
+======
+This command takes many files and bundles them into a single Flex file.
+
+Syntax:
+expack -c new_flexfile input_file_1 ... input_file_n
+
+Example:
+expack -c animals.flx ducky.wav kitty.wav moocow.wav doggy.wav
+
+
+Extract
+=======
+The "extract" command lets you extract either one or all of the files contained within a Flex file.
+The extracted files will have the extension ".u7o"
+
+Syntax:
+expack -x flexfile index   (extracts a single file)
+expack -x flexfile   (extracts all files)
+
+Examples:
+expack -x text.flx 17
+expack -x text.flx
+
+
+"Input" (is that what -i stands for?)
+=====================================
+This command is similar the create command - it creates a new Flex file from a number of input files.
+However, this command doesn't read the names of the input files from the command line - instead, it reads them from a text file.
+
+Syntax:
+expack -i info_file
+
+Example:
+expack -i wavlist
+
+The info file (which is a plain text file) looks like this:
+
+Info File Syntax:
+-----------------
+flexfile_name
+input_file_1
+.
+.
+.
+input_file_n
+
+Info File Example:
+------------------
+jmsfx.flx
+0.wav
+.
+.
+.
+114.wav
+
+
+List
+====
+This command lists the contents of a Flex file.
+It gives you the number of files contained within the Flex file, as well as the length of each file.
+
+Syntax:
+expack -l flexfile
+
+Example:
+expack -l text.flx

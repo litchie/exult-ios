@@ -1,0 +1,77 @@
+ExultStudio TODO
+================
+======Feb. 7, 2002 (jsf):=========
+
+ExultStudio creates most of the .dat files now, but it (or other tools) still
+need to create the following in 'static':
+
+FACES.VGA     GUMPS.VGA     PAPERDOL.VGA  SHAPES.VGA    XFORM.TBL
+FONT0000.VGA  POINTERS.SHP  SPRITES.VGA
+FONTS.VGA     TEXT.FLX 
+
+===========================
+This is a braindump of what I want to do with ExultStudio.
+
+I think the app should behave in a similar way to the Gimp, with a master 
+window and additional windows for each aspect that is being browsed/modified.
+
+The Toolbar
+===========
+
+The first step in getting ExultStudio into a useful state is to create a 
+"super browser" of sorts. Point it at the game's "static" directory 
+and it will classify all the files it finds there in a list. Clicking on 
+a file brings up a specific browser for that file's type. The following
+browsers should be designed:
+
+	Shape
+	Palette
+	NPC
+	IFIX
+	Usecode
+	Chunk
+	Superchunk
+	Map
+	Flex
+	Flic
+	Voc
+	MIDI
+	Weapon
+
+Shape
+=====
+
+Handles:	.shp .vga
+Drag to:	Chunks, Flex, GIMP
+Drop from:	Flex
+
+Palette
+=======
+
+Handles: 	.pal
+Drag to:	Shape
+Drop from:	Flex
+
+Chunk
+=====
+
+Handles:	u7chunk
+Drag to:	N/A
+Drop from:	Shape
+
+
+Flex
+====
+
+Handles:	.flx
+Drag to:	All
+Drop from:	All
+
+MIDI
+====
+
+Handles:	.mid, .xmi
+Drag to:	Flex
+Drop from:	Flex
+
+ecc...
