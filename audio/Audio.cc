@@ -1,9 +1,28 @@
+/*
+Copyright (C) 2000  Dancer A.L Vesperman
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
 #if __GNUG__ >= 2
 #  pragma implementation
 #endif
 
 #include "Audio.h"
 
+#include "SDL_mapping.h"
 #include <SDL_audio.h>
 #include <SDL_error.h>
 
@@ -11,6 +30,7 @@
 #include <unistd.h>
 
 #define	TRAILING_VOC_SLOP 32
+#define	LEADING_VOC_SLOP 32
 
 #include <SDL_audio.h>
 #include <SDL_timer.h>
@@ -24,19 +44,23 @@
 
 Audio::~Audio()
 {
-	SDL_CloseAudio();
+	if(midi)
+		{
+		delete midi;
+		midi=0;
+		}
+	SDL::CloseAudio();
 }
-
 
 
 
 static 	void debug_speech(void)
 {
 	extern	Audio audio;
-	return;
 
-//	audio.start_speech(23,false);
-//	return;
+	
+	audio.start_speech(31,false);
+	return;
 	for(int i=0;i<32;i++)
 		{
 		audio.start_speech(i,false);
@@ -54,46 +78,11 @@ void	Audio::mix_audio(void)
 
 void	Audio::clear(Uint8 *buf,int len)
 {
-	memset(buf,wanted.silence,len);
+	memset(buf,actual.silence,len);
 }
 
 extern void fill_audio(void *udata, Uint8 *stream, int len);
-#if 0
-static void fill_audio(void *udata, Uint8 *stream, int len)
- {
-	 extern	Audio	audio;
-	 
-	 while(len)
-		{
-         /* Only play if we have data left */
-         if ( audio_len == 0 )
-                 {
-                 // Close current buffer
-                 audio.buffers.num_samples[audio.buffers.now_playing]=0;
-                 //audio.clear(audio.buffers.buffer[audio.buffers.now_playing],audio.buffers.buffer_length);
-                 // Advance to next buffer
-                 audio.buffers.advance_playback();
-                 if(!audio.buffers.data_ready())
-					 {
-					 // SDL_PauseAudio(1);
-					 return;
-					 }
-				audio_chunk=audio.buffers.buffer[audio.buffers.now_playing];
-				audio_pos=audio_chunk;
-				audio_len=audio.buffers.buffer_length;
-                }
-		 // cout << "Play: " << audio.buffers.now_playing <<"-"<<len << endl;
-         /* Mix as much data as possible */
-         Uint32	llen=( (unsigned long)len > audio_len ? audio_len : (Uint32)len );
-         SDL_MixAudio(stream, audio_pos, llen, SDL_MIX_MAXVOLUME);
-         // memcpy(stream,audio_pos,llen);
-         audio_pos += llen;
-         audio_len -= llen;
-         stream+=llen;
-         len-=llen;
-         }
-}
-#endif
+
 struct	Chunk
 	{
 	size_t	length;
@@ -124,10 +113,9 @@ static	Uint8 *chunks_to_block(vector<Chunk> &chunks)
 	return unified_block;
 }
 
-Uint8 *Audio::convert_VOC(Uint8 *old_data)
+Uint8 *Audio::convert_VOC(Uint8 *old_data,unsigned int &visible_len)
 {
 	vector<Chunk> chunks;
-	SDL_AudioCVT	cvt;
 	size_t data_offset=0x1a;
 	bool	last_chunk=false;
 	Uint16	sample_rate;
@@ -142,23 +130,33 @@ Uint8 *Audio::convert_VOC(Uint8 *old_data)
 		switch(old_data[data_offset]&0xff)
 			{
 			case 0:
+#if DEBUG
 				cout << "Terminator" << endl;
+#endif
 				last_chunk=true;
 				continue;
 			case 1:
+#if DEBUG
 				cout << "Sound data" << endl;
+#endif
 				l=(old_data[3+data_offset]&0xff)<<16;
 				l|=(old_data[2+data_offset]&0xff)<<8;
 				l|=(old_data[1+data_offset]&0xff);
+#if DEBUG
 				cout << "Chunk length appears to be " << l << endl;
+#endif
 				sample_rate=1000000/(256-(old_data[4+data_offset]&0xff));
+#if DEBUG
 				cout << "Sample rate ("<< sample_rate<<") = _real_rate"<<endl;
 				cout << "compression type " << (old_data[5+data_offset]&0xff) << endl;
 				cout << "Channels " << (old_data[6+data_offset]&0xff) << endl;
+#endif
 				chunk_length=l+4;
 				break;
 			case 2:
+#if DEBUG
 				cout << "Sound continues" << endl;
+#endif
 				l=(old_data[3+data_offset]&0xff)<<16;
 				l|=(old_data[2+data_offset]&0xff)<<8;
 				l|=(old_data[1+data_offset]&0xff);
@@ -166,7 +164,9 @@ Uint8 *Audio::convert_VOC(Uint8 *old_data)
 				chunk_length=l+4;
 				break;
 			case 3:
+#if DEBUG
 				cout << "Silence" << endl;
+#endif
 				chunk_length=0;
 				break;
 			default:
@@ -176,39 +176,26 @@ Uint8 *Audio::convert_VOC(Uint8 *old_data)
 
 		if(chunk_length==0)
 			break;
-	if(SDL_BuildAudioCVT(&cvt,AUDIO_U8,1,sample_rate,wanted.format,1,wanted.freq)!=0)
+	// Quick rendering to stereo
+	// Double the frequency while we're at it
+	l-=(TRAILING_VOC_SLOP+LEADING_VOC_SLOP);
+	Uint8 *stereo_data=new Uint8[l*4];
+	for(size_t i=LEADING_VOC_SLOP,j=0;i<l+LEADING_VOC_SLOP;i++)
 		{
-		cerr << "SDL cannot convert formats" << endl;
+		stereo_data[j++]=old_data[i];
+		stereo_data[j++]=old_data[i];
+		stereo_data[j++]=old_data[i];
+		stereo_data[j++]=old_data[i];
 		}
-	else
-		{
-		cout << "Conversion desriptor built:"<< endl<<
-			"Format: " << cvt.src_format << " -> " << cvt.dst_format << endl <<
-			"Channels: " << 1 << " -> " << 1 << endl <<
-			"Rate: " << sample_rate << " -> " << wanted.freq << endl ;
-			cout << "Rate incr: " << cvt.rate_incr << endl ;
-		}
-
-		cvt.len=l-TRAILING_VOC_SLOP;
-		cvt.buf=new Uint8[cvt.len*cvt.len_mult];
-		memcpy(cvt.buf,old_data+6+data_offset,l-TRAILING_VOC_SLOP);
-		if(cvt.rate_incr)
-			{
-			if(SDL_ConvertAudio(&cvt)!=0)
-				{
-				cerr << "Actual sample conversion didn't work" << endl;
-				}
-			}
-		else
-			cvt.len_cvt=cvt.len;
-			
+	l*=4;
 		Chunk	c;
-		c.data=cvt.buf;
-		c.length=cvt.len_cvt;
+		c.data=stereo_data;
+		c.length=l;
 		chunks.push_back(c);
 		data_offset+=chunk_length;
 	}
 	Uint8 *single_buffer=chunks_to_block(chunks);
+	visible_len=l;
 	return single_buffer;
 }
 
@@ -218,136 +205,91 @@ void	Audio::play(Uint8 *sound_data,Uint32 len,bool wait)
 	bool	own_audio_data=false;
 	if(!strncmp((const char *)sound_data,"Creative Voice File",19))
 		{
-		sound_data=convert_VOC(sound_data);
+		sound_data=convert_VOC(sound_data,len);
 		own_audio_data=true;
 		}
-#if 0
-	SDL_LockAudio();
-	Uint32	offset=0;
-	Uint32	walk,first=buffers.now_playing+1;
-	if(first==ringsize)
-		first=0;
-	Uint32 blen=buffers.buffer_length;
-	Uint32	rlen;
-	walk=first;
-	while(len&&walk!=buffers.now_playing)
-		{
-		// cout << (unsigned long)buffers.buffer[8] << endl;
-			rlen=len>blen?blen:len;
-			if(buffers.num_samples[walk]==0)
-			{
-			memset(buffers.buffer[walk],wanted.silence,blen);
-			memcpy(buffers.buffer[walk],sound_data+offset,rlen);
-			}
-		else
-		if(buffers.num_samples[walk]<8)
-			{
-			SDL_MixAudio(buffers.buffer[walk],sound_data+offset,rlen,SDL_MIX_MAXVOLUME);
-			}
-		else
-			{
-			++walk;
-			if(walk==ringsize)
-				walk=0;
-			continue;
-			}
-		len-=rlen; offset+=rlen;
-		++buffers.num_samples[walk];
-		++walk;
-		if(walk==ringsize)
-			walk=0;
-		}
-	if(!buffers.data_ready())
-		{
-		// cout << "Start sound buffer: " << first << endl;
-		buffers.now_playing=first;
-		audio_chunk=buffers.buffer[buffers.now_playing];
-		audio_pos=audio_chunk;
-		audio_len=buffers.buffer_length;
-		SDL_PauseAudio(0);
-		}
-	SDL_UnlockAudio();
-	
 
-	if(wait)
-		{
-		// cout << "Wait sound buffer: " << walk << endl;
-         while ( buffers.now_playing!=walk-1 ) {
-                 SDL_Delay(100);         /* Sleep 1/10 second */
-         }
-		}
-	if(own_audio_data)
-		delete [] sound_data;
-#else
 	mixer->play(sound_data,len);
 	if(own_audio_data)
 		delete [] sound_data;
-#endif
 }
 
 void	Audio::mix(Uint8 *sound_data,Uint32 len)
 {
+	mixer->play(sound_data,len);
 }
 
 static	size_t calc_sample_buffer(Uint16 _samplerate)
 {
 	Uint32 _buffering_unit=1;
-	// while(_buffering_unit<_samplerate/10)
-		// _buffering_unit<<=1;
-	_buffering_unit=128;
+	while(_buffering_unit<_samplerate/10U)
+		_buffering_unit<<=1;
+	// _buffering_unit=128;
 	return _buffering_unit;
 }
 	
-Audio::Audio()
+void Audio::Init()
 {
 	Uint16 _rate=11025;
 	int	_channels=2;
 	Uint32 _buffering_unit=calc_sample_buffer(_rate);
 	// Initialise the speech vectors
 	build_speech_vector();
+	midi=new MyMidiPlayer();
          
-SDL_Init(SDL_INIT_AUDIO);
 
          /* Set the audio format */
          wanted.freq = _rate;
          wanted.format = AUDIO_U8;
          wanted.channels = _channels;    /* 1 = mono, 2 = stereo */
          wanted.samples = _buffering_unit/_channels;  /* Good low-latency value for callback */
+#if DEBUG
          cout << "Stream buffer = " << wanted.samples << endl;
+#endif
          wanted.callback = fill_audio;
          wanted.userdata = NULL;
 
          /* Open the audio device, forcing the desired format */
-         if ( SDL_OpenAudio(&wanted, NULL) < 0 ) {
+         if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
                  fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
          }
-	mixer=new Mixer(_buffering_unit,ringsize,wanted.silence);
+	mixer=new Mixer(_buffering_unit,ringsize,actual.silence);
 }
 
-Audio::Audio(int _samplerate,int _channels)	
+Audio::Audio() : midi(0)
+{}
+
+void Audio::Init(int _samplerate,int _channels)	
 {
+	// This conveniently and silently fails if you're
+	// not me, but saves me a heap of time when I'm testing.
+	// &&&& Take it out one day
 	chdir("/home/dancer/projects/exult/u7");
 	// Initialise the speech vectors
 	Uint32 _buffering_unit=calc_sample_buffer(_samplerate);
 	build_speech_vector();
+	midi=new MyMidiPlayer();
          
-SDL_Init(SDL_INIT_AUDIO);
 
          /* Set the audio format */
          wanted.freq = _samplerate;
          wanted.format = AUDIO_U8;
          wanted.channels = _channels;    /* 1 = mono, 2 = stereo */
          wanted.samples = _buffering_unit/_channels;  /* Good low-latency value for callback */
+#if DEBUG
          cout << "Stream buffer = " << wanted.samples << endl;
+#endif
          wanted.callback = fill_audio;
          wanted.userdata = NULL;
 
          /* Open the audio device, forcing the desired format */
-         if ( SDL_OpenAudio(&wanted, NULL) < 0 ) {
+         if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
                  fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
          }
+#if DEBUG
 	cout << "Audio system assembled. Ring buffers at "<<_buffering_unit<<endl;
-	mixer=new Mixer(_buffering_unit,ringsize,wanted.silence);
+#endif
+	mixer=new Mixer(_buffering_unit,ringsize,actual.silence);
 	debug_speech();
 }
 
@@ -391,7 +333,8 @@ bool	Audio::playing(void)
 
 void	Audio::start_music(int num)
 {
-	midi.start_music(num);
+	if(midi)
+		midi->start_music(num);
 }
 
 static void	load_buffer(char *buffer,const char *filename,size_t start,size_t len)
@@ -433,44 +376,5 @@ void	Audio::start_speech(Flex *f,int num,bool wait)
 void	Audio::build_speech_vector(void)
 {
 	speech_tracks=AccessFlexFile("static/u7speech.spc");
-	return;
-#if 0
-        FILE    *fp=fopen("static/u7speech.spc","rb");
-        if(!fp)
-                {
-                perror("fopen");
-                exit(1);
-                }
-        fseek(fp,0L,SEEK_END);
-        size_t  filesize=ftell(fp);
-        fseek(fp,0L,SEEK_SET);
-        cout << "Speech file is " << filesize << " bytes long" << endl;
-        char    *buf=new char[filesize];
-        fread(buf,filesize,1,fp);
-        fclose(fp);
-
-        for(size_t i=0;i<filesize-8;i++)
-        	{
-	  if(!memcmp(buf+i,"Creative",8))
-          	{
-            SpeechPos	sp;
-            sp.pos=i;
-            speech_tracks.push_back(sp);
-            }
-          }
-        cout << "Finished search"<<endl;
-        cout << "Number of discrete samples located: " << speech_tracks.size() << endl;
-        cout << "Fixing up lengths"<<endl;
-        for(size_t i=0;i<speech_tracks.size()-1;i++)
-        	{
-        	// do { ++speech_tracks[i].pos; } while ((buf[speech_tracks[i].pos]&0xff)!=0x80);
-		speech_tracks[i].pos+=48;
-        	speech_tracks[i].len=speech_tracks[i+1].pos-speech_tracks[i].pos;
-        	speech_tracks[i].len-=32;
-        	}
-        cout << "Length fixed and headers passed over." << endl;
-        cout << "Discarding temporary audio buffer" << endl;
-        delete [] buf;
-#endif
 }
 
