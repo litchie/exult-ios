@@ -204,7 +204,8 @@ public:
 	void init_shape_notebook(Shape_info& info, GtkWidget *book, 
 							int shnum, int frnum);
 	void save_shape_notebook(Shape_info& info, int shnum, int frnum);
-	void open_shape_window(int shnum, int frnum, Vga_file *ifile,
+	void open_shape_window(int shnum, int frnum, 
+			Shape_file_info *file_info,
 					char *shname, Shape_info *info = 0);
 	void save_shape_window();
 	void close_shape_window();
