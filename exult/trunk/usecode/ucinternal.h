@@ -356,7 +356,6 @@ class Usecode_internal : public Usecode_machine
 	const char *get_user_choice();	// Get user's choice.
 	int get_user_choice_num();
 	void read_usevars(std::istream& in);	// Read static variables.
-	void link_party();		// Set party's id's.
 
 	Game_object *intercept_item;
 	Game_object *temp_to_be_deleted;
@@ -405,15 +404,6 @@ public:
 	Usecode_value* peek_stack(int depth) const;
 	void poke_stack(int depth, Usecode_value& val);
 #endif
-
-private:
-
-					// Add/remove party member.
-	bool add_to_party(Actor *npc);
-	bool remove_from_party(Actor *npc);
-	int in_dead_party(Actor *npc);
-	bool add_to_dead_party(Actor *npc);
-	bool remove_from_dead_party(Actor *npc);
 public:
 	friend class Usecode_script;
 	Usecode_internal();
@@ -423,7 +413,6 @@ public:
 					// Call desired function.
 	virtual int call_usecode(int id, Game_object *obj, 
 							Usecode_events event);
-	virtual void update_party_status(Actor *npc);
 	virtual void do_speech(int num);// Start speech, or show text.
 	virtual int in_usecode()	// Currently in a usecode function?
 		{ return !call_stack.empty(); }

@@ -64,6 +64,7 @@
 #include "stackframe.h"
 #include "ucfunction.h"
 #include "effects.h"
+#include "party.h"
 
 #if (defined(USE_EXULTSTUDIO) && defined(USECODE_DEBUGGER))
 #include "server.h"
@@ -731,8 +732,6 @@ void Usecode_internal::remove_item
 	obj->remove_this();
 	}
 
-#define PARTY_MAX (sizeof(party)/sizeof(party[0]))
-
 /*
  *	Return an array containing the party, with the Avatar first.
  */
@@ -741,14 +740,15 @@ Usecode_value Usecode_internal::get_party
 	(
 	)
 	{
-	Usecode_value arr(1 + party_count, 0);
+	int cnt = partyman->get_count();
+	Usecode_value arr(1 + cnt, 0);
 					// Add avatar.
 	Usecode_value aval(gwin->get_main_actor());
 	arr.put_elem(0, aval);	
 	int num_added = 1;
-	for (int i = 0; i < party_count; i++)
+	for (int i = 0; i < cnt; i++)
 		{
-		Game_object *obj = gwin->get_npc(party[i]);
+		Game_object *obj = gwin->get_npc(partyman->get_member(i));
 		if (!obj)
 			continue;
 		Usecode_value val(obj);
@@ -2568,149 +2568,6 @@ int Usecode_internal::call_usecode
 	}
 
 /*
- *	Add NPC to party.
- *
- *	Output:	false if no room or already a member.
- */
-
-bool Usecode_internal::add_to_party
-	(
-	Actor *npc			// (Should not be the Avatar.)
-	)
-	{
-	const int maxparty = sizeof(party)/sizeof(party[0]);
-	if (!npc || party_count == maxparty || npc->is_in_party())
-		return false;
-	remove_from_dead_party(npc);	// Just to be sure.
-	npc->set_party_id(party_count);
-	npc->set_flag (Obj_flags::in_party);
-					// We can take items.
-	npc->set_flag_recursively(Obj_flags::okay_to_take);
-	party[party_count++] = npc->get_npc_num();
-	return true;
-	}
-
-/*
- *	Remove party member.
- *
- *	Output:	false if not found.
- */
-
-bool Usecode_internal::remove_from_party
-	(
-	Actor *npc
-	)
-	{
-	if (!npc)
-		return false;
-	int id = npc->get_party_id();
-	if (id == -1)			// Not in party?
-		return false;
-	int npc_num = npc->get_npc_num();
-	if (party[id] != npc_num)
-		{
-		cout << "Party mismatch!!" << endl;
-		return false;
-		}
-					// Shift the rest down.
-	for (int i = id + 1; i < party_count; i++)
-		{
-		Actor *npc2 = gwin->get_npc(party[i]);
-		if (npc2)
-			npc2->set_party_id(i - 1);
-		party[i - 1] = party[i];
-		}
-	npc->clear_flag (Obj_flags::in_party);
-	party_count--;
-	party[party_count] = 0;
-	npc->set_party_id(-1);
-	return true;
-	}
-
-/*
- *	Find index of NPC in dead party list.
- *
- *	Output:	Index, or -1 if not found.
- */
-
-int Usecode_internal::in_dead_party
-	(
-	Actor *npc
-	)
-	{
-	int num = npc->get_npc_num();
-	for (int i = 0; i < dead_party_count; i++)
-		if (dead_party[i] == num)
-			return i;
-	return -1;
-	}
-
-/*
- *	Add NPC to dead party list.
- *
- *	Output:	false if no room or already a member.
- */
-
-bool Usecode_internal::add_to_dead_party
-	(
-	Actor *npc			// (Should not be the Avatar.)
-	)
-	{
-	const int maxparty = sizeof(dead_party)/sizeof(dead_party[0]);
-	if (!npc || dead_party_count == maxparty || in_dead_party(npc) >= 0)
-		return false;
-	dead_party[dead_party_count++] = npc->get_npc_num();
-	return true;
-	}
-
-/*
- *	Remove NPC from dead party list.
- *
- *	Output:	false if not found.
- */
-
-bool Usecode_internal::remove_from_dead_party
-	(
-	Actor *npc
-	)
-	{
-	if (!npc)
-		return false;
-	int id = in_dead_party(npc);	// Get index.
-	if (id == -1)			// Not in list?
-		return false;
-	int npc_num = npc->get_npc_num();
-					// Shift the rest down.
-	for (int i = id + 1; i < dead_party_count; i++)
-		dead_party[i - 1] = dead_party[i];
-	dead_party_count--;
-	dead_party[dead_party_count] = 0;
-	return true;
-	}
-
-/*
- *	Update party status of an NPC that has died or been resurrected.
- */
-
-void Usecode_internal::update_party_status
-	(
-	Actor *npc
-	)
-	{
-	if (npc->is_dead())		// Dead?
-		{
-					// Move party members to dead list.
-		if (remove_from_party(npc))
-			add_to_dead_party(npc);
-		}
-	else				// Alive.
-		{
-		if (remove_from_dead_party(npc))
-			add_to_party(npc);
-		}
-	}
-
-/*
  *	Start speech, or show text if speech isn't enabled.
  */
 
@@ -2763,10 +2620,10 @@ void Usecode_internal::write
 	out.write((char*)gflags, sizeof(gflags));
 	out.close();
 	U7open(out, USEDAT);
-	Write2(out, party_count);	// Write party.
+	Write2(out, partyman->get_count());	// Write party.
 	size_t i;	// Blame MSVC
-	for (i = 0; i < sizeof(party)/sizeof(party[0]); i++)
-		Write2(out, party[i]);
+	for (i = 0; i < EXULT_PARTY_MAX; i++)
+		Write2(out, partyman->get_member(i));
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		Write4(out, timers[t]);
@@ -2848,15 +2705,15 @@ void Usecode_internal::read
 		U7open(in, USEDAT);
 	}
 	catch(exult_exception &e) {
-		party_count = 0;
-		link_party();		// Still need to do this.
+		partyman->set_count(0);
+		partyman->link_party();	// Still need to do this.
 		return;			// Not an error if no saved game yet.
 	}
-	party_count = Read2(in);	// Read party.
+	partyman->set_count(Read2(in));	// Read party.
 	size_t i;	// Blame MSVC
-	for (i = 0; i < sizeof(party)/sizeof(party[0]); i++)
-		party[i] = Read2(in);
-	link_party();
+	for (i = 0; i < EXULT_PARTY_MAX; i++)
+		partyman->set_member(i, Read2(in));
+	partyman->link_party();
 					// Timers.
 	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		timers[t] = Read4(in);
@@ -2911,57 +2768,6 @@ void Usecode_internal::read_usevars
 		}
 	delete [] buf;
 	}
-
-/*
- *	In case NPC's were read after usecode, set party members' id's, and
- *	move dead members into separate list.
- */
-
-void Usecode_internal::link_party
-	(
-	)
-	{
-	// avatar is a party member too
-	gwin->get_main_actor()->set_flag(Obj_flags::in_party);
-					// You own your own stuff.
-	gwin->get_main_actor()->set_flag_recursively(Obj_flags::okay_to_take);
-	const int maxparty = sizeof(party)/sizeof(party[0]);
-	int tmp_party[maxparty];
-	int tmp_party_count = party_count;
-	int i;
-	for (i = 0; i < maxparty; i++)
-		tmp_party[i] = party[i];
-	party_count = dead_party_count = 0;
-					// Now process them.
-	for (i = 0; i < tmp_party_count; i++)
-		{
-		Actor *npc = gwin->get_npc(party[i]);
-		int oldid;
-		if (!npc ||		// Shouldn't happen!
-					// But this has happened:
-		    ((oldid = npc->get_party_id()) >= 0 && 
-							oldid < party_count))
-			continue;	// Skip bad entry.
-		int npc_num = npc->get_npc_num();
-		if (npc->is_dead())	// Put dead in special list.
-			{
-			npc->set_party_id(-1);
-			if (dead_party_count >= 
-				    sizeof(dead_party)/sizeof(dead_party[0]))
-				continue;
-			dead_party[dead_party_count++] = npc_num;
-			continue;
-			}
-		npc->set_party_id(party_count);
-		party[party_count++] = npc_num;
-// ++++This messes up places where they should wait, and should be unnecessary.
-//		npc->set_schedule_type(Schedule::follow_avatar);
-					// We can use all his/her items.
-		npc->set_flag_recursively(Obj_flags::okay_to_take);
-		npc->set_flag (Obj_flags::in_party);
-		}
-	}
-
 
 #ifdef USECODE_DEBUGGER
 

@@ -1,3 +1,8 @@
+2003-04-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* party.h,party.cc,etc:  Moved party handler to new file/class,
+	which will possibly be used to implement 'formation' following later.
+
 2003-03-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/objnames.cc: Check that index is within valid list of names.

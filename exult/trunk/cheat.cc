@@ -29,7 +29,7 @@
 #include "gamewin.h"
 #include "gameclk.h"
 #include "gamemap.h"
-#include "ucmachine.h"
+#include "party.h"
 #include "Configuration.h"
 #include "game.h"
 #include "actors.h"
@@ -774,15 +774,15 @@ void Cheat::heal_party (void) const {
 	if (!enabled) return;
 
 	int	i;	// for MSVC
-	Usecode_machine *uc = gwin->get_usecode();
+	Party_manager *partyman = gwin->get_party_man();
 				// NOTE:  dead_party_count decrs. as we
 				//   resurrect.
-	int count = uc->get_dead_party_count();
+	int count = partyman->get_dead_count();
 	int dead[16];			// Save in separate list.
 	if (count > 16)
 		count = 16;
 	for (i = 0; i < count; i++)
-		dead[i] = uc->get_dead_party_member(i);
+		dead[i] = partyman->get_dead_member(i);
 	for (i = 0; i < count; i++) {
 		int npc_num = dead[i];
 		Dead_body *body = gwin->get_body(npc_num);

@@ -55,6 +55,7 @@
 #include "ucfunction.h"
 #include "palette.h"
 #include "stackframe.h"
+#include "party.h"
 
 using std::cerr;
 using std::cout;
@@ -419,7 +420,7 @@ USECODE_INTRINSIC(add_to_party)
 {
 	// NPC joins party.
 	Actor *npc = as_actor(get_item(parms[0]));
-	if (!add_to_party(npc))
+	if (!partyman->add_to_party(npc))
 		return no_ret;		// Can't add.
 	npc->set_schedule_type(Schedule::follow_avatar);
 // cout << "NPC " << npc->get_npc_num() << " added to party." << endl;
@@ -430,7 +431,7 @@ USECODE_INTRINSIC(remove_from_party)
 {
 	// NPC leaves party.
 	Game_object *npc = get_item(parms[0]);
-	remove_from_party(as_actor(npc));
+	partyman->remove_from_party(as_actor(npc));
 	return no_ret;
 }
 
@@ -1969,8 +1970,8 @@ USECODE_INTRINSIC(nap_time)
 			}
 		if (it != npcs.end())
 			{		// Show party member's face.
-			int party_cnt = get_party_count();
-			int npcnum = party_cnt ? get_party_member(
+			int party_cnt = partyman->get_count();
+			int npcnum = party_cnt ? partyman->get_member(
 						rand()%party_cnt) : 356;
 			Usecode_value actval(-npcnum), frval(0);
 			show_npc_face(actval, frval);
@@ -2298,10 +2299,12 @@ USECODE_INTRINSIC(center_view)
 USECODE_INTRINSIC(get_dead_party)
 {
 	// Return list of dead companions' bodies.
-	Usecode_value ret(dead_party_count, 0);
-	for (int i = 0; i < dead_party_count; i++)
+	int cnt = partyman->get_dead_count();
+	Usecode_value ret(cnt, 0);
+	for (int i = 0; i < cnt; i++)
 		{
-		Game_object *body = gwin->get_body(dead_party[i]);
+		Game_object *body = gwin->get_body(
+					partyman->get_dead_member(i));
 					// Body within 50 tiles (a guess)?
 		if (body && body->distance(gwin->get_main_actor()) < 50)
 			{

@@ -54,6 +54,7 @@
 #include "npctime.h"
 #include "ready.h"
 #include "ucmachine.h"
+#include "party.h"
 #include "monstinf.h"
 #include "exult_constants.h"
 #include "monsters.h"
@@ -3175,7 +3176,7 @@ void Actor::die
 	    alignment != neutral && alignment != friendly)
 		Combat_schedule::monster_died();
 					// Move party member to 'dead' list.
-	ucmachine->update_party_status(this);
+	partyman->update_party_status(this);
 	}
 
 /*
@@ -3271,7 +3272,7 @@ Actor *Actor::resurrect
 	Actor::clear_flag(Obj_flags::dead);
 	Actor::clear_flag(Obj_flags::asleep);
 					// Restore to party if possible.
-	ucmachine->update_party_status(this);
+	partyman->update_party_status(this);
 					// Give a reasonable schedule.
 	set_schedule_type(is_in_party() ? Schedule::follow_avatar
 					: Schedule::loiter);
@@ -3313,10 +3314,10 @@ void Main_actor::get_followers
 	(
 	)
 	{
-	int cnt = ucmachine->get_party_count();
+	int cnt = partyman->get_count();
 	for (int i = 0; i < cnt; i++)
 		{
-		Actor *npc = gwin->get_npc(ucmachine->get_party_member(i));
+		Actor *npc = gwin->get_npc(partyman->get_member(i));
 		if (!npc || npc->get_flag(Obj_flags::asleep) ||
 		    npc->is_dead())
 			continue;

@@ -81,6 +81,7 @@
 #include "version.h"
 #include "drag.h"
 #include "glshape.h"
+#include "party.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -309,6 +310,7 @@ Game_window::Game_window
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(new Effects_manager(this)), 
 	    gump_man(new Gump_manager), render(new Game_render),
+	    party_man(new Party_manager),
 	    painted(false), focus(true), 
 	    in_dungeon(0), ice_dungeon(false),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
@@ -408,6 +410,7 @@ Game_window::~Game_window
 		delete [] save_names[i];
 	delete shape_man;
 	delete gump_man;
+	delete party_man;
 	delete background_noise;
 	delete tqueue;
 	delete win;
@@ -628,10 +631,10 @@ void Game_window::toggle_combat
 	combat = !combat;
 					// Change party member's schedules.
 	int newsched = combat ? Schedule::combat : Schedule::follow_avatar;
-	int cnt = usecode->get_party_count();
+	int cnt = party_man->get_count();
 	for (int i = 0; i < cnt; i++)
 		{
-		int party_member=usecode->get_party_member(i);
+		int party_member=party_man->get_member(i);
 		Actor *person=get_npc(party_member);
 		if (!person)
 			continue;
@@ -1723,10 +1726,10 @@ void Game_window::teleport_party
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
 	set_all_dirty();
 
-	int cnt = usecode->get_party_count();
+	int cnt = party_man->get_count();
 	for (int i = 0; i < cnt; i++)
 		{
-		int party_member=usecode->get_party_member(i);
+		int party_member=party_man->get_member(i);
 		Actor *person = get_npc(party_member);
 		if (person && !person->is_dead() && 
 		    person->get_schedule_type() != Schedule::wait)
@@ -1766,10 +1769,10 @@ int Game_window::get_party
 	int n = 0;
 	if (avatar_too && main_actor)
 		list[n++] = main_actor;
-	int cnt = usecode->get_party_count();
+	int cnt = party_man->get_count();
 	for (int i = 0; i < cnt; i++)
 		{
-		int party_member = usecode->get_party_member(i);
+		int party_member = party_man->get_member(i);
 		Actor *person = get_npc(party_member);
 		if (person)
 			list[n++] = person;
