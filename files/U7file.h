@@ -5,6 +5,9 @@
 #include <string>
 #include <map>
 
+using namespace std;
+
+
 class	U7file
 	{
 protected:

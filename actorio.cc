@@ -118,7 +118,7 @@ void Actor::write
 	{
 	unsigned char buf4[4];		// Write coords., shape, frame.
 	Game_object::write_common_ireg(buf4);
-	nfile.write(buf4, sizeof(buf4));
+	nfile.write((char*)buf4, sizeof(buf4));
 					// Inventory flag.
 	Write2(nfile, get_last_object() ? 1 : 0);
 			// Superchunk #.

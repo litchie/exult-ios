@@ -33,8 +33,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <SDL_audio.h>
 #include <SDL_timer.h>
 #include <csignal>
-#include <sys/types.h>
-#include <sys/stat.h>
+#if defined(MACOS)
+  #include <stat.h>
+#else
+  #include <sys/stat.h>
+  #include <sys/types.h>
+#endif
 #include <fcntl.h>
 #include <iostream>
 #include <cstdlib>
@@ -64,7 +68,7 @@ void fill_audio(void *udata, Uint8 *stream, int len)
 
 void	Mixer::advance(void)
 {
-	MixBuffer m=buffers.front();
+	MixBuffer m(buffers.front());
 	buffers.pop_front();
 	m.length=0;
 	m.num_samples=0;
@@ -119,7 +123,7 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 		memset(temp_buffer,silence,len);
 		while((len-sofar))
 			{
-			int ret=read(auxilliary_audio,temp_buffer+sofar,len-sofar);
+			int ret=read(auxilliary_audio,(char*)temp_buffer+sofar,len-sofar);
 			if(ret==-1)
 				break;
 			sofar+=ret;

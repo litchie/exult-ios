@@ -1,7 +1,11 @@
 #ifndef	__PathFinder_h_
 #define	__PathFinder_h_
 
+#ifdef MACOS
+#include "tiles.h"
+#else
 #include "../tiles.h"
+#endif
 
 /*
  *	This class provides A* cost methods.

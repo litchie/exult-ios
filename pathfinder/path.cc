@@ -161,7 +161,7 @@ public:
 			}
 #if VERIFYCHAIN
 		if (!verify_chain(last))
-			cout << "Bad chain after adding.\n";
+			cout << "Bad chain after adding." << endl;
 #endif
 		}
 					// Remove this from its chain.
@@ -169,7 +169,7 @@ public:
 		{
 #if VERIFYCHAIN
 		if (!verify_chain(last))
-			cout << "Bad chain before removing.\n";
+			cout << "Bad chain before removing." << endl;
 #endif
 		if (priority_next == this)
 					// Only one in chain?
@@ -195,7 +195,7 @@ public:
 		priority_next = 0;	// No longer in 'open'.
 #if VERIFYCHAIN
 		if (!verify_chain(last, 1))
-			cout << "Bad chain after removing.\n";
+			cout << "Bad chain after removing." << endl;
 #endif
 		}
 					// Remove 1st from a priority chain.
@@ -351,7 +351,7 @@ Tile_coord *Find_path
 		if (tracing)
 			cout << "Goal: (" << goal.tx << ", " << goal.ty <<
 			"), Node: (" << node->get_tile().tx << ", " <<
-			node->get_tile().ty << ")\n";
+			node->get_tile().ty << ")" << endl;
 		Tile_coord curtile = node->get_tile();
 		if (client->at_goal(curtile, goal))
 					// Success.
