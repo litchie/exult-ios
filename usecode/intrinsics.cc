@@ -969,13 +969,19 @@ USECODE_INTRINSIC(display_map)
 		int tx, ty, z, xx, yy;
 		gwin->get_main_actor()->get_abs_tile(tx, ty, z);
 
-		//the 5 and 10 below are the map-borders, 3072 dimensions of the world
-		//the +1 seems to improve the location, maybe something to do with "/3072" ?
-		xx = ((tx * (map->get_width() - 10)) / 3072) + (5 + x - map->get_xleft()) + 1;
-		yy = ((ty * (map->get_height() - 10)) / 3072) + (5 + y - map->get_yabove()) + 1;
+		// these may need some tweaking for SI
+		int border = (Game::get_game_type()==SERPENT_ISLE ? 12 : 5);
+		const int worldsize = c_tiles_per_chunk * c_num_chunks;
+		int correction = (Game::get_game_type()==SERPENT_ISLE ? 0 : 1);
+		int correctx = (Game::get_game_type()==SERPENT_ISLE ? 9 : 0);
+		int correcty = (Game::get_game_type()==SERPENT_ISLE ? 0 : 0);
+		int correctscale = (Game::get_game_type()==SERPENT_ISLE ? 10 : 0);
+		
+		xx = ((tx * (map->get_width() - border*2 + correctscale)) / worldsize) + (border + x - map->get_xleft()) + correction + correctx;
+		yy = ((ty * (map->get_height() - border*2 + correctscale)) / worldsize) + (border + y - map->get_yabove()) + correction + correcty;
 
 		gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
-		gwin->get_win()->fill8(255, 5, 1, xx - 2, yy); // ++++++ is this the right yellow?
+		gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
 	}
 
 	gwin->show(1);
