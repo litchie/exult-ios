@@ -163,8 +163,9 @@ public:
 					// Add value(s) to an array.
 	int add_values(int index, Usecode_value& val2);
 	void print(std::ostream& out);	// Print in ASCII.
-
-
+					// Save/restore.
+	int save(unsigned char *buf, int len);
+	bool restore(unsigned char *buf, int len);
 	};
 
 #endif

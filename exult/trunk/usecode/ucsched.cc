@@ -41,6 +41,29 @@ int Scheduled_usecode::count = 0;
 Scheduled_usecode *Scheduled_usecode::first = 0;
 
 /*
+ *	Create for a 'restore'.
+ */
+
+Scheduled_usecode::Scheduled_usecode
+	(
+	Game_object *item, 
+	Usecode_value& aval, 
+	int findex,
+	int nhalt, 
+	int del
+	) : obj(item), objval(item), arrval(aval), i(0), frame_index(findex), 
+	    no_halt(nhalt), delay(del)
+	{
+	cnt = arrval.get_array_size();
+	count++;			// Keep track of total.
+	next = first;			// Put in chain.
+	prev = 0;
+	if (first)
+		first->prev = this;
+	first = this;
+	}
+
+/*
  *	Create.
  */
 
@@ -49,7 +72,8 @@ Scheduled_usecode::Scheduled_usecode
 	Usecode_internal *usecode,
 	Usecode_value& oval, 
 	Usecode_value& aval
-	) : objval(oval), arrval(aval), i(0), frame_index(0), no_halt(0)
+	) : objval(oval), arrval(aval), i(0), frame_index(0), no_halt(0),
+	    delay(0)
 	{
 	cnt = arrval.get_array_size();
 	obj = usecode->get_item(objval);
@@ -74,8 +98,6 @@ Scheduled_usecode::Scheduled_usecode
 		}
 	objpos = obj ? obj->get_abs_tile_coord() : Tile_coord(-1, -1, -1);
 					// Not an array?
-	if (!cnt && !arrval.is_array())
-		cnt = 1;		// Get_elem0 works for non-arrays.
 	count++;			// Keep track of total.
 	next = first;			// Put in chain.
 	prev = 0;
@@ -104,6 +126,18 @@ Scheduled_usecode *Scheduled_usecode::find
 	return (0);
 	}
 
+/*
+ *	Remove all from global list (assuming they've already been cleared
+ *	from the time queue).
+ */
+
+void Scheduled_usecode::clear
+	(
+	)
+	{
+	while (first)
+		delete first;
+	}
 
 inline void Scheduled_usecode::activate_egg(Usecode_internal *usecode,
 				     Game_object *e, int type)
@@ -407,15 +441,73 @@ void Scheduled_usecode::step
 		barge->face_direction(dir);
 		for (int i = 0; i < 4; i++)
 			{
-			Tile_coord t = obj->get_abs_tile_coord().get_neighbor(dir);
+			Tile_coord t = obj->get_abs_tile_coord().get_neighbor(
+									dir);
 			obj->step(t, 0);
-#if 0	/* ++++Doesn't help SI.  Definitely not for BG. */
-			if (!obj->step(t, 0))
-				{	// Blocked, so try to turn.
-				barge->face_direction((dir - 2 + 8)%8);
-				obj->step(t, 0);
-				}
-#endif
 			}
 		}
 	}
+
+/*
+ *	Save (serialize).
+ *
+ *	Output:	Length written, or -1 if error.
+ */
+
+int Scheduled_usecode::save
+	(
+	unsigned char *buf,
+	int buflen
+	)
+	{
+	unsigned char *ptr = buf;
+	int remaining = cnt - i;
+	Write2(ptr, remaining);		// # of values we'll store.
+	for (int j = i; j < cnt; j++)
+		{
+		Usecode_value& val = arrval.get_elem(j);
+		int len = val.save(ptr, buflen - (ptr - buf));
+		if (len < 0)
+			return -1;
+		ptr += len;
+		}
+	if (ptr - buf < 8)		// Enough room left?
+		return -1;
+	Write2(ptr, frame_index);
+	Write2(ptr, no_halt);
+	Write4(ptr, delay);
+	return (ptr - buf);
+	}
+
+/*
+ *	Restore (serialize).
+ *
+ *	Output:	->entry, which is also stored in our global chain, but is NOT
+ *		added to the time queue yet.
+ */
+
+Scheduled_usecode *Scheduled_usecode::restore
+	(
+	Game_object *item,		// Object this is executed for.
+	unsigned char *buf,
+	int buflen
+	)
+	{
+	unsigned char *ptr = buf;
+	int cnt = Read2(ptr);		// Get # instructions.
+	Usecode_value arrval(cnt, 0);	// Create empty array.
+	for (int i = 0; i < cnt; i++)
+		{
+		Usecode_value& val = arrval.get_elem(i);
+		if (!val.restore(ptr, buflen - (ptr - buf)))
+			return 0;
+		}
+	if (ptr - buf < 8)		// Enough room left?
+		return 0;
+	int frame_index = Read2(ptr);
+	int no_halt = Read2(ptr);
+	int delay = Read4(ptr);
+	return new Scheduled_usecode(item, arrval, frame_index, no_halt, 
+									delay);
+	}
+
