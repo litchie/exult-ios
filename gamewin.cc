@@ -1694,8 +1694,13 @@ void Game_window::write_gwin
 	Write2(gout, clock.get_minute());
 	Write4(gout, special_light);	// Write spell expiration minute.
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
-	Write4(gout, player->get_current_track());
-	Write4(gout, player->is_repeating());
+	if (player) {
+		Write4s(gout, player->get_current_track());
+		Write4s(gout, player->is_repeating());
+	} else {
+		Write4s(gout, -1);
+		Write4s(gout, 0);
+	}
 	gout.flush();
 	if (!gout.good())
 		throw file_write_exception(GWINDAT);

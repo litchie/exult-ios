@@ -1,3 +1,7 @@
+2001-09-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* gamewin.cc: fixed crash when saving with sound disabled
+	* utils.h: added Write4s (s = signed)
+
 2001-09-20  Max Horn  <max@quendi.de>
 	* audio/midi_drivers/mac_midi.cc: made compile with OS X 10.1
 	* files/listfiles.cc: unix implementation of U7ListFiles now properly
