@@ -82,11 +82,22 @@ Game *Game::create_game(const char *static_identity)
 bool Game::wait_delay(int ms)
 {
 	SDL_Event event;
-	if(SDL_PollEvent(&event)) {
-		if((event.type==SDL_KEYDOWN)||(event.type==SDL_MOUSEBUTTONDOWN))
-			return true;
+	int delay;
+	int loops;
+	if(ms<=100) {
+		delay = ms;
+		loops = 1;
+	} else {
+		delay = 50;
+		loops = ms/delay;
 	}
-	SDL_Delay(ms);
+	for(int i=0; i<loops; i++) {
+		if(SDL_PollEvent(&event)) {
+			if((event.type==SDL_KEYDOWN)||(event.type==SDL_MOUSEBUTTONDOWN))
+				return true;
+		}
+		SDL_Delay(delay);
+	}
 	return false;
 }
 
