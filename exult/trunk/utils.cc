@@ -42,7 +42,12 @@ static char *To_upper
 	char *ret = buf;
 	while (*buf)
 		{
+#ifndef BEOS
 		*buf = std::toupper(*buf);
+#else
+//sigh...
+        if ((*buf >= 'a') && (*buf <= 'z')) *buf -= 32;
+#endif         
 		buf++;
 		}
 	return (ret);
