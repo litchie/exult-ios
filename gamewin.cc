@@ -1352,7 +1352,7 @@ void Game_window::reload_usecode
 		{
 		ifstream file;
 		U7open(file, PATCH_USECODE);
-		usecode->read_usecode(file);
+		usecode->read_usecode(file, true);
 		file.close();
 		}
 	}

@@ -1,13 +1,17 @@
 const int avatar = -356;
+const int CURED_CANTRA = 0x47;		// Flag when Cantra is cured.
 
 /*
  *	Cantra.  (I want this to override the original code for her.)
  */
 Cantra 0x440()
 	{
-	if (event != 1)
-		return;
 	var cantra = item;
+	if (event != 1 || !UI_get_item_flag(cantra, 0x1e))
+		{
+		Cantra.original();
+		return;
+		}
 	var i = UI_get_random(4);
 	if (i == 1)
 		cantra.say("I want thy flesh!");

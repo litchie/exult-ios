@@ -363,7 +363,7 @@ class Usecode_internal : public Usecode_machine
 
 	// execution functions
 	bool call_function(int funcid, int event, Game_object *caller = 0,
-					   bool entrypoint = false);
+			   bool entrypoint = false, bool orig = false);
 	void previous_stack_frame();
 	void return_from_function(Usecode_value& retval);
 	void return_from_procedure();
@@ -410,7 +410,7 @@ public:
 	Usecode_internal();
 	~Usecode_internal();
 					// Read in usecode functions.
-	virtual void read_usecode(std::istream& file);
+	virtual void read_usecode(std::istream& file, bool patch = false);
 					// Call desired function.
 	virtual int call_usecode(int id, Game_object *obj, 
 							Usecode_events event);

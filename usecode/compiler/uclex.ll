@@ -174,6 +174,7 @@ event		return EVENT;
 gflags		return FLAG;
 item		return ITEM;
 goto		return GOTO;
+".original"	return ORIGINAL;
 
 					/* Script commands. */
 continue	return CONTINUE;

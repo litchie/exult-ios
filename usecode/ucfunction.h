@@ -31,6 +31,9 @@ class Usecode_function
 	int id;				// The function #.  (Appears to be the
 					//   game item # the function gets
 					//   called for.)
+	Usecode_function *orig;		// If this was from 'patch', orig will
+					//   be the function this replaced (if
+					//   it existed).
 	int len;			// Length.
 
 	bool extended; // is this an 'extented' function? (aka 32 bit function)

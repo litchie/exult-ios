@@ -281,6 +281,8 @@ public:
 class Uc_call_expression : public Uc_expression
 	{
 	Uc_symbol *sym;			// Function or intrinsic.
+	bool original;			// Call original function instead of
+					//   the one from 'patch'.
 	Uc_expression *itemref;		// Non-null for CALLE.
 	Uc_array_expression *parms;
 	Uc_function *function;		// May need function this is in.
@@ -288,9 +290,9 @@ class Uc_call_expression : public Uc_expression
 					//   its value).
 public:
 	Uc_call_expression(Uc_symbol *s, Uc_array_expression *prms,
-					Uc_function *fun)
+					Uc_function *fun, bool orig = false)
 		: sym(s), itemref(0), parms(prms), 
-		  function(fun), return_value(true)
+		  function(fun), original(orig), return_value(true)
 		{  }
 	~Uc_call_expression()
 		{ delete parms; delete itemref; }

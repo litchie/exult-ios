@@ -77,6 +77,7 @@ int Uc_symbol::gen_call
 	(
 	vector<char>& out,
 	Uc_function *fun,
+	bool orig,			// Call original (not one from patch).
 	Uc_expression *itemref,		// Non-NULL for CALLE.
 	Uc_array_expression *parms,	// Parameter list.
 	bool retvalue			// True if a function.
@@ -235,6 +236,7 @@ int Uc_intrinsic_symbol::gen_call
 	(
 	vector<char>& out,
 	Uc_function *fun,
+	bool orig,			// Call original (not one from patch).
 	Uc_expression *itemref,		// Non-NULL for CALLE.
 	Uc_array_expression *parms,	// Parameter list.
 	bool retvalue			// True if a function.
@@ -297,6 +299,7 @@ int Uc_function_symbol::gen_call
 	(
 	vector<char>& out,
 	Uc_function *fun,
+	bool orig,			// Call original (not one from patch).
 	Uc_expression *itemref,		// Non-NULL for CALLE.
 	Uc_array_expression *aparms,	// Actual parameter list.
 	bool /* retvalue */		// True if a function.
@@ -320,7 +323,19 @@ int Uc_function_symbol::gen_call
 			"# parms. passed (%d) doesn't match '%s' count (%d)",
 			parmcnt, get_name(), parms.size());
 		}				
-	if (itemref)			// Doing CALLE?  Push item onto stack.
+	if (orig)
+		{
+		if (!itemref)
+			{
+			Uc_item_expression item;
+			item.gen_value(out);
+			}
+		else
+			itemref->gen_value(out);
+		out.push_back((char) UC_CALLO);
+		Write2(out, usecode_num);	// Use fun# directly.
+		}
+	else if (itemref)	// Doing CALLE?  Push item onto stack.
 		{
 		itemref->gen_value(out);
 		out.push_back((char) UC_CALLE);
