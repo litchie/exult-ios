@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "objs.h"
 #include "vec.h"
+#include "SDL.h"
 
 /*
  *	Get array size.
@@ -381,7 +382,10 @@ void Usecode_machine::show_npc_face
 	{
 	if (gwin->is_npc_text_pending())
 		click_to_continue();
-	int shape = -arg1.get_int_value();
+	Actor *npc = (Actor *) get_item(arg1.get_int_value());
+	if (!npc)
+		return;
+	int shape = npc->get_face_shapenum();
 	int frame = arg2.get_int_value();
 	gwin->show_face(shape, frame);
 	cout << "Show face " << shape << '\n';
@@ -424,6 +428,7 @@ void Usecode_machine::set_item_shape
 		item->set_shape(shape);
 		chunk->add(item);
 		gwin->paint();		// Not sure...
+		gwin->show();		// +++++++
 		}
 	}
 
@@ -441,6 +446,9 @@ void Usecode_machine::set_item_frame
 	int frame = frame_arg.get_int_value();
 	if (item != 0)
 		item->set_frame(frame);
+//+++++Testing
+	gwin->paint();
+	gwin->show();
 	cout << "Set_item_frame: " << item << ", " << frame << '\n';
 	}
 
@@ -481,7 +489,7 @@ int Usecode_machine::npc_in_party
 	Game_object *npc
 	)
 	{
-	if (!npc)
+	if (!npc || !party_count)
 		return (0);
 	int npcnum = npc->get_npc_num();
 cout << "Is npc " << npc << " in party?  ";
@@ -550,8 +558,10 @@ Usecode_value Usecode_machine::get_party
 	for (int i = 0; i < PARTY_MAX && num_added < party_count; i++)
 		if (party[i] != 0)
 			{
-//++++Should this be -npcnum, or ->npc?
-			Usecode_value val(party[i]);
+			Game_object *obj = gwin->get_npc(party[i]);
+			if (!obj)
+				continue;
+			Usecode_value val((long) obj);
 			arr.put_elem(num_added, val);
 			}
 	cout << "Party:  "; arr.print(cout); cout << '\n';
@@ -574,6 +584,7 @@ void Usecode_machine::item_say
 		{
 		Rectangle box = gwin->get_shape_rect(obj);
 		gwin->add_text(str, box.x, box.y);
+		gwin->show();		// Not sure.+++++testing.
 		}
 	}
 
@@ -584,15 +595,21 @@ void Usecode_machine::item_say
 void Usecode_machine::exec_array
 	(
 	Usecode_value& objval,
-	Usecode_value& arrayval		// Contains instructions.
+	Usecode_value& arrayval,	// Contains instructions.
+	int delay			// 10ths?  Guessing!
 	)
 	{
 	Game_object *obj = get_item(objval.get_int_value());
 	if (!obj)
 		return;
+	if (delay)			//+++++Really want to queue this.
+		SDL_Delay(100*delay);
 	int cnt = arrayval.get_array_size();
 	for (int i = 0; i < cnt; i++)	// Go through instructions.
 		{
+					// Let's try to animate.
+		gwin->get_tqueue()->activate(SDL_GetTicks());
+		gwin->show();		// Blit to screen if necessary.
 		Usecode_value& opval = arrayval.get_elem(i);
 		int opcode = opval.get_int_value();
 		switch (opcode)
@@ -621,9 +638,8 @@ void Usecode_machine::exec_array
 		case 0x55:		// Call?
 			{
 			Usecode_value& val = arrayval.get_elem(++i);
-					// +++++For now, event = 1.
-			call_usecode_function(val.get_int_value(), 1,
-							&objval);
+			call_usecode(val.get_int_value(), obj, 
+						internal_exec);
 			break;
 			}
 		case 0x58:		// ?? 1 parm.
@@ -662,6 +678,7 @@ static void Unhandled
 
 Usecode_value Usecode_machine::call_intrinsic
 	(
+	int event,			// Event type.
 	int intrinsic,			// The ID.
 	int num_parms			// # parms on stack.
 	)
@@ -683,11 +700,11 @@ Usecode_value Usecode_machine::call_intrinsic
 		}
 	case 1:				// ??Exec (itemref, array).
 		cout << "Executing intrinsic 1\n";
-		exec_array(parms[0], parms[1]);
+		exec_array(parms[0], parms[1], 0);
 		break;
-	case 2:				// ??Exec (itemref, array, ??)
+	case 2:				// ??Exec (itemref, array, delay?)
 		cout << "Executing intrinsic 2\n";
-		exec_array(parms[0], parms[1]);
+		exec_array(parms[0], parms[1], parms[2].get_int_value());
 					// 3rd parm does what?+++++
 		break;
 	case 3:				// Show NPC face.
@@ -829,6 +846,21 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value((long) gwin->get_main_actor());
 	case 0x23:			// Return array with party members.
 		return (get_party());
+	case 0x24:			// Takes shape, rets. new obj?
+					// Show frames in seq.? (animate?)
+		{
+					// Guessing:
+		Game_object *at = gwin->get_main_actor();
+		Game_object *obj;
+		int shapenum = parms[0].get_int_value();
+		gwin->get_objects(at->get_cx(), at->get_cy())->add(
+			(obj = new Game_object(shapenum, 0, at->get_tx(),
+				at->get_ty(), 0)));
+		gwin->paint();
+		gwin->show();
+		return Usecode_value((long) obj);
+		break;
+		}
 	case 0x25:			// Take itemref, rets. flag.
 		//++++++++++++++++++
 		Unhandled(intrinsic, num_parms, parms);
@@ -934,7 +966,12 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x68:			// Returns 1 if mouse exists.
 		return Usecode_value(1);
 	case 0x6e:			// Takes itemref, returns obj???
+//+++++++++++++++
 					// Maybe it's obj's container???
+		Unhandled(intrinsic, num_parms, parms);
+		break;
+	case 0x6f:			// Animate object (w/ palette?)?
+//+++++++++++++++
 		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x88:			// Get npc flag(item, flag#).
@@ -1102,7 +1139,7 @@ void Usecode_machine::run
 	int event			// Event (??) that caused this call.
 	)
 	{
-	if (debug >= 1)
+	if (debug >= 0)
 		printf("Running usecode %04x with event %d\n", fun->id, event);
 	Usecode_value *save_sp = sp;	// Save TOS.
 	Answers save_answers;		// Save answers list.
@@ -1337,7 +1374,8 @@ void Usecode_machine::run
 			Usecode_value& arr = locals[local4];
 			if (opcode == 0x2e)
 				{	// Initialize loop.
-				int cnt = arr.get_array_size();
+				int cnt = arr.is_array() ?
+					arr.get_array_size() : 1;
 				locals[local2] = Usecode_value(cnt);
 				locals[local1] = Usecode_value(0);
 				}
@@ -1347,7 +1385,8 @@ void Usecode_machine::run
 				ip += offset;
 			else		// Get next element.
 				{
-				locals[local3] = arr.get_elem(next);
+				locals[local3] = arr.is_array() ?
+					arr.get_elem(next) : arr;
 				locals[local1] = Usecode_value(next + 1);
 				}
 			break;
@@ -1390,14 +1429,15 @@ void Usecode_machine::run
 			{
 			offset = Read2(ip);
 			sval = *ip++;	// # of parameters.
-			Usecode_value ival = call_intrinsic(offset, sval);
+			Usecode_value ival = call_intrinsic(event,
+							offset, sval);
 			push(ival);
 			}
 			break;
 		case 0x39:		// CALLI.
 			offset = Read2(ip);
 			sval = *ip++;	// # of parameters.
-			call_intrinsic(offset, sval);
+			call_intrinsic(event, offset, sval);
 			break;
 		case 0x3e:		// PUSH ITEMREF.
 			pushi((long) caller_item);

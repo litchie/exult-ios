@@ -41,12 +41,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "SDL.h"
 #include "SDL_syswm.h"
+#include "Audio.h"
 
 /*
  *	Globals:
  */
 Game_window *gwin = 0;
 unsigned char quitting_time = 0;	// Time to quit.
+Audio audio(9615,1);
 
 /*
  *	Local functions:
@@ -328,7 +330,7 @@ static void Handle_keystroke
 	int shift
 	)
 	{
-	static int shape_cnt = 0x360, shape_frame = 0;
+	static int shape_cnt = 0x9c, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = -1, gump_frame = 0;
 	gwin->end_intro();
@@ -363,7 +365,7 @@ static void Handle_keystroke
 		gwin->paint();
 		break;
 	case SDLK_s:		// Show next shape.
-#if 0
+#if 1
 		shape_frame = 0;
 		if (++shape_cnt == gwin->get_num_shapes())
 			shape_cnt = 0;
