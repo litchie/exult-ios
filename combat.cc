@@ -26,7 +26,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "combat.h"
 #include "gamewin.h"
 #include "actors.h"
-#include "usecode.h"
 #include "paths.h"
 #include "Astar.h"
 #include "actions.h"
@@ -52,16 +51,10 @@ void Combat_schedule::find_opponents
 	if (npc->get_alignment() == Npc_actor::hostile)
 #endif
 		{
-		if (gwin->get_main_actor())
-			opponents.append(gwin->get_main_actor());
-		Usecode_machine *uc = gwin->get_usecode();
-		int cnt = uc->get_party_count();
+		Actor *party[9];
+		int cnt = gwin->get_party(party, 1);
 		for (int i = 0; i < cnt; i++)
-			{
-			Actor *npc = gwin->get_npc(uc->get_party_member(i));
-			if (npc)
-				opponents.append(npc);
-			}
+			opponents.append(party[i]);
 		return;
 		}
 	Slist nearby;			// Get all nearby NPC's.

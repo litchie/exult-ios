@@ -487,6 +487,8 @@ public:
 	void start_actor(int winx, int winy, int speed = 125);
 	void stop_actor();		// Stop main actor.
 	void teleport_party(Tile_coord t);
+					// Get ->party members.
+	int get_party(Actor **list, int avatar_too = 0);
 	void activate_item(int shnum);	// Activate item in party.
 					// Find gump (x, y) is in.
 	Gump_object *find_gump(int x, int y);
