@@ -57,7 +57,7 @@
 
 > 0x01	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
-> 0x02	NEXT	"next\t[%1], [%2], [%3], [%4], %5"	"\t\t\t;"	"next()"	10	{short,short,short,varoffset,offset}	0	0	0	000000
+> 0x02	NEXT	"next\t[%1], [%2], [%3], [%4], %5"	"\t\t\t;"	"for (var%3 in var%4 with var%1 to var%2 atend label%f*_%5)"	10	{short,short,short,varoffset,offset}	0	0	0	000000
 
 TODO: To be done...
 * {varoffset} is the array to loop over.
@@ -176,7 +176,7 @@ Appends a string from the data segment {dataoffset} to the string register.
 
 Pushes the string at {dataoffset} onto the stack.
 
-> 0x1E	ARRC	"arrc\t%1H"	"\t\t\t;"	"arrc(%p,)"	2	{short}	0xFF	1	0	000000
+> 0x1E	ARRC	"arrc\t%1H"	"\t\t\t;"	"[%p,]"	2	{short}	0xFF	1	0	000000
 
 Pops {short} number of elements from the stack, and creates an array of
 them, first off the stack is the first appended to the end of the array
@@ -184,7 +184,7 @@ them, first off the stack is the first appended to the end of the array
 1 would create an array of the form {1, 2, 3}). The created array is then
 appended to the stack.
 
-> 0x1F	PUSHI	"pushi\t%1H"	"\t\t\t; %d1"	"%d1"	2	{short}	0	1	0	000000
+> 0x1F	PUSHI	"pushi\t%1H"	"\t\t\t; %d1"	"0x%1"	2	{short}	0	1	0	000000
 
 Pushes the element {short} to the stack as a signed 16bit integer.
 
@@ -260,6 +260,7 @@ Does something related to conversations. Only occurs (2x) in the usecode
 function handling the 'audition' in Britain. Current implementation
 produces same result as original, although we're unsure of the exact
 function of this opcode.
+(Doesn't push or pop anything)
 
 > 0x32	RTS	"rts"	""	"return rr"	0	{}	0	0	0	100000
 
@@ -281,7 +282,7 @@ book, whatever). Has the side effect of clearing the string register.
 
 > 0x37	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
-> 0x38	CALLIS	"callis\t%i1@%b2"	"\t\t; %1"	"%i1(%p,)"	3	{short,byte}	0xFE 1	0	000000
+> 0x38	CALLIS	"callis\t%i1@%b2"	"\t\t; %1"	"UI_%i1(%p,)"	3	{short,byte}	0xFE 1	0	000000
 
 Calls the intrinsic {short} with {byte} number of parameters popped from the
 stack passed to it. Eg: if you were calling intrinsic 23 (short) with 3 (byte)
@@ -293,7 +294,7 @@ The intrinsic called will return a value on the stack.
 
 The intrinsic called also has the same "event" flag as the caller function.
 
-> 0x39	CALLI	"calli\t%i1@%b2"	"\t\t; %1, %d2"	"%i1(%p,)"	3	{short,byte}	0xFE	0	0	000000
+> 0x39	CALLI	"calli\t%i1@%b2"	"\t\t; %1, %d2"	"UI_%i1(%p,)"	3	{short,byte}	0xFE	0	0	000000
 
 Same as opcode CALLIS (0x38), except no return value.
 
@@ -305,7 +306,7 @@ Same as opcode CALLIS (0x38), except no return value.
 
 > 0x3D	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
-> 0x3E	PUSHITM	"push\titemref"	"\t\t\t;"	"pushitm()"	0	{}	0	1	0	000000
+> 0x3E	PUSHITM	"push\titemref"	"\t\t\t;"	"item"	0	{}	0	1	0	000000
 
 (ucdump & exult call this "push itemref") Pushes the identifier of the item
 (for which the usecode event handler is called) onto the stack.
@@ -323,15 +324,15 @@ it means 'end conversation'.
 
 > 0x41	NULL	"null"	""	"null()"	0	{}	0	0	0	000000
 
-> 0x42	PUSHF	"pushf\tflag:[%1]"	"\t\t\t;"	"UcFlag[%1]"	2	{flag}	0	1	0	000000
+> 0x42	PUSHF	"pushf\tflag:[%1]"	"\t\t\t;"	"gflags[%1]"	2	{flag}	0	1	0	000000
 
 TODO: document
 
-> 0x43	POPF	"popf\tflag:[%1]"	"\t\t;"	"UcFlag[%1] = %p1"	2	{flag}	1	0	0	000000
+> 0x43	POPF	"popf\tflag:[%1]"	"\t\t;"	"gflags[%1] = %p1"	2	{flag}	1	0	0	000000
 
 TODO: document
 
-> 0x44	PUSHB	"pushb\t%b1H"	"\t\t\t; %d1"	"pushb()"	1	{byte}	0	1	0	000000
+> 0x44	PUSHB	"pushb\t%b1H"	"\t\t\t; %d1"	"0x%1"	1	{byte}	0	1	0	000000
 
 (ucdump calls this "pushbi")
 TODO: document
@@ -348,7 +349,7 @@ TODO: document
 {short} == usecode function number to call
 TODO: document
 
-> 0x48	PUSHEID	"push\teventid"	""	"UcEvent"	0	{}	0	1	0	000000
+> 0x48	PUSHEID	"push\teventid"	""	"event"	0	{}	0	1	0	000000
 
 (ucdump & exult calles this "push eventid")
 TODO: document
@@ -359,9 +360,9 @@ TODO: document
 
 Appends second param. to the list in first param.
 
-> 0x4b	POPEID	"pop\teventid"	""	"UcEvent = %p1"	0	{}	1	0	0	000000
+> 0x4b	POPEID	"pop\teventid"	""	"event = %p1"	0	{}	1	0	0	000000
 
-# TODO: Needs more documenting, need to find the pop/push numbers.
+# TODO: Needs more documenting
 (ucdump & exult calls this "pop eventid")
 TODO: document
 
