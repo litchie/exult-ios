@@ -313,7 +313,7 @@ public:
 	USECODE_INTRINSIC_DECL(get_array_size);
 	USECODE_INTRINSIC_DECL(is_pc_inside);
 	USECODE_INTRINSIC_DECL(mouse_exists);
-	USECODE_INTRINSIC_DECL(mystery_2);
+	USECODE_INTRINSIC_DECL(get_container);
 	USECODE_INTRINSIC_DECL(remove_item);
 	USECODE_INTRINSIC_DECL(get_equipment_list);
 	USECODE_INTRINSIC_DECL(advance_time);

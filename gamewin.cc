@@ -527,7 +527,7 @@ void Game_window::read_ireg_objects
 			else
 				obj = new Ireg_game_object(
 				   entry[2], entry[3], tilex, tiley, lift);
-//+++++++++Testing
+//+++++++++Testing.  Fixes crash after splash screen.
 			int num_frames = shapes.get_num_frames(shapeid);
 			if (obj->get_framenum() >= num_frames)
 				obj->set_frame(num_frames - 1);
@@ -538,12 +538,6 @@ void Game_window::read_ireg_objects
 			type = entry[4] + 256*entry[5];
 			lift = entry[9] >> 4;
 			quality = 0;
-#if 0
-cout << item_names[entry[2]+256*(entry[3]&3)] << ": ";
-for (int e = 0; e < 12; e++)
-	cout << (void *) entry[e] << ' ';
-cout << '\n';
-#endif
 			if (shapeid == 961)
 				obj = new Barge_object(
 				    entry[2], entry[3], tilex, tiley, lift);
@@ -1181,7 +1175,7 @@ void Game_window::show_items
 			obj->get_quality() << '\n';
 		cout << "Volume = " << info.get_volume() << '\n';
 		cout << "obj = " << (void *) obj << '\n';
-#if 0
+#if 1
 		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << '\n';
 		cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << '\n';
 		cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << '\n';
