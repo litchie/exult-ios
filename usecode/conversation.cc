@@ -151,6 +151,7 @@ void Conversation::init_faces()
 
 void Conversation::show_face(int shape, int frame, int slot)
 {
+        bool SI = Game::get_game_type()==SERPENT_ISLE;
 	Main_actor* main_actor = gwin->get_main_actor();
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 
@@ -161,7 +162,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 		gwin->set_palette(-1, 100);
 
 	// Petra?
-	if (shape == 28 && main_actor->get_flag(Obj_flags::petra)) {
+	if (SI && shape == 28 && main_actor->get_flag(Obj_flags::petra)) {
 		shape = main_actor->get_face_shapenum();
 		if (main_actor->get_skin_color() == 0) // WH
 		{
@@ -343,6 +344,7 @@ void Conversation::clear_text_pending()
 
 void Conversation::show_avatar_choices(int num_choices,	char **choices)
 {
+        bool SI = Game::get_game_type()==SERPENT_ISLE;
 	Main_actor *main_actor = gwin->get_main_actor();
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 	gwin->set_mode(Game_window::conversation);
@@ -357,20 +359,20 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	int shape = main_actor->get_face_shapenum();
 	int frame;
 
-	if (main_actor->get_flag(Obj_flags::petra)) // Petra
+	if (SI && main_actor->get_flag(Obj_flags::petra)) // Petra
 	{
 		shape = 28;
 		frame = 0;
 	}
-	else if (main_actor->get_skin_color() == 0) // WH
+	else if (SI && main_actor->get_skin_color() == 0) // WH
 	{
 		frame = 1 - main_actor->get_type_flag(Actor::tf_sex);
 	}
-	else if (main_actor->get_skin_color() == 1) // BN
+	else if (SI && main_actor->get_skin_color() == 1) // BN
 	{
 		frame = 3 - main_actor->get_type_flag(Actor::tf_sex);
 	}
-	else if (main_actor->get_skin_color() == 2) // BK
+	else if (SI && main_actor->get_skin_color() == 2) // BK
 	{
 		frame = 5 - main_actor->get_type_flag(Actor::tf_sex);
 	}
@@ -388,7 +390,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	Npc_face_info *prev = empty ? face_info[empty - 1] : 0;
 	int fx = prev ? prev->face_rect.x + prev->face_rect.w + 4 : 16;
 	int fy;
-	if (Game::get_game_type()==SERPENT_ISLE)
+	if (SI)
 	{
 		fy = sbox.h - 2 - face->get_height();
 		fx = 8;

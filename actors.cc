@@ -340,7 +340,7 @@ Actor::Actor
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
 	    alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
-	    usecode_dir(0), siflags(0), type_flags(0), action(0), 
+	    usecode_dir(0), siflags(0), type_flags(0), skin_color(-1), action(0), 
 	    frame_time(0), next_path_time(0), timers(0),
 	    weapon_rect(0, 0, 0, 0)
 	{
