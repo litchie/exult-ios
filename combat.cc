@@ -212,6 +212,16 @@ Game_object *Combat_schedule::find_foe
 	)
 	{
 	cout << "'" << npc->get_name() << "' is looking for a foe" << endl;
+					// Remove any that died.
+	for (Actor_queue::const_iterator it = opponents.begin(); 
+						it != opponents.end(); )
+		{
+		Actor_queue::const_iterator next = it;
+		++next;			// Point to next.
+		if ((*it)->is_dead())
+			opponents.remove(*it);
+		it = next;
+		}
 	if (opponents.empty())	// No more from last scan?
 		{
 		find_opponents();	// Find all nearby.
@@ -219,7 +229,6 @@ Game_object *Combat_schedule::find_foe
 			return practice_target;
 		}
 	Actor *new_opponent = 0;
-//	Slist_iterator next(opponents);	// For going through list.
 	switch ((Actor::Attack_mode) mode)
 		{
 	case Actor::weakest:
@@ -279,7 +288,8 @@ Game_object *Combat_schedule::find_foe
 					// FALL THROUGH to 'random'.
 	case Actor::random:
 	default:			// Default to random.
-		new_opponent = opponents.empty() ? 0 : opponents.front();
+		if (!new_opponent && !opponents.empty())
+			new_opponent = opponents.front();
 		break;
 		}
 	if (new_opponent)
