@@ -37,13 +37,15 @@ class Exec_box
 	int child_pid;			// Child's process ID.
 	gint stdout_tag, stderr_tag;	// GDK tags for getting child's output.
 	GtkText *box;			// Where we show responses.
+	GtkStatusbar *status;		// For showing status.
 public:
-	Exec_box(GtkText *b);
+	Exec_box(GtkText *b, GtkStatusbar *s);
 	~Exec_box();
 	void kill_child();		// Kill process.
+	bool check_child();		// Is child still running?
 	void read_from_child(int id);	// Read and display.
 					// Execute.
-	bool exec(const char *file, char *const argv[]);
+	bool exec(const char *file, char *argv[]);
 	};
 
 #endif
