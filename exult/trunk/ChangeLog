@@ -2,6 +2,8 @@
 	* exult.cc: added default case to key switch (kill warning)
 	* objs.cc, imagewin.cc, actors.cc, gamewin.cc, gumps.cc,
 	  actorio.cc, usecode.cc: re-ordered initializers to kill warnings
+	* configure.in: added -Wno-long-long to Windows build, since
+	  SDL and Windows header files contain long-long's
 
 2000-05-21  Willem Jan Palenstijn <palenstijn@wanandoo.nl>
 	* exult.cc, mouse.h: Wait_for_arrival() didn't restore on-screen 
