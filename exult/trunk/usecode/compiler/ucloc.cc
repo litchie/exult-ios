@@ -26,12 +26,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#include <iostream.h>
+#include <iostream>
 #include "ucloc.h"
 
 using std::strcmp;
 using std::strcpy;
 using std::strlen;
+using std::cout;
+using std::endl;
 
 
 std::vector<char *> Uc_location::source_names;

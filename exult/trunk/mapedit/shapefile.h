@@ -25,12 +25,12 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <fstream>
 #include <string>
 #include <vector>
 
 class Vga_file;
 class Shape_group_file;
-class ifstream;
 class Object_browser;
 class Shape_group;
 class Shape;
