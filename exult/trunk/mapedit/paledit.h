@@ -80,6 +80,8 @@ public:
 	virtual bool closing(bool can_cancel = false);
 	void save();			// Write them out.
 	void move_palette(bool up);
+	void add_palette();
+	void remove_palette();
 					// Configure when created/resized.
 	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
 							gpointer data);
