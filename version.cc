@@ -29,6 +29,11 @@
 #include <windows.h>
 #endif
 
+#if (defined(__linux__) || defined(__linux) || defined(linux))
+#include <fstream>
+#include <string>
+#endif
+
 void getVersionInfo(std::ostream& out)
 {
 	out << "Exult version " << VERSION << std::endl;
@@ -100,11 +105,26 @@ void getVersionInfo(std::ostream& out)
 	out << "Platform: ";
 
 #if (defined(__linux__) || defined(__linux) || defined(linux))
-	out << "Linux" << endl;
+	std::string ver;
+
+	try {
+		std::ifstream procversion("/proc/version");
+		if (!procversion) {
+			ver = "Linux";
+		} else {
+			std::getline(procversion, ver);
+			procversion.close();
+			ver = ver.substr(0, ver.find('('));
+		}
+	} catch(...) {
+		ver = "Linux";
+	}
+
+	out << ver << std::endl;
 #elif (defined(BEOS))
-	out << "BeOS" << endl;
+	out << "BeOS" << std::endl;
 #elif (defined(__sun__) || defined(__sun))
-	out << "Solaris" << endl;
+	out << "Solaris" << std::endl;
 #elif (defined(WIN32))
 	out << "Windows ";
 	{
@@ -166,6 +186,5 @@ void getVersionInfo(std::ostream& out)
 #else
 	out << "Unknown" << std::endl;
 #endif
-
 
 }
