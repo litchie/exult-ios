@@ -30,10 +30,10 @@ INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
 
 CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_PNG_H -DHAVE_FREETYPE2 $(INCLUDES)
 
-CXXFLAGS= -O2 -mms-bitfields -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET
+CXXFLAGS= -O2 -mms-bitfields -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM
 CXX=g++
 
-CFLAGS= -mms-bitfields
+CFLAGS= -O2 -mms-bitfields
 CC=gcc
 
 LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) $(FREETYPE2_LIBS) -lole32 -lpng -luuid -lz -mwindows
@@ -70,11 +70,10 @@ exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
 u7shp.exe : u7shp.o
 	$(CXX) -o u7shp.exe u7shp.o $(GTK_LIBS) -lgimp -lgimpui -mwindows
 
-allclean:
-	rm -f $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
+allclean: clean
 
 clean:
-	del $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
+	rm -f $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
 
 install: $(EXEC)
 	mkdir -p $(U7PATH)
