@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #include <csignal>
 #include "../fnames.h"
+#include "../files/U7file.h"
 
 #include "Configuration.h"
 extern	Configuration	*config;
@@ -37,20 +38,11 @@ void    MyMidiPlayer::start_track(int num,int repeats,int bank)
 #if DEBUG
         cout << "Audio subsystem request: Music track # " << num << endl;
 #endif
-        uint32  length;
-        char    *music=midi_tracks[bank].read_object(num,length);
-        if(!music)
-                return;
-        FILE    *fp;
-        unlink("/tmp/u7midi");
-        fp=fopen("/tmp/u7midi","wb");
-        if(!fp)
-                {
-                delete [] music;
-                return;
-                }
-        fwrite(music,length,1,fp);
-        fclose(fp);
+	U7object	track(midi_bank[bank].c_str(),num);
+
+	if(!track.retrieve("/tmp/u7midi"))
+		return;
+
 	if(!midi_device)
 		return;
 	midi_device->start_track("/tmp/u7midi",repeats);
@@ -69,12 +61,7 @@ void	MyMidiPlayer::start_music(int num,int repeats,int bank)
 bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 {
 	string	bank(bankname);
-	Flex	tracks=AccessFlexFile(bankname);
 	midi_bank.push_back(bank);
-	midi_tracks.push_back(tracks);
-#if DEBUG
-	cerr << "Read in " << tracks.object_list.size() << " tracks" << endl;
-#endif
 	return true;
 }
 
@@ -88,7 +75,7 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 
 	add_midi_bank(ADLIBMUS);
 
-	instrument_patches=AccessTableFile(XMIDI_MT);
+	// instrument_patches=AccessTableFile(XMIDI_MT);
 	string	s;
 	config->value("config/audio/midi/enabled",s,"---");
 	if(s=="---")

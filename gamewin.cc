@@ -49,7 +49,7 @@ Game_window::Game_window
 	int width, int height		// Window dimensions.
 	) : chunkx(0), chunky(0), painted(0), focus(1),
 	    palette(-1), brightness(100), 
-	    skip_lift(16), debug(0),
+	    skip_lift(16), debug(0), paint_eggs(1),
 	    tqueue(new Time_queue()), clock(tqueue),
 		npc_prox(new Npc_proximity_handler(this)),
 	    main_actor(0),
@@ -57,7 +57,7 @@ Game_window::Game_window
 	    open_gumps(0),
 	    main_actor_inside(0), mode(splash), npcs(0),
 	    shapes(), dragging(0), dragging_save(0),
-	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA)
+	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA), sprites(SPRITES_VGA)
 	{
 	game_window = this;		// Set static ->.
 	if (!shapes.is_good())
@@ -68,6 +68,8 @@ Game_window::Game_window
 		abort("Can't open 'gumps.vga' file.");
 	if (!fonts.is_good())
 		abort("Can't open 'fonts.vga' file.");
+	if (!sprites.is_good())
+		abort("Can't open 'sprites.vga' file.");
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);
 	ifstream ucfile;		// Read in usecode.
@@ -132,6 +134,21 @@ void Game_window::abort
 	cerr << "Exult (fatal): " << buf << '\n';
 	delete this;
 	exit(-1);
+	}
+
+/* 
+ *	Get monster info for a given shape.
+ */
+
+Monster_info *Game_window::get_monster_info
+	(
+	int shapenum
+	)
+	{
+	for (int i = 0; i < num_monsters; i++)
+		if (shapenum == monster_info[i].get_shapenum())
+			return &monster_info[i];
+	return (0);
 	}
 
 /*
@@ -360,6 +377,12 @@ void Game_window::get_chunk_objects
 			{
 			ShapeID id(data[0], data[1]);
 			Shape_frame *shape = get_shape(id);
+			if (!shape)
+				{
+				cout << "Chunk shape is null!\n";
+				data += 2;
+				continue;
+				}
 			if (shape->rle)
 				{
 				int shapenum = id.get_shapenum();
@@ -708,12 +731,12 @@ void Game_window::paint
 		paint_text_box(0, buf, 
 				x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
 		}
-					// Draw text.
-	for (Text_object *txt = texts; txt; txt = txt->next)
-		paint_text_object(txt);
 					// Draw gumps.
 	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
 		gmp->paint(this);
+					// Draw text.
+	for (Text_object *txt = texts; txt; txt = txt->next)
+		paint_text_object(txt);
 	win->clear_clip();
 	painted = 1;
 	}
@@ -786,6 +809,8 @@ void Game_window::paint_chunk_objects
 		{
 		skip_lift = main_actor->get_lift() + 
 		  shapes.get_info(main_actor->get_shapenum()).get_3d_height();
+					// Round up to nearest 5.
+		skip_lift = ((skip_lift + 4)/5)*5;
 		}
 					// +++++Clear flag.
 	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
@@ -966,7 +991,7 @@ void Game_window::start_actor
 	if (mode != normal)
 		return;
 					// Move every 1/8 sec.
-	main_actor->start(
+	main_actor->walk_to_point(
 		chunkx*chunksize + winx, chunky*chunksize + winy, 125);
 	}
 
@@ -1173,7 +1198,8 @@ void Game_window::show_items
 			<< '\n';
 		int tx, ty, tz;
 		obj->get_abs_tile(tx, ty, tz);
-		cout << "tx = " << tx << ", ty = " << ty << ", quality = " <<
+		cout << "tx = " << tx << ", ty = " << ty << ", tz = " <<
+			tz << ", quality = " <<
 			obj->get_quality() << '\n';
 		cout << "Volume = " << info.get_volume() << '\n';
 		cout << "obj = " << (void *) obj << '\n';
@@ -1278,11 +1304,12 @@ void Game_window::double_clicked
 		{
 cout << "Object name is " << obj->get_name() << '\n';
 		init_faces();		// Be sure face list is empty.
+		Game_mode savemode = mode;
 		obj->activate(usecode);
 		npc_prox->wait(4);	// Delay "barking" for 4 secs.
 		if (mode == conversation)
 			{
-			mode = normal;
+			mode = savemode;
 			paint();
 			}
 		}
@@ -1343,7 +1370,7 @@ void Game_window::show_face
 	Rectangle actbox;		// Gets box where face goes.
 					// See if already on screen.
 	for (int i = 0; i < num_faces; i++)
-		if (face_info[i]->shape == shape)
+		if (face_info[i] && face_info[i]->shape == shape)
 			{
 			info = face_info[i];
 			last_face_shown = i;
@@ -1380,8 +1407,8 @@ void Game_window::show_face
 		actbox = info->face_rect;
 					// Draw whom we're talking to.
 					// Put a black box w/ white bdr.
-	win->fill8(1, actbox.w + 4, actbox.h + 4, actbox.x - 2, actbox.y - 2);
-	win->fill8(0, actbox.w, actbox.h, actbox.x, actbox.y);
+	//win->fill8(1, actbox.w + 4, actbox.h + 4, actbox.x - 2, actbox.y - 2);
+	//win->fill8(0, actbox.w, actbox.h, actbox.x, actbox.y);
 	paint_shape(actbox.x + actbox.w - 2, 
 			actbox.y + actbox.h - 2, face);
 	}
@@ -1397,7 +1424,7 @@ void Game_window::remove_face
 	{
 	int i;				// See if already on screen.
 	for (i = 0; i < num_faces; i++)
-		if (face_info[i]->shape == shape)
+		if (face_info[i] && face_info[i]->shape == shape)
 			break;
 	if (i == num_faces)
 		return;			// Not found.
@@ -1441,7 +1468,7 @@ int Game_window::is_npc_text_pending
 	)
 	{
 	for (int i = 0; i < num_faces; i++)
-		if (face_info[i]->text_pending)
+		if (face_info[i] && face_info[i]->text_pending)
 			return (1);
 	return (0);
 	}
@@ -1480,8 +1507,8 @@ void Game_window::show_avatar_choices
 	Rectangle mbox(16, sbox.h - face->get_height() - 3*height,
 //npc_text_rect.y + npc_text_rect.h + 6*height,
 			face->get_width() + 4, face->get_height() + 4);
-	win->fill8(1, mbox.w + 4, mbox.h + 4, mbox.x - 2, mbox.y - 2);
-	win->fill8(0, mbox.w, mbox.h, mbox.x, mbox.y);
+	//win->fill8(1, mbox.w + 4, mbox.h + 4, mbox.x - 2, mbox.y - 2);
+	//win->fill8(0, mbox.w, mbox.h, mbox.x, mbox.y);
 					// Draw portrait.
 	paint_shape(mbox.x + mbox.w - 2, 
 				mbox.y + mbox.h - face->ybelow - 2, 

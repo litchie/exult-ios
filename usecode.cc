@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // External globals..
 
+extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 extern	bool	usecode_trace;
 
 /*
@@ -71,16 +72,31 @@ void Earthquake::handle_event
 	)
 	{
 	Image_window *win = gwin->get_win();
-#ifndef WIN32
 	int w = win->get_width(), h = win->get_height();
+	int sx = 0, sy = 0;
 	int dx = rand()%9 - 4;
 	int dy = rand()%9 - 4;
-	win->copy(0, 0, w, h, dx, dy);
+	if (dx > 0)
+		w -= dx;
+	else
+		{
+		w += dx;
+		sx -= dx;
+		dx = 0;
+		}
+	if (dy > 0)
+		h -= dy;
+	else
+		{
+		h += dy;
+		sy -= dy;
+		dy = 0;
+		}
+	win->copy(sx, sy, w, h, dx, dy);
 	gwin->set_painted();
 	gwin->show();
 					// Shake back.
-	win->copy(0, 0, w, h, -dx, -dy);
-#endif
+	win->copy(dx, dy, w, h, sx, sy);
 	if (++i < len)			// More to do?  Put back in queue.
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
@@ -140,8 +156,8 @@ void Scheduled_usecode::handle_event
 			break;
 		case 0x23:		// ??
 			break;
-		case 0x27:		// ?? 1 parm. Pure guess:  a delay to
-			{		//   allow other threads to run?
+		case 0x27:		// ?? 1 parm. Guessing:
+			{		//   delay before next instruction.
 			Usecode_value& delayval = arrval.get_elem(++i);
 					// ?? Guessing at time.
 			delay = 200*(delayval.get_int_value());
@@ -171,21 +187,22 @@ void Scheduled_usecode::handle_event
 					Usecode_machine::internal_exec);
 			break;
 			}
-		case 0x58:		// ?? 1 parm.
-			i++;
+		case 0x58:		// ?? 1 parm, fairly large byte.
+			i++;		// Perhaps a soundfx or sprite??
 			break;
 		case 0x59:		// Parm. is dir. (0-7).  0=north?
 				// +++++++Walk in that dir.??
 			i++;
 			break;
 		default:
-//+++ 0x61-0x6f? seem to indicate motion? frame? in a particular direction.
-			if (opcode >= 0x60 && opcode <= 0x6f)
-				{	// +++++++Experimenting:
+					// ??Guessing these are frames:
+			if (opcode >= 0x60 && opcode <= 0x7f)
+				{	// Looks okay, so far.
 				Usecode_value v(opcode & 0xf);
 				usecode->set_item_frame(objval, v);
-				printf("Sched. opcode %02x\n", opcode);
 				}
+			else
+				printf("Unhanded sched. opcode %02x\n",opcode);
 			break;
 			}
 		}
@@ -579,6 +596,41 @@ Game_object *Usecode_machine::get_item
 	}
 
 /*
+ *	Make sure pending text has been seen.
+ */
+
+void Usecode_machine::show_pending_text
+	(
+	)
+	{
+	if (book)			// Book mode?
+		{
+		int x, y;
+		while (book->show_next_page(gwin) && 
+						Get_click(x, y, Mouse::hand))
+			;
+		gwin->paint();
+		}
+					// Normal conversation:
+	else if (gwin->is_npc_text_pending())
+		click_to_continue();
+	}
+
+/*
+ *	Show book or scroll text.
+ */
+
+void Usecode_machine::show_book
+	(
+	)
+	{
+	char *str = String;
+	book->add_text(str);
+	delete String;
+	String = 0;
+	}
+
+/*
  *	Say the current string and empty it.
  */
 
@@ -589,9 +641,12 @@ void Usecode_machine::say_string
 	user_choice = 0;		// Clear user's response.
 	if (!String)
 		return;
-					// Make sure prev. text was seen.
-	if (gwin->is_npc_text_pending())
-		click_to_continue();
+	if (book)			// Displaying a book?
+		{
+		show_book();
+		return;
+		}
+	show_pending_text();		// Make sure prev. text was seen.
 	char *str = String;
 	while (*str)			// Look for stopping points ("~~").
 		{
@@ -640,8 +695,7 @@ void Usecode_machine::show_npc_face
 	Usecode_value& arg2		// Frame.
 	)
 	{
-	if (gwin->is_npc_text_pending())
-		click_to_continue();
+	show_pending_text();
 	Actor *npc = (Actor *) get_item(arg1);
 	if (!npc)
 		return;
@@ -660,8 +714,7 @@ void Usecode_machine::remove_npc_face
 	Usecode_value& arg1		// Shape (NPC #).
 	)
 	{
-	if (gwin->is_npc_text_pending())
-		click_to_continue();
+	show_pending_text();
 	int shape = -arg1.get_int_value();
 	gwin->remove_face(shape);
 	}
@@ -682,6 +735,7 @@ void Usecode_machine::set_item_shape
 		return;
 					// Figure area to repaint.
 	Rectangle rect = gwin->get_shape_rect(item);
+					// +++++++What if in a container?
 	Chunk_object_list *chunk = gwin->get_objects(item);
 	chunk->remove(item);		// Remove and add to update cache.
 	item->set_shape(shape);
@@ -774,18 +828,7 @@ int Usecode_machine::npc_in_party
 	Game_object *npc
 	)
 	{
-	if (!npc || !party_count)
-		return (0);
-	int npcnum = npc->get_npc_num();
-// cout << "Is npc " << npc << " in party?  ";
-	for (int i = 0; i < PARTY_MAX; i++)
-		if (party[i] == npcnum)
-			{
-			// cout << "Yes\n";
-			return (1);
-			}
-	// cout << "No\n";
-	return (0);
+	return (npc && npc->get_party_id() >= 0);
 	}
 
 /*
@@ -799,14 +842,10 @@ void Usecode_machine::add_to_party
 	{
 	if (!npc || party_count == PARTY_MAX || npc_in_party(npc))
 		return;			// Can't add.
-	for (int i = 0; i < PARTY_MAX; i++)
-		if (party[i] == 0)	// Find empty spot.
-			{
-			party[i] = npc->get_npc_num();
-			party_count++;
+	npc->set_party_id(party_count);
+	party[party_count++] = npc->get_npc_num();
+
 // cout << "NPC " << npc->get_npc_num() << " added to party.\n";
-			break;
-			}
 	}
 
 /*
@@ -820,14 +859,24 @@ void Usecode_machine::remove_from_party
 	{
 	if (!npc)
 		return;
-	int npcnum = npc->get_npc_num();
-	for (int i = 0; i < PARTY_MAX; i++)
-		if (party[i] == npcnum)
-			{
-			party[i] = 0;
-			party_count--;
-			break;
-			}
+	int id = npc->get_party_id();
+	if (id == -1)			// Not in party?
+		return;
+	if (party[id] != npc->get_npc_num())
+		{
+		cout << "Party mismatch!!\n";
+		return;
+		}
+					// Shift the rest down.
+	for (int i = id + 1; i < party_count; i++)
+		{
+		Actor *npc2 = gwin->get_npc(party[i]);
+		if (npc2)
+			npc2->set_party_id(i - 1);
+		party[i - 1] = party[i];
+		}
+	party_count--;
+	party[party_count] = 0;
 	}
 
 /*
@@ -843,15 +892,14 @@ Usecode_value Usecode_machine::get_party
 	Usecode_value aval((long) gwin->get_main_actor());
 	arr.put_elem(0, aval);	
 	int num_added = 1;
-	for (int i = 0; i < PARTY_MAX && num_added < 1 + party_count; i++)
-		if (party[i] != 0)
-			{
-			Game_object *obj = gwin->get_npc(party[i]);
-			if (!obj)
-				continue;
-			Usecode_value val((long) obj);
-			arr.put_elem(num_added, val);
-			}
+	for (int i = 0; i < party_count; i++)
+		{
+		Game_object *obj = gwin->get_npc(party[i]);
+		if (!obj)
+			continue;
+		Usecode_value val((long) obj);
+		arr.put_elem(num_added, val);
+		}
 	// cout << "Party:  "; arr.print(cout); cout << '\n';
 	return arr;
 	}
@@ -1121,7 +1169,6 @@ Usecode_value Usecode_machine::click_on_item
 	(
 	)
 	{
-	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 	// cout << "CLICK on an item.\n";
 	int x, y;
 	if (!Get_click(x, y, Mouse::greenselect))
@@ -1279,11 +1326,7 @@ USECODE_INTRINSIC(select_from_menu2)
 USECODE_INTRINSIC(input_numeric_value)
 	// Ask for # (min, max, step, default).
 	extern int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
-					// Want to center it.
-	Shape_frame *shape = gwin->get_shape(SLIDER, 0);
 	Slider_gump_object *slider = new Slider_gump_object(
-		(gwin->get_width() - shape->get_width())/2,
-		(gwin->get_height() - shape->get_height())/2,
 		parms[0].get_int_value(), parms[1].get_int_value(),
 		parms[2].get_int_value(), parms[3].get_int_value());
 	int ok = Modal_gump(slider, Mouse::hand);
@@ -1378,6 +1421,15 @@ USECODE_INTRINSIC(get_object_position)
 	arr.put_elem(1, vy);
 	arr.put_elem(2, vz);
 	USECODE_RETURN(arr);
+}
+
+USECODE_INTRINSIC(get_distance)
+	// Distance from parm[0] -> parm[1].  Guessing how it's computed.
+	Game_object *obj0 = get_item(parms[0]);
+	Game_object *obj1 = get_item(parms[1]);
+	Usecode_value u((obj0 && obj1) ? obj0->get_abs_tile_coord().distance(
+					obj1->get_abs_tile_coord()) : 0);
+	USECODE_RETURN(u);
 }
 
 USECODE_INTRINSIC(find_direction)
@@ -1477,10 +1529,11 @@ USECODE_INTRINSIC(create_new_object)
 	USECODE_RETURN(u);
 }
 
-USECODE_INTRINSIC(mystery_1)
-	// Take itemref, rets. flag.
-	//++++++++++++++++++
-	Usecode_value u(1); //????
+USECODE_INTRINSIC(set_last_created)
+	// Take itemref, sets last_created to it.
+	Game_object *obj = get_item(parms[0]);
+	last_created = obj;
+	Usecode_value u((long) obj);
 	USECODE_RETURN(u);
 }
 
@@ -1513,9 +1566,21 @@ USECODE_INTRINSIC(update_last_created)
 }
 
 USECODE_INTRINSIC(get_npc_name)
-	// Get NPC name.
-	// +++++Make this work on array of NPC's.
-	static char *unknown = "player";
+	// Get NPC name(s).  Works on arrays, too.
+	static char *unknown = "??name??";
+	int cnt = parms[0].get_array_size();
+	if (cnt)
+		{			// Do array.
+		Usecode_value arr(cnt, 0);
+		for (int i = 0; i < cnt; i++)
+			{
+			Game_object *obj = get_item(parms[0].get_elem(i));
+			char *nm = obj ? obj->get_name() : 0;
+			Usecode_value v(nm ? nm : unknown);
+			arr.put_elem(i, v);
+			}
+		USECODE_RETURN(arr);
+		}
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u(obj ? obj->get_name() : unknown);
 	USECODE_RETURN(u);
@@ -1565,9 +1630,12 @@ USECODE_INTRINSIC(play_music)
 	USECODE_RETURN(no_ret);
 }
 
-USECODE_INTRINSIC(npc_in_party)
-	// NPC in party? (item).
-	Usecode_value u(npc_in_party(get_item(parms[0])));
+USECODE_INTRINSIC(npc_nearby)
+	// NPC nearby? (item).
+	Game_object *npc = get_item(parms[0]);
+	int near = (npc != 0 && npc->get_abs_tile_coord().distance(
+		gwin->get_main_actor()->get_abs_tile_coord()) < 12);
+	Usecode_value u(near);
 	USECODE_RETURN(u);
 }
 
@@ -1583,15 +1651,36 @@ USECODE_INTRINSIC(is_npc)
 	// Is item an NPC?
 	Game_object *obj = get_item(parms[0]);
 					// ++++In future, check for monsters.
+	if(!obj)
+		{
+#if DEBUG
+		cerr << "is_npc: get_item returned a NULL pointer" << endl;
+#endif
+		Usecode_value u(0);
+		USECODE_RETURN(u);
+		}
 	Usecode_value u(obj == gwin->get_main_actor() ||
 			obj->get_npc_num() > 0);
 	USECODE_RETURN(u);
 }
 
 USECODE_INTRINSIC(display_runes)
-	// Display sign (gump #, text).
-	//+++++++++++++
 	// Render text into runes for signs, tombstones, plaques and the like
+	// Display sign (gump #, array_of_text).
+	int cnt = parms[1].get_array_size();
+	if (!cnt)
+		cnt = 1;		// Try with 1 element.
+	Sign_gump *sign = new Sign_gump(parms[0].get_int_value(), cnt);
+	for (int i = 0; i < cnt; i++)
+		{			// Paint each line.
+		Usecode_value& lval = parms[1].get_elem(i);
+		sign->add_text(i, lval.get_str_value());
+		}
+	sign->paint(gwin);		// Paint it, and wait for click.
+	int x, y;
+	Get_click(x, y, Mouse::hand);
+	delete sign;
+	gwin->paint();
 	USECODE_RETURN(no_ret);
 }
 
@@ -1605,6 +1694,19 @@ USECODE_INTRINSIC(click_on_item)
 USECODE_INTRINSIC(find_nearby)
 	// Think it rets. objs. near parm0.
 	Usecode_value u(find_nearby(parms[0], parms[1], parms[2], parms[3]));
+	USECODE_RETURN(u);
+}
+
+USECODE_INTRINSIC(give_last_created)
+	// Think it's give_last_created_to_npc(npc).
+	Game_object *npc = get_item(parms[0]);
+	int ret = 0;
+	if (npc && last_created)
+		{			// Remove, but don't delete, last.
+		last_created->remove(1);
+		ret = npc->add(last_created);
+		}
+	Usecode_value u(ret);
 	USECODE_RETURN(u);
 }
 
@@ -1640,6 +1742,22 @@ USECODE_INTRINSIC(part_of_day)
 	USECODE_RETURN(u);
 }
 
+USECODE_INTRINSIC(get_alignment)
+	// Get npc's alignment.
+	Game_object *obj = get_item(parms[0]);
+	Usecode_value u(obj ? obj->get_alignment() : 0);
+	USECODE_RETURN(u);
+}
+
+USECODE_INTRINSIC(set_alignment)
+	// Set npc's alignment.
+	// 2,3==bad towards Ava. 0==good.
+	Game_object *obj = get_item(parms[0]);
+	if (obj)
+		obj->set_alignment(parms[1].get_int_value());
+	USECODE_RETURN(no_ret);
+}
+
 USECODE_INTRINSIC(item_say)
 	// Show str. near item (item, str).
 	item_say(parms[0], parms[1]);
@@ -1671,6 +1789,22 @@ USECODE_INTRINSIC(set_lift)
 USECODE_INTRINSIC(display_map)
 	// Display map.
 	//++++++++++++
+	USECODE_RETURN(no_ret);
+}
+
+USECODE_INTRINSIC(book_mode)
+	// Display book or scroll.
+	Text_gump *gump;
+	Game_object *obj = get_item(parms[0]);
+	if (!obj)
+		{
+		USECODE_RETURN(no_ret);
+		}
+	if (obj->get_shapenum() == 797)
+		gump = new Scroll_gump();
+	else
+		gump = new Book_gump();
+	set_book(gump);
 	USECODE_RETURN(no_ret);
 }
 
@@ -1837,7 +1971,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(count_npc_inventory), // 0x16
 	USECODE_INTRINSIC_PTR(set_npc_inventory_count), // 0x17
 	USECODE_INTRINSIC_PTR(get_object_position), // 0x18
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x19 ++++++Distance(item1, item2).
+	USECODE_INTRINSIC_PTR(get_distance), // 0x19
 	USECODE_INTRINSIC_PTR(find_direction), // 0x1a
 	USECODE_INTRINSIC_PTR(get_npc_object), // 0x1b
 	USECODE_INTRINSIC_PTR(get_schedule_type), // 0x1c
@@ -1849,8 +1983,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(get_avatar_ref), // 0x22
 	USECODE_INTRINSIC_PTR(get_party_list), // 0x23
 	USECODE_INTRINSIC_PTR(create_new_object), // 0x24
-	USECODE_INTRINSIC_PTR(mystery_1), // 0x25 ++++++ Set last_created=item
-	// Looks like set_last_created(item).  Rets 1 if successful?
+	USECODE_INTRINSIC_PTR(set_last_created), // 0x25 
 	USECODE_INTRINSIC_PTR(update_last_created), // 0x26
 	USECODE_INTRINSIC_PTR(get_npc_name), // 0x27
 	USECODE_INTRINSIC_PTR(count_objects), // 0x28
@@ -1861,23 +1994,21 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(add_party_items), // 0x2c
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x2d UNUSED.
 	USECODE_INTRINSIC_PTR(play_music), // 0x2e
-	USECODE_INTRINSIC_PTR(npc_in_party), // 0x2f
+	USECODE_INTRINSIC_PTR(npc_nearby), // 0x2f
 	USECODE_INTRINSIC_PTR(find_nearby_avatar), // 0x30
 	USECODE_INTRINSIC_PTR(is_npc),  // 0x31
 	USECODE_INTRINSIC_PTR(display_runes), // 0x32
 	USECODE_INTRINSIC_PTR(click_on_item), // 0x33
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x34 UNUSED
 	USECODE_INTRINSIC_PTR(find_nearby), // 0x35
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x36 ++++++Think it's 
-	// give_last_created(to_npc).  Rets. 0 if no room in inventory.
+	USECODE_INTRINSIC_PTR(give_last_created), // 0x36
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x37 +++++++It is is_dead(npc).
 	USECODE_INTRINSIC_PTR(game_hour), // 0x38
 	USECODE_INTRINSIC_PTR(game_minute), // 0x39
 	USECODE_INTRINSIC_PTR(get_npc_number),	// 0x3a
 	USECODE_INTRINSIC_PTR(part_of_day),	// 0x3b
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3c+++++get_allignment(npc)?
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3d+++++set_allignment(npc, newval)
-	// 2,3==bad towards Ava. 0==good.
+	USECODE_INTRINSIC_PTR(get_alignment),	// 0x3c
+	USECODE_INTRINSIC_PTR(set_alignment),	// 0x3d
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f
 	USECODE_INTRINSIC_PTR(item_say),	// 0x40
@@ -1903,10 +2034,11 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x53
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x55
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x57
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x58
+	USECODE_INTRINSIC_PTR(book_mode),// 0x55
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x57 ++++?Light_source(time)?
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x58 ++++Get_barge(item):  Rets.
+					// barge item is on.
 	USECODE_INTRINSIC_PTR(earthquake),	// 0x59
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b
@@ -1951,8 +2083,8 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x82
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x83
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x85
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x86
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x85+++++create((tx,ty,tz), sh, fr).
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x86  +++++A sound??  Animation??
 	USECODE_INTRINSIC_PTR(direction_from),	// 0x87
 	USECODE_INTRINSIC_PTR(get_npc_flag),	// 0x88
 	USECODE_INTRINSIC_PTR(set_npc_flag),	// 0x89
@@ -2135,6 +2267,19 @@ void Usecode_machine::click_to_continue
 	}
 
 /*
+ *	Set book/scroll to display.
+ */
+
+void Usecode_machine::set_book
+	(
+	Text_gump *b			// Book/scroll.
+	)
+	{
+	delete book;
+	book = b;
+	}
+
+/*
  *	Get user's choice from among the possible responses.
  *
  *	Output:	->user choice string.
@@ -2168,7 +2313,6 @@ int Usecode_machine::get_user_choice_num
 //	for (int i = 0; i < answers.num_answers; i++)
 //		cout << ' ' << answers.answers[i] << '(' << i << ") ";
 	gwin->show_avatar_choices(answers.answers);
-	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 	int x, y;			// Get click.
 	int choice_num;
 	do
@@ -2190,7 +2334,7 @@ Usecode_machine::Usecode_machine
 	(
 	istream& file,
 	Game_window *gw
-	) : String(0), gwin(gw), call_depth(0), caller_item(0),
+	) : String(0), gwin(gw), call_depth(0), caller_item(0), book(0),
 	    last_created(0), stack(new Usecode_value[1024]), user_choice(0)
 	{
 	sp = stack;
@@ -2238,6 +2382,7 @@ Usecode_machine::~Usecode_machine
 		delete slot;
 		}
 	delete funs;
+	delete book;
 	}
 
 #if DEBUG
@@ -2489,6 +2634,8 @@ void Usecode_machine::run
 					256*externals[2*offset + 1]);
 			break;
 		case 0x25:		// RET.
+					// Experimenting...
+			show_pending_text();
 			sp = save_sp;		// Restore stack.
 			ip = endp;	// End the loop.
 			break;
@@ -2607,8 +2754,7 @@ void Usecode_machine::run
 			break;
 		case 0x3f:		// Guessing some kind of return.
 					// Experimenting...
-			if (gwin->is_npc_text_pending())
-				click_to_continue();	
+			show_pending_text();
 			ip = endp;
 			sp = save_sp;		// Restore stack.
 			break;

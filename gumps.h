@@ -43,8 +43,13 @@ const int SLIDERRIGHT = 16;
 const int SLIDERLEFT = 17;
 const int DISK = 24;			// Diskette shape #.
 const int HEART = 25;			// Stats button shape #.
+const int BOOK = 32;
+const int SPELLBOOK = 43;
 const int DOVE = 46;
 const int STATSDISPLAY = 47;
+const int SCROLL = 55;
+const int YESNOBOX = 69;
+const int YESBTN = 70, NOBTN = 71;
 
 /*
  *	A pushable button on a gump:
@@ -134,9 +139,12 @@ protected:
 	Rectangle object_area;		// Area to paint objects in, rel. to
 					// Where the 'checkmark' goes.
 	Checkmark_gump_button *check_button;
+	void initialize();		// Initialize object_area.
 public:
 	Gump_object(Container_game_object *cont, int initx, int inity, 
 								int shnum);
+					// Create centered.
+	Gump_object(Container_game_object *cont, int shnum);
 	virtual ~Gump_object()
 		{ delete check_button; }
 	int get_x()			// Get coords.
@@ -201,16 +209,21 @@ class Actor_gump_object : public Gump_object
 	Heart_gump_button *heart_button;// For bringing up stats.
 	Disk_gump_button *disk_button;	// For bringing up 'save' box.
 //+++++++Move this info to Actor!!
-	Actor_gump_spot spots[8];	// Where things can go.
-	enum Spots {			// Index of each spot.
+	Actor_gump_spot spots[12];	// Where things can go.
+	enum Spots {			// Index of each spot, starting at
+					//   upper, rt., going clkwise.
 		head = 0,
-		back = 1,
-		lhand = 2,
-		rhand = 3,
-		legs = 4,
-		feet = 5,
-		lfinger = 6,
-		rfinger = 7
+		chest = 1,
+		belt = 2,
+		lhand = 3,
+		lfinger = 4,
+		legs = 5,
+		feet = 6,
+		rfinger = 7,
+		rhand = 8,
+		arms = 9,
+		neck = 10,
+		back = 11
 		};
 					// Find index of closest spot.
 	int find_closest(int mx, int my, int only_empty = 0);
@@ -257,6 +270,68 @@ public:
 	};
 
 /*
+ *	A sign showing runes.
+ */
+class Sign_gump : public Gump_object
+	{
+	char **lines;			// Lines of text.
+	int num_lines;
+public:
+	Sign_gump(int shapenum, int nlines);
+	~Sign_gump();
+					// Set a line of text.
+	void add_text(int line, const char *txt);
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
+ *	A text gump is the base class for books and scrolls.
+ */
+class Text_gump : public Gump_object
+	{
+	char *text;			// The text.
+	int textlen;			// Length of text.
+protected:
+	int curtop;			// Offset of top of current page.
+	int curend;			// Offset past end of current page(s).
+public:
+	Text_gump(int shapenum) : Gump_object(0, shapenum),
+				text(0), textlen(0), curtop(0), curend(0)
+		{  }
+	~Text_gump()
+		{ delete text; }
+	void add_text(char *str);	// Append text.
+	int paint_page(Game_window *gwin, Rectangle box, int start);
+					// Next page of book/scroll.
+	int show_next_page(Game_window *gwin);
+	};
+
+/*
+ *	A book shows text side-by-side.
+ */
+class Book_gump : public Text_gump
+	{
+public:
+	Book_gump() : Text_gump(BOOK)
+		{  }
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
+ *	A scroll:
+ */
+class Scroll_gump : public Text_gump
+	{
+public:
+	Scroll_gump() : Text_gump(SCROLL)
+		{  }
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
  *	A modal gump object represents a 'dialog' that grabs the mouse until
  *	the user clicks okay.
  */
@@ -269,6 +344,10 @@ public:
 	Modal_gump_object(Container_game_object *cont, int initx, int inity, 
 								int shnum)
 		: Gump_object(cont, initx, inity, shnum), done(0), pushed(0)
+		{  }
+					// Create centered.
+	Modal_gump_object(Container_game_object *cont, int shnum)
+		: Gump_object(cont, shnum), done(0), pushed(0)
 		{  }
 	int is_done()
 		{ return done; }
@@ -297,8 +376,7 @@ class Slider_gump_object : public Modal_gump_object
 	static short leftbtnx, rightbtnx, btny;
 	static short xmin, xmax;
 public:
-	Slider_gump_object(int initx, int inity, int mival, int mxval,
-					int step, int defval);
+	Slider_gump_object(int mival, int mxval, int step, int defval);
 	~Slider_gump_object()
 		{
 		delete left_arrow;

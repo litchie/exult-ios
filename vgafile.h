@@ -37,17 +37,13 @@ class Shape;
 class Shape_frame
 	{
 	unsigned char rle;		// 1 if run-length encoded.
-#if 0
-	unsigned char framenum;		// Frame #.
-	unsigned short shapenum;	// Shape #.
-#endif
 	unsigned char *data;		// The actual data.
 	short xleft;			// Extent to left of origin.
 	short xright;			// Extent to right.
 	short yabove;			// Extent above origin.
 	short ybelow;			// Extent below origin.
 					// Create from RLE entry.
-	void get_rle_shape(ifstream& shapes, long filepos);
+	void get_rle_shape(ifstream& shapes, long filepos, long len);
 public:
 	friend class Game_window;
 	Shape_frame() : data(0)
@@ -86,11 +82,13 @@ protected:
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
 public:
 	friend class Vga_file;
-	Shape() : frames(0)
+	Shape() : frames(0), num_frames(0)
 		{  }
 	Shape_frame *get(ifstream& shapes, int shnum, int frnum)
-		{ return (frames && frames[frnum]) ? frames[frnum] 
-					: read(shapes, shnum, frnum); }
+		{ 
+		return (frames && frnum < num_frames && frames[frnum]) ? 
+			frames[frnum] : read(shapes, shnum, frnum); 
+		}
 	};
 
 /*
@@ -133,7 +131,6 @@ public:
 		get_shape(shapenum, 0);	// Force it into memory.
 		return shapes[shapenum].num_frames;
 		}
-	unsigned char *dims;	//+++++++++++++Debugging.
 	};
 
 /*
@@ -155,7 +152,7 @@ class Shape_info
 		}
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
-	Shape_info() : weight(0), volume(0), xtiles(0), ytiles(0), ztiles(0)
+	Shape_info() : xtiles(0), ytiles(0), ztiles(0), weight(0), volume(0)
 		{ tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0; }
 	int get_weight()		// Get weight, volume.
 		{ return weight; }
@@ -184,14 +181,18 @@ public:
 	int is_yobstacle()		// Obstacle in y-dir.???
 		{ return (shpdims[0] & 1) != 0; }
 	/*
-	 *	TFA[1][b0-b2] seems to indicate object types:
+	 *	TFA[1][b0-b6] seems to indicate object types:
 	 *	+++++++Just guessing for now.
 	enum Shape_class {
-		
+		bed = 2,		// Also water trough.
 		quantity = 3,		// Can have more than 1:  coins, arrs.
-		wearable = 5,		// Includes wieldable weapons, food??
+		shutters = 4,		// Also mirrors.
+		wearable = 5,		// Includes wieldable weapons, food,
+					//   table, curtain??
 		container = 6,		// Includes NPC's.
-		egg = 7
+		egg = 7,
+		window = 14,
+		door = 34
 	*/
 	};
 

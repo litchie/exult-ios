@@ -168,7 +168,8 @@ void Game_object::move
 	if (!newchunk)
 		return;			// Bad loc.
 					// Remove from old.
-	gwin->get_objects(cx, cy)->remove(this);
+	Chunk_object_list *oldchunk = gwin->get_objects(cx, cy);
+	oldchunk->remove(this);
 	set_lift(newlift);		// Set new values.
 	shape_pos = ((newtx%tiles_per_chunk) << 4) + newty%tiles_per_chunk;
 	newchunk->add(this);		// Updates cx, cy.
@@ -293,13 +294,15 @@ char *Game_object::get_name
 
 void Game_object::remove
 	(
+	int nodel			// 1 to not delete.
 	)
 	{
 	Chunk_object_list *chunk = 
 			Game_window::get_game_window()->get_objects(cx, cy);
 	if (chunk)
 		chunk->remove(this);
-	delete this;
+	if (!nodel)
+		delete this;
 	}
 
 /*
@@ -433,6 +436,7 @@ int Game_object::lt
 
 void Ireg_game_object::remove
 	(
+	int nodel			// 1 to not delete.
 	)
 	{
 	if (owner)			// In a bag, box, or person.
@@ -444,7 +448,8 @@ void Ireg_game_object::remove
 		if (chunk)
 			chunk->remove(this);
 		}
-	delete this;
+	if (!nodel)
+		delete this;
 	}
 
 /*
@@ -591,7 +596,7 @@ Egg_object::Egg_object
 	{
 	type = itype&0xf;
 	criteria = (itype & (7<<4)) >> 4;
-	distance = (itype >> 10) & 0x1f;
+	distance = ((itype >> 10) - 1) & 0x1f;
 	distance++;			// I think this is right.
 	unsigned char noct = (itype >> 7) & 1;
 	unsigned char do_once = (itype >> 8) & 1;
@@ -617,6 +622,76 @@ int Egg_object::within_distance
 		return (0);
 	int deltay = abs_ty - egg_ty;
 	return (deltay < distance && -deltay < distance);
+	}
+
+/*
+ *	Paint at given spot in world.
+ */
+
+void Egg_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	if(gwin->paint_eggs)
+		Game_object::paint(gwin);
+	}
+
+/*
+ *	Run usecode when double-clicked or when activated by proximity.
+ */
+
+void Egg_object::activate
+	(
+	Usecode_machine *umachine
+	)
+	{
+#if DEBUG
+cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
+		", distance = " << (int) distance << ", crit = " <<
+		(int) criteria << ", once = " <<
+	((flags & (1<<(int)once) != 0)) << ", areset = " <<
+	((flags & (1<<(int)auto_reset) != 0)) << ", data1 = " << data1
+		<< ", data2 = " << data2 << '\n';
+#endif
+	int roll = 1 + rand()%100;
+	if (roll > probability)
+		return;			// Out of luck.
+	flags |= (1 << (int) hatched);	// Flag it as done.
+	switch(type)
+		{
+		case jukebox:
+#if DEBUG
+			cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0xff) << endl;
+#endif
+			audio->start_music((data1)&0xff,(data1>>8)&0xff);
+			break;
+		case voice:
+			audio->start_speech((data1)&0xff);
+			break;
+		case monster:
+			{
+			Game_window *gwin = Game_window::get_game_window();
+			Monster_info *inf = gwin->get_monster_info(data2&1023);
+			if (inf)
+				{
+				Npc_actor *monster = inf->create(get_cx(),
+					get_cy(), get_tx(), get_ty(),
+								get_lift());
+				monster->set_alignment(data1&3);
+				gwin->add_dirty(monster);
+				}
+			break;
+			}
+		case usecode:
+			// Data2 is the usecode function.
+			umachine->call_usecode(data2, this,
+					Usecode_machine::egg_proximity);
+			break;
+		default:
+			cout << "Egg not actioned" << endl;
+                }
+
 	}
 
 /*
@@ -764,7 +839,7 @@ int Container_game_object::create_quantity
 	int todo = delta < roomfor ? delta : roomfor;
 	while (todo)			// Create them here first.
 		{
-		Game_object *newobj = new Game_object(shapenum, framenum,
+		Game_object *newobj = new Ireg_game_object(shapenum, framenum,
 								0, 0, 0);
 		if (!add(newobj))
 			{
@@ -883,6 +958,8 @@ int Container_game_object::drop
 	Game_object *obj
 	)
 	{
+	if (!get_owner())		// Only accept if inside another.
+		return (0);
 	return (add(obj));		// We'll take it.
 	}
 
@@ -973,49 +1050,6 @@ void Barge_object::paint
 	}
 
 /*
- *	Run usecode when double-clicked or when activated by proximity.
- */
-
-void Egg_object::activate
-	(
-	Usecode_machine *umachine
-	)
-	{
-#if DEBUG
-cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
-		", distance = " << (int) distance << ", crit = " <<
-		(int) criteria << ", once = " <<
-	((flags & (1<<(int)once) != 0)) << ", areset = " <<
-	((flags & (1<<(int)auto_reset) != 0)) << ", data2 = " << data2
-		<< '\n';
-#endif
-	int roll = 1 + rand()%100;
-	if (roll > probability)
-		return;			// Out of luck.
-	flags |= (1 << (int) hatched);	// Flag it as done.
-	switch(type)
-		{
-		case jukebox:
-#if DEBUG
-			cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0xff) << endl;
-#endif
-			audio->start_music((data1)&0xff,(data1>>8)&0xff);
-			break;
-		case voice:
-			audio->start_speech((data1)&0xff);
-			break;
-		case usecode:
-			// Data2 is the usecode function.
-			umachine->call_usecode(data2, this,
-					Usecode_machine::egg_proximity);
-			break;
-		default:
-			cout << "Egg not actioned" << endl;
-                }
-
-	}
-
-/*
  *	Create the cached data storage for a chunk.
  */
 
@@ -1086,6 +1120,12 @@ void Chunk_cache::update_object
 					// Get lower-right corner of obj.
 	int endx = obj->get_tx();
 	int endy = obj->get_ty();
+#if 0
+//++++Testing
+	if (cx*tiles_per_chunk + endx == 1023 && 
+	    cy*tiles_per_chunk + endy == 2015 && obj->get_lift() == 1)
+		cout << "This is the one.\n";
+#endif
 					// Get footprint dimensions.
 	int xtiles = info.get_3d_xtiles();
 	int ytiles = info.get_3d_ytiles();
@@ -1158,9 +1198,8 @@ void Chunk_cache::add_egg
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-					// Get absolute tile coords.
-	int tx = chunk->get_cx()*tiles_per_chunk + egg->get_tx(), 
-	    ty = chunk->get_cy()*tiles_per_chunk + egg->get_ty();
+	int tx, ty, tz;			// Get absolute tile coords.
+	egg->get_abs_tile(tx, ty, tz);
 	int dist = egg->get_distance();
 					// Set up rect. with abs. tile range.
 	Rectangle tiles(tx - dist, ty - dist, 2*dist + 1, 2*dist + 1);
@@ -1220,6 +1259,8 @@ void Chunk_cache::setup
 
 int Chunk_cache::is_blocked
 	(
+	int height,			// Height (in tiles) of obj. being
+					//   tested.
 	int lift,			// Given lift.
 	int tx, int ty,			// Square to test.
 	int& new_lift			// New lift returned.
@@ -1227,7 +1268,8 @@ int Chunk_cache::is_blocked
 	{
 					// Get bits.
 	unsigned short tflags = blocked[ty*tiles_per_chunk + tx];
-	if (tflags & (1<<lift))		// Something there?
+					// Something there?
+	if (tflags & (((1<<height) - 1) << lift))		
 		{
 		new_lift = lift + 1;	// Maybe we can step up.
 		if (new_lift > 15 || (tflags & (1<<new_lift)))
@@ -1439,7 +1481,7 @@ Frames_sequence::Frames_sequence
 Sprite::Sprite
 	(
 	int shapenum
-	)  : Container_game_object(), chunk(0),
+	)  : Container_game_object(),
 		major_dir(0), major_frame_incr(8), frames_seq(0)
 	{
 	set_shape(shapenum, 0); 
@@ -1468,19 +1510,18 @@ void Sprite::start
 	(
 	unsigned long destx,		// Move towards pt. within world.
 	unsigned long desty,
-	int speed			// # millisecs. between frames.
+	int speed,			// # millisecs. between frames.
+	int delay			// Delay before starting.
 	)
 	{
-	if (!in_world())
-		return;			// We can't start moving.
 	Game_window *gwin = Game_window::get_game_window();
 	frame_time = speed;
 	Direction dir;			// Gets compass direction.++++++Get
 					//  northeast, etc. too.
-	if (!is_moving())		// Not already moving?
-		{			// Start immediately.
+	if (!is_walking())		// Not already moving?
+		{			// Start.
 		unsigned long curtime = SDL_GetTicks();
-		gwin->get_tqueue()->add(curtime, this, (long) gwin);
+		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
 		}
 	curx = get_worldx();		// Get current coords.
 	cury = get_worldy();
@@ -1564,13 +1605,12 @@ int Sprite::is_dragable
 
 int Sprite::next_frame
 	(
-	unsigned long time,		// Current time.
 	int& new_cx, int& new_cy,	// New chunk coords. returned.
 	int& new_tx, int& new_ty,	// New tile coords. returned.
 	int& next_frame			// Next frame # returned.
 	)
 	{
-	if (!is_moving())
+	if (!is_walking())
 		return (0);
 					// Figure change in faster axis.
 	int new_major = major_frame_incr;
@@ -1593,33 +1633,6 @@ int Sprite::next_frame
 	else
 		next_frame = -1;
 	return (1);
-	}
-
-/*
- *	Animation.
- */
-
-void Sprite::handle_event
-	(
-	unsigned long curtime,		// Current time of day.
-	long udata			// Game window.
-	)
-	{
-	Game_window *gwin = (Game_window *) udata;
-	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
-	int frame;
-	if (next_frame(curtime, cx, cy, sx, sy, frame))
-		{
-					// Add back to queue for next time.
-		gwin->get_tqueue()->add(curtime + frame_time,
-							this, udata);
-					// Get old rectangle.
-		Rectangle oldrect = gwin->get_shape_rect(this);
-					// Move it.
-		move(cx, cy, gwin->get_objects(cx, cy), sx, sy, frame);
-					// Repaint.
-		gwin->repaint_sprite(this, oldrect);
-		}
 	}
 
 /*

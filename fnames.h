@@ -20,6 +20,7 @@
 #define FACES_VGA	"static/faces.vga"
 #define GUMPS_VGA	"static/gumps.vga"
 #define FONTS_VGA	"static/fonts.vga"
+#define SPRITES_VGA     "static/sprites.vga"
 #define SHPDIMS		"static/shpdims.dat"
 #define TFA		"static/tfa.dat"
 #define WGTVOL		"static/wgtvol.dat"		
@@ -41,6 +42,7 @@
 #define	XMIDI_MT	"static/xmidi.mt"
 #define U7SPEECH	"static/u7speech.spc"
 #define XFORMTBL       	"static/xform.tbl"
+#define MONSTERS	"static/monsters.dat"
 
 #endif
 #ifdef WIN32
@@ -50,6 +52,7 @@
 #define FACES_VGA	"static\\faces.vga"
 #define GUMPS_VGA	"static\\gumps.vga"
 #define FONTS_VGA	"static\\fonts.vga"
+#define SPRITES_VGA     "static\\sprites.vga"
 #define SHPDIMS		"static\\shpdims.dat"
 #define TFA		"static\\tfa.dat"
 #define WGTVOL		"static\\wgtvol.dat"		
@@ -71,6 +74,7 @@
 #define	XMIDI_MT	"static\\xmidi.mt"
 #define U7SPEECH	"static\\u7speech.spc"
 #define XFORMTBL       	"static\\xform.tbl"
+#define MONSTERS	"static\\monsters.dat"
 
 #endif
 

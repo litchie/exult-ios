@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "SDL_mapping.h"
 #include "../fnames.h"
+#include "../files/U7file.h"
 
 #include "Configuration.h"
 extern	Configuration *config;
@@ -52,20 +53,20 @@ Audio::~Audio()
 		midi=0;
 		}
 	SDL::CloseAudio();
+	self=0;
 }
 
 
 
 static 	void debug_speech(void)
 {
-	extern	Audio *audio;
 
 	
 	//audio.start_speech(31,false);
 	return;
 	for(int i=0;i<32;i++)
 		{
-		audio->start_speech(i,false);
+		Audio::get_ptr()->start_speech(i,false);
 		SDL::Delay(1000);
 		}
 }
@@ -262,8 +263,12 @@ void Audio::Init()
 	mixer=new Mixer(_buffering_unit,ringsize,actual.silence);
 }
 
+Audio *Audio::self=0;
+
 Audio::Audio() : midi(0)
-{}
+{
+	self=this;
+}
 
 void Audio::Init(int _samplerate,int _channels)	
 {
@@ -358,30 +363,17 @@ static void	load_buffer(char *buffer,const char *filename,size_t start,size_t le
 
 void	Audio::start_speech(int num,bool wait)
 {
-	start_speech(&speech_tracks,num,wait);
-}
-
-void	Audio::start_speech(Flex *f,int num,bool wait)
-{
-	if((unsigned)num>=f->object_list.size())
-		{
-		// Out of bounds
-		return;	
-		}
-	if(f->object_list[num].size==0||f->object_list[num].offset==0)
-		{
-		// Size is null or offset is null
+	char	*buf=0;
+	size_t	len;
+	U7object	sample(U7SPEECH,num);
+	if(!sample.retrieve(&buf,len))
 		return;
-		}
-	char *buf=new char[f->object_list[num].size];
-	load_buffer(buf,f->filename.c_str(),f->object_list[num].offset,f->object_list[num].size);
-	play((Uint8*)buf,f->object_list[num].size,wait);
+	play((Uint8*)buf,len,wait);
 	delete [] buf;
 }
 
 void	Audio::build_speech_vector(void)
 {
-	speech_tracks=AccessFlexFile(U7SPEECH);
 }
 
 void	Audio::set_external_signal(int fh)
@@ -392,4 +384,9 @@ void	Audio::set_external_signal(int fh)
 void	Audio::terminate_external_signal(void)
 {
 	mixer->set_auxilliary_audio(-1);
+}
+
+Audio	*Audio::get_ptr(void)
+{
+	return self;
 }
