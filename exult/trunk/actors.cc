@@ -1561,9 +1561,9 @@ Npc_actor *Monster_info::create
 	monster->set_schedule_type(Schedule::loiter);
 #if 0	/* +++++++Enable when tested. */
 					// Get equipment.
-	if (equip_offset >= equip_cnt)
+	if (!equip_offset || equip_offset - 1 >= equip_cnt)
 		return (monster);	// Out of range.
-	Equip_record& rec = equip[equip_offset];
+	Equip_record& rec = equip[equip_offset - 1];
 	for (int i = 0; i < sizeof(equip->elements)/sizeof(equip->elements[0]);
 								i++)
 		{			// Give equipment.
