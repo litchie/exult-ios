@@ -116,7 +116,7 @@ C_EXPORT gboolean on_monst_shape_focus_out_event
 	)
 	{
 	ExultStudio::get_instance()->show_egg_monster();
-	return TRUE;
+	return FALSE;
 	}
 /*
  *	"Teleport coords" toggled.
