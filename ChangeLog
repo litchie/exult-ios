@@ -1,3 +1,8 @@
+2003-05-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: 'Formation' walking is now on permanently.
+	* mapedit/*: Now uses gtk_drag_begin() so that DND works with GTK2.x.
+
 2003/05/09: Aurelien Marchand (artaxerxes@users.sf.net)
 	* added command option to tools/cmanip.cc to return the value of a key
 
