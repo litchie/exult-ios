@@ -2630,6 +2630,18 @@ USECODE_INTRINSIC(get_dead_party)
 	return ret;
 }
 
+USECODE_INTRINSIC(play_sound_effect)
+{
+	if (num_parms < 1) return(no_ret);
+	// Play music(item, songnum).
+	// ??Show notes by item?
+#if DEBUG
+	cout << "Sound effect " << parms[0].get_int_value() << " request in usecode" << endl;
+#endif
+	audio->play_sound_effect (parms[0].get_int_value());
+	return(no_ret);
+}
+
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
 // missing from mingw32 header files, so included manually
@@ -2785,7 +2797,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x83
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
 	USECODE_INTRINSIC_PTR(is_not_blocked),	// 0x85
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x86  +++++A sound??  Animation??
+	USECODE_INTRINSIC_PTR(play_sound_effect),	// 0x86  +++++A sound??  Animation??
 	USECODE_INTRINSIC_PTR(direction_from),	// 0x87
 	USECODE_INTRINSIC_PTR(get_item_flag),	// 0x88
 	USECODE_INTRINSIC_PTR(set_item_flag),	// 0x89

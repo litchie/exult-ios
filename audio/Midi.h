@@ -45,6 +45,7 @@ public:
 	virtual void	start_track(const char *,bool repeat)=0;
 #else
 	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat)=0;
+	virtual void	start_sfx(midi_event *evntlist, int ppqn)=0;
 #endif
 	virtual void	stop_track(void)=0;
 	virtual	bool	is_playing(void)=0;
@@ -67,6 +68,7 @@ public:
 	void	start_music(const char *fname,int num,bool continuous=false);
 	void	start_track(int num,bool continuous=false,int bank=0);
 	void	start_track(const char *fname,int num,bool continuous=false);
+	void	start_sound_effect(int num);
 
 	void	stop_music();
 

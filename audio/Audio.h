@@ -64,6 +64,7 @@ public:
 	bool	start_music(int num,bool continuous,int bank=0);
 	void	start_music(const char *fname,int num,bool continuous);
 	void	stop_music();
+	void	play_sound_effect (int num);
 	bool	start_speech(int num,bool wait=false);
 	void	set_external_signal(int);
 	void	terminate_external_signal(void);
