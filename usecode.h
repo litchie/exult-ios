@@ -242,6 +242,24 @@ public:
 	void exec_array(Usecode_value& objval, Usecode_value& arrayval);
 
 	/*
+         *	Embedded intrinsics
+	 */
+
+	Usecode_value	UI_NOP(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_UNKNOWN(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_get_random(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_execute_usecode_array(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_delayed_execute_usecode_array(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_show_npc_face(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_remove_npc_face(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_add_answer(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_remove_answer(int event,int intrinsic,Usecode_value parms[12]);
+	Usecode_value	UI_save_answers(int event,int intrinsic,Usecode_value parms[12]);
+
+
+
+
+	/*
 	 *	Other private methods:
 	 */
 					// Call instrinsic function.
