@@ -35,6 +35,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "npctime.h"
 #include "paths.h"
 
+using std::cout;
+using std::endl;
+using std::rand;
+using std::ostream;
+
 /*
  *	Timer for a missile egg (type-6 egg).
  */

@@ -40,7 +40,7 @@ class Mixer
 {
 private:
 	Mixer(const Mixer &m);	// Cannot call me
-	list<ProducerConsumerBuf *>	audio_streams;
+	std::list<ProducerConsumerBuf *>	audio_streams;
 public:
 	Mixer();
 	Mixer(unsigned int, unsigned int, unsigned char);
@@ -52,14 +52,14 @@ public:
 		Uint8 *buffer;
 		Uint8 num_samples;
 		size_t	length;
-		MixBuffer(size_t size,Uint8 silence) : buffer(new Uint8[size]),num_samples(0),length(0) { memset(buffer,silence,size); };
+		MixBuffer(size_t size,Uint8 silence) : buffer(new Uint8[size]),num_samples(0),length(0) { std::memset(buffer,silence,size); };
 		MixBuffer(const MixBuffer &m) : buffer(m.buffer),num_samples(m.num_samples),length(m.length) {  };
 #ifdef MACOS
 		MixBuffer() : buffer(NULL),num_samples(0),length(0) {};
 #endif
 		};
 	size_t	buffer_length;
-	list<MixBuffer>	buffers;
+	std::list<MixBuffer>	buffers;
 	size_t ring_size;
 	void	advance(void);
 	Uint8	silence;

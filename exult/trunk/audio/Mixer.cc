@@ -46,6 +46,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Audio.h"
 
+using std::cerr;
+using std::endl;
+using std::list;
+using std::vector;
+
 //---- Mixer ---------------------------------------------------------
 
 Mixer::~Mixer()

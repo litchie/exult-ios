@@ -24,13 +24,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "bodies.h"
-#ifdef MACOS
-  #include <hashset.h>
-#else
-  #include <hash_set>
-#endif
+#include <hash_set>
 
-using std::hash_set;
+#ifdef MACOS
+using Metrowerks::hash_set;
+#endif
 using std::size_t;
 
 /*

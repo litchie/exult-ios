@@ -98,7 +98,7 @@ public:
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame = -1);
 					// Write out to IREG file.
-	virtual void write_ireg(ostream& out);
+	virtual void write_ireg(std::ostream& out);
 	virtual void elements_read();	// Called when all member items read.
 	};
 

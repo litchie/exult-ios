@@ -26,19 +26,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_UTILS
 #define INCL_UTILS	1
 #ifdef MACOS
-  #include <cstring>
   #include <iostream>
   // it is not sufficient to #include <iosfwd> here because Read1() etc.
   // call methods of class istream
   #include <stat.h>
-  #include <hashmap.h>
 #else
   #include <sys/stat.h>
-  #include <hash_map>
   #include <iosfwd>
 #endif
 #include <exception>
+#include <hash_map>
 #include <string>
+#ifdef MACOS
+  using Metrowerks::hash_map;
+#endif
 
 /*
  *	Hash function for strings:

@@ -140,7 +140,7 @@ public:
 	virtual int is_egg() const	// An egg?
 		{ return 1; }
 					// Write out to IREG file.
-	virtual void write_ireg(ostream& out);
+	virtual void write_ireg(std::ostream& out);
 	};
 
 /*
@@ -187,7 +187,7 @@ public:
 	virtual void activate(Usecode_machine *umachine, Game_object *obj,
 							int must = 0);
 					// Write out to IREG file.
-	virtual void write_ireg(ostream& out);
+	virtual void write_ireg(std::ostream& out);
 	};
 
 #endif

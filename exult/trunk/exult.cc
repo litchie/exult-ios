@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <stdlib.h>
+#include <ctype.h>
 
 // #ifdef HAVE_SYS_TIME_H
 #ifdef XWIN  /* Only needed in XWIN. */
@@ -53,6 +54,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "barge.h"
 #include "cheat.h"
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
+using std::vector;
 
 Audio *audio;
 Configuration *config;

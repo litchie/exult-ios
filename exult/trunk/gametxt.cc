@@ -27,6 +27,11 @@ Boston, MA  02111-1307, USA.
 #include <ctype.h>
 #include "gamewin.h"
 #include "U7file.h"
+
+using std::cout;
+using std::endl;
+using std::string;
+
 /*
  *	Fonts in 'fonts.vga':
  *

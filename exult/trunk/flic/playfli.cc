@@ -32,6 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "playfli.h"
 #include "utils.h"
 
+using std::ifstream;
+
 playfli::playfli(const char *fli_name)
 {
     ifstream fli_stream; 

@@ -11,6 +11,8 @@
 #include "items.h"
 #include "schedule.h"
 
+using std::rand;
+
 extern bool god_mode;
 
 /*

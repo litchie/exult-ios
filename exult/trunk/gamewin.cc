@@ -55,6 +55,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 #include "mouse.h"
 
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::istream;
+using std::string;
+using std::vector;
+
 extern	Configuration *config;
 					// THE game window:
 Game_window *Game_window::game_window = 0;
