@@ -1,7 +1,7 @@
 int bgconv[] = {
 	0,			//FIX Bow Twang 
 	12,			//Missile   
-	80,			//Blade     
+	9,			//Blade     
 	9,			//Blunt     
 	11,			//Hit       
 	125,			//Graze     
@@ -13,7 +13,7 @@ int bgconv[] = {
 	116,			//Thunder   
 	0,			//FIX Fireball  
 	0,			//FIX Torches   
-	44,			//Gumps!!!!!
+	94,			//Gumps!!!!!
 	94,			//Gavel     
 	56,			//Treadle   
 	121,			//Clock tick
@@ -45,7 +45,7 @@ int bgconv[] = {
 	2,			//gumpster  
 	17,			//gumpster  
 	1,			//Forge     
-	49,			//Douce     
+	33,			//Douce     
 	47,			//Bellows   
 	33,			//Fountain  
 	7,			//Surf's up 
@@ -89,8 +89,8 @@ int bgconv[] = {
 	10,			//Furl      
 	52,			//Unfurl    
 	0,			//MISSING
-	64,			//Drink     
-	124,			//Eat       
+	36,			//Drink     
+	38,			//Eat       
 	0,			//FIX Whip ptb  
 	32,			//Doorslam  
 	89,			//Portcullis
@@ -105,7 +105,7 @@ int bgconv[] = {
 	73,			//Stalags   
 	103,			//MagicWeap 
 	75,			//Poison    
-	86,			//Ignite    
+	65,			//Ignite    
 	65,			//Yo yo LA  
 	62,			//Wind Spell
 	131,			//Protect   
