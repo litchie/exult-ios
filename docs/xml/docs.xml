@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="12 December 2003(GMT)">
+<readme title="Exult" changed="11 February 2004(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="11022004">
+			<header>- 11 February 2004</header>
+			<body>
+				<ul>
+				<li> A lot of clean up and small changes, too numerous to list.</li>
+				<li><ref1 target="path_config"/> fixed some outdated instructions.</li>
+				<li><ref1 target="digital_music_install"/> added as the instructions in the music-pack 
+					readme.txt are no longer valid.</li>
+				<li><ref1 target="movement"/> fixed up a bit.</li>
+				<li><ref1 target="exult_keys"/> fixed up a bit as well.</li>
+				<li><section_ref target="Game Menu"/> added screenshots showing the Game menu gumps and removed 
+					"Quit to Menu".</li>
+				<li><ref1 target="thanks"/> time to thank Sourceforge as well.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="12122003">
 			<header>- 12 December 2003</header>
 			<body>
@@ -11,23 +27,6 @@
 				<li><ref1 target="dir_config"/> added to give some explanation for Static/Gamedat.</li>
 				<li><ref1 target="music"/> updated with 'recent' audio changes.</li>
 				<li><ref1 target="audio_gump"/> updated with 'recent' audio changes.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="18102003">
-			<header>- 18 October 2003</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_version"/> note Exult version.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="08082003">
-			<header>- 08 August 2003</header>
-			<body>
-				<ul>
-				<li><section_ref target="Zaurus Guide"/> added Artaxerxes' guide.</li>
-				<li><ref1 target="thanks"/> added Artaxerxes for his guide.</li>
 				</ul>
 			</body>
 		</sub>
@@ -85,13 +84,12 @@
 						we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle"
 						as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.</li>
 					<li><strong>eggs</strong>:<br/>
-						these are trip-wires that can cause monsters to spawn, execute scripts,
-						play music, change weather, trigger traps or teleport when you
-						get near them.</li>
+						 these are trip-wires that can cause monsters to spawn, execute scripts, play 
+						 music, change weather, trigger traps or teleport when you get near them.</li>
 					<li><strong>flex files</strong>:<br/>
-						also known as flexes, these are used by the original to store the data files.
-						Also when you choose not use compressed save games (see save_compression_level in
-						<ref target="exult_config"/>) our save games are also "flexed".</li>
+						 also known as flexes, these are used by the original to store the data files.
+						Also when you choose to not use compressed save games (see save_compression_level in
+						<extref doc="docs" target="exult_config"/>) our save games are also "flexed".</li>
 					<li><strong>gumps</strong>:<br/>
 						the windows used in the game interface for containers, characters, menus, etc..</li>
 					<li><strong>paperdoll</strong>:<br/>
@@ -102,7 +100,7 @@
 						(see <extref doc="faq" target="improvements"/>).</li>
 					<li><strong>shapes</strong>:<br/>
 						shape files are the format used for storage of all graphics elements (from UI buttons
-						to terrain features) of the games <Exult/> supports. Shapes may contain one or more
+						to terrain features) of the games Exult supports. Shapes may contain one or more
 						frames (a frame is a single image).</li>
 					<li><strong>snapshot</strong>:<br/>
 						see <extref doc="faq" target="whatis_snapshot"/>.<br/>
@@ -110,7 +108,7 @@
 					<li><strong>usecode</strong>:<br/>
 						that's the scripting language that drives all of U7 (conversations, objects...).</li>
 					<li><strong>Exult data directory</strong>:<br/>
-						that's the directory where <Exult/> stores its data files (exult.flx, exult_bg.flx and
+						that's the directory where Exult stores its data files (exult.flx, exult_bg.flx and
 						exult_si.flx).</li>
 				</ul>
 			</body>
@@ -295,7 +293,7 @@
 							<configtag name="skip_splash">
 							no
 							<comment>**this skips the splash screen, the intro before you get to the</comment>
-							<comment>game menu. Disabling it brings you straight to the game menu.</comment>
+							<comment> game menu. Disabling it brings you straight to the game menu.</comment>
 							</configtag>
 							<configtag name="facestats">
 							0
@@ -471,10 +469,10 @@
 					You have two choices on how to setup <Exult/>.
 				</para>
 				<para>
-					The first one is very easy, just extract all the files from the
-					compiled snapshot archive to the directory where you have The Black
+					The first one is very easy, just install <Exult/> to the directory where you have The Black
 					Gate or Serpent Isle installed. Concerning the paths you don't have to
-					configure anything.
+					configure anything, at least for the game you have installed it to. For the other game you will
+					need to edit exult.cfg.
 				</para>
 				<para>
 					The other is a little more complicated but appeals to control freaks like me:<br/>
@@ -482,8 +480,9 @@
 					make two subfolders named "blackgate" and "serpentisle" (without the quotes of course)<br/>
 					Extract or install the two Ultima 7 games into the appropriate folder
 					("The Black Gate" to c:\ultima7\blackgate and "Serpent Isle" to c:\ultima7\serpentisle)<br/>
-					Extract the compiled <Exult/> to c:\ultima7<br/>
-					Now you have to edit the exult.cfg file like this:
+					Install <Exult/> to c:\ultima7.<br/>
+					Now you have to edit the file c:\ultima7\exult.cfg file like this (Non-Windows users please look 
+					at <ref target="exult_config"/> for the location of exult.cfg):
 				</para>
 				<configdesc>
 					<configtag name="config" closing-tag="no">
@@ -614,7 +613,7 @@
 						This parameter lets the game start nethertheless. Don't try this if you
 						don't know what you are doing.</li>
 					<li>--game gamename<br/>
-						Unused yet. Loads a game specified in exult.cfg when there are other games made
+						Loads a game specified in exult.cfg when there are other games made
 						with <Studio/>.</li>
 				</ul>
 			</body>
@@ -698,7 +697,7 @@
 				</para>
 			</body>
 		</sub>
-			<sub name="win32_device">
+		<sub name="win32_device">
 			<header>Windows MIDI Mapper</header>
 			<body>
 				<para>
@@ -734,29 +733,62 @@
 					with the device you want to use.
 				</para>
 			</body>
-		</sub>
+	</sub>
 	<sub name="digital_music">
 		<header>Digital Music</header>
+		<body>
+			<para>
+				<Exult/> needs the Digital Music pack to play Digital Music in the game. The music
+				pack contains music for both Black Gate and Serpent Isle, encoded in high quality
+				OGG format. Simon Quinn recorded the current Digital Music pack on an original
+				Roland MT-32 and with this you will experience the music as it would be heard with
+				the original game.<br/>
+				Digital Music should work on any platform that supports digital sound and does not
+				use any MIDI, so it is also a good option for platforms with no MIDI support.
+				Additionally, Digital Music supports a number of background atmospheric SFX tracks
+				that are played when no music is playing. These consist of wind, bird etc effects
+				outside and other sound effects when inside a dungeon. These SFX tracks are not
+				available when using MIDI as they play Roland MT-32 specific voices that cannot
+				be mapped to GM/GS. These SFX tracks do not play when the music is switched off.
+			</para>
+		</body>
+	</sub>
+	<sub name="digital_music_install">
+		<header>Installation of the digital music packs</header>
 			<body>
 				<para>
-					<Exult/> needs the Digital Music pack to play Digital Music in the game. The music
-					pack contains music for both Black Gate and Serpent Isle, encoded in high quality
-					OGG format. Simon Quinn recorded the current Digital Music pack on an original
-					Roland MT-32 and with this you will experience the music as it would be heard with
-					the original game.<br/>
 					The Digital Music pack can be downloaded from
 					<extref target="http://exult.sourceforge.net/download.php"/>, the files are called
-					U7MusicOGG_1of2.zip and U7MusicOGG_2of2.zip.  Instructions of how to install these
-					files are in the ZIP files themselves (they need to be extracted into the
-					Exult/data/music directory).<br/>
-					Digital Music should work on any platform that supports digital sound and does not
-					use any MIDI, so it is also a good option for platforms with no MIDI support.
-					Additionally, Digital Music supports a number of background atmospheric SFX tracks
-					that are played when no music is playing. These consist of wind, bird etc effects
-					outside and other sound effects when inside a dungeon. These SFX tracks are not
-					available when using MIDI as they play Roland MT-32 specific voices that cannot
-					be mapped to GM/GS. These SFX tracks do not play when the music is switched off.
+					<strong>Ogg encoded Music files for Exult Part 1(use with 1.1.x snapshot only)</strong>
+					(U7MusicOGG_1of2.zip) and 
+					<strong>Ogg encoded Music files for Exult Part 2(use with 1.1.x snapshot only)</strong> 
+					(U7MusicOGG_2of2.zip). The readme.txt found in the ZIP files contains installation 
+					instructions that are no longer 100% valid and should not be followed.<br/>
+					Create a music directory in exult/data (i.e. exult/data/music/) and extract the two ZIP 
+					files U7MusicOGG_1of2.zip and U7MusicOGG_2of2.zip into this directory.<br/>
+					If you are not sure where the data directory is, search for the file 
+					<strong>exult_bg.flx</strong> on your hard drive as this file is always in the data 
+					directory.<br/>
+					Now start up <Exult/> and start either a game of BG or SI. Hit <key>ESC</key> to enter 
+					the game menu. Here select <strong>Audio Options</strong> and in the "Music options" 
+					set the <strong>driver</strong> option to <strong>digital</strong>.
 				</para>
+				<para>
+					It isn't necessary but you can also customize the location of the music files by adding 
+					&lt;music_path&gt; to exult.cfg. Example:
+				</para>
+				<configdesc>
+					<configtag name="config" closing-tag="no">
+						<configtag name="disk" closing-tag="no">
+							<configtag name="data_path">
+							data
+							</configtag>
+							<configtag name="music_path">
+							data/music
+							</configtag>
+						</configtag>
+					</configtag>
+				</configdesc>
 			</body>
 		</sub>
 	<sub name="wave_sfx">
@@ -914,7 +946,7 @@
 					mouse button to have the functionality of a right mouse button.
 				</para>
 				<para>
-					Nadir implemented keyboard walking in the 1.1 (unstable) branch of our source.
+					Nadir implemented keyboard walking in the post 1.0 versions of <Exult/>.
 					The Avatar can be moved with the arrow keys (or the keypad keys for more precise
 					movement). When you move while holding shift the Avatar runs.
 				</para>
@@ -924,7 +956,7 @@
 			<header>Keyboard commands</header>
 			<body>
 				<para>
-					Starting with V0.91 Alpha2 all key commands can be changed. However, there
+					All key commands of <Exult/>can be changed for either BG or SI. However, there
 					is a default setting which closely follows the original with the addition of
 					some improvements.
 				</para>
@@ -1007,7 +1039,7 @@
 					<keydesc name="8">Show inventory for character 8</keydesc>
 				</keytable>
 				<para>
-					In conversations you now have the ability not just click on the answer
+					In conversations you have the ability not just click on the answer
 					with the mouse but also to use the numeric keys. The response options
 					aren't numbered visually but logically with the dots. Also press <key>Esc</key>
 					to select "bye" if possible.
@@ -1068,7 +1100,8 @@
 				<para>
 					You can access the Game menu either by pressing the disk icon in the Avatar's
 					inventory screen or by pressing <key>Esc</key>.<br/>
-					You then have the following options.
+					You then have the following options.<br/>
+					<img alt="the Game menu" src="images/docs01.png"/>
 				</para>
 			</body>
 		</sub>
@@ -1080,7 +1113,8 @@
 					view some information of a save game on the right side (a screenshot and some stats).<br/>
 					If you have a wheel mouse you can scroll one line up/down by using the wheel. Pressing
 					<key>Alt</key> while using the wheel scrolls by pages.<br/>
-					Pressing <strong>Cancel</strong> exits the Load/Save options.
+					Pressing <strong>Cancel</strong> exits the Load/Save options.<br/>
+					<img alt="saving/loading a game" src="images/docs02.png"/>
 				</para>
 			</body>
 		</sub>
@@ -1088,13 +1122,14 @@
 			<header>Video Options</header>
 			<body>
 				<para>
-					In this option screen you are able to determine how <Exult/> displays the game.
+					In this option screen you are able to determine how <Exult/> displays the game.<br/>
+					<img alt="Video Options" src="images/docs03.png"/>
 				</para>
 				<ul>
 					<li><strong>Resolution</strong><br/>
 						lets you choose between various resolutions. You can choose between 320x200,
-						320x240, 400x300, 512x384 and 640x480. If you want higher resolutions edit
-						the exult.cfg file as outlined in <ref1 target="exult_config"/>.</li>
+						320x240, 400x300, 512x384, 640x480 and 800x600. If you want higher resolutions edit
+						exult.cfg outlined in <ref1 target="exult_config"/>.</li>
 					<li><strong>Scaling</strong><br/>
 						choose between 1x and 2x. What it does is explained in <ref1 target="scaler"/>.</li>
 					<li><strong>Scaler</strong><br/>
@@ -1111,7 +1146,8 @@
 			<header>Audio Options</header>
 			<body>
 				<para>
-					Look at <section_ref target="Audio"/> to see explanation on the settings.
+					Look at <section_ref target="Audio"/> to see explanation on the settings.<br/>
+					<img alt="Audio Options" src="images/docs04.png"/>
 				</para>
 				<ul>
 					<li><strong>Audio</strong><br/>
@@ -1139,6 +1175,9 @@
 		<sub name="gameplay_gump">
 			<header>Gameplay Options</header>
 			<body>
+				<para>
+					<img alt="Gameplay Options" src="images/docs05.png"/>
+				</para>
 				<ul>
 					<li><strong>Status Bars</strong><br/>
 						You can either disable the status bars or choose its position on
@@ -1184,7 +1223,8 @@
 				<para>
 					As many people think that the U7 combat engine is far too easy, too hard or
 					just can't stand the real-time-combat Jeff put in some options to make combat more
-					interesting.
+					interesting.<br/>
+					<img alt="Combat Options" src="images/docs06.png"/>
 				</para>
 				<ul>
 					<li><strong>Difficulty</strong><br/>
@@ -1199,19 +1239,6 @@
 						right-clicking, then clicking on a target to attack. Or change weapons, choose a
 						favourite spell.</li>
 				</ul>
-			</body>
-		</sub>
-		<sub name="quit_menu">
-			<header>Quit to Menu</header>
-			<body>
-				<para>
-					This is not implemented yet and just quits <Exult/>. When it eventually works you will
-					be back to the <Exult/> menu where you choose which game you want to play. It is
-					actually more difficult to implement than it sounds so don't expect it too soon.
-				</para>
-				<para>
-					In snapshots after the Beta 1 release this option is no longer available.
-				</para>
 			</body>
 		</sub>
 		<sub name="quit_game">
@@ -1229,7 +1256,7 @@
 			<body>
 				<para>
 					Some people were confused where to put the <Exult/> and U7 files and
-					this is a quick guide. The long guide is in the next section.
+					this is just a quick guide. The long guide is in the next section.
 				</para>
 				<ul>
 					<li>BG and SI are expected to be installed in <strong>/mnt/cf/exult-data/bg</strong>
@@ -1464,6 +1491,8 @@
 			<header>Thanks</header>
 			<body>
 				<ul>
+					<li>The people of <extref target="http://www.sourceforge.net">SourceForge</extref> without whom this
+						project would not be where it is today.</li>
 					<li>The paper by Gary Thompson on the structure of the U7 data
 						files was crucial to the early development of <Exult/>.</li>
 					<li>Work by Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag
