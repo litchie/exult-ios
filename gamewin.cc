@@ -163,7 +163,7 @@ Game_window::Game_window
 	(
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
-	    win(0), usecode(0), mode(normal), combat(false),
+	    win(0), usecode(0), combat(false),
             tqueue(new Time_queue()), clock(tqueue),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0),
@@ -1692,7 +1692,7 @@ void Game_window::view_right
 							c_num_chunks;
 	scrolltx = INCR_TILE(scrolltx);
 	scroll_bounds.x = INCR_TILE(scroll_bounds.x);
-	if (mode == gump)		// Gump on screen?
+	if (open_gumps)		// Gump on screen?
 		{
 		paint();
 		return;
@@ -1722,7 +1722,7 @@ void Game_window::view_left
 					// Want to wrap.
 	scrolltx = DECR_TILE(scrolltx);
 	scroll_bounds.x = DECR_TILE(scroll_bounds.x);
-	if (mode == gump)		// Gump on screen?
+	if (open_gumps)			// Gump on screen?
 		{
 		paint();
 		return;
@@ -1752,7 +1752,7 @@ void Game_window::view_down
 							c_num_chunks;
 	scrollty = INCR_TILE(scrollty);
 	scroll_bounds.y = INCR_TILE(scroll_bounds.y);
-	if (mode == gump)		// Gump on screen?
+	if (open_gumps)			// Gump on screen?
 		{
 		paint();
 		return;
@@ -1780,7 +1780,7 @@ void Game_window::view_up
 					// Want to wrap.
 	scrollty = DECR_TILE(scrollty);
 	scroll_bounds.y = DECR_TILE(scroll_bounds.y);
-	if (mode == gump)		// Gump on screen?
+	if (open_gumps)		// Gump on screen?
 		{
 		paint();
 		return;
@@ -2702,7 +2702,6 @@ void Game_window::show_gump
 	new_gump->append_to_chain(open_gumps);
 	if (++cnt == 8)
 		cnt = 0;
-	mode = gump;			// Special mode.
 	clock.set_palette();		// Gumps get lighter palette.
 	Audio::get_ptr()->play_sound_effect(14);	// The weird noise.
 	paint();			// Show everything.
@@ -2723,7 +2722,6 @@ void Game_window::end_gump_mode
 		open_gumps = gmp->get_next();
 		delete gmp;
 		}
-	mode = normal;
 	clock.set_palette();
 	npc_prox->wait(4);		// Delay "barking" for 4 secs.
 	if (had_gumps)
@@ -2743,7 +2741,6 @@ void Game_window::remove_gump
 	delete gump;
 	if (!open_gumps)		// Last one?  Out of gump mode.
 		{
-		mode = normal;
 		clock.set_palette();
 		}
 	}
@@ -2975,8 +2972,6 @@ void Game_window::setup_game
 	(
 	)
 	{
-	
-	mode = normal;
 	set_palette(0);
 
 	init_actors();		// Set up actors if not already done.

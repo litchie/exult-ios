@@ -400,7 +400,6 @@ static void Init
 	if(yn == "no") 
 		game->play_intro();
 	game->show_menu();
-	gwin->set_mode(Game_window::normal);
 //	SDL_SetEventFilter(Filter_intro_events);
 	gwin->setup_game();		// This will start the scene.
 					// Get scale factor for mouse.
@@ -638,8 +637,7 @@ static void Handle_event
 			}
 					// Move sprite toward mouse
 					//  when right button pressed.
-		if (event.button.button == 3 && 
-		    gwin->get_mode() != Game_window::gump)
+		if (event.button.button == 3 && !gwin->showing_gumps())
 			{		// Try removing old queue entry.
 			gwin->get_tqueue()->remove(gwin->get_main_actor());
 			gwin->start_actor(event.button.x >> scale, 
@@ -664,7 +662,8 @@ static void Handle_event
 			uint32 curtime = SDL_GetTicks();
 			bool click_handled = false;
 			if (dragging) {
-				click_handled = gwin->drop_dragged(event.button.x >> scale, 
+				click_handled = gwin->drop_dragged(
+					event.button.x >> scale, 
 					event.button.y >> scale, dragged);
 			}
 					// Last click within .5 secs?
@@ -673,7 +672,7 @@ static void Handle_event
 				dragging = false;
 				gwin->double_clicked(event.button.x >> scale, 
 						event.button.y >> scale);
-				if (gwin->get_mode() == Game_window::gump)
+				if (gwin->showing_gumps())
 					Mouse::mouse->set_shape(Mouse::hand);
 				break;
 				}
@@ -689,7 +688,7 @@ static void Handle_event
 		{
 		Mouse::mouse->move(event.motion.x >> scale, 
 						event.motion.y >> scale);
-		if (gwin->get_mode() != Game_window::gump)
+		if (!gwin->showing_gumps())
 			Set_mouse_and_speed(event.motion.x, event.motion.y);
 		Mouse::mouse_update = true;	// Need to blit mouse.
 					// Dragging with left button?

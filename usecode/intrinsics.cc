@@ -1712,7 +1712,7 @@ USECODE_INTRINSIC(close_gumps)
 
 USECODE_INTRINSIC(in_gump_mode)
 {
-	return Usecode_value(gwin->get_mode() == Game_window::gump);
+	return Usecode_value(gwin->showing_gumps());
 }
 
 USECODE_INTRINSIC(is_not_blocked)

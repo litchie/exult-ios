@@ -574,7 +574,6 @@ void Talk_schedule::now_what
 			npc->activate(gwin->get_usecode(), 1);
 					// SO don't refer to any instance
 					//   variables from here on.
-		gwin->set_mode(Game_window::normal);
 		gwin->paint();
 		return;
 	default:
