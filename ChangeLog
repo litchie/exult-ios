@@ -1,4 +1,7 @@
 2001-11-25 Ryan Nunn <triforce@merlin.net.au>
+	 * audio/Audio.cc : Note to self, Copy and Paste not so good
+
+2001-11-25 Ryan Nunn <triforce@merlin.net.au>
 	 * version.cc : Will this ever end... Windows and MSC stuff
 	 * msvcstuff/Exult.dsp : Add in the version files to the project 
 	 * msvcstuff/msvc_kludges.h : Finally updated version to 0.95cvs 
