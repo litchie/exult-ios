@@ -159,6 +159,7 @@ void target_mode (void);
 void gump_next_inventory (void);
 void gump_next_stats (void);
 void gump_file (void);
+void make_screenshot (void);
 void show_about (void);
 void show_help (void);
 void show_cheat_help (void);
@@ -1021,7 +1022,10 @@ static void Handle_keystroke
 				}
 				break;
 			case 's':
-				if (ctrl && !alt) {		// Ctrl-s : Save to 'gamedat'
+				if (ctrl && alt) {		// Ctrl-Alt-s : Screenshot
+					make_screenshot();
+
+				} else if (ctrl && !alt) {	// Ctrl-s : Save to 'gamedat'
 					quick_save();
 
 				} else if (alt && !ctrl) {	// Alt-s : Change skin color
@@ -1432,6 +1436,37 @@ void gump_file (void)
 	delete fileio;
 }
 
+void make_screenshot (void)
+{
+	char fn[15];
+	int i;
+	FILE *f;
+	bool namefound = false;
+
+	// look for the next available exult???.pcx file
+	for (i = 0; i < 1000 && !namefound; i++) {
+		sprintf(fn, "exult%03i.pcx", i);
+		if (f = fopen(fn, "rb")) {
+			fclose(f);
+		} else {
+			namefound = true;
+		}
+	}
+
+	if (!namefound) {
+		gwin->center_text("Too many screenshots");
+	} else {
+		SDL_RWops *dst = SDL_RWFromFile(fn, "wb");
+
+		if (gwin->get_win()->screenshot(dst)) {
+			cout << "Screenshot saved in " << fn << endl;
+			gwin->center_text("Screenshot");
+		} else {
+			gwin->center_text("Screenshot failed");
+		}
+	}	
+}
+
 void show_about (void)
 {
 	Scroll_gump *scroll;
@@ -1470,7 +1505,8 @@ void show_help (void)
 			"p - Use lockpick\n"
 			"ctrl-p - Repaint screen\n"
 			"ctrl-s - Quick Save\n"
-			"ctrl-r - Restore\n"
+			"ctrl-alt-s - Screenshot\n"
+			"ctrl-r - Quick Restore\n"
 			"s - Show save box\n"
 			"v - About box\n"
 			"w - Use watch\n"
