@@ -87,15 +87,16 @@ inline void Paint_chunk_outline
 	(
 	Game_window *gwin,
 	int pixel,			// Pixel value to use.
+	int cx, int cy,			// Chunk coords.
 	int tnum,			// Terrain #.
 	int xoff, int yoff		// Where chunk was painted.
 	)
 	{
 	gwin->get_win()->fill8(pixel, c_chunksize, 1, xoff, yoff);
 	gwin->get_win()->fill8(pixel, 1, c_chunksize, xoff, yoff);
-	char text[8];			// Show chunk #.
-	snprintf(text, 8, "%d", tnum);
-	gwin->paint_text(7, text, xoff + 2, yoff + 2);
+	char text[40];			// Show chunk #.
+	snprintf(text, sizeof(text), "(%d,%d)T%d", cx, cy, tnum);
+	gwin->paint_text(2, text, xoff + 2, yoff + 2);
 	}
 
 /*
@@ -144,7 +145,7 @@ void Game_window::paint_terrain_only
 			Map_chunk *chunk = get_chunk(cx, cy);
 			chunk->get_terrain()->render_all(cx, cy);
 			if (cheat.in_map_editor())
-				Paint_chunk_outline(this, hit_pixel,
+				Paint_chunk_outline(this, hit_pixel, cx, cy,
 				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
@@ -200,7 +201,7 @@ int Game_window::paint_map
 			paint_chunk_flats(cx, cy, xoff, yoff);
 
 			if (cheat.in_map_editor())
-				Paint_chunk_outline(this, hit_pixel,
+				Paint_chunk_outline(this, hit_pixel, cx, cy,
 				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}

@@ -373,25 +373,28 @@ void Game_map::write_static
 					// Only write what we've modified.
 		if (schunk_modified[schunk])
 			write_ifix_objects(schunk);
-#if 0	/* The following test should be removed: */
-	if (modified_terrain)		// Only if edited terrain.
-#endif
+	int cnt = chunk_terrains.size();
+	int i;				// Any terrains modified?
+	for (i = 0; i < cnt; i++)
+		if (chunk_terrains[i] && chunk_terrains[i]->is_modified())
+			break;
+	if (i < cnt)
 		{
 		ofstream ochunks;	// Open file for chunks data.
+					// This truncates the file.
 		U7open(ochunks, PATCH_U7CHUNKS);
-		int cnt = chunk_terrains.size();
-		for (int i = 0; i < cnt; i++)
-			{		// Write modified ones.
+		for (i = 0; i < cnt; i++)
+			{
 			Chunk_terrain *ter = chunk_terrains[i];
-			if (ter && ter->is_modified())
+			unsigned char data[512];
+			if (ter)
 				{
-				ochunks.seekp(i*512);
-				unsigned char data[512];
 				ter->write_flats(data);
-				ochunks.write(reinterpret_cast<char*>(data), 
-									512);
 				ter->set_modified(false);
 				}
+			else
+				memset(&data[0], 0, 512);
+			ochunks.write(reinterpret_cast<char*>(data), 512);
 			}
 		if (!ochunks.good())
 			throw file_write_exception(U7CHUNKS);
