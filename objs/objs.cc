@@ -798,7 +798,9 @@ void Game_object::activate
 	else if (usefun == 0x282 && get_quality() >= 180 && 
 			 Game::get_game_type() == SERPENT_ISLE )
 		usefun = 0x63b;
-
+	else if (usefun == 0x2c1 && get_quality() >= 213 &&
+			 Game::get_game_type() == SERPENT_ISLE )
+		usefun = 0x62a;
 	umachine->call_usecode(usefun, this,
 			(Usecode_machine::Usecode_events) event);
 	}
