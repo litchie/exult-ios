@@ -23,7 +23,7 @@
 			<body>
 				<para>
 					Ultima 7, an RPG from the early 1990's, still has a huge following. But,
-					being a DOS game with a very non-standard memory manager, it is difficult
+					being a DOS game with a very nonstandard memory manager, it is difficult
 					to run it on the latest computers. <Exult/> is a project to create
 					an Ultima 7 game engine that runs on modern operating systems, capable of
 					using the data and graphics files that come with the game.
@@ -60,7 +60,7 @@
 						The <strong>Ultima Collection</strong> already contains a pre-installed
 						version of U7 (in the directory /ultima7 on the CD).</li>
 					<li>From the Ultima7 folder on your PC, copy the STATIC sub folder to 
-						an appropiate folder - see <ref target="path_config"/> what those 
+						an appropriate folder - see <ref target="path_config"/> what those 
 						could be.</li>
 					<li>Now run <strong>exult</strong> (<strong>exult.exe</strong> in Windows)
 						and quit it immediately.</li>
@@ -91,7 +91,7 @@
 				<para>
 					If you do not already have a configuration file, <Exult/> will make one for you
 					filling in sensible defaults by itself. The location of this file varies 
-					slightly. On unix systems you can expect to find it in $HOME/.exult.cfg while 
+					slightly. On UNIX systems you can expect to find it in $HOME/.exult.cfg while 
 					other operating systems will probably locate it as 'exult.cfg' in the same 
 					directory as the <Exult/> binary. However it is recommended that you edit this 
 					file by hand to achieve optimal results for your system.
@@ -295,7 +295,7 @@
 					The other is a little more complicated but appeals to control freaks like me:<br/>
 					Make a directory c:\ultima7<br/>
 					make two subfolders named "blackgate" and "serpentisle" (without the quotes of course)<br/>
-					Extract or install the two Ultima 7 games into the appropiate folder
+					Extract or install the two Ultima 7 games into the appropriate folder
 					("The Black Gate" to c:\ultima7\blackgate and "Serpent Isle" to c:\ultima7\serpentisle)<br/>
 					Extract the compiled <Exult/> to c:\ultima7<br/>
 					Now you have to edit the exult.cfg file like this:
@@ -352,14 +352,14 @@
 						This will convert the MT32 patches to standard General Midi patches.
      					Conversion is fairly accurate but some instruments may be different.</li>
      				<li><strong>gs</strong><br/>
-     					This will convert the MT32 patches to their equivilant GS patches. This
+     					This will convert the MT32 patches to their equivalent GS patches. This
      					will be a more accurate conversion that straight gm since more of the 
      					MT32 patches are in the GS set. However, not all midi devices will
      					support this mode.</li>
      				<li><strong>gs127</strong><br/>
      					This option is for midi devices that have a MT32 patch bank installed
-        				in Bank 127. Some GS implimentation have this, some don't. Only use
-        				this if you know that you have a MT32 implimentation on Bank 127.</li>
+        				in Bank 127. Some GS implementation have this, some don't. Only use
+        				this if you know that you have a MT32 implementation on Bank 127.</li>
         			<li><strong>none</strong><br/>
         				This option will output the music with nothing changed. Because
                			the mapping will be for MT32s you should only use this option if
@@ -388,7 +388,7 @@
 					Due to the way the class was constructed input can be in either .mid, .rmi or
 					the Miles Sound System .xmi format. There are no limitations to they types of
 					.mid and .rmi supported. They can be Type 0, 1 and the rarely seen type 2. The
-					loading routine is also fairly lineient of errorneous XMIDI files that do not
+					loading routine is also fairly lenient of erroneous XMIDI files that do not
 					have correct XMIDI headers.
 				</para>
 				<para>
@@ -404,7 +404,7 @@
 			<header>Windows MIDI Mapper</header>
 			<body>
 				<para>
-					You can now tell <Exult/> which MIDI device it should use. Usefull if you 
+					You can now tell <Exult/> which MIDI device it should use. Useful if you 
 					want Exult to use a different MIDI device than the default Windows device 
 					(like an MT-32).
 				</para>
@@ -442,7 +442,7 @@
 			<body>
 				<para>
 					You have to set a path to the sfx pack in the waves settings in exult.cfg 
-					(see <ref target="exult_config"/>). You have to download seperate packs for 
+					(see <ref target="exult_config"/>). You have to download separate packs for 
 					each game as order of the sfx in BG and SI varies a bit and otherwise will 
 					sound odd. However there is a little issue with sfx playback in SI.
 				</para>
@@ -632,7 +632,7 @@
 					<keydesc name="Arrow keys">Scroll map</keydesc>
 					<keydesc name="Home">Recenter map</keydesc>
 					<keydesc name="F2">Cheat screen similar to the originals'. Allows for some level of
-									NPC editing and other cheat otpions</keydesc>
+									NPC editing and other cheat options</keydesc>
 					<keydesc name="F3">Map teleport</keydesc>
 					<keydesc name="F10">Show endgame</keydesc>
 					<keydesc name="F11">SI: Play alternate intro</keydesc>
@@ -648,12 +648,12 @@
 					<keydesc name="l">Decrement skiplift</keydesc>
 					<keydesc name="Alt-h">Hackmover (you can move all objects around and it 
 									disables weight check</keydesc>
-					<keydesc name="Ctrl-Alt-m">Toggle Map editor (usefull for <Studio/>)</keydesc>
+					<keydesc name="Ctrl-Alt-m">Toggle Map editor (useful for <Studio/>)</keydesc>
 					<keydesc name="Ctrl-m">Get 100 gold coins</keydesc>
 					<keydesc name="Alt-Shift-m">Play previous song</keydesc>
 					<keydesc name="Alt-m">Play next song</keydesc>
 					<keydesc name="Alt-n">SI: Toggle naked flag</keydesc>
-					<keydesc name="Alt-p">SI: Toggle petra mode</keydesc>
+					<keydesc name="Alt-p">SI: Toggle Petra mode</keydesc>
 					<keydesc name="Alt-s">SI: Change skin color</keydesc>
 					<keydesc name="Ctrl-Alt-t">Map teleport</keydesc>
 					<keydesc name="Ctrl-t">Advance to next time period</keydesc>
@@ -664,7 +664,7 @@
 					<keydesc name="Ctrl-Alt-p">Pick pocket cheat, when enabled double-clicking on a 
 									NPC displays the actors inventory</keydesc>
 					<keydesc name="Ctrl-n">NPC number, When enabled, clicking an a NPC will 
-									display their number instead of their name. Usefull for the cheat screen.</keydesc>
+									display their number instead of their name. Useful for the cheat screen.</keydesc>
 				</keytable>
 			</body>
 		</sub>
@@ -704,7 +704,7 @@
 					<li><strong>Scaling</strong><br/>
 						choose between 1x and 2x. What it does is explained in <ref1 target="scaler"/>.</li>
 					<li><strong>Scaler</strong><br/>
-						lets you choose your favourite scaling engine. Also look at <ref1 target="scaler"/>
+						lets you choose your favorite scaling engine. Also look at <ref1 target="scaler"/>
 						for an explanation.</li>
 					<li><strong>Full Screen</strong><br/>
 						enable or disable running Exult in full screen.</li>
@@ -717,7 +717,7 @@
 			<header>Audio Options</header>
 			<body>
 				<para>
-					Look at <ref2 target="Audio"/> to see explanation on the seetings.
+					Look at <ref2 target="Audio"/> to see explanation on the settings.
 				</para>
 				<ul>
 					<li><strong>Audio</strong><br/>
@@ -753,20 +753,20 @@
 						(which could also be accomplished by pressing <key>t</key>). For modal gumps,
 						the middle mouse acts as 'return', the right button as 'escape', so you can now 
 						for example accept the default slider value by just pressing the middle button. 
-						the escape function is also available during most other actions like selecting 
+						The escape function is also available during most other actions like selecting 
 						a target or conversations. Enable or disable it.</li>
 					<li><strong>Doubleclick closes gumps</strong><br/>
 						not implemented into the Gameplay Options yet, but can be enabled or disabled by 
 						editing the exult.cfg - see <ref1 target="exult_config"/>.</li>
 					<li><strong>Paperdolls</strong><br/>
-						only availlable in <strong>Black Gate</strong>. Enables or disable Paperdolls 
+						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls 
 						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
 					<li><strong>Cheats</strong><br/>
 						Enables or disables all the cheats that we implemented in <Exult/>. 
 						See <ref1 target="exult_cheats"/> what those cheats are.</li>
 					<li><strong>Text Background</strong><br/>
 						shows a tinted background behind text in conversations to make it easier to read.
-						Either disable it or choose between the clours purple, orange, light gray, green, 
+						Either disable it or choose between the colours purple, orange, light grey, green, 
 						yellow,pale blue, dark green. red, bright white, dark grey and white.</li>
 					<li><strong>OK/Cancel</strong><br/>
 						Ok accepts your changes, Cancel discards your changes.</li>
@@ -777,9 +777,9 @@
 			<header>Quit to Menu</header>
 			<body>
 				<para>
-					This is not implented yet and just quits <Exult/>. When it eventually works you will 
+					This is not implemented yet and just quits <Exult/>. When it eventually works you will 
 					be back to the <Exult/> menu where you choose which game you want to play. It is 
-					actually more dificult to implement than it sounds so don't expect it too soon.
+					actually more difficult to implement than it sounds so don't expect it too soon.
 				</para>
 			</body>
 		</sub>
@@ -802,7 +802,7 @@
 						These may give you some idea of what is going on
 						under the hood. When <Exult/> suddenly quits, sometimes
 						these files can help.</li>
-					<li><strong>Unix/Unix clones:</strong><br/>
+					<li><strong>UNIX/UNIX clones:</strong><br/>
 						the above mentioned logs are shown in the console from which Exult
 						is started.<br/>
 						<kbd>./exult &gt;&amp;log</kbd><br/>

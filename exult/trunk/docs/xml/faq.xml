@@ -23,7 +23,7 @@
 				<li><ref1 target="latest_version"/> Version updated</li>
 				<li><ref1 target="known_issues"/> added note about stealing, killing NPCs</li>
 				<li><ref1 target="compile_issues"/> added this with information on compiling in 
-					Unix and the bug with the flex bundled with some Linux systems.</li>
+					UNIX and the bug with the flex bundled with some Linux systems.</li>
 				</ul>	
 			</body>
 		</sub>
@@ -34,7 +34,7 @@
 				<li><ref1 target="origin_exult"/> noted praise from LB and Ken Demarest.</li>				
 				<li><ref1 target="multiplayer"/> this gets asked quite often.</li>
 				<li><ref1 target="whatis_snapshot"/> added some more information.</li>
-				<li><ref1 target="compile_snapshot"/> made this gnereic for all the OS'.</li>
+				<li><ref1 target="compile_snapshot"/> made this generic for all the OS'.</li>
 				<li><ref1 target="what_platforms"/> added OSX.</li>
 				<li><ref1 target="addon_support"/> reported both as bug-free.</li>			
 				<li><ref1 target="bug_report"/> not that anyone reads the FAQ anyway. But it should get
@@ -95,7 +95,7 @@
 			<body>
 				<para>
 					First of all, Origin has been owned by EA for a long time now and from recent 
-					developements it seems that Origin only exists now to maintain Ultima Online. 
+					developments it seems that Origin only exists now to maintain Ultima Online. 
 					Furthermore, Origin and/or people that worked for Origin claim that the source 
 					code for Ultima 7 (BG/SI) has been lost for some time.
 					So there is no chance for the <Exult/> team to have a look at the actual code.
@@ -120,7 +120,7 @@
 					any other Ultima nor do members of the team plan to develop something similar.
 					The reasons for this are that no other Ultima is similar to Ultima 7 in the 
 					internal workings and also the team is quite sick of reverse engineering a game
-					allready. 
+					already. 
 				</para>
 			</body>
 		</sub>
@@ -221,7 +221,7 @@
 			<body>
 				<para>
 					It seems to run most of the available versions of the game. The most common
-					ones nowadays with the included Add-Ons (Forge of Virtue and Silver Seed) 
+					ones nowadays with the included Add-ons (Forge of Virtue and Silver Seed) 
 					runs for sure.
 				</para>
 				<para>
@@ -231,7 +231,7 @@
 					was only published in English so no localization problems with that one.
 				</para>
 				<para>
-					V0.91 Alpha2 adds fixes for the french version, which should work now.
+					V0.91 Alpha2 adds fixes for the French version, which should work now.
 					If you are running a Spanish or German version Black Gate and you notice 
 					problems please contact us.
 				</para>
@@ -264,11 +264,11 @@
 			</body>
 		</sub>
 		<sub name="addon_support">
-			<header>Do the Add-Ons work?</header>
+			<header>Do the Add-ons work?</header>
 			<body>
 				<para>
-					"Forge of Virtue" (Add-On to Black Gate) and the "The Silver Seed" 
-					(Add-On to Serpent Isle) are bug-free now.
+					"Forge of Virtue" (Add-on to Black Gate) and the "The Silver Seed" 
+					(Add-on to Serpent Isle) are bug-free now.
 				</para>
 			</body>
 		</sub>
@@ -328,7 +328,7 @@
 			<body>
 				<para>
 					Yes. The sail of ships look odd sometimes but otherwise these means of
-					transportations work quite well.
+					transportation work quite well.
 				</para>
 			</body>
 		</sub>
@@ -359,29 +359,29 @@
 				<li>A new worked over Game menu. This menu is explained in detail in the 
 					<extref target="docs.php">Documentation</extref> and many of the following 
 					improvements  and Video/Audio options can be accessed via this menu. Open 
-					this Game Menu by preesing <key>Esc</key> in the game.</li>
+					this Game Menu by pressing <key>Esc</key> in the game.</li>
 				<li>SI style paperdoll (inventory screen) in BG. Very impressive. For this you 
 					need to have Serpent Isle installed on your hard drive and you must set the 
 					path to it in exult.cfg (see the Documentation) and activate it in the 
 					Gameplay Options<br/>
 					This new inventory screen acts sometimes a little buggy, so if an item seems 
 					to have disappeared disable the paperdolls in the Game Options.</li>
-				<li>A beatuifull new savegame box. This allows you much more savegames than 
+				<li>A beatuiful new savegame box. This allows you much more savegames than 
 					the original (you should run out of disc space before you run out of savegame 
 					slots), shows a screenshot of the location you saved at, the members of your 
 					party, your stats, game time and the date you actually saved. The save game 
 					box is opened either via the game menu or the <key>s</key> key.</li>
 				<li>Face status bars at the bottom of the screen that show your health (and that 
-					of your party mambers) as well as your mana. Doubleclicking on the face opens 
+					of your party members) as well as your mana. Doubleclicking on the face opens 
 					the inventory and doubleclicking on the bars shows the status screen.</li>
 				<li>Middle mouse button support. In the normal game, the middle mouse button
 					activates the target-function (which could also be accomplished by pressing
 					't'). for modal gumps, the middle mouse acts as 'return', the right button
 					as 'escape', so you can now for example accept the default slider value by
-					just pressing the middle button. the escape function is also available
+					just pressing the middle button. The escape function is also available
 					during most other actions like selecting a target or conversations.</li>
 				<li>Fast Mouse which makes the mouse cursor move faster in fullscreen mode.</li>
-				<li>multiracial Avatar in BG. As with the paperdoll support you need to have SI 
+				<li>Multiracial Avatar in BG. As with the paperdoll support you need to have SI 
 					installed and the path set in exult.cfg.</li>
 				<li>Higher resolutions than the original. You can set the resolution as high as 
 					your computer supports. But there are some issues with it and it is considered
@@ -406,7 +406,7 @@
 					to enable the old savegame menu (the line in your custom keybindings file should look 
 					like: S old_file_gump)</li>
 				<li>Edit the exult.cfg file to point to those custom keys.</li>
-				<li>Disable SI-style paperdolls for BG in exult.cfg (see the documantation for that).</li>
+				<li>Disable SI-style paperdolls for BG in exult.cfg (see the documentation for that).</li>
 				<li>Alternatively click on the disk icon and disable the paperdolls in the Gameplay 
 					Options.</li>
 				<li>Edit the exult.cfg to use the resolution of 320x200, to run in full screen and 
@@ -458,7 +458,7 @@
 			<header>What do you need to run it?</header>
 			<body>
 				<para>
-					Currently, you need to be running <Exult/> on X (Linux, Unix, etc.), with
+					Currently, you need to be running <Exult/> on X (Linux, UNIX, etc.), with
 					<Exult/> set to run in a window (not fullscreen).  You also need the GTK+
 					library installed.
 				</para>
@@ -583,11 +583,11 @@
 			<body>
 				<ol>
 				<li>Read the <extref target="http://exult.sourceforge.net/docs.php">Documentation</extref>
-					and this FAQ to see if that is not allready covered and you have all set up correctly.</li>
+					and this FAQ to see if that is not already covered and you have all set up correctly.</li>
 				<li>Before you report a bug to the 
 					<extref target="http://sourceforge.net/bugs/?group_id=2335">bug tracker</extref> 
 					please try the latest <extref target="http://exult.sourceforge.net/download.php">snapshot</extref>.
-					If the bug still occurs make sure that no one else allready reported the bug.</li>
+					If the bug still occurs make sure that no one else already reported the bug.</li>
 				<li>If you are not a sourceforge member please include your e-mail address this is 
 					important so we can get back to you. If you are a sourceforge member please log in 
 					before submitting a bug.</li>
@@ -623,7 +623,7 @@
 						you get away or closer to them.</li>
 					<li>With scalers enabled you might encounter slow downs of the game. The team is
 						working on this right now and it is already a lot faster.</li>
-					<li>The speech in the intro is out of synch with the lips animations. But now it 
+					<li>The speech in the intro is out of synch with the lips animation. But now it 
 						matches the speed of the text.</li>
 					<li>There are reported problems with digital sound effects or speech when 
 						using Vortex series sound cards (like the Diamond MX 300) under Win9x/ME. <Exult/>
@@ -635,7 +635,7 @@
 			<header>Known Compile Issues</header>
 			<body>
 				<ul>
-					<li>Max is working to make Exult compile like it does on all Unix systems but currently
+					<li>Max is working to make Exult compile like it does on all UNIX systems but currently
 						it requires the not-yet released SDL 1.2.3.</li>
 					<li>There is a bug/incompatibility with the flex bundled Linux distributions 
 						(RH7.0, for example) that breaks compilation. Upgrading to a more recent version 
@@ -648,7 +648,7 @@
 			<body>
 				<ul>
 					<li>A few magic spells don't work yet.</li>
-					<li>stealing, killing innocent NPCs doesn't work yet correctly</li>
+					<li>Stealing, killing innocent NPCs doesn't work yet correctly</li>
 				</ul>				
 			</body>
 		</sub>
@@ -682,7 +682,7 @@
 				<para>
 					This FAQ is maintained by Dominus Dragon of the 
 					<extref target="http://www.udic.org">UDIC</extref>
-					aka <extref target="mailto:gigdr@tesionmail.de">Dominik Reichardt</extref>.
+					AKA <extref target="mailto:gigdr@tesionmail.de">Dominik Reichardt</extref>.
 					Feel free to contact me with improvements or complaints regarding
 					the FAQ. I recently became part of the <Exult/> Team though I only
 					write the FAQ and don't code at all.
