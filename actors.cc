@@ -2000,6 +2000,28 @@ bool Actor::reduce_health
 			gwin->get_info(this).has_translucency() &&
 			party_id < 0)	// Don't include Spark here!!
 		return false;
+					// Being a bully (in BG)?
+	if (attacker && attacker->get_flag(Obj_flags::in_party) && GAME_BG &&
+	    npc_num > 0 &&
+	    (alignment == Actor::friendly || alignment == Actor::neutral) &&
+	    gwin->get_info(this).get_shape_class() == Shape_info::human)
+		{
+		static long lastcall = 0L;	// Last time yelled.
+		long curtime = SDL_GetTicks();
+		long delta = curtime - lastcall;
+		if (delta > 10000)	// Call if 10 secs. has passed.
+			{
+			gwin->remove_text_effect(this);
+			say(first_call_police, last_call_police);
+			lastcall = curtime;
+			gwin->attack_avatar(1 + rand()%2);
+			}
+		else if (rand()%4 == 0)
+			{
+			cout << "Rand()%4" << endl;
+			gwin->attack_avatar(1 + rand()%2);
+			}
+		}
 	bool defeated = false;
 	int oldhp = properties[static_cast<int>(health)];
 	int maxhp = properties[static_cast<int>(strength)];
