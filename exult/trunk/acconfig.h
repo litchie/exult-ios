@@ -37,6 +37,9 @@
 /* Compiling on OpenBSD */
 #undef OPENBSD
 
+/* Compiling in Cygwin */
+#undef CYGWIN
+
 @BOTTOM@
 
 #ifdef ALPHA_LINUX_CXX

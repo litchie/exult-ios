@@ -104,9 +104,8 @@ void to_uppercase
 {
 	for(string::iterator X = str.begin(); X != str.end(); ++X)
 	{
-#if (defined(BEOS) || defined(OPENBSD))
-//sigh...
-	  if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
+#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN))
+		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #else
 		*X = std::toupper(*X);
 #endif         
