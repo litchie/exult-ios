@@ -1693,6 +1693,12 @@ bool BG_Game::new_game(Vga_file &shapes)
 bool BG_Game::is_installed()
 {
 	std::string buf("<BLACKGATE_STATIC>/endgame.dat");
-	std::cout << "is_installed: " << buf << std::endl;
-	return U7exists(buf) && U7exists("<DATA>/exult_bg.flx");
+	std::cout << "is_installed: '" << get_system_path(buf);
+	bool found = U7exists(buf) && U7exists("<DATA>/exult_bg.flx");
+	if (found)
+		std::cout << "': yes" << std::endl;
+	else
+		std::cout << "': no" << std::endl;
+
+	return found;
 }
