@@ -295,13 +295,13 @@
 	<xsl:attribute name="href">
 		<xsl:choose>
 			<xsl:when test="@doc='faq'">
-				faq.html#
+				<xsl:text>faq.html#</xsl:text>
 			</xsl:when>
 			<xsl:when test="@doc='docs'">
-				ReadMe.html#
+				<xsl:text>ReadMe.html#</xsl:text>
 			</xsl:when>
 			<xsl:when test="@doc='studio'">
-				exult_studio.html#
+				<xsl:text>exult_studio.html#</xsl:text>
 			</xsl:when>
 		</xsl:choose>
 		<xsl:value-of select="@target"/>
