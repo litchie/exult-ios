@@ -338,6 +338,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(set_temperature);
 //	USECODE_INTRINSIC_DECL(add_removed_npc);
 	USECODE_INTRINSIC_DECL(approach_avatar);
+	USECODE_INTRINSIC_DECL(set_barge_dir);
 	USECODE_INTRINSIC_DECL(telekenesis);
 	USECODE_INTRINSIC_DECL(a_or_an);
 	USECODE_INTRINSIC_DECL(add_to_keyring);

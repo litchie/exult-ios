@@ -1,3 +1,7 @@
+2004-01-06    <jeff@mini.nerble.net>
+
+	* usecode/intrinsics.cc: Yet another intrinsic:  set_barge_dir().
+
 2004-01-03    <jeff@mini.nerble.net>
 
 	* gamerend.cc,chunks.cc:  Handle dungeons slightly differently to

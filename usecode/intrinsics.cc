@@ -2838,6 +2838,17 @@ USECODE_INTRINSIC(approach_avatar)
 	return Usecode_value(1);
 	}
 
+USECODE_INTRINSIC(set_barge_dir)
+{
+	// set_barge_dir(barge, dir (0-7)).
+	Game_object *obj = get_item(parms[0]);
+	int dir = parms[1].get_int_value();
+	Barge_object *barge = obj ? obj->as_barge() : 0;
+	if (barge)
+		barge->face_direction(dir);
+	return no_ret;
+}
+
 USECODE_INTRINSIC(telekenesis)
 {
 	// telekenesis(fun#) - Save item for executing Usecode on.
