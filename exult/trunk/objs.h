@@ -534,15 +534,6 @@ enum Direction
 	southeast = 7
 	};
 
-/*
- *	Axes:
- */
-enum Axis
-	{
-	xaxis = 0,
-	yaxis = 1
-	};
-
 Direction Get_direction
 	(
 	int deltay,
@@ -572,6 +563,8 @@ public:
 
 /*
  *	A sprite is a game object which can change shape and move around.
+ *	++++++So far, this base class is never invoked, so we might not need
+ *	the Time_sensitive part.+++++++
  */
 class Sprite : public Container_game_object, public Time_sensitive
 	{
@@ -583,16 +576,18 @@ class Sprite : public Container_game_object, public Time_sensitive
 	 *	Motion info.:
 	 */
 	unsigned long curx, cury;	// Current pos. within world.
-	Axis major_axis;		// Axis along which motion is greater.
+					// ->'s to curx, cury.
+	unsigned long *major_coord, *minor_coord;
+	int major_dir, minor_dir;	// 1 or -1 for dir. along each axis.
 	int major_delta, minor_delta;	// For each pixel we move along major
 					//   axis, we add 'minor_delta'.  When
 					//   the sum >= 'major_delta', we move
 					//   1 pixel along minor axis, and
 					//   subtract 'major_delta' from sum.
 	int sum;			// Sum of 'minor_delta''s.
-	int x_dir, y_dir;		// 1 or -1 for dir. along each axis.
 	Frames_sequence *frames_seq;	// ->sequence of frames to display.
 	int frame_index;		// Index into frames_seq.
+	int major_distance;		// Distance in pixels to go.
 protected:
 	int frame_time;			// Time between frames in msecs.
 public:
@@ -627,15 +622,17 @@ public:
 		chunk->add(this);
 		}
 	int is_moving()
-		{ return x_dir != 0; }
+		{ return major_dir != 0; }
 	void stop();			// Stop motion.
 					// Start moving.
 	void start(Game_window *gwin,
 			unsigned long destx, unsigned long desty, int speed);
+	int at_destination()		// Reached/passed dest. in start()?
+		{ return major_distance <= 0; }
 	virtual int is_dragable();	// Can this be dragged?
 					// Figure next frame location.
-	virtual int next_frame(unsigned long time,
-		int& new_cx, int& new_cy, int& new_sx, int& new_sy,
+	int next_frame(unsigned long time,
+		int& new_cx, int& new_cy, int& new_tx, int& new_ty,
 		int& new_frame);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
