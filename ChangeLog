@@ -1,3 +1,7 @@
+2001-07-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamerend.cc: Show chunk outlines when in map-editor mode.
+
 2001-07-08  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Recoded write_map().
