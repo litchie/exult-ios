@@ -207,6 +207,7 @@ void Scheduled_usecode::handle_event
 #if 0
 		case 0x2c:		// Quit if there's already scheduled
 					//   code for item?
+					// Or supercede the existing one?
 			break;
 #endif
 		case 0x2d:		// Remove itemref.
@@ -2373,11 +2374,13 @@ USECODE_INTRINSIC(clear_npc_flag)
 
 USECODE_INTRINSIC(run_usecode)
 {
+#if 0	/* Turn on when we can test this.+++++++++++++ */
 	// run_usecode(fun, itemref, eventid)
 	Game_object *obj = get_item(parms[1]);
 	if (obj)
 		call_usecode(parms[0].get_int_value(), obj, 
 				(Usecode_events) parms[2].get_int_value());
+#endif
 	return(no_ret);
 }
 
