@@ -1,3 +1,7 @@
+2002-08-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* intrinsics.cc: reverted click_on_item change from 2002-08-02
+	(it broke hitting Draygan with sleep arrows)
+
 2002-08-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* effects.cc:  It's now okay to show rain/clouds when gumps are shown.

@@ -817,11 +817,16 @@ USECODE_INTRINSIC(click_on_item)
 
 					// Special case for weapon hit:
 	} else if (event == weapon && caller_item)
-		{			// First choice:  NPC's target.
+		{
+#if 0
+        // This breaks hitting Draygan with sleep arrows (SI). -wjp
+
+			// First choice:  NPC's target.
 		Actor *npc = as_actor(caller_item);
 		if (npc && npc->get_target())
 			obj = npc->get_target();
 		else			// Not sure about this:
+#endif
 			obj = caller_item;
 		t = obj->get_tile();
 		}
