@@ -2024,11 +2024,11 @@ void ExultStudio::read_from_server
 		if (combowin)
 			combowin->add(data, datalen);
 		break;
-		}
 	case Exult_server::usecode_debugging:
 		std::cerr << "Warning: got a usecode debugging message! (ignored)"
 				  << std::endl;
 		break;
+	}
 	}
 
 /*
