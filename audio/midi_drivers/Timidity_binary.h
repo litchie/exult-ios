@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Table.h"
 #include "Mixer.h"
 #include "Midi.h"
+#include "../../utils.h"
 
 
 //#undef HAVE_TIMIDITY_BIN	// Disabled for now
@@ -52,6 +53,7 @@ public:
 	virtual ~Timidity_binary();
 private:
 	pid_t	forked_job;
+	UNREPLICATABLE_CLASS(Timidity_binary);
 };
 #endif
 

@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_GUMPS
 
 #include "objs.h"
+#include "utils.h"
 
 class Actor;
 class Gump_object;
@@ -50,7 +51,9 @@ const int SPELLBOOK = 43;		// The book itself.
  */
 class Gump_widget
 	{
+	UNREPLICATABLE_CLASS(Gump_widget);
 protected:
+	Gump_widget() : parent(0) {  }
 	Gump_object *parent;		// Who this is in.
 	int shapenum;			// In "gumps.vga".
 	int framenum;			// Frame # (usually 0) when unpushed.
@@ -70,6 +73,8 @@ public:
  */
 class Gump_button : public Gump_widget
 	{
+private:
+	UNREPLICATABLE_CLASS(Gump_button);
 protected:
 	unsigned char pushed;		// 1 if in pushed state.
 public:
@@ -91,7 +96,9 @@ public:
  */
 class Gump_object : public ShapeID
 	{
+	UNREPLICATABLE_CLASS(Gump_object);
 protected:
+	Gump_object() : ShapeID() {   };
 	Gump_object *next;		// ->next to draw.
 	Container_game_object *container;// What this gump shows.
 	int x, y;			// Location on screen.
@@ -155,6 +162,7 @@ public:
  */
 class Actor_gump_object : public Gump_object
 	{
+	UNREPLICATABLE_CLASS(Actor_gump_object);
 	Heart_gump_button *heart_button;// For bringing up stats.
 	Disk_gump_button *disk_button;	// For bringing up 'save' box.
 	Combat_gump_button *combat_button;
@@ -186,6 +194,7 @@ public:
  */
 class Stats_gump_object : public Gump_object
 	{
+	UNREPLICATABLE_CLASS(Stats_gump_object);
 	Actor *get_actor()
 		{ return (Actor *) container; }
 	static short textx;		// X-coord. of where to write.
@@ -207,6 +216,7 @@ public:
  */
 class Sign_gump : public Gump_object
 	{
+	UNREPLICATABLE_CLASS(Sign_gump);
 	char **lines;			// Lines of text.
 	int num_lines;
 public:
@@ -223,6 +233,7 @@ public:
  */
 class Text_gump : public Gump_object
 	{
+	UNREPLICATABLE_CLASS(Text_gump);
 	char *text;			// The text.
 	int textlen;			// Length of text.
 protected:
@@ -245,6 +256,7 @@ public:
  */
 class Book_gump : public Text_gump
 	{
+	UNREPLICATABLE_CLASS_I(Book_gump,Text_gump(0));
 public:
 	Book_gump();
 					// Paint it and its contents.
@@ -256,6 +268,7 @@ public:
  */
 class Scroll_gump : public Text_gump
 	{
+	UNREPLICATABLE_CLASS_I(Scroll_gump,Text_gump(0));
 public:
 	Scroll_gump();
 					// Paint it and its contents.
@@ -268,6 +281,7 @@ public:
  */
 class Modal_gump_object : public Gump_object
 	{
+	UNREPLICATABLE_CLASS(Modal_gump_object);
 protected:
 	int done;			// 1 when user clicks checkmark.
 	Gump_button *pushed;		// Button currently being pushed.
@@ -296,6 +310,7 @@ public:
  */
 class Slider_gump_object : public Modal_gump_object
 	{
+	UNREPLICATABLE_CLASS_I(Slider_gump_object,Modal_gump_object(0,0,0,0));
 					// The arrows at each end:
 	Slider_gump_button *left_arrow, *right_arrow;
 	int diamondx;			// Rel. pos. where diamond is shown.
@@ -331,6 +346,7 @@ public:
  */
 class File_gump_object : public Modal_gump_object
 	{
+	UNREPLICATABLE_CLASS_I(File_gump_object,Modal_gump_object(0,0,0,0));
 	static short textx, texty;	// Where to draw first text field.
 	static short texth;		// Distance down to next text field.
 	static short btn_rows[2];	// y-coord of each button row.
@@ -365,6 +381,7 @@ public:
  */
 class Yesno_gump_object : public Modal_gump_object
 	{
+	UNREPLICATABLE_CLASS_I(Yesno_gump_object,Modal_gump_object(0,0,0,0));
 	static short yesx, yesnoy, nox;	// Coords. of the buttons.
 	const char *text;			// Text of question.  It is drawn in
 					//   object_area.
