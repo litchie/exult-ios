@@ -263,12 +263,14 @@ class Uc_call_expression : public Uc_expression
 					//   its value).
 public:
 	Uc_call_expression(Uc_symbol *s, Uc_array_expression *prms,
-			Uc_function *fun, Uc_expression *item = 0)
-		: sym(s), itemref(item), parms(prms), 
+					Uc_function *fun)
+		: sym(s), itemref(0), parms(prms), 
 		  function(fun), return_value(true)
 		{  }
 	~Uc_call_expression()
 		{ delete parms; delete itemref; }
+	void set_itemref(Uc_expression *iexpr)
+		{ itemref = iexpr; }
 	void set_no_return()
 		{ return_value = false; }
 					// Gen. code to put result on stack.
