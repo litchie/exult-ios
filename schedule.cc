@@ -485,14 +485,15 @@ void Patrol_schedule::now_what
 	(
 	)
 	{
-	if (!dir)			// Sitting?
+	if (sitting)			// Sitting?
 		{
-		dir = 1;		// Activate if we come here again.
-					// Stay 5-10 secs.
+					// Stay 5-15 secs.
 		if ((npc->get_framenum()&0xf) == Actor::sit_frame)
-			npc->start(250, 5000 + rand()%5000);
+			npc->start(250, 5000 + rand()%10000);
 		else			// Not sitting.
 			npc->start(250, rand()%1000);
+		sitting = false;	// Continue on afterward.
+		find_next = true;
 		return;
 		}
 	if (rand() % 8 == 0)		// Check for lamps, etc.
@@ -500,7 +501,8 @@ void Patrol_schedule::now_what
 			return;		// We no longer exist.
 	const int PATH_SHAPE = 607;
 	Game_object *path;
-	if (pathnum >= 0 &&		// Arrived at path?
+	if (!find_next &&
+	    pathnum >= 0 &&		// Arrived at path?
 	    pathnum < paths.size() && (path = paths[pathnum]) != 0 &&
 	    npc->distance(path) < 2)
 					// Quality = type.  (I think high bits
@@ -518,7 +520,7 @@ void Patrol_schedule::now_what
 		case 3:			// Sit.
 			if (Sit_schedule::set_action(npc))
 				{
-				dir = 0;	// Flag sitting.
+				sitting = true;
 				return;
 				}
 			break;
@@ -544,9 +546,16 @@ void Patrol_schedule::now_what
 		case 15:		// Usecode.
 			{		// Schedule so we don't get deleted.
 			Usecode_script *scr = new Usecode_script(npc);
-			(*scr) << Ucscript::usecode2 << npc->get_usecode() <<
-					static_cast<int>(Usecode_machine::npc_proximity);
+					// Don't let this script halt others,
+					//   as it messes up automaton in
+					//   SI-Freedom.
+			(*scr) << Ucscript::dont_halt <<
+				Ucscript::usecode2 << npc->get_usecode() <<
+			      static_cast<int>(Usecode_machine::npc_proximity);
 			scr->start();	// Start next tick.
+			find_next = true;	// THEN, find next path.
+			npc->start(250, 500);
+			return;
 			}
 		case 16:		// Bow to ground.  ++++Implement.
 		case 17:		// Bow from ground.+++++
@@ -564,6 +573,7 @@ void Patrol_schedule::now_what
 			break;
 			}
 	pathnum += dir;			// Find next path.
+	find_next = false;		// We're doing it.
 					// Already know its location?
 	path =  pathnum >= 0 && pathnum < paths.size() ? paths[pathnum] : 0;
 	if (!path)			// No, so look around.
@@ -586,7 +596,7 @@ void Patrol_schedule::now_what
 			}
 		if (path)		// Save it.
 			{
-			failures = 0;	// Found marker.
+			failures = 0;
 			paths.put(pathnum, path);
 			}
 		else			// Turn back if at end.
@@ -625,7 +635,8 @@ void Patrol_schedule::now_what
 		}
 	Tile_coord d = path->get_tile();
     	if (!npc->walk_path_to_tile(d, gwin->get_std_delay(), rand()%1000))
-		{			// Look for free tile within 1 square.
+		{		
+					// Look for free tile within 1 square.
 		d = Map_chunk::find_spot(d, 1, npc->get_shapenum(),
 						npc->get_framenum(), 1);
 		if (d.tx == -1 || !npc->walk_path_to_tile(d,

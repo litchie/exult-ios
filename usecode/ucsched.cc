@@ -62,17 +62,10 @@ Usecode_script::Usecode_script
 	    no_halt(nhalt != 0), delay(del)
 	{
 	cnt = code->get_array_size();
-	count++;			// Keep track of total.
-	next = first;			// Put in chain.
-	prev = 0;
-	if (first)
-		first->prev = this;
-	first = this;
 	}
 
 /*
- *	Create and place in chain after halting others for the same object
- *	(unless no_halt is set).
+ *	Create.
  */
 
 Usecode_script::Usecode_script
@@ -92,21 +85,13 @@ Usecode_script::Usecode_script
 			code = new Usecode_value(1, code);
 			cnt = 1;
 			}
-					//++++This should be done in start():
-		int opval0 = code->get_elem(0).get_int_value();
-		if (opval0 == 0x23)
-			no_halt = true;
 		}
+#if 0	/* ++++++++Moved to start(). */
 	if (!is_no_halt())		// If flag not set,
 					// Remove other entries that aren't
 					//   'no_halt'.
 		Usecode_script::terminate(obj);
-	count++;			// Keep track of total.
-	next = first;			// Put in chain.
-	prev = 0;
-	if (first)
-		first->prev = this;
-	first = this;
+#endif
 	}
 
 /*
@@ -126,7 +111,8 @@ Usecode_script::~Usecode_script()
 	}
 
 /*
- *	Enter into the time-queue.
+ *	Enter into the time-queue and our own chain.  Terminate existing
+ *	scripts for this object unless 'dont_halt' is set.
  */
 
 void Usecode_script::start
@@ -135,6 +121,22 @@ void Usecode_script::start
 	)
 	{
 	Game_window *gwin = Game_window::get_instance();
+	if (code->get_array_size())	// Check initial elem.
+		{
+		int opval0 = code->get_elem(0).get_int_value();
+		if (opval0 == 0x23)
+			no_halt = true;
+		}
+	if (!is_no_halt())		// If flag not set,
+					// Remove other entries that aren't
+					//   'no_halt'.
+		Usecode_script::terminate(obj);
+	count++;			// Keep track of total.
+	next = first;			// Put in chain.
+	prev = 0;
+	if (first)
+		first->prev = this;
+	first = this;
 //++++ Messes up Moonshade Trial.
 //	gwin->get_tqueue()->add(d + Game::get_ticks(), this,
 	gwin->get_tqueue()->add(d + SDL_GetTicks(), this,
