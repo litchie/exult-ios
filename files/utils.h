@@ -305,12 +305,14 @@ inline void Write4
 void U7open
 	(
 	std::ifstream& in,			// Input stream to open.
-	const char *fname			// May be converted to upper-case.
+	const char *fname,			// May be converted to upper-case.
+	bool is_text = false			// Should the file be opened in text mode
 	);
 void U7open
 	(
 	std::ofstream& out,			// Output stream to open.
-	const char *fname			// May be converted to upper-case.
+	const char *fname,			// May be converted to upper-case.
+	bool is_text = false			// Should the file be opened in text mode
 	);
 
 #ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
