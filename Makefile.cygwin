@@ -16,7 +16,7 @@ CPPFLAGS=-DVERSION=\"0.40\" -DEXULT_DATADIR=\"data\" -g3 -DDEBUG -DAUTOCONFIGURE
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
 	$(SDL_INCLUDES)
 
-CXXFLAGS=-mwindows -O2 -mpentiumpro -finline-functions -funroll-loops -funroll-all-loops -fstrict-aliasing
+CXXFLAGS=-mwindows -O2 -finline-functions -funroll-loops -funroll-all-loops -fstrict-aliasing
 CXX=g++
 
 LFLAGS=-g3 -mwindows
@@ -62,9 +62,6 @@ tools/expack.exe : tools/expack.o $(FILE_OBJS) utils.o
 
 data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
 	tools/expack -c data/exult.flx $(EXULT_FLX_OBJECTS)
-
-game.o : game.cc data/credits.h data/quotes.h
-	$(CXX) $(CPPFLAGS) -c game.cc -o game.o
 
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres win32/exultico.rc exultico.o
