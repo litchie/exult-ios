@@ -9,16 +9,16 @@ SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs:$(SRC)/data
 
 ### Modify these paths
-SDL_INCLUDES=-I$(SRC)/sdl/include
+SDL_CFLAGS=-I$(SRC)/sdl/include
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw32 automatically defines WIN32
-CPPFLAGS=-mno-cygwin -DWIN32 -DVERSION=\"0.94cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
+CPPFLAGS=-mno-cygwin -DWIN32 -DVERSION=\"0.95cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/data \
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
-	$(SDL_INCLUDES) -DHAVE_SNPRINTF
+	$(SDL_CFLAGS) -DHAVE_SNPRINTF
 
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
 CXXFLAGS=-mno-cygwin -O2 -include mingw_kludges.h
@@ -184,7 +184,7 @@ tools/rip.exe : tools/rip.o
 	$(CXX) $(LFLAGS) -o tools/rip.exe tools/rip.o -mconsole
 
 tools/shp2pcx.exe : tools/shp2pcx.o
-	$(CXX) $(LFLAGS) $(SDL_INCLUDES) -o tools/shp2pcx.exe tools/shp2pcx.o -mconsole
+	$(CXX) $(LFLAGS) $(SDL_CFLAGS) -o tools/shp2pcx.exe tools/shp2pcx.o -mconsole
 
 tools/splitshp.exe : tools/splitshp.o
 	$(CXX) $(LFLAGS) -o tools/splitshp.exe tools/splitshp.o -mconsole

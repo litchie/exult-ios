@@ -2,8 +2,8 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/imagewin -I$(srcdir)/shapes \
 	-I$(srcdir)/server -I$(srcdir)/data \
 	-I$(srcdir)/objs -I$(srcdir)/conf -I$(srcdir)/files -I$(srcdir)/gumps \
 	-I$(srcdir)/audio -I$(srcdir)/pathfinder -I$(srcdir)/usecode \
-	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
-	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\""$(datadir)/exult"\"
+	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
+	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
@@ -135,6 +135,7 @@ EXTRA_DIST = 	\
 	mac/exult_version.rsrc.bin \
 	mac/mac_autoconfig.h \
 	mac/mac_prefix.h \
+	macosx/exult.icns \
 	debian/changelog \
 	debian/control \
 	debian/copyright \
@@ -148,3 +149,15 @@ win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
 	windres $(srcdir)/win32/exultico.rc win32/exultico.o
 
 CLEANFILES = *~
+
+wrapper: ${EXE_TARGET}
+	mkdir -p ${PACKAGE}.app/Contents/MacOS
+	mkdir -p ${PACKAGE}.app/Contents/Resources
+	echo "APPL${SDL_APPLE_CREATOR}" > ${PACKAGE}.app/Contents/PkgInfo
+	cp Info.plist ${PACKAGE}.app/Contents/
+	cp -r SDLMain.nib ${PACKAGE}.app/Contents/Resources/
+	cp ${EXE_TARGET} ${PACKAGE}.app/Contents/MacOS/
+	cp macosx/exult.icns ${PACKAGE}.app/Contents/Resources/
+
+
+

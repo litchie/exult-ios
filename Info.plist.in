@@ -5,11 +5,11 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>@PRODUCT@</string>
+	<string>@EXE_TARGET@</string>
 	<key>CFBundleGetInfoString</key>
 	<string>@VERSION@, Copyright 2000-2001 The Exult Team</string>
 	<key>CFBundleIconFile</key>
-	<string>@ICON_FILE@</string>
+	<string>exult.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

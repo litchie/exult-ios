@@ -1,3 +1,10 @@
+2001-09-03  Max Horn  <max@quendi.de>
+	* all Makefiles/configure.in: bumped version to 0.95cvs
+	* configure.in: OS X specific changes; properly use the SDL
+	check supplied with SDL in sdl.m4 (this also required changes
+	to all the Makefile.am files)
+	* Info.plist.in: updated to match configure.in
+
 2001-09-03  Dominik Reichardt <gigdr@tesionmail.de>
 	* FAQ and docs/faq/exult_faq.xml: updated FAQ	
 	* README and docs/readme/readme.xml: Updated Documentation
