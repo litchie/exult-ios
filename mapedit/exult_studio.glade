@@ -10735,6 +10735,21 @@ Random
 	      <handler>on_loc_draw_expose_event</handler>
 	      <last_modification_time>Mon, 04 Mar 2002 06:11:02 GMT</last_modification_time>
 	    </signal>
+	    <signal>
+	      <name>button_press_event</name>
+	      <handler>on_loc_draw_button_press_event</handler>
+	      <last_modification_time>Wed, 06 Mar 2002 07:25:16 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>button_release_event</name>
+	      <handler>on_loc_draw_button_release_event</handler>
+	      <last_modification_time>Wed, 06 Mar 2002 07:25:28 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>motion_notify_event</name>
+	      <handler>on_loc_draw_motion_notify_event</handler>
+	      <last_modification_time>Wed, 06 Mar 2002 07:25:46 GMT</last_modification_time>
+	    </signal>
 	  </widget>
 	</widget>
       </widget>
