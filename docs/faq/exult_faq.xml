@@ -12,7 +12,7 @@
 			
 			<answer>
 
-				<para>
+				<ul>
 				
 				<li>"0. Changes to the FAQ" added on popular demand and began numbering of XSL style sheet
 				
@@ -52,7 +52,7 @@
 				
 				and might interest others (don't see why actually).</li>
 				
-				</para>
+				</ul>
 				
 			</answer>
 
@@ -64,11 +64,11 @@
 
 			<answer>
 
-				<para>
+				<ul>
 				
 				<li>"<ref target="is_exult_free"/> Is <Exult/> free ?" added</li>
 				
-				<li>"<ref target="sound_horrible"/> The sound effects sound horrible" Notice added on discontinueing support for MIDI sfx.</li>
+				<li>"3.4 The sound effects sound horrible"(no longer in the FAQ since 04.07.01) Notice added on discontinueing support for MIDI sfx.</li>
 				
 				<li>"<ref target="wave_sfx"/> How do I enable <Exult/> to play digital wave sfx?" mentioned the SI sfx pack, 
 				
@@ -85,7 +85,7 @@
 				<li>"<ref target="known_issues"/> Known Issues" added bug with taken seats in Fellowship meetings and problem with SI sfx playback.</li>
 				
 				
-				</para>
+				</ul>
 
 			</answer>
 
@@ -97,7 +97,7 @@
 
 			<answer>
 
-				<para>
+				<ul>
 
 				<li>Changed many answers in which I refered to newer snapshots. No longer needed due to the new release.</li>
 				
@@ -117,7 +117,7 @@
 
 				<li>"<ref target="main_links"/> Important Links" WJP changed the link to the daily snapshots.</li>
 				
-				</para>
+				</ul>
 
 			</answer>
 
@@ -1776,6 +1776,10 @@
 				
 				three issues:
 				
+				</para>
+				
+				<ul>
+				
    				<li>GTK has to be ported to the platform. I think this is already
 				
 				true for Win32.</li>
@@ -1790,7 +1794,7 @@
 				
 				drag-n-drop could be an enhancement to SDL someday.</li>
 				
-				</para>
+				</ul>
 
 			</answer>
 
@@ -1807,6 +1811,10 @@
 				You can run <Studio/> all by itself, but it isn't useful that way,
 				
 				as it uses <Exult/> as a server.  What you really want to do is:
+				
+				</para>
+				
+				<ul>
 
    				<li>Put 'exult_studio.glade' in the <Exult/> 'data' directory.</li>
    				
@@ -1820,13 +1828,17 @@
 				
 				on the left side of its window.</li>
 				
-				</para>
+				</ul>
 				
 				<para>
 				
 				You can also start up one or the other separately, and they'll
 				
 				reconnect:
+				
+				</para>
+				
+				<ul>
 
     			<li>If <Exult/> isn't running, start it up.  Then, in <Studio/>,
 				
@@ -1838,7 +1850,7 @@
         		
         		exult_studio -x (path to dir containing exult_studio.glade) -d (path to game directory)</li>
 				
-				</para>
+				</ul>
 
 			</answer>
 
@@ -1850,7 +1862,7 @@
 
 			<answer>
 
-				<para>
+				<ul>
 				
 				<li>You can browse shapes in the main window.</li>
    				
@@ -1876,7 +1888,7 @@
 				
 				the shape from the browser to the area that displays the monster.</li>
 				
-				</para>
+				</ul>
 
 			</answer>
 
@@ -1891,6 +1903,10 @@
 				<para>
 				
 				The next things to be implemented are:
+				
+				</para>
+				
+				<ul>
 
     			<li>An NPC editor, similar to the one for Eggs (but with lots more
 				
@@ -1904,7 +1920,7 @@
 				
 				the moveable objects that 'save-game' stores).</li>
 				
-				</para>
+				</ul>
 
 			</answer>
 
