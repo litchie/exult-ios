@@ -33,6 +33,7 @@
 #include "frameseq.h"
 #include "ucmachine.h"
 #include "cheat.h"
+#include "party.h"
 
 using std::cout;
 using std::endl;
@@ -80,6 +81,7 @@ Actor_action *Actor_action::walk_to_tile
 	)
 	{
 	Zombie *path = new Zombie();
+	get_party = false;
 					// Set up new path.
 	if (path->NewPath(src, dest, 0))
 		return (new Path_walking_actor_action(path));
@@ -263,6 +265,9 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		}
 	else if (actor->step(tile, frame))	// Successful.
 		{
+		if (get_party)
+			Game_window::get_instance()->get_party_man()->
+						move_followers(actor, newdir);
 		if (done)		// Was this the last step?
 			return (0);
 		return cur_speed;
@@ -401,6 +406,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	Game_window *gwin = Game_window::get_instance();
 	blocked = 0;			// Clear 'blocked' count.
 	reached_end = false;		// Starting new path.
+	get_party = false;
 	from_offscreen = false;
 				//+++++Should dist be used below??:
 					// Set up new path.

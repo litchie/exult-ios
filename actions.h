@@ -37,11 +37,15 @@ class Actor_action
 	{
 	static long seqcnt;		// Sequence # to check for deletion.
 protected:
+	bool get_party;			// At each step (of the Avatar), have
+					//   the party follow.
 	long seq;			// 'unique' sequence #.
 public:
-	Actor_action()
+	Actor_action() : get_party(false)
 		{ seq = ++seqcnt; }
 	virtual ~Actor_action() { }
+	void set_get_party(bool tf = true)
+		{ get_party = true; }
 	int handle_event_safely(Actor *actor, bool& deleted);
 					// Handle time event.
 	virtual int handle_event(Actor *actor) = 0;

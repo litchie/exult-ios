@@ -246,15 +246,15 @@ void Party_manager::link_party
  *			A
  *		       0 1
  *		      2 3 4
- *		     5 6 7 8
+ *		     7 5 6 8
  */
 static int followers[EXULT_PARTY_MAX + 1][2] = {
 	{0, 1},				// These follow Avatar (ID = -1).
 	{2, 3},				// Follow 0.
 	{-1, 4},			// Follow 1.
-	{5, 6},				// Follow 2.
-	{-1, -1},			// Nobody follows 3.
-	{7, 8},				// Follow 4.
+	{7, -1},			// Follow 2.
+	{5, 6},				// Follow 3.
+	{-1, 8},			// Follow 4.
 	{-1, -1}, {-1, -1}, {-1, -1}};
 
 /*
@@ -289,8 +289,11 @@ void Party_manager::move_followers
 	if (lnum == -1 && rnum == -1)
 		return;			// Nothing to do.
 	int dir4 = dir/2;		// 0-3 now.
-	Actor *lnpc = lnum == -1 ? 0 : gwin->get_npc(lnum);
-	Actor *rnpc = rnum == -1 ? 0 : gwin->get_npc(rnum);
+//++++++Got to deal with NPC's that are asleep, etc.
+	Actor *lnpc = (lnum == -1 || lnum >= party_count) ? 0 
+					: gwin->get_npc(party[lnum]);
+	Actor *rnpc = (rnum == -1 || rnum >= party_count) ? 0 
+					: gwin->get_npc(party[rnum]);
 	bool lmoved = false, rmoved = false;
 					// Have each take a step.
 	if (lnpc)
