@@ -41,7 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
 template<class D> 
-D_Recursive_object_iterator<D>::D_Recursive_object_iterator<D>
+D_Recursive_object_iterator<D>::D_Recursive_object_iterator
 	(
 	Game_object *start		// Start here.
 	) : elems(Game_window::get_instance()->get_chunk(
