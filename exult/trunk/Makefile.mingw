@@ -104,7 +104,6 @@ dist:   $(EXEC) exconfig.dll
 	u2d $(U7PATH)/Exult/*.txt
 	strip exconfig.dll -o $(U7PATH)/exconfig.dll
 	cp win32/exult_installer.iss $(U7PATH)
-	iscc $(U7PATH)/exult_installer.iss
 
 toolsinstall: tools
 	mkdir -p $(U7PATH)
