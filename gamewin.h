@@ -40,6 +40,7 @@ class Npc_face_info;
  */
 class Game_window
 	{
+	static Game_window *game_window;// There's just one.
 	Image_window *win;		// Window to display into.
 	Font_face *font12;		// 12-point "avatar.ttf" font.
 public:
@@ -82,6 +83,9 @@ public:
 	int debug;
 	Game_window(int width = 0, int height = 0);
 	~Game_window();
+					// Get the one game window.
+	static Game_window *get_game_window()
+		{ return game_window; }
 	void abort(char *msg, ...);	// Fatal error.
 	int get_width()
 		{ return win->get_width(); }
