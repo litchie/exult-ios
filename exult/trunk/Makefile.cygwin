@@ -270,28 +270,27 @@ dist:   $(EXEC)
 	mkdir -p $(U7PATH)/Exult
 	strip $(EXEC) -o $(U7PATH)/Exult/$(EXEC)
 	mkdir -p $(U7PATH)/Exult/Data
-	cp data/exult.flx $(U7PATH)/Exult/Data/exult.flx
-	cp data/exult_bg.flx $(U7PATH)/Exult/Data/exult_bg.flx
-	cp data/exult_si.flx $(U7PATH)/Exult/Data/exult_si.flx
+	cp data/exult.flx $(U7PATH)/Exult/Data
+	cp data/exult_bg.flx $(U7PATH)/Exult/Data
+	cp data/exult_si.flx $(U7PATH)/Exult/Data
 	cp AUTHORS $(U7PATH)/Exult/AUTHORS.txt
 	cp ChangeLog $(U7PATH)/Exult/ChangeLog.txt
 	cp COPYING $(U7PATH)/Exult/COPYING.txt
 	cp FAQ $(U7PATH)/Exult/FAQ.txt
-	cp docs/faq.html $(U7PATH)/Exult/faq.html
+	cp docs/faq.html $(U7PATH)/Exult
 	mkdir -p $(U7PATH)/Exult/images
-	cp docs/images/back.gif $(U7PATH)/Exult/images/back.gif
-	cp docs/images/exult_logo.gif $(U7PATH)/Exult/images/exult_logo.gif
+	cp docs/images/back.gif $(U7PATH)/Exult/images
+	cp docs/images/exult_logo.gif $(U7PATH)/Exult/images
 	cp NEWS $(U7PATH)/Exult/NEWS.txt
 	cp README $(U7PATH)/Exult/README.txt
 	cp README.1ST $(U7PATH)/Exult/README.1ST.txt
-	cp docs/ReadMe.html $(U7PATH)/Exult/ReadMe.html
+	cp docs/ReadMe.html $(U7PATH)/Exult
 	cp README.win32 $(U7PATH)/Exult/README.win32.txt
-	cp data/bg/defaultkeys.txt $(U7PATH)/Exult/bgdefaultkeys.txt
-	cp data/si/defaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
-	cp SDL/README-SDL.txt $(U7PATH)/Exult/README-SDL.txt
-	cp SDL/lib/SDL.dll $(U7PATH)/Exult/SDL.dll
-	u2d $(U7PATH)/Exult/AUTHORS.txt $(U7PATH)/Exult/ChangeLog.txt $(U7PATH)/Exult/COPYING.txt $(U7PATH)/Exult/FAQ.txt $(U7PATH)/Exult/NEWS.txt $(U7PATH)/Exult/README.txt $(U7PATH)/Exult/README.1ST.txt $(U7PATH)/Exult/README.win32.txt
-	u2d $(U7PATH)/Exult/bgdefaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
+	cp data/bg/defaultkeys.txt $(U7PATH)/Exult
+	cp data/si/defaultkeys.txt $(U7PATH)/Exult
+	cp SDL/README-SDL.txt $(U7PATH)/Exult
+	cp SDL/lib/SDL.dll $(U7PATH)/Exult
+	u2d $(U7PATH)/Exult/*.txt
 
 tools:  expack.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
@@ -326,12 +325,12 @@ toolsinstall: tools
 	strip ucxt.exe -o $(U7PATH)/ucxt.exe
 	strip ucc.exe -o $(U7PATH)/tools/ucc.exe
 	mkdir -p $(U7PATH)/data
-	cp usecode/ucxt/data/events.data $(U7PATH)/data/events.data
-	cp usecode/ucxt/data/flags.data $(U7PATH)/data/flags.data
-	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/data/opcodes.txt
-	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data/u7misc.data 
-	cp data/u7bgintrinsics.data $(U7PATH)/data/u7bgintrinsics.data
-	cp data/u7siintrinsics.data $(U7PATH)/data/u7siintrinsics.data
+	cp usecode/ucxt/data/events.data $(U7PATH)/data
+	cp usecode/ucxt/data/flags.data $(U7PATH)/data
+	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/data
+	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data
+	cp data/u7bgintrinsics.data $(U7PATH)/data
+	cp data/u7siintrinsics.data $(U7PATH)/data
 
 toolsdist: tools
 	mkdir -p $(TOOLSPATH)
@@ -349,20 +348,20 @@ toolsdist: tools
 	strip ucxt.exe -o $(TOOLSPATH)/ucxt.exe
 	strip ucc.exe -o $(TOOLSPATH)/tools/ucc.exe
 	mkdir -p $(TOOLSPATH)/data
-	cp usecode/ucxt/data/events.data $(TOOLSPATH)/data/events.data
-	cp usecode/ucxt/data/flags.data $(TOOLSPATH)/data/flags.data
-	cp usecode/ucxt/data/opcodes.txt $(TOOLSPATH)/data/opcodes.txt
-	cp usecode/ucxt/data/u7misc.data $(TOOLSPATH)/data/u7misc.data 
-	cp data/u7bgintrinsics.data $(TOOLSPATH)/data/u7bgintrinsics.data
-	cp data/u7siintrinsics.data $(TOOLSPATH)/data/u7siintrinsics.data
-	cp tools/expack.txt $(TOOLSPATH)/tools/expack.txt
-	cp tools/intrins1.txt $(TOOLSPATH)/tools/intrins1.txt
-	cp tools/intrins2.txt $(TOOLSPATH)/tools/intrins2.txt
-	cp tools/u7bgflag.txt $(TOOLSPATH)/tools/u7bgflag.txt
-	cp tools/u7siflag.txt $(TOOLSPATH)/tools/u7siflag.txt
-	cp tools/ucformat.txt $(TOOLSPATH)/tools/ucformat.txt
-	u2d $(TOOLSPATH)/tools/expack.txt $(TOOLSPATH)/tools/intrins1.txt $(TOOLSPATH)/tools/intrins2.txt
-	u2d $(TOOLSPATH)/tools/u7bgflag.txt $(TOOLSPATH)/tools/u7siflag.txt $(TOOLSPATH)/tools/ucformat.txt
+	cp usecode/ucxt/data/events.data $(TOOLSPATH)/data
+	cp usecode/ucxt/data/flags.data $(TOOLSPATH)/data
+	cp usecode/ucxt/data/opcodes.txt $(TOOLSPATH)/data
+	cp usecode/ucxt/data/u7misc.data $(TOOLSPATH)/data
+	cp data/u7bgintrinsics.data $(TOOLSPATH)/data
+	cp data/u7siintrinsics.data $(TOOLSPATH)/data
+	cp tools/expack.txt $(TOOLSPATH)/tools
+	cp tools/intrins1.txt $(TOOLSPATH)/tools
+	cp tools/intrins2.txt $(TOOLSPATH)/tools
+	cp tools/ipack.txt $(TOOLSPATH)/tools
+	cp tools/u7bgflag.txt $(TOOLSPATH)/tools
+	cp tools/u7siflag.txt $(TOOLSPATH)/tools
+	cp tools/ucformat.txt $(TOOLSPATH)/tools
+	u2d $(TOOLSPATH)/tools/*.txt
 
 all: $(EXEC) tools
 

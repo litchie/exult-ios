@@ -272,26 +272,26 @@ dist:   $(EXEC)
 	if not exist $(U7PATH)\Exult md $(U7PATH)\Exult
 	strip $(EXEC) -o $(U7PATH)\\Exult\$(EXEC)
 	if not exist $(U7PATH)\Exult\Data md $(U7PATH)\Exult\Data
-	copy data\exult.flx $(U7PATH)\Exult\Data\exult.flx
-	copy data\exult_bg.flx $(U7PATH)\Exult\Data\exult_bg.flx
-	copy data\exult_si.flx $(U7PATH)\Exult\Data\exult_si.flx
+	copy data\exult.flx $(U7PATH)\Exult\Data
+	copy data\exult_bg.flx $(U7PATH)\Exult\Data
+	copy data\exult_si.flx $(U7PATH)\Exult\Data
 	copy AUTHORS $(U7PATH)\Exult\AUTHORS.txt
 	copy ChangeLog $(U7PATH)\Exult\ChangeLog.txt
 	copy COPYING $(U7PATH)\Exult\COPYING.txt
 	copy FAQ $(U7PATH)\Exult\FAQ.txt
-	copy docs\faq.html $(U7PATH)\Exult\faq.html
+	copy docs\faq.html $(U7PATH)\Exult
 	if not exist $(U7PATH)\Exult\images md $(U7PATH)\Exult\images
-	copy docs\images\back.gif $(U7PATH)\Exult\images\back.gif
-	copy docs\images\exult_logo.gif $(U7PATH)\Exult\images\exult_logo.gif
+	copy docs\images\back.gif $(U7PATH)\Exult\images
+	copy docs\images\exult_logo.gif $(U7PATH)\Exult\images
 	copy NEWS $(U7PATH)\Exult\NEWS.txt
 	copy README $(U7PATH)\Exult\README.txt
 	copy README.1ST $(U7PATH)\Exult\README.1ST.txt
-	copy docs\ReadMe.html $(U7PATH)\Exult\ReadMe.html
+	copy docs\ReadMe.html $(U7PATH)\Exult
 	copy README.win32 $(U7PATH)\Exult\README.win32.txt
-	copy data\bg\defaultkeys.txt $(U7PATH)\Exult\bgdefaultkeys.txt
-	copy data\si\defaultkeys.txt $(U7PATH)\Exult\sidefaultkeys.txt
-	copy SDL\README-SDL.txt $(U7PATH)\Exult\README-SDL.txt
-	copy SDL\lib\SDL.dll $(U7PATH)\Exult\SDL.dll
+	copy data\bg\defaultkeys.txt $(U7PATH)\Exult
+	copy data\si\defaultkeys.txt $(U7PATH)\Exult
+	copy SDL\README-SDL.txt $(U7PATH)\Exult
+	copy SDL\lib\SDL.dll $(U7PATH)\Exult
 
 tools:  expack.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
@@ -326,12 +326,12 @@ toolsinstall: tools
 	strip ucxt.exe -o $(U7PATH)\ucxt.exe
 	strip ucc.exe -o $(U7PATH)\tools\ucc.exe
 	if not exist $(U7PATH)\data md $(U7PATH)\data
-	copy usecode\ucxt\data\events.data $(U7PATH)\data\events.data
-	copy usecode\ucxt\data\flags.data $(U7PATH)\data\flags.data
-	copy usecode\ucxt\data\opcodes.txt $(U7PATH)\data\opcodes.txt
-	copy usecode\ucxt\data\u7misc.data $(U7PATH)\data\u7misc.data
-	copy data\u7bgintrinsics.data $(U7PATH)\data\u7bgintrinsics.data
-	copy data\u7siintrinsics.data $(U7PATH)\data\u7siintrinsics.data
+	copy usecode\ucxt\data\events.data $(U7PATH)\data
+	copy usecode\ucxt\data\flags.data $(U7PATH)\data
+	copy usecode\ucxt\data\opcodes.txt $(U7PATH)\data
+	copy usecode\ucxt\data\u7misc.data $(U7PATH)\data
+	copy data\u7bgintrinsics.data $(U7PATH)\data
+	copy data\u7siintrinsics.data $(U7PATH)\data
 
 toolsdist: tools
 	if not exist $(TOOLSPATH) md $(TOOLSPATH)
@@ -349,15 +349,16 @@ toolsdist: tools
 	strip ucxt.exe -o $(TOOLSPATH)\ucxt.exe
 	strip ucc.exe -o $(TOOLSPATH)\tools\ucc.exe
 	if not exist $(TOOLSPATH)\data md $(TOOLSPATH)\data
-	copy usecode\ucxt\data\events.data $(TOOLSPATH)\data\events.data
-	copy usecode\ucxt\data\flags.data $(TOOLSPATH)\data\flags.data
-	copy usecode\ucxt\data\opcodes.txt $(TOOLSPATH)\data\opcodes.txt
-	copy usecode\ucxt\data\u7misc.data $(TOOLSPATH)\data\u7misc.data
-	copy data\u7bgintrinsics.data $(TOOLSPATH)\data\u7bgintrinsics.data
-	copy data\u7siintrinsics.data $(TOOLSPATH)\data\u7siintrinsics.data
+	copy usecode\ucxt\data\events.data $(TOOLSPATH)\data
+	copy usecode\ucxt\data\flags.data $(TOOLSPATH)\data
+	copy usecode\ucxt\data\opcodes.txt $(TOOLSPATH)\data
+	copy usecode\ucxt\data\u7misc.data $(TOOLSPATH)\data
+	copy data\u7bgintrinsics.data $(TOOLSPATH)\data
+	copy data\u7siintrinsics.data $(TOOLSPATH)\data
 	copy tools\expack.txt $(TOOLSPATH)\tools
 	copy tools\intrins1.txt $(TOOLSPATH)\tools
 	copy tools\intrins2.txt $(TOOLSPATH)\tools
+	copy tools\ipack.txt $(TOOLSPATH)\tools
 	copy tools\u7bgflag.txt $(TOOLSPATH)\tools
 	copy tools\u7siflag.txt $(TOOLSPATH)\tools
 	copy tools\ucformat.txt $(TOOLSPATH)\tools
