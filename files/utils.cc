@@ -693,8 +693,8 @@ int Find_next_map
 
 	for (int i = start; maxtry; --maxtry, ++i)
 		{
-		if (U7exists(Get_mapped_name(U7MAP, i, fname)) ||
-		    U7exists(Get_mapped_name(PATCH_U7MAP, i, fname)))
+		if (U7exists(Get_mapped_name("<STATIC>/", i, fname)) ||
+		    U7exists(Get_mapped_name("<PATCH>/", i, fname)))
 			return i;
 		}
 	return -1;
