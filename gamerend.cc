@@ -45,6 +45,7 @@ using std::snprintf;
 #include "Gump.h"
 #include "effects.h"
 #include "cheat.h"
+#include "drag.h"
 
 /*
  *	Paint just the map with given top-left-corner tile.
@@ -286,9 +287,11 @@ void Game_window::paint
 	int light_sources = render->paint_map(x, y, w, h);
 
 					// Draw gumps unless in dont_move mode.
-    if (!main_actor_dont_move())
-        gump_man->paint();
+	if (!main_actor_dont_move())
+        	gump_man->paint();
 	effects->paint();		// Draw text, sprites.
+	if (dragging)
+		dragging->paint();	// Paint what user is dragging.
 	win->clear_clip();
 					// Complete repaint?
 	if (!x && !y && w == get_width() && h == get_height() && main_actor)
