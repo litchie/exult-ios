@@ -1,3 +1,7 @@
+2002-06-28  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* gamewin.h (public): Reordered and added comments.
+
 2002-06-27  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* shapeid.*,etc:  Text routines moved to Shape_manager.
