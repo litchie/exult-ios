@@ -413,9 +413,9 @@ int Actor::drop
  *	Get name.
  */
 
-char *Actor::get_name
+string Actor::get_name
 	(
-	)
+	) const
 	{
 	return name ? name : Game_object::get_name();
 	}
@@ -453,7 +453,7 @@ void Actor::clear_flag
 int Actor::get_flag
 	(
 	int flag
-	)
+	) const
 	{
 	return (flag >= 0 && flag < 32) ? (flags & ((unsigned long) 1 << flag))
 			!= 0 : 0;
@@ -548,7 +548,9 @@ int Actor::add_readied
 	int best_index = find_best_spot(obj);
 	if (best_index == -1)		// No place?
 		return (0);
-	if (index == best_index || (!two_handed && index == lhand))
+	if (index == best_index || (!two_handed && index == lhand)
+			|| (!two_handed && index == rhand
+				&& best_index != lrhand))
 		{			// Okay.
 		if (!Container_game_object::add(obj))
 			return (0);	// No room, or too heavy.
@@ -1032,8 +1034,6 @@ void Sit_schedule::set_action
 	)
 	{
 #if 1	/* +++++Enable when tested. */
-					// Get chair info.
-	Shape_info& info = Game_window::get_game_window()->get_info(chairobj);
 	Tile_coord chairloc = chairobj->get_abs_tile_coord();
 	switch (chairobj->get_framenum()%4)
 		{			// Figure where to sit.

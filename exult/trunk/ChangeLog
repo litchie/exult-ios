@@ -1,3 +1,11 @@
+2000-05-25  Coder Infidel  <coder_infidel@hotmail.com>
+
+	* Display a better string when identifying objects that have a
+	  quantity
+	* objs.h, actors.h: Made many member functions const
+	* gamewin.h: Made a few arguments const
+	* actors.cc: Fixed slight inventory problem, removed unused variable
+
 2000-05-24  Jeff Freedman  <jeff@patches.simutech.com>
 
 	* Finally got the 'sit' schedule to work.

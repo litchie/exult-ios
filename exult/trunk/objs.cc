@@ -86,7 +86,7 @@ const int MAX_QUANTITY = 0x7f;		// Highest quantity possible.
 
 int Game_object::get_quantity
 	(
-	)
+	) const
 	{
 	int shnum = get_shapenum();
 	if (Has_quantity(shnum))	// +++++Until we find a flag.
@@ -104,7 +104,7 @@ int Game_object::get_quantity
 
 int Game_object::get_volume
 	(
-	)
+	) const
 	{
 	int quant = get_quantity();
 	quant = 1 + (quant - 1)/8;	// Be liberal about multiples.
@@ -334,7 +334,7 @@ Game_object *Game_object::find_blocking
 
 int Game_object::is_closed_door
 	(
-	)
+	) const
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Shape_info& info = gwin->get_info(this);
@@ -399,15 +399,145 @@ void Game_object::activate
 	}
 
 /*
- *	Get name.
+ *	For objects that can have a quantity, the name is in the format:
+ *		%1/%2/%3/%4
+ *	Where
+ *		%1 : singular prefix (e.g. "a")
+ *		%2 : main part of name
+ *		%3 : singular suffix
+ *		%4 : plural suffix (e.g. "s")
  */
 
-char *Game_object::get_name
+/*
+ *	Extracts the first, second and third parts of the name string
+ */
+static void get_singular_name
 	(
+	const char *name,		// Raw name string from TEXT.FLX
+	string& output_name		// Output string
 	)
 	{
+	if(*name != '/')		// Output the first part
+		{
+		do
+			output_name += *name++;
+		while(*name != '/' && *name != '\0');
+		if(*name == '\0')	// should not happen
+			{
+			output_name = "?";
+			return;
+			}
+		// If there is a first part it is followed by a space
+		output_name += ' ';
+		}
+	name++;
+
+					// Output the second part
+	while(*name != '/' && *name != '\0')
+		output_name += *name++;
+	if(*name == '\0')		// should not happen
+		{
+		output_name = "?";
+		return;
+		}
+	name++;
+
+					// Output the third part
+	while(*name != '/' && *name != '\0')
+		output_name += *name++;
+	if(*name == '\0')		// should not happen
+		{
+		output_name = "?";
+		return;
+		}
+	name++;
+}
+
+/*
+ *	Extracts the second and fourth parts of the name string
+ */
+static void get_plural_name
+	(
+	const char *name,
+	int quantity,
+	string& output_name
+	)
+	{
+	char buf[20];
+
+	sprintf(buf, "%d ", quantity);	// Output the quantity
+	output_name = buf;
+
+					// Skip the first part
+	while(*name != '/' && *name != '\0')
+		name++;
+	if(*name == '\0')		// should not happen
+		{
+		output_name = "?";
+		return;
+		}
+	name++;
+					// Output the second part
+	while(*name != '/' && *name != '\0')
+		output_name += *name++;
+	if(*name == '\0')		// should not happen
+		{
+		output_name = "?";
+		return;
+		}
+	name++;
+					// Skip the third part
+	while(*name != '/' && *name != '\0')
+		name++;
+	if(*name == '\0')		// should not happen
+		{
+		output_name = "?";
+		return;
+		}
+	name++;
+	while(*name != '\0')		// Output the last part
+		output_name += *name++;
+}
+
+/*
+ *	Returns the string to be displayed when the item is clicked on
+ */
+string Game_object::get_name
+	(
+	) const
+	{
 	extern char *item_names[];
-	return item_names[get_shapenum()];
+	const char *name;
+	int quantity;
+	string display_name;
+
+	name = item_names[get_shapenum()];
+	if(name == 0)
+		return "?";
+
+	if(Has_quantity(get_shapenum()))
+		quantity = quality & 0x7f;
+	else
+		quantity = 1;
+
+	// If there are no slashes then it is simpler
+	if(strchr(name, '/') == 0)
+		{
+		if(quantity <= 1)
+			display_name = name;
+		else
+			{
+			char buf[50];
+
+			sprintf(buf, "%d %s", quantity, name);
+			display_name = buf;
+			}
+		}
+	else if(quantity <= 1)		// quantity might be zero?
+		get_singular_name(name, display_name);
+	else
+		get_plural_name(name, quantity, display_name);
+	return display_name;
 	}
 
 /*
@@ -435,7 +565,7 @@ void Game_object::remove_this
 
 int Game_object::is_dragable
 	(
-	)
+	) const
 	{
 	return (0);			// Default is 'no'.
 	}
@@ -472,7 +602,7 @@ int Game_object::drop
 int Game_object::lt
 	(
 	Game_object& obj2
-	)
+	) const
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// See if there's no overlap.
@@ -604,7 +734,7 @@ void Ireg_game_object::remove_this
 
 int Ireg_game_object::is_dragable
 	(
-	)
+	) const
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// 0 weight means 'too heavy'.
@@ -803,7 +933,7 @@ Egg_object::Egg_object
 int Egg_object::within_distance
 	(
 	int abs_tx, int abs_ty		// Tile coords. within entire world.
-	)
+	) const
 	{
 	int egg_tx = ((int) cx)*tiles_per_chunk + get_tx();
 	int egg_ty = ((int) cy)*tiles_per_chunk + get_ty();
@@ -2046,7 +2176,7 @@ void Sprite::start
 
 int Sprite::is_dragable
 	(
-	)
+	) const
 	{
 	return (0);			// No.
 	}
