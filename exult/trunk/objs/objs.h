@@ -218,9 +218,10 @@ public:
 	int find_nearby(Game_object_vector& vec, int shapenum, int delta, int mask,
 			int qual = c_any_qual, int framenum = c_any_framenum) const;
 
-	Game_object *find_closest(int *shapenums, int num_shapes);
-	Game_object *find_closest(int shapenum)
-		{ return find_closest(&shapenum, 1); }
+	Game_object *find_closest(int *shapenums, int num_shapes, 
+							int dist = 24);
+	Game_object *find_closest(int shapenum, int dist = 24)
+		{ return find_closest(&shapenum, 1, dist); }
 					// Find nearby unblocked tile.
 	static Tile_coord find_unblocked_tile(Tile_coord pos,
 				int dist, int height = 1,

@@ -933,6 +933,208 @@ void Desk_schedule::now_what
 	}
 
 /*
+ *	A class for indexing the perimeter of a rectangle.
+ */
+class Perimeter
+	{
+	Rectangle perim;		// Outside given rect.
+	int sz;				// # squares.
+public:
+	Perimeter(Rectangle &r) : sz(2*r.w + 2*r.h - 4)
+		{
+		perim = r;
+		perim.enlarge(1);
+		}
+					// Get i'th tile.
+	void get(int i, Tile_coord& ptile, Tile_coord& atile);
+	};
+
+/*
+ *	Get the i'th perimeter tile and the tile in the original rect.
+ *	that's adjacent.
+ */
+
+void Perimeter::get
+	(
+	int i,
+	Tile_coord& ptile,		// Perim. tile returned.
+	Tile_coord& atile		// Adjacent tile returned.
+	)
+	{
+	if (i < perim.w - 1)		// Spiral around from top-left.
+		{
+		ptile = Tile_coord(perim.x + i, perim.y, 0);
+		atile = ptile + Tile_coord(!i ? 1 : 0, 1, 0);
+		return;
+		}
+	i -= perim.w - 1;
+	if (i < perim.h - 1)
+		{
+		ptile = Tile_coord(perim.x + perim.w - 1, i, 0);
+		atile = ptile + Tile_coord(-1, !i ? 1 : 0, 0);
+		return;
+		}
+	i -= perim.h - 1;
+	if (i < perim.w - 1)
+		{
+		ptile = Tile_coord(perim.x + perim.w - 1 - i,
+					perim.y + perim.h - 1, 0);
+		atile = ptile + Tile_coord(!i ? -1 : 0, -1, 0);
+		return;
+		}
+	i -= perim.w - 1;
+		{
+		ptile = Tile_coord(perim.x, perim.y + perim.h - 1 - i, 0);
+		atile = ptile + Tile_coord(1, !i ? -1 : 0, 0);
+		return;
+		}
+					// Bad index if here.
+	return get(i%sz, ptile, atile);
+	}
+
+/*
+ *	Initialize.
+ */
+
+void Lab_schedule::init
+	(
+	)
+	{
+	chair = book = 0;
+	cauldron = npc->find_closest(995, 20);
+					// Find 'lab' tables.
+	npc->find_nearby(tables, 1003, 20, 0);
+	npc->find_nearby(tables, 1018, 20, 0);
+	int cnt = tables.size();	// Look for book, chair.
+	for (int i = 0; (!book || !chair) && i < cnt; i++)
+		{
+		static int chairs[2] = {873,292};
+		Game_object *table = tables[i];
+		Rectangle foot = table->get_footprint();
+					// Book on table?
+		if (!book && (book = table->find_closest(642, 4)) != 0)
+			{
+			Tile_coord p = book->get_abs_tile_coord();
+			if (!foot.has_point(p.tx, p.ty))
+				book = 0;
+			}
+		if (!chair)
+			chair = table->find_closest(chairs, 2, 4);
+		}
+	}
+
+/*
+ *	Create lab schedule.
+ */
+
+Lab_schedule::Lab_schedule
+	(
+	Actor *n
+	) : Schedule(n), state(start)
+	{
+	init();
+	}
+
+/*
+ *	Lab work.
+ */
+
+void Lab_schedule::now_what
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord npcpos = npc->get_abs_tile_coord();
+	int delay = 100;		// 1/10 sec. to next action.
+					// Often want to get within 1 tile.
+	Actor_pathfinder_dist_client cost(1);
+	switch (state)
+		{
+	case start:
+	default:
+		{
+		if (!cauldron)
+			{		// Try looking again.
+			init();
+			if (!cauldron)	// Again a little later.
+				delay = 6000;
+			break;
+			}
+		int r = rand()%5;	// Pick a state.
+		if (!r)			// Sit less often.
+			state = sit_down;
+		else
+			state = r <= 2 ? walk_to_cauldron : walk_to_table;
+		break;
+		}
+	case walk_to_cauldron:
+		{
+		state = start;		// In case we fail.
+		if (!cauldron)
+			break;
+		Actor_action *pact = Path_walking_actor_action::create_path(
+				npcpos, cauldron->get_abs_tile_coord(), cost);
+		if (pact)
+			{
+			npc->set_action(new Sequence_actor_action(pact,
+				new Face_object_actor_action(cauldron, 200)));
+			state = use_cauldron;
+			}
+		break;
+		}
+	case use_cauldron:
+		{
+		int dir = npc->get_direction(cauldron);
+		gwin->add_dirty(cauldron);
+					// Set random frame.
+		cauldron->set_frame(rand()%gwin->get_shape_num_frames(
+						cauldron->get_shapenum()));
+		gwin->add_dirty(cauldron);
+		npc->add_dirty(gwin);
+		npc->set_frame(
+			npc->get_dir_framenum(dir, Actor::to_sit_frame));
+		npc->add_dirty(gwin);
+		int r = rand()%5;
+		state = !r ? use_cauldron : (r <= 2 ? sit_down
+						: walk_to_table);
+		break;
+		}
+	case sit_down:
+		if (!chair)
+			state = start;
+		else
+			{
+			Sit_schedule::set_action(npc, chair, 200);
+			state = read_book;
+			}
+		break;
+	case read_book:
+		{
+		state = stand_up;
+		if (!book || npc->distance(book) > 4)
+			break;
+					// Read a little while.
+		delay = 1000 + 1000*(rand()%5);
+		gwin->add_dirty(book);	// Open book.
+		int frnum = book->get_framenum();
+		book->set_frame(frnum - frnum%3);
+		gwin->add_dirty(book);
+		break;
+		}
+	case stand_up:
+		if (book && npc->distance(book) < 4)
+			{		// Close book.
+			gwin->add_dirty(book);
+			int frnum = book->get_framenum();
+			book->set_frame(frnum - frnum%3 + 1);
+			gwin->add_dirty(book);
+			}
+		state = start;
+		}
+	npc->start(250, delay);		// Back in queue.
+	}
+
+/*
  *	Schedule change for 'shy':
  */
 

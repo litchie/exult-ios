@@ -442,14 +442,16 @@ int Game_object::find_nearby
 
 Game_object *Game_object::find_closest
 	(
-	int *shapenums,			// Shapes to look for. c_any_shapenum=any NPC.
-	int num_shapes			// Size of shapenums.
+	int *shapenums,			// Shapes to look for. 
+					//   c_any_shapenum=any NPC.
+	int num_shapes,			// Size of shapenums.
+	int dist			// Distance to look (tiles).
 	)
 	{
 	Game_object_vector vec;			// Gets objects found.
 	int i;
 	for (i = 0; i < num_shapes; i++)
-		find_nearby(vec, shapenums[i], 24, 0);
+		find_nearby(vec, shapenums[i], dist, 0);
 	int cnt = vec.size();
 	if (!cnt)
 		return (0);
