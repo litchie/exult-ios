@@ -41,6 +41,7 @@ class Mouse
 	Image_buffer *backup;		// Stores image below mouse shape.
 	Rectangle box;			// Area backed up.
 	int mousex, mousey;		// Last place where mouse was.
+	int cur_framenum;		// Frame # of current shape.
 	Shape_frame *cur;		// Current shape.
 	unsigned char focus;		// 1 if we have focus.
 	unsigned char onscreen;		// 1 if mouse is drawn on screen.
@@ -48,6 +49,7 @@ class Mouse
 					//   by direction (0-7, 0=east).
 	static short med_arrows[8];	// Medium arrows.
 	static short long_arrows[8];	// Frame #'s of long arrows.
+	void set_shape0(int framenum);	// Set shape without checking first.
 public:
 	Mouse(Game_window *gw);
 	~Mouse();
@@ -72,7 +74,11 @@ public:
 			iwin->put(backup, box.x, box.y);	
 			}
 		}
-	void set_shape(int framenum);	// Set to desired shape.
+	void set_shape(int framenum)	// Set to desired shape.
+		{
+		if (framenum != cur_framenum)
+			set_shape0(framenum);
+		}
 	void move(int x, int y)		// Move to new location (mouse motion).
 		{
 		mousex = x;
