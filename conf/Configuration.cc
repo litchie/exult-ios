@@ -178,17 +178,33 @@ bool	Configuration::read_config_file(const string input_filename, const string r
 	if(ifile.fail())
 		return false;
 
+	#if 0
 	ostringstream sbuf;
 
 	// copies the entire contents of the input file into sbuf
-	sbuf << ifile.rdbuf();
+	//sbuf << ifile.rdbuf();
+	ifile << noskipws();
+
 	
 	#ifndef HAVE_SSTREAM
 	sbuf << ends;
 	#endif
+	#endif
+
+ 	std::string	sbuf, line;
+ 	// copies the entire contents of the input file into sbuf
+        std::getline(ifile, line);
+ 	while (ifile.good())
+ 	{
+ 	    sbuf += line + "\n";
+ 	    std::getline(ifile, line);
+ 	}
+ 	ifile.close();
+ 	read_config_string(sbuf);
+
 	
 	ifile.close();
-	read_config_string(sbuf.str());
+	read_config_string(sbuf);
 	
 	is_file=true;
 	return true;
