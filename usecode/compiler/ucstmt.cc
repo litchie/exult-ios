@@ -140,6 +140,18 @@ Uc_if_statement::~Uc_if_statement
 	}
 
 /*
+ *	Delete.
+ */
+
+Uc_while_statement::~Uc_while_statement
+	(
+	)
+	{
+	delete expr;
+	delete stmt;
+	}
+
+/*
  *	Generate code.
  */
 
@@ -172,12 +184,29 @@ void Uc_while_statement::gen
  *	Delete.
  */
 
-Uc_while_statement::~Uc_while_statement
+Uc_return_statement::~Uc_return_statement
 	(
 	)
 	{
 	delete expr;
-	delete stmt;
 	}
 
+/*
+ *	Generate code.
+ */
+
+void Uc_return_statement::gen
+	(
+	ostream& out
+	)
+	{
+	if (expr)			// Returning something?
+		{
+		expr->gen_value(out);	// Put value on stack.
+		out.put((char) UC_SETR);// Pop into ret_value.
+		out.put((char) UC_RTS);
+		}
+	else
+		out.put((char) UC_RET);
+	}
 

@@ -61,6 +61,7 @@ public:
 	Uc_symbol *add_symbol(char *nm);// Add symbol to current scope.
 					// Add string constant.
 	Uc_symbol *add_string_symbol(char *nm, char *text);
+	int add_string(char *text);
 	void gen(ostream& out);		// Generate Usecode.
 	};
 
