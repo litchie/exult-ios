@@ -1,5 +1,7 @@
 2001-07-19  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* usecode/ucinternal.cc (Usecode_internal): Clean up stack in CMPS.
+
 	* Ucinternal.{cc,h}:  Separated out most of Usecode_machine here
 	to cut down on included code (ucmachine.h is much smaller now).
 
