@@ -339,7 +339,8 @@ void Paperdoll_gump::set_to_spot
 	int w = shape->get_width(), h = shape->get_height();
 	
 	// Set object's position.
-	obj->set_chunk(spotx(index) + shape->get_xleft() - w/2 - object_area.x,
+	obj->set_shape_pos(
+		spotx(index) + shape->get_xleft() - w/2 - object_area.x,
 		spoty(index) + shape->get_yabove() - h/2 - object_area.y);
 }
 
@@ -539,7 +540,7 @@ void Paperdoll_gump::paint_object
 	if (!item || item->frame == -1 || item->shape == -1)
 	{
 		if ((old_it != -1 && !item)|| checkspot != -1) return;
-		//if (!obj->get_cx() && !obj->get_cy()) return;
+		//if (!obj->get_tx() && !obj->get_ty()) return;
 
 		set_to_spot(obj, spot);
 	
@@ -549,7 +550,7 @@ void Paperdoll_gump::paint_object
 
 		s.paint_shape(box.x + coords_blue[spot*2],
 				box.y + coords_blue[spot*2+1]);
-		int ox = box.x + obj->get_cx(), oy = box.y + obj->get_cy();
+		int ox = box.x + obj->get_tx(), oy = box.y + obj->get_ty();
 		obj->paint_shape(ox, oy);
 		if (cheat.is_selected(obj))
 					// Outline selected obj.
@@ -936,9 +937,9 @@ Game_object * Paperdoll_gump::check_object
 	{
 		if ((old_it != -1 &&!item) || checkspot != -1) return 0;
 		
-		if (!obj->get_cx() && !obj->get_cy()) set_to_spot(obj, spot);
+		if (!obj->get_tx() && !obj->get_ty()) set_to_spot(obj, spot);
 		
-		if (check_shape (mx - obj->get_cx(), my - obj->get_cy(),
+		if (check_shape (mx - obj->get_tx(), my - obj->get_ty(),
 			obj->get_shapenum(), obj->get_framenum(), obj->get_shapefile()))
 		{
 			return obj;
@@ -975,7 +976,8 @@ Game_object * Paperdoll_gump::check_object
 		Shape_frame *shape = obj->get_shape();
 		int w = shape->get_width(), h = shape->get_height();
 					// Set object's position.
-		obj->set_chunk(mx + shape->get_xleft() - w/2, my + shape->get_yabove() - h/2);
+		obj->set_shape_pos(mx + shape->get_xleft() - w/2, 
+					my + shape->get_yabove() - h/2);
 		
 		return obj;
 	}

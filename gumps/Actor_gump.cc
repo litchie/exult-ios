@@ -229,12 +229,13 @@ void Actor_gump::set_to_spot
 		return;			// Not much we can do.
 	int w = shape->get_width(), h = shape->get_height();
 					// Set object's position.
-	obj->set_chunk(spotx(index) + shape->get_xleft() - w/2 - object_area.x,
+	obj->set_shape_pos(
+		spotx(index) + shape->get_xleft() - w/2 - object_area.x,
 		spoty(index) + shape->get_yabove() - h/2 - object_area.y);
 					// Shift if necessary.
-	int x0 = obj->get_cx() - shape->get_xleft(), 
-	    y0 = obj->get_cy() - shape->get_yabove();
-	int newcx = obj->get_cx(), newcy = obj->get_cy();
+	int x0 = obj->get_tx() - shape->get_xleft(), 
+	    y0 = obj->get_ty() - shape->get_yabove();
+	int newcx = obj->get_tx(), newcy = obj->get_ty();
 	if (x0 < 0)
 		newcx -= x0;
 	if (y0 < 0)
@@ -244,7 +245,7 @@ void Actor_gump::set_to_spot
 		newcx -= x1 - object_area.w;
 	if (y1 > object_area.h)
 		newcy -= y1 - object_area.h;
-	obj->set_chunk(newcx, newcy);
+	obj->set_shape_pos(newcx, newcy);
 }
 
 /*
@@ -259,7 +260,7 @@ void Actor_gump::paint
 	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 	{			// Set object coords.
 		Game_object *obj = container->get_readied(i);
-		if (obj)//&& !obj->get_cx() && !obj->get_cy())
+		if (obj)//&& !obj->get_tx() && !obj->get_ty())
 			set_to_spot(obj, i);
 	}
 
