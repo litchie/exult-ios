@@ -373,7 +373,8 @@ Actor::Actor
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
 	) : Container_game_object(), name(nm),usecode(uc), 
-	    npc_num(num), party_id(-1), shape_save(-1), attack_mode(nearest),
+	    npc_num(num), party_id(-1), shape_save(-1), 
+	    oppressor(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
 	    dead(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
@@ -2241,8 +2242,12 @@ Game_object *Actor::attacked
 	int ammo_shape			// Also may be 0.
 	)
 	{
-	if (attacker && attacker->get_schedule_type() == Schedule::duel)
-		return this;			// Just play-fighting.
+	if (attacker)
+		{ 
+		if (attacker->get_schedule_type() == Schedule::duel)
+			return this;	// Just play-fighting.
+		set_oppressor(attacker->get_npc_num());
+		}
 	figure_hit_points(attacker, weapon_shape, ammo_shape);
 	if (attacker && is_dead())
 		{
