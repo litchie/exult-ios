@@ -320,7 +320,7 @@ cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
 							<< ")"<<endl;
 		chunk->add(to_drop);
 					// On an egg?
-		chunk->activate_eggs(to_drop, tx, ty, tx, ty);
+		chunk->activate_eggs(to_drop, tx, ty, lift, tx, ty);
 		return (1);
 		}
 	return (0);

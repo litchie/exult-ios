@@ -1594,8 +1594,11 @@ int Container_game_object::remove_quantity
 		    (framenum == -359 || obj->get_framenum() == framenum))
 					// ++++++Quality???
 			delta = -obj->modify_quantity(-delta);
+					// Still there?
+		if (next->get_prev() == obj)
 					// Do it recursively.
-		delta = obj->remove_quantity(delta, shapenum, qual, framenum);
+			delta = obj->remove_quantity(delta, shapenum, 
+							qual, framenum);
 		obj = next;
 		done = (!obj || obj == objects);
 		}
@@ -2228,7 +2231,7 @@ void Chunk_cache::activate_eggs
 	(
 	Game_object *obj,		// Object (actor) that's near.
 	Chunk_object_list *chunk,	// Chunk this is attached to.
-	int tx, int ty,			// Tile (absolute).
+	int tx, int ty, int tz,		// Tile (absolute).
 	int from_tx, int from_ty,	// Tile walked from.
 	unsigned short eggbits		// Eggs[tile].
 	)
@@ -2242,7 +2245,7 @@ void Chunk_cache::activate_eggs
 		{
 		Egg_object *egg;
 		if ((eggbits&1) && (egg = (Egg_object *) egg_objects.get(i)) &&
-		    egg->is_active(obj, tx, ty, from_tx, from_ty))
+		    egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
 			egg->activate(usecode, obj);
 		}
 	if (eggbits)			// Check 15th bit.
@@ -2252,7 +2255,7 @@ void Chunk_cache::activate_eggs
 			{
 			Egg_object *egg = (Egg_object *) egg_objects.get(i);
 			if (egg && egg->is_active(obj,
-						tx, ty, from_tx, from_ty))
+						tx, ty, tz, from_tx, from_ty))
 				egg->activate(usecode, obj);
 			}
 		}
