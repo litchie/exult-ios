@@ -1,12 +1,20 @@
+2000-11-29  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* audio/midi_drivers/Timidity_binary.cc: use %lu in sprintf instead of
+	  the meaningless %ul
+
 2000-11-29  Max Horn  <max@quendi.de>
-	* lots-o-files: changed #include <something.h> to the C++ version: include <csomething>
+	* lots-o-files: changed #include <something.h> to the C++ version: 
+	  include <csomething>
 	* exult.cc: removed Mouse *mouse and bool mouse_enabled
-	* Mouse.h/cc: added static Mouse *Mouse::mouse and bool Mouse::mouse_enabled
+	* Mouse.h/cc: added static Mouse *Mouse::mouse and 
+          bool Mouse::mouse_enabled
 	* various files: adapted to new class members of Mouse
 
 2000-11-29  Max Horn  <max@quendi.de>
-	* Makefile.be/win32/cygwin: fixed to properly support new dirs gumps/, shapes/, usecode/
-	* shapes/shapevga.cc: added some using std:: to make it compile on MacOS
+	* Makefile.be/win32/cygwin: fixed to properly support new dirs gumps/, 
+	  shapes/, usecode/
+	* shapes/shapevga.cc: added some using std:: to make it compile on 
+	  MacOS
 
 2000-11-29  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* audio/midi_drivers/Timidity_binary.*: support repeat of songs
@@ -17,7 +25,8 @@
 2000-11-29  Max Horn  <max@quendi.de>
 	* gumps/*: split up gumps.cc/h and spells.cc/h into separate files
 	* autoarray.h: std:: changes
-	* game.h: made sure this file can be included before gamewin.h (previously, you would get errors)
+	* game.h: made sure this file can be included before gamewin.h 
+	  (previously, you would get errors)
 	* exult.cc: moved some gump-related stuff to gumps/gump_utils.cc/h
 	* various: adapted to gumps changes
 
@@ -28,22 +37,29 @@
 	* various: changed includes
 
 2000-11-28  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* usecode.h: in usecode macros: '## NAME ## (int...' to '## NAME (int...'
+	* usecode.h: in usecode macros: '## NAME ## (int...' to 
+	  '## NAME (int...'
 	* Makefile.be: adapted somewhat because of new imagewin directory
 
 2000-11-27  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in: I mistakenly used target instead of host. fixed.
 
 2000-11-27  Max Horn  <max@quendi.de>
-	* files/*.cc: changed retrieve() to return a char* instead of taking a char**
-	* various files: changed Uint? to uint? (so we are less dependant on SDL)
-	* imagewin/imagebuf.h: fixed ~Image_buffer to use delete [] instead of delete
-	* actions.cc: fixed ~Sequence_actor_action to use delete [] instead of delete
+	* files/*.cc: changed retrieve() to return a char* instead of taking 
+	  a char**
+	* various files: changed Uint? to uint? (so we are less dependant 
+	  on SDL)
+	* imagewin/imagebuf.h: fixed ~Image_buffer to use delete [] instead 
+	  of delete
+	* actions.cc: fixed ~Sequence_actor_action to use delete [] instead 
+	  of delete
 	* gumps.cc: fixed ~Gump_text to use delete [] instead of delete
-	* bggame.cc: added tab key to work like arrow down in the new game screen; space works like return
+	* bggame.cc: added tab key to work like arrow down in the new game 
+	  screen; space works like return
 	* files/common_types.h: removed
 	* exult_types.h: added as replacment for common_types.h
-	* various files: changed Uint? to uint? (so we are less dependant on SDL)
+	* various files: changed Uint? to uint? (so we are less dependant 
+	  on SDL)
 
 2000-11-27  Tristan Tarrant <nadir@users.sourceforge.net>
 	* tools/u7shpload.c: applied patch from Mark Winterrowd which
@@ -70,13 +86,20 @@
 	* SDL palette methods moved to Image_window8 from Image_buffer8.
 
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
-	* Some people are having trouble including pthread_alloc. Include cstring as an alternative
+	* Some people are having trouble including pthread_alloc. Include 
+	  cstring as an alternative
 
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
-	* Never call the mixer object through it's pointer without verifying the validity of that pointer. Should fix occasional segfault at shutdown
+	* Never call the mixer object through it's pointer without verifying 
+	  the validity of that pointer. Should fix occasional segfault at 
+	  shutdown
 
 2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
-	* Create newstrdup() in gumps.cc as an interim solution. Goal is to encapsulate all char arrays into an efficient storage unit (coming soon. Be patient). For now we lose strdup to avoid the mixed memory models. newstrdup() will throw std::invalid_argument() if handed a NULL.
+	* Create newstrdup() in gumps.cc as an interim solution. Goal is to 
+	  encapsulate all char arrays into an efficient storage unit 
+	  (coming soon. Be patient). For now we lose strdup to avoid the 
+	  mixed memory models. newstrdup() will throw std::invalid_argument() 
+	  if handed a NULL.
 	* Change all strdup()'s to newstrdup()
 	* Change free() for all strdup'ed() blocks to delete []
 	* alloc.cc: Something changed in exception specification. Add std::
@@ -84,12 +107,14 @@
 
 2000-11-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* README.BeOS: added
-	* README.win32: added (temporarily unavailable) to cross-compiling instructions	
+	* README.win32: added (temporarily unavailable) to cross-compiling 
+	  instructions	
 	* Makefile.be: added 'make bindist' option to automate distributing
 	* actors.cc: removed an inline in BeOS. (won't compile otherwise...)
 
 2000-11-26  Max Horn  <max@quendi.de>
-	* files/utils.cc: fixed a bug in get_system_path (it sometimes "forgot" to call switch_slashes)
+	* files/utils.cc: fixed a bug in get_system_path (it sometimes 
+	  "forgot" to call switch_slashes)
 
 2000-11-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* beos/exult.rsrc: BeOS resource file
@@ -99,10 +124,12 @@
 	* mouse.cc: mouse is now positioned correctly directly after creation
 
 2000-11-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* gamewin.cc: fixed problem with "journey onward" right after "create new game"
+	* gamewin.cc: fixed problem with "journey onward" right after 
+	  "create new game"
 
 2000-11-26  Max Horn  <max@quendi.de>
-	* effects.cc, gamedat.cc, gumps.cc, imagewin.h, usecode.cc, useval.cc: fixed incorrect uses of delete/delete[]
+	* effects.cc, gamedat.cc, gumps.cc, imagewin.h, usecode.cc, useval.cc: 
+	  fixed incorrect uses of delete/delete[]
 	* txtscroll.cc: TextScroller::text change to vector of std::strings
 	* effects.cc: Text_effect::msg changed to std::string
 
@@ -116,16 +143,20 @@
 	* exult.cc: added try/catch block to the new main()
 	* gameclk.cc: added GPL header (should be in every source/header file)
 	* gamewin.cc: u7open removed in favor of U7open
-	* files/utils.cc: U7open throws an file_open_exception if it fails; does not return an int anmore
-	* files/utils.cc: U7exists now also checks upper case variant of the name
+	* files/utils.cc: U7open throws an file_open_exception if it fails; 
+	  does not return an int anmore
+	* files/utils.cc: U7exists now also checks upper case variant of the 
+	  name
 	* files/utils.cc: fixed a MacOS only bug in switch_slashes
-	* *.cc: changed all calls to U7open to correctly handle exceptions if appropriate
+	* *.cc: changed all calls to U7open to correctly handle exceptions 
+	  if appropriate
 
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc/usecode.cc: added config/debug/trace/usecode (yes/no) option
 
 2000-11-26  Dancer Vesperman <dancer@users.sourceforge.net>
-	* audio/Audio.h: Eliminate a warning by making the Audio constructor protected, rather than private.
+	* audio/Audio.h: Eliminate a warning by making the Audio constructor 
+	  protected, rather than private.
 	* actors.cc: const police
 	* audio/xmidi.cc: Initialise status
 	* menulist.h: const police
@@ -140,34 +171,41 @@
 	* gamewin.h: const police
 	* gamewin.cc: const police
 	* browsers.cc: const police
-	* audio/midi_drivers/Timidity_binary.cc: maybe dynamic instrument loading is not as good as it seems
+	* audio/midi_drivers/Timidity_binary.cc: maybe dynamic instrument 
+	  loading is not as good as it seems
 
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* drag.cc,exult.cc,gamewin.h/cc: changed more vars from int to bool
 	* gamedat.cc,readnpcs.cc: more int->bool
 
 2000-11-25  Max Horn  <max@quendi.de>
-	* files/utils.cc: changed path_map to be a map of strings instead of a hash_map of char*
+	* files/utils.cc: changed path_map to be a map of strings instead of a 
+	  hash_map of char*
 	* files/utils.cc: made sure functions are named like some_noun
 	* files/utils.cc: get_system_path now implicitly calls switch_slashes
 	* changed most uses of char* to string
 
 2000-11-25  Dancer Vesperman <dancer@users.sourceforge.net>
-	* audio/Audio.cc: Don't call SDL::CloseAudio(). Bad things seem to happen in there.
+	* audio/Audio.cc: Don't call SDL::CloseAudio(). Bad things seem to 
+	  happen in there.
 
 2000-11-24  Jeff Freedman  <jeff@amy.nerble.net>
 	* Write out correct count for 'monsnpcs.dat'.
 
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* gamewin.h/cc, palette.cc, exult.cc: new config/video/disable_fades (yes/no) option
+	* gamewin.h/cc, palette.cc, exult.cc: new config/video/disable_fades 
+	  (yes/no) option
 
 2000-11-25  Max Horn  <max@quendi.de>
 	* changed a lot vars from unsigned char to bool (and 0->false, 1->true)
-	* objs.cc: static find_nearby() now properly uses dynamic_cast instead of C-style cast
-	* exult.cc: activated Unicode mapping for key, used that to improve Handle_keystroke()
+	* objs.cc: static find_nearby() now properly uses dynamic_cast instead 
+	  of C-style cast
+	* exult.cc: activated Unicode mapping for key, used that to improve 
+	  Handle_keystroke()
 	
 2000-11-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* drag.cc,exult.cc,gamewin.h: fixed gump buttons passing clicks to underlying items
+	* drag.cc,exult.cc,gamewin.h: fixed gump buttons passing clicks to 
+	  underlying items
 	* cheat.h/cc: made most member functions const
 
 2000-11-24  Max Horn  <max@quendi.de>
