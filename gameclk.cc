@@ -8,6 +8,7 @@
 #include <iostream.h>			/* Debugging. */
 #include "gameclk.h"
 #include "gamewin.h"
+#include "usecode.h"
 
 /*
  *	Palette #'s in 'palettes.flx'.  Just need them here for now.
