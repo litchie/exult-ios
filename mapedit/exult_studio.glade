@@ -3771,17 +3771,17 @@ Coordinates</property>
 		      <property name="visible">True</property>
 
 		      <child>
-			<widget class="GtkMenuItem" id="convertwidget67">
+			<widget class="GtkMenuItem" id="convertwidget68">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Friendly</property>
+			  <property name="label" translatable="yes">Neutral</property>
 			  <property name="use_underline">True</property>
 			</widget>
 		      </child>
 
 		      <child>
-			<widget class="GtkMenuItem" id="convertwidget68">
+			<widget class="GtkMenuItem" id="convertwidget67">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">Neutral</property>
+			  <property name="label" translatable="yes">Friendly</property>
 			  <property name="use_underline">True</property>
 			</widget>
 		      </child>
