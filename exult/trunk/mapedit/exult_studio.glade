@@ -13008,6 +13008,7 @@ Coordinates</property>
 
 		  <child>
 		    <widget class="GtkFrame" id="frame128">
+		      <property name="border_width">2</property>
 		      <property name="visible">True</property>
 		      <property name="label_xalign">0</property>
 		      <property name="label_yalign">0.5</property>
@@ -13015,6 +13016,7 @@ Coordinates</property>
 
 		      <child>
 			<widget class="GtkDrawingArea" id="prefs_background">
+			  <property name="width_request">16</property>
 			  <property name="visible">True</property>
 			  <signal name="expose_event" handler="on_prefs_background_expose_event"/>
 			</widget>
@@ -13023,7 +13025,7 @@ Coordinates</property>
 		    <packing>
 		      <property name="padding">2</property>
 		      <property name="expand">True</property>
-		      <property name="fill">False</property>
+		      <property name="fill">True</property>
 		    </packing>
 		  </child>
 
