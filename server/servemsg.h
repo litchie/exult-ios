@@ -55,7 +55,10 @@ enum Msg_type
 	map_editing_mode = 9,		// 1 to turn it on, 0 for off.
 	tile_grid = 10,			// 1 to show grid, 0 for off.
 	edit_lift = 11,			// Lift passed: 0-13.
-	reload_usecode = 12		// Reload patched usecode.
+	reload_usecode = 12,		// Reload patched usecode.
+	locate_terrain = 13,		// Locate desired chunk terrain.
+	swap_terrain = 14,		// Swap two terrains.
+	insert_terrain = 15		// Insert new chunk terrain
 	};
 
 // I/O routines:
