@@ -35,6 +35,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::ostream;
 
 /*
+ *	Paint at given spot in world.
+ */
+
+void Ireg_game_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	int x, y;
+	gwin->get_shape_location(this, x, y);
+	if (flags & (1L << Obj_flags::invisible))
+		gwin->paint_invisible(x, y, get_shapenum(), get_framenum());
+	else
+		gwin->paint_shape(x, y, get_shapenum(), get_framenum());
+	}
+
+/*
  *	Move to a new absolute location.  This should work even if the old
  *	location is invalid (cx=cy=255).
  */
