@@ -1145,7 +1145,7 @@ void Sit_schedule::now_what
 		Game_window *gwin = Game_window::get_game_window();
 		if (gwin->get_moving_barge())
 			return;		// Already moving.
-		if (npc->get_party_id() < 0 && npc != gwin->get_main_actor())
+		if (!npc->is_in_party())
 			return;		// Not a party member.
 		Actor *party[9];	// See if all sitting.
 		int cnt = gwin->get_party(&party[0], 1);

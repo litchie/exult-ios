@@ -326,10 +326,11 @@ int Egg_object::is_active
 					// Just activate when reentering.
 		return !area.has_point(from_tx, from_ty);
 		}
-	case party_near:
-	case avatar_near:		// New tile is in, old is out.
-		if (obj != gwin->get_main_actor() &&
-		    (cri != party_near || obj->get_party_id() < 0))
+	case avatar_near:
+		if (obj != gwin->get_main_actor())
+			return 0;
+	case party_near:		// Avatar or party member.
+		if (!obj->get_flag(Obj_flags::in_party))
 			return 0;
 		if (type == teleport)	// Teleports:  Any tile, exact lift.
 			return absdeltaz == 0 && area.has_point(tx, ty);
@@ -338,6 +339,7 @@ int Egg_object::is_active
 			 (Game::get_game_type() == SERPENT_ISLE &&
 						type != missile) ||
 				(type == missile && tz/5 == get_lift()/5)) &&
+					// New tile is in, old is out.
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty)))
 			return 0;
@@ -356,8 +358,7 @@ int Egg_object::is_active
 						area.has_point(tx, ty);
 	case party_footpad:
 		return area.has_point(tx, ty) && deltaz == 0 &&
-			(obj->get_party_id() >= 0 || 
-						obj == gwin->get_main_actor());
+					obj->get_flag(Obj_flags::in_party);
 	case something_on:
 		return	 		// Guessing.  At SI end, deltaz == -1.
 			deltaz >= -1 && deltaz <= 3 &&
@@ -590,8 +591,7 @@ void Egg_object::activate_teleport
 		}
 	cout << "Should teleport to (" << pos.tx << ", " <<
 					pos.ty << ')' << endl;
-	if (pos.tx != -1 && obj && (obj == gwin->get_main_actor() ||
-					obj->get_party_id() >= 0))
+	if (pos.tx != -1 && obj && obj->get_flag(Obj_flags::in_party))
 					// Teleport everyone!!!
 		gwin->teleport_party(pos);
 					// Can keep doing it.
@@ -1042,7 +1042,7 @@ void Field_object::activate
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Main_actor *av = gwin->get_main_actor();
-	if (obj != av && obj->get_party_id() < 0)
+	if (!obj->get_flag(Obj_flags::in_party))
 		return;			// Not a party member.
 	if (field_effect((Actor *) obj))// Apply field.
 		remove_this(0);		// Delete sleep/poison if applied.

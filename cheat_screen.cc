@@ -1500,7 +1500,7 @@ void CheatScreen::FlagMenu (Actor *actor)
 	font->paint_text_fixedwidth(ibuf, buf, 208, maxy-63, 8);
 
 	// Party
-	if (actor->get_party_id() != -1 || !actor->get_npc_num())
+	if (actor->is_in_party())
 	{
 		// Temp
 		std::snprintf (buf, 512, "[Y] Temp: %02i", 
@@ -1807,7 +1807,7 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 
 		// Value
 		case 'y':	// Temp
-		if (actor->get_party_id() == -1 && actor->get_npc_num()) command = 0;
+		if (!actor->is_in_party()) command = 0;
 		else  mode = CP_NotAvail;
 		input[0] = command;
 		break;

@@ -775,8 +775,7 @@ void Game_window::toggle_combat
 					// And avoid attacking party members,
 					//  in case of Usecode bug.
 			Game_object *targ = act->get_target();
-			if (targ &&
-			    (targ == main_actor || targ->get_party_id() >= 0))
+			if (targ && targ->get_flag(Obj_flags::in_party))
 				act->set_target(0);
 			}
 		}
@@ -2603,23 +2602,23 @@ void Game_window::double_clicked
 			return;
 			}
 		}
-	if (obj)
-	{
-		if (combat && !gump && obj != main_actor &&
-			!gump_man->gump_mode() &&
+	if (!obj)
+		return;			// Nothing found.
+	if (combat && !gump &&		// In combat?
+	    !gump_man->gump_mode())
+		{
+		Actor *npc = dynamic_cast<Actor *>(obj);
 					// But don't attack party members.
-						obj->get_party_id() < 0 &&
+		if ((!npc || !npc->is_in_party()) &&
 					// Or bodies.
 						!Is_body(obj->get_shapenum()))
-		{			// In combat mode.
-
+			{		// In combat mode.
 			// Want everyone to be in combat.
 			combat = 0;
 			main_actor->set_target(obj);
 			toggle_combat();
 					// Being a bully?
 			bool bully = false;
-			Actor *npc = dynamic_cast<Actor *>(obj);
 			if (npc)
 				{
 				int align = npc->get_alignment();
@@ -2632,16 +2631,16 @@ void Game_window::double_clicked
 			   Game::get_game_type() == BLACK_GATE)
 				attack_avatar(1 + rand()%3);
 			return;
+			}
 		}
-		remove_text_effects();	// Remove text msgs. from screen.
+	remove_text_effects();		// Remove text msgs. from screen.
 #ifdef DEBUG
-		cout << "Object name is " << obj->get_name() << endl;
+	cout << "Object name is " << obj->get_name() << endl;
 #endif
-		usecode->init_conversation();
-		obj->activate(usecode);
-		npc_prox->wait(4);	// Delay "barking" for 4 secs.
+	usecode->init_conversation();
+	obj->activate(usecode);
+	npc_prox->wait(4);		// Delay "barking" for 4 secs.
 	}
-}
 
 
 /*
@@ -2800,8 +2799,7 @@ void Game_window::theft
 							it != npcs.end();++it)
 		{
 		Actor *npc = *it;
-		if (npc->is_monster() || npc == main_actor ||
-		    npc->get_party_id() >= 0 ||
+		if (npc->is_monster() || npc->is_in_party() ||
 		    (npc->get_framenum()&15) == Actor::sleep_frame ||
 		    npc->get_npc_num() >= num_npcs1)
 			continue;
@@ -2881,8 +2879,7 @@ void Game_window::attack_avatar
 		Actor *npc = (Actor *) *it;
 					// No monsters, except guards.
 		if ((npc->get_shapenum() == gshape || !npc->is_monster()) && 
-		    npc != main_actor &&
-		    npc->get_party_id() < 0)
+		    !npc->is_in_party())
 			npc->set_target(main_actor, true);
 		}
 	}

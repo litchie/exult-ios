@@ -829,7 +829,7 @@ void Actor::follow
 	Tile_coord goal;
 	if (leader->is_moving())	// Figure where to aim.
 		{			// Aim for leader's dest.
-		dist = 2 + Actor::get_party_id()/3;
+		dist = 2 + party_id/3;
 		goal = leader->get_dest();
 		goal.tx = Approach(pos.tx, goal.tx, dist);
 		goal.ty = Approach(pos.ty, goal.ty, dist);
@@ -838,11 +838,10 @@ void Actor::follow
 		{
 		goal = leaderpos;	// Aim for leader.
 //		cout << "Follow:  Leader is stopped" << endl;
-		int id = Actor::get_party_id();
 		static int xoffs[10] = {-1, 1, -2, 2, -3, 3, -4, 4, -5, 5},
 			   yoffs[10] = {1, -1, 2, -2, 3, -3, 4, -4, 5, -5};
-		goal.tx += xoffs[id] + 1 - rand()%3;
-		goal.ty += yoffs[id] + 1 - rand()%3;
+		goal.tx += xoffs[party_id] + 1 - rand()%3;
+		goal.ty += yoffs[party_id] + 1 - rand()%3;
 		dist = 1;
 		}
 					// Already aiming along a path?
@@ -880,7 +879,7 @@ void Actor::follow
 	int dist2lead = pos.distance(leaderpos);
 					// Getting kind of far away?
 	if (dist2lead > wrect.w + wrect.w/2 &&
-	    get_party_id() >= 0 &&	// And a member of the party.
+	    party_id >= 0 &&		// And a member of the party.
 	    !leaderpath)		// But leader is not following path.
 		{			// Approach, or teleport.
 					// Try to approach from offscreen.
@@ -899,51 +898,6 @@ void Actor::follow
 			return;
 			}
 		}
-#if 0
-	uint32 curtime = Game::get_ticks();
-	if ((dist2lead >= 5 ||
-	     (dist2lead >= 4 && !leader->is_moving()) || leaderpath) && 
-	      get_party_id() >= 0 && curtime >= next_path_time && 
-	      (!is_moving() || !action || !action->following_smart_path()))
-		{			// A little stuck?
-#ifdef DEBUG
-		cout << get_name() << " at distance " << dist2lead 
-				<< " trying to catch up." << endl;
-#endif
-					// Find a free spot within 3 tiles.
-		Map_chunk::Find_spot_where where = Map_chunk::anywhere;
-					// And try to be inside/outside.
-		if (leader == gwin->get_main_actor())
-			where = gwin->is_main_actor_inside() ?
-					Map_chunk::inside : Map_chunk::outside;
-		goal = Map_chunk::find_spot(goal, 3, this, 0, where);
-		if (goal.tx == -1)	// No free spot?  Give up.
-			{
-			cout << "... but is blocked." << endl;
-			next_path_time = Game::get_ticks() + 1000;
-			return;
-			}
-					// Succeed if within 3 tiles of goal.
-		if (walk_path_to_tile(goal, speed - speed/4, 0, 3, 0))
-			return;		// Success.
-		else
-			{
-			cout << "... but failed to find path." << endl;
-					// On screen (roughly)?
-			int ok;
-			if (wrect.has_point(pos.tx - pos.tz/2,
-							pos.ty - pos.tz/2))
-					// Try walking off-screen.
-				ok = walk_path_to_tile(Tile_coord(-1, -1, -1),
-							speed - speed/4, 0);
-			else		// Off screen already?
-				ok = approach_another(leader);
-			if (!ok)	// Failed? Don't try again for a bit.
-				next_path_time = Game::get_ticks() + 1000;
-			return;
-			}
-		}
-#endif
 					// NOTE:  Avoid delay when moving,
 					//  as it creates jerkiness.  AND,
 					//  0 retries if blocked.
@@ -1322,7 +1276,7 @@ void Actor::restore_schedule
 	Map_chunk *olist = Game_window::get_game_window()->
 				get_chunk_safely(get_cx(), get_cy());
 					// Activate schedule if not in party.
-	if (olist && get_party_id() < 0)
+	if (olist && party_id < 0)
 		{
 		if (next_schedule != 255 && 
 				schedule_type == Schedule::walk_to_schedule)
@@ -1662,7 +1616,7 @@ void Actor::activate
 	Schedule::Schedule_types sched = 
 				(Schedule::Schedule_types) get_schedule_type();
 	if (!npc_num ||		// Avatar
-			(show_party_inv && get_party_id() >= 0 && // Party
+			(show_party_inv && party_id >= 0 && // Party
 			(serpent || (npc_num >= 1 && npc_num <= 10))) ||
 					// Pickpocket cheat && double click
 			(cheat.in_pickpocket() && event == 1))
@@ -1856,11 +1810,11 @@ int Actor::inventory_shapenum()
 		return (123);
 					// Gump/combat mode?
 					// Show companions' pictures. (BG)
-	else if (get_party_id() >= 0 &&
+	else if (party_id >= 0 &&
 		 npc_num >= 1 && npc_num <= 10 && !serpent)
 			return (ACTOR_FIRST_GUMP + 1 + npc_num);
 	// Show companions' pictures. (SI)
-	else if (get_party_id() >= 0 && serpent)
+	else if (party_id >= 0 && serpent)
 		return (123);
 	// Pickpocket Cheat Female no paperdolls
 	else if (!serpent && Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
@@ -1885,8 +1839,7 @@ int Actor::drop
 	Game_object *obj		// MAY be deleted (if combined).
 	)
 	{
-	if (get_party_id() >= 0 ||	// In party?
-	    this == Game_window::get_game_window()->get_main_actor())
+	if (is_in_party())	// In party?
 		return (add(obj, false, true));	// We'll take it, and combine.
 	else
 		return 0;
@@ -2983,7 +2936,7 @@ Game_object *Actor::attacked
 		if (attacker->get_schedule_type() == Schedule::duel)
 			return this;	// Just play-fighting.
 		set_oppressor(attacker->get_npc_num());
-		if (is_combat_protected() && Actor::get_party_id() >= 0 &&
+		if (is_combat_protected() && party_id >= 0 &&
 		    rand()%5 == 0)
 			say(first_need_help, last_need_help);
 		}
@@ -3782,7 +3735,7 @@ int Npc_actor::find_schedule_change
 	int hour3			// 0=midnight, 1=3am, etc.
 	)
 	{
-	if (Npc_actor::get_party_id() >= 0 || is_dead())
+	if (party_id >= 0 || is_dead())
 		return (-1);		// Fail if a party member or dead.
 	for (int i = 0; i < num_schedules; i++)
 		if (schedules[i].get_time() == hour3)
@@ -3973,7 +3926,7 @@ int Npc_actor::step
 			schedule->set_blocked(t);
 		stop();
 					// Offscreen, but not in party?
-		if (!gwin->add_dirty(this) && Npc_actor::get_party_id() < 0 &&
+		if (!gwin->add_dirty(this) && party_id < 0 &&
 					// And > a screenful away?
 		    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize)
 			dormant = true;	// Go dormant.
@@ -3994,7 +3947,7 @@ int Npc_actor::step
 	nlist->activate_eggs(this, t.tx, t.ty, t.tz, oldtile.tx, oldtile.ty);
 
 					// Offscreen, but not in party?
-	if (!add_dirty(gwin, 1) && Npc_actor::get_party_id() < 0 &&
+	if (!add_dirty(gwin, 1) && party_id < 0 &&
 					// And > a screenful away?
 	    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize &&
 			//++++++++Try getting rid of the 'talk' line:

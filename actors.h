@@ -258,6 +258,8 @@ public:
 		{ return dormant; }
 	bool is_dead() const
 		{ return (flags&(1<<Obj_flags::dead)) != 0; }
+	bool is_in_party() const	// (Includes Avatar.)
+		{ return (flags&(1<<Obj_flags::in_party)) != 0; }
 	void set_dormant()
 		{ dormant = true; }
 	Actor_action *get_action()	// Return action.
@@ -356,9 +358,9 @@ public:
 	virtual int get_type_flags() const
 		{ return type_flags; }
 //++++++Is_dead() test messes up training.
-//	virtual unsigned char get_ident() { return is_dead() ? 0 : ident; }
-	virtual unsigned char get_ident() { return ident; }
-	virtual void set_ident(unsigned char id) { ident = id; }
+//	unsigned char get_ident() { return is_dead() ? 0 : ident; }
+	unsigned char get_ident() { return ident; }
+	void set_ident(unsigned char id) { ident = id; }
 
 	int get_temperature() const	// Get/set measure of coldness.
 		{ return temperature; }
@@ -372,9 +374,9 @@ public:
 	int get_npc_num() const		// Get its ID (1-num_npcs).
 		{ return npc_num; }
 					// Get/set index within party.
-	virtual int get_party_id() const
+	int get_party_id() const
 		{ return party_id; }
-	virtual void set_party_id(int i)
+	void set_party_id(int i)
 		{ party_id = i; }
 					// Set for Usecode animations.
 	virtual void set_usecode_dir(int d)

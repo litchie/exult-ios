@@ -332,7 +332,7 @@ void Npc_hunger_timer::handle_event
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *npc = list->npc;
 					// No longer a party member?
-	if ((npc != gwin->get_main_actor() && npc->get_party_id() < 0) ||
+	if (!npc->is_in_party() ||
 					//   or no longer hungry?
 	    npc->get_property(static_cast<int>(Actor::food_level)) >= 0 ||
 	    npc->is_dead())		// Obviously.

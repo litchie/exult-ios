@@ -540,8 +540,7 @@ void Death_vortex::handle_event
 							it != npcs.end(); ++it)
 			{
 			Actor *npc = *it;
-			if (npc != gwin->get_main_actor() &&
-						npc->get_party_id() < 0)
+			if (!npc->is_in_party())
 				npc->reduce_health(40);
 			}
 		}
