@@ -63,7 +63,7 @@ game.o : game.cc data/credits.h data/quotes.h
 
 # This should work with the Cygwin rm
 clean:
-	rm -f $(OBJS) tools/txt2cc.o $(EXE) tools/txt2cc.exe
+	rm -f $(OBJS) tools/txt2cc.o $(EXEC) tools/txt2cc.exe
 	rm -f data/credits.h data/quotes.h
 
 install:
