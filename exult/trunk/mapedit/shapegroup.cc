@@ -534,7 +534,7 @@ void ExultStudio::open_group_window
 	gtk_object_set_data(GTK_OBJECT(grpwin), "xml", xml);
 	gtk_object_set_data(GTK_OBJECT(grpwin), "browser", chooser);
 					// Set window title, name field.
-	string title("Exult Shape Group:  ");
+	string title("Exult Group:  ");
 	title += grp->get_name();
 	gtk_window_set_title(GTK_WINDOW(grpwin), title.c_str());
 	GtkWidget *field = glade_xml_get_widget(xml, "group_name");
