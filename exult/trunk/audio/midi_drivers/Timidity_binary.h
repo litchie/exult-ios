@@ -55,7 +55,6 @@ public:
 	virtual ~Timidity_binary();
 private:
 	SDL_Thread	*my_thread;
-	FILE	*data;
 	string	filename;
 	UNREPLICATABLE_CLASS(Timidity_binary);
 };
