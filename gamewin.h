@@ -348,6 +348,7 @@ public:
 			}
 		return false;
 		}
+	void send_location();		// Send our location to EStudio.
 					// Set view (upper-left).
 	void set_scrolls(int newscrolltx, int newscrollty);
 	void center_view(Tile_coord t);	// Center view around t.

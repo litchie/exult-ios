@@ -748,6 +748,17 @@ inline void Send_location
 	}
 
 /*
+ *	Send current location to ExultStudio.
+ */
+
+void Game_window::send_location
+	(
+	)
+	{
+	Send_location(this);
+	}
+
+/*
  *	Set the scroll position to a given tile.
  */
 
@@ -777,7 +788,7 @@ void Game_window::set_scrolls
 						camera_actor->get_lift()));
 	set_in_dungeon(nlist->has_dungeon()?nlist->is_dungeon(tx, ty):0);
 	set_ice_dungeon(nlist->is_ice_dungeon(tx, ty));
-	Send_location(this);		// Tell ExultStudio.
+	send_location();		// Tell ExultStudio.
 	}
 
 /*
