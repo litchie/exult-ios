@@ -1,3 +1,7 @@
+2001-11-18  Max Horn  <max@quendi.de>
+
+	* audio/midi_drivers/mac_midi.cc: fixed crash on exit when music is disabled
+
 2001-11-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.in: remove check for zutil.h
 	* configure.in: link dynamically against zlib
