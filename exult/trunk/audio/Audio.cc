@@ -227,6 +227,21 @@ void Audio::Init(int _samplerate,int _channels)
 	initialized = true;
 }
 
+bool	Audio::can_sfx(const std::string &game) const
+{
+	string s;
+	string d = "config/disk/game/" + game + "/waves";
+	config->value(d.c_str(), s, "---");
+	if (s != "---")
+	{
+		if (!U7exists(s.c_str()))
+			return false;
+		else
+			return true;
+	} else
+		return false;
+}
+
 void	Audio::Init_sfx()
 {
 	if (sfx_file)

@@ -1,3 +1,8 @@
+2001-11-17  Tristan Tarrant <nadir@users.sourceforge.net>
+	* data/sfx_icon.shp: sfx icon from SB-X
+	* audio/Audio.*: added can_sfx() method
+	* exultmenu.cc: show sfx icons next to menu entries
+
 2001-11-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* imagewin.cc: typo
 
