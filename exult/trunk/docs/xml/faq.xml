@@ -407,7 +407,7 @@
 			<header>Why can't I hear the Sound Effects?</header>
 			<body>
 				<para>
-					Please read the Audio section of our <extref2 target="wave_sfx"/>.
+					Please read the Audio section of our <extref doc="docs" target="wave_sfx"/>.
 				</para>
 			</body>
 		</sub>
@@ -560,7 +560,7 @@
 					a <extref target="http://www.gimp.org/">Gimp</extref> plug-in to edit shapes.
 				</para>
 				<para>
-					For much more information "<Studio/>" see <extref3 target="whatis_studio"/>.
+					For much more information "<Studio/>" see <extref doc="studio" target="whatis_studio"/>.
 				</para>
 				<cite name="Jeff">
 					As for the future, my main plan is to add editing capabilities,
@@ -658,7 +658,7 @@
 						together. If you have any information you've worked out related to
 						this, please tell either the forum or the exult-general mailing list.<br/>
 						Recently Jeff added an option to change the combat difficulty in exult.cfg.
-						See the <extref2 target="exult_config"/>.</li>
+						See the <extref doc="docs" target="exult_config"/>.</li>
 					<li>Negative health and unconsciousness. Yes, it may look weird to have
 						people walking around with negative health, but that's the way it
 						currently works.</li>
@@ -674,7 +674,7 @@
 			<body>
 				<ul>
 					<li>There might be a bug when you have any of the games installed in a 
-						path with spaces in it (see <extref2 target="path_config"/>).</li>
+						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>
 					<li>Movement is sometimes jerky or slow.</li>
 					<li>We don't know what all the data in 'weapons.dat' and 'ammo.dat'

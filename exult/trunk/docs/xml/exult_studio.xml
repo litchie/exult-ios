@@ -38,7 +38,7 @@
 			<header>Terms we use in regard to Exult and Ultima 7</header>
 			<body>
 				<para>
-					Along with the terms explained in <extref2 target="terms"/> there are
+					Along with the terms explained in <extref doc="docs" target="terms"/> there are
 					some more terms that need to be explained for the usage of <Studio/>
 				</para>
 				<ul>
@@ -60,7 +60,7 @@
 			<body>
 				<ul>
 					<li>You need <Exult/> and you need to install it properly 
-						(see <extref2 target="installation"/></li>
+						(see <extref doc="docs" target="installation"/></li>
 					<li>For U*ix platforms you need to build <Studio/> from the source avillable from our 
 						source snapshot at <extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 						You will also need the GTK+ library installed as well as
@@ -87,7 +87,7 @@
    				<li>Press 'alt-ctrl-m' to go into 'map-editor' mode.  If all is set
 					up correctly, exult_studio will start up, and will have a list of files
 					on the left side of its window (you need to have cheats enabled in <Exult/>,
-					see the <extref2 target="gameplay_gump"/>).</li>
+					see the <extref doc="docs" target="gameplay_gump"/>).</li>
 				</ul>
 				<para>
 					Starting up one or the other separately will reconnect them:
@@ -295,7 +295,7 @@
 			<header>Custom Usecode</header>
 			<body>
 				<para>
-					As hinted at (see <extref2 target="terms"/>) Usecode is actually what runs Ultima 7
+					As hinted at (see <extref doc="docs" target="terms"/>) Usecode is actually what runs Ultima 7
 					and therefore any game created with <Studio/>.<br/>
 					As of yet we do not have a Usecode editor/debugger. So writing your own Usecode is not 
 					that easy.
