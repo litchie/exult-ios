@@ -50,7 +50,6 @@ class Time_queue;
 class Npc_proximity_handler;
 class Npc_face_info;
 class Egg_object;
-class Game;
 
 /*
  *	The main game window:
@@ -70,7 +69,6 @@ public:
 		gump			// Showing open container(s).
 		};
 private:
-	Game *game;		// Which game are we running ?
 	Usecode_machine *usecode;	// Drives game plot.
 	Game_mode mode;			// Mode we're in.
 	unsigned char combat;		// 1 if in combat.
@@ -142,9 +140,6 @@ public:
 					// Get the one game window.
 	static Game_window *get_game_window()
 		{ return game_window; }
-		
-	Game *get_game()
-		{ return game; }
 		
 	void set_window_size(int w, int h);
 	void abort(const char *msg, ...);	// Fatal error.

@@ -1,5 +1,11 @@
 2000-08-01  Tristan Tarrant  <tarrant_tristan@emc.com>
 
+	* gamewin.*, exult.cc, usecode.cc: decided to not store the Game object inside
+	gamewin, but use the static get_game of the Game class instead. "There can be
+	only one" (TM)
+
+2000-08-01  Tristan Tarrant  <tarrant_tristan@emc.com>
+
 	* game.*, bggame.cc, sigame.cc: implemented shape lists. SI now has
 	placeholder intro/endgame sequences (it plays the proper FLIcs, but
 	nothing else really).

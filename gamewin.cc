@@ -75,7 +75,7 @@ Game_window::Game_window
 	    conv_choices(0), render_seq(0), painted(0), focus(1), shapes(),
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
 	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
-	    endshape(ENDSHAPE_FLX), game(0),
+	    endshape(ENDSHAPE_FLX), 
 	    moving_barge(0), main_actor(0), skip_above_actor(31), npcs(0),
 	    monster_info(0), 
 	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
@@ -88,7 +88,7 @@ Game_window::Game_window
 
 	// Discover the game we are running (BG, SI, ...)
 	char *static_identity = get_game_identity(INITGAME);
-	game = Game::create_game(static_identity);
+	Game *game = Game::create_game(static_identity);
 
 	// Go to starting chunk
 	scrolltx = game->get_start_tile_x();
