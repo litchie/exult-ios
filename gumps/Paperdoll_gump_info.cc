@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000 The Exult Team
+Copyright (C) 2000-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -853,24 +853,24 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     955,  5,       Actor::neck,   OT_Normal,  false, SF_PAPERDOL_VGA,      0,     9 },
 	// Amulet of ???
 	{     955,  6,       Actor::neck,   OT_Normal,  false, SF_PAPERDOL_VGA,      0,     3 },
-	// Forge Amulet **NEEDS ART**???
+	// Forge Amulet
 	{     955,  7,       Actor::neck,   OT_Normal,  false, SF_GAME_FLX,        EXULT_BG_FLX_AMULETS_SHP,     1 },
-	// Forge Amulet **NEEDS ART**???
+	// Forge Amulet
 	{     955,  8,       Actor::neck,   OT_Normal,  false, SF_GAME_FLX,        EXULT_BG_FLX_AMULETS_SHP,     2 },
-	// Forge Amulet **NEEDS ART**???
+	// Forge Amulet
 	{     955,  9,       Actor::neck,   OT_Normal,  false, SF_GAME_FLX,        EXULT_BG_FLX_AMULETS_SHP,     3 },
-	// Forge Amulet **NEEDS ART**???
+	// Forge Amulet
 	{     955, 10,       Actor::neck,   OT_Normal,  false, SF_GAME_FLX,        EXULT_BG_FLX_AMULETS_SHP,     4 },
 
 
 	// CLOAKS
 	
-	// Cloak **NEEDS ART**
-	{     285,  0, Actor::cloak_spot,   OT_Normal,  false, SF_PAPERDOL_VGA,      28,    0,     -1 },
-	{     285,  0, Actor::special_spot, OT_Normal,   true, SF_PAPERDOL_VGA,      28,    1,     -1 },
-	// Cloak **NEEDS ART**
-	{     285,  1, Actor::cloak_spot,   OT_Normal,  false, SF_PAPERDOL_VGA,      28,    0,     -1 },
-	{     285,  1, Actor::special_spot, OT_Normal,   true, SF_PAPERDOL_VGA,      28,    1,     -1 },
+	// Grey Cloak
+	{     285,  0, Actor::cloak_spot,   OT_Normal,  false, SF_GAME_FLX,      EXULT_BG_FLX_GREYCLOAK_SHP,    0,     -1 },
+	{     285,  0, Actor::special_spot, OT_Normal,   true, SF_GAME_FLX,      EXULT_BG_FLX_GREYCLOAK_SHP,    1,     -1 },
+	// Green Cloak
+	{     285,  1, Actor::cloak_spot,   OT_Normal,  false, SF_GAME_FLX,      EXULT_BG_FLX_GREENCLOAK_SHP,    0,     -1 },
+	{     285,  1, Actor::special_spot, OT_Normal,   true, SF_GAME_FLX,      EXULT_BG_FLX_GREENCLOAK_SHP,    1,     -1 },
 	// Cloak
 	{     285,  2, Actor::cloak_spot,   OT_Normal,  false, SF_PAPERDOL_VGA,       8,    0,     -1 },
 	{     285,  2, Actor::special_spot, OT_Normal,   true, SF_PAPERDOL_VGA,       8,    1,     -1 },
@@ -959,8 +959,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     296, 0,      Actor::lfinger,   OT_Normal,  false, SF_PAPERDOL_VGA,    120,     0,      2,   4 },
 	{     296, 0,      Actor::rfinger,   OT_Normal,  false, SF_PAPERDOL_VGA,    120,     1,      3,   5 },
 	// Ring of Protection
-	{     297, 0,      Actor::lfinger,   OT_Normal,  false, SF_PAPERDOL_VGA,    148,     0,      2,   4  },
-	{     297, 0,      Actor::rfinger,   OT_Normal,  false, SF_PAPERDOL_VGA,    148,     1,      3,   5 },
+	{     297, 0,      Actor::lfinger,   OT_Normal,  false, SF_GAME_FLX,    EXULT_BG_FLX_RING_OF_PROTECTION_SHP,     0,      2,   4  },
+	{     297, 0,      Actor::rfinger,   OT_Normal,  false, SF_GAME_FLX,    EXULT_BG_FLX_RING_OF_PROTECTION_SHP,     1,      3,   5 },
 	// Ring of Regeneration
 	{     298, 0,      Actor::lfinger,   OT_Normal,  false, SF_PAPERDOL_VGA,    122,     0,      2,   4 },
 	{     298, 0,      Actor::rfinger,   OT_Normal,  false, SF_PAPERDOL_VGA,    122,     1,      3,   5 },
@@ -1024,8 +1024,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     550, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,        EXULT_BG_FLX_MAGIC_BOOMERANG_SHP,     0 },
 	{     550, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,        EXULT_BG_FLX_MAGIC_BOOMERANG_SHP,     1 },
 	// Fire Sword
-	{     551, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     41,     0 },
-	{     551, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     41,     1 },
+	{     551, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_FIRESWORD_SHP,     0 },
+	{     551, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_FIRESWORD_SHP,     1 },
 	// Magic Axe
 	{     552, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     77,     0 },
 	{     552, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     77,     1 },
