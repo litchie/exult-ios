@@ -101,27 +101,23 @@
 #define UCC_ARR          0xFFFB
 #define UCC_STRING       0xFFFA
 
-//76, 113
-//extern const opcode_desc opcode_table[76];
-//extern const char* bg_func_table[113];
-
 vector<string> qnd_ocsplit(const string &s);
 
 class UCOpcodeData
 {
 	public:
 		UCOpcodeData() : opcode(0x00), num_bytes(0) {};
-		UCOpcodeData(const vector<string> &v)// : effect(0)
+		UCOpcodeData(const vector<string> &v)
 		{
 			#if 0 // debugging
-			if((v.size()==8)==false)
+			if((v.size()==10)==false)
 			{
 				for(unsigned int i=0; i<v.size(); i++)
 					cout << v[i] << '\t';
 				cout << endl;
 			}
 			#endif
-			assert(v.size()==8);
+			assert(v.size()==10);
 			opcode = strtol(v[1].c_str(), 0, 0);
 			name = v[2];
 			asm_nmo = v[3];
@@ -140,8 +136,6 @@ class UCOpcodeData
 		unsigned int   num_bytes;
 		vector<string> param_types;
 		
-		// temp for (effect? <grin>) _opcode_desc.
-		//unsigned long effect;
 };
 
 extern vector<UCOpcodeData> opcode_table_data;

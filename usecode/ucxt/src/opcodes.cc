@@ -78,10 +78,10 @@ void init_usecodetables(const Configuration &config, const UCData &uc)
 /* To be depricated when I get the complex vector<string> splitter online */
 vector<string> qnd_ocsplit(const string &s)
 {
-  assert((s[0]=='{') && (s[s.size()-1]=='}'));
+	assert((s[0]=='{') && (s[s.size()-1]=='}'));
 
 	vector<string> vs;
-  string tstr;
+	string tstr;
 
 	for(string::const_iterator i=s.begin(); i!=s.end(); ++i)
 	{
@@ -130,15 +130,14 @@ vector<string> str2vec(const string &s)
 			lasti=i+1;
 		}
 		if(i==s.size()-1)
-			if(lasti!=i)
+		{
+			if((s[lasti]=='"') && (s[i]=='"'))
 			{
-				if((s[lasti]=='"') && (s[i]=='"'))
-				{
-					if((lasti+1)!=(lasti-1))
-						vs.push_back(s.substr(lasti+1, i-lasti-2));
-				}
-				else
-					vs.push_back(s.substr(lasti, i-lasti+1));
+				if((lasti+1)!=(lasti-1))
+					vs.push_back(s.substr(lasti+1, i-lasti-2));
+			}
+			else
+				vs.push_back(s.substr(lasti, i-lasti+1));
 		}
 	}
 

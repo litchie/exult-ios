@@ -76,12 +76,32 @@ class SortFlagDataLessFunc
     };
 };
 
+class UCNode;
+
+class UCNode
+{
+	public:
+		UCNode(UCc *newucc=0) : ucc(newucc) { };
+		UCNode(vector<UCNode *>::iterator beg, vector<UCNode *>::iterator end)
+		      : ucc(new UCc()), nodelist(beg, end) { };
+		~UCNode() { };
+	
+		UCc *ucc;
+		vector<UCNode *> nodelist;
+};
+
 class UCFunc
 {
 	public:
 		UCFunc() : _offset(0), _funcid(0), _funcsize(0), _bodyoffset(0), _datasize(0),
 		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0) {};
+
+		void output_ucs(ostream &o, bool gnubraces=false);
+		void output_ucs_node(ostream &o, UCNode* ucn, unsigned int indent);
 		
+		void parse_ucs();
+		void parse_ucs_pass1(vector<UCNode *> &nodes);
+
 //	private:
 	
 		streampos      _offset;      // offset to start of function
@@ -104,9 +124,9 @@ class UCFunc
 		vector<UCc> _opcodes;
 
 		// the following vars are for data compatibility with the original UCFunc
-    unsigned short codesize() const { return _funcsize - _datasize; };
-    vector<FlagData *>   _flagcount;
-
+		unsigned short codesize() const { return _funcsize - _datasize; };
+		vector<FlagData *>   _flagcount;
+		UCNode node;
 };
 
 class UCData;
