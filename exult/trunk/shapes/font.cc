@@ -274,7 +274,7 @@ int Font::get_text_height
 	{
 	Shape_frame *A = font_shapes->get_frame('A');
 	Shape_frame *y = font_shapes->get_frame('y');
-	return A->get_yabove() + y->get_ybelow();	
+	return A->get_yabove() + y->get_ybelow() + 1;	
 	}
 
 /*

@@ -31,6 +31,8 @@
 #  include <cstring>
 #endif
 
+void make_screenshot (void);
+
 using std::toupper;
 
 bool wait_delay_cycle(int ms)
@@ -38,7 +40,7 @@ bool wait_delay_cycle(int ms)
 	SDL_Event event;
 	int delay;
 	int loops;
-	if(ms<=40) {
+	if(ms<=20) {
 		delay = ms;
 		loops = 1;
 	} else {
@@ -154,7 +156,7 @@ BG_Game::BG_Game()
 	add_resource("xforms/19", "<STATIC>/xform.tbl", 19);
 	
 	fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 1);
-	fontManager.add_font("END2_FONT", "<STATIC>/endgame.dat", 4, 0);
+	fontManager.add_font("END2_FONT", "<STATIC>/endgame.dat", 4, -1);
 	fontManager.add_font("END3_FONT", "<STATIC>/endgame.dat", 5, -2);
 }
 
@@ -257,11 +259,11 @@ void BG_Game::play_intro()
 		return;	
 	}
 
-
 	//TODO: show plasma first, then a bit of static
-        //TODO: text is wrong font
+        //TODO: is text font correct?
 	//TODO: guardian seems to shift a bit before and after speech
 	//TODO: reduce sudden facial movements in speech
+	//TODO: text backup area is too small??
 
 	// Enter guardian
 	play_midi(2);
@@ -269,6 +271,7 @@ void BG_Game::play_intro()
 	gwin->plasma(gwin->get_width(), gwin->get_height(), 0, 0, 16, 110);
 
 	pal.load("<STATIC>/intropal.dat",2);
+	pal.set_color(1,0,0,0); //UGLY hack... set font background to black
 	pal.apply();
 
 	// these backups store the area under the guardian shapes being drawn
@@ -407,11 +410,11 @@ void BG_Game::play_intro()
        	gwin->paint_shape(centerx,centery-49,s3);
 
 	// start speech
-	for(int i=0; i<14*30; i++) {
+	for(int i=0; i<14*20; i++) {
 		gwin->paint_shape(centerx,centery-12,shapes.get_shape(0x20,1 + i % 9));
 		gwin->paint_shape(centerx,centery,shapes.get_shape(0x1E,1 + i % 14));
 
-		if ((i % 30) == 0) {
+		if ((i % 20) == 0) {
 			txt_ptr = next_txt;
 			txt_end = std::strchr(txt_ptr, '\r');
 			*txt_end = '\0';
@@ -478,6 +481,9 @@ void BG_Game::play_intro()
 	wait_delay_cycle(1000);
 
 	// PC screen
+
+	// TODO: transition scene missing
+
 	play_midi(1);
 	
 	gwin->clear_screen();
@@ -527,6 +533,10 @@ void BG_Game::play_intro()
 	gwin->clear_screen();
 
 	// The Moongate
+
+	// TODO: "There's only one path to the answer" not shown
+	// TODO: trees don't part far enough?
+
 	pal.load("<STATIC>/intropal.dat",5);
 	pal.apply();
 	for(int i=120;i>=0;i-=2) {

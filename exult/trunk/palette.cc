@@ -200,3 +200,9 @@ void Palette::show() {
 		}
 	} 
 }
+
+void Palette::set_color(int nr, int r, int g, int b) {
+	pal1[nr*3] = r;
+	pal1[nr*3+1] = g;
+	pal1[nr*3+2] = b;
+}

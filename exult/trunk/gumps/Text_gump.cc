@@ -66,7 +66,7 @@ int Text_gump::paint_page
 	)
 {
 	const int font = 4;		// Black.
-	const int vlead = 2;		// Extra inter-line spacing.
+	const int vlead = 1;		// Extra inter-line spacing.
 	int ypos = 0;
 	int textheight = gwin->get_text_height(font) + vlead;
 	char *str = text + start;
