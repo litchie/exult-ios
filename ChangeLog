@@ -1,3 +1,8 @@
+2001-08-07  Max Horn <max@quendi.de>
+	* ibuf16.cc: needed to include cstdlib but didn't
+	* autoarray.h: needed to include exult_types.h but didn't
+	* bggame.cc: added #include <memory>; fixed butterfly path for higher resolutions
+
 2001-08-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/barge.cc (Barge_object): Don't rotate ice raft.
