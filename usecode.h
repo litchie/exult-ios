@@ -221,9 +221,17 @@ public:
 							Usecode_value& mval);
 	Usecode_value find_direction(Usecode_value& from, Usecode_value& to);
 	Usecode_value count_objects(Usecode_value& objval,
-						Usecode_value& shapeval);
+		Usecode_value& shapeval, Usecode_value& qualval,
+						Usecode_value& frameval);
 	Usecode_value get_objects(Usecode_value& objval,
-						Usecode_value& shapeval);
+		Usecode_value& shapeval, Usecode_value& qualval,
+						Usecode_value& frameval);
+	int remove_party_items(Usecode_value& quantval,
+		Usecode_value& shapeval, Usecode_value& qualval,
+			Usecode_value& frameval, Usecode_value& flagval);
+	Usecode_value add_party_items(Usecode_value& quantval,
+		Usecode_value& shapeval, Usecode_value& qualval,
+			Usecode_value& frameval, Usecode_value& flagval);
 	Usecode_value click_on_item();
 	void exec_array(Usecode_value& objval, Usecode_value& arrayval);
 
@@ -271,8 +279,8 @@ public:
         USECODE_INTRINSIC_DECL(get_npc_name);
         USECODE_INTRINSIC_DECL(count_objects);
         USECODE_INTRINSIC_DECL(get_cont_items);
-        USECODE_INTRINSIC_DECL(remove_items);
-        USECODE_INTRINSIC_DECL(add_items);
+        USECODE_INTRINSIC_DECL(remove_party_items);
+        USECODE_INTRINSIC_DECL(add_party_items);
         USECODE_INTRINSIC_DECL(play_music);
         USECODE_INTRINSIC_DECL(npc_in_party);
         USECODE_INTRINSIC_DECL(display_runes);

@@ -88,6 +88,67 @@ int Game_object::get_quantity
 	}
 
 /*
+ *	Add or remove from object's 'quantity', and delete if it goes to 0.
+ *
+ *	Output:	Delta decremented/incremented by # added/removed.
+ */
+
+int Game_object::modify_quantity
+	(
+	Container_game_object *owner,	// Container it's in, or null if obj.
+					//   is in a chunk.
+	int delta			// >0 to add, <0 to remove.
+	)
+	{
+	if (!delta)
+		return (delta);
+	if (!Has_quantity(get_shapenum()))
+		{			// Can't do quantity here.
+		if (delta > 0)
+			return (delta);
+		remove(owner);		// Remove from container (or world).
+		return (delta + 1);
+		}
+	int quant = quality&0x7f;	// Get current quality.
+	int newquant = quant + delta;
+	if (delta > 0)			// Adding?
+		{
+		if (newquant > 0x7f)	// Too much?
+			newquant = 0x7f;
+		}
+	else if (newquant <= 0)		// Subtracting.
+		{
+		remove(owner);		// We're done for.
+		return (delta + quant);
+		}
+	quality = 0x80|(char) newquant;	// Store new value.
+	return (delta - (newquant - quant));
+	}
+
+/*
+ *	Remove an object from its container, or from the world.
+ *	The object is deleted.
+ */
+
+void Game_object::remove
+	(
+	Container_game_object *owner	// Container it's in, or null if obj.
+					//   is in a chunk.
+	)
+	{
+	if (owner)			// In a bag, box, or person.
+		owner->remove(this);
+	else				// In the outside world.
+		{
+		Chunk_object_list *chunk = 
+			Game_window::get_game_window()->get_objects(cx, cy);
+		if (chunk)
+			chunk->remove(this);
+		}
+	delete this;
+	}
+
+/*
  *	Move to a new absolute location.
  */
 
@@ -633,6 +694,80 @@ int Container_game_object::add
 	}
 
 /*
+ *	Recursively add a quantity of an item to those existing in
+ *	this container, and create new objects if necessary.
+ *
+ *	Output:	Delta decremented # added.
+ */
+
+int Container_game_object::add_quantity
+	(
+	int delta,			// Quantity to add.
+	int shapenum,			// Shape #.
+	int qual,			// Quality, or -359 for any.
+	int framenum,			// Frame, or -359 for any.
+	int dontcreate			// If 1, don't create new objs.
+	)
+	{
+					// ++++++Restrict by weight, volume.
+	Game_object *obj = last_object;
+	do				// First try existing items.
+		{
+		obj = obj->get_next();
+		if (framenum == -359 || obj->get_framenum() == framenum)
+					// ++++++Quality???
+			delta = obj->modify_quantity(this, delta);
+					// Do it recursively.
+		delta = obj->add_quantity(delta, shapenum, qual, framenum, 1);
+		}
+	while (obj != last_object);
+	if (!delta || dontcreate)	// All added?
+		return (delta);
+	if (framenum == -359)
+		framenum = 0;
+	while (delta)			// Create them (here, for now+++).
+		{
+		Game_object *newobj = new Game_object(shapenum, framenum,
+								0, 0, 0);
+		delta--;
+		if (delta > 0)
+			delta = newobj->modify_quantity(this, delta);
+		add(newobj);		// ++++++Could fail. Should check 1st.
+		}
+	return (delta);
+	}		
+
+/*
+ *	Recursively remove a quantity of an item from those existing in
+ *	this container.
+ *
+ *	Output:	Delta decremented by # removed.
+ */
+
+int Container_game_object::remove_quantity
+	(
+	int delta,			// Quantity to remove.
+	int shapenum,			// Shape #.
+	int qual,			// Quality, or -359 for any.
+	int framenum			// Frame, or -359 for any.
+	)
+	{
+	int todo = -delta;
+	Game_object *obj = last_object;
+	do
+		{
+		obj = obj->get_next();
+		if (framenum == -359 || obj->get_framenum() == framenum)
+					// ++++++Quality???
+			todo = obj->modify_quantity(this, todo);
+					// Do it recursively.
+		todo = obj->remove_quantity(todo, shapenum, qual, framenum);
+		}
+	while (obj != last_object);
+	return (-todo);
+	}
+
+/*
  *	Run usecode when double-clicked.
  */
 
@@ -695,7 +830,8 @@ int Container_game_object::drop
 
 int Container_game_object::count_objects
 	(
-	int shapenum			// Shape#, or -359 for any.
+	int shapenum,			// Shape#, or -359 for any.
+	int framenum			// Frame#, or -359 for any.
 	)
 	{
 	int total = 0;
@@ -703,7 +839,8 @@ int Container_game_object::count_objects
 	do
 		{
 		obj = obj->get_next();
-		if (shapenum == -359 || obj->get_shapenum() == shapenum)
+		if ((shapenum == -359 || obj->get_shapenum() == shapenum) &&
+		    (framenum == -359 || obj->get_framenum() == framenum))
 			{		// Check quantity.
 			int quant = obj->get_quantity();
 			total += quant;
@@ -722,7 +859,8 @@ int Container_game_object::count_objects
 int Container_game_object::get_objects
 	(
 	Vector& vec,			// Objects returned here.
-	int shapenum			// Shape#, or -359 for any.
+	int shapenum,			// Shape#, or -359 for any.
+	int framenum			// Frame#, or -359 for any.
 	)
 	{
 	int vecsize = vec.get_cnt();
@@ -730,7 +868,8 @@ int Container_game_object::get_objects
 	do
 		{
 		obj = obj->get_next();
-		if (shapenum == -359 || obj->get_shapenum() == shapenum)
+		if ((shapenum == -359 || obj->get_shapenum() == shapenum) &&
+		    (framenum == -359 || obj->get_framenum() == framenum))
 			vec.append(obj);
 					// Search recursively.
 		obj->get_objects(vec, shapenum);

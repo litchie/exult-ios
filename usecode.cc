@@ -784,15 +784,18 @@ Usecode_value Usecode_machine::find_direction
 Usecode_value Usecode_machine::count_objects
 	(
 	Usecode_value& objval,		// The container, or -357 for party.
-	Usecode_value& shapeval		// Object shape to count (-359=any).
+	Usecode_value& shapeval,	// Object shape to count (-359=any).
+	Usecode_value& qualval,		// Quality (ignored, for now).
+	Usecode_value& frameval		// Frame (-359=any).
 	)
 	{
 	long oval = objval.get_int_value();
 	int shapenum = shapeval.get_int_value();
+	int framenum = frameval.get_int_value();
 	if (oval != -357)
 		{
 		Game_object *obj = get_item(oval);
-		return (!obj ? 0 : obj->count_objects(shapenum));
+		return (!obj ? 0 : obj->count_objects(shapenum, framenum));
 		}
 					// Look through whole party.
 	Usecode_value party = get_party();
@@ -802,7 +805,7 @@ Usecode_value Usecode_machine::count_objects
 		{
 		Game_object *obj = get_item(party.get_elem(i).get_int_value());
 		if (obj)
-			total += obj->count_objects(shapenum);
+			total += obj->count_objects(shapenum, framenum);
 		}
 	return (total);
 	}
@@ -814,15 +817,18 @@ Usecode_value Usecode_machine::count_objects
 Usecode_value Usecode_machine::get_objects
 	(
 	Usecode_value& objval,		// The container.
-	Usecode_value& shapeval		// Object shape to get or -359 for any.
+	Usecode_value& shapeval,	// Object shape to get or -359 for any.
+	Usecode_value& qualval,		// Quality (ignored, for now).
+	Usecode_value& frameval		// Frame (-359=any).
 	)
 	{
 	Game_object *obj = get_item(objval.get_int_value());
 	if (!obj)
 		return Usecode_value(0);
 	int shapenum = shapeval.get_int_value();
+	int framenum = frameval.get_int_value();
 	Vector vec;			// Gets list.
-	int cnt = obj->get_objects(vec, shapenum);
+	int cnt = obj->get_objects(vec, shapenum, framenum);
 
 //	cout << "Container objects found:  " << cnt << '\n';
 	Usecode_value within(cnt, 0);	// Create return array.
@@ -833,6 +839,85 @@ Usecode_value Usecode_machine::get_objects
 		within.put_elem(i, val);
 		}
 	return (within);
+	}
+
+/*
+ *	Remove a quantity of an item from the party.
+ *
+ *	Output:	1 if successful, else 0.
+ */
+
+int Usecode_machine::remove_party_items
+	(
+	Usecode_value& quantval,	// Quantity to remove.
+	Usecode_value& shapeval,	// Shape.
+	Usecode_value& qualval,		// Quality??
+	Usecode_value& frameval,	// Frame.
+	Usecode_value& flagval		// Flag??
+	)
+	{
+	int quantity = quantval.get_int_value();
+	Usecode_value all(-357);	// See if they exist.
+	Usecode_value avail = count_objects(all, shapeval, qualval, frameval);
+	if (avail.get_int_value() < quantity)
+		return 0;
+	int shapenum = shapeval.get_int_value();
+	int framenum = frameval.get_int_value();
+	int quality = qualval.get_int_value();
+					// Look through whole party.
+	Usecode_value party = get_party();
+	int cnt = party.get_array_size();
+	for (int i = 0; i < cnt && quantity > 0; i++)
+		{
+		Game_object *obj = get_item(party.get_elem(i).get_int_value());
+		if (obj)
+			quantity = obj->remove_quantity(quantity, shapenum,
+							quality, framenum);
+		}
+	return (quantity == 0);
+	}
+
+/*
+ *	Add a quantity of an item to the party.
+ *
+ *	Output:	List of members who got objects.
+ */
+
+Usecode_value Usecode_machine::add_party_items
+	(
+	Usecode_value& quantval,	// Quantity to add.
+	Usecode_value& shapeval,	// Shape.
+	Usecode_value& qualval,		// Quality??
+	Usecode_value& frameval,	// Frame.
+	Usecode_value& flagval		// Flag??
+	)
+	{
+	int quantity = quantval.get_int_value();
+					// ++++++First see if there's room.
+	int shapenum = shapeval.get_int_value();
+	int framenum = frameval.get_int_value();
+	int quality = qualval.get_int_value();
+					// Look through whole party.
+	Usecode_value party = get_party();
+	int cnt = party.get_array_size();
+	Usecode_value result(0);
+	for (int i = 0; i < cnt && quantity > 0; i++)
+		{
+		Game_object *obj = get_item(party.get_elem(i).get_int_value());
+		if (!obj)
+			continue;
+		int prev = quantity;
+		quantity = obj->add_quantity(quantity, shapenum,
+							quality, framenum);
+		if (quantity < prev)
+			{		// Added to this NPC.
+			if (!result.is_array())
+				result = Usecode_value(1, &party.get_elem(i));
+			else
+				result.concat(party.get_elem(i));
+			}
+		}
+	return result;
 	}
 
 /*
@@ -1309,33 +1394,32 @@ USECODE_INTRINSIC(get_npc_name)
 USECODE_INTRINSIC(count_objects)
 	// How many?
 	// ((npc?-357==party, -356=avatar), 
-	//   item, quality?, quality?).
-	// Quality -359 means any?
-	Usecode_value u(count_objects(parms[0], parms[1]));
+	//   item, quality?, frame?).
+	// Quality/frame -359 means any.
+	Usecode_value u(count_objects(parms[0], parms[1], parms[2], parms[3]));
 	USECODE_RETURN(u);
 }
 
 USECODE_INTRINSIC(get_cont_items)
-        // Get cont. items(item, type, qual,?).
-        Usecode_value u(get_objects(parms[0], parms[1]));
+        // Get cont. items(container, shape, qual, frame).
+        Usecode_value u(get_objects(parms[0], parms[1], parms[2], parms[3]));
 	USECODE_RETURN(u);
 }
 
 
-USECODE_INTRINSIC(remove_items)
-
-	// Remove items(quantity, item, 
-	//   ??quality?? (-359), frame(-359), T/F).
-	//+++++++++++
-	Usecode_value u(1);
-	USECODE_RETURN(u);	// ++++Pretend we did it.
+USECODE_INTRINSIC(remove_party_items)
+	// Remove items(quantity, item, ??quality?? (-359), frame(-359), T/F).
+	Usecode_value u(remove_party_items(parms[0], parms[1], parms[2],
+						parms[3], parms[4]));
+	USECODE_RETURN(u);
 }
 
-USECODE_INTRINSIC(add_items)
+USECODE_INTRINSIC(add_party_items)
 	// Add items(num, item, ??quality?? (-359), frame (or -359), T/F).
 	// Returns array of NPC's (->'s) who got the items.
-	//++++++++++
-	USECODE_RETURN(no_ret);
+	Usecode_value u(add_party_items(parms[0], parms[1], parms[2],
+						parms[3], parms[4]));
+	USECODE_RETURN(u);
 }
 
 USECODE_INTRINSIC(play_music)
@@ -1601,8 +1685,8 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(count_objects), // 0x28
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x29
 	USECODE_INTRINSIC_PTR(get_cont_items), // 0x2a
-	USECODE_INTRINSIC_PTR(remove_items), // 0x2b
-	USECODE_INTRINSIC_PTR(add_items), // 0x2c
+	USECODE_INTRINSIC_PTR(remove_party_items), // 0x2b
+	USECODE_INTRINSIC_PTR(add_party_items), // 0x2c
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x2d
 	USECODE_INTRINSIC_PTR(play_music), // 0x2e
 	USECODE_INTRINSIC_PTR(npc_in_party), // 0x2f
