@@ -104,7 +104,7 @@ public:
 class Shape_file : private Shape
 	{
 public:
-	Shape_file(char *nm);
+	Shape_file(const char *nm);
 	int get_num_frames()
 		{ return num_frames; }
 	Shape_frame *get_frame(int framenum)

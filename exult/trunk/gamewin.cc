@@ -219,7 +219,7 @@ void Game_window::resized
 int Game_window::u7open
 	(
 	ifstream& in,			// Input stream to open.
-	char *fname,			// May be converted to upper-case.
+	const char *fname,			// May be converted to upper-case.
 	int dont_abort			// 1 to just return 0.
 	)
 	{
@@ -2068,7 +2068,7 @@ Vga_file *Game_window::get_shape_file_data
 	}
 	}
 
-void Game_window::play_flic(char *archive, int index) 
+void Game_window::play_flic(const char *archive, int index) 
 	{
 		U7object flic(archive, index);
 		flic.retrieve("flic.fli");
