@@ -59,7 +59,9 @@ private:
 	char			*default_game;
 	guint32			background_color;
 	static ExultStudio	*self;
-	bool			exiting;	// In destructor.
+	bool			exiting;	// In destructor.++++Needed?
+						// Modified one of the .dat's?
+	bool			shape_info_modified;
 	Shape_file_set		*files;		// All the shape files.
 	std::vector<GtkWindow*>	group_windows;	// All 'group' windows.
 	Shape_file_info		*curfile;	// Current browser file info.
@@ -104,7 +106,7 @@ private:
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();
-	bool okay_to_quit();
+	bool okay_to_close();
 	
 	static ExultStudio *get_instance()
 		{ return self; }
@@ -134,6 +136,8 @@ public:
 	Object_browser  *create_browser(const char *fname);
 	Object_browser  *create_palette_browser(const char *fname);
 	void set_game_path(const char *path);
+	void save_all();		// Write out everything.
+	bool need_to_save();		// Anything modified?
 	void write_map();
 	void read_map();
 	void write_shape_info();
@@ -151,6 +155,7 @@ public:
 	void open_group_window();
 	void close_group_window(GtkWidget *gtkwin);
 	void save_groups();
+	bool groups_modified();
 	void update_group_windows(Shape_group *grp);
 					// Objects:
 	void open_obj_window(unsigned char *data, int datalen);
