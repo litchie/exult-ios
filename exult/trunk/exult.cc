@@ -1663,7 +1663,8 @@ static void Xselect_msg
 						U7_TARGET_SHAPEID_NAME, 0);
 	cout << "SelectionEvent received with target type: " <<
 		XGetAtomName(display, sev.target) << endl;
-	if (sev.selection != xdnd_selection || sev.target != u7shapeid_atom)
+	if (sev.selection != xdnd_selection || sev.target != u7shapeid_atom ||
+	    sev.property == None)
 		return;			// Wrong type.
 	Atom type = None;		// Get data.
 	int format;
