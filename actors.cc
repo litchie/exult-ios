@@ -884,10 +884,6 @@ void Actor::follow
 	Actor *leader
 	)
 	{
-	static const char *catchup_phrases[3] = { 
-					"Thou shan't lose me so easily!",
-					"Ah, there thou art!",
-					"Found ye!" };
 	if (Actor::is_dead())
 		return;			// Not when dead.
 	int delay = 0;
@@ -961,9 +957,8 @@ void Actor::follow
 		if (goal.tx != -1)
 			{
 			move(goal.tx, goal.ty, goal.tz);
-			int phrase = rand()%6;
-			if (phrase < 3)
-				say(catchup_phrases[phrase]);
+			if (rand()%2)
+				say(first_catchup, last_catchup);
 			gwin->paint();
 			return;
 			}

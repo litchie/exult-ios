@@ -26,7 +26,7 @@
 #include "Gump_manager.h"
 #include "Scroll_gump.h"
 #include "Sign_gump.h"
-// #include "actions.h"
+#include "items.h"
 #include "barge.h"
 #include "bodies.h"
 #include "cheat.h"
@@ -1945,11 +1945,6 @@ USECODE_INTRINSIC(fire_cannon)
 USECODE_INTRINSIC(nap_time)
 {
 	// nap_time(bed)
-	const char *msgs[] = {"Avatar!  Please restrain thyself!",
-			"Hast thou noticed that this bed is occupied?",
-			"Please, Avatar, the resident of this bed may not be desirouth of company at the moment."
-			};
-	const int nummsgs = sizeof(msgs)/sizeof(msgs[0]);
 	Game_object *bed = get_item(parms[0]);
 	if (!bed)
 		return no_ret;
@@ -1975,7 +1970,8 @@ USECODE_INTRINSIC(nap_time)
 						rand()%party_cnt) : 356;
 			Usecode_value actval(-npcnum), frval(0);
 			show_npc_face(actval, frval);
-			conv->show_npc_message(msgs[rand()%nummsgs]);
+			conv->show_npc_message(item_names[first_bed_occupied +
+						rand()%num_bed_occupied]);
 			remove_npc_face(actval);
 			gwin->get_main_actor()->set_schedule_type(
 						Schedule::follow_avatar);

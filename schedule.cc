@@ -438,10 +438,11 @@ void Eat_at_inn_schedule::now_what
 			gwin->add_dirty(food);
 			food->remove_this();
 			}
-		const char *msgs[] = {"Gulp!", "Mmmmm.", "Yum!", ""};
-		int n = rand()%(sizeof(msgs)/sizeof(msgs[0]));
-		npc->say(msgs[n]);
+		if (rand()%4)
+			npc->say(first_munch, last_munch);
 		}
+	else if (rand()%4)
+		npc->say(first_more_food, last_more_food);
 					// Wake up in a little while.
 	npc->start(250, 5000 + rand()%12000);
 	}
@@ -1273,11 +1274,7 @@ int Sit_actor_action::handle_event
 			return 0;	// Abort.
 		if (chair->get_tile() != chairloc)
 			{		// Chair was moved!
-			static char *msgs[] = {"Put that chair back!",
-					"Thief!!", "Thou scoundrel!!",
-					"Not funny!", "Who moved my chair??"};
-			const int nmsgs = sizeof(msgs)/sizeof(msgs[0]);
-			actor->say(msgs[rand()%nmsgs]);
+			actor->say(first_chair_thief, last_chair_thief);
 			return 0;
 			}
 		}
@@ -1734,15 +1731,15 @@ void Waiter_schedule::get_customer
 		for (Actor_vector::const_iterator it = vec.begin();
 							it != vec.end(); ++it)
 		{		// Filter them.
-			Actor *npc = (Actor *) *it;
-			if (npc->get_schedule_type() == Schedule::eat_at_inn)
-				customers.push(npc);
+			Actor *each = (Actor *) *it;
+			if (each->get_schedule_type() == Schedule::eat_at_inn)
+				customers.push(each);
 		}
 	}
 
 	if (!customers.empty())
 		customer = customers.pop();
-	
+	npc->say(first_waiter_ask, last_waiter_ask);	
 	if (prep_tables.size())	// Walk to a 'prep' table.
 	{
 		Game_object *table = prep_tables[rand()%prep_tables.size()];
@@ -1882,13 +1879,9 @@ void Waiter_schedule::now_what
 		Game_object_vector foods;
 		if (customer->find_nearby(foods, 377, 2, 0) > 0)
 			{
-			const char *msgs[]={"You look like you're doing fine.",
-					"Everything okay?",
-					"Ready for dessert?",
-					""
-					};
-			int n = rand()%(sizeof(msgs)/sizeof(msgs[0]));
-			npc->say(msgs[n]);
+			if (rand()%4)
+				npc->say(first_waiter_banter, 
+							last_waiter_banter);
 			}
 		else			// Needs food.
 			{
@@ -1897,18 +1890,15 @@ void Waiter_schedule::now_what
 			if (food && food->get_shapenum() == 377 &&
 			    find_serving_spot(spot))
 				{
-				const char *msgs[] = {"Enjoy!",
-						"Specialty of the house!",
-						""
-						};
 				npc->change_frame(npc->get_dir_framenum(
 					npc->get_direction(customer),
 							Actor::standing));
 				npc->remove(food);
 				food->set_invalid();
 				food->move(spot);
-				int n = rand()%(sizeof(msgs)/sizeof(msgs[0]));
-				npc->say(msgs[n]);
+				if (rand()%3)
+					npc->say(first_waiter_serve,
+						 last_waiter_serve);
 				}
 			}
 		customer = 0;		// Done with this one.
