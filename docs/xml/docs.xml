@@ -271,6 +271,10 @@
 								<comment>**options are yes/no. Used to trace intrinsics.</comment>
 								<comment>(You shouldn't need this unless you are a programmer.)</comment>
 								</configtag>
+								<configtag name="combat">
+								no
+								<comment>**options are yes/no. If enabled, show combat messages.</comment>
+								</configtag>
 							</configtag>
 						</configtag>
 						<configtag name="gameplay">
