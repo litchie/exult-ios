@@ -205,7 +205,7 @@ int Font::paint_text
 		Shape_frame *shape = font_shapes->get_frame(chr);
 		if (!shape)
 			continue;
-		shape->paint_rle(win, x, yoff);
+		shape->paint_rle(x, yoff);
 		x += shape->get_width() + hor_lead;
 		}
 	return (x - xoff);
@@ -232,7 +232,7 @@ int Font::paint_text
 		Shape_frame *shape = font_shapes->get_frame((int) *text++);
 		if (!shape)
 			continue;
-		shape->paint_rle(win, x, yoff);
+		shape->paint_rle(x, yoff);
 		x += shape->get_width() + hor_lead;
 		}
 	return (x - xoff);
@@ -384,7 +384,7 @@ int Font::paint_text_fixedwidth
 		if (!shape)
 			continue;
 		x += w = (width - shape->get_width()) / 2;
-		shape->paint_rle(win, x, yoff);
+		shape->paint_rle(x, yoff);
 		x += width - w;
 		}
 	return (x - xoff);
@@ -415,7 +415,7 @@ int Font::paint_text_fixedwidth
 		if (!shape)
 			continue;
 		x += w = (width - shape->get_width()) / 2;
-		shape->paint_rle(win, x, yoff);
+		shape->paint_rle(x, yoff);
 		x += width - w;
 		}
 	return (x - xoff);
