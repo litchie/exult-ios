@@ -1678,6 +1678,7 @@ int Container_game_object::get_objects
 	(
 	Vector& vec,			// Objects returned here.
 	int shapenum,			// Shape#, or -359 for any.
+	int qual,			// Quality, or -359 for any.
 	int framenum			// Frame#, or -359 for any.
 	)
 	{
@@ -1687,10 +1688,11 @@ int Container_game_object::get_objects
 	while ((obj = next.get_next()) != 0)
 		{
 		if ((shapenum == -359 || obj->get_shapenum() == shapenum) &&
+		    (qual == -359 || obj->get_quality() == qual) &&
 		    (framenum == -359 || obj->get_framenum() == framenum))
 			vec.append(obj);
 					// Search recursively.
-		obj->get_objects(vec, shapenum);
+		obj->get_objects(vec, shapenum, qual, framenum);
 		}
 	return (vec.get_cnt() - vecsize);
 	}
