@@ -456,7 +456,8 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	browser(0), palbuf(0), egg_monster_draw(0), 
 	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
-	npc_ctx(0), objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
+	npc_ctx(0), npc_status_id(0),
+	objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
 	equipwin(0), locwin(0), combowin(0), compilewin(0), compile_box(0)
 {
 	// Initialize the various subsystems
@@ -1670,9 +1671,10 @@ void ExultStudio::set_entry
 
 /*
  *	Set statusbar.
+ *	Output:	Msg. ID, or 0.
  */
 
-void ExultStudio::set_statusbar
+guint ExultStudio::set_statusbar
 	(
 	char *name,
 	int context,
@@ -1681,7 +1683,27 @@ void ExultStudio::set_statusbar
 	{
 	GtkWidget *sbar = glade_xml_get_widget(app_xml, name);
 	if (sbar)
-		gtk_statusbar_push(GTK_STATUSBAR(sbar), context, msg);
+		return gtk_statusbar_push(GTK_STATUSBAR(sbar), context, msg);
+	else
+		return 0;
+	}
+
+/*
+ *	Pop last message that was set.
+ */
+
+void ExultStudio::remove_statusbar
+	(
+	char *name,
+	int context,
+	guint msgid
+	)
+	{
+	if (msgid == 0)
+		return;
+	GtkWidget *sbar = glade_xml_get_widget(app_xml, name);
+	if (sbar)
+		return gtk_statusbar_remove(GTK_STATUSBAR(sbar),context,msgid);
 	}
 
 /*
