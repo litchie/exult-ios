@@ -2428,8 +2428,13 @@ int Usecode_internal::run()
 					FLAG_ERROR(offset);
 				}
 				gflags[offset] = (unsigned char) popi();
-				if (gflags[offset])
+				if (gflags[offset]) {
 					Notebook_gump::add_gflag_text(offset);
+#ifdef DEBUG
+					cout << "Setting global flag: "
+							<< offset << endl;
+#endif
+				}
 				// ++++KLUDGE for Monk Isle:
 				if (offset == 0x272 && Game::get_game_type() ==
 					SERPENT_ISLE)
