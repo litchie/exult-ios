@@ -556,7 +556,7 @@ void Barge_object::done
 		Game_object *obj = get_object(i);
 		Npc_actor *npc = dynamic_cast<Npc_actor *>(obj);
 					// Reactivate non-party NPC's scheds.
-		if (npc && npc->get_party_id() < 0)
+		if (npc && !npc->is_in_party())
 			{
 			npc->update_schedule(gwin, gwin->get_hour()/3, 7);
 					// Nothing happened?  Monster?

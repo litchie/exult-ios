@@ -129,7 +129,6 @@ class Usecode_internal : public Usecode_machine
 	void set_item_frame(Game_object *item, int frame, int check_empty = 0,
 							int set_rotated = 0);
 	void remove_item(Game_object *obj);
-	int npc_in_party(Game_object *npc);
 	Usecode_value get_party();
 	void item_say(Usecode_value& objval, Usecode_value& strval);
 	void activate_cached(Tile_coord pos);

@@ -343,8 +343,7 @@ static int Check_mask
 			{
 			if (!(mask&0x40))	// Guess:  Inv. party member.
 				return 0;
-			if (obj != gwin->get_main_actor() && 
-						obj->get_party_id() < 0)
+			if (!obj->get_flag(Obj_flags::in_party))
 				return 0;
 			}
 	return 1;			// Passed all tests.

@@ -297,7 +297,7 @@ static bool Check_weight
 	if (!owner)
 		return true;
 	owner = owner->get_outermost();
-	if (owner != gwin->get_main_actor() && owner->get_party_id() < 0)
+	if (!owner->get_flag(Obj_flags::in_party))
 		return true;		// Not a party member, so okay.
 	int wt = owner->get_weight() + to_drop->get_weight();
 	if (wt/10 > owner->get_max_weight())

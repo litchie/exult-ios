@@ -264,13 +264,6 @@ public:
 	virtual int get_siflag(int flag) const { return 0; }
 	virtual int get_type_flag(int flag) const { return 0; }
 
-	virtual unsigned char get_ident() { return 0; }
-	virtual void set_ident(unsigned char id) {  }
-
-	virtual int get_party_id() const// Get/set index within party.
-		{ return -1; }
-	virtual void set_party_id(int i)
-		{  }
 					// Set for Usecode animations.
 	virtual void set_usecode_dir(int d)
 		{  }

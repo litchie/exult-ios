@@ -120,8 +120,7 @@ void Combat_schedule::find_opponents
 	Actor_queue nearby;			// Get all nearby NPC's.
 	gwin->get_nearby_npcs(nearby);
 					// See if we're a party member.
-	bool in_party = (npc == gwin->get_main_actor() ||
-					npc->get_party_id() >= 0);
+	bool in_party = npc->is_in_party();
 	for (Actor_queue::const_iterator it = nearby.begin(); 
 						it != nearby.end(); ++it)
 	{
@@ -139,13 +138,12 @@ void Combat_schedule::find_opponents
 		else if (in_party)
 			{		// Attacking party member?
 			Game_object *t = actor->get_target();
-			if (t && (t == gwin->get_main_actor() ||
-						t->get_party_id() >= 0))
+			if (t && t->get_flag(Obj_flags::in_party))
 				opponents.push(actor);
 			}
 	}
 					// None found?  Use Avatar's.
-	if (opponents.empty() && npc->get_party_id() >= 0 &&
+	if (opponents.empty() && npc->is_in_party() &&
 	    npc != gwin->get_main_actor())
 	{
 		Game_object *opp = gwin->get_main_actor()->get_target();
@@ -165,7 +163,7 @@ Actor *Combat_schedule::find_protected_attacker
 	(
 	)
 	{
-	if (npc->get_party_id() < 0)	// Not in party?
+	if (!npc->is_in_party())	// Not in party?
 		return 0;
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *party[9];		// Get entire party, including Avatar.
@@ -523,8 +521,7 @@ void Combat_schedule::start_strike
 					// Have them attack back.
 	Actor *opp = dynamic_cast<Actor *> (opponent);
 					// But not if it's a party member.
-	if (opp && !opp->get_target() && opp != gwin->get_main_actor() &&
-	    opp->get_party_id() < 0)
+	if (opp && !opp->get_target() && !opp->is_in_party())
 		opp->set_target(npc, 
 				npc->get_schedule_type() != Schedule::duel);
 	}

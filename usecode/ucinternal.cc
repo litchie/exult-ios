@@ -749,18 +749,6 @@ void Usecode_internal::remove_item
 #define PARTY_MAX (sizeof(party)/sizeof(party[0]))
 
 /*
- *	Is an NPC in the party?
- */
-
-int Usecode_internal::npc_in_party
-	(
-	Game_object *npc
-	)
-	{
-	return (npc && npc->get_party_id() >= 0);
-	}
-
-/*
  *	Return an array containing the party, with the Avatar first.
  */
 
@@ -2506,7 +2494,7 @@ bool Usecode_internal::add_to_party
 	)
 	{
 	const int maxparty = sizeof(party)/sizeof(party[0]);
-	if (!npc || party_count == maxparty || npc->get_party_id() >= 0)
+	if (!npc || party_count == maxparty || npc->is_in_party())
 		return false;
 	remove_from_dead_party(npc);	// Just to be sure.
 	npc->set_party_id(party_count);
