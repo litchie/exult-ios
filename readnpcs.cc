@@ -62,9 +62,15 @@ void Game_window::read_npcs
 	if (u7open(nfile, MONSNPCS, 1))	// Monsters.
 		{			// (Won't exist the first time.)
 		int cnt = Read2(nfile);
-		while (cnt--)
+		char tmp = Read1(nfile);// Read 1 ahead to test.
+		int okay = nfile.good();
+		nfile.seekg(-1, ios::cur);
+		while (okay && cnt--)
 			{		// (Placed automatically.)
-			new Monster_actor(nfile, -1, 1);
+			Monster_actor *act = new Monster_actor(nfile, -1, 1);
+					// Watch for corrupted file.
+			if (get_shape_num_frames(act->get_shapenum()) < 16)
+				act->remove_this();
 			}
 		}
 	center_view(main_actor->get_abs_tile_coord());
@@ -151,12 +157,15 @@ int Game_window::write_npcs
 		}
 					// Start with count.
 	int cnt = Monster_actor::get_num_in_world();
+	if (cnt < 0)			// Watch for messed-up count.
+		cnt = 0;
 	Write2(nfile, cnt);
 	for (Monster_actor *mact = Monster_actor::get_first_in_world();
 					mact; mact = mact->get_next_in_world())
-		mact->write(nfile);
+		mact->write(nfile);	// (Dead ones don't get written.)
 	nfile.flush();
 	result = nfile.good();
+	nfile.close();
 	if (!result)			// ++++Better error system needed??
 		{
 		cerr << "Exult:  Error writing '" << MONSNPCS << "'"<<endl;
