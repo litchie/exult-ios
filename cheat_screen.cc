@@ -31,13 +31,12 @@
 #endif
 #include "actors.h"
 #include "cheat.h"
+#include "exult.h"
 #include "imagewin.h"
 #include "vgafile.h"
 #include "gameclk.h"
 #include "schedule.h"
 #include "ucmachine.h"
-
-extern void make_screenshot(bool silent=false);
 
 const char *CheatScreen::schedules[33] = {
 	"Combat",

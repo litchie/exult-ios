@@ -38,6 +38,8 @@
 
 using std::rand;
 
+bool Bg_dont_wake(Game_window *gwin, Actor *npc);
+
 /*
  *	Add an npc to the time queue.
  */

@@ -29,13 +29,13 @@
 #include "SDL_mapping.h"
 
 #include "Audio.h"
-#include "conv.h"
 #include "Configuration.h"
+#include "Flex.h"
+#include "conv.h"
+#include "exult.h"
 #include "fnames.h"
 #include "game.h"
-#include "Flex.h"
 #include "utils.h"
-extern	Configuration *config;
 
 #if !defined(ALPHA_LINUX_CXX)
 #  include <csignal>

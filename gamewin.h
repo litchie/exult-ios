@@ -33,7 +33,6 @@
 #include "gameclk.h"
 
 #include <string>	// STL string
-//#include <vector>	// STL container
 #include "vec.h"
 
 class Actor;
@@ -60,6 +59,7 @@ class Deleted_objects;
 class Gump_manager;
 struct SaveGame_Details;
 struct SaveGame_Party;
+
 /*
  *	The main game window:
  */

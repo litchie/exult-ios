@@ -40,13 +40,16 @@
 #endif
 
 #include "Gump.h"
+#include "Gump_manager.h"
 #include "Text_gump.h"
 #include "animate.h"
 #include "barge.h"
 #include "chunks.h"
 #include "conversation.h"
+#include "exult.h"
 #include "game.h"
 #include "gamewin.h"
+#include "keyring.h"
 #include "mouse.h"
 #include "schedule.h"
 #include "tqueue.h"
@@ -55,8 +58,6 @@
 #include "useval.h"
 #include "utils.h"
 #include "vec.h"
-#include "keyring.h"
-#include "Gump_manager.h"
 
 using std::cerr;
 using std::cout;
@@ -84,9 +85,7 @@ using std::vector;
 
 // External globals..
 
-extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 extern	bool intrinsic_trace,usecode_trace,usecode_debugging;
-extern void Wait_for_arrival(Actor *actor, Tile_coord dest, long maxticks = 0);
 
 #if USECODE_DEBUGGER
 std::vector<int> intrinsic_breakpoints;

@@ -51,6 +51,16 @@ class Usecode_value;
 #include "vec.h"	// Includes STL vector.
 #include <string>	// STL string
 
+/*
+ *	Recursively look for a barge that an object is a part of, or on.
+ *
+ *	Output:	->barge if found, else 0.
+ */
+
+Barge_object *Get_barge
+	(
+	Game_object *obj
+	);
 
 #define	USECODE_INTRINSIC_DECL(NAME)	Usecode_value UI_## NAME (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 

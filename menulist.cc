@@ -21,12 +21,11 @@
 #endif
 
 #include "menulist.h"
+#include "exult.h"
 #include "font.h"
 #include "gamewin.h"
 #include "mouse.h"
 #include "rect.h"
-
-void make_screenshot(bool silent = false);
 
 // MenuEntry: a selectable menu entry (a button)
 MenuEntry::MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos)

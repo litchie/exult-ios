@@ -25,13 +25,12 @@
 #include "gamewin.h"
 #include "game.h"
 #include "browser.h"
+#include "exult.h"
 #include "font.h"
 #include "items.h"
 
 using std::snprintf;
 
-extern void make_screenshot(bool silent=false);
-	
 ShapeBrowser::ShapeBrowser()
 	{
 		num_shapes = 0;

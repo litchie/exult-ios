@@ -1,20 +1,20 @@
 /*
-Copyright (C) 2000 The Exult Team
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *  Copyright (C) 2000-2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL_events.h"
 
 #include "exceptions.h"
+#include "exult.h"
 #include "gamewin.h"
 #include "gump_utils.h"
 #include "Modal_gump.h"
@@ -39,11 +40,6 @@ using std::endl;
 using std::toupper;
 using std::snprintf;
 
-extern Game_window *gwin;	// from exult.cc - FIX ME!!!
-extern unsigned char quitting_time;	// from exult.cc - FIX ME!!!
-
-void make_screenshot(bool silent = false);
-
 /*
  *	Verify user wants to quit.
  *
@@ -52,7 +48,7 @@ void make_screenshot(bool silent = false);
 int Okay_to_quit()
 {
 	if (Yesno_gump::ask("Do you really want to quit?"))
-		quitting_time = 1;
+		quitting_time = QUIT_TIME_YES;
 	return quitting_time;
 }
 

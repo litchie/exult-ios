@@ -29,28 +29,29 @@
 #  include <cstring>
 #endif
 #include <algorithm>		/* swap. */
-#include "gamewin.h"
-#include "actors.h"
-#include "imagewin.h"
-#include "ucmachine.h"
-#include "actions.h"
-#include "ready.h"
-#include "combat.h"
-#include "Zombie.h"
 #include "Astar.h"
-#include "dir.h"
-#include "items.h"
-#include "egg.h"
-#include "chunks.h"
-#include "bodies.h"
 #include "Audio.h"
-#include "npctime.h"
-#include "game.h"
-#include "cheat.h"
-#include "frameseq.h"
-#include "Paperdoll_gump.h"
-#include "animate.h"
 #include "Gump_manager.h"
+#include "Paperdoll_gump.h"
+#include "Zombie.h"
+#include "actions.h"
+#include "actors.h"
+#include "animate.h"
+#include "bodies.h"
+#include "cheat.h"
+#include "chunks.h"
+#include "combat.h"
+#include "dir.h"
+#include "egg.h"
+#include "exult.h"
+#include "frameseq.h"
+#include "game.h"
+#include "gamewin.h"
+#include "imagewin.h"
+#include "items.h"
+#include "npctime.h"
+#include "ready.h"
+#include "ucmachine.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -784,8 +785,6 @@ int Actor::approach_another
 	bool wait			// If true, game hangs until arrival.
 	)
 	{
-	extern void Wait_for_arrival(Actor *actor, Tile_coord dest,
-							long maxticks);
 	Tile_coord startdest = other->get_abs_tile_coord();
 	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
 	for (int i = 2; dest.tx == -1 && i < 8; i++)
@@ -1551,7 +1550,6 @@ void Actor::update_from_studio
 	Game_window *gwin = Game_window::get_game_window();
 	if (!npc)			// Create a new one?
 		{
-		extern int Get_click(int&, int&, Mouse::Mouse_shapes, char *);
 		int x, y;
 		if (!Get_click(x, y, Mouse::hand, 0))
 			{

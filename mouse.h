@@ -53,6 +53,21 @@ protected:
 	void Init();
 
 public:
+	enum Mouse_shapes		// List of shapes' frame #'s.
+	{
+		dontchange = 1000,	// Flag to not change.
+		hand = 0,
+		redx = 1,
+		greenselect = 2,	// For modal select.
+		tooheavy = 3,
+		outofrange = 4,
+		outofammo = 5,
+		wontfit = 6,
+		hourglass = 7,
+		greensquare = 23,
+		blocked = 49
+	};
+
 	// Avatar speed (frame delay in 1/1000 secs.)
 	enum Avatar_Speeds
 	{
@@ -69,19 +84,6 @@ public:
 	Mouse(Game_window *gw, DataSource& shapes);
 	~Mouse();
 	
-	enum Mouse_shapes {		// List of shapes' frame #'s.
-		dontchange = 1000,	// Flag to not change.
-		hand = 0,
-		redx = 1,
-		greenselect = 2,	// For modal select.
-		tooheavy = 3,
-		outofrange = 4,
-		outofammo = 5,
-		wontfit = 6,
-		hourglass = 7,
-		greensquare = 23,
-		blocked = 49
-		};
 	void show();			// Paint it.
 	void hide()			// Restore area under mouse.
 		{

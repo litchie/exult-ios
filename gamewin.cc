@@ -34,18 +34,26 @@
 #  include <cstdarg>
 #  include <cstdio>
 #endif
+
 #include "Astar.h"
 #include "Audio.h"
 #include "Configuration.h"
+#include "Flex.h"
+#include "Gump.h"
+#include "Gump_manager.h"
 #include "actions.h"
 #include "actors.h"
 #include "animate.h"
 #include "barge.h"
+#include "bodies.h"
+#include "cheat.h"
 #include "chunks.h"
 #include "chunkter.h"
+#include "delobjs.h"
 #include "dir.h"
 #include "effects.h"
 #include "egg.h"
+#include "exult.h"
 #include "files/U7file.h"
 #include "flic/playfli.h"
 #include "fnames.h"
@@ -53,6 +61,8 @@
 #include "game.h"
 #include "gamewin.h"
 #include "items.h"
+#include "jawbone.h"
+#include "keys.h"
 #include "mouse.h"
 #include "npcnear.h"
 #include "objiter.h"
@@ -61,17 +71,9 @@
 #include "segfile.h"
 #include "spellbook.h"
 #include "ucmachine.h"
+#include "ucsched.h"			/* Only used to flush objects. */
 #include "utils.h"
 #include "virstone.h"
-#include "jawbone.h"
-#include "delobjs.h"
-#include "Flex.h"
-#include "Gump.h"
-#include "Gump_manager.h"
-#include "keys.h"
-#include "ucsched.h"			/* Only used to flush objects. */
-
-#include "cheat.h"
 
 using std::cerr;
 using std::cout;
@@ -92,8 +94,6 @@ using std::srand;
 using std::vector;
 using std::snprintf;
 
-extern KeyBinder* keybinder;
-extern Configuration *config;
 					// THE game window:
 Game_window *Game_window::game_window = 0;
 
@@ -1099,30 +1099,6 @@ void Game_window::get_ireg_objects
 		if (Game_object::find_nearby(vec, Tile_coord(2936, 2726, 0),
 					787, 0, 0, c_any_qual, 5))
 			vec[0]->move(2937, 2727, 2);
-		}
-	}
-
-/*
- *	Recognize dead body shapes.  +++++++Hopefully, there's a better way.
- */
-
-int Is_body
-	(
-	int shapeid
-	)
-	{
-	switch (shapeid)
-		{
-	case 400:
-	case 414:
-	case 762:
-	case 778:
-	case 892:
-		return 1;
-	case 402:
-		return Game::get_game_type() == SERPENT_ISLE;
-	default:
-		return 0;
 		}
 	}
 
