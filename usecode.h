@@ -173,7 +173,7 @@ class Usecode_machine
 		{
 		UsecodeIntrinsicFn	func;
 		const char *name;
-		} intrinsic_table[];
+		} intrinsic_table[], serpent_table[];
 	Usecode_value	Execute_Intrinsic(UsecodeIntrinsicFn func,const char *name,int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 	USECODE_INTRINSIC_DECL(NOP);
 	USECODE_INTRINSIC_DECL(UNKNOWN);
