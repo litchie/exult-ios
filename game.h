@@ -73,7 +73,7 @@ public:
 	Game_window *gwin;
 	Image_window8 *win;
 	Image_buffer8 *ibuf;
-	Palette pal;
+	//	Palette pal;
 
 	Game();
 	virtual ~Game();

@@ -818,13 +818,13 @@ void SI_Game::top_menu()
 {
 	play_midi(28, true);
 	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-	pal.load(MAINSHP_FLX,26);
-	pal.fade_in(60);	
+	pal->load(MAINSHP_FLX,26);
+	pal->fade_in(60);	
 }
 
 void SI_Game::show_journey_failed()
 {
-	pal.fade_out(50);
+    pal->fade_out(50);
 	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	journey_failed_text();
 }
@@ -1216,7 +1216,7 @@ void SI_Game::show_quotes()
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)
 			    );
-		quotes.run(gwin,pal);
+		quotes.run(gwin);
 	}
 
 void SI_Game::show_credits()
@@ -1226,7 +1226,7 @@ void SI_Game::show_credits()
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)
 			    );
-		if(credits.run(gwin,pal)) {	// Watched through the entire sequence?
+		if(credits.run(gwin)) {	// Watched through the entire sequence?
 			std::ofstream quotesflg;
 			U7open(quotesflg, "<SAVEGAME>/quotes.flg");
 			quotesflg.close();
@@ -1269,7 +1269,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 			else
 				snprintf(disp_name, max_len+2, "%s", npc_name);
 			font->draw_text(ibuf, topx+60, menuy+10, disp_name);
-			pal.apply();
+			pal->apply();
 			redraw = false;
 		}
 		SDL_WaitEvent(&event);
@@ -1378,7 +1378,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 		set_avname (npc_name);
 		set_avsex (1-(sex%2));
 		set_avskin (sex/2);
-		pal.fade_out(c_fade_out_time);
+		pal->fade_out(c_fade_out_time);
 		gwin->clear_screen(true);	
 		ok = gwin->init_gamedat(true);
 	}

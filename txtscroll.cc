@@ -164,7 +164,7 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 }
 
 
-bool TextScroller::run(Game_window *gwin, Palette& pal)
+bool TextScroller::run(Game_window *gwin)
 {
 	gwin->clear_screen();
 	gwin->show(1);
@@ -180,7 +180,8 @@ bool TextScroller::run(Game_window *gwin, Palette& pal)
 	SDL_Event event;
 	uint32 next_time = SDL_GetTicks() + 200;
 	uint32 incr = 120;
-	pal.apply();
+	//	pal.apply();
+	gwin->get_pal()->apply();
 
 	while(looping) {
 		int ypos = starty;
@@ -227,7 +228,7 @@ bool TextScroller::run(Game_window *gwin, Palette& pal)
 		} while (next_time > SDL_GetTicks());
 		next_time = SDL_GetTicks() + incr;
 		if(!looping)
-			pal.fade_out(c_fade_out_time);
+			gwin->get_pal()->fade_out(c_fade_out_time);
 		starty--;
 	}
 	gwin->clear_screen();
