@@ -71,7 +71,7 @@ int Text_gump::paint_page
 	const int font = serpentine?8:4;	// Black.
 	const int vlead = 1;		// Extra inter-line spacing.
 	int ypos = 0;
-	int textheight = gwin->get_text_height(font) + vlead;
+	int textheight = sman->get_text_height(font) + vlead;
 	char *str = text + start;
 	while (*str && *str != '*' && ypos + textheight <= box.h)
 	{
@@ -91,7 +91,7 @@ int Text_gump::paint_page
 			eol = text + textlen;
 		char eolchr = *eol;	// Save char. at EOL.
 		*eol = 0;
-		int endoff = gwin->paint_text_box(font, str, x + box.x,
+		int endoff = sman->paint_text_box(font, str, x + box.x,
 				y + box.y + ypos, box.w, box.h - ypos, vlead);
 		*eol = eolchr;		// Restore char.
 		if (endoff > 0)		// All painted?

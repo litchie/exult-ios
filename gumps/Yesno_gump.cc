@@ -109,8 +109,8 @@ void Yesno_gump::paint
 	yes_button->paint();
 	no_button->paint();
 					// Paint text.
-	gwin->paint_text_box(2, text.c_str(), x + object_area.x, y + object_area.y,
-			object_area.w, object_area.h, 2);
+	sman->paint_text_box(2, text.c_str(), x + object_area.x, 
+			y + object_area.y, object_area.w, object_area.h, 2);
 	gwin->set_painted();
 }
 

@@ -507,9 +507,9 @@ void Paperdoll_gump::paint
 	int weight = container->get_weight()/10;
 	char text[20];
 	snprintf(text, 20, "%d/%d", weight, max_weight);
-	int twidth = gwin->get_text_width(2, text);
+	int twidth = sman->get_text_width(2, text);
 	const int boxw = 102;
-	gwin->paint_text(2, text, x + 84 - (twidth/2), y + 114);
+	sman->paint_text(2, text, x + 84 - (twidth/2), y + 114);
 }
 
 

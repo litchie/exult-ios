@@ -48,7 +48,6 @@ class Map_chunk;
 class Chunk_terrain;
 class Egg_object;
 class Font;
-class Fonts_vga_file;
 class Game_object;
 class Gump;
 class Gump_button;
@@ -104,7 +103,6 @@ class Game_window
 	bool teleported;		// true if just teleported.
 	unsigned int in_dungeon;	// true if inside a dungeon.
 	bool ice_dungeon;		// true if inside ice dungeon
-	Fonts_vga_file *fonts;		// "fonts.vga" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
 	Xform_palette invis_xform;	// For showing invisible NPC's.
@@ -487,19 +485,6 @@ public:
 	bool drag(int x, int y);	// During dragging.
 	bool drop_dragged(int x, int y, bool moved);// Done dragging.
 	bool is_dragging() const { return dragging != 0; }
-					// Paint text using "fonts.vga".
-	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
-		int h, int vert_lead = 0, int pbreak = 0, int shading = -1);
-	int paint_text(int fontnum, const char *text, int xoff, int yoff);
-	int paint_text(int fontnum, const char *text, int textlen, 
-							int xoff, int yoff);
-					// Get text width.
-	int get_text_width(int fontnum, const char *text);
-	int get_text_width(int fontnum, const char *text, int textlen);
-					// Get text height, baseline.
-	int get_text_height(int fontnum);
-	int get_text_baseline(int fontnum);
-	Font *get_font(int fontnum);
 	bool drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
 	bool init_gamedat(bool create); // Initialize gamedat directory
 					// Explode a savegame into "gamedat".

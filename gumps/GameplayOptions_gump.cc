@@ -309,18 +309,18 @@ void GameplayOptions_gump::paint()
 		if (buttons[i])
 			buttons[i]->paint();
 
-	gwin->paint_text(2, "Status Bars:", x + colx[0], y + rowy[0] + 1);
-	gwin->paint_text(2, "Text Background:", x + colx[0], y + rowy[1] + 1);
+	sman->paint_text(2, "Status Bars:", x + colx[0], y + rowy[0] + 1);
+	sman->paint_text(2, "Text Background:", x + colx[0], y + rowy[1] + 1);
 	if (GAME_BG)
-		gwin->paint_text(2, "Paperdolls:", x + colx[0], y + rowy[2] + 1);
+		sman->paint_text(2, "Paperdolls:", x + colx[0], y + rowy[2] + 1);
 	else if (GAME_SI)
-		gwin->paint_text(2, "Walk after Teleport:", x + colx[0], y + rowy[2] + 1);
-	gwin->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[3] + 1);
-	gwin->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
-	gwin->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
-	gwin->paint_text(2, "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
-	gwin->paint_text(2, "Cheats:", x + colx[0], y + rowy[7] + 1);
-	gwin->paint_text(2, "Speed:", x + colx[0], y + rowy[8] + 1);
+		sman->paint_text(2, "Walk after Teleport:", x + colx[0], y + rowy[2] + 1);
+	sman->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[3] + 1);
+	sman->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
+	sman->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
+	sman->paint_text(2, "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
+	sman->paint_text(2, "Cheats:", x + colx[0], y + rowy[7] + 1);
+	sman->paint_text(2, "Speed:", x + colx[0], y + rowy[8] + 1);
 	gwin->set_painted();
 }
 

@@ -293,9 +293,9 @@ void Actor_gump::paint
 	int weight = container->get_weight()/10;
 	char text[20];
 	snprintf(text, 20, "%d/%d", weight, max_weight);
-	int twidth = gwin->get_text_width(2, text);
+	int twidth = sman->get_text_width(2, text);
 	const int boxw = 102;
-	gwin->paint_text(2, text, x + 28 + (boxw - twidth)/2, y + 120);
+	sman->paint_text(2, text, x + 28 + (boxw - twidth)/2, y + 120);
 }
 
 Container_game_object * Actor_gump::find_actor(int mx, int my)
