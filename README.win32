@@ -27,7 +27,7 @@ To build in Windows using MinGW
 -----------------------------------
 (Thanks to Travis Howell)
 
-Download MinGW 1.0 or later from (for example):    (one line)
+Download MinGW 1.0 or later from:
 http://prdownloads.sourceforge.net/mingw/MinGW-1.1.tar.gz
 
 Extract the files to a mingw directory in root directory of drive
@@ -66,7 +66,7 @@ Unzip this file into the main directory of exult source code
 
 Open Command Prompt or MS-DOS Prompt
 
-Type 'PATH=drive:\mingw\bin;drive:\mingw\lib;%PATH%' where drive is the letter of the hard disk you installed mingw on to, without quotes to add mingw to the path
+Type 'PATH=drive:\mingw\bin;drive:\mingw\lib;%PATH%' where drive is the letter of the hard disk you installed MinGW on to, without quotes to add MinGW to the path
 (ie PATH=C:\mingw\bin;C:\mingw\lib;%PATH% )
 
 Change to the directory where you unpacked the Exult source code.
@@ -75,7 +75,7 @@ Change to the directory where you unpacked the Exult source code.
 Open makefile.win32 from the Exult directory in a text editor and change C:\\Ultima7 to the directory you want Exult to be installed to.
 (ie C:\\Games\\Ultima7 )
 
-Open makefile.studio.mingw from the Exult directory in a text editor and change C:\\Ultima7 to the directory you want Exult Studio to be installed to. 
+If you are compiling Exult Studio, open makefile.studio.mingw from the Exult directory in a text editor and change C:\\Ultima7 to the directory you want Exult Studio to be installed to. 
 (It must be the same directory that Exult is installed into to!)
 (ie C:\\Games\\Ultima7 )
 
@@ -84,7 +84,7 @@ Type 'make -f makefile.win32 install' without quotes to compile and install Exul
 Type 'make -f makefile.win32 toolsinstall' without quotes to compile and install the Exult Tools for Windows
 
 Type 'make_studio' without quotes to compile and install Exult Studio for Windows
-Then copy of the required library files (*.dll) from the lib directory of mingw to the installation directory of Exult Studio
+Then copy over the required library files (*.dll) from the lib directory of MinGW to the installation directory of Exult Studio
 
 Once compile has finished and been installed exit the Command Prompt or MS-DOS Prompt
 
