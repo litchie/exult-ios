@@ -55,10 +55,6 @@ AM_PROG_LEX
 AC_PROG_YACC
 AM_CONDITIONAL(LEXYACC, test -n "$YACC")
 
-dnl AC_CHECK_PROG(GIMPTOOL, gimptool, true, false)
-AC_CHECK_HEADERS(libgimp/gimp.h, GIMPTOOL=true, GIMPTOOL=false)
-AM_CONDITIONAL(HAVE_GIMPTOOL, $GIMPTOOL)
-AC_SUBST(HAVE_GIMPTOOL)
 
 echo "Wondering what our windowing system is... "
 
@@ -123,11 +119,6 @@ SDL_INCLUDES=`sdl-config --cflags`
 SDL_LIBS=`sdl-config --libs`
 AC_DEFINE(HAVE_SDL)
 AC_MSG_RESULT(Now we know lots about how SDL is installed locally)
-
-
-
-
-
 
 
 dnl this is for kmid
@@ -304,7 +295,23 @@ AC_C_INLINE
 if test x$CC = xgcc; then
    CFLAGS="$CFLAGS -Wall"
 fi     
-      
+
+AC_ARG_ENABLE(gimp-plugin, [  --disable-gimp-plugin          do not build the GIMP plugin [default no]],,disable_gimp_plugin=no)
+dnl Check for GIMP devel stuff. We need to check for glib first
+if test x$disable_gimp_plugin = xno; then
+	AC_PATH_PROG(GLIBCONFIG, glib-config)
+	if test -n "$GLIBCONFIG"; then
+		GLIB_INCLUDES=`glib-config --cflags`
+		save_cppflags="$CPPFLAGS"
+		CPPFLAGS="$CPPFLAGS $GLIB_INCLUDES"
+		AC_CHECK_HEADER(libgimp/gimp.h,GIMPTOOL=true,GIMPTOOL=false)
+		AM_CONDITIONAL(HAVE_GIMPTOOL, $GIMPTOOL)
+		AC_SUBST(HAVE_GIMPTOOL)
+		CPPFLAGS="$save_cppflags"
+		GIMP_PLUGIN_PREFIX=`gimptool --gimpplugindir`
+		AC_SUBST(GIMP_PLUGIN_PREFIX)
+	fi
+fi
 
 AC_OUTPUT(exult.spec \
 Makefile \
