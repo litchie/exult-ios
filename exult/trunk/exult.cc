@@ -438,13 +438,13 @@ static void Handle_events
 	unsigned char *stop
 	)
 	{
-	unsigned long last_repaint = 0;		// For insuring animation repaints.
+	unsigned long last_repaint = 0;	// For insuring animation repaints.
+	unsigned long last_rotate = 0;
 	/*
 	 *	Main event loop.
 	 */
 	while (!*stop)
 		{
-		int rotate = 0;		// 1 to rotate colors.
 		Delay();		// Wait a fraction of a second.
 
 		Mouse::mouse->hide();		// Turn off mouse.
@@ -464,7 +464,6 @@ static void Handle_events
 			{
 			gwin->paint_dirty();
 			last_repaint = ticks;
-			rotate = 1;
 			int x, y;// Check for 'stuck' Avatar.
 			if (!gwin->is_moving() &&
 			    !gwin->was_teleported())
@@ -482,11 +481,15 @@ static void Handle_events
 		if (show_mouse)
 			Mouse::mouse->show();	// Re-display mouse.
 
-		if (rotate)
+					// Rotate less often if scaling.
+		if (ticks > last_rotate + (100<<scale))
 			{		// (Blits in simulated 8-bit mode.)
 			gwin->get_win()->rotate_colors(0xf0, 4, 0);
 			gwin->get_win()->rotate_colors(0xe8, 8, 0);
 			gwin->get_win()->rotate_colors(0xe0, 8, 1);
+			last_rotate = ticks;
+			if (scale)	// Scaled requires explicit blit.
+				gwin->set_painted();
 			}
 		if (!gwin->show() &&	// Blit to screen if necessary.
 		    Mouse::mouse_update)	// If not, did mouse change?
