@@ -86,7 +86,7 @@ public:
 		};
 	GtkWidget *create_controls(int controls);
 					// Virtuals for controls.
-	virtual void search(char *srch, int dir)
+	virtual void search(const char *srch, int dir)
 		{  }
 	virtual void locate(bool upwards)// Locate terrain on game map.
 		{  }
@@ -96,7 +96,7 @@ public:
 
 					// File-selector utility:
 					// Callback for file-selector 'ok':
-typedef void (*File_sel_okay_fun)(char *, gpointer);
+typedef void (*File_sel_okay_fun)(const char *, gpointer);
 GtkFileSelection *Create_file_selection
 	(
 	const char *title,

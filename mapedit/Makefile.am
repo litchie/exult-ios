@@ -1,15 +1,13 @@
 INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes \
 	-I$(srcdir)/../imagewin -I$(srcdir)/../conf \
 	-I$(srcdir)/../files -I$(srcdir)/../server \
-	$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
+	$(GLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
 if GIMP_PLUGIN
 GIMP_PLUGINS=u7shp
 else
 GIMP_PLUGINS=
 endif
-
-GTK_LIBS = @GTK_LIBS@
 
 if BUILD_STUDIO
 bin_PROGRAMS = exult_studio 
@@ -25,8 +23,6 @@ exult_studio_SOURCES = \
 	combo.cc \
 	combo.h \
 	compile.cc \
-	dirbrowser.cc \
-	dirbrowser.h \
 	eggedit.cc \
 	execbox.h \
 	execbox.cc \
@@ -60,8 +56,7 @@ exult_studio_LDADD = \
 	../imagewin/libimagewin.la	\
 	../shapes/libshapes.la 		\
 	../server/libserver.la		\
-	-lpng $(GTK_LIBS) $(FREETYPE2_LIBS) $(SYSLIBS) $(x_libraries) \
-	$(LIBGLADE_LIBS)
+	-lpng $(FREETYPE2_LIBS) $(SYSLIBS) $(x_libraries) $(GLADE_LIBS)
 
 exult_studio_CFLAGS = $(LIBGLADE_INCLUDES)
 
@@ -70,7 +65,7 @@ mapeditdir = $(datadir)/exult
 mapedit_DATA = exult_studio.glade
 
 u7shp$(EXEEXT): u7shp.c
-	gimptool --build $<
+	$(GIMPTOOL) --build $<
 
 EXTRA_DIST=	\
 	exult_studio.glade \

@@ -617,32 +617,25 @@ else
 	AC_MSG_RESULT(yes)
 fi
 
-# GTK stuff
-AC_MSG_CHECKING(for GTK development files)
-if test "x`gtk-config --version`" = "x"; then
-	have_gtk=no
-	AC_MSG_RESULT(no gtk)
+# pkg-config
+AC_MSG_CHECKING(for pkg-config)
+if test "x`pkg-config --version`" = "x"; then
+	AC_MSG_RESULT(no pkg-config)
 else
-	have_gtk=yes
-	AC_MSG_RESULT(yes..)
-	AC_PATH_PROG(GTKCONFIG, gtk-config)
-	AC_DEFINE(HAVE_GTK, 1, [Have GTK])
-	GTK_INCLUDES=`gtk-config --cflags`
-	GTK_LIBS=`gtk-config --libs`
-	AC_SUBST(GTK_INCLUDES)
-	AC_SUBST(GTK_LIBS)
-fi
-
-
-AC_PATH_PROG(GLADECONFIG, libglade-config)
-if test -n "$GLADECONFIG"; then
-	have_libglade=yes
-	LIBGLADE_LIBS=`libglade-config --libs`
-	AC_SUBST(LIBGLADE_LIBS)
-	LIBGLADE_INCLUDES=`libglade-config --cflags`
-	AC_SUBST(LIBGLADE_INCLUDES)
-else
-	have_libglade=no
+	AC_MSG_RESULT(ok)
+	AC_MSG_CHECKING(for GTK+/GLADE development files)
+	if pkg-config --atleast-version 2.0 libglade-2.0; then
+		have_glade=yes
+		AC_MSG_RESULT(yes...)
+		AC_DEFINE(HAVE_GLADE, 1, [Have Glade support libraries])
+		GLADE_INCLUDES=`pkg-config --cflags libglade-2.0`
+		GLADE_LIBS=`pkg-config --libs libglade-2.0`
+		AC_SUBST(GLADE_INCLUDES)
+		AC_SUBST(GLADE_LIBS)
+	else
+		have_glade=no
+		AC_MSG_RESULT(no gtk+/libglade)
+	fi
 fi
 
 # Freetype2 (optional, used in ExultStudio, shapes/fontgen.cc)
@@ -660,16 +653,11 @@ AC_ARG_ENABLE(exult-studio, [  --enable-exult-studio   Build Exult Studio [defau
 AC_MSG_CHECKING(whether to build Exult Studio)
 if test x$enable_exult_studio = xyes; then
 	AC_MSG_RESULT(yes)
-	if test x$have_libglade = xno; then
+	if test x$have_glade = xno; then
 		echo "Umm, but we don't have any libglade stuff."
 		echo "Try again, either with libglade, or with --disable-exult-studio"
 		exit 1
 	fi
-	if test x$have_gtk = xno; then
-		echo "GTK not found."
-		echo "Try again, either with gtk, or with --disable-exult-studio"
-		exit 1
-	fi 
 	AM_CONDITIONAL(BUILD_STUDIO, true)
 else
 	AM_CONDITIONAL(BUILD_STUDIO, false)
@@ -680,8 +668,6 @@ fi
 AC_PATH_PROG(GNOMECONFIG, gnome-config)
 if test -n "$GNOMECONFIG"; then
 	AM_CONDITIONAL(GNOME_INSTALLED, true)
-#	GNOMEDATADIR=`gnome-config --datadir`
-#	AC_SUBST(GNOMEDATADIR)
 else
 	AM_CONDITIONAL(GNOME_INSTALLED, false)
 fi
@@ -690,37 +676,30 @@ fi
 AM_CONDITIONAL(GIMP_PLUGIN, false)
 AC_ARG_ENABLE(gimp-plugin,   [  --enable-gimp-plugin    Build the GIMP plugin [default no]],,enable_gimp_plugin=no)
 AC_MSG_CHECKING(whether to build the GIMP plugin)
-# Check for GIMP devel stuff. We need to check for glib first
 if test x$enable_gimp_plugin = xyes; then
 	AC_MSG_RESULT(yes)
-	AC_PATH_PROG(GLIBCONFIG, glib-config)
-	if test -n "$GLIBCONFIG"; then
-		GLIB_INCLUDES=`glib-config --cflags`
-		save_cppflags="$CPPFLAGS"
-		CPPFLAGS="$CPPFLAGS $GLIB_INCLUDES"
-		if test -z "$GTK_INCLUDES"; then
-			GTK_INCLUDES=`gtk-config --cflags`
-			AC_SUBST(GTK_INCLUDES)
-		fi
-		AC_CHECK_HEADER(libgimp/gimp.h,GIMP_H=true)
-		if test -n "$GIMP_H"; then
-			AC_MSG_CHECKING(for GIMP version)
-			gimp_version=`gimptool --version |  awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2*100+$3;}'`
-			if test "$gimp_version" -ge 1126; then
-				AC_MSG_RESULT(found >= 1.1.26)
-				AM_CONDITIONAL(GIMP_PLUGIN, true)
-				CPPFLAGS="$save_cppflags"
-				GIMP_PLUGIN_PREFIX=`gimptool --gimpplugindir`
-				GIMP_PLUGIN_PREFIX="$GIMP_PLUGIN_PREFIX/plug-ins"
-				AC_SUBST(GIMP_PLUGIN_PREFIX)
-				AC_DEFINE(HAVE_GIMP, 1, [Have GIMP])
-				GIMP_INCLUDES=`gimptool --cflags`
-				GIMP_LIBS=`gimptool --libs`
-				AC_SUBST(GIMP_INCLUDES)
-				AC_SUBST(GIMP_LIBS)
-			else
-				AC_MSG_RESULT(found < 1.1.26 - disabling plugin)
-			fi
+	AC_MSG_CHECKING(for gimptool)
+	AC_CHECK_PROGS(GIMPTOOL, gimptool-1.3 gimptool)
+	if test -z "$GIMPTOOL"; then
+		AC_MSG_RESULT(no, not building GIMP plugin)
+	else
+		AC_MSG_CHECKING(for GIMP version)
+		gimp_version=`$GIMPTOOL --version |  awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2*100+$3;}'`
+		if test "$gimp_version" -ge 1312; then
+			AC_MSG_RESULT(found >= 1.3.12)
+			AC_SUBST(GIMPTOOL)
+			AM_CONDITIONAL(GIMP_PLUGIN, true)
+			CPPFLAGS="$save_cppflags"
+			GIMP_PLUGIN_PREFIX=`$GIMPTOOL --gimpplugindir`
+			GIMP_PLUGIN_PREFIX="$GIMP_PLUGIN_PREFIX/plug-ins"
+			AC_SUBST(GIMP_PLUGIN_PREFIX)
+			AC_DEFINE(HAVE_GIMP, 1, [Have GIMP])
+			GIMP_INCLUDES=`$GIMPTOOL --cflags`
+			GIMP_LIBS=`$GIMPTOOL --libs`
+			AC_SUBST(GIMP_INCLUDES)
+			AC_SUBST(GIMP_LIBS)
+		else
+			AC_MSG_RESULT(found < 1.3.12 - disabling plugin)
 		fi
 	fi
 else
@@ -785,8 +764,11 @@ echo
 echo Exult v$VERSION
 echo
 echo SDL ....................... : `$SDL_CONFIG --version`
-if test x$havegtk = xyes; then
-echo GTK+ ...................... : `gtk-config --version`
+if test x$have_glade = xyes; then
+echo GLIB ...................... : `pkg-config --modversion glib-2.0`
+echo GTK+ ...................... : `pkg-config --modversion gtk+-2.0`
+echo libGlade .................. : `pkg-config --modversion libglade-2.0`
+echo 
 fi
 echo Build tools................ : $enable_tools
 echo Build ExultStudio.......... : $enable_exult_studio

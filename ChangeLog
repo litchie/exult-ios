@@ -61,6 +61,10 @@
 
 	* imagewin/scale.cc,etc.: Added Andrea Mazzoleni "Scale2X" scaler.
 
+2003-03-03  Tristan Tarrant <nadir@users.sourceforge.net>
+	* mapedit/studio.cc: implemented GtkTreeView stuff
+	* mapedit/exult_studio.glade: changes for above
+
 2003-02-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamerend.cc (using): Draw modal gumps after text.
@@ -70,6 +74,19 @@
 
 2003-02-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* conversation.cc: don't use BG multiracial hack if not in BG
+
+2003-02-25  Tristan Tarrant <nadir@users.sourceforge.net>
+	* Exult Studio compiles and runs with GTK+ 2.0. It doesn't work quite
+	  yet. I've ported GtkText to GtkTextView, but I still need to port to
+	  GtkTreeView instead of the awful GtkCTree
+	* mapedit/*: "gtk+ 2.0"-ification
+
+2003-02-25  Tristan Tarrant <nadir@users.sourceforge.net>
+	* configure.ac: use pkg-config to search for GLIB 2.0/GTK+ 2.0/LIBGLADE 2.0
+	                search for a gimptool >= 1.3.12
+	* usecode/compiler/Makefile.am: use AM_YFLAGS instead of YFLAGS
+	* mapedit/u7shp.c: ported to GIMP 1.3.x
+	* mapedit/Makefile.am: use $GIMPTOOL instead of gimptool
 
 2003-02-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.ac: renamed configure.in to configure.ac; updated for
