@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES **** V1.0 ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES **** V?.0 ****
 
 This is a list of all the U7 files I have studied while developping U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -30,6 +30,7 @@ Olivier Marcoux
 HISTORY
 
 1.0       First public release
+?.?       An ongoing voyage of discovery. We'll get back to you
 
 -----------------------------------------------------------------------
 DATA TYPES
@@ -396,6 +397,8 @@ LINKDEP2 = linked functions pointer list
 OCCLUDE.DAT = bit array (128 byte = $400 bit)
   one bit per game shape. set if the shape completely occludes the space
   it is covering (not sure?)
+U7VOICE.FLX = flex file with what we believe to be midi instrument voices.
+	The format for each voice is uncertain
 U7IFIXnn    = flex file with fixed items list
   (nn represents the region number.
    There are 16x16 lists in each file, one for each chunk in the region.
