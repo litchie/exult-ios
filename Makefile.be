@@ -4,12 +4,13 @@
 # Base of the exult source
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers
+VERSION=0.90alpha1
 
 ### Modify these paths
 SDL_INCLUDES=-I/boot/develop/tools/gnupro/include/SDL
 SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
-CPPFLAGS=-DVERSION=\"0.90alpha1\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
+CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
 	-DNO_INTRO -DAUTOCONFIGURED -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
 	$(SDL_INCLUDES)
@@ -83,10 +84,22 @@ Makefile: Makefile.be
 clean:
 	rm -f $(OBJS) $(EXEC) data/exult.flx tools/expack tools/expack.o
 
-install:
+finishedbinary: $(EXEC)
 	strip $(EXEC)
+	xres -o $(EXEC) beos/exult.rsrc
 
-run:
+run: $(EXEC)
 	./$(EXEC)
 
-
+bindist: finishedbinary
+	rm -rf exult-$(VERSION)
+	mkdir exult-$(VERSION)
+	mkdir exult-$(VERSION)/data
+	mkdir exult-$(VERSION)/doc
+	mkdir exult-$(VERSION)/lib
+	cp $(EXEC) exult-$(VERSION)
+	cp README README.BeOS COPYING NEWS AUTHORS ChangeLog exult-$(VERSION)/doc
+	cp data/exult.flx data/midisfx.flx exult-$(VERSION)/data
+	cp $(HOME)/lib/libSDL.so $(HOME)/lib/README-SDL.txt exult-$(VERSION)/lib
+	zip -r exult-$(VERSION).beos.zip exult-$(VERSION)
+	rm -rf exult-$(VERSION) 
