@@ -1327,7 +1327,8 @@ int XMIDI::ExtractTracks (DataSource *source)
 	config->value("config/audio/midi/volume_curve",s,"---");
 	if (s == "---") config->value("config/audio/midi/gamma",s,"1");
 	VolumeCurve.set_gamma (atof(s.c_str()));
-	std::snprintf (buf, 32, "%f", VolumeCurve.get_gamma ());
+	int igam = (int) ((VolumeCurve.get_gamma()*10000)+0.5);
+	std::snprintf (buf, 32, "%d.%04d", igam/10000, igam%10000);
 	config->set("config/audio/midi/volume_curve",buf,true);
 	
 

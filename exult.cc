@@ -1527,17 +1527,25 @@ void change_gamma (bool down)
 	gwin->set_palette (-1, -1);
 
 	// Message
+#ifdef HAVE_SNPRINTF
 	Image_window8::get_gamma(r, g, b);	
 	snprintf (text, 256, "Gamma Set to R: %01.2f G: %01.2f B: %01.2f", r, g, b);
+#else
+	strncpy (text, "Gamma Changed", 256);
+#endif
 	gwin->center_text(text);	
 
-	snprintf (text, 256, "%.2f", r);
+	int igam = (int) ((r*10000)+0.5);
+	snprintf (text, 256, "%d.%04d", igam/10000, igam%10000);
 	config->set("config/video/gamma/red", text, true);
-	snprintf (text, 256, "%.2f", g);
-	config->set("config/video/gamma/green", text, true);
-	snprintf (text, 256, "%.2f", b);
-	config->set("config/video/gamma/blue", text, true);
 
+	igam = (int) ((b*10000)+0.5);
+	snprintf (text, 256, "%d.%04d", igam/10000, igam%10000);
+	config->set("config/video/gamma/green", text, true);
+
+	igam = (int) ((g*10000)+0.5);
+	snprintf (text, 256, "%d.%04d", igam/10000, igam%10000);
+	config->set("config/video/gamma/blue", text, true);
 }
 
 void BuildGameMap()
