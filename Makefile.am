@@ -48,6 +48,8 @@ exult_SOURCES =	\
 	ready.h		\
 	segfile.cc	\
 	segfile.h	\
+	spells.cc	\
+	spells.h	\
 	tiles.h		\
 	tqueue.cc	\
 	tqueue.h	\

@@ -458,7 +458,7 @@ public:
 	void show_avatar_choices(vector<string> &choices);
 					// User clicked on a choice.
 	int conversation_choice(int x, int y);
-	void show_gump(Container_game_object *obj, int shapenum);
+	void show_gump(Game_object *obj, int shapenum);
 	void end_gump_mode();		// Remove gumps from screen.
 					// Remove a gump from screen.
 	void remove_gump(Gump_object *gump);

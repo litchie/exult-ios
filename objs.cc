@@ -1167,6 +1167,20 @@ int Spellbook_object::add_spell
 	}
 
 /*
+ *	Show book when double-clicked.
+ */
+
+void Spellbook_object::activate
+	(
+	Usecode_machine *umachine
+	)
+	{
+	int shnum = get_shapenum();
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->show_gump(this, 43);
+	}
+
+/*
  *	Write out.
  */
 
