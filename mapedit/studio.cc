@@ -85,6 +85,14 @@ on_open_static_activate                (GtkMenuItem     *menuitem,
 	ExultStudio::get_instance()->choose_static_path();
 }
 
+extern "C" void
+on_save_map_menu_activate              (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->write_map();
+}
+
+
 void on_choose_directory               (gchar *dir)
 {
 	ExultStudio::get_instance()->set_static_path(dir);
@@ -151,19 +159,6 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	app_xml = glade_xml_new(path, NULL);
 	app = glade_xml_get_widget( app_xml, "main_window" );
 
-	// Connect signals
-#if 0
-	GtkWidget *temp;
-	temp = glade_xml_get_widget( app_xml, "exit" );
-	gtk_signal_connect(GTK_OBJECT(temp), "activate",
-				GTK_SIGNAL_FUNC(gtk_main_quit), 0);
-	temp = glade_xml_get_widget( app_xml, "file_list" );
-	gtk_signal_connect(GTK_OBJECT(temp), "tree_select_row",
-			GTK_SIGNAL_FUNC(on_filelist_tree_select_row), this);
-	temp = glade_xml_get_widget( app_xml, "open_static" );
-	gtk_signal_connect(GTK_OBJECT(temp), "activate",
-			GTK_SIGNAL_FUNC(on_open_static_activate), this);
-#endif
 	// More setting up...
 					// Connect signals automagically.
 	glade_xml_signal_autoconnect(app_xml);
@@ -417,6 +412,18 @@ void ExultStudio::set_static_path(const char *path)
 	gtk_clist_thaw( GTK_CLIST( file_list ) );
 	connect_to_server();		// Connect to server with 'gamedat'.
 }
+
+/*
+ *	Write out map.
+ */
+
+void ExultStudio::write_map
+	(
+	)
+	{
+	if (Send_data(server_socket, Exult_server::write_map) == -1)
+		cerr << "Error sending to server" << endl;
+	}
 
 /*
  *	Get value of a toggle button (false if not found).

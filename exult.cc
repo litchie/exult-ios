@@ -1160,10 +1160,11 @@ static void Drop_dragged_shape
 					// Is it an ireg (changeable) obj?
 	bool ireg = (sclass != Shape_info::unusable &&
 		     sclass != Shape_info::building);
-	Game_object *newobj = ireg ? gwin->create_ireg_object(
-						info, shape, frame, 0, 0, 0)
-					//+++++++S.B. Ifix_game_object!!!
-			: new Game_object(shape, frame, 0, 0, 0);
+	Game_object *newobj;
+	if (ireg)
+		newobj = gwin->create_ireg_object(info, shape, frame, 0, 0, 0);
+	else
+		newobj = new Ifix_game_object(shape, frame, 0, 0, 0);
 					// First see if it's a gump.
 	Gump *on_gump = gwin->find_gump(x, y);
 	if (on_gump)
