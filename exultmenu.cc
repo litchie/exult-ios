@@ -171,15 +171,13 @@ void ExultMenu::setup()
 	int cancel_button = menu.add_entry(cancel);
 	
 	menu.set_selection(0);
-	gwin->clear_screen();
-	gwin->show(1);
+	gwin->clear_screen(true);
 	for(;;) {
 		pal.apply();
 		int entry = menu.handle_events(gwin,menu_mouse);
 		if(entry==ok_button) {
 			pal.fade_out(c_fade_out_time);
-			gwin->clear_screen();
-			gwin->show(1);
+			gwin->clear_screen(true);
 			// Scaling Method
 			if(scalemethod->get_choice()!=gwin->get_win()->get_scaler()) {
 				gwin->resized(
@@ -239,8 +237,7 @@ void ExultMenu::setup()
 			return;
 		} else if (entry==cancel_button) {
 			pal.fade_out(c_fade_out_time);
-			gwin->clear_screen();
-			gwin->show(1);
+			gwin->clear_screen(true);
 			return;
 		}
 	}
@@ -306,8 +303,7 @@ Exult_Game ExultMenu::run()
 						     fontManager.get_font("CREDITS_FONT"),
 						     exult_flx.extract_shape(0x13));
 				credits.run(gwin,pal);
-				gwin->clear_screen();
-				gwin->show(1);
+				gwin->clear_screen(true);
 				pal.apply();
 			}
 			break;
@@ -318,8 +314,7 @@ Exult_Game ExultMenu::run()
 						    fontManager.get_font("CREDITS_FONT"),
 			     			    exult_flx.extract_shape(0x13));
 				quotes.run(gwin,pal);
-				gwin->clear_screen();
-				gwin->show(1);
+				gwin->clear_screen(true);
 				pal.apply();
 			}
 			break;
@@ -329,8 +324,7 @@ Exult_Game ExultMenu::run()
 	} while(sel_game==NONE);
 	delete menu;
 	
-	gwin->clear_screen();
-	gwin->show(1);
+	gwin->clear_screen(true);
 	Audio::get_ptr()->stop_music();
 	delete menu_mouse;
 	delete midi_data;

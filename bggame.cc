@@ -173,6 +173,7 @@ BG_Game::~BG_Game()
 
 #define WAITDELAY(x) if (wait_delay(x)) { \
 			pal.fade_out(c_fade_out_time); \
+			gwin->clear_screen(true); \
 			delete backup; delete backup2; delete backup3; \
 			delete cbackup; delete cbackup2; delete cbackup3; \
 			delete noise; delete plasma; \
@@ -181,6 +182,7 @@ BG_Game::~BG_Game()
 
 #define WAITDELAYCYCLE(x) if (wait_delay((x), 16, 95)) { \
 			pal.fade_out(c_fade_out_time); \
+			gwin->clear_screen(true); \
 			delete backup; delete backup2; delete backup3; \
 			delete cbackup; delete cbackup2; delete cbackup3; \
 			return; \
@@ -188,11 +190,13 @@ BG_Game::~BG_Game()
 
 #define WAITDELAYCYCLE2(x) if (wait_delay((x), 250, 5)) { \
 			pal.fade_out(c_fade_out_time); \
+			gwin->clear_screen(true); \
 			return; \
 		     }
 
 #define WAITDELAYCYCLE3(x) if (wait_delay((x), 240, 15)) { \
 			pal.fade_out(c_fade_out_time); \
+			gwin->clear_screen(true); \
 			return; \
 		     }
 
@@ -208,6 +212,8 @@ void BG_Game::play_intro()
 	const char *txt_msg[] = { "with help from",
 			"The Exult Team", 
 			"Driven by Exult"};
+
+	gwin->clear_screen(true);
 
 	Audio::get_ptr()->stop_music();
 
@@ -233,9 +239,10 @@ void BG_Game::play_intro()
 	skip = wait_delay(2000);
 	play_midi(0);	// Start the birdsongs just before we fade
 	pal.fade_out(c_fade_out_time);
-	if(skip)
+	if(skip) {
+		gwin->clear_screen(true);
 		return;
-
+	}
 
 	// Ultima VII logo w/Trees
 	// sh. 0x12 = trees, sh. 0x0D = text, sh. 0x0E = butterfly
@@ -457,6 +464,7 @@ void BG_Game::play_intro()
 			win->show();
 			if(wait_delay(50, 16, 95)) {
 				pal.fade_out(c_fade_out_time);
+				gwin->clear_screen(true); \
 				delete [] txt;
 				delete backup; delete backup2; delete backup3;
 				delete cbackup; delete cbackup2; delete cbackup3;
@@ -501,6 +509,7 @@ void BG_Game::play_intro()
 		win->show();
 		if(wait_delay(70, 16, 95)) {
 			pal.fade_out(c_fade_out_time);
+			gwin->clear_screen(true); \
 			Audio::get_ptr()->cancel_streams();
 			delete backup; delete cbackup;
 			return;	
@@ -663,7 +672,7 @@ void BG_Game::play_intro()
 
 	// TODO: zoom (run) into moongate
 
-	gwin->clear_screen();
+	gwin->clear_screen(true);
 }
 	
 void BG_Game::top_menu()
@@ -714,7 +723,7 @@ void BG_Game::end_game(bool success)
 		pal.fade_in(c_fade_in_time);
 		wait_delay(4000);
 		pal.fade_out(c_fade_out_time);
-
+		gwin->clear_screen(true); \
 		return;
 	}
 
@@ -727,8 +736,7 @@ void BG_Game::end_game(bool success)
 	char	*fli_b[3];
 
 	// Clear screen
-	gwin->clear_screen();
-	win->show();
+	gwin->clear_screen(true);
 
 	U7object flic1(ENDGAME, 0);
 	U7object flic2(ENDGAME, 1);
@@ -767,7 +775,7 @@ void BG_Game::end_game(bool success)
 		next = fli1.play(win, 0, 1, next);
 		if (wait_delay (0))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -780,7 +788,7 @@ void BG_Game::end_game(bool success)
 		next = fli1.play(win, i, i+1, next);
 		if (wait_delay (0))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] buffer;
 			delete [] fli_b[0];
 			delete [] fli_b[1];
@@ -806,7 +814,7 @@ void BG_Game::end_game(bool success)
 		win->show();
 		if (wait_delay (0))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -834,7 +842,7 @@ void BG_Game::end_game(bool success)
 		win->show();
 		if (wait_delay (0))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -858,7 +866,7 @@ void BG_Game::end_game(bool success)
 		}
 		if (wait_delay (0))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -886,7 +894,7 @@ void BG_Game::end_game(bool success)
 	{
 		if (wait_delay (100))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -918,7 +926,7 @@ void BG_Game::end_game(bool success)
 	{
 		if (wait_delay (100))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -945,7 +953,7 @@ void BG_Game::end_game(bool success)
 		}
 		if (wait_delay (0))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -984,7 +992,7 @@ void BG_Game::end_game(bool success)
 			win->show ();
 			if (wait_delay (10))
 			{
-				gwin->clear_screen();
+				gwin->clear_screen(true);
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -1008,7 +1016,7 @@ void BG_Game::end_game(bool success)
 		}
 		if (wait_delay (0))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -1048,7 +1056,7 @@ void BG_Game::end_game(bool success)
 	{
 		if (wait_delay (100))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -1061,7 +1069,7 @@ void BG_Game::end_game(bool success)
 
 	if (wait_delay (10))
 	{
-		gwin->clear_screen();
+		gwin->clear_screen(true);
 		delete [] fli_b[0];
 		delete [] fli_b[1];
 		delete [] fli_b[2];
@@ -1096,7 +1104,7 @@ void BG_Game::end_game(bool success)
 	{
 		if (wait_delay (100))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -1110,7 +1118,7 @@ void BG_Game::end_game(bool success)
 
 	if (wait_delay (10))
 	{
-		gwin->clear_screen();
+		gwin->clear_screen(true);
 		delete [] fli_b[0];
 		delete [] fli_b[1];
 		delete [] fli_b[2];
@@ -1145,7 +1153,7 @@ void BG_Game::end_game(bool success)
 	{
 		if (wait_delay (100))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -1159,7 +1167,7 @@ void BG_Game::end_game(bool success)
 
 	if (wait_delay (10))
 	{
-		gwin->clear_screen();
+		gwin->clear_screen(true);
 		delete [] fli_b[0];
 		delete [] fli_b[1];
 		delete [] fli_b[2];
@@ -1193,7 +1201,7 @@ void BG_Game::end_game(bool success)
 	{
 		if (wait_delay (100))
 		{
-			gwin->clear_screen();
+			gwin->clear_screen(true);
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -1205,7 +1213,7 @@ void BG_Game::end_game(bool success)
 	gwin->fade_palette (50, 0, 0);
 
 
-	gwin->clear_screen();
+	gwin->clear_screen(true);
 	delete [] fli_b[0];
 	delete [] fli_b[1];
 	delete [] fli_b[2];

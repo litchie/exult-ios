@@ -265,6 +265,7 @@ void Game::show_menu()
 		case 0: // Intro
 			pal.fade_out(c_fade_out_time);
 			play_intro();
+			gwin->clear_screen(true);
 			top_menu();
 			break;
 		case 2: // Journey Onwards
@@ -304,8 +305,7 @@ void Game::show_menu()
 	} while(menu->get_selection()!=2);
 	pal.fade_out(c_fade_out_time);
 	delete menu;
-	gwin->clear_screen();
-	gwin->show(1);
+	gwin->clear_screen(true);
 	Audio::get_ptr()->stop_music();
 	delete menu_mouse;
 }
