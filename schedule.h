@@ -89,11 +89,6 @@ public:
 		{  }			//   being active to dormant.
 	virtual void ending(int newtype)// Switching to another schedule.
 		{  }
-					// Set opponent in combat.
-	virtual void set_opponent(Game_object *)
-		{  }
-	virtual Game_object *get_opponent()	// Get opponent.
-		{ return 0; }
 	};
 
 /*

@@ -1119,7 +1119,7 @@ USECODE_INTRINSIC(set_opponent)
 	Actor *npc = as_actor(get_item(parms[0]));
 	Game_object *opponent = get_item(parms[1]);
 	if (npc && opponent)
-		npc->set_opponent(opponent);
+		npc->set_target(opponent);
 	return (no_ret);
 }
 

@@ -51,7 +51,6 @@ protected:
 		} state;
 	Schedule_types prev_schedule;	// Before going into combat.
 	Actor_queue opponents;		// Possible opponents.
-	Game_object *opponent;		// Current opponent.
 	int weapon_shape;		// Weapon's shape in shapes.vga.
 	int ammo_shape;			// If required, else 0.
 	int projectile_shape;		// For shooting, else 0.
@@ -75,7 +74,7 @@ protected:
 public:
 	Combat_schedule(Actor *n, Schedule_types prev_sched) 
 		: Schedule(n), state(initial), prev_schedule(prev_sched),
-			opponent(0), weapon_shape(0),
+			weapon_shape(0),
 			ammo_shape(0), projectile_shape(0), 
 			strike_range(0), projectile_range(0), max_range(0),
 			is_thrown(false),
@@ -85,9 +84,6 @@ public:
 	virtual void now_what();	// Npc calls this when it's done
 	virtual void im_dormant();	// Npc calls this when it goes dormant.
 	virtual void ending(int newtype);// Switching to another schedule.
-					// Set opponent in combat.
-	virtual void set_opponent(Game_object *obj);
-	virtual Game_object *get_opponent();	// Get opponent.
 	};
 
 /*
