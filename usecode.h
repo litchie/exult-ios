@@ -346,6 +346,7 @@ public:
 	USECODE_INTRINSIC_DECL(get_container);
 	USECODE_INTRINSIC_DECL(remove_item);
 	USECODE_INTRINSIC_DECL(get_equipment_list);
+	USECODE_INTRINSIC_DECL(nap_time);
 	USECODE_INTRINSIC_DECL(advance_time);
 	USECODE_INTRINSIC_DECL(path_run_usecode);
 	USECODE_INTRINSIC_DECL(close_gumps);

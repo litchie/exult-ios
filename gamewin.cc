@@ -62,7 +62,8 @@ Game_window::Game_window
 	    main_actor(0), skip_above_actor(31), npcs(0),
 	    monster_info(0), 
 	    chunkx(64), chunky(136), 	// Start in Trinsic (BG).
-	    palette(-1), brightness(100), dragging(0), dragging_save(0),
+	    palette(-1), brightness(100), faded_out(0),
+	    dragging(0), dragging_save(0),
 	    skip_lift(16), paint_eggs(1), debug(0)
 	{
 	game_window = this;		// Set static ->.
@@ -1062,8 +1063,9 @@ void Game_window::paint_chunk_objects
 	{
 	Game_object *obj;
 	Chunk_object_list *olist = get_objects(cx, cy);
-	int save_skip = skip_lift;	// ++++Clean this stuff up.
-	skip_lift = skip_above_actor;
+	int save_skip = skip_lift;
+	if (skip_above_actor < skip_lift)
+		skip_lift = skip_above_actor;
 					// +++++Clear flag.
 	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
 		obj->rendered = 0;
@@ -1132,19 +1134,21 @@ void Game_window::fade_palette
 		dir = 1;
 		start = 0;
 		stop = cycles + 1;
+		faded_out = 0;
 		}
 	else
 		{
 		dir = -1;
 		start = cycles;
 		stop = -1;
+		faded_out = 1;
 		}
 	unsigned char fade_pal[3*256];	// Animate.
 	for (int i = start; i != stop; i += dir)
 		{
 		for(int c=0; c < 3*256; c++)
 			fade_pal[c] = (colors[c]*i)/cycles;
-		win->set_palette(fade_pal, 63);
+		win->set_palette(fade_pal, 63, brightness);
 		win->show();
 		SDL_Delay(20);
 		}
@@ -1162,6 +1166,8 @@ void Game_window::set_palette
 	if (palette == pal_num)
 		return;			// Already set.
 	palette = pal_num;		// Store #.
+	if (faded_out)
+		return;			// In the black.
 	ifstream pal;
 	u7open(pal, PALETTES_FLX);
 	pal.seekg(256 + 3*256*pal_num); // Get to desired palette.
@@ -1410,15 +1416,8 @@ cout << "Clicked at tile (" << get_scrolltx() + x/tilesize << ", " <<
 	int actor_lift = main_actor->get_lift();
 	int start = actor_lift > 0 ? -1 : 0;
 	int not_above = skip_lift;
-#if 0	/* ++++Old way */
-					// If inside, figure height above
-	if (main_actor_inside)		//   actor's head.
-		not_above = main_actor->get_lift() + 
-		  shapes.get_info(main_actor->get_shapenum()).get_3d_height();
-#else
 	if (skip_above_actor < not_above)
 		not_above = skip_above_actor;
-#endif
 					// See what was clicked on.
 	for (int lift = start + actor_lift; lift < not_above; lift++)
 		cnt += find_objects(lift, x, y, &found[cnt]);
