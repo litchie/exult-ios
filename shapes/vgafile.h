@@ -40,9 +40,12 @@ class GL_manager;
 #include "glshape.h"
 
 #define GLRENDER	if (glman) glman->paint(this, px, py); else
+#define GLRENDERTRANS	if (glman) glman->paint(this, px, py, xforms, xfcnt); \
+								else
 #define GLOUTLINE	if (glman) ; else
 #else
 #define GLRENDER
+#define GLRENDERTRANS
 #define GLOUTLINE
 #endif
 
@@ -112,7 +115,7 @@ public:
 					// ++++++GL versions of these needed:
 	void paint_rle_translucent(int px, int py,
 					Xform_palette *xforms, int xfcnt)
-		{ GLRENDER  paint_rle_translucent(
+		{ GLRENDERTRANS  paint_rle_translucent(
 					scrwin, px, py, xforms, xfcnt); }
 	void paint_rle_transformed(int px, int py, Xform_palette& xform)
 		{ GLRENDER  paint_rle_transformed(scrwin, px, py, xform); }
