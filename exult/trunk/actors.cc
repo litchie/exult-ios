@@ -3686,7 +3686,7 @@ int Monster_actor::get_armor_points
 	{
 	Monster_info *inf = get_info();
 					// Kind of guessing here.
-	return Actor::get_armor_points() + (inf ? inf->armor/4 : 0);
+	return Actor::get_armor_points() + (inf ? inf->armor : 0);
 	}
 
 /*
@@ -3710,7 +3710,7 @@ Weapon_info *Monster_actor::get_weapon
 		if (winf)
 			points = winf->get_damage();
 		else			// Guessing:
-			points = inf ? inf->weapon/4 : 0;
+			points = inf ? inf->weapon : 0;
 		}
 	return winf;
 	}
@@ -3799,18 +3799,15 @@ Monster_actor *Monster_info::create
 	{
 		monster->set_type_flag(Actor::tf_ethereal);
 	}
-					// Seems like the #'s are x4.
-//++++++Fix after puting in ::read()+++++++++++++++
-	monster->set_property(Actor::strength, strength/4);
+	monster->set_property(Actor::strength, strength);
 					// Max. health = strength.
-	monster->set_property(Actor::health, strength/4);
-	monster->set_property(Actor::dexterity, dexterity/4);
-	monster->set_property(Actor::intelligence, intelligence/4);
-	monster->set_property(Actor::combat, combat/4);
+	monster->set_property(Actor::health, strength);
+	monster->set_property(Actor::dexterity, dexterity);
+	monster->set_property(Actor::intelligence, intelligence);
+	monster->set_property(Actor::combat, combat);
 
 	// Set temporary
 	if (temporary) monster->set_flag (Obj_flags::is_temporary);
-					// ++++Armor?
 					// Place in world.
 	Game_window *gwin = Game_window::get_game_window();
 	Map_chunk *olist = gwin->get_chunk(chunkx, chunky);

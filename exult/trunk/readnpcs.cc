@@ -111,20 +111,8 @@ void Game_window::read_npcs
 		num_monsters = Read1(mfile);
 					// Create list, and read it in.
 		monster_info = new Monster_info[num_monsters];
-		unsigned char monster[25];
 		for (i = 0; i < num_monsters; i++)
-			{
-			int shape = Read2(mfile);
-			mfile.read((char*)monster, 23);// Get the rest.
-					// Point to flags.
-			uint8 *ptr = &monster[7];
-			unsigned short flags = Read2(ptr);
-			ptr += 3;	// Get equip.dat offset.
-			unsigned int equip = *ptr;
-			monster_info[i].set(shape, monster[0], monster[1],
-				monster[2], monster[3], monster[4], monster[5],
-				flags, equip);
-			}
+			monster_info[i].read(mfile);
 		mfile.close();
 		U7open(mfile, EQUIP);	// Get 'equip.dat'.
 		int num_recs = Read1(mfile);
