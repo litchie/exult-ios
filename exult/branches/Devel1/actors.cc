@@ -41,7 +41,8 @@ Actor::Actor
 	int shapenum, 
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
-	) : Sprite(shapenum), npc_num(num), usecode(uc), flags(0), action(0)
+	) : Sprite(shapenum), npc_num(num), party_id(-1),
+	    usecode(uc), flags(0), action(0)
 	{
 	set_default_frames();
 	name = nm == 0 ? 0 : strdup(nm);
@@ -241,6 +242,26 @@ void Main_actor::handle_event
 					curtime + delay, this, udata);
 		else
 			set_action(0);
+		}
+	get_followers();		// Get party to follow.
+	}
+
+/*
+ *	Get the party to follow.
+ */
+
+void Main_actor::get_followers
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Usecode_machine *uc = gwin->get_usecode();
+	int cnt = uc->get_party_count();
+	for (int i = 0; i < cnt; i++)
+		{
+		Npc_actor *npc = (Npc_actor *) gwin->get_npc(i);
+		if (npc)
+			npc->follow(this);
 		}
 	}
 
@@ -450,6 +471,8 @@ void Npc_actor::update_schedule
 	int hour3			// 0=midnight, 1=3am, etc.
 	)
 	{
+	if (Npc_actor::get_party_id() >= 0)
+		return;			// Skip if a party member.
 	for (int i = 0; i < num_schedules; i++)
 		if (schedules[i].get_time() == hour3)
 			{		// Found entry.
@@ -599,6 +622,48 @@ int Npc_actor::walk
 		}
 	dormant = 1;			// Not moving.
 	return (0);
+	}
+
+/*
+ *	Want one value to approach another.
+ */
+
+inline int Approach
+	(
+	int from,
+	int to,
+	int dist			// Desired distance.
+	)
+	{
+	if (from <= to)			// Going forwards?
+		return (to - from <= dist ? from : to - dist);
+	else				// Going backwards.
+		return (from - to <= dist ? from : to + dist);
+	}
+
+/*
+ *	Follow the leader.
+ */
+
+void Npc_actor::follow
+	(
+	Actor *leader
+	)
+	{
+	const int dist = 5;		// How close to aim for.
+	Tile_coord goal = leader->get_abs_tile_coord();
+	Tile_coord pos = get_abs_tile_coord();
+	if (goal.distance(pos) < dist)	// Already close enough?
+		return;
+					// Figure where to aim.
+	int newtx = Approach(pos.tx, goal.tx, dist);
+	int newty = Approach(pos.ty, goal.ty, dist);
+					// Get his speed.
+	int speed = leader->get_frame_time();
+	if (!speed)			// Not moving?
+		speed = 125;
+	speed += 20 - rand()%50;	// Let's try varying it a bit.
+	walk_to_tile(newtx, newty, goal.tz, speed);
 	}
 
 /*

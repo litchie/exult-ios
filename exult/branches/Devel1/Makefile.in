@@ -413,13 +413,13 @@ exult.exe: $(OBJECTS)
 
 tar:	exult
 	strip exult
-	(cd ..; tar cvfz exult$(RELNUM).tgz exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,exult,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
+	(cd ..; tar cvfz exult$(RELNUM).tgz exult/{*.h,*.cc,Makefile,README,README.dos,CHANGELOG,exult,*.scr} exult/npc/{*.h,*.cc,Makefile} exult/script/{*.h,*.cc,*.y,*.l,Makefile})
 
 w32zip:
-	(cd ..; zip exult$(RELNUM)w.zip exult/{*.h,*.cc,makefile,exult.ide,README,readme.w95,CHANGELOG,exultw32.exe,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
+	(cd ..; zip exult$(RELNUM)w.zip exult/{*.h,*.cc,Makefile,exult.ide,README,readme.w95,CHANGELOG,exultw32.exe,} exult/audio/{*.h,*.cc,Makefile} exult/conf/{*.h,*.cc,Makefile})
 
 srczip:
-	(cd ..; zip exult$(RELNUM).zip exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
+	(cd ..; zip exult$(RELNUM).zip exult/{*.h,*.cc,Makefile,README,README.dos,CHANGELOG,*.ttf,*.scr} exult/npc/{*.h,*.cc,Makefile} exult/script/{*.h,*.cc,*.y,*.l,Makefile})
 
 clean:
 	-rm -f *.o core exult

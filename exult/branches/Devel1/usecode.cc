@@ -775,18 +775,7 @@ int Usecode_machine::npc_in_party
 	Game_object *npc
 	)
 	{
-	if (!npc || !party_count)
-		return (0);
-	int npcnum = npc->get_npc_num();
-// cout << "Is npc " << npc << " in party?  ";
-	for (int i = 0; i < PARTY_MAX; i++)
-		if (party[i] == npcnum)
-			{
-			// cout << "Yes\n";
-			return (1);
-			}
-	// cout << "No\n";
-	return (0);
+	return (npc && npc->get_party_id() >= 0);
 	}
 
 /*
@@ -800,14 +789,10 @@ void Usecode_machine::add_to_party
 	{
 	if (!npc || party_count == PARTY_MAX || npc_in_party(npc))
 		return;			// Can't add.
-	for (int i = 0; i < PARTY_MAX; i++)
-		if (party[i] == 0)	// Find empty spot.
-			{
-			party[i] = npc->get_npc_num();
-			party_count++;
+	npc->set_party_id(party_count);
+	party[party_count++] = npc->get_npc_num();
+
 // cout << "NPC " << npc->get_npc_num() << " added to party.\n";
-			break;
-			}
 	}
 
 /*
@@ -821,14 +806,24 @@ void Usecode_machine::remove_from_party
 	{
 	if (!npc)
 		return;
-	int npcnum = npc->get_npc_num();
-	for (int i = 0; i < PARTY_MAX; i++)
-		if (party[i] == npcnum)
-			{
-			party[i] = 0;
-			party_count--;
-			break;
-			}
+	int id = npc->get_party_id();
+	if (id == -1)			// Not in party?
+		return;
+	if (party[id] != npc->get_npc_num())
+		{
+		cout << "Party mismatch!!\n";
+		return;
+		}
+					// Shift the rest down.
+	for (int i = id + 1; i < party_count; i++)
+		{
+		Actor *npc2 = gwin->get_npc(party[i]);
+		if (npc2)
+			npc2->set_party_id(i - 1);
+		party[i - 1] = party[i];
+		}
+	party_count--;
+	party[party_count] = 0;
 	}
 
 /*
@@ -844,15 +839,14 @@ Usecode_value Usecode_machine::get_party
 	Usecode_value aval((long) gwin->get_main_actor());
 	arr.put_elem(0, aval);	
 	int num_added = 1;
-	for (int i = 0; i < PARTY_MAX && num_added < 1 + party_count; i++)
-		if (party[i] != 0)
-			{
-			Game_object *obj = gwin->get_npc(party[i]);
-			if (!obj)
-				continue;
-			Usecode_value val((long) obj);
-			arr.put_elem(num_added, val);
-			}
+	for (int i = 0; i < party_count; i++)
+		{
+		Game_object *obj = gwin->get_npc(party[i]);
+		if (!obj)
+			continue;
+		Usecode_value val((long) obj);
+		arr.put_elem(num_added, val);
+		}
 	// cout << "Party:  "; arr.print(cout); cout << '\n';
 	return arr;
 	}
