@@ -121,7 +121,7 @@
 	// Packing
 	USECODE_INTRINSIC_PTR(summon),				// 0x55
 	USECODE_INTRINSIC_PTR(si_display_map),			// 0x56
-	USECODE_INTRINSIC_PTR(remove_npc),	// Guess	// 0x57
+	USECODE_INTRINSIC_PTR(kill_npc),			// 0x57
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x58
 	USECODE_INTRINSIC_PTR(set_attack_mode),			// 0x59	
 	USECODE_INTRINSIC_PTR(get_attack_mode),			// 0x5a
