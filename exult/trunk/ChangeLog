@@ -1,4 +1,7 @@
 2001-11-22 Ryan Nunn <triforce@merlin.net.au>
+	* msvcstuff/Exult.dsp : Getting rid of a link warning
+
+2001-11-22 Ryan Nunn <triforce@merlin.net.au>
 	* Makefile.*, msvcstuff/*, win32/exultico.rc : Unify Win32 Resource
 	  scripts, add Version Table to all Win32 Exult exes.
 
