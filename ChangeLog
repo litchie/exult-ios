@@ -1,4 +1,8 @@
 2001-04-32  Dancer Vesperman <dancer@users.sourceforge.net>
+	* configure.in: Support repo and (the somewhat deprecated)
+	  alt-external template instantiations.
+
+2001-04-32  Dancer Vesperman <dancer@users.sourceforge.net>
 	* g++ v3.0 can inline an implementation body....but that makes
 	  it invisible to other translation units (because it's inline and
 	  no longer exists as a seperate entity. Duh). Therefore, actors.cc:

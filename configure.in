@@ -421,6 +421,25 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+dnl repo
+AC_ARG_ENABLE(repo, [  --enable-repo Repo type template instantiation. [default no]],,enable_repo=no)
+AC_MSG_CHECKING(if we should use repo type template instantiation)
+if test x$enable_repo = xyes; then
+	AC_MSG_RESULT(yes)
+	DEBUG_FLAGS="$DEBUG_FLAGS -frepo"
+else
+	AC_MSG_RESULT(no)
+fi
+
+dnl external templates (alt)
+AC_ARG_ENABLE(external-templates, [  --enable-external-templates	external template instantiation. [default no]],,enable_external_templates=no)
+AC_MSG_CHECKING(if we should use (alternate) external template instantiation)
+if test x$enable_external_templates = xyes; then
+	AC_MSG_RESULT(yes)
+	DEBUG_FLAGS="$DEBUG_FLAGS -falt-external-templates"
+else
+	AC_MSG_RESULT(no)
+fi
 
 dnl --------------------
 dnl External features
