@@ -285,7 +285,7 @@ void Gump::paint
 	)
 {
 		// Paint the gump itself.
-	gwin->paint_shape(x, y, get_shape());
+	gwin->paint_shape(x, y, *this);
 		
 		// Paint red "checkmark".
 	if (check_button) check_button->paint(gwin);

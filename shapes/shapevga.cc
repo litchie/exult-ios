@@ -34,6 +34,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::ifstream;
 using std::ios;
 
+// For convienience
+#define patch_exists(p) (have_patch_path && U7exists(p))
+
 /*
  *	Read in data files about shapes.
  *
@@ -44,32 +47,45 @@ void Shapes_vga_file::read_info
 	(
 	)
 	{
+	int i, cnt;
+	bool have_patch_path = is_system_path_defined("<PATCH>");
+
+	// ShapeDims
+
+	// Starts at 0x96'th shape.
 	ifstream shpdims;
-	U7open(shpdims, SHPDIMS);
-					// Starts at 0x96'th shape.
-	int i; // Blame MSVC
-	for (i = 0x96; i < num_shapes; i++)
+	if (patch_exists(PATCH_SHPDIMS)) U7open(shpdims, PATCH_SHPDIMS);
+	else U7open(shpdims, SHPDIMS);
+	for (i = 0x96; i < num_shapes && !shpdims.eof(); i++)
 		{
 		shpdims.get((char&) info[i].shpdims[0]);
 		shpdims.get((char&) info[i].shpdims[1]);
 		}
+
+	// WGTVOL
 	ifstream wgtvol;
-	U7open(wgtvol, WGTVOL);
-	for (i = 0; i < num_shapes; i++)
+	if (patch_exists(PATCH_WGTVOL)) U7open(wgtvol, PATCH_WGTVOL);
+	else U7open(wgtvol, WGTVOL);
+	for (i = 0; i < num_shapes && !wgtvol.eof(); i++)
 		{
 		wgtvol.get((char&) info[i].weight);
 		wgtvol.get((char&) info[i].volume);
 		}
+
+	// TFA
 	ifstream tfa;
-	U7open(tfa, TFA);
-	for (i = 0; i < num_shapes; i++)
+	if (patch_exists(PATCH_TFA)) U7open(tfa, PATCH_TFA);
+	else U7open(tfa, TFA);
+	for (i = 0; i < num_shapes && !tfa.eof(); i++)
 		{
 		tfa.read((char*)&info[i].tfa[0], 3);
 		info[i].set_tfa_data();
 		}
+
 	ifstream ready;
-	U7open(ready, READY);
-	int cnt = Read1(ready);		// Get # entries.
+	if (patch_exists(PATCH_READY)) U7open(ready, PATCH_READY);
+	else U7open(ready, READY);
+	cnt = Read1(ready);		// Get # entries.
 	for (i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(ready);
@@ -79,7 +95,8 @@ void Shapes_vga_file::read_info
 		}
 	ready.close();
 	ifstream armor;
-	U7open(armor, ARMOR);
+	if (patch_exists(PATCH_ARMOR)) U7open(armor, PATCH_ARMOR);
+	else U7open(armor, ARMOR);
 	cnt = Read1(armor);
 	for (i = 0; i < cnt; i++)
 		{
@@ -90,7 +107,8 @@ void Shapes_vga_file::read_info
 		}
 	armor.close();
 	ifstream weapon;
-	U7open(weapon, WEAPONS);
+	if (patch_exists(PATCH_WEAPONS)) U7open(weapon, PATCH_WEAPONS);
+	else U7open(weapon, WEAPONS);
 	cnt = Read1(weapon);
 	for (i = 0; i < cnt; i++)
 		{
@@ -144,7 +162,8 @@ void Shapes_vga_file::read_info
 		}
 	weapon.close();	
 	ifstream ammo;
-	U7open(ammo, AMMO);
+	if (patch_exists(PATCH_AMMO)) U7open(ammo, PATCH_AMMO);
+	else U7open(ammo, AMMO);
 	cnt = Read1(ammo);
 	Ammo_info::create();		// Create table.
 	for (i = 0; i < cnt; i++)
@@ -162,7 +181,8 @@ void Shapes_vga_file::read_info
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;
 	unsigned short offsets[1024];
-	U7open(wihh, WIHH);
+	if (patch_exists(PATCH_WIHH)) U7open(wihh, PATCH_WIHH);
+	else U7open(wihh, WIHH);
 	for (i = 0; i < 1024; i++)
 		offsets[i] = Read2(wihh);
 	for (i = 0; i < 1024; i++)
@@ -194,3 +214,13 @@ Shapes_vga_file::~Shapes_vga_file()
 	{
 	}
 
+
+void Shapes_vga_file::init()
+{
+	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_SHAPES))
+		load(SHAPES_VGA, PATCH_SHAPES);
+	else
+		load(SHAPES_VGA);
+
+	info.set_size(num_shapes);
+}

@@ -574,7 +574,7 @@ void SI_Game::play_intro()
 		BufferDataSource gshape_ds(shape_buf+8, shapesize-8);
 		Shape_frame *sf;
 	
-		Shape_file gshape(gshape_ds);
+		Shape_file gshape(&gshape_ds);
 		
 		cout << "Shape in intro.dat has " << gshape.get_num_frames() << endl;
 
@@ -1026,8 +1026,8 @@ bool SI_Game::new_game(Vga_file &shapes)
 bool SI_Game::is_installed(const char *path)
 {
 	char buf[2048];
-	strcpy(buf, path);
-	strcat(buf, "/static/sispeech.spc");
-	cout << "is_installed: " << buf << endl;
-	return U7exists(buf);
+	std::strcpy(buf, path);
+	std::strcat(buf, "/static/sispeech.spc");
+	std::cout << "is_installed: " << buf << std::endl;
+	return U7exists(buf)!=0;
 }

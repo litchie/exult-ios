@@ -59,7 +59,7 @@ void Gump_widget::paint
 		py = parent->get_y();
 	}
 
-	gwin->paint_shape(x+px, y+py, get_shape());
+	gwin->paint_shape(x+px, y+py, *this);
 }
 
 /*

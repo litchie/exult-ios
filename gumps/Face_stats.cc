@@ -46,8 +46,8 @@ class Stat_bar : public Gump_button
 	int		prop_max;
 	unsigned char	colour;
 
-	int		prev;
-	int		max_prev;
+	int		val;
+	int		max_val;
 public:
 	Stat_bar(Gump *par, int px, int py, Actor *a, int s, int m, unsigned char c);
 	virtual void double_clicked(Game_window *gwin, int x, int y);
@@ -64,11 +64,13 @@ public:
 
 Stat_bar::Stat_bar (Gump *par, int px, int py, Actor *a, int s, int m, unsigned char c)
 	: Gump_button(par, EXULT_FLX_HP_BAR_SHP, px, py, SF_EXULT_FLX),
-	actor(a), prop(s), prop_max(m), colour(c), prev(-256), max_prev(-256)
+	actor(a), prop(s), prop_max(m), colour(c), val(-256), max_val(-256)
 {
 	Game_window *gwin = Game_window::get_game_window();
 
 	gwin->add_dirty(get_rect());
+	val = actor->get_property(prop);
+	max_val = actor->get_property(prop_max);
 }
 
 void Stat_bar::double_clicked(Game_window *gwin, int x, int y)
@@ -89,10 +91,7 @@ void Stat_bar::paint
 {
 	Gump_button::paint(gwin);
 
-	prev = actor->get_property(prop);
-	max_prev = actor->get_property(prop_max);
-
-	int width =  (prev * 32) / (max_prev);
+	int width =  (val * 32) / (max_val);
 
 	if (width > 0)
 	{
@@ -115,8 +114,11 @@ void Stat_bar::paint
 
 void Stat_bar::update_widget(Game_window *gwin)
 {
-	if (prev != actor->get_property(prop) || max_prev != actor->get_property(prop_max))
+	if (val != actor->get_property(prop) || max_val != actor->get_property(prop_max))
 		gwin->add_dirty(get_rect());
+
+	val = actor->get_property(prop);
+	max_val = actor->get_property(prop_max);
 }
 
 /*
@@ -128,6 +130,9 @@ class Portrait_button : public Face_button
 protected:
 	Stat_bar	*hp;		// Bar for HP
 	Stat_bar	*mana;		// Bar for MANA
+	bool		hit;
+	int		pois;
+	int		prot;
 public:
 	Portrait_button(Gump *par, int px, int py, Actor *a);
 	virtual ~Portrait_button();
@@ -152,6 +157,10 @@ Portrait_button::Portrait_button(Gump *par, int px, int py, Actor *a)
 
 	if (actor->get_npc_num() == 0) 
 		mana = new Stat_bar(par, px+4, py - 5, a, Actor::mana, Actor::magic, PALETTE_INDEX_BLUE);
+
+	hit = actor->was_hit();
+	pois = actor->get_flag(Obj_flags::poisoned);
+	prot = actor->get_flag(Obj_flags::protection);
 
 	Game_window::get_game_window()->add_dirty(get_rect());
 }
@@ -187,9 +196,21 @@ int Portrait_button::on_button(Game_window *gwin, int x, int y)
 void Portrait_button::update_widget(Game_window *gwin)
 {
 	Face_button::update_widget(gwin);
-
 	if (hp)	hp->update_widget(gwin);
 	if (mana) mana->update_widget(gwin);
+
+	if (hit != actor->was_hit() ||
+		pois != actor->get_flag(Obj_flags::poisoned) ||
+		prot != actor->get_flag(Obj_flags::protection))
+	{
+		Rectangle r = get_rect();
+		gwin->add_dirty(r);
+		hit = actor->was_hit();
+		pois = actor->get_flag(Obj_flags::poisoned);
+		prot = actor->get_flag(Obj_flags::protection);
+		r = get_rect();
+		gwin->add_dirty(r);
+	}
 }
 
 /*
@@ -213,17 +234,17 @@ void Portrait_button::paint(Game_window *gwin)
 			py += parent->get_y();
 		}
 
-		if (actor->was_hit())
+		if (hit)
 		{
 			s->paint_rle_outline(gwin->get_win()->get_ib8(), px, py,
 				gwin->get_hit_pixel());
 		}
-		else if (actor->get_flag(Obj_flags::poisoned))
+		else if (pois)
 		{
 			s->paint_rle_outline(gwin->get_win()->get_ib8(), px, py,
 				gwin->get_poison_pixel());
 		}
-		else if (actor->get_flag(Obj_flags::protection))
+		else if (prot)
 		{
 			s->paint_rle_outline(gwin->get_win()->get_ib8(), px, py,
 				gwin->get_protect_pixel());
@@ -237,6 +258,7 @@ void Portrait_button::paint(Game_window *gwin)
 Rectangle Portrait_button::get_rect()
 {
 	Rectangle rect = Face_button::get_rect();
+	if (hit || pois || prot) rect.enlarge(2);
 
 	if (hp)
 	{

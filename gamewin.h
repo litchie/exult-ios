@@ -397,8 +397,8 @@ public:
 					sizeof(xforms)/sizeof(xforms[0]));
 		}
 
-	inline void paint_shape(int xoff, int yoff, ShapeID &shape)
-		{ paint_shape(xoff, yoff, shape.get_shape(), shape.is_translucent()); }
+	inline void paint_shape(int xoff, int yoff, ShapeID &shape, bool force_trans = false)
+		{ paint_shape(xoff, yoff, shape.get_shape(), force_trans||shape.is_translucent()); }
 
 	void paint_shape(int xoff, int yoff, int shapenum, int framenum)
 		{
@@ -517,18 +517,11 @@ public:
 	void paint()			// Paint whole image.
 		{
 		read_map_data();	// Gather in all objs., etc.
-		paint(0, 0, get_width(), get_height());
-		clear_dirty();
+		set_all_dirty();
+		paint_dirty();
 		}
-	void paint_dirty()		// Paint 'dirty' rectangle.
-		{
-		if (dirty.w > 0)
-			{
-			Rectangle box = dirty;
-			clear_dirty();
-			paint(box);	// (Could create new dirty rects.)
-			}
-		}
+		// Paint 'dirty' rectangle.
+	void paint_dirty();
 	void set_all_dirty()		// Whole window.
 		{ dirty = Rectangle(0, 0, get_width(), get_height()); }
 	void add_dirty(Rectangle r)	// Add rectangle to dirty area.
