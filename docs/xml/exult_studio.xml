@@ -252,15 +252,17 @@
 							an example for editing BG:</li>
 					</ul>
 				<configdesc>
-					<configtag name="game">
-						<configtag name="path">
-						./blackgate
-						</configtag>
-						<configtag name="patch">
-						./blackgate/patch
-						</configtag>
-						<configtag name="title">
-						blackgate
+					<configtag name="game" closing-tag="no">
+						<configtag name="blackgate">
+							<configtag name="title">
+							blackgate
+							</configtag>
+							<configtag name="path">
+							./blackgate
+							</configtag>
+							<configtag name="patch">
+							./blackgate/patch
+							</configtag>
 						</configtag>
 					</configtag>
 				</configdesc>
@@ -280,7 +282,7 @@
 					via exult.cfg. Those settings are:
 				</para>
 				<configdesc>
-					<configtag name="config">
+					<configtag name="config" closing-tag="no">
 						<configtag name="estudio">
 							<configtag name="main">
 								<configtag name="width">
