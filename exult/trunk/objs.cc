@@ -28,7 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "Audio.h"
 #include <string.h>
-#include <Audio.h>
 
 					// Bit 5=S, Bit6=reflect. on diag.
 unsigned char Game_object::rotate[8] = { 0, 0, 48, 48, 16, 16, 32, 32};

@@ -28,7 +28,7 @@ Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <iostream.h>
 #include <string>
-#include <Configuration.h>
+#include "Configuration.h"
 extern	Configuration *config;
 
 /*
