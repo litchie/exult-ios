@@ -39,6 +39,11 @@ class Party_manager : public Game_singletons
 	int party_count;		// # of NPC's in party.
 	int dead_party[16];		// NPC #'s of dead party members.
 	int dead_party_count;
+	Actor *valid[EXULT_PARTY_MAX];	// NPC's able to walk with Avatar.
+	int validcnt;
+					// Formation-walking:
+	void move_followers(Actor *npc, int vindex, int dir);
+	int step(Actor *npc, Actor *leader, int dir, Tile_coord dest);
 public:
 	Party_manager();
 	void set_count(int n)		// For initializing from file.
@@ -64,8 +69,7 @@ public:
 	void update_party_status(Actor *npc);
 	void link_party();		// Set party's id's.
 					// Formation-walking:
-	void move_followers(Actor *npc, int dir);
-	int step(Actor *npc, Actor *leader, int dir, Tile_coord dest);
+	void get_followers(int dir);
 	};
 
 

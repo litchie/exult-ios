@@ -41,7 +41,7 @@ using std::endl;
 
 Party_manager::Party_manager
 	(
-	) : party_count(0), dead_party_count(0)
+	) : party_count(0), dead_party_count(0), validcnt(0)
 	{  
 					// Clear party list.
 	std::memset((char *) &party[0], 0, sizeof(party));
@@ -274,6 +274,31 @@ static int right_offsets[4][2] = {	// Follower is behind and to right.
 	{2, -2} };			// West.
 
 /*
+ *	This should be called each time the Avatar takes a step while under
+ *	control of the user.
+ */
+
+void Party_manager::get_followers
+	(
+	int dir				// Direction (0-7) Avatar just stepped.
+	)
+	{
+	validcnt = 0;			// Get party members to control.
+	for (int i = 0; i < party_count; i++)
+		{
+		Actor *npc = gwin->get_npc(party[i]);
+		if (!npc || npc->get_flag(Obj_flags::asleep) ||
+		    npc->get_flag(Obj_flags::paralyzed))
+			continue;	// Not available.
+		if (npc->is_moving())	// Already walking?
+			continue;	// For now, let him continue...
+		valid[validcnt++] = npc;
+		}
+	if (validcnt)
+		move_followers(gwin->get_main_actor(), -1, dir);
+	}
+
+/*
  *	To walk in formation, each party member will have one or two other
  *	party members who will follow him on each step.
  */
@@ -281,6 +306,7 @@ static int right_offsets[4][2] = {	// Follower is behind and to right.
 void Party_manager::move_followers
 	(
 	Actor *npc,			// Party member who just stepped.
+	int vindex,			// Index within 'valid'.
 	int dir				// Direction (0-7) he stepped in.
 	)
 	{
@@ -290,11 +316,10 @@ void Party_manager::move_followers
 	if (lnum == -1 && rnum == -1)
 		return;			// Nothing to do.
 	int dir4 = dir/2;		// 0-3 now.
-//++++++Got to deal with NPC's that are asleep, etc.
 	Actor *lnpc = (lnum == -1 || lnum >= party_count) ? 0 
-					: gwin->get_npc(party[lnum]);
+					: valid[lnum];
 	Actor *rnpc = (rnum == -1 || rnum >= party_count) ? 0 
-					: gwin->get_npc(party[rnum]);
+					: valid[rnum];
 	int ldir = -1, rdir = -1;
 					// Have each take a step.
 	if (lnpc)
@@ -304,9 +329,9 @@ void Party_manager::move_followers
 		rdir = step(rnpc, npc, dir, pos + Tile_coord(
 			right_offsets[dir4][0], right_offsets[dir4][1], 0));
 	if (ldir >= 0)
-		move_followers(lnpc, ldir);
+		move_followers(lnpc, lnum, ldir);
 	if (rdir >= 0)
-		move_followers(rnpc, rdir);
+		move_followers(rnpc, rnum, rdir);
 	}
 
 /*
