@@ -1,3 +1,8 @@
+2001-02-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Weapon animations are set during combat (so Great
+	Dagger is rendered correctly now).
+
 2001-02-06  Christoph Reichenbach  <jameson@linuxgames.com>
 
 	* vast amount of files: "Fixed" alpha_kludges.h includes. I'll get

@@ -109,8 +109,6 @@ protected:
 					// Move and change frame.
 	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
-					// Force repaint of area taken.
-	int add_dirty(Game_window *gwin, int figure_rect = 0);
 					// Read from file.
 	Actor(std::istream& nfile, int num, int has_usecode);
 public:
@@ -120,6 +118,8 @@ public:
 	int ready_ammo();		// Find and ready appropriate ammo.
 	void ready_best_weapon();	// Find best weapon and ready it.
 	void unready_weapon(int spot);	// Try to sheath weapon.
+					// Force repaint of area taken.
+	int add_dirty(Game_window *gwin, int figure_rect = 0);
 	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
 	void use_food();		// Decrement food level.
 					// Get frame seq. for given dir.
