@@ -579,8 +579,7 @@ Npc_actor::Npc_actor
 	int uc
 	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
 		schedule_type((int) Schedule::loiter), num_schedules(0), 
-		schedules(0), schedule(0), dormant(1), alignment(0),
-		no_climbing(0)
+		schedules(0), schedule(0), dormant(1), alignment(0)
 	{
 	}
 
@@ -742,8 +741,7 @@ int Npc_actor::walk
 		int new_lift;		// Might climb/descend.
 					// Just assume height==3.
 		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift) ||
-		    at_destination() || 
-		    (no_climbing && new_lift != get_lift()))
+		    at_destination())
 			{
 			stop();
 			return (0);	// Done.
@@ -872,6 +870,142 @@ void Npc_actor::switched_chunks
 	}
 
 /*
+ *	See if it's blocked when trying to move to a new tile.
+ *	And don't allow climbing/descending, at least for now.
+ *
+ *	Output: 1 if so, else 0.
+ *		If 0 (tile is free), new_lift contains the new height that
+ *		   an actor will be at if he walks onto the tile.
+ */
+
+int Monster_actor::is_blocked
+	(
+	int destx, int desty		// Square we want to move to.
+	)
+	{
+	int tx, ty, lift;		// Get current position.
+	get_abs_tile(tx, ty, lift);
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_shapes().get_info(get_shapenum());
+					// Get dim. in tiles.
+	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
+	int height = info.get_3d_height();
+	int vertx0, vertx1;		// Get x-coords. of vert. block
+					//   to right/left.
+	int horizx0, horizx1;		// Get x-coords of horiz. block
+					//   above/below.
+	int verty0, verty1;		// Get y-coords of horiz. block
+					//   above/below.
+	int horizy0, horizy1;		// Get y-coords of vert. block
+					//   to right/left.
+	if (destx >= tx)		// Moving right?
+		{
+		vertx0 = tx + 1;	// Start to right of hot spot.
+		vertx1 = destx;		// End at dest.
+		}
+	else				// Moving left?
+		{
+		vertx0 = destx + 1 - xtiles;
+		vertx1 = tx - xtiles;
+		}
+	horizx0 = destx + 1 - xtiles;
+	horizx1 = destx;
+	if (desty >= ty)		// Moving down?
+		{
+		horizy0 = ty + 1;	// Start below hot spot.
+		horizy1 = desty;	// End at dest.
+		vertx1--;		// Includes bottom of vert. area.
+		}
+	else				// Moving up?
+		{
+		horizy0 = desty + 1 - ytiles;
+		horizy1 = ty - ytiles;
+		vertx0++;		// Includes top of vert. area.
+		}
+	verty0 = desty + 1 - ytiles;
+	verty1 = desty;
+	int x, y;			// Go through horiz. part.
+	for (y = horizy0; y <= horizy1; y++)
+		{			// Get y chunk, tile-in-chunk.
+		int cy = y/tiles_per_chunk, rty = y%tiles_per_chunk;
+		for (x = horizx0; x <= horizx1; x++)
+			{
+			int new_lift;
+			Chunk_object_list *olist = gwin->get_objects(
+					x/tiles_per_chunk, cy);
+			if (olist->is_blocked(height, lift, x%tiles_per_chunk,
+							rty, new_lift) ||
+			    new_lift != lift)
+				return (0);
+			}
+		}
+					// Do vert. block.
+	for (x = vertx0; x <= vertx1; x++)
+		{			// Get x chunk, tile-in-chunk.
+		int cx = x/tiles_per_chunk, rtx = x%tiles_per_chunk;
+		for (y = verty0; y <= verty1; y++)
+			{
+			int new_lift;
+			Chunk_object_list *olist = gwin->get_objects(
+					cx, y/tiles_per_chunk);
+			if (olist->is_blocked(height, lift, rtx,
+					y%tiles_per_chunk, new_lift) ||
+			    new_lift != lift)
+				return (0);
+			}
+		}
+	return (1);			// All clear.
+	}
+
+/*
+ *	Walk in current direction.
+ *
+ *	Output:	Delay for next frame, or 0 to stop.
+ *		Dormant is set if off screen.
+ */
+
+int Monster_actor::walk
+	(
+	)
+	{
+					// Store old chunk.
+	int old_cx = get_cx(), old_cy = get_cy();
+	Game_window *gwin = Game_window::get_game_window();
+	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
+	int frame;
+	if (next_frame(cx, cy, sx, sy, frame))
+		{
+					// Get ->new chunk.
+		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+		nlist->setup_cache();	// Setup cache if necessary.
+					// Blocked, or at dest?
+		if (is_blocked(cx*tiles_per_chunk + sx, 
+						cy*tiles_per_chunk + sy) ||
+		    at_destination())
+			{
+			stop();
+			return (0);	// Done.
+			}
+		gwin->add_dirty(this);	// Set to repaint old area.
+					// Get old chunk.
+		Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
+					// Move it.
+		move(olist, cx, cy, nlist, sx, sy, frame, -1);
+		if (olist != nlist)	// In new chunk?
+			switched_chunks(olist, nlist);
+		if (!gwin->add_dirty(this))
+			{		// No longer on screen.
+			stop();
+			dormant = 1;
+			return (0);
+			}
+		return (frame_time);	// Add back to queue for next time.
+		}
+	dormant = 1;			// Not moving.
+	return (0);
+	}
+
+/*
  *	Create an instance of a monster.
  */
 
@@ -882,13 +1016,16 @@ Npc_actor *Monster_info::create
 	int lift			// Lift.
 	)
 	{
+#if 0	/* ++++This is what we need to try. */
+	Monster_actor *monster = new Monster_actor(0, shapenum);
+#else
 	Npc_actor *monster = new Npc_actor(0, shapenum);
+#endif
 	monster->set_property(Actor::strength, strength);
 	monster->set_property(Actor::dexterity, dexterity);
 	monster->set_property(Actor::intelligence, intelligence);
 	monster->set_property(Actor::combat, combat);
 					// ++++Armor?
-	monster->set_no_climbing();	// For now, at least.
 					// Place in world.
 	Game_window *gwin = Game_window::get_game_window();
 	Chunk_object_list *olist = gwin->get_objects(chunkx, chunky);
