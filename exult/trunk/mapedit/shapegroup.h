@@ -65,6 +65,7 @@ class Shape_group_file
 	std::vector<Shape_group *> groups;// List of groups from the file.
 	bool modified;			// Changed since last save.
 public:
+	friend class Shape_group;
 	Shape_group_file(const char *nm);
 	~Shape_group_file();
 	int size()
@@ -75,6 +76,9 @@ public:
 		{ groups.push_back(grp); modified = true; }
 	void insert(Shape_group *grp, int i)
 		{ groups.insert(groups.begin() + i, grp); modified = true; }
+	bool is_modified()
+		{ return modified; }
+	int find(const char *nm);	// Find group with given name.
 					// Remove and delete group.
 	void remove(int index, bool del = true);
 	void write();			// Write out (to 'patch' directory).
