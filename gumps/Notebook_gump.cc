@@ -28,10 +28,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gameclk.h"
 #include "actors.h"
 #include "SDL_events.h"
+#include "Configuration.h"
 
 using std::ofstream;
 using std::ostream;
 using std::endl;
+using std::string;
+using std::cout;
 
 vector<One_note *> Notebook_gump::notes;
 bool Notebook_gump::initialized = false;	// Set when read in.
@@ -61,7 +64,17 @@ public:
 	One_note() : day(0), hour(0), minute(0), tx(0), ty(0), 
 					text(0), textlen(0), textmax(0)
 		{  }
-	void set(int d, int h, int m, int x, int y, char *txt = 0);
+	void set_time(int d, int h, int m)
+		{ day = d; hour = h; minute = m; }
+	void set_loc(int x, int y)
+		{ tx = x; ty = y; }
+	void set_text(char *txt);
+	void set(int d, int h, int m, int x, int y, char *txt = 0)
+		{
+		set_time(d, h,m);
+		set_loc(x, y);
+		set_text(txt);
+		}
 	One_note(int d, int h, int m, int x, int y, char *txt = 0) : text(0)
 		{ set(d, h, m, x, y, txt); }
 	~One_note()
@@ -72,21 +85,14 @@ public:
 };
 
 /*
- *	setup one note (from already-allocated text).
+ *	Setup one note (from already-allocated text).
  */
 
-void One_note::set
+void One_note::set_text
 	(
-	int d, int h, int m,
-	int x, int y, 
 	char *txt
 	)
 	{
-	day = d;
-	hour = h;
-	minute = m;
-	tx = x;
-	ty = y;
 	delete text;
 	text = txt;
 	if (text)
@@ -221,7 +227,8 @@ void Notebook_gump::initialize
 	(
 	)
 	{
-	initialized = 1;
+	initialized = true;
+	read();
 #if 0
 	// ++++TESTING:
 	notes.push_back(new One_note(1, 1,10, 10, 10, 
@@ -232,6 +239,24 @@ void Notebook_gump::initialize
 				"Note #3")));
 #endif
 	}
+
+/*
+ *	Clear out.
+ */
+
+void Notebook_gump::clear
+	(
+	)
+	{
+	while (notes.size())
+		{
+		One_note *note = notes.back();
+		delete note;
+		notes.pop_back();
+		}
+	initialized = false;
+	}
+
 
 /*
  *	Add a new note at the current time/place.
@@ -592,7 +617,63 @@ void Notebook_gump::write
 	out << "<notebook>" << endl;
 	for (vector<One_note*>::iterator it = notes.begin();
 					it != notes.end(); ++it)
-		(*it)->write(out);
+		if ((*it)->textlen || !(*it)->is_new)
+			(*it)->write(out);
 	out << "</notebook>" << endl;
 	out.close();
+	}
+
+/*
+ *	Read it in from 'notebook.xml'.
+ */
+
+void Notebook_gump::read
+	(
+	)
+	{
+	string root;
+	Configuration conf;
+
+	conf.read_abs_config_file(NOTEBOOKXML, root);
+	string identstr;
+	conf.dump(cout, identstr);
+
+	Configuration::KeyTypeList note_nds;
+	string basekey = "notebook";
+	conf.getsubkeys(note_nds, basekey);
+	One_note *note = 0;
+	for (Configuration::KeyTypeList::iterator it = note_nds.begin();
+				it != note_nds.end(); ++it)
+		{
+		Configuration::KeyType notend = *it;
+#if 0
+		cout << note_pair.first << ": " << endl;
+		cout << note_pair.second << endl;
+#endif
+		if (notend.first == "note")
+			{
+			note = new One_note();
+			notes.push_back(note);
+			}
+		else if (notend.first == "note/time")
+			{
+			int d, h, m;
+			sscanf(notend.second.c_str(), "%d:%d:%d", &d, &h, &m);
+			if (note)
+				note->set_time(d, h, m);
+			}
+		else if (notend.first == "note/place")
+			{
+			int x, y;
+			sscanf(notend.second.c_str(), "%d:%d", &x, &y);
+			if (note)
+				note->set_loc(x, y);
+			}
+		else if (notend.first == "note/text")
+			{
+			if (note)
+				note->set_text(
+					strdup(notend.second.c_str()));
+			}
+		}
 	}
