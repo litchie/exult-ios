@@ -48,11 +48,14 @@ enum Exult_Game {
 
 #define GAME_BG (Game::get_game_type() == BLACK_GATE)
 #define GAME_SI (Game::get_game_type() == SERPENT_ISLE)
+#define GAME_FOV (Game::get_game_type()==BLACK_GATE && Game::has_expansion())
+#define GAME_SS (Game::get_game_type()==SERPENT_ISLE && Game::has_expansion())
 
 class Game : public Game_singletons {
 private:
 	static bool new_game_flag;
 	static Exult_Game game_type;
+	static bool expansion;
 #ifndef DONT_HAVE_HASH_MAP
 	hash_map<const char*, int, hashstr, eqstr> shapes;
 	hash_map<const char*, str_int_pair, hashstr, eqstr> resources;
@@ -82,8 +85,8 @@ public:
 	static bool is_new_game() { return new_game_flag; }
 	static bool is_editing() { return editing_flag; }
 	static Game *create_game(Exult_Game mygame, const char *title = 0);
-	static Exult_Game get_game_type()
-		{ return game_type; }
+	static Exult_Game get_game_type() { return game_type; }
+	static bool has_expansion() { return expansion; }
 
 	static const char *get_avname ();
 	static int get_avsex ();

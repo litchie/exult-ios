@@ -204,7 +204,10 @@ string Game_object::get_name
 				index = shnum;
 			break;
 		case 0x0b2:			// Cloth maps
-			index = 0x596 + frnum;
+			if (frnum < 5 || GAME_SS)
+				index = 0x596 + frnum;
+			else
+				index = shnum; // only SS has a description for frame 5
 			break;
 		case 0x0d1:			// Artifacts
 			index = 0x5c0 + frnum;
@@ -509,7 +512,9 @@ string Game_object::get_name
 				index = shnum;
 			break;
 		case 0x2b5:        // whistle
-			if (frnum == 4 || frnum == 5)
+			if (frnum == 1)
+				index = 0x617; // whistle
+			else if (frnum == 4 || frnum == 5)
 				index = 0x618; // bone flute
 			else
 				index = shnum;
@@ -571,7 +576,7 @@ string Game_object::get_name
 			else
 				index = shnum;
 			break;
-		case 0x31F:        // Body parts
+		case 0x31f:        // Body parts
 			index = 0x5df + frnum;
 			break;
 		case 0x320:      // chest
@@ -741,6 +746,23 @@ string Game_object::get_name
 		default:
 			index = shnum;
 			break;
+		}
+
+		// no Silver Seed?
+		if (!GAME_SS) {
+			if (index >= 0x605) {
+				index -= 11;
+			} else if (index >= 0x5bc) {
+				index -= 10;
+			} else if (index >= 0x5b8) {
+				index -= 9;
+			} else if (index >= 0x59c) {
+				index -= 8;
+			} else if (index >= 0x592) {
+				index -= 7;
+			} else if (index >= 0x581) {
+				index -= 2;
+			}
 		}
 
 	} else {

@@ -58,6 +58,7 @@ bool Game::new_game_flag = false;
 bool Game::editing_flag = false;
 Game *game = 0;
 Exult_Game Game::game_type = BLACK_GATE;
+bool Game::expansion = false;
 
 static char av_name[17] = "";
 static int av_sex = -1;
@@ -129,12 +130,19 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		char *static_identity = Game_window::get_game_identity(
 								INITGAME);
 
-		if((!strcmp(static_identity,"ULTIMA7"))||
-		   (!strcmp(static_identity,"FORGE")))
-                	game_type = BLACK_GATE;
-        	else if((!strcmp(static_identity,"SERPENT ISLE"))||
-			(!strcmp(static_identity,"SILVER SEED")))
-	                game_type = SERPENT_ISLE;
+		if (!strcmp(static_identity," ULTIMA7")) {
+			game_type = BLACK_GATE;
+			expansion = false;
+		} else if (!strcmp(static_identity, "FORGE")) {
+			game_type = BLACK_GATE;
+			expansion = true;
+		} else if (!strcmp(static_identity, "SERPENT ISLE")) {
+			game_type = SERPENT_ISLE;
+			expansion = false;
+		} else if (!strcmp(static_identity, "SILVER SEED")) {
+			game_type = SERPENT_ISLE;
+			expansion = true;
+		}
 		delete[] static_identity;
 	}
 	switch(game_type) {
