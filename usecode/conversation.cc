@@ -361,6 +361,7 @@ void Conversation::show_npc_message(const char *msg)
 		{			// More to do?
 		info->cur_text = string(msg, -height);
 		int x, y; char c;
+		gwin->paint();		// Paint scenery beneath.
 		Get_click(x, y, Mouse::hand, &c, false, this);
 //		gwin->paint(box);	// Clear area again.
 		gwin->paint();
