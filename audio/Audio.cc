@@ -374,6 +374,13 @@ void	Audio::start_music(const char *fname,int num,bool repetition)
 	}
 }
 
+void Audio::start_music(XMIDI *mid_file,bool repetition)
+{
+	if(music_enabled && midi != 0) {
+		midi->start_track(mid_file,repetition);
+	}
+}
+
 void	Audio::stop_music()
 {
 	if(midi)
