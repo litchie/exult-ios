@@ -80,6 +80,10 @@
 \CSam Lantinga
 \CAuthor of SDL, for making porting easier
 
+\CMatt Kimmich
+\CFor giving us permission to use his MIDI
+\Ctracks
+
 
 \Cand...
 
@@ -87,5 +91,5 @@
 \CORIGIN Systems Inc,
 \CRichard Garriot,
 \CWarren Spector
-\Cand the Ultima VII & Serpent Isle teams
-\Cfor making these great games in the first place
+\Cand the Ultima VII & Serpent Isle teams for
+\Cmaking these great games in the first place

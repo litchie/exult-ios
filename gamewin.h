@@ -151,6 +151,7 @@ public:
 					// Get the one game window.
 	static Game_window *get_game_window()
 		{ return game_window; }
+	void clear_screen();
 		
 	void set_window_size(int w, int h, int s);
 	void abort(const char *msg, ...);	// Fatal error.
@@ -604,7 +605,6 @@ public:
 	int get_text_height(int fontnum);
 	int get_text_baseline(int fontnum);
 	bool setup_endgame_fonts();	// Read the fonts from "endgame.dat" file
-	bool setup_mainshp_fonts();
 	bool setup_siintro_fonts();
 	Shape_frame *font_get_shape (int fontnum, int framenum);
 private:

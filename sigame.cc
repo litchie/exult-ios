@@ -21,6 +21,8 @@
 #include "game.h"
 #include "palette.h"
 #include "databuf.h"
+#include "font.h"
+#include "txtscroll.h"
 
 SI_Game::SI_Game()
 	{
@@ -90,6 +92,8 @@ SI_Game::SI_Game()
 		add_resource("palettes/12", "<STATIC>/palettes.flx", 12);
 		add_resource("palettes/13", "<STATIC>/mainshp.flx", 1);
 		add_resource("palettes/14", "<STATIC>/mainshp.flx", 26);
+		
+		fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 2);
 	}
 
 SI_Game::~SI_Game()
@@ -115,6 +119,7 @@ void SI_Game::play_intro()
 		Uint8	*buffer;
 		size_t	size;
 		int	i,j;
+		Font *font = fontManager.get_font("MENU_FONT");
 
 		if (!gwin->setup_siintro_fonts())
 			gwin->abort ("Unable to setup font from 'intro.dat' file.");
@@ -136,15 +141,15 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
-			center_text(0, txt_msg[0], centerx, centery+50);
-			center_text(0, txt_msg[1], centerx, centery+65);
+			font->center_text(gwin, centerx, centery+50, txt_msg[0]);
+			font->center_text(gwin, centerx, centery+65, txt_msg[1]);
 			win->show();
 		}
 
 
 		next = fli0.play(win, 0, 0, next, 100);
-		center_text(0, txt_msg[0], centerx, centery+50);
-		center_text(0, txt_msg[1], centerx, centery+65);
+		font->center_text(gwin, centerx, centery+50, txt_msg[0]);
+		font->center_text(gwin, centerx, centery+65, txt_msg[1]);
 		win->show();
 
 		SDL_Delay (3000);
@@ -152,8 +157,8 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
-			center_text(0, txt_msg[0], centerx, centery+50);
-			center_text(0, txt_msg[1], centerx, centery+65);
+			font->center_text(gwin, centerx, centery+50, txt_msg[0]);
+			font->center_text(gwin, centerx, centery+65, txt_msg[1]);
 			win->show();
 		}
 
@@ -751,13 +756,13 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
-			center_text(7, txt_msg[2], centerx, centery+75);
+			font->center_text(gwin, centerx, centery+75, txt_msg[2]);
 			win->show();
 		}
 
 
 		next = fli8.play(win, 0, 0, next, 100);
-		center_text(7, txt_msg[2], centerx, centery+75);
+		font->center_text(gwin, centerx, centery+75, txt_msg[2]);
 		win->show();
 
 		for (i = 0; i < 300; i++)
@@ -771,7 +776,7 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
-			center_text(7, txt_msg[2], centerx, centery+75);
+			font->center_text(gwin, centerx, centery+75, txt_msg[2]);
 			win->show();
 		}
 
@@ -814,22 +819,27 @@ void SI_Game::end_game(bool success)
 void SI_Game::show_quotes()
 	{
 		play_midi(32);
-		vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x10);
-		scroll_text(text);
-		destroy_text(text);
+		TextScroller quotes("<STATIC>/mainshp.flx", 0x10, 
+			     fontManager.get_font("MENU_FONT"),
+			     menushapes.extract_shape(0x14)
+			    );
+		quotes.run(gwin,pal);
 	}
 
 void SI_Game::show_credits()
 	{
 		play_midi(30);
-		vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x0E);
-		scroll_text(text);
-		destroy_text(text);
+		TextScroller credits("<STATIC>/mainshp.flx", 0x0E, 
+			     fontManager.get_font("MENU_FONT"),
+			     menushapes.extract_shape(0x14)
+			    );
+		credits.run(gwin,pal);
 	}
 
 bool SI_Game::new_game(Vga_file &shapes)
 	{
 		int menuy = topy+110;
+		Font *font = fontManager.get_font("MENU_FONT");
 		
 		char npc_name[9];
 		char disp_name[10];
@@ -845,7 +855,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 		bool ok = true;
 		do {
      		        if (redraw) {
-				clear_screen();
+				gwin->clear_screen();
 				gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 				gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
 				gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
@@ -856,7 +866,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 				        sprintf(disp_name, "%s_", npc_name);
 				else
 				        sprintf(disp_name, "%s", npc_name);
-				gwin->paint_text(MAINSHP_FONT1, disp_name, topx+50,menuy+10);
+				font->draw_text(gwin, topx+50, menuy+10, disp_name );
 				redraw = false;
 			}
 			pal.apply();
@@ -928,7 +938,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 			}
 		} while(editing);
 
-		clear_screen();
+		gwin->clear_screen();
 		gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 
 		if(ok)

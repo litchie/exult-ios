@@ -330,7 +330,7 @@ static gint32 load_image (gchar *filename)
 	gint32 file_size;
 	gint32 shape_size;
 	gint32 hdr_size;
-	guchar *pixptr;
+	guchar *pixptr, *eod;
 	gint32 frame_offset;
 	gint16  slice;
 	gint32 image_ID = -1;
@@ -371,7 +371,7 @@ static gint32 load_image (gchar *filename)
 		shape.num_frames = file_size/64;
 		fseek(fp, 0, SEEK_SET);		/* Return to start of file */
 		printf("num_frames = %d\n", shape.num_frames);
-		shape.frames = (struct u7frame *)malloc(sizeof(struct u7frame)*shape.num_frames);
+		shape.frames = g_new(struct u7frame, shape.num_frames);
 		max_width = 8;
 		max_height = 8;
 		for(i=0; i<shape.num_frames; i++) {
@@ -380,7 +380,7 @@ static gint32 load_image (gchar *filename)
 			frame->height = 8;
 			frame->leftX = 0;
 			frame->leftY = 0;
-			frame->pixels = (char *)malloc(64);
+			frame->pixels = (char *)g_malloc(64);
 			fread(frame->pixels, 1, 64, fp);
 		}
 	} else {
@@ -390,7 +390,7 @@ static gint32 load_image (gchar *filename)
 		max_width = -1;
 		max_height = -1;
 		printf("num_frames = %d\n", shape.num_frames);
-		shape.frames = (struct u7frame *)malloc(sizeof(struct u7frame)*shape.num_frames);
+		shape.frames = g_new(struct u7frame, shape.num_frames);
 	
 		for(i=0; i<shape.num_frames; i++) {
 			frame = &shape.frames[i];
@@ -408,14 +408,15 @@ static gint32 load_image (gchar *filename)
 			frame->height = frame->leftY+frame->rightY+1;
 			if(frame->height>max_height)
 				max_height = frame->height;
-			frame->pixels = (char *)malloc(frame->width*frame->height*2);
-			memset(frame->pixels, 0, frame->width*frame->height*2);
+			pixptr = frame->pixels = g_new0(char, frame->width*frame->height*2);
+			eod = frame->pixels+frame->width*frame->height*2;
 			while((slice=read2(fp))!=0) {
 				slice_type = slice & 0x1;
 				slice_length = slice >> 1;
 				offsetX = read2(fp);
 				offsetY = read2(fp);
 				pixptr = frame->pixels+(offsetY*frame->width+offsetX)*2;
+				g_assert(pixptr<eod);
 				if(slice_type) {	// Compressed
 					while(slice_length>0) {
 						block = read1(fp);
@@ -445,6 +446,8 @@ static gint32 load_image (gchar *filename)
 					}
 				}
 			}
+				printf("shape=%d w=%d h=%d pixptr=%d eod=%d\n", i, 
+					frame->width, frame->height, pixptr, eod);
 		}
 	}
 	image_ID = gimp_image_new (max_width, max_height, GIMP_INDEXED);
@@ -473,10 +476,10 @@ static gint32 load_image (gchar *filename)
 	fclose(fp);
 	
 	for(i=0; i<shape.num_frames; i++) {
-		free(shape.frames[i].pixels);
+		g_free(shape.frames[i].pixels);
 	}
 
-	free(shape.frames);
+	g_free(shape.frames);
 
 	return image_ID;
 }
