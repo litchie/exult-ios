@@ -30,6 +30,7 @@ public:
 	
 	void play_intro();
 	void clear_screen();
+	void refresh_screen();
 	void show_menu();
 	void play_flic(const char *archive, int index);
 	void play_audio(const char *archive, int index);

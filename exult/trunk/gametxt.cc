@@ -26,7 +26,7 @@ Boston, MA  02111-1307, USA.
 
 #include <ctype.h>
 #include "gamewin.h"
-
+#include "U7file.h"
 /*
  *	Fonts in 'fonts.vga':
  *
@@ -42,8 +42,11 @@ Boston, MA  02111-1307, USA.
 
 /*
  *	Horizontal leads, by fontnum:
+ *
+ *	This must include the Endgame fonts (currently 32-35)!!
+ *	However, their values are set elsewhere
  */
-static int hlead[10] = {-1, 0, 1, 0, 1, 0, 0, 0, 0, -1};
+static int hlead[36] = {-1, 0, 1, 0, 1, 0, 0, -1, 0, 0};
 
 /*
  *	Pass space.
@@ -167,7 +170,7 @@ int Game_window::paint_text
 	yoff += get_text_baseline(fontnum);
 	while ((chr = *text++) != 0)
 		{
-		Shape_frame *shape = fonts.get_shape(fontnum, chr);
+		Shape_frame *shape = font_get_shape(fontnum, chr);
 		if (!shape)
 			continue;
 		shape->paint_rle(win->get_ib8(), x, yoff);
@@ -185,7 +188,7 @@ int Game_window::paint_text
 int Game_window::paint_text
 	(
 	int fontnum,			// Font # in fonts.vga (0-9).
-	const char *text,			// What to draw.
+	const char *text,		// What to draw.
 	int textlen,			// Length of text.
 	int xoff, int yoff		// Upper-left corner of where to start.
 	)
@@ -194,7 +197,7 @@ int Game_window::paint_text
 	yoff += get_text_baseline(fontnum);
 	while (textlen--)
 		{
-		Shape_frame *shape = fonts.get_shape(fontnum, (int) *text++);
+		Shape_frame *shape = font_get_shape(fontnum, (int) *text++);
 		if (!shape)
 			continue;
 		shape->paint_rle(win->get_ib8(), x, yoff);
@@ -216,7 +219,7 @@ int Game_window::get_text_width
 	int width = 0;
 	short chr;
 	while ((chr = *text++) != 0)
-		width += fonts.get_shape(fontnum, chr)->get_width() + 
+		width += font_get_shape(fontnum, chr)->get_width() + 
 								hlead[fontnum];
 	return (width);
 	}
@@ -234,7 +237,7 @@ int Game_window::get_text_width
 	{
 	int width = 0;
 	while (textlen--)
-		width += fonts.get_shape(fontnum, *text++)->get_width() + 
+		width += font_get_shape(fontnum, *text++)->get_width() + 
 								hlead[fontnum];
 	return (width);
 	}
@@ -248,8 +251,8 @@ int Game_window::get_text_height
 	int fontnum
 	)
 	{
-	Shape_frame *A = fonts.get_shape(fontnum, 'A');
-	Shape_frame *y = fonts.get_shape(fontnum, 'y');
+	Shape_frame *A = font_get_shape(fontnum, 'A');
+	Shape_frame *y = font_get_shape(fontnum, 'y');
 	return A->get_yabove() + y->get_ybelow();	
 	}
 
@@ -262,7 +265,59 @@ int Game_window::get_text_baseline
 	int fontnum
 	)
 	{
-	Shape_frame *A = fonts.get_shape(fontnum, 'A');
+	Shape_frame *A = font_get_shape(fontnum, 'A');
 	return A->get_yabove();
 	}
 
+bool Game_window::setup_endgame_fonts ()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		U7object s_in(ENDGAME,i+3);
+
+		char	*buffer;
+		size_t	len;
+		if (!s_in.retrieve (&buffer, len))
+			return false;
+			
+		FILE	*tmpfile = fopen ("endfont.tmp", "wb");
+		
+		if(!tmpfile)
+		{
+			delete [] buffer;
+			return false;
+		}
+	
+		fwrite (buffer+8, len-8, 1, tmpfile);
+		delete [] buffer;
+		fclose (tmpfile);
+
+		end_fonts[i] = new Shape_file ("endfont.tmp");
+
+		remove ("endfont.tmp");
+	
+		if (!end_fonts[i]->get_num_frames())
+			return false;
+			
+	}
+
+	hlead[ENDGAME_FONT1] = 0;
+	hlead[ENDGAME_FONT2] = 0;
+	hlead[ENDGAME_FONT3] = 0;
+	hlead[ENDGAME_FONT4] = 0;
+	return true;
+}
+
+Shape_frame *Game_window::font_get_shape (int fontnum, int framenum)
+{
+	if (fontnum == ENDGAME_FONT1)
+		return end_fonts[0]->get_frame (framenum);
+	else if (fontnum == ENDGAME_FONT2)
+		return end_fonts[1]->get_frame (framenum);
+	else if (fontnum == ENDGAME_FONT3)
+		return end_fonts[2]->get_frame (framenum);
+	else if (fontnum == ENDGAME_FONT4)
+		return end_fonts[3]->get_frame (framenum);
+	
+	return fonts.get_shape(fontnum, framenum);
+}
