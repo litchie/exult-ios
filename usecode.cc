@@ -868,9 +868,8 @@ void Usecode_machine::set_item_frame
 		return;			// Already set to that.
 	// cout << "Set_item_frame: " << item->get_shapenum() 
 	//				<< ", " << frame << endl;
-#if 0	/* ++++Messes up with rotated frames. */
-	if (frame < gwin->get_shape_num_frames(item->get_shapenum()))
-#endif
+					// (Don't mess up rotated frames.)
+	if ((frame&0xf) < gwin->get_shape_num_frames(item->get_shapenum()))
 		item->set_frame(frame);
 	if (item->get_owner())		// Inside a container?
 		{
