@@ -1253,6 +1253,17 @@ void Game_window::show_items
 			cout << "Object is LIGHT_SOURCE\n";
 #endif
 		}
+	else				// Obj==0
+		{
+		int tx = chunkx*tiles_per_chunk + x/tilesize;
+		int ty = chunky*tiles_per_chunk + y/tilesize;
+		int cx = tx/tiles_per_chunk, cy = ty/tiles_per_chunk;
+		tx = tx%tiles_per_chunk;
+		ty = ty%tiles_per_chunk;
+		Chunk_object_list *chunk = get_objects(cx, cy);
+		cout << "Clicked on flat shape " << 
+			chunk->get_flat(tx, ty).get_shapenum() << '\n';
+		}
 	}
 
 /*

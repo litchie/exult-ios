@@ -76,7 +76,15 @@ int Actor_pathfinder_client::get_step_cost
 		cost++;
 		to.tz = new_lift;
 		}
-					// Maybe check types of ground?
+					// On the diagonal?
+	if (from.tx != to.tx || from.ty != to.ty)
+		cost *= 3;		// Make it 50% more expensive.
+	else
+		cost *= 2;
+					// Get 'flat' shapenum.
+	int shapenum = olist->get_flat(tx, ty).get_shapenum();
+	if (shapenum == 24)		// Cobblestone path in BlackGate?
+		cost--;
 	return (cost);
 	}
 
@@ -90,7 +98,24 @@ int Actor_pathfinder_client::estimate_cost
 	Tile_coord& to
 	)
 	{
-	return from.distance(to);
+	int dx = to.tx - from.tx;
+	if (dx < 0)
+		dx = -dx;
+	int dy = to.ty - from.ty;
+	if (dy < 0)
+		dy = -dy;
+	int larger, smaller;		// Start with larger.
+	if (dy <= dx)
+		{
+		larger = dx;
+		smaller = dy;
+		}
+	else
+		{
+		larger = dy;
+		smaller = dx;
+		}
+	return (2*larger + smaller);	// Straight = 2, diag = 3.
 	}
 
 /*
