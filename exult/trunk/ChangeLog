@@ -1,3 +1,6 @@
+2001-09-21  Ryan Nunn <triforce@merlin.net.au>
+	* objs/animate.cc : Fixing bubbles
+
 2001-09-21  Max Horn  <max@quendi.de>
 	* mapedit/Makefile.am: GTK_LIBS value from gtk-config is now used;
 	fixed strange make warning (not really sure why this fix helps)
