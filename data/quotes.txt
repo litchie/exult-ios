@@ -45,3 +45,8 @@
 \C"Luckily the world is not a donut,
 \Celse Homer Simpson might have eaten it."
 \L- Max
+
+\C"It's not our fault, the data files
+\Care telling us what to do!"
+\L- Dancer, explaining things clearly.
+
