@@ -1,3 +1,6 @@
+2001-08-06  Max Horn <max@quendi.de>
+	* exult_constants.h: added FORGET_OBJECT and FORGET_ARRAY
+
 2001-08-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* drag.cc,actors.cc: Readied/unreadied Usecode is now called at
