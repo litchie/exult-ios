@@ -1,4 +1,3 @@
-# Never ever change the order here: Exult depends on it
 EXULT_FLX_OBJECTS = \
 	exult_quotes.shp	\
 	exult_credits.shp	\
@@ -24,32 +23,40 @@ EXULT_FLX_OBJECTS = \
 	sfx_conversion.shp	\
 	palette_fades.shp	\
 	defaultkeys.txt		\
-	scaling_method.shp	\
-	hoe_of_destruction.shp  \
-	caddellite_helmet.shp	\
-	great_dagger.shp	\
-	magic_boomerang.shp	\
-	gorget.shp		\
-	magicgorget.shp		\
-	cleaver.shp		\
-	faces.shp		\
-	faces2.shp		\
-	amulets.shp		\
-	bgfiredoom.shp
+	scaling_method.shp
+
+EXULT_BG_FLX_OBJECTS = \
+	bg/hoe_of_destruction.shp	\
+	bg/caddellite_helmet.shp	\
+	bg/magic_boomerang.shp		\
+	bg/great_dagger.shp		\
+	bg/gorget.shp			\
+	bg/magicgorget.shp		\
+	bg/cleaver.shp			\
+	bg/faces.shp			\
+	bg/faces2.shp			\
+	bg/amulets.shp			\
+	bg/bgfiredoom.shp
+
 
 flexdir = $(datadir)/exult
 
 if DATA_FILES
 EXULT_FLX = exult.flx
+EXULT_BG_FLX = exult_bg.flx
 else
 EXULT_FLX =
+EXULT_BG_FLX =
 endif
 
-flex_DATA = $(EXULT_FLX) midisfx.flx
+flex_DATA = $(EXULT_FLX) $(EXULT_BG_FLX) midisfx.flx
 
-CLEANFILES = exult.flx *~
+CLEANFILES = exult.flx exult_bg.flx *~
 
-EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) midisfx.flx
+EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) $(EXULT_BG_FLX_OBJECTS) midisfx.flx
 
 exult.flx: $(EXULT_FLX_OBJECTS)
 	../tools/expack -i $(srcdir)/flx.in
+
+exult_bg.flx: $(EXULT_BG_FLX_OBJECTS)
+	../tools/expack -i $(srcdir)/bg/flx.in

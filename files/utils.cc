@@ -51,7 +51,7 @@ using std::string;
 
 // Function prototypes
 
-static void switch_slashes(string & name);
+void switch_slashes(string & name);
 
 // Ugly hack for supporting different paths
 
@@ -137,7 +137,7 @@ void base_to_uppercase
 
 
 
-static void switch_slashes(
+void switch_slashes(
 	string & name
 	)
 {
