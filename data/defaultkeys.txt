@@ -10,7 +10,6 @@ left		scroll_left
 up		scroll_up
 down		scroll_down
 home		center_screen
-F2		cheat_screen
 F3		map_teleport
 F4		toggle_fullscreen
 F10		show_endgame
