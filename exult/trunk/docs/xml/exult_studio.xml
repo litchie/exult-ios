@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="23 October 2002(GMT)">
+<studiodoc title="Exult" changed="28 October 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="28102002">
+			<header>28 October 2002</header>
+			<body>
+				<ul>
+					<li><ref1 target="studio_terms"/> added NPC schedules.</li>
+					<li><ref1 target="studio_run"/> the -d command line arg is now -gGAME.</li>
+					<li><ref1 target="can_do_atm"/> 'Paint with chunk' added.</li>
+					<li><ref1 target="shape_files"/> 'Frames' mode mentioned and explained.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="23102002">
 			<header>23 October 2002</header>
 			<body>
@@ -70,6 +81,8 @@
 						16x16 chunks</li>
 					<li><strong>world</strong>:<br/>
 						12x12 superchunks</li>
+					<li><strong>NPC schedules</strong>:<br/>
+						NPCs can have schedules which make them do certain things at certain times.</li>
 					<li><strong>BG</strong>, <strong>SI</strong>, <strong>FoV</strong> 
 					or <strong>SS</strong>:<br/>
 						we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle"
@@ -149,8 +162,9 @@
 					use the 'File' menu to choose the static directory (for the game you're
 					playing).</li>
    				<li>If <Studio/> isn't running start it up with:
-        			exult_studio -x (path to dir containing exult_studio.glade) -d
-        			(path to game directory)</li>
+        			exult_studio -x (path to dir containing exult_studio.glade) -gGAME
+        			(GAME is the same string (ie, 'blackgate') that we use in .exult.cfg or that 
+        			you've given to your own game).</li>
 				</ul>
 				<para>
 					You can also reconnect by selecting File-Connect in <Studio/>'s
@@ -208,10 +222,12 @@
 						<li>edit an NPC by double-clicking on it, and also create a new
 							NPC using the pull-down menu. Attributes, flags, and schedules can
 							all be viewed and modified.</li>
-						<li>can edit other objects' position and quality by double-clicking on them.</li>
+						<li>edit other objects' position and quality by double-clicking on them.</li>
 						<li>browse the 'u7chunks' file, and drag them into <Exult/> to change
 							the terrain. In this browser, you can also create new terrains and
 							modify their order.</li>
+						<li>select a chunk, choose 'Paint with chunks' from the 'Mode' menu, and then 
+							paint terrain with that whole chunk.</li>	
 						<li>edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit
 							terrain" checkbox in <Studio/>. This is a special mode where
 							dragging with the left mouse button 'paints' the currently-selected
@@ -344,6 +360,10 @@
 					the find option to find shapes that have that name (e.g. in shapes.vga you can search 
 					for 'door' to find all shapes that have door frames). You can search down or up in the
 					selected file.
+				</para>
+				<para>
+					When viewing shapes you can press the button 'Frames' in the lower right corner of 
+					<Studio/> to show all the frames of a shape next to each others.
 				</para>				
 				<para>
 					Shape files also have a special right-click-menu. See <ref1 target="shape_edit"/>.
