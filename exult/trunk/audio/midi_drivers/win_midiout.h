@@ -66,8 +66,6 @@ private:
 	static const unsigned char	fine_value;
 	static const unsigned char	coarse_value;
 	static const unsigned short	combined_value;
-	int							reverb_value;
-	int							chorus_value;
 
 	HMIDIOUT	midi_port;
 	

@@ -323,7 +323,8 @@ GammaTable<unsigned char> XMIDI::MidiGamma(128);
 
 // Constructor
 XMIDI::XMIDI(DataSource *source, int pconvert) : events(NULL),timing(NULL),
-						convert_type(pconvert),fixed(NULL)
+						convert_type(pconvert),fixed(NULL),
+						do_reverb(false), do_chorus(false)
 {
 	int i = 16;
 	while (i--) bank127[i] = 0;
@@ -670,35 +671,44 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	else
 		pan->data[1] = temp->data[1];
 
-	reverb = new midi_event;
-	reverb->time = 0;
-	reverb->status = channel|(MIDI_STATUS_CONTROLLER << 4);
-	reverb->len = 0;
-	reverb->buffer = NULL;
-	reverb->data[0] = 91;
-	reverb->data[1] = reverb_value;
+	if (do_reverb)
+	{
+		reverb = new midi_event;
+		reverb->time = 0;
+		reverb->status = channel|(MIDI_STATUS_CONTROLLER << 4);
+		reverb->len = 0;
+		reverb->buffer = NULL;
+		reverb->data[0] = 91;
+		reverb->data[1] = reverb_value;
+	}
 
-	chorus = new midi_event;
-	chorus->time = 0;
-	chorus->status = channel|(MIDI_STATUS_CONTROLLER << 4);
-	chorus->len = 0;
-	chorus->buffer = NULL;
-	chorus->data[0] = 93;
-	chorus->data[1] = chorus_value;
+	if (do_chorus)
+	{
+		chorus = new midi_event;
+		chorus->time = 0;
+		chorus->status = channel|(MIDI_STATUS_CONTROLLER << 4);
+		chorus->len = 0;
+		chorus->buffer = NULL;
+		chorus->data[0] = 93;
+		chorus->data[1] = chorus_value;
+	}
 
 	vol->time = 0;
 	pan->time = 0;
 	patch->time = 0;
 	bank->time = 0;
 	
-	reverb->next = chorus;
-	chorus->next = bank;
+	if (do_reverb && do_chorus) reverb->next = chorus;
+	else if (do_reverb) reverb->next = bank;
+	if (do_chorus) chorus->next = bank;
 	bank->next = vol;
 	vol->next = pan;
 	pan->next = patch;
 	
 	patch->next = list;
-	list = reverb;
+	if (do_reverb) list = reverb;
+	else if (do_chorus) list = chorus;
+	else list = bank;
 }
 
 // DuplicateAndMerge
@@ -1239,17 +1249,27 @@ int XMIDI::ExtractTracks (DataSource *source)
 
 	string s;
 	
-	config->value("config/audio/midi/reverb",s,"64");
+	config->value("config/audio/midi/reverb/enabled",s,"no");
+	if (s == "yes") do_reverb = true;
+	config->set("config/audio/midi/reverb/enabled",s,true);
+
+	config->value("config/audio/midi/reverb/level",s,"---");
+	if (s == "---") config->value("config/audio/midi/reverb",s,"64");
 	reverb_value = atoi(s.c_str());
 	if (reverb_value > 127) reverb_value = 127;
 	else if (reverb_value < 0) reverb_value = 0;
-	config->set("config/audio/midi/reverb",reverb_value,true);
+	config->set("config/audio/midi/reverb/level",reverb_value,true);
 	
-	config->value("config/audio/midi/chorus",s,"16");
+	config->value("config/audio/midi/chorus/enabled",s,"no");
+	if (s == "yes") do_chorus = true;
+	config->set("config/audio/midi/chorus/enabled",s,true);
+
+	config->value("config/audio/midi/chorus/level",s,"---");
+	if (s == "---") config->value("config/audio/midi/chorus",s,"16");
 	chorus_value = atoi(s.c_str());
 	if (chorus_value > 127) chorus_value = 127;
 	else if (chorus_value < 0) chorus_value = 0;
-	config->set("config/audio/midi/chorus",chorus_value,true);
+	config->set("config/audio/midi/chorus/level",chorus_value,true);
 	
 	config->value("config/audio/midi/gamma",s,"1");
 	MidiGamma.set_gamma (atof(s.c_str()));

@@ -1,3 +1,15 @@
+2001-03-13  Ryan Nunn <triforce@merlin.net.au>
+	* gamewin.cc: Game only attempt to detect Black Gate Actor gumps if
+	  the game is actually Black Gate.
+	* gumps/Gump.cc, objs/contain.cc: Added Tree Gump
+	* sigame.cc: Added some more gump shape nums
+	* audio/xmidi.*: Changes reverb and chorusing config keys to
+	  config/audio/midi/reverb/level and config/audio/midi/chorus/level
+	  Added two new options
+	  config/audio/midi/reverb/enabled and config/audio/midi/chorus/enabled
+	  so reverb and chorus can be enabled/disabled. Default is "no".
+	* audio/midi_drivers/win_midiout.*: Set reverb and chorus defaults to 0.
+
 2001-03-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Timidity - Fixed bug that Willem Jan figured out.
