@@ -141,8 +141,21 @@ public:
 	void set_attack_mode(Attack_mode amode)
 		{ attack_mode = amode; }
 	enum Item_flags {		// Bit #'s of flags:
+		invisible = 0,
+		asleep = 1,
+		charmed = 2,
+		cursed = 3,
+		dead = 7,		// Not sure...
 		poisoned = 8,
-		dont_render = 16	// Completely invisible.
+		protection = 9,
+		unknown3 = 10,		// In_motion (cart)??
+		okay_to_take = 11,	// Okay to take??
+		tremor = 12,		// ??Earthquake??
+		dancing = 15,		// ??Not sure.
+		dont_render = 16,	// Completely invisible.
+		unknown1 = 18,		// ??Used for Usecode-created items.
+		confused = 25,		// ??Guessing.
+		in_motion = 26		// ??Guessing (cart, boat)??
 		};
 	enum Item_properties {		// Trying to figure out properties.
 		strength = 0,		// This is also max. health.
