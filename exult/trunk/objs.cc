@@ -303,6 +303,53 @@ int Container_game_object::drop
 	}
 
 /*
+ *	Recursively count all objects of a given shape.
+ */
+
+int Container_game_object::count_objects
+	(
+	int shapenum			// Shape#, or -359 for any.
+	)
+	{
+	int total = 0;
+	Game_object *obj = last_object;
+	do
+		{
+		obj = obj->get_next();
+		if (shapenum == -359 || obj->get_shapenum() == shapenum)
+			total++;
+					// Count recursively.
+		total += obj->count_objects(shapenum);
+		}
+	while (obj != last_object);
+	return (total);
+	}
+
+/*
+ *	Recursively get all objects of a given shape.
+ */
+
+int Container_game_object::get_objects
+	(
+	Vector& vec,			// Objects returned here.
+	int shapenum			// Shape#, or -359 for any.
+	)
+	{
+	int vecsize = vec.get_cnt();
+	Game_object *obj = last_object;
+	do
+		{
+		obj = obj->get_next();
+		if (shapenum == -359 || obj->get_shapenum() == shapenum)
+			vec.append(obj);
+					// Search recursively.
+		obj->get_objects(vec, shapenum);
+		}
+	while (obj != last_object);
+	return (vec.get_cnt() - vecsize);
+	}
+
+/*
  *	Run usecode when double-clicked or when activated by proximity.
  */
 
@@ -981,9 +1028,8 @@ void Text_object::handle_event
 
 	}
 
-#if 0
 /*
- *	Lookup arctangent in a table for degrees 5-85.
+ *	Lookup arctangent in a table for degrees 0-85.
  */
 
 static unsigned Lookup_atan
@@ -993,15 +1039,20 @@ static unsigned Lookup_atan
 	{
 					// 1024*tan(x), where x ranges from
 					//   5 deg to 85.
-	static unsigned tans[17] = {90, 181, 274, 373, 477, 591, 717, 859,
+	static unsigned tans[18] = {0, 90, 181, 274, 373, 477, 591, 717, 859,
 			1024, 1220, 1462, 1774, 2196, 2813, 3822, 5807, 11704};
-++++++++++++++++++++++++++++++++++++
+	static int cnt = sizeof(tans)/sizeof(tans[0]);
+	for (int i = 1; i < cnt; i++)	// Don't bother with 0.
+		if (dydx < tans[i])
+			return (5*(i - 1));
+	return (5*(cnt - 1));
+	}
 
 /*
- *	Return the arctangent, in 5-degree increments as an angle counter-
- *	clockwise from the east.
+ *	Return the arctangent, rounded to 5-degree increments as an 
+ *	angle counter-clockwise from the east.
  *
- *	Output: Arctangent/5 degrees.
+ *	Output: Arctangent in degrees.
  */
 
 unsigned Arctangent
@@ -1010,9 +1061,21 @@ unsigned Arctangent
 	int deltax
 	)
 	{
-	if (!deltax)			// Vertical?
-		return (deltax > 0 ? 90/5 : 270/5);
+	unsigned angle;			// Gets angle in degrees.
+	int absx = deltax >= 0 ? deltax : -deltax;
+	int absy = deltay >= 0 ? deltay : -deltay;
+	if (absy > 23*absx)		// Vertical?
+		angle = 90;
+	else
+		angle = Lookup_atan((1024*absy)/absx);
 	if (deltay >= 0)
 		if (deltax >= 0)	// Top-right quadrant?
-			{
-#endif
+			return angle;
+		else			// Top-left?
+			return 180 - angle;
+	else
+		if (deltax >= 0)	// Lower-right.
+			return 360 - angle;
+		else			// Lower-left.
+			return 180 + angle;
+	}

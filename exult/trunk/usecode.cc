@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vec.h"
 #include "SDL.h"
 #include "tqueue.h"
+#include <Audio.h>
 
 /*
  *	A class for executing usecode at a scheduled time:
@@ -659,6 +660,91 @@ Usecode_value Usecode_machine::find_nearby
 	}
 
 /*
+ *	Find the angle (0-7) from one object to another.
+ *	++++++Not sure which dir.  0 represents.  Assuming East for now.
+ */
+
+Usecode_value Usecode_machine::find_direction
+	(
+	Usecode_value& from,
+	Usecode_value& to
+	)
+	{
+	unsigned angle;			// Gets angle in degrees.
+	Game_object *o1 = get_item(from.get_int_value());
+	Game_object *o2 = get_item(to.get_int_value());
+	if (!o1 || !o2)
+		angle = 0;
+	else
+		{			// Figure angle from positions.
+		int x1, y1, z1, x2, y2, z2;
+		o1->get_abs_tile(x1, y1, z1);
+		o2->get_abs_tile(x2, y2, z2);
+		angle = Arctangent(y2 - y1, x2 - x1);
+					// Round to nearest 45-degrees.
+		angle = (angle + 22)%360;
+		}
+	return Usecode_value(angle/45);
+	}
+
+/*
+ *	Count objects of a given shape in a container, or in the whole party.
+ */
+
+Usecode_value Usecode_machine::count_objects
+	(
+	Usecode_value& objval,		// The container, or -357 for party.
+	Usecode_value& shapeval		// Object shape to count (-359=any).
+	)
+	{
+	long oval = objval.get_int_value();
+	int shapenum = shapeval.get_int_value();
+	if (oval != -357)
+		{
+		Game_object *obj = get_item(oval);
+		return (!obj ? 0 : obj->count_objects(shapenum));
+		}
+					// Look through whole party.
+	Usecode_value party = get_party();
+	int cnt = party.get_array_size();
+	int total = 0;
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *obj = get_item(party.get_elem(i).get_int_value());
+		if (obj)
+			total += obj->count_objects(shapenum);
+		}
+	return (total);
+	}
+
+/*
+ *	Get objects of a given shape in a container.
+ */
+
+Usecode_value Usecode_machine::get_objects
+	(
+	Usecode_value& objval,		// The container.
+	Usecode_value& shapeval		// Object shape to get or -359 for any.
+	)
+	{
+	Game_object *obj = get_item(objval.get_int_value());
+	if (!obj)
+		return Usecode_value(0);
+	int shapenum = shapeval.get_int_value();
+	Vector vec;			// Gets list.
+	int cnt = obj->get_objects(vec, shapenum);
+	cout << "Container objects found:  " << cnt << '\n';
+	Usecode_value within(cnt, 0);	// Create return array.
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *each = (Game_object *) vec.get(i);
+		Usecode_value val((long) each);
+		within.put_elem(i, val);
+		}
+	return (within);
+	}
+
+/*
  *	Execute a list of instructions in an array.
  */
 
@@ -865,12 +951,20 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value(obj ? obj->get_quality() : 0);
 		break;
 		}
-	case 0x15:			// Guessing it's set_quality(item, value).
-		//+++++++++++++++++
-		Unhandled(intrinsic, num_parms, parms);
+	case 0x15:			// Guessing it's 
+					//  set_quality(item, value).
+		{
+		Game_object *obj = get_item(parms[0].get_int_value());
+		if (obj)
+			obj->set_quality(parms[1].get_int_value());
 		break;
+		}
 	case 0x16:			// Get # of items in NPC??????
 					//   Count(item, -npc).
+		//+++++++++++++
+		Unhandled(intrinsic, num_parms, parms);
+		break;
+	case 0x17:			// Set # of items??? (item, newcount).
 		//+++++++++++++
 		Unhandled(intrinsic, num_parms, parms);
 		break;
@@ -890,12 +984,10 @@ Usecode_value Usecode_machine::call_intrinsic
 		arr.put_elem(3, vobj);
 		return arr;
 		}
-	case 0x1a:			// ?Direction from parm[0] -> parm[1].
-					// Rets. 0-7.  Is 0 north?
-		Unhandled(intrinsic, num_parms, parms);
-		//+++++++++++++++++++++
-		break;
-	case 0x1b:			// Takes -npc.  Returns object?
+	case 0x1a:			// Direction from parm[0] -> parm[1].
+					// Rets. 0-7.  Is 0 east?
+		return find_direction(parms[0], parms[1]);
+	case 0x1b:			// Takes -npc.  Returns object.
 		{
 		Game_object *obj = get_item(parms[0].get_int_value());
 		return Usecode_value((long) obj);
@@ -986,30 +1078,25 @@ Usecode_value Usecode_machine::call_intrinsic
 		Game_object *obj = get_item(parms[0].get_int_value());
 		return Usecode_value(obj ? obj->get_name() : unknown);
 		}
-	case 0x28:			// How many 
-					// ((npc?-357==any, -356=avatar), 
+	case 0x28:			// How many?
+					// ((npc?-357==party, -356=avatar), 
 					//   item, quality?, quality?).
 					// Quality -359 means any?
-		//++++++++++++
-		Unhandled(intrinsic, num_parms, parms);
-		break;
+		return count_objects(parms[0], parms[1]);
 	case 0x2a:			// Get cont. items(item, type, qual,?).
-				// Think it rets. array of them.
-		//++++++++++++
-		Unhandled(intrinsic, num_parms, parms);
-		break;
-	case 0x2b:			// Remove items(num, item, 
+		return get_objects(parms[0], parms[1]);
+	case 0x2b:			// Remove items(quantity, item, 
 					//   -x?, -x?, T/F).  Often -359.???
 		//+++++++++++
 		Unhandled(intrinsic, num_parms, parms);
-		break;
+		return Usecode_value(1);	// ++++Pretend we did it.
 	case 0x2c:			// Add items(num, item, ??, ??, T/F).
 		//++++++++++
 		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x2e:			// Play music(item, songnum).
-		//++++++++++++
-		Unhandled(intrinsic, num_parms, parms);
+					// ??Show notes by item?
+		audio.start_music(parms[1].get_int_value());
 		break;
 	case 0x2f:			// NPC in party? (item).
 		return (Usecode_value(npc_in_party(
@@ -1064,6 +1151,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x6f:			// Animate object (w/ palette?)?
+					// Or delete object?
 //+++++++++++++++
 		Unhandled(intrinsic, num_parms, parms);
 		break;

@@ -230,6 +230,11 @@ class Usecode_machine
 	Usecode_value find_nearby(Usecode_value& objval,
 		Usecode_value& shapeval, Usecode_value& qval,
 							Usecode_value& mval);
+	Usecode_value find_direction(Usecode_value& from, Usecode_value& to);
+	Usecode_value count_objects(Usecode_value& objval,
+						Usecode_value& shapeval);
+	Usecode_value get_objects(Usecode_value& objval,
+						Usecode_value& shapeval);
 	void exec_array(Usecode_value& objval, Usecode_value& arrayval);
 
 	/*
