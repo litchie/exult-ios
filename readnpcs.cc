@@ -78,7 +78,10 @@ void Game_window::read_npcs
 	center_view(main_actor->get_abs_tile_coord());
 
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
+		{
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
+		npcs[i]->restore_schedule();
+		}
 	nfile.close();
 	main_actor->set_actor_shape();
 	try
@@ -95,6 +98,8 @@ void Game_window::read_npcs
 					// Watch for corrupted file.
 			if (get_shape_num_frames(act->get_shapenum()) < 16)
 				act->remove_this();
+			else
+				act->restore_schedule();
 			}
 	}
 	catch(...)

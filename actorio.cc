@@ -517,17 +517,7 @@ Npc_actor::Npc_actor
 	Chunk_object_list *olist = Game_window::get_game_window()->
 				get_objects_safely(get_cx(), get_cy());
 	if (olist)			// Might be invalide (a bug).
-		{
 		switched_chunks(0, olist);	// Put in chunk's NPC list.
-					// Activate schedule if not in party.
-		if (Npc_actor::get_party_id() < 0)
-			{
-			if (next_schedule != 255 && schedule_type == Schedule::walk_to_schedule)
-				set_schedule_and_loc(next_schedule, schedule_loc);
-			else
-				set_schedule_type(schedule_type);
-			}
-		}
 	}
 
 /*

@@ -328,8 +328,8 @@ void Combat_schedule::start_strike
 			!Ammo_info::is_in_family(aobj->get_shapenum(), 
 								ammo_shape)))
 			{		// Out of ammo.
-			if (Swap_weapons(npc))
-				set_weapon_info();
+			Swap_weapons(npc);
+			set_weapon_info();
 			state = approach;
 			npc->start(200, 500);
 			return;
@@ -365,7 +365,7 @@ void Combat_schedule::start_strike
 	}
 
 /*
- *	Set weapon 'max_range' and 'ammo'.
+ *	Set weapon 'max_range' and 'ammo'.  Ready a new weapon if needed.
  */
 
 void Combat_schedule::set_weapon_info
@@ -374,7 +374,12 @@ void Combat_schedule::set_weapon_info
 	{
 	int points;
 	Weapon_info *info = npc->get_weapon(points, weapon_shape);
-	if (!info)
+	if (!info)			// No weapon?  Look in inventory.
+		{
+		npc->ready_best_weapon();
+		info = npc->get_weapon(points, weapon_shape);
+		}
+	if (!info)			// Still nothing.
 		{
 		projectile_shape = ammo_shape = 0;
 		projectile_range = 0;

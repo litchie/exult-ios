@@ -1094,6 +1094,30 @@ int Actor::get_prev_schedule_type
 	}
 
 /*
+ *	Restore actor's schedule after reading.  This CANNOT be called from
+ *	a constructor, since it may call virtual methods when setting up
+ *	the schedule.
+ */
+
+void Actor::restore_schedule
+	(
+	)
+	{
+					// Make sure it's in valid chunk.
+	Chunk_object_list *olist = Game_window::get_game_window()->
+				get_objects_safely(get_cx(), get_cy());
+					// Activate schedule if not in party.
+	if (olist && get_party_id() < 0)
+		{
+		if (next_schedule != 255 && 
+				schedule_type == Schedule::walk_to_schedule)
+			set_schedule_and_loc(next_schedule, schedule_loc);
+		else
+			set_schedule_type(schedule_type);
+		}
+	}
+
+/*
  *	Set new schedule by type.
  */
 
