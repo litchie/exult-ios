@@ -2837,6 +2837,27 @@ int Game_window::get_weather
 	}
 
 /*
+ *	A sign or plaque?
+ */
+
+static bool Is_sign
+	(
+	int shnum
+	)
+	{
+	switch(shnum)
+		{
+	case 820:			// Plaque.
+	case 360:
+	case 361:
+	case 379:
+		return true;
+	default:
+		return false;
+		}
+	}
+
+/*
  *	Handle a double-click.
  */
 
@@ -2862,6 +2883,7 @@ void Game_window::double_clicked
 
 		// Check path, except if an NPC.
 	    	if (obj && obj->get_npc_num() <= 0 && !obj->is_monster() &&
+			!Is_sign(obj->get_shapenum()) &&
 			!Fast_pathfinder_client::is_grabable(
 					main_actor->get_abs_tile_coord(),
 					obj->get_abs_tile_coord()))
