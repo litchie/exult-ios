@@ -2103,11 +2103,12 @@ void Actor::set_flag
 		{			// Set timer to wake in a few secs.
 		need_timers()->start_sleep();
 		if ((get_framenum()&0xf) != Actor::sleep_frame &&
+					// Watch for slimes.
+		    !get_info().has_strange_movement() &&
 		    get_shapenum() > 0)	// (Might not be initialized yet.)
-			{		// Lie down.
+					// Lie down.
 			change_frame(Actor::sleep_frame + ((rand()%4)<<4));
-			set_action(0);	// Stop what you're doing.
-			}
+		set_action(0);		// Stop what you're doing.
 		}
 	if (flag == Obj_flags::poisoned)
 		need_timers()->start_poison();
