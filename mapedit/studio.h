@@ -132,6 +132,8 @@ public:
 	void set_browser(const char *name, Object_browser *obj);
 	bool has_focus();		// Any of our windows has focus?
 
+	void create_new_game(char *dir);
+	void new_game();
 	void choose_game_path();
 	Object_browser  *create_browser(const char *fname);
 	Object_browser  *create_palette_browser(const char *fname);

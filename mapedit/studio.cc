@@ -118,8 +118,7 @@ C_EXPORT void
 on_new_game_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-EStudio::Alert("Not implemented yet");
-//+++++	ExultStudio::get_instance()->+++++++++++=
+	ExultStudio::get_instance()->new_game();
 }
 
 C_EXPORT void
@@ -583,6 +582,60 @@ Shape_group_file *ExultStudio::get_cur_groups
 	)
 	{
 	return curfile ? curfile->get_groups() : 0;
+	}
+
+/*
+ *	New game directory was chosen.
+ */
+
+void on_choose_new_game_dir
+	(
+	char *dir,
+	gpointer udata			// ->studio.
+	)
+	{
+	((ExultStudio *) udata)->create_new_game(dir);
+	}
+void ExultStudio::create_new_game
+	(
+	char *dir			// Directory for new game.
+	)
+	{
+	string dirstr(dir);
+	string static_path = dirstr + "/static";
+	if (U7exists(static_path))
+		{
+		string msg("Directory '");
+		msg += static_path;
+		msg += "' already exists.\n";
+		msg += "Files within may be overwritten.\n";
+		msg += "Proceed?";
+		if (prompt(msg.c_str(), "Yes", "No") != 0)
+			return;
+		}
+	U7mkdir(dir, 0755);		// Create "game", "game/static",
+					//   "game/patch".
+	U7mkdir(static_path.c_str(), 0755);
+	string patch_path = dirstr + "/patch";
+	U7mkdir(patch_path.c_str(), 0755);
+	//+++++++Copy files into static.
+	set_game_path(dir);		// Open as current game.
+	}
+
+/*
+ *	Prompt for a 'new game' directory.
+ */
+
+void ExultStudio::new_game
+	(
+	)
+	{
+	if (!okay_to_close())		// Okay to close prev. game?
+		return;
+	GtkFileSelection *fsel = Create_file_selection(
+			"Choose new game directory",
+					on_choose_new_game_dir, this);
+	gtk_widget_show(GTK_WIDGET(fsel));
 	}
 
 /*
