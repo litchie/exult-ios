@@ -575,7 +575,8 @@ public:
 	void teleport_party(Tile_coord t);
 					// Get ->party members.
 	int get_party(Actor **list, int avatar_too = 0);
-	void activate_item(int shnum);	// Activate item in party.
+	void activate_item(int shnum, int frnum=c_any_framenum,
+			   int qual=c_any_qual); // Activate item in party.
 					// Find gump (x, y) is in.
 	Gump *find_gump(int x, int y);
 					// Find gump object is in.

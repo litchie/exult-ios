@@ -205,11 +205,15 @@ void ActionFullscreen(int *params)
 	gwin->paint();
 }
 
-//  { ActionUseItem, 1, "Use item", false, false, NONE },
+//  { ActionUseItem, 3, "Use item", false, false, NONE },
 // params[0] = shape nr.
+// params[1] = frame nr.
+// params[2] = quality
 void ActionUseItem(int *params)
 {
-	gwin->activate_item(params[0]);
+	if (params[1] == -1) params[1] == c_any_framenum;
+	if (params[2] == -1) params[2] == c_any_qual;
+	gwin->activate_item(params[0], params[1], params[2]);
 }
 
 //  { ActionCombat, 0, "Toggle combat", true, false, NONE },

@@ -2085,7 +2085,9 @@ int Game_window::get_party
 
 void Game_window::activate_item
 	(
-	int shnum			// Desired shape.
+	int shnum,			// Desired shape.
+	int frnum,			// Desired frame
+	int qual			// Desired quality
 	)
 	{
 	Actor *party[9];		// Get party.
@@ -2093,7 +2095,7 @@ void Game_window::activate_item
 	for (int i = 0; i < cnt; i++)
 		{
 		Actor *person = party[i];
-		Game_object *obj = person->find_item(shnum, c_any_qual, c_any_framenum);
+		Game_object *obj = person->find_item(shnum, qual, frnum);
 		if (obj)
 			{
 			Game_mode savemode = mode;
