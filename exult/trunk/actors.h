@@ -328,6 +328,7 @@ public:
 					Chunk_object_list *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
+	virtual void die();		// We're dead.
 	};
 
 /*
