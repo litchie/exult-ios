@@ -10,7 +10,7 @@ CC=gcc
 # Base of the exult source
 SRC=.
 VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SRC)/files:$(SRC)/files/zip:$(SRC)/flic: \
-$(SRC)/gumps:$(SRC)/imagewin:$(SRC)/objs:$(SRC)/pathfinder:$(SRC)/shapes:$(SRC)/server:$(SRC)/tools: \
+$(SRC)/gumps:$(SRC)/imagewin:$(SRC)/objs:$(SRC)/pathfinder:$(SRC)/shapes:$(SRC)/tools: \
 $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src
 
 ### Modify these paths
@@ -19,7 +19,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
-### of a hack.
+### of a hack. Just a note, it shouldn't be required with sdl 1.2.4
 #SDL_LIBS=-L$(SRC)/sdl/lib -lSDL -mconsole
 #SDL_CFLAGS=-I$(SRC)/sdl/include -DSDL_main=main
 
@@ -37,8 +37,8 @@ CPPFLAGS=-DVERSION=\"0.99.2cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
-	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
-	$(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
+	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data\
+	$(SDL_CFLAGS) -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
 CXXFLAGS=-O2 -Wno-long-long -mms-bitfields -DNEED_SNPRINTF_ONLY -DHAVE_EXT_HASH_MAP -DHAVE_EXT_HASH_SET -DHAVE_SSTREAM -finline-limit-1000
 CXX=g++
@@ -55,7 +55,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	gamerend.o gamewin.o keys.o keyactions.o \
 	menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
-	exultico.o cheat_screen.o shapeid.o version.o windrag.o
+	exultico.o cheat_screen.o shapeid.o version.o
 # unused: npctest.o
 
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
@@ -98,9 +98,7 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 	useval.o conversation.o keyring.o ucdisasm.o
 
-SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
-
-OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS)
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS)
 
 EXULT_FLX = data/exult.flx data/exult_flx.h
 EXULT_FLX_OBJECTS = \

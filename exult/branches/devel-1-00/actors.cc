@@ -1153,6 +1153,7 @@ void Actor::get_prefered_slots
 				
 			case torso_armor:
 			prefered = torso;
+			alternate = neck;
 			break;
 				
 			case ammunition:
