@@ -46,7 +46,7 @@ struct	IFF
 	struct  u7IFFobj
 		{
 		char    name[8];
-		char    data[]; // Variable
+		// char    data[]; // Variable
 		};
 	string	filename;
 	IFFhdr	header;
