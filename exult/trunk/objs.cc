@@ -75,7 +75,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		", distance = " << (int) distance << '\n';
 	if (type == (int) usecode)	// Data2 is the usecode function.
 		umachine->call_usecode(data2, this,
-					Usecode_machine::proximity);
+					Usecode_machine::egg_proximity);
 	}
 
 /*

@@ -242,8 +242,9 @@ public:
 	~Usecode_machine();
 					// Possible events:
 	enum Usecode_events {
+		npc_proximity = 0,
 		double_click = 1,
-		proximity = 3
+		egg_proximity = 3
 		};
 					// Call desired function.
 	int call_usecode(int id, Game_object *obj, Usecode_events event)
