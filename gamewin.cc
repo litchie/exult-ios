@@ -375,7 +375,7 @@ void Game_window::get_chunk_objects
 	for (int tiley = 0; tiley < tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < tiles_per_chunk; tilex++)
 			{
-			ShapeID id(data[0], data[1]);
+			ShapeID id(data[0], (unsigned char) (data[1]&0x7f));
 			Shape_frame *shape = get_shape(id);
 			if (!shape)
 				{
