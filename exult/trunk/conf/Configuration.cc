@@ -39,7 +39,7 @@ using std::string;
 
 const std::string	&Configuration::value(const char *key,bool &exists)
 {
-	XMLnode *sub=xmltree.subtree(string(key));
+	const XMLnode *sub=xmltree.subtree(string(key));
 	exists = (sub != NULL);
 	if(exists)
 		return sub->value();
@@ -47,9 +47,9 @@ const std::string	&Configuration::value(const char *key,bool &exists)
 	return c_empty_string;
 }
 
-void	Configuration::value(const char *key,std::string &s,const char *defaultvalue)
+void	Configuration::value(const char *key,std::string &s,const char *defaultvalue) const
 {
-	XMLnode *sub=xmltree.subtree(string(key));
+	const XMLnode *sub=xmltree.subtree(string(key));
 	if(sub)
 		s = sub->value();
 	else
@@ -199,7 +199,7 @@ void	Configuration::write_back(void)
 std::vector<std::string>	Configuration::listkeys(const std::string &key,bool longformat)
 {
 	std::vector<std::string>	vs;
-	XMLnode *sub=xmltree.subtree(key);
+	const XMLnode *sub=xmltree.subtree(key);
 	if(sub)
 		sub->listkeys(key,vs,longformat);
 	

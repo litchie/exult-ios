@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <fstream>
+#include <stack>
 
 /* Opcode table - common to BG & SI */
 const opcode_desc opcode_table[] =
@@ -643,7 +644,7 @@ vector<string> str2vec(const string &s);
 /* constructs the static usecode tables from other include files in the /exult hierachy,
    static by compilation.
 */
-void init_static_usecodetables()
+void init_static_usecodetables(const Configuration &config)
 {
 	#define	USECODE_INTRINSIC_PTR(NAME)	string(__STRING(NAME))
 	string bgut[] = 
@@ -664,14 +665,21 @@ void init_static_usecodetables()
 }
 
 /* constructs the usecode tables from datafiles in the /ucxt hierachy */
-void init_usecodetables()
+void init_usecodetables(const Configuration &config, const UCData &uc)
 {
-	// TODO: Some REAL file handling? Please?
-	ifstream file("Docs/opcodes.txt");
+	string ucxtroot;
+	if(uc.noconf() == false) config.value("config/ucxt/root", ucxtroot);
+  if(uc.verbose()) cout << "ucxtroot: " << ucxtroot << endl;
+  if(ucxtroot.size() && ucxtroot[ucxtroot.size()-1]!='/' && ucxtroot[ucxtroot.size()-1]!='\\') ucxtroot+='/';
+  ucxtroot+= "Docs/opcodes.txt";
+
+	ifstream file;
+
+	file.open(ucxtroot.c_str(), ios::in);
 	
 	if(file.fail())
 	{
-		cout << "error. could not locate Docs/opcodes.txt. exiting." << endl;
+		cout << "error. could not locate " << ucxtroot << ". exiting." << endl;
 		exit(1);
 	}
 	
@@ -691,6 +699,32 @@ void init_usecodetables()
 		if(i->asm_nmo!="" || i->ucs_nmo!="")
 			cout << i->opcode << "\t" << i->asm_nmo << "\t" << i->ucs_nmo << "\t" << i->num_bytes << "\t" << i->param_types << endl;
 	#endif ///test
+}
+
+/* To be depricated when I get the complex vector<string> splitter online */
+vector<string> qnd_ocsplit(const string &s)
+{
+  assert((s[0]=='{') && (s[s.size()-1]=='}'));
+
+	vector<string> vs;
+  string tstr;
+
+	for(string::const_iterator i=s.begin(); i!=s.end(); ++i)
+	{
+    if(*i==',')
+		{
+			vs.push_back(tstr);
+			tstr="";
+		}
+		else if(*i=='{' || *i=='}')
+		{ /* nothing */ }
+		else
+			tstr+=*i;
+	}
+	if(tstr.size())
+		vs.push_back(tstr);
+
+	return vs;
 }
 
 vector<string> str2vec(const string &s)
@@ -742,3 +776,85 @@ vector<string> str2vec(const string &s)
 	return vs;
 }
 
+/*vector<string> str2vec(const string &s)
+{
+	vector<string> vs; // the resulting strings
+	stack<char> vbound; // the "bounding" chars used to deonte collections of characters
+	unsigned int lasti=0;
+  string currstr; // the current string, gets appended to vs
+
+	// if it's empty return null
+	if(s.size()==0) return vs;
+
+	for(unsigned int i=0; i<s.size(); i++)
+	{
+		bool pushback=false; // do we push the currstr onto the vector now?
+		char c = s[i];
+		switch(c)
+		{*/
+			// let's start with the openings...
+			/* the general pricipal, since we strip the outermost enclosures,
+			   is to only append the "bounding" characters if they're NOT the
+			   outer most.
+			   NOTE: A subtle exception is the boundaries on the outermost set of
+			   bounding chars has the same effect as isspace(), YHBW */
+/*			case '{':  if(vs.size()) currstr+=c; vbound.push('}');  break;
+			//case '[': if(vs.size()) currstr+=c; vbound.push(']'); break;
+			//case '(': if(vs.size()) currstr+=c; vbound.push(')'); break;
+			//case '<': if(vs.size()) currstr+=c; vbound.push('>'); break;
+
+			// now the closures...
+			case '}':
+				if(vbound.top()=='}') vbound.pop();
+				if(vbound.size()==0)  pushback=true;
+				else                  currstr+=c;
+				break;
+			//case ']':
+			//	break;
+			//case ')':
+			//	break;
+			//case '>':
+			//	break;
+
+			// now the ones that have the pretentiousness of being both
+			// opening and closing causes
+			case '\"': if(vs.size()) currstr+=c; vbound.push('\"'); break;
+			case '\'': if(vs.size()) currstr+=c; vbound.push('\''); break;
+			case '\"':
+				if(vbound.top()=='\"')    vbound.pop();
+				else                   vbound.push('\"');
+				if(vbound.size()==0) pushback=true;
+				else                   currstr+=c;
+				break;
+			case '\'':
+				if(vbound.top()=='\'') vbound.pop();
+				if(vbound.size()==0)   pushback=true;
+				else                   currstr+=c;
+				break;
+			
+			// not to emulate isspace();
+			case ' ':  // ze space
+			case '\f': // form-feed
+			case '\n': // newline
+			case '\r': // carriage return
+			case '\t': // horizontal tab
+			case '\v': // vertical tab
+				pushback=true;
+				break;
+		}
+
+		if(pushback)
+		{
+			if(currstr.size())
+				vs.push_back(currstr);
+			currstr="";
+		}
+	}
+
+	#if 1 //test
+	for(unsigned int i=0; i<vs.size(); i++)
+		cout << "\t\"" << vs[i] << "\"" << endl;
+	#endif ///test
+
+	return vs;
+}*/
