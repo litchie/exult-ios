@@ -3,6 +3,7 @@
 	a nearest average colour scaler
 	* files/listfiles.cc: added config.h
 	* Makefile.am: changed library order
+	* gumps/Newfile_gump.cc: put some debugging output in #ifdef DEBUG's
 
 2001-04-22  Ryan Nunn <triforce@merlin.net.au>
 	* Makefiles.* : Added files/listfiles.* and gumps/Newfile_gump.*
