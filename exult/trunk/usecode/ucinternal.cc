@@ -1886,7 +1886,9 @@ int Usecode_internal::run
 				append_string(str);
 			else		// Convert integer.
 				{
-				if (locals[offset].get_int_value() != 0) {
+// 25-09-2001 - Changed to >= 0 to fix money-counting in SI.
+//				if (locals[offset].get_int_value() != 0) {
+				if (locals[offset].get_int_value() >= 0) {
 					char buf[20];
 					snprintf(buf, 20, "%ld",
 					locals[offset].get_int_value());

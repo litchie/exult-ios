@@ -95,7 +95,7 @@ Actor::Actor
 	    usecode == 0xfff)
 		usecode = -1;		// Let's try this.
 					// Guessing:  !!  (Want to get signed.)
-	int health_val = static_cast<int>(Read1(nfile));
+	int health_val = static_cast<int>(static_cast<char>(Read1(nfile)));
 	set_property(static_cast<int>(Actor::health), health_val);
 	nfile.seekg(3, ios::cur);	// Skip 3 bytes.
 	int iflag2 = Read2(nfile);	// Another inventory flag.
@@ -153,7 +153,8 @@ Actor::Actor
 		if ((strength_val << 7) & 1) set_siflag (Actor::freeze);
 	}
 
-	if (is_dying())			// Now we know health, strength.
+	if (is_dying() &&		// Now we know health, strength.
+	    npc_num > 0)		// DON'T do this for Avatar!
 		set_flag(Obj_flags::dead);	// Fixes older savegames.
 	// Dexterity
 	set_property(static_cast<int>(Actor::dexterity), Read1(nfile));
@@ -309,7 +310,7 @@ Actor::Actor
 	nfile.seekg (15, ios::cur);
 
 					// Get (signed) food level.
-	int food_read = static_cast<int>(Read1(nfile));
+	int food_read = static_cast<int>(static_cast<char>(Read1(nfile)));
 	if (fix_first) food_read = 18;
 	set_property(static_cast<int>(Actor::food_level), food_read);
 
