@@ -1,3 +1,9 @@
+2000-06-08  Coder Infidel  <coder_infidel@hotmail.com>
+
+	* actors.cc: Fixed warning
+	* exult.cc, mouse.cc, mouse.h: use red mouse pointer in combat mode
+	* gamewin.cc: added config to skip splash screen
+
 2000-06-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gumps.cc: Fixed initial object placement.
