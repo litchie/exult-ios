@@ -294,6 +294,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(nap_time);
 	USECODE_INTRINSIC_DECL(advance_time);
 	USECODE_INTRINSIC_DECL(in_usecode);
+	USECODE_INTRINSIC_DECL(call_guards);
 	USECODE_INTRINSIC_DECL(attack_avatar);
 	USECODE_INTRINSIC_DECL(path_run_usecode);
 	USECODE_INTRINSIC_DECL(close_gumps);

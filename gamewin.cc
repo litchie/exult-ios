@@ -2221,21 +2221,6 @@ void Game_window::double_clicked
 			combat = 0;
 			main_actor->set_target(obj);
 			toggle_combat();
-#if 0	/* Now done in Actor::reduce_health() +++++++++ */
-					// Being a bully?
-			bool bully = false;
-			if (npc)
-				{
-				int align = npc->get_alignment();
-				bully = npc->get_npc_num() > 0 &&
-					(align == Actor::friendly ||
-						align == Actor::neutral);
-				}
-			if (bully && obj->get_info().get_shape_class() ==
-							Shape_info::human &&
-			   Game::get_game_type() == BLACK_GATE)
-				attack_avatar(1 + rand()%3);
-#endif
 			return;
 			}
 		}
@@ -2356,24 +2341,20 @@ int Get_guard_shape
 	}
 
 /*
- *	Handle theft.
+ *	Find a witness to the Avatar's thievery.
+ *
+ *	Output:	->witness, or NULL.
+ *		closest_npc = closest one that's nearby.
  */
 
-void Game_window::theft
+Actor *Game_window::find_witness
 	(
+	Actor *& closest_npc		// Closest one returned.
 	)
 	{
-					// See if in a new location.
-	int cx = main_actor->get_cx(), cy = main_actor->get_cy();
-	if (cx != theft_cx || cy != theft_cy)
-		{
-		theft_cx = cx;
-		theft_cy = cy;
-		theft_warnings = 0;
-		}
 	Actor_vector npcs;			// See if someone is nearby.
 	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12);
-	Actor *closest_npc = 0;		// Look for closest NPC.
+	closest_npc = 0;		// Look for closest NPC.
 	int closest_dist = 5000;
 	Actor *witness = 0;		// And closest facing us.
 	int closest_witness_dist = 5000;
@@ -2405,6 +2386,27 @@ void Game_window::theft
 			closest_dist = dist;
 			}
 		}
+	return witness;
+	}
+
+/*
+ *	Handle theft.
+ */
+
+void Game_window::theft
+	(
+	)
+	{
+					// See if in a new location.
+	int cx = main_actor->get_cx(), cy = main_actor->get_cy();
+	if (cx != theft_cx || cy != theft_cy)
+		{
+		theft_cx = cx;
+		theft_cy = cy;
+		theft_warnings = 0;
+		}
+	Actor *closest_npc;
+	Actor *witness = find_witness(closest_npc);
 	if (!witness)
 		{
 		if (closest_npc && rand()%2)
@@ -2422,6 +2424,21 @@ void Game_window::theft
 		return;
 		}
 	gump_man->close_all_gumps();	// Get gumps off screen.
+	call_guards(witness);
+	}
+
+/*
+ *	Create a guard to arrest the Avatar.
+ */
+
+void Game_window::call_guards
+	(
+	Actor *witness			// ->witness, or 0 to find one.
+	)
+	{
+	Actor *closest;
+	if (!witness && !(witness = find_witness(closest)))
+		return;			// Nobody saw.
 	witness->say(first_call_guards, last_call_guards);
 					// Show guard running up.
 	int gshape = Get_guard_shape(main_actor->get_tile());
