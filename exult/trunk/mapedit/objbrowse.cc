@@ -23,6 +23,10 @@ bool Object_browser::server_response(int , unsigned char *, int )
 	return false;			// Not handled here.
 }
 
+void Object_browser::end_terrain_editing()
+{
+}
+
 GtkWidget *Object_browser::get_widget() 
 {
 	return widget;

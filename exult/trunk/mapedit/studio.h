@@ -97,6 +97,7 @@ public:
 	void set_play(gboolean play);
 	void set_tile_grid(gboolean grid);
 	void set_edit_lift(int lift);
+	void set_edit_terrain(gboolean terrain);
 					// Objects:
 	void open_obj_window(unsigned char *data, int datalen);
 	void close_obj_window();
