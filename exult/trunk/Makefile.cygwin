@@ -74,6 +74,7 @@ clean:
 install: $(EXEC)
 	strip $(EXEC) -o c:/ultima7/$(EXEC)
 	cp data/exult.flx c:/ultima7/data/exult.flx
+	cp data/midisfx.flx c:/ultima7/data/midisfx.flx
 
 run:
 	start $(EXEC)
