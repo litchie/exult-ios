@@ -103,8 +103,8 @@ char *Actor::get_name
 
 Schedule::Schedule
 	(
-	unsigned char *entry		// 5 bytes read from schedule.dat.
-	) : x(entry[2]), y(entry[3]), superchunk(entry[4])
+	unsigned char *entry		// 4 bytes read from schedule.dat.
+	) : x(entry[1]), y(entry[2]), superchunk(entry[3])
 	{
 	time = entry[0]&7;
 	type = entry[0]>>3;

@@ -52,6 +52,9 @@ public:
 private:
 	Usecode_machine *usecode;	// Drives game plot.
 	Game_mode mode;			// Mode we'er in.
+	short hour, minute;		// Time (0-23, 0-59).
+	int day;			// Keep track of days played.
+	long lasttime;			// Last time our clock updated (secs.).
 	char *showing_item;		// Item we're showing the name of.
 	Rectangle showing_rect;		// Rectangle item text is shown in.
 	Rectangle npc_text_rect;	// Rectangle NPC statement is shown in.
@@ -104,6 +107,10 @@ public:
 		}
 	Image_window *get_win()
 		{ return win; }
+	int get_hour()			// Get current time.
+		{ return hour; }
+	int get_minute()
+		{ return minute; }
   Image_window *get_shapewin()
     { return shapewin; }
   Image_window *get_win(Window xwin) {
