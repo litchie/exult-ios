@@ -92,7 +92,7 @@ enum ActionCode {
         ACTION_TOGGLE_NAKED,
         ACTION_TOGGLE_PETRA,
         ACTION_CHANGE_SKIN,
-        ACTION_SOUND_TESTER,
+        ACTION_SOUND_TESTER
 };
 
 struct ActionType {
