@@ -23,6 +23,9 @@ LIBS=$(SDL_LIBS) -lmidi -lbe -lz
 
 EXEC=exult
 
+MIDI_DRV_OBJS=be_midi.o
+# unused: KMIDI.o Timidity_binary.o forked_player.o win_MCI.o
+
 include Makefile.common
 
 beos/exult.rsrc : beos/exult.rsrc
