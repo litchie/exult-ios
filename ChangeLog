@@ -1,4 +1,6 @@
-2001-08-22  Jeff Freedman  <jeff@amy.nerble.net>
+2001-08-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* effects.cc (Lightning_effect): Use palette 10 for flashing.
 
 	* game.cc (Game): Made get_game_type() inlined.
 	* actors.cc:  Automatons don't need to eat.
