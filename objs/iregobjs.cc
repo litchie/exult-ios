@@ -84,8 +84,8 @@ void Ireg_game_object::remove_this
 		owner->remove(this);
 	else				// In the outside world.
 		{
-		Chunk_object_list *chunk = 
-			Game_window::get_game_window()->get_objects_safely(
+		Map_chunk *chunk = 
+			Game_window::get_game_window()->get_chunk_safely(
 								cx, cy);
 		if (chunk)
 			chunk->remove(this);

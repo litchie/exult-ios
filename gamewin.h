@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Actor;
 class Barge_object;
-class Chunk_object_list;
+class Map_chunk;
 class Chunk_terrain;
 class Egg_object;
 class Font;
@@ -111,7 +111,7 @@ class Game_window
 					// Chunk_terrain index for each chunk:
 	short terrain_map[c_num_chunks][c_num_chunks];
 					// A list of objects in each chunk:
-	Chunk_object_list *objects[c_num_chunks][c_num_chunks];
+	Map_chunk *objects[c_num_chunks][c_num_chunks];
 	Deleted_objects *removed;	// List of 'removed' objects.
 	bool schunk_read[144]; 		// Flag for reading in each "ifix".
 	bool schunk_modified[144];	// Flag for modified "ifix".
@@ -141,7 +141,7 @@ class Game_window
 	Time_sensitive *background_noise;
 					// Open a U7 file, throw an
 					//    exception if failed
-	Chunk_object_list *create_chunk(int cx, int cy);
+	Map_chunk *create_chunk(int cx, int cy);
 	void set_scrolls(Tile_coord cent);
 	void set_scroll_bounds();	// Set scroll-controller.
 	void clear_world();		// Clear out world's contents.
@@ -221,20 +221,20 @@ public:
 		{ schunk_modified[12*(cy/c_chunks_per_schunk) +
 					cx/c_chunks_per_schunk] = true; }
 					// Get/create objs. list for a chunk.
-	Chunk_object_list *get_objects(int cx, int cy)
+	Map_chunk *get_chunk(int cx, int cy)
 		{
 		assert((cx >= 0) && (cx < c_num_chunks) && 
 		        (cy >= 0) && (cy < c_num_chunks));
-		Chunk_object_list *list = objects[cx][cy];
+		Map_chunk *list = objects[cx][cy];
 		if (!list)
 			list = create_chunk(cx, cy);
 		return (list);
 		}
-	Chunk_object_list *get_objects(Game_object *obj);
-	Chunk_object_list *get_objects_safely(int cx, int cy)
+	Map_chunk *get_chunk(Game_object *obj);
+	Map_chunk *get_chunk_safely(int cx, int cy)
 		{
 		return (cx >= 0 && cx < c_num_chunks && 
-		        cy >= 0 && cy < c_num_chunks ? get_objects(cx, cy) : 0);
+		        cy >= 0 && cy < c_num_chunks ? get_chunk(cx, cy) : 0);
 		}
 	inline Barge_object *get_moving_barge() const
 		{ return moving_barge; }
@@ -568,7 +568,7 @@ public:
 	int paint_chunk_objects(int cx, int cy);
 					// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj);
-	void paint_dungeon_object(Chunk_object_list *olist, Game_object *obj);
+	void paint_dungeon_object(Map_chunk *olist, Game_object *obj);
 					// Fade palette in/out.
 	void fade_palette(int cycles, int inout, int pal_num = -1);
 	bool is_palette_faded_out()

@@ -112,7 +112,7 @@ protected:
 	Rectangle weapon_rect;		// Screen area weapon was drawn in.
 	void init();			// Clear stuff during construction.
 					// Move and change frame.
-	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
+	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
 					// Read from file.
 	Actor(std::istream& nfile, int num, int has_usecode);
@@ -284,7 +284,7 @@ public:
 	int approach_another(Actor *other, bool wait = false);
 					// Get info. about tile to step onto.
 	static void get_tile_info(Actor *actor,
-		Game_window *gwin, Chunk_object_list *nlist,
+		Game_window *gwin, Map_chunk *nlist,
 				int tx, int ty, int& water, int& poison);
 					// Set combat opponent.
 	void set_target(Game_object *obj, bool start_combat = false);
@@ -454,8 +454,8 @@ public:
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
 					// Update chunks after NPC moved.
-	void switched_chunks(Chunk_object_list *olist,
-					Chunk_object_list *nlist);
+	void switched_chunks(Map_chunk *olist,
+					Map_chunk *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
 	virtual void die();		// We're dead.
@@ -495,7 +495,7 @@ public:
 	virtual void remove_schedule(int time);
 	virtual void get_schedules(Schedule_change *&list, int &cnt);
 					// Move and change frame.
-	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
+	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
 					// Update schedule for new 3-hour time.
 	void update_schedule(Game_window *gwin, int hour3, int backwards = 0,
@@ -511,8 +511,8 @@ public:
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 					// Update chunks after NPC moved.
-	void switched_chunks(Chunk_object_list *olist,
-					Chunk_object_list *nlist);
+	void switched_chunks(Map_chunk *olist,
+					Map_chunk *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
 	};

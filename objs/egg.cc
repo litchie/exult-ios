@@ -503,8 +503,8 @@ void Egg_object::update_from_studio
 		((auto_reset?1:0)<<Egg_object::auto_reset);
 	egg->data1 = data1;
 	egg->data2 = data2;
-	Chunk_object_list *chunk = 
-			gwin->get_objects_safely(egg->get_cx(), egg->get_cy());
+	Map_chunk *chunk = 
+			gwin->get_chunk_safely(egg->get_cx(), egg->get_cy());
 	chunk->remove_egg(egg);		// Got to add it back.
 	chunk->add_egg(egg);
 	cout << "Egg updated" << endl;
@@ -569,8 +569,8 @@ void Egg_object::activate
 					gwin->create_ireg_object(info,
 						shnum, frnum, get_tx(),
 						get_ty(), get_lift());
-				Chunk_object_list *chunk = 
-					gwin->get_objects(get_cx(), get_cy());
+				Map_chunk *chunk = 
+					gwin->get_chunk(get_cx(), get_cy());
 				if (nobj->is_egg())
 					chunk->add_egg((Egg_object *) nobj);
 				else
@@ -728,8 +728,8 @@ void Egg_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	Chunk_object_list *chunk = 
-			Game_window::get_game_window()->get_objects_safely(
+	Map_chunk *chunk = 
+			Game_window::get_game_window()->get_chunk_safely(
 								cx, cy);
 	if (chunk)
 		chunk->remove_egg(this);

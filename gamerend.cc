@@ -206,7 +206,7 @@ void Game_window::paint_chunk_flats
 	int xoff, int yoff		// Pixel offset of top-of-screen.
 	)
 	{
-	Chunk_object_list *olist = get_objects(cx, cy);
+	Map_chunk *olist = get_chunk(cx, cy);
 					// Paint flat tiles.
 	Image_buffer8 *cflats = olist->get_rendered_flats();
 	if (cflats)
@@ -229,7 +229,7 @@ void Game_window::paint_dungeon_chunk_flats
 	int xoff, int yoff		// Pixel offset of top-of-screen.
 	)
 	{
-	Chunk_object_list *olist = get_objects(cx, cy);
+	Map_chunk *olist = get_chunk(cx, cy);
 	if (!olist->has_dungeon())	// No dungeon in this chunk?
 		{
 		const int w = c_tilesize*c_tiles_per_chunk;
@@ -268,7 +268,7 @@ int Game_window::paint_chunk_objects
 	)
 	{
 	Game_object *obj;
-	Chunk_object_list *olist = get_objects(cx, cy);
+	Map_chunk *olist = get_chunk(cx, cy);
 	if (in_dungeon && !olist->has_dungeon())
 		return 0;		// Totally outside dungeon.
 	int light_sources = 0;		// Also check for light sources.
@@ -322,7 +322,7 @@ void Game_window::paint_object
 
 void Game_window::paint_dungeon_object
 	(
-	Chunk_object_list *olist,	// Chunk being rendered.
+	Map_chunk *olist,	// Chunk being rendered.
 	Game_object *obj
 	)
 	{

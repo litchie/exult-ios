@@ -358,8 +358,8 @@ int Actor::add_dirty
  */
 inline void Actor::movef
 	(
-	Chunk_object_list *old_chunk, 
-	Chunk_object_list *new_chunk, 
+	Map_chunk *old_chunk, 
+	Map_chunk *new_chunk, 
 	int new_sx, int new_sy, int new_frame, 
 	int new_lift
 	)
@@ -755,7 +755,7 @@ void Actor::follow
 #endif
 					// Don't try again for a second.
 		next_path_time = SDL_GetTicks() + 1000;
-		if (Chunk_object_list::is_blocked(goal, 3, get_type_flags()))
+		if (Map_chunk::is_blocked(goal, 3, get_type_flags()))
 					// Find a free spot.
 			goal = leader->find_unblocked_tile(1, 3);
 		if (goal.tx == -1)	// No free spot?  Give up.
@@ -824,7 +824,7 @@ void Actor::get_tile_info
 	(
 	Actor *actor,			// May be 0 if not known.
 	Game_window *gwin,
-	Chunk_object_list *nlist,	// Chunk.
+	Map_chunk *nlist,	// Chunk.
 	int tx, int ty,			// Tile within chunk.
 	int& water,			// Returns 1 if water.
 	int& poison			// Returns 1 if poison.
@@ -1127,8 +1127,8 @@ void Actor::restore_schedule
 	)
 	{
 					// Make sure it's in valid chunk.
-	Chunk_object_list *olist = Game_window::get_game_window()->
-				get_objects_safely(get_cx(), get_cy());
+	Map_chunk *olist = Game_window::get_game_window()->
+				get_chunk_safely(get_cx(), get_cy());
 					// Activate schedule if not in party.
 	if (olist && get_party_id() < 0)
 		{
@@ -1280,7 +1280,7 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 				int delay)	// -1 for random delay.
 {
 	Game_window *gwin = Game_window::get_game_window();
-//Causes bugs in SI.  Maybe not needed.	if (!gwin->get_objects_safely(get_cx(), get_cy()))
+//Causes bugs in SI.  Maybe not needed.	if (!gwin->get_chunk_safely(get_cx(), get_cy()))
 //		return;			// Not on the map.
 
 	stop();				// Stop moving.
@@ -2208,7 +2208,7 @@ int Actor::move_aside
 			{
 			to = cur.get_neighbor(i);
 					// Assume height = 3.
-			if (!Chunk_object_list::is_blocked(
+			if (!Map_chunk::is_blocked(
 						to, 3, get_type_flags()))
 				break;
 			}
@@ -2638,7 +2638,7 @@ int Main_actor::step
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get rel. tile coords.
 	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
-	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+	Map_chunk *nlist = gwin->get_chunk(cx, cy);
 	int old_lift = get_lift();
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
@@ -2664,7 +2664,7 @@ int Main_actor::step
 	gwin->scroll_if_needed(this, t);
 	add_dirty(gwin);		/// Set to update old location.
 					// Get old chunk, old tile.
-	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
+	Map_chunk *olist = gwin->get_chunk(get_cx(), get_cy());
 	Tile_coord oldtile = get_abs_tile_coord();
 					// Move it.
 	Actor::movef(olist, nlist, tx, ty, frame, new_lift);
@@ -2695,8 +2695,8 @@ int Main_actor::step
 
 void Main_actor::switched_chunks
 	(
-	Chunk_object_list *olist,	// Old chunk, or null.
-	Chunk_object_list *nlist	// New chunk.
+	Map_chunk *olist,	// Old chunk, or null.
+	Map_chunk *nlist	// New chunk.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -2745,7 +2745,7 @@ void Main_actor::switched_chunks
 		}
 	for (int y = yfrom; y <= yto; y++)
 		for (int x = xfrom; x <= xto; x++)
-			gwin->get_objects(x, y)->setup_cache();
+			gwin->get_chunk(x, y)->setup_cache();
 
 	// If change in Superchunk number, apply Old Style caching emulation
 	if (olist) gwin->emulate_cache(olist->get_cx(), olist->get_cy(), newcx, newcy);
@@ -2765,11 +2765,11 @@ void Main_actor::move
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Store old chunk list.
-	Chunk_object_list *olist = gwin->get_objects_safely(
+	Map_chunk *olist = gwin->get_chunk_safely(
 						get_cx(), get_cy());
 					// Move it.
 	Game_object::move(newtx, newty, newlift);
-	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
+	Map_chunk *nlist = gwin->get_chunk(get_cx(), get_cy());
 	if (nlist != olist)
 		switched_chunks(olist, nlist);
 	int tx = get_tx(), ty = get_ty();
@@ -3070,8 +3070,8 @@ void Npc_actor::get_schedules
 
 inline void Npc_actor::movef
 	(
-	Chunk_object_list *old_chunk,
-	Chunk_object_list *new_chunk, 
+	Map_chunk *old_chunk,
+	Map_chunk *new_chunk, 
 	int new_sx, int new_sy,
 	int new_frame, 
 	int new_lift
@@ -3244,7 +3244,7 @@ int Npc_actor::step
 					// Get rel. tile coords.
 	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
 					// Get ->new chunk.
-	Chunk_object_list *nlist = gwin->get_objects_safely(cx, cy);
+	Map_chunk *nlist = gwin->get_chunk_safely(cx, cy);
 	if (!nlist)			// Shouldn't happen!
 		{
 		stop();
@@ -3272,7 +3272,7 @@ int Npc_actor::step
 	gwin->scroll_if_needed(this, t);
 	add_dirty(gwin);		// Set to repaint old area.
 					// Get old chunk.
-	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
+	Map_chunk *olist = gwin->get_chunk(old_cx, old_cy);
 					// Move it.
 	movef(olist, nlist, tx, ty, frame, new_lift);
 					// Offscreen, but not in party?
@@ -3308,8 +3308,7 @@ void Npc_actor::remove_this
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	gwin->remove_nearby_npc(this);	// Remove from nearby list.
 					// Store old chunk list.
-	Chunk_object_list *olist = gwin->get_objects_safely(
-							get_cx(), get_cy());
+	Map_chunk *olist = gwin->get_chunk_safely(get_cx(), get_cy());
 	Actor::remove_this(nodel);	// Remove.
 	switched_chunks(olist, 0);
 	cx = cy = 0xff;			// Set to invalid chunk coords.
@@ -3321,8 +3320,8 @@ void Npc_actor::remove_this
 
 void Npc_actor::switched_chunks
 	(
-	Chunk_object_list *olist,	// Old chunk, or null.
-	Chunk_object_list *nlist	// New chunk, or null.
+	Map_chunk *olist,	// Old chunk, or null.
+	Map_chunk *nlist	// New chunk, or null.
 	)
 	{
 	if (olist && olist->npcs)	// Remove from old list.
@@ -3362,11 +3361,10 @@ void Npc_actor::move
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Store old chunk list.
-	Chunk_object_list *olist = gwin->get_objects_safely(
-							get_cx(), get_cy());
+	Map_chunk *olist = gwin->get_chunk_safely(get_cx(), get_cy());
 					// Move it.
 	Game_object::move(newtx, newty, newlift);
-	Chunk_object_list *nlist = gwin->get_objects_safely(get_cx(), get_cy());
+	Map_chunk *nlist = gwin->get_chunk_safely(get_cx(), get_cy());
 	if (nlist != olist)
 		switched_chunks(olist, nlist);
 	}
@@ -3438,7 +3436,7 @@ int Monster_actor::is_blocked
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
 	int ztiles = info.get_3d_height();
 	Tile_coord cur = get_abs_tile_coord();
-	return Chunk_object_list::is_blocked(xtiles, ytiles, ztiles,
+	return Map_chunk::is_blocked(xtiles, ytiles, ztiles,
 			cur, t, get_type_flags());
 	}
 
@@ -3567,7 +3565,7 @@ int Monster_actor::step
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get ->new chunk.
-	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+	Map_chunk *nlist = gwin->get_chunk(cx, cy);
 	nlist->setup_cache();		// Setup cache if necessary.
 					// Blocked?
 	if (is_blocked(t))
@@ -3583,7 +3581,7 @@ int Monster_actor::step
 	gwin->scroll_if_needed(this, t);
 	add_dirty(gwin);		// Set to repaint old area.
 					// Get old chunk.
-	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
+	Map_chunk *olist = gwin->get_chunk(old_cx, old_cy);
 					// Move it.
 					// Get rel. tile coords.
 	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
@@ -3762,7 +3760,7 @@ Monster_actor *Monster_info::create
 					// ++++Armor?
 					// Place in world.
 	Game_window *gwin = Game_window::get_game_window();
-	Chunk_object_list *olist = gwin->get_objects(chunkx, chunky);
+	Map_chunk *olist = gwin->get_chunk(chunkx, chunky);
 	monster->movef(0, olist, tilex, tiley, 0, lift);
 					// Get equipment.
 	if (equip_offset && equip_offset - 1 < equip_cnt)

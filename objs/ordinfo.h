@@ -46,7 +46,7 @@ private:
 		}
 public:
 	friend class Game_object;
-	friend class Chunk_object_list;
+	friend class Map_chunk;
 					// Create from scratch.
 	Ordering_info(Game_window *gwin, const Game_object *obj)
 		: area(gwin->get_shape_rect(obj)),
