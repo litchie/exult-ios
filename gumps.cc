@@ -59,12 +59,12 @@ const int YESBTN = 70, NOBTN = 71;
 short Actor_gump_object::diskx = 122, Actor_gump_object::disky = 132;
 short Actor_gump_object::heartx = 122, Actor_gump_object::hearty = 114;
 short Actor_gump_object::coords[24] = {
-	114, 10,	/* head */	115, 24,	/* chest */
+	114, 10,	/* head */	115, 24,	/* back */
 	115, 37,	/* belt */	115, 55,	/* lhand */
 	115, 71,	/* lfinger */	114, 85,	/* legs */
 	76, 98,		/* feet */	35, 70,		/* rfinger */
-	37, 56,		/* rhand */	37, 37,		/* arms */
-	37, 24,		/* neck */	37, 11		/* back */
+	37, 56,		/* rhand */	37, 37,		/* torso */
+	37, 24,		/* neck */	37, 11		/* ammo */
 	};
 short Stats_gump_object::textx = 123;
 short Stats_gump_object::texty[10] = {17, 26, 35, 46, 55, 67, 76, 86,
