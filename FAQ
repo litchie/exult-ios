@@ -1,6 +1,6 @@
 Exult F.A.Q. (frequently asked questions)
 
-last changed: 07 June 2001(GMT)
+last changed: 04 July 2001(GMT)
 --------------------------------------------------------------------------------
 
 An html version can be found at http://exult.sourceforge.net/faq.shtml
@@ -9,18 +9,20 @@ An html version can be found at http://exult.sourceforge.net/faq.shtml
 0. Changes to the FAQ
 0.1. - 02 May 2001
 0.2. - 07 June 2001
+0.3. - 04 July 2001
 
 
 1. Introduction
 1.1. What is Exult?
 1.2. Why is it called Exult - what is the meaning of this name?
 1.3. Is Exult free ?
-1.4. Where do I find Exult?
-1.5. What is a snapshot? Are these screen shots or what?
-1.6. How do I compile a source code snapshot under Linux?
-1.7. How do I compile a source code snapshot under Win 9x?
-1.8. What is latest version of Exult?
-1.9. On what platform does Exult run?
+1.4. Does Origin support Exult?
+1.5. Where do I find Exult?
+1.6. What is a snapshot? Are these screen shots or what?
+1.7. How do I compile a source code snapshot under Linux?
+1.8. How do I compile a source code snapshot under Win 9x?
+1.9. What is the latest version of Exult?
+1.10. On what platform does Exult run?
 
 
 2. Exult and Ultima 7
@@ -37,11 +39,10 @@ An html version can be found at http://exult.sourceforge.net/faq.shtml
 3.1. What is it with the exult.cfg file?
 3.2. What do I have to change in the Path-Settings?
 3.3. Do music and sound effects play?
-3.4. The sound effects sound horrible
-3.5. How do I enable Exult to play digital wave sfx?
-3.6. How to turn off audio?
-3.7. What does the Scale option mean?
-3.8. Is Exult case sensitive?
+3.4. How do I enable Exult to play digital wave sfx?
+3.5. How to turn off audio?
+3.6. What does the Scale option mean?
+3.7. Is Exult case sensitive?
 
 
 4. Keyboard Commands, Miscellaneous
@@ -90,15 +91,15 @@ An html version can be found at http://exult.sourceforge.net/faq.shtml
 0.1. - 02 May 2001 
 
 "0. Changes to the FAQ" added on popular demand and began numbering of XSL style sheet at "0" with a lot of help from Fingolfin (I don't know much about XSL). 
-"1.8 What is latest version of Exult?" updated to Alpha3 
-"1.9 On what platform does Exult run?" added OpenBSD, FreeBSD, Solaris. 
+"1.9 What is the latest version of Exult?" updated to Alpha3 
+"1.10 On what platform does Exult run?" added OpenBSD, FreeBSD, Solaris. 
 "2.2 Does Exult work on all versions of the game?" added info that a Spanish version of BG exists and that SI was English-only. 
 "2.3 How about Serpent Isle?" updated. 
 "2.5 Can you play through U7 yet?" moved from Section 1 to 2. 
 "2.6 Do savegames from the original work in Exult?" added for those that don't bother with the readme file. 
 "3.1 What is it with the exult.cfg file?" added gamma and volume_curve settings, also aplied changes made necessary by the new game menu in snapshots later than 29.04.2001. 
-"3.6 How to turn off audio?" changed to point to new game menu. 
-"3.7 What does the Scale option mean?" added some more info from the News file as people don't seem to read it. 
+"3.5 How to turn off audio?" changed to point to new game menu. 
+"3.6 What does the Scale option mean?" added some more info from the News file as people don't seem to read it. 
 "4.1 What are the keys used in Exult?" added 'Esc' for game menu. 
 "4.7 Any other improvements/features?" praise to the new game menu and savegame box. 
 "4.8 How do I disable all improvements?" added as this was asked on Jackchaos and might interest others (don't see why actually). 
@@ -107,13 +108,26 @@ An html version can be found at http://exult.sourceforge.net/faq.shtml
 0.2. - 07 June 2001 
 
 "1.3 Is Exult free ?" added 
-"3.4 The sound effects sound horrible" Notice added on discontinueing support for MIDI sfx. 
-"3.5 How do I enable Exult to play digital wave sfx?" mentioned the SI sfx pack, point to the proper Sourceforge links and added note that you don't need to configure soundfonts for wave sfx. 
-"3.8 Is Exult case sensitive?" added this answer. 
+"0.1 The sound effects sound horrible" Notice added on discontinueing support for MIDI sfx. 
+"3.4 How do I enable Exult to play digital wave sfx?" mentioned the SI sfx pack, point to the proper Sourceforge links and added note that you don't need to configure soundfonts for wave sfx. 
+"3.7 Is Exult case sensitive?" added this answer. 
 "4.8 How do I disable all improvements?" forgot to mention the cheat menu option to disable Paperdolls in BG. 
 "4.9 Can I make my own game with Exult?" point to new section "Exult Studio" 
 "5.1 Exult Studio" added this new section by Jeff. 
-"6.2 Known Issues" added bug with taken seats in Fellowship meetings and problem with SI sfx playback 
+"6.2 Known Issues" added bug with taken seats in Fellowship meetings and problem with SI sfx playback. 
+ 
+  
+0.3. - 04 July 2001 
+
+Changed many answers in which I refered to newer snapshots. No longer needed due to the new release. 
+Deleted the former question "3.4. The sound effects sound horrible" as MIDI sfx is disabled in the code now. 
+"1.4 Does Origin support Exult?" added 
+"1.5 Where do I find Exult?" WJP changed the link to the daily snapshots. 
+"1.9 What is the latest version of Exult?" changed to Alpha 4 
+"3.4 How do I enable Exult to play digital wave sfx?" deleted reference to the now disabled MIDI sfx. 
+"4.1 What are the keys used in Exult?" added some keys that were added since Alpha 3. 
+"6.2 Known Issues" issues with higher resolutions, slow down with scalers and the out of sync BG intro. 
+"8.1 Important Links" WJP changed the link to the daily snapshots. 
  
 
 --------------------------------------------------------------------------------
@@ -140,16 +154,22 @@ Exult is more than free: it's Free (notice the caps). Exult is released under th
 More information on the GNU GPL at http://www.gnu.org/copyleft/gpl.html. 
  
   
-1.4. Where do I find Exult? 
-The latest official version is found on http://exult.sourceforge.net/ 
-Daily snapshots of the Win32 binary and of the CVS source tree can be found at http://io.spaceports.com/~kirben/ 
+1.4. Does Origin support Exult? 
+First of all, Origin has been owned by EA for a long time now and from recent developements it seems that Origin only exists now to maintain Ultima Online. Furthermore, Origin and/or people that worked for Origin claim that the source code for Ultima 7 (BG/SI) has been lost for some time. So there is no chance for the Exult team to have a look at the actual code. 
+
+Also the team tried to contact some people from Origin earlier but got no positive or negative response on the Exult project. So far it seems that both Origin and EA have decided to ignore Exult. 
  
   
-1.5. What is a snapshot? Are these screen shots or what? 
+1.5. Where do I find Exult? 
+The latest official version is found on http://exult.sourceforge.net/ 
+Daily snapshots of the Win32 binary and of the CVS source tree can be found at http://blake.prohosting.com/kirben/ 
+ 
+  
+1.6. What is a snapshot? Are these screen shots or what? 
 The snapshot is the newest source code of the program. It is updated almost daily, sometimes twice a day. There is information on how to build your own binary of the source but there is also the newest pre-compiled Windows binary. 
  
   
-1.6. How do I compile a source code snapshot under Linux? 
+1.7. How do I compile a source code snapshot under Linux? 
 Install the latest version of SDL (http://www.libsdl.org) 
 Extract the Exult source code archive to ~/exult:
 unzip exult.zip -d ~ 
@@ -162,17 +182,17 @@ Run Exult:
 cd ~/ultima7; ./exult 
  
   
-1.7. How do I compile a source code snapshot under Win 9x? 
+1.8. How do I compile a source code snapshot under Win 9x? 
 The source code snapshots contain a file called "README.win32" that explains everything. 
  
   
-1.8. What is latest version of Exult? 
-The current official release is V0.92 Alpha3. See also 1.4 to learn where to get the latest version. 
+1.9. What is the latest version of Exult? 
+The current official release is V0.93 Alpha4. See also 1.5 to learn where to get the latest version. 
 
 To find out which version you are running, press 'v' while in game. 
  
   
-1.9. On what platform does Exult run? 
+1.10. On what platform does Exult run? 
 Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT/2000). 
  
 
@@ -252,7 +272,7 @@ blackgate
 (default)  **configure custom keybindings or leave the (default) - see 4.1 
 </keys> 
 <waves> 
-./data/jmsfx.flx  **optional setting see 3.5 for configuration 
+./data/jmsfx.flx  **optional setting see 3.4 for configuration 
 </waves> 
 </blackgate> 
 <serpentisle> 
@@ -263,7 +283,7 @@ blackgate
 (default) 
 </keys> 
 <waves> 
-./data/jmsisfx.flx  **optional setting see 3.5 for configuration 
+./data/jmsisfx.flx  **optional setting see 3.4 for configuration 
 </waves> 
 </serpentisle> 
 </game> 
@@ -288,19 +308,16 @@ no  **this skips the splash screen, the intro before you get to the game menu, d
 </gameplay> 
 <audio> 
 <enabled> 
-yes  **enable/disable all audio - this takes precedence over the other audio settings (you can change this in game via 'Esc' in snapshots dated 29.04.2001 or later - the setting is saved) 
+yes  **enable/disable all audio - this takes precedence over the other audio settings (you can change this in game via 'Esc' - the setting is saved) 
 </enabled> 
 <effects> 
 <enabled> 
-yes  **enable/disable sound effects (you can change this in game via 's' (or 'Esc' in snapshots dated 29.04.2001 or later) - the setting is saved) 
+yes  **enable/disable sound effects (you can change this in game via 'Esc' - the setting is saved) 
 </enabled> 
-<convert> 
-none  **you can choose between "gs" and "none" - try out which sounds best for you when playing sfx through MIDI, takes no effect when you choose to play sfx via the wave pack - see 3.4 
-</convert> 
 </effects> 
 <midi> 
 <enabled> 
-yes  **enable/disable MIDI effects (you can change this in game via 's' (or 'Esc' in snapshots dated 29.04.2001 or later) - the setting is saved) 
+yes  **enable/disable MIDI effects (you can change this in game via 'Esc' - the setting is saved) 
 </enabled> 
 <convert> 
 gm  **you can choose between "gm","gs","gs127" and "none" - try out which sounds best for you 
@@ -311,19 +328,19 @@ gm  **you can choose between "gm","gs","gs127" and "none" - try out which sounds
 </midi> 
 <speech> 
 <enabled> 
-yes  **enable/disable speech (you can change this in game via 's' (or 'Esc' in snapshots dated 29.04.2001 or later) - the setting is saved) 
+yes  **enable/disable speech (you can change this in game via 'Esc' - the setting is saved) 
 </enabled> 
 </speech> 
 </audio> 
 <video> 
 <width> 
-320  **here you choose your resolution, it can be as big as your monitor allows. 320x200 is the resolution of the original 
+320  **here you choose your resolution, it can be as big as your monitor allows. 320x200 is the resolution of the original - see 6.2 for issues with this setting. 
 </width> 
 <height> 
 200 
 </height> 
 <scale> 
-2  **2 enables / 1 disables scaling - see 3.7 
+2  **2 enables / 1 disables scaling - see 3.6 
 </scale> 
 <fullscreen> 
 yes  **do you want to play fullscreen? 
@@ -332,7 +349,7 @@ yes  **do you want to play fullscreen?
 no  **"no" enables fading between different menu points 
 </disable_fades> 
 <scale_method> 
-SuperEagle  **choose different scalers here: SuperEagle, 2xSaI, bilinear, point, interlaced - see 3.7 
+SuperEagle  **choose different scalers here: SuperEagle, 2xSaI, bilinear, point, interlaced - see 3.6 
 </scale_method> 
 <gamma>  **set gamma levels to adjust brightness, same as +/- in game 
 <red> 
@@ -388,48 +405,34 @@ Word of advice: Don't copy the files from the one game into the directory of the
  
   
 3.3. Do music and sound effects play? 
-Yes. Music plays via MIDI and sounds quite like the original. Sound effects either play via digital (.wav) sfx or also via MIDI. Even speech is supported.
+Yes. Music plays via MIDI and sounds quite like the original. Sound effects either play via digital (.wav) sfx. Even speech is supported.
 You can change the way the music and the sound effects play via the setup menu or the exult.cfg file. 
  
   
-3.4. The sound effects sound horrible 
-Well the music plays okay but the sound effects sound horrible, especially when opening a door. What's up? 
-
-This is due to the fact that the sfx is played using MIDI. For that to work properly you need the proper soundfont selected for your card. Not every soundcard supports soundfont-managing. Creative's AWE and Live! series do support it.
-If your card doesn't or you want to hear better sfx you are much better off when you select wave sfx. The next section 3.5 covers that!
-If you have on of those cards that do allow soundfont-managing this is how you should get some decent sound out of it (description only for Win32): 
-
-Load up the Control Panel, select "Multimedia Properties" (or "Sounds and Multimedia"). Make sure that the MIDI playback device is the right one. For the SB Live! it has to be "SB Live! MIDI Synth". Don't choose "Microsoft Synth" or similar. 
-You need a Sound Font Manager. Creative either provides the AWE-Control panel or the Vienna Sound Font Manager, other sound card producers should have something similar. There also should be some Soundfont files (*.sf2 or *.sbk) 
-Select Bank: 000 or Synth
-Load 4gmgsmt.sf2 or similar (You may have to try around a bit). 
-Now go into the game and test how the music works and if the SoundFX sound okay. 
-Important notice:
-MIDI sound effects are disabled in source code in 23.05.2001 PM and later snapshots. The team decided to drop MIDI sfx and with the next release it will no longer be supported and this answer will disappear. 
- 
-  
-3.5. How do I enable Exult to play digital wave sfx? 
-You have to set a path to the sfx pack in the waves settings in exult.cfg (see 3.1). If you leave this blank the sfx will be played through MIDI. You have to download seperate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI (see 6.2). 
+3.4. How do I enable Exult to play digital wave sfx? 
+You have to set a path to the sfx pack in the waves settings in exult.cfg (see 3.1). You have to download seperate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI (see 6.2). 
 
 Note that configuring your soundfonts is not needed for digital wave sfx. 
 
 The sfx pack made by Joseph Morris can be found at http://prdownloads.sourceforge.net/exult/jmsfx.zip (4.55 MB) for "The Black Gate" and http://prdownloads.sourceforge.net/exult/jmsfxsi.zip (6.01 MB) for "Serpent Isle". He recorded the original 114 sfx used in Black Gate which must have been a lot of work. If your soundcard doesn't support soundfonts this pack is a "must-have". Enjoy! 
  
   
-3.6. How to turn off audio? 
-Press 's' (or 'Esc' in snapshots dated 29.04.2001 or later) to turn on/off Music, Speech and SoundFX or change the settings in exult.cfg - see 3.1. 
+3.5. How to turn off audio? 
+Press 'Esc' to turn on/off Music, Speech and SoundFX or change the settings in exult.cfg - see 3.1. 
  
   
-3.7. What does the Scale option mean? 
+3.6. What does the Scale option mean? 
 By default Exult runs at 320x200 (which is the resolution the original Ultima VII used). Exult uses different scaling engines to double the size to 640x400 and increase the quality of the graphics. More information on the excellent scaling engine by Derek Liauw is available at http://members.xoom.com/derek_liauw/. The scalers also work with higher resolutions. To change the scaling method either use the Exult menu or change your exult.cfg - see 3.1. "2xSaI" is the new scaler, "bilinear" is the old one, "point" duplicates the pixels, "interlaced" is the same as "point" except misses every other line, "SuperEagle" is another scaler by Derek (the author of 2xSaI). Try them out to see how they look and which you like best. 
 
 Your screen should be set to 16-bit color mode. 
 
 Within the game you can use the 'Alt +' and 'Alt -' to switch resolution. The game will save the last selected mode and reuse it the next time you run Exult. 
+
+See 6.2 for issues with scalers and resolutions. 
  
   
-3.8. Is Exult case sensitive? 
-Case sensitiveness is a slight problem with Exult when you are not using the Windows port. Exult tries lower and uppercase versions, and reports the error after trying the last (ie. uppercase) filename. If the "static" directory and the files within are uppercase you might run into problems. Better make sure that all these are lowercase. When unzipping the Ultima files from a zip in Linux you can set it to extract in lowercase with the "-L" switch (e.g. 'unzip -L ultima7.zip'). In the lates snapshots this should be fixed. 
+3.7. Is Exult case sensitive? 
+Case sensitiveness is a slight problem with Exult when you are not using the Windows port. Exult tries lower and uppercase versions, and reports the error after trying the last (ie. uppercase) filename. If the "static" directory and the files within are uppercase you might run into problems. Better make sure that all these are lowercase. When unzipping the Ultima files from a zip in Linux you can set it to extract in lowercase with the "-L" switch (e.g. 'unzip -L ultima7.zip'). This is fixed in the latest release. 
  
 
 --------------------------------------------------------------------------------
@@ -450,7 +453,11 @@ c   Combat mode
 f   Use food 
 h   Show list of keyboard commands 
 i   Show inventory 
-k   Try all keys to unlock a lock 
+j   SI: Show jawbone 
+k   BG: Try all keys to unlock a lock 
+k   SI: Use keyring 
+Alt-k   SI: Try all keys to unlock a lock 
+l   SI: Show combat stats 
 m   Show map 
 p   Use lockpicks 
 Alt-q   Exit game 
@@ -464,6 +471,14 @@ v   About screen
 w   Use watch, shows the time if you got a watch 
 Alt-x   Exit game 
 z   Show stats 
+1   Show inventory for Avatar 
+2   Show inventory for character 2 
+3   Show inventory for character 3 
+4   Show inventory for character 4 
+5   Show inventory for character 5 
+6   Show inventory for character 6 
+7   Show inventory for character 7 
+8   Show inventory for character 8 
 
 In conversations you now have the ability not just click on the answer with the mouse but also to use the numeric keys. The response options aren't numbered visually but logically with the dots. Also press 'Esc' to select "bye" if possible. 
  
@@ -478,13 +493,13 @@ Home   Recenter map
 F2   Cheat screen similar to the originals'. Allows for some level of NPC editing and other cheat otpions 
 F3   Map teleport 
 F10   Show endgame 
-F11   Show SI intro 
+F11   SI: Show intro 
 Ctrl-b   Shape browser 
 Ctrl-c   Create object 
 Ctrl-d   Delete object 
 e   Toggle egg display 
 Alt-g   Toggle God mode 
-Ctrl-g   Change avatar gender 
+Ctrl-g   SI: Change avatar gender 
 Ctrl-Alt-h   Resurrect, heal party, cure poison and still hunger 
 Alt-i   Toggle infravision 
 Ctrl-l   Level up party 
@@ -493,9 +508,9 @@ Ctrl-Alt-m   Toggle Map editor(you are able to move anything and it disables wei
 Ctrl-m   Get 100 gold coins 
 Alt-Shift-m   Play previous song 
 Alt-m   Play next song 
-Alt-n   Toggle naked flag (SI) 
-Alt-p   Toggle petra mode (SI) 
-Alt-s   Change skin color (SI) 
+Alt-n   SI: Toggle naked flag 
+Alt-p   SI: Toggle petra mode 
+Alt-s   SI: Change skin color 
 Ctrl-Alt-t   Map teleport 
 Ctrl-t   Advance to next time period 
 Alt-t   Teleport (to current cursor position) 
@@ -527,7 +542,7 @@ Recently Ryan added paperdoll support in Black Gate. Though it is still buggy (s
  
   
 4.7. Any other improvements/features? 
-In recent snapshots (since 29th of April) a new game menu was added with an improved sound settings box and a very much improved (awesome) savegame box. This allows you much more savegames than the original (you should run out of disc space before you run out of savegame slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The game menu is opened via 'Esc' and the save game box is opened either via the game menu or the 's' key. 
+Since the Alpha 4 release a new game menu was added with an improved sound settings box and a very much improved (awesome) savegame box. This allows you much more savegames than the original (you should run out of disc space before you run out of savegame slots), shows a screenshot of the location you saved at, the members of your party, your stats, game time and the date you actually saved. The game menu is opened via 'Esc' and the save game box is opened either via the game menu or the 's' key. 
 
 In Exult, you can still move your party even if there is a box/body/stats open/on. In the original, the world was kind of frozen. Now it is only frozen if you hit the 't' or 's' key. 
  
@@ -535,7 +550,7 @@ In Exult, you can still move your party even if there is a box/body/stats open/o
 4.8. How do I disable all improvements?  
 To get an Ultima 7 that looks and behaves as close to the original as possible there are several things to do (though I wonder why you'd want to do that): 
 
-make custom keybindings files (see 4.1) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. In snapshots dated 29.04.2001 or later you have to assign 's' to old_file_gump to enable the old savegame menu (the line in your custom keybindings file should look like: S old_file_gump) 
+make custom keybindings files (see 4.1) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. Since the Alpha 4 release you have to assign 's' to old_file_gump to enable the old savegame menu (the line in your custom keybindings file should look like: S old_file_gump) 
 Edit the exult.cfg file to point to those custom keys. 
 Don't set the path to the Serpent Isle files (see 3.2) and put SI and a second copy of Exult in a seperate directory (note: you can no longer launch both BG and SI from the same exult.exe). This disables SI paperdolls in BG. 
 Alternatively you can leave the cheat menu binding in the keybindings file ( 'F2' ) and disable "Paperdolls" each time you run Exult. 
@@ -626,6 +641,9 @@ Movement is sometimes jerky or slow.
 We don't know what all the data in 'weapons.dat' and 'ammo.dat' means, so hit points and damage don't work as well as in the original game. 
 Sound effects in SI are sometimes odd with the wave pack as some sounds were coded in Exult to correspond to the sfx number in BG. This is a bug and will be addressed in due time. 
 In Fellowship meetings some NPCs appear not to attend these though they should and sometimes even speak there. This is due to a bug in Exult which makes NPCs sit on already taken seats and only the top most NPC can be seen. Moving the top most via Hackmover makes the others visible. 
+If you run a resolution higher than the original (320x200) some NPCs that are further away from the Avatar may seem to disappear and reappear when you get away or closer to them. 
+With scalers enabled you might encounter slow downs of the game. The team is working on this right now. 
+The speech in the intro is out of synch with the animations. This hasn't been worked on for a long time since it's a task that involves a lot of work and no one wants to touch it for now. Any volunteer is welcome. :-) 
  
   
 6.3. Not yet implemented 
@@ -650,7 +668,7 @@ Some Exult developers like to hang out on IRC on irc.openprojects.net, channel #
  
   
 7.2. How do I contact the author of this FAQ? 
-This FAQ is maintained by Dominus Dragon of the UDIC aka Dominik Reichardt (gigdr@tesionmail.de). Feel free to contact me with improvements or complaints regarding the FAQ. I recently became part of the Exult Team though I only write the FAQ and don't code at all. 
+This FAQ is maintained by Dominus Dragon of the UDIC aka Dominik Reichardt. Feel free to contact me with improvements or complaints regarding the FAQ. I recently became part of the Exult Team though I only write the FAQ and don't code at all. 
  
 
 --------------------------------------------------------------------------------
@@ -658,7 +676,7 @@ This FAQ is maintained by Dominus Dragon of the UDIC aka Dominik Reichardt (gigd
   
 8.1. Important Links 
 Exult Hompage at http://exult.sourceforge.net/
-Daily code snapshot at http://io.spaceports.com/~kirben/
+Daily code snapshot at http://blake.prohosting.com/kirben/
 Message board at http://www.jackchaos.com/cgi-bin/UltraBoard/UltraBoard.pl?Action=ShowBoard&Board=exult
 Bugreports to http://sourceforge.net/bugs/?group_id=2335 
  
@@ -672,14 +690,9 @@ Thanks to all those I stole comments from without quoting them, those that sent 
 
 Thanks go to Matt0 who really got me thinking about doing this FAQ (though he just did it to tease me). 
  
- 
-
-
 --------------------------------------------------------------------------------
  
   
-  
-  
 Problems with Exult or this webpage? Contact us (exult-general@lists.sourceforge.net). 
  
-Last modified: 07 June 2001(GMT) 
+Last modified: 04 July 2001(GMT) 

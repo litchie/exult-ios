@@ -2,7 +2,7 @@
 
 <!DOCTYPE faqs SYSTEM "faqs.dtd">
 
-<faqs title="Exult" changed="07 June 2001(GMT)">
+<faqs title="Exult" changed="04 July 2001(GMT)">
 
 	<section title="Changes to the FAQ">
 	
@@ -18,7 +18,7 @@
 				
 				at "0" with a lot of help from Fingolfin (I don't know much about XSL).</li>
 				
-				<li>"<ref target="latest_version"/> What is latest version of <Exult/>?" updated to Alpha3</li>
+				<li>"<ref target="latest_version"/> What is the latest version of <Exult/>?" updated to Alpha3</li>
 				
 				<li>"<ref target="what_platforms"/> On what platform does <Exult/> run?" added OpenBSD, FreeBSD, Solaris.</li>
 				
@@ -82,14 +82,48 @@
 				
 				<li>"<ref target="what_is_studio"/> <Studio/>" added this new section by Jeff.</li>
 				
-				<li>"<ref target="known_issues"/> Known Issues" added bug with taken seats in Fellowship meetings and problem with SI sfx playback</li>
+				<li>"<ref target="known_issues"/> Known Issues" added bug with taken seats in Fellowship meetings and problem with SI sfx playback.</li>
 				
 				
 				</para>
 
 			</answer>
 
-		</faq>		
+		</faq>
+		
+		<faq name="04072001">
+
+			<question>- 04 July 2001</question>
+
+			<answer>
+
+				<para>
+
+				<li>Changed many answers in which I refered to newer snapshots. No longer needed due to the new release.</li>
+				
+				<li>Deleted the former question "3.4. The sound effects sound horrible" as MIDI sfx is disabled in the code now.</li>
+				
+				<li>"<ref target="origin_exult"/> Does Origin support Exult?" added</li>						
+
+				<li>"<ref target="whereis_exult"/> Where do I find Exult?" WJP changed the link to the daily snapshots.</li>				
+				
+				<li>"<ref target="latest_version"/> What is the latest version of Exult?" changed to Alpha 4</li>
+
+				<li>"<ref target="wave_sfx"/> How do I enable Exult to play digital wave sfx?" deleted reference to the now disabled MIDI sfx.</li>
+				
+				<li>"<ref target="exult_keys"/> What are the keys used in Exult?" added some keys that were added since Alpha 3.</li>
+
+				<li>"<ref target="known_issues"/> Known Issues" issues with higher resolutions, slow down with scalers and the out of sync BG intro.</li>
+
+				<li>"<ref target="main_links"/> Important Links" WJP changed the link to the daily snapshots.</li>
+				
+				</para>
+
+			</answer>
+
+		</faq>
+
+				
 	</section>
 	
 	
@@ -220,6 +254,36 @@
 			</answer>
 
 		</faq>		
+
+		<faq name="origin_exult">
+
+			<question>Does Origin support <Exult/>?</question>
+
+			<answer>
+
+				<para>
+				
+				First of all, Origin has been owned by EA for a long time now and from recent developements it seems that
+				
+				Origin only exists now to maintain Ultima Online. Furthermore, Origin and/or people that worked
+				
+				for Origin claim that the source code for Ultima 7 (BG/SI) has been lost for some time.
+				
+				So there is no chance for the <Exult/> team to have a look at the actual code.
+				
+				</para>
+				
+				<para>
+				
+				Also the team tried to contact some people from Origin earlier but got no positive or negative response
+				
+				on the <Exult/> project. So far it seems that both Origin and EA have decided to ignore <Exult/>.
+				
+				</para>
+
+			</answer>
+
+		</faq>
 		
 		<faq name="whereis_exult">
 
@@ -334,13 +398,13 @@
 
 		<faq name="latest_version">
 
-			<question>What is latest version of <Exult/>?</question>
+			<question>What is the latest version of <Exult/>?</question>
 
 			<answer>
 
 				<para>
 
-				The current official release is V0.92 Alpha3. See also <ref target="whereis_exult"/>
+				The current official release is V0.93 Alpha4. See also <ref target="whereis_exult"/>
 
 				to learn where to get the latest version.
 
@@ -759,7 +823,7 @@
 
 						other audio settings (you can change this in game via
 
-						<key>Esc</key> in snapshots dated 29.04.2001 or later - the setting is saved)</comment></line>
+						<key>Esc</key> - the setting is saved)</comment></line>
 
 					<line>&lt;/enabled&gt;</line>
 
@@ -771,23 +835,9 @@
 
 						<comment>**enable/disable sound effects (you can change this in game via
 
-						<key>s</key> (or <key>Esc</key> in snapshots dated 29.04.2001 or later) - the setting is saved)</comment></line>
+						<key>Esc</key> - the setting is saved)</comment></line>
 
 					<line>&lt;/enabled&gt;</line>
-
-					<line>&lt;convert&gt;</line>
-
-					<line>none
-
-						<comment>**you can choose between "gs" and "none" -
-
-						try out which sounds best for you when playing sfx through MIDI, 
-						
-						takes no effect when you choose to play sfx via the wave pack 
-						
-						- see <ref target="sound_horrible"/></comment></line>
-
-					<line>&lt;/convert&gt;</line>
 
 					<line>&lt;/effects&gt;</line>
 
@@ -799,7 +849,7 @@
 
 						<comment>**enable/disable MIDI effects (you can change this in game via
 
-						<key>s</key> (or <key>Esc</key> in snapshots dated 29.04.2001 or later) - the setting is saved)</comment></line>
+						<key>Esc</key> - the setting is saved)</comment></line>
 
 					<line>&lt;/enabled&gt;</line>
 
@@ -831,7 +881,7 @@
 
 						<comment>**enable/disable speech (you can change this in game via
 
-						<key>s</key> (or <key>Esc</key> in snapshots dated 29.04.2001 or later) - the setting is saved)</comment></line>
+						<key>Esc</key> - the setting is saved)</comment></line>
 
 					<line>&lt;/enabled&gt;</line>
 
@@ -847,7 +897,9 @@
 
 						<comment>**here you choose your resolution, it can be as big as your
 
-						monitor allows. 320x200 is the resolution of the original</comment></line>
+						monitor allows. 320x200 is the resolution of the original - see 
+						
+						<ref target="known_issues"/> for issues with this setting.</comment></line>
 
 					<line>&lt;/width&gt;</line>
 
@@ -1035,7 +1087,7 @@
 
 				Yes. Music plays via MIDI and sounds quite like the original. Sound
 
-				effects either play via digital (.wav) sfx  or also via MIDI. Even speech is supported.<br/>
+				effects either play via digital (.wav) sfx. Even speech is supported.<br/>
 
 				You can change the way the music and the sound effects play via the
 
@@ -1046,98 +1098,7 @@
 			</answer>
 
 		</faq>
-		
-		<faq name="sound_horrible">
 
-			<question>The sound effects sound horrible</question>
-
-			<answer>
-
-				<para>
-
-					Well the music plays okay but the sound effects sound horrible,
-
-					especially when opening a door. What's up?
-
-				</para>
-
-				<para>
-
-					This is due to the fact that the sfx is played using MIDI. For that to
-
-					work properly you need the proper soundfont selected for your card.
-
-					Not every soundcard supports soundfont-managing. Creative's AWE and Live!
-					
-					series do support it.<br/>
-					
-					If your card doesn't or you want to hear better sfx you are much better off 
-					
-					when you select wave sfx. The next section <ref target="wave_sfx"/> covers that!<br/>
-					
-					If you have on of those cards that do allow soundfont-managing this is how you
-					
-					should get some decent sound out of it (description only for Win32):
-
-				</para>
-
-				<ol>
-
-					<li>
-
-						Load up the Control Panel, select "Multimedia Properties"
-
-						(or "Sounds and Multimedia"). Make sure that the MIDI playback
-
-						device is the right one. For the SB Live! it has to be
-
-						"SB Live! MIDI Synth". Don't choose "Microsoft Synth" or similar.
-
-					</li>
-
-					<li>
-
-						You need a Sound Font Manager. Creative either provides the
-
-						AWE-Control panel or the Vienna Sound Font Manager, other sound
-
-						card producers should have something similar. There also should be
-
-						some Soundfont files (*.sf2 or *.sbk)
-
-					</li>
-
-					<li>
-
-						Select Bank: 000 or Synth<br/>
-
-						Load 4gmgsmt.sf2 or similar (You may have to try around a bit).
-
-					</li>
-
-					<li>
-
-						Now go into the game and test how the music works and if the SoundFX sound okay.
-
-					</li>
-
-				</ol>
-				
-				<para>
-				
-				<em>Important notice:</em><br/>
-				
-				MIDI sound effects are disabled in source code in 23.05.2001 PM and later snapshots.
-				
-				The team decided to drop MIDI sfx and with the next release it will no longer be 
-				
-				supported and this answer will disappear.
-				
-				</para>
-				
-			</answer>
-
-		</faq>
 	<faq name="wave_sfx">
 
 			<question>How do I enable <Exult/> to play digital wave sfx?</question>
@@ -1148,9 +1109,7 @@
 				
 				You have to set a path to the sfx pack in the waves settings in exult.cfg (see <ref target="exult_config"/>).
 				
-				If you leave this blank the sfx will be played through MIDI. You have to download
-				
-				seperate packs for each game as order of the sfx in BG and SI varies a bit and 
+				You have to download seperate packs for each game as order of the sfx in BG and SI varies a bit and 
 				
 				otherwise will sound odd. However there is a little issue with sfx playback in SI (see <ref target="known_issues"/>).
 				
@@ -1190,7 +1149,7 @@
 
 				<para>
 
-				Press <key>s</key> (or <key>Esc</key> in snapshots dated 29.04.2001 or later) to turn
+				Press <key>Esc</key> to turn
 				
 				on/off Music, Speech and SoundFX or change the settings in exult.cfg - see <ref target="exult_config"/>.
 
@@ -1247,7 +1206,13 @@
 					selected mode and reuse it the next time you run <Exult/>.
 
 				</para>
-
+				
+				<para>
+				
+				See <ref target="known_issues"/> for issues with scalers and resolutions.
+				
+				</para>
+				
 			</answer>
 
 		</faq>
@@ -1276,7 +1241,7 @@
 				
 			    (e.g. 'unzip -L ultima7.zip').
 			    
-			    In the lates snapshots this should be fixed.
+			    This is fixed in the latest release.
 				
 				</para>
 
@@ -1347,8 +1312,16 @@
 					<keydesc name="h">Show list of keyboard commands</keydesc>
 
 					<keydesc name="i">Show inventory</keydesc>
+					
+					<keydesc name="j">SI: Show jawbone</keydesc>
 
-					<keydesc name="k">Try all keys to unlock a lock</keydesc>
+					<keydesc name="k">BG: Try all keys to unlock a lock</keydesc>
+					
+					<keydesc name="k">SI: Use keyring</keydesc>
+					
+					<keydesc name="Alt-k">SI: Try all keys to unlock a lock</keydesc>
+					
+					<keydesc name="l">SI: Show combat stats</keydesc>
 
 					<keydesc name="m">Show map</keydesc>
 
@@ -1375,6 +1348,23 @@
 					<keydesc name="Alt-x">Exit game</keydesc>
 
 					<keydesc name="z">Show stats</keydesc>
+					
+					<keydesc name="1">Show inventory for Avatar</keydesc>
+					
+					<keydesc name="2">Show inventory for character 2</keydesc>
+					
+					<keydesc name="3">Show inventory for character 3</keydesc>
+					
+					<keydesc name="4">Show inventory for character 4</keydesc>
+					
+					<keydesc name="5">Show inventory for character 5</keydesc>
+					
+					<keydesc name="6">Show inventory for character 6</keydesc>
+					
+					<keydesc name="7">Show inventory for character 7</keydesc>
+					
+					<keydesc name="8">Show inventory for character 8</keydesc>
+
 
 				</keytable>
 
@@ -1424,7 +1414,7 @@
 
 					<keydesc name="F10">Show endgame</keydesc>
 
-					<keydesc name="F11">Show SI intro</keydesc>
+					<keydesc name="F11">SI: Show intro</keydesc>
 
 					<keydesc name="Ctrl-b">Shape browser</keydesc>
 
@@ -1436,7 +1426,7 @@
 
 					<keydesc name="Alt-g">Toggle God mode</keydesc>
 
-					<keydesc name="Ctrl-g">Change avatar gender</keydesc>
+					<keydesc name="Ctrl-g">SI: Change avatar gender</keydesc>
 
 					<keydesc name="Ctrl-Alt-h">Resurrect, heal party, cure poison and still hunger</keydesc>
 
@@ -1454,11 +1444,11 @@
 
 					<keydesc name="Alt-m">Play next song</keydesc>
 
-					<keydesc name="Alt-n">Toggle naked flag (SI)</keydesc>
+					<keydesc name="Alt-n">SI: Toggle naked flag</keydesc>
 
-					<keydesc name="Alt-p">Toggle petra mode (SI)</keydesc>
+					<keydesc name="Alt-p">SI: Toggle petra mode</keydesc>
 
-					<keydesc name="Alt-s">Change skin color (SI)</keydesc>
+					<keydesc name="Alt-s">SI: Change skin color</keydesc>
 
 					<keydesc name="Ctrl-Alt-t">Map teleport</keydesc>
 
@@ -1594,7 +1584,7 @@
 
 				<para>
 				
-				In recent snapshots (since 29th of April) a new game menu was added with an
+				Since the Alpha 4 release a new game menu was added with an
 				
 				improved sound settings box and a very much improved (<strong>awesome</strong>)
 				
@@ -1648,7 +1638,7 @@
 				
 				all the keys that were not in the original for Black Gate and Serpents Isle. 
 				
-				In snapshots dated 29.04.2001 or later you have to assign <key>s</key> to old_file_gump
+				Since the Alpha 4 release you have to assign <key>s</key> to old_file_gump
 				
 				to enable the old savegame menu (the line in your custom keybindings file should look like:
 				
@@ -2014,6 +2004,22 @@
 					which makes NPCs sit on already taken seats and only the top most NPC can 
 					
 					be seen. Moving the top most via Hackmover makes the others visible.</li>
+					
+					<li>If you run a resolution higher than the original (320x200) some NPCs
+					
+					that are further away from the Avatar may seem to disappear and reappear when
+					
+					you get away or closer to them.</li>
+					
+					<li>With scalers enabled you might encounter slow downs of the game. The team is
+					
+					working on this right now.</li>
+					
+					<li>The speech in the intro is out of synch with the animations. This hasn't been 
+					
+					worked on for a long time since it's a task that involves a lot of work and no one wants
+					 
+					to touch it for now. Any volunteer is welcome. :-)</li>
 				
 				</ul>
 

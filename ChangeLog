@@ -1,3 +1,7 @@
+2001-07-04  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/faq/exult_faq.xml: FAQ updated see FAQ for details
+	* Faq: updated
+
 2001-07-03  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in, Makefile.*: version to 0.94cvs
 	* exult_faq.xml: updated URL to Travis' snapshots page
