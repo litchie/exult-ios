@@ -383,7 +383,6 @@ void Actor::read
 	
 	if (num == 0 && Game::get_avname())
 	{
-		cout << Game::get_avname() << endl;
 		name = Game::get_avname();
 	}
 	else
