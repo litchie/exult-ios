@@ -19,3 +19,9 @@
 
 /* Do we appear to have a runnable copy of Timidity in our path? */
 #undef HAVE_TIMIDITY_BIN
+
+/* Using alternative memory scheme? */
+#undef WANT_ALTERNATE_ALLOCATOR
+
+/* Set memoryu before usage? */
+#undef INITIALISE_ALLOCATED_BLOCKS

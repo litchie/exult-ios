@@ -223,6 +223,23 @@ AC_HEADER_TIME
 AC_STRUCT_TM
 AC_CHECK_BOOL
 
+dnl For the alternate allocator
+AC_ARG_ENABLE(alternate_allocator, [  --enable-alternate-allocator          enable alternate memory allocator [default no]],,alternate_allocator=no)
+AC_MSG_CHECKING(checking allocation scheme)
+if test x$enable_alternate_allocator = xyes; then
+  AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
+  AC_MSG_RESULT(alternate)
+else
+  AC_MSG_RESULT(normal)
+fi
+
+
+dnl For storage initialisation
+AC_ARG_ENABLE(storate_initialisation, [  --enable-storate-initialisation          clear storage when allocated [default no]],,storate_initialisation=no)
+if test x$enable_storage_initialisation = xyes; then
+  AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
+  AC_DEFINE(INITIALISE_ALLOCATED_BLOCKS,0)
+fi
 
 dnl this is for debug
 DEBUG_FLAGS="-O2"
@@ -241,7 +258,7 @@ AC_ARG_ENABLE(warnings, [  --enable-warnings       enable all warnings and debug
 AC_MSG_CHECKING(whether to enable all warnings)
 if test x$enable_warnings = xyes; then
   AC_MSG_RESULT(yes)
-  DEBUG_FLAGS="$DEBUG_FLAGS -Wall -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
+  DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
 else
   AC_MSG_RESULT(no)
 fi
