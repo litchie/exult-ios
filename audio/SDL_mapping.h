@@ -49,7 +49,14 @@ extern	void (*Delay)(Uint32);
 extern	void (*PauseAudio)(int pause);
 extern	void (*UnlockAudio)(void);
 extern	void (*LockAudio)(void);
+
+	// SDL 1.2.1 changed the arguments of SDL_MixAudio
+#if (SDL_MAJOR_VERSION*1000+SDL_MINOR_VERSION*100+SDL_PATCHLEVEL >= 1201)
 extern	void (*MixAudio)(Uint8 *dst, const Uint8 *src, Uint32 len,int);
+#else
+extern	void (*MixAudio)(Uint8 *dst, Uint8 *src, Uint32 len,int);
+#endif
+
 extern	void (*CloseAudio)(void);
 extern int (*OpenAudio)(SDL_AudioSpec *desired, SDL_AudioSpec *obtained);
 extern	void (*QuitSubSystem)(Uint32);
