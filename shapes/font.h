@@ -34,6 +34,7 @@ private:
 	Shape_file *font_shapes;
 	DataSource *font_data;
 	char *font_buf;
+	char *orig_font_buf;
 public:
 	Font();
 	Font(const char *fname, int index, int hlead=0, int vlead=1);
@@ -86,6 +87,8 @@ public:
 	void add_font(const char *name, const char *archive, int index, int hlead=0, int vlead=1);
 	void remove_font(const char *name);
 	Font *get_font(const char *name);
+
+	void reset();
 };
 
 extern FontManager fontManager;

@@ -346,6 +346,8 @@ int Log2
 	);
 
 bool is_system_path_defined(const char *path);
+void store_system_paths();
+void reset_system_paths();
 void add_system_path(const std::string& key, const std::string& value);
 std::string get_system_path(const std::string &path);
 

@@ -70,6 +70,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "cheat.h"
 #include "exultmenu.h"
 #include "keys.h"
+#include "font.h"
+#include "utils.h"
 
 
 using std::atof;
@@ -394,7 +396,14 @@ static void Init
 	// Show the banner
 	Exult_Game mygame;
 	game = 0;
+
+	store_system_paths();
+
 	do {
+		reset_system_paths();
+		fontManager.reset();
+		U7FileManager::get_ptr()->reset();
+
 		if(game)
 			delete game;
 		ExultMenu exult_menu(gwin);
