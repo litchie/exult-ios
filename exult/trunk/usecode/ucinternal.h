@@ -97,8 +97,10 @@ class Usecode_internal : public Usecode_machine
 	Text_gump *book;		// Book/scroll being displayed.
 	Game_object *caller_item;	// Item this is being called on.
 	Game_object *last_created;	// Last item created with intrins. x24.
+	Actor *path_npc;		// Last NPC in path_run_usecode().
 	const char *user_choice;	// String user clicked on.
-	bool found_answer;          // Did we already handle the conversation option?
+	bool found_answer;		// Did we already handle the 
+					//   conversation option?
 	Tile_coord saved_pos;		// For a couple SI intrinsics.
 	char *String;			// The single string register.
 	void append_string(const char *txt);	// Append to string.
@@ -310,7 +312,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(get_item_flag);
 	USECODE_INTRINSIC_DECL(set_item_flag);
 	USECODE_INTRINSIC_DECL(clear_item_flag);
-	USECODE_INTRINSIC_DECL(run_usecode);
+	USECODE_INTRINSIC_DECL(set_path_failure);
 	USECODE_INTRINSIC_DECL(fade_palette);
 	USECODE_INTRINSIC_DECL(get_party_list2);
 	USECODE_INTRINSIC_DECL(get_party_ids);

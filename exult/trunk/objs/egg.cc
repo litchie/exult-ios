@@ -513,6 +513,40 @@ void Egg_object::update_from_studio
 	}
 
 /*
+ *	Create a monster nearby.
+ */
+
+static void Create_monster
+	(
+	Game_window *gwin,
+	Egg_object *egg,
+	int shnum,			// Monster shape.
+	Monster_info *inf,		// Info.
+	int sched,
+	int align
+	)
+	{
+	int ht = gwin->get_info(shnum).get_3d_height();
+	for (int i = 1; i < 5; i++)	// Look outward.
+		{
+		Tile_coord dest = egg->find_unblocked_tile(i, ht);
+		if (dest.tx != -1)
+			{
+			Monster_actor *monster = 
+				Monster_actor::create(shnum,
+					dest.tx/c_tiles_per_chunk,
+					dest.ty/c_tiles_per_chunk,
+					dest.tx%c_tiles_per_chunk,
+					dest.ty%c_tiles_per_chunk,
+					dest.tz, sched, align);
+			gwin->add_dirty(monster);
+			gwin->add_nearby_npc(monster);
+			return;
+			}
+		}
+	}
+
+/*
  *	Hatch egg.
  */
 
@@ -554,16 +588,11 @@ void Egg_object::activate
 				int sched = data1>>8;
 				int align = data1&3;
 				int cnt = (data1&0xff)>>2;
+				if (cnt > 1)	// Randomize.
+					cnt = 1 + (rand()%cnt);
 				while (cnt--)
-					{
-					Monster_actor *monster = 
-						Monster_actor::create(shnum,
-						get_cx(),
-						get_cy(), get_tx(), get_ty(),
-						get_lift(), sched, align);
-					gwin->add_dirty(monster);
-					gwin->add_nearby_npc(monster);
-					}
+					Create_monster(gwin, this, shnum, inf,
+							sched, align);
 				}
 			else		// Create item.
 				{
