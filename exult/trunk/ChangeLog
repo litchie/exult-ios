@@ -1,3 +1,8 @@
+2002-03-17 Darke <darkepaw@users.sourceforge.net>
+	* mapedit/paledit.[cc,h], mapedit/shapefile.cc, shapes/vgafile.[cc,h],
+	tools/ipack.cc, tools/textpack.cc, usecode/ucxt/src/ucxt.cc: fixed
+	namespace issues, and casting.
+
 2002-03-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* tools/uctools.h: added 32 bit opcodes
 	* usecode/*, tools/wud.c: support for 32 bit opcodes and headers

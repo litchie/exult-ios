@@ -49,6 +49,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using	std::cout;
 using	std::endl;
+using	std::string;
+using	std::vector;
+using	std::ostream;
+using	std::ofstream;
+using	std::setw;
+using	std::ifstream;
 
 inline void Palette_edit::show
 	(
@@ -909,7 +915,7 @@ static void Write_palette
 		buf[3*i + 1] = g/4;
 		buf[3*i + 2] = b/4;
 		}
-	out.write(buf, sizeof(buf));
+	out.write(reinterpret_cast<char *>(buf), sizeof(buf));
 	}
 
 /*
@@ -1086,7 +1092,7 @@ void Palette_edit::export_palette
 		int r = (pal->colors[i]>>16)&255,
 		    g = (pal->colors[i]>>8)&255,
 		    b = pal->colors[i]&255;
-		out << setw(3) << r << ' ' << setw(3) << g << ' ' << 
+		out << setw(3) << r << ' ' << setw(3) << g << ' ' <<
 						setw(3) << b << endl;
 		}
 	out.close();
