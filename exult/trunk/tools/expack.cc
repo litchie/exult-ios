@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 	size_t len;
 	
 	f->retrieve(i, &buf, &len);
-	cout << (i+1) << "\t" << len << endl;
+	cout << i << "\t" << len << endl;
 	delete [] buf;
       }
     }

@@ -6,12 +6,18 @@ else
 UCC=
 endif
 
-noinst_PROGRAMS = expack wuc wud mklink rip ucdump $(UCC)
+noinst_PROGRAMS = txt2cc expack wuc wud mklink rip ucdump $(UCC)
 
 expack_SOURCES = \
 	expack.cc
 
 expack_LDADD = \
+	../files/libu7file.la
+
+txt2cc_SOURCES = \
+	txt2cc.cc
+
+txt2cc_LDADD = \
 	../files/libu7file.la
 
 wuc_SOURCES = \
