@@ -32,7 +32,7 @@ Boston, MA  02111-1307, USA.
 class Font_face;
 
 					// Table for translating palette vals.:
-typedef unsigned char Xform_palette[256];
+typedef unsigned char *Xform_palette;	// Should be 256-bytes.
 
 /*
  *	Here's a generic off-screen buffer.  It's up to the derived classes
