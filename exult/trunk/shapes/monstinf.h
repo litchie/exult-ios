@@ -122,20 +122,34 @@ public:
 		{ assert(i >= 0 && i < equip_cnt); return equip[i]; }
 	bool splits() const
 		{ return m_splits; }
+	void set_splits(bool tf)
+		{ m_splits = tf; }
 	bool cant_die() const
 		{ return m_cant_die; }
+	void set_cant_die(bool tf)
+		{ m_cant_die = tf; }
 	bool cant_yell() const
 		{ return m_cant_yell; }
+	void set_cant_yell(bool tf)
+		{ m_cant_yell = tf; }
 	bool cant_bleed() const
 		{ return m_cant_bleed; }
+	void set_cant_bleed(bool tf)
+		{ m_cant_bleed = tf; }
 	bool poison_safe() const
 		{ return m_poison_safe; }
+	void set_poison_safe(bool tf)
+		{ m_poison_safe = tf; }
 					// Get bits indicating
 					//   Weapon_info::damage_type:
 	unsigned char get_vulnerable() const
 		{ return vulnerable; }
+	void set_vulnerable(unsigned char v)
+		{ vulnerable = v; }
 	unsigned char get_immune() const
 		{ return immune; }
+	void set_immune(unsigned char v)
+		{ immune = v; }
 	enum Flags {
 		fly = 0,
 		swim = 1,
@@ -150,6 +164,8 @@ public:
 		};
 	unsigned char get_flags() const	// Get above set of flags.
 		{ return flags; }
+	void set_flags(unsigned char f)
+		{ flags = f; }
 	bool has_no_body() const	// No dead body?
 		{ return (flags>>no_body)&1; }
 	int get_strength() const	
@@ -160,6 +176,8 @@ public:
 		{ return intelligence; }
 	int get_alignment() const
 		{ return alignment; }
+	void set_alignment(int a)
+		{ alignment = a; }
 	int get_combat() const
 		{ return combat; }
 	int get_armor() const
@@ -168,8 +186,12 @@ public:
 		{ return weapon; }
 	int get_reach() const
 		{ return reach; }
+	void set_stats(int str, int dex, int intel, int cmb, int arm,
+			int wpn, int rch);
 	int get_equip_offset() const
 		{ return equip_offset; }
+	void set_equip_offset(int o)
+		{ equip_offset = o; }
 	};
 
 
