@@ -20,6 +20,7 @@
 #define CHEAT_H
 
 #include "vec.h"
+#include "singles.h"
 
 class Game_window;
 class ShapeBrowser;
@@ -30,7 +31,7 @@ class Game_object;
 class Tile_coord;
 class Effects_manager;
 
-class Cheat
+class Cheat : public Game_singletons
 {
  public:
   Cheat();
@@ -45,8 +46,6 @@ class Cheat
 	combo_pick = 3			// Left-click adds item to combo.
   };
 private:
-  Game_window *gwin;
-  Effects_manager *eman;
   ShapeBrowser *browser;
   SoundTester *tester;
   CheatScreen *cscreen;
@@ -97,7 +96,10 @@ public:
   void set_edit_lift(int lift);
   void set_edit_shape(int sh, int fr);
   void set_edit_chunknum(int chnum) { edit_chunknum = chnum; }
-  void set_map_editor (bool map) { map_editor = map; }
+  void set_map_editor (bool map) 
+	{ if (map_editor != map)
+		toggle_map_editor(); 
+	}
   void toggle_infravision (void);
   void set_infravision (bool infra) { infravision = infra; }
   void toggle_pickpocket (void);

@@ -431,7 +431,7 @@ public:
 	void write_saveinfo();		// Write the save info to gamedat
 	inline char *get_save_name(int i) const	// Get ->saved-game name.
 		{ return save_names[i]; }
-	void setup_game();		// Prepare for game
+	void setup_game(bool map_editing);	// Prepare for game
 	void read_npcs();		// Read in npc's.
 	void write_npcs();		// Write them back.
 	void read_schedules();		// Read npc's schedules.

@@ -191,6 +191,7 @@ static string arg_gamename = "default";	// cmdline arguments
 static string arg_configfile = "";
 static int arg_buildmap = -1;
 static bool arg_nomenu = false;
+static bool arg_edit_mode = false;	// Start up ExultStudio.
 
 /*
  *	A handy breakpoint.
@@ -261,6 +262,7 @@ int main
 	parameters.declare("--buildmap",&arg_buildmap,-1);
 	parameters.declare("--nocrc",&ignore_crc,true);
 	parameters.declare("-c",&arg_configfile,"");
+	parameters.declare("--edit",&arg_edit_mode,true);
 
 	// Process the args
 	parameters.process(argc,argv);
@@ -280,7 +282,8 @@ int main
 			 << "\t\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl
 			 << "\t\tonly valid when used together with --bg or --si" << endl
 			 << "\t\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl
-			 << "--nocrc\t\tDon't check crc's of .flx files" << endl;
+			 << "--nocrc\t\tDon't check crc's of .flx files" << endl
+			 << "--edit\t\tStart in map-edit mode" << endl;
 			
 		exit(1);
 	}
@@ -489,8 +492,8 @@ int exult_main(const char *runpath)
 #endif
 
 	Init();				// Create main window.
-
 	cheat.finish_init();
+	cheat.set_map_editor(arg_edit_mode);	// Start in map-edit mode?
 
 	Mouse::mouse = new Mouse(gwin);
 	Mouse::mouse->set_shape(Mouse::hand);
@@ -709,7 +712,6 @@ static void Init
 		// paths.
 		get_game_paths(arg_gamename);
 	}
-
 	store_system_paths();
 
 	do {
@@ -749,7 +751,7 @@ static void Init
 	} while(!game->show_menu(arg_nomenu));
 	gwin->init_files();
 	gwin->read_gwin();
-	gwin->setup_game();		// This will start the scene.
+	gwin->setup_game(arg_edit_mode);	// This will start the scene.
 					// Get scale factor for mouse.
 #ifdef USE_EXULTSTUDIO
 #ifndef WIN32
@@ -976,7 +978,8 @@ static void Handle_event
 	{
 	// Mouse scale factor
 	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
-	bool dont_move_mode = gwin->main_actor_dont_move();
+	bool dont_move_mode = gwin->main_actor_dont_move() &&
+				!cheat.in_map_editor();
 
 	// We want this
 	Gump_manager *gump_man = gwin->get_gump_man();

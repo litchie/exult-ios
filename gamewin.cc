@@ -1267,7 +1267,7 @@ void Game_window::read
 	read_gwin();			// Read our data.
 					// DON'T do anything that might paint()
 					//   before calling read_npcs!!
-	setup_game();			// Read NPC's, usecode.
+	setup_game(cheat.in_map_editor());	// Read NPC's, usecode.
 	}
 
 /*
@@ -2256,7 +2256,7 @@ void Game_window::double_clicked
 //^^^^^^^^^^^^TESTING
 #endif
 					// Animation in progress?
-	if (main_actor_dont_move())
+	if (main_actor_dont_move() && !cheat.in_map_editor())
 		return;
 					// Nothing going on?
 	if (!Usecode_script::get_count())
@@ -2630,6 +2630,7 @@ void Game_window::lose_focus
 
 void Game_window::setup_game
 	(
+	bool map_editing
 	)
 	{
 	for (Exult_vector<Game_map*>::iterator it = maps.begin();
@@ -2684,13 +2685,14 @@ void Game_window::setup_game
 	time_stopped = 0;
 //+++++The below wasn't prev. done by ::read(), so maybe it should be
 //+++++controlled by a 'first-time' flag.
-				// Want to activate first egg.
+					// Want to activate first egg.
 	Map_chunk *olist = main_actor->get_chunk();
 	olist->setup_cache();
 
 	Tile_coord t = main_actor->get_tile();
 					// Do them immediately.
-	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1, true);
+	if (!map_editing)		// (Unless map-editing.)
+		olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1,-1,true);
 	
 	// Force entire repaint.
 	set_all_dirty();

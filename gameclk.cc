@@ -193,7 +193,7 @@ void Game_clock::handle_event
 	int min_old = minute;
 	int hour_old = hour;
 				// Time stopped?  Don't advance.
-	if (!gwin->is_time_stopped())
+	if (!gwin->is_time_stopped() && !cheat.in_map_editor())
 		{
 		minute += time_rate;
 		if (Game::get_game_type() == SERPENT_ISLE)
