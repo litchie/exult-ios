@@ -1,3 +1,6 @@
+2001-09-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Makefile.*: fixed include paths in alternate makefiles
+
 2001-09-22  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucsched.cc (Usecode_script): Fixed (again) Moonshade Trial.
