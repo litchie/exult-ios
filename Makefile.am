@@ -145,6 +145,7 @@ EXTRA_DIST = 	\
 	README.MacOSX \
 	Makefile.be \
 	Makefile.common \
+	Makefile.mingw \
 	Makefile.studio.mingw \
 	Makefile.MorphOS \
 	Info.plist.in \
