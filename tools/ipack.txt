@@ -48,8 +48,10 @@ The archive name is required.
 
 The palette name is optional.  If provided, and if the file doesn't
 yet exist, ipack will create it as a Flex file with the first input
-.png's palette stored as entry 0.  It will also write the palette in
-text format with .txt appended to the paletted name.
+.png's palette stored as entry 0, and entries 1-10 automatically
+generated to approximate what we use in Exult (see palettes.h).  
+It will also write palette 0 in text format with .txt appended to the 
+paletted name.  This format is recognized by the Gimp.
 
      Example:
 
