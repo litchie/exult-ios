@@ -761,6 +761,8 @@ static void Handle_keystroke
 			gwin->resized(res_list[current_res].x,
 					res_list[current_res].y,
 					res_list[current_res].scale);
+					// Get scale factor for mouse.
+			scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 		} else
 			gwin->brighten(20);
 		break;
@@ -773,6 +775,7 @@ static void Handle_keystroke
 			gwin->resized(res_list[current_res].x,
 					res_list[current_res].y,
 					res_list[current_res].scale);
+			scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 		} else
 			gwin->brighten(-20);
 		break;

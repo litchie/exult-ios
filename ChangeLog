@@ -1,3 +1,8 @@
+2000-10-24  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Reagants bug & resolution-change bug fixed.
+	* Version changed to Alpha.01.
+
 2000-10-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Fixed 2 bugs: Crash in Despise after generator, and problem with

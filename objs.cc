@@ -825,7 +825,9 @@ int Game_object::drop
 	{
 	int shapenum = get_shapenum();	// It's possible if shapes match.
 	if (obj->get_shapenum() != shapenum ||
-	    !Has_quantity(shapenum))
+	    !Has_quantity(shapenum) ||
+					// Reagants are a special case.
+	    (shapenum == 842 && get_framenum() != obj->get_framenum()))
 		return (0);
 	int objq = obj->get_quantity();
 	int total_quant = get_quantity() + objq;
