@@ -30,9 +30,13 @@
 
 extern Cheat cheat;
 
-using std::string;
+using std::atoi;
 using std::cerr;
 using std::endl;
+using std::ifstream;
+using std::isspace;
+using std::strchr;
+using std::string;
 using std::vector;
 
 extern void to_uppercase(string &str);
@@ -40,7 +44,6 @@ extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 
 
 /* keybinding-file should be able to override 'show' and/or 'cheat' ? */
-
 Action ExultActions[] = {
   { ActionQuit, "Quit", true, false, NONE },
   { ActionFileGump, "Save/restore", true, false, NONE },
@@ -149,13 +152,17 @@ bool KeyBinder::HandleEvent(SDL_Event &ev)
     return false;
 
   key.mod = KMOD_NONE;
-  if (ev.key.keysym.mod & KMOD_SHIFT)  key.mod |= KMOD_SHIFT;
-  if (ev.key.keysym.mod & KMOD_CTRL)   key.mod |= KMOD_CTRL;
+  if (ev.key.keysym.mod & KMOD_SHIFT)
+  	key.mod = (SDLMod)(key.mod | KMOD_SHIFT);
+  if (ev.key.keysym.mod & KMOD_CTRL)
+  	key.mod = (SDLMod)(key.mod | KMOD_CTRL);
 #ifdef MACOS
   // map Meta to Alt on MacOS
-  if (ev.key.keysym.mod & KMOD_META)   key.mod |= KMOD_ALT;
+  if (ev.key.keysym.mod & KMOD_META)
+  	key.mod = (SDLMod)(key.mod | KMOD_ALT);
 #else
-  if (ev.key.keysym.mod & KMOD_ALT)    key.mod |= KMOD_ALT;
+  if (ev.key.keysym.mod & KMOD_ALT)
+  	key.mod = (SDLMod)(key.mod | KMOD_ALT);
 #endif
 
   sdlkey_index = bindings.find(key);
@@ -254,15 +261,15 @@ void KeyBinder::ParseLine(char *line)
     // check modifiers
     //    if (u.compare("ALT-",0,4) == 0) {
     if (u.substr(0,4) == "ALT-") {
-      k.mod |= KMOD_ALT;
+      k.mod = (SDLMod)(k.mod | KMOD_ALT);
       s.erase(0,4); u.erase(0,4);
       //    } else if (u.compare("CTRL-",0,5) == 0) {
     } else if (u.substr(0,5) == "CTRL-") {
-      k.mod |= KMOD_CTRL;
+      k.mod = (SDLMod)(k.mod | KMOD_CTRL);
       s.erase(0,5); u.erase(0,5);
       //    } else if (u.compare("SHIFT-",0,6) == 0) {
     } else if (u.substr(0,6) == "SHIFT-") {
-      k.mod |= KMOD_SHIFT;
+      k.mod = (SDLMod)(k.mod | KMOD_SHIFT);
       s.erase(0,6); u.erase(0,6);
     } else {
      
@@ -348,8 +355,13 @@ void KeyBinder::ParseLine(char *line)
     desc = "";
     if (k.mod & KMOD_CTRL)
       desc += "Ctrl-";
+#ifdef MACOS
+    if (k.mod & KMOD_ALT)
+      desc += "Cmd-";
+#else
     if (k.mod & KMOD_ALT)
       desc += "Alt-";
+#endif
     if (k.mod & KMOD_SHIFT)
       desc += "Shift-";
     desc += keycode;
