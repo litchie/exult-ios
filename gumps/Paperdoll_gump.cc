@@ -327,7 +327,11 @@ void Paperdoll_gump::set_to_spot
 	
 	// Get shape.
 	Shape_frame *shape = gwin->get_shape(*obj);
-	
+	if (!shape)			// Funny?  Try frame 0.
+		shape = gwin->get_shape(obj->get_shapenum(), 0);
+	if (!shape)
+		return;
+
 	// Height and width
 	int w = shape->get_width(), h = shape->get_height();
 	
