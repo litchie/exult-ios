@@ -42,31 +42,31 @@ public:
 	T& at(int i) { return (*this)[i]; }
 	void put(int i, T& v)		// Set i'th entry.
 		{
-		if (i >= size())
-			{
-			T *iter = begin() + size();
-			insert(begin() + size(), i - size(), 0);
-			push_back(v);
-			}
-		else
-			(*this)[i] = v;
+			if (i >= size())
+				{
+				T *iter = begin() + size();
+				insert(begin() + size(), i - size(), 0);
+				push_back(v);
+				}
+			else
+				(*this)[i] = v;
 		}
 	int put(T& v)			// Put in a free spot & return it.
 		{
-		int i = find(0);
-		if (i < 0)
-			i = size();
-		put(i, v);
-		return (i);
+			int i = find(0);
+			if (i < 0)
+				i = size();
+			put(i, v);
+			return (i);
 		}
 	size_type	find( const T obj ) const
 		{
 			size_type pos = 0;
 			for (const T *X = begin(); X != end(); ++X, ++pos)
-			{
+				{
 				if( *X == obj )
 					return pos;
-			}
+				}
 			return -1;
 		}
 
@@ -96,64 +96,5 @@ typedef	FeatureVector<Game_object*>	GOVector;
 typedef	FeatureVector<Egg_object*>	EggVector;
 typedef	FeatureVector<Actor*>		ActorVector;
 
-
-#if 0
-/*
- *	Here's a vector that resizes itself.
- */
-class Vector
-	{
-	void **values;			// List of values.
-	int cnt;			// # of values stored.
-	int max;			// # of values there's room for.
-	void resize(int newmax);	// Resize.
-public:
-	Vector(int c = 0, int m = 0);
-	~Vector()
-		{ delete values; }
-	int get_cnt()
-		{ return cnt; }
-	void truncate(int newcnt)	// Reduce count.
-		{
-		if (newcnt < cnt)
-			cnt = newcnt;
-		}
-	void *get(int i)		// Get i'th entry.
-		{ return i >= 0 && i < cnt ? values[i] : 0; }
-	int put(int i, void *v)		// Set i'th entry.  Returns 0 if error.
-		{
-		if (i < 0)
-			return (0);
-		if (i >= max)
-			resize(i + 1);
-		if (i >= cnt)
-			cnt = i + 1;
-		values[i] = v;
-		return (1);
-		}
-	int append(void *v)		// Append entry, and return index.
-		{
-		int i = cnt;
-		put(i, v);
-		return (i);
-		}
-	int find(void *v);		// Find an entry.
-	int remove(void *v)		// Remove an entry.
-		{
-		int i = find(v);
-		if (i >= 0)
-			values[i] = 0;
-		return i;
-		}
-	int put(void *v)		// Put in a free spot & return it.
-		{
-		int i = find(0);
-		if (i < 0)
-			i = cnt;
-		put(i, v);
-		return (i);
-		}
-	};
-#endif
 
 #endif
