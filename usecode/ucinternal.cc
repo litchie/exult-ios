@@ -210,7 +210,8 @@ bool Usecode_internal::call_function(int funcid,
 			cout << ", ";
 		frame->locals[i].print(cout);
 	}
-	cout << ") with event " << eventid << endl;
+	cout << ") with event " << eventid 
+		 << ", depth " << frame->call_depth << endl;
 #endif
 
 	return true;
@@ -2375,12 +2376,14 @@ int Usecode_internal::run()
 				Usecode_value ival = call_intrinsic(frame->eventid,
 													offset, sval);
 				push(ival);
+				frame_changed = true;
 				break;
 			}
 			case 0x39:		// CALLI.
 				offset = Read2(frame->ip);
 				sval = *(frame->ip)++; // # of parameters.
 				call_intrinsic(frame->eventid, offset, sval);
+				frame_changed = true;
 				break;
 			case 0x3e:		// PUSH ITEMREF.
 				pushref(frame->caller_item);
