@@ -2,14 +2,14 @@
 OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o \
 	gumps.o \
 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o \
-	tqueue.o gameclk.o imagetxt.o text.o items.o lists.o
+	tqueue.o gameclk.o imagetxt.o text.o items.o lists.o vec.o
 
 RELNUM = 12
 
 				# X-windows.
 CXX = g++
 CXXFLAGS = -g
-CPPFLAGS = -DXWIN -D_REENTRANT -DRELNUM=$(RELNUM) -I/usr/local/include/SDL -Inpc -Iscript
+CPPFLAGS = -DXWIN -D_REENTRANT -DRELNUM=$(RELNUM) -I/usr/local/include/SDL
 ifdef RELEASE
 # STATIC = -static
 STATIC =
