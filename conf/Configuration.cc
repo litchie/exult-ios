@@ -198,6 +198,13 @@ bool	Configuration::read_config_file(const char *n)
         // For now, just read file from current directory
 	filename=n;
 #endif
+#ifdef BEOS
+	// should become .exult.cfg in homedir
+	
+	// For now, just read exult.cfg from current directory
+	filename=n;
+#endif
+
 	FILE	*fp=fopen(filename.c_str(),"r");
 	if(!fp)
 		return false;
