@@ -3,6 +3,7 @@
 	* cheat_screen.cc: include config.h
 	* NEWS: fixed typos
 	* gamewin.h: added a check for NULL shape data. (avoids sword crash)
+	* txtscroll.cc: fixed unresponsiveness
 
 2001-02-12  Ryan Nunn <triforce@merlin.net.au>
 	* makefile.* : cheat_screen.cc
