@@ -231,7 +231,8 @@ int Game_object::find_nearby
 						continue;
 					}
 				else if (shapenum == -359 &&
-							!obj->get_npc_num())
+							!obj->get_npc_num() &&
+						 obj != gwin->get_main_actor())
 					continue;
 				int tx, ty, tz;
 				obj->get_abs_tile(tx, ty, tz);
