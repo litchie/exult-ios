@@ -259,7 +259,9 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			break;
 		case monster:		// +++++Not just for monsters!
 			{
-			Monster_info *inf = gwin->get_monster_info(data2&1023);
+			int shnum = data2&1023;
+			int frnum = data2>>10;
+			Monster_info *inf = gwin->get_monster_info(shnum);
 			if (inf)
 				{
 				Monster_actor *monster = inf->create(get_cx(),
@@ -273,7 +275,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			else		// Create item.
 				{
 				Game_object *nobj = new Ireg_game_object(
-					data2&1023, data2>>10, get_tx(),
+					shnum, frnum, get_tx(),
 					get_ty(), get_lift());
 				gwin->get_objects(get_cx(), get_cy())->add(
 									nobj);

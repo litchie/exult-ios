@@ -89,8 +89,6 @@ void Game_window::read_npcs
 			monster_info[i].set(shape, monster[0], monster[1],
 				monster[2], monster[3], monster[4], monster[5],
 				flags, equip);
-//			cout << '\t' << shape << "\t// " << 
-//					item_names[shape] << endl;
 			}
 		mfile.close();
 		u7open(mfile, EQUIP);	// Get 'equip.dat'.
