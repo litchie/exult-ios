@@ -240,6 +240,7 @@ void Game::show_menu()
 		switch(menu->handle_events(gwin,menu_mouse)) {
 		case -1: // Exit
 			pal.fade_out(30);
+			Audio::get_ptr()->stop_music();
 			exit(0);
 		case 0: // Intro
 			pal.fade_out(30);
@@ -535,6 +536,7 @@ Exult_Game ExultMenu::run()
 		case 5:
 		case -1: // Exit
 			pal.fade_out(30);
+			Audio::get_ptr()->stop_music();
 			exit(0);
 		case 0: // Black Gate
 			pal.fade_out(30);

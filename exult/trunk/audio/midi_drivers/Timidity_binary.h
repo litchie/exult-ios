@@ -32,16 +32,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/types.h>
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
-#include <SDL_thread.h>
 #include "Flex.h"
 #include "Table.h"
 #include "Mixer.h"
 #include "Midi.h"
 #include "exceptions.h"
 #include "utils.h"
+#include <pthread.h>
 
-
-//#undef HAVE_TIMIDITY_BIN	// Disabled for now
 #if HAVE_TIMIDITY_BIN
 class	Timidity_binary : virtual public MidiAbstract
 {
@@ -58,8 +56,8 @@ public:
 	Timidity_binary();
 	virtual ~Timidity_binary();
 private:
-	SDL_Thread	*my_thread;
-	SDL_Thread	*sfx_thread;
+	pthread_t midi_thread;
+	pthread_t sfx_thread;
 	string	filename;
 	bool	do_repeat;
 	string	sfxname;

@@ -274,7 +274,6 @@ int exult_main(void)
 	Mouse::mouse->set_shape(Mouse::hand);
 
 	int result = Play();		// start game
-//	delete config;			// free configuration object
 	return result;
 }
 

@@ -308,6 +308,11 @@ public:
 		while(1)
 			{
 			lock();
+			if(!consuming)
+				{
+				unlock();
+				return;
+				}
 			size_t	n=Buffer.size();
 			if(n>window)
 				{
