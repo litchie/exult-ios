@@ -235,6 +235,39 @@ void Uc_binary_expression::gen_value
 	}
 
 /*
+ *	Evaluate constant.
+ *
+ *	Output:	true if successful, with result returned in 'val'.
+ */
+
+bool Uc_binary_expression::eval_const
+	(
+	int& val			// Value returned here.
+	)
+	{
+	int val1, val2;			// Get each side.
+	if (!left->eval_const(val1) || !right->eval_const(val2))
+		return false;
+	switch (opcode)
+		{
+	case UC_ADD:	val = val1 + val2; return true;
+	case UC_SUB:	val = val1 - val2; return true;
+	case UC_MUL:	val = val1*val2; return true;
+	case UC_DIV:
+		if (!val2)
+			{
+			error("Division by 0");
+			return false;
+			}
+		val = val1/val2;
+		return true;
+		}
+	val = 0;
+	error("This operation not supported for integer constants");
+	return false;
+	}
+
+/*
  *	Generate code to evaluate expression and leave result on stack.
  */
 
