@@ -61,5 +61,11 @@ int	main(int argc,char **argv)
 	vs=config.listkeys("config/audio");
 	dump_stringvec(vs);
 
+	vs=config.listkeys("config/something");
+	dump_stringvec(vs);
+
+	vs=config.listkeys("config/somenonexistantthing");
+	dump_stringvec(vs);
+
 	return 0;
 }
