@@ -51,6 +51,7 @@ class Npc_proximity_handler;
 class Npc_face_info;
 class Egg_object;
 class Fonts_vga_file;
+class Ireg_game_object;
 
 /*
  *	The main game window:

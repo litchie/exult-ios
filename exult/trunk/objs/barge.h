@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_BARGE
 #define INCL_BARGE	1
 
-#include "objs.h"
+#include "contain.h"
 
 /*
  *	A 'barge', such as a ship or horse-and-cart.  The elements of a barge

@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_ACTORS
 #define INCL_ACTORS	1
 
-#include "objs.h"
+#include "contain.h"
 #include "utils.h"
 
 class Image_window;

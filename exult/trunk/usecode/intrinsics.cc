@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "barge.h"
 #include "virstone.h"
 #include "chunks.h"
+#include "spellbook.h"
 
 using std::cerr;
 using std::cout;

@@ -52,6 +52,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "paths.h"
 #include "Astar.h"
 #include "chunks.h"
+#include "spellbook.h"
 #include "objiter.h"
 #include "mouse.h"
 #include "fontvga.h"

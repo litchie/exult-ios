@@ -1,11 +1,11 @@
-INCLUDES = -I. -Iimagewin -Ishapes -Iconf -Ifiles -Igumps -Iaudio -Ipathfinder -Iusecode\
+INCLUDES = -I. -Iimagewin -Ishapes -Iobjs -Iconf -Ifiles -Igumps -Iaudio -Ipathfinder -Iusecode\
 	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
 	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\""$(datadir)/exult"\"
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
 SUBDIRS = audio pathfinder files gumps conf flic tools data docs desktop \
-	shapes imagewin usecode
+	shapes imagewin usecode objs
 
 bin_PROGRAMS = exult
 
@@ -16,21 +16,14 @@ exult_SOURCES =	\
 	actors.cc	\
 	actors.h	\
 	alloc.cc	\
-	animate.cc	\
-	animate.h	\
 	args.cc		\
 	args.h		\
 	autoarray.h	\
-	barge.cc	\
-	barge.h		\
 	bggame.cc	\
 	browser.cc	\
 	browser.h	\
 	cheat.cc	\
 	cheat.h		\
-	chunks.cc	\
-	chunks.h	\
-	citerate.h	\
 	combat.cc	\
 	combat.h	\
 	delobjs.cc	\
@@ -40,8 +33,6 @@ exult_SOURCES =	\
 	drag.cc		\
 	effects.cc	\
 	effects.h	\
-	egg.cc		\
-	egg.h		\
 	exult.cc	\
 	fnames.h	\
 	frameseq.h	\
@@ -62,10 +53,6 @@ exult_SOURCES =	\
 	npcnear.h	\
 	npctime.cc	\
 	npctime.h	\
-	objiter.h	\
-	objs.cc		\
-	objs.h		\
-	ordinfo.h	\
 	palette.cc	\
 	palette.h	\
 	paths.cc	\
@@ -84,9 +71,7 @@ exult_SOURCES =	\
 	tqueue.h	\
 	txtscroll.cc	\
 	txtscroll.h	\
-	vec.h		\
-	virstone.cc	\
-	virstone.h
+	vec.h
 
 exult_LDADD = 			\
 	pathfinder/libpathfinder.la		\
@@ -98,6 +83,7 @@ exult_LDADD = 			\
 	imagewin/libimagewin.la	\
 	usecode/libusecode.la	\
 	shapes/libshapes.la \
+	objs/libobjs.la \
 	gumps/libgumps.la \
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE)
 
