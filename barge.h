@@ -47,7 +47,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	PathFinder *path;		// For traveling.
 	Tile_coord center;		// Center of barge.
 	Game_object *get_object(int i)
-		{ return objects.at(i); }
+		{ return objects[i]; }
 	void swap_dims();
 	Rectangle get_tile_footprint();
 	void set_center();
