@@ -746,6 +746,8 @@ int Container_game_object::add
 	int dont_check			// 1 to skip volume check.
 	)
 	{
+	if (obj->get_shapenum() == get_shapenum())
+		return (0);		// Can't put a bag in a bag.
 	int vol;			// Note:  NPC's have 0 volume.
 	if (!dont_check && (vol = get_volume()) > 0)
 		{
