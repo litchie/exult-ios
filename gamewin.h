@@ -131,6 +131,8 @@ private:
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
 	void read_map_data();		// Read in 'ifix', 'ireg', etc.
+					// Render the map & objects.
+	int paint_map(int x, int y, int w, int h);
 public:
 	int skip_lift;			// Skip objects with lift > 0.
 	int paint_eggs;
@@ -410,6 +412,8 @@ public:
 	void init_actors();		// Place actors in the world.
 	void clear_dirty()		// Clear dirty rectangle.
 		{ dirty.w = 0; }
+					// Paint scene at given tile.
+	void paint_map_at_tile(int toptx, int topty, int skip_above = 31);
 					// Paint area of image.
 	void paint(int x, int y, int w, int h);
 	void paint(Rectangle& r)

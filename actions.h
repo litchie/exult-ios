@@ -48,6 +48,9 @@ public:
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest)
 		{ return 0; }
+					// Check for Astar.
+	virtual int following_smart_path()
+		{ return 0; }
 	};
 
 /*
@@ -83,6 +86,8 @@ public:
 	virtual Actor_action *walk_to_tile(Tile_coord src, Tile_coord dest, int move_flags);
 					// Get destination, or ret. 0.
 	virtual int get_dest(Tile_coord& dest);
+					// Check for Astar.
+	virtual int following_smart_path();
 	};
 
 /*

@@ -2219,6 +2219,40 @@ USECODE_INTRINSIC(set_opponent)
 	return (no_ret);
 }
 
+USECODE_INTRINSIC(display_area)
+{
+	// display_area(tilepos) - used for crystal balls.
+	int size = parms[0].get_array_size();
+	if (size >= 3)
+		{
+		int tx = parms[0].get_elem(0).get_int_value();
+		int ty = parms[0].get_elem(1).get_int_value();
+		int unknown = parms[0].get_elem(2).get_int_value();
+					// Figure in tiles.
+		int tw = gwin->get_width()/tilesize, 
+		    th = gwin->get_height()/tilesize;
+					// Paint game area.
+		gwin->paint_map_at_tile(tx - tw/2, ty - th/2, 4);
+					// Paint sprite #10 (black gate!)
+					//   over it.
+		Shape_frame *sprite = gwin->get_sprite_shape(10, 0);
+		if (sprite)		// They have translucency.
+			{		// Center it.
+			int topx = (gwin->get_width() - sprite->get_width())/2,
+			    topy = (gwin->get_height() - 
+						sprite->get_height())/2;
+			gwin->paint_shape(topx + sprite->get_xleft(),
+					  topy + sprite->get_yabove(), 
+								sprite, 1);
+			}
+		gwin->show();
+		int x, y;		// Wait for click.
+		Get_click(x, y, Mouse::hand);
+		gwin->paint();		// Repaint normal area.
+		}
+	return (no_ret);
+}
+
 USECODE_INTRINSIC(resurrect)
 {
 	// resurrect(body).  Returns actor if successful.
@@ -2824,9 +2858,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(set_opponent),	// 0x4c
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d     CloneNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e UNUSED
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4f ++++called when you dbl-click
-                         	// on FoV gem. (gift from LB) display area???
-                                // ShowCrystalBall  (ucdump.c)
+	USECODE_INTRINSIC_PTR(display_area), // 0x4f// ShowCrystalBall(ucdump)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50     ShowWizardEye (ucdump.c)
 	USECODE_INTRINSIC_PTR(resurrect),// 0x51     ResurrectNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(add_spell),// 0x52     AddSpellToBook (ucdump.c)
