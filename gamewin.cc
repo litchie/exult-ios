@@ -2846,7 +2846,8 @@ void Game_window::theft
 		{
 		Actor *npc = *it;
 		if (npc->is_monster() || npc == main_actor ||
-		    npc->get_party_id() >= 0)
+		    npc->get_party_id() >= 0 ||
+		    npc->get_npc_num() >= num_npcs1)
 			continue;
 		int dist = npc->distance(main_actor);
 		if (dist < best_dist && Fast_pathfinder_client::is_grabable(
