@@ -332,7 +332,7 @@ TODO: document
 
 TODO: document
 
-> 0x44	PUSHB	"pushb\t%b1H"	"\t\t\t; %d1"	"0x%1"	1	{byte}	0	1	0	000000
+> 0x44	PUSHB	"pushb\t%b1H"	"\t\t\t; %d1"	"0x%b1"	1	{byte}	0	1	0	000000
 
 (ucdump calls this "pushbi")
 TODO: document

@@ -1,3 +1,7 @@
+2002-01-03  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*: Cleaned up output so it's possible to pipe ucxt
+	straight to ucc.
+
 2002-01-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamemap.cc,objs/chunkter.cc:  Commit/abort terrain edits.
