@@ -61,7 +61,7 @@ inline ostream &tab_indent(const unsigned int indent, ostream &o)
 	return o;
 }
 
-void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool gnubraces)
+void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, bool gnubraces)
 {
 	unsigned int indent=0;
 	// output the "function name"
@@ -75,17 +75,15 @@ void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned i
 	// start of func
 	tab_indent(indent++, o) << '{' << endl;
 	
-	output_ucs_data(o, funcmap, intrinsics, indent);
+	output_ucs_data(o, funcmap, intrinsics, uselesscomment, indent);
 	
 	tab_indent(--indent, o) << '}' << endl;
 }
 
-void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, unsigned int indent)
+void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, unsigned int indent)
 {
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
 	{
-		//o << "//" << uccs[i]._offset << endl;
-
 		// we don't want to output the first "jump" (the start of the function)
 		if(i!=gotoset.begin())
 			tab_indent(indent++, o) << setbase(16) << "label" << setw(4) << _funcid << "_" << setw(4) << i->offset() << ":" << endl;
@@ -94,11 +92,10 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsig
 		{
 			const UCc &ucc = *(j->first);
 			
-			//if we've already done this
-			if(ucc._tagged!=true)
-			{
-					output_ucs_opcode(o, funcmap, opcode_table_data, ucc, intrinsics, indent);
-			}
+			if(uselesscomment)
+				tab_indent(indent, o) << "// Offset: " << setw(4) << ucc._offset << endl;
+
+			output_ucs_opcode(o, funcmap, opcode_table_data, ucc, intrinsics, indent);
 		}
 		if(i!=gotoset.begin()) --indent; //decrement it again to skip the label statement.
 		
@@ -291,14 +288,13 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 						/* save the 'current' value as the return value and increment it so it's
 						   pointing at the 'next' current value */
 						vector<pair<UCc *, bool> >::reverse_iterator ret(current);
-						//ret->second=false;
+						
 						ret->first->_popped = parse_ucs_pass2b(++current, vec, num_args, funcmap, intrinsics);
-						//current->second=false;
+						
 						assert(current!=ret);
-						//assert(current->second==false);
+						
 						--current;
-						//ret->second=false;
-						//assert(ret->second==false);
+						
 						assert(current==ret);
 						#ifdef DEBUG_PARSE2a
 						print_asm_opcode(tab_indent(1, cout), *this, funcmap, opcode_table_data, intrinsics, *(ret->first));
