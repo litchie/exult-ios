@@ -222,6 +222,16 @@ if test x$enable_storage_initialisation = xyes; then
   AC_DEFINE(INITIALISE_ALLOCATED_BLOCKS,0)
 fi
 
+dnl For storage poisoning
+AC_ARG_ENABLE(storage_poisoning, [  --enable-storage-poisoning          fill storage with 0xf1 when allocated [default no]],,storage_initialisation=no)
+if test x$enable_storage_initialisation = xyes; then
+  if text x$enable_storage_initialisation = xyes; then
+	echo "Disabling storage initialisation. Can poision or init to zero. Not both"
+  fi
+  AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
+  AC_DEFINE(POISON_ALLOCATED_BLOCKS)
+fi
+
 dnl this is for debug
 DEBUG_FLAGS="-O2"
 AC_ARG_ENABLE(debug, [  --enable-debug          enable debug messages [default no]],,enable_debug=no)
