@@ -48,7 +48,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "flic/playfli.h"
 #include "Configuration.h"
 #include "schedule.h"
-#include "titles.h"
+#include "game.h"
 #include "barge.h"
 #include "actors.h"
 #include "dir.h"
@@ -75,16 +75,25 @@ Game_window::Game_window
 	    conv_choices(0), render_seq(0), painted(0), focus(1), shapes(),
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
 	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
-	    endshape(ENDSHAPE_FLX),
+	    endshape(ENDSHAPE_FLX), game(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31), npcs(0),
 	    monster_info(0), 
-	    scrolltx(64*tiles_per_chunk), 
-	    scrollty(136*tiles_per_chunk), 	// Start in Trinsic (BG).
 	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
 	    dragging(0), dragging_save(0),
 	    skip_lift(16), paint_eggs(0), debug(0)
 	{
 	game_window = this;		// Set static ->.
+	
+	set_window_size(width, height);
+
+	// Discover the game we are running (BG, SI, ...)
+	char *static_identity = get_game_identity(INITGAME);
+	game = Game::get_game(static_identity);
+
+	// Go to starting chunk
+	scrolltx = game->get_start_tile_x();
+	scrollty = game->get_start_tile_y();
+
 	if (!shapes.is_good())
 		abort("Can't open 'shapes.vga' file.");
 	if (!faces.is_good())
@@ -119,9 +128,6 @@ Game_window::Game_window
 		}
 	else
 		{
-			cout << "Checking consistency of static/gamedat: ";
-			char *static_identity = get_game_identity(INITGAME);
-			cout << static_identity << "/";
 			ifstream identity_file;
 			u7open(identity_file, IDENTITY);
 			char gamedat_identity[256];
@@ -130,7 +136,7 @@ Game_window::Game_window
 			for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
 				;
 			*ptr = 0;
-			cout << gamedat_identity;
+			cout << "Gamedat identity " << gamedat_identity << endl;
 			if(strcmp(static_identity, gamedat_identity))
 				{
 					cout << " ->BAD" << endl;
@@ -141,13 +147,14 @@ Game_window::Game_window
 				{
 					cout << " ->GOOD" << endl;
 				}
-			delete[] static_identity;
+			
 			read_gwin();	// Read in 'gamewin.dat' to set clock,
 					//   scroll coords.
 		}
 	read_save_names();		// Read in saved-game names.
+	delete[] static_identity;
 
-	set_window_size(width, height);
+	
 
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
