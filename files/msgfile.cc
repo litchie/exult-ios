@@ -54,7 +54,8 @@ int Read_text_msg_file
 	strings.reserve(2000);
 	char buf[1024];
 	int linenum = 0;
-	unsigned long first = 0xffffffff;// Index of first one found.
+#define NONEFOUND 0xffffffff
+	unsigned long first = NONEFOUND;// Index of first one found.
 	while (!in.eof())
 		{
 		++linenum;
@@ -91,6 +92,6 @@ int Read_text_msg_file
 		if (index < first)
 			first = index;
 		}
-	return first;
+	return first == NONEFOUND ? -1 : (int) first;
 	}
 

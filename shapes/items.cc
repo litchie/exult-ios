@@ -28,10 +28,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // #include <iomanip>			/* Debugging */
 #include <fstream>
+#include <vector>
 #include "items.h"
 #include "utils.h"
+#include "msgfile.h"
 
 using std::ifstream;
+using std::cerr;
+using std::endl;
+using std::vector;
 
 char **item_names;			// Names of U7 items.
 int num_item_names;
@@ -43,11 +48,29 @@ int num_item_names;
  *	Frame names start at entry 0x500 (reagents,medallions,food,etc.).
  */
 
-void Setup_item_names (ifstream& items) {
+void Setup_item_names (ifstream& items, ifstream& msgs) {
+	vector<char *> msglist;
+	int first_msg;			// First in exultmsg.txt.  Should
+					//   follow those in text.flx.
+
 	items.seekg(0x54);
-	num_item_names = Read4(items);
+	int flxcnt = Read4(items);
+	first_msg = num_item_names = flxcnt;
+	if (msgs.good()) {		// Exult msgs. too?
+		first_msg = Read_text_msg_file(msgs, msglist);
+		if (first_msg >= 0) {
+			if (first_msg < num_item_names) {
+				cerr << "Exult msg. # " << first_msg <<
+					" conflicts with 'text.flx'" << endl;
+				first_msg = num_item_names;
+			}
+			num_item_names = msglist.size();
+		} else
+			first_msg = num_item_names;
+	}
 	item_names = new char *[num_item_names];
-	for(int i=0; i<num_item_names; i++) {
+	int i;
+	for(i=0; i < flxcnt; i++) {
 		items.seekg(0x80+i*8);
 		int itemoffs = Read4(items);
 		if(!itemoffs)
@@ -61,4 +84,6 @@ void Setup_item_names (ifstream& items) {
 			<< "\t" << item_names[i] << endl;
 #endif
 	}
+	for (i = first_msg; i < num_item_names; i++)
+		item_names[i] = msglist[i];
 } 

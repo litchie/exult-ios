@@ -1,0 +1,7 @@
+# These messages are used in the Exult engine, and follow the
+# game-specific ones.
+2800:Put that chair back!
+2801:Thief!!
+2802:Thou scoundrel!!
+2803:Not funny!
+2804:Who moved my chair??
