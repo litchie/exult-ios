@@ -53,6 +53,7 @@ class Npc_face_info {
   Rectangle face_rect;		// Rectangle where face is shown.
   Rectangle text_rect;		// Rectangle NPC statement is shown in.
   int last_text_height;		// Height of last text painted.
+  string cur_text;		// Current text being shown.
   Npc_face_info(ShapeID &sid, int num) : shape(sid), face_num(num), text_pending(0)
   {  }
 };
@@ -289,7 +290,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 		info->last_text_height = info->text_rect.h;
 		}
 	gwin->get_win()->set_clip(0, 0, screenw, screenh);
-	paint();			// Paint all faces.
+	paint_faces();			// Paint all faces.
 	gwin->get_win()->clear_clip();
 	}
 
@@ -338,20 +339,6 @@ void Conversation::remove_slot_face
 	}
 
 
-#if 0	/* ++++I think this can go away.
-/*
- *	Remove the last face shown (SI).  (Or maybe it's just slot 1 always?)
- */
-
-void Conversation::remove_last_face
-	(
-	)
-	{
-	if (last_face_shown >= 0 && face_info[last_face_shown])
-		remove_face(face_info[last_face_shown]->shape);
-	}
-#endif
-
 /*
  *	Show what the NPC had to say.
  */
@@ -361,20 +348,23 @@ void Conversation::show_npc_message(const char *msg)
 	if (last_face_shown == -1)
 		return;
 	Npc_face_info *info = face_info[last_face_shown];
+	info->cur_text = "";
 	Rectangle& box = info->text_rect;
 	gwin->paint(box);		// Clear what was there before.
-	paint();
+	paint_faces();
 	int height;			// Break at punctuation.
 	while ((height = sman->paint_text_box(0, msg, box.x,box.y,box.w,box.h, 
 								-1, 1, gwin->get_text_bg())) < 0)
 		{			// More to do?
+		info->cur_text = string(msg, -height);
 		int x, y; char c;
-		Get_click(x, y, Mouse::hand, &c);
+		Get_click(x, y, Mouse::hand, &c, false, this);
 		gwin->paint(box);	// Clear area again.
 		msg += -height;
 		}
 					// All fit?  Store height painted.
 	info->last_text_height = height;
+	info->cur_text = msg;
 	info->text_pending = 1;
 	gwin->set_painted();
 	gwin->show();
@@ -496,9 +486,6 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	Rectangle mbox(fx, fy, face->get_width(), face->get_height());
 	mbox = mbox.intersect(sbox);
 	avatar_face = mbox;		// Repaint entire width.
-					// Draw portrait.
-	sman->paint_shape(mbox.x + face->get_xleft(), 
-			  mbox.y + face->get_yabove(), face);
 					// Set to where to draw sentences.
 	Rectangle tbox(mbox.x + mbox.w + 8, mbox.y + 4,
 				sbox.w - mbox.x - mbox.w - 16,
@@ -506,6 +493,9 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 				5*height);// Try 5 lines.
 	tbox = tbox.intersect(sbox);
 	gwin->paint(tbox);              // Paint background.
+					// Draw portrait.
+	sman->paint_shape(mbox.x + face->get_xleft(), 
+			  mbox.y + face->get_yabove(), face);
 	delete [] conv_choices;		// Set up new list of choices.
 	conv_choices = new Rectangle[num_choices + 1];
 	for (int i = 0; i < num_choices; i++)
@@ -580,12 +570,24 @@ int Conversation::conversation_choice(int x, int y)
 }
 
 /*
- *	Repaint the faces.   Assumes clip has already been set to screen.
- *	???Maybe we should paint text too.  We'd have to keep better track.
+ *	Repaint everything.
  */
 
 void Conversation::paint
 	(
+	)
+	{
+	show_avatar_choices();
+	paint_faces(true);
+	}
+
+/*
+ *	Repaint the faces.   Assumes clip has already been set to screen.
+ */
+
+void Conversation::paint_faces
+	(
+	bool text			// Show text too.
 	)
 	{
 	if (!num_faces)
@@ -607,6 +609,13 @@ void Conversation::paint
 			sman->paint_shape(
 				finfo->face_rect.x + face_xleft,
 				finfo->face_rect.y + face_yabove, face, 1);
+			}
+		if (text)		// Show text too?
+			{
+			Rectangle& box = finfo->text_rect;
+			sman->paint_text_box(0, finfo->cur_text.c_str(), 
+				box.x,box.y,box.w,box.h, -1, 1, 
+							gwin->get_text_bg());
 			}
 		}
 	}
