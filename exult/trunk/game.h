@@ -34,7 +34,7 @@ class Mouse;
 
 struct str_int_pair
 {
-	char *str;
+	const char *str;
 	int  num;
 };
 

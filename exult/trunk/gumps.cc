@@ -1491,7 +1491,7 @@ void Sign_gump::paint
 
 void Text_gump::add_text
 	(
-	char *str
+	const char *str
 	)
 	{
 	int slen = strlen(str);		// Length of new text.

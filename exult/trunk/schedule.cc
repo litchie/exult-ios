@@ -176,7 +176,7 @@ void Eat_at_inn_schedule::now_what
 			gwin->add_dirty(food);
 			food->remove_this();
 			}
-		char *msgs[] = {"Gulp!", "Mmmmm.", "Yum!", ""};
+		const char *msgs[] = {"Gulp!", "Mmmmm.", "Yum!", ""};
 		int n = rand()%(sizeof(msgs)/sizeof(msgs[0]));
 		npc->say(msgs[n]);
 		}
@@ -866,7 +866,7 @@ void Waiter_schedule::now_what
 		GOVector foods;
 		if (customer->find_nearby(foods, 377, 2, 0) > 0)
 			{
-			char *msgs[] = {"You look like you're doing fine.",
+			const char *msgs[] = {"You look like you're doing fine.",
 					"Everything okay?",
 					"Ready for dessert?",
 					""
@@ -881,7 +881,7 @@ void Waiter_schedule::now_what
 			if (food && food->get_shapenum() == 377 &&
 			    find_serving_spot(spot))
 				{
-				char *msgs[] = {"Enjoy!",
+				const char *msgs[] = {"Enjoy!",
 						"Specialty of the house!",
 						""
 						};

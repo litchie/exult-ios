@@ -65,7 +65,7 @@ void ShapeBrowser::browse_shapes()
 		Palette pal;
 		char buf[255];
 		str_int_pair pal_tuple, xform_tuple;
-		char *fname;
+		const char *fname;
 		
 		sprintf(buf,"files/shapes/%d",current_file);
 		fname = game->get_resource(buf).str;

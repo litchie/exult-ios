@@ -514,7 +514,7 @@ void Actor::follow
 	Actor *leader
 	)
 	{
-	static char *catchup_phrases[3] = { "Thou shan't lose me so easily!",
+	static const char *catchup_phrases[3] = { "Thou shan't lose me so easily!",
 					"Ah, there thou art!",
 					"Found ye!" };
 	if (Actor::is_dead_npc())

@@ -2326,7 +2326,7 @@ void Game_window::remove_face
 
 void Game_window::show_npc_message
 	(
-	char *msg
+	const char *msg
 	)
 	{
 	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, 

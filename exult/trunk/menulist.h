@@ -64,7 +64,7 @@ private:
 public:
 	MenuChoice(Shape_frame *on, Shape_frame *off, int xpos, int ypos, Font *fnt);
 	virtual ~MenuChoice() { delete choices; }
-	void add_choice(char *s);
+	void add_choice(const char *s);
 	int get_choice() { return choice; }
 	void set_choice(int c) { choice = c; }
 	
@@ -75,8 +75,8 @@ public:
 class MenuList {
 private:
 	std::vector<MenuObject*> *entries;
-	int selection;
 	bool selected;
+	int selection;
 public:
 	MenuList(): selected(false), selection(0) { entries = new std::vector<MenuObject*>(); }
 	~MenuList();

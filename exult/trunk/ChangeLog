@@ -1,3 +1,21 @@
+2000-11-26  Dancer Vesperman <dancer@users.sourceforge.net>
+	* audio/Audio.h: Eliminate a warning by making the Audio constructor protected, rather than private.
+	* actors.cc: const police
+	* audio/xmidi.cc: Initialise status
+	* menulist.h: const police
+	* menulist.h: initialisers in declaration order
+	* game.h: const police
+	* gamewin.h: initialisers in declaration order
+	* gumps.h: const police
+	* gumps.cc: const police
+	* schedule.cc: const police
+	* usecode.cc: int and size_t are not _quite_ the same thing
+	* usecode.cc: const police
+	* gamewin.h: const police
+	* gamewin.cc: const police
+	* browsers.cc: const police
+	* audio/midi_drivers/Timidity_binary.cc: maybe dynamic instrument loading is not as good as it seems
+
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* drag.cc,exult.cc,gamewin.h/cc: changed more vars from int to bool
 	* gamedat.cc,readnpcs.cc: more int->bool
