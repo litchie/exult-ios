@@ -113,6 +113,7 @@ void Mouse::set_shape0
 					// Set backup box to cover mouse.
 	box.x = mousex - cur->get_xleft();
 	box.y = mousey - cur->get_yabove();
+	dirty = dirty.add(box);		// Update dirty area.
 	}
 
 /*

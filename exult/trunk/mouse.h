@@ -40,6 +40,7 @@ class Mouse
 	Image_window8 *iwin;		// From gwin.
 	Image_buffer *backup;		// Stores image below mouse shape.
 	Rectangle box;			// Area backed up.
+	Rectangle dirty;		// Dirty area from mouse move.
 	int mousex, mousey;		// Last place where mouse was.
 	int cur_framenum;		// Frame # of current shape.
 	Shape_frame *cur;		// Current shape.
@@ -75,6 +76,7 @@ public:
 			{
 			onscreen = 0;
 			iwin->put(backup, box.x, box.y);	
+			dirty = box;	// Init. dirty to box.
 			}
 		}
 	void set_shape(int framenum)	// Set to desired shape.
@@ -94,9 +96,12 @@ public:
 #endif
 					// Shift to new position.
 		box.shift(x - mousex, y - mousey);
+		dirty = dirty.add(box);	// Enlarge dirty area.
 		mousex = x;
 		mousey = y;
 		}
+	void blit_dirty()		// Blit dirty area.
+		{ iwin->show(dirty.x, dirty.y, dirty.w, dirty.h); }
 	void set_location(int x, int y);// Set to given location.
 					// Flash desired shape for 1/2 sec.
 	void flash_shape(Mouse_shapes flash);
