@@ -262,7 +262,7 @@ void ActionInventory(int *params)
 	
 	Actor *actor = Get_party_member(inventory_page);
 	if (actor) {
-		actor->activate(gwin->get_usecode(), 1, true); //force showing inv.
+		actor->show_inventory(); //force showing inv.
 	}
 
 	if (gwin->showing_gumps() && gwin->find_gump(Mouse::mouse->get_mousex(), Mouse::mouse->get_mousey()) )
