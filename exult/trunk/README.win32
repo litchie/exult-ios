@@ -100,10 +100,3 @@ If you are currently playing a game of Ultima 7, be sure
 to make a backup of the gamedat directory.
  
 4) Have fun :-)
-
-
-Note: 
-It is also possible to build Exult using the Windows version 
-of Mingw32. (see www.mingw.org)
-Since I have not yet tried this myself, I am unable to give
-exact instructions for this.
