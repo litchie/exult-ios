@@ -268,7 +268,6 @@ void Conversation::show_face(int shape, int frame, int slot)
 	gwin->get_win()->clear_clip();
 	}
 
-
 /*
  *	Remove face from screen.
  */
@@ -282,13 +281,28 @@ void Conversation::remove_face(int shape)
 			break;
 	if (i == max_faces)
 		return;			// Not found.
-	Npc_face_info *info = face_info[i];
+	remove_slot_face(i);
+}
+
+/*
+ *	Remove face from indicated slot (SI).
+ */
+
+void Conversation::remove_slot_face
+	(
+	int slot
+	)
+	{
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
+	if (slot >= max_faces || !face_info[slot])
+		return;			// Invalid.
+	Npc_face_info *info = face_info[slot];
 	gwin->paint(info->face_rect);
 	gwin->paint(info->text_rect);
-	delete face_info[i];
-	face_info[i] = 0;
+	delete face_info[slot];
+	face_info[slot] = 0;
 	num_faces--;
-	if (last_face_shown == i)	// Just in case.
+	if (last_face_shown == slot)	// Just in case.
 		{
 		int j;
 		for (j = max_faces - 1; j >= 0; j--)
@@ -296,8 +310,10 @@ void Conversation::remove_face(int shape)
 				break;
 		last_face_shown = j;
 		}
-}
+	}
 
+
+#if 0	/* ++++I think this can go away.
 /*
  *	Remove the last face shown (SI).  (Or maybe it's just slot 1 always?)
  */
@@ -309,6 +325,7 @@ void Conversation::remove_last_face
 	if (last_face_shown >= 0 && face_info[last_face_shown])
 		remove_face(face_info[last_face_shown]->shape);
 	}
+#endif
 
 /*
  *	Show what the NPC had to say.

@@ -65,24 +65,22 @@ void Game_window::read_npcs
 	memset(npcs, 0, num_npcs*sizeof(npcs[0]));
 					// Create main actor.
 	camera_actor = npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
-#if 0
-	if (Game::get_game_type() == BLACK_GATE)
-		{
-		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-			main_actor->clear_flag(Obj_flags::dont_render);
-		else
-			main_actor->set_flag(Obj_flags::dont_render);
-		}
-#endif
 	int i;
 
 	// Don't like it... no i don't.
 	center_view(main_actor->get_abs_tile_coord());
-
+					// SI: 231-255 are bogus automatons(?).
+	int skip = Game::get_game_type() == SERPENT_ISLE ? 231 : 10000;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 		{
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
-		npcs[i]->restore_schedule();
+		if (i >= skip && i < 256)
+			{
+			npcs[i]->remove_this();
+			npcs[i] = 0;
+			}
+		else
+			npcs[i]->restore_schedule();
 		}
 	nfile.close();
 	main_actor->set_actor_shape();
@@ -245,7 +243,10 @@ void Game_window::read_schedules
 			schedules[j].set(ent);
 			}
 					// Store in NPC.
-		npc->set_schedules(schedules, cnt);
+		if (npc)
+			npc->set_schedules(schedules, cnt);
+		else
+			delete schedules;
 		}
 	delete [] offsets;		// Done with this.
 	cout.flush();

@@ -2853,7 +2853,7 @@ void Game_window::schedule_npcs
 		{
 		Npc_actor *npc = (Npc_actor *) npcs[i];
 					// Don't want companions leaving.
-		if (npc->get_schedule_type() != Schedule::wait)
+		if (npc && npc->get_schedule_type() != Schedule::wait)
 			npc->update_schedule(this, hour3, backwards);
 		}
 	paint();			// Repaint all.

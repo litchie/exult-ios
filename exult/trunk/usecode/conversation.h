@@ -52,6 +52,7 @@ class Conversation {
   void init_faces();
   void show_face(int shape, int frame, int slot = -1);
   void remove_face(int shape);
+  void remove_slot_face(int slot); // SI.
   void remove_last_face();	// SI.
   void show_npc_message(const char *msg);
   bool is_npc_text_pending();

@@ -332,7 +332,8 @@ private:
 	USECODE_INTRINSIC_DECL(set_polymorph);
 	USECODE_INTRINSIC_DECL(show_npc_face0);
 	USECODE_INTRINSIC_DECL(show_npc_face1);
-	USECODE_INTRINSIC_DECL(remove_last_face);
+	USECODE_INTRINSIC_DECL(remove_npc_face0);
+	USECODE_INTRINSIC_DECL(remove_npc_face1);
 	USECODE_INTRINSIC_DECL(set_conversation_slot);
 	USECODE_INTRINSIC_DECL(set_new_schedules);
 	USECODE_INTRINSIC_DECL(revert_schedule);
