@@ -1,3 +1,8 @@
+2001-03-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Audio:  For Win32, changed desired sample rate from 44100 to
+	22050.   This stops (at least on my machine) the freeze upon exit.
+
 2001-03-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* tools/shp2pcx.cc: convert shp+pal to a .pcx for each frame
 	* tools/Makefile.am: build shp2pcx

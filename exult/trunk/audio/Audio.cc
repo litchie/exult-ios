@@ -77,13 +77,18 @@ Audio::~Audio()
 		return;
 	}
 
+cerr << "~Audio:  about to stop_music()" << endl; cerr.flush();
 	stop_music();
+cerr << "~Audio:  about to quit subsystem" << endl; cerr.flush();
 	SDL::QuitSubSystem(SDL_INIT_AUDIO); // SDL 1.1 lets us diddle with
 						// subsystems
+cerr << "~Audio:  closed audio" << endl; cerr.flush();
 	if(mixer)
 		{
+cerr << "~Audio:  about to cancel_streams()" << endl; cerr.flush();
 		cancel_streams();
 		delete mixer;
+cerr << "~Audio:  deleted mixer" << endl; cerr.flush();
 		mixer=0;
 		}
 	if(midi)
@@ -91,6 +96,7 @@ Audio::~Audio()
 		delete midi;
 		midi=0;
 		}
+cerr << "~Audio:  deleted midi" << endl; cerr.flush();
 	// Avoid closing SDL audio. This seems to trigger a segfault
 	// SDL::CloseAudio();
 	SDL_open=false;
@@ -413,6 +419,7 @@ void Audio::Init(int _samplerate,int _channels)
 #endif
 	midi=new MyMidiPlayer();
 	mixer=new Mixer(this, _buffering_unit,_channels,actual.silence);
+	SDL_PauseAudio(0);		// Enable playing.
 #if DEBUG
 	cout << "Audio initialisation OK" << endl;
 #endif
@@ -666,7 +673,11 @@ Audio	*Audio::get_ptr(void)
 	if(!self)
 		{
 		new Audio();
+#if !defined(WIN32)	/* !!!! 44100 caused the freeze upon exit in Win! */
 		self->Init(44100,2);
+#else
+		self->Init(22050,2);
+#endif
 		}
 
 	return self;
