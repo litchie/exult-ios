@@ -931,7 +931,7 @@ bool Game_window::restore_gamedat_zip
 									// use GAMEDAT define cause that's got a
 									// trailing slash
 	U7remove (USEDAT);
-	u7remove (USEVARS);
+	U7remove (USEVARS);
 	U7remove (U7NBUF_DAT);
 	U7remove (NPC_DAT);
 	U7remove (MONSNPCS);
