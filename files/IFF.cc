@@ -61,11 +61,6 @@ long ntohl(long x) {
 
 
 
-IFF::IFF(const char *n) : U7file(std::string(n))
-{
-	IndexIFFFile();
-}
-
 IFF::IFF(const string &n) : U7file(n)
 {
 	IndexIFFFile();
@@ -125,7 +120,8 @@ void	IFF::IndexIFFFile(void)
 			fseek(fp,-3,SEEK_CUR);
 			continue;
 			}
-		fread(&len,4,1,fp);	// 4 bytes of length
+		len = Read4(fp);	// 4 bytes of length
+//		fread(&len,4,1,fp);	// 4 bytes of length
 		size_t	n=ftell(fp);	// If it's not an even fileposition, advance one byte
 		if(n%2)
 			fseek(fp,1,SEEK_CUR);	// Advance one byte

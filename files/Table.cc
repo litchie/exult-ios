@@ -39,16 +39,9 @@ using std::FILE;
 using std::size_t;
 
 
-Table::Table(const char *n)
+Table::Table(const string &n) : U7file(n)
 {
-        filename=n;
-        IndexTableFile();
-}
-
-Table::Table(const string &n)
-{
-        filename=n;
-        IndexTableFile();
+	IndexTableFile();
 }
 
 
@@ -69,10 +62,12 @@ void	Table::IndexTableFile(void)
 	while(1)
 		{
 		Table::Reference f;
-		fread(&f.size,sizeof(uint16),1,fp);
+		f.size = Read2(fp);
+//		fread(&f.size,sizeof(uint16),1,fp);
 		if(f.size==65535)
 			break;
-		fread(&f.offset,sizeof(uint32),1,fp);
+		f.offset = Read4(fp);
+//		fread(&f.offset,sizeof(uint32),1,fp);
 		if(f.size>file_size||f.offset>file_size)
 			throw 0;
 #if 0
@@ -112,7 +107,8 @@ char	*Table::read_object(int objnum,uint32 &length)
 	fseek(fp,object_list[objnum].offset,SEEK_SET);
 	// length=object_list[objnum].size;
 	uint16	sz;
-	fread(&sz,sizeof(sz),1,fp);
+	sz = Read2(fp);
+//	fread(&sz,sizeof(sz),1,fp);
 	length=sz-2;
 	char	*ret=new char[length];
 	fread(ret,length,1,fp);

@@ -40,7 +40,6 @@ protected:
 		};
 	std::vector<Reference> object_list;
 public:
-	Table(const char *name);
 	Table(const std::string &name);
 	Table(const Table &t) : object_list(t.object_list)
 		{  }

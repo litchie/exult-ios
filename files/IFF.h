@@ -72,7 +72,6 @@ protected:
 	IFFhdr	header;
         std::vector<Reference> object_list;
 public:
-        IFF(const char *fname);
         IFF(const std::string &fname);
 	IFF(const IFF &i) : header(i.header),object_list(i.object_list)
 		{  }
