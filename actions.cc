@@ -66,9 +66,12 @@ int Actor_pathfinder_client::get_step_cost
 	int new_lift;			// Might climb/descend.
 					// For now, assume height=3.
 	if (olist->is_blocked(3, to.tz, tx, ty, new_lift))
-		{			//+++++++Check for door.
-					//+++++++Need method to get shape.
-		return -1;
+		{			// Blocked, but check for a door.
+		Game_object *block = Game_object::find_blocking(to);
+		Shape_info& info = gwin->get_info(block);
+		if (!info.is_door())
+			return -1;
+		new_lift = to.tz;	// We can open doors.
 		}
 	int cost = 1;
 	if (new_lift != to.tz)

@@ -37,7 +37,7 @@ static int Has_quantity
 	{
 #if 1
 	Game_window *gwin = Game_window::get_game_window();
-	Shape_info& info = gwin->get_shapes().get_info(shnum);
+	Shape_info& info = gwin->get_info(shnum);
 	return info.get_shape_class() == Shape_info::has_quantity;
 #else
 	switch (shnum)
@@ -104,8 +104,7 @@ int Game_object::get_volume
 	int quant = get_quantity();
 	quant = 1 + (quant - 1)/8;	// Be liberal about multiples.
 	return (quant *
-		Game_window::get_game_window()->get_shapes().get_info(
-			get_shapenum()).get_volume());
+		Game_window::get_game_window()->get_info(this).get_volume());
 	}
 
 /*
@@ -148,7 +147,7 @@ int Game_object::modify_quantity
 	int num_frames = gwin->get_shapes().get_num_frames(shapenum);
 	int new_frame = newquant - 1;
 	set_frame(new_frame < num_frames ? new_frame : num_frames - 1);
-	Shape_info& info = gwin->get_shapes().get_info(shapenum);
+	Shape_info& info = gwin->get_info(shapenum);
 	int objvol = info.get_volume();
 	Container_game_object *owner = get_owner();
 	if (owner)			// Update owner's volume.
@@ -250,6 +249,40 @@ int Game_object::find_nearby
 			}
 					// Return # added.
 	return (vec.get_cnt() - vecsize);
+	}
+
+/*
+ *	Find the game object that's blocking a given tile.
+ *
+ *	Output:	->object, or 0 if not found.
+ */
+
+Game_object *Game_object::find_blocking
+	(
+	Tile_coord tile			// Tile to check.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Chunk_object_list *chunk = gwin->get_objects(tile.tx/tiles_per_chunk,
+						     tile.ty/tiles_per_chunk);
+	for (Game_object *obj = chunk->get_first(); obj;
+						obj = chunk->get_next(obj))
+		{
+		int tx, ty, tz;		// Get object's coords.
+		obj->get_abs_tile(tx, ty, tz);
+		if (tx < tile.tx || ty < tile.ty || tz > tile.tz)
+			continue;	// Out of range.
+		Shape_info& info = gwin->get_info(obj);
+		int ztiles = info.get_3d_height(); 
+		if (!ztiles || !info.is_solid())
+			continue;	// Skip if not an obstacle.
+					// Occupies desired tile?
+		if (tile.tx > tx - info.get_3d_xtiles() &&
+		    tile.ty > ty - info.get_3d_ytiles() &&
+		    tile.tz < tz + ztiles)
+			return (obj);	// Found it.
+		}
+	return (0);
 	}
 
 /*
@@ -468,7 +501,7 @@ int Ireg_game_object::is_dragable
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// 0 weight means 'too heavy'.
-	return gwin->get_shapes().get_info(get_shapenum()).get_weight() > 0;
+	return gwin->get_info(this).get_weight() > 0;
 	}
 
 /*
@@ -797,7 +830,7 @@ int Container_game_object::add_quantity
 	)
 	{
 					// Get volume of 1 object.
-	int objvol = Game_window::get_game_window()->get_shapes().get_info(
+	int objvol = Game_window::get_game_window()->get_info(
 			shapenum).get_volume();
 	int roomfor = (get_volume() - volume_used)/objvol;
 	int todo = delta < roomfor ? delta : roomfor;
@@ -849,7 +882,7 @@ int Container_game_object::create_quantity
 	)
 	{
 					// Get volume of 1 object.
-	int objvol = Game_window::get_game_window()->get_shapes().get_info(
+	int objvol = Game_window::get_game_window()->get_info(
 			shapenum).get_volume();
 	int roomfor = (get_volume() - volume_used)/objvol;
 	int todo = delta < roomfor ? delta : roomfor;
@@ -1141,9 +1174,7 @@ void Chunk_cache::update_object
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Shapes_vga_file& shapes = gwin->get_shapes();
-	int shnum = obj->get_shapenum();
-	Shape_info& info = shapes.get_info(shnum);
+	Shape_info& info = gwin->get_info(obj);
 	int ztiles = info.get_3d_height(); 
 	if (!ztiles || !info.is_solid())
 		return;			// Skip if not an obstacle.
@@ -1152,12 +1183,6 @@ void Chunk_cache::update_object
 					// Get lower-right corner of obj.
 	int endx = obj->get_tx();
 	int endy = obj->get_ty();
-#if 0
-//++++Testing
-	if (cx*tiles_per_chunk + endx == 1023 && 
-	    cy*tiles_per_chunk + endy == 2015 && obj->get_lift() == 1)
-		cout << "This is the one.\n";
-#endif
 					// Get footprint dimensions.
 	int xtiles = info.get_3d_xtiles();
 	int ytiles = info.get_3d_ytiles();
@@ -1457,7 +1482,7 @@ void Chunk_object_list::add
 		{
 #if 0 /* Not sure yet. */
 		Shape_info& info = Game_window::get_game_window()->
-			get_shapes().get_info(newobj->get_shapenum());
+			get_info(newobj);
 		if (info.get_shape_class() == Shape_info::building)
 #endif
 			roof = 1;

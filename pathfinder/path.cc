@@ -27,8 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "PathFinder.h"
 #include "../objs.h"
 
-#define DEBUG 1
-
 /*
  *	Iterate through neighbors of a tile (in 2 dimensions).
  */
@@ -123,7 +121,7 @@ public:
 			}
 		return result;
 		}
-#if DEBUG
+#if VERIFYCHAIN
 					// Returns 0 if bad chain.
 	int verify_chain(Search_node *last, int removed = 0)
 		{
@@ -162,7 +160,7 @@ public:
 			last = this;
 			priority_next = this;
 			}
-#if DEBUG
+#if VERIFYCHAIN
 		if (!verify_chain(last))
 			cout << "Bad chain after adding.\n";
 #endif
@@ -170,7 +168,7 @@ public:
 					// Remove this from its chain.
 	void remove_from_chain(Search_node *&last)
 		{
-#if DEBUG
+#if VERIFYCHAIN
 		if (!verify_chain(last))
 			cout << "Bad chain before removing.\n";
 #endif
@@ -196,7 +194,7 @@ public:
 				}
 			}
 		priority_next = 0;	// No longer in 'open'.
-#if DEBUG
+#if VERIFYCHAIN
 		if (!verify_chain(last, 1))
 			cout << "Bad chain after removing.\n";
 #endif
@@ -376,7 +374,7 @@ Tile_coord *Find_path
 				continue;
 			int new_goal_cost = client->estimate_cost(ntile, goal);
 					// Skip nodes too far away.
-			if (new_goal_cost >= max_cost)
+			if (new_cost + new_goal_cost >= max_cost)
 				continue;
 			if (!next)	// Create if necessary.
 				{
