@@ -328,7 +328,7 @@ void Audio::channel_complete_callback(int chan)
 
 	//Must be freed after the Mix_FreeChunk
 	if(chunkbuf)
-		std::free(chunkbuf);
+		delete[] chunkbuf;
 }
 
 bool	Audio::can_sfx(const std::string &game) const
