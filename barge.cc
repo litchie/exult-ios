@@ -177,6 +177,50 @@ inline Rectangle Barge_object::get_tile_footprint
 	}
 
 /*
+ *	See if okay to rotate.
+ */
+
+int Barge_object::okay_to_rotate
+	(
+	Tile_coord pos			// New position (bottom-right).
+	)
+	{
+	int lift = get_lift();
+					// Get footprint in tiles.
+	Rectangle foot = get_tile_footprint();
+	int xts = get_xtiles(), yts = get_ytiles();
+					// Get where new footprint will be.
+	Rectangle newfoot(pos.tx - yts + 1, pos.ty - xts + 1, yts, xts);
+	int new_lift;			// Ignored.
+	if (newfoot.y < foot.y)		// Got a piece above the old one?
+					// Check area.  (No dropping allowed.)
+		if (Chunk_object_list::is_blocked(4, lift,
+			newfoot.x, newfoot.y, newfoot.w, foot.y - newfoot.y,
+							new_lift, 0))
+			return 0;
+	if (foot.y + foot.h < newfoot.y + newfoot.h)
+					// A piece below old one.
+		if (Chunk_object_list::is_blocked(4, lift,
+			newfoot.x, foot.y + foot.h, newfoot.w, 
+				newfoot.y + newfoot.h - (foot.y + foot.h),
+							new_lift, 0))
+			return 0;
+	if (newfoot.x < foot.x)		// Piece to the left?
+		if (Chunk_object_list::is_blocked(4, lift,
+			newfoot.x, newfoot.y, foot.x - newfoot.x, newfoot.h,
+							new_lift, 0))
+			return 0;
+	if (foot.x + foot.w < newfoot.x + newfoot.w)
+					// Piece to the right.
+		if (Chunk_object_list::is_blocked(4, lift,
+			foot.x + foot.w, newfoot.y,
+			newfoot.x + newfoot.w - (foot.x + foot.w), newfoot.h,
+							new_lift, 0))
+			return 0;
+	return 1;
+	}
+
+/*
  *	Delete.
  */
 
@@ -325,12 +369,8 @@ void Barge_object::travel_to_tile
 		default:
 			break;
 			}
-#if 0	/* ++++Testing */
-		frame_time = 0;
-#else
 		if (!in_queue())	// Not already in queue?
 			gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
-#endif
 		}
 	else
 		frame_time = 0;		// Not moving.
@@ -350,9 +390,10 @@ void Barge_object::turn_right
 	Tile_coord center = get_abs_tile_coord();
 	center.tx -= xtiles/2;
 	center.ty -= ytiles/2;
-	//+++++++Need to check for blocked squares.
 					// Move the barge itself.
 	Tile_coord rot = Rotate90r(gwin, this, xtiles, ytiles, center);
+	if (!okay_to_rotate(rot))	// Check for blockage.
+		return;
 	Game_object::move(rot.tx, rot.ty, rot.tz);
 	swap_dims();			// Exchange xtiles, ytiles.
 	dir = (dir + 1)%4;		// Increment direction.
@@ -388,9 +429,10 @@ void Barge_object::turn_left
 	Tile_coord center = get_abs_tile_coord();
 	center.tx -= xtiles/2;
 	center.ty -= ytiles/2;
-	//+++++++Need to check for blocked squares.
 					// Move the barge itself.
 	Tile_coord rot = Rotate90l(gwin, this, xtiles, ytiles, center);
+	if (!okay_to_rotate(rot))	// Check for blockage.
+		return;
 	Game_object::move(rot.tx, rot.ty, rot.tz);
 	swap_dims();			// Exchange xtiles, ytiles.
 	dir = (dir + 3)%4;		// Increment direction.
@@ -567,13 +609,6 @@ int Barge_object::add
 	)
 	{
 	objects.append(obj);		// Add to list.
-#if 0	/* ++++Rake & bucket are showing up as cart's members! */
-	if (!complete)			// Permanent member?
-		{
-		perm_count++;
-		obj->set_owner(this);
-		}
-#endif
 	return (0);			// We want it added to the chunk.
 	}
 
@@ -676,7 +711,7 @@ void Barge_object::elements_read
 #if 0
 	perm_count = objects.get_cnt();
 #endif
-	perm_count = 0;			// ++++So we don't get haystack!
+	perm_count = 0;			// So we don't get haystack!
 	complete = 1;
 	}
 
