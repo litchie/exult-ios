@@ -37,19 +37,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 unsigned char Shape_frame::read
 	(
 	ifstream& shapes,		// "Shapes.vga" file to read.
-	int shnum,			// Shape #.
+	unsigned long shapeoff,		// Offset of shape in file.
+	unsigned long shapelen,		// Length expected for detecting RLE.
 	int frnum			// Frame #.
 	)
 	{
-	int shapenum = shnum;
 	int framenum = frnum;
 	rle = 0;
-					// Figure offset in "shapes.vga".
-	unsigned long shapeoff = 0x80 + shapenum*8;
-	shapes.seekg(shapeoff);
-					// Get location, length.
-	shapeoff = Read4(shapes);
-	unsigned long shapelen = Read4(shapes);
 					// Get to actual shape.
 	shapes.seekg(shapeoff);
 	unsigned long datalen = Read4(shapes);
@@ -210,8 +204,29 @@ Shape_frame *Shape::read
 	)
 	{
 	Shape_frame *frame = new Shape_frame();
+					// Figure offset in "shapes.vga".
+	unsigned long shapeoff = 0x80 + shapenum*8;
+	shapes.seekg(shapeoff);
+					// Get location, length.
+	shapeoff = Read4(shapes);
+	unsigned long shapelen = Read4(shapes);
 					// Read it in and get frame count.
-	num_frames = frame->read(shapes, shapenum, framenum);
+	num_frames = frame->read(shapes, shapeoff, shapelen, framenum);
+	return store_frame(frame, framenum);
+	}
+
+/*
+ *	Store frame that was read.
+ *
+ *	Output:	->frame, or 0 if not valid.
+ */
+
+Shape_frame *Shape::store_frame
+	(
+	Shape_frame *frame,		// Frame that was read.
+	int framenum			// It's frame #.
+	)
+	{
 	if (framenum >= num_frames)	// Something fishy?
 		{
 		delete frame;
@@ -224,6 +239,32 @@ Shape_frame *Shape::read
 		}
 	frames[framenum] = frame;
 	return (frame);
+	}
+
+/*
+ *	Read in all shapes from a single-shape file.
+ */
+
+Shape_file::Shape_file
+	(
+	char *nm			// Path to file.
+	) : Shape()
+	{
+	ifstream file;
+	if (!U7open(file, nm))
+		return;
+	Shape_frame *frame = new Shape_frame();
+	unsigned long shapelen = Read4(file);
+					// Read frame 0 & get frame count.
+	num_frames = frame->read(file, 0L, shapelen, 0);
+	store_frame(frame, 0);
+					// Get the rest.
+	for (int i = 1; i < num_frames; i++)
+		{
+		frame = new Shape_frame();
+		frame->read(file, 0L, shapelen, i);
+		store_frame(frame, i);
+		}
 	}
 
 /*
