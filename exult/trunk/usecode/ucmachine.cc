@@ -2144,9 +2144,12 @@ int Usecode_machine::run
 			pushi(popi() <= sval);
 			break;
 		case 0x1a:		// CMPNE.
-			sval = popi();
-			pushi(popi() != sval);
+			{
+			Usecode_value val1 = pop();
+			Usecode_value val2 = pop();
+			pushi(!(val1 == val2));
 			break;
+			}
 		case 0x1c:		// ADDSI.
 			offset = Read2(ip);
 			append_string(data + offset);
