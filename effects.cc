@@ -97,6 +97,22 @@ void Sprites_effect::paint
 	}
 
 /*
+ *	Done with explosion.
+ */
+
+Explosion_effect::~Explosion_effect
+	(
+	)
+	{
+	if (explode)
+		{
+		// +++++Destroy stuff?
+		Game_window::get_game_window()->add_dirty(explode);
+		explode->remove_this();
+		}
+	}
+
+/*
  *	Get direction in 1/16's starting from North.
  */
 
@@ -131,8 +147,8 @@ void Projectile_effect::init
 		int dir = Get_dir16(s, d);
 		frame_num = 8 + dir;
 		}
-	else if (frames == 1)
-		frame_num == 0;
+	else if (frames == 1 && shape_num != 704)
+		frame_num == 0;		// (Don't show powder keg!)
 	else
 		frame_num = -1;		// We just won't show it.
 					// Start immediately.
@@ -252,11 +268,15 @@ void Projectile_effect::handle_event
 	const int delay = 100;		// Delay between frames.
 	Game_window *gwin = Game_window::get_game_window();
 	add_dirty(gwin);		// Force repaint of old pos.
+	Tile_coord epos = pos;		// Save pos.
 	if (!path->GetNextStep(pos) ||	// Get next spot.
 					// If missile egg, detect target.
 			(!target && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
-		if (target)
+		if (shape_num == 704)	// Powder keg?
+			gwin->add_effect(new Explosion_effect(
+				epos.tx - epos.tz/2, epos.ty - epos.tz/2, 0));
+		else if (target)
 			target->attacked(attacker, weapon, shape_num);
 		pos.tx = -1;		// Signal we're done.
 		gwin->remove_effect(this);

@@ -256,6 +256,7 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(resurrect);
 	USECODE_INTRINSIC_DECL(add_spell);
 	USECODE_INTRINSIC_DECL(sprite_effect);
+	USECODE_INTRINSIC_DECL(explode);
 	USECODE_INTRINSIC_DECL(book_mode);
 	USECODE_INTRINSIC_DECL(cause_light);
 	USECODE_INTRINSIC_DECL(get_barge);

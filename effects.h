@@ -76,6 +76,19 @@ public:
 	};
 
 /*
+ *	An explosion.
+ */
+class Explosion_effect : public Sprites_effect
+	{
+	Game_object *explode;		// What's exploding, or 0.
+public:
+	Explosion_effect(int xpos, int ypos, Game_object *exp) 
+		: Sprites_effect(1, xpos, ypos), explode(exp)
+		{  }
+	virtual ~Explosion_effect();
+	};
+
+/*
  *	A moving animation, followed by an 'attack' at the end, to
  *	implement Usecode intrinsic 0x41:
  */
