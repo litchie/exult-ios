@@ -208,11 +208,7 @@ void Shape_group_file::write
 		gfile.mark_section_done();
 		}
 	if (!gfile.close())
-		{
-		string msg("Error writing '");
-		msg += patchname; msg += "'.";
-		ExultStudio::get_instance()->prompt(msg.c_str(), "Okay");
-		}
+		Alert("Error writing '%s'", patchname.c_str());
 	modified = false;
 	}
 
