@@ -124,7 +124,6 @@ class Game_window
 	bool mouse3rd;			// use third (middle) mouse button
 	bool fastmouse;
 	bool double_click_closes_gumps;
-	bool walk_after_teleport;
 	int text_bg;			// draw a dark background behind text
 		// Private methods:
 	void set_scrolls(Tile_coord cent);
@@ -206,10 +205,6 @@ public:
 		{ return double_click_closes_gumps; }
 	void set_double_click_closes_gumps(bool d)
 		{ double_click_closes_gumps = d; }
-	bool get_walk_after_teleport() const
-		{ return walk_after_teleport; }
-	void set_walk_after_teleport(bool w)
-		{ walk_after_teleport = w; }
 	int get_text_bg() const
 		{ return text_bg; }
 	void set_text_bg(int t)

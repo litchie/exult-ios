@@ -1,5 +1,8 @@
 2002-07-10  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
+	* gumps/GameplayOptions_gump.cc,gamewinc.cc:  Walk_after_teleport
+	option is no longer needed (it's always TRUE now).
+
 	* gamewin.cc,etc:  Cleanup:  NPC list in Chunks has been removed.
 
 2002-07-10  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
