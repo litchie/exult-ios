@@ -620,8 +620,10 @@ bool Game_window::drop_at_lift
 		{
 		to_drop->set_invalid();
 		to_drop->move(tx, ty, lift);
-cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
-							<< ")"<<endl;
+#ifdef DEBUG
+		cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
+			 << ")"<<endl;
+#endif
 					// On an egg?
 		chunk->activate_eggs(to_drop, tx, ty, lift, tx, ty);
 

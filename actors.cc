@@ -80,6 +80,8 @@ using std::swap;
 
 Actor *Actor::editing = 0;
 
+extern bool combat_trace;
+
 // Party positions
 // Direction, Party num, xy (tile) from leader
 //
@@ -2925,7 +2927,9 @@ bool Actor::figure_hit_points
 	if (instant_death)
 		prob = 200;	// always hits
 
-	cout << "Hit probability is " << prob << endl;
+	if (combat_trace) {
+		cout << "Hit probability is " << prob << endl;
+	}
 	if (rand()%100 > prob)
 		{			// Missed.
 					// See if we should drop ammo.
@@ -3010,8 +3014,6 @@ bool Actor::figure_hit_points
 				properties[static_cast<int>(strength)] + 1;
 	int newhp = oldhealth - hp;	// Subtract from health.
 
-	if (instant_death)
-		say("\"Cheater!\"");
 	bool defeated = reduce_health(hp, attacker);
 	if (Combat::show_hits)
 		{
@@ -3024,11 +3026,11 @@ bool Actor::figure_hit_points
 	if (attacker)
 		name = attacker->get_name();
 
-	cout << name << " hits " << get_name() <<
-		" for " << hp << " hit points, leaving " <<
-		properties[static_cast<int>(health)] << " remaining" << endl;
-//	cout << "Attack damage was " << hp << " hit points, leaving " << 
-//		properties[static_cast<int>(health)] << " remaining" << endl;
+	if (combat_trace) {
+		cout << name << " hits " << get_name()
+			 << " for " << hp << " hit points, leaving "
+			 <<	properties[static_cast<int>(health)] << " remaining" << endl;
+	}
 	if (!defeated && minf && minf->splits() && rand()%2 == 0 && 
 	    properties[static_cast<int>(health)] > 0)
 		clone();
