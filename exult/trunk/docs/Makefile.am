@@ -18,3 +18,5 @@ EXTRA_DIST =		\
 #	usedis.zip	\
 #	weapons.txt	\
 #	wuc.zip
+
+CLEANFILES = *~

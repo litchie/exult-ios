@@ -100,3 +100,5 @@ EXTRA_DIST = 	\
 
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres win32/exultico.rc exultico.o
+
+CLEANFILES = *~

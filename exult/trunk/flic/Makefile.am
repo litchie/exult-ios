@@ -6,3 +6,4 @@ libflic_la_SOURCES =	\
 	playfli.cc	\
 	playfli.h
 
+CLEANFILES = *~
