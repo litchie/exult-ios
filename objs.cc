@@ -608,7 +608,10 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	switch(type)
 		{
 		case jukebox:
-			audio.start_music((data1)&0xff);
+#if DEBUG
+			cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0xff) << endl;
+#endif
+			audio.start_music((data1)&0xff,(data1>>8)&0xff);
 			break;
 		case voice:
 			audio.start_speech((data1)&0xff);

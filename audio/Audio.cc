@@ -333,10 +333,14 @@ bool	Audio::playing(void)
 }
 
 
-void	Audio::start_music(int num)
+void	Audio::start_music(int num,int repetition)
 {
+	if(!repetition||repetition>=0xb0)
+		repetition=-2;
+	else
+		repetition--;
 	if(midi)
-		midi->start_music(num);
+		midi->start_music(num,repetition);
 }
 
 static void	load_buffer(char *buffer,const char *filename,size_t start,size_t len)

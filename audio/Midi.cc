@@ -63,7 +63,7 @@ void	MyMidiPlayer::start_music(int num,int repeats,int bank)
 	if(current_track==num&&midi_device->is_playing())
 		return;	// Already playing it
 	current_track=num;
-	start_track(num);
+	start_track(num,repeats,bank);
 }
 
 bool	MyMidiPlayer::add_midi_bank(const char *bankname)

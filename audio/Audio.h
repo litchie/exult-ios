@@ -53,7 +53,7 @@ public:
 	void	mixfile(const char *fname);
 	bool	playing(void);
 	void	clear(Uint8 *,int);
-	void	start_music(int num);
+	void	start_music(int num,int repetition);
 	void	start_speech(int num,bool wait=false);
 	void	start_speech(Flex *f,int num,bool wait=false);
 
