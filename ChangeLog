@@ -1,3 +1,7 @@
+2002-04-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* game.cc: applied patch by Paul Hebble:
+	'savegame_path', 'static_path' and 'gamedat_path' in exult.cfg
+
 2002-04-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/shapelst.*: don't take address of overloaded function
 
