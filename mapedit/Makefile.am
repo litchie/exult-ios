@@ -56,6 +56,8 @@ libmapedit_la_SOURCES = \
 	objbrowse.cc \
 	paledit.cc \
 	paledit.h \
+	shapedraw.cc \
+	shapedraw.h \
 	shapelst.cc \
 	shapelst.h
 

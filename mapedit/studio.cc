@@ -158,6 +158,25 @@ extern "C" gboolean on_egg_window_delete_event
 	return TRUE;
 	}
 
+/*
+ *	Draw shape in egg 'monster' area.
+ */
+extern "C" gboolean on_egg_monster_draw_expose_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventExpose *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+#if 0
+	ExultStudio::get_instance()->paint_egg_monster(
+		event->area.x, event->area.y, event->area.width,
+							event->area.height);
+#endif
+	return (TRUE);
+	}
+
+
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	eggwin(0), server_socket(-1), server_input_tag(-1), 
 	static_path(0), browser(0)
@@ -800,6 +819,20 @@ int ExultStudio::save_egg_window
 	close_egg_window();
 	return 1;
 	}
+
+#if 0
+/*
+ *	Paint the shape in the egg 'monster' notebook page.
+ */
+
+void ExultStudio::paint_egg_monster
+	(
+	int x, int y, int w, int h	// Rectangle.
+	)
++++++++++++++++++++
+		event->area.x, event->area.y, event->area.width,
+							event->area.height);
+#endif
 
 void ExultStudio::run()
 {

@@ -567,9 +567,9 @@ External
       <widget>
 	<class>GtkHBox</class>
 	<name>hbox3</name>
-	<border_width>4</border_width>
+	<border_width>6</border_width>
 	<homogeneous>False</homogeneous>
-	<spacing>6</spacing>
+	<spacing>12</spacing>
 
 	<widget>
 	  <class>GtkVBox</class>
@@ -585,6 +585,7 @@ External
 	  <widget>
 	    <class>GtkFrame</class>
 	    <name>frame7</name>
+	    <border_width>4</border_width>
 	    <label>Shape Number</label>
 	    <label_xalign>0</label_xalign>
 	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
@@ -608,6 +609,7 @@ External
 	  <widget>
 	    <class>GtkFrame</class>
 	    <name>frame8</name>
+	    <border_width>4</border_width>
 	    <label>Frame Number</label>
 	    <label_xalign>0</label_xalign>
 	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
@@ -625,6 +627,29 @@ External
 	      <text_visible>True</text_visible>
 	      <text_max_length>0</text_max_length>
 	      <text></text>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>frame28</name>
+	    <border_width>4</border_width>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>True</expand>
+	      <fill>True</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkDrawingArea</class>
+	      <name>egg_monster_draw</name>
+	      <signal>
+		<name>expose_event</name>
+		<handler>on_egg_monster_draw_expose_event</handler>
+		<last_modification_time>Mon, 04 Jun 2001 02:35:46 GMT</last_modification_time>
+	      </signal>
 	    </widget>
 	  </widget>
 	</widget>
