@@ -39,32 +39,42 @@ public:
 	Manip8to16(SDL_Color *c, SDL_PixelFormat *f)
 		: colors(c), fmt(f)
 		{  }
-	unsigned short rgb(unsigned short r, unsigned short g,
-							unsigned short b) const
+	unsigned short rgb(unsigned int r, unsigned int g,
+							unsigned int b) const
 		{
+#if 0
+		return ((r>>3)<<10) | ((g>>3)<<5) | (b>>3);
+#else
 		return ((r>>fmt->Rloss)<<fmt->Rshift) |
 		       ((g>>fmt->Gloss)<<fmt->Gshift) |
 		       ((b>>fmt->Bloss)<<fmt->Bshift);
+#endif
 		}
 	void copy(unsigned short& dest, unsigned char src) const
 		{
 		SDL_Color& color = colors[src];
 		dest = rgb(color.r, color.g, color.b);
 		}
-	void split_source(unsigned char pix, unsigned short& r,
-				unsigned short& g, unsigned short& b) const
+	void split_source(unsigned char pix, unsigned int& r,
+				unsigned int& g, unsigned int& b) const
 		{
 		SDL_Color& color = colors[pix];
 		r = color.r;
 		g = color.g;
 		b = color.b;
 		}
-	void split_dest(unsigned short pix, unsigned short& r,
-				unsigned short& g, unsigned short& b) const
+	void split_dest(unsigned short pix, unsigned int& r,
+				unsigned int& g, unsigned int& b) const
 		{
+#if 0
+		r = (pix>>10)&0x1f;
+		g = (pix>>5)&0x1f;
+		b = pix&0x1f;
+#else
 		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
 		g = ((pix&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
 		b = ((pix&fmt->Bmask)>>fmt->Bshift)<<fmt->Bloss;
+#endif
 		}
 	};
 
@@ -79,8 +89,8 @@ public:
 	Manip8to32(SDL_Color *c, SDL_PixelFormat *f)
 		: colors(c), fmt(f)
 		{  }
-	unsigned long rgb(unsigned short r, unsigned short g,
-							unsigned short b) const
+	unsigned long rgb(unsigned int r, unsigned int g,
+							unsigned int b) const
 		{
 		return ((r>>fmt->Rloss)<<fmt->Rshift) |
 		       ((g>>fmt->Gloss)<<fmt->Gshift) |
@@ -91,16 +101,16 @@ public:
 		SDL_Color& color = colors[src];
 		dest = rgb(color.r, color.g, color.b);
 		}
-	void split_source(unsigned char pix, unsigned short& r,
-				unsigned short& g, unsigned short& b) const
+	void split_source(unsigned char pix, unsigned int& r,
+				unsigned int& g, unsigned int& b) const
 		{
 		SDL_Color& color = colors[pix];
 		r = color.r;
 		g = color.g;
 		b = color.b;
 		}
-	void split_dest(unsigned long pix, unsigned short& r,
-				unsigned short& g, unsigned short& b) const
+	void split_dest(unsigned long pix, unsigned int& r,
+				unsigned int& g, unsigned int& b) const
 		{
 		r = ((pix&fmt->Rmask)>>fmt->Rshift)<<fmt->Rloss;
 		g = ((pix&fmt->Gmask)>>fmt->Gshift)<<fmt->Gloss;
@@ -116,18 +126,18 @@ class Manip16to16
 public:
 	static void copy(unsigned short& dest, unsigned short src)
 		{ dest = src; }
-	static void split_source(unsigned short pix, unsigned short& r,
-					unsigned short& g, unsigned short& b)
+	static void split_source(unsigned short pix, unsigned int& r,
+					unsigned int& g, unsigned int& b)
 		{
 		r = (pix>>10)&0x1f;
 		g = (pix>>5)&0x1f;
 		b = pix&0x1f;
 		}
-	static void split_dest(unsigned short pix, unsigned short& r,
-					unsigned short& g, unsigned short& b)
+	static void split_dest(unsigned short pix, unsigned int& r,
+					unsigned int& g, unsigned int& b)
 		{ return split_source(pix, r, g, b); }
-	static unsigned short rgb(unsigned short r, unsigned short g,
-							unsigned short b)
+	static unsigned short rgb(unsigned int r, unsigned int g,
+							unsigned int b)
 		{ return ((r&0x1f)<<10) | ((g&0x1f)<<5) | (b&0x1f); }
 	};
 
