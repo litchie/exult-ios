@@ -29,6 +29,7 @@
 #include "Configuration.h"
 #include "utils.h"
 #include "segfile.h"
+#include "u7drag.h"
 
 using std::cerr;
 using std::cout;
@@ -103,7 +104,7 @@ void Shape_manager::load
 
 	shapes.init();
 	shapes.read_info(GAME_BG);	// Read in shape dimensions.
-	files[SF_GUMPS_VGA].load(GUMPS_VGA);
+	files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS);
 
 	if (Game::get_game_type()==SERPENT_ISLE)
 		{
@@ -141,7 +142,7 @@ void Shape_manager::load
 			}
 
 		}
-	files[SF_SPRITES_VGA].load(SPRITES_VGA);
+	files[SF_SPRITES_VGA].load(SPRITES_VGA, PATCH_SPRITES);
 	files[SF_FACES_VGA].load(FACES_VGA, PATCH_FACES);
 	files[SF_EXULT_FLX].load("<DATA>/exult.flx");
 	const char* gamedata = game->get_resource("files/gameflx").str;
@@ -180,6 +181,40 @@ void Shape_manager::load
 		}
 
 	invis_xform = xforms[nxforms - 1 - 2];   // ->entry 2.
+	}
+
+/*
+ *	Reload one of the shape files (msg. from ExultStudio).
+ */
+
+void Shape_manager::reload_shapes
+	(
+	int dragtype			// Type from u7drag.h.
+	)
+	{
+	switch (dragtype)
+		{
+	case U7_SHAPE_SHAPES:
+		shapes.init();		// Reread .vga file.
+		shapes.read_info(GAME_BG);	//+++++Needs work.
+					// ++++Reread text?
+		break;
+	case U7_SHAPE_GUMPS:
+		files[SF_GUMPS_VGA].load(GUMPS_VGA, PATCH_GUMPS);
+		break;
+	case U7_SHAPE_FONTS:
+		fonts->init();
+		break;
+	case U7_SHAPE_FACES:
+		files[SF_FACES_VGA].load(FACES_VGA, PATCH_FACES);
+		break;
+	case U7_SHAPE_SPRITES:
+		files[SF_SPRITES_VGA].load(SPRITES_VGA, PATCH_SPRITES);
+		break;
+	default:
+		cerr << "Type not supported:  " << dragtype << endl;
+		break;
+		}
 	}
 
 /*
