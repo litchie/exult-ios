@@ -1,3 +1,6 @@
+2001-04-18  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/savegump.shp: touched up a bit
+
 2001-04-18  Tristan Tarrant <nadir@users.sourceforge.net>
 
 	* configure.in: fix GIMP checks to support recent GTK+'s
@@ -8,6 +11,7 @@
 
 2001-04-18  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.cygwin: Travis' changes
+	* gamewin.cc: fixed memleak in mini-screenshot
 
 2001-04-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gumps/Gump.cc: fixed "ok to load?"/"ok to save?" dialog boxes.
