@@ -940,13 +940,30 @@ class Perimeter
 	Rectangle perim;		// Outside given rect.
 	int sz;				// # squares.
 public:
-	Perimeter(Rectangle &r) : sz(2*r.w + 2*r.h - 4)
+	Perimeter(Rectangle &r) : sz(2*r.w + 2*r.h + 4)
 		{
 		perim = r;
 		perim.enlarge(1);
 		}
+	int size() { return sz; }
 					// Get i'th tile.
 	void get(int i, Tile_coord& ptile, Tile_coord& atile);
+#if 0
+	static void test()
+		{
+		Rectangle r(10, 10, 3, 4);
+		Perimeter p(r);
+		int cnt = p.size();
+		for (int i = 0; i < cnt; i++)
+			{
+			Tile_coord pt, at;
+			p.get(i, pt, at);
+			cout << "pt.tx = " << pt.tx << ", pt.ty = " << pt.ty
+				<< ", at.tx = " << at.tx << ", at.ty = " <<
+				at.ty << endl;
+			}
+		}
+#endif
 	};
 
 /*
@@ -970,7 +987,7 @@ void Perimeter::get
 	i -= perim.w - 1;
 	if (i < perim.h - 1)
 		{
-		ptile = Tile_coord(perim.x + perim.w - 1, i, 0);
+		ptile = Tile_coord(perim.x + perim.w - 1, perim.y + i, 0);
 		atile = ptile + Tile_coord(-1, !i ? 1 : 0, 0);
 		return;
 		}
@@ -1077,7 +1094,7 @@ void Lab_schedule::now_what
 		if (pact)
 			{
 			npc->set_action(new Sequence_actor_action(pact,
-				new Face_object_actor_action(cauldron, 200)));
+				new Face_pos_actor_action(cauldron, 200)));
 			state = use_cauldron;
 			}
 		break;
@@ -1086,9 +1103,9 @@ void Lab_schedule::now_what
 		{
 		int dir = npc->get_direction(cauldron);
 		gwin->add_dirty(cauldron);
-					// Set random frame.
-		cauldron->set_frame(rand()%gwin->get_shape_num_frames(
-						cauldron->get_shapenum()));
+					// Set random frame (skip last frame).
+		cauldron->set_frame(rand()%(gwin->get_shape_num_frames(
+					cauldron->get_shapenum()) - 1));
 		gwin->add_dirty(cauldron);
 		npc->add_dirty(gwin);
 		npc->set_frame(
@@ -1130,6 +1147,60 @@ void Lab_schedule::now_what
 			gwin->add_dirty(book);
 			}
 		state = start;
+	walk_to_table:
+		{
+		state = start;		// In case we fail.
+		int ntables = tables.size();
+		if (!ntables)
+			break;
+		Game_object *table = tables[rand()%ntables];
+		Rectangle r = table->get_footprint();
+		Perimeter p(r);		// Find spot adjacent to table.
+		Tile_coord spot;	// Also get closest spot on table.
+		p.get(rand()%p.size(), spot, spot_on_table);
+		Actor_pathfinder_dist_client cost0(0);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+							npcpos, spot, cost0);
+		if (!pact)
+			break;		// Failed.
+		Shape_info& info = gwin->get_info(table);
+		spot_on_table.tz += info.get_3d_height();
+		npc->set_action(new Sequence_actor_action(pact,
+			new Face_pos_actor_action(spot_on_table, 200)));
+		state = use_potion;
+		break;
+		}
+	case use_potion:
+		{
+		state = start;
+		Exult_vector<Game_object *> potions;
+		Game_object::find_nearby(potions, spot_on_table, 340, 0, 0);
+		if (potions.size())	// Found a potion.  Remove it.
+			{
+			gwin->add_dirty(potions[0]);
+			potions[0]->remove_this();
+			}
+		else			// Create potion if spot is empty.
+			{
+			Tile_coord t = Game_object::find_unblocked_tile(
+					spot_on_table, 0);
+			if (t.tx != -1 && t.tz == spot_on_table.tz)
+				{
+				int nframes = gwin->get_shape_num_frames(340);
+				Game_object *p = gwin->create_ireg_object(
+					gwin->get_info(340), 340,
+					rand()%nframes, 0, 0, 0);
+				p->move(t);
+				}
+			}
+		char frames[2];
+		int dir = npc->get_direction(spot_on_table);
+					// Reach out hand:
+		frames[0] = npc->get_dir_framenum(dir, 1);
+		frames[1] = npc->get_dir_framenum(dir, Actor::standing);
+		npc->set_action(new Frames_actor_action(frames, 2));
+		break;
+		}
 		}
 	npc->start(250, delay);		// Back in queue.
 	}
@@ -1507,7 +1578,7 @@ void Sew_schedule::now_what
 				npcpos, lpos, cost);
 		if (pact)
 			npc->set_action(new Sequence_actor_action(pact,
-				new Face_object_actor_action(loom, 250),
+				new Face_pos_actor_action(loom, 250),
 				new Object_animate_actor_action(loom,
 								4, 200)));
 		state = get_cloth;
@@ -1545,7 +1616,7 @@ void Sew_schedule::now_what
 			work_table->get_lift() + info.get_3d_height());
 		if (pact)
 			npc->set_action(new Sequence_actor_action(pact,
-				new Face_object_actor_action(
+				new Face_pos_actor_action(
 						work_table, 250),
 				new Pickup_actor_action(cloth, cpos, 250)));
 		state = set_to_sew;

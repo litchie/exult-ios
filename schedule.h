@@ -308,6 +308,7 @@ class Lab_schedule : public Schedule
 	Game_object *chair;		// Chair to sit in.
 	Game_object *book;		// Book to read.
 	Game_object *cauldron;
+	Tile_coord spot_on_table;
  	enum {
 		start,
 		walk_to_cauldron,
