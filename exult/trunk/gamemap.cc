@@ -195,6 +195,7 @@ void Game_map::clear
 	for (int i = 0; i < cnt; i++)
 		delete chunk_terrains[i];
 	chunk_terrains.resize(0);
+	chunks->close();
 					// Clear 'read' flags.
 	memset(reinterpret_cast<char*>(schunk_read), 0, sizeof(schunk_read));
 	memset(reinterpret_cast<char*>(schunk_modified), 0, 
