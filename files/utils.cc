@@ -242,8 +242,6 @@ static bool base_to_uppercase(string& str, int count)
 	if (X == str.rend())
 		todo--; // start of pathname counts as separator too
 
-std::cerr << "base_to_uppercase: " << str << std::endl;
-
 	// false if it didn't reach 'count' parts
 	return (todo <= 0);
 }
