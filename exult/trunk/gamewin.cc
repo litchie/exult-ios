@@ -82,11 +82,11 @@ Game_window::Game_window
 	if (!shapes.read_info())
 		abort(
 		"Can't read shape data (tfa.dat, wgtvol.dat, shpdims.dat).");
-	Segment_file xf(XFORM);		// Read in translucency tables.
+	Segment_file xf(XFORMTBL);	// Read in translucency tables.
 	int len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
 	for (int i = 0; i < nxforms; i++)
 		if (!xf.read_segment(i, xforms[nxforms - 1 - i], len))
-			abort("Error reading %s.", XFORM);
+			abort("Error reading %s.", XFORMTBL);
 					// Create window.
 	win = new Image_window(width, height); //<- error in timer
 					// Set title.
