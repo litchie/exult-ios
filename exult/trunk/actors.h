@@ -158,9 +158,9 @@ public:
 		special_spot = 102	// Special:  SI non placeable
 		};
 	int free_hand() const		// Get index of a free hand, or -1.
-		{ 
+		{ 			// PREFER right hand.
 		return two_handed ? -1 :
-			(!spots[lhand] ? lhand : (!spots[rhand] ? rhand : -1));
+			(!spots[rhand] ? rhand : (!spots[lhand] ? lhand : -1));
 		}
 	int free_finger() const		// Get index of a free finger, or -1.
 		{ 
