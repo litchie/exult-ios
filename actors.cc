@@ -2850,6 +2850,11 @@ bool Actor::figure_hit_points
 	unsigned char powers = winf ? winf->get_powers() : 0;
 	if (ainf)
 		powers |= ainf->get_powers();
+	if (!explosion && winf && winf->explodes() &&		// Exploding?
+	    rand()%4)			// Let's do it 3/4 the time.
+		eman->add_effect(new Explosion_effect(get_tile() + 
+			Tile_coord(0, 0, get_info().get_3d_height()/2), 0, 0,
+							weapon_shape));
 	if (!wpoints && !powers)
 		return false;		// No harm can be done.
 
@@ -2950,10 +2955,6 @@ bool Actor::figure_hit_points
 	    (this == gwin->get_main_actor() || 
 				attacker == gwin->get_main_actor()))
 		Audio::get_ptr()->play_sound_effect(sfx);
-	if (!explosion && winf->explodes() &&		// Exploding?
-	    rand()%4)			// Let's do it 3/4 the time.
-		eman->add_effect(new Explosion_effect(get_tile() + 
-			Tile_coord(0, 0, get_info().get_3d_height()/2), 0, 0));
 
 	int oldhealth = properties[static_cast<int>(health)];
 	int maxhealth = properties[static_cast<int>(strength)];
