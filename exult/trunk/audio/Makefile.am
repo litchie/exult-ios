@@ -51,3 +51,4 @@ Midi.o: Midi.cc Midi.h ../autoconfig.h SDL_mapping.h Flex.h common.h Mixer.h
 Mixer.o: Mixer.cc Mixer.h ../autoconfig.h SDL_mapping.h Flex.h common.h Audio.h Midi.h
 SDL_mapping.o: SDL_mapping.cc SDL_mapping.h ../autoconfig.h
 test.o: test.cc Audio.h ../autoconfig.h SDL_mapping.h Flex.h common.h Mixer.h Midi.h
+libaudio.a: midi_drivers/KMIDI.o midi_drivers/forked_player.o midi_drivers/Timidity_binary.o
