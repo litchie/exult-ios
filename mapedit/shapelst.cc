@@ -1328,6 +1328,20 @@ C_EXPORT gboolean on_new_shape_font_color_draw_expose_event
 			event->area.y, event->area.width, event->area.height);
 	return (TRUE);
 	}
+C_EXPORT void on_new_shape_font_color_changed
+	(
+	GtkSpinButton *button,
+	gpointer user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+					// Show new color.
+	GtkWidget *draw = glade_xml_get_widget(studio->get_xml(), 
+						"new_shape_font_color_draw");
+	GdkRectangle area = {0, 0, draw->allocation.width, 
+						draw->allocation.height};
+	gtk_widget_draw(draw, &area);
+	}
 
 /*
  *	Font file was selected.

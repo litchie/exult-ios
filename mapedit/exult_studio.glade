@@ -11568,6 +11568,11 @@ Random
 	    <class>GtkSpinButton</class>
 	    <name>new_shape_font_color</name>
 	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>changed</name>
+	      <handler>on_new_shape_font_color_changed</handler>
+	      <last_modification_time>Wed, 10 Apr 2002 04:48:53 GMT</last_modification_time>
+	    </signal>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
 	    <numeric>False</numeric>
