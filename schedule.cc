@@ -1225,7 +1225,8 @@ class Sit_actor_action : public Frames_actor_action, public Game_singletons
 			return false;	// We're standing there.
 					// See if spot is blocked.
 		Tile_coord pos = sitloc;// Careful, .tz gets updated.
-		if (Map_chunk::is_blocked(pos, 3, MOVE_WALK, 0))
+		if (Map_chunk::is_blocked(pos, 
+			    actor->get_info().get_3d_height(), MOVE_WALK, 0))
 			return true;
 #endif
 		return false;
