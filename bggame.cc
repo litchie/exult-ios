@@ -1,18 +1,20 @@
 /*
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
+Copyright (C) 2000-2001 The Exult Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
 
 #include "alpha_kludges.h"
 
@@ -33,6 +35,8 @@
 
 using std::abs;
 using std::rand;
+using std::strchr;
+using std::strlen;
 using std::toupper;
 
 void create_static(Image_buffer8* ib, int w, int h, int x, int y,
@@ -456,7 +460,7 @@ void BG_Game::play_intro()
 
 		if ((i % 20) == 0) {
 			txt_ptr = next_txt;
-			txt_end = std::strchr(txt_ptr, '\r');
+			txt_end = strchr(txt_ptr, '\r');
 			*txt_end = '\0';
 
 			next_txt = txt_end+2;
@@ -1284,7 +1288,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 			case SDLK_SPACE:
 				if(selected==0)
 				{
-					int len = std::strlen(npc_name);
+					int len = strlen(npc_name);
 					if(len<max_len)
 					{
 						npc_name[len] = ' ';
@@ -1341,8 +1345,8 @@ bool BG_Game::new_game(Vga_file &shapes)
 			case SDLK_BACKSPACE:
 				if(selected==0)
 				{
-					if(std::strlen(npc_name)>0)
-						npc_name[std::strlen(npc_name)-1] = 0;
+					if(strlen(npc_name)>0)
+						npc_name[strlen(npc_name)-1] = 0;
 				}
 				break;
 			default:
@@ -1350,7 +1354,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 					int c = event.key.keysym.sym;
 					if(selected==0 && c>=SDLK_0 && c<=SDLK_z)
 					{
-						int len = std::strlen(npc_name);
+						int len = strlen(npc_name);
 						char chr = (event.key.keysym.mod & KMOD_SHIFT) ? toupper(c) : c;
 						if(len<max_len)
 						{

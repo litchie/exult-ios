@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <fstream>
 #endif
 #include <map>
+#include <list>
 #ifdef MACOS
   #include <stat.h>
 #else
@@ -120,33 +121,34 @@ static void switch_slashes(
 			*X =  '\\';
 	}
 #elif defined(MACOS)
-	const string c_up_dir("../");
-	const string c_cur_dir("./");
-	string::size_type pos;
+	// We use a component-wise algorithm (suggested by Yorick)
+	// Basically, split the path along the "/" seperators
+	// If a component is empty or '.', remove it. If it's '..', replace it
+	// with the empty string. convert all / to :
+	string::size_type	begIdx, endIdx;;
+	string	component;
+	string	new_name(":");
 	
-	// 1. prepend with ":" 
-	name = ":" + name;
-	// 2. replace all "../" with ":" 
-	pos = name.find(c_up_dir);
-	while( pos != string::npos )
+	begIdx = name.find_first_not_of('/');
+	while( begIdx != string::npos )
 	{
-		name.replace(pos, 3, 1, ':' );
-		pos = name.find(c_up_dir, pos);
+		endIdx = name.find_first_of('/', begIdx);
+		if( endIdx == std::string::npos )
+			component = name.substr(begIdx);
+		else
+			component = name.substr(begIdx, endIdx-begIdx);
+		if( component == ".." )
+			new_name += ":";
+		else if( !component.empty() && component != "." )
+		{
+			new_name += component;
+			if( endIdx != std::string::npos )
+				new_name += ":";
+		}
+		begIdx = name.find_first_not_of('/', endIdx);
 	}
-	// 3. remove all "./"
-	pos = name.find(c_cur_dir);
-	while( pos != string::npos )
-	{
-		name.erase(pos, 2);
-		pos = name.find(c_cur_dir, pos);
-	}
-	// 4. replace all "/" with ":" 
-	pos = name.find('/');
-	while( pos != string::npos )
-	{
-		name.at(pos) = ':';
-		pos = name.find('/', pos);
-	}
+
+	name = new_name;
 #else
 	// do nothing
 #endif

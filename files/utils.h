@@ -351,5 +351,6 @@ int Log2
 	);
 
 void add_system_path(const std::string& key, const std::string& value);
+std::string get_system_path(const std::string &path);
 
 #endif	/* _UTILS_H_ */

@@ -1,3 +1,11 @@
+2001-01-13  Max Horn  <max@quendi.de>
+	* bggame.cc: some minor changes to make more similiar to sigame.cc
+	* sigame.cc: brought SI_Game::new_game up-to-date with its BG_Game counterpart
+	  i.e. the name arrays now have correct size (where too small before) so you can now enter
+	  names up to 15 chars, and you can now use left/right arrow to switch your portrait/sex
+	* vgafile.cc: Vga_file destructor checks that shapes is allocated before destroying it
+	* files/utils.cc: rewrote Switch_slashes algorithm to translate Unix->mac paths
+
 2001-01-13  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Found 1 memory corruption (my fault:-( ).
