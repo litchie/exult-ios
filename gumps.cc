@@ -677,12 +677,12 @@ void Gump_object::initialize
         	}
         else if(shnum==Game::get_game()->get_shape("gumps/shipshold"))
 	        {
-		object_area = Rectangle(0, 0, 0, 0);
-		checkx = 0; checky = 0;
+		object_area = Rectangle(38, 10, 82, 80);
+		checkx = 8; checky = 92;
         	}
         else if(shnum==Game::get_game()->get_shape("gumps/drawer"))
 	        {
-		object_area = Rectangle(38, 12, 70, 26);
+		object_area = Rectangle(36, 12, 70, 26);
 		checkx = 8; checky = 46;
         	}
         else if(shnum==SLIDER)
@@ -976,7 +976,7 @@ void Gump_object::paint
 	)
 	{
 					// Paint the gump itself.
-	cout << get_shapenum() << endl;
+//	cout << get_shapenum() << endl;
 	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
 					// Paint red "checkmark".
 	paint_button(gwin, check_button);

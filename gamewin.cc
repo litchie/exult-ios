@@ -2495,8 +2495,9 @@ void Game_window::show_gump
 	new_gump->append_to_chain(open_gumps);
 	if (++cnt == 8)
 		cnt = 0;
-	paint();			// Show everything.
 	mode = gump;			// Special mode.
+	clock.set_palette();		// Gumps get lighter palette.
+	paint();			// Show everything.
 	}
 
 /*
@@ -2514,6 +2515,7 @@ void Game_window::end_gump_mode
 		delete gmp;
 		}
 	mode = normal;
+	clock.set_palette();
 	npc_prox->wait(4);		// Delay "barking" for 4 secs.
 	paint();
 	}
@@ -2530,7 +2532,10 @@ void Game_window::remove_gump
 	gump->remove_from_chain(open_gumps);
 	delete gump;
 	if (!open_gumps)		// Last one?  Out of gump mode.
+		{
 		mode = normal;
+		clock.set_palette();
+		}
 	}
 
 /*

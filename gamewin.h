@@ -220,6 +220,8 @@ public:
 		}
 	inline void set_in_dungeon(int tf)
 		{ in_dungeon = tf; }
+	inline int is_in_dungeon()
+		{ return in_dungeon; }
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < num_npcs) ? 
 				npcs[npc_num] : 0; }
