@@ -1,3 +1,6 @@
+2001-10-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* game.cc: clear screen on 'return to menu'
+
 2001-10-21  Max Horn  <max@quendi.de>
 
 	* Removed all files from macosx/ except exult.icns - we don't need them anymore
