@@ -278,8 +278,9 @@ static int Check_mask
 		}
 	if (mask == 16)			// Egg or barge.
 		return obj->is_egg() || obj->get_shapenum() == 0x3c1;
-	if (mask == 32)
-		return obj->is_monster();
+	if (mask == 32)			// ??? Used in 'reveal' to find inv.
+					// objs, and to detect blocked gplank.
+		return 1;		// For now.+++++
 	if (!mask)			// Guessing a bit here.
 		return !obj->is_egg();	// Don't pass eggs if 0.
 	return 1;
@@ -308,7 +309,7 @@ int Game_object::find_nearby
 					//   4 == party members only???
 					//   8 == all NPC's.
 					//  16 == egg or barge.
-					//  32 == monsters? 
+					//  32 == ???
 	int qual,			// Quality, or c_any_qual for any.
 	int framenum			// Frame #, or c_any_framenum for any.
 	)

@@ -1626,6 +1626,10 @@ USECODE_INTRINSIC(get_item_flag)
 			return Usecode_value(0);
 		return Usecode_value(barge->okay_to_land());
 		}
+					// +++++0x18 is used in testing for
+					//   blocked gangplank. What is it?????
+	else if (fnum == 0x18 && Game::get_game_type() == BLACK_GATE)
+		return Usecode_value(1);
 	Usecode_value u(obj->get_flag(fnum));
 	return(u);
 }
