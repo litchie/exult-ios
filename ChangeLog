@@ -1,3 +1,6 @@
+2001-11-22  Tristan Tarrant <nadir@users.sourceforge.net>
+	* data/Makefile.am: added forgotten files so that make dist works again
+
 2001-11-21 Ryan Nunn <triforce@merlin.net.au>
 	* Makefile.am: Yes I did kill something (backslashes vs slashes)
 
