@@ -3,8 +3,6 @@ INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes \
 	-I$(srcdir)/../files -I$(srcdir)/../server \
 	$(GLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
-SUBDIRS=tools
-
 if GIMP_PLUGIN
 GIMP_PLUGINS=u7shp
 else
