@@ -19,5 +19,7 @@ uccparse.c
 expack
 shp2pcx
 splitshp
+textpack
+ipack
 *.tab.c
 cmanip
