@@ -80,11 +80,11 @@ inline unsigned int Read2
 
 inline unsigned int Read2
 	(
-	unsigned char * in
+	unsigned char *& in
 	)
 	{
-	unsigned char b0 = in[0];
-	unsigned char b1 = in[1];
+	unsigned char b0 = *in++;
+	unsigned char b1 = *in++;
 	return (b0 + (b1 << 8));
 	}
 
@@ -124,11 +124,11 @@ inline unsigned int Read2high
 
 inline unsigned int Read2high
 	(
-	const unsigned char * in
+	unsigned char *& in
 	)
 	{
-	unsigned char b0 = in[0];
-	unsigned char b1 = in[1];
+	unsigned char b0 = *in++;
+	unsigned char b1 = *in++;
 	return ((b0 << 8) + b1);
 	}
 
@@ -170,13 +170,13 @@ inline unsigned long Read4
 
 inline unsigned long Read4
 	(
-	const unsigned char * in
+	unsigned char *& in
 	)
 	{
-	unsigned char b0 = in[0];
-	unsigned char b1 = in[1];
-	unsigned char b2 = in[2];
-	unsigned char b3 = in[3];
+	unsigned char b0 = *in++;
+	unsigned char b1 = *in++;
+	unsigned char b2 = *in++;
+	unsigned char b3 = *in++;
 	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	}
 
@@ -220,13 +220,13 @@ inline unsigned long Read4high
 
 inline unsigned long Read4high
 	(
-	const unsigned char * in
+	unsigned char *& in
 	)
 	{
-	unsigned char b0 = in[0];
-	unsigned char b1 = in[1];
-	unsigned char b2 = in[2];
-	unsigned char b3 = in[3];
+	unsigned char b0 = *in++;
+	unsigned char b1 = *in++;
+	unsigned char b2 = *in++;
+	unsigned char b3 = *in++;
 	return ((b0<<24) + (b1<<16) + (b2<<8) + b3);
 	}
 
