@@ -42,7 +42,7 @@ UINT MCI_Command(LPCTSTR lpszCommand, LPTSTR lpszReturnString,
     char buf[128];
 
     mciGetErrorString(code, buf, 127);
-    cerr << "On MCI command: " << lpszCommand << ":" << endl;
+    cerr << "On MCI command: \"" << lpszCommand << "\"" << endl;
     cerr << "MCI error code " << code << ": ";
     fprintf(stderr, "%s\n", buf);
   }
@@ -158,7 +158,7 @@ void Windows_MCI::callback(WPARAM wParam, HWND hWnd)
       MCI_Command("play u7midi notify", 0, 0, hWnd); //play
     } else {
 
-    //non-continuous playback, so ok to close MIDI device
+    //non-continuous playback stopped, so close MIDI device
       if (device_open) {
 	MCI_Command("close u7midi", 0, 0, 0);
 	device_open = false;
@@ -166,6 +166,7 @@ void Windows_MCI::callback(WPARAM wParam, HWND hWnd)
       }
     }
   } else if (wParam == MCI_NOTIFY_FAILURE) {
+    //error. Close midi device
     if (device_open) {
       MCI_Command("close u7midi", 0, 0, 0);
       device_open = false;
