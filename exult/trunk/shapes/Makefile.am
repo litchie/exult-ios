@@ -13,6 +13,8 @@ libshapes_la_SOURCES = \
 	fontgen.h \
 	fontvga.cc \
 	fontvga.h \
+	glshape.cc \
+	glshape.h \
 	items.cc \
 	items.h \
 	monstinf.cc \

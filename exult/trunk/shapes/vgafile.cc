@@ -316,6 +316,9 @@ Shape_frame::Shape_frame
 	bool setrle			// Run-length-encode.
 	) : xleft(xoff), yabove(yoff), xright(w - xoff - 1),
 	    ybelow(h - yoff - 1), rle(setrle)
+#ifdef HAVE_OPENGL
+		, glshape(0)
+#endif
 	{
 	if (!rle)
 		{
