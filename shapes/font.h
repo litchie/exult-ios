@@ -21,6 +21,7 @@
 
 class Image_buffer8;
 class Shape_file;
+class DataSource;
 
 /*
  *	A single font:
@@ -31,6 +32,8 @@ private:
 	int hor_lead;
 	int ver_lead;
 	Shape_file *font_shapes;
+	DataSource *font_data;
+	char *font_buf;
 public:
 	Font();
 	Font(const char *fname, int index, int hlead=0, int vlead=1);
