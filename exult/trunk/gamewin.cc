@@ -2541,10 +2541,7 @@ int Game_window::conversation_choice
 			!conv_choices[i].has_point(x, y); i++)
 		;
 	if (conv_choices[i].w != 0)	// Found one?
-		{
-		clear_avatar_choices();
 		return (i);
-		}
 	else
 		return (-1);
 	}
