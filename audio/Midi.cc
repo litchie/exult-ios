@@ -81,6 +81,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	if (music_conversion == XMIDI_CONVERT_OGG)
 	{
 	    char filename[255] ;
+		string s;
 
 		//Free previous music, may not have been properly stopped
 		if(oggmusic)
@@ -89,13 +90,12 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 			oggmusic = NULL;
 		}
 
-
 		if(Game::get_game_type()==SERPENT_ISLE)
 		{
 			if(bank == 2 && num == 28)	//Convert title track number only in SI
 				num = 70;
 
-			string s = midi_bank[bank];
+			s = midi_bank[bank];
 			to_uppercase(s);
 			if((num == 30 || num == 32) && s.find("MAINSHP") != std::string::npos)
 			{
@@ -114,7 +114,7 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 		{
 			char outputstr[255];
 
-			string s = midi_bank[bank];
+			s = midi_bank[bank];
 			to_uppercase(s);
 			if((num == 4 || num == 5) && s.find("INTRORDM") != std::string::npos)
 			{
@@ -131,8 +131,15 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 			sprintf(filename, outputstr, num);
 		}
 
+		if(num == 99)		//Play the Exult theme tune
+		{
+			s = get_system_path("<DATA>/music/") + "exult.ogg";
+			strcpy(filename, s.c_str());
+		}
+
 		if(repeat)
 			repeat = 2;		//Convert repeats to repeat 2 times only
+
 	    oggmusic = Mix_LoadMUS(filename);
 	    Mix_PlayMusic(oggmusic, repeat);
 		Mix_VolumeMusic(MIX_MAX_VOLUME);
