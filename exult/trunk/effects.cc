@@ -99,7 +99,7 @@ void Sprites_effect::paint
  *	Get direction in 1/16's starting from North.
  */
 
-inline Get_dir16
+inline int Get_dir16
 	(
 	Game_object *from,
 	Game_object *to
