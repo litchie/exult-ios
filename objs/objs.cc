@@ -1029,7 +1029,6 @@ string Game_object::get_name
 			}
 			break;
 		case 0x172:         // floor
-			// TODO: CHECK!
 			if (frnum == 19)
 				name = item_names[0x60e]; // wall
 			else
@@ -1075,7 +1074,6 @@ string Game_object::get_name
 			name = item_names[0x581 + frnum/2];
 			break;
 		case 0x1db:         // wall of lights
-			// TODO: CHECK
 			if (frnum == 10)
 				name = item_names[0x683]; // wall
 			else
@@ -1085,7 +1083,6 @@ string Game_object::get_name
 			name = item_names[0x5f8 + frnum/2];
 			break;
 		case 0x1e3:         // rug
-			// TODO: CHECK
 			if (frnum >= 2)
 				name = item_names[0x608]; // meditation mat
 			else
@@ -1125,7 +1122,6 @@ string Game_object::get_name
 			name = item_names[0x5a3 + frnum];
 			break;
 		case 0x220:         // broken column
-			// TODO: CHECK
 			if (frnum == 14)
 				name = item_names[0x611]; // pillar of purity
 			else
@@ -1231,15 +1227,20 @@ string Game_object::get_name
 				name = item_names[shnum];
 			break;
 		case 0x2b5:        // whistle
-			// TODO: CHECK
 			if (frnum == 4 || frnum == 5)
-				name = item_names[0x618]; // bone whistle
+				name = item_names[0x618]; // bone flute
 			else
 				name = item_names[shnum];
 			break;
 		case 0x2b8:        // bed
 			if (frnum == 1)
 				name = item_names[0x5da]; // stone bier
+			else if (frnum == 2)
+				name = item_names[0x5db]; // cot
+			else if (frnum == 4)
+				name = item_names[0x5dc]; // pallet
+			else if (frnum == 5)
+				name = item_names[0x5dd]; // fur pallet
 			else
 				name = item_names[shnum];
 			break;
@@ -1256,15 +1257,12 @@ string Game_object::get_name
 				name = item_names[shnum];
 			break;
 		case 0x2d7:        // Dream Crystal
-			// TODO: CHECK
-			if (frnum == 1)
+			if (frnum <= 1)
 				name = item_names[0x659]; // dream crystal
 			else if (frnum == 2)
 				name = item_names[0x65a]; // mirror rock
 			else if (frnum >= 3)
 				name = item_names[0x65b]; // icy column
-			else
-				name = item_names[shnum];
 			break;
 		case 0x2d8:        // Force_Wall
 			// TODO: CHECK
@@ -1286,7 +1284,6 @@ string Game_object::get_name
 				name = item_names[shnum];
 			break;
 		case 0x314:        // switch
-			// TODO: CHECK 10, 11
 			if (frnum >= 6 && frnum <= 9)
 				name = item_names[0x613]; // button
 			else
@@ -1354,7 +1351,12 @@ string Game_object::get_name
 			break;
 		case 0x392:         // urn
 			// TODO: umm... x's ashes?.. should be interesting
-			name = item_names[shnum];
+			if (frnum <= 1)
+				name = item_names[0x632]; // urn with ashes
+			else if (frnum == 2)
+				name = item_names[0x633]; // pot of unguent
+			else
+				name = item_names[shnum];
 			break;
 		case 0x397:         // bookshelf
 			if (frnum == 6)
@@ -1421,13 +1423,14 @@ string Game_object::get_name
 			name = item_names[0x5a6 + frnum];
 			break;
 		case 0x3f3:			// Beds
-			// TODO: CHECK
-			if (frnum >= 1 && frnum <= 4)
-				name = item_names[0x5da + frnum - 1];
+			if (frnum == 1)
+				name = item_names[0x5da]; // stone bier
+			else if (frnum == 2)
+				name = item_names[0x5db]; // cot
+			else if (frnum == 4)
+				name = item_names[0x5dc]; // pallet
 			else if (frnum == 5)
-				name = item_names[0x5dd];
-			else if (frnum == 6)
-				name = item_names[0x5da];
+				name = item_names[0x5dd]; // fur pallet
 			else
 				name = item_names[shnum];
 			break;
