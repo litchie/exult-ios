@@ -77,6 +77,7 @@ public:
 	virtual int  get_start_tile_y() =0;
 	virtual void show_journey_failed() = 0;
 	
+	void banner();
 	void clear_screen();
 	void refresh_screen();
 	void show_exult_credits();
