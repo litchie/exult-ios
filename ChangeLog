@@ -1,3 +1,8 @@
+2003-09-01  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/animate.cc,gamemap.cc:  Check for 'sfx' objs. that aren't
+	animated.  Black gate and vortex cube now have sound effects.
+
 2003-08-31  Ryan Nunn  <colourles@users.sourceforge.net>
 	* imagewin/scale.cc : Fixing 2xSaI (No mouse problems, should generally
 	  look better)
