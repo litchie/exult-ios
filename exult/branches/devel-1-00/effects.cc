@@ -410,9 +410,10 @@ void Projectile_effect::handle_event
 			gwin->add_effect(new Death_vortex(target, epos));
 			target = 0;	// Takes care of attack.
 			break;
-		case 78:		// Explosion.
 		case 82:		// Delayed explosion.
 		case 621:		//    "       "
+			delay = 3000;	// Wait 3 secs.  FALL THROUGH!
+		case 78:		// Explosion.
 		case 702:		// Cannon.
 		case 704:		// Powder keg.
 			gwin->add_effect(new Explosion_effect(epos, 0));
