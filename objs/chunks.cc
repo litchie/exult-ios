@@ -414,57 +414,6 @@ int Chunk_cache::is_blocked
 		if (new_high != -1 && new_high < (new_lift + height)) 
 			return 1;
 		}
-#if 0	/* +++++ Old way */
-		if (!(move_flags & MOVE_FLY))		
-			{
-			new_lift = lift + 1;	// Maybe we can step up.
-			new_high = get_lowest_blocked (new_lift, tflags);
-			if (new_lift > 15)
-				return (1);	// In sky
-			else if (tflags & (1 << new_lift))
-				return (1);	// Next step up also blocked
-			else if (new_high != -1 && 
-					new_high < (new_lift + height))
-				return (1);	// Blocked by something above
-			}
-		else			// Flying.
-			{
-			new_lift = lift;
-			while (tflags & (1 << new_lift) && 
-						new_lift <= lift+max_drop)
-				{
-				new_lift++;	// Maybe we can step up.
-				new_high = get_lowest_blocked(
-							new_lift, tflags);
-				if (new_lift > 15)
-					return (1);	// In sky
-				else if (new_high != -1 && new_high < 
-							(new_lift + height))
-					// Blocked by something above
-					return (1);
-				}
-			}
-		}
-	else
-		{			// Not blocked.
-					// See if going down if not levitating.
-		new_lift =  (move_flags & MOVE_NODROP) ? lift :
-				get_highest_blocked(lift, tflags) + 1;
-					// Don't allow fall of > max_drop.
-		if (lift - new_lift > max_drop)
-			{		// Map-editing?  Suspend in air there.
-			if (move_flags & MOVE_MAPEDIT)
-				new_lift = lift - max_drop;
-			else
-				return 1;
-			}
-		int new_high = get_lowest_blocked (new_lift, tflags);
-	
-		// Make sure that where we want to go is tall enough for us
-		if (new_high != -1 && new_high < (new_lift + height)) return 1;
-		}
-#endif
-		
 	
 	// Found a new place to go, lets test if we can actually move there
 	
@@ -637,15 +586,9 @@ void Map_chunk::add_dependencies
 	while ((obj = next.get_next()) != 0)
 		{
 		//cout << "Here " << __LINE__ << " " << obj << endl;
-#define TESTNEWCMP
-#ifdef TESTNEWCMP	/* Just #define it to use the new one. */
-//++++Experimenting:
 		/* Compare returns -1 if lt, 0 if dont_care, 1 if gt. */
 		int newcmp = Game_object::compare(newinfo, obj);
 		int cmp = newcmp == -1 ? 1 : newcmp == 1 ? 0 : -1;
-#else
-		int cmp = Game_object::lt(newinfo, obj);
-#endif
 		if (!cmp)		// Bigger than this object?
 			{
 			newobj->dependencies.put(obj);

@@ -140,8 +140,7 @@ public:
 		{ return next; }
 	Game_object *get_prev()
 		{ return prev; }
-	static int lt(class Ordering_info& inf1, Game_object *obj2);
-					// ++++Experimental:
+					// Compare for render order.
 	static int compare(class Ordering_info& inf1, Game_object *obj2);
 	int lt(Game_object& obj2);	// Is this less than another in pos.?
 					// Return chunk coords.
@@ -223,16 +222,6 @@ public:
 							int dist = 24);
 	Game_object *find_closest(int shapenum, int dist = 24)
 		{ return find_closest(&shapenum, 1, dist); }
-#if 0	/* +++Going away. */
-					// Find nearby unblocked tile.
-	static Tile_coord find_unblocked_tile(Tile_coord pos,
-				int dist, int height = 1,
-				const int move_flags = MOVE_WALK);
-	Tile_coord find_unblocked_tile(int dist, int height = 1,
-				const int move_flags = MOVE_WALK)
-		{ return find_unblocked_tile(get_tile(), dist, 
-						height, move_flags); }
-#endif
 	Rectangle get_footprint();	// Get tile footprint.
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
