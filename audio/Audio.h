@@ -48,6 +48,7 @@ enum Combat_song
 	CSDanger,
 	CSHidden_Danger
 };
+
 //---- Audio -----------------------------------------------------------
 
 class Audio 
@@ -84,8 +85,8 @@ public:
 	void	start_music(XMIDI *midfile,bool continuous);
 	bool	start_music_combat(Combat_song song,bool continuous,int bank=0);
 	void	stop_music();
-	void	play_sound_effect (int num);
-	void	play_wave_sfx(int num);
+	AudioID	play_sound_effect (int num);
+	AudioID	play_wave_sfx(int num);
 	bool	start_speech(int num,bool wait=false);
 	void	set_external_signal(int);
 	void	terminate_external_signal(void);

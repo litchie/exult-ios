@@ -30,6 +30,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Audio;
 
+/*
+ *	(Mostly) unique identification for a sound that's playing:
+ */
+class AudioID
+	{
+	ProducerConsumerBuf *pcb;	// The PCB.
+	uint32 seq;			// PCB sequence #.
+public:
+	friend class Mixer;
+	AudioID(ProducerConsumerBuf *p, uint32 s) : pcb(p), seq(s)
+		{  }
+	void set_volume(int v);		// 0-128.
+	};
+
 //---- Mixer -----------------------------------------------------------
 
 #define MAX_AUDIO_STREAMS  6
@@ -53,11 +67,11 @@ public:
 	void	stream_lock(void) { SDL_mutexP(stream_mutex); };
 	void	stream_unlock(void) { SDL_mutexV(stream_mutex); };
 	void fill_audio_func(void *, uint8 *, int);
-	void play(uint8 *, uint32);
-	ProducerConsumerBuf *Create_Audio_Stream(uint32 id);
-	void	Destroy_Audio_Stream(uint32 id);
+	AudioID play(uint8 *, uint32);
+	ProducerConsumerBuf *Create_Audio_Stream(uint32 type);
+	void	Destroy_Audio_Stream(uint32 type);
 	void	cancel_streams(void);
-	bool	is_playing(uint32 id);
+	bool	is_playing(uint32 type);
 
 	// void	set_auxilliary_audio(int);
 	// int	auxilliary_audio;

@@ -305,20 +305,20 @@ class ByteBuffer
 
 
 
-
-
-
 #define	MAX_PCB_SIZE	8192
 
 
 class	ProducerConsumerBuf
 	{
 private:
+	static  uint32 sequence_cnt;	// For generating (mostly) unique ID's.
 	ByteBuffer Buffer;
 	SDL_mutex	*mutex;
 	size_t	window;
 	bool	producing,consuming;
-	uint32	id;
+	uint32	type;			// 'Magic' # identifying type.
+	uint32  seq;			// Sequence # assigned.
+	int	volume;				// 0-128.
 	inline 	void	lock(void)
 		{
 		if(SDL_mutexP(mutex)!=0)
@@ -369,18 +369,26 @@ public:
 		unlock();
 		return l?l:(producing?0:-1);
 		}
-	void init(uint32 i)		// Initialize prior to use/reuse.
+	uint32 init(uint32 t)		// Initialize prior to use/reuse.
+					// Returns sequence #.
 		{
-		id = i;
+		type = t;
 		lock();
+		seq = ++sequence_cnt;
+		volume = SDL_MIX_MAXVOLUME;
 		producing = consuming = true;
 		Buffer.clear();
 		unlock();
+		return seq;
 		}
+	int get_volume()
+		{ return volume; }
+	void set_volume(int v)		// Should be 0-128.
+		{ volume = v; }
 
 	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),
 			window(32768),producing(false),consuming(false),
-			id(0)
+			type(0), seq(0), volume(SDL_MIX_MAXVOLUME)
 		{
 #if DEBUG
 		mycounter=++counter;
@@ -394,8 +402,10 @@ public:
 #endif
 		SDL_DestroyMutex(mutex);
 		}
-	uint32	get_id(void) const
-		{ return id; }
+	uint32	get_type(void) const
+		{ return type; }
+	uint32  get_seq(void) const
+		{ return seq; }
 	void	end_production(void)
 		{
 #if DEBUG

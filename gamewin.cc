@@ -91,6 +91,66 @@ extern	Configuration *config;
 Game_window *Game_window::game_window = 0;
 
 /*
+ *	Provide chirping birds.
+ */
+class Background_noise : public Time_sensitive
+	{
+	int repeats;			// Repeats in quick succession.
+	int last_sound;			// # of last sound played.
+	Game_window *gwin;
+public:
+	Background_noise(Game_window *gw) : repeats(0), last_sound(-1),
+					gwin(gw)
+		{ gwin->get_tqueue()->add(5000, this, 0L); }
+	virtual ~Background_noise()
+		{ gwin->get_tqueue()->remove(this); }
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
+ *	Play background sound.
+ */
+
+void Background_noise::handle_event
+	(
+	unsigned long curtime,
+	long udata
+	)
+	{
+	Main_actor *ava = gwin->get_main_actor();
+	unsigned long delay = 8000;
+					// Only if outside.
+	if (ava && !gwin->is_main_actor_inside())
+		{
+		int sound;		// SFX #.
+		static unsigned char night[] = {61, 103, 110},
+				     day[] = {75, 82, 85, 85};
+		if (repeats > 0)	// Repeating?
+			sound = last_sound;
+		else
+			{
+			int hour = gwin->get_hour();
+			if (hour < 6 || hour > 20)
+				sound = night[rand()%sizeof(night)];
+			else
+				sound = day[rand()%sizeof(day)];
+			last_sound = sound;
+			}
+		Audio::get_ptr()->play_sound_effect(sound);
+		repeats++;		// Count it.
+		if (rand()%(repeats + 1) == 0)
+					// Repeat.
+			delay = 500 + rand()%1000;
+		else
+			{
+			delay = 4000 + rand()%3000;
+			repeats = 0;
+			}
+		}
+	gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
  *	Create game window.
  */
 
@@ -112,6 +172,7 @@ Game_window::Game_window
 	    special_light(0), last_restore_hour(6),
 	    dragging(0), dragging_save(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
+	    background_noise(new Background_noise(this)),
 	    bg_paperdolls_allowed(false), bg_paperdolls(false),
 	    skip_lift(16), paint_eggs(false), debug(0)
 	{
@@ -165,6 +226,7 @@ Game_window::~Game_window
 	delete [] invis_xform;
 	if(monster_info)
 		delete [] monster_info;
+	delete background_noise;
 	delete tqueue;
 	delete win;
 	delete dragging_save;
