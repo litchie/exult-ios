@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucparse.h"
 #include "ucloc.h"
 
+using std::string;
+
 extern std::vector<char *> include_dirs;	// -I directories.
 
 /*
