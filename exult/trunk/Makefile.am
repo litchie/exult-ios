@@ -23,6 +23,8 @@ exult_SOURCES =	\
 	drag.cc		\
 	effects.cc	\
 	effects.h	\
+	egg.cc		\
+	egg.h		\
 	exult.cc	\
 	fnames.h	\
 	gameclk.cc	\
