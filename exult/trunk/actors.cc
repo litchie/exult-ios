@@ -306,10 +306,10 @@ void Patrol_schedule::now_what
 				break;
 				}
 			}
-		if (!path)		// Go back to 0 if at end.
+		if (!path)		// Turn back if at end.
 			{
 			pathnum = 0;
-			path = (Game_object *) paths.get(0);
+			path = (Game_object *) paths.get(pathnum);
 			}
 		if (!path)
 			{

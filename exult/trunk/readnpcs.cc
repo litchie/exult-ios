@@ -120,7 +120,7 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		if (npc_actor)
 			{
 			npc_actor->switched_chunks(0, olist);
-#if 0	/* ++++Got to test this: */
+#if 1	/* ++++Got to test this: */
 			npc_actor->set_schedule_type(schedtype);
 #endif
 			}
