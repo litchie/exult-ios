@@ -1,6 +1,8 @@
 ??/??/00:	V??.??
 		Better introduction sequence. Can be interrupted by
 		keypress.
+
+		Proper instruments in MIDI music and XMI support.
 		
 		Cheating mode: any keys which enable additional features can
 		be disabled/enabled from the config file
@@ -8,6 +10,8 @@
 		Support for barges (Flying carpet, ships, carts...)
 
 		Teleports.
+
+		Serpent Isle awareness (not useful yet)
 
 		The usual slew of bug-fixes.
 
