@@ -1,3 +1,7 @@
+2003-03-03  Tristan Tarrant <nadir@users.sourceforge.net>
+	* mapedit/studio.cc: implemented GtkTreeView stuff
+	* mapedit/exult_studio.glade: changes for above
+	
 2003-02-25  Tristan Tarrant <nadir@users.sourceforge.net>
 	* Exult Studio compiles and runs with GTK+ 2.0. It doesn't work quite
 	  yet. I've ported GtkText to GtkTextView, but I still need to port to
