@@ -280,25 +280,32 @@ Actor::Actor
 	{
 		uint32	f;
 
-		// Flags low dword
+		// Flags
 		f = Read4(nfile);
 		flags |= f;
 
-		// Flags high dword
-		f = Read4(nfile);
+		// SIFlags
+		f = Read2(nfile);
 		siflags |= f;
+
+		// Flags2
+		f = Read4(nfile);
+		flags2 |= f;
 	}
 	else
 	{
-		// Flags low dword
+		// Flags
 		nfile.seekg (4, ios::cur);
 
-		// Flags high dword
+		// SIFlags
+		nfile.seekg (2, ios::cur);
+
+		// Flags2 
 		nfile.seekg (4, ios::cur);
 	}
 
-	// Skip 17
-	nfile.seekg (17, ios::cur);
+	// Skip 15
+	nfile.seekg (15, ios::cur);
 
 					// Get (signed) food level.
 	int food_read = static_cast<int>(Read1(nfile));
@@ -551,14 +558,17 @@ void Actor::write
 		Write2 (nfile, 0);		// 16 Bit Polymorph Shape
 	}
 
-	// Flags low dword
+	// Flags
 	Write4(nfile, flags);
 
-	// Flags high dword
-	Write4(nfile, siflags);
+	// SIFlags 
+	Write2(nfile, siflags);
 
-	// Skip 17
-	for (i = 0; i < 17; i++)
+	// flags2
+	Write4(nfile, flags2);
+
+	// Skip 15
+	for (i = 0; i < 15; i++)
 		nfile.put(0);
 	
 	// Food

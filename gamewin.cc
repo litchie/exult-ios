@@ -126,6 +126,8 @@ void Background_noise::handle_event
 	{
 	Main_actor *ava = gwin->get_main_actor();
 	unsigned long delay = 8000;
+
+#ifndef COLOURLESS_REALLY_HATES_THE_BG_SFX
 					// Only if outside.
 	if (ava && !gwin->is_main_actor_inside() &&
 					// +++++SI SFX's don't sound right.
@@ -158,6 +160,8 @@ void Background_noise::handle_event
 			repeats = 0;
 			}
 		}
+#endif
+
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
 
@@ -1076,7 +1080,7 @@ void Game_window::get_ifix_chunk_objects
 
 void Game_window::write_scheduled
 	(
-	ostream& ireg,
+	std::ostream& ireg,
 	Game_object *obj,
 	bool write_mark			// Write an IREG_ENDMARK if true.
 	)
@@ -1093,7 +1097,7 @@ void Game_window::write_scheduled
 			ireg.put(IREG_SPECIAL);
 			ireg.put(IREG_UCSCRIPT);
 			Write2(ireg, len);	// Store length.
-			ireg.write(buf, len);
+			ireg.write((char *) buf, len);
 			}
 		}
 	if (write_mark)
@@ -1184,7 +1188,7 @@ void Read_special_ireg
 	int type = Read1(ireg);		// Get type.
 	int len = Read2(ireg);		// Length of rest.
 	unsigned char *buf = new unsigned char[len];
-	ireg.read(buf, len);
+	ireg.read((char *)buf, len);
 	if (type == IREG_UCSCRIPT)	// Usecode script?
 		{
 		Usecode_script *scr = Usecode_script::restore(obj, buf, len);

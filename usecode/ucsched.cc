@@ -613,7 +613,7 @@ Usecode_script *Usecode_script::restore
 
 void Usecode_script::print
 	(
-	ostream& out
+	std::ostream& out
 	)
 	{
 	out << hex << "Obj = 0x" << setfill((char)0x30) << setw(2)
@@ -625,5 +625,5 @@ void Usecode_script::print
 		code->get_elem(i).print(out);
 		}
 	out <<") = ";
-	out << dec;
+	out << std::dec;
 	}
