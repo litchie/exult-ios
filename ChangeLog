@@ -4,6 +4,8 @@
 
 	* usecode/ucxt/*: Modifications to allow for the above.
 
+	* usecode/ucxt/*: Fixed U7opens.
+
 2002-01-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* tools/wuc.c, rip.c: minor bugfixes
 	* tools/rip.c: use .uco extension for extracted objects
