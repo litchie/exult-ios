@@ -240,13 +240,13 @@ void Time_queue::activate_always
 		return;
 	Queue_entry ent;
 	for(Temporal_sequence::iterator it=data.begin();
-		it!=data.end(); )
+		it!=data.end() && !(curtime < (*it).time); )
 		{
 		Temporal_sequence::iterator next = it;
 		++next;			// Get ->next in case we erase.
 		ent = *it;
 		Time_sensitive *obj = ent.handler;
-		if (obj->always && !(curtime < ent.time))
+		if (obj->always)
 			{
 			obj->queue_cnt--;
 			long udata = ent.udata;
