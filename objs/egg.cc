@@ -1012,3 +1012,99 @@ void Field_object::write_ireg
 	{
 	Ireg_game_object::write_ireg(out);
 	}
+
+
+/*
+ *	It's a Mirror
+ */
+
+Mirror_object::Mirror_object(int shapenum, int framenum, unsigned int tilex, 
+		     unsigned int tiley, unsigned int lft) :
+	Egg_object(shapenum, framenum, tilex, tiley, lft, Egg_object::mirror_object)
+{
+	solid_area = 1;
+}
+
+void Mirror_object::activate(Usecode_machine *umachine, int event)
+{
+	Ireg_game_object::activate(umachine, event);
+}
+
+void Mirror_object::activate(Usecode_machine *umachine, Game_object *obj, int must)
+{
+	// These are broken, so dont touch
+	if ((get_framenum()%3) == 2)  return;
+
+	int wanted_frame = get_framenum()/3;
+	wanted_frame *= 3;
+
+	// Find upperleft or our area
+	Tile_coord t = get_tile();
+
+	// To left or above?
+	if (get_shapenum()==268)	// Left
+	{
+		t.tx++;
+		t.ty--;
+	}
+	else				// Above
+	{
+		t.tx--;
+		t.ty++;
+	}
+
+	// We just want to know if the area is blocked
+	int nl = 0;
+	if (Map_chunk::is_blocked(1, t.tz, t.tx, t.ty, 2, 2, nl, MOVE_WALK, 0))
+	{
+		wanted_frame++;
+	}
+
+	// Only if it changed update the shape
+	if (get_framenum()!=wanted_frame)
+	{
+		Game_window *gwin = Game_window::get_game_window();
+
+		gwin->add_dirty(this);
+		set_frame(wanted_frame);
+		gwin->add_dirty(this);
+	}
+}
+
+// Can it be activated?
+int Mirror_object::is_active(Game_object *obj, int tx, int ty, int tz, int from_tx, int from_ty)
+{
+	// These are broken, so dont touch
+	if ((get_framenum()%3) == 2)  return 0;
+
+	return 1;
+}
+
+// Set up active area.
+void Mirror_object::set_area()
+{
+	// These are broken, so dont touch
+	if ((get_framenum()%3) == 2) area = Rectangle(0, 0, 0, 0);
+
+	Tile_coord t = get_tile();	// Get absolute tile coords.
+
+	// To left or above?
+	if (get_shapenum()==268) area = Rectangle(t.tx-1, t.ty-3, 6, 6);
+	else  area = Rectangle(t.tx-3 , t.ty-1, 6, 6);
+}
+
+void Mirror_object::paint(Game_window *gwin)
+{
+	Ireg_game_object::paint(gwin);	// Always paint these.
+}
+
+/*
+ *	Write out.  These are stored as normal game objects.
+ */
+
+void Mirror_object::write_ireg(ostream& out)
+{
+	Ireg_game_object::write_ireg(out);
+}
+
+
