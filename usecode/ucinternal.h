@@ -167,7 +167,7 @@ class Usecode_internal : public Usecode_machine
 
 	int path_run_usecode(Usecode_value& npcval, Usecode_value& locval,
 		Usecode_value& useval, Usecode_value& itemval,
-				Usecode_value& eventval, int find_free = 0);
+		Usecode_value& eventval, int find_free = 0, int always = 0);
 	void create_script(Usecode_value& objval, Usecode_value& codeval,
 								long delay);
 

@@ -2314,7 +2314,10 @@ USECODE_INTRINSIC(si_path_run_usecode)
 {
 	// exec(npc, loc(x,y,z)?, eventid, itemref, usecode#, ??true/false).
 	// Schedule Npc to walk to loc and then execute usecode.
-	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2], 1);
+					// Guessing:
+	int always = parms[5].get_int_value();
+	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2], 1,
+							always);
 	return no_ret;
 
 #if 0	/* Old way++++++++ */

@@ -1033,7 +1033,8 @@ int Usecode_internal::path_run_usecode
 	Usecode_value& useval,		// Usecode #.
 	Usecode_value& itemval,		// Use as itemref in Usecode fun.
 	Usecode_value& eventval,	// Eventid.
-	int find_free			// Not sure.  For SI.  
+	int find_free,			// Not sure.  For SI.  
+	int always			// Always run function, even if failed.
 	)
 	{
 	Actor *npc = as_actor(get_item(npcval));
@@ -1065,6 +1066,10 @@ int Usecode_internal::path_run_usecode
 					// Walk there and execute.
 	If_else_path_actor_action *action = 
 		new If_else_path_actor_action(npc, dest,
+				new Usecode_actor_action(usefun, obj, 
+						eventval.get_int_value()));
+	if (always)			// Set failure to same thing.
+		action->set_failure(
 				new Usecode_actor_action(usefun, obj, 
 						eventval.get_int_value()));
 	npc->set_action(action);
