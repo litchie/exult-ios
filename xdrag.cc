@@ -205,6 +205,8 @@ void Xdnd::client_msg
 	else if (cev.message_type == xdnd_leave)
 		{
 		num_types = 0;		// Clear list.
+					// Force repaint to clear grid.
+		(*move_shape_handler)(-1, -1, 0, 0, lastx, lasty, true);
 		data_valid = false;
 		}
 	else if (cev.message_type == xdnd_drop)
@@ -250,6 +252,7 @@ void Xdnd::select_msg
 		 sev.target != comboid_atom) ||
 	    sev.property == None)
 		return;			// Wrong type.
+	cout << "HERE" << endl;
 	file = shape = frame = -1;	// Invalidate old data.
 	chunknum = -1;
 	combo_cnt = -1;

@@ -178,6 +178,7 @@ extern int Game_info_out
 	int fd,				// Socket.
 	int num_npcs,			// # in game.
 	int edit_lift,			// Lift being edited.
+	int hide_lift,			// Lift being hidden.
 	bool map_editing,		// In 'map-editing' mode.
 	bool tile_grid,			// Showing tile grid.
 	bool map_modified		// Map was changed.
@@ -188,6 +189,7 @@ extern int Game_info_in
 	int datalen,			// Length of data.
 	int& num_npcs,			// # in game.
 	int& edit_lift,			// Lift being edited.
+	int& hide_lift,			// Lift being hidden.
 	bool& map_editing,		// In 'map-editing' mode.
 	bool& tile_grid,		// Showing tile grid.
 	bool& map_modified		// Map was changed.

@@ -1,3 +1,8 @@
+2002-05-08  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/combo.cc,exult.cc,xdrag.cc: Combos starting to work.
+	* mapedit/studio.cc: Added a "Hide lift" spin-button.
+
 2002-05-06  Darke <darkepaw@users.sourceforge.net>
 	* files/U7file.cc: Fixed over-paranoid catch()ing.
 

@@ -1646,16 +1646,23 @@ static void Move_grid
 
 /*
  *	Show where a shape dragged from a shape-chooser will go.
+ *	ALSO, this is called with shape==-1 to just force a repaint.
  */
 
 static void Move_dragged_shape
 	(
-	int shape, int frame,		// What to create.
+	int shape, int frame,		// What to create, OR -1 to just
+					//   repaint window.
 	int x, int y,			// Mouse coords. within window.
 	int prevx, int prevy,		// Prev. coords, or -1.
 	bool show			// Blit window.
 	)
 	{
+	if (shape == -1)
+		{
+		gwin->set_all_dirty();
+		return;
+		}
 	Shape_info& info = gwin->get_info(shape);
 					// Get footprint in tiles.
 	int xtiles = info.get_3d_xtiles(frame),
