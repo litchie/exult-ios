@@ -938,10 +938,15 @@ int Modal_gump
 	int escaped = 0;
 					// Get area to repaint when done.
 	Rectangle box = gwin->get_gump_rect(gump);
-	box.enlarge(6);
+	box.enlarge(2);
+	box = gwin->clip_to_win(box);
+					// Create buffer to backup background.
+	Image_buffer *back = gwin->get_win()->create_buffer(box.w, box.h);
 #ifdef MOUSE
 	mouse->hide();			// Turn off mouse.
 #endif
+					// Save background.
+	gwin->get_win()->get(back, box.x, box.y);
 	gump->paint(gwin);		// Paint gump.
 	gwin->show();
 	do
@@ -951,7 +956,7 @@ int Modal_gump
 		mouse->hide();		// Turn off mouse.
 #endif
 		SDL_Event event;
-		while (!escaped && SDL_PollEvent(&event))
+		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
 			escaped = !Handle_gump_event(gump, event);
 #ifdef MOUSE
 		mouse->show();		// Re-display mouse.
@@ -960,9 +965,13 @@ int Modal_gump
 		}
 	while (!gump->is_done() && !escaped);
 	mouse->hide();
-	gwin->paint(box);		// Paint over gump.
+					// Restore background.
+	gwin->get_win()->put(back, box.x, box.y);
+	delete back;
 	mouse->set_shape(saveshape);
 	mouse->show();
+	gwin->set_painted();
+	gwin->show();
 	return (!escaped);
 	}
 
