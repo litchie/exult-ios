@@ -3252,6 +3252,9 @@ Actor *Actor::resurrect
 	Actor::clear_flag(Obj_flags::asleep);
 					// Restore to party if possible.
 	ucmachine->update_party_status(this);
+					// Give a reasonable schedule.
+	set_schedule_type(is_in_party() ? Schedule::follow_avatar
+					: Schedule::loiter);
 	return (this);
 	}
 
