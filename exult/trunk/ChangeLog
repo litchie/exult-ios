@@ -1,3 +1,6 @@
+2000-05-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* objs.cc: attempt at synching animations 
+
 2000-05-03  Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* gamewin.cc: Show game title in splash screen
