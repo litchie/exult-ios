@@ -45,6 +45,9 @@ public:
 		{  }
 					// Set simple path to destination.
 	virtual Actor_action *walk_to_tile(Tile_coord src, Tile_coord dest);
+					// Get destination, or ret. 0.
+	virtual int get_dest(Tile_coord& dest)
+		{ return 0; }
 	};
 
 /*
@@ -63,6 +66,8 @@ public:
 	virtual void stop(Actor *actor);// Stop moving.
 					// Set simple path to destination.
 	virtual Actor_action *walk_to_tile(Tile_coord src, Tile_coord dest);
+					// Get destination, or ret. 0.
+	virtual int get_dest(Tile_coord& dest);
 	};
 
 /*
