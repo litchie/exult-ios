@@ -199,7 +199,8 @@ public:
 					// but we will return rubbish.
 		// I've put this assert in _before_ you know...
 		// So this isn't the first time we've had trouble here
-		Shape_frame *r=(shapes[shapenum].get(shape_source, shapenum, framenum, shape_source2, num_shapes1, num_shapes2));
+		Shape_frame *r=(shapes[shapenum].get(shape_source, shapenum, 
+			framenum, shape_source2, num_shapes1, num_shapes2));
 		if(!r)
 			{
 #ifdef DEBUG
@@ -226,6 +227,7 @@ public:
 		get_shape(shapenum, 0);	// Force it into memory.
 		return shapes[shapenum].num_frames;
 		}
+	Shape *new_shape(int shapenum);	// Create new shape (or del old).
 	};
 	
 #endif	/* VGAFILE_H */
