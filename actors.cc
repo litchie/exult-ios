@@ -2829,7 +2829,7 @@ bool Actor::figure_hit_points
 		return false;
 		}
 					// Compute hit points to lose.
-	int attacker_str = Get_effective_prop(attacker, strength, 8)/4;
+	int attacker_str = Get_effective_prop(attacker, strength, 8);
 	int hp;
 	if (wpoints > 0)		// Some ('curse') do no damage.
 		{
@@ -2838,7 +2838,7 @@ bool Actor::figure_hit_points
 		else
 			hp = 1 + rand()%wpoints
 				+ (attacker_str > 1 ? 
-					(1 + rand()%(attacker_str/2)) : 0)
+					(1 + rand()%(attacker_str/3)) : 0)
 				- (armor > 0 ? (1 + rand()%armor) : 0);
 		if (hp < 1)
 			hp = 1;
