@@ -1544,7 +1544,12 @@ int Npc_actor::step
 					// Get rel. tile coords.
 	int tx = t.tx%tiles_per_chunk, ty = t.ty%tiles_per_chunk;
 					// Get ->new chunk.
-	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+	Chunk_object_list *nlist = gwin->get_objects_safely(cx, cy);
+	if (!nlist)			// Shouldn't happen!
+		{
+		stop();
+		return (0);
+		}
 	nlist->setup_cache();		// Setup cache if necessary.
 	int water, poison;		// Get tile info.
 	get_tile_info(gwin, nlist, tx, ty, water, poison);
