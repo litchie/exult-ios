@@ -1,3 +1,6 @@
+2001-07-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* ibuf8.cc, Makefile.am: include utils.h
+
 2001-07-06  Ryan Nunn <triforce@merlin.net.au>
 	* cheat.cc, exult.cc, menulist.cc, gumps/gump_utils.cc: Fixed all
 	  problems with scale factors other 2.
