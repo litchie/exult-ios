@@ -283,6 +283,7 @@ public:
 	virtual void clear_siflag(int flag) { }
 	virtual void clear_flag(int flag) { }
 	virtual int get_flag(int flag) const  { return 0; }
+	virtual void set_flag_recursively(int flag) { }
 	virtual int get_siflag(int flag) const { return 0; }
 	virtual int get_type_flag(int flag) const { return 0; }
 

@@ -152,7 +152,7 @@ private:
 	Usecode_value get_objects(Usecode_value& objval,
 		Usecode_value& shapeval, Usecode_value& qualval,
 						Usecode_value& frameval);
-	int remove_party_items(Usecode_value& quantval,
+	Usecode_value remove_party_items(Usecode_value& quantval,
 		Usecode_value& shapeval, Usecode_value& qualval,
 			Usecode_value& frameval, Usecode_value& flagval);
 	Usecode_value add_party_items(Usecode_value& quantval,

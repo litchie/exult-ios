@@ -547,6 +547,22 @@ Game_object *Container_game_object::attacked
 	}
 
 /*
+ *	Set a flag on this and all contents.
+ */
+
+void Container_game_object::set_flag_recursively
+	(
+	int flag
+	)
+	{
+	set_flag(flag);
+	Game_object *obj;
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
+		obj->set_flag_recursively(flag);
+	}
+
+/*
  *	Write out container and its members.
  */
 

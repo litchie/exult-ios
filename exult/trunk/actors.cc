@@ -2344,7 +2344,8 @@ void Actor::die
 	else
 		body->set_quality(2);	// Set to decay.
 	body->move(pos);
-	body->set_flag(Obj_flags::okay_to_take);	// Okay to take its contents.
+					// Okay to take its contents.
+	body->set_flag_recursively(Obj_flags::okay_to_take);
 	Game_object *item;		// Move all the items.
 	Game_object_vector tooheavy;		// Some shouldn't be moved.
 	while ((item = objects.get_first()) != 0)
@@ -3211,6 +3212,25 @@ void Dead_body::link
 	}
 
 /*
+ *	Unlink from chain.
+ */
+
+void Dead_body::unlink
+	(
+	)
+	{
+	if (!next_body && !prev_body && in_world != this)
+		return;			// Not in chain.
+	if (next_body)
+		next_body->prev_body = prev_body;
+	if (prev_body)
+		prev_body->next_body = next_body;
+	else				// We're at start of list.
+		in_world = next_body;
+	next_body = prev_body = 0;	// So we don't do it again.
+	}
+
+/*
  *	Delete.
  */
 
@@ -3220,13 +3240,7 @@ Dead_body::~Dead_body
 	{
 	if (!decayable)
 		return;
-					// Remove from chain.
-	if (next_body)
-		next_body->prev_body = prev_body;
-	if (prev_body)
-		prev_body->next_body = next_body;
-	else				// We're at start of list.
-		in_world = next_body;
+	unlink();			// Remove from chain.
 	}
 
 /*
@@ -3277,18 +3291,20 @@ void Dead_body::decay
 					// Get those that are due.
 	while (in_world && in_world->decay_hour <= hour)
 		{
+		Dead_body *obj = in_world;
 					// In something?
-		if (in_world->get_owner())
+		if (obj->get_owner())
 			{		// Don't delete.  Add back.
-			Dead_body *obj = in_world;
 			if (obj->next_body)
 				obj->next_body->prev_body = 0;
 			in_world = obj->next_body;
 			obj->link();	// Try again later.
 			continue;
 			}
-		gwin->add_dirty(in_world);
-		in_world->remove_this();
+		gwin->add_dirty(obj);
+		obj->unlink();		// Remove from list.
+					// Schedule for deletion.
+		gwin->delete_object(obj);
 		}
 	}
 
