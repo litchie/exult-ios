@@ -243,7 +243,8 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		return (0);
 		}
 	Tile_coord cur = actor->get_tile();
-	int newdir = static_cast<int>(Get_direction4(cur.ty - tile.ty, tile.tx - cur.tx));
+	int newdir = static_cast<int>(Get_direction4(cur.ty - tile.ty, 
+							tile.tx - cur.tx));
 	Frames_sequence *frames = actor->get_frames(newdir);
 	if (!frame_index)		// First time?  Init.
 		frame_index = frames->find_unrotated(actor->get_framenum());
@@ -464,6 +465,51 @@ int Path_walking_actor_action::following_smart_path
 	)
 	{
 	return path != 0 && path->following_smart_path();
+	}
+
+/*
+ *	Create action to follow a path towards another object.
+ */
+
+Approach_actor_action::Approach_actor_action
+	(
+	PathFinder *p,			// Path to follow.
+	Game_object *d			// Destination object.
+	) : Path_walking_actor_action(p, 0),	// (Stop if blocked.)
+	    dest_obj(d), orig_dest_pos(d->get_tile()), cur_step(0)
+	{
+					// Get length of path.
+	int nsteps = path->get_num_steps();
+	if (nsteps >= 6)		// (May have to play with this).
+		check_step = nsteps/2;	// Check when half-way there.
+	else
+		check_step = 10000;
+	}
+
+/*
+ *	Handle a time event.
+ *
+ *	Output:	0 if done with this action, else delay for next frame.
+ */
+
+int Approach_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	int delay = Path_walking_actor_action::handle_event(actor);
+	if (!delay)			// Done or blocked.
+		return 0;
+	if (++cur_step == check_step)	// Time to check.
+		{
+		if (dest_obj->get_tile().distance(orig_dest_pos) > 2)
+			return 0;	// Moved too much, so stop.
+					// Figure next check.
+		int nsteps = path->get_num_steps();
+		if (nsteps >= 6)
+			check_step += nsteps/2;	// Check when half-way there.
+		}
+	return delay;
 	}
 
 /*

@@ -82,8 +82,8 @@ class Path_walking_actor_action : public Actor_action
 	{
 protected:
 	bool reached_end;		// Reached end of path.
-private:
 	PathFinder *path;		// Allocated pathfinder.
+private:
 	int original_dir;		// From src. to dest. (0-7).
 	int frame_index;		// Index within frame sequence.
 	int speed;			// Time between frames.
@@ -117,10 +117,25 @@ public:
 	};
 
 /*
+ *	Follow a path to approach a given object, and stop half-way if it
+ *	moved.
+ */
+class Approach_actor_action : public Path_walking_actor_action
+	{
+	Game_object *dest_obj;		// Destination object.
+	Tile_coord orig_dest_pos;	// Dest_obj's pos. when we start.
+	int cur_step;			// Count steps.
+	int check_step;			// Check at this step.
+public:
+	Approach_actor_action(PathFinder *p, Game_object *d);
+					// Handle time event.
+	virtual int handle_event(Actor *actor);
+	};
+
+/*
  *	Follow a path and execute one action if successful, another if
  *	failed.
  */
-
 class If_else_path_actor_action : public Path_walking_actor_action
 	{
 	bool succeeded, failed, done;
