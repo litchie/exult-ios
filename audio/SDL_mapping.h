@@ -43,19 +43,19 @@ namespace	SDL	{
 	typedef	SDL_Event	Event;
 	typedef SDL_Thread	Thread;
 
-extern	void Delay(Uint32 ms);
+extern	void (*Delay)(Uint32);
 
 // Audio functions
-extern	void PauseAudio(bool pause);
-extern	void UnlockAudio(void);
-extern	void LockAudio(void);
-extern	void MixAudio(Uint8 *dst, Uint8 *src, Uint32 len,int);
-extern	void CloseAudio(void);
-extern int OpenAudio(SDL_AudioSpec *desired, SDL_AudioSpec *obtained);
+extern	void (*PauseAudio)(int pause);
+extern	void (*UnlockAudio)(void);
+extern	void (*LockAudio)(void);
+extern	void (*MixAudio)(Uint8 *dst, Uint8 *src, Uint32 len,int);
+extern	void (*CloseAudio)(void);
+extern int (*OpenAudio)(SDL_AudioSpec *desired, SDL_AudioSpec *obtained);
 
 
 // Thread functions
-extern	Thread *CreateThread(int (*fn)(void *), void *data);
+extern	Thread *(*CreateThread)(int (*fn)(void *), void *data);
 
 
 
