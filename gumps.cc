@@ -587,7 +587,7 @@ void Gump_object::initialize
 		break;
 	case SPELLBOOK:
 		checkx = 7; checky = 54;
-		object_area = Rectangle(36, 26, 102, 66);
+		object_area = Rectangle(36, 28, 102, 66);
 		break;
 	default:
 					// Character pictures:
