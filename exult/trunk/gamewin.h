@@ -320,8 +320,7 @@ public:
 	void get_shape_location(Game_object *obj, int& x, int& y);
 	void get_shape_location(Tile_coord t, int& x, int& y);
 					// Paint shape in window.
-					// ++++Maybe get rid of these two?
-	void paint_shape(int xoff, int yoff, Shape_frame *shape, int trans= 0);
+					// ++++Maybe get rid of this:
 					// Paint outline around a shape.
 	inline void paint_outline(int xoff, int yoff, Shape_frame *shape, 
 							Pixel_colors pix)
