@@ -730,15 +730,6 @@ Animated_ifix_object::Animated_ifix_object
 	}
 
 /*
- *	Create from IFIX
- */
-
-Animated_ifix_object::Animated_ifix_object(unsigned char *ifix) : Ifix_game_object(ifix)
-	{
-	animator = Animator::create(this);
-	}
-
-/*
  *	When we delete, better remove from queue.
  */
 

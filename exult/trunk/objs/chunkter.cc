@@ -116,7 +116,9 @@ Chunk_terrain::Chunk_terrain
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			{
-			ShapeID id(data[0], (unsigned char) (data[1]&0x7f));
+			int shnum = data[0]+256*(data[1]&3),
+			    frnum = (data[1]>>2)&0x1f;
+			ShapeID id(shnum, frnum);
 			shapes[16*tiley + tilex] = id;
 			data += 2;
 			}

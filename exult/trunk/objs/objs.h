@@ -80,12 +80,6 @@ public:
 protected:
 					// Handle attack on an object.
 	int attack_object(Actor *attacker, int weapon_shape, int ammo_shape);
-					// Create from ifix record.
-	Game_object(unsigned char *ifix)
-			: ShapeID(ifix[2], ifix[3]), 
-			  tx((ifix[0]>>4)&0xf), ty(ifix[0]&0xf),
-			  lift(ifix[1] & 0xf), quality(0), chunk(0)
-		{  }
 public:
 	friend class T_Object_list<Game_object *>;
 	friend class T_Object_iterator<Game_object *>;
@@ -332,9 +326,6 @@ public:
 class Ifix_game_object : public Game_object
 	{
 public:
-					// Create from ifix record.
-	Ifix_game_object(unsigned char *ifix) : Game_object(ifix)
-		{  }
 	Ifix_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
