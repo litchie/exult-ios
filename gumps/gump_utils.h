@@ -74,8 +74,7 @@ inline void Delay
 	/*
 	 *	Here's a somewhat better way to delay in X:
 	 */
-	static int xfd = -1;			// X connection #.
-
+	extern int xfd;
 	fd_set rfds;
 	struct timeval timer;
 	timer.tv_sec = 0;
