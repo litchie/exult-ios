@@ -81,7 +81,7 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		Actor *actor;
 		if (i == 0)		// Main character?
 			actor = main_actor =
-				new Actor(namebuf, 
+				new Main_actor(namebuf, 
 				shape[0] + 256*(shape[1]&0x3), i, usecode);
 		else			// Create NPC.
 			actor = new Npc_actor(namebuf, 

@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "objs.h"
-#include "vgafile.h"
+#include "gamewin.h"
 #include "usecode.h"
 #include <string.h>
 
@@ -256,6 +256,7 @@ void Sprite::stop
 
 void Sprite::start
 	(
+	Game_window *gwin,		// Game window.
 	unsigned long destx,		// Move towards pt. within world.
 	unsigned long desty,
 	int speed			// # microsecs. between frames.
@@ -267,8 +268,11 @@ void Sprite::start
 	Direction dir;			// Gets compass direction.++++++Get
 					//  northeast, etc. too.
 	if (!is_moving())		// Not already moving?
-					// Store current time.
-		gettimeofday(&last_frame_time, 0);
+		{			// Start immediately.
+		timeval curtime;
+		gettimeofday(&curtime, 0);
+		gwin->get_tqueue()->add(curtime, this, (long) gwin);
+		}
 	curx = get_worldx();		// Get current coords.
 	cury = get_worldy();
 	sum = 0;			// Clear accumulator.
@@ -333,10 +337,6 @@ int Sprite::next_frame
 	{
 	if (!is_moving())
 		return (0);
-	long since = Time_passed(time, last_frame_time);
-	if (since < frame_time)		// Not time yet?
-		return (0);
-	last_frame_time = time;		// Store this time.
 					// Figure change in faster axis.
 	int new_major = major_frame_incr;
 					// Accumulate change.
@@ -363,6 +363,33 @@ int Sprite::next_frame
 	else
 		next_frame = -1;
 	return (1);
+	}
+
+/*
+ *	Animation.
+ */
+
+void Sprite::handle_event
+	(
+	timeval curtime,		// Current time of day.
+	long udata			// Ignored.
+	)
+	{
+	Game_window *gwin = (Game_window *) udata;
+	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
+	int frame;
+	if (next_frame(curtime, cx, cy, sx, sy, frame))
+		{
+					// Add back to queue for next time.
+		gwin->get_tqueue()->add(Add_usecs(curtime, frame_time),
+							this, udata);
+					// Get old rectangle.
+		Rectangle oldrect = gwin->get_shape_rect(this);
+					// Move it.
+		move(cx, cy, gwin->get_objects(cx, cy), sx, sy, frame);
+					// Repaint.
+		gwin->repaint_sprite(this, oldrect);
+		}
 	}
 
 #if 0

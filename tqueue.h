@@ -20,12 +20,32 @@ inline int operator<(timeval &t1, timeval& t2)
 	}
 
 /*
+ *	Add a given # of microseconds to a time.
+ */
+inline timeval Add_usecs
+	(
+	timeval t,
+	int usecs
+	)
+	{
+	timeval result;
+	result.tv_sec = t.tv_sec;
+	result.tv_usec = t.tv_usec + usecs;
+	if (result.tv_usec >= 1000000)
+		{
+		result.tv_usec -= 1000000;
+		result.tv_sec++;
+		}
+	return result;
+	}
+
+/*
  *	An interface for entries in the queue:
  */
 class Time_sensitive
 	{
 public:
-	virtual void activate(timeval curtime, long udata) = 0;
+	virtual void handle_event(timeval curtime, long udata) = 0;
 	};
 
 /*

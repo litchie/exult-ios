@@ -78,6 +78,19 @@ public:
 	};
 
 /*
+ *	The main actor.
+ */
+class Main_actor : public Actor
+	{
+public:
+	Main_actor(char *nm, int shapenum, int num = -1, int uc = -1)
+		: Actor(nm, shapenum, num, uc)
+		{  }
+					// For Time_sensitive:
+	virtual void handle_event(timeval curtime, long udata);
+	};
+
+/*
  *	An NPC schedule:
  */
 class Schedule
@@ -121,7 +134,7 @@ public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
 	~Npc_actor();
 	};
-
+#if 0
 /*
  *	Here's an actor that's just hanging around an area.
  */
@@ -138,5 +151,5 @@ public:
 		int& new_cx, int& new_cy, int& new_sx, int& new_sy,
 		int& new_frame);
 	};
-
+#endif
 #endif
