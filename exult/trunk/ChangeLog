@@ -1,3 +1,7 @@
+2000-09-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Improved conversation rendering.
+
 2000-09-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* effects.cc (Projectile_effect): Missile eggs pretty-much done.

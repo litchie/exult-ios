@@ -77,7 +77,7 @@ static const char *Pass_word
 	return (text);
 	}
 
-#if 0	/* New code to break up text: */
+#if 1	/* New code to break up text: */
 
 /*
  *	Draw text within a rectangular area.
@@ -97,7 +97,7 @@ int Game_window::paint_text_box
 	int x, int y,			// Top-left corner of box.
 	int w, int h,			// Dimensions.
 	int vert_lead,			// Extra spacing between lines.
-	int sentence_break		// End at sentence boundary.
+	int pbreak			// End at punctuation.
 	)
 	{
 	const char *start = text;	// Remember the start.
@@ -109,9 +109,9 @@ int Game_window::paint_text_box
 	int max_lines = h/height;	// # lines that can be shown.
 	string *lines = new string[max_lines + 1];
 	int cur_line = 0;
-	char *last_sentence_end = 0;	// ->last period, qmark, etc.
-					// Last sentence in 'lines':
-	int last_sentence_line = -1, last_sentence_offset = -1;
+	const char *last_punct_end = 0;// ->last period, qmark, etc.
+					// Last punct in 'lines':
+	int last_punct_line = -1, last_punct_offset = -1;
 
 	while (*text)
 		{
@@ -127,7 +127,7 @@ int Game_window::paint_text_box
 		case ' ':		// Space.
 		case '\t':
 			{		// Pass space.
-			char *wrd = Pass_space(text);
+			const char *wrd = Pass_space(text);
 			if (wrd != text)
 				{
 				int w = get_text_width(fontnum, text, 
@@ -156,30 +156,31 @@ int Game_window::paint_text_box
 		lines[cur_line].append(text, ewrd - text);
 		curx += width;
 		text = ewrd;		// Continue past the word.
-					// Keep loc. of sentence endings.
-		if (text[-1] == '.' || text[-1] == '?' || text[-1] == '!')
+					// Keep loc. of punct. endings.
+		if (text[-1] == '.' || text[-1] == '?' || text[-1] == '!' ||
+		    text[-1] == ',')
 			{
-			last_sentence_end = text;
-			last_sentence_line = cur_line;
-			last_sentence_offset = lines[cur_line].length();
+			last_punct_end = text;
+			last_punct_line = cur_line;
+			last_punct_offset = lines[cur_line].length();
 			}
 		}
 	if (*text &&			// Out of room?
-					// Break off at end of sentence.
-	     sentence_break && last_sentence_end)
-		text = Pass_space(last_sentence_end);
+					// Break off at end of punct.
+	     pbreak && last_punct_end)
+		text = Pass_space(last_punct_end);
 	else
-		last_sentence_line = -1;
+		last_punct_line = -1;
 					// Render text.
 	for (int i = 0; i <= cur_line; i++)
 		{
-		char *str = lines[i].data();
+		const char *str = lines[i].data();
 		int len = lines[i].length();
-		if (i == last_sentence_line)
-			len = last_sentence_offset;
+		if (i == last_punct_line)
+			len = last_punct_offset;
 		paint_text(fontnum, str, len, x, cury);
 		cury += height;
-		if (i == last_sentence_line)
+		if (i == last_punct_line)
 			break;
 		}
 	win->clear_clip();
@@ -189,8 +190,7 @@ int Game_window::paint_text_box
 	else				// Else return height.
 		return (cury - y);
 	}
-
-#endif
+#else	/* Old way: */
 
 /*
  *	Draw text within a rectangular area.
@@ -266,6 +266,7 @@ int Game_window::paint_text_box
 					//   partial line.
 		return (cury - y) + (curx != 0);
 	}
+#endif
 
 /*
  *	Draw text at a given location (which is the upper-left corner of the

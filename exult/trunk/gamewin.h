@@ -573,7 +573,7 @@ public:
 	void drop_dragged(int x, int y, int moved);// Done dragging.
 					// Paint text using "fonts.vga".
 	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
-				int h, int vert_lead = 0);
+		int h, int vert_lead = 0, int pbreak = 0);
 	int paint_text(int fontnum, const char *text, int xoff, int yoff);
 	int paint_text(int fontnum, const char *text, int textlen, 
 							int xoff, int yoff);
