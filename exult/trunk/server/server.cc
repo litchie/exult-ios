@@ -321,6 +321,15 @@ static void Handle_client_message
 			Exult_server::insert_terrain, data, ptr - data);
 		break;
 		}
+	case Exult_server::delete_terrain:
+		{
+		int tnum = (short) Read2(ptr);
+		bool okay = gwin->get_map()->delete_terrain(tnum);
+		*ptr++ = okay ? 1 : 0;
+		Exult_server::Send_data(client_socket,
+			Exult_server::delete_terrain, data, ptr - data);
+		break;
+		}
 	case Exult_server::send_terrain:
 		{			// Send back #, total, 512-bytes data.
 		int tnum = (short) Read2(ptr);

@@ -218,6 +218,21 @@ unsigned char *Chunk_chooser::get_chunk
 	}
 
 /*
+ *	Update #chunks.
+ */
+
+void Chunk_chooser::update_num_chunks
+	(
+	int new_num_chunks
+	)
+	{
+	num_chunks = new_num_chunks;
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(vscroll));
+	adj->upper = num_chunks;
+	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+	}
+
+/*
  *	Set chunk with data from 'Exult'.
  *
  *	NOTE:  Don't call 'show()' or 'render()' here, since this gets called
@@ -248,11 +263,7 @@ void Chunk_chooser::set_chunk
 		{			// Update total #.
 		if (new_num_chunks > num_chunks)
 			chunklist.resize(new_num_chunks);
-		num_chunks = new_num_chunks;
-		GtkAdjustment *adj = 
-			gtk_range_get_adjustment(GTK_RANGE(vscroll));
-		adj->upper = num_chunks;
-		gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+		update_num_chunks(new_num_chunks);
 		}
 	unsigned char *chunk = chunklist[tnum];
 	if (!chunk)			// Not read yet?
@@ -748,6 +759,15 @@ static void on_insert_dup
 	Chunk_chooser *chooser = (Chunk_chooser *) udata;
 	chooser->insert(true);
 	}
+static void on_delete
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	Chunk_chooser *chooser = (Chunk_chooser *) udata;
+	chooser->del();
+	}
 
 /*
  *	Set up popup menu.
@@ -767,8 +787,12 @@ GtkWidget *Chunk_chooser::create_popup
 	Add_menu_item(new_menu, "Empty", GTK_SIGNAL_FUNC(on_insert_empty), 
 									this);
 	if (selected >= 0)
+		{
 		Add_menu_item(new_menu, "Duplicate", 
 					GTK_SIGNAL_FUNC(on_insert_dup), this);
+		Add_menu_item(popup, "Delete",
+					GTK_SIGNAL_FUNC(on_delete), this);
+		}
 	return popup;
 	}
 
@@ -786,7 +810,7 @@ Chunk_chooser::Chunk_chooser
 	) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
 		chunkfile(cfile), 
 		info(0), info_cnt(0), sel_changed(0),
-		locate_cx(-1), locate_cy(-1), drop_enabled(false)
+		locate_cx(-1), locate_cy(-1), drop_enabled(false), to_del(-1)
 	{
 	chunkfile.seekg(0, std::ios::end);	// Figure total #chunks.
 	num_chunks = chunkfile.tellg()/(c_tiles_per_chunk*c_tiles_per_chunk*2);
@@ -905,6 +929,9 @@ bool Chunk_chooser::server_response
 	case Exult_server::insert_terrain:
 		insert_response(data, datalen);
 		return true;
+	case Exult_server::delete_terrain:
+		delete_response(data, datalen);
+		return true;
 	case Exult_server::swap_terrain:
 		swap_response(data, datalen);
 		return true;
@@ -968,27 +995,45 @@ void Chunk_chooser::unselect
 		}
 	}
 
+
 /*
  *	Locate terrain on game map.
  */
 
 void Chunk_chooser::locate
 	(
-	bool upwards
+	int dir				// 1=downwards, -1=upwards, 0=from top.
 	)
 	{
 	if (selected < 0)
 		return;			// Shouldn't happen.
+	bool upwards = false;
 	unsigned char data[Exult_server::maxlength];
 	unsigned char *ptr = &data[0];
 	int tnum = info[selected].num;	// Terrain #.
+	int cx = locate_cx, cy = locate_cy;
+	if (dir == 0)
+		{
+		cx = cy = -1;
+		}
+	else if (dir == -1)
+		upwards = true;
 	Write2(ptr, tnum);
-	Write2(ptr, locate_cx);		// Current chunk, or -1.
-	Write2(ptr, locate_cy);
+	Write2(ptr, cx);		// Current chunk, or -1.
+	Write2(ptr, cy);
 	*ptr++ = upwards ? 1 : 0;
 	ExultStudio *studio = ExultStudio::get_instance();
-	studio->send_to_server(
-			Exult_server::locate_terrain, data, ptr - data);
+	if (!studio->send_to_server(
+			Exult_server::locate_terrain, data, ptr - data))
+		to_del = -1;		// In case we're deleting.
+	}
+
+void Chunk_chooser::locate
+	(
+	bool upwards
+	)
+	{
+	locate(upwards ? -1 : 1);
 	}
 
 /*
@@ -1004,17 +1049,35 @@ void Chunk_chooser::locate_response
 	unsigned char *ptr = data;
 	int tnum = Read2(ptr);
 	if (selected < 0 || tnum != info[selected].num)
+		{
+		to_del = -1;
 		return;			// Not the current selection.
+		}
 	short cx = (short) Read2(ptr);	// Get chunk found.
 	short cy = (short) Read2(ptr);
 	ptr++;				// Skip upwards flag.
 	if (!*ptr)
-		cout << "Terrain not found." << endl;
+		{
+		if (to_del >= 0 && to_del == tnum)
+			{
+			unsigned char data[Exult_server::maxlength];
+			unsigned char *ptr = &data[0];
+			Write2(ptr, tnum);
+			ExultStudio *studio = ExultStudio::get_instance();
+			studio->send_to_server(Exult_server::delete_terrain, 
+							data, ptr - data);
+			}
+		else
+			EStudio::Alert("Terrain %d not found.", tnum);
+		}
 	else
 		{
 		locate_cx = cx;		// Save new chunk.
 		locate_cy = cy;
+		if (to_del >= 0)
+			EStudio::Alert("Terrain %d is still in use", tnum);
 		}
+	to_del = -1;
 	}
 
 /*
@@ -1039,6 +1102,20 @@ void Chunk_chooser::insert
 	}
 
 /*
+ *	Delete currently selected chunk if it's not being used.
+ */
+
+void Chunk_chooser::del
+	(
+	)
+	{
+	if (selected < 0)
+		return;	
+	to_del = info[selected].num;
+	locate(0);			// See if it exists.
+	}
+
+/*
  *	Response from server to an 'insert'.
  */
 
@@ -1053,7 +1130,7 @@ void Chunk_chooser::insert_response
 	bool dup = *ptr++ ? true : false;
 	bool okay = *ptr ? true : false;
 	if (!*ptr)
-		cout << "Terrain insert failed." << endl;
+		EStudio::Alert("Terrain insert failed.");
 	else
 		{			// Insert in our list.
 		unsigned char *data = new unsigned char[512];
@@ -1065,7 +1142,32 @@ void Chunk_chooser::insert_response
 			chunklist.insert(chunklist.begin() + tnum + 1, data);
 		else			// If -1, append to end.
 			chunklist.push_back(data);
-		num_chunks++;
+		update_num_chunks(num_chunks + 1);
+		render();
+		show();
+		}
+	}
+
+/*
+ *	Response from server to an 'delete'.
+ */
+
+void Chunk_chooser::delete_response
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+	unsigned char *ptr = data;
+	int tnum = (short) Read2(ptr);
+	bool okay = *ptr ? true : false;
+	if (!*ptr)
+		EStudio::Alert("Terrain delete failed.");
+	else
+		{			// Remove from our list.
+		delete chunklist[tnum];
+		chunklist.erase(chunklist.begin() + tnum);
+		update_num_chunks(num_chunks - 1);
 		render();
 		show();
 		}
