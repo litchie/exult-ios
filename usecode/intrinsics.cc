@@ -2592,6 +2592,26 @@ USECODE_INTRINSIC(run_schedule)
 	return no_ret;
 }
 
+USECODE_INTRINSIC(modify_schedule)
+{
+	// modify_schedule ( npc, time, activity, [x, y] )
+
+	Actor *actor = as_actor(get_item(parms[0]));
+
+	// If no actor return
+	if (!actor) return no_ret;
+
+	int time = parms[1].get_int_value();
+	int sched = parms[2].get_int_value();
+	int tx = parms[3].get_elem(0).get_int_value();
+	int ty = parms[3].get_elem(1).get_int_value();
+
+	actor->set_schedule_time_type(time, sched);
+	actor->set_schedule_time_location(time, tx, ty);
+
+	return no_ret;
+}
+
 USECODE_INTRINSIC(get_temperature)
 {
 	Actor *npc = as_actor(get_item(parms[0]));
