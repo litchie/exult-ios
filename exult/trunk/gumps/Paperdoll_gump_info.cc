@@ -797,7 +797,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// AMULETS and COLLARS
 
 	// Leather Collar **NEEDS ART**
-	{     582,  9,       Actor::neck,   OT_Normal,  false, paperdoll,    -1,     0 },
+	{     582,  0,       Actor::neck,   OT_Normal,  false, paperdoll,    -1,     0 },
 	// Gorget
 	{     586,  0,       Actor::neck,   OT_Normal,  false, gameflx,       4,     0 },
 	// Magic Gorget

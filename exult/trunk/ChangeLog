@@ -1,3 +1,6 @@
+2001-07-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Paperdoll_gump_info.cc: fixed "can't wear leather collar" bug
+
 2001-07-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin,actors: Dead_bodies are created with the is_temporary
