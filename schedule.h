@@ -179,7 +179,9 @@ class Preach_schedule : public Schedule
 		at_podium,
 		exhort,
 		visit,
-		talk_member
+		talk_member,
+		find_icon,
+		pray
 		} state;
 public:
 	Preach_schedule(Actor *n) : Schedule(n), state(find_podium)
