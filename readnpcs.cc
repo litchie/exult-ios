@@ -49,6 +49,16 @@ void Game_window::read_npcs
 	npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 		npcs[1] = new Npc_actor(nfile, i, i < num_npcs1);
+	nfile.close();
+	if (u7open(nfile, MONSNPCS, 1))	// Monsters.
+		{			// (Won't exist the first time.)
+		int cnt = Read2(nfile);
+		while (cnt--)
+			{		// (Placed automatically.)
+			Monster_actor *mact = new Monster_actor(nfile, -1, 1);
+			}
+		}
+
 #else	/* +++++Old way. */
 	for (i = 0; i < num_npcs; i++)
 		{
@@ -200,11 +210,36 @@ int Game_window::write_npcs
 	int i;
 	for (i = 0; i < num_npcs; i++)
 		npcs[i]->write(nfile);
-	//++++++++++++Don't forget monsters.
 	nfile.flush();
 	int result = nfile.good();
 	if (!result)			// ++++Better error system needed??
+		{
 		cerr << "Exult:  Error writing '" << NPC_DAT << "'\n";
+		return (0);
+		}
+	nfile.close();
+#if 0	/* +++++Test before making active. */
+					// Now write out monsters in world.
+	if (!U7open(nfile, MONSNPCS))
+		{			// +++++Better error???
+		cerr << "Exult:  Error opening '" << MONSNPCS <<
+				"' for writing\n";
+		return (0);
+		}
+					// Start with count.
+	int cnt = Monster_actor::get_num_in_world();
+	Write2(nfile, cnt);
+	for (Monster_actor *mact = Monster_actor::get_first_in_world();
+					mact; mact = mact->get_next_in_world())
+		mact->write(nfile);
+	nfile.flush();
+	result = nfile.good();
+	if (!result)			// ++++Better error system needed??
+		{
+		cerr << "Exult:  Error writing '" << MONSNPCS << "'\n";
+		return (0);
+		}
+#endif
 	return (result);
 	}
 

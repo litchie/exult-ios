@@ -34,6 +34,7 @@
 #define PALETTES_FLX	"static/palettes.flx"
 #define U7NBUF_DAT	"gamedat/u7nbuf.dat"
 #define NPC_DAT		"gamedat/npc.dat"
+#define MONSNPCS	"gamedat/monsnpcs.dat"
 #define SCHEDULE_DAT	"static/schedule.dat"
 #define SHPDIMS_DAT	"static/shpdims.dat"
 #define INITGAME	"static/initgame.dat"
