@@ -298,6 +298,7 @@ toolsclean:
 	del $(UCXT_OBJS) ucxt.exe
 	del $(UCC_OBJS) ucc.exe ucparse.cc ucparse.h uclex.cc
 	del $(CONFREGRESS_OBJS) confregress.exe
+	del head2data.o head2data.exe data\u7bgintrinsics.data data\u7siintrinsics.data
 
 toolsinstall: tools
 	if not exist $(U7PATH)\tools md $(U7PATH)\tools
