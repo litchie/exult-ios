@@ -8,7 +8,7 @@
 #define INCL_OPCODES 1
 
 const char UC_LOOPTOP = 0x02;
-const char UC_CATCH = 0x04;
+const char UC_CONVERSE = 0x04;
 const char UC_JNE = 0x05;
 const char UC_JMP = 0x06;
 const char UC_CMPS = 0x07;
@@ -48,7 +48,7 @@ const char UC_CALLIS = 0x38;
 const char UC_CALLI = 0x39;
 const char UC_PUSHITEMREF = 0x3e;
 const char UC_ABRT = 0x3f;
-const char UC_CATCHLOC = 0x40;	// CATCH jmps here.
+const char UC_CONVERSELOC = 0x40;	// CONVERSE jmps here.
 const char UC_PUSHF = 0x42;		// PUSH global flag.
 const char UC_POPF = 0x43;		// POP global flag.
 const char UC_PUSHB = 0x44;		// Push byte that follows.

@@ -59,11 +59,11 @@ public:
 		{  }
 	const char *get_name() { return name.c_str(); }
 					// Gen. code to put result on stack.
-	virtual int gen_value(std::ostream& out);
+	virtual int gen_value(vector<char>& out);
 					// Gen. to assign from stack.
-	virtual int gen_assign(std::ostream& out);
+	virtual int gen_assign(vector<char>& out);
 					// Generate function/procedure call.
-	virtual int gen_call(std::ostream& out, Uc_function *fun, 
+	virtual int gen_call(vector<char>& out, Uc_function *fun, 
 			Uc_array_expression *parms, bool retvalue);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return -1; }
@@ -86,9 +86,9 @@ public:
 	int get_offset()
 		{ return offset; }
 					// Gen. code to put result on stack.
-	virtual int gen_value(std::ostream& out);
+	virtual int gen_value(vector<char>& out);
 					// Gen. to assign from stack.
-	virtual int gen_assign(std::ostream& out);
+	virtual int gen_assign(vector<char>& out);
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
 	};
@@ -103,7 +103,7 @@ public:
 	Uc_const_int_symbol(char *nm, int v) : Uc_symbol(nm), value(v)
 		{  }
 					// Gen. code to put result on stack.
-	virtual int gen_value(std::ostream& out);
+	virtual int gen_value(vector<char>& out);
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
 	};
@@ -119,7 +119,7 @@ public:
 	Uc_string_symbol(char *nm, int off) : Uc_symbol(nm), offset(off)
 		{  }
 					// Gen. code to put result on stack.
-	virtual int gen_value(std::ostream& out);
+	virtual int gen_value(vector<char>& out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return offset; }
 					// Return var/int expression.
@@ -142,7 +142,7 @@ public:
 	int get_num_parms()		// ++++Not valid yet.
 		{ return num_parms; }
 					// Generate function/procedure call.
-	virtual int gen_call(std::ostream& out, Uc_function *fun, 
+	virtual int gen_call(vector<char>& out, Uc_function *fun, 
 			Uc_array_expression *parms, bool retvalue);
 	};
 
@@ -165,7 +165,7 @@ public:
 	int get_num_parms()
 		{ return parms.size(); }
 					// Generate function/procedure call.
-	virtual int gen_call(std::ostream& out, Uc_function *fun, 
+	virtual int gen_call(vector<char>& out, Uc_function *fun, 
 			Uc_array_expression *parms, bool retvalue);
 	};
 

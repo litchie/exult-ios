@@ -70,9 +70,9 @@ static Uc_function *function = 0;	// Current function being parsed.
 /*
  *	Keywords:
  */
-%token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN
+%token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN BREAK
 %token VAR INT CONST STRING
-%token SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE
+%token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE
 
 /*
  *	Other tokens:
@@ -107,6 +107,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
 %type <stmt> array_loop_statement var_decl var_decl_list declaration
+%type <stmt> break_statement converse_statement
 %type <block> statement_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list
@@ -183,6 +184,8 @@ statement:
 	| function_call_statement
 	| return_statement
 	| statement_block
+	| converse_statement
+	| break_statement
 	| SAY  '(' opt_expression_list ')' ';'
 		{ $$ = new Uc_say_statement($3); }
 	| MESSAGE '(' opt_expression_list ')' ';'
@@ -349,6 +352,16 @@ return_statement:
 		{ $$ = new Uc_return_statement($2); }
 	| RETURN ';'
 		{ $$ = new Uc_return_statement(); }
+	;
+
+converse_statement:
+	CONVERSE statement
+		{ $$ = new Uc_converse_statement($2); }
+	;
+
+break_statement:
+	BREAK ';'
+		{ $$ = new Uc_break_statement(); }
 	;
 
 expression:

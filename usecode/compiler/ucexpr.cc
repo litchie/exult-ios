@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 
-#include <iostream.h>
 #include <stdio.h>
 #include "ucexpr.h"
 #include "ucsym.h"
@@ -43,7 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int Uc_expression::gen_values
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	gen_value(out);			// Gen. result on stack.
@@ -52,17 +51,20 @@ int Uc_expression::gen_values
 
 /*
  *	Default jmp-if-false generation.
+ *
+ *	Output:	offset where offset is stored.
  */
 
-void Uc_expression::gen_jmp_if_false
+int Uc_expression::gen_jmp_if_false
 	(
-	ostream& out,
+	vector<char>& out,
 	int offset			// Offset to jmp (relative).
 	)
 	{
 	gen_value(out);			// Gen. result on stack.
-	out.put((char) UC_JNE);		// Pop and jmp if false.
+	out.push_back((char) UC_JNE);		// Pop and jmp if false.
 	Write2(out, offset);
+	return out.size() - 2;
 	}
 
 /*
@@ -71,7 +73,7 @@ void Uc_expression::gen_jmp_if_false
 
 void Uc_expression::gen_assign
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	error("Can't assign to this expression");
@@ -83,7 +85,7 @@ void Uc_expression::gen_assign
 
 Uc_var_symbol *Uc_expression::need_var
 	(
-	ostream& out,
+	vector<char>& out,
 	Uc_function *fun
 	)
 	{
@@ -121,7 +123,7 @@ bool Uc_expression::eval_const
 
 void Uc_var_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	char buf[150];
@@ -138,7 +140,7 @@ void Uc_var_expression::gen_value
 
 void Uc_var_expression::gen_assign
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	char buf[150];
@@ -155,13 +157,13 @@ void Uc_var_expression::gen_assign
 
 void Uc_arrayelem_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	out.put((char) UC_AIDX);	// Opcode, var #.
+	out.push_back((char) UC_AIDX);	// Opcode, var #.
 	Write2(out, array->get_offset());
 	}
 
@@ -171,13 +173,13 @@ void Uc_arrayelem_expression::gen_value
 
 void Uc_arrayelem_expression::gen_assign
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	if (!index || !array)
 		return;
 	index->gen_value(out);		// Want index on stack.
-	out.put((char) UC_POPARR);	// Opcode, var #.
+	out.push_back((char) UC_POPARR);	// Opcode, var #.
 	Write2(out, array->get_offset());
 	}
 
@@ -187,10 +189,10 @@ void Uc_arrayelem_expression::gen_assign
 
 void Uc_flag_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_PUSHF);	// Opcode, flag #.
+	out.push_back((char) UC_PUSHF);	// Opcode, flag #.
 	Write2(out, index);
 	}
 
@@ -200,10 +202,10 @@ void Uc_flag_expression::gen_value
 
 void Uc_flag_expression::gen_assign
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_POPF);
+	out.push_back((char) UC_POPF);
 	Write2(out, index);
 	}
 
@@ -226,12 +228,12 @@ int Uc_var_expression::get_string_offset
 
 void Uc_binary_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	left->gen_value(out);		// First the left.
 	right->gen_value(out);		// Then the right.
-	out.put((char) opcode);
+	out.push_back((char) opcode);
 	}
 
 /*
@@ -273,11 +275,11 @@ bool Uc_binary_expression::eval_const
 
 void Uc_unary_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	operand->gen_value(out);
-	out.put((char) opcode);
+	out.push_back((char) opcode);
 	}
 
 /*
@@ -286,7 +288,7 @@ void Uc_unary_expression::gen_value
 
 void Uc_response_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	error("Must use UcResponse in 'if (UcResponse == ...)'");
@@ -295,19 +297,22 @@ void Uc_response_expression::gen_value
 /*
  *	Jmp-if-false generation for getting conversation response & comparing
  *	to a string or strings.
+ *
+ *	Output:	offset where offset is stored.
  */
 
-void Uc_response_expression::gen_jmp_if_false
+int Uc_response_expression::gen_jmp_if_false
 	(
-	ostream& out,
+	vector<char>& out,
 	int offset			// Offset to jmp (relative).
 	)
 	{
 					// Push string(s) on stack.
 	int cnt = operand->gen_values(out);
-	out.put((char) UC_CMPS);
+	out.push_back((char) UC_CMPS);
 	Write2(out, cnt);		// # strings on stack.
 	Write2(out, offset);		// Offset to jmp if false.
+	return out.size() - 2;
 	}
 
 /*
@@ -316,10 +321,10 @@ void Uc_response_expression::gen_jmp_if_false
 
 void Uc_int_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_PUSHI);
+	out.push_back((char) UC_PUSHI);
 	Write2(out, value);
 	}
 
@@ -344,13 +349,13 @@ bool Uc_int_expression::eval_const
 
 void Uc_bool_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	if (tf)
-		out.put((char) UC_PUSHTRUE);
+		out.push_back((char) UC_PUSHTRUE);
 	else
-		out.put((char) UC_PUSHFALSE);
+		out.push_back((char) UC_PUSHFALSE);
 	}
 
 /*
@@ -359,10 +364,10 @@ void Uc_bool_expression::gen_value
 
 void Uc_event_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_PUSHEVENTID);
+	out.push_back((char) UC_PUSHEVENTID);
 	}
 
 /*
@@ -371,10 +376,10 @@ void Uc_event_expression::gen_value
 
 void Uc_event_expression::gen_assign
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_POPEVENTID);
+	out.push_back((char) UC_POPEVENTID);
 	}
 
 /*
@@ -383,10 +388,10 @@ void Uc_event_expression::gen_assign
 
 void Uc_item_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_PUSHITEMREF);
+	out.push_back((char) UC_PUSHITEMREF);
 	}
 
 /*
@@ -395,10 +400,10 @@ void Uc_item_expression::gen_value
 
 void Uc_string_expression::gen_value
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
-	out.put((char) UC_PUSHS);
+	out.push_back((char) UC_PUSHS);
 	Write2(out, offset);
 	}
 
@@ -421,11 +426,11 @@ Uc_array_expression::~Uc_array_expression
 
 void Uc_array_expression::gen_value
 	(
-	std::ostream& out
+	vector<char>& out
 	)
 	{
 	int actual = Uc_array_expression::gen_values(out);
-	out.put((char) UC_ARRC);
+	out.push_back((char) UC_ARRC);
 	Write2(out, actual);
 	}
 
@@ -437,7 +442,7 @@ void Uc_array_expression::gen_value
 
 int Uc_array_expression::gen_values
 	(
-	ostream& out
+	vector<char>& out
 	)
 	{
 	int actual = 0;			// (Just to be safe.)
@@ -461,7 +466,7 @@ int Uc_array_expression::gen_values
 
 void Uc_call_expression::gen_value
 	(
-	std::ostream& out
+	vector<char>& out
 	)
 	{
 	if (!sym)
