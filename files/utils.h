@@ -27,11 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_UTILS	1
 #ifdef MACOS
   #include <iostream>
-  // it is not sufficient to #include <iosfwd> here because Read1() etc.
+  // it is not sufficient to #include <iosfwd> here since Read1() etc.
   // call methods of class istream
-  #include <stat.h>
 #else
-  #include <sys/stat.h>
   #include <iosfwd>
 #endif
 #include <hash_map>
@@ -365,6 +363,6 @@ int Log2
 	unsigned int n
 	);
 
-void add_system_path(const char *key, const char *value);
+void add_system_path(const std::string& key, const std::string& value);
 
 #endif

@@ -22,51 +22,51 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <fstream>
 #include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <map>
+#ifdef MACOS
+  #include <stat.h>
+#else
+  #include <sys/stat.h>
+#endif
 
 #include "utils.h"
 
+using std::string;
+
+// Function prototypes
+
+static void switch_slashes(string & name);
 
 // Ugly hack for supporting different paths
 
-static hash_map<const char*, const char*, hashstr, eqstr> path_map;
+static std::map<string, string> path_map;
 
-void add_system_path(const char *key, const char *value)
+void add_system_path(const string& key, const string& value)
 {
 	path_map[key] = value;
 }
 
-char *get_system_path(const char *path)
+string get_system_path(const string &path)
 {
-	char * slash = strchr(path, '/');
+	string::size_type pos = path.find('/');
 	// If there is no separator, return the path as is
-	if(!slash)
-		{
-		char *ret=new char[strlen(path)+1];
-		strcpy(ret,path);
-		return ret;
-		}
-	int prefix_size = slash-path;
-	char *prefix = new char[prefix_size+1];
-	strncpy(prefix, path, prefix_size);
-	prefix[prefix_size] = 0;
-	const char *new_prefix = path_map[prefix];
-	delete [] prefix;
+	if(pos == string::npos)
+		return path;
+		
+	// See if we can translate this prefix
+	string new_prefix(path_map[path.substr(0, pos).c_str()]);
+
 	// If the prefix path is not recognised, return the path as is
-	if(!new_prefix)
-		{
-		char *ret=new char[strlen(path)+1];
-		strcpy(ret,path);
-		return ret;
-		}
+	if(new_prefix.empty())
+		return path;
 	
-	char *new_path = new char[sizeof(char)*(strlen(new_prefix)+strlen(path)-prefix_size+1)];
-	strcpy(new_path, new_prefix);
-	strcat(new_path, slash);
+	string new_path = new_prefix + path.substr(pos);
+	switch_slashes(new_path);
 	return new_path;
 }
 
@@ -77,49 +77,41 @@ char *get_system_path(const char *path)
  *	Output: ->original buffer, changed to upper case.
  */
 
-static char *To_upper
+static void to_uppercase
 	(
-	char *buf
+	string &str
 	)
 	{
-	char *ret = buf;
-	while (*buf)
+	for(string::iterator X = str.begin(); X != str.end(); ++X)
 		{
 #ifndef BEOS
-		*buf = std::toupper(*buf);
+		*X = std::toupper(*X);
 #else
 //sigh...
-        if ((*buf >= 'a') && (*buf <= 'z')) *buf -= 32;
+        if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
 #endif         
-		buf++;
 		}
-	return (ret);
 	}
 
-static char *Switch_slash(
-	char *name,
-	const char *old_name
+static void switch_slashes(
+	string & name
 	)
 	{
 #ifdef WIN32
-		std::strcpy(name, old_name);
-		for(;*name!=0;name++)
+		for(string::iterator X = name.begin(); X != name.end(); ++X)
 			{
-				if(*name=='/')
-					*name = '\\';
+			if(*X == '/' )
+				*X =  '\\';
 			}
 #elif defined(MACOS)
-		name[0] = ':';
-		std::strcpy(name+1, old_name);
-		for(;*name!=0;name++)
+		for(string::iterator X = name.begin(); X != name.end(); ++X)
 			{
-				if(*name=='/')
-					*name = ':';
+			if(*X == '/' )
+				*X =  ':';
 			}
 #else
-		std::strcpy(name, old_name);
+	// do nothing
 #endif
-		return name;
 	}
 /*
  *	Open a file for input, 
@@ -142,15 +134,13 @@ int U7open
 #else
 	int mode = ios::in | ios::binary;
 #endif
-	const char * filename = get_system_path(fname);
-	char name[512];
-	Switch_slash(name, filename);
-	delete [] filename;
-	in.open(name, mode);		// Try to open original name.
+	string name = get_system_path(fname);
+
+	in.open(name.c_str(), mode);		// Try to open original name.
 	if (!in.good())			// No good?  Try upper-case.
 		{
-		To_upper(name);
-		in.open(name, mode);
+		to_uppercase(name);
+		in.open(name.c_str(), mode);
 		if (!in.good())
 			return (0);
 		}
@@ -178,16 +168,13 @@ int U7open
 #else
 	int mode = ios::out | ios::trunc | ios::binary;
 #endif
-	const char * filename = get_system_path(fname);
+	string name = get_system_path(fname);
 
-	char name[512];
-	Switch_slash(name, filename);
-	delete [] filename;
-	out.open(name, mode);		// Try to open original name.
+	out.open(name.c_str(), mode);		// Try to open original name.
 	if (!out.good())		// No good?  Try upper-case.
 		{
-		char upper[512];
-		out.open(To_upper(std::strcpy(upper, name)), mode);
+		to_uppercase(name);
+		out.open(name.c_str(), mode);
 		if (!out.good())
 			return (0);
 		}
@@ -207,16 +194,13 @@ std::FILE* U7open
 	const char *mode			// File access mode.
 	)
 	{
-	char * filename = get_system_path(fname);
-	
-	char name[512];
-	Switch_slash(name, filename);
-	delete [] filename;
-	std::FILE *f = std::fopen(name, mode);
+	string name = get_system_path(fname);
+
+	std::FILE *f = std::fopen(name.c_str(), mode);
 	if (!f)				// No good?  Try upper-case.
 		{
-		char upper[512];
-		f = std::fopen(To_upper(std::strcpy(upper, name)), mode);
+		to_uppercase(name);
+		f = std::fopen(name.c_str(), mode);
 		if (!f)
 			return (0);
 		}
@@ -233,12 +217,9 @@ void U7remove
 	const char *fname			// May be converted to upper-case.
 	)
 	{
-	const char * filename = get_system_path(fname);
-	
-	char name[512];
-	Switch_slash(name, filename);
-	delete [] filename;
-	remove(name);
+	string name = get_system_path(fname);
+
+	std::remove(name.c_str());
 	}
 
 /*
@@ -250,13 +231,10 @@ int U7exists
 	const char *fname			// May be converted to upper-case.
 	)
 	{
-	const char * filename = get_system_path(fname);
-	
-	char name[512];
-	Switch_slash(name, filename);
-	delete [] filename;
+	string name = get_system_path(fname);
+
 	struct stat sbuf;
-	return (stat(name, &sbuf) == 0);
+	return (stat(name.c_str(), &sbuf) == 0);
 	}
 
 /*
