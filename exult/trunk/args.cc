@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ void	Args::process(int argc,char **argv)
 {
 	for(int i=1;i<argc;i++)
 	{
-		for(unsigned int j=0;j<options.size();j++)
+		for(unsigned int j=0;j<options.size() && i<argc;j++)
 		{
 			switch(options[j].valuetype)
 			{
