@@ -245,13 +245,22 @@ Usecode_function::Usecode_function
  *	Add a possible 'answer'.
  */
 
+Answers::Answers()
+{}
+
+void Answers::clear(void)
+{
+	answers.clear();
+}
+
 void Answers::add_answer
 	(
-	char *str
+	const char *str
 	)
 	{
-	if (num_answers < max_answers)
-		answers[num_answers++] = str;
+	_remove_answer(str);
+	string	s(str);
+	answers.push_back(s);
 	}
 
 /*
@@ -263,7 +272,7 @@ void Answers::add_answer
 	Usecode_value& val		// Array or string.
 	)
 	{
-	char *str;
+	const char *str;
 	int size = val.get_array_size();
 	if (size)			// An array?
 		{
@@ -278,38 +287,33 @@ void Answers::add_answer
  *	Remove an answer from the list.
  */
 
+void Answers::_remove_answer(const char *str)
+{
+	vector<string>::iterator it;
+
+	for(it=answers.begin();
+		it!=answers.end();
+		++it)
+		{
+	//	cerr << "'" << *it << "' ~ '" << str << "'"<<endl;
+		if(*it==str)
+			break;
+		}
+	if(it!=answers.end())
+		answers.erase(it);
+}
+
 void Answers::remove_answer
 	(
 	Usecode_value& val		// String.
 	)
 	{
-	char *str = val.get_str_value();
+	const char *str = val.get_str_value();
 	if (!str)
 		return;
-	int i;				// Look for answer.
-	for (i = 0; i < num_answers; i++)
-		if (strcmp(answers[i], str) == 0)
-			break;		// Found it.
-	if (i == num_answers)
-		return;			// Not found.
-	for (i++; i < num_answers; i++)	// Shift others left.
-		answers[i - 1] = answers[i];
-	num_answers--;
+	_remove_answer(str);
 	}
 
-/*
- *	Make a shallow copy.
- */
-
-void Answers::operator=
-	(
-	Answers& cpy
-	)
-	{
-	num_answers = cpy.num_answers;
-	for (int i = 0; i < num_answers; i++)
-		answers[i] = cpy.answers[i];
-	}
 
 /*
  *	Append a string.
@@ -317,23 +321,23 @@ void Answers::operator=
 
 void Usecode_machine::append_string
 	(
-	char *str
+	const char *str
 	)
 	{
 	if (!str)
 		return;
 					// Figure new length.
-	int len = string ? strlen(string) : 0;
+	int len = String ? strlen(String) : 0;
 	len += strlen(str);
 	char *newstr = new char[len + 1];
-	if (string)
+	if (String)
 		{
-		strcpy(newstr, string);
-		delete string;
-		string = strcat(newstr, str);
+		strcpy(newstr, String);
+		delete String;
+		String = strcat(newstr, str);
 		}
 	else
-		string = strcpy(newstr, str);
+		String = strcpy(newstr, str);
 	}
 
 /*
@@ -367,12 +371,12 @@ void Usecode_machine::say_string
 	)
 	{
 	user_choice = 0;		// Clear user's response.
-	if (!string)
+	if (!String)
 		return;
 					// Make sure prev. text was seen.
 	if (gwin->is_npc_text_pending())
 		click_to_continue();
-	char *str = string;
+	char *str = String;
 	while (*str)			// Look for stopping points ("~~").
 		{
 		char *eol = str;
@@ -390,8 +394,8 @@ void Usecode_machine::say_string
 		if (*str == '~')
 			str++;		// 2 in a row.
 		}
-	delete string;
-	string = 0;
+	delete String;
+	String = 0;
 	}
 
 /*
@@ -624,11 +628,11 @@ void Usecode_machine::item_say
 	)
 	{
 	Game_object *obj = get_item(objval.get_int_value());
-	char *str = strval.get_str_value();
+	const char *str = strval.get_str_value();
 	if (obj && str && *str)
 		{
 		Rectangle box = gwin->get_shape_rect(obj);
-		gwin->add_text(str, box.x, box.y);
+		gwin->add_text((char *)str, box.x, box.y);	// &&& Fix me later and avoid the ugly cast
 		gwin->show();		// Not sure.+++++testing.
 		}
 	}
@@ -931,32 +935,41 @@ Usecode_value	Usecode_machine::UI_remove_answer(int event,int intrinsic,Usecode_
 	return no_ret;
 }
 
-Usecode_value	Usecode_machine::UI_save_answers(int event,int intrinsic,Usecode_value parms[12])
+Usecode_value	Usecode_machine::UI_push_answers(int event,int intrinsic,Usecode_value parms[12])
 {
-	answer_stack[saved_answers] = new Answers;
-	*(answer_stack[saved_answers++]) = answers;
-	answers.num_answers = 0;
+	answer_stack.push_front(answers);
+	answers.clear();
 	return no_ret;
 }
 
-#if 0
-struct	_intrinsic_table {
-	Usecode_value	(Usecode_machine::*func);
-	} intrinsic_table[] =
-	{
-	Usecode_machine::UI_get_random,	// 0
-	Usecode_machine::UI_execute_usecode_array, // 1
-	Usecode_machine::UI_delayed_execute_usecode_array, // 2
-	Usecode_machine::UI_show_npc_face, // 3
-	Usecode_machine::UI_remove_npc_face, // 4
-	Usecode_machine::UI_add_answer, // 5
-	Usecode_machine::UI_remove_answer, // 6
-	};
-#endif
+Usecode_value	Usecode_machine::UI_pop_answers(int event,int intrinsic,Usecode_value parms[12])
+{
+	if(answer_stack.size())
+		{
+		answers=answer_stack.front();
+		answer_stack.pop_front();
+		}
+	return no_ret;
+}
+
+Usecode_value	Usecode_machine::UI_select_from_menu(int event,int intrinsic,Usecode_value parms[12])
+{
+	user_choice = 0;
+	const char *choice = get_user_choice();
+	user_choice = 0;
+	return choice;
+}
+
+Usecode_value	Usecode_machine::UI_select_from_menu2(int event,int intrinsic,Usecode_value parms[12])
+{			// Return index (1-n) of choice.
+	user_choice = 0;
+	Usecode_value val(get_user_choice_num() + 1);
+	user_choice = 0;
+	return val;
+}
 
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,Usecode_value parms[12]);
 
-#include <vector>
 UsecodeIntrinsicFn intrinsic_table[]=
 	{
 	&Usecode_machine::UI_get_random,	// 0
@@ -966,9 +979,14 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	&Usecode_machine::UI_remove_npc_face, // 4
 	&Usecode_machine::UI_add_answer, // 5
 	&Usecode_machine::UI_remove_answer, // 6
+	&Usecode_machine::UI_push_answers, // 7
+	&Usecode_machine::UI_pop_answers, // 8
+	&Usecode_machine::UI_UNKNOWN, // 9
+	&Usecode_machine::UI_select_from_menu, // 0x0a
+	&Usecode_machine::UI_select_from_menu2, // 0x0b
 	};
 
-int	max_bundled_intrinsics=6;
+int	max_bundled_intrinsics=0xb;	// Index of the last intrinsic in this table
 
 /*
  *	Call an intrinsic function.
@@ -995,32 +1013,6 @@ Usecode_value Usecode_machine::call_intrinsic
 	else
 	switch (intrinsic)
 		{
-	case 7:				// Save answers. (0)
-		answer_stack[saved_answers] = new Answers;
-		*(answer_stack[saved_answers++]) = answers;
-		answers.num_answers = 0;
-		break;
-	case 8:				// Restore answers. (0)
-		if (saved_answers > 0)
-			{
-			answers = *(answer_stack[saved_answers - 1]);
-			delete answer_stack[--saved_answers];
-			}
-		break;
-	case 0xa:			// Show choices & return string.
-		{
-		user_choice = 0;
-		char *choice = get_user_choice();
-		user_choice = 0;
-		return choice;
-		}
-	case 0xb:			// Show choices and wait for click.
-		{			// Return index (1-n) of choice.
-		user_choice = 0;
-		Usecode_value val(get_user_choice_num() + 1);
-		user_choice = 0;
-		return val;
-		}
 	case 0xc:			// Ask for # (min, max, step, default).
 					// (Show slider.)
 		//+++++++++++++
@@ -1334,7 +1326,7 @@ void Usecode_machine::click_to_continue
 	{
 	Answers save_answers;		// Save answers list.
 	save_answers = answers;
-	answers.num_answers = 0;
+	answers.clear();
 	answers.add_answer("Continue");
 	get_user_choice_num();
 	user_choice = 0;		// Clear it.
@@ -1348,11 +1340,11 @@ void Usecode_machine::click_to_continue
  *		0 if no possible choices or user quit.
  */
 
-char *Usecode_machine::get_user_choice
+const char *Usecode_machine::get_user_choice
 	(
 	)
 	{
-	if (!answers.num_answers)
+	if (!answers.answers.size())
 		return (0);		// Shouldn't happen.
 	if (!user_choice)		// May have already been done.
 		get_user_choice_num();
@@ -1374,7 +1366,7 @@ int Usecode_machine::get_user_choice_num
 //	cout << "Choose: ";		// TESTING.
 //	for (int i = 0; i < answers.num_answers; i++)
 //		cout << ' ' << answers.answers[i] << '(' << i << ") ";
-	gwin->show_avatar_choices(answers.num_answers, answers.answers);
+	gwin->show_avatar_choices(answers.answers);
 	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 	int x, y;			// Get click.
 	int choice_num;
@@ -1383,9 +1375,9 @@ int Usecode_machine::get_user_choice_num
 			return (-1);
 					// Wait for valid choice.
 	while ((choice_num = gwin->conversation_choice(x, y)) < 0 ||
-		choice_num >= answers.num_answers);
+		choice_num >= answers.answers.size());
 					// Store ->answer string.
-	user_choice = answers.answers[choice_num];
+	user_choice = answers.answers[choice_num].c_str();
 	return (choice_num);		// Return choice #.
 	}
 
@@ -1397,9 +1389,8 @@ Usecode_machine::Usecode_machine
 	(
 	istream& file,
 	Game_window *gw
-	) : string(0), gwin(gw), call_depth(0), caller_item(0),
-	    stack(new Usecode_value[1024]), user_choice(0),
-	    saved_answers(0)
+	) : String(0), gwin(gw), call_depth(0), caller_item(0),
+	    stack(new Usecode_value[1024]), user_choice(0)
 	{
 	sp = stack;
 					// Clear global flags.
@@ -1435,7 +1426,7 @@ Usecode_machine::~Usecode_machine
 	)
 	{
 	delete [] stack;
-	delete string;
+	delete String;
 	int num_slots = funs->get_cnt();
 	for (int i = 0; i < num_slots; i++)
 		{
@@ -1472,7 +1463,7 @@ void Usecode_machine::run
 	Usecode_value *save_sp = sp;	// Save TOS.
 	Answers save_answers;		// Save answers list.
 	save_answers = answers;
-	answers.num_answers = 0;
+	answers.clear();
 	unsigned char *ip = fun->code;	// Instruction pointer.
 					// Where it ends.
 	unsigned char *endp = ip + fun->len;
@@ -1514,7 +1505,7 @@ void Usecode_machine::run
 			{
 		case 0x04:		// Jump if done with function.
 			offset = (short) Read2(ip);
-			if (set_ret_value || !answers.num_answers)
+			if (set_ret_value || !answers.answers.size())
 				ip += offset;
 			break;
 		case 0x05:		// JNE.
@@ -1726,7 +1717,7 @@ void Usecode_machine::run
 		case 0x2f:		// ADDSV.
 			{
 			offset = Read2(ip);
-			char *str = locals[offset].get_str_value();
+			const char *str = locals[offset].get_str_value();
 			if (str)
 				append_string(str);
 			else		// Convert integer.
