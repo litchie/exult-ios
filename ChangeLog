@@ -3,6 +3,7 @@
 	* useval.*, ucmachine.cc: moved adding usecode_values to useval,
 	possibly risky change: adding (int) 0 to a string does nothing
 	* bgintrinsics.h: 0x96 = a_or_an
+	* siintrinsics.h: 0xC2 = IsOnKeyring(qual.), 0xC3 = AddToKeyring(qual.)
 
 2001-06-23  Ryan Nunn <triforce@merlin.net.au>
 	* actors.cc, actors.h: Almost complete rewrite of the add_readied and
