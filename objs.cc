@@ -361,19 +361,20 @@ Game_object *Game_object::find_closest
 	)
 	{
 	GOVector vec;			// Gets objects found.
-	int cnt = 0;
 	int i;
 	for (i = 0; i < num_shapes; i++)
-		cnt += find_nearby(vec, shapenums[i], 24, 0);
+		find_nearby(vec, shapenums[i], 24, 0);
+	int cnt = vec.size();
 	if (!cnt)
 		return (0);
 	Game_object *closest = 0;	// Get closest.
 	int best_dist = 10000;		// In tiles.
 					// Get our location.
 	Tile_coord loc = get_abs_tile_coord();
-	for (i = 0; i < cnt; i++)
+	for (GOVector::const_iterator iter = vec.begin();
+						iter != vec.end(); ++iter)
 		{
-		Game_object *obj = vec.at(i);
+		Game_object *obj = *iter;
 		int dist = obj->get_abs_tile_coord().distance(loc);
 		if (dist < best_dist)
 			{
@@ -2078,14 +2079,15 @@ void Chunk_cache::set_egged
 		}
 	else				// Remove.
 		{
-		if (eggnum < 0)
+		if (eggnum < 0 || eggnum >= egg_objects.size())
 			return;		// Not there.
-		egg_objects.at(eggnum) = NULL;
+		egg_objects[eggnum] = NULL;
 		if (eggnum >= 15)	// We only have 16 bits.
 			{		// Last one at 15 or above?
-			int num_eggs = get_num_eggs();
-			for (int i = 15; i < num_eggs; i++)
-				if (egg_objects.at(i))
+			for (EggVector::const_iterator it = 
+				egg_objects.begin() + 15; 
+					it != egg_objects.end(); ++it)
+				if (*it != 0)
 					// No, so leave bits alone.
 					return;
 			eggnum = 15;
@@ -2384,16 +2386,17 @@ void Chunk_cache::activate_eggs
 						i++, eggbits = eggbits >> 1)
 		{
 		Egg_object *egg;
-		if ((eggbits&1) && (egg = egg_objects.at(i)) &&
+		if ((eggbits&1) && i < egg_objects.size() &&
+		    (egg = egg_objects[i]) &&
 		    egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
 			egg->activate(usecode, obj);
 		}
 	if (eggbits)			// Check 15th bit.
 		{
-		int num_eggs = egg_objects.size();
-		for ( ; i < num_eggs; i++)
+		for (EggVector::const_iterator it = egg_objects.begin() + i;
+					it != egg_objects.end(); ++it)
 			{
-			Egg_object *egg = egg_objects.at(i);
+			Egg_object *egg = *it;
 			if (egg && egg->is_active(obj,
 						tx, ty, tz, from_tx, from_ty))
 				egg->activate(usecode, obj);
@@ -2784,12 +2787,9 @@ void Chunk_object_list::try_all_eggs
 					eggs.push_back(egg);
 				}
 		}
-	int eggcnt = eggs.size();
-	for (int i = 0; i < eggcnt; i++)
-		{
-		Egg_object *egg = eggs.at(i);
-		egg->activate(gwin->get_usecode(), obj);
-		}
+	for (EggVector::const_iterator it = eggs.begin(); it != eggs.end();
+									++it)
+		(*it)->activate(gwin->get_usecode(), obj);
 	norecurse--;
 	}
 
@@ -2891,10 +2891,10 @@ void Chunk_object_list::gravity
 				}
 			}
 		}
-	int cnt = dropped.size();	// Get # objs. that dropped.
-	for (int i = 0; i < cnt; i++)	// Recurse on each one.
-		{
-		Game_object *obj = dropped.at(i);
+	for (GOVector::const_iterator it = dropped.begin(); 
+						it != dropped.end(); ++it)
+		{			// Recurse on each one.
+		Game_object *obj = *it;
 					// Get footprint.
 		Rectangle foot = obj->get_footprint();
 		gravity(foot, obj->get_lift() +

@@ -189,10 +189,10 @@ static void Activate_cached
 		return;			// ++++Since we're not sure about it.
 	const int dist = 16;
 	GOVector vec;			// Find all usecode eggs.
-	int cnt = Game_object::find_nearby(vec, pos, 275, dist, 16, -359, 7);
-	for (int i = 0; i < cnt; i++)
+	Game_object::find_nearby(vec, pos, 275, dist, 16, -359, 7);
+	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Egg_object *egg = (Egg_object *) vec.at(i);
+		Egg_object *egg = (Egg_object *) *it;
 		if (egg->get_criteria() == Egg_object::cached_in)
 			egg->activate(uc);
 		}
@@ -1071,7 +1071,6 @@ Usecode_value Usecode_machine::find_nearby
 	)
 	{
 	GOVector vec;			// Gets list.
-	int cnt;
 					// It might be (tx, ty, tz).
 	int arraysize = objval.get_array_size();
 	if (arraysize >= 3 && objval.get_elem(0).get_int_value() < num_tiles)
@@ -1082,7 +1081,7 @@ Usecode_value Usecode_machine::find_nearby
 					// Frame is 5th if there.
 		int frnum = arraysize == 5 ? objval.get_elem(4).get_int_value()
 							: -359;
-		cnt = Game_object::find_nearby(vec,
+		Game_object::find_nearby(vec,
 			Tile_coord(objval.get_elem(0).get_int_value(),
 				   objval.get_elem(1).get_int_value(),
 				   objval.get_elem(2).get_int_value()),
@@ -1096,15 +1095,16 @@ Usecode_value Usecode_machine::find_nearby
 		if (!obj)
 			return Usecode_value(0, 0);
 		obj = obj->get_outermost();	// Might be inside something.
-		cnt = obj->find_nearby(vec, shapeval.get_int_value(),
+		obj->find_nearby(vec, shapeval.get_int_value(),
 			distval.get_int_value(), mval.get_int_value());
 		}
-	Usecode_value nearby(cnt, 0);	// Create return array.
-	for (int i = 0; i < cnt; i++)
+	Usecode_value nearby(vec.size(), 0);	// Create return array.
+	int i = 0;
+	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Game_object *each = vec.at(i);
+		Game_object *each = *it;
 		Usecode_value val((long) each);
-		nearby.put_elem(i, val);
+		nearby.put_elem(i++, val);
 		}
 	return (nearby);
 	}
@@ -1130,14 +1130,14 @@ Usecode_value Usecode_machine::find_nearest
 					// Kludge for Test of Courage:
 	if (cur_function->id == 0x70a && shnum == 0x9a && dist == 0)
 		dist = 16;		// Mage may have wandered.
-	int cnt = obj->find_nearby(vec, shnum, dist, 0);
+	obj->find_nearby(vec, shnum, dist, 0);
 	Game_object *closest = 0;
 	unsigned long bestdist = 100000;// Distance-squared in tiles.
 	int x1, y1, z1;
 	obj->get_abs_tile(x1, y1, z1);
-	for (int i = 0; i < cnt; i++)
+	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Game_object *each = vec.at(i);
+		Game_object *each = *it;
 		int x2, y2, z2;
 		each->get_abs_tile(x2, y2, z2);
 		int dx = x1 - x2, dy = y1 - y2, dz = z1 - z2;
@@ -1224,15 +1224,16 @@ Usecode_value Usecode_machine::get_objects
 	int framenum = frameval.get_int_value();
 	int qual = qualval.get_int_value();
 	GOVector vec;			// Gets list.
-	int cnt = obj->get_objects(vec, shapenum, qual, framenum);
+	obj->get_objects(vec, shapenum, qual, framenum);
 
 //	cout << "Container objects found:  " << cnt << << endl;
-	Usecode_value within(cnt, 0);	// Create return array.
-	for (int i = 0; i < cnt; i++)
+	Usecode_value within(vec.size(), 0);	// Create return array.
+	int i = 0;
+	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Game_object *each = vec.at(i);
+		Game_object *each = *it;
 		Usecode_value val((long) each);
-		within.put_elem(i, val);
+		within.put_elem(i++, val);
 		}
 	return (within);
 	}
@@ -2279,12 +2280,10 @@ USECODE_INTRINSIC(sit_down)
 	if (!chair)
 		return(no_ret);
 	GOVector vec;			// See if someone already there.
-//	int cnt = chair->find_nearby(vec, -359, 1, 0, 8);
-//	cnt += chair->find_nearby(vec, -359, 1, 0, 4);
-	int cnt = chair->find_nearby(vec, -359, 1, 8);
-	for (int i = 0; i < cnt; i++)
+	chair->find_nearby(vec, -359, 1, 8);
+	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Game_object *obj = vec.at(i);
+		Game_object *obj = *it;
 		if ((obj->get_framenum()&0xf) == Actor::sit_frame)
 			return no_ret;	// Occupied.
 		}
@@ -2748,7 +2747,7 @@ USECODE_INTRINSIC(nap_time)
 		int i;
 		for (i = 0; i < cnt; i++)
 			{
-			Game_object *npc = npcs.at(i);
+			Game_object *npc = npcs[i];
 			int zdiff = npc->get_lift() - bed->get_lift();
 			if (npc != gwin->get_main_actor() &&
 						zdiff <= 2 && zdiff >= -2)
@@ -2790,10 +2789,10 @@ USECODE_INTRINSIC(attack_avatar)
 {
 	// Attack thieving Avatar.
 	GOVector npcs;			// See if someone is nearby.
-	int cnt = gwin->get_main_actor()->find_nearby(npcs, -359, 12, 8);
-	for (int i = 0; i < cnt; i++)
+	gwin->get_main_actor()->find_nearby(npcs, -359, 12, 8);
+	for (GOVector::const_iterator it = npcs.begin(); it != npcs.end();++it)
 		{
-		Actor *npc = (Actor *) npcs.at(i);
+		Actor *npc = (Actor *) *it;
 		if (!npc->is_monster() && npc != gwin->get_main_actor() &&
 		    npc->get_party_id() <= 0)
 			npc->set_opponent(gwin->get_main_actor());

@@ -156,9 +156,10 @@ void Eat_at_inn_schedule::now_what
 		{			// Find closest.
 		Game_object *food = 0;
 		int dist = 500;
-		for (int i = 0; i < cnt; i++)
+		for (GOVector::const_iterator it = foods.begin();
+					it != foods.end(); ++it)
 			{
-			Game_object *obj = foods.at(i);
+			Game_object *obj = *it;
 			int odist = obj->distance(npc);
 			if (odist < dist)
 				{
@@ -193,7 +194,7 @@ void Preach_schedule::now_what
 		GOVector vec;
 		if (npc->find_nearby(vec, 697, 5, 0))
 			{
-			Game_object *podium = vec.at(0);
+			Game_object *podium = vec[0];
 			npc->walk_to_tile(podium->get_abs_tile_coord());
 			return;
 			}
@@ -223,14 +224,15 @@ void Patrol_schedule::now_what
 	const int PATH_SHAPE = 607;
 	pathnum++;			// Find next path.
 					// Already know its location?
-	Game_object *path =  pathnum < paths.size() ? paths.at(pathnum) : 0;
+	Game_object *path =  pathnum < paths.size() ? paths[pathnum] : 0;
 	if (!path)			// No, so look around.
 		{
 		GOVector nearby;
-		int cnt = npc->find_nearby(nearby, PATH_SHAPE, 26, 0);
-		for (int i = 0; i < cnt; i++)
+		npc->find_nearby(nearby, PATH_SHAPE, 26, 0);
+		for (GOVector::const_iterator it = nearby.begin();
+						it != nearby.end(); ++it)
 			{
-			Game_object *obj = nearby.at(i);
+			Game_object *obj = *it;
 			int framenum = obj->get_framenum();
 					// Cache it.
 			paths.put(framenum, obj);
@@ -243,7 +245,7 @@ void Patrol_schedule::now_what
 		if (!path)		// Turn back if at end.
 			{
 			pathnum = 0;
-			path = paths.at(pathnum);
+			path = paths.size() ? paths[0] : 0;
 			}
 		if (!path)
 			{
@@ -397,10 +399,11 @@ void Kid_games_schedule::now_what
 	else				// No more kids?  Search.
 		{
 		GOVector vec;
-		int cnt = npc->find_nearby(vec, -359, 16, 8);
-		for (int i = 0; i < cnt; i++)
+		npc->find_nearby(vec, -359, 16, 8);
+		for (GOVector::const_iterator it = vec.begin();
+						it != vec.end(); ++it)
 			{
-			Actor *act = (Actor *) vec.at(i);
+			Actor *act = (Actor *) *it;
 			if (act->get_schedule_type() == kid_games)
 				kids.append(act);
 			}
@@ -544,11 +547,11 @@ void Sleep_schedule::now_what
 		return;
 		}
 	GOVector tops;			// Want to find top of bed.
-	int cnt = bed->find_nearby(tops, bed->get_shapenum(), 1, 0);
-	if (cnt > 0)
-		for (int i = 0; i < cnt; i++)
+	bed->find_nearby(tops, bed->get_shapenum(), 1, 0);
+	for (GOVector::const_iterator it = tops.begin(); it != tops.end();
+									++it)
 			{
-			Game_object *top = tops.at(i);
+			Game_object *top = *it;
 			int frnum = top->get_framenum();
 			if (frnum >= 3 && frnum <= 16)
 				{
@@ -719,10 +722,11 @@ void Waiter_schedule::get_customer
 	if (!customer)			// Got to search?
 		{
 		GOVector vec;		// Look within 32 tiles;
-		int cnt = npc->find_nearby(vec, -359, 32, 8);
-		for (int i = 0; i < cnt; i++)
+		npc->find_nearby(vec, -359, 32, 8);
+		for (GOVector::const_iterator it = vec.begin();
+							it != vec.end(); ++it)
 			{		// Filter them.
-			Actor *npc = (Actor *) vec.at(i);
+			Actor *npc = (Actor *) *it;
 			int sched = npc->get_schedule_type();
 			if (sched == Schedule::eat_at_inn)
 				customers.append(npc);
@@ -731,7 +735,7 @@ void Waiter_schedule::get_customer
 		}
 	if (prep_tables.size())	// Walk to a 'prep' table.
 		{
-		Game_object *table = prep_tables.at(rand()%prep_tables.size());
+		Game_object *table = prep_tables[rand()%prep_tables.size()];
 		Tile_coord pos = table->find_unblocked_tile(1, 3);
 		if (pos.tx != -1 &&
 		    npc->walk_path_to_tile(pos, 200, 1000 + rand()%1000))
@@ -753,11 +757,12 @@ void Waiter_schedule::find_tables
 	)
 	{
 	GOVector vec;
-	int cnt = npc->find_nearby(vec, shapenum, 32, 0);
+	npc->find_nearby(vec, shapenum, 32, 0);
 	int floor = npc->get_lift()/5;	// Make sure it's on same floor.
-	for (int i = 0; i < cnt; i++)
+	for (GOVector::const_iterator it = vec.begin(); it != vec.end();
+								++it)
 		{
-		Game_object *table = vec.at(i);
+		Game_object *table = *it;
 		if (table->get_lift()/5 != floor)
 			continue;
 		GOVector chairs;		// No chairs by it?
@@ -780,14 +785,15 @@ int Waiter_schedule::find_serving_spot
 	Tile_coord& spot
 	)
 	{
-	GOVector plates;			// First look for a nearby plate.
+	GOVector plates;		// First look for a nearby plate.
 	int cnt = npc->find_nearby(plates, 717, 1, 0);
 	if (!cnt)
 		cnt = npc->find_nearby(plates, 717, 2, 0);
 	int floor = npc->get_lift()/5;	// Make sure it's on same floor.
-	for (int i = 0; i < cnt; i++)
+	for (GOVector::const_iterator it = plates.begin();
+					it != plates.end(); ++it)
 		{
-		Game_object *plate = plates.at(i);
+		Game_object *plate = *it;
 		if (plate->get_lift()/5 == floor)
 			{
 			spot = plate->get_abs_tile_coord();
@@ -797,10 +803,11 @@ int Waiter_schedule::find_serving_spot
 		}
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord cpos = customer->get_abs_tile_coord();
-	cnt = eating_tables.size();	// Go through tables.
-	for (int i = 0; i < cnt; i++)
+					// Go through tables.
+	for (GOVector::const_iterator it = eating_tables.begin();
+					it != eating_tables.end(); ++it)
 		{
-		Game_object *table = eating_tables.at(i);
+		Game_object *table = *it;
 		Rectangle foot = table->get_footprint();
 		if (foot.distance(cpos.tx, cpos.ty) <= 2)
 			{		// Found it.
