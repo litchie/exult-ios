@@ -5,7 +5,9 @@
  **	Written: 4/29/99 - JSF
  **/
 
-#include "../alpha_kludges.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include <fstream>
 #include <iostream>

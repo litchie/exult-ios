@@ -30,3 +30,12 @@
 
 /* have GIMP devel environment */
 #undef HAVE_GIMP
+
+/* Compiling with CXX on Alpha */
+#undef ALPHA_LINUX_CXX
+
+@BOTTOM@
+
+#ifdef ALPHA_LINUX_CXX
+#include "alpha_kludges.h"
+#endif

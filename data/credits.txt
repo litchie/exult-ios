@@ -18,7 +18,7 @@
 \Cwhat more could you possibly ask for ?
 
 
-\CWillem Jan "Arthuris" Palenstijn
+\CWillem Jan "Arthuris Dragon" Palenstijn
 \C<palenstijn@wanadoo.nl>
 \CPorting to obscure OSs (Windows) and less
 \Cobscure ones (BeOS), cheats, autoconf

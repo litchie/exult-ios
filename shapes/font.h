@@ -17,10 +17,6 @@
 #ifndef FONT_H
 #define FONT_H
 
-#ifdef ALPHA_LINUX_CXX
-#  include "../alpha_kludges.h"
-#endif
-
 #include "hash_utils.h"
 
 class Image_buffer8;

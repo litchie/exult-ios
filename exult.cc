@@ -24,7 +24,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include "alpha_kludges.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdlib>
 #  include <cctype>

@@ -26,7 +26,9 @@ occasionally by Nick Lamb njl195@zepler.org.uk."
 It has been partly rewritten to use an SDL surface as input.
 */
 
-#include "../alpha_kludges.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdlib>

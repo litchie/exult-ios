@@ -102,7 +102,9 @@ tools/expack.exe : tools/expack.o $(FILE_OBJS)
 	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) $(LIBS) -mconsole
 
 data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
-	tools/expack -c data/exult.flx $(EXULT_FLX_OBJECTS)
+	cd data
+	../tools/expack -i flx.in
+	cd ..
 
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres win32/exultico.rc exultico.o

@@ -19,11 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef	_EXULT_TYPES_H_
 #define	_EXULT_TYPES_H_
 
-#ifdef HAVE_CONFIG_H
-#  include "autoconfig.h"
-#endif
-
-
 #ifndef EX_TYPE_INT8
 #  define EX_TYPE_INT8 char /* guaranteed by ISO */
 #endif

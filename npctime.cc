@@ -5,7 +5,9 @@
  **	Written: 8/4/00 - JSF
  **/
 
-#include "alpha_kludges.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include "npctime.h"
 #include "gamewin.h"

@@ -5,7 +5,9 @@
  **	Written: 6/14/00 - JSF
  **/
 
-#include "../alpha_kludges.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include "SDL_video.h"
 #ifndef ALPHA_LINUX_CXX

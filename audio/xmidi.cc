@@ -16,7 +16,9 @@
  *
  */
 
-#include "../alpha_kludges.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifndef ALPHA_LINUX_CXX
 #  include <unistd.h>

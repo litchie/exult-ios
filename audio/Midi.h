@@ -24,12 +24,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma interface
 #endif
 
-#ifdef HAVE_CONFIG_H
-#  include "../autoconfig.h"
-#endif
-
-#include "alpha_kludges.h"
-
 #include <vector>
 #include "Mixer.h"
 #include "xmidi.h"
