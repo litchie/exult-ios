@@ -71,7 +71,7 @@ public:
 private:
 	Usecode_machine *usecode;	// Drives game plot.
 	Game_mode mode;			// Mode we're in.
-	bool combat;		// 1 if in combat.
+	bool combat;			// true if in combat.
 	Time_queue *tqueue;		// Time-based queue.
 	Game_clock clock;		// Keeps track of time.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
@@ -83,12 +83,12 @@ private:
 	Rectangle avatar_face;		// Area take by Avatar in conversation.
 	Rectangle *conv_choices;	// Choices during a conversation.
 	unsigned long render_seq;	// For marking rendered objects.
-	bool painted;		// 1 if we updated image buffer.
-	bool focus;		// Do we have focus?
+	bool painted;			// true if we updated image buffer.
+	bool focus;			// Do we have focus?
 	unsigned char poison_pixel;	// For rendering poisoned actors.
 	unsigned char protect_pixel;	// For rendering protected actors.
-	bool teleported;	// 1 if just teleported.
-	bool in_dungeon;	// 1 if inside a dungeon.
+	bool teleported;		// true if just teleported.
+	bool in_dungeon;		// true if inside a dungeon.
 	std::ifstream chunks;		// "u7chunks" file.
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
@@ -119,7 +119,7 @@ private:
 	int brightness;			// Palette brightness.
 	int user_brightness;		// User's setting for brightness.
 	bool fades_enabled;
-	bool faded_out;			// 1 if faded palette to black.
+	bool faded_out;			// true if faded palette to black.
 	unsigned long special_light;	// Game minute when light spell ends.
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
@@ -145,7 +145,7 @@ private:
 	int paint_map(int x, int y, int w, int h);
 public:
 	int skip_lift;			// Skip objects with lift > 0.
-	int paint_eggs;
+	bool paint_eggs;
 	int debug;
 	Game_window(int width = 0, int height = 0, int scale = 1);
 	~Game_window();
@@ -198,7 +198,7 @@ public:
 	bool get_fades_enabled() const { return fades_enabled; }
 	void set_palette()		// Set for time, flags, lighting.
 		{ clock.set_palette(); }
-	int is_chunk_read(int cx, int cy)
+	bool is_chunk_read(int cx, int cy)
 		{ return schunk_read[12*(cy/chunks_per_schunk) +
 						cx/chunks_per_schunk]; }
 					// Get/create objs. list for a chunk.
@@ -219,35 +219,35 @@ public:
 	inline Barge_object *get_moving_barge() const
 		{ return moving_barge; }
 	void set_moving_barge(Barge_object *b);
-	int is_moving();		// Is Avatar (or barge) moving?
+	bool is_moving();		// Is Avatar (or barge) moving?
 	inline Main_actor *get_main_actor() const
 		{ return main_actor; }
-	int is_main_actor_inside()
+	bool is_main_actor_inside()
 		{ return skip_above_actor < 31 ; }
 					// Returns if skip_above_actor changed!
-	int set_above_main_actor(int lift)
+	bool set_above_main_actor(int lift)
 		{
 		if (skip_above_actor == lift) return false;
 		skip_above_actor = lift;
 		return true;
 		}
-	inline int set_in_dungeon(int tf)
+	inline bool set_in_dungeon(int tf)
 		{ 
 		if (in_dungeon == tf)
 			return false;
 		in_dungeon = tf;
 		return true;
 		}
-	inline int is_in_dungeon()
+	inline bool is_in_dungeon()
 		{ return in_dungeon; }
-	inline int is_special_light()	// Light spell in effect?
+	inline bool is_special_light()	// Light spell in effect?
 		{ return special_light != 0; }
 					// Light spell.
 	void add_special_light(int minutes);
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < num_npcs) ? 
 				npcs[npc_num] : 0; }
-	inline int was_teleported()
+	inline bool was_teleported()
 		{ return teleported; }
 					// Find monster info. for shape.
 	Monster_info *get_monster_info(int shapenum);
@@ -592,9 +592,9 @@ public:
 	int write_npcs();		// Write them back.
 	void read_schedules();		// Read npc's schedules.
 					// Start dragging.
-	int start_dragging(int x, int y);
-	int drag(int x, int y);		// During dragging.
-	bool drop_dragged(int x, int y, int moved);// Done dragging.
+	bool start_dragging(int x, int y);
+	bool drag(int x, int y);	// During dragging.
+	bool drop_dragged(int x, int y, bool moved);// Done dragging.
 					// Paint text using "fonts.vga".
 	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
 		int h, int vert_lead = 0, int pbreak = 0);
