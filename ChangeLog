@@ -1,3 +1,7 @@
+2001-03-12  Wilem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Makefile.*: added new art to dependencies
+	* Makefile.cygwin, files/utils.cc, cheat_screen.cc, configure.in: updated for Cygwin
+
 2001-03-12  Max Horn  <max@quendi.de>
 	* docs/faq/: added directory
 	* docs/faq/exult_faq.xml: actual FAQ source (thanks to Dominik Reichardt!)

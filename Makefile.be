@@ -81,6 +81,9 @@ EXULT_FLX_OBJECTS = \
 	data/caddellite_helmet.shp \
 	data/great_dagger.shp \
 	data/magic_boomerang.shp \
+	data/gorget.shp \
+	data/magicgorget.shp \
+	data/cleaver.shp \
 	data/flx.in
 
 $(EXEC) : Makefile data/exult.flx $(OBJS) beos/exult.rsrc
