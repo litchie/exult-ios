@@ -1,9 +1,28 @@
+/*
+ *  Copyright (C) 2001-2002  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
 #ifdef HAVE_CONFIG_H
 	#include <config.h>
 #endif
 
 #include "opcodes.h"
 #include "files/utils.h"
+#include "exceptions.h"
 #include <cstdlib>
 #include <iomanip>
 #include <fstream>
@@ -17,6 +36,14 @@
 	#endif
 #endif
 
+using std::vector;
+using std::ifstream;
+using std::cout;
+using std::endl;
+using std::string;
+using std::cerr;
+using std::ends;
+
 #define MAX_NO_OPCODES 512
 std::vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
 std::vector<std::pair<unsigned int, unsigned int> > opcode_jumps;
@@ -29,7 +56,7 @@ std::vector<std::string> str2vec(const std::string &s);
 /* constructs the static usecode tables from other include files in the /exult hierachy,
    static by compilation.
 */
-void init_static_usecodetables(const Configuration &config)
+void init_static_usecodetables()
 {
 	#define	USECODE_INTRINSIC_PTR(NAME)	std::string(__STRING(NAME))
 	std::string bgut[] = 
@@ -66,11 +93,12 @@ void init_usecodetables(const Configuration &config, bool noconf, bool verbose)
 
 	std::ifstream file;
 
-	U7open(file, ucxtroot.c_str(), true);
-	
-	if(file.fail())
+	try
 	{
-		std::cout << "error. could not locate " << ucxtroot << ". exiting." << std::endl;
+		U7open(file, ucxtroot.c_str(), true);
+	} catch (const file_open_exception& e)
+	{
+		cerr << e.what() << ". exiting." << endl;
 		exit(1);
 	}
 	

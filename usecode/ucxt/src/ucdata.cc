@@ -1,3 +1,21 @@
+/*
+ *  Copyright (C) 2001-2002  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
@@ -12,6 +30,13 @@
 #include "opcodes.h"
 #include "files/utils.h"
 
+using std::cout;
+using std::setw;
+using std::endl;
+using std::vector;
+using std::setbase;
+using std::setfill;
+
 UCData::UCData() : _noconf(false), _rawops(false),
                    _autocomment(false), _uselesscomment(false),
                    _verbose(false), _ucdebug(false),
@@ -20,8 +45,7 @@ UCData::UCData() : _noconf(false), _rawops(false),
                    _output_ucz(false), _output_flag(false),
                    _mode_all(false), _mode_dis(false),
                    _search_opcode(-1),
-                   _search_intrinsic(-1),
-                   _search_func(-1)
+                   _search_intrinsic(-1)
 {
 }
 
@@ -62,13 +86,14 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 		{
 			char* stopstr;
 			/* Disassembly mode */
-			_search_func = strtoul(argv[i], &stopstr, 16);
+			unsigned int search_func = strtoul(argv[i], &stopstr, 16);
 			if( stopstr - argv[i] < (int)strlen(argv[i]) )
 				/* Invalid number */
-				_search_func = (unsigned long) -1;
+			{ /* Do Nothing */ }
 			else
 			{
-				if(verbose()) cout << "Disassembling Function: " << _search_func << endl;
+				search_funcs.push_back(search_func);
+				if(verbose()) cout << "Disassembling Function: " << search_func << endl;
 				_mode_dis = true;
 			}
 		}
@@ -101,16 +126,20 @@ void UCData::disassamble()
 {
 	load_funcs();
 
-	if(verbose()) cout << "Looking for function number " << std::setw(8) << _search_func << endl << endl;
-
+	if(verbose())
+	{
+		for(vector<unsigned int>::iterator i=search_funcs.begin(); i!=search_funcs.end(); i++)
+			cout << "Looking for function number " << setw(8) << (*i) << endl;
+		cout << endl;
+	}
+	
 	if(output_list())
 		cout << "Function       offset    size  data  code" << (ucdebug() ? " funcname" : "") << endl;
 
 	bool _foundfunc=false; //did we find and print the function?
 	for(unsigned int i=0; i<_funcs.size(); i++)
 	{
-		//cout << _funcs[i]->_funcid << "\t" << _search_func << endl;
-		if(mode_all() || (mode_dis() && (_funcs[i]->_funcid==_search_func)))
+		if(mode_all() || (mode_dis() && count(search_funcs.begin(), search_funcs.end(), _funcs[i]->_funcid)))
 		{
 			_foundfunc=true;
 			bool _func_printed=false; // to test if we've actually printed a function ouput
@@ -137,13 +166,15 @@ void UCData::disassamble()
 	if(!_foundfunc)
 		printf("Function not found.\n");
 
-	if( _search_func == -1 )
+	if(search_funcs.size()==0)
 	{
 		printf("Functions: %d\n", _funcs.size());
 	}
 
 	if(output_list())
-	  cout << endl << "Functions: " << std::setbase(10) << _funcs.size() << std::setbase(16) << endl;
+		cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
+	
+	cout << endl;
 }
 
 /* FIXME: Need to remove the hard coded opcode numbers (0x42 and 0x43) and replace them
@@ -152,75 +183,74 @@ void UCData::dump_flags(ostream &o)
 {
 	if(!(game_bg() || game_si()))
 	{
-		cout << "This option only works for U7:BG and U7:SI" << endl;
+		o << "This option only works for U7:BG and U7:SI" << endl;
 		return;
 	}
-  load_funcs();
+	load_funcs();
+	
+	vector<FlagData> flags;
 
-  // don't need to delete "flags" the pointers are already owned.
-  vector<FlagData> flags;
-
-  // *BLEH* ugly!
-  for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); func++)
-    for(vector<UCc>::iterator op=(*func)->_opcodes.begin(); op!=(*func)->_opcodes.end(); op++)
-    {
-    	if(op->_id==0x42)
-    		flags.push_back(FlagData((*func)->_funcid, op->_offset, op->_params_parsed[0], FlagData::GETFLAG));
-		else if(op->_id==0x43)
-    		flags.push_back(FlagData((*func)->_funcid, op->_offset, op->_params_parsed[0], FlagData::SETFLAG));
-	}
+	// *BLEH* ugly!
+	for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); func++)
+		for(vector<UCc>::iterator op=(*func)->_opcodes.begin(); op!=(*func)->_opcodes.end(); op++)
+		{
+			if(op->_id==0x42)
+				flags.push_back(FlagData((*func)->_funcid, op->_offset, op->_params_parsed[0], FlagData::GETFLAG));
+			else if(op->_id==0x43)
+				flags.push_back(FlagData((*func)->_funcid, op->_offset, op->_params_parsed[0], FlagData::SETFLAG));
+		}
 		
-	o << "Number of flags found: " << std::setbase(10) << flags.size() << endl << endl;
+	o << "Number of flags found: " << setbase(10) << flags.size() << endl << endl;
 
-  // output per function
-  {
-    sort(flags.begin(), flags.end(), SortFlagDataLessFunc());
-
-    cout << std::setbase(16) << std::setfill('0');
-    int currfunc = -1;
-    for(unsigned int i=0; i<flags.size(); i++)
-    {
-      if(currfunc!=flags[i].func())
-      {
-        cout << "Function: " << std::setw(4) << flags[i].func() << endl;
-        currfunc=flags[i].func();
-        cout << "              flag  offset" << endl;
-      }
-
-      cout << "        ";
-      if(flags[i].access()==FlagData::GETFLAG)
-        cout << "push  ";
-      else if(flags[i].access()==FlagData::SETFLAG)
-        cout << "pop   ";
-      cout << std::setw(4) << flags[i].flag()   << "  "
-           << std::setw(4) << flags[i].offset() << endl;
-    }
-  }
-  // output per flag
-  {
-    sort(flags.begin(), flags.end(), SortFlagDataLessFlag());
-
-    cout << std::setbase(16) << std::setfill('0');
-    unsigned int currflag = (unsigned int)-1;
-    for(unsigned int i=0; i<flags.size(); i++)
-    {
-      if(currflag!=flags[i].flag())
-      {
-        cout << "Flag: " << std::setw(4) << flags[i].flag() << endl;
-        currflag=flags[i].flag();
-        cout << "              func  offset" << endl;
-      }
-
-      cout << "        ";
-      if(flags[i].access()==FlagData::GETFLAG)
-        cout << "push  ";
-      else if(flags[i].access()==FlagData::SETFLAG)
-        cout << "pop   ";
-      cout << std::setw(4) << flags[i].func()   << "  "
-           << std::setw(4) << flags[i].offset() << endl;
-    }
-  }
-  // don't need to delete "flags" the pointers are already owned.
+	// output per function
+	{
+		sort(flags.begin(), flags.end(), SortFlagDataLessFunc());
+		
+		o << setbase(16) << setfill('0');
+		int currfunc = -1;
+		for(unsigned int i=0; i<flags.size(); i++)
+		{
+			if(currfunc!=flags[i].func())
+			{
+				o << "Function: " << setw(4) << flags[i].func() << endl;
+				currfunc=flags[i].func();
+				o << "              flag  offset" << endl;
+			}
+			
+			o << "        ";
+			if(flags[i].access()==FlagData::GETFLAG)
+				o << "push  ";
+			else if(flags[i].access()==FlagData::SETFLAG)
+				o << "pop   ";
+			o << setw(4) << flags[i].flag()   << "  "
+			  << setw(4) << flags[i].offset() << endl;
+		}
+	}
+	
+	// output per flag
+	{
+		sort(flags.begin(), flags.end(), SortFlagDataLessFlag());
+		
+		o << setbase(16) << setfill('0');
+		unsigned int currflag = (unsigned int)-1;
+		for(unsigned int i=0; i<flags.size(); i++)
+		{
+			if(currflag!=flags[i].flag())
+			{
+				o << "Flag: " << setw(4) << flags[i].flag() << endl;
+				currflag=flags[i].flag();
+				o << "              func  offset" << endl;
+			}
+		
+		o << "        ";
+		if(flags[i].access()==FlagData::GETFLAG)
+			o << "push  ";
+		else if(flags[i].access()==FlagData::SETFLAG)
+			o << "pop   ";
+		o << setw(4) << flags[i].func()   << "  "
+		  << setw(4) << flags[i].offset() << endl;
+		}
+	}
 }
 
 void UCData::file_open(const string &filename)
@@ -271,7 +301,7 @@ void UCData::output_extern_header(ostream &o)
 
 	for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); func++)
 	{
-		(*func)->output_ucs_funcname(o, _funcmap, (*func)->_funcid, (*func)->_num_args, (*func)->return_var) << endl;
+		(*func)->output_ucs_funcname(o << "extern ", _funcmap, (*func)->_funcid, (*func)->_num_args, (*func)->return_var) << ';' << endl;
 
 	}
 }
