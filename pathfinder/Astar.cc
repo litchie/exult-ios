@@ -33,7 +33,7 @@ int Astar::NewPath(Tile_coord s, Tile_coord d,
 	delete [] path;			// Clear out old path, if there.
 	path = Find_path(s, d, tileclassifier);
 	next_index = 0;
-	if (path != 0)			// Failed?  Put in fake.
+	if (path == 0)			// Failed?  Put in fake.
 		{
 		path = new Tile_coord(-1, -1, -1);
 		return (0);
