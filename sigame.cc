@@ -822,22 +822,27 @@ bool SI_Game::new_game(Vga_file &shapes)
 		//pal.load("static/intropal.dat",6);
 		SDL_Event event;
 		bool editing = true;
+		bool redraw = true;
 		bool ok = true;
 		do {
-			win->fill8(0,gwin->get_width(),90,0,menuy);
-			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
-			gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
-			gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(0x16+sex,0));
-			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
-			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
-			if(selected==0)
-				sprintf(disp_name, "%s_", npc_name);
-			else
-				sprintf(disp_name, "%s", npc_name);
-			gwin->paint_text(MAINSHP_FONT1, disp_name, topx+50,menuy+10);
+     		        if (redraw) {
+			        win->fill8(0,gwin->get_width(),90,0,menuy);
+				gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
+				gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
+				gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(0x16+sex,0));
+				gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
+				gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
+				if(selected==0)
+				        sprintf(disp_name, "%s_", npc_name);
+				else
+				        sprintf(disp_name, "%s", npc_name);
+				gwin->paint_text(MAINSHP_FONT1, disp_name, topx+50,menuy+10);
+				redraw = false;
+			}
 			pal.apply();
 			SDL_WaitEvent(&event);
 			if(event.type==SDL_KEYDOWN) {
+ 			        redraw = true;
 				switch(event.key.keysym.sym) {
 				case SDLK_SPACE:
 					if(selected==0)
