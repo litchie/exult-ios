@@ -297,9 +297,6 @@ void MyMidiPlayer::set_music_conversion(int conv)
 	case XMIDI_CONVERT_MT32_TO_GS127:
 		config->set("config/audio/midi/convert","gs127",true);
 		break;
-	case XMIDI_CONVERT_MT32_TO_GS127DRUM:
-		config->set("config/audio/midi/convert","gs127drum",true);
-		break;
 	default:
 		config->set("config/audio/midi/convert","gm",true);
 		break;
@@ -351,7 +348,10 @@ bool MyMidiPlayer::init_device(void)
 	else if (s == "gs127")
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS127;
 	else if (s == "gs127drum")
-		music_conversion = XMIDI_CONVERT_MT32_TO_GS127DRUM;
+	{
+		music_conversion = XMIDI_CONVERT_MT32_TO_GS;
+		config->set("config/audio/midi/convert","gs",true);
+	}
 	else
 	{
 		music_conversion = XMIDI_CONVERT_MT32_TO_GM;

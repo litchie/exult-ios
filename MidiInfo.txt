@@ -52,14 +52,6 @@ gs127 - This option is for midi devices that have a MT32 patch bank installed
         in Bank 127. Some GS implimentation have this, some don't. Only use
         this if you know that you have a MT32 implimentation on Bank 127.
 
-gs127drum - This option is a combination of gs and gs127. Some implimentations
-            will include a MT32 percussive set on Bank 127, however there isn't
-            a MT32 melodic set. This option will allow for conversion of the
-            melodic notes to GS patches and will set the percussive notes to
-            Bank 127. Check to see if your midi device has a CM-64/32L
-            percussive set installed on Bank 127 before using this option. This
-            option is only valid for music conversion.
-
 none (music) - This option will output the music with nothing changed. Because
                the mapping will be for MT32s you should only use this option if
                you have a MT32 compatible device or you have replaced the
@@ -72,9 +64,8 @@ none (sfx) - This option will output the sfx with some patches in the standard
 The order of music conversion quality is:
 1) none
 2) gs127
-3) gs127drum
-4) gs
-5) gm
+3) gs
+4) gm
 
 However, none shouldn't really be used there is currently no equivilant SFX
 conversion option. In the future however, sampled SFX will become avaliable,
