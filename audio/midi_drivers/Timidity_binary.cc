@@ -141,7 +141,9 @@ void	Timidity_binary::player(void)
 #ifndef DEBUG
 	s+=" 2>/dev/null";	// Swallow extraneous output if !debug
 #endif
+	__sighandler_t oldhandler=signal(SIGPIPE,SIG_DFL);
 	FILE *data=popen(s.c_str(),"r");
+	signal(SIGPIPE,oldhandler);
 	if(!data)
 		return;
 	char	buf[1024];

@@ -64,6 +64,11 @@ Audio::~Audio()
 {
 	if(mixer)
 		{
+		cancel_streams();
+		cancel_raw();
+		}
+	if(mixer)
+		{
 		delete mixer;
 		mixer=0;
 		}

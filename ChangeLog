@@ -1,3 +1,7 @@
+2000-12-03  Dancer Vesperman <dancer@users.sourceforge.net>
+	* Clean up audio-streams before terminating.
+	* Discovered a bug with termination of timidity. SIGPIPE is getting masked out. NOT FIXED YET. popen() looks like the wrong way to go.
+
 2000-12-02  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
 	* File_gump.cc: fixed initial state of sound buttons
 
