@@ -1,3 +1,8 @@
+2002-01-07  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* usecode/ucxt/include/ucc.h, usecode/ucxt/include/ucdata.h, usecode/ucxt/include/ucfunc.h, usecode/ucxt/src/ucdata.cc, usecode/ucxt/src/ucdump.cc, usecode/ucxt/src/ucfunc.cc: Half-assed conversion to standard C++ so that code compiles.
+	* WARNING: usecode/ucxt/src/ucfunc.cc: 830 relied on the return-value of std::string::insert, which DOES NOT HAVE ONE, post-standardisation. Behaviour may have changed.
+
 2002-01-07  Dominik Reichardt <gigdr@tesionmail.de>
 	* FAQ,ReadMe updated
 	* docs/FAQ.html and ReadMe.html updated

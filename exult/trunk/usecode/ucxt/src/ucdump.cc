@@ -49,7 +49,7 @@ UCData uc;
 int main(int argc, char** argv)
 {
 	// Tends to make life easier
-	cout << setfill('0') << setbase(16);
+	cout << std::setfill('0') << std::setbase(16);
 	cout.setf(ios::uppercase);
 
 	// get the parameters
@@ -80,8 +80,8 @@ int main(int argc, char** argv)
 	// ICK! Don't try this at home kids...
 	// done because for some reason it started crashing upon piping or redirection to file... wierd.
 	// yes, it's a hack to fix an eldritch bug I can't find... it seems appropriate
-	ofstream outputstream;
-	streambuf *coutbuf=0;
+	std::ofstream outputstream;
+	std::streambuf *coutbuf=0;
 	if(uc.output_redirect().size())
 	{
 		U7open(outputstream, uc.output_redirect().c_str(), false);
@@ -189,7 +189,7 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 	}
 	else
 	{
-		cerr << "Error: uc.game() was not set to GAME_U7 or GAME_SI this can't happen" << endl;
+		std::cerr << "Error: uc.game() was not set to GAME_U7 or GAME_SI this can't happen" << endl;
 		assert(false); exit(1); // just incase someone decides to compile without asserts;
 	}
 	
