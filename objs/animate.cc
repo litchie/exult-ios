@@ -399,6 +399,9 @@ int Frame_animator::get_framenum()
 	unsigned int ticks = Game::get_ticks();
 	int framenum = 0;
 
+	if (last_shape != obj->get_shapenum() || last_frame != obj->get_framenum())
+		Initialize();
+
 	Game_window *gwin = Game_window::get_game_window();
 
 	bool dirty_first = gwin->add_dirty(obj);
@@ -442,9 +445,6 @@ void Frame_animator::handle_event
 	Game_window *gwin = (Game_window *) udata;
 
 	bool dirty_first = gwin->add_dirty(obj);
-
-	if (last_shape != obj->get_shapenum() || last_frame != obj->get_framenum())
-		Initialize();
 
 	int framenum = get_framenum();
 
