@@ -145,12 +145,12 @@ else		return ELSE;
 return		return RETURN;
 while		return WHILE;
 for		return FOR;
-in		return IN;
+in		return UCC_IN;
 with		return WITH;
 to		return TO;
 var		return VAR;
-int		return INT;
-const		return CONST;
+int		return UCC_INT;
+const		return UCC_CONST;
 string		return STRING;
 enum		return ENUM;
 extern		return EXTERN;
@@ -239,7 +239,7 @@ se		return SE;
 "!="			{ return NEQUALS; }
 "<="			{ return LTEQUALS; }
 ">="			{ return GTEQUALS; }
-"->"			{ return POINTS; }
+"->"			{ return UCC_POINTS; }
 
 "# "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 2); }
 "#line "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 6); }
