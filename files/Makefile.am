@@ -3,6 +3,8 @@ INCLUDES = -I.. $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(
 lib_LTLIBRARIES = libu7file.la
 
 libu7file_la_SOURCES =	\
+	Flat.cc		\
+	Flat.h		\
 	Flex.cc		\
 	Flex.h		\
 	Table.cc	\

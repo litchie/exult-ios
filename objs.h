@@ -47,6 +47,12 @@ class Egg_object;
 class PathFinder;
 class Actor;
 
+enum Exult_Game {
+	BLACK_GATE,
+	SERPENT_ISLE
+};
+
+
 /*
  *	Sizes:
  */

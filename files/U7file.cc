@@ -2,6 +2,7 @@
 #include "Flex.h"
 #include "IFF.h"
 #include "Table.h"
+#include "Flat.h"
 #include <cstdio>
 #include <iostream>
 #include "utils.h"
@@ -39,6 +40,7 @@ U7file  *U7FileManager::get_file_object(const string &s)
 	TRY_FILE_TYPE(uf,IFF);
 	TRY_FILE_TYPE(uf,Flex);
 	TRY_FILE_TYPE(uf,Table);
+	TRY_FILE_TYPE(uf,Flat);
 
 	return uf;
 }

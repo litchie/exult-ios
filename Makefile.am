@@ -22,6 +22,7 @@ exult_SOURCES =	\
 	autoarray.h	\
 	barge.cc	\
 	barge.h		\
+	bggame.cc	\
 	bodies.cc	\
 	bodies.h	\
 	citerate.h	\
@@ -74,11 +75,12 @@ exult_SOURCES =	\
 	segfile.cc	\
 	segfile.h	\
 	shapeid.h	\
+	sigame.cc	\
 	spells.cc	\
 	spells.h	\
 	tiles.h		\
-	titles.cc	\
-	titles.h	\
+	game.cc	\
+	game.h	\
 	tqueue.cc	\
 	tqueue.h	\
 	usecode.cc	\
