@@ -159,10 +159,10 @@ bool	Configuration::read_config_file(const string &input_filename)
 	if(ifile.fail())
 		return false;
 
-    std::ostringstream sbuf;
+	std::ostringstream sbuf;
 
 	// copies the entire contents of the input file into sbuf
-	sbuf << ifile.rdbuf() << ends;
+	sbuf << ifile.rdbuf() << std::ends;
 
 	ifile.close();
 	read_config_string(sbuf.str());

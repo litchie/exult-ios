@@ -437,6 +437,7 @@ bool Game_window::start_dragging
 		return (true);		// Success, so far.
 	delete dragging;
 	dragging = 0;
+	return false;
 	}
 
 /*
