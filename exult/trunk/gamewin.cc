@@ -1072,7 +1072,7 @@ int Game_window::find_objects
 	int actor_lift = main_actor->get_lift();
 	int start = actor_lift > 0 ? -1 : 0;
 					// See what was clicked on.
-	for (int lift = start; lift < 3; lift++)
+	for (int lift = start; lift < 4; lift++)
 		cnt += find_objects(actor_lift + lift, x, y, &list[cnt]);
 //+++++++++Look in gumps.
 	return (cnt);

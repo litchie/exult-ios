@@ -43,6 +43,11 @@ int Game_window::start_dragging
 	if (!cnt)
 		return (0);
 	dragging = found[cnt - 1];	// Store object.
+	if (!dragging->is_dragable())	// Don't want to move walls.
+		{
+		dragging = 0;
+		return (0);
+		}
 	dragging_mousex = x;
 	dragging_mousey = y;
 					// Get coord. where painted.
@@ -105,13 +110,35 @@ void Game_window::drop_dragged
 	drag(x, y);			// Get object to mouse pos.
 //++++++See if dropping on a container or gump. Else...
 					// Find where to drop it.
-//++++++Take lift into account.  add 4*lift?
-	dragging_paintx += tilesize/2;	// Round.
-	dragging_painty += tilesize/2;
-	int cx = chunkx + dragging_paintx/chunksize;
-	int cy = chunky + dragging_painty/chunksize;
-	int tx = (dragging_paintx/tilesize)%tiles_per_chunk;
-	int ty = (dragging_painty/tilesize)%tiles_per_chunk;
+	int max_lift = main_actor->get_lift() + 4;
+	int lift;
+	for (lift = dragging->get_lift(); lift < max_lift; lift++)
+		if (drop(lift))
+			break;
+	if (lift == max_lift)		// Couldn't drop?  Put it back.
+		get_objects(dragging_cx, dragging_cy)->add(dragging);
+	dragging = 0;
+	paint();
+	}
+
+/*
+ *	Try to drop at a given lift.
+ *
+ *	Output:	1 if successful.
+ */
+
+int Game_window::drop
+	(
+	int at_lift
+	)
+	{
+					// Take lift into account & round.
+	int x = dragging_paintx + at_lift*4 + tilesize/2;
+	int y = dragging_painty + at_lift*4 + tilesize/2;
+	int cx = chunkx + x/chunksize;
+	int cy = chunky + y/chunksize;
+	int tx = (x/tilesize)%tiles_per_chunk;
+	int ty = (y/tilesize)%tiles_per_chunk;
 	Chunk_object_list *chunk = get_objects(cx, cy);
 	chunk->setup_cache();		// Be sure cache is set up.
 	int lift;			// Can we put it here?
@@ -120,9 +147,7 @@ void Game_window::drop_dragged
 		dragging->set_lift(lift);
 		dragging->set_shape_pos(tx, ty);
 		chunk->add(dragging);
+		return (1);
 		}
-	else				// Just put it back.
-		get_objects(dragging_cx, dragging_cy)->add(dragging);
-	dragging = 0;
-	paint();
+	return (0);
 	}

@@ -55,7 +55,7 @@ Glyph::~Glyph
 	(
 	)
 	{
-	delete bitmap.bitmap;
+	delete[] (char *) bitmap.bitmap;
 	}
 
 /*
