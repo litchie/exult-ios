@@ -125,6 +125,18 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
+	    <name>connect</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_connect_activate</handler>
+	      <last_modification_time>Sun, 09 Dec 2001 02:50:38 GMT</last_modification_time>
+	    </signal>
+	    <label>_Connect</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
 	    <name>separator1</name>
 	    <right_justify>False</right_justify>
 	  </widget>

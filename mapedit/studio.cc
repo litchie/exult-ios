@@ -98,6 +98,13 @@ on_open_static_activate                (GtkMenuItem     *menuitem,
 }
 
 extern "C" void
+on_connect_activate                    (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->connect_to_server();
+}
+
+extern "C" void
 on_save_map_menu_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -789,6 +796,22 @@ void ExultStudio::run()
 }
 
 /*
+ *	This is called every few seconds to try to reconnect to Exult.
+ */
+
+static gint Reconnect
+	(
+	gpointer data			// ->ExultStudio.
+	)
+	{
+	ExultStudio *studio = (ExultStudio *) data;
+	if (studio->connect_to_server())
+		return 0;		// Cancel timer.  We succeeded.
+	else
+		return 1;
+	}
+
+/*
  *	Input from server is available.
  */
 
@@ -818,6 +841,8 @@ void ExultStudio::read_from_server
 			{
 			gdk_input_remove(server_input_tag);
 			server_input_tag = -1;
+					// Try again every 4 secs.
+			gtk_timeout_add(4000, Reconnect, this);
 			}
 		return;
 		}
@@ -840,13 +865,15 @@ void ExultStudio::read_from_server
 
 /*
  *	Try to connect to the Exult game.
+ *
+ *	Output:	True if succeeded.
  */
-void ExultStudio::connect_to_server
+bool ExultStudio::connect_to_server
 	(
 	)
 	{
 	if (!static_path)
-		return;			// No place to go.
+		return false;		// No place to go.
 	if (server_socket >= 0)		// Close existing socket.
 		{
 		close(server_socket);
@@ -866,14 +893,14 @@ void ExultStudio::connect_to_server
 	if (!pstatic)
 		{
 		cout << "Can't find gamedat for socket" << endl;
-		return;
+		return false;
 		}
 	strcpy(pstatic + 1, "gamedat/exultserver");
 	server_socket = socket(PF_LOCAL, SOCK_STREAM, 0);
 	if (server_socket < 0)
 		{
 		perror("Failed to open map-editor socket");
-		return;
+		return false;
 		}
 					// Set to be non-blocking.
 //	fcntl(server_socket, F_SETFL, 
@@ -886,12 +913,14 @@ void ExultStudio::connect_to_server
 		perror("Socket connect");
 		close(server_socket);
 		server_socket = -1;
+		return false;
 		}
 	else
 		{
 		server_input_tag = gdk_input_add(server_socket,
 			GDK_INPUT_READ, Read_from_server, this);
 		cout << "Connected to server" << endl;
+		return true;
 		}
 	}
 
