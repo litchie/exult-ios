@@ -1,3 +1,7 @@
+2001-10-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* monsters.cc: Slime movement is starting to work.
+
 2001-10-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Makefile.am (exult_SOURCES): Added monsters.cc, monsters.h.

@@ -713,7 +713,9 @@ void Combat_schedule::now_what
 			{
 			int dir = npc->get_direction(opponent);
 			npc->add_dirty(gwin);
-			npc->set_frame(npc->get_dir_framenum(dir,
+//+++++++Got to handle slimes specially.
+			if (npc->get_shapenum() != 529)
+				npc->set_frame(npc->get_dir_framenum(dir,
 							Actor::standing));
 			npc->add_dirty(gwin, 1);
 					// Glass sword?  Only 1 use.
