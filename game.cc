@@ -168,12 +168,16 @@ Game *Game::create_game(Exult_Game mygame)
 		game = 0;
 	}
 
+	// initialize keybinder
+	keybinder = new KeyBinder();
 	d = "config/disk/game/"+gametitle+"/keys";
 	config->value(d.c_str(),keyfilename,"(default)");
-	if (keyfilename == "(default)")
+	if (keyfilename == "(default)") {
 	  config->set(d.c_str(), keyfilename, true);
-	else
+	  keybinder->LoadDefaults();
+	} else {
 	  keybinder->LoadFromFile(keyfilename.c_str());
+	}
 
 	delete[] static_identity;
 	Audio::get_ptr()->Init_sfx();

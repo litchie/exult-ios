@@ -340,16 +340,6 @@ static void Init
 
 	int w, h, sc, sclr;
 
-	// create keybinder with default bindings from exult.flx
-	keybinder = new KeyBinder;
-	try {
-		keybinder->LoadDefaults();
-	} catch (exult_exception e) {
-		cerr << "An exception occured while loading the kay bindings.\n"
-			"Please run 'make install' again, unless you have already done so.";
-		exit(1);
-	}
-
 	// Default resolution is 320x200 with 2x scaling
 	w = 320;
 	h = 200;

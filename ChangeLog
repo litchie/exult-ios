@@ -1,3 +1,8 @@
+2001-06-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* tools/expack.cc: allow NULL entries
+	* keys.cc, ??game.cc, exult.cc, */defaultkeys.txt, */flx.in:
+	moved defaultkeys.txt to exult_bg/si.flx instead of exult.flx
+
 2001-06-21  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* path.cc: fixed memory leaks from A* pathfinder
 
