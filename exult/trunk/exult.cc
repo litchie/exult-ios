@@ -1737,6 +1737,7 @@ static void Drop_dragged_shape
 	int scale = gwin->get_win()->get_scale();
 	if (!cheat.in_map_editor())	// Get into editing mode.
 		cheat.toggle_map_editor();
+	cheat.clear_selected();		// Remove old selected.
 	gwin->get_map()->set_map_modified();
 	x /= scale;			// Watch for scaled window.
 	y /= scale;
@@ -1781,6 +1782,7 @@ static void Drop_dragged_shape
 		for (int lift = edit_lift; lift <= 11; lift++)
 			if (gwin->drop_at_lift(newobj, x, y, lift))
 				{	// Success.
+				cheat.append_selected(newobj);
 				if (!ireg)
 					gwin->get_map()->set_ifix_modified(
 					   newobj->get_cx(), newobj->get_cy());
@@ -1834,6 +1836,7 @@ void Drop_dragged_combo
 	int scale = gwin->get_win()->get_scale();
 	if (!cheat.in_map_editor())	// Get into editing mode.
 		cheat.toggle_map_editor();
+	cheat.clear_selected();		// Remove old selected.
 	x /= scale;			// Watch for scaled window.
 	y /= scale;
 	int at_lift = cheat.get_edit_lift();
@@ -1867,6 +1870,8 @@ void Drop_dragged_combo
 							elem.frame, ireg);
 		newobj->set_invalid();	// Not in world.
 		newobj->move(ntx, nty, ntz);
+					// Add to selection.
+		cheat.append_selected(newobj);
 		}
 	gwin->set_all_dirty();		// For now, until we clear out grid.
 	}

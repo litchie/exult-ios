@@ -121,6 +121,8 @@ const struct Action {
 	  ActionCreateShape, "Create last shape", true, true, NONE, false },
 	{ "DELETE_OBJECT", 
 	  ActionDeleteObject, "Delete object", true, true, NONE, false },
+	{ "DELETE_SELECTED",
+	  ActionDeleteSelected, "Delete selected", true, true, NONE, false },
 	{ "TOGGLE_EGGS",
 	  ActionToggleEggs, "Toggle egg display", true, true, NONE, false },
 	{ "TOGGLE_GOD_MODE",

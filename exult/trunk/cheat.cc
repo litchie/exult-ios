@@ -189,6 +189,7 @@ void Cheat::toggle_map_editor (void) {
 		}
 	else
 		{
+		clear_selected();	// Selection goes away.
 		gwin->center_text("Map Editor Mode Disabled");
 					// Stop time-stop.
 		gwin->set_time_stopped(0);
@@ -360,6 +361,54 @@ void Cheat::set_skip_lift (int skip) const {
 	gwin->paint();
 }
 
+/*
+ *	Add an object to the selected list without checking.
+ */
+void Cheat::append_selected(Game_object *obj) {
+	selected.push_back(obj);
+}
+
+/*
+ *	Toggle the selection of an object.
+ */
+void Cheat::toggle_selected(Game_object *obj) {
+	gwin->add_dirty(obj);
+					// In list?
+	for (vector<Game_object *>::iterator it = selected.begin();
+					it != selected.end(); ++it)
+		if (*it == obj)
+			{		// Yes, so remove it.
+			selected.erase(it);
+			return;
+			}
+	selected.push_back(obj);	// No, so add it.
+}
+
+/*
+ *	Clear out selection.
+ */
+void Cheat::clear_selected() {
+	if (selected.empty())
+		return;
+	for (vector<Game_object *>::iterator it = selected.begin();
+					it != selected.end(); ++it)
+		gwin->add_dirty(*it);
+	selected.clear();
+}
+
+/*
+ *	Delete all selected objects.
+ */
+void Cheat::delete_selected() {
+	while (!selected.empty())
+		{
+		Game_object *obj = selected.back();
+		selected.pop_back();
+		gwin->add_dirty(obj);
+		obj->remove_this();
+		}
+}
+
 void Cheat::map_teleport (void) const {
 	if (!enabled) return;
 
@@ -446,7 +495,7 @@ void Cheat::create_last_shape (void) const {
 		gwin->center_text("Can only create from 'shapes.vga'");
 }
 
-void Cheat::delete_object (void) const {
+void Cheat::delete_object (void) {
 	if (!enabled) return;
 
 	int x, y;
@@ -463,6 +512,7 @@ void Cheat::delete_object (void) const {
 	}
 
 	if (obj) {
+		clear_selected();	// Unselect all.
 		obj->remove_this();
 		gwin->center_text("Object deleted");
 		gwin->paint();
