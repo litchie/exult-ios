@@ -12,12 +12,12 @@ $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/s
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw automatically defines WIN32
-CPPFLAGS=-DVERSION=\"0.99cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
+CPPFLAGS=-DVERSION=\"1.1.0cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I. -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/tools -I$(SRC) -I$(SRC)/conf -I$(SRC)/usecode \
 	-I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -DHAVE_PNG_H
 	
-CXXFLAGS=-O2 -Wno-long-long
+CXXFLAGS=-O2 -Wno-long-long -DHAVE_SSTREAM
 CXX=g++
 
 LFLAGS=-mwindows
