@@ -30,6 +30,7 @@ private:
 	GtkWidget *widget;
 protected:
 	Shape_group *group;		// Non-null to use filter.
+	GtkWidget *popup;		// Popup menu in draw area.
 	void set_widget(GtkWidget *w);
 public:
 	Object_browser(Shape_group *grp = 0);
@@ -39,8 +40,18 @@ public:
 	Shape_group *get_group()
 		{ return group; }
 	virtual void render() = 0;
+					// Blit onto screen.
+	virtual void show(int x, int y, int w, int h) = 0;
+	virtual void show() = 0;
+	virtual int get_selected_id()
+		{ return -1; }
 	virtual bool server_response(int id, unsigned char *data, int datalen);
 	virtual void end_terrain_editing();
+					// Menu items:
+	static void on_shapes_popup_add2group_activate(
+					GtkMenuItem *item, gpointer udata);
+					// Add 'Add to group...' submenu.
+	void add_group_submenu(GtkWidget *popup);
 };
 
 #endif

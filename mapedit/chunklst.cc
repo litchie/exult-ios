@@ -44,6 +44,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapeid.h"
 #include "studio.h"
 #include "utils.h"
+#include "shapegroup.h"
 
 #include <iosfwd>
 
@@ -55,10 +56,27 @@ const int border = 2;			// Border at bottom, sides of each
 					//   chunk.
 
 /*
+ *	Set up popup menu for chunk browser.
+ *
+ *	Output:	->popup menu created.
+ */
+
+static GtkWidget *Create_browser_popup
+	(
+	Chunk_chooser *chooser
+	)
+	{
+					// Create popup menu.
+	GtkWidget *popup = gtk_menu_new();
+	chooser->add_group_submenu(popup);
+	return popup;
+	}
+
+/*
  *	Blit onto screen.
  */
 
-inline void Chunk_chooser::show
+void Chunk_chooser::show
 	(
 	int x, int y, int w, int h	// Area to blit.
 	)
@@ -117,17 +135,20 @@ void Chunk_chooser::render
 	info_cnt = 0;			// Count them.
 					// Clear window first.
 	iwin->fill8(0);			// ++++Which color?
-	int chunknum = index0;
+	int index = index0;
 					// 16x16 tiles, each 8x8 pixels.
 	const int chunkw = 128, chunkh = 128;
+	int total_cnt = get_count();
 	int y = border;
-	while (chunknum < num_chunks && y + chunkh + border <= winh)
+					// Show bottom if at least 1/2 vis.
+	while (index < total_cnt && y + chunkh/2 + border <= winh)
 		{
 		int x = border;
-		while (chunknum < num_chunks && x + chunkw + border <= winw)
+		int cliph = y + chunkh <= winh ? chunkh : (winh - y);
+		while (index < total_cnt && x + chunkw + border <= winw)
 			{
-			iwin->set_clip(x, y, chunkw, chunkh);
-//			iwin->set_clip(0, 0, winw, winh);
+			iwin->set_clip(x, y, chunkw, cliph);
+			int chunknum = group ? (*group)[index] : index;
 			render_chunk(chunknum, x, y);
 			iwin->clear_clip();
 					// Store info. about where drawn.
@@ -136,7 +157,7 @@ void Chunk_chooser::render
 						// Found the selected chunk.
 				new_selected = info_cnt;
 			info_cnt++;
-			chunknum++;		// Next chunk.
+			index++;		// Next chunk.
 			x += chunkw + border;
 			}
 		y += chunkh + border;
@@ -222,6 +243,8 @@ void Chunk_chooser::set_chunk
 		}
 	if (new_num_chunks != num_chunks)
 		{			// Update total #.
+		if (new_num_chunks > num_chunks)
+			chunklist.resize(new_num_chunks);
 		num_chunks = new_num_chunks;
 		GtkAdjustment *adj = 
 			gtk_range_get_adjustment(GTK_RANGE(chunk_scroll));
@@ -261,6 +284,17 @@ void Chunk_chooser::render_chunk
 		}
 	}
 	
+/*
+ *	Get # shapes we can display.
+ */
+
+int Chunk_chooser::get_count
+	(
+	)
+	{
+	return group ? group->size() : num_chunks;
+	}
+
 /*
  *	Configure the viewing window.
  */
@@ -370,8 +404,8 @@ gint Chunk_chooser::mouse_press
 		if (chooser->info[i].box.has_point(
 					(int) event->x, (int) event->y))
 			{		// Found the box?
-			if (i == old_selected)
-				return TRUE;
+//			if (i == old_selected)
+//				return TRUE;
 					// Indicate we can dra.
 #ifdef WIN32
 // Here, we have to override GTK+'s Drag and Drop, which is non-OLE and
@@ -399,6 +433,16 @@ gint Chunk_chooser::mouse_press
 				(*chooser->sel_changed)();
 			break;
 			}
+	if (event->button == 3 && chooser->selected >= 0)
+		{
+					// Clean out old.
+		if (chooser->popup)
+			gtk_widget_destroy(chooser->popup);
+		GtkWidget *popup = Create_browser_popup(chooser);
+		chooser->popup = popup;
+		gtk_menu_popup(GTK_MENU(popup), 0, 0, 0, 0, event->button,
+							event->time);
+		}
 	return (TRUE);
 	}
 
@@ -523,8 +567,9 @@ void Chunk_chooser::scroll
 	int newindex			// Abs. index of leftmost to show.
 	)
 	{
+	int total = get_count();
 	if (index0 < newindex)	// Going forwards?
-		index0 = newindex < num_chunks ? newindex : num_chunks;
+		index0 = newindex < total ? newindex : total;
 	else if (index0 > newindex)	// Backwards?
 		index0 = newindex >= 0 ? newindex : 0;
 	render();
@@ -648,6 +693,15 @@ GtkWidget *Chunk_chooser::create_controls
 	gtk_widget_show (loc_chunk_up);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), loc_chunk_up);
 	GTK_WIDGET_SET_FLAGS (loc_chunk_up, GTK_CAN_DEFAULT);
+	gtk_signal_connect (GTK_OBJECT (loc_chunk_down), "clicked",
+                      GTK_SIGNAL_FUNC (on_loc_chunk_down_clicked),
+                      this);
+	gtk_signal_connect (GTK_OBJECT (loc_chunk_up), "clicked",
+                      GTK_SIGNAL_FUNC (on_loc_chunk_up_clicked),
+                      this);
+	if (group != 0)			// Filtering?  Skip the rest.
+		return topframe;
+
 	/*
 	 *	The 'Insert' controls.
 	 */
@@ -670,6 +724,12 @@ GtkWidget *Chunk_chooser::create_controls
 	gtk_widget_show (insert_chunk_dup);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_chunk_dup);
 	GTK_WIDGET_SET_FLAGS (insert_chunk_dup, GTK_CAN_DEFAULT);
+	gtk_signal_connect (GTK_OBJECT (insert_chunk_new), "clicked",
+			GTK_SIGNAL_FUNC (on_insert_chunk_new_clicked),
+			this);
+	gtk_signal_connect (GTK_OBJECT (insert_chunk_dup), "clicked",
+			GTK_SIGNAL_FUNC (on_insert_chunk_dup_clicked),
+			this);
 	/*
 	 *	The 'Move' controls.
 	 */
@@ -692,25 +752,13 @@ GtkWidget *Chunk_chooser::create_controls
 	gtk_widget_show (move_chunk_up);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_up);
 	GTK_WIDGET_SET_FLAGS (move_chunk_up, GTK_CAN_DEFAULT);
-
-	gtk_signal_connect (GTK_OBJECT (loc_chunk_down), "clicked",
-                      GTK_SIGNAL_FUNC (on_loc_chunk_down_clicked),
-                      this);
-	gtk_signal_connect (GTK_OBJECT (loc_chunk_up), "clicked",
-                      GTK_SIGNAL_FUNC (on_loc_chunk_up_clicked),
-                      this);
-	gtk_signal_connect (GTK_OBJECT (insert_chunk_new), "clicked",
-			GTK_SIGNAL_FUNC (on_insert_chunk_new_clicked),
-			this);
-	gtk_signal_connect (GTK_OBJECT (insert_chunk_dup), "clicked",
-			GTK_SIGNAL_FUNC (on_insert_chunk_dup_clicked),
-			this);
 	gtk_signal_connect (GTK_OBJECT (move_chunk_down), "clicked",
 			GTK_SIGNAL_FUNC (on_move_chunk_down_clicked),
 			this);
 	gtk_signal_connect (GTK_OBJECT (move_chunk_up), "clicked",
 			GTK_SIGNAL_FUNC (on_move_chunk_up_clicked),
 			this);
+
 	return topframe;
 	}
 
@@ -726,17 +774,24 @@ void Chunk_chooser::enable_controls
 		{
 		gtk_widget_set_sensitive(loc_chunk_down, false);
 		gtk_widget_set_sensitive(loc_chunk_up, false);
-		gtk_widget_set_sensitive(insert_chunk_dup, false);
-		gtk_widget_set_sensitive(move_chunk_down, false);
-		gtk_widget_set_sensitive(move_chunk_up, false);
+		if (!group)
+			{
+			gtk_widget_set_sensitive(insert_chunk_dup, false);
+			gtk_widget_set_sensitive(move_chunk_down, false);
+			gtk_widget_set_sensitive(move_chunk_up, false);
+			}
 		return;
 		}
 	gtk_widget_set_sensitive(loc_chunk_down, true);
 	gtk_widget_set_sensitive(loc_chunk_up, true);
-	gtk_widget_set_sensitive(insert_chunk_dup, true);
-	gtk_widget_set_sensitive(move_chunk_down, 
+	if (!group)
+		{
+		gtk_widget_set_sensitive(insert_chunk_dup, true);
+		gtk_widget_set_sensitive(move_chunk_down, 
 					info[selected].num < num_chunks - 1);
-	gtk_widget_set_sensitive(move_chunk_up, info[selected].num > 0);
+		gtk_widget_set_sensitive(move_chunk_up, 
+					info[selected].num > 0);
+		}
 	}
 
 /*

@@ -57,8 +57,7 @@ using std::strlen;
 
 static GtkWidget *Create_browser_popup
 	(
-	Shape_chooser *chooser,
-	Shape_group *group		// Chooser's group, or 0 if none.
+	Shape_chooser *chooser
 	)
 	{
 					// Create popup menu.
@@ -69,36 +68,7 @@ static GtkWidget *Create_browser_popup
 	gtk_signal_connect (GTK_OBJECT (mitem), "activate",
 			GTK_SIGNAL_FUNC(
 		Shape_chooser::on_shapes_popup_info_activate), chooser);
-					// Use our group, or assume we're in
-					//   the main window.
-	Shape_group_file *groups = group ? group->get_file()
-			: ExultStudio::get_instance()->get_cur_groups();
-	int gcnt = groups ? groups->size() : 0;
-	if (gcnt > 1 ||			// Groups besides ours?
-	    (gcnt == 1 && !group))
-		{
-		mitem = gtk_menu_item_new_with_label("Add to group...");
-		gtk_widget_show(mitem);
-		gtk_menu_append(GTK_MENU(popup), mitem);
-		GtkWidget *group_menu = gtk_menu_new();
-		gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), group_menu);
-		for (int i = 0; i < gcnt; i++)
-			{
-			Shape_group *grp = groups->get(i);
-			if (grp == group)
-				continue;// Skip ourself.
-			GtkWidget *gitem = gtk_menu_item_new_with_label(
-							grp->get_name());
-			gtk_widget_show(gitem);
-			gtk_menu_append(GTK_MENU(group_menu), gitem);
-					// Store group on menu item.
-			gtk_object_set_user_data(GTK_OBJECT(gitem), grp);
-			gtk_signal_connect (GTK_OBJECT (gitem), "activate",
-				GTK_SIGNAL_FUNC (
-			    Shape_chooser::on_shapes_popup_add2group_activate),
-								chooser);
-			}
-		}
+	chooser->add_group_submenu(popup);
 	return popup;
 	}
 
@@ -121,7 +91,7 @@ static void Shape_dropped_here
  *	Blit onto screen.
  */
 
-inline void Shape_chooser::show
+void Shape_chooser::show
 	(
 	int x, int y, int w, int h	// Area to blit.
 	)
@@ -410,8 +380,7 @@ gint Shape_chooser::mouse_press
 					// Clean out old.
 		if (chooser->popup)
 			gtk_widget_destroy(chooser->popup);
-		GtkWidget *popup = Create_browser_popup(chooser, 
-							chooser->group);
+		GtkWidget *popup = Create_browser_popup(chooser);
 		chooser->popup = popup;
 		gtk_menu_popup(GTK_MENU(popup), 0, 0, 0, 0, event->button,
 							event->time);
@@ -643,23 +612,6 @@ void Shape_chooser::on_shapes_popup_info_activate
 	((Shape_chooser *) udata)->edit_shape();
 	}
 
-void Shape_chooser::on_shapes_popup_add2group_activate
-	(
-	GtkMenuItem *item,
-	gpointer udata
-	)
-	{
-	Shape_chooser *chooser = (Shape_chooser *) udata;
-	Shape_group *grp = (Shape_group *) gtk_object_get_user_data(
-							GTK_OBJECT(item));
-	int shnum = chooser->info[chooser->selected].shapenum;
-	if (shnum >= 0)			// Selected shape?
-		{
-		grp->add(shnum);	// Add & redisplay open windows.
-		ExultStudio::get_instance()->update_group_windows(grp);
-		}
-	}
-
 /*
  *	Handle a shape dropped on our draw area.
  */
@@ -853,7 +805,7 @@ Shape_chooser::Shape_chooser
 		Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
 		shapes_file(0), index0(0), framenum0(0),
 		info(0), info_cnt(0), num_per_row(0), 
-		selected(-1), sel_changed(0), popup(0)
+		selected(-1), sel_changed(0)
 	{
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
@@ -956,8 +908,6 @@ Shape_chooser::~Shape_chooser
 	)
 	{
 	gtk_widget_destroy(get_widget());
-	if (popup)
-		gtk_widget_destroy(popup);
 	delete [] info;
 	}
 	

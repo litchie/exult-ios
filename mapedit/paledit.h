@@ -45,9 +45,10 @@ class Palette_edit: public Object_browser
 	int selected;			// Index of user-selected entry.
 	Rectangle selected_box;		// Location of selected color.
 					// Blit onto screen.
-	void show(int x, int y, int w, int h);
-	void show()
-		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
+	virtual void show(int x, int y, int w, int h);
+	virtual void show()
+		{ Palette_edit::show(0, 0, 
+			draw->allocation.width, draw->allocation.height);}
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
 					// Handle color-selector buttons.

@@ -537,10 +537,13 @@ void ExultStudio::update_group_windows
 		if (chooser->get_group() == grp)
 			{		// A match?
 			chooser->render();
+			chooser->show();
+#if 0	/* +++Crashes sometimes. */
 			gboolean ret;
 			gtk_signal_emit_by_name(
 				GTK_OBJECT(chooser->get_widget()), 
 						"expose_event", &ret);
+#endif
 			}
 		}
 	}
