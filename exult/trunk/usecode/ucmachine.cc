@@ -39,7 +39,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vec.h"
 #include "SDL.h"
 #include "tqueue.h"
-#include "gumps.h"
+#include "Gump.h"
+#include "Text_gump.h"
 #include "useval.h"
 #include "game.h"
 #include <iomanip>
@@ -58,12 +59,19 @@ using std::endl;
 using std::istream;
 using std::ifstream;
 using std::ofstream;
+using std::exit;
 using std::ios;
 using std::dec;
 using std::hex;
+using std::memset;
 using std::setfill;
 using std::setw;
 using std::string;
+using std::strcat;
+using std::strchr;
+using std::strcmp;
+using std::strcpy;
+using std::strlen;
 using std::vector;
 
 
@@ -486,7 +494,7 @@ void Usecode_machine::set_item_shape
 			gwin->paint();	// Repaint finds all lights.
 		else
 			{
-			Gump_object *gump = gwin->find_gump(item);
+			Gump *gump = gwin->find_gump(item);
 			if (gump)
 				gump->paint(gwin);
 			}
@@ -533,7 +541,7 @@ void Usecode_machine::set_item_frame
 		item->set_frame(frame);
 	if (item->get_owner())		// Inside a container?
 		{
-		Gump_object *gump = gwin->find_gump(item);
+		Gump *gump = gwin->find_gump(item);
 		if (gump)
 			{
 			item->set_frame(frame);
@@ -642,7 +650,7 @@ void Usecode_machine::item_say
 	if (obj && str && *str)
 		{
 					// See if it's in a gump.
-		Gump_object *gump = gwin->find_gump(obj);
+		Gump *gump = gwin->find_gump(obj);
 		Rectangle box;
 		if (gump)
 			box = gump->get_shape_rect(obj);
@@ -960,7 +968,7 @@ Usecode_value Usecode_machine::click_on_item
 	int ty = gwin->get_scrollty() + y/tilesize;
 	int tz = 0;
 					// Look for obj. in open gump.
-	Gump_object *gump = gwin->find_gump(x, y);
+	Gump *gump = gwin->find_gump(x, y);
 	Game_object *obj;
 	if (gump)
 		obj = gump->find_object(x, y);

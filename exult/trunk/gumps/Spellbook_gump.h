@@ -1,12 +1,5 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
- **	Spells.h - Spellbook handling.
- **
- **	Written: 5/29/2000 - JSF
- **/
-
 /*
-Copyright (C) 2000  Jeffrey S. Freedman
+Copyright (C) 2000 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,17 +16,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef INCL_SPELLS
-#define INCL_SPELLS 1
+#ifndef _SPELLBOOK_GUMP_H_
+#define _SPELLBOOK_GUMP_H_
 
-#include "gumps.h"
+#include "Gump.h"
 
 class Spellbook_object;
 
 /*
  *	Open spellbook.  The spells are drawn in the object area.
  */
-class Spellbook_gump : public Gump_object
+class Spellbook_gump : public Gump
 	{
 					// Reagants needed for each spell:
 	static unsigned char reagants[9*8];

@@ -40,7 +40,7 @@ class Barge_object;
 class Main_actor;
 class Monster_info;
 class Chunk_object_list;
-class Gump_object;
+class Gump;
 class Gump_button;
 class Special_effect;
 class Slist;
@@ -76,7 +76,7 @@ private:
 	Game_clock clock;		// Keeps track of time.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
 	Special_effect *effects;	// Text snippets, sprite effects.
-	Gump_object *open_gumps;	// Open containers on screen.
+	Gump *open_gumps;	// Open containers on screen.
 	Npc_face_info *face_info[3];	// NPC's on-screen faces in convers.
 	int num_faces;			// # of faces.
 	int last_face_shown;		// Index of last npc face shown.
@@ -126,8 +126,8 @@ private:
 	long last_restore_hour;		// Hour in game of last restore.
 					// Dragging info:
 	Game_object *dragging;		// What's being dragged.
-	Gump_object *dragging_gump;
-	Gump_button *dragging_gump_button;
+	Gump *dragging_gump;
+	Gump_button *dragging_button;
 					// Last mouse, paint positions:
 	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
 	Rectangle dragging_rect;	// Rectangle to repaint.
@@ -347,7 +347,7 @@ public:
 		{ return paperdoll ? paperdolls.get_shape(shapenum, framenum) : gumps.get_shape(shapenum, framenum); }
 					// Get screen area of a gump.
 					//   for painting it.
-	Rectangle get_gump_rect(Gump_object *gump);
+	Rectangle get_gump_rect(Gump *gump);
 					// Get sprites shape.
 	Shape_frame *get_sprite_shape(int shapenum, int framenum)
 		{ return sprites.get_shape(shapenum, framenum); }
@@ -534,9 +534,9 @@ public:
 	int get_party(Actor **list, int avatar_too = 0);
 	void activate_item(int shnum);	// Activate item in party.
 					// Find gump (x, y) is in.
-	Gump_object *find_gump(int x, int y);
+	Gump *find_gump(int x, int y);
 					// Find gump object is in.
-	Gump_object *find_gump(Game_object *obj);
+	Gump *find_gump(Game_object *obj);
 					// Find top object that (x,y) is in.
 	Game_object *find_object(int x, int y);
 	int find_objects(int lift, int x, int y, Game_object **list);
@@ -570,7 +570,7 @@ public:
 	void show_gump(Game_object *obj, int shapenum);
 	void end_gump_mode();		// Remove gumps from screen.
 					// Remove a gump from screen.
-	void remove_gump(Gump_object *gump);
+	void remove_gump(Gump *gump);
 					// Add npc to 'nearby' list.
 	void add_nearby_npc(Npc_actor *npc);
 					// Track npcs in range of chunks.

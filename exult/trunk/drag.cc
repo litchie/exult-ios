@@ -25,7 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>	/* Debugging */
 #include "gamewin.h"
-#include "gumps.h"
+#include "Gump_button.h"
+#include "Gump.h"
 #include "mouse.h"
 #include "paths.h"
 #include "actors.h"
@@ -48,7 +49,7 @@ bool Game_window::start_dragging
 	{
 	dragging = 0;
 	dragging_gump = 0;
-	dragging_gump_button = 0;
+	dragging_button = 0;
 	dragging_mousex = x;
 	dragging_mousey = y;
 	dragging_rect = Rectangle(0, 0, 0, 0);
@@ -62,11 +63,11 @@ bool Game_window::start_dragging
 		if (dragging)
 			dragging_gump->get_shape_location(dragging,
 					dragging_paintx, dragging_painty);
-		else if ((dragging_gump_button = 
+		else if ((dragging_button = 
 				dragging_gump->on_button(this, x, y)) != 0)
 			{
 			dragging_gump = 0;
-			dragging_gump_button->push(this);
+			dragging_button->push(this);
 			painted = true;
 			}
 		else
@@ -192,13 +193,13 @@ bool Game_window::drop_dragged
 	{
 	bool handled = moved;
 
-	if (dragging_gump_button)
+	if (dragging_button)
 		{
-		dragging_gump_button->unpush(this);
-		if (dragging_gump_button->on_button(this, x, y))
+		dragging_button->unpush(this);
+		if (dragging_button->on_button(this, x, y))
 					// Clicked on button.
-			dragging_gump_button->activate(this);
-		dragging_gump_button = 0;
+			dragging_button->activate(this);
+		dragging_button = 0;
 		handled = true;
 		}
 	else if (!dragging)		// Only dragging a gump?
@@ -278,7 +279,7 @@ void Game_window::drop
 	int old_top = dragging->get_lift() + 
 					get_info(dragging).get_3d_height();
 					// First see if it's a gump.
-	Gump_object *on_gump = find_gump(x, y);
+	Gump *on_gump = find_gump(x, y);
 					// Check for quantity.
 	int dragging_quantity = dragging->get_quantity();
 					// Don't prompt if within same gump.

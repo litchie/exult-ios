@@ -1,12 +1,5 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
- **	Spells.cc - Spellbook handling.
- **
- **	Written: 5/29/2000 - JSF
- **/
-
 /*
-Copyright (C) 2000  Jeffrey S. Freedman
+Copyright (C) 2000 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,13 +16,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include "spells.h"
-#include "gamewin.h"
 #include "actors.h"
-#include "ucmachine.h"
+#include "cheat.h"
+#include "gamewin.h"
+#include "Gump_button.h"
 #include "items.h"
 #include "mouse.h"
-#include "cheat.h"
+#include "ucmachine.h"
+#include "Spellbook_gump.h"
 
 extern Cheat cheat;
 
@@ -119,7 +113,7 @@ class Page_button : public Gump_button
 	{
 	int leftright;			// 0=left, 1=right.
 public:
-	Page_button(Gump_object *par, int px, int py, int lr)
+	Page_button(Gump *par, int px, int py, int lr)
 		: Gump_button(par, lr ? RIGHTPAGE : LEFTPAGE, px, py),
 		  leftright(lr)
 		{  }
@@ -146,7 +140,7 @@ class Spell_button : public Gump_button
 	{
 	int spell;			// Spell # (0 - 71).
 public:
-	Spell_button(Gump_object *par, int px, int py, int sp)
+	Spell_button(Gump *par, int px, int py, int sp)
 		: Gump_button(par, SPELLS + sp%8, px, py), spell(sp)
 		{
 		framenum = sp/8;	// Frame # is circle.
@@ -187,7 +181,7 @@ void Spell_button::double_clicked
 void Spellbook_gump::set_avail
 	(
 	)
-	{
+{
 	int i;				// Init.
 	for (i = 0; i < 9*8; i++)
 		avail[i] = 0;
@@ -199,7 +193,7 @@ void Spellbook_gump::set_avail
 		reagant_counts[r] = book_owner->count_objects(
 							REAGANTS, -359, r);
 	for (i = 0; i < 9*8; i++)	// Now figure what's available.
-		{
+	{
 		avail[i] = 10000;	// 'infinite'.
 		unsigned char flags = reagants[i];
 					// Go through bits.
@@ -207,8 +201,8 @@ void Spellbook_gump::set_avail
 					// Take min. of req. reagant counts.
 			if ((flags&1) && reagant_counts[r] < avail[i])
 				avail[i] = reagant_counts[r];
-		}
 	}
+}
 
 /*
  *	Create spellbook display.
@@ -217,8 +211,8 @@ void Spellbook_gump::set_avail
 Spellbook_gump::Spellbook_gump
 	(
 	Spellbook_object *b
-	) : Gump_object(0, 43), page(0), book(b)
-	{
+	) : Gump(0, 43), page(0), book(b)
+{
 					// Where to paint page marks:
 	const int lpagex = 38, rpagex = 142, lrpagey = 25;
 					// Get book's top owner.
@@ -235,7 +229,7 @@ Spellbook_gump::Spellbook_gump
 	spheight = spshape->get_height();
 	int vertspace = (object_area.h - 4*spheight)/4;
 	for (int c = 0; c < 9; c++)	// Add each spell.
-		{
+	{
 		int spindex = c*8;
 		unsigned char cflags = book->circles[c];
 		for (int s = 0; s < 8; s++)
@@ -250,8 +244,8 @@ Spellbook_gump::Spellbook_gump
 							spindex + s);
 			else
 				spells[spindex + s] = 0;
-		}
 	}
+}
 
 /*
  *	Delete.
@@ -260,12 +254,12 @@ Spellbook_gump::Spellbook_gump
 Spellbook_gump::~Spellbook_gump
 	(
 	)
-	{
+{
 	delete leftpage;
 	delete rightpage;
 	for (int i = 0; i < 9*8; i++)
 		delete spells[i];
-	}
+}
 
 /*
  *	Perform a spell.
@@ -275,9 +269,9 @@ void Spellbook_gump::do_spell
 	(
 	int spell
 	)
-	{
+{
 	if ((spells[spell] && avail[spell]) || cheat.in_wizard_mode())
-		{
+	{
 		Game_window *gwin = Game_window::get_game_window();
 		int circle = spell/8;	// Figure/subtract mana.
 		if (cheat.in_wizard_mode())
@@ -286,16 +280,17 @@ void Spellbook_gump::do_spell
 		int level = gwin->get_main_actor()->get_level();
 		if ((mana < circle) || (level < circle))
 			// Not enough mana or not yet at required level?
-			{
+		{
 			extern Mouse *mouse;
 			mouse->flash_shape(Mouse::redx);
 			return;
-			}
+		}
 		gwin->get_main_actor()->set_property(Actor::mana, mana-circle);
 					// Figure what we used.
 		unsigned char flags = reagants[spell];
 
-		if (!cheat.in_wizard_mode()) {
+		if (!cheat.in_wizard_mode())
+		{
 					// Go through bits.
 			for (int r = 0; flags; r++, flags = flags >> 1)
 					// Remove 1 of each required reagant.
@@ -305,8 +300,8 @@ void Spellbook_gump::do_spell
 		gwin->end_gump_mode();
 		gwin->get_usecode()->call_usecode(Get_usecode(spell),
 			gwin->get_main_actor(), Usecode_machine::double_click);
-		}
 	}
+}
 
 /*
  *	Change page.
@@ -316,14 +311,14 @@ void Spellbook_gump::change_page
 	(
 	int delta
 	)
-	{
+{
 	page += delta;
 	if (page < 0)
 		page = 0;
 	else if (page > 8)
 		page = 8;
 	paint(Game_window::get_game_window());
-	}
+}
 
 /*
  *	Set bookmark.
@@ -333,21 +328,21 @@ void Spellbook_gump::set_bookmark
 	(
 	int spell
 	)
-	{
+{
 	if (spells[spell])
-		{
+	{
 		book->bookmark = spell;
 		paint(Game_window::get_game_window());
-		}
 	}
+}
 
 /*
  *	Get object that 'owns' this.
  */
 Game_object *Spellbook_gump::get_owner()
-	{
+{
 	return book; 
-	}
+}
 
 /*
  *	Is a given screen point on one of our buttons?
@@ -360,8 +355,8 @@ Gump_button *Spellbook_gump::on_button
 	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
-	{
-	Gump_button *btn = Gump_object::on_button(gwin, mx, my);
+{
+	Gump_button *btn = Gump::on_button(gwin, mx, my);
 	if (btn)
 		return btn;
 	else if (leftpage->on_button(gwin, mx, my))
@@ -370,13 +365,13 @@ Gump_button *Spellbook_gump::on_button
 		return rightpage;
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Check spells.
-		{
+	{
 		Gump_button *spell = spells[spindex + s];
 		if (spell && spell->on_button(gwin, mx, my))
 			return spell;
-		}
-	return 0;
 	}
+	return 0;
+}
 
 /*
  *	Our buttons are never drawn 'pushed'.
@@ -387,9 +382,9 @@ void Spellbook_gump::paint_button
 	Game_window *gwin,
 	Gump_button *btn
 	)
-	{
+{
 	gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, btn->framenum);
-	}
+}
 
 /*
  *	Render.
@@ -399,10 +394,10 @@ void Spellbook_gump::paint
 	(
 	Game_window *gwin
 	)
-	{
+{
 	const int numx = 1, numy = -4;// Where to draw numbers on spells,
 					//   with numx being the right edge.
-	Gump_object::paint(gwin);	// Paint outside & checkmark.
+	Gump::paint(gwin);	// Paint outside & checkmark.
 	if (page > 0)			// Not the first?
 		paint_button(gwin, leftpage);
 	if (page < 8)			// Not the last?
@@ -410,7 +405,7 @@ void Spellbook_gump::paint
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Paint spells.
 		if (spells[spindex + s] || cheat.in_wizard_mode())
-			{
+		{
 			Gump_button *spell = spells[spindex + s];
 			paint_button(gwin, spell);
 			int num = avail[spindex + s];
@@ -421,19 +416,19 @@ void Spellbook_gump::paint
 					x + spell->x + numx -
 						gwin->get_text_width(4, text),
 					y + spell->y + numy);
-			}
+		}
 	if (page > 0)			// Paint circle.
-		{
+	{
 		char *circ = item_names[0x545];
 		char *cnum = item_names[0x545 + page];
 		gwin->paint_text(4, cnum, x + 40 + 
 			(44 - gwin->get_text_width(4, cnum))/2, y + 20);
 		gwin->paint_text(4, circ, x + 92 +
 			(44 - gwin->get_text_width(4, circ))/2, y + 20);
-		}
+	}
 	if (book->bookmark >= 0 &&	// Bookmark?
 	    book->bookmark/8 == page)
-		{
+	{
 		int s = book->bookmark%8;// Get # within circle.
 		int bx = s < 4 ? object_area.x + spwidth/2
 			: object_area.x + object_area.w - spwidth/2 - 2;
@@ -441,6 +436,6 @@ void Spellbook_gump::paint
 		bx += bshape->get_xleft();
 		int by = object_area.y - 14 + bshape->get_yabove();
 		gwin->paint_gump(x + bx, y + by, BOOKMARK, 1 + s%4);
-		}
-	gwin->set_painted();
 	}
+	gwin->set_painted();
+}
