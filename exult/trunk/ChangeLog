@@ -1,3 +1,8 @@
+2001-03-11  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/(magic)gorget.shp: paperdoll art for gorget & magic gorget, created by Adam Delman. (Thanks!)
+	* data/flx.in, gunps/Paperdoll_gump_info.cc: include new art
+	* data/credits.txt: credit where credit is due
+
 2001-03-11  Max Horn  <max@quendi.de>
 	* docs/interview: added a lot of babble there ;) you all should ;)
 	* actions.cc: added missing using directive

@@ -799,9 +799,9 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Leather Collar **NEEDS ART**
 	{     582,  9,       Actor::neck,   OT_Normal,  false, paperdoll,    -1,     0 },
 	// Gorget **NEEDS ART**
-	{     586,  9,       Actor::neck,   OT_Normal,  false, paperdoll,    -1,     0 },
+	{     586,  0,       Actor::neck,   OT_Normal,  false, exult_flx,    29,     0 },
 	// Magic Gorget **NEEDS ART**
-	{     843,  9,       Actor::neck,   OT_Normal,  false, paperdoll,    -1,     0 },
+	{     843,  0,       Actor::neck,   OT_Normal,  false, exult_flx,    30,     0 },
 	// Ankh
 	{     955,  0,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     0 },
 	// Fellowship
