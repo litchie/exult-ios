@@ -481,7 +481,7 @@ Approach_actor_action::Approach_actor_action
 					// Get length of path.
 	int nsteps = path->get_num_steps();
 	if (nsteps >= 6)		// (May have to play with this).
-		check_step = nsteps/2;	// Check when half-way there.
+		check_step = nsteps/2;
 	else
 		check_step = 10000;
 	}
@@ -507,7 +507,7 @@ int Approach_actor_action::handle_event
 					// Figure next check.
 		int nsteps = path->get_num_steps();
 		if (nsteps >= 6)
-			check_step += nsteps/2;	// Check when half-way there.
+			check_step += nsteps/2;
 		}
 	return delay;
 	}

@@ -300,7 +300,6 @@ Game_window::Game_window
 
 	set_window_size(width, height, scale, scaler);
 	pal = new Palette();
-	Game_singletons::init(this);	// Everything should exist here.
 
 	string str;
 	config->value("config/gameplay/textbackground", text_bg, -1);
@@ -447,6 +446,7 @@ void Game_window::init_files(bool cycle)
 #endif
 
 	usecode = Usecode_machine::create(this);
+	Game_singletons::init(this);	// Everything should exist here.
 
 	CYCLE_RED_PLASMA();
 	shape_man->load();		// All the .vga files!
