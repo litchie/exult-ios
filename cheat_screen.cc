@@ -92,7 +92,7 @@ const char *CheatScreen::flag_names[64] = {
 	"tremor",		// 0x0C
 	"cant_die",		// 0x0D
 	"dancing",		// 0x0E
-	"dont_render",		// 0x0F
+	"dont_move",		// 0x0F
 
 	0,			// 0x10
 	"si_on_moving_barge",	// 0x11
@@ -1490,7 +1490,8 @@ void CheatScreen::FlagMenu (Actor *actor)
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-90, 8);
 
 		// NoCast
-		std::snprintf (buf, 512, "[U] NoCast.%c", actor->get_siflag(Actor::no_spell_casting)?'Y':'N');
+		std::snprintf (buf, 512, "[U] NoCast.%c", actor->get_flag(
+					Obj_flags::no_spell_casting)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-81, 8);
 
 		// ID
@@ -1683,10 +1684,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 		
 		case 'u':	// No Cast
-		if (actor->get_siflag(Actor::no_spell_casting))
-			actor->clear_siflag(Actor::no_spell_casting);
+		if (actor->get_flag(Obj_flags::no_spell_casting))
+			actor->clear_flag(Obj_flags::no_spell_casting);
 		else
-			actor->set_siflag(Actor::no_spell_casting);
+			actor->set_flag(Obj_flags::no_spell_casting);
 		break;
 		
 		case 'z':	// Zombie
