@@ -1,3 +1,6 @@
+2002-07-29  Aurelien Marchand  <artaxerxes@users.sourceforge.net>
+	* README.Qtopia: More accurate details.
+
 2002-07-25  Ryan Nunn  <colourles@users.sourceforge.net>
 	* WinNT and Win2K are forced to use the Win9x style IPC that i wrote. 
 	  This should now meant that Exult Studio will now work.
