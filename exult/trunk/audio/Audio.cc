@@ -938,7 +938,11 @@ int Audio::play_wave_sfx
 		wavbuf = (unsigned char *) sfx_file->retrieve(num, wavlen);
 		rwsrc = SDL_RWFromMem(wavbuf, wavlen);
 		wave = Mix_LoadWAV_RW(rwsrc, 1);
-		sfxs = new SFX_cached(num, wave->abuf, wave->alen, sfxs);
+		if (!wave) {
+			cerr << "SFX " << num << " is an invalid wave. ";
+		} else {
+			sfxs = new SFX_cached(num, wave->abuf, wave->alen, sfxs);
+		}
 		delete [] wavbuf;
 	}
 	else
