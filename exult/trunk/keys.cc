@@ -94,8 +94,6 @@ const struct Action {
 	{ "STATS", ActionStats, "Show stats", true, false, NONE },
 	{ "COMBAT_STATS",
 	  ActionCombatStats, "Show combat stats", true, false, SERPENT_ISLE },
-	{ "JAWBONE", ActionJawbone, "Show Jawbone", true, false, SERPENT_ISLE },
-	  
 	
 	{ "SHOW_SI_INTRO",
 	  ActionSIIntro, "Show SI intro", true, true, SERPENT_ISLE },
@@ -525,7 +523,9 @@ void KeyBinder::LoadDefaults()
 	
 	cout << "Loading default keybindings" << endl;
 	
-	U7object txtobj("<DATA>/exult.flx", 23);
+	str_int_pair resource = game->get_resource("config/defaultkeys");
+
+	U7object txtobj(resource.str, resource.num);
 	size_t len;
 	char *txt = txtobj.retrieve(len);
 	

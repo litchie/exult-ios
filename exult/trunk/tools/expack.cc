@@ -51,6 +51,18 @@ bool is_text_file(const char *fname)
 	return false;
 }
 
+bool is_null_entry(const char *fname)
+{
+	int len = strlen(fname);
+
+	if (len >= 4 && fname[len-4] == 'N' && fname[len-3] == 'U' &&
+					fname[len-2] == 'L' && fname[len-1] == 'L')
+		return true;
+
+	return false;
+
+}
+
 void set_mode(Arch_mode &mode, Arch_mode new_mode)
 {
 	if(mode!=NONE) {
@@ -62,6 +74,9 @@ void set_mode(Arch_mode &mode, Arch_mode new_mode)
 
 long get_file_size(const char *fname)
 {
+	if (is_null_entry(fname)) 
+		return 0; // an empty entry
+
 	const char *mode = "rb";
 	bool text = is_text_file(fname);
 	if (text)

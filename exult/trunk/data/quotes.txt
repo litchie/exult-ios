@@ -101,3 +101,7 @@
 \Cselling tours to Britannia"
 \L - Jeff,
 \L replying to spam
+
+\C"Using missing functionality to
+\C work-around a bug? Clever."
+\L - Amy
