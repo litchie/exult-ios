@@ -484,6 +484,30 @@ void U7remove
 }
 
 /*
+ *	Open a "static" game file by first looking in <PATCH>, then
+ *	<STATIC>.
+ *	Output: 0 if couldn't open.
+ */
+
+bool U7open_static
+	(
+	std::ifstream& in,		// Input stream to open.
+	const char *fname,		// May be converted to upper-case.
+	bool is_text			// Should file be opened in text mode
+	)
+	{
+	string name;
+
+	name = string("<PATCH>/") + fname;
+	if (U7open(in, name.c_str(), is_text))
+		return true;
+	name = string("<STATIC>/") + fname;
+	if (U7open(in, name.c_str(), is_text))
+		return true;
+	return false;
+	}
+
+/*
  *	See if a file exists.
  */
 
