@@ -207,9 +207,12 @@ void Shape_group_file::write
 		delete buf;
 		gfile.mark_section_done();
 		}
-	bool result = gfile.close();
-	if (!result)			// ++++Better error system needed??
-		throw file_write_exception(patchname.c_str());
+	if (!gfile.close())
+		{
+		string msg("Error writing '");
+		msg += patchname; msg += "'.";
+		ExultStudio::get_instance()->prompt(msg.c_str(), "Okay");
+		}
 	modified = false;
 	}
 
