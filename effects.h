@@ -234,10 +234,10 @@ class Lightning_effect : public Weather_effect
 	static int active;		// Just want one at a time.
 	bool flashing;			// Lightning palette is set.
 	friend class Storm_effect;
+public:
 	Lightning_effect(int duration, int delay = 0) 
 		: Weather_effect(duration, delay, -1), flashing(false)
 		{ }
-public:
 	~Lightning_effect();
 					// Execute when due.
 	virtual void handle_event(unsigned long curtime, long udata);
