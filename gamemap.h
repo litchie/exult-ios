@@ -27,6 +27,7 @@
 #include "flags.h"
 #include <string>	// STL string
 #include <iostream>
+#include <fstream>
 
 class Map_chunk;
 class Chunk_terrain;

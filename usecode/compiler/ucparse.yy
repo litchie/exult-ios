@@ -423,6 +423,8 @@ expression:
 		{ $$ = new Uc_binary_expression(UC_OR, $1, $3); }
 	| expression IN expression	/* Value in array. */
 		{ $$ = new Uc_binary_expression(UC_IN, $1, $3); }
+	| expression '&' expression	/* append arrays */
+		{ $$ = new Uc_binary_expression(UC_ARRA, $1, $3); }
 	| '-' primary
 		{ $$ = new Uc_binary_expression(UC_SUB,
 				new Uc_int_expression(0), $2); }

@@ -1,4 +1,8 @@
-2001-01-03  Ryan Nunn <triforce@merlin.net.au>
+2002-01-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* ucparse.yy, opcodes.txt: added 'append arrays' operator (&) to ucc
+	* gamemap.h: include fstream
+
+2002-01-03  Ryan Nunn <triforce@merlin.net.au>
 	* gamemap.*, usecode/useval.h,  objs/chunkter.cc: std namespace stuff.
 	  Note to Jeff, doing "class ifstream;" and using fstream.h was a
 	  really really really bad idea :-)
