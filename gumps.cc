@@ -81,7 +81,6 @@ short File_gump_object::btn_cols[3] = {10, 40, 70};
 short File_gump_object::textx = 4, File_gump_object::texty = 4,
       File_gump_object::texth = 10;
 
-
 /*
  *	An editable text field:
  */
@@ -106,17 +105,10 @@ public:
 		{ delete text; }
 	int get_length()
 		{ return length; }
-	void paint()			// Paint.
-		{
-		Game_window *gwin = Game_window::get_game_window();
-		gwin->paint_gump(parent->get_x() + x, 
-				parent->get_y() + y, shapenum, focus);
-					// Show text.
-		gwin->paint_text(2, text, parent->get_x() + x + textx,
-						parent->get_y() + y + texty);
-		}
+	void paint();			// Paint.
 					// Handle mouse click.
 	int mouse_clicked(Game_window *gwin, int mx, int my);
+	void insert(int chr);		// Insert a character.
 	void lose_focus()
 		{
 		focus = 0;
@@ -232,6 +224,28 @@ int Gump_widget::on_widget
 	}
 
 /*
+ *	Paint text field.
+ */
+
+void Gump_text::paint
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->paint_gump(parent->get_x() + x, 
+					parent->get_y() + y, shapenum, focus);
+					// Show text.
+	gwin->paint_text(2, text, parent->get_x() + x + textx,
+						parent->get_y() + y + texty);
+	if (focus)			// Focused?  Show cursor.
+		gwin->get_win()->fill8(0, 1, gwin->get_text_height(2),
+			parent->get_x() + x + textx +
+					gwin->get_text_width(2, text, cursor),
+				parent->get_y() + y + texty);
+	gwin->set_painted();
+	}
+
+/*
  *	Handle click on text object.
  *
  *	Output:	1 if point is within text object, else 0.
@@ -243,16 +257,47 @@ int Gump_text::mouse_clicked
 	int mx, int my			// Mouse position on screen.
 	)
 	{
-	mx -= parent->get_x() + x;	// Get point rel. to gump.
+	mx -= parent->get_x() + x;	// Get point rel. to this.
 	my -= parent->get_y() + y;
 	Shape_frame *cshape = gwin->get_gump_shape(shapenum, 0);
 	if (!cshape->has_point(mx, my))
 		return (0);
-	focus = 1;			// We have focus now.
-			//++++++++Figure cursor.
+	if (!focus)			// Gaining focus?
+		{
+		focus = 1;		// We have focus now.
+		cursor = 0;		// Put cursor at start.
+		}
+	else
+		{
+		for (cursor = 0; cursor <= length; cursor++)
+			if (gwin->get_text_width(2, text, cursor) > mx - textx)
+				{
+				if (cursor > 0)
+					cursor--;
+				break;
+				}
+		}
 	paint();
 	gwin->set_painted();
 	return (1);
+	}
+
+/*
+ *	Insert a character at the cursor.
+ */
+
+void Gump_text::insert
+	(
+	int chr
+	)
+	{
+	if (!focus || length == max_size)
+		return;			// Can't.
+	if (cursor < length)		// Open up space.
+		memmove(text + cursor + 1, text + cursor, length - cursor);
+	text[cursor++] = chr;		// Store, and increment cursor.
+	length++;
+	paint();
 	}
 
 /*
@@ -1536,5 +1581,20 @@ void File_gump_object::mouse_up
 		}
 	pushed = 0;
 	pushed_text = 0;
+	}
+
+/*
+ *	Handle ASCII character typed.
+ */
+
+void File_gump_object::key_down
+	(
+	int chr
+	)
+	{
+	if (chr < ' ')
+		return;			// For now, ignore these.
+	if (focus)			// Text field?
+		focus->insert(chr);
 	}
 
