@@ -1,3 +1,6 @@
+2004-01-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* audio/Audio.cc: prevent crash when loading an invalid wave file
+
 2004-01-30  Ryan Nunn  <colourles@users.sourceforge.net>
 	* Various files : Updating version to 1.1.10cvs. That's one point one
 	  point ten see vee ess. 
