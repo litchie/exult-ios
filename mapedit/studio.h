@@ -136,6 +136,8 @@ public:
 		{ return vgafile; }
 	Combo_editor *get_combowin()
 		{ return combowin; }
+	void set_msg_callback(Msg_callback cb, void *client)
+		{ waiting_for_server = cb; waiting_client = client; }
 	Shape_group_file *get_cur_groups();
 	void set_browser(const char *name, Object_browser *obj);
 	bool has_focus();		// Any of our windows has focus?

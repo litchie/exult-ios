@@ -79,6 +79,7 @@ enum Msg_type
 	npc_info = 29,			// Get #NPC's, first unused.
 	edit_selected = 30,		// Edit selected object.
 	set_edit_chunknum = 31,		// Set chunk# to paint with.
+	game_pos = 32,			// Returns tx, ty, tz of main char.
 	usecode_debugging = 128
 	};
 
