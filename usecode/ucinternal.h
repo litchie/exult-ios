@@ -71,10 +71,8 @@ class Usecode_internal : public Usecode_machine
 	Exult_vector<Usecode_function*> funs[16];
 	Exult_vector<Usecode_value> statics;	// Global persistent vars.
 	std::deque<Stack_frame*> call_stack; // the call stack
-#if 0	/* ++++Goes away. */
-	Usecode_function *cur_function;	// Current function being executed.
-#endif
 	Stack_frame *frame;		// One intrinsic uses this for now...
+	bool modified_map;		// We add/deleted/moved an object.
 	unsigned long timers[20];	// Each has time in hours when set.
 	int speech_track;		// Set/read by some intrinsics.
 	Text_gump *book;		// Book/scroll being displayed.

@@ -1646,7 +1646,8 @@ Usecode_internal::Usecode_internal
 	    path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),
 	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
-		temp_to_be_deleted(0), telekenesis_fun(-1)
+		temp_to_be_deleted(0), telekenesis_fun(-1),
+		modified_map(false)
 #ifdef USECODE_DEBUGGER
 		, on_breakpoint(false)
 #endif
@@ -2596,9 +2597,13 @@ int Usecode_internal::call_usecode
 		conv->init_faces();	// Remove them.
 		gwin->set_all_dirty();	// Force repaint.
 		}
-	Barge_object *barge = gwin->get_moving_barge();
-	if (barge)
-		barge->set_to_gather();	// Refigure what's on barge.
+	if (modified_map)
+		{			// On a barge, and we changed the map.
+		Barge_object *barge = gwin->get_moving_barge();
+		if (barge)
+			barge->set_to_gather();	// Refigure what's on barge.
+		modified_map = false;
+		}
 	return ret;
 	}
 

@@ -484,6 +484,7 @@ USECODE_INTRINSIC(create_new_object)
 
 	Game_object *obj;		// Create to be written to Ireg.
 	Shape_info& info = ShapeID::get_info(shapenum);
+	modified_map = true;
 					// +++Not sure if 1st test is needed.
 	if (info.get_monster_info() || info.is_npc())
 	{
@@ -536,6 +537,7 @@ USECODE_INTRINSIC(set_last_created)
 {
 	// Take itemref off map and set last_created to it.
 	Game_object *obj = get_item(parms[0]);
+	modified_map = true;
 	if (obj)
 		{
 		last_created.push_back(obj);
@@ -550,6 +552,7 @@ USECODE_INTRINSIC(update_last_created)
 	// Think it takes array from 0x18,
 	//   updates last-created object.
 	//   ??guessing??
+	modified_map = true;
 	if (last_created.empty())
 		{
 		Usecode_value u((Game_object*) NULL);
@@ -976,6 +979,7 @@ USECODE_INTRINSIC(move_object)
 			p.get_elem(1).get_int_value(),
 			p.get_elem(2).get_int_value());
 	Actor *ava = gwin->get_main_actor();
+	modified_map = true;
 	if (parms[0].get_int_value() == -357)
 		{			// Move whole party.
 					// If Freedom exit teleport, don't ac-
@@ -1017,6 +1021,7 @@ USECODE_INTRINSIC(remove_npc)
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
 		{
+		modified_map = true;
 					// Don't want him/her coming back!
 		npc->set_schedule_type(Schedule::wait);
 		gwin->add_dirty(npc);
@@ -1095,6 +1100,7 @@ USECODE_INTRINSIC(set_lift)
 			obj->move(t.tx, t.ty, lift);
 		gwin->paint();
 		gwin->show();
+		modified_map = true;
 		}
 	return(no_ret);
 }
@@ -1255,6 +1261,7 @@ USECODE_INTRINSIC(kill_npc)
 	Actor *npc = as_actor(item);
 	if (npc)
 		npc->die(0);
+	modified_map = true;
 	return (no_ret);
 }
 
@@ -1301,6 +1308,7 @@ USECODE_INTRINSIC(clone)
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (npc)
 		{
+		modified_map = true;
 		npc->set_alignment(Actor::friendly);
 		npc->set_schedule_type(Schedule::combat);
 		return Usecode_value(npc->clone());
@@ -1411,6 +1419,7 @@ USECODE_INTRINSIC(resurrect)
 		Usecode_script *scr = new Usecode_script(body);
 		(*scr) << Ucscript::resurrect;
 		scr->start();
+		modified_map = true;
 		}
 	return Usecode_value(actor);
 }
@@ -1784,6 +1793,7 @@ USECODE_INTRINSIC(remove_item)
 {
 	// Think it's 'delete object'.
 	remove_item(get_item(parms[0]));
+	modified_map = true;
 	return no_ret;
 }
 
