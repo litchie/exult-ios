@@ -1,5 +1,6 @@
 2003-04-26  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/objedit.cc: properly load/save shape/frame/quality for objs
+	* palette.cc: removed unnecessary palette changes
 
 2003-04-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* docs/usecode_bugs.txt: added some bugs from the forum
