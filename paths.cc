@@ -48,9 +48,12 @@ int Actor_pathfinder_client::get_step_cost
 	int ty = to.ty%tiles_per_chunk;
 	int cost = 1;
 	olist->setup_cache();		// Make sure cache is valid.
+	int water, poison;		// Get tile info.
+	Actor::get_tile_info(gwin, olist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 					// For now, assume height=3.
-	if (olist->is_blocked(3, to.tz, tx, ty, new_lift))
+	if (olist->is_blocked(3, to.tz, tx, ty, new_lift) ||
+	    (water && new_lift == 0))
 		{			// Blocked, but check for a door.
 		Game_object *block = Game_object::find_blocking(to);
 		if (!block)
@@ -70,6 +73,8 @@ int Actor_pathfinder_client::get_step_cost
 		cost *= 3;		// Make it 50% more expensive.
 	else
 		cost *= 2;
+	if (poison && new_lift == 0)
+		cost *= 2;		// And avoid poison if possible.
 					// Get 'flat' shapenum.
 	ShapeID flat = olist->get_flat(tx, ty);
 	int shapenum = flat.get_shapenum();
