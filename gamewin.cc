@@ -1646,6 +1646,8 @@ void Game_window::show_items
 		shnum = id.get_shapenum();
 		cout << "Clicked on flat shape " << 
 			shnum << ':' << id.get_framenum() << endl;
+		if (id.is_invalid())
+			return;
 		}
 	Shape_info& info = shapes.get_info(shnum);
 #if 1

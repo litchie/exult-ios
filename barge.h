@@ -58,10 +58,10 @@ public:
 		{  }
 	int is_moving()
 		{ return frame_time > 0; }
-	int get_xtiles()		// Dims., depending on direction.
-		{ return (dir&1) ? ytiles : xtiles; }
+	int get_xtiles()		// Dims. in tiles.
+		{ return xtiles; }
 	int get_ytiles()
-		{ return (dir&1) ? xtiles : ytiles; }
+		{ return ytiles; }
 	virtual ~Barge_object();
 	void gather();			// Gather up objects on barge.
 					// Start rolling/sailing.
