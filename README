@@ -1,14 +1,13 @@
 Exult Documentation
-last changed: 18 October 2003(GMT)
+last changed: 12 December 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 18 October 2003
-0.2. - 08 August 2003
-0.3. - 04 May 2003
-0.4. - 04 March 2003
+0.1. - 12 December 2003
+0.2. - 18 October 2003
+0.3. - 08 August 2003
 
 1. Introduction
 1.1. Exult Version
@@ -19,7 +18,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 2.1. Installation
 2.2. Settings in exult.cfg
 2.3. Path-Settings
-2.4. Command line options
+2.4. Further directory customizations
+2.5. Command line options
 
 3. Audio
 3.1. Music
@@ -74,27 +74,23 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 18 October 2003
+0.1. - 12 December 2003
+* 2.2. Settings in exult.cfg fixed bad path settings and updated audio settings.
+* 2.3. Path-Settings moved stuff over to next point.
+* 2.4. Further directory customizations added to give some explanation for Static/Gamedat.
+* 3.1. Music updated with 'recent' audio changes.
+* 6.4. Audio Options updated with 'recent' audio changes.
+
+
+
+0.2. - 18 October 2003
 * 1.1. Exult Version note Exult version.
 
 
 
-0.2. - 08 August 2003
+0.3. - 08 August 2003
 * 8. Zaurus Guide added Artaxerxes' guide.
 * 9.1. Thanks added Artaxerxes for his guide.
-
-
-
-0.3. - 04 May 2003
-* 2.2. Settings in exult.cfg option for "original" party formation added.
-
-
-
-0.4. - 04 March 2003
-* 1.1. Exult Version this doc is for 1.1.x and not for 1.0 anymore.
-* 2.2. Settings in exult.cfg added more combat options and Scale2x.
-* 4.2. Scaler added Scale2x and information on it.
-* 6.6. Combat Options Some explanations for the combat options.
 
 
 
@@ -172,17 +168,17 @@ blackgate
 <savegame_path>
 ./blackgate
 						**optional. Default is the same as <path>, change to whatever you like.
-						Also see  for recommendations.
+						Also see  before changing it.
 						
 </savegame_path>
 <static_path>
-./blackgate
-						**optional. See <savegame_path>.
+./blackgate/static
+						**optional. See  before changing it.
 						
 </static_path>
 <gamedat_path>
-./blackgate
-						**optional. See <savegame_path>.
+./blackgate/gamedat
+						**optional. See  before changing it.
 						
 </gamedat_path>
 <keys>
@@ -203,17 +199,17 @@ jmsfx.flx
 <savegame_path>
 ./serpentisle
 						**optional. Default is the same as <path>, change to whatever you like.
-						Also see  for recommendations.
+						Also see  before changing it.
 						
 </savegame_path>
 <static_path>
-./serpentisle
-						**optional. See <savegame_path>.
+./serpentisle/static
+						**optional. See  before changing it.
 						
 </static_path>
 <gamedat_path>
-./serpentisle
-						**optional. See <savegame_path>.
+./serpentisle/gamedat
+						**optional. See  before changing it.
 						
 </gamedat_path>
 <keys>
@@ -352,7 +348,7 @@ no
 						fix problems some people have with Exult and sound in Windows
 						(it's a Windows-only option)
 						
-</enabled>
+</force_waveou>
 <effects>
 <enabled>
 yes
@@ -361,6 +357,11 @@ yes
 						
 </enabled>
 </effects>
+<driver>
+normal
+						**choose your music driver between normal, digital, fmsynth. See  for details.
+						
+</driver>
 <midi>
 <enabled>
 yes
@@ -387,7 +388,7 @@ Yes
 </looping>
 <dual_opl>
 Yes
-   						**No disables 'dual' mode for stereo sound when <convert> is set to fmsynth.
+   						**No disables 'dual' mode for stereo sound when <driver> is set to fmsynth.
    						
 </dual_opl>
 </midi>
@@ -476,7 +477,19 @@ blackgate
 </serpentisle>
 </game>
 </disk>
-You can also specify where Exult reads and stores the game specific data, like the files in the Static and Gamedat directory and the save games. This is optional and not required but may be useful (it only works in post-RC1 snapshots). My recommendations and example for BG (for SI use the same syntax) are:
+You can either use the relative (e.g. ./blackgate) or absolute (e.g. c:\ultima\blackgate) path to point to the correct directory.
+Note: Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\). Some people seem to have problems with that.
+Note: path settings in exult.cfg are the same on all operating systems. Of course you need to make adjustments on UNIX based systems when you enter the absolute path.
+
+
+2.4. Further directory customizations
+You can also specify whereExult reads and stores the game specific data, like the files in the Static and Gamedat directory and the save games. This is optional and not required but may be useful if you want to exercise absolute control. Some explanation what these dirs are for:
+* Savegames this is where Exult stores your savegames. Normally you find these in the dir set in <path>.
+* Static the most important dir. Here you have the data files from the original game. You should never touch these files.
+* Gamedat contains the (dynamic) data for the game you're currently playing. It's where the "journey onward" 'savegame' is stored.
+
+If you don't change the loaction of either the Static or Gamedat directories, Exult expects to find both directories in the path you specified in <path>. Don't ever point these two at the same directory.
+My recommendations and example for BG (for SI use the same syntax) are:
 <disk>
 <data_path>
 data
@@ -493,18 +506,15 @@ blackgate
 ./blackgate/savegames
 </savegame_path>
 <static_path>
-./blackgate
+./blackgate/static
 </static_path>
 <gamedat_path>
-./blackgate
+./blackgate/gamedat
 </gamedat_path>
 </blackgate>
-You can either use the relative (e.g. ./blackgate) or absolute (e.g. c:\ultima\blackgate) path to point to the correct directory.
-Note: Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\). Some people seem to have problems with that.
-Note: path settings in exult.cfg are the same on all operating systems. Of course you need to make adjustments on UNIX based systems when you enter the absolute path.
 
 
-2.4. Command line options
+2.5. Command line options
 Exult offers some "hidden" command line options:
 * -h or --help Shows all the command line parameters in stderr (stderr.txt on Windows systems)
 * -v or --version Shows version information in stderr
@@ -523,16 +533,18 @@ Exult offers some "hidden" command line options:
 
 3. Audio
 3.1. Music
-There are two ways that music is played in Exult. One is using MIDI, which plays the music through any GM MIDI device, Timidity can be used in Linux. The other is Digital Music encoded into OGG (similar to MP3) which was recorded directly from a Roland MT-32. The MIDI files are converted on-the-fly from the original Ultima 7 MT-32 files to General Midi format so that they will be playable on modern General Midi and General Midi/GS supporting sound cards.
-The options for changing the Music format are in the opening Exult menu Setup screen or in the actual game's audio options. The following settings can be used (in order of music conversion quality):
+There are three ways that music is played in Exult. One is using MIDI, which plays the music through any GM MIDI device, Timidity can be used in Linux. Another way is Digital Music encoded into OGG (similar to MP3) which was recorded directly from a Roland MT-32. The third option is FMSynth which emulates Opl2/Adlib. The MIDI files are converted on-the-fly from the original Ultima 7 MT-32 files to General Midi format so that they will be playable on modern General Midi and General Midi/GS supporting sound cards.
+The options for changing the Music driver are in the opening Exult menu Setup screen or in the actual game's audio options. Currently only the in game options menu works correctly. You can choose between:
+* Nromal This setting utilizes the MIDI driver of your system. See the MIDI conversion order below.
 * Digital Digital Music plays the OGG files which must be located in the Exult data/music directory. This does not use MIDI but plays the music digitally through any soundcard.
-* fmsynth This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib). It has a 'dual'mode for stereo sound. Use "config/audio/midi/dual_opl" set to "yes" or "no" to enable/disable it. Default is "yes". You have to restart Exult if you change this in the game.
+* FMSynth This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib). It has a 'dual'mode for stereo sound. Use "config/audio/midi/dual_opl" set to "yes" or "no" to enable/disable it. Default is "yes". You don't have to restart Exult anymore if you change this in the game.
+
+The order of MIDI conversion quality is:
 * none This option will output the music with nothing changed. Because the mapping will be for MT32s you should only use this option if you have a MT32 compatible device or you have replaced the music.
 * gs127 This option is for midi devices that have a MT32 patch bank installed in Bank 127. Some GS implementation have this, some don't. Only use this if you know that you have a MT32 implementation on Bank 127.
 * gs This will convert the MT32 patches to their equivalent GS patches. This will be a more accurate conversion that straight gm since more of the MT32 patches are in the GS set. However, not all midi devices will support this mode.
 * gm This will convert the MT32 patches to standard General Midi patches. Conversion is fairly accurate but some instruments may be different.
 
-The order of music conversion quality is:
 NOTE: Currently the conversion to GS and GS127 is not finished and the notes are only mapped to General Midi.
 
 
@@ -766,10 +778,10 @@ In this option screen you are able to determine how Exult displays the game.
 Look at 3. Audio to see explanation on the settings.
 * Audio Enable or disable all Audio in Exult.
 * Music Enable or disable music.
-* Conversion choose between Digital, FMSynth, None, GM, GS, GS127.
-* Reverb alters the way the midi is played. Enable or disable to hear if you like it.
-* Chorus the same as Reverb
-* Looping Disable restores the (broken) way the original handled the music looping flag.
+* driver choose between Normal, Digital or FMSynth.
+* conversion choose between None, GM, GS, GS127.
+* effects alters the way the midi is played. Choose between Reverb, Chorus, Both (Reverb and Chorus) or disable it.
+* looping Disable restores the (broken) way the original handled the music looping flag.
 * SFX Enable or disable digital sound effects.
 * Speech Options Enable or disable the speech in the games.
 * OK/Cancel Ok accepts your changes, Cancel discards your changes.
@@ -841,7 +853,7 @@ Introduced in April 2002, this PDA is really a pico-computer (one degree of magn
 
 
 8.3. Zaurus SL5x00 and ROMs
-Sharp occasionnally releases new versions of its ROM for Zaurus. Consider a new ROM like a new Linux distribution: new packages, new look, new kernel etc. It is possible to update the ROM thanks to information found on the Zaurus web site mentioned earlier. The current exult package for the Zaurus is created for the stock SL-5500 ROM v2.12. It has been reported to work on the SL5000-D (the earlier and less capable version). However, it has been reported that the package will not run properly using the latest ROM (no matter what version of the Zaurus you use). More detailed information on how to fix this problem will be found further down this document.
+Sharp occasionnally releases new versions of its ROM for Zaurus. Consider a new ROM like a new Linux distribution: new packages, new look, new kernel etc. It is possible to update the ROM thanks to information found on the Zaurus web site mentioned earlier. The current Exult package for the Zaurus is created for the stock SL-5500 ROM v2.12. It has been reported to work on the SL5000-D (the earlier and less capable version). However, it has been reported that the package will not run properly using the latest ROM (no matter what version of the Zaurus you use). More detailed information on how to fix this problem will be found further down this document.
 
 
 8.4. Exult and Zaurus
@@ -867,7 +879,7 @@ As mentioned earlier, Exult won't run properly on the latest ROM (v3.10 as of 20
 8.9. Solving the problems with the latest ROM
 In order to play, you'll have to change the location of the files installed by the package to /home/zaurus/ instead of /home/root/. I have not done this, but I expect you'd have to "su" to be able to change it. "su" is a command to become superuser (root). Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but you also want to edit the ~/.exult.cfg so that every occurence of /home/root/ is replaced with /home/zaurus. Please remember I have not done nor tested this, but here are the commands I suppose you'd have to type. First, open a terminal (install one if you don't have one).
 From the terminal, verify who you are by typing ($ is the prompt): $ cd ~/ $ whoami $ pwd
-The "whoami" command should return "zaurus". The "pwd" command should return "/home/zaurus/". Then copy the exult files: $ cp /home/root/.exult* ~/ -rf
+The "whoami" command should return "zaurus". The "pwd" command should return "/home/zaurus/". Then copy the Exult files: $ cp /home/root/.exult* ~/ -rf
 And change ownership to yourself. You might have to become root to do so: $ su # chown zaurus:zaurus /home/zaurus/.exult* -R # chown zaurus:zaurus /opt/QtPalmtop/share/exult -R # chown zaurus:zaurus /opt/QtPalmtop/bin/exult* -R # chown zaurus:zaurus /opt/QtPalmtop/pics/exult.png -R # chown zaurus:zaurus /opt/QtPalmtop/apps/Games/exult.desktop -R # exit
 The # is the root's prompt. The "exit" command will stop the "su" command and make you return to the "zaurus" user. It is now time to edit the .exult.cfg. A fast way to do it: $ sed -e 's/root/zaurus/' >~/.exult.cfg ~/.exult.cfg_new $ mv ~/.exult.cfg_new ~/.exult.cfg
 Normally, you should be able to start and play the game normally. Let me know if I am missing anything.
