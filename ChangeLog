@@ -1,3 +1,8 @@
+2000-05-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Orb of Moons, Moongates working (but not perfect visually)
+	* Moongates appear animated.
+
 2000-05-25  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
 	* objs.cc: treat bones as containers
 	* usecode.cc: make remove_answer accept arrays too
