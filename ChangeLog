@@ -1,6 +1,7 @@
 2003-03-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: fixed --buildmap
 	* */.cvsignore: added some misc files to .cvsignore
+	* sigame.cc, bggame.cc: use unicode translation for avatar name input
 
 2003-03-04  Jeff Freedman  <jeff@amy.nerble.net>
 
