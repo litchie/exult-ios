@@ -1,3 +1,6 @@
+2001-09-22 Patrick Burke <takhisisii@yahoo.com.au>
+	* Makefile.cygwin: Added from Kirben "Just added distribution option"
+
 2001-09-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Makefile.*: fixed include paths in alternate makefiles
 	* Makefile.*: build ucdisasm.cc
