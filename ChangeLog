@@ -1,3 +1,6 @@
+2001-06-07  Ryan Nunn <triforce@merlin.net.au>
+	* audio/xmidi.cc : Fixed Pub Music (BG Track 20) "Bug"
+
 2001-06-07  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/faq/faqs.dtd, faq_html.xsl: added "Exult Studio" template
 	* docs/faq/exult_faq.xml: FAQ updated see FAQ for details
