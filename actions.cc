@@ -86,6 +86,20 @@ int Path_walking_actor_action::handle_event
 	}
 
 /*
+ *	Stopped moving.
+ */
+
+void Path_walking_actor_action::stop
+	(
+	Actor *actor
+	)
+	{
+					// ++++For now, just use original dir.
+	Frames_sequence *frames = actor->get_frames(original_dir);
+	actor->set_frame(frames->get_resting());
+	}
+
+/*
  *	Delete.
  */
 Sequence_actor_action::~Sequence_actor_action

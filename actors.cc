@@ -98,8 +98,10 @@ void Actor::set_action
 	)
 	{
 	delete action;
+#ifndef NEWPATH
 					// Clear us from queue.
 	Game_window::get_game_window()->get_tqueue()->remove(this);
+#endif
 	action = newact;
 	}
 
@@ -111,15 +113,36 @@ void Actor::walk_to_tile
 	(
 	int tx, int ty, int tz,		// Tile.  (Tz is the lift.)
 	int speed,			// Time between frames (msecs).
-	int delay			// Delay before starting (msecs).
+	int delay			// Delay before starting (msecs) (only
+					//   if not already moving).
 	)
 	{
+#ifdef NEWPATH
+	frame_time = speed;
+	Zombie *path = new Zombie();	// Create dumb pathfinder.
+					// Set up new path.
+	if (path->NewPath(get_abs_tile_coord(), Tile_coord(tx, ty, tz),
+								Get_cost))
+		{
+		Game_window *gwin = Game_window::get_game_window();
+		if (!in_queue())	// Not already in queue?
+			{
+			unsigned long curtime = SDL_GetTicks();
+			gwin->get_tqueue()->add(curtime + delay, this, 
+								(long) gwin);
+			}
+		set_action(new Path_walking_actor_action(path));
+		}
+	else
+		delete path;		// Nowhere to go.
+#else
 	Game_window *gwin = Game_window::get_game_window();
 	int liftpixels = tz*4;
 	if (!is_walking())
 		set_action(new Walking_actor_action());
 	start(((unsigned long) tx + 1)*tilesize - liftpixels,
 	      ((unsigned long) ty + 1)*tilesize - liftpixels, speed, delay);
+#endif
 	}
 
 /*
@@ -133,11 +156,34 @@ void Actor::walk_to_point
 	int speed			// Delay between frames.
 	)
 	{
+#ifdef NEWPATH
+	int liftpixels = 4*get_lift();
+	int tx = (destx + liftpixels)/tilesize, 
+	    ty = (desty + liftpixels)/tilesize;
+	walk_to_tile(tx, ty, speed, 0);
+#else
 	Game_window *gwin = Game_window::get_game_window();
 	if (!is_walking())
 		set_action(new Walking_actor_action());
 	start(destx, desty, speed, 0);
+#endif
 	}
+
+#ifdef NEWPATH
+/*
+ *	Stop walking.
+ */
+void Actor::stop
+	(
+	)
+	{
+	if (action)
+		{
+		action->stop(this);
+		set_action(0);
+		}
+	}
+#endif
 
 /*
  *	Find the best spot where an item may be readied.
@@ -432,6 +478,7 @@ void Main_actor::get_followers
 
 /*
  *	Walk in current direction.
+ *	++++++All walk() methods go away when NEWPATH is implemented.
  *
  *	Output:	Delay for next frame, or 0 to stop.
  *		Dormant is set if off screen.
@@ -499,7 +546,6 @@ int Main_actor::walk
 
 /*
  *	Step onto an adjacent tile.
- *	+++++++++++This should be used by walk.
  *
  *	Output:	Delay for next frame, or 0 to stop.
  *		Dormant is set if off screen.

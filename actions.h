@@ -38,6 +38,7 @@ class Actor_action
 public:
 					// Handle time event.
 	virtual int handle_event(Actor *actor) = 0;
+	virtual void stop(Actor *actor) = 0;	// Stop moving.
 	};
 
 /*
@@ -50,6 +51,8 @@ public:
 		{  }
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
+	virtual void stop(Actor *actor)// Stop moving.
+		{  }
 	};
 
 /*
@@ -65,6 +68,7 @@ public:
 	~Path_walking_actor_action();
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
+	virtual void stop(Actor *actor);// Stop moving.
 	};
 
 /*
@@ -80,6 +84,8 @@ public:
 	~Sequence_actor_action();
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
+	virtual void stop(Actor *actor)	// Stop moving.
+		{  }
 	};
 
 #endif	/* INCL_ACTIONS */
