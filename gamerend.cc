@@ -321,7 +321,10 @@ void Game_window::paint
 			carried_light = party[i]->has_light_source();
 					// Also check light spell.
 		if (special_light && clock->get_total_minutes() >special_light)
+			{		// Just expired.
 			special_light = 0;
+			clock->set_palette();
+			}
 					// Set palette for lights.
 		clock->set_light_source(carried_light + (light_sources > 0),
 								in_dungeon);

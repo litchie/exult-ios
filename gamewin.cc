@@ -578,7 +578,7 @@ bool Game_window::main_actor_dont_move()
 
 void Game_window::add_special_light
 	(
-	int minutes
+	int units			// Light=500, GreatLight=5000.
 	)
 	{
 	if (!special_light)		// Nothing in effect now?
@@ -586,7 +586,7 @@ void Game_window::add_special_light
 		special_light = clock->get_total_minutes();
 		clock->set_palette();
 		}
-	special_light += minutes;	// Figure ending time.
+	special_light += units/20;	// Figure ending time.
 	}
 
 /*
