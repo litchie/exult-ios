@@ -69,15 +69,6 @@ Mouse *mouse = 0;
 ShapeBrowser *browser;
 int scale = 0;				// 1 if scaling X2.
 
-//bool    cheat=true;			// Enable cheating keys
-
-/*
-bool	god_mode = false;
-bool    wizard_mode = false;
-bool	hack_mover = false;
-bool	infravision = false;
-*/
-
 bool	usecode_trace = false;		// Do we trace Usecode-intrinsics?
 
 #if USECODE_DEBUGGER
@@ -218,13 +209,6 @@ int main
 	config->value("config/debug/trace/intrinsics",tracing,"no");
 	if(tracing=="yes")
 		usecode_trace=true;	// Enable tracing of intrinsics
-
-/*
-	string  cheating;
-	config->value("config/gameplay/cheat",cheating,"yes");
-	if(cheating=="no")
-		cheat = false;
-*/
 
 #if USECODE_DEBUGGER
 	string	u_debugging;
@@ -764,7 +748,7 @@ static void Handle_keystroke
 		break;
 	case SDLK_PLUS:
 	case SDLK_KP_PLUS:
-		if(cheat() && alt && !ctrl) {			// Alt-+ : Increase resolution
+		if(cheat() && alt && !ctrl) {		// Alt-+ : Increase resolution
 			current_res++;
 			if(current_res>=num_res)
 				current_res = 0;
@@ -780,7 +764,7 @@ static void Handle_keystroke
 		break;
 	case SDLK_MINUS:
 	case SDLK_KP_MINUS:
-		if(cheat() && alt && !ctrl) {			// Alt-- : Decrease resolution
+		if(cheat() && alt && !ctrl) {		// Alt-- : Decrease resolution
 			current_res--;
 			if(current_res<0)
 				current_res = num_res-1;
@@ -799,11 +783,11 @@ static void Handle_keystroke
 			gwin->paint();
 			gwin->set_palette(-1,-1);
 
-		} else if (!alt && !ctrl)		// B : Open spellbook.
+		} else if (!alt && !ctrl)		// b : Open spellbook.
 			gwin->activate_item(761);
 		break;
 	case SDLK_c:
-		if (cheat() && ctrl && !alt) {		// Ctrl-C : Create last shape viewed.
+		if (cheat() && ctrl && !alt) {		// Ctrl-c : Create last shape viewed.
 			int current_shape = 0;
 			int current_frame = 0;
 			if(browser->get_shape(current_shape, current_frame))
@@ -813,7 +797,7 @@ static void Handle_keystroke
 			else
 				gwin->center_text("Can only create from 'shapes.vga'");
 
-		} else if (!ctrl && !alt) {		// C : Combat mode
+		} else if (!ctrl && !alt) {		// c : Combat mode
 			gwin->toggle_combat();
 			gwin->paint();
 			int mx, my;		// Update mouse.
@@ -917,7 +901,7 @@ static void Handle_keystroke
 		delete scroll;
 		break;
 	case SDLK_i:
-		if (alt && !ctrl) {    // Alt-i : infravision
+		if (alt && !ctrl) {    		// Alt-i : infravision
 			cheat.toggle_infravision();
 
 		} else if (!alt && !ctrl) {	// i : show inventory
@@ -935,7 +919,7 @@ static void Handle_keystroke
 		}
 		break;
 	case SDLK_k:
-		if (!alt && !ctrl) {	// k : find key
+		if (!alt && !ctrl) {		// k : find key
 			Try_key(gwin);
 		}
 		break;
