@@ -7,3 +7,4 @@ Makefile
 *.lo
 .deps
 .libs
+testxml
