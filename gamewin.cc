@@ -2349,8 +2349,8 @@ void Game_window::end_splash
 		Chunk_object_list *olist = get_objects(
 				main_actor->get_cx(), main_actor->get_cy());
 		olist->setup_cache();
-		olist->activate_eggs(main_actor, main_actor->get_tx(), 
-						main_actor->get_ty(), -1, -1);
+		Tile_coord t = main_actor->get_abs_tile_coord();
+		olist->activate_eggs(main_actor, t.tx, t.ty, -1, -1);
 		}
 	}
 
