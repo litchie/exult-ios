@@ -959,20 +959,19 @@ static void Handle_event
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500)
 				{
-				dragging = false;
+				dragging = dragged = false;
 				gwin->double_clicked(x, y);
 				Mouse::mouse->set_speed_cursor();
 				break;
 				}
-
-			last_b1_click = curtime;
-
+			if (!dragging || !dragged)
+				last_b1_click = curtime;
 			if (!click_handled) {
 					// Identify item(s) clicked on.
 				gwin->show_items(x, y, 
 					(SDL_GetModState() & KMOD_CTRL) != 0);
 			}
-			dragging = false;
+			dragging = dragged = false;
 			}
 		break;
 		}
