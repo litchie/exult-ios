@@ -348,9 +348,9 @@ public:
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
 		: Ireg_game_object(l, h, shapex, shapey, lft),
-		  last_object(0), volume_used(0)
+		  volume_used(0), last_object(0)
 		{  }
-	Container_game_object() : last_object(0), volume_used(0) {  }
+	Container_game_object() : volume_used(0), last_object(0) {  }
 	void remove(Game_object *obj);
 	Game_object *get_last_object()
 		{ return last_object; }

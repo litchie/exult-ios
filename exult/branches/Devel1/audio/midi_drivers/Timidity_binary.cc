@@ -53,7 +53,7 @@ static  void    playTBmidifile(const char *name)
 			name,
 			0 };
         // execlp("timidity","-Or","-id","-o-",name,0);
-	execvp("timidity",args);
+	execvp("timidity",(char *const *)args);
 	exit(0);	// Just in case
 }
 

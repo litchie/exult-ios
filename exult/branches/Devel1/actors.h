@@ -234,6 +234,7 @@ public:
 		: Schedule(n), pathnum(-1)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
+	virtual ~Patrol_schedule();
 	};
 
 /*
