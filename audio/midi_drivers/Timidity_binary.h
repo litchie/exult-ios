@@ -17,8 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _Mixer_h_
-#define _Mixer_h_
+#ifndef _MIDI_driver_Timidity_binary_h_
+#define _MIDI_driver_Timidity_binary_h_
 
 #if __GNUG__ >= 2
 #  pragma interface
@@ -28,39 +28,30 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../autoconfig.h"
 #endif
 
-#include <list>
+#include <vector>
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
 #include "Flex.h"
+#include "Table.h"
+#include "Mixer.h"
+#include "Midi.h"
 
-//---- Mixer -----------------------------------------------------------
 
-class Mixer 
+#undef HAVE_TIMIDITY_BIN	// Disabled for now
+#if HAVE_TIMIDITY_BIN
+class	Timidity_binary : virtual public MidiAbstract
 {
 public:
-    Mixer();
-	Mixer(unsigned int, unsigned int, unsigned char);
-    Mixer(size_t ringsize,size_t bufferlength);
-    ~Mixer();
+	virtual void	start_track(const char *,int repeats);
+	virtual void	stop_track(void);
+	virtual	bool	is_playing(void);
+	virtual const	char *copyright(void);
 
-	struct	MixBuffer
-		{
-		Uint8 *buffer;
-		Uint8 num_samples;
-		size_t	length;
-		MixBuffer(size_t size,Uint8 silence) : buffer(new Uint8[size]),num_samples(0),length(0) { memset(buffer,silence,size); };
-		};
-	size_t	buffer_length;
-	list<MixBuffer>	buffers;
-	size_t ring_size;
-	void	advance(void);
-	Uint8	silence;
-	void fill_audio_func(void *, Uint8 *, int);
-	void play(Uint8 *, unsigned int);
-
-	void	set_auxilliary_audio(int);
-	int	auxilliary_audio;
+	Timidity_binary();
+	virtual ~Timidity_binary();
+private:
+	pid_t	forked_job;
 };
-
+#endif
 
 #endif
