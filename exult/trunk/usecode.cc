@@ -2592,8 +2592,13 @@ void Usecode_machine::click_to_continue
 	Answers save_answers;		// Save answers list.
 	save_answers = answers;
 	answers.clear();
+#if 0	/* Handy for debugging. */
 	answers.add_answer("Continue");
 	get_user_choice_num();
+#else
+	int xx, yy;
+	Get_click(xx, yy, Mouse::hand);
+#endif
 	user_choice = 0;		// Clear it.
 	answers = save_answers;
 	}
