@@ -2343,7 +2343,7 @@ void Game_window::show_npc_message
 	paint(box);			// Clear what was there before.
 	int height;			// Break at punctuation.
 	while ((height = paint_text_box(0, msg, box.x, box.y, box.w, box.h, 
-								0, 1)) < 0)
+								-1, 1)) < 0)
 		{			// More to do?
 		int x, y; char c;
 		Get_click(x, y, Mouse::hand, &c);
@@ -2477,7 +2477,7 @@ void Game_window::show_avatar_choices
 		if (x > 0 && x + width >= tbox.w)
 			{		// Start a new line.
 			x = 0;
-			y += height;
+			y += height - 1;
 			}
 					// Store info.
 		conv_choices[i] = Rectangle(tbox.x + x, tbox.y + y,
