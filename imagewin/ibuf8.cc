@@ -34,6 +34,8 @@ Boston, MA  02111-1307, USA.
 #  include <iostream>
 #endif
 
+#include "exult_types.h"
+
 using std::cerr;
 using std::endl;
 
@@ -188,7 +190,7 @@ void Image_buffer8::copy8
 	int srcw, int srch,		// Dimensions of source.
 	int destx, int desty
 	)
-	{
+{
 
 	if (!src_pixels)
 	{
@@ -201,18 +203,34 @@ void Image_buffer8::copy8
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
-	unsigned char *to = bits + desty*line_width + destx;
-	unsigned char *from = src_pixels + srcy*src_width + srcx;
+	uint32 *to = (uint32*) (bits + desty*line_width + destx);
+	uint32 *from = (uint32*) (src_pixels + srcy*src_width + srcx);
 	int to_next = line_width - srcw;// # pixels to next line.
 	int from_next = src_width - srcw;
+
+	// Need to know if we end dword alligned
+	int end_align = srcw%4;
+	// The actual aligned width in dwords
+	int aligned = srcw/4;
+
+	uint8 *to8;
+	uint8 *from8;
+
 	while (srch--)			// Do each line.
-		{
-		for (int cnt = srcw; cnt; cnt--)
-			*to++ = *from++;
-		to += to_next;
-		from += from_next;
-		}
+	{
+		int counter = aligned;
+		while (counter--) *to++ = *from++;
+
+		to8 = (uint8*) to;
+		from8 = (uint8*) from;
+
+		counter = end_align;
+		while (counter--) *to8++ = *from8++;
+
+		to = (uint32*) (to8+to_next);
+		from = (uint32*) (from8+from_next);
 	}
+}
 
 /*
  *	Copy a line into this buffer.
