@@ -90,6 +90,9 @@ AUTOMAKE_OPTIONS = foreign
 CXXFLAGS =  $(INCDIRS) -Wall  $(WINDOWING_SYSTEM) $(DEBUG_FLAGS)
 
 OFILES = xmlparse.o xmldump.o XMLEntity.o Configuration.o
+
+SOURCES = Configuration.cc Configuration.h XMLEntity.cc XMLEntity.h 		xmain.cc xmldump.cc xmlparse.cc
+
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../autoconfig.h
 CONFIG_CLEAN_FILES = 
@@ -126,7 +129,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$d/$$file $(distdir)/$$file; \
+	    cp -pr $$/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

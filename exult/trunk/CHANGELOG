@@ -1,3 +1,13 @@
+3/23/00:	Speech and midi support from Dancer Vesperman, as well as
+		automatic configuration.
+
+		Inventory partly working.  You can open bags and boxes, and
+		drag items in/out of them.
+
+		Mouse pointers and fonts from Ultima7 are now used.
+
+		Animated objects (like fountains and flags) supported.
+
 2/29/00:	Fixed crashes at start and after initial conversation, thanks
 		to Richard Wesley.
 

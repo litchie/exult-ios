@@ -16,6 +16,10 @@ CXXFLAGS += $(WINDOWING_SYSTEM)
 
 OFILES=	Mixer.o Midi.o Audio.o Flex.o Table.o IFF.o SDL_mapping.o
 
+SOURCES = Audio.cc Audio.h Flex.cc Flex.h IFF.cc IFF.h Midi.cc Midi.h \
+		Mixer.cc Mixer.h SDL_mapping.cc SDL_mapping.h Table.cc Table.h \
+		common.h test.cc
+
 libaudio.a:	$(OFILES)
 	ar rs libaudio.a $(OFILES)
 
