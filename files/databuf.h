@@ -28,12 +28,16 @@ public:
 	
 	virtual unsigned int read1() =0;
 	virtual unsigned int read2() =0;
+	virtual unsigned int read2high() =0;
 	virtual unsigned int read4() =0;
+	virtual unsigned int read4high() =0;
 	virtual void read(char *, int) =0;
 	
 	virtual void write1(unsigned int) =0;
 	virtual void write2(unsigned int) =0;
+	virtual void write2high(unsigned int) =0;
 	virtual void write4(unsigned int) =0;
+	virtual void write4high(unsigned int) =0;
 	
 	virtual void seek(unsigned int) =0;
 	virtual void skip(int) =0;
@@ -74,6 +78,14 @@ public:
 		return (b0 + (b1 << 8));
 	};
 	
+	virtual unsigned int read2high()
+	{
+		unsigned char b0, b1;
+		in->get((char&) b1);
+		in->get((char&) b0);
+		return (b0 + (b1 << 8));
+	};
+	
 	virtual unsigned int read4()
 	{
 		unsigned char b0, b1, b2, b3;
@@ -81,6 +93,16 @@ public:
 		in->get((char&) b1);
 		in->get((char&) b2);
 		in->get((char&) b3);
+		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	};
+	
+	virtual unsigned int read4high()
+	{
+		unsigned char b0, b1, b2, b3;
+		in->get((char&) b3);
+		in->get((char&) b2);
+		in->get((char&) b1);
+		in->get((char&) b0);
 		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	};
 	
@@ -99,12 +121,26 @@ public:
 		out->put((char) ((val>>8)&0xff));
 	};
 
+	virtual void write2high(unsigned int val)
+	{
+		out->put((char) ((val>>8)&0xff));
+		out->put((char) (val&0xff));
+	};
+
 	virtual void write4(unsigned int val)
 	{
 		out->put((char) (val&0xff));
 		out->put((char) ((val>>8)&0xff));
 		out->put((char) ((val>>16)&0xff));
 		out->put((char) ((val>>24)&0xff));
+	};
+
+	virtual void write4high(unsigned int val)
+	{
+		out->put((char) ((val>>24)&0xff));
+		out->put((char) ((val>>16)&0xff));
+		out->put((char) ((val>>8)&0xff));
+		out->put((char) (val&0xff));
 	};
 	
 	virtual void seek(unsigned int pos) { in->seekg(pos); };
@@ -151,6 +187,14 @@ public:
 		return (b0 + (b1 << 8));
 	};
 	
+	virtual unsigned int read2high()
+	{
+		unsigned char b0, b1;
+		b1 = fgetc(f);
+		b0 = fgetc(f);
+		return (b0 + (b1 << 8));
+	};
+	
 	virtual unsigned int read4()
 	{
 		unsigned char b0, b1, b2, b3;
@@ -158,6 +202,16 @@ public:
 		b1 = fgetc(f);
 		b2 = fgetc(f);
 		b3 = fgetc(f);
+		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	};
+	
+	virtual unsigned int read4high()
+	{
+		unsigned char b0, b1, b2, b3;
+		b3 = fgetc(f);
+		b2 = fgetc(f);
+		b1 = fgetc(f);
+		b0 = fgetc(f);
 		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	};
 	
@@ -176,12 +230,26 @@ public:
 		fputc((char) ((val>>8)&0xff),f);
 	};
 	
+	virtual void write2high(unsigned int val)
+	{
+		fputc((char) ((val>>8)&0xff),f);
+		fputc((char) (val&0xff),f);
+	};
+	
 	virtual void write4(unsigned int val)
 	{
 		fputc((char) (val&0xff),f);
 		fputc((char) ((val>>8)&0xff),f);
 		fputc((char) ((val>>16)&0xff),f);
 		fputc((char) ((val>>24)&0xff),f);
+	};
+
+	virtual void write4high(unsigned int val)
+	{
+		fputc((char) ((val>>24)&0xff),f);
+		fputc((char) ((val>>16)&0xff),f);
+		fputc((char) ((val>>8)&0xff),f);
+		fputc((char) (val&0xff),f);
 	};
 	
 	virtual void seek(unsigned int pos) { fseek(f, pos, SEEK_SET); };
@@ -232,6 +300,14 @@ public:
 		return (b0 + (b1 << 8));
 	};
 	
+	virtual unsigned int read2high()
+	{
+		unsigned char b0, b1;
+		b1 = (unsigned char)*buf_ptr++;
+		b0 = (unsigned char)*buf_ptr++;
+		return (b0 + (b1 << 8));
+	};
+	
 	virtual unsigned int read4()
 	{
 		unsigned char b0, b1, b2, b3;
@@ -239,6 +315,16 @@ public:
 		b1 = (unsigned char)*buf_ptr++;
 		b2 = (unsigned char)*buf_ptr++;
 		b3 = (unsigned char)*buf_ptr++;
+		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	};
+	
+	virtual unsigned int read4high()
+	{
+		unsigned char b0, b1, b2, b3;
+		b3 = (unsigned char)*buf_ptr++;
+		b2 = (unsigned char)*buf_ptr++;
+		b1 = (unsigned char)*buf_ptr++;
+		b0 = (unsigned char)*buf_ptr++;
 		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	};
 	
@@ -258,6 +344,12 @@ public:
 		*buf_ptr++ = (val>>8) & 0xff;
 	};
 
+	virtual void write2high(unsigned int val)
+	{
+		*buf_ptr++ = (val>>8) & 0xff;
+		*buf_ptr++ = val & 0xff;
+	};
+
 	
 	virtual void write4(unsigned int val)
 	{
@@ -265,6 +357,14 @@ public:
 		*buf_ptr++ = (val>>8) & 0xff;
 		*buf_ptr++ = (val>>16)&0xff;
 		*buf_ptr++ = (val>>24)&0xff;
+	};
+	
+	virtual void write4high(unsigned int val)
+	{
+		*buf_ptr++ = (val>>24)&0xff;
+		*buf_ptr++ = (val>>16)&0xff;
+		*buf_ptr++ = (val>>8) & 0xff;
+		*buf_ptr++ = val & 0xff;
 	};
 	
 	virtual void seek(unsigned int pos) { buf_ptr = buf+pos; };
