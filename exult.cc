@@ -382,10 +382,10 @@ static int Okay_to_quit
 /*
  *	Statics used below:
  */
-static int show_mouse = 0;		// 1 to display mouse in main loop.
-static int dragging = 0;		// Object or gump being moved.
-static int dragged = 0;			// Flag for when obj. moved.
-static int mouse_update = 0;		// Mouse moved/changed.
+static bool show_mouse = false;		// display mouse in main loop?
+static bool dragging = false;		// Object or gump being moved.
+static bool dragged = false;		// Flag for when obj. moved.
+static bool mouse_update = 0;		// Mouse moved/changed.
 static unsigned int altkeys = 0;	// SDL doesn't seem to handle ALT
 					//   right, so we'll keep track.
 					// 1/6, 1/10, 1/20 frame rates.
@@ -405,14 +405,14 @@ static int Filter_intro_events
 	if (gwin->get_mode() == Game_window::conversation)
 		{
 		SDL_SetEventFilter(0);	// Intro. conversation started.
-		show_mouse = 1;
+		show_mouse = true;
 		return 1;
 		}
 	if (gwin->get_usecode()->get_global_flag(
 					Usecode_machine::did_first_scene))
 		{
 		SDL_SetEventFilter(0);	// Intro. is done.
-		show_mouse = 1;
+		show_mouse = true;
 		return 0;
 		}
 	switch (event->type)
@@ -446,7 +446,7 @@ static void Handle_events
 		Delay();		// Wait a fraction of a second.
 
 		mouse->hide();		// Turn off mouse.
-		mouse_update = 0;
+		mouse_update = false;
 
 		SDL_Event event;
 		while (!*stop && SDL_PollEvent(&event))
@@ -563,7 +563,7 @@ static void Handle_event
 			dragging = gwin->start_dragging(
 					event.button.x >> scale,
 					event.button.y >> scale);
-			dragged = 0;
+			dragged = false;
 			}
 					// Move sprite toward mouse
 					//  when right button pressed.
@@ -596,7 +596,7 @@ static void Handle_event
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500)
 				{
-				dragging = 0;
+				dragging = false;
 				gwin->double_clicked(event.button.x >> scale, 
 						event.button.y >> scale);
 				if (gwin->get_mode() == Game_window::gump)
@@ -608,7 +608,7 @@ static void Handle_event
 					// Identify item(s) clicked on.
 				gwin->show_items(event.button.x >> scale, 
 						event.button.y >> scale);
-			dragging = 0;
+			dragging = false;
 			}
 		break;
 	case SDL_MOUSEMOTION:
@@ -616,7 +616,7 @@ static void Handle_event
 		mouse->move(event.motion.x >> scale, event.motion.y >> scale);
 		if (gwin->get_mode() == Game_window::normal)
 			Set_mouse_and_speed(event.motion.x, event.motion.y);
-		mouse_update = 1;	// Need to blit mouse.
+		mouse_update = true;	// Need to blit mouse.
 		if (gwin->get_mode() != Game_window::normal &&
 		    gwin->get_mode() != Game_window::gump)
 			break;
@@ -1011,7 +1011,7 @@ static int Get_click
 		Delay();		// Wait a fraction of a second.
 
 		mouse->hide();		// Turn off mouse.
-		mouse_update = 0;
+		mouse_update = false;
 
 		while (SDL_PollEvent(&event))
 			switch (event.type)
@@ -1027,7 +1027,7 @@ static int Get_click
 			case SDL_MOUSEMOTION:
 				mouse->move(event.motion.x >> scale, 
 						event.motion.y >> scale);
-				mouse_update = 1;
+				mouse_update = true;
 				break;
 			case SDL_KEYDOWN:
 				{
@@ -1110,7 +1110,7 @@ void Wait_for_arrival
 		Delay();		// Wait a fraction of a second.
 
 		mouse->hide();		// Turn off mouse.
-		mouse_update = 0;
+		mouse_update = false;
 
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
@@ -1119,7 +1119,7 @@ void Wait_for_arrival
 			case SDL_MOUSEMOTION:
 				mouse->move(event.motion.x >> scale,
 						 event.motion.y >> scale);
-				mouse_update = 1;
+				mouse_update = true;
 				break;
 				}
 					// Get current time, & animate.
@@ -1171,7 +1171,7 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
 		break;
 	case SDL_MOUSEMOTION:
 		mouse->move(event.motion.x >> scale, event.motion.y >> scale);
-		mouse_update = 1;
+		mouse_update = true;
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
 			gump->mouse_drag(event.motion.x >> scale,
@@ -1241,7 +1241,7 @@ int Modal_gump
 		{
 		Delay();		// Wait a fraction of a second.
 		mouse->hide();		// Turn off mouse.
-		mouse_update = 0;
+		mouse_update = false;
 		SDL_Event event;
 		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
 			escaped = !Handle_gump_event(gump, event);
