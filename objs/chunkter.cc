@@ -92,7 +92,7 @@ inline void Chunk_terrain::paint_tile
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Shape_frame *shape = gwin->get_shape(get_flat(tilex, tiley));
+	Shape_frame *shape = get_shape(tilex, tiley);
 	if (shape && !shape->is_rle())		// Only do flat tiles.
 		rendered_flats->copy8(shape->get_data(), 
 			c_tilesize, c_tilesize, tilex*c_tilesize,

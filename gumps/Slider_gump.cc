@@ -209,13 +209,13 @@ void Slider_gump::mouse_down
 		return;
 	}
 					// See if on diamond.
-	Shape_frame *diamond = gwin->get_gump_shape(game->get_shape("gumps/slider_diamond"), 0);
-	if (diamond->has_point(mx - (x + diamondx), my - (y + diamondy)))
+	Shape_frame *d_shape = diamond.get_shape();
+	if (d_shape->has_point(mx - (x + diamondx), my - (y + diamondy)))
 	{			// Start to drag it.
 		dragging = 1;
 		prev_dragx = mx;
 	} else {
-		if(my-get_y()<diamondy || my-get_y()>diamondy+diamond->get_height())
+		if(my-get_y()<diamondy || my-get_y()>diamondy+d_shape->get_height())
 			return;
 		diamondx = mx-get_x();
 		if(diamondx<xmin)

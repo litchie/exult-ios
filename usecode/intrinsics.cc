@@ -1109,13 +1109,13 @@ USECODE_INTRINSIC(summon)
 USECODE_INTRINSIC(display_map)
 {
 	// Display map.
-	Shape_frame *map;
-	map = gwin->get_sprite_shape(game->get_shape("sprites/map"), 0);
+	ShapeID msid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
+	Shape_frame *map = msid.get_shape();
 
 					// Get coords. for centered view.
 	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
 	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
-	gwin->paint_shape(x, y, map, 1);
+	gwin->paint_shape(x, y, msid);
 
 	//count all sextants in party
 	Usecode_value v_357(-357), v650(650), v_359(-359);
@@ -1163,11 +1163,14 @@ USECODE_INTRINSIC(si_display_map)
 	}
 			
 	// Display map.
-	Shape_frame *map = gwin->get_sprite_shape(shapenum, 0);
+	
+	// Display map.
+	ShapeID msid(shapenum, 0, SF_SPRITES_VGA);
+	Shape_frame *map = msid.get_shape();
 				// Get coords. for centered view.
 	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
 	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
-	gwin->paint_shape(x, y, map, 1);
+	gwin->paint_shape(x, y, msid);
 
 	gwin->show(1);
 	int xx, yy;
@@ -1288,7 +1291,7 @@ USECODE_INTRINSIC(display_area)
 		int tw = gwin->get_width()/c_tilesize, 
 		    th = gwin->get_height()/c_tilesize;
 		gwin->clear_screen();	// Fill with black.
-		Shape_frame *sprite = gwin->get_sprite_shape(10, 0);
+		Shape_frame *sprite = ShapeID(10, 0, SF_SPRITES_VGA).get_shape();
 					// Center it.
 		int topx = (gwin->get_width() - sprite->get_width())/2,
 		    topy = (gwin->get_height() - sprite->get_height())/2;

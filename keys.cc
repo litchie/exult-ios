@@ -160,7 +160,7 @@ const struct Action {
 	{ "TOGGLE_PETRA",
 	  ActionPetra, "Toggle Petra mode", true, true, SERPENT_ISLE, false },
 	{ "CHANGE_SKIN",
-	  ActionSkinColour, "Change skin colour", true, true, SERPENT_ISLE, false },
+	  ActionSkinColour, "Change skin colour", true, true, NONE, false },
 	{ "SOUND_TESTER", 
 	  ActionSoundTester, "Sound tester", false, true, NONE, false },
 	{ "TEST", ActionTest, "Test", false, false, NONE, false },

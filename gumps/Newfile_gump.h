@@ -70,8 +70,9 @@ struct SaveGame_Party
 	unsigned char	training;	// 40
 	short		health;		// 42
 
+	short		shape_file;	// 44
+
 	//Incase we want to add more later
-	short		reserved0;	// 44
 	int		reserved1;	// 48
 	int		reserved2;	// 52
 	int		reserved3;	// 56

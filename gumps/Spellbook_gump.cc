@@ -319,7 +319,7 @@ Spellbook_gump::Spellbook_gump
 	leftpage = new Page_button(this, lpagex, lrpagey, 0);
 	rightpage = new Page_button(this, rpagex, lrpagey, 1);
 					// Get dims. of a spell.
-	Shape_frame *spshape = gwin->get_gump_shape(SPELLS, 0);
+	Shape_frame *spshape = ShapeID(SPELLS, 0, SF_GUMPS_VGA).get_shape();
 	spwidth = spshape->get_width();
 	spheight = spshape->get_height();
 	int vertspace = (object_area.h - 4*spheight)/4;
@@ -534,10 +534,10 @@ void Spellbook_gump::paint
 		int s = book->bookmark%8;// Get # within circle.
 		int bx = s < 4 ? object_area.x + spwidth/2
 			: object_area.x + object_area.w - spwidth/2 - 2;
-		Shape_frame *bshape = gwin->get_gump_shape(BOOKMARK, 0);
+		ShapeID bm(BOOKMARK, 1 + s%4, SF_GUMPS_VGA);
+		Shape_frame *bshape = bm.get_shape();
 		bx += bshape->get_xleft();
 		int by = object_area.y - 14 + bshape->get_yabove();
-		ShapeID bm(BOOKMARK, 1 + s%4, SF_GUMPS_VGA);
 		gwin->paint_shape(x + bx, y + by, bm);
 	}
 	gwin->set_painted();
@@ -556,7 +556,7 @@ Spellscroll_gump::Spellscroll_gump
 
 	Game_window *gwin = Game_window::get_game_window();
 					// Get dims. of a spell.
-	Shape_frame *spshape = gwin->get_gump_shape(SCROLLSPELLS, 0);
+	Shape_frame *spshape = ShapeID(SCROLLSPELLS, 0, SF_GUMPS_VGA).get_shape();
 	spwidth = spshape->get_width();
 	spheight = spshape->get_height();
 	int spellnum = scroll->get_quality();

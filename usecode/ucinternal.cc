@@ -506,13 +506,14 @@ void Usecode_internal::set_item_frame
 	if (frame == item->get_framenum())
 		return;			// Already set to that.
 					// Check for empty frame.
-	Shape_frame *shape = gwin->get_shape(item->get_shapenum(), frame);
+	ShapeID sid(item->get_shapenum(), frame);
+	Shape_frame *shape = sid.get_shape();
 	if (!shape || (check_empty && shape->is_empty()))
 		return;
 	// cout << "Set_item_frame: " << item->get_shapenum() 
 	//				<< ", " << frame << endl;
 					// (Don't mess up rotated frames.)
-	if ((frame&0xf) < gwin->get_shape_num_frames(item->get_shapenum()))
+	if ((frame&0xf) < item->get_num_frames())
 		{
 		if (item->get_owner())	// Inside a container?
 			{
@@ -2367,7 +2368,7 @@ void Usecode_internal::link_party
 		tmp_party[i] = party[i];
 	party_count = dead_party_count = 0;
 					// Now process them.
-	for (int i = 0; i < tmp_party_count; i++)
+	for (i = 0; i < tmp_party_count; i++)
 		{
 		Actor *npc = gwin->get_npc(party[i]);
 		int oldid;

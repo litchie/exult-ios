@@ -61,6 +61,10 @@ public:
 	virtual bool apply() = 0;	// Perform action.
 	};
 
+// Sigh, this is needed to prevent compiler error with MSVC
+typedef std::list<Map_patch*> Map_patch_list;
+typedef std::map<int, Map_patch_list> Map_patch_map;
+
 /*
  *	Remove an object.
  */
@@ -90,7 +94,7 @@ public:
  */
 class Map_patch_collection
 	{
-	map<int, list<Map_patch *> > patches;
+	Map_patch_map patches;
 public:
 	Map_patch_collection()
 		{  }

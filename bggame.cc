@@ -29,10 +29,14 @@
 #include "gamewin.h"
 #include "Audio.h"
 #include "bggame.h"
+#include "sigame.h"
 #include "palette.h"
 #include "databuf.h"
 #include "font.h"
 #include "txtscroll.h"
+#include "data/exult_bg_flx.h"
+#include "exult.h"
+#include "Configuration.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
@@ -1483,7 +1487,19 @@ bool BG_Game::new_game(Vga_file &shapes)
 {
 	int menuy = topy+110;
 	Font *font = fontManager.get_font("MENU_FONT");
-	
+
+	// Need to know if SI is installed
+	std::string si_dir;
+	config->value("config/disk/game/serpentisle/path",si_dir,".");
+	bool si_installed = SI_Game::is_installed(si_dir.c_str());
+
+	U7object faces_u7o("<DATA>/exult_bg.flx", EXULT_BG_FLX_MR_INTRO_SHP);
+	unsigned int shapesize;
+	char *shape_buf = faces_u7o.retrieve(shapesize);
+	BufferDataSource faces_ds(shape_buf, shapesize);
+	Shape_file faces_shape(&faces_ds);
+	Shape_frame *sf;
+
 	const int max_name_len = 16;
 	char npc_name[max_name_len+1];
 	char disp_name[max_name_len+2];
@@ -1503,8 +1519,24 @@ bool BG_Game::new_game(Vga_file &shapes)
 			win->fill8(0,gwin->get_width(),90,0,menuy);
 			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
 			gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0xA, selected==1?1:0));
-			gwin->paint_shape(topx+50,menuy+25,shapes.get_shape(0xB,sex));
-			gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
+
+			if (si_installed)
+			{
+				gwin->paint_shape(topx+50,menuy+25,shapes.get_shape(0xB,sex%2));
+
+				if (sex >= 2)
+				{
+					gwin->paint_shape(topx+250,menuy+10,faces_shape.get_frame(7-sex));
+				}
+				else
+					gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
+			}
+			else
+			{
+				gwin->paint_shape(topx+50,menuy+25,shapes.get_shape(0xB,sex));
+				gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
+			}
+
 			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
 			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
 			if(selected==0)
@@ -1532,7 +1564,15 @@ bool BG_Game::new_game(Vga_file &shapes)
 					}
 				}
 				else if(selected==1)
-					sex = !sex;
+				{
+					if (si_installed)
+					{
+						sex++;
+						if (sex >= 8) sex = 0;
+					}
+					else
+						sex = !sex;
+				}
 				else if(selected==2)
 				{
 					editing=false;
@@ -1545,9 +1585,29 @@ bool BG_Game::new_game(Vga_file &shapes)
 				}
 				break;
 			case SDLK_LEFT:
+				if(selected==1)
+				{
+					if (si_installed)
+					{
+						sex--;
+						if (sex < 0) sex = 7;
+					}
+					else
+						sex = !sex;
+				}
+				break;
+
 			case SDLK_RIGHT:
 				if(selected==1)
-					sex = !sex;
+				{
+					if (si_installed)
+					{
+						sex++;
+						if (sex >= 8) sex = 0;
+					}
+					else
+						sex = !sex;
+				}
 				break;
 			case SDLK_ESCAPE:
 				editing = false;
@@ -1609,10 +1669,14 @@ bool BG_Game::new_game(Vga_file &shapes)
 	}
 	while(editing);
 
+	FORGET_ARRAY(shape_buf);
+
 	if(ok)
 	{
+		std::cout << "Skin is: " << (3-(sex/2)) << " Sex is: " << (sex%2) << std::endl;
+		set_avskin(3-(sex/2));
 		set_avname (npc_name);
-		set_avsex (sex);
+		set_avsex (sex%2);
 		ok =gwin->init_gamedat(true);
 	}
 	win->fill8(0,gwin->get_width(),90,0,menuy);

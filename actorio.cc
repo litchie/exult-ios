@@ -122,12 +122,23 @@ void Actor::read
 	
 					// Get char. atts.
 
-	// Strength (0-4), skin colour(5-6), freeze (7)
+	// In BG - Strength (0-5), skin colour(6-7)
+	// In SI - Strength (0-4), skin colour(5-6), freeze (7)
 	int strength_val = Read1(nfile);
 
 	if (Game::get_game_type() == BLACK_GATE)
 	{
-		set_property(static_cast<int>(Actor::strength), strength_val);
+		set_property(static_cast<int>(Actor::strength), strength_val & 0x3F);
+
+		if (num == 0)
+		{
+			if (Game::get_avskin() >= 0 && Game::get_avskin() <= 3)
+				set_skin_color (Game::get_avskin());
+			else
+				set_skin_color (((strength_val >> 6)-1) & 0x3);
+		}
+		else 
+			set_skin_color (3);
 	}
 	else
 	{
@@ -254,15 +265,20 @@ void Actor::read
 	nfile.seekg (2, ios::cur);	// V1 ????? (refer to U7tech.txt)
 	nfile.seekg (2, ios::cur);	// V2 ????? (refer to U7tech.txt)
 
+	Game_window *gwin = Game_window::get_game_window();
+
 	// 16 Bit Shape Numbers, allows for shapes > 1023
 	shnum = Read2(nfile);
 	if (!fix_first && shnum)
 	{
-		set_shape(shnum);		// 16 Bit Shape Number
+		if (GAME_BG && !gwin->can_use_multiracial() && shnum > 1024 && npc_num == 0)
+			set_actor_shape();
+		else
+			set_shape(shnum);		// 16 Bit Shape Number
+
 		shnum = (sint16) Read2(nfile);	// 16 Bit Polymorph Shape Number
 		if (get_flag (Obj_flags::polymorph)) set_polymorph(shnum);
-
-
+		
 	}
 	else
 	{
@@ -333,8 +349,6 @@ void Actor::read
 	else
 		name = namebuf;		// Store copy of it.
 
-
-	Game_window *gwin = Game_window::get_game_window();
 					// Get abs. chunk. coords. of schunk.
 	int scy = 16*(schunk/12);
 	int scx = 16*(schunk%12);
@@ -461,7 +475,9 @@ void Actor::write
 	
 					// Write char. attributes.
 	iout = get_property(Actor::strength);
-	if (Game::get_game_type() != BLACK_GATE) iout |= (get_skin_color () & 3) << 5;
+	if (Game::get_game_type() != BLACK_GATE && npc_num == 0) iout |= (get_skin_color () & 3) << 5;
+	else if (npc_num == 0) iout |= ((get_skin_color()+1) & 3) << 6;
+
 	if (get_flag (Obj_flags::freeze)) iout |= 1 << 7;
 	nfile.put(iout);
 	

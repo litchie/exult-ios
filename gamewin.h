@@ -172,6 +172,10 @@ class Game_window
 	bool bg_paperdolls;		// True if paperdolls are wanted in BG
 	Vga_file bg_serpgumps;		// "gumps.vga" - from serpent isle 
 					//   for BG Paperdolls
+	bool bg_multiracial_allowed;	// Set true if the SI shapes file 
+					//   is found when playing BG
+	Vga_file bg_serpshapes;		// "shapes.vga" - from serpent isle 
+					//   for BG multiracial
 
 	bool mouse3rd;			// use third (middle) mouse button
 	bool fastmouse;
@@ -377,16 +381,7 @@ public:
 	Shape_info& get_info(int shnum)	// Get shape info.
 		{ return shapes.get_info(shnum); }
 	Shape_info& get_info(const Game_object *obj);
-					// Get shape from shapes.vga.
-	Shape_frame *get_shape(int shapenum, int framenum)
-		{ return shapes.get_shape(shapenum, framenum); }
-	Shape_frame *get_shape(const ShapeID& id)
-		{ return get_shape(id.get_shapenum(), id.get_framenum()); }
-					// Get # frames in a shape.
-	int get_shape_num_frames(int shapenum)
-		{ return shapes.get_num_frames(shapenum); }
-	int get_sprite_num_frames(int shapenum)
-		{ return sprites.get_num_frames(shapenum); }
+
 					// Get screen area of shape at pt.
 	Rectangle get_shape_rect(const Shape_frame *s, int x, int y) const
 		{
@@ -394,8 +389,14 @@ public:
 				s->get_width(), s->get_height());
 		}
 					// Get screen area used by object.
-	Rectangle get_shape_rect(const Game_object *obj);
+	Rectangle get_shape_rect(Game_object *obj);
 
+private: 
+	friend class ShapeID;
+
+			// Get shape from shapes.vga.
+	inline Shape_frame *get_shape(int shapenum, int framenum)
+		{ return shapes.get_shape(shapenum, framenum); }
 	inline Shape_frame *get_gump_shape(int shapenum, int framenum)
 		{ return gumps.get_shape(shapenum, framenum); }
 	inline Shape_frame *get_paperdoll_shape(int shapenum, int framenum)
@@ -411,6 +412,33 @@ public:
 	inline Shape_frame *get_bg_sigump_shape(int shapenum, int framenum)
 		{ return (!bg_paperdolls_allowed || !bg_paperdolls) ? 0:
 			bg_serpgumps.get_shape(shapenum, framenum); }
+	inline Shape_frame *get_bg_sishape(int shapenum, int framenum)
+		{ return (!bg_multiracial_allowed) ? 0:
+			bg_serpshapes.get_shape(shapenum, framenum); }
+
+					// Get # frames in a shape.
+	inline int get_shape_num_frames(int shapenum)
+		{ return shapes.get_num_frames(shapenum); }
+	inline int get_gump_num_frames(int shapenum)
+		{ return gumps.get_num_frames(shapenum); }
+	inline int get_paperdoll_num_frames(int shapenum)
+		{ return paperdolls.get_num_frames(shapenum); }
+	inline int get_exult_num_frames(int shapenum)
+		{ return exult_flx.get_num_frames(shapenum); }
+	inline int get_gameflx_num_frames(int shapenum)
+		{ return gameflx.get_num_frames(shapenum); }
+	inline int get_sprite_num_frames(int shapenum)
+		{ return sprites.get_num_frames(shapenum); }
+	inline int get_face_num_frames(int shapenum)
+		{ return faces.get_num_frames(shapenum); }
+	inline int get_bg_sigump_num_frames(int shapenum)
+		{ return (!bg_paperdolls_allowed || !bg_paperdolls) ? 0:
+			bg_serpgumps.get_num_frames(shapenum); }
+	inline int get_bg_sishape_num_frames(int shapenum)
+		{ return (!bg_multiracial_allowed) ? 0:
+			bg_serpshapes.get_num_frames(shapenum); }
+	
+public:
 
 					// Get screen loc. of object.
 	void get_shape_location(Game_object *obj, int& x, int& y);
@@ -436,57 +464,27 @@ public:
 
 	inline void paint_shape(int xoff, int yoff, ShapeID &shape, bool force_trans = false)
 		{ paint_shape(xoff, yoff, shape.get_shape(), force_trans||shape.is_translucent()); }
-
-	void paint_shape(int xoff, int yoff, int shapenum, int framenum)
+	inline void paint_invisible(int xoff, int yoff, Shape_frame *shape)
 		{
-		paint_shape(xoff, yoff, get_shape(shapenum, framenum),
-				shapes.get_info(shapenum).has_translucency());
-		}
-	void paint_invisible(int xoff, int yoff, int shapenum, int framenum)
-		{
-		Shape_frame *shape = get_shape(shapenum, framenum);
-		if (shape)
-			shape->paint_rle_transformed(win->get_ib8(),
+		if (shape) shape->paint_rle_transformed(win->get_ib8(),
 						xoff, yoff, invis_xform);
 		}
+
 					// Paint outline around a shape.
-	void paint_outline(int xoff, int yoff, int shapenum, int framenum,
-								int pix)
+	inline void paint_outline(int xoff, int yoff, Shape_frame *shape, int pix)
 		{
-		Shape_frame *shape = get_shape(shapenum, framenum);
-		if (shape)
-			shape->paint_rle_outline(win->get_ib8(), 
+		if (shape) shape->paint_rle_outline(win->get_ib8(), 
 					xoff, yoff, pix);
 		}
-	void paint_poison_outline(int xoff, int yoff, int shnum, int frnum)
-		{ paint_outline(xoff, yoff, shnum, frnum, poison_pixel); }
-	void paint_protect_outline(int xoff, int yoff, int shnum, int frnum)
-		{ paint_outline(xoff, yoff, shnum, frnum, protect_pixel); }
-	void paint_cursed_outline(int xoff, int yoff, int shnum, int frnum)
-		{ paint_outline(xoff, yoff, shnum, frnum, cursed_pixel); }
-	void paint_hit_outline(int xoff, int yoff, int shnum, int frnum)
-		{ paint_outline(xoff, yoff, shnum, frnum, hit_pixel); }
-	void paint_exult_shape(int xoff, int yoff, int shapenum, int framenum)
-		{
-		Shape_frame *shape = exult_flx.get_shape(shapenum, framenum);
-		if (shape) paint_shape(xoff, yoff, shape);
-		}
-	void paint_gameflx_shape(int xoff,int yoff, int shapenum, int framenum)
-	{
-		Shape_frame *shape = gameflx.get_shape(shapenum, framenum);
-		if (shape) paint_shape(xoff, yoff, shape);
-	}
-	void paint_face(int xoff, int yoff, int shapenum, int framenum) {
-		Shape_frame *shape = faces.get_shape(shapenum, framenum);
-		if (shape)
-			paint_shape(xoff, yoff, shape);
-	}
-	void paint_sprite(int xoff, int yoff, int shapenum, int framenum)
-		{
-		Shape_frame *shape = sprites.get_shape(shapenum, framenum);
-		if (shape)		// They have translucency.
-			paint_shape(xoff, yoff, shape, 1);
-		}
+	inline void paint_poison_outline(int xoff, int yoff, Shape_frame *shape)
+		{ paint_outline(xoff, yoff, shape, poison_pixel); }
+	inline void paint_protect_outline(int xoff, int yoff, Shape_frame *shape)
+		{ paint_outline(xoff, yoff, shape, protect_pixel); }
+	inline void paint_cursed_outline(int xoff, int yoff, Shape_frame *shape)
+		{ paint_outline(xoff, yoff, shape, cursed_pixel); }
+	inline void paint_hit_outline(int xoff, int yoff, Shape_frame *shape)
+		{ paint_outline(xoff, yoff, shape, hit_pixel); }
+
 					// Get "map" superchunk objs/scenery.
 	void get_map_objects(int schunk);
 					// Get "chunk" objects/scenery.
@@ -701,18 +699,21 @@ public:
 	// Create a mini-screenshot (96x60)
 	Shape_file* create_mini_screenshot ();
 
-	bool get_frame_skipping()	// This needs doing
+	inline bool get_frame_skipping()	// This needs doing
 	{ return true; }
 
 	// BG Only
-	bool can_use_paperdolls() const
+	inline bool can_use_paperdolls() const
 	{ return bg_paperdolls_allowed; }
 
-	bool get_bg_paperdolls() const
+	inline bool get_bg_paperdolls() const
 	{ return bg_paperdolls; }
 
-	void set_bg_paperdolls(bool p)
+	inline void set_bg_paperdolls(bool p)
 	{ bg_paperdolls = p; }
+
+	inline bool can_use_multiracial() const
+	{ return bg_multiracial_allowed; }
 
 	// Old Style Caching Emulation. Called if player has changed chunks
 	void emulate_cache(int oldx, int oldy, int newx, int newy);
@@ -725,8 +726,9 @@ public:
 	unsigned char get_protect_pixel() { return protect_pixel; }
 	unsigned char get_hit_pixel() { return hit_pixel; }
 
-	Gump_manager *get_gump_man() { return gump_man; }
-	Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
+	inline Gump_manager *get_gump_man() { return gump_man; }
+	inline Gump *get_dragging_gump() { return dragging_gump; }
+	inline Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
 
 protected:
 	void start_actor_alt (int winx, int winy, int speed);

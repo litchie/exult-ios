@@ -187,10 +187,12 @@ Game_window::Game_window
 	    palette(-1), brightness(100), user_brightness(100), 
 	    faded_out(false), fades_enabled(true),
 	    special_light(0), last_restore_hour(6),
-	    dragging(0), dragging_save(0),
+	    dragging(0), dragging_gump(0),
+	    dragging_button(0), dragging_save(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    background_noise(new Background_noise(this)),
 	    bg_paperdolls_allowed(false), bg_paperdolls(false),
+	    bg_multiracial_allowed(false),
 	    removed(new Deleted_objects()), 
 	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0),
 	    map_patches(new Map_patch_collection)
@@ -408,20 +410,22 @@ void Game_window::init_files(bool cycle)
 		{
 			paperdolls.load("<SERPENT_STATIC>/paperdol.vga");
 			bg_serpgumps.load("<SERPENT_STATIC>/gumps.vga");
+			bg_serpshapes.load("<SERPENT_STATIC>/shapes.vga");
 
-			if (paperdolls.is_good() && bg_serpgumps.is_good())
+			if (paperdolls.is_good() && bg_serpgumps.is_good() && bg_serpshapes.is_good())
 			{
-				cout << "Found Serpent Isle 'paperdol.vga' and 'gumps.vga'." << endl << "Support for 'Serpent Isle' Paperdolls in 'Black Gate' ENABLED." << endl;
+				cout << "Found Serpent Isle 'paperdol.vga', 'gumps.vga' and 'shapes.vga'." << endl << "Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' ENABLED." << endl;
 				bg_paperdolls_allowed = true;
+				bg_multiracial_allowed = true;
 			}
 			else
-				cout << "Found Serpent Isle 'paperdol.vga' and 'gumps.vga' but one was bad." << endl << "Support for 'Serpent Isle' Paperdolls in 'Black Gate' DISABLED." << endl;
+				cout << "Found Serpent Isle 'paperdol.vga', 'gumps.vga' and 'shapes.vga' but one or more as bad." << endl << "Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' DISABLED." << endl;
 		}
-		catch (const exult_exception &e)
+		catch (const exult_exception &e)	
 		{
-			cerr << "Exception attempting to load Serpent Isle 'paperdol.vga' or 'gumps.vga" << endl <<
+			cerr << "Exception attempting to load Serpent Isle 'paperdol.vga', 'gumps.vga' or 'shapes.vga'"<< endl <<
 				"Do you have Serpent Isle and is the correct path set in the config for Serpent Isle?" << endl <<
-				"Support for 'Serpent Isle' Paperdolls in 'Black Gate' DISABLED." << endl;
+				"Support for 'Serpent Isle' Paperdolls and Multiracial Avatars in 'Black Gate' DISABLED." << endl;
 		}
 
 	}
@@ -845,9 +849,9 @@ Shape_info& Game_window::get_info(const Game_object *obj)
  *	Get screen area used by object.
  */
 
-Rectangle Game_window::get_shape_rect(const Game_object *obj)
+Rectangle Game_window::get_shape_rect(Game_object *obj)
 {
-	Shape_frame *s = get_shape(*obj);
+	Shape_frame *s = obj->get_shape();
 	if(!s)
 	{
 		// This is probably fatal.
@@ -2511,7 +2515,7 @@ int Game_window::find_objects
 						!obj->is_findable(this))
 					continue;
 					// Check the shape itself.
-				Shape_frame *s = get_shape(*obj);
+				Shape_frame *s = obj->get_shape();
 				int ox, oy;
 				get_shape_location(obj, ox, oy);
 				if (s->has_point(x - ox, y - oy))

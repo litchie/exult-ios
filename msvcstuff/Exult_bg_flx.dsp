@@ -134,36 +134,9 @@ CFG=Exult_bg_flx - Win32 Release
 # Begin Group "Shapes"
 
 # PROP Default_Filter "shp"
-# Begin Source File
+# Begin Group "Faces"
 
-SOURCE=..\data\bg\amulets.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\bg\bgfiredoom.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\bg\BGmap.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\bg\caddellite_helmet.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
-# Begin Source File
-
-SOURCE=..\data\bg\cleaver.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\data\bg\dupre_face.shp
@@ -183,13 +156,56 @@ SOURCE=..\data\bg\faces2.shp
 # End Source File
 # Begin Source File
 
-SOURCE=..\data\bg\fellowshipstaff.shp
+SOURCE=..\data\bg\fem_av_face.shp
+# PROP Intermediate_Dir "."
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\bg\iolo_face.shp
+# PROP Intermediate_Dir "."
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\bg\male_av_face.shp
+# PROP Intermediate_Dir "."
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\bg\shamino_face.shp
+# PROP Intermediate_Dir "."
+# End Source File
+# End Group
+# Begin Group "Paperdolls"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\data\bg\amulets.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
-SOURCE=..\data\bg\fem_av_face.shp
+SOURCE=..\data\bg\bgfiredoom.shp
+# PROP BASE Intermediate_Dir "."
+# PROP Intermediate_Dir "."
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\bg\caddellite_helmet.shp
+# PROP BASE Intermediate_Dir "."
+# PROP Intermediate_Dir "."
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\bg\cleaver.shp
+# PROP BASE Intermediate_Dir "."
+# PROP Intermediate_Dir "."
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\bg\fellowshipstaff.shp
+# PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
@@ -206,13 +222,12 @@ SOURCE=..\data\bg\great_dagger.shp
 # End Source File
 # Begin Source File
 
-SOURCE=..\data\bg\hoe_of_destruction.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
+SOURCE=..\data\bg\greaves.shp
 # End Source File
 # Begin Source File
 
-SOURCE=..\data\bg\iolo_face.shp
+SOURCE=..\data\bg\hoe_of_destruction.shp
+# PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
@@ -229,12 +244,25 @@ SOURCE=..\data\bg\magicgorget.shp
 # End Source File
 # Begin Source File
 
-SOURCE=..\data\bg\male_av_face.shp
-# PROP Intermediate_Dir "."
+SOURCE=..\data\bg\spiked_shield.shp
+# End Source File
+# End Group
+# Begin Group "Multiracial"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\data\bg\mr_faces.shp
 # End Source File
 # Begin Source File
 
-SOURCE=..\data\bg\shamino_face.shp
+SOURCE=..\data\bg\mr_intro.shp
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\data\bg\BGmap.shp
+# PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
 # End Source File
 # End Group
@@ -251,29 +279,8 @@ SOURCE=..\data\bg\defaultkeys.txt
 # Begin Source File
 
 SOURCE=..\data\bg\flx.in
-
-!IF  "$(CFG)" == "Exult_bg_flx - Win32 Release"
-
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
-
-!ELSEIF  "$(CFG)" == "Exult_bg_flx - Win32 Debug"
-
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-
-!ELSEIF  "$(CFG)" == "Exult_bg_flx - Win32 Release Install"
-
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-
-!ELSEIF  "$(CFG)" == "Exult_bg_flx - Win32 Debug Install"
-
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
-
-!ENDIF 
-
 # End Source File
 # End Target
 # End Project

@@ -746,7 +746,7 @@ Object_animate_actor_action::Object_animate_actor_action
 	) : obj(o), cycles(cy), speed(spd)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	nframes = gwin->get_shape_num_frames(obj->get_shapenum());
+	nframes = obj->get_num_frames();
 	}
 
 Object_animate_actor_action::Object_animate_actor_action

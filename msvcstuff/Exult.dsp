@@ -52,7 +52,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /version:93.4 /subsystem:windows /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /version:93.4 /subsystem:windows /incremental:yes /machine:I386
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
@@ -104,7 +104,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /version:93.4 /subsystem:windows /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /version:93.4 /subsystem:windows /incremental:yes /machine:I386
 # SUBTRACT LINK32 /pdb:none
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
 TargetPath=\UC\exult\Exult.exe
@@ -529,6 +529,10 @@ SOURCE=..\menulist.cc
 # End Source File
 # Begin Source File
 
+SOURCE=..\monsters.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\mouse.cc
 # End Source File
 # Begin Source File
@@ -662,6 +666,10 @@ SOURCE=..\gumps\File_gump.cc
 # Begin Source File
 
 SOURCE=..\gumps\Gamemenu_gump.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\gumps\GameplayOptions_gump.cc
 # End Source File
 # Begin Source File
 
@@ -851,6 +859,10 @@ SOURCE=..\objs\jawbone.cc
 # Begin Source File
 
 SOURCE=..\objs\Makefile.am
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\mappatch.cc
 # End Source File
 # Begin Source File
 
@@ -1186,6 +1198,10 @@ SOURCE=..\mingw_kludges.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\monsters.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\mouse.h
 # End Source File
 # Begin Source File
@@ -1327,6 +1343,10 @@ SOURCE=..\gumps\File_gump.h
 # Begin Source File
 
 SOURCE=..\gumps\Gamemenu_gump.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gumps\GameplayOptions_gump.h
 # End Source File
 # Begin Source File
 
@@ -1483,6 +1503,10 @@ SOURCE=..\objs\iregobjs.h
 # Begin Source File
 
 SOURCE=..\objs\jawbone.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\mappatch.h
 # End Source File
 # Begin Source File
 
@@ -1725,6 +1749,10 @@ SOURCE=..\AUTHORS
 # Begin Source File
 
 SOURCE=..\ChangeLog
+# End Source File
+# Begin Source File
+
+SOURCE=..\docs\excinematics.txt
 # End Source File
 # Begin Source File
 

@@ -599,7 +599,7 @@ void Map_chunk::set_terrain
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			{
 			ShapeID id = ter->get_flat(tilex, tiley);
-			Shape_frame *shape = gwin->get_shape(id);
+			Shape_frame *shape = id.get_shape();
 			if (shape && shape->is_rle())
 				{
 				int shapenum = id.get_shapenum(),

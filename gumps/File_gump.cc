@@ -152,8 +152,7 @@ public:
 		  cursor(0)
 		{
 		text[0] = text[maxsz] = 0;
-		Shape_frame *shape = Game_window::get_game_window()->
-			get_gump_shape(shnum, 0);
+		Shape_frame *shape = ShapeID(shnum, 0).get_shape();
 					// Want text coords. rel. to parent.
 		textx -= shape->get_xleft();
 		texty -= shape->get_yabove();
