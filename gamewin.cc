@@ -295,9 +295,6 @@ Game_window::Game_window
 	game_window = this;		// Set static ->.
 	shape_man = new Shape_manager();// Create the single instance.
 
-	for (int i=0; i<5; i++)
-		extra_fonts[i] = NULL;
-
 	set_window_size(width, height, scale, scaler);
 	pal = new Palette();
 
