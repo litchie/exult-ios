@@ -111,7 +111,7 @@ public:
 	void paint_rle(int px, int py)
 		{ GLRENDER  paint_rle(scrwin, px, py); }
 	void paint(int px, int py)
-		{ GLRENDER  paint_rle(scrwin, px, py); }
+		{ GLRENDER  paint(scrwin, px, py); }
 					// ++++++GL versions of these needed:
 	void paint_rle_translucent(int px, int py,
 					Xform_palette *xforms, int xfcnt)
