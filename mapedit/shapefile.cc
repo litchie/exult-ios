@@ -105,7 +105,6 @@ void Image_file_info::flush
 	Shape **shapes = new Shape *[nshapes];
 	for (shnum = 0; shnum < nshapes; shnum++)
 		shapes[shnum] = ifile->extract_shape(shnum);
-	ofstream out;
 	string filestr("<PATCH>/");	// Always write to 'patch'.
 	filestr += basename;
 	write_file(filestr.c_str(), shapes, nshapes, false);
@@ -186,20 +185,6 @@ void Chunks_file_info::flush
 		return;
 	modified = false;
 	cerr << "Chunks should be stored by Exult" << endl;
-	}
-
-/*
- *	Write out if modified.  May throw exception.
- */
-
-void Flex_file_info::flush
-	(
-	)
-	{
-	if (!modified)
-		return;
-	modified = false;
-	//+++++++++Finish.
 	}
 
 /*
@@ -298,6 +283,40 @@ Object_browser *Flex_file_info::create_browser
 	}
 
 /*
+ *	Write out if modified.  May throw exception.
+ */
+
+void Flex_file_info::flush
+	(
+	)
+	{
+	if (!modified)
+		return;
+	modified = false;
+	int cnt = entries.size();
+	size_t len;
+	int i;
+	for (i = 0; i < cnt; i++)	// Make sure all are read.
+		{
+		if (!entries[i])
+			get(i, len);
+		}
+	ofstream out;
+	string filestr("<PATCH>/");	// Always write to 'patch'.
+	filestr += basename;
+	U7open(out, filestr.c_str());	// May throw exception.
+	Flex_writer writer(out, "Written by ExultStudio", cnt);
+					// Write all out.
+	for (int i = 0; i < cnt; i++)
+		{
+		out.write(entries[i], lengths[i]);
+		writer.mark_section_done();
+		}
+	if (!writer.close())
+		throw file_write_exception(filestr.c_str());
+	}
+
+/*
  *	Delete set's entries.
  */
 
@@ -393,6 +412,8 @@ void Shape_file_set::flush
 	(
 	)
 	{
+	//++++++Problem this gets called by dtor even if user did NOT want
+	//+++++to save.  Doesn't seem right...
 	for (vector<Shape_file_info *>::iterator it = files.begin(); 
 					it != files.end(); ++it)
 		(*it)->flush();
