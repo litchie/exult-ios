@@ -403,8 +403,6 @@ SOURCE=..\data\savegump.shp
 # Begin Source File
 
 SOURCE=..\data\scaling_method.shp
-# PROP BASE Intermediate_Dir "."
-# PROP Intermediate_Dir "."
 # End Source File
 # Begin Source File
 
@@ -423,6 +421,26 @@ SOURCE=..\data\setup.shp
 SOURCE=..\data\sfx_conversion.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\vid_left.shp
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\vid_resolution.shp
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\vid_right.shp
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\vid_scaling.shp
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\videooptions.shp
 # End Source File
 # End Group
 # Begin Source File

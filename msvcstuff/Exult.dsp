@@ -52,7 +52,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"$(SDL_PATH)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /version:93.4 /subsystem:windows /machine:I386 /libpath:"$(SDL_PATH)\lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Debug"
@@ -77,7 +77,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"$(SDL_PATH)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /version:93.4 /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"$(SDL_PATH)\lib"
 # SUBTRACT LINK32 /incremental:no /map
 
 !ELSEIF  "$(CFG)" == "Exult - Win32 Release Install"
@@ -104,7 +104,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /subsystem:windows /machine:I386 /libpath:"$(SDL_PATH)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib SDLMain.lib winmm.lib /nologo /version:93.4 /subsystem:windows /machine:I386 /libpath:"$(SDL_PATH)\lib"
 # SUBTRACT LINK32 /pdb:none
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
 TargetPath=\UC\exult\Exult.exe
@@ -141,7 +141,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"..\SDL-1.2.0\lib"
 # SUBTRACT BASE LINK32 /incremental:no /map
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"$(SDL_PATH)\lib"
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib /nologo /version:93.4 /subsystem:console /debug /machine:I386 /pdbtype:sept /libpath:"$(SDL_PATH)\lib"
 # SUBTRACT LINK32 /incremental:no /map
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
 TargetPath=\UC\exult\Exult.exe
@@ -733,6 +733,10 @@ SOURCE=..\gumps\Stats_gump.cc
 # End Source File
 # Begin Source File
 
+SOURCE=..\gumps\Text_button.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\gumps\Text_gump.cc
 # End Source File
 # Begin Source File
@@ -1078,6 +1082,10 @@ SOURCE=..\autoarray.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\bggame.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\browser.h
 # End Source File
 # Begin Source File
@@ -1107,6 +1115,10 @@ SOURCE=..\effects.h
 # Begin Source File
 
 SOURCE=..\exceptions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\exult.h
 # End Source File
 # Begin Source File
 
@@ -1207,6 +1219,10 @@ SOURCE=..\segfile.h
 # Begin Source File
 
 SOURCE=..\shapeid.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\sigame.h
 # End Source File
 # Begin Source File
 
@@ -1378,6 +1394,10 @@ SOURCE=..\gumps\Stats_gump.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\gumps\Text_button.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\gumps\Text_gump.h
 # End Source File
 # Begin Source File
@@ -1459,6 +1479,10 @@ SOURCE=..\objs\iregobjs.h
 # Begin Source File
 
 SOURCE=..\objs\jawbone.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\monstinf.h
 # End Source File
 # Begin Source File
 
@@ -1567,6 +1591,10 @@ SOURCE=..\usecode\ucmachine.h
 # Begin Source File
 
 SOURCE=..\usecode\ucsched.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\ucscriptop.h
 # End Source File
 # Begin Source File
 

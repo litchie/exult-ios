@@ -75,6 +75,17 @@ public:
 };
 
 
+class VideoTextToggle : public Gump_ToggleTextButton {
+public:
+	VideoTextToggle(Gump* par, std::string *s, int px, int py, int width, 
+				int selectionnum, int numsel)
+		: Gump_ToggleTextButton(par, s, selectionnum, numsel, px, py, width) {}
+
+	friend class VideoOptions_gump;
+	virtual void toggle(int state) { 
+		((VideoOptions_gump*)parent)->toggle((Gump_button*)this, state);
+	}
+};
 void VideoOptions_gump::close(Game_window* gwin)
 {
 	save_settings();
@@ -103,8 +114,18 @@ void VideoOptions_gump::build_buttons()
 	// resolution
 	buttons[0] = new VideoToggle(this, colx[3], rowy[0], EXULT_FLX_VID_RESOLUTION_SHP, resolution, 5);
 	buttons[1] = new VideoToggle(this, colx[3], rowy[1], EXULT_FLX_VID_SCALING_SHP, scaling, 2);
-	buttons[2] = new VideoToggle(this, colx[2], rowy[2], EXULT_FLX_VID_SCALER_SHP, scaler, 5);
+	//buttons[2] = new VideoToggle(this, colx[2], rowy[2], EXULT_FLX_VID_SCALER_SHP, scaler, 5);
 	buttons[3] = new VideoToggle(this, colx[3], rowy[3], EXULT_FLX_AUD_ENABLED_SHP, fullscreen, 2);
+
+
+	std::string *scalers = new std::string[6];
+	scalers[0] = "Point";
+	scalers[1] = "Bilinear";
+	scalers[2] = "Interlaced";
+	scalers[3] = "2xSaI";
+	scalers[4] = "SuperEagle";
+	scalers[5] = "Super2xSaI";
+	buttons[2] = new VideoTextToggle (this, scalers, colx[2], rowy[2], 74, scaler, 6);
 }
 
 void VideoOptions_gump::load_settings()
@@ -187,6 +208,8 @@ void VideoOptions_gump::save_settings()
 		config->set("config/video/scale_method","SuperEagle",true);
 	else if (scaler == Image_window::point)
 		config->set("config/video/scale_method","point",true);
+	else if (scaler == Image_window::Super2xSaI)
+		config->set("config/video/scale_method","Super2xSaI",true);
 	else
 		config->set("config/video/scale_method","2xSaI",true);
 	config->set("config/video/fullscreen", fullscreen ? "yes" : "no", true);
