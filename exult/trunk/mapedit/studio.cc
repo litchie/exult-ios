@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fcntl.h>
 
 #include "shapelst.h"
+#include "chunklst.h"
 #include "paledit.h"
 #include "vgafile.h"
 #include "ibuf8.h"
@@ -44,6 +45,7 @@ ExultStudio *ExultStudio::self = 0;
 
 enum ExultFileTypes {
 	ShapeArchive =1,
+	ChunkArchive,
 	PaletteFile,
 	FlexArchive
 };
@@ -60,10 +62,16 @@ extern "C" void on_filelist_tree_select_row       (GtkCTree        *ctree,
 	ExultStudio *studio = ExultStudio::get_instance();
 	switch(type) {
 	case ShapeArchive:
-		studio->set_browser("Shape Browser", studio->create_shape_browser(text));
+		studio->set_browser("Shape Browser", 
+					studio->create_shape_browser(text));
+		break;
+	case ChunkArchive:
+		studio->set_browser("Chunk Browser", 
+					studio->create_chunk_browser(text));
 		break;
 	case PaletteFile:
-		studio->set_browser("Palette Browser", studio->create_palette_browser(text));
+		studio->set_browser("Palette Browser", 
+					studio->create_palette_browser(text));
 		break;
 	default:
 		break;
@@ -106,7 +114,8 @@ extern "C" void on_main_window_destroy_event
 
 
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
-	vgafile(0), eggwin(0), server_socket(-1), server_input_tag(-1), 
+	vgafile(0), chunkfile(0), eggwin(0), 
+	server_socket(-1), server_input_tag(-1), 
 	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), 
 	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_ctx(0)
@@ -170,6 +179,7 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 ExultStudio::~ExultStudio()
 {
 	delete_shape_browser();
+	delete_chunk_browser();
 	delete [] palbuf;
 	palbuf = 0;
 	if (eggwin)
@@ -181,6 +191,7 @@ ExultStudio::~ExultStudio()
 	delete npc_draw;
 	npcwin = 0;
 	delete vgafile;
+	delete chunkfile;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 	if (server_input_tag >= 0)
@@ -250,6 +261,32 @@ void ExultStudio::delete_shape_browser()
 	}
 }
 
+/*
+ *	Create chunk browser (for 'u7chunks').
+ */
+
+Object_browser *ExultStudio::create_chunk_browser(const char *fname)
+	{
+	delete_chunk_browser();
+					// Get file for this path.
+	char *fullname = g_strdup_printf("%s%s", static_path, fname);	
+	chunkfile = new ifstream(fullname);
+	g_free(fullname);
+	if (!chunkfile->good()) {
+		cerr << "Error opening file '" << fname << "'.\n";
+		abort();
+	}
+	return new Chunk_chooser(vgafile, *chunkfile, palbuf, 400, 64);
+}
+
+void ExultStudio::delete_chunk_browser()
+{
+	if(chunkfile) {
+		delete chunkfile;
+		chunkfile = 0;
+	}
+}
+
 Object_browser *ExultStudio::create_palette_browser(const char *fname)
 {
 	char *fullname = g_strdup_printf("%s%s", static_path, fname);
@@ -282,7 +319,7 @@ GtkCTreeNode *create_subtree( GtkCTree *ctree,
 			      GtkCTreeNode *previous,
 			      const char *name,
 			      const char *path,
-			      const char *ext,
+			      const char *ext,  // Or whole filename.
 			      gpointer data
 			    )
 {
@@ -359,6 +396,12 @@ void ExultStudio::set_static_path(const char *path)
 						   static_path,
 						   ".vga",
 						   (gpointer)ShapeArchive );
+	GtkCTreeNode *chunkfiles = create_subtree( GTK_CTREE( file_list ),
+						   0,
+						   "Map Files",
+						   static_path,
+						   "u7chunks",
+						   (gpointer)ChunkArchive );
 	GtkCTreeNode *palettefiles = create_subtree( GTK_CTREE( file_list ),
 						   shapefiles,
 						   "Palette Files",
