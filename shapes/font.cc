@@ -109,6 +109,9 @@ int Font::paint_text_box
 			if (cur_line >= max_lines)
 				break;	// No more room.
 			continue;
+		case '\r':		//??
+			text++;
+			continue;
 		case ' ':		// Space.
 		case '\t':
 			{		// Pass space.
@@ -116,7 +119,7 @@ int Font::paint_text_box
 			if (wrd != text)
 				{
 				int w = get_text_width(text, wrd - text);
-				if (!w)
+				if (w <= 0)
 					w = space_width;
 				int nsp = w/space_width;
 				lines[cur_line].append(nsp, ' ');
