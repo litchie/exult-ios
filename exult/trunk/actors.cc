@@ -315,6 +315,11 @@ void Patrol_schedule::now_what
 			{
 			cout << "Couldn't find patrol path " << pathnum
 								<< '\n';
+					// Wiggle a bit.
+			Tile_coord pos = npc->get_abs_tile_coord();
+			Tile_coord delta = Tile_coord(rand()%3 - 1,
+					rand()%3 - 1, 0);
+			npc->walk_to_tile(pos + delta);
 			return;
 			}
 		}

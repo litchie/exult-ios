@@ -75,9 +75,10 @@ void Game_clock::handle_event
 	long udata			// ->game window.
 	)
 	{
+	static int first_day = 1;
+	Game_window *gwin = (Game_window *) udata;
 	if ((minute += 12) >= 60)	// 1 real minute = 12 game minutes.
 		{
-		Game_window *gwin = (Game_window *) udata;
 		minute -= 60;
 		if (++hour >= 24)
 			{
@@ -89,6 +90,15 @@ void Game_clock::handle_event
 					// Update NPC schedules.
 			gwin->schedule_npcs(hour/3);
 		}
+#if 1
+	else if (first_day &&		// Set 6am schedules after intro.
+		 gwin->get_usecode()->get_global_flag(
+					Usecode_machine::did_first_scene))
+		{
+		first_day = 0;
+		gwin->schedule_npcs(hour/3);
+		}
+#endif
 	cout << "Clock updated to " << hour << ':' << minute << '\n';
 	curtime += 60*1000;		// Do it again in 60 seconds.
 	tqueue->add(curtime, this, udata);
