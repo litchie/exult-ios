@@ -219,8 +219,13 @@ public:
 		skip_above_actor = lift;
 		return true;
 		}
-	inline void set_in_dungeon(int tf)
-		{ in_dungeon = tf; }
+	inline int set_in_dungeon(int tf)
+		{ 
+		if (in_dungeon == tf)
+			return false;
+		in_dungeon = tf;
+		return true;
+		}
 	inline int is_in_dungeon()
 		{ return in_dungeon; }
 	inline int is_special_light()	// Light spell in effect?
