@@ -283,17 +283,37 @@ void Talk_schedule::now_what
 	switch (phase)
 		{
 	case 0:				// Start by approaching Avatar.
+		{
 		if (npc->distance(gwin->get_main_actor()) > 50)
 			return;		// But not if too far away.
-		npc->follow(gwin->get_main_actor());
+		PathFinder *path = new Astar();
+					// Aim for within 5 tiles.
+		Fast_pathfinder_client cost(5);
+		if (!path->NewPath(npc->get_abs_tile_coord(),
+			gwin->get_main_actor()->get_abs_tile_coord(), &cost))
+			{
+			delete path;
+			cout << "Talk: Failed to find path for " << 
+						npc->get_name() << endl;
+			npc->follow(gwin->get_main_actor());
+			}
+		else
+			{
+					// Walk there, and retry if
+					//   blocked.
+			npc->set_action(new Path_walking_actor_action(
+								path, 1));
+			npc->start(400, 250);	// Start walking.
+			}
 		phase++;
 		return;
+		}
 	case 1:				// Wait a second.
 	case 2:
 		{
 		int dx = 1 - 2*(rand()%2);
 		npc->walk_to_tile(npc->get_abs_tile_coord() +
-			Tile_coord(dx, -dx, 0), 200, 300);
+			Tile_coord(dx, -dx, 0), 300, 500);
 					// Wait til conversation is over.
 		if (gwin->get_num_faces_on_screen() == 0)
 			phase++;
