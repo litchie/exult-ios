@@ -1,5 +1,7 @@
 2000-09-17  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* Got all the way through Forge, and banished Dark Core!
+	* drag.cc: Dropping works.
 	* usecode.cc: Can forge Black Sword (but Love test broken).
 
 2000-09-16  Jeff Freedman  <jeff@amy.nerble.net>
