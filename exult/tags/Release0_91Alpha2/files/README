@@ -1,0 +1,12 @@
+The goal here is to make a unified files API that is inherently
+object-centric rather than file-centric. The same (simple) API
+is used to fetch any given object by any given exult subsystem
+and the subsystem requesting the object does not need to know
+what sort of file-format contains the object. The API takes
+care of all of that ugly need-to-know business.
+
+For the future, and a game creator, the API can be extended to
+pack files as well. I'm also interested in the idea of
+configurable redirections, where an object in a collection can
+be overriden and replaced by some other file/object and that
+redirection be transparent to the core.

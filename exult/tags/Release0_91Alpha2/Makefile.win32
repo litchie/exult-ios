@@ -1,0 +1,131 @@
+# Exult makefile for use in Windows with mingw32
+# It may require a little tweaking. (paths)
+
+# Where is Ultima 7 installed
+U7PATH=C:\\UC\\Ultima7
+
+# Base of the exult source (I'm building in a subdir called 'debug')
+SRC=.
+VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs
+
+### Modify these paths
+SDL_INCLUDES=-I$(SRC)/sdl/include
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
+
+# NOTE: make's builtin implicit rules are used for .cc => .o
+# mingw32 automatically defines WIN32
+CPPFLAGS=-DVERSION=\\\"0.91alpha2\\\" -DEXULT_DATADIR=\\\"data\\\" -g3 -DDEBUG \
+	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
+	-I$(SRC)/files -I$(SRC)/gumps -I$(SRC)/objs \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
+	-I$(SRC)/usecode $(SDL_INCLUDES)
+
+# NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
+CXXFLAGS=-O2 -mwindows -Wno-long-long -include mingw_kludges.h
+
+LFLAGS=-g3 -mwindows
+LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
+
+EXEC=exult.exe
+MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
+	args.o bggame.o browser.o cheat.o  \
+	combat.o delobjs.o dir.o drag.o effects.o exult.o exultmenu.o \
+	game.o gameclk.o gamedat.o gamerend.o gamewin.o keys.o keyactions.o \
+	menulist.o mouse.o npcnear.o npctime.o palette.o \
+	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
+	exultico.o cheat_screen.o
+# TBA:	cheat_screen.o
+# unused: npctest.o
+
+PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
+
+CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
+# unused: xmain.o
+
+MIDI_DRV_OBJS=win_midiout.o
+# unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o win_MCI.o
+
+AUDIO_OBJS=Audio.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
+# unused: test.o u7audiotool.o
+
+FLIC_OBJS=playfli.o
+
+FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o
+
+GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
+	gump_utils.o  Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
+	Paperdoll_gump_info.o Scroll_gump.o Sign_gump.o  Slider_gump.o \
+	Spellbook_gump.o Stats_gump.o Text_gump.o  Yesno_gump.o
+
+IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
+	savepcx.o
+
+SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o
+
+OBJS_OBJS=animate.o barge.o chunks.o contain.o egg.o iregobjs.o objs.o \
+	spellbook.o virstone.o
+# unused: test.o
+
+USECODE_OBJS=ucmachine.o ucsched.o intrinsics.o useval.o conversation.o
+
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
+
+EXULT_FLX_OBJECTS = \
+	data/exult_quotes.shp \
+	data/exult_credits.shp \
+	data/quotes.txt \
+	data/credits.txt \
+	data/exult_logo.shp \
+	data/exult0.pal \
+	data/black_gate.shp \
+	data/serpent_isle.shp \
+	data/meditown.mid \
+	data/font.shp \
+	data/setup.shp \
+	data/play_intro.shp \
+	data/full_screen.shp \
+	data/cheating.shp \
+	data/ok.shp \
+	data/cancel.shp \
+	data/pointers.shp \
+	data/exit.shp \
+	data/play_1st_scene.shp \
+	data/extras.shp \
+	data/midi_conversion.shp \
+	data/sfx_conversion.shp \
+	data/palette_fades.shp \
+	data/defaultkeys.txt \
+	data/flx.in 
+
+$(EXEC) : $(OBJS) data/exult.flx
+	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
+
+tools/expack.exe : tools/expack.o $(FILE_OBJS) 
+	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) $(LIBS) -mconsole
+
+data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
+	tools/expack.exe -i data/flx.in
+
+exultico.o: win32/exultico.rc win32/exult.ico
+	windres win32/exultico.rc exultico.o
+
+tools/wud.exe : tools/wud.o tools/uctools.h usecode/bgintrinsics.h usecode/siintrinsics.h 
+	$(CXX) $(LFLAGS) -o tools/wud.exe tools/wud.o -mconsole
+
+tools/ucdump.exe : tools/ucdump.o
+	$(CXX) $(LFLAGS) -o tools/ucdump.exe tools/ucdump.o -mconsole
+
+clean:
+	del $(OBJS)
+	del tools\expack.exe
+	del $(EXEC)
+	del data\exult.flx
+
+install: $(EXEC)
+	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
+	if not exist $(U7PATH)\data md  $(U7PATH)\data
+	copy data\exult.flx  $(U7PATH)\data
+	copy data\midisfx.flx  $(U7PATH)\data
+
+run:
+	start $(EXEC)

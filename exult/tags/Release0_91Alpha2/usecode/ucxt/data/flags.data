@@ -1,0 +1,9 @@
+# value:Mnemonic:Description
+0x3B	DidFirstScene		"Went through 1st scene with Iolo"
+0x3D	HaveTrinsicPassword	"Does the Avatar have the Trinsic Password?"
+0x48	FoundStableKey		"Did the Avatar find the Trinsic Stable Key?"
+0x57	LeftTrinsic		"???"
+0x2EB	AvatarIsThief		"The Avatar is a thief."
+0x0CC	_			"Avatar's talked to LB about Weston."
+0x222	_			"Avatar's talked to Alina (Weston's Wife)"
+
