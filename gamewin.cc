@@ -499,10 +499,7 @@ void Game_window::add_path_egg
 	{
 	int qual = egg->get_quality();
 	if (qual >= 0 && qual < 255)
-		{
-		path_eggs.reserve(qual + 1);
-		path_eggs[qual] = egg;
-		}
+		path_eggs.put(qual, egg);
 	}
 
 /*
