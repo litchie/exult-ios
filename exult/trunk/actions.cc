@@ -113,7 +113,7 @@ int Path_walking_actor_action::handle_event
 	Tile_coord tile;
 	if (blocked)
 		{
-#if DEBUG
+#if 0
 std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::endl;
 #endif
 		if (actor->step(blocked_tile, blocked_frame))

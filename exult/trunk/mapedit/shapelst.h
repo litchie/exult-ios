@@ -99,9 +99,9 @@ public:
 					// Handle mouse press.
 	static gint mouse_press(GtkWidget *widget, GdkEventButton *event,
 							gpointer data);
-					// Give selected shape.
-	static void selection_get(GtkWidget *widget, GtkSelectionData *data,
-					guint info, guint time, gpointer data);
+					// Give dragged shape.
+	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
+		GtkSelectionData *data, guint info, guint time, gpointer data);
 					// Someone else selected.
 	static gint selection_clear(GtkWidget *widget,
 				GdkEventSelection *event, gpointer data);

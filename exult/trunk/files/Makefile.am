@@ -9,7 +9,6 @@ libu7file_la_SOURCES =	\
 	Flex.h		\
 	Table.cc	\
 	Table.h		\
-	common_types.h	\
 	IFF.cc		\
 	IFF.h		\
 	U7file.cc	\
