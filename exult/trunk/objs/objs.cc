@@ -1284,6 +1284,8 @@ int Game_object::drop
 	int shapenum = get_shapenum();	// It's possible if shapes match.
 	if (obj->get_shapenum() != shapenum ||
 	    !Has_quantity(shapenum) ||
+					// ++++Really should use 
+					//   Get_combine_info in contain.cc
 					// Reagents are a special case.
 	    (shapenum == 842 && get_framenum() != obj->get_framenum()))
 		return (0);

@@ -29,6 +29,7 @@
 #include "objiter.h"
 #include "game.h"
 #include "ucmachine.h"
+#include "keyring.h"
 #include "utils.h"
 #include "Gump_manager.h"
 
@@ -141,6 +142,74 @@ void Container_game_object::change_member_shape
 	}
 
 /*
+ *	Add a key (by quality) to the SI keyring.
+ *
+ *	Output:	1 if successful, else 0 (and this does need to be an int).
+ */
+
+static int Add2keyring
+	(
+	int qual
+	)
+	{
+	Keyring *ring = 
+		Game_window::get_game_window()->get_usecode()->getKeyring();
+					// Valid quality & not already there?
+	if (qual != c_any_qual && !ring->checkkey(qual))
+		{
+		ring->addkey(qual);
+		return 1;
+		}
+	return 0;
+	}
+
+/*
+ *	Get information about whether a shape is a 'quantity' shape, and
+ *	whether we need to match its framenum to combine it with another.
+ *
+ *	Output:	True if a 'quantity' shape.
+ */
+
+static bool Get_combine_info
+	(
+	int shapenum,
+	int framenum,
+	bool& quantity_frame		// Rets. true if frame depends on quan.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(shapenum);
+	quantity_frame = false;
+	if (!info.has_quantity())
+		return false;
+	switch (shapenum)		// Which shapes have frames depending
+		{			//   on their quantity?
+	case 644:			// Coins.
+	case 627:			// Lockpicks.
+	case 581:			// Ammunition.
+	case 554:			// Burst arrows.
+	case 556:			// Magic arrows.
+	case 558:			// Lucky arrows.
+	case 560:			// Love arrows.
+	case 568:			// Tseramed arrows.
+	case 722:			// Arrows.
+	case 723:			// Bolts.
+	case 417:			// Magic bolts.
+	case 948:			// Bolts.  (or SI filari).
+		quantity_frame = true;
+		break;
+	case 951:			// Monetari/guilders:
+	case 952:
+		if (GAME_SI)
+			quantity_frame = true;
+		break;
+	default:
+		break;
+		}
+	return true;
+	}
+
+/*
  *	Recursively add a quantity of an item to those existing in
  *	this container, and create new objects if necessary.
  *
@@ -176,6 +245,9 @@ int Container_game_object::add_quantity
 			delta -= cant_add;
 			}
 		}
+	bool has_quantity_frame;	// Quantity-type shape?
+	bool has_quantity = Get_combine_info(
+				shapenum, framenum, has_quantity_frame);
 					// Note:  quantity is ignored for
 					//   figuring volume.
 	Game_object *obj;
@@ -184,11 +256,15 @@ int Container_game_object::add_quantity
 		Object_iterator next(objects);
 		while (delta && (obj = next.get_next()) != 0)
 			{
-			if (obj->get_shapenum() == shapenum &&
-		    	 (framenum == c_any_framenum || 
+			if (has_quantity && obj->get_shapenum() == shapenum &&
+		    	 (framenum == c_any_framenum || has_quantity_frame ||
 					obj->get_framenum() == framenum))
 
 				delta = obj->modify_quantity(delta);
+					// Adding key to SI keyring?
+			else if (GAME_SI && shapenum == 641 &&
+				 obj->get_shapenum() == 485 && delta == 1)
+				delta -= Add2keyring(qual);
 			}
 		next.reset();			// Now try recursively.
 		while ((obj = next.get_next()) != 0)
