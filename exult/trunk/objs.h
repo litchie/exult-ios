@@ -572,7 +572,8 @@ class Chunk_cache
 	int get_lowest_blocked(int lift, unsigned short tflags);
 	int get_lowest_blocked(int lift, int tx, int ty);
 					// Is a spot occupied?
-	int is_blocked(int height, int lift, int tx, int ty, int& new_lift);
+	int is_blocked(int height, int lift, int tx, int ty, int& new_lift,
+							int max_drop = 1);
 					// Activate eggs nearby.
 	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
 			int tx, int ty, 
@@ -653,16 +654,16 @@ public:
 	int get_lowest_blocked(int lift, int tx, int ty)
 		{ return need_cache()->get_lowest_blocked(lift, tx, ty); }
 					// Is a spot occupied?
-	int is_blocked(int height, int lift, int tx, int ty, int& new_lift)
-		{ return cache->is_blocked(height, lift, tx, ty, new_lift); }
-					// Old entry:
-	int is_blocked(int lift, int tx, int ty, int& new_lift)
-		{ return cache->is_blocked(1, lift, tx, ty, new_lift); }
+	int is_blocked(int height, int lift, int tx, int ty, int& new_lift,
+							int max_drop = 1)
+		{ return cache->is_blocked(height, lift, tx, ty, new_lift,
+								max_drop); }
 					// Check range.
 	static int is_blocked(int height, int lift, int startx, int starty,
-					int xtiles, int ytiles, int& new_lift);
+		int xtiles, int ytiles, int& new_lift, int max_drop = 1);
 					// Check absolute tile.
-	static int is_blocked(Tile_coord& tile, int height = 1);
+	static int is_blocked(Tile_coord& tile, int height = 1,
+							int max_drop = 1);
 					// Check for > 1x1 object.
 	static int is_blocked(int xtiles, int ytiles, int ztiles,
 				Tile_coord from, Tile_coord to, int& terrain);
