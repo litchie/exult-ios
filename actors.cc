@@ -69,7 +69,7 @@ Actor::Actor
 	) : Container_game_object(), usecode(uc), npc_num(num), party_id(-1),
 	    schedule_type((int) Schedule::loiter), two_handed(0), 
 	    two_fingered(false), usecode_dir(0), flags(0), action(0),
-	    frame_time(0)
+	    frame_time(0), light_sources(0)
 	{
 	name = nm == 0 ? 0 : strdup(nm);
 	set_shape(shapenum, 0); 
@@ -407,7 +407,10 @@ void Actor::remove
 	Container_game_object::remove(obj);
 	int index = Actor::find_readied(obj);	// Remove from spot.
 	if (index >= 0)
-		{
+		{			// Update light-source count.
+		if (Game_window::get_game_window()->get_info(obj).
+							is_light_source())
+			light_sources--;
 		spots[index] = 0;
 		if (index == rhand || index == lhand)
 			two_handed = 0;
@@ -455,6 +458,8 @@ int Actor::add
 		}
 	spots[index] = obj;		// Store in correct spot.
 	obj->cx = obj->cy = 0;		// Clear coords. (set by gump).
+	if (Game_window::get_game_window()->get_info(obj).is_light_source())
+		light_sources++;
 	return (1);
 	}
 
@@ -490,6 +495,9 @@ int Actor::add_readied
 			two_handed = 1;	// Must be a two-handed weapon.
 		if (best_index == lrfinger)
 			two_fingered = 1;	// Must be gloves
+		if (Game_window::get_game_window()->get_info(obj).
+							is_light_source())
+			light_sources++;
 		return (1);
 		}
 	return (0);

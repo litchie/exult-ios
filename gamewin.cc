@@ -979,9 +979,17 @@ void Game_window::paint
 	win->clear_clip();
 					// Complete repaint?
 	if (!x && !y && w == get_width() && h == get_height())
+		{			// Look for lights.
+		int carried_light = main_actor->has_light_source();
+#if 0	/* +++++Uncomment when tested. */
+		int cnt = usecode->get_party_count();
+		for (int i = 0; !carried_light && i < cnt; i++)
+			carried_light = get_npc(usecode->get_party_member(i))->
+							has_light_source();
+#endif
 					// Set palette for lights.
-					// +++++main_actor->has_light_source()?
-		clock.set_light_source(light_sources > 0);
+		clock.set_light_source(carried_light + (light_sources > 0));
+		}
 	painted = 1;
 	}
 
