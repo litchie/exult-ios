@@ -48,6 +48,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 #include "schedule.h"
 #include "titles.h"
+#include "barge.h"
 
 extern	Configuration *config;
 					// THE game window:

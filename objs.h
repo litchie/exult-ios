@@ -44,6 +44,7 @@ class Npc_actor;
 class Rectangle;
 class Container_game_object;
 class Egg_object;
+class PathFinder;
 
 /*
  *	Sizes:
@@ -161,6 +162,8 @@ public:
 		{ return cx; }
 	int get_cy() const
 		{ return cy; }
+	void set_invalid()		// Set to invalid position.
+		{ cx = cy = 255; }
 					// Get frame for desired direction.
 	int get_dir_framenum(int dir, int frnum) const
 		{ return (frnum&0xf) + rotate[dir]; }
@@ -426,52 +429,6 @@ public:
 	virtual void write_ireg(ostream& out);
 					// Write contents in IREG format.
 	void write_contents(ostream& out);
-	};
-
-/*
- *	A 'barge', such as a ship or horse-and-cart.  The elements of a barge
- *	are stored in the outside world, so rendering and obstacle detection
- *	don't have to be reimplemented.
- */
-class Barge_object : public Container_game_object
-	{
-	Vector objects;			// All objects in/on barge.
-	int perm_count;			// Counts permanent parts of barge,
-					//   which proceed those placed on it.
-	unsigned char xtiles, ytiles;	// Tiles covered (when vert?).
-	unsigned char horizontal;	// Flag:  1 if horizontal.
-	unsigned char complete;		// Flag:  all members have been read.
-	Game_object *get_object(int i)
-		{ return (Game_object *) objects.get(i); }
-public:
-	Barge_object(unsigned char l, unsigned char h, 
-		unsigned int shapex, unsigned int shapey, unsigned int lft,
-			int xt, int yt, int horiz)
-		: Container_game_object(l, h, shapex, shapey, lft),
-			perm_count(0),
-			xtiles(xt), ytiles(yt), horizontal(horiz),
-			complete(0)
-		{  }
-#if 0
-	Barge_object() : Ireg_game_object()
-		{  }
-#endif
-	virtual ~Barge_object()
-		{  }
-	void gather();			// Gather up objects on barge.
-					// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift);
-					// Remove an object.
-	virtual void remove(Game_object *obj);
-					// Add an object.
-	virtual int add(Game_object *obj, int dont_check = 0);
-					// Drop another onto this.
-	virtual int drop(Game_object *obj);
-					// Render.
-	virtual void paint(Game_window *gwin);
-					// Write out to IREG file.
-	virtual void write_ireg(ostream& out);
-	virtual void elements_read();	// Called when all member items read.
 	};
 
 /*
