@@ -275,8 +275,10 @@ gint Shape_chooser::configure
 	chooser->Shape_draw::configure(widget);
 	chooser->render();
 	chooser->adjust_scrollbar();	// Figure new scroll amounts.
-					// If shape is dropped here:
-	chooser->enable_drop(Shape_dropped_here, chooser);
+					// Set handler for shape dropped here,
+					//   BUT not more than once.
+	if (chooser->drop_callback != Shape_dropped_here)
+		chooser->enable_drop(Shape_dropped_here, chooser);
 	return (TRUE);
 	}
 
@@ -395,10 +397,13 @@ gint Shape_chooser::mouse_press
 		}
 	if (event->button == 3 && chooser->selected >= 0)
 		{	//++++++Doesn't do anything yet.
+					// Clean out old.
+		if (chooser->popup)
+			gtk_widget_destroy(chooser->popup);
 		GtkWidget *popup = Create_browser_popup(chooser->group);
+		chooser->popup = popup;
 		gtk_menu_popup(GTK_MENU(popup), 0, 0, 0, 0, event->button,
 							event->time);
-//		gtk_widget_destroy(popup); //+++++Where do we destroy it???
 		}
 	return (TRUE);
 	}
@@ -629,8 +634,8 @@ void Shape_chooser::shape_dropped_here
 	if (ifile->get_u7drag_type() == file && group != 0)
 		{			// Add to group.
 		group->add(shape);
-		// adjust_scrollbar();
 		render();
+		adjust_scrollbar();
 		show();
 		}
 	}
@@ -677,7 +682,7 @@ void Shape_chooser::search
 	scroll(i);
 	select(0);			// It's at top.
 	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(shape_scroll));
-	gtk_adjustment_set_value(adj, info[0].shapenum);
+	gtk_adjustment_set_value(adj, index0);
 	show();
 	}
 
@@ -806,7 +811,7 @@ Shape_chooser::Shape_chooser
 	) : Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
 		shapes_file(0), group(g), index0(0), framenum0(0),
 		info(0), info_cnt(0), num_per_row(0), 
-		selected(-1), sel_changed(0)
+		selected(-1), sel_changed(0), popup(0)
 	{
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
@@ -909,6 +914,8 @@ Shape_chooser::~Shape_chooser
 	)
 	{
 	gtk_widget_destroy(get_widget());
+	if (popup)
+		gtk_widget_destroy(popup);
 	delete [] info;
 	}
 	
