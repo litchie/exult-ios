@@ -1,3 +1,6 @@
+2003-12-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* docs/xml/*: updated .xsl's to indent config file examples
+
 2003-12-01    <jeff@mini.nerble.net>
 
 	* gamemap.cc: Fixed map-editing bug involving cached-out superchunks.
