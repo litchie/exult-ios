@@ -1,4 +1,8 @@
-2001-0-08   Tristan Tarrant  <nadir@users.sourceforge.net>
+2001-02-08  Max Horn  <max@quendi.de>
+	* pathfinder/path.cc: fixed memory leak in A_star_queue destructor
+	* files/utils.cc: added two missing std:: prefixes
+
+2001-02-08   Tristan Tarrant  <nadir@users.sourceforge.net>
 	* audio/pcb.h: Throttle producers by not increasing the window, and
 	  reshuffle data to the bottom of the buffer if space is available,
 	  instead of allocating more memory.

@@ -291,10 +291,11 @@ class A_star_queue
 	int best;			// Index of 1st non-null ent. in open.
 					// For finding each tile's node:
 #ifndef DONT_HAVE_HASH_SET
-	hash_set<Search_node *, Hash_node, Equal_nodes> lookup;
+	typedef	hash_set<Search_node *, Hash_node, Equal_nodes> Lookup_set;
 #else
-	set<Search_node *, Less_nodes> lookup;
+	typedef	set<Search_node *, Less_nodes> Lookup_set;
 #endif
+	Lookup_set lookup;
 public:
 #ifndef DONT_HAVE_HASH_SET
 	A_star_queue() : open(256), lookup(1000)
@@ -307,6 +308,8 @@ public:
 		}
 	~A_star_queue()
 		{
+		for(Lookup_set::iterator X = lookup.begin(); X != lookup.end(); ++X)
+			delete *X;
 		lookup.clear();		// Remove all nodes.
 		}
 	void add_back(Search_node *nd)	// Add an existing node back to 'open'.
