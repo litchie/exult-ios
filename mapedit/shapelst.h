@@ -188,6 +188,8 @@ public:
 					GtkMenuItem *item, gpointer udata);
 	static void on_shapes_popup_edit_activate(
 					GtkMenuItem *item, gpointer udata);
+	static void on_shapes_popup_edtiles_activate(
+					GtkMenuItem *item, gpointer udata);
 	};
 
 #endif
