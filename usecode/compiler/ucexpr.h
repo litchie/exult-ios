@@ -241,6 +241,7 @@ public:
 	~Uc_array_expression();
 	void add(Uc_expression *e)	// Append an expression.
 		{ exprs.push_back(e); }
+	void concat(Uc_expression *e);	// Concat e's elements onto this.
 	const std::vector<Uc_expression*>& get_exprs()
 		{ return exprs; }
 					// Gen. code to put result on stack.
