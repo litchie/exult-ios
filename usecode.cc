@@ -781,8 +781,8 @@ void Usecode_machine::show_npc_face
 	int frame = arg2.get_int_value();
 	gwin->remove_text_effects();
 	gwin->end_gump_mode();
-	gwin->set_all_dirty();
-	gwin->paint();
+//	gwin->set_all_dirty();
+//	gwin->paint();
 	gwin->show_face(shape, frame);
 	user_choice = 0;		// Seems like a good idea.
 	}
