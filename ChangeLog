@@ -1,3 +1,6 @@
+2001-04-16  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* keys.*, keyactions.*: added a 'test' action, for testing anything you like
+	
 2001-04-16  Dancer Vesperman <dancer@users.sourceforge.net>
 	* Upgrade for g++ 3.0
 		- Repair a throw specification in exceptions.h
