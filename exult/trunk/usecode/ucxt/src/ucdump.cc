@@ -23,13 +23,14 @@
 #include <iomanip>
 #include <vector>
 #include <stack>
+#include <map>
+
 #include "ucc.h"
 #include "opcodes.h"
 #include "printucc.h"
-#include <map>
-
 #include "ucdata.h"
 #include "ucfunc.h"
+#include "files/utils.h"
 
 // include xml configuration stuff
 #include "Configuration.h"
@@ -87,7 +88,8 @@ int main(int argc, char** argv)
 	streambuf *coutbuf=0;
 	if(uc.output_redirect().size())
 	{
-		outputstream.open(uc.output_redirect().c_str(), ios::out);
+		//outputstream.open(uc.output_redirect().c_str(), ios::out);
+		U7open(outputstream, uc.output_redirect().c_str(), false);
 		if(outputstream.fail())
 		{
 			cout << "error. failed to open " << uc.output_redirect() << " for writing. exiting." << endl;
