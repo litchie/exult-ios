@@ -629,6 +629,36 @@ void Usecode_machine::item_say
 	}
 
 /*
+ *	Return an array of nearby objects.
+ */
+
+Usecode_value Usecode_machine::find_nearby
+	(
+	Usecode_value& objval,		// Find them near this.
+	Usecode_value& shapeval,	// Shape to find, or -1 for any,
+					//  -359 for any npc.
+	Usecode_value& qval,		// Quality??
+	Usecode_value& mval		// Some kind of mask?
+	)
+	{
+	Game_object *obj = get_item(objval.get_int_value());
+	if (!obj)
+		return Usecode_value(0, 0);
+	Vector vec;			// Gets list.
+	int cnt = obj->find_nearby(vec, shapeval.get_int_value(),
+			qval.get_int_value(), mval.get_int_value());
+	cout << "Nearby objects found:  " << cnt << '\n';
+	Usecode_value nearby(cnt, 0);	// Create return array.
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *each = (Game_object *) vec.get(i);
+		Usecode_value val((long) each);
+		nearby.put_elem(i, val);
+		}
+	return (nearby);
+	}
+
+/*
  *	Execute a list of instructions in an array.
  */
 
@@ -995,10 +1025,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		Unhandled(intrinsic, num_parms, parms);
 		break;
 	case 0x35:			// Think it rets. objs. near parm0.
-					// (item, type? (-359=any?), m, n)??
-		//++++++++++
-		Unhandled(intrinsic, num_parms, parms);
-		break;
+		return (find_nearby(parms[0], parms[1], parms[2], parms[3]));
 	case 0x38:			// Return. game time hour (0-23).
 		return Usecode_value(gwin->get_hour());
 	case 0x39:			// Return minute (0-59).
