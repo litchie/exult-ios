@@ -127,11 +127,13 @@
 \L - actorio.cc:89 cvs 1.1
 \L   (jsf 13-May-00)
 
-\Ca comment to inspire confidence :-)
+\C"a comment to inspire confidence :-)"
 \L - Wumpus on ##exult
 
-\CPeople will love this
-\L - Dominus on April Fools 2002
+\C"People will love this"
+\L - Dominus on April
+\L   Fools 2002
 
-\Cand hate us
-\L - Colourless on April Fools 2002
+\C"and hate us"
+\L - Colourless on April
+\L   Fools 2002
