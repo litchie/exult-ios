@@ -64,6 +64,7 @@ Mouse::Mouse
 	box.w = maxw;
 	box.h = maxh;
 	set_short_arrow(east);		// +++++For now.
+	onscreen = 0;                   // initially offscreen
 	}
 
 /*
