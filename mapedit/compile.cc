@@ -59,6 +59,24 @@ C_EXPORT void on_halt_compile_btn_clicked
 	}
 
 /*
+ *	Called when UCC is done.
+ */
+
+void Ucc_done
+	(
+	int exit_code,
+	Exec_box *box,			// Box that called this.
+	gpointer user_data		// Not used.
+	)
+	{
+	if (exit_code == 0)		// Success?
+		{
+		ExultStudio::get_instance()->reload_usecode();
+		box->add_message("Reloaded usecode\n");
+		}
+	}
+
+/*
  *	Open the compile window.
  */
 
@@ -73,7 +91,8 @@ void ExultStudio::open_compile_window
 			GTK_TEXT(
 			    glade_xml_get_widget(app_xml, "compile_msgs")),
 			GTK_STATUSBAR(
-			    glade_xml_get_widget(app_xml, "compile_status")));
+			    glade_xml_get_widget(app_xml, "compile_status")),
+			Ucc_done, 0);
 		}
 	gtk_widget_show(compilewin);
 	}
