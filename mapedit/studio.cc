@@ -114,6 +114,14 @@ on_open_game_activate                  (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
+on_new_game_activate                   (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+EStudio::Alert("Not implemented yet");
+//+++++	ExultStudio::get_instance()->+++++++++++=
+}
+
+C_EXPORT void
 on_connect_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -127,6 +135,21 @@ on_save_all1_activate                  (GtkMenuItem     *menuitem,
 	ExultStudio::get_instance()->save_all();
 }
 
+C_EXPORT void
+on_new_shapes_file_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+EStudio::Alert("Not implemented yet");
+//+++++	ExultStudio::get_instance()->+++++++++++=
+}
+
+C_EXPORT void
+on_new_shape_file_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+EStudio::Alert("Not implemented yet");
+//+++++	ExultStudio::get_instance()->+++++++++++=
+}
 
 C_EXPORT void
 on_save_map_menu_activate              (GtkMenuItem     *menuitem,
