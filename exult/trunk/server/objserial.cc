@@ -126,7 +126,7 @@ void Egg_object_io
 /*
  *	Send out an egg object.
  *
- *	Output:	0 if unsuccessful.
+ *	Output:	-1 if unsuccessful.  0 if okay.
  */
 
 int Egg_object_out

@@ -181,7 +181,7 @@ static void Handle_client_message
 	unsigned char data[Exult_server::maxlength];
 	Exult_server::Msg_type id;
 	int datalen = Exult_server::Receive_data(fd, id, data, sizeof(data));
-	if (!datalen)
+	if (datalen < 0)
 		return;
 	if (id == Exult_server::egg)
 		Egg_object::update_from_studio(&data[0], datalen);

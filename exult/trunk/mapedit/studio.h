@@ -24,6 +24,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "paledit.h"
 #include "vgafile.h"
 
+					// Callback for msgs.
+typedef void (*Msg_callback)(int id, unsigned char *data, int datalen);
+
 class ExultStudio {
 private:
 	GtkWidget		*app;
@@ -35,10 +38,12 @@ private:
 	char			**names;
 	Object_browser		*browser;
 	GtkWidget		*eggwin;// Egg window.
+	Shape_draw		*egg_monster_draw;
+	int			egg_ctx;
 	int			server_socket;
 	gint			server_input_tag;
 	unsigned char 		*palbuf;
-	Shape_draw		*egg_monster_draw;
+	Msg_callback		waiting_for_server;
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();

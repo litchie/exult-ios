@@ -843,6 +843,14 @@ static int Get_click
 				}
 				break;
 				}
+			case SDL_ACTIVEEVENT:
+				if (event.active.state & SDL_APPINPUTFOCUS)
+					{
+					if (event.active.gain)
+						gwin->get_focus();
+					else
+						gwin->lose_focus();
+					}
 				}
 		Mouse::mouse->show();		// Turn on mouse.
 
