@@ -90,7 +90,9 @@ class Field_frame_animator : public Animator
 	{
 	unsigned char frames;		// # of frames.
 	unsigned char recycle;		// # of frame to recycle at.
+	bool activated;			// Time to check for damage.
 public:
+	friend class Field_object;
 	Field_frame_animator(Game_object *o, int rcy);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
