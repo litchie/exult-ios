@@ -138,8 +138,8 @@ void Scheduled_usecode::handle_event
 			break;
 		case 0x23:		// ??
 			break;
-		case 0x27:		// ?? 1 parm. Pure guess:  a delay to
-			{		//   allow other threads to run?
+		case 0x27:		// ?? 1 parm. Guessing:
+			{		//   delay before next instruction.
 			Usecode_value& delayval = arrval.get_elem(++i);
 					// ?? Guessing at time.
 			delay = 200*(delayval.get_int_value());
@@ -169,21 +169,22 @@ void Scheduled_usecode::handle_event
 					Usecode_machine::internal_exec);
 			break;
 			}
-		case 0x58:		// ?? 1 parm.
-			i++;
+		case 0x58:		// ?? 1 parm, fairly large byte.
+			i++;		// Perhaps a soundfx or sprite??
 			break;
 		case 0x59:		// Parm. is dir. (0-7).  0=north?
 				// +++++++Walk in that dir.??
 			i++;
 			break;
 		default:
-//+++ 0x61-0x6f? seem to indicate motion? frame? in a particular direction.
-			if (opcode >= 0x60 && opcode <= 0x6f)
-				{	// +++++++Experimenting:
+					// ??Guessing these are frames:
+			if (opcode >= 0x60 && opcode <= 0x7f)
+				{	// Looks okay, so far.
 				Usecode_value v(opcode & 0xf);
 				usecode->set_item_frame(objval, v);
-				printf("Sched. opcode %02x\n", opcode);
 				}
+			else
+				printf("Unhanded sched. opcode %02x\n",opcode);
 			break;
 			}
 		}
