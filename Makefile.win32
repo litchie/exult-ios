@@ -39,7 +39,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 
-CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
+CONF_OBJS=Configuration.o XMLEntity.o
 # unused: xmain.o
 
 MIDI_DRV_OBJS=win_midiout.o

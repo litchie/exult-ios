@@ -20,6 +20,7 @@
 #  include <config.h>
 #endif
 
+#include "exult_constants.h"
 #include "Configuration.h"
 
 #ifndef ALPHA_LINUX_CXX

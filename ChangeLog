@@ -1,3 +1,6 @@
+2001-08-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* various: compiles on Linux again
+
 2001-08-05  Max Horn <max@quendi.de>
 	* files/utils.cc/.h: added missing prototypes
 	* conf/XMLEntity.c/.h: removed class XMLEntity; added XMLNode methods dump, xmlassign and xmlparse

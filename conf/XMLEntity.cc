@@ -24,7 +24,7 @@
 #  pragma implementation
 #endif
 
-
+#include "exult_constants.h"
 #include "XMLEntity.h"
 
 using std::string;
