@@ -35,6 +35,7 @@ class Image_window8;
 class Shape_frame;
 class Actor;
 class Special_effect;
+class Text_effect;
 
 /*
  *	Manage special effects.
@@ -42,9 +43,10 @@ class Special_effect;
 class Effects_manager
 	{
 	Game_window *gwin;		// Handy pointer.
-	Special_effect *effects;	// Text snippets, sprite effects.
+	Special_effect *effects;	// Sprite effects, projectiles, etc.
+	Text_effect *texts;		// Text snippets.
 public:
-	Effects_manager(Game_window *g) : gwin(g), effects(0)
+	Effects_manager(Game_window *g) : gwin(g), effects(0), texts(0)
 		{  }
 	~Effects_manager();
 					// Add text item.
@@ -52,15 +54,18 @@ public:
 	void add_text(const char *msg, int x, int y);
 	void center_text(const char *msg);
 	void add_effect(Special_effect *effect);
+	void add_text_effect(Text_effect *txt);
 	void remove_text_effect(Game_object *item);
 					// Remove text item & delete it.
-	void remove_effect(Special_effect *txt);
+	void remove_effect(Special_effect *effect);
+	void remove_text_effect(Text_effect *txt);
 	void remove_all_effects(bool repaint=false);
 	void remove_text_effects();
 					// Remove just the weather.
 	void remove_weather_effects(int dist = 0);
 	int get_weather();		// Get # of last weather added.
-	void paint();			// Draw all effects.
+	void paint();			// Draw all sprites/proj./weather.
+	void paint_text();		// Draw text.
 	};
 
 /*
@@ -68,8 +73,7 @@ public:
  */
 class Special_effect : public Time_sensitive, public Game_singletons
 	{
-	Special_effect *next, *prev;	// All of them are chained together in
-					//   Game_window.
+	Special_effect *next, *prev;	// All of them are chained together.
 public:
 	friend class Effects_manager;
 	Special_effect() : next(0), prev(0)
@@ -79,8 +83,6 @@ public:
 					// Render.
 	virtual void paint();
 	virtual int is_weather()	// Need to distinguish weather.
-		{ return 0; }
-	virtual int is_text(Game_object *it = 0)
 		{ return 0; }
 	};
 
@@ -180,8 +182,9 @@ public:
  *	of seconds.  These are all kept in a single list, and managed by
  *	Game_window.
  */
-class Text_effect : public Special_effect
+class Text_effect : public Time_sensitive, public Game_singletons
 	{
+	Text_effect *next, *prev;	// All of them are chained together.
 	std::string msg;		// What to print.
 	Game_object *item;		// Item text is on.  May be null.
 	Tile_coord pos;			// Position to display it at.
@@ -190,16 +193,16 @@ class Text_effect : public Special_effect
 	void add_dirty();
 	void init();
 public:
-	friend class Game_window;
+	friend class Effects_manager;
 	Text_effect(const std::string &m, Game_object *it);
 	Text_effect(const std::string &m, int t_x, int t_y);
 					// At timeout, remove from screen.
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Render.
 	virtual void paint();
-					// Check for matching item if !null.
-	virtual int is_text(Game_object *it = 0)
-		{ return !it || it == item; }
+					// Check for matching item.
+	int is_text(Game_object *it)
+		{ return it == item; }
 	};
 
 /*
