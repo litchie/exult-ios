@@ -360,8 +360,6 @@ Game_window::Game_window
 	config->value("config/gameplay/combat/mode", str, "original");
 	if (str == "keypause")
 		Combat::mode = Combat::keypause;
-	else if (str == "round")
-		Combat::mode = Combat::round;
 	else
 		Combat::mode = Combat::original;
 	config->set("config/gameplay/combat/mode", str, true);
@@ -2060,7 +2058,8 @@ void Game_window::paused_combat_select
 					// Aim within 1 tile.
 		if (!npc->walk_path_to_tile(dest, std_delay, 0, 1))
 			Mouse::mouse->flash_shape(Mouse::blocked);
-					// ++++++Nothing happens!!  Later....
+		else			// Make sure he's in combat mode.
+			npc->set_target(0, true);
 		return;
 		}
 	Actor *target = obj->as_actor();
