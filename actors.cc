@@ -2768,6 +2768,17 @@ bool Actor::figure_hit_points
 			wpoints - armor;
 	if (get_flag(Obj_flags::protection))// Defender is protected?
 		prob -= (40 + rand()%20);
+					// Attacked by Vesculio in SI?
+	if (GAME_SI && attacker && attacker->npc_num == 294)
+		{
+		int pts, sh;		// Do we have Magebane?
+	    	if (get_weapon(pts, sh) && sh == 0xe7)
+			{
+			prob -= (70 + rand()%20);
+			gwin->remove_text_effect(attacker);
+			attacker->say(item_names[0x49b]);
+			}
+		}
 	if (instant_death)
 		prob = 200;	// always hits
 
@@ -2792,16 +2803,8 @@ bool Actor::figure_hit_points
 			set_property((int) Actor::mana, 
 					mana > 1 ? rand()%(mana - 1) : 0);
 					// Vasculio the Vampire?
-			if (npc_num == 294 && Game::get_game_type() ==
-								SERPENT_ISLE)
-				{
+			if (npc_num == 294 && GAME_SI)
 				hp *= 3;
-				if (weapon_shape == 231)
-					{// I really want to see this.
-					gwin->remove_text_effect(this);
-					say(item_names[0x49b]);
-					}
-				}
 			}
 		if ((powers&Weapon_info::curse) && roll_to_win(
 			Get_effective_prop(attacker, Actor::intelligence),
@@ -2828,7 +2831,7 @@ bool Actor::figure_hit_points
 		if (instant_death)
 			say("\"Cheater!\"");
 					// Goblin?
-		else if (Game::get_game_type() == SERPENT_ISLE &&
+		else if (GAME_SI &&
 			 (get_shapenum() == 0x1de ||
 			  get_shapenum() == 0x2b3 ||
 			  get_shapenum() == 0x2d5 ||
