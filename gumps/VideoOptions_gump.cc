@@ -145,15 +145,12 @@ void VideoOptions_gump::build_buttons()
 	buttons[3] = new VideoTextToggle (this, enabledtext, colx[4], rowy[3], 59,
 									  fullscreen, 2);
 
-	std::string *scalers = new std::string[6];
-	scalers[0] = "Point";
-	scalers[1] = "Bilinear";
-	scalers[2] = "Interlaced";
-	scalers[3] = "2xSaI";
-	scalers[4] = "SuperEagle";
-	scalers[5] = "Super2xSaI";
+	std::string *scalers = new std::string[Image_window::NumScalers];
+	for (int i = 0; i < Image_window::NumScalers; i++)
+		scalers[i] = Image_window::get_name_for_scaler(i);
+
 	buttons[2] = new VideoTextToggle (this, scalers, colx[2], rowy[2], 74,
-									  scaler, 6);
+									  scaler, Image_window::NumScalers);
 }
 
 void VideoOptions_gump::load_settings()
@@ -225,18 +222,8 @@ void VideoOptions_gump::save_settings()
 	config->set("config/video/width", resx, true);
 	config->set("config/video/height", resy, true);
 	config->set("config/video/scale", scaling+1, true);
-	if (scaler == Image_window::bilinear)
-		config->set("config/video/scale_method","bilinear",true);
-	else if (scaler == Image_window::interlaced)
-		config->set("config/video/scale_method","interlaced",true);
-	else if (scaler == Image_window::SuperEagle)
-		config->set("config/video/scale_method","SuperEagle",true);
-	else if (scaler == Image_window::point)
-		config->set("config/video/scale_method","point",true);
-	else if (scaler == Image_window::Super2xSaI)
-		config->set("config/video/scale_method","Super2xSaI",true);
-	else
-		config->set("config/video/scale_method","2xSaI",true);
+	if (scaler > Image_window::NoScaler && scaler < Image_window::NumScalers)
+		config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),true);
 	config->set("config/video/fullscreen", fullscreen ? "yes" : "no", true);
 	
 	gwin->resized(resx,resy,scaling+1,scaler);

@@ -74,12 +74,8 @@ void ExultMenu::setup()
 	MenuChoice *scalemethod = new MenuChoice(exult_flx.get_shape(EXULT_FLX_SCALING_METHOD_SHP,1),
 			      exult_flx.get_shape(EXULT_FLX_SCALING_METHOD_SHP,0),
 			      centerx, menuypos, font);
-	scalemethod->add_choice("Point");
-	scalemethod->add_choice("Bilinear");
-	scalemethod->add_choice("Interlaced");
-	scalemethod->add_choice("2xSaI");
-	scalemethod->add_choice("Super Eagle");
-	scalemethod->add_choice("Super2xSaI");
+	for (int i = 0; i < Image_window::NumScalers; i++)
+		scalemethod->add_choice(Image_window::get_name_for_scaler(i));
 	scalemethod->set_choice(gwin->get_win()->get_scaler());
 	menu.add_entry(scalemethod);
 	menuypos+=11;
@@ -182,35 +178,16 @@ void ExultMenu::setup()
 			pal.fade_out(c_fade_out_time);
 			gwin->clear_screen(true);
 			// Scaling Method
-			if(scalemethod->get_choice()!=gwin->get_win()->get_scaler()) {
+			int scaler = scalemethod->get_choice();
+			if(scaler!=gwin->get_win()->get_scaler()) {
 				gwin->resized(
 					gwin->get_win()->get_width(),
 					gwin->get_win()->get_height(),
 					gwin->get_win()->get_scale(),
 					scalemethod->get_choice()
 				);
-				switch(scalemethod->get_choice()) {
-				case 0:
-					config->set("config/video/scale_method","point",true);
-					break;
-				case 1:
-					config->set("config/video/scale_method","bilinear",true);
-					break;
-				case 2:
-					config->set("config/video/scale_method","interlaced",true);
-					break;
-				case 3:
-					config->set("config/video/scale_method","2xSaI",true);
-					break;
-				case 4:
-					config->set("config/video/scale_method","SuperEagle",true);
-					break;
-				case 5:
-					config->set("config/video/scale_method","Super2xSaI",true);
-					break;
-				default:
-					break;
-				}
+				if (scaler > Image_window::NoScaler && scaler < Image_window::NumScalers)
+					config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),true);
 			}
 			// Palette fades
 			gwin->set_fades_enabled(palfades->get_choice()==1);

@@ -1,3 +1,11 @@
+2002-03-06  Ryan Nunn  <triforce@merlin.net.au>
+	* exult.cc, exultmenu.cc, gumps/VideoOptions_gump.cc,
+	  imagewin/imagescl.cc, imagewin/imagewin.*, imagewin/scale.* :
+	  Added Kreed's BilinearPlus scaler. Also added some utility functions
+	  and an array to get the scalers names, and the scaler number of a 
+	  name. Should simplify adding or removing scalers in the future.
+	  Updated all the various parts of Exult to use the new funcs.
+
 2002-03-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* server/server.cc: Handle ::view_pos message from ExultStudio.
