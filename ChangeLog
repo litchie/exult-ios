@@ -1,6 +1,7 @@
 2001-07-13  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* egg.cc: #include cheat.h not only for XWIN
 	* font.cc: check for NULL shape in get_text_width()
+	* objs.cc: more SI object names
 
 2001-07-13  Jeff Freedman  <jeff@amy.nerble.net>
 
