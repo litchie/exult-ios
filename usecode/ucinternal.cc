@@ -35,9 +35,7 @@
 #ifdef XWIN
 #include <signal.h>
 #endif
-#if USECODE_DEBUGGER
 #include <algorithm>       // STL function things
-#endif
 
 #include "Gump.h"
 #include "Gump_manager.h"
@@ -662,6 +660,30 @@ void Usecode_internal::activate_cached
 	}
 
 /*
+ *	For sorting up-to-down, right-to-left, and near-to-far:
+ */
+class Object_reverse_sorter
+	{
+public:
+	bool operator()(const Game_object *o1, const Game_object *o2)
+		{
+		Tile_coord t1 = o1->get_abs_tile_coord(),
+			   t2 = o2->get_abs_tile_coord();
+		if (t1.ty > t2.ty)
+			return true;
+		else if (t1.ty == t2.ty)
+			{
+			if (t1.tx > t2.tx)
+				return true;
+			else 
+				return t1.tx == t2.tx && t1.tz > t2.tz;
+			}
+		else
+			return false;
+		}
+	};
+
+/*
  *	Return an array of nearby objects.
  */
 
@@ -719,9 +741,13 @@ Usecode_value Usecode_internal::find_nearby
 		obj->find_nearby(vec, shapenum,
 			distval.get_int_value(), mval.get_int_value());
 		}
+	if (vec.size() > 1)		// Sort right-left, near-far to fix
+					//   SI/SS cask bug.
+		std::sort(vec.begin(), vec.end(), Object_reverse_sorter());
 	Usecode_value nearby(vec.size(), 0);	// Create return array.
 	int i = 0;
-	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Game_object_vector::const_iterator it = vec.begin(); 
+						it != vec.end(); ++it)
 		{
 		Game_object *each = *it;
 		Usecode_value val(each);
