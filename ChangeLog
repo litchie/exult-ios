@@ -1,3 +1,8 @@
+2002-07-12  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc (public): Call_guards logic moved to
+	Actor::reduce_health(), so spells will get you in trouble.
+
 2002-07-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.h,actors.cc:  All NPC's except Avatar get 4-frame

@@ -2071,6 +2071,7 @@ void Game_window::double_clicked
 			combat = 0;
 			main_actor->set_target(obj);
 			toggle_combat();
+#if 0	/* Now done in Actor::reduce_health() +++++++++ */
 					// Being a bully?
 			bool bully = false;
 			if (npc)
@@ -2084,6 +2085,7 @@ void Game_window::double_clicked
 							Shape_info::human &&
 			   Game::get_game_type() == BLACK_GATE)
 				attack_avatar(1 + rand()%3);
+#endif
 			return;
 			}
 		}
