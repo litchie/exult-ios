@@ -40,6 +40,7 @@
 #include "Gump.h"
 #include "Gump_manager.h"
 #include "Text_gump.h"
+#include "Audio.h"
 #include "animate.h"
 #include "barge.h"
 #include "chunks.h"
@@ -2293,6 +2294,21 @@ void Usecode_internal::update_party_status
 		if (remove_from_dead_party(npc))
 			add_to_party(npc);
 		}
+	}
+
+/*
+ *	Start speech, or show text if speech isn't enabled.
+ */
+
+void Usecode_internal::do_speech
+	(
+	int num
+	)
+	{
+	speech_track = num;		// Used in Usecode function.
+	if (!Audio::get_ptr()->start_speech(num))
+					// No speech?  Call text function.
+		call_usecode(0x614, gwin->get_main_actor(), double_click);
 	}
 
 /*

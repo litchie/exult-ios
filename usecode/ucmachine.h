@@ -95,6 +95,8 @@ public:
 					// Update status of NPC that died or
 					//   was resurrected.
 	virtual void update_party_status(Actor *npc) = 0;
+					// Start speech, or show text.
+	virtual void do_speech(int num) = 0;
 	int in_usecode()		// Currently in a usecode function?
 		{ return call_depth > 0; }
 	Keyring* getKeyring() const { return keyring; }

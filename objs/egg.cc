@@ -566,7 +566,7 @@ void Egg_object::activate
 			Audio::get_ptr()->start_music((data1)&0xff,(data1>>8)&0x01);
 			break;
 		case voice:
-			Audio::get_ptr()->start_speech((data1)&0xff);
+			umachine->do_speech(data1&0xff);
 			break;
 		case monster:		// Also creates other objects.
 			{
