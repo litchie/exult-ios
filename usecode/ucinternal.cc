@@ -597,25 +597,6 @@ Usecode_value Usecode_internal::get_party
 	}
 
 /*
- *	Recursively look for a barge that an object is a part of, or on.
- *
- *	Output:	->barge if found, else 0.
- */
-
-Barge_object *Get_barge
-	(
-	Game_object *obj
-	)
-	{
-	int barge_shape = 961;
-	Game_object *found = obj->find_closest(&barge_shape, 1);
-	if (found)
-		return dynamic_cast<Barge_object *> (found);
-	else
-		return 0;
-	}
-
-/*
  *	Put text near an item.
  */
 
@@ -753,6 +734,28 @@ Usecode_value Usecode_internal::find_nearby
 		nearby.put_elem(i++, val);
 		}
 	return (nearby);
+	}
+
+/*
+ *	Look for a barge that an object is a part of, or on, using the same
+ *	sort (right-left, front-back) as ::find_nearby().
+ *
+ *	Output:	->barge if found, else 0.
+ */
+
+Barge_object *Get_barge
+	(
+	Game_object *obj
+	)
+	{
+	Game_object_vector vec;		// Find it within 20 tiles (egglike).
+	obj->find_nearby(vec, 961, 20, 0x10);
+	if (vec.size() > 1)		// Sort right-left, near-far.
+		std::sort(vec.begin(), vec.end(), Object_reverse_sorter());
+	if (!vec.empty())
+		return dynamic_cast<Barge_object *> (vec.front());
+	else
+		return 0;
 	}
 
 /*
