@@ -41,6 +41,8 @@ class Uc_function
 	static Uc_scope globals;	// For finding intrinsics, funs.
 					// Intrinsics, indexed by number:
 	static vector<Uc_intrinsic_symbol *> intrinsics;
+					// Some intrinsic numbers:
+	static int add_answer, remove_answer, push_answers, pop_answers;
 	Uc_scope top;			// Top-level scope.
 	Uc_function_symbol *proto;	// Function declaration.
 	Uc_scope *cur_scope;		// Current scope.
@@ -88,6 +90,14 @@ public:
 		}
 	static Uc_intrinsic_symbol *get_intrinsic(int i)
 		{ return (i >= 0 && i < intrinsics.size())? intrinsics[i] : 0;}
+	static Uc_intrinsic_symbol *get_add_answer()
+		{ return get_intrinsic(add_answer); }
+	static Uc_intrinsic_symbol *get_remove_answer()
+		{ return get_intrinsic(remove_answer); }
+	static Uc_intrinsic_symbol *get_push_answers()
+		{ return get_intrinsic(push_answers); }
+	static Uc_intrinsic_symbol *get_pop_answers()
+		{ return get_intrinsic(pop_answers); }
 					// Already declared?
 	static bool is_dup(Uc_scope *scope, char *nm);
 	Uc_var_symbol *add_symbol(char *nm);// Add var. to current scope.

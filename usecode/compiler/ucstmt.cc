@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::vector;
 using std::string;
 
+int Uc_converse2_statement::nest = 0;
+
 /*
  *	Delete.
  */
@@ -107,7 +109,6 @@ void Uc_if_statement::gen
 	Uc_function *fun
 	)
 	{
-#if 1
 					// Gen JNE (or CMPS) past IF code.
 	int jne_offset = expr->gen_jmp_if_false(out, 0);
 	if (if_stmt)
@@ -129,33 +130,6 @@ void Uc_if_statement::gen
 		Write2(out, jmp_past_else_offset,
 					else_end - (jmp_past_else_offset + 2));
 		}
-#else
-	int elselen = 0;		// Get ELSE code.
-	char *elsestr = 0;
-	if (else_stmt)
-		{
-		ostrstream code;
-		else_stmt->gen(code, fun);
-		elselen = code.pcount();
-		elsestr = code.str();
-		}
-	ostrstream ifcode;		// Generate IF code.
-	if (if_stmt)
-		if_stmt->gen(ifcode, fun);
-	if (elselen)			// JMP past ELSE code.
-		{
-		ifcode.put((char) UC_JMP);
-		Write2(ifcode, elselen);
-		}
-	int iflen = ifcode.pcount();
-	char *ifstr = ifcode.str();
-					// Gen JNE (or CMPS) past IF code.
-	expr->gen_jmp_if_false(out, iflen);
-	out.write(ifstr, iflen);	// Now the IF code.
-	out.write(elsestr, elselen);	// Then the ELSE code.
-	delete elsestr;
-	delete ifstr;
-#endif
 	}
 
 /*
@@ -332,9 +306,8 @@ void Uc_break_statement::gen
 	Uc_function *fun
 	)
 	{
-//++++++++NOOOOO.  The location isn't right, since it might be inside
-//   and IF block.
-	fun->add_break(out.size());	// Store our location.
+					// Store our location.
+	fun->add_break(out.size());	//+++++if in an IF???
 	out.push_back((char) UC_JMP);
 	Write2(out, 0);			// To be filled in at end of loop.
 	}
@@ -416,6 +389,117 @@ void Uc_converse_statement::gen
 					// Write out body.
 	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
 	out.push_back((char) UC_CONVERSELOC);	// Past CONVERSE loop.
+	}
+
+/*
+ *	Generate a call to an intrinsic with 0 or 1 parameter.
+ */
+static void Call_intrinsic
+	(
+	vector<char>& out,
+	Uc_function *fun,		// Function we're in.
+	Uc_intrinsic_symbol *intr,	// What to call.
+	Uc_expression *parm0 = 0	// Parm, or null.
+	)
+	{
+					// Create parms. list.
+	Uc_array_expression *parms = new Uc_array_expression;
+	if (parm0)
+		parms->add(parm0);
+	Uc_call_expression *fcall = new Uc_call_expression(intr, parms, fun);
+	Uc_call_statement fstmt(fcall);
+	fstmt.gen(out, fun);
+	parms->clear();			// DON'T want to delete parm0.
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_converse_case_statement::gen
+	(
+	vector<char>& out,		// Contains all CASE statements up to
+					//   this point.
+	Uc_function *fun
+	)
+	{
+	out.push_back((char) UC_PUSHS);	// Gen. string comparison.
+	Write2(out, string_offset);
+	out.push_back((char) UC_CMPS);	// Generate comparison.
+	Write2(out, 1);			// # strings on stack.
+	int to_top_index = out.size();	// Remember this spot to fill in.
+	Write2(out, 0);			// Place holder.
+	if (remove)			// Remove answer?
+		{
+		Uc_string_expression str(string_offset);
+		Call_intrinsic(out, fun,
+				Uc_function::get_remove_answer(), &str);
+		}
+	if (statements)			// Generate statement's code.
+		statements->gen(out, fun);
+					// Get distance back to top, including
+					//   this JMP
+					//   and the CONVERSE above 'out' code.
+	long dist = out.size() + 3 + 3;
+					// Generate JMP to start of conv.
+	out.push_back((char) UC_JMP);
+	Write2(out, -dist);
+					// Fill in offset in CMPS.
+	Write2(out, to_top_index, out.size() - (to_top_index + 2));
+	}
+
+/*
+ *	Delete.
+ */
+
+Uc_converse2_statement::~Uc_converse2_statement
+	(
+	)
+	{
+	delete answers;
+	delete cases;
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_converse2_statement::gen
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+	{
+	if (nest++ > 0)			// Not the outermost?
+					// Generate a 'push_answers()'.
+		Call_intrinsic(out, fun, Uc_function::get_push_answers());
+	if (answers)			// Add desired answers.
+		Call_intrinsic(out, fun, 
+				Uc_function::get_add_answer(), answers);
+	vector<char> stmt_code;
+	fun->start_breakable(this);
+	if (cases) 
+		{
+		fun->adjust_reloffset(out.size() + 3);
+		cases->gen(stmt_code, fun);	// Generate statement's code.
+		fun->adjust_reloffset(-out.size() - 3);
+		}
+	int stmtlen = stmt_code.size();
+					// Get distance back to top, including
+					//   a CONVERSE & JMP back to top.
+	long dist = stmtlen + 3 + 3;
+	stmt_code.push_back((char) UC_JMP);	// Generate JMP back to top.
+	Write2(stmt_code, -dist);
+	stmtlen = stmt_code.size();	// Get total length.
+	fun->end_breakable(this, stmt_code);
+	out.push_back((char) UC_CONVERSE);	// Put CONVERSE at top.
+	Write2(out, stmtlen);		// Skip around body if no choices.
+					// Write out body.
+	out.insert(out.end(), stmt_code.begin(), stmt_code.end());
+	out.push_back((char) UC_CONVERSELOC);	// Past CONVERSE loop.
+	if (--nest > 0)			// Not the outermost?
+					// Generate a 'pop_answers()'.
+		Call_intrinsic(out, fun, Uc_function::get_pop_answers());
 	}
 
 /*

@@ -156,6 +156,7 @@ extern		return EXTERN;
 true		return UCTRUE;
 false		return UCFALSE;
 break		return BREAK;
+case		return CASE;
 
 converse	return CONVERSE;
 say		return SAY;
