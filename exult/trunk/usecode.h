@@ -33,6 +33,7 @@ class Game_object;
 class Text_gump;
 class Vector;
 class Deleted_objects;
+class Actor;
 
 #include "tiles.h"
 #include <vector>	// STL container
@@ -219,6 +220,8 @@ class Usecode_machine
 	deque< Answers > answer_stack;
 					// Get ->obj. from 'itemref'.
 	Game_object *get_item(Usecode_value& itemref);
+					// "Safe" cast to Actor.
+	Actor *as_actor(Game_object *obj);
 					// Get position.
 	Tile_coord get_position(Usecode_value& itemref);
 	/*
