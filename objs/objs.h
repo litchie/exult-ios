@@ -231,6 +231,8 @@ public:
 	void say(int from, int to);	// Show random msg. from 'text.flx'.
 					// Render.
 	virtual void paint(Game_window *gwin);
+					// Make this class abstract.
+	virtual void paint_terrain(Game_window *gwin) = 0;
 					// Can this be clicked on?
 	virtual int is_findable(Game_window *gwin)
 		{ return 1; }
@@ -348,16 +350,21 @@ public:
 	virtual int get_live_npc_num()
 		{ return -1; }
 
-	virtual int get_high_shape() const { return -1; }
-	virtual void set_high_shape(int s) { }
-	virtual int get_low_lift() const { return -1; }
-	virtual void set_low_lift(int l) { }
-
-	virtual void reset_cached_in()
-		{ }
-
 	virtual void delete_contents() { }
 
+	};
+
+/*
+ *	Object from U7chunks.
+ */
+class Terrain_game_object : public Game_object
+	{
+public:
+	Terrain_game_object(int shapenum, int framenum, unsigned int tilex, 
+				unsigned int tiley, unsigned int lft = 0)
+		: Game_object(shapenum, framenum, tilex, tiley, lft)
+		{  }
+	virtual void paint_terrain(Game_window *gwin);
 	};
 
 /*
@@ -373,6 +380,7 @@ public:
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
+	virtual void paint_terrain(Game_window *gwin) {  }
 	virtual void write_ifix(std::ostream& ifix);
 	};
 
