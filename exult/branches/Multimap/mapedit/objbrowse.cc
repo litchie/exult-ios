@@ -350,6 +350,9 @@ GtkWidget *Object_browser::create_controls
 		gtk_container_add (GTK_CONTAINER(frame), hbox2);
 
 		find_text = gtk_entry_new ();
+		gtk_editable_set_editable(GTK_EDITABLE(find_text), TRUE);
+		gtk_entry_set_visibility(GTK_ENTRY(find_text), TRUE);
+		GTK_OBJECT_SET_FLAGS(find_text, GTK_CAN_FOCUS);
 		gtk_widget_show (find_text);
 		gtk_box_pack_start(GTK_BOX(hbox2), find_text, FALSE, FALSE, 0);
 		gtk_widget_set_usize (find_text, 110, -2);

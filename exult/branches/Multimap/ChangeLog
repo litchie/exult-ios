@@ -1,3 +1,7 @@
+2004-02-16    <jeff@mini.nerble.net>
+
+	* combat.cc,etc:  Keep track of wand charges.
+
 2004-01-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* audio/Audio.cc: prevent crash when loading an invalid wave file
 	* docs/xml/docs.xml: updated a bit
