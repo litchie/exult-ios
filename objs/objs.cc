@@ -2,7 +2,7 @@
  *	objs.cc - Game objects.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -970,7 +970,7 @@ string Game_object::get_name
 		case 0x2a3:			// Desk items
 			name = item_names[0x52d + frnum];
 			break;
-		case 0x390:         // "Blood":
+		case 0x390:         // "Blood"
 			if (frnum < 4)
 				name = item_names[0x390];
 			else
@@ -988,92 +988,41 @@ string Game_object::get_name
 		
 		switch (shnum)			// More special cases!
 		{
-		case 0x390:         // "Blood":
-			if (frnum < 4)
-				name = item_names[0x390];
+		case 0x097:         // wall
+			if (frnum == 17)
+				name = item_names[0x681];  // door
 			else
-				name = 0;
+				name = item_names[shnum];
 			break;
-		case 0x34a:			// Reagents
-			name = item_names[0x500 + frnum];
-			break;
-		case 0x32a:			// Bucket
-			if (frnum == 1 && qual >= 10 && qual <= 15)
-				name = item_names[0x55b + qual];
-			else if (frnum == 2 && qual == 9)
-				name = item_names[0x55b + qual];
-			else
-				name = item_names[0x55b + frnum];
-			break;
-		case 0x179:			// Food items
-			name = item_names[0x510 + frnum];
-			break;
-		case 0x2a3:			// Desk items
-			name = item_names[0x532 + frnum];
-			break;
-		case 0x28a:			// Sextants
-			name = item_names[0x531 - frnum];
-			break;
-		case 0x1bd:			// Soul prisms
-			name = item_names[0x56b + frnum];
-			break;
-		case 0x289:			// Artifacts
-			name = item_names[0x573 + frnum];
-			break;
-		case 0x1d3:			// Magic plants
-			name = item_names[0x581 + frnum/2];
-			// not sure about 'catnip'
-			break;
-		case 0x1c2:			// Orbs
-			name = item_names[0x585 + frnum];
-			break;
-		case 0x106:			// Blackrock Serpents
-			if (frnum < 4)
-				name = item_names[0x592 + frnum];
+		case 0x98:          // wall
+			if (frnum == 22)
+				name = item_names[0x681];  // door
 			else
 				name = item_names[shnum];
 			break;
 		case 0x0b2:			// Cloth maps
 			name = item_names[0x596 + frnum];
 			break;
-		case 0x24b:			// Boots
-			name = item_names[0x59c + frnum];
-			break;
-		case 0x21e:			// Crested Helmets
-			name = item_names[0x5a3 + frnum];
-			break;
-		case 0x3ec:			// Helmets
-			name = item_names[0x5a6 + frnum];
-			break;
-		case 0x241:			// Nests
-			if (frnum < 6)
-				name = item_names[0x5ab + frnum/3];
-			else
-				name = item_names[shnum];
-			break;
-		case 0x3bb:			// Amulets
-			name = item_names[0x5ae + frnum];
-			break;
-		case 0x128:			// Rings
-			name = item_names[0x5b8 + frnum];
-			break;
-		case 0x377:			// More rings
-			name = item_names[0x5bc + frnum];
-			break;
-		case 0x2b4:			// Lute
-			if (frnum == 2)
-				name = item_names[0x5be];
-			else
-				name = item_names[shnum];
-			break;
-		case 0x347:			// Hourglass
-			if (frnum == 1)
-				name = item_names[0x5bf];
-			else
-				name = item_names[shnum];
-			break;
 		case 0x0d1:			// Artifacts
 			name = item_names[0x5c0 + frnum];
+			break;
+		case 0xd2:          // chicken coop
+			if (frnum == 4)
+				name = item_names[0x680]; // platform
+			else
+				name = item_names[shnum];
+			break;
+		case 0x0e3:      // cloak
+			if (frnum <= 4)
+				name = item_names[0x5ff + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x0f3:      // coffin
+			if (frnum >= 7)
+				name = item_names[0x605]; // stone bier
+			else
+				name = item_names[shnum];
 			break;
 		case 0x0f4:			// Large skulls
 			if (frnum < 2)
@@ -1081,24 +1030,72 @@ string Game_object::get_name
 			else
 				name = item_names[shnum];
 			break;
-		case 0x3f3:			// Beds
-			if (frnum >= 1 && frnum <= 4)
-				name = item_names[0x5da + frnum - 1];
-			else if (frnum == 5)
-				name = item_names[0x5dd];
-			else if (frnum == 6)
-				name = item_names[0x5da];
+		case 0x106:			// Blackrock Serpents
+			if (frnum < 4)
+				name = item_names[0x592 + frnum];
 			else
 				name = item_names[shnum];
 			break;
-		case 0x390:         // Acid
-			if (frnum == 24)
-				name = item_names[0x5de];
+		case 0x11a:       // painting
+			if (frnum >= 6 && frnum <= 10)
+				name = item_names[0x60c]; // ruined painting
 			else
 				name = item_names[shnum];
 			break;
-		case 0x31F:        // Body parts
-			name = item_names[0x5df + frnum];
+		case 0x11d:      // brush
+			if (frnum == 6)
+				name = item_names[0x5fa];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x11e:      // drum
+			if (frnum == 1 || frnum == 2)
+				name = item_names[0x669]; // drumsticks
+			else
+				name = item_names[shnum];
+			break;
+		case 0x124:      // seat
+			if (frnum == 17 || frnum == 18 || frnum == 19 || frnum == 22)
+				name = item_names[0x5fc];
+			else
+				name = item_names[shnum];
+		case 0x128:			// Rings
+			name = item_names[0x5b8 + frnum];
+			break;
+		case 0x12c:         // cooking utensil
+			if (frnum <= 7)
+				name = item_names[0x636 + (frnum/2)];
+			else if (frnum >= 8 && frnum <= 23)
+				name = item_names[0x63a + (frnum%4)];
+			else if (frnum >= 24)
+				name = item_names[0x63e + (frnum%2)];
+			break;
+		case 0x179:			// Food items
+			name = item_names[0x510 + frnum];
+			break;
+		case 0x1bd:			// Soul prisms
+			name = item_names[0x56b + frnum];
+			break;
+		case 0x1c2:			// Orbs
+			name = item_names[0x585 + frnum];
+			break;
+		case 0x1d3:			// Magic plants
+			name = item_names[0x581 + frnum/2];
+			break;
+		case 0x1df:      // claw + gwani amulet
+			name = item_names[0x5f8 + frnum/2];
+			break;
+		case 0x21e:			// Crested Helmets
+			name = item_names[0x5a3 + frnum];
+			break;
+		case 0x241:			// Nests
+			if (frnum < 6)
+				name = item_names[0x5ab + frnum/3];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x24b:			// Boots
+			name = item_names[0x59c + frnum];
 			break;
 		case 0x258:        // Bottles
 			switch (frnum) {
@@ -1124,35 +1121,24 @@ string Game_object::get_name
 				name = item_names[shnum];
 			}
 			break;
-		case 0x1df:      // claw + gwani amulet
-			name = item_names[0x5f8 + frnum/2];
+		case 0x289:			// Artifacts
+			name = item_names[0x573 + frnum];
 			break;
-		case 0x11d:      // brush
-			if (frnum == 6)
-				name = item_names[0x5fa];
+		case 0x28a:			// Sextants
+			name = item_names[0x531 - frnum];
+			break;
+		case 0x2a3:			// Desk items
+			name = item_names[0x532 + frnum];
+			break;
+		case 0x2b4:			// Lute
+			if (frnum == 2)
+				name = item_names[0x5be];
 			else
 				name = item_names[shnum];
 			break;
-#if 0
-			// probably wrong
-		case 0x222:      // broken dish
-			switch(frnum) {
-			case 4: case 6: case 7: case 8: case 9:
-			case 11: case 12: case 14: case 15:
-				name = item_names[0x5fb];  // broken glass
-			default:
-				name = item_names[shnum];
-			}
+		case 0x31F:        // Body parts
+			name = item_names[0x5df + frnum];
 			break;
-#endif
-#if 0
-			// not sure
-		case 0x124:      // seat
-			if (frnum == 17 || frnum == 18 || frnum == 21 || frnum == 22)
-				name = item_names[0x5fc];
-			else
-				name = item_names[shnum];
-#endif
 		case 0x320:      // chest
 			if (frnum == 4 || frnum == 5)
 				name = item_names[0x5fd];
@@ -1161,12 +1147,51 @@ string Game_object::get_name
 			else
 				name = item_names[shnum];
 			break;
-		case 0x0e3:      // cloak
-			if (frnum <= 4)
-				name = item_names[0x5ff + frnum];
+		case 0x32a:			// Bucket
+			if (frnum == 1 && qual >= 10 && qual <= 15)
+				name = item_names[0x55b + qual];
+			else if (frnum == 2 && qual == 9)
+				name = item_names[0x55b + qual];
+			else
+				name = item_names[0x55b + frnum];
+			break;
+		case 0x347:			// Hourglass
+			if (frnum == 1)
+				name = item_names[0x5bf];
 			else
 				name = item_names[shnum];
 			break;
+		case 0x34a:			// Reagents
+			name = item_names[0x500 + frnum];
+			break;
+		case 0x377:			// More rings
+			name = item_names[0x5bc + frnum];
+			break;
+		case 0x390:         // Acid
+			if (frnum == 24)
+				name = item_names[0x5de];
+			else if (frnum < 4)
+				name = item_names[0x390];
+			else
+				name = 0;
+			break;
+		case 0x3bb:			// Amulets
+			name = item_names[0x5ae + frnum];
+			break;
+		case 0x3ec:			// Helmets
+			name = item_names[0x5a6 + frnum];
+			break;
+		case 0x3f3:			// Beds
+			if (frnum >= 1 && frnum <= 4)
+				name = item_names[0x5da + frnum - 1];
+			else if (frnum == 5)
+				name = item_names[0x5dd];
+			else if (frnum == 6)
+				name = item_names[0x5da];
+			else
+				name = item_names[shnum];
+			break;
+			// not sure
 		default:
 			name = item_names[shnum];
 			break;
