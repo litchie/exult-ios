@@ -330,6 +330,8 @@ public:
 					// Get "ifix" objs. for given chunk.
 	void get_ifix_chunk_objects(ifstream& ifix, long filepos, int cnt,
 							int cx, int cy);
+					// Get iregxx name.
+	static char *get_ireg_name(int schunk, char *fname);
 					// Write moveable objects to file.
 	int write_ireg_objects(int schunk);
 					// Get moveable objects.
@@ -462,7 +464,9 @@ private:
 	void drop(int x, int y);
 	int drop_at_lift(int at_lift);
 public:
-	void write_gamedat(char *fname);// Explode a savegame into "gamedat".
+	void restore_gamedat(char *fname);// Explode a savegame into "gamedat".
+					// Save "gamedat".
+	int save_gamedat(char *fname, char *savename);
 	char *get_game_identity(char *fname);
 	char *get_shape_file_name(int n);
 	Vga_file *get_shape_file_data(int n);
