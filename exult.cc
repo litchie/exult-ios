@@ -301,6 +301,7 @@ static void Init
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif //WIN32
 
+	Game::get_game()->banner();
 	string yn;
 					// Skip splash screen?
 	config->value("config/gameplay/skip_splash", yn, "no");

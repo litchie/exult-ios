@@ -307,9 +307,22 @@ void Game::scroll_text(vector<char *> *text)
 	}
 }
 
+void Game::banner()
+{
+	Shape_file exult_logo("data/exult_logo.shp");
+	gwin->paint_shape(topx,topy,exult_logo.get_frame(0));
+	pal.load("static/intropal.dat",0);
+	pal.fade_in(30);
+	wait_delay(2000);
+	pal.fade_out(30);
+	clear_screen();
+}
+
 void Game::show_menu()
 	{
 		int menuy = topy+110;
+		Shape_file exult_credits("data/exult_credits.shp");
+		Shape_file exult_quotes("data/exult_quotes.shp");
 
 		top_menu();
 		
@@ -325,14 +338,15 @@ void Game::show_menu()
 			do {
 			        if (redraw) {
 				        for(int i=0; i<num_choices; i++) {
+						Shape_frame *shape = 0;
 					        if(menuchoices[i]==-1) {
-						        center_text(MAINSHP_FONT1, "EXULT CREDITS", centerx, menuy+i*10);
+						        shape = exult_credits.get_frame(i==selected);
 					        } else if(menuchoices[i]==-2) {
-						        center_text(MAINSHP_FONT1, "EXULT QUOTES", centerx, menuy+i*10);
+						        shape = exult_quotes.get_frame(i==selected);
 					        } else {
-						        Shape_frame *shape = menushapes.get_shape(menuchoices[i],i==selected);
-						        gwin->paint_shape(centerx-shape->get_width()/2,menuy+i*10,shape);
-					        }
+						         shape = menushapes.get_shape(menuchoices[i],i==selected);
+						}
+						gwin->paint_shape(centerx-shape->get_width()/2,menuy+i*10,shape);
 					}
 					win->show();
 					redraw = false;

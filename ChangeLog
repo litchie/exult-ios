@@ -1,5 +1,14 @@
 2000-08-30  Tristan Tarrant  <nadir@users.sourceforge.net>
 
+	* data/exult_credits.shp, 
+	  data/exult_quotes.shp,
+	  data/exult_logo.shp: Two shapes for the main menu and a logo
+	* game.cc: use the above shapes, instead of using the MAINSHP font
+	and implement a banner.
+	* exult.cc: show banner
+
+2000-08-30  Tristan Tarrant  <nadir@users.sourceforge.net>
+
 	* tools/u7shpload.c: Saving works properly now. Damn alpha :-)
 
 2000-08-30  Tristan Tarrant  <nadir@users.sourceforge.net>
