@@ -22,7 +22,7 @@ adder1 0x481 (a, b)
 		say("Hello, the time is ", 11, "o'clock");
 		if (response == "Name")
 			{
-			say("My name is DrCode.");
+			say("My name is \"DrCode\".");
 			}
 		else if (response == "Bye")
 			return;
@@ -42,8 +42,9 @@ adder1 0x481 (a, b)
 	return adder(a, 3);
 	}
 
+/*
 adder 0x480 (a, b)
 	{
 	return a + b;
 	}
-
+*/
