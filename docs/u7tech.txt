@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.20 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.21 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -449,6 +449,14 @@ XFORM.TBL:    flex file with shape transform tables
   through semi-transparent effect (glass, cloud, blood...)
   table     = 256 new_color (one for each possible color index)
   new_color = byte  (the new color index to use)
+
+  There are 11 of these tables, and they're assigned to the
+  11 translucent colors (0xf4-0xfe) going backwards; i.e., table 0
+  applies to color 0xfe, 1 to color 0xfd, 2 to 0xfc,... 10 to 0xf4.
+  When the renderer paints one of the translucent colors, it takes the
+  pixel that's already in the frame buffer and looks it up in the
+  appropriate xform table to get its replacement.
+
 POINTERS.SHP: shape file
   (contains the mouse cursors used in the game)
 ENDSCORE.DAT: A RIFF file containing what _appears_ to be some kind of midi 
