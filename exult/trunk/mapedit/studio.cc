@@ -50,7 +50,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapevga.h"
 #include "Flex.h"
 #include "studio.h"
-// #include "dirbrowser.h"
 #include "utils.h"
 #include "u7drag.h"
 #include "shapegroup.h"
@@ -87,15 +86,35 @@ enum ExultFileTypes {
 	ComboArchive
 };
 
-C_EXPORT void on_filelist_tree_select_row       (GtkCTree        *ctree,
-                                        GtkCTreeNode    *node,
-                                        gint             column,
-                                        gpointer         user_data)
+typedef struct _FileTreeItem FileTreeItem;
+struct _FileTreeItem
 {
-	int type = (int)gtk_ctree_node_get_row_data( ctree, node );
-	gboolean leaf;
+  const gchar    *label;
+  ExultFileTypes datatype;
+  FileTreeItem   *children;
+};
+
+/* columns */
+enum
+{
+  FOLDER_COLUMN = 0,
+  FILE_COLUMN,
+  DATA_COLUMN,
+  NUM_COLUMNS
+};
+
+
+C_EXPORT void on_filelist_tree_select_row(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, gpointer data)
+{
+	int type = -1;
 	char *text;
-	gtk_ctree_get_node_info( ctree, node, &text, 0, 0, 0, 0, 0, &leaf, 0);
+	GtkTreeIter iter;
+	GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
+	
+	gtk_tree_model_get_iter(model, &iter, path);
+	gtk_tree_model_get(model, &iter, FILE_COLUMN, &text, DATA_COLUMN, &type,-1);
+	printf("%s %d\n",text,type);
+	
 	ExultStudio *studio = ExultStudio::get_instance();
 	switch(type) {
 	case ShapeArchive:
@@ -117,6 +136,7 @@ C_EXPORT void on_filelist_tree_select_row       (GtkCTree        *ctree,
 	default:
 		break;
 	}
+	g_free(text);
 }                                     
 
 C_EXPORT void
@@ -476,7 +496,7 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 		strcpy(path,".");
 	strcat(path, "/exult_studio.glade");
 	// Load the Glade interface
-	app_xml = glade_xml_new(path, NULL);
+	app_xml = glade_xml_new(path, NULL, NULL);
 	app = glade_xml_get_widget( app_xml, "main_window" );
 	glade_path = g_strdup(path);
 
@@ -704,7 +724,7 @@ inline bool Is_dir_marker
 
 void on_choose_new_game_dir
 	(
-	char *dir,
+	const char *dir,
 	gpointer udata			// ->studio.
 	)
 	{
@@ -712,7 +732,7 @@ void on_choose_new_game_dir
 	}
 void ExultStudio::create_new_game
 	(
-	char *dir			// Directory for new game.
+	const char *dir			// Directory for new game.
 	)
 	{
 					// Take basename as game name.
@@ -794,17 +814,15 @@ void ExultStudio::create_new_game
  *	Prompt for a 'new game' directory.
  */
 
-void ExultStudio::new_game
-	(
-	)
-	{
+void ExultStudio::new_game()
+{
 	if (!okay_to_close())		// Okay to close prev. game?
 		return;
 	GtkFileSelection *fsel = Create_file_selection(
 			"Choose new game directory",
-					on_choose_new_game_dir, this);
+			on_choose_new_game_dir, this);
 	gtk_widget_show(GTK_WIDGET(fsel));
-	}
+}
 
 /*
  *	Choose game directory.
@@ -830,115 +848,16 @@ void ExultStudio::choose_game_path()
 			return;
 			}
 		}
-#if 0
-	GtkWidget *dirbrowser = xmms_create_dir_browser(
-					"Select game directory",
-					cwd, GTK_SELECTION_SINGLE,
-					on_choose_directory);
-	gtk_signal_connect(GTK_OBJECT(dirbrowser), "destroy", 
-		GTK_SIGNAL_FUNC(gtk_widget_destroyed), &dirbrowser);
-        gtk_window_set_transient_for(GTK_WINDOW(dirbrowser), GTK_WINDOW(app));
-	gtk_widget_show (dirbrowser);
-#else
 	GtkFileSelection *fsel = Create_file_selection(
 					"Select game directory",
 			(File_sel_okay_fun) on_choose_directory, 0L);
 	gtk_file_selection_set_filename(fsel, cwd);
 	gtk_widget_show(GTK_WIDGET(fsel));
-#endif
 	delete [] cwd;	// Prevent leakage
 }
 
-/*
- *	Add a node to a tree.
- */
-static GtkCTreeNode *Create_tree_node
-	(
-	GtkCTree *ctree,
-	char *fname,			// Filename to add.
-	GtkCTreeNode *parent,		// Subtree this is to go under.
-	GtkCTreeNode *sibling,		// Sibling to go after.
-	gpointer data
-	)
-	{
-	char *text[1];
-	text[0] = fname;
-	GtkCTreeNode *newnd = gtk_ctree_insert_node(ctree, parent, sibling, 
-			text, 0,0,0,0,0, TRUE, FALSE );
-	gtk_ctree_node_set_row_data(ctree, newnd, data);
-	return newnd;
-	}
 
-/*
- *	Add a subtree to a clist using files from the patch or static dirs.
- *	OR, add files to an existing subtree.
- *
- *	Output:	Parent of subtree.
- */
-GtkCTreeNode *Create_subtree( GtkCTree *ctree,
-			      GtkCTreeNode *previous,
-			      const char *name,
-			      const char *ext,  // Or whole filename.
-			      gpointer data,
-			      GtkCTreeNode *parent = 0
-			    )
-{
-	struct dirent *entry;
-	GtkCTreeNode *sibling = 0;
-	char *text[1];
-	text[0] = (char *) name;
-	if (!parent)
-		parent = gtk_ctree_insert_node( ctree,
-					0,
-					previous,
-					text,
-					0,
-					0,0,0,0,
-					FALSE,
-					TRUE );
-	gtk_ctree_node_set_selectable( ctree,
-				       parent, 
-				       FALSE );
-	int extlen = strlen(ext);
-	string spath("<STATIC>"), ppath("<PATCH>");
-	spath = get_system_path(spath);
-	ppath = get_system_path(ppath);
-	DIR *dir = opendir(ppath.c_str());// Get names from 'patch' first.
-	if (dir) {
-		while(entry=readdir(dir)) {
-			char *fname = entry->d_name;
-			int flen = strlen(fname);
-					// Ignore case of extension.
-			if(!strcmp(fname,".")||!strcmp(fname,"..") ||
-				strcasecmp(fname + flen - extlen, ext) != 0)
-				continue;
-			sibling = Create_tree_node(ctree, fname, parent,
-							sibling, data);
-		}
-		closedir(dir);
-	}
-	dir = opendir(spath.c_str());	// Now go through 'static'.
-	if (dir) {
-		while(entry=readdir(dir)) {
-			char *fname = entry->d_name;
-			int flen = strlen(fname);
-					// Ignore case of extension.
-			if(!strcmp(fname,".")||!strcmp(fname,"..") ||
-				strcasecmp(fname + flen - extlen, ext) != 0)
-				continue;
-					// See if also in 'patch'.
-			string fullpath(ppath);
-			fullpath += "/";
-			fullpath += fname;
-			if (U7exists(fullpath))
-				continue;
-			sibling = Create_tree_node(ctree, fname, parent,
-							sibling, data);
-		}
-		closedir(dir);
-	}
-	return parent;
-}
+
 
 void ExultStudio::set_game_path(const char *gamepath)
 {
@@ -1008,57 +927,133 @@ void ExultStudio::set_game_path(const char *gamepath)
 	connect_to_server();		// Connect to server with 'gamedat'.
 }
 
+void add_to_tree(GtkTreeStore *model, const char *folderName, const char *files, ExultFileTypes file_type)
+{
+	struct dirent *entry;
+	GtkTreeIter iter;
+	
+	// First, we add the folder
+	gtk_tree_store_append(model, &iter, NULL);
+	gtk_tree_store_set(model, &iter,
+		FOLDER_COLUMN, folderName,
+		FILE_COLUMN, NULL,
+		DATA_COLUMN, -1,
+		-1);
+	
+	// Scan the files which are separated by commas
+	GtkTreeIter child_iter;
+	char *startpos = (char *)files;
+	int adding_children = 1;
+	do {
+		char *pattern;
+		char *commapos = strstr(startpos, ",");
+		if(commapos==0) {
+			pattern = strdup(startpos);
+			adding_children = 0;
+		} else {
+			pattern = g_strndup(startpos, commapos-startpos);
+			startpos = commapos+1;
+		}
+		
+		string spath("<STATIC>"), ppath("<PATCH>");
+	        spath = get_system_path(spath);
+        	ppath = get_system_path(ppath);
+        	char *ext = strstr(pattern,"*");
+		if(!ext)
+			ext = pattern;
+		else
+			ext++;
+		DIR *dir = opendir(ppath.c_str());// Get names from 'patch' first.
+		if (dir) {
+			while(entry=readdir(dir)) {
+				char *fname = entry->d_name;
+                        	int flen = strlen(fname);
+                                        // Ignore case of extension.
+                        	if(!strcmp(fname,".")||!strcmp(fname,"..") ||strcasecmp(fname + flen - strlen(ext), ext) != 0)
+                                	continue;
+				gtk_tree_store_append (model, &child_iter, &iter);
+				gtk_tree_store_set (model, &child_iter,
+			      		FOLDER_COLUMN, NULL,
+			      		FILE_COLUMN, fname,
+					DATA_COLUMN, file_type,
+			      		-1);
+                        	
+                	}
+                	closedir(dir);
+        	}
+		dir = opendir(spath.c_str());   // Now go through 'static'.
+        	if (dir) {
+                	while(entry=readdir(dir)) {
+                        	char *fname = entry->d_name;
+                        	int flen = strlen(fname);
+                                        // Ignore case of extension.
+                        	if(!strcmp(fname,".")||!strcmp(fname,"..")||strcasecmp(fname + flen - strlen(ext), ext) != 0)
+                                	continue;
+                                        // See if also in 'patch'.
+                        	string fullpath(ppath);
+                        	fullpath += "/";
+                        	fullpath += fname;
+                        	if (U7exists(fullpath))
+                                	continue;
+				gtk_tree_store_append (model, &child_iter, &iter);
+				gtk_tree_store_set (model, &child_iter,
+			      		FOLDER_COLUMN, NULL,
+			      		FILE_COLUMN, fname,
+					DATA_COLUMN, file_type,
+			      		-1);
+                	}
+                	closedir(dir);
+        	}
+
+		free(pattern);
+	} while (adding_children);
+}
+
 /*
  *	Set up the file list to the left of the main window.
  */
 
-void ExultStudio::setup_file_list
-	(
-	)
-	{
+void ExultStudio::setup_file_list() {
 	GtkWidget *file_list = glade_xml_get_widget( app_xml, "file_list" );
 	
-	gtk_clist_clear( GTK_CLIST( file_list ) );
+  	/* create tree store */
+  	GtkTreeStore *model = gtk_tree_store_new(NUM_COLUMNS, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT);
+	add_to_tree(model, "Shape Files", "*.vga,*.shp,combos.flx", ShapeArchive);
+	add_to_tree(model, "Map Files", "u7chunks", ChunkArchive);
+	add_to_tree(model, "Palette Files", "*.pal,palettes.flx", PaletteFile);
 	
-	gtk_clist_freeze( GTK_CLIST( file_list ) );
-	
-	GtkCTreeNode *shapefiles = Create_subtree( GTK_CTREE( file_list ),
-						   0,
-						   "Shape Files",
-						   ".vga",
-						   (gpointer)ShapeArchive );
-					// Put .shps in same subtree.
-				   Create_subtree( GTK_CTREE( file_list ),
-						   0,
-						   "Shape Files",
-						   ".shp",
-						   (gpointer)ShapeArchive,
-						   shapefiles );
-					// And always add combos.flx.
-	Create_tree_node(GTK_CTREE(file_list), "combos.flx", shapefiles, 0,
-						   (gpointer)ComboArchive );
-
-	GtkCTreeNode *chunkfiles = Create_subtree( GTK_CTREE( file_list ),
-						   0,
-						   "Map Files",
-						   "u7chunks",
-						   (gpointer)ChunkArchive );
-	GtkCTreeNode *palettefiles = Create_subtree( GTK_CTREE( file_list ),
-						   0,
-						   "Palette Files",
-						   ".pal",
-						   (gpointer)PaletteFile );
-					// Always include main palettes file.
-	Create_tree_node(GTK_CTREE(file_list), "palettes.flx", palettefiles, 0,
-						   (gpointer)PaletteFile );
 #if 0	/* Skip this until we can do something with these files. */
-	GtkCTreeNode *flexfiles = Create_subtree( GTK_CTREE( file_list ),
-						   palettefiles,
-						   "FLEX Files",
-						   ".flx",
-						   (gpointer)FlexArchive );
+	add_to_tree(model, "FLEX Files", "*.flx", FlexArchive);
 #endif
-	gtk_clist_thaw( GTK_CLIST( file_list ) );
+	gtk_tree_view_set_model(GTK_TREE_VIEW(file_list), GTK_TREE_MODEL(model));
+	g_object_unref(model);
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(file_list), TRUE);
+	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(file_list)), GTK_SELECTION_SINGLE);
+	
+	gint col_offset;
+  	GtkCellRenderer *renderer;
+  	GtkTreeViewColumn *column;
+  	
+	/* column for folder names */
+	renderer = gtk_cell_renderer_text_new ();
+	g_object_set (renderer, "xalign", 0.0, NULL);
+	col_offset = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(file_list),
+							    -1, "Folders",
+							    renderer, "text",
+							    FOLDER_COLUMN,
+							    NULL);
+	column = gtk_tree_view_get_column(GTK_TREE_VIEW(file_list), col_offset - 1);
+	gtk_tree_view_column_set_clickable(GTK_TREE_VIEW_COLUMN(column), TRUE);
+	
+	/* column for file names */
+	col_offset = gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(file_list),
+							    -1, "Files",
+							    renderer, "text",
+							    FILE_COLUMN,
+							    NULL);
+	column = gtk_tree_view_get_column(GTK_TREE_VIEW(file_list), col_offset - 1);
+	gtk_tree_view_column_set_clickable(GTK_TREE_VIEW_COLUMN(column), TRUE);
+
 }
 
 /*
@@ -1315,9 +1310,9 @@ void ExultStudio::show_unused_shapes
 	)
 	{
 	int nshapes = datalen*8;
-	GtkText *text = GTK_TEXT(glade_xml_get_widget(app_xml, "msg_text"));
-	gtk_text_set_point(text, 0);	// Clear out old text.
-	gtk_text_forward_delete(text, gtk_text_get_length(text));
+	GtkTextView *text = GTK_TEXT_VIEW(glade_xml_get_widget(app_xml, "msg_text"));
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	gtk_text_buffer_set_text(buffer, "", 0);	// Clear out old text
 	set_visible("msg_win", TRUE);	// Show message window.
 	int pos = 0;
 	GtkEditable *ed = GTK_EDITABLE(text);
@@ -1334,7 +1329,7 @@ void ExultStudio::show_unused_shapes
 			Insert_text(ed, msg, pos);
 			g_free(msg);
 			}
-	gtk_text_set_point(text, 0);	// Scroll back to top.
+	// FIXME: gtk_text_set_point(text, 0);	// Scroll back to top.
 	}
 
 
@@ -1572,7 +1567,7 @@ int ExultStudio::get_num_entry
 	GtkWidget *field = glade_xml_get_widget(app_xml, name);
 	if (!field)
 		return -1;
-	char *txt = gtk_entry_get_text(GTK_ENTRY(field));
+	const gchar *txt = gtk_entry_get_text(GTK_ENTRY(field));
 	if (!txt)
 		return -1;
 	while (*txt == ' ')
@@ -1589,7 +1584,7 @@ int ExultStudio::get_num_entry
  *	Output:	->text, or null if not found.
  */
 
-char *ExultStudio::get_text_entry
+const gchar *ExultStudio::get_text_entry
 	(
 	char *name
 	)
@@ -2013,7 +2008,7 @@ void ExultStudio::save_preferences
 	(
 	)
 	{
-	char *text = get_text_entry("prefs_image_editor");
+	const char *text = get_text_entry("prefs_image_editor");
 	g_free(image_editor);
 	image_editor = g_strdup(text);
 	config->set("config/estudio/image_editor", image_editor, true);

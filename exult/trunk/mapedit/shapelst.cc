@@ -1465,7 +1465,7 @@ C_EXPORT void on_new_shape_font_color_changed
 
 static void font_file_chosen
 	(
-	char *fname,
+	const char *fname,
 	gpointer user_data
 	)
 	{

@@ -10,15 +10,15 @@ TOOLSPATH=C:/GimpPlugin
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
 
-# If this doesn't work, insert output of `pkg-config --cflags gtk+-1.3-win32-production` manually
-GTK_INCLUDES = `pkg-config --cflags gtk+-1.3-win32-production`
-# If this doesn't work, insert output of `pkg-config --libs gtk+-1.3-win32-production` manually
-GTK_LIBS = `pkg-config --libs gtk+-1.3-win32-production`
+# If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
+GTK_INCLUDES = `pkg-config --cflags gtk+-win32-2.0`
+# If this doesn't work, insert output of `pkg-config --libs gtk+-win32-2.0` manually
+GTK_LIBS = `pkg-config --libs gtk+-win32-2.0`
 
-# If this doesn't work, insert output of 'pkg-config --cflags libglade-0.17' manually
-LIBGLADE_INCLUDES = `pkg-config --cflags libglade-0.17`
-# If this doesn't work, insert output of 'pkg-config --libs libglade-0.17' manually
-LIBGLADE_LIBS = `pkg-config --libs libglade-0.17`
+# If this doesn't work, insert output of 'pkg-config --cflags libglade-2.0' manually
+LIBGLADE_INCLUDES = `pkg-config --cflags libglade-2.0`
+# If this doesn't work, insert output of 'pkg-config --libs libglade-2.0' manually
+LIBGLADE_LIBS = `pkg-config --libs libglade-2.0`
 
 # If this doesn't work, insert output of 'pkg-config --cflags freetype2' manually
 FREETYPE2_INCLUDES = `pkg-config --cflags freetype2`
@@ -42,7 +42,7 @@ EXP_FILE=exult_studio.exp
 
 SERVER_OBJS=objserial.o servemsg.o servewin32.o
 
-MAPEDIT_OBJS=chunklst.o combo.o dirbrowser.o eggedit.o compile.o execbox.o exult_studio.o locator.o npcedit.o \
+MAPEDIT_OBJS=chunklst.o combo.o eggedit.o compile.o execbox.o exult_studio.o locator.o npcedit.o \
 	objbrowse.o objedit.o paledit.o shapedraw.o shapefile.o shapegroup.o \
 	shapeedit.o shapelst.o studio.o
 
