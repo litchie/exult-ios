@@ -598,13 +598,15 @@ USECODE_INTRINSIC(get_npc_name)
 		for (int i = 0; i < cnt; i++)
 			{
 			Game_object *obj = get_item(parms[0].get_elem(i));
-			Usecode_value v(obj->get_name().c_str());
+			std::string namestr = obj->get_name();
+			Usecode_value v(namestr.c_str());
 			arr.put_elem(i, v);
 			}
 		return(arr);
 		}
 	Game_object *obj = get_item(parms[0]);
-	Usecode_value u(obj ? obj->get_name().c_str() : unknown);
+	std::string namestr = obj->get_name();
+	Usecode_value u(obj ? namestr.c_str() : unknown);
 	return(u);
 }
 
