@@ -1,3 +1,9 @@
+2004-09-19    <jeff@mini.nerble.net>
+
+	* mapedit/shapeedit.cc, shapes/items.cc, files/msgfile.cc: Support
+	more than 1024 shapes in item names by storing messages in
+	"textmsg.txt".
+
 2004-09-18    <jeff@mini.nerble.net>
 
 	* shapes/items.h,etc: Reorganized lists of text to prepare for
