@@ -286,8 +286,8 @@ dist:   $(EXEC)
 	cp README.1ST $(U7PATH)/Exult/README.1ST.txt
 	cp docs/ReadMe.html $(U7PATH)/Exult
 	cp README.win32 $(U7PATH)/Exult/README.win32.txt
-	cp data/bg/defaultkeys.txt $(U7PATH)/Exult
-	cp data/si/defaultkeys.txt $(U7PATH)/Exult
+	cp data/bg/defaultkeys.txt $(U7PATH)/Exult/bgdefaultkeys.txt
+	cp data/si/defaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 	cp SDL/README-SDL.txt $(U7PATH)/Exult
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
