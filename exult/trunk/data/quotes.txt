@@ -48,8 +48,16 @@
 
 \C"It's not our fault, the data files
 \Care telling us what to do!"
-\L- Dancer, explaining things clearly.
+\L- Dancer, 
+\Lexplaining things clearly.
 
 \C"If we stack kids, 
-\Cwe should use a proper stack"
+\Cwe should use a proper stack!"
 \L- Max
+
+\C"I know what a stack is.
+\CBut what's a `kid`?"
+\L- Tony
+
+\C"A young person..."
+\L- Willem Jan
