@@ -196,9 +196,6 @@ public:
 	void walk_to_tile(int tx, int ty, int tz, int speed = 250, 
 							int delay = 0)
 		{ walk_to_tile(Tile_coord(tx, ty, tz), speed, delay); }
-					// Walk to desired point.
-	void walk_to_point(unsigned long destx, unsigned long desty, 
-								int speed);
 					// Get there, avoiding obstacles.
 	int walk_path_to_tile(Tile_coord src, Tile_coord dest, 
 					int speed = 250, int delay = 0);

@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "paths.h"
 #include "Astar.h"
 #include "gamewin.h"
+#include "actors.h"
 
 /*
  *	Figure cost going from one tile to an adjacent tile (for pathfinding).

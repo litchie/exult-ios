@@ -8,6 +8,7 @@
 #include <iostream.h>			/* Debugging. */
 #include "gameclk.h"
 #include "gamewin.h"
+#include "actors.h"
 #include "usecode.h"
 
 /*

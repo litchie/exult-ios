@@ -25,7 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "barge.h"
 #include "gamewin.h"
-#include "PathFinder.h"
+#include "actors.h"
+#include "Zombie.h"
 #include "citerate.h"
 
 /*
@@ -75,6 +76,30 @@ void Barge_object::gather
 				objects.append(obj);
 			}
 		}
+	}
+
+/*
+ *	Travel towards a given tile.
+ */
+
+void Barge_object::travel_to_tile
+	(
+	Tile_coord dest,		// Destination.
+	int speed			// Time between frames (msecs).
+	)
+	{
+	if (!path)
+		path = new Zombie();
+					// Set up new path.
+	if (path->NewPath(get_abs_tile_coord(), dest, 0))
+		{
+		frame_time = speed;
+		Game_window *gwin = Game_window::get_game_window();
+		if (!in_queue())	// Not already in queue?
+			gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+		}
+	else
+		frame_time = 0;		// Not moving.
 	}
 
 /*
@@ -211,7 +236,8 @@ int Barge_object::step
 	{
 	Tile_coord cur = get_abs_tile_coord();
 					// Blocked? (Assume ht.=5, for now.)
-	if (Chunk_object_list::is_blocked(xtiles, ytiles, 5, cur, t))
+	if (Chunk_object_list::is_blocked(get_xtiles(), get_ytiles(), 
+								5, cur, t))
 		{
 		return (0);		// Done.
 		}
