@@ -1,5 +1,7 @@
 2002-04-21  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* schedule.cc,actions.cc:  notify_object_gone() method tells
+	schedule that one of its objects is no longer around.
 	* schedule.cc (Sleep_schedule): Make sure NPC is still by bed when
 	waking up.
 

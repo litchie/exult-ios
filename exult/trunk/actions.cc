@@ -817,6 +817,11 @@ int Pickup_actor_action::handle_event
 		cnt++;
 		if (pickup)
 			{
+			if (actor->distance(obj) > 8)
+				{	// No longer nearby.
+				actor->notify_object_gone(obj);
+				break;
+				}
 			gwin->add_dirty(obj);
 			obj->remove_this(1);
 			actor->add(obj, 1);
