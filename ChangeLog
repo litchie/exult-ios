@@ -1,3 +1,7 @@
+2002-04-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/studio.cc: Show Exult logo in 'Prompt' box.
+
 2002-04-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/studio.cc: "New shape" menu items.
