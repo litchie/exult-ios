@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2001-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,10 +22,6 @@
 
 
 #ifdef XWIN
-
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma implementation
-#endif
 
 
 #ifndef ALPHA_LINUX_CXX

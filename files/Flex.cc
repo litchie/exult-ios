@@ -22,10 +22,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifndef PENTAGRAM // DONT'T INCLUDE THIS IN PENTAGRAM!
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma implementation
-#endif
-
 #define	DEBUGFLEX 0
 
 #include "Flex.h"

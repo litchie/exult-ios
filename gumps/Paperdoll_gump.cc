@@ -37,7 +37,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cerr;
 using std::endl;
 using std::size_t;
-using std::snprintf;
 
 //#define SHOW_USECODE_CONTAINER
 //#define SHOW_NONREADIED_OBJECTS

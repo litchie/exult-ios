@@ -94,7 +94,6 @@ using std::exit;
 using std::toupper;
 using std::string;
 using std::vector;
-using std::snprintf;
 
 Configuration *config = 0;
 KeyBinder *keybinder = 0;

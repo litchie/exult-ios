@@ -59,7 +59,6 @@ using std::strcpy;
 using std::strcat;
 using std::time_t;
 using std::tm;
-using std::snprintf;
 
 /*
  *	Macros:
