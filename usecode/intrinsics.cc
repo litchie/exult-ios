@@ -50,7 +50,7 @@ using std::rand;
 using std::strchr;
 
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
-extern void Wait_for_arrival(Actor *actor, Tile_coord dest);
+extern void Wait_for_arrival(Actor *actor, Tile_coord dest, long maxticks = 0);
 Barge_object *Get_barge	(Game_object *obj);
 extern unsigned char quitting_time;
 extern Usecode_value no_ret;
