@@ -47,7 +47,8 @@ public:
 	enum Game_mode {		// Can be in different modes.
 		intro,			// Splash screen.
 		normal,			// Normal game-play.
-		conversation		// Talking.
+		conversation,		// Talking.
+		gump			// Showing open container(s).
 		};
 private:
 	Usecode_machine *usecode;	// Drives game plot.
@@ -56,6 +57,7 @@ private:
 	Game_clock clock;		// Keeps track of time.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
 	Text_object *texts;		// Text snippets shown on screen.
+	Gump_object *open_gumps;	// Open containers on screen.
 	Npc_face_info *face_info[3];	// NPC's on-screen faces in convers.
 	int num_faces;			// # of faces.
 	int last_face_shown;		// Index of last npc face shown.
@@ -257,6 +259,8 @@ public:
 		{ paint(0, 0, get_width(), get_height()); }
 					// Paint a bit of text.
 	void paint_text(Text_object *txt);
+					// Paint an open container.
+	void paint_gump(Gump_object *gmp);
 					// Paint "flat" scenery in a chunk.
 	void paint_chunk_flats(int cx, int cy, int xoff, int yoff);
 					// Paint objects in given chunk at
@@ -297,6 +301,7 @@ public:
 	void show_avatar_choices(int num_choices, char **choices);
 					// User clicked on a choice.
 	int conversation_choice(int x, int y);
+	void show_gump(Game_object *obj, int shapenum);
 					// Queue up npcs in range of chunks.
 	void add_nearby_npcs(int from_cx, int from_cy,
 						int stop_cx, int stop_cy);
