@@ -1,3 +1,7 @@
+2001-12-18  Patrick Burke <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*: Added 'long' type handling for opcodes.txt.
+	Optomised USECODE file reading to increase speed.
+
 2001-12-17  Patrick Burke <takhisisii@yahoo.com.au>
 	* conf/Configuration.[cc|h]: Updated from FILE *'s to fstreams.
 	* usecode/ucxt/*: Updated to use U7open() rather then fstream.open().

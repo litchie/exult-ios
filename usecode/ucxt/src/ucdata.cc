@@ -284,7 +284,6 @@ void UCData::list_funcs()
 void UCData::file_open(const string &filename)
 {
 	/* Open a usecode file */
-//	_file.open(filename.c_str(), ios::in | ios::binary);
 	U7open(_file, filename.c_str(), false);
 }
 

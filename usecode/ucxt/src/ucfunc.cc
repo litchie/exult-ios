@@ -1060,6 +1060,47 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 {
 	unsigned int first=0;
 	
+	for(vector<pair<unsigned int, bool> >::const_iterator s=otd.param_sizes.begin(); s!=otd.param_sizes.end(); ++s)
+	{
+		assert(first<ucop._params.size());
+		
+		unsigned int ssize=s->first;
+		bool offset_munge=s->second;
+		
+/*		// all these are two bytes
+		if(*s=="short")           ssize=2;
+		else if(*s=="flag")       ssize=2;
+		else if(*s=="extoffset")  ssize=2;
+		else if(*s=="dataoffset") ssize=2;
+		else if(*s=="varoffset")  ssize=2;
+		else if(*s=="offset")     { ssize=2; offset_munge=true; }
+		// and the single one byte type
+		else if(*s=="byte")       ssize=1;
+		else
+		{
+			cout << "error: data type '" << *s << "' is not defined. exiting." << endl;
+			exit(1);
+		}*/
+		assert(ssize!=0);
+
+		if(ssize==1)
+			ucop._params_parsed.push_back((unsigned short)((unsigned int)ucop._params[first++]));
+		else if(ssize==2)
+			if(offset_munge)
+			{
+				unsigned int reloffset = calcreloffset(ucop, (unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
+				ucop._params_parsed.push_back(reloffset);
+				ucop._jump_offsets.push_back(reloffset);
+			}
+			else
+				ucop._params_parsed.push_back((unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
+	}
+}
+
+/*void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
+{
+	unsigned int first=0;
+	
 	for(vector<string>::const_iterator s=otd.param_types.begin(); s!=otd.param_types.end(); ++s)
 	{
 		assert(first<ucop._params.size());
@@ -1093,7 +1134,7 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 			else
 				ucop._params_parsed.push_back((unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
 	}
-}
+}*/
 
 
 void print_asm_data(UCFunc &ucf, ostream &o);
