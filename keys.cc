@@ -73,6 +73,7 @@ struct Action {
   { ActionCloseGumps, "Close gumps", false, false, NONE },
   { ActionScreenshot, "Take screenshot", true, false, NONE },
   { ActionMenuGump, "Game Menu", false, false, NONE },
+  { ActionNewfileGump, "Save/restore", true, false, NONE },
 
   { ActionRepaint, "Repaint screen", false, false, NONE },
   { ActionResIncrease, "Increase resolution", true, true, NONE },
@@ -191,6 +192,7 @@ const struct {
   {"CLOSE_GUMPS",           ACTION_CLOSE_GUMPS},         
   {"SCREENSHOT",            ACTION_SCREENSHOT},         
   {"GAME_MENU",             ACTION_GAME_MENU},         
+  {"NEWFILE_GUMP",          ACTION_NEWFILE_GUMP},         
 
   {"REPAINT",               ACTION_REPAINT},         
   {"RESOLUTION_INCREASE",   ACTION_RESOLUTION_INCREASE},         
