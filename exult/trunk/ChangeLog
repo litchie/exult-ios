@@ -1,3 +1,8 @@
+2001-12-20  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/egg.cc (Egg_object): Fixed excessive monster spawning from
+	testing wrong variable in is_active().
+
 2001-12-19  Patrick Burke <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Added fixes for cygwin compatibility.
 	* conf/Configuration.h: Added a 'return' in the call to read_config_file
