@@ -255,14 +255,17 @@ Actor::Actor
 	int tilex = locx & 0xf;
 	int tiley = locy & 0xf;
 	set_shape_pos(tilex, tiley);
-	Chunk_object_list *olist = gwin->get_objects(scx + cx, scy + cy);
+	Chunk_object_list *olist = gwin->get_objects_safely(
+							scx + cx, scy + cy);
 					// Put into chunk list.
 	if (!is_dead_npc())
-		olist->add(this);
-#if 0	/* +++Old way */
-		Game_object::move(
-			0, scx + cx, scy + cy, olist, tilex, tiley, -1, -1);
-#endif
+		if (olist)
+			olist->add(this);
+		else
+			{
+			cerr << "NPC has invalid chunk coord." << endl;
+			set_invalid();	// Or set to invalid chunk.
+			}
 	ready_best_weapon();		// Get best weapon in hand.
 #ifdef DEBUG
 
@@ -462,11 +465,13 @@ Npc_actor::Npc_actor
 	{
 	Chunk_object_list *olist = Game_window::get_game_window()->
 				get_objects_safely(get_cx(), get_cy());
-	if (olist)
+	if (olist)			// Might be invalide (a bug).
+		{
 		switched_chunks(0, olist);	// Put in chunk's NPC list.
 					// Activate schedule if not in party.
-	if (Npc_actor::get_party_id() < 0)
-		set_schedule_type(schedule_type);
+		if (Npc_actor::get_party_id() < 0)
+			set_schedule_type(schedule_type);
+		}
 	}
 
 /*
