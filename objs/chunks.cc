@@ -602,7 +602,8 @@ Map_chunk::Map_chunk
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
 	) : objects(0), terrain(0), first_nonflat(0), ice_dungeon(0x00),
-	    dungeon_levels(0), cache(0), roof(0), light_sources(0),
+	    dungeon_levels(0), cache(0), roof(0),
+	    dungeon_lights(0), non_dungeon_lights(0),
 	    cx(chunkx), cy(chunky), from_below(0), from_right(0),
 	    from_below_right(0)
 	{
@@ -779,7 +780,11 @@ void Map_chunk::add
 	if (cache)			// Add to cache.
 		cache->update_object(this, newobj, 1);
 	if (ord.info.is_light_source())	// Count light sources.
-		light_sources++;
+		if (dungeon_levels && is_dungeon(newobj->get_tx(),
+							newobj->get_ty()))
+			dungeon_lights++;
+		else
+			non_dungeon_lights++;
 	if (newobj->get_lift() >= 5)	// Looks like a roof?
 		{
 		if (ord.info.get_shape_class() == Shape_info::building)
@@ -850,7 +855,10 @@ void Map_chunk::remove
 	if (ext_above)
 		gmap->get_chunk(cx, cy - 1)->from_below--;
 	if (info.is_light_source())	// Count light sources.
-		light_sources--;
+		if (dungeon_levels && is_dungeon(tx, ty))
+			dungeon_lights--;
+		else
+			non_dungeon_lights--;
 	if (remove == first_nonflat)	// First nonflat?
 		{			// Update.
 		first_nonflat = remove->get_next();
@@ -1366,6 +1374,17 @@ void Map_chunk::setup_dungeon_levels
 								tiles, each->get_lift());
 		}
 	}
+	if (dungeon_levels)		// Recount lights.
+		{
+		dungeon_lights = non_dungeon_lights = 0;
+		next.reset();
+		while ((each = next.get_next()) != 0)
+			if (each->get_info().is_light_source())
+				if (is_dungeon(each->get_tx(), each->get_ty()))
+					dungeon_lights++;
+				else
+					non_dungeon_lights++;
+		}
 }
 
 /*
