@@ -161,8 +161,9 @@ bool Dragging_info::start
 		else
 			gwin->get_gump_man()->remove_gump(gump);
 	else {			// +++++Really should remove_this(1),
-		gwin->get_chunk(old_pos.tx/c_tiles_per_chunk,
-				old_pos.ty/c_tiles_per_chunk)->remove(obj);
+//		gwin->get_chunk(old_pos.tx/c_tiles_per_chunk,
+//				old_pos.ty/c_tiles_per_chunk)->remove(obj);
+		obj->remove_this(true);	// This SHOULD work (jsf 21-12-01).
 	}
 					// Make a little bigger.
 	int pad = obj ? 8 : 12;
