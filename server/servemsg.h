@@ -48,17 +48,18 @@ const int hdrlength = 5;
 enum Msg_type
 	{
 	say = 0,			// For testing.  Data is text.
-	egg = 1,			// Egg_object.
-	npc = 2,			// Editing an NPC.
-	user_responded = 3,		// User performed requested action.
-	cancel = 4,			// Cancel operation.
-	num_npcs = 5,			// Get/return # of NPC's.
-	write_map = 6,			// Save map.
-	read_map = 7,			// Read map.
-	map_editing_mode = 8,		// 1 to turn it on, 0 for off.
-	tile_grid = 9,			// 1 to show grid, 0 for off.
-	edit_lift = 10,			// Lift passed: 0-13.
-	reload_usecode = 11		// Reload patched usecode.
+	obj = 1,			// Generic object.
+	egg = 2,			// Egg_object.
+	npc = 3,			// Editing an NPC.
+	user_responded = 4,		// User performed requested action.
+	cancel = 5,			// Cancel operation.
+	num_npcs = 6,			// Get/return # of NPC's.
+	write_map = 7,			// Save map.
+	read_map = 8,			// Read map.
+	map_editing_mode = 9,		// 1 to turn it on, 0 for off.
+	tile_grid = 10,			// 1 to show grid, 0 for off.
+	edit_lift = 11,			// Lift passed: 0-13.
+	reload_usecode = 12		// Reload patched usecode.
 	};
 
 // I/O routines:

@@ -25,6 +25,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef OBJSERIAL_H
 #define OBJSERIAL_H	1
 
+extern int Object_out
+	(
+	int fd,				// Socket.
+	unsigned long addr,		// Address.
+	int tx, int ty, int tz,		// Absolute tile coords.
+	int shape, int frame,
+	int quality,
+	std::string name
+	);
+extern int Object_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	int& quality,
+	std::string& name
+	);
+
 extern int Egg_object_out
 	(
 	int fd,				// Socket.
