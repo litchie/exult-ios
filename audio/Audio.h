@@ -145,6 +145,8 @@ public:
 //	static	const	int	buffering_unit=1024;
 
 	MyMidiPlayer *get_midi() {return midi;}
+	Flex *get_sfx_file()
+		{ return sfx_file; }
 };
 
 #endif

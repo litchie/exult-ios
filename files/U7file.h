@@ -29,10 +29,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class	U7file
 {
-protected:
-	std::string	filename;
-
 public:
+	std::string	filename;
 	U7file() {}
 	U7file(const std::string &name) : filename(name) {}
 	U7file(const U7file &f) : filename(f.filename) {}

@@ -1230,6 +1230,15 @@ void Earthquake::handle_event
 	long udata
 	)
 	{
+	static int eqsoundonce;
+
+	if(eqsoundonce != 1)
+	{
+		eqsoundonce = 1;
+		// Play earthquake SFX once
+  		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(60));
+	}
+
 	Game_window *gwin = Game_window::get_game_window();
 	Image_window *win = gwin->get_win();
 	int w = win->get_width(), h = win->get_height();
@@ -1260,6 +1269,10 @@ void Earthquake::handle_event
 	if (++i < len)			// More to do?  Put back in queue.
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
+		{
+		eqsoundonce = 0;	
 		delete this;
+		}
+
 	}
 
