@@ -1,7 +1,7 @@
 /*
  *  Gump_manager.h - Object that manages all available gumps
  *
- *  Copyright (C) 2001-2002  The Exult Team
+ *  Copyright (C) 2001-2003  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ class  Gump_manager : public Game_singletons
 
 	Gump_list	*open_gumps;
 	int		non_persistent_count;		// So we can test for 'gump mode' quickly.
+	int modal_gump_count;
 	bool	right_click_close;
 	bool	dont_pause_game;			// NEVER EVER SET THIS MANUALLY! YOU MUST CALL set_gumps_dont_pause_game
 public:
@@ -57,6 +58,8 @@ public:
 	bool showing_gumps(bool no_pers = false) const;	// Are gumps showing?
 	bool gump_mode() const				// Fast check.
 		{ return non_persistent_count > 0; }
+	bool modal_gump_mode() const // displaying a modal gump?
+		{ return modal_gump_count > 0; }
 
 	Gump *find_gump(int x, int y, bool pers = true);		// Find gump x,y is in
 	Gump *find_gump(Game_object *obj);		// Find gump that object is in

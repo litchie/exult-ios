@@ -1,7 +1,7 @@
 /*
  *  Gump_manager.cc - Object that manages all available gumps
  *
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2001-2003  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ using std::cout;
 using std::endl;
 
 Gump_manager::Gump_manager()
-	: open_gumps(0), non_persistent_count(0), right_click_close(true), dont_pause_game(false)
+	: open_gumps(0), non_persistent_count(0), modal_gump_count(0), right_click_close(true), dont_pause_game(false)
 {
 	std::string str;
 	config->value("config/gameplay/right_click_closes_gumps", str, "yes");
@@ -505,6 +505,7 @@ int Gump_manager::do_modal_gump
 	Paintable *paint		// Paint this over everything else.
 	)
 {
+	modal_gump_count++;
 	SDL_EnableUNICODE(1); // enable unicode translation for text input
 
 
@@ -557,6 +558,8 @@ int Gump_manager::do_modal_gump
 	gwin->get_tqueue()->resume(SDL_GetTicks());
 
 	SDL_EnableUNICODE(0);
+
+	modal_gump_count--;
 
 	return (!escaped);
 }
