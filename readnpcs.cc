@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Readnpcs.cc - Read in NPC's from u7nbuf.dat & schedule.dat.
  **
  **	Written: 5/13/99 - JSF
@@ -81,9 +82,13 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		Actor *actor;
 		Npc_actor *npc_actor = 0;
 		if (i == 0)		// Main character?
+			{
 			actor = main_actor =
 				new Main_actor(namebuf, 
 				shape[0] + 256*(shape[1]&0x3), i, usecode);
+					// +++++Start out invisible.
+			main_actor->set_flag(Actor::dont_render);
+			}
 		else			// Create NPC.
 			actor = npc_actor = new Npc_actor(namebuf, 
 				shape[0] + 256*(shape[1]&0x3), i, usecode);

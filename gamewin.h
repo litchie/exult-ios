@@ -49,7 +49,7 @@ class Game_window
 	Image_window *win;		// Window to display into.
 public:
 	enum Game_mode {		// Can be in different modes.
-		intro,			// Splash screen.
+		splash,			// Splash screen.
 		normal,			// Normal game-play.
 		conversation,		// Talking.
 		gump			// Showing open container(s).
@@ -378,7 +378,7 @@ public:
 		{ focus = 0; }
 	int have_focus()
 		{ return focus; }
-	void end_intro();		// End splash screen.
+	void end_splash();		// End splash screen.
 	void read_npcs();		// Read in npc's & schedules.
 	void read_schedules();
 					// Start dragging.

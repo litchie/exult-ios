@@ -411,20 +411,7 @@ public:
 	Egg_object(unsigned char l, unsigned char h, unsigned int shapex,
 		unsigned int shapey, unsigned int lft, 
 		unsigned short itype,
-		unsigned char prob, short d1, short d2)
-		: Game_object(l, h, shapex, shapey, lft),
-			probability(prob), data1(d1), data2(d2)
-		{
-		type = itype&0xf;
-		criteria = (itype & (7<<4)) >> 4;
-		distance = (itype >> 10) & 0x1f;
-		unsigned char noct = (itype >> 7) & 1;
-		unsigned char do_once = (itype >> 8) & 1;
-		unsigned char htch = (itype >> 9) & 1;
-		unsigned char ar = (itype >> 15) & 1;
-		flags = (noct << nocturnal) + (do_once << once) +
-			(htch << hatched) + (ar << auto_reset);
-		}
+		unsigned char prob, short d1, short d2);
 	int get_distance()
 		{ return distance; }
 	int is_active()			// Can it be activated?
