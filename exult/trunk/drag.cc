@@ -67,7 +67,7 @@ bool Game_window::start_dragging
 			{
 			dragging_gump = 0;
 			dragging_gump_button->push(this);
-			painted = 1;
+			painted = true;
 			}
 		else
 			{		// Dragging whole gump.
@@ -175,7 +175,7 @@ bool Game_window::drag
 		dragging_gump->set_pos(dragging_paintx, dragging_painty);
 		dragging_gump->paint(this);
 		}
-	painted = 1;
+	painted = true;
 	return (true);
 	}
 
@@ -225,10 +225,10 @@ bool Game_window::drop_dragged
 /*
  *	Check weight.
  *
- *	Output:	0 if too heavy, with mouse flashed.
+ *	Output:	false if too heavy, with mouse flashed.
  */
 
-static int Check_weight
+static bool Check_weight
 	(
 	Game_window *gwin,
 	Game_object *to_drop,
@@ -236,20 +236,20 @@ static int Check_weight
 	)
 	{
 	if (cheat.in_hack_mover())		// hack_mover -> no weight checking
-		return 1;
+		return true;
 
 	if (!owner)
-		return 1;
+		return true;
 	owner = owner->get_outermost();
 	if (owner != gwin->get_main_actor() && owner->get_party_id() < 0)
-		return 1;		// Not a party member, so okay.
+		return true;		// Not a party member, so okay.
 	int wt = owner->get_weight() + to_drop->get_weight();
 	if (wt/10 > 2*owner->get_property(Actor::strength))
 		{
 		mouse->flash_shape(Mouse::tooheavy);
-		return 0;
+		return false;
 		}
-	return 1;
+	return true;
 	}
 
 /*
@@ -267,8 +267,8 @@ void Game_window::drop
 	int oldtx = oldcx*tiles_per_chunk + dragging->get_tx(),
 	    oldty = oldcy*tiles_per_chunk + dragging->get_ty(),
 	    oldtz = dragging->get_lift();
-	int dropped = 0;		// 1 when dropped.
-	int dropped_in_something = 0;	// For detecting theft.
+	bool dropped = false;			// 1 when dropped.
+	bool dropped_in_something = false;	// For detecting theft.
 	Game_object *to_drop = dragging;// If quantity, split it off.
 	int okay_to_take = to_drop->get_flag(Game_object::okay_to_take);
 					// Save original footprint.
@@ -305,17 +305,17 @@ void Game_window::drop
 			int max_lift = main_actor->get_lift() + 4;
 			int lift;
 			Game_object *found = find_object(x, y);
-			int heavy = 0;
+			bool heavy = 0;
 			if (found && found != dragging &&
 			    !(heavy = !Check_weight(this, to_drop, found)) &&
 			    found->drop(to_drop))
-				dropped = dropped_in_something = 1;
+				dropped = dropped_in_something = true;
 					// Try to place on 'found'.
 			else if (found && !heavy && 
 				(lift = found->get_lift() +
 				get_info(found).get_3d_height()) <= max_lift &&
 				drop_at_lift(to_drop, lift))
-				dropped = 1;
+				dropped = true;
 			else if (!heavy)
 				{	// Find where to drop it.
 				Game_object *outer = dragging->get_outermost();
@@ -358,10 +358,10 @@ void Game_window::drop
 /*
  *	Try to drop at a given lift.
  *
- *	Output:	1 if successful.
+ *	Output:	true if successful.
  */
 
-int Game_window::drop_at_lift
+bool Game_window::drop_at_lift
 	(
 	Game_object *to_drop,
 	int at_lift
@@ -394,8 +394,8 @@ cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
 		chunk->add(to_drop);
 					// On an egg?
 		chunk->activate_eggs(to_drop, tx, ty, lift, tx, ty);
-		return (1);
+		return (true);
 		}
-	return (0);
+	return (false);
 	}
 

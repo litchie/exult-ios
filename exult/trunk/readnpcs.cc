@@ -127,10 +127,10 @@ void Game_window::read_npcs
 /*
  *	Write NPC (and monster) data back out.
  *
- *	Output:	0 if error, already reported.
+ *	Output:	false if error, already reported.
  */
 
-int Game_window::write_npcs
+bool Game_window::write_npcs
 	(
 	)
 	{
@@ -139,7 +139,7 @@ int Game_window::write_npcs
 		{			// +++++Better error???
 		cerr << "Exult:  Error opening '" << NPC_DAT <<
 				"' for writing"<<endl;
-		return (0);
+		return (false);
 		}
 	Write2(nfile, num_npcs1);	// Start with counts.
 	Write2(nfile, num_npcs - num_npcs1);
@@ -147,11 +147,11 @@ int Game_window::write_npcs
 	for (i = 0; i < num_npcs; i++)
 		npcs[i]->write(nfile);
 	nfile.flush();
-	int result = nfile.good();
+	bool result = nfile.good();
 	if (!result)			// ++++Better error system needed??
 		{
 		cerr << "Exult:  Error writing '" << NPC_DAT << "'"<<endl;
-		return (0);
+		return (false);
 		}
 	nfile.close();
 					// Now write out monsters in world.
@@ -159,7 +159,7 @@ int Game_window::write_npcs
 		{			// +++++Better error???
 		cerr << "Exult:  Error opening '" << MONSNPCS <<
 				"' for writing"<<endl;
-		return (0);
+		return (false);
 		}
 	int cnt = 0;
 	Write2(nfile, 0);		// Write 0 as a place holder.

@@ -1,5 +1,6 @@
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* drag.cc,exult.cc,gamewin.h/cc: changed more vars from int to bool
+	* gamedat.cc,readnpcs.cc: more int->bool
 
 2000-11-25  Max Horn  <max@quendi.de>
 	* files/utils.cc: changed path_map to be a map of strings instead of a hash_map of char*
