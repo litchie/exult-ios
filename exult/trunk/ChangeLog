@@ -1,5 +1,6 @@
 2000-01-08  Max Horn  <max@quendi.de>
-	* gameclk.cc/h: fixed parameter types of Game_clock::handle_event
+	* I had broken the game by replacing tiles_per_schunk with c_fade_out_time
+	  (instead of c_tiles_per_schunk). Fixed. Sorry again.
 
 2001-01-08  Christoph Reichenbach  <jameson@linuxgames.com>
 
