@@ -794,6 +794,7 @@ void Game_window::clear_world
 		(*it)->clear();
 	set_map(0);			// Back to main map.
 	Monster_actor::delete_all();	// To be safe, del. any still around.
+	Notebook_gump::clear();
 	main_actor = 0;
 	camera_actor = 0;
 	num_npcs1 = 0;

@@ -1,3 +1,8 @@
+2005-01-13    <jeff@mini.nerble.net>
+
+	* gumps/Notebook_gump.cc (Notebook_gump): Online journal support
+	(hit 'n' for 'notebook').
+
 2004-12-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: don't let avatar move if right clicking on gump to close it
 	  (based on patch #1088000)
