@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "spellbook.h"
 #include "conversation.h"
 #include "rect.h"
+#include "actions.h"
 
 using std::cerr;
 using std::cout;
@@ -47,6 +48,7 @@ using std::rand;
 using std::strchr;
 
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
+extern void Wait_for_arrival(Actor *actor, Tile_coord dest);
 Barge_object *Get_barge	(Game_object *obj);
 extern unsigned char quitting_time;
 extern Usecode_value no_ret;
@@ -1837,7 +1839,7 @@ USECODE_INTRINSIC(get_item_flag)
 					//   blocked gangplank. What is it?????
 	else if (fnum == 0x18 && Game::get_game_type() == BLACK_GATE)
 		return Usecode_value(1);
-	Usecode_value u(obj->get_flag(fnum));
+	Usecode_value u(obj->get_flag(fnum) != 0);
 	return(u);
 }
 
@@ -2197,7 +2199,7 @@ USECODE_INTRINSIC(run_schedule)
 	return no_ret;
 }
 
-
+#if 0	/* +++++Not used at the moment. */
 USECODE_INTRINSIC(add_removed_npc)
 {
 	// move_offscreen(npc, x, y) - I think (seems good) I think
@@ -2341,6 +2343,34 @@ USECODE_INTRINSIC(add_removed_npc)
 
 	return (Usecode_value(false));
 }
+#endif
+
+USECODE_INTRINSIC(approach_avatar)
+{
+	// Approach_avatar(npc, ?, ?).
+	// Actor we want to move
+	Actor *actor = as_actor(get_item(parms[0]));
+	if (!actor)
+		return Usecode_value(0);
+	Tile_coord start = gwin->get_main_actor()->get_abs_tile_coord();
+	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
+	for (int i = 2; dest.tx == -1 && i < 8; i++)
+		dest = Game_object::find_unblocked_tile(start, i);
+	if (dest.tx == -1)
+		return Usecode_value(0);
+					// Want to approach from offscreen.
+	Actor_action *action = new Path_walking_actor_action();
+	if (!action->walk_to_tile(Tile_coord(-1, -1, 0), dest,
+						actor->get_type_flags()))
+		{
+		delete action;
+		return Usecode_value(0);
+		}
+	actor->set_action(action);
+	actor->start(150);		// Walk fairly fast.
+	Wait_for_arrival(actor, dest);	// Wait.
+	return Usecode_value(actor->distance(gwin->get_main_actor()) < 10);
+	}
 
 USECODE_INTRINSIC(a_or_an)
 {

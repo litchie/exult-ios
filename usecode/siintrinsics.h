@@ -251,7 +251,8 @@
 	USECODE_INTRINSIC_PTR(get_npc_id),			// 0xbc - Known
 	USECODE_INTRINSIC_PTR(set_npc_id),			// 0xbd - Known
 	USECODE_INTRINSIC_PTR(get_readied),	// Guess	// 0xbe
-	USECODE_INTRINSIC_PTR(add_removed_npc),			// 0xbf - This looks like it may be used to detect if a npc is near a certain location
+//	USECODE_INTRINSIC_PTR(add_removed_npc),			// 0xbf
+	USECODE_INTRINSIC_PTR(approach_avatar),			// 0xbf
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xc0
 	USECODE_INTRINSIC_PTR(si_path_run_usecode),		// 0xc1
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xc2

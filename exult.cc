@@ -884,8 +884,10 @@ void Wait_for_arrival
 	)
 	{
 	unsigned char os = Mouse::mouse->is_onscreen();
-	uint32 last_repaint = 0;		// For insuring animation repaints.
-	while (actor->is_moving() && actor->get_abs_tile_coord() != dest)
+	uint32 last_repaint = 0;	// For insuring animation repaints.
+	Actor_action *orig_action = actor->get_action();
+	while (actor->is_moving() && actor->get_action() == orig_action &&
+	       actor->get_abs_tile_coord() != dest)
 		{
 		Delay();		// Wait a fraction of a second.
 

@@ -117,12 +117,14 @@ int Null_action::handle_event
 
 Path_walking_actor_action::Path_walking_actor_action
 	(
-	PathFinder *p,			// Already set to path.
+	PathFinder *p,			// Pathfinder, or 0 for Astar.
 	int maxblk			// Max. retries when blocked.
 	) : path(p), frame_index(0), from_offscreen(false), subseq(0),
 	    blocked(0), max_blocked(maxblk)
 	{
-	Tile_coord src = p->get_src(), dest = p->get_dest();
+	if (!path)
+		path = new Astar();
+	Tile_coord src = path->get_src(), dest = path->get_dest();
 	original_dir = (int) Get_direction4(
 				src.ty - dest.ty, dest.tx - src.tx);
 	}

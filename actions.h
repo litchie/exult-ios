@@ -92,7 +92,7 @@ class Path_walking_actor_action : public Actor_action
 		subseq = sub;
 		}
 public:
-	Path_walking_actor_action(PathFinder *p, int maxblk = 3);
+	Path_walking_actor_action(PathFinder *p = 0, int maxblk = 3);
 	virtual ~Path_walking_actor_action();
 	static Path_walking_actor_action *create_path(Tile_coord src,
 			Tile_coord dest, Pathfinder_client& cost);
