@@ -124,7 +124,7 @@ void Gump::initialize
 		}
 		else if(shnum==game->get_shape("gumps/tree"))
 		{
-			object_area = Rectangle(65, 28, 92, 57);
+			object_area = Rectangle(62, 22, 36, 44);
 			checkx = 8;
 			checky = 100;
 		}
