@@ -1,6 +1,10 @@
+2002-05-29 Simon Quinn <email@simonquinn.co.uk>
+	* Work around for Usecode bug where track 0 is played at Intro Earthquake
+
 2002-05-28 Simon Quinn <email@simonquinn.co.uk>
 	* Converted Windows MIDI out to use SDL_mixer, i.e. uses a Generic MidiOut
-	* Changed MP3 references to DigitalMusic/OGG, not called "DigitalMusic" in the audio settings
+	* Changed MP3 references to DigitalMusic/OGG, now called "DigitalMusic" in 
+	  the audio settings
 
 2002-05-27 Simon Quinn <email@simonquinn.co.uk>
 	* Implemented SDL_mixer/OGG changes into 'audiotest' branch of CVS
@@ -9,7 +13,6 @@
 
 Issues Remaining with Audio Code
 --------------------------------
-* Intro scene, after earthquake, track 0 plays!
 * Night time crashes?
 * Add crickets at night with MP3.
 * Quick repeating of waves SFX when moving, need to turn off repeat instead of stopping dead

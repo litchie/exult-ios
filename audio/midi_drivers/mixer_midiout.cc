@@ -80,7 +80,7 @@ void Mixer_MidiOut::music_complete_callback(void)
 
 bool	Mixer_MidiOut::is_playing(void)
 {
-	return Mix_PlayingMusic();
+	return Mix_PlayingMusic()!=0;
 }
 
 void	Mixer_MidiOut::start_track(XMIDIEventList *event_list,bool repeat)
