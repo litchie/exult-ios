@@ -45,4 +45,4 @@ CLEANFILES = exult.flx *~
 EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) midisfx.flx
 
 exult.flx: $(EXULT_FLX_OBJECTS)
-	../tools/expack -i flx.in
+	../tools/expack -i $(srcdir)/flx.in

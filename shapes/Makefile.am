@@ -1,4 +1,5 @@
-INCLUDES = -I.. -I../files -I../imagewin $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin \
+	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libshapes.la
 

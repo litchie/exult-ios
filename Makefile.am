@@ -1,4 +1,6 @@
-INCLUDES = -I. -Iimagewin -Ishapes -Iobjs -Iconf -Ifiles -Igumps -Iaudio -Ipathfinder -Iusecode\
+INCLUDES = -I$(srcdir) -I$(srcdir)/imagewin -I$(srcdir)/shapes \
+	-I$(srcdir)/objs -I$(srcdir)/conf -I$(srcdir)/files -I$(srcdir)/gumps \
+	-I$(srcdir)/audio -I$(srcdir)/pathfinder -I$(srcdir)/usecode \
 	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
 	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\""$(datadir)/exult"\"
 
@@ -117,6 +119,6 @@ EXTRA_DIST = 	\
 	exult.spec
 
 exultico.o: win32/exultico.rc win32/exult.ico
-	windres win32/exultico.rc exultico.o
+	windres $(srcdir)/win32/exultico.rc $(srcdir)/exultico.o
 
 CLEANFILES = *~
