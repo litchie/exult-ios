@@ -121,4 +121,4 @@
 \L - Jeff
 
 \C"I love freedman"
-\L - Fingolfin on #exult
+\L - Fingolfin on ##exult

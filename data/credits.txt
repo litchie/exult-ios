@@ -74,8 +74,8 @@
 
 \CChristian Ohm
 \C<chr.ohm@gmx.net>
-Gameplay Options menu, fast mouse, 
-middle mouse button support
+\CGameplay Options menu, fast mouse, 
+\Cmiddle mouse button support
 
 
 \COTHER CONTRIBUTORS
