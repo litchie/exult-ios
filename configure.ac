@@ -1,4 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
+AC_PREREQ(2.53)
 AC_INIT(exult.cc)
 
 
@@ -19,13 +20,21 @@ AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE($PACKAGE,$VERSION,no-define)
-AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
-AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
-AC_DEFINE_UNQUOTED(VER_MAJOR, "$VER_MAJOR")
-AC_DEFINE_UNQUOTED(VER_MINOR, "$VER_MINOR")
-AC_DEFINE_UNQUOTED(VER_EXTRA, "$VER_EXTRA")
+AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE", [Package Name])
+AC_DEFINE_UNQUOTED(VERSION, "$VERSION", [Package Version])
+AC_DEFINE_UNQUOTED(VER_MAJOR, "$VER_MAJOR", [Version Number Major])
+AC_DEFINE_UNQUOTED(VER_MINOR, "$VER_MINOR", [Version Number Minor])
+AC_DEFINE_UNQUOTED(VER_EXTRA, "$VER_EXTRA", [Version Number Extra])
 
 AM_CONFIG_HEADER(config.h)
+
+AH_BOTTOM([
+#ifdef ALPHA_LINUX_CXX
+#include "alpha_kludges.h"
+#endif
+ 
+#define USE_FMOPL_MIDI
+])
 
 
 # ---------------------------------------------------------------------
@@ -76,7 +85,7 @@ case "$host_os" in
 		;;
 	cygwin* )
 		WINDOWING_SYSTEM="-DWIN32"
-		AC_DEFINE(CYGWIN)
+		AC_DEFINE(CYGWIN, 1, [Using Cygwin])
 		AC_MSG_RESULT(Win32 (cygwin))
 		SYSLIBS="-lwinmm"
 		ICON_FILE="win32/exultico.o"
@@ -85,7 +94,7 @@ case "$host_os" in
 		;;
 	openbsd* )
 		WINDOWING_SYSTEM="-DXWIN"
-		AC_DEFINE(OPENBSD)
+		AC_DEFINE(OPENBSD, 1, [Using OpenBSD])
 		AC_MSG_RESULT(X11 (OpenBSD))
 		SYSLIBS="-L/usr/X11R6/lib -lX11 -lXext -lXxf86vm -lXxf86dga"
 		;;
@@ -95,14 +104,14 @@ case "$host_os" in
 		SYSLIBS="-lsocket -lX11"
 		;;
 	darwin*)
-		dnl We have a problem here: both MacOS X and Darwin report the same
-		dnl signature "powerpc-apple-darwin*" - so we have to do more to
-		dnl distinguish them. Plain Darwin will propably use X-Windows; and it
-		dnl is of course lacking Cocoa. For now I am lazy and do not add 
-		dnl proper detection code.
+		dnl We have a problem here: both MacOS X and Darwin report 
+		dnl the same signature "powerpc-apple-darwin*" - so we have
+		dnl to do more to distinguish them. Plain Darwin will propably
+		dnl use X-Windows; and it is of course lacking Cocoa. For
+		dnl now I am lazy and do not add proper detection code.
 		
 		WINDOWING_SYSTEM="-DMACOSX"
-		AC_DEFINE(MACOSX)
+		AC_DEFINE(MACOSX, 1, [Using MacOSX])
 		AC_MSG_RESULT(Mac OS X)
 		SYSLIBS="-framework QuickTime"
 		CXXFLAGS="$CXXFLAGS"
@@ -159,7 +168,7 @@ AC_TRY_RUN([
 		return 1;
 	}], [
 		AC_MSG_RESULT([yes])
-		AC_DEFINE(ALPHA_LINUX_CXX)
+		AC_DEFINE(ALPHA_LINUX_CXX, 1, [Using Alpha Linux with cxx])
 	], AC_MSG_RESULT([no]), AC_MSG_RESULT([cross compiling- assuming \"no\"]))
 ])
 
@@ -232,7 +241,7 @@ AC_TRY_COMPILE([
   ac_cv_func_getaddrinfo=no)
 AC_MSG_RESULT($ac_cv_func_getaddrinfo)
 if test x$ac_cv_func_getaddrinfo = xyes ; then
-	AC_DEFINE(HAVE_GETADDRINFO)
+	AC_DEFINE(HAVE_GETADDRINFO, 1, [Have addrinfo/getaddrinfo])
 fi
 
 AC_MSG_CHECKING(for mkstemp())
@@ -249,7 +258,7 @@ AC_TRY_LINK([
   ac_cv_func_mkstemp=no)
 AC_MSG_RESULT($ac_cv_func_mkstemp)
 if test x$ac_cv_func_mkstemp = xyes ; then
-	AC_DEFINE(HAVE_MKSTEMP)
+	AC_DEFINE(HAVE_MKSTEMP, 1, [Have mkstemp])
 fi
 
 AC_MSG_CHECKING(for snprintf())
@@ -263,7 +272,7 @@ AC_TRY_LINK([
   ac_cv_func_snprintf=no)
 AC_MSG_RESULT($ac_cv_func_snprintf)
 if test x$ac_cv_func_snprintf = xyes ; then
-	AC_DEFINE(HAVE_SNPRINTF)
+	AC_DEFINE(HAVE_SNPRINTF, 1, [Have snprintf])
 	AM_CONDITIONAL(HAVE_SNPRINTF,true)
 else
 	AM_CONDITIONAL(HAVE_SNPRINTF,false)
@@ -309,34 +318,7 @@ if test x$enable_timidity = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_CHECK_PROG(HAVE_TIMIDITY_BIN, timidity, found it, not found)
 	if test "$HAVE_TIMIDITY_BIN" = "found it"; then
-		AC_DEFINE(HAVE_TIMIDITY_BIN)
-	fi
-else
-	AC_MSG_RESULT(no)
-fi
-
-dnl there _should_ be a built-in macro for this check...
-# kmid MIDI driver
-AC_MSG_CHECKING(whether to enable kmid)
-AC_ARG_ENABLE(kmid,     [  --enable-kmid           Use libkmid [default no]],,enable_kmid=no)
-if test x$enable_kmid = xyes; then
-	AC_MSG_RESULT(yes)
-	AC_MSG_CHECKING(for libkmid)
-
-	KMID_INCLUDES=""
-	KMID_LIBS=""
-	for i in /usr/include/libkmid.h /usr/include/libkmid/libkmid.h /usr/local/include/libkmid.h /usr/local/include/libkmid/libkmid.h; do
-		test -f "$i" && KMID_INCLUDES=`dirname $i` && HAVE_KMID="yes"
-	done
-	for i in /lib /usr/lib /usr/local/lib; do
-		test -f "$i/libkmid.so" && KMID_LIBS="-L$i -lkmid"
-	done
-	if test "$HAVE_KMID" != "yes" ; then
-		AC_MSG_RESULT(not found)
-	else
-		AC_MSG_RESULT(found it)
-		AC_DEFINE(HAVE_LIBKMIDI)
-		KMID_INCLUDES="-I$KMID_INCLUDES"
+		AC_DEFINE(HAVE_TIMIDITY_BIN, 1, [Have timidity binary])
 	fi
 else
 	AC_MSG_RESULT(no)
@@ -361,7 +343,7 @@ if test x$enable_zip_support = xyes ; then
 	# else
 		ZLIB_LIBS="-lz"
 	# fi
-	AC_DEFINE(HAVE_ZIP_SUPPORT)
+	AC_DEFINE(HAVE_ZIP_SUPPORT, 1, [Have zip support])
 	AC_MSG_RESULT(yes)
 else
 	AC_MSG_RESULT(no)
@@ -375,7 +357,7 @@ AC_ARG_ENABLE(opengl, [  --enable-opengl         Enable OpenGL rendering support
 AC_MSG_CHECKING(for OpenGL rendering support)
 
 if test x$enable_opengl = xyes; then
-	AC_DEFINE(HAVE_OPENGL)
+	AC_DEFINE(HAVE_OPENGL, 1, [Have OpenGL])
 	OPENGL_LIBS="-lGL"
 	AC_MSG_RESULT(yes)
 else
@@ -394,7 +376,7 @@ fi
 
 if test x$enable_exult_studio_support = xyes ; then
 	AC_MSG_RESULT(yes)
-	AC_DEFINE(USE_EXULTSTUDIO)
+	AC_DEFINE(USE_EXULTSTUDIO, 1, [Use ExultStudio])
 else
 	AC_MSG_RESULT(no)
 fi
@@ -408,14 +390,14 @@ AC_MSG_CHECKING(checking memory allocation scheme)
 # For the alternate allocator
 AC_ARG_ENABLE(alternate-allocator,    [  --enable-alternate-allocator    Use alternate memory allocator [default no]],,enable_alternate_allocator=no)
 if test x$enable_alternate_allocator = xyes; then
-	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
+	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR, 1, [Use alternate allocator])
 fi
 
 # For storage initialisation
 AC_ARG_ENABLE(storage-initialisation, [  --enable-storage-initialisation Clear storage when allocated [default no]],,enable_storage_initialisation=no)
 if test x$enable_storage_initialisation = xyes; then
-	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
-	AC_DEFINE(INITIALISE_ALLOCATED_BLOCKS,0)
+	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR, 1, [Use alternate allocator])
+	AC_DEFINE(INITIALISE_ALLOCATED_BLOCKS,0, [Initialize allocated blocks])
 fi
 
 # For storage poisoning
@@ -424,8 +406,8 @@ if test x$enable_storage_poisoning = xyes; then
 	if test x$enable_storage_initialisation = xyes; then
 		AC_MSG_RESULT(poisoned. (Disabling storage initialisation. Can't poison and init to zero.))
 	fi
-	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
-	AC_DEFINE(POISON_ALLOCATED_BLOCKS)
+	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR, 1, [Use alternate allocator])
+	AC_DEFINE(POISON_ALLOCATED_BLOCKS, 1, [Poison allocated blocks])
 fi
 
 # output result
@@ -455,7 +437,7 @@ AC_ARG_ENABLE(debug, [  --enable-debug          Enable debug messages [default n
 AC_MSG_CHECKING(whether to enable debugging mode)
 if test x$enable_debug = xyes; then
 	AC_MSG_RESULT(yes)
-	AC_DEFINE(DEBUG)
+	AC_DEFINE(DEBUG, 1, [Enable debug mode])
 	DEBUG_FLAGS="-g"
 else
 	AC_MSG_RESULT(no)
@@ -467,7 +449,7 @@ AC_ARG_ENABLE(optimized-debug,  [  --enable-optimized-debug        Enable optimi
 AC_MSG_CHECKING(whether to do an optimized debug build)
 if test x$enable_optimized_debug = xyes; then
 	AC_MSG_RESULT(yes)
-	AC_DEFINE(DEBUG)
+	AC_DEFINE(DEBUG, 1, [Enable debug mode])
 	DEBUG_FLAGS="-g -O2 -fno-default-inline -fno-inline"
 else
 	AC_MSG_RESULT(no)
@@ -478,7 +460,7 @@ AC_ARG_ENABLE(sdl-parachute,    [  --enable-sdl-parachute  Use SDL parachute [de
 AC_MSG_CHECKING(if we should disable the SDL parachute)
 if test x$enable_sdl_parachute = xno; then
   AC_MSG_RESULT(yes)
-  AC_DEFINE(NO_SDL_PARACHUTE)
+  AC_DEFINE(NO_SDL_PARACHUTE, 1, [Disable SDL parachute])
 else
   AC_MSG_RESULT(no)
 fi
@@ -488,7 +470,7 @@ AC_ARG_ENABLE(usecode-debugger, [  --enable-usecode-debugger       Support for u
 AC_MSG_CHECKING(whether to enable the usecode debugger)
 if test x$enable_usecode_debugger = xyes; then
 	AC_MSG_RESULT(yes)
-	AC_DEFINE(USECODE_DEBUGGER)
+	AC_DEFINE(USECODE_DEBUGGER, 1, [Enable Usecode debugging])
 else
 	AC_MSG_RESULT(no)
 fi
@@ -643,7 +625,7 @@ else
 	have_gtk=yes
 	AC_MSG_RESULT(yes..)
 	AC_PATH_PROG(GTKCONFIG, gtk-config)
-	AC_DEFINE(HAVE_GTK)
+	AC_DEFINE(HAVE_GTK, 1, [Have GTK])
 	GTK_INCLUDES=`gtk-config --cflags`
 	GTK_LIBS=`gtk-config --libs`
 	AC_SUBST(GTK_INCLUDES)
@@ -665,7 +647,7 @@ fi
 # Freetype2 (optional, used in ExultStudio, shapes/fontgen.cc)
 AC_PATH_PROG(FT2CONFIG, freetype-config)
 if test -n "$FT2CONFIG"; then
-	AC_DEFINE(HAVE_FREETYPE2)
+	AC_DEFINE(HAVE_FREETYPE2, 1, [Have freetype2])
 	FREETYPE2_LIBS=`freetype-config --libs`
 	AC_SUBST(FREETYPE2_LIBS)
 	FREETYPE2_INCLUDES=`freetype-config --cflags`
@@ -730,7 +712,7 @@ if test x$enable_gimp_plugin = xyes; then
 				GIMP_PLUGIN_PREFIX=`gimptool --gimpplugindir`
 				GIMP_PLUGIN_PREFIX="$GIMP_PLUGIN_PREFIX/plug-ins"
 				AC_SUBST(GIMP_PLUGIN_PREFIX)
-				AC_DEFINE(HAVE_GIMP)
+				AC_DEFINE(HAVE_GIMP, 1, [Have GIMP])
 				GIMP_INCLUDES=`gimptool --cflags`
 				GIMP_LIBS=`gimptool --libs`
 				AC_SUBST(GIMP_INCLUDES)
