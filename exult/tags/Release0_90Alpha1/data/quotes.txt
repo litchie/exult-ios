@@ -1,0 +1,47 @@
+\CEXULT QUOTES
+
+\C"Feel free to release without me."
+\L- Tristan
+
+\C"Heh. New law of physics: Actors are not
+\Csupporters."
+\L- Dancer
+
+\C"Code is now less 'Dubious'"
+\L- Colourless
+
+\C"All this stuff is driving me to Java!"
+\L- Jeff
+
+\C"I haven't touched the original in a while
+\CExult is so much better"
+\L- Tristan
+
+\C"The few crashes just made it
+\Cfeel more authentic!"
+\L- Jeff
+
+\C"Holy S!*@!"
+\L- Jeff 
+\C(on Horizons Tavern
+\Cafter seeing a screenshot 
+\Cof Exult with 2xSaI)
+
+\C"Working on Forge (but Love broken now)"
+\L- Jeff
+
+\C"Paladin reproduces infinitely"
+\L- Dominik
+\C(on Jackchaos)
+
+\C"Oh Wow. Boom!
+\CIt crashed good an proper for me."
+\L- Colourless
+
+\C"Exult - X-windows Ultima7 map browser."
+\L- Top of exult.cc
+\L(Alpha version)
+
+\C"Luckily the world is not a donut,
+\Celse Homer Simpson might have eaten it."
+\L- Max
