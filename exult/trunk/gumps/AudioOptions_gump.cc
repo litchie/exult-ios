@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2003-2004  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -108,28 +108,16 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 {
 	if (btn == buttons[0]) {		// audio on/off
 		audio_enabled = state;
-		if (state == 0) {
-			for (int i=1; i<9; i++) {
-				if (buttons[i]) delete buttons[i];
-				buttons[i] = 0;
-			}
-		} else {
-			build_buttons();
-		}
+		rebuild_buttons();
 		paint();
 	} else if (btn == buttons[1]) {	// midi on/off 
 		midi_enabled = state;
-		if (state == 0) {
-			for (int i=2; i<6; i++) {
-				if (buttons[i]) delete buttons[i];
-				buttons[i] = 0;
-			}
-		} else {
-			build_midi_buttons();
-		}
+		rebuild_midi_buttons();
 		paint();
 	} else if (btn == buttons[2]) { // midi driver
 		midi_driver = state;
+		rebuild_mididriveroption_buttons();
+		paint();
 	} else if (btn == buttons[3]) { // midi conversion
 		midi_conversion = state;
 	} else if (btn == buttons[4]) { // midi reverb/chorus
@@ -138,12 +126,7 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 		midi_looping = state;
 	} else if (btn == buttons[6]) { // sfx on/off
 		sfx_enabled = state;
-		if (state == 0) {
-			if (buttons[7]) delete buttons[7];
-			buttons[7] = 0;
-		} else {
-			build_sfx_buttons();
-		}
+		rebuild_sfx_buttons();
 		paint();
 #ifdef ENABLE_MIDISFX
 	} else if (btn == buttons[7]) { // sfx conversion
@@ -158,33 +141,38 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 	}
 }
 
-void AudioOptions_gump::build_buttons()
+void AudioOptions_gump::rebuild_buttons()
 {
-	// audio on/off
-    buttons[0] = new AudioEnabledToggle(this, colx[2], rowy[0], audio_enabled);
-
-	if (audio_enabled) {
-
-		// midi on/off
-		buttons[1] = new AudioEnabledToggle(this, colx[2], rowy[2], 
-											midi_enabled);
-		if (midi_enabled)
-			build_midi_buttons();
-
-		// sfx on/off
-		buttons[6] = new AudioEnabledToggle(this, colx[2], rowy[8],
-											sfx_enabled);
-		if (sfx_enabled)
-			build_sfx_buttons();
-
-		// speech on/off
-		buttons[8] = new AudioEnabledToggle(this,colx[2],rowy[11],
-										   speech_enabled);
+	for (unsigned int i = 1; i < 9; ++i) {
+		delete buttons[i];
+		buttons[i] = 0;
 	}
+
+	if (!audio_enabled) return;
+
+	// midi on/off
+	buttons[1] = new AudioEnabledToggle(this, colx[2], rowy[2], midi_enabled);
+	if (midi_enabled)
+		rebuild_midi_buttons();
+	
+	// sfx on/off
+	buttons[6] = new AudioEnabledToggle(this, colx[2], rowy[8], sfx_enabled);
+	if (sfx_enabled)
+		rebuild_sfx_buttons();
+	
+	// speech on/off
+	buttons[8] = new AudioEnabledToggle(this,colx[2],rowy[11], speech_enabled);
 }
 
-void AudioOptions_gump::build_midi_buttons()
+void AudioOptions_gump::rebuild_midi_buttons()
 {
+	for (unsigned int i = 2; i < 6; ++i) {
+		delete buttons[i];
+		buttons[i] = 0;
+	}
+
+	if (!midi_enabled) return;
+
 	std::string* midi_drivertext = new std::string[NUM_MIDI_DRIVER_TYPES];
 	midi_drivertext[MIDI_DRIVER_NORMAL] = std::string("Normal");
 	midi_drivertext[MIDI_DRIVER_OGG] = std::string("Digital");
@@ -194,6 +182,45 @@ void AudioOptions_gump::build_midi_buttons()
 #ifdef USE_MT32EMU_MIDI
 	midi_drivertext[MIDI_DRIVER_MT32EMU] = std::string("MT32Emu");
 #endif
+
+
+	// midi driver
+	buttons[2] = new AudioTextToggle(this, midi_drivertext, 
+									 colx[2], rowy[3], 59, midi_driver, NUM_MIDI_DRIVER_TYPES);
+
+	rebuild_mididriveroption_buttons();
+
+	// looping on/off
+	buttons[5] = new AudioEnabledToggle(this, colx[2], rowy[6], midi_looping);
+
+}
+
+
+void AudioOptions_gump::rebuild_sfx_buttons()
+{
+	delete buttons[7];
+	buttons[7] = 0;
+
+	if (!sfx_enabled)
+		return;
+
+#ifdef ENABLE_MIDISFX
+	std::string* sfx_conversiontext = new std::string[2];
+	sfx_conversiontext[0] = "None";
+	sfx_conversiontext[1] = "GS";
+
+	// sfx conversion
+	buttons[7] = new AudioTextToggle(this, sfx_conversiontext, colx[2], rowy[9],
+									 59, sfx_conversion/4,2);
+#endif
+}
+
+void AudioOptions_gump::rebuild_mididriveroption_buttons()
+{
+	delete buttons[3];
+	buttons[3] = 0;
+	delete buttons[4];
+	buttons[4] = 0;
 
 	std::string* midi_conversiontext = new std::string[4];
 	midi_conversiontext[0] = std::string("None");
@@ -207,31 +234,16 @@ void AudioOptions_gump::build_midi_buttons()
 	midi_reverbchorustext[2] = std::string("Chorus");
 	midi_reverbchorustext[3] = std::string("Both");
 
-	// midi driver
-	buttons[2] = new AudioTextToggle(this, midi_drivertext, 
-									 colx[2], rowy[3], 59, midi_driver, NUM_MIDI_DRIVER_TYPES);
-	// midi conversion
-	buttons[3] = new AudioTextToggle(this, midi_conversiontext, 
-									 colx[2], rowy[4], 59, midi_conversion, 4);
-	// reverb/chorus combo
-	buttons[4] = new AudioTextToggle(this, midi_reverbchorustext, 
-									 colx[2], rowy[5], 59, midi_reverb_chorus, 4);
-	// looping on/off
-	buttons[5] = new AudioEnabledToggle(this, colx[2], rowy[6], midi_looping);
-
-}
-
-void AudioOptions_gump::build_sfx_buttons()
-{
-#ifdef ENABLE_MIDISFX
-	std::string* sfx_conversiontext = new std::string[2];
-	sfx_conversiontext[0] = "None";
-	sfx_conversiontext[1] = "GS";
-
-	// sfx conversion
-	buttons[7] = new AudioTextToggle(this, sfx_conversiontext, colx[2], rowy[9],
-									 59, sfx_conversion/4,2);
-#endif
+	if (midi_driver == MIDI_DRIVER_NORMAL) {
+		// midi conversion
+		buttons[3] = new AudioTextToggle(this, midi_conversiontext, 
+										 colx[2], rowy[4], 59,
+										 midi_conversion, 4);
+		// reverb/chorus combo
+		buttons[4] = new AudioTextToggle(this, midi_reverbchorustext, 
+										 colx[2], rowy[5], 59,
+										 midi_reverb_chorus, 4);
+	}
 }
 
 void AudioOptions_gump::load_settings()
@@ -315,12 +327,15 @@ AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SH
 {
 	set_object_area(Rectangle(0,0,0,0), 8, 172);//++++++ ???
 
-	for (int i=0; i<11; i++) buttons[i] = 0;
+	for (int i=0; i<12; i++) buttons[i] = 0;
 
 	load_settings();
-	
-	build_buttons();
 
+	rebuild_buttons();
+
+
+	// audio on/off
+    buttons[0] = new AudioEnabledToggle(this, colx[2], rowy[0], audio_enabled);
 	// Ok
 	buttons[9] = new AudioOptions_button(this, oktext, colx[0], rowy[12]);
 	// Cancel
@@ -329,7 +344,7 @@ AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SH
 
 AudioOptions_gump::~AudioOptions_gump()
 {
-	for (int i=0; i<11; i++)
+	for (int i=0; i<12; i++)
 		if (buttons[i]) delete buttons[i];
 }
 
@@ -419,8 +434,10 @@ void AudioOptions_gump::paint()
 		sman->paint_text(2, "music", x + colx[1], y + rowy[2] + 1);
 		if (midi_enabled) {
 			sman->paint_text(2, "driver", x + colx[1], y + rowy[3] + 1);
-			sman->paint_text(2, "conversion", x + colx[1], y + rowy[4] + 1);
-			sman->paint_text(2, "effects", x + colx[1], y + rowy[5] + 1);
+			if (midi_driver == MIDI_DRIVER_NORMAL) {
+				sman->paint_text(2, "conversion", x+colx[1], y+rowy[4] + 1);
+				sman->paint_text(2, "effects", x + colx[1], y + rowy[5] + 1);
+			}
 			sman->paint_text(2, "looping", x + colx[1], y + rowy[6] + 1);
 		}
 		sman->paint_text(2, "SFX options:", x + colx[0], y + rowy[7] + 1);
