@@ -86,7 +86,8 @@ void add_system_path(const string& key, const string& value)
 
 void clone_system_path(const string& new_key, const string& old_key)
 {
-	path_map[new_key] = path_map[old_key];
+	if (path_map.find(old_key) != path_map.end())
+		path_map[new_key] = path_map[old_key];
 }
 
 void clear_system_path(const string& key)

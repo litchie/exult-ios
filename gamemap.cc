@@ -1124,6 +1124,21 @@ Ireg_game_object *Game_map::create_ireg_object
 	}
 
 /*
+ *	Create 'fixed' (landscape, building) objects.
+ */
+
+Ifix_game_object *Game_map::create_ifix_object
+	(
+	int shnum, int frnum		// Shape, frame.
+	)
+	{
+	Shape_info& info = ShapeID::get_info(shnum);
+	return (info.is_animated() || info.has_sfx())
+			? new Animated_ifix_object(shnum, frnum, 0, 0, 0)
+			: new Ifix_game_object(shnum, frnum, 0, 0, 0);
+	}
+
+/*
  *	Read in the objects in a superchunk.
  */
 
