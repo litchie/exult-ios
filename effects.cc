@@ -181,27 +181,29 @@ Explosion_effect::Explosion_effect
 		Audio::game_sfx(9), SDL_MIX_MAXVOLUME, dir);
 	}
 
-
-/*
- *	Done with explosion.
- */
-
-Explosion_effect::~Explosion_effect
+void Explosion_effect::handle_event
 	(
+	unsigned long curtime,		// Current time of day.
+	long udata
 	)
-	{
-	if (explode)
-		{
-		Game_window::get_game_window()->add_dirty(explode);
-		explode->remove_this();
-		}
-	Game_object_vector vec;			// Find objects near explosion.
-	Game_object::find_nearby(vec, pos, c_any_shapenum, 3, 0);
-	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
-		{
-		(**it).attacked(0, 704, 0);
-		}
+{
+	if (frame_num == frames/2) {
+		// this was in ~Explosion_effect before
+		if (explode)
+			{
+				Game_window::get_game_window()->add_dirty(explode);
+				explode->remove_this();
+				explode = 0;
+			}
+		Game_object_vector vec;			// Find objects near explosion.
+		Game_object::find_nearby(vec, pos, c_any_shapenum, 3, 0);
+		for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+			{
+				(**it).attacked(0, 704, 0);
+			}
 	}
+	Sprites_effect::handle_event(curtime, udata);
+}
 
 /*
  *	Get direction in 1/16's starting from North.
