@@ -1943,6 +1943,8 @@ USECODE_INTRINSIC(set_new_schedules)
 	}
 
 	actor->set_schedules(list, count);
+
+	return no_ret;
 }
 
 USECODE_INTRINSIC(run_schedule)
