@@ -69,7 +69,7 @@ exultico.o: win32/exultico.rc win32/exult.ico
 
 # This should work with the Cygwin rm
 clean:
-	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe exult.flx
+	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx
 
 install: $(EXEC)
 	strip $(EXEC) -o c:/ultima7/$(EXEC)
