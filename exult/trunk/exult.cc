@@ -101,8 +101,8 @@ static void Try_key(Game_window *);
 void increase_resolution (void);
 void decrease_resolution (void);
 int find_resolution(int w, int h, int s);
-bool get_play_introduction (void);
-void set_play_introduction (bool);
+bool get_play_intro (void);
+void set_play_intro (bool);
 void toggle_fullscreen (void);
 void quick_save (void);
 void quick_restore (void);
@@ -1363,6 +1363,18 @@ bool get_play_intro (void)
 void set_play_intro (bool play)
 {
 	config->set("config/gameplay/skip_splash", play?"no":"yes", true);
+}
+
+bool get_play_1st_scene (void)
+{
+	std::string yn;
+	config->value("config/gameplay/skip_intro", yn, "no");
+	return(yn=="no");
+}
+
+void set_play_1st_scene (bool play)
+{
+	config->set("config/gameplay/skip_intro", play?"no":"yes", true);
 }
 
 void toggle_fullscreen (void) {

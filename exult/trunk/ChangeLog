@@ -1,5 +1,14 @@
 2000-11-20  Tristan Tarrant <nadir@users.sourceforge.net>
 
+	* data/play_1st_scene.shp, data/exit.shp: 2 new shapes
+	* data/Makefile.am, tools/expack.cc, data/README,
+	  Makefile.cygwin, Makefile.win32, Makefile.be: update all
+	  known references to shape list for exult.flx...
+	* exult.cc, game.cc: handle extra menu entries
+	* README: updated with more information
+
+2000-11-20  Tristan Tarrant <nadir@users.sourceforge.net>
+
 	* configure.in: check if Gnome is installed
 	* Makefile.am: add desktop dir
 	* desktop/*: Gnome desktop entry and icon
