@@ -2769,10 +2769,9 @@ void Game_window::theft
 	if (!closest_npc)
 		return;			// Didn't get caught.
 	int dir = closest_npc->get_direction(main_actor);
-	closest_npc->add_dirty(this);	// Face avatar.
-	closest_npc->set_frame(closest_npc->get_dir_framenum(dir,
+					// Face avatar.
+	closest_npc->change_frame(closest_npc->get_dir_framenum(dir,
 							Actor::standing));
-	closest_npc->add_dirty(this);
 	theft_warnings++;
 	if (theft_warnings < 3 + rand()%3)
 		{			// Just a warning this time.

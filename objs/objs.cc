@@ -264,6 +264,21 @@ void Game_object::move
 	}
 
 /*
+ *	Change the frame and set to repaint areas.
+ */
+
+void Game_object::change_frame
+	(
+	int frnum
+	)
+	{
+	Game_window *gwin = Game_window::get_instance();
+	gwin->add_dirty(this);		// Set to repaint old area.
+	set_frame(frnum);
+	gwin->add_dirty(this);		// Set to repaint new.
+	}
+
+/*
  *	Swap positions with another object (of the same footprint).
  *
  *	Output: 1 if successful, else 0.
@@ -1601,9 +1616,7 @@ Game_object *Game_object::attacked
 		else if (shnum == 735 && ammo_shape == 722) {
 			int newframe = !frnum ? (3*(rand()%8) + 1)
 					: ((frnum%3) != 0 ? frnum + 1 : frnum);
-			gwin->add_dirty(this);
-			set_frame(newframe);
-			gwin->add_dirty(this);
+			change_frame(newframe);
 		}
 #if 0
 		else if (shnum == 522 && frnum < 2) { // locked normal chest

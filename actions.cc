@@ -368,7 +368,7 @@ void Path_walking_actor_action::stop
 	if (!actor->get_info().has_strange_movement())
 		{			// ++++For now, just use original dir.
 		Frames_sequence *frames = actor->get_frames(original_dir);
-		actor->set_frame(frames->get_resting());
+		actor->change_frame(frames->get_resting());
 		}
 	}
 
@@ -662,15 +662,10 @@ int Frames_actor_action::handle_event
 	if (frnum >= 0)
 		{
 		Game_window *gwin = Game_window::get_instance();
-		if (o) {
-			gwin->add_dirty(o);
-			o->set_frame(frnum);
-			gwin->add_dirty(o);
-		} else {
-			actor->add_dirty(gwin);	// Get weapon to redraw too.
-			actor->set_frame(frnum);
-			actor->add_dirty(gwin, 1);
-		}
+		if (o)
+			o->change_frame(frnum);
+		else
+			actor->change_frame(frnum);
 		}
 	return (speed);
 	}
@@ -773,10 +768,7 @@ int Object_animate_actor_action::handle_event
 	int frnum = (obj->get_framenum() + 1) % nframes;
 	if (!frnum)			// New cycle?
 		--cycles;
-	Game_window *gwin = Game_window::get_instance();
-	gwin->add_dirty(obj);		// Paint over old.
-	obj->set_frame(frnum);
-	gwin->add_dirty(obj);
+	obj->change_frame(frnum);
 	return (cycles ? speed : 0);
 	}
 
@@ -837,9 +829,7 @@ int Pickup_actor_action::handle_event
 	default:
 		return 0;		// Done.
 		}
-	actor->add_dirty(gwin);		// Get weapon to redraw too.
-	actor->set_frame(frnum);
-	actor->add_dirty(gwin, 1);
+	actor->change_frame(frnum);
 	return speed;
 	}
 
@@ -871,9 +861,7 @@ int Face_pos_actor_action::handle_event
 	int frnum = actor->get_dir_framenum(dir, Actor::standing);
 	if (actor->get_framenum() == frnum)
 		return 0;		// There.
-	actor->add_dirty(gwin);		// Get weapon to redraw too.
-	actor->set_frame(frnum);
-	actor->add_dirty(gwin, 1);
+	actor->change_frame(frnum);
 	return speed;
 	}
 

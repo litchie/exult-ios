@@ -127,6 +127,7 @@ public:
 	void unready_weapon(int spot);	// Try to sheath weapon.
 					// Force repaint of area taken.
 	int add_dirty(Game_window *gwin, int figure_rect = 0);
+	void change_frame(int frnum);	// Change frame & set to repaint.
 	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
 	void use_food();		// Decrement food level.
 					// Increment/decrement temperature.
