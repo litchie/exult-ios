@@ -540,12 +540,12 @@ void ExultStudio::init_shape_notebook
 	else if (spot > 17)
 		spot = 3;
 	set_optmenu("shinfo_ready_spot", spot);
-	set_spin("shinfo_weight", info.get_weight());
-	set_spin("shinfo_volume", info.get_volume());
+	set_spin("shinfo_weight", info.get_weight(), 0, 255);
+	set_spin("shinfo_volume", info.get_volume(), 0, 255);
 	unsigned char wx, wy;		// Weapon-in-hand offset.
 	info.get_weapon_offset(frnum, wx, wy);
-	set_spin("shinfo_wihx", wx);
-	set_spin("shinfo_wihy", wy);
+	set_spin("shinfo_wihx", wx, 0, 255);	// Negative???
+	set_spin("shinfo_wihy", wy, 0, 255);
 					// Bunch of flags:
 	set_toggle("shinfo_sfx_check", info.has_sfx());
 	set_toggle("shinfo_strange_check", info.has_strange_movement());
