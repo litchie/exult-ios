@@ -1123,8 +1123,8 @@ static void Handle_event
 			}
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500 &&
-				show_items_x - 1 <= x && x <= show_items_x + 1 &&
-				show_items_y - 1 <= y && y <= show_items_y + 1)
+				left_down_x - 1 <= x && x <= left_down_x + 1 &&
+				left_down_y - 1 <= y && y <= left_down_y + 1)
 			{
 				dragging = dragged = false;
 				gwin->double_clicked(x, y);
