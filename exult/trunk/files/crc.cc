@@ -119,15 +119,15 @@ unsigned int ssh_crc32(const unsigned char *s, unsigned int len)
 
 uint32 crc32(const char *filename)
 {
-	ifstream crcfile(filename);
+	std::ifstream crcfile(filename, std::ios::binary);
 
 	uint32 crc32val = 0;
 	unsigned char c;
 
-	crcfile.get(c);
+	crcfile.get(reinterpret_cast<char &>(c));
 	while (crcfile.good()) {
 		crc32val = crc32_tab[(crc32val ^ c) & 0xff] ^ (crc32val >> 8);
-		crcfile.get(c);
+		crcfile.get(reinterpret_cast<char &>(c));
 	}
 
 	return crc32val;
