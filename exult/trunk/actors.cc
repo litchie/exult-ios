@@ -535,6 +535,7 @@ void Actor::start
 					//   if not already moving).
 	)
 	{
+	dormant = false;		// 14-jan-2001 - JSF.
 	frame_time = speed;
 	Game_window *gwin = Game_window::get_game_window();
 	if (!in_queue() || delay)	// Not already in queue?

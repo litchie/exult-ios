@@ -1654,7 +1654,8 @@ void Game_window::start_actor
 	int speed			// Msecs. between frames.
 	)
 	{
-	if (main_actor->Actor::get_flag(Obj_flags::asleep))
+	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
+	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
 	teleported = 0;
 	int lift = main_actor->get_lift();
