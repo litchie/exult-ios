@@ -50,7 +50,7 @@ int Astar::GetNextStep(Tile_coord& n)
 	if (next_index == stop)
 		return (0);
 	n = path[next_index];
-	next_index++;
+	next_index += dir;
 	return 1;
 }
 

@@ -44,15 +44,17 @@ void Schedule::set_action_sequence
 	(
 	Actor *actor,			// Whom to activate.
 	Tile_coord dest,		// Where to walk to.
-	Actor_action *when_there	// What to do when he gets there.
+	Actor_action *when_there,	// What to do when he gets there.
+	int from_off_screen		// Have actor walk from off-screen.
 	)
 	{
 	Actor_action *act = when_there;
 	Tile_coord actloc = actor->get_abs_tile_coord();
+	if (from_off_screen)
+		actloc.tx = actloc.ty = -1;
 	if (dest != actloc)		// Get to destination.
 		{
 		Actor_action *w = new Path_walking_actor_action(new Astar());
-					// Teleport if blocked while walking.
 		Actor_action *w2 = w->walk_to_tile(actloc, dest, 
 						actor->get_type_flags());
 		if (w2 != w)

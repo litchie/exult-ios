@@ -174,6 +174,57 @@ int Onecoord_pathfinder_client::at_goal
 	}
 
 /*
+ *	Client to get offscreen.
+ */
+
+Offscreen_pathfinder_client::Offscreen_pathfinder_client
+	(
+	Game_window *gwin,
+	int mf				// Move-flags.
+	) : screen(gwin->get_win_tile_rect())
+	{
+	}
+
+/*
+ *	Estimate cost from one point to another.
+ */
+
+int Offscreen_pathfinder_client::estimate_cost
+	(
+	Tile_coord& from,
+	Tile_coord& to			// Should be the goal.
+	)
+	{
+	int dx = from.tx - screen.x;	// Figure shortest dist.
+	int dx1 = screen.x + screen.w - from.tx;
+	if (dx1 < dx)
+		dx = dx1;
+	int dy = from.ty - screen.y;
+	int dy1 = screen.y + screen.h - from.ty;
+	if (dy1 < dy)
+		dy = dy1;
+	int cost = dx < dy ? dx : dy;
+	if (cost < 0)
+		cost = 0;
+	if (from.tz != to.tz)
+		cost++;
+	return 2*cost;
+	}
+
+/*
+ *	Is tile at goal?
+ */
+
+int Offscreen_pathfinder_client::at_goal
+	(
+	Tile_coord& tile,
+	Tile_coord& goal
+	)
+	{
+	return !screen.has_point(tile.tx, tile.ty) && tile.tz == goal.tz;
+	}
+
+/*
  *	Figure when to give up.
  */
 

@@ -48,6 +48,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "barge.h"
 #include "actors.h"
 #include "dir.h"
+#include "actions.h"
 #include "paths.h"
 #include "Astar.h"
 #include "objiter.h"
@@ -2658,9 +2659,34 @@ void Game_window::theft
 		return;
 		}
 	closest_npc->say(first_call_guards, last_call_guards);
-					// +++++Show guard running up.
-	usecode->call_usecode(0x625, main_actor, 
-					Usecode_machine::double_click);
+					// Show guard running up.
+	Monster_info *inf = get_monster_info(0x3b2);
+	if (inf)
+		{			// Create it off-screen.
+		Monster_actor *guard = inf->create(
+			main_actor->get_cx() + 8, 
+			main_actor->get_cy() + 8, 0, 0, 0);
+		add_nearby_npc(guard);
+		Tile_coord actloc = main_actor->get_abs_tile_coord();
+		Tile_coord dest(-1, -1, -1);
+		for (int i = 2; i < 6 && dest.tx == -1; i++)
+			dest = Game_object::find_unblocked_tile(actloc, i, 3);
+		if (dest.tx != -1)
+			{
+			int dir = Get_direction(dest.ty - actloc.ty,
+						actloc.tx - dest.tx);
+					
+			char frames[2];	// Use frame for starting attack.
+			frames[0] = guard->get_dir_framenum(dir,
+							Actor::standing);
+			frames[1] = guard->get_dir_framenum(dir, 3);
+			Actor_action *action = new Sequence_actor_action(
+				new Frames_actor_action(frames, 2),
+				new Usecode_actor_action(0x625, main_actor,
+					Usecode_machine::double_click));
+			Schedule::set_action_sequence(guard, dest, action, 1);
+			}
+		}
 	}
 
 /*

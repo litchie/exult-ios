@@ -47,10 +47,6 @@ class Schedule
 protected:
 	Actor *npc;			// Who this controls.
 	Tile_coord blocked;		// Tile where actor was blocked.
-					// Set actor to walk somewhere, then
-					//   do something.
-	static void set_action_sequence(Actor *actor, Tile_coord dest,
-						Actor_action *when_there);
 public:
 	Schedule(Actor *n) : npc(n), blocked(-1, -1, -1)
 		{  }
@@ -78,6 +74,10 @@ public:
 					// Our own:
 		walk_to_schedule = 32
 		};
+					// Set actor to walk somewhere, then
+					//   do something.
+	static void set_action_sequence(Actor *actor, Tile_coord dest,
+			Actor_action *when_there, int from_off_screen = 0);
 	virtual void now_what() = 0;	// Npc calls this when it's done
 					//   with its last task.
 	virtual void im_dormant()	// Npc calls this when it goes from
