@@ -315,7 +315,8 @@ char *Game_window::get_game_identity
 	      in.read(game_identity, len);
 	      // Truncate identity
 	      char *ptr = game_identity;
-	      for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++);
+	      for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
+	      	;
 	      *ptr = 0;
 	      break;
 	    }
