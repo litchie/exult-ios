@@ -1,5 +1,6 @@
 2002-07-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs.cc: fixes to SI item names (thanks sb-x)
+	* objnames.cc: moved naming code to separate file
 
 2002-07-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs.cc: even more item names for SI
