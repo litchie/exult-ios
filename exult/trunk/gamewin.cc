@@ -484,12 +484,14 @@ void Game_window::init_files(bool cycle)
 	shape_man->load();		// All the .vga files!
 	CYCLE_RED_PLASMA();
 
-	ifstream textflx;	
+	ifstream textflx, exultmsg;	
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_TEXT))
 		U7open(textflx, PATCH_TEXT);
 	else
   		U7open(textflx, TEXT_FLX);
-	Setup_item_names(textflx);	// Set up list of item names.
+	if (U7exists(EXULTMSG))
+		U7open(exultmsg, EXULTMSG, true);
+	Setup_item_names(textflx, exultmsg);	// Set up list of item names.
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
 					// Force clock to start.

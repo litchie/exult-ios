@@ -1,3 +1,8 @@
+2003-06-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* items.{cc,h},msgfile.{cc,h}:  Adding support for an
+	'exultmsg.txt' file containing strings used in C++ code.
+
 2003-06-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc, gumps/VideoOptions_gump.cc: fixed screen corruption
 	  when changing scaler from video options gump
