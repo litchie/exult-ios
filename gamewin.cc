@@ -2141,9 +2141,10 @@ void Game_window::start_actor_alt
 			stop_actor();
 			if (main_actor->get_lift()%5)// Up on something?
 				{	// See if we're stuck in the air.
-				start.tz--;
+				int savetz = start.tz;
 				if (!Map_chunk::is_blocked(start, 1, 
-						MOVE_WALK, 100))
+						MOVE_WALK, 100) && 
+						start.tz < savetz)
 					main_actor->move(start.tx, start.ty, 
 								start.tz);
 				}
