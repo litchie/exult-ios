@@ -2100,6 +2100,18 @@ USECODE_INTRINSIC(set_new_schedules)
 	return no_ret;
 }
 
+USECODE_INTRINSIC(revert_schedule)
+{
+	// revert_schedule(npc)
+	// Reverts the schedule of the npc to the saved state in
+	// <STATIC>/schedule.dat
+
+	Npc_actor *actor = as_npcactor(get_item(parms[0]));
+	if (actor) gwin->revert_schedules(actor);
+
+	return no_ret;
+}
+
 USECODE_INTRINSIC(run_schedule)
 {
 	// run_schedule(npc)

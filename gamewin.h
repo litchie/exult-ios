@@ -595,6 +595,7 @@ public:
 	void write_npcs();		// Write them back.
 	void read_schedules();		// Read npc's schedules.
 	void write_schedules();		// Write npc's schedules.
+	void revert_schedules(Actor *);	// Reset a npc's schedule.
 					// Start dragging.
 	bool start_dragging(int x, int y);
 	bool drag(int x, int y);	// During dragging.

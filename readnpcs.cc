@@ -73,6 +73,10 @@ void Game_window::read_npcs
 			main_actor->set_flag(Obj_flags::dont_render);
 		}
 	int i;
+
+	// Don't like it... no i don't.
+	center_view(main_actor->get_abs_tile_coord());
+
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
 	nfile.close();
@@ -96,7 +100,6 @@ void Game_window::read_npcs
 	catch(...)
 	{
 	}
-	center_view(main_actor->get_abs_tile_coord());
 	read_schedules();		// Now get their schedules.
 	if (!monster_info)		// Might be a 'restore'.
 		{
@@ -139,6 +142,7 @@ void Game_window::read_npcs
 					// Monster_info owns this.
 		Monster_info::set_equip(equip, num_recs);
 		}
+	center_view(main_actor->get_abs_tile_coord());
 	}
 
 /*
@@ -216,11 +220,11 @@ void Game_window::read_schedules
 	for (i = 0; i < num_npcs - 1; i++)	// Do each NPC, except Avatar.
 		{
 					// Avatar isn't included here.
-		Npc_actor *npc = (Npc_actor *) npcs[i + 1];
+		Actor *npc = npcs[i + 1];
 		int cnt = offsets[i + 1] - offsets[i];
-		//if (!cnt) continue;	// If none, don't try
 					// Read schedules into this array.
-		Schedule_change *schedules = new Schedule_change[cnt];
+		Schedule_change *schedules = cnt?new Schedule_change[cnt]:0;
+		
 		for (int j = 0; j < cnt; j++)
 			{
 			unsigned char ent[4];
@@ -274,5 +278,42 @@ void Game_window::write_schedules ()
 			sfile.write((char*)ent, 4);
 		}
 	}
+}
+
+void Game_window::revert_schedules(Actor *npc)
+{
+	// Can't do this if <= 0
+	if (npc->get_npc_num() <= 0) return;
+
+	int i;
+	ifstream sfile;
+
+	U7open(sfile, SCHEDULE_DAT);
+
+	// # of NPC's, not include Avatar.
+	int num_npcs = Read4(sfile);
+	short *offsets = new short[num_npcs];
+	for (i = 0; i < num_npcs; i++) offsets[i] = Read2(sfile);
+
+	// Seek to the right place
+	sfile.seekg(offsets[npc->get_npc_num()-1]*4, ios::cur);
+
+	// Get the count that we want to use
+	int cnt = offsets[npc->get_npc_num()] - offsets[npc->get_npc_num()-1];
+
+	// Read schedules into this array.
+	Schedule_change *schedules = cnt?new Schedule_change[cnt]:0;
+
+	for (i = 0; i < cnt; i++)
+	{
+		unsigned char ent[4];
+		sfile.read((char*)ent, 4);
+		schedules[i].set(ent);
+	}
+	// Store in NPC.
+	npc->set_schedules(schedules, cnt);
+
+	// Done
+	delete [] offsets;
 }
 
