@@ -1,3 +1,8 @@
+2001-01-03  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* usecode/compiler/Makefile.am: don't build ucc with --disable-tools
+	* usecode/compiler/.cvsignore: added
+	* bggame.cc: fixed crash in 'arm hits screen' scene
+	
 2001-01-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* More usecode-compiler coding:  Symbols.
