@@ -62,7 +62,7 @@ dnl this is for win32 for now at least
 AC_ARG_ENABLE(win32, [  --enable-win32          force exult build for windows [default no]],,enable_win32=no)
 
 dnl And kmid
-AC_ARG_ENABLE(kmid, [  --disable-kmid          force exult not to use kmid [default no]],,disable_kmid=no)
+AC_ARG_ENABLE(kmid, [  --disable-kmid          force exult not to use kmid [default no]],,enable_kmid=yes)
 
 if test x$enable_win32 = xno; then
   WINDOWING_SYSTEM=""
@@ -82,16 +82,17 @@ if test "$WINDOWING_SYSTEM" = "-DXWIN"; then
 	SYSLIBS=""
 	ICON_FILE=""
 else
+dnl this is for win32 for now at least
 	echo "Umm. Doesn't seem to be X11."
 	echo "Let's assume it's Windows as an alternative."
 	WINDOWING_SYSTEM="-DWIN32"
 	EXE_TARGET="exult.exe"
-	disable_kmid="yes"
+	enable_kmid="no"
 	SYSLIBS="-lwinmm"
 	ICON_FILE="exultico.o"
 fi
 
-dnl this is for win32 for now at least
+
 AC_ARG_ENABLE(usecode-debugger, [  --enable-usecode-debugger          pre-alpha usecode debugger [default no]],,enable_usecode_debugger=no)
 if test x$enable_usecode_debugger = xyes; then
 	echo "Enabling usecode debugger"
@@ -123,7 +124,7 @@ AC_MSG_RESULT(Now we know lots about how SDL is installed locally)
 
 dnl this is for kmid
 AC_MSG_CHECKING(whether to disable kmid)
-if test x$disable_kmid = xno; then
+if test x$enable_kmid = xyes; then
 	AC_MSG_RESULT(no)
 	AC_MSG_CHECKING(for libkmid)
 
@@ -205,32 +206,45 @@ AC_CHECK_BOOL
 
 
 dnl For the alternate allocator
-AC_ARG_ENABLE(alternate_allocator, [  --enable-alternate-allocator          enable alternate memory allocator [default no]],,alternate_allocator=no)
+AC_ARG_ENABLE(alternate-allocator, [  --enable-alternate-allocator          enable alternate memory allocator [default no]],,enable_alternate_allocator=no)
 AC_MSG_CHECKING(checking allocation scheme)
 if test x$enable_alternate_allocator = xyes; then
   AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
-  AC_MSG_RESULT(alternate)
-else
-  AC_MSG_RESULT(normal)
 fi
 
-
 dnl For storage initialisation
-AC_ARG_ENABLE(storage_initialisation, [  --enable-storage-initialisation          clear storage when allocated [default no]],,storage_initialisation=no)
+AC_ARG_ENABLE(storage-initialisation, [  --enable-storage-initialisation          clear storage when allocated [default no]],,enable_storage_initialisation=no)
 if test x$enable_storage_initialisation = xyes; then
   AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
   AC_DEFINE(INITIALISE_ALLOCATED_BLOCKS,0)
 fi
 
 dnl For storage poisoning
-AC_ARG_ENABLE(storage_poisoning, [  --enable-storage-poisoning          fill storage with 0xf1 when allocated [default no]],,storage_initialisation=no)
-if test x$enable_storage_initialisation = xyes; then
-  if test x$enable_storage_poisoning = xyes; then
-	echo "Disabling storage initialisation. Can poision or init to zero. Not both"
+AC_ARG_ENABLE(storage-poisoning, [  --enable-storage-poisoning          fill storage with 0xf1 when allocated [default no]],,enable_storage_poisoning=no)
+if test x$enable_storage_poisoning = xyes; then
+  if test x$enable_storage_initialisation = xyes; then
+	AC_MSG_RESULT(poisoned. (Disabling storage initialisation. Can't poison and init to zero.))
   fi
   AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
   AC_DEFINE(POISON_ALLOCATED_BLOCKS)
 fi
+
+if test x$enable_storage_poisoning = xyes; then
+  if test x$enable_storage_initialisation = xno; then
+    AC_MSG_RESULT(poisoned)
+  fi
+else
+  if test x$enable_storage_initialisation = xyes; then
+    AC_MSG_RESULT(initialized)
+  else
+    if test x$enable_alternate_allocator = xyes; then
+      AC_MSG_RESULT(alternate)
+    else
+      AC_MSG_RESULT(normal)
+    fi
+  fi
+fi
+
 
 dnl this is for debug
 DEBUG_FLAGS="-O2"
@@ -244,9 +258,9 @@ else
   AC_MSG_RESULT(no)
 fi
 
-AC_ARG_ENABLE(debug, [  --enable-optimized-debug          enable optimized debug build [default no]],,enable_opt_debug=no)
+AC_ARG_ENABLE(optimized-debug, [  --enable-optimized-debug          enable optimized debug build [default no]],,enable_optimized_debug=no)
 AC_MSG_CHECKING(whether to enable optimized debug build)
-if test x$enable_opt_debug = xyes; then
+if test x$enable_optimized_debug = xyes; then
   AC_MSG_RESULT(yes)
   AC_DEFINE(DEBUG)
   DEBUG_FLAGS="-g -O2 -fno-default-inline -fno-inline"
@@ -320,8 +334,8 @@ if test x$CC = xgcc; then
 fi
 
 
-dnl AC_ARG_ENABLE(gtk-interface, [  --enable-gtk-interface          build the GTK+ interface [default no]],build_gtk_interface=yes,build_gtk_interface=no)
-dnl if test x$build_gtk_interface = xyes; then
+dnl AC_ARG_ENABLE(gtk-interface, [  --enable-gtk-interface          build the GTK+ interface [default no]],,enable_gtk_interface=no)
+dnl if test x$enable_gtk_interface = xyes; then
 dnl	AC_PATH_PROG(GTKCONFIG, gtk-config)
 dnl	AM_CONDITIONAL(GTK_INTERFACE, true)
 dnl	AC_SUBST(GTK_INTERFACE)
@@ -337,9 +351,9 @@ fi
 
 
 AM_CONDITIONAL(HAVE_GIMP, false)
-AC_ARG_ENABLE(gimp-plugin, [  --disable-gimp-plugin          do not build the GIMP plugin [default no]],,disable_gimp_plugin=no)
+AC_ARG_ENABLE(gimp-plugin, [  --disable-gimp-plugin          do not build the GIMP plugin [default no]],,enable_gimp_plugin=yes)
 dnl Check for GIMP devel stuff. We need to check for glib first
-if test x$disable_gimp_plugin = xno; then
+if test x$enable_gimp_plugin = xyes; then
 	AC_PATH_PROG(GLIBCONFIG, glib-config)
 	if test -n "$GLIBCONFIG"; then
 		GLIB_INCLUDES=`glib-config --cflags`
