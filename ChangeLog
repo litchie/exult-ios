@@ -1,3 +1,7 @@
+2004-02-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* desktop/*: put .desktop file in /usr/share/applications,
+	icon in /usr/share/icons.
+
 2004-02-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/studio.cc: fixed main_window not getting toplevel_focus
 

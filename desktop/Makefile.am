@@ -1,13 +1,7 @@
-if GNOME_INSTALLED
-gnomeappicondir = $(datadir)/pixmaps
-gnomeappicon_DATA = exult.png
+icondir = $(datadir)/icons
+dist_icon_DATA = exult.png
 
-gnomeappdir = $(datadir)/gnome/apps/Games
-gnomeapp_DATA = exult.desktop
-endif
-
-EXTRA_DIST = \
-	exult.png \
-	exult.desktop
+desktopdir = $(datadir)/applications
+dist_desktop_DATA = exult.desktop
 
 CLEANFILES = *~
