@@ -37,6 +37,7 @@ using std::strlen;
 using std::memcpy;
 
 Uc_scope Uc_function::globals(0);	// Stores intrinic symbols.
+vector<Uc_intrinsic_symbol *> Uc_function::intrinsics;
 
 /*
  *	Create function, and add to global symbol table.
@@ -405,12 +406,15 @@ void Uc_function::set_intrinsics
 		table = si_intrinsic_table;
 		cnt = sizeof(si_intrinsic_table)/sizeof(si_intrinsic_table[0]);
 		}
+	intrinsics.resize(cnt);
 	for (int i = 0; i < cnt; i++)
 		{
 		char *nm = (char *)table[i];
+		Uc_intrinsic_symbol *sym = new Uc_intrinsic_symbol(nm, i);
+		intrinsics[i] = sym;	// Store in indexed list.
 		if (!globals.search(nm))
 					// ++++Later, get num parms.
-			globals.add(new Uc_intrinsic_symbol(nm, i));
+			globals.add(sym);
 		}
 	}
 
