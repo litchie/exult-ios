@@ -3,6 +3,7 @@
 
 <project>
   <name>ExultStudio</name>
+  <program_name>exultstudio</program_name>
   <directory></directory>
   <source_directory>.</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
@@ -20,12 +21,14 @@
   <handler_header_file>xx_callbacks.h</handler_header_file>
   <support_source_file>support.c</support_source_file>
   <support_header_file>support.h</support_header_file>
+  <translatable_strings_file></translatable_strings_file>
 </project>
 
 <widget>
   <class>GtkFileSelection</class>
   <name>file_selection</name>
   <border_width>10</border_width>
+  <visible>False</visible>
   <title>Select File</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -57,6 +60,13 @@
 <widget>
   <class>GtkWindow</class>
   <name>main_window</name>
+  <width>500</width>
+  <height>300</height>
+  <signal>
+    <name>delete_event</name>
+    <handler>on_main_window_delete_event</handler>
+    <last_modification_time>Wed, 02 May 2001 19:05:36 GMT</last_modification_time>
+  </signal>
   <title>ExultStudio</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -134,11 +144,11 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
-	    <name>egg1</name>
+	    <name>open_egg</name>
 	    <signal>
 	      <name>activate</name>
-	      <handler>on_egg1_activate</handler>
-	      <last_modification_time>Tue, 01 May 2001 21:58:46 GMT</last_modification_time>
+	      <handler>on_open_egg_activate</handler>
+	      <last_modification_time>Wed, 02 May 2001 16:38:31 GMT</last_modification_time>
 	    </signal>
 	    <label>_Egg...</label>
 	    <right_justify>False</right_justify>
@@ -164,7 +174,7 @@
       <name>hpaned1</name>
       <handle_size>10</handle_size>
       <gutter_size>6</gutter_size>
-      <position>0</position>
+      <position>1</position>
       <child>
 	<padding>0</padding>
 	<expand>True</expand>
@@ -186,6 +196,8 @@
 	<widget>
 	  <class>GtkCTree</class>
 	  <name>file_list</name>
+	  <width>150</width>
+	  <height>280</height>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>tree_select_row</name>
@@ -251,6 +263,12 @@
 <widget>
   <class>GtkWindow</class>
   <name>egg_window</name>
+  <visible>False</visible>
+  <signal>
+    <name>delete_event</name>
+    <handler>on_egg_window_delete_event</handler>
+    <last_modification_time>Wed, 02 May 2001 18:52:49 GMT</last_modification_time>
+  </signal>
   <title>Exult Egg</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -1497,9 +1515,14 @@ Clouds
 
       <widget>
 	<class>GtkButton</class>
-	<name>button3</name>
+	<name>egg_cancel_btn</name>
 	<can_default>True</can_default>
 	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>on_egg_cancel_btn_clicked</handler>
+	  <last_modification_time>Wed, 02 May 2001 18:50:31 GMT</last_modification_time>
+	</signal>
 	<label>Cancel</label>
       </widget>
     </widget>
