@@ -104,9 +104,12 @@ class Game_object : public ShapeID
 	short quality;			// Some sort of game attribute.
 	Game_object *next;		// ->next in chunk list or container.
 protected:
-	unsigned char cx, cy;		// (Absolute) chunk coords.
+	unsigned char cx, cy;		// (Absolute) chunk coords., or if this
+					//   is in a container, coords. within
+					//   gump's rectangle.
 public:
 	friend class Chunk_object_list;
+	friend class Gump_object;
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),

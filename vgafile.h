@@ -57,6 +57,10 @@ public:
 		{ return xleft + xright; }
 	int get_height()
 		{ return yabove + ybelow; }
+	int get_xleft()
+		{ return xleft; }
+	int get_yabove()
+		{ return yabove; }
 	~Shape_frame()
 		{ delete data; }
 	};

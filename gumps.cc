@@ -41,25 +41,25 @@ cout << "Creating gump at " << initx << ", " << inity << '\n';
 	switch (shnum)			// Different shapes.
 		{
 	case 1:				// Crate.
-		object_area = Rectangle(58, 28, 80, 24);
+		object_area = Rectangle(50, 20, 80, 24);
 		break;
 	case 8:				// Barrel.
-		object_area = Rectangle(40, 40, 40, 40);
+		object_area = Rectangle(32, 32, 40, 40);
 		break;
 	case 9:				// Bag.
-		object_area = Rectangle(56, 28, 66, 44);
+		object_area = Rectangle(48, 20, 66, 44);
 		break;
 	case 10:			// Backpack.
-		object_area = Rectangle(54, 44, 72, 40);
+		object_area = Rectangle(36, 36, 72, 40);
 		break;
 	case 22:			// Chest.
-		object_area = Rectangle(48, 28, 60, 32);
+		object_area = Rectangle(40, 20, 60, 32);
 		break;
 	case 27:			// Drawer.
-		object_area = Rectangle(46, 20, 70, 26);
+		object_area = Rectangle(38, 12, 70, 26);
 		break;
 	default:
-		object_area = Rectangle(60, 30, 60, 40);
+		object_area = Rectangle(52, 22, 60, 40);
 		}
 	}
 
@@ -108,6 +108,52 @@ void Gump_object::remove_from_chain
 	}
 
 /*
+ *	Get screen rectangle for one of our objects.
+ */
+
+Rectangle Gump_object::get_shape_rect
+	(
+	Game_object *obj
+	)
+	{
+	Shape_frame *s = Game_window::get_game_window()->get_shape(*obj);
+	return Rectangle(x + object_area.x + obj->cx + tilesize - 
+							s->get_xleft(), 
+			 y + object_area.y + obj->cy + tilesize - 
+							s->get_yabove(), 
+				 s->get_width(), s->get_height());
+	}
+
+/*
+ *	Find objects a screen point is on.
+ *
+ *	Output:	# of objects stored, last one being the highest.
+ */
+
+int Gump_object::find_objects
+	(
+	Game_window *gwin,
+	int mx, int my,			// Mouse pos. on screen.
+	Game_object **list		// Objects found are stored here.
+	)
+	{
+	int cnt = 0;
+	Game_object *last_object = container->get_last_object();
+	if (!last_object)
+		return (0);
+	Game_object *obj = last_object;
+	do
+		{
+		obj = obj->get_next();
+		Rectangle box = get_shape_rect(obj);
+		if (box.has_point(mx, my))
+			list[cnt++] = obj;
+		}
+	while (obj != last_object);
+	return (cnt);
+	}
+
+/*
  *	Paint on screen.
  */
 
@@ -123,30 +169,49 @@ void Gump_object::paint
 		return;			// Empty.
 	Rectangle box = object_area;	// Paint objects inside.
 	box.shift(x, y);		// Set box to screen location.
-	int cury = box.y, curx = box.x;
-	int endy = box.y + box.h, endx = box.x + box.w;
+	int cury = 0, curx = 0;
+	int endy = box.h, endx = box.w;
 	int loop = 0;			// # of times covering container.
 	Game_object *obj = last_object;
 	do				// First try is really rough.+++++
 		{
 		obj = obj->get_next();
 		Shape_frame *shape = gwin->get_shape(*obj);
-		int px = curx + shape->get_width(),
-		    py = cury + shape->get_height();
-		if (px > endx)
-			px = endx;
-		if (py > endy)
-			py = endy;
-		gwin->paint_shape(px, py, obj->get_shapenum(),
-						obj->get_framenum());
-		curx += 8;
-		if (curx >= endx)
-			{
-			cury += 8;
-			curx = box.x;
-			if (cury >= endy)
-				cury = box.y + 2*(++loop);
+		int objx = obj->cx - shape->get_xleft() + tilesize;
+		int objy = obj->cy - shape->get_yabove() + tilesize;
+					// Does obj. appear to be placed?
+		if (!object_area.has_point(objx, objy) ||
+		    !object_area.has_point(objx + shape->get_width() - 2,
+					objy + shape->get_height() - 2))
+			{		// No.
+			int px = curx + shape->get_width(),
+			    py = cury + shape->get_height();
+			if (px > endx)
+				px = endx;
+			if (py > endy)
+				py = endy;
+					// Take into account that objs. are
+					//   normally located by tile.
+			obj->cx = px - shape->get_width() + 
+					shape->get_xleft();
+			obj->cy = py - shape->get_height() + 
+					shape->get_yabove();
+cout << "Object set to " << (int) obj->cx << ", " << (int) obj->cy << '\n';
+			curx += 8;
+			if (curx >= endx)
+				{
+				cury += 8;
+				curx = 0;
+				if (cury >= endy)
+					cury = 2*(++loop);
+				}
 			}
+cout << "Painting gump obj. at " << box.x + obj->cx << ", " <<
+			box.y + obj->cy << '\n';
+		gwin->paint_shape(box.x + obj->cx,
+				  box.y + obj->cy, 
+						obj->get_shapenum(),
+						obj->get_framenum());
 		}
 	while (obj != last_object);
 	}

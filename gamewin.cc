@@ -191,6 +191,20 @@ void Game_window::show_game_location
 	cout << "Game location is (" << x << ", " << y << ")\n";
 	}
 
+/*
+ *	Get screen area used by a gump.
+ */
+
+Rectangle Game_window::get_gump_rect
+	(
+	Gump_object *gump
+	)
+	{
+	Shape_frame *s = gumps.get_shape(gump->get_shapenum(),
+						gump->get_framenum());
+	return Rectangle(gump->get_x() - s->xleft, gump->get_y() - s->yabove,
+					s->get_width(), s->get_height());
+	}
 
 /*
  *	Get a shape onto the screen.
@@ -1042,6 +1056,28 @@ int Game_window::find_roof
 	}
 
 /*
+ *	Find the highest gump that the mouse cursor is on.
+ *
+ *	Output:	->gump, or null if none.
+ */
+
+Gump_object *Game_window::find_gump
+	(
+	int x, int y			// Pos. on screen.
+	)
+	{
+	Gump_object *gmp;
+	Gump_object *found = 0;		// We want last found in chain.
+	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
+		{
+		Rectangle box = get_gump_rect(gmp);
+		if (box.has_point(x, y))
+			found = gmp;
+		}
+	return (found);
+	}
+
+/*
  *	Find objects that can be selected, dragged, or activated.
  *	The last one in the list is the 'highest' in terms of lift, with
  *	objects visible in a 'gump' the highest.
@@ -1239,8 +1275,10 @@ cout << "Object name is " << obj->get_name() << '\n';
 		obj->activate(usecode);
 		npc_prox->wait(4);	// Delay "barking" for 4 secs.
 		if (mode == conversation)
+			{
 			mode = normal;
-		paint();//????Not sure+++++++++
+			paint();
+			}
 		}
 	}
 
@@ -1532,6 +1570,7 @@ void Game_window::end_gump_mode
 		delete gmp;
 		}
 	mode = normal;
+	npc_prox->wait(4);		// Delay "barking" for 4 secs.
 	paint();
 	}
 
