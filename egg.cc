@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "items.h"
 #include "npctime.h"
+#include "paths.h"
 
 /*
  *	Timer for a missile egg (type-6 egg).
@@ -62,9 +63,11 @@ void Missile_launcher::handle_event
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-					// +++++Halt if egg off screen.
 	Tile_coord src = egg->get_abs_tile_coord();
-	Projectile_effect *proj;
+					// Is egg off the screen?
+	if (!gwin->get_win_tile_rect().has_point(src.tx, src.ty))
+		return;			// Return w'out adding back to queue.
+	Projectile_effect *proj = 0;
 	if (dir < 8)			// Direction given?
 		{			// Get adjacent tile in direction.
 		Tile_coord adj = src.get_neighbor(dir%8);
@@ -78,12 +81,18 @@ void Missile_launcher::handle_event
 	else				// Target a party member.
 		{
 		Actor *party[9];
-		int cnt = gwin->get_party(party, 1);
-		int n = rand()%cnt;	// Pick one at random.
-					//++++++Check for clear path.
-		proj = new Projectile_effect(src, party[n], shapenum);
+		int psize = gwin->get_party(party, 1);
+		int cnt = psize;
+		int n = rand()%psize;	// Pick one at random.
+					// Find one we can hit.
+		for (int i = n; !proj && cnt; cnt--, i = (i + 1)%psize)
+			if (Fast_pathfinder_client::is_straight_path(src,
+					party[i]->get_abs_tile_coord()))
+				proj = new Projectile_effect(
+						src, party[i], shapenum);
 		}
-	gwin->add_effect(proj);
+	if (proj)
+		gwin->add_effect(proj);
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
@@ -334,6 +343,21 @@ int Egg_object::is_active
 	default:
 		return 0;
 		}
+	}
+
+/*
+ *	Paint at given spot in world.
+ */
+
+void Egg_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	Egglike_game_object::paint(gwin);
+					// Make sure launcher is active.
+	if (launcher && !launcher->in_queue())
+		gwin->get_tqueue()->add(0L, launcher, 0);
 	}
 
 /*

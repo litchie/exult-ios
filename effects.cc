@@ -215,6 +215,25 @@ inline void Projectile_effect::add_dirty
 	}
 
 /*
+ *	See if something was hit.
+ *
+ *	Output:	->target hit, or 0.
+ */
+
+inline Game_object *Find_target
+	(
+	Game_window *gwin,
+	Tile_coord pos
+	)
+	{
+	Tile_coord dest = pos;		// This gets modified.
+	if (!Chunk_object_list::is_blocked(pos, 1, MOVE_FLY, 0) &&
+	    dest == pos)
+		return (0);
+	return Game_object::find_blocking(pos);
+	}
+
+/*
  *	Animation.
  */
 
@@ -228,7 +247,8 @@ void Projectile_effect::handle_event
 	Game_window *gwin = Game_window::get_game_window();
 	add_dirty(gwin);		// Force repaint of old pos.
 					// +++++For trap, must detect
-// collisions.  (Maybe for all cases it should do that.)
+// collisions.  (Maybe for all cases it should do that.) Add following:
+//			|| (!target && target->find_target(gwin, pos))
 	if (!path->GetNextStep(pos))	// Get next spot.
 		{			// Done? 
 		if (target)
