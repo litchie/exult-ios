@@ -2,29 +2,13 @@ EXULT lets you browse around the Ultima7 universe in a window under Linux,
 and possibly other Unix systems.  It is released under the GNU General Public
 License, and contains source code.
 
+See the "NEWS" and "ChangeLog" files for the latest changes.
+
 IMPORTANT:  Run "exult" in a clean installation of Ultima7; "exult" should be
 installed in a directory where you see the "static" subdirectory.  "Exult" will
 create the "gamedat" directory and files the first time you run it.  And al-
 though I've tried to be safe about this, I don't recommend trying it on a
 game which you're actually in the middle of playing.
-
-** NEW for this release **
-
-MIDI
-----
-If you have timidity and an appropriate patchset installed, linux systems
-will now produce acceptable MIDI music. Enjoy.
-
-As before, none of the game's own instrument sets are loaded. We're still
-working on that.
-
-Windows
--------
-Exult now runs in Windows! See the README.win32 file for more information.
-
-
-=================================================================================
-** NEW for 0.20 **
 
 CONFIGURATION
 -------------
@@ -51,20 +35,7 @@ release
 
 MIDI
 ----
-MIDI audio is available for a small subset of people.
-What you need:
-1) Linux
-2) A system capable of playing audio through kmidi. If playing a file 
-   through kmidi Does The Right Thing then you should be able to hear
-   in-game music.
-3) (Alternative to 2): A system capable of playing midi through 'playmidi -e'.
-   This doesn't sound as nice as option 2, above, but it's the fallback and
-   will work for some setups.
-
-If you don't have linux, or your system doesn't support either of the two
-given MIDI audio options, then you'll have to wait. We're still working on
-how to generate MIDI on cards without explicit MIDI support, and on multiple
-operating system platforms.
+MIDI audio is now available for both Linux and Windows users.
 
 Limitation: None of the game-specific instrument voices are loaded. You'll hear
 them as whatever the general midi system maps them to. In the case of the Kmidi
@@ -111,15 +82,6 @@ Installation:	On a RedHat Linux system, just type './configure', then
 Caveats:	The program is a memory hog.  Really makes me appreciate
 		Origin's accomplishment in making it run under DOS.
 
-		Z-ordering is far from perfect.  Sometimes trees get clipped
-		by the roof that's behind them, and objects on top of carpets
-		sometimes get clipped.
-
-		I obviously haven't chosen all correct frames for the Avatar's
-		animation as he walks around.
-
-		No object avoidance:  you can walk through walls, trees, etc.
-
 		I'm not sure if the program works with a 2-button mouse.
 
 Running:	Hold right mouse button down to move Avatar.
@@ -130,6 +92,7 @@ Running:	Hold right mouse button down to move Avatar.
 		Arrow keys scroll around the "universe".
 		'q' quits.
 		'p' repaints the screen.
+		'i' brings up inventory.
 		'l' cycles through the "lift factors", causing roofs to
 			disappear so you can see inside buildings.
 		'+' brightens the palette.
