@@ -53,6 +53,10 @@ Shape_frame *Shape_frame::reflect
 	)
 	{
 	int w = get_width(), h = get_height();
+	if (w < h)
+		w = h;
+	else
+		h = w;			// Use max. dim.
 	Shape_frame *reflected = new Shape_frame();
 	reflected->rle = 1;		// Set data.
 	reflected->xleft = yabove;
@@ -62,7 +66,8 @@ Shape_frame *Shape_frame::reflect
 					// Create drawing area.
 	Image_buffer8 *ibuf = new Image_buffer8(h, w);
 	ibuf->fill8(255);		// Fill with 'transparent' pixel.
-	int xoff = yabove, yoff = xleft;// Figure origin.
+					// Figure origin.
+	int xoff = reflected->xleft, yoff = reflected->yabove;
 	unsigned char *in = data; 	// Point to data, and draw.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0)
@@ -155,7 +160,7 @@ static int Find_runs
 			}
 		if (run)		// Repeated?  Count 1st, shift, flag.
 			{
-			run = ((run + 1)<<1)&1;
+			run = ((run + 1)<<1)|1;
 			x++;		// Also pass the last one.
 			pixels++;
 			}
@@ -191,6 +196,17 @@ void Shape_frame::create_rle
 	unsigned char *out = buf;
 	int newx;			// Gets new x at end of a scan line.
 	for (int y = 0; y < h; y++)	// Go through rows.
+#if 0	/* ++++Testing. */
+		{
+		Write2(out, w << 1);
+					// Write position.
+		Write2(out, 0 - xleft);
+		Write2(out, y - yabove);
+		memcpy(out, pixels, w);
+		pixels += w;
+		out += w;
+		}
+#else
 		for (int x = 0; (x = Skip_transparent(pixels, x, w)) < w; 
 								x = newx)
 			{
@@ -242,6 +258,8 @@ void Shape_frame::create_rle
 					}
 				}
 			}
+#endif
+	Write2(out, 0);			// End with 0 length.
 	int datalen = out - buf;	// Create buffer of correct size.
 	delete data;			// Delete old data if there.
 	data = new unsigned char[datalen];
@@ -375,12 +393,49 @@ int Shape_frame::has_point
 	return (0);			// Never found it.
 	}
 
+/*
+ *	Create the reflection of a shape.
+ */
+
+Shape_frame *Shape::reflect
+	(
+	ifstream& shapes,		// "Shapes.vga" file to read.
+	int shapenum,			// Shape #.
+	int framenum			// Frame # without the 'reflect' bit.
+	)
+	{
+					// Get normal frame.
+	Shape_frame *normal = get(shapes, shapenum, framenum);
+	if (!normal)
+		return (0);
+					// Reflect it.
+	Shape_frame *reflected = normal->reflect();
+	if (!reflected)
+		return (0);
+	framenum |= 32;			// Put back 'reflect' flag.
+	if (framenum >= num_frames - 1)	// Expand list of necessary.
+		{
+		Shape_frame **newframes = new Shape_frame *[framenum + 1];
+		int i;
+		for (i = 0; i < num_frames; i++)
+			newframes[i] = frames[i];
+		num_frames = framenum + 1;
+		for ( ; i < num_frames; i++)
+			newframes[i] = 0;
+		delete [] frames;
+		frames = newframes;
+		}
+	frames[framenum] = reflected;	// Store new frame.
+	return reflected;
+	}
 
 /*
- *	Read in a frame.
+ *	Read in a frame, or convert an existing one if reflection is
+ *	desired.
  *
- *	Output:	->frame.
+ *	Output:	->frame, or 0 if failed.
  */
+
 Shape_frame *Shape::read
 	(
 	ifstream& shapes,		// "Shapes.vga" file to read.
@@ -399,10 +454,12 @@ Shape_frame *Shape::read
 	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
 		num_frames = nframes;
-#if 0
-	else if (nframes != num_frames)	// DEBUGGING.
-		cout << "New num_frames??\n";
-#endif
+	if (framenum >= nframes &&	// Compare against #frames in file.
+	    (framenum&32))		// Reflection desired?
+		{
+		delete frame;
+		return (reflect(shapes, shapenum, framenum&0x1f));
+		}
 	return store_frame(frame, framenum);
 	}
 

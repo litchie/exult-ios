@@ -106,7 +106,7 @@ public:
 	int get_shapenum()
 		{ return low + 256*(high&0x3); }
 	int get_framenum()
-		{ return (high >> 2) & 0x1f; }
+		{ return (high >> 2); }
 					// Set to given shape.
 	void set_shape(int shapenum, int framenum)
 		{
