@@ -16,18 +16,31 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef	____common_h_
-#define	____common_h_
+#ifndef	__Table_h_
+#define	__Table_h_
 
 #if !AUTOCONFIGURED
 #include "../autoconfig.h"
 #endif
 
+#include <vector>
+#include <string>
+#include "common.h"
 
-typedef	unsigned char uint8;
-typedef	unsigned long uint32;
-typedef	unsigned short uint16;
 
+struct	Table
+	{
+	string	filename;
+	struct Reference
+		{
+		uint32 offset;
+		uint16 size;
+		Reference() : offset(0),size(0) {};
+		};
+	vector<Reference> object_list;
+	char *read_object(int objnum,uint32 &length);
+	};
+
+extern Table AccessTableFile(const char *);
 
 #endif
-

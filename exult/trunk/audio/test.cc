@@ -10,6 +10,7 @@ Configuration config;
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include "Table.h"
 
 SEQ_DEFINEBUF(2048);
 
@@ -85,6 +86,27 @@ void	load_mt32_patch(const char *d,size_t l)
 
 int	main(void)
 {
+	Table instrument_patches=AccessTableFile("../../u7/static/xmidi.mt");
+	cout << "Found " << instrument_patches.object_list.size() << " patches" << endl;
+
+	for(size_t i=0;i<instrument_patches.object_list.size();i++)
+		{
+		uint32 length;
+		string s;
+		char *t=instrument_patches.read_object(i,length);
+		cout << i <<" " << length << endl;
+		s="/tmp/patches/patch";
+		char	buf[32];
+		sprintf(buf,"%d",i);
+		cout << "open " << s << endl;
+		s+=buf;
+		FILE *fp=fopen(s.c_str(),"wb");
+		fwrite(t,length,1,fp);
+		fclose(fp);
+		if(t)
+			delete [] t;
+		}
+
 	
 	seq_init();
 	return 0;

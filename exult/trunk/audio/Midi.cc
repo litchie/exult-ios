@@ -217,6 +217,7 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 {
 	bool	no_device=true;
 	midi_tracks=AccessFlexFile("static/adlibmus.dat");
+	instrument_patches=AccessTableFile("static/xmidi.mt");
 #if DEBUG
 	cerr << "Read in " << midi_tracks.object_list.size() << " tracks" << endl;
 #endif
