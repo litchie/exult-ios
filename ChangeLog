@@ -2,6 +2,7 @@
 	* keyactions.cc, gamewin.*: you can now specify a framenum and quality
 	for the 'useitem' action
 	* server.cc: define PF_LOCAL in Solaris
+	* credits.txt: added Joseph Morris
 
 2001-05-18  Jeff Freedman  <jeff@amy.nerble.net>
 
