@@ -93,6 +93,9 @@ protected:
 					//   pathfinding to follow leader.
 	void init();			// Clear stuff during construction.
 	void ready_best_weapon();	// Find best weapon and ready it.
+					// Move and change frame.
+	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
+		int new_sx, int new_sy, int new_frame, int new_lift);
 					// Read from file.
 	Actor(istream& nfile, int num, int has_usecode);
 public:
@@ -384,6 +387,9 @@ public:
 		{ return nearby != 0; }
 					// Set schedule list.
 	void set_schedules(Schedule_change *list, int cnt);
+					// Move and change frame.
+	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
+		int new_sx, int new_sy, int new_frame, int new_lift);
 					// Get/set 'alignment'.
 	virtual int get_alignment() const
 		{ return alignment; }
@@ -404,17 +410,6 @@ public:
 					Chunk_object_list *nlist);
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
-					// Move and change shape/frame.
-	void move(Chunk_object_list *old_chunk, int new_cx, int new_cy, 
-			Chunk_object_list *new_chunk, 
-			int new_sx, int new_sy, int new_frame, 
-			int new_lift = -1)
-		{
-		Game_object::move(old_chunk, new_cx, new_cy, new_chunk,
-				new_sx, new_sy, new_frame, new_lift);
-		if (old_chunk != new_chunk)	// In new chunk?
-			switched_chunks(old_chunk, new_chunk);
-		}
 	};
 
 /*
