@@ -2575,8 +2575,8 @@ void Game_window::show_items
 			obj->get_quality() << ", low lift = " <<
 			obj->get_low_lift() << ", high shape = " <<
 			obj->get_high_shape () << ", okay_to_take = " <<
-			(int) obj->get_flag(Obj_flags::okay_to_take) <<
-			", flag0x1d = " << (int) obj->get_flag(0x1d)
+			static_cast<int>(obj->get_flag(Obj_flags::okay_to_take)) <<
+			", flag0x1d = " << static_cast<int>(obj->get_flag(0x1d))
 			<< endl;
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))
@@ -2614,9 +2614,9 @@ void Game_window::show_items
 			return;
 		}
 	Shape_info& info = shapes.get_info(shnum);
-	cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << endl;
-	cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << endl;
-	cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << endl;
+	cout << "TFA[1][0-6]= " << ((static_cast<int>(info.get_tfa(1)))&127) << endl;
+	cout << "TFA[0][0-1]= " << ((static_cast<int>(info.get_tfa(0))&3)) << endl;
+	cout << "TFA[0][3-4]= " << ((static_cast<int>((info.get_tfa(0)>>3))&3)) << endl;
 	if (info.is_animated())
 		cout << "Object is ANIMATED" << endl;
 	if (info.has_translucency())

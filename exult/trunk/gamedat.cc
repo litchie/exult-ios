@@ -292,7 +292,7 @@ void Game_window::save_gamedat
 		Write4(tptr, len);
 		}
 	out.seekp(0x80, ios::beg);	// Write table.
-	out.write((char*)table, 2*count*4);
+	out.write(reinterpret_cast<char*>(table), 2*count*4);
 	delete [] table;
 	out.flush();
 	bool result = out.good();
