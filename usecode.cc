@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vec.h"
 #include "SDL.h"
 #include "tqueue.h"
+#include "gumps.h"
 #include <Audio.h>
 
 /*
@@ -745,6 +746,35 @@ Usecode_value Usecode_machine::get_objects
 	}
 
 /*
+ *	Have the user choose an object with the mouse.
+ *
+ *	Output:	Ref. to item, or 0.
+ */
+
+Usecode_value Usecode_machine::click_on_item
+	(
+	)
+	{
+	extern int Get_click(int& x, int& y);
+	cout << "CLICK on an item.\n";	// ++++++++Got to show cursor.
+	int x, y;
+	if (!Get_click(x, y))
+		return Usecode_value(0);
+	Game_object *found[100];	// See what was clicked on.
+	int cnt;
+					// Look for obj. in open gump.
+	Gump_object *gump = gwin->find_gump(x, y);
+	if (gump)
+		cnt = gump->find_objects(gwin, x, y, found);
+	else				// Search rest of world.
+		cnt = gwin->find_objects(x, y, found);
+	if (cnt)
+		return Usecode_value((long) found[cnt - 1]);
+	else
+		return Usecode_value(0);
+	}
+
+/*
  *	Execute a list of instructions in an array.
  */
 
@@ -1108,9 +1138,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 	case 0x33:			// Doesn't ret. until user single-
 					//   clicks on an item.  Rets. item.
-		//+++++++++++Show crosshair cursor.
-		Unhandled(intrinsic, num_parms, parms);
-		break;
+		return click_on_item();
 	case 0x35:			// Think it rets. objs. near parm0.
 		return (find_nearby(parms[0], parms[1], parms[2], parms[3]));
 	case 0x38:			// Return. game time hour (0-23).
