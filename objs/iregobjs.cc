@@ -124,6 +124,11 @@ void Ireg_game_object::write_ireg
 	write_common_ireg(&buf[1]);
 	buf[5] = (get_lift()&15)<<4;
 	buf[6] = get_quality();
+					// Special case for 'quantity' items:
+	if (get_flag(Obj_flags::okay_to_take) &&
+	    Game_window::get_game_window()->get_info(this).has_quantity())
+		buf[6] |= 0x80;
+
 	buf[7] = (get_flag(Obj_flags::is_temporary) != 0);
 	out.write((char*)buf, sizeof(buf));
 	}
