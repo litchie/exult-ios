@@ -558,6 +558,10 @@ class Chunk_cache
 		blocked[ty*tiles_per_chunk + tx] &= 
 					~(((1 << ztiles) - 1) << lift);
 		}
+					// Get highest lift blocked below a
+					//   given level for a desired tile.
+	int get_highest_blocked(int lift, unsigned short tflags);
+	int get_highest_blocked(int lift, int tx, int ty);
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift);
 					// Activate eggs nearby.
@@ -635,6 +639,9 @@ public:
 						int lift, int ztiles, int set)
 		{ need_cache()->set_blocked(startx, starty, endx, endy,
 							lift, ztiles, set); }
+					// Get highest lift blocked.
+	int get_highest_blocked(int lift, int tx, int ty)
+		{ return need_cache()->get_highest_blocked(lift, tx, ty); }
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift)
 		{ return cache->is_blocked(height, lift, tx, ty, new_lift); }
