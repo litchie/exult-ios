@@ -271,8 +271,10 @@ gint Shape_chooser::selection_clear
 	return TRUE;
 	}
 
+#if 0
 /*
  *	Mouse motion.  This starts a drag for drag-and-drop.
+ *	++++++++Goes away???
  */
 
 gint Mouse_drag_motion
@@ -295,20 +297,47 @@ gint Mouse_drag_motion
 	gtk_target_list_unref(targets);
 	return TRUE;
 	}
+#endif
 
 /*
  *	Beginning of a drag.
  */
 
-gint Drag_begin
+gint Shape_chooser::drag_begin
 	(
 	GtkWidget *widget,		// The view window.
-	GdkEventButton *event,
+	GdkDragContext *context,
 	gpointer data			// ->Shape_chooser.
 	)
 	{
-	Shape_chooser *chooser = (Shape_chooser *) data;
 	cout << "In DRAG_BEGIN" << endl;
+	Shape_chooser *chooser = (Shape_chooser *) data;
+	if (chooser->selected < 0)
+		return FALSE;		// ++++Display a halt bitmap.
+					// Get ->shape.
+	Shape_info& shinfo = chooser->info[chooser->selected];
+	Shape_frame *shape = chooser->ifile->get_shape(shinfo.shapenum, 
+							shinfo.framenum);
+	if (!shape)
+		return FALSE;
+	int w = shape->get_width(), h = shape->get_height(),
+		xright = shape->get_xright(), ybelow = shape->get_ybelow();
+	Image_buffer8 tbuf(w, h);	// Create buffer to render to.
+	tbuf.fill8(0xff);		// Fill with 'transparent' pixel.
+	shape->paint(&tbuf, w - 1 - xright, h - 1 - ybelow);
+					// Put shape on a pixmap.
+	GdkPixmap *pixmap = gdk_pixmap_new(widget->window, w, h, -1);
+	gdk_draw_indexed_image(pixmap, chooser->drawgc, 0, 0, w, h,
+			GDK_RGB_DITHER_NORMAL,
+			tbuf.get_bits(),
+			tbuf.get_line_width(), chooser->palette);
+// ++++++++Create mask.
+					// This will be the shape dragged.
+					// ++++++Mask?
+	gtk_drag_set_icon_pixmap(context,
+			gdk_window_get_colormap(widget->window), pixmap, 0,
+					w - 2 - xright, h - 2 - ybelow);
+	gdk_pixmap_unref(pixmap);
 	return TRUE;
 	}
 
@@ -379,6 +408,13 @@ Shape_chooser::Shape_chooser
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
 	draw = gtk_drawing_area_new();	// Create drawing area window.
+	GtkTargetEntry tents[1];	// Indicate what we'll drag.
+	tents[0].target = U7_TARGET_SHAPEID_NAME;
+	tents[0].flags = 0;
+	tents[0].info = U7_TARGET_SHAPEID;
+	gtk_drag_source_set (draw, GDK_BUTTON1_MASK, tents, 1,
+						GDK_ACTION_DEFAULT);
+//+++++++Maybe don't need to catch mouse actions???
 					// Indicate the events we want.
 	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
 		| /* GDK_POINTER_MOTION_MASK | */ GDK_POINTER_MOTION_HINT_MASK |
@@ -394,9 +430,9 @@ Shape_chooser::Shape_chooser
 				GTK_SIGNAL_FUNC(mouse_press), this);
 					// Mouse motion.
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
-				GTK_SIGNAL_FUNC(Drag_begin), this);
-	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
-				GTK_SIGNAL_FUNC(Mouse_drag_motion), this);
+				GTK_SIGNAL_FUNC(drag_begin), this);
+//	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
+//				GTK_SIGNAL_FUNC(Mouse_drag_motion), this);
 	gtk_signal_connect (GTK_OBJECT(draw), "drag_data_get",
 				GTK_SIGNAL_FUNC(drag_data_get), this);
 	gtk_signal_connect (GTK_OBJECT(draw), "selection_clear_event",
