@@ -61,6 +61,9 @@ public:
 	Tile_coord(int x, int y, int z) : tx(x), ty(y), tz(z)
 		{  }
 	};
+					// Add two coords.
+inline Tile_coord operator+(Tile_coord a, Tile_coord b)
+	{ return Tile_coord(a.tx + b.tx, a.ty + b.ty, a.tz + b.tz); }
 
 /*
  *	A shape ID contains a shape # and a frame # within the shape encoded
@@ -248,6 +251,9 @@ public:
 					// Add an object.
 	virtual int add(Game_object *obj)
 		{ return 0; }
+					// Get coord. where this was placed.
+	virtual Tile_coord get_original_tile_coord()
+		{ return get_abs_tile_coord(); }
 	};
 
 /*
@@ -344,6 +350,10 @@ public:
 	virtual void paint(Game_window *gwin);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
+					// Get coord. where this was placed.
+	virtual Tile_coord get_original_tile_coord()
+		{ return get_abs_tile_coord() + 
+					Tile_coord(-deltax, -deltay, 0); }
 	};
 
 #if 0	/* ++++Going away. */
