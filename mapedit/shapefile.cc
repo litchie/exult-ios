@@ -30,6 +30,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "u7drag.h"
 #include "shapegroup.h"
 #include "shapevga.h"
+#include "shapelst.h"
+#include "chunklst.h"
 
 using std::vector;
 using std::string;
@@ -45,7 +47,35 @@ Shape_file_info::~Shape_file_info
 	)
 	{
 	delete ifile;
+	delete file;
 	delete groups;
+	}
+
+/*
+ *	Create a browser for our data.
+ */
+
+Object_browser *Shape_file_info::create_browser
+	(
+	Shape_file_info *vgafile,	// THE 'shapes.vga' file.
+	char **names,			// Names for shapes.vga entries.
+	unsigned char *palbuf		// Palette for displaying.
+	)
+	{
+	if (file)			// Must be 'u7chunks' (for now).
+		return new Chunk_chooser(vgafile->get_ifile(), *file, palbuf, 
+								400, 64);
+	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64);
+	int len = pathname.length();	// Fonts?  Show 'A' as the default.
+	if (len >= 9 && strcasecmp(pathname.c_str() - 9, "fonts.vga") == 0)
+		chooser->set_framenum0('A');
+	if (this == vgafile)		// Main 'shapes.vga' file?
+		{
+		chooser->set_shape_names(names);
+		chooser->set_shapes_file(
+			(Shapes_vga_file *) vgafile->get_ifile());
+		}
+	return chooser;
 	}
 
 /*
@@ -75,8 +105,12 @@ Shape_file_info *Shape_file_set::create
 					it != files.end(); ++it)
 		if ((*it)->pathname == fullname)
 			return *it;	// Found it.
+	string group_name(basename);	// Create groups file.
+	group_name += ".grp";
+	Shape_group_file *groups = new Shape_group_file(group_name.c_str());
 	int u7drag_type = U7_SHAPE_UNK;
 	Vga_file *ifile = 0;
+	std::ifstream *file = 0;
 	if (strcasecmp(basename, "shapes.vga") == 0)
 		{			// Special case.
 		u7drag_type = U7_SHAPE_SHAPES;
@@ -88,18 +122,19 @@ Shape_file_info *Shape_file_set::create
 		u7drag_type = U7_SHAPE_FACES;
 	else if (strcasecmp(basename, "sprites.vga") == 0)
 		u7drag_type = U7_SHAPE_SPRITES;
-	if (!ifile)			// Not assigned to vgafile?
+	else if (strcasecmp(basename, "u7chunks") == 0)
+		file = new std::ifstream(fullname, 
+						std::ios::in|std::ios::binary);
+	if (!ifile && !file)		// Not handled above?
 					// Get image file for this path.
 		ifile = new Vga_file(fullname, u7drag_type);
-	if (!ifile->is_good())
+	if ((ifile && !ifile->is_good()) || (file && !file->good()))
 		{
 		cerr << "Error opening image file '" << basename << "'.\n";
 		abort();
 		}
-	string group_name(basename);	// Create groups file.
-	group_name += ".grp";
-	Shape_file_info *fi = new Shape_file_info(fullname, ifile,
-				new Shape_group_file(group_name.c_str()));
+	Shape_file_info *fi = new Shape_file_info(fullname, ifile, file,
+								groups);
 	files.push_back(fi);
 	return fi;
 	}
