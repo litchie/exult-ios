@@ -330,6 +330,38 @@ Game_object *Game_object::find_blocking
 	}
 
 /*
+ *	Is this a closed door?
+ */
+
+int Game_object::is_closed_door
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(this);
+	if (!info.is_door())
+		return 0;
+					// Get door's footprint.
+	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
+					// Get its location.
+	Tile_coord doortile = get_abs_tile_coord();
+	Tile_coord before, after;	// Want tiles to both sides.
+	if (xtiles > ytiles)		// Horizontal footprint?
+		{
+		before = doortile + Tile_coord(-xtiles, 0, 0);
+		after = doortile + Tile_coord(1, 0, 0);
+		}
+	else				// Vertical footprint.
+		{
+		before = doortile + Tile_coord(0, -ytiles, 0);
+		after = doortile + Tile_coord(0, 1, 0);
+		}
+					// Should be blocked before/after.
+	return (Chunk_object_list::is_blocked(before) &&
+	    	Chunk_object_list::is_blocked(after));
+	}
+
+/*
  *	Paint at given spot in world.
  */
 
