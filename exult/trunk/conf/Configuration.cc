@@ -183,6 +183,9 @@ bool	Configuration::read_config_file(const char *n)
 #ifdef WIN32
 	// Probably something to do with deteriming the username
 	// and generating a filename in their personal setup area.
+
+        // For now, just read file from current directory
+	filename=n;
 #endif
 	FILE	*fp=fopen(filename.c_str(),"r");
 	if(!fp)
