@@ -51,16 +51,27 @@ void Game_window::read_npcs
 	(
 	)
 {
+	npcs.resize(1);			// Create main actor.
+	camera_actor = npcs[0] = main_actor = new Main_actor("", 0);
 	ifstream nfile;
-	U7open(nfile, NPC_DAT);
-	num_npcs1 = Read2(nfile);	// Get counts.
-	int cnt2 = Read2(nfile);
-	int num_npcs = num_npcs1 + cnt2;
+	int num_npcs;
+	try
+		{
+		U7open(nfile, NPC_DAT);
+		num_npcs1 = Read2(nfile);	// Get counts.
+		num_npcs = num_npcs1 + Read2(nfile);
+		main_actor->read(nfile, 0, 0);
+		}
+	catch(exult_exception &e)
+		{
+		if (!Game::is_editing())
+			throw e;
+		num_npcs1 = num_npcs = 1; 
+		main_actor->set_invalid();	// Put in middle of world.
+		main_actor->move(c_num_tiles/2, c_num_tiles/2, 0);
+		}
 	npcs.resize(num_npcs);
 	bodies.resize(num_npcs);
-					// Create main actor.
-	camera_actor = npcs[0] = main_actor = new Main_actor("", 0);
-	main_actor->read(nfile, 0, 0);
 	int i;
 
 	// Don't like it... no i don't.
@@ -186,7 +197,7 @@ void Game_window::read_schedules
 	)
 	{
 	ifstream sfile;
-
+	int num_npcs = 0;
 	try
 	{
 		U7open(sfile, GSCHEDULE);
@@ -196,11 +207,19 @@ void Game_window::read_schedules
 		
 		cerr << "Exult Exception: "<< e.what() << 
 		endl << "Trying " << SCHEDULE_DAT << endl;
-
-		U7open(sfile, SCHEDULE_DAT);
+		try
+		{
+			U7open(sfile, SCHEDULE_DAT);
+		}
+		catch(exult_exception e1)
+		{
+		if (!Game::is_editing())
+			throw e1;
+		else
+			return;
+		}
 	}
-
-	int num_npcs = Read4(sfile);	// # of NPC's, not include Avatar.
+	num_npcs = Read4(sfile);	// # of NPC's, not include Avatar.
 
 	short *offsets = new short[num_npcs];
 	int i;				// Read offsets with list of scheds.

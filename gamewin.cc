@@ -2574,17 +2574,6 @@ void Game_window::setup_game
 		else
 			main_actor->set_flag(Obj_flags::dont_render);
 	}
-	//+++++++Fix for old savegames to make Fawn Tower work.  Delete after
-	//  a few weeks (now 23-09-2001).
-	else if (!usecode->get_global_flag(0x14e))
-		{
-		int n;
-		for (n = 119; n <= 123; n++)
-			if (npcs[n]->get_cx() != 255)
-				break;
-		if (n > 123)		// All goblins dead?
-			usecode->set_global_flag(0x14e);
-		}
 
 	CYCLE_RED_PLASMA();
 
