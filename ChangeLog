@@ -1,3 +1,11 @@
+2001-02-09  Max Horn  <max@quendi.de>
+	* shapes/ vgafile.cc: fixed bad bug, shape_source was never inited
+	   to 0, this could cause bad crashs in the destructor if load was
+	   never called
+	* gamewin.cc: fixed delete -> delete[] in Game_window destructor
+	* shapes/font.cc: fixed delete -> delete[] in Font destructor
+	
+
 2001-02-09  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* keys.cc: Endgame is for SI as well
 
