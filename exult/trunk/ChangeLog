@@ -1,3 +1,6 @@
+2002-08-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Makefile.am: correct windows Makefiles in EXTRA_DIST
+
 2002-08-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gumps/Gump_manager.cc: fixed combat stats crash
 

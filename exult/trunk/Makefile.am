@@ -141,8 +141,9 @@ EXTRA_DIST = 	\
 	README.MacOSX \
 	Makefile.win32 \
 	Makefile.be \
-	Makefile.cygwin \
+	Makefile.common \
 	Makefile.studio.mingw \
+	Makefile.studio.win32 \
 	Makefile.MorphOS \
 	Info.plist.in \
 	exult.spec \
