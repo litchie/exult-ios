@@ -45,6 +45,8 @@ const int DISK = 24;			// Diskette shape #.
 const int HEART = 25;			// Stats button shape #.
 const int DOVE = 46;
 const int STATSDISPLAY = 47;
+const int BOOK = 20;			// +++++++++++guessing.
+const int SCROLL = 21;			// ++++++++++++++
 
 /*
  *	A pushable button on a gump:
@@ -276,6 +278,52 @@ public:
 	~Sign_gump();
 					// Set a line of text.
 	void add_text(int line, const char *txt);
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
+ *	A text gump is the base class for books and scrolls.
+ */
+class Text_gump : public Gump_object
+	{
+	char *text;			// The text.
+	int textlen;			// Length of text.
+protected:
+	int curtop;			// Offset of top of current page.
+	int curend;			// Offset past end of current page(s).
+public:
+	Text_gump(int shapenum) : Gump_object(0, shapenum),
+				text(0), textlen(0), curtop(0), curend(0)
+		{  }
+	~Text_gump()
+		{ delete text; }
+	void add_text(char *str);	// Append text.
+	int paint_page(Game_window *gwin, Rectangle box, int start);
+					// Next page of book/scroll.
+	int show_next_page(Game_window *gwin);
+	};
+
+/*
+ *	A book shows text side-by-side.
+ */
+class Book_gump : public Text_gump
+	{
+public:
+	Book_gump() : Text_gump(BOOK)
+		{  }
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
+ *	A scroll:
+ */
+class Scroll_gump : public Text_gump
+	{
+public:
+	Scroll_gump() : Text_gump(SCROLL)
+		{  }
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};
