@@ -43,9 +43,14 @@ libu7file.a:      $(OBJECTS)
 test:	libu7file.a test.o
 	g++ $(CXXFLAGS) -o filetest test.o -L. -lu7file
 
-# dependencies
+rebuild_master_dependencies:
+	makedepend -f Makefile.am -Y $(CXXFLAGS) -I. -I.. -I../conf -I../audio -I../pathfinder -I../flic - -- *.cc
+
+
 # DO NOT DELETE
 
 Flex.o: Flex.h ../autoconfig.h common_types.h U7file.h
+IFF.o: IFF.h ../autoconfig.h common_types.h U7file.h
 Table.o: Table.h ../autoconfig.h U7file.h common_types.h
-U7file.o: U7file.h Flex.h ../autoconfig.h common_types.h Table.h
+U7file.o: U7file.h Flex.h ../autoconfig.h common_types.h IFF.h Table.h
+test.o: U7file.h Flex.h ../autoconfig.h common_types.h

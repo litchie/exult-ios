@@ -43,13 +43,27 @@ tar:
 %.o : %.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
 
-# Dependencies
+rebuild_master_dependencies:
+	makedepend -f Makefile.am -Y $(CXXFLAGS) -I. -I.. -I../conf -I../audio -I../pathfinder -I../flic - -- *.cc
+	cd midi_drivers && make rebuild_master_dependencies
 
-Audio.o: Audio.cc Audio.h ../autoconfig.h SDL_mapping.h Flex.h common.h Mixer.h Midi.h
-Flex.o: Flex.cc Flex.h ../autoconfig.h common.h
-IFF.o: IFF.cc IFF.h ../autoconfig.h common.h
-Midi.o: Midi.cc Midi.h ../autoconfig.h SDL_mapping.h Flex.h common.h Mixer.h
-Mixer.o: Mixer.cc Mixer.h ../autoconfig.h SDL_mapping.h Flex.h common.h Audio.h Midi.h
-SDL_mapping.o: SDL_mapping.cc SDL_mapping.h ../autoconfig.h
-test.o: test.cc Audio.h ../autoconfig.h SDL_mapping.h Flex.h common.h Mixer.h Midi.h
-libaudio.a: midi_drivers/KMIDI.o midi_drivers/forked_player.o midi_drivers/Timidity_binary.o
+
+# DO NOT DELETE
+
+Audio.o: Audio.h ../autoconfig.h SDL_mapping.h Mixer.h Midi.h ../fnames.h
+Audio.o: ../files/U7file.h ../conf/Configuration.h ../conf/XMLEntity.h
+Flex.o: Flex.h ../autoconfig.h common.h
+IFF.o: IFF.h ../autoconfig.h common.h
+Midi.o: Midi.h SDL_mapping.h Mixer.h ../fnames.h ../files/U7file.h
+Midi.o: ../conf/Configuration.h ../conf/XMLEntity.h
+Midi.o: midi_drivers/Timidity_binary.h ../autoconfig.h Flex.h common.h
+Midi.o: Table.h midi_drivers/KMIDI.h midi_drivers/forked_player.h
+Midi.o: midi_drivers/win_MCI.h
+Mixer.o: Mixer.h SDL_mapping.h Audio.h ../autoconfig.h Midi.h
+SDL_mapping.o: SDL_mapping.h
+Table.o: Table.h common.h
+test.o: Audio.h ../autoconfig.h SDL_mapping.h Mixer.h Midi.h
+test.o: ../conf/Configuration.h ../conf/XMLEntity.h Table.h common.h
+u7audiotool.o: Audio.h ../autoconfig.h SDL_mapping.h Mixer.h Midi.h
+u7audiotool.o: ../conf/Configuration.h ../conf/XMLEntity.h Table.h common.h
+u7audiotool.o: ../fnames.h

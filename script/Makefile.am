@@ -46,3 +46,8 @@ exec.cc:	exec.h script.h
 clean:
 	-rm -f *.o *.a
 	-rm -f script.cc script.h scrlex.cc
+
+rebuild_master_dependencies:
+	makedepend -f Makefile.am -Y $(CXXFLAGS) -I.  -- *.cc
+
+

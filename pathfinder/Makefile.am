@@ -23,6 +23,14 @@ clean:
 %.o : %.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
 
-PathFinder.o: PathFinder.h
-Astar.o: Astar.h PathFinder.h
-Zombie.o: Zombie.h PathFinder.h
+rebuild_master_dependencies:
+	makedepend -f Makefile.am -Y $(CXXFLAGS) -I. -I.. -I../conf -I../audio -I../files -I../flic - -- *.cc
+
+
+# DO NOT DELETE
+
+Astar.o: Astar.h PathFinder.h ../tiles.h
+PathFinder.o: PathFinder.h ../tiles.h
+Zombie.o: Zombie.h PathFinder.h ../tiles.h
+path.o: PathFinder.h ../tiles.h ../objs.h ../vec.h ../usecode.h ../tqueue.h
+path.o: ../tiles.h

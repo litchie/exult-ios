@@ -29,7 +29,18 @@ clean:
 %.o : %.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
 
-forked_player.o: forked_player.h ../Midi.h
-KMIDI.o: KMIDI.h ../Midi.h
-Timidity_binary.o: Timidity_binary.h ../Midi.h
-win_MCI.o: win_MCI.h ../Midi.h
+rebuild_master_dependencies:
+	makedepend -f Makefile.am -Y $(CXXFLAGS) -I. -I.. -I../.. -I../../conf -I../../pathfinder -I../../flic - -- *.cc
+
+# DO NOT DELETE
+
+KMIDI.o: KMIDI.h ../../autoconfig.h ../../fnames.h ../../conf/Configuration.h
+KMIDI.o: ../../conf/XMLEntity.h
+Timidity_binary.o: ../Midi.h ../../autoconfig.h ../SDL_mapping.h ../Mixer.h
+Timidity_binary.o: ../../fnames.h ../Audio.h ../../conf/Configuration.h
+Timidity_binary.o: ../../conf/XMLEntity.h Timidity_binary.h ../Flex.h
+Timidity_binary.o: ../common.h ../Table.h
+forked_player.o: forked_player.h ../../autoconfig.h ../SDL_mapping.h
+forked_player.o: ../Flex.h ../common.h ../Table.h ../Mixer.h ../Midi.h
+forked_player.o: ../../autoconfig.h ../../fnames.h ../../conf/Configuration.h
+forked_player.o: ../../conf/XMLEntity.h
