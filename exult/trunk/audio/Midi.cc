@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 #include "../fnames.h"
 #include "../files/U7file.h"
+#include "utils.h"
 #include "xmidi.h"
 
 #include "Configuration.h"
@@ -51,16 +52,33 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	
 	char		*buffer;
 	size_t		size;
+	FILE		*mid_file;
+	DataSource 	*mid_data;
 	
 	if(!track.retrieve(&buffer, size))
 	        return;
 
-	XMIDI		midfile((unsigned char *)buffer, size);
+
+	// Read the data into the XMIDI class
+	mid_data = new BufferDataSource(buffer, size);
+
+	XMIDI		midfile(mid_data);
 	
-	if(!midfile.retrieve(0, MIDITMPFILE))
-	        return;
+	delete mid_data;
+	delete [] buffer;
+
+
+	// Now get the data out of the XMIDI class and play it
 	
-	midi_device->start_track(MIDITMPFILE,repeat);
+	mid_file = U7open(MIDITMPFILE, "wb");
+	mid_data = new FileDataSource(mid_file);
+
+	int can_play = midfile.retrieve(0, mid_data);
+	
+	delete mid_data;
+	fclose(mid_file);
+
+	if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
 }
 
 void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
@@ -76,13 +94,32 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	//stop track before writing to temp. file
 	midi_device->stop_track();
 #endif
+	FILE		*mid_file;
+	DataSource	*mid_data;
 	
-	XMIDI		midfile(fname);
+
+	// Read the data into the XMIDI class
+
+	mid_file = U7open(fname, "rb");
+	mid_data = new FileDataSource(mid_file);
+
+	XMIDI		midfile(mid_data);
 	
-	if(!midfile.retrieve(num, MIDITMPFILE))
-	        return;
+	delete mid_data;
+	fclose(mid_file);
 	
-	midi_device->start_track(MIDITMPFILE,repeat);
+	
+	// Now get the data out of the XMIDI class and play it
+	
+	mid_file = U7open(MIDITMPFILE, "wb");
+	mid_data = new FileDataSource(mid_file);
+
+	int can_play = midfile.retrieve(num, mid_data);
+	
+	delete mid_data;
+	fclose(mid_file);
+
+	if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
 }
 
 void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
