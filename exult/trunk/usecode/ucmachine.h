@@ -102,7 +102,7 @@ public:
 	virtual int call_usecode(int id, Game_object *obj, 
 						Usecode_events event) = 0;
 	virtual void write() = 0;	// Write out 'gamedat/usecode.dat'.
-	virtual void read() = 0;	// Reat in 'gamedat/usecode.dat'.
+	virtual void read() = 0;	// Read in 'gamedat/usecode.dat'.
 
 	void init_conversation();
 	int get_num_faces_on_screen() const;

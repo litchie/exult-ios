@@ -403,7 +403,7 @@ public:
 							Usecode_events event);
 	virtual void update_party_status(Actor *npc);
 	virtual void write();		// Write out 'gamedat/usecode.dat'.
-	virtual void read();		// Reat in 'gamedat/usecode.dat'.
+	virtual void read();		// Read in 'gamedat/usecode.dat'.
 
 	virtual void intercept_click_on_item(Game_object *obj) 
 		{ intercept_item = obj; }

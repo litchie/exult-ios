@@ -216,10 +216,11 @@ Game_object *Usecode_internal::get_item
 		return gwin->get_main_actor();
 	if (val < 0 && val > -356)
 		obj = gwin->get_npc(-val);
-	else if (val >= 0 && val < gwin->get_num_npcs())
+	else if (val >= 0 && val < gwin->get_num_npcs()) {
 		obj = gwin->get_npc(val);
+		CERR("Warning: interpreting positive integer as NPCnum");
 					// Special case:  palace guards.
-	else if (val >= 0 && val < 0x400)		// Looks like a shape #?
+	} else if (val >= 0 && val < 0x400)		// Looks like a shape #?
 		{
 		if (!itemref.is_array() &&
  		    caller_item && val == caller_item->get_shapenum())
