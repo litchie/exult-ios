@@ -152,6 +152,7 @@ public:
 	bool insert_terrain(int tnum, bool dup = false);
 	void commit_terrain_edits();	// End terrain-editing mode.
 	void abort_terrain_edits();
+	void find_unused_shapes();	// Search entire game for unused.
 	};
 
 #endif

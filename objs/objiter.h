@@ -142,6 +142,10 @@ public:
 		: T_Safe_object_iterator<T>(chunk->get_objects()),
 		  first(chunk->get_objects().get_first())
 		{ reset(); }
+	T_Object_iterator_backwards(T_Object_list<T>& objects) 
+		: T_Safe_object_iterator<T>(objects),
+		  first(objects.get_first())
+		{ reset(); }
 	T get_next()
 		{
 		if (cur == stop)
@@ -153,5 +157,28 @@ public:
 	};
 
 typedef T_Object_iterator_backwards<Game_object *, Map_chunk *> Object_iterator_backwards;
+
+/*
+ *	Iterate through a list of objects (recursively).
+ */
+template<class D> class D_Recursive_object_iterator
+	{
+					// Child we're going through, or 0.
+	D_Recursive_object_iterator<class D> *child;
+	D elems;			// Goes through our elements.
+public:
+	D_Recursive_object_iterator(Object_list& objs)
+		: elems(objs), child(0)
+		{  }
+	Game_object *get_next();	// Get next, going into containers.
+	};
+
+/*
+ *	Iterate forwards/backwards through a list of objects (recursively).
+ */
+typedef D_Recursive_object_iterator<Object_iterator_backwards> 
+					Recursive_object_iterator_backwards;
+typedef D_Recursive_object_iterator<Object_iterator> 
+					Recursive_object_iterator;
 
 #endif

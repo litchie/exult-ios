@@ -56,7 +56,7 @@ IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o \
 	monstinf.o
 OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
-	contain.o egg.o iregobjs.o mappatch.o objs.o \
+	contain.o egg.o iregobjs.o mappatch.o objs.o objiter.o \
 	spellbook.o virstone.o jawbone.o
 # unused: test.o
 USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o useval.o \

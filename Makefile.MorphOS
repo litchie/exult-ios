@@ -58,7 +58,8 @@ IMAGEWIN_OBJS=imagewin/imagebuf.o imagewin/imagewin.o imagewin/iwin8.o imagewin/
 SHAPES_OBJS=shapes/bodies.o shapes/items.o shapes/shapeinf.o shapes/shapevga.o shapes/vgafile.o \
 	shapes/font.o shapes/fontvga.o shapes/monstinf.o
 OBJS_OBJS=objs/animate.o objs/barge.o objs/chunks.o objs/chunkter.o \
-	objs/contain.o objs/egg.o objs/iregobjs.o objs/mappatch.o objs/objs.o \
+	objs/contain.o objs/egg.o objs/iregobjs.o objs/mappatch.o \
+	objs\objiter.o objs/objs.o \
 	objs/spellbook.o objs/virstone.o objs/jawbone.o
 # unused: test.o
 USECODE_OBJS=usecode/ucinternal.o usecode/ucmachine.o usecode/ucsched.o usecode/intrinsics.o usecode/useval.o \
