@@ -130,6 +130,10 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/greentop.shp \
 	data/bg/orangedress.shp \
 	data/bg/bluedress.shp \
+	data/bg/death_scythe.shp \
+	data/bg/firewand.shp \
+	data/bg/knife.shp \
+	data/bg/starburst.shp \
 	data/bg/flx.in
 
 
