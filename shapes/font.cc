@@ -191,7 +191,8 @@ int Font::paint_text_box
 	else
 		{
 		last_punct_line = -1;
-		if (text - start == coff)	// Cursor at very end?
+		if (text - start == coff &&	// Cursor at very end?
+		    cur_line < max_lines)
 			{
 			cursor->x = curx;
 			cursor->y = cury;
