@@ -79,7 +79,6 @@ EXULT_FLX_OBJECTS = \
 	data/midi_conversion.shp \
 	data/sfx_conversion.shp \
 	data/palette_fades.shp \
-	data/defaultkeys.txt \
 	data/savegump.shp \
 	data/sav_load.shp \
 	data/sav_save.shp \
@@ -119,10 +118,12 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/bgfiredoom.shp \
 	data/bg/fellowshipstaff.shp \
 	data/bg/BGmap.shp \
+	data/bg/defaultkeys.txt \
 	data/bg/flx.in
 
 EXULT_SI_FLX_OBJECTS = \
 	data/si/SImap.shp \
+	data/si/defaultkeys.txt \
 	data/si/flx.in
 
 

@@ -23,7 +23,6 @@ EXULT_FLX_OBJECTS = \
 	midi_conversion.shp	\
 	sfx_conversion.shp	\
 	palette_fades.shp	\
-	defaultkeys.txt		\
 	scaling_method.shp	\
 	savegump.shp		\
 	sav_load.shp		\
@@ -63,12 +62,14 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/amulets.shp			\
 	bg/bgfiredoom.shp		\
 	bg/fellowshipstaff.shp		\
-	bg/BGmap.shp
+	bg/BGmap.shp			\
+	bg/defaultkeys.txt
+
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\
-	si/SImap.shp
-
+	si/SImap.shp			\
+	si/defaultkeys.txt
 
 flexdir = $(datadir)/exult
 

@@ -152,6 +152,8 @@ BG_Game::BG_Game()
 
 	add_resource("files/gameflx", "<DATA>/exult_bg.flx", 0);
 
+	add_resource("config/defaultkeys", "<DATA>/exult_bg.flx", 13);
+
 	add_resource("palettes/count", 0, 18);
 	add_resource("palettes/0", "<STATIC>/palettes.flx", 0);
 	add_resource("palettes/1", "<STATIC>/palettes.flx", 1);
