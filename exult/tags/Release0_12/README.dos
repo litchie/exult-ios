@@ -1,0 +1,11 @@
+Exult now has been ported to MSDOS, and an MSDOS executable has been added
+to the release.
+
+Compilation is done using the same source and "makefile" as the Linux version,
+using the DJGPP cross-compiler under Linux.
+
+To run it, place "exult.exe" and "avatar.ttf" in the U7 top-level directory,
+and run "exult".
+
+For more information, refer to "README".
+
