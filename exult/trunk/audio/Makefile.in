@@ -77,6 +77,7 @@ MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
+PEDANTIC = @PEDANTIC@
 RANLIB = @RANLIB@
 RELNUM = @RELNUM@
 SDL_INCLUDES = @SDL_INCLUDES@
@@ -87,7 +88,7 @@ WINDOWING_SYSTEM = @WINDOWING_SYSTEM@
 
 AUTOMAKE_OPTIONS = foreign
 INCLUDES =  $(SDL_INCLUDES) $(KMID_INCLUDES) -I../conf
-CXXFLAGS =  $(INCDIRS) -Wall  $(DEBUG_FLAGS)
+CXXFLAGS =  $(INCDIRS) -Wall  $(PEDANTIC) $(DEBUG_FLAGS)
 
 #LIBS +=  -L/usr/X11R6/lib/ -lc -lstdc++ -lgcc -lm -lXi -lXext -lX11 
 
@@ -95,7 +96,7 @@ OFILES = Mixer.o Midi.o Audio.o Flex.o IFF.o SDL_mapping.o
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../autoconfig.h
 CONFIG_CLEAN_FILES = 
-DIST_COMMON =  Makefile.am Makefile.in
+DIST_COMMON =  README Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
