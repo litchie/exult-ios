@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2001  The Exult Team
+ *  Copyright (C) 2001-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -452,7 +452,9 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	}
 	else
 	{
+#if 0
 		std::cout << main_actor->get_skin_color() << std::endl;
+#endif
 		// BG Multiracial Hack
 		if (main_actor->get_skin_color() >= 0 && main_actor->get_skin_color() <= 2)
 		{

@@ -1,3 +1,6 @@
+2002-03-23  Willem Jan Palenstijn  <wjpalenstijn@users.sourceforge.net>
+	* usecode/conversation.cc: removed some debugging output
+
 2002-03-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* cheat.h,server.h,mouse.cc,objserial.cc:  Edit mode set from
