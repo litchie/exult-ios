@@ -45,7 +45,7 @@ AC_MSG_CHECKING("windowing system")
 case "$host_os" in
 	linux*)
 		WINDOWING_SYSTEM="-DXWIN"
-		if test "$host_vendor" = "zaurus"; then
+		if test "$host_vendor" = "embeddix"; then
 			AC_MSG_RESULT(Qtopia (Sharp Zaurus))
 			CXXFLAGS="$CXXFLAGS -fsigned-char -DDISABLE_X11 -DQWS -D__zaurus__ -DUSE_FMOPL_MIDI"
 			enable_kmid="no"
@@ -54,6 +54,7 @@ case "$host_os" in
 			enable_exult_studio="no"
 			enable_gimp_plugin="no"
 			enable_debug="no"
+			enable_data="yes"
 		else
 			AC_MSG_RESULT(X11 (GNU/Linux))
 		fi
