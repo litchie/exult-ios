@@ -36,7 +36,7 @@ private:
 
   bool god_mode;
   bool wizard_mode;
-  bool hack_mover;
+  bool map_editor;
   bool infravision;
 
   bool enabled;
@@ -47,12 +47,12 @@ public:
 
   bool in_god_mode (void) const { return god_mode; }
   bool in_wizard_mode (void) const { return wizard_mode; }
-  bool in_hack_mover (void) const { return hack_mover; }
+  bool in_map_editor(void) const { return map_editor; }
   bool in_infravision (void) const { return infravision; }
   
   void toggle_god (void);
   void toggle_wizard (void);
-  void toggle_hack_mover (void);
+  void toggle_map_editor (void);
   void toggle_infravision (void);
 
   void toggle_eggs (void) const;
