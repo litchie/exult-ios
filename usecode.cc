@@ -1712,7 +1712,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(input_numeric_value), // 0xc
 	USECODE_INTRINSIC_PTR(set_item_shape), // 0xd
 	USECODE_INTRINSIC_PTR(find_nearest), // 0xe
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xf
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xf  ++++++Play sound effect(n).
 	USECODE_INTRINSIC_PTR(die_roll), // 0x10
 	USECODE_INTRINSIC_PTR(get_item_shape), // 0x11
 	USECODE_INTRINSIC_PTR(get_item_frame), // 0x12
@@ -1722,7 +1722,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(count_npc_inventory), // 0x16
 	USECODE_INTRINSIC_PTR(set_npc_inventory_count), // 0x17
 	USECODE_INTRINSIC_PTR(get_object_position), // 0x18
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x19
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x19 ++++++Distance(item1, item2).
 	USECODE_INTRINSIC_PTR(find_direction), // 0x1a
 	USECODE_INTRINSIC_PTR(get_npc_object), // 0x1b
 	USECODE_INTRINSIC_PTR(get_schedule_type), // 0x1c
