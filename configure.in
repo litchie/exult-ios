@@ -274,7 +274,7 @@ fi
 dnl there _should_ be a built-in macro for this check...
 dnl kmid MIDI driver
 AC_MSG_CHECKING(whether to enable kmid)
-AC_ARG_ENABLE(kmid,     [  --enable-kmid           Use libkmid [default yes]],,enable_kmid=yes)
+AC_ARG_ENABLE(kmid,     [  --enable-kmid           Use libkmid [default no]],,enable_kmid=no)
 if test x$enable_kmid = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_MSG_CHECKING(for libkmid)

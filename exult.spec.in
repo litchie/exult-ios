@@ -20,12 +20,16 @@ URL: http://exult.sourceforge.net
 Prereq: /sbin/install-info
 Prefix: %{prefix}
 Docdir: %{prefix}/doc
-Requires: SDL >= 1.1.7
 
 %description
 Exult: an implementation of the Ultima VII engine for modern Operating Systems.
 
 %changelog
+
+* Mon Jun 25 2001  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+
+- added exult_bg.flx, exult_si.flx
+- removed explicit SDL req. (proper SDL version is added automatically)
 
 * Tue Nov 7 2000  Tristan Tarrant <nadir@users.sourceforge.net>
 
