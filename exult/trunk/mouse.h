@@ -42,14 +42,16 @@ class Mouse
 	Rectangle box;			// Area backed up.
 	int mousex, mousey;		// Last place where mouse was.
 	Shape_frame *cur;		// Current shape.
+	unsigned char focus;		// 1 if we have focus.
 	static short short_arrows[8];	// Frame #'s of short arrows, indexed
 					//   by direction (0-7, 0=east).
 	static short long_arrows[8];	// Frame #'s of long arrows.
 public:
 	Mouse(Game_window *gw);
-	void move(int newx, int newy);	// Move to new location.
-	void set_shape(int framenum)	// Set to desired shape.
-		{ cur = pointers.get_frame(framenum); }
+	void set_shape(int framenum);	// Set to desired shape.
+	void move(int x, int y);	// Move to new location.
+	void gain_focus(int x, int y);	// Turn on mouse.
+	void lose_focus();		// Turn off mouse.
 					// Set to short arrow.
 	void set_short_arrow(Direction dir)
 		{ set_shape(short_arrows[(int) dir]); }

@@ -38,8 +38,48 @@ Mouse::Mouse
 	(
 	Game_window *gw			// Where to draw.
 	) : pointers(POINTERS), gwin(gw), backup(0), cur(0), mousex(-1),
-	    mousey(-1)
+	    mousey(-1), focus(0)
 	{
+					// Get max. backup size.
+	int cnt = pointers.get_num_frames();
+	int maxw = 0, maxh = 0;
+	for (int i = 0; i < cnt; i++)
+		{
+		Shape_frame *frame = pointers.get_frame(i);
+		int w = frame->get_width(), h = frame->get_height();
+		if (w > maxw)
+			maxw = w;
+		if (h > maxh)
+			maxh = h;
+		}
+					// Create backup buffer.
+	backup = gwin->get_win()->create_buffer(maxw, maxh);
+	box.w = maxw;
+	box.h = maxh;
+	set_short_arrow(east);		// +++++For now.
+	}
+
+/*
+ *	Set to new shape.
+ */
+
+void Mouse::set_shape
+	(
+	int framenum
+	)
+	{
+	if (focus)			// Restore area under mouse.
+		gwin->get_win()->put(backup, box.x, box.y);	
+	cur = pointers.get_frame(framenum); 
+					// Set backup box to cover mouse.
+	box.x = mousex - cur->get_xleft();
+	box.y = mousey - cur->get_yabove();
+	if (!focus)
+		return;
+					// Save background.
+	gwin->get_win()->get(backup, box.x, box.y);
+					// Paint new location.
+	gwin->paint_rle_shape(*cur, mousex, mousey);
 	}
 
 /*
@@ -62,6 +102,43 @@ void Mouse::move
 	gwin->get_win()->get(backup, box.x, box.y);
 					// Paint new location.
 	gwin->paint_rle_shape(*cur, mousex, mousey);
-
 	}
 
+/*
+ *	Gain mouse coverage.
+ */
+
+void Mouse::gain_focus
+	(
+	int x, int y			// Mouse position.
+	)
+	{
+	if (!focus)
+		{
+		focus = 1;
+		mousex = x;
+		mousey = y;
+		box.x = mousex - cur->get_xleft();
+		box.y = mousey - cur->get_yabove();
+					// Save background.
+		gwin->get_win()->get(backup, box.x, box.y);
+					// Paint new location.
+		gwin->paint_rle_shape(*cur, mousex, mousey);
+		}
+	}
+
+/*
+ *	Lose mouse coverage.
+ */
+
+void Mouse::lose_focus
+	(
+	)
+	{
+	if (focus)
+		{
+		focus = 0;
+					// Restore area under mouse.
+		gwin->get_win()->put(backup, box.x, box.y);	
+		}
+	}
