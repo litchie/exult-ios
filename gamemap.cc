@@ -957,3 +957,137 @@ void Game_map::get_superchunk_objects
 	map_patches->apply(schunk);	// Move/delete objects.
 	}
 
+/*
+ *	Locate a chunk with a given terrain # and center the view on it.
+ *
+ *	Output:	true if found, else 0.
+ */
+
+bool Game_map::locate_terrain
+	(
+	int tnum,			// # in u7chunks.
+	int& cx, int& cy,		// Chunk to start at, or (-1,-1).
+					//   Updated with chunk found.
+	bool upwards			// If true, search upwards.
+	)
+	{
+	int cnum;			// Chunk #, counting L-R, T-B.
+	int cstop;			// Stop when cnum == cstop.
+	int dir;
+	if (upwards)
+		{
+		cstop = -1;
+		dir = -1;
+		if (cx == -1)		// Start at end?
+			cnum = c_num_chunks*c_num_chunks - 1;
+		else
+			cnum = cy*c_num_chunks + cx - 1;
+		}
+	else
+		{
+		cstop = c_num_chunks*c_num_chunks;
+		dir = 1;
+		cnum = (cx == -1) ? 0 : cy*c_num_chunks + cx + 1;
+		}
+	while (cnum != cstop)
+		{
+		int chunky = cnum/c_num_chunks;
+		int chunkx = cnum%c_num_chunks;
+		if (terrain_map[chunkx][chunky] == tnum)
+			{		// Return chunk # found.
+			cx = chunkx;
+			cy = chunky;
+					// Center window over chunk found.
+			Game_window::get_game_window()->center_view(Tile_coord(
+				cx*c_tiles_per_chunk + c_tiles_per_chunk/2,
+				cy*c_tiles_per_chunk + c_tiles_per_chunk/2, 
+									0));
+			return true;
+			}
+		cnum += dir;
+		}
+	return false;			// Failed.
+	}
+
+/*
+ *	Swap two adjacent terrain #'s, keeping the map looking the same.
+ *
+ *	Output:	false if unsuccessful.
+ */
+
+bool Game_map::swap_terrains
+	(
+	int tnum			// Swap tnum and tnum + 1.
+	)
+	{
+	if (tnum < 0 || tnum >= num_chunk_terrains - 1)
+		return false;		// Out of bounds.
+					// Swap in list.
+	Chunk_terrain *tmp = chunk_terrains[tnum];
+	tmp->set_modified();
+	chunk_terrains[tnum] = chunk_terrains[tnum + 1];
+	chunk_terrains[tnum]->set_modified();
+	chunk_terrains[tnum + 1] = tmp;
+					// Update terrain map.
+	for (int cy = 0; cy < c_num_chunks; cy++)
+		for (int cx = 0; cx < c_num_chunks; cx++)
+			{
+			if (terrain_map[cx][cy] == tnum)
+				terrain_map[cx][cy]++;
+			else if (terrain_map[cx][cy] == tnum + 1)
+				terrain_map[cx][cy]--;
+			}
+	return true;
+	}
+
+/*
+ *	Insert a new terrain after a given one, and push all the others up
+ *	so the map looks the same.  The new terrain is filled with
+ *	(shape, frame) == (0, 0) unless 'dup' is passed 'true'.
+ *
+ *	Output:	False if unsuccessful.
+ */
+
+bool Game_map::insert_terrain
+	(
+	int tnum,			// Insert after this one (may be -1).
+	bool dup			// If true, duplicate #tnum.
+	)
+	{
+	if (tnum < -1 || tnum >= num_chunk_terrains)
+		return false;		// Invalid #.
+	unsigned char buf[16*16*2];	// Set up buffer with shape #'s.
+	if (dup && tnum >= 0 && tnum < num_chunk_terrains)
+		{			// Want to duplicate given terrain.
+		Chunk_terrain *ter = chunk_terrains[tnum];
+		unsigned char *data = &buf[0];
+		for (int ty = 0; ty < c_tiles_per_chunk; ty++)
+			for (int tx = 0; tx < c_tiles_per_chunk; tx++)
+			{
+			ShapeID id = ter->get_flat(tx, ty);
+			*data++ = id.get_shapenum()&0xff;
+			*data++ = ((id.get_shapenum()>>8)&3) | 
+						(id.get_framenum()<<2);
+			}
+		}
+	else
+		memset(reinterpret_cast<char*>(buf), 0, sizeof(buf));
+	Chunk_terrain *new_terrain = new Chunk_terrain(&buf[0]);
+					// Insert in list.
+	chunk_terrains.insert(chunk_terrains.begin() + tnum + 1, new_terrain);
+	num_chunk_terrains++;
+					// Indicate terrains are modified.
+	for (int i = tnum + 1; i < num_chunk_terrains; i++)
+		chunk_terrains[i]->set_modified();
+	if (tnum + 1 == num_chunk_terrains - 1)
+		return true;		// Inserted at end of list.
+					// Update terrain map.
+	for (int cy = 0; cy < c_num_chunks; cy++)
+		for (int cx = 0; cx < c_num_chunks; cx++)
+			{
+			if (terrain_map[cx][cy] > tnum)
+				terrain_map[cx][cy]++;
+			}
+	return true;
+	}
+

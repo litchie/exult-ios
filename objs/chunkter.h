@@ -65,6 +65,8 @@ public:
 		{ num_clients--; }
 	inline bool is_modified()
 		{ return modified; }
+	inline void set_modified()
+		{ modified = true; }
 					// Less-than c2 (for STL Map)?
 	bool operator<(const Chunk_terrain& c2) const;
 					// Get tile's shape ID.
