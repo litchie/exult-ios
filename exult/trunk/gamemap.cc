@@ -199,7 +199,7 @@ void Game_map::init_chunks
 					// Get to end so we can get length.
 	chunks->seekg(0, ios::end);
 					// 2 bytes/tile.
-	num_chunk_terrains = (chunks->tellg() - (long) hdrsize)/chunksz;
+	num_chunk_terrains = ((int)chunks->tellg() - hdrsize)/chunksz;
 	if (!chunk_terrains)
 		chunk_terrains = new Exult_vector<Chunk_terrain*>();
 					// Resize list to hold all.
