@@ -1,3 +1,6 @@
+2001-07-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.cc: BeOS: get exult path on startup
+
 2001-07-24  Tristan Tarrant <nadir@users.sourceforge.net>
 	* usecode/useval.h: add a cast to get_elem() to make it compile
 

@@ -170,6 +170,17 @@ int main
 	char *argv[]
 	)
 {
+
+#ifdef BEOS
+	// get exult path
+	int counti;
+	char datapath[256];
+	for (counti=strlen(argv[0]) ; argv[0][counti]!='/' ; counti--);
+	strncpy(datapath, argv[0], counti);
+	chdir(datapath);
+#endif
+
+
 	bool	needhelp=false;
 	int		result;
 	Args    parameters;
