@@ -1,3 +1,9 @@
+2001-06-23  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* objs/contain.h: changed has_room(): max_volume == 0 means unlimited
+	* useval.*, ucmachine.cc: moved adding usecode_values to useval,
+	possibly risky change: adding (int) 0 to a string does nothing
+	* bgintrinsics.h: 0x96 = a_or_an
+
 2001-06-23  Ryan Nunn <triforce@merlin.net.au>
 	* actors.cc, actors.h: Almost complete rewrite of the add_readied and
 	  get_best_spot functions to make them cleaner and to remove all bugs.

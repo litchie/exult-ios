@@ -34,6 +34,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #include <iostream>
   #include <cstdlib>
 #endif
+#include <cstdio>
+
 #include "useval.h"
 #include "gump_utils.h"
 
@@ -45,6 +47,8 @@ using std::ostream;
 using std::setfill;
 using std::setw;
 using std::strcmp;
+using std::snprintf;
+
 
 
 /*
@@ -332,3 +336,46 @@ void Usecode_value::print
 		}
 	}
 
+Usecode_value Usecode_value::operator+(const Usecode_value& v2)
+{
+	char buf[300];
+	Usecode_value& v1 = *this;
+	Usecode_value sum(0);
+	if (v1.get_type() == Usecode_value::int_type)
+	{
+		if (v2.get_type() == Usecode_value::int_type) {
+			sum = Usecode_value(v1.get_int_value()
+					+ v2.get_int_value());
+		} else if (v2.get_type() == Usecode_value::string_type) {
+			if (v1.get_int_value() != 0) {
+				snprintf(buf, 300, "%ld%s", 
+						v1.get_int_value(),
+						v2.get_str_value());
+				sum = Usecode_value(buf);
+			} else {
+				sum = v2;
+			}
+		}
+	}
+	else if (v1.get_type() == Usecode_value::string_type)
+	{
+		if (v2.get_type() == Usecode_value::int_type) {
+			if (v2.get_int_value() != 0) {
+				snprintf(buf, 300, "%s%ld", 
+						v1.get_str_value(),
+						v2.get_int_value());
+				sum = Usecode_value(buf);
+			} else {
+				sum = v1;
+			}
+		} else if (v2.get_type() == Usecode_value::string_type) {
+			snprintf(buf, 300, "%s%s", 
+					v1.get_str_value(),
+					v2.get_str_value());
+			sum = Usecode_value(buf);
+		} else {
+			sum = v1;
+		}
+	}
+	return sum;
+}
