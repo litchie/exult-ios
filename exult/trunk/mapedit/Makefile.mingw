@@ -1,5 +1,7 @@
 # Exult Studio makefile for use in Windows with mingw 1.0 or later and Cygwin shell
-# Where is Exult Studio will be installed
+# The shell IS required! 
+
+# Where is Exult Studio will be installed. 
 U7PATH=C:/Ultima7
 
 SRC=..
@@ -40,11 +42,11 @@ SHAPES_OBJS=font.o fontvga.o items.o monstinf.o shapeinf.o shapevga.o u7drag.o v
 
 OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS)
 
-exultstudioico.o: ../win32/exultstudioico.rc ../win32/exultstudio.ico
-	windres --include-dir ../win32 ../win32/exultstudioico.rc exultstudioico.o
-
 $(EXEC): $(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LIBS)
+
+exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
+	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc exultstudioico.o
 
 clean:
 	rm -f $(OBJS) $(EXEC)
