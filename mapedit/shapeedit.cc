@@ -37,12 +37,40 @@ using	std::cout;
 using	std::endl;
 
 /*
+ *	Equip window's Cancel button.
+ */
+extern "C" void on_equip_cancel_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->close_equip_window();
+	}
+
+/*
+ *	Equip window's close button.
+ */
+extern "C" gboolean on_equip_window_delete_event
+	(
+	GtkWidget *widget,
+	GdkEvent *event,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->close_equip_window();
+	return TRUE;
+	}
+
+/*
  *	Widgets in one row of the 'equipment' dialog:
  */
 struct Equip_row_widgets
 	{
 	GtkWidget *draw, *shape, *name, *chance, *count;
 	};
+
+static Equip_row_widgets equip_rows[10];// Holds widgets from equip. dialog.
 
 /*
  *	Set up 'equipment' dialog's table, which has 10 identical rows.
@@ -107,7 +135,7 @@ static void Setup_equip
 		gtk_widget_set_usize (drawingarea, 20, 40);
 					// Shape #:
   		GtkWidget *spin = gtk_spin_button_new (GTK_ADJUSTMENT(
-			gtk_adjustment_new (1, 0, 100, 1, 10, 10)), 1, 0);
+			gtk_adjustment_new (1, 0, 1023, 1, 50, 50)), 1, 0);
 		rows[row].shape = spin;
 		gtk_widget_show(spin);
 		gtk_table_attach (table, spin, 1, 2, row + 2, row + 3,
@@ -139,6 +167,50 @@ static void Setup_equip
                 	    (GtkAttachOptions) (GTK_FILL),
 	                    (GtkAttachOptions) (0), 0, 0);
 		}
+	}
+
+/*
+ *	Open the equip-editing window.
+ */
+
+void ExultStudio::open_equip_window
+	(
+	int recnum			// Record # to start with.
+	)
+	{
+	if (!equipwin)			// First time?
+		{
+		equipwin = glade_xml_get_widget( app_xml, "equip_window" );
+		GtkWidget *table = glade_xml_get_widget(app_xml,
+								"equip_table");
+		Setup_equip(GTK_TABLE(table), equip_rows);
+		}
+	set_spin("equip_recnum", recnum);
+#if 0
+	if (shape_draw)			// Ifile might have changed.
+		delete shape_draw;
+	shape_draw = 0;
+	if (ifile && palbuf)
+		{
+		shape_draw = new Shape_draw(ifile, palbuf,
+			    glade_xml_get_widget(app_xml, "shinfo_draw"));
+//		shape_draw->enable_drop(Shape_shape_dropped, this);
+		}
+#endif
+	gtk_widget_show(equipwin);
+//	show_shinfo_shape();		// Be sure picture is updated.
+	}
+
+/*
+ *	Close the equip window.
+ */
+
+void ExultStudio::close_equip_window
+	(
+	)
+	{
+	if (equipwin)
+		gtk_widget_hide(equipwin);
 	}
 
 /*
@@ -181,6 +253,19 @@ extern "C" gboolean on_shinfo_draw_expose_event
 		event->area.x, event->area.y, event->area.width,
 							event->area.height);
 	return (TRUE);
+	}
+
+/*
+ *	Shape window's Equip-Edit button.
+ */
+extern "C" void on_open_equip_button_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio *s = ExultStudio::get_instance();
+	s->open_equip_window(s->get_spin("shinfo_monster_equip"));
 	}
 
 /*
