@@ -1568,7 +1568,7 @@ void Actor::reduce_health
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
 	    Game_window::get_game_window()->get_info(this).has_translucency())
-		return this;
+		return;
 	int oldhp = properties[(int) health];
 	int maxhp = properties[(int) strength];
 	int val = oldhp - delta;
