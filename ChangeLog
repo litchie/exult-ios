@@ -1,3 +1,8 @@
+2003-11-02    <jeff@mini.nerble.net>
+
+	* combat.cc,actors.cc,npcnear.cc:  No longer automatically put
+	'hostile' NPC's in combat.  Should fix Wisp problem.
+
 2003-11-01    <jeff@mini.nerble.net>
 
 	* schedule.cc (Waiter_schedule): Create plates if needed.
