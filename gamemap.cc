@@ -375,7 +375,7 @@ void Game_map::write_static
 									// trailing slash
 
 	int schunk;			// Write each superchunk to 'static'.
-	for (schunk = 0; schunk < 12*12 - 1; schunk++)
+	for (schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
 					// Only write what we've modified.
 		if (schunk_modified[schunk])
 			write_ifix_objects(schunk);
@@ -605,7 +605,7 @@ void Game_map::write_ireg
 	{
 
 					// Write each superchunk to Iregxx.
-	for (int schunk = 0; schunk < 12*12 - 1; schunk++)
+	for (int schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
 					// Only write what we've read.
 		if (schunk_read[schunk])
 			write_ireg_objects(schunk);
