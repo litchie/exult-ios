@@ -188,11 +188,12 @@ static void Activate_cached
 		return;			// ++++Since we're not sure about it.
 	const int dist = 8;
 	Vector vec;			// Find all usecode eggs.
-	int cnt = Game_object::find_nearby(vec, pos, 275, dist, 0, -359, 7);
+	int cnt = Game_object::find_nearby(vec, pos, 275, dist, 16, -359, 7);
 	for (int i = 0; i < cnt; i++)
 		{
 		Egg_object *egg = (Egg_object *) vec.get(i);
-		egg->activate(uc);
+		if (egg->get_criteria() == Egg_object::cached_in)
+			egg->activate(uc);
 		}
 	}
 
