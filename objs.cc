@@ -53,6 +53,28 @@ char *Game_object::get_name
 	return item_names[get_shapenum()];
 	}
 
+
+/*
+ *	Is a given tile within this egg's influence?
+ */
+
+int Egg_object::within_distance
+	(
+	int abs_tx, int abs_ty		// Tile coords. within entire world.
+	)
+	{
+	//+++++++++++++++++
+#if 0	/* When we have data set up: +++++++++ */
+	int deltax = abs_tx - abs_tilex;
+	if (deltax >= distance || -deltax >= distance)
+		return (0);
+	int deltay = abs_ty - abs_tiley;
+	return (deltay < distance && -deltay < distance);
+#else
+	return (0);
+#endif
+	}
+
 /*
  *	Run usecode when double-clicked or when activated by proximity.
  */
@@ -62,6 +84,7 @@ void Egg_object::activate
 	Usecode_machine *umachine
 	)
 	{
+//+++++++++Check probability, etc.  (But not distance.)
 cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		", distance = " << (int) distance << '\n';
 	if (type == (int) usecode)	// Data2 is the usecode function.
@@ -75,9 +98,10 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 
 Chunk_cache::Chunk_cache
 	(
-	) : setup_done(0)
+	) : setup_done(0), num_eggs(0), egg_objects(0)
 	{
 	memset((char *) &blocked[0], 0, sizeof(blocked));
+	memset((char *) &eggs[0], 0, sizeof(eggs));
 	}
 
 /*
@@ -201,16 +225,16 @@ void Chunk_cache::setup
 int Chunk_cache::is_blocked
 	(
 	int lift,			// Given lift.
-	int tilex, int tiley,		// Square to test.
+	int tx, int ty,		// Square to test.
 	int& new_lift			// New lift returned.
 	)
 	{
 #if 0			/* ++++++Until we get the right footprint dims. */
 	new_lift = lift;
 	return (0);
-#else
+#else			/* ++++++Got them now!  This works. */
 					// Get bits.
-	unsigned short tflags = blocked[tiley*tiles_per_chunk + tilex];
+	unsigned short tflags = blocked[ty*tiles_per_chunk + tx];
 	if (tflags & (1<<lift))		// Something there?
 		{
 		new_lift = lift + 1;	// Maybe we can step up.
@@ -225,6 +249,43 @@ int Chunk_cache::is_blocked
 	new_lift = i + 1;
 	return (0);
 #endif
+	}
+
+/*
+ *	Activate nearby eggs.
+ */
+
+void Chunk_cache::activate_eggs
+	(
+	Chunk_object_list *chunk,	// Chunk this is attached to.
+	int tx, int ty,			// Tile.
+	unsigned short eggbits		// Eggs[tile].
+	)
+	{
+					// Get ->usecode machine.
+	Usecode_machine *usecode = 
+				Game_window::get_game_window()->get_usecode();
+	int i;				// Go through eggs.
+	for (i = 0; i < 8*sizeof(eggbits) - 1 && eggbits; 
+						i++, eggbits = eggbits >> 1)
+		{
+		Egg_object *egg;
+		if (!(eggbits&1) || !(egg = egg_objects[i]))
+			continue;	// This one's not set.
+		egg->activate(usecode);
+		}
+	if (eggbits)			// Check 15th bit.
+		{
+					// Figure absolute tile coords.
+		int atx = chunk->get_cx()*tiles_per_chunk + tx;
+		int aty = chunk->get_cy()*tiles_per_chunk + ty;
+		for ( ; i < num_eggs; i++)
+			{
+			Egg_object *egg = egg_objects[i];
+			if (egg && egg->within_distance(atx, aty))
+				egg->activate(usecode);
+			}
+		}
 	}
 
 /*
