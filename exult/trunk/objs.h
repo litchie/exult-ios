@@ -36,6 +36,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #endif
 
+#include "lists.h"
+
 class Vga_file;
 
 /*
@@ -101,15 +103,9 @@ public:
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
 			  lift(ifix[1] & 0xf), quality(0)
 		{  }
-					// Create from map chunk.
-	Game_object(unsigned char l, unsigned char h, unsigned int shapex,
-				unsigned int shapey)
-		: ShapeID(l, h), shape_pos((shapex << 4) + shapey), lift(0),
-		  quality(0)
-		{  }
 					// Create from ireg. data.
 	Game_object(unsigned char l, unsigned char h, unsigned int shapex,
-				unsigned int shapey, unsigned int lft)
+				unsigned int shapey, unsigned int lft = 0)
 		: ShapeID(l, h), shape_pos((shapex << 4) + shapey), 
 					lift(lft), quality(0)
 		{  }
@@ -148,6 +144,75 @@ public:
 		{  }
 	virtual int get_property(int prop)
 		{ return 0; }
+	};
+
+/*
+ *	A container object:
+ */
+class Container_game_object : public Game_object
+	{
+	Slist objects;			// List of objects contained.
+public:
+	Container_game_object(unsigned char l, unsigned char h, 
+				unsigned int shapex,
+				unsigned int shapey, unsigned int lft = 0)
+		: Game_object(l, h, shapex, shapey, lft)
+		{  }
+	Container_game_object() {  }
+	void add(Game_object *obj)
+		{ objects.append(obj); }
+	void remove(Game_object *obj)
+		{ objects.remove(obj); }
+	};
+
+/*
+ *	An "egg" is a special object that activates under certain
+ *	circumstances.
+ */
+class Egg_object : public Game_object
+	{
+	unsigned char type;		// One of the below types.
+	unsigned char probability;	// 1-100, chance of egg activating.
+	unsigned char criteria;		// Don't know this one.
+	unsigned char distance;		// Distance for activation.
+	unsigned char flags;		// Formed from below flags.
+	unsigned short data1, data2;	// More data, depending on type.
+public:
+	enum Egg_types {		// Types of eggs:
+		monster = 1,
+		jukebox = 2,
+		soundsfx = 3,
+		voice = 4,
+		usecode = 5,
+		missile = 6,
+		teleport = 7,
+		weather = 8,
+		path = 9,
+		button = 10
+		};
+	enum Egg_flag_shifts {
+		nocturnal = 0,
+		once = 1,
+		hatched = 2,
+		auto_reset = 3
+		};
+					// Create from ireg. data.
+	Egg_object(unsigned char l, unsigned char h, unsigned int shapex,
+		unsigned int shapey, unsigned int lft, short itype,
+		unsigned char prob, short d1, short d2)
+		: Game_object(l, h, shapex, shapey, lft),
+			probability(prob), data1(d1), data2(d2)
+		{
+		type = itype&0xf;
+		criteria = (itype & (7<<4)) >> 4;
+		distance = (itype & (0x1f << 10)) >> 10;
+		unsigned char noct = (itype >> 7) & 1;
+		unsigned char do_once = (itype >> 8) & 1;
+		unsigned char htch = (itype >> 9) & 1;
+		unsigned char ar = (itype >> 15) & 1;
+		flags = (noct << nocturnal) + (do_once << once) +
+			(htch << hatched) + (ar << auto_reset);
+		}
 	};
 
 /*
@@ -251,7 +316,7 @@ inline long Time_passed
 /*
  *	A sprite is a game object which can change shape and move around.
  */
-class Sprite : public Game_object
+class Sprite : public Container_game_object
 	{
 	int cx, cy;			// (Absolute) chunk coords.
 	Chunk_object_list *chunk;	// The chunk list we're on.

@@ -227,7 +227,9 @@ public:
 					// Get moveable objects.
 	void get_ireg_objects(int schunk);
 	void read_ireg_objects(ifstream& ireg, int scx, int scy,
-						void *container = 0);
+					Container_game_object *container = 0);
+					// Create special objects.
+	Game_object *create_egg(unsigned char *entry);
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
 	void init_actors();		// Place actors in the world.
