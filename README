@@ -1,16 +1,17 @@
-ExultDocumentation
-last changed: 23 November 2001(GMT)
+ExultDocumentation 
 
-The latest version of this document can be found at http://exult.sourceforge.net/docs.php
-
+last changed: 25 November 2001(GMT)
+------------------------------------
+The latest version of this document can be found here
 
 0. Changes to the Documentation
-0.1. - 23 November 2001
+0.1. - 25 November 2001
 0.2. - 06 November 2001
 0.3. - 28 October 2001
 
 1. Introduction
 1.1. What is Exult?
+
 2. Configurations
 2.1. Installation
 2.2. Settings in exult.cfg
@@ -44,7 +45,6 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 7. OS specific notes
 7.1. Error Log
-
 8. Credits and Contact
 8.1. Thanks
 8.2. Contacting us
@@ -52,8 +52,10 @@ The latest version of this document can be found at http://exult.sourceforge.net
 ------------------------------------
 0. Changes to the Documentation
  
-0.1. - 23 November 2001
-  * 2.2. Settings in exult.cfg added <save_compression_level> to zip up savegames. 
+0.1. - 25 November 2001
+  * 2.2. Settings in exult.cfg added <save_compression_level> to zip up savegames, <waves> no longer needs path set if in data dir. 
+  * 4.2. Scaler updated link To Derek Liauw's scaler page. 
+  * 3.4. Digital Wave Sound Effects no longer needs paths for sfx pack (if in data dir). 
  
 0.2. - 06 November 2001
   * a lot of spelling checked and corrected. 
@@ -122,7 +124,7 @@ blackgate
 (default)   **configure custom keybindings or leave the (default) - see 5.2. 
 </keys>
 <waves>
-./data/jmsfx.flx   **optional setting see 3.4. for configuration 
+jmsfx.flx   **optional setting see 3.4. for configuration 
 </waves>
 </blackgate>
 <serpentisle>
@@ -133,7 +135,7 @@ blackgate
 (default)
 </keys>
 <waves>
-./data/jmsisfx.flx   **optional setting see 3.4. for configuration 
+jmsisfx.flx   **optional setting see 3.4. for configuration 
 </waves>
 </serpentisle>
 </game>
@@ -321,12 +323,26 @@ To change the MIDI Device open exult.cfg and change
 with the device you want to use. 
  
 3.4. Digital Wave Sound Effects
-You have to set a path to the sfx pack in the waves settings in exult.cfg (see 2.2.). You have to download separate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI. In combat the sfx may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. 
+Exult needs the so called sfx packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI: In combat the sfx may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'.
+Also Exult doesn't yet playback all the sfx that the orignal did. 
 
 Note that configuring your soundfonts is not needed for digital wave sfx. 
 
 The sfx pack made by Joseph Morris can be found at http://prdownloads.sourceforge.net/exult/jmsfx.zip (~4.55 MB) for "The Black Gate" and http://prdownloads.sourceforge.net/exult/jmsfxsi.zip (~6.01 MB) for "Serpent Isle".
-He recorded the original 114 sfx used in Black Gate which must have been a lot of work. If your soundcard doesn't support soundfonts this pack is a "must-have". Enjoy! 
+J.Morris recorded the original sfx used in BG and SI which meant a lot of work. Don't complain that the sfx sounds strange, instead load up the original and you will find that it sounds the same. Enjoy! 
+
+Extract the zip files into your Exult data directory and write down the name of the pack in your exult.cfg file (see 2.2.). You don't need to set correct paths anymore if the pack is in the data directory.
+An example of how the relevant part of exult.cfg looks with these packs: 
+<blackgate>
+<waves>
+jmsfx.flx
+</waves>
+</blackgate>
+<serpentisle>
+<waves>
+jmsisfx.flx
+</waves>
+</serpentisle>
  
 3.5. Speech
 Exult can play the Ultima VII's speech through SDL, and its own internal mixer. Configuration is managed through Exult's configuration file. 
@@ -354,7 +370,7 @@ The scalers also work with higher resolutions than 320x200. To change the scalin
   * interlaced identical to point except that it skips every other line to be even faster 
 The scalers by Derek Liauw are slower but look much better. Try out yourself which one you like most. 
 
-More information on the excellent scaling engines by Derek Liauw is available at http://members.xoom.com/derek_liauw/. 
+More information on the excellent scaling engines by Derek Liauw is available at http://elektron.its.tudelft.nl/~dalikifa/. 
 ------------------------------------
 5. Movement and Keys
  
@@ -542,3 +558,4 @@ will send both stderr and stdout to the file named "log".
 You can contact the Exult team and/or get more information from:
 http://exult.sourceforge.net/ or
 http://sourceforge.net/projects/exult/
+------------------------------------
