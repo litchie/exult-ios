@@ -354,8 +354,8 @@ void Game_map::set_chunk_terrain
 	}
 
 /*
- *	Store a file name with the map directory before it; ie,
- *		Store_mapped_name("<GAMEDAT>/ireg, 3, to) will store
+ *	Build a file name with the map directory before it; ie,
+ *		get_mapped_name("<GAMEDAT>/ireg, 3, to) will store
  *			"<GAMEDAT>/map03/ireg".
  */
 
@@ -365,22 +365,7 @@ char *Game_map::get_mapped_name
 	char *to
 	)
 	{
-	if (num == 0)
-		strcpy(to, from);	// Default map.
-	else
-		{
-		char *sep = strrchr(from, '/');
-		assert(sep != 0);
-		int len = sep - from;
-		memcpy(to, from, len);	// Copy dir.
-		strcpy(to + 1, MULTIMAP_DIR);
-		len = strlen(to);
-		to[len] = '0' + num/16;
-		int lb = num%16;
-		to[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
-		strcat(to + len + 2, sep);
-		}
-	return to;
+	return Get_mapped_name(from, num, to);
 	}
 
 /*

@@ -81,6 +81,7 @@ void ActionMapEditor(int* params);
 void ActionHackMover(int* params);
 void ActionMapTeleport(int* params);
 void ActionTeleport(int* params);
+void ActionNextMapTeleport(int *params);
 void ActionTime(int* params);
 void ActionWizard(int* params);
 void ActionHeal(int* params);

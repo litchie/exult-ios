@@ -154,6 +154,8 @@ const struct Action {
 	{ "MAP_TELEPORT", ActionMapTeleport, 0, "Map teleport", true, true, NONE, false },
 	{ "CURSOR_TELEPORT",
 	  ActionTeleport, 0, "Teleport to cursor", true, true, NONE, false },
+	{ "NEXT_MAP_TELEPORT",
+	  ActionNextMapTeleport, 0, "Teleport to next map", true, true, NONE, false },
 	{ "NEXT_TIME_PERIOD",
 	  ActionTime, 0, "Next time period", true, true, NONE, false },
 	{ "TOGGLE_WIZARD_MODE",

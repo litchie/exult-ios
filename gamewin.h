@@ -233,6 +233,8 @@ public:
 	inline Party_manager *get_party_man() { return party_man; }
 	inline Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
 	Game_clock *get_clock () { return clock; }
+	Game_map *get_map(int num);	// Read in additional map.
+	void set_map(int num);		// Make map #num the current map.
 	/*
 	 *	ExultStudio support:
 	 */
@@ -399,7 +401,6 @@ public:
 	void read_gwin();		// Read gamedat/gamewin.dat.
 	void write_map();		// Write map data to <PATCH> dir.
 	void read_map();		// Reread initial game map.
-	Game_map *get_map(int num);	// Read in additional map.
 	void reload_usecode();		// Reread (patched) usecode.
 	void init_actors();		// Place actors in the world.
 	void init_files(bool cycle=true);	// Load all files
@@ -466,7 +467,8 @@ public:
 	inline int get_step_tile_delta() { return step_tile_delta; };
 	inline void set_allow_double_right_move(bool a) { allow_double_right_move = a; }
 	inline bool get_allow_double_right_move() { return allow_double_right_move; }
-	void teleport_party(Tile_coord t, bool skip_eggs = false);
+	void teleport_party(Tile_coord t, bool skip_eggs = false, 
+							int new_map = -1);
 	bool activate_item(int shnum, int frnum=c_any_framenum,
 			   int qual=c_any_qual); // Activate item in party.
 					// Find object (x, y) is in.
