@@ -284,7 +284,7 @@ public:
 		{  }
 	~Text_gump()
 		{ delete text; }
-	void add_text(char *str);	// Append text.
+	void add_text(const char *str);	// Append text.
 	int paint_page(Game_window *gwin, Rectangle box, int start);
 					// Next page of book/scroll.
 	int show_next_page(Game_window *gwin);

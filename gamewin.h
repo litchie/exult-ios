@@ -118,8 +118,8 @@ private:
 	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
 	int user_brightness;		// User's setting for brightness.
-	bool fades_enabled;
 	bool faded_out;			// true if faded palette to black.
+	bool fades_enabled;
 	unsigned long special_light;	// Game minute when light spell ends.
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
@@ -560,7 +560,7 @@ public:
 	inline int get_num_faces_on_screen() const	// # of faces on screen.
 		{ return num_faces; }
 					// Show what NPC said.
-	void show_npc_message(char *msg);
+	void show_npc_message(const char *msg);
 	int is_npc_text_pending();	// Need to prompt user?
 	void clear_text_pending();	// Don't need to prompt.
 					// Show what Avatar can say.

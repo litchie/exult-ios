@@ -45,6 +45,7 @@ private:
 	bool speech_enabled, music_enabled, effects_enabled;
 	bool SDL_open;
 	UNREPLICATABLE_CLASS(Audio);
+protected:
 	Audio();
 public:
     void	Init(void);

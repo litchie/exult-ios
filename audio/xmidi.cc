@@ -895,7 +895,7 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 	int		end = 0;
 	int		tempo = 500000;
 	int		tempo_set = 0;
-	uint32		status;
+	uint32		status = 0;
 	int		play_size = 2;
 	
 	if (is_xmi) play_size = 3;
