@@ -128,7 +128,7 @@
 	USECODE_INTRINSIC_PTR(get_speech_track), // 0x69
 	USECODE_INTRINSIC_PTR(flash_mouse),	// 0x6a
 	USECODE_INTRINSIC_PTR(get_item_frame_rot),	// 0x6b Guessing
-	USECODE_INTRINSIC_PTR(set_item_frame),	// 0x6c Guessing
+	USECODE_INTRINSIC_PTR(set_item_frame_rot),	// 0x6c Guessing
 	USECODE_INTRINSIC_PTR(on_barge),	// 0x6d
 	USECODE_INTRINSIC_PTR(get_container),	// 0x6e
 	USECODE_INTRINSIC_PTR(remove_item),	// 0x6f

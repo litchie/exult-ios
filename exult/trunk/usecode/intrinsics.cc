@@ -49,6 +49,7 @@
 #include "egg.h"
 #include "monstinf.h"
 #include "actions.h"
+#include "ucscriptop.h"
 
 using std::cerr;
 using std::cout;
@@ -239,13 +240,15 @@ USECODE_INTRINSIC(get_item_shape)
 
 USECODE_INTRINSIC(get_item_frame)
 {
+	// Returns frame without rotated bit.
 	Game_object *item = get_item(parms[0]);
 					// Don't count rotated frames.
 	return Usecode_value(item == 0 ? 0 : item->get_framenum()&31);
 }
 
 USECODE_INTRINSIC(set_item_frame)
-{
+{	// Set frame, but don't change rotated bit.
+
 	set_item_frame(get_item(parms[0]), parms[1].get_int_value());
 	return(no_ret);
 }
@@ -981,7 +984,21 @@ USECODE_INTRINSIC(remove_npc)
 USECODE_INTRINSIC(item_say)
 {
 	// Show str. near item (item, str).
-	item_say(parms[0], parms[1]);
+	if (!conv->is_npc_text_pending())
+		item_say(parms[0], parms[1]);	// Do it now.
+#if 0	/* ++++Crashes. */
+	else
+		{
+		Game_object *obj = get_item(parms[0]);
+		const char *str = parms[1].get_str_value();
+		if (obj && str)
+			{
+			Usecode_script *scr = new Usecode_script(obj);
+			scr->add(Ucscript::say, str);
+			scr->start();
+			}
+		}
+#endif
 	return(no_ret);
 }
 
@@ -1601,9 +1618,15 @@ USECODE_INTRINSIC(flash_mouse)
 
 USECODE_INTRINSIC(get_item_frame_rot)
 {
-	// Same as get_item_frame, but (guessing!) leave rotated bit.
+	// Same as get_item_frame, but (guessing!) include rotated bit.
 	Game_object *obj = get_item(parms[0]);
 	return Usecode_value(obj ? obj->get_framenum() : 0);
+}
+
+USECODE_INTRINSIC(set_item_frame_rot)
+{	// Set entire frame, including rotated bit.
+	set_item_frame(get_item(parms[0]), parms[1].get_int_value(), 0, 1);
+	return(no_ret);
 }
 
 USECODE_INTRINSIC(on_barge)
@@ -2336,6 +2359,13 @@ USECODE_INTRINSIC(set_conversation_slot)
 USECODE_INTRINSIC(init_conversation)
 {
 	init_conversation();
+	return no_ret;
+}
+
+USECODE_INTRINSIC(end_conversation)
+{
+	show_pending_text();		// Wait for click if needed.
+	conv->init_faces();		// Removes faces from screen.
 	return no_ret;
 }
 

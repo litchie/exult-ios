@@ -2531,7 +2531,8 @@ void Game_window::add_text
 	add_effect(txt);
 					// Show for a couple seconds.
 	unsigned long curval = Game::get_ticks();
-	tqueue->add(curval + 2000, txt, (long) this);
+//	tqueue->add(curval + 2000, txt, (long) this);
+	tqueue->add(curval + 10*std_delay, txt, (long) this);
 	}
 
 /*

@@ -134,7 +134,8 @@ class Usecode_internal : public Usecode_machine
 							int slot = -1);
 	void remove_npc_face(Usecode_value& arg1);
 	void set_item_shape(Usecode_value& item_arg, Usecode_value& shape_arg);
-	void set_item_frame(Game_object *item, int frame, int check_empty = 0);
+	void set_item_frame(Game_object *item, int frame, int check_empty = 0,
+							int set_rotated = 0);
 	void remove_item(Game_object *obj);
 	int npc_in_party(Game_object *npc);
 	Usecode_value get_party();
@@ -291,6 +292,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(get_speech_track);
 	USECODE_INTRINSIC_DECL(flash_mouse);
 	USECODE_INTRINSIC_DECL(get_item_frame_rot);
+	USECODE_INTRINSIC_DECL(set_item_frame_rot);
 	USECODE_INTRINSIC_DECL(on_barge);
 	USECODE_INTRINSIC_DECL(get_container);
 	USECODE_INTRINSIC_DECL(remove_item);
@@ -341,6 +343,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(remove_npc_face1);
 	USECODE_INTRINSIC_DECL(set_conversation_slot);
 	USECODE_INTRINSIC_DECL(init_conversation);
+	USECODE_INTRINSIC_DECL(end_conversation);
 	USECODE_INTRINSIC_DECL(set_new_schedules);
 	USECODE_INTRINSIC_DECL(revert_schedule);
 	USECODE_INTRINSIC_DECL(run_schedule);

@@ -149,7 +149,7 @@ void Usecode_script::add(int v1, int v2)
 	code->append(vals, 2);
 	cnt += 2;
 	}
-void Usecode_script::add(int v1, char *str)
+void Usecode_script::add(int v1, const char *str)
 	{
 	int sz = code->get_array_size();
 	code->resize(sz + 2);
@@ -434,7 +434,7 @@ void Usecode_script::handle_event
 			int dir = val.get_int_value()&7;
 			obj->set_usecode_dir(dir);
 			usecode->set_item_frame(obj, obj->get_dir_framenum(
-							dir, Actor::standing));
+				dir, obj->get_framenum()), 1, 1);
 			frame_index = 0;// Reset walking frame index.
 			break;
 			}
@@ -454,7 +454,7 @@ void Usecode_script::handle_event
 				int v = obj->get_dir_framenum(
 					obj->get_usecode_dir(), 
 					opcode - 0x61);
-				usecode->set_item_frame(obj, v, 1);
+				usecode->set_item_frame(obj, v, 1, 1);
 				}
 					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode < 0x38)
