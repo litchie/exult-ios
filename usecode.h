@@ -303,7 +303,21 @@ public:
         USECODE_FUNCTION_DECL(find_nearby);
         USECODE_FUNCTION_DECL(game_hour);
         USECODE_FUNCTION_DECL(game_minute);
-
+	USECODE_FUNCTION_DECL(get_npc_number);
+	USECODE_FUNCTION_DECL(part_of_day);
+	USECODE_FUNCTION_DECL(item_say);
+	USECODE_FUNCTION_DECL(get_lift);
+	USECODE_FUNCTION_DECL(set_lift);
+	USECODE_FUNCTION_DECL(display_map);
+	USECODE_FUNCTION_DECL(is_pc_female);
+	USECODE_FUNCTION_DECL(run_endgame);
+	USECODE_FUNCTION_DECL(get_array_size);
+	USECODE_FUNCTION_DECL(is_pc_inside);
+	USECODE_FUNCTION_DECL(mouse_exists);
+	USECODE_FUNCTION_DECL(mystery_2);
+	USECODE_FUNCTION_DECL(remove_item);
+	USECODE_FUNCTION_DECL(get_equipment_list);
+	USECODE_FUNCTION_DECL(advance_time);
 
 
 
