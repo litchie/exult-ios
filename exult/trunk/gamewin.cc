@@ -1526,8 +1526,14 @@ Ireg_game_object *Game_window::create_ireg_object
 				&circles[0], 0L);
 		}
 	else if (info.get_shape_class() == Shape_info::container)
-		return new Container_game_object(shnum, frnum, tilex, tiley,
+		{
+		if (shnum == 555 && GAME_SI)
+			return new Jawbone_object(shnum, frnum, tilex, tiley,
 									lift);
+		else
+			return new Container_game_object(shnum, frnum, 
+							tilex, tiley, lift);
+		}
 	else
 		return new Ireg_game_object(shnum, frnum, tilex, tiley, lift);
 	}
