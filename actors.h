@@ -47,7 +47,7 @@ const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
  */
 class Actor : public Container_game_object, public Time_sensitive
 	{
-	char *name;			// Its name.
+	std::string name;			// Its name.
 	int usecode;			// # of usecode function.
 	short npc_num;			// # in Game_window::npcs list, or -1.
 	short party_id;			// Index in party, or -1.
@@ -97,7 +97,7 @@ protected:
 	Actor(istream& nfile, int num, int has_usecode);
 public:
 	void set_default_frames();	// Set usual frame sequence.
-	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
+	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
 	~Actor();
 	void use_food();		// Decrement food level.
 					// Get frame seq. for given dir.
@@ -331,7 +331,7 @@ public:
 class Main_actor : public Actor
 	{
 public:
-	Main_actor(char *nm, int shapenum, int num = -1, int uc = -1)
+	Main_actor(const std::string &nm, int shapenum, int num = -1, int uc = -1)
 		: Actor(nm, shapenum, num, uc)
 		{  }
 					// Read from file.
@@ -362,7 +362,7 @@ protected:
 	Schedule_change *schedules;	// List of schedule changes.
 	short alignment;		// 'Feelings' towards Ava. See below.
 public:
-	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
+	Npc_actor(const std::string &nm, int shapenum, int fshape = -1, int uc = -1);
 					// Read from file.
 	Npc_actor(istream& nfile, int num, int has_usecode);
 	~Npc_actor();
@@ -460,7 +460,7 @@ class Monster_actor : public Npc_actor
 		}
 public:
 	friend class Monster_info;
-	Monster_actor(char *nm, int shapenum, int fshape = -1, int uc = -1)
+	Monster_actor(const std::string &nm, int shapenum, int fshape = -1, int uc = -1)
 		: Npc_actor(nm, shapenum, fshape, uc), prev_monster(0),
 		  creator(0), info(0)
 		{
