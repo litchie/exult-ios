@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "Notebook_gump.h"
+#include "Gump_button.h"
 #include "exult_flx.h"
 #include "game.h"
 // #include "gamewin.h"
@@ -28,6 +29,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 vector<One_note *> Notebook_gump::notes;
 bool Notebook_gump::initialized = false;	// Set when read in.
 vector<Notebook_top_left> Notebook_gump::page_info;
+
+/*
+ *	Defines in 'gumps.vga':
+ */
+#define LEFTPAGE  (GAME_BG ? 44 : 39)	// At top-left of left page.
+#define RIGHTPAGE  (GAME_BG ? 45 : 40)	// At top-right of right page.
 
 /*
  *	setup one note (from already-allocated text).
@@ -50,6 +57,34 @@ void One_note::set
 	}
 
 /*
+ *	A 'page-turner' button.
+ */
+class Notebook_page_button : public Gump_button
+	{
+	int leftright;			// 0=left, 1=right.
+public:
+	Notebook_page_button(Gump *par, int px, int py, int lr)
+		: Gump_button(par, lr ? RIGHTPAGE : LEFTPAGE, px, py),
+		  leftright(lr)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate();
+	virtual void push() {}
+	virtual void unpush() {}
+	};
+
+/*
+ *	Handle click.
+ */
+
+void Notebook_page_button::activate
+	(
+	)
+	{
+	((Notebook_gump *) parent)->change_page(leftright ? 1 : -1);
+	}
+
+/*
  *	Create notebook gump.
  */
 
@@ -57,9 +92,13 @@ Notebook_gump::Notebook_gump
 	(
 	) : Gump(0, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curpage(0)
 	{
-	// +++++++++Guessing obj. area.
+					// (Obj. area doesn't matter.)
 	set_object_area(Rectangle(36, 10, 100, 100), 7, 40);
 	page_info.push_back(Notebook_top_left(0, 0));
+					// Where to paint page marks:
+	const int lpagex = 35, rpagex = 300, lrpagey = 12;
+	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
+ 	rightpage = new Notebook_page_button(this, rpagex, lrpagey, 1);
 	// ++++TESTING:
 	notes.push_back(new One_note(1, 1, 10, 10, strdup("Note #1\nHello")));
 	notes.push_back(new One_note(2, 2, 20, 20, strdup(
@@ -73,6 +112,17 @@ Notebook_gump *Notebook_gump::create
 	{
 	// ++++++Initialize.
 	return new Notebook_gump;
+	}
+
+/*
+ *	Cleanup.
+ */
+Notebook_gump::~Notebook_gump
+	(
+	)
+	{
+	delete leftpage;
+	delete rightpage;
 	}
 
 /*
@@ -118,6 +168,52 @@ int Notebook_gump::paint_page
 }
 
 /*
+ *	Change page.
+ */
+
+void Notebook_gump::change_page
+	(
+	int delta
+	)
+{
+	if (delta > 0)
+		{
+		int nxt = curpage/2 + 1;
+		if (nxt >= page_info.size())
+			return;
+		curpage += 2;
+		}
+	else if (delta < 0)
+		{
+		if (curpage == 0)
+			return;
+		curpage -= 2;
+		}
+	paint();
+}
+
+/*
+ *	Is a given screen point on one of our buttons?
+ *
+ *	Output: ->button if so.
+ */
+
+Gump_button *Notebook_gump::on_button
+	(
+	int mx, int my			// Point in window.
+	)
+{
+	Gump_button *btn = Gump::on_button(mx, my);
+	if (btn)
+		return btn;
+	else if (leftpage->on_button(mx, my))
+		return leftpage;
+	else if (rightpage->on_button(mx, my))
+		return rightpage;
+	return 0;
+}
+
+/*
  *	Paint notebook.
  */
 
@@ -126,6 +222,8 @@ void Notebook_gump::paint
 	)
 {
 	Gump::paint();
+	if (curpage > 0)		// Not the first?
+		leftpage->paint();
 	int curnote = page_info[curpage/2].notenum;
 	if (curnote < 0)
 		return;
@@ -150,6 +248,7 @@ void Notebook_gump::paint
 		++curnote;
 		offset = 0;
 		}
+	rightpage->paint();
 	int nxt = curpage/2 + 1;	// For next pair of pages.
 	if (nxt >= page_info.size())
 		page_info.resize(nxt + 1);

@@ -65,11 +65,17 @@ class Notebook_gump : public Gump
 	static vector<Notebook_top_left> page_info;
 	static bool initialized;
 	int curpage;			// Page # of current top-left.
+					// Page turners:
+	Gump_button *leftpage, *rightpage;
+
 	int paint_page(Rectangle box, One_note *note, int start);
 public:
 	Notebook_gump();
-	~Notebook_gump() {  }
+	~Notebook_gump();
 	static Notebook_gump *create();
+	void change_page(int delta);	// Page forward/backward.
+					// Is a given point on a button?
+	virtual Gump_button *on_button(int mx, int my);
 	virtual void paint();		// Paint it and its contents.
 };
 
