@@ -160,9 +160,10 @@ class Patrol_schedule : public Schedule
 	Game_object_vector paths;	// Each 'path' object.
 	int pathnum;			// # of next we're heading towards.
 	int dir;			// 1 or -1;
+	int failures;			// # of failures to find marker.
 public:
 	Patrol_schedule(Actor *n)
-		: Schedule(n), pathnum(-1), dir(1)
+		: Schedule(n), pathnum(-1), dir(1), failures(0)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	};
