@@ -43,7 +43,7 @@ Boston, MA  02111-1307, USA.
 /*
  *	Horizontal leads, by fontnum:
  */
-static int hlead[10] = {0, 0, 0, 0, 1, 0, 0, 0, 0, 0};
+static int hlead[10] = {-1, 0, 1, 0, 1, 0, 0, 0, 0, -1};
 
 /*
  *	Pass space.
