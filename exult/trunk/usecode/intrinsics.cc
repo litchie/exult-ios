@@ -2419,10 +2419,13 @@ USECODE_INTRINSIC(approach_avatar)
 	Actor *actor = as_actor(get_item(parms[0]));
 	if (!actor || actor->is_dead())
 		return Usecode_value(0);
-					// Approach, and wait_for_arrival().
+					// Guessing!! If already close...
+	if (actor->distance(gwin->get_main_actor()) < 10)
+		return Usecode_value(1);
+					// Approach, and wait.
 	if (!actor->approach_another(gwin->get_main_actor(), true))
 		return Usecode_value(0);
-	return Usecode_value(actor->distance(gwin->get_main_actor()) < 10);
+	return Usecode_value(1);
 	}
 
 USECODE_INTRINSIC(a_or_an)

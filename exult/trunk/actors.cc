@@ -791,10 +791,14 @@ int Actor::approach_another
 		dest = Game_object::find_unblocked_tile(startdest, i);
 	if (dest.tx == -1)
 		return 0;
-					// Want to approach from offscreen.
+					// Where are we now?
+	Tile_coord src = get_abs_tile_coord();
+	Game_window *gwin = Game_window::get_game_window();
+	if (!gwin->get_win_tile_rect().has_point(src.tx, src.ty))
+					// Off-screen?
+		src = Tile_coord(-1, -1, 0);
 	Actor_action *action = new Path_walking_actor_action();
-	if (!action->walk_to_tile(Tile_coord(-1, -1, 0), dest,
-						get_type_flags()))
+	if (!action->walk_to_tile(src, dest, get_type_flags()))
 		{
 		delete action;
 		return 0;
