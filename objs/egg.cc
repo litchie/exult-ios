@@ -302,6 +302,8 @@ int Egg_object::is_active
 		if (!(hour >= 9 || hour <= 5))
 			return (0);	// It's not night.
 		}
+	if (cheat.in_map_editor())
+		return 0;		// Disable in map-editor.
 	Egg_criteria cri = (Egg_criteria) get_criteria();
 
 	int deltaz = tz - get_lift();

@@ -549,7 +549,7 @@ int Usecode_machine::npc_in_party
 	}
 
 /*
- *	Return an array containing the party.
+ *	Return an array containing the party, with the Avatar first.
  */
 
 Usecode_value Usecode_machine::get_party
@@ -2085,7 +2085,7 @@ void Usecode_machine::read
 		timers[t] = Read4(in);
 	if (!in.good())
 		throw file_read_exception(USEDAT);
-
+#if 0
 					// +++++No longer needed:
 	for (i = 0; i < 8; i++)	// Virtue stones.
 		{
@@ -2096,6 +2096,7 @@ void Usecode_machine::read
 	if (!in.good())			// Failed.+++++Can remove this later.
 		for (size_t i = 0; i < 8; i++)
 			virtue_stones[i] = Tile_coord(0, 0, 0);
+#endif
 	}
 
 /*
