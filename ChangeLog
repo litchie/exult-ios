@@ -1,3 +1,19 @@
+2001-08-13  Max Horn <max@quendi.de>
+	* audio/Audio.cc: make use of exceptions
+	* audio/midi_drivers/mac_midi.cc: dynamic buffer resizing, enhanced pitch
+	  bend support, some fixes
+	* gumps/File_gump.cc: fixed Gump_text::paint() to match other gumps
+	* gumps/Newfile_gump.cc: changed to not restore background in destructor
+	* bggame.*: more code cleanup; added possibility to skip parts of the intro
+	  some other changes
+	* exceptions.h: added quit_exception and file_exception (base class
+	  for all file related exceptions)
+	* game.*: changed wait_delay to treat Return/Enter differently
+	  (used by the intro to skip parts of it)
+	* gamedat.cc, gamewin.*, readnpcs.cc: added red-plasma animation during game loading
+	* palette.cc: fixed fade_in/fade_out
+	* tqueue.cc: changed to use proper way to remove first element from a std::list
+
 2001-08-13  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* Lots:  Moved Monster_info to its own files in the shapes directory. 

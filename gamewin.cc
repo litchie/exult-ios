@@ -79,7 +79,6 @@
 using std::cerr;
 using std::cout;
 using std::endl;
-using std::exit;
 using std::istream;
 using std::ifstream;
 using std::ios;
@@ -188,6 +187,9 @@ Game_window::Game_window
 	    bg_paperdolls_allowed(false), bg_paperdolls(false),
 	    removed(new Deleted_objects()), 
 	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0)
+#ifdef RED_PLASMA
+	    ,load_palette_timer(0)
+#endif
 	{
 	game_window = this;		// Set static ->.
 
@@ -269,35 +271,49 @@ void Game_window::abort
 	vsprintf(buf, msg, ap);		// Format the message.
 	cerr << "Exult (fatal): " << buf << endl;
 	delete this;
-	exit(-1);
+	throw quit_exception(-1);
 	}
 
 void Game_window::init_files()
 {
 	pal = new Palette();
-	clock.set_palette();		// Set palette for correct time.
+	
+	// Determine some colors based on the default palette
+	set_palette(0);
 					// Get a bright green.
 	poison_pixel = pal->find_color(4, 63, 4);
 					// Get a light gray.
 	protect_pixel = pal->find_color(62, 62, 55);
 					// Red for hit in battle.
 	hit_pixel = pal->find_color(63, 4, 4);
+	// What about charmed/cursed/paralyzed?
+
+#ifdef RED_PLASMA
+	// Display red plasma during load...
+	setup_load_palette();
+#endif
+
 	usecode = Usecode_machine::create(this);
-	cerr << "Loading exult.flx..." << endl;
+	cout << "Loading exult.flx..." << endl;
 	exult_flx.load("<DATA>/exult.flx");
 
 	const char* gamedata = game->get_resource("files/gameflx").str;
-	cerr << "Loading " << gamedata << "..." << endl;
+	cout << "Loading " << gamedata << "..." << endl;
 	gameflx.load(gamedata);
+	CYCLE_RED_PLASMA();
 	faces.load(FACES_VGA);
+	CYCLE_RED_PLASMA();
 	gumps.load(GUMPS_VGA);
+	CYCLE_RED_PLASMA();
 	if (!fonts)
-		{
+	{
 		fonts = new Fonts_vga_file();
 		fonts->init();
-		}
+	}
 	sprites.load(SPRITES_VGA);
+	CYCLE_RED_PLASMA();
 	mainshp.load(MAINSHP_FLX);
+	CYCLE_RED_PLASMA();
 	shapes.init();
 
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_U7CHUNKS))
@@ -313,7 +329,7 @@ void Game_window::init_files()
 	else
 		U7open(u7map, U7MAP);
 	for (int schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
-		{			// Read in the chunk #'s.
+	{			// Read in the chunk #'s.
 		unsigned char buf[16*16*2];
 		u7map.read((char*)buf, sizeof(buf));
 		int scy = 16*(schunk/12);// Get abs. chunk coords.
@@ -323,7 +339,8 @@ void Game_window::init_files()
 		for (int cy = 0; cy < 16; cy++)
 			for (int cx = 0; cx < 16; cx++)
 				terrain_map[scx+cx][scy+cy] = Read2(mapdata);
-		}
+		CYCLE_RED_PLASMA();
+	}
 	u7map.close();
 	ifstream textflx;	
   	U7open(textflx, TEXT_FLX);
@@ -333,16 +350,18 @@ void Game_window::init_files()
 	Segment_file xf(XFORMTBL);	// Read in translucency tables.
 	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
 	for (int i = 0; i < nxforms; i++)
+	{
 		xforms[nxforms - 1 - i] = (uint8*)xf.retrieve(i, len);
+		CYCLE_RED_PLASMA();
+	}
 	invis_xform = (uint8*)xf.retrieve(2, len);
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
 					// Force clock to start.
 	tqueue->add(timer, &clock, (long) this);
+
 					// Clear object lists, flags.
-	for (int i1 = 0; i1 < c_num_chunks; i1++)
-		for (int i2 = 0; i2 < c_num_chunks; i2++)
-			objects[i1][i2] = 0;
+	memset((char *) objects, 0, sizeof(objects));
 	memset((char *) schunk_read, 0, sizeof(schunk_read));
 	memset((char *) schunk_modified, 0, sizeof(schunk_modified));
 
@@ -372,7 +391,7 @@ void Game_window::init_files()
 			else
 				cout << "Found Serpent Isle 'paperdol.vga' and 'gumps.vga' but one was bad." << endl << "Support for 'Serpent Isle' Paperdolls in 'Black Gate' DISABLED." << endl;
 		}
-		catch (exult_exception e)
+		catch (const exult_exception &e)
 		{
 			cerr << "Exception attempting to load Serpent Isle 'paperdol.vga' or 'gumps.vga" << endl <<
 				"Do you have Serpent Isle and is the correcct path set in the config for Serpent Isle?" << endl <<
@@ -397,9 +416,9 @@ void Game_window::init_files()
 	  keybinder->LoadFromFile(keyfilename.c_str());
 	}
 
+	CYCLE_RED_PLASMA();
 	// initialize .wav SFX pack
 	Audio::get_ptr()->Init_sfx();
-
 }
 	
 
@@ -1071,7 +1090,7 @@ void Game_window::get_ireg_objects
 	{
 		U7open(ireg, get_schunk_file_name(U7IREG, schunk, fname));
 	}
-	catch(...)
+	catch(const file_exception & f)
 	{
 		return;			// Just don't show them.
 	}
@@ -1368,9 +1387,13 @@ void Game_window::get_superchunk_objects
 	int schunk			// Superchunk #.
 	)
 	{
+	CYCLE_RED_PLASMA();
 	get_map_objects(schunk);	// Get map objects/scenery.
+	CYCLE_RED_PLASMA();
 	get_ifix_objects(schunk);	// Get objects from ifix.
+	CYCLE_RED_PLASMA();
 	get_ireg_objects(schunk);	// Get moveable objects.
+	CYCLE_RED_PLASMA();
 	schunk_read[schunk] = 1;	// Done this one now.
 	}
 
@@ -1493,6 +1516,11 @@ void Game_window::read
 	)
 	{
 	Audio::get_ptr()->cancel_streams();
+#ifdef RED_PLASMA
+	// Display red plasma during load...
+	setup_load_palette();
+#endif
+
 	clear_world();			// Wipe clean.
 	read_gwin();			// Read our data.
 					// DON'T do anything that might paint()
@@ -1542,7 +1570,6 @@ void Game_window::read_gwin
 		U7open(gin, GWINDAT);	// Gamewin.dat.
 	} catch (const file_open_exception& e)
 	{
-		e;
 		return;
 	}
 	
@@ -2915,13 +2942,14 @@ void Game_window::setup_game
 	(
 	)
 	{
-	set_palette(0);
-
 	init_actors();		// Set up actors if not already done.
 				// This also sets up initial 
 				// schedules and positions.
 
+	CYCLE_RED_PLASMA();
+
 	usecode->read();		// Read the usecode flags
+	CYCLE_RED_PLASMA();
 
 	if (Game::get_game_type() == BLACK_GATE)
 	{
@@ -2939,13 +2967,18 @@ void Game_window::setup_game
 			main_actor->set_flag(Obj_flags::dont_render);
 	}
 
+	CYCLE_RED_PLASMA();
+
 	Actor *party[9];
 	int cnt = get_party(party, 1);	// Get entire party.
+
 	for (int i = 0; i < cnt; i++)	// Init. rings.
+	{
 		party[i]->init_readied();
+		CYCLE_RED_PLASMA();
+	}
 	faded_out = 0;
 	time_stopped = 0;
-	clock.set_palette();		// Set palette for time-of-day.
 	Audio::get_ptr()->cancel_streams();
 //+++++The below wasn't prev. done by ::read(), so maybe it should be
 //+++++controlled by a 'first-time' flag.
@@ -2953,12 +2986,24 @@ void Game_window::setup_game
 	Map_chunk *olist = get_chunk(
 			main_actor->get_cx(), main_actor->get_cy());
 	olist->setup_cache();
+	CYCLE_RED_PLASMA();
 	Tile_coord t = main_actor->get_abs_tile_coord();
 	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1);
-//	paint();
-	set_all_dirty();		// Force entire repaint.
+	
+	// Force entire repaint.
+	set_all_dirty();
 	Face_stats::load_config(config);
-	}
+
+	// Fade out & clear screen before palette change
+	pal->fade_out(c_fade_out_time);
+	clear_screen(true);
+#ifdef RED_PLASMA
+	load_palette_timer = 0;
+#endif
+
+	// Set palette for time-of-day.
+	clock.set_palette();
+}
 
 /*
  *	Text-drawing methods:
@@ -2991,8 +3036,7 @@ Font *Game_window::get_font(int fontnum)
 
 void Game_window::plasma(int w, int h, int x, int y, int startc, int endc)
 {
-	Image_buffer8 *ibuf = Game_window::get_game_window()->
-				get_win()->get_ib8();
+	Image_buffer8 *ibuf = get_win()->get_ib8();
 
 	ibuf->fill8(startc, w, h, x, y);
 
@@ -3008,6 +3052,7 @@ void Game_window::plasma(int w, int h, int x, int y, int startc, int endc)
 			ibuf->fill8(pc, 1, 3, px2, py2 - 1);
 		}
 	}
+	painted = true;
 }
 
 /*
@@ -3138,3 +3183,47 @@ Shape_file* Game_window::create_mini_screenshot()
 	paint();
 	return sh;
 }
+
+#ifdef RED_PLASMA
+
+#define	PLASMA_START_COLOR	128
+#define	PLASMA_CYCLE_RANGE	77
+void Game_window::setup_load_palette()
+{
+	if (load_palette_timer != 0)
+		return;
+
+	// Put up the plasma to the screen
+	plasma(get_width(), get_height(), 0, 0, PLASMA_START_COLOR, PLASMA_START_COLOR+PLASMA_CYCLE_RANGE+1);
+
+	// Load the palette
+	if (Game::get_game_type()==BLACK_GATE)
+		pal->load("<STATIC>/intropal.dat",2);
+	else if (Game::get_game_type()==SERPENT_ISLE)
+	{
+		// both of the following two palettes are useable for plasma
+		//set_palette(9);
+		pal->load(MAINSHP_FLX,1);
+		// TODO - SI should have blue plasma I think
+	}
+	pal->apply();
+	load_palette_timer = SDL_GetTicks();
+}
+
+void Game_window::cycle_load_palette()
+{
+	if (load_palette_timer == 0)
+		return;
+	uint32 ticks = SDL_GetTicks();
+	if(ticks > load_palette_timer+100)
+	{
+		for(int i = 0; i < 4; ++i)
+			get_win()->rotate_colors(PLASMA_START_COLOR, PLASMA_CYCLE_RANGE, 1);
+		show(true);
+
+		// We query the timer here again, as the blit can take easily 50 ms and more
+		// depending on the chosen scaler and the overall system speed
+		load_palette_timer = SDL_GetTicks();
+	}
+}
+#endif
