@@ -1,3 +1,9 @@
+2004-10-07    <jeff@mini.nerble.net>
+
+	* objs/contain.cc: Use gump # from 'containers.dat' for given
+	container.  (Not really tested yet.)  Support has also been added
+	to ExultStudio for setting a shape's associated gump shape.
+
 2004-09-19    <jeff@mini.nerble.net>
 
 	* mapedit/shapeedit.cc, shapes/items.cc, files/msgfile.cc: Support
