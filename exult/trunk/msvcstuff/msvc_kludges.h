@@ -20,13 +20,21 @@
 #define DONT_HAVE_HASH_MAP
 #define MSVC_FIND_NEARBY_KLUDGE
 
+#define ENABLE_MIDISFX
+#define COLOURLESS_REALLY_HATES_THE_BG_SFX
+
 // Don't need everything in the windows headers
 #define WIN32_LEAN_AND_MEAN
 
 // Disable some warnings
 #pragma warning (disable: 4786)	// Debug Len > 255
 #pragma warning (disable: 4355)	// 'this' : used in base member initializer list
+
+#ifndef ENABLE_EXTRA_WARNINGS
 #pragma warning (disable: 4101) // unreferenced local variable
+#pragma warning (disable: 4309) // truncation of constant value
+#pragma warning (disable: 4305) // truncation from 'const int' to 'char'
+#endif
 
 // Define size_t, but don't define tm, we'll define that later
 #define _TM_DEFINED
@@ -131,7 +139,7 @@ using std::tm;
 #include "text_gump.h"
 #include "audio.h"
 #include "midi.h"
-#include "SDL.h"
+#include <SDL.h>
 #include "Astar.h"
 #include "Audio.h"
 #include "Configuration.h"

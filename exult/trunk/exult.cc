@@ -32,10 +32,10 @@
 #  include <cctype>
 #endif
 
-#include "SDL.h"
+#include <SDL.h>
 
 #define Font _XFont_
-#include "SDL_syswm.h"
+#include <SDL_syswm.h>
 #undef Font
 
 #ifdef USE_EXULTSTUDIO  /* Only needed for communication with exult studio */
@@ -495,7 +495,8 @@ static void Handle_events
 					// This avoids jumpy walking:
 			{
 			gwin->paint_dirty();
-			last_repaint = ticks;
+			while (ticks > last_repaint+50)last_repaint += 50;
+
 			int x, y;// Check for 'stuck' Avatar.
 			if (!gwin->is_moving() &&
 			    !gwin->was_teleported())
@@ -514,14 +515,15 @@ static void Handle_events
 			Mouse::mouse->show();	// Re-display mouse.
 
 					// Rotate less often if scaling and not paletized.
-		if (ticks > last_rotate + (100 << (gwin->get_win()->is_palettized()||scale==1?0:1)))
+		int rot_speed = 100 << (gwin->get_win()->is_palettized()||scale==1?0:1);
+		if (ticks > last_rotate + rot_speed)
 			{		// (Blits in simulated 8-bit mode.)
 			gwin->get_win()->rotate_colors(0xf8, 4, 0);
 			gwin->get_win()->rotate_colors(0xf4, 4, 0);
 			gwin->get_win()->rotate_colors(0xf0, 4, 0);
 			gwin->get_win()->rotate_colors(0xe8, 8, 0);
 			gwin->get_win()->rotate_colors(0xe0, 8, 1);
-			last_rotate = ticks;
+			while (ticks > last_rotate + rot_speed) last_rotate += rot_speed;
 					// Non palettized needs explicit blit.
 			if (!gwin->get_win()->is_palettized())
 				gwin->set_painted();
@@ -860,6 +862,7 @@ void Wait_for_arrival
 				}
 					// Get current time, & animate.
 		uint32 ticks = SDL_GetTicks();
+		Game::set_ticks(ticks);
 		if (maxticks && ticks > stop_time)
 			timeout = true;
 		if (gwin->have_focus())
@@ -868,7 +871,7 @@ void Wait_for_arrival
 		if (ticks > last_repaint + 50 || gwin->was_painted())
 			{
 			gwin->paint_dirty();
-			last_repaint = ticks;
+			while (ticks > last_repaint+50)last_repaint += 50;
 			}
 
 		Mouse::mouse->show();		// Re-display mouse.

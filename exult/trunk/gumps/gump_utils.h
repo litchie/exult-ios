@@ -93,7 +93,7 @@ inline void Delay
 					// Wait for timeout or event.
 	select(xfd + 1, &rfds, 0, 0, &timer);
 #else					/* May use this for Linux too. */
-	SDL_Delay(20);			// Try 1/50 second.
+	SDL_Delay(10);			// Try 1/100 second.
 #endif
 }
 
