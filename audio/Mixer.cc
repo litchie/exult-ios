@@ -242,9 +242,13 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 			buf->end_consumption();
 			continue;
 		}
+#if !defined(MACOS)
+		// the following code is not working under MacOS - it results in garbled sound
+		// Propably an endianess problem?
 		int dir = buf->get_dir();
 		if (dir != 0 && dir != 8 && format == AUDIO_S16 && len%4 == 0)
 			modify_stereo16((sint16 *) temp_buffer, len/4, dir);
+#endif
 		SDL::MixAudio(stream, temp_buffer, len, buf->get_volume());
 		++active_cnt;
 	}
