@@ -208,7 +208,7 @@ dnl ----------------------
 
 dnl Timidity MIDI driver
 AC_MSG_CHECKING(whether to enable timidity)
-AC_ARG_ENABLE(timidity, [  --disable-timidity      force exult not to use timidity [defult no]],,enable_timidity=yes)
+AC_ARG_ENABLE(timidity, [  --enable-timidity       Use timidity [defult yes]],,enable_timidity=yes)
 if test x$enable_timidity = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_CHECK_PROG(HAVE_TIMIDITY_BIN, timidity, found it, not found)
@@ -222,7 +222,7 @@ fi
 dnl there _should_ be a built-in macro for this check...
 dnl kmid MIDI driver
 AC_MSG_CHECKING(whether to enable kmid)
-AC_ARG_ENABLE(kmid,     [  --disable-kmid          force exult not to use kmid [default no]],,enable_kmid=yes)
+AC_ARG_ENABLE(kmid,     [  --enable-kmid           Use libkmid [default yes]],,enable_kmid=yes)
 if test x$enable_kmid = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_MSG_CHECKING(for libkmid)
@@ -254,20 +254,20 @@ dnl ---------------------------
 AC_MSG_CHECKING(checking memory allocation scheme)
 
 dnl For the alternate allocator
-AC_ARG_ENABLE(alternate-allocator, [  --enable-alternate-allocator          enable alternate memory allocator [default no]],,enable_alternate_allocator=no)
+AC_ARG_ENABLE(alternate-allocator,    [  --enable-alternate-allocator    Use alternate memory allocator [default no]],,enable_alternate_allocator=no)
 if test x$enable_alternate_allocator = xyes; then
 	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
 fi
 
 dnl For storage initialisation
-AC_ARG_ENABLE(storage-initialisation, [  --enable-storage-initialisation          clear storage when allocated [default no]],,enable_storage_initialisation=no)
+AC_ARG_ENABLE(storage-initialisation, [  --enable-storage-initialisation Clear storage when allocated [default no]],,enable_storage_initialisation=no)
 if test x$enable_storage_initialisation = xyes; then
 	AC_DEFINE(WANT_ALTERNATE_ALLOCATOR)
 	AC_DEFINE(INITIALISE_ALLOCATED_BLOCKS,0)
 fi
 
 dnl For storage poisoning
-AC_ARG_ENABLE(storage-poisoning, [  --enable-storage-poisoning          fill storage with 0xf1 when allocated [default no]],,enable_storage_poisoning=no)
+AC_ARG_ENABLE(storage-poisoning,      [  --enable-storage-poisoning      Poison storage when allocated [default no]],,enable_storage_poisoning=no)
 if test x$enable_storage_poisoning = xyes; then
 	if test x$enable_storage_initialisation = xyes; then
 		AC_MSG_RESULT(poisoned. (Disabling storage initialisation. Can't poison and init to zero.))
@@ -299,7 +299,7 @@ dnl Debugging options
 dnl --------------------
 
 dnl basic debugging mode
-AC_ARG_ENABLE(debug, [  --enable-debug          enable debug messages [default no]],,enable_debug=no)
+AC_ARG_ENABLE(debug, [  --enable-debug          Enable debug messages [default no]],,enable_debug=no)
 AC_MSG_CHECKING(whether to enable debugging mode)
 if test x$enable_debug = xyes; then
 	AC_MSG_RESULT(yes)
@@ -311,7 +311,7 @@ else
 fi
 
 dnl optimized debugging mode
-AC_ARG_ENABLE(optimized-debug, [  --enable-optimized-debug          enable optimized debug build [default no]],,enable_optimized_debug=no)
+AC_ARG_ENABLE(optimized-debug,  [  --enable-optimized-debug        Enable optimized debug build [default no]],,enable_optimized_debug=no)
 AC_MSG_CHECKING(whether to do an optimized debug build)
 if test x$enable_optimized_debug = xyes; then
 	AC_MSG_RESULT(yes)
@@ -322,7 +322,7 @@ else
 fi
 
 dnl SDL parachute?
-AC_ARG_ENABLE(sdl-parachute,       [ --disable-sdl-parachute                disables SDL parachute [default no]],,enable_sdl_parachute=yes)
+AC_ARG_ENABLE(sdl-parachute,    [  --enable-sdl-parachute  Use SDL parachute [default yes]],,enable_sdl_parachute=yes)
 AC_MSG_CHECKING(if we should disable the SDL parachute)
 if test x$enable_sdl_parachute = xno; then
   AC_MSG_RESULT(yes)
@@ -332,7 +332,7 @@ else
 fi
 
 dnl Usecode debugger
-AC_ARG_ENABLE(usecode-debugger, [  --enable-usecode-debugger          pre-alpha usecode debugger [default no]],,enable_usecode_debugger=no)
+AC_ARG_ENABLE(usecode-debugger, [  --enable-usecode-debugger       Pre-alpha usecode debugger [default no]],,enable_usecode_debugger=no)
 AC_MSG_CHECKING(whether to enable the usecode debugger)
 if test x$enable_usecode_debugger = xyes; then
 	AC_MSG_RESULT(yes)
@@ -351,14 +351,14 @@ AC_MSG_CHECKING(warning level)
 WARNING_LEVEL="normal"
 
 dnl more warnings
-AC_ARG_ENABLE(warnings, [  --enable-warnings       enable all warnings and debug msg [default no]],,enable_warnings=no)
+AC_ARG_ENABLE(warnings, [  --enable-warnings       Enable all warnings [default no]],,enable_warnings=no)
 if test x$enable_warnings = xyes; then
  	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
 	WARNING_LEVEL="all"
 fi
 
 dnl Weep into your beer warnings
-AC_ARG_ENABLE(awful-warnings, [  --enable-awful-warnings       enable warnings for violations of Scott Meyers' Effective C++ style guidelines [default no]],,enable_awful_warnings=no)
+AC_ARG_ENABLE(awful-warnings, [  --enable-awful-warnings Enable warnings for violations of Scott Meyers' Effective C++ style guidelines [default no]],,enable_awful_warnings=no)
 if test x$enable_awful_warnings = xyes; then
 	DEBUG_FLAGS="$DEBUG_FLAGS -Weffc++"
 	if test x$WARNING_LEVEL = xall; then
@@ -373,7 +373,7 @@ AC_MSG_RESULT($WARNING_LEVEL)
 
 
 dnl Ignore long-long warnings (for SDL header files...)
-AC_ARG_ENABLE(long-long-warnings, [  --enable-long-long-warnings   Enable long long warnings- needed for Compaq's cxx with GNU ld],
+AC_ARG_ENABLE(long-long-warnings, [  --enable-long-long-warnings     Enable long long warnings- needed for Compaq's cxx with GNU ld [default no]],
 	,,enable_long_long_warnings=no)
 AC_MSG_CHECKING(if we should disable long-long warnings)
 if test x$enable_long_long_warnings = xyes; then
@@ -384,7 +384,7 @@ else
 fi
 
 dnl Heavy namespaces. Most installations probably can't take this option
-AC_ARG_ENABLE(std-namespace, [  --enable-std-namespace		Tell the compiler to honour the std namespace. May not work for you. [default no]],,enable_std_namespace=no)
+AC_ARG_ENABLE(std-namespace, [  --enable-std-namespace  Honour the std namespace. [default no]],,enable_std_namespace=no)
 AC_MSG_CHECKING(if we should honour the std namespace)
 if test x$enable_std_namespace = xyes; then
 	AC_MSG_RESULT(yes)
@@ -399,7 +399,7 @@ dnl External features
 dnl --------------------
 
 dnl Build any external programs?
-AC_ARG_ENABLE(tools, [ --disable-tools                   only build the main program [default no]],,enable_tools=yes)
+AC_ARG_ENABLE(tools,    [  --disable-tools         Only build the main program],,enable_tools=yes)
 AC_MSG_CHECKING(whether to build only the main program)
 if test x$enable_tools = xno; then
 	AC_MSG_RESULT(yes)
@@ -414,7 +414,7 @@ else
 fi
 
 dnl Build compiler?
-AC_ARG_ENABLE(compiler, [ --disable-compiler             don't build the usecode compiler [default no]],,enable_compiler=yes)
+AC_ARG_ENABLE(compiler, [  --enable-compiler       Build the usecode compiler [default yes]],,enable_compiler=yes)
 AC_MSG_CHECKING(whether to build the usecode compiler)
 if test x$enable_compiler = xno; then
 	AC_MSG_RESULT(no)
@@ -425,7 +425,7 @@ else
 fi
 
 dnl Build data files?
-AC_ARG_ENABLE(data, [ --disable-data                    don't build the data files [default no]],,enable_data=yes)
+AC_ARG_ENABLE(data,          [  --enable-data           Create the data files [default yes]],,enable_data=yes)
 AC_MSG_CHECKING(whether to build the data files)
 if test x$enable_data = xno; then
 	AC_MSG_RESULT(no)
@@ -436,7 +436,7 @@ else
 fi
 
 dnl GTK interface
-AC_ARG_ENABLE(gtk-interface, [  --enable-gtk-interface          build the GTK+ interface [default no]],,enable_gtk_interface=no)
+AC_ARG_ENABLE(gtk-interface, [  --enable-gtk-interface  Build the GTK+ interface [default no]],,enable_gtk_interface=no)
 AC_MSG_CHECKING(whether to build the GTK+ interface)
 if test x$enable_gtk_interface = xyes; then
 	AC_MSG_RESULT(yes)
@@ -469,7 +469,7 @@ fi
 
 dnl GIMP plugin
 AM_CONDITIONAL(GIMP_PLUGIN, false)
-AC_ARG_ENABLE(gimp-plugin, [  --disable-gimp-plugin          do not build the GIMP plugin [default no]],,enable_gimp_plugin=yes)
+AC_ARG_ENABLE(gimp-plugin,   [  --enable-gimp-plugin    Build the GIMP plugin [default yes]],,enable_gimp_plugin=yes)
 dnl Check for GIMP devel stuff. We need to check for glib first
 if test x$enable_gimp_plugin = xyes; then
 	AC_PATH_PROG(GLIBCONFIG, glib-config)
