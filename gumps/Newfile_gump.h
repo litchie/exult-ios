@@ -161,7 +161,8 @@ protected:
 	Shape_file *screenshot;		// The picture to be drawn
 	SaveGame_Details *details;	// The game details to show
 	SaveGame_Party *party;		// The party to show
-	bool is_readable;
+	bool is_readable;		// Is the save game readable
+	const char *filename;		// Filename of the savegame, if exists
 
 	int	list_position;		// The position in the savegame list (top game)
 	int	selected;		// The savegame that has been selected (num in list)
