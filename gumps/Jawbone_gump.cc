@@ -79,7 +79,7 @@ void Jawbone_gump::paint_tooth(Game_window* gwin, int index)
 	int objx = toothx[index];
 	int objy = toothy[index];
 
-	gwin->paint_shape(x + objx, y + objy, *this);
+	gwin->paint_shape(x + objx, y + objy, shape);
 }
 
 Game_object *Jawbone_gump::find_object(int mx, int my)
