@@ -158,7 +158,7 @@ void Handle_events
 		FD_SET(xfd, &rfds);
 					// Wait for timeout or event.
 		select(xfd + 1, &rfds, 0, 0, &timer);
-		while (!*stop && XPending(display) > 0)
+		while (!*stop && SDL_PollEvent(0))
 			Handle_event();
 					// Get current time.
 		gettimeofday(&timer, 0);
@@ -197,8 +197,9 @@ static void Handle_event
 	int rootx, rooty, winx, winy;	// Get positions.
 	unsigned int mask;
 	char keybuf[10];
-	if (!SDL_WaitEvent(&event))	// Get event.
+	if (!SDL_PollEvent(&event))	// Get event.
 		return;			// Some kind of error.
+//cout << "Event " << (int) event.type << " received\n";
 	switch (event.type)
 		{
 	case SDL_MOUSEBUTTONDOWN:
@@ -276,7 +277,6 @@ static void Handle_event
 		}
 	}
 
-
 /*
  *	Handle a keystroke.
  */
@@ -287,7 +287,7 @@ static void Handle_keystroke
 	int shift
 	)
 	{
-	static int shape_cnt = 0x310, shape_frame = 0;
+	static int shape_cnt = 0x360, shape_frame = 0;
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = 4, gump_frame = 0;
 	gwin->end_intro();

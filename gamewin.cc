@@ -494,8 +494,9 @@ void Game_window::read_ireg_objects
 			quality = 0;
 #if 0
 cout << item_names[entry[2]+256*(entry[3]&3)] << ": ";
-cout << "ents 6, 7, 8 = " << (void *) entry[6] << ' ' <<
-	(void *) entry[7] << ' ' << (void *) entry[8] << '\n';
+for (int e = 0; e < 12; e++)
+	cout << (void *) entry[e] << ' ';
+cout << '\n';
 #endif
 			Container_game_object *cobj = 
 				new Container_game_object(
@@ -1419,6 +1420,7 @@ void Game_window::show_avatar_choices
 	conv_choices[num_choices] = Rectangle(0, 0, 0, 0);
 	for (int i = 0; i < num_faces; i++)	// Clear 'pending' flags.
 		face_info[i]->text_pending = 0;
+	painted = 1;
 	}
 
 /*
@@ -1487,6 +1489,7 @@ void Game_window::end_intro
 	if (mode == intro)
 		{
 		mode = normal;
+		init_actors();		// Set up actors if not already done.
 		paint();
 					// Start with Iolo.
 		mode = conversation;
