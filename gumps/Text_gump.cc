@@ -26,7 +26,7 @@ using std::strcpy;
 using std::strlen;
 
 /*
- *	Add to the text.
+ *	Add to the text, starting a newline.
  */
 
 void Text_gump::add_text
@@ -36,9 +36,12 @@ void Text_gump::add_text
 {
 	int slen = strlen(str);		// Length of new text.
 					// Allocate new space.
-	char *newtext = new char[textlen + slen + 1];
+	char *newtext = new char[textlen + (textlen != 0) + slen + 1];
 	if (textlen)			// Copy over old.
+		{
 		strcpy(newtext, text);
+		newtext[textlen++] = '~';
+		}
 	strcpy(newtext + textlen, str);	// Append new.
 	delete [] text;
 	text = newtext;
@@ -65,7 +68,7 @@ int Text_gump::paint_page
 	char *str = text + start;
 	while (*str && *str != '*' && ypos + textheight <= box.h)
 	{
-		if (*str == '~')	// End of paragraph?
+		if (*str == '~')	// Empty paragraph?
 		{
 			ypos += textheight;
 			str++;
@@ -86,7 +89,7 @@ int Text_gump::paint_page
 		*eol = eolchr;		// Restore char.
 		if (endoff > 0)		// All painted?
 		{		// Value returned is height.
-			str = eol;
+			str = eol + (eolchr == '~');
 			ypos += endoff;
 		}
 		else			// Out of room.

@@ -2,6 +2,7 @@
 
 	* Changes to barges and Chunk_object_list::is_blocked to handle
 	flying carpet better.
+	* Fiddled with scroll rendering.
 
 2000-12-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* menulist.cc: handle SDL_QUIT event in menus

@@ -41,8 +41,9 @@ using std::string;
  *      And the MAINSHP font (36)
  *	However, their values are set elsewhere
  */
-static int hlead[NUM_FONTS] = {-1, 0, 1, 0, 1, 0, 0, -1, 0, 0};
-
+//static int hlead[NUM_FONTS] = {-1, 0, 1, 0, 1, 0, 0, -1, 0, 0};
+// For scrolls (12/6/00):
+static int hlead[NUM_FONTS] = {-1, 0, 1, 0, 0, 0, 0, -1, 0, 0};
 /*
  *	Initialize.
  */
