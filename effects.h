@@ -27,6 +27,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_EFFECTS	1
 
 #include "tqueue.h"
+#include "tiles.h"
+
+class PathFinder;
+class Game_object;
 
 /*
  *	Base class for special-effects:
@@ -57,6 +61,29 @@ class Sprites_effect : public Special_effect
 					//   left corner.
 public:
 	Sprites_effect(int num, int xpos, int ypos);
+					// For Time_sensitive:
+	virtual void handle_event(unsigned long time, long udata);
+					// Render.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
+ *	A moving animation, followed by a Usecode function call at the end, to
+ *	implement Usecode intrinsic 0x41:
+ */
+class Projectile_effect : public Special_effect
+	{
+	Game_object *dest;		// Destination of path.
+	int usefun;			// Usecode function to run on 'dest'.
+	int shape_num;			// Shape # in 'shapes.vga'.
+	int frame_num;			// Current frame.
+	int frames;			// # frames.
+	PathFinder *path;		// Determines path.
+	Tile_coord pos;			// Current position.
+public:
+	Projectile_effect(Game_object *from, Game_object *to, int ufun, 
+								int shnum);
+	~Projectile_effect();
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.
