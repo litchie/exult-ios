@@ -544,9 +544,11 @@ void ExultStudio::update_group_windows
 			gtk_object_get_data(GTK_OBJECT(*it), "browser");
 		if (chooser->get_group() == grp)
 			{		// A match?
-//++++Crashes			gtk_signal_emit_by_name(
-//				GTK_OBJECT(chooser->get_widget()), 
-//							"expose_event");
+			dynamic_cast<Shape_draw*>(chooser)->render();
+			gboolean ret;
+			gtk_signal_emit_by_name(
+				GTK_OBJECT(chooser->get_widget()), 
+						"expose_event", &ret);
 			}
 		}
 	}
