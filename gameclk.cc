@@ -30,16 +30,6 @@
 #include "game.h"
 
 /*
- *	Palette #'s in 'palettes.flx'.  Just need them here for now.
-	++++++Need to verify #'s.
- */
-const int PALETTE_DAY = 0;
-const int PALETTE_DUSK = 1;
-const int PALETTE_NIGHT = 2;
-const int PALETTE_DAWN = 1;		// Think this is it.
-const int PALETTE_INVISIBLE = 3;	// When Avatar is invisible.
-
-/*
  *	Set palette.
  */
 
