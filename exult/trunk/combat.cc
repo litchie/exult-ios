@@ -230,10 +230,12 @@ void Combat_schedule::find_opponents
 		if (actor->get_alignment() >= Npc_actor::hostile)
 		{
 			opponents.push(actor);
+#if 0	/* ++++++I think I was wrong about this. */
 					// And set hostile monsters.
 			if (actor->get_alignment() == Npc_actor::hostile &&
 			    actor->get_schedule_type() != Schedule::combat)
 				actor->set_schedule_type(Schedule::combat);
+#endif
 		}
 		else if (in_party)
 			{		// Attacking party member?
@@ -642,12 +644,14 @@ void Combat_schedule::start_strike
 	    (npc == gwin->get_main_actor() || 
 				opponent == gwin->get_main_actor()))
 		Audio::get_ptr()->play_sound_effect(sfx);
+#if 0	/* +++++Now done in 'attacked' */
 					// Have them attack back.
 	Actor *opp = opponent ? opponent->as_actor() : 0;
 					// But not if it's a party member.
 	if (opp && !opp->get_target() && !opp->is_in_party())
 		opp->set_target(npc, 
 				npc->get_schedule_type() != Schedule::duel);
+#endif
 	}
 
 /*
@@ -907,7 +911,7 @@ void Combat_schedule::now_what
 		break;
 	case strike:			// He hasn't moved away?
 		state = approach;
-					// Back into queue.++++Guessing delay.
+					// Back into queue.
 		npc->start(gwin->get_std_delay(), strange 
 			? 4*gwin->get_std_delay() : gwin->get_std_delay());
 		if (npc->get_footprint().enlarge(strike_range).intersects(
