@@ -1,14 +1,13 @@
 INCLUDES = -I.. -I../shapes -I../imagewin -I../files \
 	$(GTK_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
-# This test isn't working - jsf
-#if GTK_INTERFACE
+if GTK_INTERFACE
 GTK_APPS = shapetest
 GTK_LIBS = -lgtk -lgdk
-#else
-#GTK_APPS = 
-#GTK_LIBS =
-#endif
+else
+GTK_APPS = 
+GTK_LIBS =
+endif
 
 shapetest_SOURCES = shapelst.cc shapelst.h
 
