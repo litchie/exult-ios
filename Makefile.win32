@@ -33,7 +33,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	game.o gameclk.o gamedat.o gamerend.o gamewin.o keys.o keyactions.o \
 	menulist.o mouse.o npcnear.o npctime.o palette.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
-	exultico.o
+	exultico.o cheat_screen.o
 # TBA:	cheat_screen.o
 # unused: npctest.o
 
@@ -93,7 +93,9 @@ EXULT_FLX_OBJECTS = \
 	data/extras.shp \
 	data/midi_conversion.shp \
 	data/sfx_conversion.shp \
-	data/palette_fades.shp
+	data/palette_fades.shp \
+	data/defaultkeys.txt \
+	data/flx.in 
 
 $(EXEC) : $(OBJS) data/exult.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)

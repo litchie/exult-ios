@@ -171,7 +171,7 @@ void U7open
 	(
 	std::ifstream& in,			// Input stream to open.
 	const char *fname,			// May be converted to upper-case.
-	bool is_text = false			// Should the file be opened in text mode
+	bool is_text				// Should the file be opened in text mode
 	)
 {
 #ifdef MACOS
@@ -207,7 +207,7 @@ void U7open
 	(
 	std::ofstream& out,			// Output stream to open.
 	const char *fname,			// May be converted to upper-case.
-	bool is_text = false			// Should the file be opened in text mode
+	bool is_text				// Should the file be opened in text mode
 	)
 {
 #ifdef MACOS
