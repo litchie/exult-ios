@@ -1,3 +1,8 @@
+2002-12-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gumps/Spellbook_gump.cc (public): Bookmark always shows, and
+	clicking on it gets you back to its page.
+
 2002-11-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* CombatOptions_gump.cc:  Added "Combat" menu.
