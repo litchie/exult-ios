@@ -224,6 +224,21 @@ int Game_render::paint_map
 				    map->get_terrain_num(cx, cy), xoff, yoff);
 			}
 		}
+					// Now the flat RLE terrain.
+	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
+		{
+		int yoff = Figure_screen_offset(cy, scrollty);
+		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
+			{
+			int xoff = Figure_screen_offset(cx, scrolltx);
+			paint_chunk_flat_rles(cx, cy, xoff, yoff);
+
+			if (cheat.in_map_editor())
+				Paint_chunk_outline(gwin, 
+				    sman->get_special_pixel(HIT_PIXEL), cx, cy,
+				    map->get_terrain_num(cx, cy), xoff, yoff);
+			}
+		}
 					// Draw the chunks' objects
 					//   diagonally NE.
 	int tmp_stopy = DECR_CHUNK(start_chunky);
@@ -343,7 +358,21 @@ void Game_render::paint_chunk_flats
 			gwin->win->copy8(cflats->get_bits(), 
 				c_chunksize, c_chunksize, xoff, yoff);
 		}
-	Flat_object_iterator next(olist);// Now do flat RLE objects.
+	}
+
+/*
+ *	Paint the flat RLE (terrain) shapes in a chunk.
+ */
+
+void Game_render::paint_chunk_flat_rles
+	(
+	int cx, int cy,			// Chunk coords (0 - 12*16).
+	int xoff, int yoff		// Pixel offset of top-of-screen.
+	)
+	{
+	Game_window *gwin = Game_window::get_instance();
+	Map_chunk *olist = gwin->map->get_chunk(cx, cy);
+	Flat_object_iterator next(olist);// Do flat RLE objects.
 	Game_object *obj;
 	while ((obj = next.get_next()) != 0)
 		obj->paint();
