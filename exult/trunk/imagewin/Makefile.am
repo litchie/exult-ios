@@ -12,6 +12,7 @@ libimagewin_la_SOURCES = \
 	imagescl.cc \
 	imagewin.cc \
 	imagewin.h \
+	iwin8.cc \
 	iwin8.h \
 	scale.cc \
 	scale.h
