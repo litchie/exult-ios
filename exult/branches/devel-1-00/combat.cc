@@ -212,6 +212,16 @@ Game_object *Combat_schedule::find_foe
 	)
 	{
 	cout << "'" << npc->get_name() << "' is looking for a foe" << endl;
+					// Remove any that died.
+	for (Actor_queue::const_iterator it = opponents.begin(); 
+						it != opponents.end(); )
+		{
+		Actor_queue::const_iterator next = it;
+		++next;			// Point to next.
+		if ((*it)->is_dead())
+			opponents.remove(*it);
+		it = next;
+		}
 	if (opponents.empty())	// No more from last scan?
 		{
 		find_opponents();	// Find all nearby.
