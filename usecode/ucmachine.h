@@ -55,7 +55,7 @@ public:
 					// Create Usecode_internal.
 	static Usecode_machine *create(Game_window *gw);
 	Usecode_machine(Game_window *gw);
-	~Usecode_machine();
+	virtual ~Usecode_machine();
 					// Read in usecode functions.
 	virtual void read_usecode(std::istream& file) = 0;
 					// Possible events:
