@@ -210,7 +210,8 @@ struct Usecode_machine
 		}
 	Answers answers;		// What user can click on.
 	deque< Answers > answer_stack;
-	Game_object *get_item(long val);// Get ->obj. from 'itemref'.
+					// Get ->obj. from 'itemref'.
+	Game_object *get_item(Usecode_value& itemref);
 	/*
 	 *	Built-in usecode functions:
 	 */

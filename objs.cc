@@ -1310,25 +1310,10 @@ void Chunk_object_list::add
 	int num_entries = 0;		// Need to count as we sort.
 	Game_object *obj;
 	Game_object *prev = 0;
-#if 0
-	for (obj = objects; obj && !newobj->lt(*obj); obj = obj->next)
-		prev = obj;
-#else	/* ++++++Testing */
-#if 0
-	for (obj = objects; obj; obj = obj->next)
-		{
-		int cmp = newobj->lt(*obj);
-		if (!cmp)		// Bigger than this object?
-			prev = obj;	// Let's find last that we're bigger
-					//   than.
-		}
-#else	/* Just sort by lift. */
+					// Just sort by lift.
 	for (obj = objects; obj && newobj->get_lift() > obj->get_lift(); 
 							obj = obj->next)
 		prev = obj;
-
-#endif
-#endif
 	if (!prev)			// Goes in front?
 		{
 		newobj->next = objects;
