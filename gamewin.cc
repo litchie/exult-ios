@@ -884,6 +884,41 @@ int Game_window::read_gwin
 	}
 
 /*
+ *	Read in superchunk data to cover the screen.
+ */
+
+void Game_window::read_map_data
+	(
+	)
+	{
+	int scrolltx = get_scrolltx(), scrollty = get_scrollty();
+	int w = get_width(), h = get_height();
+					// Start one tile to left.
+	int firstsx = (scrolltx - 1)/tiles_per_schunk, 
+	    firstsy = (scrollty - 1)/tiles_per_schunk;
+					// End 8 tiles to right.
+	int lastsx = (scrolltx + (w + tilesize - 2)/tilesize + 
+					tiles_per_chunk/2)/tiles_per_schunk;
+	int lastsy = (scrollty + (h + tilesize - 2)/tilesize + 
+					tiles_per_chunk/2)/tiles_per_schunk;
+	if (lastsx >= 12)		// Don't go past end.
+		lastsx = 11;
+	if (lastsy >= 12)
+		lastsy = 11;
+					// Read in "map", "ifix" objects for
+					//  all visible superchunks.
+	for (int sy = firstsy; sy <= lastsy; sy++)
+		for (int sx = firstsx; sx <= lastsx; sx++)
+			{
+					// Figure superchunk #.
+			int schunk = 12*sy + sx;
+					// Read it if necessary.
+			if (!schunk_read[schunk])
+				get_superchunk_objects(schunk);
+			}
+	}	
+
+/*
  *      Paint splash screen
  */
 
@@ -969,6 +1004,7 @@ void Game_window::paint
 	if (stop_chunky > num_chunks)
 		stop_chunky = num_chunks;
 	int cx, cy;			// Chunk #'s.
+#if 0	/*+++++++Done in read_map_data().  Called from paint(void). */
 					// Read in "map", "ifix" objects for
 					//  all visible superchunks.
 	for (cy = start_chunky; cy < stop_chunky; )
@@ -1003,6 +1039,7 @@ void Game_window::paint
 					// Increment y coords.
 		cy += num_chunks_y;
 		}
+#endif
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy < stop_chunky; cy++)
 		for (cx = start_chunkx; cx < stop_chunkx; cx++)
@@ -1282,6 +1319,7 @@ void Game_window::view_right
 		paint();
 		return;
 		}
+	read_map_data();		// Be sure objects are present.
 	int w = get_width(), h = get_height();
 					// Shift image to left.
 	win->copy(chunksize, 0, w - chunksize, h, 0, 0);
@@ -1304,6 +1342,7 @@ void Game_window::view_left
 		paint();
 		return;
 		}
+	read_map_data();		// Be sure objects are present.
 	win->copy(0, 0, get_width() - chunksize, get_height(), chunksize, 0);
 	int h = get_height();
 	paint(0, 0, chunksize, h);
@@ -1323,6 +1362,7 @@ void Game_window::view_down
 		paint();
 		return;
 		}
+	read_map_data();		// Be sure objects are present.
 	int w = get_width(), h = get_height();
 	win->copy(0, chunksize, w, h - chunksize, 0, 0);
 	paint(0, h - chunksize, w, chunksize);
@@ -1344,6 +1384,7 @@ void Game_window::view_up
 		paint();
 		return;
 		}
+	read_map_data();		// Be sure objects are present.
 	int w = get_width();
 	win->copy(0, 0, w, get_height() - chunksize, 0, chunksize);
 	paint(0, 0, w, chunksize);
