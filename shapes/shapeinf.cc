@@ -24,11 +24,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 
+#include "../alpha_kludges.h"
 #include "shapeinf.h"
 
 Ammo_table *Ammo_info::table = 0;
 
-#include <hash_map>
+#ifndef DONT_HAVE_HASH_MAP
+#  include <hash_map>
+#else
+#  include <map>
+#endif
+
 #ifdef MACOS
   using Metrowerks::hash_map;
 #endif
@@ -39,15 +45,28 @@ Ammo_table *Ammo_info::table = 0;
 
 class Ammo_table
 	{
-	hash_map<int, Ammo_info> map;
+#ifndef DONT_HAVE_HASH_MAP
+	hash_map<int, Ammo_info> my_map;
+#else
+	map<int, Ammo_info> my_map;
+#endif
 public:
-	Ammo_table() : map(53) {  }
+
+#ifndef DONT_HAVE_HASH_MAP
+	Ammo_table() : my_map(53) {  }
+#else
+	Ammo_table() : my_map() {  }
+#endif
 	void insert(int shnum, Ammo_info& ent)
-		{ map[shnum] = ent; }
+		{ my_map[shnum] = ent; }
 	Ammo_info *find(int shnum)	// Look up given shape.
 		{
-		hash_map<int, Ammo_info>::iterator it = map.find(shnum);
-		return it == map.end() ? 0 : &((*it).second);
+#ifndef DONT_HAVE_HASH_MAP
+		hash_map<int, Ammo_info>::iterator it = my_map.find(shnum);
+#else
+		map<int, Ammo_info>::iterator it = my_map.find(shnum);
+#endif
+		return it == my_map.end() ? 0 : &((*it).second);
 		}
 	};
 

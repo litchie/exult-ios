@@ -227,7 +227,7 @@ public:
 	void clear_dependencies();	// Remove all dependencies.
 
 					// Find nearby objects.
-#ifdef __DECCXX
+#ifdef ALPHA_LINUX_CXX
 	template<class T>
 	static int find_nearby_static(Exult_vector<T*>& vec, Tile_coord pos,
 			int shapenum, int delta, int mask, 

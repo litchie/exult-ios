@@ -17,7 +17,13 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <hash_map>
+#include "alpha_kludges.h"
+
+#ifndef DONT_HAVE_HASH_MAP
+#  include <hash_map>
+#else
+#  include <map>
+#endif
 #include <string>
 #include <vector>
 #ifdef MACOS
@@ -60,8 +66,13 @@ public:
 
 class Game {
 private:
+#ifndef DONT_HAVE_HASH_MAP
 	hash_map<const char*, int, hashstr, eqstr> shapes;
 	hash_map<const char*, str_int_pair, hashstr, eqstr> resources;
+#else /* !HAVE_HASH_MAP */
+	map<const char*, int, ltstr> shapes;
+	map<const char*, str_int_pair, ltstr> resources;
+#endif
 	Mouse *menu_mouse;
 protected:
 	int topx, topy, centerx, centery;

@@ -5,6 +5,8 @@
  **	Written: 8/4/00 - JSF
  **/
 
+#include "alpha_kludges.h"
+
 #include "npctime.h"
 #include "gamewin.h"
 #include "actors.h"

@@ -29,7 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef MACOS
   #include <hashset.h>
 #else
-  #include <hash_set>
+#  ifndef DONT_HAVE_HASH_SET
+#    include <hash_set>
+#  else
+#    include <set>
+#  endif
 #endif
 
 /*
@@ -54,15 +58,36 @@ public:
 		}
 	};
 
+/*
+ *	"Less than" relation for objects
+ */
+class Less_objs
+	{
+public:
+     bool operator() (const Game_object *a, const Game_object *b) const
+     	{
+			return a < b;
+		}
+	};
+
 
 /*
  *	A pool of removed game objects, waiting to be deleted:
  */
+#ifndef DONT_HAVE_HASH_SET
 class Deleted_objects : public std::hash_set<Game_object *, Hash_objs, Equal_objs>
+#else
+class Deleted_objects : public std::set<Game_object *, Less_objs>
+#endif
 	{
 public:
+#ifndef DONT_HAVE_HASH_SET
 	Deleted_objects() : std::hash_set<Game_object *, Hash_objs, Equal_objs> (1013)
+#else
+	Deleted_objects() : std::set<Game_object *, Less_objs> ()
+#endif
 		{  }
+
 	void flush();			// Delete them now.
 	~Deleted_objects()
 		{ flush(); }

@@ -21,9 +21,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
-#ifdef __DECCXX
-#  include "alpha_kludges.h"
-#else
+#include "../alpha_kludges.h"
+
+#ifndef ALPHA_LINUX_CXX
 #  include <csignal>
 #  include <iostream>
 #endif

@@ -14,8 +14,12 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <cstdlib>
-#include <unistd.h>
+#include "alpha_kludges.h"
+
+#ifndef ALPHA_LINUX_CXX
+#  include <cstdlib>
+#  include <unistd.h>
+#endif
 #include "files/U7file.h"
 #include "flic/playfli.h"
 #include "gamewin.h"
