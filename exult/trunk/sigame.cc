@@ -88,9 +88,9 @@ void SI_Game::play_intro()
 		}
 	}
 
-void SI_Game::top_menu(Vga_file &shapes)
+void SI_Game::top_menu()
 {
-	gwin->paint_shape(topx,topy,shapes.get_shape(0x2,0));
+	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	pal.load("static/mainshp.flx",26);
 	pal.fade_in(60);	
 }
@@ -112,12 +112,14 @@ void SI_Game::end_game(bool success)
 void SI_Game::show_quotes()
 	{
 		vector<char *> *text = load_text("static/mainshp.flx", 0x10);
+		scroll_text(text);
 		destroy_text(text);
 	}
 
 void SI_Game::show_credits()
 	{
 		vector<char *> *text = load_text("static/mainshp.flx", 0x0E);
+		scroll_text(text);
 		destroy_text(text);
 	}
 
