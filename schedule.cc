@@ -404,6 +404,16 @@ void Patrol_schedule::now_what
 	(
 	)
 	{
+	if (!dir)			// Sitting?
+		{
+		dir = 1;		// Activate if we come here again.
+					// Stay 5-10 secs.
+		if ((npc->get_framenum()&0xf) == Actor::sit_frame)
+			npc->start(250, 5000 + rand()%5000);
+		else			// Not sitting.
+			npc->start(250, rand()%1000);
+		return;
+		}
 	if (rand() % 8 == 0)		// Check for lamps, etc.
 		if (try_street_maintenance())
 			return;		// We no longer exist.
@@ -412,18 +422,40 @@ void Patrol_schedule::now_what
 	Game_window *gwin = Game_window::get_game_window();
 	if (pathnum >= 0 &&		// Arrived at path?
 	    pathnum < paths.size() && (path = paths[pathnum]) != 0 &&
-	    path->get_quality() == 0xf && npc->distance(path) < 2)
+	    npc->distance(path) < 2)
 					// Quality = type.  (I think high bits
 					//   are flags.
 		switch (path->get_quality()&31)
 			{
 		case 0:			// None.
 			break;
-		case 1:			// Wrap to 0.+++++Implement these.
+		case 1:			// Wrap to 0.
+			pathnum = -1;
+			dir = 1;
+			break;
+		case 2:			// Pause.
+			break;		//++++++++
 		case 3:			// Sit.
-		case 6:			// Loiter.
+			Sit_schedule::set_action(npc, 0);
+			dir = 0;
+			return;
+		case 4:			// Kneel at tombstone.+++++++
+		case 5:			// Kneel+++++++++++
+		case 6:			// Loiter.++++++
+			break;
 		case 7:			// Left about-face.
 		case 8:			// Right about-face.
+			if (pathnum == 0 && dir == -1)
+				dir = 1;
+			else if (pathnum > 0 && dir == 1)
+				dir = -1;
+					// ++++Turn animations.
+			break;
+		case 9:			// Horiz. pace.+++++++
+		case 10:		// Vert. pace+++++++
+		case 11:		// 50% reverse.
+		case 12:		// 50% skip next.
+		case 13:		// Hammer.++++++
 		case 14:		// Check area.
 			break;		//++++++Implement above.
 		case 15:		// Usecode.
@@ -435,13 +467,23 @@ void Patrol_schedule::now_what
 				return;	// We're gone.
 			}
 		case 16:		// Bow to ground.  ++++Implement.
-		case 22:		// One-handed swing.
+		case 17:		// Bow from ground.+++++
+		case 18:		// Wait for semaphore+++++
+		case 19:		// Release semaphore+++++
+		case 20:		// Ready weapon++++++++
+		case 21:		// Unready weapon+++++++
+		case 22:		// One-handed swing.+++++
+		case 23:		// Two-handed swing.
+		case 24:		// Read++++++
+		case 25:		// 50% wrap to 0.++++++
+		case 26:		// Combat near??
+		case 27:		// Repeat forever??
 		default:
 			break;
 			}
-	pathnum++;			// Find next path.
+	pathnum += dir;			// Find next path.
 					// Already know its location?
-	path =  pathnum < paths.size() ? paths[pathnum] : 0;
+	path =  pathnum >= 0 && pathnum < paths.size() ? paths[pathnum] : 0;
 	if (!path)			// No, so look around.
 		{
 		Game_object_vector nearby;
@@ -464,6 +506,7 @@ void Patrol_schedule::now_what
 			paths.put(pathnum, path);
 		else			// Turn back if at end.
 			{
+			dir = 1;
 			if (pathnum == 0)	// At start?  Retry.
 				{
 				pathnum = -1;
@@ -1007,10 +1050,15 @@ void Sit_schedule::now_what
 void Sit_schedule::set_action
 	(
 	Actor *actor,
-	Game_object *chairobj,
+	Game_object *chairobj,		// May be 0 to find it.
 	int delay			// Msecs. to delay.
 	)
 	{
+	static int chairs[] = {873,292};
+	if (!chairobj)			// Find chair if not given.
+		if (!(chairobj = actor->find_closest(chairs, 
+					sizeof(chairs)/sizeof(chairs[0]))))
+			return;
 	Tile_coord chairloc = chairobj->get_abs_tile_coord();
 	switch (chairobj->get_framenum()%4)
 		{			// Figure where to sit.
@@ -1023,6 +1071,15 @@ void Sit_schedule::set_action
 	case 3:				// West.
 		chairloc.tx--; break;
 		}
+	Game_object_vector occ;		// See if occupied.
+	if (Game_object::find_nearby(occ, chairloc, c_any_shapenum, 0, 8))
+		for (Game_object_vector::const_iterator it = occ.begin(); 
+						it != occ.end(); ++it)
+			if (*it != actor)
+				{	// Occupied.  Into queue for a sec.
+				actor->start(250, 1000);
+				return;
+				}
 	char frames[2];
 					// Frame 0 faces N, 1 E, etc.
 	int dir = 2*(chairobj->get_framenum()%4);
