@@ -1,3 +1,9 @@
+2001-08-06  Tristan Tarrant <nadir@users.sourceforge.net>
+	* configure.in, files/snprintf.cc, files/Makefile.am,
+	files/utils.h: add an implementation of snprintf for OSs
+	which don't provide one (Irix???)
+	* mapedit/Makefile.studio.mingw: updates from Kirben
+
 2001-08-06  Max Horn <max@quendi.de>
 	* exult_constants.h: added FORGET_OBJECT and FORGET_ARRAY
 

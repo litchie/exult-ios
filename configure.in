@@ -222,6 +222,23 @@ if test x$ac_cv_func_mkstemp = xyes ; then
 	AC_DEFINE(HAVE_MKSTEMP)
 fi
 
+AC_MSG_CHECKING(for snprintf())
+AC_TRY_LINK([
+#include <stdio.h>
+],
+[
+	snprintf(0,0,0,0);
+],
+  ac_cv_func_snprintf=yes,
+  ac_cv_func_snprintf=no)
+AC_MSG_RESULT($ac_cv_func_snprintf)
+if test x$ac_cv_func_snprintf = xyes ; then
+	AC_DEFINE(HAVE_SNPRINTF)
+	AM_CONDITIONAL(HAVE_SNPRINTF,true)
+else
+	AM_CONDITIONAL(HAVE_SNPRINTF,false)
+fi
+
 dnl Check if C compiler supports inline
 AC_C_INLINE
 if test x$CC = xgcc; then

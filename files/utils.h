@@ -30,6 +30,10 @@
 
 #include "exult_types.h"
 
+#ifndef HAVE_SNPRINTF
+extern int snprintf(char *, size_t, const char *, /*args*/ ...);
+#endif
+
 
 /*
  *	Read a 1-byte value.
