@@ -628,16 +628,29 @@ USECODE_INTRINSIC(count_objects)
 	return(u);
 }
 
-USECODE_INTRINSIC(find_in_owner)
+USECODE_INTRINSIC(find_object)
 {
-	// Find_in_owner(container(-357=party), shapenum, qual?? (-359=any), 
+	// Find_object(container(-357=party) OR loc, shapenum, qual?? (-359=any), 
 	//						frame??(-359=any)).
-	int oval  = parms[0].get_int_value(),
-	    shnum = parms[1].get_int_value(),
+	int shnum = parms[1].get_int_value(),
 	    qual  = parms[2].get_int_value(),
 	    frnum = parms[3].get_int_value();
+	if (parms[0].get_array_size() == 3)
+		{			// Location (x, y).
+		Game_object_vector vec;
+		Game_object::find_nearby(vec,
+			Tile_coord(parms[0].get_elem(0).get_int_value(),
+				   parms[0].get_elem(1).get_int_value(),
+				   parms[0].get_elem(2).get_int_value()),
+			shnum, 1, 0, qual, frnum);
+		if (vec.empty())
+			return Usecode_value((Game_object *) 0);
+		else
+			return Usecode_value(vec.front());
+		}
+	int oval  = parms[0].get_int_value();
 	if (oval != -357)		// Not the whole party?
-		{
+		{			// Find inside owner.
 		Game_object *obj = get_item(parms[0]);
 		if (!obj)
 			return Usecode_value((Game_object*) NULL);
