@@ -1,4 +1,4 @@
-# Exult Studio makefile for use in Windows with mingw using GCC 3.1 and msys shell
+# Exult Studio makefile for use in Windows with mingw using GCC 3.2 and msys shell
 # The shell IS required! 
 
 # Where is Exult Studio will be installed. 

@@ -26,6 +26,7 @@
 #include "lists.h"
 
 #ifdef WIN32
+#include <windows.h>
 #define Rectangle RECTX
 #endif
 
