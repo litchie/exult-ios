@@ -56,7 +56,7 @@ extern int yylex();
  */
 %left AND OR
 %left '-' '+'
-%left '*' '/'
+%left '*' '/' '%'
 %left NOT
 
 %%
@@ -156,6 +156,7 @@ expression:
 	| expression '-' expression
 	| expression '*' expression
 	| expression '/' expression
+	| expression '%' expression	/* MOD. */
 	| expression AND expression
 	| expression OR expression
 	| '-' primary
