@@ -42,22 +42,6 @@ const	Uint32	Timidity_binary_magic=0x345300;
 #if HAVE_TIMIDITY_BIN
 #include "Timidity_binary.h"
 
-static  void    playTBmidifile(const char *name)
-{
-	const char	*args[]= {
-			"timidity",
-			"-Oru8S",	// Raw. Unsigned. 8-bit. Stereo
-			"-id",
-			"-T 175",	// Tempo. Faster than normal to make it
-					// sound right
-			"-o-",
-			name,
-			0 };
-        // execlp("timidity","-Or","-id","-o-",name,0);
-	execvp("timidity",(char *const *)args);
-	exit(0);	// Just in case
-}
-
 template<class T>
 T max(T x,T y)
 	{
@@ -77,23 +61,30 @@ void	Timidity_binary::player(void)
 {
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
 	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
+	string	newfilename=tmpnam(0);
+	rename(filename.c_str(),newfilename.c_str());
+	// This could be across filesystems, you naughty boy.
+
 	audiostream->id=Timidity_binary_magic;
-	string	s="timidity -Oru8S -id -T 175 -o- "+filename;
+	string	s="timidity -Oru8S -id -T 175 -o- "+newfilename;
 	data=popen(s.c_str(),"r");
 	if(!data)
 		return;
+	char	buf[1024];
 	while(!feof(data))
 		{
-		char	buf[1024];
-		size_t	x=fread(buf,1,sizeof(buf),data);
-		if(x==0)
+		if(!audiostream->consuming)
+			{
+			cerr << "Consumer gone away" << endl;
 			break;
+			}
+		size_t	x=fread(buf,1,sizeof(buf),data);
 		audiostream->produce(buf,x);
 		}
-	audiostream->end_production();
 	pclose(data);
+	unlink(newfilename.c_str());
+	audiostream->end_production();
 	audiostream=0;
-	my_thread=0;	// Race?
 }
 
 
@@ -112,11 +103,7 @@ Timidity_binary::~Timidity_binary()
 
 void	Timidity_binary::stop_track(void)
 	{
-	if(my_thread)
-		{
-		Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
-		my_thread=0;
-		}
+	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
 	}
 
 bool	Timidity_binary::is_playing(void)
@@ -131,7 +118,6 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 #if DEBUG
 	cerr << "Starting midi sequence with Timidity_binary" << endl;
 #endif
-        if(my_thread)
                 {
 #if DEBUG
 	cerr << "Stopping any running track" << endl;
