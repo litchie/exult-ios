@@ -291,11 +291,8 @@ void Spellbook_object::write_ireg
 	DataSource *out
 	)
 	{
-	unsigned char buf[19];		// 18-byte entry + length-byte.
-	buf[0] = 18;
-	uint8 *ptr = &buf[1];	// To avoid confusion about offsets.
-	write_common_ireg(ptr);		// Fill in bytes 1-4.
-	ptr += 4;
+	unsigned char buf[24];		// 18-byte entry.
+	uint8 *ptr = write_common_ireg(18, buf);
 	memcpy(ptr, &circles[0], 5);	// Store the way U7 does it.
 	ptr += 5;
 	*ptr++ = (get_lift()&15)<<4;	// Low bits?++++++
@@ -305,7 +302,7 @@ void Spellbook_object::write_ireg
 	*ptr++ = 0;
 	*ptr++ = 0;
 	*ptr++ = bookmark >= 0 ? bookmark : 255;
-	out->write((char*)buf, sizeof(buf));
+	out->write((char*)buf, ptr - buf);
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}

@@ -876,7 +876,7 @@ void Game_map::read_special_ireg
 
 static Egg_object *Create_egg
 	(
-	unsigned char *entry,		// 1-byte ireg entry.
+	unsigned char *entry,		// 12-byte ireg entry.
 	bool animated
 	)
 	{
@@ -923,6 +923,7 @@ void Game_map::read_ireg_objects
 	unsigned long flags		// Usecode item flags.
 	)
 	{
+	unsigned char entbuf[20];
 	int entlen;			// Gets entry length.
 	sint8 index_id = -1;
 	Game_object *last_obj = 0;	// Last one read in this call.
@@ -930,6 +931,7 @@ void Game_map::read_ireg_objects
 					// Go through entries.
 	while (((entlen = ireg->read1(), !ireg->eof())))
 		{
+		int extended = 0;	// 1 for 2-byte shape #'s.
 
 		// Skip 0's & ends of containers.
 
@@ -951,18 +953,24 @@ void Game_map::read_ireg_objects
 			Read_special_ireg(ireg, last_obj);
 			continue;
 			}
+		else if (entlen == IREG_EXTENDED)
+			{
+			extended = 1;
+			entlen = ireg->read1();
+			}
 					// Get copy of flags.
 		unsigned long oflags = flags & ~(1<<Obj_flags::is_temporary);
-		if (entlen != 6 && entlen != 10 && entlen != 12 && 
-								entlen != 18)
+		int testlen = entlen - extended;
+		if (testlen != 6 && testlen != 10 && testlen != 12 && 
+								testlen != 18)
 			{
 			long pos = ireg->getPos();
-			cout << "Unknown entlen " << entlen << " at pos. " <<
+			cout << "Unknown entlen " << testlen << " at pos. " <<
 					pos << endl;
 			ireg->seek(pos + entlen);
 			continue;	// Only know these two types.
 			}
-		unsigned char entry[18];// Get entry.
+		unsigned char *entry = &entbuf[0];	// Get entry.
 		ireg->read(reinterpret_cast<char*>(entry), entlen);
 		int cx = entry[0] >> 4; // Get chunk indices within schunk.
 		int cy = entry[1] >> 4;
@@ -978,10 +986,18 @@ void Game_map::read_ireg_objects
 		 	tilex = entry[0] & 0xf;
 			tiley = entry[1] & 0xf;
 			}
-					// Get shape #, frame #.
-		int shnum = entry[2]+256*(entry[3]&3);
-		int frnum = entry[3] >> 2;
-
+		int shnum, frnum;	// Get shape #, frame #.
+		if (extended)
+			{
+			shnum = entry[2]+256*entry[3];
+			frnum = entry[4];
+			++entry;	// So the rest is in the right place.
+			}
+		else
+			{
+			shnum = entry[2]+256*(entry[3]&3);
+			frnum = entry[3] >> 2;
+			}
 		Shape_info& info = ShapeID::get_info(shnum);
 		unsigned int lift, quality, type;
 		Ireg_game_object *obj;
@@ -989,7 +1005,7 @@ void Game_map::read_ireg_objects
 					// An "egg"?
 
 		// Has flag byte(s)
-		if (entlen == 10)
+		if (testlen == 10)
 		{
 			// Temporary
 			if (entry[6] & 1) oflags |= 1<<Obj_flags::is_temporary;
@@ -998,12 +1014,13 @@ void Game_map::read_ireg_objects
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
 			bool anim = info.is_animated() || info.has_sfx();
+			assert(!extended);	// Not handled yet.
 			Egg_object *egg = Create_egg(entry, anim);
 			get_chunk(scx + cx, scy + cy)->add_egg(egg);
 			last_obj = egg;
 			continue;
 			}
-		else if (entlen == 6 || entlen == 10)	// Simple entry?
+		else if (testlen == 6 || testlen == 10)	// Simple entry?
 			{
 			type = 0;
 			lift = entry[4] >> 4;
@@ -1027,7 +1044,7 @@ void Game_map::read_ireg_objects
 				quality = 0;
 				}
 			}
-		else if (entlen == 12)	// Container?
+		else if (testlen == 12)	// Container?
 			{
 			type = entry[4] + 256*entry[5];
 			lift = entry[9] >> 4;
@@ -1060,16 +1077,6 @@ void Game_map::read_ireg_objects
 				{
 				obj = new Jawbone_object(shnum, frnum,
 					tilex, tiley, lift, entry[10]);
-				}
-			else if (Game::get_game_type() == SERPENT_ISLE && 
-				 shnum == 400 && frnum == 8 && quality == 1)
-				// Gwenno. Ugly hack to fix bug without having to start
-				// a new game. Remove someday... (added 20010820)
-				{
-				Dead_body *b = new Dead_body(400, 8, 
-						tilex, tiley, lift, 149);
-				obj = b;
-				gwin->set_body(149, b);
 				}
 			else if (quality == 1 && 
 					 (entry[8] >= 0x80 || 

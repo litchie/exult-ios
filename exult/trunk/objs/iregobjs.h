@@ -95,7 +95,7 @@ public:
 	uint32 get_flags2() const { return flags2; }
 
 					// Write common IREG data.
-	void write_common_ireg(unsigned char *buf);
+	unsigned char *write_common_ireg(int norm_len, unsigned char *buf);
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
 				// Get size of IREG. Returns -1 if can't write to buffer
