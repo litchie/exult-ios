@@ -71,7 +71,7 @@ Image_window::Image_window
 	unsigned int h,
 	bool fs				// Fullscreen.
 	) : Image_buffer(w, h, Get_best_depth()),
-	    scale(1), scaler(point), fullscreen(fs),
+	    scale(1), scaler(point), uses_palette(true), fullscreen(fs),
 	    surface(0), scaled_surface(0), unscaled_surface(0), show_scaled(0)
 	{
 	create_surface(w, h);
@@ -104,6 +104,7 @@ void Image_window::create_surface
 	ibuf->height = h;
 	Uint32 flags = (fullscreen?SDL_FULLSCREEN:0) |
 					SDL_SWSURFACE |  SDL_HWPALETTE;
+	uses_palette = true;
 	show_scaled = 0;
 	unscaled_surface = surface = scaled_surface = 0;
 
@@ -160,6 +161,8 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 			}
 			else
 			    	show_scaled = &Image_window::show_scaled8to32_2xSaI;
+
+			uses_palette = false;
 		}
 		else
 		{
@@ -200,6 +203,8 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 			}
 			else
 			    	show_scaled = &Image_window::show_scaled8to32_bilinear;
+
+			uses_palette = false;
 		}
 		else
 		{
@@ -208,6 +213,7 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 			delete scaled_surface;
 			surface = scaled_surface = 0;
 		}
+
 	}
 	else if (scale == 2 && scaler == SuperEagle)
 	{
@@ -240,6 +246,8 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 			}
 			else
 			    	show_scaled = &Image_window::show_scaled8to32_SuperEagle;
+
+			uses_palette = false;
 		}
 		else
 		{

@@ -139,6 +139,9 @@ using std::tm;
 #define SDL_main main
 #endif
 
+// Don't want SDL Parachute
+#define NO_SDL_PARACHUTE
+
 // MSVC doesn't like doing dynamic_cast's on Polymorphic classes/structs
 #define dynamic_cast static_cast
 

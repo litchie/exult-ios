@@ -52,7 +52,8 @@ public:
 protected:
 	Image_buffer *ibuf;		// Where the data is actually stored.
 	int scale;			// Only 1 or 2 for now.
-	int scaler;		// What scaler do we want to use
+	int scaler;			// What scaler do we want to use
+	bool uses_palette;		// Does this window have a palette
 	bool fullscreen;		// Rendering fullscreen.
 	SDL_Surface *surface;		// Represents window in memory. (has palette)
 	SDL_Surface *scaled_surface;	// 2X surface if scaling, else 0. (only used when scaling)
@@ -86,8 +87,8 @@ protected:
 public:
 					// Create with given buffer.
 	Image_window(Image_buffer *ib, int scl = 1, bool fs = false, int sclr = point)
-		: ibuf(ib), scale(scl), scaler(sclr), fullscreen(fs), 
-		  surface(0), 
+		: ibuf(ib), scale(scl), scaler(sclr), uses_palette(true), 
+		  fullscreen(fs), surface(0), 
 		  scaled_surface(0), show_scaled(0)
 		{ create_surface(ibuf->width, ibuf->height); }
 	virtual ~Image_window();
@@ -95,6 +96,9 @@ public:
 		{ return scale; }
 	int get_scaler()		// Returns 1 or 2.
 		{ return scaler; }
+	bool is_palettized()		// Does the window have a palette?
+		{ return uses_palette; }
+
 					// Is rect. visible within clip?
 	int is_visible(int x, int y, int w, int h)
 		{ return ibuf->is_visible(x, y, w, h); }

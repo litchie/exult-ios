@@ -94,7 +94,6 @@ Cheat cheat;
 Game_window *gwin = 0;
 static string data_path;
 unsigned char quitting_time = 0;	// 1 = Time to quit, 2 = Restart.
-int scale = 0;				// 1 if scaling X2.
 
 bool intrinsic_trace = false;		// Do we trace Usecode-intrinsics?
 bool usecode_trace = false;		// Do we trace Usecode-instruction?
@@ -396,8 +395,6 @@ static void Init
 //	SDL_SetEventFilter(Filter_intro_events);
 	gwin->setup_game();		// This will start the scene.
 					// Get scale factor for mouse.
-	if (gwin->get_win())
-		scale = Log2( gwin->get_win()->get_scale() );
 #ifdef XWIN
         SDL_GetWMInfo(&info);
         xfd = ConnectionNumber(info.info.x11.display);
@@ -506,6 +503,8 @@ static void Handle_events
 #else
 		Delay();		// Wait a fraction of a second.
 #endif
+		// Mouse scale factor
+		int scale = gwin->get_win()->get_scale();
 
 		Mouse::mouse->hide();		// Turn off mouse.
 		Mouse::mouse_update = false;
@@ -533,8 +532,8 @@ static void Handle_events
 						(Game::get_game_type() == SERPENT_ISLE ||
 						gwin->get_usecode()->get_global_flag(
 							Usecode_machine::did_first_scene)))
-					gwin->start_actor(x >> scale, 
-							  y >> scale, 
+					gwin->start_actor(x / scale, 
+							  y / scale, 
 							  avatar_speed);
 				}
 			}
@@ -543,13 +542,13 @@ static void Handle_events
 			Mouse::mouse->show();	// Re-display mouse.
 
 					// Rotate less often if scaling.
-		if (ticks > last_rotate + (100<<scale))
+		if (ticks > last_rotate + (100 << (scale==1?0:1)))
 			{		// (Blits in simulated 8-bit mode.)
 			gwin->get_win()->rotate_colors(0xf0, 4, 0);
 			gwin->get_win()->rotate_colors(0xe8, 8, 0);
 			gwin->get_win()->rotate_colors(0xe0, 8, 1);
 			last_rotate = ticks;
-			if (scale)	// Scaled requires explicit blit.
+			if (gwin->get_win()->is_palettized())	// Non palettized requires explicit blit.
 				gwin->set_painted();
 			}
 		if (!gwin->show() &&	// Blit to screen if necessary.
@@ -568,6 +567,7 @@ void Set_mouse_and_speed
 	)
 	{
 	int ax, ay;			// Get Avatar/barge screen location.
+	int scale = gwin->get_win()->get_scale();
 	Barge_object *barge = gwin->get_moving_barge();
 	if (barge)
 		{			// Use center of barge.
@@ -577,7 +577,7 @@ void Set_mouse_and_speed
 		}
 	else				
 		gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
-	int dy = ay - (mousey >> scale), dx = (mousex >> scale) - ax;
+	int dy = ay - (mousey / scale), dx = (mousex / scale) - ax;
 	Direction dir = Get_direction(dy, dx);
 	int dist = dy*dy + dx*dx;
 	if (dist < 40*40)
@@ -616,6 +616,9 @@ static void Handle_event
 	SDL_Event& event
 	)
 	{
+	// Mouse scale factor
+	int scale = gwin->get_win()->get_scale();
+
 					// For detecting double-clicks.
 	static uint32 last_b1_click = 0, last_b3_click = 0;
 	//cout << "Event " << (int) event.type << " received"<<endl;
@@ -625,8 +628,8 @@ static void Handle_event
 		if (event.button.button == 1)
 			{
 			dragging = gwin->start_dragging(
-					event.button.x >> scale,
-					event.button.y >> scale);
+					event.button.x / scale,
+					event.button.y / scale);
 			//Mouse::mouse->set_shape(Mouse::hand);
 			dragged = false;
 			}
@@ -635,8 +638,8 @@ static void Handle_event
 		if (event.button.button == 3 && !gwin->showing_gumps())
 			{		// Try removing old queue entry.
 			gwin->get_tqueue()->remove(gwin->get_main_actor());
-			gwin->start_actor(event.button.x >> scale, 
-				event.button.y >> scale, avatar_speed);
+			gwin->start_actor(event.button.x / scale, 
+				event.button.y / scale, avatar_speed);
 			}
 		break;
 	case SDL_MOUSEBUTTONUP:
@@ -646,8 +649,8 @@ static void Handle_event
 					// Last click within .5 secs?
 			if (curtime - last_b3_click < 500)
 				gwin->start_actor_along_path(
-					event.button.x >> scale, 
-					event.button.y >> scale, avatar_speed);
+					event.button.x / scale, 
+					event.button.y / scale, avatar_speed);
 			else
 				gwin->stop_actor();
 			last_b3_click = curtime;
@@ -658,55 +661,53 @@ static void Handle_event
 			bool click_handled = false;
 			if (dragging) {
 				click_handled = gwin->drop_dragged(
-					event.button.x >> scale, 
-					event.button.y >> scale, dragged);
+					event.button.x / scale, 
+					event.button.y / scale, dragged);
 			}
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500)
 				{
 				dragging = false;
-				gwin->double_clicked(event.button.x >> scale, 
-						event.button.y >> scale);
-				if (gwin->showing_gumps() && gwin->find_gump(event.motion.x >> scale, 
-						event.motion.y >> scale))
+				gwin->double_clicked(event.button.x / scale, 
+						event.button.y / scale);
+				if (gwin->showing_gumps() && gwin->find_gump(event.motion.x / scale, 
+						event.motion.y / scale))
 					Mouse::mouse->set_shape(Mouse::hand);
 				break;
 				}
 			last_b1_click = curtime;
 			if (!click_handled)
 					// Identify item(s) clicked on.
-				gwin->show_items(event.button.x >> scale, 
-						event.button.y >> scale);
+				gwin->show_items(event.button.x / scale, 
+						event.button.y / scale);
 			dragging = false;
 			}
 		break;
 	case SDL_MOUSEMOTION:
 		{
-		Mouse::mouse->move(event.motion.x >> scale, 
-						event.motion.y >> scale);
-		if (!(gwin->showing_gumps() && gwin->find_gump(event.motion.x >> scale, 
-						event.motion.y >> scale)) && !dragging)
+		Mouse::mouse->move(event.motion.x / scale, 
+						event.motion.y / scale);
+		if (!(gwin->showing_gumps() && gwin->find_gump(event.motion.x / scale, 
+						event.motion.y / scale)) && !dragging)
 			Set_mouse_and_speed(event.motion.x, event.motion.y);
-		else if ((gwin->showing_gumps() && gwin->find_gump(event.motion.x >> scale, 
-						event.motion.y >> scale)) || dragging)
+		else if ((gwin->showing_gumps() && gwin->find_gump(event.motion.x / scale, 
+						event.motion.y / scale)) || dragging)
 					Mouse::mouse->set_shape(Mouse::hand);
 
 		Mouse::mouse_update = true;	// Need to blit mouse.
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
-			dragged = gwin->drag(event.motion.x >> scale, 
-						event.motion.y >> scale);
+			dragged = gwin->drag(event.motion.x / scale, 
+						event.motion.y / scale);
 					// Dragging with right?
 		if ((event.motion.state & SDL_BUTTON(3)) &&
 					// But not right after teleport.
 		    !gwin->was_teleported())
-			gwin->start_actor(event.motion.x >> scale, 
-					event.motion.y >> scale, avatar_speed);
+			gwin->start_actor(event.motion.x / scale, 
+					event.motion.y / scale, avatar_speed);
 		break;
 		}
 	case SDL_ACTIVEEVENT:
-					// Get scale factor for mouse.
-		scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 
 		if (event.active.state & SDL_APPMOUSEFOCUS)
 			{
@@ -714,7 +715,7 @@ static void Handle_event
 				{
 				int x, y;
 				SDL_GetMouseState(&x, &y);
-				Mouse::mouse->set_location(x >> scale, y >> scale);
+				Mouse::mouse->set_location(x/scale, y/scale);
 				}
 			gwin->set_painted();
 			}
@@ -794,14 +795,17 @@ static int Get_click
 		Mouse::mouse->hide();		// Turn off mouse.
 		Mouse::mouse_update = false;
 
+		// Mouse scale factor
+		int scale = gwin->get_win()->get_scale();
+
 		while (SDL_PollEvent(&event))
 			switch (event.type)
 				{
 			case SDL_MOUSEBUTTONUP:
 				if (event.button.button == 1)
 					{
-					x = event.button.x >> scale;
-					y = event.button.y >> scale;
+					x = event.button.x / scale;
+					y = event.button.y / scale;
 					if (chr) *chr = 0;
 					return (1);
 					}
@@ -811,8 +815,8 @@ static int Get_click
 					gwin->get_main_actor()->stop();
 				break;
 			case SDL_MOUSEMOTION:
-				Mouse::mouse->move(event.motion.x >> scale, 
-						event.motion.y >> scale);
+				Mouse::mouse->move(event.motion.x / scale, 
+						event.motion.y / scale);
 				Mouse::mouse_update = true;
 				break;
 			case SDL_KEYDOWN:
@@ -902,6 +906,9 @@ void Wait_for_arrival
 	Tile_coord dest			// Where he's going.
 	)
 	{
+	// Mouse scale factor
+	int scale = gwin->get_win()->get_scale();
+
 	unsigned char os = Mouse::mouse->is_onscreen();
 	uint32 last_repaint = 0;	// For insuring animation repaints.
 	Actor_action *orig_action = actor->get_action();
@@ -918,8 +925,8 @@ void Wait_for_arrival
 			switch (event.type)
 				{
 			case SDL_MOUSEMOTION:
-				Mouse::mouse->move(event.motion.x >> scale,
-						 event.motion.y >> scale);
+				Mouse::mouse->move(event.motion.x / scale,
+						 event.motion.y / scale);
 				Mouse::mouse_update = true;
 				break;
 				}
@@ -958,7 +965,6 @@ void set_resolution (int new_res, bool save)
 		gwin->resized(res_list[current_res].x,
 			res_list[current_res].y,
 			res_list[current_res].scale, scaler);
-		scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 		if(save) {
 			char val[20];
 			snprintf(val, 20, "%d", res_list[current_res].x);
@@ -1139,10 +1145,11 @@ static void Drop_dragged_shape
 	int x, int y			// Mouse coords. within window.
 	)
 	{
+	int scale = gwin->get_win()->get_scale();
 	if (!cheat.in_map_editor())	// Get into editing mode.
 		cheat.toggle_map_editor();
-	x = (x >> scale);		// Watch for scaled window.
-	y = (y >> scale);
+	x /= scale;			// Watch for scaled window.
+	y /= scale;
 	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;
 	cout << "Create shape (" << shape << '/' << frame << ')' <<
 								endl;
