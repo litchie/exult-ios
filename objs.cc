@@ -1104,6 +1104,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	if (roll > probability)
 		return;			// Out of luck.
 	flags |= (1 << (int) hatched);	// Flag it as done.
+	Game_window *gwin = Game_window::get_game_window();
 	switch(type)
 		{
 		case jukebox:
@@ -1117,7 +1118,6 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			break;
 		case monster:
 			{
-			Game_window *gwin = Game_window::get_game_window();
 			Monster_info *inf = gwin->get_monster_info(data2&1023);
 			if (inf)
 				{
@@ -1130,10 +1130,17 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			break;
 			}
 		case usecode:
-			// Data2 is the usecode function.
+			{		// Data2 is the usecode function.
+			Game_window::Game_mode savemode = gwin->get_mode();
 			umachine->call_usecode(data2, this,
 					Usecode_machine::egg_proximity);
+			if (gwin->get_mode() == Game_window::conversation)
+				{
+				gwin->set_mode(savemode);
+				gwin->set_all_dirty();
+				}
 			break;
+			}
 		default:
 			cout << "Egg not actioned" << endl;
                 }

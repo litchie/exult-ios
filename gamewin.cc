@@ -1382,6 +1382,11 @@ void Game_window::brighten
 /*
  *	Shift view by one chunk.
  */
+#if 0
+// +++++++++++++++++ Got to shift the dirty rectangle list in all 4 of
+these functions.
++++++++++++++++++++++++++
+#endif
 
 void Game_window::view_right
 	(
