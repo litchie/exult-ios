@@ -1354,6 +1354,7 @@ void Container_game_object::activate
 	case 762:
 	case 778:
 	case 892:
+	case 507: 			// Bones
 		gwin->show_gump(this, 53);
 		return;
 	case 416:			// Chest of drawers.
