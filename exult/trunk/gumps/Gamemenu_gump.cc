@@ -91,10 +91,9 @@ Gamemenu_gump::~Gamemenu_gump()
 //++++++ IMPLEMENT RETURN_TO_MENU!
 void Gamemenu_gump::quit(bool return_to_menu)
 {
-	extern unsigned char quitting_time;
 	if (!Yesno_gump::ask("Do you really want to quit?"))
 		return;
-	quitting_time = 1;
+	quitting_time = QUIT_TIME_YES;
 	done = 1;
 }
 

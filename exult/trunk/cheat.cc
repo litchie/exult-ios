@@ -24,6 +24,7 @@
 
 #include "SDL_mouse.h"
 #include "cheat.h"
+#include "exult.h"
 #include "gamewin.h"
 #include "Configuration.h"
 #include "game.h"
@@ -41,9 +42,8 @@ using std::endl;
 using std::strcpy;
 using std::strcat;
 
-extern Configuration* config;
 
-int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
+Cheat cheat;
 
 
 Cheat::Cheat() {

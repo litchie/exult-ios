@@ -32,8 +32,6 @@
 #  include <cctype>
 #endif
 
-//#include <unistd.h>
-
 #include "SDL.h"
 
 #define Font _XFont_
@@ -48,28 +46,24 @@
 #include "server.h"
 #endif
 
-#ifdef WIN32
-//#include <mmsystem.h>   //for MM_MCINOTIFY message
-//#include "audio/midi_drivers/win_MCI.h"
-#endif
-
-#include "gamewin.h"
-#include "actors.h"
-#include "ucmachine.h"
-#include "fnames.h"
 #include "Audio.h"
 #include "Configuration.h"
-#include "mouse.h"
-#include "gump_utils.h"
-#include "Scroll_gump.h"
-#include "effects.h"
-#include "args.h"
-#include "game.h"
-#include "cheat.h"
-#include "exultmenu.h"
-#include "keys.h"
 #include "Gump_manager.h"
+#include "Scroll_gump.h"
+#include "actors.h"
+#include "args.h"
+#include "cheat.h"
+#include "effects.h"
+#include "exult.h"
+#include "exultmenu.h"
+#include "fnames.h"
 #include "font.h"
+#include "game.h"
+#include "gamewin.h"
+#include "gump_utils.h"
+#include "keys.h"
+#include "mouse.h"
+#include "ucmachine.h"
 #include "utils.h"
 
 using std::atof;
@@ -83,16 +77,14 @@ using std::string;
 using std::vector;
 using std::snprintf;
 
-Configuration *config;
+Configuration *config = 0;
 KeyBinder *keybinder = 0;
-Cheat cheat;
 
 /*
  *	Globals:
  */
 Game_window *gwin = 0;
-static string data_path;
-unsigned char quitting_time = 0;	// 1 = Time to quit, 2 = Restart.
+quitting_time_enum quitting_time = QUIT_TIME_NO;
 
 bool intrinsic_trace = false;		// Do we trace Usecode-intrinsics?
 bool usecode_trace = false;		// Do we trace Usecode-instruction?
@@ -103,9 +95,6 @@ const std::string c_empty_string;
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
 #endif
 
-// Cmdline arguments:
-string arg_gamename = "default";
-int arg_buildmap = -1;
 
 
 struct resolution {
@@ -129,28 +118,36 @@ int current_res = 0;
 #ifdef XWIN
 int xfd = 0;			// X connection #.
 static class Xdnd *xdnd = 0;
-
 #endif
 
 
 /*
  *	Local functions:
  */
-int exult_main(void);
+static int exult_main(void);
 static void Init();
 static int Play();
-int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
-int Put_click(int x, int y, int button = 1);
-void increase_resolution (void);
-void decrease_resolution (void);
-int find_resolution(int w, int h, int s);
-bool get_play_intro (void);
-void set_play_intro (bool);
-void make_screenshot (bool silent = false);
-void change_gamma (bool down);
+static int Get_click(int& x, int& y, char *chr);
+static int find_resolution(int w, int h, int s);
+static void set_resolution (int new_res, bool save);
 static void Drop_dragged_shape(int shape, int frame, int x, int y);
 static void Drop_dragged_chunk(int chunknum, int x, int y);
 static void BuildGameMap();
+static void Handle_events();
+static void Handle_event(SDL_Event& event);
+
+
+/*
+ *	Statics:
+ */
+static bool show_mouse = true;		// display mouse in main loop?
+static bool dragging = false;		// Object or gump being moved.
+static bool dragged = false;		// Flag for when obj. moved.
+
+static string arg_gamename = "default";	// cmdline arguments
+static int arg_buildmap = -1;
+
+
 
 /*
  *	A handy breakpoint.
@@ -237,6 +234,8 @@ int main
 
 int exult_main(void)
 {
+	string data_path;
+
 	cout << "Exult V" << VERSION << "." << endl;
 
 	// Read in configuration file
@@ -319,10 +318,6 @@ int exult_main(void)
 	return result;
 }
 
-
-//static int Filter_intro_events(const SDL_Event *event);
-static void Handle_events(unsigned char *stop);
-static void Handle_event(SDL_Event& event);
 
 /*
  *	Initialize and create main window.
@@ -434,16 +429,16 @@ static int Play()
 {
 	do
 	{
-		quitting_time = 0;
-		Handle_events(&quitting_time);
-		if( quitting_time == 2 )
-			{
+		quitting_time = QUIT_TIME_NO;
+		Handle_events();
+		if( quitting_time == QUIT_TIME_RESTART )
+		{
 			Mouse::mouse->hide();	// Turn off mouse.
 			gwin->read();	// Restart
 			gwin->setup_game();
-			}
+		}
 	}
-	while (quitting_time == 2);
+	while (quitting_time == QUIT_TIME_RESTART);
 	delete gwin;
 	delete Mouse::mouse;
 
@@ -456,56 +451,11 @@ static int Play()
 
 
 /*
- *	Statics used below:
- */
-static bool show_mouse = true;		// display mouse in main loop?
-static bool dragging = false;		// Object or gump being moved.
-static bool dragged = false;		// Flag for when obj. moved.
-
-#if 0
-/*
- *	Filter out events during the intro. sequence.
- */
-static int Filter_intro_events
-	(
-	const SDL_Event *event
-	)
-	{
-	if (gwin->get_mode() == Game_window::conversation)
-		{
-		SDL_SetEventFilter(0);	// Intro. conversation started.
-		show_mouse = true;
-		return 1;
-		}
-	if (gwin->get_usecode()->get_global_flag(
-					Usecode_machine::did_first_scene))
-		{
-		SDL_SetEventFilter(0);	// Intro. is done.
-		show_mouse = true;
-		return 0;
-		}
-	if (gwin->get_mode() == Game_window::gump)
-		return 1;		// Dialog to quit.
-	switch (event->type)
-		{
-	case SDL_MOUSEBUTTONUP:
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_MOUSEMOTION:
-	case SDL_KEYDOWN:
-	case SDL_KEYUP:
-		return 0;		// The intro. is running.
-		}
-	return (1);
-	}
-#endif
-
-/*
  *	Handle events until a flag is set.
  */
 
 static void Handle_events
 	(
-	unsigned char *stop
 	)
 	{
 	uint32 last_repaint = 0;	// For insuring animation repaints.
@@ -513,7 +463,7 @@ static void Handle_events
 	/*
 	 *	Main event loop.
 	 */
-	while (!*stop)
+	while (!quitting_time)
 		{
 #ifdef USE_EXULTSTUDIO
 		Server_delay();		// Handle requests.
@@ -527,7 +477,7 @@ static void Handle_events
 		Mouse::mouse_update = false;
 
 		SDL_Event event;
-		while (!*stop && SDL_PollEvent(&event))
+		while (!quitting_time && SDL_PollEvent(&event))
 			Handle_event(event);
 					// Get current time.
 		uint32 ticks = SDL_GetTicks();
@@ -937,10 +887,16 @@ void Wait_for_arrival
 
 	}
 
-int get_resolution (void)
+int find_resolution(int w, int h, int s)
 {
-	return current_res;
+	int res = 0;
+	for(int i=0; i<num_res; i++) {
+		if(res_list[i].x==w && res_list[i].y==h && res_list[i].scale==s)
+			res = i;
+	}
+	return res;
 }
+
 
 void set_resolution (int new_res, bool save)
 {
@@ -974,16 +930,8 @@ void set_resolution (int new_res, bool save)
 	}
 }
 
-void decrease_resolution (void) {
-	if (!cheat()) return;
-
-	current_res--;
-	if(current_res<0)
-		current_res = num_res-1;
-	set_resolution(current_res,false);
-}
-
-void increase_resolution (void) {
+void increase_resolution()
+{
 	if (!cheat()) return;
 
 	current_res++;
@@ -992,38 +940,14 @@ void increase_resolution (void) {
 	set_resolution(current_res,false);
 }
 
-int find_resolution(int w, int h, int s)
+void decrease_resolution()
 {
-	int res = 0;
-	for(int i=0; i<num_res; i++) {
-		if(res_list[i].x==w && res_list[i].y==h && res_list[i].scale==s)
-			res = i;
-	}
-	return res;
-}
+	if (!cheat()) return;
 
-bool get_play_intro (void)
-{
-	std::string yn;
-	config->value("config/gameplay/skip_splash", yn, "no");
-	return(yn=="no");
-}
-
-void set_play_intro (bool play)
-{
-	config->set("config/gameplay/skip_splash", play?"no":"yes", true);
-}
-
-bool get_play_1st_scene (void)
-{
-	std::string yn;
-	config->value("config/gameplay/skip_intro", yn, "no");
-	return(yn=="no");
-}
-
-void set_play_1st_scene (bool play)
-{
-	config->set("config/gameplay/skip_intro", play?"no":"yes", true);
+	current_res--;
+	if(current_res<0)
+		current_res = num_res-1;
+	set_resolution(current_res,false);
 }
 
 void make_screenshot (bool silent)

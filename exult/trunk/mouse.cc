@@ -171,7 +171,7 @@ void Mouse::flash_shape
 	Mouse_shapes flash
 	)
 {
-	Mouse::Mouse_shapes saveshape = get_shape();
+	Mouse_shapes saveshape = get_shape();
 	hide();
 	set_shape(flash);
 	show();

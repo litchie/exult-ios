@@ -1,20 +1,20 @@
 /*
-Copyright (C) 2001 The Exult Team
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *  Copyright (C) 2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -22,23 +22,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "SDL_events.h"
 
-#include "AudioOptions_gump.h"
-#include "mouse.h"
-#include "gump_utils.h"
-#include "Configuration.h"
 #include <iostream>
-#include "xmidi.h"
+
 #include "Audio.h"
+#include "AudioOptions_gump.h"
+#include "Configuration.h"
 #include "Gump_button.h"
 #include "Gump_ToggleButton.h"
-#include "gamewin.h"
+#include "exult.h"
 #include "exult_flx.h"
+#include "gamewin.h"
+#include "gump_utils.h"
+#include "mouse.h"
+#include "xmidi.h"
 
 using std::cerr;
 using std::endl;
 using std::string;
-
-extern Configuration *config;
 
 static const int rowy[] = { 5,  19, 29, 41, 53, 65,  79, 89, 101,  
 							115, 125,  146 };

@@ -29,16 +29,17 @@
 #include "Audio.h"
 #include "Configuration.h"
 #include "databuf.h"
+#include "exult.h"
+#include "exult_flx.h"
 #include "files/U7file.h"
 #include "files/utils.h"
 #include "flic/playfli.h"
 #include "font.h"
 #include "game.h"
 #include "gamewin.h"
+#include "keys.h"
 #include "mouse.h"
 #include "palette.h"
-#include "keys.h"
-#include "exult_flx.h"
 
 using std::cout;
 using std::endl;
@@ -52,10 +53,7 @@ using std::snprintf;
 
 bool Game::new_game_flag = false;
 Game *game = 0;
-extern Configuration *config;
-extern KeyBinder *keybinder;
 static Exult_Game game_type = BLACK_GATE;
-extern void make_screenshot(bool silent = false);
 
 static char av_name[17] = "";
 static int av_sex = -1;

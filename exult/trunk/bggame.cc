@@ -45,7 +45,10 @@ using std::strlen;
 using std::toupper;
 using std::snprintf;
 
-void create_static(Image_buffer8* ib, int w, int h, int x, int y,
+static void create_static(Image_buffer8* ib, int w, int h, int x, int y,
+		   int black, int gray, int white);
+
+static void create_static(Image_buffer8* ib, int w, int h, int x, int y,
 		   int black, int gray, int white) {
 	for (int i = x; i < x+w; i++) {
 		for (int j = y; j < y+h; j++) {

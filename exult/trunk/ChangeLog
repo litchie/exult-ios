@@ -1,3 +1,9 @@
+2001-08-05  Max Horn <max@quendi.de>
+	* shapes/bodies.cc/h: moved Is_body from gamewin.cc to here
+	* bggame.cc: added missing prototypes (making compiler happy)
+	* exult.h: added, allowed to remove "extern ..." in many files
+	* various files: updated legal headers; removed extern's; and other clean up
+
 2001-08-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: compiles on Linux again
 
