@@ -1,14 +1,15 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 14 August 2004(GMT
+last changed: 04 October 2004(GMT
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 14 August 2004
-0.2. - 23 May 2004
-0.3. - 27 January 2004
-0.4. - 12 December 2003
+0.1. - 04 October 2004
+0.2. - 14 August 2004
+0.3. - 23 May 2004
+0.4. - 27 January 2004
+0.5. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -68,16 +69,18 @@ The latest version of this document can be found at http://exult.sourceforge.net
 5.2. Why can't I cast mark/recall on the Virtue Runes (BG)?
 5.3. Why can't I get the sacrifice in Skara Brae to work (BG)?
 5.4. Why can't I talk to the mayor of Skara Brae (BG)?
-5.5. Where did my gem of the Demon vanish to (BG-FoV)?
-5.6. Attacking the Stone of Castambre doesn't work (FoV)
-5.7. Where is the pikeman that lets you train in Monitor (SI)?
-5.8. How do I get the Mandrake Roots for Fedabiblio (SI)?
-5.9. Why can't I summon the Great Hierophant (SI)?
-5.10. Why won't Xenka speak about sacrifice (SI)?
-5.11. Where did XY disappear to (SI)?
-5.12. Why can't I find Karnax and the other monks (SI)?
-5.13. An important note about the Serpent Staff (SI)
-5.14. How to break the plot by doubleclicking some pillars (SI-SS)
+5.5. Multiple problems with the tetrahedron generator and prism (BG)?
+5.6. Where did my gem of the Demon vanish to (FoV)?
+5.7. Attacking the Stone of Castambre doesn't work (FoV)
+5.8. Where is the pikeman that lets you train in Monitor (SI)?
+5.9. How do I get the Mandrake Roots for Fedabiblio (SI)?
+5.10. Why won't Pothos take the blood moss and talk about the mad mage (SI)?
+5.11. Why can't I summon the Great Hierophant (SI)?
+5.12. Why won't Xenka speak about sacrifice (SI)?
+5.13. Where did XY disappear to (SI)?
+5.14. Why can't I find Karnax and the other monks (SI)?
+5.15. An important note about the Serpent Staff (SI)
+5.16. How to break the plot by doubleclicking some pillars (SI-SS)
 
 6. Questions and Answers
 6.1. How can I get answers concerning Ultima 7/Exult?
@@ -91,17 +94,24 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 14 August 2004
+0.1. - 04 October 2004
+* 5.1. Why is there a gameplay FAQ? walkthroughs, the source of evil.
+* 5.5. Multiple problems with the tetrahedron generator and prism (BG)? two issues come up from time to time.
+* 5.10. Why won't Pothos take the blood moss and talk about the mad mage (SI)? needed to be added.
+
+
+
+0.2. - 14 August 2004
 * 1.3. Is Exult free ? contact us via the forum.
 * 1.7. But isn't Pentagram some kind of Exult for U8? the homepage is actually informative now.
 * 1.14. Will a port for Pocket PC be available anytime? time to have this answered.
-* 5.6. Attacking the Stone of Castambre doesn't work (FoV) Willem added this useful information.
-* 5.11. Where did XY disappear to (SI)? teleporting is dangerous.
-* 5.12. Why can't I find Karnax and the other monks (SI)? example for above.
+* 5.7. Attacking the Stone of Castambre doesn't work (FoV) Willem added this useful information.
+* 5.13. Where did XY disappear to (SI)? teleporting is dangerous.
+* 5.14. Why can't I find Karnax and the other monks (SI)? example for above.
 
 
 
-0.2. - 23 May 2004
+0.3. - 23 May 2004
 * 1.12. What is the latest version of Exult? 1.2 now.
 * 1.4. Do you accept donations? No we don't but SF would be happy.
 * 1.12. What is the latest version of Exult? 1.2 now.
@@ -109,15 +119,15 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 27 January 2004
+0.4. - 27 January 2004
 * 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
-* 5.10. Why won't Xenka speak about sacrifice (SI)? added.
-* 5.13. An important note about the Serpent Staff (SI) Willem fixed this.
+* 5.12. Why won't Xenka speak about sacrifice (SI)? added.
+* 5.15. An important note about the Serpent Staff (SI) Willem fixed this.
 
 
 
-0.4. - 12 December 2003
+0.5. - 12 December 2003
 * 5.3. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
 
@@ -429,6 +439,7 @@ Possible workaround for the above mentioned audio issues: We added a config file
 5. Gameplay FAQ
 5.1. Why is there a gameplay FAQ?
 Although you can find many useful gameplay FAQs on the internet we do get asked some questions quite frequently as people think these are bugs with Exult.
+Most of the times the problem is that people don't play the game regulary but depend overly on walkthroughs and don't read what NPCs in the game tell you to do.
 Note that this section contains text that may spoil your game. Caution is advised.
 
 
@@ -445,50 +456,60 @@ Stuart Hillman told me of another way around this bug: Stand next to Trent when 
 You might be talking to "The Other Forsythe"(TM). There's a ghost in the Skara Brae town hall that looks like Forsythe, but isn't. This was fixed in more recent versions of Exult but with games started with earlier versions this bug is still present. You need to start a new game of Exult to fix this. But this bug poses no problem, so if you don't want to start a new game, just ignore that clone and search for the real Forsythe.
 
 
-5.5. Where did my gem of the Demon vanish to (BG-FoV)?
+5.5. Multiple problems with the tetrahedron generator and prism (BG)?
+Some of our users have problems entering the generator and finding the prism afterwards.
+To enter the tetrahedron generator you have to wear the ethereal ring (enchanted by Penumbra). It is important to wear the ring on a finger and not just hold it like a weapon.
+After you defeated the enemy you have to doubleclick the prism to destroy the generator. You will then find the black prism (without the yellow outline) to your feet. Look closely and take it with you.
+
+
+5.6. Where did my gem of the Demon vanish to (FoV)?
 For forging the black sword you need to bind the demon to the gem you got from that invincible dragon you met in the test of courage. Some people mistake that little dark-blue gem with the glowing gem you received from Lord British. If you use the glowing gem on the isle of fire it just vanishes with a shattering sound.
 
 
-5.6. Attacking the Stone of Castambre doesn't work (FoV)
+5.7. Attacking the Stone of Castambre doesn't work (FoV)
 You need to use (double-click) the pick while it's in your hands instead of attacking with it. After that, select the tree with the resulting crosshairs.
 
 
-5.7. Where is the pikeman that lets you train in Monitor (SI)?
+5.8. Where is the pikeman that lets you train in Monitor (SI)?
 The pikeman that lets you enter the list field in Monitor sometimes disappears due to a bug in the game (even the original). This bug occurs when you enter the banquet scene of Monitor. To avoid this bug, we recommend, that you approach the banquet hall from the right and/or double-click the entrance door to the hall when the party is standing very close to it.
 
 
-5.8. How do I get the Mandrake Roots for Fedabiblio (SI)?
+5.9. How do I get the Mandrake Roots for Fedabiblio (SI)?
 Fedabiblio in Moonshade sends you on a quest to find fresh Mandrake Roots. You get to Monk Island but can't find the any fresh roots. The problem is that fresh roots only appear depending on the tide. One of the nameless monks of the island tells you to ask him when the tide is right. Keep coming back to him and when he tells you the tide is right walk to the northern shore of the island to find fresh roots.
 
 
-5.9. Why can't I summon the Great Hierophant (SI)?
+5.10. Why won't Pothos take the blood moss and talk about the mad mage (SI)?
+Pothos won't take the moss if he hasn't sent you to fetch it for him. If you want him to tell you about the mad mage and how to get to him you first have to talk with Bucia (also in Moonshade) about Pothos. Then you can talk to Pothos about it and he will sent you off to fetch him fresh blood moss. Read what he says because it is important to get fresh blood moss.
+
+
+5.11. Why can't I summon the Great Hierophant (SI)?
 If you follow some walkthrough you might find that your summoning of the Great Hierophant doesn't work. This is a problem with the walkthrough. You need to have a personal item of the Great Hierophant in your inventory, namely the Serpent Staff.
 If possible don't just play following the walkthrough, but go out and explore Serpent Isle. It's hard to imagine someone could miss the cave to the east of Monitor...
 
 
-5.10. Why won't Xenka speak about sacrifice (SI)?
+5.12. Why won't Xenka speak about sacrifice (SI)?
 For Xenka to speak about sacrifice some parts of the game need to have been played correctly. The sacrifice conversation option will only turn up if:
 * you have returned the amulet to the Gwani AND
 * you have spoken with the Chaos Hierophant AND
-* you have picked up the Serpent Staff from its proper location (see 5.13.) AND
+* you have picked up the Serpent Staff from its proper location (see 5.15.) AND
 * you have not yet healed the Chaos Serpent
 
 
 
-5.11. Where did XY disappear to (SI)?
+5.13. Where did XY disappear to (SI)?
 SI is very plot driven, so to stop people from breaking the plot, certain NPCs stay in a unaccessible spot on the map until you meet them by following the plot, or disappear from the map until they are needed again. If you cheat by teleporting to them before the scripted meeting you are bound to break the plot and most likely forced to reload an earlier savegame or start the whole game again. So please take care when teleporting around the map.
 
 
-5.12. Why can't I find Karnax and the other monks (SI)?
+5.14. Why can't I find Karnax and the other monks (SI)?
 See the above question. You have to use the Dark Path to make the monks appear on Monk Island. If you just use the teleport cheat they won't show up.
 
 
-5.13. An important note about the Serpent Staff (SI)
+5.15. An important note about the Serpent Staff (SI)
 The Serpent Staff in SI is a very important item. It doesn't seem like it but it is crucial to some major plot elements that you have the staff in your possession. Unfortunately the game also demands that you get the staff properly. For that I recommend to get it without cheating and to stand right next to it.
 Just picking it up and not transfering it to the inventory at once, but instead putting it on the ground again could break later plot. Willem coded a workaround in Exult so the problem might disappear.
 
 
-5.14. How to break the plot by doubleclicking some pillars (SI-SS)
+5.16. How to break the plot by doubleclicking some pillars (SI-SS)
 In the dining hall of the fort in the add-on Silver Seed you can doubleclick the pillars. This teleports you to the test in the gargoyle city. If you haven't done this test yet this breaks that plot later on and if you already have it is still a nuisance. So better don't do it.
 Obviously a slight oversight of the add-on designers. Could be fixed by changing the usecode and the map slightly.
 
