@@ -189,7 +189,7 @@ protected:
 	int num_shapes2;		// Total # of shapes in file 2.
 	Shape *shapes;			// List of ->'s to shapes' lists
 public:
-	Vga_file(const char *nm, int u7drag = -1);
+	Vga_file(const char *nm, int u7drag = -1, const char *nm2 = 0);
 	Vga_file();
 	int get_u7drag_type() const
 		{ return u7drag_type; }

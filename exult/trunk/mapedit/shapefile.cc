@@ -480,11 +480,9 @@ Shape_file_set::~Shape_file_set
 static bool Create_file
 	(
 	const char *basename,		// Base file name.
-	string& pathname		// Pathname is returned here.
+	const string& pathname		// Full name.
 	)
 	{
-	pathname = "<PATCH>/";		// Always write to 'patch'.
-	pathname += basename;
 	int namelen = strlen(basename);
 	if (strcasecmp(".flx", basename + namelen - 4) == 0)
 		{			// We can create an empty flx.
@@ -516,78 +514,67 @@ Shape_file_info *Shape_file_set::create
 	const char *basename		// Like 'shapes.vga'.
 	)
 	{
-	string fullstr("<PATCH>/");	// First look in 'patch'.
-	fullstr += basename;
-	if (!U7exists(fullstr.c_str()))
-		{
-		fullstr = "<STATIC>/";
-		fullstr += basename;
-		if (!U7exists(fullstr.c_str()) && 
-					// Try to create it (in some cases).
-		    !Create_file(basename, fullstr))
-			return 0;
-		}
-	const char *fullname = fullstr.c_str();
+					// Already have it open?
 	for (vector<Shape_file_info *>::iterator it = files.begin(); 
 					it != files.end(); ++it)
-		if (strcasecmp((*it)->pathname.c_str(), fullname) == 0)
+		if (strcasecmp((*it)->basename.c_str(), basename) == 0)
 			return *it;	// Found it.
+					// Look in 'static', 'patch'.
+	string sstr = string("<STATIC>/") + basename;
+	string pstr = string("<PATCH>/") + basename;
+	const char *spath = sstr.c_str(), *ppath = pstr.c_str();
+	bool sexists = U7exists(spath);
+	bool pexists = U7exists(ppath);
+	if (!sexists && !pexists)	// Neither place.  Try to create.
+		if (!(pexists = Create_file(basename, ppath)))
+			return 0;
+					// Use patch file if it exists.
+	const char *fullname = pexists ? ppath : spath;
 	string group_name(basename);	// Create groups file.
 	group_name += ".grp";
 	Shape_group_file *groups = new Shape_group_file(group_name.c_str());
-	int u7drag_type = U7_SHAPE_UNK;
-	Vga_file *ifile = 0;
-	std::ifstream *file = 0;
-	Flex *flex = 0;
 	if (strcasecmp(basename, "shapes.vga") == 0)
-		{			// Special case.
-		u7drag_type = U7_SHAPE_SHAPES;
-		ifile = new Shapes_vga_file(fullname, U7_SHAPE_SHAPES);
-		}
+		return append(new Image_file_info(basename, fullname, 
+			new Shapes_vga_file(spath, U7_SHAPE_SHAPES, ppath), 
+								groups));
 	else if (strcasecmp(basename, "gumps.vga") == 0)
-		u7drag_type = U7_SHAPE_GUMPS;
+		return append(new Image_file_info(basename, fullname,
+			new Vga_file(spath, U7_SHAPE_GUMPS, ppath), groups));
 	else if (strcasecmp(basename, "faces.vga") == 0)
-		u7drag_type = U7_SHAPE_FACES;
+		return append(new Image_file_info(basename, fullname,
+			new Vga_file(spath, U7_SHAPE_FACES, ppath), groups));
 	else if (strcasecmp(basename, "sprites.vga") == 0)
-		u7drag_type = U7_SHAPE_SPRITES;
+		return append(new Image_file_info(basename, fullname,
+			new Vga_file(spath, U7_SHAPE_SPRITES, ppath), groups));
 	else if (strcasecmp(basename, "u7chunks") == 0)
 		{
-		file = new std::ifstream;
-		U7open(*file, fullname);// Automatically does binary.
+		std::ifstream *file = new std::ifstream;
+		U7open(*file, fullname);
+		return append(new Chunks_file_info(basename, fullname, 
+								file, groups));
 		}
 	else if (strcasecmp(basename, "combos.flx") == 0 ||
 		 strcasecmp(basename, "palettes.flx") == 0)
-		flex = new Flex(fullname);
+		return append(new Flex_file_info(basename, fullname, 
+						new Flex(fullname), groups));
 	else if (strcasecmp(".pal", basename + strlen(basename) - 4) == 0)
 		{			// Single palette?
 		std::ifstream in;
 		U7open(in, fullname);
 		in.seekg(0, std::ios::end);	// Figure size.
 		int sz = in.tellg();
-		Shape_file_info *fi = new Flex_file_info(basename, fullname,
-									sz);
-		files.push_back(fi);
-		return fi;
+		return append(new Flex_file_info(basename, fullname, sz));
 		}
-	if (!ifile && !file && !flex)	// Not handled above?
-					// Get image file for this path.
-		ifile = new Vga_file(fullname, u7drag_type);
-	if ((ifile && !ifile->is_good()) || (file && !file->good()))
-		{
-		cerr << "Error opening image file '" << basename << "'.\n";
-		abort();
+	else				// Not handled above?
+		{			// Get image file for this path.
+		Vga_file *ifile = new Vga_file(spath, U7_SHAPE_UNK, ppath);
+		if (ifile->is_good())
+			return append(new Image_file_info(basename, fullname,
+							ifile, groups));
+		delete ifile;
 		}
-	Shape_file_info *fi;
-	if (ifile)
-		fi = new Image_file_info(basename, fullname, ifile, groups);
-	else if (file)
-		fi = new Chunks_file_info(basename, fullname, file, groups);
-	else if (flex)
-		fi = new Flex_file_info(basename, fullname, flex, groups);
-	else
-		return 0;
-	files.push_back(fi);
-	return fi;
+	cerr << "Error opening image file '" << basename << "'.\n";
+	return 0;
 	}
 
 /*
