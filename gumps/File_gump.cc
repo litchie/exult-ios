@@ -373,6 +373,26 @@ int File_gump::get_save_index
 }
 
 /*
+ *	Remove text focus.
+ */
+
+void File_gump::remove_focus
+	(
+	)
+	{
+	if (!focus)
+		return;
+	focus->lose_focus();
+	focus = 0;
+	delete buttons[0];		// Remove load/save buttons.
+	buttons[0] = 0;
+	delete buttons[1];
+	buttons[1] = 0;
+	Game_window *gwin = Game_window::get_game_window();
+	paint(gwin);
+	}
+
+/*
  *	'Load' clicked.
  */
 
@@ -418,6 +438,7 @@ void File_gump::save
 	gwin->write();		// First flush to 'gamedat'.
 	gwin->save_gamedat(num, focus->get_text());
 	cout << "Saved game #" << num << " successfully." << endl;
+	remove_focus();
 }
 
 /*

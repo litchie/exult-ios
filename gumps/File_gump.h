@@ -46,6 +46,7 @@ public:
 	~File_gump();
 					// Find savegame index of text field.
 	int get_save_index(Gump_text *txt);
+	void remove_focus();		// Unfocus text.
 	void load();			// 'Load' was clicked.
 	void save();			// 'Save' was clicked.
 	void quit();			// 'Quit' was clicked.
