@@ -273,7 +273,10 @@ public:
 					// Handle events:
 	virtual void mouse_down(int mx, int my) = 0;
 	virtual void mouse_up(int mx, int my) = 0;
-	virtual void mouse_drag(int mx, int my) = 0;
+	virtual void mouse_drag(int mx, int my)
+		{  }
+	virtual void key_down(int chr)	// Character typed.
+		{  }
 	};
 
 /*
@@ -337,8 +340,7 @@ public:
 					// Handle events:
 	virtual void mouse_down(int mx, int my);
 	virtual void mouse_up(int mx, int my);
-	virtual void mouse_drag(int mx, int my)
-		{  }
+	virtual void key_down(int chr);	// Character typed.
 	};
 
 #endif	/* INCL_GUMPS */
