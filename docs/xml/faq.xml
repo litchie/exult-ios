@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="06 November 2001(GMT)">
+<faqs title="Exult" changed="23 November 2001(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="23112001">
+			<header>- 23 November 2001</header>
+			<body>
+				<ul>
+				<li><ref1 target="latest_version"/> Beta1 release.</li>
+				<li><ref1 target="what_platforms"/> added Windows XP and changed NT to NT4.</li>				
+				<li><ref1 target="play_through_u7"/> SI is now playable.</li>				
+				<li><ref1 target="si_support"/> is now playable.</li>
+				<li><ref1 target="improvements"/> added compressed savegames.</li>
+				<li><ref1 target="bug_report"/> Zipping up savegames for bug reports is no longer 
+					needed with Beta1.</li>
+				</ul>
+			</body>
+		</sub>		
 		<sub name="06112001">
 			<header>- 06 November 2001</header>
 			<body>
@@ -186,6 +200,7 @@
 				</para>
 				<para>
 					Also this FAQ mainly addresses the snapshots as people use them and ask question.
+					And all the new features and improvements are found in those!
 				</para>
 			</body>
 		</sub>
@@ -202,7 +217,7 @@
 			<header>What is the latest version of <Exult/>?</header>
 			<body>
 				<para>
-					The current official release is V0.94 Alpha5. See also <ref target="whereis_exult"/>
+					The current official release is V0.95 Beta1. See also <ref target="whereis_exult"/>
 					to learn where to get the latest version.
 				</para>
 				<para>
@@ -217,7 +232,7 @@
 					<Exult/> should be able to be compiled (with minor modifications) on
 					any platform that SDL supports. Right now the source can be compiled
 					in Linux/i386, Linux/Alpha, MacOS, OSX, OpenBSD, FreeBSD, Solaris, BeOS and 
-					Win32 (Windows 9x/ME/NT/2000).
+					Win32 (Windows 9x/ME/NT4/2000/XP).
 				</para>
 			</body>
 		</sub>
@@ -252,13 +267,22 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="play_through_u7">
+			<header>Can you play through U7 yet?</header>
+			<body>
+				<para>
+					You can play through the Black Gate/Forge of Virtue without cheating and
+					plotholes.<br/>
+					And since Beta1 the same is true for Serpent Isle/Silver Seed.
+				</para>
+			</body>
+		</sub>
 		<sub name="si_support">
 			<header>How about Serpent Isle?</header>
 			<body>
 				<para>
-					The team is working on it. Last month I was able to finish it but ran into 
-					a couple of bugs which have been fixed since then. In the next version it will
-					probably be playable.
+					Serpent Isle is now playable without cheating and plotholes. Two members of the team
+					have already finished the game with <Exult/>. 
 				</para>
 				<para>
 					Old quotes on this topic from the time when SI wasn't playable at all in <Exult/>.
@@ -284,16 +308,6 @@
 				<para>
 					"Forge of Virtue" (Add-on to Black Gate) and the "The Silver Seed" 
 					(Add-on to Serpent Isle) are bug-free now.
-				</para>
-			</body>
-		</sub>
-		<sub name="play_through_u7">
-			<header>Can you play through U7 yet?</header>
-			<body>
-				<para>
-					You can play through the Black Gate/Forge of Virtue without cheating and
-					plotholes.<br/>
-					SI is partially playable since V0.91 Alpha2.
 				</para>
 			</body>
 		</sub>
@@ -413,6 +427,9 @@
 				<li>Higher resolutions than the original. You can set the resolution as high as 
 					your computer supports. But there are some issues with it and it is considered
 					cheating.</li>
+				<li>Compressed savegames. Since Beta1 <Exult/> compresses savegames by default as
+					zip files. They are still labeled *.sav and have the savegame name in the zip
+					comment.</li>
 				</ul>
 			</body>
 		</sub>
@@ -630,8 +647,8 @@
 				<li>State which Operating System you use (Windows 9X, Linux, ...).</li>
 				<li>Please include a savegame (use common sense if it is really needed). You will find 
 					those in the game directories you put in the exult.cfg. They are called exult**bg.sav 
-					(** is a number) for BG and exult**si.sav for SI. <em>Zip</em> it (important as 
-					Sourceforge seems to have a size limit for attached files). As some parts of the game 
+					(** is a number) for BG and exult**si.sav for SI. You can look up the filename int the
+					savegame dialog as well (to the right, above the party members). As some parts of the game 
 					may require you to complete other quests or stuff before you get to the bug you want to 
 					report it's much easier for the team to look at the problem (speeds the process up a bit 
 					as they are much more likely you take a look at the problem this way).</li>
@@ -673,7 +690,7 @@
 						This has been changed a lot as this is disputed almost every four weeks.
 						Currently <Exult/> is coded using 2 frames.</li>
 					<li>Combat works differently. We don't have any hard data or formulae 
-						that tell us how combat worked in BG/SI, so DrCode (IIRC) put something 
+						that tell us how combat worked in BG/SI, so DrCode put something 
 						together. If you have any information you've worked out related to 
 						this, please tell either the forum or the exult-general mailing list.</li>
 					<li>Negative health and unconsciousness. Yes, it may look weird to have 
@@ -712,8 +729,8 @@
 			<header>Known Compile Issues</header>
 			<body>
 				<ul>
-					<li>Max is working to make Exult compile like it does on all UNIX systems but currently
-						it requires the not-yet released SDL 1.2.3.</li>
+					<li>Max is working to make Exult compile like it does on all UNIX systems but that
+						requires SDL 1.2.3 or newer.</li>
 					<li>There is a bug/incompatibility with the flex bundled Linux distributions 
 						(RH7.0, for example) that breaks compilation. Upgrading to a more recent version 
 						of flex should fix it.</li>

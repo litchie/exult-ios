@@ -50,10 +50,7 @@
 				</tr>
 				<tr>
 					<td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
-				</tr>
-				<tr>
-					<td align="center"><font size="+1"><a href="index.shtml">Home</a> | <a href="download.shtml">Download</a> | <a href="readme.shtml">ReadMe</a> | <a href="faq.shtml">FAQ</a> | <a href="screenshots.shtml">Screen Shots</a> | <a href="dev.shtml">Development</a> | <a href="forum/index.php">Discussion</a> | <a href="about.shtml">About Us</a> | <a href="history.shtml">History</a> | <a href="links.shtml">Links</a></font></td>
-				</tr>
+				</tr>				
 				<tr>
 					<td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
 				</tr>
@@ -74,13 +71,6 @@
 			<table border="0" cellpadding="0" cellspacing="0" width="100%">
 				<tr>
 					<td align="center"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
-				</tr>
-				<tr>
-					<td align="center">
-						<a href="http://sourceforge.net"><img src="http://sourceforge.net/sflogo.php?group_id=2335&amp;type=1" alt="SourceForge" height="31" width="88" border="0" /></a>
-						<xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text>
-						<a href="http://validator.w3.org/check/referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" border="0" /></a>
-					</td>
 				</tr>
 				<tr>
 					<td align="center"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
@@ -114,7 +104,7 @@
 		<title><xsl:value-of select="@title"/> FAQ</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 	</head>
-	<body bgcolor="#cccccc" text="#333366" link="#666699" vlink="#669966" alink="#ffcc33" background="images/back.gif">
+	<body bgcolor="#cccccc" text="#333366" link="#666699" vlink="#669966" alink="#ffcc33"  background="images/back.gif">
 		<div align="center">
 			<table border="0" cellpadding="0" cellspacing="0" width="90%">
 				<xsl:call-template name="NAVBAR"/>
@@ -124,10 +114,10 @@
 						<p>last changed: <xsl:value-of select="@changed"/></p>
 						<hr/>
 						<p>
-							A text only version can be found <a href="http://exult.sourceforge.net/faq.txt">here</a> 
+							The latest version of this document can be found <a href="http://exult.sourceforge.net/faq.php">here</a> 
 						</p>
 						<br/>
-				
+
 					<!-- BEGIN TOC -->
 					<xsl:call-template name="TOC"/>
 					<!-- END TOC -->
@@ -161,6 +151,9 @@
 						<h1><xsl:value-of select="@title"/> - Documentation </h1> 
 						<p>last changed: <xsl:value-of select="@changed"/></p>
 						<hr/>						
+						<p>
+							The latest version of this document can be found <a href="http://exult.sourceforge.net/docs.php">here</a> 
+						</p>
 						<br/>
 				
 					<!-- BEGIN TOC -->
