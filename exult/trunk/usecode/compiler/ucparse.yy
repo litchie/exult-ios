@@ -400,9 +400,9 @@ item:					/* Any object, NPC.	*/
 	;
 
 script_command_list:
-	script_command_list script_command ';'
+	script_command_list script_command
 		{ $$->concat($2); }
-	| script_command ';'
+	| script_command
 		{
 		$$ = new Uc_array_expression();
 		$$->concat($1);
@@ -410,59 +410,68 @@ script_command_list:
 	;
 
 script_command:
-	CONTINUE			/* Continue script without painting. */
+	CONTINUE ';'			/* Continue script without painting. */
 		{ $$ = new Uc_int_expression(Ucscript::cont); }
-	| REPEAT expression script_command
-		{ $$ = 0; /* +++++FINISH */ }
+	| REPEAT expression script_command  ';'
+		{
+		Uc_array_expression *result = new Uc_array_expression();
+		result->concat($3);	// Start with cmnds. to repeat.
+		int sz = result->get_exprs().size();
+		result->add(new Uc_int_expression(Ucscript::repeat));
+					// Then -offset to start.
+		result->add(new Uc_int_expression(-sz));
+		result->add($2);	// Then #times to repeat.
+		$$ = result;
+		}
 					/* REPEAT2? */
-	| NOP
+	| NOP  ';'
 		{ $$ = new Uc_int_expression(Ucscript::nop); }
-	| NOHALT
+	| NOHALT  ';'
 		{ $$ = new Uc_int_expression(Ucscript::dont_halt); }
-	| WAIT expression		/* Ticks. */
+	| WAIT expression  ';'		/* Ticks. */
 		{ $$ = Create_array(Ucscript::delay_ticks, $2); }
-	| WAIT expression HOURS		/* Game hours. */
+	| WAIT expression HOURS  ';'	/* Game hours. */
 		{ $$ = Create_array(Ucscript::delay_hours, $2); }
-	| REMOVE			/* Remove item. */
+	| REMOVE ';'			/* Remove item. */
 		{ $$ = new Uc_int_expression(Ucscript::remove); }
-	| RISE				/* For flying barges. */
+	| RISE ';'			/* For flying barges. */
 		{ $$ = new Uc_int_expression(Ucscript::rise); }
-	| DESCEND
+	| DESCEND ';'
 		{ $$ = new Uc_int_expression(Ucscript::descend); }
-	| FRAME expression
+	| FRAME expression ';'
 		{ $$ = Create_array(Ucscript::frame, $2); }
-	| ACTOR FRAME INT_LITERAL	/* 0-15. ++++Maybe have keywords. */
+	| ACTOR FRAME INT_LITERAL ';'	/* 0-15. ++++Maybe have keywords. */
 		{ $$ = new Uc_int_expression(0x61 + ($3 & 15)); }
-	| HATCH				/* Assumes item is an egg. */
+	| HATCH ';'			/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg); }
-	| NEXT FRAME			/* Next, but stop at last. */
+	| NEXT FRAME ';'		/* Next, but stop at last. */
 		{ $$ = new Uc_int_expression(Ucscript::next_frame_max); }
-	| NEXT FRAME CYCLE		/* Next, or back to 0. */
+	| NEXT FRAME CYCLE ';'		/* Next, or back to 0. */
 		{ $$ = new Uc_int_expression(Ucscript::next_frame); }
-	| PREVIOUS FRAME		/* Prev. but stop at 0. */
+	| PREVIOUS FRAME ';'		/* Prev. but stop at 0. */
 		{ $$ = new Uc_int_expression(Ucscript::prev_frame_min); }
-	| PREVIOUS FRAME CYCLE
+	| PREVIOUS FRAME CYCLE ';'
 		{ $$ = new Uc_int_expression(Ucscript::prev_frame); }
-	| SAY expression
+	| SAY expression ';'
 		{ $$ = Create_array(Ucscript::say, $2); }
-	| STEP expression		/* Step in given direction (0-7). */
+	| STEP expression ';'		/* Step in given direction (0-7). */
 		{ $$ = Create_array(Ucscript::step, $2); }
-	| STEP direction
+	| STEP direction ';'
 		{ $$ = new Uc_int_expression(Ucscript::step_n + $2); }
-	| MUSIC expression
+	| MUSIC expression ';'
 		{ $$ = Create_array(Ucscript::music, $2); }
-	| CALL expression
+	| CALL expression ';'
 		{ $$ = Create_array(Ucscript::usecode, $2); }
-	| CALL expression ',' eventid
+	| CALL expression ',' eventid ';'
 		{ $$ = Create_array(Ucscript::usecode2, $2, 
 				new Uc_int_expression($4)); }
-	| SPEECH expression
+	| SPEECH expression ';'
 		{ $$ = Create_array(Ucscript::speech, $2); }
-	| SFX expression
+	| SFX expression ';'
 		{ $$ = Create_array(Ucscript::sfx, $2); }
-	| FACE expression
+	| FACE expression ';'
 		{ $$ = Create_array(Ucscript::face_dir, $2); }
-	| HIT expression		/* 2nd parm unknown. */
+	| HIT expression ';'		/* 2nd parm unknown. */
 		{ $$ = Create_array(Ucscript::hit, $2); }
 	| '{' script_command_list '}'
 		{ $$ = $2; }
