@@ -41,18 +41,6 @@
 </project>
 <project>
 	<description>
-		Implement Gameplay Options with the following options: cheats, SI paperdolls,
-		stats bars, etc.
-	</description>
-	<difficulty>
-		Easy
-	</difficulty>
-	<owner>
-		Willem Jan Palenstijn
-	</owner>
-</project>
-<project>
-	<description>
 		Implement a Journal which logs all conversations
 	</description>
 	<difficulty>

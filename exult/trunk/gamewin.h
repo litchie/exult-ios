@@ -175,6 +175,7 @@ class Game_window
 
 	bool mouse3rd;			// use third (middle) mouse button
 	bool fastmouse;
+	bool text_bg;			// draw a dark background behind text
 
 #ifdef RED_PLASMA
 	// Red plasma animation during game load
@@ -204,6 +205,10 @@ public:
 		{ return get_win()->is_fullscreen() ? fastmouse : false; }
 	void set_fastmouse(bool f)
 		{ fastmouse = f; }
+	bool get_text_bg() const
+		{ return text_bg; }
+	void set_text_bg(bool t)
+		{ text_bg = t; }
 	int get_width() const
 		{ return win->get_width(); }
 	int get_height() const
@@ -668,7 +673,7 @@ public:
 	bool is_dragging() const { return dragging != 0; }
 					// Paint text using "fonts.vga".
 	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
-		int h, int vert_lead = 0, int pbreak = 0);
+		int h, int vert_lead = 0, int pbreak = 0, bool shaded = false);
 	int paint_text(int fontnum, const char *text, int xoff, int yoff);
 	int paint_text(int fontnum, const char *text, int textlen, 
 							int xoff, int yoff);
