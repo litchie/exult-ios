@@ -39,6 +39,7 @@ Actor::Actor
 	) : Container_game_object(), npc_num(num), party_id(-1),
 	    two_handed(0),
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
+	    light_sources(0),
 	    usecode_dir(0), flags(0), action(0), frame_time(0)
 	{
 	init();				// Clear rest of stuff.

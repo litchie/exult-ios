@@ -382,9 +382,11 @@ void Game_window::paint_rle_shape
 	int xoff, int yoff		// Where to show in iwin.
 	)
 	{
-#if 0	/* It does work, but the real problem is in Game_object::paint(). */
-	xoff--; yoff--;  // !!!!!!!!!!!!! Seems to work, but WHY?
-#endif
+	int w = shape.get_width(), h = shape.get_height();
+	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+		if (!win->is_visible(xoff - shape.xleft, 
+						yoff - shape.yabove, w, h))
+			return;
 	unsigned char *in = shape.data; // Point to data.
 	int scanlen;
 	while ((scanlen = Read2(in)) != 0)
@@ -434,6 +436,11 @@ void Game_window::paint_rle_shape_translucent
 	int xoff, int yoff		// Where to show in iwin.
 	)
 	{
+	int w = shape.get_width(), h = shape.get_height();
+	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+		if (!win->is_visible(xoff - shape.xleft, 
+						yoff - shape.yabove, w, h))
+			return;
 					// # of tables:
 	const int xfcnt = sizeof(xforms)/sizeof(xforms[0]);
 					// First pix. value to transform.
@@ -1009,6 +1016,7 @@ void Game_window::paint_splash
 		paint_shape(x+120,y+120,menushapes.get_shape(0x5,0));
 		paint_shape(x+120,y+130,menushapes.get_shape(0x8,0));
 		paint_shape(x+120,y+140,menushapes.get_shape(0x6,0));
+		show(1);
 		SDL_Delay(1500);
 		
 		win->fill8(0,get_width(),get_height(),0,0);
@@ -1702,12 +1710,14 @@ void Game_window::show_items
 	else				// Search rest of world.
 		obj = find_object(x, y);
 	if (obj)
-		{
 					// Show name.
 		add_text(obj->get_name().c_str(), x, y);
 //++++++++Testing
 #if 1
-		int shnum = obj->get_shapenum(), frnum = obj->get_framenum();
+	int shnum, frnum;
+	if (obj)
+		{
+		shnum = obj->get_shapenum(), frnum = obj->get_framenum();
 		Shape_info& info = shapes.get_info(shnum);
 		cout << "Object " << shnum << ':' << frnum <<
 					" has 3d tiles (x, y, z): " <<
@@ -1723,22 +1733,6 @@ void Game_window::show_items
 			obj->get_quality() << endl;
 		cout << "Volume = " << info.get_volume() << endl;
 		cout << "obj = " << (void *) obj << endl;
-#if 1
-		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << endl;
-		cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << endl;
-		cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << endl;
-#endif
-		if (info.is_animated())
-			cout << "Object is ANIMATED" << endl;
-		if (info.has_translucency())
-			cout << "Object has TRANSLUCENCY" << endl;
-		if (info.is_transparent())
-			cout << "Object is TRANSPARENT" << endl;
-		if (info.is_light_source())
-			cout << "Object is LIGHT_SOURCE" << endl;
-		if (info.is_door())
-			cout << "Object is a DOOR" << endl;
-#endif
 		}
 	else				// Obj==0
 		{
@@ -1749,9 +1743,27 @@ void Game_window::show_items
 		ty = ty%tiles_per_chunk;
 		Chunk_object_list *chunk = get_objects(cx, cy);
 		ShapeID id = chunk->get_flat(tx, ty);
+		shnum = id.get_shapenum();
 		cout << "Clicked on flat shape " << 
-			id.get_shapenum() << ':' << id.get_framenum() << endl;
+			shnum << ':' << id.get_framenum() << endl;
 		}
+	Shape_info& info = shapes.get_info(shnum);
+#if 1
+	cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << endl;
+	cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << endl;
+	cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << endl;
+#endif
+	if (info.is_animated())
+		cout << "Object is ANIMATED" << endl;
+	if (info.has_translucency())
+		cout << "Object has TRANSLUCENCY" << endl;
+	if (info.is_transparent())
+		cout << "Object is TRANSPARENT" << endl;
+	if (info.is_light_source())
+		cout << "Object is LIGHT_SOURCE" << endl;
+	if (info.is_door())
+		cout << "Object is a DOOR" << endl;
+#endif
 	}
 
 /*

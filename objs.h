@@ -64,42 +64,44 @@ const int num_tiles = tiles_per_chunk*num_chunks;
  */
 class ShapeID
 	{
-	unsigned char low, high;
+	short shapenum;			// Shape #.
+	unsigned char framenum;		// Frame # within shape.
 public:
-	ShapeID(unsigned char l, unsigned char h) : low(l), high(h)
+					// Create from map data.
+	ShapeID(unsigned char l, unsigned char h) 
+		: shapenum(l + 256*(h&0x3)), framenum(h >> 2)
 		{  }
 	ShapeID(unsigned char *& data)	// Read from buffer & incr. ptr.
 		{
-		low = *data++;
-		high = *data++;
+		unsigned char l = *data++;
+		unsigned char h = *data++;
+		shapenum = l + 256*(h&0x3);
+		framenum = h >> 2;
 		}
 					// Create "end-of-list"/invalid entry.
-	ShapeID() : low(0xff), high(0xff)
+	ShapeID() : shapenum(-1)
 		{  }
 	~ShapeID() {};
 	int is_invalid() const		// End-of-list or invalid?
-		{ return (low == 0xff && high == 0xff); }
+		{ return shapenum == -1; }
 	int is_eol() const
 		{ return is_invalid(); }
 	int get_shapenum() const
-		{ return low + 256*(high&0x3); }
+		{ return shapenum; }
 	int get_framenum() const
-		{ return (high >> 2); }
+		{ return framenum; }
 					// Set to given shape.
-	void set_shape(int shapenum, int framenum)
+	void set_shape(int shnum, int frnum)
 		{
-		low = shapenum & 0xff;
-		high = ((shapenum >> 8) & 3) | (framenum << 2);
+		shapenum = shnum;
+		framenum = frnum;
 		}
-	ShapeID(int shapenum, int framenum)
-		{ set_shape(shapenum, framenum); }
-	void set_shape(int shapenum)	// Set shape, but keep old frame #.
-		{
-		low = shapenum & 0xff;
-		high = ((shapenum >> 8) & 3) | (high & ~3);
-		}
-	void set_frame(int framenum)	// Set to new frame.
-		{ high = (high & 3) | (framenum << 2); }
+	ShapeID(int shnum, int frnum) : shapenum(shnum), framenum(frnum)
+		{  }
+	void set_shape(int shnum)	// Set shape, but keep old frame #.
+		{ shapenum = shnum; }
+	void set_frame(int frnum)	// Set to new frame.
+		{ framenum = frnum; }
 	};
 
 /*
