@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _HASH_UTILS_H_
 #define _HASH_UTILS_H_
 
-#include "alpha_kludges.h"
 #include "exult_types.h"
 
 #ifdef DONT_HAVE_HASH_MAP

@@ -4,6 +4,10 @@
  **
  **	Written: 2/15/00 - JSF
  **/
+ 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #include "tqueue.h"
 #include <algorithm>

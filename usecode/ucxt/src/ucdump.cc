@@ -71,6 +71,10 @@
  - hex coords to sextant coords - ( x - 933 ) / 10, ( y - 1134 ) / 10
 */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>

@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 
-#include "alpha_kludges.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cerrno>
 #endif

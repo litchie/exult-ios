@@ -26,16 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _UTILS_H_
 #define _UTILS_H_
 
-
-#ifdef MACOS
-  #include <iostream>
-  // it is not sufficient to #include <iosfwd> here since Read1() etc.
-  // call methods of class istream
-#elif defined(__DECCXX)
-  #include "../alpha_kludges.h"
-#else
-  #include <iosfwd>
-#endif
+#include <iostream>
+#include <iosfwd>
 #include <string>
 
 #include "exult_types.h"

@@ -6,7 +6,9 @@
  **	Written: 2/17/00 - JSF
  **/
 
-#include "alpha_kludges.h"
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdlib>
