@@ -6,13 +6,15 @@ else
 UCC=
 endif
 
-if HAVE_GIMP
+if GIMP_PLUGIN
 GIMP_PLUGINS=u7shpload
 else
 GIMP_PLUGINS=
 endif
 
+if BUILD_TOOLS
 noinst_PROGRAMS = expack wuc wud mklink rip ucdump $(UCC) $(GIMP_PLUGINS)
+endif
 
 expack_SOURCES = \
 	expack.cc
@@ -40,7 +42,7 @@ ucclex.c: ucclex.l
 	$(LEX) $< && mv lex.yy.c $@
 uccparse.c: uccparse.y
 	$(YACC) $< && mv y.tab.c $@
-	
+
 uccparse.o: ucclex.c uccparse.c
 	$(COMPILE) -o $@ -c uccparse.c
 
@@ -50,7 +52,7 @@ ucc: uccparse.o
 u7shpload: u7shpload.c
 	gimptool --build $<
 
-if HAVE_GIMP
+if GIMP_PLUGIN
 install-exec-local:
 	gimptool --install-admin-bin u7shpload
 endif
@@ -63,7 +65,4 @@ EXTRA_DIST = \
 	u7siflag.txt \
 	ucformat.txt
 
-CLEANFILES = \
-	u7shpload
-
-CLEANFILES = *~
+CLEANFILES = *~ u7shpload
