@@ -23,11 +23,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>	// All the ifdefs aren't useful if we don't do this
+#endif
+
 /*
  *	For the time being, we'll only inflict this on X users.
  */
-#include "config.h"	// All the ifdefs aren't useful if we don't do this
-
 #ifdef XWIN
 
 #include <unistd.h>
@@ -55,7 +57,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "server.h"
 #include "servemsg.h"
-#include "config.h"
 #include "utils.h"
 #include "egg.h"
 #include "actors.h"
