@@ -111,6 +111,15 @@ public:
 					// Get an array element.
 	Usecode_value& get_elem(int i)
 		{ return value.array[i]; }
+	int is_false()			// Represents a FALSE value?
+		{
+		return is_int() ? value.intval == 0
+				: is_array() ? value.array[0].type == 
+					(int) end_of_array_type : 0;
+		}
+	int is_true()
+		{ return !is_false(); }
+
 	int resize(int new_size);	// Resize array.
 					// Look in array for given value.
 	int find_elem(const Usecode_value& val);
