@@ -227,7 +227,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
   #include "midi_drivers/forked_player.h"
 #endif
 #ifdef WIN32
-  #include "midi_drivers/win_MCI.h"
+//  #include "midi_drivers/win_MCI.h"
   #include "midi_drivers/win_midiout.h"
 #endif
 #ifdef BEOS
@@ -303,7 +303,7 @@ bool MyMidiPlayer::init_device(void)
 
 #ifdef WIN32
 //	TRY_MIDI_DRIVER(Windows_MCI)
-//	TRY_MIDI_DRIVER(Windows_MidiOut)
+	TRY_MIDI_DRIVER(Windows_MidiOut)
 #endif
 #ifdef BEOS
 	TRY_MIDI_DRIVER(Be_midi)
@@ -365,12 +365,6 @@ void    MyMidiPlayer::start_sound_effect(int num)
 
 	if (!midi_device && !init_device())
 	        return;
-
-//Not needed anymore
-//#ifdef WIN32
-//	//stop track before writing to temp. file
-//	midi_device->stop_track();
-//#endif
 	
 	char		*buffer;
 	size_t		size;
