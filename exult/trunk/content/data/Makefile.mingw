@@ -10,8 +10,6 @@ SRC=../..
 VPATH=$(SRC):$(SRC)/conf:$(SRC)/files:$(SRC)/imagewin:$(SRC)/shapes:$(SRC)/tools: \
 $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src
 
-# NOTE: make's builtin implicit rules are used for .cc => .o
-# mingw automatically defines WIN32
 CPPFLAGS=-DVERSION=\"1.1.0cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I. -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/tools -I$(SRC) -I$(SRC)/conf -I$(SRC)/usecode \

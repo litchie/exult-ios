@@ -34,7 +34,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>			/* These are for sockets. */
 #ifdef WIN32
-#include <args.h>
+#define __GNU_LIBRARY__
+#include <getopt.h>
 #include <windows.h>
 #include <ole2.h>
 #include "servewin32.h"
@@ -439,7 +440,6 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 					// Get options.
 	const char *xmldir = 0;		// Default:  Look here for .glade.
 	const char *game = 0;		// Game to look up in .exult.cfg.
-#ifndef WIN32
 	static char *optstring = "g:x:d:";
 	extern int optind, opterr, optopt;
 	extern char *optarg;
@@ -455,19 +455,6 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 			xmldir = optarg;
 			break;
 			}
-#else
-	Args    parameters;
-	string xmldir_string, game_string;
-	// Declare everything from the commandline that we're interested in.
-	parameters.declare("-g",&game_string);
-	parameters.declare("-x",&xmldir_string);
-	// Process the args
-	parameters.process(argc,argv);
-	if (game_string != "")
-		game = game_string.c_str();
-	if (xmldir_string != "")
-		xmldir = xmldir_string.c_str();
-#endif
 	string dirstr, datastr;
 	if (!xmldir)
 		{
