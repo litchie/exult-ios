@@ -1,3 +1,10 @@
+2001-07-30 Ryan Nunn <triforce@merlin.net.au>
+	* cheat_screen.cc, gamewin.h, shapeid.cc, shapeid.h, gumps/Gump.cc: 
+	  ShapeID now also can specify if a shape is translucent. This fixes
+	  some problems where translucent objects weren't drawn as translucent.
+	* gumps/Paperdoll_gump_info.cc: Fixed crash when using status bars and
+	  Rowena was in your party and you don't have SI.
+
 2001-07-30  Willem Jan Palenstijn <wjpalenstijn@users.soureforge.net>
 	* objs.cc: fixed books in SI
 

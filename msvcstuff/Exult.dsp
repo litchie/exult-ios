@@ -1700,6 +1700,10 @@ SOURCE=..\INSTALL
 # End Source File
 # Begin Source File
 
+SOURCE=..\data\Makefile.am
+# End Source File
+# Begin Source File
+
 SOURCE=..\Makefile.be
 # End Source File
 # Begin Source File
