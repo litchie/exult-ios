@@ -1,3 +1,12 @@
+2001-01-10  Max Horn  <max@quendi.de>
+	* autoarray.h: added check for access to negative indices
+	* game.cc: changed to use U7chdir instead of chdir
+	* gamedat.cc: changed to use U7mkdir instead of mkdir
+	* audio/Audio.h: removed not needed #include "utils.h"
+	* audio/Mixer.cc: re-enabled audio on MacOS
+	* audio/xmidi.cc: fixed namespace std issues
+	* files/utisl.cc/h: added U7mkdir and U7chdir for portability reasons. Also augmented switch_slashes()
+
 2001-01-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SI - Schedules take effect immediately.
@@ -26,7 +35,7 @@
 2001-01-09  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* audio/audio.cc, audio/Mixer.cc: experimental audio-buffer fix
 
-2000-01-08  Max Horn  <max@quendi.de>
+2001-01-08  Max Horn  <max@quendi.de>
 	* I had broken the game by replacing tiles_per_schunk with c_fade_out_time
 	  (instead of c_tiles_per_schunk). Fixed. Sorry again.
 
