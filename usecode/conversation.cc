@@ -387,6 +387,8 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	}
 	else if (SI)
 		frame = SI_get_frame(main_actor);
+	else
+		frame = main_actor->get_type_flag(Actor::tf_sex);
 
 	Shape_frame *face = gwin->get_face(shape, frame);
 	int empty;			// Find face prev. to 1st empty slot.
