@@ -1,0 +1,109 @@
+From: "Coder Infidel" <coder_infidel@hotmail.com>
+Sender: exult-general-admin@lists.sourceforge.net
+Status: RO
+X-Status: A
+
+I checked in the original game and a couple of the spots are numbered 
+incorrectly. I believe they should be:
+
+enum Spots {
+  head = 0,
+  back = 1,
+  belt = 2,
+  lhand = 3,
+  lfinger = 4,
+  legs = 5,
+  feet = 6,
+  rfinger = 7,
+  rhand = 8,
+  torso = 9,
+  neck = 10,
+  ammo = 11,
+  lrhand = 100
+};
+
+Note that there is no "arms" spot but there is an "ammo" one. It seems 
+strange to me that in the original game weapons are in the actor's LEFT 
+hand, but perhaps the inventory is meant to be like looking in a mirror? 
+Also I have noticed that when the screen is scrolled in Exult using the 
+arrow keys the gumps are not repainted.
+
+Now that readying works, you might later want to draw the weapon in the 
+actor's hand. For this purpose I think you will need to read the WIHH.DAT 
+file, which seems to stand for "Weapon In Hand H?" or something. This file 
+seems to contain per-frame offsets that determine where the weapon is drawn 
+relative to the actor shape.
+
+At the beginning of the file is a 1024-element array of 16 bit integers 
+which point to the records in the file (most are zero indicating that there 
+is no record). Each record is 64 bytes and consists of an array of 32 (x,y) 
+pairs, where each coordinate is a byte. For example shape 721 (Avatar) at 
+file position 0x26C0 has:
+
+   0:  5, 14
+   1:  8, 15
+   2:  7, 28
+   3: 12, 25
+   4: 14, 25
+   5:  7, 19
+   6: 20, 29
+   7: 16, 24
+   8:  6, 20
+   9: 20, 28
+  10: 255, 255
+  11: 255, 255
+  12: 255, 255
+  13: 255, 255
+  14: 27, 31
+  15:  5, 26
+  16: 11, 10
+  17:  4, 19
+  18: 14, 13
+  19: 14, 12
+  20: 14, 22
+  21:  4, 29
+  22: 19,  9
+  23: 14, 21
+  24:  5, 27
+  25: 18, 10
+  26: 255, 255
+  27: 255, 255
+  28: 255, 255
+  29: 255, 255
+  30: 25, 32
+  31:  0, 26
+
+So when drawing frame 0 of the Avatar, the weapon should be drawn at (5,14) 
+from the Avatar's hotspot (?). Evidently the 255 indicates that  the weapon 
+should not be drawn at all since the Avatar is sitting or lying down. But 
+for some reason, most NPC shapes have (64,64) for these sitting/lying down 
+frames.
+
+But wait, there is more: the file also contains entries for the weapons 
+themselves. You may have noticed that each weapon has at least 5 frames:
+
+0: normal item
+1: in hand, normal
+2/3/4: attacking
+(Throwing weapons like the dagger have extra frames.)
+
+Thus the sword (599) record has:
+   0: 255, 255
+   1:  4,  3
+   2:  7,  1
+   3: 14,  7
+   4:  7, 14
+   (the rest are 255)
+
+So perhaps the weapon's offset is added to the actor's offset?
+
+
+________________________________________________________________________
+Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com
+
+
+_______________________________________________
+Exult-general mailing list
+Exult-general@lists.sourceforge.net
+http://lists.sourceforge.net/mailman/listinfo/exult-general
+
