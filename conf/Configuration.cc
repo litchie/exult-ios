@@ -119,7 +119,12 @@ void	Configuration::set(const char *key,int value,bool write_out)
 bool	Configuration::read_config_string(const std::string &s)
 {
 	std::string	sbuf(s);
-	std::size_t	nn=1;
+	std::size_t	nn=0;
+	while(isspace(s[nn])) ++nn;
+	
+	assert(s[nn]=='<');
+	++nn;
+	
 	xmltree->xmlparse(sbuf,nn);
 	is_file=false;
 	return true;
