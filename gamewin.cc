@@ -1645,13 +1645,15 @@ bool Game_window::init_gamedat(bool create)
 	if (create)
 		{
 		cout << "Creating 'gamedat' files."<<endl;
-		Game::set_new_game();
 		if (is_system_path_defined("<PATCH>") && 
 						U7exists(PATCH_INITGAME))
 			restore_gamedat(PATCH_INITGAME);
 		else
+			{
+					// Flag that we're reading U7 file.
+			Game::set_new_game();
 			restore_gamedat(INITGAME);
-		
+			}
 		ofstream out;
 		U7open(out, GNEWGAMEVER);
 		getVersionInfo(out);
