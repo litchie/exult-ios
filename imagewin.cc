@@ -862,9 +862,20 @@ void Image_window::create_surface
 						hwdepth, flags)) != 0 &&
 			 (surface = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h,
 							8, 0, 0, 0, 0)) != 0)
-			show_scaled = hwdepth == 16 ? 
-				&Image_window::show_scaled8to16
-			      : &Image_window::show_scaled8to32;
+			{			// Get color mask info.
+			SDL_PixelFormat *fmt = scaled_surface->format;
+			unsigned long r = fmt->Rmask, g=fmt->Gmask, 
+								b=fmt->Bmask;
+			if (hwdepth == 16)
+				show_scaled = 
+				     (r == 0xf800 && g == 0x7e0 &&b == 0x1f) ? 
+					&Image_window::show_scaled8to565
+				   : (r == 0x7c00 && g == 0x3e0 && b == 0x1f) ?
+					&Image_window::show_scaled8to555
+				   : &Image_window::show_scaled8to16;
+			else
+			    	show_scaled = &Image_window::show_scaled8to32;
+			}
 		else
 			{
 			cout << "Couldn't create scaled surface" << endl;

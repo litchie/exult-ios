@@ -84,8 +84,6 @@ void Game_window::read_npcs
 		for (i = 0; i < num_monsters; i++)
 			{
 			int shape = Read2(mfile);
-//			cout << "Monster info: " << item_names[shape] <<
-//							endl;
 			mfile.read((char*)monster, 23);// Get the rest.
 					// Point to flags.
 			unsigned char *ptr = &monster[7];
@@ -95,6 +93,8 @@ void Game_window::read_npcs
 			monster_info[i].set(shape, monster[0], monster[1],
 				monster[2], monster[3], monster[4], monster[5],
 				flags, equip);
+//			cout << '\t' << shape << "\t// " << 
+//					item_names[shape] << endl;
 			}
 		mfile.close();
 		u7open(mfile, EQUIP);	// Get 'equip.dat'.
