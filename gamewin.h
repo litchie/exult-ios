@@ -617,9 +617,16 @@ public:
 
 	void set_bg_paperdolls(bool p)
 	{ bg_paperdolls = p; }
-private:
-	void start_actor_alt (int winx, int winy, int speed);
 
+	// Old Style Caching Emulation. Called if player has changed chunks
+	void emulate_cache(int oldx, int oldy, int newx, int newy);
+	// Is a specific move by a monster or item allowed
+	bool emulate_is_move_allowed(int tx, int ty);
+private:
+	// Swapping a superchunk to disk emulation
+	void emulate_swapout (int scx, int scy);
+
+	void start_actor_alt (int winx, int winy, int speed);
 
 	};
 #endif

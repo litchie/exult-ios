@@ -67,7 +67,6 @@ protected:
 	unsigned short data1, data2;	// More data, depending on type.
 	Rectangle area;			// Active area.
 	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
-	Monster_actor *monster_created;	// ->monster created.
 	Missile_launcher *launcher;	// For missile eggs.
 	void init_field(unsigned char ty);
 public:
@@ -121,7 +120,6 @@ public:
 		{ return criteria; }
 	int get_type() const
 		{ return type; }
-	void monster_gone();		// Monster this created just died.
 					// Can it be activated?
 	int is_active(Game_object *obj,
 			int tx, int ty, int tz, int from_tx, int from_ty);
@@ -142,6 +140,10 @@ public:
 		{ return 1; }
 					// Write out to IREG file.
 	virtual void write_ireg(std::ostream& out);
+
+	virtual void reset_cached_in() 
+	{ if(criteria == cached_in) flags &= ~(1 << hatched); }
+
 	};
 
 /*

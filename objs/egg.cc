@@ -146,19 +146,16 @@ Egg_object::Egg_object
 	short d1, short d2
 	) : Egglike_game_object(shapenum, framenum, tilex, tiley, lft),
 	    probability(prob), data1(d1), data2(d2),
-	    area(Rectangle(0, 0, 0, 0)), monster_created(0), launcher(0)
+	    area(Rectangle(0, 0, 0, 0)), launcher(0)
 	{
 	type = itype&0xf;
 	criteria = (itype & (7<<4)) >> 4;
 	distance = (itype >> 10) & 0x1f;
 	unsigned char noct = (itype >> 7) & 1;
 	unsigned char do_once = (itype >> 8) & 1;
-					// Cached_in eggs can be rehatched, as
-					//   can missile eggs.
-	unsigned char htch = (criteria == cached_in || type == missile) ? 0 
-					: ((itype >> 9) & 1);
-	solid_area = (criteria == cached_in || criteria == something_on) ? 1 
-								: 0;
+					// Missile eggs can be rehatched
+	unsigned char htch = (type == missile) ? 0 : ((itype >> 9) & 1);
+	solid_area = (criteria == something_on || criteria == cached_in) ? 1 : 0;
 	unsigned char ar = (itype >> 15) & 1;
 	flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
@@ -180,7 +177,6 @@ inline void Egg_object::init_field
 	type = ty;
 	probability = 100;
 	data1 = data2 = 0;
-	monster_created = 0;
 	launcher = 0;
 	area = Rectangle(0, 0, 0, 0);
 	criteria = avatar_footpad;
@@ -213,8 +209,6 @@ Egg_object::~Egg_object
 	(
 	)
 	{
-	if (monster_created)
-		monster_created->set_creator(0);
 	if (launcher)
 		{
 		Game_window::get_game_window()->get_tqueue()->remove(launcher);
@@ -279,20 +273,6 @@ void Egg_object::set_area
 	}
 
 /*
- *	This is called by the monster that this egg created.
- */
-
-void Egg_object::monster_gone
-	(
-	)
-	{
-					// In future, may want to set a time
-					//   before 'hatched' is cleared.
-	flags &= ~((1 << (int) hatched));
-	monster_created = 0;
-	}
-
-/*
  *	Is the egg active when stepping onto a given spot, or placing an obj.
  *	on the spot?
  */
@@ -304,8 +284,7 @@ int Egg_object::is_active
 	int from_tx, int from_ty	// Tile stepped from.
 	)
 	{
-	if (flags & (1 << (int) hatched) && //+++++Testing
-	    criteria != cached_in)
+	if (flags & (1 << (int) hatched))
 		return (0);		// For now... Already hatched.
 	Game_window *gwin = Game_window::get_game_window();
 	if (flags & (1 << (int) nocturnal))
@@ -315,10 +294,7 @@ int Egg_object::is_active
 			return (0);	// It's not night.
 		}
 	Egg_criteria cri = (Egg_criteria) get_criteria();
-					// Watch for cached_in eggs which have
-					//   been reset.
-	if (cri == cached_in && !solid_area)
-		cri = avatar_near;
+
 	int deltaz = tz - get_lift();
 //	deltaz = deltaz < 0 ? -deltaz : deltaz;
 	switch (cri)
@@ -416,12 +392,6 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	int roll = must ? 0 : 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
-	if (monster_created)
-		{
-		if (!must)
-			return;
-		monster_created->set_creator(0);
-		}
 	if ((flags & (1 << (int) auto_reset)) == 0)
 					// Flag it as done if not auto-reset.
 		flags |= (1 << (int) hatched);
@@ -474,8 +444,6 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				Monster_actor *monster = inf->create(get_cx(),
 					get_cy(), get_tx(), get_ty(),
 					get_lift(), sched, align);
-				monster->set_creator(this);
-				monster_created = monster;
 				gwin->add_dirty(monster);
 				gwin->add_nearby_npc(monster);
 				}
@@ -583,17 +551,6 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
                 }
 	if (flags & (1 << (int) once))
 		remove_this();		// All done, so go away.
-	else if (criteria == cached_in  && solid_area )
-		{			// Replace solid area with outline.
-		Chunk_object_list *chk = gwin->get_objects_safely(
-							get_cx(), get_cy());
-		if (chk)		// Usecode may have remove it.
-			{
-			chk->remove_egg(this);	// Remove from chunk.
-			chk->add_egg(this);	// Add back.
-			}
-		solid_area = 0;		// Clear flag.
-		}
 	}
 
 /*
