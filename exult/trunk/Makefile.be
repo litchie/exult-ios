@@ -31,7 +31,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	cheat_screen.o shapeid.o 
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
-CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
+CONF_OBJS=Configuration.o XMLEntity.o
 # unused: xmain.o
 MIDI_DRV_OBJS=be_midi.o
 # unused: KMIDI.o Timidity_binary.o forked_player.o win_MCI.o

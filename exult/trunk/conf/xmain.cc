@@ -31,6 +31,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 #include <iostream>
 #include <string>
+#include "exult_constants.h"
+
+const std::string c_empty_string;
 
 Configuration	config;
 using std::cout;
