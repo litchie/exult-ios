@@ -1975,10 +1975,15 @@ inline void Call_readied_usecode
 	(
 	Game_window *gwin,
 	Actor *npc,
+	int index,
 	Game_object *obj,
 	Usecode_machine::Usecode_events eventid
 	)
 	{
+	if (index != Actor::rfinger && index != Actor::lfinger && 
+	    index != Actor::belt &&
+	    index != Actor::head)
+		return;
 	if (obj->get_shapenum() == 297)	// Fix special case:  ring of protect.
 		{
 		if (eventid == Usecode_machine::readied)
@@ -2007,10 +2012,16 @@ void Actor::init_readied
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	if (spots[lfinger])
-		Call_readied_usecode(gwin, this, spots[lfinger],
+		Call_readied_usecode(gwin, this, lfinger, spots[lfinger],
 						Usecode_machine::readied);
 	if (spots[rfinger])
-		Call_readied_usecode(gwin, this, spots[rfinger],
+		Call_readied_usecode(gwin, this, rfinger, spots[rfinger],
+						Usecode_machine::readied);
+	if (spots[belt])
+		Call_readied_usecode(gwin, this, belt, spots[belt],
+						Usecode_machine::readied);
+	if (spots[head])
+		Call_readied_usecode(gwin, this, head, spots[head],
 						Usecode_machine::readied);
 	}
 
@@ -2025,8 +2036,7 @@ void Actor::remove
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int index = Actor::find_readied(obj);	// Remove from spot.
-	if (index == rfinger || index == lfinger)
-		Call_readied_usecode(gwin, this, 
+	Call_readied_usecode(gwin, this, index,
 					obj, Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
 	if (index >= 0)
@@ -2085,9 +2095,9 @@ int Actor::add
 	spots[index] = obj;		// Store in correct spot.
 	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
 	Game_window *gwin = Game_window::get_game_window();
-	if (!dont_check &&		// Watch for initialization.
-	    (index == lfinger || index == rfinger))
-		Call_readied_usecode(gwin, this, obj,Usecode_machine::readied);
+	if (!dont_check)		// Watch for initialization.
+		Call_readied_usecode(gwin, this, index, obj,
+						Usecode_machine::readied);
 	if (gwin->get_info(obj).is_light_source())
 		light_sources++;
 	return (1);
@@ -2143,8 +2153,9 @@ int Actor::add_readied
 	Game_window *gwin = Game_window::get_game_window();
 
 	// Usecode?
-	if (!dont_check && (index == lfinger || index == rfinger))
-		Call_readied_usecode(gwin, this, obj,Usecode_machine::readied);
+	if (!dont_check)
+		Call_readied_usecode(gwin, this, index, obj,
+						Usecode_machine::readied);
 
 	// Lightsource?
 	if (gwin->get_info(obj).is_light_source()) light_sources++;
