@@ -70,6 +70,8 @@ class Notebook_gump : public Gump
 		}
 	void prev_page();
 	void next_page();
+	bool on_last_page_line();
+	bool on_first_page_line();
 	void up_arrow();
 	void down_arrow();
 public:
