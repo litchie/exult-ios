@@ -24,10 +24,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Game_object;
 class Container_game_object;
 class Game_window;
+class Jawbone_object;
 
 class Jawbone_gump : public Gump {
  public:
-	Jawbone_gump(Container_game_object *cont, int initx, int inity);
+	Jawbone_gump(Jawbone_object *cont, int initx, int inity);
 
 	~Jawbone_gump() {}
 
@@ -45,11 +46,9 @@ class Jawbone_gump : public Gump {
 	void set_to_spot(Game_object *obj, int sx, int sy);
 	void paint_tooth(Game_window* gwin, int index);
 
-	// pointers to the teeth. Note: this is only set in paint/find_object!
-	Game_object* teeth[19];
-
-	void find_teeth(); //fill the teeth[] array
 	bool on_tooth(int sx, int sy, int index); // is spot on tooth?
+
+	Jawbone_object *jawbone;
 
 };
 

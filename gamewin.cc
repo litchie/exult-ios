@@ -61,6 +61,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucmachine.h"
 #include "utils.h"
 #include "virstone.h"
+#include "jawbone.h"
 #include "delobjs.h"
 #include "Flex.h"
 #include "ucsched.h"			/* Only used to flush objects. */
@@ -1227,6 +1228,12 @@ void Game_window::read_ireg_objects
 				obj = b;
 				if (!moving_barge && (quality&(1<<3)))
 					moving_barge = b;
+				}
+			else if (Game::get_game_type() == SERPENT_ISLE &&
+				shnum == 555) // serpent jawbone
+				{
+				obj = new Jawbone_object(shnum, frnum,
+					tilex, tiley, lift, entry[10]);
 				}
 			else if (quality == 1 && entry[8] >= 0x80)
 				obj = new Dead_body(
@@ -2755,7 +2762,7 @@ void Game_window::show_gump
 			new_gump = new CombatStats_gump(x, y);
 		else if (shapenum == game->get_shape("gumps/jawbone"))
 			new_gump = new Jawbone_gump(
-					(Container_game_object*) obj, x, y);
+					(Jawbone_object*) obj, x, y);
 	}
 
 	if (!new_gump)
