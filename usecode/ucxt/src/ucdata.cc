@@ -338,7 +338,8 @@ void UCData::output_extern_header(ostream &o)
 
 	for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); func++)
 	{
-		(*func)->output_ucs_funcname(o << "extern ", _funcmap, (*func)->_funcid, (*func)->_num_args, (*func)->return_var) << ';' << endl;
+		//(*func)->output_ucs_funcname(o << "extern ", _funcmap, (*func)->_funcid, (*func)->_num_args, (*func)->return_var) << ';' << endl;
+		(*func)->output_ucs_funcname(o << "extern ", _funcmap) << ';' << endl;
 	}
 }
 

@@ -183,6 +183,11 @@ ostream &UCFunc::output_ucs_funcname(ostream &o, const FuncMap &funcmap,
 	return o;
 }
 
+ostream &UCFunc::output_ucs_funcname(ostream &o, const FuncMap &funcmap)
+{
+		return output_ucs_funcname(o, funcmap, _funcid, _num_args, return_var);
+}
+
 void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCOptions &options, unsigned int indent)
 {
 	vector<unsigned int> labeltmp(1);
@@ -899,7 +904,10 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 	if(ucs_output && opcode_table_data[op._id].flag_paren) str << ')';
 	
 	str << std::ends;
-	return str.str();
+	
+	string tstr(str.str());
+	str.freeze(false);
+	return tstr;
 }
 
 void readbin_U7UCFunc(ifstream &f, UCFunc &ucf, const UCOptions &options)

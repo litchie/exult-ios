@@ -116,8 +116,6 @@ class UCNode
 {
 	public:
 		UCNode(UCc *newucc=0) : ucc(newucc) { };
-		UCNode(std::vector<UCNode *>::iterator beg, std::vector<UCNode *>::iterator end)
-		      : ucc(new UCc()), nodelist(beg, end) { };
 		~UCNode() { };
 	
 		UCc *ucc;
@@ -208,6 +206,7 @@ class UCFunc
 		bool output_list(std::ostream &o, unsigned int funcno, const UCOptions &options);
 		
 		bool output_ucs(std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options);
+		std::ostream &UCFunc::output_ucs_funcname(std::ostream &o, const FuncMap &funcmap);
 		std::ostream &output_ucs_funcname(std::ostream &o, const FuncMap &funcmap,
                                     unsigned int funcid,
                                     unsigned int numargs, bool return_var);
@@ -229,6 +228,7 @@ class UCFunc
 		void output_raw_opcodes(std::ostream &o, const UCc &op);
 		
 		bool output_tt(std::ostream &o);
+
 //	private:
 	
 		std::vector<GotoSet> gotoset;
@@ -261,8 +261,6 @@ class UCFunc
 		
 		unsigned int codesize() const { return _funcsize - _datasize; };
 		
-		// the following vars are for data compatibility with the original UCFunc
-		std::vector<FlagData *>   _flagcount;
 		UCNode node;
 };
 
