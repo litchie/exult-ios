@@ -5,6 +5,7 @@
 	* objs.h, actors.h: Made many member functions const
 	* gamewin.h: Made a few arguments const
 	* actors.cc: Fixed slight inventory problem, removed unused variable
+	* objs.cc, gumps.cc: Add support for Fellowship box container gump
 
 2000-05-24  Jeff Freedman  <jeff@patches.simutech.com>
 
