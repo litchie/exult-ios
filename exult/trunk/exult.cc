@@ -1041,14 +1041,23 @@ static void Handle_keystroke
 			int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
 			int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
 			gwin->paint_shape(x, y, map, 1);
+
+			// mark current location
+			int tx, ty, z, xx, yy;
+			gwin->get_main_actor()->get_abs_tile(tx, ty, z);
+	
+			//the 5 and 10 below are the map-borders, 3072 dimensions of the world
+			//the +1 _seems_ to improve location, maybe something to do with "/ 3072"
+			xx = ((tx * (map->get_width() - 10)) / 3072) + (5 + x - map->get_xleft()) + 1;
+			yy = ((ty * (map->get_height() - 10)) / 3072) + (5 + y - map->get_yabove()) + 1;
+			gwin->get_win()->fill8(0, 1, 5, xx, yy - 2); // black isn't the correct colour,
+			gwin->get_win()->fill8(0, 5, 1, xx - 2, yy); // ++++should be yellow
+
 			gwin->show(1);
-			int xx, yy;
 			if (!Get_click(xx, yy, Mouse::greenselect)) {
 				gwin->paint();
 				break;
 			}
-			
-			int tx, ty;
 			
 			//the 5 and 10 below are the map-borders, 3072 dimensions of the world
 			tx = ((xx - (5 + x - map->get_xleft()))*3072) / (map->get_width() - 10);

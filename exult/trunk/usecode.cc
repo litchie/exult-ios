@@ -2182,6 +2182,24 @@ USECODE_INTRINSIC(display_map)
 	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
 	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
 	gwin->paint_shape(x, y, map, 1);
+
+	//count all sextants in party
+	Usecode_value v_357(-357), v650(650), v_359(-359);
+	long sextants = count_objects(v_357, v650, v_359, v_359).get_int_value();
+	if ((!gwin->is_main_actor_inside()) && (sextants > 0)) {
+		// mark location
+		int tx, ty, z, xx, yy;
+		gwin->get_main_actor()->get_abs_tile(tx, ty, z);
+
+		//the 5 and 10 below are the map-borders, 3072 dimensions of the world
+		//the +1 seems to improve the location, maybe something to do with "/3072" ?
+		xx = ((tx * (map->get_width() - 10)) / 3072) + (5 + x - map->get_xleft()) + 1;
+		yy = ((ty * (map->get_height() - 10)) / 3072) + (5 + y - map->get_yabove()) + 1;
+
+		gwin->get_win()->fill8(0, 1, 5, xx, yy - 2); // black isn't the correct colour
+		gwin->get_win()->fill8(0, 5, 1, xx - 2, yy); // ++++ should be yellow!
+	}
+
 	gwin->show(1);
 	int xx, yy;
 	Get_click(xx, yy, Mouse::hand);
@@ -3065,7 +3083,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(remove_answer), // 6
 	USECODE_INTRINSIC_PTR(push_answers), // 7
 	USECODE_INTRINSIC_PTR(pop_answers), // 8
-	USECODE_INTRINSIC_PTR(clear_answers), // 9 +++++Testing. WJP
+	USECODE_INTRINSIC_PTR(clear_answers), // 9
 
 	USECODE_INTRINSIC_PTR(select_from_menu), // 0x0a
 	USECODE_INTRINSIC_PTR(select_from_menu2), // 0x0b
