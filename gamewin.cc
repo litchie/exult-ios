@@ -171,6 +171,7 @@ Game_window::Game_window
 	) : 
 	    win(0), usecode(0), combat(false),
             tqueue(new Time_queue()), clock(tqueue), time_stopped(0),
+	    std_delay(c_std_delay),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), gump_man(new Gump_manager),
 	    render_seq(0), painted(false), focus(true), 
@@ -420,6 +421,11 @@ void Game_window::init_files(bool cycle)
 	CYCLE_RED_PLASMA();
 	// initialize .wav SFX pack
 	Audio::get_ptr()->Init_sfx();
+	int fps;			// Init. animation speed.
+	config->value("config/video/fps", fps, 5);
+	if (fps <= 0)
+		fps = 5;
+	std_delay = 1000/fps;		// Convert to msecs. between frames.
 }
 	
 

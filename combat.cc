@@ -324,7 +324,7 @@ void Combat_schedule::approach_foe
 			if (rand()%3 == 0)
 				pos = pos + Tile_coord(rand()%12 - 6,
 							rand()%12 - 6, 0);
-			npc->walk_to_tile(pos, 2*c_std_delay, 
+			npc->walk_to_tile(pos, 2*gwin->get_std_delay(), 
 							500 + rand()%500);
 			failures++;
 			return;

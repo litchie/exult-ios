@@ -623,7 +623,7 @@ void Egg_object::activate
 					scr->add(Ucscript::remove);
 					flags &= ~(1<<(int)once);
 					}
-				scr->start(c_std_delay);
+				scr->start(gwin->get_std_delay());
 				}
 			break;
 			}
@@ -642,7 +642,7 @@ void Egg_object::activate
 				proj = 856;// Fireball.  Shouldn't get here.
 			if (!launcher)
 				launcher = new Missile_launcher(this, weapon,
-						proj, dir, c_std_delay*delay);
+				    proj, dir, gwin->get_std_delay()*delay);
 			if (!launcher->in_queue())
 				gwin->get_tqueue()->add(0L, launcher, 0);
 			break;
