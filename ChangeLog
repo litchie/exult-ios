@@ -1,3 +1,8 @@
+2002-01-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/shapeedit.cc: Starting to show shape info.
+	* shapes/shapeinf.{cc,h} (public): 'Editing' flag added.
+
 2002-01-11  Dominik Reichardt <gigdr@tesionmail.de>
 	* FAQ,ReadMe updated
 	* docs/FAQ.html and ReadMe.html updated
