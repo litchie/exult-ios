@@ -633,6 +633,7 @@ static void Handle_event
 			dragging = gwin->start_dragging(
 					event.button.x >> scale,
 					event.button.y >> scale);
+			Mouse::mouse->set_shape(Mouse::hand);
 			dragged = false;
 			}
 					// Move sprite toward mouse
@@ -688,7 +689,7 @@ static void Handle_event
 		{
 		Mouse::mouse->move(event.motion.x >> scale, 
 						event.motion.y >> scale);
-		if (!gwin->showing_gumps())
+		if (!gwin->showing_gumps() && !dragging)
 			Set_mouse_and_speed(event.motion.x, event.motion.y);
 		Mouse::mouse_update = true;	// Need to blit mouse.
 					// Dragging with left button?
