@@ -182,6 +182,11 @@ public:
 			int srcw, int destx, int desty, Xform_palette xform)
 		{ ibuf->fill_line_translucent8(val, srcw, destx, desty,
 								xform); }
+					// Apply translucency to a rectangle
+	virtual void fill_translucent8(unsigned char val, int srcw, int srch, 
+				int destx, int desty, Xform_palette xform)
+		{ ibuf->fill_translucent8(val, 
+					srcw, srch, destx, desty, xform); }
 					// Copy rect. with transp. color.
 	void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty)

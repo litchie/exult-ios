@@ -156,6 +156,21 @@ int Game_window::paint_map
 				dx = INCR_CHUNK(dx), dy = DECR_CHUNK(dy))
 			light_sources += paint_chunk_objects(dx, dy);
 		}
+	if (cheat.in_map_editor() && cheat.show_tile_grid())
+		{			// Paint grid at edit height.
+		int xtiles = get_width()/c_tilesize,
+		    ytiles = get_height()/c_tilesize;
+		int lift = cheat.get_edit_lift();
+		int liftpixels = lift*(c_tilesize/2) + 1;
+					// Try a little color-coding.
+		Xform_palette& xform = xforms[10];
+		for (int y = 0; y < ytiles; y++)
+			win->fill_translucent8(0, xtiles*c_tilesize, 1, 
+				-liftpixels, y*c_tilesize - liftpixels, xform);
+		for (int x = 0; x < xtiles; x++)
+			win->fill_translucent8(0, 1, ytiles*c_tilesize,
+				x*c_tilesize - liftpixels, -liftpixels, xform);
+		}
 	painted = 1;
 	return light_sources;
 	}

@@ -79,6 +79,9 @@ public:
 					// Apply translucency to a line.
 	virtual void fill_line_translucent8(unsigned char val,
 			int srcw, int destx, int desty, Xform_palette xform);
+					// Apply translucency to a rectangle
+	virtual void fill_translucent8(unsigned char val, int srcw, int srch, 
+				int destx, int desty, Xform_palette xform);
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty);
