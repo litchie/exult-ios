@@ -271,13 +271,15 @@ static void Set_opengl
 	if (win->get_scaler() == Image_window::OpenGL)
 		{
 		GL_manager *glman = new GL_manager();
+					// +++++Hope this is okay to do:
+		pal->load(PALETTES_FLX, 0);	// Main palette.
 					// This should be elsewhere, I think:
 		unsigned char *newpal = new unsigned char[768];
 		for (int i = 0; i < 256; i++)
-			{
-			newpal[3*i] = pal->get_red(i);
-			newpal[3*i+1] = pal->get_green(i);
-			newpal[3*i+2] = pal->get_blue(i);
+			{		// Palette colors are 0-63.
+			newpal[3*i] = 4*pal->get_red(i);
+			newpal[3*i+1] = 4*pal->get_green(i);
+			newpal[3*i+2] = 4*pal->get_blue(i);
 			}
 		glman->set_palette(newpal);
 		glman->resized(win->get_width(), win->get_height());
@@ -323,6 +325,7 @@ Game_window::Game_window
 	set_window_size(width, height, scale, scaler);
 	pal = new Palette();
 	Game_singletons::init(this);	// Everything but 'usecode' exists.
+	Set_opengl(win, pal);
 
 	string str;
 	config->value("config/gameplay/textbackground", text_bg, -1);
@@ -359,7 +362,6 @@ void Game_window::set_window_size(int width, int height, int scale, int scaler)
 		fullscreen=true;
 	config->set("config/video/fullscreen",fullscreenstr,true);
 	win = new Image_window8(width, height, scale, fullscreen, scaler);
-	Set_opengl(win, pal);
 	win->set_title("Exult Ultima7 Engine");
 	shape_man->set_ibuf(win->get_ib8());
 }

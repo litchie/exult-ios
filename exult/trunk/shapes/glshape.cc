@@ -50,11 +50,16 @@ void GL_texshape::create
 	)
 	{
 	assert(pal != 0);
+#if 0	/* +++++Testing */
+	Image_buffer8 test(128, 128);
+	for (int r = 0; r < 16; r++)
+	for (int c = 0; c < 16; c++)
+		test.fill8(16*r + c, 8, 8, c*8, r*8);
+	unsigned char *pixels = test.rgba(pal, transp);
+#else
 					// Convert to rgba.
 	unsigned char *pixels = src->rgba(pal, transp);
-//+++++TESTING
-// memset(pixels, 255, texsize*texsize*4);
-//++++++
+#endif
 	GLuint tex;
 	glGenTextures(1, &tex);		// Generate (empty) texture.
 	texture = tex;
@@ -136,6 +141,10 @@ void GL_texshape::paint
 					//   of screen.
 	)
 	{
+#if 0	/* +++++Testing */
+	if (px < 0 || py < 0)
+		return;
+#endif
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glPushMatrix();
 					// Convert to tile position.
