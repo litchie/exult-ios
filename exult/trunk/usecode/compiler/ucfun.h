@@ -38,7 +38,9 @@ class Uc_function
 	Uc_scope top;			// Top-level scope.
 	Uc_function_symbol *proto;	// Function declaration.
 	Uc_scope *cur_scope;		// Current scope.
-	int num_locals;			// Counts locals (+parms).
+	int num_parms;			// # parameters.
+	int num_locals;			// Counts locals.
+	int num_links;			// # links to external functions.
 	string text_data;		// All strings.
 	Uc_statement *statement;	// Statement(s) in function.
 public:
@@ -50,9 +52,7 @@ public:
 		{ cur_scope = cur_scope->add_scope(); }
 	void pop_scope()		// End scope.
 		{
-		Uc_scope *old = cur_scope;
 		cur_scope = cur_scope->get_parent();
-		delete old;
 		}
 	Uc_symbol *search(char *nm)	// Search current scope.
 		{ return cur_scope->search(nm); }
