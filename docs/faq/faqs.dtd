@@ -32,6 +32,7 @@
 <!-- Empty elements -->
 <!ELEMENT br (#PCDATA)>
 <!ELEMENT Exult (#PCDATA)>
+<!ELEMENT Studio (#PCDATA)>
 
 <!ELEMENT configdesc (line*)>
 <!ELEMENT line (#PCDATA|comment)*>

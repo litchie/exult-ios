@@ -1,3 +1,8 @@
+2001-05-02  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/faq/faqs.dtd, faq_html.xsl: added "Exult Studio" template
+	* docs/faq/exult_faq.xml: FAQ updated see FAQ for details
+	* Faq: updated
+
 2001-06-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* 'Tournament' flag is back; I was wrong about it being
