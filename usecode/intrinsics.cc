@@ -382,8 +382,8 @@ USECODE_INTRINSIC(get_schedule_type)
 					// Path_run_usecode?  (This is to fix
 					//   a bug in the Fawn Trial.)
 					//+++++Should be a better way to check.
-	if (dynamic_cast<If_else_path_actor_action *>(npc->get_action()) &&
-	    Game::get_game_type() == SERPENT_ISLE)
+	if (Game::get_game_type() == SERPENT_ISLE &&
+	    npc->get_action() && npc->get_action()->as_usecode_path())
 					// Give a 'fake' schedule.
 		sched = Schedule::walk_to_schedule;
 	Usecode_value u(sched);
@@ -2166,8 +2166,8 @@ USECODE_INTRINSIC(set_path_failure)
 	if (path_npc && item)		// Set in path_run_usecode().
 		{
 		If_else_path_actor_action *action = 
-			dynamic_cast<If_else_path_actor_action *>(
-						path_npc->get_action());
+			path_npc->get_action() ?
+			path_npc->get_action()->as_usecode_path() : 0;
 		if (action)		// Set in in path action.
 			action->set_failure(
 				new Usecode_actor_action(fun, item, eventid));

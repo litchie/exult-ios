@@ -28,6 +28,7 @@ class Game_object;
 class Tile_coord;
 class PathFinder;
 class Pathfinder_client;
+class If_else_path_actor_action;
 
 /*
  *	This class controls the current actions of an actor:
@@ -59,6 +60,8 @@ public:
 		{ return 0; }
 					// Check for Astar.
 	virtual int following_smart_path()
+		{ return 0; }
+	virtual If_else_path_actor_action *as_usecode_path()
 		{ return 0; }
 	};
 
@@ -131,6 +134,8 @@ public:
 		{ return done && failed; }
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
+	virtual If_else_path_actor_action *as_usecode_path()
+		{ return this; }
 	};
 
 /*
