@@ -2282,6 +2282,7 @@ void Game_window::remove_text_effect
 			{		// Found it.
 			tqueue->remove(each);
 			remove_effect(each);
+			paint();
 			return;
 			}
 	}
