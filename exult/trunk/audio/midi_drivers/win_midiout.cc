@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "xmidi.h"
 #include <unistd.h>
 #include "utils.h"
-#include "sdl.h"
+#include "SDL.h"
 #include "win_midiout.h"
 
 static HMIDIOUT		midi_port;
