@@ -1,3 +1,6 @@
+2003-10-26  Max Horn  <max@quendi.de>
+	* configure.ac: Patch #794229: OpenGL on Mac OS X
+
 2003-10-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* FAQ, README, docs/xml/*: updated for beta3
 	* autogen.sh: don't delete docs/xml/Makefile

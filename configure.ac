@@ -359,7 +359,12 @@ AC_MSG_CHECKING(for OpenGL rendering support)
 
 if test x$enable_opengl = xyes; then
 	AC_DEFINE(HAVE_OPENGL, 1, [Have OpenGL])
-	OPENGL_LIBS="-lGL"
+	
+	# Mac OS X gets OpenGL through a framework (which appears to be pulled in by SDL)
+	if test x$ARCH != xmacosx; then
+		OPENGL_LIBS="-lGL"
+	fi
+	
 	AC_MSG_RESULT(yes)
 else
 	AC_MSG_RESULT(no)
