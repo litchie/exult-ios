@@ -275,6 +275,7 @@ public:
 	virtual void clear_flag(int flag) { }
 	virtual int get_flag(int flag) const { return 0; }
 	virtual int get_siflag(int flag) const { return 0; }
+	virtual int get_type_flag(int flag) const { return 0; }
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return 0; }
 	virtual int get_party_id() const// Get/set index within party.
@@ -333,6 +334,12 @@ public:
 	void write_common_ireg(unsigned char *buf);
 	virtual int get_live_npc_num()
 		{ return -1; }
+
+	virtual int get_high_shape() const { return -1; }
+	virtual void set_high_shape(int s) { }
+	virtual int get_low_lift() const { return -1; }
+	virtual void set_low_lift(int l) { }
+
 	};
 
 /*
@@ -346,18 +353,18 @@ public:
 	Ireg_game_object(unsigned char l, unsigned char h, 
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
-		: Game_object(l, h, shapex, shapey, lft), owner(0)
+		: Game_object(l, h, shapex, shapey, lft), owner(0), lowlift(-1), highshape (-1)
 		{  }
 	Ireg_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
-						owner(0)
+						owner(0), lowlift(-1), highshape (-1)
 		{  }
 					// Copy constructor.
 	Ireg_game_object(const Ireg_game_object& obj2)
-		: Game_object(obj2), owner(0)
+		: Game_object(obj2), owner(0), lowlift(-1), highshape (-1)
 		{  }
-	Ireg_game_object() : owner(0)	// Create fake entry.
+	Ireg_game_object() : owner(0), lowlift(-1), highshape (-1)	// Create fake entry.
 		{  }
 	virtual ~Ireg_game_object()
 		{  }
@@ -377,6 +384,12 @@ public:
 	virtual int is_dragable() const;// Can this be dragged?
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
+	int	lowlift;
+	int highshape;
+	virtual int get_high_shape() const { return highshape; };
+	virtual void set_high_shape(int s) { highshape = s;};
+	virtual int get_low_lift() const { return lowlift; };
+	virtual void set_low_lift(int l) { lowlift = l;};
 	};
 
 /*
