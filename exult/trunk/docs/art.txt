@@ -59,3 +59,4 @@ Fellowship staff	885		Willem Jan
 Tripple crossbow	647		-
 Musket			278		-
 Musket ammo		581		-
+Fire wand		630		Willem Jan
