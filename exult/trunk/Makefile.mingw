@@ -173,6 +173,7 @@ toolsdist: tools
 	cp SDL/lib/SDL.dll $(TOOLSPATH)/tools
 
 allclean: clean toolsclean
+	rm -f exconfig.dll
 
 allinstall: install toolsinstall
 
