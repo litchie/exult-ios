@@ -153,6 +153,7 @@ class Usecode_machine
 	void say_string();		// "Say" the string.
 	Usecode_value *stack;		// Stack.
 	Usecode_value *sp;		// Stack ptr.  Grows upwards.
+	unsigned char choice_made;	// 1 when user clicks on a choice.
 	void stack_error(int under);
 	void push(Usecode_value& val)	// Push/pop stack.
 		{ *sp++ = val; }
@@ -207,7 +208,8 @@ class Usecode_machine
 					// Run the function.
 	void run(Usecode_function *fun, int event);
 					// Call desired function.
-	int call_usecode_function(int id, int event = 0, Usecode_value *parm0 = 0);
+	int call_usecode_function(int id, int event = 0, 
+						Usecode_value *parm0 = 0);
 public:
 	Usecode_machine(istream& file, Game_window *gw);
 	~Usecode_machine();
@@ -220,5 +222,7 @@ public:
 		caller_item = 0;
 		return ret;
 		}
+					// User clicked on a response.
+	void chose_response(int response);
 	};
 

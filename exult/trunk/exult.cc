@@ -161,7 +161,7 @@ static void Init
  *	Handle events until a flag is set.
  */
 
-int Handle_events
+void Handle_events
 	(
 	unsigned char *stop
 	)
@@ -251,8 +251,8 @@ static void Handle_event
 			{
 			if (gwin->get_mode() == Game_window::conversation)
 				{	// In a conversation.
-				gwin->converse(event.xbutton.x,
-							event.xbutton.y);
+				gwin->conversation_choice(
+					event.xbutton.x, event.xbutton.y);
 				break;
 				}
 					// Last click within .5 secs?

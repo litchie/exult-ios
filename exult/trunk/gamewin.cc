@@ -49,8 +49,7 @@ Game_window::Game_window
 	    skip_lift(16), debug(0), shapewin(0),
 	    script(0),
 	    main_actor(721, 0),		// Someone to move around.
-	    npc_actors(new Slist),
-	    conversing_with(0),
+	    conv_choices(0),
 	    main_actor_inside(0), mode(intro), showing_item(0),
 	    shapes(SHAPES_VGA),
 	    faces(FACES_VGA)
@@ -111,6 +110,7 @@ Game_window::~Game_window
 		   //crash after last instruction of ~image_window
 	delete win;
 	delete shapewin;
+	delete [] conv_choices;
 	}
 
 /*
@@ -688,6 +688,7 @@ void Game_window::init_actors
 		return;
 	main_actor.move(chunkx, chunky + 1, 
 				get_objects(chunkx, chunky + 1), 10, 4, -1);
+#if 0
 	if (script)			// Script file given?
 		{
 					// Add new ones to list.
@@ -700,7 +701,6 @@ void Game_window::init_actors
 			actor->set_npc(npc);
 					// Add to list.
 			prev->add_after_this(actor);
-			npc_actors->append(actor);
 			prev = actor;
 			actor->move(cx, cy, get_objects(cx, cy), sx, sy, -1);
 			}
@@ -712,18 +712,15 @@ void Game_window::init_actors
 		iolo->move(chunkx + 1, chunky + 1, 
 			get_objects(chunkx + 1, chunky + 1), 6, 10, -1);
 		main_actor.add_after_this(iolo);
-		npc_actors->append(iolo);
 					// And another (female Avatar).
 		Npc_actor *sara = new Area_actor(989, 5);
 		sara->set_npc(Init_sara_npc());
 		sara->move(chunkx + 1, chunky + 1, 
 			get_objects(chunkx + 1, chunky + 1), 7, 14, -1);
 		iolo->add_after_this(sara);
-		npc_actors->append(sara);
 		}
-#if 1	/* Not working right yet. */
-	read_npcs();			// Read in all U7 NPC's.
 #endif
+	read_npcs();			// Read in all U7 NPC's.
 	}
 
 
@@ -1231,47 +1228,15 @@ void Game_window::double_clicked
 	for (int i = 0; i < cnt; i++)	// Go through them.
 		{
 		Game_object *obj = found[i];
-#if 0
-		switch (obj->get_shapenum())
-			{
-		case CLOSED_DOOR:
-			obj->set_shape(OPEN_DOOR); paint();
-			break;
-		case OPEN_DOOR:
-			obj->set_shape(CLOSED_DOOR); paint();
-			break;
-		case CLOSED_HORIZ_SHUTTERS:
-			obj->set_shape(OPEN_HORIZ_SHUTTERS); paint();
-			break;
-		case OPEN_HORIZ_SHUTTERS:
-			obj->set_shape(CLOSED_HORIZ_SHUTTERS); paint();
-			break;
-		case CLOSED_VERT_SHUTTERS:
-			obj->set_shape(OPEN_VERT_SHUTTERS); paint();
-			break;
-		case OPEN_VERT_SHUTTERS:
-			obj->set_shape(CLOSED_VERT_SHUTTERS); paint();
-			break;
-			}
-#endif
+		int save_mode = mode;
 		usecode->call_usecode(obj->get_usecode(), obj);
-		paint();
-#if 0
-					// For now, search all actors.
-		Slist_iterator next(npc_actors);
-		Npc_actor *actor;
-		while ((actor = (Npc_actor *) next()) != 0)
-			if (obj == actor)
-				{
-				converse(actor);
-				return;
-				}
-#endif
+		mode = save_mode;
+		paint();//????Not sure+++++++++
 		}
 	}
 
 /*
- *	Show a "face" on the screen.
+ *	Show a "face" on the screen.  Npc_text_rect is also set.
  *	+++++++Got to handle more than one.
  */
 
@@ -1283,7 +1248,6 @@ void Game_window::show_face
 	{
 					// Get screen rectangle.
 	Rectangle sbox = get_win_rect();
-	Rectangle tbox;			// Gets text box.
 					// Get character's portrait.
 	Shape_frame *face = faces.get_shape(shape, frame);
 					// Draw at top of screen.
@@ -1295,55 +1259,46 @@ void Game_window::show_face
 	win->fill8(0, actbox.w, actbox.h, actbox.x, actbox.y);
 	paint_shape(win, actbox.x + actbox.w - 2 - 8, 
 			actbox.y + actbox.h - 2 - 8, face);
+					// This is where NPC text will go.
+	npc_text_rect = Rectangle(actbox.x + actbox.w + 16,
+				actbox.y + 8,
+				sbox.w - actbox.x - actbox.w - 32,
+				6*win->get_text_height(font12));
 	}
 
 /*
- *	Converse with a character who was double-clicked on.
+ *	Show what the NPC had to say.
  */
 
-void Game_window::converse
+void Game_window::show_npc_message
 	(
-	Npc_actor *actor,
-	int x, int y			// Mouse click, or -1's if start of
-					//   conversation.
+	char *msg
 	)
 	{
-	if (!actor->get_npc())		// No personality?
-		return;
+	paint(npc_text_rect);		// Clear what was there before.
+	win->draw_text_box(font12, msg, npc_text_rect.x, npc_text_rect.y,
+					npc_text_rect.w, npc_text_rect.h);
+	}
+
+/*
+ *	Show the Avatar's conversation choices (and face).
+ */
+
+void Game_window::show_avatar_choices
+	(
+	int num_choices,
+	char **choices
+	)
+	{
 					// Get screen rectangle.
 	Rectangle sbox = get_win_rect();
-	Rectangle tbox;			// Gets text box.
-					// Get character's portrait.
-	Shape_frame *face = faces.get_shape(actor->get_face_shapenum());
-					// Draw at top of screen.
-	Rectangle actbox(16, 16,
-			face->get_width() + 4, face->get_height() + 4);
-					// Draw whom we're talking to.
-					// Put a black box w/ white bdr.
-	win->fill8(1, actbox.w + 4, actbox.h + 4, actbox.x - 2, actbox.y - 2);
-	win->fill8(0, actbox.w, actbox.h, actbox.x, actbox.y);
-	paint_shape(win, actbox.x + actbox.w - 2 - 8, 
-			actbox.y + actbox.h - 2 - 8, face);
-					// This is where NPC text will go.
-	tbox.x = actbox.x + actbox.w + 16;
-	tbox.y = actbox.y + 8;
-	tbox.w = sbox.w - actbox.x - actbox.w - 32;
-	tbox.h = 6*win->get_text_height(font12);
-	if (x != -1)			// A mouse click?
-		{			
-		paint(tbox);		// Paint background.
-		if (!actor->respond(win, font12, tbox, x, y))
-			{		// Done.
-			mode = normal;
-			paint();
-			return;
-			}
-		}
-	else				// Start of conversation.
-		actor->start_conversation(win, font12, tbox);
+	int x = 0, y = 0;		// Keep track of coords. in box.
+	int height = win->get_text_height(font12);
+	int space_width = win->get_text_width(font12, "   ");
 					// Get main actor's portrait.
-	face = faces.get_shape(main_actor.get_face_shapenum());
-	Rectangle mbox(16, actbox.y + 6*win->get_text_height(font12),
+	Shape_frame *face = faces.get_shape(main_actor.get_face_shapenum());
+
+	Rectangle mbox(16, npc_text_rect.y + npc_text_rect.h + 6*height,
 			face->get_width() + 4, face->get_height() + 4);
 	win->fill8(1, mbox.w + 4, mbox.h + 4, mbox.x - 2, mbox.y - 2);
 	win->fill8(0, mbox.w, mbox.h, mbox.x, mbox.y);
@@ -1352,12 +1307,45 @@ void Game_window::converse
 				mbox.y + mbox.h - face->ybelow - 2 - 8, 
 				face);
 					// Set to where to draw sentences.
-	tbox.x = mbox.x + mbox.w + 16;
-	tbox.y = mbox.y + 8;
-	tbox.w = sbox.w - mbox.x - mbox.w - 32;
-	tbox.h = sbox.h - mbox.y - 16;
+	Rectangle tbox(mbox.x + mbox.w + 16, mbox.y + 8,
+				sbox.w - mbox.x - mbox.w - 32,
+				sbox.h - mbox.y - 16);
 	paint(tbox);			// Paint background.
-	actor->converse(win, font12, tbox);
-	conversing_with = actor;
+	delete [] conv_choices;		// Set up new list of choices.
+	conv_choices = new Rectangle[num_choices + 1];
+	for (int i = 0; i < num_choices; i++)
+		{
+		char *text = choices[i];
+		int width = win->get_text_width(font12, text);
+		if (x > 0 && x + width > tbox.w)
+			{		// Start a new line.
+			x = 0;
+			y += height;
+			}
+					// Store info.
+		conv_choices[i] = Rectangle(tbox.x + x, tbox.y + y,
+					width, height);
+		win->draw_text(font12, text, tbox.x + x, tbox.y + y);
+		x += width + space_width;
+		}
+					// Terminate the list.
+	conv_choices[num_choices] = Rectangle(0, 0, 0, 0);
 	mode = conversation;
+	}
+
+/*
+ *	User clicked during a conversation.
+ */
+
+void Game_window::conversation_choice
+	(
+	int x, int y			// Where mouse was clicked.
+	)
+	{
+	int i;
+	for (i = 0; conv_choices[i].w != 0 &&
+			!conv_choices[i].has_point(x, y); i++)
+		;
+	if (conv_choices[i].w != 0)	// Found one?
+		usecode->chose_response(i);
 	}

@@ -58,22 +58,6 @@ Npc_actor::~Npc_actor
 	(
 	)
 	{
-	delete npc;
-	delete sentences;
-	}
-
-/*
- *	Set personality.
- */
-
-void Npc_actor::set_npc
-	(
-	Npc *n
-	)
-	{
-	delete npc;
-	npc = n;
-	npc->set_user(this);		// Set user-data to ourselves.
 	}
 
 /*
@@ -85,110 +69,6 @@ int Npc_actor::get_usecode
 	)
 	{
 	return usecode;
-	}
-
-/*
- *	Print the sentences we'll respond to.
- *
- *	Output:	0 if we don't converse.
- */
-
-int Npc_actor::converse
-	(
-	Image_window *win,		// Window to draw in.
-	Font_face *font,		// Font to use.
-	Rectangle& box			// Where to write on screen.
-	)
-	{
-	if (!npc)
-		return (0);
-					// Create new list.
-	int maxcnt = npc->get_max_sentence_cnt();
-	delete sentences;
-	sentences = new Npc_sentence[maxcnt + 1];
-	int cnt = 0;
-	Sentence *sent;
-	int id;				// Get them.
-	Npc_sentence_iterator next(npc);
-	int x = 0, y = 0;		// Keep track of coords. in box.
-	int height = win->get_text_height(font);
-	int space_width = win->get_text_width(font, "   ");
-	while (next(sent, id))
-		{
-		char *text = sent->get_text();
-		int width = win->get_text_width(font, text);
-		if (x > 0 && x + width > box.w)
-			{		// Start a new line.
-			x = 0;
-			y += height;
-			}
-					// Store info.
-		sentences[cnt].loc = Rectangle(box.x + x, box.y + y,
-					width, height);
-		sentences[cnt].id = id;
-		win->draw_text(font, text, box.x + x, box.y + y);
-		x += width + space_width;
-		cnt++;
-		}
-	sentences[cnt].id = -1;		// Put -1 in last one.
-	return (1);
-	}
-
-/*
- *	Start conversation.
- */
-
-void Npc_actor::start_conversation
-	(
-	Image_window *win,		// Window to draw in.
-	Font_face *font,		// Font to use.
-	Rectangle& box			// Where to write on screen.
-	)
-	{
-	our_win = win;
-	our_face = font;
-	our_box = box;			// Set area to write our speech in.
-	npc->start();
-	}
-
-/*
- *	Respond to a mouse click from the user on a sentence.
- *
- *	Output:	0 to end conversation (User said "Bye").
- */
-
-int Npc_actor::respond
-	(
-	Image_window *win,		// Window to draw in.
-	Font_face *font,		// Font to use.
-	Rectangle& box,			// Where to write on screen.
-	int x, int y			// Mouse location.
-	)
-	{
-	int i;				// Locate sentence clicked on.
-	for (i = 0; sentences[i].id != -1 &&
-			!sentences[i].loc.has_point(x, y); i++)
-		;
-	if (sentences[i].id == -1)	// Missed them all.
-		return (1);
-//+++++++++++++++These are already set in start_conversation().
-	our_win = win;
-	our_face = font;
-	our_box = box;			// Set area to write our speech in.
-	return (npc->respond_to_sentence(sentences[i].id));
-	}
-
-/*
- *	Print response.  This is called from an action.
- */
-
-void Npc_actor::show_response
-	(
-	char *msg
-	)
-	{
-	our_win->draw_text_box(our_face, msg, our_box.x, our_box.y,
-						our_box.w, our_box.h);
 	}
 
 /*
