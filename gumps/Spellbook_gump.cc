@@ -109,11 +109,12 @@ unsigned short Spellbook_gump::si_reagants[9*8] = {
 					// Circle 2:
 	gr|gn, bm|sa, ns|sa, bp|sa|wh, mr|sa, gr|gn|ss, gr|gn|mr, gr|gn|sa,
 					// Circle 3:
-	gr|ns|sa, bp|mr, bp|gr, gr|gn|mr|sa, ns|ss, bp|ns|ss, bp|mr|sa|sa, 0,
+	gr|gn|wh,gr|ns|sa, bp|mr, bp|gr, gr|gn|mr|sa, ns|ss, bp|ns|ss, bp|mr|sa|sa,
 					// Circle 4:
-	bm|mr, gr|ss, mr|sa, gr|mr|ns|sa, bm|sa, bp|ss, bm|sa, 0,
+	bm|mr, gr|ss, mr|sa, sa|bm|gr|mr|ss|sc, gr|mr|ns|sa, bm|sa, bp|ss, bm|sa,
 					// Circle 5:
-	mr|ss, bm|bp|mr|sa, gr|gn|mr|ss, bm|ns, gn|ns|ss, bp|gr|mr|sa, 0, 0,
+	mr|ss, bp|gr|ss|sa, bm|bp|mr|sa, gr|gn|mr|ss, bm|ns, gn|ns|ss, sa|bm|mr|ns|ss, 
+					bp|gr|mr|sa,
 					// Circle 6:
 	bp|ns|ss, gr|mr|ns, gr|mr|ns, bp|wh|ss|sa, bp|wh|mr|ss|sa, 
 					bm|bp|wh|sa, bm|gn|sa, mr|sa|ss|sc,
