@@ -881,8 +881,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 
 	// ARMOUR
 	
-	// Top **NEEDS ART**
-	{     249,  0,      Actor::torso,   OT_Shield,   true, SF_PAPERDOL_VGA,     -1,     0,      2,   4,  6 },
+	// Green Top
+	{     249,  0,      Actor::torso,   OT_Shield,   true, SF_GAME_FLX,      EXULT_BG_FLX_GREENTOP_SHP,     0,      2,   4,  6 },
 	// Top **NEEDS ART**
 	{     249,  1,      Actor::torso,   OT_Shield,   true, SF_PAPERDOL_VGA,     -1,     0,      2,   4,  6 },
 	// Top **NEEDS ART**
