@@ -96,9 +96,11 @@ public:
   void set_wizard (bool wizard) { wizard_mode = wizard; }
   void toggle_map_editor (void);
   void toggle_tile_grid (void);
-  void set_edit_mode(Map_editor_mode md) { edit_mode = md; }
+  void set_edit_mode(Map_editor_mode md);
   void clear_chunksel();
   void add_chunksel(Map_chunk *chunk, bool extend = false);
+  void Cheat::move_chunk(Map_chunk *chunk, int dx, int dy);
+  void Cheat::move_selected_chunks(int dx, int dy);
   void set_edit_lift(int lift);
   void set_edit_shape(int sh, int fr);
   void set_edit_chunknum(int chnum) { edit_chunknum = chnum; }
@@ -131,6 +133,7 @@ public:
   void toggle_selected(Game_object *obj);
   void clear_selected();
   void delete_selected();
+  void move_selected_objs(int dx, int dy, int dz);
   void move_selected(int dx, int dy, int dz);
   const Game_object_vector& get_selected() const
 	{ return selected; }
