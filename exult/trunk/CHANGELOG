@@ -1,3 +1,24 @@
+3/12/00:	Improved midi support using the timidity binary an patchsets
+		under linux.
+
+		Earthquakes!
+
+		In-game scripted introduction.
+
+		More animated objects.
+
+		Some NPC schedules now implemented.
+
+		Lighting and transparency.
+
+		Better USECODE support. Also speed, compilation and debugging
+		improvements.
+
+		Better support for building win32 targets.
+
+		Improved rendering pipeline. Still not perfect, but definitely
+		a vast improvement.
+
 3/23/00:	Speech and midi support from Dancer Vesperman, as well as
 		automatic configuration.
 

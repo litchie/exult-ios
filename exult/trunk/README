@@ -10,6 +10,17 @@ game which you're actually in the middle of playing.
 
 ** NEW for this release **
 
+MIDI
+----
+If you have timidity and an appropriate patchset installed, linux systems
+will now produce acceptable MIDI music. Enjoy.
+
+As before, none of the game's own instrument sets are loaded. We're still
+working on that.
+
+=================================================================================
+** NEW for 0.20 **
+
 CONFIGURATION
 -------------
 Exult now keeps a configuration file. You can specify where your Ultima7
