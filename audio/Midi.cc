@@ -34,8 +34,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Midi.h"
 
 #include <unistd.h>
-#include "../fnames.h"
-#include "../files/U7file.h"
+#include "fnames.h"
+#include "U7file.h"
+#include "exult.h"
 #include "utils.h"
 #include "xmidi.h"
 #include "gamewin.h"
@@ -44,7 +45,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 
 #include "Configuration.h"
-extern	Configuration	*config;
 
 using std::cerr;
 using std::cout;
@@ -269,7 +269,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 #ifdef BEOS
   #include "midi_drivers/be_midi.h"
 #endif
-#ifdef MACOS
+#if defined(MACOS) || defined(MACOSX)
   #include "midi_drivers/mac_midi.h"
 #endif
 
