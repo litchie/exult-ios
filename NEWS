@@ -1,7 +1,8 @@
-10/04/03	v1.1 Beta3
+10/18/03	v1.1 Beta3
 
-		Fixed item duplication in Windows
-		Fixed missing NPCs in Windows
+		Fixed item duplication
+		Fixed missing NPCs
+		Fixed disappearing items
 		Fixed cosmetic bug in 2xSaI scaler
 		Fixed resurrection
 		Improved SFX handling for items
