@@ -2058,6 +2058,8 @@ void Actor::set_flag
 		need_timers()->start_might();
 	if (flag == Obj_flags::cursed)
 		need_timers()->start_curse();
+	if (flag == Obj_flags::paralyzed)
+		need_timers()->start_paralyze();
 	if (flag == Obj_flags::invisible)
 		{
 		need_timers()->start_invisibility();
@@ -2792,9 +2794,15 @@ bool Actor::figure_hit_points
 		return false;		// Missed.
 					// Compute hit points to lose.
 	int attacker_str = Get_effective_prop(attacker, strength, 8)/4;
-	int hp = attacker_str + (rand()%attacker_level) + wpoints - armor;
-	if (hp < 1)
-		hp = 1;
+	int hp;
+	if (wpoints > 0)		// Some ('curse') do no damage.
+		{
+		hp = attacker_str + (rand()%attacker_level) + wpoints - armor;
+		if (hp < 1)
+			hp = 1;
+		}
+	else
+		hp = 0;
 	if (powers)			// Special attacks?
 		{
 		if ((powers&Weapon_info::poison) && roll_to_win(
@@ -2815,7 +2823,14 @@ bool Actor::figure_hit_points
 			Get_effective_prop(attacker, Actor::intelligence),
 			Get_effective_prop(this, Actor::intelligence)))
 			set_flag(Obj_flags::cursed);
-		// ++++++++++MORE in shapeinf.h
+		if ((powers&Weapon_info::sleep) && roll_to_win(
+			Get_effective_prop(attacker, Actor::intelligence),
+			Get_effective_prop(this, Actor::intelligence)))
+			set_flag(Obj_flags::asleep);
+		if ((powers&Weapon_info::paralyze) && roll_to_win(
+			Get_effective_prop(attacker, Actor::intelligence),
+			Get_effective_prop(this, Actor::intelligence)))
+			set_flag(Obj_flags::paralyzed);
 		}
 	int sfx;			// Play 'hit' sfx.
 	if (winf && (sfx = winf->get_hitsfx()) >= 0 &&
@@ -3812,7 +3827,7 @@ void Npc_actor::handle_event
 /*
  *	Step onto an adjacent tile.
  *
- *	Output:	0 if blocked.
+ *	Output:	0 if blocked (or paralyzed).
  *		Dormant is set if off screen.
  */
 
@@ -3822,6 +3837,8 @@ int Npc_actor::step
 	int frame			// New frame #.
 	)
 	{
+	if (get_flag(Obj_flags::paralyzed))
+		return 0;
 					// Store old chunk.
 	int old_cx = get_cx(), old_cy = get_cy();
 	Game_window *gwin = Game_window::get_game_window();
@@ -3917,6 +3934,7 @@ void Npc_actor::switched_chunks
 				if (each == this)
 					{
 					prev->next = next;
+					assert(prev->next != prev);
 					break;
 					}
 				else
@@ -3926,8 +3944,11 @@ void Npc_actor::switched_chunks
 	if (nlist)			// Add to new list.
 		{
 		next = nlist->npcs;
+		assert(next != this);
 		nlist->npcs = this;
 		}
+	else
+		next = 0;
 	}
 
 /*

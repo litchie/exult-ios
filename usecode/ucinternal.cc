@@ -628,7 +628,11 @@ void Usecode_internal::item_say
 	Game_object *obj = get_item(objval);
 	const char *str = strval.get_str_value();
 	if (obj && str && *str)
+		{
+					// Added Nov01,01 to fix 'locate':
+		gwin->remove_text_effect(obj);
 		gwin->add_text(str, obj);
+		}
 	}
 
 /*
