@@ -63,7 +63,7 @@ static int Handle_gump_event
 	SDL_Event& event
 	)
 {
-	int scale_factor = Game_window::get_game_window()->get_win()->get_scale();
+	int scale_factor = Game_window::get_game_window()->get_fastmouse() ? 1 : Game_window::get_game_window()->get_win()->get_scale();
 
 	switch (event.type)
 	{
@@ -75,6 +75,17 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 		if (event.button.button == 1)
 			gump->mouse_down(event.button.x / scale_factor, 
 						event.button.y / scale_factor);
+		else if (Game_window::get_game_window()->get_mouse3rd()) {
+			if (event.button.button == 2)
+				gump->key_down(SDLK_RETURN);
+			else if (event.button.button == 3) {
+				SDL_Event event;
+				do {
+					SDL_PollEvent(&event);
+				} while (!(event.type == SDL_MOUSEBUTTONUP && event.button.button == 3));
+				return 0;
+			}
+		}
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 1)

@@ -103,18 +103,7 @@ public:
 		{ set_shape(static_cast<int>(shape)); }
 	Mouse_shapes get_shape()
 		{ return (Mouse_shapes) cur_framenum; }
-	void move(int x, int y)		// Move to new location (mouse motion).
-		{
-#ifdef DEBUG
-		if (onscreen)
-			std::cerr << "Trying to move mouse while onscreen!" << std::endl;
-#endif
-					// Shift to new position.
-		box.shift(x - mousex, y - mousey);
-		dirty = dirty.add(box);	// Enlarge dirty area.
-		mousex = x;
-		mousey = y;
-		}
+	void move(int x, int y);	// Move to new location (mouse motion).
 	void blit_dirty()		// Blit dirty area.
 		{ iwin->show(dirty.x - 1, dirty.y - 1, dirty.w + 2, 
 							dirty.h + 2); }

@@ -61,6 +61,7 @@
 #include "game.h"
 #include "gamewin.h"
 #include "gump_utils.h"
+#include "keyactions.h"
 #include "keys.h"
 #include "mouse.h"
 #include "ucmachine.h"
@@ -486,7 +487,7 @@ static void Handle_events
 		Delay();		// Wait a fraction of a second.
 #endif
 		// Mouse scale factor
-		int scale = gwin->get_win()->get_scale();
+		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 
 		Mouse::mouse->hide();		// Turn off mouse.
 		Mouse::mouse_update = false;
@@ -557,8 +558,8 @@ static void Handle_event
 	)
 	{
 	// Mouse scale factor
-	int scale = gwin->get_win()->get_scale();
-    bool dont_move_mode = gwin->main_actor_dont_move();
+	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
+	bool dont_move_mode = gwin->main_actor_dont_move();
 
 					// For detecting double-clicks.
 	static uint32 last_b1_click = 0, last_b3_click = 0;
@@ -578,6 +579,11 @@ static void Handle_event
 			}
 					// Move sprite toward mouse
 					//  when right button pressed.
+		if (gwin->get_mouse3rd())
+			if (event.button.button == 2)
+				{
+					ActionTarget(0);
+				}
 		if (event.button.button == 3)
 			{		// Try removing old queue entry.
 			gwin->get_tqueue()->remove(gwin->get_main_actor());
@@ -734,11 +740,20 @@ static int Get_click
 		Mouse::mouse_update = false;
 
 		// Mouse scale factor
-		int scale = gwin->get_win()->get_scale();
+		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 
 		while (SDL_PollEvent(&event))
 			switch (event.type)
 				{
+			case SDL_MOUSEBUTTONDOWN:
+				if (gwin->get_mouse3rd() && event.button.button == 3) {
+					SDL_Event event;
+					do {
+						SDL_PollEvent(&event);
+					} while (!(event.type == SDL_MOUSEBUTTONUP && event.button.button == 3));
+					return 0;
+				}
+				break;
 			case SDL_MOUSEBUTTONUP:
 				if (event.button.button == 1)
 					{
@@ -847,7 +862,7 @@ void Wait_for_arrival
 	)
 	{
 	// Mouse scale factor
-	int scale = gwin->get_win()->get_scale();
+	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
 
 	unsigned char os = Mouse::mouse->is_onscreen();
 	uint32 last_repaint = 0;	// For insuring animation repaints.

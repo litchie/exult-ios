@@ -1,4 +1,10 @@
 2001-10-12  Tristan Tarrant <nadir@users.sourceforge.net>
+	More patches from Christian Ohm <chr.ohm@gmx.net>
+	mouse.patch, gumps/Gameplay_options.* : Implement GameplayOptions 
+	menu and add fast mouse and middle mouse button support
+	data/credits.txt: credit where credit is due :)
+
+2001-10-12  Tristan Tarrant <nadir@users.sourceforge.net>
 	Patch from Christian Ohm <chr.ohm@gmx.net>
 	abacus.patch: add a keyboard shortcut ('g') to use the
 	abacus. 

@@ -1,9 +1,22 @@
 ??/??/01	next release
+	
+		Gameplay Options Dialog has been implemented 
+		
+		Middle mouse button support
+
+		Fast mouse in full-screen modes
+
+		The currently playing music track is stored within savegames
+		so that it started again on load
+
+		Scheduled usecode is now retained between save/load
 
 		Endgame and Quotes entries in the menus are now only visible
 		when appropriate
 
 		Allow choice of MIDI device in Win32
+
+		Many broken animations were fixed (especially in SI)
 
 		Tons of bugfixes (see ChangeLog for details)
 
