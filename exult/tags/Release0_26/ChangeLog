@@ -1,0 +1,69 @@
+2000-05-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* usecode.cc: avoided Internal Compiler Error for gcc 2.95.2
+	* README.win32: minor change for release 0.26
+
+2000-05-08  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Pathfinding added to run_usecode().  Can be tested by
+	double-clicking on a bucket.  Works, but needs refinement.
+
+2000-05-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* objs.cc: attempt at synching animations 
+
+2000-05-03  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* gamewin.cc: Show game title in splash screen
+
+	* exult.cc: you can now press 'i' to show the npc's inventories just
+	like the real U7. Needs improvement.
+	New shape browser: PgUp/PgDn selects file, sS selects shape, fF 
+	selects frame. Also 'q' quits and ESC only closes gumps.
+
+2000-05-02  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Use data from 'ready.dat' to place objects on Actor.
+
+2000-05-02  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* gamewin.cc (Game_window): Free string used to determine game
+	identity.
+
+2000-04-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Use direction to get correct frames for Usecode animations.
+	* The 'bucket bug' is partly fixed.
+
+2000-04-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Re-enabled sound in Windows (Where did it go??)
+	* added some more #ifndef WIN32 to the pragma's
+	* added exult.exe to .cvsignore
+	* added MIDI support for Windows
+
+2000-04-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Use correct frames for East-West walking animation!!
+	* Show signs, books, and scrolls.
+	* Create monsters, and have them loiter.
+
+2000-04-28  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* Testing of CVS commit mails...
+	* gamedat.cc, gamewin.h: implement get_game_identity
+	* gamewin.cc, exult.cc: generate initial gamedat before opening window.
+	Also if static and gamedat identities don't match, recreate gamedat.
+	* autogen.sh: clear old generated files first
+	* configure.in: if I don't have kmid build without it anyway, don't
+	tell me to run configure with --disable-kmid
+
+2000-04-26  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* exult.cc: Implement 'h' key to show a simple help page
+	* .cvsignore: added cvsignore files everywhere
+	* ChangeLog: started changelog using standard GNU notation. Emacs 
+	has a major mode which enables easy editing of this beast.
+	* autogen.sh: script which generates automake/autoconf stuff.
+	* configure.in: should not use acinclude.m4 as AC_INIT. Use exult.cc 
+	instead.
+	
+	
+
