@@ -166,7 +166,7 @@ Egg_object::Egg_object
 	unsigned char htch = (type == missile) ? 0 : ((itype >> 9) & 1);
 	solid_area = (criteria == something_on || criteria == cached_in ||
 					// Teleports need solid area.
-						type == teleport) ? 1 : 0;
+		type == teleport || type == intermap) ? 1 : 0;
 	unsigned char ar = (itype >> 15) & 1;
 	flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
@@ -332,7 +332,8 @@ int Egg_object::is_active
 	case party_near:		// Avatar or party member.
 		if (!obj->get_flag(Obj_flags::in_party))
 			return 0;
-		if (type == teleport)	// Teleports:  Any tile, exact lift.
+		if (type == teleport ||	// Teleports:  Any tile, exact lift.
+		    type == intermap)
 			return absdeltaz == 0 && area.has_point(tx, ty);
 		if (!((absdeltaz <= 1 || 
 					// Using trial&error here:
@@ -507,15 +508,16 @@ void Egg_object::update_from_studio
 		case soundsfx:frame = 1; break;
 		case voice:   frame = 3; break;
 		case weather: frame = 4; break;
+		case intermap:
 		case teleport:frame = 5; break;
 		case path:    frame = 6; break;
-        case missile:
-            egg->set_shape(200); 
-            if ((data2 & 0xFF) < 8)
-                frame = 2 + ((data2 & 0xFF) / 2);
-            else
-                frame = 1;
-            break;
+	        case missile:
+        		egg->set_shape(200); 
+            		if ((data2 & 0xFF) < 8)
+                		frame = 2 + ((data2 & 0xFF) / 2);
+            		else
+                		frame = 1;
+            		break;
 		default:      frame = 7; break;
 			}
 	if (frame != -1)
@@ -532,10 +534,9 @@ void Egg_object::update_from_studio
 	egg->data2 = data2;
 	if (type == usecode || type == teleport || type == path)
 		egg->set_quality(data1&0xff);
-	Map_chunk *chunk = 
-			gmap->get_chunk_safely(egg->get_cx(), egg->get_cy());
-	chunk->remove_egg(egg);		// Got to add it back.
-	chunk->add_egg(egg);
+	Map_chunk *echunk = egg->get_chunk();
+	echunk->remove_egg(egg);	// Got to add it back.
+	echunk->add_egg(egg);
 	cout << "Egg updated" << endl;
 #endif
 	}
@@ -575,7 +576,11 @@ void Egg_object::activate_teleport
 	)
 	{
 	Tile_coord pos(-1, -1, -1);	// Get position to jump to.
-	int qual = get_quality();
+	int qual = 255, mapnum = 0;
+	if (type == intermap)
+		mapnum = data1&0xff;
+	else
+ 		qual = get_quality();
 	if (qual == 255)
 		{			// Jump to coords.
 		int schunk = data1 >> 8;
@@ -592,11 +597,12 @@ void Egg_object::activate_teleport
 			pos = path->get_tile();
 			}
 		}
-	cout << "Should teleport to (" << pos.tx << ", " <<
+	cout << "Should teleport to map " << mapnum << 
+				", (" << pos.tx << ", " <<
 					pos.ty << ')' << endl;
 	if (pos.tx != -1 && obj && obj->get_flag(Obj_flags::in_party))
 					// Teleport everyone!!!
-		gwin->teleport_party(pos);
+		gwin->teleport_party(pos, false, mapnum);
 #if 0	/* ++++I'm almost sure this is wrong. */
 					// Can keep doing it.
 	flags &= ~((1 << (int) hatched));
@@ -687,10 +693,9 @@ breaks anything!  */
 		else			// Create item.
 			{
 			Shape_info& info = ShapeID::get_info(shnum);
-			Game_object *nobj =gmap->create_ireg_object(info,
+			Game_object *nobj = 
+			    chunk->get_map()->create_ireg_object(info,
 				shnum, frnum, get_tx(), get_ty(), get_lift());
-			Map_chunk *chunk = 
-					gmap->get_chunk(get_cx(), get_cy());
 			if (nobj->is_egg())
 				chunk->add_egg((Egg_object *) nobj);
 			else
@@ -739,6 +744,7 @@ breaks anything!  */
 		break;
 		}
 	case teleport:
+	case intermap:
 		activate_teleport(obj);
 		break;
 	case weather:

@@ -386,6 +386,7 @@ void Game_map::set_chunk_terrain
 	{
 	terrain_map[cx][cy] = chunknum;	// Set map.
 	get_chunk_objects(cx, cy);	// Set chunk to it.
+	map_modified = true;
 	}
 
 /*
