@@ -49,9 +49,12 @@ void rebuild(void)
 
 int main(int argc,char *argv[])
 {
-	unsigned short fn,fnc,fs,fsc;
+	unsigned short fn, fnc;
+	unsigned short temp;
+	int fs,fsc;
 	unsigned int i,put=0;
 	int number;
+	int extended;
 	char s[10];
 	char filename[18];
 	FILE *fi,*fo,*fo2;
@@ -68,9 +71,9 @@ int main(int argc,char *argv[])
 	if (!strcasecmp(argv[1],"all"))
 		number=-1;
 	else if (!strcasecmp(argv[1],"glue"))
-			rebuild();
+		rebuild(); // note: this doesn't return
 	else if (!strcasecmp(argv[1],"index"))
-				number=-2;
+		number=-2;
 	else if (!strcasecmp(argv[1],"put"))
 	{
 		sscanf(argv[2],"%x",&number);
@@ -91,7 +94,16 @@ int main(int argc,char *argv[])
 	}
 	while (1) {
 		if (fread(&fn,2,1,fi)!=1) break;
-		fread(&fs,2,1,fi);
+		if (fn == 0xFFFF) {
+			extended = 1;
+			fread(&fn,2,1,fi);
+			fread(&fs,4,1,fi);
+		} else {
+			extended = 0;
+			fread(&temp,2,1,fi);
+			fs = temp;
+		}
+
 		if (number==-1||number==-2||number==fn)
 		{
 			sprintf(s,"%04X",fn);
@@ -109,8 +121,18 @@ int main(int argc,char *argv[])
 					printf("Can't open file %s\n", filename);
 					exit(0);
 				}
-				fwrite(&fn,2,1,fo);
-				fwrite(&fs,2,1,fo);
+
+				if (extended) {
+					temp = 0xFFFF;
+					fwrite(&temp,2,1,fo);
+					fwrite(&fn,2,1,fo);
+					fwrite(&fs,4,1,fo);
+				} else {
+					fwrite(&fn,2,1,fo);
+					temp = fs;
+					fwrite(&temp,2,1,fo);
+				}
+
 				for (i=0;i<fs;i++)
 					fputc(fgetc(fi),fo);
 				fclose(fo);
@@ -125,7 +147,21 @@ int main(int argc,char *argv[])
 					exit(0);
 				}
 				fread(&fnc,2,1,fo);
-				fread(&fsc,2,1,fo);
+				if (fnc == 0xFFFF) {
+					if (extended == 0) {
+						printf("Wrong header (u7) in object\n");
+						exit(0);
+					}
+					fread(&fnc,2,1,fo);
+					fread(&fsc,4,1,fo);
+				} else {
+					if (extended == 1) {
+						printf("Wrong header (extended) in object\n");
+						exit(0);
+					}
+					fread(&temp,2,1,fo);
+					fsc = temp;
+				}
 				if (fnc!=fn)
 				{
 					printf("Wrong function in object\n");
