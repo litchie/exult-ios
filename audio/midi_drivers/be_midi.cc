@@ -59,8 +59,11 @@ bool	Be_midi::is_playing(void)
 }
 
 
-void Be_midi::start_track(const char *name,bool repeat)
+void Be_midi::start_track(XMIDIEventList *event_list,bool repeat)
 {
+	const char *name = MIDITMPFILE;
+	event_list->Write(name);
+
 #if DEBUG
   cerr << "Stopping any running track" << endl;
 #endif

@@ -25,8 +25,7 @@
 #endif
 #include <new>
 #include "SDL_mapping.h"
-#include "exult_constants.h"
-#include "exult_types.h"
+#include "common_types.h"
 
 class ByteBuffer
 {

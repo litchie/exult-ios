@@ -20,6 +20,7 @@
 #  include <config.h>
 #endif
 
+#ifndef PENTAGRAM // Exult only at this stage. 
 
 #if (__GNUG__ >= 2) && (!defined WIN32)
 #  pragma implementation
@@ -48,3 +49,5 @@ int (*SDL::InitSubSystem)(Uint32)=::SDL_InitSubSystem;
 // Thread functions
 SDL::Thread *(*SDL::CreateThread)(int (*fn)(void *), void *data)=::SDL_CreateThread;
 
+
+#endif // PENTAGRAM

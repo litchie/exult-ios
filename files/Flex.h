@@ -19,9 +19,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef	__FLEX_H_
 #define	__FLEX_H_
 
+#ifndef PENTAGRAM // DONT'T INCLUDE THIS IN PENTAGRAM!
+
 #include <vector>
 #include <string>
-#include "exult_types.h"
+#include "common_types.h"
 #include "U7file.h"
 
 
@@ -70,5 +72,6 @@ private:
 	void IndexFlexFile(void);
 };
 
+#endif // PENTAGRAM
 
 #endif

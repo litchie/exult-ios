@@ -28,7 +28,7 @@
 #  include <iosfwd>
 #endif
 
-#include "exult_types.h"
+#include "common_types.h"
 
 #ifndef HAVE_SNPRINTF
 extern int snprintf(char *, size_t, const char *, /*args*/ ...);

@@ -25,7 +25,7 @@
 
 #include "SDL_mapping.h"
 #include "pcb.h"
-#include "exult_types.h"
+#include "common_types.h"
 
 class Audio;
 

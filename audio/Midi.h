@@ -24,7 +24,9 @@
 #endif
 
 #include <vector>
+#ifndef WIN32
 #include "Mixer.h"
+#endif
 #include "xmidi.h"
 
 #include <string>
@@ -34,15 +36,8 @@
 class	MidiAbstract
 {
 public:
-	// Do we accept events, default no
-	virtual bool	accepts_events(void) { return false; }
-
-	// Non Event based methods
-	virtual void	start_track(const char *,bool repeat) { };
-	virtual void	start_sfx(const char *) { };
-	// Event based methods
-	virtual void	start_track(midi_event *evntlist, int ppqn, bool repeat) { };
-	virtual void	start_sfx(midi_event *evntlist, int ppqn) { };
+	virtual void start_track(XMIDIEventList *, bool repeat) = 0;
+	virtual void start_sfx(XMIDIEventList *) { }
 	
 	virtual void	stop_track(void)=0;
 	virtual void	stop_sfx(void) { };
@@ -66,7 +61,7 @@ public:
 	void	start_music(const char *fname,int num,bool continuous=false);
 	void	start_track(int num,bool continuous=false,int bank=0);
 	void	start_track(const char *fname,int num,bool continuous=false);
-	void	start_track(XMIDI *midfile, bool continuous=false);
+	void	start_track(XMIDIEventList *eventlist, bool continuous=false);
 	void	start_sound_effect(int num);
 	void	stop_sound_effects();
 

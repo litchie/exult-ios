@@ -44,7 +44,7 @@
 #endif
 
 #include "crc.h"
-#include "exult_types.h"
+#include "common_types.h"
 #include "utils.h"
 #include <fstream>
 

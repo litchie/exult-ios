@@ -24,7 +24,7 @@
 #  pragma implementation
 #endif
 
-#include "exult_constants.h"
+#include "common_types.h"
 #include "XMLEntity.h"
 #include <iostream>
 

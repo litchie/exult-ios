@@ -90,8 +90,11 @@ bool AmigaMIDI::is_playing(void)
 }
 
 
-void AmigaMIDI::start_track(const char *name,bool repeat)
+void AmigaMIDI::start_track(XMIDIEventList *event_list,bool repeat)
 {
+	const char *name = MIDITMPFILE;
+	event_list->Write(name);
+
 	if( amMidiRequest )
 	{
 		stop_track();

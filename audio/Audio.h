@@ -105,7 +105,7 @@ public:
 	void	clear(uint8 *,int);
 	void	start_music(int num,bool continuous,int bank=0);
 	void	start_music(const char *fname,int num,bool continuous);
-	void	start_music(XMIDI *midfile,bool continuous);
+	void	start_music(XMIDIEventList *midfile,bool continuous);
 	void	start_music_combat(Combat_song song,bool continuous,int bank=0);
 	void	stop_music();
 	AudioID	play_sound_effect (int num, int volume = SDL_MIX_MAXVOLUME,

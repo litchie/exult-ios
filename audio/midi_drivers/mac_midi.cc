@@ -104,11 +104,17 @@ Mac_QT_midi::~Mac_QT_midi(void)
 }
 
 
-void	Mac_QT_midi::start_track(midi_event *evntlist, int ppqn, bool repeat)
+void	Mac_QT_midi::start_track(XMIDIEventList *elist, bool repeat)
 {
 	int			part_to_inst[32];
 	int			part_poly_max[32];
 	int			numParts = 0;
+
+	// Max, this is just a work around that should allow things to compile
+	// Note that now the ppqn is always 60, and the tempo is always 500000 mcs
+	// This means each tick is now always 120th of a second
+	int ppqn = 60;
+	midi_event *evntlist = elist->events;
 
 	UInt32		queueFlags = 0;
 	ComponentResult tpError;

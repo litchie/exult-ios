@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#ifndef PENTAGRAM // Exult only at this stage. 
+
 #if (__GNUG__ >= 2) && (!defined WIN32)
 #  pragma implementation
 #endif
@@ -297,3 +299,4 @@ void Mixer::cancel_streams(void)
 	stream_unlock();
 }
 
+#endif // PENTAGRAM
