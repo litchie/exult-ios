@@ -145,7 +145,7 @@ public:
  */
 class Rain_effect : public Weather_effect
 	{
-	Raindrop drops[100];		// Drops moving down the screen.
+	Raindrop drops[200];		// Drops moving down the screen.
 public:
 	Rain_effect(int duration) : Weather_effect(duration)
 		{  }
