@@ -26,18 +26,89 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 #include "gamewin.h"
 
-const int CHECKMARK = 2;		// Shape # in gumps.vga for checkmark.
-const int DISK = 24;			// Diskette shape #.
-const int STATS = 25;			// Stats button shape #.
-const int DOVE = 46;
-const int STATSDISPLAY = 47;
-
 /*
  *	Statics:
  */
 short Actor_gump_object::diskx = 122, Actor_gump_object::disky = 132;
-short Actor_gump_object::statx = 122, Actor_gump_object::staty = 114;
+short Actor_gump_object::heartx = 122, Actor_gump_object::hearty = 114;
 
+/*
+ *	Is a given screen point on this button?
+ */
+
+int Gump_button::on_button
+	(
+	Game_window *gwin,
+	int mx, int my			// Point in window.
+	)
+	{
+	mx -= parent->get_x() + x;	// Get point rel. to gump.
+	my -= parent->get_y() + y;
+	Shape_frame *cshape = gwin->get_gump_shape(shapenum, 0);
+	return (cshape->has_point(mx, my));
+	}
+
+/*
+ *	Redisplay as 'pushed'.
+ */
+
+void Gump_button::push
+	(
+	Game_window *gwin
+	)
+	{
+	pushed = 1;
+	parent->paint_button(gwin, this);
+	}
+
+/*
+ *	Redisplay as 'unpushed'.
+ */
+
+void Gump_button::unpush
+	(
+	Game_window *gwin
+	)
+	{
+	pushed = 0;
+	parent->paint_button(gwin, this);
+	}
+
+/*
+ *	Handle click on a 'checkmark'.
+ */
+
+void Checkmark_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+	gwin->remove_gump(parent);	// (This kills ourself.)
+	}
+
+/*
+ *	Handle click on a heart.
+ */
+
+void Heart_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+	gwin->show_gump(parent->get_container(), STATSDISPLAY);
+	}
+
+/*
+ *	Handle click on a diskette.
+ */
+
+void Disk_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+	cout << "Diskette clicked.\n";
+	}
 
 /*
  *	Create a gump.
@@ -50,7 +121,7 @@ Gump_object::Gump_object
 	int shnum			// Shape #.
 	) : container(cont), x(initx), y(inity), ShapeID(shnum, 0)
 	{
-	checkx = 8; checky = 64;	//++++default.
+	int checkx = 8, checky = 64;	// Default.
 
 	switch (shnum)			// Different shapes.
 		{
@@ -82,10 +153,14 @@ Gump_object::Gump_object
 		object_area = Rectangle(38, 12, 70, 26);
 		checkx = 8; checky = 46;
 		break;
+	case STATSDISPLAY:
+		object_area = Rectangle(0, 0, 0, 0);
+		checkx = 6; checky = 136;
+		break;
 	default:
 					// Character pictures:
 		if (shnum >= 57 && shnum <= 68)
-			{		// +++++Want whole rectangle.
+			{		// Want whole rectangle.
 			object_area = Rectangle(26, 0, 104, 132);
 			checkx = 6; checky = 136;
 			}
@@ -93,6 +168,7 @@ Gump_object::Gump_object
 			object_area = Rectangle(52, 22, 60, 40);
 		}
 	checkx += 16; checky -= 12;
+	check_button = new Checkmark_gump_button(this, checkx, checky);
 	}
 
 /*
@@ -185,30 +261,31 @@ int Gump_object::find_objects
 
 /*
  *	Is a given screen point on the checkmark?
+ *
+ *	Output: ->button if so.
  */
 
-int Gump_object::on_checkmark
+Gump_button *Gump_object::on_button
 	(
 	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
 	{
-	mx -= x + checkx;		// Get point rel. to gump.
-	my -= y + checky;
-	Shape_frame *cshape = gwin->get_gump_shape(CHECKMARK, 0);
-	return (cshape->has_point(mx, my));
+	return (check_button->on_button(gwin, mx, my) ?
+			check_button : 0);
 	}
 
 /*
- *	Repaint checkmark pushed.
+ *	Repaint checkmark.
  */
 
-void Gump_object::push_checkmark
+void Gump_object::paint_button
 	(
-	Game_window *gwin
+	Game_window *gwin,
+	Gump_button *btn
 	)
 	{
-	gwin->paint_gump(x + checkx, y + checky, CHECKMARK, 1);
+	gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, btn->pushed);
 	}
 
 /*
@@ -249,7 +326,7 @@ void Gump_object::paint
 					// Paint the gump itself.
 	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
 					// Paint red "checkmark".
-	gwin->paint_gump(x + checkx, y + checky, CHECKMARK, 0);
+	paint_button(gwin, check_button);
 	Game_object *last_object = container->get_last_object();
 	if (!last_object)
 		return;			// Empty.
@@ -338,6 +415,8 @@ Actor_gump_object::Actor_gump_object
 	int shnum			// Shape #.
 	) : Gump_object(cont, initx, inity, shnum)
 	{
+	heart_button = new Heart_gump_button(this, heartx, hearty);
+	disk_button = new Disk_gump_button(this, diskx, disky);
 					// Set spot locations.
 	spots[(int) head].x = 114; spots[(int) head].y = 10;
 	spots[(int) back].x = 115; spots[(int) back].y = 24;
@@ -363,6 +442,28 @@ Actor_gump_object::Actor_gump_object
 			add_to_spot(obj, index);
 		}
 	while (obj != last_object);
+	}
+
+/*
+ *	Is a given screen point on one of our buttons?
+ *
+ *	Output: ->button if so.
+ */
+
+Gump_button *Actor_gump_object::on_button
+	(
+	Game_window *gwin,
+	int mx, int my			// Point in window.
+	)
+	{
+	Gump_button *btn = Gump_object::on_button(gwin, mx, my);
+	if (btn)
+		return btn;
+	else if (heart_button->on_button(gwin, mx, my))
+		return heart_button;
+	else if (disk_button->on_button(gwin, mx, my))
+		return disk_button;
+	return 0;
 	}
 
 /*
@@ -457,6 +558,21 @@ void Actor_gump_object::paint
 	{
 	Gump_object::paint(gwin);	// Paint gump & objects.
 					// Paint buttons.
-	gwin->paint_gump(x + diskx, y + disky, DISK, 0);
-	gwin->paint_gump(x + statx, y + staty, STATS, 0);
+	paint_button(gwin, heart_button);
+	paint_button(gwin, disk_button);
+	}
+
+/*
+ *	Paint on screen.
+ */
+
+void Stats_gump_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+					// Paint the gump itself.
+	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+					// Paint red "checkmark".
+	paint_button(gwin, check_button);
 	}

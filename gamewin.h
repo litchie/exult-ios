@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gameclk.h"
 
 class Gump_object;
+class Gump_button;
 class Font_face;
 class Slist;
 class Usecode_machine;
@@ -82,7 +83,8 @@ private:
 	int brightness;			// Palette brightness.
 					// Dragging info:
 	Game_object *dragging;		// What's being dragged.
-	Gump_object *dragging_gump, *closing_gump;
+	Gump_object *dragging_gump;
+	Gump_button *dragging_gump_button;
 					// Last mouse, paint positions:
 	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
 	Rectangle dragging_rect;	// Rectangle to repaint.
@@ -329,6 +331,8 @@ public:
 	int conversation_choice(int x, int y);
 	void show_gump(Container_game_object *obj, int shapenum);
 	void end_gump_mode();		// Remove gumps from screen.
+					// Remove a gump from screen.
+	void remove_gump(Gump_object *gump);
 					// Queue up npcs in range of chunks.
 	void add_nearby_npcs(int from_cx, int from_cy,
 						int stop_cx, int stop_cy);
