@@ -527,12 +527,13 @@ void Actor::activate
 					// In gump mode?  Or Avatar?
 	if (!npc_num)			// Avatar?
 		gwin->show_gump(this, ACTOR_FIRST_GUMP);// ++++58 if female.
-	else if (gwin->get_mode() == Game_window::gump)
-		{			// Show companions' pictures.
-					// +++++Check for companions.
-		if (npc_num >= 1 && npc_num <= 10)
+	else if (gwin->get_mode() == Game_window::gump &&
+		 get_party_id() >= 0 &&
+		 npc_num >= 1 && npc_num <= 10)
+					// Show companions' pictures.
 			gwin->show_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
-		}
+	else if (get_schedule_type() == (int) Schedule::sleep)
+		return;			// Asleep.  +++++Check flag too?
 	else if (usecode == -1)
 		umachine->call_usecode(get_shapenum(), this,
 				Usecode_machine::double_click);

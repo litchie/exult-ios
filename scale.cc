@@ -23,9 +23,9 @@ inline void Interp_horiz
 	Source_pixel pix1 = *from;
 	manip.copy(*to++, pix0);
 	unsigned short r0, r1, g0, g1, b0, b1;
-	manip.split(pix0, r0, g0, b0);
-	manip.split(pix1, r1, g1, b1);
-	manip.copy(*to++, manip.rgb((r0 + r1)/2, (g0 + g1)/2, (b0 + b1)/2));
+	manip.split_source(pix0, r0, g0, b0);
+	manip.split_source(pix1, r1, g1, b1);
+	*to++ = manip.rgb((r0 + r1)/2, (g0 + g1)/2, (b0 + b1)/2);
 	}
 
 /*
@@ -42,9 +42,13 @@ inline void Interp_vert
 	{
 	Dest_pixel pix0 = *from0++, pix1 = *from1++;
 	unsigned short r0, r1, g0, g1, b0, b1;
-	manip.split(pix0, r0, g0, b0);
-	manip.split(pix1, r1, g1, b1);
-	manip.copy(*to++, manip.rgb((r0 + r1)/2, (g0 + g1)/2, (b0 + b1)/2));
+	manip.split_dest(pix0, r0, g0, b0);
+	manip.split_dest(pix1, r1, g1, b1);
+#if 1
+	*to++ = manip.rgb((r0 + r1)/2, (g0 + g1)/2, (b0 + b1)/2);
+#else
+	*to++ = manip.rgb(r0, g0, b0);
+#endif
 	}
 
 /*
@@ -54,37 +58,49 @@ template <class Source_pixel, class Dest_pixel, class Manip_pixels>
 void Scale2x
 	(
 	Source_pixel *source,		// ->source pixels.
-	int swidth, int sheight,	// Source height.
+	int sline_pixels,		// Pixels (words)/line for source.
+	int sheight,			// Source height.
 	Dest_pixel *dest,		// ->dest pixels.
+	int dline_pixels,		// Pixels (words)/line for dest.
 	const Manip_pixels& manip	// Manipulator methods.
 	)
 	{
-					// Figure dest. dims.
-	int dwidth = swidth*2, dheight = sheight*2;
+					// Figure dest. height.
+	int dheight = sheight*2;
 	Source_pixel *from = source;
 	Dest_pixel *to = dest;
+	int swidth = dline_pixels/2;	// Take min. of pixels/line.
+	if (swidth > sline_pixels)
+		swidth = sline_pixels;
 					// Do each row, interpolating horiz.
 	for (int y = 0; y < sheight; y++)
 		{
+		Source_pixel *source_line = from;
+		Dest_pixel *dest_line = to;
 		for (int x = 0; x < swidth - 1; x++)
 			Interp_horiz(from, to, manip);
 		manip.copy(*to++, *from);// End of row.
 		manip.copy(*to++, *from++);
-		to += dwidth;		// Skip odd rows.
+		from = source_line + sline_pixels;
+					// Skip odd rows.
+		to = dest_line + 2*dline_pixels;
 		}
 	Dest_pixel *from0 = dest;	// Interpolate vertically.
-	to = dest + dwidth;
-	Dest_pixel *from1 = to + dwidth;
+	Dest_pixel *from1;
 	for (int y = 0; y < sheight - 1; y++)
 		{
-		for (int x = 0; x < dwidth; x++)
+		to = from0 + dline_pixels;
+		from1 = to + dline_pixels;
+		Dest_pixel *source_line1 = from1;
+		for (int x = 0; x < dline_pixels; x++)
 			Interp_vert(from0, from1, to, manip);
-		to += dwidth;		// Skip row.
-		from0 = from1;
-		from1 += dwidth;
+					// Doing every other line.
+		from0 = source_line1;
 		}
 					// Just copy last row.
-	memcpy(to, from0, dwidth*sizeof(*from0));
+#if 0
+	memcpy(to, from0, dline_pixels*sizeof(*from0));
+#endif
 	}
 
 #if 0	/* Testing */

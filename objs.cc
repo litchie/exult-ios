@@ -34,6 +34,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 unsigned char Game_object::rotate[8] = { 0, 0, 48, 48, 16, 16, 32, 32};
 
 /*
+ *	Get direction to another object.
+ */
+
+int Game_object::get_direction
+	(
+	Game_object *o2
+	) const
+	{
+	Tile_coord t1 = get_abs_tile_coord();
+	Tile_coord t2 = o2->get_abs_tile_coord();
+					// Treat as cartesian coords.
+	return (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
+	}
+
+/*
  *	Does a given shape come in quantity.
  */
 static int Has_quantity

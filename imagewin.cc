@@ -857,6 +857,8 @@ void Image_window::create_surface
 	ibuf->height = h;
 	int flags = (fullscreen?SDL_FULLSCREEN:0) |
 					SDL_SWSURFACE |  SDL_HWPALETTE;
+					// Let 'config' override scale.
+	config->value("config/video/scale", scale, 1);
 	show_scaled = 0;
 	surface = scaled_surface = 0;
 	if (scale == 2)			// We support 2X scaling.
