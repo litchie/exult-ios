@@ -2337,7 +2337,8 @@ void Game_window::show_items
 			info.get_3d_ytiles(frnum) << ", " <<
 			info.get_3d_height() << ", sched = " <<
 			obj->get_schedule_type() << ", align = " <<
-			obj->get_alignment()
+			obj->get_alignment() << ", npcnum = " <<
+			obj->get_npc_num()
 			<< endl;
 		int tx, ty, tz;
 		obj->get_abs_tile(tx, ty, tz);
@@ -2346,7 +2347,9 @@ void Game_window::show_items
 			obj->get_quality() << ", low lift = " <<
 			obj->get_low_lift() << ", high shape = " <<
 			obj->get_high_shape () << ", okay_to_take = " <<
-			(int) obj->get_flag(Obj_flags::okay_to_take) << endl;
+			(int) obj->get_flag(Obj_flags::okay_to_take) <<
+			", flag0x1d = " << (int) obj->get_flag(0x1d)
+			<< endl;
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))
 			cout << "ASLEEP" << endl;
