@@ -86,6 +86,8 @@ public:
 		{  }			//   being active to dormant.
 	virtual void ending(int newtype)// Switching to another schedule.
 		{  }
+	virtual void set_weapon()	// Set weapon info.
+		{  }
 					// For Usecode intrinsic.
 	virtual int get_actual_type(Actor *npc);
 	};
