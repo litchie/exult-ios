@@ -42,7 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class	MidiAbstract
 {
 public:
-	virtual void	start_track(const char *,int repeats)=0;
+	virtual void	start_track(const char *,bool repeat)=0;
 	virtual void	stop_track(void)=0;
 	virtual	bool	is_playing(void)=0;
 	virtual	const	char *copyright(void)=0;
@@ -60,14 +60,14 @@ public:
 	MyMidiPlayer();
 	~MyMidiPlayer();
 	MyMidiPlayer(const char *flexfile);
-	void	start_music(int num,int repeats=0,int bank=0);
-	void	start_track(int num,int repeats=0,int bank=0);
+	void	start_music(int num,bool continuous=false,int bank=0);
+	void	start_track(int num,bool continuous=false,int bank=0);
 
 	bool	add_midi_bank(const char *s);
 
 
 private:
-	void    kmidi_start_track(int num,int repeats=0);
+	void    kmidi_start_track(int num,bool continuous=false);
 	vector<string>	midi_bank;
 	int	current_track;
 	MidiAbstract	*midi_device;
@@ -80,7 +80,7 @@ private:
 class MyMidiPlayer
 {
 public:
-  void start_music(int num,int repeats=0, int bank=0) {}
+  void start_music(int num,bool continuous=false, int bank=0) {}
 };
 #endif
 

@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class	Windows_MCI : virtual public MidiAbstract
 {
 public:
-	virtual void	start_track(const char *,int repeats);
+	virtual void	start_track(const char *,bool repeat);
 	virtual void	stop_track(void);
 	virtual	bool	is_playing(void);
 	virtual const	char *copyright(void);

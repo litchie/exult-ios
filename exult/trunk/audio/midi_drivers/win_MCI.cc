@@ -68,7 +68,7 @@ bool	Windows_MCI::is_playing(void)
 }
 
 
-void	Windows_MCI::start_track(const char *name,int numrepeats)
+void	Windows_MCI::start_track(const char *name,bool repeat)
 {
   int ret;
   char buf[512];
