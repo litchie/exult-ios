@@ -14,8 +14,8 @@
 	USECODE_INTRINSIC_PTR(show_npc_face0),			// 5
 	USECODE_INTRINSIC_PTR(show_npc_face1),			// 6
 
-	USECODE_INTRINSIC_PTR(remove_last_face), // Guess!	// 7
-	USECODE_INTRINSIC_PTR(remove_last_face),		// 8
+	USECODE_INTRINSIC_PTR(remove_npc_face0), // Guess!	// 7
+	USECODE_INTRINSIC_PTR(remove_npc_face1),		// 8
 	USECODE_INTRINSIC_PTR(set_conversation_slot),		// 9
 	USECODE_INTRINSIC_PTR(UNKNOWN),		// UNUSED	// 0xa
 	USECODE_INTRINSIC_PTR(UNKNOWN),		// UNUSED	// 0xb

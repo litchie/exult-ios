@@ -503,9 +503,9 @@ void Talk_schedule::now_what
 	Game_window *gwin = Game_window::get_game_window();
 
 	// Switch to phase 3 if we are reasonable close
-	if (phase != 0 && npc->distance(gwin->get_main_actor()) < 7)
+	if (phase != 0 && phase != 4 &&
+	    npc->distance(gwin->get_main_actor()) < 7)
 		phase = 3;
-		
 
 	switch (phase)
 		{
@@ -566,6 +566,9 @@ void Talk_schedule::now_what
 				gwin->get_main_actor()), Actor::standing));
 		gwin->add_dirty(npc);
 		phase++;
+		npc->start(250, 250);	// Wait another 1/4 sec.
+		break;
+	case 4:
 		npc->stop();		// Stop moving.
 					// NOTE:  This could DESTROY us!
 		if (Game::get_game_type() == SERPENT_ISLE)

@@ -387,7 +387,8 @@ void Usecode_machine::show_npc_face
 		npc->set_flag (Obj_flags::met);
 	int shape = npc->get_face_shapenum();
 	int frame = arg2.get_int_value();
-	gwin->remove_text_effects();
+	if (!conv->get_num_faces_on_screen())
+		gwin->remove_text_effects();
 	if (gwin->showing_gumps())
 		{
 		gwin->end_gump_mode();
