@@ -1,6 +1,7 @@
 2002-07-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* shapeid.h: let paint_shape paint non-rle shapes properly
 	* vgafile.cc: assert(rle); in the paint_rle_* functions
+	* objs.cc: more item names for SI
 
 2002-06-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs.cc: finally fixed 'blood' names
