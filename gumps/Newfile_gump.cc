@@ -42,6 +42,7 @@
 #include "party.h"
 #include "Text_button.h"
 
+#ifndef UNDER_CE
 using std::atoi;
 using std::cout;
 using std::endl;
@@ -57,6 +58,7 @@ using std::strcpy;
 using std::strcat;
 using std::time_t;
 using std::tm;
+#endif
 
 /*
  *	Macros:
@@ -122,6 +124,91 @@ static const char *loadtext = "LOAD";
 static const char *savetext = "SAVE";
 static const char *deletetext = "DELETE";
 static const char *canceltext = "CANCEL";
+
+#ifdef UNDER_CE
+struct tm * __cdecl localtime(const time_t *it)
+{
+	static tm	t;
+	memset(&t,0,sizeof(t));
+
+	SYSTEMTIME systime;
+	FILETIME filetime;
+	FILETIME local_filetime;
+	LONGLONG time;
+
+	SYSTEMTIME systime_1970;
+	FILETIME filetime_1970;
+	LONGLONG time_1970;
+
+	systime_1970.wYear = 1970;
+	systime_1970.wMonth = 1;
+	systime_1970.wDay = 1;
+	systime_1970.wHour = 0;
+	systime_1970.wMinute = 0;
+	systime_1970.wSecond = 0;
+	systime_1970.wMilliseconds = 0;
+	SystemTimeToFileTime(&systime_1970, &filetime_1970);
+	memcpy(&time_1970, &filetime_1970, 8);
+
+	// Seconds to 100 nanoseconds
+	time = *it;
+	time *= 10000000;
+	time += time_1970;
+
+	memcpy(&filetime, &time, 8);
+	FileTimeToLocalFileTime(&filetime, &local_filetime);
+	FileTimeToSystemTime(&local_filetime, &systime);
+
+	t.tm_sec = systime.wSecond;
+	t.tm_min = systime.wMinute;
+	t.tm_hour = systime.wHour;
+	t.tm_isdst = 0;
+	t.tm_wday = systime.wDayOfWeek;
+	t.tm_mday = systime.wDay;
+	t.tm_mon = systime.wMonth - 1;
+	t.tm_yday = 0;
+	t.tm_year = systime.wYear - 1900;
+
+	return &t;
+}
+
+time_t __cdecl time(time_t *t)
+{
+	SYSTEMTIME systime;
+	FILETIME filetime;
+	LONGLONG time;
+
+	SYSTEMTIME systime_1970;
+	FILETIME filetime_1970;
+	LONGLONG time_1970;
+
+	GetSystemTime(&systime);
+	SystemTimeToFileTime(&systime, &filetime);
+	memcpy(&time, &filetime, 8);
+
+	systime_1970.wYear = 1970;
+	systime_1970.wMonth = 1;
+	systime_1970.wDay = 1;
+	systime_1970.wHour = 0;
+	systime_1970.wMinute = 0;
+	systime_1970.wSecond = 0;
+	systime_1970.wMilliseconds = 0;
+	SystemTimeToFileTime(&systime_1970, &filetime_1970);
+	memcpy(&time_1970, &filetime_1970, 8);
+
+	// Time since Jan First 1970
+	time -= time_1970;
+	if (time < 0) time = 0;
+
+	// 100 nanoseconds to Seconds
+	time /= 10000000;
+
+	if (t) *t = time;
+
+	return time;
+}
+#endif
+
 
 /*
  *	One of our buttons.

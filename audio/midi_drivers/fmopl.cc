@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopl.cc,v 1.2 2002/08/07 15:02:16 kirben Exp $
+ * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopl.cc,v 1.3 2004/05/21 16:57:13 colourles Exp $
  *
  * LGPL licensed version of MAMEs fmopl (V0.37a modified) by
  * Tatsuyuki Satoh. Included from LGPL'ed AdPlug.
@@ -38,8 +38,10 @@
 #include <iostream>
 #include "fmopl.h"
 
+#ifndef UNDER_CE
 using std::malloc;
 using std::free;
+#endif
 
 #ifndef PI
 #define PI 3.14159265358979323846

@@ -36,6 +36,7 @@
 #include "SDL_events.h"
 #include "SDL_keysym.h"
 
+#ifndef UNDER_CE
 using std::atoi;
 using std::size_t;
 using std::strchr;
@@ -43,6 +44,7 @@ using std::string;
 using std::strlen;
 using std::strncmp;
 using std::vector;
+#endif
 
 TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp)
 {

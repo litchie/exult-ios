@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::string;
 using std::vector;
 
+#ifndef UNDER_CE
 using std::cout;
 using std::cerr;
 using std::endl;
@@ -40,6 +41,7 @@ using std::FILE;
 using std::memcmp;
 using std::memset;
 using std::size_t;
+#endif
 
 IFF::IFF(const string &n) : U7file(n)
 {

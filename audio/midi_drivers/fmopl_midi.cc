@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 
+#include "Audio.h"
 #include "fmopl_midi.h"
 #include "fmopldrv.h"
 #include "xmidi.h"
@@ -255,19 +256,28 @@ void FMOpl_Midi::deinit_device()
 void FMOpl_Midi::init_device()
 {
 	string s;
+
+	Audio *audio = Audio::get_ptr();
 		
 	// Dual Opl mode
-	config->value("config/audio/midi/dual_opl",s,"yes");
-	if (s == "yes") dual = true;
-	else {
-		s = "no";
+	if (audio->is_stereo())
+	{
+		config->value("config/audio/midi/dual_opl",s,"yes");
+		if (s == "yes") dual = true;
+		else {
+			s = "no";
+			dual = false;
+		}
+
+		std::cout << "Dual OPL mode: " << s << endl;
+
+		// Make sure it's in the config
+		config->set("config/audio/midi/dual_opl",s,true);
+	}
+	else
+	{
 		dual = false;
 	}
-
-	std::cout << "Dual OPL mode: " << s << endl;
-
-	// Make sure it's in the config
-	config->set("config/audio/midi/dual_opl",s,true);
 
 	// Now setup all our settings
 	playing = false;
@@ -279,13 +289,13 @@ void FMOpl_Midi::init_device()
 	// Create Left
 	buffer = new RingBuffer16(44096);
 	opl = new OplDriver;
-	opl->open(22050);
+	opl->open(audio->get_sample_rate());
 
 	// Create right, if required
 	if (dual) {
 		buffer_right = new RingBuffer16(44096);
 		opl_right = new OplDriver;
-		opl_right->open(22050);
+		opl_right->open(audio->get_sample_rate());
 	}
 	else {
 		opl_right = 0;
@@ -314,7 +324,7 @@ void FMOpl_Midi::init_device()
 
 	// Hook the process
 #ifdef PENTAGRAM
-	Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096);
+	Mix_OpenAudio(audio->get_sample_rate(), AUDIO_S16SYS, 2, 4096);
 #endif
 	Mix_HookMusic (mixer_hook_static, (void*) this);
 }
@@ -364,9 +374,21 @@ inline void FMOpl_Midi::send(uint32 b) {
 	}
 }
 
-uint32 FMOpl_Midi::GenerateSamples(uint32 count_required) {
+uint32 FMOpl_Midi::GenerateSamples(uint32 count_required, uint32 sample_rate) {
 
 	uint32 amount_generated = 0;
+
+	uint32 inc = 1;
+	uint32 gen = OPL_NUM_SAMPLES_PER_PASS;
+
+	if (sample_rate == 44100) gen *= 2;
+	else if (sample_rate == 11025) inc *= 2;
+	else if (sample_rate != 22050) 
+	{
+		// Approximate it!
+		inc = 6;
+		gen = (OPL_TIME_PER_PASS*sample_rate)/(120*OPL_TICK_MULTIPLIER*inc);
+	}
 
 	while (amount_generated < count_required) {
 
@@ -374,9 +396,9 @@ uint32 FMOpl_Midi::GenerateSamples(uint32 count_required) {
 		PlayNotes();
 		HandlePlay();
 
-		GetSamples(OPL_NUM_SAMPLES_PER_PASS);
-		amount_generated += OPL_NUM_SAMPLES_PER_PASS;
-		wmoClockIncTime(1);
+		GetSamples(gen);
+		amount_generated += gen;
+		wmoClockIncTime(inc);
 	}
 
 	return amount_generated - count_required;
@@ -719,8 +741,13 @@ void FMOpl_Midi::mixer_hook(Uint8 *stream, int len)
 	// Looks like we are shutting down
 	if (!is_available) return;
 
+	Audio *audio = Audio::get_ptr();
+
 	// Generate the music
-	generate_rem = GenerateSamples(len/4-generate_rem);
+	if (audio->is_stereo())
+		generate_rem = GenerateSamples(len/4-generate_rem, audio->get_sample_rate());
+	else
+		generate_rem = GenerateSamples(len/2-generate_rem, audio->get_sample_rate());
 
 	// Copy the buffers into SDL_Mixer's buffer
 	sint16* stream16 = (sint16*) stream;
@@ -732,7 +759,10 @@ void FMOpl_Midi::mixer_hook(Uint8 *stream, int len)
 	int i = 0;
 
 	// Lock it (Left or Mono)
-	buffer->LockRead(len/4, b1, size1, b2, size2);
+	if (audio->is_stereo())
+		buffer->LockRead(len/4, b1, size1, b2, size2);
+	else
+		buffer->LockRead(len/2, b1, size1, b2, size2);
 
 	sint16* b1_r = b1;
 	sint16* b2_r = b2;
@@ -744,14 +774,28 @@ void FMOpl_Midi::mixer_hook(Uint8 *stream, int len)
 
 	// Copy the samples
 	if (global_volume >= 255) {
-		for (i = 0; i < size1; ++i) {
-			stream16[i<<1] = b1[i];
-			stream16[(i<<1)+1] = b1_r[i];
-		}
 
-		for (i = 0; i < size2; ++i) {
-			stream16[(i+size1)<<1] = b2[i];
-			stream16[((i+size1)<<1)+1] = b2_r[i];
+		if (audio->is_stereo()) {
+
+			for (i = 0; i < size1; ++i) {
+				stream16[i<<1] = b1[i];
+				stream16[(i<<1)+1] = b1_r[i];
+			}
+
+			for (i = 0; i < size2; ++i) {
+				stream16[(i+size1)<<1] = b2[i];
+				stream16[((i+size1)<<1)+1] = b2_r[i];
+			}
+		}
+		else {
+
+			for (i = 0; i < size1; ++i) {
+				stream16[i] = b1[i];
+			}
+
+			for (i = 0; i < size2; ++i) {
+				stream16[i+size1] = b2[i];
+			}
 		}
 	}
 	else if (global_volume && dual) {
@@ -766,12 +810,25 @@ void FMOpl_Midi::mixer_hook(Uint8 *stream, int len)
 		}
 	}
 	else if (global_volume) {
-		for (i = 0; i < size1; ++i) {
-			stream16[(i<<1)+1] = stream16[i<<1] = (b1[i]*global_volume)/255;
-		}
+		if (audio->is_stereo()) {
 
-		for (i = 0; i < size2; ++i) {
-			stream16[((i+size1)<<1)+1] = stream16[(i+size1)<<1] = (b2[i]*global_volume)/255;
+			for (i = 0; i < size1; ++i) {
+				stream16[(i<<1)+1] = stream16[i<<1] = (b1[i]*global_volume)/255;
+			}
+
+			for (i = 0; i < size2; ++i) {
+				stream16[((i+size1)<<1)+1] = stream16[(i+size1)<<1] = (b2[i]*global_volume)/255;
+			}
+		}
+		else {
+
+			for (i = 0; i < size1; ++i) {
+				stream16[i] = (b1[i]*global_volume)/255;
+			}
+
+			for (i = 0; i < size2; ++i) {
+				stream16[i+size1] = (b2[i]*global_volume)/255;
+			}
 		}
 	}
 
@@ -916,10 +973,10 @@ what we will do for now
 
   repeat
 
-at 22050 KHz there are 735 samples for every 4 ticks.
-at 22050 KHz there are 147 samples for every 4/5 ticks
-at 22050 KHz there are  98 samples for every 8/15 ticks
-at 22050 KHz there are  49 samples for every 4/15 ticks
+at audio->get_sample_rate() KHz there are 735 samples for every 4 ticks.
+at audio->get_sample_rate() KHz there are 147 samples for every 4/5 ticks
+at audio->get_sample_rate() KHz there are  98 samples for every 8/15 ticks
+at audio->get_sample_rate() KHz there are  49 samples for every 4/15 ticks
 
   The wmo clock 'should' be based on the 98 samples number. For every 98 samples,
   we increment the clock 15 units. Working out the midi tick is unit/8. The unit

@@ -37,18 +37,22 @@
 #include "utils.h"
 
 #if !defined(ALPHA_LINUX_CXX)
+#ifndef UNDER_CE
 #  include <csignal>
+#endif
 #  include <cstdio>
 #  include <cstdlib>
 #  include <cstring>
 #  include <iostream>
 #endif
+#ifndef UNDER_CE
 #include <fcntl.h>
 #include <unistd.h>
+#endif
 
 #if defined(MACOS)
 #  include <stat.h>
-#else
+#elif !defined(UNDER_CE)
 #  include <sys/stat.h>
 #  include <sys/types.h>
 #endif
@@ -56,6 +60,7 @@
 //#include <crtdbg.h>
 
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -65,6 +70,7 @@ using std::memset;
 using std::string;
 using std::strncmp;
 using std::vector;
+#endif
 
 // These MIGHT be macros!
 #ifndef min
@@ -88,6 +94,9 @@ struct	Chunk
 static	size_t calc_sample_buffer(uint16 _samplerate);
 static	uint8 *chunks_to_block(vector<Chunk> &chunks);
 static	sint16 *resample_new(uint8 *sourcedata,
+						size_t sourcelen, size_t &destlen,
+						int current_rate, int wanted_rate);
+static	sint16 *resample_new_mono(uint8 *sourcedata,
 						size_t sourcelen, size_t &destlen,
 						int current_rate, int wanted_rate);
 static	void resample(uint8 *sourcedata, uint8 **destdata,
@@ -201,7 +210,11 @@ void Audio::Init(void)
 	if (!self)
 	{
 		self = new Audio();
+#ifdef UNDER_CE
+		self->Init(SAMPLERATE/2,1);
+#else
 		self->Init(SAMPLERATE,2);
+#endif
 	}
 }
 
@@ -508,7 +521,10 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 		// New code: Do it all in one step with cubic interpolation
 
 		sint16 *stereo_data;
-		stereo_data = resample_new(dec_data, dec_len, l, sample_rate, actual.freq);
+		if (is_stereo())
+			stereo_data = resample_new(dec_data, dec_len, l, sample_rate, actual.freq);
+		else
+			stereo_data = resample_new_mono(dec_data, dec_len, l, sample_rate, actual.freq);
 #else
 		// Old code: resample using pseudo-breshenham, then in a second step convert
 		// to 16 bit stereo.
@@ -624,6 +640,80 @@ static	sint16 *resample_new(uint8 *src,
 	return stereo_data;
 }
 
+static	sint16 *resample_new_mono(uint8 *src,
+						size_t sourcelen, size_t &size,
+						int rate, int wanted_rate)
+{
+	int fp_pos = 0;
+	int fp_speed = (1 << 16) * rate / wanted_rate;
+	size = sourcelen;
+
+	// adjust the magnitudes of size and rate to prevent division error
+	while (size & 0xFFFF0000)
+		size >>= 1, rate = (rate >> 1) + 1;
+	
+	// Compute the output size (times 2 since it is 16 stereo)
+	size = (size * wanted_rate / rate) << 1;
+
+	sint16 *stereo_data = new sint16 [size];
+	sint16 *data = stereo_data;
+	uint8 *src_end = src + sourcelen;
+
+	int result;
+	
+	// Compute the initial data feed for the interpolator. We don't simply
+	// shift by 8, but rather duplicate the byte, this way we cover the full
+	// range. Probably doesn't make a big difference, listening wise :-)
+	int a = *(src+0); a = (a|(a << 8))-32768;
+	int b = *(src+1); b = (a|(b << 8))-32768;
+	int c = *(src+2); c = (a|(c << 8))-32768;
+	
+	// We divide the data by 2, to prevent overshots. Imagine this sample pattern:
+	// 0, 65535, 65535, 0. Now you want to compute a value between the two 65535.
+	// Obviously, it will be *bigger* than 65535 (it can get to about 80,000).
+	// It is possibly to clamp it, but that leads to a distored wave form. Compare
+	// this to turning up the volume of your stereo to much, it will start to sound
+	// bad at a certain level (depending on the power of your stereo, your speakers 
+	// etc, this can be quite loud, though ;-). Hence we reduce the original range.
+	// A factor of roughly 1/1.2 = 0.8333 is sufficient. Since we want to avoid 
+	// floating point, we approximate that by 27/32
+	#define RANGE_REDUX(x)	(((x) * 27) >> 5)
+//	#define RANGE_REDUX(x)	((x) >> 1)
+//	#define RANGE_REDUX(x)	((x) / 1.2)
+
+	CubicInterpolator	interp(RANGE_REDUX(a), RANGE_REDUX(b), RANGE_REDUX(c));
+	
+	do {
+		do {
+			// Convert to signed data
+			result = interp.interpolate(fp_pos);
+
+			// Enforce range in case of an "overshot". Shouldn't happen since we
+			// scale down already, but safe is safe.
+			if (result < -32768)
+				result = -32768;
+			else if (result > 32767)
+				result = 32767;
+	
+			*data++ = result;
+	
+			fp_pos += fp_speed;
+		} while (!(fp_pos & 0xFFFF0000));
+		src++;
+		fp_pos &= 0x0000FFFF;
+		
+
+		if (src+2 < src_end) {
+			c = *(src+2);
+			c = (c|(c << 8))-32768;
+			interp.feedData(RANGE_REDUX(c));
+		} else
+			interp.feedData();
+
+	} while (src < src_end);
+	
+	return stereo_data;
+}
 		
 void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 {

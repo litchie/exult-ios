@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "databuf.h"
 
+#ifndef UNDER_CE
 using std::cerr;
 using std::endl;
 using std::FILE;
@@ -44,7 +45,7 @@ using std::string;
 using std::strncpy;
 using std::ofstream;
 using std::ios;
-
+#endif
 
 Flex::Flex(const string &n) : U7file(n)
 {

@@ -47,8 +47,10 @@ using std::cout;
 using std::endl;
 #endif
 
+#ifndef UNDER_CE
 using std::memset;
 using std::rand;
+#endif
 
 /*
  *	Create the cached data storage for a chunk.

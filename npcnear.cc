@@ -36,7 +36,9 @@
 
 #include "SDL_timer.h"
 
+#ifndef UNDER_CE
 using std::rand;
+#endif
 
 bool Bg_dont_wake(Game_window *gwin, Actor *npc);
 
@@ -179,12 +181,12 @@ void Npc_proximity_handler::wait
 
 void Npc_proximity_handler::get_all
 	(
-	Actor_queue& list			// They're appended to this.
+	Actor_queue& alist			// They're appended to this.
 	)
 	{
 	Time_queue_iterator next(gwin->get_tqueue(), this);
 	Time_sensitive *obj;
 	long data;			// NPC is the data.
 	while (next(obj, data))
-		list.push((Npc_actor *) data);
+		alist.push((Npc_actor *) data);
 	}

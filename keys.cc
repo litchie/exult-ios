@@ -34,6 +34,7 @@
 #include "utils.h"
 #include "keyactions.h"
 
+#ifndef UNDER_CE
 using std::pair;
 using std::atoi;
 using std::cerr;
@@ -46,6 +47,7 @@ using std::strchr;
 using std::string;
 using std::strlen;
 using std::vector;
+#endif
 
 static	class Chardata	// ctype-like character lists
 	{
@@ -327,7 +329,7 @@ bool KeyBinder::HandleEvent(SDL_Event &ev)
 	
 	sdlkey_index = bindings.find(key);
 	if (sdlkey_index != bindings.end())
-		return DoAction(sdlkey_index->second, ev.type==SDL_KEYDOWN);
+		return DoAction((*sdlkey_index).second, ev.type==SDL_KEYDOWN);
 	
 	return false;
 }
@@ -455,7 +457,7 @@ void KeyBinder::ParseLine(char *line)
 				ParseKeyMap::iterator key_index;
 				key_index = keys.find(t);
 				if (key_index != keys.end()) {
-					k.sym = key_index->second;
+					k.sym = (*key_index).second;
 				} else {
 					cerr << "Keybinder: unsupported key: " << keycode << endl;
 					return;
@@ -479,7 +481,7 @@ void KeyBinder::ParseLine(char *line)
 	ParseActionMap::iterator action_index;
 	action_index = actions.find(t);
 	if (action_index != actions.end()) {
-		a.action = action_index->second;
+		a.action = (*action_index).second;
 	} else {
 		cerr << "Keybinder: unsupported action: " << t << endl;
 		return;

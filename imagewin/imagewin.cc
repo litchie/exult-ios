@@ -47,10 +47,12 @@ Boston, MA  02111-1307, USA.
 
 bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst);
 
+#ifndef UNDER_CE
 using std::cout;
 using std::cerr;
 using std::endl;
 using std::exit;
+#endif
 
 // This is all the names of the scalers. It needs to match the ScalerType enum
 const char *Image_window::ScalerNames[] =  {

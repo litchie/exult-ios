@@ -55,12 +55,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib SDL_mixer.lib opengl32.lib"
+				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib"
 				OutputFile="..\Exult.exe"
 				Version="1.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				IgnoreDefaultLibraryNames="libc.lib"
+				IgnoreDefaultLibraryNames="libcmt.lib msvcrt.lib"
 				SubSystem="2"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -114,12 +114,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib SDL_mixer.lib opengl32.lib"
+				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib"
 				OutputFile="..\Exult.exe"
 				Version="1.1"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				IgnoreDefaultLibraryNames="libc.lib msvcrt.lib"
+				IgnoreDefaultLibraryNames="libcmt.lib,msvcrt.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\../Exult.pdb"
 				SubSystem="1"/>
@@ -181,12 +181,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib SDL_mixer.lib opengl32.lib"
+				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib"
 				OutputFile="..\Exult.exe"
 				Version="1.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				IgnoreDefaultLibraryNames="libc.lib"
+				IgnoreDefaultLibraryNames="libcmt.lib msvcrt.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\../Exult.pdb"
 				SubSystem="2"/>
@@ -246,12 +246,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib SDL_mixer.lib opengl32.lib SDLmain.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib SDLmain.lib"
 				OutputFile="..\Exult.exe"
 				Version="1.1"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				IgnoreDefaultLibraryNames="LIBC.lib,libcmt.lib"
+				IgnoreDefaultLibraryNames="libcmt.lib msvcrt.lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\../Exult.pdb"
 				SubSystem="1"/>
@@ -1630,10 +1630,10 @@
 				RelativePath="..\NEWS">
 			</File>
 			<File
-				RelativePath="..\conf\README">
+				RelativePath="..\README">
 			</File>
 			<File
-				RelativePath="..\README">
+				RelativePath="..\conf\README">
 			</File>
 			<File
 				RelativePath="..\README.1ST">

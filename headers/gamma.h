@@ -26,7 +26,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <cmath>
 #endif
 
+#ifndef UNDER_CE
 using std::pow;
+#endif
 
 template <class T> class GammaTable
 {

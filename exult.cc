@@ -89,6 +89,7 @@
 #include "exult_si_flx.h"
 #include "crc.h"
 
+#ifndef UNDER_CE
 using std::atof;
 using std::cerr;
 using std::cout;
@@ -98,6 +99,7 @@ using std::exit;
 using std::toupper;
 using std::string;
 using std::vector;
+#endif
 
 Configuration *config = 0;
 KeyBinder *keybinder = 0;
@@ -471,6 +473,21 @@ int exult_main(const char *runpath)
 
 	cheat.init();
 
+#ifdef UNDER_CE
+	GXOpenInput();
+
+	GXKeyList keys = GXGetDefaultKeys(GX_LANDSCAPEKEYS);
+
+	std::cout << "Up " << keys.vkUp << std::endl;
+	std::cout << "Down " << keys.vkDown << std::endl;
+	std::cout << "Left " << keys.vkLeft << std::endl;
+	std::cout << "Right " << keys.vkRight << std::endl;
+	std::cout << "A " << keys.vkA << std::endl;
+	std::cout << "B " << keys.vkB << std::endl;
+	std::cout << "C " << keys.vkC << std::endl;
+	std::cout << "Start " << keys.vkStart << std::endl;
+#endif
+
 	Init();				// Create main window.
 
 	cheat.finish_init();
@@ -479,6 +496,10 @@ int exult_main(const char *runpath)
 	Mouse::mouse->set_shape(Mouse::hand);
 
 	int result = Play();		// start game
+	
+#ifdef UNDER_CE
+	GXCloseInput();
+#endif
 
 #if defined(WIN32) && defined(USE_EXULTSTUDIO)
 	// Currently, leaving the game results in destruction of the window.
@@ -736,7 +757,7 @@ static void Init
 		info.info.x11.window, Move_dragged_shape, Move_dragged_combo,
 				Drop_dragged_shape, Drop_dragged_chunk, 
 							Drop_dragged_combo);
-#else
+#elif !defined(UNDER_CE)
 	SDL_GetWMInfo(&info);
 	Server_init();			// Initialize server (for map-editor).
 	hgwin = info.window;

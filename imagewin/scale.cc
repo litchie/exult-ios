@@ -15,7 +15,9 @@
 
 #include "exult_types.h"
 
+#ifndef UNDER_CE
 using std::memcpy;
+#endif
 
 /** 
  ** 2xSaI scaling filter source code adapted for Exult

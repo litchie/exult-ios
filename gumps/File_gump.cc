@@ -36,12 +36,14 @@
 #include "mouse.h"
 #include "Yesno_gump.h"
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::memmove;
 using std::string;
 using std::strlen;
 using std::strncpy;
+#endif
 
 /*
  *	Statics:

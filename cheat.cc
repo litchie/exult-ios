@@ -55,10 +55,12 @@
 
 #endif //USE_EXULTSTUDIO 
 
+#ifndef UNDER_CE
 using std::cout;
 using std::endl;
 using std::strcpy;
 using std::strcat;
+#endif
 
 Cheat cheat;
 
@@ -179,7 +181,7 @@ void Cheat::toggle_map_editor (void) {
 					int ret = system(cmnd);
 					if (ret == 127 || ret == -1)
 						cout << "Couldn't run Exult Studio" << endl;
-#else
+#elif !(defined(UNDER_CE))
 					PROCESS_INFORMATION	pi;
 					STARTUPINFO		si;
 

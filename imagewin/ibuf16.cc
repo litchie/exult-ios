@@ -29,7 +29,9 @@
 #  include <cstdlib>
 #endif
 
+#ifndef UNDER_CE
 using std::memmove;
+#endif
 
 /*
  *	Create a default palette for 8-bit graphics on a 16-bit display.

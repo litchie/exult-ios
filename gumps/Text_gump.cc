@@ -27,9 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "Text_gump.h"
 
+#ifndef UNDER_CE
 using std::strchr;
 using std::strcpy;
 using std::strlen;
+#endif
 
 /*
  *	Add to the text, starting a newline.
