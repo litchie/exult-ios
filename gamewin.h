@@ -411,6 +411,8 @@ public:
 			paint(dirty);
 		clear_dirty();
 		}
+	void set_all_dirty()		// Whole window.
+		{ dirty = Rectangle(0, 0, get_width(), get_height()); }
 	void add_dirty(Rectangle r)	// Add rectangle to dirty area.
 		{ dirty = dirty.w > 0 ? dirty.add(r) : r; }
 					// Add dirty rect. for obj.  Rets. 0
