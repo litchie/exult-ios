@@ -26,7 +26,13 @@ Boston, MA  02111-1307, USA.
 #ifndef INCL_TEXT
 #define INCL_TEXT
 
+#if !AUTOCONFIGURED
+#include "autoconfigure.h"
+#endif
+
+#if HAVE_FREETYPE
 #include <freetype.h>
+#endif
 
 /*
  *	A 'cached' glyph:
