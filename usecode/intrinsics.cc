@@ -1576,6 +1576,16 @@ USECODE_INTRINSIC(recall_virtue_stone)
 	return no_ret;
 }
 
+USECODE_INTRINSIC(apply_damage)
+{
+	// apply_damage(??str?, hps, ??type?, NPC);
+	int hps = parms[1].get_int_value();
+	Actor *npc = as_actor(get_item(parms[3]));
+	if (npc)			// Treat avatar as attacker.
+		npc->reduce_health(hps, gwin->get_main_actor());
+	return Usecode_value(1);	// ?? Guessing.
+}
+
 USECODE_INTRINSIC(is_pc_inside)
 {
 	Usecode_value u(gwin->is_main_actor_inside());

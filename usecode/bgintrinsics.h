@@ -117,7 +117,7 @@
 	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
 	USECODE_INTRINSIC_PTR(mark_virtue_stone),	// 0x5f
 	USECODE_INTRINSIC_PTR(recall_virtue_stone),	// 0x60
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x61  +++++do some kind of damage
+	USECODE_INTRINSIC_PTR(apply_damage),	// 0x61
 	USECODE_INTRINSIC_PTR(is_pc_inside),	// 0x62
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63     SetOrreryState (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x64     UNUSED
