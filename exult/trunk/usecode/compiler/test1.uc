@@ -1,11 +1,9 @@
+
+extern adder 0x480(a, b);	// Declaration.
+
 //
 //	Return sum.
 //
-
-adder 0x480 (a, b)
-	{
-	return a + b;
-	}
 
 adder1 0x481 (a, b)
 	{
@@ -34,3 +32,9 @@ adder1 0x481 (a, b)
 		}
 	return adder(a, 3);
 	}
+
+adder 0x480 (a, b)
+	{
+	return a + b;
+	}
+

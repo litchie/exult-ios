@@ -70,7 +70,11 @@ public:
 		Uc_symbol *sym = cur_scope->search_up(nm);
 		return (sym ? sym : globals.search(nm));
 		}
-	Uc_var_symbol *add_symbol(char *nm);// Add symbol to current scope.
+	Uc_var_symbol *add_symbol(char *nm);// Add var. to current scope.
+	int add_function_symbol(Uc_function_symbol *fun)
+		{ return cur_scope->add_function_symbol(fun); }
+	static int add_global_function_symbol(Uc_function_symbol *fun)
+		{ return globals.add_function_symbol(fun); }
 					// Add string constant.
 	Uc_symbol *add_string_symbol(char *nm, char *text);
 	int add_string(char *text);
