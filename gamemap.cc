@@ -158,7 +158,7 @@ void Game_map::init
 		U7open(ochunks, PATCH_U7CHUNKS);
 		unsigned char buf[16*16*2];	
 		memset(&buf[0], 0, sizeof(buf));
-		ochunks.write(&buf[0], sizeof(buf));
+		ochunks.write((char *) buf, sizeof(buf));
 		ochunks.close();
 		U7open(*chunks, PATCH_U7CHUNKS);
 		}
