@@ -570,6 +570,9 @@ Shape_file_info *Shape_file_set::create
 	else if (strcasecmp(basename, "paperdol.vga") == 0)
 		return append(new Image_file_info(basename, fullname,
 		      new Vga_file(spath, U7_SHAPE_PAPERDOL, ppath), groups));
+	else if (strcasecmp(basename, "fonts.vga") == 0)
+		return append(new Image_file_info(basename, fullname,
+		      new Vga_file(spath, U7_SHAPE_FONTS, ppath), groups));
 	else if (strcasecmp(basename, "u7chunks") == 0)
 		{
 		std::ifstream *file = new std::ifstream;
