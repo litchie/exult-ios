@@ -437,7 +437,7 @@ Actor::Actor
 	    usecode_dir(0), siflags(0), type_flags(0), ident(0),
 	    skin_color(-1), action(0), 
 	    frame_time(0), timers(0),
-	    weapon_rect(0, 0, 0, 0)
+	    weapon_rect(0, 0, 0, 0), rest_time(0)
 	{
 	set_shape(shapenum, 0); 
 	init();
@@ -665,6 +665,24 @@ void Actor::init_default_frames
 	frames[static_cast<int> (west)] = new Frames_sequence(3, west_frames);
 	frames[static_cast<int> (northwest)] = frames[static_cast<int>(west)];
 #endif
+	}
+
+/*
+ *	This is called for the Avatar to return to a normal standing position
+ *	when not doing anything else.  It could work for other party members,
+ *	but currently isn't called for them.
+ */
+
+void Actor::stand_at_rest
+	(
+	)
+	{
+	rest_time = 0;			// Reset timer.
+	if ((get_framenum()&0xf) == standing)
+		return;			// Already standing.
+	if (!is_dead() && schedule_type == Schedule::follow_avatar &&
+	    !get_flag(Obj_flags::asleep))
+		change_frame(get_dir_framenum(standing));
 	}
 
 /*
@@ -3239,6 +3257,7 @@ int Main_actor::step
 	int frame			// New frame #.
 	)
 	{
+	rest_time = 0;			// Reset counter.
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get rel. tile coords.

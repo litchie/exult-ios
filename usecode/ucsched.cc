@@ -524,6 +524,7 @@ void Usecode_script::handle_event
 			if (opcode >= 0x61 && opcode <= 0x70)
 				{	// But don't show empty frames.
 				Actor *npc = obj->as_actor();
+				npc->clear_rest_time();
 				int v = obj->get_dir_framenum(
 					npc ? npc->get_usecode_dir() : 0, 
 					opcode - 0x61);
