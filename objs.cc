@@ -300,7 +300,7 @@ Game_object *Game_object::find_closest
 	int cnt = 0;
 	int i;
 	for (i = 0; i < num_shapes; i++)
-		cnt += find_nearby(vec, shapenums[i], -359, 0);
+		cnt += find_nearby(vec, shapenums[i], 24, 0);
 	if (!cnt)
 		return (0);
 	Game_object *closest = 0;	// Get closest.

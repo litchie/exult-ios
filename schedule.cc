@@ -123,6 +123,59 @@ void Pace_schedule::now_what
 	}
 
 /*
+ *	Eat at inn.
+ */
+
+void Eat_at_inn_schedule::now_what
+	(
+	)
+	{
+	Vector foods;			// Food nearby?
+	int cnt = npc->find_nearby(foods, 377, 2, 0);
+	if (cnt)			// Found?
+		{			// Find closest.
+		Game_object *food = 0;
+		int dist = 500;
+		for (int i = 0; i < cnt; i++)
+			{
+			Game_object *obj = (Game_object *) foods.get(i);
+			int odist = obj->distance(npc);
+			if (odist < dist)
+				{
+				dist = odist;
+				food = obj;
+				}
+			}
+		food->remove_this();	// Maybe an animation too?
+		char *msgs[] = {"Gulp!", "Mmmmm.", "Yum!", ""};
+		int n = rand()%(sizeof(msgs)/sizeof(msgs[0]));
+		npc->say(msgs[n]);
+		}
+					// Wake up in a little while.
+	npc->start(250, 4000 + rand()%10000);
+	}
+
+/*
+ *	Preach:
+ */
+
+void Preach_schedule::now_what
+	(
+	)
+	{
+	char frames[8];			// Frames.
+	int cnt = 1 + rand()%(sizeof(frames) - 1);
+					// Frames to choose from:
+	static char choices[3] = {0, 9, 14};
+	for (int i = 0; i < cnt; i++)
+		frames[i] = npc->get_dir_framenum(
+					choices[rand()%(sizeof(choices))]);
+	npc->set_action(new Frames_actor_action(frames, cnt, 250));
+					// Do it in 3-?? seconds.
+	npc->start(250, 3000 + rand()%8000);
+	}
+
+/*
  *	Schedule change for patroling:
  */
 
@@ -856,7 +909,5 @@ Tile_coord Schedule_change::get_pos() const
 	return Tile_coord(cx*tiles_per_chunk + tx, cy*tiles_per_chunk + ty, 0);
 	}
 
-Patrol_schedule::~Patrol_schedule()
-{}
 
 
