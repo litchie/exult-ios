@@ -186,7 +186,7 @@ public:
 		{ return weapon; }
 	int get_reach() const
 		{ return reach; }
-	void set_stats(int str, int dex, int intel, int cmb, int arm,
+	void set_stats(int str, int dex, int intel, int cmb, int armur,
 			int wpn, int rch);
 	int get_equip_offset() const
 		{ return equip_offset; }

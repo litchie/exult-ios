@@ -1,3 +1,9 @@
+2002-07-26  Aurelien Marchand <artaxerxes@users.sourceforge.net>
+	* README.Qtopia: updated
+	* imagewin/ibuf8.cc: added a test to prevent fast copy on the zaurus
+	* configure.in: added test for $host_vendor under the linux clause
+	* shapes/monstinf.*: renamed "arm" into "armur" as "arm" is reserved
+	
 2002-07-24  Dominik Reichardt  <dominus@users.sourceforge.net>
 	* docs/xml/exult_studio.xml: updated
 	* docs/exult_studio.html, exult_studio.txt: updated
