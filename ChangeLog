@@ -1,3 +1,6 @@
+2004-02-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mapedit/studio.cc: fixed main_window not getting toplevel_focus
+
 2004-02-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* shapeid.h: fixed uninitialised member variable
 	* mouse.cc: removed dynamic_cast
