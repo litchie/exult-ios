@@ -177,7 +177,7 @@ void Scheduled_usecode::handle_event
 				}
 			break;
 			}
-#if 0
+#if 1
 		case 0x0c:		// Loop with 3 parms.???
 			{		// Loop(offset, cnt1, cnt2?).
 			do_another = 1;
