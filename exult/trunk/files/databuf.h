@@ -26,6 +26,7 @@
 #endif
 #include <fstream>
 #include "U7file.h"
+#include "utils.h"
 
 typedef char * charptr;
 
@@ -73,90 +74,29 @@ public:
 	
 	virtual ~StreamDataSource() {};
 	
-	virtual unsigned int read1() 
-	{ 
-		unsigned char b0;
-		in->get((char&) b0);
-		return (b0);
-	};
+	virtual uint32 read1()      { return Read1(*in); };
 	
-	virtual uint16 read2()
-	{
-		unsigned char b0, b1;
-		in->get((char&) b0);
-		in->get((char&) b1);
-		return (b0 | (b1 << 8));
-	};
+	virtual uint16 read2()      { return Read2(*in); };
 	
-	virtual uint16 read2high()
-	{
-		unsigned char b0, b1;
-		in->get((char&) b1);
-		in->get((char&) b0);
-		return (b0 | (b1 << 8));
-	};
+	virtual uint16 read2high()  { return Read2high(*in); };
 	
-	virtual uint32 read4()
-	{
-		unsigned char b0, b1, b2, b3;
-		in->get((char&) b0);
-		in->get((char&) b1);
-		in->get((char&) b2);
-		in->get((char&) b3);
-		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
-	};
+	virtual uint32 read4()      { return Read4(*in); };
 	
-	virtual uint32 read4high()
-	{
-		unsigned char b0, b1, b2, b3;
-		in->get((char&) b3);
-		in->get((char&) b2);
-		in->get((char&) b1);
-		in->get((char&) b0);
-		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
-	};
+	virtual uint32 read4high()  { return Read4high(*in); };
 	
-	void read(char *b, int len) {
-		in->read(b, len);
-	};
+	void read(char *b, int len) { in->read(b, len); };
 	
-	virtual void write1(unsigned int val)
-	{
-		out->put((char) (val&0xff));
-	};
+	virtual void write1(uint32 val)      { Write1(*out, val); };
 	
-	virtual void write2(uint16 val)
-	{
-		out->put((char) (val&0xff));
-		out->put((char) ((val>>8)&0xff));
-	};
+	virtual void write2(uint16 val)      { Write2(*out, val); };
 
-	virtual void write2high(uint16 val)
-	{
-		out->put((char) ((val>>8)&0xff));
-		out->put((char) (val&0xff));
-	};
+	virtual void write2high(uint16 val)  { Write2high(*out, val); };
 
-	virtual void write4(uint32 val)
-	{
-		out->put((char) (val&0xff));
-		out->put((char) ((val>>8)&0xff));
-		out->put((char) ((val>>16)&0xff));
-		out->put((char) ((val>>24)&0xff));
-	};
+	virtual void write4(uint32 val)      { Write4(*out, val); };
 
-	virtual void write4high(uint32 val)
-	{
-		out->put((char) ((val>>24)&0xff));
-		out->put((char) ((val>>16)&0xff));
-		out->put((char) ((val>>8)&0xff));
-		out->put((char) (val&0xff));
-	};
+	virtual void write4high(uint32 val)  { Write4high(*out, val); };
 
-	virtual void write(char *b, int len)
-	{
-		out->write(b, len);
-	};
+	virtual void write(char *b, int len) { out->write(b, len); };
 	
 	virtual void seek(unsigned int pos) { in->seekg(pos); };
 	
@@ -236,35 +176,35 @@ public:
 	
 	virtual void write1(unsigned int val)
 	{
-		fputc((char) (val&0xff),f);
+		fputc(static_cast<char>(val&0xff),f);
 	};
 	
 	virtual void write2(uint16 val)
 	{
-		fputc((char) (val&0xff),f);
-		fputc((char) ((val>>8)&0xff),f);
+		fputc(static_cast<char>(val&0xff),f);
+		fputc(static_cast<char>((val>>8)&0xff),f);
 	};
 	
 	virtual void write2high(uint16 val)
 	{
-		fputc((char) ((val>>8)&0xff),f);
-		fputc((char) (val&0xff),f);
+		fputc(static_cast<char>((val>>8)&0xff),f);
+		fputc(static_cast<char>(val&0xff),f);
 	};
 	
 	virtual void write4(uint32 val)
 	{
-		fputc((char) (val&0xff),f);
-		fputc((char) ((val>>8)&0xff),f);
-		fputc((char) ((val>>16)&0xff),f);
-		fputc((char) ((val>>24)&0xff),f);
+		fputc(static_cast<char>(val&0xff),f);
+		fputc(static_cast<char>((val>>8)&0xff),f);
+		fputc(static_cast<char>((val>>16)&0xff),f);
+		fputc(static_cast<char>((val>>24)&0xff),f);
 	};
 
 	virtual void write4high(uint32 val)
 	{
-		fputc((char) ((val>>24)&0xff),f);
-		fputc((char) ((val>>16)&0xff),f);
-		fputc((char) ((val>>8)&0xff),f);
-		fputc((char) (val&0xff),f);
+		fputc(static_cast<char>((val>>24)&0xff),f);
+		fputc(static_cast<char>((val>>16)&0xff),f);
+		fputc(static_cast<char>((val>>8)&0xff),f);
+		fputc(static_cast<char>(val&0xff),f);
 	};
 
 	virtual void write(char *b, int len)
@@ -302,7 +242,7 @@ public:
 	{
 		// data can be NULL if len is also 0
 		assert(data!=0 || len==0);
-		buf = buf_ptr = (unsigned char*)data;
+		buf = buf_ptr = reinterpret_cast<unsigned char*>(data);
 		size = len;
 	};
 	
@@ -311,43 +251,43 @@ public:
 	virtual unsigned int read1() 
 	{ 
 		unsigned char b0;
-		b0 = (unsigned char)*buf_ptr++;
+		b0 = static_cast<unsigned char>(*buf_ptr++);
 		return (b0);
 	};
 	
 	virtual uint16 read2()
 	{
 		unsigned char b0, b1;
-		b0 = (unsigned char)*buf_ptr++;
-		b1 = (unsigned char)*buf_ptr++;
+		b0 = static_cast<unsigned char>(*buf_ptr++);
+		b1 = static_cast<unsigned char>(*buf_ptr++);
 		return (b0 | (b1 << 8));
 	};
 	
 	virtual uint16 read2high()
 	{
 		unsigned char b0, b1;
-		b1 = (unsigned char)*buf_ptr++;
-		b0 = (unsigned char)*buf_ptr++;
+		b1 = static_cast<unsigned char>(*buf_ptr++);
+		b0 = static_cast<unsigned char>(*buf_ptr++);
 		return (b0 | (b1 << 8));
 	};
 	
 	virtual uint32 read4()
 	{
 		unsigned char b0, b1, b2, b3;
-		b0 = (unsigned char)*buf_ptr++;
-		b1 = (unsigned char)*buf_ptr++;
-		b2 = (unsigned char)*buf_ptr++;
-		b3 = (unsigned char)*buf_ptr++;
+		b0 = static_cast<unsigned char>(*buf_ptr++);
+		b1 = static_cast<unsigned char>(*buf_ptr++);
+		b2 = static_cast<unsigned char>(*buf_ptr++);
+		b3 = static_cast<unsigned char>(*buf_ptr++);
 		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
 	virtual uint32 read4high()
 	{
 		unsigned char b0, b1, b2, b3;
-		b3 = (unsigned char)*buf_ptr++;
-		b2 = (unsigned char)*buf_ptr++;
-		b1 = (unsigned char)*buf_ptr++;
-		b0 = (unsigned char)*buf_ptr++;
+		b3 = static_cast<unsigned char>(*buf_ptr++);
+		b2 = static_cast<unsigned char>(*buf_ptr++);
+		b1 = static_cast<unsigned char>(*buf_ptr++);
+		b0 = static_cast<unsigned char>(*buf_ptr++);
 		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
@@ -413,7 +353,7 @@ public:
 		BufferDataSource(0,0)
 	{
 		U7object obj(fname, index);
-		buf = (unsigned char*)obj.retrieve(size);
+		buf = reinterpret_cast<unsigned char*>(obj.retrieve(size));
 		buf_ptr = buf;
 	};
 	
