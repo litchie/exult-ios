@@ -47,6 +47,7 @@ private:
 	void scene_butterfly();
 	void scene_guardian();
 	void scene_desk();
+	void scene_moongate();
 };
 
 	

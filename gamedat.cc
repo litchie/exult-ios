@@ -84,6 +84,12 @@ void Game_window::restore_gamedat
 	)
 	{
 	ifstream in;
+
+#ifdef RED_PLASMA
+	// Display red plasma during load...
+	setup_load_palette();
+#endif
+
 	U7open(in, fname);		// Open file; throws an exception 
 					// in case of an error.
 	U7mkdir(GAMEDAT, 0755);		// Create dir. if not already there.
@@ -138,6 +144,7 @@ void Game_window::restore_gamedat
 		if (!out.good())
 			abort("Error writing '%s'.", fname);
 		out.close();
+		CYCLE_RED_PLASMA();
 		}
 	delete [] finfo;
 	cout.flush();
@@ -338,7 +345,7 @@ void Game_window::read_save_names
 				save_names[i] = newstrdup("");
 			in.close();
 		}
-		catch(...)
+		catch(const file_exception & f)
 		{
 			save_names[i] = newstrdup("");
 		}
@@ -362,7 +369,7 @@ void Game_window::write_saveinfo()
 		in.close();
 		save_count += details.save_count;
 	}
-	catch(...)
+	catch(const file_exception & f)
 	{
 	}
 
@@ -574,7 +581,7 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 		read_saveinfo (in, details, party);
 		in.close();
 	}
-	catch(...)
+	catch(const file_exception & f)
 	{
 		details = NULL;
 		party = NULL;
@@ -588,7 +595,7 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 		map = new Shape_file(&ds);
 		in.close();
 	}
-	catch(...)
+	catch(const file_exception & f)
 	{
 		// yes, this is weird, but seems to work-around a compiler
 		// problem... (gcc-2.95.2-12mdk)    -wjp
