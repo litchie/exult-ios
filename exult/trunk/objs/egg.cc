@@ -1069,6 +1069,7 @@ void Field_object::activate
 		}
 	Actor_queue npcs;		// Find all nearby NPC's.
 	gwin->get_nearby_npcs(npcs);
+	npcs.push(gwin->get_main_actor());	// Include Avatar.
 	Rectangle eggfoot = get_footprint();
 					// Clear flag to check.
 	((Field_frame_animator *) animator)->activated = false;
