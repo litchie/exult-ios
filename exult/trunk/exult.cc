@@ -865,6 +865,7 @@ static void Handle_keystroke
 				gwin->paint();
 				}
 			}
+		break;
 		}
 	case SDLK_h:	// Help keys, ctrl = cheat keys
 		{
