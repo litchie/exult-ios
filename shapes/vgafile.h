@@ -126,6 +126,7 @@ public:
 	Shape(int n);			// Create with given #frames.	
 	virtual ~Shape();
 	void reset();
+	void take(Shape *s2);		// Take frames from another shape.
 	void load(DataSource* shape_source);
 	void write(std::ostream& out);	// Write out.
 	Shape_frame *get(DataSource* shapes, int shnum, int frnum, 

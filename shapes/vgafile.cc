@@ -938,6 +938,23 @@ void Shape::reset()
 	}
 
 /*
+ *	Take frames from another shape and set that shape to empty.
+ */
+
+void Shape::take
+	(
+	Shape *sh2
+	)
+	{
+	reset();			// Clear ourself.
+	frames = sh2->frames;
+	sh2->frames = 0;
+	frames_size = sh2->frames_size;
+	num_frames = sh2->num_frames;	
+	sh2->num_frames = sh2->frames_size = 0;
+	}
+
+/*
  *	Load all frames for a single shape.  (Assumes RLE-type shape.)
  */
 
@@ -1224,10 +1241,9 @@ Shape *Vga_file::new_shape
 		if (!flex)
 			return 0;	// 1-shape file.
 		Shape *newshapes = new Shape[shapenum + 1];
-		if (num_shapes)
-			memcpy(newshapes, shapes, num_shapes*sizeof(Shape));
-					// (Don't want destructor called.)
-		delete reinterpret_cast<char *> (shapes);
+		for (int i = 0; i < num_shapes; i++)
+			newshapes[i].take(&shapes[i]);
+		delete [] shapes;
 		shapes = newshapes;
 		num_shapes = shapenum + 1;
 		}
