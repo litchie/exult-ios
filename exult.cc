@@ -604,6 +604,8 @@ static void SetIcon()
 	SDL_SetColorKey(iconsurface, SDL_SRCCOLORKEY, 0);
 
 	SDL_WM_SetIcon(iconsurface, 0);
+
+	SDL_FreeSurface(iconsurface);
 }
 
 
