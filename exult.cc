@@ -750,8 +750,8 @@ static void Handle_event
 #ifdef USE_EXULTSTUDIO			// Shift-click means 'paint'.
 			if (cheat.in_map_editor() && 
 			    cheat.get_edit_shape() >= 0 &&
-					// But always if terrain-editing.
-			    (gwin->skip_lift == 0 ||
+					// But always if painting.
+			    (cheat.get_edit_mode() == Cheat::paint ||
 					(SDL_GetModState() & KMOD_SHIFT)))
 				{
 				Drop_in_map_editor(event, false);
@@ -865,8 +865,9 @@ static void Handle_event
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
 			{
-#ifdef USE_EXULTSTUDIO			// Paint IFF editing terrain.
-			if (cheat.in_map_editor() && gwin->skip_lift == 0 &&
+#ifdef USE_EXULTSTUDIO			// Painting?
+			if (cheat.in_map_editor() && 
+			    cheat.get_edit_mode() == Cheat::paint &&
 			    cheat.get_edit_shape() >= 0)
 				{
 				Drop_in_map_editor(event, true);

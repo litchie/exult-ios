@@ -961,11 +961,15 @@ void ExultStudio::set_edit_terrain
 	send_to_server(Exult_server::terrain_editing_mode, data, ptr - data);
 	if (browser && !terrain)
 		browser->end_terrain_editing();
+					// Set edit-mode to paint.
+	GtkWidget *mitem = glade_xml_get_widget(app_xml, 
+						terrain ? "paint1" : "move1");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mitem), TRUE);
 	}
 
 void ExultStudio::set_edit_mode
 	(
-	int md				// 0-3.
+	int md				// 0-3 (drag, paint, sel, hide).
 	)
 	{
 	unsigned char data[Exult_server::maxlength];
