@@ -309,6 +309,53 @@ void Party_manager::move_followers
 	}
 
 /*
+ *	Get tile to step to, given destination tile (possibly more than 1
+ *	step away), and the party's direction.
+ */
+
+inline Tile_coord Get_step_tile
+	(
+	Tile_coord pos,			// Current pos.
+	Tile_coord dest,		// Desired dest.
+	int dir				// Dir. party is moving (0-7).
+	)
+	{
+	int dx = dest.tx - pos.tx, dy = dest.ty - pos.ty;
+					// Get adjacent tile in given dir.
+	Tile_coord adj = pos.get_neighbor(dir);
+					// See if we're past desired spot.
+	if (dx < 0)			// Dest. to our left?
+		{
+		if (adj.tx > pos.tx)	// But walking right.
+			dx = 0;
+		else if (dx < -1)
+			dx = -1;	// Can only step by 1 tile.
+		}
+	else if (dx > 0)
+		{
+		if (adj.tx < pos.tx)	// Walking left?
+			dx = 0;
+		else if (dx > 1)
+			dx = 1;
+		}
+	if (dy < 0)			// Dest. North?
+		{
+		if (adj.ty > pos.ty)	// But walking South?
+			dy = 0;
+		else if (dy < -1)
+			dy = -1;
+		}
+	else if (dy > 0)		// Dest. South?
+		{
+		if (adj.ty < pos.ty)
+			dy = 0;
+		else if (dy > 1)
+			dy = 1;
+		}
+	return pos + Tile_coord(dx, dy, 0);
+	}
+
+/*
  *	Move one follower to its destination (if possible).
  *
  *	Output:	True if he moved.
@@ -322,40 +369,32 @@ bool Party_manager::step
 	)
 	{
 	Tile_coord pos = npc->get_tile();	// Current position.
-					// Get adjacent tile in given dir.
-	Tile_coord adj = pos.get_neighbor(dir);
-					// See if we're past desired spot.
-	if (dest.tx < pos.tx)		// Dest. to our left?
-		{
-		if (adj.tx > pos.tx)	// But walking right.
-			dest.tx = pos.tx;
-		}
-	else if (dest.tx > pos.tx)
-		{
-		if (adj.tx < pos.tx)	// Walking left?
-			dest.tx = pos.tx;
-		}
-	if (dest.ty < pos.ty)		// Dest. North?
-		{
-		if (adj.ty > pos.ty)	// But walking South?
-			dest.ty = pos.ty;
-		}
-	else if (dest.ty > pos.ty)	// Dest. South?
-		{
-		if (adj.ty < pos.ty)
-			dest.ty = pos.ty;
-		}
-	if (pos == dest)
-		return false;		// Stay pat.
+	Tile_coord to = Get_step_tile(pos, dest, dir);
+	if (to.tx == pos.tx && to.ty == pos.ty)
+		return false;		// Not moving.
 	Frames_sequence *frames = npc->get_frames(dir);
 	int& step_index = npc->get_step_index();
 	if (!step_index)		// First time?  Init.
 		step_index = frames->find_unrotated(npc->get_framenum());
 					// Get next (updates step_index).
 	int frame = frames->get_next(step_index);
-	if (npc->step(dest, frame))
-		return true;		// Succeeded.
-	//+++++Obviously, we should work around obstacles.
+	if (npc->step(to, frame))
+		{
+		if (to.tx != dest.tx || to.ty != dest.ty)
+			{		// Take a 2nd step (w/ same frame).
+			to = Get_step_tile(npc->get_tile(), dest, dir);
+			npc->step(to, frame);
+			}
+		return true;		// Moved.
+		}
+	int destdir = npc->get_direction(dest);
+					// Try next dir. clockwise.
+	to = pos.get_neighbor((dir + 1)%8);
+	if (npc->step(to, frame))
+		return true;
+	to = pos.get_neighbor((dir + 7)%8);	// Now counterclockwise.
+	if (npc->step(to, frame))
+		return true;
 	frames->decrement(step_index);	// We didn't take the step.
 	return false;
 	}
