@@ -351,6 +351,12 @@ std::FILE* U7open
 	const char *mode			// File access mode.
 	);
 #endif
+bool U7open_static
+	(
+	std::ifstream& in,		// Input stream to open.
+	const char *fname,		// May be converted to upper-case.
+	bool is_text			// Should file be opened in text mode
+	);
 void U7remove(
 	const char *fname
 	);

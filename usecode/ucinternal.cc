@@ -40,6 +40,7 @@
 #include "Gump.h"
 #include "Gump_manager.h"
 #include "Text_gump.h"
+#include "Notebook_gump.h"
 #include "Audio.h"
 #include "animate.h"
 #include "barge.h"
@@ -2427,6 +2428,8 @@ int Usecode_internal::run()
 					FLAG_ERROR(offset);
 				}
 				gflags[offset] = (unsigned char) popi();
+				if (gflags[offset])
+					Notebook_gump::add_gflag_text(offset);
 				// ++++KLUDGE for Monk Isle:
 				if (offset == 0x272 && Game::get_game_type() ==
 					SERPENT_ISLE)
