@@ -80,7 +80,7 @@ void Earthquake::handle_event
 					// Shake back.
 	win->copy(0, 0, w, h, -dx, -dy);
 	if (++i < len)			// More to do?  Put back in queue.
-		gwin->get_tqueue()->add(curtime + 50, this, udata);
+		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
 		delete this;
 	}
@@ -342,9 +342,11 @@ Usecode_value& Usecode_value::concat
 /*
  *	Given an array and an index, and a 2nd value, add the new value at that
  *	index, or if the new value is an array itself, add its values.
+ *
+ *	Output:	# elements added.
  */
 
-void Usecode_value::add_values
+int Usecode_value::add_values
 	(
 	int index,
 	Usecode_value& val2
@@ -356,7 +358,7 @@ void Usecode_value::add_values
 		if (index >= size)
 			resize(index + 1);
 		put_elem(index, val2);
-		return;
+		return (1);
 		}
 					// Add each element.
 	int size2 = val2.get_array_size();
@@ -364,6 +366,7 @@ void Usecode_value::add_values
 		resize(index + size2);
 	for (int i = 0; i < size2; i++)
 		put_elem(index++, val2.get_elem(i));
+	return (size2);			// Return # added.
 	}
 
 /*
@@ -2443,13 +2446,14 @@ void Usecode_machine::run
 			pushs(data + offset);
 			break;
 		case 0x1e:		// ARRC.
-			{		// Get array size.
+			{		// Get # values to pop into array.
 			offset = Read2(ip);
 			Usecode_value arr(offset, 0);
-			for (int i = 0; i < offset; i++)
+			int to = 0;	// Store at this index.
+			while (offset--)
 				{
 				Usecode_value val = pop();
-				arr.add_values(i, val);
+				to += arr.add_values(to, val);
 				}
 			push(arr);
 			}

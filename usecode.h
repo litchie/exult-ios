@@ -128,7 +128,7 @@ public:
 					// Concat. to end of this array.
 	Usecode_value& concat(Usecode_value& val2);
 					// Add value(s) to an array.
-	void add_values(int index, Usecode_value& val2);
+	int add_values(int index, Usecode_value& val2);
 	void print(ostream& out);	// Print in ASCII.
 	};
 
