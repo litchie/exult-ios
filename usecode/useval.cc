@@ -116,6 +116,25 @@ Usecode_value& Usecode_value::operator=
 	}
 
 /*
+ *	Set this to (a copy of) a string.
+ */
+
+
+Usecode_value& Usecode_value::operator=
+	(
+	const char *str
+	)
+	{
+	if (type == array_type)
+		delete [] value.array;
+	else if (type == string_type)
+		delete [] value.str;
+	type = string_type;
+	value.str = str ? newstrdup(str) : 0;
+	return *this;
+	}
+
+/*
  *	Create a string value.
  */
 
@@ -128,7 +147,8 @@ Usecode_value::Usecode_value
 	}
 
 /*
- *	Resize array (or turn single element into an array).
+ *	Resize array (or turn single element into an array).  The new values
+ *	are (integer) 0.
  *
  *	Output:	Always true.
  */
@@ -278,6 +298,23 @@ Usecode_value& Usecode_value::concat
 			put_elem(size + i, val2.get_elem(i));
 		}
 	return (*this);
+	}
+
+/*
+ *	Append a list of integer values.
+ */
+
+void Usecode_value::append
+	(
+	int *vals,
+	int cnt
+	)
+	{
+	assert(type == array_type);
+	int sz = get_array_size();
+	resize(sz + cnt);
+	for (int i = 0; i < cnt; i++)
+		value.array[sz + i].value.intval = vals[i];
 	}
 
 /*
