@@ -10,14 +10,14 @@ TOOLSPATH=C:/GimpPlugin
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
 
-# If this doesn't work, insert output of `pkg-config --cflags gtk+-1.3-win32-production` manually
+# If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
 GTK_INCLUDES = `pkg-config --cflags gtk+-win32-2.0`
-# If this doesn't work, insert output of `pkg-config --libs gtk+-1.3-win32-production` manually
+# If this doesn't work, insert output of `pkg-config --libs gtk+-win32-2.0` manually
 GTK_LIBS = `pkg-config --libs gtk+-win32-2.0`
 
-# If this doesn't work, insert output of 'pkg-config --cflags libglade-0.17' manually
+# If this doesn't work, insert output of 'pkg-config --cflags libglade-2.0' manually
 LIBGLADE_INCLUDES = `pkg-config --cflags libglade-2.0`
-# If this doesn't work, insert output of 'pkg-config --libs libglade-0.17' manually
+# If this doesn't work, insert output of 'pkg-config --libs libglade-2.0' manually
 LIBGLADE_LIBS = `pkg-config --libs libglade-2.0`
 
 # If this doesn't work, insert output of 'pkg-config --cflags freetype2' manually
@@ -96,8 +96,8 @@ dist: $(EXEC)
 	cp docs/exult_studio.html $(STUDIOPATH)
 	cp docs/exult_studio.txt $(STUDIOPATH)
 	mkdir -p $(STUDIOPATH)/images
-	cp docs/images/back.gif $(STUDIOPATH)/images
-	cp docs/images/exult_logo.gif $(STUDIOPATH)/images
+	cp docs/images/*.gif $(STUDIOPATH)/images
+	cp docs/images/*.jpg $(STUDIOPATH)/images
 	cp mapedit/exult_studio.glade $(STUDIOPATH)/data
 	mkdir -p $(STUDIOPATH)/data/estudio
 	mkdir -p $(STUDIOPATH)/data/estudio/new
