@@ -47,6 +47,8 @@ exult_SOURCES =	\
 	objs.h		\
 	readnpcs.cc	\
 	ready.h		\
+	schedule.cc	\
+	schedule.h	\
 	segfile.cc	\
 	segfile.h	\
 	spells.cc	\
