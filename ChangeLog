@@ -4,6 +4,7 @@
 	* defaultkeys.txt: re-added change_skin
 	* tools/.cvsignore: added shp2pcx, removed u7shp
 	* fnames.h, gamedat.cc: changed savegame names to exultXXbg/si.sav
+	* gamedat.cc, files/utils.cc: fixed gamedat creation
 
 2001-03-10  Jeff Freedman  <jeff@amy.nerble.net>
 

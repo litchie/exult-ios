@@ -78,8 +78,9 @@ void Game_window::restore_gamedat
 	)
 	{
 	ifstream in;
-	U7open(in, fname);		// Open file; throws an exception in case of an error.
-	U7mkdir("gamedat", 0755);		// Create dir. if not already there.
+	U7open(in, fname);		// Open file; throws an exception 
+					// in case of an error.
+	U7mkdir(GAMEDAT, 0755);		// Create dir. if not already there.
 
 	U7remove (USEDAT);
 	U7remove (U7NBUF_DAT);
