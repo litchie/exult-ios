@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <io.h>
 #endif
 
-#include <iostream.h>
+#include <fstream.h>
 #include <string.h>
 
 #if (defined(XWIN) || defined(BEOS))
@@ -84,7 +84,7 @@ void Game_window::restore_gamedat
 					// Watch for names ending in '.'.
 		if (fname[namelen - 1] == '.')
 			fname[namelen - 1] = 0;
-		ofstream out(fname, ios_base::openmode(ios::out + ios::trunc + ios::binary));
+		ofstream out(fname, ios::out + ios::trunc + ios::binary);
 					// Now read the file.
 		char *buf = new char[len];
 		in.read(buf, len);
