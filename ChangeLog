@@ -1,5 +1,6 @@
 2004-02-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/death_scythe.shp: death scythe paperdoll art
+	* data/bg/firewand.shp: fire wand paperdoll art
 
 2004-02-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: rotate colours 0xFC-0xFE (Juggernaut Hammer)

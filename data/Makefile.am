@@ -69,7 +69,9 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/ring_of_protection.shp	\
 	bg/greentop.shp			\
 	bg/orangedress.shp		\
-	bg/bluedress.shp
+	bg/bluedress.shp		\
+	bg/death_scythe.shp		\
+	bg/firewand.shp
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\
