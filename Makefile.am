@@ -7,8 +7,8 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/headers -I$(srcdir)/imagewin -I$(srcdir)/shap
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
-SUBDIRS =  files conf tools data flic audio pathfinder gumps shapes \
-	imagewin usecode objs server mapedit debian desktop docs
+SUBDIRS =  files conf shapes imagewin tools data flic audio pathfinder gumps \
+	usecode objs server mapedit debian desktop docs
 
 bin_PROGRAMS = exult
 
