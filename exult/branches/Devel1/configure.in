@@ -247,4 +247,5 @@ AC_OUTPUT(Makefile \
 audio/Makefile \
 audio/midi_drivers/Makefile \
 conf/Makefile \
+files/Makefile \
 pathfinder/Makefile)
