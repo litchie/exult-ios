@@ -592,6 +592,11 @@ void Egg_object::activate
 				{
 				Usecode_script *scr = new Usecode_script(this);
 				scr->add(Ucscript::usecode, data2);
+				if (flags & (1<<(int)once))
+					{// Don't remove until done.
+					scr->add(Ucscript::remove);
+					flags &= ~(1<<(int)once);
+					}
 				scr->start(c_std_delay);
 				}
 			break;
@@ -671,7 +676,7 @@ void Egg_object::activate
 			cout << "Egg not actioned" << endl;
                 }
 	if (flags & (1 << (int) once))
-		remove_this();		// All done, so go away.
+		gwin->delete_object(this);// All done, so go away.
 	}
 
 /*
