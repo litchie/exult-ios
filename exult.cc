@@ -39,6 +39,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "audio/midi_drivers/win_MCI.h"
 #endif
 
+#ifdef MACOS
+#include <Events.h>
+#endif
+
+
 #include "gamewin.h"
 #include "actors.h"
 #include "usecode.h"
@@ -812,7 +817,7 @@ static void Handle_keystroke
 			"l - Decrement lift\n"
 			"m - Change mouse shape\n"
 			"p - Repaint screen\n"
-			"q - Exit\n"
+			"alt-x - Exit\n"
 			"ctrl-t - Fake time period change\n"
 		);
 			
@@ -1102,11 +1107,19 @@ void Wait_for_arrival
 				break;
 				}
 					// Get current time, & animate.
+#ifdef MACOS
+		unsigned long ticks = TickCount();
+#else
 		unsigned long ticks = SDL_GetTicks();
+#endif
 		if (gwin->have_focus() && !dragging)
 			gwin->get_tqueue()->activate(ticks);
 					// Show animation every 1/10 sec.
+#ifdef MACOS
+		if (ticks > last_repaint + 6)
+#else
 		if (ticks > last_repaint + 100)
+#endif
 			{
 			gwin->paint_dirty();
 			last_repaint = ticks;
