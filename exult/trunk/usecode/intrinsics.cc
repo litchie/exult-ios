@@ -504,7 +504,7 @@ USECODE_INTRINSIC(create_new_object)
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
-		last_created = monster;
+		last_created.push_back(monster);
 		return Usecode_value(monster);
 	}
 	else
@@ -524,7 +524,7 @@ USECODE_INTRINSIC(create_new_object)
 	}
 	obj->set_invalid();		// Not in world yet.
 	obj->set_flag(Obj_flags::okay_to_take);
-	last_created = obj;
+	last_created.push_back(obj);
 	Usecode_value u(obj);
 	return(u);
 }
@@ -543,9 +543,11 @@ USECODE_INTRINSIC(set_last_created)
 {
 	// Take itemref off map and set last_created to it.
 	Game_object *obj = get_item(parms[0]);
-	last_created = obj;
 	if (obj)
+		{
+		last_created.push_back(obj);
 		obj->remove_this(1);	// Remove, but don't delete.
+		}
 	Usecode_value u(obj);
 	return(u);
 }
@@ -555,11 +557,13 @@ USECODE_INTRINSIC(update_last_created)
 	// Think it takes array from 0x18,
 	//   updates last-created object.
 	//   ??guessing??
-	if (!last_created)
+	if (last_created.empty())
 		{
 		Usecode_value u((Game_object*) NULL);
 		return(u);
 		}
+	Game_object *obj = last_created.back();
+	last_created.pop_back();
 	Usecode_value& arr = parms[0];
 	int sz = arr.get_array_size();
 	if (sz == 3 || sz == 2)
@@ -570,7 +574,7 @@ USECODE_INTRINSIC(update_last_created)
 		Tile_coord pos = dest;
 					// Skip 'blocked' check if it looks
 					//   structural. (For SI maze).
-		Shape_info& info = gwin->get_info(last_created);
+		Shape_info& info = gwin->get_info(obj);
 		if (info.get_3d_height() < 5 &&
 					// Weed out drawbridge:
 		    info.get_3d_xtiles() < 8 && info.get_3d_ytiles() < 8 &&
@@ -582,20 +586,18 @@ USECODE_INTRINSIC(update_last_created)
 				if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
 					{
 //					cerr << " Failed to find space"<< endl;
-					last_created->remove_this(0);
-					last_created = 0; // added 20010810, wjp
+					obj->remove_this(0);
 					return Usecode_value(0);
 					}
 				dest.tz++;
 				pos.tz = dest.tz;
 				}
-		last_created->move(dest.tx, dest.ty, dest.tz);
+		obj->move(dest.tx, dest.ty, dest.tz);
 		}
 					// Taking a guess here:
 	else if (parms[0].get_int_value() == -358)
 		{
-		last_created->remove_this();
-		last_created = 0;
+		obj->remove_this();
 		}
 #ifdef DEBUG
 	else
@@ -605,7 +607,7 @@ USECODE_INTRINSIC(update_last_created)
 #endif
 //	gwin->paint_dirty();	// Problems in conversations.
 //	gwin->show();		// ??
-	Usecode_value u(1);// ??
+	Usecode_value u(1);
 	return(u);
 }
 
@@ -852,13 +854,13 @@ USECODE_INTRINSIC(give_last_created)
 	// Think it's give_last_created(container).
 	Game_object *cont = get_item(parms[0]);
 	int ret = 0;
-	if (cont && last_created)
-		{			// Remove, but don't delete, last.
-		last_created->remove_this(1);
+	if (cont && !last_created.empty())
+		{
+		Game_object *obj = last_created.back();
+		last_created.pop_back();
 					// Don't check.  Causes failures.
-		ret = cont->add(last_created, 1);
+		ret = cont->add(obj, 1);
 		}
-	last_created = 0;
 	Usecode_value u(ret);
 	return(u);
 }
@@ -1985,23 +1987,8 @@ USECODE_INTRINSIC(is_not_blocked)
 					// Okay?
 	if (!blocked && new_lift == tile.tz)
 		return Usecode_value(1);
-					// Don't let last_created block.
-	if (!last_created || last_created->get_owner() ||
-	    !gwin->get_info(last_created).is_solid() ||
-	    !last_created->get_footprint().intersects(footprint))
+	else
 		return Usecode_value(0);
-	Tile_coord lcpos = last_created->get_abs_tile_coord();
-	last_created->remove_this(1);
-	last_created->set_invalid();
-	blocked = Map_chunk::is_blocked(
-		info.get_3d_height(), tile.tz, 
-		footprint.x, footprint.y, footprint.w, footprint.h,
-		new_lift, MOVE_ALL_TERRAIN);
-//Don't know why this is causing trouble in Forge with mage at end:
-	blocked = (blocked || new_lift != tile.tz);
-
-	last_created->move(lcpos);	// Put back last_created.
-	return Usecode_value(!blocked);
 }
 
 USECODE_INTRINSIC(direction_from)
