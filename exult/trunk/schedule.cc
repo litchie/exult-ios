@@ -1165,15 +1165,17 @@ void Sit_schedule::now_what
 		Game_object *barge = chair->find_closest(961);
 		if (!barge)
 			return;
-		Game_object_vector fman;// See if Ferryman nearby.
 		int usefun = 0x634;	// I hate using constants like this.
+		Game_object_vector fman;// See if Ferryman nearby.
 		if (chair->find_nearby(fman, 155, 8, 0) == 1)
 			{
 			usefun = 0x61c;
 			}
 		did_barge_usecode = true;
 					// Special usecode for barge pieces:
-		ucmachine->call_usecode(usefun, barge,
+					// (Call with item=Avatar to avoid
+					//   running nearby barges.)
+		ucmachine->call_usecode(usefun, gwin->get_main_actor(),
 					Usecode_machine::double_click);
 		return;
 		}
