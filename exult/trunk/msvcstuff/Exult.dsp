@@ -1143,7 +1143,7 @@ SOURCE=..\gamewin.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\gamma.h
+SOURCE=..\headers\gamma.h
 # End Source File
 # Begin Source File
 

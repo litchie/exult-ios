@@ -1,4 +1,8 @@
 2002-06-13  Ryan Nunn  <triforce@merlin.net.au>
+	* exult.cc, audio/xmidi.cc : Getting around some problems with (our)
+	  snprintf not supporting floating point types.
+
+2002-06-13  Ryan Nunn  <triforce@merlin.net.au>
 	* Any file that I changed, but not the 2 below : Changed lots of things
 	  to use DataSources rather than directly use streams. Hopefully
 	  nothing is broken. I expect that there will be numerous

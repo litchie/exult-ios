@@ -1,3 +1,7 @@
+2002-06-13  Ryan Nunn  <triforce@merlin.net.au>
+	* exult.cc, audio/xmidi.cc : Getting around some problems with (our)
+	  snprintf not supporting floating point types. 
+
 2002-06-09  Ryan Nunn  <triforce@merlin.net.au>
 	* gumps/Paperdoll_gump.cc : Fixing up cosmetic problem with belt slot
 	  items lacking paperdoll art.
