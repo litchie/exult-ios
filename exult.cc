@@ -1020,7 +1020,7 @@ static void Handle_event
 			else
 				{
 				gwin->stop_actor();
-				if (Combat::is_paused())
+				if (Combat::is_paused() && gwin->in_combat())
 					gwin->paused_combat_select(x, y);
 				}
 			last_b3_click = curtime;

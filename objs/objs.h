@@ -212,6 +212,7 @@ public:
 	void say(int from, int to);	// Show random msg. from 'text.flx'.
 					// Render.
 	virtual void paint();
+	void paint_outline(Pixel_colors pix);
 					// Make this class abstract.
 	virtual void paint_terrain() = 0;
 					// Can this be clicked on?
