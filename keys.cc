@@ -327,7 +327,7 @@ void KeyBinder::ShowCheatHelp()
 	delete scroll;
 }
 
-void KeyBinder::ParseText(char *text)
+void KeyBinder::ParseText(char *text, int len)
 {
 	char *ptr, *end;
 	const char LF = '\n';
@@ -335,7 +335,7 @@ void KeyBinder::ParseText(char *text)
 	ptr = text;
 	
 	// last (useful) line must end with LF
-	while ((end = strchr(ptr, LF)) != 0) {
+	while ((ptr - text) < len && (end = strchr(ptr, LF)) != 0) {
 		*end = '\0';
 		ParseLine(ptr);
 		ptr = end + 1;
@@ -531,8 +531,7 @@ void KeyBinder::LoadDefaults()
 	U7object txtobj(resource.str, resource.num);
 	size_t len;
 	char *txt = txtobj.retrieve(len);
-	
-	ParseText(txt);
+	ParseText(txt, len);
 	
 	delete [] txt;
 }

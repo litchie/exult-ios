@@ -75,7 +75,7 @@ class KeyBinder {
 	void ShowCheatHelp();
 	
  private:
-	void ParseText(char *text);
+	void ParseText(char *text, int len);
 	void ParseLine(char *line);
 	void FillParseMaps();
 };

@@ -291,6 +291,12 @@ void Scheduled_usecode::handle_event
 			usecode->item_say(objval, strval);
 			break;
 			}
+		case 0x54:		// Unknown.
+		        cout << "Und sched. opcode " << hex << 
+				"0x" << setfill((char)0x30) << setw(2) 
+						<< opcode << std::dec << endl;
+			++i;		// Takes 1 parameter!
+			break;
 		case 0x55:		// Call?
 			{
 			Usecode_value& val = arrval.get_elem(++i);
