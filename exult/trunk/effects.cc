@@ -761,7 +761,7 @@ void Lightning_effect::handle_event
 			gwin->set_palette(-1, save_brightness);
 		save_brightness = -1;
 		active = false;
-		gwin->show(1);
+//		gwin->show(1);
 		if (curtime >= stop_time)
 			{		// Time to stop.
 			gwin->remove_effect(this);
@@ -778,9 +778,9 @@ void Lightning_effect::handle_event
 		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(62));
 		active = true;
 		save_brightness = gwin->get_brightness();
-		gwin->set_palette(-1, 400);
-		gwin->show(1);
-		delay = (1 + r%2)*50;
+		gwin->set_palette(-1, 800);
+//No longer needed...		gwin->show(1);
+		delay = (1 + r%2)*25;
 		}
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
