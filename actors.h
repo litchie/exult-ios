@@ -323,7 +323,8 @@ public:
 	std::string get_npc_name() const;
 	void set_npc_name(const char *n);
 	virtual void set_property(int prop, int val);
-	void reduce_health(int delta);	// Lose HP's and check for death.
+					// Lose HP's and check for death.
+	void reduce_health(int delta, Actor *attacker = 0);
 	virtual int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
 	int is_dying() const		// Dead when health below -1/3 str.
