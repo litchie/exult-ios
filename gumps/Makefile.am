@@ -2,7 +2,7 @@ INCLUDES = -I.. $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(
 
 noinst_LTLIBRARIES = libgumps.la
 
-libusecode_la_SOURCES = \
+libgumps_la_SOURCES = \
 	Actor_gump.cc	\
 	Actor_gump.h	\
 	Book_gump.cc	\
