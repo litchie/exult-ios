@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #include "Table.h"
+#include "utils.h"
 
 #include <cstdio>
 #include <iostream>
@@ -35,7 +36,6 @@ using std::cout;
 using std::cerr;
 using std::endl;
 using std::FILE;
-using std::fopen;
 using std::size_t;
 
 
@@ -56,7 +56,7 @@ void	Table::IndexTableFile(void)
 {
 	Table	&ret=*this;
 	FILE	*fp;
-	fp=fopen(ret.filename.c_str(),"rb");
+	fp=U7open(ret.filename.c_str(),"rb");
 	if(!fp)
 		{
 		throw 0;
@@ -103,7 +103,7 @@ char	*Table::read_object(int objnum,uint32 &length)
 		cerr << "objnum too large in read_object()" << endl;
 		return 0;
 		}
-	FILE	*fp=fopen(filename.c_str(),"rb");
+	FILE	*fp=U7open(filename.c_str(),"rb");
 	if(!fp)
 		{
 		cerr << "File open failed in read_object" << endl;

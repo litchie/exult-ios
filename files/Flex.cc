@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	DEBUGFLEX 0
 
 #include "Flex.h"
+#include "utils.h"
 
 #include <cstdio>
 #include <iostream>
@@ -34,7 +35,6 @@ using std::string;
 using std::cerr;
 using std::endl;
 using std::FILE;
-using std::fopen;
 using std::fread;
 using std::size_t;
 
@@ -54,7 +54,7 @@ void	Flex::IndexFlexFile(void)
 	Flex	&ret=*this;
 	FILE	*fp;
 	const 	char *name=ret.filename.c_str();
-	fp=fopen(name,"rb");
+	fp=U7open(name,"rb");
 	if(!fp)
 		{
 		throw 0;
@@ -100,7 +100,7 @@ int     Flex::retrieve(int objnum,char **buf,size_t *len)
 		cerr << "objnum too large in read_object()" << endl;
 		return 0;
 		}
-	FILE	*fp=fopen(filename.c_str(),"rb");
+	FILE	*fp=U7open(filename.c_str(),"rb");
 	if(!fp)
 		{
 		cerr << "File open failed in read_object" << endl;
@@ -130,7 +130,7 @@ char	*Flex::read_object(int objnum,uint32 &length)
 		cerr << "objnum too large in read_object()" << endl;
 		return 0;
 		}
-	FILE	*fp=fopen(filename.c_str(),"rb");
+	FILE	*fp=U7open(filename.c_str(),"rb");
 	if(!fp)
 		{
 		cerr << "File open failed in read_object" << endl;
