@@ -1,5 +1,7 @@
 2002-02-07  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* usecode/ucinternal.cc: Removed open of static/flaginit.dat.
+
 	* shapes/shapewrite.cc: Use num_shapes, not 1024.
 	* mapedit/studio.cc:  Fixed ::write_shape_info().
 	* mapedit/shapefile.cc:  Compare filenames ignoring case.
