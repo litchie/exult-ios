@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucsym.h"
 #include "opcodes.h"
 #include "utils.h"
+#include "ucexpr.h"
 
 /*
  *	Assign value on stack.
@@ -49,6 +50,22 @@ int Uc_symbol::gen_assign
 int Uc_symbol::gen_value
 	(
 	ostream& out
+	)
+	{
+	return 0;
+	}
+
+/*
+ *	Generate function call.
+ *
+ *	Output: 0 if can't do this.
+ */
+
+int Uc_symbol::gen_call
+	(
+	ostream& out,
+	Uc_array_expression *parms,	// Parameter list.
+	bool retvalue			// True if a function.
 	)
 	{
 	return 0;
@@ -99,6 +116,38 @@ int Uc_string_symbol::gen_value
 	{
 	out.put((char) UC_PUSHS);
 	Write2(out, offset);
+	return 1;
+	}
+
+/*
+ *	Generate function call.
+ *
+ *	Output: 0 if can't do this.
+ */
+
+int Uc_intrinsic_symbol::gen_call
+	(
+	ostream& out,
+	Uc_array_expression *parms,	// Parameter list.
+	bool retvalue			// True if a function.
+	)
+	{
+	int parmcnt = 0;
+					// Want to push parm. values.
+	const vector<Uc_expression *>& exprs = parms->get_exprs();
+					// Push backwards, so #0 pops first.
+	for (vector<Uc_expression *>::const_reverse_iterator it = 
+			exprs.rbegin(); it != exprs.rend(); it++)
+		{
+		Uc_expression *expr = *it;
+		expr->gen_value(out);
+		parmcnt++;
+		}
+					// ++++ parmcnt == num_parms.
+					// Opcode depends on val. returned.
+	out.put((char) (retvalue ? UC_CALLIS : UC_CALLI));
+	Write2(out, intrinsic_num);	// Intrinsic # is 2 bytes.
+	out.put((char) parmcnt);	// Parm. count is 1.
 	return 1;
 	}
 

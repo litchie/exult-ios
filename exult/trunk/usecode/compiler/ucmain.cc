@@ -63,6 +63,8 @@ int main
 		strcpy(outname, "a.ucout");
 		}
 	Uc_location::set_cur(src, 0);
+					// For now, use black gate.
+	Uc_function::set_intrinsics(Uc_function::bg);
 #if 0
 //++++TESTING
 	int tok;

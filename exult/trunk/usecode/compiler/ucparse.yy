@@ -296,7 +296,18 @@ primary:
 
 function_call:
 	IDENTIFIER '(' opt_expression_list ')'
-		{ $$ = 0; /* ++++++++ */ }
+		{ 
+		Uc_symbol *sym = function->search_up($1);
+		if (!sym)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' not declared", $1);
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			$$ = new Uc_call_expression(sym, $3);
+		}
 	;
 
 opt_identifier_list:

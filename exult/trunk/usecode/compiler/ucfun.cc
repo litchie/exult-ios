@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucstmt.h"
 #include "utils.h"
 
+Uc_scope Uc_function::intrinsics(0);	// Stores intrinic symbols.
+
 /*
  *	Create function.
  */
@@ -165,4 +167,56 @@ void Uc_function::gen
 	out.flush();
 	}
 
+#ifndef __STRING
+#if defined __STDC__ && __STDC__
+#define __STRING(x) #x
+#else
+#define __STRING(x) "x"
+#endif
+#endif
+
+/*
+ *	Tables of usecode intrinsics:
+ */
+#define	USECODE_INTRINSIC_PTR(NAME)	__STRING(UI_##NAME)
+
+char *bg_intrinsic_table[] =
+	{
+#include "../bgintrinsics.h"
+	};
+
+char *si_intrinsic_table[] = 
+	{
+#include "../siintrinsics.h"
+	};
+
+/*
+ *	Add one of the intrinsic tables to the 'intrinsics' scope.
+ */
+
+void Uc_function::set_intrinsics
+	(
+	Intrinsic_type ty
+	)
+	{
+	int cnt;
+	char **table;
+	if (ty == bg)
+		{
+		table = bg_intrinsic_table;
+		cnt = sizeof(bg_intrinsic_table)/sizeof(bg_intrinsic_table[0]);
+		}
+	else
+		{
+		table = si_intrinsic_table;
+		cnt = sizeof(si_intrinsic_table)/sizeof(si_intrinsic_table[0]);
+		}
+	for (int i = 0; i < cnt; i++)
+		{
+		char *nm = table[i];
+		if (!intrinsics.search(nm))
+					// ++++Later, get num parms.
+			intrinsics.add(new Uc_intrinsic_symbol(nm, i));
+		}
+	}
 
