@@ -1,3 +1,6 @@
+2002-01-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* conf/XMLEntity.*: fixed uninitialized no_close
+	
 2002-01-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamemap.cc,shapes/shapeinf.h: quality_flags, okay_to_take.
