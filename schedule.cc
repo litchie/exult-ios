@@ -2172,7 +2172,7 @@ void Sew_schedule::now_what
 			Tile_coord pos = cloth->get_tile();
 			cloth->remove_this(1);
 					// Top or pants.
-			int shnum = rand()%2 ? 738 : 249;
+			int shnum = GAME_SI ? 403 : (rand()%2 ? 738 : 249);
 			cloth->set_shape(shnum);
 			int nframes = ShapeID(shnum, 0).get_num_frames();
 			cloth->set_frame(rand()%nframes);
@@ -2227,8 +2227,14 @@ void Sew_schedule::now_what
 		{
 		state = get_wool;
 		Game_object_vector vec;		// Don't create too many.
-		int cnt = npc->find_nearby(vec, 738, 4, 0);
-		cnt += npc->find_nearby(vec, 249, 4, 0);
+		int cnt = 0;
+		if (GAME_SI)
+			cnt += npc->find_nearby(vec, 403, 4, 0);
+		else				// BG shapes.
+			{
+			cnt += npc->find_nearby(vec, 738, 4, 0);
+			cnt += npc->find_nearby(vec, 249, 4, 0);
+			}
 		if (cnt > 5)
 			{
 			Game_object *obj = vec[rand()%cnt];

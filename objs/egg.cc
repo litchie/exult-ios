@@ -979,13 +979,13 @@ bool Field_object::field_effect
 		if (get_shapenum() == 561)
 			{
 			actor->reduce_health(5 + rand()%4);
-			say(first_ouch, last_ouch);
+			actor->say(first_ouch, last_ouch);
 			}
 		else if (rand()%2)
 			{
 			actor->reduce_health(1);
 			if (rand()%2)
-				say(first_ouch, last_ouch);
+				actor->say(first_ouch, last_ouch);
 			}
 					// But no sleeping here.
 		actor->clear_flag(Obj_flags::asleep);
@@ -995,10 +995,12 @@ bool Field_object::field_effect
 		    (actor->get_flag(Obj_flags::might) ? 2 : 1) < rand()%40)
 			{
 			actor->reduce_health(2 + rand()%3);
-			say(first_ouch, last_ouch);
+			actor->say(first_ouch, last_ouch);
 			}
-		break;
+		return false;
 		}
+	if (!del)			// Tell animator to keep checking.
+		((Field_frame_animator *) animator)->activated = true;
 	return del;
 	}
 
@@ -1013,7 +1015,28 @@ void Field_object::activate
 	int event
 	)
 	{
-	Ireg_game_object::activate(umachine, event);
+	Game_window *gwin = Game_window::get_game_window();
+					// Field_frame_animator calls us with
+					//   event==0 to check for damage.
+	if (event != Usecode_machine::npc_proximity)
+		{
+		Ireg_game_object::activate(umachine, event);
+		return;
+		}
+	Actor_queue npcs;		// Find all nearby NPC's.
+	gwin->get_nearby_npcs(npcs);
+	Rectangle eggfoot = get_footprint();
+					// Clear flag to check.
+	((Field_frame_animator *) animator)->activated = false;
+	for (Actor_queue::const_iterator it = npcs.begin(); 
+						it != npcs.end(); ++it)
+		{
+		Actor *actor = *it;
+		if (actor->is_dead() || Game_object::distance(actor) > 4)
+			continue;
+		if (actor->get_footprint().intersects(eggfoot))
+			Field_object::activate(umachine, actor);
+		}
 	}
 
 /*
