@@ -1089,7 +1089,7 @@ void Sit_schedule::now_what
 		return;
 		}
 					// Wait a while if we got up.
-	if (!set_action(npc, chair, sat ? (4000 + rand()%3000) : 0))
+	if (!set_action(npc, chair, sat ? (2000 + rand()%3000) : 0, &chair))
 		npc->start(200, 5000);	// Failed?  Try again later.
 	else
 		sat = true;
@@ -1219,11 +1219,14 @@ bool Sit_schedule::set_action
 	(
 	Actor *actor,
 	Game_object *chairobj,		// May be 0 to find it.
-	int delay			// Msecs. to delay.
+	int delay,			// Msecs. to delay.
+	Game_object **chair_found	// ->chair ret'd if not NULL.
 	)
 	{
 	static int chairshapes[] = {873,292};
 	Game_object_vector chairs;
+	if (chair_found)
+		*chair_found = 0;	// Init. in case we fail.
 	if (!chairobj)			// Find chair if not given.
 		{
 		actor->find_closest(chairs, chairshapes,
@@ -1243,6 +1246,8 @@ bool Sit_schedule::set_action
 	Sit_actor_action *act = new Sit_actor_action(chairobj, actor);
 					// Walk there, then sit.
 	set_action_sequence(actor, act->get_sitloc(), act, false, delay);
+	if (chair_found)
+		*chair_found = chairobj;
 	return true;
 	}
 

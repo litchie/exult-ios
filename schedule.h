@@ -289,7 +289,7 @@ public:
 	virtual void now_what();	// Now what should NPC do?
 	static bool is_occupied(Game_object *chairobj, Actor *actor);
 	static bool set_action(Actor *actor, Game_object *chairobj = 0,
-					int delay = 0);
+				int delay = 0, Game_object **chair_found = 0);
 	};
 
 /*
