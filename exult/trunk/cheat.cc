@@ -421,7 +421,8 @@ void Cheat::delete_selected() {
 }
 
 /*
- *	Move the selected objects by given #tiles.
+ *	Move the selected objects by given #tiles.  Objects inside another are
+ *	treated as being at the location of their owner.
  */
 void Cheat::move_selected(int dx, int dy, int dz) {
 	if (selected.empty())
@@ -461,6 +462,49 @@ void Cheat::move_selected(int dx, int dy, int dz) {
 		(*it)->set_invalid();
 		(*it)->move(newtx, newty, newtz);
 		}
+	}
+
+/*
+ *	Cut/copy.
+ */
+void Cheat::cut(bool copy)
+	{
+	Game_object_vector::iterator it;
+					// Clear out old clipboard.
+	for (it = clipboard.begin(); it != clipboard.end(); ++it)
+		gwin->delete_object(*it);	// Careful here.
+	clipboard.resize(0);
+	clipboard.reserve(selected.size());
+	if (!copy)			// Removing?  Force repaint.
+		gwin->set_all_dirty();
+					// Go through selected objects.
+	for (it = selected.begin(); it != selected.end(); ++it)
+		{
+		Game_object *obj = *it;
+		Tile_coord t = obj->get_outermost()->get_tile();
+		if (copy)
+					// TEST+++++REALLY want a 'clone()'.
+			obj = gwin->create_ireg_object(obj->get_shapenum(),
+							obj->get_framenum());
+		else			// Cut:  Remove but don't delete.
+			obj->remove_this(true);
+					// Set pos. & add to list.
+		obj->set_shape_pos(t.tx%c_tiles_per_chunk,
+				   t.ty%c_tiles_per_chunk);
+		obj->set_chunk(t.tx/c_tiles_per_chunk, t.ty/c_tiles_per_chunk);
+		clipboard.push_back(obj);
+		}
+	}
+
+/*
+ *	Paste selection.
+ */
+void Cheat::paste
+	(
+	Tile_coord pos			// Position.
+	)
+	{
+	cout << "FINISH++++++++++" << endl;
 	}
 
 void Cheat::map_teleport (void) const {
