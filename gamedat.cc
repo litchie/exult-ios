@@ -108,7 +108,7 @@ void Game_window::restore_gamedat
 /*
  *	List of 'gamedat' files to save (in addition to 'iregxx'):
  */
-static char *savefiles[] = {
+static const char *savefiles[] = {
 	NPC_DAT,	MONSNPCS,
 	IDENTITY,	USEDAT,
 	FLAGINIT,	GWINDAT
@@ -125,7 +125,7 @@ static const int numsavefiles = sizeof(savefiles)/sizeof(savefiles[0]);
 static long Savefile
 	(
 	ostream& out,			// Write here.
-	char *fname			// Name of file to save.
+	const char *fname			// Name of file to save.
 	)
 	{
 	ifstream in;

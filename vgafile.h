@@ -121,7 +121,7 @@ protected:
 	int num_shapes;			// Total # of shapes.
 	Shape *shapes;			// List of ->'s to shapes' lists
 public:
-	Vga_file(char *nm);
+	Vga_file(const char *nm);
 	int get_num_shapes()
 		{ return num_shapes; }
 	int is_good()
