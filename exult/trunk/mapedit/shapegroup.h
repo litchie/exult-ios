@@ -26,36 +26,47 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <vector>
+#include <string>
 
 class Shape_group_file;
 
 /*
  *	A group of shape/chunk #'s:
  */
-class Shape_group : vector<int>
+class Shape_group : public vector<int>
 	{
-	vector<int> ids;		// The shape/chunk #'s.
-	char *name;			// What this group is called.
+	std::string name;		// What this group is called.
 	Shape_group_file *file;		// Where this comes from.
 public:
 	Shape_group(char *nm, Shape_group_file *f);
-	~Shape_group();
+	~Shape_group() {  }
 	const char *get_name() const
-		{ return name; }
-	void set_name(char *nm);
+		{ return name.c_str(); }
+	void set_name(char *nm)
+		{ name = nm; }
 	};
 
 /*
  *	This class represents the file containing groups for a given shape
- *	or chunks file.
+ *	or chunks file.  It is read from the 'patch' or 'static' directory,
+ *	and saved to the 'patch' directory.
  */
 class Shape_group_file
 	{
-	std::iofstream file;		// The file this represents.
+	std::string name;		// Base filename.
 	vector<Shape_group *> groups;	// List of groups from the file.
+	bool modified;			// Changed since last save.
 public:
 	Shape_group_file(char *nm);
 	~Shape_group_file();
-
+	int size()
+		{ return groups.size(); }
+	Shape_group *get(int i)
+		{ return groups[i]; }
+	void add(Shape_group *grp)	// Add a new group.
+		{ groups.push_back(grp); modified = true; }
+	void remove(int index);		// Remove and delete group.
+	void write();			// Write out (to 'patch' directory).
+	};
 
 #endif
