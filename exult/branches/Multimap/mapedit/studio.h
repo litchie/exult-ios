@@ -174,6 +174,8 @@ public:
 	void groups_changed(GtkTreeModel *model, GtkTreePath *path,
 					GtkTreeIter *loc, bool value = false);
 	void open_group_window();
+	void open_builtin_group_window();
+	void open_group_window(Shape_group *grp);
 	void close_group_window(GtkWidget *gtkwin);
 	void save_groups();
 	bool groups_modified();

@@ -62,7 +62,10 @@ Shape_group::Shape_group
 	ExultStudio *es = ExultStudio::get_instance();
 	Shapes_vga_file *vgafile = (Shapes_vga_file *)
 					es->get_vgafile()->get_ifile();	
+					// Read info. the first time.
+	vgafile->read_info(false, true);//+++++BG?
 	int i, cnt = vgafile->get_num_shapes();
+	bool modified = file->modified;
 
 	if (builtin >= 0 && builtin <= 15)
 		{
@@ -89,10 +92,12 @@ Shape_group::Shape_group
 		break;
 	case weapons_group:
 		for (i = 0; i < cnt; i++)
-			if (vgafile->get_info(i).get_weapon_info())
+			if (vgafile->get_info(i).get_weapon_info() &&
+			    !vgafile->get_info(i).get_monster_info())
 				add(i);
 		break;
 		}
+	file->modified = modified;	// Add() sets this.
 	}
 
 /*
@@ -229,6 +234,66 @@ void Shape_group_file::remove
 	}
 
 /*
+ *	Get/create desired builtin group.
+ */
+
+Shape_group *Shape_group_file::get_builtin
+	(
+	int menindex,			// Index of item in 'builtin_group'.
+	const char *nm			// Label on menu item.
+	)
+	{
+	int type;
+	switch (menindex)
+		{
+	case 0:
+		type = Shape_group::ammo_group; break;
+	case 1:
+		type = Shape_group::armour_group; break;
+	case 2:
+		type = Shape_group::monsters_group; break;
+	case 3:
+		type = Shape_group::weapons_group; break;
+	case 5:
+		type = Shape_info::unusable; break;
+	case 6:
+		type = Shape_info::quality; break;
+	case 7:
+		type = Shape_info::quantity; break;
+	case 8:
+		type = Shape_info::has_hp; break;
+	case 9:
+		type = Shape_info::quality_flags; break;
+	case 10:
+		type = Shape_info::container; break;
+	case 11:
+		type = Shape_info::hatchable; break;
+	case 12:
+		type = Shape_info::spellbook; break;
+	case 13:
+		type = Shape_info::barge; break;
+	case 14:
+		type = Shape_info::virtue_stone; break;
+	case 15:
+		type = Shape_info::monster; break;
+	case 16:
+		type = Shape_info::human; break;
+	case 17:
+		type = Shape_info::building; break;
+	default:
+		type = -1;
+		break;
+		}
+	if (type < 0 || type >= Shape_group::last_builtin_group)
+		return 0;
+	if (builtins.size() <= type)
+		builtins.resize(type + 1);
+	if (!builtins[type])		// Create if needed.
+		builtins[type] = new Shape_group(nm, this, type);
+	return builtins[type];
+	}
+
+/*
  *	Write out to the 'patch' directory.
  */
 
@@ -328,7 +393,7 @@ C_EXPORT void
 on_open_builtin_group_clicked          (GtkButton       *button,
                                         gpointer         user_data)
 {
-//+++++++++++
+	ExultStudio::get_instance()->open_builtin_group_window();
 }
 
 /*
@@ -683,6 +748,39 @@ void ExultStudio::open_group_window
 	int row = Get_tree_row(model, &iter);
 	Shape_group_file *groups = curfile->get_groups();
 	Shape_group *grp = groups->get(row);
+	open_group_window(grp);
+	}
+
+/*
+ *	Open window for currently selected builtin group.
+ */
+
+void ExultStudio::open_builtin_group_window
+	(
+	)
+	{
+	if (!curfile || !vgafile || !palbuf)
+		return;
+	Shape_group_file *groups = curfile->get_groups();
+	int index = get_optmenu("builtin_group");
+	GtkButton *btn = GTK_BUTTON(
+			glade_xml_get_widget(app_xml, "builtin_group"));
+	GtkLabel *label = GTK_LABEL(GTK_BIN(btn)->child);
+	Shape_group *grp = groups->get_builtin(index,
+						gtk_label_get_text(label));
+	if (grp)
+		open_group_window(grp);
+	}
+
+/*
+ *	Open window for given group.
+ */
+
+void ExultStudio::open_group_window
+	(
+	Shape_group *grp
+	)
+	{
 	GladeXML *xml = glade_xml_new(glade_path, "group_window", NULL);
 	glade_xml_signal_autoconnect(xml);
 	GtkWidget *grpwin = glade_xml_get_widget(xml, "group_window");
