@@ -32,13 +32,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Animator *Animator::create
 	(
-	Game_object *ob			// Animated object.
+	Game_object *ob,		// Animated object.
+	int ireg			// 1 if an IREG object.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int frames = gwin->get_shape_num_frames(ob->get_shapenum());
 	if (frames > 1)
-		return new Frame_animator(ob, 1);
+		return new Frame_animator(ob, ireg);
 	else
 		return new Wiggle_animator(ob);
 	}
@@ -160,7 +161,7 @@ Animated_object::Animated_object
 	unsigned int lft
 	) : Game_object(l, h, shapex, shapey, lft)
 	{
-	animator = Animator::create(this);
+	animator = Animator::create(this, 0);
 	}
 
 /*
@@ -175,7 +176,7 @@ Animated_object::Animated_object
 	unsigned int lft
 	) : Game_object(shapenum, framenum, tilex, tiley, lft)
 	{
-	animator = Animator::create(this);
+	animator = Animator::create(this, 0);
 	}
 
 /*
@@ -214,7 +215,7 @@ Animated_ireg_object::Animated_ireg_object
 	unsigned int lft
 	) : Ireg_game_object(l, h, shapex, shapey, lft)
 	{
-	animator = Animator::create(this);
+	animator = Animator::create(this, 1);
 	}
 
 /*
@@ -229,7 +230,7 @@ Animated_ireg_object::Animated_ireg_object
 	unsigned int lft
 	) : Ireg_game_object(shapenum, framenum, tilex, tiley, lft)
 	{
-	animator = Animator::create(this);
+	animator = Animator::create(this, 1);
 	}
 
 /*
