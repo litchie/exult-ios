@@ -857,27 +857,6 @@ public:
 #endif
 
 /*
- *	A text object is a message that stays on the screen for just a couple
- *	of seconds.  These are all kept in a single list, and managed by
- *	Game_window.
- */
-class Text_object : public Time_sensitive
-	{
-	Text_object *next, *prev;	// All of them are chained together.
-	char *msg;			// What to print.
-	short tx, ty;			// Tile coords. within world of upper-
-					//   left corner.
-	short width, height;		// Dimensions of rectangle.
-public:
-	friend class Game_window;
-	Text_object(const char *m, int t_x, int t_y, int w, int h);
-	virtual ~Text_object()
-		{ delete msg; }
-					// At timeout, remove from screen.
-	virtual void handle_event(unsigned long curtime, long udata);
-	};
-
-/*
  *	Move an object, and possibly change its shape too.
  */
 inline void Game_object::move

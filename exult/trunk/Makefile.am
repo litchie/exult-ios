@@ -20,6 +20,8 @@ exult_SOURCES =	\
 	delobjs.cc	\
 	delobjs.h	\
 	drag.cc		\
+	effects.cc	\
+	effects.h	\
 	exult.cc	\
 	fnames.h	\
 	gameclk.cc	\
