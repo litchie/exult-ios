@@ -279,7 +279,9 @@ int Import_png32
 	int& xoff, int& yoff,		// (X,Y) offsets from top-left of
 					//   image returned.  (0,0) if not
 					//   specified in file.
-	unsigned char *& pixels		// ->(allocated) pixels returned.
+	unsigned char *& pixels,	// ->(allocated) pixels returned.
+	bool bottom_first		// Return last row first.  Useful for
+					//   OpenGL textures.
 	)
 	{
 	pixels = 0;			// In case we fail.
@@ -343,10 +345,18 @@ int Import_png32
 	rowbytes = png_get_rowbytes(png, info);
 	png_bytep image = new png_byte[height*rowbytes];
 	pixels = image;			// Return ->.
-	png_bytep rowptr;		// Read in rows.
+	png_bytep rowptr = image;	// Read in rows.
 	int r;
-	for (r = 0, rowptr = image; r < height; r++, rowptr += rowbytes)
-		png_read_rows(png, &rowptr, 0, 1);
+	int stride;			// Distance to next row.
+	if (bottom_first)
+		{
+		stride = -rowbytes;
+		rowptr += (height - 1)*rowbytes;
+		}
+	else
+		stride = rowbytes;
+	for (int r = 0; r < height; r++, rowptr += stride)
+		png_read_row(png, rowptr, 0);
 	png_read_end(png, info);	// Get the rest.
 					// Clean up.
 	png_destroy_read_struct(&png, &info, 0);

@@ -36,9 +36,9 @@ bool Load_texture
 	glBindTexture(GL_TEXTURE_2D, texture[0]);
 					// Read in .png.
 	int width, height, rowbytes, xoff, yoff;
-	unsigned char *pixels;
+	unsigned char *pixels;		// Want last row, first.
 	if (!Import_png32(filename, width, height, rowbytes, xoff, yoff,
-							pixels))
+							pixels, true))
 		return false;
 #if 0
 	for (int i = 0; i < width*height; i++)
@@ -149,24 +149,24 @@ void Draw_block
 					// Choose texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
 					// Texture dims.:
-	float texx = 2, texy = 2, texz = 2;
+	float texx = 1, texy = 1, texz = 1;
 	glBegin(GL_QUADS);
 		{
 					// TOP:
-		glTexCoord2f(texx, 0);	 	glVertex3f(width, depth, ht);
-		glTexCoord2f(0, 0);		glVertex3f(0, depth, ht);
-		glTexCoord2f(0, texy);		glVertex3f(0, 0, ht);
-		glTexCoord2f(texx, texy);	glVertex3f(width, 0, ht);
+		glTexCoord2f(texx, texy); 	glVertex3f(width, depth, ht);
+		glTexCoord2f(0, texy);		glVertex3f(0, depth, ht);
+		glTexCoord2f(0, 0);		glVertex3f(0, 0, ht);
+		glTexCoord2f(texx, 0);		glVertex3f(width, 0, ht);
 		glColor3f(1,.5, 0);	// BOTTOM:  Orange.
 		glVertex3f(width, depth, 0);
 		glVertex3f(0, depth, 0);
 		glVertex3f(0, 0, 0);
 		glVertex3f(width, 0, 0);
 					// FRONT: 
-		glTexCoord2f(0, texz);		glVertex3f(0, 0, 0);
-		glTexCoord2f(0, 0);		glVertex3f(0, 0, ht);
-		glTexCoord2f(texx, 0);	glVertex3f(width, 0, ht);
-		glTexCoord2f(texx, texz);	glVertex3f(width, 0, 0);
+		glTexCoord2f(0, 0);		glVertex3f(0, 0, 0);
+		glTexCoord2f(0, texz);		glVertex3f(0, 0, ht);
+		glTexCoord2f(texx, texz);	glVertex3f(width, 0, ht);
+		glTexCoord2f(texx, 0);		glVertex3f(width, 0, 0);
 		glColor3f(1, 1, 0);	// BACK:  Yellow.
 		glVertex3f(width, depth, ht);
 		glVertex3f(0, depth, ht);
@@ -178,10 +178,10 @@ void Draw_block
 		glVertex3f(0, depth, 0);
 		glVertex3f(0, 0, 0);
 					// RIGHT:
-		glTexCoord2f(texy, 0);		glVertex3f(width, 0, ht);
-		glTexCoord2f(0, 0);		glVertex3f(width, depth, ht);
-		glTexCoord2f(0, texz);		glVertex3f(width, depth, 0);
-		glTexCoord2f(texy, texz);	glVertex3f(width, 0, 0);
+		glTexCoord2f(0, texz);		glVertex3f(width, 0, ht);
+		glTexCoord2f(texy, texz);	glVertex3f(width, depth, ht);
+		glTexCoord2f(texy, 0);		glVertex3f(width, depth, 0);
+		glTexCoord2f(0, 0);		glVertex3f(width, 0, 0);
 		}
 	glEnd();
 	glPopMatrix();
@@ -198,7 +198,7 @@ void Render
 	{
 					// Clear screen & depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//	glLoadIdentity();
+	glLoadIdentity();
 					// Note that this is columnwise.
 					// It provides a U7-like ortho view.
 	float ortho[16] = {	1, 0, 0, 0,
