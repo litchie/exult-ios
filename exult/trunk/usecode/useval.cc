@@ -173,7 +173,7 @@ void	Usecode_value::push_back(int i)
 int Usecode_value::operator==
 	(
 	const Usecode_value& v2
-	)
+	) const
 	{
 	if (&v2 == this)
 		return (1);		// Same object.
@@ -204,7 +204,19 @@ int Usecode_value::operator==
 			Usecode_value& v = get_elem(0);
 			return v2.value.ptr == v.value.ptr;
 			}
-		return 0;		// +++++Should we compare arrays.
+		if (v2.type != array_type)
+			return 0;
+		int cnt = get_array_size();
+		if (cnt != v2.get_array_size())
+			return 0;
+		for (int i = 0; i < cnt; i++)
+			{
+			Usecode_value& e1 = get_elem(i);
+			const Usecode_value& e2 = v2.get_elem(i);
+			if (!(e1 == e2))
+				return 0;
+			}
+		return 1;		// Arrays matched.
 		}
 	else if (type == string_type)
 		return (v2.type == string_type &&

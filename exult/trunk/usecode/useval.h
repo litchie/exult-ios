@@ -87,7 +87,7 @@ public:
 	Usecode_value operator+(const Usecode_value& v2);
 					// Comparator.
 	void	push_back(int);
-	int operator==(const Usecode_value& v2);
+	int operator==(const Usecode_value& v2) const;
 	inline Val_type get_type() const
 		{ return type; }
 	int get_array_size() const		// Get size of array.
@@ -126,7 +126,7 @@ public:
 	void put_elem(int i, Usecode_value& val)
 		{ value.array[i] = val; }
 					// Get an array element, or *this.
-	inline Usecode_value& get_elem(int i)
+	inline Usecode_value& get_elem(int i) const
 		{
 		return (type == array_type) ? value.array[i] : *this;
 		}
