@@ -375,7 +375,9 @@ class StackBufferDataSource : protected BufferDataSource
 		{
 			buf_ptr = const_cast<unsigned char *>(buf)+len;
 		};
-		~StackBufferDataSource() { delete buf; };
+		~StackBufferDataSource() { 
+			delete [] const_cast<unsigned char *>(buf);
+		};
 		
 		void push2(uint16 val)
 		{
@@ -437,7 +439,7 @@ public:
 	
 	~ExultDataSource()
 	{
-		delete[] buf;
+					delete [] const_cast<unsigned char *>(buf);
 	}
 };
 
