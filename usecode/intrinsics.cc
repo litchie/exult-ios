@@ -137,7 +137,7 @@ USECODE_INTRINSIC(remove_npc_face)
 USECODE_INTRINSIC(add_answer)
 {
 	conv->add_answer(parms[0]);
-	user_choice = 0;
+	//	user_choice = 0;
 	return(no_ret);
 }
 
