@@ -47,6 +47,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define MIDI_STATUS_PITCH_WHEEL	0xE
 #define MIDI_STATUS_SYSEX		0xF
 
+template <class T> class GammaTable;
+
 struct midi_event
 {
 	int		time;
@@ -89,11 +91,7 @@ private:
 	int					reverb_value;
 
 	// Gamma Table - Move to it's own class??
-	static float		gamma_value;
-	static unsigned char	gamma_table[128];
-
-	static void BuildGammaTable (float gamma);
-	static unsigned char GetGamma (int v);
+	static GammaTable<unsigned char>	MidiGamma;
 
 public:
 	XMIDI(DataSource *source, int pconvert);

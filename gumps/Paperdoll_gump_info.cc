@@ -110,7 +110,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items[] =
 	// MISC ITEMS
 	
 	// Usecode container (not drawn normally)
-	{     486, -1, Actor::ucont_spot,   OT_Normal },
+	{     486, -1, Actor::ucont_spot,   OT_Normal,   false,    6,     0 },
 	// Bed roll
 	{     583, -1,       Actor::back,   OT_Normal,   true,     9,     0 },
 	{     583, -1,Actor::back2h_spot,   OT_Normal,   true,     9,     1 },

@@ -313,6 +313,7 @@ void Container_game_object::activate
 		gwin->show_gump(this, game->get_shape("gumps/body"));
 		return;
 	case 800:			// Chest.
+	case 486:
 		gwin->show_gump(this, game->get_shape("gumps/chest"));	// ???Guessing.
 		return;
 	case 801:			// Backpack.

@@ -25,6 +25,7 @@ class Palette
 		unsigned char pal1[768];
 		unsigned char pal2[768];
 		int brightness;
+		int max_val;
 		
 public:
 		Palette();
@@ -35,12 +36,16 @@ public:
 		void set_brightness(int bright);
 		int get_brightness();
 		void brighten(int percent);
+		void set_max_val(int max);
+		int get_max_val();
 		void fade_in(int cycles);
 		void fade_out(int cycles);
 		int find_color(int r, int g, int b);
 		void show();
 
 		void set_color(int nr, int r, int g, int b);
+		void set_palette (unsigned char palnew[768]);
+		void update();
 	};
 	
 

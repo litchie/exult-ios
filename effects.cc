@@ -39,7 +39,7 @@ using std::string;
 using std::strlen;
 
 int Cloud::randcnt = 0;
-int Lightning_effect::count = 0;
+int Lightning_effect::active = 0;
 
 /*
  *	Some special effects may not need painting.
@@ -521,7 +521,6 @@ Lightning_effect::~Lightning_effect
 	    save_brightness < 300)
 		Game_window::get_game_window()->set_palette(
 						-1, save_brightness);
-	count--;
 	}
 
 /*
@@ -542,6 +541,7 @@ void Lightning_effect::handle_event
 		if (save_brightness < 300)
 			gwin->set_palette(-1, save_brightness);
 		save_brightness = -1;
+		active = false;
 		gwin->show(1);
 		if (curtime >= stop_time)
 			{		// Time to stop.
@@ -553,8 +553,9 @@ void Lightning_effect::handle_event
 		else			// Otherwise, wait several secs.
 			delay = (4000 + r%4);
 		}
-	else if (!gwin->is_in_dungeon())// Time to flash.
+	else if (!gwin->is_in_dungeon() && !active)// Time to flash.
 		{
+		active = true;
 		save_brightness = gwin->get_brightness();
 		gwin->set_palette(-1, 400);
 		gwin->show(1);
@@ -577,12 +578,9 @@ Storm_effect::Storm_effect
 					// Start raining soon.
 	int rain_delay = 20 + rand()%1000;
 	gwin->add_effect(new Rain_effect(duration - 1, rain_delay));
-	if (!Lightning_effect::count)	// Then lightning (but only 1).
-		{
-		int lightning_delay = rain_delay + rand()%500;
-		gwin->add_effect(new Lightning_effect(
+	int lightning_delay = rain_delay + rand()%500;
+	gwin->add_effect(new Lightning_effect(
 					duration - 1, lightning_delay));
-		}
 	}
 
 /*
