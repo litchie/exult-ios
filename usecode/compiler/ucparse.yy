@@ -116,7 +116,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  */
 %type <expr> expression primary declared_var_value opt_script_delay item
 %type <expr> script_command
-%type <intval> opt_int eventid direction
+%type <intval> opt_int eventid direction int_literal
 %type <sym> declared_sym
 %type <var> declared_var
 %type <funsym> function_proto function_decl
@@ -168,7 +168,7 @@ function_proto:
 	;
 
 opt_int:
-	INT_LITERAL
+	int_literal
 	|				/* Empty. */
 		{ $$ = -1; }
 	;
@@ -441,7 +441,7 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::descend); }
 	| FRAME expression ';'
 		{ $$ = Create_array(Ucscript::frame, $2); }
-	| ACTOR FRAME INT_LITERAL ';'	/* 0-15. ++++Maybe have keywords. */
+	| ACTOR FRAME int_literal ';'	/* 0-15. ++++Maybe have keywords. */
 		{ $$ = new Uc_int_expression(0x61 + ($3 & 15)); }
 	| HATCH ';'			/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg); }
@@ -498,7 +498,7 @@ direction:
 	;
 
 eventid:
-	INT_LITERAL
+	int_literal
 	;
 
 opt_script_delay:
@@ -605,7 +605,7 @@ primary:
 		{ $$ = $1; }
 	| declared_var '[' expression ']'
 		{ $$ = new Uc_arrayelem_expression($1, $3); }
-	| FLAG '[' INT_LITERAL ']'
+	| FLAG '[' int_literal ']'
 		{ $$ = new Uc_flag_expression($3); }
 	| function_call
 		{ $$ = $1; }
@@ -654,7 +654,7 @@ opt_identifier_list:
 	identifier_list
 	|
 		{ $$ = new std::vector<char *>; }
-	;
+   	;
 
 identifier_list:
 	identifier_list ',' opt_var IDENTIFIER
@@ -663,6 +663,24 @@ identifier_list:
 		{
 		$$ = new std::vector<char *>;
 		$$->push_back($2);
+		}
+	;
+
+int_literal:				/* A const. integer value.	*/
+	INT_LITERAL
+	| declared_sym
+		{
+		Uc_const_int_symbol *sym = 
+				dynamic_cast<Uc_const_int_symbol *>($1);
+		if (!sym)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' is not a const int");
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			$$ = sym->get_value();
 		}
 	;
 
