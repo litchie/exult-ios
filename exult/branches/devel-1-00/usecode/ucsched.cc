@@ -247,7 +247,8 @@ void Usecode_script::purge
 	for (Usecode_script *each = first; each; each = next)
 		{
 		next = each->next;	// Get next in case we delete 'each'.
-		if (each->obj && 
+					// Only purge if not yet started.
+		if (each->obj && !each->i &&
 		    each->obj->get_outermost()->get_tile().distance(
 								spot) > dist)
 			{		// Force it to halt.
