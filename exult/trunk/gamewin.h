@@ -82,6 +82,7 @@ private:
 	int last_face_shown;		// Index of last npc face shown.
 	Rectangle avatar_face;		// Area take by Avatar in conversation.
 	Rectangle *conv_choices;	// Choices during a conversation.
+	unsigned long render_seq;	// For marking rendered objects.
 	unsigned char painted;		// 1 if we updated image buffer.
 	unsigned char focus;		// Do we have focus?
 	ifstream chunks;		// "u7chunks" file.

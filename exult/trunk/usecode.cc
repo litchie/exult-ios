@@ -2013,17 +2013,8 @@ USECODE_INTRINSIC(move_object)
 			}
 		}
 	if (moved_avatar)		// Teleported Avatar?
-		{			// Make new loc. visible.
+					// Make new loc. visible.
 		gwin->center_view(tile);
-		Chunk_object_list *nlist = gwin->get_objects(ava->get_cx(),
-								ava->get_cy());
-		if (gwin->set_above_main_actor(nlist->is_roof(
-							ava->get_tx(),
-							ava->get_ty(),
-							ava->get_lift()
-							)))
-			gwin->set_all_dirty();
-		}
 	return(no_ret);
 }
 

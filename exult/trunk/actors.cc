@@ -483,13 +483,24 @@ void Actor::set_opponent
 	Game_object *obj
 	)
 	{
-#if 0	/* Got to try this.+++++++ */
+#if 1	/* Got to try this.+++++++ */
 	if (schedule_type != Schedule::combat)
 		set_schedule_type(Schedule::combat);
 #endif
 	if (schedule)
 		schedule->set_opponent(obj);
 	start(100);			// Get going if not already.
+	}
+
+/*
+ *	Return current opponent.
+ */
+
+Game_object *Actor::get_opponent
+	(
+	)
+	{
+	return schedule ? schedule->get_opponent() : 0;
 	}
 
 /*

@@ -217,6 +217,7 @@ public:
 				int tx, int ty, int& water, int& poison);
 					// Set combat opponent.
 	void set_opponent(Game_object *obj);
+	Game_object *get_opponent();	// Get opponent.
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
 					// Set new schedule.

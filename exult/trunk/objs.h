@@ -72,20 +72,14 @@ class Game_object : public ShapeID
 	Vector dependencies;		// Objects which must be painted before
 					//   this can be rendered.
 	static unsigned char rotate[8];	// For getting rotated frame #.
-public:	//++++++Testing.  Maybe replace with a seq. number.
-	unsigned char rendered;		// 1 when rendered.
+public:
+	unsigned long render_seq;	// Render sequence #.
 protected:
 	unsigned char cx, cy;		// (Absolute) chunk coords., or if this
 					//   is in a container, coords. within
 					//   gump's rectangle.
 public:
 	friend class Chunk_object_list;
-#if 0
-	friend class Barge_object;
-	friend class Gump_object;
-	friend class Actor;
-	friend class Actor_gump_object;
-#endif
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
