@@ -35,11 +35,8 @@ void Game_window::read_npcs
 	(
 	)
 	{
-	ifstream nfile, sched;		// 2 files we read from.
+	ifstream nfile;
 	u7open(nfile, NPC_DAT);
-//	u7open(sched, SCHEDULE_DAT);
-					// Get header size of "schedule.dat".
-//	long hdrsize = Read4(sched) * 2 + 4;
 	int cnt1 = Read2(nfile);		// Get counts.
 	int cnt2 = Read2(nfile);
 cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
@@ -104,7 +101,39 @@ cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 		if (iflag1 && iflag2)	// Inventory?  Read (but ignore++++).
 			read_ireg_objects(nfile, scx, scy, actor);
 		}
+	read_schedules();		// Now get their schedules.
 	}
+/*
+ *	Read NPC schedules. ++++++++++++Finish, and check offsets.
+ */
 
+void Game_window::read_schedules
+	(
+	)
+	{
+#if 1
+	ifstream sched;
+	u7open(sched, SCHEDULE_DAT);
+	int num_npcs = Read4(sched);	// # of NPC's, not include Avatar.
+	short *offsets = new short[num_npcs];
+	int i;				// Read offsets with list of scheds.
+	for (i = 0; i < num_npcs; i++)
+		offsets[i] = Read2(sched);
+	for (i = 1; i < num_npcs; i++)	// Do each NPC.
+		{
+		Npc_actor *npc = (Npc_actor *) npcs[i];
+		int cnt = offsets[i + 1] - offsets[i]; //+++++Correct.
+					// Read each schedule. ++++++Store.
+		for (int j = 0; j < cnt; j++)
+			{
+			unsigned char ent[5];
+			sched.read(ent, 5);
+			Schedule *sched = new Schedule(ent);
+			// +++++Store in npc.
+			}
+		}
+	delete [] offsets;		// Done with this.
+#endif
+	}
 
 
