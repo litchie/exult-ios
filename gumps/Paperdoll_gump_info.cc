@@ -1198,7 +1198,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Crossbow
 	{     598, -1,      Actor::lhand, OT_Crossbow,  false, SF_PAPERDOL_VGA,      32,    0 },
 	{     598, -1,       Actor::belt, OT_Crossbow,  false, SF_PAPERDOL_VGA,      32,    1 },
-	// Triple Crossbow **NEEDS ART**
+	// Triple Crossbow
 	{     647, -1,      Actor::lhand, OT_Crossbow,  false, SF_GAME_FLX,      EXULT_BG_FLX_TRIPLE_XBOW_SHP,    0 },
 	{     647, -1,       Actor::belt, OT_Crossbow,  false, SF_GAME_FLX,       EXULT_BG_FLX_TRIPLE_XBOW_SHP,    1 },
 	// Bolts
