@@ -569,8 +569,7 @@ void Notebook_gump::next_page
 	++curpage;
 	Notebook_top &pinfo = page_info[curpage];
 	curnote = pinfo.notenum;
-	if (!pinfo.offset)		// Goint to new note?
-		cursor.offset = 0;
+	cursor.offset = pinfo.offset;	// Start of page.
 	}
 
 /*
