@@ -15,7 +15,7 @@ CPPFLAGS=-DRELNUM=26 -DBEOS -DDEBUG -DAUTOCONFIGURED -I$(SRC)/files \
 CXXFLAGS=-g -Wall
 
 LFLAGS=-g
-LIBS=$(SDL_LIBS)
+LIBS=$(SDL_LIBS) -lmidi -lbe
 
 EXEC=exult
 MAIN_OBJS=actions.o actorio.o actors.o args.o delobjs.o drag.o effects.o \
@@ -27,7 +27,7 @@ MAIN_OBJS=actions.o actorio.o actors.o args.o delobjs.o drag.o effects.o \
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
 # unused: xmain.o
-MIDI_DRV_OBJS=
+MIDI_DRV_OBJS=be_midi.o
 # unused: KMIDI.o Timidity_binary.o forked_player.o win_MCI.o
 AUDIO_OBJS=Audio.o Midi.o Mixer.o SDL_mapping.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
