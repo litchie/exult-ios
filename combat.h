@@ -53,9 +53,12 @@ protected:
 	Actor_queue opponents;		// Possible opponents.
 	Game_object *opponent;		// Current opponent.
 	int weapon_shape;		// Weapon's shape in shapes.vga.
-	int max_reach;			// Max. weapon reach in tiles.
 	int ammo_shape;			// If required, else 0.
 	int projectile_shape;		// For shooting, else 0.
+					// Ranges in tiles.  
+					//   0 means not applicable.
+	unsigned char strike_range, projectile_range, max_range;
+	bool is_thrown;			// Daggers, etc.
 	unsigned char yelled;		// Yell when first opponent targeted.
 	unsigned char started_battle;	// 1st opponent targeted.
 	unsigned char fleed;		// Set 1st time fleeing.
@@ -64,14 +67,16 @@ protected:
 	Actor *find_foe(int mode);	// Find a new opponent.
 	Actor *find_foe();
 	void approach_foe();		// Approach foe.
-	void start_strike();		// Start to hit.
+	void start_strike(Rectangle& npctiles, Rectangle& opptiles);
 	void set_weapon_info();		// Set 'max_reach' of weapon.
 public:
 	Combat_schedule(Actor *n, Schedule_types prev_sched) 
 		: Schedule(n), state(initial), prev_schedule(prev_sched),
 			opponent(0), weapon_shape(0),
-			max_reach(1), ammo_shape(0), 
-			projectile_shape(0), yelled(0), 
+			ammo_shape(0), projectile_shape(0), 
+			strike_range(0), projectile_range(0), max_range(0),
+			is_thrown(false),
+			yelled(0), 
 			started_battle(0), fleed(0), failures(0)
 		{ set_weapon_info(); }
 	virtual void now_what();	// Npc calls this when it's done

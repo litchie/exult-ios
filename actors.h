@@ -81,7 +81,6 @@ private:
 	const static char attack_frames2[4];
 					// Draw weapon in hand
 	void paint_weapon(Game_window *gwin);
-	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
 protected:
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Schedule *schedule;		// Current schedule.
@@ -121,6 +120,7 @@ public:
 	int ready_ammo();		// Find and ready appropriate ammo.
 	void ready_best_weapon();	// Find best weapon and ready it.
 	void unready_weapon(int spot);	// Try to sheath weapon.
+	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
 	void use_food();		// Decrement food level.
 					// Get frame seq. for given dir.
 	static Frames_sequence *get_frames(int dir)
@@ -635,7 +635,7 @@ public:
 		}
 					// Create an instance.
 	Monster_actor *create(int chunkx, int chunky, int tilex, int tiley, 
-					int lift, int sched = -1);
+				int lift, int sched = -1, int align = -1);
 	};
 
 #endif

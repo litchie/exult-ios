@@ -132,7 +132,8 @@ void Shapes_vga_file::read_info
 						(short) unk6[i] << ' ';
 		cout << dec << endl << endl;
 #endif
-		info[shapenum].weapon = new Weapon_info(damage, special,
+		info[shapenum].weapon = new Weapon_info(damage, 
+			(range>>4)&0xf, range&0xf, special,
 					ammoshape, strikeshape, usecode);
 		}
 	weapon.close();	
