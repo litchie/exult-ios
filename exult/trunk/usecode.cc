@@ -1779,21 +1779,17 @@ USECODE_INTRINSIC(create_new_object)
 	}
 	else
 	{
-		Shape_info& info = gwin->get_info(shapenum);
-		if (info.is_animated())
-		{
-			obj = new Animated_ireg_object(shapenum, 0, tx, ty, lift);
-			cout << " animated " << endl;
-		}
-		else if (Is_body(shapenum))
+		if (Is_body(shapenum))
 		{
 			obj = new Dead_body(shapenum, 0, tx, ty, lift, -1);
 			cout << " body " << endl;
 		}
 		else
 		{
-			obj = new Ireg_game_object(shapenum, 0, tx, ty, lift);
-			cout << " normal " << endl;
+			obj = gwin->create_ireg_object(
+				gwin->get_info(shapenum), shapenum, 0,
+								tx, ty, lift);
+			cout << " ireg object " << endl;
 		}
 		gwin->get_objects(cx, cy)->add(obj);
 	}
