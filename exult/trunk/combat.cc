@@ -557,11 +557,11 @@ void Duel_schedule::find_opponents
 	)
 	{
 	opponents.clear();
-	GOVector vec;			// Find all nearby NPC's.
-	npc->find_nearby(vec, -359, 24, 8);
-	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	ActorVector vec;			// Find all nearby NPC's.
+	npc->find_nearby_actors(vec, -359, 24);
+	for (ActorVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Actor *opp = (Actor *) *it;
+		Actor *opp = *it;
 		Game_object *oppopp = opp->get_opponent();
 		if (opp != npc && opp->get_schedule_type() == duel &&
 		    (!oppopp || oppopp == npc))

@@ -215,14 +215,18 @@ public:
 	Game_object *get_dependency(int i)
 		{ return dependencies[i]; }
 	void clear_dependencies();	// Remove all dependencies.
+
 					// Find nearby objects.
-	static int find_nearby(GOVector& vec, Tile_coord pos,
+	template<class T>
+	static int find_nearby(FeatureVector<T*>& vec, Tile_coord pos,
 			int shapenum, int delta, int mask, 
 			int qual = -359, int framenum = -359);
+
+	int find_nearby_actors(ActorVector& vec, int shapenum, int delta) const;
+	int find_nearby_eggs(EggVector& vec, int shapenum, int delta) const;
 	int find_nearby(GOVector& vec, int shapenum, int delta, int mask,
-			int qual = -359, int framenum = -359)
-		{ return find_nearby(vec, get_abs_tile_coord(), shapenum,
-						delta, mask, qual, framenum); }
+			int qual = -359, int framenum = -359) const;
+
 	Game_object *find_closest(int *shapenums, int num_shapes);
 					// Find nearby unblocked tile.
 	static Tile_coord find_unblocked_tile(Tile_coord pos,
