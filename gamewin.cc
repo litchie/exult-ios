@@ -292,8 +292,10 @@ void Game_window::init_files()
 		}
 	cerr << "Loading exult.flx..." << endl;
 	exult_flx.load("<DATA>/exult.flx");
-	cerr << "Loading exult_bg.flx..." << endl;
-	exultbg_flx.load("<DATA>/exult_bg.flx");
+
+	const char* gamedata = game->get_resource("files/gameflx").str;
+	cerr << "Loading " << gamedata << "..." << endl;
+	gameflx.load(gamedata);
 	faces.load(FACES_VGA);
 	gumps.load(GUMPS_VGA);
 	if (!fonts)

@@ -1018,7 +1018,9 @@ USECODE_INTRINSIC(summon)
 USECODE_INTRINSIC(display_map)
 {
 	// Display map.
-	Shape_frame *map = gwin->get_sprite_shape(22, 0);
+	Shape_frame *map;
+	map = gwin->get_sprite_shape(game->get_shape("sprites/map"), 0);
+
 					// Get coords. for centered view.
 	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
 	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();

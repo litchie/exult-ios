@@ -87,16 +87,20 @@ SI_Game::SI_Game()
 		add_shape("gumps/body", 48);
 		add_shape("gumps/tree", 64);
 
-		// Need to be doing
-		add_shape("gumps/spell_scroll",65);
-		add_shape("gumps/jawbone", 56);
-		add_shape("gumps/tooth", 57);
 		add_shape("gumps/cstats/1",58);
 		add_shape("gumps/cstats/2",59);
 		add_shape("gumps/cstats/3",60);
 		add_shape("gumps/cstats/4",61);
 		add_shape("gumps/cstats/5",62);
 		add_shape("gumps/cstats/6",63);
+
+		add_shape("sprites/map", 22);
+		add_shape("sprites/cheatmap", 0);
+
+		// Need to be done
+		add_shape("gumps/spell_scroll",65);
+		add_shape("gumps/jawbone", 56);
+		add_shape("gumps/tooth", 57);
 
 		add_resource("files/shapes/count", 0, 7);
 		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
@@ -107,6 +111,8 @@ SI_Game::SI_Game()
 		add_resource("files/shapes/5", "<STATIC>/paperdol.vga", 0);
 		add_resource("files/shapes/6", "<DATA>/exult.flx", 0);
 
+		add_resource("files/gameflx", "<DATA>/exult_si.flx", 0);
+	
 		add_resource("palettes/count", 0, 14);
 		add_resource("palettes/0", "<STATIC>/palettes.flx", 0);
 		add_resource("palettes/1", "<STATIC>/palettes.flx", 1);

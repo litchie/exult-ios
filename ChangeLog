@@ -1,3 +1,11 @@
+2001-06-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/exult_si.flx, data/si/*: new data file (exult_si.flx)
+	* Makefile.*, exult.spec.in: build/distribute new data file
+	* data/bg/BGmap.shp, data/si/SImap.shp: BG and SI maps
+	* ??game.*, gamewin.*, intrinsics.*, Face_button.cc, Paperdoll_gump*.*:
+	exultbg_flx to gameflx. (exult_bg.flx for BG, exult_si.flx for SI)
+	* cheat.cc: use real maps for the teleport cheat
+
 2001-06-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Emulate_swapout() now does chunks 3 or more away.

@@ -117,10 +117,15 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/amulets.shp \
 	data/bg/bgfiredoom.shp \
 	data/bg/fellowshipstaff.shp \
+	data/bg/BGmap.shp \
 	data/bg/flx.in
 
+EXULT_SI_FLX_OBJECTS = \
+	data/si/SImap.shp \
+	data/si/flx.in
 
-$(EXEC) : Makefile data/exult.flx data/exult_bg.flx $(OBJS) beos/exult.rsrc
+
+$(EXEC) : Makefile data/exult.flx data/exult_bg.flx data/exult_si.flx $(OBJS) beos/exult.rsrc
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 	xres -o $(EXEC) beos/exult.rsrc
 
@@ -133,6 +138,8 @@ data/exult.flx: tools/expack data/flx.in $(EXULT_FLX_OBJECTS)
 data/exult_bg.flx: tools/expack $(EXULT_BG_FLX_OBJECTS)
 	tools/expack -i data/bg/flx.in
 
+data/exult_si.flx: tools/expack $(EXULT_SI_FLX_OBJECTS)
+
 
 imagescl.o: imagewin/imagescl.cc scale.cc
 	$(CXX) $(CPPFLAGS) -O3 -c imagewin/imagescl.cc -o imagescl.o
@@ -141,7 +148,7 @@ Makefile: Makefile.be
 	cp Makefile.be Makefile
 
 clean:
-	rm -f $(OBJS) $(EXEC) data/exult.flx data/exult_bg.flx tools/expack tools/expack.o
+	rm -f $(OBJS) $(EXEC) data/exult.flx data/exult_bg.flx data/exult_si.flx tools/expack tools/expack.o
 
 finishedbinary: $(EXEC)
 	strip $(EXEC)
@@ -158,7 +165,7 @@ bindist: finishedbinary
 	mkdir exult-$(VERSION)/lib
 	cp $(EXEC) exult-$(VERSION)
 	cp README FAQ README.BeOS COPYING NEWS AUTHORS ChangeLog exult-$(VERSION)/doc
-	cp data/exult.flx data/exult_bg.flx data/midisfx.flx exult-$(VERSION)/data
+	cp data/exult.flx data/exult_bg.flx data/exult_si.flx exult-$(VERSION)/data
 	cp $(HOME)/lib/libSDL.so $(HOME)/lib/README-SDL.txt exult-$(VERSION)/lib
 	rm -f exult-$(VERSION).x86.beos.zip
 	zip -r exult-$(VERSION).x86.beos.zip exult-$(VERSION)
