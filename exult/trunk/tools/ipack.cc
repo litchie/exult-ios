@@ -39,6 +39,8 @@
 #include "utils.h"
 #include "exceptions.h"
 #include "vgafile.h"
+#include "pngio.h"
+#include "ibuf8.h"
 
 using std::atoi;
 using std::cerr;
@@ -230,11 +232,113 @@ static void Write_frame
 	Shape_frame *frame		// What to write.
 	)
 	{
+	assert(frame != 0);
 	char *fullname = new char[strlen(basename) + 30];
 	sprintf(fullname, "%s_%02d.png", basename, frnum);
 	cout << "Writing " << fullname << endl;
-	//++++++++++++++
+	int w = frame->get_width(), h = frame->get_height();
+	int xoff = frame->get_xleft(), yoff = frame->get_yabove();
+	Image_buffer8 img(w, h);	// Render into a buffer.
+	frame->paint(&img, xoff, yoff);
+	unsigned char palette[3*256] = {0,0,0};	//+++++++++++++++
+	int palsize = 256;		// +++++++++++++++++
+					// Write out to the .png.
+	if (!Export_png8(fullname, w, h, w, xoff, yoff, img.get_bits(),
+					palette, palsize))
+		throw file_write_exception(fullname);
 	delete fullname;
+	}
+
+/*
+ *	Write a shape's frames to an Exult image file.
+ */
+
+static void Write_exult
+	(
+	ostream& out,			// What to write to.
+	char *basename,			// Base filename for files to read.
+	int nframes,			// # frames.
+	bool flat			// Store as 8x8 flats.
+	)
+	{
+	char *fullname = new char[strlen(basename) + 30];
+					// Save starting position.
+	unsigned long startpos = out.tellp();
+	Write4(out, 0);			// Place-holder for total length.
+	int frnum;			// Also for frame locations.
+	for (frnum = 0; frnum < nframes; frnum++)
+		Write4(out, 0);
+	for (frnum = 0; frnum < nframes; frnum++)
+		{
+		sprintf(fullname, "%s_%02d.png", basename, frnum);
+		cout << "Reading " << fullname << endl;
+		int w, h, rowsize, xoff, yoff, palsize;
+		unsigned char *pixels, *palette;
+		if (!Import_png8(fullname, w, h, rowsize, xoff, yoff,
+						pixels, palette, palsize))
+			throw file_read_exception(fullname);
+		int datalen = h*rowsize;// Figure total #bytes.
+		if (flat)
+			{
+			if (w != 8 || h != 8)
+				{
+				cerr << "Image in '" << fullname <<
+					"' is not flat" << endl;
+				exit(1);
+				}
+			}
+		else			// Encode.
+			{
+			unsigned char *rle = Shape_frame::encode_rle(pixels,
+						w, h, xoff, yoff, datalen);
+			delete pixels;
+			pixels = rle;
+			}
+					// Get position of frame.
+		unsigned long pos = out.tellp();
+		out.seekp(startpos + (frnum + 1)*4);
+		Write4(out, pos - startpos);	// Store pos.
+		out.seekp(pos);		// Get back.
+		Write2(out, w - xoff - 1);	// Xright.
+		Write2(out, xoff);		// Xleft.
+		Write2(out, yoff);		// Yabove.
+		Write2(out, h - yoff - 1);	// Ybelow.
+		out.write(pixels, datalen);	// The frame data.
+		delete pixels;
+		delete palette;		//+++++++Save this in palettes.flx???
+		}
+	unsigned long pos = out.tellp();// Ending position.
+	out.seekp(startpos);		// Store total length.
+	Write4(out, pos - startpos);
+	out.seekp(pos);			// And get back to end.
+	delete fullname;
+	}
+
+/*
+ *	Create an archive from a set of image files.  May throw an exception.
+ */
+
+static void Create
+	(
+	char *imagename,		// Image archive name.
+	Shape_specs& specs,		// List of things to extract.
+	const char *title		// For storing in Flex file.
+	)
+	{
+	ofstream out;
+	U7open(out, imagename);		// May throw exception.
+	Flex_writer writer(out, title, specs.size());
+	for (Shape_specs::const_iterator it = specs.begin();
+						it != specs.end();  ++it)
+		{
+		int shnum = it - specs.begin();
+		char *basename = (*it).filename;
+		if (basename)		// Empty?
+			Write_exult(out, basename, (*it).nframes, (*it).flat);
+		writer.mark_section_done();
+		}
+	if (!writer.close())
+		throw file_write_exception(imagename);
 	}
 
 /*
@@ -243,7 +347,7 @@ static void Write_frame
 
 static void Extract
 	(
-	char *imagename,			// Image archive name.
+	char *imagename,		// Image archive name.
 	Shape_specs& specs		// List of things to extract.
 	)
 	{
@@ -311,14 +415,12 @@ int main
 	switch (argv[1][1])		// Which function?
 		{
 	case 'c':			// Create.
-#if 0
 		try {
-			Write_flex(imagename, "Flex created by Exult", strings);
+			Create(imagename, specs, "Exult image file");
 		} catch (exult_exception& e){
 			cerr << e.what() << endl;
 			exit(1);
 		}
-#endif
 		break;
 	case 'x':			// Extract .png files.
 		try {
@@ -327,6 +429,9 @@ int main
 			cerr << e.what() << endl;
 			exit(1);
 		}
+		break;
+	case 'u':
+		//++++++++++++
 		break;
 	default:
 		Usage();

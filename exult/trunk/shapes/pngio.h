@@ -27,10 +27,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_PNGIO
 #ifdef HAVE_PNG_H
 
-int Import_png8(char *pngname, int& width, int& height, int& rowbytes,
+int Import_png8(char *pngname, int& width, int& height,
 		int& rowbytes, int& xoff, int& yoff, unsigned char *& pixels,
 		unsigned char *& palette, int& pal_size);
-int Export_png8(char *pngname, int width, int height, int rowbytes,
+int Export_png8(char *pngname, int width, int height,
 		int rowbytes, int xoff, int yoff, unsigned char * pixels,
 		unsigned char * palette, int pal_size);
 
