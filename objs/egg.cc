@@ -822,6 +822,12 @@ void Egg_object::remove_this
 			chunk->remove_egg(this);
 			}
 		}
+	if (launcher)			// Stop missiles.
+		{
+		Game_window::get_game_window()->get_tqueue()->remove(launcher);
+		delete launcher;
+		launcher = 0;
+		}
 	 if (!nodel)
 		 gwin->delete_object(this);
 	 }
