@@ -124,15 +124,16 @@ void Ireg_game_object::write_ireg
 	write_common_ireg(&buf[1]);
 	buf[5] = (get_lift()&15)<<4;
 	buf[6] = get_quality();
-					// Special case for 'quantity' items:
-	if (get_flag(Obj_flags::okay_to_take))
-		{
-		Shape_info& info = get_info();
-		if (info.has_quantity())
-			buf[6] |= 0x80;
-		else if (info.has_quality_flags())
-			buf[6] |= (1<<3);
+	Shape_info& info = get_info();
+	if (info.has_quality_flags())
+		{			// Store 'quality_flags'.
+		buf[6] = get_flag((Obj_flags::invisible) != 0) +
+		 	((get_flag(Obj_flags::okay_to_take) != 0) << 3);
 		}
+					// Special case for 'quantity' items:
+	else if (get_flag(Obj_flags::okay_to_take) && info.has_quantity())
+		buf[6] |= 0x80;
+
 	buf[7] = (get_flag(Obj_flags::is_temporary) != 0);
 	out->write((char*)buf, sizeof(buf));
 					// Write scheduled usecode.
