@@ -85,7 +85,7 @@ install: $(EXEC)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
 	cp mapedit/exult_studio.glade $(U7PATH)/data
-    mkdir -p $(U7PATH)/data/estudio
+	mkdir -p $(U7PATH)/data/estudio
 	mkdir -p $(U7PATH)/data/estudio/new
 	cp data/estudio/new/*.flx $(U7PATH)/data/estudio/new
 	cp data/estudio/new/*.vga $(U7PATH)/data/estudio/new
