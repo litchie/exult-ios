@@ -1,4 +1,7 @@
 2002-07-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs.cc: implemented "x's ashes" name in SI
+
+2002-07-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs.cc: last commit seems to have gone wrong... should be ok now
 
 2002-07-02  Jeff Freedman  <jeff@amy.nerble.net>
