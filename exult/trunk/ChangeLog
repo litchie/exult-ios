@@ -29,7 +29,7 @@
 	* objs/objs.h (public): Added is_pos_invalid().
 	* effects.cc:  Don't delete 'explode' if already off map.
 
-2002-15-12  Aurelien Marchand  <artaxerxes@users.sf.net>
+2002-08-12  Aurelien Marchand  <artaxerxes@users.sf.net>
 
 	* audio/Audio.cc: corrected cast error to prevent bus error on Zaurus
 
