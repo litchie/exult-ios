@@ -710,8 +710,9 @@ void Field_object::field_effect
 	case fire_field:
 		if (rand()%2)
 			{
-			int health = actor->get_property(Actor::health);
-			actor->set_property(Actor::health, health - 1);
+//			int health = actor->get_property(Actor::health);
+//			actor->set_property(Actor::health, health - 1);
+			actor->reduce_health(1);
 			if (rand()%2)
 				say(first_ouch, last_ouch);
 			}
