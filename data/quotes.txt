@@ -26,3 +26,6 @@
 \C(on Horizons Tavern
 \Cafter seeing a screenshot 
 \Cof Exult with 2xSaI)
+
+\C"Working on Forge (but Love broken now)"
+\L- Jeff
