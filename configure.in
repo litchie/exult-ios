@@ -304,7 +304,23 @@ dnl
 AC_C_INLINE
 if test x$CC = xgcc; then
    CFLAGS="$CFLAGS -Wall"
-fi     
+fi
+
+
+dnl AC_ARG_ENABLE(gtk-interface, [  --enable-gtk-interface          build the GTK+ interface [default no]],build_gtk_interface=yes,build_gtk_interface=no)
+dnl if test x$build_gtk_interface = xyes; then
+dnl	AC_PATH_PROG(GTKCONFIG, gtk-config)
+dnl	AM_CONDITIONAL(GTK_INTERFACE, true)
+dnl	AC_SUBST(GTK_INTERFACE)
+dnl fi
+
+AC_PATH_PROG(GNOMECONFIG, gnome-config)
+if test -n "$GNOMECONFIG"; then
+	AM_CONDITIONAL(GNOME_INSTALLED, true)
+	AC_SUBST(GNOME_INSTALLED)
+	GNOMEDATADIR=`gnome-config --datadir`
+	AC_SUBST(GNOMEDATADIR)
+fi
 
 AC_ARG_ENABLE(gimp-plugin, [  --disable-gimp-plugin          do not build the GIMP plugin [default no]],,disable_gimp_plugin=no)
 dnl Check for GIMP devel stuff. We need to check for glib first
@@ -342,4 +358,5 @@ pathfinder/Makefile \
 flic/Makefile \
 tools/Makefile \
 data/Makefile \
-docs/Makefile)
+docs/Makefile \
+desktop/Makefile )
