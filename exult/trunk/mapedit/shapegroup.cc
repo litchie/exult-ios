@@ -593,7 +593,7 @@ void ExultStudio::save_groups
 
 void ExultStudio::update_group_windows
 	(
-	Shape_group *grp
+	Shape_group *grp		// Group, or 0 for all.
 	)
 	{
 	for (vector<GtkWindow*>::const_iterator it = group_windows.begin();
@@ -601,7 +601,7 @@ void ExultStudio::update_group_windows
 		{
 		Object_browser *chooser = (Object_browser *) 
 			gtk_object_get_data(GTK_OBJECT(*it), "browser");
-		if (chooser->get_group() == grp)
+		if (!grp || chooser->get_group() == grp)
 			{		// A match?
 			chooser->render();
 			chooser->show();
