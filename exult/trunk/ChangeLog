@@ -1,6 +1,6 @@
-2001-02-28  Jeff Freedman  <jeff@amy.nerble.net>
+2001-03-01  Jeff Freedman  <jeff@amy.nerble.net>
 
-	* schedule.cc (Sew_schedule): Started implementing this.
+	* schedule.cc (Sew_schedule): Finished it.
 
 2001-02-27  Jeff Freedman  <jeff@amy.nerble.net>
 
