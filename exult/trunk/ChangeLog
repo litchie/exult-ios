@@ -1,3 +1,8 @@
+2001-11-07  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/objs.cc: Rendering order again:  Added special case when
+	objs. occupy same 3D space.  Fixes Penumbra plaque.
+
 2001-11-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Drop ammo or throwing-weapon on ground if it misses.
