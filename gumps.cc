@@ -1228,11 +1228,16 @@ void Stats_gump_object::paint
 	Game_window *gwin
 	)
 	{
+					// Area to print name in.
+	const int namex = 30, namey = 6, namew = 95;
 					// Paint the gump itself.
 	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
 					// Paint red "checkmark".
 	paint_button(gwin, check_button);
 	Actor *act = get_actor();	// Show statistics.
+	char *nm = act->get_name().c_str();
+	gwin->paint_text(2, nm, x + namex +
+			(namew - gwin->get_text_width(2, nm))/2, y + namey);
 	Paint_num(gwin, act->get_property(Actor::strength),
 						x + textx, y + texty[0]);
 	Paint_num(gwin, act->get_property(Actor::dexterity),
