@@ -3051,8 +3051,7 @@ Game_object *Actor::attacked
 				get_property(static_cast<int>(combat))/4 +
 				get_property(static_cast<int>(dexterity))/4 +
 				get_property(static_cast<int>(intelligence))/4;
-		if (!is_dead())		// Tournament win (List Field)?
-			expval /= 2;
+		expval /= 2;	// Users complain we're giving too much.
 					// Attacker gains experience.
 		attacker->set_property(static_cast<int>(exp),
 		    attacker->get_property(static_cast<int>(exp)) + expval);
