@@ -82,6 +82,7 @@
 #include "drag.h"
 #include "palette.h"
 #include "glshape.h"
+#include "combat_opts.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
@@ -1017,7 +1018,11 @@ static void Handle_event
 				right_on_gump = false;
 			}
 			else
+				{
 				gwin->stop_actor();
+				if (Combat::is_paused())
+					gwin->paused_combat_select(x, y);
+				}
 			last_b3_click = curtime;
 			}
 		else if (event.button.button == 1)

@@ -461,6 +461,8 @@ public:
 	Game_object *find_object(int x, int y);
 					// Show names of items clicked on.
 	void show_items(int x, int y, bool ctrl = false);
+					// Right-click while combat paused.
+	void paused_combat_select(int x, int y);
 	ShapeID get_flat(int x, int y);	// Return terrain (x, y) is in.
 					// Schedule object for deletion.
 	void delete_object(Game_object *obj);

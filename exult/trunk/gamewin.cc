@@ -50,7 +50,7 @@
 #include "cheat.h"
 #include "chunks.h"
 #include "chunkter.h"
-#include "combat.h"
+#include "combat_opts.h"
 #include "delobjs.h"
 #include "dir.h"
 #include "effects.h"
@@ -1915,8 +1915,19 @@ void Game_window::show_items
 		effects->add_text(str, obj);
 	}
 	else if (obj)
-					// Show name.
-		effects->add_text(obj->get_name().c_str(), obj);
+		{			// Show name.
+		const char *objname = obj->get_name().c_str();
+		Actor *actor;		// Combat, and an NPC?
+		if (in_combat() && Combat::mode != Combat::original &&
+		    (actor = obj->as_actor()) != 0)
+			{
+			char buf[128];
+			sprintf(buf, "%s (%d)", objname, 
+					actor->get_property(Actor::health));
+			objname = &buf[0];
+			}
+		effects->add_text(objname, obj);
+		}
 	else if (cheat.in_map_editor() && skip_lift > 0)
 		{			// Show flat, but not when editing ter.
 		ShapeID id = get_flat(x, y);
@@ -2006,6 +2017,18 @@ void Game_window::show_items
 	if (info.is_solid())
 		cout << "Object is SOLID" << endl;
 #endif
+	}
+
+/*
+ *	Handle right click when combat is paused.
+ */
+
+void Game_window::paused_combat_select
+	(
+	int x, int y			// Coords in window.
+	)
+	{
+	//++++++++++FINISH
 	}
 
 /*

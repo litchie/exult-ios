@@ -23,6 +23,7 @@
 #endif
 
 #include "combat.h"
+#include "combat_opts.h"
 #include "gamewin.h"
 #include "gameclk.h"
 #include "gamemap.h"
