@@ -92,7 +92,7 @@ void Ireg_game_object::remove_this
 		}
 	if (!nodel)
 	{
-		cheat.set_grabbed_actor(0);	// Could be an actor
+		cheat.clear_this_grabbed_actor((Actor*)this);	// Could be an actor
 		Game_window::get_game_window()->delete_object(this);
 	}
 	}

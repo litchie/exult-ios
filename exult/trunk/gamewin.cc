@@ -2443,8 +2443,14 @@ void Game_window::delete_object
 	Game_object *obj
 	)
 	{
+#if 0
+		// don't do this, since this function is only called from
+		// Game_object::remove_this (and inherited's)
+
 	obj->remove_this(1);		// Remove from world or container, but
-					//   don't delete.
+								//   don't delete.
+#endif
+
 	obj->set_invalid();		// Set to invalid chunk.
 	if (!obj->is_monster())		// Don't delete these!
 		removed->insert(obj);	// Add to pool instead.
@@ -3102,7 +3108,8 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 #ifdef DEBUG
 		cout << "Culling object: " << (*it)->get_name() << "@" << ((Game_object *)(*it))->get_worldx() << "," << ((Game_object *)(*it))->get_worldy() << "," << ((Game_object *)(*it))->get_lift() <<endl;
 #endif
-		delete_object(*it);	// Remove & schedule for deletion.
+		(*it)->delete_contents();  // first delete item's contents
+		(*it)->remove_this(0);
 		}
 	}
 

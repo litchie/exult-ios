@@ -540,7 +540,8 @@ void Usecode_internal::remove_item
 		}
 	else
 		gwin->add_dirty(obj);
-	gwin->delete_object(obj);
+
+	obj->remove_this();
 	}
 
 #define PARTY_MAX (sizeof(party)/sizeof(party[0]))
@@ -868,15 +869,15 @@ Usecode_value Usecode_internal::remove_party_items
 	int framenum = frameval.get_int_value();
 	int quality = qualval.get_int_value();
 	if (quantity == -359 && Game::get_game_type() == SERPENT_ISLE)
-		{			// Special case. (Check party??)
+	{			// Special case. (Check party??)
 		Game_object *obj = gwin->get_main_actor()->find_item(
 				shapenum, quality, framenum);
 		if (!obj)
 			return Usecode_value(0);
-		gwin->delete_object(obj);// Schedule for deletion.
-					// But return it anyway!!
-		return Usecode_value(obj);
-		}
+		obj->remove_this(0);
+		// don't return the deleted object; just return 'true' (20010810, wjp)
+		return Usecode_value(1);
+	}
 	Usecode_value all(-357);	// See if they exist.
 	Usecode_value avail = count_objects(all, shapeval, qualval, frameval);
 	if (avail.get_int_value() < quantity)

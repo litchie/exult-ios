@@ -1,3 +1,11 @@
+2001-08-10  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* cheat.cc: Ctrl-D now properly checks inside gumps
+	* contain.*: extract items inside container when destroying it
+	* gamewin.cc: destroy contents of container before culling it
+	* objs.cc, contain.cc: fix attacking containers (see yesterday's log)
+	* gamewin.cc, objs/various: you can now no longer call 
+	gwin::delete_object to delete an item, use Game_object::remove_this
+
 2001-08-10  Tristan Tarrant <nadir@users.sourceforge.net>
 	* gamewin.cc, keyactions.cc, gumps/Face_stats.*: save/restore face 
 	status
