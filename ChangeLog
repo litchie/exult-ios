@@ -1,3 +1,8 @@
+2002-01-07  Dominik Reichardt <gigdr@tesionmail.de>
+	* FAQ,ReadMe updated
+	* docs/FAQ.html and ReadMe.html updated
+	* docs/xml: faq.xml, docs.xml updated and ready for exult.sf.net
+
 2002-01-07  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* usecode/ucxt/src/opcodes.cc, usecode/ucxt/include/opcodes.h: Convert to standard C++ to fix compile failures.

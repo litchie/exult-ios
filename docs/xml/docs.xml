@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="04 January 2002(GMT)">
+<readme title="Exult" changed="07 January 2002(GMT)">
 	<section title="Changes to the Documentation">
-		<sub name="04012002">
-			<header>- 04 January 2002</header>
+		<sub name="07012002">
+			<header>- 07 January 2002</header>
 			<body>
 				<ul>
 				<li><ref1 target="exult_config"/> added &lt;force_wavout&gt; and 
@@ -423,22 +423,28 @@
 					<Exult/> offers some "hidden" command line options:
 				</para>
 				<ul>
-					<li>-bg<br/>
+					<li>-h or --help<br/>
+						Shows all the command line parameters in stderr (stderr.txt on Windows systems)</li>
+					<li>-v or --version<br/>
+						Shows version information in stderr</li>
+					<li>--bg<br/>
 						Starts the game with the Black Gate menu</li>
-					<li>-si<br/>
+					<li>--si<br/>
 						Starts the game with the Serpent Isle menu</li>
-					<li>-nocrc<br/>
+					<li>--nocrc<br/>
 						Recently we added a crc check that Exult doesn't start when the
 						exult*.flx files in the data dir aren't the same it got compiled with.
 						This parameter lets the game start nethertheless. Don't try this if you 
 						don't know what you are doing.</li>
-					<li>-buildmap x<br/>
+					<li>--buildmap x<br/>
 						x = 0 shows all roofs, x = 2 pops them all.<br/>
-						Builds a map of Black Gate.The map is <strong>huge</strong> and in the pcx 
+						You have to specify the game first (Example: exult --bg buildmap 0).<br/>						
+						Builds the map of the game specified.The map is <strong>huge</strong> and in pcx 
 						format, you will need a lot of ram to even look at this map once it is build 
 						(and even that requires a lot of patience)</li>
-					<li>-game serpentisle -buildmap x<br/>
-						Does the same as above with the Serpent Isle map</li>
+					<li>--game gamename<br/>
+						Unused yet. Loads a game specified in exult.cfg when there are other games made
+						with <Studio/>.</li>
 				</ul>
 			</body>
 		</sub>
