@@ -635,35 +635,54 @@ int Game_object::lt
 					// Get absolute tile positions.
 	int atx1, aty1, atz1, atx2, aty2, atz2;
 	int x1, x2, y1, y2, z1, z2;	// Dims. in tiles.
+	get_abs_tile(atx1, aty1, atz1);
+	obj2.get_abs_tile(atx2, aty2, atz2);
 #ifdef DEBUGLT
 	Debug_lt(atx1, aty1, atx2, aty2);
 #endif
-	get_abs_tile(atx1, aty1, atz1);
-	obj2.get_abs_tile(atx2, aty2, atz2);
 	x1 = info1.get_3d_xtiles(), x2 = info2.get_3d_xtiles();
 	y1 = info1.get_3d_ytiles(), y2 = info2.get_3d_ytiles();
 	z1 = info1.get_3d_height(), z2 = info2.get_3d_height();
+	int result = -1;		// Watch for conflicts.
 	if (atz1 != atz2)		// Is one obj. on top of another?
 		{
 		if (atz1 + z1 <= atz2)
-			return (1);	// It's above us.
-		if (atz2 + z2 <= atz1)
-			return (0);	// We're above.
+			result = 1;	// It's above us.
+		else if (atz2 + z2 <= atz1)
+			result = 0;	// We're above.
 		}
 	if (aty1 != aty2)		// Is one obj. in front of the other?
 		{
 		if (aty1 <= aty2 - y2)
-			return (1);	// Obj2 is in front.
-		if (aty2 <= aty1 - y1)
-			return (0);	// We're in front.
+			{		// Obj2 is in front.
+			if (result == 0)// Conflict, so return 'neither'.
+				return -1;
+			result = 1;
+			}
+		else if (aty2 <= aty1 - y1)
+			{		// We're in front.
+			if (result == 1)
+				return -1;
+			result = 0;
+			}
 		}
 	if (atx1 != atx2)		// Is one obj. to right of the other?
 		{
 		if (atx1 <= atx2 - x2)
-			return (1);	// Obj2 is to right of us.
+			{		// Obj2 is to right of us.
+			if (result == 0)
+				return -1;
+			result = 1;
+			}
 		if (atx2 <= atx1 - x1)
-			return (0);	// We're to the right.
+			{		// We're to the right.
+			if (result == 1)
+				return -1;
+			result = 0;
+			}
 		}
+	if (result != -1)		// Consistent result?
+		return result;
 	if (!z1 && atz1 <= atz2)	// We're flat and below?
 		return (1);
 	if (!z2 && atz2 <= atz1)	// It's below us?
@@ -2060,6 +2079,10 @@ void Chunk_object_list::add
 	newobj->cx = get_cx();		// Set object's chunk.
 	newobj->cy = get_cy();
 	Game_object *obj;
+#if 1	/* ++++Let's try this. */
+	newobj->next = objects;		// Just put in front.
+	objects = newobj;
+#else	/* ++++Old way. */
 	Game_object *prev = 0;
 					// +++++Still necessary:???
 					// Just sort by lift.
@@ -2076,6 +2099,7 @@ void Chunk_object_list::add
 		newobj->next = prev->next;
 		prev->next = newobj;
 		}
+#endif
 					// Figure dependencies.
 	for (obj = objects; obj; obj = obj->next)
 		{

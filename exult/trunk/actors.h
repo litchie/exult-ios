@@ -375,8 +375,10 @@ public:
 class Loiter_schedule : public Schedule
 	{
 	Tile_coord center;		// Center of rectangle.
+	int dist;			// Distance in tiles to roam in each
+					//   dir.
 public:
-	Loiter_schedule(Npc_actor *n);
+	Loiter_schedule(Npc_actor *n, int d = 12);
 	virtual void now_what();	// Now what should NPC do?
 	};
 
