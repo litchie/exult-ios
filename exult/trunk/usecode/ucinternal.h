@@ -383,7 +383,7 @@ class Usecode_internal : public Usecode_machine
 						 uint8* data, uint8* externals, uint8* code,
 						 uint8* ip);
 	static int get_opcode_length(int opcode);
-	void stack_trace(ostream& out);
+	void stack_trace(std::ostream& out);
 
 #ifdef USECODE_DEBUGGER
 

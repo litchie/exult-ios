@@ -85,12 +85,12 @@ std::ostream& operator<<(std::ostream& out, Stack_frame& frame)
 	// #depth: 0xIP in functionname (obj=...,event=..., arg1name=..., ...)
 
 	out << "#" << frame.call_depth << ": 0x" 
-		<< hex << setw(4) << setfill('0')
+		<< std::hex << std::setw(4) << std::setfill('0')
 		<< (int)(frame.ip - frame.code) << " in 0x"
-		<< setw(4) << frame.function->id
-		<< "(obj=" << setw(8) << (long)frame.caller_item
+		<< std::setw(4) << frame.function->id
+		<< "(obj=" << std::setw(8) << (long)frame.caller_item
 		<< ",ev=" << frame.eventid
-		<< setfill(' ') << dec;
+		<< std::setfill(' ') << std::dec;
 	
 	for (int i=0; i < frame.num_args; i++)
 		out << ", " << frame.locals[i];
