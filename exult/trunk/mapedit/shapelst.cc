@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef WIN32
 #include "Windrag.h"
+#include <windows.h>
 #endif
 
 #include <gtk/gtk.h>
@@ -698,6 +699,52 @@ gint Shape_chooser::mouse_press
 	}
 
 /*
+ *	Export the currently selected frame as a .png file.
+ *
+ *	Output:	Modification time of file written, or 0 if error.
+ */
+
+time_t Shape_chooser::export_png
+	(
+	const char *fname		// File to write out.
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	int shnum = info[selected].shapenum,
+	    frnum = info[selected].framenum;
+	Shape_frame *frame = ifile->get_shape(shnum, frnum);
+	int w = frame->get_width(), h = frame->get_height();
+	Image_buffer8 img(w, h);	// Render into a buffer.
+	const unsigned char transp = 255;
+	img.fill8(transp);		// Fill with transparent pixel.
+	frame->paint(&img, frame->get_xleft(), frame->get_yabove());
+	int xoff = 0, yoff = 0;
+	if (frame->is_rle())
+		{
+		xoff = -frame->get_xright();
+		yoff = -frame->get_ybelow();
+		}
+	unsigned char pal[3*256];	// Set up palette.
+	for (int i = 0; i < 256; i++)
+		{
+		pal[3*i] = (palette->colors[i]>>16)&0xff;
+		pal[3*i + 1] = (palette->colors[i]>>8)&0xff;
+		pal[3*i + 2] = palette->colors[i]&0xff;
+		}
+	struct stat fs;			// Write out to the .png.
+	if (!Export_png8(fname, transp, w, h, w, xoff, yoff, img.get_bits(),
+					&pal[0], 256) ||
+	    stat(fname, &fs) != 0)
+		{
+		string msg("Error creating file:  ");
+		msg += fname;
+		studio->prompt(msg.c_str(), "Continue");
+		return 0;
+		}
+	return fs.st_mtime;
+	}
+
+/*
  *	Bring up the shape-info editor for the selected shape.
  */
 
@@ -739,45 +786,29 @@ void Shape_chooser::edit_shape
 	g_free(ext);
 					// Lookup <GAME>.
 	filestr = get_system_path(filestr);
-	cout << "Writing image '" << filestr.c_str() << "'" << endl;
-	Shape_frame *frame = ifile->get_shape(shnum, frnum);
-	int w = frame->get_width(), h = frame->get_height();
-	Image_buffer8 img(w, h);	// Render into a buffer.
-	const unsigned char transp = 255;
-	img.fill8(transp);		// Fill with transparent pixel.
-	frame->paint(&img, frame->get_xleft(), frame->get_yabove());
-	int xoff = 0, yoff = 0;
-	if (frame->is_rle())
-		{
-		xoff = -frame->get_xright();
-		yoff = -frame->get_ybelow();
-		}
-	unsigned char pal[3*256];	// Set up palette.
-	for (int i = 0; i < 256; i++)
-		{
-		pal[3*i] = (palette->colors[i]>>16)&0xff;
-		pal[3*i + 1] = (palette->colors[i]>>8)&0xff;
-		pal[3*i + 2] = palette->colors[i]&0xff;
-		}
 	const char *fname = filestr.c_str();
-	struct stat fs;			// Write out to the .png.
-	if (!Export_png8(fname, transp, w, h, w, xoff, yoff, img.get_bits(),
-					&pal[0], 256) ||
-	    stat(fname, &fs) != 0)
-		{
-		string msg("Error creating file:  ");
-		msg += fname;
-		studio->prompt(msg.c_str(), "Continue");
-		return;
-		}
+	cout << "Writing image '" << fname << "'" << endl;
+	time_t mtime = export_png(fname);
 					// Store info. about file.
 	editing_files.push_back(new Editing_file(
-		file_info->get_basename(), fname, fs.st_mtime, shnum, frnum));
+		file_info->get_basename(), fname, mtime, shnum, frnum));
 	string cmd(studio->get_image_editor());
 	cmd += ' ';
 	cmd += fname;
-	cmd += '&';			// Background.  WIN32?????+++++++
-	system(cmd.c_str());
+	cmd += " &";			// Background.  WIN32?????+++++++
+#ifndef WIN32
+	int ret = system(cmd.c_str());
+	if (ret == 127 || ret == -1)
+		cout << "Couldn't run image_editor" << endl;
+#else
+	PROCESS_INFORMATION	pi;
+	STARTUPINFO		si;
+	std::memset (&si, 0, sizeof(si));
+	si.cb = sizeof(si);
+	int ret = CreateProcess (NULL, cmd.c_str(), NULL, NULL, FALSE, 0,
+				NULL, NULL, &si, &pi);
+	if (!ret) cout << "Couldn't run image-editor" << endl;
+#endif
 	if (check_editing_timer == -1)	// Monitor files every 6 seconds.
 		check_editing_timer = gtk_timeout_add(6000,
 				Shape_chooser::check_editing_files, 0L);
@@ -808,7 +839,7 @@ gint Shape_chooser::check_editing_files
 		if (fs.st_mtime <= ed->mtime)
 			continue;	// Still not changed.
 		ed->mtime = fs.st_mtime;
-		import_shape(ed);
+		read_back_edited(ed);
 		modified = true;	// Did one.
 		}
 	if (modified)			// Write out changed files.
@@ -827,32 +858,32 @@ gint Shape_chooser::check_editing_files
 	}
 
 /*
- *	Import a shape that was changed by an external program (i.e., Gimp).
+ *	Import a PNG file into a given shape,frame.
  */
 
-void Shape_chooser::import_shape
+static void Import_png
 	(
-	Editing_file *ed
+	const char *fname,		// Filename.
+	Shape_file_info *finfo,		// What we're updating.
+	int shapenum, int framenum	// Shape, frame to update
 	)
 	{
 	ExultStudio *studio = ExultStudio::get_instance();
-	Shape_file_info *finfo = studio->get_files()->create(
-						ed->vga_basename.c_str());
 	Vga_file *ifile = finfo->get_ifile();
 	if (!ifile)
 		return;			// Shouldn't happen.
-	Shape *shape = ifile->extract_shape(ed->shapenum);
+	Shape *shape = ifile->extract_shape(shapenum);
 	if (!shape)
 		return;
 	int w, h, rowsize, xoff, yoff, palsize;
 	unsigned char *pixels, *palette;
 					// Import, with 255 = transp. index.
-	if (!Import_png8(ed->pathname.c_str(), 255, w, h, rowsize, xoff, yoff,
+	if (!Import_png8(fname, 255, w, h, rowsize, xoff, yoff,
 						pixels, palette, palsize))
 		return;			// Just return if error, for now.
 	delete palette;
 					// Low shape in 'shapes.vga'?
-	bool flat = ed->shapenum < 0x96 && finfo == studio->get_vgafile();
+	bool flat = shapenum < 0x96 && finfo == studio->get_vgafile();
 	int xleft, yabove;
 	if (flat)
 		{
@@ -860,7 +891,7 @@ void Shape_chooser::import_shape
 		if (w != 8 || h != 8 || rowsize != 8)
 			{
 			char *msg = g_strdup_printf(
-				"Shape %d must be 8x8", ed->shapenum);
+				"Shape %d must be 8x8", shapenum);
 			studio->prompt(msg, "Continue");
 			g_free(msg);
 			delete pixels;
@@ -873,9 +904,24 @@ void Shape_chooser::import_shape
 		yabove = h + yoff - 1;
 		}
 	shape->set_frame(new Shape_frame(pixels,
-			w, h, xleft, yabove, !flat), ed->framenum);
+			w, h, xleft, yabove, !flat), framenum);
 	delete pixels;
 	finfo->set_modified();
+	}
+
+/*
+ *	Read in a shape that was changed by an external program (i.e., Gimp).
+ */
+
+void Shape_chooser::read_back_edited
+	(
+	Editing_file *ed
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	Shape_file_info *finfo = studio->get_files()->create(
+						ed->vga_basename.c_str());
+	Import_png(ed->pathname.c_str(), finfo, ed->shapenum, ed->framenum);
 	}
 
 /*
@@ -920,7 +966,9 @@ void Shape_chooser::export_frame
 		if (answer != 0)
 			return;
 		}
-	//++++++++++++++++++
+	if (ed->selected < 0)
+		return;			// Shouldn't happen.
+	ed->export_png(fname);
 	}
 
 /*
@@ -934,8 +982,15 @@ void Shape_chooser::import_frame
 	)
 	{
 	Shape_chooser *ed = (Shape_chooser *) user_data;
-//++++++++
+	if (ed->selected < 0)
+		return;			// Shouldn't happen.
+	int shnum = ed->info[ed->selected].shapenum,
+	    frnum = ed->info[ed->selected].framenum;
+	Import_png(fname, ed->file_info, shnum, frnum);
+	ed->render();
+	ed->show();
 	}
+
 /*
  *	Someone wants the dragged shape.
  */
