@@ -87,6 +87,7 @@ case "$host_os" in
 		WINDOWING_SYSTEM="-DWIN32"
 		AC_DEFINE(CYGWIN, 1, [Using Cygwin])
 		AC_MSG_RESULT(Win32 (cygwin))
+		CXXFLAGS="$CXXFLAGS -mno-cygwin"
 		SYSLIBS="-lwinmm"
 		ICON_FILE="win32/exultico.o"
 		enable_kmid="no"
