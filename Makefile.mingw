@@ -98,7 +98,7 @@ dist:   $(EXEC)
 	cp SDL/lib/SDL_mixer.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
 
-tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe wuc.exe wud.exe ucc.exe ucxt.exe head2data.exe head2data.test
+tools:  expack.exe cmanip.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe wuc.exe wud.exe u7voice2syx.exe ucc.exe ucxt.exe head2data.exe head2data.test
 
 toolsclean:
 	rm -f expack.o expack.exe $(FILE_OBJS)
@@ -110,6 +110,7 @@ toolsclean:
 	rm -f splitshp.o splitshp.exe
 	rm -f textpack.o textpack.exe
 	rm -f ucc.o ucc.exe
+	rm -f u7voice2syx.o u7voice2syx.exe
 	rm -f wuc.o wuc.exe
 	rm -f wud.o wud.exe
 	rm -f $(UCXT_OBJS) ucxt.exe
@@ -128,6 +129,7 @@ toolsinstall: tools
 	strip shp2pcx.exe -o $(U7PATH)/tools/shp2pcx.exe
 	strip splitshp.exe -o $(U7PATH)/tools/splitshp.exe
 	strip textpack.exe -o $(U7PATH)/tools/textpack.exe
+	strip u7voice2syx.exe -o $(U7PATH)/tools/u7voice2syx.exe
 	strip ucc.exe -o $(U7PATH)/tools/ucc.exe
 	strip wuc.exe -o $(U7PATH)/tools/wuc.exe
 	strip wud.exe -o $(U7PATH)/tools/wud.exe
@@ -151,6 +153,7 @@ toolsdist: tools
 	strip shp2pcx.exe -o $(TOOLSPATH)/tools/shp2pcx.exe
 	strip splitshp.exe -o $(TOOLSPATH)/tools/splitshp.exe
 	strip textpack.exe -o $(TOOLSPATH)/tools/textpack.exe
+	strip u7voice2syx.exe -o $(TOOLSPATH)/tools/u7voice2syx.exe
 	strip ucc.exe -o $(TOOLSPATH)/tools/ucc.exe
 	strip wuc.exe -o $(TOOLSPATH)/tools/wuc.exe
 	strip wud.exe -o $(TOOLSPATH)/tools/wud.exe
