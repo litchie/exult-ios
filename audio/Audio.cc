@@ -123,10 +123,10 @@ static	Uint8 *chunks_to_block(vector<Chunk> &chunks)
 Uint8 *Audio::convert_VOC(Uint8 *old_data,unsigned int &visible_len)
 {
 	vector<Chunk> chunks;
-	size_t data_offset=0x1a;
+	size_t	data_offset=0x1a;
 	bool	last_chunk=false;
 	Uint16	sample_rate;
-        size_t  l=0;
+	size_t  l=0;
 	size_t	chunk_length;
 	
 
@@ -313,7 +313,7 @@ void	Audio::playfile(const char *fname,bool wait)
 {
 	FILE	*fp;
 	
-	fp=fopen(fname,"r");
+	fp=U7open(fname,"r");
 	if(!fp)
 		{
 		perror(fname);
@@ -361,7 +361,7 @@ void	Audio::start_music(const char *fname,int num,bool repetition)
 #if 0	// Unused
 static void	load_buffer(char *buffer,const char *filename,size_t start,size_t len)
 {
-	FILE	*fp=fopen(filename,"rb");
+	FILE	*fp=U7open(filename,"rb");
 	if(!fp)
 		{
 		memset(buffer,0,len);
