@@ -437,9 +437,18 @@ Image_buffer::Image_buffer
 		}
 	}
 
-#ifdef XWIN
-#include <X11/Xutil.h>
-Display *Image_window::display = 0;	// The X-windows display.
+/*
+ *	Get best depth.  Returns bits/pixel.
+ */
+static int Get_best_depth
+	(
+	)
+	{
+					// Get video info.
+	const SDL_VideoInfo *vinfo = SDL_GetVideoInfo();
+					// The "best" format:
+	return (vinfo->vfmt->BitsPerPixel);
+	}
 
 /*
  *	Create window.
@@ -449,30 +458,10 @@ Image_window::Image_window
 	(
 	unsigned int w,			// Desired width, height.
 	unsigned int h
-	) : Image_buffer(w, h, DisplayPlanes(display, DefaultScreen(display))),
-	    image(0), colormap(0)
+	) : Image_buffer(w, h, Get_best_depth()),
+	    surface(0)
 	{
-	int screen_num = DefaultScreen(display);
-					// Get color display type.
-	visual = DefaultVisual(display, screen_num);
-					// Shared memory available?
-	int shm_major,shm_minor, shm_pixmaps, shm_completion;
-	shm = XShmQueryVersion (display, &shm_major, &shm_minor, &shm_pixmaps);
-	XSetWindowAttributes atts;	// Set up attributes.
-	atts.border_pixel = BlackPixel(display, screen_num);
-	atts.background_pixel = WhitePixel(display, screen_num);
-	win = XCreateWindow(display, 
-		RootWindow(display, screen_num), 0, 0, ibuf->width, 
-								ibuf->height,
-		4,			// Border width.
-		DisplayPlanes(display, screen_num),
-		CopyFromParent, CopyFromParent, CWBackPixel | CWBorderPixel,
-		&atts);
-					// Get graphics context.
-	XGCValues gcvalues;
-	gc = XCreateGC(display, win, 0L, &gcvalues);
-					// Set foreground color for drawing.
-	XSetForeground(display, gc, BlackPixel(display, screen_num));
+	create_surface(w, h);
 	}
 
 /*
@@ -483,32 +472,48 @@ Image_window::~Image_window
 	(
 	)
 	{
-	XFreeGC(display, gc);
-	free_image();
+	SDL_FreeSurface(surface);
 	}
 
 /*
- *	Free the image.
+ *	Create the surface.
  */
 
-void Image_window::free_image
+void Image_window::create_surface
+	(
+	unsigned int w, 
+	unsigned int h
+	)
+	{
+	ibuf->width = w;
+	ibuf->height = h;
+	surface = SDL_SetVideoMode(w, h, ibuf->depth, 
+					SDL_SWSURFACE |  SDL_HWPALETTE);
+	if (!surface)
+		{
+		cout << "Couldn't set video mode (" << w << ", " << h <<
+			") at " << ibuf->depth << " bpp depth: " <<
+			SDL_GetError() << '\n';
+		exit(-1);
+		}
+	ibuf->bits = (char *) surface->pixels;
+					// Update line size in words.
+	ibuf->line_width = surface->pitch/ibuf->pixel_size;
+	}
+
+/*
+ *	Free the surface.
+ */
+
+void Image_window::free_surface
 	(
 	)
 	{
-	if (!image)
+	if (!surface)
 		return;
-	if (shm)			// MIT shared mem?
-		{			// Detach memory.
-		XShmDetach(display, &shm_info);
-					// Mark for deletion.
-		shmctl(shm_info.shmid, IPC_RMID, 0);
-		shmdt(shm_info.shmaddr);
-		}
-	else
-		delete ibuf->bits;
-	ibuf->bits = image->data = 0;
-	XDestroyImage(image);
-	image = 0;
+	SDL_FreeSurface(surface);
+	ibuf->bits = 0;
+	surface = 0;
 	}
 
 /*
@@ -521,51 +526,13 @@ void Image_window::resized
 	unsigned int newh
 	)
 	{
-	if (image)
+	if (surface)
 		{
 		if (neww == ibuf->width && newh == ibuf->height)
 			return;		// Nothing changed.
-		free_image();		// Delete old image.
+		free_surface();		// Delete old image.
 		}
-	ibuf->width = neww;
-	ibuf->height = newh;
-	if (shm)
-		{
-		image = XShmCreateImage(display, 0, 
-			ibuf->depth, ZPixmap, 0,
-			&shm_info, ibuf->width, ibuf->height);
-					// Get shared memory.
-		shm_info.shmid = shmget(IPC_PRIVATE,
-				image->bytes_per_line * image->height,
-				IPC_CREAT|0777);
-		if (shm_info.shmid < 0 ||
-		    (shm_info.shmaddr = (char *) shmat(shm_info.shmid, 0, 0))
-							== ((char *) -1))
-			shm = 0;
-		else
-			{
-			ibuf->bits = image->data = shm_info.shmaddr;
-			shm_info.readOnly = False;
-			XShmAttach(display, &shm_info);
-			cout << "Using MIT shared memory ext.\n";
-			}
-		}
-	if (!shm)
-		{			// Create new image.
-		int line_size = ibuf->width * ibuf->pixel_size;
-		if (line_size & 3)	// Round up to nearest 32-bits.
-			line_size += (4 - (line_size & 3));
-		ibuf->bits = new char[line_size * ibuf->height];
-		image = XCreateImage(display, 
-			visual,
-			ibuf->depth,
-			ZPixmap, 0, ibuf->bits, ibuf->width, ibuf->height,
-			32, line_size);
-		}
-					// Update line size in words.
-	ibuf->line_width = image->bytes_per_line/ibuf->pixel_size;
-	cout << "Bytes_per_line = " << image->bytes_per_line <<
-			" Width = " << ibuf->width << '\n';
+	create_surface(neww, newh);	// Create new one.
 	}
 
 /*
@@ -578,12 +545,7 @@ void Image_window::show
 	{
 	if (!ready())
 		return;
-	if (shm)
-		XShmPutImage(display, win, gc, image, 0, 0, 0, 0,
-				ibuf->width, ibuf->height, True);
-	else
-		XPutImage(display, win, gc, image, 0, 0, 0, 0, 
-					ibuf->width, ibuf->height);
+	SDL_UpdateRect(surface, 0, 0, ibuf->width, ibuf->height);
 	}
 
 /*
@@ -618,290 +580,16 @@ void Image_window::set_palette
 		Image_buffer::set_palette(rgbs, maxval, brightness);
 		return;
 		}
-	XColor colors[256];
+	SDL_Color colors[256];
 					// Get the colors.
 	for (int i = 0; i < 256; i++)
 		{
-		colors[i].pixel = i;
-		colors[i].flags = DoRed | DoGreen | DoBlue;
-		colors[i].red = Get_color8(rgbs[3*i], maxval, brightness);
-		colors[i].green = Get_color8(rgbs[3*i + 1], maxval,
+		colors[i].r = Get_color8(rgbs[3*i], maxval, brightness);
+		colors[i].g = Get_color8(rgbs[3*i + 1], maxval,
 							brightness);
-		colors[i].blue = Get_color8(rgbs[3*i + 2], maxval,
+		colors[i].b = Get_color8(rgbs[3*i + 2], maxval,
 							brightness);
 		}
-	if (!colormap)			// First time?
-		{
-		colormap = XCreateColormap(display, win, visual, AllocAll);
-		XSetWindowColormap(display, win, colormap);
-		}
-	XStoreColors(display, colormap, colors, 256);
-	}
-#endif	/* XWIN */
-
-#ifdef DOS
-
-/**
- **	Note:  Much of this code was adapted from the EZVGA library.
- **/
-
-__dpmi_regs Image_window::regs;		// Registers for DPMI functions.
-unsigned long Image_window::win_count = 0;
-
-/*
- *	Clear all the registers.
- */
-
-void Image_window::clear_registers
-	(
-	)
-	{
-	memset((char *) &regs, 0, sizeof(regs));
+	SDL_SetColors(surface, colors, 0, 256);
 	}
 
-/*
- *	Create window.	The first one is always 320x200 for the whole screen.
- */
-
-Image_window::Image_window
-	(
-	unsigned int w,			// Desired width, height.
-	unsigned int h
-	) : Image_buffer(win_count ? w : 320, win_count ? h : 200, 8)
-	{
-	win = win_count++;		// Assign unique ID.
-	ibuf->bits = new char[w*h];	// Initialize buffer.
-	}
-
-/*
- *	Convert rgb value.
- */
-
-inline unsigned short Get_color8
-	(
-	unsigned char val,
-	int maxval,
-	int brightness			// 100=normal.
-	)
-	{
-	unsigned long c = (((unsigned long) val)*brightness)/
-							(100);
-	return (c <= 63 ? c : 63);
-	}
-
-/*
- *	Set palette.
- */
-
-void Image_window::set_palette
-	(
-	unsigned char *rgbs,		// 256 3-byte entries.
-	int maxval,			// Highest val. for each color.
-	int brightness			// Brightness control (100 = normal).
-	)
-	{
-					// Get the colors.
-	for (int i = 0; i < 256; i++)
-		{
-		outportb(0x03c8, i);
-		outportb(0x03c9, Get_color8(rgbs[(i << 1) + i],
-						maxval, brightness));
-		outportb(0x03c9, Get_color8(rgbs[(i << 1) + i + 1],
-						maxval, brightness));
-		outportb(0x03c9, Get_color8(rgbs[(i << 1) + i + 2],
-						maxval, brightness));
-		}
-	}
-
-/*
- *	Set up the display.
- */
-
-void Image_window::set_display
-	(
-	)
-	{
-	clear_registers();
-	regs.x.ax = 0x13;
-	__dpmi_int(0x10, &regs);
-	}
-
-/*
- *	Restore display.
- */
-
-void Image_window::restore_display
-	(
-	)
-	{
-	clear_registers();
-	regs.x.ax = 0x03;
-	__dpmi_int(0x10, &regs);
-	}
-
-/*
- *	Initialize the mouse.
- *
- *	Output: 0 if no mouse.
- */
-
-int Image_window::init_mouse
-	(
-	)
-	{
-	clear_registers();
-	regs.x.ax = 0;
-	__dpmi_int(0x33, &regs);
-	return (regs.x.ax == 0xffff);
-	}
-
-
-#endif	/* DOS	*/
-
-#ifdef __WIN32
-
-HWND InitInstance(int, int); //in exult.cpp
-
-//constructor
-Image_window::Image_window (unsigned int w, unsigned int h):
-  Image_buffer(w, h, 8) {
-
-  img_width = w;
-  img_height = h;
-
-  win = InitInstance(2*w, 2*h); //create and show window
-
-  HWND ActiveWindow = win;
-
-  HDC ScrDC = GetDC ( ActiveWindow );
-  BMInfo = new MyBITMAPINFO;
-  PalInfo = new MyLOGPALETTE;
-
-  HPALETTE PalHan;
-
-  //set bitmap parameters
-  BMInfo->bmiHeader.biSize = sizeof ( BITMAPINFOHEADER );
-  BMInfo->bmiHeader.biWidth = img_width;
-  BMInfo->bmiHeader.biHeight = -img_height;  //top-down
-  BMInfo->bmiHeader.biPlanes = 1;
-  BMInfo->bmiHeader.biBitCount = 8;
-  BMInfo->bmiHeader.biCompression = BI_RGB;
-  BMInfo->bmiHeader.biSizeImage = NULL;
-  BMInfo->bmiHeader.biXPelsPerMeter = NULL;
-  BMInfo->bmiHeader.biYPelsPerMeter = NULL;
-  BMInfo->bmiHeader.biClrUsed = 256;
-  BMInfo->bmiHeader.biClrImportant = 256;
-
-  //load palette (all black for now)
-	for (int i = 0; i < 256; i ++) {
-		unsigned char r = 0;//Get_color32(rgbs[3*i], maxval, brightness);
-		unsigned char g = 0;//Get_color32(rgbs[3*i + 1], maxval, brightness);
-		unsigned char b = 0;//Get_color32(rgbs[3*i + 2], maxval, brightness);
-    PalInfo->palPalEntry[i].peRed = r;
-    PalInfo->palPalEntry[i].peGreen = g;
-    PalInfo->palPalEntry[i].peBlue = b;
-    PalInfo->palPalEntry[i].peFlags = PC_NOCOLLAPSE;
-    BMInfo->bmiColors[i].rgbBlue = b;
-    BMInfo->bmiColors[i].rgbGreen = g;
-    BMInfo->bmiColors[i].rgbRed = r;
-	}
-
-  //realize palette
-  PalHan = CreatePalette ( (tagLOGPALETTE*) PalInfo );
-  SelectPalette ( ScrDC, PalHan, FALSE );
-  RealizePalette ( ScrDC );
-
-  //create Device Independent Bitmap
-  BMHan =
-    CreateDIBSection ( ScrDC, (BITMAPINFO*) BMInfo, DIB_RGB_COLORS,
-      (void**) &(ibuf->bits), NULL, NULL);
-
-  ReleaseDC ( ActiveWindow, ScrDC );
-
-
-}
-
-Image_window::~Image_window () {
-//  delete[] (ibuf->bits);
-
-  DeleteObject(BMHan); //free bitmap
-  BMHan = 0;
-
-//  delete ibuf;  //???
-
-  delete BMInfo;
-  delete PalInfo;
-
-}
-
-//show buffer on screen
-void Image_window::show () {
-  if (!ready())
-    return;
-
-  int cwidth, cheight;
-
-
-  HWND ActiveWindow = win;
-  HDC ScrDC;
-
-  RECT ClientRect;
-  GetClientRect(ActiveWindow, &ClientRect);
-  cwidth = ClientRect.right;
-  cheight = ClientRect.bottom;
-
-  if ((ScrDC = ScreenDC) == NULL)
-    ScrDC = GetDC ( ActiveWindow );
-
-  HDC Context = CreateCompatibleDC ( 0 );
-  HBITMAP DefaultBitmap = SelectBitmap ( Context, BMHan );
-
-  //TO DO: get dimensions
-
-  StretchBlt ( ScrDC , 0, 0, cwidth /*ClientWidth*/, cheight /*ClientHeight*/,
-      Context, 0, 0, img_width, img_height, SRCCOPY); //blt to screen
-
-  SelectBitmap ( Context, DefaultBitmap );
-  DeleteDC ( Context );
-
-  if (ScreenDC == NULL)
-    ReleaseDC ( ActiveWindow, ScrDC );
-}
-
-inline unsigned char Get_color32
-	(
-	unsigned char val,
-	int maxval,
-	int brightness			// 100=normal.
-	)
-	{
-	unsigned int c = (((unsigned int) val)*brightness*256)/
-							(100*(maxval + 1));
-	return (c < 256 ? c : 255);
-	}
-
-void Image_window::set_palette(unsigned char* rgbs, int maxval, int brightness) {
-  Image_buffer::set_palette(rgbs, maxval, brightness);
-
-  HDC Context = CreateCompatibleDC ( 0 );
-  HBITMAP DefaultBitmap = SelectBitmap ( Context, BMHan );
-
-  RGBQUAD Pal[256];
-  //load palette
-	for (int i = 0; i < 256; i ++) {
-		unsigned char r = Get_color32(rgbs[3*i], maxval, brightness);
-		unsigned char g = Get_color32(rgbs[3*i + 1], maxval, brightness);
-		unsigned char b = Get_color32(rgbs[3*i + 2], maxval, brightness);
-    Pal[i].rgbBlue = b;
-    Pal[i].rgbGreen = g;
-    Pal[i].rgbRed = r;
-	}
-
-  SetDIBColorTable(Context, 0, 256, Pal);
-
-  SelectBitmap ( Context, DefaultBitmap );
-  DeleteDC ( Context );
-
-}
-
-#endif

@@ -3,25 +3,17 @@ OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o \
 	vgafile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o \
 	tqueue.o gameclk.o imagetxt.o text.o items.o lists.o
 
-ifdef DOS
-CXX = dos-g++
-CXXFLAGS =
-CPPFLAGS = -DDOS -I/usr/local/include -Inpc -Iscript
-LFLAGS =
-LIBS =  -L npc -lttf -lstdcx
-
-else				# X-windows.
+				# X-windows.
 CXX = g++
 CXXFLAGS = -g
-CPPFLAGS = -DXWIN -Inpc -Iscript
+CPPFLAGS = -DXWIN -I/usr/local/include/SDL -Inpc -Iscript
 ifdef RELEASE
 STATIC = -static
 else
 STATIC =
 endif
 LFLAGS = -g -L /usr/X11R6/lib -L /usr/local/lib
-LIBS = -lttf -lX11 -lXext
-endif
+LIBS = -lttf -lSDL -lX11 -lXext -lpthread
 
 all:
 	make exult

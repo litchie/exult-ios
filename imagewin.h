@@ -26,14 +26,7 @@ Boston, MA  02111-1307, USA.
 #ifndef INCL_IMAGEWIN
 #define INCL_IMAGEWIN	1
 
-#if !(defined(XWIN) || defined(DOS))
-
-#define __WIN32
-#include <windows.h>
-#include <windowsx.h>
-
-#endif
-
+#include "SDL.h"
 
 class Font_face;
 
@@ -351,40 +344,21 @@ public:
 		{ return Image_buffer_base::get_text_height(font); }
 	};
 
-#ifdef XWIN
-#include <X11/Xlib.h>
-#include <sys/shm.h>
-#include <X11/extensions/XShm.h>
-
 /*
- *	Here's a window for showing and manipulating images in X.
+ *	Here's a window for showing and manipulating images using SDL.
  */
 class Image_window : public Image_buffer
 	{
-	int shm;			// 1 if using MITSHM.
-	XShmSegmentInfo shm_info;	// Shared memory info.
-	static Display *display;	// X-windows display.
-	Window win;			// The window handle.
-	GC gc;				// Graphics context for drawing.
-	Visual *visual;			// Color characteristics.
-	Colormap colormap;		// The palette for 8-bit displays.
+	SDL_Surface *surface;		// Represents window in memory.
 	/*
 	 *	Image info.
 	 */
-	XImage *image;			// Image containing 'bits'.
-	void free_image();		// Free image.
+					// Create new SDL surface.
+	void create_surface(unsigned int w, unsigned int h);
+	void free_surface();		// Free it.
 public:
-					// You MUST call this first.
-	static void set_display(Display *dpy)
-		{ display = dpy; }
-	static Display *get_display()
-		{ return display; }
 	Image_window(unsigned int w, unsigned int h);
 	~Image_window();
-	Window get_win()		// Get handle.
-		{ return win; }
-	GC get_gc()
-		{ return gc; }
 	unsigned int get_width()	// Get dims.
 		{ return ibuf->width; }
 	unsigned int get_height()
@@ -394,172 +368,14 @@ public:
 					// Set title.
 	void set_title(char *title)
 		{
-		XStoreName(display, win, title);
-		}
-					// Indicate events we want.
-	void select_input(unsigned int mask)
-		{
-		XSelectInput(display, win, mask);
-		}
-	void map()			// Display it.
-		{
-		XMapWindow(display, win);
+		SDL_WM_SetCaption(title, 0);
 		}
 					// Resize event occurred.
-	void resized(unsigned int neww, unsigned int newh);
+	void resized(unsigned int neww, unsigned int nehh);
 	void show();			// Repaint entire window.
 					// Set palette.
 	void set_palette(unsigned char *rgbs, int maxval, 
 						int brightness = 100);
 	};
-#endif	/* XWIN */
-
-#ifdef DOS
-
-#include <dpmi.h>
-#include <pc.h>
-#include <string.h>
-
-typedef long Window;			// For Window ID's.
-
-/*
- *	Here's a window for showing and manipulating images in DOS.
- */
-class Image_window : public Image_buffer
-	{
-	static __dpmi_regs regs;	// Registers for DPMI functions.
-	static unsigned long win_count; // For assigning window ID's.
-	Window win;			// The window handle.
-	static void clear_registers();	// Clear regs.
-public:
-	Image_window(unsigned int w, unsigned int h);
-	~Image_window()
-		{  }
-	Window get_win()		// Get handle.
-		{ return win; }
-	unsigned int get_width()	// Get dims.
-		{ return ibuf->width; }
-	unsigned int get_height()
-		{ return ibuf->height; }
-	int ready()			// Ready to draw?
-		{ return 1; }
-	void set_title(char *title)	// Set title (ignored).
-		{  }
-	void map()			// Always mapped in DOS.
-		{  }
-					// For now, ignore resizes.
-	void resized(unsigned int neww, unsigned int newh)
-		{  }
-	void show();			// Repaint entire window.
-					// Set palette.
-	void set_palette(unsigned char *rgbs, int maxval, 
-						int brightness = 100);
-	/*
-	 *	Dos-specific methods:
-	 */
-	static void set_display();	// You MUST call this first.
-	static void restore_display();	// You MUST call this at end.
-	static int init_mouse();	// Init. mouse.	 Returns 0 if error.
-	static int show_mouse(int on)	// Turn on/off mouse cursor.
-		{
-		clear_registers();
-		regs.x.ax = on ? 1 : 2;;
-		__dpmi_int(0x33, &regs);
-		}
-					// Get mouse position.
-	static void get_mouse(int& x, int& y)
-		{
-		clear_registers();
-		regs.x.ax = 3;
-		__dpmi_int(0x33, &regs);
-		x = regs.x.cx >> 1;
-		y = regs.x.dx;
-		}
-					// Get mouse buttons (1, 2, or 3).
-	static int get_mouse_buttons()
-		{
-		clear_registers();
-		regs.x.ax = 3;
-		__dpmi_int(0x33, &regs);
-		if (regs.x.bx >= 1 && regs.x.bx <= 3)
-			return (regs.x.bx);
-		else
-			return (0);	// No button down.
-		}
-					// Set mouse position.
-	static void set_mouse(int x, int y)
-		{
-		clear_registers();
-		regs.x.ax = 4;
-		regs.x.cx = x << 1;
-		regs.x.dx = y;
-		__dpmi_int(0x33, &regs);
-		}
-	};
-
-//	Blit to screen.
-inline void Image_window::show()
-	{
-	show_mouse(0);		// Turn off mouse before blitting.
-	dosmemput(ibuf->bits, 64000, 0xa0000);
-	show_mouse(1);
-	}
-
-
-#endif	/* DOS	*/
-
-
-#ifdef __WIN32
-
-typedef struct {
-      BITMAPINFOHEADER bmiHeader;
-      RGBQUAD bmiColors[256];
-} MyBITMAPINFO;
-
-typedef struct {
-      WORD palVersion;
-      WORD palNumEntries;
-      PALETTEENTRY palPalEntry[256];
-} MyLOGPALETTE;
-
-
-typedef HWND Window;
-typedef long Display;
-
-class Image_window : public Image_buffer {
-  private:
-    MyBITMAPINFO *BMInfo;
-    MyLOGPALETTE *PalInfo;
-
-  public:
-    int img_width, img_height;
-    HBITMAP BMHan;
-    HDC ScreenDC;
-
-	  Window win;			// The window handle.
-	Image_window(unsigned int w, unsigned int h);
-	~Image_window();
-	Window get_win()		// Get handle.
-		{ return win; }
-	unsigned int get_width()	// Get dims.
-		{ return ibuf->width; }
-	unsigned int get_height()
-		{ return ibuf->height; }
-	int ready()			// Ready to draw?
-		{ return (ibuf->bits != 0); }
-					// Set title.
-	void set_title(char *title) {
-	SetWindowText(win, title);
-		}
-					// Resize event occurred.
-	void resized(unsigned int neww, unsigned int newh) {};
-	void show();			// Repaint entire window.
-					// Set palette.
-	void set_palette(unsigned char *rgbs, int maxval,
-						int brightness = 100);
-  void map() { }
-};
-
-#endif //__WIN32
 
 #endif	/* INCL_IMAGEWIN	*/
