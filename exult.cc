@@ -62,7 +62,7 @@ Configuration *config;
  */
 Game_window *gwin = 0;
 static string data_path;
-unsigned char quitting_time = 0;	// Time to quit.
+unsigned char quitting_time = 0;	// 1 = Time to quit, 2 = Restart.
 Mouse *mouse = 0;
 ShapeBrowser *browser;
 int scale = 0;				// 1 if scaling X2.
@@ -329,7 +329,12 @@ static void Init
 
 static int Play()
 	{
-	Handle_events(&quitting_time);
+	do
+		{
+		quitting_time = 0;
+		Handle_events(&quitting_time);
+		}
+	while (quitting_time == 2 && gwin->read());	// Restart.
 	delete browser;
 	delete gwin;
 	delete mouse;

@@ -393,6 +393,7 @@ void Game_window::clear_world
 	main_actor = 0;
 	num_npcs = num_npcs1 = 0;
 	theft_cx = theft_cy = -1;
+	combat = 0;
 	delete [] npcs;			// NPC's already deleted above.
 	moving_barge = 0;		// Get out of barge mode.
 	special_light = 0;		// Clear out light spells.
@@ -1093,7 +1094,7 @@ int Game_window::read
 		else
 			main_actor->set_flag(Actor::dont_render);
 	}
-
+	faded_out = 0;
 	clock.set_palette();		// Set palette for time-of-day.
 	set_all_dirty();		// Force entire repaint.
 	return (1);
