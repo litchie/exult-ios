@@ -29,6 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <csignal>
 #include "fnames.h"
 #include "Audio.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+
 
 #include "Configuration.h"
 extern	Configuration	*config;
@@ -65,14 +70,49 @@ static	int	sfx_process(void *p)
 	return 0;
 }
 
+static	void	copy_to_fh(std::string name,int number)
+{
+	char	buf[8192];
+
+	int	fh=::open(name.c_str(),O_RDONLY);
+	if(fh==-1)
+		{
+		perror("open");
+		return;
+		}
+	while(1)
+		{
+		ssize_t r=read(fh, buf, sizeof(buf));
+		if(r<=0)
+			break;
+		write(number,buf,r);
+		}
+	close(number);
+	close(fh);
+}
+
 void	Timidity_binary::player(void)
 {
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
 	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
+#if HAVE_MKSTEMP
+        char newfn[128];
+        strcpy(newfn,"/tmp/u7_midi_fileXXXXXX");
+        int     dfh=mkstemp(newfn);
+        if(dfh==-1)
+                {
+                perror("mkstemp");
+                return; // Abort
+                }
+        copy_to_fh(filename,dfh);
+	unlink(filename.c_str());
+	string	newfilename=newfn;
+#else
 	char newfn[L_tmpnam];
 	string	newfilename=tmpnam(newfn);
 	rename(filename.c_str(),newfilename.c_str());
 	// This could be across filesystems, you naughty boy.
+#endif
 
 	audiostream->id=Timidity_binary_magic;
 	string	s="timidity -Oru8S -id -T 175 -o- "+newfilename;
@@ -99,10 +139,24 @@ void	Timidity_binary::sfxplayer(void)
 {
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic_sfx);
 	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
+#if HAVE_MKSTEMP
+	char newfn[128];
+	strcpy(newfn,"/tmp/u7_midi_fileXXXXXX");
+	int	dfh=mkstemp(newfn);
+	if(dfh==-1)
+		{
+		perror("mkstemp");
+		return;	// Abort
+		}
+	copy_to_fh(sfxname,dfh);
+	unlink(sfxname.c_str());
+	string newfilename=newfn;
+#else
 	char newfn[L_tmpnam];
 	string	newfilename=tmpnam(newfn);
 	rename(sfxname.c_str(),newfilename.c_str());
 	// This could be across filesystems, you naughty boy.
+#endif
 
 	audiostream->id=Timidity_binary_magic_sfx;
 	string	s="timidity -Oru8S -id -T 175 -o- "+newfilename;
