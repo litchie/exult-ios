@@ -1058,6 +1058,7 @@ int Usecode_internal::path_run_usecode
 	Actor *npc = as_actor(get_item(npcval));
 	if (!npc)
 		return 0;
+	int usefun = useval.get_int_value();
 	int sz = locval.get_array_size();
 	if (sz != 3)			// Looks like tile coords.
 		{	//++++++Not sure about this.
@@ -1075,6 +1076,9 @@ int Usecode_internal::path_run_usecode
 	if (find_free)
 		{
 		dest = Find_unblocked(dest);
+		if (usefun == 0x60a &&	// ++++Added 7/21/01 to fix Iron
+		    src.distance(dest) <= 1)
+			return 1;	// Maiden loop in SI.  Kludge+++++++
 		if (src != dest && !npc->walk_path_to_tile(dest))
 			{		// Try again at npc's level.
 			dest.tz = src.tz;
@@ -1096,7 +1100,7 @@ int Usecode_internal::path_run_usecode
 	Game_object *obj = get_item(itemval);
 	if (obj)
 		{
-		call_usecode(useval.get_int_value(), obj, 
+		call_usecode(usefun, obj, 
 				(Usecode_events) eventval.get_int_value());
 		return 1;	// Success.
 		}
