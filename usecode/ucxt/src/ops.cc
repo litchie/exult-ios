@@ -27,9 +27,11 @@
 #include <iomanip>
 #include <fstream>
 #include <stack>
+#ifdef HAVE_SSTREAM
 #include <sstream>
-
 using std::stringstream;
+#endif
+
 
 /*** head2data
 #ifndef __STRING

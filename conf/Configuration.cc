@@ -32,9 +32,10 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+#ifdef HAVE_SSTREAM
 #include <sstream>
+#endif
 
-using std::ostringstream;
 using std::atoi;
 using std::cerr;
 using std::endl;
