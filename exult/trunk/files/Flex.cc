@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
 #endif
+#include <fstream>
 #include <iostream>
 #include "exceptions.h"
 #include "utils.h"
@@ -124,3 +125,32 @@ void Flex::write_header
 		out.put((char) 0);
 	}
 
+/*
+ *	Verify if a file is a FLEX.  Note that this is a STATIC method.
+ */
+
+bool Flex::is_flex(std::istream& in)
+{
+	long pos = in.tellg();		// Fill to data (past table at 0x80).
+	in.seekg(0x50);
+	uint32 magic = Read4(in);
+	in.seekg(pos);
+
+	// Is a flex
+	if(magic==0xffff1a00UL) return true;
+
+	// Isn't a flex
+	return false;
+}
+
+bool Flex::is_flex(const char *fname)
+{
+	bool is = false;
+	std::ifstream in;
+	U7open (in, fname);
+
+	if (in.good()) is = is_flex(in);
+
+	in.close();
+	return is;
+}

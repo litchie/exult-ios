@@ -305,7 +305,7 @@ void Actor::read
 		siflags |= f;
 
 		// Flags2	But don't set polymorph.
-		bool polym = get_flag(Obj_flags::polymorph);
+		bool polym = get_flag(Obj_flags::polymorph)!= false;
 		f = Read4(nfile);
 		flags2 |= f;
 		if (!polym && get_flag(Obj_flags::polymorph))

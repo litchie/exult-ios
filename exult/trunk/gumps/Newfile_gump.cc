@@ -63,18 +63,7 @@ using std::snprintf;
 /*
  *	Macros:
  */
-/*
-#define NEWFILE_SHAPE_LOAD	26
-#define NEWFILE_SHAPE_SAVE	27
-#define NEWFILE_SHAPE_DELETE	28
-#define NEWFILE_SHAPE_CANCEL	29
-#define NEWFILE_SHAPE_PGDN	30
-#define NEWFILE_SHAPE_DOWN	31
-#define NEWFILE_SHAPE_UP	32
-#define NEWFILE_SHAPE_PGUP	33
-#define NEWFILE_SHAPE_SLIDER	34
-#define NEWFILE_SHAPE_SELECTED	35
-*/
+
 /*
  *	Statics:
  */
@@ -508,7 +497,12 @@ void Newfile_gump::paint
 
 		gwin->paint_text_box (4, info, x+infox, y+infoy, infow, infoh);
 	}
-	else
+	else if (!is_readable)
+	{
+		gwin->paint_text (2, "Unreadable", x+infox+(infow-gwin->get_text_width(2, "Unreadable"))/2, y+infoy+(infoh-18)/2);
+		gwin->paint_text (2, "Savegame", x+infox+(infow-gwin->get_text_width(2, "Savegame"))/2, y+infoy+(infoh)/2);
+	}
+	else 
 	{
 		gwin->paint_text (4, "No Info", x+infox+(infow-gwin->get_text_width(4, "No Info"))/2, y+infoy+(infoh-gwin->get_text_height(4))/2);
 	}
@@ -616,6 +610,7 @@ void Newfile_gump::mouse_down
 		party = cur_party;
 		newname[0] = 0;
 		cursor = 0;
+		is_readable = true;
 	}
 	else if (selected == -1)
 	{
@@ -625,6 +620,7 @@ void Newfile_gump::mouse_down
 		party = gd_party;
 		strcpy (newname, "Quick Save");
 		cursor = -1; // No cursor
+		is_readable = true;
 	}
 	else
 	{
@@ -633,6 +629,7 @@ void Newfile_gump::mouse_down
 		party = games[selected].party;
 		strcpy (newname, games[selected].savename);
 		cursor = strlen (newname);
+		is_readable = want_load = games[selected].readable;
 	}
 
 	if (!buttons[0] && want_load) buttons[0] = new Newfile_button(this,
@@ -1019,7 +1016,7 @@ void Newfile_gump::LoadSaveGameDetails()
 	first_free = -1;
 	for (i = 0; i<num_games; i++)
 	{
-		gwin->get_saveinfo(games[i].num, games[i].savename, games[i].screenshot,
+		games[i].readable = gwin->get_saveinfo(games[i].num, games[i].savename, games[i].screenshot,
 			games[i].details, games[i].party);
 
 		if (first_free == -1 && i != games[i].num) first_free = i;
@@ -1067,8 +1064,8 @@ void Newfile_gump::FreeSaveGameDetails()
 // Save Info Methods
 
 // Constructor
-Newfile_gump::SaveInfo::SaveInfo() : num(0), filename(0), savename(0), details(0),
-			party(0), screenshot(0)
+Newfile_gump::SaveInfo::SaveInfo() : num(0), filename(0), savename(0), readable(true),
+			details(0), party(0), screenshot(0)
 {
 
 }

@@ -93,6 +93,7 @@ public:
 		int			num;
 		char			*filename;
 		char			*savename;
+		bool			readable;
 		SaveGame_Details	*details;
 		SaveGame_Party		*party;
 		Shape_file		*screenshot;
@@ -160,6 +161,7 @@ protected:
 	Shape_file *screenshot;		// The picture to be drawn
 	SaveGame_Details *details;	// The game details to show
 	SaveGame_Party *party;		// The party to show
+	bool is_readable;
 
 	int	list_position;		// The position in the savegame list (top game)
 	int	selected;		// The savegame that has been selected (num in list)

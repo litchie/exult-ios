@@ -708,7 +708,7 @@ void Combat_schedule::now_what
 		}
 	Game_object *opponent = npc->get_target();
 					// Flag for slimes:
-	bool strange = gwin->get_info(npc).has_strange_movement();
+	bool strange = gwin->get_info(npc).has_strange_movement() != false;
 	switch (state)			// Note:  state's action has finished.
 		{
 	case approach:

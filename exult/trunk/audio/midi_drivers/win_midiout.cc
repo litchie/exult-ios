@@ -32,6 +32,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+// These will prevent inclusion of mmsystem sections
+#define MMNODRV         // Installable driver support
+#define MMNOSOUND       // Sound support
+#define MMNOWAVE        // Waveform support
+#define MMNOAUX         // Auxiliary audio support
+#define MMNOMIXER       // Mixer support
+#define MMNOTIMER       // Timer support
+#define MMNOJOY         // Joystick support
+#define MMNOMCI         // MCI support
+#define MMNOMMIO        // Multimedia file I/O support
+
 #include <windows.h>
 #include <winbase.h>
 #include <mmsystem.h>

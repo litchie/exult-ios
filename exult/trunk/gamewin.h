@@ -548,13 +548,23 @@ public:
 			SaveGame_Details *&details,
 			SaveGame_Party *& party);
 	// From Savegame
-	void get_saveinfo(int num, char *&name,
+	bool get_saveinfo(int num, char *&name,
 			Shape_file *&map,
 			SaveGame_Details *&details,
 			SaveGame_Party *& party);
-	void read_saveinfo(std::ifstream &in,
+	void read_saveinfo(DataSource *in,
 			SaveGame_Details *&details,
 			SaveGame_Party *& party);
+
+#ifdef HAVE_ZIP_SUPPORT
+private:
+	bool get_saveinfo_zip(const char *fname, char *&name,
+			Shape_file *&map,
+			SaveGame_Details *&details,
+			SaveGame_Party *& party);
+public:
+#endif
+
 	void write_saveinfo();		// Write the save info to gamedat
 
 	void clear_dirty()		// Clear dirty rectangle.
@@ -703,6 +713,14 @@ public:
 					// Save "gamedat".
 	void save_gamedat(const char *fname, const char *savename);
 	void save_gamedat(int num, const char *savename);
+
+#ifdef HAVE_ZIP_SUPPORT
+private:
+	bool save_gamedat_zip(const char *fname, const char *savename);
+	bool Restore_level2 (void *unzipfile);
+	bool restore_gamedat_zip(const char *fname);
+public:
+#endif
 
 	void plasma(int w, int h, int x, int y, int startc, int endc);
 	
