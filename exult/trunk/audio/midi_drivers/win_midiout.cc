@@ -39,17 +39,40 @@ static bool		playing;
 static void		init_device();
 static bool		is_avaliable;
 	
-static midi_event	*thread_list;
-static int 		thread_ppqn;
-static bool		thread_repeat;
+static DWORD		thread_main(void *data);
+static void		thread_play(midi_event *list, const int ppqn, bool repeat);
+static HANDLE	 	*thread_handle;
+static DWORD		thread_id;
+
+// Thread communicatoins
 static int		thread_com;
 
-static int		thread_main(char *data);
-static void		thread_play(midi_event *list, const int ppqn, bool repeat);
-static SDL_Thread 	*thread_id;
+#define W32MO_THREAD_COM_READY		0
+#define W32MO_THREAD_COM_PLAY		1
+#define W32MO_THREAD_COM_STOP		2
+#define W32MO_THREAD_COM_INIT		3
+#define W32MO_THREAD_COM_INIT_FAILED	4
+#define W32MO_THREAD_COM_EXIT		-1
+
+static bool		in_use = 0;
+
+struct mid_data {
+	midi_event	*list;
+	int 		ppqn;
+	bool		repeat;
+};
+
+static mid_data *thread_data;
+
 
 Windows_MidiOut::Windows_MidiOut()
 {
+	if (in_use)
+	{
+		throw (0);
+		return;
+	}
+	in_use = true;
 	playing = false;
 	is_avaliable = false;
 	init_device();
@@ -57,36 +80,51 @@ Windows_MidiOut::Windows_MidiOut()
 
 Windows_MidiOut::~Windows_MidiOut()
 {
+	in_use = false;
 	if (!is_avaliable) return;
 
-	while (thread_com != 0) SDL_Delay (1);
-	thread_com = -1;
-	SDL_WaitThread (thread_id, NULL);
+	while (thread_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
+	thread_com = W32MO_THREAD_COM_EXIT;
+
+	int count = 0;
+	
+	while (count < 100)
+	{
+		DWORD code;
+		GetExitCodeThread (thread_handle, &code);
+		
+		// Wait 1 MS before trying again
+		if (code == STILL_ACTIVE) SDL_Delay (10);
+		else break;
+	}
+
+	// We waited a second and it still didn't terminate
+	if (count == 100 && is_avaliable)
+		TerminateThread (thread_handle, 1);
+
+	is_avaliable = false;
 }
 
 static void init_device()
 {
 	// Opened, lets open the thread
-	thread_com = 4;
-	char	*data = " ";
-	thread_id = SDL_CreateThread (thread_main, data);
+	thread_com = W32MO_THREAD_COM_INIT;
 	
-	while (thread_com == 4) SDL_Delay (1);
+	thread_handle = CreateThread (NULL, 0, thread_main, NULL, 0, &thread_id);
 	
-	if (thread_com == 3) return;
+	while (thread_com == W32MO_THREAD_COM_INIT) SDL_Delay (1);
 	
-	is_avaliable = true;
+	if (thread_com == W32MO_THREAD_COM_INIT_FAILED) return;
 }
 
-
-static int thread_main(char *data)
+static DWORD thread_main(void *data)
 {
 	midi_event*	evntlist;
 	playing = false;
-	thread_list = NULL;
+	thread_data = NULL;
 
 
-	UINT mmsys_err = midiOutOpen (&midi_port, (unsigned) -1, 0, 0, 0);
+	UINT mmsys_err = midiOutOpen (&midi_port, MIDI_MAPPER, 0, 0, 0);
 
 	if (mmsys_err != MMSYSERR_NOERROR)
 	{
@@ -94,28 +132,41 @@ static int thread_main(char *data)
 
 		mciGetErrorString(mmsys_err, buf, 512);
 		cerr << "Unable to open device: " << buf << endl;
-		thread_com = 3;
+		thread_com = W32MO_THREAD_COM_INIT_FAILED;
 		return 1;
 	}
-	thread_com = 0;
+	is_avaliable = true;
+	
+	SetThreadPriority (thread_handle, THREAD_PRIORITY_HIGHEST);
+	
+	thread_com = W32MO_THREAD_COM_READY;
 
 	// -1 = quit
-	while (thread_com != -1)
+	while (thread_com != W32MO_THREAD_COM_EXIT)
 	{
-		if (thread_com == 1)
+		if (thread_com == W32MO_THREAD_COM_PLAY)
 		{
-			SDL_Delay (1);
-			evntlist = thread_list;
-			thread_com = 0;
-			thread_play (evntlist, thread_ppqn, thread_repeat);
+			// Make sure that the data exists
+			while (!thread_data) SDL_Delay(1);
+			
+			evntlist = thread_data->list;
+			int repeat = thread_data->repeat;
+			int ppqn = thread_data->ppqn;
+			
+			thread_data = NULL;
+			thread_com = W32MO_THREAD_COM_READY;
+			
+			thread_play (evntlist, ppqn, repeat);
+
 			XMIDI::DeleteEventList (evntlist);
 		}
-		else if (thread_com == 2)
-			thread_com = 0;
+		else if (thread_com == W32MO_THREAD_COM_STOP)
+			thread_com = W32MO_THREAD_COM_READY;
 
 		SDL_Delay (1);
 	}
 	midiOutClose (midi_port);
+	is_avaliable = false;
 	return 0;
 }
 
@@ -155,11 +206,15 @@ static void thread_play (midi_event *evntlist, const int ppqn, bool repeat)
 	midi_event *event = evntlist;
 
 	playing = true;
-	while (1)
+	
+	// Play while there isn't a message waiting
+	while (thread_com == W32MO_THREAD_COM_READY)
 	{
 		aim = last_time + (event->time-last_tick)*tick;
 		
-		while ((diff = aim - wmoGetTime ()) > 0) wmoDelay (1000);
+		while (((diff = aim - wmoGetTime ()) > 0) && thread_com == W32MO_THREAD_COM_READY) wmoDelay (1000);
+		
+		if (thread_com != W32MO_THREAD_COM_READY) break;
 		
 		last_tick = event->time;
 		last_time = aim;
@@ -177,9 +232,6 @@ static void thread_play (midi_event *evntlist, const int ppqn, bool repeat)
 				
 			tick = tempo*Ippqn;
 		}
-		
-		//Somethings been issued
-		if (thread_com != 0) break;
 		
 	 	event = event->next;
 	 	if (!event)
@@ -199,6 +251,8 @@ static void thread_play (midi_event *evntlist, const int ppqn, bool repeat)
 	midiOutReset (midi_port);
 }
 
+static mid_data data;
+
 void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool repeat)
 {
 	if (!is_avaliable)
@@ -207,12 +261,14 @@ void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool re
 	if (!is_avaliable)
 		return;
 		
-	while (thread_com != 0) SDL_Delay (1);
+	while (thread_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
 	
-	thread_list = evntlist;
-	thread_ppqn = ppqn;
-	thread_repeat = repeat;
-	thread_com = 1;
+	data.list = evntlist;
+	data.ppqn = ppqn;
+	data.repeat = repeat;
+	
+	thread_data = &data;
+	thread_com = W32MO_THREAD_COM_PLAY;
 }
 
 void Windows_MidiOut::stop_track(void)
@@ -220,8 +276,8 @@ void Windows_MidiOut::stop_track(void)
 	if (!is_avaliable)
 		return;
 
-	while (thread_com != 0) SDL_Delay (1);
-	thread_com = 2;
+	while (thread_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
+	thread_com = W32MO_THREAD_COM_STOP;
 }
 
 bool Windows_MidiOut::is_playing(void)
@@ -231,7 +287,7 @@ bool Windows_MidiOut::is_playing(void)
 
 const char *Windows_MidiOut::copyright(void)
 {
-	return "Internal Midiout midi player";
+	return "Internal Win32 Midiout Midi Player for Exult.";
 }
 
 
