@@ -5,7 +5,9 @@ EXULT_FLX_OBJECTS = \
 	quotes.txt \
 	credits.txt \
 	exult_logo.shp \
-	exult0.pal
+	exult0.pal \
+	black_gate.shp \
+	serpent_isle.shp
 
 flexdir = $(datadir)/exult
 
