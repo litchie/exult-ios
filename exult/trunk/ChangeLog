@@ -1,3 +1,6 @@
+2001-08-21  Ryan Nunn <triforce@merlin.net.au>
+	* gamedat.cc : Fixed endian issue with save counts.
+
 2001-08-21  Max Horn <max@quendi.de>
 	* audio/Midi.cc: enabled MIDI driver on OS X
 	* audio/midi_drivers/mac_midi.* enabled MIDI driver on OS X
