@@ -154,7 +154,7 @@ void Actor::write
 		nfile.put(0);
 	char namebuf[16];		// Write 16-byte name.
 	memset(namebuf, 0, 16);
-	strncpy(namebuf, get_name(), 16);
+	strncpy(namebuf, get_name().c_str(), 16);
 	nfile.write(namebuf, 16);
 	write_contents(nfile);		// Write what he holds.
 	}

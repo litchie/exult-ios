@@ -234,12 +234,12 @@ public:
 		{ return shapes; }
 	Shape_info& get_info(int shnum)	// Get shape info.
 		{ return shapes.get_info(shnum); }
-	Shape_info& get_info(Game_object *obj)
+	Shape_info& get_info(const Game_object *obj)
 		{ return get_info(obj->get_shapenum()); }
 					// Get shape from shapes.vga.
 	Shape_frame *get_shape(int shapenum, int framenum)
 		{ return shapes.get_shape(shapenum, framenum); }
-	Shape_frame *get_shape(ShapeID& id)
+	Shape_frame *get_shape(const ShapeID& id)
 		{ return get_shape(id.get_shapenum(), id.get_framenum()); }
 					// Get # frames in a shape.
 	int get_shape_num_frames(int shapenum)
@@ -247,7 +247,7 @@ public:
 	int get_sprite_num_frames(int shapenum)
 		{ return sprites.get_num_frames(shapenum); }
 					// Get screen area used by object.
-	Rectangle get_shape_rect(Game_object *obj)
+	Rectangle get_shape_rect(const Game_object *obj)
 		{
 		Shape_frame *s = get_shape(*obj);
 		if(!s)
