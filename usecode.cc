@@ -594,6 +594,8 @@ Game_object *Usecode_machine::get_item
 					// If array, take 1st element.
 	Usecode_value& elemval = itemref.get_elem(0);
 	long val = elemval.get_int_value();
+	if (!val)
+		return (0);
 	Game_object *obj = 0;
 	if (val == -356)		// +++++Avatar.  Define in .h file.
 		return gwin->get_main_actor();
@@ -1029,9 +1031,16 @@ Usecode_value Usecode_machine::find_direction
 	unsigned angle;			// Gets angle 0-7 (east - southeast).
 	Game_object *o1 = get_item(from);
 	Game_object *o2 = get_item(to);
+#if 1 /* +++++Try this */
+	if (!o1)
+		o1 = caller_item;
+	if (!o2)
+		o2 = caller_item;
+#else
 	if (!o1 || !o2)
 		angle = 0;
 	else
+#endif
 		{			// Figure angle from positions.
 		int x1, y1, z1, x2, y2, z2;
 		o1->get_abs_tile(x1, y1, z1);
@@ -1902,26 +1911,28 @@ USECODE_INTRINSIC(advance_time)
 
 USECODE_INTRINSIC(run_usecode)
 	// exec(loc(x,y,z)?, usecode#, itemref, eventid).
-	//++++++Think it should have Avatar walk path to loc, return 0
+	// Think it should have Avatar walk path to loc, return 0
 	//  if he can't get there (and return), 1 if he can.
 	Usecode_value u(0);
 	Usecode_value& loc = parms[0];
 	int sz = loc.get_array_size();
 	if (sz == 3)			// Looks like tile coords.
 		{
-		Astar path;
 		int sx, sy, sz;		// Get source, dest.
 		gwin->get_main_actor()->get_abs_tile(sx, sy, sz);
 		int dx = loc.get_elem(0).get_int_value();
 		int dy = loc.get_elem(1).get_int_value();
 		int dz = loc.get_elem(2).get_int_value();
+		Tile_coord dest(dx, dy, dz);
+		cout << "\nRun_usecode:  first walk to (" << dx << ", " <<
+				dy << ", " << dz << ")\n";
 #if 0
-					// Try pathfinding.
-		if (!path.NewPath(sx, sy, sz, dx, dy, dz, Get_cost))
+		if (!gwin->get_main_actor()->walk_path_to_tile(dest));
 			USECODE_RETURN(u);
-#endif
+#else
 					// ++++++Should use pathfinding here.
 		gwin->get_main_actor()->walk_to_tile(dx, dy, dz);
+#endif
 		}
 	else
 		{	//++++++Not sure about this.

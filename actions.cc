@@ -26,9 +26,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actions.h"
 #include "actors.h"
 #include "Zombie.h"
+#include "Astar.h"
 
 /*
- *	Set to walk from one point to another, using the same pathfinder.
+ *	Set to walk from one point to another the dumb way.
  *
  *	Output:	->this, or 0 if unsuccessful.
  */
@@ -53,6 +54,7 @@ Actor_action *Actor_action::walk_to_tile
 /*
  *	Create action to follow a path.
  */
+
 Path_walking_actor_action::Path_walking_actor_action
 	(
 	PathFinder *p			// Already set to path.
@@ -66,6 +68,7 @@ Path_walking_actor_action::Path_walking_actor_action
 /*
  *	Delete.
  */
+
 Path_walking_actor_action::~Path_walking_actor_action
 	(
 	)
