@@ -595,6 +595,23 @@ int Game_object::drop
 	return (1);
 	}
 
+#ifdef DEBUGLT
+static int rx1 = -1, ry1 = -1, rx2 = -1, ry2 = -1;
+
+static void Debug_lt
+	(
+	int tx1, int ty1,		// 1st coord.
+	int tx2, int ty2		// 2nd coord.
+	)
+	{
+	if (tx1 == rx1 && ty1 == ry1)
+		{
+		if (tx2 == rx2 && ty2 == ry2)
+			cout << "Debug_lt" << endl;
+		}
+	}
+#endif
+
 /*
  *	Should this object be rendered before obj2?
  *
@@ -618,6 +635,9 @@ int Game_object::lt
 					// Get absolute tile positions.
 	int atx1, aty1, atz1, atx2, aty2, atz2;
 	int x1, x2, y1, y2, z1, z2;	// Dims. in tiles.
+#ifdef DEBUGLT
+	Debug_lt(atx1, aty1, atx2, aty2);
+#endif
 	get_abs_tile(atx1, aty1, atz1);
 	obj2.get_abs_tile(atx2, aty2, atz2);
 	x1 = info1.get_3d_xtiles(), x2 = info2.get_3d_xtiles();
