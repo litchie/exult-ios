@@ -868,6 +868,10 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 			current->data[0] = 0;
 			current->data[1] = 127;
 		}
+	}// Disable patch changes on Track 10 is doing a conversion
+	else if ((status >> 4) == 0xC && (status&0xF) == 9 && convert_type != XMIDI_CONVERT_NOCONVERSION)
+	{
+		return size;
 	}
 
 	CreateNewEvent (time);
@@ -945,15 +949,6 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 	int		file_size = source->getSize();
 	
 	if (is_xmi) play_size = 3;
-
-	// Set Drum track to correct setting if required
-	if (convert_type == XMIDI_CONVERT_MT32_TO_GS127)
-	{
-		CreateNewEvent (0);
-		current->status = 0xB9;
-		current->data[0] = 0;
-		current->data[1] = 127;			
-	}
 
 	while (!end && source->getPos() < file_size)
 	{
