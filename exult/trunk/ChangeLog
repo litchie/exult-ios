@@ -1,3 +1,10 @@
+2002-07-24  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* shapeid.cc,vgafile.h,glshape.cc:  Translucent shapes supported
+	in OpenGL.
+	May not look entirely right, as I had to guess at the colors (in
+	'shapeid.cc'; look for 'blends'.)
+
 2002-07-23  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* imagewin/imagebuf.h (public): Xform_palette is now a class

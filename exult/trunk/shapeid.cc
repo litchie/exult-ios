@@ -158,10 +158,10 @@ void Shape_manager::load
 	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
 					// RGBA blend colors:
 	static unsigned char blends[4*11] = {
-			36,10,48,128, 24,10,4,128, 25,27,29,192, 
-			17,33,7,128, 63,52,12,64, 7,13,63,128,
-			2,17,0,128, 63,2,2,128, 65,61,62,128, 
-			14,10,8,128, 49,48,46,128};
+			144,40,192,128, 96,40,16,128, 100,108,116,192, 
+			68,132,28,128, 255,208,48,64, 28,52,255,128,
+			8,68,0,128, 255,8,8,118, 255,244,248,128, 
+			56,40,32,128, 228,224,214,82};
 	for (int i = 0; i < nxforms; i++)
 		xforms[i].set_color(blends[4*i], blends[4*i+1],
 					blends[4*i+2], blends[4*i+3]);
@@ -181,8 +181,8 @@ void Shape_manager::load
 		gwin->get_pal()->load(PALETTES_FLX, 0);
 		for (int i = 0; i < nxforms; i++)
 			{
-			gwin->get_pal()->create_trans_table(xforms[i].r,
-				xforms[i].g, xforms[i].b,
+			gwin->get_pal()->create_trans_table(xforms[i].r/4,
+				xforms[i].g/4, xforms[i].b/4,
 				xforms[i].a, xforms[i].colors);
 			}
 		}
