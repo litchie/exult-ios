@@ -53,6 +53,7 @@ class Shape_chooser
 	{
 	Vga_file *ifile;		// Where the shapes come from.
 	int num_shapes;			// Total # shapes in ifile.
+	char **names;			// Names of shapes (or null).
 	GtkWidget *draw;		// GTK draw area to display them in.
 	GdkGC *drawgc;			// For drawing in 'draw'.
 	Image_buffer8 *iwin;		// What we render into.
@@ -73,7 +74,7 @@ class Shape_chooser
 	void render();			// Draw list.
 	void scroll(int newindex);	// Scroll.
 public:
-	Shape_chooser(Vga_file *i, GtkWidget *box, int w, int h);
+	Shape_chooser(Vga_file *i, char **nms, GtkWidget *box, int w, int h);
 	~Shape_chooser();
 	void unselect();		// Turn off selection.
 	int is_selected()		// Is a shape selected?
