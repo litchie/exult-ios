@@ -27,3 +27,6 @@ libshapes_la_SOURCES = \
 	vgafile.h
 
 CLEANFILES = *~
+
+# Don't add local copy of png.h.
+OMIT_DEPENDENCIES = png.h
