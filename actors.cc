@@ -46,6 +46,7 @@
 #include "frameseq.h"
 #include "game.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "imagewin.h"
 #include "items.h"
 #include "npctime.h"
@@ -1440,7 +1441,7 @@ void Actor::set_schedule_type
 	schedule_loc = Tile_coord(0,0,0);
 	next_schedule = 255;
 
-	if (!gwin->is_chunk_read(get_cx(), get_cy()))
+	if (!gwin->get_map()->is_chunk_read(get_cx(), get_cy()))
 		dormant = true;		// Chunk hasn't been read in yet.
 	else if (schedule)		// Try to start it.
 		{
@@ -1462,8 +1463,8 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 	if (schedule)			// End prev.
 		schedule->ending(new_schedule_type);
 
-	if (!gwin->is_chunk_read(get_cx(), get_cy()) &&
-	    !gwin->is_chunk_read(dest.tx/c_tiles_per_chunk,
+	if (!gwin->get_map()->is_chunk_read(get_cx(), get_cy()) &&
+	    !gwin->get_map()->is_chunk_read(dest.tx/c_tiles_per_chunk,
 						dest.ty/c_tiles_per_chunk))
 		{			// Src, dest. are off the screen.
 		move(dest.tx, dest.ty, dest.tz);

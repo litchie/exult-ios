@@ -28,6 +28,7 @@
 using std::snprintf;
 
 #include "gamewin.h"
+#include "gamemap.h"
 #include "actors.h"
 #include "chunks.h"
 #include "objiter.h"
@@ -51,7 +52,7 @@ void Game_window::paint_map_at_tile
 	scrolltx = toptx;
 	scrollty = topty;
 	skip_lift = skip_above;
-	read_map_data();		// Gather in all objs., etc.
+	map->read_map_data();		// Gather in all objs., etc.
 	win->set_clip(x, y, w, h);
 	paint_map(0, 0, get_width(), get_height());
 	win->clear_clip();
@@ -126,7 +127,8 @@ int Game_window::paint_map
 				win->fill8(hit_pixel, 1, c_chunksize, 
 								xoff, yoff);
 				char text[8];	// Show chunk #.
-				snprintf(text, 8, "%d", terrain_map[cx][cy]);
+				snprintf(text, 8, "%d", 
+						map->get_terrain_num(cx, cy));
 				paint_text(7, text, xoff + 2, yoff + 2);
 				}
 			}
@@ -209,6 +211,16 @@ void Game_window::paint
 					// Set palette for lights.
 		clock.set_light_source(carried_light + (light_sources > 0));
 		}
+	}
+
+/*
+ *	Paint whole window.
+ */
+void Game_window::paint()
+	{
+	map->read_map_data();		// Gather in all objs., etc.
+	set_all_dirty();
+	paint_dirty();
 	}
 
 /*

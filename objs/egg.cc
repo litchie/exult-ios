@@ -31,6 +31,7 @@
 #include "exult.h"
 #include "game.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "items.h"
 #include "npctime.h"
 #include "paths.h"
@@ -835,7 +836,7 @@ void Egg_object::write_ireg
 	Write2(ptr, data2);
 	out.write((char*)buf, sizeof(buf));
 					// Write scheduled usecode.
-	Game_window::write_scheduled(out, this);	
+	Game_map::write_scheduled(out, this);	
 	}
 
 /*

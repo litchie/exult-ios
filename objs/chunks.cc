@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunks.h"
 #include "chunkter.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "shapeinf.h"
 #include "citerate.h"
 #include "egg.h"
@@ -102,6 +103,7 @@ void Chunk_cache::update_object
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 	Shape_info& info = gwin->get_info(obj);
 	int ztiles = info.get_3d_height(); 
 	if (!ztiles || !info.is_solid())
@@ -127,7 +129,7 @@ void Chunk_cache::update_object
 	Rectangle tiles;
 	int cx, cy;
 	while (next_chunk.get_next(tiles, cx, cy))
-		gwin->get_chunk(cx, cy)->set_blocked(tiles.x, tiles.y, 
+		gmap->get_chunk(cx, cy)->set_blocked(tiles.x, tiles.y, 
 			tiles.x + tiles.w - 1, tiles.y + tiles.h - 1, lift,
 								ztiles, add);
 	}
@@ -192,7 +194,7 @@ void Chunk_cache::update_egg
 	bool add				// 1 to add, 0 to remove.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = Game_window::get_game_window()->get_map();
 					// Get footprint with abs. tiles.
 	Rectangle foot = egg->get_area();
 	if (!foot.w)
@@ -203,7 +205,7 @@ void Chunk_cache::update_egg
 		{			// Do solid rectangle.
 		Chunk_intersect_iterator all(foot);
 		while (all.get_next(crect, cx, cy))
-			gwin->get_chunk(cx, cy)->set_egged(egg, crect, add);
+			gmap->get_chunk(cx, cy)->set_egged(egg, crect, add);
 		return;
 		}
 					// Just do the perimeter.
@@ -214,16 +216,16 @@ void Chunk_cache::update_egg
 					// Go through intersected chunks.
 	Chunk_intersect_iterator tops(top);
 	while (tops.get_next(crect, cx, cy))
-		gwin->get_chunk(cx, cy)->set_egged(egg, crect, add);
+		gmap->get_chunk(cx, cy)->set_egged(egg, crect, add);
 	Chunk_intersect_iterator bottoms(bottom);
 	while (bottoms.get_next(crect, cx, cy))
-		gwin->get_chunk(cx, cy)->set_egged(egg, crect, add);
+		gmap->get_chunk(cx, cy)->set_egged(egg, crect, add);
 	Chunk_intersect_iterator lefts(left);
 	while (lefts.get_next(crect, cx, cy))
-		gwin->get_chunk(cx, cy)->set_egged(egg, crect, add);
+		gmap->get_chunk(cx, cy)->set_egged(egg, crect, add);
 	Chunk_intersect_iterator rights(right);
 	while (rights.get_next(crect, cx, cy))
-		gwin->get_chunk(cx, cy)->set_egged(egg, crect, add);
+		gmap->get_chunk(cx, cy)->set_egged(egg, crect, add);
 
 	}
 
@@ -668,8 +670,8 @@ inline Map_chunk *Map_chunk::add_outside_dependencies
 	Ordering_info& newinfo		// Info. for new object's ordering.
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
-	Map_chunk *chunk = gwin->get_chunk(cx, cy);
+	Game_map *gmap = Game_window::get_game_window()->get_map();
+	Map_chunk *chunk = gmap->get_chunk(cx, cy);
 	chunk->add_dependencies(newobj, newinfo);
 	return chunk;
 	}
@@ -786,6 +788,7 @@ void Map_chunk::remove
 		cache->update_object(this, remove, 0);
 	remove->clear_dependencies();	// Remove all dependencies.
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 	Shape_info& info = gwin->get_info(remove);
 					// See if it extends outside.
 	int frame = remove->get_framenum(), tx = remove->get_tx(),
@@ -799,12 +802,12 @@ void Map_chunk::remove
 #endif
 	if (ext_left)
 		{
-		gwin->get_chunk(cx - 1, cy)->from_below_right--;
+		gmap->get_chunk(cx - 1, cy)->from_below_right--;
 		if (ext_above)
-			gwin->get_chunk(cx - 1, cy - 1)->from_below_right--;
+			gmap->get_chunk(cx - 1, cy - 1)->from_below_right--;
 		}
 	if (ext_above)
-		gwin->get_chunk(cx, cy - 1)->from_below--;
+		gmap->get_chunk(cx, cy - 1)->from_below--;
 	if (info.is_light_source())	// Count light sources.
 		light_sources--;
 	if (remove == first_nonflat)	// First nonflat?
@@ -836,6 +839,7 @@ int Map_chunk::is_blocked
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 	int tx, ty;
 	new_lift = 0;
 	startx %= c_num_tiles;		// Watch for wrapping.
@@ -848,7 +852,7 @@ int Map_chunk::is_blocked
 		for (tx = startx; tx != stopx; tx = INCR_TILE(tx))
 			{
 			int this_lift;
-			Map_chunk *olist = gwin->get_chunk(
+			Map_chunk *olist = gmap->get_chunk(
 					tx/c_tiles_per_chunk, cy);
 			olist->setup_cache();
 			if (olist->is_blocked(height, lift, 
@@ -880,7 +884,8 @@ int Map_chunk::is_blocked
 	{
 					// Get chunk tile is in.
 	Game_window *gwin = Game_window::get_game_window();
-	Map_chunk *chunk = gwin->get_chunk_safely(
+	Game_map *gmap = gwin->get_map();
+	Map_chunk *chunk = gmap->get_chunk_safely(
 			tile.tx/c_tiles_per_chunk, tile.ty/c_tiles_per_chunk);
 	if (!chunk)			// Outside the world?
 		return 0;		// Then it's not blocked.
@@ -909,6 +914,7 @@ int Map_chunk::is_blocked
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 	int vertx0, vertx1;		// Get x-coords. of vert. block
 					//   to right/left.
 	int horizx0, horizx1;		// Get x-coords of horiz. block
@@ -960,7 +966,7 @@ int Map_chunk::is_blocked
 		int cy = y/c_tiles_per_chunk, rty = y%c_tiles_per_chunk;
 		for (x = horizx0; x != horizx1; x = INCR_TILE(x))
 			{
-			Map_chunk *olist = gwin->get_chunk(
+			Map_chunk *olist = gmap->get_chunk(
 					x/c_tiles_per_chunk, cy);
 			olist->setup_cache();
 			int rtx = x%c_tiles_per_chunk;
@@ -980,7 +986,7 @@ int Map_chunk::is_blocked
 		int cx = x/c_tiles_per_chunk, rtx = x%c_tiles_per_chunk;
 		for (y = verty0; y != verty1; y = INCR_TILE(y))
 			{
-			Map_chunk *olist = gwin->get_chunk(
+			Map_chunk *olist = gmap->get_chunk(
 					cx, y/c_tiles_per_chunk);
 			olist->setup_cache();
 			int rty = y%c_tiles_per_chunk;
@@ -1162,10 +1168,10 @@ int Map_chunk::find_in_area
 	Rectangle tiles;		// (Tiles within intersected chunk).
 	int eachcx, eachcy;
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 	while (next_chunk.get_next(tiles, eachcx, eachcy))
 		{
-		Map_chunk *chunk = gwin->get_chunk_safely(
-							eachcx, eachcy);
+		Map_chunk *chunk = gmap->get_chunk_safely(eachcx, eachcy);
 		if (!chunk)
 			continue;
 		Object_iterator next(chunk->objects);
@@ -1197,6 +1203,7 @@ void Map_chunk::try_all_eggs
 		return;
 	norecurse++;
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 	Tile_coord pos = obj->get_tile();
 	const int dist = 32;		// See if this works okay.
 	Rectangle area(pos.tx - dist, pos.ty - dist, 2*dist, 2*dist);
@@ -1208,8 +1215,7 @@ void Map_chunk::try_all_eggs
 					//   an egg could affect chunk's list.
 	while (next_chunk.get_next(tiles, eachcx, eachcy))
 		{
-		Map_chunk *chunk = gwin->get_chunk_safely(
-							eachcx, eachcy);
+		Map_chunk *chunk = gmap->get_chunk_safely(eachcx, eachcy);
 		if (!chunk)
 			continue;
 		chunk->setup_cache();	// I think we should do this.
@@ -1278,6 +1284,7 @@ void Map_chunk::setup_dungeon_levels
 	)
 {
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 
 	Object_iterator next(objects);
 	Game_object *each;
@@ -1296,7 +1303,7 @@ void Map_chunk::setup_dungeon_levels
 			Rectangle tiles;// Rel. tiles.
 			int cx, cy;
 			while (next_chunk.get_next(tiles, cx, cy))
-				gwin->get_chunk(cx, cy)->add_dungeon_levels(
+				gmap->get_chunk(cx, cy)->add_dungeon_levels(
 								tiles, each->get_lift());
 		}			// Ice Dungeon Pieces in SI
 		else if (Game::get_game_type() == SERPENT_ISLE && (
@@ -1314,7 +1321,7 @@ void Map_chunk::setup_dungeon_levels
 			Rectangle tiles;// Rel. tiles.
 			int cx, cy;
 			while (next_chunk.get_next(tiles, cx, cy))
-				gwin->get_chunk(cx, cy)->add_dungeon_levels(
+				gmap->get_chunk(cx, cy)->add_dungeon_levels(
 								tiles, each->get_lift());
 		}
 	}
@@ -1333,13 +1340,14 @@ void Map_chunk::gravity
 	{
 	Game_object_vector dropped(20);	// Gets list of objs. that dropped.
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 					// Go through interesected chunks.
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;		// Rel. tiles.  Not used.
 	int cx, cy, new_lift;
 	while (next_chunk.get_next(tiles, cx, cy))
 		{
-		Map_chunk *chunk = gwin->get_chunk(cx, cy);
+		Map_chunk *chunk = gmap->get_chunk(cx, cy);
 		Object_iterator objs(chunk->objects);
 		Game_object *obj;
 		while ((obj = objs.get_next()) != 0)

@@ -43,6 +43,7 @@
 #include "exceptions.h"
 #include "fnames.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "utils.h"
 #include "gump_utils.h"
 #include "game.h"
@@ -309,7 +310,7 @@ void Game_window::save_gamedat
 		{
 		Write4(tptr, out.tellp());
 		char iname[80];
-		long len = Savefile(out, get_schunk_file_name(U7IREG,
+		long len = Savefile(out, map->get_schunk_file_name(U7IREG,
 							schunk, iname));
 		Write4(tptr, len);
 		}
@@ -1045,7 +1046,8 @@ bool Game_window::save_gamedat_zip
 		for (int schunk = 0; schunk < 12*12; schunk++)
 		{
 			char iname[80];
-			Save_level1(zipfile, get_schunk_file_name(U7IREG, schunk, iname));
+			Save_level1(zipfile, 
+			    map->get_schunk_file_name(U7IREG, schunk, iname));
 		}
 	}
 	// Level 2 Compression
@@ -1065,7 +1067,8 @@ bool Game_window::save_gamedat_zip
 		for (int schunk = 0; schunk < 12*12; schunk++)
 		{
 			char iname[80];
-			Save_level2(zipfile, get_schunk_file_name(U7IREG, schunk, iname));
+			Save_level2(zipfile, map->get_schunk_file_name(
+						U7IREG, schunk, iname));
 		}
 
 		End_level2(zipfile);

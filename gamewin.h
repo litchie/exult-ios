@@ -68,6 +68,7 @@ struct SaveGame_Details;
 struct SaveGame_Party;
 class Map_patch_collection;
 class Dragging_info;
+class Game_map;
 
 /*
  *	The main game window:
@@ -77,6 +78,7 @@ class Game_window
 	static Game_window *game_window;// There's just one.
 	Image_window8 *win;		// Window to display into.
 	Palette *pal;
+	Game_map *map;			// Holds all terrain.
 	Usecode_machine *usecode;	// Drives game plot.
 	bool combat;			// true if in combat.
 	Time_queue *tqueue;		// Time-based queue.
@@ -96,7 +98,6 @@ class Game_window
 	bool teleported;		// true if just teleported.
 	unsigned int in_dungeon;	// true if inside a dungeon.
 	bool ice_dungeon;		// true if inside ice dungeon
-	std::ifstream chunks;		// "u7chunks" file.
 	Vga_file exult_flx;		// "<data>/exult.flx"
 	Vga_file gameflx;		// "<data>/exult_bg.flx" or 
 					//   "<data>/exult_si.flx"
@@ -119,17 +120,7 @@ class Game_window
 	Game_object_vector bodies;	// Corresponding Dead_body's.
 					// Path eggs, indexed by 'quality'.
 	Exult_vector<Egg_object *> path_eggs;
-					// Flat chunk areas:
-	Exult_vector<Chunk_terrain *> chunk_terrains;
-	int num_chunk_terrains;		// Total #.
-					// Chunk_terrain index for each chunk:
-	short terrain_map[c_num_chunks][c_num_chunks];
-					// A list of objects in each chunk:
-	Map_chunk *objects[c_num_chunks][c_num_chunks];
 	Deleted_objects *removed;	// List of 'removed' objects.
-	bool schunk_read[144]; 		// Flag for reading in each "ifix".
-	bool schunk_modified[144];	// Flag for modified "ifix".
-	Map_patch_collection *map_patches;
 	int scrolltx, scrollty;		// Top-left tile of screen.
 	Actor *camera_actor;		// What to center view around.
 	Rectangle scroll_bounds;	// Walking outside this scrolls.
@@ -147,14 +138,11 @@ class Game_window
 	int theft_warnings;		// # times warned in current chunk.
 	short theft_cx, theft_cy;	// Chunk where warnings occurred.
 	Time_sensitive *background_noise;
-					// Open a U7 file, throw an
-					//    exception if failed
-	Map_chunk *create_chunk(int cx, int cy);
+
 	void set_scrolls(Tile_coord cent);
 	void set_scroll_bounds();	// Set scroll-controller.
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
-	void read_map_data();		// Read in 'ifix', 'ireg', etc.
 					// Render the map & objects.
 	int paint_map(int x, int y, int w, int h);
 					// Render dungeon blackness
@@ -226,8 +214,8 @@ public:
 		{ return scrolltx; }
 	inline int get_scrollty() const
 		{ return scrollty; }
-	inline Map_patch_collection *get_map_patches()
-		{ return map_patches; }
+	inline Game_map *get_map() const
+		{ return map; }
 	inline Usecode_machine *get_usecode() const
 		{ return usecode; }
 	inline Rectangle get_win_rect() const	// Get window's rectangle.
@@ -263,29 +251,11 @@ public:
 	bool get_fades_enabled() const { return fades_enabled; }
 	void set_palette()		// Set for time, flags, lighting.
 		{ clock.set_palette(); }
-	bool is_chunk_read(int cx, int cy)
-		{ return cx < c_num_chunks && cy < c_num_chunks &&
-			schunk_read[12*(cy/c_chunks_per_schunk) +
-						cx/c_chunks_per_schunk]; }
-	void set_ifix_modified(int cx, int cy)
-		{ schunk_modified[12*(cy/c_chunks_per_schunk) +
-					cx/c_chunks_per_schunk] = true; }
+	Map_patch_collection *get_map_patches();
 					// Get/create objs. list for a chunk.
-	Map_chunk *get_chunk(int cx, int cy)
-		{
-		assert((cx >= 0) && (cx < c_num_chunks) && 
-		        (cy >= 0) && (cy < c_num_chunks));
-		Map_chunk *list = objects[cx][cy];
-		if (!list)
-			list = create_chunk(cx, cy);
-		return (list);
-		}
+	Map_chunk *get_chunk(int cx, int cy);
 	Map_chunk *get_chunk(Game_object *obj);
-	Map_chunk *get_chunk_safely(int cx, int cy)
-		{
-		return (cx >= 0 && cx < c_num_chunks && 
-		        cy >= 0 && cy < c_num_chunks ? get_chunk(cx, cy) : 0);
-		}
+	Map_chunk *get_chunk_safely(int cx, int cy);
 	inline Barge_object *get_moving_barge() const
 		{ return moving_barge; }
 	void set_moving_barge(Barge_object *b);
@@ -301,7 +271,7 @@ public:
 		skip_above_actor = lift;
 		return true;
 		}
-    bool main_actor_dont_move();
+	bool main_actor_dont_move();
 	inline bool set_in_dungeon(unsigned int lift)
 		{ 
 		if (in_dungeon == lift)
@@ -491,44 +461,11 @@ public:
 	inline void paint_hit_outline(int xoff, int yoff, Shape_frame *shape)
 		{ paint_outline(xoff, yoff, shape, hit_pixel); }
 
-					// Get "map" superchunk objs/scenery.
-	void get_map_objects(int schunk);
-					// Get "chunk" objects/scenery.
-	void get_chunk_objects(int cx, int cy);
-					// Set new terrain chunk.
-	void set_chunk_terrain(int cx, int cy, int chunknum);
-					// Get ifixxxx/iregxx name.
-	static char *get_schunk_file_name(char *prefix,
-						int schunk, char *fname);
-					// Write (static) map objects.
-	void write_ifix_objects(int schunk);
-					// Get "ifix" objects for a superchunk.
-	void get_ifix_objects(int schunk);
-					// Get "ifix" objs. for given chunk.
-	void get_ifix_chunk_objects(std::ifstream& ifix, long filepos, int cnt,
-							int cx, int cy);
-					// Write scheduled script for obj.
-	static void write_scheduled(std::ostream& ireg, Game_object *obj,
-						bool write_mark = false);
-					// Write moveable objects to file.
-	void write_ireg_objects(int schunk);
-					// Get moveable objects.
-	void get_ireg_objects(int schunk);
-					// Read scheduled script(s) for obj.
-	void read_special_ireg(std::istream& ireg, Game_object *obj);
-	void read_ireg_objects(std::istream& ireg, int scx, int scy,
-					Game_object *container = 0,
-//			unsigned long flags = (1<<11));
-			unsigned long flags = (1<<Obj_flags::okay_to_take));
 	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
 			int frnum, int tilex, int tiley, int lift);
 	Ireg_game_object *create_ireg_object(int shnum, int frnum)
 		{ return create_ireg_object(get_info(shnum), shnum, frnum,
 						0, 0, 0); 	}
-					// Create special objects.
-	Egg_object *create_egg(unsigned char *entry, bool animated);
-					// Get all superchunk objects.
-	void get_superchunk_objects(int schunk);
 	void write();// Write out to 'gamedat'.
 	void read();			// Read in 'gamedat'.
 	void write_gwin();		// Write gamedat/gamewin.dat.
@@ -572,13 +509,8 @@ public:
 	void paint(int x, int y, int w, int h);
 	void paint(Rectangle& r)
 		{ paint(r.x, r.y, r.w, r.h); }
-	void paint()			// Paint whole image.
-		{
-		read_map_data();	// Gather in all objs., etc.
-		set_all_dirty();
-		paint_dirty();
-		}
-		// Paint 'dirty' rectangle.
+	void paint();			// Paint whole image.
+					// Paint 'dirty' rectangle.
 	void paint_dirty();
 	void set_all_dirty()		// Whole window.
 		{ dirty = Rectangle(0, 0, get_width(), get_height()); }
