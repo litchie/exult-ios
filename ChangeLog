@@ -1,3 +1,6 @@
+2000-12-11  Max Horn  <max@quendi.de>
+	* audio/Mixer.*: some code cleanup
+
 2000-12-09  Max Horn  <max@quendi.de>
 	* Text_gump.h: fixed delete -> delete []
 

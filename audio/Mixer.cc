@@ -71,9 +71,11 @@ Mixer::~Mixer()
  */
  
 void fill_audio(void *udata, uint8 *stream, int len)
- {
-	// cerr << "fill_audio: " << len << endl;
-	 Audio::get_ptr()->mixer->fill_audio_func(udata,stream,len);
+{
+	Mixer *m = Audio::get_ptr()->mixer;
+	
+	if( m )
+		m->fill_audio_func(udata,stream,len);
 }
 
 void	compress_audio_sample(uint8 *buf,int len)
@@ -111,72 +113,71 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 #endif
 	stream_lock();
 	if(audio_streams.size()==0)
-		{
+	{
 #if DEBUG
 		cerr << "No more audio data" << endl;
 #endif
 		SDL::PauseAudio(1);
 		stream_unlock();
 		return;
-		}
+	}
 	else
-		{
+	{
 		int which=0;
-		vector<list<ProducerConsumerBuf *>::iterator> close_list;
-		for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
+		vector<pcb_list::iterator> close_list;
+		uint8	*temp_buffer=new uint8[len];
+		for(pcb_list::iterator it=audio_streams.begin();
 			it!=audio_streams.end();++it)
-				{
+		{
 				
 #ifdef NOT_YET
-				// The world is not ready for this yet
-				if((*it)->size()<buffer_length)
-					continue;
+			// The world is not ready for this yet
+			if((*it)->size()<buffer_length)
+				continue;
 #endif
-				uint8	*temp_buffer=new uint8[len];
-				int	ret=0;
-				size_t	sofar=0;
-				memset(temp_buffer,silence,len);
-				while((len-sofar))
-					{
-					ret=(*it)->consume((char*)temp_buffer+sofar,len-sofar);
-					if(ret<=0)
-						break;
-					sofar+=ret;
-					}
+			int	ret=0;
+			size_t	sofar=0;
+			memset(temp_buffer,silence,len);
+			while((len-sofar))
+			{
+				ret=(*it)->consume((char*)temp_buffer+sofar,len-sofar);
+				if(ret<=0)
+					break;
+				sofar+=ret;
+			}
 #if 0
-				cerr << "(" << which <<"/"<<audio_streams.size()<< ")" << " Mixing auxilliary data " ;
-				cerr << sofar << " of " << (*it)->size() << endl;
+			cerr << "(" << which <<"/"<<audio_streams.size()<< ")" << " Mixing auxilliary data " ;
+			cerr << sofar << " of " << (*it)->size() << endl;
 #endif
-				if(len-sofar&&ret==-1)
-					{
-					// perror("consume");
-					// delete the entry
-					close_list.push_back(it);
-					delete [] temp_buffer;
-					continue;
-					}
-				compress_audio_sample(temp_buffer,len);
-				SDL::MixAudio(stream, temp_buffer, len, SDL_MIX_MAXVOLUME);
-				delete [] temp_buffer;
-				++which;
-				}
-			for(vector<list<ProducerConsumerBuf *>::iterator>::iterator it=close_list.begin();it!=close_list.end();++it)
-				{
-				(**it)->end_consumption();
-				audio_streams.erase(*it);
-				}
+			if(len-sofar&&ret==-1)
+			{
+				// perror("consume");
+				// delete the entry
+				close_list.push_back(it);
+				continue;
+			}
+			compress_audio_sample(temp_buffer,len);
+			SDL::MixAudio(stream, temp_buffer, len, SDL_MIX_MAXVOLUME);
+			++which;
 		}
+		delete [] temp_buffer;
+		for(vector<pcb_list::iterator>::iterator it=close_list.begin();it!=close_list.end();++it)
+		{
+			(**it)->end_consumption();
+			audio_streams.erase(*it);
+		}
+	}
 	stream_unlock();
 #if 0
 	if(buffers.begin()->num_samples)
-		{
+	{
 #if 0
 		cerr << "Mixing sample data" << endl;
 #endif
 		if((unsigned)len>buffers.front().length)
 			len=buffers.front().length;
 		SDL::MixAudio(stream, buffers.begin()->buffer, len, SDL_MIX_MAXVOLUME);
-		}
+	}
 #endif
 }
 
@@ -229,7 +230,7 @@ void	Mixer::Destroy_Audio_Stream(uint32 id)
 		return;	// We don't honour id 0
 	SDL::PauseAudio(1);
 	stream_lock();
-	for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
+	for(pcb_list::iterator it=audio_streams.begin();
 		it!=audio_streams.end();++it)
 			{
 			ProducerConsumerBuf *p=*it;
@@ -249,7 +250,7 @@ bool	Mixer::is_playing(uint32 id)
 	if(id==0)
 		return false; // We don't honor id 0
 	stream_lock();
-	for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
+	for(pcb_list::iterator it=audio_streams.begin();
 		it!=audio_streams.end();++it)
 			{
 			ProducerConsumerBuf *p=*it;
@@ -266,7 +267,7 @@ bool	Mixer::is_playing(uint32 id)
 void Mixer::cancel_streams(void)
 {
 	stream_lock();
-	for(list<ProducerConsumerBuf *>::iterator it=audio_streams.begin();
+	for(pcb_list::iterator it=audio_streams.begin();
 		it!=audio_streams.end();++it)
 			{
 			ProducerConsumerBuf *p=*it;
