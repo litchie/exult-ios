@@ -110,37 +110,43 @@ string get_datadir(const Configuration &config, const UCOptions &options)
 	return datadir;
 }
 
+void init_misc(const string &datadir)
+{
+	Configuration miscdata(datadir + "u7misc.data", "misc");
+
+	Configuration::KeyTypeList om;
+	miscdata.getsubkeys(om, "misc/offset_munge");
+	
+	Configuration::KeyTypeList st;
+	miscdata.getsubkeys(st, "misc/size_type");
+	
+	// For each size type (small/long/byte/etc.)
+	for(typeof(st.begin()) k=st.begin(); k!=st.end(); ++k)
+	{
+		bool munge_offset=false;
+		
+		const string tmpstr(k->first + "/");
+		
+		/* ... we need to find out if we should munge it's parameter
+			that is, it's some sort of goto target (like offset) or such */
+		for(typeof(om.begin()) m=om.begin(); m!=om.end(); ++m)
+			if(m->first.size()-1==k->first.size())
+				if(m->first==tmpstr)
+//				if(m->first.compare(0, m->first.size()-1, k->first, 0, k->first.size())==0)
+					munge_offset=true;
+		
+		// once we've got it, add it to the map
+		pair<unsigned int, bool> tsm_tmp(strtol(k->second.c_str(), 0, 0), munge_offset);
+		type_size_map.insert(pair<string, pair<unsigned int, bool> >(k->first, tsm_tmp));
+	}
+}
 /* constructs the usecode tables from datafiles in the /ucxt hierachy */
 void init_usecodetables(const Configuration &config, const UCOptions &options)
 {
 	const string datadir(get_datadir(config, options));
 	
-	{
-		Configuration miscdata(datadir + "u7misc.data", "misc");
-	
-		Configuration::KeyTypeList om;
-		miscdata.getsubkeys(om, "misc/offset_munge");
-		
-		Configuration::KeyTypeList st;
-		miscdata.getsubkeys(st, "misc/size_type");
-		
-		// For each size type (small/long/byte/etc.)
-		for(typeof(st.begin()) k=st.begin(); k!=st.end(); ++k)
-		{
-			bool munge_offset=false;
-			
-			/* ... we need to find out if we should munge it's parameter
-				that is, it's some sort of goto target (like offset) or such */
-			for(typeof(om.begin()) m=om.begin(); m!=om.end(); ++m)
-				if(m->first.size()-1==k->first.size())
-					if(m->first.compare(0, m->first.size()-1, k->first, 0, k->first.size())==0)
-						munge_offset=true;
-			
-			// once we've got it, add it to the map
-			pair<unsigned int, bool> tsm_tmp(strtol(k->second.c_str(), 0, 0), munge_offset);
-			type_size_map.insert(pair<string, pair<unsigned int, bool> >(k->first, tsm_tmp));
-		}
-	}
+	// parse the u7misc.data file...
+	init_misc(datadir);
 	
 	Configuration opdata(datadir + "u7opcodes.data", "opcodes");
 	
@@ -293,7 +299,7 @@ void map_type_size(const std::vector<std::string> &param_types, std::vector<std:
 		map<string, pair<unsigned int, bool> >::iterator tsm(type_size_map.find(*s));
 		if(tsm==type_size_map.end())
 		{
-			cerr << "error: No suck type `" << *s << "`" << endl;
+			cerr << "error: No size type `" << *s << "`" << endl;
 			assert(tsm!=type_size_map.end());
 		}
 		
