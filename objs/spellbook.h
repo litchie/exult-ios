@@ -45,7 +45,7 @@ public:
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// Write out to IREG file.
-	virtual void write_ireg(std::ostream& out);
+	virtual void write_ireg(DataSource* out);
 	};
 
 #endif

@@ -1,3 +1,13 @@
+2002-06-13  Ryan Nunn  <triforce@merlin.net.au>
+	* Any file that I changed, but not the 2 below : Changed lots of things
+	  to use DataSources rather than directly use streams. Hopefully
+	  nothing is broken. I expect that there will be numerous
+	  signed/unsigned problem for people who are using more standards
+	  compliant compilers than me.
+
+	* usecode/ucinternal.cc, msvcstuff/Exult.dsp : Getting to compile in
+	  MSVC once again
+
 2002-06-10  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc (Npc_actor): Fixed a nasty bug I caused which could

@@ -141,7 +141,7 @@ void Background_noise::handle_event
 	unsigned long delay = 8000;
 	int currentstate = 0;
 
-//#ifdef COLOURLESS_REALLY_HATES_THE_BG_SFX
+#ifndef COLOURLESS_REALLY_HATES_THE_BG_SFX
 
 	int bghour = gwin->get_hour();
 	if(gwin->is_in_dungeon())
@@ -252,7 +252,7 @@ void Background_noise::handle_event
 			}
 		}
 	}
-//#endif
+#endif
 
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 }
@@ -1359,27 +1359,28 @@ void Game_window::write_gwin
 	(
 	)
 	{
-	ofstream gout;
-	U7open(gout, GWINDAT);	// Gamewin.dat.
+	ofstream gout_stream;
+	U7open(gout_stream, GWINDAT);	// Gamewin.dat.
+	StreamDataSource gout(&gout_stream);
 					// Start with scroll coords (in tiles).
-	Write2(gout, get_scrolltx());
-	Write2(gout, get_scrollty());
+	gout.write2(get_scrolltx());
+	gout.write2(get_scrollty());
 					// Write clock.
-	Write2(gout, clock.get_day());
-	Write2(gout, clock.get_hour());
-	Write2(gout, clock.get_minute());
-	Write4(gout, special_light);	// Write spell expiration minute.
+	gout.write2(clock.get_day());
+	gout.write2(clock.get_hour());
+	gout.write2(clock.get_minute());
+	gout.write4(special_light);	// Write spell expiration minute.
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
 	if (player) {
-		Write4s(gout, player->get_current_track());
-		Write4s(gout, player->is_repeating());
+		gout.write4(static_cast<uint32>(player->get_current_track()));
+		gout.write4(static_cast<uint32>(player->is_repeating()));
 	} else {
-		Write4s(gout, -1);
-		Write4s(gout, 0);
+		gout.write4(static_cast<uint32>(-1));
+		gout.write4(0);
 	}
-	gout.put(armageddon ? 1 : 0);
-	gout.flush();
-	if (!gout.good())
+	gout.write1(armageddon ? 1 : 0);
+	gout_stream.flush();
+	if (!gout_stream.good())
 		throw file_write_exception(GWINDAT);
 	}
 
@@ -1393,48 +1394,49 @@ void Game_window::read_gwin
 	(
 	)
 	{
-	ifstream gin;
+	ifstream gin_stream;
 	try
 	{
-		U7open(gin, GWINDAT);	// Gamewin.dat.
-	} catch (const file_open_exception& e)
+		U7open(gin_stream, GWINDAT);	// Gamewin.dat.
+	} catch (const file_open_exception&)
 	{
 		return;
 	}
 	
+	StreamDataSource gin(&gin_stream);
 
 					// Start with scroll coords (in tiles).
-	scrolltx = Read2(gin);
-	scrollty = Read2(gin);
+	scrolltx = gin.read2();
+	scrollty = gin.read2();
 					// Read clock.
-	clock.set_day(Read2(gin));
-	clock.set_hour(Read2(gin));
-	clock.set_minute(Read2(gin));
+	clock.set_day(gin.read2());
+	clock.set_hour(gin.read2());
+	clock.set_minute(gin.read2());
 	last_restore_hour = clock.get_total_hours();
 	if (!clock.in_queue())		// Be sure clock is running.
 		tqueue->add(Game::get_ticks(), &clock, reinterpret_cast<long>(this));
-	if (!gin.good())		// Next ones were added recently.
+	if (!gin_stream.good())		// Next ones were added recently.
 		throw file_read_exception(GWINDAT);
-	special_light = Read4(gin);
+	special_light = gin.read4();
 	armageddon = false;		// Old saves may not have this yet.
 	
-	if (!gin.good())
+	if (!gin_stream.good())
 	{
 		special_light = 0;
 		return;
 	}
 
-	int track_num = Read4(gin);
-	int repeat = Read4(gin);
-	if (!gin.good())
+	int track_num = gin.read4();
+	int repeat = gin.read4();
+	if (!gin_stream.good())
 	{
 		Audio::get_ptr()->stop_music();
 		return;
 	}
 
 	Audio::get_ptr()->start_music(track_num, repeat != false);
-	armageddon = Read1(gin) == 1 ? true : false;
-	if (!gin.good())
+	armageddon = gin.read1() == 1 ? true : false;
+	if (!gin_stream.good())
 		armageddon = false;
 
 	}

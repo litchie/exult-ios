@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "game.h"
 #include "Gump_manager.h"
+#include "databuf.h"
 
 using std::memcpy;
 using std::ostream;
@@ -92,7 +93,7 @@ void Spellbook_object::activate
 
 void Spellbook_object::write_ireg
 	(
-	ostream& out
+	DataSource *out
 	)
 	{
 	unsigned char buf[19];		// 18-byte entry + length-byte.
@@ -106,7 +107,7 @@ void Spellbook_object::write_ireg
 	memcpy(ptr, &circles[5], 4);	// Rest of spell circles.
 	ptr += 4;
 	Write4(ptr, flags);
-	out.write((char*)buf, sizeof(buf));
+	out->write((char*)buf, sizeof(buf));
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}

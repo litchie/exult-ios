@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamemap.h"
 #include "chunks.h"
 #include "cheat.h"
+#include "databuf.h"
 
 using std::ostream;
 
@@ -117,7 +118,7 @@ int Ireg_game_object::is_dragable
 
 void Ireg_game_object::write_ireg
 	(
-	ostream& out
+	DataSource *out
 	)
 	{
 	unsigned char buf[11];		// 10-byte entry + length-byte.
@@ -136,7 +137,7 @@ void Ireg_game_object::write_ireg
 			buf[6] |= (1<<3);
 		}
 	buf[7] = (get_flag(Obj_flags::is_temporary) != 0);
-	out.write((char*)buf, sizeof(buf));
+	out->write((char*)buf, sizeof(buf));
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}

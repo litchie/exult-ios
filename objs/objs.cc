@@ -37,6 +37,7 @@
 #include "game.h"
 #include "Gump_manager.h"
 #include "effects.h"
+#include "databuf.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -1747,7 +1748,7 @@ void Ifix_game_object::remove_this
 
 void Ifix_game_object::write_ifix
 	(
-	ostream& ifix			// Where to write.
+	DataSource *ifix			// Where to write.
 	)
 	{
 	unsigned char buf[4];
@@ -1756,7 +1757,7 @@ void Ifix_game_object::write_ifix
 	int shapenum = get_shapenum(), framenum = get_framenum();
 	buf[2] = shapenum&0xff;
 	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
-	ifix.write((char*)buf, sizeof(buf));
+	ifix->write((char*)buf, sizeof(buf));
 	}
 
 

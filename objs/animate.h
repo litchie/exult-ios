@@ -149,7 +149,7 @@ public:
 				   -animator->get_deltay(), 0); }
 
 				// Write out to IREG file.
-	virtual void write_ireg(std::ostream& out);
+	virtual void write_ireg(DataSource* out);
 
 	};
 
@@ -173,7 +173,7 @@ public:
 			Tile_coord(-animator->get_deltax(), 
 				   -animator->get_deltay(), 0); }
 
-	virtual void write_ifix(std::ostream& ifix);
+	virtual void write_ifix(DataSource* ifix);
 
 	};
 #endif

@@ -422,13 +422,13 @@ public:
 	Monster_actor *clone();		// Create another nearby to this.
 	void mend_hourly();		// Restore HP's hourly.
 					// Read from file.
-	void read(std::istream& nfile, int num, bool has_usecode,
+	void read(DataSource* nfile, int num, bool has_usecode,
 							bool& fix_unused);
 					// Don't write out to IREG file.
-	virtual void write_ireg(std::ostream& out)
+	virtual void write_ireg(DataSource* out)
 		{  }
-	void write(std::ostream& nfile);// Write out (to 'npc.dat').
-	virtual void write_contents(std::ostream& out);	// Write contents
+	void write(DataSource* nfile);// Write out (to 'npc.dat').
+	virtual void write_contents(DataSource* out);	// Write contents
 	void set_actor_shape(); 	// Set shape based on sex, skin color
 	void set_polymorph(int shape);	// Set a polymorph shape
 	void set_polymorph_default();	// Set the default shape
