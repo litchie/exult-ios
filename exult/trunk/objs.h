@@ -350,6 +350,22 @@ public:
 	};
 
 /*
+ *	A spellbook:
+ */
+class Spellbook_object : public Ireg_game_object
+	{
+	unsigned char circles[9];	// Spell-present flags for each circle.
+	unsigned long flags;		// Unknown at present.
+public:
+					// Create from ireg. data.
+	Spellbook_object(unsigned char l, unsigned char h, unsigned int shapex,
+		unsigned int shapey, unsigned int lft, unsigned char *c,
+		unsigned long f);
+					// Write out to IREG file.
+	virtual void write_ireg(ostream& out);
+	};
+
+/*
  *	A container object:
  */
 class Container_game_object : public Ireg_game_object

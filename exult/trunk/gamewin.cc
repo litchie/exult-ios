@@ -720,8 +720,19 @@ void Game_window::read_ireg_objects
 			if (type)	// ???Don't understand this yet.
 				read_ireg_objects(ireg, scx, scy, obj);
 			}
-		else
-			continue;	// FOR NOW.
+		else			// Length 18 means it's a spellbook.
+			{		// Get all 9 spell bytes.
+			quality = 0;
+			unsigned char circles[9];
+			memcpy(&circles[0], &entry[4], 5);
+			lift = entry[9] >> 4;
+			memcpy(&circles[5], &entry[10], 4);
+			unsigned char *ptr = &entry[14];
+			unsigned long flags = Read4(ptr);
+			obj = new Spellbook_object(
+				entry[2], entry[3], tilex, tiley, lift,
+				&circles[0], flags);
+			}
 		obj->set_quality(quality);
 					// Add, but skip volume check.
 		if (!container || !container->add(obj, 1))
