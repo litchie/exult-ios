@@ -5,6 +5,10 @@
 #include <string>
 #include <cstdio>
 #include <fstream>
+#include <iostream>
+
+using std::cout;
+using std::cerr;
 
 #include "ucfunc.h"
 
