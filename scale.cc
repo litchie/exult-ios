@@ -25,7 +25,7 @@ inline void Interp_horiz
 	unsigned int r0, r1, g0, g1, b0, b1;
 	manip.split_source(pix0, r0, g0, b0);
 	manip.split_source(pix1, r1, g1, b1);
-	*to++ = manip.rgb((r0 + r1)/2, (g0 + g1)/2, (b0 + b1)/2);
+	*to++ = manip.rgb((r0 + r1)>>1, (g0 + g1)>>1, (b0 + b1)>>1);
 	}
 
 /*
@@ -44,7 +44,7 @@ inline void Interp_vert
 	unsigned int r0, r1, g0, g1, b0, b1;
 	manip.split_dest(pix0, r0, g0, b0);
 	manip.split_dest(pix1, r1, g1, b1);
-	*to++ = manip.rgb((r0 + r1)/2, (g0 + g1)/2, (b0 + b1)/2);
+	*to++ = manip.rgb((r0 + r1)>>1, (g0 + g1)>>1, (b0 + b1)>>1);
 	}
 
 /*
@@ -99,7 +99,7 @@ void Scale2x
 		from1 = to + dline_pixels;
 		Dest_pixel *source_line1 = from1;
 		int count = dline_pixels;
-		int n = ( count + 7 ) / 8;
+		int n = ( count + 7 ) >>3;
 		switch( count % 8 )
 			{
 	             	case 0: do { Interp_vert(from0, from1, to, manip);
@@ -152,7 +152,7 @@ void Scale2x
 		int count = swidth;
 		register Source_pixel *source_line = from;
 		register Dest_pixel *dest_line = to;
-		register int n = ( count + 7 ) / 8;
+		register int n = ( count + 7 ) >>3;
 		switch( count % 8 )
 			{
 	             	case 0: do { Interp_horiz(from, to, manip);
