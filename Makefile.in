@@ -108,7 +108,7 @@ EXTRA_DIST = CHANGELOG
 
 SUFFIXES = .cc .h
 INCLUDES =  -I. $(AUDIO_INCLUDES) -Iconf $(SDL_INCLUDES) $(KMID_INCLUDES)
-LIBS =  $(SDL_LIBS) -Lconf  $(KMID_LIBS) $(AUDIO_LIBRARY) $(SYSLIBS) $(AUDIO_LIBRARY)
+LIBS =  $(SDL_LIBS) -Lconf -Lpathfinder $(KMID_LIBS) $(AUDIO_LIBRARY) $(SYSLIBS) $(AUDIO_LIBRARY)
 CXXFLAGS =  $(PEDANTIC) -DRELNUM=$(RELNUM) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS)
 
 LFLAGS =  -g 
@@ -307,7 +307,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
