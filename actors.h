@@ -379,9 +379,9 @@ public:
 	void set_party_id(int i)
 		{ party_id = i; }
 					// Set for Usecode animations.
-	virtual void set_usecode_dir(int d)
+	void set_usecode_dir(int d)
 		{ usecode_dir = d&7; }
-	virtual int get_usecode_dir() const
+	int get_usecode_dir() const
 		{ return usecode_dir; }
 	virtual Actor *as_actor()	// An actor?
 		{ return this; }

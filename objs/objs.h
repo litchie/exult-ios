@@ -264,11 +264,6 @@ public:
 	virtual int get_siflag(int flag) const { return 0; }
 	virtual int get_type_flag(int flag) const { return 0; }
 
-					// Set for Usecode animations.
-	virtual void set_usecode_dir(int d)
-		{  }
-	virtual int get_usecode_dir() const
-		{ return 0; }
 	virtual Actor *as_actor() 	// An actor?
 		{ return 0; }
 	virtual int is_egg() const	// An egg?

@@ -501,7 +501,9 @@ void Usecode_script::handle_event
 			Usecode_value& val = code->get_elem(++i);
 					// It may be 0x3x.  Face dir?
 			int dir = val.get_int_value()&7;
-			obj->set_usecode_dir(dir);
+			Actor *npc = obj->as_actor();
+			if (npc)
+				npc->set_usecode_dir(dir);
 			usecode->set_item_frame(obj, obj->get_dir_framenum(
 				dir, obj->get_framenum()), 1, 1);
 			frame_index = 0;// Reset walking frame index.
@@ -520,8 +522,9 @@ void Usecode_script::handle_event
 					// Frames with dir.  U7-verified!
 			if (opcode >= 0x61 && opcode <= 0x70)
 				{	// But don't show empty frames.
+				Actor *npc = obj->as_actor();
 				int v = obj->get_dir_framenum(
-					obj->get_usecode_dir(), 
+					npc ? npc->get_usecode_dir() : 0, 
 					opcode - 0x61);
 				usecode->set_item_frame(obj, v, 1, 1);
 				}
