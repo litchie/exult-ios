@@ -164,7 +164,7 @@ public:
 					// Get the one game window.
 	static Game_window *get_game_window()
 		{ return game_window; }
-	void clear_screen();
+	void clear_screen(bool update = false);
 		
 	void set_window_size(int w, int h, int s, int sclr);
 	void abort(const char *msg, ...);	// Fatal error.
@@ -346,7 +346,7 @@ public:
 	int get_sprite_num_frames(int shapenum)
 		{ return sprites.get_num_frames(shapenum); }
 					// Get screen area of shape at pt.
-	Rectangle get_shape_rect(const Shape_frame *s, int x, int y)
+	Rectangle get_shape_rect(const Shape_frame *s, int x, int y) const
 		{
 		return Rectangle(x - s->xleft, y - s->yabove,
 				s->get_width(), s->get_height());

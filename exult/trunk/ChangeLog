@@ -1,3 +1,7 @@
+2001-07-09  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* game.cc, ??game.cc, exultmenu.cc, gamewin.*, keyactions.cc:
+	fixed more annoying palette-flashes. cleaned up a bit
+
 2001-07-09  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/faq/readme.txt: instructions on how to build FAQ
 
