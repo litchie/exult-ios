@@ -1,3 +1,6 @@
+2001-03-18  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* credits.txt: added Alex Botero-Lowry (openbsd work)
+
 2001-03-17  Christoph Reichenbach  <jameson@linuxgames.com>
 
 	* game.cc (get_game_identity): long -> sint32 fix
