@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 
 #include <iostream.h>			/* Debugging messages */
 #include <X11/X.h>
@@ -233,6 +233,6 @@ void Xdnd::select_msg
 		}
 	}
 
-#endif	/* XWIN */
+#endif	/* USE_EXULTSTUDIO */
 
 

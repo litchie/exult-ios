@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL_syswm.h"
 #undef Font
 
-#ifdef XWIN  /* Only needed in XWIN. */
+#ifdef USE_EXULTSTUDIO  /* Only needed for communication with exult studio */
 #if HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -345,7 +345,7 @@ static void Init
 	
 	SDL_SysWMinfo info;		// Get system info.
         SDL_GetWMInfo(&info);
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 					// Want drag-and-drop events.
 	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
@@ -411,7 +411,7 @@ static void Init
 	gwin->init_files();
 	gwin->setup_game();		// This will start the scene.
 					// Get scale factor for mouse.
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
         SDL_GetWMInfo(&info);
         xfd = ConnectionNumber(info.info.x11.display);
 	Server_init();			// Initialize server (for map-editor).
@@ -514,7 +514,7 @@ static void Handle_events
 	 */
 	while (!*stop)
 		{
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 		Server_delay();		// Handle requests.
 #else
 		Delay();		// Wait a fraction of a second.
@@ -766,7 +766,7 @@ static void Handle_event
 //		Audio::get_ptr()->playwave("/home/jeff/exult/test.wav", false);
 		keybinder->HandleEvent(event);
 		break;
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 	case SDL_SYSWMEVENT:
 		{
 		XEvent& ev = event.syswm.msg->event.xevent;
@@ -1157,7 +1157,7 @@ void BuildGameMap()
 }
 
 
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 /*
  *	Drop a shape dragged from a shape-chooser via drag-and-drop.  Dnd is
  *	only supported under X for now.
