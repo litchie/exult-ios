@@ -78,53 +78,59 @@ class Effects_manager;
 class Game_window
 	{
 	static Game_window *game_window;// There's just one.
-	Image_window8 *win;		// Window to display into.
-	Shape_manager *shape_man;	// Manages shape file.
-	Palette *pal;
-	Game_map *map;			// Holds all terrain.
-	Usecode_machine *usecode;	// Drives game plot.
-	bool combat;			// true if in combat.
-	Time_queue *tqueue;		// Time-based queue.
-	Game_clock clock;		// Keeps track of time.
-	long time_stopped;		// For 'stop time' spell.
-	int std_delay;			// Standard delay between frames.
-	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
+		// Game component classes:
+	Dragging_info *dragging;	// Dragging info:
 	Effects_manager *effects;	// Manages special effects.
-	Gump_manager *gump_man;		// Open containers on screen.
+	Game_clock clock;		// Keeps track of time.
+	Game_map *map;			// Holds all terrain.
 	Game_render *render;		// Helps with rendering.
-	bool painted;			// true if we updated image buffer.
+	Gump_manager *gump_man;		// Open containers on screen.
+	Image_window8 *win;		// Window to display into.
+	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
+	Palette *pal;
+	Shape_manager *shape_man;	// Manages shape file.
+	Time_queue *tqueue;		// Time-based queue.
+	Time_sensitive *background_noise;
+	Usecode_machine *usecode;	// Drives game plot.
+		// Game state flags:
+	bool combat;			// true if in combat.
 	bool focus;			// Do we have focus?
-	bool teleported;		// true if just teleported.
-	unsigned int in_dungeon;	// true if inside a dungeon.
 	bool ice_dungeon;		// true if inside ice dungeon
+	bool painted;			// true if we updated image buffer.
+	bool teleported;		// true if just teleported.
+		// Game state values:
+	int skip_above_actor;		// Level above actor to skip rendering.
+	unsigned int in_dungeon;	// true if inside a dungeon.
+	int num_npcs1;			// Number of type1 NPC's.
+	int std_delay;			// Standard delay between frames.
+	long time_stopped;		// For 'stop time' spell.
+	unsigned long special_light;	// Game minute when light spell ends.
+	int theft_warnings;		// # times warned in current chunk.
+	short theft_cx, theft_cy;	// Chunk where warnings occurred.
+		// Gameplay objects:
 	Barge_object *moving_barge;	// ->cart/ship that's moving, or 0.
 	Main_actor *main_actor;		// Main sprite to move around.
-	int skip_above_actor;		// Level above actor to skip rendering.
-	int num_npcs1;			// Number of type1 NPC's.
+	Actor *camera_actor;		// What to center view around.
 	Actor_vector npcs;		// Array of NPC's + the Avatar.
 	Exult_vector<Dead_body*> bodies;// Corresponding Dead_body's.
 	Deleted_objects *removed;	// List of 'removed' objects.
+		// Rendering info:
 	int scrolltx, scrollty;		// Top-left tile of screen.
-	Actor *camera_actor;		// What to center view around.
 	Rectangle scroll_bounds;	// Walking outside this scrolls.
-	unsigned long special_light;	// Game minute when light spell ends.
 	Rectangle dirty;		// Dirty rectangle.
+		// Savegames:
 	char *save_names[10];		// Names of saved games.
-	Dragging_info *dragging;	// Dragging info:
-					// Theft info:
-	int theft_warnings;		// # times warned in current chunk.
-	short theft_cx, theft_cy;	// Chunk where warnings occurred.
-	Time_sensitive *background_noise;
-
-	void set_scrolls(Tile_coord cent);
-	void clear_world();		// Clear out world's contents.
-	void read_save_names();		// Read in saved-game names.
-
+		// Options:
 	bool mouse3rd;			// use third (middle) mouse button
 	bool fastmouse;
 	bool double_click_closes_gumps;
 	bool walk_after_teleport;
 	int text_bg;			// draw a dark background behind text
+		// Private methods:
+	void set_scrolls(Tile_coord cent);
+	void clear_world();		// Clear out world's contents.
+	void read_save_names();		// Read in saved-game names.
+	long check_time_stopped();
 
 #ifdef RED_PLASMA
 	// Red plasma animation during game load
@@ -134,22 +140,60 @@ class Game_window
 	
 public:
 	friend class Game_render;
+	/*
+	 *	Public flags and gameplay options:
+	 */
 	int skip_lift;			// Skip objects with lift >= this.  0
 					//   means 'terrain-editing' mode.
 	bool paint_eggs;
 	bool armageddon;		// Spell was cast.
 	int combat_difficulty;		// 0=normal, >0 harder, <0 easier.
 	int debug;
+	/*
+	 *	Class maintenance:
+	 */
 	Game_window(int width = 0, int height = 0, int scale = 1, 
 							int scaler = 0);
 	~Game_window();
 					// Get the one game window.
 	static Game_window *get_instance()
 		{ return game_window; }
-	void clear_screen(bool update = false);
-		
-	void set_window_size(int w, int h, int s, int sclr);
 	void abort(const char *msg, ...);	// Fatal error.
+	/*
+ 	 *	Display:
+	 */
+	void clear_screen(bool update = false);
+	void set_window_size(int w, int h, int s, int sclr);
+	int get_width() const
+		{ return win->get_width(); }
+	int get_height() const
+		{ return win->get_height(); }
+	inline int get_scrolltx() const		// Get window offsets in tiles.
+		{ return scrolltx; }
+	inline int get_scrollty() const
+		{ return scrollty; }
+	inline Rectangle get_win_rect() const	// Get window's rectangle.
+		{ return Rectangle(0, 0, win->get_width(), win->get_height());}
+	Rectangle get_win_tile_rect()	// Get it in tiles, rounding up.
+		{ return Rectangle(get_scrolltx(), get_scrollty(),
+			(get_width() + c_tilesize - 1)/c_tilesize,
+			(get_height() + c_tilesize - 1)/c_tilesize); }
+					// Clip rectangle to window's.
+	Rectangle clip_to_win(Rectangle r)
+		{
+		Rectangle wr = get_win_rect();
+		return (r.intersect(wr));
+		}
+					// Resize event occurred.
+	void resized(unsigned int neww, unsigned int newh,
+				unsigned int newsc, unsigned int newsclr);
+	void get_focus();		// Get/lose focus.
+	void lose_focus();
+	inline bool have_focus() const
+		{ return focus; }
+	/*
+	 *	Game options:
+	 */
 	bool get_mouse3rd() const
 		{ return mouse3rd; }
 	void set_mouse3rd(bool m)
@@ -170,34 +214,26 @@ public:
 		{ return text_bg; }
 	void set_text_bg(int t)
 		{ text_bg = t; }
-	int get_width() const
-		{ return win->get_width(); }
-	int get_height() const
-		{ return win->get_height(); }
-	inline int get_scrolltx() const		// Get window offsets in tiles.
-		{ return scrolltx; }
-	inline int get_scrollty() const
-		{ return scrollty; }
+	/*
+	 *	Game components:
+	 */
 	inline Game_map *get_map() const
 		{ return map; }
 	inline Usecode_machine *get_usecode() const
 		{ return usecode; }
-	inline Rectangle get_win_rect() const	// Get window's rectangle.
-		{ return Rectangle(0, 0, win->get_width(), win->get_height());}
-	Rectangle get_win_tile_rect()	// Get it in tiles, rounding up.
-		{ return Rectangle(get_scrolltx(), get_scrollty(),
-			(get_width() + c_tilesize - 1)/c_tilesize,
-			(get_height() + c_tilesize - 1)/c_tilesize); }
-					// Clip rectangle to window's.
-	Rectangle clip_to_win(Rectangle r)
-		{
-		Rectangle wr = get_win_rect();
-		return (r.intersect(wr));
-		}
 	inline Image_window8 *get_win() const
 		{ return win; }
 	inline Time_queue *get_tqueue() const
 		{ return tqueue; }
+	Palette *get_pal()
+		{ return pal; }
+	Effects_manager *get_effects()
+		{ return effects; }
+	inline Gump_manager *get_gump_man() { return gump_man; }
+	inline Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
+	/*
+	 *	Game time:
+	 */
 	int get_hour()			// Get current time.
 		{ return clock.get_hour(); }
 	int get_minute()
@@ -211,8 +247,17 @@ public:
 	Game_clock *get_clock () { return &clock; }
 	void set_palette()		// Set for time, flags, lighting.
 		{ clock.set_palette(); }
+	/*
+	 *	ExultStudio support:
+	 */
 	void reload_shapes(int dragtype);	// Reload a shape file.
 	Map_patch_collection *get_map_patches();
+					// Locate shape (for EStudio).
+	bool locate_shape(int shapenum, bool upwards);
+	void send_location();		// Send our location to EStudio.
+	/*
+	 *	Gameplay data:
+	 */
 	inline Barge_object *get_moving_barge() const
 		{ return moving_barge; }
 	void set_moving_barge(Barge_object *b);
@@ -245,9 +290,6 @@ public:
 	void add_special_light(int minutes);
 					// Handle 'stop time' spell.
 	void set_time_stopped(long ticks);
-protected:
-	long check_time_stopped();
-public:
 	long is_time_stopped()
 		{ return !time_stopped ? 0 : check_time_stopped(); }
 	int get_std_delay() const	// Get/set animation frame delay.
@@ -270,13 +312,31 @@ public:
 	inline int in_combat()		// In combat mode?
 		{ return combat; }
 	void toggle_combat();
-					// Resize event occurred.
-	void resized(unsigned int neww, unsigned int newh, unsigned int newsc, unsigned int newsclr);
-	inline void set_painted()		// Force blit.
+	inline bool get_frame_skipping()	// This needs doing
+		{ return true; }
+					// Get ->party members.
+	int get_party(Actor **list, int avatar_too = 0);
+					// Add npc to 'nearby' list.
+	void add_nearby_npc(Npc_actor *npc);
+	void remove_nearby_npc(Npc_actor *npc);
+					// Track npcs in range of chunks.
+	void add_nearby_npcs(int from_cx, int from_cy,
+						int stop_cx, int stop_cy);
+					// Get all nearby NPC's.
+	void get_nearby_npcs(Actor_queue& list);
+					// Update NPCs' schedules.
+	void schedule_npcs(int hour3, int backwards = 0, bool repaint = true);
+	void mend_npcs();		// Restore HP's each hour.
+	void theft();			// Handle thievery.
+	void attack_avatar(int num_guards = 0);
+	/*
+	 *	Rendering:
+	 */
+	inline void set_painted()	// Force blit.
 		{ painted = 1; }
 	inline bool was_painted()
 		{ return painted; }
-	bool show(bool force = false)			// Returns true if blit occurred.
+	bool show(bool force = false)	// Returns true if blit occurred.
 		{
 		if (painted || force)
 			{
@@ -286,71 +346,6 @@ public:
 			}
 		return false;
 		}
-					// Locate shape (for EStudio).
-	bool locate_shape(int shapenum, bool upwards);
-	void send_location();		// Send our location to EStudio.
-					// Set view (upper-left).
-	void set_scrolls(int newscrolltx, int newscrollty);
-	void center_view(Tile_coord t);	// Center view around t.
-	void set_camera_actor(Actor *a);
-	Actor *get_camera_actor()
-		{ return camera_actor; }
-					// Scroll if necessary.
-	bool scroll_if_needed(Tile_coord t);
-	bool scroll_if_needed(Actor *a, Tile_coord t)
-		{ if (a == camera_actor) return scroll_if_needed(t); else return false; }
-#if 1
-					// Show abs. location of mouse.
-	void show_game_location(int x, int y);
-#endif
-					// Get screen area of shape at pt.
-	Rectangle get_shape_rect(const Shape_frame *s, int x, int y) const
-		{
-		return Rectangle(x - s->xleft, y - s->yabove,
-				s->get_width(), s->get_height());
-		}
-					// Get screen area used by object.
-	Rectangle get_shape_rect(Game_object *obj);
-					// Get screen loc. of object.
-	void get_shape_location(Game_object *obj, int& x, int& y);
-	void get_shape_location(Tile_coord t, int& x, int& y);
-	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
-			int frnum, int tilex, int tiley, int lift);
-	Ireg_game_object *create_ireg_object(int shnum, int frnum);
-	void write();// Write out to 'gamedat'.
-	void read();			// Read in 'gamedat'.
-	void write_gwin();		// Write gamedat/gamewin.dat.
-	void read_gwin();		// Read gamedat/gamewin.dat.
-	void write_map();		// Write map data to <PATCH> dir.
-	void read_map();		// Reread initial game map.
-	void reload_usecode();		// Reread (patched) usecode.
-	void init_actors();		// Place actors in the world.
-	void init_files(bool cycle=true);	// Load all files
-
-	// From Gamedat
-	void get_saveinfo( Shape_file *&map,
-			SaveGame_Details *&details,
-			SaveGame_Party *& party);
-	// From Savegame
-	bool get_saveinfo(int num, char *&name,
-			Shape_file *&map,
-			SaveGame_Details *&details,
-			SaveGame_Party *& party);
-	void read_saveinfo(DataSource *in,
-			SaveGame_Details *&details,
-			SaveGame_Party *& party);
-
-#ifdef HAVE_ZIP_SUPPORT
-private:
-	bool get_saveinfo_zip(const char *fname, char *&name,
-			Shape_file *&map,
-			SaveGame_Details *&details,
-			SaveGame_Party *& party);
-public:
-#endif
-
-	void write_saveinfo();		// Write the save info to gamedat
-
 	void clear_dirty()		// Clear dirty rectangle.
 		{ dirty.w = 0; }
 					// Paint scene at given tile.
@@ -367,7 +362,7 @@ public:
 		{ dirty = Rectangle(0, 0, get_width(), get_height()); }
 	void add_dirty(Rectangle r)	// Add rectangle to dirty area.
 		{ dirty = dirty.w > 0 ? dirty.add(r) : r; }
-					// Add dirty rect. for obj.  Rets. false
+					// Add dirty rect. for obj. Rets. false
 					//   if not on screen.
 	bool add_dirty(Game_object *obj)
 		{
@@ -382,21 +377,111 @@ public:
 		else
 			return false;
 		}
+					// Set view (upper-left).
+	void set_scrolls(int newscrolltx, int newscrollty);
+	void center_view(Tile_coord t);	// Center view around t.
+	void set_camera_actor(Actor *a);
+	Actor *get_camera_actor()
+		{ return camera_actor; }
+					// Scroll if necessary.
+	bool scroll_if_needed(Tile_coord t);
+	bool scroll_if_needed(Actor *a, Tile_coord t)
+		{ if (a == camera_actor) return scroll_if_needed(t); 
+							else return false; }
+#if 1
+					// Show abs. location of mouse.
+	void show_game_location(int x, int y);
+#endif
+					// Get screen area of shape at pt.
+	Rectangle get_shape_rect(const Shape_frame *s, int x, int y) const
+		{
+		return Rectangle(x - s->xleft, y - s->yabove,
+				s->get_width(), s->get_height());
+		}
+					// Get screen area used by object.
+	Rectangle get_shape_rect(Game_object *obj);
+					// Get screen loc. of object.
+	void get_shape_location(Game_object *obj, int& x, int& y);
+	void get_shape_location(Tile_coord t, int& x, int& y);
+	void plasma(int w, int h, int x, int y, int startc, int endc);
+	/*
+	 *	Object creation:
+	 */
+	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
+			int frnum, int tilex, int tiley, int lift);
+	Ireg_game_object *create_ireg_object(int shnum, int frnum);
+	/*
+	 *	Save/restore/startup:
+	 */
+	void write();			// Write out to 'gamedat'.
+	void read();			// Read in 'gamedat'.
+	void write_gwin();		// Write gamedat/gamewin.dat.
+	void read_gwin();		// Read gamedat/gamewin.dat.
+	void write_map();		// Write map data to <PATCH> dir.
+	void read_map();		// Reread initial game map.
+	void reload_usecode();		// Reread (patched) usecode.
+	void init_actors();		// Place actors in the world.
+	void init_files(bool cycle=true);	// Load all files
+
+		// From Gamedat
+	void get_saveinfo( Shape_file *&map,
+			SaveGame_Details *&details,
+			SaveGame_Party *& party);
+		// From Savegame
+	bool get_saveinfo(int num, char *&name,
+			Shape_file *&map,
+			SaveGame_Details *&details,
+			SaveGame_Party *& party);
+	void read_saveinfo(DataSource *in,
+			SaveGame_Details *&details,
+			SaveGame_Party *& party);
+#ifdef HAVE_ZIP_SUPPORT
+private:
+	bool get_saveinfo_zip(const char *fname, char *&name,
+			Shape_file *&map,
+			SaveGame_Details *&details,
+			SaveGame_Party *& party);
+public:
+#endif
+	void write_saveinfo();		// Write the save info to gamedat
 	inline char *get_save_name(int i) const	// Get ->saved-game name.
 		{ return save_names[i]; }
-	Palette *get_pal()
-		{ return pal; }
+	void setup_game();		// Prepare for game
+	void read_npcs();		// Read in npc's.
+	void write_npcs();		// Write them back.
+	void read_schedules();		// Read npc's schedules.
+	void write_schedules();		// Write npc's schedules.
+	void revert_schedules(Actor *);	// Reset a npc's schedule.
+					// Explode a savegame into "gamedat".
+	void restore_gamedat(const char *fname);
+	void restore_gamedat(int num);
+					// Save "gamedat".
+	void save_gamedat(const char *fname, const char *savename);
+	void save_gamedat(int num, const char *savename);
+					// Get IDENTITY string.
+	static char *get_game_identity(const char *savename);
+	bool init_gamedat(bool create); // Initialize gamedat directory
+#ifdef HAVE_ZIP_SUPPORT
+private:
+	bool save_gamedat_zip(const char *fname, const char *savename);
+	bool Restore_level2 (void *unzipfile);
+	bool restore_gamedat_zip(const char *fname);
+	static char *get_game_identity_zip(const char *savename);
+public:
+#endif
+	/*
+	 *	Game control:
+	 */
 	void view_right();		// Move view 1 chunk to right.
 	void view_left();		// Move view left by 1 chunk.
 	void view_down();		// Move view down.
 	void view_up();			// Move view up.
 					// Start moving actor.
+	void start_actor_alt (int winx, int winy, int speed);
 	void start_actor(int winx, int winy, int speed = 125);
 	void start_actor_along_path(int winx, int winy, int speed = 125);
 	void stop_actor();		// Stop main actor.
 	void teleport_party(Tile_coord t, bool skip_eggs = false);
-					// Get ->party members.
-	int get_party(Actor **list, int avatar_too = 0);
 	void activate_item(int shnum, int frnum=c_any_framenum,
 			   int qual=c_any_qual); // Activate item in party.
 					// Find object (x, y) is in.
@@ -407,77 +492,26 @@ public:
 	ShapeID get_flat(int x, int y);	// Return terrain (x, y) is in.
 					// Schedule object for deletion.
 	void delete_object(Game_object *obj);
-	Effects_manager *get_effects()
-		{ return effects; }
 					// Handle a double-click in window.
 	void double_clicked(int x, int y);
-					// Add npc to 'nearby' list.
-	void add_nearby_npc(Npc_actor *npc);
-	void remove_nearby_npc(Npc_actor *npc);
-					// Track npcs in range of chunks.
-	void add_nearby_npcs(int from_cx, int from_cy,
-						int stop_cx, int stop_cy);
-					// Get all nearby NPC's.
-	void get_nearby_npcs(Actor_queue& list);
-					// Update NPCs' schedules.
-	void schedule_npcs(int hour3, int backwards = 0, bool repaint = true);
-	void mend_npcs();		// Restore HP's each hour.
-	void theft();			// Handle thievery.
-	void attack_avatar(int num_guards = 0);
-	void get_focus();		// Get/lose focus.
-	void lose_focus();
-	inline bool have_focus() const
-		{ return focus; }
-	void setup_game();		// Prepare for game
-	void read_npcs();		// Read in npc's.
-	void write_npcs();		// Write them back.
-	void read_schedules();		// Read npc's schedules.
-	void write_schedules();		// Write npc's schedules.
-	void revert_schedules(Actor *);	// Reset a npc's schedule.
-					// Start dragging.
 	bool start_dragging(int x, int y);
 	bool drag(int x, int y);	// During dragging.
 	bool drop_dragged(int x, int y, bool moved);// Done dragging.
 	bool is_dragging() const { return dragging != 0; }
 	bool drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
-	bool init_gamedat(bool create); // Initialize gamedat directory
-					// Explode a savegame into "gamedat".
-	void restore_gamedat(const char *fname);
-	void restore_gamedat(int num);
-					// Save "gamedat".
-	void save_gamedat(const char *fname, const char *savename);
-	void save_gamedat(int num, const char *savename);
-					// Get IDENTITY string.
-	static char *get_game_identity(const char *savename);
-
-#ifdef HAVE_ZIP_SUPPORT
-private:
-	bool save_gamedat_zip(const char *fname, const char *savename);
-	bool Restore_level2 (void *unzipfile);
-	bool restore_gamedat_zip(const char *fname);
-	static char *get_game_identity_zip(const char *savename);
-public:
-#endif
-
-	void plasma(int w, int h, int x, int y, int startc, int endc);
-	
+	Gump *get_dragging_gump();
 	// Create a mini-screenshot (96x60)
 	Shape_file* create_mini_screenshot ();
-
-	inline bool get_frame_skipping()	// This needs doing
-	{ return true; }
+	/*
+	 *	Chunk-caching:
+	 */
 	// Old Style Caching Emulation. Called if player has changed chunks
 	void emulate_cache(int oldx, int oldy, int newx, int newy);
 	// Is a specific move by a monster or item allowed
 	bool emulate_is_move_allowed(int tx, int ty);
 	// Swapping a superchunk to disk emulation
 	void emulate_swapout (int scx, int scy);
-	inline Gump_manager *get_gump_man() { return gump_man; }
-	Gump *get_dragging_gump();
-	inline Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
 
-protected:
-	void start_actor_alt (int winx, int winy, int speed);
 
 #ifdef RED_PLASMA
 	void setup_load_palette();
