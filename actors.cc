@@ -967,8 +967,8 @@ int Actor::get_rotated_frame
 	)
 	{
 	int curframe = get_framenum();
-					// Bit 4=rotate180, 5=rotate90.
-	int curdir = 2*((curframe>>4)&1) + ((curframe>>5)&1);
+					// Bit 4=rotate180, 5=rotate-90.
+	int curdir = (4 + 2*((curframe>>4)&1) - ((curframe>>5)&1))%4;
 	int newdir = (curdir + quads)%4;
 					// Convert to 8-value dir & get frame.
 	return get_dir_framenum(2*newdir, curframe);
