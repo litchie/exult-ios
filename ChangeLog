@@ -1,4 +1,7 @@
 2000-11-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* gumps.cc: stopped bags from disappearing when put into another bag.
+
+2000-11-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc: keycommands only get activated when ctrl/alt status is exactly correct
 	* exult.cc: updated help screens
 
