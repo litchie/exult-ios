@@ -356,39 +356,6 @@ inline Tile_coord Get_step_tile
 		dy = -1;
 	else if (dy > 1)
 		dy = 1;
-#if 0	/* ++++++I don't think this is good.	*/
-					// Get adjacent tile in given dir.
-	Tile_coord adj = pos.get_neighbor(dir);
-					// See if we're past desired spot.
-	if (dx < 0)			// Dest. to our left?
-		{
-		if (adj.tx > pos.tx && dx >= -4)// But walking right.
-			dx = 0;
-		else if (dx < -1)
-			dx = -1;	// Can only step by 1 tile.
-		}
-	else if (dx > 0)
-		{
-		if (adj.tx < pos.tx && dx <= 4)	// Walking left?
-			dx = 0;
-		else if (dx > 1)
-			dx = 1;
-		}
-	if (dy < 0)			// Dest. North?
-		{
-		if (adj.ty > pos.ty && dy >= -4)	// But walking South?
-			dy = 0;
-		else if (dy < -1)
-			dy = -1;
-		}
-	else if (dy > 0)		// Dest. South?
-		{
-		if (adj.ty < pos.ty && dy <= 4)
-			dy = 0;
-		else if (dy > 1)
-			dy = 1;
-		}
-#endif
 	return pos + Tile_coord(dx, dy, 0);
 	}
 
@@ -605,7 +572,7 @@ int Party_manager::step
 	Tile_coord to = Get_step_tile(pos, dest, dir);
 	if (to.tx == pos.tx && to.ty == pos.ty)
 		return dir;		// Not moving.
-//++++++TEST:
+//TEST:
 	if (npc->in_queue() || npc->is_moving())
 		cout << npc->get_name() << " shouldn't be stepping!" << endl;
 	Frames_sequence *frames = npc->get_frames(dir);
@@ -616,15 +583,7 @@ int Party_manager::step
 	int frame = frames->get_next(step_index);
 					// Want dz<=1, dx<=2, dy<=2.
 	if (Is_step_okay(npc, leader, to) && npc->step(to, frame))
-		{
-#if 0	/* ++++++Not sure... */
-		if (to.tx != dest.tx || to.ty != dest.ty)
-			{		// Take a 2nd step (w/ same frame).
-			to = Get_step_tile(npc->get_tile(), dest, dir);
-			npc->step(to, frame);
-			}
-#endif
-		}
+		;
 					// Could have died from stepping on
 					//   something.
 	else if (npc->is_dead() ||

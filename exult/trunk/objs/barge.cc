@@ -841,9 +841,6 @@ void Barge_object::elements_read
 	(
 	)
 	{
-#if 0
-	perm_count = objects.size();
-#endif
 	perm_count = 0;			// So we don't get haystack!
 	complete = true;
 	}

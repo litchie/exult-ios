@@ -572,10 +572,6 @@ Combo_editor::Combo_editor
 		    GDK_BUTTON1_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
 		first = false;
 		}
-#if 0
-	combo->add(5, 5, 0, 162, 0);	// Testing.
-	combo->add(7, 7, 0, 161, 0);
-#endif
 	set_controls();
 	}
 
@@ -1157,11 +1153,6 @@ on_combo_key_press			(GtkEntry	*entry,
 	case GDK_Delete:
 		chooser->remove();
 		return TRUE;
-#if 0
-	case GDK_Insert:
-		chooser->new_frame();
-		return TRUE;
-#endif
 		}
 	return FALSE;			// Let parent handle it.
 }

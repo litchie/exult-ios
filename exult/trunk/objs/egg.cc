@@ -597,10 +597,6 @@ void Egg_object::activate_teleport
 	if (pos.tx != -1 && obj && obj->get_flag(Obj_flags::in_party))
 					// Teleport everyone!!!
 		gwin->teleport_party(pos);
-#if 0	/* ++++I'm almost sure this is wrong. */
-					// Can keep doing it.
-	flags &= ~((1 << (int) hatched));
-#endif
 	}
 
 /*

@@ -386,19 +386,7 @@ int Fast_pathfinder_client::get_step_cost
 					//   Crystal Ball).
 	if (olist->is_blocked(1, to.tz, tx, ty, new_lift, get_move_flags(), 
 									2, 2))
-		{
-#if 0	/* +++++Lets you get to things in locked rooms! */
-		int i;			// Look upwards a bit.
-		for (i = to.tz + 1; i < to.tz + 3; i++)
-			if (!olist->is_blocked(1, i, tx, ty, new_lift, get_move_flags()))
-				return 1;
-					// Look downwards a bit.
-		for (i = to.tz - 1; i >= 0 && i >= to.tz - 3; i--) 
-			if (!olist->is_blocked(1, i, tx, ty, new_lift, get_move_flags()))
-				return 1;
-#endif
 		return -1;
-		}
 	to.tz = new_lift;		// (I don't think we should do this
 					//    above...)
 	return 1;
