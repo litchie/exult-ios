@@ -356,7 +356,9 @@ int Path_walking_actor_action::open_door
 	Tile_coord tmp = Map_chunk::find_spot(past, 1, actor, 1);
 	if (past.tx != -1)		// Succeeded.  Walk past and close it.
 		{
+#ifdef DEBUG
 		cout << "Path_walking_actor_action::open_door()" << endl;
+#endif
 		signed char frames[2];
 		frames[0] = actor->get_dir_framenum(dir, Actor::standing);
 		frames[1] = actor->get_dir_framenum(dir, 3);
