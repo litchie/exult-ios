@@ -50,7 +50,9 @@ class Xdnd
 	int num_types;
 	Atom drag_types[max_types];	// Data type atoms source can supply.
 					// Current drag info:
-	int lastx, lasty;		// Last mouse pos. during drag.public:
+	int lastx, lasty;		// Last mouse pos. during drag, within
+					//   our window.
+	int winx, winy;			// Window coords. at start of drag.
 	int file, shape, frame;		// Set when a shape is being dragged.
 	int chunknum;			// Set when a chunk is dragged.
 	bool data_valid;		// True when the above is retrieved.
