@@ -17,7 +17,7 @@
 #ifndef MENU_LIST_H
 #define MENU_LIST_H
 
-#include "vec.h"
+#include <vector>
 
 class Game_window;
 class Shape_frame;
@@ -50,7 +50,7 @@ public:
 
 class MenuChoice: public MenuObject {
 private:
-	FeatureVector<char*> *choices;
+	std::vector<std::string> *choices;
 	int choice;
 	Font *font;
 	int max_choice_width;
@@ -67,12 +67,12 @@ public:
 
 class MenuList {
 private:
-	FeatureVector<MenuObject*> *entries;
+	std::vector<MenuObject*> *entries;
 	int selected;
 public:
-	MenuList(): selected(-1) { entries = new FeatureVector<MenuObject*>(); }
+	MenuList(): selected(-1) { entries = new std::vector<MenuObject*>(); }
 	~MenuList();
-	void add_entry(MenuObject *entry) { entries->append(entry); }
+	void add_entry(MenuObject *entry) { entries->push_back(entry); }
 	void paint(Game_window *gwin);
 	int handle_events(Game_window *gwin);
 	int get_selected() { return selected; }
