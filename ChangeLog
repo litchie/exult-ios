@@ -1,3 +1,6 @@
+2001-02-07  Ryan Nunn <triforce@merlin.net.au>
+	* tools/expack.cc: Fix end of line bug on Win32
+
 2001-02-06  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* tools/expack.cc: allow -i to create flex archives from files not
 	  in the current directory
