@@ -1008,22 +1008,26 @@ USECODE_INTRINSIC(display_area)
 					// Figure in tiles.
 		int tw = gwin->get_width()/tilesize, 
 		    th = gwin->get_height()/tilesize;
-					// Paint game area.
-		gwin->paint_map_at_tile(tx - tw/2, ty - th/2, 4);
-					// Paint sprite #10 (black gate!)
-					//   over it.
+		gwin->clear_screen();	// Fill with black.
 		Shape_frame *sprite = gwin->get_sprite_shape(10, 0);
-		if (sprite)		// They have translucency.
-			{		// Center it.
-			int topx = (gwin->get_width() - sprite->get_width())/2,
-			    topy = (gwin->get_height() - 
-						sprite->get_height())/2;
-			gwin->paint_shape(topx + sprite->get_xleft(),
-					  topy + sprite->get_yabove(), 
-								sprite, 1);
-			}
+					// Center it.
+		int topx = (gwin->get_width() - sprite->get_width())/2,
+		    topy = (gwin->get_height() - sprite->get_height())/2;
+					// Get area to fill.
+		int x = topx, y = topy, w = sprite->get_width(),
+					h = sprite->get_height();
+		if (w > gwin->get_width())
+			{ x = 0; w = gwin->get_width(); }
+		if (h > gwin->get_height())
+			{ y = 0; h = gwin->get_height(); }
+					// Paint game area.
+		gwin->paint_map_at_tile(x, y, w, h, tx - tw/2, ty - th/2, 4);
+					// Paint sprite #10 (black gate!)
+					//   over it, transparently.
+		gwin->paint_shape(topx + sprite->get_xleft(),
+				topy + sprite->get_yabove(), sprite, 1);
 		gwin->show();
-		int x, y;		// Wait for click.
+					// Wait for click.
 		Get_click(x, y, Mouse::hand);
 		gwin->paint();		// Repaint normal area.
 		}
