@@ -60,7 +60,7 @@ static const char *Pass_word
 	const char *text
 	)
 	{
-	while (*text && (!isspace(*text) || (*text == '\f')))
+	while (*text && (!isspace(*text) || (*text == '\f') || (*text == '\v')))
 		text++;
 	return (text);
 	}
