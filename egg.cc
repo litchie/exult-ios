@@ -57,7 +57,8 @@ Egg_object::Egg_object
 	unsigned char do_once = (itype >> 8) & 1;
 					// Cached_in eggs can be rehatched.
 	unsigned char htch = criteria == cached_in ? 0 : ((itype >> 9) & 1);
-	solid_area = criteria == cached_in ? 1 : 0;
+	solid_area = (criteria == cached_in || criteria == something_on) ? 1 
+								: 0;
 	unsigned char ar = (itype >> 15) & 1;
 	flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
@@ -170,7 +171,8 @@ int Egg_object::is_active
 	case party_footpad:
 		return area.has_point(tx, ty) && obj->get_party_id() >= 0;
 	case something_on:
-		return area.has_point(tx, ty) && obj->get_npc_num() <= 0;
+		return obj != gwin->get_main_actor() &&
+			area.has_point(tx, ty) && obj->get_npc_num() <= 0;
 	default:
 		return 0;
 		}
