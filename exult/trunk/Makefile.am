@@ -46,6 +46,7 @@ exult_SOURCES =	\
 	effects.h	\
 	exult.cc	\
 	exult.h		\
+	exulticon.h	\
 	exultmenu.cc	\
 	exultmenu.h	\
 	exult_types.h	\
