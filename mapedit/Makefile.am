@@ -29,6 +29,8 @@ shapetest_SOURCES = shapetest.cc
 paltest_SOURCES = paltest.cc
 
 exult_studio_SOURCES = \
+	chunklst.cc \
+	chunklst.h \
 	dirbrowser.cc \
 	dirbrowser.h \
 	eggedit.cc \

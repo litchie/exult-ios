@@ -35,6 +35,7 @@ private:
 	static ExultStudio	*self;
 	Vga_file		*ifile;
 	Vga_file		*vgafile;	// Main 'shapes.vga'.
+	ifstream		*chunkfile;	// 'u7chunks'.
 	char			**names;
 	Object_browser		*browser;
 	unsigned char 		*palbuf;
@@ -77,6 +78,8 @@ public:
 	void choose_static_path();
 	Object_browser  *create_shape_browser(const char *fname);
 	void delete_shape_browser();
+	Object_browser  *create_chunk_browser(const char *fname);
+	void delete_chunk_browser();
 	Object_browser  *create_palette_browser(const char *fname);
 	void set_static_path(const char *path);
 	void open_egg_window(unsigned char *data = 0, int datalen = 0);

@@ -303,7 +303,9 @@ unsigned char Shape_frame::read
 	uint32 datalen = shapes.read4();
 	uint32 hdrlen = shapes.read4();
 	if (datalen == shapelen)
-		{			// Figure # frames.
+		{
+		rle = 1;		// It's run-length-encoded.
+					// Figure # frames.
 		int nframes = (hdrlen - 4)/4;
 		if (framenum >= nframes)// Bug out if bad frame #.
 			return (nframes);
@@ -330,7 +332,7 @@ unsigned char Shape_frame::read
 					// Return # frames.
 		return (nframes);
 		}
-	xleft = yabove = 8;
+	xleft = yabove = 8;		// Just an 8x8 bitmap.
 	xright= ybelow = -1;
 	shapes.seek(shapeoff + framenum*64);
 	data = new unsigned char[64];	// Read in 8x8 pixels.
@@ -687,7 +689,9 @@ Shape_frame *Shape::read
 	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
 		create_frames_list(nframes);
-	if (framenum >= nframes &&	// Compare against #frames in file.
+	if (!frame->rle)		// Flat?
+		framenum &= 31;		// !!!Guessing here.
+	else if (framenum >= nframes &&	// Compare against #frames in file.
 	    (framenum&32))		// Reflection desired?
 		{
 		delete frame;

@@ -112,12 +112,16 @@ void Chunk_chooser::render
 		int x = border;
 		while (chunknum < num_chunks && x + chunkw + border <= winw)
 			{
+			iwin->set_clip(x, y, chunkw, chunkh);
+//			iwin->set_clip(0, 0, winw, winh);
 			render_chunk(x, y);
+			iwin->clear_clip();
 					// Store info. about where drawn.
-			info[info_cnt++].set(chunknum, x, y, chunkw, chunkh);
+			info[info_cnt].set(chunknum, x, y, chunkw, chunkh);
 			if (chunknum == selchunk)
 						// Found the selected chunk.
 				new_selected = info_cnt;
+			info_cnt++;
 			chunknum++;		// Next chunk.
 			x += chunkw + border;
 			}
@@ -142,18 +146,17 @@ void Chunk_chooser::render_chunk
 	unsigned char buf[512];
 	chunkfile.read(buf, 512);
 	unsigned char *data = &buf[0];
-	int y = 0;
+	int y = c_tilesize;
 	for (int ty = 0; ty < c_tiles_per_chunk; ty++, y += c_tilesize)
 		{
-		int x = 0;
+		int x = c_tilesize;
 		for (int tx = 0; tx < c_tiles_per_chunk; tx++,
 							x += c_tilesize)
 			{
 			ShapeID id(data);
 			Shape_frame *s = ifile->get_shape(id.get_shapenum(),
 							id.get_framenum());
-			s->paint(iwin, xoff + x + s->get_xleft(),
-					yoff + y + s->get_yabove());
+			s->paint(iwin, xoff + x - 1, yoff + y -1);
 			}
 		}
 	}
