@@ -711,7 +711,7 @@ class Frames_sequence
 public:
 	Frames_sequence(int cnt, unsigned char *f);
 	~Frames_sequence()
-		{ delete frames; }
+		{ delete [] frames; }
 					// Get resting frame.
 	unsigned char get_resting() const
 		{ return frames[0]; }
