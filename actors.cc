@@ -862,7 +862,8 @@ string Actor::get_name
 	(
 	) const
 	{
-	return (name.empty() || !get_flag (met)) ? Game_object::get_name() : name;
+	return (name.empty() || 
+		!get_flag (met)) ? Game_object::get_name() : name;
 	}
 
 /*
@@ -874,8 +875,28 @@ void Actor::set_property
 	int val
 	)
 	{
-	if (prop == health && ((party_id != -1) || (npc_num == 0)) && god_mode && val < 1)
-		return;
+	if (prop == health)
+		{
+		if (((party_id != -1) || (npc_num == 0)) && 
+							god_mode && val < 1)
+			return;
+		int oldhp = properties[(int) health];
+		int maxhp = properties[(int) strength];
+		properties[(int) health] = val;
+		if (val < oldhp)	// Losing points?
+			{
+			Game_window *gwin = Game_window::get_game_window();
+				
+			if (this == gwin->get_main_actor() && val < maxhp/8)
+				{	// Flash red if Avatar badly hurt.
+				if (rand()%2)
+					gwin->flash_palette_red();
+				if (Actor::is_dead_npc())
+					die();
+				}
+			}
+		return;			// All done in this case.
+		}
 	if (prop >= 0 && prop < 12)
 		if (prop == (int) exp)
 			{		// Experience?  Check for new level.
@@ -1351,9 +1372,6 @@ int Actor::figure_hit_points
 			say(first_ouch, last_ouch);
 	cout << "Attack damage was " << hp << " hit points, leaving " << 
 		properties[(int) health] << " remaining" << endl;
-					// Flash red if Avatar badly hurt.
-	if (this == gwin->get_main_actor() && oldhealth - hp < maxhealth/8)
-		gwin->flash_palette_red();
 	return hp;
 	}
 
@@ -1373,7 +1391,6 @@ void Actor::attacked
 	figure_hit_points(attacker, weapon_shape, ammo_shape);
 	if (is_dead_npc())
 		{
-		die();
 					// Experience gained = strength???
 		int expval = get_property((int) strength);
 		if (is_monster())
