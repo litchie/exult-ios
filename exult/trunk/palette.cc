@@ -220,6 +220,31 @@ int Palette::find_color(int r, int g, int b) {
 	return best_index;
 }
 
+/*
+ *	Create a translucency table for this palette seen through a given
+ *	color.  (Based on a www.gamedev.net article by Jesse Towner.)
+ */
+
+void Palette::create_trans_table
+	(
+					// Color to blend with:
+	unsigned char br, unsigned bg, unsigned bb,
+	int alpha,			// 0-255, applied to 'blend' color.
+	unsigned char *table		// 256 indices are stored here.
+	)
+	{
+	for (int i = 0; i < 256; i++)
+		{
+		int newr = ((int) br * alpha)/255 + 
+				((int) pal1[i*3] * (1- alpha))/255;
+		int newg = ((int) bg * alpha)/255 + 
+				((int) pal1[i*3 + 1] * (1- alpha))/255;
+		int newb = ((int) bb * alpha)/255 + 
+				((int) pal1[i*3 + 2] * (1- alpha))/255;
+		table[i] = find_color(newr, newg, newb);
+		}
+	}
+
 void Palette::show() {
 	for (int x = 0; x < 16; x++) {
 		for (int y = 0; y < 16; y++) {

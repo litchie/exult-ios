@@ -43,6 +43,8 @@ public:
 		void fade_in(int cycles);
 		void fade_out(int cycles);
 		int find_color(int r, int g, int b);
+		void create_trans_table(unsigned char br, unsigned bg,
+			unsigned bb, int alpha, unsigned char *table);
 		void show();
 
 		void set_color(int nr, int r, int g, int b);
