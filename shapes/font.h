@@ -84,6 +84,7 @@ public:
 	FontManager();
 	~FontManager();
 	void add_font(const char *name, const char *archive, int index, int hlead=0, int vlead=1);
+	void remove_font(const char *name);
 	Font *get_font(const char *name);
 };
 

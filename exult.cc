@@ -392,18 +392,23 @@ static void Init
 
 	SDL_SetEventFilter(0);
 	// Show the banner
-	ExultMenu exult_menu(gwin);
-	Exult_Game mygame = exult_menu.run();
-	Game::create_game(mygame);
+	Exult_Game mygame;
+	game = 0;
+	do {
+		if(game)
+			delete game;
+		ExultMenu exult_menu(gwin);
+		mygame = exult_menu.run();
+		Game::create_game(mygame);
 
-	string yn;
-	gwin->init_files();
+		string yn;
+		
 					// Skip splash screen?
-	config->value("config/gameplay/skip_splash", yn, "no");
-	if(yn == "no") 
+		config->value("config/gameplay/skip_splash", yn, "no");
+		if(yn == "no") 
 		game->play_intro();
-	game->show_menu();
-//	SDL_SetEventFilter(Filter_intro_events);
+	} while(!game->show_menu());
+	gwin->init_files();
 	gwin->setup_game();		// This will start the scene.
 					// Get scale factor for mouse.
 #ifdef XWIN

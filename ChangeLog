@@ -1,3 +1,11 @@
+2001-07-26  Tristan Tarrant <nadir@users.sourceforge.net>
+	* exult.cc, game.cc, game.h: implement "Return to menu" functionality
+	* files/IFF.cc, files/utils.cc: clean up some printouts
+	* gumps/VideoOptions_gump.cc: converted to use the expack-generated 
+	EXULT_FLX_* constants
+	* shapes/font.*: release memory on deallocation of fonts
+	* shapes/vgafile.*: allow reuse of shape objects for different files
+
 2001-07-26  Patrick Burke  <takhisisii@yahoo.com.au>
 
 	* usecode/siintrinsics.h: lacked UNKNOWN opcode definitions for

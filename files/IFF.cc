@@ -101,9 +101,6 @@ void	IFF::IndexIFFFile(void)
 		
 		if(r.size==0||r.offset==0)
 			break;
-#ifdef DEBUG	
-		cout << "Object type: " << type << " at position " << r.offset << " with length of " << r.size << endl;
-#endif
 		object_list.push_back(r);
 		fseek(fp,r.offset+r.size,SEEK_SET);
 	}

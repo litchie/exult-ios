@@ -35,6 +35,7 @@
 #include "mouse.h"
 #include "palette.h"
 #include "keys.h"
+#include "data/exult_flx.h"
 
 using std::cout;
 using std::endl;
@@ -241,7 +242,7 @@ str_int_pair Game::get_resource(const char *name)
 }
 
 
-void Game::show_menu()
+bool Game::show_menu()
 {
 	int menuy = topy+120;
 	ExultDataSource mouse_data(MAINSHP_FLX, 19);
@@ -250,18 +251,23 @@ void Game::show_menu()
 	top_menu();
 	MenuList *menu = new MenuList();
 		
-	int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12};
+	int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12, 0x07 };
 	int num_choices = sizeof(menuchoices)/sizeof(int);
+	Vga_file exult_flx("<DATA>/exult.flx");
 		
 	for(int i=0; i<num_choices; i++) {
 		menu->add_entry(new MenuEntry(menushapes.get_shape(menuchoices[i],1),
 					      menushapes.get_shape(menuchoices[i],0),
 					      centerx, menuy+i*11));
 	}
-		
+	
+	/*	menu->add_entry(new MenuEntry(exult_flx.get_shape(returnshape,1),
+					      exult_flx.get_shape(returnshape,0),
+					      centerx, menuy+num_choices*11));*/
 	menu->set_selection(2);
 	char npc_name[16];
 	snprintf(npc_name, 16, "Exult");
+	bool play = false;
 	do {
 		bool created = false;
 		
@@ -291,6 +297,7 @@ void Game::show_menu()
 					menu->set_selection(2);
 			} else
 				menu->set_selection(2); // This will start the game
+			play = true;
 			break;
 		case 3: // Credits
 			pal.fade_out(c_fade_out_time);
@@ -307,6 +314,9 @@ void Game::show_menu()
 			end_game(true);
 			top_menu();
 			break;
+		case 6:
+			menu->set_selection(2);
+			break;
 		default:
 			break;
 		}
@@ -316,6 +326,7 @@ void Game::show_menu()
 	gwin->clear_screen(true);
 	Audio::get_ptr()->stop_music();
 	delete menu_mouse;
+	return play;
 }
 	
 void Game::journey_failed_text()
