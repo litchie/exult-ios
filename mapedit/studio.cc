@@ -17,6 +17,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "../alpha_kludges.h"
+#include <dirent.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <glib.h>
@@ -28,42 +29,71 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "u7drag.h"
 #include "studio.h"
 
-Vga_file *ifile = 0;
-char **names = 0;
-Shape_chooser *chooser = 0;
-Palette_edit *paled = 0;
+ExultStudio *ExultStudio::self = 0;
+
+void on_filelist_select_row(GtkCList        *clist,
+				   gint             row,
+				   gint             column,
+				   GdkEvent        *event,
+				   gpointer         user_data)
+{
+	char *text;
+	gtk_clist_get_text( clist, row, 0, &text );
+	ExultStudio::get_instance()->create_shape_browser(text);
+}
 
 ExultStudio::ExultStudio(int argc, char **argv)
 {
+	// Initialize the various subsystems
+	self = this;
 	gtk_init( &argc, &argv );
 	gdk_rgb_init();
 	glade_init();
+	
+	// Load the Glade interface
 	app_xml = glade_xml_new( "./exult_studio.glade", "main_window" );
 	app = glade_xml_get_widget( app_xml, "main_window" );
-	// glade_xml_signal_autoconnect( app_xml );
+	
+	// Connect signals
+	GtkWidget *temp;
+	temp = glade_xml_get_widget( app_xml, "exit" );
+	gtk_signal_connect(GTK_OBJECT(temp), "activate",
+				GTK_SIGNAL_FUNC(gtk_main_quit), 0);
+	temp = glade_xml_get_widget( app_xml, "file_list" );
+	gtk_signal_connect(GTK_OBJECT(temp), "select_row",
+				GTK_SIGNAL_FUNC(on_filelist_select_row), this);
+	
+	// More setting up...
 	gtk_widget_show( app );
-	create_shape_browser();
-	create_palette_browser();
+	chooser = 0;
+	static_path = "./static/";
+	scan_static_path();
 }
 
 ExultStudio::~ExultStudio()
 {
 	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
-	delete chooser;
+	delete_shape_browser();
 	delete paled;
-	int num_shapes = ifile->get_num_shapes();
-	delete ifile;
-	for (int i = 0; i < num_shapes; i++)
-		delete names[i];
-	delete [] names;
+	self = 0;
 }
 
-void ExultStudio::create_shape_browser()
+void ExultStudio::set_browser_frame_name(const char *name)
 {
-	ifile = new Vga_file("static/shapes.vga");
+	GtkWidget *browser_frame = glade_xml_get_widget( app_xml, "browser_frame" );
+	gtk_frame_set_label( GTK_FRAME( browser_frame ), name );
+}
+
+void ExultStudio::create_shape_browser(const char *fname)
+{
+	delete_shape_browser();
+	char *fullname = g_strdup_printf("%s%s", static_path, fname);
+	
+	ifile = new Vga_file(fullname);
+	g_free(fullname);
 	if (!ifile->is_good()) {
-		cerr << "Error opening image file 'shapes.vga'.\n";
+		cerr << "Error opening image file '" << fname << "'.\n";
 		abort();
 	}
 	
@@ -77,11 +107,29 @@ void ExultStudio::create_shape_browser()
 	delete items;
 	
 	
-	GtkWidget *shape_browser_box = glade_xml_get_widget( app_xml, "shape_browser_box" );
-	gtk_widget_show( shape_browser_box );
+	GtkWidget *browser_box = glade_xml_get_widget( app_xml, "browser_box" );
+	gtk_widget_show( browser_box );
 	chooser = new Shape_chooser(ifile, names, 400, 64);
-	gtk_box_pack_start(GTK_BOX(shape_browser_box), chooser->get_widget(), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(browser_box), chooser->get_widget(), TRUE, TRUE, 0);
+	set_browser_frame_name("Shape Browser");
 }
+
+void ExultStudio::delete_shape_browser()
+{
+	if(chooser) {
+		gtk_widget_destroy(chooser->get_widget());
+		delete chooser;
+		chooser = 0;
+		int num_shapes = ifile->get_num_shapes();
+		delete ifile;
+		ifile = 0;
+		for (int i = 0; i < num_shapes; i++)
+		delete names[i];
+		delete [] names;
+		names = 0;
+	}
+}
+
 
 void ExultStudio::create_palette_browser()
 {
@@ -96,6 +144,28 @@ void ExultStudio::create_palette_browser()
 	GtkWidget *palette_browser_box = glade_xml_get_widget( app_xml, "palette_browser_box" );
 	gtk_widget_show( palette_browser_box );
 	paled = new Palette_edit(colors, palette_browser_box, 128, 128);	
+}
+
+void ExultStudio::scan_static_path()
+{
+	GtkWidget *filelist = glade_xml_get_widget( app_xml, "file_list" );
+	struct dirent *entry;
+	DIR *dir = opendir(static_path);
+	if(!dir)
+		return;
+	gtk_clist_freeze( GTK_CLIST( filelist ) );
+	gtk_clist_clear( GTK_CLIST( filelist ) );
+	while(entry=readdir(dir)) {
+		char *name = entry->d_name;
+		if(!strcmp(name,".")||!strcmp(name,".."))
+			continue;
+		char *text[2];
+		text[0] = name;
+		text[1] = "N/A";
+		gtk_clist_append( GTK_CLIST( filelist ), text );
+	}
+	gtk_clist_thaw( GTK_CLIST( filelist ) );
+	closedir(dir);
 }
 	
 void ExultStudio::run()
