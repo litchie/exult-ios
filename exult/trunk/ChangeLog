@@ -1,4 +1,7 @@
 2002-03-20  Ryan Nunn  <triforce@merlin.net.au>
+	* game.cc : Fixing allignment problem in German BG Menu
+
+2002-03-20  Ryan Nunn  <triforce@merlin.net.au>
 	* bggame.cc : Fixing problems with overlapping text in German create
 	  new game screen.
 
