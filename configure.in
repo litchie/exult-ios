@@ -252,6 +252,11 @@ else
   AC_MSG_RESULT(no)
 fi
 
+dnl Ignore long-long warnings (for SDL & winnt header files...)
+if test "$WINDOWING_SYSTEM" = "-DWIN32"; then
+  DEBUG_FLAGS="$DEBUG_FLAGS -Wno-long-long"
+fi
+
 dnl 
 AC_C_INLINE
 if test x$CC = xgcc; then
