@@ -1,9 +1,10 @@
-# Exult makefile for use in Windows with cygwin
+# Exult makefile for use in Windows with mingw 1.0 or later and Cygwin shell
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
 U7PATH=C:/Ultima7
 
+CC=gcc
 # Base of the exult source
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs:$(SRC)/data
@@ -13,22 +14,21 @@ SDL_CFLAGS=-I$(SRC)/sdl/include
 SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
-# mingw32 automatically defines WIN32
-CPPFLAGS=-mno-cygwin -DWIN32 -DVERSION=\"0.95cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
-	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/files \
-	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/data -I$(SRC)/tools \
-	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
-	$(SDL_CFLAGS) -DHAVE_SNPRINTF
+# mingw automatically defines WIN32
+CPPFLAGS=-DVERSION=\"0.95cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
+	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
+	-I$(SRC)/files -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
+	-I$(SRC)/usecode -I$(SRC)/data $(SDL_CFLAGS) -DHAVE_SNPRINTF
 
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
-CXXFLAGS=-mno-cygwin -O2 -include mingw_kludges.h
-
+CXXFLAGS=-O2 -Wno-long-long -include mingw_kludges.h
 CXX=g++
 
-LFLAGS=-mno-cygwin -mwindows
+LFLAGS=-mwindows
 LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
 
-EXEC=exult.exe
+EXEC=Exult.exe
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	args.o bggame.o browser.o cheat.o  \
 	combat.o delobjs.o dir.o drag.o effects.o exult.o exultmenu.o \
@@ -61,7 +61,6 @@ GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	AudioOptions_gump.o Face_button.o CombatStats_gump.o \
 	Jawbone_gump.o VideoOptions_gump.o Face_stats.o Gump_manager.o \
 	Text_button.o
-
 
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o
@@ -203,29 +202,26 @@ clean:
 	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
 
 install: $(EXEC)
-	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
+	strip $(EXEC) -o $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
-	cp data/exult.flx  $(U7PATH)/data/exult.flx
+	cp data/exult.flx $(U7PATH)/data/exult.flx
 	cp data/exult_bg.flx $(U7PATH)/data/exult_bg.flx
 	cp data/exult_si.flx $(U7PATH)/data/exult_si.flx
 
-dist:   $(EXEC)
-	strip $(EXEC) -o  $(U7PATH)/Exult/$(EXEC)
-	mkdir -p $(U7PATH)/Exult/Data
-	cp data/exult.flx  $(U7PATH)/Exult/Data/exult.flx
-	cp data/exult_bg.flx $(U7PATH)/Exult/Data/exult_bg.flx
-	cp data/exult_si.flx $(U7PATH)/Exult/data/exult_si.flx
-	cp AUTHORS $(U7PATH)/Exult/AUTHORS
-	cp COPYING $(U7PATH)/Exult/COPYING
-	cp FAQ $(U7PATH)/Exult/FAQ
-	cp NEWS $(U7PATH)/Exult/NEWS
-	cp README $(U7PATH)/Exult/README
-	cp README.win32 $(U7PATH)/Exult/README.win32
+dist:   install
+	cp AUTHORS $(U7PATH)/Exult/AUTHORS.txt
+	cp ChangeLog $(U7PATH)/Exult/ChangeLog.txt
+	cp COPYING $(U7PATH)/Exult/COPYING.txt
+	cp FAQ $(U7PATH)/Exult/FAQ.txt
+	cp NEWS $(U7PATH)/Exult/NEWS.txt
+	cp README $(U7PATH)/Exult/README.txt
+	cp README.win32 $(U7PATH)/Exult/README.win32.txt
 	cp data/bg/defaultkeys.txt $(U7PATH)/Exult/bgdefaultkeys.txt
 	cp data/si/defaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 	cp SDL/README-SDL.txt $(U7PATH)/Exult/README-SDL.txt
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult/SDL.dll
-
+	u2d $(U7PATH)/Exult/AUTHORS.txt $(U7PATH)/Exult/ChangeLog.txt $(U7PATH)/Exult/COPYING.txt $(U7PATH)/Exult/FAQ.txt $(U7PATH)/Exult/NEWS.txt $(U7PATH)/Exult/README.txt $(U7PATH)/Exult/README.win32.txt
+	u2d $(U7PATH)/Exult/bgdefaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 
 tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe
 
@@ -249,6 +245,15 @@ toolsinstall: tools
 	strip tools/wuc.exe -o $(U7PATH)/tools/wuc.exe
 	strip tools/wud.exe -o $(U7PATH)/tools/wud.exe
 
+toolsdist: toolsinstall
+	cp tools/expack.txt $(U7PATH)/tools/expack.txt
+	cp tools/intrins1.txt $(U7PATH)/tools/intrins1.txt
+	cp tools/intrins2.txt $(U7PATH)/tools/intrins2.txt
+	cp tools/u7bgflag.txt $(U7PATH)/tools/u7bgflag.txt
+	cp tools/u7siflag.txt $(U7PATH)/tools/u7siflag.txt
+	cp tools/ucformat.txt $(U7PATH)/tools/ucformat.txt
+	u2d $(U7PATH)/tools/expack.txt $(U7PATH)/tools/intrins1.txt $(U7PATH)/tools/intrins2.txt $(U7PATH)/tools/u7bgflag.txt $(U7PATH)/tools/u7siflag.txt $(U7PATH)/tools/ucformat.txt
+
 all: $(EXEC) tools
 
 allclean: clean toolsclean
@@ -257,5 +262,3 @@ allinstall: install toolsinstall
 
 run:
 	start $(EXEC)
-
-
