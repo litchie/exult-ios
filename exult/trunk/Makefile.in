@@ -95,11 +95,11 @@ INCLUDES = -I. -Iconf -Ifiles -Iaudio -Ipathfinder 	$(SDL_INCLUDES) $(INCDIRS) $
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
-SUBDIRS = audio conf pathfinder files flic
+SUBDIRS = audio conf pathfinder files flic tools
 
 bin_PROGRAMS = exult
 
-exult_SOURCES =  	actions.cc		actions.h		actorio.cc		actors.cc		actors.h		alloc.cc		args.cc			args.h			autoarray.h		delobjs.cc		delobjs.h		drag.cc			effects.cc		effects.h		egg.cc			egg.h			exult.cc		fnames.h		gameclk.cc		gameclk.h		gamedat.cc		gametxt.cc		gamewin.cc		gamewin.h		gumps.cc		gumps.h			imagescl.cc		imagewin.cc		imagewin.h		items.cc		items.h			lists.cc		lists.h			mouse.cc		mouse.h			npcnear.cc		npcnear.h		objs.cc			objs.h			paths.cc		paths.h			readnpcs.cc		ready.h			scale.cc		scale.h			schedule.cc		schedule.h		segfile.cc		segfile.h		spells.cc		spells.h		tiles.h			tqueue.cc		tqueue.h		usecode.cc		usecode.h		useval.cc		useval.h		utils.cc		utils.h			vec.cc			vec.h			vgafile.cc		vgafile.h
+exult_SOURCES =  	actions.cc		actions.h		actorio.cc		actors.cc		actors.h		alloc.cc		args.cc			args.h			autoarray.h		delobjs.cc		delobjs.h		dir.cc			dir.h			drag.cc			effects.cc		effects.h		egg.cc			egg.h			exult.cc		fnames.h		gameclk.cc		gameclk.h		gamedat.cc		gametxt.cc		gamewin.cc		gamewin.h		gumps.cc		gumps.h			imagescl.cc		imagewin.cc		imagewin.h		items.cc		items.h			lists.cc		lists.h			mouse.cc		mouse.h			npcnear.cc		npcnear.h		objs.cc			objs.h			paths.cc		paths.h			readnpcs.cc		ready.h			rect.h			scale.cc		scale.h			schedule.cc		schedule.h		segfile.cc		segfile.h		shapeid.h		spells.cc		spells.h		tiles.h			tqueue.cc		tqueue.h		usecode.cc		usecode.h		useval.cc		useval.h		utils.cc		utils.h			vec.cc			vec.h			vgafile.cc		vgafile.h
 
 
 exult_LDADD =  	pathfinder/libpathfinder.la			audio/libaudio.la		audio/midi_drivers/libmididrv.la		flic/libflic.la			conf/libconf.la			files/libu7file.la		$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries)
@@ -118,10 +118,10 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I.
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 exult_OBJECTS =  actions.o actorio.o actors.o alloc.o args.o delobjs.o \
-drag.o effects.o egg.o exult.o gameclk.o gamedat.o gametxt.o gamewin.o \
-gumps.o imagescl.o imagewin.o items.o lists.o mouse.o npcnear.o objs.o \
-paths.o readnpcs.o scale.o schedule.o segfile.o spells.o tqueue.o \
-usecode.o useval.o utils.o vec.o vgafile.o
+dir.o drag.o effects.o egg.o exult.o gameclk.o gamedat.o gametxt.o \
+gamewin.o gumps.o imagescl.o imagewin.o items.o lists.o mouse.o \
+npcnear.o objs.o paths.o readnpcs.o scale.o schedule.o segfile.o \
+spells.o tqueue.o usecode.o useval.o utils.o vec.o vgafile.o
 exult_DEPENDENCIES =  pathfinder/libpathfinder.la audio/libaudio.la \
 audio/midi_drivers/libmididrv.la flic/libflic.la conf/libconf.la \
 files/libu7file.la
@@ -146,14 +146,14 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 TAR = tar
 GZIP_ENV = --best
 DEP_FILES =  .deps/actions.P .deps/actorio.P .deps/actors.P \
-.deps/alloc.P .deps/args.P .deps/delobjs.P .deps/drag.P .deps/effects.P \
-.deps/egg.P .deps/exult.P .deps/gameclk.P .deps/gamedat.P \
-.deps/gametxt.P .deps/gamewin.P .deps/gumps.P .deps/imagescl.P \
-.deps/imagewin.P .deps/items.P .deps/lists.P .deps/mouse.P \
-.deps/npcnear.P .deps/objs.P .deps/paths.P .deps/readnpcs.P \
-.deps/scale.P .deps/schedule.P .deps/segfile.P .deps/spells.P \
-.deps/tqueue.P .deps/usecode.P .deps/useval.P .deps/utils.P .deps/vec.P \
-.deps/vgafile.P
+.deps/alloc.P .deps/args.P .deps/delobjs.P .deps/dir.P .deps/drag.P \
+.deps/effects.P .deps/egg.P .deps/exult.P .deps/gameclk.P \
+.deps/gamedat.P .deps/gametxt.P .deps/gamewin.P .deps/gumps.P \
+.deps/imagescl.P .deps/imagewin.P .deps/items.P .deps/lists.P \
+.deps/mouse.P .deps/npcnear.P .deps/objs.P .deps/paths.P \
+.deps/readnpcs.P .deps/scale.P .deps/schedule.P .deps/segfile.P \
+.deps/spells.P .deps/tqueue.P .deps/usecode.P .deps/useval.P \
+.deps/utils.P .deps/vec.P .deps/vgafile.P
 SOURCES = $(exult_SOURCES)
 OBJECTS = $(exult_OBJECTS)
 
