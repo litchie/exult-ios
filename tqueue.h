@@ -97,6 +97,7 @@ public:
 	// Time_queue() : head(0), free_entries(0)
 	Time_queue() 
 		{  }
+	void clear();			// Remove all entries.
 					// Add an entry.
 	void add(unsigned long t, Time_sensitive *obj, long ud);
 					// Remove object's entry.
