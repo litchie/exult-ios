@@ -1366,9 +1366,10 @@ void Container_game_object::activate
 	case 801:			// Backpack.
 		gwin->show_gump(this, 10);
 		return;
-	case 798:			// Bag.
-	case 799:
-	case 802:
+	case 799:			// Unsealed box
+		gwin->show_gump(this, 0);
+		return;
+	case 802:			// Bag.
 		gwin->show_gump(this, 9);
 		return;
 	case 803:			// Basket.
