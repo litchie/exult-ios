@@ -42,7 +42,9 @@ exult_studio_SOURCES = \
 	studio.h \
 	exult_studio.cc
 
-bin_PROGRAMS = $(GTK_APPS) $(GIMP_PLUGINS) $(GLADE_APPS)
+bin_PROGRAMS = $(GIMP_PLUGINS) $(GLADE_APPS)
+
+noinst_PROGRAMS = $(GTK_APPS)
 
 shapetest_LDADD = \
 	./libmapedit.la			\
