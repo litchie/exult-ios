@@ -57,7 +57,7 @@ bool	usecode_trace=false;	// Do we trace Usecode-intrinsics?
  */
 static void Init();
 static int Play();
-static void Handle_keystroke(SDLKey ch, int shift);
+static void Handle_keystroke(SDLKey ch, int shift, int alt);
 
 
 /*
@@ -527,7 +527,8 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 		break;
 	case SDL_KEYDOWN:			// Keystroke.
 		Handle_keystroke(event.key.keysym.sym,
-			event.key.keysym.mod & KMOD_SHIFT);
+			event.key.keysym.mod & KMOD_SHIFT,
+			event.key.keysym.mod & KMOD_ALT);
 		break;
 		}
 	}
@@ -568,7 +569,8 @@ static void shape_showcase(
 static void Handle_keystroke
 	(
 	SDLKey sym,
-	int shift
+	int shift,
+        int alt
 	)
 	{
 	static int current_shape = 0, current_frame = 0, current_file = 0;
@@ -720,9 +722,18 @@ static void Handle_keystroke
 	case SDLK_UP:
 		gwin->view_up();
 		break;
-		}
-	}
 
+//#ifdef WIN32
+	case SDLK_RETURN:
+/* Why doesn't SDL detect alt properly? Ctrl does work, btw. */
+//		if (alt) {
+			gwin->get_win()->toggle_fullscreen();
+			gwin->paint();
+//                }
+		break;
+//#endif
+	}
+}
 
 /*
  *	Wait for a click.
