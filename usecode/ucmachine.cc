@@ -466,7 +466,8 @@ void Usecode_machine::set_item_shape
 void Usecode_machine::set_item_frame
 	(
 	Usecode_value& item_arg,
-	Usecode_value& frame_arg
+	Usecode_value& frame_arg,
+	int check_empty			// If 1, don't set empty frame.
 	)
 	{
 	Game_object *item = get_item(item_arg);
@@ -477,7 +478,7 @@ void Usecode_machine::set_item_frame
 		return;			// Already set to that.
 					// Check for empty frame.
 	Shape_frame *shape = gwin->get_shape(item->get_shapenum(), frame);
-	if (!shape || shape->is_empty())
+	if (!shape || (check_empty && shape->is_empty()))
 		return;
 	// cout << "Set_item_frame: " << item->get_shapenum() 
 	//				<< ", " << frame << endl;

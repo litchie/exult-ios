@@ -316,11 +316,11 @@ void Scheduled_usecode::handle_event
 		default:
 					// Frames with dir.  U7-verified!
 			if (opcode >= 0x61 && opcode <= 0x70)
-				{
+				{	// But don't show empty frames.
 				Usecode_value v(obj->get_dir_framenum(
 					obj->get_usecode_dir(), 
 					opcode - 0x61));
-				usecode->set_item_frame(objval, v);
+				usecode->set_item_frame(objval, v, 1);
 				}
 					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode < 0x38)
