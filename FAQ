@@ -1,18 +1,19 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 24 August 2003(GMT)
+last changed: 18 October 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 24 August 2003
-0.2. - 08 August 2003
-0.3. - 21 July 2003
-0.4. - 04 May 2003
-0.5. - 04 March 2003
+0.1. - 18 October 2003
+0.2. - 24 August 2003
+0.3. - 08 August 2003
+0.4. - 21 July 2003
+0.5. - 04 May 2003
+0.6. - 04 March 2003
 
 1. Introduction
-1.1. Important Notice
+1.1. Exult Version
 1.2. Why is it called Exult - what is the meaning of this name?
 1.3. Is Exult free ?
 1.4. Does Origin support Exult?
@@ -85,26 +86,32 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 24 August 2003
+0.1. - 18 October 2003
+* 0. note Exult version.
+* 1.11. What is the latest version of Exult? is now 1.1.beta3.
+
+
+
+0.2. - 24 August 2003
 * Some spell checking done.
 * 1.6. But isn't Pentagram some kind of Exult for U8? changed location of snapshots.
 * 1.11. What is the latest version of Exult? is now 1.1.beta3.
 
 
 
-0.2. - 08 August 2003
+0.3. - 08 August 2003
 * Why are there now two different snapshots? was deleted as we no longer have two snapshots.
 * 1.11. What is the latest version of Exult? is now 1.1.beta2.
 * 4.4. Known Issues item descriptions in SI standalone.
 
 
 
-0.3. - 21 July 2003
+0.4. - 21 July 2003
 * 1.11. What is the latest version of Exult? is now 1.1.beta1.
 
 
 
-0.4. - 04 May 2003
+0.5. - 04 May 2003
 * 2.7. Do Exult savegames work on all Operating Systems? don't use 1.1.x saves with 1.0.
 * 3.6. Why is the party formation different? Jeff changed the behaviour of it.
 * 5.4. Why can't I talk to the mayor of Skara Brae (BG)? added.
@@ -113,8 +120,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.5. - 04 March 2003
-* 1.1. Important Notice this faq is for 1.1.x and not for 1.0 anymore.
+0.6. - 04 March 2003
+* 1.1. Exult Version this faq is for 1.1.x and not for 1.0 anymore.
 * 1.6. But isn't Pentagram some kind of Exult for U8? here is the link to Pentagram and some more info.
 * 2.7. Do Exult savegames work on all Operating Systems? Savegames are platform independent.
 * 4.3. Broken by Design linked to Combat Options in the Menu.
@@ -127,8 +134,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 1. Introduction
-1.1. Important Notice
-This FAQ is for the work-in-progress 1.1.x version of Exult. Frequently asked questions and answers for the 1.0 version can be found where you installed the release.
+1.1. Exult Version
+This documentation is for the 1.1beta3 version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
 
 
 1.2. Why is it called Exult - what is the meaning of this name?
@@ -182,7 +189,7 @@ The source code snapshots contain a file called "README.OS" (like Readme.win32, 
 
 
 1.11. What is the latest version of Exult?
-The current official release is V1.1beta2 See also 1.8. to learn where to get the latest version.
+The current official release is V1.1beta3 See also 1.8. to learn where to get the latest version.
 To find out which version you are running, press 'v' while in game.
 
 
