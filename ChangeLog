@@ -1,3 +1,6 @@
+2001-05-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* objs.cc: added a ton of special item names for SI
+	
 2001-05-08  Ryan Nunn <triforce@merlin.net.au>
 	* gamewin.h, gamedat.cc, Gumps/Newfile_gump.h: Fixed byte ordering 
 	  problem with savegame info for Savegump. Savegame info is now cross
