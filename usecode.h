@@ -256,7 +256,6 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(earthquake);
 	USECODE_INTRINSIC_DECL(is_pc_female);
 	USECODE_INTRINSIC_DECL(halt_scheduled);
-	USECODE_INTRINSIC_DECL(run_endgame);
 	USECODE_INTRINSIC_DECL(get_array_size);
 	USECODE_INTRINSIC_DECL(is_pc_inside);
 	USECODE_INTRINSIC_DECL(get_timer);
@@ -269,6 +268,7 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(remove_item);
 	USECODE_INTRINSIC_DECL(get_equipment_list);
 	USECODE_INTRINSIC_DECL(start_speech);
+	USECODE_INTRINSIC_DECL(run_endgame);
 	USECODE_INTRINSIC_DECL(nap_time);
 	USECODE_INTRINSIC_DECL(advance_time);
 	USECODE_INTRINSIC_DECL(in_usecode);
