@@ -59,26 +59,12 @@ private:
 					// Shape info. editor:
 	GtkWidget		*shapewin;
 	Shape_draw		*shape_draw;
+	GtkWidget		*equipwin;
 					// Server data.
 	int			server_socket;
 	gint			server_input_tag;
 	Msg_callback		waiting_for_server;
 	void			*waiting_client;
-					// GTK/Glade utils:
-	bool get_toggle(char *name);
-	void set_toggle(char *name, bool val);
-	void set_bit_toggles(char **names, int num, unsigned char bits);
-	int get_optmenu(char *name);
-	void set_optmenu(char *name, int val);
-	int get_spin(char *name);
-	void set_spin(char *name, int val, bool sensitive = true);
-	int get_num_entry(char *name);
-	char *get_text_entry(char *name);
-	void set_entry(char *name, int val, bool hex = false,
-						bool sensitive = true);
-	void set_entry(char *name, const char *val, bool sensitive = true);
-	void set_statusbar(char *name, int context, char *msg);
-	void set_visible(char *name, bool vis);
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();
@@ -131,6 +117,8 @@ public:
 	void set_npc_face(int shape, int frame);
 	static void schedule_btn_clicked(GtkWidget *btn, gpointer data);
 					// Shapes:
+	void open_equip_window(int recnum);
+	void close_equip_window();
 	void init_shape_notebook(Shape_info& info, GtkWidget *book, 
 							int shnum, int frnum);
 	void open_shape_window(int shnum, int frnum, Vga_file *ifile,
@@ -143,6 +131,21 @@ public:
 				unsigned char *data = 0, int datalen = 0);
 	void read_from_server();
 	bool connect_to_server();
+					// GTK/Glade utils:
+	bool get_toggle(char *name);
+	void set_toggle(char *name, bool val);
+	void set_bit_toggles(char **names, int num, unsigned char bits);
+	int get_optmenu(char *name);
+	void set_optmenu(char *name, int val);
+	int get_spin(char *name);
+	void set_spin(char *name, int val, bool sensitive = true);
+	int get_num_entry(char *name);
+	char *get_text_entry(char *name);
+	void set_entry(char *name, int val, bool hex = false,
+						bool sensitive = true);
+	void set_entry(char *name, const char *val, bool sensitive = true);
+	void set_statusbar(char *name, int context, char *msg);
+	void set_visible(char *name, bool vis);
 };
 
 #endif

@@ -1,3 +1,8 @@
+2002-01-15  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/shapeedit.cc: Building 'equip' dialog.
+	* objs/chunks.cc: Don't check terrain if MOVE_MAPEDITOR.
+
 2002-01-14  Patrick Burke  <takhisisii@yahoo.com.au>
 	* configure.in: Added --enable-paranoid-warnings, only tested with
 	gcc3.0.3, so some of the warnings might not exist in previous versions,
