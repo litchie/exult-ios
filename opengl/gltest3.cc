@@ -77,7 +77,7 @@ void InitGL
 	)
 	{
 	glShadeModel(GL_SMOOTH);	// Smooth shading.
-	glClearColor(1, 1, 1, 0);	// Background is white.
+	glClearColor(1, 1, 1, .5);	// Background is white.
 	glClearDepth(1);
 	glEnable(GL_DEPTH_TEST);	// Enable depth-testing.
 	glDepthFunc(GL_LEQUAL);
@@ -90,9 +90,7 @@ void InitGL
 	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
 					// A diffuse light source.
 	static GLfloat diffuse[] = {1, 1, 1, 1.0};
-	static GLfloat diffuse_pos[] = {0, 0, 8, 1};
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
-	glLightfv(GL_LIGHT1, GL_POSITION, diffuse_pos);
 	glEnable(GL_LIGHT1);
 #endif
 	}
@@ -107,31 +105,28 @@ void Render
 	{
 					// Clear screen & depth buffer.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-					// Note that this is columnwise.
 
-	glDisable(GL_LIGHTING);		// Disble lighting.
-	glBegin(GL_LINES);		// Draw tile grid.
-		{
-		glColor3f(.5, .5, 1.0);	// Light blue for grid.
-		for (int y = -15; y < 16; y++)	// Horizontal.
-			{
-		  	glVertex3f(-16, y, 0);
-		  	glVertex3f(16,  y, 0);
-			}
-		for (int x = -15; x < 16; x++)	// Vertical.
-			{
-			glVertex3f(x, -16, 0);
-			glVertex3f(x, 16,  0);
-			}
-		}
-	glEnd();
 	glEnable(GL_LIGHTING);		// Enable lighting.
-	Vector3 center = model.find_center();
-	glTranslatef(-center.x, -center.y + 6, -center.z - 20);
+	Vector3 low, high;		// Get range of dimensions.
+	model.find_extents(low, high);
+
+	glMatrixMode(GL_PROJECTION);	// Set up orthogonal volume.
+	glLoadIdentity();
+	glOrtho(3*low.x/2, 3*high.x/2, 3*low.y/2, 3*high.y/2, 
+						3*low.z/2, 3*high.z/2);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	GLfloat pos[4];
+	pos[0] = (high.x + low.x)/2;
+	pos[1] = (high.y + low.y)/2;
+	pos[2] = 2*(high.z + 2);
+	pos[3] = 1.0;
+	glLightfv(GL_LIGHT1, GL_POSITION, pos);
+
+//	glTranslatef(-center.x, -center.y + 6, -center.z - 20);
 //	glTranslatef(-center.x, -center.y + 16, -center.z);
-	glRotatef(45, 1, 0, 0);
-	glScalef(.1, .1, .1);
+	glRotatef(22.5, 1, 0, 0);
+//	glScalef(.1, .1, .1);
 //	glScalef(.5, .5, .5);
 	model.render();			// Show model.
 	SDL_GL_SwapBuffers();		// Blit.
