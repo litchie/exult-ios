@@ -186,7 +186,7 @@ bool	Configuration::read_config_file(const string input_filename, const string r
 	try {
 	        U7open(ifile, filename.c_str(), true);
 	}
-	catch(exult_exception &e) {
+	catch(exult_exception &) {
 	        // configuration file not found
 	        return false;
 	}
