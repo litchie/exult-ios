@@ -177,8 +177,9 @@ Main_actor::Main_actor
 	) : Actor(nfile, num, has_usecode)
 	{
 	Chunk_object_list *olist = Game_window::get_game_window()->
-				get_objects(get_cx(), get_cy());
-	switched_chunks(0, olist);
+				get_objects_safely(get_cx(), get_cy());
+	if (olist)
+		switched_chunks(0, olist);
 	}
 
 /*

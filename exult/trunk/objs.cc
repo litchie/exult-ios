@@ -318,6 +318,35 @@ Game_object *Game_object::find_closest
 	}
 
 /*
+ *	Find a free tile within given distance.
+ *
+ *	Output:	Tile, or (-1, -1, -1) if failed.
+ */
+
+Tile_coord Game_object::find_unblocked_tile
+	(
+	int dist,			// 1 means adjacent.
+	int height			// Height to check for unblocked.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord pos = get_abs_tile_coord();
+					// Get box to go through.
+	Rectangle box(pos.tx - dist, pos.ty - dist, 2*dist + 1, 2*dist + 1);
+	Rectangle world(0, 0, num_tiles, num_tiles);
+	box = box.intersect(world);
+	int stopx = box.x + box.w, stopy = box.y + box.h;
+	for (int y = box.y; y < stopy; y++)
+		for (int x = box.x; x < stopx; x++)
+			{		// Check this spot.
+			Tile_coord spot(x, y, pos.tz);
+			if (!Chunk_object_list::is_blocked(spot, height))
+				return spot;
+			}
+	return Tile_coord(-1, -1, -1);
+	}
+
+/*
  *	Find the game object that's blocking a given tile.
  *
  *	Output:	->object, or 0 if not found.
@@ -2237,7 +2266,8 @@ int Chunk_object_list::is_blocked
 
 int Chunk_object_list::is_blocked
 	(
-	Tile_coord& tile
+	Tile_coord& tile,
+	int height			// Height in tiles to check.
 	)
 	{
 					// Get chunk tile is in.
@@ -2245,7 +2275,7 @@ int Chunk_object_list::is_blocked
 	Chunk_object_list *chunk = gwin->get_objects(
 			tile.tx/tiles_per_chunk, tile.ty/tiles_per_chunk);
 	int new_lift;			// Check it within chunk.
-	if (chunk->is_blocked(tile.tz, tile.tx%tiles_per_chunk,
+	if (chunk->is_blocked(height, tile.tz, tile.tx%tiles_per_chunk,
 				tile.ty%tiles_per_chunk, new_lift))
 		return (1);
 	tile.tz = new_lift;

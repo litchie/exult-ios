@@ -1705,7 +1705,8 @@ void Game_window::show_items
 			info.get_3d_xtiles() << ", " <<
 			info.get_3d_ytiles() << ", " <<
 			info.get_3d_height() << ", sched = " <<
-			obj->get_schedule_type()
+			obj->get_schedule_type() << ", align = " <<
+			obj->get_alignment()
 			<< endl;
 		int tx, ty, tz;
 		obj->get_abs_tile(tx, ty, tz);

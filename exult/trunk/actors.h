@@ -360,12 +360,16 @@ class Npc_actor : public Actor
 protected:
 	unsigned char num_schedules;	// # entries below.
 	Schedule_change *schedules;	// List of schedule changes.
-	short alignment;		// 'Feelings' towards Avatar. 0==good.
+	short alignment;		// 'Feelings' towards Ava. See below.
 public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
 					// Read from file.
 	Npc_actor(istream& nfile, int num, int has_usecode);
 	~Npc_actor();
+	enum Alignment {		// Describes alignment field.
+		friendly = 0,
+		neutral = 1,
+		hostile = 2 };
 	Npc_actor *get_next()
 		{ return next; }
 	void set_nearby()		// Set/clear/test 'nearby' flag.
