@@ -162,7 +162,7 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 #endif
                 {
 #if DEBUG
-	cerr << "Stopping any running sfx" << endl;
+	cerr << "Stopping any running track" << endl;
 #endif
 		stop_track();
                 }
@@ -181,7 +181,7 @@ void	Timidity_binary::start_sfx(const char *name)
 #endif
                 {
 #if DEBUG
-	cerr << "Stopping any running track" << endl;
+	cerr << "Stopping any running sfx" << endl;
 #endif
 		stop_sfx();
                 }
