@@ -312,6 +312,33 @@ void Cheat::delete_object (void) const {
   }
 }
 
+void Cheat::heal_party (void) const {
+  if (!enabled) return;
+
+  // resurrect dead party members
+  Dead_body *bodies[9];
+  int count = Dead_body::find_dead_companions(bodies);
+  for (int i = 0; i < count; i++) {
+    int npc_num = bodies[i]->get_live_npc_num();
+    if (npc_num < 0)
+      continue;
+    Actor *live_npc = gwin->get_npc(npc_num);
+    if (live_npc)
+      live_npc->resurrect(bodies[i]);;
+  }
+
+  // heal everyone
+  Actor* party[9];
+  count = gwin->get_party(party, 1);
+  for (int i = 0; i < count; i++) {
+    if (!party[i]->is_dead_npc())
+      party[i]->set_property(Actor::health, party[i]->get_property(Actor::strength));
+  }  
+ 
+  gwin->center_text("Party healed");
+  gwin->paint();
+}
+
 void Cheat::shape_browser (void) const {
   if (!enabled) return;
 
