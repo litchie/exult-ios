@@ -56,15 +56,19 @@ using std::ends;
 using std::setw;
 using std::setfill;
 using std::setbase;
+using std::pair;
+using std::map;
 
 #define MAX_NO_OPCODES 512
-std::vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
-std::vector<std::pair<unsigned int, unsigned int> > opcode_jumps;
+vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
+vector<pair<unsigned int, unsigned int> > opcode_jumps;
 
-std::map<unsigned int, std::string> bg_uc_intrinsics;
-std::map<unsigned int, std::string> si_uc_intrinsics;
+map<unsigned int, string> bg_uc_intrinsics;
+map<unsigned int, string> si_uc_intrinsics;
 
-std::vector<std::string> str2vec(const std::string &s);
+vector<string> str2vec(const string &s);
+
+map<string, pair<unsigned int, bool> > type_size_map;
 
 /* constructs the static usecode tables from other include files in the /exult hierachy,
    static by compilation.
@@ -89,21 +93,56 @@ void init_static_usecodetables()
 		si_uc_intrinsics.insert(std::pair<unsigned int, std::string>(si_uc_intrinsics.size(), siut[i]));
 }
 
+string get_datadir(const Configuration &config, const UCOptions &options)
+{
+	string datadir;
+	
+	// just to handle if people are going to compile with makefile.unix, unsupported, but occasionally useful
+	#ifdef HAVE_CONFIG_H
+	if(options.noconf == false) config.value("config/ucxt/root", datadir, EXULT_DATADIR);
+	#else
+	if(options.noconf == false) config.value("config/ucxt/root", datadir, "data/");
+	#endif
+	
+	if(datadir.size() && datadir[datadir.size()-1]!='/' && datadir[datadir.size()-1]!='\\') datadir+='/';
+	if(options.verbose) cout << "datadir: " << datadir << endl;
+
+	return datadir;
+}
+
 /* constructs the usecode tables from datafiles in the /ucxt hierachy */
 void init_usecodetables(const Configuration &config, const UCOptions &options)
 {
-	std::string ucxtroot;
-	// just to handle if people are going to compile with makefile.unix, unsupported, but occasionally useful
-	#ifdef HAVE_CONFIG_H
-	if(options.noconf == false) config.value("config/ucxt/root", ucxtroot, EXULT_DATADIR);
-	#else
-	if(options.noconf == false) config.value("config/ucxt/root", ucxtroot, "data/");
-	#endif
+	const string datadir(get_datadir(config, options));
 	
-	if(options.verbose) std::cout << "ucxtroot: " << ucxtroot << std::endl;
-	if(ucxtroot.size() && ucxtroot[ucxtroot.size()-1]!='/' && ucxtroot[ucxtroot.size()-1]!='\\') ucxtroot+='/';
+	{
+		Configuration miscdata(datadir + "u7misc.data", "misc");
 	
-	Configuration opdata(ucxtroot + "u7opcodes.data", "opcodes");
+		Configuration::KeyTypeList om;
+		miscdata.getsubkeys(om, "misc/offset_munge");
+		
+		Configuration::KeyTypeList st;
+		miscdata.getsubkeys(st, "misc/size_type");
+		
+		// For each size type (small/long/byte/etc.)
+		for(typeof(st.begin()) k=st.begin(); k!=st.end(); ++k)
+		{
+			bool munge_offset=false;
+			
+			/* ... we need to find out if we should munge it's parameter
+				that is, it's some sort of goto target (like offset) or such */
+			for(typeof(om.begin()) m=om.begin(); m!=om.end(); ++m)
+				if(m->first.size()-1==k->first.size())
+					if(m->first.compare(0, m->first.size()-1, k->first, 0, k->first.size())==0)
+						munge_offset=true;
+			
+			// once we've got it, add it to the map
+			pair<unsigned int, bool> tsm_tmp(strtol(k->second.c_str(), 0, 0), munge_offset);
+			type_size_map.insert(pair<string, pair<unsigned int, bool> >(k->first, tsm_tmp));
+		}
+	}
+	
+	Configuration opdata(datadir + "u7opcodes.data", "opcodes");
 	
 	vector<string> keys = opdata.listkeys("opcodes");
 		
@@ -126,7 +165,7 @@ void init_usecodetables(const Configuration &config, const UCOptions &options)
 	
 	#else
 	
-	ucxtroot+= "opcodes.txt";
+	string ucxtroot(datadir + "opcodes.txt");
 
 	std::ifstream file;
 
@@ -251,25 +290,14 @@ void map_type_size(const std::vector<std::string> &param_types, std::vector<std:
 {
 	for(std::vector<std::string>::const_iterator s=param_types.begin(); s!=param_types.end(); ++s)
 	{
-		unsigned int ssize=0;
-		bool offset_munge=false;
-		// all these are two bytes
-		if(*s=="short")           ssize=2;
-		else if(*s=="flag")       ssize=2;
-		else if(*s=="extoffset")  ssize=2;
-		else if(*s=="dataoffset") ssize=2;
-		else if(*s=="varoffset")  ssize=2;
-		else if(*s=="offset")     { ssize=2; offset_munge=true; }
-		else if(*s=="long")       ssize=4;
-		// and the single one byte type
-		else if(*s=="byte")       ssize=1;
-		else
+		map<string, pair<unsigned int, bool> >::iterator tsm(type_size_map.find(*s));
+		if(tsm==type_size_map.end())
 		{
-			std::cout << "error: data type '" << *s << "' is not defined. exiting." << std::endl;
-			exit(1);
+			cerr << "error: No suck type `" << *s << "`" << endl;
+			assert(tsm!=type_size_map.end());
 		}
-		assert(ssize!=0);
-		param_sizes.push_back(std::pair<unsigned int, bool>(ssize, offset_munge));
+		
+		param_sizes.push_back(std::pair<unsigned int, bool>(tsm->second.first, tsm->second.second));
 	}
 }
 
