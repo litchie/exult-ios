@@ -541,8 +541,7 @@ public:
 	void schedule_npcs(int hour3, int backwards = 0);
 	void theft();			// Handle thievery.
 	void get_focus();		// Get/lose focus.
-	inline void lose_focus()
-		{ focus = false; }
+	void lose_focus();
 	inline bool have_focus() const
 		{ return focus; }
 	void setup_game();		// Prepare for game

@@ -606,13 +606,15 @@ void Egg_object::set_weather
 	{
 	if (!len)			// ???Not sure about this.
 		len = 15;
+	int cur = gwin->get_weather();
 	switch (weather)
 		{
 	case 0:		// Back to normal.
 		gwin->remove_weather_effects();
 		break;
 	case 2:		// Storm.
-		gwin->add_effect(new Storm_effect(len));
+		if (gwin->get_weather() != weather)
+			gwin->add_effect(new Storm_effect(len));
 		break;
 	case 3:		// (On Ambrosia).
 		gwin->remove_weather_effects();

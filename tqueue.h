@@ -63,13 +63,14 @@ class Time_queue
 	{
 	typedef std::list<Queue_entry>	Temporal_sequence;
 	Temporal_sequence data;
+	uint32 pause_time;		// Time when paused.
 
 	// Activate head + any others due.
 	void activate0(uint32 curtime);
 public:
 	friend class Time_queue_iterator;
 	// Time_queue() : head(0), free_entries(0)
-	Time_queue() 
+	Time_queue() : pause_time(0)
 		{  }
 	void clear();			// Remove all entries.
 					// Add an entry.
@@ -84,6 +85,12 @@ public:
 		if (data.size() && !(curtime < data.front().time))
 			activate0(curtime);
 		}
+	void pause(uint32 curtime)	// Game paused.
+		{
+		if (!pause_time)
+			pause_time = curtime;
+		}
+	void resume(uint32 curtime);
 	};
 
 
