@@ -63,7 +63,7 @@ Actor::Actor
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
 	) : Container_game_object(), npc_num(num), party_id(-1),
-	    frame_time(0),
+	    schedule_type((int) Schedule::loiter), frame_time(0),
 	    usecode(uc), flags(0), action(0), usecode_dir(0), two_handed(0)
 	{
 	name = nm == 0 ? 0 : strdup(nm);
@@ -1063,7 +1063,7 @@ Npc_actor::Npc_actor
 	int fshape, 
 	int uc
 	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
-		schedule_type((int) Schedule::loiter), num_schedules(0), 
+		num_schedules(0), 
 		schedules(0), schedule(0), dormant(1), alignment(0)
 	{
 	}

@@ -334,7 +334,7 @@ public:
 	int write_ireg_objects(int schunk);
 					// Get moveable objects.
 	void get_ireg_objects(int schunk);
-	void read_ireg_objects(ifstream& ireg, int scx, int scy,
+	void read_ireg_objects(istream& ireg, int scx, int scy,
 					Game_object *container = 0);
 					// Create special objects.
 	Egg_object *create_egg(unsigned char *entry);

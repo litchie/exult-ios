@@ -54,7 +54,7 @@ Game_window::Game_window
 	    skip_lift(16), debug(0), paint_eggs(1),
 	    tqueue(new Time_queue()), clock(tqueue),
 		npc_prox(new Npc_proximity_handler(this)),
-	    main_actor(0),
+	    main_actor(0), monster_info(0),
 	    conv_choices(0), texts(0), num_faces(0), last_face_shown(-1),
 	    open_gumps(0),
 	    main_actor_inside(0), mode(splash), npcs(0),
@@ -618,7 +618,7 @@ void Game_window::get_ireg_objects
 
 void Game_window::read_ireg_objects
 	(
-	ifstream& ireg,			// File to read from.
+	istream& ireg,			// File to read from.
 	int scx, int scy,		// Abs. chunk coords. of superchunk.
 	Game_object *container		// Container, or null.
 	)
