@@ -242,7 +242,11 @@ public:
 	unsigned char get_pixel8(int x, int y)
 		{ return bits[y*line_width + x]; }
 	void put_pixel8(unsigned char pix, int x, int y)
-		{ bits[y*line_width + x] = pix; }
+		{ 
+		if (x >= clipx && x < clipx + clipw &&
+		    y >= clipy && y < clipy + cliph)
+			bits[y*line_width + x] = pix;
+		}
 	};
 
 /*
