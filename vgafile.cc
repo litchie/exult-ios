@@ -976,7 +976,14 @@ int Shapes_vga_file::read_info
 							ammoshape, usecode);
 		}
 	weapon.close();	
-
+					// Since we don't know the flag yet...
+	info[278].set_ammo_consumed();	// Musket.
+	info[474].set_ammo_consumed();	// Sling.
+	info[563].set_ammo_consumed();	// Blowgun.
+	info[597].set_ammo_consumed();	// Bow.
+	info[598].set_ammo_consumed();	// Crossbow.
+	info[606].set_ammo_consumed();	// Magic bow.	
+	info[647].set_ammo_consumed();	// Triple crossbow.
 	ifstream ammo;
 	if (!U7open(ammo, AMMO))
 		return (0);
