@@ -441,20 +441,22 @@ void Usecode_machine::set_item_shape
 		return;
 		}
 					// Figure area to repaint.
-	Rectangle rect = gwin->get_shape_rect(item);
+//	Rectangle rect = gwin->get_shape_rect(item);
+	gwin->add_dirty(item);
 					// Get chunk it's in.
 	Chunk_object_list *chunk = gwin->get_objects(item);
 	chunk->remove(item);		// Remove and add to update cache.
 	item->set_shape(shape);
 	chunk->add(item);
-	rect = gwin->get_shape_rect(item).add(rect);
-	rect.enlarge(8);
-	rect = gwin->clip_to_win(rect);
+	gwin->add_dirty(item);
+//	rect = gwin->get_shape_rect(item).add(rect);
+//	rect.enlarge(8);
+//	rect = gwin->clip_to_win(rect);
 	if (light_changed)
 		gwin->paint();		// Complete repaint refigures lights.
-	else
-		gwin->paint(rect);	// Not sure...
-	gwin->show();			// Not sure if this is needed.
+//	else
+//		gwin->paint(rect);	// Not sure...
+//	gwin->show();			// Not sure if this is needed.
 	}
 
 /*

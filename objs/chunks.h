@@ -124,6 +124,9 @@ class Chunk_object_list
 	Object_list objects;		// ->first in list of all objs.  'Flat'
 					//   obs. (lift=0,ht=0) stored 1st.
 	Game_object *first_nonflat;	// ->first nonflat in 'objects'.
+					// Counts of overlapping objects from
+					//    chunks below, to right.
+	unsigned char from_below, from_right, from_below_right;
 	unsigned char *dungeon_bits;	// A 'dungeon' bit flag for each tile.
 	Npc_actor *npcs;		// List of NPC's in this chunk.
 					//   (Managed by Npc_actor class.)
@@ -134,6 +137,8 @@ class Chunk_object_list
 	void add_dungeon_bits(Rectangle& tiles);
 	void add_dependencies(Game_object *newobj,
 					class Ordering_info& newinfo);
+	static Chunk_object_list *add_outside_dependencies(int cx,
+		int cy, Game_object *newobj, class Ordering_info& newinfo);
 public:
 	friend class Npc_actor;
 	Chunk_object_list(int chunkx, int chunky);

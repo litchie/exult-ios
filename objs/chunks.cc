@@ -500,7 +500,8 @@ Chunk_object_list::Chunk_object_list
 	int chunkx, int chunky		// Absolute chunk coords.
 	) : objects(0), first_nonflat(0), dungeon_bits(0),
 	    npcs(0), cache(0), roof(0), light_sources(0),
-	    cx(chunkx), cy(chunky)
+	    cx(chunkx), cy(chunky), from_below(0), from_right(0),
+	    from_below_right(0)
 	{
 	}
 
@@ -534,11 +535,8 @@ void Chunk_object_list::add_dependencies
 		int cmp = Game_object::lt(newinfo, obj);
 		if (!cmp)		// Bigger than this object?
 			{
-			if (newobj->cx == obj->cx && newobj->cy == obj->cy)
-				{
-				newobj->dependencies.put(obj);
-				obj->dependors.put(newobj);
-				}
+			newobj->dependencies.put(obj);
+			obj->dependors.put(newobj);
 			}
 		else if (cmp == 1)	// Smaller than?
 			{
@@ -546,6 +544,26 @@ void Chunk_object_list::add_dependencies
 			newobj->dependors.put(obj);
 			}
 		}
+	}
+
+/*
+ *	Add rendering dependencies for a new object to another chunk.
+ *	NOTE:  This is static.
+ *
+ *	Output:	->chunk that was checked.
+ */
+
+inline Chunk_object_list *Chunk_object_list::add_outside_dependencies
+	(
+	int cx, int cy,			// Chunk to check.
+	Game_object *newobj,		// Object to add.
+	Ordering_info& newinfo		// Info. for new object's ordering.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+	chunk->add_dependencies(newobj, newinfo);
+	return chunk;
 	}
 
 /*
@@ -571,21 +589,29 @@ void Chunk_object_list::add
 					// Not flat?
 	if (newobj->get_lift() || ord.info.get_3d_height())
 		{			// Deal with dependencies.
-		if (ord.xs == 1 && ord.ys == 1)	// Simplest case?
-			add_dependencies(newobj, ord);
-		else
+		int ty = newobj->get_ty();
+					// First this chunk.
+		add_dependencies(newobj, ord);
+		if (from_below)		// Overlaps from below?
+			add_outside_dependencies(cx, cy + 1, newobj, ord);
+		if (from_right)		// Overlaps from right?
+			add_outside_dependencies(cx + 1, cy, newobj, ord);
+		if (from_below_right)
+			add_outside_dependencies(cx + 1, cy + 1, newobj, ord);
+					// See if newobj extends outside.
+		bool ext_left = (newobj->get_tx() - ord.xs) < -1 && cx > 0;
+		bool ext_above = (newobj->get_ty() - ord.ys) < -1 && cy > 0;
+		if (ext_left)
 			{
-			Rectangle footprint(ord.tx - ord.xs + 1, 
-					ord.ty - ord.ys + 1, ord.xs, ord.ys);
-					// Go through interesected chunks.
-			Chunk_intersect_iterator next_chunk(footprint);
-			Rectangle tiles;// (Ignored).
-			int eachcx, eachcy;
-			while (next_chunk.get_next(tiles, eachcx, eachcy))
-				if (eachcx <= cx && eachcy <= cy)
-					gwin->get_objects(eachcx, eachcy)->
-						add_dependencies(newobj, ord);
+			add_outside_dependencies(cx - 1, cy, 
+						newobj, ord)->from_right++;
+			if (ext_above)
+				add_outside_dependencies(cx - 1, cy - 1,
+					newobj, ord)->from_below_right++;
 			}
+		if (ext_above)
+			add_outside_dependencies(cx, cy - 1,
+					newobj, ord)->from_below++;
 		first_nonflat = newobj;	// Inserted before old first_nonflat.
 		}
 			// +++++Maybe should skip test, do update_object(...).
@@ -658,7 +684,21 @@ void Chunk_object_list::remove
 	if (cache)			// Remove from cache.
 		cache->update_object(this, remove, 0);
 	remove->clear_dependencies();	// Remove all dependencies.
-	Shape_info& info = Game_window::get_game_window()->get_info(remove);
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(remove);
+					// See if it extends outside.
+	int frame = remove->get_framenum(), tx = remove->get_tx(),
+					ty = remove->get_ty();
+	bool ext_left = (tx - info.get_3d_xtiles(frame)) < -1 && cx > 0;
+	bool ext_above = (ty - info.get_3d_ytiles(frame)) < -1 && cy > 0;
+	if (ext_left)
+		{
+		gwin->get_objects(cx - 1, cy)->from_below_right--;
+		if (ext_above)
+			gwin->get_objects(cx - 1, cy - 1)->from_below_right--;
+		}
+	if (ext_above)
+		gwin->get_objects(cx, cy - 1)->from_below--;
 	if (info.is_light_source())	// Count light sources.
 		light_sources--;
 	if (remove == first_nonflat)	// First nonflat?
