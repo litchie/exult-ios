@@ -2460,17 +2460,15 @@ void Game_window::show_gump
 	{
 	int paperdoll = (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP);
 
+	// overide for paperdolls
 	if (Game::get_game_type() == SERPENT_ISLE && paperdoll)
 	{
 		shapenum = 123;
 		paperdoll=2;
 	}
-	
-	// overinde for avatar
-	// Messes up other gumps
-	if (paperdoll && obj == main_actor)
+	else if (paperdoll && obj == main_actor)
 		shapenum += main_actor->get_type_flag(Actor::tf_sex);
-	
+		
 	static int cnt = 0;		// For staggering them.
 	Gump_object *gmp;		// See if already open.
 	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
