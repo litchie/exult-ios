@@ -47,7 +47,7 @@ void getVersionInfo(std::ostream& out)
 	 */
 	 
 
-#if (defined(__TIME__) || defined(__DATE))
+#if (defined(__TIME__) || defined(__DATE__))
 	out << "Built at: ";
 #ifdef __DATE__
 	out << __DATE__ << " ";
