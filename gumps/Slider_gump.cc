@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "SDL_events.h"
+#include "SDL_keyboard.h"
 #include "game.h"
 #include "gamewin.h"
 #include "Gump_button.h"
@@ -140,24 +141,27 @@ void Slider_gump::clicked_arrow
 	Slider_button *arrow	// What was clicked.
 	)
 {
-	int newval = val;
 	if (arrow == left_arrow)
-	{
-		newval -= step_val;
-		if (newval < min_val)
-			newval = min_val;
-	}
+		move_diamond(-step_val);
 	else if (arrow == right_arrow)
-	{
-		newval += step_val;
-		if (newval > max_val)
-			newval = max_val;
-	}
+		move_diamond(step_val);
+}
+
+void Slider_gump::move_diamond(int dir)
+{
+	int newval = val;
+	newval += dir;
+	if (newval < min_val)
+		newval = min_val;
+	if (newval > max_val)
+		newval = max_val;
+
 	set_val(newval);
 	Game_window *gwin = Game_window::get_game_window();
 	paint(gwin);
 	gwin->set_painted();
 }
+
 
 /*
  *	Paint on screen.
@@ -305,4 +309,22 @@ void Slider_gump::key_down
 		clicked_arrow(right_arrow);
 		break;
 	} 
+}
+
+void Slider_gump::mousewheel_up()
+{
+	SDLMod mod = SDL_GetModState();
+	if (mod & KMOD_ALT)
+		move_diamond(-10*step_val);
+	else
+		move_diamond(-step_val);
+}
+
+void Slider_gump::mousewheel_down()
+{
+	SDLMod mod = SDL_GetModState();
+	if (mod & KMOD_ALT)
+		move_diamond(10*step_val);
+	else
+		move_diamond(step_val);
 }
