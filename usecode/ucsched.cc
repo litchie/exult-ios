@@ -108,14 +108,17 @@ void Scheduled_usecode::handle_event
 	Game_window *gwin = usecode->gwin;
 	int delay = 200;			// Trying default delay.
 	int do_another = 1;			// Flag to keep going.
-	for ( ; i < cnt && do_another; i++)
+	int opcode;
+					// If a 1 follows, keep going.
+	for (; i < cnt && ((opcode = arrval.get_elem(i).get_int_value()) 
+						== 0x1 || do_another); i++)
 		{
 		do_another = 0;
-		Usecode_value& opval = arrval.get_elem(i);
-		int opcode = opval.get_int_value();
 		switch (opcode)
 			{
-		case 0x01:		// ?? Might mean 'paint/show()'.
+		case 0x1:		// Means keep going without painting.
+			do_another = 1;
+			gwin->set_painted();	// Want to paint when done.
 			break;
 		case 0x0b:		// ?? 2 parms, 1st one < 0.
 			{		// Loop(offset, cnt).

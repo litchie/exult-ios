@@ -756,7 +756,8 @@ AudioID Audio::play_wave_sfx
 	bool repeat			// Keep playing.
 	)
 	{
-	if (!sfx_file) return AudioID(0, 0);  // no .wav sfx available
+	if (!effects_enabled || !sfx_file) 
+		return AudioID(0, 0);  // no .wav sfx available
 
 	extern int bgconv[];
 	const int max_cached = 12;	// Max. we'll cache.
