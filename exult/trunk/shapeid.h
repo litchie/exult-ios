@@ -228,4 +228,13 @@ public:
 		{ return Shape_manager::instance->shapes.get_info(shnum); }
 	};
 
+/*
+ *	An interface used in Get_click():
+ */
+class Paintable
+	{
+public:
+	virtual void paint() = 0;
+	};
+
 #endif
