@@ -519,6 +519,17 @@ void Barge_object::move
 		positions[i] = Tile_coord(ox + dx, oy + dy, oz + dz);
 		obj->remove_this(1);	// Remove object from world.
 		obj->set_invalid();	// So it gets added back right.
+					// Animate a few shapes.
+		int frame = obj->get_framenum();
+		switch (obj->get_shapenum())
+			{
+		case 437:		// Wagon wheel.
+			obj->set_frame(((frame + 1)%3)|(frame&32));
+			break;
+		case 796:		// Draft horse.
+			//+++++++++How many groups?
+			break;
+			}
 		}
 	finish_move(positions);		// Add back & del. positions.
 	}
