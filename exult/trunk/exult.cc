@@ -1095,6 +1095,7 @@ static void Handle_event
 		gwin->get_gump_man()->okay_to_quit();
 		break;
 	case SDL_KEYDOWN:		// Keystroke.
+	case SDL_KEYUP:
 		if (!dragging)		// ESC while dragging causes crashes.
 			keybinder->HandleEvent(event);
 		break;
