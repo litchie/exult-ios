@@ -91,6 +91,15 @@ void Object3d::render
 		glDisable(GL_TEXTURE_2D);
 	glColor3ub(255, 255, 255);	// Reset color to white.
 	glBegin(GL_TRIANGLES);		// Start drawing.
+	if (material)			// Set colors.
+		{
+		glMaterialfv(GL_FRONT, GL_AMBIENT,
+					material->colors[Material::ambient]);
+		glMaterialfv(GL_FRONT, GL_SPECULAR,
+					material->colors[Material::specular]);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE,
+					material->colors[Material::diffuse]);
+		}
 					// Go through faces.
 	for (vector<Face>::const_iterator faceit = faces.begin();
 					faceit != faces.end(); ++faceit)
@@ -109,10 +118,6 @@ void Object3d::render
 					// Set texture coord.
 					glTexCoord2f(tex_vertices[vindex].x,
 						tex_vertices[vindex].y);
-				else
-					// Set color.
-					glColor3ub(material->r, material->g,
-								material->b);
 				}
 					// Finally, the vertex:
 			Vector3& vert = vertices[vindex];

@@ -36,6 +36,7 @@ using namespace Exult3d;
 #define MATNAME       0xA000		// Material name
 #define MATAMBIENT    0xA010		// Ambient color of material.
 #define MATDIFFUSE    0xA020		// Color of object/material.
+#define MATSPECULAR   0xA030		// Another color.
 #define MATMAP        0xA200		// Header for a new material
 #define MATMAPFILE    0xA300		// Texture filename.
 
@@ -243,11 +244,50 @@ static int Read_chunk
 	}
 
 /*
+ *	Read in a material color.
+ *
+ *	Output:	#bytes read.
+ */
+
+static int Read_color
+	(
+	Model3d *model,
+	istream& in, 			// Header already read.
+	int top_len,			// Total length of this chunk.
+	Material *mat,
+	Material::Color_index which	// Which color to set.
+	)
+	{
+	int top_read = CHUNK_HEADER_LENGTH;	// Already read header.
+	while (top_read < top_len)	// Go through subchunks.
+		{
+		int id, len;
+		int read = Get_chunk_header(in, id, len);
+		switch (id)
+			{
+		case COLOR24:
+		case COLORLIN24:
+			{
+			unsigned char c[3];
+			in.read(c, 3);
+			read += 3;
+			mat->set_color(which, &c[0]);
+			break;
+			}
+		default:		// Skip others.
+			in.seekg(len - read, ios::cur);
+			read = len;
+			}
+		top_read += read;	// Add to top's total.
+		}
+	return top_read - CHUNK_HEADER_LENGTH;
+	}
+
+/*
  *	Read in a new material.
  *
  *	Output:	#bytes read, or -1 if error.
  */
-
 
 static int Read_material_chunk
 	(
@@ -274,20 +314,18 @@ static int Read_material_chunk
 			read = len;	//++++++skip to end.
 			break;
 			}
-		case MATAMBIENT:	//+++++++Unsure.  Fall through.
-		case MATDIFFUSE:	// Color.
-			{
-			int cid, clen;	// Color subchunk.
-			read += Get_chunk_header(in, cid, clen);
-			unsigned char c[3];
-			in.read(c, 3);
-			read += 3;
-			mat->set_color(&c[0]);
-					// Skip others.
-			in.seekg(len - read, ios::cur);
-			read = len;
+		case MATAMBIENT:	// Colors.
+			read += Read_color(model, in, len, mat,
+							Material::ambient);
 			break;
-			}
+		case MATSPECULAR:
+			read += Read_color(model, in, len, mat,
+							Material::specular);
+			break;
+		case MATDIFFUSE:
+			read += Read_color(model, in, len, mat,
+							Material::diffuse);
+			break;
 		case MATMAP:		// Parent of texture info.
 			{
 			int subread = Read_material_chunk(model, in, len, mat);
