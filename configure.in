@@ -171,6 +171,7 @@ AC_CHECK_HEADERS(sys/types.h sys/socket.h netdb.h)
 AM_CONDITIONAL(HAVE_PNG, false)
 AC_CHECK_HEADERS(png.h, AM_CONDITIONAL(HAVE_PNG,true))
 AC_CHECK_ALPHA_LINUX_CXX
+AC_LANG_CPLUSPLUS
 AC_CHECK_HEADERS(hash_map hash_set ext/hash_map ext/hash_set sstream)
 AC_LANG_C
 
