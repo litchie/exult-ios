@@ -159,20 +159,6 @@ int main
 	char *argv[]
 	)
 {
-#ifdef MACOS
-// some testing
-	// home
-	// home/dir/
-	// ./home./dir//./test
-	// ../quark/../.././quark
-
-	cout << "./home./dir//./test" << "  -->  " << get_system_path("./home./dir//./test") << endl;
-	cout << "home" << "  -->  " << get_system_path("home") << endl;
-	cout << "home/dir/" << "  -->  " << get_system_path("home/dir/") << endl;
-	cout << "./home../baz/test/.." << "  -->  " << get_system_path("./home../baz/test/..") << endl;
-	cout << "../quark/../.././quark" << "  -->  " << get_system_path("../quark/../.././quark") << endl;
-#endif
-
 	bool	needhelp=false;
 	string	gamename("default");
 	Args    parameters;
