@@ -1000,6 +1000,8 @@ int Actor::find_best_spot
 			case one_handed_weapon:			// Also includes shields.
 			case tongs:
 			{
+				if (!spots[lhand])	// Prefer lhand.
+					return lhand;
 				int spot = free_hand();
 				if (spot == -1 && !spots[belt])
 					spot = belt;
