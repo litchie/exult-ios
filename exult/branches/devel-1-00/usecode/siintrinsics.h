@@ -93,7 +93,7 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x38 - Si Only
 	USECODE_INTRINSIC_PTR(play_music),			// 0x39 - Known
 	USECODE_INTRINSIC_PTR(npc_nearby),			// 0x3a - ???
-	USECODE_INTRINSIC_PTR(npc_nearby),			// 0x3b
+	USECODE_INTRINSIC_PTR(npc_nearby2),			// 0x3b Guess
 	USECODE_INTRINSIC_PTR(find_nearby_avatar),		// 0x3c
 
 	USECODE_INTRINSIC_PTR(is_npc),				// 0x3d - Known

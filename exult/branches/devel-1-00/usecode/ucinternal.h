@@ -237,6 +237,7 @@ class Usecode_internal : public Usecode_machine
         USECODE_INTRINSIC_DECL(add_party_items);
         USECODE_INTRINSIC_DECL(play_music);
         USECODE_INTRINSIC_DECL(npc_nearby);
+	USECODE_INTRINSIC_DECL(npc_nearby2);
         USECODE_INTRINSIC_DECL(find_nearby_avatar);
         USECODE_INTRINSIC_DECL(is_npc);
         USECODE_INTRINSIC_DECL(display_runes);
