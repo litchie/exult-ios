@@ -522,7 +522,7 @@ Shape_file::Shape_file
 
 Vga_file::Vga_file
 	(
-	char *nm			// Path to file.
+	const char *nm			// Path to file.
 	) : num_shapes(0), shapes(0)
 	{
 	if (!U7open(file, nm))
