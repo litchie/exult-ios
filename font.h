@@ -50,7 +50,7 @@ public:
 class FontManager
 {
 private:
-	hash_map<const char*, Font*, hashstr, eqstr> fonts;
+	std::hash_map<const char*, Font*, hashstr, eqstr> fonts;
 public:
 	FontManager();
 	~FontManager();
