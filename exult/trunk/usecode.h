@@ -316,10 +316,9 @@ private:
 	const char *get_user_choice();	// Get user's choice.
 	int get_user_choice_num();
 					// Run the function.
-	int run(Usecode_function *fun, int event);
+	int run(Usecode_function *fun, int event, int stack_elems);
 					// Call desired function.
-	int call_usecode_function(int id, int event = 0, 
-						Usecode_value *parm0 = 0);
+	int call_usecode_function(int id, int event, int stack_elems);
 	void	_init_(istream &);
 public:
 	friend class Scheduled_usecode;

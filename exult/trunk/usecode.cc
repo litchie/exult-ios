@@ -372,6 +372,7 @@ void Scheduled_usecode::handle_event
 			}
 		case 0x58:		// ?? 1 parm, fairly large byte.
 			i++;		// Wield weapon (tmporarily). parm=?+++
+					// Or play sound effect??
 			break;
 		case 0x59:		// Parm. is dir. (0-7).  0=north?
 			{
@@ -3938,7 +3939,8 @@ void Clearbreak()
 int Usecode_machine::run
 	(
 	Usecode_function *fun,
-	int event			// Event (??) that caused this call.
+	int event,			// Event (??) that caused this call.
+	int stack_elems			// # elems. on stack at call.
 	)
 	{
 	call_depth++;
@@ -3958,6 +3960,11 @@ int Usecode_machine::run
 	char *data = (char *) ip;	// Save ->text.
 	ip += data_len;			// Point past text.
 	int num_args = Read2(ip);	// # of args. this function takes.
+	while (num_args > stack_elems)	// Not enough args pushed?
+		{			// Push 0's.
+		pushi(0);
+		stack_elems++;
+		}
 					// Local variables follow args.
 	int num_locals = Read2(ip) + num_args;
 					// Allocate locals.
@@ -4196,7 +4203,8 @@ int Usecode_machine::run
 		case 0x24:		// CALL.
 			offset = Read2(ip);
 			if (!call_usecode_function(externals[2*offset] + 
-					256*externals[2*offset + 1], event))
+					256*externals[2*offset + 1], event,
+					sp - save_sp))
 				{	// Catch ABRT.
 				abort = 1;
 				if (catch_ip)
@@ -4388,7 +4396,8 @@ int Usecode_machine::run
 			caller_item = get_item(ival);
 			push(ival);
 			offset = Read2(ip);
-			if (!call_usecode_function(offset, event))
+			if (!call_usecode_function(offset, event, 
+								sp - save_sp))
 				{	// Catch ABRT.
 				abort = 1;
 				if (catch_ip)
@@ -4443,18 +4452,13 @@ int Usecode_machine::call_usecode_function
 	(
 	int id,
 	int event,			// Event (?) that caused this call.
-	Usecode_value *parm0		// If non-zero, pass this parm.
+	int stack_elems			// # elems. on stack at call.
 	)
 	{
 					// Nothing going on?
 	if (!call_depth && !Scheduled_usecode::get_count())
 		removed->flush();	// Flush removed objects.
 					// Look up in table.
-#if 0
-	Vector *slot = (Vector *) funs->get(id/0x100);
-	Usecode_function *fun = slot ? (Usecode_function *) slot->get(id%0x100)
-				     : 0;
-#endif
 	vector<Usecode_function*>& slot = funs[id/0x100];
 	int index = id%0x100;
 	Usecode_function *fun = index < slot.size() ? slot[index] : 0;
@@ -4463,9 +4467,8 @@ int Usecode_machine::call_usecode_function
 		cout << "Usecode " << id << " not found."<<endl;
 		return (-1);
 		}
-	if (parm0)
-		push(*parm0);
-	return run(fun, event);		// Do it.  Rets. 0 if aborted.
+					// Do it.  Rets. 0 if aborted.
+	return run(fun, event, stack_elems);
 	}
 
 /*
@@ -4489,8 +4492,7 @@ int Usecode_machine::call_usecode
 	Game_object *prev_item = caller_item;
 	caller_item = obj;
 	answers.clear();
-	Usecode_value parm(0);		// They all seem to take 1 parm.
-	int ret = call_usecode_function(id, event, &parm);
+	int ret = call_usecode_function(id, event, 0);
 	set_book(0);
 	caller_item = prev_item;
 	return ret;
