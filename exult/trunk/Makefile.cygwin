@@ -7,11 +7,11 @@ U7PATH=C:/Ultima7
 CC=gcc
 # Base of the exult source
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/files/zip:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs:$(SRC)/data
+VPATH=$(SRC):$(SRC)/files:$(SRC)/files/zip:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs:$(SRC)/data:$(SRC)/server
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
-SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDL -lSDLmain
 
 ### Uncomment these 2 lines, and comment out the 2 above if you want to build
 ### Exult as a console Win32 application. This is unsupported and is somewhat
@@ -33,8 +33,8 @@ CPPFLAGS=-DVERSION=\"0.97cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
-	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/data $(SDL_CFLAGS) -DHAVE_SNPRINTF \
-	 $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
+	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/data -I$(SRC)/server \
+	$(SDL_CFLAGS) -DHAVE_SNPRINTF -DUSE_EXULTSTUDIO $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
 CXXFLAGS=-O2 -Wno-long-long -include mingw_kludges.h
@@ -95,7 +95,9 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 	useval.o conversation.o keyring.o ucdisasm.o
 
-OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS)
+SERVER_OBJS=objserial.o servermsg.o server.o
+
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS)
 
 
 EXULT_FLX = data/exult.flx data/exult_flx.h

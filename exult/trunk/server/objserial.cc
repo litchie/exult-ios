@@ -201,11 +201,12 @@ void Npc_actor_io
 	Serial io(buf);
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
 	io << face << name << npc_num << ident << usecode;
-	for (int i = 0; i < 12; i++)
+	int i;
+	for (i = 0; i < 12; i++)
 		io << properties[i];
 	io << attack_mode << alignment << oflags << siflags << type_flags;
 	io << num_schedules;
-	for (int i = 0; i < num_schedules; i++)
+	for (i = 0; i < num_schedules; i++)
 		io << schedules[i].time << schedules[i].type <<
 				schedules[i].tx << schedules[i].ty;
 	}

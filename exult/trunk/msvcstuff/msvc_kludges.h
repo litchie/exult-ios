@@ -11,6 +11,8 @@
 #ifndef MSVC_KLUDGES_H
 #define MSVC_KLUDGES_H
 
+#define USE_EXULTSTUDIO
+
 // Fisrtly some things that need to be defined
 #define VERSION "0.97cvs"
 #define EXULT_DATADIR "data/"

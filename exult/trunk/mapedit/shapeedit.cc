@@ -39,7 +39,7 @@ using	std::endl;
 /*
  *	Equip window's Cancel button.
  */
-extern "C" void on_equip_cancel_clicked
+C_EXPORT void on_equip_cancel_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -51,7 +51,7 @@ extern "C" void on_equip_cancel_clicked
 /*
  *	Equip window's close button.
  */
-extern "C" gboolean on_equip_window_delete_event
+C_EXPORT gboolean on_equip_window_delete_event
 	(
 	GtkWidget *widget,
 	GdkEvent *event,
@@ -65,7 +65,7 @@ extern "C" gboolean on_equip_window_delete_event
 /*
  *	Record # changed, so update what's displayed.
  */
-extern "C" gboolean on_equip_recnum_changed
+C_EXPORT gboolean on_equip_recnum_changed
 	(
 	GtkWidget *widget,
 	GdkEventFocus *event,
@@ -289,7 +289,7 @@ void ExultStudio::close_equip_window
 /*
  *	Shape window's Cancel button.
  */
-extern "C" void on_shinfo_cancel_clicked
+C_EXPORT void on_shinfo_cancel_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -301,7 +301,7 @@ extern "C" void on_shinfo_cancel_clicked
 /*
  *	Shape window's close button.
  */
-extern "C" gboolean on_shape_window_delete_event
+C_EXPORT gboolean on_shape_window_delete_event
 	(
 	GtkWidget *widget,
 	GdkEvent *event,
@@ -315,7 +315,7 @@ extern "C" gboolean on_shape_window_delete_event
 /*
  *	Draw shape in draw area.
  */
-extern "C" gboolean on_shinfo_draw_expose_event
+C_EXPORT gboolean on_shinfo_draw_expose_event
 	(
 	GtkWidget *widget,		// The view window.
 	GdkEventExpose *event,
@@ -331,7 +331,7 @@ extern "C" gboolean on_shinfo_draw_expose_event
 /*
  *	Shape window's Equip-Edit button.
  */
-extern "C" void on_open_equip_button_clicked
+C_EXPORT void on_open_equip_button_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -344,7 +344,7 @@ extern "C" void on_open_equip_button_clicked
 /*
  *	Special-shapes toggles:
  */
-extern "C" void on_shinfo_weapon_check_toggled
+C_EXPORT void on_shinfo_weapon_check_toggled
 	(
 	GtkToggleButton *btn,
         gpointer user_data
@@ -353,7 +353,7 @@ extern "C" void on_shinfo_weapon_check_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_weapon_box", on);
 	}
-extern "C" void on_shinfo_ammo_check_toggled
+C_EXPORT void on_shinfo_ammo_check_toggled
 	(
 	GtkToggleButton *btn,
         gpointer user_data
@@ -362,7 +362,7 @@ extern "C" void on_shinfo_ammo_check_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_ammo_box", on);
 	}
-extern "C" void on_shinfo_armor_check_toggled
+C_EXPORT void on_shinfo_armor_check_toggled
 	(
 	GtkToggleButton *btn,
         gpointer user_data
@@ -371,7 +371,7 @@ extern "C" void on_shinfo_armor_check_toggled
 	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
 	ExultStudio::get_instance()->set_visible("shinfo_armor_box", on);
 	}
-extern "C" void on_shinfo_monster_check_toggled
+C_EXPORT void on_shinfo_monster_check_toggled
 	(
 	GtkToggleButton *btn,
         gpointer user_data

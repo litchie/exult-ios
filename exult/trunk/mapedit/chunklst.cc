@@ -497,14 +497,14 @@ cout << "Scrolled to " << adj->value << '\n';
 /*
  *	Callbacks for controls:
  */
-extern "C" void
+C_EXPORT void
 on_loc_chunk_down_clicked             (GtkButton       *button,
                                         gpointer         user_data)
 {
 	Chunk_chooser *chooser = (Chunk_chooser *) user_data;
 	chooser->locate(false);
 }
-extern "C" void
+C_EXPORT void
 on_loc_chunk_up_clicked               (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -512,14 +512,14 @@ on_loc_chunk_up_clicked               (GtkButton       *button,
 	chooser->locate(true);
 }
 
-extern "C" void
+C_EXPORT void
 on_insert_chunk_new_clicked            (GtkButton       *button,
                                         gpointer         user_data)
 {
 	Chunk_chooser *chooser = (Chunk_chooser *) user_data;
 	chooser->insert(false);
 }
-extern "C" void
+C_EXPORT void
 on_insert_chunk_dup_clicked            (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -527,14 +527,14 @@ on_insert_chunk_dup_clicked            (GtkButton       *button,
 	chooser->insert(true);
 }
 
-extern "C" void
+C_EXPORT void
 on_move_chunk_down_clicked            (GtkButton       *button,
                                         gpointer         user_data)
 {
 	Chunk_chooser *chooser = (Chunk_chooser *) user_data;
 	chooser->move(false);
 }
-extern "C" void
+C_EXPORT void
 on_move_chunk_up_clicked              (GtkButton       *button,
                                         gpointer         user_data)
 {

@@ -39,7 +39,7 @@ using	std::endl;
  *	Open npc window.
  */
 
-extern "C" void on_open_npc_activate
+C_EXPORT void on_open_npc_activate
 	(
 	GtkMenuItem     *menuitem,
         gpointer         user_data
@@ -52,7 +52,7 @@ extern "C" void on_open_npc_activate
 /*
  *	Npc window's Apply button.
  */
-extern "C" void on_npc_apply_btn_clicked
+C_EXPORT void on_npc_apply_btn_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -64,7 +64,7 @@ extern "C" void on_npc_apply_btn_clicked
 /*
  *	Npc window's Cancel button.
  */
-extern "C" void on_npc_cancel_btn_clicked
+C_EXPORT void on_npc_cancel_btn_clicked
 	(
 	GtkButton *btn,
 	gpointer user_data
@@ -76,7 +76,7 @@ extern "C" void on_npc_cancel_btn_clicked
 /*
  *	Npc window's close button.
  */
-extern "C" gboolean on_npc_window_delete_event
+C_EXPORT gboolean on_npc_window_delete_event
 	(
 	GtkWidget *widget,
 	GdkEvent *event,
@@ -90,7 +90,7 @@ extern "C" gboolean on_npc_window_delete_event
 /*
  *	Draw shape in NPC shape area.
  */
-extern "C" gboolean on_npc_draw_expose_event
+C_EXPORT gboolean on_npc_draw_expose_event
 	(
 	GtkWidget *widget,		// The view window.
 	GdkEventExpose *event,
@@ -106,7 +106,7 @@ extern "C" gboolean on_npc_draw_expose_event
 /*
  *	Npc shape # lost focus, so update shape displayed.
  */
-extern "C" gboolean on_npc_shape_focus_out_event
+C_EXPORT gboolean on_npc_shape_focus_out_event
 	(
 	GtkWidget *widget,
 	GdkEventFocus *event,
@@ -137,7 +137,7 @@ static void Npc_shape_dropped
 /*
  *	Draw face.
  */
-extern "C" gboolean on_npc_face_draw_expose_event
+C_EXPORT gboolean on_npc_face_draw_expose_event
 	(
 	GtkWidget *widget,		// The view window.
 	GdkEventExpose *event,
@@ -704,7 +704,7 @@ static void Set_sched_btn
 /*
  *	Npc window's "set schedule" button.
  */
-extern "C" void on_npc_set_sched
+C_EXPORT void on_npc_set_sched
 	(
 	GtkWidget *btn,			// One of the 'set' buttons.
 	gpointer user_data
