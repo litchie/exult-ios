@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapevga.h"
 #include "shapelst.h"
 #include "chunklst.h"
+#include "paledit.h"
 #include "utils.h"
 #include "Flex.h"
 #include "exceptions.h"
@@ -197,10 +198,33 @@ Flex_file_info::Flex_file_info
 	const char *pnm,		// Full pathname,
 	Flex *fl,			// Flex file (we'll own it).
 	Shape_group_file *g		// Group file (or 0).
-	) : Shape_file_info(bnm, pnm, g), flex(fl)
+	) : Shape_file_info(bnm, pnm, g), flex(fl), write_flat(false)
 	{
 	entries.resize(flex->number_of_objects());
 	lengths.resize(entries.size());
+	}
+
+/*
+ *	Init. for single-palette.
+ */
+
+Flex_file_info::Flex_file_info
+	(
+	const char *bnm,		// Basename,
+	const char *pnm,		// Full pathname,
+	int size			// File size.
+	) : Shape_file_info(bnm, pnm, 0), flex(0), write_flat(true)
+	{
+	entries.resize(size > 0);
+	lengths.resize(entries.size());
+	if (size > 0)			// Read in whole thing.
+		{
+		std::ifstream in;
+		U7open(in, pnm);	// Shouldn't fail.
+		entries[0] = new char[size];
+		in.read(entries[0], size);
+		lengths[0] = size;
+		}
 	}
 
 /*
@@ -311,6 +335,10 @@ Object_browser *Flex_file_info::create_browser
 	Shape_group *g			// Group, or 0.
 	)
 	{
+	const char *bname = basename.c_str();
+	if (strcasecmp(bname, "palettes.flx") == 0 ||
+	    strcasecmp(".pal", bname + strlen(bname) - 4) == 0)
+		return new Palette_edit(this);
 	return new Combo_chooser(vgafile->get_ifile(), this, palbuf,
 								400, 64, g);
 	}
@@ -338,6 +366,15 @@ void Flex_file_info::flush
 	string filestr("<PATCH>/");	// Always write to 'patch'.
 	filestr += basename;
 	U7open(out, filestr.c_str());	// May throw exception.
+	if (cnt <= 1 && write_flat)	// Write flat file.
+		{
+		if (cnt)
+			out.write(entries[0], lengths[0]);
+		out.close();
+		if (!out.good())
+			throw file_write_exception(filestr.c_str());
+		return;
+		}
 	Flex_writer writer(out, "Written by ExultStudio", cnt);
 					// Write all out.
 	for (int i = 0; i < cnt; i++)
@@ -374,16 +411,23 @@ static bool Create_file
 	string& pathname		// Pathname is returned here.
 	)
 	{
+	pathname = "<PATCH>/";		// Always write to 'patch'.
+	pathname += basename;
 	int namelen = strlen(basename);
 	if (strcasecmp(".flx", basename + namelen - 4) == 0)
 		{			// We can create an empty flx.
 		ofstream out;
-		pathname = "<PATCH>/";	// Always write to 'patch'.
-		pathname += basename;
 		U7open(out, pathname.c_str());	// May throw exception.
 		Flex_writer writer(out, "Written by ExultStudio", 0);
 		if (!writer.close())
 			throw file_write_exception(pathname.c_str());
+		return true;
+		}
+	else if (strcasecmp(".pal", basename + namelen - 4) == 0)
+		{			// Empty 1-palette file.
+		ofstream out;
+		U7open(out, pathname.c_str());	// May throw exception.
+		out.close();		// Empty file.
 		return true;
 		}
 	return false;			// Might add more later.
@@ -439,8 +483,20 @@ Shape_file_info *Shape_file_set::create
 		file = new std::ifstream;
 		U7open(*file, fullname);// Automatically does binary.
 		}
-	else if (strcasecmp(basename, "combos.flx") == 0)
+	else if (strcasecmp(basename, "combos.flx") == 0 ||
+		 strcasecmp(basename, "palettes.flx") == 0)
 		flex = new Flex(fullname);
+	else if (strcasecmp(".pal", basename + strlen(basename) - 4) == 0)
+		{			// Single palette?
+		std::ifstream in;
+		U7open(in, fullname);
+		in.seekg(0, std::ios::end);	// Figure size.
+		int sz = in.tellg();
+		Shape_file_info *fi = new Flex_file_info(basename, fullname,
+									sz);
+		files.push_back(fi);
+		return fi;
+		}
 	if (!ifile && !file && !flex)	// Not handled above?
 					// Get image file for this path.
 		ifile = new Vga_file(fullname, u7drag_type);

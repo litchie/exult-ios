@@ -381,6 +381,8 @@ public:
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
+					// Remove/delete this object.
+	virtual void remove_this(int nodel = 0);
 	virtual void paint_terrain(Game_window *gwin) {  }
 	virtual void write_ifix(std::ostream& ifix);
 	};

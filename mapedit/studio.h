@@ -140,7 +140,6 @@ public:
 	void new_game();
 	void choose_game_path();
 	Object_browser  *create_browser(const char *fname);
-	Object_browser  *create_palette_browser(const char *fname);
 	void set_game_path(const char *path);
 	void setup_file_list();
 	void save_all();		// Write out everything.
@@ -160,7 +159,7 @@ public:
 	void new_shape_file(bool single);
 	static void create_shape_file(char *nm, gpointer udata);
 					// Groups:
-	void setup_groups(const char *fname);
+	void setup_groups();
 	void setup_group_controls();
 	void add_group();
 	void del_group();

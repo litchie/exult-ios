@@ -295,15 +295,18 @@ on_group_list_button_press_event	(GtkCList	*clist,
 
 void ExultStudio::setup_groups
 	(
-	const char *fname		// Base filename.
 	)
 	{
-	string name(fname);		// Start with shapes filename.
-	name += ".grp";
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
 	Shape_group_file *groups = curfile->get_groups();
 	gtk_clist_clear(clist);		// Clear out list.
+	if (!groups)			// No groups?
+		{
+		set_visible("groups_frame", FALSE);
+		return;
+		}
+	set_visible("groups_frame", TRUE);
 	gtk_clist_freeze(clist);
 	int cnt = groups->size();	// Add groups from file.
 	for (int i = 0; i < cnt; i++)

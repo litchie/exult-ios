@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "rect.h"
 #include <vector>
 
-class Flex;
+class Flex_file_info;
 class U7object;
 
 /*
@@ -38,14 +38,13 @@ class U7object;
  */
 class Palette_edit: public Object_browser
 	{
-	char *basename;			// Base filename.
+	Flex_file_info *flex_info;	// Where file data is stored.
 	guchar *image;			// Holds data to render.
 	int width, height;		// Dimensions of image.
 	GtkWidget *draw;		// GTK draw area to display them in.
 	GdkGC *drawgc;			// For drawing in 'draw'.
 	std::vector<GdkRgbCmap*> palettes;	// The palettes to display.
 	int cur_pal;			// Index of current palette.
-	bool modified;
 	GtkColorSelectionDialog *colorsel;// Open color selector.
 	GtkWidget *sbar;		// Status bar.
 	GtkWidget *pspin;		// Spin button for palette #.
@@ -70,17 +69,14 @@ class Palette_edit: public Object_browser
 	void enable_controls();		// Enable/disable controls after sel.
 					//   has changed.
 	void setup();			// Setup box.
+	void new_palette();		// Create new palette.
+	void update_flex(int pnum);	// Update flex_info data.
 public:
-	Palette_edit(const char *bname);
+	Palette_edit(Flex_file_info *flinfo);
 	~Palette_edit();
 	void show_palette(int palnum);	// Show desired palette.
 					// Turn off selection.
 	void unselect(bool need_render = true);
-					// About to close this browser.
-	virtual bool closing(bool can_cancel = false);
-	virtual bool is_modified() const
-		{ return modified; }
-	virtual void save();		// Write them out.
 	void move_palette(bool up);
 	void add_palette();
 	void remove_palette();
