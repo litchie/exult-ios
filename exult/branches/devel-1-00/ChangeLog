@@ -1,5 +1,6 @@
 2002-07-10  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.in: removed --enable-usecode-debugger (it's 1.1.x only)
+	* exult.cc: undo double click change. (it broke gumps)
 
 2002-07-09  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ucinternal.cc: allow (but ignore) large changes to loop arrays
