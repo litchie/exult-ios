@@ -166,7 +166,7 @@ void Scheduled_usecode::handle_event
 			{		// Loop(offset, cnt).
 			Usecode_value& cntval = arrval.get_elem(i + 2);
 			int cnt = cntval.get_int_value();
-			if (cnt <= (Game::get_game_type() == SERPENT_ISLE ? 1 : 0))
+			if (cnt <= 0)
 					// Done.
 				i += 2;
 			else
@@ -183,7 +183,7 @@ void Scheduled_usecode::handle_event
 			do_another = 1;
 			Usecode_value& cntval = arrval.get_elem(i + 2);
 			int cnt = cntval.get_int_value();
-			if (cnt <= (Game::get_game_type() == SERPENT_ISLE ? 1 : 0))
+			if (cnt <= 0)
 					// Done.
 				i += 3;
 			else
@@ -246,6 +246,15 @@ void Scheduled_usecode::handle_event
 			activate_eggs(usecode);
 			break;
 		case 0x4d:		// ??Also show next frame?
+			{
+			int nframes = gwin->get_shapes().get_num_frames(
+							obj->get_shapenum());
+			if (obj->get_framenum() < nframes) {
+				Usecode_value fval(1+obj->get_framenum());
+				usecode->set_item_frame(objval, fval);
+			}
+			break;
+			}
 		case 0x4e:		// Show next frame.
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
