@@ -386,9 +386,8 @@ void Combat_schedule::approach_foe
 				npc->say(first_to_battle, last_to_battle);
 			}
 		}
-					// Walk there, but don't retry if
-					//   blocked.
-	npc->set_action(new Path_walking_actor_action(path, 0));
+					// Walk there, & check half-way.
+	npc->set_action(new Approach_actor_action(path, opponent));
 					// Start walking.  Delay a bit if
 					//   opponent is off-screen.
 	npc->start(gwin->get_std_delay(), Off_screen(gwin, opponent) ? 
