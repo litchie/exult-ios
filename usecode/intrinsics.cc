@@ -875,8 +875,8 @@ USECODE_INTRINSIC(projectile_effect)
 	int shnum = parms[2].get_int_value();
 	Shape_info& info = gwin->get_info(shnum);
 	Weapon_info *winfo = info.get_weapon_info();
-	if (winfo && winfo->get_ammo())	// Ammo?
-		shnum = winfo->get_ammo();
+	if (winfo && winfo->get_projectile())	// Ammo?
+		shnum = winfo->get_projectile();
 	gwin->add_effect(new Projectile_effect(attacker, to, shnum));
 
 	return Usecode_value(0);	// Not sure what this should be.

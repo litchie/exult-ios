@@ -34,23 +34,28 @@ class Weapon_info
 	{
 	char damage;			// Damage points (positive).
 	unsigned char special_atts;	// Poison, sleep, charm. flags.
-	unsigned char ammo_consumed;	// Ammo. is consumed when used.
-	short ammo;			// Shape # of ammo., or 0.
+	short ammo;			// Shape # of ammo. consumed, or
+					//   -1 = ?? (swords, also sling).
+					//   -2 = ?? wands?
+					//   -3 = throw weapon itself.
+	short projectile;		// Projectile shape, or 0.
 	short usecode;			// Usecode function, or 0.
 public:
 	friend class Shape_info;
-	Weapon_info(char d, unsigned char sp, short am, short uc) 
-		: damage(d), special_atts(sp), ammo_consumed(0),
-		  ammo(am), usecode(uc)
+	Weapon_info(char d, unsigned char sp, short am, short pr, short uc) 
+		: damage(d), special_atts(sp), ammo(am), projectile(pr),
+		  usecode(uc)
 		{  }
 	int get_damage()
 		{ return damage; }
 	unsigned char get_special_atts()// Test for special damage.
 		{ return special_atts; }
-	int get_ammo()
-		{ return ammo; }
-	int is_ammo_consumed()
-		{ return ammo_consumed; }
+	int get_ammo_consumed()
+		{ return ammo > 0 ? ammo : 0; }
+	int is_thrown()
+		{ return ammo == -3; }
+	int get_projectile()
+		{ return projectile; }
 	int get_usecode()
 		{ return usecode; }
 	};
@@ -121,11 +126,6 @@ class Shape_info
 	// defined so copying will cause a link error (intentional)
 	Shape_info(const Shape_info & other);
 	const Shape_info & operator = (const Shape_info & other);
-	void set_ammo_consumed()
-		{
-		if (weapon)
-			weapon->ammo_consumed = 1;
-		}
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : weight(0), volume(0),

@@ -1,3 +1,9 @@
+2001-02-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* shapes, etc.:  Figured out more info. about weapons.
+	Triple-crossbow now works, and sling, blowgun work like the
+	original (unlimited ammo).
+
 2001-02-03  Max Horn  <max@quendi.de>
 	* actors.cc: "fixed" Marsten crash (teleport code was buggy)
 
