@@ -109,11 +109,20 @@ void Render
 	glEnable(GL_LIGHTING);		// Enable lighting.
 	Vector3 low, high;		// Get range of dimensions.
 	model.find_extents(low, high);
-
+					// Compute bounding sphere.
+	Vector3 c = (low + high)/2.0;	// Center.
+	float width = high.x - low.x, depth = high.y - low.y, 
+		ht = high.z - low.z;
+	float diam = width > depth ? width : depth;
+	if (ht > diam)
+		diam = ht;
+	float r = diam/2;		// Radius.
+	r += r/10.0;			// Make it a bit bigger.
 	glMatrixMode(GL_PROJECTION);	// Set up orthogonal volume.
 	glLoadIdentity();
-	glOrtho(3*low.x/2, 3*high.x/2, 3*low.y/2, 3*high.y/2, 
-						3*low.z/2, 3*high.z/2);
+	glOrtho(c.x - r, c.x + r, c.y - r, c.y + r, 1.0, 1.0 - diam);
+//	glOrtho(3*low.x/2, 3*high.x/2, 3*low.y/2, 3*high.y/2, 
+//						3*low.z/2, 3*high.z/2);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	GLfloat pos[4];
