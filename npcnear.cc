@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Npcnear.cc - At random times, run proximity usecode funs. on nearby
  **		NPC's.
  **
@@ -16,15 +17,15 @@
 
 void Npc_proximity_handler::add
 	(
-	timeval curtime,		// Current time.
+	unsigned long curtime,		// Current time (msecs).
 	Npc_actor *npc,
 	int additional_secs		// More secs. to wait.
 	)
 	{
 					// Wait between 3 & 18 secs.
 	int msecs = (rand() % 15000) + 3000;
-	timeval newtime = Add_usecs(curtime, msecs*1000);
-	newtime.tv_sec += additional_secs;
+	unsigned long newtime = curtime + msecs;
+	newtime += 1000*additional_secs;
 	gwin->get_tqueue()->add(newtime, this, (long) npc);
 	}
 
@@ -34,7 +35,7 @@ void Npc_proximity_handler::add
 
 void Npc_proximity_handler::handle_event
 	(
-	timeval curtime,
+	unsigned long curtime,
 	long udata
 	)
 	{
@@ -66,7 +67,6 @@ void Npc_proximity_handler::wait
 	int secs			// # of seconds.
 	)
 	{
-	gettimeofday(&wait_until, 0);
-	wait_until.tv_sec += secs;
+	wait_until = SDL_GetTicks() + 1000*secs;
 	}
 

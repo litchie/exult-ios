@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Actors.cc - Game actors.
  **
  **	Written: 11/3/98 - JSF
@@ -142,7 +143,7 @@ int Actor::get_flag
 
 void Main_actor::handle_event
 	(
-	timeval curtime,		// Current time of day.
+	unsigned long curtime,		// Current time of day.
 	long udata			// Ignored.
 	)
 	{
@@ -152,7 +153,7 @@ void Main_actor::handle_event
 	if (next_frame(curtime, cx, cy, sx, sy, frame))
 		{
 					// Add back to queue for next time.
-		gwin->get_tqueue()->add(Add_usecs(curtime, frame_time),
+		gwin->get_tqueue()->add(curtime + frame_time,
 							this, udata);
 					// Check for scrolling.
 		int chunkx = gwin->get_chunkx(), chunky = gwin->get_chunky();
@@ -267,7 +268,7 @@ cout << "Npc " << get_name() << " has new schedule " << schedule << '\n';
 
 void Npc_actor::handle_event
 	(
-	timeval curtime,		// Current time of day.
+	unsigned long curtime,		// Current time of day.
 	long udata			// Ignored.
 	)
 	{
@@ -328,14 +329,14 @@ void Npc_actor::switched_chunks
 
 int Area_actor::next_frame
 	(
-	timeval& time,			// Current time.
+	unsigned long time,		// Current time.
 	int& new_cx, int& new_cy,	// New chunk coords. returned.
 	int& new_sx, int& new_sy,	// New shape coords. returned.
 	int& next_frame			// Next frame # returned.
 	)
 	{
 					// See if we should change motion.
-	if (time.tv_sec < next_change.tv_sec)
+	if (time < next_change)
 		return (Actor::next_frame(time, new_cx, new_cy,
 						new_sx, new_sy, next_frame));
 	if (is_moving())
@@ -360,7 +361,7 @@ int Area_actor::next_frame
 		long newx = get_worldx() + deltax;
 		long newy = get_worldy() + deltay;
 					// Move every 1/4 second.
-		start(newx, newy, 250000);
+		start(newx, newy, 250);
 					// Go 1 to 4 seconds.
 		next_change.tv_sec = time.tv_sec + 1 +
 			(long) (4.0*rand()/(RAND_MAX + 1.0));

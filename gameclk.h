@@ -26,7 +26,7 @@ public:
 		{ return minute; }
 	int get_day()
 		{ return day; }
-	virtual void handle_event(timeval curtime, long udata);
+	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
 #endif	/* INCL_GAMECLK */

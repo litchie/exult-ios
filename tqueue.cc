@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Tqueue.cc - A queue of time-based events for animation.
  **
  **	Written: 2/15/00 - JSF
@@ -12,7 +13,7 @@
 
 void Time_queue::add
 	(
-	timeval t,			// When entry is to be activated.
+	unsigned long t,		// When entry is to be activated.
 	Time_sensitive *obj,		// Object to be added.
 	long ud				// User data.
 	)
@@ -82,7 +83,7 @@ void Time_queue::remove
 
 void Time_queue::activate0
 	(
-	timeval curtime			// Current time.
+	unsigned long curtime		// Current time.
 	)
 	{
 	do

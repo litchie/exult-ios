@@ -14,7 +14,7 @@
 
 void Game_clock::handle_event
 	(
-	timeval curtime,		// Current time of day.
+	unsigned long curtime,		// Current time of day.
 	long udata			// ->game window.
 	)
 	{
@@ -33,6 +33,6 @@ void Game_clock::handle_event
 			}
 		}
 	cout << "Clock updated to " << hour << ':' << minute << '\n';
-	curtime.tv_sec += 60;		// Do it again in 60 seconds.
+	curtime += 60*1000;		// Do it again in 60 seconds.
 	tqueue->add(curtime, this, udata);
 	}
