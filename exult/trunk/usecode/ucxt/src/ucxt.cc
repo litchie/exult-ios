@@ -93,13 +93,11 @@ int main(int argc, char** argv)
 		}
 	}
 	
-	// init the compile time tables
-	if(uc.options.verbose) cout << "Initing static tables..." << endl;
-	init_static_usecodetables();
-
 	// init the run time tables
 	if(uc.options.verbose) cout << "Initing runtime tables..." << endl;
-	init_usecodetables(config, uc.options);
+	
+	ucxtInit init;
+	init.init(config, uc.options);
 	
 	#if 0
 	{

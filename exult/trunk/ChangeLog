@@ -1,3 +1,9 @@
+2002-01-27  Darke  <darkepaw@users.sourceforge.net>
+	* usecode/ucxt/head2data*: Creates data/u7bgintrinsics.data and
+	data/u7siintrinsics.data from their respective *intrinsics.h files.
+
+	* usecode/ucxt/*: Modifications to allow for the above.
+
 2002-01-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* tools/wuc.c, rip.c: minor bugfixes
 	* tools/rip.c: use .uco extension for extracted objects
