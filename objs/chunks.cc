@@ -1080,7 +1080,7 @@ Tile_coord Map_chunk::find_spot
 	if (dir < 0)
 		dir = rand()%8;		// Choose dir. randomly.
 	dir = (dir + 1)%8;		// Make NW the 0 point.
-	for (int d = 1; d < dist; d++)	// Look outwards.
+	for (int d = 1; d <= dist; d++)	// Look outwards.
 		{
 		int square_cnt = 8*d	;// # tiles in square's perim.
 					// Get square (starting in NW).
