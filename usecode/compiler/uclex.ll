@@ -216,6 +216,7 @@ se		return SE;
 "!="			{ return NEQUALS; }
 "<="			{ return LTEQUALS; }
 ">="			{ return GTEQUALS; }
+"->"			{ return POINTS; }
 
 "# "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 2); }
 "#line "[0-9]+\ \"[^"]*\".*\n	{ Set_location(yytext + 6); }

@@ -102,13 +102,14 @@ static Uc_function *function = 0;	// Current function being parsed.
 %right ELSE
 
 /*
- *	Expression precedence rules:
+ *	Expression precedence rules (lowest to highest):
  */
 %left AND OR
 %left EQUALS NEQUALS LTEQUALS GTEQUALS '<' '>' IN
 %left '-' '+' '&'
 %left '*' '/' '%'
 %left NOT
+%left POINTS
 
 /*
  *	Production types:
@@ -128,7 +129,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 %type <block> statement_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
-%type <funcall> function_call
+%type <funcall> function_call routine_call method_call
 
 %%
 
@@ -621,6 +622,19 @@ primary:
 	;
 
 function_call:
+	routine_call
+	| method_call
+	;
+
+method_call:				/* Really a way to do CALLE.	*/
+	primary POINTS routine_call
+		{
+		$3->set_itemref($1);
+		$$ = $3;	
+		}
+	;
+
+routine_call:
 	IDENTIFIER '(' opt_expression_list ')'
 		{ 
 		Uc_symbol *sym = function->search_up($1);
