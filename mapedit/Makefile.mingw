@@ -1,6 +1,6 @@
 # Exult Studio makefile for use in Windows with mingw 1.0 or later and Cygwin shell
 # Where is Exult Studio will be installed
-STUDIOPATH=C:/Studio
+U7PATH=C:/Ultima7
 
 SRC=..
 VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs
@@ -50,6 +50,6 @@ clean:
 	rm -f $(OBJS) $(EXEC)
 
 install: $(EXEC)
-	mkdir -p $(STUDIOPATH)
-	strip $(EXEC) -o  $(STUDIOPATH)/$(EXEC)
-	cp exult_studio.glade $(STUDIOPATH)
+	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
+	mkdir -p $(U7PATH)/data
+	cp exult_studio.glade $(U7PATH)/data/exult_studio.glade
