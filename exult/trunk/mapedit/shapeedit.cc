@@ -614,8 +614,8 @@ void ExultStudio::init_shape_notebook
 		set_spin("shinfo_weapon_proj", winfo->get_projectile(),
 								0, 1023);
 		set_optmenu("shinfo_weapon_uses", winfo->get_uses());
-		set_spin("shinfo_weapon_sfx", winfo->get_sfx());
-		set_spin("shinfo_weapon_hitsfx", winfo->get_hitsfx());
+		set_spin("shinfo_weapon_sfx", winfo->get_sfx(), 0, 1023);
+		set_spin("shinfo_weapon_hitsfx", winfo->get_hitsfx(), 0, 1023);
 					// Show usecode in hex.
 		set_entry("shinfo_weapon_uc", winfo->get_usecode(), true);
 		static char *powers[] = {
