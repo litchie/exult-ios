@@ -64,10 +64,18 @@ void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 	if(len==768) {	// Simple palette
 		if (xindex >= 0) {	// Get xform table.
 			U7object xform(xfname, xindex);
-			char *xbuf = 0;
+			unsigned char *xbuf = 0;
 			size_t xlen;
 			try {
-				xbuf = xform.retrieve( xlen);
+#if 0	/* +++++TESTING */
+				xbuf = new unsigned char[256];
+				Game_window *gwin = 
+					Game_window::get_game_window();
+				memcpy(xbuf, gwin->get_xform(11 - xindex - 1),
+									256);
+#else
+				xbuf = (unsigned char *) xform.retrieve( xlen);
+#endif
 				for (int i = 0; i < 256; i++) {
 					int ix = xbuf[i];
 					pal1[3*i] = buf[3*ix];
@@ -101,7 +109,7 @@ void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 		if (xindex >= 0)	// Get xform table.
 			{
 			U7object xform(xfname, xindex);
-			char *xbuf; size_t xlen;
+			unsigned char *xbuf; size_t xlen;
 			if (!xform.retrieve(&xbuf, xlen))
 				xindex = -1;
 			else
@@ -236,11 +244,11 @@ void Palette::create_trans_table
 	for (int i = 0; i < 256; i++)
 		{
 		int newr = ((int) br * alpha)/255 + 
-				((int) pal1[i*3] * (1- alpha))/255;
+				((int) pal1[i*3] * (255 - alpha))/255;
 		int newg = ((int) bg * alpha)/255 + 
-				((int) pal1[i*3 + 1] * (1- alpha))/255;
+				((int) pal1[i*3 + 1] * (255 - alpha))/255;
 		int newb = ((int) bb * alpha)/255 + 
-				((int) pal1[i*3 + 2] * (1- alpha))/255;
+				((int) pal1[i*3 + 2] * (255 - alpha))/255;
 		table[i] = find_color(newr, newg, newb);
 		}
 	}
