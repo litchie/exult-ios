@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Gumps.h - Open containers and their contents.
  **
  **	Written: 3/4/2000 - JSF
@@ -32,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Gump_object : public ShapeID
 	{
+protected:
 	Gump_object *next;		// ->next to draw.
 	Container_game_object *container;// What this gump shows.
 	int x, y;			// Location on screen.
@@ -59,8 +61,6 @@ public:
 		{ return next; }
 	Container_game_object *get_container()
 		{ return container; }
-	void add(Game_object *obj)
-		{ container->add(obj); }
 	void remove(Game_object *obj)
 		{ container->remove(obj); }
 					// Get screen rect. of obj. in here.
@@ -78,6 +78,50 @@ public:
 	int on_checkmark(Game_window *gwin, int mx, int my);
 					// Show checkmark pushed in.
 	void push_checkmark(Game_window *gwin);
+					// Add object.
+	virtual int add(Game_object *obj, int mx = -1, int my = -1);
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
+ *	A spot on an Actor gump:
+ */
+class Actor_gump_spot
+	{
+	friend class Actor_gump_object;
+	short x, y;			// Location rel. to gump.
+	Game_object *obj;		// Object that is here.
+	int usecode_id;			// ID # used in intrinsic 0x72.
+	Actor_gump_spot()
+		{  }
+	};
+
+/*
+ *	A rectangular area showing a character and his/her possessions:
+ */
+class Actor_gump_object : public Gump_object
+	{
+	Actor_gump_spot spots[8];	// Where things can go.
+	enum Spots {			// Index of each spot.
+		head = 0,
+		back = 1,
+		lhand = 2,
+		rhand = 3,
+		legs = 4,
+		feet = 5,
+		lfinger = 6,
+		rfinger = 7
+		};
+					// Find index of closest spot.
+	int find_closest(int mx, int my);
+	static short diskx, disky;	// Where to show 'diskette' button.
+	static short statx, staty;	// Where to show 'stats' button.
+public:
+	Actor_gump_object(Container_game_object *cont, int initx, int inity, 
+								int shnum);
+					// Add object.
+	virtual int add(Game_object *obj, int mx = -1, int my = -1);
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};
