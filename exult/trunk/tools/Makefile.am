@@ -1,20 +1,16 @@
 INCLUDES = -I$(srcdir)/../files -I$(srcdir)/../usecode -I$(srcdir)/.. \
 		$(DEBUG_FLAGS) $(CPPFLAGS) $(SDL_CFLAGS)
 
-if LEXYACC
-UCC= ucc
-else
-UCC=
-endif
-
 if BUILD_TOOLS
-EXTRATOOLS = wuc wud mklink rip ucdump shp2pcx splitshp $(UCC)
+NOINSTTOOLS = wuc wud mklink rip ucdump
+EXTRATOOLS = splitshp shp2pcx
 else
 EXTRATOOLS =
+NOINSTTOOLS =
 endif
 
-bin_PROGRAMS = expack
-noinst_PROGRAMS = $(EXTRATOOLS)
+bin_PROGRAMS = expack $(EXTRATOOLS)
+noinst_PROGRAMS = $(NOINSTTOOLS)
 
 expack_SOURCES = \
 	expack.cc
@@ -42,16 +38,6 @@ shp2pcx_LDADD = $(SYSLIBS)
 splitshp_SOURCES = splitshp.cc
 
 splitshp_LDADD = $(SYSLIBS)
-
-ucc_SOURCES = \
-	ucclex.l \
-	uccparse.y
-
-ucc$(EXEEXT): uccparse.o
-	$(LINK) uccparse.o
-
-uccparse.o: ucclex.c
-
 
 EXTRA_DIST = \
 	intrins1.txt \

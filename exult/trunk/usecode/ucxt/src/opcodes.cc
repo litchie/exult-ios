@@ -42,10 +42,10 @@ void init_static_usecodetables(const Configuration &config)
 void init_usecodetables(const Configuration &config, bool noconf, bool verbose)//const UCData &uc)
 {
 	string ucxtroot;
-	if(noconf == false) config.value("config/ucxt/root", ucxtroot);
+	if(noconf == false) config.value("config/ucxt/root", ucxtroot, EXULT_DATADIR);
 	if(verbose) cout << "ucxtroot: " << ucxtroot << endl;
 	if(ucxtroot.size() && ucxtroot[ucxtroot.size()-1]!='/' && ucxtroot[ucxtroot.size()-1]!='\\') ucxtroot+='/';
-	ucxtroot+= "Docs/opcodes.txt";
+	ucxtroot+= "opcodes.txt";
 
 	ifstream file;
 

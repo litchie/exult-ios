@@ -3,7 +3,7 @@ INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin \
 		-I$(srcdir)/../gumps -I$(srcdir)/../tools \
 	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
-SUBDIRS = compiler # Compile errors: ucxt
+SUBDIRS = compiler ucxt
 
 noinst_LTLIBRARIES = libusecode.la
 
