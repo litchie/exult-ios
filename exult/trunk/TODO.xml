@@ -2,7 +2,7 @@
 
 <!DOCTYPE todo SYSTEM "todo.dtd">
 
-<todo title="Exult" changed="05 July 2001(GMT)">
+<todo title="Exult" changed="27 November 2001(GMT)">
 
 <project>
 	<description>
@@ -21,7 +21,7 @@
 		Implement "Return to Menu" in the in-game menu to go back to the Exult menu
 	</description>
 	<difficulty>
-		Easy
+		Medium
 	</difficulty>
 	<owner>
 		Nobody
@@ -33,7 +33,7 @@
 		correction sliders
 	</description>
 	<difficulty>
-		Medium
+		Easy
 	</difficulty>
 	<owner>
 		Tristan Tarrant
@@ -110,4 +110,17 @@
 		Nobody
 	</owner>
 </project>
+<project>
+	<description>
+		Implement a checksum for the generated .flx files and check
+		against it at runtime
+	</description>
+	<difficulty>
+		Medium
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+
 </todo>
