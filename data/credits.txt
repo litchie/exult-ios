@@ -21,7 +21,7 @@
 \CWillem Jan Palenstijn
 \C<palenstijn@wanadoo.nl>
 \CPorting to obscure OSs (Windows) and less
-\Cobscure ones (BeOS)
+\Cobscure ones (BeOS), cheats, autoconf
 
 
 \CTristan Tarrant
