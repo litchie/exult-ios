@@ -309,6 +309,7 @@ private:
 	USECODE_INTRINSIC_DECL(center_view);
 	USECODE_INTRINSIC_DECL(get_dead_party);
 	USECODE_INTRINSIC_DECL(play_sound_effect);
+	USECODE_INTRINSIC_DECL(play_sound_effect2);
 	USECODE_INTRINSIC_DECL(get_npc_id);
 	USECODE_INTRINSIC_DECL(set_npc_id);
 	USECODE_INTRINSIC_DECL(add_cont_items);

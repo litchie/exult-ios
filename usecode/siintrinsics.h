@@ -223,7 +223,7 @@
 
 	USECODE_INTRINSIC_PTR(is_not_blocked),			// 0xa0
 	
-	USECODE_INTRINSIC_PTR(play_sound_effect),		// 0xA1 - Known
+	USECODE_INTRINSIC_PTR(play_sound_effect2),		// 0xA1 - Known
 	
 	USECODE_INTRINSIC_PTR(direction_from),			// 0xa2
 	

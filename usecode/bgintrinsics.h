@@ -138,7 +138,7 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x83
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
 	USECODE_INTRINSIC_PTR(is_not_blocked),	// 0x85
-	USECODE_INTRINSIC_PTR(play_sound_effect),	// 0x86  
+	USECODE_INTRINSIC_PTR(play_sound_effect2),	// 0x86  
 	USECODE_INTRINSIC_PTR(direction_from),	// 0x87
 	USECODE_INTRINSIC_PTR(get_item_flag),	// 0x88
 	USECODE_INTRINSIC_PTR(set_item_flag),	// 0x89

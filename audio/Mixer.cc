@@ -194,7 +194,7 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 	stream_unlock();
 }
 
-AudioID	Mixer::play(uint8 *sound_data,uint32 len)
+AudioID	Mixer::play(uint8 *sound_data,uint32 len, int volume)
 {
 	ProducerConsumerBuf *audiostream=Create_Audio_Stream(
 						Mixer_Sample_Magic_Number);
@@ -204,6 +204,7 @@ AudioID	Mixer::play(uint8 *sound_data,uint32 len)
 		return AudioID(0, 0);
 		}
 	SDL::LockAudio();
+	audiostream->set_volume(volume);
 	audiostream->produce(sound_data,len);
 	audiostream->end_production();
 	AudioID id(audiostream, audiostream->get_seq());
