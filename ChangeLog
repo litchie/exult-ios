@@ -1,3 +1,8 @@
+2001-01-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc: Get_click ignores modifier keys, and takes screenshots
+	* gamewin.cc/h: added Game_window::clear_avatar_choices()
+	* usecode/ucmachine.cc: accept only 1-9 keys during conversation
+
 2001-01-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* UCC - Intrinsics, function-calls.

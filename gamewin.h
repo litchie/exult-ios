@@ -560,7 +560,7 @@ public:
 					// Show a "face" on the screen.
 	void show_face(int shape, int frame);
 	void remove_face(int shape);	// Remove "face" from screen.
-	inline int get_num_faces_on_screen() const	// # of faces on screen.
+	inline int get_num_faces_on_screen() const // # of faces on screen.
 		{ return num_faces; }
 					// Show what NPC said.
 	void show_npc_message(const char *msg);
@@ -569,6 +569,7 @@ public:
 					// Show what Avatar can say.
 	void show_avatar_choices(int num_choices, char **choices);
 	void show_avatar_choices(std::vector<std::string> &choices);
+	void clear_avatar_choices();
 					// User clicked on a choice.
 	int conversation_choice(int x, int y);
 	void show_gump(Game_object *obj, int shapenum);
