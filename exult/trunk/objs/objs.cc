@@ -1133,6 +1133,7 @@ int Game_object::get_rotated_frame
 		return (curframe - dir) + (dir + quads)%4;
 		}
 	case 665:			// Prow.  Frames 0,3 are N, 1,2 S.
+	case 248:			// SI prow.
 		{
 		static char dirs[4] = {0, 2, 2, 0};
 		int subframe = curframe%4;

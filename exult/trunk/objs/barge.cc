@@ -356,6 +356,31 @@ void Barge_object::finish_move
 	gwin->scroll_if_needed(center);
 	}
 
+/*
+ *	Turn to face a given direction.
+ */
+
+void Barge_object::face_direction
+	(
+	int ndir			// 0-7 0==North.
+	)
+	{
+	ndir /= 2;			// Convert to 0-3.
+	switch ((4 + ndir - dir)%4)
+		{
+	case 1:				// Rotate 90 degrees right.
+		turn_right();
+		break;
+	case 2:
+		turn_around();		// 180 degrees.
+		break;
+	case 3:
+		turn_left();
+		break;
+	default:
+		break;
+		}
+	}
 
 /*
  *	Travel towards a given tile.
@@ -377,21 +402,7 @@ void Barge_object::travel_to_tile
 					// Figure new direction.
 		Tile_coord cur = get_abs_tile_coord();
 		int ndir = Get_direction4(cur.ty - dest.ty, dest.tx - cur.tx);
-		ndir /= 2;		// Convert to 0-3.
-		switch ((4 + ndir - dir)%4)
-			{
-		case 1:			// Rotate 90 degrees right.
-			turn_right();
-			break;
-		case 2:
-			turn_around();	// 180 degrees.
-			break;
-		case 3:
-			turn_left();
-			break;
-		default:
-			break;
-			}
+		face_direction(ndir);
 		if (!in_queue())	// Not already in queue?
 			gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
 		}

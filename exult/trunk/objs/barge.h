@@ -75,6 +75,7 @@ public:
 		{ return center; }
 	virtual ~Barge_object();
 	void gather();			// Gather up objects on barge.
+	void face_direction(int ndir);	// Face dir. (0-7).
 					// Start rolling/sailing.
 	void travel_to_tile(Tile_coord dest, int speed);
 	void turn_right();		// Turn 90 degrees right.

@@ -280,34 +280,14 @@ void Scheduled_usecode::handle_event
 				}
 					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode < 0x38)
-				{	// Step in dir. opcode&7.????
-				int dir = opcode&7;
-				int frame = obj->get_framenum();
-				Actor *act = usecode->as_actor(obj);
-				if (act)
-					{
-					Frames_sequence *frames = 
-							act->get_frames(dir);
-					// Get frame (updates frame_index).
-					frame = frames->get_next(frame_index);
-					}
-				Barge_object *brg = 
-					dynamic_cast<Barge_object *> (obj);
-				int repeat = brg ? 4 : 1;
-				for (int i = 0; i < repeat; i++)
-					{
-					Tile_coord tile = 
-						obj->get_abs_tile_coord().
-							get_neighbor(dir);
-					obj->step(tile, frame);
-					gwin->paint_dirty();
-					gwin->show();
-					}
-				}
+					// Step in dir. opcode&7.
+				step(usecode, opcode&7);
 			else
+				{
 			        cout << "Und sched. opcode " << hex << 
 			"0x" << setfill((char)0x30) << setw(2) << opcode << endl;
-
+				do_another = 1; // Don't let it delay us.
+				}
 			break;
 			}
 		}
@@ -329,3 +309,38 @@ void Scheduled_usecode::handle_event
 	delete this;			// Hope this is safe.
 	}
 
+/*
+ *	Step in given direction.
+ */
+
+void Scheduled_usecode::step
+	(
+	Usecode_machine *usecode,
+	int dir				// 0-7.
+	)
+	{
+	int frame = obj->get_framenum();
+	Barge_object *barge;
+	Actor *act = usecode->as_actor(obj);
+	if (act)
+		{
+		Frames_sequence *frames = act->get_frames(dir);
+					// Get frame (updates frame_index).
+		frame = frames->get_next(frame_index);
+		Tile_coord tile = obj->get_abs_tile_coord().get_neighbor(dir);
+		obj->step(tile, frame);
+		}
+	else if ((barge = dynamic_cast<Barge_object *> (obj)) != 0)
+		{
+		barge->face_direction(dir);
+		for (int i = 0; i < 4; i++)
+			{
+			Tile_coord t = obj->get_abs_tile_coord().get_neighbor(dir);
+			if (!obj->step(t, 0))
+				{	// Blocked, so try to turn.
+				barge->face_direction((dir + 2)%8);
+				obj->step(t, 0);
+				}
+			}
+		}
+	}
