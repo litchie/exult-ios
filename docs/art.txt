@@ -22,7 +22,7 @@ Name			shape/frame	Artist		Notes
 
 Silver sextant		650/0		-		(hanging from belt)
 Gold sextant		650/1		-		(hanging from belt)
-Leather Collar		582		-
+Leather Collar		582		Sam Matthews
 Gorget			586		Adam Delman
 Magic gorget		843		Adam
 Ankh Amulet		955/0		Oblivious
@@ -38,7 +38,7 @@ Dark-brown hood		444/0		-
 Light-brown hood	444/1		-
 Caddellite helmet	638/0		Willem Jan
 Greaves			353		Oblivious
-Brown pants		738/0,1		Sam Matthews
+Brown pants		738/0,1		Sam
 Green pants		738/2,4		Sam
 Brownish pants		738/3,5		Sam
 Shoes			585		Willem Jan
@@ -60,3 +60,4 @@ Triple crossbow		647		Willem Jan
 Musket			278		-
 Musket ammo		581		WishStone Dragon
 Fire wand		630		Willem Jan
+Avatar costume		838		-
