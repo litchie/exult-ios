@@ -1563,7 +1563,7 @@ Clouds
 
     <widget>
       <class>GtkStatusbar</class>
-      <name>statusbar1</name>
+      <name>egg_status</name>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>

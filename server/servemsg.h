@@ -49,7 +49,9 @@ const int hdrlength = 5;
 enum Msg_type
 	{
 	say = 0,			// For testing.  Data is text.
-	egg = 1				// Egg_object.
+	egg = 1,			// Egg_object.
+	user_responded,			// User performed requested action.
+	cancel				// Cancel operation.
 	};
 
 // I/O routines:
@@ -57,8 +59,8 @@ int Send_data
 	(
 	int socket,
 	Msg_type id,
-	unsigned char *data,
-	int datalen
+	unsigned char *data = 0,	// For just sending id.
+	int datalen = 0
 	);
 int Receive_data
 	(
