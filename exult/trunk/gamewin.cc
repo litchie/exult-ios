@@ -52,6 +52,7 @@ Game_window::Game_window
 		npc_prox(new Npc_proximity_handler(this)),
 	    main_actor(0),
 	    conv_choices(0), texts(0), num_faces(0), last_face_shown(-1),
+	    open_gumps(0),
 	    main_actor_inside(0), mode(intro), npcs(0),
 	    shapes(),
 	    faces(FACES_VGA),
@@ -683,6 +684,9 @@ void Game_window::paint
 					// Draw text.
 	for (Text_object *txt = texts; txt; txt = txt->next)
 		paint_text(txt);
+					// Draw gumps.
+	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
+		paint_gump(gmp);
 	win->clear_clip();
 	painted = 1;
 	}
@@ -706,6 +710,20 @@ void Game_window::paint_text
 			(txt->cx - chunkx)*chunksize + txt->sx*tilesize,
 		        (txt->cy - chunky)*chunksize + txt->sy*tilesize);
 	painted = 1;
+	}
+
+/*
+ *	Paint a gump and its contents.
+ */
+
+void Game_window::paint_gump
+	(
+	Gump_object *gmp
+	)
+	{
+	paint_gump(win, gmp->get_x(), gmp->get_y(),
+				gmp->get_shapenum(), gmp->get_framenum());
+	//+++++++++++++++elements
 	}
 
 /*
@@ -1459,7 +1477,35 @@ int Game_window::conversation_choice
 		return (i);
 	else
 		return (-1);
-//++++		usecode->chose_response(i);
+	}
+
+/*
+ *	Show a gump.
+ */
+
+void Game_window::show_gump
+	(
+	Game_object *obj,		// Container gump represents.
+	int shapenum			// Shape # in 'gumps.vga'.
+	)
+	{
+	extern void Gump_events();
+	int x = get_width()/2, y = get_height()/2;
+	Gump_object *new_gump = new Gump_object(obj, x, y, shapenum);
+					// Paint new one last.
+	new_gump->append_to_chain(open_gumps);
+	paint();			// Show everything.
+	if (open_gumps == new_gump)	// First one?
+		{
+		Game_mode savemode = mode;
+		mode = gump;
+		Gump_events();		// Go into gump mode.
+					// For now, this seems right...
+		new_gump->remove_from_chain(open_gumps);
+		paint();
+		mode = savemode;
+		}
+					// Else we're already in it.
 	}
 
 /*
