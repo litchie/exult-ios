@@ -422,6 +422,8 @@ public:
 	int inventory_shapenum();
 
 	bool was_hit() { return hit; }
+
+	virtual bool update_forced_schedule() { return false; }
 	};
 
 /*
@@ -476,6 +478,7 @@ class Npc_actor : public Actor
 					//   to avoid being added twice.
 protected:
 	unsigned char num_schedules;	// # entries below.
+	bool force_update;		// Force schedule update
 	Schedule_change *schedules;	// List of schedule changes.
 	int find_schedule_change(int hour3);
 public:
@@ -505,6 +508,8 @@ public:
 					// Update schedule for new 3-hour time.
 	void update_schedule(Game_window *gwin, int hour3, int backwards = 0,
 							int delay = -1);
+	virtual bool update_forced_schedule();
+	void set_force_update() { force_update = true; }
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.

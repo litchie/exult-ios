@@ -120,7 +120,7 @@ short Paperdoll_gump::feetx = 46, Paperdoll_gump::feety = 99;
 
 short Paperdoll_gump::handsx = 68, Paperdoll_gump::handsy = 44;
 short Paperdoll_gump::rhandx = 68, Paperdoll_gump::rhandy = 44;
-short Paperdoll_gump::lhandx = 35, Paperdoll_gump::lhandy = 66;
+short Paperdoll_gump::lhandx = 34, Paperdoll_gump::lhandy = 65;
 
 short Paperdoll_gump::ahandx = 28, Paperdoll_gump::ahandy = 59;
 short Paperdoll_gump::ammox = 28, Paperdoll_gump::ammoy = 59;

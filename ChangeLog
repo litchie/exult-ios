@@ -1,3 +1,15 @@
+2001-08-08  Ryan Nunn <triforce@merlin.net.au>
+	* conf/XMLEntity.cc, usecode/useval.cc: std namespace stuff.
+	* actorio.cc, actors.cc, actors.h, usecode/intrinsics.cc: A fix for the bridge
+	  crash in Serpent Isle.
+	* shapeid.cc, shapeid.h: Now possible to force a shape from any file to be
+	  drawn translucent.
+	* gamerend.cc, gamewin.cc, gamewin.h, objs/chunks.cc, objs/chunks.h: New 
+	  dungeon rendering method. Should hopefully be almost perfect.
+	* gumps/Paperdoll_gump.cc: Tweak to hand rendering offsets
+	* win32/exult.ico: Updated Icon for Windows
+	* msvcstuff/*.*: Misc project setting changes
+
 2001-08-08  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucsched.cc (Usecode_script): Changed name, cleaned up

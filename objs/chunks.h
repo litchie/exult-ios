@@ -110,6 +110,13 @@ class Chunk_cache
 			activate_eggs(obj, chunk, tx, ty, tz,
 						from_tx, from_ty,  eggbits);
 		}
+
+public:
+					// Quick is blocked
+	inline int is_blocked_fast(int tx, int ty, int lift)
+		{
+		return blocked[ty*c_tiles_per_chunk + tx] & (1 << lift);
+		}
 	};
 
 /*
@@ -125,14 +132,14 @@ class Map_chunk
 					// Counts of overlapping objects from
 					//    chunks below, to right.
 	unsigned char from_below, from_right, from_below_right;
-	unsigned char *dungeon_bits;	// A 'dungeon' bit flag for each tile.
+	unsigned char *dungeon_levels;	// A 'dungeon' level value for each tile (4 bit).
 	Npc_actor *npcs;		// List of NPC's in this chunk.
 					//   (Managed by Npc_actor class.)
 	Chunk_cache *cache;		// Data for chunks near player.
 	unsigned char roof;		// 1 if a roof present.
 	unsigned char light_sources;	// # light sources in chunk.
 	unsigned char cx, cy;		// Absolute chunk coords. of this.
-	void add_dungeon_bits(Rectangle& tiles);
+	void add_dungeon_levels(Rectangle& tiles, unsigned int lift);
 	void add_dependencies(Game_object *newobj,
 					class Ordering_info& newinfo);
 	static Map_chunk *add_outside_dependencies(int cx,
@@ -218,17 +225,17 @@ public:
 					// Use this when teleported in.
 	static void try_all_eggs(Game_object *obj, int tx, int ty, int tz,
 						int from_tx, int from_ty);
-	void setup_dungeon_bits();	// Set up after IFIX objs. read.
+	void setup_dungeon_levels();	// Set up after IFIX objs. read.
 	int has_dungeon()		// Any tiles within dungeon?
-		{ return dungeon_bits != 0; }
+		{ return dungeon_levels != 0; }
+
 					// NOTE:  The following should only be
 					//   called if has_dungeon()==1.
-	int in_dungeon(int tx, int ty)	// Is object within dungeon?
+	int is_dungeon(int tx, int ty)	// Is object within dungeon? (returns height)
 		{
 		int tnum = ty*c_tiles_per_chunk + tx;
-		return dungeon_bits[tnum/8] & (1 << (tnum%8));
+		return tnum%2? dungeon_levels[tnum/2] >> 4: dungeon_levels[tnum/2] & 0xF;
 		}
-	int in_dungeon(Game_object *obj); // Is object within dungeon?
 
 	};
 

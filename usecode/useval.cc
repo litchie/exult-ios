@@ -459,12 +459,12 @@ int Usecode_value::save
 		return -1;		// Can't serialize this.
 	case string_type:
 		{
-		int len = strlen(value.str);
+		int len = std::strlen(value.str);
 		if (buflen < len + 3)
 			return -1;
 		*ptr++ = type;
 		Write2(ptr, len);
-		memcpy(ptr, value.str, len);
+		std::memcpy(ptr, value.str, len);
 		ptr += len;
 		break;
 		}
@@ -505,7 +505,7 @@ bool Usecode_value::restore
 		if (buflen < len + 3)
 			return false;
 		value.str = new char[len + 1];
-		memcpy(value.str, ptr, len);
+		std::memcpy(value.str, ptr, len);
 		value.str[len] = 0;
 		ptr += len;
 		return true;

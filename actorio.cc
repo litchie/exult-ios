@@ -52,8 +52,8 @@ Actor::Actor
 	) : Container_game_object(), npc_num(num), party_id(-1), 
 	    shape_save(-1), oppressor(-1), target(0),
 	    attack_mode(nearest), schedule(0), schedule_loc(0,0,0),
-	    next_schedule(255), dormant(true), hit(false), alignment(0),
-	    two_handed(0),
+	    next_schedule(255), dormant(true), hit(false),
+	    alignment(0), two_handed(0),
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
 	    light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), ident(0),
@@ -428,6 +428,8 @@ void Actor::write
 	if (get_flag (Obj_flags::petra)) iout |= 1 << 7;
 	nfile.put(iout);
 	
+	// Make sure schedule is correct
+	update_forced_schedule();
 
 	nfile.put(get_schedule_type());
 	unsigned char amode = attack_mode | 
@@ -551,7 +553,7 @@ Npc_actor::Npc_actor
 	int num,			// NPC #.
 	int has_usecode			// 1 if a 'type1' NPC.
 	) : Actor(nfile, num, has_usecode), nearby(0),
-		num_schedules(0), 
+		num_schedules(0),  force_update(false),
 		schedules(0)
 	{
 	Map_chunk *olist = Game_window::get_game_window()->
