@@ -32,7 +32,7 @@ EXTRA_OPTIONS=
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw automatically defines WIN32
-CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" -DDEBUG \
+CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
@@ -49,7 +49,7 @@ EXEC=Exult.exe
 EXEEXT=.exe
 
 FILE_OBJS = snprintf.o
-MIDI_DRV_OBJS=win_midiout.o
+MIDI_DRV_OBJS=fmopl.o fmopl_midi.o fmopldrv.o win_midiout.o
 # unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o 
 SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
 OBJS	= exultico.o
