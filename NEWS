@@ -2,7 +2,9 @@
 
 		UCC, Exult's Usecode compiler works again
 
-		Subpackages for Linux distributions can be built (RPM)
+		UCXT, Exult's Usecode decompiler, is now included
+
+		Subpackages for Linux distributions can be built (RPM, Debian)
 		
 		Exult's data files have a CRC now, so it is easier to 
 		detect a mismatch between them and the main executable
