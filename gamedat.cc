@@ -31,6 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if (defined(XWIN) || defined(BEOS))
 #include <sys/stat.h>
+#elif defined(MACOS)
+#include <stat.h>
 #endif
 
 #include <stdio.h>
