@@ -1,3 +1,7 @@
+2001-11-25  Max Horn  <max@quendi.de>
+
+	* version.cc: added MacOS support; added Metrowerks Codewarrior to the compiler list
+
 2001-11-25  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* version.cc: reordered the output
 	* exult.cc: -v/--version outputs version info
