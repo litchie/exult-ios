@@ -393,6 +393,38 @@ static Actor *Find_member_blocking
  	}
 
 /*
+ *	Get the direction from a tile to NPC's position.
+ */
+
+inline int Get_dir_from
+	(
+	Actor *npc,
+	Tile_coord& from
+	)
+	{
+	Tile_coord pos = npc->get_tile();
+	return Get_direction(from.ty - pos.ty, pos.tx - from.tx);
+	}
+
+/*
+ *	Is the next tile towards the leader one we can step onto?
+ */
+
+inline bool Is_next_free
+	(
+	Actor *npc,
+	Actor *leader,
+	Tile_coord& from		// Start from here.
+	)
+	{
+	int dir = Get_dir_from(leader, from);
+	Tile_coord next = from.get_neighbor(dir);
+	if (npc->is_blocked(next) && !Find_member_blocking(next, 0))
+		return false;		// Blocked by non-party-member.
+	return true;
+	}
+
+/*
  *	Get a notion of 'cost' for stepping to a particular tile.
  *
  *	Output:	Currently, 10000 if blocked, or (dist)**2.
@@ -429,7 +461,14 @@ static int Get_cost
 	int difftz = to.tz - lpos.tz,	// Measure closeness.
 	    diffty = Tile_coord::delta(to.ty, lpos.ty),
 	    difftx = Tile_coord::delta(to.tx, lpos.tx);
-	cost += difftz*difftz + diffty*diffty + difftx*difftx;
+					// Get dist**2 in x-y plane.
+	int xydist2 = diffty*diffty + difftx*difftx;
+	cost += difftz*difftz + xydist2;
+	if (xydist2 > 2)		// More than 1 tile away?
+		{			// Check 1 more tile towards leader.
+		if (!Is_next_free(npc, leader, to))
+			cost += 16;	// If blocked, try to avoid.
+		}
 	return cost;
 	}
 
@@ -496,27 +535,15 @@ inline bool Is_step_okay
 		return false;
 	int difftz = to.tz - leader->get_lift();
 	difftz *= difftz;		// Deltaz squared.
-	if (difftz <= 1)
-		return true;		// Close.
 	if (difftz > 4)			// More than 2?
 		return false;		// We'll want to find best dir.
-					// DZ = 2.  How close in XY.
+					// How close in XY?
 	int dist = to.distance(leader->get_tile());
-	return dist > 1;		// If dist==1 & deltaz>1, not good.
-	}
-
-/*
- *	Get the direction we just stepped towards.
- */
-
-inline int Get_dir_from
-	(
-	Actor *npc,
-	Tile_coord& from
-	)
-	{
-	Tile_coord pos = npc->get_tile();
-	return Get_direction(from.ty - pos.ty, pos.tx - from.tx);
+	if (dist == 1)
+		return (difftz <= 1);	// 1 tile away, so want dz <= 1.
+	if (!Is_next_free(npc, leader, to))
+		return false;		// Couldn't take a 2nd step.
+	return true;
 	}
 
 /*
