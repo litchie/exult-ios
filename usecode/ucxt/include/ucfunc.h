@@ -12,13 +12,14 @@
 class UCFuncSet
 {
 	public:
-		UCFuncSet(unsigned short new_funcid, unsigned short new_num_args, bool new_return_var)
-		         : funcid(new_funcid), num_args(new_num_args), return_var(new_return_var) {};
+		UCFuncSet(unsigned short new_funcid, unsigned short new_num_args, bool new_return_var, const string &new_funcname)
+		         : funcid(new_funcid), num_args(new_num_args), return_var(new_return_var), funcname(new_funcname) {};
 		~UCFuncSet() {};
 		
 		unsigned short funcid;      // the id of the function
 		unsigned short num_args;    // the number of arguments
 		bool           return_var;  // if true, the function returns a variable
+		string         funcname;    // the name of the function, if it has one
 };
 
 typedef map<unsigned short, UCFuncSet> FuncMap;
@@ -185,13 +186,15 @@ class UCFunc
 	public:
 		UCFunc() : _offset(0), _funcid(0), _funcsize(0), _bodyoffset(0), _datasize(0),
 		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0),
-		           _return_var(false) {};
+		           return_var(false), debugging_info(false), debugging_offset(0) {};
 
 		void output_list(ostream &o, unsigned int funcno, bool debug);
 		
 		// temp passing UCData, probably shouldn't need it.
 		void output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment);
-		ostream &output_ucs_funcname(ostream &o, unsigned int funcid, unsigned int num_args, bool return_var);
+		ostream &output_ucs_funcname(ostream &o, const FuncMap &funcmap,
+                                    unsigned int funcid,
+                                    unsigned int numargs, bool return_var);
 		void output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, const map<unsigned int, string> &intrinsics, unsigned int indent);
 		void output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool uselesscomment, unsigned int indent);
 		void output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, const map<unsigned int, string> &intrinsics, unsigned int indent);
@@ -227,7 +230,10 @@ class UCFunc
 		
 		vector<UCc> _opcodes;
 		
-		bool           _return_var; // does the function return a variable?
+		bool           return_var; // does the function return a variable?
+		bool           debugging_info;
+		unsigned int   debugging_offset;
+		string         funcname;
 		
 		unsigned short codesize() const { return _funcsize - _datasize; };
 		

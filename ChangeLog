@@ -1,3 +1,11 @@
+2002-01-05  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*: Added support for the 'debug' opcodes in the Spanish
+	version of SI. It'll output the 'function name' rather then just a
+	munged version involving the opcode number under -fz, no effect if the
+	'dbgfunc' opcode is not found in the function. Also added an
+	undocumented parameter --extern-header which will kind of output
+	something that looks like a header file for usecode, sometime soon.
+
 2002-01-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.h,actorio.cc (public): Properties changed from short to int.
