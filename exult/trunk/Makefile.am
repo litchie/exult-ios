@@ -43,6 +43,8 @@ exult_SOURCES =	\
 	egg.h		\
 	exult.cc	\
 	fnames.h	\
+	font.cc		\
+	font.h		\
 	gameclk.cc	\
 	gameclk.h	\
 	gamedat.cc	\
@@ -59,6 +61,8 @@ exult_SOURCES =	\
 	items.h		\
 	lists.cc	\
 	lists.h		\
+	menulist.cc	\
+	menulist.h	\
 	mouse.cc	\
 	mouse.h		\
 	npcnear.cc	\
@@ -86,10 +90,12 @@ exult_SOURCES =	\
 	spells.cc	\
 	spells.h	\
 	tiles.h		\
-	game.cc	\
-	game.h	\
+	game.cc		\
+	game.h		\
 	tqueue.cc	\
 	tqueue.h	\
+	txtscroll.cc	\
+	txtscroll.h	\
 	usecode.cc	\
 	usecode.h	\
 	useval.cc	\

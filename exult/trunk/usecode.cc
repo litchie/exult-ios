@@ -2721,10 +2721,10 @@ USECODE_INTRINSIC(start_speech)
 
 USECODE_INTRINSIC(run_endgame)
 {
-	Game::get_game()->end_game(parms[0].get_int_value() != 0);
+	game->end_game(parms[0].get_int_value() != 0);
 	// If successful play credits afterwards
 	if(parms[0].get_int_value() != 0)
-		Game::get_game()->show_credits();
+		game->show_credits();
 	quitting_time = 1;
 	return(no_ret);
 }

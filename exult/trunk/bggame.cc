@@ -21,6 +21,8 @@
 #include "game.h"
 #include "palette.h"
 #include "databuf.h"
+#include "font.h"
+#include "txtscroll.h"
 
 BG_Game::BG_Game()
 	{
@@ -115,6 +117,8 @@ BG_Game::BG_Game()
 		add_resource("xforms/17", "<STATIC>/xform.tbl", 17);
 		add_resource("xforms/18", "<STATIC>/xform.tbl", 18);
 		add_resource("xforms/19", "<STATIC>/xform.tbl", 19);
+		
+		fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 2);
 	}
 
 BG_Game::~BG_Game()
@@ -126,6 +130,7 @@ void BG_Game::play_intro()
 		Vga_file shapes(ENDSHAPE_FLX);
 		bool skip = false;
 		Palette pal;
+		Font *font = fontManager.get_font("MENU_FONT");
 
 		audio->stop_music();
 
@@ -135,8 +140,8 @@ void BG_Game::play_intro()
 		const char *txt_msg[] = { "with help from",
 				"The Exult Team", 
 				"Driven by the Exult game engine V" VERSION };
-		center_text(0, txt_msg[0], centerx, centery+50);
-		center_text(0, txt_msg[1], centerx, centery+65);
+		font->center_text(gwin, centerx, centery+50, txt_msg[0]);
+		font->center_text(gwin, centerx, centery+65, txt_msg[1]);
 		pal.fade_in(30);
 		skip = wait_delay(2000);
 		play_midi(0);	// Start the birdsongs just before we fade
@@ -146,7 +151,7 @@ void BG_Game::play_intro()
 		// Ultima VII logo w/Trees
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
 		gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
-		center_text(0, txt_msg[2], centerx, centery+50);
+		font->center_text(gwin, centerx, centery+50, txt_msg[2]);
 		pal.load("<STATIC>/intropal.dat",4);
 		pal.fade_in(30);
 		if(wait_delay(1500)) {
@@ -186,7 +191,7 @@ void BG_Game::play_intro()
 		pal.apply();
 		// First
 		for(int i=9; i>0; i--) {
-			clear_screen();
+			gwin->clear_screen();
 			gwin->paint_shape(centerx,centery-45,shapes.get_shape(0x21,i));
 			win->show();
 			if(wait_delay(70)) {
@@ -195,7 +200,7 @@ void BG_Game::play_intro()
 			}
 		}
 		for(int i=1; i<10; i++) {
-			clear_screen();
+			gwin->clear_screen();
 			gwin->paint_shape(centerx,centery-45,shapes.get_shape(0x21,i));
 			win->show();
 			if(wait_delay(70)) {
@@ -205,7 +210,7 @@ void BG_Game::play_intro()
 		}
 		// Second 
 		for(int i=0; i<10; i++) {
-			clear_screen();
+			gwin->clear_screen();
 			gwin->paint_shape(centerx,centery-45,shapes.get_shape(0x22,i));
 			win->show();
 			if(wait_delay(70)) {
@@ -214,7 +219,7 @@ void BG_Game::play_intro()
 			}
 		}
 		for(int i=9; i>=0; i--) {
-			clear_screen();
+			gwin->clear_screen();
 			gwin->paint_shape(centerx,centery-45,shapes.get_shape(0x22,i));
 			win->show();
 			if(wait_delay(70)) {
@@ -223,7 +228,7 @@ void BG_Game::play_intro()
 			}
 		}
 		for(int i=0; i<16; i++) {
-			clear_screen();
+			gwin->clear_screen();
 			gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x23,i));
 			win->show();
 			if(wait_delay(70)) {
@@ -260,7 +265,7 @@ void BG_Game::play_intro()
 		}
 		delete [] txt;
 		for(int i=15; i>=0; i--) {
-			clear_screen();
+			gwin->clear_screen();
 			gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x23,i));
 			win->show();
 			if(wait_delay(70)) {
@@ -315,7 +320,7 @@ void BG_Game::play_intro()
 			return;	
 		}
 
-		clear_screen();
+		gwin->clear_screen();
 
 		// The Moongate
 		pal.load("<STATIC>/intropal.dat",5);
@@ -339,7 +344,7 @@ void BG_Game::play_intro()
 			}
 		}
 		wait_delay(2000);
-		clear_screen();
+		gwin->clear_screen();
 	}
 	
 void BG_Game::top_menu()
@@ -364,30 +369,32 @@ void BG_Game::end_game(bool success)
 		int	starty;
 		int	centerx = gwin->get_width() /2;
 		int 	topy = (gwin->get_height()-200)/2;
+		Font *font = fontManager.get_font("MENU_FONT");
 
 		if (!gwin->setup_endgame_fonts())
 			gwin->abort ("Unable to setup fonts from 'endgame.dat' file.");
 
 		if(!success) {
-			vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x15);
-			clear_screen();
+			TextScroller text("<STATIC>/mainshp.flx", 0x15,
+					  font,0);
+			gwin->clear_screen();
 			pal.load("<STATIC>/intropal.dat",0);
-			for(uint32 i=0; i<text->size(); i++) {
-				show_text_line(topx, topx+320, topy+20+i*12, (*text)[i]);
+			for(uint32 i=0; i<text.get_count(); i++) {
+				text.show_line(gwin, topx, topx+320, topy+20+i*12, i);
 			}
 			
 			pal.fade_in(30);
 			wait_delay(10000);
 			pal.fade_out(30);
 			
-			clear_screen();
-			center_text(MAINSHP_FONT1, "The end of Ultima VII", centerx, centery-10);
+			gwin->clear_screen();
+			font->center_text(gwin, centerx, centery-10, "The end of Ultima VII");
 			pal.fade_in(30);
 			wait_delay(4000);
 			pal.fade_out(30);
 			
-			clear_screen();
-			center_text(MAINSHP_FONT1, "The end of Britannia as you know it!", centerx, centery-10);
+			gwin->clear_screen();
+			font->center_text(gwin, centerx, centery-10, "The end of Britannia as you know it!");
 			pal.fade_in(30);
 			wait_delay(4000);
 			pal.fade_out(30);
@@ -404,7 +411,7 @@ void BG_Game::end_game(bool success)
 		char	*fli_b[3];
 
 		// Clear screen
-		clear_screen();
+		gwin->clear_screen();
 		win->show();
 
 		U7object flic1(ENDGAME, 0);
@@ -446,7 +453,7 @@ void BG_Game::end_game(bool success)
 			next = fli1.play(win, 0, 1, next);
 			if (wait_delay (10))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -459,7 +466,7 @@ void BG_Game::end_game(bool success)
 			next = fli1.play(win, i, i+1, next);
 			if (wait_delay (10))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] buffer;
 				delete [] fli_b[0];
 				delete [] fli_b[1];
@@ -483,7 +490,7 @@ void BG_Game::end_game(bool success)
 			win->show();
 			if (wait_delay (10))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -511,7 +518,7 @@ void BG_Game::end_game(bool success)
 			win->show();
 			if (wait_delay (10))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -525,7 +532,7 @@ void BG_Game::end_game(bool success)
 			win->show ();
 			if (wait_delay (10))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -553,7 +560,7 @@ void BG_Game::end_game(bool success)
 		{
 			if (wait_delay (100))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -585,7 +592,7 @@ void BG_Game::end_game(bool success)
 		{
 			if (wait_delay (100))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -604,7 +611,7 @@ void BG_Game::end_game(bool success)
 			next = fli3.play(win, 0, 1, next, i/2);
 			if (wait_delay (10))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -644,7 +651,7 @@ void BG_Game::end_game(bool success)
 				win->show ();
 				if (wait_delay (10))
 				{
-					refresh_screen();
+					gwin->clear_screen();
 					delete [] fli_b[0];
 					delete [] fli_b[1];
 					delete [] fli_b[2];
@@ -659,7 +666,7 @@ void BG_Game::end_game(bool success)
 			next = fli3.play(win, 0, 0, next, i/2);
 			if (wait_delay (10))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -699,7 +706,7 @@ void BG_Game::end_game(bool success)
 		{
 			if (wait_delay (100))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -712,7 +719,7 @@ void BG_Game::end_game(bool success)
 
 		if (wait_delay (10))
 		{
-			refresh_screen();
+			gwin->clear_screen();
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -747,7 +754,7 @@ void BG_Game::end_game(bool success)
 		{
 			if (wait_delay (100))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -761,7 +768,7 @@ void BG_Game::end_game(bool success)
 
 		if (wait_delay (10))
 		{
-			refresh_screen();
+			gwin->clear_screen();
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -796,7 +803,7 @@ void BG_Game::end_game(bool success)
 		{
 			if (wait_delay (100))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -810,7 +817,7 @@ void BG_Game::end_game(bool success)
 
 		if (wait_delay (10))
 		{
-			refresh_screen();
+			gwin->clear_screen();
 			delete [] fli_b[0];
 			delete [] fli_b[1];
 			delete [] fli_b[2];
@@ -844,7 +851,7 @@ void BG_Game::end_game(bool success)
 		{
 			if (wait_delay (100))
 			{
-				refresh_screen();
+				gwin->clear_screen();
 				delete [] fli_b[0];
 				delete [] fli_b[1];
 				delete [] fli_b[2];
@@ -856,7 +863,7 @@ void BG_Game::end_game(bool success)
 		gwin->fade_palette (50, 0, 0);
 
 
-		refresh_screen();
+		gwin->clear_screen();
 		delete [] fli_b[0];
 		delete [] fli_b[1];
 		delete [] fli_b[2];
@@ -865,23 +872,28 @@ void BG_Game::end_game(bool success)
 void BG_Game::show_quotes()
 	{
 		play_midi(5);
-		vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x10);
-		scroll_text(text);
-		destroy_text(text);
+		TextScroller quotes("<STATIC>/mainshp.flx", 0x10, 
+			     fontManager.get_font("MENU_FONT"),
+			     menushapes.extract_shape(0x14)
+			    );
+		quotes.run(gwin,pal);
 	}
 
 void BG_Game::show_credits()
 	{
 		
 		play_midi(4);
-		vector<char *> *text = load_text("<STATIC>/mainshp.flx", 0x0E);
-		scroll_text(text);
-		destroy_text(text);
+		TextScroller credits("<STATIC>/mainshp.flx", 0x0E, 
+			     fontManager.get_font("MENU_FONT"),
+			     menushapes.extract_shape(0x14)
+			    );
+		credits.run(gwin,pal);
 	}
 
 bool BG_Game::new_game(Vga_file &shapes)
 	{
 		int menuy = topy+110;
+		Font *font = fontManager.get_font("MENU_FONT");
 		
 		char npc_name[17];
 		char disp_name[10];
@@ -908,7 +920,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 				        sprintf(disp_name, "%s_", npc_name);
 				else
 				        sprintf(disp_name, "%s", npc_name);
-				gwin->paint_text(MAINSHP_FONT1, disp_name, topx+50,menuy+10);
+				font->draw_text(gwin, topx+50, menuy+10, disp_name);
 				pal.apply();
 				redraw = false;
 			}

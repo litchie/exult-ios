@@ -1740,7 +1740,7 @@ void Container_game_object::activate
 	switch(shnum)			// Watch for gumps.
 		{
 	case 405:			// Ship's hold
-		gwin->show_gump(this, Game::get_game()->get_shape("gumps/shipshold"));
+		gwin->show_gump(this, game->get_shape("gumps/shipshold"));
 		return;
 	case 406:			// Nightstand.
 	case 407:			// Desk.
@@ -1748,7 +1748,7 @@ void Container_game_object::activate
 	case 203:
 	case 416:			// Chest of drawers.
 	case 679:
-		gwin->show_gump(this, Game::get_game()->get_shape("gumps/drawer"));
+		gwin->show_gump(this, game->get_shape("gumps/drawer"));
 		return;
 	case 400:			// Bodies.
 	case 414:
@@ -1756,28 +1756,28 @@ void Container_game_object::activate
 	case 778:
 	case 892:
 	case 507: 			// Bones
-		gwin->show_gump(this, Game::get_game()->get_shape("gumps/body"));
+		gwin->show_gump(this, game->get_shape("gumps/body"));
 		return;
 	case 800:			// Chest.
-		gwin->show_gump(this, Game::get_game()->get_shape("gumps/chest"));	// ???Guessing.
+		gwin->show_gump(this, game->get_shape("gumps/chest"));	// ???Guessing.
 		return;
 	case 801:			// Backpack.
-		gwin->show_gump(this, Game::get_game()->get_shape("gumps/backpack"));
+		gwin->show_gump(this, game->get_shape("gumps/backpack"));
 		return;
 	case 799:			// Unsealed box
-		gwin->show_gump(this, Game::get_game()->get_shape("gumps/box"));
+		gwin->show_gump(this, game->get_shape("gumps/box"));
 		return;
 	case 802:			// Bag.
-		gwin->show_gump(this, Game::get_game()->get_shape("gumps/bag"));
+		gwin->show_gump(this, game->get_shape("gumps/bag"));
 		return;
 	case 803:			// Basket.
-		gwin->show_gump(this, Game::get_game()->get_shape("gumps/basket"));
+		gwin->show_gump(this, game->get_shape("gumps/basket"));
 		return;
 	case 804:			// Crate.
-		gwin->show_gump(this, Game::get_game()->get_shape("gumps/crate"));
+		gwin->show_gump(this, game->get_shape("gumps/crate"));
 		return;
 	case 819:			// Barrel.
-		gwin->show_gump(this, Game::get_game()->get_shape("gumps/barrel"));
+		gwin->show_gump(this, game->get_shape("gumps/barrel"));
 		return;
 		}
 					// Try to run normal usecode fun.

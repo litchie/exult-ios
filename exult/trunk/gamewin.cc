@@ -86,7 +86,6 @@ Game_window::Game_window
 	
 	set_window_size(width, height, scale);
 
-	Game *game = Game::create_game("static");
 	}
 
 void Game_window::set_window_size(int width, int height, int scale)
@@ -103,14 +102,14 @@ void Game_window::set_window_size(int width, int height, int scale)
 	config->set("config/video/fullscreen",fullscreenstr,true);
 	win = new Image_window8(width, height, scale, fullscreen);
 	win->set_title("Exult Ultima7 Engine");
-	pal = new Palette();
-	clock.set_palette();		// Set palette for correct time.
-	pal->brighten(20);		// Brighten 20%.
-					// Get a bright green.
-	poison_pixel = pal->find_color(4, 63, 4);
-					// Get a light gray.
-	protect_pixel = pal->find_color(62, 62, 55);
+	
 }
+
+void Game_window::clear_screen()
+{
+	win->fill8(0,get_width(),get_height(),0,0);
+}
+
 
 
 /*
@@ -151,6 +150,13 @@ void Game_window::abort
 
 void Game_window::init_files()
 	{
+		pal = new Palette();
+		clock.set_palette();		// Set palette for correct time.
+		pal->brighten(20);		// Brighten 20%.
+					// Get a bright green.
+		poison_pixel = pal->find_color(4, 63, 4);
+					// Get a light gray.
+		protect_pixel = pal->find_color(62, 62, 55);
 		usecode = new Usecode_machine(this);
 		faces.load(FACES_VGA);
 		if (!faces.is_good())
@@ -202,8 +208,8 @@ void Game_window::init_files()
 		memset((char *) schunk_read, 0, sizeof(schunk_read));
 
 		// Go to starting chunk
-		scrolltx = Game::get_game()->get_start_tile_x();
-		scrollty = Game::get_game()->get_start_tile_y();
+		scrolltx = game->get_start_tile_x();
+		scrollty = game->get_start_tile_y();
 		
 		if (Game::get_game_type()==SERPENT_ISLE)
 		{
@@ -2549,10 +2555,10 @@ void Game_window::show_gump
 			: paperdoll ?
 				new Actor_gump_object(
 					(Container_game_object *) obj, x, y, shapenum)
-			: shapenum == Game::get_game()->get_shape("gumps/statsdisplay") ?
+			: shapenum == game->get_shape("gumps/statsdisplay") ?
 				new Stats_gump_object(
 					(Container_game_object *) obj, x, y)
-			: shapenum == Game::get_game()->get_shape("gumps/spellbook") ?
+			: shapenum == game->get_shape("gumps/spellbook") ?
 				new Spellbook_gump((Spellbook_object *) obj)
 			: new Gump_object((Container_game_object *) obj, 
 							x, y, shapenum);

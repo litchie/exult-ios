@@ -33,12 +33,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include "fnames.h"
 #include "autoarray.h"
-// #include "databuf.h"
 
 class DataSource;
 class StreamDataSource;
 class Shape;
 class Image_buffer8;
+class Image_window8;
 
 /*
  *	A shape from "shapes.vga":
@@ -120,26 +120,25 @@ public:
 		return (frames && frnum < num_frames && frames[frnum]) ? 
 			frames[frnum] : read(shapes, shnum, frnum); 
 		}
+	int get_num_frames()
+		{ return num_frames; }
+	Shape_frame *get_frame(int framenum)
+		{ return framenum < num_frames ? frames[framenum] : 0; }
 	};
 
 /*
  *	A shape file just has one shape with multiple frames.  They're all
  *	read in during construction.
  */
-class Shape_file : private Shape
+class Shape_file : public Shape
 	{
 public:
 	Shape_file(const char *nm);
 	Shape_file(DataSource& shape_source);
 	Shape_file();
+	virtual ~Shape_file() {}
 	void load(const char *nm);
 	void load(DataSource& shape_source);
-	int get_num_frames()
-		{ return num_frames; }
-	Shape_frame *get_frame(int framenum)
-		{ return framenum < num_frames ? frames[framenum] : 0; }
-	virtual ~Shape_file()
-		{  }
 	};
 
 /*
@@ -179,6 +178,16 @@ public:
 #endif
 			}
 		return r;
+		}
+		
+	Shape *extract_shape(int shapenum)
+		{
+		assert(shapes!=0);
+		// Load all frames into memory
+		int count = get_num_frames(shapenum);
+		for(int i=1; i<count; i++)
+			get_shape(shapenum, i);
+		return &shapes[shapenum];
 		}
 					// Get # frames for a shape.
 	int get_num_frames(int shapenum)

@@ -1,3 +1,19 @@
+2000-11-06  Tristan Tarrant <nadir@users.sourceforge.net>
+	
+	* font.cc, font.h: beginnings of independent font class and font 
+	  manager
+	* menulist.cc, menulist.h: menu implementation
+	* txtscroll.cc, txtscroll.h: extracted from game.cc
+        * game.cc: use font manager, implement Exult menu
+	* exult.cc, gamewin.cc: clean up initialization sequence
+	* vgafile.h: implemented extract_shape() in Vga_file, moved some 
+	  methods from Shape_file to its parent class, because they should 
+	  really be there.
+	* data/meditown.mid: This is the MIDI I wanted to use for our menu
+	* data/exult_logo.shp: Add dimmed frame
+	* data/font.shp: Menu font
+	* files/utils.h: Moved eqstr, hashstr in here so they can be shared
+
 2000-11-05  Ryan Nunn <triforce@merlin.net.au>
 	* audio/Midi.*: Changes so midi drivers other than Win_midiout can play SFX.
 	* audio/xmidi.*: New midi conversion types
