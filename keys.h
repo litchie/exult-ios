@@ -65,7 +65,7 @@ class KeyBinder {
 	
 	/* Other methods */
 	void Flush() { bindings.clear(); keyhelp.clear(); cheathelp.clear(); }
-	bool DoAction(ActionType action);
+	bool DoAction(ActionType action, bool press);
 	bool HandleEvent(SDL_Event &ev);
 	
 	void LoadFromFile(const char* filename);

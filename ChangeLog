@@ -1,3 +1,10 @@
+2002-07-22  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* exult.cc: pass key releases to the action handler too
+	* keyactions.*: added ActionWalk* functions
+	* keys.*: implemented mapping for key release
+	* data/bg/defaultkeys.txt data/si/defaultkeys.txt: added walking
+	  via arrows and remapped scrolling to alt-arrow
+
 2002-07-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* content/islefaq/usecode.uc: fixed some typos and spacing
 
