@@ -36,6 +36,7 @@ extern Cheat cheat;
 
 using std::atoi;
 using std::cerr;
+using std::clog;
 using std::endl;
 using std::ifstream;
 using std::isspace;
@@ -225,11 +226,7 @@ void KeyBinder::ShowCheatHelp()
 void KeyBinder::ParseText(char *text)
 {
   char *ptr, *end;
-#ifdef MACOS
-  const char LF = '\r';
-#else
   const char LF = '\n';
-#endif
 
   ptr = text;
 
@@ -283,7 +280,8 @@ void KeyBinder::ParseLine(char *line)
       s.erase(0,6); u.erase(0,6);
     } else {
      
-      for (i = 0; i < s.length() && !isspace(s[i]); i++);
+      for (i = 0; i < s.length() && !isspace(s[i]); i++)
+      	;
 
       keycode = s.substr(0, i); s.erase(0, i);
       string t = keycode;
@@ -324,7 +322,8 @@ void KeyBinder::ParseLine(char *line)
   // get function
   skipspace(s);
 
-  for (i = 0; i < s.length() && !isspace(s[i]); i++);
+  for (i = 0; i < s.length() && !isspace(s[i]); i++)
+  	;
   string t = s.substr(0, i); s.erase(0, i);
   to_uppercase(t);
 
@@ -342,8 +341,11 @@ void KeyBinder::ParseLine(char *line)
 
   int np = 0;
   while (s.length() && s[0] != '#' && np < c_maxparams) {
-    for (i = 0; i < s.length() && !isspace(s[i]); i++);
-    string t = s.substr(0, i); s.erase(0, i); skipspace(s);
+    for (i = 0; i < s.length() && !isspace(s[i]); i++)
+    	;
+    string t = s.substr(0, i);
+    s.erase(0, i);
+    skipspace(s);
     
     int p = atoi(t.c_str());
     a.params[np++] = p;
@@ -396,7 +398,7 @@ void KeyBinder::LoadFromFile(const char* filename)
   Flush();
 
 #ifdef DEBUG
-  cerr << "Loading keybindings from file " << filename << endl;
+  clog << "Loading keybindings from file " << filename << endl;
 #endif
 
   U7open(keyfile, filename);
@@ -418,7 +420,7 @@ void KeyBinder::LoadDefaults()
   Flush();
 
 #ifdef DEBUG
-  cerr << "Loading default keybindings" << endl;
+  clog << "Loading default keybindings" << endl;
 #endif
 
   U7object txtobj("<DATA>/exult.flx", 23);
