@@ -284,6 +284,8 @@ void Barge_object::gather
 	while (next_chunk.get_next(tiles, cx, cy))
 		{
 		Map_chunk *chunk = gmap->get_chunk(cx, cy);
+		tiles.x += cx*c_tiles_per_chunk;
+		tiles.y += cy*c_tiles_per_chunk;
 		Game_object *obj;
 		Object_iterator next(chunk->get_objects());
 		while ((obj = next.get_next()) != 0)
@@ -295,7 +297,7 @@ void Barge_object::gather
 			Tile_coord t = obj->get_tile();
 			Shape_info& info = obj->get_info();
 					// Above barge, within 5-tiles up?
-			if (foot.has_point(t.tx, t.ty) &&
+			if (tiles.has_point(t.tx, t.ty) &&
 			    t.tz + info.get_3d_height() > lift && 
 			    (info.is_barge_part() || t.tz < lift + 5) &&
 			    obj->get_owner() != this)

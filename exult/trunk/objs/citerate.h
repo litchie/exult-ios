@@ -32,7 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Chunk_intersect_iterator
 	{
-	Rectangle tiles;		// Original rect.
+	Rectangle tiles;		// Original rect, shifted -cx, -cy.
+	int start_tx;			// Saves start of tx in tiles.
 					// Chunk #'s covered:
 	int startcx, stopcx, stopcy;
 	int curcx, curcy;		// Next chunk to return.
@@ -44,6 +45,8 @@ public:
 		  curcy(t.y/c_tiles_per_chunk)
 		{
 		curcx = startcx;
+		tiles.shift(-curcx*c_tiles_per_chunk,-curcy*c_tiles_per_chunk);
+		start_tx = tiles.x;
 		if (t.x < 0 || t.y < 0)
 			{		// Empty to begin with.
 			curcx = stopcx;
@@ -58,17 +61,18 @@ public:
 				return (0);
 			else
 				{
+				tiles.y -= c_tiles_per_chunk;
+				tiles.x = start_tx;
 				curcy = INCR_CHUNK(curcy);
 				curcx = startcx;
 				}
-		Rectangle tmp = tiles;	// Shift area to chunk pos.
-		tmp.shift(-curcx*c_tiles_per_chunk, -curcy*c_tiles_per_chunk);
 		Rectangle cr(0, 0, c_tiles_per_chunk, c_tiles_per_chunk);
 					// Intersect given rect. with chunk.
-		intersect = cr.intersect(tmp);
+		intersect = cr.intersect(tiles);
 		cx = curcx;
 		cy = curcy;
 		curcx = INCR_CHUNK(curcx);
+		tiles.x -= c_tiles_per_chunk;
 		return (1);
 		}
 	};
