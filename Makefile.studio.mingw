@@ -4,7 +4,6 @@
 # Where is Exult Studio will be installed. 
 U7PATH=C:/Ultima7
 # Only used for snapshots
-STUDIOPATH=C:/Studio
 TOOLSPATH=C:/GimpPlugin
 
 SRC=.
@@ -107,18 +106,20 @@ toolsdist: tools
 	u2d $(TOOLSPATH)/*.txt
 
 dist: $(EXEC)
-	mkdir -p $(STUDIOPATH)
-	strip $(EXEC) -o  $(STUDIOPATH)/$(EXEC)
-	mkdir -p $(STUDIOPATH)/data
-	cp docs/exult_studio.html $(STUDIOPATH)
-	cp docs/exult_studio.txt $(STUDIOPATH)
-	mkdir -p $(STUDIOPATH)/images
-	cp docs/images/*.gif $(STUDIOPATH)/images
-	cp docs/images/studio*.png $(STUDIOPATH)/images
-	cp mapedit/exult_studio.glade $(STUDIOPATH)/data
-	mkdir -p $(STUDIOPATH)/data/estudio
-	mkdir -p $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/*.flx $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/*.vga $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/*.shp $(STUDIOPATH)/data/estudio/new
-	u2d $(STUDIOPATH)/*.txt
+	mkdir -p $(U7PATH)
+	mkdir -p $(U7PATH)/Studio
+	strip $(EXEC) -o  $(U7PATH)/Studio/$(EXEC)
+	mkdir -p $(U7PATH)/Studio/data
+	cp docs/exult_studio.html $(U7PATH)/Studio
+	cp docs/exult_studio.txt $(U7PATH)/Studio
+	mkdir -p $(U7PATH)/Studio/images
+	cp docs/images/*.gif $(U7PATH)/Studio/images
+	cp docs/images/studio*.png $(U7PATH)/Studio/images
+	cp mapedit/exult_studio.glade $(U7PATH)/Studio/data
+	mkdir -p $(U7PATH)/Studio/data/estudio
+	mkdir -p $(U7PATH)/Studio/data/estudio/new
+	cp data/estudio/new/*.flx $(U7PATH)/Studio/data/estudio/new
+	cp data/estudio/new/*.vga $(U7PATH)/Studio/data/estudio/new
+	cp data/estudio/new/*.shp $(U7PATH)/Studio/data/estudio/new
+	u2d $(U7PATH)/Studio/*.txt
+	cp win32/exult_studio_installer.iss $(U7PATH)
