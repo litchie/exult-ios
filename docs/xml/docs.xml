@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="19 May 2002(GMT)">
+<readme title="Exult" changed="22 May 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="22052002">
+			<header>- 22 May 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="linux_alsa"/> after some discussion we rephrased this a bit.</li>		
+				</ul>
+			</body>
+		</sub>
 		<sub name="19052002">
 			<header>- 19 May 2002</header>
 			<body>
@@ -716,11 +724,11 @@
 			<header>Linux and Audio</header>
 			<body>
 				<para>
-					Apparently <Exult/> has some problem with OSS (Open Sound System - a commercial 
-					product that comes included with many Linux distributions).<br/>
+					Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably
+ 					with the Soundblaster Live.<br/>
 					Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture)
-					found at <extref target="http://www.alsa-project.org"/>. ALSA is going to replace OSS
-					in the upcoming 2.5 Kernel anyway.<br/>
+					found at <extref target="http://www.alsa-project.org"/>. ALSA is going to replace 
+					OSS in the upcoming stable (2.6) Kernel anyway.<br/>
 					We are sorry for this.
 				</para>
 			</body>

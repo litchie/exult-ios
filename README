@@ -1,12 +1,13 @@
 Exult Documentation
-last changed: 19 May 2002(GMT)
+last changed: 22 May 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 19 May 2002
-0.2. - 15 April 2002
+0.1. - 22 May 2002
+0.2. - 19 May 2002
+0.3. - 15 April 2002
 
 1. Introduction
 1.1. What is Exult?
@@ -56,14 +57,19 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 19 May 2002
+0.1. - 22 May 2002
+* 3.7. Linux and Audio after some discussion we rephrased this a bit.
+
+
+
+0.2. - 19 May 2002
 * 3.4. Digital Wave Sound Effects added selection move keys.
 * 3.7. Linux and Audio we advice using ALSA instead of OSS.
 * 5.3. Cheat keys added selection move keys.
 
 
 
-0.2. - 15 April 2002
+0.3. - 15 April 2002
 * 1.1. What is Exult? the Add-ons are NOT required for Exult to run.
 * 2.2. Settings in exult.cfg added Hebble's changes to set different paths.
 * 2.3. Path-Settings example for Hebble's changes.
@@ -502,7 +508,7 @@ Press 'Esc' to turn on/off Music, Speech and SoundFX or change the settings in e
 
 
 3.7. Linux and Audio
-Apparently Exult has some problem with OSS (Open Sound System - a commercial product that comes included with many Linux distributions). Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture) found at http://www.alsa-project.org. ALSA is going to replace OSS in the upcoming 2.5 Kernel anyway. We are sorry for this.
+Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably with the Soundblaster Live. Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture) found at http://www.alsa-project.org. ALSA is going to replace OSS in the upcoming stable (2.6) Kernel anyway. We are sorry for this.
 
 
 
