@@ -77,5 +77,6 @@ int	U7object::retrieve(const char *fname)
 		}
 	fwrite(n,l,1,fp);	// &&&& Should check return value
 	fclose(fp);
+	delete [] n;
 	return !0;
 }
