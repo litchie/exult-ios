@@ -40,17 +40,7 @@ class Vector;
 class Stack_frame;
 class Usecode_function;
 
-#ifdef MACOS
-// With Metrowerks Codewarrior, we *have* to include useval.h, otherwise this will fail to compile:
-// ...
-// 	typedef Usecode_value (Usecode_internal::*UsecodeIntrinsicFn)(
-//		int event,int intrinsic,int num_parms,Usecode_value parms[12]);
-// ...
-// This might be a problem on other compilers besides CodeWarrior (thoug it works with gcc 2.95)
-// This is *not* a bug in CW! It is a "feature" of g++ that it can work without!
 #include "useval.h"
-#endif
-
 #include "ucmachine.h"
 #include "ucdebugging.h"
 #include "tiles.h"
@@ -79,9 +69,12 @@ class Usecode_internal : public Usecode_machine
 					// I'th entry contains funs for ID's
 					//    256*i + n.
 	Exult_vector<Usecode_function*> funs[16];
-
+	Exult_vector<Usecode_value> statics;	// Global persistent vars.
 	std::deque<Stack_frame*> call_stack; // the call stack
+#if 0	/* ++++Goes away. */
 	Usecode_function *cur_function;	// Current function being executed.
+#endif
+	Stack_frame *frame;		// One intrinsic uses this for now...
 	unsigned long timers[20];	// Each has time in hours when set.
 	int speech_track;		// Set/read by some intrinsics.
 	Text_gump *book;		// Book/scroll being displayed.
