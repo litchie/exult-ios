@@ -361,7 +361,7 @@ static void Handle_events
 	unsigned char *stop
 	)
 	{
-	long last_repaint = 0;		// For insuring animation repaints.
+	unsigned long last_repaint = 0;		// For insuring animation repaints.
 	/*
 	 *	Main event loop.
 	 */
@@ -874,7 +874,7 @@ void Wait_for_arrival
 	)
 	{
 	unsigned char os = mouse->is_onscreen();
-	long last_repaint = 0;		// For insuring animation repaints.
+	unsigned long last_repaint = 0;		// For insuring animation repaints.
 	while (actor->is_moving())
 		{
 		Delay();		// Wait a fraction of a second.
