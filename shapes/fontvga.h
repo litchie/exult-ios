@@ -26,39 +26,41 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <fstream>
-#include <iostream>
-#ifdef MACOS
-  #include <cassert>
-#endif
-#include "fnames.h"
-#include "vgafile.h"
+#include "font.h"
 
 /*
  *	The "fonts.vga" file:
  */
 class Fonts_vga_file : public Vga_file
 	{
+	Font fonts[8];			// Fonts from fonts.vga file.
 public:
 	Fonts_vga_file()
 		{  }
-	void init() { load(FONTS_VGA); }
+	void init();
 					// Text rendering:
 	int paint_text_box(Image_buffer8 *win, int fontnum, 
 		const char *text, int x, int y, int w, 
-		int h, int vert_lead = 0, int pbreak = 0);
+		int h, int vert_lead = 0, int pbreak = 0)
+		{ return fonts[fontnum].paint_text_box(win, text, x, y, w, h,
+						vert_lead, pbreak); }
 	int paint_text(Image_buffer8 *win, int fontnum, 
-		const char *text, int xoff, int yoff);
+		const char *text, int xoff, int yoff)
+		{ return fonts[fontnum].paint_text(win, text, xoff, yoff); }
 	int paint_text(Image_buffer8 *win, int fontnum, 
-		const char *text, int textlen, int xoff, int yoff);
+		const char *text, int textlen, int xoff, int yoff)
+		{ return fonts[fontnum].paint_text(win, text, textlen,
+								xoff, yoff); }
 					// Get text width.
-	int get_text_width(int fontnum, const char *text);
-	int get_text_width(int fontnum, const char *text, int textlen);
+	int get_text_width(int fontnum, const char *text)
+		{ return fonts[fontnum].get_text_width(text); }
+	int get_text_width(int fontnum, const char *text, int textlen)
+		{ return fonts[fontnum].get_text_width(text, textlen); }
 					// Get text height, baseline.
-	int get_text_height(int fontnum);
-	int get_text_baseline(int fontnum);
-	Shape_frame *font_get_shape (int fontnum, int framenum)
-		{ return get_shape(fontnum, framenum); }
+	int get_text_height(int fontnum)
+		{ return fonts[fontnum].get_text_height(); }
+	int get_text_baseline(int fontnum)
+		{ return fonts[fontnum].get_text_baseline(); }
 	};
 
 #endif

@@ -145,8 +145,8 @@ void BG_Game::play_intro()
 	const char *txt_msg[] = { "with help from",
 			"The Exult Team", 
 			"Driven by the Exult game engine V" VERSION };
-	font->center_text(gwin, centerx, centery+50, txt_msg[0]);
-	font->center_text(gwin, centerx, centery+65, txt_msg[1]);
+	font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
+	font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
 	pal.fade_in(30);
 	skip = wait_delay(2000);
 	play_midi(0);	// Start the birdsongs just before we fade
@@ -156,7 +156,7 @@ void BG_Game::play_intro()
 	// Ultima VII logo w/Trees
 	gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
 	gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
-	font->center_text(gwin, centerx, centery+50, txt_msg[2]);
+	font->center_text(ibuf, centerx, centery+50, txt_msg[2]);
 	pal.load("<STATIC>/intropal.dat",4);
 	pal.fade_in(30);
 	if(wait_delay(1500)) {
@@ -423,13 +423,13 @@ void BG_Game::end_game(bool success)
 		pal.fade_out(30);
 		
 		gwin->clear_screen();
-		font->center_text(gwin, centerx, centery-10, "The end of Ultima VII");
+		font->center_text(ibuf, centerx, centery-10, "The end of Ultima VII");
 		pal.fade_in(30);
 		wait_delay(4000);
 		pal.fade_out(30);
 		
 		gwin->clear_screen();
-		font->center_text(gwin, centerx, centery-10, "The end of Britannia as you know it!");
+		font->center_text(ibuf, centerx, centery-10, "The end of Britannia as you know it!");
 		pal.fade_in(30);
 		wait_delay(4000);
 		pal.fade_out(30);
@@ -520,7 +520,7 @@ void BG_Game::end_game(bool success)
 	for (i = 150; i < 204; i++)
 	{
 		next = fli1.play(win, i, i, next);
-		endfont2->draw_text(gwin, width, height, message);
+		endfont2->draw_text(ibuf, width, height, message);
 		
 		win->show();
 		if (wait_delay (10))
@@ -548,7 +548,7 @@ void BG_Game::end_game(bool success)
 	for (i = 0; i < 320; i++)
 	{
 		next = fli2.play(win, i, i, next);
-		endfont2->draw_text(gwin, width, height, message);
+		endfont2->draw_text(ibuf, width, height, message);
 		
 		win->show();
 		if (wait_delay (10))
@@ -679,7 +679,7 @@ void BG_Game::end_game(bool success)
 		{
 			next = fli3.play(win, j, j, next);
 			for(m=0; m<6; m++)
-				endfont3->center_text(gwin, centerx, starty+endfont3->get_text_height()*m, txt_screen0[m]);
+				endfont3->center_text(ibuf, centerx, starty+endfont3->get_text_height()*m, txt_screen0[m]);
 
 			win->show ();
 			if (wait_delay (10))
@@ -959,7 +959,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 				sprintf(disp_name, "%s_", npc_name);
 			else
 				sprintf(disp_name, "%s", npc_name);
-			font->draw_text(gwin, topx+50, menuy+10, disp_name);
+			font->draw_text(ibuf, topx+50, menuy+10, disp_name);
 			pal.apply();
 			redraw = false;
 		}

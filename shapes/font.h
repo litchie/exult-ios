@@ -25,9 +25,12 @@
   #include <hash_map>
 #endif
 
-class Game_window;
+class Image_buffer8;
 class Shape_file;
 
+/*
+ *	A single font:
+ */
 class Font
 {
 private:
@@ -39,14 +42,32 @@ public:
 	Font(const char *fname, int index, int hlead=0, int vlead=1);
 	~Font();
 	int load(const char *fname, int index, int hlead=0, int vlead=1);
-	int draw_text(Game_window *gwin, int x, int y, const char *s);
-	int draw_text_box(Game_window *gwin, int x, int y, int w, int h, const char *s);
-	int center_text(Game_window *gwin, int x, int y, const char *s);
-	int get_text_width(const char *s);
-	int get_text_baseline();
+					// Text rendering:
+	int paint_text_box(Image_buffer8 *win,  
+		const char *text, int x, int y, int w, 
+		int h, int vert_lead = 0, int pbreak = 0);
+	int paint_text(Image_buffer8 *win,  
+		const char *text, int xoff, int yoff);
+	int paint_text(Image_buffer8 *win,  
+		const char *text, int textlen, int xoff, int yoff);
+					// Get text width.
+	int get_text_width(const char *text);
+	int get_text_width(const char *text, int textlen);
+					// Get text height, baseline.
 	int get_text_height();
+	int get_text_baseline();
+
+	int draw_text(Image_buffer8 *win, int x, int y, const char *s)
+		{ return paint_text(win, s, x, y); }
+	int draw_text_box(Image_buffer8 *win, 
+				int x, int y, int w, int h, const char *s)
+		{ return paint_text_box(win, s, x, y, w, h, 0, 0); }
+	int center_text(Image_buffer8 *iwin, int x, int y, const char *s);
 };
 
+/*
+ *	Manage a list of fonts by name.
+ */
 class FontManager
 {
 private:
