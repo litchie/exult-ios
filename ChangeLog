@@ -1,3 +1,8 @@
+2003-08-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* schedule.cc:  Rewrote Preach schedule.
+	* usecode/ucsched.cc:  Fixed the add(int, char*) method.
+
 2003-07-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: fixed memory corruption issue breaking item descriptions
 
