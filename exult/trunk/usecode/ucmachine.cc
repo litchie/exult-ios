@@ -659,6 +659,19 @@ Usecode_value Usecode_machine::find_nearby
 	)
 	{
 	Game_object_vector vec;			// Gets list.
+
+	int shapenum;
+
+	if (shapeval.is_array()) {
+		// fixes 'lightning whip sacrifice' in Silver Seed
+		shapenum = shapeval.get_elem(0).get_int_value();
+		if (shapeval.get_array_size() > 1)
+			cerr << "Calling find_nearby with an array > 1 !!!!"
+				 << endl;
+	} else
+		shapenum = shapeval.get_int_value();
+
+		
 					// It might be (tx, ty, tz).
 	int arraysize = objval.get_array_size();
 	if (arraysize >= 3 && objval.get_elem(0).get_int_value() < c_num_tiles)
@@ -673,7 +686,7 @@ Usecode_value Usecode_machine::find_nearby
 			Tile_coord(objval.get_elem(0).get_int_value(),
 				   objval.get_elem(1).get_int_value(),
 				   objval.get_elem(2).get_int_value()),
-			shapeval.get_int_value(),
+			shapenum,
 			distval.get_int_value(), mval.get_int_value(), 
 			qual, frnum);
 		}
@@ -683,7 +696,7 @@ Usecode_value Usecode_machine::find_nearby
 		if (!obj)
 			return Usecode_value(0, 0);
 		obj = obj->get_outermost();	// Might be inside something.
-		obj->find_nearby(vec, shapeval.get_int_value(),
+		obj->find_nearby(vec, shapenum,
 			distval.get_int_value(), mval.get_int_value());
 		}
 	Usecode_value nearby(vec.size(), 0);	// Create return array.
