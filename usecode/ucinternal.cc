@@ -506,7 +506,7 @@ void Usecode_internal::set_item_frame
 	if (frame == item->get_framenum())
 		return;			// Already set to that.
 					// Check for empty frame.
-	ShapeID sid(item->get_shapenum(), frame);
+	ShapeID sid(item->get_shapenum(), frame, item->get_shapefile());
 	Shape_frame *shape = sid.get_shape();
 	if (!shape || (check_empty && shape->is_empty()))
 		return;
