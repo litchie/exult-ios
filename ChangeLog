@@ -1,3 +1,8 @@
+2002-01-21  Darke  <darkepaw@users.sourceforge.net>
+	* usecode/ucxt/*: Lots of code cleanup, and preperation for adding
+	basic u8 disassembler functions.
+	* Pawnote: Blame Fingolfin for me commiting as my alter ego. <grin>
+
 2002-01-21  Ryan Nunn  <triforce@merlin.net.au>
 	* windrag.* : Don't need GDK
 

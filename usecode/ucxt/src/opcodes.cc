@@ -90,17 +90,17 @@ void init_static_usecodetables()
 }
 
 /* constructs the usecode tables from datafiles in the /ucxt hierachy */
-void init_usecodetables(const Configuration &config, bool noconf, bool verbose)
+void init_usecodetables(const Configuration &config, const UCOptions &options)
 {
 	std::string ucxtroot;
 	// just to handle if people are going to compile with makefile.unix, unsupported, but occasionally useful
 	#ifdef HAVE_CONFIG_H
-	if(noconf == false) config.value("config/ucxt/root", ucxtroot, EXULT_DATADIR);
+	if(options.noconf == false) config.value("config/ucxt/root", ucxtroot, EXULT_DATADIR);
 	#else
-	if(noconf == false) config.value("config/ucxt/root", ucxtroot, "data/");
+	if(options.noconf == false) config.value("config/ucxt/root", ucxtroot, "data/");
 	#endif
 	
-	if(verbose) std::cout << "ucxtroot: " << ucxtroot << std::endl;
+	if(options.verbose) std::cout << "ucxtroot: " << ucxtroot << std::endl;
 	if(ucxtroot.size() && ucxtroot[ucxtroot.size()-1]!='/' && ucxtroot[ucxtroot.size()-1]!='\\') ucxtroot+='/';
 	
 	Configuration opdata(ucxtroot + "u7opcodes.data", "opcodes");
@@ -183,7 +183,7 @@ std::vector<std::string> qnd_ocsplit(const std::string &s)
 
 	for(std::string::const_iterator i=s.begin(); i!=s.end(); ++i)
 	{
-    if(*i==',')
+		if(*i==',')
 		{
 			vs.push_back(tstr);
 			tstr="";

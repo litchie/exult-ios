@@ -24,6 +24,7 @@
 #include <vector>
 #include <iostream>
 #include "Configuration.h"
+#include "ucc.h"
 
 std::vector<std::string> qnd_ocsplit(const std::string &s);
 
@@ -59,14 +60,14 @@ class UCOpcodeData
 				switch(k->first[0])
 				{
 					case 'a':
-						if(k->first=="asm_nmo")            asm_nmo = strip_backticks(k->second);
+						if(k->first=="asm_nmo")             asm_nmo = strip_backticks(k->second);
 						else if(k->first=="asm_comment")    asm_comment = strip_backticks(k->second);
 						break;
 					case 'c':
-						if(k->first=="call_effect")    call_effect = strtol(k->second.c_str(), 0, 0);
+						if(k->first=="call_effect")         call_effect = strtol(k->second.c_str(), 0, 0);
 						break;
 					case 'i':
-						if(k->first=="indent_inc/")    flag_indent_inc=true;
+						if(k->first=="indent_inc/")         flag_indent_inc=true;
 						else if(k->first=="indent_dec/")    flag_indent_dec=true;
 						else if(k->first=="indent_tmpinc/") flag_indent_tmpinc=true;
 						else if(k->first=="indent_tmpdec/") flag_indent_tmpdec=true;
@@ -78,14 +79,14 @@ class UCOpcodeData
 						else if(k->first=="num_push")       num_push = strtol(k->second.c_str(), 0, 0);
 						break;
 					case 'p':
-						if(k->first=="param_types")    param_types = qnd_ocsplit(k->second);
+						if(k->first=="param_types")         param_types = qnd_ocsplit(k->second);
 						else if(k->first=="paren/")         flag_paren=true;
 						break;
 					case 'r':
-						if(k->first=="return/")        flag_return=true;
+						if(k->first=="return/")             flag_return=true;
 						break;
 					case 'u':
-						if(k->first=="ucs_nmo")        ucs_nmo = strip_backticks(k->second);
+						if(k->first=="ucs_nmo")              ucs_nmo = strip_backticks(k->second);
 						break;
 					case '!': // ignore, it's a comment or something.
 						break;
@@ -95,54 +96,6 @@ class UCOpcodeData
 			}
 			map_type_size(param_types, param_sizes);
 		};
-/*		UCOpcodeData(unsigned int op, const Configuration::KeyTypeList &ktl)
-		               : opcode(op), num_bytes(0), num_pop(0),
-		                 num_push(0), call_effect(0), flag_return(false),
-		                 flag_paren(false), flag_indent_inc(false),
-		                 flag_indent_dec(false), flag_indent_tmpinc(false),
-		                 flag_indent_tmpdec(false)
-		{
-			for(typeof(ktl.begin()) k=ktl.begin(); k!=ktl.end(); ++k)
-			{
-				switch(k->first[0])
-				{
-					case 'a':
-						if(k->first=="asm_nmo")            asm_nmo = strip_backticks(k->second);
-						else if(k->first=="asm_comment")    asm_comment = strip_backticks(k->second);
-						break;
-					case 'c':
-						if(k->first=="call_effect")    call_effect = strtol(k->second.c_str(), 0, 0);
-						break;
-					case 'i':
-						if(k->first=="indent_inc/")    flag_indent_inc=true;
-						else if(k->first=="indent_dec/")    flag_indent_dec=true;
-						else if(k->first=="indent_tmpinc/") flag_indent_tmpinc=true;
-						else if(k->first=="indent_tmpdec/") flag_indent_tmpdec=true;
-						break;
-					case 'n':
-						if(k->first=="name")                name = strip_backticks(k->second);
-						else if(k->first=="num_bytes")      num_bytes = strtol(k->second.c_str(), 0, 0);
-						else if(k->first=="num_pop")        num_pop = strtol(k->second.c_str(), 0, 0);
-						else if(k->first=="num_push")       num_push = strtol(k->second.c_str(), 0, 0);
-						break;
-					case 'p':
-						if(k->first=="param_types")    param_types = qnd_ocsplit(k->second);
-						else if(k->first=="paren/")         flag_paren=true;
-						break;
-					case 'r':
-						if(k->first=="return/")        flag_return=true;
-						break;
-					case 'u':
-						if(k->first=="ucs_nmo")        ucs_nmo = strip_backticks(k->second);
-						break;
-					case '!': // ignore, it's a comment or something.
-						break;
-					default:
-						std::cerr << "invalid key `" << k->first << "` value `" << k->second << "`" << std::endl;
-				}
-			}
-			map_type_size(param_types, param_sizes);
-		};*/
 		
 		UCOpcodeData(const std::vector<std::string> &v)
 		{
@@ -228,7 +181,7 @@ extern std::map<unsigned int, std::string> bg_uc_intrinsics;
 extern std::map<unsigned int, std::string> si_uc_intrinsics;
 
 void init_static_usecodetables();
-void init_usecodetables(const Configuration &config, bool noconf, bool verbose);
+void init_usecodetables(const Configuration &config, const UCOptions &options);
 
 
 #endif
