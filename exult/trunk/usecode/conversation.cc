@@ -156,6 +156,9 @@ void Conversation::show_face(int shape, int frame, int slot)
 
 	// Make sure mode is set right.
       	gwin->set_mode(Game_window::conversation);
+					// Watch for wierdness (lightning).
+	if (gwin->get_brightness() >= 300)
+		gwin->set_palette(-1, 100);
 
 	// Petra?
 	if (shape == 28 && main_actor->get_flag(Obj_flags::petra)) {
