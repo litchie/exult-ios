@@ -3,6 +3,7 @@
 	* gamedat.cc: only include dir.h on windows
 	* Midi.cc: only try forked,KMIDI,timidity in XWin
 	* Configuration.cc: put .exult.cfg in user's homedir
+	* Makefile.win32: added delobjs.cc, effects.cc
 
 2000-05-26  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
 	* Configuration.cc: added a temp. BeOS config file section
