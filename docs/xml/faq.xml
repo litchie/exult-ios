@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="27 January 2004(GMT)">
+<faqs title="Exult" changed="23 May 2004(GMT">
 	<section title="Changes to the FAQ">
+		<sub name="23052004">
+			<header>- 23 May 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="latest_version"/> 1.2 now.</li>
+				<li><ref1 target="exult_donation"/> No we don't but SF would be happy.</li>
+				<li><ref1 target="latest_version"/> 1.2 now.</li>
+				<li><ref1 target="where_cfg"/> if you really can't find it.</li>				
+				</ul>
+			</body>
+		</sub>
 		<sub name="27012004">
 			<header>- 27 January 2004</header>
 			<body>
@@ -23,31 +34,13 @@
 				</ul>
 			</body>
 		</sub>
-		<sub name="18102003">
-			<header>- 18 October 2003</header>
-			<body>
-				<ul>
-				<li><ref1 target="exult_version"/> note <Exult/> version.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="24082003">
-			<header>- 24 August 2003</header>
-			<body>
-				<ul>
-				<li>Some spell checking done.</li>
-				<li><ref1 target="pentagram"/> changed location of snapshots.</li>
-				<li><ref1 target="latest_version"/> is now 1.1.beta3.</li>
-				</ul>
-			</body>
-		</sub>
 	</section>
 	<section title="Introduction">
 		<sub name="exult_version">
 			<header>Exult Version</header>
 			<body>
 				<para>
-					This documentation is for the 1.1.9rc1 version of <Exult/>.
+					This documentation is for the 1.2 version of <Exult/>.
 					If you have another <Exult/> version, its documentation can be found where you installed the release.
 				</para>
 			</body>
@@ -85,6 +78,19 @@
 					<extref target="mailto:exult-general@lists.sourceforge.net">team</extref>.<br/>
  					More information on the GNU GPL at
  					<extref target="http://www.gnu.org/copyleft/gpl.html"/>.
+				</para>
+			</body>
+		</sub>
+		<sub name="exult_donation">
+			<header>Do you accept donations?</header>
+			<body>
+				<para>
+					No the <Exult/> team will not accept donations. For us there are greater legal matters 
+					involved, which none of us particularly want to explore. We do not want to risk the 
+					wrath of EA for directly profitting off xult.<br/>
+					If you want to donate to anyone, donate to 
+					<extref target="http://sourceforge.net/donate/">Sourceforge</extref>. 
+					We wouldn't be here if it weren't for them. 
 				</para>
 			</body>
 		</sub>
@@ -214,7 +220,7 @@
 			<header>What is the latest version of <Exult/>?</header>
 			<body>
 				<para>
-					The current official release is V1.1.9rc1
+					The current official release is V1.2
 					See also <ref target="whereis_exult"/>
 					to learn where to get the latest version.
 				</para>
@@ -378,6 +384,22 @@
 						The Ultima 7 section of Paulon Dragons Ultima games FAQ.</li>
 					<li><extref target="http://www.ultimainfo.net/FAQ/ultimafaqs.htm#11"/><br/>
 						The U7 section of the more detailed Ultima Gameplay FAQ.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="where_cfg">
+			<header>Where do I find the configuration file?</header>
+			<body>
+				<para>
+					You can find exult.cfg in specific directories:
+				</para>
+				<ul>
+					<li> On Windows systems the file can be found in the same folder you 
+					installed Exult to</li>
+					<li>On UNIX systems you can expect to find it in $HOME/.exult.cfg 
+					(keep in mind that the dot before exult.cfg means that it is hidden from 
+					normal view).</li>
+					<li>In Mac OS X it is ~/Library/Preferences/exult.cfg</li>
 				</ul>
 			</body>
 		</sub>

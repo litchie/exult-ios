@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="06 February 2004(GMT)">
+<studiodoc title="Exult" changed="23 May 2004(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="23052004">
+			<header>- 23 May 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="palettes_files"/> palette files are compatible with the Gimp.</li>
+				<li><ref1 target="edit_menu"/> note about map-editing operations.</li>
+				<li><ref1 target="eggs_properties"/> some more infos.</li>
+				<li><ref1 target="creature_schedules"/> more on the patrol schedule.</li>
+				<li><ref1 target="npc_flags"/> removed some unused flags.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="06022004">
 			<header>- 06 February 2004</header>
 			<body>
@@ -11,35 +23,6 @@
 				<li><ref1 target="studio_run"/> some corrections.</li>
 				<li><ref1 target="map_files"/> More right click options.</li>
 				<li><section_ref target="NPC editing"/> finally took on that task.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="08082003">
-			<header>- 08 August 2003</header>
-			<body>
-				<ul>
-				<li><ref1 target="installation"/> only use latest snapshots not latest release.</li>
-				<li><ref1 target="run_steps"/> you need to set up the patch path in exult.cfg.</li>
-				<li><ref1 target="win32_bugs"/> <Studio/> now works on all Win32 platforms.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="04052003">
-			<header>- 04 May 2003</header>
-			<body>
-				<ul>
-				<li><ref1 target="win32_bugs"/> two bugs fixed in the win32 port.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="28102002">
-			<header>- 28 October 2002</header>
-			<body>
-				<ul>
-					<li><ref1 target="studio_terms"/> added NPC schedules.</li>
-					<li><ref1 target="studio_run"/> the -d command line arg is now -gGAME.</li>
-					<li><ref1 target="can_do_atm"/> 'Paint with chunk' added.</li>
-					<li><ref1 target="shape_files"/> 'Frames' mode mentioned and explained.</li>
 				</ul>
 			</body>
 		</sub>
@@ -283,7 +266,8 @@
 					</configtag>
 				</configdesc>
 				<para>
-					<Exult/> will also read files from 'patch' if it exists on starting a new game.
+					<Exult/> will also read files from 'patch' if it exists on starting a new game. The patch 
+					dir is expected to be within the main game directory, parallel to the static and gamedat directories.
 				</para>
 				<para>
 					In any mode, you can add the currently selected shape by shift-clicking..
@@ -461,7 +445,10 @@
 						Exports the current palette to a text file.</li>
 				</ul>
 				<para>
-					Right clicking on a chunk only gives you the default File-save/revert option.
+					The palette text files are compatible with the Gimp.
+				</para>
+				<para>
+					Right clicking on a palette only gives you the default File-save/revert option.
 				</para>
 			</body>
 		</sub>
@@ -627,6 +614,10 @@
 					Create or edit NPCs with this.
 					See <section_ref target="NPC editing"/> for more information (not yet there).</li>
 				</ul>
+				<para>
+				When in map-edit mode, you can select shapes in Exult by left-clicking, or multiple shapes by 
+				ctrl+left-clicking.
+				</para>
 			</body>
 		</sub>
 		<sub name="mode_menu">
@@ -898,15 +889,17 @@
 						<strong>Party footpad</strong> - This option is identical to the Avatar footpad option
 						except if either the main character or one of his companions stumbles onto the egg it
 						will be activated.<br/>
-						<strong>Something on</strong> - This egg is activated whenever an object is placed
-						within the area specified by an egg.<br/>
+						<strong>Something on</strong> - This egg is activated whenever an object is placed 
+						<strong>AND</strong> removed within the area specified by an egg.<br/>
 						<strong>External</strong> - Eggs set to the external characteristic will be activated
 						by button eggs in the vicinity.
 						</li>
 					<li><strong>Flag</strong><br/>
 						final attribute you can give an egg to determine whether it will be activated or not.
 						As a note you can mix and match flags, you can set an egg to nocturnal once only or
-						nocturnal auto-reset.<br/>
+						nocturnal auto-reset.Not that an egg will be reactivated after you walk about a 
+						screenful away and then return if the the flags "once-only" or "auto-reset" are not 
+						set.<br/>
 					 	<strong>Nocturnal</strong> - Any egg with this setting will only be activated during
 					 	the nighttime. Great for setting the spawning of creatures of the night, or giving
 					 	some nice night time music.<br/>
@@ -982,7 +975,10 @@
 						dummies or archery targets. For an extra laugh place 10 spawns each set for 31 guards
 						to appear in dueling mode.</li>
 					<li><strong>Patrol</strong><br/>
-						A creature given this setting will very slowly wander from place to place.<br/>
+						An NPC with this schedule will follow "path" markers (shape #607). The default behavior is to go 
+						to "1", then "2", etc., and return to "1" when no higher numbers are found. There are also some 
+						fairly complicated rules that depend on the "quality" that you give to each of the path markers.
+						(<Studio/> should have a dialog to create these, so I wouldn't worry about them right now.)<br/>
 						<img alt="Guards duel" src="images/studio04.png"/><br/></li>
 				</ul>
 			</body>
@@ -1200,7 +1196,6 @@
 					<li><strong>Confused</strong></li>
 					<li><strong>Dancing</strong></li>
 					<li><strong>Fly</strong></li>
-					<li><strong>In motion</strong></li>
 					<li><strong>Invisible</strong></li>
 					<li><strong>No Magic</strong></li>
 					<li><strong>Petra</strong></li>
@@ -1218,7 +1213,6 @@
 						The NPC is a member of the party.</li>
 					<li><strong>Met</strong><br/>
 						The Avatar has previously spoken to the NPC.</li>
-					<li><strong>Okay to land</strong></li>
 					<li><strong>Poisoned</strong></li>
 					<li><strong>Tattooed</strong></li>
 					<li><strong>Walk</strong></li>

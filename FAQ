@@ -1,28 +1,28 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 27 January 2004(GMT)
+last changed: 23 May 2004(GMT
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 27 January 2004
-0.2. - 12 December 2003
-0.3. - 18 October 2003
-0.4. - 24 August 2003
+0.1. - 23 May 2004
+0.2. - 27 January 2004
+0.3. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
 1.2. Why is it called Exult - what is the meaning of this name?
 1.3. Is Exult free ?
-1.4. Does Origin support Exult?
-1.5. Will Exult support other Ultimas?
-1.6. But isn't Pentagram some kind of Exult for U8?
-1.7. Will there be a multiplayer Exult?
-1.8. Where do I find Exult?
-1.9. What is a snapshot? Are these screenshots or what?
-1.10. How do I compile a source code snapshot for my OS?
-1.11. What is the latest version of Exult?
-1.12. On what platform does Exult run?
+1.4. Do you accept donations?
+1.5. Does Origin support Exult?
+1.6. Will Exult support other Ultimas?
+1.7. But isn't Pentagram some kind of Exult for U8?
+1.8. Will there be a multiplayer Exult?
+1.9. Where do I find Exult?
+1.10. What is a snapshot? Are these screenshots or what?
+1.11. How do I compile a source code snapshot for my OS?
+1.12. What is the latest version of Exult?
+1.13. On what platform does Exult run?
 
 2. Exult and Ultima 7
 2.1. Do I need Ultima 7?
@@ -36,21 +36,22 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 3. Miscellaneous
 3.1. Where do I find a walkthrough?
-3.2. Why can't I move my party with the arrow keys?
-3.3. Do the carriages, ships and the magic carpet work?
-3.4. So why can't I sail a ship in BG?
-3.5. Will you implement the extended intro for SI?
-3.6. Why is the party formation different?
-3.7. What should I do when Exult keeps crashing when I try to save?
-3.8. Why does the game run so choppy?
-3.9. Why can't I hear the Sound Effects?
-3.10. Why do I hear strange, noisy effects in Linux?
-3.11. Why is the music so much louder/softer than the sfx/speech?
-3.12. Why does my monitor stay black when I try to run Exult?
-3.13. What are the improvements in Exult over the original Ultima 7?
-3.14. Are there issues with the SI style paperdoll in BG?
-3.15. How do I disable all improvements?
-3.16. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.2. Where do I find the configuration file?
+3.3. Why can't I move my party with the arrow keys?
+3.4. Do the carriages, ships and the magic carpet work?
+3.5. So why can't I sail a ship in BG?
+3.6. Will you implement the extended intro for SI?
+3.7. Why is the party formation different?
+3.8. What should I do when Exult keeps crashing when I try to save?
+3.9. Why does the game run so choppy?
+3.10. Why can't I hear the Sound Effects?
+3.11. Why do I hear strange, noisy effects in Linux?
+3.12. Why is the music so much louder/softer than the sfx/speech?
+3.13. Why does my monitor stay black when I try to run Exult?
+3.14. What are the improvements in Exult over the original Ultima 7?
+3.15. Are there issues with the SI style paperdoll in BG?
+3.16. How do I disable all improvements?
+3.17. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
 
 4. Bugs, known issues and not yet implemented features
 4.1. Bugs
@@ -85,29 +86,25 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 27 January 2004
-* 1.11. What is the latest version of Exult? 1.1.9rc1 now.
+0.1. - 23 May 2004
+* 1.12. What is the latest version of Exult? 1.2 now.
+* 1.4. Do you accept donations? No we don't but SF would be happy.
+* 1.12. What is the latest version of Exult? 1.2 now.
+* 3.2. Where do I find the configuration file? if you really can't find it.
+
+
+
+0.2. - 27 January 2004
+* 1.12. What is the latest version of Exult? 1.1.9rc1 now.
 * 4.4. Known Issues Items descriptions in SI-only work now.
 * 5.9. Why won't Xenka speak about sacrifice (SI) added.
 * 5.10. An important note about the Serpent Staff (SI) Willem fixed this.
 
 
 
-0.2. - 12 December 2003
+0.3. - 12 December 2003
 * 5.3. Why can't I get the sacrifice in Skara Brae to work (BG)? Stuart told me another workaround.
 * 6.1. How can I get answers concerning Ultima 7/Exult? still used the old invalid address for irc and #exultlog (thanks Lars).
-
-
-
-0.3. - 18 October 2003
-* 1.1. Exult Version note Exult version.
-
-
-
-0.4. - 24 August 2003
-* Some spell checking done.
-* 1.6. But isn't Pentagram some kind of Exult for U8? changed location of snapshots.
-* 1.11. What is the latest version of Exult? is now 1.1.beta3.
 
 
 
@@ -116,7 +113,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 1. Introduction
 1.1. Exult Version
-This documentation is for the 1.1.9rc1 version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
+This documentation is for the 1.2 version of Exult. If you have another Exult version, its documentation can be found where you installed the release.
 
 
 1.2. Why is it called Exult - what is the meaning of this name?
@@ -131,23 +128,27 @@ I'd like to point out that "exult" is also an English verb that means "to rejoic
 Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exults components and publicly redistribute your work you are required to make the source freely available in turn. Obviously the Exult team would be very grateful if any modifications you make are contributed back to the main code, so that everyone can benefit from them. If you want to work on Exult just send an e-mail to the team. More information on the GNU GPL at http://www.gnu.org/copyleft/gpl.html.
 
 
-1.4. Does Origin support Exult?
+1.4. Do you accept donations?
+No the Exult team will not accept donations. For us there are greater legal matters involved, which none of us particularly want to explore. We do not want to risk the wrath of EA for directly profitting off xult. If you want to donate to anyone, donate to Sourceforge. We wouldn't be here if it weren't for them.
+
+
+1.5. Does Origin support Exult?
 First of all, Origin has been owned by EA for a long time now and from recent developments it seems that Origin only exists now to maintain Ultima Online. Furthermore, Origin and/or people that worked for Origin claim that the source code for Ultima 7 (BG/SI) has been lost for some time. So there is no chance for the Exult team to have a look at the actual code.
 Also the team tried to contact some people from Origin earlier but got no positive or negative response on the Exult project. So far it seems that both Origin and EA have decided to ignore Exult.
 On the other hand former Origin employees contacted the team and congratulated the team on their effort. Most noticeable are Lord British himself and Ken Demarest (Programming Manager of Ultima 7)(hint:spell his name backwards).
 
 
-1.5. Will Exult support other Ultimas?
+1.6. Will Exult support other Ultimas?
 Exult supports only Ultima 7 (BG/SI and the add-ons). It will never support any other Ultima nor do members of the team plan to develop something similar. The reasons for this are that no other Ultima is similar to Ultima 7 in the internal workings and also the team used to be quite sick of reverse engineering a game already.
 
 
-1.6. But isn't Pentagram some kind of Exult for U8?
+1.7. But isn't Pentagram some kind of Exult for U8?
 Pentagram is a pet project by some members of the Exult team (currently mostly Willem, Colourless, Fingolfin and Darke). It is a map and shapes viewer and nothing more (although the team does indeed invest some time to disassemble the Usecode of U8). It isn't meant to be something similar to Exult. It is rather a clever plan to stir up interest in other coders to carry this basic work further. Any developer is welcome to take a look and contact us.
 Seriously Pentagram is slowly progressing and you can find snapshots of the code and Win32 binaries for it on the Pentagramsnapshots page.
 On the official Pentagram homepage at http://pentagram.sourceforge.net/ you might find more information on this project in the future. For now you can find some nice screenshots of the map viewer in action.
 
 
-1.7. Will there be a multiplayer Exult?
+1.8. Will there be a multiplayer Exult?
 No.
 
 Jeff on the Forum:
@@ -155,26 +156,26 @@ The question is 'why?'. I continue working on Exult, in large part, because nobo
 Note however that Exult is open source. If you want a multiplayer U7 no one holds you back to code it in.
 
 
-1.8. Where do I find Exult?
-The latest official version is found on http://exult.sourceforge.net/ Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree can be found at http://exult.sourceforge.net/download.php. A BeOS binary snapshot can be found at http://digilander.iol.it/burton666/exult-beos.zip. Jack Burton provides this weekly or whenever it compiles for him. Thanks! There is also a version available for AmigaOS/MorphOS at http://www.muenster.de/~tomjoad/exult.html. Please see 1.12. for some more information on this port.
+1.9. Where do I find Exult?
+The latest official version is found on http://exult.sourceforge.net/ Daily snapshots (by Travis Howell) of the Win32 binary and of the CVS source tree can be found at http://exult.sourceforge.net/download.php. A BeOS binary snapshot can be found at http://digilander.iol.it/burton666/exult-beos.zip. Jack Burton provides this weekly or whenever it compiles for him. Thanks! There is also a version available for AmigaOS/MorphOS at http://www.muenster.de/~tomjoad/exult.html. Please see 1.13. for some more information on this port.
 
 
-1.9. What is a snapshot? Are these screenshots or what?
+1.10. What is a snapshot? Are these screenshots or what?
 Bugs and not yet implemented features in Exult get fixed almost daily in the code. A release is very time consuming that's why there are so few.
 The snapshot is the newest source code of the program. It is updated almost daily, sometimes twice a day. There is information on how to build your own binary in the source but there is also the newest pre-compiled Windows executable. If you there is no new one this means that either there were no changes to the code or the source failed to compile.
 Also this FAQ mainly addresses the snapshots as people use them and ask question. And all the new features and improvements are found in those!
 
 
-1.10. How do I compile a source code snapshot for my OS?
+1.11. How do I compile a source code snapshot for my OS?
 The source code snapshots contain a file called "README.OS" (like Readme.win32, Readme.MacOS) that explains everything.
 
 
-1.11. What is the latest version of Exult?
-The current official release is V1.1.9rc1 See also 1.8. to learn where to get the latest version.
+1.12. What is the latest version of Exult?
+The current official release is V1.2 See also 1.9. to learn where to get the latest version.
 To find out which version you are running, press 'v' while in game.
 
 
-1.12. On what platform does Exult run?
+1.13. On what platform does Exult run?
 Exult should be able to be compiled (with minor modifications) on any platform that SDL supports. Right now the source can be compiled in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher), OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP).
 Ruediger Hanke's ported Exult to MorphOS and AmigaOS. You can get this version at http://www.muenster.de/~tomjoad/exult.html.
 Recently Artaxerxes started working on a port for Zaurus, a Linux/ARM based PDA. It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus running SI can be found at http://exult.sourceforge.net/images/screenshots/zaurus/ and an IPK package at http://exult.sourceforge.net/download.php.
@@ -240,24 +241,32 @@ If you need help with the game itself, like walkthroughs, hints, location of NPC
 
 
 
-3.2. Why can't I move my party with the arrow keys?
+3.2. Where do I find the configuration file?
+You can find exult.cfg in specific directories:
+* On Windows systems the file can be found in the same folder you installed Exult to
+* On UNIX systems you can expect to find it in $HOME/.exult.cfg (keep in mind that the dot before exult.cfg means that it is hidden from normal view).
+* In Mac OS X it is ~/Library/Preferences/exult.cfg
+
+
+
+3.3. Why can't I move my party with the arrow keys?
 Nadir implemented keyboard walking in the 1.1 (unstable) branch of our source. For details see ReadMe.txt.
 
 
-3.3. Do the carriages, ships and the magic carpet work?
+3.4. Do the carriages, ships and the magic carpet work?
 Yes. The sail of ships look odd sometimes but otherwise these means of transportation work quite well.
 
 
-3.4. So why can't I sail a ship in BG?
+3.5. So why can't I sail a ship in BG?
 To sail a ship in BG you naturally need to have the deed to this ship in your party. Then double-click on the sail of the ship and your party moves aboard it and sits down. Once they are all seated, double-click the gangplank to close it. Now double-click on the sail once more to have it unfold. You should be able to move the ship then.
 
 
-3.5. Will you implement the extended intro for SI?
+3.6. Will you implement the extended intro for SI?
 The extended intro for Serpent Isle can be found at http://www.io.com/~dloubet/. At this moment we don't even think about implementing this extended intro. Why not? It sure would be nice to use it. But you may have noticed some effects missing from the intro. You may have noticed that there is no sound. You may have noticed that there is neither speech nor subtitles. All that would have to be addressed and add to that the longer running time and that you have to synchronize the music with it. Then what about the size of it? You would need to compress it and make sure all our supported platforms make use of it.
 Everyone volunteering to do it is welcome to.
 
 
-3.6. Why is the party formation different?
+3.7. Why is the party formation different?
 In Exult the party (the Avatar and his companions) move quite differently than they do in the original. The problem is that this was controlled by the original executable. Changing the formation now is not as easy as it sounds as the party formation has effects on other game internals. Changing it to be more like the original may force us to replay the whole game to make sure we didn't introduce new bugs.
 Recently Jeff added an optional formation that behaves way more like in the original game. The default is still the "loose" Exult formation. See ReadMe.txt.
 
@@ -265,34 +274,34 @@ Jeff:
 It's not a bug, it's a feature! I like it that way. Everyone is sensitive to different things, and I always though the formation-walking in the original U7 looked really stupid. Eventually, someone may add the original type of walking to Exult, probably as an option.
 
 
-3.7. What should I do when Exult keeps crashing when I try to save?
+3.8. What should I do when Exult keeps crashing when I try to save?
 This is not normal behavior for Exult. Normally when you restart and "Journey Onward" Exult will actually restore to the point you saved.
 Please do not play further at this point. You should restore to an earlier save game, no matter how much game time you loose. Your game must have gotten corrupted and when you play on with it you will most likely experience even more serious problems.
 Please also avoid saving when a scripted sequence is running. Whenever you can't control the Avatar on your own a scripted scene is running and saving at this time will break the game on reloading.
 
 
-3.8. Why does the game run so choppy?
+3.9. Why does the game run so choppy?
 Well, every Ultima required a fast computer. Even though Exult is just an engine that runs the ancient Ultima 7 it still requires a fast computer.
 Seriously, if the game runs choppy for you, try the speed setting in the Game Options menu and if that doesn't help also play with the original resolution (320x200), try a different scaler or disable scaling altogether.
 
 
-3.9. Why can't I hear the Sound Effects?
+3.10. Why can't I hear the Sound Effects?
 Please read the Audio section of our ReadMe.txt.
 
 
-3.10. Why do I hear strange, noisy effects in Linux?
+3.11. Why do I hear strange, noisy effects in Linux?
 This is due to a bug with OSS. We advice installing ALSA. Please read ReadMe.txt for a little more extensive explanation.
 
 
-3.11. Why is the music so much louder/softer than the sfx/speech?
+3.12. Why is the music so much louder/softer than the sfx/speech?
 Music is played via midi but the sfx (sound effects) and speech are played via wave. Midi and Wave volume are set up separately in the settings of your Operating System and not by Exult.
 
 
-3.12. Why does my monitor stay black when I try to run Exult?
+3.13. Why does my monitor stay black when I try to run Exult?
 The most common reason for this is that you try to run Exult full screen in a resolution that isn't supported by either your monitor or your graphics card. Edit your exult.cfg (see ReadMe.txt) to disable full screen. If Exult now runs fine in a window you have to select a different resolution (also editable in exult.cfg) to run it full screen. If it still doesn't run contact us.
 
 
-3.13. What are the improvements in Exult over the original Ultima 7?
+3.14. What are the improvements in Exult over the original Ultima 7?
 * Many more keyboard shortcuts than the original had. Including in BG the 'k' key that checks if you have the right key for a lock in your inventory. The list of keys can be found in the Documentation.
 * A new worked over Game Options menu. This menu is explained in detail in the Documentation and many of the following improvements and Video/Audio options can be accessed via this menu. Open this Game Options Menu by pressing 'Esc' in the game.
 * SI style paperdoll (inventory screen) in BG. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see the Documentation) and activate it in the Gameplay Options . This new inventory screen acts sometimes a little buggy, so if an item seems to have disappeared disable the paperdolls in the Gameplay Options.
@@ -307,7 +316,7 @@ The most common reason for this is that you try to run Exult full screen in a re
 
 
 
-3.14. Are there issues with the SI style paperdoll in BG?
+3.15. Are there issues with the SI style paperdoll in BG?
 There are some issues. The paperdoll in BG is still limited to the slots it had originally. That means:
 * You can either equip a pair of gauntlets or one/two rings.
 * The 'shield behind back', 'weapon behind back' and 'belt' slots are one and the same in BG. (So if you have a weapon on your back, you can't use your belt slot)
@@ -316,7 +325,7 @@ There are some issues. The paperdoll in BG is still limited to the slots it had 
 Sparks paperdoll looks very odd (Spark on steroids) as there is no paperdoll for kids in SI and we have to use the adult paperdoll. Unless someone draws heaps of art we can't do anything.
 
 
-3.15. How do I disable all improvements?
+3.16. How do I disable all improvements?
 To get an Ultima 7 that looks and behaves as close to the original as possible there are several things to do (though I wonder why you'd want to do that):
 * make custom key bindings files (see Documentation) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. Since the Alpha 4 release you have to assign 's' to old_file_gump to enable the old save game menu (the line in your custom key bindings file should look like: S old_file_gump)
 * Edit the exult.cfg file to point to those custom keys.
@@ -327,7 +336,7 @@ To get an Ultima 7 that looks and behaves as close to the original as possible t
 
 
 
-3.16. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.17. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
 Work has begun on "Exult Studio" which is aimed to be an editor for all kinds of files that are used by Ultima 7. As of now there is already a Gimp plug-in to edit shapes.
 For much more information "Exult Studio" see exult_studio.txt.
 
@@ -361,7 +370,7 @@ So if you want to have a bug fixed follow these steps!
 4.3. Broken by Design
 Exult often behaves and works differently than the original Ultima 7. These behaviors are sometimes features that just differ from the way the original worked. Some are bugs that the development team consider to have almost no detrimental effect to the enjoyment/running of the game, but would require a large amount of time and effort to fix. Please don't bother the team about those as some of these will be fixed in the future, others will only be fixed when someone who thinks it should be done differently sits down and codes it. The following are such 'features' of Exult:
 * Birds and animals open doors and such, like the human and sentient creatures of Britannia do.
-* Party members don't walk lockstep with the Avatar like they do in BG/SI. Please see 3.6. Why is the party formation different?.
+* Party members don't walk lockstep with the Avatar like they do in BG/SI. Please see 3.7. Why is the party formation different?.
 * The way the Avatar and the companions walk. Is it 2 frames or 3 frames? This has been changed a lot as this was disputed almost every four weeks. Finally it works like the original and the Avatar uses two frames and the companions use three frames.
 * Combat works differently. We don't have any hard data or formulae that tell us how combat worked in BG/SI, so Dr.Code put something together. If you have any information you've worked out related to this, please tell either the forum or the exult-general mailing list. Recently Jeff added options to change combat somewhat. See the ReadMe.txt.
 * Negative health and unconsciousness. Yes, it may look weird to have people walking around with negative health, but that's the way it currently works.
