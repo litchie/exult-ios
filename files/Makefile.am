@@ -13,7 +13,8 @@ libu7file_la_SOURCES =	\
 	U7file.cc	\
 	U7file.h	\
 	utils.cc	\
-	utils.h
+	utils.h		\
+	databuf.h
 
 EXTRA_DIST = 		\
 	README

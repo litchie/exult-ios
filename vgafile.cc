@@ -114,6 +114,7 @@ Shape_frame *Shape_frame::reflect
 	delete ibuf;			// Done with this.
 	return (reflected);
 	}
+	
 /*
  *	Skip transparent pixels.
  *
@@ -273,7 +274,7 @@ void Shape_frame::create_rle
 
 unsigned char Shape_frame::read
 	(
-	ifstream& shapes,		// "Shapes.vga" file to read.
+	DataSource& shapes,		// Shapes data source to read.
 	unsigned long shapeoff,		// Offset of shape in file.
 	unsigned long shapelen,		// Length expected for detecting RLE.
 	int frnum			// Frame #.
@@ -282,10 +283,9 @@ unsigned char Shape_frame::read
 	int framenum = frnum;
 	rle = 0;
 					// Get to actual shape.
-	shapes.seekg(shapeoff);
-	Check_file(shapes);
-	unsigned long datalen = Read4(shapes);
-	unsigned long hdrlen = Read4(shapes);
+	shapes.seek(shapeoff);
+	unsigned long datalen = shapes.read4();
+	unsigned long hdrlen = shapes.read4();
 	if (datalen == shapelen)
 		{			// Figure # frames.
 		int nframes = (hdrlen - 4)/4;
@@ -296,20 +296,19 @@ unsigned char Shape_frame::read
 		if (framenum == 0)
 			{
 			frameoff = hdrlen;
-			framelen = nframes > 1 ? Read4(shapes) - frameoff :
+			framelen = nframes > 1 ? shapes.read4() - frameoff :
 						datalen - frameoff;
 			}
 		else
 			{
-			shapes.seekg((framenum - 1) * 4, ios::cur);
-			frameoff = Read4(shapes);
+			shapes.skip((framenum - 1) * 4);
+			frameoff = shapes.read4();
 					// Last frame?
 			if (framenum == nframes - 1)
 				framelen = datalen - frameoff;
 			else
-				framelen = Read4(shapes) - frameoff;
+				framelen = shapes.read4() - frameoff;
 			}
-		Check_file(shapes);
 					// Get compressed data.
 		get_rle_shape(shapes, shapeoff + frameoff, framelen);
 					// Return # frames.
@@ -317,39 +316,36 @@ unsigned char Shape_frame::read
 		}
 	xleft = yabove = 8;
 	xright= ybelow = 0;
-	shapes.seekg(shapeoff + framenum*64);
+	shapes.seek(shapeoff + framenum*64);
 	data = new unsigned char[64];	// Read in 8x8 pixels.
 	shapes.read((char *) data, 64);
-	Check_file(shapes);
 	return (shapelen/64);		// That's how many frames.
 	}
-
+	
 /*
  *	Read in a Run-Length_Encoded shape.
  */
 
 void Shape_frame::get_rle_shape
 	(
-	ifstream& shapes,		// "Shapes.vga" file to read.
+	DataSource& shapes,		// Shapes data source to read.
 	long filepos,			// Position in file.
 	long len			// Length of entire frame data.
 	)
 	{
-	shapes.seekg(filepos);		// Get to extents.
-	Check_file(shapes);
-	xright = Read2(shapes);
-	xleft = Read2(shapes);
-	yabove = Read2(shapes);
-	ybelow = Read2(shapes);
+	shapes.seek(filepos);		// Get to extents.
+	xright = shapes.read2();
+	xleft = shapes.read2();
+	yabove = shapes.read2();
+	ybelow = shapes.read2();
 	len -= 8;			// Subtract what we just read.
 	data = new unsigned char[len + 2];	// Allocate and read data.
 	shapes.read((char*)data, len);
-	Check_file(shapes);
 	data[len] = 0;			// 0-delimit.
 	data[len + 1] = 0;
 	rle = 1;
 	}
-
+	
 /*
  *	Show a Run-Length_Encoded shape.
  */
@@ -365,39 +361,39 @@ void Shape_frame::paint_rle
 		if (!win->is_visible(xoff - xleft, 
 						yoff - yabove, w, h))
 			return;
-	unsigned char *in = data; // Point to data.
+	BufferDataSource in((char *)data,0);
 	int scanlen;
-	while ((scanlen = Read2(in)) != 0)
+	while ((scanlen = in.read2()) != 0)
 		{
 					// Get length of scan line.
 		int encoded = scanlen&1;// Is it encoded?
 		scanlen = scanlen>>1;
-		short scanx = Read2(in);
-		short scany = Read2(in);
+		short scanx = in.read2();
+		short scany = in.read2();
 		if (!encoded)		// Raw data?
 			{
-			win->copy_line8(in, scanlen,
+			win->copy_line8(in.getPtr(), scanlen,
 					xoff + scanx, yoff + scany);
-			in += scanlen;
+			in.skip(scanlen);
 			continue;
 			}
 		for (int b = 0; b < scanlen; )
 			{
-			unsigned char bcnt = *in++;
+			unsigned char bcnt = in.read1();
 					// Repeat next char. if odd.
 			int repeat = bcnt&1;
 			bcnt = bcnt>>1; // Get count.
 			if (repeat)
 				{
-				unsigned char pix = *in++;
+				unsigned char pix = in.read1();
 				win->fill_line8(pix, bcnt,
 					xoff + scanx + b, yoff + scany);
 				}
 			else		// Get that # of bytes.
 				{
-				win->copy_line8(in, bcnt,
+				win->copy_line8(in.getPtr(), bcnt,
 					xoff + scanx + b, yoff + scany);
-				in += bcnt;
+				in.skip(bcnt);
 				}
 			b += bcnt;
 			}
@@ -423,32 +419,32 @@ void Shape_frame::paint_rle_translucent
 			return;
 					// First pix. value to transform.
 	const int xfstart = 0xff - xfcnt;
-	unsigned char *in = data; // Point to data.
+	BufferDataSource in((char *)data,0);
 	int scanlen;
-	while ((scanlen = Read2(in)) != 0)
+	while ((scanlen = in.read2()) != 0)
 		{
 					// Get length of scan line.
 		int encoded = scanlen&1;// Is it encoded?
 		scanlen = scanlen>>1;
-		short scanx = Read2(in);
-		short scany = Read2(in);
+		short scanx = in.read2();
+		short scany = in.read2();
 		if (!encoded)		// Raw data?
 			{
-			win->copy_line_translucent8(in, scanlen,
+			win->copy_line_translucent8(in.getPtr(), scanlen,
 					xoff + scanx, yoff + scany,
 					xfstart, 0xfe, xforms);
-			in += scanlen;
+			in.skip(scanlen);
 			continue;
 			}
 		for (int b = 0; b < scanlen; )
 			{
-			unsigned char bcnt = *in++;
+			unsigned char bcnt = in.read1();
 					// Repeat next char. if odd.
 			int repeat = bcnt&1;
 			bcnt = bcnt>>1; // Get count.
 			if (repeat)
 				{
-				unsigned char pix = *in++;
+				unsigned char pix = in.read1();
 				if (pix >= xfstart && pix <= 0xfe)
 					win->fill_line_translucent8(pix, bcnt,
 						xoff + scanx + b, yoff + scany,
@@ -459,10 +455,10 @@ void Shape_frame::paint_rle_translucent
 				}
 			else		// Get that # of bytes.
 				{
-				win->copy_line_translucent8(in, bcnt,
+				win->copy_line_translucent8(in.getPtr(), bcnt,
 					xoff + scanx + b, yoff + scany,
 					xfstart, 0xfe, xforms);
-				in += bcnt;
+				in.skip(bcnt);
 				}
 			b += bcnt;
 			}
@@ -486,15 +482,15 @@ void Shape_frame::paint_rle_outline
 						yoff - yabove, w, h))
 			return;
 	int firsty = -10000;		// Finds first line.
-	unsigned char *in = data; // Point to data.
+	BufferDataSource in((char *)data,0);
 	int scanlen;
-	while ((scanlen = Read2(in)) != 0)
+	while ((scanlen = in.read2()) != 0)
 		{
 					// Get length of scan line.
 		int encoded = scanlen&1;// Is it encoded?
 		scanlen = scanlen>>1;
-		short scanx = Read2(in);
-		short scany = Read2(in);
+		short scanx = in.read2();
+		short scany = in.read2();
 		int x = xoff + scanx;
 		int y = yoff + scany;
 		if (firsty == -10000)
@@ -507,19 +503,19 @@ void Shape_frame::paint_rle_outline
 			{
 			if (y == firsty)// First line?
 				win->fill_line8(color, scanlen, x, y);
-			in += scanlen;
+			in.skip(scanlen);
 			continue;
 			}
 		for (int b = 0; b < scanlen; )
 			{
-			unsigned char bcnt = *in++;
+			unsigned char bcnt = in.read1();
 					// Repeat next char. if odd.
 			int repeat = bcnt&1;
 			bcnt = bcnt>>1; // Get count.
 			if (repeat)	// Pass repetition byte.
-				in++;
+				in.skip(1);
 			else		// Skip that # of bytes.
-				in += bcnt;
+				in.skip(bcnt);
 			if (y == firsty)// First line?
 				win->fill_line8(color, bcnt, x + b, y);
 			b += bcnt;
@@ -576,7 +572,7 @@ int Shape_frame::has_point
 
 Shape_frame *Shape::reflect
 	(
-	ifstream& shapes,		// "Shapes.vga" file to read.
+	DataSource& shapes,		// shapes data source to read.
 	int shapenum,			// Shape #.
 	int framenum			// Frame # without the 'reflect' bit.
 	)
@@ -615,7 +611,7 @@ Shape_frame *Shape::reflect
 
 Shape_frame *Shape::read
 	(
-	ifstream& shapes,		// "Shapes.vga" file to read.
+	DataSource& shapes,		// Shapes data source to read.
 	int shapenum,			// Shape #.
 	int framenum			// Frame # within shape.
 	)
@@ -623,10 +619,10 @@ Shape_frame *Shape::read
 	Shape_frame *frame = new Shape_frame();
 					// Figure offset in "shapes.vga".
 	unsigned long shapeoff = 0x80 + shapenum*8;
-	shapes.seekg(shapeoff);
+	shapes.seek(shapeoff);
 					// Get location, length.
-	shapeoff = Read4(shapes);
-	unsigned long shapelen = Read4(shapes);
+	shapeoff = shapes.read4();
+	unsigned long shapelen = shapes.read4();
 					// Read it in and get frame count.
 	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
@@ -686,15 +682,16 @@ Shape_file::Shape_file
 	if (!U7open(file, nm))
 		return;
 	Shape_frame *frame = new Shape_frame();
-	unsigned long shapelen = Read4(file);
+	StreamDataSource shape_source(&file);
+	unsigned long shapelen = shape_source.read4();
 					// Read frame 0 & get frame count.
-	num_frames = frame->read(file, 0L, shapelen, 0);
+	num_frames = frame->read(shape_source, 0L, shapelen, 0);
 	store_frame(frame, 0);
 					// Get the rest.
 	for (int i = 1; i < num_frames; i++)
 		{
 		frame = new Shape_frame();
-		frame->read(file, 0L, shapelen, i);
+		frame->read(shape_source, 0L, shapelen, i);
 		store_frame(frame, i);
 		}
 	}
@@ -710,13 +707,11 @@ Vga_file::Vga_file
 	{
 	if (!U7open(file, nm))
 		return;
-	file.seekg(0x54);		// Get # of shapes.
-	num_shapes = Read4(file);
+	shape_source = new StreamDataSource(&file);
+	shape_source->seek(0x54);		// Get # of shapes.
+	num_shapes = shape_source->read4();
 					// Set up lists of pointers.
 	shapes = new Shape[num_shapes];
-#if 0
-	memset((char *) shapes, 0, num_shapes * sizeof(Shape **));
-#endif
 	}
 
 Vga_file::~Vga_file()
