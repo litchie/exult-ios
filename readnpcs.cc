@@ -112,17 +112,17 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 				shape[0] + 256*(shape[1]&0x3), i, usefun);
 		npcs[i] = actor;	// Store in list.
 		Chunk_object_list *olist = get_objects(scx + cx, scy + cy);
+#if 0
 		actor->set_initial_location(scx + cx, scy + cy, olist,
 				shapex, shapey, (shape[1]>>2) & 0x1f, lift);
+#endif
 		actor->move(scx + cx, scy + cy, olist,
 				shapex, shapey, (shape[1]>>2) & 0x1f, lift);
 					// Put in chunk's NPC list.
 		if (npc_actor)
 			{
 			npc_actor->switched_chunks(0, olist);
-#if 1	/* ++++Got to test this: */
 			npc_actor->set_schedule_type(schedtype);
-#endif
 			}
 					// Set attributes.
 	actor->set_property((int) Actor::strength, strength);
@@ -185,11 +185,13 @@ void Game_window::read_schedules
 			}
 					// Store in NPC.
 		npc->set_schedules(schedules, cnt);
+#if 0	/* ++++++++ Now done in gameclk.cc. */
 		// Start their initial schedule
 		npc->update_schedule(this,2);
 		// Set their starting location
 		npc->move(npc->initial_location.cx, npc->initial_location.cy, npc->initial_location.chunk,
 				npc->initial_location.sx, npc->initial_location.sy, npc->initial_location.frame, npc->initial_location.lift);
+#endif
 		}
 	delete [] offsets;		// Done with this.
 	}
