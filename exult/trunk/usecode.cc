@@ -92,6 +92,7 @@ class Scheduled_usecode : public Time_sensitive
 	Scheduled_usecode *next, *prev;	// Next/prev. in global chain.
 	Usecode_value objval;		// The 'itemref' object.
 	Game_object *obj;		// From objval.
+	Tile_coord objpos;		// Abs. tile coord.
 	Usecode_value arrval;		// Array of code to execute.
 	int cnt;			// Length of arrval.
 	int i;				// Current index.
@@ -104,6 +105,7 @@ public:
 		{
 		cnt = arrval.get_array_size();
 		obj = usecode->get_item(objval);
+		objpos = obj->get_abs_tile_coord();
 					// Not an array?
 		if (!cnt && !arrval.is_array())
 			cnt = 1;	// Get_elem(0) works for non-arrays.
@@ -169,6 +171,28 @@ Scheduled_usecode *Scheduled_usecode::find
 		if (each->obj == srch)
 			return each;	// Found it.
 	return (0);
+	}
+
+/*
+ *	Activate all cached-in usecode eggs near a given spot.
+ */
+
+static void Activate_cached
+	(
+	Usecode_machine *uc,
+	Tile_coord pos
+	)
+	{
+	if (Game::get_game_type() != BLACK_GATE)
+		return;			// ++++Since we're not sure about it.
+	const int dist = 8;
+	Vector vec;			// Find all usecode eggs.
+	int cnt = Game_object::find_nearby(vec, pos, 275, dist, 0, -359, 7);
+	for (int i = 0; i < cnt; i++)
+		{
+		Egg_object *egg = (Egg_object *) vec.get(i);
+		egg->activate(uc);
+		}
 	}
 
 /*
@@ -411,6 +435,8 @@ void Scheduled_usecode::handle_event
 		gwin->end_gump_mode();	// This also sets mode=normal.
 		gwin->paint();
 		}
+	if (count == 1)			// Last one?  GUESSING:
+		Activate_cached(usecode, objpos);
 	delete this;			// Hope this is safe.
 	}
 
