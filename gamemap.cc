@@ -1475,7 +1475,6 @@ Game_object *Game_map::locate_shape
 
 void Game_map::cache_out(int cx, int cy)
 {
-#ifdef WANT_MAP_CACHE_OUT
 	int sx = cx / c_chunks_per_schunk;
 	int sy = cy / c_chunks_per_schunk;
 	bool chunk_flags[12][12];
@@ -1506,7 +1505,6 @@ void Game_map::cache_out(int cx, int cy)
 		int schunk = sy*12 + sx;
 		if (schunk_read[schunk] && !schunk_modified[schunk]) cache_out_schunk(schunk);
 	}
-#endif
 }
 
 void Game_map::cache_out_schunk(int schunk)
