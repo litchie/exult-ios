@@ -498,7 +498,7 @@ public:
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);
 					// Move to new abs. location.
-	void move(int newtx, int newty, int newlift);
+	virtual void move(int newtx, int newty, int newlift);
 					// Move and change shape/frame.
 	void move(Chunk_object_list *old_chunk, int new_cx, int new_cy, 
 			Chunk_object_list *new_chunk, 

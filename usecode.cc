@@ -1716,7 +1716,7 @@ USECODE_INTRINSIC(update_last_created)
 		cout << " { Intrinsic 0x26:  "; arr.print(cout); cout << endl << "} ";
 		}
 #endif
-	gwin->paint();
+	gwin->paint_dirty();
 	gwin->show();		// ??
 	Usecode_value u(1);// ??
 	return(u);

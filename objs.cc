@@ -178,12 +178,14 @@ void Game_object::move
 	Chunk_object_list *newchunk = gwin->get_objects(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
+	gwin->add_dirty(this);		// Want to repaint old area.
 					// Remove from old.
 	Chunk_object_list *oldchunk = gwin->get_objects(cx, cy);
 	oldchunk->remove(this);
 	set_lift(newlift);		// Set new values.
 	shape_pos = ((newtx%tiles_per_chunk) << 4) + newty%tiles_per_chunk;
 	newchunk->add(this);		// Updates cx, cy.
+	gwin->add_dirty(this);		// And repaint new area.
 	}
 
 /*
@@ -703,7 +705,7 @@ void Animated_object::handle_event
 		ty += -deltay + newdy;
 		deltax = newdx;
 		deltay = newdy;
-		move(tx, ty, tz);
+		Game_object::move(tx, ty, tz);
 		}
 	gwin->add_dirty(rect);		// Paint.
 					// Add back to queue for next time.
