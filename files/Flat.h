@@ -16,8 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef	__Flat_h_
-#define	__Flat_h_
+#ifndef	FLAT_H
+#define	FLAT_H
 
 #if !AUTOCONFIGURED
 #include "../autoconfig.h"
@@ -38,11 +38,9 @@ public:
 		{
 			return *this;
 		}
-	virtual ~Flat();
 
         virtual int     number_of_objects(const char *) { return 1; };
-        virtual int     retrieve(int objnum,char **,std::size_t *len); // To a memory block
-        virtual int     retrieve(int objnum,const char *);       // To a file
+        virtual void     retrieve(int objnum,char **,std::size_t *len); // To a memory block
 	virtual const char *get_archive_type() { return "FLAT"; };
 	Flat();
 	};

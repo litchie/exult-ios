@@ -48,11 +48,9 @@ public:
 		object_list=t.object_list;
 		return *this;
 		}
-	virtual ~Table();
 
         virtual int     number_of_objects(const char *) { return object_list.size(); };
-        virtual int     retrieve(int objnum,char **,std::size_t *len); // To a memory block
-        virtual int     retrieve(int objnum,const char *);       // To a file
+        virtual void     retrieve(int objnum,char **,std::size_t *len); // To a memory block
 	virtual const char *get_archive_type() { return "TABLE"; };
 private:
 	void IndexTableFile(void);

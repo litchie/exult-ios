@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <cstdio>
 #include <iostream>
+#include "exceptions.h"
 #include "utils.h"
 
 using std::string;
@@ -50,14 +51,12 @@ void	IFF::IndexIFFFile(void)
 	char	ckid[4];
 	fp=U7open(filename.c_str(),"rb");
 	if(!fp)
-		{
-		throw 0;
-		}
+		throw file_not_found_error(filename);
 	fread(ckid,4,1,fp);
 	if(memcmp(ckid,"FORM",4))
 		{
 		// Not an IFF file we recognise
-		throw 0;
+		throw wrong_file_type_error();
 		}
 #if DEBUG
 	cout << "Okay. It looks like an IFF file chunk" << endl;
@@ -114,20 +113,20 @@ void	IFF::IndexIFFFile(void)
 	fclose(fp);
 }
 
-int     IFF::retrieve(int objnum,char **buf,size_t *len)
+void     IFF::retrieve(int objnum,char **buf,size_t *len)
 {
 	*buf=0;
 	*len=0;
 	if((unsigned)objnum>=object_list.size())
 		{
 		cerr << "objnum too large in read_object()" << endl;
-		return 0;
+		throw exult_exception("objnum too large in read_object()");
 		}
 	FILE	*fp=U7open(filename.c_str(),"rb");
 	if(!fp)
 		{
 		cerr << "File open failed in read_object: " << filename << endl;
-		return 0;
+		throw exult_exception("File open failed in read_object: "+filename);
 		}
 	fseek(fp,object_list[objnum].offset,SEEK_SET);
 	size_t length=object_list[objnum].size;
@@ -136,12 +135,5 @@ int     IFF::retrieve(int objnum,char **buf,size_t *len)
 	fclose(fp);
 	*buf=ret;
 	*len=length;
-	return 1;
 }
-
-int     IFF::retrieve(int objnum,const char *)
-{ return 0; }
-
-
-IFF::~IFF() {}
 
