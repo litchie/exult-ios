@@ -23,10 +23,6 @@
 
 #ifdef XWIN
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma implementation
-#endif
-
 
 #ifndef ALPHA_LINUX_CXX
 #  include <csignal>

@@ -304,12 +304,12 @@ void CheatScreen::SharedPrompt (char *input, const Cheat_Prompt &mode)
 		break;
 
 		case CP_XCoord:
-		std::snprintf (buf, 512, "Enter X Coord. Max %i (-1 to cancel.)", c_num_tiles);
+		snprintf (buf, 512, "Enter X Coord. Max %i (-1 to cancel.)", c_num_tiles);
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-9, 8);
 		break;
 
 		case CP_YCoord:
-		std::snprintf (buf, 512, "Enter Y Coord. Max %i (-1 to cancel.)", c_num_tiles);
+		snprintf (buf, 512, "Enter Y Coord. Max %i (-1 to cancel.)", c_num_tiles);
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-9, 8);
 		break;
 
@@ -482,31 +482,31 @@ void CheatScreen::NormalDisplay ()
 	font->paint_text_fixedwidth(ibuf, "Colourless' Advanced Option Cheat Screen", 0, 0, 8);
 
 	if (Game::get_game_type() == BLACK_GATE)
-		std::snprintf (buf, 512, "Running \"Ultima 7: The Black Gate\"");
+		snprintf (buf, 512, "Running \"Ultima 7: The Black Gate\"");
 	else if (Game::get_game_type() == SERPENT_ISLE)
-		std::snprintf (buf, 512, "Running \"Ultima 7: Part 2: Serpent Isle\"");
+		snprintf (buf, 512, "Running \"Ultima 7: Part 2: Serpent Isle\"");
 	else
-		std::snprintf (buf, 512, "Running Unknown Game Type %i", Game::get_game_type());
+		snprintf (buf, 512, "Running Unknown Game Type %i", Game::get_game_type());
 	
 	font->paint_text_fixedwidth(ibuf, buf, 0, 18, 8);
 
-	std::snprintf (buf, 512, "Exult Version %s", VERSION);
+	snprintf (buf, 512, "Exult Version %s", VERSION);
 	font->paint_text_fixedwidth(ibuf, buf, 0, 27, 8);
 
 
 
-	std::snprintf (buf, 512, "Current time: %i:%02i %s  Day: %i",
+	snprintf (buf, 512, "Current time: %i:%02i %s  Day: %i",
 			((clock->get_hour()+11)%12)+1,
 			clock->get_minute(),
 			clock->get_hour()<12 ? "AM":"PM",
 			clock->get_day());
 	font->paint_text_fixedwidth(ibuf, buf, 0, 45, 8);
 
-	std::snprintf (buf, 512, "Coords in hex (%04x, %04x, %02x)", 
+	snprintf (buf, 512, "Coords in hex (%04x, %04x, %02x)", 
 							t.tx, t.ty, t.tz);
 	font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
 
-	std::snprintf (buf, 512, "Coords in dec (%04i, %04i, %02i)",
+	snprintf (buf, 512, "Coords in dec (%04i, %04i, %02i)",
 							t.tx, t.ty, t.tz);
 	font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
 
@@ -521,36 +521,36 @@ void CheatScreen::NormalMenu ()
 	// Use
 	Shape_manager *sman = Shape_manager::get_instance();
 	if (Game::get_game_type() == SERPENT_ISLE || (sman->can_use_paperdolls() && sman->get_bg_paperdolls()))
-		std::snprintf (buf, 512, "[P]aperdolls..: Yes");
+		snprintf (buf, 512, "[P]aperdolls..: Yes");
 	else
-		std::snprintf (buf, 512, "[P]aperdolls..:  No");		
+		snprintf (buf, 512, "[P]aperdolls..:  No");		
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-99, 8);
 
 	// GodMode
-	std::snprintf (buf, 512, "[G]od Mode....: %3s", cheat.in_god_mode()?"On":"Off");
+	snprintf (buf, 512, "[G]od Mode....: %3s", cheat.in_god_mode()?"On":"Off");
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-90, 8);
 
 	// Archwizzard Mode
-	std::snprintf (buf, 512, "[W]izard Mode.: %3s", cheat.in_wizard_mode()?"On":"Off");
+	snprintf (buf, 512, "[W]izard Mode.: %3s", cheat.in_wizard_mode()?"On":"Off");
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-81, 8);
 
 	// Infravision
-	std::snprintf (buf, 512, "[I]nfravision.: %3s", cheat.in_infravision()?"On":"Off");
+	snprintf (buf, 512, "[I]nfravision.: %3s", cheat.in_infravision()?"On":"Off");
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-72, 8);
 
 	// Hackmover
-	std::snprintf (buf, 512, "[H]ack Mover..: %3s", cheat.in_hack_mover()?"Yes":"No");
+	snprintf (buf, 512, "[H]ack Mover..: %3s", cheat.in_hack_mover()?"Yes":"No");
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-63, 8);
 
 	// Eggs
-	std::snprintf (buf, 512, "[E]ggs Visible: %3s", gwin->paint_eggs?"Yes":"No");
+	snprintf (buf, 512, "[E]ggs Visible: %3s", gwin->paint_eggs?"Yes":"No");
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-54, 8);
 
 	// Set Time
 	font->paint_text_fixedwidth(ibuf, "[S]et Time", 0, maxy-45, 8);
 
 	// Time Rate
-	std::snprintf (buf, 512, "[+-] Time Rate: %3i", clock->get_time_rate());
+	snprintf (buf, 512, "[+-] Time Rate: %3i", clock->get_time_rate());
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-36, 8);
 
 
@@ -743,15 +743,15 @@ void CheatScreen::ActivityDisplay ()
 
 	for (i = 0; i < 11; i++)
 	{
-		std::snprintf (buf, 512, "%2i %s", i, schedules[i]);
+		snprintf (buf, 512, "%2i %s", i, schedules[i]);
 		font->paint_text_fixedwidth(ibuf, buf, 0, i*9, 8);
 
-		std::snprintf (buf, 512, "%2i %s", i+11, schedules[i+11]);
+		snprintf (buf, 512, "%2i %s", i+11, schedules[i+11]);
 		font->paint_text_fixedwidth(ibuf, buf, 112, i*9, 8);
 
 		if (i != 10)
 		{
-			std::snprintf (buf, 512, "%2i %s", i+22, schedules[i+22]);
+			snprintf (buf, 512, "%2i %s", i+22, schedules[i+22]);
 			font->paint_text_fixedwidth(ibuf, buf, 224, i*9, 8);
 		}
 	}
@@ -877,10 +877,10 @@ CheatScreen::Cheat_Prompt CheatScreen::GlobalFlagLoop (int num)
 
 
 		// First the info
-		std::snprintf (buf, 512, "Global Flag %i", num);
+		snprintf (buf, 512, "Global Flag %i", num);
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-99, 8);
 
-		std::snprintf (buf, 512, "Flag is %s", usecode->get_global_flag(num)?"SET":"UNSET");
+		snprintf (buf, 512, "Flag is %s", usecode->get_global_flag(num)?"SET":"UNSET");
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-90, 8);
 
 
@@ -1059,49 +1059,49 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 		if (shape) actor->paint_shape (shape->get_xright()+240, shape->get_yabove());
 
 		// Now the info
-		std::snprintf (buf, 512, "NPC %i - %s", num, actor->get_npc_name().c_str());
+		snprintf (buf, 512, "NPC %i - %s", num, actor->get_npc_name().c_str());
 		font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
 
-		std::snprintf (buf, 512, "Loc (%04i, %04i, %02i)", 
+		snprintf (buf, 512, "Loc (%04i, %04i, %02i)", 
 							t.tx, t.ty, t.tz);
 		font->paint_text_fixedwidth(ibuf, buf, 0, 9, 8);
 
-		std::snprintf (buf, 512, "Shape %04i:%02i  %s", actor->get_shapenum(), actor->get_framenum(), actor->get_flag(Obj_flags::met)?"Met":"Not Met");
+		snprintf (buf, 512, "Shape %04i:%02i  %s", actor->get_shapenum(), actor->get_framenum(), actor->get_flag(Obj_flags::met)?"Met":"Not Met");
 		font->paint_text_fixedwidth(ibuf, buf, 0, 18, 8);
 
-		std::snprintf (buf, 512, "Current Activity: %2i - %s", actor->get_schedule_type(), schedules[actor->get_schedule_type()]);
+		snprintf (buf, 512, "Current Activity: %2i - %s", actor->get_schedule_type(), schedules[actor->get_schedule_type()]);
 		font->paint_text_fixedwidth(ibuf, buf, 0, 36, 8);
 
-		std::snprintf (buf, 512, "Experience: %i", actor->get_property(Actor::exp));
+		snprintf (buf, 512, "Experience: %i", actor->get_property(Actor::exp));
 		font->paint_text_fixedwidth(ibuf, buf, 0, 45, 8);
-		std::snprintf (buf, 512, "Level: %i", actor->get_level());
+		snprintf (buf, 512, "Level: %i", actor->get_level());
 		font->paint_text_fixedwidth(ibuf, buf, 144, 45, 8);
 
-		std::snprintf (buf, 512, "Training: %2i  Health: %2i", actor->get_property(Actor::training), actor->get_property(Actor::health));
+		snprintf (buf, 512, "Training: %2i  Health: %2i", actor->get_property(Actor::training), actor->get_property(Actor::health));
 		font->paint_text_fixedwidth(ibuf, buf, 0, 54, 8);
 
 		if (num != -1)
 		{
 			int ucitemnum = 0x10000-num;
 			if (!num) ucitemnum = 0xfe9c;
-			std::snprintf (buf, 512, "Usecode item %4x function %x", ucitemnum, actor->get_usecode());
+			snprintf (buf, 512, "Usecode item %4x function %x", ucitemnum, actor->get_usecode());
 			font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
 		}
 		else
 		{
-			std::snprintf (buf, 512, "Usecode function %x", actor->get_usecode());
+			snprintf (buf, 512, "Usecode function %x", actor->get_usecode());
 			font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
 		}
 
 		if (actor->get_polymorph() != -1)
 		{
-			std::snprintf (buf, 512, "Polymorphed from %04i", actor->get_polymorph());
+			snprintf (buf, 512, "Polymorphed from %04i", actor->get_polymorph());
 			font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
 		}
 	}
 	else
 	{
-		std::snprintf (buf, 512, "NPC %i - Invalid NPC!", num);
+		snprintf (buf, 512, "NPC %i - Invalid NPC!", num);
 		font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
 	}
 }
@@ -1391,27 +1391,27 @@ void CheatScreen::FlagMenu (Actor *actor)
 	// Left Column
 
 	// Asleep
-	std::snprintf (buf, 512, "[A] Asleep.%c", actor->get_flag(Obj_flags::asleep)?'Y':'N');
+	snprintf (buf, 512, "[A] Asleep.%c", actor->get_flag(Obj_flags::asleep)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-108, 8);
 
 	// Charmed
-	std::snprintf (buf, 512, "[B] Charmd.%c", actor->get_flag(Obj_flags::charmed)?'Y':'N');
+	snprintf (buf, 512, "[B] Charmd.%c", actor->get_flag(Obj_flags::charmed)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-99, 8);
 
 	// Cursed
-	std::snprintf (buf, 512, "[C] Cursed.%c", actor->get_flag(Obj_flags::cursed)?'Y':'N');
+	snprintf (buf, 512, "[C] Cursed.%c", actor->get_flag(Obj_flags::cursed)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-90, 8);
 
 	// Paralyzed
-	std::snprintf (buf, 512, "[D] Prlyzd.%c", actor->get_flag(Obj_flags::paralyzed)?'Y':'N');
+	snprintf (buf, 512, "[D] Prlyzd.%c", actor->get_flag(Obj_flags::paralyzed)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-81, 8);
 
 	// Poisoned
-	std::snprintf (buf, 512, "[E] Poisnd.%c", actor->get_flag(Obj_flags::poisoned)?'Y':'N');
+	snprintf (buf, 512, "[E] Poisnd.%c", actor->get_flag(Obj_flags::poisoned)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-72, 8);
 
 	// Protected
-	std::snprintf (buf, 512, "[F] Prtctd.%c", actor->get_flag(Obj_flags::protection)?'Y':'N');
+	snprintf (buf, 512, "[F] Prtctd.%c", actor->get_flag(Obj_flags::protection)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-63, 8);
 
 	// Advanced Editor
@@ -1424,46 +1424,46 @@ void CheatScreen::FlagMenu (Actor *actor)
 	// Center Column
 
 	// Party
-	std::snprintf (buf, 512, "[I] Party..%c", actor->get_flag(Obj_flags::in_party)?'Y':'N');
+	snprintf (buf, 512, "[I] Party..%c", actor->get_flag(Obj_flags::in_party)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-108, 8);
 
 	// Invisible
-	std::snprintf (buf, 512, "[J] Invsbl.%c", actor->get_flag(Obj_flags::invisible)?'Y':'N');
+	snprintf (buf, 512, "[J] Invsbl.%c", actor->get_flag(Obj_flags::invisible)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-99, 8);
 
 	// Fly
-	std::snprintf (buf, 512, "[K] Fly....%c", actor->get_type_flag(Actor::tf_fly)?'Y':'N');
+	snprintf (buf, 512, "[K] Fly....%c", actor->get_type_flag(Actor::tf_fly)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-90, 8);
 
 	// Walk
-	std::snprintf (buf, 512, "[L] Walk...%c", actor->get_type_flag(Actor::tf_walk)?'Y':'N');
+	snprintf (buf, 512, "[L] Walk...%c", actor->get_type_flag(Actor::tf_walk)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-81, 8);
 
 	// Swim
-	std::snprintf (buf, 512, "[M] Swim...%c", actor->get_type_flag(Actor::tf_swim)?'Y':'N');
+	snprintf (buf, 512, "[M] Swim...%c", actor->get_type_flag(Actor::tf_swim)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-72, 8);
 
 	// Ethereal
-	std::snprintf (buf, 512, "[N] Ethrel.%c", actor->get_type_flag(Actor::tf_ethereal)?'Y':'N');
+	snprintf (buf, 512, "[N] Ethrel.%c", actor->get_type_flag(Actor::tf_ethereal)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-63, 8);
 
 	// Protectee
-	std::snprintf (buf, 512, "[O] Prtcee.%c", '?');
+	snprintf (buf, 512, "[O] Prtcee.%c", '?');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-54, 8);
 
 	// Conjured
-	std::snprintf (buf, 512, "[P] Conjrd.%c", actor->get_type_flag(Actor::tf_conjured)?'Y':'N');
+	snprintf (buf, 512, "[P] Conjrd.%c", actor->get_type_flag(Actor::tf_conjured)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-45, 8);
 
 	// Tournament (SI ONLY)
-	std::snprintf (buf, 512, "[3] Tourna.%c", actor->get_flag(
+	snprintf (buf, 512, "[3] Tourna.%c", actor->get_flag(
 		Obj_flags::si_tournament)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 104, maxy-36, 8);
 
 	// Naked (AV SI ONLY)
 	if (Game::get_game_type() == SERPENT_ISLE && !actor->get_npc_num())
 	{
-		std::snprintf (buf, 512, "[7] Naked..%c", actor->get_siflag(Actor::naked)?'Y':'N');
+		snprintf (buf, 512, "[7] Naked..%c", actor->get_siflag(Actor::naked)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 104, maxy-27, 8);
 	}
 
@@ -1471,45 +1471,45 @@ void CheatScreen::FlagMenu (Actor *actor)
 	// Right Column
 
 	// Summoned
-	std::snprintf (buf, 512, "[Q] Summnd.%c", actor->get_type_flag(Actor::tf_summonned)?'Y':'N');
+	snprintf (buf, 512, "[Q] Summnd.%c", actor->get_type_flag(Actor::tf_summonned)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 208, maxy-108, 8);
 
 	// Bleeding
-	std::snprintf (buf, 512, "[R] Bleedn.%c", actor->get_type_flag(Actor::tf_bleeding)?'Y':'N');
+	snprintf (buf, 512, "[R] Bleedn.%c", actor->get_type_flag(Actor::tf_bleeding)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 208, maxy-99, 8);
 
 	if (!actor->get_npc_num())	// Avatar
 	{
 		// Sex
-		std::snprintf (buf, 512, "[S] Sex....%c", actor->get_type_flag(Actor::tf_sex)?'F':'M');
+		snprintf (buf, 512, "[S] Sex....%c", actor->get_type_flag(Actor::tf_sex)?'F':'M');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-90, 8);
 
 		// Skin
-		std::snprintf (buf, 512, "[1] Skin...%s", "??");
+		snprintf (buf, 512, "[1] Skin...%s", "??");
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-81, 8);
 
 		// Read
-		std::snprintf (buf, 512, "[4] Read...%c", actor->get_flag(Obj_flags::read)?'Y':'N');
+		snprintf (buf, 512, "[4] Read...%c", actor->get_flag(Obj_flags::read)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-72, 8);
 	}
 	else	// Not Avatar
 	{
 		// Met
-		std::snprintf (buf, 512, "[T] Met....%c", actor->get_flag(Obj_flags::met)?'Y':'N');
+		snprintf (buf, 512, "[T] Met....%c", actor->get_flag(Obj_flags::met)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-90, 8);
 
 		// NoCast
-		std::snprintf (buf, 512, "[U] NoCast.%c", actor->get_flag(
+		snprintf (buf, 512, "[U] NoCast.%c", actor->get_flag(
 					Obj_flags::no_spell_casting)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-81, 8);
 
 		// ID
-		std::snprintf (buf, 512, "[V] ID#:%02i", actor->get_ident());
+		snprintf (buf, 512, "[V] ID#:%02i", actor->get_ident());
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-72, 8);
 	}
 
 	// Freeze
-	std::snprintf (buf, 512, "[W] Freeze.%c", actor->get_flag(
+	snprintf (buf, 512, "[W] Freeze.%c", actor->get_flag(
 						Obj_flags::freeze)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 208, maxy-63, 8);
 
@@ -1517,24 +1517,24 @@ void CheatScreen::FlagMenu (Actor *actor)
 	if (actor->is_in_party())
 	{
 		// Temp
-		std::snprintf (buf, 512, "[Y] Temp: %02i", 
+		snprintf (buf, 512, "[Y] Temp: %02i", 
 						actor->get_temperature());
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-54, 8);
 
 		// Conjured
-		std::snprintf (buf, 512, "Warmth: %04i", 
+		snprintf (buf, 512, "Warmth: %04i", 
 						actor->figure_warmth());
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-45, 8);
 	}
 
 	// Polymorph
-	std::snprintf (buf, 512, "[2] Polymo.%c", actor->get_flag(Obj_flags::polymorph)?'Y':'N');
+	snprintf (buf, 512, "[2] Polymo.%c", actor->get_flag(Obj_flags::polymorph)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 208, maxy-36, 8);
 
 	// Patra (AV SI ONLY)
 	if (Game::get_game_type() == SERPENT_ISLE && !actor->get_npc_num())
 	{
-		std::snprintf (buf, 512, "[5] Petra..%c", actor->get_flag(Obj_flags::petra)?'Y':'N');
+		snprintf (buf, 512, "[5] Petra..%c", actor->get_flag(Obj_flags::petra)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-27, 8);
 	}
 
@@ -1957,13 +1957,13 @@ void CheatScreen::BusinessDisplay (Actor *actor)
 	Tile_coord t = actor->get_tile();
 
 	// Now the info
-	std::snprintf (buf, 512, "NPC %i - %s", actor->get_npc_num(), actor->get_npc_name().c_str());
+	snprintf (buf, 512, "NPC %i - %s", actor->get_npc_num(), actor->get_npc_name().c_str());
 	font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
 
-	std::snprintf (buf, 512, "Loc (%04i, %04i, %02i)", t.tx, t.ty, t.tz);
+	snprintf (buf, 512, "Loc (%04i, %04i, %02i)", t.tx, t.ty, t.tz);
 	font->paint_text_fixedwidth(ibuf, buf, 0, 8, 8);
 
-	std::snprintf (buf, 512, "Current Activity:  %2i - %s", actor->get_schedule_type(), schedules[actor->get_schedule_type()]);
+	snprintf (buf, 512, "Current Activity:  %2i - %s", actor->get_schedule_type(), schedules[actor->get_schedule_type()]);
 	font->paint_text_fixedwidth(ibuf, buf, 0, 16, 8);
 	
 
@@ -2003,7 +2003,7 @@ void CheatScreen::BusinessDisplay (Actor *actor)
 	
 		for (i = 0; i < 8; i++) if (types[i] != -1)
 		{
-			std::snprintf (buf, 512, "%2i (%4i,%4i) - %s", types[i], x[i], y[i], schedules[types[i]]);
+			snprintf (buf, 512, "%2i (%4i,%4i) - %s", types[i], x[i], y[i], schedules[types[i]]);
 			font->paint_text_fixedwidth(ibuf, buf, 56, 36+i*8, 8);
 		}
 	}
@@ -2252,38 +2252,38 @@ void CheatScreen::StatMenu (Actor *actor)
 	// Left Column
 
 	// Dexterity
-	std::snprintf (buf, 512, "[D]exterity....%3i", actor->get_property(Actor::dexterity));
+	snprintf (buf, 512, "[D]exterity....%3i", actor->get_property(Actor::dexterity));
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-108, 8);
 
 	// Food Level
-	std::snprintf (buf, 512, "[F]ood Level...%3i", actor->get_property(Actor::food_level));
+	snprintf (buf, 512, "[F]ood Level...%3i", actor->get_property(Actor::food_level));
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-99, 8);
 
 	// Intelligence
-	std::snprintf (buf, 512, "[I]ntellicence.%3i", actor->get_property(Actor::intelligence));
+	snprintf (buf, 512, "[I]ntellicence.%3i", actor->get_property(Actor::intelligence));
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-90, 8);
 
 	// Strength
-	std::snprintf (buf, 512, "[S]trength.....%3i", actor->get_property(Actor::strength));
+	snprintf (buf, 512, "[S]trength.....%3i", actor->get_property(Actor::strength));
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-81, 8);
 
 	// Combat Skill
-	std::snprintf (buf, 512, "[C]ombat Skill.%3i", actor->get_property(Actor::combat));
+	snprintf (buf, 512, "[C]ombat Skill.%3i", actor->get_property(Actor::combat));
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-72, 8);
 
 	// Hit Points
-	std::snprintf (buf, 512, "[H]it Points...%3i", actor->get_property(Actor::health));
+	snprintf (buf, 512, "[H]it Points...%3i", actor->get_property(Actor::health));
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-63, 8);
 
 	// Magic - Avatar Only
 	if (!actor->get_npc_num())
 	{
 		// Magic Points
-		std::snprintf (buf, 512, "[M]agic Points.%3i", actor->get_property(Actor::magic));
+		snprintf (buf, 512, "[M]agic Points.%3i", actor->get_property(Actor::magic));
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-54, 8);
 
 		// Mana
-		std::snprintf (buf, 512, "[V]ana Level...%3i", actor->get_property(Actor::mana));
+		snprintf (buf, 512, "[V]ana Level...%3i", actor->get_property(Actor::mana));
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-45, 8);
 	}
 
@@ -2412,13 +2412,13 @@ CheatScreen::Cheat_Prompt CheatScreen::AdvancedFlagLoop (int num, Actor *actor)
 
 		// First the info
 		if (flag_names[num])
-			std::snprintf (buf, 512, "NPC Flag %i: %s", num, flag_names[num]);
+			snprintf (buf, 512, "NPC Flag %i: %s", num, flag_names[num]);
 		else
-			std::snprintf (buf, 512, "NPC Flag %i", num);
+			snprintf (buf, 512, "NPC Flag %i", num);
 
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-108, 8);
 
-		std::snprintf (buf, 512, "Flag is %s", actor->get_flag(num)?"SET":"UNSET");
+		snprintf (buf, 512, "Flag is %s", actor->get_flag(num)?"SET":"UNSET");
 		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-90, 8);
 
 

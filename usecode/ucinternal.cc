@@ -86,7 +86,6 @@ using std::memset;
 using std::setfill;
 using std::setw;
 using std::size_t;
-using std::snprintf;
 using std::string;
 using std::strcat;
 using std::strchr;

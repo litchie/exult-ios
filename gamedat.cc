@@ -66,7 +66,6 @@ using std::memset;
 using std::ofstream;
 using std::ostream;
 using std::size_t;
-using std::snprintf;
 using std::strchr;
 using std::strcmp;
 using std::strcpy;

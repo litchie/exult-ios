@@ -19,10 +19,6 @@
 #ifndef _MIDI_H_
 #define _MIDI_H_
 
-#if (_GNUG__ >= 2) && (!defined WIN32)
-#  pragma interface
-#endif
-
 #include <vector>
 #ifndef WIN32
 //#include "Mixer.h"

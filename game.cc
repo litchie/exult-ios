@@ -53,7 +53,6 @@ using std::strcmp;
 using std::strcpy;
 using std::strncmp;
 using std::string;
-using std::snprintf;
 
 bool Game::new_game_flag = false;
 bool Game::editing_flag = false;

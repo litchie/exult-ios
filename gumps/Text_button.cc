@@ -44,7 +44,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define TB_BACKGROUND			140
 #define TB_RT_HIGHLIGHT			139
 
-Text_button::Text_button(Gump *p, std::string str, int x, int y, int w, int h)
+Text_button::Text_button(Gump *p, const std::string &str, int x, int y, int w, int h)
 	: Gump_button(p, 0, x, y, SF_OTHER), text(str), width(w), height(h)
 {
 	init();
