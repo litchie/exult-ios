@@ -90,10 +90,11 @@ string get_system_path(const string &path)
 		string new_prefix(path_map[path.substr(0, pos).c_str()]);
 
 		// If the prefix path is not recognised, return the path as is
-		if(new_prefix.empty())
+		if(new_prefix.empty()) {
 			new_path = path;
-		else
+		} else {
 			new_path = new_prefix + path.substr(pos);
+		}
 	}
 	switch_slashes(new_path);
 	return new_path;

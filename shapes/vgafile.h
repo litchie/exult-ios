@@ -122,7 +122,9 @@ public:
 	Shape() : frames(0), num_frames(0)
 		{  }
 	Shape(Shape_frame* fr);
+	
 	virtual ~Shape();
+	void reset();
 	Shape_frame *get(DataSource& shapes, int shnum, int frnum)
 		{ 
 		return (frames && frnum < num_frames && frames[frnum]) ? 
@@ -169,6 +171,7 @@ public:
 	int get_u7drag_type() const
 		{ return u7drag_type; }
 	void load(const char *nm);
+	void reset();
 	virtual ~Vga_file();
 	int get_num_shapes()
 		{ return num_shapes; }

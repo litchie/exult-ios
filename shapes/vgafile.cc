@@ -736,7 +736,7 @@ Shape::Shape(Shape_frame* fr)
 	frames[0] = fr;
 }
 
-Shape::~Shape()
+void Shape::reset()
 	{
 	if (frames)
 		{
@@ -747,6 +747,11 @@ Shape::~Shape()
 	else if (num_frames)
 		cerr << "Shape::~Shape():  'frames' is null, while num_frames="
 				<< (int) num_frames << endl;
+	}
+
+Shape::~Shape()
+	{
+	reset();
 	}
 
 /*
@@ -780,6 +785,7 @@ void Shape_file::load
 	)
 	{
 	ifstream file;
+	reset();			// Allow reuse of object
 	U7open(file, nm);
 	Shape_frame *frame = new Shape_frame();
 	StreamDataSource shape_source(&file);
@@ -812,6 +818,7 @@ void Shape_file::load
 	DataSource& shape_source		// datasource.
 	)
 	{
+	reset();
 	Shape_frame *frame = new Shape_frame();
 	uint32 shapelen = shape_source.read4();
 					// Read frame 0 & get frame count.
@@ -894,6 +901,7 @@ void Vga_file::load
 	const char *nm			// Path to file.
 	)
 	{
+	reset();
 	U7open(file, nm);		// throws an error if it fails
 	shape_source = new StreamDataSource(&file);
 	shape_source->seek(0x54);		// Get # of shapes.
@@ -902,10 +910,16 @@ void Vga_file::load
 	shapes = new Shape[num_shapes];
 	}
 
-Vga_file::~Vga_file()
+void Vga_file::reset()
 	{
 	if( shapes )
 		delete [] shapes;
 	if( shape_source )
 		delete shape_source;
+	file.close();
+	}
+
+Vga_file::~Vga_file()
+	{
+	reset();
 	}

@@ -103,7 +103,7 @@ public:
 	void add_resource(const char *name, const char *str, int num);
 	str_int_pair get_resource(const char *name);
 	
-	void show_menu();
+	bool show_menu();
 	void journey_failed_text();
 	void set_jive () {jive = true;}
 	void clear_jive () {jive = false;}
