@@ -87,7 +87,7 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 			char* stopstr;
 			/* Disassembly mode */
 			unsigned int search_func = strtoul(argv[i], &stopstr, 16);
-			if( stopstr - argv[i] < (int)strlen(argv[i]) )
+			if( stopstr - argv[i] < static_cast<int>(strlen(argv[i])) )
 				/* Invalid number */
 			{ /* Do Nothing */ }
 			else
@@ -232,7 +232,7 @@ void UCData::dump_flags(ostream &o)
 		sort(flags.begin(), flags.end(), SortFlagDataLessFlag());
 		
 		o << setbase(16) << setfill('0');
-		unsigned int currflag = (unsigned int)-1;
+		unsigned int currflag = static_cast<unsigned int>(-1);
 		for(unsigned int i=0; i<flags.size(); i++)
 		{
 			if(currflag!=flags[i].flag())

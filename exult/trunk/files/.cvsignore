@@ -8,3 +8,4 @@ filetest
 *.lo
 .deps
 .libs
+rwregress

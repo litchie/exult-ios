@@ -483,6 +483,13 @@ if test x$enable_awful_warnings = xyes; then
 	fi
 fi
 
+AC_ARG_ENABLE(paranoid-warnings, [  --enable-paranoid-warnings       Enable paranoid warnings [default no]],,enable_paranoid_warnings=no)
+if test x$enable_paranoid_warnings = xyes; then
+	WARNINGS="-Wall -W -Wcast-qual -Wwrite-strings -Wconversion -Wredundant-decls -Winline -Wdisabled-optimization -fcheck-new -Wctor-dtor-privacy -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual"
+#	DEBUG_FLAGS="$DEBUG_FLAGS -Wall -O -Wunused -Wuninitialized -Woverloaded-virtual -Wpointer-arith -Wcast-qual -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Winline"
+	WARNING_LEVEL="paranoid"
+fi
+
 # Output result
 AC_MSG_RESULT($WARNING_LEVEL)
 
@@ -680,6 +687,7 @@ AC_SUBST(SYSLIBS)
 AC_SUBST(ICON_FILE)
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(ZLIB_LIBS)
+AC_SUBST(WARNINGS)
 
 AC_OUTPUT([
 exult.spec

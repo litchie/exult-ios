@@ -39,30 +39,19 @@ extern int snprintf(char *, size_t, const char *, /*args*/ ...);
  *	Read a 1-byte value.
  */
 
-inline uint8 Read1
-	(
-	std::istream& in
-	)
-	{
-	uint8 c;
-	in.get((char&) c);
-	return (c);
-	}
+inline uint8 Read1 (std::istream &in)
+{
+	return static_cast<uint8>(in.get());
+}
 
 /*
  *	Read a 2-byte value, lsb first.
  */
 
-inline uint16 Read2
-	(
-	std::istream& in
-	)
-	{
-	uint8 b0, b1;
-	in.get((char&) b0);
-	in.get((char&) b1);
-	return (b0 | (b1 << 8));
-	}
+inline uint16 Read2 (std::istream &in)
+{
+	return static_cast<uint16>(in.get() | (in.get() << 8));
+}
 
 /*
  *	Read a 2-byte value from a buffer.
@@ -99,16 +88,10 @@ inline uint16 Read2
  *	Read a 2-byte value, hsb first.
  */
 
-inline uint16 Read2high
-	(
-	std::istream& in
-	)
-	{
-	uint8 b0, b1;
-	in.get((char&) b0);
-	in.get((char&) b1);
-	return ((b0 << 8) | b1);
-	}
+inline uint16 Read2high (std::istream &in)
+{
+	return static_cast<uint16>((in.get() << 8) | in.get());
+}
 
 /*
  *	Read a 2-byte value from a buffer.
@@ -145,18 +128,10 @@ inline uint16 Read2high
  *	Read a 4-byte long value, lsb first.
  */
 
-inline uint32 Read4
-	(
-	std::istream& in
-	)
-	{
-	uint8 b0, b1, b2, b3;
-	in.get((char&) b0);
-	in.get((char&) b1);
-	in.get((char&) b2);
-	in.get((char&) b3);
-	return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
-	}
+inline uint32 Read4 (std::istream &in)
+{
+	return static_cast<uint32>(in.get() | (in.get()<<8) | (in.get()<<16) | (in.get()<<24));
+}
 
 /*
  *	Read a 4-byte value from a buffer.
@@ -196,18 +171,10 @@ inline uint32 Read4
  *	Read a 4-byte long value, hsb first.
  */
 
-inline uint32 Read4high
-	(
-	std::istream& in
-	)
-	{
-	uint8 b0, b1, b2, b3;
-	in.get((char&) b0);
-	in.get((char&) b1);
-	in.get((char&) b2);
-	in.get((char&) b3);
-	return ((b0<<24) | (b1<<16) | (b2<<8) | b3);
-	}
+inline uint32 Read4high (std::istream &in)
+{
+	return static_cast<uint32>((in.get()<<24) | (in.get()<<16) | (in.get()<<8) | in.get());
+}
 
 /*
  *	Read a 4-byte value from a buffer.
@@ -254,8 +221,8 @@ inline void Write2
 	uint16 val
 	)
 	{
-	out.put((char) (val&0xff));
-	out.put((char) ((val>>8)&0xff));
+	out.put(static_cast<char> (val&0xff));
+	out.put(static_cast<char> ((val>>8)&0xff));
 	}
 
 /*
@@ -282,10 +249,10 @@ inline void Write4
 	uint32 val
 	)
 	{
-	out.put((char) (val&0xff));
-	out.put((char) ((val>>8)&0xff));
-	out.put((char) ((val>>16)&0xff));
-	out.put((char) ((val>>24)&0xff));
+	out.put(static_cast<char> (val&0xff));
+	out.put(static_cast<char> ((val>>8)&0xff));
+	out.put(static_cast<char> ((val>>16)&0xff));
+	out.put(static_cast<char> ((val>>24)&0xff));
 	}
 
 /*
@@ -306,7 +273,7 @@ inline void Write4
 
 inline void Write4s(std::ostream& out, sint32 val)
 {
-	Write4(out, (uint32)val);
+	Write4(out, static_cast<uint32>(val));
 }
 
 void U7open

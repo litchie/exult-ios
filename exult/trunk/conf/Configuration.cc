@@ -40,6 +40,7 @@ using std::cerr;
 using std::endl;
 using std::snprintf;
 using std::string;
+using std::ostream;
 
 void	Configuration::value(const string key,std::string &ret,const char *defaultvalue) const
 {
@@ -116,9 +117,9 @@ bool	Configuration::read_config_string(const std::string &s)
 	return true;
 }
 
-bool	Configuration::read_config_file(const string input_filename)
+bool	Configuration::read_config_file(const string input_filename, const string root)
 {
-	clear();
+	clear(root);
 	
 	filename=input_filename;
 	// Don't frob the filename if it starts with a dot and
@@ -194,6 +195,11 @@ std::string	Configuration::dump(void)
 	return xmltree->dump();
 }
 
+ostream &Configuration::dump(ostream &o, string indentstr)
+{
+	xmltree->dump(o, indentstr);
+	return o;
+}
 
 void Configuration::write_back(void)
 {
@@ -236,7 +242,7 @@ void Configuration::clear(std::string new_root)
 	xmltree = new XMLnode(rootname);
 }
 
-void Configuration::getpairs(KeyTypeList &ktl, const string basekey)
+void Configuration::getsubkeys(KeyTypeList &ktl, const string basekey)
 {
 	/*if(basekey.size()==0)
 		xmltree->selectpairs(ktl, string());
