@@ -1,3 +1,7 @@
+2001-06-08  Dancer Vesperman <dancer@users.sourceforge.net>
+	- Code Nazi
+	* mapedit/shapedraw.cc: std::cout, std::endl
+
 2001-06-07  Ryan Nunn <triforce@merlin.net.au>
 	* audio/xmidi.cc : Fixed Pub Music (BG Track 20) "Bug"
 
