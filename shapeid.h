@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2003  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -157,12 +157,12 @@ class ShapeID : public Game_singletons
 public:
 					// Create from map data.
 	ShapeID(unsigned char l, unsigned char h) 
-		: shapenum(l + 256*(h&0x3)), framenum(h >> 2), has_trans(false),
+		: shapenum(l + 256*(h&0x3)), framenum(h >> 2), has_trans(0),
 			shapefile(SF_SHAPES_VGA), shape(0)
 		{  }
 					// Read from buffer & incr. ptr.
 	ShapeID(unsigned char *& data)
-		: has_trans(false), shapefile(SF_SHAPES_VGA), shape(0)
+		: has_trans(0), shapefile(SF_SHAPES_VGA), shape(0)
 		{
 		unsigned char l = *data++;
 		unsigned char h = *data++;
@@ -170,7 +170,7 @@ public:
 		framenum = h >> 2;
 		}
 					// Create "end-of-list"/invalid entry.
-	ShapeID() : shapenum(-1), has_trans(false), shapefile(SF_SHAPES_VGA), shape(0)
+	ShapeID() : shapenum(-1), framenum(-1), has_trans(0), shapefile(SF_SHAPES_VGA), shape(0)
 		{  }
 
     virtual ~ShapeID()
