@@ -42,6 +42,8 @@ SI_Game::SI_Game()
 		add_shape("gumps/yesnobox",51);
 		add_shape("gumps/yesbtn",52);
 		add_shape("gumps/nobtn",53);
+		add_shape("gumps/book",27);
+		add_shape("gumps/scroll",49);
 
 		add_resource("files/shapes/count", 0, 6);
 		add_resource("files/shapes/0", "static/shapes.vga", 0);
