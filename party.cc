@@ -297,10 +297,10 @@ void Party_manager::move_followers
 	bool lmoved = false, rmoved = false;
 					// Have each take a step.
 	if (lnpc)
-		lmoved = step(lnpc, dir, pos + Tile_coord(
+		lmoved = step(lnpc, npc, dir, pos + Tile_coord(
 			left_offsets[dir4][0], left_offsets[dir4][1], 0));
 	if (rnpc)
-		rmoved = step(rnpc, dir, pos + Tile_coord(
+		rmoved = step(rnpc, npc, dir, pos + Tile_coord(
 			right_offsets[dir4][0], right_offsets[dir4][1], 0));
 	if (lmoved)
 		move_followers(lnpc, dir);
@@ -356,6 +356,60 @@ inline Tile_coord Get_step_tile
 	}
 
 /*
+ *	Get a notion of 'cost' for stepping to a particular tile.
+ */
+
+const int max_cost = 10000;
+static int Get_cost
+	(
+	Actor *npc,			// NPC to take the step.
+	Actor *leader,			// NPC he's following.
+	Tile_coord& dest		// Tile to step to.
+	)
+	{
+	Tile_coord to = dest;
+	if (npc->is_blocked(to))	// (To.tz is updated.)
+		return max_cost;	// Can't go there.
+	int cost = 0;
+	int ltz = leader->get_lift();	// Leader's z-coord.
+	int difftz = to.tz - ltz;	// Measure closeness.
+	cost += difftz*difftz;
+	return cost;
+	}
+
+/*
+ *	Take the better of two steps.
+ *
+ *	Output:	True if successful.
+ */
+
+static bool Take_better_step
+	(
+	Actor *npc,
+	Actor *leader,
+	Tile_coord& pos,		// Current pos.
+	int frame,			// Frame to show.
+	int dir1, int dir2		// Dirs.  We'll take mod 8.
+	)
+	{
+	dir1 %= 8; dir2 %= 8;
+	Tile_coord dest1 = pos.get_neighbor(dir1);
+	int cost1 = Get_cost(npc, leader, dest1);
+	if (!cost1 && npc->step(dest1, frame))
+		return true;
+	Tile_coord dest2 = pos.get_neighbor(dir2);
+	int cost2 = Get_cost(npc, leader, dest2);
+	if (cost1 <= cost2)
+		{
+		if (cost1 == max_cost)	// Both fail.
+			return false;
+		if (npc->step(dest1, frame))
+			return true;
+		}
+	return npc->step(dest2, frame);
+	}
+
+/*
  *	Move one follower to its destination (if possible).
  *
  *	Output:	True if he moved.
@@ -364,6 +418,7 @@ inline Tile_coord Get_step_tile
 bool Party_manager::step
 	(
 	Actor *npc,
+	Actor *leader,			// Who NPC is following.
 	int dir,			// Direction we're walking (0-7).
 	Tile_coord dest			// Destination tile.
 	)
@@ -388,14 +443,11 @@ bool Party_manager::step
 		return true;		// Moved.
 		}
 	int destdir = npc->get_direction(dest);
+	int cost0, cost1;
 					// Try next/prev dir.
-	if (npc->step(pos.get_neighbor((destdir + 1)%8), frame))
+	if (Take_better_step(npc, leader, pos, frame, destdir+1, destdir+7))
 		return true;
-	if (npc->step(pos.get_neighbor((destdir + 7)%8), frame))
-		return true;
-	if (npc->step(pos.get_neighbor((destdir + 2)%8), frame))
-		return true;
-	if (npc->step(pos.get_neighbor((destdir + 6)%8), frame))
+	if (Take_better_step(npc, leader, pos, frame, destdir+2, destdir+6))
 		return true;
 	frames->decrement(step_index);	// We didn't take the step.
 	return false;
