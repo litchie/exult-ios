@@ -67,7 +67,7 @@ bool	usecode_debugging=false;	// Do we enable the usecode debugger?
 static void Init();
 static int Play();
 static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl);
-
+int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 
 /*
  *	A handy breakpoint.
@@ -357,6 +357,8 @@ static int Filter_intro_events
  */
 static int dragging = 0;		// Object or gump being moved.
 static int dragged = 0;			// Flag for when obj. moved.
+static unsigned int altkeys = 0;	// SDL doesn't seem to handle ALT
+					//   right, so we'll keep track.
 					// 1/6, 1/10, 1/20 frame rates.
 const int slow_speed = 166, medium_speed = 100, fast_speed = 50;
 static int avatar_speed = slow_speed;	// Avatar speed (frame delay in
@@ -447,7 +449,8 @@ static void Handle_event
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 3)
 			{
-			if (gwin->get_mode() != Game_window::normal)
+			if (gwin->get_mode() != Game_window::normal &&
+			    gwin->get_mode() != Game_window::gump)
 				break;
 			gwin->stop_actor();
 			}
@@ -553,11 +556,24 @@ static void Handle_event
 	case SDL_QUIT:
 		quitting_time = 1;
 		break;
-	case SDL_KEYDOWN:			// Keystroke.
+	case SDL_KEYDOWN:		// Keystroke.
 		Handle_keystroke(event.key.keysym.sym,
 			event.key.keysym.mod & KMOD_SHIFT,
-			event.key.keysym.mod & KMOD_ALT,
+			(event.key.keysym.mod & KMOD_ALT) || altkeys,
 			event.key.keysym.mod & KMOD_CTRL);
+		break;
+	case SDL_KEYUP:			// Key released.
+		switch (event.key.keysym.sym)
+			{
+		case SDLK_RALT:		// Right alt.
+		case SDLK_RMETA:
+			altkeys &= ~1;	// Clear flag.
+			break;
+		case SDLK_LALT:
+		case SDLK_LMETA:
+			altkeys &= ~2;
+			break;
+			}
 		break;
 #ifdef WIN32
 	case SDL_SYSWMEVENT:
@@ -627,6 +643,14 @@ static void Handle_keystroke
 				// larger stepping when cycling shapes
 	switch (sym)
 		{
+	case SDLK_RALT:			// Right alt.
+	case SDLK_RMETA:
+		altkeys |= 1;		// Set flag.
+		break;
+	case SDLK_LALT:
+	case SDLK_LMETA:
+		altkeys |= 2;
+		break;
 	case SDLK_PLUS:			// Brighten.
 	case SDLK_KP_PLUS:
 		gwin->brighten(20);
@@ -640,11 +664,14 @@ static void Handle_keystroke
 		break;
 	case SDLK_i:
 		// Show Inventory
+		if (gwin->get_mode() != Game_window::gump)
+			inventory_page = -1;
 		if(inventory_page<gwin->get_usecode()->get_party_count()) {
 			++inventory_page;
 			int npc_num = 0; // Default to Avatar
 			if(inventory_page>0)
-				npc_num = gwin->get_usecode()->get_party_member(inventory_page-1);
+				npc_num = gwin->get_usecode()->
+					get_party_member(inventory_page-1);
 			Actor *actor = gwin->get_npc(npc_num);
 			actor->activate(gwin->get_usecode());
 			if (gwin->get_mode() == Game_window::gump)
@@ -669,7 +696,7 @@ static void Handle_keystroke
 			"m - Change mouse shape\n"
 			"p - Repaint screen\n"
 			"q - Exit\n"
-			"t - Fake time period change\n"
+			"ctrl-t - Fake time period change\n"
 		);
 			
 		gwin->paint_text_box(2, buf, 
@@ -761,6 +788,21 @@ static void Handle_keystroke
 		}
 		shape_showcase(current_file, current_shape, current_frame);
 		break;
+	case SDLK_t:			// 'Target' mode.
+		{
+		if (ctrl)		// 'T':  Fake next time change.
+			{
+			gwin->fake_next_period();
+			break;
+			}
+		int x, y;
+		if (!Get_click(x, y, Mouse::greenselect))
+			break;
+		gwin->double_clicked(x, y);
+		if (gwin->get_mode() == Game_window::gump)
+			mouse->set_shape(Mouse::hand);
+		break;
+		}
 	case SDLK_x:			// Alt-x means quit.
 		if (alt && Yesno_gump_object::ask(
 						"Do you really want to quit?"))
@@ -781,9 +823,6 @@ static void Handle_keystroke
 		if(current_file==gwin->get_shape_file_count())
 			current_file = 0;
 		shape_showcase(current_file, current_shape, current_frame);
-		break;
-	case SDLK_t:			// Fake out time period change.
-		gwin->fake_next_period();
 		break;
 	case SDLK_RIGHT:
 		gwin->view_right();
@@ -874,6 +913,9 @@ int Get_click
 	Mouse::Mouse_shapes saveshape = mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		mouse->set_shape(shape);
+	mouse->show();
+	gwin->set_painted();		// Want to see new mouse.
+	gwin->show();
 	int ret = Get_click(x, y);
 	mouse->set_shape(saveshape);
 	return (ret);
@@ -972,6 +1014,19 @@ cout << "(x,y) rel. to gump is (" << (event.button.x - gump->get_x()) <<
 					? toupper(chr) : chr);
 		break;
 		}
+	case SDL_KEYUP:			// Watch for ALT keys released.
+		switch (event.key.keysym.sym)
+			{
+		case SDLK_RALT:		// Right alt.
+		case SDLK_RMETA:
+			altkeys &= ~1;	// Clear flag.
+			break;
+		case SDLK_LALT:
+		case SDLK_LMETA:
+			altkeys &= ~2;
+			break;
+			}
+		break;
 		}
 	return (1);
 	}

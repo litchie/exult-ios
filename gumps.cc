@@ -137,6 +137,7 @@ public:
 	int mouse_clicked(Game_window *gwin, int mx, int my);
 	void insert(int chr);		// Insert a character.
 	int delete_left();		// Delete char. to left of cursor.
+	int delete_right();		// Delete char. to right of cursor.
 	void lose_focus();
 	};
 
@@ -353,6 +354,22 @@ int Gump_text::delete_left
 	cursor--;
 	paint();
 	return (1);
+	}
+
+/*
+ *	Delete char. to right of cursor.
+ *
+ *	Output:	1 if successful.
+ */
+
+int Gump_text::delete_right
+	(
+	)
+	{
+	if (!focus || cursor == length)
+		return (0);		// Past end of text.
+	cursor++;			// Move right.
+	return (delete_left());		// Delete what was passed.
 	}
 
 /*
@@ -1753,6 +1770,20 @@ void File_gump_object::key_down
 		{
 	case SDLK_BACKSPACE:
 		if (focus->delete_left())
+			{		// Can't restore now.
+			delete buttons[0];
+			buttons[0] = 0;
+			}
+		if (!focus->get_length())
+			{		// Last char.?
+			delete buttons[0];
+			delete buttons[1];
+			buttons[0] = buttons[1] = 0;
+			paint(Game_window::get_game_window());
+			}
+		return;
+	case SDLK_DELETE:
+		if (focus->delete_right())
 			{		// Can't restore now.
 			delete buttons[0];
 			buttons[0] = 0;
