@@ -102,6 +102,8 @@ public:
 		{
 		if (!shape || !shape->data)
 			CERR("NULL SHAPE!!!");
+		else if (!shape->rle)
+			shape->paint(ibuf, xoff, yoff);
 		else if (!translucent)
 			shape->paint_rle(ibuf, xoff, yoff);
 		else
