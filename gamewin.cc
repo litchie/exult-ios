@@ -303,7 +303,7 @@ void Game_window::init_files(bool cycle)
 {
 	
 	// Determine some colors based on the default palette
-	set_palette(0, -1, false);
+	pal->load(PALETTES_FLX, 0);	// could throw!
 					// Get a bright green.
 	poison_pixel = pal->find_color(4, 63, 4);
 					// Get a light gray.

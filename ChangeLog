@@ -1,5 +1,6 @@
 2001-11-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc, cheat_screen.cc: implemented NPC-browser's 'teleport' key
+	* gamewin.cc, ??game.cc: more palette flashes fixed
 
 2001-10-31  Dancer Vesperman  <dancer@users.sourceforge.net>
 
