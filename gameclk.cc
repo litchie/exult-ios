@@ -99,8 +99,8 @@ void Game_clock::increment
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int old_3hour = hour/3;		// Remember current 3-hour period.
-	num_minutes += 6;		// Round to nearest 12 minutes.
-	num_minutes -= num_minutes%12;
+	num_minutes += time_factor/2;	// Round to nearest 15 minutes.
+	num_minutes -= num_minutes%time_factor;
 	long new_min = minute + num_minutes;
 	hour += new_min/60;		// Update hour.
 	minute = new_min%60;
@@ -126,7 +126,7 @@ void Game_clock::handle_event
 	{
 	static int first_day = 1, first_hour_passed = 0;
 	Game_window *gwin = (Game_window *) udata;
-	if ((minute += 12) >= 60)	// 1 real minute = 12 game minutes.
+	if ((minute += time_factor) >= 60)// 1 real minute = 15 game minutes.
 		{
 		minute -= 60;
 		first_hour_passed = 1;

@@ -31,6 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class PathFinder;
 class Game_object;
+class Game_window;
+class Image_window8;
 
 /*
  *	Base class for special-effects:
@@ -110,6 +112,74 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Render.
 	virtual void paint(Game_window *gwin);
+	};
+
+/*
+ *	Weather.
+ */
+class Weather_effect : public Time_sensitive
+	{
+protected:
+	long stop_time;			// Time in 1/1000 secs. to stop.
+public:
+	Weather_effect(int duration);
+	};
+
+/*
+ *	A raindrop:
+ */
+class Raindrop
+	{
+	unsigned char oldpix;		// Pixel originally on screen.
+	unsigned char yperx;		// Move this many y-pixels for each x.
+	short x, y;			// Coords. where drawn.
+public:
+	Raindrop() : oldpix(0), x(-1), y(-1), yperx(1)
+		{  }
+					// Move to next position.
+	void next(Image_window8 *iwin, unsigned char *xform, int w, int h);
+	};	
+
+/*
+ *	Raining.
+ */
+class Rain_effect : public Weather_effect
+	{
+	Raindrop drops[100];		// Drops moving down the screen.
+public:
+	Rain_effect(int duration) : Weather_effect(duration)
+		{  }
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
+ *	Lightning.
+ */
+class Lightning_effect : public Weather_effect
+	{
+	int save_brightness;		// Palette brightness.
+public:
+	Lightning_effect(int duration) : Weather_effect(duration),
+						save_brightness(-1)
+		{  }
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
+ *	Earthquakes.  +++++Might make this a Weather_effect.
+ */
+class Earthquake : public Time_sensitive
+	{
+	int len;			// From Usecode intrinsic.
+	int i;				// Current index.
+public:
+	Earthquake(int l) : len(l), i(0)
+		{
+		}
+					// Execute when due.
+	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
 #endif

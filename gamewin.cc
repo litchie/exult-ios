@@ -1322,12 +1322,16 @@ void Game_window::fade_palette
 
 void Game_window::set_palette
 	(
-	int pal_num			// 0-11.
+	int pal_num,			// 0-11, or -1 to leave unchanged.
+	int new_brightness		// New percentage, or -1.
 	)
 	{
-	if (palette == pal_num)
+	if (palette == pal_num && brightness == new_brightness)
 		return;			// Already set.
-	palette = pal_num;		// Store #.
+	if (pal_num != -1)
+		palette = pal_num;	// Store #.
+	if (new_brightness > 0)
+		brightness = new_brightness;
 	if (faded_out)
 		return;			// In the black.
 	ifstream pal;
@@ -1399,13 +1403,11 @@ void Game_window::brighten
 	int per				// +- percentage to change.
 	)
 	{
-	brightness += per;
-	if (brightness < 20)		// Have a min.
-		brightness = 20;
-	int pal_num = palette;		// Force re-read.
-	palette = -1;
-	set_palette(pal_num);
-	paint();
+	int new_brightness = brightness + per;
+	if (new_brightness < 20)	// Have a min.
+		new_brightness = 20;
+	set_palette(palette, new_brightness);
+//	paint();	++++Not needed since we're always 8-bit now.
 	}
 
 /*
