@@ -643,6 +643,8 @@ static void Init
 			mygame = exult_menu.run();
 		}
 		Game::create_game(mygame, title);
+
+		Audio::get_ptr()->Init_sfx();
 		
 					// Skip splash screen?
 		bool skip_splash;
