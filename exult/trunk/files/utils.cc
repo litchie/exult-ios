@@ -34,10 +34,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <map>
 #ifdef MACOS
   #include <stat.h>
-  #include <unistd.h>
 #else
   #include <sys/stat.h>
 #endif
+#include <unistd.h>
 
 #include "exceptions.h"
 #include "utils.h"
