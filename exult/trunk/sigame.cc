@@ -77,22 +77,13 @@ SI_Game::~SI_Game()
 	}
 
 // Little weighted random function for lightning on the castle
-static int castle_frame = 0;
-
 static int get_frame (void)
 {
-	int num = rand();
+	int num = rand() % 9;
 
-	for (int i = castle_frame; i > 2; i--)
-		num%=i+2;
-	
-	num %= 4;
-	num %= 3;
-
-	castle_frame+=2;
-	castle_frame %= 16;
-
-	return num;
+	if (num >= 8) return 2;
+	else if (num >= 6) return 1;
+	return 0;
 }
 
 void SI_Game::play_intro()
@@ -100,10 +91,16 @@ void SI_Game::play_intro()
 		int	next = 0;
 		size_t	flisize;
 		char	*fli_b;
+		char	*buf;
+		Uint8	*buffer;
+		size_t	size;
 		int	i,j;
+
+		bool speech = audio->is_speech_enabled();
 		
+		audio->stop_music();
+
 		// Lord British presents...
-		//pal.load("static/lblogo.pal",0);
 		U7object lbflic("static/intro.dat", 0);
 		lbflic.retrieve(&fli_b, flisize);
 		playfli fli0(fli_b+8, flisize-8);
@@ -156,7 +153,11 @@ void SI_Game::play_intro()
 		
 		// Castle Outside
 		// No sound... yet, can't decode it :(
-			
+
+		// Start Music
+		audio->start_music ("static/r_sintro.xmi", 0, false);
+
+
 		U7object flic("static/intro.dat", 1);
 		flic.retrieve(&fli_b, flisize);
 		playfli fli1(fli_b+8, flisize-8);
@@ -187,6 +188,7 @@ void SI_Game::play_intro()
 		}
 
 		const char *lb_cas = "Lord British's Castle";
+		const char *db_cas = "Dick British's Castle";
 		
 		for (j = 0; j < 50; j++)
 		{
@@ -195,7 +197,10 @@ void SI_Game::play_intro()
 				for (i = 0; i < num+1; i++)
 					fli1.play(win, i, i, next);
 
-			gwin->paint_text(SIINTRO_FONT1, lb_cas, centerx-gwin->get_text_width(SIINTRO_FONT1, lb_cas)/2, centery+50);
+			if (jive)
+				gwin->paint_text(SIINTRO_FONT1, db_cas, centerx-gwin->get_text_width(SIINTRO_FONT1, db_cas)/2, centery+50);
+			else 
+				gwin->paint_text(SIINTRO_FONT1, lb_cas, centerx-gwin->get_text_width(SIINTRO_FONT1, lb_cas)/2, centery+50);
 
 			prev = num;
 			next += 75;
@@ -270,9 +275,7 @@ void SI_Game::play_intro()
 			return;
 
 
-		// Start Music
-		audio->start_music ("static/r_sintro.xmi", 0, false);
-
+		// Guard walks in
 		U7object flic2("static/intro.dat", 2);
 		flic2.retrieve(&fli_b, flisize);
 		playfli fli2(fli_b+8, flisize-8);
@@ -289,9 +292,480 @@ void SI_Game::play_intro()
 			}
 		}
 
-		fli2.play(win, 0, 55);
+		// Guard walks in
+		for (j = 0; j < 37; j++)
+		{
+			next = fli2.play(win, j, j, next);
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+		}
+
+		// Guard walks in
+		const char *my_leige = "My leige";
+		const char *yo_homes = "Yo, homes";
+
+		if (speech && !jive)
+		{
+			U7object voc_my_leige("static/intro.dat", 16);
+			voc_my_leige.retrieve (&buf, size);
+			buffer = (Uint8 *) buf;
+			audio->play (buffer+8, size-8, false);
+			delete [] buffer;
+		}
+
+
+		for (; j < 55; j++)
+		{
+			next = fli2.play(win, j, j, next);
+
+			if (jive)
+				gwin->paint_text(SIINTRO_FONT1, yo_homes, centerx+30, centery+87);
+			else if (!speech)
+				gwin->paint_text(SIINTRO_FONT1, my_leige, centerx+30, centery+87);
+
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+		}
+
+		next = fli2.play(win, j, j, next);
+		win->show();
+
+		const char *all_we[2] = { "All we found among Batlin's",
+					"belongings was this enchanted scroll.." };
+
+		if (speech && !jive)
+		{
+			U7object voc_all_we("static/intro.dat", 17);
+			voc_all_we.retrieve (&buf, size);
+			buffer = (Uint8 *) buf;
+			audio->play (buffer+8, size-8, false);
+			delete [] buf;
+		}
+
+		for (; j < 73; j++)
+		{
+			next = fli2.play(win, j, j, next);
+
+			if (!speech || jive)
+			{
+				gwin->paint_text(SIINTRO_FONT1, all_we[0], centerx+150-gwin->get_text_width(SIINTRO_FONT1, all_we[0]), centery+74);
+				gwin->paint_text(SIINTRO_FONT1, all_we[1], centerx+160-gwin->get_text_width(SIINTRO_FONT1, all_we[1]), centery+87);
+			}
+
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+		}
+		for (i = 0; i < 220; i++)
+			if (wait_delay (10))
+			{
+				delete [] fli_b;
+				return;
+			}
+
+		const char *and_a[2] = { "and a map showing the way to",
+					"a place called the Serpent Isle" };
+
+		next = fli2.play(win, j, j, next);
+
+		if (!speech || jive)
+		{
+			gwin->paint_text(SIINTRO_FONT1, and_a[0], centerx+150-gwin->get_text_width(SIINTRO_FONT1, and_a[0]), centery+74);
+			gwin->paint_text(SIINTRO_FONT1, and_a[1], centerx+150-gwin->get_text_width(SIINTRO_FONT1, and_a[1]), centery+87);
+		}
+
+		win->show();
+		j++;
 		
+		for (i = 0; i < 290; i++)
+			if (wait_delay (10))
+			{
+				delete [] fli_b;
+				return;
+			}
+
+
+		fli2.play(win, j, j);
+		j++;
+
+		for (i = 0; i < 50; i++)
+			if (wait_delay (10))
+			{
+				delete [] fli_b;
+				return;
+			}
+
+		const char *indeed[2] = { "Indeed.",
+					"Put it on the table." };
+
+		const char *iree = { "Iree. Slap it down there!" };
+
+		if (speech && !jive)
+		{
+			U7object voc_indeed("static/intro.dat", 18);
+			voc_indeed.retrieve (&buf, size);
+			buffer = (Uint8 *) buf;
+			audio->play (buffer+8, size-8, false);
+			delete [] buf;
+		}
+
+		next = fli2.play(win, j, j);
+		j++;
+		
+		for (; j < 81; j++)
+		{
+			next = fli2.play(win, j, j, next);
+
+			if (jive)
+				gwin->paint_text(SIINTRO_FONT1, iree, topx+40, centery+74);
+			else if (!speech)
+			{
+				gwin->paint_text(SIINTRO_FONT1, indeed[0], topx+40, centery+74);
+				gwin->paint_text(SIINTRO_FONT1, indeed[1], topx+40, centery+87);
+			}
+
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+		}
+
+		for (i = 0; i < 200; i++)
+			if (wait_delay (10))
+			{
+				delete [] fli_b;
+				return;
+			}
+
 		delete [] fli_b;
+
+		// Scroll opens
+		U7object flic3("static/intro.dat", 3);
+		flic3.retrieve(&fli_b, flisize);
+		playfli fli3(fli_b+8, flisize-8);
+		fli3.info();
+
+		next = 0;
+
+		// Scroll opens
+		for (j = 0; j < 20; j++)
+		{
+			next = fli3.play(win, j, j, next)+20;
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+		}
+
+
+		// 'Stand Back'
+		const char *stand_back = "Stand Back!";
+		const char *jump_back = "Jump Back!";
+
+		if (speech && !jive)
+		{
+			U7object voc_stand_back("static/intro.dat", 19);
+			voc_stand_back.retrieve (&buf, size);
+			buffer = (Uint8 *) buf;
+			audio->play (buffer+8, size-8, false);
+			delete [] buffer;
+		}
+
+		for (; j < 61; j++)
+		{
+			next = fli3.play(win, j, j, next)+20;
+
+			if (jive)
+				gwin->paint_text(SIINTRO_FONT1, jump_back, topx+70, centery+60);
+			else if (!speech)	
+				gwin->paint_text(SIINTRO_FONT1, stand_back, topx+70, centery+60);
+
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+		}
+
+		delete [] fli_b;
+
+
+		// Big G speaks
+		U7object flic4("static/intro.dat", 4);
+		flic4.retrieve(&fli_b, flisize);
+		playfli fli4(fli_b+8, flisize-8);
+		fli4.info();
+
+		U7object shapes("static/intro.dat", 30);
+		size_t	shapesize;
+		char *	shape_buf;
+		shapes.retrieve(&shape_buf, shapesize);
+		BufferDataSource gshape_ds(shape_buf+8, shapesize-8);
+		Shape_frame *sf;
+	
+		Shape_file gshape(gshape_ds);
+		
+		cout << "Shape in intro.dat has " << gshape.get_num_frames() << endl;
+
+		if (speech && !jive)
+		{
+			U7object voc_big_g("static/intro.dat", 20);
+			voc_big_g.retrieve (&buf, size);
+			buffer = (Uint8 *) buf;
+			audio->play (buffer+8, size-8, false);
+			delete [] buffer;
+		}
+
+		next = 0;
+
+		// Batlin...
+		const char *batlin[2] = { "Batlin! In the event that the",
+					"Avatar destroys the Black Gate" };
+
+		const char *you_shall[2] = { "you shall follow the unwitting",
+					"human Gwenno to the Serpent Isle" };
+
+		const char *there_i[2] = { "There I shall outline my plan",
+					"to destroy Britannia!" };
+
+
+		const char *batlin2[2] = { "Batlin! Know that my face is most",
+					"muppet like!" };
+
+		const char *you_must[2] = { "You must go to the Serpent Isle",
+					"to learn the secret of Acne Medication" };
+
+		const char *soon_i[2] = { "Soon I and my horde of muppets will",
+					"destroy Britannia!" };
+
+		for (j = 0; j < 320; j++)
+		{
+			next = fli4.play(win, j%40, j%40, next);
+
+			if (j < 300)
+				sf = gshape.get_frame((j/2)%7);
+			else
+				sf = gshape.get_frame(0);
+
+			if (sf)
+				gwin->paint_shape (centerx-36, centery, sf);
+
+			if (j < 100 && jive)
+			{
+				gwin->paint_text(SIINTRO_FONT1, batlin2[0], centerx-gwin->get_text_width(SIINTRO_FONT1, batlin2[0])/2, centery+74);
+				gwin->paint_text(SIINTRO_FONT1, batlin2[1], centerx-gwin->get_text_width(SIINTRO_FONT1, batlin2[1])/2, centery+87);
+			}
+			else if (j < 200 && jive)
+			{
+				gwin->paint_text(SIINTRO_FONT1, you_must[0], centerx-gwin->get_text_width(SIINTRO_FONT1, you_must[0])/2, centery+74);
+				gwin->paint_text(SIINTRO_FONT1, you_must[1], centerx-gwin->get_text_width(SIINTRO_FONT1, you_must[1])/2, centery+87);
+			}
+			else if (j < 300 && jive)
+			{
+				gwin->paint_text(SIINTRO_FONT1, soon_i[0], centerx-gwin->get_text_width(SIINTRO_FONT1, soon_i[0])/2, centery+74);
+				gwin->paint_text(SIINTRO_FONT1, soon_i[1], centerx-gwin->get_text_width(SIINTRO_FONT1, soon_i[1])/2, centery+87);
+			}
+			else if (j < 100 && !speech)
+			{
+				gwin->paint_text(SIINTRO_FONT1, batlin[0], centerx-gwin->get_text_width(SIINTRO_FONT1, batlin[0])/2, centery+74);
+				gwin->paint_text(SIINTRO_FONT1, batlin[1], centerx-gwin->get_text_width(SIINTRO_FONT1, batlin[1])/2, centery+87);
+			}
+			else if (j < 200 && !speech)
+			{
+				gwin->paint_text(SIINTRO_FONT1, you_shall[0], centerx-gwin->get_text_width(SIINTRO_FONT1, you_shall[0])/2, centery+74);
+				gwin->paint_text(SIINTRO_FONT1, you_shall[1], centerx-gwin->get_text_width(SIINTRO_FONT1, you_shall[1])/2, centery+87);
+			}
+			else if (j < 300 && !speech)
+			{
+				gwin->paint_text(SIINTRO_FONT1, there_i[0], centerx-gwin->get_text_width(SIINTRO_FONT1, there_i[0])/2, centery+74);
+				gwin->paint_text(SIINTRO_FONT1, there_i[1], centerx-gwin->get_text_width(SIINTRO_FONT1, there_i[1])/2, centery+87);
+			}
+
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				delete [] shape_buf;
+				return;
+			}
+		}
+		sf = gshape.get_frame(0);
+
+		for (j = 20; j; j--)
+		{
+			next = fli4.play(win, 0, 0, next, j*5);
+			if (sf)
+				gwin->paint_shape (centerx-36, centery, sf);
+
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] shape_buf;
+				delete [] fli_b;
+				return;
+			}
+		}
+
+		delete [] shape_buf;
+		delete [] fli_b;
+		
+		// Tis LBs's Worst fear
+		U7object flic5("static/intro.dat", 5);
+		flic5.retrieve(&fli_b, flisize);
+		playfli fli5(fli_b+8, flisize-8);
+		fli5.info();
+
+		for (j=0; j < 20; j++)
+		{
+			next = fli5.play(win, 0, 0, next, j*5);
+
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+		}
+
+
+		const char *tis_my[3] = {"'Tis my worst fear!",
+					"I must send the Avatar through",
+					"the pilars to the Serpent Isle!" };
+
+
+		if (speech && !jive)
+		{
+			U7object voc_tis_my("static/intro.dat", 21);
+			voc_tis_my.retrieve (&buf, size);
+			buffer = (Uint8 *) buf;
+			audio->play (buffer+8, size-8, false);
+			delete [] buffer;
+		}
+
+		for (j=0; j < 61; j++)
+		{
+			next = fli5.play(win, j, j, next)+30;
+
+			if (j < 20 && (!speech || jive))
+			{
+				gwin->paint_text(SIINTRO_FONT1, tis_my[0], centerx-gwin->get_text_width(SIINTRO_FONT1, tis_my[0])/2, centery+74);
+			}
+			else if (j > 22 && (!speech || jive))
+			{
+				gwin->paint_text(SIINTRO_FONT1, tis_my[1], centerx-gwin->get_text_width(SIINTRO_FONT1, tis_my[1])/2, centery+74);
+				gwin->paint_text(SIINTRO_FONT1, tis_my[2], centerx-gwin->get_text_width(SIINTRO_FONT1, tis_my[2])/2, centery+87);
+			}
+
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+		}
+
+		delete [] fli_b;
+
+
+		// Boat 1
+		U7object flic6("static/intro.dat", 6);
+		flic6.retrieve(&fli_b, flisize);
+		playfli fli6(fli_b+8, flisize-8);
+		fli6.info();
+
+		for (j=0; j < 61; j++)
+		{
+			next = fli6.play(win, j, j, next)+30;
+
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+		}
+
+		delete [] fli_b;
+
+
+		// Boat 2
+		U7object flic7("static/intro.dat", 7);
+		flic7.retrieve(&fli_b, flisize);
+		playfli fli7(fli_b+8, flisize-8);
+		fli7.info();
+
+		const char *zot = "Zot!";
+
+		for (j=0; j < 61; j++)
+		{
+			next = fli7.play(win, j, j, next)+30;
+
+			if (j > 55 && jive)
+				gwin->paint_text(SIINTRO_FONT1, zot, centerx-gwin->get_text_width(SIINTRO_FONT1, zot)/2, centery+74);
+
+			win->show();
+			if (wait_delay (0))
+			{
+				delete [] fli_b;
+				return;
+			}
+		}
+
+		delete [] fli_b;
+
+
+		// Ultima VII Part 2
+		U7object flic8("static/intro.dat", 8);
+		flic8.retrieve(&fli_b, flisize);
+		playfli fli8(fli_b+8, flisize-8);
+		fli8.info();
+
+		for (j = 0; j < 20; j++)
+		{
+			next = fli8.play(win, 0, 0, next, j*5);
+			gwin->paint_text(7, txt_msg[3], centerx-gwin->get_text_width(7, txt_msg[3])/2, centery+75);
+			win->show();
+		}
+
+
+		next = fli8.play(win, 0, 0, next, 100);
+		gwin->paint_text(7, txt_msg[3], centerx-gwin->get_text_width(7, txt_msg[3])/2, centery+75);
+		win->show();
+
+		for (i = 0; i < 300; i++)
+			if (wait_delay (10))
+			{
+				delete [] fli_b;
+				return;
+			}
+
+
+		for (j = 20; j; j--)
+		{
+			next = fli8.play(win, 0, 0, next, j*5);
+			gwin->paint_text(7, txt_msg[3], centerx-gwin->get_text_width(7, txt_msg[3])/2, centery+75);
+			win->show();
+		}
+
+
+		delete [] fli_b;
+
 	}
 
 void SI_Game::top_menu()

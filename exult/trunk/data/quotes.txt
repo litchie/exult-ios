@@ -1,9 +1,14 @@
 \CEXULT QUOTES
 
-\RFeel free to release without me.|\CTristan
+\C"Feel free to release without me."
+\L- Tristan
 
-\RHeh. New law of physics: Actors are not|\Rsupporters.|\CDancer
+\C"Heh. New law of physics: Actors are not
+\Csupporters."
+\L- Dancer
 
-\RCode is now less 'Dubious'|\CColourless
+\C"Code is now less 'Dubious'"
+\L- Colourless
 
-\RAll this stuff is driving me to Java!|\CJeff
+\C"All this stuff is driving me to Java!"
+\L- Jeff

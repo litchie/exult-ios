@@ -85,6 +85,8 @@ void BG_Game::play_intro()
 		bool skip = false;
 		Palette pal;
 
+		audio->stop_music();
+
 		// Lord British presents...
 		pal.load("static/intropal.dat",3);
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
@@ -822,7 +824,7 @@ void BG_Game::show_quotes()
 void BG_Game::show_credits()
 	{
 		
-		play_midi(3);
+		play_midi(4);
 		vector<char *> *text = load_text("static/mainshp.flx", 0x0E);
 		scroll_text(text);
 		destroy_text(text);

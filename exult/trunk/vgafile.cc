@@ -698,6 +698,29 @@ Shape_file::Shape_file
 	}
 
 /*
+ *	Read in all shapes from a single-shape file.
+ */
+
+Shape_file::Shape_file
+	(
+	DataSource& shape_source		// datasource.
+	) : Shape()
+	{
+	Shape_frame *frame = new Shape_frame();
+	unsigned long shapelen = shape_source.read4();
+					// Read frame 0 & get frame count.
+	num_frames = frame->read(shape_source, 0L, shapelen, 0);
+	store_frame(frame, 0);
+					// Get the rest.
+	for (int i = 1; i < num_frames; i++)
+		{
+		frame = new Shape_frame();
+		frame->read(shape_source, 0L, shapelen, i);
+		store_frame(frame, i);
+		}
+	}
+
+/*
  *	Open file.
  */
 

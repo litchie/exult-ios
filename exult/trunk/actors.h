@@ -174,7 +174,8 @@ public:
 		petra = 4,
 		met = 5,
 		no_spell_casting = 6,
-		zombie = 7
+		zombie = 7,
+		naked = 8
 		};
 	enum type_flags {
 		tf_fly = 4,
@@ -352,6 +353,7 @@ public:
 	virtual void write_ireg(ostream& out)
 		{  }
 	void write(ostream& nfile);	// Write out (to 'npc.dat').
+	virtual int get_shapenum() const; 	// Get shape based on sex and color and petra flag
 	};
 
 /*
@@ -394,7 +396,6 @@ public:
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
 	virtual void die();		// We're dead.
-	virtual int get_shapenum() const; 	// Get shape based on sex and color
 	};
 
 /*
