@@ -1,3 +1,7 @@
+2001-06-23  Ryan Nunn <triforce@merlin.net.au>
+	* actors.cc, actors.h: Almost complete rewrite of the add_readied and
+	  get_best_spot functions to make them cleaner and to remove all bugs.
+
 2001-06-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* mapedit/u7shp.c: disabled debugging messages
 	* data/bg/amulets.shp, Paperdoll_gump_info.cc: added FoV amulets
