@@ -73,7 +73,8 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/death_scythe.shp		\
 	bg/firewand.shp			\
 	bg/knife.shp			\
-	bg/starburst.shp
+	bg/starburst.shp		\
+	bg/hawk.shp
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\
