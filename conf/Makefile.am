@@ -22,3 +22,5 @@ confregress_LDADD =	\
 EXTRA_DIST = 		\
 	config.xml	\
 	README
+
+CLEANFILES = *~

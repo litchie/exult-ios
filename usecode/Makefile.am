@@ -10,3 +10,5 @@ libusecode_la_SOURCES = \
 	ucsched.cc	\
 	useval.cc	\
 	useval.h
+
+CLEANFILES = *~

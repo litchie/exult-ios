@@ -65,3 +65,5 @@ EXTRA_DIST = \
 
 CLEANFILES = \
 	u7shpload
+
+CLEANFILES = *~

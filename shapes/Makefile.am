@@ -18,5 +18,4 @@ libshapes_la_SOURCES = \
 	vgafile.cc \
 	vgafile.h
 
-
-
+CLEANFILES = *~

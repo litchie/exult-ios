@@ -11,3 +11,4 @@ libpathfinder_la_SOURCES =	\
 	Zombie.h		\
 	path.cc
 
+CLEANFILES = *~

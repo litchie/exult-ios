@@ -36,3 +36,5 @@ libgumps_la_SOURCES = \
 	Text_gump.h	\
 	Yesno_gump.cc	\
 	Yesno_gump.h
+
+CLEANFILES = *~
