@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Vga_file;
 class Image_buffer8;
 class Shapes_vga_file;
+class Editing_file;
 
 /*
  *	Store information about an individual shape shown in the list.
@@ -75,6 +76,10 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	int hoffset;			// Horizontal offset in pixels (when in
 					//   frames_mode).
 	void (*sel_changed)();		// Called when selection changes.
+					// List of files being edited by an
+					//   external program (Gimp, etc.)
+	static std::vector<Editing_file*> editing_files;
+
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
 	virtual void show()
@@ -133,6 +138,11 @@ public:
 							gpointer data);
 	void edit_shape_info();		// Edit selected shape's info.
 	void edit_shape();		// Edit selected shape-frame.
+					// Deal with list of files being edited
+					//   by an external prog. (Gimp).
+	static void check_editing_files();
+	static void import_shape(Editing_file *ed);
+	static void clear_editing_files();
 					// Give dragged shape.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
 		GtkSelectionData *data, guint info, guint time, gpointer data);
