@@ -35,6 +35,8 @@ class VideoOptions_gump : public Modal_gump
 	int scaler;
 	int fullscreen;
 
+	int old_resolution;
+
  public:
 	VideoOptions_gump();
 	~VideoOptions_gump();
