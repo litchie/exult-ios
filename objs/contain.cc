@@ -85,8 +85,10 @@ bool Container_game_object::add
 	{
 	if (!dont_check)
 		{			// Can't put a bag in a bag.
-		if (obj->get_shapenum() == get_shapenum() ||
-		    get_shapenum() == 522)	// Can't put into locked chest.
+		int shnum = get_shapenum();
+		if (shnum == obj->get_shapenum() ||
+		    shnum == 522 ||	// Can't put into locked chest.
+		    (shnum == 798 && GAME_BG))	// Or sealed box.
 		return false;
 		}
 	// ugly hack for SI urn (shouldn't be a container)
