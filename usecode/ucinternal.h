@@ -132,8 +132,7 @@ class Usecode_internal : public Usecode_machine
 							int slot = -1);
 	void remove_npc_face(Usecode_value& arg1);
 	void set_item_shape(Usecode_value& item_arg, Usecode_value& shape_arg);
-	void set_item_frame(Usecode_value& item_arg, Usecode_value& frame_arg,
-						int check_empty = 0);
+	void set_item_frame(Game_object *item, int frame, int check_empty = 0);
 	void remove_item(Game_object *obj);
 	int npc_in_party(Game_object *npc);
 	Usecode_value get_party();
@@ -167,6 +166,8 @@ class Usecode_internal : public Usecode_machine
 	int path_run_usecode(Usecode_value& npcval, Usecode_value& locval,
 		Usecode_value& useval, Usecode_value& itemval,
 				Usecode_value& eventval, int find_free = 0);
+	void create_script(Usecode_value& objval, Usecode_value& codeval,
+								long delay);
 
 	/*
          *	Embedded intrinsics
@@ -359,7 +360,7 @@ class Usecode_internal : public Usecode_machine
 	int call_usecode_function(int id, int event, int stack_elems);
 	void link_party();		// Set party's id's.
 public:
-	friend class Scheduled_usecode;
+	friend class Usecode_script;
 	Usecode_internal(Game_window *gw);
 	~Usecode_internal();
 					// Read in usecode functions.

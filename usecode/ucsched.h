@@ -19,46 +19,35 @@
 #ifndef _UCSCHED_H
 #define _UCSCHED_H
 
+class Game_object;
+class Usecode_value;
 class Usecode_internal;
 
-#include "useval.h"
 #include "tqueue.h"
-#include "egg.h"
-#include "actors.h"
 
 /*
  *	A class for executing usecode at a scheduled time:
  */
-class Scheduled_usecode : public Time_sensitive
+class Usecode_script : public Time_sensitive
 	{
 	static int count;		// Total # of these around.
-	static Scheduled_usecode *first;// ->chain of all of them.
-	Scheduled_usecode *next, *prev;	// Next/prev. in global chain.
-	Usecode_value objval;		// The 'itemref' object.
+	static Usecode_script *first;// ->chain of all of them.
+	Usecode_script *next, *prev;	// Next/prev. in global chain.
 	Game_object *obj;		// From objval.
-	Tile_coord objpos;		// Abs. tile coord.
-	Usecode_value arrval;		// Array of code to execute.
+	Usecode_value *code;		// Array of code to execute.
 	int cnt;			// Length of arrval.
 	int i;				// Current index.
 	int frame_index;		// For taking steps.
 	int no_halt;			// 1 to ignore halt().
 	int delay;			// Used for restoring.
 					// For restore:
-	Scheduled_usecode(Game_object *item, Usecode_value& aval, int findex,
+	Usecode_script(Game_object *item, Usecode_value *cd, int findex,
 						int nhalt, int del);
 public:
-	Scheduled_usecode(Usecode_internal *usecode,
-				Usecode_value& oval, Usecode_value& aval);
-	virtual ~Scheduled_usecode()
-		{
-		count--;
-		if (next)
-			next->prev = prev;
-		if (prev)
-			prev->next = next;
-		else
-			first = next;
-		}
+	Usecode_script(Usecode_internal *usecode, Game_object *o, 
+						Usecode_value *cd);
+	~Usecode_script();
+	void start(long delay = 1);	// Start after 'delay' msecs.
 	void halt()			// Stop executing.
 		{
 		if (!no_halt)
@@ -72,16 +61,18 @@ public:
 	static int get_count()
 		{ return count; }
 					// Find for given item.
-	static Scheduled_usecode *find(Game_object *srch);
+	static Usecode_script *find(Game_object *srch);
 	static void clear();		// Delete all.
+#if 0
 					// Activate itemref eggs.
 	void activate_eggs(Usecode_internal *usecode);
+#endif
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Move object in given direction.
 	void step(Usecode_internal *usecode, int dir);
 					// Save/restore.
 	int save(unsigned char *buf, int buflen);
-	static Scheduled_usecode *restore(Game_object *item,
+	static Usecode_script *restore(Game_object *item,
 					unsigned char *buf, int buflen);
 	};
 

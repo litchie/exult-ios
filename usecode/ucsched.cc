@@ -21,12 +21,16 @@
 #endif
 
 #include "ucinternal.h"
+#include "useval.h"
 #include "ucsched.h"
 #include "Audio.h"
 #include "barge.h"
 #include "game.h"
 #include "frameseq.h"
 #include "gamewin.h"
+#include "egg.h"
+#include "actors.h"
+#include "ucscriptop.h"
 
 #include <iostream>
 #include <iomanip>
@@ -37,24 +41,26 @@ using std::hex;
 using std::setfill;
 using std::setw;
 
-int Scheduled_usecode::count = 0;
-Scheduled_usecode *Scheduled_usecode::first = 0;
+using namespace Ucscript;
+
+int Usecode_script::count = 0;
+Usecode_script *Usecode_script::first = 0;
 
 /*
  *	Create for a 'restore'.
  */
 
-Scheduled_usecode::Scheduled_usecode
+Usecode_script::Usecode_script
 	(
 	Game_object *item, 
-	Usecode_value& aval, 
+	Usecode_value *cd, 
 	int findex,
 	int nhalt, 
 	int del
-	) : obj(item), objval(item), arrval(aval), i(0), frame_index(findex), 
+	) : obj(item), code(cd), i(0), frame_index(findex), 
 	    no_halt(nhalt), delay(del)
 	{
-	cnt = arrval.get_array_size();
+	cnt = code->get_array_size();
 	count++;			// Keep track of total.
 	next = first;			// Put in chain.
 	prev = 0;
@@ -67,60 +73,73 @@ Scheduled_usecode::Scheduled_usecode
  *	Create.
  */
 
-Scheduled_usecode::Scheduled_usecode
+Usecode_script::Usecode_script
 	(
 	Usecode_internal *usecode,
-	Usecode_value& oval, 
-	Usecode_value& aval
-	) : objval(oval), arrval(aval), i(0), frame_index(0), no_halt(0),
+	Game_object *o,
+	Usecode_value *cd
+	) : obj(o), code(cd), i(0), frame_index(0), no_halt(0),
 	    delay(0)
 	{
-	cnt = arrval.get_array_size();
-	obj = usecode->get_item(objval);
+	cnt = code->get_array_size();
 	if (!cnt)			// Not an array??  (This happens.)
 		{			// Create with single element.
-		arrval = Usecode_value(1, &aval);
+		code = new Usecode_value(1, code);
 		cnt = 1;
 		}
-					// Pure kludge for SI wells:
-	if (objval.get_array_size() == 2 && 
-	    Game::get_game_type() == SERPENT_ISLE &&
-	    obj && obj->get_shapenum() == 470 && obj->get_lift() == 0)
-		{			// We want the TOP of the well.
-		Usecode_value v2 = objval.get_elem(1);
-		Game_object *o2 = usecode->get_item(v2);
-		if (o2->get_shapenum() == obj->get_shapenum() && 
-		    o2->get_lift() == 2)
-			{
-			objval = v2;
-			obj = o2;
-			}
-		}
-	objpos = obj ? obj->get_abs_tile_coord() : Tile_coord(-1, -1, -1);
-					// Not an array?
 	count++;			// Keep track of total.
 	next = first;			// Put in chain.
 	prev = 0;
 	if (first)
 		first->prev = this;
 	first = this;
-	int opval0 = arrval.get_elem0().get_int_value();
+	int opval0 = code->get_elem0().get_int_value();
 	if (opval0 == 0x23)		// PURE GUESS:
 		no_halt = 1;
 	}
 
 /*
- *	Search list for one for a given item.
- *
- *	Output:	->Scheduled_usecode if found, else 0.
+ *	Delete.
  */
 
-Scheduled_usecode *Scheduled_usecode::find
+Usecode_script::~Usecode_script()
+	{
+	delete code;
+	count--;
+	if (next)
+		next->prev = prev;
+	if (prev)
+		prev->next = next;
+	else
+		first = next;
+	}
+
+/*
+ *	Enter into the time-queue.
+ */
+
+void Usecode_script::start
+	(
+	long delay			// Start after this many msecs.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->get_tqueue()->add(delay + SDL_GetTicks(), this,
+					(long) gwin->get_usecode());
+	}
+
+/*
+ *	Search list for one for a given item.
+ *
+ *	Output:	->Usecode_script if found, else 0.
+ */
+
+Usecode_script *Usecode_script::find
 	(
 	Game_object *srch
 	)
 	{
-	for (Scheduled_usecode *each = first; each; each = each->next)
+	for (Usecode_script *each = first; each; each = each->next)
 		if (each->obj == srch)
 			return each;	// Found it.
 	return (0);
@@ -131,7 +150,7 @@ Scheduled_usecode *Scheduled_usecode::find
  *	from the time queue).
  */
 
-void Scheduled_usecode::clear
+void Usecode_script::clear
 	(
 	)
 	{
@@ -139,7 +158,7 @@ void Scheduled_usecode::clear
 		delete first;
 	}
 
-inline void Scheduled_usecode::activate_egg(Usecode_internal *usecode,
+inline void Usecode_script::activate_egg(Usecode_internal *usecode,
 				     Game_object *e, int type)
 {
 	if (e && e->is_egg() && (type == -1 || 
@@ -148,11 +167,12 @@ inline void Scheduled_usecode::activate_egg(Usecode_internal *usecode,
 			usecode->gwin->get_main_actor(), 1);
 }
 
+#if 0
 /*
  *	Execute eggs.
  */
 
-void Scheduled_usecode::activate_eggs
+void Usecode_script::activate_eggs
 	(
 	Usecode_internal *usecode
 	)
@@ -175,12 +195,13 @@ void Scheduled_usecode::activate_eggs
 		activate_egg(usecode, usecode->get_item(objval.get_elem(i)),
 									-1);
 	}
+#endif
 
 /*
  *	Execute an array of usecode, generally one instruction per tick.
  */
 
-void Scheduled_usecode::handle_event
+void Usecode_script::handle_event
 	(
 	unsigned long curtime,		// Current time of day.
 	long udata			// ->usecode machine.
@@ -192,19 +213,19 @@ void Scheduled_usecode::handle_event
 	int do_another = 1;			// Flag to keep going.
 	int opcode;
 					// If a 1 follows, keep going.
-	for (; i < cnt && ((opcode = arrval.get_elem(i).get_int_value()) 
+	for (; i < cnt && ((opcode = code->get_elem(i).get_int_value()) 
 						== 0x1 || do_another); i++)
 		{
 		do_another = 0;
 		switch (opcode)
 			{
-		case 0x1:		// Means keep going without painting.
+		case cont:		// Means keep going without painting.
 			do_another = 1;
 			gwin->set_painted();	// Want to paint when done.
 			break;
-		case 0x0b:		// ?? 2 parms, 1st one < 0.
+		case repeat:		// ?? 2 parms, 1st one < 0.
 			{		// Loop(offset, cnt).
-			Usecode_value& cntval = arrval.get_elem(i + 2);
+			Usecode_value& cntval = code->get_elem(i + 2);
 			int cnt = cntval.get_int_value();
 			if (cnt <= 0)
 					// Done.
@@ -212,13 +233,13 @@ void Scheduled_usecode::handle_event
 			else
 				{	// Decr. and loop.
 				cntval = Usecode_value(cnt - 1);
-				Usecode_value& offval = arrval.get_elem(i + 1);
+				Usecode_value& offval = code->get_elem(i + 1);
 				i += offval.get_int_value() - 1;
 				do_another = 1;
 				}
 			break;
 			}
-		case 0x0c:		// Loop with 3 parms.???
+		case repeat2:		// Loop with 3 parms.???
 			{		// Loop(offset, cnt1, cnt2?).++++
 				//+++ guessing: loop cnt1 each round. use cnt2 as loop var.
 				//This is necessary for loop nesting.
@@ -227,8 +248,8 @@ void Scheduled_usecode::handle_event
 				// maybe cnt1 and cnt2 should be swapped... not sure
 
 			do_another = 1;
-			Usecode_value& cntval = arrval.get_elem(i + 3);
-			Usecode_value& origval = arrval.get_elem(i + 2);
+			Usecode_value& cntval = code->get_elem(i + 3);
+			Usecode_value& origval = code->get_elem(i + 2);
 			int cnt = cntval.get_int_value();
 			int orig = origval.get_int_value();
 			if (cnt > orig) { // ++++ First pass? Set to orig or not?
@@ -242,22 +263,22 @@ void Scheduled_usecode::handle_event
 			} else
 				{	// Decr. and loop.
 				cntval = Usecode_value(cnt - 1);
-				Usecode_value& offval = arrval.get_elem(i + 1);
+				Usecode_value& offval = code->get_elem(i + 1);
 				i += offval.get_int_value() - 1;
 				}
 			break;
 			}
-		case 0x21:		// Just a nop.
+		case nop:		// Just a nop.
 			break;
-		case 0x23:		// ?? Always appears first.
+		case dont_halt:		// ?? Always appears first.
 					// Maybe means "don't let
 					//    intrinsic 5c stop it".
 			no_halt = 1;	// PURE GUESS.
 			do_another = 1;
 			break;
-		case 0x27:		// ?? 1 parm. Guessing:
+		case delay_ticks:	// 1 parm.
 			{		//   delay before next instruction.
-			Usecode_value& delayval = arrval.get_elem(++i);
+			Usecode_value& delayval = code->get_elem(++i);
 					// ?? Guessing at time.
 // NOTE: Changing this can have a major impact!
 //			delay = 250*(delayval.get_int_value());
@@ -266,15 +287,15 @@ void Scheduled_usecode::handle_event
 			break;		
 			}
 #if 0
-		case 0x2c:		// Quit if there's already scheduled
+		case finish:		// Quit if there's already scheduled
 					//   code for item?
 					// Or supercede the existing one?
 			break;
 #endif
-		case 0x2d:		// Remove itemref.
+		case Ucscript::remove:	// Remove obj.
 			usecode->remove_item(obj);
 			break;
-		case 0x39:		// Rise?  (For flying carpet.
+		case rise:		// (For flying carpet.
 			{
 			Tile_coord t = obj->get_abs_tile_coord();
 			if (t.tz < 10)
@@ -282,7 +303,7 @@ void Scheduled_usecode::handle_event
 			obj->move(t);
 			break;
 			}
-		case 0x38:		// Descend?
+		case descend:
 			{
 			Tile_coord t = obj->get_abs_tile_coord();
 			if (t.tz > 0)
@@ -290,57 +311,56 @@ void Scheduled_usecode::handle_event
 			obj->move(t);
 			break;
 			}
-		case 0x46:
-			{		// Set frame.
-			Usecode_value& fval = arrval.get_elem(++i);
-			usecode->set_item_frame(objval, fval);
+		case frame:		// Set frame.
+			usecode->set_item_frame(obj, 
+					code->get_elem(++i).get_int_value());
 			break;
-			}
-		case 0x48:		// Guessing:  activate egg.
-			activate_eggs(usecode);
+		case egg:		// Guessing:  activate egg.
+			activate_egg(usecode, obj, -1);
+//			activate_eggs(usecode);
 			break;
-		case 0x4d:		// ??Also show next frame?
+		case next_frame_max:	// Stop at last frame.
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
 							obj->get_shapenum());
-			if (obj->get_framenum() < nframes) {
-				Usecode_value fval(1+obj->get_framenum());
-				usecode->set_item_frame(objval, fval);
-			}
+			if (obj->get_framenum() < nframes)
+				usecode->set_item_frame(obj,
+							1+obj->get_framenum());
 			break;
 			}
-		case 0x4e:		// Show next frame.
+		case next_frame:
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
 							obj->get_shapenum());
-			Usecode_value fval((1 + obj->get_framenum())%nframes);
-			usecode->set_item_frame(objval, fval);
+			usecode->set_item_frame(obj, 
+					(1 + obj->get_framenum())%nframes);
 			break;
 			}
-		case 0x50:		// Guessing: Show prev. frame.
+		case prev_frame:
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
 							obj->get_shapenum());
 			int pframe = obj->get_framenum() - 1;
-			Usecode_value fval((pframe + nframes)%nframes);
-			usecode->set_item_frame(objval, fval);
+			usecode->set_item_frame(obj, 
+						(pframe + nframes)%nframes);
 			break;
 			}
-		case 0x52:		// Say string.
+		case say:		// Say string.
 			{
-			Usecode_value& strval = arrval.get_elem(++i);
+			Usecode_value& strval = code->get_elem(++i);
+			Usecode_value objval(obj);
 			usecode->item_say(objval, strval);
 			break;
 			}
-		case 0x54:		// Unknown.
+		case music:		// Unknown.
 		        cout << "Und sched. opcode " << hex << 
 				"0x" << setfill((char)0x30) << setw(2) 
 						<< opcode << std::dec << endl;
 			++i;		// Takes 1 parameter!
 			break;
-		case 0x55:		// Call?
+		case Ucscript::usecode:	// Call?
 			{
-			Usecode_value& val = arrval.get_elem(++i);
+			Usecode_value& val = code->get_elem(++i);
 			int fun = val.get_int_value();
 					// REALLY guessing (for Forge):
 			Usecode_internal::Usecode_events ev = 
@@ -355,30 +375,29 @@ void Scheduled_usecode::handle_event
 			usecode->call_usecode(fun, obj, ev);
 			break;
 			}
-		case 0x56:		// Play speech track.
+		case speech:		// Play speech track.
 			{
-			Usecode_value& val = arrval.get_elem(++i);
+			Usecode_value& val = code->get_elem(++i);
 			int track = val.get_int_value();
 			if (track >= 0)
 				Audio::get_ptr()->start_speech(track);
 			}
-		case 0x58:		// Play sound effect!
+		case sfx:		// Play sound effect!
 			{
-			Usecode_value& val = arrval.get_elem(++i);
+			Usecode_value& val = code->get_elem(++i);
 			Audio::get_ptr()->play_sound_effect(val.get_int_value());
 					// Or play sound effect??
 			break;
 			}
-		case 0x59:		// Parm. is dir. (0-7).  0=north?
+		case face_dir:		// Parm. is dir. (0-7).  0=north.
 			{
 					// Look in that dir.
-			Usecode_value& val = arrval.get_elem(++i);
+			Usecode_value& val = code->get_elem(++i);
 					// It may be 0x3x.  Face dir?
 			int dir = val.get_int_value()&7;
 			obj->set_usecode_dir(dir);
-			Usecode_value v(obj->get_dir_framenum(
+			usecode->set_item_frame(obj, obj->get_dir_framenum(
 							dir, Actor::standing));
-			usecode->set_item_frame(objval, v);
 			frame_index = 0;// Reset walking frame index.
 			break;
 			}
@@ -386,10 +405,10 @@ void Scheduled_usecode::handle_event
 					// Frames with dir.  U7-verified!
 			if (opcode >= 0x61 && opcode <= 0x70)
 				{	// But don't show empty frames.
-				Usecode_value v(obj->get_dir_framenum(
+				int v = obj->get_dir_framenum(
 					obj->get_usecode_dir(), 
-					opcode - 0x61));
-				usecode->set_item_frame(objval, v, 1);
+					opcode - 0x61);
+				usecode->set_item_frame(obj, v, 1);
 				}
 					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode < 0x38)
@@ -409,11 +428,13 @@ void Scheduled_usecode::handle_event
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
 		return;
 		}
+#if 0	/* ++++Might need this for Test of Love!! */
 	if (count == 1 &&		// Last one?  GUESSING:
 	    objpos.tx != -1)		// And valid pos.
 	{
 		usecode->activate_cached(objpos);
 	}
+#endif
 	delete this;			// Hope this is safe.
 	}
 
@@ -421,7 +442,7 @@ void Scheduled_usecode::handle_event
  *	Step in given direction.
  */
 
-void Scheduled_usecode::step
+void Usecode_script::step
 	(
 	Usecode_internal *usecode,
 	int dir				// 0-7.
@@ -456,7 +477,7 @@ void Scheduled_usecode::step
  *	Output:	Length written, or -1 if error.
  */
 
-int Scheduled_usecode::save
+int Usecode_script::save
 	(
 	unsigned char *buf,
 	int buflen
@@ -467,7 +488,7 @@ int Scheduled_usecode::save
 	Write2(ptr, remaining);		// # of values we'll store.
 	for (int j = i; j < cnt; j++)
 		{
-		Usecode_value& val = arrval.get_elem(j);
+		Usecode_value& val = code->get_elem(j);
 		int len = val.save(ptr, buflen - (ptr - buf));
 		if (len < 0)
 			return -1;
@@ -488,7 +509,7 @@ int Scheduled_usecode::save
  *		added to the time queue yet.
  */
 
-Scheduled_usecode *Scheduled_usecode::restore
+Usecode_script *Usecode_script::restore
 	(
 	Game_object *item,		// Object this is executed for.
 	unsigned char *buf,
@@ -497,19 +518,25 @@ Scheduled_usecode *Scheduled_usecode::restore
 	{
 	unsigned char *ptr = buf;
 	int cnt = Read2(ptr);		// Get # instructions.
-	Usecode_value arrval(cnt, 0);	// Create empty array.
+					// Create empty array.
+	Usecode_value *code = new Usecode_value(cnt, 0);
 	for (int i = 0; i < cnt; i++)
 		{
-		Usecode_value& val = arrval.get_elem(i);
+		Usecode_value& val = code->get_elem(i);
 		if (!val.restore(ptr, buflen - (ptr - buf)))
+			{
+			delete code;
 			return 0;
+			}
 		}
 	if (ptr - buf < 8)		// Enough room left?
+		{
+		delete code;
 		return 0;
+		}
 	int frame_index = Read2(ptr);
 	int no_halt = Read2(ptr);
 	int delay = Read4(ptr);
-	return new Scheduled_usecode(item, arrval, frame_index, no_halt, 
-									delay);
+	return new Usecode_script(item, code, frame_index, no_halt, delay);
 	}
 
