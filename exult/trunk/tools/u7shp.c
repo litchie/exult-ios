@@ -1,5 +1,5 @@
 /* 
- * SHP loading file filter for The GIMP version 1.1
+ * SHP loading file filter for The GIMP version 1.2
  *
  * (C) 2000 Tristan Tarrant
  */
@@ -496,8 +496,18 @@ static gint32 load_image (gchar *filename)
 
 		gimp_drawable_flush (drawable);
 		gimp_drawable_detach (drawable);
+		
+		if(i==0) {	/* FIXME: Do this for first frame only... */
+			if(frame->leftY>0) {
+				gimp_image_add_hguide(image_ID, frame->leftY);
+				printf("Added hguide=%d\n", frame->leftY);
+			}
+			if(frame->leftX>0) {
+				gimp_image_add_vguide(image_ID, frame->leftX);
+				printf("Added vguide=%d\n", frame->leftX);
+			}
+		}
 	}
-
 
 	fclose(fp);
 	
@@ -577,6 +587,9 @@ static gint32 save_image (gchar  *filename,
 	int newx;
 	int x;
 	int y;
+	int hotx;
+	int hoty;
+	gint32 guide_ID;
 	gint32 *layers;   
 	int nlayers;
 	int pos;
@@ -589,6 +602,34 @@ static gint32 save_image (gchar  *filename,
 		gimp_progress_init (name_buf);
 		g_free (name_buf);
 	}
+	
+	/* Find the guides... */
+	guide_ID = gimp_image_find_next_guide(image_ID, 0);
+	hotx = -1;
+	hoty = -1;
+	while(guide_ID>0) {
+		int orientation;
+		printf("Found guide %d:", guide_ID);
+		orientation = gimp_image_get_guide_orientation(image_ID, guide_ID);
+		switch(orientation) {
+		case GIMP_HORIZONTAL:
+			if(hoty<0) {
+				hoty = gimp_image_get_guide_position(image_ID, guide_ID);
+				printf(", horizontal=%d\n", hoty);
+			}
+			break;
+		case GIMP_VERTICAL:
+			if(hotx<0) {
+				hotx = gimp_image_get_guide_position(image_ID, guide_ID);
+				printf(", vertical=%d\n", hotx);
+			}
+			break;
+		default:
+			break;
+		}
+		guide_ID = gimp_image_find_next_guide(image_ID, guide_ID);
+	}
+	
 	/* get a list of layers for this image_ID */
 	layers = gimp_image_get_layers (image_ID, &nlayers);  
 
@@ -602,11 +643,11 @@ static gint32 save_image (gchar  *filename,
 	for (k=0;k<nlayers;k++) {
 		frame = &shape.frames[k];
 		drawable = gimp_drawable_get (layers[k]);
-		gimp_drawable_offsets (layers[k], &offsetX, &offsetY);
+		//gimp_drawable_offsets (layers[k], &offsetX, &offsetY);
 		frame->width = drawable->width;
 		frame->height = drawable->height;
-		frame->leftX = offsetX;
-		frame->leftY = offsetY;
+		frame->leftX = hotx;
+		frame->leftY = hoty;
 		frame->rightX = frame->width-frame->leftX-1;
 		frame->rightY = frame->height-frame->leftY-1;
 		pix = (gchar *)malloc(frame->width*frame->height*2);
