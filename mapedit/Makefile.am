@@ -59,6 +59,7 @@ exult_studio_LDADD = \
 	-lpng $(FREETYPE2_LIBS) $(SYSLIBS) $(x_libraries) $(GLADE_LIBS)
 
 exult_studio_CFLAGS = $(LIBGLADE_INCLUDES)
+exult_studio_LDFLAGS = -export-dynamic		# For libglade 2.x
 
 mapeditdir = $(datadir)/exult
 

@@ -356,6 +356,32 @@ inline Tile_coord Get_step_tile
 	}
 
 /*
+ *	Find the party member occupying a given tile, starting with a given
+ *	party #.
+ *	Note:	Maybe it should check a rectangle of tiles someday if we want
+ *		to have NPC's bigger than 1 tile.
+ */
+
+static Actor *Find_member_blocking
+	(
+	Tile_coord pos,			// Position to check.
+	int first			// Party ID to start with.
+	)
+	{
+	Game_window *gwin = Game_window::get_instance();
+	Party_manager *pman = gwin->get_party_man();
+	int count = pman->get_count();
+
+	for (int i = first; i < count; i++)
+		{
+		Actor *npc = gwin->get_npc(pman->get_member(i));
+		if (npc->blocks(pos))
+			return npc;	// Found.
+		}
+	return 0;
+ 	}
+
+/*
  *	Get a notion of 'cost' for stepping to a particular tile.
  *
  *	Output:	Currently, 10000 if blocked, or (delta-z)**2, so a
@@ -367,18 +393,31 @@ static int Get_cost
 	(
 	Actor *npc,			// NPC to take the step.
 	Actor *leader,			// NPC he's following.
-	Tile_coord to			// Tile to step to.
+	Tile_coord to,			// Tile to step to.
+	Actor **find_blocking = 0	// Returns blocking party member.
 	)
 	{
-	if (npc->is_blocked(to))	// (To.tz is updated.)
-		return max_cost;	// Can't go there.
 	int cost = 0;
+	if (npc->is_blocked(to))	// (To.tz is updated.)
+		{			// Can't go there.
+		if (find_blocking)
+			{		// Find member we can swap with.
+			*find_blocking = Find_member_blocking(to,
+						1 + npc->get_party_id());
+			if (!*find_blocking)
+				return max_cost;
+			to.tz = (*find_blocking)->get_lift();
+			cost += 1;	// Assess one point to swap.
+			}
+		else
+			return max_cost;
+		}
 	int ltz = leader->get_lift();	// Leader's z-coord.
 	int difftz = to.tz - ltz;	// Measure closeness.
 	cost += difftz*difftz;
 	return cost;
 	}
-
+#if 0	/* ++++ Not used. */
 /*
  *	Take the better of two steps.
  *
@@ -410,6 +449,7 @@ static bool Take_better_step
 		}
 	return npc->step(dest2, frame);
 	}
+#endif
 
 /*
  *	Take best step to follow the leader.
@@ -474,7 +514,7 @@ bool Party_manager::step
 	int frame = frames->get_next(step_index);
 	int cost = Get_cost(npc, leader, to);
 					// Want delta-z <= 1.
-	if (cost <= 2 && npc->step(to, frame))
+	if (cost <= 3 && npc->step(to, frame))
 		{
 		if (to.tx != dest.tx || to.ty != dest.ty)
 			{		// Take a 2nd step (w/ same frame).
