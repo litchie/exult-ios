@@ -298,6 +298,31 @@ void Image_buffer8::copy_line_translucent8
 	}
 
 /*
+ *	Apply a translucency table to a line.
+ */
+
+void Image_buffer8::fill_line_translucent8
+	(
+	unsigned char val,		// Ignored for this method.
+	int srcw,
+	int destx, int desty,
+	Xform_palette xform		// Transform table.
+	)
+	{
+	int srcx = 0, srcy = 0, srch = 1;
+					// Constrain to window's space.
+	if (!clip(srcx, srcy, srcw, srch, destx, desty))
+		return;
+	unsigned char *pixels = (unsigned char *) bits + 
+						desty*line_width + destx;
+	while (srcw--)
+		{
+		*pixels = xform[*pixels];
+		pixels++;
+		}
+	}
+
+/*
  *	Copy another rectangle into this one, with 0 being the transparent
  *	color.
  */

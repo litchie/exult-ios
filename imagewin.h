@@ -137,6 +137,9 @@ public:
 		unsigned char *src_pixels, int srcw,
 		int destx, int desty, int first_translucent,
 		int last_translucent, Xform_palette *xforms) = 0;
+					// Apply translucency to a line.
+	virtual void fill_line_translucent8(unsigned char val,
+		int srcw, int destx, int desty, Xform_palette xform) = 0;
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty) = 0;
@@ -215,6 +218,9 @@ public:
 		unsigned char *src_pixels, int srcw,
 		int destx, int desty, int first_translucent,
 		int last_translucent, Xform_palette *xforms);
+					// Apply translucency to a line.
+	virtual void fill_line_translucent8(unsigned char val,
+			int srcw, int destx, int desty, Xform_palette xform);
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty);
@@ -304,6 +310,10 @@ public:
 		int destx, int desty, int first_translucent,
 		int last_translucent, Xform_palette *xforms)
 		{ copy_line8(src_pixels, srcw, destx, desty); }
+					// Apply translucency to a line.
+	virtual void fill_line_translucent8(unsigned char val,
+			int srcw, int destx, int desty, Xform_palette xform)
+		{ fill_line8(val, srcw, destx, desty); }
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty);
@@ -363,7 +373,7 @@ public:
 						int destx, int desty)
 		{ ibuf->fill8(val, srcw, srch, destx, desty); }
 					// Fill line with pixel.
-	virtual void fill_line8(unsigned char val, int srcw,
+	void fill_line8(unsigned char val, int srcw,
 						int destx, int desty)
 		{ ibuf->fill_line8(val, srcw, destx, desty); }
 					// Copy rectangle into here.
@@ -371,16 +381,21 @@ public:
 				int srcw, int srch, int destx, int desty)
 		{ ibuf->copy8(src_pixels, srcw, srch, destx, desty); }
 					// Copy line to here.
-	virtual void copy_line8(unsigned char *src_pixels, int srcw,
+	void copy_line8(unsigned char *src_pixels, int srcw,
 						int destx, int desty)
 		{ ibuf->copy_line8(src_pixels, srcw, destx, desty); }
 					// Copy with translucency table.
-	virtual void copy_line_translucent8(
+	void copy_line_translucent8(
 		unsigned char *src_pixels, int srcw,
 		int destx, int desty, int first_translucent,
 		int last_translucent, Xform_palette *xforms)
 		{ ibuf->copy_line_translucent8(src_pixels, srcw, destx, desty,
 				first_translucent, last_translucent, xforms); }
+					// Apply translucency to a line.
+	void fill_line_translucent8(unsigned char val,
+			int srcw, int destx, int desty, Xform_palette xform)
+		{ ibuf->fill_line_translucent8(val, srcw, destx, desty,
+								xform); }
 					// Copy rect. with transp. color.
 	void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty)
