@@ -2103,10 +2103,7 @@ void Game_window::activate_item
 		Game_object *obj = person->find_item(shnum, qual, frnum);
 		if (obj)
 			{
-			Game_mode savemode = mode;
 			obj->activate(usecode);
-			if (mode == conversation)
-				mode = savemode;
 			return;
 			}
 		}
@@ -2627,16 +2624,8 @@ void Game_window::double_clicked
 		cout << "Object name is " << obj->get_name() << endl;
 #endif
 		usecode->init_conversation();
-		Game_mode savemode = mode;
 		obj->activate(usecode);
 		npc_prox->wait(4);	// Delay "barking" for 4 secs.
-		if (mode == conversation)
-			{
-			// We had a conversation with an NPC, set the met flag true (BG Only)
-			if (Game::get_game_type() == BLACK_GATE && obj->get_npc_num() != -1) obj->set_flag (Obj_flags::met);
-			mode = savemode;
-			paint();
-			}
 		}
 	}
 

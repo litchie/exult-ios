@@ -362,13 +362,6 @@ void Scheduled_usecode::handle_event
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
 		return;
 		}
-					// Don't get stuck in conv. mode.
-	if (gwin->get_mode() == Game_window::conversation)
-		{
-//		gwin->set_mode(Game_window::normal);
-		gwin->end_gump_mode();	// This also sets mode=normal.
-		gwin->paint();
-		}
 	if (count == 1 &&		// Last one?  GUESSING:
 	    objpos.tx != -1)		// And valid pos.
 		usecode->activate_cached(objpos);
