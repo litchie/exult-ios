@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #include <sys/stat.h>
 #endif
 #include "gamewin.h"
+#include "egg.h"
 #include "items.h"
 #include "utils.h"
 #include "fnames.h"
@@ -2298,15 +2299,11 @@ void Game_window::end_splash
 		paint();
 		audio->cancel();
 					// Want to activate first egg.
-#if 0
-		main_actor->walk_to_tile(1075, 2214, 0);
-#else
 		Chunk_object_list *olist = get_objects(
 				main_actor->get_cx(), main_actor->get_cy());
 		olist->setup_cache();
 		olist->activate_eggs(main_actor->get_tx(), 
-						main_actor->get_ty());
-#endif
+						main_actor->get_ty(), -1, -1);
 		}
 	}
 

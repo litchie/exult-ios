@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "objs.h"
+#include "egg.h"
 #include "gamewin.h"
 #include "usecode.h"
 #include "items.h"
@@ -1596,6 +1597,54 @@ void Barge_object::write_ireg
 	}
 
 /*
+ *	Here's an iterator that takes a rectangle of tiles, and sequentially
+ *	returns the interesection of that rectangle with each chunk that it
+ *	touches.
+ */
+class Chunk_intersect_iterator
+	{
+	Rectangle tiles;		// Original rect.
+					// Chunk #'s covered:
+	int firstcx, lastcx, lastcy;
+	int curcx, curcy;		// Next chunk to return.
+public:
+	Chunk_intersect_iterator(Rectangle t) : tiles(t),
+		  firstcx(t.x/tiles_per_chunk), curcy(t.y/tiles_per_chunk),
+		  lastcx((t.x + t.w - 1)/tiles_per_chunk),
+		  lastcy((t.y + t.h - 1)/tiles_per_chunk)
+		{
+		curcx = firstcx;
+		if (t.x <= 0 || t.y <= 0)
+			{		// Empty to begin with.
+			curcx = lastcx + 1;
+			curcy = lastcy + 1;
+			}
+		}
+					// Intersect is ranged within chunk.
+	int get_next(Rectangle& intersect, int& cx, int& cy)
+		{
+		if (curcx > lastcx)	// End of row?
+			if (curcy > lastcy)
+				return (0);
+			else
+				{
+				curcy++;
+				curcx = firstcx;
+				}
+		Rectangle cr(curcx*tiles_per_chunk, curcy*tiles_per_chunk,
+				tiles_per_chunk, tiles_per_chunk);
+					// Intersect given rect. with chunk.
+		intersect = cr.intersect(tiles);
+					// Make it 0-based rel. to chunk.
+		intersect.shift(-cr.x, -cr.y);
+		cx = curcx;
+		cy = curcy;
+		curcx++;
+		return (1);
+		}
+	};
+
+/*
  *	Create the cached data storage for a chunk.
  */
 
@@ -1659,8 +1708,6 @@ void Chunk_cache::update_object
 	int ztiles = info.get_3d_height(); 
 	if (!ztiles || !info.is_solid())
 		return;			// Skip if not an obstacle.
-					// Get chunk coords.
-	int cx = chunk->get_cx(), cy = chunk->get_cy();
 					// Get lower-right corner of obj.
 	int endx = obj->get_tx();
 	int endy = obj->get_ty();
@@ -1676,6 +1723,22 @@ void Chunk_cache::update_object
 			clear_blocked_tile(endx, endy, lift, ztiles);
 		return;
 		}
+#if 1	/* ++++New way. */
+	Tile_coord endpt = obj->get_abs_tile_coord();
+	Rectangle footprint(endpt.tx - xtiles + 1, endpt.ty - ytiles + 1, 
+							xtiles, ytiles);
+					// Go through interesected chunks.
+	Chunk_intersect_iterator next_chunk(footprint);
+	Rectangle tiles;
+	int cx, cy;
+	while (next_chunk.get_next(tiles, cx, cy))
+		gwin->get_objects(cx, cy)->set_blocked(tiles.x, tiles.y, 
+			tiles.x + tiles.w - 1, tiles.y + tiles.h - 1, lift,
+								ztiles, add);
+
+#else	/* ++++++++Old way */
+					// Get chunk coords.
+	int cx = chunk->get_cx(), cy = chunk->get_cy();
 	int startx = endx - xtiles + 1, starty = endy - ytiles + 1;
 					// First this chunk.
 	int this_startx = startx < 0 ? 0 : startx;
@@ -1696,93 +1759,94 @@ void Chunk_cache::update_object
 	if (starty < 0 && cy > 0)	// Chunk directly above?
 		gwin->get_objects(cx, cy - 1)->set_blocked(this_startx,
 			starty + tiles_per_chunk, endx, 15, lift, ztiles, add);
+#endif
 	}
 
 /*
  *	Set a rectangle of tiles within this chunk to be under the influence
- *	of a given egg.
+ *	of a given egg, or clear it.
  */
 
 void Chunk_cache::set_egged
 	(
 	Egg_object *egg,
-	Rectangle& tiles		// Range of tiles within chunk.
+	Rectangle& tiles,		// Range of tiles within chunk.
+	int add				// 1 to add, 0 to remove.
 	)
 	{
 					// Egg already there?
 	int eggnum = egg_objects.find(egg);
-	if (eggnum < 0)			// No, so add it.
-		eggnum = egg_objects.put(egg);
-	if (eggnum > 15)		// We only have 16 bits.
-		eggnum = 15;
-	short mask = (1<<eggnum);
-	int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
-	for (int ty = tiles.y; ty < stopy; ty++)
-		for (int tx = tiles.x; tx < stopx; tx++)
-			eggs[ty*tiles_per_chunk + tx] |= mask;
-	}
-
-/*
- *	Clear a rectangle of tiles within this chunk so they're no longer 
- *	under the influence of a given egg.
- */
-
-void Chunk_cache::unset_egged
-	(
-	Egg_object *egg,
-	Rectangle& tiles		// Range of tiles within chunk.
-	)
-	{
-					// Find egg.
-	int eggnum = egg_objects.find(egg);
-	if (eggnum < 0)
-		return;			// Not there.
-	egg_objects.put(eggnum, 0);	// Clear it out.
-	if (eggnum >= 15)		// We only have 16 bits.
-		{			// Last one at 15 or above?
-		int num_eggs = get_num_eggs();
-		for (int i = 15; i < num_eggs; i++)
-			if (egg_objects.get(i))
-				return;	// No, so leave bits alone.
-		eggnum = 15;
+	if (add)
+		{
+		if (eggnum < 0)		// No, so add it.
+			eggnum = egg_objects.put(egg);
+		if (eggnum > 15)	// We only have 16 bits.
+			eggnum = 15;
+		short mask = (1<<eggnum);
+		int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
+		for (int ty = tiles.y; ty < stopy; ty++)
+			for (int tx = tiles.x; tx < stopx; tx++)
+				eggs[ty*tiles_per_chunk + tx] |= mask;
 		}
-	short mask = ~(1<<eggnum);
-	int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
-	for (int ty = tiles.y; ty < stopy; ty++)
-		for (int tx = tiles.x; tx < stopx; tx++)
-			eggs[ty*tiles_per_chunk + tx] &= mask;
+	else				// Remove.
+		{
+		if (eggnum < 0)
+			return;		// Not there.
+		egg_objects.put(eggnum, 0);
+		if (eggnum >= 15)	// We only have 16 bits.
+			{		// Last one at 15 or above?
+			int num_eggs = get_num_eggs();
+			for (int i = 15; i < num_eggs; i++)
+				if (egg_objects.get(i))
+					// No, so leave bits alone.
+					return;
+			eggnum = 15;
+			}
+		short mask = ~(1<<eggnum);
+		int stopx = tiles.x + tiles.w, stopy = tiles.y + tiles.h;
+		for (int ty = tiles.y; ty < stopy; ty++)
+			for (int tx = tiles.x; tx < stopx; tx++)
+				eggs[ty*tiles_per_chunk + tx] &= mask;
+		}
 	}
 
 /*
- *	Add an egg to the cache.
+ *	Add/remove an egg to the cache.
  */
 
-void Chunk_cache::add_egg
+void Chunk_cache::update_egg
 	(
 	Chunk_object_list *chunk,
-	Egg_object *egg
+	Egg_object *egg,
+	int add				// 1 to add, 0 to remove.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	int tx, ty, tz;			// Get absolute tile coords.
-	egg->get_abs_tile(tx, ty, tz);
-	int dist = egg->get_distance();
-	Rectangle tiles;		// Set up rect. with abs. tile range.
-	if (egg->get_criteria() == Egg_object::avatar_footpad)
-		{
-		Shape_info& info = gwin->get_info(egg);
-		int xtiles = info.get_3d_xtiles(), 
-		    ytiles = info.get_3d_ytiles();
-		tiles = Rectangle(tx - xtiles + 1, ty - ytiles + 1,
-							xtiles, ytiles);
-		}
-	else
-		tiles = Rectangle(tx - dist, ty - dist, 
-						2*dist + 1, 2*dist + 1);
-					// Don't go outside the world.
-	Rectangle world(0, 0, num_chunks*tiles_per_chunk,
-						num_chunks*tiles_per_chunk);
-	tiles = tiles.intersect(world);
+					// Get footprint with abs. tiles.
+	Rectangle foot = egg->get_area();
+#if 1
+					// Just do the perimeter.
+	Rectangle top(foot.x, foot.y, foot.w, 1);
+	Rectangle bottom(foot.x, foot.y + foot.h - 1, foot.w, 1);
+	Rectangle left(foot.x, foot.y + 1, 1, foot.h - 2);
+	Rectangle right(foot.x + foot.w - 1, foot.y + 1, 1, foot.h - 2);
+	Rectangle crect;		// Gets tiles within each chunk.
+	int cx, cy;
+					// Go through intersected chunks.
+	Chunk_intersect_iterator tops(top);
+	while (tops.get_next(crect, cx, cy))
+		gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
+	Chunk_intersect_iterator bottoms(bottom);
+	while (bottoms.get_next(crect, cx, cy))
+		gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
+	Chunk_intersect_iterator lefts(left);
+	while (lefts.get_next(crect, cx, cy))
+		gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
+	Chunk_intersect_iterator rights(right);
+	while (rights.get_next(crect, cx, cy))
+		gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
+
+#else	/* ++++++Old way */
 					// Figure range of chunks.
 	int start_cx = tiles.x/tiles_per_chunk,
 	    end_cx = (tiles.x + tiles.w - 1)/tiles_per_chunk;
@@ -1804,6 +1868,7 @@ void Chunk_cache::add_egg
 				chunk->set_egged(egg, crect);
 				}
 			}
+#endif
 	}
 
 /*
@@ -1819,7 +1884,7 @@ void Chunk_cache::setup
 	for (Game_object *obj = chunk->get_first(); obj; 
 						obj = chunk->get_next(obj))
 		if (obj->is_egg())
-			add_egg(chunk, (Egg_object *) obj);
+			update_egg(chunk, (Egg_object *) obj, 1);
 		else
 			update_object(chunk, obj, 1);
 	setup_done = 1;
@@ -1869,7 +1934,8 @@ int Chunk_cache::is_blocked
 void Chunk_cache::activate_eggs
 	(
 	Chunk_object_list *chunk,	// Chunk this is attached to.
-	int tx, int ty,			// Tile.
+	int tx, int ty,			// Tile (absolute).
+	int from_tx, int from_ty,	// Tile walked from.
 	unsigned short eggbits		// Eggs[tile].
 	)
 	{
@@ -1882,20 +1948,16 @@ void Chunk_cache::activate_eggs
 		{
 		Egg_object *egg;
 		if ((eggbits&1) && (egg = (Egg_object *) egg_objects.get(i)) &&
-		    egg->is_active())
+		    egg->is_active(tx, ty, from_tx, from_ty))
 			egg->activate(usecode);
 		}
 	if (eggbits)			// Check 15th bit.
 		{
-					// Figure absolute tile coords.
-		int atx = chunk->get_cx()*tiles_per_chunk + tx;
-		int aty = chunk->get_cy()*tiles_per_chunk + ty;
-		int num_eggs = get_num_eggs();
+		int num_eggs = egg_objects.get_cnt();
 		for ( ; i < num_eggs; i++)
 			{
 			Egg_object *egg = (Egg_object *) egg_objects.get(i);
-			if (egg && egg->within_distance(atx, aty) &&
-			    egg->is_active())
+			if (egg && egg->is_active(tx, ty, from_tx, from_ty))
 				egg->activate(usecode);
 			}
 		}
@@ -2001,7 +2063,7 @@ void Chunk_object_list::add_egg
 	{
 	add(egg);			// Add it normally.
 	if (cache)			// Add to cache.
-		cache->add_egg(this, egg);
+		cache->update_egg(this, egg, 1);
 	}
 
 /*

@@ -679,13 +679,14 @@ int Main_actor::step
 					// Check for scrolling.
 	gwin->scroll_if_needed(t);
 	gwin->add_dirty(this);		/// Set to update old location.
-					// Get old chunk.
+					// Get old chunk, old tile.
 	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
+	Tile_coord oldtile = get_abs_tile_coord();
 					// Move it.
 	Game_object::move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
 	gwin->add_dirty(this);		// Set to update new.
 					// Near an egg?
-	nlist->activate_eggs(tx, ty);
+	nlist->activate_eggs(t.tx, t.ty, oldtile.tx, oldtile.ty);
 					// In a new chunk?
 	if (olist != nlist)
 		{
