@@ -81,6 +81,15 @@ C_EXPORT gint on_combo_draw_expose_event
 	}
 
 C_EXPORT void
+on_combo_remove_clicked                (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	combo->remove();
+}
+
+C_EXPORT void
 on_combo_apply_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -185,6 +194,16 @@ void Combo::add
 	int shnum, int frnum		// Shape.
 	)
 	{
+					// Look for identical shape, pos.
+	for (vector<Combo_member *>::iterator it = members.begin();
+					it != members.end(); ++it)
+		{
+		Combo_member *m = *it;
+		if (tx == m->tx && ty == m->ty && tz == m->tz &&
+		    shnum == m->shapenum && frnum == m->framenum)
+			return;		// Don't add same one twice.
+		}
+
 //++++++++Make sure it's not too far away from existing objects.
 	Combo_member *memb = new Combo_member(tx, ty, tz, shnum, frnum);
 	members.push_back(memb);
@@ -212,7 +231,14 @@ void Combo::remove
 	int i
 	)
 	{
-	//+++++++++++
+	if (i < 0 || i >= members.size())
+		return;
+					// Get and remove i'th entry.
+	vector<Combo_member *>::iterator it = members.begin() + i;
+	Combo_member *m = *it;
+	members.erase(it);
+	delete m;
+	// +++++++Mayby re-adjust top tx, ty???
 	}
 
 /*
@@ -225,6 +251,8 @@ void Combo::draw
 	int selected			// Index of 'selected' item, or -1.
 	)
 	{
+	int selx = -1000, sely = -1000;
+	bool selfound = false;
 	for (vector<Combo_member *>::iterator it = members.begin();
 					it != members.end(); ++it)
 		{
@@ -246,10 +274,18 @@ void Combo::draw
 		y -= shape->get_yabove();
 		draw->draw_shape(shape, x, y);
 		if (it - members.begin() == selected)
-					// Outline selected.
+			{
+			selx = x;	// Save coords for selected.
+			sely = y;
+			selfound = true;
+			}
+		}
+	if (selfound)			// Now put border around selected.
+		{
+		Combo_member *m = members[selected];
 					// FOR NOW, use color #1 ++++++++
-			draw->draw_shape_outline(m->shapenum, m->framenum,
-						x, y, 1);
+		draw->draw_shape_outline(m->shapenum, m->framenum,
+						selx, sely, 1);
 		}
 	}
 
@@ -384,6 +420,7 @@ void Combo_editor::set_controls
 		studio->set_spin("combo_locy", 0, false);
 		studio->set_spin("combo_locz", 0, false);
 		studio->set_spin("combo_order", 0, false);
+		studio->set_sensitive("combo_remove", false);
 		}
 	else
 		{
@@ -400,6 +437,7 @@ void Combo_editor::set_controls
 		studio->set_sensitive("combo_order", true);
 		studio->set_spin("combo_order", selected, 0,
 						combo->members.size() - 1);
+		studio->set_sensitive("combo_remove", true);
 		}
 	setting_controls = false;
 	}
@@ -490,3 +528,19 @@ void Combo_editor::add
 	render();
 	}
 
+/*
+ *	Remove selected.
+ */
+
+void Combo_editor::remove
+	(
+	)
+	{
+	if (selected >= 0)
+		{
+		combo->remove(selected);
+		selected = -1;
+		set_controls();
+		render();
+		}
+	}
