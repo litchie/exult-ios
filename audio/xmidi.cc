@@ -372,8 +372,10 @@ XMIDI::~XMIDI()
 {
 	if (events)
 	{
-		for (int i=0; i < num_tracks; i++)
-			DeleteEventList (events[i]);
+		for (int i=0; i < num_tracks; i++) {
+			events[i]->DecerementCounter();
+			events[i] = NULL;
+		}
 		//delete [] events;
 		Free(events);
 	}
@@ -393,34 +395,7 @@ XMIDIEventList *XMIDI::GetEventList (uint32 track)
 		return 0;
 	}
 
-	events[track]->counter ++;
-
 	return events[track];
-}
-
-void XMIDI::DeleteEventList (midi_event *mlist)
-{
-	midi_event *event;
-	midi_event *next;
-	
-	next = mlist;
-	event = mlist;
-
-	while ((event = next))
-	{
-		next = event->next;
-		// We only do this with sysex
-		if ((event->status>>4) == 0xF && event->buffer) Free (event->buffer);
-		Free (event);
-	}
-}
-
-void XMIDI::DeleteEventList (XMIDIEventList *mlist)
-{
-	if (--mlist->counter < 0) {
-		DeleteEventList(mlist->events);
-		Free(mlist);
-	}
 }
 
 // Sets current to the new event and updates list
@@ -1462,8 +1437,10 @@ int XMIDI::ExtractTracks (DataSource *source)
 			
 			int i = 0;
 			
-			for (i = 0; i < num_tracks; i++)
-				DeleteEventList (events[i]);
+			for (i = 0; i < num_tracks; i++) {
+				events[i]->DecerementCounter();
+				events[i] = NULL;
+			}
 			
 			//delete [] events;
 			Free (events);
@@ -1504,8 +1481,10 @@ int XMIDI::ExtractTracks (DataSource *source)
 		{
 			cerr << "Error: unable to extract all (" << num_tracks << ") tracks specified from MIDI. Only ("<< count << ")" << endl;
 			
-			for (i = 0; i < num_tracks; i++)
-				DeleteEventList (events[i]);
+			for (i = 0; i < num_tracks; i++) {
+				events[i]->DecerementCounter();
+				events[i] = NULL;
+			}
 			
 			Free (events);
 			
@@ -1750,3 +1729,28 @@ uint32 XMIDIEventList::ConvertListToMTrk (DataSource *dest)
 	return i;
 }
 
+
+void XMIDIEventList::DeleteEventList (midi_event *mlist)
+{
+	midi_event *event;
+	midi_event *next;
+	
+	next = mlist;
+	event = mlist;
+
+	while ((event = next))
+	{
+		next = event->next;
+		// We only do this with sysex
+		if ((event->status>>4) == 0xF && event->buffer) Free (event->buffer);
+		Free (event);
+	}
+}
+
+void XMIDIEventList::DecerementCounter()
+{
+	if (--counter < 0) {
+		DeleteEventList(events);
+		Free(this);
+	}
+}

@@ -1,3 +1,11 @@
+2002-02-09  Ryan Nunn  <triforce@merlin.net.au>
+	* game.cc : Namespace stuff
+	* gamemap.cc : Compiling error
+	* msvcstuff/msvc_kludges.h : Headers dir
+	* audio/xmidi.*, audio/midi_drivers/mac_midi.cc, 
+	  audio/midi_drivers/win_midiout.cc : Fixing up a memory leak that
+	  was occuring for all the builds except Win32 and Mac.
+
 2002-02-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/shapefile.cc (Shape_file_set): Check 'patch', then

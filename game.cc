@@ -89,7 +89,7 @@ char *Game::get_game_identity(const char *savename)
         U7open(in, savename);		// Open file.
     } catch (const exult_exception &e) {
 	if (is_editing())		// Okay if creating a new game.
-	    return strdup(gametitle.c_str());
+		return std::strdup(gametitle.c_str());
 	throw e;
     }
     in.seekg(0x54);			// Get to where file count sits.
