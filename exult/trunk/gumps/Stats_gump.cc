@@ -106,24 +106,24 @@ void Stats_gump::paint
 	std::string nm = act->get_name();
 	sman->paint_text(2, nm.c_str(), x + namex +
 		(namew - sman->get_text_width(2, nm.c_str()))/2, y + namey);
-	gman->Paint_num(act->get_property(Actor::strength),
+	gman->paint_num(act->get_property(Actor::strength),
 						x + textx, y + texty[0]);
-	gman->Paint_num(act->get_property(Actor::dexterity),
+	gman->paint_num(act->get_property(Actor::dexterity),
 						x + textx, y + texty[1]);
-	gman->Paint_num(act->get_property(Actor::intelligence),
+	gman->paint_num(act->get_property(Actor::intelligence),
 						x + textx, y + texty[2]);
-  	gman->Paint_num(act->get_property(Actor::combat),
+  	gman->paint_num(act->get_property(Actor::combat),
 						x + textx, y + texty[3]);
-  	gman->Paint_num(act->get_property(Actor::magic),
+  	gman->paint_num(act->get_property(Actor::magic),
 						x + textx, y + texty[4]);
-  	gman->Paint_num(act->get_property(Actor::health),
+  	gman->paint_num(act->get_property(Actor::health),
 						x + textx, y + texty[5]);
-  	gman->Paint_num(act->get_property(Actor::mana),
+  	gman->paint_num(act->get_property(Actor::mana),
 						x + textx, y + texty[6]);
-  	gman->Paint_num(act->get_property(Actor::exp),
+  	gman->paint_num(act->get_property(Actor::exp),
 						x + textx, y + texty[7]);
-	gman->Paint_num(act->get_level(), x + textx, y + texty[8]);
-  	gman->Paint_num(act->get_property(Actor::training),
+	gman->paint_num(act->get_level(), x + textx, y + texty[8]);
+  	gman->paint_num(act->get_property(Actor::training),
 						x + textx, y + texty[9]);
 					// Now show atts. at bottom.
 	const int attsy = 130, attsx0 = 29;

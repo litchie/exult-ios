@@ -89,9 +89,9 @@ void CombatStats_gump::paint()
 	for (int i = 0; i < party_size; i++) {
 		face_btn[i]->paint();
 
-		gman->Paint_num(party[i]->get_property(Actor::combat),
+		gman->paint_num(party[i]->get_property(Actor::combat),
 				  x + colx + i*coldx, y + rowy[1]);		
-		gman->Paint_num(party[i]->get_property(Actor::health),
+		gman->paint_num(party[i]->get_property(Actor::health),
 				  x + colx + i*coldx, y + rowy[2]);
 
 		halo_btn[i]->paint();
@@ -99,9 +99,9 @@ void CombatStats_gump::paint()
 	}
 
 	// magic stats only for Avatar
-  	gman->Paint_num(party[0]->get_property(Actor::magic),
+  	gman->paint_num(party[0]->get_property(Actor::magic),
 						x + colx, y + rowy[5]);
-  	gman->Paint_num(party[0]->get_property(Actor::mana),
+  	gman->paint_num(party[0]->get_property(Actor::mana),
 						x + colx, y + rowy[6]);	
 }
 

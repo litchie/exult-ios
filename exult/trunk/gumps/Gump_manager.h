@@ -70,17 +70,16 @@ public:
 	inline void set_right_click_close(bool r) { right_click_close = r; }
 
 
-	int Okay_to_quit();
-	int Prompt_for_number(int minval, int maxval, int step, int def);
-	int Do_Modal_gump(Modal_gump *, Mouse::Mouse_shapes);
-	void Paint_num(int num, int x, int y);
-
+	int okay_to_quit();
+	int prompt_for_number(int minval, int maxval, int step, int def);
+	int do_modal_gump(Modal_gump *, Mouse::Mouse_shapes);
+	void paint_num(int num, int x, int y);
 
 	Gump_manager();
 	~Gump_manager() { close_all_gumps(true); }
 
  private:
-	int Handle_Modal_gump_event(Modal_gump *gump, SDL_Event& event);
+	int handle_modal_gump_event(Modal_gump *gump, SDL_Event& event);
 };
 
 #endif // GUMP_MANAGER_INCLUDED

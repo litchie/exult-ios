@@ -179,7 +179,7 @@ int Yesno_gump::ask
 {
 	Yesno_gump *dlg = new Yesno_gump(txt);
 	int answer;
-	if (!gumpman->Do_Modal_gump(dlg, Mouse::hand))
+	if (!gumpman->do_modal_gump(dlg, Mouse::hand))
 		answer = 0;
 	else
 		answer = dlg->get_answer();
