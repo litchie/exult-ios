@@ -27,6 +27,7 @@ class SoundTester;
 class CheatScreen;
 class Actor;
 class Game_object;
+class Tile_coord;
 
 class Cheat
 {
@@ -55,6 +56,7 @@ private:
   int  edit_lift;
   int  edit_shape, edit_frame;		// What to 'paint' with.
   Game_object_vector selected;		// Selected objects (map-editing).
+  Game_object_vector clipboard;		// Cut/copy/paste objects.
   bool infravision;
   bool pickpocket;
   bool grab_actor;
@@ -119,6 +121,11 @@ public:
 	{ return selected; }
   bool is_selected(Game_object *o)
 	{ return selected.size() ? (selected.find(o) != -1) : false; }
+
+  void cut(bool copy = false);
+  void paste(Tile_coord pos);
+  const Game_object_vector& get_clipboard() const
+	{ return clipboard; }
 
   void map_teleport (void) const;
   void cursor_teleport (void) const;
