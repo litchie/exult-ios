@@ -910,6 +910,46 @@ int Game_object::get_rotated_frame
 		int dir = curframe%4;	// Current dir (0-3).
 		return (curframe - dir) + (dir + quads)%4;
 		}
+	case 665:			// Prow.  Frames 0,3 are N, 1,2 S.
+		{
+		static char dirs[4] = {0, 2, 2, 0};
+		int subframe = curframe%4;
+		int dir = (4 + dirs[subframe] - ((curframe>>5)&1) + quads)%4;
+		static int subframes[4] = {0, 33, 1, 32};
+		return ((curframe - subframe)&31) + subframes[dir];
+		}
+	case 775:			// Ship rails.
+		{
+		static char swaps180[8] = {2, 3, 0, 1, 6, 7, 4, 5};
+		static char swaps90r[8] = {1, 0, 3, 2, 5, 4, 7, 6};
+		int subframe = curframe&7;
+		switch (quads)
+			{
+		case 1:			// 90 right?
+			{
+			int swapped = swaps90r[subframe];
+			return (curframe&32) ? swaps180[swapped]
+					     : (swapped|32);
+			}
+		case 3:			// 90 left?  Go 180 + 90 right.
+			{
+			int swapped = swaps90r[swaps180[subframe]];
+			return (curframe&32) ? swaps180[swapped]
+					     : (swapped|32);
+			}
+		case 2:			// 180?
+			return swaps180[subframe] | (curframe&32);
+		default:
+			return curframe;
+			}
+		}
+	case 781:			// Gang plank.  Odd frames are rot.
+	case 791:			// Ship.+++++++Not right.
+	case 1017:			// Ship.
+		{
+		int newframe = (curframe + quads)%4;
+		return newframe | ((newframe&1)<<5);
+		}
 	case 840:			// Magic carpet.
 		{
 		if (curframe >= 24)	// Plain square.
