@@ -257,14 +257,20 @@ void Conversation::show_face(int shape, int frame, int slot)
 		info->text_rect = gwin->clip_to_win(Rectangle(
 			actbox.x + actbox.w + 3, actbox.y + 3,
 			screenw - actbox.x - actbox.w - 6, 4*text_height));
+					// No room?  (Serpent?)
+		if (info->text_rect.w < 16 || info->text_rect.h < 16)
+					// Show in lower center.
+			info->text_rect = Rectangle(screenw/4, screenh/2,
+						screenw/2, screenh/4);
 		info->last_text_height = info->text_rect.h;
 		}
 	else
 		actbox = info->face_rect;
 	gwin->get_win()->set_clip(0, 0, screenw, screenh);
-					// Draw whom we're talking to.
+					// Draw whom we're talking to, using
+					//   translucency.
 	gwin->paint_shape(actbox.x + face->get_xleft(),
-			actbox.y + face->get_yabove(), face);
+			actbox.y + face->get_yabove(), face, 1);
 	gwin->get_win()->clear_clip();
 	}
 

@@ -564,10 +564,13 @@ USECODE_INTRINSIC(update_last_created)
 					//   structural. (For SI maze).
 		Shape_info& info = gwin->get_info(last_created);
 		if (info.get_3d_height() < 5 &&
+					// Weed out drawbridge:
+		    info.get_3d_xtiles() < 8 && info.get_3d_ytiles() < 8 &&
 					// And skip if BG.  Causes FoV probs.
 		    Game::get_game_type() != BLACK_GATE)
-			while (Map_chunk::is_blocked(pos) &&
-			      Game_object::find_blocking(dest) != last_created)
+			while (Map_chunk::is_blocked(pos, 1,
+					MOVE_ALL_TERRAIN | MOVE_NODROP) &&
+			      Game_object::find_blocking(pos) != last_created)
 				{	// Try up to ceiling.
 				if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
 					{
