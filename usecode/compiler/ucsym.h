@@ -83,6 +83,10 @@ public:
 	virtual int gen_assign(ostream& out);
 	const vector<char *>& get_parms()
 		{ return parms; }
+	int get_function_num()
+		{ return offset; }
+	int get_num_parms()
+		{ return parms.size(); }
 	};
 
 /*
