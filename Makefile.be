@@ -56,7 +56,7 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 	spellbook.o virstone.o jawbone.o
 # unused: test.o
 USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o useval.o \
-	conversation.o keyring.o
+	conversation.o keyring.o ucdisasm.o
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
 
 EXULT_FLX_OBJECTS = \
