@@ -146,7 +146,11 @@ AC_MSG_CHECKING(for a C++-Compiler)
 dnl if there is one, print out. if not, don't matter
 AC_MSG_RESULT($CXX)
  
-if test -z "$CXX"; then AC_CHECK_PROG(CXX, g++, g++) fi
+if test -z "$CXX"; then
+	AC_CHECK_PROG(CXX, g++, g++)
+	CXXFLAGS="$CXXFLAGS --pedantic"
+	PEDANTIC="--pedantic"
+fi
 if test -z "$CXX"; then AC_CHECK_PROG(CXX, CC, CC) fi
 if test -z "$CXX"; then AC_CHECK_PROG(CXX, xlC, xlC) fi
 if test -z "$CXX"; then AC_CHECK_PROG(CXX, DCC, DCC) fi
@@ -166,6 +170,7 @@ AC_SUBST(WINDOWING_SYSTEM)
 AC_SUBST(RELNUM)
 AC_SUBST(KMID_INCLUDES)
 AC_SUBST(KMID_LIBS)
+AC_SUBST(PEDANTIC)
 
 dnl Checks for header files.
 AC_HEADER_DIRENT
