@@ -692,11 +692,9 @@ static int Handle_gump_event
 		mouse->move(event.motion.x, event.motion.y);
 		gwin->set_painted();
 #endif
-#if 0
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
 			gump->mouse_drag(event.motion.x, event.motion.y);
-#endif
 		break;
 	case SDL_QUIT:
 		quitting_time = 1;
