@@ -244,6 +244,19 @@ else
   AC_MSG_RESULT(no)
 fi
 
+AC_ARG_ENABLE(debug, [  --enable-optimized-debug          enable optimized debug build [default no]],,enable_opt_debug=no)
+AC_MSG_CHECKING(whether to enable optimized debug build)
+if test x$enable_opt_debug = xyes; then
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(DEBUG)
+  DEBUG_FLAGS="-g -O2 -fno-default-inline -fno-inline"
+else
+  AC_MSG_RESULT(no)
+fi
+
+
+
+
 dnl more warnings
 AC_ARG_ENABLE(warnings, [  --enable-warnings       enable all warnings and debug msg [default no]],,enable_warnings=no)
 AC_MSG_CHECKING(whether to enable all warnings)
