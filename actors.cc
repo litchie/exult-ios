@@ -572,7 +572,12 @@ int Actor::find_best_spot
 	case other_spell:
 	case one_handed_weapon:
 	case tongs:
-		return free_hand();
+		{
+		int spot = free_hand();
+		if (spot == -1 && !spots[belt])
+			spot = belt;
+		return spot;
+		}
 	case neck_armor: // This is Head in SI
 		return !spots[neck] ? neck : free_hand();
 	case torso_armor:
@@ -594,7 +599,6 @@ int Actor::find_best_spot
 		// Gloves occupy both finger spots
 		return (!spots[lfinger] && !spots[rfinger]) ? lrfinger 
 							: free_hand();
-					// ++++++What about belt?
 					// What about Bedroll in SI
 	case other:
 	default:
@@ -1113,6 +1117,30 @@ int Actor::add
 	}
 
 /*
+ *	Okay to store object in belt?
+ */
+
+static int Belt_okay
+	(
+	Game_object *obj
+	)
+	{
+	Shape_info& info = 
+		Game_window::get_game_window()->get_info(obj);
+	Ready_type type = (Ready_type) info.get_ready_type();
+	switch (type)
+		{
+	case spell:
+	case other_spell:
+	case one_handed_weapon:
+	case tongs:
+		return 1;
+	default:
+		return 0;
+		}
+	}
+
+/*
  *	Add to given spot.
  *
  *	Output:	1 if successful, else 0.
@@ -1135,7 +1163,8 @@ int Actor::add_readied
 		return (0);
 	if (index == best_index || (!two_handed && index == lhand)
 			|| (!two_handed && index == rhand
-				&& best_index != lrhand))
+				&& best_index != lrhand) ||
+	   (index == belt && Belt_okay(obj)))
 		{			// Okay.
 		if (!Container_game_object::add(obj))
 			return (0);	// No room, or too heavy.
