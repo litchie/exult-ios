@@ -2109,6 +2109,8 @@ void Usecode_machine::link_party
 	{
 	// avatar is a party member too
 	gwin->get_main_actor()->set_flag(Obj_flags::in_party);
+					// You own your own stuff.
+	gwin->get_main_actor()->set_flag_recursively(Obj_flags::okay_to_take);
 
 	for (int i = 0; i < party_count; i++)
 		{
