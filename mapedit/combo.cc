@@ -171,6 +171,31 @@ C_EXPORT gint on_combo_draw_button_press_event
 	}
 
 /*
+ *	Which member makes the better 'hot-spot' in a combo, where 'better'
+ *	means lower, then southmost, then eastmost.
+ *
+ *	Output:	0 if c0, 1 if c1
+ */
+
+int hot_spot_compare
+	(
+	Combo_member& c0,
+	Combo_member& c1
+	)
+	{
+	if (c0.tz < c1.tz)
+		return 0;
+	else if (c1.tz < c0.tz)
+		return 1;
+	else if (c0.ty > c1.ty)
+		return 0;
+	else if (c1.ty > c0.ty)
+		return 1;
+	else
+		return c0.tx >= c1.tx ? 0 : 1;
+	}
+
+/*
  *	Create empty combo.
  */
 
@@ -262,8 +287,9 @@ void Combo::add
 		starttx = vtx;
 	if (vty < startty)
 		startty = vty;
-	if (hot_index == -1)		// First one?
-		hot_index = 0;
+	if (hot_index == -1 ||		// First one, or better than prev?
+	    hot_spot_compare(*memb, *members[hot_index]) == 0)
+		hot_index = members.size() - 1;
 	}
 
 /*
@@ -282,6 +308,17 @@ void Combo::remove
 	Combo_member *m = *it;
 	members.erase(it);
 	delete m;
+	if (hot_index == i)		// Was it the hot-spot?
+		{
+		hot_index = members.size() - 1;
+		for (vector<Combo_member *>::iterator it = members.begin();
+					it != members.end(); ++it)
+			{
+			Combo_member *m = *it;
+			if (hot_spot_compare(*m, *members[hot_index]) == 0)
+				hot_index = (it - members.begin());
+			}
+		}
 	// +++++++Mayby re-adjust top tx, ty???
 	}
 
@@ -900,11 +937,15 @@ void Combo_chooser::drag_data_get
 	Combo *combo = chooser->combos[num];
 					// Get enough memory.
 	int cnt = combo->members.size();
-	guchar *buf = new unsigned char[4 + cnt*5*4];
+	int buflen = 5*4 + cnt*5*4;
+cout << "Buflen = " << buflen << endl;
+	guchar *buf = new unsigned char[buflen];
 	guchar *ptr = buf;
 	U7_combo_data *ents = new U7_combo_data[cnt];
 					// Get 'hot-spot' member.
 	Combo_member *hot = combo->members[combo->hot_index];
+					// And figure range.
+	int fromtx = 0, totx = -1, fromty = 0, toty = -1;
 	for (int i = 0; i < cnt; i++)
 		{
 		Combo_member *m = combo->members[i];
@@ -913,8 +954,24 @@ void Combo_chooser::drag_data_get
 		ents[i].tz = m->tz - hot->tz;
 		ents[i].shape = m->shapenum;
 		ents[i].frame = m->framenum;
+		if (ents[i].tx > totx)
+			totx = ents[i].tx;
+		if (ents[i].ty > toty)
+			toty = ents[i].ty;
+		Shape_info& info = combo->shapes_file->get_info(m->shapenum);
+		int tx0 = ents[i].tx - info.get_3d_xtiles() + 1,
+		    ty0 = ents[i].ty - info.get_3d_ytiles() + 1;
+		if (tx0 < fromtx)
+			fromtx = tx0;
+		if (ty0 < fromty)
+			fromty = ty0;
 		}
-	int len = Store_u7_comboid(buf, cnt, ents);
+cout << "Combo: xtiles=" << totx-fromtx+1 << ", ytiles=" << toty-fromty+1 <<
+	", tiles_right=" << totx << ", tiles_below=" <<
+					toty << endl;
+	int len = Store_u7_comboid(buf, totx - fromtx + 1, toty - fromty + 1, 
+				totx, toty, cnt, ents);
+	assert(len <= buflen);
 #ifdef WIN32
 	windragdata *wdata = (windragdata *)seldata;
 	wdata->data = buf;

@@ -25,6 +25,8 @@ const int max_types = 15;
 
 typedef void (*Move_shape_handler_fun)(int shape, int frame, int x, int y,
 					int prevx, int prevy, bool show);
+typedef void (*Move_combo_handler_fun)(int xtiles, int ytiles, int tiles_right,
+	int tiles_below, int x, int y, int prevx, int prevy, bool show);
 typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y,
 							void *data);
 typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y, void *data);
@@ -62,15 +64,18 @@ class Xdnd
 	int file, shape, frame;		// Set when a shape is being dragged.
 	int chunknum;			// Set when a chunk is dragged.
 	int combo_cnt;			// Set when combo is dragged.
+	int combo_xtiles, combo_ytiles, combo_tiles_right, combo_tiles_below;
 	struct U7_combo_data *combo;	// Combo elements (allocated);
 	bool data_valid;		// True when the above is retrieved.
 
-	Move_shape_handler_fun move_handler;	// For dragging shapes.
+	Move_shape_handler_fun move_shape_handler;	// For dragging shapes.
+	Move_combo_handler_fun move_combo_handler;	// For dragging combos.
 	Drop_shape_handler_fun shape_handler;	// For dropping shapes.
 	Drop_chunk_handler_fun chunk_handler;	// For dropping chunks.
 	Drop_combo_handler_fun combo_handler;	// For dropping combos.
 public:
 	Xdnd(Display *d, Window xw, Window xgw, Move_shape_handler_fun movefun,
+		Move_combo_handler_fun movecmbfun,
 		Drop_shape_handler_fun shapefun, Drop_chunk_handler_fun cfun,
 					Drop_combo_handler_fun cmbfun);
 	~Xdnd();

@@ -56,8 +56,10 @@ void Get_u7_chunkid(unsigned char *data, int& cnum);
 //	Store/get combo and its elements:
 typedef struct U7_combo_data 
 	{ int tx, ty, tz, shape, frame; } U7_combo_data;
-int Store_u7_comboid(unsigned char *data, int cnt, U7_combo_data *ents);
-void Get_u7_comboid(unsigned char *data, int& cnt, U7_combo_data *& ents);
+int Store_u7_comboid(unsigned char *data, int xtiles, int ytiles,
+	int tiles_right, int tiles_below, int cnt, U7_combo_data *ents);
+void Get_u7_comboid(unsigned char *data, int& xtiles, int& ytiles,
+	int& tiles_right, int& tiles_below, int& cnt, U7_combo_data *& ents);
 
 
 #endif
