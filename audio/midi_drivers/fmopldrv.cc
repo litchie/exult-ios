@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopldrv.cc,v 1.5 2004/01/17 15:08:04 wjpalenstijn Exp $
+ * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopldrv.cc,v 1.6 2004/01/17 15:55:34 colourles Exp $
  */
 
 /*
@@ -494,9 +494,9 @@ void OplDriver::send(uint32 b)
 				midi_update_volume(channel);
 				break;
 			case 0x40:								/* Sustain on/off */
-				for (i = 0; i < 9; i++)
-					if (chp[i][CHP_CHAN] == channel)
-						midi_write_adlib(0x80 + adlib_opadd[i], vel);
+				//for (i = 0; i < 9; i++)
+				//	if (chp[i][CHP_CHAN] == channel)
+				//		midi_write_adlib(0x80 + adlib_opadd[i], vel);
 				break;
 			case 0x5B:								/* Extended depth effect */
 				//debug(1,
