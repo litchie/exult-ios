@@ -86,6 +86,7 @@ protected:
 	Schedule *schedule;		// Current schedule.
 	bool dormant;			// I.e., off-screen.
 	bool dead;
+	bool combat_protected;		// 'Halo' on paperdoll screen.
 	short alignment;		// 'Feelings' towards Ava. See below.
 	Game_object *spots[18];		// Where things can go.  See 'Spots'
 					//   below for description.
@@ -176,6 +177,10 @@ public:
 		{ return attack_mode; }
 	void set_attack_mode(Attack_mode amode)
 		{ attack_mode = amode; }
+	bool is_combat_protected() const
+		{ return combat_protected; }
+	void set_combat_protected(bool v)
+		{ combat_protected = v; }
 	int get_oppressor() const
 		{ return oppressor; }
 	void set_oppressor(int opp)

@@ -188,16 +188,19 @@ Paperdoll_gump::Paperdoll_gump
 {
 	// Create Heart button
 	heart_button = new Heart_button(this, heartx, hearty);
-			
+	Actor *actor = (Actor *) cont;
 	// Create Cstats button or Halo and Cmode
 	if (Game::get_game_type() == BLACK_GATE)
 	{
 		if (cont->get_npc_num() == 0)
-			halo_button = new Halo_button(this, halox, haloy);
+			halo_button = new Halo_button(this, halox, haloy, 
+									actor);
 		else
-			halo_button = new Halo_button(this, diskx, disky);
+			halo_button = new Halo_button(this, diskx, disky,
+									actor);
 
-		cmode_button = new Combat_mode_button(this, cmodex, cmodey, (Actor *) cont);
+		cmode_button = new Combat_mode_button(this, cmodex, cmodey, 
+									actor);
 		cstats_button = NULL;
 	}
 	else

@@ -168,8 +168,11 @@ Actor::Actor
 	set_polymorph_default();	// We now have enought info to set the polymorph shape
 
 	schedule_type = Read1(nfile);
-	nfile.seekg(1, ios::cur);	// Default attack mode
-	
+	int amode = Read1(nfile);	// Default attack mode
+					// Just stealing a spare bit:
+	combat_protected = (amode&(1<<4)) != 0;
+	attack_mode = (Attack_mode) (amode&0xf);
+
 	nfile.seekg(3, ios::cur); 	//Unknown
 
 	// If NPC 0: MaxMagic (0-4), TempHigh (5-7) and Mana(0-4), TempLow (5-7)
@@ -410,7 +413,8 @@ void Actor::write
 	
 
 	nfile.put(get_schedule_type());
-	Write2(nfile, 0);		// Skip 4.
+	nfile.put(attack_mode | (combat_protected ? (1<<4) : 0));
+	nfile.put(0);		// Skip 3.
 	Write2(nfile, 0);
 
 	// Magic
