@@ -45,6 +45,8 @@ exult_SOURCES =	\
 	fnames.h	\
 	font.cc		\
 	font.h		\
+	game.cc		\
+	game.h		\
 	gameclk.cc	\
 	gameclk.h	\
 	gamedat.cc	\
@@ -90,8 +92,6 @@ exult_SOURCES =	\
 	spells.cc	\
 	spells.h	\
 	tiles.h		\
-	game.cc		\
-	game.h		\
 	tqueue.cc	\
 	tqueue.h	\
 	txtscroll.cc	\
