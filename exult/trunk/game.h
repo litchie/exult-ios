@@ -80,7 +80,6 @@ public:
 	static void set_new_game() { new_game_flag = true; }
 	static bool is_new_game() { return new_game_flag; }
 	static bool is_editing() { return editing_flag; }
-	static char *get_game_identity(const char *savename);
 	static Game *create_game(Exult_Game mygame, const char *title = 0);
 	static Exult_Game get_game_type()
 		{ return game_type; }

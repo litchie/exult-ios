@@ -651,12 +651,15 @@ public:
 					// Save "gamedat".
 	void save_gamedat(const char *fname, const char *savename);
 	void save_gamedat(int num, const char *savename);
+					// Get IDENTITY string.
+	static char *get_game_identity(const char *savename);
 
 #ifdef HAVE_ZIP_SUPPORT
 private:
 	bool save_gamedat_zip(const char *fname, const char *savename);
 	bool Restore_level2 (void *unzipfile);
 	bool restore_gamedat_zip(const char *fname);
+	static char *get_game_identity_zip(const char *savename);
 public:
 #endif
 

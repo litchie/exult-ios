@@ -89,54 +89,6 @@ Game::~Game()
 {
 }
 
-char *Game::get_game_identity(const char *savename)
-{
-    ifstream in;
-    try {
-        U7open(in, savename);		// Open file.
-    } catch (const exult_exception &e) {
-	if (is_editing())		// Okay if creating a new game.
-		return newstrdup(gametitle.c_str());
-	throw e;
-    }
-    in.seekg(0x54);			// Get to where file count sits.
-    int numfiles = Read4(in);
-    char *game_identity = 0;
-    in.seekg(0x80);			// Get to file info.
-    // Read pos., length of each file.
-    sint32 *finfo = new sint32[2*numfiles];
-    int i;
-    for (i = 0; i < numfiles; i++)
-      {
-	finfo[2*i] = Read4(in);	// The position, then the length.
-	finfo[2*i + 1] = Read4(in);
-      }
-    for (i = 0; i < numfiles; i++)	// Now read each file.
-      {
-	// Get file length.
-	int len = finfo[2*i + 1] - 13;
-	if (len <= 0)
-	  continue;
-	in.seekg(finfo[2*i]);	// Get to it.
-	char fname[50];		// Set up name.
-	in.read(fname, 13);
-	if (!strcmp("identity",fname))
-	    {
-      	      game_identity = new char[len];
-	      in.read(game_identity, len);
-	      // Truncate identity
-	      char *ptr = game_identity;
-	      for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
-	      	;
-	      *ptr = 0;
-	      break;
-	    }
-      }
-    delete [] finfo;
-    return game_identity;
-}
-
-
 Game *Game::create_game(Exult_Game mygame, const char *title)
 {
 	switch(mygame) {
@@ -176,7 +128,8 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 	// Discover the game we are running (BG, SI, ...)
 	// We do this, because we don't really trust config :-)
 	if (game_type != EXULT_DEVEL_GAME) {
-		char *static_identity = get_game_identity(INITGAME);
+		char *static_identity = Game_window::get_game_identity(
+								INITGAME);
 
 		if((!strcmp(static_identity,"ULTIMA7"))||
 		   (!strcmp(static_identity,"FORGE")))

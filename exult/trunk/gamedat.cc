@@ -50,6 +50,7 @@
 #include "Flex.h"
 #include "databuf.h"
 #include "Newfile_gump.h"
+#include "Yesno_gump.h"
 #include "actors.h"
 #include "ucmachine.h"
 #include "version.h"
@@ -88,7 +89,18 @@ void Game_window::restore_gamedat
 	const char *fname		// Name of savegame file.
 	)
 	{
-
+					// Check IDENTITY.
+	char *id = get_game_identity(fname);
+	char *static_identity = get_game_identity(INITGAME);
+					// Note: "*" means an old game.
+	if(!id || (*id != '*' && strcmp(static_identity, id) != 0))
+		{
+		string msg("Wrong identity '");
+		msg += id; msg += "'.  Open anyway?";
+		int ok = Yesno_gump::ask(msg.c_str());
+		if (!ok)
+			return;
+		}
 	// Check for a ZIP file first
 #ifdef HAVE_ZIP_SUPPORT
 	if (restore_gamedat_zip(fname) != false)
@@ -200,9 +212,10 @@ void Game_window::restore_gamedat
  */
 static const char *bgsavefiles[] = {
 	GSCRNSHOT,	GSAVEINFO,	// MUST BE FIRST!!
+	IDENTITY,			// MUST BE #2
 	GEXULTVER,	GNEWGAMEVER,
 	NPC_DAT,	MONSNPCS,
-	IDENTITY,	USEDAT,
+			USEDAT,
 	FLAGINIT,	GWINDAT,
 	GSCHEDULE
 	};
@@ -210,9 +223,10 @@ static const int bgnumsavefiles = sizeof(bgsavefiles)/sizeof(bgsavefiles[0]);
 
 static const char *sisavefiles[] = {
 	GSCRNSHOT,	GSAVEINFO,	// MUST BE FIRST!!
+	IDENTITY,			// MUST BE #2
 	GEXULTVER,	GNEWGAMEVER,
 	NPC_DAT,	MONSNPCS,
-	IDENTITY,	USEDAT,
+			USEDAT,
 	FLAGINIT,	GWINDAT,
 	GSCHEDULE,	KEYRINGDAT
 	};
@@ -671,6 +685,65 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 	}
 }
 
+/*
+ *	Return string from IDENTITY in a savegame.
+ *
+ *	Output:	->identity if found.
+ *		0 if error (or may throw exception).
+ *		"*" if older savegame.
+ */
+char *Game_window::get_game_identity(const char *savename)
+{
+    char *game_identity = 0;
+#ifdef HAVE_ZIP_SUPPORT
+    game_identity = get_game_identity_zip(savename);
+    if (game_identity)
+	return game_identity;
+#endif
+    ifstream in;
+    try {
+        U7open(in, savename);		// Open file.
+    } catch (const exult_exception &e) {
+	if (Game::is_editing())		// Okay if creating a new game.
+		return newstrdup(Game::get_gametitle().c_str());
+	throw e;
+    }
+    in.seekg(0x54);			// Get to where file count sits.
+    int numfiles = Read4(in);
+    in.seekg(0x80);			// Get to file info.
+    // Read pos., length of each file.
+    sint32 *finfo = new sint32[2*numfiles];
+    int i;
+    for (i = 0; i < numfiles; i++)
+      {
+	finfo[2*i] = Read4(in);	// The position, then the length.
+	finfo[2*i + 1] = Read4(in);
+      }
+    for (i = 0; i < numfiles; i++)	// Now read each file.
+      {
+	// Get file length.
+	int len = finfo[2*i + 1] - 13;
+	if (len <= 0)
+	  continue;
+	in.seekg(finfo[2*i]);	// Get to it.
+	char fname[50];		// Set up name.
+	in.read(fname, 13);
+	if (!strcmp("identity",fname))
+	    {
+      	      game_identity = new char[len];
+	      in.read(game_identity, len);
+	      // Truncate identity
+	      char *ptr = game_identity;
+	      for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
+	      	;
+	      *ptr = 0;
+	      break;
+	    }
+      }
+    delete [] finfo;
+    return game_identity;
+}
+
 // Zip file support
 #ifdef HAVE_ZIP_SUPPORT
 
@@ -1080,14 +1153,15 @@ bool Game_window::save_gamedat_zip
 	// Level 2 Compression
 	else
 	{
-		// Keep saveinfo and screenshot using normal compression
-		// There are always files 0 and 1
+		// Keep saveinfo, screenshot, identity using normal compression
+		// There are always files 0 - 2
 		Save_level1(zipfile, GSCRNSHOT);
 		Save_level1(zipfile, GSAVEINFO);
+		Save_level1(zipfile, IDENTITY);
 
 		Begin_level2(zipfile);
 
-		for (int i = 2; i < numsavefiles; i++)
+		for (int i = 3; i < numsavefiles; i++)
 			Save_level2(zipfile, savefiles[i]);
 
 		// Now the Ireg's.
@@ -1107,5 +1181,61 @@ bool Game_window::save_gamedat_zip
 
 	return true;
 }
+
+/*
+ *	Return string from IDENTITY in a savegame.
+ *
+ *	Output:	->identity string.
+ *		0 if error.
+ *		"*" if not found.
+ */
+char *Game_window::get_game_identity_zip
+	(
+	const char *savename
+	)
+	{
+	// If a flex, so can't read it
+	try
+		{
+		if (Flex::is_flex(savename)) 
+			return 0;
+		}
+	catch(const file_exception & f)
+		{
+		return 0;		// Ignore if not found.
+		}
+	unzFile unzipfile = unzOpen(get_system_path(savename).c_str());
+	if (!unzipfile) 
+		return 0;
+					// Find IDENTITY, ignoring case.
+	if (unzLocateFile(unzipfile, "identity", 2) != UNZ_OK)
+		{
+		unzClose(unzipfile);
+		return "*";		// Old game.  Return wildcard.
+		}
+					// Open the file in the zip
+	if (unzOpenCurrentFile(unzipfile) != UNZ_OK)
+		{
+		unzClose(unzipfile);
+		throw file_read_exception(savename);
+		}
+					// Now read the file.
+	char buf[256];
+	int cnt = unzReadCurrentFile(unzipfile, buf, sizeof(buf) - 1);
+	if (cnt <= 0)
+		{
+		unzCloseCurrentFile(unzipfile);
+		unzClose(unzipfile);
+		throw file_read_exception(savename);
+		}
+	buf[cnt] = 0;			// 0-delimit.
+	unzCloseCurrentFile(unzipfile);
+	unzClose(unzipfile);
+	char *ptr = buf;
+	for(; (*ptr != 0 && *ptr!=0x1a && *ptr!=0x0d); ptr++)
+	      	;
+	*ptr = 0;
+	return newstrdup(buf);
+	}
 
 #endif
