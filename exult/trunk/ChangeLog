@@ -1,3 +1,7 @@
+2001-10-23  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Makefile.*, data/bg/flx.in, data/bg/*.shp, docs/art.txt: new art
+	by Oblivious
+
 2001-10-23  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* gumps/GameplayOptions_gump.*, gamewin.*: allow choice of text
 	background colour

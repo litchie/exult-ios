@@ -806,7 +806,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Magic Gorget
 	{     843,  0,       Actor::neck,   OT_Normal,  false, SF_GAME_FLX,        EXULT_BG_FLX_MAGICGORGET_SHP,     0 },
 	// Ankh
-	{     955,  0,       Actor::neck,   OT_Normal,  false, SF_PAPERDOL_VGA,      0,     0 },
+	{     955,  0,       Actor::neck,   OT_Normal,  false, SF_GAME_FLX,        EXULT_BG_FLX_AMULETS_SHP,     5 },
 	// Fellowship
 	{     955,  1,       Actor::neck,   OT_Normal,  false, SF_PAPERDOL_VGA,      0,     4 },
 	// White Heart
@@ -885,8 +885,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 
 	// LEGGINGS
 
-	// Greaves **NEEDS ART** ???
-	{     353, -1,        Actor::legs,     OT_Normal,   true, SF_PAPERDOL_VGA,     87,     0 },
+	// Greaves
+	{     353, -1,        Actor::legs,     OT_Normal,   true, SF_GAME_FLX,     EXULT_BG_FLX_GREAVES_SHP,     0 },
 	// Leather
 	{     574, -1,        Actor::legs,     OT_Normal,   true, SF_PAPERDOL_VGA,     60,     0 },
 	// Chain
@@ -965,7 +965,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     572, -1,       Actor::rhand,   OT_Shield,  false, SF_PAPERDOL_VGA,    117,     0 },
 	{     572, -1, Actor::shield_spot,   OT_Shield,  false, SF_PAPERDOL_VGA,     99,     0 },
 	// Spiked
-	{     578, -1,       Actor::rhand,   OT_Shield,  false, SF_PAPERDOL_VGA,    104,     0 },
+	{     578, -1,       Actor::rhand,   OT_Shield,  false, SF_GAME_FLX,        EXULT_BG_FLX_SPIKED_SHIELD_SHP,     0 },
 	{     578, -1, Actor::shield_spot,   OT_Shield,  false, SF_PAPERDOL_VGA,     99,     0 },
 	// Kite
 	{     609, -1,       Actor::rhand,   OT_Shield,  false, SF_PAPERDOL_VGA,     37,     0 },
