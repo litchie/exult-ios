@@ -67,6 +67,8 @@ vector<int> intrinsic_breakpoints;
 class Scheduled_usecode : public Time_sensitive
 	{
 	static int count;		// Total # of these around.
+	static Scheduled_usecode *first;// ->chain of all of them.
+	Scheduled_usecode *next, *prev;	// Next/prev. in global chain.
 	Usecode_value objval;		// The 'itemref' object.
 	Game_object *obj;		// From objval.
 	Usecode_value arrval;		// Array of code to execute.
@@ -84,16 +86,51 @@ public:
 		if (!cnt && !arrval.is_array())
 			cnt = 1;	// Get_elem(0) works for non-arrays.
 		count++;		// Keep track of total.
+		next = first;		// Put in chain.
+		prev = 0;
+		if (first)
+			first->prev = this;
+		first = this;
 		}
 					// Execute when due.
 	virtual ~Scheduled_usecode()
-		{ count--; }
+		{
+		count--;
+		if (next)
+			next->prev = prev;
+		if (prev)
+			prev->next = next;
+		else
+			first = next;
+		}
+	void halt()			// Stop executing.
+		{ i = cnt; }
 	static int get_count()
 		{ return count; }
+					// Find for given item.
+	static Scheduled_usecode *find(Game_object *srch);
 	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
 int Scheduled_usecode::count = 0;
+Scheduled_usecode *Scheduled_usecode::first = 0;
+
+/*
+ *	Search list for one for a given item.
+ *
+ *	Output:	->Scheduled_usecode if found, else 0.
+ */
+
+Scheduled_usecode *Scheduled_usecode::find
+	(
+	Game_object *srch
+	)
+	{
+	for (Scheduled_usecode *each = first; each; each = each->next)
+		if (each->obj == srch)
+			return each;	// Found it.
+	return (0);
+	}
 
 /*
  *	Execute an array of usecode, generally one instruction per tick.
@@ -2006,6 +2043,27 @@ USECODE_INTRINSIC(is_pc_female)
 	return(u);
 }
 
+USECODE_INTRINSIC(halt_scheduled)
+{
+	// Halt_scheduled(item)
+	Game_object *obj = get_item(parms[0]);
+	if (!obj)
+		return(no_ret);
+	Scheduled_usecode *uc;
+#if 0
+	while ((uc = Scheduled_usecode::find(obj)) != 0)
+		{
+		uc->halt();		// Tell it to stop.
+					// Give it a chance.
+		gwin->get_tqueue()->activate(SDL_GetTicks());
+		}
+#else
+	if ((uc = Scheduled_usecode::find(obj)) != 0)
+		uc->halt();
+#endif
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(run_endgame)
 {
 	gwin->end_game();
@@ -2112,6 +2170,16 @@ USECODE_INTRINSIC(advance_time)
 	// Incr. clock by (parm[0]*.04min.).
 	gwin->increment_clock(parms[0].get_int_value()/25);
 	return(no_ret);
+}
+
+USECODE_INTRINSIC(in_usecode)
+{
+	// in_usecode(item):  Return 1 if executing usecode on parms[0].
+
+	Game_object *obj = get_item(parms[0]);
+	if (!obj)
+		return Usecode_value(0);
+	return Usecode_value(Scheduled_usecode::find(obj) != 0);
 }
 
 USECODE_INTRINSIC(path_run_usecode)
@@ -2386,7 +2454,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(earthquake),	// 0x59
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b     Armageddon (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5c  ++++Extinguish(lightsource)?
+	USECODE_INTRINSIC_PTR(halt_scheduled),	// 0x5c
 	USECODE_INTRINSIC_PTR(run_endgame),	// 0x5d  +++++CauseBlackout (ucdump.c)
 	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5f  ++++mark(virtue-stone)
@@ -2415,7 +2483,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x76     FireCannon (ucdump.c)
 	USECODE_INTRINSIC_PTR(nap_time),	// 0x77
 	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x79+++++in_usecode(obj)?
+	USECODE_INTRINSIC_PTR(in_usecode),	// 0x79
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b ++++Another sprite animation?
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7c

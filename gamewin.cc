@@ -1939,6 +1939,7 @@ void Game_window::show_face
 	)
 	{
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
+	mode = conversation;		// Make sure mode is set right.
 	if (num_faces == max_faces)
 		{
 		cout << "Can't show more than " << max_faces << " faces" << endl;
