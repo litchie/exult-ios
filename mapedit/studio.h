@@ -117,6 +117,7 @@ public:
 	void set_npc_face(int shape, int frame);
 	static void schedule_btn_clicked(GtkWidget *btn, gpointer data);
 					// Shapes:
+	void init_equip_window(int recnum);
 	void open_equip_window(int recnum);
 	void close_equip_window();
 	void init_shape_notebook(Shape_info& info, GtkWidget *book, 
@@ -139,6 +140,7 @@ public:
 	void set_optmenu(char *name, int val);
 	int get_spin(char *name);
 	void set_spin(char *name, int val, bool sensitive = true);
+	void set_spin(char *name, int val, int low, int high);
 	int get_num_entry(char *name);
 	char *get_text_entry(char *name);
 	void set_entry(char *name, int val, bool hex = false,
