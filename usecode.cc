@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tqueue.h"
 #include "gumps.h"
 #include "mouse.h"
+#include "Astar.h"
 #include <Audio.h>
 #include <iomanip>
 
@@ -1907,12 +1908,21 @@ USECODE_INTRINSIC(run_usecode)
 	Usecode_value& loc = parms[0];
 	int sz = loc.get_array_size();
 	if (sz == 3)			// Looks like tile coords.
+		{
+		Astar path;
+		int sx, sy, sz;		// Get source, dest.
+		gwin->get_main_actor()->get_abs_tile(sx, sy, sz);
+		int dx = loc.get_elem(0).get_int_value();
+		int dy = loc.get_elem(1).get_int_value();
+		int dz = loc.get_elem(2).get_int_value();
+#if 0
+					// Try pathfinding.
+		if (!path.NewPath(sx, sy, sz, dx, dy, dz, Get_cost))
+			USECODE_RETURN(u);
+#endif
 					// ++++++Should use pathfinding here.
-					// ++++Don't want NPC's following.
-		gwin->get_main_actor()->walk_to_tile(
-			loc.get_elem(0).get_int_value(),
-			loc.get_elem(1).get_int_value(), 
-			loc.get_elem(2).get_int_value());
+		gwin->get_main_actor()->walk_to_tile(dx, dy, dz);
+		}
 	else
 		{	//++++++Not sure about this.
 		cout << "0x7d Location not a 3-int array\n";

@@ -75,42 +75,6 @@ inline int Cost_to_goal
 	return from.distance(to);
 	}
 
-#if 0	/* Move this to its own file above & pass as a parm. */
-/*
- *	Figure cost going from one tile to an adjacent tile.
- *
- *	Output:	Cost, or -1 if blocked.
- *		The 'tz' field in tile may be modified.
- */
-
-static int Get_cost
-	(
-	Game_window *gwin,
-	Tile_coord& tile		// The tile we're going to.  The 'tz'
-					//   field may be modified.
-	)
-	{
-	int cx = tile.tx/tiles_per_chunk, cy = tile.ty/tiles_per_chunk;
-	int tx = tile.tx%tiles_per_chunk, ty = tile.ty%tiles_per_chunk;
-	Chunk_object_list *olist = gwin->get_objects(cx, cy);
-	olist->setup_cache();		// Make sure cache is valid.
-	int new_lift;			// Might climb/descend.
-	if (olist->is_blocked(tile.tz, tx, ty, new_lift))
-		{			//+++++++Check for door.
-					//+++++++Need method to get shape.
-		return -1;
-		}
-	int cost = 1;
-	if (new_lift != tile.tz)
-		{
-		cost++;
-		tile.tz = new_lift;
-		}
-					// Maybe check types of ground?
-	return (cost);
-	}
-#endif
-
 /*
  *	A node for our search:
  */
@@ -337,7 +301,7 @@ Tile_coord *Find_path
 	(
 	Tile_coord start,		// Where to start from.
 	Tile_coord goal,		// Where to end up.
-	int (*get_cost)(int, int, int)	// Gets cost of moving to a tile.
+	int (*get_cost)(int, int, int&)	// Gets cost of moving to a tile.
 	)
 	{
 	A_star_queue nodes;		// The priority queue & hash table.
@@ -358,10 +322,12 @@ Tile_coord *Find_path
 		Tile_coord ntile(0, 0, 0);
 		while (get_next(ntile))
 			{		// Get cost to next tile.
-			int step_cost = get_cost(ntile.tx, ntile.ty, ntile.tz);
+			int tz = ntile.tz;
+			int step_cost = get_cost(ntile.tx, ntile.ty, tz);
 					// Blocked?
 			if (step_cost == -1)
 				continue;
+			ntile.tz = (short) tz;
 					// Get cost from start to ntile.
 			int new_cost = node->get_start_cost() + step_cost;
 					// See if next tile already seen.
