@@ -1809,24 +1809,27 @@ void Clear_hit::handle_event(unsigned long curtime, long udata)
 
 /*
  *	This method should be called to decrement health from attacks, traps.
+ *
+ *	Output:	true if defeated.
  */
 
-void Actor::reduce_health
+bool Actor::reduce_health
 	(
 	int delta,			// # points to lose.
 	Actor *attacker			// Attacker, or null.
 	)
 	{
 	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
-		return;
+		return false;
 	Game_window *gwin = Game_window::get_game_window();
 	Monster_info *minf = gwin->get_info(this).get_monster_info();
 	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
-		return;
+		return false;
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
 				gwin->get_info(this).has_translucency())
-		return;
+		return false;
+	bool defeated = false;
 	int oldhp = properties[(int) health];
 	int maxhp = properties[(int) strength];
 	int val = oldhp - delta;
@@ -1863,17 +1866,18 @@ void Actor::reduce_health
 			    get_property((int) health) < 1)
 				{
 				set_property((int) health, 1);
-				if (attacker)	// Have him attack another.
-					attacker->set_target(0);
+				if (get_attack_mode() == Actor::flee)
+					defeated = true;
 				}
 			}
 		else
 			die();
-
+		defeated = defeated || is_dead();
 		}
 	else if (val < 0 && !get_flag(Obj_flags::asleep) &&
 					!get_flag(Obj_flags::si_tournament))
 		set_flag(Obj_flags::asleep);
+	return defeated;
 	}
 
 /*
@@ -2442,10 +2446,10 @@ bool Actor::roll_to_win
 /*
  *	Figure hit points lost from an attack, and subtract from total.
  *
- *	Output:	# of hit points lost (already subtracted).
+ *	Output:	True if defeated (dead, or lost battle on List Field).
  */
 
-int Actor::figure_hit_points
+bool Actor::figure_hit_points
 	(
 	Actor *attacker,		// 0 if hit from a missile egg.
 	int weapon_shape,
@@ -2455,11 +2459,11 @@ int Actor::figure_hit_points
 
 	// godmode effects:
 	if (((party_id != -1) || (npc_num == 0)) && cheat.in_god_mode())
-		return 0;
+		return false;
 	Game_window *gwin = Game_window::get_game_window();
 	Monster_info *minf = gwin->get_info(this).get_monster_info();
 	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
-		return 0;
+		return false;
 	bool instant_death = (cheat.in_god_mode() && attacker &&
 		((attacker->party_id != -1) || (attacker->npc_num == 0)));
 
@@ -2492,7 +2496,7 @@ int Actor::figure_hit_points
 		gwin->get_usecode()->call_usecode(0x7e1, this,
 					Usecode_machine::weapon);
 	if (!wpoints && (!winf || !winf->get_special_atts()))
-		return 0;		// No harm can be done.
+		return false;		// No harm can be done.
 
 	int attacker_level = attacker ? attacker->get_level() : 4;
 	int prob = 40 + attacker_level + (attacker ?
@@ -2507,7 +2511,7 @@ int Actor::figure_hit_points
 
 	cout << "Hit probability is " << prob << endl;
 	if (rand()%100 > prob)
-		return 0;		// Missed.
+		return false;		// Missed.
 					// +++++Do special atts. too.
 					// Compute hit points to lose.
 	int hp = (attacker ? attacker->get_property((int) strength)/4 : 2) +
@@ -2542,7 +2546,7 @@ int Actor::figure_hit_points
 		else if (!minf || !minf->cant_yell())
 			say(first_ouch, last_ouch);
 
-	reduce_health(hp, attacker);
+	bool defeated = reduce_health(hp, attacker);
 	
 	string name = "<trap>";
 	if (attacker)
@@ -2553,13 +2557,13 @@ int Actor::figure_hit_points
 		properties[(int) health] << " remaining" << endl;
 //	cout << "Attack damage was " << hp << " hit points, leaving " << 
 //		properties[(int) health] << " remaining" << endl;
-	return hp;
+	return defeated;
 	}
 
 /*
  *	Being attacked.
  *
- *	Output:	0 if destroyed, else object itself.
+ *	Output:	0 if defeated, else object itself.
  */
 
 Game_object *Actor::attacked
@@ -2582,8 +2586,8 @@ Game_object *Actor::attacked
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
 	    Game_window::get_game_window()->get_info(this).has_translucency())
 		return this;
-	figure_hit_points(attacker, weapon_shape, ammo_shape);
-	if (attacker && is_dead())
+	bool defeated = figure_hit_points(attacker, weapon_shape, ammo_shape);
+	if (attacker && defeated)
 		{
 					// Experience gained = strength???
 		int expval = get_property((int) strength);

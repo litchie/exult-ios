@@ -1,5 +1,7 @@
 2001-09-15  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* Many:  Fixed a bunch of bugs involving fighting on List Field.
+
 	* objs/egg.cc (Egg_object): Fixed eggs once again.
 	* combat.cc: Don't set duelists into combat mode when struck.
 	* intrinsics.cc: Separated out 'create_new_object2()'.
