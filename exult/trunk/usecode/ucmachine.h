@@ -309,6 +309,7 @@ private:
 	USECODE_INTRINSIC_DECL(add_cont_items);
 	USECODE_INTRINSIC_DECL(remove_cont_items);
 					// Serpent Isle:
+	USECODE_INTRINSIC_DECL(sprite_effect2);
 	USECODE_INTRINSIC_DECL(si_path_run_usecode);
 	USECODE_INTRINSIC_DECL(error_message);
 	USECODE_INTRINSIC_DECL(set_polymorph);

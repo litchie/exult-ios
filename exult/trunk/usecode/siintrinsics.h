@@ -76,9 +76,9 @@
 	USECODE_INTRINSIC_PTR(remove_cont_items),		// 0x37 - SI Only ???
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x38 - Si Only
 	USECODE_INTRINSIC_PTR(play_music),			// 0x39 - Known
-	USECODE_INTRINSIC_PTR(npc_nearby),			// 0x3c - ???
-	USECODE_INTRINSIC_PTR(npc_nearby),			// 0x3a
-	USECODE_INTRINSIC_PTR(find_nearby_avatar),		// 0x3b
+	USECODE_INTRINSIC_PTR(npc_nearby),			// 0x3a - ???
+	USECODE_INTRINSIC_PTR(npc_nearby),			// 0x3b
+	USECODE_INTRINSIC_PTR(find_nearby_avatar),		// 0x3c
 
 	USECODE_INTRINSIC_PTR(is_npc),				// 0x3d - Known
 	USECODE_INTRINSIC_PTR(display_runes),			// 0x3e
@@ -108,7 +108,7 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x4e Gets an Array??
 
 	USECODE_INTRINSIC_PTR(projectile_effect),		// 0x4f
-	USECODE_INTRINSIC_PTR(get_lift),			// 0x40
+	USECODE_INTRINSIC_PTR(get_lift),			// 0x50
 	USECODE_INTRINSIC_PTR(set_lift),			// 0x51
 
 	USECODE_INTRINSIC_PTR(get_weather),			// 0x52
@@ -139,9 +139,9 @@
                          					// on FoV gem. (gift from LB) display area???
 								// ShowCrystalBall  (ucdump.c)
 
-	USECODE_INTRINSIC_PTR(resurrect),			// 0x66     ResurrectNPC (ucdump.c)
-	USECODE_INTRINSIC_PTR(add_spell),			// 0x67     AddSpellToBook (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x65     ShowWizardEye (ucdump.c)
+	USECODE_INTRINSIC_PTR(resurrect),			// 0x65     ResurrectNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(add_spell),			// 0x66     AddSpellToBook (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x67     ShowWizardEye (ucdump.c)
 	USECODE_INTRINSIC_PTR(sprite_effect),			// 0x68 ExecuteSprite (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x69  ++++Explode???
 
@@ -182,45 +182,45 @@
 	USECODE_INTRINSIC_PTR(remove_item),			// 0x84 - Known
 
 	// Packing!!!
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x84
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x85
 	// End Pack
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x70
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x71
-	USECODE_INTRINSIC_PTR(is_readied),			// 0x72
-	USECODE_INTRINSIC_PTR(restart_game),			// 0x73
-	USECODE_INTRINSIC_PTR(start_speech),			// 0x74
-	USECODE_INTRINSIC_PTR(run_endgame),			// 0x75 StartEndGame (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x76     FireCannon (ucdump.c)
-	USECODE_INTRINSIC_PTR(nap_time),			// 0x77
-	USECODE_INTRINSIC_PTR(advance_time),			// 0x78
-	USECODE_INTRINSIC_PTR(in_usecode),			// 0x79
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x7a
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x7b ++++Another sprite animation?
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x7c
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x86
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x87
+	USECODE_INTRINSIC_PTR(is_readied),			// 0x88
+	USECODE_INTRINSIC_PTR(restart_game),			// 0x89
+	USECODE_INTRINSIC_PTR(start_speech),			// 0x8a
+	USECODE_INTRINSIC_PTR(run_endgame),			// 0x8b StartEndGame (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x8c     FireCannon (ucdump.c)
+	USECODE_INTRINSIC_PTR(nap_time),			// 0x8d
+	USECODE_INTRINSIC_PTR(advance_time),			// 0x8e
+	USECODE_INTRINSIC_PTR(in_usecode),			// 0x8f
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x90
+	USECODE_INTRINSIC_PTR(sprite_effect2),			// 0x91 ++++Another sprite animation?
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x92
 
 	// Packing
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x84
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x93
 	// End Pack
 
 	USECODE_INTRINSIC_PTR(path_run_usecode),		// 0x94 - Known
 	
-	USECODE_INTRINSIC_PTR(close_gumps),			// 0x7e
-	USECODE_INTRINSIC_PTR(item_say),			// 0x7f ItemSay in gump.
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x80 ++++Open_gump(item)???
-	USECODE_INTRINSIC_PTR(in_gump_mode),			// 0x81
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x82
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x83
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x84
+	USECODE_INTRINSIC_PTR(close_gumps),			// 0x95
+	USECODE_INTRINSIC_PTR(item_say),			// 0x96 ItemSay in gump.
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x97 ++++Open_gump(item)???
+	USECODE_INTRINSIC_PTR(in_gump_mode),			// 0x98
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x99
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9a
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9b
 
 	// Packing!!!
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x84
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x84
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x84
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x84
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9c
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9d
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9e
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x9f
 	// End Pack
 
-	USECODE_INTRINSIC_PTR(is_not_blocked),			// 0x85
+	USECODE_INTRINSIC_PTR(is_not_blocked),			// 0xa0
 	
 	USECODE_INTRINSIC_PTR(play_sound_effect),		// 0xA1 - Known
 	
