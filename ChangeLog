@@ -1,3 +1,6 @@
+2001-01-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* flic/Makefile.am: added ../objs, ../shapes include dirs
+
 2001-01-07  Ryan Nunn <triforce@merlin.net.au>
 	* Makefile.* : Paperdoll_gump_info.cc
 	* actors.cc : Paperdolls, Game specific combat music
