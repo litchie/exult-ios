@@ -1,3 +1,8 @@
+2002-01-13  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* xdrag.cc (Xdnd): Redesigning so it can provide more visual
+	feedback during the drag.
+
 2002-01-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* conf/XMLEntity.*: fixed uninitialized no_close
 	
