@@ -1486,7 +1486,7 @@ void Actor::activate
 	if (!npc_num ||		// Avatar
 			(show_party_inv && get_party_id() >= 0 && // Party
 			(serpent || (npc_num >= 1 && npc_num <= 10))) ||
-			cheat.in_pickpocket())		// Pickpocket cheat
+			(cheat.in_pickpocket() && event == 1))		// Pickpocket cheat && double click
 		show_inventory();
 					// Asleep (but not awakened)?
 	else if ((get_schedule_type() == (int) Schedule::sleep &&
