@@ -1,3 +1,7 @@
+2001-04-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Makefile.be, beos/exult.rsrc: bumped up version to 0.92alpha3
+	* NEWS: inserted date, added new paperdoll art
+
 2001-04-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* objs/egg.cc, objs/objs.cc, objs/iregobjs.cc: replaced the 'delete' in remove_this by a Game_window::delete_object
 
