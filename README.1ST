@@ -60,7 +60,9 @@ These features are:
 - Combat with the Spellbook works now
 - bookmarked Spell is saved and restored
 - Using "evil" spells can now get you into trouble with the guards
-- Walking formation has been changed
 - Feeding also uses drinks now
-- Avatar always uses the correct bed now ?
-
+- Avatar always uses the correct bed now
+- Experimental OpenGL hardware-accelerated support
+- More support for weapon/ammo powers
+- A "--nomenu" command-line arg, that gets you directly into the game
+- Partly fixes problem where two combatants rush towards each other but keep going after they meet
