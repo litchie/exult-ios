@@ -38,7 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class	Windows_MidiOut : virtual public MidiAbstract
 {
 public:
-	virtual void start_track(const char *,bool repeat) { }
+//	virtual void start_track(const char *,bool repeat) { }
 	virtual void start_track(midi_event *evntlist, int ppqn, bool repeat);
 	virtual void stop_track(void);
 	virtual bool is_playing(void);
