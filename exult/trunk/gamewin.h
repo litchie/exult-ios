@@ -466,6 +466,9 @@ public:
 			unsigned long flags = (1<<Obj_flags::okay_to_take));
 	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
 			int frnum, int tilex, int tiley, int lift);
+	Ireg_game_object *create_ireg_object(int shnum, int frnum)
+		{ return create_ireg_object(get_info(shnum), shnum, frnum,
+						0, 0, 0); 	}
 					// Create special objects.
 	Egg_object *create_egg(unsigned char *entry, bool animated);
 					// Get all superchunk objects.

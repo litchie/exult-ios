@@ -1249,6 +1249,9 @@ Ireg_game_object *Game_window::create_ireg_object
 		else if (shnum == 902)	// Sleep.
 			return new Field_object(shnum, frnum, tilex, tiley,
 					lift, Egg_object::sleep_field);
+		else if (shnum == 756)	// Caltrops.
+			return new Field_object(shnum, frnum, tilex, tiley,
+					lift, Egg_object::caltrops_field);
 		}
 	if (info.is_animated())
 		return new Animated_ireg_object(

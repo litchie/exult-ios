@@ -179,7 +179,7 @@ inline void Egg_object::init_field
 	data1 = data2 = 0;
 	launcher = 0;
 	area = Rectangle(0, 0, 0, 0);
-	criteria = avatar_footpad;
+	criteria = party_footpad;
 	distance = 0;
 	solid_area = 0;
 	flags = (1 << auto_reset);
@@ -661,6 +661,8 @@ Animated_egg_object::Animated_egg_object
 		recycle = 1; break;
 	case fire_field:
 		recycle = 8; break;
+	case caltrops_field:
+		recycle = 0; break;
 		}
 	animator = new Field_frame_animator(this, recycle); 
 	}
@@ -734,6 +736,13 @@ void Field_object::field_effect
 			}
 					// But no sleeping here.
 		actor->clear_flag(Obj_flags::asleep);
+		break;
+	case caltrops_field:
+		if (actor->get_property(Actor::intelligence) < rand()%40)
+			{
+			actor->reduce_health(2 + rand()%3);
+			say(first_ouch, last_ouch);
+			}
 		break;
 		}
 	}
