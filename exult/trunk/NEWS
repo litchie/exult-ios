@@ -36,6 +36,9 @@
 
 		Many broken animations were fixed (especially in SI)
 
+		Show SFX icon next to BG/SI to show that support for digital
+		sfx is enabled.
+
 		Tons of bugfixes (see ChangeLog for details)
 
 08/25/01	v0.94 alpha 5
