@@ -1,5 +1,8 @@
 2002-02-13  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* schedule.h (public): Sit_schedule:  did_barge_usecode flag added
+	to fix carpet-landing bug.
+
 	* gamewin.h,game.*:  Allow MAINSHP.FLX to not exist for newly
 	developed games.  A new game is created automatically with Avatar 
 	named "Newbie" and shape=721 (for now).
