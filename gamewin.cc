@@ -49,6 +49,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "schedule.h"
 #include "titles.h"
 #include "barge.h"
+#include "actors.h"
 
 extern	Configuration *config;
 					// THE game window:
@@ -216,6 +217,18 @@ void Game_window::set_moving_barge
 	if (b && b != moving_barge)
 		b->gather();		// Gather up all objects on it.
 	moving_barge = b;
+	}
+
+/*
+ *	Is character moving?
+ */
+
+int Game_window::is_moving
+	(
+	)
+	{
+	return moving_barge ? moving_barge->is_moving()
+			    : main_actor->is_moving();
 	}
 
 /* 
@@ -1381,13 +1394,15 @@ void Game_window::start_actor
 	int speed			// Msecs. between frames.
 	)
 	{
-	// +++++++++++Check for moving_barge.
+	int lift = main_actor->get_lift();
+	int liftpixels = 4*lift;	// Figure abs. tile.
+	int tx = get_scrolltx() + (winx + liftpixels)/tilesize,
+	    ty = get_scrollty() + (winy + liftpixels)/tilesize;
 	if (moving_barge)
-		cout << "Moving barge" << endl;
+		moving_barge->travel_to_tile(Tile_coord(tx, ty, lift), speed);
 	else
 		{
-		main_actor->walk_to_point(get_scrolltx()*tilesize + winx, 
-				get_scrollty()*tilesize + winy, speed);
+		main_actor->walk_to_tile(tx, ty, lift, speed, 0);
 		main_actor->get_followers();
 		}
 	}
@@ -1401,7 +1416,7 @@ void Game_window::stop_actor
 	)
 	{
 	if (moving_barge)
-		cout << "Stoping barge" << endl;
+		moving_barge->stop();
 	else
 		{
 		main_actor->stop();	// Stop and set resting state.

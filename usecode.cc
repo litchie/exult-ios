@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "usecode.h"
 #include "gamewin.h"
+#include "actors.h"
 #include "schedule.h"
 #include "objs.h"
 #include "delobjs.h"

@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define GAMEWIN_H
 
 #include "imagewin.h"
-#include "actors.h"
+#include "objs.h"
 #include "vgafile.h"
 #include "gameclk.h"
 #include "fnames.h"
@@ -36,6 +36,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>	// STL string
 #include <vector>	// STL container
 
+class Barge_object;
+class Main_actor;
+class Monster_info;
+class Chunk_object_list;
 class Gump_object;
 class Gump_button;
 class Special_effect;
@@ -190,7 +194,8 @@ public:
 	inline Barge_object *get_moving_barge() const
 		{ return moving_barge; }
 	void set_moving_barge(Barge_object *b);
-	inline Actor *get_main_actor() const
+	int is_moving();		// Is Avatar (or barge) moving?
+	inline Main_actor *get_main_actor() const
 		{ return main_actor; }
 	int set_above_main_actor(int inside, int lift)
 		{			// Use ht=4, round to nearest 5.
@@ -207,7 +212,7 @@ public:
 		}
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < num_npcs) ? 
-				(dynamic_cast<Actor *>(npcs[npc_num])) : 0; }
+				npcs[npc_num] : 0; }
 					// Find monster info. for shape.
 	Monster_info *get_monster_info(int shapenum);
 	Egg_object *get_path_egg(int q)	// Get path egg by quality.

@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "gamewin.h"
+#include "actors.h"
 #include "usecode.h"
 #include "fnames.h"
 #include "Audio.h"
@@ -444,7 +445,7 @@ static void Handle_events
 				last_repaint = ticks;
 				rotate = 1;
 				int x, y;// Check for 'stuck' Avatar.
-				if (!gwin->get_main_actor()->is_moving())
+				if (!gwin->is_moving())
 					{
 					int ms = SDL_GetMouseState(&x, &y);
 					if ((SDL_BUTTON(3) & ms) &&
