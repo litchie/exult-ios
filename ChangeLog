@@ -1,5 +1,8 @@
 2001-01-14  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* Bugs fixed:  Crash (out of memory) at end, guards, walking in
+	sleep.
+	
 	* gamewin.cc (Game_window): "userusecode" entry in .exult.cfg
 	allows for custom Usecode functions.
 	* npcnear.cc: Faster response for SI's rabbit, and storms cleaned
