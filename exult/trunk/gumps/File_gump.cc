@@ -189,7 +189,7 @@ public:
 protected:
 	void refresh()
 		{
-			paint(Game_window::get_instance());
+			paint(gwin);
 		}
 };
 
@@ -202,7 +202,6 @@ void Gump_text::paint
 	Game_window *gwin
 	)
 	{
-//	Game_window *gwin = Game_window::get_instance();
 	gwin->paint_shape(parent->get_x() + x, parent->get_y() + y, get_shape());
 					// Show text.
 	gwin->paint_text(2, text, parent->get_x() + textx,
@@ -328,7 +327,6 @@ File_gump::File_gump
 {
 	set_object_area(Rectangle(0,0,0,0), 8, 150);
 
-	Game_window *gwin = Game_window::get_instance();
 	size_t i;
 	int ty = texty;
 	for (i = 0; i < sizeof(names)/sizeof(names[0]); i++, ty += texth)
@@ -401,7 +399,6 @@ void File_gump::remove_focus
 	buttons[0] = 0;
 	delete buttons[1];
 	buttons[1] = 0;
-	Game_window *gwin = Game_window::get_instance();
 	paint(gwin);
 	}
 
@@ -422,7 +419,6 @@ void File_gump::load
 	if (!Yesno_gump::ask(
 			"Okay to load over your current game?"))
 		return;
-	Game_window *gwin = Game_window::get_instance();
 	gwin->restore_gamedat(num);	// Aborts if unsuccessful.
 	gwin->read();			// And read the files in.
 	done = 1;
@@ -443,7 +439,6 @@ void File_gump::save
 	int num = get_save_index(focus);// Which one is it?
 	if (num == -1)
 		return;			// Shouldn't ever happen.
-	Game_window *gwin = Game_window::get_instance();
 	if (*gwin->get_save_name(num))	// Already a game in this slot?
 		if (!Yesno_gump::ask(
 			"Okay to write over existing saved game?"))
@@ -542,7 +537,6 @@ void File_gump::mouse_down
 	int mx, int my			// Position in window.
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
 	pushed = 0;
 	pushed_text = 0;
 					// First try checkmark.
@@ -579,7 +573,6 @@ void File_gump::mouse_up
 	int mx, int my			// Position in window.
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
 	if (pushed)			// Pushing a button?
 	{
 		pushed->unpush(gwin);
@@ -634,7 +627,6 @@ void File_gump::key_down
 {
 	if (!focus)			// Text field?
 		return;
-	Game_window *gwin = Game_window::get_instance();
 	switch (chr)
 		{
 	case SDLK_RETURN:		// If only 'Save', do it.
@@ -658,7 +650,7 @@ void File_gump::key_down
 			delete buttons[0];
 			delete buttons[1];
 			buttons[0] = buttons[1] = 0;
-			paint(Game_window::get_instance());
+			paint(gwin);
 		}
 		return;
 	case SDLK_DELETE:
@@ -672,7 +664,7 @@ void File_gump::key_down
 			delete buttons[0];
 			delete buttons[1];
 			buttons[0] = buttons[1] = 0;
-			paint(Game_window::get_instance());
+			paint(gwin);
 		}
 		return;
 	case SDLK_LEFT:

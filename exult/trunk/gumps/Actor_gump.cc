@@ -225,7 +225,6 @@ void Actor_gump::set_to_spot
 	int index			// Spot index.
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
 					// Get shape info.
 	Shape_frame *shape = obj->get_shape();
 	if (!shape)

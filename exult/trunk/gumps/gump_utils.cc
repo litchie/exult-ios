@@ -72,7 +72,9 @@ static int Handle_gump_event
 	SDL_Event& event
 	)
 {
-	int scale_factor = Game_window::get_instance()->get_fastmouse() ? 1 : Game_window::get_instance()->get_win()->get_scale();
+	Game_window *gwin = Game_window::get_instance();
+	int scale_factor = gwin->get_fastmouse() ? 1 
+				: gwin->get_win()->get_scale();
 	static bool rightclick;
 
 	switch (event.type)
@@ -85,7 +87,7 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 		if (event.button.button == 1)
 			gump->mouse_down(event.button.x / scale_factor, 
 						event.button.y / scale_factor);
-		else if (event.button.button == 2 && Game_window::get_instance()->get_mouse3rd())
+		else if (event.button.button == 2 && gwin->get_mouse3rd())
 			gump->key_down(SDLK_RETURN);
 		else if (event.button.button == 3)
 			rightclick = true;
@@ -98,9 +100,9 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 		if (event.button.button == 1)
 			gump->mouse_up(event.button.x / scale_factor,
 						event.button.y / scale_factor);
-		else if (event.button.button == 3 && Game_window::get_instance()->get_mouse3rd() && rightclick) {
+		else if (event.button.button == 3 && gwin->get_mouse3rd() && rightclick) {
 			rightclick = false;
-			if (Game_window::get_instance()->get_gump_man()->can_right_click_close()) return 0;
+			if (gwin->get_gump_man()->can_right_click_close()) return 0;
 		}
 		break;
 	case SDL_MOUSEMOTION:
@@ -147,10 +149,10 @@ int Do_Modal_gump
 	Mouse::Mouse_shapes shape	// Mouse shape to use.
 	)
 {
+	Game_window *gwin = Game_window::get_instance();
 	// maybe make this selective? it's nice for menus, but annoying for sliders
 	//	gwin->end_gump_mode();
 
-	Game_window *gwin = Game_window::get_instance();
 	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		Mouse::mouse->set_shape(shape);

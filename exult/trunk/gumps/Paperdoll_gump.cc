@@ -329,7 +329,6 @@ void Paperdoll_gump::set_to_spot
 	int index			// Spot index.
 	)
 {
-	Game_window *gwin = Game_window::get_instance();
 	
 	// Get shape.
 	Shape_frame *shape = obj->get_shape();
@@ -740,7 +739,6 @@ Game_object * Paperdoll_gump::find_object
 	)
 {
 
-	Game_window *gwin = Game_window::get_instance();
 	
 	// Check Objects
 	Rectangle box = object_area;	// Paint objects inside.

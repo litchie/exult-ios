@@ -21,11 +21,13 @@
 #ifndef GUMP_INCLUDED
 #define GUMP_INCLUDED
 
+#include "singles.h"
+
 class Gump;
 class Game_object;
 class Game_window;
 
-class  Gump_manager
+class  Gump_manager : public Game_singletons
 {
 	struct Gump_list
 	{

@@ -156,7 +156,6 @@ void VideoOptions_gump::build_buttons()
 
 void VideoOptions_gump::load_settings()
 {
-	Game_window *gwin = Game_window::get_instance();
 	int w = gwin->get_width();
 	int h = gwin->get_height();
 
@@ -216,7 +215,6 @@ VideoOptions_gump::~VideoOptions_gump()
 
 void VideoOptions_gump::save_settings()
 {
-	Game_window *gwin = Game_window::get_instance();
 	
 	int resx = resolutions[2*resolution];
 	int resy = resolutions[2*resolution+1];
@@ -253,7 +251,6 @@ void VideoOptions_gump::paint(Game_window* gwin)
 
 void VideoOptions_gump::mouse_down(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_instance();
 	pushed = Gump::on_button(gwin, mx, my);
 					// First try checkmark.
 	// Try buttons at bottom.
@@ -273,7 +270,6 @@ void VideoOptions_gump::mouse_down(int mx, int my)
 
 void VideoOptions_gump::mouse_up(int mx, int my)
 {
-	Game_window *gwin = Game_window::get_instance();
 	if (pushed)			// Pushing a button?
 	{
 		pushed->unpush(gwin);
