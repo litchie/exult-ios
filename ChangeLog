@@ -1,6 +1,7 @@
 2002-11-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: fixed division by zero
 	* shapes/Makefile.am: removed outdated OMIT_DEPENDENCIES
+	* mapedit/compile.cc: std::string
 
 2002-10-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* shapes/font.cc: fixed hang in french BG
