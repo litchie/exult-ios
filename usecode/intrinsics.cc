@@ -1055,9 +1055,31 @@ USECODE_INTRINSIC(display_map)
 
 USECODE_INTRINSIC(si_display_map)
 {
-	// display_map(frame#)
-	// +++++++++++++++++++
-	cout << " IMPLEMENT this!" << endl;
+	int mapnum = parms[0].get_int_value();
+	int shapenum;
+
+	switch (mapnum) {
+		case 0:	return UI_display_map(event,intrinsic,num_parms,parms);
+		case 1:	shapenum = 57; break;
+		case 2: shapenum = 58; break;
+		case 3: shapenum = 59; break;
+		case 4: shapenum = 60; break;
+		case 5: shapenum = 52; break;
+		default: return no_ret;
+	}
+			
+	// Display map.
+	Shape_frame *map = gwin->get_sprite_shape(shapenum, 0);
+				// Get coords. for centered view.
+	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
+	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
+	gwin->paint_shape(x, y, map, 1);
+
+	gwin->show(1);
+	int xx, yy;
+	Get_click(xx, yy, Mouse::hand);
+	gwin->paint();
+
 	return no_ret;
 }
 
