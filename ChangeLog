@@ -1,3 +1,7 @@
+2003-03-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/objnames.cc: Check that index is within valid list of names.
+
 2003-03-22  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* bgintrinsics.h,intrinsics.cc,gamewin.cc:  Implemented
