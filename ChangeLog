@@ -1,4 +1,9 @@
 2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* audio/xmidi.cc: cut & paste can be fatal :)
+	  make sure that if chorus values are out of range we change them,
+	  not reverb
+
+2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* data/scaling_method.shp: new shape for menu entry
 	* exultmenu.cc: implement choosing scaler from setup
 
