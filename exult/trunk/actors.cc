@@ -2237,6 +2237,10 @@ void Monster_actor::die
 		creator->monster_gone();
 	creator = 0;
 	audio->start_music(VICTORY, 0);
+					// Special case:  Hook's death?
+	if (get_shapenum() == 0x1fa && Game::get_game_type() == BLACK_GATE)
+		Game_window::get_game_window()->get_usecode()->call_usecode(
+				0x1fa, this, Usecode_machine::internal_exec);
 					// Got to delete this somewhere, but
 					//   doing it here crashes.
 	}

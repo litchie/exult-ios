@@ -1896,7 +1896,9 @@ int Game_window::find_objects
 				if (obj->get_lift() != lift)
 					continue;
 				Rectangle r = get_shape_rect(obj);
-				if (!r.has_point(x, y))
+				if (!r.has_point(x, y) || 
+					// Don't find invisible eggs.
+						!obj->is_findable(this))
 					continue;
 					// Check the shape itself.
 				Shape_frame *s = get_shape(*obj);

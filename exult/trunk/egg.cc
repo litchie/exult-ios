@@ -49,6 +49,18 @@ void Egglike_game_object::paint
 	}
 
 /*
+ *	Can this be clicked on?
+ */
+
+int Egglike_game_object::is_findable
+	(
+	Game_window *gwin
+	)
+	{
+	return gwin->paint_eggs && Ireg_game_object::is_findable(gwin);
+	}
+
+/*
  *	Create an egg from IREG data.
  */
 
