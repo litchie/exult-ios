@@ -300,7 +300,10 @@ void Game_window::toggle_combat
 		{
 		int party_member=usecode->get_party_member(i);
 		Actor *person=get_npc(party_member);
-		if (person && person->get_schedule_type() != newsched)
+		if (!person)
+			continue;
+		int sched = person->get_schedule_type();
+		if (sched != newsched && sched != Schedule::wait)
 			person->set_schedule_type(newsched);
 		}
 	if (main_actor->get_schedule_type() != newsched)
@@ -1426,6 +1429,13 @@ void Game_window::start_actor_alt
 	else if (blocked[dir])
 	{
 		stop_actor();
+		if (main_actor->get_lift()%5)// Up on something?
+			{		// See if we're stuck in the air.
+			start.tz--;
+			if (!Chunk_object_list::is_blocked(start, 1, 
+						MOVE_WALK, 100))
+				main_actor->move(start.tx, start.ty, start.tz);
+			}
 		return;
 	}
 
