@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 #include "gamewin.h"
 
+const int CHECKMARK = 2;		// Shape # in gumps.vga for checkmark.
+
 /*
  *	Create a gump.
  */
@@ -154,6 +156,34 @@ int Gump_object::find_objects
 	}
 
 /*
+ *	Is a given screen point on the checkmark?
+ */
+
+int Gump_object::on_checkmark
+	(
+	Game_window *gwin,
+	int mx, int my			// Point in window.
+	)
+	{
+	mx -= x + checkx;		// Get point rel. to gump.
+	my -= y + checky;
+	Shape_frame *cshape = gwin->get_gump_shape(CHECKMARK, 0);
+	return (cshape->has_point(mx, my));
+	}
+
+/*
+ *	Repaint checkmark pushed.
+ */
+
+void Gump_object::push_checkmark
+	(
+	Game_window *gwin
+	)
+	{
+	gwin->paint_gump(x + checkx, y + checky, CHECKMARK, 1);
+	}
+
+/*
  *	Paint on screen.
  */
 
@@ -165,7 +195,7 @@ void Gump_object::paint
 					// Paint the gump itself.
 	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
 					// Paint red "checkmark".
-	gwin->paint_gump(x + checkx, y + checky, 2, 0);
+	gwin->paint_gump(x + checkx, y + checky, CHECKMARK, 0);
 	Game_object *last_object = container->get_last_object();
 	if (!last_object)
 		return;			// Empty.

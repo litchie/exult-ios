@@ -74,6 +74,10 @@ public:
 					// Find objs. containing mouse point.
 	int find_objects(Game_window *gwin, int mx, int my,
 						Game_object **list);
+					// Is a given point on the checkmark?
+	int on_checkmark(Game_window *gwin, int mx, int my);
+					// Show checkmark pushed in.
+	void push_checkmark(Game_window *gwin);
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};
