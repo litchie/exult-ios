@@ -80,43 +80,34 @@ class UCFunc
     UCFunc() : _opcode_count(256), _unknown_opcode_count(256, 0), _unknown_intrinsic_count(256, 0) {};
     ~UCFunc();
     void process_old(FILE* f, long func, int* found,
-//                          unsigned char* opcode_buf,
                           unsigned char* intrinsic_buf,
                           bool scan_mode,
                           unsigned long opcode,
                           unsigned long intrinsic,
                           unsigned int &uc_funcid,
-//                          vector<UCc> &uc_codes,
                           const char** func_table);
     void process_data_seg();
-    void process_code_seg(//unsigned char* opcode_buf,
-                          unsigned char* intrinsic_buf,
-                          int mute,
+    void process_code_seg(unsigned char* intrinsic_buf, int mute,
                           int count_all_opcodes,
                           int count_all_intrinsic,
-//                          vector<UCc> &uc_codes,
                           const char** func_table);
     unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
                             unsigned char* pdataseg,
                             unsigned short* pextern,
                             unsigned short externsize,
-//                            unsigned char* opcode_buf,
                             unsigned char* intrinsic_buf,
                             int mute,
                             int count_all_opcodes,
                             int count_all_intrinsic,
-//                            vector<UCc> &uc_codes,
                             const char** func_table);
     unsigned short print_opcode_old(unsigned char* ptrc, unsigned short coffset,
                             unsigned char* pdataseg,
                             unsigned short* pextern,
                             unsigned short externsize,
-//                            unsigned char* opcode_buf,
                             unsigned char* intrinsic_buf,
                             int mute,
                             int count_all_opcodes,
                             int count_all_intrinsic,
-//                            vector<UCc> &uc_codes,
                             const char** func_table);
 
     //void genflags(const vector<UCc> &uc_codes);

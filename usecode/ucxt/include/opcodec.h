@@ -8,30 +8,9 @@
 #include "opcodec_.h"
 #include "opcodecn.h"
 
-class MiscOpcode : public Opcode
-{
-  public:
-    MiscOpcode(const unsigned int offset, const unsigned int id, const vector<unsigned int> &params)
-          : Opcode(offset, id, params), _params(params) {};
-    virtual ~MiscOpcode() {};
-    virtual void print_asm(ostream &o)
-    {
-      o << setw(4) << _offset << ":" << SPACER << setw(2) << _id << " -";
-      for(unsigned int i=0; i<_params.size(); i++)
-        o << " " << setw(2) << _params[i];
-      o << endl;
-    };
-    virtual void print(ostream &o)
-    {
-      indent(o);
-      o << "// ";
-      print_asm(o);
-    };
-    virtual bool IsUnknown() const { return true; };
+extern const string VARPREFIX;
 
-  private:
-    vector<unsigned int> _params;
-};
+extern const unsigned int ASM_DISP_STR_LEN;
 
 class NextOpcode : public Opcode
 {
@@ -287,6 +266,11 @@ class PopOpcode : public Opcode
     {
       o << setw(4) << _offset << ": " << *this << SPACER << SPACER << "pop" << SPACER << "[" << setw(4) << _variable << "]" << endl;
     };
+    virtual void print_c(ostream &o)
+    {
+      indent(o);
+      o << VARPREFIX << setw(4) << _variable << endl;
+    };
     virtual bool I_Pop() const { return true; };
 
   private:
@@ -413,12 +397,25 @@ class AddSIOpcode : public Opcode
     virtual ~AddSIOpcode() {};
     virtual void print_asm(ostream &o)
     {
-      o << setw(4) << _offset << ": " << *this << SPACER << SPACER << "addsi" << SPACER << setw(4) << (unsigned short)_value << "H" << SPACER << SPACER << SPACER << "; " << "*** STRING GOES HERE ***" << endl;
+      o << setw(4) << _offset << ": " << *this << SPACER << SPACER << "addsi" << SPACER << setw(4) << (unsigned short)_value << "H" << SPACER << SPACER << SPACER << "; ";
+
+      if(_string.size()<ASM_DISP_STR_LEN)
+        o << '"' << _string << '"';
+      else
+        o << '"' << _string.substr(0, ASM_DISP_STR_LEN-4) << "...\"";
+      o << endl;
+    };
+    virtual void pass2(const map<unsigned int, string, less<unsigned int> > &data)
+    {
+      map<unsigned int, string, less<unsigned int> >::const_iterator i = data.find(_value);
+      assert(i!=data.end());
+      _string = i->second;
     };
     virtual bool I_Push() const { return true; };
 
   private:
     int _value;
+    string _string;
 };
 
 class PushSOpcode : public Opcode
@@ -433,12 +430,25 @@ class PushSOpcode : public Opcode
     virtual ~PushSOpcode() {};
     virtual void print_asm(ostream &o)
     {
-      o << setw(4) << _offset << ": " << *this << SPACER << SPACER << "pushs" << SPACER << setw(4) << (unsigned short)_value << "H" << SPACER << SPACER << SPACER << "; " << "*** STRING GOES HERE ***" << endl;
+      o << setw(4) << _offset << ": " << *this << SPACER << SPACER << "pushs" << SPACER << setw(4) << (unsigned short)_value << "H" << SPACER << SPACER << SPACER << "; ";
+
+      if(_string.size()<ASM_DISP_STR_LEN)
+        o << '"' << _string << '"';
+      else
+        o << '"' << _string.substr(0, ASM_DISP_STR_LEN-4) << "...\"";
+      o << endl;
+    };
+    virtual void pass2(const map<unsigned int, string, less<unsigned int> > &data)
+    {
+      map<unsigned int, string, less<unsigned int> >::const_iterator i = data.find(_value);
+      assert(i!=data.end());
+      _string = i->second;
     };
     virtual bool I_Push() const { return true; };
 
   private:
     int _value;
+    string _string;
 };
 
 class ArrCOpcode : public Opcode
@@ -528,11 +538,17 @@ class CallOpcode : public Opcode
     virtual ~CallOpcode() {};
     virtual void print_asm(ostream &o)
     {
-      o << setw(4) << _offset << ": " << *this << SPACER << SPACER << "call" << SPACER << "extern:[" << setw(4) << _externref << "]" << SPACER << SPACER << "; *** EXTERN NAME ***" << endl;
+      o << setw(4) << _offset << ": " << *this << SPACER << SPACER << "call" << SPACER << "extern:[" << setw(4) << _externref << "]" << SPACER << SPACER << "; " << setw(4) << _extern_funcid << "H" << endl;
+    };
+    virtual void pass1(const vector<unsigned int> &externs)
+    {
+      assert(_externref<externs.size());
+      _extern_funcid = externs[_externref];
     };
 
   private:
     unsigned int _externref;
+    unsigned int _extern_funcid;
 };
 
 class RetOpcode : public Opcode

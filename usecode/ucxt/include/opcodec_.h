@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <map>
 
 inline unsigned int calc_rel_offset(const unsigned int offset,
                                     const unsigned int params_size,
@@ -17,7 +18,7 @@ inline unsigned int calc_rel_offset(const unsigned int offset,
       // + reloffset
       return 1 + offset + params_size + reloffset;
 }
-;
+
 class Opcode
 {
   public:
@@ -25,8 +26,15 @@ class Opcode
           : _offset(offset), _id(id), _params(params) {};
     virtual ~Opcode() {};
     virtual void print_asm(ostream &o)=0;
+    virtual void print_c(ostream &o)
+    {
+      indent(o);
+      o << "// ";
+      print_asm(o);
+    };
     virtual void print(ostream &o) { print_asm(o); };
-    virtual void pass1(const vector<unsigned int> &_externs) {};
+    virtual void pass1(const vector<unsigned int> &externs) {};
+    virtual void pass2(const map<unsigned int, string, less<unsigned int> > &data) {};
     friend ostream &operator<<(ostream &o, const Opcode &op);
 
     unsigned int offset() const { return _offset; };
@@ -153,12 +161,15 @@ class Opcode
 //    static const char * const SPACER = " ";
     static const char * const SPACER;
 
-  protected:
+    void indent_inc() { indent_level++; };
+    void indent_dec() { indent_level--; };
     void indent(ostream &o)
     {
       for(unsigned int i=0; i<indent_level; i++)
         o << "  ";
     };
+
+  protected:
 
     unsigned int _offset;
     unsigned int _id;
@@ -210,6 +221,31 @@ class OpcodeGenericFlag : public Opcode
 
   protected:
     unsigned int _flag;
+};
+
+class MiscOpcode : public Opcode
+{
+  public:
+    MiscOpcode(const unsigned int offset, const unsigned int id, const vector<unsigned int> &params)
+          : Opcode(offset, id, params), _params(params) {};
+    virtual ~MiscOpcode() {};
+    virtual void print_asm(ostream &o)
+    {
+      o << setw(4) << _offset << ":" << SPACER << setw(2) << _id << " -";
+      for(unsigned int i=0; i<_params.size(); i++)
+        o << " " << setw(2) << _params[i];
+      o << endl;
+    };
+    virtual void print(ostream &o)
+    {
+      indent(o);
+      o << "// ";
+      print_asm(o);
+    };
+    virtual bool IsUnknown() const { return true; };
+
+  private:
+    vector<unsigned int> _params;
 };
 
 #endif

@@ -8,6 +8,7 @@ const unsigned int SIZEOF_USHORT = 2;
 
 const string VARNAME = "uvar";
 const string VARPREFIX = "var";
+const unsigned int ASM_DISP_STR_LEN=20;
 
 //#define TEST_V3 false
 #define TEST_V3 true
@@ -160,10 +161,10 @@ void UCFunc::process_code_seg(//unsigned char* opcode_buf,
   while( offset < size )
   {
     unsigned int nbytes = print_opcode(pp, offset, pdata, pextern, externsize,
-                              /*opcode_buf,*/ intrinsic_buf, mute,
+                              intrinsic_buf, mute,
                               count_all_opcodes,
                               count_all_intrinsic,
-                              /*uc_codes,*/ func_table);
+                              func_table);
     pp += nbytes;
     offset += nbytes;
   }
@@ -172,13 +173,11 @@ void UCFunc::process_code_seg(//unsigned char* opcode_buf,
 }
 
 void UCFunc::process_old(FILE* file, long func, int* found,
-//                            unsigned char* opcode_buf,
                           unsigned char* intrinsic_buf,
                           bool scan_mode,
                           unsigned long opcode,
                           unsigned long intrinsic,
                           unsigned int &uc_funcid,
-//                          vector<UCc> &uc_codes,
                           const char** func_table)
 {
   _file = file;
@@ -213,10 +212,10 @@ void UCFunc::process_old(FILE* file, long func, int* found,
 //      memset(opcode_buf, 0, 256);
     if( intrinsic != -1 ) 
       memset(intrinsic_buf, 0, 256);
-    process_code_seg(/*opcode_buf,*/ intrinsic_buf,
+    process_code_seg(intrinsic_buf,
               scan_mode || ( opcode != -1 ) || ( intrinsic != -1 ),
               ( opcode != -1 ), ( intrinsic != -1 ),
-              /*uc_codes,*/ func_table);
+              func_table);
     if( !scan_mode && ( opcode == -1 ) && ( intrinsic == -1 ) )
     {
       do_decompile();
@@ -345,8 +344,13 @@ void UCFunc::do_decompile()
 
   genflags();
 
+  // setup the extern values
   for(unsigned int i=0; i<_raw_opcodes.size(); i++)
     _raw_opcodes[i]->pass1(_externs);
+
+  // setup the string values
+  for(unsigned int i=0; i<_raw_opcodes.size(); i++)
+    _raw_opcodes[i]->pass2(_data);
 
   re_order();
 }
@@ -378,7 +382,7 @@ void UCFunc::re_order()
   }
 
   // create the "first" label from the zeroth offset
-  Label *currlbl = new Label(0);
+  Label *currlbl = new Label(_funcid, 0);
 
   //for each opcode
   for(unsigned int i=0; i<_raw_opcodes.size(); i++)
@@ -391,7 +395,7 @@ void UCFunc::re_order()
       {
         _opcodes.push_back(currlbl);
         currlbl=0;
-        currlbl = new Label(_raw_opcodes[i]->offset());
+        currlbl = new Label(_funcid, _raw_opcodes[i]->offset());
         break;
       }
     }
@@ -464,17 +468,22 @@ void UCFunc::print_c_local()
 
   strlocal << setfill('0') << setbase(16);
 
+  vector<unsigned int> ocvi;
+  MiscOpcode oc(1, 1, ocvi);
+  oc.indent_inc();
+
   if(_localc)
   {
     for(unsigned int i=_argc; i<(_argc+_localc); i++)
     {
       // TODO: more indenting fuss
-      strlocal << "    ";
+      oc.indent(strlocal);
       strlocal << VARNAME << " " << VARPREFIX << setw(4) << i << ";" << endl;
     }
     strlocal << endl;
   }
   strlocal << ends;
+
   cout << strlocal.str() << endl;
 }
 
@@ -482,12 +491,20 @@ void UCFunc::print_c_local()
    since most of the work should be done */
 void UCFunc::print_c_body()
 {
-
+  cout << endl;
+  for(unsigned int i=0; i<_opcodes.size(); i++)
+  {
+    cout << "-----" << endl;
+    _opcodes[i]->print_c(cout);
+  }
 }
 
 /* prints out the tail of the C function */
 void UCFunc::print_c_tail()
 {
+  vector<unsigned int> ocvi;
+  MiscOpcode oc(1, 1, ocvi);
+  oc.indent_dec();
 
   cout << endl << "}" << endl << endl;
 }
