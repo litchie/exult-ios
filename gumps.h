@@ -35,6 +35,12 @@ class Gump_object;
  *	Some gump shape numbers:
  */
 const int CHECKMARK = 2;		// Shape # in gumps.vga for checkmark.
+const int HORIZBAR = 4;
+const int HALO = 7;
+const int SLIDER = 14;
+const int SLIDERDIAMOND = 15;
+const int SLIDERRIGHT = 16;
+const int SLIDERLEFT = 17;
 const int DISK = 24;			// Diskette shape #.
 const int HEART = 25;			// Stats button shape #.
 const int DOVE = 46;
@@ -97,6 +103,19 @@ class Disk_gump_button : public Gump_button
 public:
 	Disk_gump_button(Gump_object *par, int px, int py)
 		: Gump_button(par, DISK, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	One of the two arrow button on the slider:
+ */
+class Slider_gump_button : public Gump_button
+	{
+public:
+	Slider_gump_button(Gump_object *par, int px, int py, int shapenum)
+		: Gump_button(par, shapenum, px, py)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -231,6 +250,36 @@ public:
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1)
 		{ return 0; }		// Can't drop onto it.
+					// Paint it and its contents.
+	virtual void paint(Game_window *gwin);
+	};
+
+/*
+ *	A slider for choosing a number.
+ */
+class Slider_gump_object : public Gump_object
+	{
+					// The arrows at each end:
+	Slider_gump_button *left_arrow, *right_arrow;
+	int diamondx;			// Rel. pos. where diamond is shown.
+	int min_val, max_val;		// Max., min. values to choose from.
+	int step_val;			// Amount to step by.
+	static int val;			// Current value.
+	void set_val(int newval);	// Set to new value.
+					// Coords:
+	static short leftbtnx, rightbtnx, btny;
+public:
+	Slider_gump_object(int initx, int inity, int mival, int mxval,
+					int step, int defval);
+	~Slider_gump_object()
+		{
+		delete left_arrow;
+		delete right_arrow;
+		}
+	static int get_val()		// Get last value set.
+		{ return val; }
+					// An arrow was clicked on.
+	void clicked_arrow(Slider_gump_button *arrow);
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};
