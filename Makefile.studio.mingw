@@ -60,16 +60,21 @@ $(EXP_FILE): $(OBJS)
 exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
 	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc $@
 
+u7shp.exe : u7shp.o
+	$(CXX) $(LFLAGS) -o u7shp.exe u7shp.o $(GTK_LIBS) -lgimp -lgimpui -mconsole
+
 allclean:
-	rm -f $(OBJS) $(EXP_FILE) $(EXEC)
+	rm -f $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
 
 clean:
-	del $(OBJS) $(EXP_FILE) $(EXEC)
+	del $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
 
 install: $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
 	cp mapedit/exult_studio.glade $(U7PATH)/data/exult_studio.glade
+
+tools: u7shp.exe
 
 dist: $(EXEC)
 	mkdir -p $(STUDIOPATH)
