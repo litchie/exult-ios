@@ -125,6 +125,7 @@ void Palette::apply(bool repaint)
  */
 void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 	{
+	string name(fname);		// Copy for safety.
 	size_t len;
 	char *buf = 0;
 	if (std::strncmp(fname, "<STATIC>/", sizeof("<STATIC>/") - 1) == 0 &&
@@ -142,7 +143,7 @@ void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 		}
 	if (!buf)			// Not in patch.
 		{
-		U7object pal(fname, index);
+		U7object pal(name.c_str(), index);
 		buf = pal.retrieve(len);// this may throw an exception
 		}
 	if(len==768) {	// Simple palette
