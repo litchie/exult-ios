@@ -5,7 +5,7 @@ LPATH := audio
 LSRC := $(wildcard $(LPATH)/*.cc)
 LPRODUCTS := 
 
-#u7audiotool_SRC := u7audiotool.o
+#u7audiotool_OBJ := u7audiotool.o
 
 # Common rules
 #include common.mk
