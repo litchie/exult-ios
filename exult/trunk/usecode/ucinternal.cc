@@ -1469,9 +1469,6 @@ Usecode_internal::~Usecode_internal
 	{
 	delete [] stack;
 	delete [] String;
-	delete conv;
-	delete keyring;
-//	int num_slots = funs->get_cnt();
 	int num_slots = sizeof(funs)/sizeof(funs[0]);
 	for (int i = 0; i < num_slots; i++)
 		{
