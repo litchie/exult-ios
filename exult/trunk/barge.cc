@@ -30,6 +30,60 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "citerate.h"
 
 /*
+ *	Rotate 90 degrees to the right around a point.
+ *
+ *	In cartesian coords with 'c' as center, the rule is:
+ *		(newx, newy) = (oldy, -oldx)
+ */
+
+inline Tile_coord rotate90r
+	(
+	Tile_coord t,			// Tile to move.
+	Tile_coord c			// Center to rotate around.
+	)
+	{
+					// Get cart. coords. rel. to center.
+	int rx = t.tx - c.tx, ry = c.ty - t.ty;
+	return Tile_coord(c.tx + ry, c.ty + rx, t.tz);
+	}
+
+/*
+ *	Rotate 90 degrees to the left around a point.
+ *
+ *	In cartesian coords with 'c' as center, the rule is:
+ *		(newx, newy) = (-oldy, oldx)
+ */
+
+inline Tile_coord rotate90l
+	(
+	Tile_coord t,			// Tile to move.
+	Tile_coord c			// Center to rotate around.
+	)
+	{
+					// Get cart. coords. rel. to center.
+	int rx = t.tx - c.tx, ry = c.ty - t.ty;
+	return Tile_coord(c.tx - ry, c.ty - rx, t.tz);
+	}
+
+/*
+ *	Rotate 180 degrees around a point.
+ *
+ *	In cartesian coords with 'c' as center, the rule is:
+ *		(newx, newy) = (-oldx, -oldy)
+ */
+
+inline Tile_coord rotate180
+	(
+	Tile_coord t,			// Tile to move.
+	Tile_coord c			// Center to rotate around.
+	)
+	{
+					// Get cart. coords. rel. to center.
+	int rx = t.tx - c.tx, ry = c.ty - t.ty;
+	return Tile_coord(c.tx - rx, c.ty + ry, t.tz);
+	}
+
+/*
  *	Delete.
  */
 
