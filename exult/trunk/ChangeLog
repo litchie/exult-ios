@@ -1,4 +1,7 @@
 2002-03-23  Willem Jan Palenstijn  <wjpalenstijn@users.sourceforge.net>
+	* Makefile.be, be_midi.cc, xmidi.cc: merged BeOS patch by Jack Burton
+
+2002-03-23  Willem Jan Palenstijn  <wjpalenstijn@users.sourceforge.net>
 	* usecode/conversation.cc: removed some debugging output
 	* audio/Audio.cc, files/Flex.cc: added newline at end of file
 
