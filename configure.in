@@ -82,7 +82,18 @@ SDL_LIBS=`sdl-config --libs`
 AC_DEFINE(HAVE_SDL)
 AC_MSG_RESULT(Now we know lots about how SDL is installed locally)
 
-AC_MSG_CHECKING(for libkmidi)
+
+
+
+
+
+
+dnl this is for kmid
+AC_ARG_ENABLE(kmid, [  --disable-kmid          force exult not to use kmid [default no]],,disable_kmid=no)
+AC_MSG_CHECKING(whether to disable kmid)
+if test x$disable_kmid = xno; then
+  AC_MSG_RESULT(no)
+AC_MSG_CHECKING(for libkmid)
 
 KMID_INCLUDES=""
 KMID_LIBS=""
@@ -95,14 +106,20 @@ for i in /lib /usr/lib /usr/local/lib
 	test -f "$i/libkmid.so" && KMID_LIBS="-L$i -lkmid"
 	done
 if test "$HAVE_KMID" != "yes" ; then
-	echo "You really need to have kmid installed."
-	echo "this requirement will be relaxed soon."
+	echo "If you don't have kmid installed try $0 --disable-kmid"
 	exit 1
 else
 	AC_MSG_RESULT(Found it. Neat.)
 	AC_DEFINE(HAVE_LIBKMIDI)
 fi
 KMID_INCLUDES="-I$KMID_INCLUDES"
+
+else
+  AC_MSG_RESULT(yes)
+  echo "Okay. No Kmid in this binary."
+fi
+
+AC_SUBST(DEBUG_FLAGS)
 
 
 AC_MSG_CHECKING(for freetype)
