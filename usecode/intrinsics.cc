@@ -98,7 +98,9 @@ USECODE_INTRINSIC(execute_usecode_array)
 		uc->halt();		// Stop current one.
 					// Start on next tick.
 	create_script(parms[0], parms[1], 1);
-	return(no_ret);
+
+	Usecode_value u(1);
+	return(u);
 }
 
 USECODE_INTRINSIC(delayed_execute_usecode_array)
@@ -112,7 +114,9 @@ USECODE_INTRINSIC(delayed_execute_usecode_array)
 	int delay = parms[2].get_int_value();
 	create_script(parms[0], parms[1], delay*c_std_delay);
 	COUT("Executing intrinsic 2");
-	return(no_ret);
+
+	Usecode_value u(1);
+	return(u);
 }
 
 USECODE_INTRINSIC(show_npc_face)
