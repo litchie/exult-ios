@@ -338,8 +338,9 @@ USECODE_INTRINSIC(get_distance)
 	// Distance from parm[0] -> parm[1].  Guessing how it's computed.
 	Game_object *obj0 = get_item(parms[0]);
 	Game_object *obj1 = get_item(parms[1]);
-	Usecode_value u((obj0 && obj1) ? obj0->get_tile().distance(
-					obj1->get_tile()) : 0);
+	Usecode_value u((obj0 && obj1) ? 
+		obj0->get_outermost()->get_tile().distance(
+				obj1->get_outermost()->get_tile()) : 0);
 	return(u);
 }
 
