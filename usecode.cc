@@ -2697,8 +2697,8 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(mouse_exists),	// 0x68
 	USECODE_INTRINSIC_PTR(get_speech_track), // 0x69
 	USECODE_INTRINSIC_PTR(flash_mouse),	// 0x6a
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6b
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6c +++??set_xxx(item, val).
+	USECODE_INTRINSIC_PTR(get_item_frame),	// 0x6b Guessing++++
+	USECODE_INTRINSIC_PTR(set_item_frame),	// 0x6c Guessing++++
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6d
 	USECODE_INTRINSIC_PTR(get_container),	// 0x6e
 	USECODE_INTRINSIC_PTR(remove_item),	// 0x6f
