@@ -115,8 +115,9 @@ class UCOpcodeData
 			num_pop = strtol(v[8].c_str(), 0, 0);
 			num_push = strtol(v[9].c_str(), 0, 0);
 			call_effect = strtol(v[10].c_str(), 0, 0);
-			assert(v[11].size()>=1);
+			assert(v[11].size()>=2);
 			flag_return = (v[11][0]=='0') ? false : true;
+			flag_paren  = (v[11][1]=='0') ? false : true;
 			map_type_size(param_types, param_sizes);
 		};
 		
@@ -134,7 +135,7 @@ class UCOpcodeData
 		unsigned int   num_push;
 		unsigned int   call_effect;
 		bool           flag_return;
-		
+		bool           flag_paren;
 };
 
 extern vector<UCOpcodeData> opcode_table_data;
