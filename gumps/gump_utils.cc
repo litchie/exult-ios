@@ -132,7 +132,7 @@ int Do_Modal_gump
 	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		Mouse::mouse->set_shape(shape);
-	gwin->show(1);
+	gwin->show(true);
 	int escaped = 0;
 					// Get area to repaint when done.
 	Rectangle box = gump->get_rect();
@@ -161,12 +161,13 @@ int Do_Modal_gump
 	}
 	while (!gump->is_done() && !escaped);
 	Mouse::mouse->hide();
-					// Restore background.
-	gwin->get_win()->put(back, box.x, box.y);
+					// Restore background, if wanted.
+	if (gump->want_restore_background())
+		gwin->get_win()->put(back, box.x, box.y);
 	delete back;
 	Mouse::mouse->set_shape(saveshape);
 					// Leave mouse off.
-	gwin->show(1);
+	gwin->show(true);
 	return (!escaped);
 }
 

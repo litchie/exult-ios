@@ -3,6 +3,8 @@
 	* audio/midi_drivers/mac_midi.*: compiles again on classic MacOS
 	* fnames.h: changed for MacOS X again (set default value for EXULT_DATADIR)
 	* gamewin.*: red plasma is now blue in SI
+	* gumps/Modal_gump.h, Gamemenu_gump.cc, gump_utils.cc, Newfile_gump.cc:
+	  fixed screen redrawal after loading a game.
 
 2001-08-17  Ryan Nunn <triforce@merlin.net.au>
 	* actors.cc : Swamp boots should now work in SI
