@@ -861,18 +861,22 @@ void Game_window::paint_splash
 		Vga_file shapes(ENDSHAPE_FLX);
 		int x = get_width()/2-160;
 		int y = get_height()/2-100;
-		
+		set_palette("static/intropal.dat",3);
 		paint_shape(x,y,shapes.get_shape(0x11,0));
 		paint_text_box(0,"With the help of Jeff Freedman, Dancer Vesperman, " \
 				 "Willem Jan Palenstijn, Tristan Tarrant", x, y+160, 320, 200);
-		win->show();
+		set_palette("static/intropal.dat",3,1);
 		SDL_Delay(2000);
+		set_palette("static/intropal.dat",3,-1);
+		
+		
 		paint_shape(x,y,shapes.get_shape(0x12,0));
 		paint_shape(x+160,y+30,shapes.get_shape(0x0D,0));
 		paint_text_box(0,"Driven by the Exult game engine", x, y+160, 320, 200);
-		win->show();
-		SDL_Delay(2000);
-		paint_shape(x,y,shapes.get_shape(0x0,0));
+		set_palette("static/intropal.dat",4,1);
+		SDL_Delay(1500);
+		set_palette("static/intropal.dat",4,-1);
+		//paint_shape(x,y,shapes.get_shape(0x0,0));
 	}
 
 /*
@@ -1106,18 +1110,52 @@ void Game_window::set_palette
 void Game_window::set_palette
 	(
 	char *fname,
-	int pal_num
+	int pal_num,
+	int fade
 	)
 	{
 	U7object pal(fname, pal_num);
-	unsigned char colors_raw[1536];	// Read it in.
+	char *colors_raw = 0;
 	size_t len;
-	pal.retrieve((char **)&colors_raw,len);
+	pal.retrieve(&colors_raw,len);
 	unsigned char colors[768];
 	for(int i=0;i<768;i++)
 		colors[i]=colors_raw[i*2];
 					// They use 6 bits.
-	win->set_palette(colors, 63, brightness);
+	switch(fade) 
+		{
+		case -1:
+			{
+				unsigned char fade_pal[768];
+				for(int i=30;i>=0;i--) {
+					for(int c=0;c<768;c++)
+						fade_pal[c] = colors[c]*i/30;
+					win->set_palette(fade_pal, 63);
+					win->show();
+					SDL_Delay(20);
+				}
+				break;
+			}
+		case 0:
+			win->set_palette(colors, 63);
+			break;
+		case 1:
+			{
+				unsigned char fade_pal[768];
+				for(int i=0;i<=30;i++) {
+					for(int c=0;c<768;c++)
+						fade_pal[c] = colors[c]*i/30;
+					win->set_palette(fade_pal, 63);
+					win->show();
+					SDL_Delay(20);
+				}
+				break;
+			}
+		default:
+			break;
+		}
+	
+	delete[] colors_raw;
 	}
 
 /*
