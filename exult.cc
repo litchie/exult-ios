@@ -31,7 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL.h"
 #include "SDL_syswm.h"
 
-#include <sys/stat.h>
 #include "gamewin.h"
 #include "fnames.h"
 #include "Audio.h"
@@ -158,6 +157,7 @@ int main
 		usecode_trace=true;	// Enable tracing of intrinsics
 
 	Init();				// Create main window.
+	
 #if 0	/* Make this an option. */
 	if (argc > 2)			// Specify chunkx, chunky on cmndline.
 		gwin->set_chunk_offsets(atoi(argv[1]), atoi(argv[2]));
@@ -169,14 +169,7 @@ int main
 #ifdef MOUSE
 	SDL_ShowCursor(0);
 #endif
-	struct stat sbuf;		// Create gamedat files 1st time.
-	if (stat(U7NBUF_DAT, &sbuf) != 0 &&
-	    stat(NPC_DAT, &sbuf) != 0)
-		{
-		cout << "Creating 'gamedat' files.\n";
-		gwin->write_gamedat(INITGAME);
-		}
-
+	
 	int result = Play();		// start game
 //	delete config;			// free configuration object
 	return result;
