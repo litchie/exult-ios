@@ -2239,7 +2239,7 @@ int Usecode_internal::run()
 						// update new total count
 						frame->locals[local2] = Usecode_value(cnt);
 						
-						if (abs(cnt-frame->locals[local2].get_int_value())==1)
+						if (std::abs(cnt-frame->locals[local2].get_int_value())==1)
 						{
 							// small change... we can fix this
 							Usecode_value& curval = arr.is_array() ?
