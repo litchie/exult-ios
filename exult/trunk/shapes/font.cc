@@ -390,7 +390,7 @@ int Font::get_text_height()
 
 int Font::center_text(Image_buffer8 *win, int x, int y, const char *s)
 {
-	return 0;
+	return draw_text(win, x - get_text_width(s)/2, y, s);
 }
 
 FontManager::FontManager()
