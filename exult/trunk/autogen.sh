@@ -32,8 +32,16 @@ fi
 
 aclocalincludes=""
 if test -d "/usr/local/share/aclocal"; then
-  aclocalincludes="-I /usr/local/share/aclocal"
+  if test "/usr/local/share/aclocal" != `aclocal --print-ac-dir`; then
+    aclocalincludes="$aclocalincludes -I /usr/local/share/aclocal"
+  fi
 fi
+
+#if test -d "$HOME/share/aclocal"; then
+#  if test "$HOME/share/aclocal" != `aclocal --print-ac-dir`; then
+#    aclocalincludes="$aclocalincludes -I $HOME/share/aclocal"
+#  fi
+#fi
 
 # Clean up the generated crud
 rm -f configure config.log config.guess config.sub config.cache
