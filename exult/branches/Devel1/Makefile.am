@@ -24,7 +24,7 @@ INCLUDES += -Iconf
 INCLUDES += $(SDL_INCLUDES)
 INCLUDES += $(KMID_INCLUDES)
 
-LIBS += $(SDL_LIBS) -Lconf 
+LIBS += $(SDL_LIBS) -Lconf -Lpathfinder
 LIBS += $(KMID_LIBS)
 LIBS += $(AUDIO_LIBRARY)
 
