@@ -2317,8 +2317,8 @@ USECODE_INTRINSIC(display_map)
 		xx = ((tx * (map->get_width() - 10)) / 3072) + (5 + x - map->get_xleft()) + 1;
 		yy = ((ty * (map->get_height() - 10)) / 3072) + (5 + y - map->get_yabove()) + 1;
 
-		gwin->get_win()->fill8(0, 1, 5, xx, yy - 2); // black isn't the correct colour
-		gwin->get_win()->fill8(0, 5, 1, xx - 2, yy); // ++++ should be yellow!
+		gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
+		gwin->get_win()->fill8(255, 5, 1, xx - 2, yy); // ++++++ is this the right yellow?
 	}
 
 	gwin->show(1);
