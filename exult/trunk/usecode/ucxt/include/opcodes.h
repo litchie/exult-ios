@@ -104,6 +104,7 @@ extern const char* bg_func_table[113];
 extern map<unsigned int, string> bg_uc_intrinsics;
 extern map<unsigned int, string> si_uc_intrinsics;
 
+void init_static_usecodetables();
 void init_usecodetables();
 
 #endif
