@@ -19,6 +19,7 @@
 
 #define MAX_NO_OPCODES 256
 vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
+vector<pair<unsigned int, unsigned int> > opcode_jumps;
 
 map<unsigned int, string> bg_uc_intrinsics;
 map<unsigned int, string> si_uc_intrinsics;
@@ -85,6 +86,25 @@ void init_usecodetables(const Configuration &config, bool noconf, bool verbose)
 		}	
 	}
 	file.close();
+	
+	/* Create an {opcode, parameter_index} array of all opcodes that
+		execute a 'jump' statement */
+	for(vector<UCOpcodeData>::iterator op=opcode_table_data.begin(); op!=opcode_table_data.end(); op++)
+	{
+		for(unsigned int i=0; i<op->param_sizes.size(); i++)
+		{
+			if(op->param_sizes[i].second==true) // this is a calculated offset
+			{
+				opcode_jumps.push_back(pair<unsigned int, unsigned int>(op->opcode, i+1)); // parameters are stored as base 1
+			}
+		}
+	}
+	
+	#if 0
+	cout << "Calculated Opcode pairs:" << endl;
+	for(vector<pair<unsigned int, unsigned int> >::iterator i=opcode_jumps.begin(); i!=opcode_jumps.end(); i++)
+		cout << setw(4) << i->first << '\t' << setw(4) << i->second << endl;
+	#endif
 }
 
 /* To be depricated when I get the complex vector<string> splitter online */

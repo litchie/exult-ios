@@ -15,7 +15,8 @@
 
 UCData::UCData() : _noconf(false), _rawops(false),
                    _autocomment(false), _uselesscomment(false),
-                   _verbose(false), _mode(MODE_NONE), _game(GAME_BG),
+                   _verbose(false), _ucdebug(false),
+                   _mode(MODE_NONE), _game(GAME_BG),
                    _output_list(false), _output_asm(false), _output_ucs(false),
                    _output_ucz(false), _mode_all(false), _mode_dis(false),
                    _search_opcode(-1),
@@ -36,18 +37,19 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 	/* Parse command line */
 	for(unsigned int i=1; i<argc; i++)
 	{
-		if     (strcmp(argv[i], "-si")==0)  _game    = GAME_SI;
-		else if(strcmp(argv[i], "-bg")==0)  _game    = GAME_BG;
+		if     (strcmp(argv[i], "-si" )==0)  _game    = GAME_SI;
+		else if(strcmp(argv[i], "-bg" )==0)  _game    = GAME_BG;
 
-		else if(strcmp(argv[i], "-a" )==0)  { _mode  = MODE_ALL; _mode_all=true; }
-		else if(strcmp(argv[i], "-f" )==0)  _mode    = MODE_FLAG_DUMP;
-//		else if(strcmp(argv[i], "-c" )==0)  _mode    = MODE_OPCODE_SCAN; // Opcode scan mode
+		else if(strcmp(argv[i], "-a"  )==0)  { _mode  = MODE_ALL; _mode_all=true; }
+		else if(strcmp(argv[i], "-f"  )==0)  _mode    = MODE_FLAG_DUMP;
+//		else if(strcmp(argv[i], "-c"  )==0)  _mode    = MODE_OPCODE_SCAN; // Opcode scan mode
 
-		else if(strcmp(argv[i], "-nc")==0)  _noconf  = true;
-		else if(strcmp(argv[i], "-ro")==0)  _rawops  = true;
-		else if(strcmp(argv[i], "-ac")==0)  _autocomment = true;
-		else if(strcmp(argv[i], "-uc")==0)  _uselesscomment = true;
-		else if(strcmp(argv[i], "-v" )==0)  _verbose = true;
+		else if(strcmp(argv[i], "-nc" )==0)  _noconf  = true;
+		else if(strcmp(argv[i], "-ro" )==0)  _rawops  = true;
+		else if(strcmp(argv[i], "-ac" )==0)  _autocomment = true;
+		else if(strcmp(argv[i], "-uc" )==0)  _uselesscomment = true;
+		else if(strcmp(argv[i], "-v"  )==0)  _verbose = true;
+		else if(strcmp(argv[i], "-dbg")==0)  _ucdebug = true;
 
 		else if(strcmp(argv[i], "-fl" )==0)  _output_list = true;
 		else if(strcmp(argv[i], "-fa" )==0)  _output_asm  = true;
@@ -133,8 +135,12 @@ void UCData::disassamble()
 			         << setw(8) << _funcs[i]->_offset   << "  "
 			         << setw(4) << _funcs[i]->_funcsize << "  "
 			         << setw(4) << _funcs[i]->_datasize << "  "
-			         << setw(4) << _funcs[i]->codesize() << "  "
-			         << endl;
+			         << setw(4) << _funcs[i]->codesize() << "  ";
+				
+			    if(ucdebug())
+					cout << _funcs[i]->_data.find(0)->second;
+			
+			    cout << endl;
 				_func_printed=true;
 			}
 
