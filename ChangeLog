@@ -1,3 +1,8 @@
+2001-08-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* various: replaced unsigned char by uint8
+	* Makefile.be: updated
+	* gamewin.cc: fixed compile error
+
 2001-08-24  Max Horn <max@quendi.de>
 	* various files: removed "../" from #include statments
 	* various files: updated copyright header

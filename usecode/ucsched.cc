@@ -532,7 +532,7 @@ int Usecode_script::save
 	int buflen
 	)
 	{
-	unsigned char *ptr = buf;
+	uint8 *ptr = buf;
 	int remaining = cnt - i;
 	Write2(ptr, remaining);		// # of values we'll store.
 	for (int j = i; j < cnt; j++)
@@ -565,7 +565,7 @@ Usecode_script *Usecode_script::restore
 	int buflen
 	)
 	{
-	unsigned char *ptr = buf;
+	uint8 *ptr = buf;
 	int cnt = Read2(ptr);		// Get # instructions.
 					// Create empty array.
 	Usecode_value *code = new Usecode_value(cnt, 0);
