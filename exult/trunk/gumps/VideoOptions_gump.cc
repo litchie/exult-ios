@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_button.h"
 #include "Gump_ToggleButton.h"
 #include "gamewin.h"
+#include "data/exult_flx.h"
 
 using std::cerr;
 using std::endl;
@@ -52,10 +53,10 @@ public:
 void VideoOptions_button::activate(Game_window *gwin)
 {
 	switch (shapenum) {
-	case 47: // cancel
+	case EXULT_FLX_AUD_CANCEL_SHP:
 		((VideoOptions_gump*)parent)->cancel();
 		break;
-	case 46: // ok
+	case EXULT_FLX_AUD_OK_SHP:
 		((VideoOptions_gump*)parent)->close(gwin);
 		break;
 	}
@@ -100,10 +101,10 @@ void VideoOptions_gump::toggle(Gump_button* btn, int state)
 void VideoOptions_gump::build_buttons()
 {
 	// resolution
-	buttons[0] = new VideoToggle(this, colx[3], rowy[0], 51, resolution, 5);
-	buttons[1] = new VideoToggle(this, colx[3], rowy[1], 53, scaling, 2);
-	buttons[2] = new VideoToggle(this, colx[2], rowy[2], 52, scaler, 5);
-	buttons[3] = new VideoToggle(this, colx[3], rowy[3], 44, fullscreen, 2);
+	buttons[0] = new VideoToggle(this, colx[3], rowy[0], EXULT_FLX_VID_RESOLUTION_SHP, resolution, 5);
+	buttons[1] = new VideoToggle(this, colx[3], rowy[1], EXULT_FLX_VID_SCALING_SHP, scaling, 2);
+	buttons[2] = new VideoToggle(this, colx[2], rowy[2], EXULT_FLX_VID_SCALER_SHP, scaler, 5);
+	buttons[3] = new VideoToggle(this, colx[3], rowy[3], EXULT_FLX_AUD_ENABLED_SHP, fullscreen, 2);
 }
 
 void VideoOptions_gump::load_settings()
@@ -121,7 +122,7 @@ void VideoOptions_gump::load_settings()
 	
 }
 
-VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, 48, GSF_EXULT_FLX)
+VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SHP, GSF_EXULT_FLX)
 {
 	for (int i=0; i<10; i++) buttons[i] = 0;
 
@@ -130,9 +131,9 @@ VideoOptions_gump::VideoOptions_gump() : Modal_gump(0, 48, GSF_EXULT_FLX)
 	build_buttons();
 
 	// Ok
-	buttons[8] = new VideoOptions_button(this, colx[0], rowy[7], 46);
+	buttons[8] = new VideoOptions_button(this, colx[0], rowy[7], EXULT_FLX_AUD_OK_SHP);
 	// Cancel
-	buttons[9] = new VideoOptions_button(this, colx[4], rowy[7], 47);
+	buttons[9] = new VideoOptions_button(this, colx[4], rowy[7], EXULT_FLX_AUD_CANCEL_SHP);
 }
 
 VideoOptions_gump::~VideoOptions_gump()

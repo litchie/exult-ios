@@ -483,36 +483,6 @@ int Font::get_text_baseline
 	return A->get_yabove();
 	}
 
-#if 0
-/*
- *	Pass space.
- */
-
-static const char *Pass_space
-	(
-	const char *text
-	)
-	{
-	while (isspace(*text))
-		text++;
-	return (text);
-	}
-
-/*
- *	Pass a word.
- */
-
-static const char *Pass_word
-	(
-	const char *text
-	)
-	{
-	while (*text && !isspace(*text))
-		text++;
-	return (text);
-	}
-#endif
-
 Font::Font(): font_shapes(0), font_data(0), font_buf(0)
 {
 }
@@ -548,43 +518,6 @@ int Font::load(const char *fname, int index, int hlead, int vlead)
 	return 0;
 }
 
-#if 0
-int Font::draw_text(Game_window *gwin, int x, int y, const char *s)
-{
-	int xoff = x;
-	int chr;
-	int yoff = y+get_text_baseline();
-	while ((chr = *s++) != 0) {
-		Shape_frame *shape = font_shapes->get_frame(chr);
-		if (!shape)
-			continue;
-		shape->paint_rle(gwin->get_win()->get_ib8(), x, yoff);
-		x += shape->get_width() + hor_lead;
-		}
-	return (x - xoff);
-}
-
-int Font::get_text_width(const char *s)
-{
-	int width = 0;
-	short chr;
-	while ((chr = *s++) != 0)
-		width += font_shapes->get_frame(chr)->get_width() + hor_lead;
-	return width;
-}
-
-int Font::get_text_baseline() 
-{
-	return font_shapes->get_frame('A')->get_yabove();
-}
-
-int Font::get_text_height()
-{
-	return get_text_baseline()+font_shapes->get_frame('y')->get_ybelow();
-}
-#endif
-
-
 int Font::center_text(Image_buffer8 *win, int x, int y, const char *s)
 {
 	return draw_text(win, x - get_text_width(s)/2, y, s);
@@ -596,18 +529,24 @@ FontManager::FontManager()
 
 FontManager::~FontManager()
 {
-	// FIXME: free all fonts
 	fonts.clear();
 }
 
 void FontManager::add_font(const char *name, const char *archive, int index, int hlead, int vlead)
 {
-	if(fonts[name]!=0)		// If a font is already here, delete it
-		delete fonts[name];
+	remove_font(name);
 
 	Font *font = new Font(archive, index, hlead, vlead);
 	
 	fonts[name] = font;
+}
+
+void FontManager::remove_font(const char *name)
+{
+	if(fonts[name]!=0) {
+		delete fonts[name];
+		fonts.erase(name);
+	}
 }
 
 Font *FontManager::get_font(const char *name)
