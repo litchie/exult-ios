@@ -122,3 +122,11 @@
 
 \C"I love freedman"
 \L - Fingolfin on ##exult
+
+\Cusecode = -1; // Let's try this.
+\L - actorio.cc:89 cvs 1.1
+\L   (jsf 13-May-00)
+
+\Ca comment to inspire confidence :-)
+\L - Wumpus on ##exult
+

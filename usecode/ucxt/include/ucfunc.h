@@ -12,13 +12,13 @@
 class UCFuncSet
 {
 	public:
-		UCFuncSet(unsigned short new_funcid, unsigned short new_num_args)
-		         : funcid(new_funcid), num_args(new_num_args) {};
+		UCFuncSet(unsigned short new_funcid, unsigned short new_num_args, bool new_return_var)
+		         : funcid(new_funcid), num_args(new_num_args), return_var(new_return_var) {};
 		~UCFuncSet() {};
 		
 		unsigned short funcid;      // the id of the function
 		unsigned short num_args;    // the number of arguments
-		
+		bool           return_var;  // if true, the function returns a variable
 };
 
 typedef map<unsigned short, UCFuncSet> FuncMap;
@@ -184,7 +184,8 @@ class UCFunc
 {
 	public:
 		UCFunc() : _offset(0), _funcid(0), _funcsize(0), _bodyoffset(0), _datasize(0),
-		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0) {};
+		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0),
+		           _return_var(false) {};
 
 		// temp passing UCData, probably shouldn't need it.
 		void output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool gnubraces=false);
@@ -222,7 +223,9 @@ class UCFunc
 		vector<unsigned short> _externs; // the external function id's
 		//vector<pair<unsigned short, pair<unsigned char, vector<unsigned char> > > > _usecode;
 		vector<UCc> _opcodes;
-
+		
+		bool           _return_var; // does the function return a variable?
+		
 		// the following vars are for data compatibility with the original UCFunc
 		unsigned short codesize() const { return _funcsize - _datasize; };
 		vector<FlagData *>   _flagcount;
