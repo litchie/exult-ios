@@ -50,7 +50,6 @@ private:
 		} value;
 					// Count array elements.
 	static int count_array(const Usecode_value& val);
-	void resize(int new_size);	// Resize array.
 public:
 	Usecode_value() : type((unsigned char) int_type)
 		{ value.intval = 0; }
@@ -111,6 +110,7 @@ public:
 					// Get an array element.
 	Usecode_value& get_elem(int i)
 		{ return value.array[i]; }
+	int resize(int new_size);	// Resize array.
 					// Look in array for given value.
 	int find_elem(const Usecode_value& val);
 					// Concat. to end of this array.

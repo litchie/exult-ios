@@ -47,15 +47,21 @@ int Usecode_value::count_array
 	}
 
 /*
- *	Resize array.  (Assumes this is an array.)
+ *	Resize array.
+ *
+ *	Output:	false if not an array.
  */
 
-void Usecode_value::resize
+int Usecode_value::resize
 	(
 	int new_size
 	)
 	{
+	if (type != (int) array_type)
+		return (0);
 	int size = count_array(*this);	// Get current size.
+	if (new_size == size)
+		return (1);		// Nothing to do.
 	Usecode_value *newvals = new Usecode_value[new_size + 1];
 	newvals[new_size].type = (unsigned char) end_of_array_type;
 					// Move old values over.
@@ -64,6 +70,7 @@ void Usecode_value::resize
 		newvals[i] = value.array[i];
 	delete [] value.array;		// Delete old list.
 	value.array = newvals;		// Store new.
+	return (1);
 	}
 
 /*
@@ -494,6 +501,8 @@ Usecode_value Usecode_machine::call_intrinsic
 			return Usecode_value(0);
 		return Usecode_value(1 + (rand() % range));
 		}
+	case 1:				// ??Animate (itemref, array).+++++++
+		break;
 	case 3:				// Show NPC face.
 		show_npc_face(parms[0], parms[1]);
 		break;
@@ -540,6 +549,21 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x14:			// Get item quality.
 		//++++++++++++++++++
 		break;
+	case 0x16:			// Get # of items in NPC??????
+					//   Count(item, -npc).
+		//+++++++++++++
+		break;
+	case 0x18:			// Takes itemref.  Rets. some kind
+					//   of array.
+		{
+		Usecode_value arr(2, 0);
+		Usecode_value z(0);
+		arr.put_elem(0, z);
+		arr.put_elem(0, z);
+		return arr;
+		}
+	case 0x1b:			// Takes -npc.  Returns index?
+		return parms[0];	// Just return -npc for now.
 	case 0x1e:			// NPC joins party.
 		add_to_party(-parms[0].get_int_value());
 		break;
@@ -560,6 +584,10 @@ Usecode_value Usecode_machine::call_intrinsic
 		    ((Game_object *) parms[0].get_int_value())->get_name());
 	case 0x2a:			// Get cont. items(item, type, qual,?).
 		//++++++++++++
+		break;
+	case 0x2b:			// Remove items(num, item, 
+					//   -x?, -x?, -x?).  Often -359.???
+		//+++++++++++
 		break;
 	case 0x2e:			// Play music(item, songnum).
 		//++++++++++++
@@ -882,6 +910,7 @@ void Usecode_machine::run
 		case 0x26:		// AIDX.
 			{
 			sval = popi();	// Get index into array.
+			sval--;		// It's 1 based.
 					// Get # of local to index.
 			offset = Read2(ip);
 			if (offset < 0 || offset >= num_locals)
@@ -997,15 +1026,26 @@ void Usecode_machine::run
 			offset = Read2(ip);
 			gflags[offset] = (unsigned char) popi();
 			break;
-		case 0x44:		// PUSHW.
+		case 0x44:		// PUSHB.
 			pushi(*ip++);
 			break;
 		case 0x45:		// Unknown.
 			ip++;
 			break;
-		case 0x46:		// Unknown.
-			ip++;
+		case 0x46:		// Set array element.
+			{
+					// Get # of local array.
+			offset = Read2(ip);
+			Usecode_value& arr = locals[offset];
+			short index = popi();
+			index--;	// It's 1-based.
+			Usecode_value val = pop();
+			int size = arr.get_array_size();
+			if (index >= 0 && 
+			    (index < size || arr.resize(index + 1)))
+				arr.put_elem(index, val);
 			break;
+			}
 		case 0x47:		// CALLE.
 			offset = Read2(ip);
 			call_usecode_function(offset);
