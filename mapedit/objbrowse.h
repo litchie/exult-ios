@@ -54,10 +54,13 @@ public:
 	virtual void end_terrain_editing();
 	virtual void set_background_color(guint32 c);
 					// Menu items:
-	static void on_shapes_popup_add2group_activate(
+	static void on_browser_group_add(
 					GtkMenuItem *item, gpointer udata);
 					// Add 'Add to group...' submenu.
 	void add_group_submenu(GtkWidget *popup);
+	static void on_browser_file_save(GtkMenuItem *item, gpointer udata);
+	static void on_browser_file_revert(GtkMenuItem *item, gpointer udata);
+	virtual GtkWidget *create_popup();	// Popup menu.
 };
 
 					// File-selector utility:
