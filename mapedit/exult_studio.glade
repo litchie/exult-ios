@@ -450,7 +450,7 @@
 	  <label_xalign>0</label_xalign>
 	  <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
 	  <child>
-	    <shrink>True</shrink>
+	    <shrink>False</shrink>
 	    <resize>False</resize>
 	  </child>
 
@@ -522,7 +522,8 @@
 
 	    <widget>
 	      <class>GtkFrame</class>
-	      <name>frame120</name>
+	      <name>groups_frame</name>
+	      <visible>False</visible>
 	      <label_xalign>0</label_xalign>
 	      <shadow_type>GTK_SHADOW_IN</shadow_type>
 
@@ -559,6 +560,16 @@
 		      <name>unselect_row</name>
 		      <handler>on_group_list_unselect_row</handler>
 		      <last_modification_time>Wed, 23 Jan 2002 05:29:47 GMT</last_modification_time>
+		    </signal>
+		    <signal>
+		      <name>row_move</name>
+		      <handler>on_group_list_row_move</handler>
+		      <last_modification_time>Thu, 24 Jan 2002 02:26:58 GMT</last_modification_time>
+		    </signal>
+		    <signal>
+		      <name>button_press_event</name>
+		      <handler>on_group_list_button_press_event</handler>
+		      <last_modification_time>Thu, 24 Jan 2002 02:54:50 GMT</last_modification_time>
 		    </signal>
 		    <columns>1</columns>
 		    <column_widths>80</column_widths>
@@ -663,62 +674,6 @@
 			</child>
 		      </widget>
 		    </widget>
-		  </widget>
-		</widget>
-
-		<widget>
-		  <class>GtkHBox</class>
-		  <name>hbox27</name>
-		  <homogeneous>False</homogeneous>
-		  <spacing>0</spacing>
-		  <child>
-		    <padding>0</padding>
-		    <expand>False</expand>
-		    <fill>True</fill>
-		  </child>
-
-		  <widget>
-		    <class>GtkButton</class>
-		    <name>groups_open</name>
-		    <can_focus>True</can_focus>
-		    <label>Open</label>
-		    <child>
-		      <padding>0</padding>
-		      <expand>True</expand>
-		      <fill>True</fill>
-		    </child>
-		  </widget>
-
-		  <widget>
-		    <class>GtkArrow</class>
-		    <name>groups_up_arrow</name>
-		    <arrow_type>GTK_ARROW_UP</arrow_type>
-		    <shadow_type>GTK_SHADOW_OUT</shadow_type>
-		    <xalign>0.5</xalign>
-		    <yalign>0.5</yalign>
-		    <xpad>0</xpad>
-		    <ypad>0</ypad>
-		    <child>
-		      <padding>0</padding>
-		      <expand>False</expand>
-		      <fill>False</fill>
-		    </child>
-		  </widget>
-
-		  <widget>
-		    <class>GtkArrow</class>
-		    <name>groups_down_arrow</name>
-		    <arrow_type>GTK_ARROW_DOWN</arrow_type>
-		    <shadow_type>GTK_SHADOW_OUT</shadow_type>
-		    <xalign>0.5</xalign>
-		    <yalign>0.5</yalign>
-		    <xpad>0</xpad>
-		    <ypad>0</ypad>
-		    <child>
-		      <padding>0</padding>
-		      <expand>False</expand>
-		      <fill>False</fill>
-		    </child>
 		  </widget>
 		</widget>
 	      </widget>
