@@ -1,6 +1,14 @@
 ??/??/00:	v??.??
 
-		
+		Massive code restructuring and cleanup (use STL wherever
+		possible, pervasive use of namespaces, more portable C++
+		conformance, etc.)
+
+		New cheats
+
+		Reworked audio subsystem
+
+		Loads of bug fixes
 
 
 11/20/00:	v0.90 alpha 1

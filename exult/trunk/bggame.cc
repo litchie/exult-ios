@@ -299,6 +299,7 @@ void BG_Game::play_intro()
 		win->show();
 		if(wait_delay(50)) {
 			pal.fade_out(30);
+			Audio::get_ptr()->cancel_streams();
 			return;	
 		}
 	}
@@ -309,6 +310,7 @@ void BG_Game::play_intro()
 		win->show();
 		if(wait_delay(70)) {
 			pal.fade_out(30);
+			Audio::get_ptr()->cancel_streams();
 			return;	
 		}
 	}
