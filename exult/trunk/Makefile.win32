@@ -200,7 +200,7 @@ exultico.o: win32/exultico.rc win32/exult.ico
 IPACK_OBJS=ipack.o U7file.o Flex.o IFF.o Table.o Flat.o utils.o imagebuf.o ibuf8.o ibuf16.o vgafile.o pngio.o
 
 ipack.exe : $(IPACK_OBJS)
-	$(CXX) $(LFLAGS) -o ipack.exe $(IPACK_OBJS) -lpng -mconsole
+	$(CXX) $(LFLAGS) -o ipack.exe $(IPACK_OBJS) -lpng -lz -mconsole
 
 mklink.exe : mklink.o
 	$(CXX) $(LFLAGS) -o mklink.exe mklink.o -mconsole
