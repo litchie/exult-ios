@@ -143,7 +143,7 @@ void Usecode_internal::stack_trace(ostream& out)
 bool Usecode_internal::call_function(int funcid,
 									 int eventid,
 									 Game_object *caller,
-									 bool entrypoint)
+									 bool entrypoint, bool orig)
 {
 	// locate function
 	vector<Usecode_function*>& slot = funs[funcid/0x100];
@@ -154,6 +154,13 @@ bool Usecode_internal::call_function(int funcid,
 		cout << "Usecode " << funcid << " not found." << endl;
 		return false;
 	}
+	if (orig)
+		if (!(fun = fun->orig))
+		{
+			cout << "Original usecode " << funcid << " not found."
+								<< endl;
+			return false;
+		}
 
 	int depth, oldstack, chain;
 
@@ -1666,7 +1673,7 @@ Usecode_internal::Usecode_internal
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_USECODE))
 		{
 		U7open(file, PATCH_USECODE);
-		read_usecode(file);
+		read_usecode(file, true);
 		file.close();
 		}
 
@@ -1680,7 +1687,8 @@ Usecode_internal::Usecode_internal
 
 void Usecode_internal::read_usecode
 	(
-	istream &file
+	istream &file,
+	bool patch			// True if reading from 'patch'.
 	)
 	{
 	file.seekg(0, ios::end);
@@ -1692,8 +1700,24 @@ void Usecode_internal::read_usecode
 		Usecode_function *fun = new Usecode_function(file);
 		Exult_vector<Usecode_function *> & vec = funs[fun->id/0x100];
 		int i = fun->id%0x100;
-		if (i < vec.size())
-			delete vec[i];
+		if (i < vec.size() && vec[i])
+			{		// Already have one there.
+			if (patch)	// Patching?
+				{
+				if (vec[i]->orig)
+					{	// Patching a patch.
+					fun->orig = vec[i]->orig;
+					delete vec[i];
+					}
+				else		// Patching fun. from static.
+					fun->orig = vec[i];
+				}
+			else
+				{
+				delete vec[i]->orig;
+				delete vec[i];
+				}
+			}
 		vec.put(i, fun);
 		}
 	}
@@ -2444,7 +2468,6 @@ int Usecode_internal::run()
 				Usecode_value ival = pop();
 				Game_object *caller = get_item(ival);
 				push(ival); // put caller_item back on stack
-
 				offset = Read2(frame->ip);
 				call_function(offset, frame->eventid, caller);
 				frame_changed = true;
@@ -2499,6 +2522,18 @@ int Usecode_internal::run()
 								offset, val);
 			}
 				break;
+			case 0x52:		// CALLO (call original).
+			{			// Otherwise, like CALLE.
+				Usecode_value ival = pop();
+				Game_object *caller = get_item(ival);
+				push(ival); // put caller_item back on stack
+
+				offset = Read2(frame->ip);
+				call_function(offset, frame->eventid, caller,
+								false, true);
+				frame_changed = true;
+				break;
+			}
 			case 0xcd: // 32 bit debugging function init
 			{
 				int funcname = (sint32)Read4(frame->ip);

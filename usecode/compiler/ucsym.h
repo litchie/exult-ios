@@ -64,7 +64,7 @@ public:
 					// Gen. to assign from stack.
 	virtual int gen_assign(vector<char>& out);
 					// Generate function/procedure call.
-	virtual int gen_call(vector<char>& out, Uc_function *fun, 
+	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
 							bool retvalue);
 	virtual int get_string_offset()	// Get offset in text_data.
@@ -160,7 +160,7 @@ public:
 	int get_num_parms()		// ++++Not valid yet.
 		{ return num_parms; }
 					// Generate function/procedure call.
-	virtual int gen_call(vector<char>& out, Uc_function *fun, 
+	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
 							bool retvalue);
 	};
@@ -189,7 +189,7 @@ public:
 	int get_num_parms()
 		{ return parms.size(); }
 					// Generate function/procedure call.
-	virtual int gen_call(vector<char>& out, Uc_function *fun, 
+	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
 							bool retvalue);
 	};

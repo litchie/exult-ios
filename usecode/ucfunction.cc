@@ -35,7 +35,7 @@ using std::istream;
 Usecode_function::Usecode_function
 	(
 	istream& file
-	)
+	) : orig(0)
 {
 	id = Read2(file);
 

@@ -54,7 +54,7 @@ public:
 	Usecode_machine();
 	virtual ~Usecode_machine();
 					// Read in usecode functions.
-	virtual void read_usecode(std::istream& file) = 0;
+	virtual void read_usecode(std::istream& file, bool patch = false) = 0;
 					// Possible events:
 	enum Usecode_events {
 		npc_proximity = 0,
