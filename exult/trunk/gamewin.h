@@ -386,7 +386,7 @@ public:
 		{
 		if (!shape || !shape->data)
 			{
-				std::cout << "NULL SHAPE!!!" << std::endl;
+				CERR("NULL SHAPE!!!");
 				return;
 			}
 		if (!shape->rle)	// Not RLE?

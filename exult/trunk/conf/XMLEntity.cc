@@ -262,7 +262,8 @@ static	void	trim(string &s)
 void	XMLnode::xmlparse(string &s,std::size_t &pos)
 {
 	bool	intag = true;
-
+	
+	id = "";
 	while(pos<s.length())
 	{
 		switch(s[pos])
