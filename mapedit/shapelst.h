@@ -70,6 +70,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	std::vector<short> row_indices;	// Index at start of each row.
 	int row0;			// Row # at top of window.
 	int nrows;			// Last #rows rendered.
+	bool frames_mode;		// Show all frames horizontally.
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
@@ -79,6 +80,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void tell_server_shape();	// Tell Exult what shape is selected.
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
+	void render_frames();		// Show all frames.
 	int next_row(int start);	// Down/up 1 row.
 	void goto_index(int index);	// Get desired index in view.
 	virtual int get_selected_id()
@@ -136,6 +138,8 @@ public:
 	static void scrolled(GtkAdjustment *adj, gpointer data);
 					// Handle spin-button for frames.
 	static void frame_changed(GtkAdjustment *adj, gpointer data);
+	static void all_frames_toggled(GtkToggleButton *btn,
+						        gpointer user_data);
 #ifdef WIN32
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 		gpointer data);
