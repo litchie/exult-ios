@@ -92,7 +92,8 @@ void Combat_schedule::find_opponents
 	{
 		Actor *actor = *it;
 		if (actor->get_alignment() >= Npc_actor::hostile &&
-		    !actor->is_dead())
+		    !actor->is_dead() && 
+				!actor->get_flag(Obj_flags::invisible))
 		{
 			opponents.push(actor);
 					// And set hostile monsters.
