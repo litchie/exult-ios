@@ -1,5 +1,6 @@
 2000-12-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* savepcx.cc: unsigned long -> Uint32, unsigned short -> Uint16
+	* configure.in: removed a few crosscompiling-related warnings
 
 2000-12-23  Jeff Freedman  <jeff@amy.nerble.net>
 
