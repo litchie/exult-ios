@@ -1052,7 +1052,7 @@ void Sleep_schedule::now_what
 				}
 			}
 		Tile_coord bloc = bed->get_tile();
-		bloc.tz -= bloc.tx%5;	// Round down to floor level.
+		bloc.tz -= bloc.tz%5;	// Round down to floor level.
 		Shape_info& info = gwin->get_info(bed);
 		bloc.tx -= info.get_3d_xtiles(bed->get_framenum())/2;
 		bloc.ty -= info.get_3d_ytiles(bed->get_framenum())/2;
