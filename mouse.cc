@@ -129,7 +129,8 @@ void Mouse::show
 					// Save background.
 		iwin->get(backup, box.x, box.y);
 					// Paint new location.
-		cur->paint_rle(iwin->get_ib8(), mousex, mousey);
+//		cur->paint_rle(iwin->get_ib8(), mousex, mousey);
+		cur->paint_rle(mousex, mousey);
 	}
 }
 
