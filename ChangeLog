@@ -1,3 +1,6 @@
+2004-06-07  Ryan Nunn  <colourles@users.sourceforge.net>
+	* msvcstuff/Exult.vcproj: Fixing compiling
+
 2004-05-23 Dominik Reichardt <dominus@users.sourceforge.net>
 	* docs/xml/*.xml: updated documentations and FAQ
 	* docs/*.html: updated documentations and FAQ
