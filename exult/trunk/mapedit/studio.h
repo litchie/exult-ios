@@ -84,6 +84,8 @@ public:
 	Object_browser  *create_palette_browser(const char *fname);
 	void set_static_path(const char *path);
 	void write_map();
+	void read_map();
+	void reload_usecode();
 	void set_play(gboolean play);
 	void open_egg_window(unsigned char *data = 0, int datalen = 0);
 	void close_egg_window();

@@ -54,7 +54,9 @@ enum Msg_type
 	cancel = 4,			// Cancel operation.
 	num_npcs = 5,			// Get/return # of NPC's.
 	write_map = 6,			// Save map.
-	map_editing_mode = 7		// 1 to turn it on, 0 for off.
+	read_map = 7,			// Read map.
+	map_editing_mode = 8,		// 1 to turn it on, 0 for off.
+	reload_usecode = 9		// Reload patched usecode.
 	};
 
 // I/O routines:
