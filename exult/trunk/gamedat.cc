@@ -363,6 +363,7 @@ void Game_window::write_saveinfo()
 	details.real_minute = timeinfo->tm_min;
 	details.real_month = timeinfo->tm_mon+1;
 	details.real_year = timeinfo->tm_year + 1900;
+	details.real_second = timeinfo->tm_sec;
 
 	U7open(out, GSAVEINFO);		// Open file; throws an exception - Don't care
 	out.write((char *) &details, sizeof(details));
