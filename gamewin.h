@@ -471,8 +471,7 @@ public:
 		{
 		main_actor->walk_to_point(get_scrolltx()*tilesize + winx, 
 				get_scrollty()*tilesize + winy, speed);
-		if (!in_combat())
-			main_actor->get_followers();
+		main_actor->get_followers();
 		}
 	void stop_actor();		// Stop main actor.
 					// Find gump (x, y) is in.

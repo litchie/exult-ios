@@ -38,15 +38,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Combat_schedule::find_monsters
 	(
-	Chunk_object_list *chunk,
-	Vector& vec			// Returned here.
+	Chunk_object_list *chunk
 	)
 	{
-	for (Npc_actor *npc = chunk->get_npcs(); npc; npc = npc->get_next())
-		if (npc->is_monster())
-			vec.append(npc);
+	const int maxdist = 20;		// Max distance in tiles.
+	for (Npc_actor *each = chunk->get_npcs(); each; 
+						each = each->get_next())
+		if (npc->distance(each) < maxdist && each->is_monster())
+			opponents.append(each);
 	}
-
 
 /*
  *	Find nearby opponents in the 9 surrounding chunks.
@@ -54,21 +54,21 @@ void Combat_schedule::find_monsters
 
 void Combat_schedule::find_opponents
 	(
-	Vector& vec			// Returned here.
 	)
 	{
+	opponents.clear();
 	Game_window *gwin = Game_window::get_game_window();
 	if (npc->is_monster())		// Monster?  Return party.
 		{
 		if (gwin->get_main_actor())
-			vec.append(gwin->get_main_actor());
+			opponents.append(gwin->get_main_actor());
 		Usecode_machine *uc = gwin->get_usecode();
 		int cnt = uc->get_party_count();
 		for (int i = 0; i < cnt; i++)
 			{
 			Actor *npc = gwin->get_npc(uc->get_party_member(i));
 			if (npc)
-				vec.append(npc);
+				opponents.append(npc);
 			}
 		return;
 		}
@@ -86,7 +86,7 @@ void Combat_schedule::find_opponents
 		endcy = num_chunks - 1;
 	for (int cy = startcy; cy <= endcy; cy++)
 		for (int cx = startcx; cx <= endcx; cx++)
-			find_monsters(gwin->get_objects(cx, cy), vec);
+			find_monsters(gwin->get_objects(cx, cy));
 	}		
 
 /*
@@ -101,23 +101,23 @@ Actor *Combat_schedule::find_foe
 	)
 	{
 	cout << "'" << npc->get_name() << "' is looking for a foe" << endl;
-	Vector vec(0, 20);
-	find_opponents(vec);		// Find all nearby.
-	int cnt = vec.get_cnt();
+	Actor *opp;
+	if (!opponents.get_first())	// No more from last scan?
+		find_opponents();	// Find all nearby.
 	Actor *new_opponent = 0;
+	Slist_iterator next(opponents);	// For going through list.
 	switch ((Actor::Attack_mode) mode)
 		{
 		case Actor::weakest:
 			{
 			int str, least_str = 100;
-			for (int i = 0; i < cnt; i++)
+			while ((opp = (Actor *) next()) != 0)
 				{
-				Actor *opp = (Actor *) vec.get(i);
 				str = opp->get_property(Actor::strength);
 				if (str < least_str)
 					{
 					least_str = str;
-					new_opponent = (Actor *) vec.get(i);
+					new_opponent = opp;
 					}
 				}
 			break;
@@ -125,14 +125,13 @@ Actor *Combat_schedule::find_foe
 		case Actor::strongest:
 			{
 			int str, best_str = -100;
-			for (int i = 0; i < cnt; i++)
+			while ((opp = (Actor *) next()) != 0)
 				{
-				Actor *opp = (Actor *) vec.get(i);
 				str = opp->get_property(Actor::strength);
 				if (str > best_str)
 					{
 					best_str = str;
-					new_opponent = (Actor *) vec.get(i);
+					new_opponent = opp;
 					}
 				}
 			break;
@@ -140,21 +139,22 @@ Actor *Combat_schedule::find_foe
 		case Actor::nearest:
 			{
 			int dist, best_dist = 4*tiles_per_chunk;
-			for (int i = 0; i < cnt; i++)
-				if ((dist = npc->distance(
-					(Actor *) vec.get(i))) < best_dist)
+			while ((opp = (Actor *) next()) != 0)
+				if ((dist = npc->distance(opp)) < best_dist)
 					{
 					best_dist = dist;
-					new_opponent = (Actor *) vec.get(i);
+					new_opponent = opp;
 					}
 			break;
 			}
 		case Actor::protect:		// ++++++For now, do random.
 		case Actor::random:
 		default:		// Default to random.
-			new_opponent = (Actor *) vec.get(rand()%cnt);
+			new_opponent = (Actor *) opponents.get_first();
 			break;
 		}
+	if (new_opponent)
+		opponents.remove(new_opponent);
 	return new_opponent;
 	}
 
@@ -179,15 +179,11 @@ void Combat_schedule::approach_foe
 	(
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Find opponent.
 	if (!opponent && !(opponent = find_foe()))
 		{
-#if 0	/* ++++Try this. */
-		if (npc->get_party_id() >= 0)
-			{
-			Game_window *gwin = Game_window::get_game_window();
-			npc->follow(gwin->get_main_actor());
-			}
-#endif
+		failures = 100;
 		return;			// No one left to fight.
 		}
 	Actor::Attack_mode mode = npc->get_attack_mode();
@@ -210,15 +206,20 @@ void Combat_schedule::approach_foe
 	Fast_pathfinder_client cost(max_reach);
 	if (!path->NewPath(pos, opponent->get_abs_tile_coord(), &cost))
 		{			// Failed?  Try nearest opponent.
+		failures++;
 		opponent = find_foe(Actor::nearest);
 		if (!opponent || !path->NewPath(
 				pos, opponent->get_abs_tile_coord(), &cost))
 			{
 			delete path;	// Really failed.  Try again in .5 sec.
 			npc->start(200, 500);
+			failures++;
 			return;
 			}
 		}
+	failures = 0;			// Clear count.  We succeeded.
+	cout << npc->get_name() << " is pursuing " << opponent->get_name() <<
+		endl;
 	if (!yelled++)			// First time (or 256th)?
 		npc->say(first_to_battle, last_to_battle);
 					// Walk there, but don't retry if
@@ -252,6 +253,7 @@ void Combat_schedule::now_what
 	(
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	if (npc->get_attack_mode() == Actor::manual)
 		return;
 					// Check if opponent still breathes.
@@ -271,11 +273,25 @@ void Combat_schedule::now_what
 		break;
 	case strike:			// He hasn't moved away?
 		if (npc->distance(opponent) <= max_reach)
+			{
+			int dir = npc->get_direction(opponent);
 			opponent->attacked(npc);
+			gwin->add_dirty(npc);
+			npc->set_frame(npc->get_dir_framenum(dir,
+							Actor::standing));
+			gwin->add_dirty(npc);
+			}
 		state = approach;
 		npc->start(200);	// Back into queue.
 		break;
 	default:
 		break;
+		}
+	if (failures > 5 && npc->get_party_id() >= 0)
+		{			// Too many failures.  Give up for now.
+		cout << npc->get_name() << " is giving up" << endl;
+		npc->walk_to_tile(
+			gwin->get_main_actor()->get_abs_tile_coord());
+		npc->set_schedule_type(Schedule::follow_avatar);
 		}
 	}

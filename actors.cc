@@ -117,6 +117,12 @@ int Actor::get_attack_frames
 		which = attack_frames1;
 		cnt = sizeof(attack_frames1);
 		}
+					// Check for empty shape.
+	Shape_frame *shape = Game_window::get_game_window()->get_shape(
+					get_shapenum(), which[1]);
+	if (!shape || shape->is_empty())
+					// If empty, the other usually isn't.
+		which = two_handed ? attack_frames1 : attack_frames2;
 	for (int i = 0; i < cnt; i++)	// Copy frames with correct dir.
 		*frames++ = get_dir_framenum(dir, *which++);
 	return (cnt);
@@ -303,6 +309,8 @@ void Actor::follow
 	Actor *leader
 	)
 	{
+	if (schedule_type == Schedule::combat)
+		return;			// Not when fighting.
 	int delay = 50;
 					// How close to aim for.
 	int dist = 3 + Actor::get_party_id()/3;
