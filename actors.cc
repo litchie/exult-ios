@@ -429,7 +429,7 @@ Actor::Actor
 	    two_handed(false), two_fingered(false), light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), ident(0),
 	    skin_color(-1), action(0), 
-	    frame_time(0), next_path_time(0), timers(0),
+	    frame_time(0), timers(0),
 	    weapon_rect(0, 0, 0, 0)
 	{
 	set_shape(shapenum, 0); 
@@ -714,12 +714,13 @@ void Actor::walk_to_tile
 	(
 	Tile_coord dest,		// Destination.
 	int speed,			// Time between frames (msecs).
-	int delay			// Delay before starting (msecs) (only
+	int delay,			// Delay before starting (msecs) (only
 					//   if not already moving).
+	int maxblk			// Max. # retries if blocked.
 	)
 	{
 	if (!action)
-		action = new Path_walking_actor_action(new Zombie());
+		action = new Path_walking_actor_action(new Zombie(), maxblk);
 	set_action(action->walk_to_tile(this, get_tile(), dest));
 	if (action)			// Successful at setting path?
 		start(speed, delay);
@@ -741,10 +742,11 @@ int Actor::walk_path_to_tile
 	int speed,			// Time between frames (msecs).
 	int delay,			// Delay before starting (msecs) (only
 					//   if not already moving).
-	int dist			// Distance to get within dest.
+	int dist,			// Distance to get within dest.
+	int maxblk			// Max. # retries if blocked.
 	)
 	{
-	set_action(new Path_walking_actor_action(new Astar()));
+	set_action(new Path_walking_actor_action(new Astar(), maxblk));
 	set_action(action->walk_to_tile(this, src, dest, dist));
 	if (action)			// Successful at setting path?
 		{
@@ -903,6 +905,7 @@ void Actor::follow
 			return;
 			}
 		}
+#if 0
 	uint32 curtime = Game::get_ticks();
 	if ((dist2lead >= 5 ||
 	     (dist2lead >= 4 && !leader->is_moving()) || leaderpath) && 
@@ -927,7 +930,7 @@ void Actor::follow
 			return;
 			}
 					// Succeed if within 3 tiles of goal.
-		if (walk_path_to_tile(goal, speed - speed/4, 0, 3))
+		if (walk_path_to_tile(goal, speed - speed/4, 0, 3, 0))
 			return;		// Success.
 		else
 			{
@@ -946,9 +949,11 @@ void Actor::follow
 			return;
 			}
 		}
+#endif
 					// NOTE:  Avoid delay when moving,
-					//  as it creates jerkiness.
-	walk_to_tile(goal, speed, delay);
+					//  as it creates jerkiness.  AND,
+					//  0 retries if blocked.
+	walk_to_tile(goal, speed, delay, 0);
 	}
 
 /*
@@ -1445,6 +1450,9 @@ void Actor::set_schedule_type
 			break;
 		case Schedule::desk_work:
 			schedule = new Desk_schedule(this);
+			break;
+		case Schedule::follow_avatar:
+			schedule = new Follow_avatar_schedule(this);
 			break;
 		case Schedule::walk_to_schedule:
 			cerr << "Attempted to set a \"walk to schedule\" activity for NPC "<< get_npc_num() << endl;
@@ -3267,7 +3275,8 @@ void Main_actor::get_followers
 			if (sched != Schedule::follow_avatar)
 				npc->set_schedule_type(
 						Schedule::follow_avatar);
-			npc->follow(this);
+			else
+				npc->follow(this);
 			}
 		}
 	}

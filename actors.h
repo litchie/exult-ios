@@ -107,8 +107,6 @@ protected:
 	Actor_action *action;		// Controls current animation.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   actor not moving.
-	unsigned long next_path_time;	// Next time we're allowed to use
-					//   pathfinding to follow leader.
 	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
 	Rectangle weapon_rect;		// Screen area weapon was drawn in.
 	void init();			// Clear stuff during construction.
@@ -268,17 +266,18 @@ public:
 	void notify_object_gone(Game_object *obj);
 	Tile_coord get_dest();		// Get destination.
 					// Walk to a desired spot.
-	void walk_to_tile(Tile_coord dest, int speed = 250, int delay = 0);
+	void walk_to_tile(Tile_coord dest, int speed = 250, int delay = 0,
+							int maxblk = 3);
 	void walk_to_tile(int tx, int ty, int tz, int speed = 250, 
-							int delay = 0)
-		{ walk_to_tile(Tile_coord(tx, ty, tz), speed, delay); }
+					int delay = 0, int maxblk = 3)
+		{ walk_to_tile(Tile_coord(tx, ty, tz), speed, delay, maxblk); }
 					// Get there, avoiding obstacles.
 	int walk_path_to_tile(Tile_coord src, Tile_coord dest, 
-				int speed = 250, int delay = 0, int dist = 0);
+		int speed = 250, int delay = 0, int dist = 0, int maxblk = 3);
 	int walk_path_to_tile(Tile_coord dest, 
-				int speed = 250, int delay = 0, int dist = 0)
+		int speed = 250, int delay = 0, int dist = 0, int maxblk = 3)
 		{ return walk_path_to_tile(get_tile(), dest,
-							speed, delay, dist); }
+						speed, delay, dist, maxblk); }
 					// Start animation.
 	void start(int speed = 250, int delay = 0);
 	void stop();			// Stop animation.
