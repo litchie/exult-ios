@@ -87,7 +87,7 @@ Game_window::Game_window
 	    special_light(0), last_restore_hour(6),
 	    dragging(0), dragging_save(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
-	    skip_lift(16), paint_eggs(0), debug(0), fades_enabled(true)
+	    skip_lift(16), paint_eggs(false), debug(0), fades_enabled(true)
 	{
 	game_window = this;		// Set static ->.
 
@@ -255,7 +255,7 @@ void Game_window::set_moving_barge
  *	Is character moving?
  */
 
-int Game_window::is_moving
+bool Game_window::is_moving
 	(
 	)
 	{

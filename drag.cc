@@ -38,10 +38,10 @@ extern Mouse *mouse;
  *	Begin a possible drag when the mouse button is depressed.  Also detect
  *	if the 'close' checkmark on a gump is being depressed.
  *
- *	Output:	1 if object selected for dragging, else 0.
+ *	Output:	true iff object selected for dragging
  */
 
-int Game_window::start_dragging
+bool Game_window::start_dragging
 	(
 	int x, int y			// Position in window.
 	)
@@ -81,38 +81,38 @@ cout << "(x,y) rel. to gump is (" << (x-dragging_paintx) << ", " <<
 		{
 		dragging = find_object(x, y);
 		if (!dragging)
-			return (0);
+			return (false);
 					// Get coord. where painted.
 		get_shape_location(dragging, dragging_paintx, dragging_painty);
 		}
-	return (1);
+	return (true);
 	}
 
 /*
  *	Mouse was moved while dragging.
  *
- *	Output:	1 if movement started/continued.
+ *	Output:	true iff movement started/continued.
  */
 
-int Game_window::drag
+bool Game_window::drag
 	(
 	int x, int y			// Mouse pos. in window.
 	)
 	{
 	if (!dragging && !dragging_gump)
-		return (0);
+		return (false);
 	if (dragging_rect.w == 0)
 		{			// First motion.
 		if (x - dragging_mousex <= 2 && dragging_mousex - x <= 2 &&
 		    y - dragging_mousey <= 2 && dragging_mousey - y <= 2)
-			return (0);	// Wait for greater motion.
+			return (false);	// Wait for greater motion.
 		if (dragging)
 			{		// Don't want to move walls.
 			if (!cheat.in_hack_mover() && !dragging->is_dragable())	
 				{
 				mouse->flash_shape(Mouse::tooheavy);
 				dragging = 0;
-				return (0);
+				return (false);
 				}
 			Game_object *owner = dragging->get_outermost();
 			if (owner == dragging)
@@ -123,7 +123,7 @@ int Game_window::drag
 					{
 					mouse->flash_shape(Mouse::blocked);
 					dragging = 0;
-					return (0);
+					return (false);
 					}
 				}
 			else		// Inside something else?  Set lift.
@@ -176,7 +176,7 @@ int Game_window::drag
 		dragging_gump->paint(this);
 		}
 	painted = 1;
-	return (1);
+	return (true);
 	}
 
 /*
@@ -187,7 +187,7 @@ int Game_window::drag
 bool Game_window::drop_dragged
 	(
 	int x, int y,			// Mouse pos.
-	int moved			// 1 if mouse moved from starting pos.
+	bool moved			// has mouse moved from starting pos?
 	)
 	{
 	bool handled = moved;
