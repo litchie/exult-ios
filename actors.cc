@@ -1498,10 +1498,13 @@ void Actor::paint
 			gwin->paint_hit_outline(xoff, yoff,
 					get_shapenum(), get_framenum());
 		else if (flags & ((1L<<Obj_flags::protection) | 
-						(1L << Obj_flags::poisoned)))
+		    (1L << Obj_flags::poisoned) | (1 << Obj_flags::cursed)))
 			{
 			if (flags & (1L << Obj_flags::poisoned))
 				gwin->paint_poison_outline(xoff, yoff,
+					get_shapenum(), get_framenum());
+			else if (flags & (1L << Obj_flags::cursed))
+				gwin->paint_cursed_outline(xoff, yoff,
 					get_shapenum(), get_framenum());
 			else
 				gwin->paint_protect_outline(xoff, yoff,
@@ -2052,6 +2055,8 @@ void Actor::set_flag
 		need_timers()->start_protection();
 	if (flag == Obj_flags::might)
 		need_timers()->start_might();
+	if (flag == Obj_flags::cursed)
+		need_timers()->start_curse();
 	if (flag == Obj_flags::invisible)
 		{
 		need_timers()->start_invisibility();
@@ -2677,7 +2682,7 @@ static int Get_effective_prop
 	(
 	Actor *npc,
 	Actor::Item_properties prop,	// Property #.
-	int defval			// Default val if npc==0.
+	int defval = 0			// Default val if npc==0.
 	)
 	{
 	if (!npc)
@@ -2750,7 +2755,11 @@ bool Actor::figure_hit_points
 					// KLUDGE:  putting Draygan to sleep.
 		gwin->get_usecode()->call_usecode(0x7e1, this,
 					Usecode_machine::weapon);
-	if (!wpoints)
+					// Get special attacks (poison, etc.)
+	unsigned char powers = winf ? winf->get_powers() : 0;
+	if (ainf)
+		powers |= ainf->get_powers();
+	if (!wpoints && !powers)
 		return false;		// No harm can be done.
 
 	int attacker_level = attacker ? attacker->get_level() : 4;
@@ -2767,12 +2776,11 @@ bool Actor::figure_hit_points
 	cout << "Hit probability is " << prob << endl;
 	if (rand()%100 > prob)
 		return false;		// Missed.
-	unsigned char powers = winf ? winf->get_powers() : 0;
-	if (ainf)
-		powers |= ainf->get_powers();
 	if (powers)			// Special attacks?
 		{
-		if ((powers&Weapon_info::poison) && rand()%4 == 0 &&
+		if ((powers&Weapon_info::poison) && roll_to_win(
+			Get_effective_prop(attacker, Actor::strength),
+			Get_effective_prop(this, Actor::dexterity)) &&
 		    !(minf && minf->poison_safe()))
 			set_flag(Obj_flags::poisoned);
 		if (powers&Weapon_info::magebane)
@@ -2781,6 +2789,10 @@ bool Actor::figure_hit_points
 			set_property((int) Actor::mana, 
 					mana > 1 ? rand()%(mana - 1) : 0);
 			}
+		if ((powers&Weapon_info::curse) && roll_to_win(
+			Get_effective_prop(attacker, Actor::intelligence),
+			Get_effective_prop(this, Actor::intelligence)))
+			set_flag(Obj_flags::cursed);
 		// ++++++++++MORE in shapeinf.h
 		}
 					// Compute hit points to lose.
