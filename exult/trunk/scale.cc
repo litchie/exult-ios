@@ -61,8 +61,6 @@ void Scale2x
 	const Manip_pixels& manip	// Manipulator methods.
 	)
 	{
-					// Figure dest. height.
-	int dheight = sheight*2;
 	Source_pixel *from = source;
 	Dest_pixel *to = dest;
 	int swidth = dline_pixels/2;	// Take min. of pixels/line.
@@ -121,7 +119,7 @@ void Scale2x
 	memcpy(from0 + dline_pixels, from0, dline_pixels*sizeof(*from0));
 	}
 
-#if 0
+#if 1
 /*
  *	Scale a rectangle X2 with bilinear interpolation.
  */
@@ -138,22 +136,20 @@ void Scale2x
 	const Manip_pixels& manip	// Manipulator methods.
 	)
 	{
-	int destx = srcx*2, desty = srcy*2;
-					// Figure dest. height.
-	int dheight = sheight*2;
 	Source_pixel *from = source + srcy*sline_pixels + srcx;
 	Dest_pixel *to = dest + 2*srcy*dline_pixels + 2*srcx;
-	int endrow = 0;
+	Dest_pixel *from0 = to;		// We'll use in 2nd pass.
+	int right_edge = 0;		// Row ends at rt. edge of window.
 	int swidth = srcw;
 	if (srcx + swidth >= sline_pixels)
-+++++++++++++
-	int swidth = dline_pixels/2;	// Take min. of pixels/line.
-	if (swidth > sline_pixels)
-		swidth = sline_pixels;
-					// Do each row, interpolating horiz.
-	for (int y = 0; y < sheight; y++)
 		{
-		int count = swidth - 1;
+		right_edge = 1;
+		swidth = sline_pixels - srcx - 1;
+		}
+					// Do each row, interpolating horiz.
+	for (int y = 0; y < srch; y++)
+		{
+		int count = swidth;
 		register Source_pixel *source_line = from;
 		register Dest_pixel *dest_line = to;
 		register int n = ( count + 7 ) / 8;
@@ -169,20 +165,30 @@ void Scale2x
         	     	case 1:      Interp_horiz(from, to, manip);
                 	       } while( --n > 0 );
 			}
-		manip.copy(*to++, *from);// End of row.
-		manip.copy(*to++, *from++);
+		if (right_edge)		// Handle right edge.
+			{
+			manip.copy(*to++, *from);
+			manip.copy(*to++, *from++);
+			}
 		from = source_line + sline_pixels;
 					// Skip odd rows.
 		to = dest_line + 2*dline_pixels;
 		}
-	Dest_pixel *from0 = dest;	// Interpolate vertically.
+					// Interpolate vertically.
 	Dest_pixel *from1;
-	for (int y = 0; y < sheight - 1; y++)
+	int bottom_edge = 0;
+	int dheight = srch;
+	if (srcy + srch >= sheight)	// Watch for bottom row.
+		{
+		bottom_edge = 1;
+		dheight = sheight - srcy - 1;
+		}
+	for (int y = 0; y < dheight; y++)
 		{
 		to = from0 + dline_pixels;
 		from1 = to + dline_pixels;
 		Dest_pixel *source_line1 = from1;
-		int count = dline_pixels;
+		int count = 2*srcw;
 		int n = ( count + 7 ) / 8;
 		switch( count % 8 )
 			{
@@ -199,8 +205,8 @@ void Scale2x
 					// Doing every other line.
 		from0 = source_line1;
 		}
-					// Just copy last row.
-	memcpy(from0 + dline_pixels, from0, dline_pixels*sizeof(*from0));
+	if (bottom_edge)		// Just copy last row.
+		memcpy(from0 + dline_pixels, from0, 2*srcw*sizeof(*from0));
 	}
 #endif
 

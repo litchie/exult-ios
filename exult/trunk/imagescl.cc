@@ -137,31 +137,34 @@ public:
 
 void Image_window::show_scaled8to16
 	(
+	int x, int y, int w, int h	// Area to show.
 	)
 	{
 	Manip8to16 manip(surface->format->palette->colors,
 						scaled_surface->format);
 	Scale2x<unsigned char, unsigned short, Manip8to16>
-		(ibuf->get_bits(), ibuf->line_width, ibuf->height, 
+		(ibuf->get_bits(), x, y, w, h,
+		    ibuf->line_width, ibuf->height, 
 		    (unsigned short *) scaled_surface->pixels, 
 			scaled_surface->pitch/
 				scaled_surface->format->BytesPerPixel,
 			manip);
-	SDL_UpdateRect(scaled_surface, 0, 0, 2*ibuf->width, 2*ibuf->height);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
 	}
 
 void Image_window::show_scaled8to32
 	(
+	int x, int y, int w, int h	// Area to show.
 	)
 	{
 	Manip8to32 manip(surface->format->palette->colors,
 						scaled_surface->format);
 	Scale2x<unsigned char, unsigned long, Manip8to32>
-		(ibuf->get_bits(), 
+		(ibuf->get_bits(), x, y, w, h,
 			ibuf->line_width, ibuf->height, 
 			(unsigned long *) scaled_surface->pixels,
 			scaled_surface->pitch/
 				scaled_surface->format->BytesPerPixel,
 								manip);
-	SDL_UpdateRect(scaled_surface, 0, 0, 2*ibuf->width, 2*ibuf->height);
+	SDL_UpdateRect(scaled_surface, 2*x, 2*y, 2*w, 2*h);
 	}
