@@ -11,6 +11,8 @@ libusecode_la_SOURCES = \
 	ucsched.h	\
 	ucsched.cc	\
 	useval.cc	\
-	useval.h
+	useval.h	\
+	conversation.cc \
+	conversation.h
 
 CLEANFILES = *~

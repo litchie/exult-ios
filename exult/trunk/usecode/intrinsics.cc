@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "virstone.h"
 #include "chunks.h"
 #include "spellbook.h"
+#include "conversation.h"
 
 using std::cerr;
 using std::cout;
@@ -120,14 +121,14 @@ USECODE_INTRINSIC(remove_npc_face)
 
 USECODE_INTRINSIC(add_answer)
 {
-	answers.add_answer(parms[0]);
+	conv.add_answer(parms[0]);
 	user_choice = 0;
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(remove_answer)
 {
-	answers.remove_answer(parms[0]);
+	conv.remove_answer(parms[0]);
 // Commented out 'user_choice = 0' 8/3/00 for Tseramed conversation.
 //	user_choice = 0;
 	return(no_ret);
@@ -135,25 +136,23 @@ USECODE_INTRINSIC(remove_answer)
 
 USECODE_INTRINSIC(push_answers)
 {
-	answer_stack.push_front(answers);
-	answers.clear();
+	conv.push_answers();
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(pop_answers)
 {
-	if(answer_stack.size())
-		{
-		answers=answer_stack.front();
-		answer_stack.pop_front();
+	if(!conv.stack_empty())
+	{
+		conv.pop_answers();
 		user_choice = 0;	// Added 7/24/2000.
-		}
+	}
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(clear_answers)
 {
-	answers.clear();
+	conv.clear_answers();
 	return(no_ret);
 }
 
@@ -183,7 +182,7 @@ USECODE_INTRINSIC(input_numeric_value)
 	Usecode_value ret(Prompt_for_number(
 		parms[0].get_int_value(), parms[1].get_int_value(),
 		parms[2].get_int_value(), parms[3].get_int_value()));
-	gwin->clear_text_pending();	// Answered a question.
+	conv.clear_text_pending();	// Answered a question.
 	return(ret);
 }
 
@@ -1393,7 +1392,7 @@ USECODE_INTRINSIC(nap_time)
 						rand()%get_party_count());
 			Usecode_value actval(-npcnum), frval(0);
 			show_npc_face(actval, frval);
-			gwin->show_npc_message(msgs[rand()%nummsgs]);
+			conv.show_npc_message(msgs[rand()%nummsgs]);
 			remove_npc_face(actval);
 			return no_ret;
 			}

@@ -1,3 +1,10 @@
+2001-01-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* gamewin.cc/h, usecode/conversation.cc/h: moved part of Game_window
+	to a new Conversation class
+	* schedule.cc, usecode/ucmachine.cc/h, usecode/intrinsics.cc: 
+	changed to use new Conversation class
+	* usecode/Makefile.am, Makefile.*: build conversation.o
+
 2001-01-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc: Get_click ignores modifier keys, and takes screenshots
 	* gamewin.cc/h: added Game_window::clear_avatar_choices()
