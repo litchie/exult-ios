@@ -1,6 +1,17 @@
 2000-12-19  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in: fixed --disable-long-long-warnings
 
+2000-12-18  Christoph Reichenbach  <jameson@linuxgames.com>
+
+	* Applied the Alpha/Debian/cxx patch, updated README.Alpha
+	* Many files now include "alpha_kludges.h"
+	* hash_maps and hash_sets are now used iff DONT_HAVE_HASH_MAP/
+	DONT_HAVE_HASH_SET are /not/ defined. Those are #defined in
+	alpha_kludges.h iff HAVE_CONFIG_H is defined and the hash_map
+	and hash_set header files were found during configure time.
+	* Misc. int/long int -> u?int32 fixes all over the place
+	* configure.in: added --disable-long-long-warnings
+
 2000-12-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Shape dragging uses shape as its icon.
