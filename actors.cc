@@ -1980,6 +1980,9 @@ void Actor::set_property
 	case magic:
 		properties[prop] = val > 30 ? 30 : val;
 		break;
+	case training:			// Don't let this go negative.
+		properties[prop] = val < 0 ? 0 : val;
+		break;
 	default:
 		if (prop >= 0 && prop < 12)
 			properties[prop] = val;
