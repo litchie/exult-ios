@@ -1093,7 +1093,7 @@ void Waiter_schedule::now_what
 		Game_object_vector foods;
 		if (customer->find_nearby(foods, 377, 2, 0) > 0)
 			{
-			const char *msgs[] = {"You look like you're doing fine.",
+			const char *msgs[]={"You look like you're doing fine.",
 					"Everything okay?",
 					"Ready for dessert?",
 					""
@@ -1171,7 +1171,7 @@ void Waiter_schedule::ending
 Sew_schedule::Sew_schedule
 	(
 	Actor *n
-	) : Schedule(n), state(get_wool)
+	) : Schedule(n), state(get_wool), spindle(0)
 	{
 	int shnum = 653;
 	bale = npc->find_closest(&shnum, 1);
@@ -1179,6 +1179,8 @@ Sew_schedule::Sew_schedule
 	chair = npc->find_closest(&shnum, 1);
 	shnum = 651;
 	spinwheel = npc->find_closest(&shnum, 1);
+	shnum = 261;
+	loom = npc->find_closest(&shnum, 1);
 	}
 
 /*
@@ -1189,6 +1191,8 @@ void Sew_schedule::now_what
 	(
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+	Tile_coord npcpos = npc->get_abs_tile_coord();
 	switch (state)
 		{
 	case get_wool:
@@ -1199,25 +1203,17 @@ void Sew_schedule::now_what
 			break;
 			}
 		Astar *path = new Astar();
-		Tile_coord npcpos = npc->get_abs_tile_coord();
 					// Get to within 1 tile.
 		Actor_pathfinder_dist_client cost(1);
 		if (path->NewPath(npcpos, bale->get_abs_tile_coord(), &cost))
-			{
-			int dir = npc->get_direction(bale);
-			char frames[2];
-			frames[0] = npc->get_dir_framenum(dir, 
-							Actor::standing);
-			frames[1] = npc->get_dir_framenum(dir, 11);
 			npc->set_action(new Sequence_actor_action(
 				new Path_walking_actor_action(path),
 				new Pickup_actor_action(bale, 250),
 				new Pickup_actor_action(bale,
 					bale->get_abs_tile_coord(), 250)));
-			state = sit_at_wheel;
-			}
 		else
 			delete path;
+		state = sit_at_wheel;
 		break;
 		}
 	case sit_at_wheel:
@@ -1227,8 +1223,48 @@ void Sew_schedule::now_what
 	case spin_wool:			// Cycle spinning wheel 8 times.
 		npc->set_action(new Object_animate_actor_action(spinwheel,
 								8, 200));
-		state = get_cloth;
+		state = get_thread;
 		break;
+	case get_thread:
+		{
+		Tile_coord t = spinwheel->find_unblocked_tile(1);
+		if (t.tx != -1)		// Space to create thread?
+			{
+			spindle = new Ireg_game_object(654, 0, 0, 0);
+			spindle->move(t);
+			gwin->add_dirty(spindle);
+			npc->set_action(
+				new Pickup_actor_action(spindle, 250));
+			}
+		state = weave_cloth;
+		break;
+		}
+	case weave_cloth:
+		{
+		if (spindle)		// Should be held by NPC.
+			spindle->remove_this();
+		spindle = 0;
+		if (!loom)		// No loom found?
+			{
+			state = sew_clothes;
+			break;
+			}
+		Astar *path = new Astar();
+					// Get to within 1 tile.
+		Actor_pathfinder_dist_client cost(1);
+		Tile_coord lpos = loom->get_abs_tile_coord() +
+						Tile_coord(-1, 1, 0);
+		if (path->NewPath(npcpos, lpos, &cost))
+			npc->set_action(new Sequence_actor_action(
+				new Path_walking_actor_action(path),
+				new Face_object_actor_action(loom, 250),
+				new Object_animate_actor_action(loom,
+								4, 200)));
+		else
+			delete path;
+		state = sew_clothes;
+		break;
+		}
 	default:			// Back to start.
 		state = get_wool;
 		break;
