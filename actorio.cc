@@ -228,7 +228,7 @@ Actor::Actor
 	int tflags = Read2 (nfile);
 
 	// First time round, all the flags are garbage
-	int first_time = (Game::get_avname() != 0);
+	int first_time = Game::is_new_game();
 	if (first_time)
 		set_type_flags (1 << Actor::tf_walk);
 	else

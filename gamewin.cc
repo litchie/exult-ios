@@ -1452,6 +1452,7 @@ bool Game_window::init_gamedat(bool create)
 	if (create)
 		{
 		cout << "Creating 'gamedat' files."<<endl;
+		Game::set_new_game();
 		if (is_system_path_defined("<PATCH>") && 
 						U7exists(PATCH_INITGAME))
 			restore_gamedat(PATCH_INITGAME);
@@ -1649,6 +1650,36 @@ void Game_window::write_map
 	u7map.close();
 	write();			// Write out to 'gamedat' too.
 	save_gamedat(PATCH_INITGAME, "Saved map");
+	}
+
+/*
+ *	Reinitialize game from map.
+ */
+
+void Game_window::read_map
+	(
+	)
+	{
+	init_gamedat(true);		// Unpack 'initgame.dat'.
+	read();				// This does the whole restore.
+	}
+
+/*
+ *	Reload (patched) usecode.
+ */
+
+void Game_window::reload_usecode
+	(
+	)
+	{
+					// Get custom usecode functions.
+	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_USECODE))
+		{
+		ifstream file;
+		U7open(file, PATCH_USECODE);
+		usecode->read_usecode(file);
+		file.close();
+		}
 	}
 
 /*

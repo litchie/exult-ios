@@ -46,6 +46,7 @@ using std::strncmp;
 using std::string;
 using std::snprintf;
 
+bool Game::new_game_flag = false;
 Game *game = 0;
 extern Configuration *config;
 extern KeyBinder *keybinder;
@@ -363,6 +364,7 @@ void Game::set_avskin (int skin)
 void Game::clear_avname ()
 {
 	av_name[0] = 0;
+	new_game_flag = false;
 }
 
 void Game::clear_avsex ()
