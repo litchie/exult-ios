@@ -460,7 +460,8 @@ public:
 	void clear_dirty()		// Clear dirty rectangle.
 		{ dirty.w = 0; }
 					// Paint scene at given tile.
-	void paint_map_at_tile(int toptx, int topty, int skip_above = 31);
+	void paint_map_at_tile(int x, int y, int w, int h,
+				int toptx, int topty, int skip_above = 31);
 					// Paint area of image.
 	void paint(int x, int y, int w, int h);
 	void paint(Rectangle& r)
