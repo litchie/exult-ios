@@ -1193,8 +1193,12 @@ int Actor::figure_hit_points
 	int ammo_shape
 	)
 	{
+
+	// godmode effects:
 	if (((party_id != -1) || (npc_num == 0)) && god_mode)
 		return 0;
+	bool instant_death = (god_mode && ((attacker->party_id != -1) || (attacker->npc_num == 0)));
+
 
 	Game_window *gwin = Game_window::get_game_window();
 	int armor = get_armor_points();
@@ -1226,7 +1230,7 @@ int Actor::figure_hit_points
 			get_property((int) dexterity) +
 			wpoints - armor;
 
-	if (god_mode && ((attacker->party_id != -1) || (attacker->npc_num == 0)))
+	if (instant_death)
 		prob = 200;	// always hits
 
 	cout << "Hit probability is " << prob << endl;
@@ -1242,7 +1246,7 @@ int Actor::figure_hit_points
 	int oldhealth = properties[(int) health];
 	int maxhealth = properties[(int) strength];
 
-	if (god_mode && ((attacker->party_id != -1) || (attacker->npc_num == 0)))
+	if (instant_death)
 		hp = properties[(int) health] + properties[(int) strength];	//instant death
 	
 	properties[(int) health] -= hp;	// Subtract from health.
@@ -1250,7 +1254,10 @@ int Actor::figure_hit_points
 	if (oldhealth >= maxhealth/2 && properties[(int) health] <
 					maxhealth/2 && rand()%3 != 0)
 					// A little oomph.
-		say(first_ouch, last_ouch);
+		if (instant_death)
+			say("\"Cheater!\"");
+		else
+			say(first_ouch, last_ouch);
 	cout << "Attack damage was " << hp << " hit points, leaving " << 
 		properties[(int) health] << " remaining" << endl;
 					// Flash red if Avatar badly hurt.
