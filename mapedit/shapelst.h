@@ -132,8 +132,7 @@ public:
 	static gint expose(GtkWidget *widget, GdkEventExpose *event,
 							gpointer data);
 					// Handle mouse press.
-	static gint mouse_press(GtkWidget *widget, GdkEventButton *event,
-							gpointer data);
+	gint mouse_press(GtkWidget *widget, GdkEventButton *event);
 					// Export current frame as a PNG.
 	time_t export_png(const char *fname);
 					// Export given image as a PNG.

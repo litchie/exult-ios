@@ -405,7 +405,7 @@ gint Chunk_chooser::drag_motion
 	)
 	{
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
-	if (!chooser->dragging)
+	if (!chooser->dragging && chooser->selected >= 0)
 		chooser->start_drag(U7_TARGET_CHUNKID_NAME, 
 			U7_TARGET_CHUNKID, (GdkEvent *) event);
 	return true;
@@ -430,8 +430,8 @@ gint Chunk_chooser::mouse_press
     }
 
 	int old_selected = chooser->selected;
-					// Search through entries.
-	for (int i = 0; i < chooser->info_cnt; i++)
+	int i;				// Search through entries.
+	for (i = 0; i < chooser->info_cnt; i++)
 		if (chooser->info[i].box.has_point(
 					(int) event->x, (int) event->y))
 			{		// Found the box?
@@ -456,7 +456,9 @@ gint Chunk_chooser::mouse_press
 				(*chooser->sel_changed)();
 			break;
 			}
-	if (event->button == 3)
+	if (i == chooser->info_cnt && event->button == 1)
+		chooser->unselect(true);// Nothing under mouse.
+	else if (event->button == 3)
 		gtk_menu_popup(GTK_MENU(chooser->create_popup()), 0, 0, 0, 0, 
 					event->button, event->time);
 	return (TRUE);
