@@ -91,12 +91,13 @@
 	// Yes, these both seem to be 'give_last_created':
 	USECODE_INTRINSIC_PTR(give_last_created),		// 0x42
 	USECODE_INTRINSIC_PTR(give_last_created),		// 0x43
-	USECODE_INTRINSIC_PTR(game_hour),			// 0x44
-	USECODE_INTRINSIC_PTR(game_minute),			// 0x45
-	
-	USECODE_INTRINSIC_PTR(get_npc_number),			// 0x46
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x47
+	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x44 - Guess
+
+	USECODE_INTRINSIC_PTR(game_hour),			// 0x45 - Correct
+	USECODE_INTRINSIC_PTR(game_minute),			// 0x46 - Correct
+
+	USECODE_INTRINSIC_PTR(get_npc_number),			// 0x47 - Guess
 
 	USECODE_INTRINSIC_PTR(part_of_day),			// 0x48
 	USECODE_INTRINSIC_PTR(get_alignment),			// 0x49
