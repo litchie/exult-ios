@@ -2,6 +2,7 @@
 	* SDL_mapping.*: modified to work with recent SDL CVS versions
 	* actors.*: added a force_party_inv argument to Actor::activate
 	* keyactions.cc: fixed '1'-'8' inventory shortcuts
+	* defaultkeys.txt: small fix to make sure the correct map is displayed
 	
 2001-06-04  Jeff Freedman  <jeff@amy.nerble.net>
 
