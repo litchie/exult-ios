@@ -70,7 +70,6 @@
 #include "objiter.h"
 #include "paths.h"
 #include "schedule.h"
-#include "segfile.h"
 #include "spellbook.h"
 #include "ucmachine.h"
 #include "ucsched.h"			/* Only used to flush objects. */
@@ -335,7 +334,7 @@ void Game_window::set_window_size(int width, int height, int scale, int scaler)
 	config->set("config/video/fullscreen",fullscreenstr,true);
 	win = new Image_window8(width, height, scale, fullscreen, scaler);
 	win->set_title("Exult Ultima7 Engine");
-	
+	shape_man->set_ibuf(win->get_ib8());
 }
 
 void Game_window::clear_screen(bool update)
@@ -362,10 +361,6 @@ Game_window::~Game_window
 	int i;	// Blame MSVC
 	for (i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
 		delete [] save_names[i];
-	int nxforms = sizeof(xforms)/sizeof(xforms[0]);
-	for (i = 0; i < nxforms; i++)
-		delete [] xforms[nxforms - 1 - i];
-//++++Now points into xforms	delete [] invis_xform;
 	delete shape_man;
 	delete gump_man;
 	delete background_noise;
@@ -451,46 +446,6 @@ void Game_window::init_files(bool cycle)
 	else
   		U7open(textflx, TEXT_FLX);
 	Setup_item_names(textflx);	// Set up list of item names.
-	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
-	if (U7exists(XFORMTBL))
-		{			// Read in translucency tables.
-		Segment_file xf(XFORMTBL);
-		for (int i = 0; i < nxforms; i++)
-			{
-			xforms[nxforms - 1 - i] = (uint8*)xf.retrieve(i, len);
-			CYCLE_RED_PLASMA();
-#if 0	/* +++++++Testing */
-			pal->load(PALETTES_FLX, 0);	// ++++++TESTING
-			cout << "XFORM " << (nxforms - 1 - i) << ":" << endl;
-			cout << "Alpha = 64: ";
-			Analyze_xform(xforms[nxforms - 1 - i], 64, pal);
-			cout << "Alpha = 128: ";
-			Analyze_xform(xforms[nxforms - 1 - i], 128, pal);
-			cout << "Alpha = 192: ";
-			Analyze_xform(xforms[nxforms - 1 - i], 192, pal);
-#endif
-			}
-		}
-	else				// Create algorithmically.
-		{
-		pal->load(PALETTES_FLX, 0);
-					// RGB blend colors:
-		static unsigned char blends[3*11] = {
-			36,10,48, 24,10,4, 25,27,29, 17,33,7, 63,52,12, 
-			7,13,63,
-			2,17,0, 63,2,2, 65,61,62, 14,10,8, 49,48,46};
-		static int alphas[11] = {128, 128, 192, 128, 64, 128,
-					128, 128, 128, 128, 128};
-		for (int i = 0; i < nxforms; i++)
-			{
-			xforms[i] = new unsigned char[256];
-			pal->create_trans_table(blends[3*i],
-				blends[3*i+1], blends[3*i+2],
-				alphas[i], xforms[i]);
-			}
-		}
-
-	invis_xform = xforms[nxforms - 1 - 2];   // ->entry 2.
 	unsigned long timer = SDL_GetTicks();
 	srand(timer);			// Use time to seed rand. generator.
 					// Force clock to start.
@@ -1089,6 +1044,18 @@ void Game_window::get_shape_location(Tile_coord t, int&x, int& y)
 	Get_shape_location(t, scrolltx, scrollty, x, y);
 }
 
+/*
+ *	Paint shape.
+ */
+void Game_window::paint_shape
+	(
+	int xoff, int yoff, 
+	Shape_frame *shape, 
+	int trans			// Translucent.
+	)
+	{
+	shape_man->paint_shape(xoff, yoff, shape, trans);
+	}
 
 /*
  *	Put the actor(s) in the world.
@@ -1236,7 +1203,8 @@ void Game_window::write
 	int text_height = shape_man->get_text_height(0);
 	int text_width = shape_man->get_text_width(0, "Saving Game");
 
-	win->fill_translucent8(0, width, height, 0, 0, xforms[2]);
+	win->fill_translucent8(0, width, height, 0, 0, 
+					shape_man->get_xform(2));
 	shape_man->paint_text(0, "Saving Game", centre_x-text_width/2, 
 							centre_y-text_height);
 	show(true);

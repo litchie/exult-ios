@@ -460,7 +460,8 @@ void Newfile_gump::paint
 	slider_shape.paint_shape(x+scrollx , y+scrolly+pos);
 
 	// Now paint the savegame details
-	if (screenshot) gwin->paint_shape(x + 222, y + 2, screenshot->get_frame(0));
+	if (screenshot) 
+		sman->paint_shape(x + 222, y + 2, screenshot->get_frame(0));
 
 	// Need to ensure that the avatar's shape actually exists
 	if (party && party[0].shape_file == SF_BG_SISHAPES_VGA && 

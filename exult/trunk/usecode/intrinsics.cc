@@ -1317,7 +1317,7 @@ USECODE_INTRINSIC(display_area)
 		gwin->paint_map_at_tile(x, y, w, h, tx - tw/2, ty - th/2, 4);
 					// Paint sprite #10 (black gate!)
 					//   over it, transparently.
-		gwin->paint_shape(topx + sprite->get_xleft(),
+		sman->paint_shape(topx + sprite->get_xleft(),
 				topy + sprite->get_yabove(), sprite, 1);
 		gwin->show();
 					// Wait for click.

@@ -22,7 +22,6 @@
 #ifndef GAMEWIN_H
 #define GAMEWIN_H
 
-#include "exult_constants.h"
 #include "flags.h"
 #include "iwin8.h"
 #include "lists.h"
@@ -103,9 +102,6 @@ class Game_window
 	bool teleported;		// true if just teleported.
 	unsigned int in_dungeon;	// true if inside a dungeon.
 	bool ice_dungeon;		// true if inside ice dungeon
-	Xform_palette xforms[11];	// Transforms translucent colors
-					//   0xf4 through 0xfe.
-	Xform_palette invis_xform;	// For showing invisible NPC's.
 	Barge_object *moving_barge;	// ->cart/ship that's moving, or 0.
 	Main_actor *main_actor;		// Main sprite to move around.
 	int skip_above_actor;		// Level above actor to skip rendering.
@@ -207,8 +203,6 @@ public:
 		{ return win; }
 	inline Time_queue *get_tqueue() const
 		{ return tqueue; }
-	inline Xform_palette get_xform(int i) const
-		{ return xforms[i]; }
 	int get_hour()			// Get current time.
 		{ return clock.get_hour(); }
 	int get_minute()
@@ -326,31 +320,8 @@ public:
 	void get_shape_location(Game_object *obj, int& x, int& y);
 	void get_shape_location(Tile_coord t, int& x, int& y);
 					// Paint shape in window.
-	void paint_shape(int xoff, int yoff, Shape_frame *shape,
-						int translucent = 0)
-		{
-		if (!shape || !shape->data)
-			{
-				CERR("NULL SHAPE!!!");
-				return;
-			}
-		if (!shape->rle)	// Not RLE?
-			win->copy8(shape->data, 8, 8, xoff - c_tilesize, 
-						yoff - c_tilesize);
-		else if (!translucent)
-			shape->paint_rle(win->get_ib8(), xoff, yoff);
-		else
-			shape->paint_rle_translucent(win->get_ib8(), 
-					xoff, yoff, xforms, 
-					sizeof(xforms)/sizeof(xforms[0]));
-		}
-
-	inline void paint_invisible(int xoff, int yoff, Shape_frame *shape)
-		{
-		if (shape) shape->paint_rle_transformed(win->get_ib8(),
-						xoff, yoff, invis_xform);
-		}
-
+					// ++++Maybe get rid of these two?
+	void paint_shape(int xoff, int yoff, Shape_frame *shape, int trans= 0);
 					// Paint outline around a shape.
 	inline void paint_outline(int xoff, int yoff, Shape_frame *shape, 
 							Pixel_colors pix)

@@ -27,6 +27,9 @@
 #include "fnames.h"
 #include "game.h"
 #include "Configuration.h"
+#include "utils.h"
+#include "segfile.h"
+
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -80,6 +83,7 @@ void Shape_manager::load
 	(
 	)
 	{
+	ibuf = gwin->get_win()->get_ib8();// Assume this exists now.
 	shapes.init();
 	shapes.read_info(GAME_BG);	// Read in shape dimensions.
 	files[SF_GUMPS_VGA].load(GUMPS_VGA);
@@ -131,6 +135,34 @@ void Shape_manager::load
 		fonts = new Fonts_vga_file();
 		fonts->init();
 		}
+					// Get translucency tables.
+	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
+	if (U7exists(XFORMTBL))
+		{			// Read in translucency tables.
+		Segment_file xf(XFORMTBL);
+		for (int i = 0; i < nxforms; i++)
+			xforms[nxforms - 1 - i] = (uint8*)xf.retrieve(i, len);
+		}
+	else				// Create algorithmically.
+		{
+		gwin->get_pal()->load(PALETTES_FLX, 0);
+					// RGB blend colors:
+		static unsigned char blends[3*11] = {
+			36,10,48, 24,10,4, 25,27,29, 17,33,7, 63,52,12, 
+			7,13,63,
+			2,17,0, 63,2,2, 65,61,62, 14,10,8, 49,48,46};
+		static int alphas[11] = {128, 128, 192, 128, 64, 128,
+					128, 128, 128, 128, 128};
+		for (int i = 0; i < nxforms; i++)
+			{
+			xforms[i] = new unsigned char[256];
+			gwin->get_pal()->create_trans_table(blends[3*i],
+				blends[3*i+1], blends[3*i+2],
+				alphas[i], xforms[i]);
+			}
+		}
+
+	invis_xform = xforms[nxforms - 1 - 2];   // ->entry 2.
 	}
 
 /*
@@ -139,6 +171,9 @@ void Shape_manager::load
 Shape_manager::~Shape_manager()
 	{
 	delete fonts;
+	int nxforms = sizeof(xforms)/sizeof(xforms[0]);
+	for (int i = 0; i < nxforms; i++)
+		delete [] xforms[nxforms - 1 - i];
 	assert(this == instance);
 	instance = 0;
 	}
@@ -152,7 +187,7 @@ int Shape_manager::paint_text_box(int fontnum, const char *text,
 	{
 	if(shading>=0)
 		gwin->get_win()->fill_translucent8(
-				0, w, h, x, y, gwin->get_xform(shading));
+				0, w, h, x, y, xforms[shading]);
 	return fonts->paint_text_box(gwin->get_win()->get_ib8(),
 			fontnum, text, x, y, w, h, vert_lead, pbreak); 
 	}
@@ -212,13 +247,6 @@ Shape_frame *ShapeID::cache_shape()
 	return shape;
 
 }
-
-void ShapeID::paint_shape(int xoff, int yoff, bool force_trans)
-{ 
-	Shape_frame *s = get_shape();
-	gwin->paint_shape(xoff, yoff, s, force_trans||has_trans);
-}
-
 
 int ShapeID::get_num_frames() const
 {
