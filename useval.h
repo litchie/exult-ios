@@ -77,6 +77,7 @@ public:
 		: type((unsigned char) int_type)
 		{ *this = v2; }
 					// Comparator.
+	void	push_back(int);
 	int operator==(const Usecode_value& v2);
 	inline Val_type get_type() const
 		{ return (Val_type) type; }

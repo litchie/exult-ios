@@ -134,6 +134,12 @@ int Usecode_value::resize
 	return (1);
 	}
 
+void	Usecode_value::push_back(int i)
+{
+	resize(count_array(*this)+1);
+	value.array[count_array(*this)-1]=Usecode_value(i);
+}
+
 /*
  *	Comparator.
  *
