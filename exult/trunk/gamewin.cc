@@ -543,7 +543,8 @@ Game_map *Game_window::get_map
 	{
 	if (num >= maps.size() || maps[num] == 0)
 		{
-		maps.put(num, new Game_map(num));
+		Game_map* newmap = new Game_map(num);
+		maps.put(num, newmap);
 		maps[num]->init();
 		}
 	return maps[num];
