@@ -74,7 +74,9 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/fem_av_face.shp		\
 	bg/iolo_face.shp		\
 	bg/male_av_face.shp		\
-	bg/shamino_face.shp
+	bg/shamino_face.shp		\
+	bg/greaves.shp			\
+	bg/spiked_shield.shp
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\
