@@ -101,9 +101,10 @@ void Shape_manager::load
 	special_pixels[PROTECT_PIXEL] = pal.find_color(62, 62, 55);
 					// Yellow for cursed.
 	special_pixels[CURSED_PIXEL] = pal.find_color(62, 62, 5);
+					// Light blue for charmed.
+	special_pixels[CHARMED_PIXEL] = pal.find_color(30, 40, 63);
 					// Red for hit in battle.
 	special_pixels[HIT_PIXEL] = pal.find_color(63, 4, 4);
-	// What about charmed/cursed/paralyzed?
 
 	shapes.init();
 	shapes.read_info(GAME_BG);	// Read in shape dimensions.

@@ -43,7 +43,7 @@ class Npc_timer_list
 	Npc_sleep_timer *sleep;
 	Npc_invisibility_timer *invisibility;
 	Npc_protection_timer *protection;
-	Npc_flag_timer *might, *curse, *paralyze;
+	Npc_flag_timer *might, *curse, *charm, *paralyze;
 public:
 	friend class Npc_hunger_timer;
 	friend class Npc_poison_timer;
@@ -53,7 +53,7 @@ public:
 	friend class Npc_flag_timer;
 	Npc_timer_list(Actor *n) : npc(n), hunger(0), poison(0), sleep(0),
 			invisibility(0), protection(0), might(0), curse(0),
-			paralyze(0)
+			charm(0), paralyze(0)
 		{  }
 	~Npc_timer_list();
 	void start_hunger();
@@ -63,6 +63,7 @@ public:
 	void start_protection();
 	void start_might();
 	void start_curse();
+	void start_charm();
 	void start_paralyze();
 	};
 
