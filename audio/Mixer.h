@@ -80,9 +80,6 @@ public:
 	void	Destroy_Audio_Stream(uint32 type);
 	void	cancel_streams(void);
 	bool	is_playing(uint32 type);
-
-	// void	set_auxilliary_audio(int);
-	// int	auxilliary_audio;
 };
 
 

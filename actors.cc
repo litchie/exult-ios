@@ -2840,9 +2840,6 @@ void Main_actor::die
  */
 void Actor::set_actor_shape()
 {
-#ifdef DEBUG
-	cerr << "Told to set Shape. Num " << get_npc_num() << " Polymorph " << get_siflag (polymorph) << endl;
-#endif
 	if (get_npc_num() != 0 || get_siflag (polymorph))
 		return;
 
