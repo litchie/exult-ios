@@ -1,3 +1,17 @@
+2001-11-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* npctime.cc (Npc_timer_list): Paralyze timer.
+
+2001-11-01  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucinternal.cc: Clear object's current text before
+	showing new text.
+	* actors.cc (figure_hit_points):  If weapon points == 0, don't
+	take away any hit points.  Fixes, i.e., Curse spell.
+
+	* actors.cc (Npc_actor): A couple asserts added to find a bug.
+	* objs/chunks.cc: Fixed gravity() bug (and warning).
+
 2001-11-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc, cheat_screen.cc: implemented NPC-browser's 'teleport' key
 	* gamewin.cc, ??game.cc: more palette flashes fixed
@@ -15,6 +29,7 @@
 	  accordingly and updated exult_faq.xml/readme.xml
 	* Faq, Readme updated
 
+>>>>>>> 1.1128
 2001-10-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Don't teleport party members in 'wait' state.

@@ -160,6 +160,7 @@ Npc_timer_list::~Npc_timer_list
 	delete protection;
 	delete might;
 	delete curse;
+	delete paralyze;
 	}
 
 /*
@@ -251,6 +252,19 @@ void Npc_timer_list::start_curse
 	if (curse)			// Remove old one.
 		delete curse;
 	curse = new Npc_flag_timer(this, Obj_flags::cursed, &curse);
+	}
+
+/*
+ *	Start paralyze.
+ */
+
+void Npc_timer_list::start_paralyze
+	(
+	)
+	{
+	if (paralyze)			// Remove old one.
+		delete paralyze;
+	paralyze = new Npc_flag_timer(this, Obj_flags::paralyzed, &paralyze);
 	}
 
 /*
@@ -508,7 +522,7 @@ void Npc_protection_timer::handle_event
 	}
 
 /*
- *	Might/curse wore off.
+ *	Might/curse/paralyze wore off.
  */
 
 void Npc_flag_timer::handle_event
