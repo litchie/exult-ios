@@ -270,6 +270,7 @@ void Windows_MidiOut::thread_play ()
 		 		// Clean up
 				giveinfo();
 				for (int i = 0; i < 16; i++) reset_channel (i); 
+				midiOutReset (midi_port);
 				giveinfo();
 				XMIDI::DeleteEventList (evntlist);
 				giveinfo();
@@ -305,6 +306,7 @@ void Windows_MidiOut::thread_play ()
 			// Manual Reset since I don't trust midiOutReset()
 			giveinfo();
 			for (int i = 0; i < 16; i++) reset_channel (i);
+			midiOutReset (midi_port);
 			
 			// Make sure that the data exists
 			giveinfo();
@@ -453,6 +455,7 @@ void Windows_MidiOut::thread_play ()
 	if (evntlist) XMIDI::DeleteEventList (evntlist);
 	if (s_evntlist) XMIDI::DeleteEventList (s_evntlist);
 	for (int i = 0; i < 16; i++) reset_channel (i); 
+	midiOutReset (midi_port);
 }
 
 void Windows_MidiOut::reset_channel (int i)
