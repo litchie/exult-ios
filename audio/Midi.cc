@@ -512,7 +512,7 @@ bool MyMidiPlayer::init_device(void)
 #if HAVE_LIBKMIDI
 	TRY_MIDI_DRIVER(KMIDI)
 #endif
-#if (defined(XWIN) && !defined(OPENBSD))
+#if (defined(XWIN) && !defined(OPENBSD) && !defined(__zaurus__))
 	TRY_MIDI_DRIVER(forked_player)
 #endif
 #if defined(MACOS) || defined(MACOSX)
