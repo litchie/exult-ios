@@ -43,7 +43,7 @@ inline bool Is_space(char c)
  *	Pass space.
  */
 
-static const char *Pass_space
+static const char *Pass_whitespace
 	(
 	const char *text
 	)
@@ -51,6 +51,16 @@ static const char *Pass_space
 	while (Is_space(*text))
 		text++;
 	return (text);
+	}
+// Just spaces and tabs:
+static const char *Pass_space
+	(
+	const char *text
+	)
+	{
+	while (*text == ' ' || *text == '\t')
+		text++;
+	return text;
 	}
 
 /*
@@ -187,7 +197,7 @@ int Font::paint_text_box
 	if (*text &&			// Out of room?
 					// Break off at end of punct.
 	     pbreak && last_punct_end)
-		text = Pass_space(last_punct_end);
+		text = Pass_whitespace(last_punct_end);
 	else
 		{
 		last_punct_line = -1;
@@ -373,7 +383,7 @@ int Font::paint_text_box_fixedwidth
 	if (*text &&			// Out of room?
 					// Break off at end of punct.
 	     pbreak && last_punct_end)
-		text = Pass_space(last_punct_end);
+		text = Pass_whitespace(last_punct_end);
 	else
 		last_punct_line = -1;
 					// Render text.
