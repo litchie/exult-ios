@@ -1787,18 +1787,32 @@ void Npc_actor::move
 	}
 
 /*
- *	Link body into global list.
+ *	Link body into global list, and set decay time.
  */
 
 void Dead_body::link
 	(
 	)
 	{
-	if (in_world)
-		in_world->next_body = this;
-	prev_body = in_world;
-	next_body = 0;
-	in_world = this;
+	Game_window *gwin = Game_window::get_game_window();
+	unsigned long cur_hour = gwin->get_total_hours();
+	if (npc_num >= 0)		// Can be resurrected?  Give 3 days.
+		decay_hour = cur_hour + 72;
+	else				// Else give it several hours.
+		decay_hour = cur_hour + 4 + rand()%4;
+					// Store sorted by decay_hour.
+	Dead_body *prev = 0, *each;
+	for (each = in_world; each && each->decay_hour < decay_hour;
+							each = each->next_body)
+		prev = each;
+	next_body = each;		// First one with later hour.
+	prev_body = prev;
+	if (prev)
+		prev->next_body = this;
+	else				// New head of chain.
+		in_world = this;
+	if (each)
+		each->prev_body = this;
 	}
 
 /*
@@ -1812,10 +1826,10 @@ Dead_body::~Dead_body
 					// Remove from chain.
 	if (next_body)
 		next_body->prev_body = prev_body;
-	else				// We're at end of list.
-		in_world = prev_body;
 	if (prev_body)
 		prev_body->next_body = next_body;
+	else				// We're at start of list.
+		in_world = next_body;
 	}
 
 /*
@@ -1832,7 +1846,7 @@ int Dead_body::find_dead_companions
 	Game_window *gwin = Game_window::get_game_window();
 	int cnt = 0;			// # found.
 	for (Dead_body *each = in_world; each && cnt < 8; 
-							each = each->prev_body)
+							each = each->next_body)
 		{
 		Actor *npc = gwin->get_npc(each->npc_num);
 		if (npc && npc->get_party_id() >= 0)
@@ -1851,6 +1865,24 @@ void Dead_body::delete_all
 	{
 	while (in_world)
 		delete in_world;
+	}
+
+/*
+ *	Remove all 'decayed' bodies.
+ */
+
+void Dead_body::decay
+	(
+	unsigned long hour		// Current game hour.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Get those that are due.
+	while (in_world && in_world->decay_hour <= hour)
+		{
+		gwin->add_dirty(in_world);
+		in_world->remove_this();
+		}
 	}
 
 /*
