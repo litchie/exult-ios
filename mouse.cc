@@ -230,7 +230,8 @@ void Mouse::set_speed_cursor()
                 cursor = get_short_combat_arrow(dir);
             else
                 cursor = get_short_arrow(dir);
-            avatar_speed = slow_speed;
+//            avatar_speed = slow_speed;
+	    avatar_speed = gwin->get_std_delay();
         }
         else if (dist < 75*75)
         {
@@ -238,7 +239,8 @@ void Mouse::set_speed_cursor()
                 cursor = get_medium_combat_arrow(dir);
             else
                 cursor = get_medium_arrow(dir);
-            avatar_speed = medium_speed;
+//            avatar_speed = medium_speed;
+	    avatar_speed = gwin->get_std_delay()/2;
         }
         else
         {		// No long arrow in combat: use medium
@@ -246,7 +248,8 @@ void Mouse::set_speed_cursor()
                 cursor = get_medium_combat_arrow(dir);
             else
                 cursor = get_long_arrow(dir);
-            avatar_speed = fast_speed;
+//            avatar_speed = fast_speed;
+	    avatar_speed = gwin->get_std_delay()/4;
         }
     }
     
