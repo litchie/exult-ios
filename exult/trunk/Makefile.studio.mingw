@@ -7,7 +7,7 @@ U7PATH=C:/Ultima7
 STUDIOPATH=C:/Studio
 
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs
+VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
 
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-1.3-win32-production` manually
 GTK_INCLUDES = `pkg-config --cflags gtk+-1.3-win32-production`
@@ -20,11 +20,12 @@ LIBGLADE_INCLUDES = `pkg-config --cflags libglade-0.17`
 LIBGLADE_LIBS = `pkg-config --libs libglade-0.17`
 
 INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
-	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/server -I$(SRC)/objs $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
+	-I$(SRC)/files -I$(SRC)/headers -I$(SRC)/server -I$(SRC)/objs -I$(SRC)/conf $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
 
-CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO $(INCLUDES)
+CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_SNPRINTF $(INCLUDES)
 
-CXXFLAGS= -fnative-struct -fvtable-thunks
+# NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
+CXXFLAGS= -O2 -fnative-struct -fvtable-thunks -include mingw_kludges.h
 
 CXX=g++
 
@@ -44,9 +45,11 @@ IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 
 SHAPES_OBJS=font.o fontvga.o items.o monstinf.o shapeinf.o shapevga.o shapewrite.o u7drag.o vgafile.o
 
+CONF_OBJS=Configuration.o XMLEntity.o
+
 MISC_OBJS=exultstudioico.o windrag.o
 
-OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS) $(MISC_OBJS)
+OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS) $(CONF_OBJS) $(MISC_OBJS)
 
 $(EXEC): $(OBJS) $(EXP_FILE)
 	$(CXX) $(EXP_FILE) -o $@ $(OBJS) $(LIBS)
