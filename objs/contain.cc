@@ -143,7 +143,7 @@ int Container_game_object::add_quantity
 			{		// Limit what we can add.
 					// Work in 1/100ths.
 			int weight1 = (10*objweight)/delta;
-			cant_add = delta - (10*avail)/weight1;
+			cant_add = delta - (10*avail)/(weight1 ? weight1 : 1);
 			delta -= cant_add;
 			}
 		}
