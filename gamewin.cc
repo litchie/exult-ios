@@ -410,22 +410,22 @@ int Game_window::scroll_if_needed
 	)
 	{
 	int scrolled = 0;
-	if (t.tx == scroll_bounds.x - 1)
+	if (t.tx <= scroll_bounds.x - 1)
 		{
 		view_left();
 		scrolled = 1;
 		}
-	else if (t.tx == scroll_bounds.x + scroll_bounds.w)
+	else if (t.tx >= scroll_bounds.x + scroll_bounds.w)
 		{
 		view_right();
 		scrolled = 1;
 		}
-	if (t.ty == scroll_bounds.y - 1)
+	if (t.ty <= scroll_bounds.y - 1)
 		{
 		view_up();
 		scrolled = 1;
 		}
-	else if (t.ty == scroll_bounds.y + scroll_bounds.h)
+	else if (t.ty >= scroll_bounds.y + scroll_bounds.h)
 		{
 		view_down();
 		scrolled = 1;

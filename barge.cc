@@ -63,7 +63,7 @@ inline Tile_coord Rotate90l
 	{
 					// Get cart. coords. rel. to center.
 	int rx = t.tx - c.tx, ry = c.ty - t.ty;
-	return Tile_coord(c.tx - ry, c.ty + rx, t.tz);
+	return Tile_coord(c.tx - ry, c.ty - rx, t.tz);
 	}
 
 /*
@@ -81,7 +81,7 @@ inline Tile_coord Rotate180
 	{
 					// Get cart. coords. rel. to center.
 	int rx = t.tx - c.tx, ry = c.ty - t.ty;
-	return Tile_coord(c.tx - rx, c.ty - ry, t.tz);
+	return Tile_coord(c.tx - rx, c.ty + ry, t.tz);
 	}
 
 /*
@@ -100,11 +100,9 @@ inline Tile_coord Rotate90r
 	{
 					// Rotate hot spot.
 	Tile_coord r = Rotate90r(obj->get_abs_tile_coord(), c);
-	Shape_info& info = gwin->get_info(obj);
 					// New hotspot is what used to be the
 					//   upper-right corner.
 	r.tx += ytiles - 1;
-//	r.ty -= xtiles;
 	r.ty++;
 	return r;
 	}
@@ -213,6 +211,37 @@ void Barge_object::gather
 	}
 
 /*
+ *	Swap dimensions.
+ */
+
+inline void Barge_object::swap_dims
+	(
+	)
+	{
+	int tmp = xtiles;		// Swap dims.
+	xtiles = ytiles;
+	ytiles = tmp;
+	}
+
+/*
+ *	Add a dirty rectangle for our current position.
+ */
+
+void Barge_object::add_dirty
+	(
+	Game_window *gwin
+	)
+	{
+	int x, y;			// Get lower-right corner.
+	gwin->get_shape_location(this, x, y);
+	int w = xtiles*tilesize, h = ytiles*tilesize;
+	Rectangle box(x - w, y - h, w, h);
+	box.enlarge(6);			// Make it a bit bigger.
+	box = gwin->clip_to_win(box);	// Intersect with screen.
+	gwin->add_dirty(box);
+	}
+
+/*
  *	Finish up moving all the objects by adding them back and deleting the
  *	saved list of positions.
  */
@@ -260,8 +289,12 @@ void Barge_object::travel_to_tile
 		case 1:			// Rotate 90 degrees right.
 			turn_right();
 			break;
-		case 2:			// +++++
-		case 3:			// +++++
+		case 2:
+			turn_around();	// 180 degrees.
+			break;
+		case 3:
+			turn_left();
+			break;
 		default:
 			break;
 			}
@@ -281,22 +314,21 @@ void Barge_object::turn_right
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	add_dirty(gwin);		// Want to repaint old position.
 					// Get center to rotate around.
 	Tile_coord center = get_abs_tile_coord();
 	center.tx -= xtiles/2;
 	center.ty -= ytiles/2;
 	//+++++++Need to check for blocked squares.
 					// Move the barge itself.
-	Game_object::move(Rotate90r(gwin, this, xtiles, ytiles, center));
-	int tmp = xtiles;		// Swap dims.
-	xtiles = ytiles;
-	ytiles = tmp;
+	Tile_coord rot = Rotate90r(gwin, this, xtiles, ytiles, center);
+	Game_object::move(rot.tx, rot.ty, rot.tz);
+	swap_dims();			// Exchange xtiles, ytiles.
 	dir = (dir + 1)%4;		// Increment direction.
 	int cnt = objects.get_cnt();	// We'll move each object.
 					// But 1st, remove & save new pos.
 	Tile_coord *positions = new Tile_coord[cnt];
-	int i;
-	for (i = 0; i < cnt; i++)
+	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *obj = get_object(i);
 		Shape_info& info = gwin->get_info(obj);
@@ -305,6 +337,76 @@ void Barge_object::turn_right
 		obj->remove_this(1);	// Remove object from world.
 					// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(1));
+		obj->set_invalid();	// So it gets added back right.
+		}
+	finish_move(positions);		// Add back & del. positions.
+	}
+
+/*
+ *	Turn 90 degrees to the left.
+ */
+
+void Barge_object::turn_left
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	add_dirty(gwin);		// Want to repaint old position.
+					// Get center to rotate around.
+	Tile_coord center = get_abs_tile_coord();
+	center.tx -= xtiles/2;
+	center.ty -= ytiles/2;
+	//+++++++Need to check for blocked squares.
+					// Move the barge itself.
+	Tile_coord rot = Rotate90l(gwin, this, center);
+	Game_object::move(rot.tx, rot.ty, rot.tz);
+	swap_dims();			// Exchange xtiles, ytiles.
+	dir = (dir + 3)%4;		// Increment direction.
+	int cnt = objects.get_cnt();	// We'll move each object.
+					// But 1st, remove & save new pos.
+	Tile_coord *positions = new Tile_coord[cnt];
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *obj = get_object(i);
+		positions[i] = Rotate90l(gwin, obj, center);
+		obj->remove_this(1);	// Remove object from world.
+					// Set to rotated frame.
+		obj->set_frame(obj->get_rotated_frame(3));
+		obj->set_invalid();	// So it gets added back right.
+		}
+	finish_move(positions);		// Add back & del. positions.
+	}
+
+/*
+ *	Turn 180 degrees.
+ */
+
+void Barge_object::turn_around
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	add_dirty(gwin);		// Want to repaint old position.
+					// Get center to rotate around.
+	Tile_coord center = get_abs_tile_coord();
+	center.tx -= xtiles/2;
+	center.ty -= ytiles/2;
+					// Move the barge itself.
+	Tile_coord rot = Rotate180(gwin, this, xtiles, ytiles, center);
+	Game_object::move(rot.tx, rot.ty, rot.tz);
+	dir = (dir + 2)%4;		// Increment direction.
+	int cnt = objects.get_cnt();	// We'll move each object.
+					// But 1st, remove & save new pos.
+	Tile_coord *positions = new Tile_coord[cnt];
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *obj = get_object(i);
+		Shape_info& info = gwin->get_info(obj);
+		positions[i] = Rotate180(gwin, obj, info.get_3d_xtiles(),
+						info.get_3d_ytiles(), center);
+		obj->remove_this(1);	// Remove object from world.
+					// Set to rotated frame.
+		obj->set_frame(obj->get_rotated_frame(2));
 		obj->set_invalid();	// So it gets added back right.
 		}
 	finish_move(positions);		// Add back & del. positions.
@@ -341,6 +443,8 @@ void Barge_object::move
 	int newlift
 	)
 	{
+					// Want to repaint old position.
+	add_dirty(Game_window::get_game_window());
 					// Get current location.
 	Tile_coord old = get_abs_tile_coord();
 					// Move the barge itself.
