@@ -843,6 +843,20 @@ void Walk_to_schedule::now_what
 		npc->set_schedule_type(new_schedule);
 		return;
 		}
+					// Looks like we're blocked?
+	if (legs > 0 && !retries &&
+	    npc->get_abs_tile_coord().distance(blocked) == 1)
+		{			// A door?
+		Game_object *bobj = Game_object::find_blocking(blocked);
+		if (bobj && gwin->get_info(bobj).is_door())
+			{		// Try to open it.
+/*	Want to look at where NPC is rel. to door's footprint, and move him
+	out of the way first.
+ */
+			cout << "Got to open door.\n";
+			bobj->activate(gwin->get_usecode());
+			}
+		}
 					// Get screen rect. in tiles.
 	Rectangle screen(gwin->get_chunkx()*tiles_per_chunk,
 			gwin->get_chunky()*tiles_per_chunk,
@@ -1077,6 +1091,8 @@ int Npc_actor::step
 					// Just assume height==3.
 	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift))
 		{
+		if (schedule)		// Tell scheduler.
+			schedule->set_blocked(t);
 		stop();
 		return (0);		// Done.
 		}
@@ -1325,6 +1341,8 @@ int Monster_actor::step
 					// Blocked.
 	if (is_blocked(cx*tiles_per_chunk + tx, cy*tiles_per_chunk + ty))
 		{
+		if (schedule)		// Tell scheduler.
+			schedule->set_blocked(t);
 		stop();
 		return (0);		// Done.
 		}

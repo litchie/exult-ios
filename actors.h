@@ -111,6 +111,8 @@ public:
 		{ return frame_time; }
 	int is_moving()
 		{ return frame_time != 0; }
+	Actor_action *get_action()	// Return action.
+		{ return action; }
 					// Set new action.
 	void set_action(Actor_action *newact);
 					// Walk to a desired spot.
@@ -258,9 +260,12 @@ class Schedule
 	{
 protected:
 	Npc_actor *npc;			// Who this controls.
+	Tile_coord blocked;		// Tile where actor was blocked.
 public:
-	Schedule(Npc_actor *n) : npc(n)
+	Schedule(Npc_actor *n) : npc(n), blocked(-1, -1, -1)
 		{  }
+	void set_blocked(Tile_coord b)
+		{ blocked = b; }
 	enum Schedule_types {
 		combat = 0,	horiz_pace = 1,
 		vert_pace = 2,	talk = 3,
