@@ -1,5 +1,6 @@
 2002-07-08  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
+	* actors.cc,monsters.cc:  Bare hands weapon gets 1 damage point.
 	* objs/egg.cc (Animated_egg_object): Fields continue to check for
 	NPC's standing in them so they can add damage.
 
