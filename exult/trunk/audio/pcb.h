@@ -6,6 +6,45 @@
 class ByteBuffer
 {
   public:
+	void	reserve(size_t numbytes)    // Reserve space in advance
+		{
+		if (!data)
+			{
+			data = new char[numbytes];
+
+			low  = high = 0;
+			cap  = numbytes;
+
+			return;
+			}
+
+		// Sanity check. Do we already have at least that much?
+		if (numbytes <= cap)
+			{
+			memmove(data, (data + low), (high - low));
+
+			high -= low;
+			low  =  0;
+
+			return;
+			}
+
+		// Allocate new store
+		char   *tmp = new char[numbytes];
+
+		// Copy the old store into it.
+		memcpy(tmp, (data + low), (high - low));
+
+		// Reset all our offsets
+		high -= low;
+		low  =  0;
+		cap  =  numbytes;
+
+		// Replace the old store with the new one
+		delete [] data;
+		data = tmp;
+		}
+
 	ByteBuffer() : data(0), cap(0), low(0), high(0)
 		{  } 
 	ByteBuffer(const ByteBuffer &b) :  data(0), cap(0), low(0), high(0)
@@ -65,45 +104,6 @@ class ByteBuffer
 		return *(data + low + pos);
 		}
     
-	void	reserve(size_t numbytes)    // Reserve space in advance
-		{
-		if (!data)
-			{
-			data = new char[numbytes];
-
-			low  = high = 0;
-			cap  = numbytes;
-
-			return;
-			}
-
-		// Sanity check. Do we already have at least that much?
-		if (numbytes <= cap)
-			{
-			memmove(data, (data + low), (high - low));
-
-			high -= low;
-			low  =  0;
-
-			return;
-			}
-
-		// Allocate new store
-		char   *tmp = new char[numbytes];
-
-		// Copy the old store into it.
-		memcpy(tmp, (data + low), (high - low));
-
-		// Reset all our offsets
-		high -= low;
-		low  =  0;
-		cap  =  numbytes;
-
-		// Replace the old store with the new one
-		delete [] data;
-		data = tmp;
-		}
-
 	void	push_back(char c)    // Add-to-end of buffer
 		{
 		if (!data)
