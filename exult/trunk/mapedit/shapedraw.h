@@ -60,6 +60,7 @@ public:
 	guint32 get_color(int i)
 		{ return palette->colors[i]; }
 	void draw_shape(Shape_frame *shape, int x, int y);
+	void draw_shape(int shapenum, int framenum, int x, int y);
 	void draw_shape_centered(int shapenum, int framenum);
 	virtual void render();		// Update what gets shown.
 	void set_background_color(guint32 c);
