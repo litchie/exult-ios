@@ -83,8 +83,6 @@ exult_SOURCES =	\
 	shapeid.h	\
 	sigame.cc	\
 	tiles.h		\
-	spells.cc	\
-	spells.h	\
 	tqueue.cc	\
 	tqueue.h	\
 	txtscroll.cc	\
