@@ -18,34 +18,20 @@
 #include "flic/playfli.h"
 #include "gamewin.h"
 #include "Audio.h"
-#include "titles.h"
+#include "game.h"
 #include "palette.h"
 #include "databuf.h"
 
-Titles::Titles()
-	{
-		gwin = Game_window::get_game_window();
-		win = gwin->get_win();
-	}
-
-Titles::~Titles()
+SI_Game::SI_Game()
 	{
 	}
 
-bool Titles::wait_delay(int ms)
+SI_Game::~SI_Game()
 	{
-		SDL_Event event;
-		if(SDL_PollEvent(&event)) {
-			if((event.type==SDL_KEYDOWN)||(event.type==SDL_MOUSEBUTTONDOWN))
-				return true;
-		}
-		SDL_Delay(ms);
-		return false;
 	}
 
-void Titles::play_intro()
+void SI_Game::play_intro()
 	{
-		Vga_file shapes(ENDSHAPE_FLX);
 		bool skip = false;
 		Palette pal;
 
@@ -55,8 +41,8 @@ void Titles::play_intro()
 		int centery = gwin->get_height()/2;
 
 		// Lord British presents...
-		pal.load("static/intropal.dat",3);
-		gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
+		pal.load("static/lblogo.pal",0);
+		// FIXME: retrieve "Lord British presents..."
 		const char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
 				"Willem Jan Palenstijn, Tristan Tarrant,", 
 				"Max Horn, Luke Dunstan, Ryan Nunn",
@@ -66,215 +52,12 @@ void Titles::play_intro()
 		}
 		pal.fade_in(30);
 		skip = wait_delay(2000);
-		play_midi(0);	// Start the birdsongs just before we fade
 		pal.fade_out(30);
 		if(skip)
 			return;
-		// Ultima VII logo w/Trees
-		gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
-		gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
-		gwin->paint_text(0, txt_msg[3], centerx-gwin->get_text_width(0, txt_msg[3])/2, centery+50);
-		pal.load("static/intropal.dat",4);
-		pal.fade_in(30);
-		if(wait_delay(1500)) {
-			pal.fade_out(30);
-			return;
-		}
-		for(int i=0; i<270; i++) {
-			gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
-			gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
-			if(i>20) {
-				gwin->paint_shape(topx+i, centery-i/5, shapes.get_shape(0x0E, i%4));
-			}
-			win->show();
-			if(wait_delay(50)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		for(int i=1; i<13; i++) {
-			gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
-			gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
-			gwin->paint_shape(270, centery-54, shapes.get_shape(0x0E, i%4));
-			win->show();
-			if(wait_delay(50*i)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		if(wait_delay(2000)) {
-			pal.fade_out(30);
-			return;	
-		}
-
-		// The main man :)
-		play_midi(2);
-		pal.load("static/intropal.dat",2);
-		pal.apply();
-		// First
-		for(int i=9; i>0; i--) {
-			clear_screen();
-			gwin->paint_shape(centerx,centery-45,shapes.get_shape(0x21,i));
-			win->show();
-			if(wait_delay(70)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		for(int i=1; i<10; i++) {
-			clear_screen();
-			gwin->paint_shape(centerx,centery-45,shapes.get_shape(0x21,i));
-			win->show();
-			if(wait_delay(70)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		// Second 
-		for(int i=0; i<10; i++) {
-			clear_screen();
-			gwin->paint_shape(centerx,centery-45,shapes.get_shape(0x22,i));
-			win->show();
-			if(wait_delay(70)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		for(int i=9; i>=0; i--) {
-			clear_screen();
-			gwin->paint_shape(centerx,centery-45,shapes.get_shape(0x22,i));
-			win->show();
-			if(wait_delay(70)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		for(int i=0; i<16; i++) {
-			clear_screen();
-			gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x23,i));
-			win->show();
-			if(wait_delay(70)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		gwin->paint_shape(centerx,centery-30,shapes.get_shape(0x20,1));
-		win->show();
-		
-		U7object textobj(MAINSHP_FLX, 0x0D);
-		char * txt, *txt_ptr;
-		size_t txt_len;
-		textobj.retrieve(&txt,txt_len);
-		txt_ptr = txt;
-		// Guardian speech
-		audio->playfile(INTROSND,false);
-		int txt_ypos = gwin->get_height()-gwin->get_text_height(0);
-		for(int i=0; i<14*40; i++) {
-			gwin->paint_shape(centerx,centery-30,shapes.get_shape(0x20,i % 10));
-			gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x1E,i % 15));
-			if(i % 40 ==0) {
-				char *txt_end = strchr(txt_ptr, '\r');
-				*txt_end = 0;
-				win->fill8(0,gwin->get_width(),txt_ypos,0,txt_ypos);
-				gwin->paint_text(0, txt_ptr, centerx-gwin->get_text_width(0, txt_ptr)/2, txt_ypos);
-				txt_ptr = txt_end+2;
-			}
-			win->show();
-			if(wait_delay(50)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		delete [] txt;
-		for(int i=15; i>=0; i--) {
-			clear_screen();
-			gwin->paint_shape(centerx,centery-20,shapes.get_shape(0x23,i));
-			win->show();
-			if(wait_delay(70)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-
-		// PC screen
-		play_midi(1);
-		
-		pal.load("static/intropal.dat",1);
-		pal.apply();
-
-		for(int i=0;i<194;i+=2) {
-			gwin->paint_shape(centerx-i, centery, shapes.get_shape(0x07,0));
-			gwin->paint_shape(centerx-i, centery, shapes.get_shape(0x09,0));
-			gwin->paint_shape(centerx-i, centery, shapes.get_shape(0x08,0));
-			gwin->paint_shape(centerx-i, centery, shapes.get_shape(0x0A,0));
-			gwin->paint_shape(centerx-i+12, centery-22, shapes.get_shape(0x1D,0));
-			gwin->paint_shape(topx+320-i, topy, shapes.get_shape(0x06,0));
-			if(i<75)
-				gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x15,0));
-			else
-				gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x16,0));
-			win->show();
-			if(wait_delay(50)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		for(int i=0;i<50;i++) {
-			gwin->paint_shape(centerx-194, centery-i, shapes.get_shape(0x07,0));
-			gwin->paint_shape(centerx-194, centery-i, shapes.get_shape(0x09,0));
-			gwin->paint_shape(centerx-194, centery-i, shapes.get_shape(0x08,0));
-			gwin->paint_shape(centerx-194, centery-i, shapes.get_shape(0x0A,0));
-			gwin->paint_shape(centerx-194+12, centery-22-i, shapes.get_shape(0x1D,0));
-			gwin->paint_shape(topx+320-194, topy-i, shapes.get_shape(0x06,0));
-			gwin->paint_shape(topx+320, topy+200-i, shapes.get_shape(0x0B,0));
-			if(i>48) {
-				gwin->paint_shape(centerx, topy, shapes.get_shape(0x18,0));
-			} else if(i>15)
-				gwin->paint_shape(centerx, topy, shapes.get_shape(0x17,0));
-			win->show();
-			if(wait_delay(50)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		if(wait_delay(2000)) {
-			pal.fade_out(30);
-			return;	
-		}
-
-		clear_screen();
-
-		// The Moongate
-		pal.load("static/intropal.dat",5);
-		pal.apply();
-		for(int i=120;i>=0;i-=2) {
-			gwin->paint_shape(centerx, centery, shapes.get_shape(0x02,0));
-			gwin->paint_shape(centerx, centery, shapes.get_shape(0x03,0));
-			gwin->paint_shape(centerx, centery, shapes.get_shape(0x04,0));
-			gwin->paint_shape(centerx, centery, shapes.get_shape(0x05,0));
-
-			gwin->paint_shape(centerx+i, topy, shapes.get_shape(0x00,0));
-			gwin->paint_shape(centerx-i, topy, shapes.get_shape(0x01,0));
-			if(i>60)
-				gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x19,0));
-			else
-				gwin->paint_shape(centerx, centery+50, shapes.get_shape(0x1A,0));
-			win->show();
-			if(wait_delay(50)) {
-				pal.fade_out(30);
-				return;	
-			}
-		}
-		wait_delay(2000);
-		clear_screen();
 	}
 	
-void Titles::clear_screen()
-	{
-		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
-	}
-
-void Titles::show_menu()
+void SI_Game::show_menu()
 	{
 		Vga_file menushapes(MAINSHP_FLX);
 		Palette pal;
@@ -283,10 +66,8 @@ void Titles::show_menu()
 		int topy = (gwin->get_height()-200)/2;
 		int centerx = gwin->get_width()/2;
 		
-		play_midi(3);
-		
 		gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-		pal.load("static/intropal.dat",0);
+		pal.load("static/u72_logo.pal",0);
 		pal.fade_in(60);
 		
 		int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12 };
@@ -302,38 +83,7 @@ void Titles::show_menu()
 		clear_screen();
 	}
 
-void Titles::play_flic(const char *archive, int index) 
-	{
-		char *fli_buf;
-		size_t len;
-		U7object flic(archive, index);
-		flic.retrieve(&fli_buf, len);
-		playfli fli(fli_buf);
-		fli.play(win);
-		delete [] fli_buf;
-	}
-
-void Titles::play_audio(const char *archive, int index) 
-	{
-		U7object speech(archive, index);
-		speech.retrieve("speech.voc");
-		audio->playfile("speech.voc", false);
-	}
-
-void Titles::play_midi(int track)
-	{
-		audio->start_music(track,0,1);
-	}
-
-void Titles::refresh_screen ()
-{
-	clear_screen();
-	gwin->set_palette(0);
-	gwin->paint();
-	gwin->fade_palette (50, 1, 0);
-}
-
-void Titles::end_game(bool success) 
+void SI_Game::end_game(bool success) 
 	{
 		int	i, j, next = 0;
 		int	starty;
@@ -810,11 +560,11 @@ void Titles::end_game(bool success)
 		delete [] fli_b[2];
 	}
 
-void Titles::show_quotes()
+void SI_Game::show_quotes()
 	{
 	}
 
-void Titles::show_credits()
+void SI_Game::show_credits()
 	{
 		U7object mainshp("static/mainshp.flx", 0x0E);
 		size_t len;
