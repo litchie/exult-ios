@@ -336,6 +336,7 @@ public:
 	Usecode_machine(std::istream& file, Game_window *gw);
 	Usecode_machine(Game_window *gw);
 	~Usecode_machine();
+	void read_usecode(istream& file);// Read in usecode functions.
 					// Possible events:
 	enum Usecode_events {
 		npc_proximity = 0,

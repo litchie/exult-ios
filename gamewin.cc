@@ -181,61 +181,75 @@ void Game_window::abort
 
 void Game_window::init_files()
 	{
-		pal = new Palette();
-		clock.set_palette();		// Set palette for correct time.
+	pal = new Palette();
+	clock.set_palette();		// Set palette for correct time.
 					// Get a bright green.
-		poison_pixel = pal->find_color(4, 63, 4);
+	poison_pixel = pal->find_color(4, 63, 4);
 					// Get a light gray.
-		protect_pixel = pal->find_color(62, 62, 55);
-		usecode = new Usecode_machine(this);
-		faces.load(FACES_VGA);
-		gumps.load(GUMPS_VGA);
-		if (!fonts)
-			{
-			fonts = new Fonts_vga_file();
-			fonts->init();
-			}
-		sprites.load(SPRITES_VGA);
-		mainshp.load(MAINSHP_FLX);
-		shapes.init();
+	protect_pixel = pal->find_color(62, 62, 55);
+	usecode = new Usecode_machine(this);
+					// Get custom usecode functions.
+	string gametitle = Game::get_game_type() == BLACK_GATE ?
+		"blackgate" : "serpentisle";
+	string d = "config/disk/game/" + gametitle + "/userusecode";
+	string useruc;
+	config->value(d.c_str(), useruc, "");
+	if (useruc != "")
+		{
+		ifstream file;
+		const char *nm = useruc.c_str();
+		cout << "Reading user usecode:  " << nm << endl;
+		U7open(file, nm);
+		usecode->read_usecode(file);
+		file.close();
+		}
+	faces.load(FACES_VGA);
+	gumps.load(GUMPS_VGA);
+	if (!fonts)
+		{
+		fonts = new Fonts_vga_file();
+		fonts->init();
+		}
+	sprites.load(SPRITES_VGA);
+	mainshp.load(MAINSHP_FLX);
+	shapes.init();
 
-		U7open(chunks, U7CHUNKS);
-		U7open(u7map, U7MAP);
-		ifstream textflx;	
-	  	U7open(textflx, TEXT_FLX);
-		Setup_item_names(textflx);	// Set up list of item names.
+	U7open(chunks, U7CHUNKS);
+	U7open(u7map, U7MAP);
+	ifstream textflx;	
+  	U7open(textflx, TEXT_FLX);
+	Setup_item_names(textflx);	// Set up list of item names.
 					// Read in shape dimensions.
-		shapes.read_info();
-		Segment_file xf(XFORMTBL);	// Read in translucency tables.
-		std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
-		for (int i = 0; i < nxforms; i++)
-			xforms[nxforms - 1 - i] = (uint8*)xf.retrieve(i, len);
-		invis_xform = (uint8*)xf.retrieve(2, len);
-		unsigned long timer = SDL_GetTicks();
-		srand(timer);			// Use time to seed rand. generator.
-						// Force clock to start.
-		tqueue->add(timer, &clock, (long) this);
-						// Clear object lists, flags.
+	shapes.read_info();
+	Segment_file xf(XFORMTBL);	// Read in translucency tables.
+	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
+	for (int i = 0; i < nxforms; i++)
+		xforms[nxforms - 1 - i] = (uint8*)xf.retrieve(i, len);
+	invis_xform = (uint8*)xf.retrieve(2, len);
+	unsigned long timer = SDL_GetTicks();
+	srand(timer);			// Use time to seed rand. generator.
+					// Force clock to start.
+	tqueue->add(timer, &clock, (long) this);
+					// Clear object lists, flags.
 #if 1
-		for (int i1 = 0; i1 < c_num_chunks; i1++)
-			for (int i2 = 0; i2 < c_num_chunks; i2++)
-				objects[i1][i2] = 0;
+	for (int i1 = 0; i1 < c_num_chunks; i1++)
+		for (int i2 = 0; i2 < c_num_chunks; i2++)
+			objects[i1][i2] = 0;
 #else	/* Old way +++++++*/
-		memset((char *) objects, 0, sizeof(objects));
+	memset((char *) objects, 0, sizeof(objects));
 #endif
-		memset((char *) schunk_read, 0, sizeof(schunk_read));
+	memset((char *) schunk_read, 0, sizeof(schunk_read));
 
 		// Go to starting chunk
-		scrolltx = game->get_start_tile_x();
-		scrollty = game->get_start_tile_y();
+	scrolltx = game->get_start_tile_x();
+	scrollty = game->get_start_tile_y();
 		
-		if (Game::get_game_type()==SERPENT_ISLE)
+	if (Game::get_game_type()==SERPENT_ISLE)
 		{
-			paperdolls.load(PAPERDOL);
-			if (!paperdolls.is_good())
-				abort("Can't open 'paperdol.vga' file.");
+		paperdolls.load(PAPERDOL);
+		if (!paperdolls.is_good())
+			abort("Can't open 'paperdol.vga' file.");
 		}
-
 	}
 	
 
