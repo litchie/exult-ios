@@ -3,6 +3,7 @@
 	the explosion instead of afterwards
 	* objs.cc: powderkegs blow up more doors
 	* objs.cc: powderkegs blow up other powderkegs
+	* gamewin.*: clear effects queue when reloading
 
 2001-10-11  Jeff Freedman  <jeff@amy.nerble.net>
 

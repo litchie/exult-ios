@@ -613,7 +613,7 @@ public:
 	void remove_text_effect(Game_object *item);
 					// Remove text item & delete it.
 	void remove_effect(Special_effect *txt);
-	void remove_all_effects();
+	void remove_all_effects(bool repaint=false);
 	void remove_text_effects();
 					// Remove just the weather.
 	void remove_weather_effects(int dist = 0);
