@@ -401,6 +401,8 @@ public:
 	void read_ireg_objects(istream& ireg, int scx, int scy,
 					Game_object *container = 0,
 			unsigned long flags = (1<<Game_object::okay_to_take));
+	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
+			int frnum, int tilex, int tiley, int lift);
 					// Create special objects.
 	Egg_object *create_egg(unsigned char *entry, int animated);
 					// Get all superchunk objects.

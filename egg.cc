@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "useval.h"
 #include "effects.h"
 #include "game.h"
+#include "items.h"
 
 // #include <math.h>
 
@@ -292,7 +293,7 @@ void Egg_object::activate
 	}
 
 /*
- *	Run usecode when double-clicked or when activated by proximity.
+ *	Hatch egg.
  */
 
 void Egg_object::activate
@@ -526,6 +527,20 @@ Animated_egg_object::Animated_egg_object
 	}
 
 /*
+ *	Create for fields.
+ */
+
+Animated_egg_object::Animated_egg_object
+	(
+	int shapenum, int framenum, unsigned int tilex, 
+	unsigned int tiley, unsigned int lft,
+	unsigned char ty
+	) : Egg_object(shapenum, framenum, tilex, tiley, lft, ty)
+	{
+	animator = new Frame_animator(this, 1); 
+	}
+
+/*
  *	Delete.
  */
 Animated_egg_object::~Animated_egg_object()
@@ -560,6 +575,32 @@ void Animated_egg_object::activate
 	flags &= ~(1 << (int) hatched);	// Moongate:  reset always.
 	}
 
+/*
+ *	Apply field.
+ */
+
+void Field_object::field_effect
+	(
+	Actor *actor
+	)
+	{
+	switch (type)
+		{
+	case poison_field:
+		actor->set_flag(Actor::poisoned);
+		break;
+	case sleep_field:
+		actor->set_flag(Actor::asleep);
+		break;
+	case fire_field:
+		if (rand()%2)
+			{
+			actor->set_property(Actor::health, -1);
+			if (rand()%2)
+				say(first_ouch, last_ouch);
+			}
+		}
+	}
 
 /*
  *	Run usecode when double-clicked or when activated by proximity.
@@ -573,6 +614,24 @@ void Field_object::activate
 	)
 	{
 	Ireg_game_object::activate(umachine, event);
+	}
+
+/*
+ *	Avatar stepped on it.
+ */
+
+void Field_object::activate
+	(
+	Usecode_machine *umachine,
+	Game_object *obj,		// Object (actor) that came near it.
+	int /* must */			// If 1, skip dice roll.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Main_actor *av = gwin->get_main_actor();
+	if (obj != av && obj->get_party_id() < 0)
+		return;			// Not a party member.
+	field_effect((Actor *) obj);	// Apply field.
 	}
 
 /*

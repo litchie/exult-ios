@@ -38,6 +38,7 @@ using std::size_t;
  */
 
 short Body_lookup::table[] = {
+				// Monsters:
 	491,	762,	13,	 // acid slug
 	492,	892,	13,	 // alligator
 	493,	762,	9,	 // bat   ??Unsure
@@ -75,7 +76,6 @@ short Body_lookup::table[] = {
 	946,	762,	23,	 // guard
 	532,	762,	5,	 // harpie
 	514,	762,	6,	 // headless
-	506,	762,	2,	 // Hook
 	727,	778,	1,	 // horse
 	381,	762,	2,	 // three headed hydra
 	517,	892,	15,	 // insects
@@ -102,7 +102,30 @@ short Body_lookup::table[] = {
 	533,	778,	4,	 // troll
 	534,	762,	2,	 // wisp
 	537,	762,	21,	 // wolf
-	447,	762,	2	 // wounded man
+	447,	762,	2,	 // wounded man
+				// NCPs:
+	318,	400,	5,	// Sage.
+	319,	400,	9,	// Male peasant.
+	451,	400,	13,	// Male noble.
+	452,	400,	10,	// Female peasant.
+	454,	400,	12,	// Female shopkeeper.
+	455,	400,	11,	// Male shopkeeper.
+	456,	400,	14,	// Female noble.
+	458,	400,	16,	// Pirate.
+	401,	400,	16,	// Pirate.
+	462,	400,	20,	// Male fighter.
+	463,	400,	21,	// Female fighter.
+	465,	400,	3,	// Iolo.
+	468,	400,	25,	// Male entertainer.
+	469,	400,	26,	// Female entertainer.
+	489,	414,	21,	// Spark.
+	720,	400,	23,	// Guard.
+	882,	892,	1,	// Abraham.
+	881,	892,	2,	// Elizabeth.
+	403,	892,	3,	// Batlin.
+	482,	892,	3,	// Batlin.
+	805,	892,	4,	// Forksis.
+	506,	892,	19	// Hook.
 	};
 
 /*
