@@ -255,7 +255,7 @@ void Barge_object::gather
 	(
 	)
 	{
-	objects.truncate(perm_count);	// Start fresh.
+	objects.resize(perm_count);	// Start fresh.
 					// Get footprint in tiles.
 	Rectangle foot = get_tile_footprint();
 	int lift = get_lift();		// How high we are.
@@ -334,7 +334,7 @@ void Barge_object::finish_move
 	)
 	{
 	set_center();			// Update center.
-	int cnt = objects.get_cnt();	// We'll move each object.
+	int cnt = objects.size();	// We'll move each object.
 	for (int i = 0; i < cnt; i++)	// Now add them back in new location.
 		{
 		Game_object *obj = get_object(i);
@@ -408,7 +408,7 @@ void Barge_object::turn_right
 	Game_object::move(rot.tx, rot.ty, rot.tz);
 	swap_dims();			// Exchange xtiles, ytiles.
 	dir = (dir + 1)%4;		// Increment direction.
-	int cnt = objects.get_cnt();	// We'll move each object.
+	int cnt = objects.size();	// We'll move each object.
 					// But 1st, remove & save new pos.
 	Tile_coord *positions = new Tile_coord[cnt];
 	for (int i = 0; i < cnt; i++)
@@ -443,7 +443,7 @@ void Barge_object::turn_left
 	Game_object::move(rot.tx, rot.ty, rot.tz);
 	swap_dims();			// Exchange xtiles, ytiles.
 	dir = (dir + 3)%4;		// Increment direction.
-	int cnt = objects.get_cnt();	// We'll move each object.
+	int cnt = objects.size();	// We'll move each object.
 					// But 1st, remove & save new pos.
 	Tile_coord *positions = new Tile_coord[cnt];
 	for (int i = 0; i < cnt; i++)
@@ -475,7 +475,7 @@ void Barge_object::turn_around
 	Tile_coord rot = Rotate180(gwin, this, xtiles, ytiles, center);
 	Game_object::move(rot.tx, rot.ty, rot.tz);
 	dir = (dir + 2)%4;		// Increment direction.
-	int cnt = objects.get_cnt();	// We'll move each object.
+	int cnt = objects.size();	// We'll move each object.
 					// But 1st, remove & save new pos.
 	Tile_coord *positions = new Tile_coord[cnt];
 	for (int i = 0; i < cnt; i++)
@@ -559,7 +559,7 @@ void Barge_object::move
 	Game_object::move(newtx, newty, newlift);
 					// Get deltas.
 	int dx = newtx - old.tx, dy = newty - old.ty, dz = newlift - old.tz;
-	int cnt = objects.get_cnt();	// We'll move each object.
+	int cnt = objects.size();	// We'll move each object.
 					// But 1st, remove & save new pos.
 	Tile_coord *positions = new Tile_coord[cnt];
 	int i;
@@ -721,7 +721,7 @@ void Barge_object::elements_read
 	)
 	{
 #if 0
-	perm_count = objects.get_cnt();
+	perm_count = objects.size();
 #endif
 	perm_count = 0;			// So we don't get haystack!
 	complete = 1;

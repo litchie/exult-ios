@@ -35,7 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Barge_object : public Container_game_object, public Time_sensitive
 	{
-	Vector objects;			// All objects in/on barge.
+	GOVector objects;			// All objects in/on barge.
 	int perm_count;			// Counts permanent parts of barge,
 					//   which proceed those placed on it.
 	unsigned char xtiles, ytiles;	// Tiles covered (when vertical).
@@ -47,7 +47,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	PathFinder *path;		// For traveling.
 	Tile_coord center;		// Center of barge.
 	Game_object *get_object(int i)
-		{ return (Game_object *) objects.get(i); }
+		{ return objects.at(i); }
 	void swap_dims();
 	Rectangle get_tile_footprint();
 	void set_center();

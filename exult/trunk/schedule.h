@@ -137,7 +137,7 @@ public:
  */
 class Patrol_schedule : public Schedule
 	{
-	Vector paths;			// Each 'path' object.
+	GOVector paths;			// Each 'path' object.
 	int pathnum;			// # of next we're heading towards.
 public:
 	Patrol_schedule(Actor *n)
@@ -255,8 +255,8 @@ class Waiter_schedule : public Schedule
 	Tile_coord startpos;		// Starting position.
 	Actor *customer;		// Current customer.
 	Slist customers;		// List of customers.
-	Vector prep_tables;		// Prep. tables.
-	Vector eating_tables;		// Tables with chairs around them.
+	GOVector prep_tables;		// Prep. tables.
+	GOVector eating_tables;		// Tables with chairs around them.
 	void get_customer();
 	void find_tables(int shapenum);
 	int find_serving_spot(Tile_coord& spot);
