@@ -875,28 +875,9 @@ void Actor::set_property
 	int val
 	)
 	{
-	if (prop == health)
-		{
-		if (((party_id != -1) || (npc_num == 0)) && 
+	if (prop == health && ((party_id != -1) || (npc_num == 0)) && 
 							god_mode && val < 1)
-			return;
-		int oldhp = properties[(int) health];
-		int maxhp = properties[(int) strength];
-		properties[(int) health] = val;
-		if (val < oldhp)	// Losing points?
-			{
-			Game_window *gwin = Game_window::get_game_window();
-				
-			if (this == gwin->get_main_actor() && val < maxhp/8)
-				{	// Flash red if Avatar badly hurt.
-				if (rand()%2)
-					gwin->flash_palette_red();
-				if (Actor::is_dead_npc())
-					die();
-				}
-			}
-		return;			// All done in this case.
-		}
+		return;
 	if (prop >= 0 && prop < 12)
 		if (prop == (int) exp)
 			{		// Experience?  Check for new level.
@@ -908,6 +889,30 @@ void Actor::set_property
 			}
 		else
 			properties[prop] = (short) val;
+	}
+
+/*
+ *	This method should be called to decrement health from attacks, traps.
+ */
+
+void Actor::reduce_health
+	(
+	int delta			// # points to lose.
+	)
+	{
+	if (god_mode && ((party_id != -1) || (npc_num == 0)))
+		return;
+	int oldhp = properties[(int) health];
+	int maxhp = properties[(int) strength];
+	int val = oldhp - delta;
+	properties[(int) health] = val;
+	Game_window *gwin = Game_window::get_game_window();
+	if (this == gwin->get_main_actor() && val < maxhp/8)
+					// Flash red if Avatar badly hurt.
+		if (rand()%2)
+			gwin->flash_palette_red();
+	if (Actor::is_dead_npc())
+		die();
 	}
 
 /*
@@ -1358,18 +1363,17 @@ int Actor::figure_hit_points
 	int oldhealth = properties[(int) health];
 	int maxhealth = properties[(int) strength];
 
-	if (instant_death)
-		hp = properties[(int) health] + properties[(int) strength];	//instant death
-	
-	properties[(int) health] -= hp;	// Subtract from health.
+	if (instant_death)		//instant death
+		hp = properties[(int) health] + properties[(int) strength];
+	int newhp = oldhealth - hp;	// Subtract from health.
 
-	if (oldhealth >= maxhealth/2 && properties[(int) health] <
-					maxhealth/2 && rand()%3 != 0)
+	if (oldhealth >= maxhealth/2 && newhp < maxhealth/2 && rand()%3 != 0)
 					// A little oomph.
 		if (instant_death)
 			say("\"Cheater!\"");
 		else
 			say(first_ouch, last_ouch);
+	reduce_health(hp);
 	cout << "Attack damage was " << hp << " hit points, leaving " << 
 		properties[(int) health] << " remaining" << endl;
 	return hp;
