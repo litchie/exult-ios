@@ -1353,12 +1353,15 @@ USECODE_INTRINSIC(display_area)
 			{ x = 0; w = gwin->get_width(); }
 		if (h > gwin->get_height())
 			{ y = 0; h = gwin->get_height(); }
+		int save_dungeon = gwin->is_in_dungeon();
+		gwin->set_in_dungeon(0);	// Disable dungeon.
 					// Paint game area.
 		gwin->paint_map_at_tile(x, y, w, h, tx - tw/2, ty - th/2, 4);
 					// Paint sprite #10 (black gate!)
 					//   over it, transparently.
 		sman->paint_shape(topx + sprite->get_xleft(),
 				topy + sprite->get_yabove(), sprite, 1);
+		gwin->set_in_dungeon(save_dungeon);
 		gwin->show();
 					// Wait for click.
 		Get_click(x, y, Mouse::hand);
