@@ -1,3 +1,8 @@
+2000-07-14  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* gamewin.cc: Don't show eggs by default. Should do the same for
+	paths.
+
 2000-07-13  Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* titles.cc: Text under Guardian's speech and Guardian sinking back

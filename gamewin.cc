@@ -77,7 +77,7 @@ Game_window::Game_window
 	    scrollty(136*tiles_per_chunk), 	// Start in Trinsic (BG).
 	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
 	    dragging(0), dragging_save(0),
-	    skip_lift(16), paint_eggs(1), debug(0)
+	    skip_lift(16), paint_eggs(0), debug(0)
 	{
 	game_window = this;		// Set static ->.
 	if (!shapes.is_good())
