@@ -56,7 +56,8 @@ public:
 		{ volume_used += delta; }
 					// Room for this object?
 	int has_room(Game_object *obj) const
-		{ return obj->get_volume() + volume_used <= get_max_volume(); }
+		{ return get_max_volume() <= 0 || 
+			obj->get_volume() + volume_used <= get_max_volume(); }
 					// Remove an object.
 	virtual void remove(Game_object *obj);
 					// Add an object.
