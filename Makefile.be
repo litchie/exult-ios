@@ -27,9 +27,9 @@ MAIN_OBJS=actions.o actorio.o actors.o args.o delobjs.o drag.o effects.o \
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
 # unused: xmain.o
-# MIDI_DRV_OBJS=win_MCI.o
-# unused: KMIDI.o Timidity_binary.o forked_player.o
-AUDIO_OBJS=Audio.o Midi.o Mixer.o SDL_mapping.o
+MIDI_DRV_OBJS=
+# unused: KMIDI.o Timidity_binary.o forked_player.o win_MCI.o
+AUDIO_OBJS=Audio.o Midi.o Mixer.o SDL_mapping.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 FLIC_OBJS=playfli.o
 FILE_OBJS=U7file.o Flex.o IFF.o Table.o
@@ -39,14 +39,13 @@ OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OB
 $(EXEC) : $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
-# This should work with the Cygwin rm
 clean:
 	rm -f $(OBJS) $(EXEC)
 
 install:
-	strip $(EXEC) -o e:/games/ultima7/$(EXEC)
+	strip $(EXEC)
 
 run:
-	start $(EXEC)
+	./$(EXEC)
 
 
