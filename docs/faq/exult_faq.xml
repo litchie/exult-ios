@@ -2,8 +2,64 @@
 
 <!DOCTYPE faqs SYSTEM "faqs.dtd">
 
-<faqs title="Exult" changed="21 March 2001(GMT)">
+<faqs title="Exult" changed="02 May 2001(GMT)">
 
+	<section title="Changes to the FAQ">
+	
+		<faq name="02052001">
+		
+			<question>02 May 2001</question>
+			
+			<answer>
+
+				<para>
+				"0. Changes to the FAQ" added on popular demand and began numbering of XSL style sheet
+				
+				at "0" with a lot of help from Fingolfin (I don't know much about XSL).<br/>
+				
+				"<ref target="latest_version"/> What is latest version of Exult?" updated to Alpha3<br/>
+				
+				"<ref target="what_platforms"/> On what platform does Exult run?" added OpenBSD, FreeBSD, Solaris.<br/>
+				
+				"<ref target="u7_versions"/> Does Exult work on all versions of the game?" added info that a Spanish version of BG
+				
+				exists and that SI was English-only.<br/>
+				
+				"<ref target="si_support"/> How about Serpent Isle?" updated.<br/>
+				
+				"<ref target="play_through_u7"/> Can you play through U7 yet?" moved from Section 1 to 2.<br/>
+				
+				"<ref target="old_savegames"/> Do savegames from the original work in Exult?" added for those that
+				
+				don't bother with the readme file.<br/>
+				
+				"<ref target="exult_config"/> What is it with the exult.cfg file?" added gamma and volume_curve settings, also aplied
+				
+				changes made necessary by the new game menu in snapshots later than 29.04.2001.<br/>
+				
+				"<ref target="sound_turnoff"/> How to turn of audio?" changed to point to new game menu.<br/>
+				
+				"<ref target="scaler"/> What does the Scale option mean?" added some more info from the News file as people
+				
+				don't seem to read it.<br/>
+				
+				"<ref target="exult_keys"/> What are the keys used in Exult?" added <key>Esc</key> for game menu.<br/>
+				
+				"<ref target="other_improvements"/> Any other improvements/features?" praise to the new game menu and savegame box.<br/>
+				
+				"<ref target="disable_improvements"/> How do I disable all improvements?" added as this was asked on Jackchaos
+				
+				and might interest others (don't see why actually).<br/>
+				
+				</para>
+				
+			</answer>
+
+		</faq>
+		
+	</section>
+	
+	
 	<section title="Introduction">
 
 		<faq name="whatis_exult">
@@ -131,17 +187,16 @@
 			<question>What is a snapshot? Are these screen shots or what?</question>
 
 			<answer>
-
 			    <para>
-
+			    
 				The snapshot is the newest source code of the program. It is updated almost
 
 				daily, sometimes twice a day. There is information on how to build your
 
 				own binary of the source but there is also the newest pre-compiled Windows binary.
-
+				
 				</para>
-
+				
 			</answer>
 
 		</faq>
@@ -222,7 +277,7 @@
 
 				<para>
 
-				The current official release is V0.91 Alpha2. See also <ref target="whereis_exult"/>
+				The current official release is V0.92 Alpha3. See also <ref target="whereis_exult"/>
 
 				to learn where to get the latest version.
 
@@ -239,29 +294,6 @@
 		</faq>
 
 
-
-		<faq name="play_through_u7">
-
-			<question>Can you play through U7 yet?</question>
-
-			<answer>
-
-				<para>
-
-				You can play through the Black Gate/Forge of Virtue without cheating and
-
-				plotholes<br/>
-
-				SI is partially playable starting with V0.91 Alpha2.
-
-				</para>
-
-			</answer>
-
-		</faq>
-
-
-
 		<faq name="what_platforms">
 
 			<question>On what platform does <Exult/> run?</question>
@@ -274,7 +306,9 @@
 
 				any platform that SDL supports. Right now the source can be compiled
 
-				in Linux/i386, Linux/Alpha, MacOS, BeOS and Win32 (Windows 9x/ME/NT/2000).
+				in Linux/i386, Linux/Alpha, MacOS, OpenBSD, FreeBSD, Solaris, BeOS and 
+				
+				Win32 (Windows 9x/ME/NT/2000).
 
 				</para>
 
@@ -285,23 +319,20 @@
 	</section>
 
  
-
- 
-
-	<section title="Exult and Ultima 7">
+ 	<section title="Exult and Ultima 7">
 
 		<faq name="u7_needed">
 
 			<question>Do I need Ultima 7?</question>
-
+			
 			<answer>
-
+				
 				<para>
-
+				
 				Yes. Exult won't work without the original files.
-
+				
 				</para>
-
+				
 			</answer>
 
 		</faq>
@@ -324,9 +355,11 @@
 
 				However there are reported problems with the localized versions of the
 
-				game (French and German). Conversation threads don't seem to skip to the
+				game (French, German and Spanish). Conversation threads don't seem to skip to the
 
-				next line in the proper places and therefore are unreadable in some cases.
+				next line in the proper places and therefore are unreadable in some cases. SI
+				
+				was only published in English so no localization problems with that.
 
 				</para>
 
@@ -336,7 +369,7 @@
 
 				No work has been done for the german version, due to lack of testers. If
 
-				you have the german version, and want it to run, contact us.
+				you have the German or Spanish version, and want it to run, contact us.
 
 				</para>
 
@@ -356,7 +389,7 @@
 
 				talk to some people... Paperdolls are working now and plotwise you will
 
-				get as far as the <q>Knight's Test</q>.
+				get quite far but you certainly won't be able to play through it yet.
 
 				</para>
 
@@ -408,6 +441,45 @@
 
 		</faq>
 
+		<faq name="play_through_u7">
+
+			<question>Can you play through U7 yet?</question>
+
+			<answer>
+
+				<para>
+
+				You can play through the Black Gate/Forge of Virtue without cheating and
+
+				plotholes.<br/>
+
+				SI is partially playable since V0.91 Alpha2.
+
+				</para>
+
+			</answer>
+
+		</faq>
+
+		<faq name="old_savegames">
+		
+			<question>Do savegames from the original work in Exult?</question>
+
+			<answer>
+
+				<para>
+
+				Savegames that were made with the original Ultima 7 or U7Run don't work
+				
+				with Exult. You have to start a new game when you begin playing with Exult.
+				
+				Sorry! 
+
+				</para>
+
+			</answer>
+
+		</faq>		
 		<faq name="u7_download">
 
 			<question>Where do I find Ultima 7 on the net to download?</question>
@@ -438,13 +510,11 @@
 
  
 
- 
-
 	<section title="Configurations, Resolution, Music">
 
 		<faq name="exult_config">
 
-			<question>What is it with the Exult.cfg file?</question>
+			<question>What is it with the exult.cfg file?</question>
 
 			<answer>
 
@@ -502,15 +572,7 @@
 
 					<line>&lt;game&gt;</line>
 
-					<line>&lt;blackgate&gt;</line>
-
-					<line>&lt;waves&gt;</line>
-
-					<line>./data/jmsfx.flx
-
-						<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment></line>
-
-					<line>&lt;/waves&gt;</line>
+					<line>&lt;blackgate&gt;</line>					
 
 					<line>&lt;path&gt;</line>
 
@@ -531,19 +593,19 @@
 						<comment>**configure custom keybindings or leave the (default) - see <ref target="exult_keys"/></comment></line>
 
 					<line>&lt;/keys&gt;</line>
+					
+					<line>&lt;waves&gt;</line>
+					
+					<line>./data/jmsfx.flx
+					
+					<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment></line>
+					
+					<line>&lt;/waves&gt;</line>					
 
 					<line>&lt;/blackgate&gt;</line>
 
 					<line>&lt;serpentisle&gt;</line>
-
-					<line>&lt;waves&gt;</line>
-
-					<line>./data/jmsfx.flx
-
-						<comment>**optional setting see <ref target="wave_sfx"/> for configuration</comment></line>
-
-					<line>&lt;/waves&gt;</line>
-
+					
 					<line>&lt;path&gt;</line>
 
 					<line>.</line>
@@ -592,7 +654,7 @@
 
 					<line>no
 
-						<comment>**this skips the intro when you started a new game; Iolo talks to
+						<comment>**this skips the intro in BG when you started a new game; Iolo talks to
 
 						Peter, the Avatar appears, Iolo talks to you, the mayor talks to you and so on.</comment></line>
 
@@ -618,7 +680,9 @@
 
 						<comment>**enable/disable all audio - this takes precedence over the 
 
-						other audio settings</comment></line>
+						other audio settings (you can change this in game via
+
+						<key>Esc</key> in snapshots dated 29.04.2001 or later - the setting is saved)</comment></line>
 
 					<line>&lt;/enabled&gt;</line>
 
@@ -630,7 +694,7 @@
 
 						<comment>**enable/disable sound effects (you can change this in game via
 
-						<key>s</key> - the setting is saved)</comment></line>
+						<key>s</key> (or <key>Esc</key> in snapshots dated 29.04.2001 or later) - the setting is saved)</comment></line>
 
 					<line>&lt;/enabled&gt;</line>
 
@@ -638,9 +702,11 @@
 
 					<line>gs
 
-						<comment>**you can choose between <q>gm</q>, <q>gs</q> and <q>none</q> -
+						<comment>**you can choose between <q>gs</q> and <q>none</q> -
 
-						see <ref target="sound_available"/></comment></line>
+						try out which sounds best for you when playing sfx through midi -
+						
+						see <ref target="sound_horrible"/></comment></line>
 
 					<line>&lt;/convert&gt;</line>
 
@@ -654,7 +720,7 @@
 
 						<comment>**enable/disable midi effects (you can change this in game via
 
-						<key>s</key> - the setting is saved)</comment></line>
+						<key>s</key> (or <key>Esc</key> in snapshots dated 29.04.2001 or later) - the setting is saved)</comment></line>
 
 					<line>&lt;/enabled&gt;</line>
 
@@ -662,13 +728,19 @@
 
 					<line>gm
 
-						<comment>**you can choose between <q>gm</q>,<q>gs</q>,<q>gs127</q>,
+						<comment>**you can choose between <q>gm</q>,<q>gs</q>,<q>gs127</q>
 
-						<q>gs127drum</q> and <q>none</q> - see <ref target="sound_available"/>
-
-						</comment></line>
+						and <q>none</q> - try out which sounds best for you</comment></line>
 
 					<line>&lt;/convert&gt;</line>
+					
+					<line>&lt;volume_curve&gt;</line>
+					
+   					<line>1.000000
+   						
+   						<comment>**set volume (kind of at least, best don't change)</comment></line>
+   						
+   					<line>&lt;/volume_curve&gt;</line>
 
 					<line>&lt;/midi&gt;</line>
 
@@ -680,7 +752,7 @@
 
 						<comment>**enable/disable speech (you can change this in game via
 
-						<key>s</key> - the setting is saved)</comment></line>
+						<key>s</key> (or <key>Esc</key> in snapshots dated 29.04.2001 or later) - the setting is saved)</comment></line>
 
 					<line>&lt;/enabled&gt;</line>
 
@@ -734,9 +806,33 @@
 
 					<line>SuperEagle
 
-						<comment>**choose different scalers here: SuperEagle, 2xSaI, bilinear, point, interlaced.</comment></line>
+						<comment>**choose different scalers here: SuperEagle, 2xSaI, bilinear, point, interlaced - see <ref target="scaler"/></comment></line>
 
 					<line>&lt;/scale_method&gt;</line>
+					
+					<line>&lt;gamma&gt;
+						
+						<comment>**set gamma levels to adjust brightness, same as +/- in game</comment></line>
+					
+					<line>&lt;red&gt;</line>
+   					
+   					<line>1</line>
+   					
+   					<line>&lt;/red&gt;</line>
+   					
+   					<line>&lt;green&gt;</line>
+   					
+   					<line>1</line>
+   					
+   					<line>&lt;/green&gt;</line>
+   					
+   					<line>&lt;blue&gt;</line>
+   					
+   					<line>1</line>
+   					
+   					<line>&lt;/blue&gt;</line>
+  					
+  					<line>&lt;/gamma&gt;</line>
 
 					<line>&lt;/video&gt;</line>
 
@@ -860,7 +956,7 @@
 
 				Yes. Music plays via MIDI and sounds quite like the original. Sound
 
-				effects also play via MIDI. Even speech is supported.<br/>
+				effects either play via digital (.wav) SFX  or also via Midi. Even speech is supported.<br/>
 
 				You can change the way the music and the sound effects play via the
 
@@ -871,9 +967,7 @@
 			</answer>
 
 		</faq>
-
 		
-
 		<faq name="sound_horrible">
 
 			<question>The sound effects sound horrible</question>
@@ -894,15 +988,17 @@
 
 					work properly you need the proper soundfont selected for your card.
 
-					Not every soundcard supports soundfont-managing. If your card doesn't 
-
-					support soundfonts or you want to hear better sfx you are much better off 
-
-					when you select wave sfx. The next section <ref target="wave_sfx"/> covers that!
-
-					Creative's AWE and Live! series do support it. If you have on of those 
-
-					cards this is how you do it (description only for Win32):
+					Not every soundcard supports soundfont-managing. Creative's AWE and Live!
+					
+					series do support it.<br/>
+					
+					If your card doesn't or you want to hear better sfx you are much better off 
+					
+					when you select wave sfx. The next section <ref target="wave_sfx"/> covers that!<br/>
+					
+					If you have on of those cards that do allow soundfont-managing this is how you
+					
+					should get some decent sound out of it (description only for Win32):
 
 				</para>
 
@@ -951,47 +1047,44 @@
 			</answer>
 
 		</faq>
-
-		<faq name="wave_sfx">
+	<faq name="wave_sfx">
 
 			<question>How do I enable Exult to play wave Sfx?</question>
 
 			<answer>
 
 				<para>
-
+				
 				You have to set a path to the sfx pack in the waves settings in exult.cfg (see <ref target="exult_config"/>).
-
+				
 				If you leave this blank the sfx will be played through midi. For now there
-
+				
 				is only one pack and as the sfx in BG and SI varies a bit it's probably better
-
+				
 				if you don't configure SI to use it (leave the wave settings blank so the sfx
-
+				
 				is played throug midi).
-
+				
 				</para>
-
+				
 				<para> 
-
+				
 				The sfx pack made by Joseph Morris can be found at 
-
+				
 				<extref target="http://ftp1.sourceforge.net/exult/jmsfx.zip"/> (4.55 MB).
-
+				
 				He recorded the original 114 sfx used in Black Gate which must
-
+				
 				have been a lot of work. If your soundcard doesn't support soundfonts
-
+				
 				this pack is a <q>must-have</q>. Enjoy!
-
+				
 				</para>
-
+			
 			</answer>
 
 		</faq>
-
 				
-
 		<faq name="sound_turnoff">
 
 			<question>How to turn of audio?</question>
@@ -1000,7 +1093,9 @@
 
 				<para>
 
-				Press <key>s</key> to turn on/off Music, Speech and SoundFX or use change the settings in exult.cfg - see <ref target="exult_config"/>.
+				Press <key>s</key> (or <key>Esc</key> in snapshots dated 29.04.2001 or later) to turn
+				
+				on/off Music, Speech and SoundFX or change the settings in exult.cfg - see <ref target="exult_config"/>.
 
 				</para>
 
@@ -1028,7 +1123,15 @@
 
 					The scalers also work with higher resolutions. To change the scaling method either
 
-					use the Exult menu or change your exult.cfg - see <ref target="exult_config"/>
+					use the Exult menu or change your exult.cfg - see <ref target="exult_config"/>.
+					
+					"2xSaI" is the new scaler, "bilinear" is the old one, "point" duplicates the pixels,
+					
+					"interlaced" is the same as "point" except misses every other line, "SuperEagle" is
+					
+					another scaler by Derek (the author of 2xSaI). Try them out to see how they look and which
+					
+					you like best.
 
 				</para>
 
@@ -1078,9 +1181,13 @@
 
 				<para>
 
-				To change your key bindings first edit the file defaultkeys.txt in your Exult directory, 					change the bindings and save the file (e.g. as my_keys.txt). Now you have to change exult.cfg 				to use that file. You can even choose if you want to change your key bindings for BG or SI.
+				To change your key bindings first edit the file defaultkeys.txt in your Exult directory,
+				
+				change the bindings and save the file (e.g. as my_keys.txt). Now you have to change exult.cfg
+				
+				to use that file. You can even choose if you want to change your key bindings for BG or SI.
 
-				See the keys settings at <ref target="exult_config"/>. Change (default) 				to my_keys.txt.
+				See the keys settings at <ref target="exult_config"/>. Change (default) to my_keys.txt.
 
 				</para>
 
@@ -1088,7 +1195,9 @@
 
 				During the game press <key>h</key> to see a help
 
-				screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen shows the 				correct key combination for MacOS).
+				screen with all the keys (for MacOS change Alt for Cmd - the in-game help screen shows the
+				
+				correct key combination for MacOS).
 
 				</para>
 
@@ -1125,6 +1234,8 @@
 					<keydesc name="Ctrl-s">Quick save</keydesc>
 
 					<keydesc name="s">Show save/load box</keydesc>
+					
+					<keydesc name="Esc">Show Game menu box and closes all open boxes</keydesc>
 
 					<keydesc name="t">Target, instead of double clicking, shows a cursor and pauses the game until you click on something</keydesc>
 
@@ -1234,7 +1345,9 @@
 
 					<keydesc name="Ctrl-Alt-p">Pick pocket cheat, when enabled double-clicking on a NPC displays the actors inventory</keydesc>
 
-					<keydesc name="Ctrl-n">NPC number, When enabled, clicking an a NPC will display their number instead of their name. Usefull for the cheat screen.</keydesc>
+					<keydesc name="Ctrl-n">NPC number, When enabled, clicking an a NPC will display their number instead of their name.
+					
+					Usefull for the cheat screen.</keydesc>
 
 				</keytable>
 
@@ -1247,13 +1360,13 @@
 			<question>Do the various cheat rooms work?</question>
 
 			<answer>
-
+				
 				<para>
 
 				Yes.
 
 				</para>
-
+				
 			</answer>
 
 		</faq>
@@ -1265,11 +1378,11 @@
 			<answer>
 
 				<para>
-
+				
 				Just keep on looking for them :-)
-
+				
 				</para>
-
+				
 			</answer>
 
 		</faq>
@@ -1281,11 +1394,11 @@
 			<answer>
 
 				<para>
-
+				
 				Yes. The sail of ships look odd sometimes but otherwise these means of
 
 				transportations work quite well.
-
+				
 				</para>
 
 			</answer>
@@ -1351,6 +1464,24 @@
 			<answer>
 
 				<para>
+				
+				In recent snapshots (since 29th of April) a new game menu was added with an
+				
+				improved sound settings box and a very much improved (<strong>awesome</strong>)
+				
+				savegame box. This allows you much more savegames than the original (you should
+				
+				run out of disc space before you run out of savegame slots), shows a screenshot of
+				
+				the location you saved at, the members of your party, your stats, game time and the 
+				
+				date you actually saved. The game menu is opened via <key>Esc</key> and the save
+				
+				game box is opened either via the game menu or the <key>s</key> key.
+				
+				</para>
+				
+				<para>
 
 				In exult, you can still move your party even if there is a box/body/stats
 
@@ -1364,6 +1495,56 @@
 
 		</faq>
 
+		<faq name="disable_improvements">
+			
+			<question>
+				
+				How do I disable all improvements?
+			
+			</question>
+			
+			<answer>
+
+				<para>
+				
+				To get an Ultima 7 that looks and behaves as close to the original as possible there
+				
+				are several things to do (though I wonder why you'd want to do that):
+				
+				</para>
+				
+				<ul>
+				
+				<li>make custom keybindings files (see <ref target="exult_keys"/>) in which you disable 
+				
+				all the keys that were not in the original for Black Gate and Serpents Isle. 
+				
+				In snapshots dated 29.04.2001 or later you have to assign <key>s</key> to old_file_gump
+				
+				to enable the old savegame menu (the line in your custom keybindings file should look like:
+				
+				S old_file_gump)</li>
+				
+				<li>Edit the exult.cfg file to point to those custom keys.</li>
+				
+				<li>Don't set the path to the Serpent Isle files (see <ref target="path_config"/>) and put
+				
+				SI and a second copy of Exult in a seperate directory (note: you can no longer launch both 
+				
+				BG and SI from the same exult.exe). This disables SI paperdolls in BG.</li>
+				
+				<li>Edit the exult.cfg to use the resolution of 320x200, to run in full screen and disable scalers.</li>
+				
+				<li>The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot be altered.
+				
+				Sorry!</li> 
+				
+				</ul>
+				
+			</answer>
+		
+		</faq>
+			
 		<faq name="exult_engine">
 
 			<question>
@@ -1399,10 +1580,7 @@
 	</section>
 
   
-
- 
-
-	<section title="Bugs, known issues, and not yet implemented features">
+  	<section title="Bugs, known issues, and not yet implemented features">
 
 		<faq name="known_bugs">
 
@@ -1437,9 +1615,7 @@
 					means, so hit points and damage don't work as well as in the original
 
 					game.</li>
-
 					
-
 				</ul>
 
 			</answer>
@@ -1456,9 +1632,6 @@
 
 	</section>
 
-
-
- 
 
 	<section title="Questions and Answers, Bugreports">
 
@@ -1494,9 +1667,9 @@
 
 				<para>
 
-				Or go to the Ultima Dragons homepage and find your way from there
-
-				<extref target="http://www.udic.org"/> (this is an online Ultima fanclub)
+				Or go to the Ultima Dragons homepage <extref target="http://www.udic.org"/> and find your
+				
+				way from there (this is an online Ultima fanclub)
 
 				</para>
 
@@ -1536,9 +1709,6 @@
 
 	</section>
 
-
-
- 
 
 	<section title="Links and Thanks">
 

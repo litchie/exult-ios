@@ -58,7 +58,8 @@
 						<a href="#{generate-id(key('section_ref',@title))}">
 							<xsl:number level="multiple"
 										count="section"
-										format="1. "/>
+										format="1. "
+										value="position() -1"/>
 								<xsl:value-of select="@title"/>
 						</a>
 						<br/>
@@ -66,7 +67,9 @@
 							<a href="#{generate-id(key('faq_ref',@name))}">
 								<xsl:number level="multiple"
 											count="section|faq"
-											format="1.1 "/>
+											format="1."
+											value="count(ancestor::section/preceding-sibling::section)"/>									
+								<xsl:number format="1. "/>
 								<xsl:apply-templates select="question"/>
 							</a>
 							<br/>
@@ -133,7 +136,9 @@
 	<table width="100%">
 		<tr><th align="left">
 			<a name="{generate-id()}">
-				<xsl:number format="1. "/><xsl:value-of select="@title"/>
+				<xsl:number format="1. "
+				value="position() -1"/>
+				<xsl:value-of select="@title"/>
 			</a>
 		</th></tr>
 		<xsl:apply-templates select="faq"/>
@@ -144,9 +149,11 @@
 <!-- FAQ Entry Template -->
 <xsl:template match="faq">
 	<xsl:variable name = "num_idx">
-		<xsl:number level="multiple"
-					count="section|faq"
-					format="1.1 "/>
+		<xsl:number level="single"
+					count="section"					
+					format="1."
+					value="count(ancestor::section/preceding-sibling::section)"/>									
+		<xsl:number format="1. "/>		
 	</xsl:variable> 
 	<tr><td><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td></tr>
 	<tr><td><strong>
@@ -177,7 +184,7 @@
 				<xsl:value-of select="."/>
 		</xsl:when>
 		<xsl:otherwise>
-			<xsl:value-of select="count(key('faq_ref',@target)/parent::section/preceding-sibling::section)+1"/>
+			<xsl:value-of select="count(key('faq_ref',@target)/parent::section/preceding-sibling::section)"/>
 			<xsl:text>.</xsl:text>
 			<xsl:value-of select="count(key('faq_ref',@target)/preceding-sibling::faq)+1"/>
 		</xsl:otherwise>
