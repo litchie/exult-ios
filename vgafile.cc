@@ -29,6 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "imagewin.h"
 #include "vgafile.h"
 
+#if 1	/* For debugging. */
+#include <iomanip.h>
+#include "items.h"
+#endif
+
 /*
  *	+++++Debugging
  */
@@ -196,17 +201,6 @@ void Shape_frame::create_rle
 	unsigned char *out = buf;
 	int newx;			// Gets new x at end of a scan line.
 	for (int y = 0; y < h; y++)	// Go through rows.
-#if 0	/* ++++Testing. */
-		{
-		Write2(out, w << 1);
-					// Write position.
-		Write2(out, 0 - xleft);
-		Write2(out, y - yabove);
-		memcpy(out, pixels, w);
-		pixels += w;
-		out += w;
-		}
-#else
 		for (int x = 0; (x = Skip_transparent(pixels, x, w)) < w; 
 								x = newx)
 			{
@@ -258,7 +252,6 @@ void Shape_frame::create_rle
 					}
 				}
 			}
-#endif
 	Write2(out, 0);			// End with 0 length.
 	int datalen = out - buf;	// Create buffer of correct size.
 #ifdef DEBUG
@@ -576,10 +569,6 @@ Shape_frame *Shape::read
 					// Get location, length.
 	shapeoff = Read4(shapes);
 	unsigned long shapelen = Read4(shapes);
-#if 0
-	if (shapenum == 465)
-		cout << "Shape 465 (iolo)" << endl;	//++++++
-#endif
 					// Read it in and get frame count.
 	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
@@ -724,7 +713,6 @@ int Shapes_vga_file::read_info
 		ready.seekg(6, ios::cur);// Skip 9 bytes.
 		}
 	ready.close();
-#if 1	/* ++++Uncomment when tested. */
 	ifstream armor;
 	if (!U7open(armor, ARMOR))
 		return (0);
@@ -744,17 +732,44 @@ int Shapes_vga_file::read_info
 	for (int i = 0; i < cnt; i++)
 		{
 		unsigned short shapenum = Read2(weapon);
-		short points = Read2(weapon);
+		short unknown = Read2(weapon);
 		unsigned short ammoshape = Read2(weapon);
 		if (ammoshape == shapenum)
 			ammoshape = 0;
-		else if (ammoshape == points)
-			points = 0;
-		weapon.seekg(15, ios::cur);	// Skip unknown.
-		info[shapenum].weapon = new Weapon_info(-points, ammoshape);
+		int damage = Read1(weapon);
+#if 0
+		cout << "Weapon '" << item_names[shapenum] << 
+			"': -chance-to-hit?? = "
+			<< dec << points << ", damage = " 
+				<< damage << endl;
+		for (int j = 0; j < 14; j++)
+			if (j == 6)
+				{
+				j++;
+				cout << endl << "Usecode = " << hex << 
+					" 0x" << setw(4) << Read2(weapon)
+					<< endl << 
+					"                            ";
+				}
+			else
+				cout << hex << 
+				" 0x" << setfill(0x30) << setw(2) 
+					<< (int) Read1(weapon);
+		cout << endl;
+#else
+		weapon.seekg(4, ios::cur);
+		unsigned char special = Read1(weapon);
+		Read1(weapon);		// Skip.
+		short usecode = Read2(weapon);
+		weapon.seekg(6, ios::cur);	// Skip unknown.
+#endif
+//		cout << "Read weapon '" << item_names[shapenum] <<
+//			"' with damage " << damage << endl;
+		info[shapenum].weapon = new Weapon_info(damage, special,
+							ammoshape, usecode);
 		}
 	weapon.close();	
-#endif
+
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;
 	unsigned short offsets[1024];

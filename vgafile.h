@@ -168,15 +168,22 @@ public:
  */
 class Weapon_info
 	{
-	short damage;			// Damage points (positive).
+	char damage;			// Damage points (positive).
+	unsigned char special_atts;	// Poison, sleep, charm. flags.
 	short ammo;			// Shape # of ammo., or 0.
+	short usecode;			// Usecode function, or 0.
 public:
-	Weapon_info(short d, short am) : damage(d), ammo(am)
+	Weapon_info(char d, unsigned char sp, short am, short uc) 
+		: damage(d), special_atts(sp), ammo(am), usecode(uc)
 		{  }
 	int get_damage()
 		{ return damage; }
+	unsigned char get_special_atts()// Test for special damage.
+		{ return special_atts; }
 	int get_ammo()
 		{ return ammo; }
+	int get_usecode()
+		{ return usecode; }
 	};
 
 /*

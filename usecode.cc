@@ -518,10 +518,9 @@ Actor *Usecode_machine::as_actor
 	Game_object *obj
 	)
 	{
-	if (!obj ||
-	    (obj->get_npc_num() < 0 && obj != gwin->get_main_actor()))
-		return (0);
-	return ((Actor *) obj);
+	if (!obj)
+		return 0;
+	return (dynamic_cast<Actor *> (obj));
 	}
 
 /*
@@ -1937,13 +1936,16 @@ USECODE_INTRINSIC(item_say)
 USECODE_INTRINSIC(projectile_effect)
 {
 	// animate(fromitem, toitem, anim_shape_in_shapesdotvga).
-	// ???? When it reaches toitem, caller usecode is called again with
-	//   itemref = toitem, eventid=4.  Returns??}
+	// ???? When it reaches toitem, toitem is 'attacked' by anim_shape.
+	//   Returns??}
 	Game_object *from = get_item(parms[0]),
 		    *to = get_item(parms[1]);
 	if (!from || !to)
 		return Usecode_value(0);
-	gwin->add_effect(new Projectile_effect(from, to, cur_function->id,
+	Actor *attacker = as_actor(from);
+	if (!attacker)
+		return Usecode_value(0);
+	gwin->add_effect(new Projectile_effect(attacker, to,
 						parms[2].get_int_value()));
 
 	return Usecode_value(0);	// Not sure what this should be.

@@ -36,6 +36,7 @@ class Actor_action;
 class Schedule;
 class Schedule_change;
 class Monster_info;
+class Weapon_info;
 					// The range of actors' rect. gumps:
 const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
 
@@ -274,13 +275,13 @@ public:
 		{ return 0; }
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
-	virtual int get_weapon_points();	
+	virtual Weapon_info *get_weapon(int& points);	
 	virtual int is_monster()
 		{ return 0; }
 					// Hit-point algorithm:
-	int figure_hit_points(Actor *attacker);
+	int figure_hit_points(Actor *attacker, int weapon_shape);
 					// Under attack.
-	virtual void attacked(Actor *attacker);
+	virtual void attacked(Actor *attacker, int weapon_shape = 0);
 	virtual void die();		// We're dead.
 					// Don't write out to IREG file.
 	virtual void write_ireg(ostream& out)
@@ -439,7 +440,7 @@ public:
 	virtual int add(Game_object *obj, int dont_check = 0);
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
-	virtual int get_weapon_points();	
+	virtual Weapon_info *get_weapon(int& points);	
 	virtual int is_monster()
 		{ return 1; }
 	virtual void die();		// We're dead.
