@@ -77,6 +77,16 @@ EXULT_FLX_OBJECTS = \
 	data/sfx_conversion.shp \
 	data/palette_fades.shp \
 	data/defaultkeys.txt \
+	data/savegump.shp \
+	data/sav_load.shp \
+	data/sav_save.shp \
+	data/sav_delete.shp \
+	data/sav_cancel.shp \
+	data/sav_downdown.shp \
+	data/sav_down.shp \
+	data/sav_up.shp \
+	data/sav_upup.shp \
+	data/sav_slider.shp \
 	data/flx.in
 
 EXULT_BG_FLX_OBJECTS = \
