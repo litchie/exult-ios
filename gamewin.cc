@@ -77,7 +77,7 @@ Game_window::Game_window
 	    npcs(0),
 	    monster_info(0), 
 	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
-	    special_light(0), last_restore_hour(0),
+	    special_light(0), last_restore_hour(6),
 	    dragging(0), dragging_save(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    skip_lift(16), paint_eggs(0), debug(0)
