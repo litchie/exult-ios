@@ -110,6 +110,9 @@ Usecode_value& Usecode_value::operator=
 			value.array[i] = v2.value.array[i];
 		while (value.array[i++].type != end_of_array_type);
 		}
+
+	undefined = v2.undefined;
+
 	return *this;
 	}
 
@@ -120,7 +123,7 @@ Usecode_value& Usecode_value::operator=
 Usecode_value::Usecode_value
 	(
 	const char *s
-	) : type(string_type)
+	) : type(string_type), undefined(false)
 	{
 	value.str = s ? newstrdup(s) : 0; 
 	}
@@ -341,33 +344,36 @@ Usecode_value Usecode_value::operator+(const Usecode_value& v2)
 	char buf[300];
 	Usecode_value& v1 = *this;
 	Usecode_value sum(0);
-	if (v1.get_type() == Usecode_value::int_type)
+
+	if (v1.is_undefined())
+	{
+		sum = v2;
+	}
+	else if (v2.is_undefined())
+	{
+		sum = v1;
+	} 
+	else if (v1.get_type() == Usecode_value::int_type)
 	{
 		if (v2.get_type() == Usecode_value::int_type) {
 			sum = Usecode_value(v1.get_int_value()
 					+ v2.get_int_value());
 		} else if (v2.get_type() == Usecode_value::string_type) {
-			if (v1.get_int_value() != 0) {
-				snprintf(buf, 300, "%ld%s", 
-						v1.get_int_value(),
-						v2.get_str_value());
-				sum = Usecode_value(buf);
-			} else {
-				sum = v2;
-			}
+			snprintf(buf, 300, "%ld%s", 
+					v1.get_int_value(),
+					v2.get_str_value());
+			sum = Usecode_value(buf);
+		} else {
+			sum = v1;
 		}
 	}
 	else if (v1.get_type() == Usecode_value::string_type)
 	{
 		if (v2.get_type() == Usecode_value::int_type) {
-			if (v2.get_int_value() != 0) {
-				snprintf(buf, 300, "%s%ld", 
-						v1.get_str_value(),
-						v2.get_int_value());
-				sum = Usecode_value(buf);
-			} else {
-				sum = v1;
-			}
+			snprintf(buf, 300, "%s%ld", 
+				v1.get_str_value(),
+				v2.get_int_value());
+			sum = Usecode_value(buf);
 		} else if (v2.get_type() == Usecode_value::string_type) {
 			snprintf(buf, 300, "%s%s", 
 					v1.get_str_value(),
