@@ -1,3 +1,8 @@
+2001-11-27  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* npctime.cc (Npc_hunger_timer): End hunger/poison if dead.
+	* exult.cc: Fixed telescope display.
+
 2001-11-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs.cc, msvcstuff/find_nearby.h: fixed crash in SI cheat room
 

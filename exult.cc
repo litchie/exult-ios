@@ -1059,6 +1059,7 @@ void Wizard_eye
 			int ms = SDL_GetMouseState(&x, &y);
 			if (SDL_BUTTON(3) & ms)
 				Shift_wizards_eye(x/scale, y/scale);
+			gwin->set_all_dirty();
 			gwin->paint_dirty();
 					// Paint sprite over view.
 			ShapeID eye(10, 0, SF_SPRITES_VGA);
