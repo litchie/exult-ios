@@ -331,7 +331,7 @@ public:
 			window+=(l>>3);
 		return l?l:(producing?0:-1);
 		}
-	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),window(4096),producing(true),consuming(true),id(0)
+	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),window(8192),producing(true),consuming(true),id(0)
 		{
 #if DEBUG
 		mycounter=++counter;
