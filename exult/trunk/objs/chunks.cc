@@ -471,10 +471,12 @@ int Chunk_cache::is_blocked
 	// Lift 0 tests
 	if (new_lift == 0)
 	{
+		if (move_flags & MOVE_MAPEDIT)
+			return 0;	// Map-editor, so anything is okay.
 		int ter = 0;
 		Check_terrain (Game_window::get_game_window(), obj_list, 
 								tx, ty, ter);
-		if (ter & 2)	// Water
+		if (ter & 2)		// Water
 		{
 			if (move_flags & (MOVE_FLY+MOVE_SWIM))
 				return 0;
