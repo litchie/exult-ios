@@ -375,7 +375,7 @@ void Actor::write
 	char namebuf[17];		// Write 16-byte name.
 	memset(namebuf, 0, 16);
 	if (name.empty()) strncpy(namebuf, Game_object::get_name().c_str(), 16);
-	else if (name.empty()) strncpy(namebuf, name.c_str(), 16);
+	else strncpy(namebuf, name.c_str(), 16);
 	nfile.write(namebuf, 16);
 	write_contents(nfile);		// Write what he holds.
 	namebuf[16] = 0;
