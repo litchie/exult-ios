@@ -169,7 +169,7 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 #ifdef BEOS
 	TRY_MIDI_DRIVER(Be_midi)
 #endif
-#if HAVE_TIMIDITY_BIN
+#if HAVE_TIMIDITY_BIN && defined(XWIN)
 	TRY_MIDI_DRIVER(Timidity_binary)
 #endif
 #if HAVE_LIBKMIDI
