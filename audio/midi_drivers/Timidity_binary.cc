@@ -130,7 +130,7 @@ void	Timidity_binary::player(void)
 
 	audiostream->id=Timidity_binary_magic;
 	char nbuf[32];
-	sprintf(nbuf,"%ul",Audio::get_ptr()->actual.freq);
+	sprintf(nbuf,"%lu",Audio::get_ptr()->actual.freq);
 	string	s="timidity -Oru8S -id";
 	if(do_repeat)
 		s+="l";
@@ -186,7 +186,7 @@ void	Timidity_binary::sfxplayer(void)
 
 	audiostream->id=Timidity_binary_magic_sfx;
 	char nbuf[32];
-	sprintf(nbuf,"%ul",Audio::get_ptr()->actual.freq);
+	sprintf(nbuf,"%lu",Audio::get_ptr()->actual.freq);
 	string	s="timidity -Oru8S -id -s ";
 	s+=nbuf;
 	s+=" -o- ";
