@@ -1,12 +1,13 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 04 May 2003(GMT)
+last changed: 21 July 2003(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 04 May 2003
-0.2. - 04 March 2003
+0.1. - 21 July 2003
+0.2. - 04 May 2003
+0.3. - 04 March 2003
 
 1. Introduction
 1.1. Important Notice
@@ -83,7 +84,12 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 04 May 2003
+0.1. - 21 July 2003
+* 1.12. What is the latest version of Exult? is now 1.1.beta1.
+
+
+
+0.2. - 04 May 2003
 * 2.7. Do Exult savegames work on all Operating Systems? don't use 1.1.x saves with 1.0.
 * 3.6. Why is the party formation different? Jeff changed the behaviour of it.
 * 5.4. Why can't I talk to the mayor of Skara Brae (BG)? added.
@@ -92,7 +98,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 04 March 2003
+0.3. - 04 March 2003
 * 1.1. Important Notice this faq is for 1.1.x and not for 1.0 anymore.
 * 1.6. But isn't Pentagram some kind of Exult for U8? here is the link to Pentagram and some more info.
 * 2.7. Do Exult savegames work on all Operating Systems? Savegames are platform independent.
@@ -168,7 +174,7 @@ The source code snapshots contain a file called "README.OS" (like Readme.win32, 
 
 
 1.12. What is the latest version of Exult?
-The current official release is V1.00. See also 1.8. to learn where to get the latest version.
+The current official release is V1.1beta1 See also 1.8. to learn where to get the latest version.
 To find out which version you are running, press 'v' while in game.
 
 
