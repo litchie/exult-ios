@@ -652,6 +652,7 @@ gint Shape_chooser::mouse_press
 	gpointer data			// ->Shape_chooser.
 	)
 	{
+	gtk_widget_grab_focus(widget);
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	int old_selected = chooser->selected;
 					// Search through entries.
@@ -697,6 +698,27 @@ gint Shape_chooser::mouse_press
 				0, 0, 0, 0, event->button, event->time);
 	return (TRUE);
 	}
+
+/*
+ *	Keystroke in draw-area.
+ */
+C_EXPORT gboolean
+on_draw_key_press			(GtkEntry	*entry,
+					 GdkEventKey	*event,
+					 gpointer	 user_data)
+{
+	Shape_chooser *chooser = (Shape_chooser *) user_data;
+	switch (event->keyval)
+		{
+	case GDK_Delete:
+		chooser->del_frame();
+		return TRUE;
+	case GDK_Insert:
+		chooser->new_frame();
+		return TRUE;
+		}
+	return FALSE;			// Let parent handle it.
+}
 
 /*
  *	Export the currently selected frame as a .png file.
@@ -852,7 +874,7 @@ gint Shape_chooser::check_editing_files
 			browser->render();
 			browser->show();
 			}
-		//+++++++++Update group windows???
+		studio->update_group_windows(0);
 		}
 	return 1;			// Continue timeouts.
 	}
@@ -989,6 +1011,8 @@ void Shape_chooser::import_frame
 	Import_png(fname, ed->file_info, shnum, frnum);
 	ed->render();
 	ed->show();
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->update_group_windows(0);
 	}
 
 /*
@@ -999,7 +1023,58 @@ void Shape_chooser::new_frame
 	(
 	)
 	{
-	//+++++
+	if (selected < 0)
+		return;
+	int shnum = info[selected].shapenum,
+	    frnum = info[selected].framenum;
+	Vga_file *ifile = file_info->get_ifile();
+					// Read entire shape.
+	Shape *shape = ifile->extract_shape(shnum);
+	if (!shape ||			// Shouldn't happen.
+					// We'll insert AFTER frnum.
+	    frnum > shape->get_num_frames())
+		return;
+					// Low shape in 'shapes.vga'?
+	ExultStudio *studio = ExultStudio::get_instance();
+	bool flat = shnum < 0x96 && file_info == studio->get_vgafile();
+	int w = 0, h = 0;
+	int xleft, yabove;
+	if (flat)
+		w = h = xleft = yabove = 8;
+	else				// Find largest frame.
+		{
+		int cnt = shape->get_num_frames();
+		for (int i = 0; i < cnt; i++)
+			{
+			int ht = shape->get_frame(i)->get_height();
+			if (ht > h)
+				h = ht;
+			int wd = shape->get_frame(i)->get_width();
+			if (wd > w)
+				w = wd;
+			}
+		if (h == 0)
+			h = 8;
+		if (w == 0)
+			w = 8;
+		xleft = w - 1;
+		yabove = h - 1;
+		}
+	Image_buffer8 img(w, h);
+	img.fill8(1);			// Just use color #1.
+	if (w > 2 && h > 2)
+		img.fill8(2, w - 2, h - 2, 1, 1);
+	Shape_frame *frame = new Shape_frame(img.get_bits(),
+			w, h, xleft, yabove, !flat);
+	shape->add_frame(frame, frnum + 1);
+	file_info->set_modified();
+	Object_browser *browser = studio->get_browser();
+	if (browser)
+		{			// Repaint main window.
+		browser->render();
+		browser->show();
+		}
+	studio->update_group_windows(0);
 	}
 
 /*
@@ -1021,7 +1096,26 @@ void Shape_chooser::del_frame
 	(
 	)
 	{
-	//+++
+	if (selected < 0)
+		return;
+	int shnum = info[selected].shapenum,
+	    frnum = info[selected].framenum;
+	Vga_file *ifile = file_info->get_ifile();
+					// Read entire shape.
+	Shape *shape = ifile->extract_shape(shnum);
+	if (!shape ||			// Shouldn't happen.
+	    frnum > shape->get_num_frames() - 1)
+		return;
+	shape->del_frame(frnum);
+	file_info->set_modified();
+	ExultStudio *studio = ExultStudio::get_instance();
+	Object_browser *browser = studio->get_browser();
+	if (browser)
+		{			// Repaint main window.
+		browser->render();
+		browser->show();
+		}
+	studio->update_group_windows(0);
 	}
 
 /*
@@ -1649,13 +1743,18 @@ Shape_chooser::Shape_chooser
 					// Indicate the events we want.
 	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
 		| GDK_POINTER_MOTION_HINT_MASK |
-		GDK_BUTTON1_MOTION_MASK);
+		GDK_BUTTON1_MOTION_MASK | GDK_KEY_PRESS_MASK);
 					// Set "configure" handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "configure_event",
 				GTK_SIGNAL_FUNC(configure), this);
 					// Set "expose" handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "expose_event",
 				GTK_SIGNAL_FUNC(expose), this);
+					// Keystroke.
+	gtk_signal_connect(GTK_OBJECT(draw), "key-press-event",
+		      GTK_SIGNAL_FUNC (on_draw_key_press),
+		      this);
+	GTK_WIDGET_SET_FLAGS(draw, GTK_CAN_FOCUS);
 					// Set mouse click handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "button_press_event",
 				GTK_SIGNAL_FUNC(mouse_press), this);
