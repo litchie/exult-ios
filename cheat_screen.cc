@@ -37,6 +37,7 @@
 #include "gameclk.h"
 #include "schedule.h"
 #include "ucmachine.h"
+#include "Configuration.h"
 
 const char *CheatScreen::schedules[33] = {
 	"Combat",
@@ -639,8 +640,12 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 
 		// Paperdolls
 		case 'p':
-		if (Game::get_game_type() == BLACK_GATE && gwin->can_use_paperdolls())
-			gwin->set_bg_paperdolls (gwin->get_bg_paperdolls()?false:true);
+			if (Game::get_game_type() == BLACK_GATE 
+				&& gwin->can_use_paperdolls()) {
+				gwin->set_bg_paperdolls (gwin->get_bg_paperdolls()?false:true);
+				config->set("config/gameplay/bg_paperdolls",
+							gwin->get_bg_paperdolls() ? "yes" : "no", true);
+			}
 		break;
 
 		default:
