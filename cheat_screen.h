@@ -28,6 +28,7 @@ class Actor;
 class CheatScreen {
 	Actor			*grabbed;
 	static const char	*schedules[33];
+	static const char	*flag_names[64];
 public:
 		CheatScreen();
 		~CheatScreen();
@@ -65,6 +66,7 @@ private:
 		CP_YCoord = 24,
 		CP_Lift = 25,
 		CP_GFlagNum = 26,
+		CP_NFlagNum = 27,
 
 		CP_Name = 32
 	};
@@ -101,6 +103,7 @@ private:
 	void FlagMenu(Actor *actor);
 	void FlagActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor);
 	bool FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool &activate, Actor *actor);
+	Cheat_Prompt AdvancedFlagLoop(int flagnum, Actor *actor);
 
 	void BusinessLoop(Actor *actor);
 	void BusinessDisplay (Actor *actor);
