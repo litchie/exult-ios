@@ -83,8 +83,8 @@ dist:   $(EXEC)
 	cp FAQ $(U7PATH)/Exult/FAQ.txt
 	cp docs/faq.html $(U7PATH)/Exult
 	mkdir -p $(U7PATH)/Exult/images
-	cp docs/images/back.gif $(U7PATH)/Exult/images
-	cp docs/images/exult_logo.gif $(U7PATH)/Exult/images
+	cp docs/images/*.gif $(U7PATH)/Exult/images
+	cp docs/images/docs*.png $(U7PATH)/Exult/images
 	cp NEWS $(U7PATH)/Exult/NEWS.txt
 	cp README $(U7PATH)/Exult/README.txt
 	cp README.1ST $(U7PATH)/Exult/README.1ST.txt
