@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE todo SYSTEM "todo.dtd">
+
+<todo title="Exult" changed="05 July 2001(GMT)">
+
+<project>
+	<description>
+		Clean up debug/output messages and send them to the appropriate stream 
+		(stdout, stderr). Remove useless messages.
+	</description>
+	<difficulty>
+		Easy
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+<project>
+	<description>
+		Implement "Return to Menu" in BG and SI's menus and in the in-game menu
+		to go back to the Exult menu
+	</description>
+	<difficulty>
+		Easy
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+<project>
+	<description>
+		Implement Video Options menu with the following options: resolution, scaling
+		engine, fullscreen, RGB gamma correction sliders
+	</description>
+	<difficulty>
+		Medium
+	</difficulty>
+	<owner>
+		Tristan Tarrant
+	</owner>
+</project>
+<project>
+	<description>
+		Implement Gameplay Options with the following options: cheats, SI paperdolls
+	</description>
+	<difficulty>
+		Easy
+	</difficulty>
+	<owner>
+		Medium
+	</owner>
+</project>
+<project>
+	<description>
+		Implement a Journal which logs all conversations
+	</description>
+	<difficulty>
+		Medium
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+<project>
+	<description>
+		Change the rendering mechanism to paint the mouse pointer after the scaling,
+		so that underlying graphics don't get corrupted
+	</description>
+	<difficulty>
+		Medium
+	</difficulty>
+	<owner>
+		Jeff Freedman
+	</owner>
+</project>
+<project>
+	<description>
+		Synchronize the BG intro
+	</description>
+	<difficulty>
+		Easy
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+<project>
+	<description>
+		Get the Guardian's labial expression in both BG and SI's intros correct
+	</description>
+	<difficulty>
+		Difficult
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+<project>
+	<description>
+		Implement a text tool for the GIMP plugin that loads "fonts.vga", allows the
+		user to select a font, type some text and paste the result in the current
+		frame
+	</description>
+	<difficulty>
+		Medium
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+<project>
+	<description>
+		Implement a palette loader for the GIMP plugin which allows the user to 
+		interactively choose palettes from "palettes.flx" and apply them to the 
+		current shape
+	</description>
+	<difficulty>
+		Medium
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+<project>
+	<description>
+		Implement a keyring for Black Gate in a similar way to the one in Silver
+		Seed
+	</description>
+	<difficulty>
+		Difficult
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+<project>
+	<description>
+		Implement an optional turn-based combat mode
+	</description>
+	<difficulty>
+		Difficult
+	</difficulty>
+	<owner>
+		Nobody
+	</owner>
+</project>
+<project>
+	<description>
+		Implement a "status bar" at the bottom of the screen with the portrait of
+		the party member and a red health bar. The Avatar would in addition have a
+		blue mana bar
+	</description>
+	<difficulty>
+		Medium
+	</difficulty>
+	<owner>
+		Ryan Nunn
+	</owner>
+</project>
+</todo>
