@@ -3,6 +3,7 @@
 
 #include "PathFinder.h"
 
+#include <deque>
 
 
 class	Astar: public virtual PathFinder
@@ -19,6 +20,9 @@ public:
 	Astar();
 	virtual ~Astar();
 
+protected:
+	deque<Tile_coord> calculated_path;
+	Tile_coord	start,goal;
 	};
 
 #endif
