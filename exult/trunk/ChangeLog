@@ -1,3 +1,6 @@
+2001-02-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Makefile.be, exult_types.h, actors.cc: building on BeOS again
+
 2001-02-07  Ryan Nunn <triforce@merlin.net.au>
 	* tools/expack.cc, files/utils.*: Removed the Win32 fix and replaced it
 	  with text file reading modes.
