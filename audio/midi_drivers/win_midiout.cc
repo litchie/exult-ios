@@ -110,7 +110,7 @@ static void init_device()
 	// Opened, lets open the thread
 	thread_com = W32MO_THREAD_COM_INIT;
 	
-	thread_handle = CreateThread (NULL, 0, thread_main, NULL, 0, &thread_id);
+	thread_handle = (HANDLE*) CreateThread (NULL, 0, thread_main, NULL, 0, &thread_id);
 	
 	while (thread_com == W32MO_THREAD_COM_INIT) SDL_Delay (1);
 	
