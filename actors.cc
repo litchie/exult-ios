@@ -2074,7 +2074,7 @@ int Actor::add
 					: 0;
 		}
 					// Add to ourself.
-	if (!Container_game_object::add(obj, dont_check))
+	if (!Container_game_object::add(obj, 1))
 		return (0);
 
 	if (type == FIS_2Hand)		// Two-handed?
@@ -2126,7 +2126,7 @@ int Actor::add_readied
 	if (!fits_in_spot (obj, index, type) && !force_pos) return 0;
 
 	// No room, or too heavy.
-	if (!Container_game_object::add(obj)) return 0;
+	if (!Container_game_object::add(obj, 1)) return 0;
 
 	// Set the spot to this object
 	spots[index] = obj;
