@@ -283,6 +283,8 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 				dragging = 0;
 				gwin->double_clicked(event.button.x, 
 							event.button.y);
+				if (gwin->get_mode() == Game_window::gump)
+					mouse->set_shape(Mouse::hand);
 				break;
 				}
 			last_b1_click = curtime;
@@ -300,7 +302,7 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 		{
 #ifdef MOUSE
 		mouse->move(event.motion.x, event.motion.y);
-		if (gwin->get_main_actor())
+		if (gwin->get_mode() == Game_window::normal)
 			{
 			int ax, ay;	// Get Avatar screen location.
 			gwin->get_shape_location(gwin->get_main_actor(), 

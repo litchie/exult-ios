@@ -71,9 +71,10 @@ Gump_object::Gump_object
 		checkx = 8; checky = 46;
 		break;
 	default:
+					// Character pictures:
 		if (shnum >= 57 && shnum <= 68)
 			{
-			object_area = Rectangle(0, 0, 0, 0);
+			object_area = Rectangle(32, 4, 92, 126);
 			checkx = 6; checky = 136;
 			}
 		else
