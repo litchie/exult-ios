@@ -39,16 +39,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "listfiles.h"
 
+using std::atoi;
 using std::cout;
 using std::endl;
+using std::isdigit;
+using std::memcpy;
+using std::memset;
 using std::memmove;
+using std::qsort;
 using std::string;
 using std::strlen;
 using std::strncpy;
 using std::strcpy;
 using std::strcat;
-using std::memcpy;
-using std::memset;
+using std::time_t;
+using std::tm;
 
 extern Configuration *config;
 
@@ -937,11 +942,27 @@ void Newfile_gump::LoadSaveGameDetails()
 	details = cur_details;
 
 	// Now read save game details
-	char	**filenames = 0;
 	char	mask[256];
-	int	i;
+	int		i;
 
 	snprintf(mask, 256, SAVENAME2, Game::get_game_type() == BLACK_GATE ? "bg" : "si");
+#if 1
+	FileList filenames;
+	U7ListFiles (mask, filenames);
+	num_games = filenames.size();
+	
+	games = new SaveInfo[num_games];
+
+	// Setup basic details
+	for (i = 0; i<num_games; i++)
+	{
+		games[i].filename = new char[filenames[i].length()+1];
+		strcpy (games[i].filename, filenames[i].c_str());
+		games[i].SetSeqNumber();
+	}
+#else
+	char	**filenames = 0;
+
 	U7ListFiles (mask, filenames, num_games);
 
 	games = new SaveInfo[num_games];
@@ -956,10 +977,12 @@ void Newfile_gump::LoadSaveGameDetails()
 
 	// Delete the filenames array cause it's not needed any more
 	U7FreeFileList(filenames, num_games);
+#endif
 
 	// First sort thet games so the will be sorted by number
 	// This is so I can work out the first free game
-	if (num_games) qsort(games, num_games, sizeof(SaveInfo), SaveInfo::CompareGames);
+	if (num_games)
+		qsort(games, num_games, sizeof(SaveInfo), SaveInfo::CompareGames);
 
 	// Reand and cache all details
 	first_free = -1;
@@ -1032,10 +1055,12 @@ Newfile_gump::SaveInfo::~SaveInfo()
 // Set Sequence Number
 void Newfile_gump::SaveInfo::SetSeqNumber()
 {
-        int i;
+	int i;
 
-        for (i = strlen(filename) - 1; !isdigit(filename[i]); i--);
-        for (; isdigit(filename[i]); i--);
+	for (i = strlen(filename) - 1; !isdigit(filename[i]); i--)
+		;
+	for (; isdigit(filename[i]); i--)
+		;
 
 	num = atoi(filename+i+1);
 }
@@ -1090,14 +1115,16 @@ int Newfile_gump::SaveInfo::CompareThis(const SaveInfo *other) const
 
 static int _U7SaveSeqNr(const char *a)
 {
-        int i;
+	int i;
 
 
-        for (i = strlen((char*)a) - 1; !isdigit(((char*)a)[i]); i--);
-        for (; isdigit(((char*)a)[i]); i--);
+	for (i = strlen((char*)a) - 1; !isdigit(((char*)a)[i]); i--)
+		;
+	for (; isdigit(((char*)a)[i]); i--)
+		;
 
 
-        return atoi(&a[i+1]);
+	return atoi(&a[i+1]);
 }
 
 // Compare Games Static
