@@ -1,3 +1,9 @@
+2002-01-18  Patrick Burke  <takhisisii@yahoo.com.au>
+	* shapes/shapewrite.cc: Added missing using declaration, and fixed
+	what looks like a problem with a lack of a cast. It seems to work from
+	my couple of tests, but I don't know exactly what the code originaly
+	did.
+
 2002-01-16  Patrick Burke  <takhisisii@yahoo.com.au>
 	* conf/Configuration.cc: Altered file loading so that loading from an
 	absolute path has the same effect as loading from a relative "./" path
