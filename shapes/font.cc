@@ -18,9 +18,6 @@
 #  include <config.h>
 #endif
 
-#ifndef ALPHA_LINUX_CXX
-#  include <cctype>
-#endif
 #include "U7file.h"
 #include "databuf.h"
 #include "font.h"
@@ -30,12 +27,15 @@
 
 using std::cout;
 using std::endl;
-using std::isspace;
 using std::size_t;
 using std::string;
 using std::strncmp;
 
 FontManager fontManager;
+
+//	Want a more restrictive test for space.
+inline bool Is_space(char c)
+	{ return c == ' ' || c == '\n' || c == '\t'; }
 
 /*
  *	Pass space.
@@ -46,7 +46,7 @@ static const char *Pass_space
 	const char *text
 	)
 	{
-	while (isspace(*text))
+	while (Is_space(*text))
 		text++;
 	return (text);
 	}
@@ -60,7 +60,7 @@ static const char *Pass_word
 	const char *text
 	)
 	{
-	while (*text && (!isspace(*text) || (*text == '\f') || (*text == '\v')))
+	while (*text && (!Is_space(*text) || (*text == '\f') || (*text == '\v')))
 		text++;
 	return (text);
 	}
