@@ -883,7 +883,7 @@ void Actor::set_flag
 	int flag
 	)
 	{
-	cout << "Set flag for NPC " << get_npc_num() << " = " << flag << endl;
+//	cout << "Set flag for NPC " << get_npc_num() << " = " << flag << endl;
 
 	// Small hack to stop SI from hiding the avatar
 	if (get_npc_num() == 0
@@ -935,7 +935,7 @@ void Actor::clear_flag
 	int flag
 	)
 	{
-	cout << "Clear flag for NPC " << get_npc_num() << " = " << flag << endl;
+//	cout << "Clear flag for NPC " << get_npc_num() << " = " << flag << endl;
 	if (flag >= 0 && flag < 32)
 		flags &= ~((unsigned long) 1 << flag);
 	else if (flag >= 32 && flag < 64)
@@ -1264,7 +1264,7 @@ Weapon_info *Actor::get_weapon
 
 int Actor::figure_hit_points
 	(
-	Actor *attacker,
+	Actor *attacker,		// 0 if hit from a missile egg.
 	int weapon_shape,
 	int ammo_shape
 	)
@@ -1273,8 +1273,8 @@ int Actor::figure_hit_points
 	// godmode effects:
 	if (((party_id != -1) || (npc_num == 0)) && god_mode)
 		return 0;
-	bool instant_death = (god_mode && ((attacker->party_id != -1) || (attacker->npc_num == 0)));
-
+	bool instant_death = (god_mode && attacker &&
+		((attacker->party_id != -1) || (attacker->npc_num == 0)));
 
 	Game_window *gwin = Game_window::get_game_window();
 	int armor = get_armor_points();
@@ -1299,10 +1299,10 @@ int Actor::figure_hit_points
 	if (!wpoints && (!winf || !winf->get_special_atts()))
 		return 0;		// No harm can be done.
 
-	int attacker_level = attacker->get_level();
-	int prob = 40 + attacker_level + 
-			attacker->get_property((int) combat) +
-			attacker->get_property((int) dexterity) -
+	int attacker_level = attacker ? attacker->get_level() : 4;
+	int prob = 40 + attacker_level + (attacker ?
+			(attacker->get_property((int) combat) +
+			attacker->get_property((int) dexterity)) : 20) -
 			get_property((int) dexterity) +
 			wpoints - armor;
 
@@ -1314,7 +1314,7 @@ int Actor::figure_hit_points
 		return 0;		// Missed.
 					// +++++Do special atts. too.
 					// Compute hit points to lose.
-	int hp = attacker->get_property((int) strength)/4 +
+	int hp = (attacker ? attacker->get_property((int) strength)/4 : 2) +
 			(rand()%attacker_level) +
 			wpoints - armor;
 	if (hp < 1)
@@ -1812,6 +1812,8 @@ void Npc_actor::update_schedule
 	int hour3			// 0=midnight, 1=3am, etc.
 	)
 	{
+	if (!gwin->get_objects(get_cx(), get_cy()))
+		return;			// Not on the map.
 	int i = find_schedule_change(hour3);
 	if (i < 0)
 		{

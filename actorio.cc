@@ -263,7 +263,7 @@ Actor::Actor
 			olist->add(this);
 		else
 			{
-			cerr << "NPC has invalid chunk coord." << endl;
+			cout << "NPC has invalid chunk coord." << endl;
 			set_invalid();	// Or set to invalid chunk.
 			}
 	ready_best_weapon();		// Get best weapon in hand.
