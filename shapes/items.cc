@@ -165,7 +165,9 @@ void Setup_text()
 			U7open(textflx, PATCH_TEXT);
 		else
   			U7open(textflx, TEXT_FLX);
-		if (U7exists(EXULTMSG))
+		if (is_patch && U7exists(PATCH_EXULTMSG))
+			U7open(exultmsg, PATCH_EXULTMSG, true);
+		else
 			U7open(exultmsg, EXULTMSG, true);
 		Setup_item_names(textflx, exultmsg);
 		}
