@@ -56,6 +56,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "paths.h"
 #include "Astar.h"
 #include "objiter.h"
+#include "mouse.h"
 
 extern	Configuration *config;
 					// THE game window:
@@ -2039,13 +2040,23 @@ void Game_window::double_clicked
 	int x, int y			// Coords in window.
 	)
 	{
+	extern Mouse *mouse;
 					// Look for obj. in open gump.
 	Gump_object *gump = find_gump(x, y);
 	Game_object *obj;
 	if (gump)
 		obj = gump->find_object(x, y);
 	else				// Search rest of world.
+		{
 		obj = find_object(x, y);
+	    	if (!Fast_pathfinder_client::is_grabable(
+					main_actor->get_abs_tile_coord(),
+					obj->get_abs_tile_coord()))
+			{
+			mouse->flash_shape(Mouse::blocked);
+			return;
+			}
+		}
 	if (obj)
 		{
 		if (combat && !gump && obj != main_actor &&
