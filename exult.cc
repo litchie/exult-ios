@@ -1013,7 +1013,8 @@ void BuildGameMap()
 		gwin = new Game_window(w, h, sc, sclr);
 		current_res = find_resolution(w, h, sc);
 		Game::create_game(gametype);
-		gwin->init_files();	
+		gwin->init_files(false); //init, but don't show plasma	
+		gwin->set_palette(0);
 		for (int x = 0; x < c_num_chunks / c_chunks_per_schunk; x++) {
 			for (int y = 0; y < c_num_chunks / c_chunks_per_schunk; y++) {
 				gwin->paint_map_at_tile(0,0,w,h,x * c_tiles_per_schunk, y * c_tiles_per_schunk, maplift);

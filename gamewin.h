@@ -499,7 +499,7 @@ public:
 	void read_map();		// Reread initial game map.
 	void reload_usecode();		// Reread (patched) usecode.
 	void init_actors();		// Place actors in the world.
-	void init_files();		// Load all files
+	void init_files(bool cycle=true);	// Load all files
 
 	// From Gamedat
 	void get_saveinfo( Shape_file *&map,
