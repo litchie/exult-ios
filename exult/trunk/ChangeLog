@@ -1,3 +1,7 @@
+2001-09-03  Ryan Nunn <triforce@merlin.net.au>
+	* audio/midi_drivers/win_midiout.cc : Fixed 'Lising' typo.
+	* objs/chunks.cc : Namespace
+
 2001-09-03  Max Horn  <max@quendi.de>
 	* all Makefiles/configure.in: bumped version to 0.95cvs
 	* configure.in: OS X specific changes; properly use the SDL

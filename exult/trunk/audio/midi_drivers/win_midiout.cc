@@ -169,7 +169,7 @@ DWORD Windows_MidiOut::thread_main()
 	MIDIOUTCAPS caps;
 	sint32 dev_count = (sint32) midiOutGetNumDevs(); 
 	std::cout << dev_count << " Midi Devices Detected" << endl;
-	std::cout << "Lising midi devices:" << endl;
+	std::cout << "Listing midi devices:" << endl;
 
 	for (i = -1; i < dev_count; i++)
 	{
