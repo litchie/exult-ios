@@ -191,8 +191,9 @@ Npc_actor::Npc_actor
 	Chunk_object_list *olist = Game_window::get_game_window()->
 				get_objects(get_cx(), get_cy());
 	switched_chunks(0, olist);	// Put in chunk's NPC list.
-					// Activate schedule.
-	set_schedule_type(schedule_type);
+					// Activate schedule if not in party.
+	if (Npc_actor::get_party_id() < 0)
+		set_schedule_type(schedule_type);
 	}
 
 /*

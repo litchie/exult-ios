@@ -239,7 +239,7 @@ void Actor::stop
 	if (action)
 		{
 		action->stop(this);
-//++++++++++++Try this.		Game_window::get_game_window()->add_dirty(this);
+		Game_window::get_game_window()->add_dirty(this);
 		}
 	frame_time = 0;
 	}
@@ -270,16 +270,19 @@ void Actor::follow
 	Actor *leader
 	)
 	{
+	int delay = 50;
 					// How close to aim for.
-	int dist = 2 + Actor::get_party_id()/3;
+	int dist = 3 + Actor::get_party_id()/3;
+	Tile_coord leaderpos = leader->get_abs_tile_coord();
 					// Aim for leader's dest.
-// ++++Try later.	Tile_coord goal = leader->get_dest();
-	Tile_coord goal = leader->get_abs_tile_coord();
+	Tile_coord goal = leader->is_moving() ? leader->get_dest() : leaderpos;
 	Tile_coord pos = get_abs_tile_coord();
-					// Tiles to leader.
+					// Tiles to goal.
 	int goaldist = goal.distance(pos);
 	if (goaldist < dist)		// Already close enough?
 		return;
+					// Get leader's distance from goal.
+	int leaderdist = goal.distance(leaderpos);
 					// Figure where to aim.
 	goal.tx = Approach(pos.tx, goal.tx, dist);
 	goal.ty = Approach(pos.ty, goal.ty, dist);
@@ -292,7 +295,13 @@ void Actor::follow
 	int speed = leader->get_frame_time();
 	if (!speed)			// Not moving?
 		speed = 125;
-	speed += 10 - rand()%50;	// Let's try varying it a bit.
+	if (goaldist <= leaderdist)	// Closer than leader?
+		{			// Delay a bit.
+		delay = (1 + leaderdist - goaldist)*100;
+		speed += 10;		// And slow a bit.
+		}
+	else if (goaldist - leaderdist > 5)
+		speed -= 20;		// Speed up if too far.
 	if (goaldist > 32 &&		// Getting kind of far away?
 	    get_party_id() >= 0)	// And a member of the party.
 		{			// Teleport.
@@ -308,13 +317,14 @@ void Actor::follow
 			return;
 			}
 		}
-	if (!leader->is_moving())	// Leader stopped?
+//	if (!leader->is_moving())	// Leader stopped?
 		{			// A little stuck?
-		if (goaldist >= 8 && get_party_id() >= 0)
+//		if (goaldist >= 8 && get_party_id() >= 0)
+		if (pos.distance(leaderpos) >= 8 && get_party_id() >= 0)
 			walk_path_to_tile(goal, speed);
-		return;			// Otherwise, take a rest.
+//		return;			// Otherwise, take a rest.
 		}
-	walk_to_tile(goal, speed);
+	walk_to_tile(goal, speed, delay);
 	}
 
 /*
@@ -877,9 +887,11 @@ void Main_actor::handle_event
 		else
 			set_action(0);
 		}
+#if 0
 					// Not doing an animation?
 	if (!gwin->get_usecode()->in_usecode())
 		get_followers();	// Get party to follow.
+#endif
 	}
 
 /*
