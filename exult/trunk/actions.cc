@@ -444,12 +444,8 @@ int Move_actor_action::handle_event
 	actor->move(dest);		// Zip right there.
 	Game_window *gwin = Game_window::get_game_window();
 	if (actor == gwin->get_main_actor())
-		{			// Teleported Avatar?
+					// Teleported Avatar?
 		gwin->center_view(dest);
-					// Check all eggs around new spot.
-//		Map_chunk::try_all_eggs(actor, dest.tx, dest.ty, dest.tz,
-//					oldpos.tx, oldpos.ty);
-		}
 	dest.tx = -1;			// Set to stop.
 	return (100);			// Wait 1/10 sec.
 	}
