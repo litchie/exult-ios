@@ -673,7 +673,7 @@ int ExultStudio::get_num_entry
 	while (*txt == ' ')
 		txt++;			// Skip space.
 	if (txt[0] == '0' && txt[1] == 'x')
-		return strtol(txt + 2, 0, 16);	// Hex.
+		return (int) strtoul(txt + 2, 0, 16);	// Hex.
 	else
 		return atoi(txt);
 	}
