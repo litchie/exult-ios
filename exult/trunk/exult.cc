@@ -812,10 +812,7 @@ static void Handle_events
 			while (ticks > last_repaint+50)last_repaint += 50;
 
 			int x, y;// Check for 'stuck' Avatar.
-			if (!gwin->is_moving()) //  &&
-#if 0
-			    !((gwin->get_walk_after_teleport() && GAME_SI) ? false : gwin->was_teleported())
-#endif
+			if (!gwin->is_moving())
 				{
 				int ms = SDL_GetMouseState(&x, &y);
 				if (SDL_BUTTON(3) & ms)
@@ -1021,11 +1018,7 @@ static void Handle_event
 						event.motion.y / scale);
 			}
 					// Dragging with right?
-		else if ((event.motion.state & SDL_BUTTON(3))) //  &&
-#if 0
-					// But not right after teleport (if disabled).
-		    !((gwin->get_walk_after_teleport() && GAME_SI) ? false : gwin->was_teleported()))
-#endif
+		else if ((event.motion.state & SDL_BUTTON(3)))
 			gwin->start_actor(event.motion.x / scale, 
 			event.motion.y / scale, Mouse::mouse->avatar_speed);
 #ifdef USE_EXULTSTUDIO			// Painting?
