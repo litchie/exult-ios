@@ -14,7 +14,9 @@ libmididrv_la_SOURCES =	\
 	win_midiout.cc		\
 	win_midiout.h		\
 	be_midi.cc		\
-	be_midi.h
+	be_midi.h		\
+	mac_midi.cc		\
+	mac_midi.h
 
 EXTRA_DIST = 		\
 	README
