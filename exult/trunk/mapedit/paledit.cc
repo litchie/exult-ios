@@ -27,7 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <gtk/gtk.h>
+#ifdef XWIN
 #include <gdk/gdkx.h>
+#endif
 #include <glib.h>
 #include "Flex.h"
 #include "paledit.h"

@@ -1,3 +1,6 @@
+2001-07-25  Tristan Tarrant <nadir@users.sourceforge.net>
+	* mapedit/*.cc: wrapped gdkx.h header in #ifdef XWIN/#endif
+
 2001-07-25  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* npcnear.cc: Don't execute 'nearby' usecode for NPC's in the
