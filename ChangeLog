@@ -1,3 +1,7 @@
+2000-12-05  Tristan Tarrant <nadir@users.sourceforge.net>
+	* INSTALL: more details
+	* TODO: a few ideas
+
 2000-12-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc, cheat.h/cc: added ctrl-alt-h = resurrect and heal party.
 	* various: changed lots of unsigned char* to uint*, added some std::toupper
