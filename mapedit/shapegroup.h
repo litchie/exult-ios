@@ -41,6 +41,8 @@ public:
 	friend class Shape_group_file;
 	Shape_group(char *nm, Shape_group_file *f);
 	~Shape_group() {  }
+	Shape_group_file *get_file()
+		{ return file; }
 	const char *get_name() const
 		{ return name.c_str(); }
 	void set_name(char *nm)

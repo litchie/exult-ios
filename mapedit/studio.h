@@ -30,6 +30,7 @@ class Shapes_vga_file;
 class Equip_row_widgets;
 class Shape_file_set;
 class Shape_file_info;
+class Shape_group_file;
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
@@ -47,6 +48,7 @@ typedef void (*Msg_callback)(Exult_server::Msg_type id,
 
 class ExultStudio {
 private:
+	char			*glade_path;	// Where our .glade file is.
 	GtkWidget		*app;
 	GladeXML		*app_xml;
 	char 			*static_path;
@@ -103,7 +105,7 @@ public:
 		{ return server_socket; }
 	char *get_shape_name(int shnum)
 		{ return names ? names[shnum] : 0; }
-
+	Shape_group_file *get_cur_groups();
 	void set_browser(const char *name, Object_browser *obj);
 
 	void choose_static_path();
@@ -126,6 +128,8 @@ public:
 	void add_group();
 	void del_group();
 	void move_group(int from_row, int to_row);
+	void open_group_window();
+	void close_group_window(GtkWidget *gtkwin);
 					// Objects:
 	void open_obj_window(unsigned char *data, int datalen);
 	void close_obj_window();

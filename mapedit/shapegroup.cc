@@ -239,8 +239,7 @@ on_group_list_button_press_event	(GtkCList	*clist,
 {
 	if (event->type == GDK_2BUTTON_PRESS)
 		{
-		cout << "Double-clicked" << endl;
-		//++++++++++++
+		ExultStudio::get_instance()->open_group_window();
 		return true;
 		}
 	return false;
@@ -356,4 +355,90 @@ void ExultStudio::move_group
 	Shape_group *grp = groups->get(src_row);
 	groups->remove(src_row, false);	// Remove from old pos.
 	groups->insert(grp, dest_row);	// Put into new spot.
+	}
+
+/*
+ *	Events on 'group' window:
+ */
+/*
+ *	Npc window's close button.
+ */
+C_EXPORT gboolean on_group_window_delete_event
+	(
+	GtkWidget *widget,
+	GdkEvent *event,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->close_group_window(widget);
+	return TRUE;
+	}
+
+/*
+ *	Open a 'group' window for the currently selected group.
+ */
+
+void ExultStudio::open_group_window
+	(
+	)
+	{
+	GtkCList *clist = GTK_CLIST(
+				glade_xml_get_widget(app_xml, "group_list"));
+	GList *list = clist->selection; 
+	if (!list || !curfile || !vgafile || !palbuf)
+		return;
+	int row = (int) list->data;
+	Shape_group_file *groups = curfile->get_groups();
+	Shape_group *grp = groups->get(row);
+	GladeXML *xml = glade_xml_new(glade_path, "group_window");
+	GtkWidget *grpwin = glade_xml_get_widget(xml, "group_window");
+	Shape_chooser *chooser = new Shape_chooser(curfile->get_ifile(), 
+							palbuf, 400, 64);
+//	if (strcasecmp(fname, "fonts.vga") == 0)
+//		chooser->set_framenum0('A');
+	chooser->set_group(grp);
+	if (curfile == vgafile)		// Main 'shapes.vga' file?
+		{
+		chooser->set_shape_names(names);
+		chooser->set_shapes_file(
+			(Shapes_vga_file *) vgafile->get_ifile());
+		}
+					// Set xml as data on window.
+	gtk_object_set_data(GTK_OBJECT(grpwin), "xml", xml);
+	gtk_object_set_data(GTK_OBJECT(grpwin), "browser", chooser);
+					// Set window title, name field.
+	string title("Exult Shape Group:  ");
+	title += grp->get_name();
+	gtk_window_set_title(GTK_WINDOW(grpwin), title.c_str());
+	GtkWidget *field = glade_xml_get_widget(xml, "group_name");
+	if (field)
+		gtk_entry_set_text(GTK_ENTRY(field), grp->get_name());
+					// Attach browser.
+	GtkWidget *browser_box = glade_xml_get_widget(xml, "group_shapes" );
+	gtk_widget_show(browser_box);
+	gtk_box_pack_start(GTK_BOX(browser_box), chooser->get_widget(), 
+								TRUE, TRUE, 0);
+					// Auto-connect doesn't seem to work.
+	gtk_signal_connect (GTK_OBJECT(grpwin), "delete_event",
+                      GTK_SIGNAL_FUNC (on_group_window_delete_event),
+                      this);
+	gtk_widget_show(grpwin);
+	}
+
+/*
+ *	Close a 'group' window.
+ */
+
+void ExultStudio::close_group_window
+	(
+	GtkWidget *grpwin
+	)
+	{
+	GladeXML *xml = (GladeXML *) gtk_object_get_data(GTK_OBJECT(grpwin), 
+							"xml");
+	Object_browser *chooser = (Object_browser *) gtk_object_get_data(
+			GTK_OBJECT(grpwin), "browser");
+	delete chooser;
+	gtk_widget_destroy(grpwin);
+	gtk_object_destroy(GTK_OBJECT(xml));
 	}
