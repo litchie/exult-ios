@@ -1,8 +1,8 @@
 man_MANS = exult.6
 
 EXTRA_DIST =		\
-	$(man_MANS)	\
-	FAQ README
+	$(man_MANS)
+
 #	FLI.txt 	\
 #	exscript.txt	\
 #	items.txt	\
