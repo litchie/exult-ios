@@ -626,6 +626,8 @@ public:
 					// Check range.
 	static int is_blocked(int height, int lift, int startx, int starty,
 					int xtiles, int ytiles, int& new_lift);
+					// Check absolute tile.
+	static int is_blocked(Tile_coord& tile);
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles)
 		{ need_cache()->set_egged(egg, tiles); }

@@ -139,6 +139,58 @@ int Actor_pathfinder_client::at_goal
 	}
 
 /*
+ *	This client succeeds when the path makes it to just one X/Y coord.
+ *	It assumes that a -1 was placed in the coord. that we should ignore.
+ */
+class Onecoord_pathfinder_client : public Actor_pathfinder_client
+	{
+public:
+					// Estimate cost between two points.
+	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
+					// Is tile at the goal?
+	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
+	};
+
+/*
+ *	Estimate cost from one point to another.
+ */
+
+int Onecoord_pathfinder_client::estimate_cost
+	(
+	Tile_coord& from,
+	Tile_coord& to			// Should be the goal.
+	)
+	{
+	if (to.tx == -1)		// Just care about Y?
+		{			// Cost = 2/tile.
+		int dy = to.ty - from.ty;
+		return (2*(dy < 0 ? -dy : dy));
+		}
+	else if (to.ty == -1)
+		{
+		int dx = to.tx - from.tx;
+		return (2*(dx < 0 ? -dx : dx));
+		}
+	else				// Should get here.
+		return Actor_pathfinder_client::estimate_cost(from, to);
+	}
+
+/*
+ *	Is tile at goal?
+ */
+
+int Onecoord_pathfinder_client::at_goal
+	(
+	Tile_coord& tile,
+	Tile_coord& goal
+	)
+	{
+	return ((goal.tx == -1 || tile.tx == goal.tx) && 
+		(goal.ty == -1 || tile.ty == goal.ty) &&
+		(goal.tz == -1 || tile.tz == goal.tz));
+	}
+
+/*
  *	Set to walk from one point to another the dumb way.
  *
  *	Output:	->this, or 0 if unsuccessful.
