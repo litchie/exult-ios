@@ -332,7 +332,6 @@ Spellbook_gump::Spellbook_gump
 			if ((cflags & (1<<s)) || cheat.in_wizard_mode())
 				{
 				int spnum = spindex + s;
-				std::cout << c << ":" << s << ":"<< spells0 + spnum%8 << std::endl;
 				spells[spnum] = new Spell_button(this,
 					s < 4 ? object_area.x +
 						spshape->get_xleft()

@@ -323,7 +323,7 @@ Actor::Actor
 	if (Game::get_game_type() == BLACK_GATE && Game::get_avname() && (num == 0 || num == 1))
 		ready_best_weapon();
 			
-#ifdef DEBUG
+#if defined(DEBUG) && 0
 
 	cout << get_npc_num() << " Creating ";
 

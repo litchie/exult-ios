@@ -84,7 +84,7 @@ USECODE_INTRINSIC(get_random)
 
 USECODE_INTRINSIC(execute_usecode_array)
 {
-	cout << "Executing intrinsic 1" << endl;
+	COUT("Executing intrinsic 1");
 					// 9/17/00:  New guess to make it
 					//   possible to heat Black sword.
 	Game_object *item = get_item(parms[0]);
@@ -110,7 +110,7 @@ USECODE_INTRINSIC(delayed_execute_usecode_array)
 	gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
 		new Scheduled_usecode(this, parms[0], parms[1]),
 							(long) this);
-	cout << "Executing intrinsic 2" << endl;
+	COUT("Executing intrinsic 2");
 	return(no_ret);
 }
 
@@ -2114,9 +2114,8 @@ USECODE_INTRINSIC(play_sound_effect)
 {
 	if (num_parms < 1) return(no_ret);
 	// Play music(isongnum).
-#ifdef DEBUG
-	cout << "Sound effect " << parms[0].get_int_value() << " request in usecode" << endl;
-#endif
+	COUT("Sound effect " << parms[0].get_int_value() << " request in usecode");
+
 	Audio::get_ptr()->play_sound_effect (parms[0].get_int_value());
 	return(no_ret);
 }
@@ -2245,7 +2244,7 @@ USECODE_INTRINSIC(si_path_run_usecode)
 	int sz = parms[1].get_array_size();
 	if (!npc || !obj || sz < 2)
 		{
-		cout << "Si_path_run_usecode: bad inputs" << endl;
+		CERR("Si_path_run_usecode: bad inputs");
 		return no_ret;		// Bad data.
 		}
 	Tile_coord src = npc->get_abs_tile_coord();

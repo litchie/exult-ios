@@ -25,6 +25,7 @@
 #endif
 #include <new>
 #include "SDL_mapping.h"
+#include "exult_constants.h"
 #include "exult_types.h"
 
 class ByteBuffer
@@ -404,16 +405,12 @@ public:
 			repeat(false),
 			type(0), seq(0), volume(SDL_MIX_MAXVOLUME), dir(0)
 		{
-#ifdef DEBUG
 		mycounter = counter++;
-		std::cerr << "Created PCB " << mycounter << std::endl;
-#endif
+		COUT("Created PCB " << mycounter);
 		 }
 	~ProducerConsumerBuf()
 		{
-#ifdef DEBUG
-		std::cerr << "::"<<mycounter<<" ProducerConsumerBuf going away" << std::endl;
-#endif
+		COUT("::"<<mycounter<<" ProducerConsumerBuf going away");
 		SDL_DestroyMutex(mutex);
 		}
 	uint32	get_type(void) const
@@ -422,18 +419,16 @@ public:
 		{ return seq; }
 	void	end_production(void)
 		{
-#ifdef DEBUG
-		std::cerr << "::" << mycounter << " end_production" << std::endl;
-#endif
+		COUT("::" << mycounter << " end_production");
 		lock();
 		producing=false;
 		unlock();
 		}
 	void	end_consumption(void)
 		{
-#if defined(DEBUG) && !defined(MACOS)
+#if !defined(MACOS)
 		// As always, no use of cerr etc. on MacOS during Audio Interrupt!
-		std::cerr << "::"<<mycounter<<" end_consumption" << std::endl;
+		COUT("::"<<mycounter<<" end_consumption");
 #endif
 		lock();
 		consuming=false;
