@@ -80,6 +80,7 @@ void Missile_launcher::handle_event
 		Actor *party[9];
 		int cnt = gwin->get_party(party, 1);
 		int n = rand()%cnt;	// Pick one at random.
+					//++++++Check for clear path.
 		proj = new Projectile_effect(src, party[n], shapenum);
 		}
 	gwin->add_effect(proj);
@@ -448,6 +449,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			switch (shnum)	// Get a more reasonable shape.
 				{
 			case 3:		// Lightning.
+			case 11:	// Looks like lightning in original.
 				shnum = 807; break;
 			case 6:		// Arrow.
 				shnum = 722; break;
