@@ -50,10 +50,11 @@ static void handle_key(int shift, int& value, int max, int amt = 1)
 		value -= amt;
 	else
 		value += amt;
-	if(value<0)
-		value = max-1;
-	else if(value>=max)
-		value = 0;
+		
+	while (value<0)
+		value = max+value;
+	while (value>=max)
+		value = value-max;
 }
 	
 void ShapeBrowser::browse_shapes()
@@ -63,8 +64,10 @@ void ShapeBrowser::browse_shapes()
 		Image_buffer8 *ibuf = gwin->get_win()->get_ib8();
 		Font *font = fontManager.get_font("MENU_FONT");
 
-		int centerx = gwin->get_width()/2;
-		int centery = gwin->get_height()/2;
+		int maxx = gwin->get_width();
+		int centerx = maxx/2;
+		int maxy = gwin->get_height();
+		int centery = maxy/2;
 		Palette pal;
 		char buf[255];
 		str_int_pair pal_tuple, xform_tuple;
@@ -97,25 +100,43 @@ void ShapeBrowser::browse_shapes()
 					}
 				else
 					pal.load(pal_tuple.str,pal_tuple.num);
+					
 				sprintf(buf,"VGA File: '%s'", fname);
-				font->draw_text(ibuf, 0, 170, buf);
+				//font->draw_text(ibuf, 0, 170, buf);
+				font->paint_text_fixedwidth(ibuf, buf, 2, maxy-30, 8);
+				
 				num_shapes = shapes->get_num_shapes();
-				sprintf(buf,"Shape: %3d/%3d", current_shape, num_shapes-1);
-				font->draw_text(ibuf, 0, 180, buf);
+				sprintf(buf,"Shape: %2d/%d", current_shape, num_shapes-1);
+				//font->draw_text(ibuf, 0, 180, buf);
+				font->paint_text_fixedwidth(ibuf, buf, 2, maxy-20, 8);
 			
 			        num_frames = shapes->get_num_frames(current_shape);
-				sprintf(buf,"Frame: %3d/%3d", current_frame, num_frames-1);
-				font->draw_text(ibuf, 160, 180, buf);
+				sprintf(buf,"Frame: %2d/%d", current_frame, num_frames-1);
+				//font->draw_text(ibuf, 160, 180, buf);
+				font->paint_text_fixedwidth(ibuf, buf, 162, maxy-20, 8);
+
 				sprintf(buf,"Palette: %s, %d", pal_tuple.str, pal_tuple.num);
-				font->draw_text(ibuf, 0, 190, buf);
+				//font->draw_text(ibuf, 0, 190, buf);
+				font->paint_text_fixedwidth(ibuf, buf, 2, maxy-10, 8);
 
 			        if (num_frames) {
 				        Shape_frame *frame = shapes->get_shape(
 					        current_shape, current_frame);
+
  				        if (frame) {
 					        sprintf(buf,"%d x %d", frame->get_width(), frame->get_height());
-					        font->draw_text(ibuf, 32, 32, buf);
-  					        font->draw_text(ibuf, 32, 24, item_names[current_shape]);
+					        //font->draw_text(ibuf, 32, 32, buf);
+						font->paint_text_fixedwidth(ibuf, buf, 2, 22, 8);
+
+						Shape_info& info = 
+							Game_window::get_game_window()->get_info(current_shape);
+
+					        sprintf(buf,"class: %2i  ready_type: 0x%02x", info.get_shape_class(), info.get_ready_type());
+					        font->paint_text_fixedwidth(ibuf, buf, 2, 12, 8);
+
+					        //font->draw_text(ibuf, 32, 16, item_names[current_shape]);
+						font->paint_text_fixedwidth(ibuf, item_names[current_shape], 2, 2, 8);
+
 						//draw outline
 						gwin->get_win()->fill8(255, 
 						    frame->get_width()+4, frame->get_height()+4, 
@@ -163,8 +184,17 @@ void ShapeBrowser::browse_shapes()
 					handle_key(shift, current_xform,
 							num_xforms);
 					break;
+				// Shapes
 				case SDLK_s:
 					handle_key(shift, current_shape, num_shapes);
+					current_frame = 0;
+					break;
+				case SDLK_UP:
+					handle_key(1, current_shape, num_shapes);
+					current_frame = 0;
+					break;
+				case SDLK_DOWN:
+					handle_key(0, current_shape, num_shapes);
 					current_frame = 0;
 					break;
 				case SDLK_j:	// Jump by 20.
@@ -172,9 +202,25 @@ void ShapeBrowser::browse_shapes()
 							num_shapes, 20);
 					current_frame = 0;
 					break;
+				case SDLK_PAGEUP:
+					handle_key(1, current_shape, num_shapes, 20);
+					current_frame = 0;
+					break;
+				case SDLK_PAGEDOWN:
+					handle_key(0, current_shape, num_shapes, 20);
+					current_frame = 0;
+					break;
+				// Frames
 				case SDLK_f:
 					handle_key(shift, current_frame, num_frames);
 					break;
+				case SDLK_LEFT:
+					handle_key(1, current_frame, num_frames);
+					break;
+				case SDLK_RIGHT:
+					handle_key(0, current_frame, num_frames);
+					break;
+
 				default:
 					break;
 				}

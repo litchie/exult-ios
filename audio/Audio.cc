@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL_mapping.h"
 #include "fnames.h"
 #include "U7file.h"
-
+#include "game.h"
 #include "Configuration.h"
 extern	Configuration *config;
 
@@ -479,7 +479,14 @@ bool	Audio::start_speech(int num,bool wait)
 		return false;
 	char	*buf=0;
 	size_t	len;
-	U7object	sample(U7SPEECH,num);
+	char	*filename;
+	
+	if (Game::get_game_type() == SERPENT_ISLE)
+		filename = SISPEECH;
+	else
+		filename = U7SPEECH;
+	
+	U7object	sample(filename,num);
 	try
 	{
 		buf = sample.retrieve(len);

@@ -127,7 +127,7 @@ int Container_game_object::add_quantity
 	int objvol = Game_window::get_game_window()->get_info(
 			shapenum).get_volume();
 	int maxvol = get_max_volume();	// 0 means anything (NPC's?).
-	int roomfor = maxvol ? (maxvol - volume_used)/objvol : 20000;
+	int roomfor = maxvol && objvol ? (maxvol - volume_used)/objvol : 20000;
 	int todo = delta < roomfor ? delta : roomfor;
 	Game_object *obj;
 	if (!objects.is_empty())

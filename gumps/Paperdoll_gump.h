@@ -28,16 +28,58 @@ class Halo_button;
 class Cstats_button;
 
 
+
 class Paperdoll_gump : public Gump 
 {
+public:
+	enum Skin_colour
+	{
+		white = 0,
+		brown = 1,
+		black = 2,
+		aluminium = 3
+	};
+private:
 	UNREPLICATABLE_CLASS(Paperdoll_gump);
+
+//
+// Is this info avaliable elsewhere???? 
+//	
+	struct  Paperdoll_npc
+	{
+		// NPC Num
+		int			npc_num;
+
+		bool		is_female;
+		Paperdoll_gump::Skin_colour	colour;
+
+		// Face info
+		int			head_shape;
+		int			head_frame;
+			
+		int			body_shape;
+		int			body_frame;
+		
+	};
+
+	struct  Paperdoll_item
+	{
+		// NPC Num
+		int			world_shape;
+		int			world_frame;
+
+		bool		gender;
+
+		int			shape;
+		int			type;
+	};
 
 protected:
 	Heart_button *heart_button;// For bringing up stats.
 	Disk_button *disk_button;	// For bringing up 'save' box.
 	Combat_button *combat_button;
 	Cstats_button *cstats_button;
-	static short coords[26];	// Coords. of where to draw things,
+	static short coords[36];	// Coords. of where to draw things,
 					//   indexed by spot # (0-11).
 	static int spotx(int i) { return coords[2*i]; }
 	static int spoty(int i) { return coords[2*i + 1]; }

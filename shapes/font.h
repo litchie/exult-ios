@@ -56,6 +56,13 @@ public:
 		const char *text, int xoff, int yoff);
 	int paint_text(Image_buffer8 *win,  
 		const char *text, int textlen, int xoff, int yoff);
+	int paint_text_box_fixedwidth(Image_buffer8 *win,  
+		const char *text, int x, int y, int w, 
+		int h, int char_width, int vert_lead = 0, int pbreak = 0);
+	int paint_text_fixedwidth(Image_buffer8 *win,  
+		const char *text, int xoff, int yoff, int width);
+	int paint_text_fixedwidth(Image_buffer8 *win,  
+		const char *text, int textlen, int xoff, int yoff, int width);
 					// Get text width.
 	int get_text_width(const char *text);
 	int get_text_width(const char *text, int textlen);
