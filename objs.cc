@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "usecode.h"
 #include "Audio.h"
+#include "items.h"
 #include <string.h>
 
 					// Bit 5=S, Bit6=reflect. on diag.
@@ -507,16 +508,32 @@ string Game_object::get_name
 	(
 	) const
 	{
-	extern char *item_names[];
 	const char *name;
 	int quantity;
 	string display_name;
-
-	name = item_names[get_shapenum()];
+	int shnum = get_shapenum();
+	switch (shnum)			// Some special cases!
+		{
+	case 0x34a:			// Reagants.
+		name = item_names[0x500 + get_framenum()];
+		break;
+	case 0x3bb:			// Medallions?
+		name = item_names[0x508 + get_framenum()];
+		break;
+	case 0x179:			// Food items.
+		name = item_names[0x50b + get_framenum()];
+		break;
+	case 0x2a3:			// Desk item.
+		name = item_names[0x52d + get_framenum()];
+		break;
+	default:
+		name = item_names[shnum];
+		break;
+		}
 	if(name == 0)
 		return "?";
 
-	if(Has_quantity(get_shapenum()))
+	if (Has_quantity(shnum))
 		quantity = quality & 0x7f;
 	else
 		quantity = 1;
@@ -1552,6 +1569,7 @@ void Container_game_object::activate
 		gwin->show_gump(this, 27);
 		return;
 	case 407:			// Desk.
+	case 283:
 	case 203:
 		gwin->show_gump(this, 27);
 		return;

@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "spells.h"
 #include "gamewin.h"
 #include "usecode.h"
+#include "items.h"
 
 const int REAGANTS = 842;		// Shape #.
 
@@ -367,7 +368,8 @@ void Spellbook_gump::paint
 	Game_window *gwin
 	)
 	{
-	const int numx = -12, numy = -7;// Where to draw numbers on spells.
+	const int numx = 1, numy = -4;// Where to draw numbers on spells,
+					//   with numx being the right edge.
 	Gump_object::paint(gwin);	// Paint outside & checkmark.
 	if (page > 0)			// Not the first?
 		paint_button(gwin, leftpage);
@@ -383,19 +385,29 @@ void Spellbook_gump::paint
 			char text[6];
 			sprintf(text, "%d", num);
 			if (num > 0 && num < 1000)
-				gwin->paint_text(2, text,
-					x + spell->x + numx,
+				gwin->paint_text(4, text,
+					x + spell->x + numx -
+						gwin->get_text_width(4, text),
 					y + spell->y + numy);
 			}
+	if (page > 0)			// Paint circle.
+		{
+		char *circ = item_names[0x545];
+		char *cnum = item_names[0x545 + page];
+		gwin->paint_text(4, cnum, x + 40 + 
+			(44 - gwin->get_text_width(4, cnum))/2, y + 20);
+		gwin->paint_text(4, circ, x + 92 +
+			(44 - gwin->get_text_width(4, circ))/2, y + 20);
+		}
 	if (book->bookmark >= 0 &&	// Bookmark?
 	    book->bookmark/8 == page)
 		{
 		int s = book->bookmark%8;// Get # within circle.
 		int bx = s < 4 ? object_area.x + spwidth/2
-			: object_area.x + object_area.w - spwidth/2;
+			: object_area.x + object_area.w - spwidth/2 - 2;
 		Shape_frame *bshape = gwin->get_gump_shape(BOOKMARK, 0);
 		bx += bshape->get_xleft();
-		int by = object_area.y - 12 + bshape->get_yabove();
+		int by = object_area.y - 14 + bshape->get_yabove();
 		gwin->paint_gump(x + bx, y + by, BOOKMARK, 1 + s%4);
 		}
 	gwin->set_painted();
