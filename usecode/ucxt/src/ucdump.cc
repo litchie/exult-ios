@@ -104,7 +104,7 @@
 #include "ucfunc.h"
 
 // include xml configuration stuff
-#include "conf/Configuration.h"
+#include "Configuration.h"
 
 //#define DEBUG(x) x
 #define DEBUG(x)

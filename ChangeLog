@@ -1,3 +1,8 @@
+2001-07-27  Patrick Burke  <takhisisii@yahoo.com.au>
+
+	* usecode/ucxt/*.[cc|h]: rewrote entire usecode file parser inherited
+	from ucdump, twice as slow, but it's maintainable.
+
 2001-07-26  Tristan Tarrant <nadir@users.sourceforge.net>
 	* exult.cc, game.cc, game.h: implement "Return to menu" functionality
 	* files/IFF.cc, files/utils.cc: clean up some printouts

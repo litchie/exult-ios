@@ -10,6 +10,8 @@
 #include "opcodec.h"
 #include <fstream>
 
+const unsigned int SIZEOF_USHORT = 2;
+
 class FlagData
 {
   public:
