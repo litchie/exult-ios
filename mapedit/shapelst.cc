@@ -689,6 +689,16 @@ gint Shape_chooser::mouse_press
 	{
 	gtk_widget_grab_focus(widget);
 	Shape_chooser *chooser = (Shape_chooser *) data;
+
+    if (event->button == 4) {
+        if (chooser->row0 > 0)
+            chooser->scroll_vertical(chooser->row0-1);
+        return(TRUE);
+    } else if (event->button == 5) {
+        chooser->scroll_vertical(chooser->row0+1);
+        return(TRUE);
+    }        
+
 	int old_selected = chooser->selected;
 					// Search through entries.
 	for (int i = 0; i < chooser->info_cnt; i++)

@@ -1505,6 +1505,17 @@ gint Combo_chooser::mouse_press
 	{
 	gtk_widget_grab_focus(widget);	// Enables keystrokes.
 	Combo_chooser *chooser = (Combo_chooser *) data;
+
+    if (event->button == 4) {
+        chooser->scroll(true);
+        return(TRUE);
+    } else if (event->button == 5) {
+        chooser->scroll(false);
+        return(TRUE);
+    }
+
+
+
 	int old_selected = chooser->selected;
 					// Search through entries.
 	for (int i = 0; i < chooser->info_cnt; i++)

@@ -1,3 +1,6 @@
+2002-10-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mapedit/shapelst.cc,chunklst.cc,paledit.cc,combo.cc: mouse wheel
+
 2002-10-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* exult.cc,mapedit/chunklst.cc,etc: "Paint with chunks" mode added.
