@@ -1377,6 +1377,16 @@ void Actor::die
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	int shnum = get_shapenum();
+					// Special case:  Hook, Dracothraxus.
+	if ((shnum == 0x1fa || shnum == 0x1f8) && 
+	    Game::get_game_type() == BLACK_GATE)
+		{			// Exec. usecode before dying.
+		gwin->get_usecode()->call_usecode(
+				shnum, this, Usecode_machine::internal_exec);
+		if (get_cx() == 255)	// Invalid now?
+			return;
+		}
 	properties[(int) health] = -50;
 	gwin->add_dirty(this);		// Want to repaint area.
 					// Get location.
@@ -1387,7 +1397,7 @@ void Actor::die
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	remove_this(1);			// Remove (but don't delete this).
 	cx = cy = 0xff;			// Set to invalid chunk coords.
-	int shnum, frnum;		// Lookup body shape/frame.
+	int frnum;			// Lookup body shape/frame.
 	if (!Body_lookup::find(get_shapenum(), shnum, frnum))
 		{
 		shnum = 400;
@@ -1407,10 +1417,6 @@ void Actor::die
 		body->add(item, 1);	// Always succeed at adding.
 		}
 	gwin->add_dirty(body);
-					// Special case:  Hook's death?
-	if (get_shapenum() == 0x1fa && Game::get_game_type() == BLACK_GATE)
-		gwin->get_usecode()->call_usecode(
-				0x1fa, this, Usecode_machine::internal_exec);
 	}
 
 /*

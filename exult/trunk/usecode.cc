@@ -325,8 +325,17 @@ void Scheduled_usecode::handle_event
 		case 0x55:		// Call?
 			{
 			Usecode_value& val = arrval.get_elem(++i);
-			usecode->call_usecode(val.get_int_value(), obj, 
-					Usecode_machine::internal_exec);
+			int fun = val.get_int_value();
+					// REALLY guessing (for Forge):
+			Usecode_machine::Usecode_events ev = 
+					Usecode_machine::internal_exec;
+			if (obj->is_egg() && ((Egg_object *)obj)->get_type() ==
+			    Egg_object::usecode)
+				{
+				ev = Usecode_machine::egg_proximity;
+				cout << "0x55:  guessing with egg" << endl;
+				}
+			usecode->call_usecode(fun, obj, ev);
 			break;
 			}
 		case 0x58:		// ?? 1 parm, fairly large byte.
@@ -872,6 +881,7 @@ void Usecode_machine::remove_item
 		last_created = 0;
 	obj->remove_this(1);		// Remove from world or container, but
 					//   don't delete.
+	obj->set_invalid();		// Set to invalid chunk.
 	removed->insert(obj);		// Add to pool instead.
 	gwin->paint();
 	}
@@ -1767,10 +1777,10 @@ USECODE_INTRINSIC(create_new_object)
 	}
 	else
 	{
-		Game_object *at = caller_item;
-		if (!at)
+		Game_object *at = caller_item ? caller_item->get_outermost()
+								: 0;
+		if (!at || at->get_cx() == 255)	// Invalid chunk?
 			at = gwin->get_main_actor();
-		at = at->get_outermost();	// In case it's inside something.
 		
 		tx = at->get_tx();
 		ty = at->get_ty();
