@@ -1,3 +1,7 @@
+2001-05-29  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* effects.cc (Death_vortex): Death Vortex spell implemented.
+
 2001-05-28  Dancer Vesperman <dancer@users.sourceforge.net>
 	* actors.cc: uninline static method called from external translation
 		units. (Otherwise we cannot link under some compilers. Duh)

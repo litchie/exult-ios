@@ -214,6 +214,9 @@ void ActionUseItem(int *params)
 	if (params[1] == -1) params[1] = c_any_framenum;
 	if (params[2] == -1) params[2] = c_any_qual;
 	gwin->activate_item(params[0], params[1], params[2]);
+	if (gwin->showing_gumps())
+		Mouse::mouse->set_shape(Mouse::hand);
+
 }
 
 //  { ActionCombat, 0, "Toggle combat", true, false, NONE },
