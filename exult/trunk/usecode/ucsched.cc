@@ -246,6 +246,9 @@ void Usecode_script::purge
 	)
 	{
 	Usecode_script *next = 0;
+	Game_window *gwin = Game_window::get_instance();
+	Usecode_internal *usecode = static_cast<Usecode_internal*>(
+					gwin->get_usecode());
 	for (Usecode_script *each = first; each; each = next)
 		{
 		next = each->next;	// Get next in case we delete 'each'.
@@ -255,8 +258,11 @@ void Usecode_script::purge
 								spot) > dist)
 			{		// Force it to halt.
 			each->no_halt = false;
-			if (each->must_finish)	// ++++++Finish this.
+			if (each->must_finish)
+				{
 				cout << "MUST finish this script" << endl;
+				each->exec(usecode, true);
+				}
 			each->halt();
 			}
 		}
@@ -287,19 +293,47 @@ void Usecode_script::handle_event
 	)
 	{
 	Usecode_internal *usecode = (Usecode_internal *) udata;
+	int delay = exec(usecode, false);
+	if (i < cnt)			// More to do?
+		{
+		usecode->gwin->get_tqueue()->add(curtime + delay, this, udata);
+		return;
+		}
+#if 0	/* ++++Might need this for Test of Love!! */
+	if (count == 1 &&		// Last one?  GUESSING:
+	    objpos.tx != -1)		// And valid pos.
+	{
+		usecode->activate_cached(objpos);
+	}
+#endif
+	delete this;			// Hope this is safe.
+	}
+
+/*
+ *	Execute an array of usecode, generally one instruction per tick.
+ *
+ *	Output:	Delay for next execution.
+ */
+
+int Usecode_script::exec
+	(
+	Usecode_internal *usecode,
+	bool finish			// If set, keep going to end.
+	)
+	{
 	Game_window *gwin = usecode->gwin;
 	int delay = gwin->get_std_delay();	// Start with default delay.
-	int do_another = 1;			// Flag to keep going.
+	bool do_another = true;			// Flag to keep going.
 	int opcode;
 					// If a 1 follows, keep going.
 	for (; i < cnt && ((opcode = code->get_elem(i).get_int_value()) 
 						== 0x1 || do_another); i++)
 		{
-		do_another = 0;
+		do_another = finish;
 		switch (opcode)
 			{
 		case cont:		// Means keep going without painting.
-			do_another = 1;
+			do_another = true;
 			gwin->set_painted();	// Want to paint when done.
 			break;
 		case repeat:		// ?? 2 parms, 1st one < 0.
@@ -314,7 +348,7 @@ void Usecode_script::handle_event
 				cntval = Usecode_value(cnt - 1);
 				Usecode_value& offval = code->get_elem(i + 1);
 				i += offval.get_int_value() - 1;
-				do_another = 1;
+				do_another = true;
 				}
 			break;
 			}
@@ -326,7 +360,7 @@ void Usecode_script::handle_event
 
 				// maybe cnt1 and cnt2 should be swapped... not sure
 
-			do_another = 1;
+			do_another = true;
 			Usecode_value& cntval = code->get_elem(i + 3);
 			Usecode_value& origval = code->get_elem(i + 2);
 			int cnt = cntval.get_int_value();
@@ -351,13 +385,13 @@ void Usecode_script::handle_event
 			break;
 		case Ucscript::finish:	// Flag to finish if deleted.
 			must_finish = true;
-			do_another = 1;
+			do_another = true;
 			break;
 		case dont_halt:		// ?? Always appears first.
 					// Maybe means "don't let
 					//    intrinsic 5c stop it".
 			no_halt = true;	// PURE GUESS.
-			do_another = 1;
+			do_another = true;
 			break;
 		case delay_ticks:	// 1 parm.
 			{		//   delay before next instruction.
@@ -550,30 +584,19 @@ void Usecode_script::handle_event
 			else if (opcode >= 0x30 && opcode < 0x38)
 				{	// Step in dir. opcode&7.
 				step(usecode, opcode&7);
-				do_another = 1;	// Guessing.
+				do_another = true;	// Guessing.
 				}
 			else
 				{
 			        cout << "Und sched. opcode " << hex << 
-					"0x" << setfill((char)0x30) << setw(2) << opcode << std::dec << endl;
-				do_another = 1; // Don't let it delay us.
+					"0x" << setfill((char)0x30) << setw(2) 
+					<< opcode << std::dec << endl;
+				do_another = true; // Don't let it delay us.
 				}
 			break;
 			}
 		}
-	if (i < cnt)			// More to do?
-		{
-		gwin->get_tqueue()->add(curtime + delay, this, udata);
-		return;
-		}
-#if 0	/* ++++Might need this for Test of Love!! */
-	if (count == 1 &&		// Last one?  GUESSING:
-	    objpos.tx != -1)		// And valid pos.
-	{
-		usecode->activate_cached(objpos);
-	}
-#endif
-	delete this;			// Hope this is safe.
+	return delay;
 	}
 
 /*

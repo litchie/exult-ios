@@ -1,3 +1,8 @@
+2003-09-12  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucsched.cc (Usecode_script): Finish some scripts before
+	purging them.  Fixes Test-O-Love bug.
+
 2003-09-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* delobjs.cc: Adding a timestamp, so objects don't get deleted
