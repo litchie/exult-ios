@@ -68,6 +68,7 @@ class Shape_manager : public Game_singletons
 	bool bg_paperdolls;		// True if paperdolls are wanted in BG
 	bool bg_multiracial_allowed;	// Set true if the SI shapes file 
 					//   is found when playing BG
+	void read_shape_info();
 public:
 	friend class ShapeID;
 	Shape_manager();
