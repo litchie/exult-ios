@@ -1,4 +1,8 @@
 2002-07-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* autogen.sh: fixed problem when automake was compiled with aclocal
+	data directory /usr/local/share/aclocal
+
+2002-07-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs.cc: implemented "x's ashes" name in SI
 	* font.cc: fixed word wrapping off-by-hlead
 
