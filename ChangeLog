@@ -1,3 +1,10 @@
+2002-05-19  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/compiler/ucparse.yy,etc:  Added 'converse2' syntax for
+	easier conversations.
+	* content/islefaq/usecode.uc:  Converted some of the conversations
+	to the new syntax, and added a bit more plot after Amy has joined.
+
 2002-05-19  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/*.html : updated
 	* docs/exult_studio.txt : updated
