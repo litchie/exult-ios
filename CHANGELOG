@@ -1,3 +1,12 @@
+2/29/00:	Fixed crashes at start and after initial conversation, thanks
+		to Richard Wesley.
+
+		Added obstacle detection.  You now need to open doors to get
+		through them, and you can climb up/down stairs.
+
+		Replaced XLib and Win32 code with the SDL library.  Should make
+		porting to Windows far easier.
+
 2/20/00:	Loads of improvements to the USECODE interpreter, especially
 		with conversations.
 

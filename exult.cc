@@ -124,7 +124,12 @@ static void Init
 	unsigned int display_width = DisplayWidth(display, screen_num);
 	unsigned int display_height = DisplayHeight(display, screen_num);
 					// Make window 1/2 size of screen.
-	gwin = new Game_window(display_width/2, display_height/2);
+	int w = display_width/2, h = display_height/2;
+	if (w < 500)
+		w = 500;
+	if (h < 400)
+		h = 400;
+	gwin = new Game_window(w, h);
 #else
 	gwin = new Game_window(640, 480);
 #endif
