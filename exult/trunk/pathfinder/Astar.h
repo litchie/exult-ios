@@ -33,7 +33,7 @@ public:
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
 	virtual	int	NewPath(Tile_coord s, Tile_coord d,
-						int (*tileclassifier)(int,int,int&));
+						Pathfinder_client *client);
 
 	// Retrieve the coordinates of the next step on the path
 	virtual	int	GetNextStep(Tile_coord& n);

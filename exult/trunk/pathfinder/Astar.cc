@@ -23,15 +23,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *	Output:	1 if successful, else 0.
  */
-int Astar::NewPath(Tile_coord s, Tile_coord d,
-					int (*tileclassifier)(int,int,int&))
+int Astar::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *client)
 {
 	extern Tile_coord *Find_path(Tile_coord, Tile_coord,
-					int (*tileclassifier)(int, int, int&));
+						Pathfinder_client *client);
 	src = s;			// Store start, destination.
 	dest = d;
 	delete [] path;			// Clear out old path, if there.
-	path = Find_path(s, d, tileclassifier);
+	path = Find_path(s, d, client);
 	next_index = 0;
 	if (path == 0)			// Failed?  Put in fake.
 		{

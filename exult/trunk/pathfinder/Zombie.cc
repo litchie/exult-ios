@@ -23,8 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *	Output:	1 if successful, else 0.
  */
-int Zombie::NewPath(Tile_coord s, Tile_coord d,
-					int (*tileclassifier)(int,int,int&))
+int Zombie::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *)
 {
 	src = s;			// Store start, destination.
 	dest = d;

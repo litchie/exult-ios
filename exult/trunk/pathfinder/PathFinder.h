@@ -1,9 +1,25 @@
 #ifndef	__PathFinder_h_
 #define	__PathFinder_h_
 
-#include "tiles.h"
+#include "../tiles.h"
 
+/*
+ *	This class provides A* cost methods.
+ */
+class Pathfinder_client
+	{
+public:
+					// Figure cost for a single step.
+	virtual int get_step_cost(Tile_coord from, Tile_coord& to) = 0;
+					// Estimate cost between two points.
+	virtual int estimate_cost(Tile_coord& from, Tile_coord& to) = 0;
+					// Is tile at the goal?
+	virtual int at_goal(Tile_coord& tile, Tile_coord& goal) = 0;
+	};
 
+/*
+ *	Base class for all PathFinders.
+ */
 class	PathFinder
 	{
 protected:
@@ -13,8 +29,8 @@ public:
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
-	virtual	int	NewPath(Tile_coord s, Tile_coord d, 
-					int (*tileclassifier)(int,int,int&))=0;
+	virtual	int NewPath(Tile_coord s, Tile_coord d, 
+					Pathfinder_client *client)=0;
 	// Retrieve starting point (set by subclasses).
 	Tile_coord get_src()
 		{ return src; }
