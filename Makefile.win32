@@ -2,7 +2,7 @@
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
-U7PATH=C:\\UC\\Ultima7
+U7PATH=C:\Ultima7
 
 # Base of the exult source
 SRC=.
@@ -57,7 +57,7 @@ GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	Spellbook_gump.o Stats_gump.o Text_gump.o  Yesno_gump.o \
 	Gamemenu_gump.o Newfile_gump.o Gump_ToggleButton.o \
 	AudioOptions_gump.o Face_button.o CombatStats_gump.o \
-	Jawbone_gump.o
+	Jawbone_gump.o VideoOptions_gump.o
 
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o
@@ -120,6 +120,12 @@ EXULT_FLX_OBJECTS = \
 	data/aud_conversion.shp \
 	data/aud_cancel.shp \
 	data/aud_ok.shp \
+	data/vid_left.shp \
+	data/vid_resolution.shp \
+	data/vid_right.shp \
+	data/vid_scaler.shp \
+	data/vid_scaling.shp \
+	data/videooptions.shp \
 	data/flx.in
 
 EXULT_BG_FLX_OBJECTS = \
