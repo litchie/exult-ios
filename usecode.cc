@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "Audio.h"
 #include "useval.h"
-#include "titles.h"
+#include "game.h"
 #include "barge.h"
 #include <iomanip>
 #ifdef XWIN
@@ -2372,8 +2372,7 @@ USECODE_INTRINSIC(start_speech)
 
 USECODE_INTRINSIC(run_endgame)
 {
-	Titles titles;
-	titles.end_game(parms[0].get_int_value() != 0);
+	gwin->get_game()->end_game(parms[0].get_int_value() != 0);
 	return(no_ret);
 }
 

@@ -1,5 +1,14 @@
 2000-07-31  Tristan Tarrant  <tarrant_tristan@emc.com>
 
+	* game.*, bggame.cc, sigame.cc: separated game-dependent stuff into
+	separate files with an abstract Game class.
+	* exult.cc, gamewin.*, usecode.cc: modified to take the above into
+	account
+	* files/Flat.*: added a new filetype, which is for simple files 
+	(e.g. The palettes in Serpent Isle)
+
+2000-07-31  Tristan Tarrant  <tarrant_tristan@emc.com>
+
 	* exult.cc, gamewin.*, imagewin.*: support resolution switching
 	with ALT-PLUS and ALT-MINUS. Also show messages when certain 'cheat'
 	keys are pressed.
