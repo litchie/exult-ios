@@ -35,6 +35,7 @@ class Npc_actor;
 class Actor_action;
 class Schedule;
 class Schedule_change;
+class Monster_info;
 					// The range of actors' rect. gumps:
 const int ACTOR_FIRST_GUMP = 57, ACTOR_LAST_GUMP = 68;
 
@@ -182,8 +183,9 @@ public:
 		}
 	virtual int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
-	virtual int is_dead_npc() const	// Dead when health goes below 0.
-		{ return properties[(int) health] < 0; }
+	virtual int is_dead_npc() const	// Dead when health below -1/3 str.
+		{ return properties[(int) health] < 
+					-(properties[(int) strength]/3); }
 	int get_level() const		// Get experience level.
 		{ return 1 + Log2(get_property(exp)/50); }
 					// Set/clear/get actor flag.
@@ -241,6 +243,9 @@ public:
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame)
 		{ return 0; }
+	virtual int get_armor_points();	// Get total armor value.
+					// Get total weapon value.
+	virtual int get_weapon_points();	
 					// Under attack.
 	virtual void attacked(Actor *attacker);
 	virtual void die();		// We're dead.
@@ -360,12 +365,21 @@ class Monster_actor : public Npc_actor
 					// Links for 'in_world' list.
 	Monster_actor *next_monster, *prev_monster;
 	Egg_object *creator;		// Egg that create it, or 0.
+	Monster_info *info;		// Info. about this monster.
 					// Are new tiles blocked?
 	int is_blocked(int destx, int desty);
+	void set_info(Monster_info *i = 0);
+	Monster_info *get_info()
+		{
+		if (!info)
+			set_info();
+		return info;
+		}
 public:
+	friend class Monster_info;
 	Monster_actor(char *nm, int shapenum, int fshape = -1, int uc = -1)
 		: Npc_actor(nm, shapenum, fshape, uc), prev_monster(0),
-		  creator(0)
+		  creator(0), info(0)
 		{
 		if (in_world)
 			in_world->prev_monster = this;
@@ -390,6 +404,9 @@ public:
 	virtual int step(Tile_coord t, int frame);
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0);
+	virtual int get_armor_points();	// Get total armor value.
+					// Get total weapon value.
+	virtual int get_weapon_points();	
 	};
 
 /*
@@ -440,10 +457,12 @@ class Monster_info
 	unsigned char intelligence;
 	unsigned char combat;
 	unsigned char armor;
+	unsigned char weapon;		// Guessing.
 	unsigned short flags;		// Defined below.
 	unsigned char equip_offset;	// Offset in 'equip.dat' (1 based;
 					//   if 0, there's none.)
 public:
+	friend class Monster_actor;
 	Monster_info() {  }
 					// Done by Game_window:
 	static void set_equip(Equip_record *eq, int cnt)
@@ -465,7 +484,7 @@ public:
 	int get_shapenum()
 		{ return shapenum; }
 	void set(int sh, int str, int dex, int intel, int comb, int ar,
-						int flgs, int eqoff)
+					int weap, int flgs, int eqoff)
 		{
 		shapenum = sh;
 		strength = str;
@@ -473,6 +492,7 @@ public:
 		intelligence = intel;
 		combat = comb;
 		armor = ar;
+		weapon = weap;
 		flags = flgs;
 		equip_offset = eqoff;
 		}

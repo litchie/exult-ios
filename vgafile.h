@@ -169,6 +169,8 @@ class Shape_info
 					//   be worn.
 	unsigned char *weapon_offsets;	// From "wihh.dat": pixel offsets
 					//   for drawing weapon in hand
+	unsigned char armor, weapon;	// Armour, weapon values from
+					//   "armor.dat", "weapons.dat".
 	void set_tfa_data()		// Set fields from tfa.
 		{
 		xtiles = 1 + (tfa[2]&7);
@@ -182,13 +184,17 @@ class Shape_info
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : xtiles(0), ytiles(0), ztiles(0), weight(0), volume(0),
-		ready_type(0), weapon_offsets(0)
+		ready_type(0), weapon_offsets(0), armor(0), weapon(0)
 		{ tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0; }
 	virtual ~Shape_info();
 	int get_weight()		// Get weight, volume.
 		{ return weight; }
 	int get_volume()
 		{ return volume; }
+	int get_armor()			// Get armor protection.
+		{ return armor; }
+	int get_weapon()		// Get weapon hits.
+		{ return weapon; }
 	int get_3d_height()		// Height (in lifts?).
 		{ return ztiles; }
 	int get_3d_xtiles()		// Dimension in tiles - X.

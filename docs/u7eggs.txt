@@ -40,6 +40,10 @@ Avatar actually steps on the egg
 distance
 "External" - ?
 
+> One small correction about the "something on" criteria: this is activated 
+> whenever an object near the egg is moved by the player, including when an 
+> object is dropped or picked up.
+>
 ________________________________________________________________________
 Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com
 
