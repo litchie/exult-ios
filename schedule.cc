@@ -494,6 +494,39 @@ void Tool_schedule::ending
 	}
 
 /*
+ *	Schedule change for hounding the Avatar.
+ */
+
+void Hound_schedule::now_what
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Actor *av = gwin->get_main_actor();
+	Tile_coord avpos = av->get_abs_tile_coord(),
+		   npcpos = npc->get_abs_tile_coord();
+					// How far away is Avatar?
+	int dist = npcpos.distance(avpos);
+	if (dist > 16 || dist < 3)	// Too far, or close enough?
+		{			// Check again in a few seconds.
+		npc->start(250, 500 + rand()%2000);
+		return;
+		}
+	int newdist = 1 + rand()%2;	// Aim for about 3 tiles from Avatar.
+	Fast_pathfinder_client cost(newdist);
+	PathFinder *path = new Astar();
+	avpos.tx += rand()%3 - 1;	// Vary a bit randomly.
+	avpos.ty += rand()%3 - 1;
+	if (path->NewPath(npcpos, avpos, &cost))
+		{
+		npc->set_action(new Path_walking_actor_action(path, 0));
+		npc->start(250, 50);
+		}
+	else				// Try again.
+		npc->start(250, 2000 + rand()%3000);
+	}
+
+/*
  *	Schedule change for 'wander':
  */
 
@@ -659,7 +692,7 @@ void Sit_schedule::now_what
 		Game_object *barge = chair->find_closest(&bargeshape, 1);
 		if (!barge)
 			return;
-		Game_object_vector fman;		// See if Ferryman nearby.
+		Game_object_vector fman;// See if Ferryman nearby.
 		int usefun = 0x634;	// I hate using constants like this.
 		if (chair->find_nearby(fman, 155, 8, 0) == 1)
 			{
@@ -709,6 +742,44 @@ void Sit_schedule::set_action
 					// Walk there, then sit.
 	set_action_sequence(actor, chairloc, act);
 	}
+
+/*
+ *	Schedule change for 'shy':
+ */
+
+void Shy_schedule::now_what
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Actor *av = gwin->get_main_actor();
+	Tile_coord avpos = av->get_abs_tile_coord(),
+		   npcpos = npc->get_abs_tile_coord();
+					// How far away is Avatar?
+	int dist = npcpos.distance(avpos);
+	if (dist > 9)			// Far enough?
+		{			// Check again in a few seconds.
+		if (rand()%3)		// Just wait.
+			npc->start(250, 1000 + rand()%2000);
+		else			// Sometimes wander.
+			npc->walk_to_tile(
+				Tile_coord(npcpos.tx + rand()%6 - 3,
+					npcpos.ty + rand()%6 - 3, npcpos.tz));
+		return;
+		}
+					// Get deltas.
+	int dx = npcpos.tx - avpos.tx, dy = npcpos.ty - avpos.ty;
+	int adx = dx < 0 ? -dx : dx;
+	int ady = dy < 0 ? -dy : dy;
+					// Which is farthest?
+	int farthest = adx < ady ? ady : adx;
+	int factor = farthest < 3 ? 3 : farthest < 5 ? 2 : 1;
+					// Walk away.
+	Tile_coord dest = npcpos + Tile_coord(dx*factor, dy*factor, 0);
+	Tile_coord delta = Tile_coord(rand()%3 - 1, rand()%3 - 1, 0);
+	npc->walk_to_tile(dest + delta, 250, 250);
+	}
+
 
 /*
  *	Create a 'waiter' schedule.

@@ -1,3 +1,8 @@
+2001-01-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Implemented 'shy' and 'hound' schedules.
+	* Fixed 'hang' bug upon entering Monitor.
+
 2001-01-12  Ryan Nunn <triforce@merlin.net.au>
 	* Actors.* : When in SI Intercept dont_render item flag and change to
 	  dont_move SI flag.
