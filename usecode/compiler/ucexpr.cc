@@ -100,6 +100,22 @@ Uc_var_symbol *Uc_expression::need_var
 	}
 
 /*
+ *	Evaluate constant.
+ *
+ *	Output:	true if successful, with result returned in 'val'.
+ */
+
+bool Uc_expression::eval_const
+	(
+	int& val			// Value returned here.
+	)
+	{
+	val = 0;
+	error("Integer constant expected.");
+	return false;
+	}
+
+/*
  *	Generate code to evaluate expression and leave result on stack.
  */
 
@@ -272,6 +288,21 @@ void Uc_int_expression::gen_value
 	{
 	out.put((char) UC_PUSHI);
 	Write2(out, value);
+	}
+
+/*
+ *	Evaluate constant.
+ *
+ *	Output:	true if successful, with result returned in 'val'.
+ */
+
+bool Uc_int_expression::eval_const
+	(
+	int& val			// Value returned here.
+	)
+	{
+	val = value;
+	return true;
 	}
 
 /*

@@ -53,6 +53,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 
 %union
 	{
+	class Uc_symbol *sym;
 	class Uc_var_symbol *var;
 	class Uc_expression *expr;
 	class Uc_call_expression *funcall;
@@ -70,7 +71,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  *	Keywords:
  */
 %token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN
-%token VAR STRING
+%token VAR INT CONST STRING
 %token SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE
 
 /*
@@ -97,8 +98,9 @@ static Uc_function *function = 0;	// Current function being parsed.
 /*
  *	Production types:
  */
-%type <expr> expression primary
+%type <expr> expression primary declared_var_value
 %type <intval> opt_int
+%type <sym> declared_sym
 %type <var> declared_var
 %type <funsym> function_proto function_decl
 %type <strvec> identifier_list opt_identifier_list
@@ -124,6 +126,7 @@ global_decl:
 		if (!Uc_function::add_global_function_symbol($1))
 			delete $1;
 		}
+	| const_int_decl
 	;
 
 function:
@@ -193,6 +196,8 @@ declaration:
 		{ $$ = $2; }
 	| STRING string_decl_list ';'
 		{ $$ = 0; }
+	| const_int_decl
+		{ $$ = 0; }
 	| function_decl
 		{
 		if (!function->add_function_symbol($1))
@@ -223,6 +228,29 @@ var_decl_list:
 		}
 	| var_decl
 		{ $$ = $1; }
+	;
+
+const_int_decl:
+	CONST INT const_int_decl_list ';'
+	;
+
+const_int_decl_list:
+	const_int_decl_list ',' const_int
+	| const_int
+	;
+
+const_int:
+	IDENTIFIER '=' expression	
+		{
+		int val;		// Get constant.
+		if ($3->eval_const(val))
+			if (function)
+				function->add_int_const_symbol($1, val);
+			else		// Global.
+//+++finish				Uc_function::add_global_int_const_symbol(
+//								($1, val));
+				;
+		}
 	;
 
 var_decl:
@@ -387,8 +415,8 @@ expression_list:
 primary:
 	INT_LITERAL
 		{ $$ = new Uc_int_expression($1); }
-	| declared_var
-		{ $$ = new Uc_var_expression($1); }
+	| declared_var_value
+		{ $$ = $1; }
 	| declared_var '[' expression ']'
 		{ $$ = new Uc_arrayelem_expression($1, $3); }
 	| FLAG '[' INT_LITERAL ']'
@@ -439,19 +467,48 @@ identifier_list:
 		}
 	;
 
+declared_var_value:
+	declared_sym
+		{
+		$$ = $1->create_expression();
+		if (!$$)
+			{
+			char buf[150];
+			sprintf("Can't use '%s' here", $1->get_name());
+			yyerror(buf);
+			$$ = new Uc_int_expression(0);
+			}
+		}
+	;
+
 declared_var:
+	declared_sym
+		{
+		Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>($1);
+		if (!var)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' not a 'var'", $1);
+			yyerror(buf);
+			sprintf(buf, "%s_needvar", $1->get_name());
+			var = function->add_symbol(buf);
+			}
+		$$ = var;
+		}
+	;
+
+declared_sym:
 	IDENTIFIER
 		{
-		Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>
-					(function->search_up($1));
-		if (!var)
+		Uc_symbol *sym = function->search_up($1);
+		if (!sym)
 			{
 			char buf[150];
 			sprintf(buf, "'%s' not declared", $1);
 			yyerror(buf);
-			var = function->add_symbol($1);
+			sym = function->add_symbol($1);
 			}
-		$$ = var;
+		$$ = sym;
 		}
 	;
 

@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 
 class Uc_array_expression;
+class Uc_expression;
 class Uc_function;
 
 /*
@@ -63,6 +64,8 @@ public:
 			Uc_array_expression *parms, bool retvalue);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return -1; }
+					// Return var/int expression.
+	virtual Uc_expression *create_expression();
 	};
 
 /*
@@ -83,6 +86,23 @@ public:
 	virtual int gen_value(std::ostream& out);
 					// Gen. to assign from stack.
 	virtual int gen_assign(std::ostream& out);
+					// Return var/int expression.
+	virtual Uc_expression *create_expression();
+	};
+
+/*
+ *	A constant integer variable.
+ */
+class Uc_const_int_symbol : public Uc_symbol
+	{
+	int value;
+public:
+	Uc_const_int_symbol(char *nm, int v) : Uc_symbol(nm), value(v)
+		{  }
+					// Gen. code to put result on stack.
+	virtual int gen_value(std::ostream& out);
+					// Return var/int expression.
+	virtual Uc_expression *create_expression();
 	};
 
 /*
@@ -99,6 +119,8 @@ public:
 	virtual int gen_value(std::ostream& out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return offset; }
+					// Return var/int expression.
+	virtual Uc_expression *create_expression();
 	};
 
 /*

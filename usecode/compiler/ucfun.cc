@@ -81,12 +81,12 @@ Uc_function::~Uc_function
 	}
 
 /*
- *	Add a new variable to the current scope.
+ *	Check for a duplicate symbol and print an error.
  *
- *	Output:	New sym, or 0 if already declared.
+ *	Output:	true if dup., with error printed.
  */
 
-Uc_var_symbol *Uc_function::add_symbol
+bool Uc_function::is_dup
 	(
 	char *nm
 	)
@@ -97,8 +97,24 @@ Uc_var_symbol *Uc_function::add_symbol
 		char msg[180];
 		sprintf(msg, "Symbol '%s' already declared", nm);
 		Uc_location::yyerror(msg);
-		return 0;
+		return true;
 		}
+	return false;
+	}
+
+/*
+ *	Add a new variable to the current scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_var_symbol *Uc_function::add_symbol
+	(
+	char *nm
+	)
+	{
+	if (is_dup(nm))
+		return 0;
 					// Create & assign slot.
 	Uc_var_symbol *var = new Uc_var_symbol(nm, num_parms + num_locals++);
 	cur_scope->add(var);
@@ -115,18 +131,32 @@ Uc_symbol *Uc_function::add_string_symbol
 	char *text
 	)
 	{
-	Uc_symbol *sym = search(nm);
-	if (sym)			// Already in scope?
-		{
-		char msg[180];
-		sprintf(msg, "Symbol '%s' already declared", nm);
-		Uc_location::yyerror(msg);
-		return sym;
-		}
+	if (is_dup(nm))
+		return 0;
 					// Create & assign slot.
-	sym = new Uc_string_symbol(nm, add_string(text));
+	Uc_symbol *sym = new Uc_string_symbol(nm, add_string(text));
 	cur_scope->add(sym);
 	return sym;
+	}
+
+/*
+ *	Add a new integer constant variable to the current scope.
+ *
+ *	Output:	New sym, or 0 if already declared.
+ */
+
+Uc_symbol *Uc_function::add_int_const_symbol
+	(
+	char *nm,
+	int value
+	)
+	{
+	if (is_dup(nm))
+		return 0;
+					// Create & assign slot.
+	Uc_const_int_symbol *var = new Uc_const_int_symbol(nm, value);
+	cur_scope->add(var);
+	return var;
 	}
 
 /*
