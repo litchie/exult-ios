@@ -311,11 +311,10 @@ void Mouse::set_speed_cursor()
 	for( Actor_queue::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
 		Actor *actor = *it;
 
-		if( !actor->is_dead() &&
+		if( !actor->is_dead() && actor->get_schedule() &&
 			actor->get_alignment() >= Npc_actor::hostile && 
 		    actor->get_schedule_type() == Schedule::combat && 
-			dynamic_cast<Combat_schedule*>(actor->get_schedule()) &&
-			dynamic_cast<Combat_schedule*>(actor->get_schedule())->
+			static_cast<Combat_schedule*>(actor->get_schedule())->
 						has_started_battle())
 		{
 			/* TODO- I think invisibles still trigger the

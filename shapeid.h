@@ -201,7 +201,8 @@ public:
 		shape = 0;
 		}
 	ShapeID(int shnum, int frnum, ShapeFile shfile = SF_SHAPES_VGA) :
-		shapenum(shnum), framenum(frnum), shapefile(shfile), shape(0)
+		shapenum(shnum), framenum(frnum), shapefile(shfile),
+		shape(0), has_trans(0)
 		{  }
 
 	void set_shape(int shnum)	// Set shape, but keep old frame #.
