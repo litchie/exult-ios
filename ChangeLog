@@ -1,3 +1,7 @@
+2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* tools/ucdump.c: #include <string.h>
+	* usecode/compiler/ucfun.cc: fixed cast problem
+
 2001-02-12  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* lots-of-files: fixed warnings
 
