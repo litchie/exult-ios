@@ -787,6 +787,39 @@ int Get_click
 	}
 
 /*
+ *	Wait for someone to stop walking.
+ */
+
+void Wait_for_arrival
+	(
+	Actor *actor			// Whom to wait for.
+	)
+	{
+	long last_repaint = 0;		// For insuring animation repaints.
+	while (actor->is_walking())
+		{
+		Delay();		// Wait a fraction of a second.
+#ifdef MOUSE
+		mouse->hide();		// Turn off mouse.
+#endif
+					// Get current time, & animate.
+		unsigned long ticks = SDL_GetTicks();
+		if (gwin->have_focus() && !dragging)
+			gwin->get_tqueue()->activate(ticks);
+					// Show animation every 1/10 sec.
+		if (ticks > last_repaint + 100)
+			{
+			gwin->paint_dirty();
+			last_repaint = ticks;
+			}
+#ifdef MOUSE
+		mouse->show();		// Re-display mouse.
+#endif
+		gwin->show();		// Blit to screen if necessary.
+		}
+	}
+
+/*
  *	Wait for a click.
  *
  *	Output:	0 if user hit ESC.
