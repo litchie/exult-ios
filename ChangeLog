@@ -5,6 +5,7 @@
 	* palette.cc/h: added Palette::show() to dump palette onscreen
 	* gamewin.cc/h: added Game_window::plasma() function (needs work)
 	* bggame.cc: fixed up Guardian speech (show right shapes, show plasma)
+	* shapes/font.cc: implemented center_text()
 
 2000-12-31  Jeff Freedman  <jeff@amy.nerble.net>
 

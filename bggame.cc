@@ -155,7 +155,7 @@ BG_Game::BG_Game()
 	
 	fontManager.add_font("MENU_FONT", "<STATIC>/mainshp.flx", 9, 1);
 	fontManager.add_font("END2_FONT", "<STATIC>/endgame.dat", 4, 0);
-	fontManager.add_font("END3_FONT", "<STATIC>/endgame.dat", 5, 0);
+	fontManager.add_font("END3_FONT", "<STATIC>/endgame.dat", 5, -3);
 }
 
 BG_Game::~BG_Game()
@@ -171,6 +171,8 @@ void BG_Game::play_intro()
 
 	Audio::get_ptr()->stop_music();
 
+	//TODO: next screen doesn't show up somehow
+
 	// Lord British presents...
 	pal.load("<STATIC>/intropal.dat",3);
 	gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
@@ -185,6 +187,7 @@ void BG_Game::play_intro()
 	pal.fade_out(30);
 	if(skip)
 		return;
+
 	// Ultima VII logo w/Trees
 	gwin->paint_shape(topx,topy,shapes.get_shape(0x12,0));
 	gwin->paint_shape(topx+160,topy+30,shapes.get_shape(0x0D,0));
@@ -275,7 +278,7 @@ void BG_Game::play_intro()
 	Image_buffer *backup, *backup2, *backup3;
 	Image_buffer *cbackup, *cbackup2, *cbackup3;
 	Shape_frame *s, *s2, *s3;
-	
+
 	// First 'popup'
 	s = shapes.get_shape(0x21, 0);
 	backup = gwin->get_win()->create_buffer(s->get_width(), 
@@ -362,13 +365,14 @@ void BG_Game::play_intro()
 	// Actual appearance
 
 	// prepare Guardian speech
+	font = fontManager.get_font("END3_FONT");
 	U7object textobj(MAINSHP_FLX, 0x0D);
 	char * txt, *txt_ptr, *txt_end, *next_txt;
 	size_t txt_len;
 	next_txt = txt_ptr = txt = textobj.retrieve(txt_len);
 	Audio::get_ptr()->playfile(INTROSND,false);
-	int txt_height = gwin->get_text_height(0);
-	int txt_ypos = gwin->get_height()-txt_height;
+	int txt_height = font->get_text_height();
+	int txt_ypos = gwin->get_height()-txt_height-16;
 
 	// backup text area
 	backup3 = gwin->get_win()->create_buffer(gwin->get_width(),txt_height);
@@ -416,7 +420,8 @@ void BG_Game::play_intro()
 			next_txt = txt_end+2;
 		}
 
-		gwin->paint_text(0, txt_ptr, centerx-gwin->get_text_width(0, txt_ptr)/2, txt_ypos);
+//gwin->paint_text(7, txt_ptr, centerx-gwin->get_text_width(0, txt_ptr)/2, txt_ypos);
+		font->center_text(gwin->get_win()->get_ib8(), centerx, txt_ypos, txt_ptr);
 
 		win->show();
 		if(wait_delay_cycle(50)) {
