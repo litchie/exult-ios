@@ -1366,8 +1366,9 @@ USECODE_INTRINSIC(select_from_menu2)
 USECODE_INTRINSIC(input_numeric_value)
 {
 	// Ask for # (min, max, step, default).
-	extern int Prompt_for_value(int minval, int maxval, int step, int def);
-	Usecode_value ret(Prompt_for_value(
+	extern int Prompt_for_number(int minval, int maxval, 
+							int step, int def);
+	Usecode_value ret(Prompt_for_number(
 		parms[0].get_int_value(), parms[1].get_int_value(),
 		parms[2].get_int_value(), parms[3].get_int_value()));
 	gwin->clear_text_pending();	// Answered a question.
