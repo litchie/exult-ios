@@ -1,3 +1,8 @@
+2001-01-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* npcnear.cc: Faster response for SI's rabbit, and storms cleaned
+	up a bit more.
+
 2001-01-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc: added some (disabled) code to create a full 600Mb world map for U7
 

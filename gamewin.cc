@@ -1391,17 +1391,6 @@ void Game_window::brighten
 	}
 
 /*
- *	Restore brightness to user's setting.
- */
-
-void Game_window::restore_users_brightness
-	(
-	)
-	{
-	set_palette(-1, user_brightness);
-	}
-
-/*
  *	Shift view by one tile.
  */
 

@@ -494,7 +494,8 @@ public:
 		{ return brightness; }
 	void brighten(int per);		// Brighten/darken by percentage for
 					//   the user.
-	void restore_users_brightness();// Restore to user's setting.
+	int get_users_brightness()	// What user set it at.
+		{ return user_brightness; }
 	void view_right();		// Move view 1 chunk to right.
 	void view_left();		// Move view left by 1 chunk.
 	void view_down();		// Move view down.

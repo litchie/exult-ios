@@ -34,8 +34,8 @@ void Npc_proximity_handler::add
 	int msecs;			// Hostile?  Wait 0-4 secs.
 	if (npc->get_alignment() >= Npc_actor::hostile)
 		msecs = rand() % 4000;
-	else				// Wait between 3 & 10 secs.
-		msecs = (rand() % 10000) + 3000;
+	else				// Wait between 2 & 6 secs.
+		msecs = (rand() % 4000) + 2000;
 	unsigned long newtime = curtime + msecs;
 	newtime += 1000*additional_secs;
 	gwin->get_tqueue()->add(newtime, this, (long) npc);
@@ -52,7 +52,7 @@ void Npc_proximity_handler::handle_event
 	)
 	{
 	Npc_actor *npc = (Npc_actor *) udata;
-	int extra_delay = 0;		// For next time.
+	int extra_delay = 3000;		// For next time.
 					// See if still on visible screen.
 	Rectangle tiles = gwin->get_win_tile_rect().enlarge(4);
 	int tx, ty, tz;
@@ -80,8 +80,11 @@ void Npc_proximity_handler::handle_event
 		{
 		npc->set_schedule_type(Schedule::combat);
 		}
-					// Do it 50% of the time.
-	else if (!(curtime < wait_until) && rand()%2 == 1 &&
+			
+	else if (!(curtime < wait_until) && 
+					// Do it 50% of the time OR if
+					//   a rabbit (SI start).
+		 (rand()%2 == 1 || npc->get_shapenum() == 811)  &&
 					// And not for party members.
 			npc->get_party_id() < 0)
 		{
@@ -89,7 +92,7 @@ void Npc_proximity_handler::handle_event
 		ucfun = ucfun == -1 ? npc->get_shapenum() : ucfun;
 		gwin->get_usecode()->call_usecode(ucfun, npc,
 					Usecode_machine::npc_proximity);
-		extra_delay = 3;
+		extra_delay += 3;
 		}
 	add(curtime, npc, extra_delay);	// Add back for next time.
 	}
