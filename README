@@ -59,6 +59,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 0. Changes to the Documentation
 0.1. - 24 October 2002
+* 2.2. Settings in exult.cfg settings in exult.cfg are the same on all OS.
+* 2.3. Path-Settings same as above.
 * 7.1. How to get the Zaurus port working quick guide where the necessary files can be found.
 
 
@@ -116,6 +118,7 @@ Important: Do not run Exult on an original Ultima7 game which you're actually in
 2.2. Settings in exult.cfg
 Exult keeps a configuration file. You can specify where your Ultima 7 installation is, whether you want full screen graphics, or windowed, and midi devices and midi settings. Some of these options can be set from the Setup menu when you run Exult or via the Game menu.
 If you do not already have a configuration file, Exult will make one for you filling in sensible defaults by itself. The location of this file varies slightly. On UNIX systems you can expect to find it in $HOME/.exult.cfg while other operating systems will probably locate it as 'exult.cfg' in the same directory as the Exult binary. However it is recommended that you edit this file by hand to achieve optimal results for your system.
+Note: the settings in exult.cfg are the same on all operating systems (except when explicitly stated below).
 The file uses a simple hierarchical XML-like syntax, which should be simple to understand and modify. Take care though. Handling of syntax errors in this file is not well tested.
 Okay, the default file looks like this (do not copy the **and following - these are my remarks).
 Note: yes means enabled, no means disabled
@@ -429,6 +432,7 @@ blackgate
 </blackgate>
 You can either use the relative (e.g. ./blackgate) or absolute (e.g. c:\ultima\blackgate) path to point to the correct directory.
 Note: Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\). Some people seem to have problems with that.
+Note: path settings in exult.cfg are the same on all operating systems. Of course you need to make adjustments on UNIX based systems when you enter the absolute path.
 
 
 2.4. Command line options
