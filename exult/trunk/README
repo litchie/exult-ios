@@ -1,0 +1,107 @@
+EXULT lets you browse around the Ultima7 universe in a window under Linux,
+and possibly other Unix systems.  It is released under the GNU General Public
+License, and contains source code.  This is my first attempt at graphical
+X programming, so please excuse any roughness in my code.
+
+Version 0.09 is the first WIN32 release, done entirely by W.J. Palenstijn.
+Please see his "readme.w95" file.
+
+Version 0.08's major new feature is a builtin script compiler for the 
+conversation engine.  There are a couple script examples, "test1.scr" and
+"test2.scr".  To run, for example, the second example, enter:
+		exult test2.scr
+The script language uses absolute locations in the game, which can be
+obtained by clicking the middle mouse button while holding the SHIFT key
+down.
+
+In addition, 0.08 has greatly improved object identification, thanks to
+contributor Tristan Tarrant.
+
+Version 0.07 has my first, rough attempt at creating a conversation engine
+based on muliple finite-state-machines.  You can double-click on Iolo or the
+female Avatar and have a brief conversation.  My goal is to provide a script-
+ing capability for conversations, and the engine is being designed with that
+as a goal.  The interface to conversations is currently only implemented for
+Linux.
+
+Version 0.06's main enhancements involve portability to MSDOS.  The startup
+memory requirements are also greatly reduced.
+
+Version 0.05 is even closer to being a game engine.  It not only
+allows you to walk the avatar around using the right mouse button, but also
+has two NPC's wandering around randomly; plus, it now has text-rendering
+capabilities.
+
+Although I'm designing Exult under X, I want it to be as portable as possible
+to other platforms and graphics systems (like SVGALIB and GGI).  This is why
+I've gone to the trouble of doing the text rendering using FreeType, since it's
+already highly portable and completely graphics-system independent.
+
+This program is based on the work of Gary Thompson in uncovering the format
+of the Ultima 7 data files.  My eventual goal is to make it possible to create
+Ultima7-type games under Linux.
+
+Requirements:	Ultima7 must be installed and visible.  The "exult" executable
+		should be placed in the top-level u7 directory (where "static"
+		appears as a subdirectory).  You also need "avatar.ttf" in the
+		same directory as "exult".
+
+		Your X display must be in 8-bit or 16-bit color.
+		(24-bit is left as an exercise to the user :-)).
+
+Installation:	On a RedHat Linux system, just type
+		'make' in the directory where you unpacked "exult".  On other
+		systems, I'm afraid you'll have to modify the "makefile" by
+		hand.  Then copy "exult" and "avatar.ttf" to your Ultima7
+		directory.  Starting with version 0.04, you also need to have
+		the "FreeType" library installed on your system when you build
+		"Exult".
+
+		Exult will attempt to show the moveable objects in the
+		"u7ireg" files if they exist.  You will have had to play the
+		actual Ultima 7 game (under DOS) at least once for these
+		files to exist, as the installation program doesn't create
+		them.
+
+		A binary built on a RedHat 5.0 x86 system is included, static-
+		ally linked as much as possible.
+
+Caveats:	The program is a memory hog.  Really makes me appreciate
+		Origin's accomplishment in making it run under DOS.
+
+		Z-ordering is far from perfect.  Sometimes trees get clipped
+		by the roof that's behind them, and objects on top of carpets
+		sometimes get clipped.
+
+		I obviously haven't chosen all correct frames for the Avatar's
+		animation as he walks around.
+
+		No object avoidance:  you can walk through walls, trees, etc.
+
+		I'm not sure if the program works with a 2-button mouse.
+
+Running:	Hold right mouse button down to move Avatar.
+		Click on objects with left button to identify them.
+		Double-click on doors, shutters with left button to open or
+			close them.
+		Arrow keys scroll around the "universe".
+		'q' quits.
+		'p' repaints the screen.
+		'l' cycles through the "lift factors", causing roofs to
+			disappear so you can see inside buildings.
+		'+' brightens the palette.
+		'-' darkens the palette.
+
+Credits:	The paper by Gary Thompson on the structure of the U7 data
+		files was crucial to the development of Exult.
+
+		Font rendering is done using the FreeType font engine.
+
+		Thanks also go to the person who wrote u7items.txt and the
+		contributor of the "avatar.ttf" font.
+
+I can be reached for complaints/complements/code-modifications at
+jsf@hevanet.com.
+
+-- Jeff Freedman
+

@@ -1,0 +1,33 @@
+7/5/99:		W.J. Palenstijn's WIN32 port!
+
+6/10/99:	First attempt at obstacle avoidance.
+
+5/28/99:	Wrote a script compiler for NPC's.
+
+5/24/99:	Modified conversation engine to handle the notion of a
+		conversation "topic".  Also show character "portraits".
+
+4/23/99:	From Tristan Tarrant:  Read item names from "text.flx" instead
+		of trying to enumerate them in the code.
+
+4/14/99:	V0.07 - First implementation of an NPC conversation engine.
+
+12/21/98:	V0.06 - Startup memory requirements are reduced dramatically.
+		A port to MSDOS (320x200 VGA) is added.
+
+12/4/98:	V0.05 - Added text rendering using the FreeType package and the
+		"avatar.ttf" font.  Left-clicking on many of the game items
+		now causes their names to show on the screen.
+
+11/5/98:	V0.04 - 2 other characters walk around randomly.
+		Double-click on doors and shutters to open/shut them.
+		Program exits gracefully when window is closed.
+
+10/14/98:	V0.03 - Avatar now walks around using the right-mouse button.
+
+10/6/98:	V0.02 - Show moveable objects from "ireg" files.
+		Read in all objects shown.  Improves display performance.
+		Attempt (with partial success) to show objects in proper
+		z-order.
+
+9/25/98:	Try to open files first lower-case, then upper (u7open()).
