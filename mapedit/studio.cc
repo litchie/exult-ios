@@ -58,6 +58,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapefile.h"
 #include "shapedraw.h"
 #include "paledit.h"
+#include "locator.h"
 
 using std::cerr;
 using std::cout;
@@ -322,7 +323,7 @@ ExultStudio::~ExultStudio()
 		gtk_widget_destroy(equipwin);
 	equipwin = 0;
 	if (locwin)
-		gtk_widget_destroy(locwin);
+		delete locwin;
 	locwin = 0;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
@@ -1231,6 +1232,10 @@ void ExultStudio::read_from_server
 			}
 		else if (browser)
 			browser->server_response((int) id, data, datalen);
+		break;
+	case Exult_server::view_pos:
+		if (locwin)
+			locwin->view_changed(data, datalen);
 		break;
 		}
 	}

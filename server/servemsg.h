@@ -62,7 +62,9 @@ enum Msg_type
 	insert_terrain = 15,		// Insert new chunk terrain
 	send_terrain = 16,		// Send 512-byte terrain to client.
 	terrain_editing_mode = 17,	// 1 to turn on, 0 for off, -1 to undo.
-	set_edit_shape = 18		// Set shape/frame to 'paint' with.
+	set_edit_shape = 18,		// Set shape/frame to 'paint' with.
+	view_pos = 19			// Tile loc., size, scale of what's
+					//   shown in gamewin.  Sent both ways.
 	};
 
 // I/O routines:
