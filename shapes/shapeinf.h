@@ -234,9 +234,9 @@ public:
 		unusable = 0,		// Trees.
 		quality = 2,
 		quantity = 3,		// Can have more than 1:  coins, arrs.
-		has_hp = 4,         // Breakable items (if hp != 0, that is)
-//		wearable = 5,		// Includes wieldable weapons, food,
-					//   table, curtain??
+		has_hp = 4,	    // Breakable items (if hp != 0, that is)
+		quality_flags = 5,	// Item quality is set of flags:
+					// Bit 3 = okay-to-take.
 		container = 6,
 		hatchable = 7,		// Eggs, traps, moongates.
 		spellbook = 8,
@@ -255,6 +255,8 @@ public:
 		}
 	bool has_quantity()
 		{ return get_shape_class() == quantity; }
+	bool has_quality_flags()	// Might be more...
+		{ return get_shape_class() == quality_flags; }
 	bool has_quality()
 		{
 #if 0
