@@ -217,7 +217,7 @@ Offscreen_pathfinder_client::Offscreen_pathfinder_client
 	(
 	Game_window *gwin,
 	int mf				// Move-flags.
-	) : screen(gwin->get_win_tile_rect())
+	) : screen(gwin->get_win_tile_rect().enlarge(3))
 	{
 	}
 
@@ -243,7 +243,7 @@ int Offscreen_pathfinder_client::estimate_cost
 	int cost = dx < dy ? dx : dy;
 	if (cost < 0)
 		cost = 0;
-	if (from.tz != to.tz)
+	if (to.tz != -1 && from.tz != to.tz)
 		cost++;
 	return 2*cost;
 	}
@@ -258,7 +258,8 @@ int Offscreen_pathfinder_client::at_goal
 	Tile_coord& goal
 	)
 	{
-	return !screen.has_point(tile.tx, tile.ty) && tile.tz == goal.tz;
+	return !screen.has_point(tile.tx - tile.tz/2, tile.ty - tile.tz/2) &&
+		(goal.tz == -1 || tile.tz == goal.tz);
 	}
 
 /*

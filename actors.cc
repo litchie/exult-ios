@@ -743,27 +743,26 @@ void Actor::follow
 	Game_window *gwin = Game_window::get_game_window();
 	if (goaldist - leaderdist >= 5)
 		speed -= 20;		// Speed up if too far.
-	if (goaldist > 32 &&		// Getting kind of far away?
+					// Get window rect. in tiles.
+	Rectangle wrect = gwin->get_win_tile_rect();
+	if (goaldist > wrect.w + wrect.w/2 &&	// Getting kind of far away?
 	    get_party_id() >= 0 &&	// And a member of the party.
 	    !leaderpath)		// But leader is not following path.
 		{			// Approach, or teleport.
-		int pixels = goaldist*c_tilesize;
-		if (pixels > gwin->get_width() + 16)
-			{		// Try to approach from offscreen.
-			if (approach_another(leader))
-				return;
+					// Try to approach from offscreen.
+		if (approach_another(leader))
+			return;
 					// Find a free spot.
-			goal = Map_chunk::find_spot(
+		goal = Map_chunk::find_spot(
 				leader->get_abs_tile_coord(), 2, this);
-			if (goal.tx != -1)
-				{
-				move(goal.tx, goal.ty, goal.tz);
-				int phrase = rand()%6;
-				if (phrase < 3)
-					say(catchup_phrases[phrase]);
-				gwin->paint();
-				return;
-				}
+		if (goal.tx != -1)
+			{
+			move(goal.tx, goal.ty, goal.tz);
+			int phrase = rand()%6;
+			if (phrase < 3)
+				say(catchup_phrases[phrase]);
+			gwin->paint();
+			return;
 			}
 		}
 	uint32 curtime = SDL_GetTicks();
@@ -795,7 +794,18 @@ void Actor::follow
 		if (walk_path_to_tile(goal, speed - speed/4, 0))
 			return;		// Success.
 		else
+			{
 			cout << "... but failed to find path." << endl;
+					// On screen (roughly)?
+			if (wrect.has_point(pos.tx - pos.tz/2,
+							pos.ty - pos.tz/2))
+					// Try walking off-screen.
+				walk_path_to_tile(Tile_coord(-1, -1, -1),
+							speed - speed/4, 0);
+			else		// Off screen already?
+				approach_another(leader);
+			return;
+			}
 		}
 					// NOTE:  Avoid delay when moving,
 					//  as it creates jerkiness.
@@ -827,7 +837,8 @@ int Actor::approach_another
 					// Where are we now?
 	Tile_coord src = get_abs_tile_coord();
 	Game_window *gwin = Game_window::get_game_window();
-	if (!gwin->get_win_tile_rect().has_point(src.tx, src.ty))
+	if (!gwin->get_win_tile_rect().has_point(src.tx - src.tz/2, 
+							src.ty - src.tz/2))
 					// Off-screen?
 		src = Tile_coord(-1, -1, 0);
 	Actor_action *action = new Path_walking_actor_action();
