@@ -47,8 +47,8 @@ enum ShapeFile {
 };
 
 					// Special pixels.
-enum Pixel_colors {POISON_PIXEL = 0, PROTECT_PIXEL, CURSED_PIXEL, HIT_PIXEL,
-			NPIXCOLORS};
+enum Pixel_colors {POISON_PIXEL = 0, PROTECT_PIXEL, CURSED_PIXEL,
+			CHARMED_PIXEL, HIT_PIXEL, NPIXCOLORS};
 
 /*
  *	Manage the set of shape files.
