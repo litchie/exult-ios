@@ -3,10 +3,12 @@ OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o \
 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o \
 	tqueue.o gameclk.o imagetxt.o text.o items.o lists.o
 
+RELNUM = 12
+
 				# X-windows.
 CXX = g++
 CXXFLAGS = -g
-CPPFLAGS = -DXWIN -D_REENTRANT -I/usr/local/include/SDL -Inpc -Iscript
+CPPFLAGS = -DXWIN -D_REENTRANT -DRELNUM=$(RELNUM) -I/usr/local/include/SDL -Inpc -Iscript
 ifdef RELEASE
 STATIC = -static
 else
@@ -35,16 +37,16 @@ release:
 
 tar:	exult
 	strip exult
-	(cd ..; tar cvfz exult11.tgz exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,exult,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
+	(cd ..; tar cvfz exult$(RELNUM).tgz exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,exult,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
 
 w32zip:
-	(cd ..; zip exult11w.zip exult/{*.h,*.cc,makefile,exult.ide,README,readme.w95,CHANGELOG,exultw32.exe,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
+	(cd ..; zip exult$(RELNUM)w.zip exult/{*.h,*.cc,makefile,exult.ide,README,readme.w95,CHANGELOG,exultw32.exe,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
 
 doszip:	exult.exe
 	(cd ..; zip exult06.zip exult/{exult.exe,avatar.ttf,*.scr,csdpmi3b.zip,README,CHANGELOG})
 
 srczip:
-	(cd ..; zip exult11.zip exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
+	(cd ..; zip exult$(RELNUM).zip exult/{*.h,*.cc,makefile,README,README.dos,CHANGELOG,*.ttf,*.scr} exult/npc/{*.h,*.cc,makefile} exult/script/{*.h,*.cc,*.y,*.l,makefile})
 
 clean:
 	(cd npc; make clean)

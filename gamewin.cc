@@ -680,7 +680,10 @@ void Game_window::paint
 		{
 		int x = 15, y = 15;
 		int w = get_width() - x, h = get_height() - y;
-		win->draw_text_box(font, "Welcome to EXULT V 0.11, a free RPG game engine.\n\nCopyright 2000 J. S. Freedman\nGraphics copyrighted by Origin\nText rendered by FreeType", x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
+		char buf[512];
+		sprintf(buf, "Welcome to EXULT V 0.%02d, a free RPG game engine.\n\nCopyright 2000 J. S. Freedman\nGraphics copyrighted by Origin\nText rendered by FreeType", RELNUM);
+		win->draw_text_box(font, buf, 
+				x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
 		}
 					// Draw text.
 	for (Text_object *txt = texts; txt; txt = txt->next)

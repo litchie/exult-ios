@@ -77,7 +77,8 @@ int main
 	char *argv[]
 	)
 	{
-	cout << "Exult V0.11.  Copyright (C) 2000 J. S. Freedman\n";
+	cout << "Exult V0." << RELNUM << 
+				".  Copyright (C) 2000 J. S. Freedman\n";
 	cout << "Text rendering done using the 'FreeType' font engine.\n";
 	cout << "Low level graphics use the 'SDL' library.\n";
 	Init();				// Create main window.
