@@ -991,7 +991,7 @@ void Sit_schedule::now_what
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) == Actor::sit_frame)
 		return;			// Already sitting.
-	static int chairs[] = {873,292};// ++++Check 292.
+	static int chairs[] = {873,292};
 	if (!chair)			// Find chair if not given.
 		if (!(chair = npc->find_closest(chairs, 
 					sizeof(chairs)/sizeof(chairs[0]))))
@@ -1009,7 +1009,7 @@ void Sit_schedule::set_action
 	Game_object *chairobj
 	)
 	{
-#if 0	/* +++++Enable when tested. */
+#if 1	/* +++++Enable when tested. */
 					// Get chair info.
 	Shape_info& info = Game_window::get_game_window()->get_info(chairobj);
 	Tile_coord chairloc = chairobj->get_abs_tile_coord();

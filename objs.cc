@@ -482,6 +482,10 @@ int Game_object::lt
 		if (atx2 <= atx1 - x1)
 			return (0);	// We're to the right.
 		}
+	if (!z1 && atz1 <= atz2)	// We're flat and below?
+		return (1);
+	if (!z2 && atz2 <= atz1)	// It's below us?
+		return (0);
 					// Handle intersecting objects.
 	if (atx1 == atx2 &&		// Watch for paintings on NS walls.
 	    x1 == x2)
