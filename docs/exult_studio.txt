@@ -1,11 +1,12 @@
 Exult Studio Documentation
-last changed: 23 October 2002(GMT)
+last changed: 28 October 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/studio.php
 
 
 0. Changes to the Documentation
-0.1. 23 October 2002
+0.1. 28 October 2002
+0.2. 23 October 2002
 
 1. Introduction
 1.1. What is Exult Studio?
@@ -86,7 +87,15 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. 23 October 2002
+0.1. 28 October 2002
+* 1.3. Terms we use in regard to Exult and Ultima 7 added NPC schedules.
+* 2.2. Running Exult Studio the -d command line arg is now -gGAME.
+* 2.4. What you can do at the moment 'Paint with chunk' added.
+* 3.2. Shape files 'Frames' mode mentioned and explained.
+
+
+
+0.2. 23 October 2002
 * Currently I'm trying to merge my docs with the great work by Jeffrey Hoeksma. So many things changed that it's no use listing all the changes. And please take our many spelling and grammar mistakes with humor!
 
 
@@ -112,6 +121,7 @@ Of course the terms explained in ReadMe.txt are also used in this Documentation 
 * chunk: 16x16 tiles
 * superchunk: 16x16 chunks
 * world: 12x12 superchunks
+* NPC schedules: NPCs can have schedules which make them do certain things at certain times.
 * BG, SI, FoV or SS: we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle" as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.
 * eggs: these are trip-wires that cause monsters to spawn, execute scripts, play music, change weather, trigger traps, teleport when you get near them.
 * flex files: or flexes are used by the original to store the data files. Also when you choose not use compressed save games (see save_compression_level in ReadMe.txt) our save games are also "flexed".
@@ -145,7 +155,7 @@ You can run Exult Studio all by itself, but it isn't useful that way, as it uses
 
 Starting up one or the other separately will reconnect them:
 * If Exult isn't running, start it up. Then, in Exult Studio, use the 'File' menu to choose the static directory (for the game you're playing).
-* If Exult Studio isn't running start it up with: exult_studio -x (path to dir containing exult_studio.glade) -d (path to game directory)
+* If Exult Studio isn't running start it up with: exult_studio -x (path to dir containing exult_studio.glade) -gGAME (GAME is the same string (ie, 'blackgate') that we use in .exult.cfg or that you've given to your own game).
 
 You can also reconnect by selecting File-Connect in Exult Studio's menus.
 
@@ -169,8 +179,9 @@ With the latest source you can
 * create a new 'egg' using the pull-down menu in Exult Studio. In the Egg edit box, after you hit 'Apply', you'll be prompted to click in Exult where you want the egg to appear.
 * if editing a 'monster' egg, you can set the monster by dragging the shape from the browser to the area that displays the monster.
 * edit an NPC by double-clicking on it, and also create a new NPC using the pull-down menu. Attributes, flags, and schedules can all be viewed and modified.
-* can edit other objects' position and quality by double-clicking on them.
+* edit other objects' position and quality by double-clicking on them.
 * browse the 'u7chunks' file, and drag them into Exult to change the terrain. In this browser, you can also create new terrains and modify their order.
+* select a chunk, choose 'Paint with chunks' from the 'Mode' menu, and then paint terrain with that whole chunk.
 * edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit terrain" checkbox in Exult Studio. This is a special mode where dragging with the left mouse button 'paints' the currently-selected shape (generally one of the flat tiles near the top of the shapes browser). Note that a 'terrain' is generally used in multiple places in the map and changing it in one place changes it in all the others as well.
 * save the map using Exult Studio's "File-Save map" pulldown menu. In order to avoid writing over files inadvertently, the files that would normally go into the 'static' directory, will, instead, go into a 'patch' directory that you specify in your 'exult.cfg' file. Here's an example for editing BG:
 
@@ -247,6 +258,7 @@ Once Exult Studio runs correctly , a tree of game files is displayed to the left
 3.2. Shape files
 Shapes are the basic graphical elements of the game. Each shape has one or more frames that typically represent different states or angles of the same thing. E.g. a button shape could have frames for pressed, and released; a character could have frames depicting her sitting, standing up facing one way, or another, swinging a punch, etc. When a shape file is selected, the right part of the main window will show frame zero of the shapes contained therein. Shapes can be selected by clicking, which will show there number, number of frames, and name if known. Other frames can be viewed by changing the frame number.
 When the selected file contains shapes that have names in their info you can also use the find option to find shapes that have that name (e.g. in shapes.vga you can search for 'door' to find all shapes that have door frames). You can search down or up in the selected file.
+When viewing shapes you can press the button 'Frames' in the lower right corner of Exult Studio to show all the frames of a shape next to each others.
 Shape files also have a special right-click-menu. See 5.1. The shape editor.
 Typicall shape files are:
 * Sprites.vga displays all the animations that can be used to overlay the screen.
