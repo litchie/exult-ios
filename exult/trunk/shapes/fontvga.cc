@@ -37,6 +37,9 @@ using std::isspace;
  *	5 = little white.
  *	6 = runes.
  *	7 = normal red.
+ *	8 = Serpentine (books)
+ *	9 = Serpentine (signs)
+ *	10 = Serpentine (gold signs)
  */
 
 /*
@@ -48,7 +51,7 @@ using std::isspace;
  */
 //static int hlead[NUM_FONTS] = {-1, 0, 1, 0, 1, 0, 0, -1, 0, 0};
 // For scrolls (12/6/00):
-static int hlead[NUM_FONTS] = {-2, -1, 0, -1, 0, -1, -1, -2, -1, -1};
+static int hlead[NUM_FONTS] = {-2, -1, 0, -1, 0, -1, -1, -2, -1, -1, 0, 0};
 /*
  *	Initialize.
  */

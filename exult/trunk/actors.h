@@ -192,7 +192,6 @@ public:
 	// This is not even a guess, it's a place holder
 	enum Serpent_flags {		// Bit #'s of flags:
 		freeze = 0,
-		read = 1,
 //		tournament = 2,  This is really !si_killable in Usecode funs.
 		polymorph = 3,
 		// petra = 4,

@@ -46,7 +46,9 @@ void Text_gump::add_text
 	if (textlen)			// Copy over old.
 		{
 		strcpy(newtext, text);
-		newtext[textlen++] = '~';
+		// Add new line if not starting a new page and if first char of new string is
+		// not a new line
+		if (newtext[textlen-1] != '*') newtext[textlen++] = '~';
 		}
 	strcpy(newtext + textlen, str);	// Append new.
 	delete [] text;
@@ -67,7 +69,7 @@ int Text_gump::paint_page
 	int start			// Starting offset into text.
 	)
 {
-	const int font = 4;		// Black.
+	const int font = serpentine?8:4;	// Black.
 	const int vlead = 1;		// Extra inter-line spacing.
 	int ypos = 0;
 	int textheight = gwin->get_text_height(font) + vlead;

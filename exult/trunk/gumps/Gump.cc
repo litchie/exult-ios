@@ -74,6 +74,17 @@ Gump::~Gump()
 }
 
 /*
+ *	 Set centered.	
+ */
+void Gump::set_pos()
+{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_frame *shape = get_shape();
+	x = (gwin->get_width() - shape->get_width())/2;
+	y = (gwin->get_height() - shape->get_height())/2;
+}
+
+/*
  *	Sets object area and creates checkmark button
  */
 

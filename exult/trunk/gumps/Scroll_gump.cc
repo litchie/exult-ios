@@ -31,7 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Scroll_gump::Scroll_gump
 	(
-	) : Text_gump(game->get_shape("gumps/scroll"))
+	bool serp
+	) : Text_gump(game->get_shape("gumps/scroll"), serp)
 {  
 }
 
@@ -46,5 +47,5 @@ void Scroll_gump::paint
 {
 					// Paint the gump itself.
 	gwin->paint_shape(x, y, *this);
-	curend = paint_page(gwin, Rectangle(48, 30, 146, 118), curtop);
+	curend = paint_page(gwin, Rectangle(52, 30, 142, 118), curtop);
 }

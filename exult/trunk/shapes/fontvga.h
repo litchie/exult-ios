@@ -33,7 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Fonts_vga_file : public Vga_file
 	{
-	Font fonts[8];			// Fonts from fonts.vga file.
+	Font fonts[11];			// Fonts from fonts.vga file.
 public:
 	Fonts_vga_file()
 		{  }

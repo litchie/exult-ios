@@ -113,7 +113,7 @@ const char *CheatScreen::flag_names[64] = {
 
 	0,			// 0x20
 	"tattooed",		// 0x21
-	0,			// 0x22
+	"read",			// 0x22
 	"petra",		// 0x23
 	0,			// 0x24
 	0,			// 0x25
@@ -1464,12 +1464,12 @@ void CheatScreen::FlagMenu (Actor *actor)
 		std::snprintf (buf, 512, "[S] Sex....%c", actor->get_type_flag(Actor::tf_sex)?'F':'M');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-90, 8);
 
-		// Walk
+		// Skin
 		std::snprintf (buf, 512, "[1] Skin...%s", "??");
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-81, 8);
 
-		// Swim
-		std::snprintf (buf, 512, "[4] Read...%c", actor->get_siflag(Actor::read)?'Y':'N');
+		// Read
+		std::snprintf (buf, 512, "[4] Read...%c", actor->get_flag(Obj_flags::read)?'Y':'N');
 		font->paint_text_fixedwidth(ibuf, buf, 208, maxy-72, 8);
 	}
 	else	// Not Avatar
@@ -1639,10 +1639,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 		
 		case '4':	// Read
-		if (actor->get_siflag(Actor::read))
-			actor->clear_siflag(Actor::read);
+		if (actor->get_flag(Obj_flags::read))
+			actor->clear_flag(Obj_flags::read);
 		else
-			actor->set_siflag(Actor::read);
+			actor->set_flag(Obj_flags::read);
 		break;
 		
 		case '5':	// Petra
@@ -1803,13 +1803,13 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 
 		// Toggles
 		case 's':	// Sex
+		case '4':	// Read
 		if (actor->get_npc_num()) command = 0;
 		else activate = true;
 		input[0] = command;
 		break;
 
 		// Toggles SI
-		case '4':	// Read
 		case '5':	// Petra
 		case '7':	// Naked
 		if (Game::get_game_type() != SERPENT_ISLE || actor->get_npc_num()) command = 0;

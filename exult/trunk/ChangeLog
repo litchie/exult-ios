@@ -1,3 +1,18 @@
+2001-09-26  Ryan Nunn <triforce@merlin.net.au>
+	* actorio.cc, actors.h, cheat_screen.cc, gumps/Book_gump.*, 
+	  gumps/Scroll_gump.* gumps/Sign_gump.*, gumps/Text_gump.*,
+	  objs/flags.h, usecode/intrinsics.cc :
+	  Implimented Serpentine Signs, books and scrolls. Also Implimented
+	  Serpent Isle 'read' flag. Can also be enabled in BG by using cheats.
+	* gumps/Gump.cc, gumps/Gump.h : Added method to center a gump on sreen
+	  after it's already been created.
+	* shapes/font.cc, shapes/font.h, shapes/fontvga.cc : Changes to use 
+	  Serpentine fonts in SI.
+	* msvcstuff/msvc_kludges.h, usecode/ucdisasm.cc : Change to compile
+	  with MSVC
+	* gumps/Text_button.h, exultmenu.h : Only allow headers to be included
+	  once.
+
 2001-09-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucinternal.cc (Usecode_internal): ADDSV prints '0' now;

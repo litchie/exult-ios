@@ -164,7 +164,7 @@ Actor::Actor
 	int intel_val = Read1(nfile);
 
 	set_property(static_cast<int>(Actor::intelligence), intel_val & 0x1F);
-	if ((intel_val >> 5) & 1) set_siflag (Actor::read);
+	if ((intel_val >> 5) & 1) set_flag (Obj_flags::read);
 					// Tournament.
 	if ((intel_val >> 6) & 1) 
 		set_flag (Obj_flags::si_tournament);
@@ -473,7 +473,7 @@ void Actor::write
 	nfile.put(get_property(Actor::dexterity));
 	
 	iout = get_property(Actor::intelligence);
-	if (get_siflag (Actor::read)) iout |= 1 << 5;
+	if (get_flag (Obj_flags::read)) iout |= 1 << 5;
 					// Tournament
 	if (get_flag (Obj_flags::si_tournament)) iout |= 1 << 6;
 	if (get_siflag (Actor::polymorph)) iout |= 1 << 7;

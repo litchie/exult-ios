@@ -47,6 +47,7 @@ namespace  Obj_flags
 		si_tournament = 29,	// SI-Call usecode (eventid=7)
 		// Flags > 31
 		tattooed = 33,			// Guess (SI).
+		read = 34,			// Guess (SI).
 		petra = 35			// Guess
 	};
 }
