@@ -1,5 +1,10 @@
 2000-11-17  Tristan Tarrant <nadir@users.sourceforge.net>
 
+	* exult.cc: Game_window::splash is not needed now, so I've
+	removed the check in Handle_events. 
+
+2000-11-17  Tristan Tarrant <nadir@users.sourceforge.net>
+
 	* menulist.cc, game.cc: handle events better
 
 2000-11-17  Jeff Freedman  <jeff@amy.nerble.net>
