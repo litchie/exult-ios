@@ -60,14 +60,14 @@ void Game_window::restore_gamedat
 	mkdir("gamedat", 0755);		// Create dir. if not already there.
 #endif
 
-	remove (USEDAT);
-	remove (U7NBUF_DAT);
-	remove (NPC_DAT);
-	remove (MONSNPCS);
-	remove (FLAGINIT);
-	remove (GWINDAT);
-	remove (IDENTITY);
-	remove ("static/flags.flg");
+	U7remove (USEDAT);
+	U7remove (U7NBUF_DAT);
+	U7remove (NPC_DAT);
+	U7remove (MONSNPCS);
+	U7remove (FLAGINIT);
+	U7remove (GWINDAT);
+	U7remove (IDENTITY);
+	U7remove ("<STATIC>/flags.flg");
 
 	in.seekg(0x54);			// Get to where file count sits.
 	int numfiles = Read4(in);
@@ -284,50 +284,3 @@ void Game_window::read_save_names
 		in.close();
 		}
 	}
-
-/*
- *	Get game identity.
- */
-char *Game_window::get_game_identity
-		 (
-		  const char *savename
-		  )
-{
-    ifstream in;
-    u7open(in, savename);		// Open file & abort if error.
-    in.seekg(0x54);			// Get to where file count sits.
-    int numfiles = Read4(in);
-    char *game_identity = 0;
-    in.seekg(0x80);			// Get to file info.
-    // Read pos., length of each file.
-    long *finfo = new long[2*numfiles];
-    int i;
-    for (i = 0; i < numfiles; i++)
-      {
-	finfo[2*i] = Read4(in);	// The position, then the length.
-	finfo[2*i + 1] = Read4(in);
-      }
-    for (i = 0; i < numfiles; i++)	// Now read each file.
-      {
-	// Get file length.
-	int len = finfo[2*i + 1] - 13;
-	if (len <= 0)
-	  continue;
-	in.seekg(finfo[2*i]);	// Get to it.
-	char fname[50];		// Set up name.
-	in.read(fname, 13);
-	if (!strcmp("identity",fname))
-	    {
-      	      game_identity = new char[len];
-	      in.read(game_identity, len);
-	      // Truncate identity
-	      char *ptr = game_identity;
-	      for(; (*ptr!=0x1a && *ptr!=0x0d); ptr++)
-	      	;
-	      *ptr = 0;
-	      break;
-	    }
-      }
-    delete [] finfo;
-    return game_identity;
-}

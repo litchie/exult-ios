@@ -76,8 +76,9 @@ like:
  </audio>
 </config>
 
-Scaling:  An experimental 2X-scaled mode with antialiasing has been added to
-version 0.35.  Your screen should be set to 16-bit color mode, and you need to
+Scaling:  Exult uses the 2xSaI scaling engine by Derek Liauw. More information
+is available at http://members.xoom.com/derek_liauw/
+Your screen should be set to 16-bit color mode, and you need to
 add the following to the <video> section of .exult.cfg:
 
    <width>

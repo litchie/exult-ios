@@ -1,3 +1,13 @@
+2000-09-04  Tristan Tarrant  <nadir@users.sourceforge.net>
+
+	* files/utils.*: Added get_system_path() for remapping virtual paths
+	to real ones. Modified U7open() to use new method. Implement U7remove()
+	to enable similar functionality for removing files.
+	* fnames.h: Remapped all names to use the new notation for virtual paths
+	* game.cc: Clean up construction.
+	* exult.cc: Setup virtual paths
+	* configure.in: Better debug flags
+
 2000-09-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc (Npc_actor): Skip schedule actions if NPC is in a

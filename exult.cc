@@ -65,6 +65,7 @@ Configuration *config;
  *	Globals:
  */
 Game_window *gwin = 0;
+static string data_path;
 unsigned char quitting_time = 0;	// Time to quit.
 Mouse *mouse = 0;
 ShapeBrowser *browser;
@@ -147,13 +148,24 @@ int main
 		}
 
 	cout << "Exult V" << VERSION << "." << endl;
-        config = new Configuration;	// Create configuration object
-	config->read_config_file(USER_CONFIGURATION_FILE);
-	audio = new Audio;
 
-	{
-	// Select the data directory
-	string	data_directory;
+	// Read in configuration file
+        config = new Configuration;
+	config->read_config_file(USER_CONFIGURATION_FILE);
+
+	// Initialize audio
+	audio = new Audio;
+	
+	// Setup virtual directories
+	config->value("config/disk/data_path",data_path,"data");
+	cout << "Data path = " << data_path << endl;
+	add_system_path("<DATA>", data_path.c_str());
+	add_system_path("<STATIC>", "static");
+	add_system_path("<GAMEDAT>", "gamedat");
+	add_system_path("<SAVEGAME>", "savegame");
+	
+	// Choose the startup path
+	string data_directory;
 	vector<string> vs=config->listkeys("config/disk/game",false);
 	if(vs.size()==0)
 		{
@@ -183,12 +195,12 @@ int main
 		config->set("config/disk/game/blackgate/path",data_directory,true);
 	cout << "chdir to " << data_directory << endl;
 	chdir(data_directory.c_str());
+	
 	d="config/disk/game/";
 	d+=gamename;
 	d+="/title";
 	config->value(d.c_str(),data_directory,"(unnamed)");
 	cout << "Loading game: " << data_directory << endl;
-	}
 
 	string	tracing;
 	config->value("config/debug/trace/intrinsics",tracing,"no");
@@ -207,7 +219,6 @@ int main
 		usecode_debugging=true;	// Enable usecode debugger
 	initialise_usecode_debugger();
 #endif
-
 	Init();				// Create main window.
 	
 	mouse = new Mouse(gwin);

@@ -18,6 +18,7 @@
 #define GAME_H
 
 #include <hash_map>
+#include <string>
 #include <vector>
 
 class Game_window;
@@ -52,8 +53,9 @@ public:
 
 	Game();
 	virtual ~Game();
-	
-	static Game *create_game(const char *identity);
+
+	static char *get_game_identity(const char *savename);
+	static Game *create_game(const char *static_path);
 	static Game *get_game();
 	static Exult_Game get_game_type();
 
@@ -76,7 +78,7 @@ public:
 	virtual int  get_start_tile_x() =0;
 	virtual int  get_start_tile_y() =0;
 	virtual void show_journey_failed() = 0;
-	
+
 	void banner();
 	void clear_screen();
 	void refresh_screen();

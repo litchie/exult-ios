@@ -572,7 +572,6 @@ public:
 					// Save "gamedat".
 	int save_gamedat(const char *fname, const char *savename);
 	int save_gamedat(int num, const char *savename);
-	char *get_game_identity(const char *fname);
 	int find_roof(int cx, int cy);
 	
 private:
