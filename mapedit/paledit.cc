@@ -126,6 +126,102 @@ void Palette_edit::render
 	}
 
 /*
+ *	Color box was closed.
+ */
+
+int Palette_edit::color_closed
+	(
+	GtkWidget *dlg,
+	GdkEvent *event,
+	gpointer data
+	)
+	{
+	cout << "color_closed" << endl;
+	Palette_edit *paled = (Palette_edit *) data;
+	paled->colorsel = 0;
+	return FALSE;
+	}
+
+/*
+ *	'Cancel' was hit in the color selector.
+ */
+
+void Palette_edit::color_cancel
+	(
+	GtkWidget *dlg,
+	gpointer data
+	)
+	{
+	Palette_edit *paled = (Palette_edit *) data;
+	if (paled->colorsel)
+		gtk_widget_destroy(GTK_WIDGET(paled->colorsel));
+	paled->colorsel = 0;
+	}
+
+/*
+ *	'Okay' was hit in the color selector.
+ */
+
+void Palette_edit::color_okay
+	(
+	GtkWidget *dlg,
+	gpointer data
+	)
+	{
+	Palette_edit *paled = (Palette_edit *) data;
+	if (paled->colorsel)
+		{
+		gdouble rgb[3];
+		gtk_color_selection_get_color(
+			GTK_COLOR_SELECTION(paled->colorsel->colorsel), rgb);
+		unsigned char r = (unsigned char) (rgb[0]*256),
+			      g = (unsigned char) (rgb[1]*256),
+			      b = (unsigned char) (rgb[2]*256);
+		if (paled->selected >= 0)
+			paled->palette->colors[paled->selected] = 
+							(r<<16) + (g<<8) + b;
+		gtk_widget_destroy(GTK_WIDGET(paled->colorsel));
+		paled->render();
+		paled->show();
+		}
+	paled->colorsel = 0;
+	}
+
+/*
+ *	Handle double-click on a color by bringing up a color-selector.
+ */
+
+void Palette_edit::double_clicked
+	(
+	)
+	{
+	cout << "Double-clicked" << endl;
+	if (selected < 0 || colorsel)	// Only one at a time.
+		return;			// Nothing selected.
+	char buf[150];			// Show new selection.
+	g_snprintf(buf, sizeof(buf), "Color %d (0x%02x)", selected, selected);
+	colorsel = GTK_COLOR_SELECTION_DIALOG(
+					gtk_color_selection_dialog_new(buf));
+					// Set mouse click handler.
+	gtk_signal_connect(GTK_OBJECT(colorsel->ok_button), "clicked",
+				GTK_SIGNAL_FUNC(color_okay), this);
+	gtk_signal_connect(GTK_OBJECT(colorsel->cancel_button), "clicked",
+				GTK_SIGNAL_FUNC(color_cancel), this);
+					// Set delete handler.
+	gtk_signal_connect(GTK_OBJECT(colorsel), "delete_event",
+				GTK_SIGNAL_FUNC(color_closed), this);
+					// Get color.
+	guint32 c = palette->colors[selected];
+	gdouble rgb[3];
+	rgb[0] = ((double) ((c>>16)&0xff))/256;
+	rgb[1] = ((double) ((c>>8)&0xff))/256;
+	rgb[2] = ((double) ((c>>0)&0xff))/256;
+	gtk_color_selection_set_color(GTK_COLOR_SELECTION(colorsel->colorsel),
+								rgb);
+	gtk_widget_show(GTK_WIDGET(colorsel));
+	}
+
+/*
  *	Configure the viewing window.
  */
 
@@ -177,6 +273,8 @@ gint Palette_edit::mouse_press
 	)
 	{
 	Palette_edit *paled = (Palette_edit *) data;
+	if (paled->colorsel)
+		return (TRUE);		// Already editing a color.
 	int old_selected = paled->selected;
 	int width = paled->width, height = paled->height;
 	int eventx = (int) event->x, eventy = (int) event->y;
@@ -197,9 +295,15 @@ gint Palette_edit::mouse_press
 		sely = extrah + (eventy - extray)/eachh;
 	paled->selected = sely*16 + selx;
 	if (paled->selected == old_selected)
-		return TRUE;
-	paled->render();
-	paled->show();
+		{			// Same square.  Check for dbl-click.
+		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
+			paled->double_clicked();
+		}
+	else
+		{
+		paled->render();
+		paled->show();
+		}
 #if 0
 					// Indicate we can drag.
 			GtkTargetEntry tents[1];
@@ -341,7 +445,7 @@ Palette_edit::Palette_edit
 	GtkWidget *box,			// Where to put this.
 	int w, int h			// Dimensions.
 	) : image(0), width(0), height(0),
-		palette(0),
+		palette(0), colorsel(0),
 		selected(-1)
 	{
 	palette = gdk_rgb_cmap_new(colors, 256);
