@@ -69,9 +69,6 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	int info_cnt;			// # entries in info.
 	int locate_cx, locate_cy;	// Last chunk found by 'locate'.
 	bool drop_enabled;		// So we only do it once.
-					// Various controls.
-	GtkWidget *loc_chunk_down, *loc_chunk_up, *insert_chunk_dup,
-		  *move_chunk_down, *move_chunk_up;
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);
@@ -89,9 +86,9 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	void render_chunk(int chunknum, int xoff, int yoff);
 	void scroll(int newindex);	// Scroll.
 	void scroll(bool upwards);
-	GtkWidget *create_controls();
 	void enable_controls();		// Enable/disable controls after sel.
 					//   has changed.
+	virtual GtkWidget *create_popup();	// Popup menu.
 public:
 	Chunk_chooser(Vga_file *i, std::istream& cfile, unsigned char *palbuf, 
 					int w, int h, Shape_group *g = 0);
