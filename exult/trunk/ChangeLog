@@ -1,3 +1,6 @@
+2001-12-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mapedit/u7shp.c: use new and improved palette in gimp plugin
+
 2001-12-21  Max Horn  <max@quendi.de>
 
 	* configure.in: fixed output at end of configure run to do what it is
