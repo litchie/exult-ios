@@ -122,20 +122,22 @@ void Background_noise::handle_event
 	Main_actor *ava = gwin->get_main_actor();
 	unsigned long delay = 8000;
 					// Only if outside.
-	if (ava && !gwin->is_main_actor_inside())
+	if (ava && !gwin->is_main_actor_inside() &&
+					// ++++++Need SI SFX #'s.
+	    Game::get_game_type() == BLACK_GATE)
 		{
 		int sound;		// SFX #.
-		static unsigned char night[] = {61, 103, 110},
-				     day[] = {75, 82, 85, 85};
+		static unsigned char bgnight[] = {61, 103, 110},
+				     bgday[] = {75, 82, 85, 85};
 		if (repeats > 0)	// Repeating?
 			sound = last_sound;
 		else
 			{
 			int hour = gwin->get_hour();
 			if (hour < 6 || hour > 20)
-				sound = night[rand()%sizeof(night)];
+				sound = bgnight[rand()%sizeof(bgnight)];
 			else
-				sound = day[rand()%sizeof(day)];
+				sound = bgday[rand()%sizeof(bgday)];
 			last_sound = sound;
 			}
 		Audio::get_ptr()->play_sound_effect(sound);
