@@ -1,3 +1,7 @@
+2000-05-19  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* gamewin.cc: Blank screen after intro...
+
 2000-05-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Improved rendering when climbing stairs.

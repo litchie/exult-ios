@@ -878,6 +878,7 @@ void Game_window::paint_splash
 		set_palette("static/intropal.dat",4,1);
 		SDL_Delay(1500);
 		set_palette("static/intropal.dat",4,-1);
+		win->fill8(0,get_width(),get_height(),0,0);
 	}
 
 /*
