@@ -31,6 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include <string>	// STL string
+#include "shapeid.h"
+#include "rect.h"
 #include "vec.h"
 #include "tqueue.h"
 #include "tiles.h"
@@ -54,52 +56,6 @@ const int chunks_per_schunk = 16;	// # chunks in each superchunk.
 const int tiles_per_schunk = 16*16;	// # tiles in each superchunk.
 					// Total # tiles in each dir.:
 const int num_tiles = tiles_per_chunk*num_chunks;
-
-/*
- *	A shape ID contains a shape # and a frame # within the shape encoded
- *	as a 2-byte quantity.
- */
-class ShapeID
-	{
-	short shapenum;			// Shape #.
-	unsigned char framenum;		// Frame # within shape.
-public:
-					// Create from map data.
-	ShapeID(unsigned char l, unsigned char h) 
-		: shapenum(l + 256*(h&0x3)), framenum(h >> 2)
-		{  }
-	ShapeID(unsigned char *& data)	// Read from buffer & incr. ptr.
-		{
-		unsigned char l = *data++;
-		unsigned char h = *data++;
-		shapenum = l + 256*(h&0x3);
-		framenum = h >> 2;
-		}
-					// Create "end-of-list"/invalid entry.
-	ShapeID() : shapenum(-1)
-		{  }
-	~ShapeID() {};
-	int is_invalid() const		// End-of-list or invalid?
-		{ return shapenum == -1; }
-	int is_eol() const
-		{ return is_invalid(); }
-	int get_shapenum() const
-		{ return shapenum; }
-	int get_framenum() const
-		{ return framenum; }
-					// Set to given shape.
-	void set_shape(int shnum, int frnum)
-		{
-		shapenum = shnum;
-		framenum = frnum;
-		}
-	ShapeID(int shnum, int frnum) : shapenum(shnum), framenum(frnum)
-		{  }
-	void set_shape(int shnum)	// Set shape, but keep old frame #.
-		{ shapenum = shnum; }
-	void set_frame(int frnum)	// Set to new frame.
-		{ framenum = frnum; }
-	};
 
 /*
  *	A game object is a shape from shapes.vga along with info. about its
@@ -701,32 +657,6 @@ public:
 	};
 
 /*
- *	Directions:
- */
-enum Direction
-	{
-	north = 0,
-	northeast = 1,
-	east = 2,
-	southeast = 3,
-	south = 4,
-	southwest = 5,
-	west = 6,
-	northwest = 7
-	};
-
-Direction Get_direction
-	(
-	int deltay,
-	int deltax
-	);
-Direction Get_direction4
-	(
-	int deltay,
-	int deltax
-	);
-
-/*
  *	A sequence of frames.  Frame 0 is the resting state.
  */
 class Frames_sequence
@@ -747,64 +677,6 @@ public:
 		if (++index >= num_frames)
 			index = 1;
 		return frames[index];
-		}
-	};
-
-/*
- *	A rectangle:
- */
-class Rectangle
-	{
-public:					// Let's make it all public.
-	int x, y;			// Position.
-	int w, h;			// Dimensions.
-	Rectangle(int xin, int yin, int win, int hin)
-			: x(xin), y(yin), w(win), h(hin)
-		{  }
-	Rectangle() { }			// An uninitialized one.
-					// Is this point in it?
-	int has_point(int px, int py) const
-		{ return (px >= x && px < x + w && py >= y && py < y + h); }
-					// Add another to this one to get
-					//  a rect. that encloses both.
-	Rectangle add(Rectangle& r2) const
-		{
-		int xend = x + w, yend = y + h;
-		int xend2 = r2.x + r2.w, yend2 = r2.y + r2.h;
-		Rectangle r;		// Return this.
-		r.x = x < r2.x ? x : r2.x;
-		r.y = y < r2.y ? y : r2.y;
-		r.w = (xend > xend2 ? xend : xend2) - r.x;
-		r.h = (yend > yend2 ? yend : yend2) - r.y;
-		return (r);
-		}
-					// Intersect another with this.
-	Rectangle intersect(Rectangle& r2) const
-		{
-		int xend = x + w, yend = y + h;
-		int xend2 = r2.x + r2.w, yend2 = r2.y + r2.h;
-		Rectangle r;		// Return this.
-		r.x = x >= r2.x ? x : r2.x;
-		r.y = y >= r2.y ? y : r2.y;
-		r.w = (xend <= xend2 ? xend : xend2) - r.x;
-		r.h = (yend <= yend2 ? yend : yend2) - r.y;
-		return (r);
-		}
-					// Does it intersect another?
-	int intersects(Rectangle r2) const
-		{
-		return (x >= r2.x + r2.w ? 0 : r2.x >= x + w ? 0 :
-			y >= r2.y + r2.h ? 0 : r2.y >= y + h ? 0 : 1);
-		}
-	void shift(int deltax, int deltay)
-		{
-		x += deltax;
-		y += deltay;
-		}		
-	Rectangle& enlarge(int delta)	// Add delta in each dir.
-		{
-		x -= delta; y -= delta; w += 2*delta; h += 2*delta; 
-		return *this;
 		}
 	};
 

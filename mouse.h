@@ -26,7 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_MOUSE
 #define INCL_MOUSE 1
 
-#include "objs.h"
+#include "rect.h"
+#include "dir.h"
 #include "imagewin.h"
 #include "vgafile.h"
 

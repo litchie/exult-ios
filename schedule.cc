@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Astar.h"
 #include "gamewin.h"
 #include "actions.h"
+#include "dir.h"
 
 /*
  *	Set up an action to get an actor to a location (via pathfinding), and
