@@ -807,7 +807,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Fellowship
 	{     955,  1,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     1 },
 	// White Heart??? **NEEDS ART**
-	{     955,  2,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     5 },
+	{     955,  2,       Actor::neck,   OT_Normal,  false, exult_flx,    34,     0 },
 	// Amulet of Protection???
 	{     955,  3,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     3 },
 	// Amulet of ???
