@@ -57,6 +57,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapegroup.h"
 #include "shapefile.h"
 #include "shapedraw.h"
+#include "paledit.h"
 
 using std::cerr;
 using std::cout;
@@ -349,16 +350,8 @@ Object_browser *ExultStudio::create_browser(const char *fname)
 Object_browser *ExultStudio::create_palette_browser(const char *fname)
 {
 	char *fullname = g_strdup_printf("%s%s", static_path, fname);
-	U7object pal(fullname, 0);
+	Palette_edit *paled = new Palette_edit(fullname);
 	g_free(fullname);
-	size_t len;
-	unsigned char *buf;		// this may throw an exception
-	buf = (unsigned char *) pal.retrieve(len);
-	guint32 colors[256];
-	for (int i = 0; i < 256; i++)
-		colors[i] = (buf[3*i]<<16)*4 + (buf[3*i+1]<<8)*4 + 
-							buf[3*i+2]*4;
-	Palette_edit *paled = new Palette_edit(colors, 128, 128);
 	return paled;
 }
 
