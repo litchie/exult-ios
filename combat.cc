@@ -463,8 +463,9 @@ void Combat_schedule::run_away
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	if (npc->get_party_id() >= 0 && !fleed && gwin->in_combat())
-		Audio::get_ptr()->start_music_combat(CSRun_Away, 0);
+// +++I think this should only be played if you quit combat+++++
+//	if (npc->get_party_id() >= 0 && !fleed && gwin->in_combat())
+//		Audio::get_ptr()->start_music_combat(CSRun_Away, 0);
 	fleed++;
 					// Might be nice to run from opp...
 	int rx = rand();		// Get random position away from here.
@@ -782,7 +783,21 @@ void Combat_schedule::ending
 	if (gwin->get_main_actor() == npc)
 		{			// See if being a coward.
 		find_opponents();
-		if (!opponents.empty())
+		bool found = false;	// Find a close-by enemy.
+		Tile_coord pos = npc->get_abs_tile_coord();
+		for (Actor_queue::const_iterator it = opponents.begin(); 
+						it != opponents.end(); ++it)
+			{
+			Actor *opp = *it;
+			Tile_coord opppos = opp->get_abs_tile_coord();
+			if (opppos.distance(pos) < (300/2)/c_tilesize &&
+			    Fast_pathfinder_client::is_grabable(pos, opppos))
+				{
+				found = true;
+				break;
+				}
+			}
+		if (found)
 			Audio::get_ptr()->start_music_combat(CSRun_Away,
 								false);
 		}
