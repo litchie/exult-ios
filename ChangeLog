@@ -1,5 +1,6 @@
 2001-03-27  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* tools/Makefile.am: added SDL_INCLUDES to includes
+	* schedule.cc: fixed crash in Sew_schedule
 
 2001-03-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.be: added exult_bg.flx to dependencies
