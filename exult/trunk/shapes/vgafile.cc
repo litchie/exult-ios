@@ -1172,13 +1172,15 @@ void Vga_file::load
 	{
 		U7open(file, nm);
 		shape_source = new StreamDataSource(&file);
-		flex = Flex::is_flex(file);
+		StreamDataSource ds(&file);
+		flex = Flex::is_flex(&ds);
 	}
 	if (nm2 && U7exists(nm2))
 	{
 		U7open(file2, nm2);		// throws an error if it fails
 		shape_source2 = new StreamDataSource(&file2);
-		flex = Flex::is_flex(file2);
+		StreamDataSource ds(&file2);
+		flex = Flex::is_flex(&ds);
 	}
 	if (!shape_source && !shape_source2)
 		throw file_open_exception(get_system_path(nm));

@@ -856,7 +856,7 @@ void Egg_object::remove_this
 
 void Egg_object::write_ireg
 	(
-	ostream& out
+	DataSource *out
 	)
 	{
 	unsigned char buf[13];		// 13-byte entry + length-byte.
@@ -876,7 +876,7 @@ void Egg_object::write_ireg
 	Write2(ptr, data1);
 	*ptr++ = (get_lift()&15)<<4;
 	Write2(ptr, data2);
-	out.write((char*)buf, sizeof(buf));
+	out->write((char*)buf, sizeof(buf));
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}
@@ -1054,7 +1054,7 @@ void Field_object::activate
 
 void Field_object::write_ireg
 	(
-	ostream& out
+	DataSource *out
 	)
 	{
 	Ireg_game_object::write_ireg(out);
@@ -1152,7 +1152,7 @@ void Mirror_object::paint(Game_window *gwin)
  *	Write out.  These are stored as normal game objects.
  */
 
-void Mirror_object::write_ireg(ostream& out)
+void Mirror_object::write_ireg(DataSource *out)
 {
 	Ireg_game_object::write_ireg(out);
 }

@@ -34,6 +34,7 @@
 #include "chunks.h"
 #include "schedule.h"
 #include "objiter.h"
+#include "databuf.h"
 
 using std::ios;
 using std::cout;
@@ -51,7 +52,7 @@ using std::ostream;
 
 void Actor::read
 	(
-	istream& nfile,			// 'npc.dat', generally.
+	DataSource* nfile,		// 'npc.dat', generally.
 	int num,			// NPC #, or -1.
 	bool has_usecode,		// 1 if a 'type1' NPC.
 	bool& fix_unused		// Old savegame, so 'unused' isn't
@@ -67,10 +68,10 @@ void Actor::read
 	bool fix_first = Game::is_new_game();
 					
 	init();				// Clear rest of stuff.
-	unsigned locx = Read1(nfile);	// Get chunk/tile coords.
-	unsigned locy = Read1(nfile);
+	unsigned locx = nfile->read1();	// Get chunk/tile coords.
+	unsigned locy = nfile->read1();
 					// Read & set shape #, frame #.
-	unsigned short shnum = Read2(nfile);
+	unsigned short shnum = nfile->read2();
 
 	if (num == 0 && Game::get_game_type() != BLACK_GATE && 
 						(shnum & 0x3ff) < 12)
@@ -80,7 +81,7 @@ void Actor::read
 
 	set_frame(shnum >> 10);
 	
-	int iflag1 = Read2(nfile);	// Inventory flag.
+	int iflag1 = nfile->read2();	// Inventory flag.
 					// We're going to use these bits.
 					// iflag1:0 == has_contents.
 					// iflag1:1 == sched. usecode follows,
@@ -91,9 +92,9 @@ void Actor::read
 	if (!fix_first && (iflag1&4))
 		usecode_assigned = true;
 
-	int schunk = Read1(nfile);	// Superchunk #.
-	Read1(nfile);			// Skip next byte.
-	int usefun = Read2(nfile);	// Get usecode function #.
+	int schunk = nfile->read1();	// Superchunk #.
+	nfile->read1();			// Skip next byte.
+	int usefun = nfile->read2();	// Get usecode function #.
 	set_lift(usefun >> 12);		// Lift is high 4 bits.
 	usecode = usefun & 0xfff;
 //	if (!npc_num)			// Avatar is always first.
@@ -107,10 +108,10 @@ void Actor::read
 	    usecode == 0xfff)
 		usecode = -1;		// Let's try this.
 					// Guessing:  !!  (Want to get signed.)
-	int health_val = static_cast<int>(static_cast<char>(Read1(nfile)));
+	int health_val = static_cast<int>(static_cast<char>(nfile->read1()));
 	set_property(static_cast<int>(Actor::health), health_val);
-	nfile.seekg(3, ios::cur);	// Skip 3 bytes.
-	int iflag2 = Read2(nfile);	// The 'used-in-game' flag.
+	nfile->skip(3);	// Skip 3 bytes.
+	int iflag2 = nfile->read2();	// The 'used-in-game' flag.
 	if (iflag2 == 0 && num >= 0 && !fix_unused)
 		{
 		if (num == 0)		// Old (bad) savegame?
@@ -122,7 +123,7 @@ void Actor::read
 
 	bool has_contents = fix_first ? (iflag1 && !unused) : (iflag1&1);
 	// Read first set of flags
-	const int rflags = Read2(nfile);
+	const int rflags = nfile->read2();
 	
 	if ((rflags >> 0x7) & 1) set_flag (Obj_flags::asleep);
 	if ((rflags >> 0x8) & 1) set_flag (Obj_flags::charmed);
@@ -152,7 +153,7 @@ void Actor::read
 
 	// In BG - Strength (0-5), skin colour(6-7)
 	// In SI - Strength (0-4), skin colour(5-6), freeze (7)
-	int strength_val = Read1(nfile);
+	int strength_val = nfile->read1();
 
 	if (Game::get_game_type() == BLACK_GATE)
 	{
@@ -189,11 +190,11 @@ void Actor::read
 	    npc_num > 0)		// DON'T do this for Avatar!
 		set_flag(Obj_flags::dead);	// Fixes older savegames.
 	// Dexterity
-	set_property(static_cast<int>(Actor::dexterity), Read1(nfile));
+	set_property(static_cast<int>(Actor::dexterity), nfile->read1());
 
 
 	// Intelligence (0-4), read(5), Tournament (6), polymorph (7)
-	int intel_val = Read1(nfile);
+	int intel_val = nfile->read1();
 
 	set_property(static_cast<int>(Actor::intelligence), intel_val & 0x1F);
 	if ((intel_val >> 5) & 1) set_flag (Obj_flags::read);
@@ -204,23 +205,23 @@ void Actor::read
 
 
 	// Combat skill (0-6), Petra (7)
-	int combat_val = Read1(nfile);
+	int combat_val = nfile->read1();
 	set_property(static_cast<int>(Actor::combat), combat_val & 0x7F);
 	if ((combat_val << 7) & 1) set_flag (Obj_flags::petra);
 
-	schedule_type = Read1(nfile);
-	int amode = Read1(nfile);	// Default attack mode
+	schedule_type = nfile->read1();
+	int amode = nfile->read1();	// Default attack mode
 					// Just stealing 2 spare bits:
 	combat_protected = (amode&(1<<4)) != 0;
 	user_set_attack = (amode&(1<<5)) != 0;
 	attack_mode = (Attack_mode) (amode&0xf);
 
-	nfile.seekg(3, ios::cur); 	//Unknown
+	nfile->skip(3); 	//Unknown
 
 	// If NPC 0: MaxMagic (0-4), TempHigh (5-7) and Mana(0-4), TempLow (5-7)
 	// Else: ID# (0-4) ???, TempHigh (5-7) and Mat (0), No Spell Casting (1), Zombie (3), TempLow (5-7)
-	int magic_val = Read1(nfile);
-	int mana_val = Read1(nfile);
+	int magic_val = nfile->read1();
+	int mana_val = nfile->read1();
 
 	if (num == 0)
 	{
@@ -246,27 +247,27 @@ void Actor::read
 
 	set_temperature (((magic_val >> 2) & 0x38) + ((mana_val >> 5) & 7));
 
-//	nfile.seekg(1	, ios::cur);	// Index2???? (refer to U7tech.txt)
-	face_num = Read1(nfile);
+//	nfile->skip(1	);	// Index2???? (refer to U7tech.txt)
+	face_num = nfile->read1();
 	if (!face_num && npc_num > 0)	// Fix older savegames.
 		face_num = npc_num;
-	nfile.seekg(2	, ios::cur);	// Unknown
+	nfile->skip(2	);	// Unknown
 
-	set_property(static_cast<int>(Actor::exp), Read4(nfile));
-	set_property(static_cast<int>(Actor::training), Read1(nfile));
+	set_property(static_cast<int>(Actor::exp), nfile->read4());
+	set_property(static_cast<int>(Actor::training), nfile->read1());
 
 
-	nfile.seekg (2, ios::cur);	// Primary Attacker
-	nfile.seekg (2, ios::cur);	// Secondary Attacker
-	oppressor = Read2(nfile);	// Oppressor NPC id.
+	nfile->skip (2);	// Primary Attacker
+	nfile->skip (2);	// Secondary Attacker
+	oppressor = nfile->read2();	// Oppressor NPC id.
 
-	nfile.seekg (4, ios::cur);	//I-Vr ??? (refer to U7tech.txt)
+	nfile->skip (4);	//I-Vr ??? (refer to U7tech.txt)
 
-	schedule_loc.tx = Read2(nfile);	//S-Vr Where npc is supposed to 
-	schedule_loc.ty = Read2(nfile);	//be for schedule)
+	schedule_loc.tx = nfile->read2();	//S-Vr Where npc is supposed to 
+	schedule_loc.ty = nfile->read2();	//be for schedule)
 	
 	// Type flags 2
-	int tflags = Read2 (nfile);
+	int tflags = nfile->read2();
 
 	// First time round, all the flags are garbage
 	if (fix_first)
@@ -285,18 +286,18 @@ void Actor::read
 	}
 	
 
-	nfile.seekg (5, ios::cur);	// Unknown
+	nfile->skip (5);	// Unknown
 
-	next_schedule = Read1(nfile);	// Acty ????? what is this??
+	next_schedule = nfile->read1();	// Acty ????? what is this??
 
-	nfile.seekg (1, ios::cur);	// SN ????? (refer to U7tech.txt)
-	nfile.seekg (2, ios::cur);	// V1 ????? (refer to U7tech.txt)
-	nfile.seekg (2, ios::cur);	// V2 ????? (refer to U7tech.txt)
+	nfile->skip (1);	// SN ????? (refer to U7tech.txt)
+	nfile->skip (2);	// V1 ????? (refer to U7tech.txt)
+	nfile->skip (2);	// V2 ????? (refer to U7tech.txt)
 
 	Game_window *gwin = Game_window::get_game_window();
 
 	// 16 Bit Shape Numbers, allows for shapes > 1023
-	shnum = Read2(nfile);
+	shnum = nfile->read2();
 	if (!fix_first && shnum)
 	{
 		if (GAME_BG && !gwin->can_use_multiracial() && shnum > 1024 && npc_num == 0)
@@ -304,7 +305,7 @@ void Actor::read
 		else
 			set_shape(shnum);		// 16 Bit Shape Number
 
-		shnum = (sint16) Read2(nfile);	// 16 Bit Polymorph Shape Number
+		shnum = (sint16) nfile->read2();	// 16 Bit Polymorph Shape Number
 		if (get_flag (Obj_flags::polymorph)) 
 			{			// Try to fix messed-up flag.
 			if (shnum != get_shapenum())
@@ -315,7 +316,7 @@ void Actor::read
 	}
 	else
 	{
-		nfile.seekg (2, ios::cur);
+		nfile->skip (2);
 		set_polymorph_default();
 	}
 
@@ -325,16 +326,16 @@ void Actor::read
 		uint32	f;
 
 		// Flags
-		f = Read4(nfile);
+		f = nfile->read4();
 		flags |= f;
 
 		// SIFlags
-		f = Read2(nfile);
+		f = nfile->read2();
 		siflags |= f;
 
 		// Flags2	But don't set polymorph.
 		bool polym = get_flag(Obj_flags::polymorph)!= false;
-		f = Read4(nfile);
+		f = nfile->read4();
 		flags2 |= f;
 		if (!polym && get_flag(Obj_flags::polymorph))
 			clear_flag(Obj_flags::polymorph);
@@ -342,28 +343,28 @@ void Actor::read
 	else
 	{
 		// Flags
-		nfile.seekg (4, ios::cur);
+		nfile->skip (4);
 
 		// SIFlags
-		nfile.seekg (2, ios::cur);
+		nfile->skip (2);
 
 		// Flags2 
-		nfile.seekg (4, ios::cur);
+		nfile->skip (4);
 	}
 
 	// Skip 15
-	nfile.seekg (15, ios::cur);
+	nfile->skip (15);
 
 					// Get (signed) food level.
-	int food_read = static_cast<int>(static_cast<char>(Read1(nfile)));
+	int food_read = static_cast<int>(static_cast<char>(nfile->read1()));
 	if (fix_first) food_read = 18;
 	set_property(static_cast<int>(Actor::food_level), food_read);
 
 	// Skip 7
-	nfile.seekg(7, ios::cur);
+	nfile->skip(7);
 
 	char namebuf[17];
-	nfile.read(namebuf, 16);
+	nfile->read(namebuf, 16);
 	
 	for (int i = 0; i < 16; i++)
 		if (namebuf[i] == 0) 
@@ -445,7 +446,7 @@ void Actor::read
 
 void Actor::write
 	(
-	ostream& nfile			// Generally 'npc.dat'.
+	DataSource* nfile			// Generally 'npc.dat'.
 	)
 	{
 	int i;
@@ -455,7 +456,7 @@ void Actor::write
 	set_shape( get_shape_real() );	// Change the shape out non polymorph one
 	
 	Game_object::write_common_ireg(buf4);
-	nfile.write(reinterpret_cast<char*>(buf4), sizeof(buf4));
+	nfile->write(reinterpret_cast<char*>(buf4), sizeof(buf4));
 
 	set_shape( old_shape );		// Revert the shape to what it was
 
@@ -469,19 +470,19 @@ void Actor::write
 	iflag1 |= 2;			// We're always doing write_scheduled()
 	if (usecode_assigned)		// # assigned by EStudio?
 		iflag1 |= 4;		// Set bit 2.
-	Write2(nfile, iflag1);
+	nfile->write2(iflag1);
 			// Superchunk #.
-	nfile.put((get_cy()/16)*12 + get_cx()/16);
-	nfile.put(0);			// Unknown.
+	nfile->write1((get_cy()/16)*12 + get_cx()/16);
+	nfile->write1(0);			// Unknown.
 					// Usecode.
 	int usefun = get_usecode() & 0xfff;
 					// Lift is in high 4 bits.
 	usefun |= ((get_lift()&15) << 12);
-	Write2(nfile, usefun);
-	nfile.put(get_property(Actor::health));
-	nfile.put(0);			// Unknown 3 bytes.
-	Write2(nfile, 0);
-	Write2(nfile, unused ? 0 : 1);	// Write 0 if unused.
+	nfile->write2(usefun);
+	nfile->write1(get_property(Actor::health));
+	nfile->write1(0);			// Unknown 3 bytes.
+	nfile->write2(0);
+	nfile->write2(unused ? 0 : 1);	// Write 0 if unused.
 
 	//Write first set of flags
 	int iout = 0;
@@ -503,7 +504,7 @@ void Actor::write
 
 	iout |= ((alignment&3) << 3);
 
-	Write2(nfile, iout);
+	nfile->write2(iout);
 	
 					// Write char. attributes.
 	iout = get_property(Actor::strength);
@@ -511,32 +512,32 @@ void Actor::write
 	else if (npc_num == 0) iout |= ((get_skin_color()+1) & 3) << 6;
 
 	if (get_flag (Obj_flags::freeze)) iout |= 1 << 7;
-	nfile.put(iout);
+	nfile->write1(iout);
 	
-	nfile.put(get_property(Actor::dexterity));
+	nfile->write1(get_property(Actor::dexterity));
 	
 	iout = get_property(Actor::intelligence);
 	if (get_flag (Obj_flags::read)) iout |= 1 << 5;
 					// Tournament
 	if (get_flag (Obj_flags::si_tournament)) iout |= 1 << 6;
 	if (get_flag (Obj_flags::polymorph)) iout |= 1 << 7;
-	nfile.put(iout);
+	nfile->write1(iout);
 
 
 	iout = get_property(Actor::combat);
 	if (get_flag (Obj_flags::petra)) iout |= 1 << 7;
-	nfile.put(iout);
+	nfile->write1(iout);
 	
 	// Make sure schedule is correct
 	update_forced_schedule();
 
-	nfile.put(get_schedule_type());
+	nfile->write1(get_schedule_type());
 	unsigned char amode = attack_mode | 
 		(combat_protected ? (1<<4) : 0) |
 		(user_set_attack ? (1<<5) : 0);
-	nfile.put(amode);
-	nfile.put(0);		// Skip 3.
-	Write2(nfile, 0);
+	nfile->write1(amode);
+	nfile->write1(0);		// Skip 3.
+	nfile->write2(0);
 
 	// Magic
 	int mana_val = 0;
@@ -559,68 +560,68 @@ void Actor::write
 	mana_val |= (get_temperature () & 0x1F) << 5;
 	magic_val |= (get_temperature () & 0x38) << 2;
 
-	nfile.put (magic_val);
-	nfile.put (mana_val);
+	nfile->write1 (magic_val);
+	nfile->write1 (mana_val);
 
-	nfile.put((face_num >= 0 && face_num <= 255) ? face_num : 0);
-	Write2(nfile, 0);		// Skip 2
+	nfile->write1((face_num >= 0 && face_num <= 255) ? face_num : 0);
+	nfile->write2(0);		// Skip 2
 
-	Write4(nfile, get_property(Actor::exp));
-	nfile.put(get_property(Actor::training));
+	nfile->write4(get_property(Actor::exp));
+	nfile->write1(get_property(Actor::training));
 			// 0x40 unknown.
 
-	Write2(nfile, 0);	// Skip 2*2
-	Write2(nfile, 0);
-	Write2(nfile, oppressor);	// Oppressor.
+	nfile->write2(0);	// Skip 2*2
+	nfile->write2(0);
+	nfile->write2(oppressor);	// Oppressor.
 
-	Write4(nfile, 0);	// Skip 2*2
+	nfile->write4(0);	// Skip 2*2
 	
-	Write2(nfile, schedule_loc.tx);	//S-Vr Where npc is supposed to 
-	Write2(nfile, schedule_loc.ty);	//be for schedule)
-	//Write4(nfile, 0);
+	nfile->write2(schedule_loc.tx);	//S-Vr Where npc is supposed to 
+	nfile->write2(schedule_loc.ty);	//be for schedule)
+	//nfile->write4(0);
 
-	Write2(nfile, get_type_flags());	// Typeflags
+	nfile->write2(get_type_flags());	// Typeflags
 	
-	Write4(nfile, 0);	// Skip 5
-	nfile.put(0);
+	nfile->write4(0);	// Skip 5
+	nfile->write1(0);
 
-	nfile.put(next_schedule);	// Acty ????? what is this??
+	nfile->write1(next_schedule);	// Acty ????? what is this??
 
-	nfile.put(0);		// Skip 1
-	Write2(nfile,0);	// Skip 2
-	Write2(nfile,0);	// Skip 2
+	nfile->write1(0);		// Skip 1
+	nfile->write2(0);	// Skip 2
+	nfile->write2(0);	// Skip 2
 
 	// 16 Bit Shapes
 	if (get_flag (Obj_flags::polymorph))
 	{
-		Write2 (nfile, shape_save);	// 16 Bit Shape Num
-		Write2 (nfile, get_shapenum());	// 16 Bit Polymorph Shape
+		nfile->write2(shape_save);	// 16 Bit Shape Num
+		nfile->write2(get_shapenum());	// 16 Bit Polymorph Shape
 	}
 	else
 	{
-		Write2 (nfile, get_shapenum());	// 16 Bit Shape Num
-		Write2 (nfile, 0);		// 16 Bit Polymorph Shape
+		nfile->write2(get_shapenum());	// 16 Bit Shape Num
+		nfile->write2(0);		// 16 Bit Polymorph Shape
 	}
 
 	// Flags
-	Write4(nfile, flags);
+	nfile->write4(flags);
 
 	// SIFlags 
-	Write2(nfile, siflags);
+	nfile->write2(siflags);
 
 	// flags2
-	Write4(nfile, flags2);
+	nfile->write4(flags2);
 
 	// Skip 15
 	for (i = 0; i < 15; i++)
-		nfile.put(0);
+		nfile->write1(0);
 	
 	// Food
-	nfile.put(get_property (Actor::food_level));
+	nfile->write1(get_property (Actor::food_level));
 
 	// Skip 7
 	for (i = 0; i < 7; i++)
-		nfile.put(0);
+		nfile->write1(0);
 
 	char namebuf[17];		// Write 16-byte name.
 	std::memset(namebuf, 0, 16);
@@ -628,7 +629,7 @@ void Actor::write
 		std::strncpy(namebuf, Game_object::get_name().c_str(), 16);
 	else
 		std::strncpy(namebuf, name.c_str(), 16);
-	nfile.write(namebuf, 16);
+	nfile->write(namebuf, 16);
 	write_contents(nfile);		// Write what he holds.
 	namebuf[16] = 0;
 					// Write scheduled usecode.
@@ -641,7 +642,7 @@ void Actor::write
 
 void Monster_actor::write
 	(
-	ostream& nfile			// Generally 'npc.dat'.
+	DataSource* nfile			// Generally 'npc.dat'.
 	)
 	{
 	if (Actor::is_dead())		// Not alive?
@@ -659,7 +660,7 @@ void Monster_actor::write
 
 void Actor::write_contents
 	(
-	ostream& out
+	DataSource* out
 	)
 {
 	if (!objects.is_empty())	// Now write out what's inside.
@@ -673,8 +674,8 @@ void Actor::write_contents
 			if (spots[i])
 			{
 				// Write 2 byte index id
-				out.put(0x02);
-				Write2 (out, static_cast<uint8>(i));
+				out->write1(0x02);
+				out->write2(static_cast<uint8>(i));
 				spots[i]->write_ireg(out);
 			}
 		}
@@ -692,12 +693,12 @@ void Actor::write_contents
 			{
 				// Write 2 byte index id (-1 = no slot)
 				i = -1;
-				out.put(0x02);
-				Write2 (out, static_cast<uint8>(i));
+				out->write1(0x02);
+				out->write2(static_cast<uint8>(i));
 				obj->write_ireg(out);
 			}
 		}
-		out.put(0x01);		// A 01 terminates the list.
+		out->write1(0x01);		// A 01 terminates the list.
 	}
 }
 

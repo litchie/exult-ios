@@ -33,6 +33,7 @@
 #include "utils.h"
 #include "fnames.h"
 #include "schedule.h"
+#include "databuf.h"
 //#include "items.h"			/* Debugging only */
 
 using std::cerr;
@@ -53,15 +54,16 @@ void Game_window::read_npcs
 {
 	npcs.resize(1);			// Create main actor.
 	camera_actor = npcs[0] = main_actor = new Main_actor("", 0);
-	ifstream nfile;
+	ifstream nfile_stream;
+	StreamDataSource nfile(&nfile_stream);
 	int num_npcs;
 	bool fix_unused = false;	// Get set for old savegames.
 	try
 		{
-		U7open(nfile, NPC_DAT);
-		num_npcs1 = Read2(nfile);	// Get counts.
-		num_npcs = num_npcs1 + Read2(nfile);
-		main_actor->read(nfile, 0, false, fix_unused);
+		U7open(nfile_stream, NPC_DAT);
+		num_npcs1 = nfile.read2();	// Get counts.
+		num_npcs = num_npcs1 + nfile.read2();
+		main_actor->read(&nfile, 0, false, fix_unused);
 		}
 	catch(exult_exception &e)
 		{
@@ -83,7 +85,7 @@ void Game_window::read_npcs
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 	{
 		npcs[i] = new Npc_actor("", 0);
-		npcs[i]->read(nfile, i, i < num_npcs1, fix_unused);
+		npcs[i]->read(&nfile, i, i < num_npcs1, fix_unused);
 		if (npcs[i]->is_unused())
 			{		// Not part of the game.
 			npcs[i]->remove_this(1);
@@ -93,28 +95,28 @@ void Game_window::read_npcs
 			npcs[i]->restore_schedule();
 		CYCLE_RED_PLASMA();
 	}
-	nfile.close();
+	nfile_stream.close();
 	main_actor->set_actor_shape();
 	try
 	{
-		U7open(nfile, MONSNPCS);	// Monsters.
+		U7open(nfile_stream, MONSNPCS);	// Monsters.
 		// (Won't exist the first time; in this case U7open throws
-		int cnt = Read2(nfile);
-		char tmp = Read1(nfile);// Read 1 ahead to test.
-		int okay = nfile.good();
-		nfile.seekg(-1, ios::cur);
+		int cnt = nfile.read2();
+		char tmp = nfile.read1();// Read 1 ahead to test.
+		int okay = nfile_stream.good();
+		nfile.skip(-1);
 		while (okay && cnt--)
 		{
 					// Read ahead to get shape.
-			nfile.seekg(2, ios::cur);
-			unsigned short shnum = Read2(nfile)&0x3ff;
-			okay = nfile.good();
-			nfile.seekg(-4, ios::cur);
+			nfile.skip(2);
+			unsigned short shnum = nfile.read2()&0x3ff;
+			okay = nfile_stream.good();
+			nfile.skip(-4);
 			ShapeID sid(shnum, 0);
 			if (!okay || sid.get_num_frames() < 16)
 				break;	// Watch for corrupted file.
 			Monster_actor *act = Monster_actor::create(shnum);
-			act->read(nfile, -1, false, fix_unused);
+			act->read(&nfile, -1, false, fix_unused);
 			act->restore_schedule();
 			CYCLE_RED_PLASMA();
 		}
@@ -144,35 +146,37 @@ void Game_window::write_npcs
 	)
 	{
 	int num_npcs = npcs.size();
-	ofstream nfile;
-	U7open(nfile, NPC_DAT);
-	Write2(nfile, num_npcs1);	// Start with counts.
-	Write2(nfile, num_npcs - num_npcs1);
+	ofstream nfile_stream;
+	U7open(nfile_stream, NPC_DAT);
+	StreamDataSource nfile(&nfile_stream);
+
+	nfile.write2(num_npcs1);	// Start with counts.
+	nfile.write2(num_npcs - num_npcs1);
 	int i;
 	for (i = 0; i < num_npcs; i++)
-		npcs[i]->write(nfile);
-	nfile.flush();
-	bool result = nfile.good();
+		npcs[i]->write(&nfile);
+	nfile_stream.flush();
+	bool result = nfile_stream.good();
 	if (!result)
 		throw file_write_exception(NPC_DAT);
-	nfile.close();
+	nfile_stream.close();
 	write_schedules();		// Write schedules
 					// Now write out monsters in world.
-	U7open(nfile, MONSNPCS);
+	U7open(nfile_stream, MONSNPCS);
 	int cnt = 0;
-	Write2(nfile, 0);		// Write 0 as a place holder.
+	nfile.write2(0);		// Write 0 as a place holder.
 	for (Monster_actor *mact = Monster_actor::get_first_in_world();
 					mact; mact = mact->get_next_in_world())
 		if (!mact->is_dead())	// Alive?
 			{
-			mact->write(nfile);
+			mact->write(&nfile);
 			cnt++;
 			}
-	nfile.seekp(0);			// Back to start.
-	Write2(nfile, cnt);		// Write actual count.
-	nfile.flush();
-	result = nfile.good();
-	nfile.close();
+	nfile.seek(0);			// Back to start.
+	nfile.write2(cnt);		// Write actual count.
+	nfile_stream.flush();
+	result = nfile_stream.good();
+	nfile_stream.close();
 	if (!result)
 		throw file_write_exception(NPC_DAT);
 	}
@@ -185,11 +189,11 @@ void Game_window::read_schedules
 	(
 	)
 	{
-	ifstream sfile;
+	ifstream sfile_stream;
 	int num_npcs = 0;
 	try
 	{
-		U7open(sfile, GSCHEDULE);
+		U7open(sfile_stream, GSCHEDULE);
 	}
 	catch(exult_exception e)
 	{
@@ -198,7 +202,7 @@ void Game_window::read_schedules
 		endl << "Trying " << SCHEDULE_DAT << endl;
 		try
 		{
-			U7open(sfile, SCHEDULE_DAT);
+			U7open(sfile_stream, SCHEDULE_DAT);
 		}
 		catch(exult_exception e1)
 		{
@@ -208,12 +212,14 @@ void Game_window::read_schedules
 			return;
 		}
 	}
-	num_npcs = Read4(sfile);	// # of NPC's, not include Avatar.
+	StreamDataSource sfile(&sfile_stream);
+
+	num_npcs = sfile.read4();	// # of NPC's, not include Avatar.
 
 	short *offsets = new short[num_npcs];
 	int i;				// Read offsets with list of scheds.
 	for (i = 0; i < num_npcs; i++)
-		offsets[i] = Read2(sfile);
+		offsets[i] = sfile.read2();
 	for (i = 0; i < num_npcs - 1; i++)	// Do each NPC, except Avatar.
 		{
 					// Avatar isn't included here.
@@ -247,7 +253,7 @@ void Game_window::read_schedules
 void Game_window::write_schedules ()
 {
 
-	ofstream sfile;
+	ofstream sfile_stream;
 	Schedule_change *schedules;
 	int cnt;
 	short offset = 0;
@@ -257,16 +263,17 @@ void Game_window::write_schedules ()
 	// So do I allow for all NPCs (type1 and type2) - Yes i will
 	num = npcs.size();
 
-	U7open(sfile, GSCHEDULE);
+	U7open(sfile_stream, GSCHEDULE);
+	StreamDataSource sfile(&sfile_stream);
 
-	Write4(sfile, num);		// # of NPC's, not include Avatar.
-	Write2(sfile, 0);		// First offfset
+	sfile.write4(num);		// # of NPC's, not include Avatar.
+	sfile.write2(0);		// First offfset
 
 	for (i = 1; i < num; i++)	// write offsets with list of scheds.
 	{
 		npcs[i]->get_schedules(schedules, cnt);
 		offset += cnt;
-		Write2(sfile, offset);
+		sfile.write2(offset);
 	}
 
 	for (i = 1; i < num; i++)	// Do each NPC, except Avatar.
@@ -287,17 +294,18 @@ void Game_window::revert_schedules(Actor *npc)
 	if (npc->get_npc_num() <= 0) return;
 
 	int i;
-	ifstream sfile;
+	ifstream sfile_stream;
 
-	U7open(sfile, SCHEDULE_DAT);
+	U7open(sfile_stream, SCHEDULE_DAT);
+	StreamDataSource sfile(&sfile_stream);
 
 	// # of NPC's, not include Avatar.
-	int num_npcs = Read4(sfile);
+	int num_npcs = sfile.read4();
 	short *offsets = new short[num_npcs];
-	for (i = 0; i < num_npcs; i++) offsets[i] = Read2(sfile);
+	for (i = 0; i < num_npcs; i++) offsets[i] = sfile.read2();
 
 	// Seek to the right place
-	sfile.seekg(offsets[npc->get_npc_num()-1]*4, ios::cur);
+	sfile.skip(offsets[npc->get_npc_num()-1]*4);
 
 	// Get the count that we want to use
 	int cnt = offsets[npc->get_npc_num()] - offsets[npc->get_npc_num()-1];

@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunks.h"
 #include "objiter.h"
 #include "game.h"
+#include "databuf.h"
 
 using std::ostream;
 
@@ -784,7 +785,7 @@ int Barge_object::step
 
 void Barge_object::write_ireg
 	(
-	ostream& out
+	DataSource *out
 	)
 	{
 	unsigned char buf[13];		// 13-byte entry + length-byte.
@@ -805,14 +806,14 @@ void Barge_object::write_ireg
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = 0;			// Data2.
 	*ptr++ = 0;			// 
-	out.write((char*)buf, sizeof(buf));
+	out->write((char*)buf, sizeof(buf));
 					// Write permanent objects.
 	for (int i = 0; i < perm_count; i++)
 		{
 		Game_object *obj = get_object(i);
 		obj->write_ireg(out);
 		}
-	out.put(0x01);			// A 01 terminates the list.
+	out->write1(0x01);			// A 01 terminates the list.
 					// Write scheduled usecode.
 	Game_map::write_scheduled(out, this);	
 	}

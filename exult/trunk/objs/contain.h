@@ -91,9 +91,9 @@ public:
 					int qual, int framenum);
 	virtual void set_flag_recursively(int flag);
 					// Write out to IREG file.
-	virtual void write_ireg(std::ostream& out);
+	virtual void write_ireg(DataSource* out);
 					// Write contents in IREG format.
-	virtual void write_contents(std::ostream& out);
+	virtual void write_contents(DataSource* out);
 
 	virtual int get_obj_hp() const { return resistance; }
 	virtual void set_obj_hp(int hp) { resistance = (char)hp; }

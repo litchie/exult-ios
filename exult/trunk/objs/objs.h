@@ -45,10 +45,10 @@ class Rectangle;
 class Schedule;
 class Usecode_machine;
 class Vga_file;
+class DataSource;
 
 template<class T>
 class T_Object_list;
-
 
 /*
  *	A game object is a shape from shapes.vga along with info. about its
@@ -321,10 +321,10 @@ public:
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
 					// Write out to IREG file.
-	virtual void write_ireg(std::ostream& out)
+	virtual void write_ireg(DataSource* out)
 		{  }
 					// Write out IFIX, CHUNKS.
-	virtual void write_ifix(std::ostream& ifix)
+	virtual void write_ifix(DataSource* ifix)
 		{  }
 	virtual void elements_read()	// Called when all member items read.
 		{  }
@@ -368,7 +368,7 @@ public:
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual void paint_terrain(Game_window *gwin) {  }
-	virtual void write_ifix(std::ostream& ifix);
+	virtual void write_ifix(DataSource* ifix);
 	};
 
 #endif

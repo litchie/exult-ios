@@ -71,7 +71,7 @@ public:
 	virtual int is_monster()
 		{ return 1; }
 	virtual void die();		// We're dead.
-	void write(std::ostream& nfile);// Write out (to 'monsnpc.dat').
+	void write(DataSource* nfile);// Write out (to 'monsnpc.dat').
 	};
 
 /*
