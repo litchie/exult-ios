@@ -284,6 +284,7 @@ void Frame_animator::handle_event
 			if (framenum < frames - 1)
 				framenum++;
 			break;
+		case 222:		// Pennant (SI).
 		case 289:		// Fire (SI).
 		case 326:		// Fountain (SI).
 		case 614:		// Magic music box (SI).
