@@ -1,3 +1,8 @@
+2001-12-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/chunklst.cc: Added controls for 'chunks' list.
+	* server/server.cc: Added 'terrain' message handling.
+
 2001-12-28  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Fixed bug/TODO where ucxt wasn't building the list of
 	goto targets from all the opcodes with goto offsets (it was only
