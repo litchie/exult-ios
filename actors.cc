@@ -1144,7 +1144,7 @@ int Actor::find_best_spot
 	// Back2h
 	else if (SI && fits_in_spot (obj, back2h_spot, type)) return back2h_spot;
 	// Sheild Spot
-	else if (SI && fits_in_spot (obj, back2h_spot, type)) return shield_spot;
+	else if (SI && fits_in_spot (obj, shield_spot, type)) return shield_spot;
 	// Left Hand
 	else if (fits_in_spot (obj, lhand, type)) return lhand;
 	// Right Hand

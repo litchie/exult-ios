@@ -2048,19 +2048,31 @@ USECODE_INTRINSIC(set_item_flag)
 	// Set npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
 	int flag = parms[1].get_int_value();
-	if (obj)
+	if (!obj)
+		return no_ret;
+	switch (flag)
 		{
+	case Obj_flags::dont_render:
 		obj->set_flag(flag);
-		if (flag == Obj_flags::dont_render)
-			{	// Show change in status.
-			gwin->set_all_dirty();
+					// Show change in status.
+		gwin->set_all_dirty();
+		break;
+	case Obj_flags::invisible:
+		if (as_actor(obj))	// Only NPC's for now.
+			{
+			obj->set_flag(flag);
+			gwin->add_dirty(obj);
 			}
-		else if (Is_moving_barge_flag(flag))
-			{	// Set barge in motion.
+		break;
+	default:
+		obj->set_flag(flag);
+		if (Is_moving_barge_flag(flag))
+			{		// Set barge in motion.
 			Barge_object *barge = Get_barge(obj);
 			if (barge)
 				gwin->set_moving_barge(barge);
 			}
+			break;
 		}
 	return(no_ret);
 }
