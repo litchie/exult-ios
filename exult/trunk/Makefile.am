@@ -95,6 +95,8 @@ exult_SOURCES =	\
 	txtscroll.cc	\
 	txtscroll.h	\
 	vec.h 		\
+	version.cc	\
+	version.h	\
 	xdrag.cc	\
 	xdrag.h
 

@@ -105,6 +105,8 @@
 
 #define GSCRNSHOT	"<GAMEDAT>/scrnshot.shp"
 #define GSAVEINFO	"<GAMEDAT>/saveinfo.dat"
+#define GEXULTVER	"<GAMEDAT>/exult.ver"
+#define GNEWGAMEVER	"<GAMEDAT>/newgame.ver"
 #define KEYRINGDAT	"<GAMEDAT>/keyring.dat"
 
 #define NUM_FONTS	(20)
