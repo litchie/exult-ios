@@ -1,6 +1,7 @@
 2003-03-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: ignore fullscreen mode for --buildmap (in a hackish way)
 	* ucinternal.cc: fixed sleeping crash
+	* INSTALL: updated
 
 2003-03-10  Jeff Freedman  <jeff@amy.nerble.net>
 
