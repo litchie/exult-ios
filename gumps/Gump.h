@@ -33,7 +33,7 @@ class Gump_manager;
 /*
  *	A gump contains an image of an open container from "gumps.vga".
  */
-class Gump : public ShapeID
+class Gump : public ShapeID, public Paintable
 {
 	UNREPLICATABLE_CLASS(Gump);
 

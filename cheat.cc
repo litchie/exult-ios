@@ -644,12 +644,21 @@ void Cheat::paste()
 		paste(x, y);
 	}
 
-void Cheat::map_teleport (void) const {
-	if (!enabled) return;
+const int border=2;			// For showing map.
+const int worldsize = c_tiles_per_chunk * c_num_chunks;
 
+/*
+ *	Show 'cheat' map.
+ */
+class Cheat_map : public Game_singletons, public Paintable
+	{
+public:
+	int x, y;			// Where it's painted.
+	int w, h;
 	Shape_frame *map;
-	// display map
 
+	virtual void paint()
+	{
 #if 0
 	ShapeID mapid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
 #else
@@ -658,37 +667,41 @@ void Cheat::map_teleport (void) const {
 	map = mapid.get_shape();
 
 	// Get coords. for centered view.
-	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
-	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
+	w = map->get_width();
+	h = map->get_height();
+	x = (gwin->get_width() - w)/2 + map->get_xleft();
+	y = (gwin->get_height() - h)/2 + map->get_yabove();
 	mapid.paint_shape(x, y, 1);
   
 	// mark current location
 	int xx, yy;
 	Tile_coord t = gwin->get_main_actor()->get_tile();
   
-	const int worldsize = c_tiles_per_chunk * c_num_chunks;
-	int border=2;
 
-	xx = ((t.tx * (map->get_width() - border*2)) / worldsize);
-	yy = ((t.ty * (map->get_height() - border*2)) / worldsize);
-
+	xx = ((t.tx * (w - border*2)) / worldsize);
+	yy = ((t.ty * (h - border*2)) / worldsize);
 
 	xx += x - map->get_xleft() + border;
 	yy += y - map->get_yabove() + border;
 	gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
 	gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
-  
-	gwin->show(1);
-	if (!Get_click(xx, yy, Mouse::greenselect)) {
+	}
+	};
+
+void Cheat::map_teleport (void) const {
+	if (!enabled) return;
+	Cheat_map map;
+	int xx, yy;
+	if (!Get_click(xx, yy, Mouse::greenselect, 0, false, &map)) {
 		gwin->paint();
 		return;
 	}
 
-	xx -= x - map->get_xleft() + border;
-	yy -= y - map->get_yabove() + border;
-
-	t.tx = static_cast<int>(((xx + 0.5)*worldsize) / (map->get_width() - 2*border));
-	t.ty = static_cast<int>(((yy + 0.5)*worldsize) / (map->get_height() - 2*border));
+	xx -= map.x - map.map->get_xleft() + border;
+	yy -= map.y - map.map->get_yabove() + border;
+	Tile_coord t;
+	t.tx = static_cast<int>(((xx + 0.5)*worldsize) / (map.w - 2*border));
+	t.ty = static_cast<int>(((yy + 0.5)*worldsize) / (map.h - 2*border));
 
 	// World-wrapping.
 	t.tx = (t.tx + c_num_tiles)%c_num_tiles;

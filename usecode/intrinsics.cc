@@ -787,9 +787,8 @@ USECODE_INTRINSIC(display_runes)
 #endif
 			sign->add_text(i, str);
 		}
-	sign->paint();			// Paint it, and wait for click.
-	int x, y;
-	Get_click(x, y, Mouse::hand);
+	int x, y;			// Paint it, and wait for click.
+	Get_click(x, y, Mouse::hand, 0, false, sign);
 	delete sign;
 	gwin->paint();
 	return(no_ret);
@@ -1121,43 +1120,72 @@ USECODE_INTRINSIC(summon)
 	return Usecode_value(monst);
 }
 
+/*
+ *	Class to paint a shape centered.
+ */
+class Paint_centered : public Paintable, public Game_singletons
+	{
+protected:
+	ShapeID *sid;			// ->shape.
+	int x, y;			// Where to paint.
+public:
+	Paint_centered(ShapeID *si) : sid(si)
+		{
+		Shape_frame *s = sid->get_shape();
+					// Get coords. for centered view.
+		x = (gwin->get_width() - s->get_width())/2 + s->get_xleft();
+		y = (gwin->get_height() - s->get_height())/2 + s->get_yabove();
+		}
+	virtual void paint()
+		{
+		sid->paint_shape(x, y);
+		}
+	};
+/*
+ *	Paint map.
+ */
+class Paint_map : public Paint_centered
+	{
+	bool show_loc;
+public:
+	Paint_map(ShapeID *s, bool loc) : Paint_centered(s), show_loc(loc)
+		{  }
+	virtual void paint()
+		{
+		Paint_centered::paint();
+		if (show_loc)
+			{		// mark location
+			int xx, yy;
+			Tile_coord t = gwin->get_main_actor()->get_tile();
+			if (Game::get_game_type()==BLACK_GATE) {
+				xx = (int)(t.tx/16.05 + 5 + 0.5);
+				yy = (int)(t.ty/15.95 + 4 + 0.5);
+			} else if (Game::get_game_type()==SERPENT_ISLE) {
+				xx = (int)(t.tx/16.0 + 18 + 0.5);
+				yy = (int)(t.ty/16.0 + 9.4 + 0.5);
+			}
+			Shape_frame *s = sid->get_shape();
+			xx += x - s->get_xleft();
+			yy += y - s->get_yabove();
+			gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
+			gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
+			}
+		}
+	};
+
 USECODE_INTRINSIC(display_map)
 {
-	// Display map.
-	ShapeID msid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
-	Shape_frame *map = msid.get_shape();
-
-					// Get coords. for centered view.
-	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
-	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
-	msid.paint_shape(x, y);
 
 	//count all sextants in party
 	Usecode_value v_357(-357), v650(650), v_359(-359);
-	long sextants = count_objects(v_357, v650, v_359, v_359).get_int_value();
-	if ((!gwin->is_main_actor_inside()) && (sextants > 0)) {
-		// mark location
-		int xx, yy;
-		Tile_coord t = gwin->get_main_actor()->get_tile();
+	long sextants=count_objects(v_357, v650, v_359, v_359).get_int_value();
+	bool loc = !gwin->is_main_actor_inside() && (sextants > 0);
+	// Display map.
+	ShapeID msid(game->get_shape("sprites/map"), 0, SF_SPRITES_VGA);
+	Paint_map map(&msid, loc);
 
-		if (Game::get_game_type()==BLACK_GATE) {
-			xx = (int)(t.tx/16.05 + 5 + 0.5);
-			yy = (int)(t.ty/15.95 + 4 + 0.5);
-		} else if (Game::get_game_type()==SERPENT_ISLE) {
-			xx = (int)(t.tx/16.0 + 18 + 0.5);
-			yy = (int)(t.ty/16.0 + 9.4 + 0.5);
-		}
-
-		xx += x - map->get_xleft();
-		yy += y - map->get_yabove();
-
-		gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
-		gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
-	}
-
-	gwin->show(1);
 	int xx, yy;
-	Get_click(xx, yy, Mouse::hand);
+	Get_click(xx, yy, Mouse::hand, 0, false, &map);
 	gwin->paint();
 	return(no_ret);
 }
@@ -1181,15 +1209,9 @@ USECODE_INTRINSIC(si_display_map)
 	
 	// Display map.
 	ShapeID msid(shapenum, 0, SF_SPRITES_VGA);
-	Shape_frame *map = msid.get_shape();
-				// Get coords. for centered view.
-	int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
-	int y = (gwin->get_height() - map->get_height())/2 + map->get_yabove();
-	msid.paint_shape(x, y);
-
-	gwin->show(1);
+	Paint_centered map(&msid);
 	int xx, yy;
-	Get_click(xx, yy, Mouse::hand);
+	Get_click(xx, yy, Mouse::hand, 0, false, &map);
 	gwin->paint();
 
 	return no_ret;
