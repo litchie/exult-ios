@@ -45,7 +45,7 @@ inline int Image_buffer_base::clip
 	)
 	{
 					// Start with x-dim.
-	if (!clip_xinternal(srcx, srcw, srch))
+	if (!clip_xinternal(srcx, srcw, destx))
 		return (0);
 	if (desty < clipy)
 		{
