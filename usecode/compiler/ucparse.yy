@@ -38,7 +38,9 @@ extern int yylex();
 
 #define YYERROR_VERBOSE 1
 
-Uc_function *function = 0;		// Current function being parsed.
+vector<Uc_function *> functions;	// THIS is what we produce.
+
+static Uc_function *function = 0;	// Current function being parsed.
 
 %}
 
@@ -49,7 +51,7 @@ Uc_function *function = 0;		// Current function being parsed.
 	class Uc_function_symbol *funsym;
 	class Uc_statement *stmt;
 	class vector<char *> *strvec;
-	class vector<Uc_statement *> *stmtvec;
+	class Uc_block_statement *block;
 	int intval;
 	char *strval;
 	}
@@ -88,8 +90,8 @@ Uc_function *function = 0;		// Current function being parsed.
 %type <sym> declared_var
 %type <funsym> function_proto
 %type <strvec> identifier_list opt_identifier_list
-%type <stmt> statement assignment_statement
-%type <stmtvec> statement_list statement_block
+%type <stmt> statement assignment_statement if_statement while_statement
+%type <block> statement_list statement_block
 
 %%
 
@@ -103,9 +105,8 @@ function:
 		{ function = new Uc_function($1); }
 		statement_block
 		{ 
-		//+++++++++Generate code.
-		delete function;
-		function = 0;
+		function->set_statement($3);
+		functions.push_back(function);
 		}
 	;
 
@@ -136,9 +137,12 @@ statement_block:
 
 statement_list:
 	statement_list statement
-		{ $$->push_back($2); }
+		{
+		if ($2)
+			$$->add($2); 
+		}
 	|				/* Empty. */
-		{ $$ = new vector<Uc_statement *>; }
+		{ $$ = new Uc_block_statement(); }
 	;
 
 statement:
@@ -146,9 +150,7 @@ statement:
 		{ $$ = 0; }
 	| assignment_statement
 	| if_statement
-		{ $$ = 0; /* ++++++++ */ }
 	| while_statement
-		{ $$ = 0; /* ++++++++ */ }
 	| array_loop_statement
 		{ $$ = 0; /* ++++++++ */ }
 	| function_call_statement
@@ -181,11 +183,14 @@ assignment_statement:
 
 if_statement:
 	IF '(' expression ')' statement %prec IF
+		{ $$ = new Uc_if_statement($3, $5, 0); }
 	| IF '(' expression ')' statement ELSE statement
+		{ $$ = new Uc_if_statement($3, $5, $7); }
 	;
 
 while_statement:
 	WHILE '(' expression ')' statement
+		{ $$ = new Uc_while_statement($3, $5); }
 	;
 
 array_loop_statement:

@@ -27,6 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "ucsym.h"
 
+class Uc_statement;
+class ostream;
+
 /* 
  *	This represents a usecode function:
  */
@@ -37,8 +40,12 @@ class Uc_function
 	Uc_scope *cur_scope;		// Current scope.
 	int num_locals;			// Counts locals (+parms).
 	string text_data;		// All strings.
+	Uc_statement *statement;	// Statement(s) in function.
 public:
 	Uc_function(Uc_function_symbol *p);
+	~Uc_function();
+	void set_statement(Uc_statement *s)
+		{ statement = s; }
 	void push_scope()		// Start a new scope.
 		{ cur_scope = cur_scope->add_scope(); }
 	void pop_scope()		// End scope.
@@ -54,6 +61,7 @@ public:
 	Uc_symbol *add_symbol(char *nm);// Add symbol to current scope.
 					// Add string constant.
 	Uc_symbol *add_string_symbol(char *nm, char *text);
+	void gen(ostream& out);		// Generate Usecode.
 	};
 
 #endif
