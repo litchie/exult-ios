@@ -1147,9 +1147,11 @@ void Game_window::read_ireg_objects
 			is_egg = obj->is_egg();
 			obj->set_low_lift (entry[4] & 0xF);
 			obj->set_high_shape (entry[3] >> 7);
+#if 0	/* Causes too much trouble. */
 			if (!container && // Special case:  food.
 			    shnum == 377)
 				oflags &= ~(1<<Obj_flags::okay_to_take);
+#endif
 			}
 		else if (entlen == 12)	// Container?
 			{
