@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef GAMEWIN_H
 #define GAMEWIN_H
 
-#include "imagewin.h"
+#include "iwin8.h"
 #include "objs.h"
 #include "vgafile.h"
 #include "gameclk.h"

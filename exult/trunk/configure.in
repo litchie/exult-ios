@@ -387,4 +387,6 @@ flic/Makefile \
 tools/Makefile \
 data/Makefile \
 docs/Makefile \
-desktop/Makefile )
+desktop/Makefile \
+imagewin/Makefile )
+
