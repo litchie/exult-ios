@@ -31,6 +31,7 @@
 #include "dir.h"
 #include "ucmachine.h"
 #include "frameseq.h"
+#include "ucmachine.h"
 
 using std::cout;
 using std::endl;
@@ -63,6 +64,8 @@ Actor_action *Actor_action::walk_to_tile
 /*
  *	Set up an action to get an actor to a location (via pathfinding), and
  *	then execute another action when he gets there.
+ *
+ *	Output:	->action.  
  */
 
 Actor_action *Actor_action::create_action_sequence
@@ -70,8 +73,7 @@ Actor_action *Actor_action::create_action_sequence
 	Actor *actor,			// Whom to activate.
 	Tile_coord dest,		// Where to walk to.
 	Actor_action *when_there,	// What to do when he gets there.
-	bool from_off_screen,		// Have actor walk from off-screen.
-	bool no_teleport		// Don't teleport if no path found.
+	bool from_off_screen		// Have actor walk from off-screen.
 	)
 	{
 	Actor_action *act = when_there;
@@ -86,11 +88,7 @@ Actor_action *Actor_action::create_action_sequence
 		if (w2 != w)
 			delete w;
 		if (!w2)		// Failed?  Teleport.
-			{
-			if (no_teleport)// Or, just do action here.
-				return act;
 			w2 = new Move_actor_action(dest);
-			}
 					// And teleport if blocked walking.
 		Actor_action *tel = new Move_actor_action(dest);
 					// Walk there, then do whatever.
@@ -430,6 +428,103 @@ int Path_walking_actor_action::following_smart_path
 	{
 	return path != 0 && path->following_smart_path();
 	}
+
+/*
+ *	Create if-then-else path.
+ */
+
+If_else_path_actor_action::If_else_path_actor_action
+	(
+	Actor *actor,
+	Tile_coord dest,
+	Actor_action *s,
+	Actor_action *f
+	) : succeeded(false), failed(false), done(false),
+		success(s), failure(f)
+	{
+	if (!walk_to_tile(actor->get_abs_tile_coord(), dest, 
+						actor->get_type_flags()))
+		{
+		done = failed = true;
+		}
+	}
+
+/*
+ *	Delete.
+ */
+
+If_else_path_actor_action::~If_else_path_actor_action
+	(
+	)
+	{
+	delete success;
+	delete failure;
+	}
+
+/*
+ *	Set failure action.
+ */
+
+void If_else_path_actor_action::set_failure
+	(
+	Actor_action *f
+	)
+	{
+	delete failure;
+	failure = f;
+	done = false;			// So it gets executed.
+	}
+
+/*
+ *	Handle a time event.
+ *
+ *	Output:	0 if done with this action, else delay for next frame.
+ */
+
+int If_else_path_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	if (done)
+		return 0;		// Shouldn't really get here.
+	int delay;
+	if (succeeded)			// Doing the success action?
+		{
+		if ((delay = success->handle_event(actor)) == 0)
+			done = true;
+		return delay;
+		}
+	else if (failed)
+		{
+		if ((delay = failure->handle_event(actor)) == 0)
+			done = true;
+		return delay;
+		}
+	delay = Path_walking_actor_action::handle_event(actor);
+	if (delay)
+		return delay;
+	Tile_coord dest;
+	if (!get_dest(dest) || actor->get_abs_tile_coord() != dest)
+		{			// Didn't get there.
+		if (failure)
+			{
+			failed = true;
+			delay = failure->handle_event(actor);
+			}
+		}
+	else				// Success.
+		{
+		if (success)
+			{
+			succeeded = true;
+			delay = success->handle_event(actor);
+			}
+		}
+	if (!delay)
+		done = true;		// All done now.
+	return delay;
+	}			
 
 /*
  *	Handle a time event.

@@ -26,7 +26,7 @@
 #include "Gump_manager.h"
 #include "Scroll_gump.h"
 #include "Sign_gump.h"
-#include "actions.h"
+// #include "actions.h"
 #include "barge.h"
 #include "bodies.h"
 #include "cheat.h"
@@ -2068,6 +2068,7 @@ USECODE_INTRINSIC(clear_item_flag)
 
 USECODE_INTRINSIC(run_usecode)
 {
+#if 0	/* ++++++Think it's 'set failure'. */
 	// run_usecode(fun, itemref, eventid)
 	Game_object *obj = get_item(parms[1]);
 	int ucfun = parms[0].get_int_value();
@@ -2079,6 +2080,7 @@ USECODE_INTRINSIC(run_usecode)
 	if (obj)
 		call_usecode(ucfun, obj, 
 				(Usecode_events) parms[2].get_int_value());
+#endif
 	return(no_ret);
 }
 
@@ -2294,6 +2296,10 @@ USECODE_INTRINSIC(si_path_run_usecode)
 {
 	// exec(npc, loc(x,y,z)?, eventid, itemref, usecode#, ??true/false).
 	// Schedule Npc to walk to loc and then execute usecode.
+	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2]);
+	return no_ret;
+
+#if 0	/* Old way++++++++ */
 	Actor *npc = as_actor(get_item(parms[0]));
 	Game_object *obj = get_item(parms[3]);
 	int sz = parms[1].get_array_size();
@@ -2333,6 +2339,7 @@ USECODE_INTRINSIC(si_path_run_usecode)
 			false, true));	// Don't teleport if path not found.
 	npc->start(200, 0);		// Get into time queue.
 	return no_ret;
+#endif
 }
 
 USECODE_INTRINSIC(error_message)
