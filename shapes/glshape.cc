@@ -144,8 +144,8 @@ void GL_texshape::paint
 	float y = static_cast<float>(py) + texsize;
 	if (frame)
 		{
-		x += frame->get_xright() - (int) texsize;
-		y += frame->get_ybelow() - (int) texsize;
+		x += frame->get_xright() + 1 - (int) texsize;
+		y += frame->get_ybelow() + 1 - (int) texsize;
 		}
 					// Game y-coord goes down from top.
 	y = -y;
