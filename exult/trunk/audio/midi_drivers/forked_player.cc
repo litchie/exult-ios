@@ -75,8 +75,11 @@ bool	forked_player::is_playing(void)
 }
 
 
-void	forked_player::start_track(const char *name,bool repeat)
+void	forked_player::start_track(XMIDIEventList *event_list,bool repeat)
 {
+	const char *name = MIDITMPFILE;
+	event_list->Write(name);
+
 	repeat_=repeat;
 #if DEBUG
 	cerr << "Starting midi sequence with forked_player" << endl;

@@ -20,7 +20,7 @@
 #  include <config.h>
 #endif
 
-#include "exult_constants.h"
+#include "common_types.h"
 #include "Configuration.h"
 #include "exceptions.h"
 #include "utils.h"

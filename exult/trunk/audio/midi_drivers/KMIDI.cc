@@ -101,8 +101,11 @@ KMIDI::~KMIDI()
 {}
 
 
-void	KMIDI::start_track(const char * name,bool repeat)
+void	KMIDI::start_track(XMIDIEventList *event_list,bool repeat)
 {
+	const char *name = MIDITMPFILE;
+	event_list->Write(name);
+
 	if(is_playing())
 		stop_track();
 	repeat_=repeat;

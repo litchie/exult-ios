@@ -27,10 +27,10 @@
 #  include <iostream>
 #  include <cmath>
 #endif
-#include "exult.h"
-#include "utils.h"
+#include "../files/utils.h"
 #include "xmidi.h"
-#include "Configuration.h"
+#include "../conf/Configuration.h"
+extern	Configuration	*config;
 
 using std::atof;
 using std::atoi;
@@ -359,8 +359,8 @@ const char XMIDI::mt32asgs[256] = {
 GammaTable<unsigned char> XMIDI::VolumeCurve(128);
 
 // Constructor
-XMIDI::XMIDI(DataSource *source, int pconvert) : events(NULL),timing(NULL),
-						convert_type(pconvert),fixed(NULL),
+XMIDI::XMIDI(DataSource *source, int pconvert) : events(NULL),
+						convert_type(pconvert),
 						do_reverb(false), do_chorus(false)
 {
 	std::memset(bank127,0,sizeof(bank127));
@@ -372,83 +372,14 @@ XMIDI::~XMIDI()
 {
 	if (events)
 	{
-		for (int i=0; i < info.tracks; i++)
+		for (int i=0; i < num_tracks; i++)
 			DeleteEventList (events[i]);
 		//delete [] events;
 		Free(events);
 	}
-	if (timing) delete [] timing;
-	if (fixed) delete [] fixed;
 }
 
-int XMIDI::retrieve (uint32 track, DataSource *dest)
-{
-	int len = 0;
-	
-	if (!events)
-	{
-		cerr << "No midi data in loaded." << endl;
-		return 0;
-	}
-
-	// Convert type 1 midi's to type 0
-	if (info.type == 1)
-	{
-		DuplicateAndMerge(-1);
-		
-		for (int i=0; i < info.tracks; i++)
-			DeleteEventList (events[i]);
-			
-		//delete [] events;
-		Free (events);
-		//events = new midi_event *[1];
-		events = Calloc<midi_event *>();
-		events[0] = list;
-
-		info.tracks = 1;
-		info.type = 0;
-	}
-
-	if (track >= info.tracks)
-	{
-		cerr << "Can't retrieve MIDI data, track out of range" << endl;
-		return 0;
-	}
-
-	// And fix the midis if they are broken
-	if (!fixed[track])
-	{
-		list = events[track];
-		MovePatchVolAndPan ();
-		fixed[track] = true;
-		events[track] = list;
-	}
-
-	// This is so if using buffer datasource, the caller can know how big to make the buffer
-	if (!dest)
-	{
-		// Header is 14 bytes long and add the rest as well
-		len = ConvertListToMTrk (NULL, events[track]);
-		return 14 + len;
-	}
-		
-	dest->write1 ('M');
-	dest->write1 ('T');
-	dest->write1 ('h');
-	dest->write1 ('d');
-	
-	dest->write4high (6);
-
-	dest->write2high (0);
-	dest->write2high (1);
-	dest->write2high (timing[track]);
-		
-	len = ConvertListToMTrk (dest, events[track]);
-
-	return len + 14;
-}
-
-int XMIDI::retrieve (uint32 track, midi_event **dest, int &ppqn)
+XMIDIEventList *XMIDI::GetEventList (uint32 track)
 {
 	if (!events)
 	{
@@ -456,18 +387,15 @@ int XMIDI::retrieve (uint32 track, midi_event **dest, int &ppqn)
 		return 0;
 	}
 
-	if ((info.type == 1 && track != 0) || (track >= info.tracks))
+	if (track >= num_tracks)
 	{
 		cerr << "Can't retrieve MIDI data, track out of range" << endl;
 		return 0;
 	}
-	DuplicateAndMerge(track);
-	MovePatchVolAndPan ();
 
-	*dest = list;
-	ppqn = timing[track];
+	events[track]->counter ++;
 
-	return 1;
+	return events[track];
 }
 
 void XMIDI::DeleteEventList (midi_event *mlist)
@@ -481,11 +409,17 @@ void XMIDI::DeleteEventList (midi_event *mlist)
 	while ((event = next))
 	{
 		next = event->next;
-		if (event->buffer) 
-			//delete [] event->buffer;
-			Free (event->buffer);
-		//delete event;
+		// We only do this with sysex
+		if ((event->status>>4) == 0xF && event->buffer) Free (event->buffer);
 		Free (event);
+	}
+}
+
+void XMIDI::DeleteEventList (XMIDIEventList *mlist)
+{
+	if (--mlist->counter < 0) {
+		DeleteEventList(mlist->events);
+		Free(mlist);
 	}
 }
 
@@ -500,7 +434,7 @@ void XMIDI::CreateNewEvent (int time)
 		return;
 	}
 
-	if (time < 0)
+	if (time < 0 || list->time > time)
 	{
 		midi_event *event = Calloc<midi_event>(); //new midi_event;
 		event->next = list;
@@ -508,7 +442,7 @@ void XMIDI::CreateNewEvent (int time)
 		return;
 	}
 
-	if (current->time > time)
+	if (!current || current->time > time)
 		current = list;
 
 	while (current->next)
@@ -532,8 +466,11 @@ void XMIDI::CreateNewEvent (int time)
 	current->time = time;
 }
 
-
-// Conventional Variable Length Quantity
+//
+// GetVLQ
+//
+// Get a Conventional Variable Length Quantity
+//
 int XMIDI::GetVLQ (DataSource *source, uint32 &quant)
 {
 	int i;
@@ -556,7 +493,11 @@ int XMIDI::GetVLQ (DataSource *source, uint32 &quant)
 	return i;
 }
 
-// XMIDI Delta Variable Length Quantity
+//
+// GetVLQ2
+//
+// Get a XMIDI Variable Length Quantity
+//
 int XMIDI::GetVLQ2 (DataSource *source, uint32 &quant)
 {
 	int i;
@@ -576,265 +517,417 @@ int XMIDI::GetVLQ2 (DataSource *source, uint32 &quant)
 	return i;
 }
 
-int XMIDI::PutVLQ(DataSource *dest, uint32 value)
-{
-	int buffer;
-	int i = 1;
-	buffer = value & 0x7F;
-	while (value >>= 7)
-	{
-		buffer <<= 8;
-		buffer |= ((value & 0x7F) | 0x80);
-		i++;
-	}
-	if (!dest) return i;
-	for (int j = 0; j < i; j++)
-	{
-		dest->write1(buffer & 0xFF);
-		buffer >>= 8;
-	}
-	
-	return i;
-}
-
-// MovePatchVolAndPan
 //
-// This little function attempts to correct errors in midi files
-// that relate to patch, volume and pan changing
-void XMIDI::MovePatchVolAndPan (int channel)
+// MovePatchVolAndPan.
+//
+// Well, this is just a modified version of what that method used to do. This
+// is a massive optimization. Speed up should be quite impressive
+//
+void XMIDI::ApplyFirstState(first_state &fs, int chan_mask)
 {
-	if (channel == -1)
+	for (int channel = 0; channel < 16; channel++)
 	{
-		for (int i = 0; i < 16; i++)
-			MovePatchVolAndPan (i);
-			
-		return;
-	}
+		midi_event *patch = fs.patch[channel];
+		midi_event *vol = fs.vol[channel];
+		midi_event *pan = fs.pan[channel];
+		midi_event *bank = fs.bank[channel];
+		midi_event *reverb = NULL;
+		midi_event *chorus = NULL;
+		midi_event *temp;
+
+		// Got no patch change, return and don't try fixing it
+		if (!patch || !(chan_mask & 1 << channel)) continue;
+#if 0
+		std::cout << "Channel: " << channel+1 << std::endl;
+		std::cout << "Patch: " << (unsigned int) patch->data[0] << " @ " << patch->time << std::endl;
+		if (bank) std::cout << " Bank: " << (unsigned int) bank->data[1] << " @ " << bank->time << std::endl;
+		if (vol) std::cout << "  Vol: " << (unsigned int) vol->data[1] << " @ " << vol->time << std::endl;
+		if (pan) std::cout << "  Pan: " << ((signed int) pan->data[1])-64 << " @ " << pan->time << std::endl;
+		std::cout << std::endl;
+#endif
+
+		// Copy Patch Change Event
+		temp = patch;
+		patch = Calloc<midi_event>(); //new midi_event;
+		patch->time = temp->time;
+		patch->status = channel|(MIDI_STATUS_PROG_CHANGE << 4);
+		patch->data[0] = temp->data[0];
+
+		// Copy Volume
+		if (vol && (vol->time > patch->time+PATCH_VOL_PAN_BIAS || vol->time < patch->time-PATCH_VOL_PAN_BIAS))
+			vol = NULL;
+
+		temp = vol;
+		vol = Calloc<midi_event>(); //new midi_event;
+		vol->status = channel|(MIDI_STATUS_CONTROLLER << 4);
+		vol->data[0] = 7;
+
+		if (!temp)
+		{
+			if (convert_type) vol->data[1] = VolumeCurve[90];
+			else vol->data[1] = 90;
+		}
+		else
+			vol->data[1] = temp->data[1];
+
+
+		// Copy Bank
+		if (bank && (bank->time > patch->time+PATCH_VOL_PAN_BIAS || bank->time < patch->time-PATCH_VOL_PAN_BIAS))
+			bank = NULL;
+
+		temp = bank;
 		
-	midi_event *patch = NULL;
-	midi_event *vol = NULL;
-	midi_event *pan = NULL;
-	midi_event *bank = NULL;
-	midi_event *reverb = NULL;
-	midi_event *chorus = NULL;
-	midi_event *temp;
-	
-	for (current = list; current; )
-	{
-		if (!patch && (current->status >> 4) == 0xC && (current->status & 0xF) == channel)
-			patch = current;
-		else if (!vol && (current->status >> 4) == 0xB && current->data[0] == 7 && (current->status & 0xF) == channel)
-			vol = current;
-		else if (!pan && (current->status >> 4) == 0xB && current->data[0] == 10 && (current->status & 0xF) == channel)
-			pan = current;
-		else if (!bank && (current->status >> 4) == 0xB && current->data[0] == 0 && (current->status & 0xF) == channel)
-			bank = current;
+		bank = Calloc<midi_event>(); //new midi_event;
+		bank->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 
-		if (pan && vol && patch) break;
+		if (!temp)
+			bank->data[1] = 0;
+		else
+			bank->data[1] = temp->data[1];
 
-		if (current) current = current->next;
-		else current = list;
+		// Copy Pan
+		if (pan && (pan->time > patch->time+PATCH_VOL_PAN_BIAS || pan->time < patch->time-PATCH_VOL_PAN_BIAS))
+			pan = NULL;
+
+		temp = pan;
+		pan = Calloc<midi_event>(); //new midi_event;
+		pan->status = channel|(MIDI_STATUS_CONTROLLER << 4);
+		pan->data[0] = 10;
+
+		if (!temp)
+			pan->data[1] = 64;
+		else
+			pan->data[1] = temp->data[1];
+
+		if (do_reverb)
+		{
+			reverb = Calloc<midi_event>(); //new midi_event;
+			reverb->status = channel|(MIDI_STATUS_CONTROLLER << 4);
+			reverb->data[0] = 91;
+			reverb->data[1] = reverb_value;
+		}
+
+		if (do_chorus)
+		{
+			chorus = Calloc<midi_event>(); //new midi_event;
+			chorus->status = channel|(MIDI_STATUS_CONTROLLER << 4);
+			chorus->data[0] = 93;
+			chorus->data[1] = chorus_value;
+		}
+
+		vol->time = 0;
+		pan->time = 0;
+		patch->time = 0;
+		bank->time = 0;
+		
+		if (do_reverb && do_chorus) reverb->next = chorus;
+		else if (do_reverb) reverb->next = bank;
+		if (do_chorus) chorus->next = bank;
+		bank->next = vol;
+		vol->next = pan;
+		pan->next = patch;
+		
+		patch->next = list;
+		if (do_reverb) list = reverb;
+		else if (do_chorus) list = chorus;
+		else list = bank;
 	}
-
-	// Got no patch change, return and don't try fixing it
-	if (!patch) return;
-
-
-	// Copy Patch Change Event
-	temp = patch;
-	patch = Calloc<midi_event>(); //new midi_event;
-	patch->time = temp->time;
-	patch->status = channel|(MIDI_STATUS_PROG_CHANGE << 4);
-	patch->data[0] = temp->data[0];
-
-
-	// Copy Volume
-	if (vol && (vol->time > patch->time+PATCH_VOL_PAN_BIAS || vol->time < patch->time-PATCH_VOL_PAN_BIAS))
-		vol = NULL;
-
-	temp = vol;
-	vol = Calloc<midi_event>(); //new midi_event;
-	vol->status = channel|(MIDI_STATUS_CONTROLLER << 4);
-	vol->data[0] = 7;
-
-	if (!temp)
-	{
-		if (convert_type) vol->data[1] = VolumeCurve[90];
-		else vol->data[1] = 90;
-	}
-	else
-		vol->data[1] = temp->data[1];
-
-
-	// Copy Bank
-	if (bank && (bank->time > patch->time+PATCH_VOL_PAN_BIAS || bank->time < patch->time-PATCH_VOL_PAN_BIAS))
-		bank = NULL;
-
-	temp = bank;
-	
-	bank = Calloc<midi_event>(); //new midi_event;
-	bank->status = channel|(MIDI_STATUS_CONTROLLER << 4);
-
-	if (!temp)
-		bank->data[1] = 0;
-	else
-		bank->data[1] = temp->data[1];
-
-	// Copy Pan
-	if (pan && (pan->time > patch->time+PATCH_VOL_PAN_BIAS || pan->time < patch->time-PATCH_VOL_PAN_BIAS))
-		pan = NULL;
-
-	temp = pan;
-	pan = Calloc<midi_event>(); //new midi_event;
-	pan->status = channel|(MIDI_STATUS_CONTROLLER << 4);
-	pan->data[0] = 10;
-
-	if (!temp)
-		pan->data[1] = 64;
-	else
-		pan->data[1] = temp->data[1];
-
-	if (do_reverb)
-	{
-		reverb = Calloc<midi_event>(); //new midi_event;
-		reverb->status = channel|(MIDI_STATUS_CONTROLLER << 4);
-		reverb->data[0] = 91;
-		reverb->data[1] = reverb_value;
-	}
-
-	if (do_chorus)
-	{
-		chorus = Calloc<midi_event>(); //new midi_event;
-		chorus->status = channel|(MIDI_STATUS_CONTROLLER << 4);
-		chorus->data[0] = 93;
-		chorus->data[1] = chorus_value;
-	}
-
-	vol->time = 0;
-	pan->time = 0;
-	patch->time = 0;
-	bank->time = 0;
-	
-	if (do_reverb && do_chorus) reverb->next = chorus;
-	else if (do_reverb) reverb->next = bank;
-	if (do_chorus) chorus->next = bank;
-	bank->next = vol;
-	vol->next = pan;
-	pan->next = patch;
-	
-	patch->next = list;
-	if (do_reverb) list = reverb;
-	else if (do_chorus) list = chorus;
-	else list = bank;
 }
 
-// DuplicateAndMerge
-void XMIDI::DuplicateAndMerge (int num)
+// Unsigned 64 Bit Int emulation. Only supports SOME operations
+struct uint64 {
+	uint32	low;		// Low is first so uint64 can be cast as uint32 to get low dword
+	uint32	high;		// 
+
+	uint64() : low(0), high(0) { }
+	uint64(uint32 i) : low(i), high(0) { }
+	uint64(uint32 h, uint32 l) : low(l), high(h) { }
+	uint64(uint64 &i) : low(i.low), high(i.high) { }
+
+	inline void addlow(uint32 l) {
+		uint32 mid = (low >> 16);
+		low = (low & 0xFFFF) + (l & 0xFFFF);
+		mid += (low >> 16) + (l >> 16);
+		low = (low&0xFFFF) + (mid << 16);
+		high += mid >> 16;
+	}
+
+	// uint64 operations
+
+	inline uint64 & operator = (uint64 &o) {
+		low = o.low;
+		high = o.high;
+		return *this;
+	}
+
+	inline uint64 & operator += (uint64 &o) {
+		addlow(o.low);
+		high += o.high;
+		return *this;
+	}
+
+	inline uint64 operator + (uint64 &o) {
+		uint64 n(*this);
+		n.addlow(o.low);
+		n.high += o.high;
+		return n;
+	}
+
+	// uint32 operations
+
+	inline uint64 & operator = (uint32 i) {
+		low = i;
+		high = 0;
+		return *this;
+	}
+
+	inline uint64 & operator += (uint32 i) {
+		addlow(i);
+		return *this;
+	}
+
+	inline uint64 operator + (uint32 i) {
+		uint64 n(*this);
+		n.addlow(i);
+		return n;
+	}
+
+	inline uint64 & operator *= (uint32 i) {
+		// High 16 bits
+		uint32 h1 =   i >> 16;
+		uint32 h2 = low >> 16;
+		uint32 h3 = high >> 16;
+
+		// Low 16 Bits
+		uint32 l1 =   i & 0xFFFF;
+		uint32 l2 = low & 0xFFFF;
+		uint32 l3 = high & 0xFFFF;
+
+		// The accumulator
+		uint32 accum;
+
+		// 0 -> 32
+		low = l1*l2;
+		high = 0;
+
+		// 16 -> 48
+		accum = h1*l2;
+		addlow(accum<<16);
+		high += accum>>16;
+
+		// 16 -> 48
+		accum = l1*h2;
+		addlow(accum<<16);	
+		high += accum>>16;
+
+		// 32 -> 64
+		high += h1*h2;
+
+		// 32 -> 64
+		high += l1*l3;
+
+		// 48 -> 80
+		high += (h1*l3) << 16;
+
+		// 48 -> 80
+		high += (l1*l3) << 16;
+
+		return *this;
+	}
+
+	inline uint64 operator * (uint32 i) {
+		uint64 n(*this);
+		return n*=i;
+	}
+
+	inline uint64 & operator /= (uint32 div) {
+
+		// If there isn't a high dword, we only need to work on the low dword
+		if (!high) {
+			low /= div;
+			return *this;
+		}
+
+		// modulus of last division
+		uint32 mod = high;
+		uint32 l = low;
+
+		// Low shift
+		uint32 shift = 32;
+		low = 0;
+
+		// Only High DWORD
+		// Can divide
+		if (mod >= div) {
+			high = mod / div;
+			mod %= div;
+		}
+		else high = 0;
+
+		// Only Both high and low
+		while (--shift) {
+
+			mod <<= 1;
+			mod |= (l>>shift) & 1;
+
+			// Can divide
+			if (mod >= div) {
+				uint32 v = mod / div;
+				mod %= div;
+				addlow(v << shift);
+				high += v >> (32 - shift);
+			}
+		}
+
+
+		// Only Low DWORD
+		mod <<= 1;
+		mod |= l & 1;
+
+		// Can divide
+		if (mod >= div) {
+			uint32 v = mod / div;
+			mod %= div;
+			addlow(v << shift);
+		}
+
+		return *this;
+	}
+
+	inline uint64 operator / (uint32 i) {
+		uint64 n(*this);
+		return n/=i;
+	}
+
+	inline uint64 & operator %= (uint32 div) {
+
+		// If there isn't a high dword, we only need to work on the low dword
+		if (!high) {
+			low %= div;
+			return *this;
+		}
+
+		// Remainder of last division
+		uint32 mod = high;
+
+		// Low shift
+		uint32 shift = 32;
+
+		while (1) {
+
+			// Can divide
+			if (mod >= div) mod %= div;
+
+			if (shift == 0) break;
+
+			mod <<= 1;
+			shift--;
+			mod |= (low>>shift) & 1;
+		}
+
+		high = 0;
+		low = mod;
+
+		return *this;
+	}
+
+	inline uint64 operator % (uint32 i) {
+		uint64 n(*this);
+		return n%=i;
+	}
+
+	inline operator uint32 ()
+	{
+		return low;
+	}
+
+	void printx() {
+		if (high) printf ("%X%08X", high, low);
+		else printf ("%X", low);
+	}
+};
+
+//
+// AdjustTimings
+//
+// It converts the midi's to use 120 Hz timing, and also calcs the duration of
+// the notes. It also strips the tempo events, and adds it's own
+//
+// This is used by Midi's ONLY! It will do nothing with Xmidi
+//
+void XMIDI::AdjustTimings(uint32 ppqn)
 {
-	int		i;
-	midi_event	**track;
-	int		time = 0;
-	int		start = 0;
-	int		end = 1;
-	
-	if (info.type == 1)
-	{
-		start = 0;
-		end = info.tracks;
-	}
-	else if (num >= 0 && num < info.tracks)
-	{
-		start += num;
-		end += num;
-	}
-	
-	track = Malloc<midi_event*>(sizeof(midi_event *)*info.tracks); //new midi_event *[info.tracks];
-	// NOTE: Not using Calloc here, since we're initializing each element below.
-	
-	for (i = 0; i < info.tracks; i++)
-		track[i] = events[i];
-	
-	current = list = NULL;
+	uint32		tempo = 500000;
+	uint32		time_prev = 0;
+	uint32		hs_rem = 0;
+	uint32		hs     = 0;
 
-	
-	while (1)
-	{
-		int	lowest = 1 << 30;
-		int	selected = -1;
-		int	num_na = end-start;
-		
-		// Firstly we find the track with the lowest time
-		// for it's current event
-		for (i = start; i < end; i++)
-		{
-			if (!track[i])
-			{
-				num_na--;
-				continue;
+	ppqn *= 10000;
+
+	// Virtual playing
+	NoteStack notes;
+
+	for (midi_event	*event = list; event; event = event->next) {
+
+			// Note 64 bit int is required because multiplication by tempo can
+			// require 52 bits in some circumstances
+
+			uint64 aim = event->time - time_prev;
+			aim *= tempo;
+
+			hs_rem += aim%ppqn;
+			hs += aim/ppqn;
+			hs += hs_rem/ppqn;
+			hs_rem %= ppqn;
+
+			time_prev = event->time;
+			event->time = (hs*6)/5 + (6*hs_rem)/(5*ppqn);
+				
+			// Note on and note off handling
+			if (event->status <= 0x9F) {
+
+				// Add if it's a note on and remove if it's a note off
+				if ((event->status>>4) == MIDI_STATUS_NOTE_ON && event->data[1]) 
+					notes.Push(event);
+				else {
+					midi_event *prev = notes.FindAndPop(event);
+					if (prev) prev->duration = event->time - prev->time;
+				}
+
 			}
-			if (track[i]->time < lowest)
-			{
-				selected = i;
-				lowest = track[i]->time;			
+			else if (event->status == 0xFF && event->data[0] == 0x51) {
+
+				tempo = (event->buffer[0] << 16) +
+					(event->buffer[1] << 8) +
+					event->buffer[2];
+					
+				event->buffer[0] = 0x07;
+				event->buffer[1] = 0xA1;
+				event->buffer[2] = 0x20;
 			}
-		}
-		
-		// This is just so I don't have to type [selected] all the time
-		i = selected;
-		
-		// None left to convert
-		if (!num_na) break;
-	
-		// Only need 1 end of track
-		// So take the last one and ignore the rest;
-		if ((num_na != 1) && (track[i]->status == 0xff) && (track[i]->data[0] == 0x2f))
-		{
-			track[i] = NULL;
-			continue;
-		}
-		
-		if (current)
-		{
-			current->next = Calloc<midi_event>(); //new midi_event;
-			current = current->next;
-		}
-		else
-			list = current = Calloc<midi_event>(); //new midi_event;
-			
-		current->next = NULL;
-		
-		time = track[i]->time;
-		current->time = time;
-
-		current->status = track[i]->status;
-		current->data[0] = track[i]->data[0];
-		current->data[1] = track[i]->data[1];
-
-		current->len = track[i]->len;
-		
-		if (current->len)
-		{
-			current->buffer = Malloc<unsigned char>(current->len);
-			
-			memcpy (current->buffer, track[i]->buffer, current->len);
-		}
-		else
-			current->buffer = NULL;
-		
-		track[i] = track[i]->next;
 	}
+
+	//std::cout << "Max Polyphony: " << notes.GetMaxPolyphony() << std::endl;
+	static const unsigned char tempo_buf[5] = { 0x51, 0x03, 0x07, 0xA1, 0x20 };
+	BufferDataSource ds((char *)tempo_buf, 5);
+	current = list;
+	ConvertSystemMessage (0, 0xFF,&ds);
 }
 
 
 // Converts Events
 //
 // Source is at the first data byte
-// size 1 is single data byte
+// size 1 is single data byte (ConvertEvent Only)
 // size 2 is dual data byte
-// size 3 is XMI Note on
+// size 3 is XMI Note on (ConvertNote only)
 // Returns bytes converted
+//
+// ConvertNote is used for Note On's and Note offs
+// ConvertSystemMessage is used for SysEx events and Meta events
+// ConvertEvent is used for everything else
 
-int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size)
+int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size, first_state &fs)
 {
 	uint32	delta = 0;
 	int	data;
@@ -858,6 +951,9 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 		current->data[0] = 0;
 		current->data[1] = data;
 
+		// Set the bank
+		if (!fs.bank[status&0xF] || fs.bank[status&0xF]->time > time) fs.bank[status&0xF] = current;
+
 		if (convert_type == XMIDI_CONVERT_GS127_TO_GS && data == 127)
 			bank127[status&0xF] = true;
 
@@ -880,6 +976,9 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 			current->data[1] = mt32asgs[data*2+1];
 
 			data = mt32asgs[data*2];
+
+			// Set the bank
+			if (!fs.bank[status&0xF] || fs.bank[status&0xF]->time > time) fs.bank[status&0xF] = current;
 		}
 		else if (convert_type == XMIDI_CONVERT_MT32_TO_GS127)
 		{
@@ -887,6 +986,9 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 			current->status = 0xB0 | (status&0xF);
 			current->data[0] = 0;
 			current->data[1] = 127;
+
+			// Set the bank
+			if (!fs.bank[status&0xF] || fs.bank[status&0xF]->time > time) fs.bank[status&0xF] = current;
 		}
 	}// Disable patch changes on Track 10 is doing a conversion
 	else if ((status >> 4) == 0xC && (status&0xF) == 9 && convert_type != XMIDI_CONVERT_NOCONVERSION)
@@ -899,17 +1001,52 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 
 	current->data[0] = data;
 
+	// Check for patch change, and update fs if req
+	if ((status >> 4) == 0xC) {
+		if (!fs.patch[status&0xF] || fs.patch[status&0xF]->time > time)
+			fs.patch[status&0xF] = current;
+	}
+	// Controllers
+	else if ((status >> 4) == 0xB) {
+		// Volume
+		if (current->data[0] == 7) {
+			if (!fs.vol[status&0xF] || fs.vol[status&0xF]->time > time)
+				fs.vol[status&0xF] = current;
+		}
+		// Pan
+		else if (current->data[0] == 10) {
+			if (!fs.pan[status&0xF] || fs.pan[status&0xF]->time > time)
+				fs.pan[status&0xF] = current;
+		}
+	}
+
 	if (size == 1)
 		return 1;
 
 	current->data[1] = source->read1();
 
-	// Volume modify the note on's, only if converting
-	if (convert_type && (current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
-		current->data[1] = VolumeCurve[current->data[1]];
-
 	// Volume modify the volume controller, only if converting
 	if (convert_type && (current->status >> 4) == MIDI_STATUS_CONTROLLER && current->data[0] == 7)
+		current->data[1] = VolumeCurve[current->data[1]];
+
+	return 2;
+}
+
+int XMIDI::ConvertNote (const int time, const unsigned char status, DataSource *source, const int size)
+{
+	uint32	delta = 0;
+	int	data;
+
+	data = source->read1();
+
+	CreateNewEvent (time);
+	current->status = status;
+
+	current->data[0] = data;
+	current->data[1] = source->read1();
+
+	// Volume modify the note on's, only if converting
+	if (convert_type && (current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
 		current->data[1] = VolumeCurve[current->data[1]];
 
 	if (size == 2)
@@ -917,11 +1054,17 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 
 	// XMI Note On handling
 
+	// Get the duration
+	int i = GetVLQ (source, delta);
+	
+	// Set the duration
+	current->duration = delta;
+
 	// This is an optimization
 	midi_event *prev = current;
 		
-	int i = GetVLQ (source, delta);
-	CreateNewEvent (time+delta*3);
+	// Create a note off
+	CreateNewEvent (time+delta);
 
 	current->status = status;
 	current->data[0] = data;
@@ -963,24 +1106,21 @@ int XMIDI::ConvertSystemMessage (const int time, const unsigned char status, Dat
 	return i+current->len;
 }
 
-// XMIDI and Midi to List
-// Returns XMIDI PPQN
-int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
+// XMIDI and Midi to List. Returns bit mask of channels used
+int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi, first_state &fs)
 {
-	int 		time = 0;
-	uint32 		data;
+	int 	time = 0;			// 120th of a second
+	uint32 	data;
 	int		end = 0;
-	int		tempo = 500000;
-	int		tempo_set = 0;
-	uint32		status = 0;
+	uint32	status = 0;
 	int		play_size = 2;
 	int		file_size = source->getSize();
-	
+	int		retval = 0;
+
 	if (is_xmi) play_size = 3;
 
 	while (!end && source->getPos() < file_size)
 	{
-
 		if (!is_xmi)
 		{
 			GetVLQ (source, data);
@@ -998,30 +1138,34 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 		else
 		{
 			GetVLQ2 (source, data);
-			time += data*3;
+			time += data;
 
 			status = source->read1();
 		}
-		
+
 		switch (status >> 4)
 		{
 			case MIDI_STATUS_NOTE_ON:
-			ConvertEvent (time, status, source, play_size);
+			retval |= 1 << (status & 0xF);
+			ConvertNote (time, status, source, play_size);
+			break;
+
+			case MIDI_STATUS_NOTE_OFF:
+			ConvertNote (time, status, source, 2);
 			break;
 
 			// 2 byte data
-			case MIDI_STATUS_NOTE_OFF:
 			case MIDI_STATUS_AFTERTOUCH:
 			case MIDI_STATUS_CONTROLLER:
 			case MIDI_STATUS_PITCH_WHEEL:
-			ConvertEvent (time, status, source, 2);
+			ConvertEvent (time, status, source, 2, fs);
 			break;
 			
 
 			// 1 byte data
 			case MIDI_STATUS_PROG_CHANGE:
 			case MIDI_STATUS_PRESSURE:
-			ConvertEvent (time, status, source, 1);
+			ConvertEvent (time, status, source, 1, fs);
 			break;
 			
 
@@ -1031,18 +1175,9 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 				int	pos = source->getPos();
 				uint32	data = source->read1();
 				
-				if (data == 0x2F) // End
+				if (data == 0x2F)					// End, of track
 					end = 1;
-				else if (data == 0x51 && !tempo_set) // Tempo. Need it for PPQN
-				{
-					source->skip(1);
-					tempo = source->read1() << 16;
-					tempo += source->read1() << 8;
-					tempo += source->read1();
-					tempo *= 3;
-					tempo_set = 1;
-				}
-				else if (data == 0x51 && tempo_set && is_xmi) // Skip any other tempo changes
+				else if (data == 0x51 && is_xmi)	// XMIDI doesn't use tempo
 				{
 					GetVLQ (source, data);
 					source->skip(data);
@@ -1059,121 +1194,21 @@ int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 		}
 
 	}
-	return (tempo*3)/25000;
-}
 
-// Converts and event list to a MTrk
-// Returns bytes of the array
-// buf can be NULL
-uint32 XMIDI::ConvertListToMTrk (DataSource *dest, midi_event *mlist)
-{
-	int time = 0;
-	midi_event	*event;
-	uint32	delta;
-	unsigned char	last_status = 0;
-	uint32 	i = 8;
-	uint32 	j;
-	uint32	size_pos=0;
-	bool end = false;
-
-	if (dest)
-	{
-		dest->write1('M');
-		dest->write1('T');
-		dest->write1('r');
-		dest->write1('k');
-
-		size_pos = dest->getPos();
-		dest->skip(4);
-	}
-
-	for (event = mlist; event && !end; event=event->next)
-	{
-		delta = (event->time - time);
-		time = event->time;
-
-		i += PutVLQ (dest, delta);
-
-		if ((event->status != last_status) || (event->status >= 0xF0))
-		{
-			if (dest) dest->write1(event->status);
-			i++;
-		}
-		
-		last_status = event->status;
-		
-		switch (event->status >> 4)
-		{
-			// 2 bytes data
-			// Note off, Note on, Aftertouch, Controller and Pitch Wheel
-			case 0x8: case 0x9: case 0xA: case 0xB: case 0xE:
-			if (dest)
-			{
-				dest->write1(event->data[0]);
-				dest->write1(event->data[1]);
-			}
-			i += 2;
-			break;
-			
-
-			// 1 bytes data
-			// Program Change and Channel Pressure
-			case 0xC: case 0xD:
-			if (dest) dest->write1(event->data[0]);
-			i++;
-			break;
-			
-
-			// Variable length
-			// SysEx
-			case 0xF:
-			if (event->status == 0xFF)
-			{
-				if (event->data[0] == 0x2f) end = true;
-				if (dest) dest->write1(event->data[0]);
-				i++;
-			}
-	
-			i += PutVLQ (dest, event->len);
-			
-			if (event->len)
-			{
-				for (j = 0; j < event->len; j++)
-				{
-					if (dest) dest->write1(event->buffer[j]); 
-					i++;
-				}
-			}
-
-			break;
-			
-
-			// Never occur
-			default:
-			cerr << "Not supposed to see this" << endl;
-			break;
-		}
-	}
-
-	if (dest)
-	{
-		int cur_pos = dest->getPos();
-		dest->seek (size_pos);
-		dest->write4high (i-8);
-		dest->seek (cur_pos);
-	}
-	return i;
+	return retval;
 }
 
 // Assumes correct xmidi
 int XMIDI::ExtractTracksFromXmi (DataSource *source)
 {
-	int		num = 0;
+	int				num = 0;
 	signed short	ppqn;
-	uint32		len = 0;
-	char		buf[32];
+	uint32			len = 0;
+	char			buf[32];
 
-	while (source->getPos() < source->getSize() && num != info.tracks)
+	first_state	fs;
+
+	while (source->getPos() < source->getSize() && num != num_tracks)
 	{
 		// Read first 4 bytes of name
 		source->read (buf, 4);
@@ -1194,17 +1229,25 @@ int XMIDI::ExtractTracksFromXmi (DataSource *source)
 		}
 
 		list = NULL;
+		memset(&fs, 0, sizeof(fs));
+
 		int begin = source->getPos ();
-		
+
 		// Convert it
-		if (!(ppqn = ConvertFiletoList (source, true)))
-		{
-			cerr << "Unable to convert data" << endl;
-			break;
-		}
-		timing[num] = ppqn;
-		events[num] = list;
-	
+		int chan_mask = ConvertFiletoList (source, true, fs);
+
+		// Apply the first state
+		ApplyFirstState(fs, chan_mask);
+
+		// Add tempo
+		static const unsigned char tempo_buf[5] = { 0x51, 0x03, 0x07, 0xA1, 0x20 };
+		BufferDataSource ds((char *)tempo_buf, 5);
+		current = list;
+		ConvertSystemMessage (0, 0xFF,&ds);
+
+		// Set the list
+		events[num]->events = list;
+
 		// Increment Counter
 		num++;
 
@@ -1212,18 +1255,23 @@ int XMIDI::ExtractTracksFromXmi (DataSource *source)
 		source->seek (begin + ((len+1)&~1));
 	}
 
-
 	// Return how many were converted
 	return num;
 }
 
-int XMIDI::ExtractTracksFromMid (DataSource *source)
+int XMIDI::ExtractTracksFromMid (DataSource *source, const uint32 ppqn, const int num_tracks, const bool type1)
 {
-	int	num = 0;
-	uint32	len = 0;
-	char	buf[32];
+	int			num = 0;
+	uint32		len = 0;
+	char		buf[32];
+	int			chan_mask = 0;
 
-	while (source->getPos() < source->getSize() && num != info.tracks)
+	first_state	fs;
+	memset(&fs, 0, sizeof(fs));
+
+	list = NULL;
+
+	while (source->getPos() < source->getSize() && num != num_tracks)
 	{
 		// Read first 4 bytes of name
 		source->read (buf, 4);
@@ -1235,23 +1283,31 @@ int XMIDI::ExtractTracksFromMid (DataSource *source)
 			continue;
 		}
 
-		list = NULL;
 		int begin = source->getPos ();
 
 		// Convert it
-		if (!ConvertFiletoList (source, false))
-		{
-			cerr << "Unable to convert data" << endl;
-			break;
+		chan_mask |= ConvertFiletoList (source, false, fs);
+
+		if (!type1) {
+			ApplyFirstState(fs, chan_mask);
+			AdjustTimings(ppqn);
+			events[num]->events = list;
+			list = NULL;
+			memset(&fs, 0, sizeof(fs));
+			chan_mask = 0;
 		}
-		
-		events[num] = list;
 		
 		// Increment Counter
 		num++;		
 		source->seek (begin+len);
 	}
 
+	if (type1) { 
+		ApplyFirstState(fs, chan_mask);
+		AdjustTimings(ppqn);
+		events[0]->events = list;
+		return num == num_tracks ? 1 : 0;
+	}
 
 	// Return how many were converted
 	return num;
@@ -1315,7 +1371,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 		if (!memcmp (buf, "XMID", 4))
 		{	
 			cerr << "Warning: XMIDI doesn't have XDIR" << endl;
-			info.tracks = 1;
+			num_tracks = 1;
 			
 		} // Not an XMIDI that we recognise
 		else if (memcmp (buf, "XDIR", 4))
@@ -1326,7 +1382,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 		} // Seems Valid
 		else 
 		{
-			info.tracks = 0;
+			num_tracks = 0;
 		
 			for (i = 4; i < len; i++)
 			{
@@ -1351,12 +1407,12 @@ int XMIDI::ExtractTracks (DataSource *source)
 				if (chunk_len < 2)
 					break;
 				
-				info.tracks = source->read2();
+				num_tracks = source->read2();
 				break;
 			}
 		
 			// Didn't get to fill the header
-			if (info.tracks == 0)
+			if (num_tracks == 0)
 			{
 				cerr << "Not a valid XMID" << endl;
 				return 0;
@@ -1393,31 +1449,24 @@ int XMIDI::ExtractTracks (DataSource *source)
 
 		// Ok it's an XMID, so pass it to the ExtractCode
 
-		events = Calloc<midi_event*>(info.tracks); //new midi_event *[info.tracks];
-		timing = new short[info.tracks];
-		fixed = new bool[info.tracks];
-		info.type = 0;
+		events = Calloc<XMIDIEventList*>(num_tracks); //new midi_event *[info.tracks];
 		
-		for (i = 0; i < info.tracks; i++)
-		{
-			// events[i] = NULL; // Not necessary if we Calloc'ed it
-			fixed[i] = false;
-		}
+		for (i = 0; i < num_tracks; i++)
+			events[i] = Calloc<XMIDIEventList>();
 
 		count = ExtractTracksFromXmi (source);
 
-		if (count != info.tracks)
+		if (count != num_tracks)
 		{
-			cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from XMIDI. Only ("<< count << ")" << endl;
+			cerr << "Error: unable to extract all (" << num_tracks << ") tracks specified from XMIDI. Only ("<< count << ")" << endl;
 			
 			int i = 0;
 			
-			for (i = 0; i < info.tracks; i++)
+			for (i = 0; i < num_tracks; i++)
 				DeleteEventList (events[i]);
 			
 			//delete [] events;
 			Free (events);
-			delete [] timing;
 			
 			return 0;		
 		}
@@ -1436,33 +1485,29 @@ int XMIDI::ExtractTracks (DataSource *source)
 			return 0;
 		}
 
-		info.type = source->read2high();
+		int type = source->read2high();
 		
-		info.tracks = source->read2high();
+		int actual_num = num_tracks = source->read2high();
+
+		// Type 1 only has 1 track, even though it says it has more
+		if (type == 1) num_tracks = 1;
+
+		events = Calloc<XMIDIEventList*>(num_tracks); //new midi_event *[info.tracks];
+		const uint32 ppqn = source->read2high();
+
+		for (i = 0; i < num_tracks; i++)
+			events[i] = Calloc<XMIDIEventList>();
 		
-		events = Calloc<midi_event*>(info.tracks); //new midi_event *[info.tracks];
-		timing = new short[info.tracks];
-		fixed = new bool[info.tracks];
-		timing[0] = source->read2high();
-		for (i = 0; i < info.tracks; i++)
-		{
-			timing[i] = timing[0];
-			// events[i] = NULL; // Not necessary. We Calloc'ed
-			fixed[i] = false;
-		}
+		count = ExtractTracksFromMid (source, ppqn, actual_num, type == 1);
 
-		count = ExtractTracksFromMid (source);
-
-		if (count != info.tracks)
+		if (count != num_tracks)
 		{
-			cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from MIDI. Only ("<< count << ")" << endl;
+			cerr << "Error: unable to extract all (" << num_tracks << ") tracks specified from MIDI. Only ("<< count << ")" << endl;
 			
-			for (i = 0; i < info.tracks; i++)
+			for (i = 0; i < num_tracks; i++)
 				DeleteEventList (events[i]);
 			
-			//delete [] events;
 			Free (events);
-			delete [] timing;
 			
 			return 0;
 				
@@ -1515,3 +1560,193 @@ int XMIDI::ExtractTracks (DataSource *source)
 	
 	return 0;	
 }
+
+//
+// XMIDIEventList stuff
+//
+int	XMIDIEventList::Write (const char *filename)
+{
+	std::FILE *file = U7open (filename, "wb");
+	FileDataSource ds(file);
+	int ret = Write(&ds);
+	fclose (file);
+	return ret;
+}
+
+int XMIDIEventList::Write (DataSource *dest)
+{
+	int len = 0;
+	
+	if (!events)
+	{
+		cerr << "No midi data in loaded." << endl;
+		return 0;
+	}
+
+	// This is so if using buffer datasource, the caller can know how big to make the buffer
+	if (!dest)
+	{
+		// Header is 14 bytes long and add the rest as well
+		len = ConvertListToMTrk (NULL);
+		return 14 + len;
+	}
+		
+	dest->write1 ('M');
+	dest->write1 ('T');
+	dest->write1 ('h');
+	dest->write1 ('d');
+	
+	dest->write4high (6);
+
+	dest->write2high (0);
+	dest->write2high (1);
+	dest->write2high (60);	// The PPQN
+		
+	len = ConvertListToMTrk (dest);
+
+	return len + 14;
+}
+
+//
+// PutVLQ
+//
+// Write a Conventional Variable Length Quantity
+//
+int XMIDIEventList::PutVLQ(DataSource *dest, uint32 value)
+{
+	int buffer;
+	int i = 1;
+	buffer = value & 0x7F;
+	while (value >>= 7)
+	{
+		buffer <<= 8;
+		buffer |= ((value & 0x7F) | 0x80);
+		i++;
+	}
+	if (!dest) return i;
+	for (int j = 0; j < i; j++)
+	{
+		dest->write1(buffer & 0xFF);
+		buffer >>= 8;
+	}
+	
+	return i;
+}
+
+// Converts and event list to a MTrk
+// Returns bytes of the array
+// buf can be NULL
+uint32 XMIDIEventList::ConvertListToMTrk (DataSource *dest)
+{
+	int time = 0;
+	int lasttime = 0;
+	midi_event	*event;
+	uint32	delta;
+	unsigned char	last_status = 0;
+	uint32 	i = 8;
+	uint32 	j;
+	uint32	size_pos=0;
+
+	if (dest)
+	{
+		dest->write1('M');
+		dest->write1('T');
+		dest->write1('r');
+		dest->write1('k');
+
+		size_pos = dest->getPos();
+		dest->skip(4);
+	}
+
+	for (event = events; event; event=event->next)
+	{
+		// We don't write the end of stream marker here, we'll do it later
+		if (event->status == 0xFF && event->data[0] == 0x2f) {
+			lasttime = event->time;
+			continue;
+		}
+
+		delta = (event->time - time);
+		time = event->time;
+
+		i += PutVLQ (dest, delta);
+
+		if ((event->status != last_status) || (event->status >= 0xF0))
+		{
+			if (dest) dest->write1(event->status);
+			i++;
+		}
+		
+		last_status = event->status;
+		
+		switch (event->status >> 4)
+		{
+			// 2 bytes data
+			// Note off, Note on, Aftertouch, Controller and Pitch Wheel
+			case 0x8: case 0x9: case 0xA: case 0xB: case 0xE:
+			if (dest)
+			{
+				dest->write1(event->data[0]);
+				dest->write1(event->data[1]);
+			}
+			i += 2;
+			break;
+			
+
+			// 1 bytes data
+			// Program Change and Channel Pressure
+			case 0xC: case 0xD:
+			if (dest) dest->write1(event->data[0]);
+			i++;
+			break;
+			
+
+			// Variable length
+			// SysEx
+			case 0xF:
+			if (event->status == 0xFF)
+			{
+				if (dest) dest->write1(event->data[0]);
+				i++;
+			}
+	
+			i += PutVLQ (dest, event->len);
+			
+			if (event->len)
+			{
+				for (j = 0; j < event->len; j++)
+				{
+					if (dest) dest->write1(event->buffer[j]); 
+					i++;
+				}
+			}
+
+			break;
+			
+
+			// Never occur
+			default:
+			cerr << "Not supposed to see this" << endl;
+			break;
+		}
+	}
+
+	// Write out end of stream marker
+	if (lasttime > time) i += PutVLQ (dest, lasttime-time);
+	else i += PutVLQ (dest, 0);
+	if (dest) {
+		dest->write1(0xFF);
+		dest->write1(0x2F);
+	}
+	i += 2+PutVLQ (dest, 0);
+
+	if (dest)
+	{
+		int cur_pos = dest->getPos();
+		dest->seek (size_pos);
+		dest->write4high (i-8);
+		dest->seek (cur_pos);
+	}
+	return i;
+}
+

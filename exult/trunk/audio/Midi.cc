@@ -34,16 +34,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Midi.h"
 
+#ifndef PENTAGRAM
 #include "fnames.h"
-#include "U7file.h"
 #include "exult.h"
-#include "utils.h"
-#include "xmidi.h"
 #include "game.h"
-#include "conv.h"
 #include "Audio.h"
+#endif
 
-#include "Configuration.h"
+#include "../files/U7file.h"
+#include "../files/utils.h"
+#include "xmidi.h"
+#include "conv.h"
+
+#include "../conf/Configuration.h"
+extern	Configuration	*config;
 
 using std::cerr;
 using std::cout;
@@ -100,29 +104,10 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	delete mid_data;
 	delete [] buffer;
 
+	// Now give the xmidi object to the midi device
 
-	// Now get the data out of the XMIDI class and play it
-		
-	if (!midi_device->accepts_events())
-		{
-		FILE* mid_file = U7open(MIDITMPFILE, "wb");
-		mid_data = new FileDataSource(mid_file);
-
-		int can_play = midfile.retrieve(0, mid_data);
-	
-		delete mid_data;
-		fclose(mid_file);
-
-		if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
-		}
-	else
-		{
-		midi_event	*eventlist;
-		int		ppqn;
-	
-		if (midfile.retrieve(0, &eventlist, ppqn))
-			midi_device->start_track(eventlist, ppqn, repeat);
-		}
+	XMIDIEventList *eventlist = midfile.GetEventList(0);
+	if (eventlist) midi_device->start_track(eventlist, repeat);
 
 }
 
@@ -165,31 +150,12 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 	delete mid_data;
 	fclose(mid_file);
 	
-	
-	// Now get the data out of the XMIDI class and play it
-	if (!midi_device->accepts_events())
-		{
-		mid_file = U7open(MIDITMPFILE, "wb");
-		mid_data = new FileDataSource(mid_file);
-
-		int can_play = midfile.retrieve(num, mid_data);
-	
-		delete mid_data;
-		fclose(mid_file);
-
-		if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
-		}
-	else
-		{
-		midi_event	*eventlist;
-		int		ppqn;
-	
-		if (midfile.retrieve(num, &eventlist, ppqn))
-			midi_device->start_track(eventlist, ppqn, repeat);
-		}
+	// Now give the xmidi object to the midi device
+	XMIDIEventList *eventlist = midfile.GetEventList(num);
+	if (eventlist) midi_device->start_track(eventlist, repeat);
 }
 
-void    MyMidiPlayer::start_track(XMIDI *midfile, bool repeat)
+void    MyMidiPlayer::start_track(XMIDIEventList *midfile, bool repeat)
 {
 
   #ifdef DEBUG
@@ -197,30 +163,9 @@ void    MyMidiPlayer::start_track(XMIDI *midfile, bool repeat)
   #endif
 	if (!midi_device && !init_device())
 	        return;
-
-	// Now get the data out of the XMIDI class and play it
 	
-	if (!midi_device->accepts_events())
-		{	
-		FILE* mid_file = U7open(MIDITMPFILE, "wb");
-		DataSource *mid_data = new FileDataSource(mid_file);
-
-		int can_play = midfile->retrieve(0, mid_data);
-	
-		delete mid_data;
-		fclose(mid_file);
-
-		if (can_play) midi_device->start_track(MIDITMPFILE,repeat);
-	
-		}
-	else
-		{
-		midi_event	*eventlist;
-		int		ppqn;
-	
-		if (midfile->retrieve(0, &eventlist, ppqn))
-			midi_device->start_track(eventlist, ppqn, repeat);
-		}
+	// Now give the xmidi object to the midi device
+	midi_device->start_track(midfile, repeat);
 }
 
 void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
@@ -333,20 +278,29 @@ bool MyMidiPlayer::init_device(void)
 	// instrument_patches=AccessTableFile(XMIDI_MT);
 	string	s;
 
+#ifndef PENTAGRAM
 	bool sfx = Audio::get_ptr()->are_effects_enabled();
+#else
+	config->value("config/audio/effects/enabled",s,"no");
+	bool sfx = s!="yes";
+#endif
 
 	if (!sfx) s = "no";
 	else s = "yes";
 
 	config->set("config/audio/effects/enabled",s,true);
 
+#ifndef PENTAGRAM
 	bool music = Audio::get_ptr()->is_music_enabled();
+#else
+	config->value("config/audio/midi/enabled",s,"yes");
+	bool music = s!="no";
+#endif
 
 	if (!music) s = "no";
 	else s = "yes";
 
 	config->set("config/audio/midi/enabled",s,true);
-
 
 	config->value("config/audio/midi/convert",s,"gm");
 
@@ -430,9 +384,11 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),repeating(false),
 				  music_conversion(XMIDI_CONVERT_MT32_TO_GM),
 				  effects_conversion(XMIDI_CONVERT_GS127_TO_GS)
 {
+#ifndef PENTAGRAM
 	add_midi_bank(MAINMUS);
 	add_midi_bank(INTROMUS);
 	add_midi_bank("<STATIC>/mainshp.flx");
+#endif
 	
 	init_device();
 }
@@ -452,9 +408,10 @@ void    MyMidiPlayer::start_sound_effect(int num)
   #endif
         int real_num = num;
 
+#ifndef PENTAGRAM
         if (Game::get_game_type() == BLACK_GATE)
         	real_num = bgconv[num];
-        
+#endif        
         cout << "Real num " << real_num << endl;
 
 	U7object	track("<DATA>/midisfx.flx",real_num);
@@ -485,27 +442,10 @@ void    MyMidiPlayer::start_sound_effect(int num)
 	delete mid_data;
 	delete [] buffer;
 
-	// Now get the data out of the XMIDI class and play it
-	if (!midi_device->accepts_events())
-		{
-		FILE *mid_file = U7open(MIDISFXFILE, "wb");
-		mid_data = new FileDataSource(mid_file);
-
-		int can_play = midfile.retrieve(0, mid_data);
+	// Now give the xmidi object to the midi device
+	XMIDIEventList *eventlist = midfile.GetEventList(0);
+	if (eventlist) midi_device->start_sfx(eventlist);
 	
-		delete mid_data;
-		fclose(mid_file);
-
-		if (can_play) midi_device->start_sfx(MIDISFXFILE);
-		}
-	else
-		{
-		midi_event	*eventlist;
-		int		ppqn;
-	
-		if (midfile.retrieve(0, &eventlist, ppqn))
-			midi_device->start_sfx(eventlist, ppqn);
-		}
 }
 
 void    MyMidiPlayer::stop_sound_effects()

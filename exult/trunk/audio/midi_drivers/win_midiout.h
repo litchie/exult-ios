@@ -1,6 +1,5 @@
-//-*-Mode: C++;-*-
 /*
-Copyright (C) 2000  Ryan Nunn
+Copyright (C) 2000, 2001, 2002  Ryan Nunn
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -17,8 +16,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef _MIDI_driver_win_midiout_h_
-#define _MIDI_driver_win_midiout_h_
+#ifndef WIN_MIDIOUT_H
+#define WIN_MIDIOUT_H
 
 #if (__GNUG__ >= 2) && (!defined WIN32)
 #  pragma interface
@@ -30,21 +29,28 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+// These will prevent inclusion of mmsystem sections
+#define MMNODRV         // Installable driver support
+#define MMNOSOUND       // Sound support
+#define MMNOWAVE        // Waveform support
+#define MMNOAUX         // Auxiliary audio support
+#define MMNOMIXER       // Mixer support
+#define MMNOTIMER       // Timer support
+#define MMNOJOY         // Joystick support
+#define MMNOMCI         // MCI support
+#define MMNOMMIO        // Multimedia file I/O support
+
 #include <windows.h>
 #include <mmsystem.h>
 
-#include "Midi.h"
-#include "xmidi.h"
+#include "../Midi.h"
 #include "exceptions.h"
 
 class	Windows_MidiOut : virtual public MidiAbstract
 {
 public:
-	// Do we accept events, YES!
-	virtual bool accepts_events(void) { return true; }
-
-	virtual void start_track(midi_event *evntlist, int ppqn, bool repeat);
-	virtual void start_sfx(midi_event *evntlist, int ppqn);
+	virtual void start_track(XMIDIEventList *, bool repeat);
+	virtual void start_sfx(XMIDIEventList *);
 	virtual void stop_track(void);
 	virtual void stop_sfx(void);
 	virtual bool is_playing(void);
@@ -57,9 +63,8 @@ private:
 	UNREPLICATABLE_CLASS(Windows_MidiOut);
 
 	struct mid_data {
-		midi_event	*list;
-		int 		ppqn;
-		bool		repeat;
+		XMIDIEventList	*list;
+		bool			repeat;
 	};
 
 	static const unsigned short	centre_value;
@@ -67,7 +72,7 @@ private:
 	static const unsigned char	coarse_value;
 	static const unsigned short	combined_value;
 
-	sint32		dev_num;
+	signed int	dev_num;
 	HMIDIOUT	midi_port;
 	
 	HANDLE	 	*thread_handle;
@@ -94,26 +99,37 @@ private:
 	void reset_channel (int i);
 
 	// Microsecond Clock
-	Uint32 start;
-	Uint32 sfx_start;
+	unsigned long start;
+	unsigned long sfx_start;
 
 	inline void wmoInitClock ()
-	{ start = GetTickCount(); }
+	{ start = GetTickCount()*6; }
 
-	inline double wmoGetTime ()
-	{ return (GetTickCount() - start) * 1000.0; }
+	inline void wmoAddOffset (unsigned long offset)
+	{ start += offset; }
+
+	inline unsigned long wmoGetTime ()
+	{ return GetTickCount()*6 - start; }
+
+	inline unsigned long wmoGetStart ()
+	{ return start; }
+
+	inline unsigned long wmoGetRealTime ()
+	{ return GetTickCount()*6; }
 
 	inline void wmoInitSFXClock ()
-	{ sfx_start = GetTickCount(); }
+	{ sfx_start = GetTickCount()*6; }
 
-	inline double wmoGetSFXTime ()
-	{ return (GetTickCount() - sfx_start) * 1000.0; }
+	inline void wmoAddSFXOffset (unsigned long offset)
+	{ sfx_start += offset; }
 
-	inline void wmoDelay (const double mcs_delay)
-	{ if (mcs_delay >= 0) Sleep ((int) (mcs_delay / 1000.0)); }
+	inline unsigned long wmoGetSFXTime ()
+	{ return GetTickCount()*6 - sfx_start; }
 
+	inline unsigned long wmoGetSFXStart ()
+	{ return sfx_start; }
 };
 
-#endif
+#endif //WIN32
 
-#endif
+#endif //WIN_MIDIOUT_H

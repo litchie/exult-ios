@@ -59,7 +59,9 @@ U7file  *U7FileManager::get_file_object(const string &s)
 	// Not in our cache. Attempt to figure it out.
 	
 	TRY_FILE_TYPE(uf,IFF);
+#ifndef PENTAGRAM
 	TRY_FILE_TYPE(uf,Flex);
+#endif
 	TRY_FILE_TYPE(uf,Table);
 	TRY_FILE_TYPE(uf,Flat);
 

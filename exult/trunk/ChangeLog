@@ -1,3 +1,30 @@
+2002-02-08  Ryan Nunn  <triforce@merlin.net.au>
+	* audio/*.*, audio/midi_drivers/*.*, exultmenu.cc : Changes to the midi
+	  system. Now evern faster, and safer too. New super accurate integer
+	  timing method for Windows. Improved XMIDI looping for Pentagram in
+	  Windows. Probably other things as well that I just can't remember
+
+	* sigame.cc : Fixed a crash in the SI Intro.
+
+	* data/bg/defaultkeys.txt, data/si/defaultkeys.txt : Added Alt-F4 (quit)
+	  and Alt-Enter (toggle fullscreen) shortcut keys.
+
+	* headers/common_types.h : Some things from both exult_types.h and
+	  exult_constants.h that are needed by the modules shared with
+	  Pentagram
+
+	* headers/gamma.h : Moving this to headers (needed by Pentagram)
+
+	* exceptions.h, gamma.h : Since common_types.h was added, I'm removing
+	  these because now everyone needs to use headers
+
+	* Makefile.cygwin, Makefile.win32,  msvcstuff/*.dsp : Setting things up
+	  to use the files in headers dir. 
+
+	* conf/*.*, files/*.*, audio/*.*: Changes so thing will compile for
+	  Pentagram. Note that PENTRAGRAM must be defined when compiling
+	  Pentagram.
+
 2002-02-08  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Removed old bug fixup.

@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#ifndef PENTAGRAM // DONT'T INCLUDE THIS IN PENTAGRAM!
+
 #if (__GNUG__ >= 2) && (!defined WIN32)
 #  pragma implementation
 #endif
@@ -154,3 +156,5 @@ bool Flex::is_flex(const char *fname)
 	in.close();
 	return is;
 }
+
+#endif // PENTAGRAM

@@ -20,6 +20,8 @@
 #  include <config.h>
 #endif
 
+#ifndef PENTAGRAM // Exult only at this stage. 
+
 #if (__GNUG__ >= 2) && (!defined WIN32)
 #  pragma implementation
 #endif
@@ -64,8 +66,14 @@ using std::memset;
 using std::string;
 using std::strncmp;
 using std::vector;
+
+// These MIGHT be macros!
+#ifndef min
 using std::min;
+#endif
+#ifndef max
 using std::max;
+#endif
 
 #if defined(WIN32) && !defined(FORCE_44KHZ)
 /* 44100 caused the freeze upon exit in Win! */
@@ -594,7 +602,7 @@ void	Audio::start_music(const char *fname, int num, bool continuous)
 		midi->start_music(fname,num,continuous && allow_music_looping);
 }
 
-void Audio::start_music(XMIDI *mid_file,bool continuous)
+void Audio::start_music(XMIDIEventList *mid_file,bool continuous)
 {
 	if(audio_enabled && music_enabled && midi != 0)
 		midi->start_track(mid_file,continuous && allow_music_looping);
@@ -991,3 +999,5 @@ static void decode_ADPCM_4(uint8* inBuf,
 		outBuf[i * 2 + 1] = decode_ADPCM_4_sample(inBuf[i] >> 0, reference, scale);
 	}
 }
+
+#endif // PENTAGRAM
