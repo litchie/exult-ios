@@ -251,10 +251,12 @@
 <!-- Key Command Templates -->
 <!--=======================-->
 <xsl:template match="keytable">
-	<table border="0" cellpadding="0" cellspacing="2" width="80%">
+	<table border="0" cellpadding="0" cellspacing="0" width="0">
 		<tr>
 			<th colspan="3" align="left">
+				<xsl:text>&#xA;</xsl:text>
 				<xsl:value-of select="@title"/>
+				<xsl:text>&#xA;</xsl:text>
 			</th>
 		</tr>
 		<xsl:apply-templates select="keydesc"/>
@@ -267,8 +269,9 @@
 		<td nowrap="nowrap" valign="top">
 			<font color="maroon"><xsl:value-of select="@name"/></font>
 		</td>
-		<td width="10"><xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text></td>
-		<td><xsl:value-of select="."/></td>
+		<td><xsl:text> : </xsl:text></td>
+		<td><xsl:value-of select="."/></td>		
+		<xsl:text>&#xA;</xsl:text>
 	</tr>
 </xsl:template>
 
