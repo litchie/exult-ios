@@ -99,7 +99,8 @@ void Game_window::read_npcs
 			unsigned short shnum = Read2(nfile)&0x3ff;
 			okay = nfile.good();
 			nfile.seekg(-4, ios::cur);
-			if (!okay || get_shape_num_frames(shnum) < 16)
+			ShapeID sid(shnum, 0);
+			if (!okay || sid.get_num_frames() < 16)
 				break;	// Watch for corrupted file.
 			Monster_actor *act = Monster_actor::create(shnum);
 			act->read(nfile, -1, 1);

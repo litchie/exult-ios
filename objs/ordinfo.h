@@ -61,11 +61,11 @@ public:
 	friend class Game_object;
 	friend class Map_chunk;
 					// Create from scratch.
-	Ordering_info(Game_window *gwin, const Game_object *obj)
+	Ordering_info(Game_window *gwin, Game_object *obj)
 		: area(gwin->get_shape_rect(obj)),
 		  info(gwin->get_shapes().get_info(obj->get_shapenum()))
 		{ init(obj); }
-	Ordering_info(Game_window *gwin, const Game_object *obj, Rectangle& a)
+	Ordering_info(Game_window *gwin, Game_object *obj, Rectangle& a)
 		: area(a),
 		  info(gwin->get_shapes().get_info(obj->get_shapenum()))
 		{ init(obj); }

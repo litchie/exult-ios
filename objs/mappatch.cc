@@ -101,10 +101,10 @@ Map_patch_collection::~Map_patch_collection
 	(
 	)
 	{
-	for (map<int, list<Map_patch *> >::iterator it1 = patches.begin();
+	for (Map_patch_map::iterator it1 = patches.begin();
 						it1 != patches.end(); it1++)
 		{
-		list<Map_patch *>& lst = (*it1).second;
+		Map_patch_list& lst = (*it1).second;
 		while (!lst.empty())
 			{
 			Map_patch *patch = lst.front();
@@ -140,11 +140,11 @@ void Map_patch_collection::apply
 	int schunk
 	)
 	{
-	map<int, list<Map_patch *> >::iterator it1 = patches.find(schunk);
+	Map_patch_map::iterator it1 = patches.find(schunk);
 	if (it1 != patches.end())	// Found list for superchunk?
 		{
-		list<Map_patch *>& lst = (*it1).second;
-		for (list<Map_patch *>::const_iterator it2 = lst.begin();
+		Map_patch_list& lst = (*it1).second;
+		for (Map_patch_list::const_iterator it2 = lst.begin();
 						it2 != lst.end(); it2++)
 			(*it2)->apply();	// Apply each one in list.
 		}

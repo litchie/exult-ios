@@ -640,7 +640,7 @@ void ActionPetra(int *params)
 	cheat.toggle_Petra();
 }
 
-//  { ActionSkinColour, 0 "Change skin colour", true, true, SERPENT_ISLE },
+//  { ActionSkinColour, 0 "Change skin colour", true, true, NONE },
 void ActionSkinColour(int *params)
 {
 	cheat.change_skin();

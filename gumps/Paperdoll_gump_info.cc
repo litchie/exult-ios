@@ -611,11 +611,31 @@ Paperdoll_gump::Paperdoll_npc Paperdoll_gump::Characters_BG[] = {
 	// Shp, fmale, head_file,       bsh, bf, hds, hf, hh,  ash, af, a2, as
 	
 	// Avatar Female White
+	{ 1029,  true, SF_PAPERDOL_VGA,   13,  0,   4,  0,  1,   7,  0,  2,  4 },
+	{ 1035,  true, SF_PAPERDOL_VGA,   13,  0,   4,  0,  1,   7,  0,  2,  4 },
 	{  989,  true, SF_GAME_FLX,      13,  0, EXULT_BG_FLX_FEM_AV_FACE_SHP,
 	                                               0,  1,   7,  0,  2,  4 },
+	// Avatar Female Brown
+	{ 1027,  true, SF_PAPERDOL_VGA,   13,  1,   4,  2,  3, 130,  0,  2,  4 },
+	{ 1033,  true, SF_PAPERDOL_VGA,   13,  1,   4,  2,  3, 130,  0,  2,  4 },
+
+	// Avatar Female Black
+	{ 1025,  true, SF_PAPERDOL_VGA,   13,  2,   4,  4,  5, 131,  0,  2,  4 },
+	{ 1031,  true, SF_PAPERDOL_VGA,   13,  2,   4,  4,  5, 131,  0,  2,  4 },
+	
 	// Avatar Male White
+	{ 1028, false, SF_PAPERDOL_VGA,   14,  0, 128,  0,  1,   7,  1,  3,  5 },
+	{ 1034, false, SF_PAPERDOL_VGA,   14,  0, 128,  0,  1,   7,  1,  3,  5 },
 	{  721, false, SF_GAME_FLX,      14,  0, EXULT_BG_FLX_MALE_AV_FACE_SHP,
 	                                               0,  1,   7,  1,  3,  5 },
+	// Avatar Male Brown
+	{ 1026, false, SF_PAPERDOL_VGA,   14,  1, 128,  2,  3, 130,  1,  3,  5 },
+	{ 1032, false, SF_PAPERDOL_VGA,   14,  1, 128,  2,  3, 130,  1,  3,  5 },
+
+	// Avatar Male Black
+	{ 1024, false, SF_PAPERDOL_VGA,   14,  2, 128,  4,  5, 131,  1,  3,  5 },
+	{ 1030, false, SF_PAPERDOL_VGA,   14,  2, 128,  4,  5, 131,  1,  3,  5 },
+
 	// Iolo
 	{  465, false, SF_GAME_FLX,      14,  0, EXULT_BG_FLX_IOLO_FACE_SHP,  
 	                                               0,  1,   7,  1,  3,  5 },

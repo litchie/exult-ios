@@ -59,17 +59,21 @@ public:
 					// Copy-constructor:
 	Chunk_terrain(const Chunk_terrain& c2);
 	~Chunk_terrain();
-	void add_client()
+	inline void add_client()
 		{ num_clients++; }
-	void remove_client()
+	inline void remove_client()
 		{ num_clients--; }
-	bool is_modified()
+	inline bool is_modified()
 		{ return modified; }
 					// Less-than c2 (for STL Map)?
 	bool operator<(const Chunk_terrain& c2) const;
 					// Get tile's shape ID.
-	ShapeID get_flat(int tilex, int tiley) const
+	inline ShapeID get_flat(int tilex, int tiley) const
 		{ return shapes[16*tiley + tilex]; }
+
+	inline Shape_frame *get_shape(int tilex, int tiley)
+		{ return shapes[16*tiley + tilex].get_shape(); }
+
 					// Set tile's shape.
 	void set_flat(int tilex, int tiley, ShapeID id);
 	Image_buffer8 *get_rendered_flats()

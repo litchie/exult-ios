@@ -439,9 +439,10 @@ void Game_window::write_saveinfo()
 		out.put(npc->get_property(Actor::training));
 
 		Write2(out, npc->get_property(Actor::health));
+		Write2(out, npc->get_shapefile());
 
 		// Packing for the rest of the structure
-		for (j = reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved0)); j < sizeof(SaveGame_Party); j++)
+		for (j = reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved1)); j < sizeof(SaveGame_Party); j++)
 			out.put(0);
 	}
 
@@ -506,9 +507,10 @@ void Game_window::read_saveinfo(std::ifstream &in,
 		in.get(reinterpret_cast<char &>(party[i].training));
 
 		party[i].health = Read2(in);
+		party[i].shape_file = Read2(in);
 
 		// Packing for the rest of the structure
-		for (j = reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved0)); j < sizeof(SaveGame_Party); j++)
+		for (j = reinterpret_cast<long>(&(((SaveGame_Party *)0)->reserved1)); j < sizeof(SaveGame_Party); j++)
 			in.get();
 	}
 }

@@ -1,3 +1,10 @@
+2001-10-24  Ryan Nunn <triforce@merlin.net.au>
+	* Too many files to even think about listing:
+	  Added support for BG multiracial and added shapes. SI Required!
+	  Changed lots of things to use ShapeID methods rather than the
+	    Game_window alternatives.
+	  Fixed Gump Problem
+
 2001-10-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucsched.cc (Usecode_script): Purge() forces halt.

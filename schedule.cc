@@ -1441,8 +1441,7 @@ void Lab_schedule::now_what
 		int dir = npc->get_direction(cauldron);
 		gwin->add_dirty(cauldron);
 					// Set random frame (skip last frame).
-		cauldron->set_frame(rand()%(gwin->get_shape_num_frames(
-					cauldron->get_shapenum()) - 1));
+		cauldron->set_frame(rand()%(cauldron->get_num_frames() - 1));
 		gwin->add_dirty(cauldron);
 		npc->add_dirty(gwin);
 		npc->set_frame(
@@ -1523,7 +1522,7 @@ void Lab_schedule::now_what
 							340, 0, 0);
 			if (t.tx != -1 && t.tz == spot_on_table.tz)
 				{
-				int nframes = gwin->get_shape_num_frames(340);
+				int nframes = ShapeID(340, 0).get_num_frames();
 				Game_object *p = gwin->create_ireg_object(
 					gwin->get_info(340), 340,
 					rand()%nframes, 0, 0, 0);
@@ -1807,7 +1806,7 @@ void Waiter_schedule::now_what
 					// Walk to customer with food.
 	if (!npc->get_readied(Actor::lhand))
 		{			// Acquire some food.
-		int nfoods = gwin->get_shape_num_frames(377);
+		int nfoods = ShapeID(377, 0).get_num_frames();
 		int frame = rand()%nfoods;
 		Game_object *food = new Ireg_game_object(377, frame, 0, 0, 0);
 		npc->add_readied(food, Actor::lhand);
@@ -2025,7 +2024,7 @@ void Sew_schedule::now_what
 		if (sew_clothes_cnt > 1 && sew_clothes_cnt < 5)
 			{
 			gwin->add_dirty(cloth);
-			int num_cloth_frames = gwin->get_shape_num_frames(851);
+			int num_cloth_frames = ShapeID(851, 0).get_num_frames();
 			cloth->set_frame(rand()%num_cloth_frames);
 			gwin->add_dirty(cloth);
 			}
@@ -2037,7 +2036,7 @@ void Sew_schedule::now_what
 					// Top or pants.
 			int shnum = rand()%2 ? 738 : 249;
 			cloth->set_shape(shnum);
-			int nframes = gwin->get_shape_num_frames(shnum);
+			int nframes = ShapeID(shnum, 0).get_num_frames();
 			cloth->set_frame(rand()%nframes);
 			cloth->move(pos);
 			gwin->add_dirty(cloth);

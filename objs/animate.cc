@@ -202,7 +202,7 @@ Animator *Animator::create
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int shnum = ob->get_shapenum();
-	int frames = gwin->get_shape_num_frames(shnum);
+	int frames = ob->get_num_frames();
 	if (frames > 1)
 		return new Frame_animator(ob, ireg);
 	else
@@ -275,7 +275,7 @@ void Frame_animator::Initialize()
 
 	last_shape = obj->get_shapenum();
 	last_frame = obj->get_framenum();
-	frames = gwin->get_shape_num_frames(last_shape);
+	frames = obj->get_num_frames();
 
 	// Serpent Isle
 	if (Game::get_game_type() == SERPENT_ISLE)
@@ -480,7 +480,7 @@ Field_frame_animator::Field_frame_animator
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int shapenum = obj->get_shapenum();
-	frames = gwin->get_shape_num_frames(shapenum);
+	frames = obj->get_num_frames();
 	}
 
 /*

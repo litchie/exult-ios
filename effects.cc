@@ -64,11 +64,11 @@ Sprites_effect::Sprites_effect
 	int num,			// Index.
 	Tile_coord p,			// Position within world.
 	int dx, int dy			// Add to offset for each frame.
-	) : sprite_num(num), frame_num(0), item(0), pos(p), xoff(0), yoff(0),
+	) : sprite(num, 0, SF_SPRITES_VGA), item(0), pos(p), xoff(0), yoff(0),
 						deltax(dx), deltay(dy)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	frames = gwin->get_sprite_num_frames(num);
+	frames = sprite.get_num_frames();
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	}
@@ -83,12 +83,12 @@ Sprites_effect::Sprites_effect
 	Game_object *it,		// Item to put effect by.
 	int xf, int yf,			// Offset from actor in pixels.
 	int dx, int dy			// Add to offset on each frame.
-	) : sprite_num(num), frame_num(0), item(it), xoff(xf), 
+	) : sprite(num, 0, SF_SPRITES_VGA), item(it), xoff(xf), 
 					yoff(yf), deltax(dx), deltay(dy)
 	{
 	pos = item->get_abs_tile_coord();
 	Game_window *gwin = Game_window::get_game_window();
-	frames = gwin->get_sprite_num_frames(num);
+	frames = sprite.get_num_frames();
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	}
@@ -105,7 +105,7 @@ inline void Sprites_effect::add_dirty
 	{
 	if (pos.tx == -1 || frnum == -1)
 		return;			// Already at destination.
-	Shape_frame *shape = gwin->get_sprite_shape(sprite_num, frnum);
+	Shape_frame *shape = sprite.get_shape();
 	int lp = pos.tz/2;
 
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
@@ -124,6 +124,7 @@ void Sprites_effect::handle_event
 	long udata
 	)
 	{
+	int frame_num = sprite.get_framenum();
 	Game_window *gwin = Game_window::get_game_window();
 	int delay = gwin->get_std_delay();// Delay between frames.  Needs to
 					//   match usecode animations.
@@ -141,6 +142,7 @@ void Sprites_effect::handle_event
 	yoff += deltay;
 	add_dirty(gwin, frame_num);	// Want to paint new frame.
 	frame_num++;			// Next frame.
+	sprite.set_frame(frame_num);
 					// Add back to queue for next time.
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
@@ -154,13 +156,13 @@ void Sprites_effect::paint
 	Game_window *gwin
 	)
 	{
-	if (frame_num >= frames)
+	if (sprite.get_framenum() >= frames)
 		return;
 	int lp = pos.tz/2;		// Account for lift.
-	gwin->paint_sprite(
+	gwin->paint_shape(
 		xoff + (pos.tx - lp - gwin->get_scrolltx())*c_tilesize,
 		yoff + (pos.ty - lp - gwin->get_scrollty())*c_tilesize, 
-						sprite_num, frame_num);
+						sprite);
 	}
 
 /*
@@ -192,7 +194,7 @@ void Explosion_effect::handle_event
 	long udata
 	)
 {
-	if (frame_num == frames/4) {
+	if (sprite.get_framenum()== frames/4) {
 		// this was in ~Explosion_effect before
 		if (explode)
 			{
@@ -235,7 +237,7 @@ void Projectile_effect::init
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	frames = gwin->get_shape_num_frames(shape_num);
+	frames = projectile.get_num_frames();
 	pos = s;			// Get starting position.
 	if (attacker)			// Try to set start better.
 		{
@@ -257,12 +259,12 @@ void Projectile_effect::init
 	if (frames >= 24)		// Use frames 8-23, for direction
 		{			//   going clockwise from North.
 		int dir = Get_dir16(s, d);
-		frame_num = 8 + dir;
+		projectile.set_frame(8 + dir);
 		}
-	else if (frames == 1 && shape_num != 704)
-		frame_num = 0;		// (Don't show powder keg!)
+	else if (frames == 1 && projectile.get_shapenum() != 704)
+		projectile.set_frame(0);	// (Don't show powder keg!)
 	else
-		frame_num = -1;		// We just won't show it.
+		projectile.set_frame(-1);	// We just won't show it.
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	}
@@ -278,8 +280,7 @@ Projectile_effect::Projectile_effect
 	Game_object *to,		// End here, 'attack' it with shape.
 	int shnum,			// Projectile shape # in 'shapes.vga'.
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
-	) : attacker(att), target(to), shape_num(shnum), weapon(weap),
-		frame_num(0)
+	) : attacker(att), target(to), projectile(shnum, 0), weapon(weap)
 	{
 	init(attacker->get_abs_tile_coord(), to->get_abs_tile_coord());
 	}
@@ -294,8 +295,7 @@ Projectile_effect::Projectile_effect
 	Tile_coord d,			// End here.
 	int shnum,			// Projectile shape
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
-	) : attacker(0), target(0), shape_num(shnum), weapon(weap), 
-		frame_num(0)
+	) : attacker(0), target(0), projectile(shnum, 0), weapon(weap)
 	{
 	init(s, d);
 	}
@@ -310,8 +310,7 @@ Projectile_effect::Projectile_effect
 	Game_object *to,		// End here, 'attack' it with shape.
 	int shnum,			// Projectile shape
 	int weap			// Weapon (bow, gun, etc.) shape, or 0.
-	) : attacker(0), target(to), shape_num(shnum), weapon(weap), 
-		frame_num(0)
+	) : attacker(0), target(to), projectile(shnum, 0), weapon(weap)
 	{
 	init(s, to->get_abs_tile_coord());
 	}
@@ -336,9 +335,9 @@ inline void Projectile_effect::add_dirty
 	Game_window *gwin
 	)
 	{
-	if (pos.tx == -1 || frame_num == -1)
+	if (pos.tx == -1 || projectile.get_framenum() == -1)
 		return;			// Already at destination.
-	Shape_frame *shape = gwin->get_shape(shape_num, frame_num);
+	Shape_frame *shape = projectile.get_shape();
 					// Force repaint of prev. position.
 	int liftpix = pos.tz*c_tilesize/2;
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
@@ -385,7 +384,7 @@ void Projectile_effect::handle_event
 					// If missile egg, detect target.
 			(!target && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
-		switch (shape_num)
+		switch (projectile.get_shapenum())
 			{
 		case 287:		// Swordstrike.
 			gwin->add_effect(new Sprites_effect(23, epos));
@@ -411,7 +410,7 @@ void Projectile_effect::handle_event
 		if (target && (!attacker || 
 					// Watch for teleporting away.
 					attacker->distance(target) < 50))
-			target->attacked(attacker, weapon, shape_num);
+			target->attacked(attacker, weapon, projectile.get_shapenum());
 		add_dirty(gwin);
 		pos.tx = -1;		// Signal we're done.
 		gwin->remove_effect(this);
@@ -431,12 +430,12 @@ void Projectile_effect::paint
 	Game_window *gwin
 	)
 	{
-	if (pos.tx == -1 || frame_num == -1)
+	if (pos.tx == -1 || projectile.get_framenum() == -1)
 		return;			// Already at destination.
 	int liftpix = pos.tz*c_tilesize/2;
 	gwin->paint_shape((pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
 		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix, 
-		shape_num, frame_num);
+		projectile);
 	}
 
 /*
@@ -447,12 +446,12 @@ Death_vortex::Death_vortex
 	(
 	Game_object *trg,		// What to aim for.
 	Tile_coord tp			// Target pos, if trg==0.
-	) : frame_num(0), next_damage_time(0)
+	) : vortex(8, 0, SF_SPRITES_VGA), next_damage_time(0)
 	{
 	pos = trg ? trg->get_abs_tile_coord() : tp;
 	target = dynamic_cast<Actor *> (trg);
 	Game_window *gwin = Game_window::get_game_window();
-	frames = gwin->get_sprite_num_frames(8);
+	frames = vortex.get_num_frames();
 					// Go for 20 seconds.
 	stop_time = Game::get_ticks() + 20*1000;
 					// Start immediately.
@@ -470,7 +469,7 @@ inline int Death_vortex::add_dirty
 	Game_window *gwin
 	)
 	{
-	Shape_frame *shape = gwin->get_sprite_shape(8, frame_num);
+	Shape_frame *shape = vortex.get_shape();
 	int liftpix = pos.tz*c_tilesize/2;
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
 		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
@@ -519,7 +518,7 @@ void Death_vortex::handle_event
 				npc->reduce_health(40);
 			}
 		}
-	frame_num = (frame_num + 1)%frames;
+	vortex.set_frame((vortex.get_framenum() + 1)%frames);
 	add_dirty(gwin);		// Paint new.
 	if (curtime < stop_time)	// Keep going?
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
@@ -540,10 +539,10 @@ void Death_vortex::paint
 	)
 	{
 	int liftpix = pos.tz*c_tilesize/2;
-	gwin->paint_sprite(
+	gwin->paint_shape(
 		(pos.tx - gwin->get_scrolltx())*c_tilesize - liftpix,
 		(pos.ty - gwin->get_scrollty())*c_tilesize - liftpix, 
-		8, frame_num);
+		vortex);
 	}
 
 /*
@@ -1000,10 +999,12 @@ void Sparkle_effect::handle_event
  *	Create a cloud.
  */
 
+const int CLOUD = 2;		// Shape #.
+
 Cloud::Cloud
 	(
 	short dx, short dy		// Deltas for movement.
-	) : frame(0), wx(0), wy(0), deltax(dx), deltay(dy), count(-1)
+	) : cloud(CLOUD, 0, SF_SPRITES_VGA), wx(0), wy(0), deltax(dx), deltay(dy), count(-1)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 					// Get abs. values.
@@ -1015,8 +1016,6 @@ Cloud::Cloud
 		max_count = 2*gwin->get_width()/adx;
 	start_time = 0;
 	}
-
-const int CLOUD = 2;		// Shape #.
 
 /*
  *	Set starting screen position according to direction.
@@ -1074,7 +1073,7 @@ inline void Cloud::next
 					// Get top-left world pos.
 	long scrollx = gwin->get_scrolltx()*c_tilesize;
 	long scrolly = gwin->get_scrollty()*c_tilesize;
-	Shape_frame *shape = gwin->get_sprite_shape(CLOUD, frame);
+	Shape_frame *shape = cloud.get_shape();
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(
 			shape, wx - scrollx, wy - scrolly).enlarge(4)));
 	if (count <= 0)			// Time to restart?
@@ -1085,7 +1084,7 @@ inline void Cloud::next
 		start_time = Game::get_ticks() + 2000*randcnt + rand()%500;
 cout << "Cloud: start_time = " << start_time << endl;
 		count = max_count;
-		frame = rand()%gwin->get_sprite_num_frames(CLOUD);
+		cloud.set_frame(rand()%cloud.get_num_frames());
 		int x, y;		// Get screen pos.
 		set_start_pos(shape, w, h, x, y);
 		wx = x + scrollx;
@@ -1111,8 +1110,8 @@ void Cloud::paint
 	)
 	{
 	if (count > 0)			// Might not have been started.
-		gwin->paint_sprite(wx - gwin->get_scrolltx()*c_tilesize, 
-			wy - gwin->get_scrollty()*c_tilesize, CLOUD, frame);
+		gwin->paint_shape(wx - gwin->get_scrolltx()*c_tilesize, 
+			wy - gwin->get_scrollty()*c_tilesize, cloud);
 	}
 
 /*

@@ -412,11 +412,13 @@ void Newfile_gump::PaintSaveName (int line)
 				y + fieldy + texty + line*(fieldh + fieldgap));
 
 	// If selected, show selected icon
-	if (selected == actual_game) gwin->paint_exult_shape (
-					x+fieldx+iconx,
+	if (selected == actual_game)
+	{
+		ShapeID icon (EXULT_FLX_SAV_SELECTED_SHP, 0, SF_EXULT_FLX);
+		gwin->paint_shape ( x+fieldx+iconx,
 					y+fieldy+icony+line*(fieldh+fieldgap),
-					EXULT_FLX_SAV_SELECTED_SHP,
-					0);
+					icon);
+	}
 
 }
 
@@ -451,20 +453,37 @@ void Newfile_gump::paint
 	// Now work out the position
 	int pos = ((scrollh-sliderh)*(list_position+2))/num_pos;
 
-	gwin->paint_exult_shape(x+scrollx , y+scrolly+pos, EXULT_FLX_SAV_SLIDER_SHP, 0);
+	ShapeID slider_shape(EXULT_FLX_SAV_SLIDER_SHP, 0, SF_EXULT_FLX);
+	gwin->paint_shape(x+scrollx , y+scrolly+pos, slider_shape);
 
 	// Now paint the savegame details
 	if (screenshot) gwin->paint_shape(x + 222, y + 2, screenshot->get_frame(0));
+
+	// Need to ensure that the avatar's shape actually exists
+	if (party && party[0].shape_file == SF_BG_SISHAPES_VGA && !gwin->can_use_multiracial())
+	{
+		party[0].shape_file = SF_SHAPES_VGA;
+
+		// Female if odd, male if even
+		if (party[0].shape %2) party[0].shape = 989;
+		else party[0].shape = 721;
+	}
 
 	if (details && party)
 	{
 		int	i;
 
 		for (i=0; i<4 && i<details->party_size; i++)
-			gwin->paint_shape(x + 249 + i*23, y + 169, party[i].shape, 16);
+		{
+			ShapeID shape(party[i].shape, 16, (ShapeFile) party[i].shape_file);
+			gwin->paint_shape(x + 249 + i*23, y + 169, shape);
+		}
 
 		for (i=4; i<8 && i<details->party_size; i++)
-			gwin->paint_shape(x + 249 + (i-4)*23, y + 198, party[i].shape, 16);
+		{
+			ShapeID shape(party[i].shape, 16, (ShapeFile) party[i].shape_file);
+			gwin->paint_shape(x + 249 + (i-4)*23, y + 198, shape);
+		}
 
 		char	info[256];
 
@@ -933,6 +952,7 @@ void Newfile_gump::LoadSaveGameDetails()
 
 		strncpy (cur_party[i].name, npc->get_npc_name().c_str(), 18);
 		cur_party[i].shape = npc->get_shapenum();
+		cur_party[i].shape_file = npc->get_shapefile();
 
 		cur_party[i].dext = npc->get_property(Actor::dexterity);
 		cur_party[i].str = npc->get_property(Actor::strength);

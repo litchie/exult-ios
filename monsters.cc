@@ -30,6 +30,8 @@
 #include "chunks.h"
 #include "Audio.h"
 
+using std::rand;
+
 Monster_actor *Monster_actor::in_world = 0;
 int Monster_actor::in_world_cnt = 0;
 

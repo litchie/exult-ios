@@ -330,8 +330,9 @@ int Actor::add_dirty
 			{
 			Game_object * weapon = spots[lhand];
 			int shnum = weapon->get_shapenum();
-			Shape_frame *wshape = gwin->get_shape(
-							shnum, weapon_frame);
+			
+			Shape_frame *wshape = ShapeID(shnum, weapon_frame).get_shape();
+
 			if (wshape)	// Set dirty area rel. to NPC.
 				weapon_rect = gwin->get_shape_rect(wshape, 
 							weapon_x, weapon_y);
@@ -600,8 +601,7 @@ int Actor::get_attack_frames
 		break;
 		}
 					// Check for empty shape.
-	Shape_frame *shape = Game_window::get_game_window()->get_shape(
-					get_shapenum(), which[1]);
+	Shape_frame *shape = ShapeID(get_shapenum(), which[1]).get_shape();
 	if (!shape || shape->is_empty())
 					// If empty, the other usually isn't.
 		which = two_handed ? attack_frames1 : attack_frames2;
@@ -1488,27 +1488,21 @@ void Actor::paint
 		int xoff, yoff;
 		gwin->get_shape_location(this, xoff, yoff);
 		if (flags & (1L << Obj_flags::invisible))
-			gwin->paint_invisible(xoff, yoff, get_shapenum(),
-							get_framenum());
+			gwin->paint_invisible(xoff, yoff, get_shape());
 		else
-			gwin->paint_shape(xoff, yoff, get_shapenum(),
-							get_framenum());
+			gwin->paint_shape(xoff, yoff, *this);
 		paint_weapon(gwin);
 		if (hit)		// Want a momentary red outline.
-			gwin->paint_hit_outline(xoff, yoff,
-					get_shapenum(), get_framenum());
+			gwin->paint_hit_outline(xoff, yoff, get_shape());
 		else if (flags & ((1L<<Obj_flags::protection) | 
 		    (1L << Obj_flags::poisoned) | (1 << Obj_flags::cursed)))
 			{
 			if (flags & (1L << Obj_flags::poisoned))
-				gwin->paint_poison_outline(xoff, yoff,
-					get_shapenum(), get_framenum());
+				gwin->paint_poison_outline(xoff, yoff, get_shape());
 			else if (flags & (1L << Obj_flags::cursed))
-				gwin->paint_cursed_outline(xoff, yoff,
-					get_shapenum(), get_framenum());
+				gwin->paint_cursed_outline(xoff, yoff, get_shape());
 			else
-				gwin->paint_protect_outline(xoff, yoff,
-					get_shapenum(), get_framenum());
+				gwin->paint_protect_outline(xoff, yoff, get_shape());
 			}
 		}
 	}
@@ -1525,7 +1519,8 @@ void Actor::paint_weapon
 		{
 		Game_object * weapon = spots[lhand];
 		int shnum = weapon->get_shapenum();
-		Shape_frame *wshape = gwin->get_shape(shnum, weapon_frame);
+		ShapeID wsid(shnum, weapon_frame);
+		Shape_frame *wshape = wsid.get_shape();
 		if (!wshape)
 			{
 			weapon_rect.w = 0;
@@ -1538,10 +1533,11 @@ void Actor::paint_weapon
 		gwin->get_shape_location(this, xoff, yoff);
 		xoff += weapon_x;
 		yoff += weapon_y;
+
 		if (flags & (1L<<Obj_flags::invisible))
-			gwin->paint_invisible(xoff, yoff, shnum, weapon_frame);
+			gwin->paint_shape(xoff, yoff, wsid, true);
 		else
-			gwin->paint_shape(xoff, yoff, shnum, weapon_frame);
+			gwin->paint_shape(xoff, yoff, wsid);
 		}
 	else
 		weapon_rect.w = 0;
@@ -3348,22 +3344,36 @@ void Actor::set_actor_shape()
 
 	int sn;
 
-	if (Game::get_game_type() == SERPENT_ISLE)
+	ShapeFile the_file = SF_SHAPES_VGA;
+	int female = get_type_flag(tf_sex)?1:0;
+
+	if (Game::get_game_type() == SERPENT_ISLE || Game_window::get_game_window()->can_use_multiracial())
 	{
+		if (Game::get_game_type() == BLACK_GATE) the_file = SF_BG_SISHAPES_VGA;
+
 		if (get_skin_color() == 0) // WH
 		{
-			sn = 1028+get_type_flag(tf_sex)+6*get_siflag(naked);
+			sn = 1028+female+6*get_siflag(naked);
 		}
 		else if (get_skin_color() == 1) // BN
 		{
-			sn = 1026+get_type_flag(tf_sex)+6*get_siflag(naked);
+			sn = 1026+female+6*get_siflag(naked);
 		}
 		else if (get_skin_color() == 2) // BK
 		{
-			sn = 1024+get_type_flag(tf_sex)+6*get_siflag(naked);
+			sn = 1024+female+6*get_siflag(naked);
+		}
+		else if (Game::get_game_type() == SERPENT_ISLE)
+		{
+			sn = female?658:747;
+		}
+		else
+		{
+			the_file = SF_SHAPES_VGA;
+			sn = female?989:721;
 		}
 	}
-	else if (get_type_flag(Actor::tf_sex))
+	else if (female)
 		sn = 989;
 	else
 		sn = 721;
@@ -3371,6 +3381,7 @@ void Actor::set_actor_shape()
 	cerr << "Setting Shape to " << sn << endl;
 #endif
 	set_shape (sn, get_framenum());
+	set_file(the_file);
 }
 
 // Sets the polymorph to shape
