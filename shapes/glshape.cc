@@ -145,7 +145,6 @@ void GL_texshape::paint
 	{
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glPushMatrix();
-					// Convert to tile position.
 	float x = static_cast<float>(px);
 	float y = static_cast<float>(py) + texsize;
 	if (frame)
@@ -155,10 +154,8 @@ void GL_texshape::paint
 		}
 					// Game y-coord goes down from top.
 	y = -y;
-	x /= c_tilesize;
-	y /= c_tilesize;
-	float w = static_cast<float>(texsize)/(c_tilesize), 
-	      h = static_cast<float>(texsize)/(c_tilesize);
+	float w = static_cast<float>(texsize), 
+	      h = static_cast<float>(texsize);
 	glTranslatef(x, y, 0);
 					// Choose texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -242,8 +239,8 @@ void GL_manager::resized
 	glViewport(0, 0, scale*new_width, scale*new_height);
 	glMatrixMode(GL_PROJECTION);	// Set up orthogonal volume.
 	glLoadIdentity();
-					// Set camera.
-	glOrtho(0, new_width/c_tilesize, -new_height/c_tilesize, 0, 1, -16);
+					// Set camera area in 'pixels'.
+	glOrtho(0, new_width, -new_height, 0, 1, -16);
 	glMatrixMode(GL_MODELVIEW);	// Use model-view matrix from now on.
 	glLoadIdentity();
 					// Clear screen & depth buffer.
@@ -252,9 +249,6 @@ void GL_manager::resized
 
 /*
  *	Paint an image directly.
- *	NOTE:  On my voodoo3, this works in software mode but doesn't show up
- *	with hardware acceleration.  The Red Book implies that it will do
- *	automatic conversion to the hardware, but I guess this isn't so.
  */
 
 static void Paint_image
@@ -265,17 +259,12 @@ static void Paint_image
 	int scale			// Scale factor.
 	)
 	{
-					// Convert to tile position.
 	float x = static_cast<float>(px);
 	float y = static_cast<float>(py);
 	x -= frame->get_xleft();
 	y += frame->get_ybelow();
 					// Game y-coord goes down from top.
 	y = -y;
-	x *= scale;
-	y *= scale;
-	x /= c_tilesize;
-	y /= c_tilesize;
 	int w = frame->get_width(), h = frame->get_height();
 					// Render frame.
 	Image_buffer8 buf8(w, h);
