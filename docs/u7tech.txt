@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.12 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.13 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -473,10 +473,10 @@ WIHH.DAT:     wihh entries for the game shapes
 WEAPONS.DAT:  weapons enumeration (jsf)
   weapon    = 21 bytes (meaning?)
   type	    = int16 (shape type)
-  damage/pts. to hit?   = int16 (negative, HP's subtracted?, or same type shape
-	        as ammo.  Or is it extra points to hit?).
+  ????      = int16 (negative, or same type shape
+	        as ammo.  Is it extra points to hit?).
   ammo	    = int16 (shape type) Same as type if ammo not required.
-  damage??  = 1 byte, positive.
+  damage    = 1 byte, positive.
   flags0?   = 1 byte, bit flags:
 	      10 == fire?
 	      20 == magic?
@@ -492,7 +492,16 @@ WEAPONS.DAT:  weapons enumeration (jsf)
 	      0xc6 == fire bolt, triple crossbow.
 	      0xce == crossbow
 	      0xf8 == explosions.
-  unknown(5 bytes)
+  unknown(2 bytes) Usually 4 and 7.
+  flags1	= 1 byte, bit flags (special powers), meaning:
+		  0x01 == sleep
+		  0x02 == charm
+		  0x04 == curse
+		  0x08 == poison
+		  0x10 == paralyze
+		  0x20 == scare? remove mana? (ghosts/magebane have this).
+		  0x40 == ?? (insects have this).
+  zero	    = 1 byte, always 0.
   usecode   = int16 (Usecode function.  ??Call upon strike with event=4.??)
 
 
