@@ -825,7 +825,8 @@ private:
 		zs = info.get_3d_height();
 		}
 public:
-	friend Game_object, Chunk_object_list;
+	friend class Game_object;
+	friend class Chunk_object_list;
 					// Create from scratch.
 	Ordering_info(Game_window *gwin, const Game_object *obj)
 		: area(gwin->get_shape_rect(obj)),
