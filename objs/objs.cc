@@ -23,6 +23,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "../alpha_kludges.h"
+
 #include "objs.h"
 #include "chunks.h"
 #include "objiter.h"
@@ -34,9 +36,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dir.h"
 // #include "game.h"
 #include "ordinfo.h"
-#ifdef __DECCXX
-#  include "alpha_kludges.h"
-#else
+#include "alpha_kludges.h"
+#ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #endif
 
@@ -291,7 +292,7 @@ static int Check_mask
  */
 
 template <class T>
-#ifdef __DECCXX
+#ifdef ALPHA_LINUX_CXX
 int Game_object::find_nearby_static
 #else
 int Game_object::find_nearby
@@ -368,7 +369,7 @@ int Game_object::find_nearby
 	return (vec.size() - vecsize);
 	}
  
-#ifdef __DECCXX
+#ifdef ALPHA_LINUX_CXX
 #define DEFINE_FIND_NEARBY(decl_type, decl_conttype) \
 int Game_object::find_nearby(decl_type vec, Tile_coord pos, int shapenum, int delta, int mask, int qual, int framenum) \
 {  \

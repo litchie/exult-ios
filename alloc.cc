@@ -1,9 +1,10 @@
 #if !AUTOCONFIGURED
 #  include "autoconfig.h"
 #endif
-#ifdef __DECCXX
-#  include "alpha_kludges.h"
-#else
+
+#include "alpha_kludges.h"
+
+#ifndef ALPHA_LINUX_CXX
 #  include <cstdlib>
 #  include <cstdio>
 #endif
@@ -12,7 +13,7 @@
 // Some people are having trouble with this
 #include <pthread_alloc>	// This allocator defines memset (we think)
 #else
-#ifndef __DECCXX
+#ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #endif
 #endif

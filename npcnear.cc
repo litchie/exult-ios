@@ -6,7 +6,11 @@
  **	Written: 2/17/00 - JSF
  **/
 
-#include <cstdlib>
+#include "alpha_kludges.h"
+
+#ifndef ALPHA_LINUX_CXX
+#  include <cstdlib>
+#endif
 #include "npcnear.h"
 #include "gamewin.h"
 #include "actors.h"

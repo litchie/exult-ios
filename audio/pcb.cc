@@ -16,8 +16,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "../alpha_kludges.h"
+
 #include "pcb.h"
-#ifndef __DECCXX
+#ifndef ALPHA_LINUX_CXX
 #  include <cassert>
 #endif
 #include <iostream>

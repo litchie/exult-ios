@@ -5,6 +5,8 @@
  **	Written: 4/29/99 - JSF
  **/
 
+#include "../alpha_kludges.h"
+
 #include <fstream>
 #include <iostream>
 #ifdef MACOS
@@ -13,7 +15,9 @@
 #include "vgafile.h"
 #include "fontvga.h"
 #include "fnames.h"
-#include <cctype>
+#ifndef ALPHA_LINUX_CXX
+#  include <cctype>
+#endif
 #include "ibuf8.h"
 
 using std::cout;

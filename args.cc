@@ -16,9 +16,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifdef __DECCXX
-#  include "alpha_kludges.h"
-#else
+#include "alpha_kludges.h"
+
+#ifndef ALPHA_LINUX_CXX
 #  include <iostream>
 #endif
 

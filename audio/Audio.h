@@ -28,9 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include "../autoconfig.h"
 #endif
 
-#ifdef __DECCXX
-#  include "alpha_kludges.h"
-#endif
+#include "../alpha_kludges.h"
 
 #include <vector>
 #include "SDL_mapping.h"

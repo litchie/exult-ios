@@ -26,7 +26,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../autoconfig.h"
 #endif
 
-#include <cstring>
+#include "../alpha_kludges.h"
+
+#ifndef ALPHA_LINUX_CXX
+#  include <cstring>
+#endif
 #include <iostream.h>
 #include "databuf.h"
 #include "playfli.h"

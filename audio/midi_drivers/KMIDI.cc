@@ -23,10 +23,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef XWIN
 
+#include "../../alpha_kludges.h"
 #include "KMIDI.h"
 
-#include <unistd.h>
-#include <csignal>
+#ifndef ALPHA_LINUX_CXX
+#  include <unistd.h>
+#  include <csignal>
+#endif
 #include "../../fnames.h"
 
 #include "Configuration.h"

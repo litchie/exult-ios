@@ -21,9 +21,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
+#include "../alpha_kludges.h"
+
 #include "IFF.h"
 
-#include <cstdio>
+#ifndef ALPHA_LINUX_CXX
+#  include <cstdio>
+#endif
 #include <iostream>
 #include "exceptions.h"
 #include "utils.h"
