@@ -235,29 +235,37 @@ bool Game::show_menu()
 	menu_mouse = new Mouse(gwin, mouse_data);
 	
 	top_menu();
-	MenuList *menu = new MenuList();
+	MenuList *menu = 0;
+
 		
 	int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12, 0x07 };
 	int num_choices = sizeof(menuchoices)/sizeof(int);
-	Vga_file exult_flx("<DATA>/exult.flx");
-		
-	for(int i=0; i<num_choices; i++) {
-		menu->add_entry(new MenuEntry(menushapes.get_shape(menuchoices[i],1),
-					      menushapes.get_shape(menuchoices[i],0),
-					      centerx, menuy+i*11));
-	}
+	int *menuentries = new int[num_choices];
 	
-	/*	menu->add_entry(new MenuEntry(exult_flx.get_shape(returnshape,1),
-					      exult_flx.get_shape(returnshape,0),
-					      centerx, menuy+num_choices*11));*/
-	menu->set_selection(2);
+	Vga_file exult_flx("<DATA>/exult.flx");
 	char npc_name[16];
 	snprintf(npc_name, 16, "Exult");
 	bool play = false;
+	
 	do {
+		int entries = 0;
+		if(!menu) {
+			entries = 0;
+			menu = new MenuList();	
+			for(int i=0; i<num_choices; i++) {
+				if((i!=4 && i!=5) || (i==4 && U7exists("<SAVEGAME>/quotes.flg")) || (i==5 && U7exists("<SAVEGAME>/endgame.flg"))) {
+					menu->add_entry(new MenuEntry(menushapes.get_shape(menuchoices[i],1),
+						      menushapes.get_shape(menuchoices[i],0),
+						      centerx, menuy+i*11));
+					menuentries[entries++]=i;
+				}
+			}
+			menu->set_selection(2);
+		}
+	
 		bool created = false;
-		
-		switch(menu->handle_events(gwin,menu_mouse)) {
+		int choice = menu->handle_events(gwin, menu_mouse);
+		switch(choice<0?choice:menuentries[choice]) {
 		case -1: // Exit
 			pal.fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
@@ -290,6 +298,8 @@ bool Game::show_menu()
 		case 3: // Credits
 			pal.fade_out(c_fade_out_time);
 			show_credits();
+			delete menu;
+			menu = 0;
 			top_menu();
 			break;
 		case 4: // Quotes
@@ -309,9 +319,10 @@ bool Game::show_menu()
 		default:
 			break;
 		}
-	} while(menu->get_selection()!=2);
+	} while(!menu || menu->get_selection()!=2);
 	pal.fade_out(c_fade_out_time);
 	delete menu;
+	delete[] menuentries;
 	gwin->clear_screen(true);
 	Audio::get_ptr()->stop_music();
 	delete menu_mouse;

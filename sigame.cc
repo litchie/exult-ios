@@ -818,7 +818,11 @@ void SI_Game::show_credits()
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)
 			    );
-		credits.run(gwin,pal);
+		if(credits.run(gwin,pal)) {	// Watched through the entire sequence?
+			std::ofstream quotesflg;
+			U7open(quotesflg, "<SAVEGAME>/quotes.flg");
+			quotesflg.close();
+		}
 	}
 
 bool SI_Game::new_game(Vga_file &shapes)
