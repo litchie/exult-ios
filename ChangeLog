@@ -1,3 +1,8 @@
+2001-09-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: undid the fix I made to returning party items
+	(Jeff's fix worked better :-) )
+	* usecode/ucinternal.*: fixed bug with remove_party_items
+
 2001-09-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/contain.cc (Container_game_object): Fixed add_quantity() so

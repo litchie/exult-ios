@@ -365,6 +365,8 @@ class Usecode_internal : public Usecode_machine
 	void link_party();		// Set party's id's.
 
 	Game_object *intercept_item;
+	Game_object *temp_to_be_deleted;
+
 public:
 	friend class Usecode_script;
 	Usecode_internal(Game_window *gw);

@@ -884,9 +884,15 @@ Usecode_value Usecode_internal::remove_party_items
 				shapenum, quality, framenum);
 		if (!obj)
 			return Usecode_value(0);
-		obj->remove_this(0);
-		// don't return the deleted object; just return 'true' (20010810, wjp)
-		return Usecode_value(1);
+
+		// +++++++++ problem: we need to really delete this object, but
+		// it also has to remain long enough to be processed by the
+		// calling usecode function...
+		// for now: use temp_to_be_deleted to store the object and
+		// delete it afterwards (end of Usecode_internal::run)
+		temp_to_be_deleted = obj;
+		obj->remove_this(1);
+		return Usecode_value(obj);
 	}
 	Usecode_value all(-357);	// See if they exist.
 	Usecode_value avail = count_objects(all, shapeval, qualval, frameval);
@@ -1372,7 +1378,8 @@ Usecode_internal::Usecode_internal
 	    book(0), caller_item(0),
 	    last_created(0), path_npc(0), user_choice(0), 
 	    saved_pos(-1, -1, -1),
-	    String(0), stack(new Usecode_value[1024]), intercept_item(0)
+	    String(0), stack(new Usecode_value[1024]), intercept_item(0),
+		temp_to_be_deleted(0)
 	{
 	ifstream file;                // Read in usecode.
         U7open(file, USECODE);
@@ -1970,6 +1977,10 @@ int Usecode_internal::run
 	cout.flush();
 	cur_function = save_fun;
 	call_depth--;
+	if (call_depth == 0 && temp_to_be_deleted) {
+		temp_to_be_deleted->remove_this(0);
+		temp_to_be_deleted = 0;
+	}
 	return (abort == 0);		// Return 0 if ABRT.
 	}
 
