@@ -42,7 +42,6 @@ bool is_text_file(const char *fname)
 		(fname[len-2] == 'x' || fname[len-2] == 'X') &&
 		(fname[len-1] == 't' || fname[len-1] == 'T'))
 	{
-		cout << fname << endl;
 		return true;
 	}
 
