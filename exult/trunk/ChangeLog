@@ -1,5 +1,7 @@
 2002-06-26  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
+	* objs/*:  Removed umachine parm. from activate() methods.
+	* objs/*:  Removed most 'gwin' parameters.
 	* objs/objs.h (public): Game_object::paint() no longer takes gwin
 	as a parameter. Same for paint() in Special_effects.
 	* gumps/*:  Got rid of gwin parm. in ALL methods.

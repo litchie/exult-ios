@@ -337,7 +337,6 @@ void Barge_object::gather
 
 void Barge_object::add_dirty
 	(
-	Game_window *gwin
 	)
 	{
 	int x, y;			// Get lower-right corner.
@@ -441,7 +440,7 @@ void Barge_object::turn_right
 	(
 	)
 	{
-	add_dirty(gwin);		// Want to repaint old position.
+	add_dirty();			// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate90r(gwin, this, xtiles, ytiles, center);
 	if (!okay_to_rotate(rot))	// Check for blockage.
@@ -475,7 +474,7 @@ void Barge_object::turn_left
 	(
 	)
 	{
-	add_dirty(gwin);		// Want to repaint old position.
+	add_dirty();			// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate90l(gwin, this, xtiles, ytiles, center);
 	if (!okay_to_rotate(rot))	// Check for blockage.
@@ -509,7 +508,7 @@ void Barge_object::turn_around
 	(
 	)
 	{
-	add_dirty(gwin);		// Want to repaint old position.
+	add_dirty();			// Want to repaint old position.
 					// Move the barge itself.
 	Tile_coord rot = Rotate180(gwin, this, xtiles, ytiles, center);
 	Container_game_object::move(rot.tx, rot.ty, rot.tz);
@@ -607,7 +606,7 @@ void Barge_object::move
 	if (!gathered)			// Happens in SI with turtle.
 		gather();
 					// Want to repaint old position.
-	add_dirty(gwin);
+	add_dirty();
 					// Get current location.
 	Tile_coord old = get_tile();
 					// Move the barge itself.

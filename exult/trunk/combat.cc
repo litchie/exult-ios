@@ -798,7 +798,7 @@ void Combat_schedule::now_what
 			if (npc->remove_quantity(1, wshape,
 					c_any_qual, c_any_framenum) == 0)
 				{
-				npc->add_dirty(gwin);
+				npc->add_dirty();
 				ashape = wshape;
 				Combat_schedule::set_weapon();
 				}
@@ -840,7 +840,7 @@ void Combat_schedule::now_what
 				prev_schedule != combat)
 					// Return to normal schedule.
 			{
-			npc->update_schedule(gwin, gwin->get_hour()/3, 7);
+			npc->update_schedule(gwin->get_hour()/3, 7);
 #if 0	/* I think this isn't needed. */
 			else
 				npc->set_schedule_type(prev_schedule);

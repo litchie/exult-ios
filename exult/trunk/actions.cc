@@ -304,7 +304,7 @@ int Path_walking_actor_action::open_door
 					//   avoid unwanted usecode.
 	int savequal = door->get_quality();
 	door->set_quality(0);
-	door->activate(gwin->get_usecode());
+	door->activate();
 	door->set_quality(savequal);
 	Tile_coord past;		// Tile on other side of door.
 	past.tz = cur.tz;
@@ -651,8 +651,7 @@ int Activate_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
-	obj->activate(gwin->get_usecode());
+	obj->activate();
 	return 0;			// That's all.
 	}
 

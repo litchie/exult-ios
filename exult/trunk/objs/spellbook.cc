@@ -80,7 +80,6 @@ int Spellbook_object::add_spell
 
 void Spellbook_object::activate
 	(
-	Usecode_machine *umachine,
 	int event
 	)
 	{

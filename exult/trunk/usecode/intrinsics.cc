@@ -1076,7 +1076,7 @@ USECODE_INTRINSIC(get_weather)
 USECODE_INTRINSIC(set_weather)
 {
 	// Set_weather(i)
-	Egg_object::set_weather(gwin, parms[0].get_int_value());
+	Egg_object::set_weather(parms[0].get_int_value());
 	return no_ret;
 }
 
@@ -2551,7 +2551,7 @@ USECODE_INTRINSIC(run_schedule)
 	
 	if (actor)
 	{
-		actor->update_schedule(gwin, gwin->get_hour()/3, 7);
+		actor->update_schedule(gwin->get_hour()/3, 7);
 
 	}
 

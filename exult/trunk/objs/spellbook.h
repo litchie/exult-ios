@@ -43,7 +43,7 @@ public:
 		uint32 f);
 	int add_spell(int spell);	// Add a spell.
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual void activate(int event = 1);
 					// Write out to IREG file.
 	virtual void write_ireg(DataSource* out);
 				// Get size of IREG. Returns -1 if can't write to buffer

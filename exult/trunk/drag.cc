@@ -461,13 +461,13 @@ bool Dragging_info::drop
 	else if (readied_index >= 0)
 					// Do 'unreadied' usecode.
 		gump->get_cont_or_actor(x,y)->call_readied_usecode(
-			gwin, readied_index, obj, Usecode_machine::unreadied);
+			readied_index, obj, Usecode_machine::unreadied);
 	if (on_gump)			// Do 'readied' usecode.
 		{
 		Container_game_object *owner = on_gump->get_cont_or_actor(x,y);
 		int index = owner ? owner->find_readied(obj) : -1;
 		if (index >= 0)
-			owner->call_readied_usecode(gwin, index,
+			owner->call_readied_usecode(index,
 					obj, Usecode_machine::readied);
 		}
 					// On a barge?

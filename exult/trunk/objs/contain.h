@@ -66,7 +66,7 @@ public:
 		{ return -1; }
 	virtual Game_object *get_readied(int index) const
 		{ return 0; }
-	virtual void call_readied_usecode(Game_window *gwin, int index,
+	virtual void call_readied_usecode(int index,
 					Game_object *obj, int eventid)
 		{  }
 					// Add/remove quantities of objs.
@@ -79,7 +79,7 @@ public:
 								int framenum);
 	virtual Game_object *find_item(int shapenum, int qual, int framenum);
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual void activate(int event = 1);
 	virtual int get_weight();
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
