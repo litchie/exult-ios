@@ -41,3 +41,7 @@
 \C"Exult - X-windows Ultima7 map browser."
 \L- Top of exult.cc
 \L(Alpha version)
+
+\C"Luckily the world is not a donut,
+\Celse Homer Simpson might have eaten it."
+\L- Max
