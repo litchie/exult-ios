@@ -58,8 +58,8 @@ public:
  */
 int Neighbor_iterator::coords[16] = {
 	-1, -1, 0, -1, 1, -1,
-	0, -1,           0, 1,
-	1, -1,  1, 0,  1, 1
+	-1,  0,        1,  0,
+	-1,  1, 0,  1, 1,  1
 	};
 
 /*
@@ -122,10 +122,11 @@ public:
 		Search_node *each = this;
 		while ((each = each->parent) != 0)
 			cnt++;
-		Tile_coord *result = new Tile_coord[cnt];
-		result[cnt - 1] = Tile_coord(-1, -1, -1);
+					// Don't want starting tile.
+		Tile_coord *result = new Tile_coord[cnt - 1];
+		result[cnt - 2] = Tile_coord(-1, -1, -1);
 		each = this;
-		for (int i = cnt - 2; i >= 0; i--)
+		for (int i = cnt - 3; i >= 0; i--)
 			{
 			result[i] = each->tile;
 			each = each->parent;
@@ -287,7 +288,10 @@ public:
 		Search_node key(tile);
 		hash_set<Search_node *, Hash_node, Equal_nodes>::iterator it =
 							lookup.find(&key);
-		return *it;
+		if (it != lookup.end())
+			return *it;
+		else
+			return 0;
 		}
 	};
 
