@@ -1,7 +1,7 @@
-4/12/00:	Improved midi support using the timidity binary and patchsets
+4/25/00:	Improved midi support using the timidity binary and patchsets
 		under linux.
 
-		Earthquakes!
+		Earthquakes (except in Win32 version)!
 
 		In-game scripted introduction.
 
