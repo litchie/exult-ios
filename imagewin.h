@@ -31,6 +31,9 @@ Boston, MA  02111-1307, USA.
 
 class Font_face;
 
+					// Table for translating palette vals.:
+typedef unsigned char Xform_palette[256];
+
 /*
  *	Here's a generic off-screen buffer.  It's up to the derived classes
  *	to set the data.
@@ -129,6 +132,11 @@ public:
 					// Copy line to here.
 	virtual void copy_line8(unsigned char *src_pixels, int srcw,
 						int destx, int desty) = 0;
+					// Copy with translucency table.
+	virtual void copy_line_translucent8(
+		unsigned char *src_pixels, int srcw,
+		int destx, int desty, int first_translucent,
+		int last_translucent, Xform_palette *xforms) = 0;
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty) = 0;
@@ -202,6 +210,11 @@ public:
 					// Copy line to here.
 	virtual void copy_line8(unsigned char *src_pixels, int srcw,
 						int destx, int desty);
+					// Copy with translucency table.
+	virtual void copy_line_translucent8(
+		unsigned char *src_pixels, int srcw,
+		int destx, int desty, int first_translucent,
+		int last_translucent, Xform_palette *xforms);
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty);
@@ -285,6 +298,12 @@ public:
 					// Copy line to here.
 	virtual void copy_line8(unsigned char *src_pixels, int srcw,
 						int destx, int desty);
+					// Copy with translucency table.
+	virtual void copy_line_translucent8(
+		unsigned char *src_pixels, int srcw,
+		int destx, int desty, int first_translucent,
+		int last_translucent, Xform_palette *xforms)
+		{ copy_line8(src_pixels, srcw, destx, desty); }
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty);
@@ -355,6 +374,13 @@ public:
 	virtual void copy_line8(unsigned char *src_pixels, int srcw,
 						int destx, int desty)
 		{ ibuf->copy_line8(src_pixels, srcw, destx, desty); }
+					// Copy with translucency table.
+	virtual void copy_line_translucent8(
+		unsigned char *src_pixels, int srcw,
+		int destx, int desty, int first_translucent,
+		int last_translucent, Xform_palette *xforms)
+		{ ibuf->copy_line_translucent8(src_pixels, srcw, destx, desty,
+				first_translucent, last_translucent, xforms); }
 					// Copy rect. with transp. color.
 	void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty)

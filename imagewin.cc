@@ -264,6 +264,39 @@ void Image_buffer8::copy_line8
 	}
 
 /*
+ *	Copy a line into this buffer where some of the colors are translucent.
+ */
+
+void Image_buffer8::copy_line_translucent8
+	(
+	unsigned char *src_pixels,	// Source rectangle pixels.
+	int srcw,			// Width to copy.
+	int destx, int desty,
+	int first_translucent,		// Palette index of 1st trans. color.
+	int last_translucent,		// Index of last trans. color.
+	Xform_palette *xforms		// Transformers.  Need same # as
+					//   (last_translucent - 
+					//    first_translucent + 1).
+	)
+	{
+	int srcx = 0, srcy = 0, srch = 1;
+	int src_width = srcw;		// Save full source width.
+					// Constrain to window's space.
+	if (!clip(srcx, srcy, srcw, srch, destx, desty))
+		return;
+	char *to = bits + desty*line_width + destx;
+	unsigned char *from = src_pixels + srcx;
+	for (int i = srcw; i; i--)
+		{
+		char c = *from++;	// Get char., and transform.
+		if (c >= first_translucent && c <= last_translucent)
+					// Use table to shift existing pixel.
+			c = xforms[c - first_translucent][*to];
+		*to++ = c;
+		}
+	}
+
+/*
  *	Copy another rectangle into this one, with 0 being the transparent
  *	color.
  */
