@@ -30,8 +30,11 @@ Don't forget to activate the cross-compiling environment before any cross-compil
 ./autogen.sh should work on its own
 ./configure should be passed in the following manner:
 
-NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar ./configure --prefix=/opt/QtPalmtop  --disable-tools  --enable-debug arm-zaurus-linux-gnu
+NOTE: updated the 2003/02/05
+NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar ./configure arm-embeddix-linux-gnu --disable-exult-studio-support --disable-debug --disable-exult-studio --disable-gimp-plugin --disable-tools --disable-compiler --enable-data --disable-timidity --disable-kmid
 (it's all on one line)
+
+[and no more NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar ./configure --prefix=/opt/QtPalmtop  --disable-tools  --enable-debug arm-zaurus-linux-gnu]
 
 Exult uses some tools for its compilation. Of course, those tools get compiled by the ARM cross compiler so it won't work on your platform. Make sure you put a hand on expack (compiled for your platform) before any work.
 
@@ -44,7 +47,7 @@ $ /opt/Embeddix/tools/arm-linux/bin/strip exult
 
 Copy the binary to the PDA with the method you prefer. Don't forget to copy the exult.flx, exult_bg.flx, exult_si.flx to the PDA also. They should go to the /opt/QtPalmtop/data/ directory.
 
-Create a swap file on an external card of yours. I've devoted an entire 32MB SD card to swap file. It really help to avoid crashes.
+I find the with or without a swap file, you get a random crash or a random hang.
 
 Launch exult, edit the ~/.exult.cfg created so that it points to where your BG or SI data files are and restart exult!
 
