@@ -28,7 +28,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "shapeinf.h"
 #include "monstinf.h"
-#include "game.h"
 
 Ammo_table *Ammo_info::table = 0;
 
@@ -56,7 +55,8 @@ using std::hash_map;
 
 int Weapon_info::read
 	(
-	std::istream& in			// Read from here.
+	std::istream& in,			// Read from here.
+	bool bg
 	)
 	{
 	uint8 buf[21];			// Entry length.
@@ -92,7 +92,7 @@ int Weapon_info::read
 	*ptr++;				// Skip (0).
 	usecode = Read2(ptr);
 					// BG:  Subtract 1 from each sfx.
-	int sfx_delta = Game::get_game_type() == BLACK_GATE ? -1 : 0;
+	int sfx_delta = bg ? -1 : 0;
 	sfx = Read2(ptr) + sfx_delta;
 	hitsfx = Read2(ptr) + sfx_delta;
 					// Last 2 bytes unknown/unused.

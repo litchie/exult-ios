@@ -358,7 +358,7 @@ void Game_window::init_files(bool cycle)
   	U7open(textflx, TEXT_FLX);
 	Setup_item_names(textflx);	// Set up list of item names.
 					// Read in shape dimensions.
-	shapes.read_info();
+	shapes.read_info(GAME_BG);
 	Segment_file xf(XFORMTBL);	// Read in translucency tables.
 	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
 	for (int i = 0; i < nxforms; i++)

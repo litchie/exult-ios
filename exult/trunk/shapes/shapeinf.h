@@ -73,7 +73,7 @@ private:
 public:
 	friend class Shape_info;
 	Weapon_info() {  }
-	int read(std::istream& mfile);	// Read in from file.
+	int read(std::istream& mfile, bool bg);	// Read in from file.
 	int get_damage() const
 		{ return damage; }
 	int get_damage_type() const
