@@ -29,6 +29,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tiles.h"
 #include "vec.h"
 
+#ifdef WIN32
+#define Rectangle RECTX
+#endif
+
 class Npc_actor;
 class Game_object;
 class Actor;
