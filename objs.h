@@ -570,10 +570,10 @@ public:
 	Npc_actor *get_npcs()		// Get ->first npc in chunk.
 		{ return npcs; }
 					// Set/get flat shape.
-	void set_flat(int shapex, int shapey, ShapeID id)
-		{ flats[16*shapey + shapex] = id; }
-	ShapeID get_flat(int shapex, int shapey)
-		{ return flats[16*shapey + shapex]; }
+	void set_flat(int tilex, int tiley, ShapeID id)
+		{ flats[16*tiley + tilex] = id; }
+	ShapeID get_flat(int tilex, int tiley)
+		{ return flats[16*tiley + tilex]; }
 	Game_object *get_first()	// Return first object.
 		{ return objects; }
 					// Return next object.
