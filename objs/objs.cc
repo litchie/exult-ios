@@ -1133,6 +1133,7 @@ int Game_object::get_rotated_frame
 		return (curframe - dir) + (dir + quads)%4;
 		}
 	case 665:			// Prow.  Frames 0,3 are N, 1,2 S.
+	case 1017:			// Ship.
 	case 248:			// SI prow.
 		{
 		static char dirs[4] = {0, 2, 2, 0};
@@ -1184,7 +1185,7 @@ int Game_object::get_rotated_frame
 			}
 		}
 	case 781:			// Gang plank.  Odd frames are rot.
-	case 1017:			// Ship.
+//	case 1017:			// Ship.
 		{
 		int newframe = (curframe + quads)%4;
 		return newframe | ((newframe&1)<<5);
