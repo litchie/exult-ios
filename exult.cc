@@ -1337,7 +1337,9 @@ int Get_click
 		paint->paint();
 	Mouse::mouse->show();
 	gwin->show(1);			// Want to see new mouse.
+	gwin->get_tqueue()->pause(Game::get_ticks());
 	int ret = Get_click(x, y, chr, drag_ok, paint);
+	gwin->get_tqueue()->resume(Game::get_ticks());
 	Mouse::mouse->set_shape(saveshape);
 	return (ret);
 	}
