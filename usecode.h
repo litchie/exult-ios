@@ -139,7 +139,6 @@ class Usecode_machine
 	void set_item_shape(Usecode_value& item_arg, Usecode_value& shape_arg);
 	void set_item_frame(Usecode_value& item_arg, Usecode_value& frame_arg);
 	int get_item_shape(Usecode_value& item_arg);
-	int get_item_frame(Usecode_value& item_arg);
 	void remove_item(Game_object *obj);
 	int npc_in_party(Game_object *npc);
 	void add_to_party(Game_object *npc);
@@ -268,6 +267,7 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(mouse_exists);
 	USECODE_INTRINSIC_DECL(get_speech_track);
 	USECODE_INTRINSIC_DECL(flash_mouse);
+	USECODE_INTRINSIC_DECL(get_item_frame_rot);
 	USECODE_INTRINSIC_DECL(okay_to_fly);
 	USECODE_INTRINSIC_DECL(get_container);
 	USECODE_INTRINSIC_DECL(remove_item);

@@ -824,7 +824,9 @@ void Usecode_machine::set_item_frame
 		return;			// Already set to that.
 	// cout << "Set_item_frame: " << item->get_shapenum() 
 	//				<< ", " << frame << endl;
+#if 0	/* ++++Messes up with rotated frames. */
 	if (frame < gwin->get_shape_num_frames(item->get_shapenum()))
+#endif
 		item->set_frame(frame);
 	if (item->get_owner())		// Inside a container?
 		{
@@ -853,20 +855,6 @@ int Usecode_machine::get_item_shape
 	{
 	Game_object *item = get_item(item_arg);
 	return (item == 0 ? 0 : item->get_shapenum());
-	}
-
-/*
- *	Get an item's frame.
- */
-
-int Usecode_machine::get_item_frame
-	(
-	Usecode_value& item_arg
-	)
-	{
-	Game_object *item = get_item(item_arg);
-					// Don't count rotated frames.
-	return (item == 0 ? 0 : item->get_framenum()&31);
 	}
 
 /*
@@ -1553,8 +1541,9 @@ USECODE_INTRINSIC(get_item_shape)
 
 USECODE_INTRINSIC(get_item_frame)
 {
-	Usecode_value u(get_item_frame(parms[0]));
-	return(u);
+	Game_object *item = get_item(parms[0]);
+					// Don't count rotated frames.
+	return Usecode_value(item == 0 ? 0 : item->get_framenum()&31);
 }
 
 USECODE_INTRINSIC(set_item_frame)
@@ -2521,6 +2510,13 @@ USECODE_INTRINSIC(flash_mouse)
 	return (no_ret);
 }
 
+USECODE_INTRINSIC(get_item_frame_rot)
+{
+	// Same as get_item_frame, but (guessing!) leave rotated bit.
+	Game_object *obj = get_item(parms[0]);
+	return Usecode_value(obj ? obj->get_framenum() : 0);
+}
+
 USECODE_INTRINSIC(okay_to_fly)
 {
 	// Only used once, in usecode for magic-carpet.
@@ -3041,8 +3037,8 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(mouse_exists),	// 0x68
 	USECODE_INTRINSIC_PTR(get_speech_track), // 0x69
 	USECODE_INTRINSIC_PTR(flash_mouse),	// 0x6a
-	USECODE_INTRINSIC_PTR(get_item_frame),	// 0x6b Guessing++++
-	USECODE_INTRINSIC_PTR(set_item_frame),	// 0x6c Guessing++++
+	USECODE_INTRINSIC_PTR(get_item_frame_rot),	// 0x6b Guessing
+	USECODE_INTRINSIC_PTR(set_item_frame),	// 0x6c Guessing
 	USECODE_INTRINSIC_PTR(okay_to_fly),	// 0x6d
 	USECODE_INTRINSIC_PTR(get_container),	// 0x6e
 	USECODE_INTRINSIC_PTR(remove_item),	// 0x6f
