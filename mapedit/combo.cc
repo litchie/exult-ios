@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#include <gdk/gdkkeysyms.h>
 #include "studio.h"
 #include "combo.h"
 #include "exult_constants.h"
@@ -408,6 +409,24 @@ unsigned char *Combo::read
 	}
 
 /*
+ *	Set to edit an existing combo.
+ */
+
+void Combo_editor::set_combo
+	(
+	Combo *newcombo,		// We'll own this.
+	int findex			// File index.
+	)
+	{
+	delete combo;
+	combo = newcombo;
+	file_index = findex;
+	selected = -1;
+	set_controls();			// No selection now.
+	render();
+	}
+
+/*
  *	Create combo editor.
  */
 
@@ -417,7 +436,7 @@ Combo_editor::Combo_editor
 	unsigned char *palbuf		// Palette for drawing shapes.
 	) : Shape_draw(svga, palbuf, glade_xml_get_widget(
 		ExultStudio::get_instance()->get_xml(), "combo_draw")),
-	    selected(-1), setting_controls(false)
+	    selected(-1), setting_controls(false), file_index(-1)
 	{
 	static bool first = true;
 	combo = new Combo(svga);
@@ -646,8 +665,8 @@ void Combo_editor::save
 	Combo_chooser *browser = dynamic_cast<Combo_chooser *>(
 						studio->get_browser());
 	if (browser)			// Browser open?
-					// +++++What if editing existing??
-		browser->add(new Combo(*combo));
+					// What if editing existing??
+		file_index = browser->add(new Combo(*combo), file_index);
 	else
 		;	//+++++++++Got to store in Flex_file_info!!!!!
 	}
@@ -860,6 +879,29 @@ on_move_combo_up_clicked              (GtkButton       *button,
 }
 
 /*
+ *	Keystroke in draw-area.
+ */
+static gboolean
+on_combo_key_press			(GtkEntry	*entry,
+					 GdkEventKey	*event,
+					 gpointer	 user_data)
+{
+	Combo_chooser *chooser = (Combo_chooser *) user_data;
+	switch (event->keyval)
+		{
+	case GDK_Delete:
+		chooser->remove();
+		return TRUE;
+#if 0
+	case GDK_Insert:
+		chooser->new_frame();
+		return TRUE;
+#endif
+		}
+	return FALSE;			// Let parent handle it.
+}
+
+/*
  *	Create box with 'move' controls.
  */
 
@@ -1008,13 +1050,18 @@ Combo_chooser::Combo_chooser
 					// Indicate the events we want.
 	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
 		| GDK_POINTER_MOTION_HINT_MASK |
-		GDK_BUTTON1_MOTION_MASK);
+		GDK_BUTTON1_MOTION_MASK | GDK_KEY_PRESS_MASK);
 					// Set "configure" handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "configure_event",
 				GTK_SIGNAL_FUNC(configure), this);
 					// Set "expose" handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "expose_event",
 				GTK_SIGNAL_FUNC(expose), this);
+					// Keystroke.
+	gtk_signal_connect(GTK_OBJECT(draw), "key-press-event",
+		      GTK_SIGNAL_FUNC (on_combo_key_press),
+		      this);
+	GTK_WIDGET_SET_FLAGS(draw, GTK_CAN_FOCUS);
 					// Set mouse click handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "button_press_event",
 				GTK_SIGNAL_FUNC(mouse_press), this);
@@ -1081,26 +1128,98 @@ Combo_chooser::~Combo_chooser
 	}
 
 /*
- *	Add a new combo.
+ *	Add a new or updated combo.
+ *
+ *	Output:	Index of entry.
  */
 
-void Combo_chooser::add
+int Combo_chooser::add
 	(
-	Combo *newcombo			// We'll own this.
+	Combo *newcombo,		// We'll own this.
+	int index			// Index to replace, or -1 to add new.
 	)
 	{
-	combos.push_back(newcombo);
-	int num = combos.size() - 1;	// Index of new entry.
+	if (index == -1)
+		{			// New.
+		combos.push_back(newcombo);
+		index = combos.size() - 1;	// Index of new entry.
+		}
+	else
+		{
+		assert(index >= 0 && index < combos.size());
+		delete combos[index];
+		combos[index] = newcombo;
+		}
 	flex_info->set_modified();
 	int len;			// Serialize.
 	unsigned char *newbuf = newcombo->write(len);
-	flex_info->set(num, (char *) newbuf, len);	// Update.
+	flex_info->set(index, (char *) newbuf, len);	// Update.
 	GtkAdjustment *adj = 
 			gtk_range_get_adjustment(GTK_RANGE(combo_scroll));
 	adj->upper = combos.size();
 	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
 	render();
 	show();
+	return index;			// Return index.
+	}
+
+/*
+ *	Remove selected entry.
+ */
+
+void Combo_chooser::remove
+	(
+	)
+	{
+	if (selected < 0)
+		return;
+	int tnum = info[selected].num;
+	Combo_editor *combowin = ExultStudio::get_instance()->get_combowin();
+	if (combowin && combowin->is_visible() && combowin->file_index == tnum)
+		{
+		EStudio::Alert("Can't remove the combo you're editing");
+		return;
+		}
+	if (EStudio::Prompt("Okay to remove selected combo?", "Yes", "no")
+								!= 0)
+		return;
+	selected = -1;
+	Combo *todel = combos[tnum];
+	delete todel;			// Delete from our list.
+	combos.erase(combos.begin() + tnum);
+	flex_info->set_modified();
+	flex_info->remove(tnum);	// Update flex-file list.
+	GtkAdjustment *adj = 		// Update scrollbar.
+			gtk_range_get_adjustment(GTK_RANGE(combo_scroll));
+	adj->upper = combos.size();
+	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+	render();
+	show();
+	}
+
+/*
+ *	Bring up editor for selected combo.
+ */
+
+void Combo_chooser::edit
+	(
+	)
+	{
+	if (selected < 0)
+		return;
+	Combo_editor *combowin = ExultStudio::get_instance()->get_combowin();
+	if (combowin && combowin->is_visible())
+		{
+		EStudio::Alert("You're already editing a combo");
+		return;
+		}
+	int tnum = info[selected].num;
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->open_combo_window();	// Open it.
+	Combo_editor *ed = studio->get_combowin();
+	if (!ed || !ed->is_visible())
+		return;			// Failed.  Shouldn't happen.
+	ed->set_combo(new Combo(*(combos[tnum])), tnum);
 	}
 
 /*
@@ -1163,6 +1282,7 @@ gint Combo_chooser::mouse_press
 	gpointer data			// ->Combo_chooser.
 	)
 	{
+	gtk_widget_grab_focus(widget);	// Enables keystrokes.
 	Combo_chooser *chooser = (Combo_chooser *) data;
 	int old_selected = chooser->selected;
 					// Search through entries.
@@ -1197,6 +1317,11 @@ gint Combo_chooser::mouse_press
 				(*chooser->sel_changed)();
 			break;
 			}
+	if (chooser->selected == old_selected && old_selected >= 0)
+		{			// Same square.  Check for dbl-click.
+		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
+			chooser->edit();
+		}
 #if 0
 	if (event->button == 3 && chooser->selected >= 0)
 		{
@@ -1233,7 +1358,17 @@ void Combo_chooser::move
 	combos[tnum] = combos[tnum + 1];
 	combos[tnum + 1] = tmp;
 	selected += upwards ? -1 : 1;
-		//++++++++++Update flex_info entries!!!!!
+					// Update editor if open.
+	Combo_editor *combowin = ExultStudio::get_instance()->get_combowin();
+	if (combowin && combowin->is_visible())
+		{
+		if (combowin->file_index == tnum)
+			combowin->file_index = tnum + 1;
+		else if (combowin->file_index == tnum + 1)
+			combowin->file_index = tnum;
+		}
+	flex_info->set_modified();
+	flex_info->swap(tnum);		// Update flex-file list.
 	render();
 	show();
 	}

@@ -128,6 +128,8 @@ public:
 		{ return browser; }
 	Shape_file_info *get_vgafile()	// 'shapes.vga'.
 		{ return vgafile; }
+	Combo_editor *get_combowin()
+		{ return combowin; }
 	Shape_group_file *get_cur_groups();
 	void set_browser(const char *name, Object_browser *obj);
 	bool has_focus();		// Any of our windows has focus?
