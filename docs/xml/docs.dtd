@@ -1,6 +1,6 @@
 <!-- block and inline elements -->
 
-<!ENTITY % inline "br|em|extref|Exult|kbd|key|q|ref|strong|ref1|ref2|extref1|extref2|extref3|Studio|Pentagram" >
+<!ENTITY % inline "#PCDATA|br|em|extref|Exult|kbd|key|q|ref|ref1|section_ref|strong|Studio|Pentagram" >
 
 <!ENTITY % lists "ul|ol" >
 
@@ -16,11 +16,11 @@
 <!ELEMENT header (#PCDATA|Exult|Studio|Pentagram)*>
 <!ELEMENT body (%block;)*>
 
-<!ELEMENT para ( #PCDATA | %inline; )*>
-<!ELEMENT cite ( #PCDATA | %inline; )*>
+<!ELEMENT para ( %inline; )*>
+<!ELEMENT cite ( %inline; )*>
 <!ELEMENT ol (li*)>
 <!ELEMENT ul (li*)>
-<!ELEMENT li ( #PCDATA | %inline; )*>
+<!ELEMENT li ( %inline; )*>
 
 <!ELEMENT key (#PCDATA)>
 <!ELEMENT kbd (#PCDATA)>
@@ -29,11 +29,8 @@
 
 <!ELEMENT ref (#PCDATA)>
 <!ELEMENT ref1 (#PCDATA)>
-<!ELEMENT ref2 (#PCDATA)>
+<!ELEMENT section_ref (#PCDATA)>
 <!ELEMENT extref (#PCDATA)>
-<!ELEMENT extref1 (#PCDATA)>
-<!ELEMENT extref2 (#PCDATA)>
-<!ELEMENT extref3 (#PCDATA)>
 
 <!ELEMENT q (#PCDATA)>
 
@@ -66,8 +63,6 @@
 
 <!ATTLIST	ref		target	CDATA	#REQUIRED>
 <!ATTLIST	ref1		target	CDATA	#REQUIRED>
-<!ATTLIST	ref2		target	CDATA	#REQUIRED>
+<!ATTLIST	section_ref		target	CDATA	#REQUIRED>
 <!ATTLIST	extref		target	CDATA	#REQUIRED>
-<!ATTLIST	extref1		target	CDATA	#REQUIRED>
-<!ATTLIST	extref2		target	CDATA	#REQUIRED>
-<!ATTLIST	extref3		target	CDATA	#REQUIRED>
+<!ATTLIST	extref		doc	(faq|docs|studio)	#IMPLIED>
