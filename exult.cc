@@ -423,7 +423,11 @@ static int Play()
 		quitting_time = 0;
 		Handle_events(&quitting_time);
 		if( quitting_time == 2 )
+			{
+			Mouse::mouse->hide();	// Turn off mouse.
 			gwin->read();	// Restart
+			gwin->setup_game();
+			}
 	}
 	while (quitting_time == 2);
 	delete gwin;

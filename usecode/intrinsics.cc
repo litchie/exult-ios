@@ -1360,6 +1360,7 @@ USECODE_INTRINSIC(restart_game)
 	// Think it's 'restart game'.  
 	// Happens if you die before leaving trinsic.
 	extern unsigned char quitting_time;
+	Audio::get_ptr()->stop_music();
 	quitting_time = 2;		// Quit & restart.
 	return(no_ret);
 }
