@@ -26,8 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#define HAVE_FREETYPE2_H	/* ++++++++TESTING. */
-#ifdef HAVE_FREETYPE2_H
+#ifdef HAVE_FREETYPE2
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -73,7 +72,6 @@ Shape *Gen_font_shape
 			//+++++Do we need to store an empty frame?
 			continue;
 			}
-					// Not sure about dims here+++++
 		int w = glyph->bitmap.width, h = glyph->bitmap.rows;
 					// Allocate our buffer.
 		int cnt = w*h;		// Total #pixels.
@@ -84,6 +82,7 @@ Shape *Gen_font_shape
 		for (int b = 0; b < cnt; b++)
 			if (monobits[b/8]&(0x80>>(b%8)))
 				pixels[b] = fg;
+					// Not sure about dims here+++++
 		Shape_frame *frame = new Shape_frame(pixels,
 			w, h, glyph->bitmap_left, glyph->bitmap_top, true);
 		delete pixels;
@@ -93,5 +92,5 @@ Shape *Gen_font_shape
 	return shape;
 	}
 
-#endif	/* HAVE_FREETYPE2_H */
+#endif	/* HAVE_FREETYPE2 */
 
