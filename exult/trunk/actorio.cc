@@ -56,7 +56,7 @@ Actor::Actor
 	) : Container_game_object(), npc_num(num), party_id(-1), 
 	    shape_save(-1), oppressor(-1),
 	    attack_mode(nearest), schedule(0), schedule_loc(0,0,0),
-	    next_schedule(255), dormant(1), alignment(0),
+	    next_schedule(255), dormant(true), hit(false), alignment(0),
 	    two_handed(0),
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
 	    light_sources(0),

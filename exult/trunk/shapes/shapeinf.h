@@ -44,12 +44,14 @@ class Weapon_info
 					//   weapons with 2 uses; i.e.,
 					//   daggers.
 	unsigned char range2;		// Throwing range for i.e., daggers.
+	short sfx, hitsfx;		// Sound when using/hit, or -1.
 public:
 	friend class Shape_info;
 	Weapon_info(char d, unsigned char r1, unsigned char r2,
-			unsigned char sp, short am, short pr, short uc) 
+		unsigned char sp, short am, short pr, short uc, 
+						short sx, short hsx) 
 		: damage(d),  special_atts(sp), ammo(am), projectile(pr),
-	          usecode(uc), range1(r1), range2(r2)
+	          usecode(uc), range1(r1), range2(r2), sfx(sx), hitsfx(hsx)
 		{  }
 	int get_damage()
 		{ return damage; }
@@ -68,6 +70,10 @@ public:
 		{ return projectile; }
 	int get_usecode()
 		{ return usecode; }
+	int get_sfx()			// Return sound-effects #, or -1.
+		{ return sfx; }
+	int get_hitsfx()
+		{ return hitsfx; }
 	};
 
 /*

@@ -77,6 +77,7 @@ private:
 	bool focus;			// Do we have focus?
 	unsigned char poison_pixel;	// For rendering poisoned actors.
 	unsigned char protect_pixel;	// For rendering protected actors.
+	unsigned char hit_pixel;	// For rendering 'hit' actors.
 	bool teleported;		// true if just teleported.
 	bool in_dungeon;		// true if inside a dungeon.
 	std::ifstream chunks;		// "u7chunks" file.
@@ -397,6 +398,8 @@ public:
 		{ paint_outline(xoff, yoff, shnum, frnum, poison_pixel); }
 	void paint_protect_outline(int xoff, int yoff, int shnum, int frnum)
 		{ paint_outline(xoff, yoff, shnum, frnum, protect_pixel); }
+	void paint_hit_outline(int xoff, int yoff, int shnum, int frnum)
+		{ paint_outline(xoff, yoff, shnum, frnum, hit_pixel); }
 					// A "gump" is an open container.
 	void paint_gump(int xoff, int yoff, int shapenum, int framenum, bool paperdoll = false)
 		{
