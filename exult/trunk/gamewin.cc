@@ -2338,7 +2338,8 @@ void Game_window::stop_actor
 
 void Game_window::teleport_party
 	(
-	Tile_coord t			// Where to go.
+	Tile_coord t,			// Where to go.
+	bool skip_eggs			// Don't activate eggs at dest.
 	)
 	{
 	Tile_coord oldpos = main_actor->get_abs_tile_coord();
@@ -2363,8 +2364,8 @@ void Game_window::teleport_party
 		}
 	center_view(t);			// Bring pos. into view.
 	main_actor->get_followers();
-					// Check all eggs around new spot.
-	Map_chunk::try_all_eggs(main_actor, t.tx, t.ty, t.tz,
+	if (!skip_eggs)			// Check all eggs around new spot.
+		Map_chunk::try_all_eggs(main_actor, t.tx, t.ty, t.tz,
 					oldpos.tx, oldpos.ty);
 	teleported = 1;
 	}

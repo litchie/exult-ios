@@ -926,7 +926,11 @@ USECODE_INTRINSIC(move_object)
 	Actor *ava = gwin->get_main_actor();
 	if (parms[0].get_int_value() == -357)
 		{			// Move whole party.
-		gwin->teleport_party(tile);
+					// If Freedom exit teleport, don't ac-
+					//   tivate eggs when you arrive.
+		gwin->teleport_party(tile, Game::get_game_type() ==
+			SERPENT_ISLE && cur_function->id == 0x7df && 
+				caller_item->get_quality() == 0xcf);
 		return (no_ret);
 		}
 	Game_object *obj = get_item(parms[0]);
