@@ -26,6 +26,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Configuration	config;
 
+void	dump_stringvec(vector<string> &vs)
+{
+	int	n;
+	cout << "vs is " << vs.size() << " entries" << endl;
+	for(n=0;n<vs.size();n++)
+		cout << n << " : " << vs[n] << endl;
+
+
+
+}
+
 int	main(int argc,char **argv)
 {
 	config.read_config_file("config.xml");
@@ -41,6 +52,14 @@ int	main(int argc,char **argv)
 
 	string	out=config.dump();
 	cout << out << endl;
+
+	vector<string> vs;
+
+	vs=config.listkeys("config");
+	dump_stringvec(vs);
+
+	vs=config.listkeys("config/audio");
+	dump_stringvec(vs);
 
 	return 0;
 }
