@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // External globals..
 
+extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 extern	bool	usecode_trace;
 
 /*
@@ -1121,7 +1122,6 @@ Usecode_value Usecode_machine::click_on_item
 	(
 	)
 	{
-	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 	// cout << "CLICK on an item.\n";
 	int x, y;
 	if (!Get_click(x, y, Mouse::greenselect))
@@ -1279,11 +1279,7 @@ USECODE_INTRINSIC(select_from_menu2)
 USECODE_INTRINSIC(input_numeric_value)
 	// Ask for # (min, max, step, default).
 	extern int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
-					// Want to center it.
-	Shape_frame *shape = gwin->get_shape(SLIDER, 0);
 	Slider_gump_object *slider = new Slider_gump_object(
-		(gwin->get_width() - shape->get_width())/2,
-		(gwin->get_height() - shape->get_height())/2,
 		parms[0].get_int_value(), parms[1].get_int_value(),
 		parms[2].get_int_value(), parms[3].get_int_value());
 	int ok = Modal_gump(slider, Mouse::hand);
@@ -1611,9 +1607,22 @@ USECODE_INTRINSIC(is_npc)
 }
 
 USECODE_INTRINSIC(display_runes)
-	// Display sign (gump #, text).
-	//+++++++++++++
 	// Render text into runes for signs, tombstones, plaques and the like
+	// Display sign (gump #, array_of_text).
+	int cnt = parms[1].get_array_size();
+	if (!cnt)
+		cnt = 1;		// Try with 1 element.
+	Sign_gump *sign = new Sign_gump(parms[0].get_int_value(), cnt);
+	for (int i = 0; i < cnt; i++)
+		{			// Paint each line.
+		Usecode_value& lval = parms[1].get_elem(i);
+		sign->add_text(i, lval.get_str_value());
+		}
+	sign->paint(gwin);		// Paint it, and wait for click.
+	int x, y;
+	Get_click(x, y, Mouse::hand);
+	delete sign;
+	gwin->paint();
 	USECODE_RETURN(no_ret);
 }
 
@@ -2216,7 +2225,6 @@ int Usecode_machine::get_user_choice_num
 //	for (int i = 0; i < answers.num_answers; i++)
 //		cout << ' ' << answers.answers[i] << '(' << i << ") ";
 	gwin->show_avatar_choices(answers.answers);
-	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 	int x, y;			// Get click.
 	int choice_num;
 	do

@@ -134,18 +134,15 @@ void Slider_gump_button::activate
 	}
 
 /*
- *	Create a gump.
+ *	Initialize.
  */
 
-Gump_object::Gump_object
+void Gump_object::initialize
 	(
-	Container_game_object *cont,	// Container it represents.
-	int initx, int inity, 		// Coords. on screen.
-	int shnum			// Shape #.
-	) : container(cont), x(initx), y(inity), ShapeID(shnum, 0)
+	)
 	{
 	int checkx = 8, checky = 64;	// Default.
-
+	int shnum = get_shapenum();
 	switch (shnum)			// Different shapes.
 		{
 	case 1:				// Crate.
@@ -184,6 +181,9 @@ Gump_object::Gump_object
 		object_area = Rectangle(0, 0, 0, 0);
 		checkx = 6; checky = 30;
 		break;
+	case 49: case 50:		// Signs. ++++++++Verify.
+		object_area = Rectangle(2, 2, 80, 80);
+		break;
 	default:
 					// Character pictures:
 		if (shnum >= 57 && shnum <= 68)
@@ -196,6 +196,37 @@ Gump_object::Gump_object
 		}
 	checkx += 16; checky -= 12;
 	check_button = new Checkmark_gump_button(this, checkx, checky);
+	}
+
+/*
+ *	Create a gump.
+ */
+
+Gump_object::Gump_object
+	(
+	Container_game_object *cont,	// Container it represents.
+	int initx, int inity, 		// Coords. on screen.
+	int shnum			// Shape #.
+	) : container(cont), x(initx), y(inity), ShapeID(shnum, 0)
+	{
+	initialize();
+	}
+
+/*
+ *	Create, centered on screen.
+ */
+
+Gump_object::Gump_object
+	(
+	Container_game_object *cont,	// Container it represents.
+	int shnum			// Shape #.
+	) : container(cont), ShapeID(shnum, 0)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_frame *shape = gwin->get_gump_shape(shnum, 0);
+	x = (gwin->get_width() - shape->get_width())/2;
+	y = (gwin->get_height() - shape->get_height())/2;
+	initialize();
 	}
 
 /*
@@ -662,6 +693,81 @@ void Stats_gump_object::paint
 	}
 
 /*
+ *	Create a sign gump.
+ */
+
+Sign_gump::Sign_gump
+	(
+	int shapenum,
+	int nlines			// # of text lines.
+	) : num_lines(nlines), Gump_object(0, shapenum)
+	{
+	lines = new char *[num_lines];
+	for (int i = 0; i < num_lines; i++)
+		lines[i] = 0;
+	}
+
+/*
+ *	Delete sign.
+ */
+
+Sign_gump::~Sign_gump
+	(
+	)
+	{
+	for (int i = 0; i < num_lines; i++)
+		delete lines[i];
+	delete lines;
+	}
+
+/*
+ *	Add a line of text.
+ */
+
+void Sign_gump::add_text
+	(
+	int line,
+	const char *txt
+	)
+	{
+	if (line < 0 || line >= num_lines)
+		return;
+	delete lines[line];
+	lines[line] = txt ? strdup(txt) : 0;
+	}
+
+/*
+ *	Paint sign.
+ */
+
+void Sign_gump::paint
+	(
+	Game_window *gwin
+	)
+	{
+	const int font = 1;		// Runes.
+					// Get height of 1 line.
+	int lheight = gwin->get_text_height(font);
+					// Get space between lines.
+	int lspace = (object_area.h - num_lines*lheight)/(num_lines + 1);
+					// Paint the gump itself.
+	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+	int ypos = y + object_area.y;	// Where to paint next line.
+	for (int i = 0; i < num_lines; i++)
+		{
+		ypos += lspace;
+		if (!lines[i])
+			continue;
+		gwin->paint_text(font, lines[i],
+			x + object_area.x + 
+				(object_area.w - 
+				    gwin->get_text_width(font, lines[i]))/2,
+			ypos);
+		}
+	gwin->set_painted();
+	}
+
+/*
  *	Set slider value.
  */
 
@@ -688,11 +794,10 @@ void Slider_gump_object::set_val
 
 Slider_gump_object::Slider_gump_object
 	(
-	int initx, int inity,		// Where to show it.
 	int mival, int mxval,		// Value range.
 	int step,			// Amt. to change by.
 	int defval			// Default value.
-	) : Modal_gump_object(0, initx, inity, SLIDER),
+	) : Modal_gump_object(0, SLIDER),
 	    val(defval), min_val(mival), max_val(mxval), step_val(step),
 	    dragging(0), prev_dragx(0)
 	{
