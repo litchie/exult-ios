@@ -1,3 +1,11 @@
+2000-09-12  Tristan Tarrant  <nadir@users.sourceforge.net>
+
+	* tools/u7shpload.c: Load 8x8 tiles (no save). Still crashes on some 
+	shapes (fonts???)
+	* data/black_gate.shp, data/serpent_isle.shp: Menu entries for the two
+	games
+	* data/Makefile.am: add above to build
+
 2000-09-09  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* Makefile.am: Add EXULT_DATADIR to the defines
