@@ -3,6 +3,7 @@
 	* usecode/*, tools/wud.c: support for 32 bit opcodes and headers
 	* tools/wuc.c: support for 32 bit opcodes
 	* tools/wuc.c: produce warnings when offsets out of the 16 bit range
+	* tools/rip.c: support 32 bit headers
 
 2002-03-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* docs/usecode32.txt: attempt at specs for 32 bit usecode
