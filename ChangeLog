@@ -1,3 +1,8 @@
+2001-08-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actorio.cc (Actor): Avatar's Usecode function is always 0x400.
+	This fixes Ethicality Test (and probably other bugs).
+
 2001-08-25  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/monstinfo.cc:  Cant_yell, cant_bleed flags.
