@@ -369,8 +369,8 @@ void Gump_manager::update_gumps(Game_window *gwin)
 /*
  *	Paint the gumps
  */
-void Gump_manager::paint(Game_window *gwin)
+void Gump_manager::paint()
 {
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
-		gmp->gump->paint(gwin);
+		gmp->gump->paint();
 }

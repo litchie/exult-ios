@@ -46,7 +46,7 @@ public:
 	virtual void double_clicked(Game_window *gwin, int x, int y);
 	virtual void push(Game_window *gwin);	// Redisplay as pushed.
 	virtual void unpush(Game_window *gwin);
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 };
 
 #endif

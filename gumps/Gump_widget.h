@@ -49,7 +49,7 @@ public:
 					// Is a given point on the widget?
 	virtual int on_widget(Game_window *gwin, int mx, int my);
 
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 
 	virtual Rectangle get_rect();
 					// update the widget, if required

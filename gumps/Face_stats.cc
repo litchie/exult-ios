@@ -51,7 +51,7 @@ class Stat_bar : public Gump_button
 public:
 	Stat_bar(Gump *par, int px, int py, Actor *a, int s, int m, unsigned char c);
 	virtual void double_clicked(Game_window *gwin, int x, int y);
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 
 	virtual void activate(Game_window *gwin) {}
 	virtual void push(Game_window *gwin) {}
@@ -85,10 +85,9 @@ void Stat_bar::double_clicked(Game_window *gwin, int x, int y)
 
 void Stat_bar::paint
 	(
-	Game_window *gwin
 	)
 {
-	Gump_button::paint(gwin);
+	Gump_button::paint();
 
 	int width =  (val * 32) / (max_val);
 
@@ -138,7 +137,7 @@ public:
 	Portrait_button(Gump *par, int px, int py, Actor *a);
 	virtual ~Portrait_button();
 	virtual void double_clicked(Game_window *gwin, int x, int y);
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 
 					// update dirty region, if required
 	virtual void update_widget(Game_window *gwin);
@@ -218,9 +217,9 @@ void Portrait_button::update_widget(Game_window *gwin)
  *	Paint on screen.
  */
 
-void Portrait_button::paint(Game_window *gwin)
+void Portrait_button::paint()
 {
-	Face_button::paint(gwin);
+	Face_button::paint();
 
 	Shape_frame *s = get_shape();
 
@@ -249,8 +248,8 @@ void Portrait_button::paint(Game_window *gwin)
 		}
 	}
 
-	if (hp)	hp->paint(gwin);
-	if (mana) mana->paint(gwin);
+	if (hp)	hp->paint();
+	if (mana) mana->paint();
 }
 
 Rectangle Portrait_button::get_rect()
@@ -306,11 +305,10 @@ Face_stats::~Face_stats()
 
 void Face_stats::paint
 	(
-	Game_window *gwin
 	)
 {
 	for (int i = 0; i < 8; i++)
-		if (party[i]) party[i]->paint(gwin);
+		if (party[i]) party[i]->paint();
 }
 
 /*

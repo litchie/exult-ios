@@ -325,12 +325,12 @@ void KeyBinder::ShowHelp()
 	for (iter = keyhelp.begin(); iter != keyhelp.end(); iter++)
 		scroll->add_text(iter->c_str());
 	
-	scroll->paint(Game_window::get_instance());
+	scroll->paint();
 	do
 	{
 		int x, y;
 		Get_click(x,y, Mouse::hand);
-	} while (scroll->show_next_page(Game_window::get_instance()));
+	} while (scroll->show_next_page());
 	Game_window::get_instance()->paint();
 	delete scroll;
 }
@@ -345,12 +345,12 @@ void KeyBinder::ShowCheatHelp()
 	for (iter = cheathelp.begin(); iter != cheathelp.end(); iter++)
 		scroll->add_text(iter->c_str());
 	
-	scroll->paint(Game_window::get_instance());
+	scroll->paint();
 	do
 	{
 		int x, y;
 		Get_click(x,y, Mouse::hand);
-	} while (scroll->show_next_page(Game_window::get_instance()));
+	} while (scroll->show_next_page());
 	Game_window::get_instance()->paint();
 	delete scroll;
 }

@@ -51,7 +51,7 @@ public:
 	int get_answer()
 		{ return answer; }
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Handle events:
 	virtual void mouse_down(int mx, int my);
 	virtual void mouse_up(int mx, int my);

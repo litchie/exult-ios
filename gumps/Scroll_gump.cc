@@ -42,10 +42,9 @@ Scroll_gump::Scroll_gump
 
 void Scroll_gump::paint
 	(
-	Game_window *gwin
 	)
 {
 					// Paint the gump itself.
 	paint_shape(x, y);
-	curend = paint_page(gwin, Rectangle(52, 30, 142, 118), curtop);
+	curend = paint_page(Rectangle(52, 30, 142, 118), curtop);
 }

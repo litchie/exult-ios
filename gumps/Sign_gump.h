@@ -40,7 +40,7 @@ public:
 					// Set a line of text.
 	void add_text(int line, const std::string &txt);
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 };
 
 #endif

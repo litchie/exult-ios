@@ -58,7 +58,7 @@ public:
 	void move_diamond(int dir);
 
 					// Paint it and its contents.
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 	virtual void close(Game_window *gwin)
 		{ done = 1; }
 					// Handle events:

@@ -148,7 +148,6 @@ void Sign_gump::add_text
 
 void Sign_gump::paint
 	(
-	Game_window *gwin
 	)
 {
 	int font = 1;			// Normal runes.

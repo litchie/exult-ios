@@ -302,12 +302,12 @@ void GameplayOptions_gump::save_settings()
 				paperdolls ? "yes" : "no", true);
 }
 
-void GameplayOptions_gump::paint(Game_window* gwin)
+void GameplayOptions_gump::paint()
 {
-	Gump::paint(gwin);
+	Gump::paint();
 	for (int i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
 		if (buttons[i])
-			buttons[i]->paint(gwin);
+			buttons[i]->paint();
 
 	gwin->paint_text(2, "Status Bars:", x + colx[0], y + rowy[0] + 1);
 	gwin->paint_text(2, "Text Background:", x + colx[0], y + rowy[1] + 1);

@@ -49,7 +49,7 @@ public:
 	virtual ~Face_stats();
 						// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 					// Don't close on end_gump_mode
 	virtual bool is_persistent() const { return true; }
 					// Can't be dragged with mouse

@@ -65,7 +65,7 @@ public:
 	Combat_button(Gump *par, int px, int py);
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
-	virtual void paint(Game_window *gwin);
+	virtual void paint();
 };
 
 /*
