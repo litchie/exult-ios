@@ -1,3 +1,7 @@
+2002-02-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exultmenu.cc: only display SFX icons for a game in the main menu 
+	if the game is actually installed
+
 2002-02-14  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* tools/textpack.cc:  A tool for creating 'text.flx' more 

@@ -300,7 +300,7 @@ Exult_Game ExultMenu::run()
 	int num_choices = sizeof(menuchoices)/sizeof(int);
 	int *menuentries = new int[num_choices];
 	int entries = 0;
-	int sfx_bg_ypos, sfx_si_ypos;
+	int sfx_bg_ypos = -1, sfx_si_ypos = -1;
 	
 	int ypos = menuy-24;
 	for(int i=0; i<num_choices; i++) {
@@ -325,8 +325,10 @@ Exult_Game ExultMenu::run()
 		gwin->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1));
 		font->draw_text(gwin->get_win()->get_ib8(), 
 					topx+320-font->get_text_width(VERSION), topy+190, VERSION);
-		gwin->paint_shape(centerx-80,sfx_bg_ypos,exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("blackgate")?1:0));
-		gwin->paint_shape(centerx-80,sfx_si_ypos,exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("serpentisle")?1:0));
+		if (sfx_bg_ypos >= 0)
+			gwin->paint_shape(centerx-80,sfx_bg_ypos, exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("blackgate")?1:0));
+		if (sfx_si_ypos >= 0)
+			gwin->paint_shape(centerx-80,sfx_si_ypos,exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("serpentisle")?1:0));
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch(choice<0?choice:menuentries[choice]) {
 		case 5:
