@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Actor;
 class Tile_coord;
+class PathFinder;
 
 /*
  *	This class controls the current actions of an actor:
@@ -56,11 +57,9 @@ public:
  */
 class Path_walking_actor_action : public Actor_action
 	{
-	Tile_coord *path;		// Path to follow (allocated).  End of
-					//   path is (-1, -1, -1).
-	int index;			// Index into path.
+	PathFinder *path;		// Allocated pathfinder.
 public:
-	Path_walking_actor_action(Tile_coord *p) : path(p), index(0)
+	Path_walking_actor_action(PathFinder *p) : path(p)
 		{  }
 	~Path_walking_actor_action();
 					// Handle time event.

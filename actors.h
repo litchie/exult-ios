@@ -176,7 +176,7 @@ public:
 	virtual int walk()		// Walk towards a direction.
 		{ return 0; }
 					// Step onto an (adjacent) tile.
-	virtual int step(Tile_coord t)
+	virtual int step(Tile_coord t, int frame)
 		{ return 0; }
 	};
 
@@ -225,6 +225,8 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata);
 	void get_followers();		// Get party to follow.
 	virtual int walk();		// Walk towards a direction.
+					// Step onto an (adjacent) tile.
+	virtual int step(Tile_coord t, int frame);
 					// Update chunks after NPC moved.
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);

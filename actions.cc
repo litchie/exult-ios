@@ -25,11 +25,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "actions.h"
 #include "actors.h"
+#include "PathFinder.h"
 
 /*
  *	Handle a time event.
  *
- *	Output:	0 if done with this action.
+ *	Output:	0 if done with this action, else delay for next frame.
  */
 
 int Walking_actor_action::handle_event
@@ -47,13 +48,13 @@ Path_walking_actor_action::~Path_walking_actor_action
 	(
 	)
 	{
-	delete [] path; 
+	delete path; 
 	}
 
 /*
  *	Handle a time event.
  *
- *	Output:	0 if done with this action.
+ *	Output:	0 if done with this action, else delay for next frame.
  */
 
 int Path_walking_actor_action::handle_event
@@ -61,7 +62,11 @@ int Path_walking_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	return actor->step(path[index++]);
+	Tile_coord t;
+	if (!path->GetNextStep(t))
+		return (0);
+					// ++++++Figure new frame.+++++++++++
+	return actor->step(t, actor->get_framenum());
 	}
 
 /*
@@ -79,7 +84,7 @@ Sequence_actor_action::~Sequence_actor_action
 /*
  *	Handle a time event.
  *
- *	Output:	0 if done with this action.
+ *	Output:	0 if done with this action, else delay for next frame.
  */
 
 int Sequence_actor_action::handle_event

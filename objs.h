@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vec.h"
 #include "usecode.h"
 #include "tqueue.h"
+#include "tiles.h"
 
 class Vga_file;
 class Game_window;
@@ -53,33 +54,6 @@ const int chunksize = 16 * 8;		// A chunk has 16 8x8 shapes.
 const int num_chunks = 12*16;		// Total # of chunks in each dir.
 					// Total # tiles in each dir.:
 const int num_tiles = tiles_per_chunk*num_chunks;
-
-/*
- *	A 3D tile coordinate:
- */
-class Tile_coord
-	{
-public:
-	short tx, ty, tz;		// Coords. within world. tz=lift.
-	Tile_coord(int x, int y, int z) : tx(x), ty(y), tz(z)
-		{  }
-	Tile_coord() { }
-	int operator==(Tile_coord t2)
-		{ return t2.tx == tx && t2.ty == ty && t2.tz == tz; }
-	int distance(Tile_coord t2)	// Distance to another tile?
-		{
-		int dy = t2.ty - ty;
-		int dx = t2.tx - tx;
-		if (dy < 0)		// Just take longer abs. value.
-			dy = -dy;
-		if (dx < 0)
-			dx = -dx;
-		return (dy > dx ? dy : dx);
-		}
-	};
-					// Add two coords.
-inline Tile_coord operator+(Tile_coord a, Tile_coord b)
-	{ return Tile_coord(a.tx + b.tx, a.ty + b.ty, a.tz + b.tz); }
 
 /*
  *	A shape ID contains a shape # and a frame # within the shape encoded
