@@ -48,13 +48,17 @@ void Schedule::set_action_sequence
 	if (dest != actloc)		// Get to destination.
 		{
 		Actor_action *w = new Path_walking_actor_action(new Astar());
-		Actor_action *w2 = w->walk_to_tile(actloc, dest, actor->get_type_flags());
+					// Teleport if blocked while walking.
+		Actor_action *w2 = w->walk_to_tile(actloc, dest, 
+						actor->get_type_flags());
 		if (w2 != w)
 			delete w;
 		if (!w2)		// Failed?  Teleport.
 			w2 = new Move_actor_action(dest);
+					// And teleport if blocked walking.
+		Actor_action *tel = new Move_actor_action(dest);
 					// Walk there, then do whatever.
-		act = new Sequence_actor_action(w2, act);
+		act = new Sequence_actor_action(w2, tel, act);
 		}
 	actor->set_action(act);
 	actor->start();			// Get into time queue.

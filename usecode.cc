@@ -816,6 +816,8 @@ void Usecode_machine::set_item_frame
 	if (!item)
 		return;
 	int frame = frame_arg.get_int_value();
+	if (frame == item->get_framenum())
+		return;			// Already set to that.
 	// cout << "Set_item_frame: " << item->get_shapenum() 
 	//				<< ", " << frame << endl;
 	if (frame < gwin->get_shape_num_frames(item->get_shapenum()))
@@ -1009,7 +1011,7 @@ void Usecode_machine::item_say
 		if (gump)
 			box = gump->get_shape_rect(obj);
 		else
-			box = gwin->get_shape_rect(obj);
+			box = gwin->get_shape_rect(obj->get_outermost());
 		gwin->add_text(str, box.x, box.y);
 		gwin->show();		// Not sure.+++++testing.
 		}
@@ -1809,12 +1811,10 @@ USECODE_INTRINSIC(count_objects)
 	return(u);
 }
 
-USECODE_INTRINSIC(take_from_owner)
+USECODE_INTRINSIC(find_in_owner)
 {
-	// Take_from_owner(container(-357=party), shapenum, qual?? (-359=any), 
+	// Find_in_owner(container(-357=party), shapenum, qual?? (-359=any), 
 	//						frame??(-359=any)).
-	// Remove object and return it.
-//++++++++++I think it shouldn't be removed++++++++++++
 	int oval  = parms[0].get_int_value(),
 	    shnum = parms[1].get_int_value(),
 	    qual  = parms[2].get_int_value(),
@@ -1824,9 +1824,7 @@ USECODE_INTRINSIC(take_from_owner)
 		Game_object *obj = get_item(parms[0]);
 		if (!obj)
 			return Usecode_value(0);
-		Game_object *f = obj->remove_and_return(shnum, qual, frnum);
-		if (f)			// Add it back.+++++++++
-			obj->add(f);
+		Game_object *f = obj->find_item(shnum, qual, frnum);
 		return Usecode_value((long) f);
 		}
 					// Look through whole party.
@@ -1837,13 +1835,9 @@ USECODE_INTRINSIC(take_from_owner)
 		Game_object *obj = get_item(party.get_elem(i));
 		if (obj)
 			{
-			Game_object *f = obj->remove_and_return(shnum, qual,
-									frnum);
+			Game_object *f = obj->find_item(shnum, qual, frnum);
 			if (f)
-				{	// +++++Add it back.
-				obj->add(f);
 				return Usecode_value((long) f);
-				}
 			}
 		}
 	return Usecode_value(0);
@@ -2048,10 +2042,11 @@ USECODE_INTRINSIC(move_object)
 	Tile_coord tile(p.get_elem(0).get_int_value(),
 			p.get_elem(1).get_int_value(),
 			p.get_elem(2).get_int_value());
-	int moved_avatar = 0;
 	Actor *ava = gwin->get_main_actor();
 	if (parms[0].get_int_value() == -357)
 		{			// Move whole party.
+		gwin->teleport_party(tile);
+#if 0	/* ++++Old way. */
 		Usecode_value party = get_party();
 		int cnt = party.get_array_size();
 		for (int i = 0; i < cnt; i++)
@@ -2066,6 +2061,7 @@ USECODE_INTRINSIC(move_object)
 			if (act)
 				act->set_action(0);
 			}
+#endif
 		}
 	else
 		{
@@ -2073,15 +2069,17 @@ USECODE_INTRINSIC(move_object)
 		if (obj)
 			{
 			obj->move(tile.tx, tile.ty, tile.tz);
-			moved_avatar |= (obj == ava);
 			Actor *act = as_actor(obj);
 			if (act)
+				{
 				act->set_action(0);
+				if (act == ava)
+					// Teleported Avatar?
+					// Make new loc. visible.
+					gwin->center_view(tile);
+				}
 			}
 		}
-	if (moved_avatar)		// Teleported Avatar?
-					// Make new loc. visible.
-		gwin->center_view(tile);
 	return(no_ret);
 }
 
@@ -2786,7 +2784,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(update_last_created), // 0x26
 	USECODE_INTRINSIC_PTR(get_npc_name), // 0x27
 	USECODE_INTRINSIC_PTR(count_objects), // 0x28
-	USECODE_INTRINSIC_PTR(take_from_owner), // 0x29
+	USECODE_INTRINSIC_PTR(find_in_owner), // 0x29
 	USECODE_INTRINSIC_PTR(get_cont_items), // 0x2a
 	USECODE_INTRINSIC_PTR(remove_party_items), // 0x2b
 	USECODE_INTRINSIC_PTR(add_party_items), // 0x2c

@@ -86,6 +86,7 @@ private:
 	unsigned char painted;		// 1 if we updated image buffer.
 	unsigned char focus;		// Do we have focus?
 	unsigned char poison_pixel;	// For rendering poisoned actors.
+	unsigned char teleported;	// 1 if just teleported.
 	ifstream chunks;		// "u7chunks" file.
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
@@ -212,6 +213,8 @@ public:
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < num_npcs) ? 
 				npcs[npc_num] : 0; }
+	inline int was_teleported()
+		{ return teleported; }
 					// Find monster info. for shape.
 	Monster_info *get_monster_info(int shapenum);
 	Egg_object *get_path_egg(int q)	// Get path egg by quality.
@@ -474,6 +477,7 @@ public:
 	void start_actor(int winx, int winy, int speed = 125);
 	void stop_actor();		// Stop main actor.
 	void teleport_party(Tile_coord t);
+	void activate_item(int shnum);	// Activate item in party.
 					// Find gump (x, y) is in.
 	Gump_object *find_gump(int x, int y);
 					// Find gump object is in.
