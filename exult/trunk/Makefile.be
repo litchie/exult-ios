@@ -3,7 +3,7 @@
 
 # Base of the exult source
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers
+VPATH=$(SRC):$(SRC)/files:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin
 VERSION=0.90alpha1
 
 ### Modify these paths
@@ -11,7 +11,7 @@ SDL_INCLUDES=-I/boot/develop/tools/gnupro/include/SDL
 SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
-	-DNO_INTRO -DAUTOCONFIGURED -I$(SRC)/files \
+	-DNO_INTRO -DAUTOCONFIGURED -I$(SRC)/imagewin -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
 	$(SDL_INCLUDES)
 CXXFLAGS=-O2 -Wall
@@ -24,8 +24,8 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
 	args.o barge.o bggame.o bodies.o browser.o cheat.o\
 	combat.o delobjs.o dir.o drag.o effects.o egg.o exult.o font.o \
 	game.o gameclk.o gamedat.o gamerend.o gametxt.o gamewin.o \
-	gumps.o imagescl.o imagewin.o items.o lists.o menulist.o mouse.o \
-	npcnear.o npctime.o objs.o palette.o paths.o readnpcs.o scale.o schedule.o \
+	gumps.o items.o lists.o menulist.o mouse.o \
+	npcnear.o npctime.o objs.o palette.o paths.o readnpcs.o schedule.o \
 	segfile.o sigame.o spells.o tqueue.o txtscroll.o usecode.o \
     useval.o vgafile.o virstone.o
 # unused: npctest.o
@@ -38,8 +38,9 @@ AUDIO_OBJS=Audio.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 FLIC_OBJS=playfli.o
 FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o
+IMAGEWIN_OBJS=imagebuf.o imagewin.o ibuf8.o ibuf16.o imagescl.o
 # unused: test.o
-OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS)
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(IMAGEWIN_OBJS)
 
 EXULT_FLX_OBJECTS = \
 	data/exult_quotes.shp \
