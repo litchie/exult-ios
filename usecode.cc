@@ -2090,7 +2090,8 @@ USECODE_INTRINSIC(sit_down)
 	Game_object *chair = get_item(parms[1]);
 	if (!chair)
 		return(no_ret);
-	Sit_schedule::set_action(npc, chair);
+//	Sit_schedule::set_action(npc, chair);
+	npc->set_schedule_type(Schedule::sit, new Sit_schedule(npc, chair));
 	return(no_ret);
 }
 
