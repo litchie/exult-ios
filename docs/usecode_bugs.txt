@@ -10,6 +10,18 @@ download page.
 Unfixed bugs:
 =================
 
+(SI) Pillars in Silver Seed fort teleport to Gargoyle test
+==========================================================
+
+A slight mistake of the add-on designers. The cool looking pillars in the dining
+hall of the Silver Seed fort start the gargoyle city test and teleport the Avatar
+to it.
+This could be fixed by
+- change the usecode to only trigger in the right area
+- change the pillars (i.e., change their frame)
+- give the 'real' pillar a quality and check for that
+
+
 (SI) Resurrecting Gwenno:
 ==========================
 Author: Clock Nova
