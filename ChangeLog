@@ -1,3 +1,6 @@
+2002-05-06  Darke <darkepaw@users.sourceforge.net>
+	* files/U7file.cc: Fixed over-paranoid catch()ing.
+
 2002-05-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* exult.cc: If map-editing, you can only drag things if in 'Move' mode.
