@@ -448,17 +448,6 @@ else
   AC_MSG_RESULT(no)
 fi
 
-# Usecode debugger
-AC_ARG_ENABLE(usecode-debugger, [  --enable-usecode-debugger       Pre-alpha usecode debugger [default no]],,enable_usecode_debugger=no)
-AC_MSG_CHECKING(whether to enable the usecode debugger)
-if test x$enable_usecode_debugger = xyes; then
-	AC_MSG_RESULT(yes)
-	CXXFLAGS="$CXXFLAGS -DUSECODE_DEBUGGER=1"
-else
-	AC_MSG_RESULT(no)
-fi
-
-
 # ---------------------------------------------------------------------
 # Warning level
 # ---------------------------------------------------------------------
