@@ -1494,13 +1494,8 @@ void Actor::paint
 		gwin->get_shape_location(this, xoff, yoff);
 		if (flags & (1L << Obj_flags::invisible))
 			gwin->paint_invisible(xoff, yoff, get_shape());
-		else {
-			if (GAME_BG && get_shapenum() == 489)
-				// draw Spark translucently (otherwise his pants palette-cycle)
-				gwin->paint_shape(xoff, yoff, *this, 1);
-			else
-				gwin->paint_shape(xoff, yoff, *this);
-		}
+		else 
+			gwin->paint_shape(xoff, yoff, *this);
 
 		paint_weapon(gwin);
 		if (hit)		// Want a momentary red outline.

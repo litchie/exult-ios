@@ -27,6 +27,7 @@
 #include "shapevga.h"
 #include "monstinf.h"
 #include "utils.h"
+#include "game.h"
 
 using std::ifstream;
 using std::ios;
@@ -78,6 +79,12 @@ void Shapes_vga_file::read_info
 		tfa.read((char*)&info[i].tfa[0], 3);
 		info[i].set_tfa_data();
 		}
+
+	if (GAME_BG) {
+		// set Spark to translucent. Otherwise his pant will palette-cycle
+		info[489].tfa[2] |= (1<<7);
+		info[489].set_tfa_data();
+	}
 
 	ifstream ready;
 	if (patch_exists(PATCH_READY)) U7open(ready, PATCH_READY);
