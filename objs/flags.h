@@ -36,6 +36,7 @@ namespace  Obj_flags
 		tremor = 12,		// ??Earthquake??
 		dancing = 15,		// ??Not sure.
 		dont_render = 16,	// Completely invisible.
+		si_on_moving_barge = 17,// SI's version of 10?
 		okay_to_move = 18,	// ??Guess: for Usecode-created items.
 		okay_to_land = 21,	// Used for flying-carpet.
 		confused = 25,		// ??Guessing.
