@@ -1714,7 +1714,7 @@ USECODE_INTRINSIC(update_last_created)
 USECODE_INTRINSIC(get_npc_name)
 {
 	// Get NPC name(s).  Works on arrays, too.
-	static char *unknown = "??name??";
+	static const char *unknown = "??name??";
 	int cnt = parms[0].get_array_size();
 	if (cnt)
 		{			// Do array.

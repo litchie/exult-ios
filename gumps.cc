@@ -1805,7 +1805,7 @@ void File_gump_object::key_down
 
 Yesno_gump_object::Yesno_gump_object
 	(
-	char *txt
+	const char *txt
 	) : Modal_gump_object(0, YESNOBOX), text(strdup(txt)), answer(-1)
 	{
 	yes_button = new Yesno_gump_button(this, yesx, yesnoy, 1);
@@ -1910,7 +1910,7 @@ void Yesno_gump_object::key_down
 
 int Yesno_gump_object::ask
 	(
-	char *txt			// What to ask.
+	const char *txt			// What to ask.
 	)
 	{
 	extern int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);

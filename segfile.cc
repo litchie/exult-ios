@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Segment_file::Segment_file
 	(
-	char *nm			// Path to file.
+	const char *nm			// Path to file.
 	) : num_segments(0)
 	{
 	if (!U7open(file, nm))

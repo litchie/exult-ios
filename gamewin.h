@@ -104,7 +104,7 @@ private:
 	Rectangle dragging_rect;	// Rectangle to repaint.
 	Image_buffer *dragging_save;	// Image below dragged object.
 					// Open a U7 file.
-	int u7open(ifstream& in, char *fname, int dont_abort = 0);
+	int u7open(ifstream& in, const char *fname, int dont_abort = 0);
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
 public:
@@ -466,7 +466,7 @@ public:
 	void drag(int x, int y);	// During dragging.
 	void drop_dragged(int x, int y, int moved);// Done dragging.
 					// Paint text using "fonts.vga".
-	int paint_text_box(int fontnum, char *text, int x, int y, int w, 
+	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
 				int h, int vert_lead = 0);
 	int paint_text(int fontnum, const char *text, int xoff, int yoff);
 	int paint_text(int fontnum, const char *text, int textlen, 
@@ -481,16 +481,16 @@ private:
 	void drop(int x, int y);
 	int drop_at_lift(int at_lift);
 public:
-	void restore_gamedat(char *fname);// Explode a savegame into "gamedat".
+	void restore_gamedat(const char *fname);// Explode a savegame into "gamedat".
 	void restore_gamedat(int num);
 					// Save "gamedat".
-	int save_gamedat(char *fname, char *savename);
-	int save_gamedat(int num, char *savename);
-	char *get_game_identity(char *fname);
+	int save_gamedat(const char *fname, const char *savename);
+	int save_gamedat(int num, const char *savename);
+	char *get_game_identity(const char *fname);
 	const char *get_shape_file_name(int n);
 	Vga_file *get_shape_file_data(int n);
 	int get_shape_file_count();
-	void play_flic(char *archive, int index);
+	void play_flic(const char *archive, int index);
 	void paint_splash();
 	void end_game();
 	int find_roof(int cx, int cy);

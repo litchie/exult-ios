@@ -41,7 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Game_window::restore_gamedat
 	(
-	char *fname			// Name of savegame file.
+	const char *fname			// Name of savegame file.
 	)
 	{
 	ifstream in;
@@ -139,7 +139,7 @@ static long Savefile
 	in.seekg(0, ios::beg);
 	char namebuf[13];		// First write 13-byte name.
 	memset(namebuf, 0, sizeof(namebuf));
-	char *base = strchr(fname, '/');// Want the base name.
+	const char *base = strchr(fname, '/');// Want the base name.
 	if (!base)
 		base = strchr(fname, '\\');
 	if (base)
@@ -165,8 +165,8 @@ static long Savefile
 
 int Game_window::save_gamedat
 	(
-	char *fname,			// File to create.
-	char *savename			// User's savegame name.
+	const char *fname,			// File to create.
+	const char *savename			// User's savegame name.
 	)
 	{
 	ofstream out;
@@ -230,7 +230,7 @@ int Game_window::save_gamedat
 int Game_window::save_gamedat
 	(
 	int num,			// 0-9, currently.
-	char *savename			// User's savegame name.
+	const char *savename			// User's savegame name.
 	)
 	{
 	char fname[50];			// Set up name.
@@ -270,7 +270,7 @@ void Game_window::read_save_names
  */
 char *Game_window::get_game_identity
 		 (
-		  char *savename
+		  const char *savename
 		  )
 {
     ifstream in;
