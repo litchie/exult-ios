@@ -118,6 +118,21 @@ C_EXPORT gboolean on_monst_shape_focus_out_event
 	ExultStudio::get_instance()->show_egg_monster();
 	return TRUE;
 	}
+/*
+ *	"Teleport coords" toggled.
+ */
+C_EXPORT void on_teleport_coord_toggled
+	(
+	GtkToggleButton *btn,
+        gpointer user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	studio->set_sensitive("teleport_x", on);
+	studio->set_sensitive("teleport_y", on);
+	studio->set_sensitive("teleport_eggnum", !on);
+	}
 
 /*
  *	Callback for when a shape is dropped on the Egg 'monster' area.
@@ -179,8 +194,17 @@ void ExultStudio::open_egg_window
 	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
 						"egg_apply_btn"), true);
 	if (data)
+		{
 		if (!init_egg_window(data, datalen))
 			return;
+		}
+	else if (first_time)		// Init. empty dialog first time.
+		{
+		set_toggle("teleport_coord", true);
+		set_sensitive("teleport_x", true);
+		set_sensitive("teleport_y", true);
+		set_sensitive("teleport_eggnum", false);
+		}
 	gtk_widget_show(eggwin);
 
 #ifdef WIN32
@@ -403,7 +427,7 @@ int ExultStudio::save_egg_window
 			data2 = (tx&0xff) + ((ty&0xff)<<8);
 			int sx = tx/c_tiles_per_schunk,
 			    sy = ty/c_tiles_per_schunk;
-			data1 = 255 + (sy*12 + sx);
+			data1 = 255 + ((sy*12 + sx)<<8);
 			}
 		else			// Egg #.
 			data1 = get_spin("teleport_eggnum")&0xff;

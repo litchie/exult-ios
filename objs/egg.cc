@@ -466,20 +466,8 @@ void Egg_object::update_from_studio
 			}
 		if (shape == -1)
 			shape = 275;	// FOR NOW.
-		if (frame == -1)
-			switch (type)
-				{	// (These aren't perfect.)
-			case monster: frame = 0; break;
-			case jukebox: frame = 2; break;
-			case soundsfx:frame = 1; break;
-			case voice:   frame = 3; break;
-			case weather: frame = 4; break;
-			case teleport:frame = 5; break;
-			case path:    frame = 6; break;
-			default:      frame = 7; break;
-				}
 					// Create.  Gets initialized below.
-		egg = new Egg_object(shape, frame, 0, 0, 0, 0, 0, 0, 0);
+		egg = new Egg_object(shape, 0, 0, 0, 0, 0, 0, 0, 0);
 		int lift;		// Try to drop at increasing hts.
 		for (lift = 0; lift < 12; lift++)
 			if (gwin->drop_at_lift(egg, x, y, lift))
@@ -487,16 +475,30 @@ void Egg_object::update_from_studio
 		if (lift == 12)
 			{
 			if (client_socket >= 0)
-				Exult_server::Send_data(client_socket, Exult_server::cancel);
+				Exult_server::Send_data(client_socket, 
+							Exult_server::cancel);
 			delete egg;
 			return;
 			}
 		if (client_socket >= 0)
-			Exult_server::Send_data(client_socket, Exult_server::user_responded);
+			Exult_server::Send_data(client_socket, 
+						Exult_server::user_responded);
 		}
 	egg->type = type;
 	if (shape != -1)
 		egg->set_shape(shape);
+	if (frame == -1)
+		switch (type)
+			{		// (These aren't perfect.)
+		case monster: frame = 0; break;
+		case jukebox: frame = 2; break;
+		case soundsfx:frame = 1; break;
+		case voice:   frame = 3; break;
+		case weather: frame = 4; break;
+		case teleport:frame = 5; break;
+		case path:    frame = 6; break;
+		default:      frame = 7; break;
+			}
 	if (frame != -1)
 		egg->set_frame(frame);
 	gwin->add_dirty(egg);
@@ -509,6 +511,8 @@ void Egg_object::update_from_studio
 		((auto_reset?1:0)<<Egg_object::auto_reset);
 	egg->data1 = data1;
 	egg->data2 = data2;
+	if (type == usecode || type == teleport || type == path)
+		egg->set_quality(data1&0xff);
 	Map_chunk *chunk = 
 			gwin->get_chunk_safely(egg->get_cx(), egg->get_cy());
 	chunk->remove_egg(egg);		// Got to add it back.
