@@ -752,9 +752,9 @@ static void Handle_keystroke
 	case SDLK_LMETA:
 		altkeys |= 2;
 		break;
-	case SDLK_PLUS:			// Brighten.
+	case SDLK_PLUS:
 	case SDLK_KP_PLUS:
-		if(cheat&&alt) {
+		if(cheat && alt && !ctrl) {			// Alt-+ : Increase resolution
 			current_res++;
 			if(current_res>=num_res)
 				current_res = 0;
@@ -763,12 +763,14 @@ static void Handle_keystroke
 					res_list[current_res].scale);
 					// Get scale factor for mouse.
 			scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
-		} else
+
+		} else if (!alt && !ctrl) {		// + : Brighten
 			gwin->brighten(20);
+		}
 		break;
-	case SDLK_MINUS:		// Darken.
+	case SDLK_MINUS:
 	case SDLK_KP_MINUS:
-		if(cheat&&alt) {
+		if(cheat && alt && !ctrl) {			// Alt-- : Decrease resolution
 			current_res--;
 			if(current_res<0)
 				current_res = num_res-1;
@@ -776,21 +778,22 @@ static void Handle_keystroke
 					res_list[current_res].y,
 					res_list[current_res].scale);
 			scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
-		} else
+
+		} else if (!alt && !ctrl) {		// - : Darken
 			gwin->brighten(-20);
+		}
 		break;
 	case SDLK_b:
-		if(cheat&&ctrl) {
+		if(cheat && ctrl && !alt) { 		// Ctrl-B : Shape browser
 			browser->browse_shapes();
 			gwin->paint();
 			gwin->set_palette(-1,-1);
-		} else			// Open spellbook.
+
+		} else if (!alt && !ctrl)		// B : Open spellbook.
 			gwin->activate_item(761);
 		break;
 	case SDLK_c:
-		{
-		if (ctrl)		// Create last shape viewed.
-			{
+		if (cheat && ctrl && !alt) {		// Ctrl-C : Create last shape viewed.
 			int current_shape = 0;
 			int current_frame = 0;
 			if(browser->get_shape(current_shape, current_frame))
@@ -799,57 +802,52 @@ static void Handle_keystroke
 					current_frame, 0, 0), 1);
 			else
 				gwin->center_text("Can only create from 'shapes.vga'");
-			break;
-			}
-		gwin->toggle_combat();	// Go into combat mode
-		gwin->paint();
-		int mx, my;		// Update mouse.
-		SDL_GetMouseState(&mx, &my);
-		Set_mouse_and_speed(mx, my);
-		break;
+
+		} else if (!ctrl && !alt) {		// C : Combat mode
+			gwin->toggle_combat();
+			gwin->paint();
+			int mx, my;		// Update mouse.
+			SDL_GetMouseState(&mx, &my);
+			Set_mouse_and_speed(mx, my);
 		}
-	case SDLK_d:			// ctrl-d:  delete what mouse is on.
-		{
-		if (ctrl&&cheat)
-			{
+		break;
+	case SDLK_d:			// Ctrl-d : delete what mouse is on.
+		if (cheat && ctrl && !alt) {
 			int x, y;
 			SDL_GetMouseState(&x, &y);
 			x = x>>scale;
 			y = y>>scale;
 			Game_object *obj = gwin->find_object(x, y);
-			if (obj)
-				{
+			if (obj) {
 				obj->remove_this();
 				gwin->paint();
-				}
 			}
-		break;
 		}
-	case SDLK_e:
-		if(!cheat)
-			break;
-		gwin->paint_eggs = !gwin->paint_eggs;
-		if(gwin->paint_eggs)
-			gwin->center_text("Eggs display enabled");
-		else
-			gwin->center_text("Eggs display disabled");
-		gwin->paint();
 		break;
-	case SDLK_f:			// Feed food.
-		gwin->activate_item(377);	// +++++Black gate.
+	case SDLK_e:			// e : toggle eggs display
+		if (cheat && !alt && !ctrl) {
+			gwin->paint_eggs = !gwin->paint_eggs;
+			if(gwin->paint_eggs)
+				gwin->center_text("Eggs display enabled");
+			else
+				gwin->center_text("Eggs display disabled");
+			gwin->paint();
+		}
+		break;
+	case SDLK_f:			// f : Feed food.
+		if (!ctrl && !alt) {
+			gwin->activate_item(377);	// +++++Black gate.
+		}
 		break;
 	case SDLK_g:
-		if (alt) {	// toggle god-mode
-			if (cheat) {
-				god_mode = !god_mode;
-				if (god_mode)
-					gwin->center_text("God Mode Enabled");
-				else
-					gwin->center_text("God Mode Disabled");
-			}
-		} else {	// Change Avatars gender
-			if(!cheat)
-				break;
+		if (cheat && alt && !ctrl) {		// Alt-g : toggle god-mode
+			god_mode = !god_mode;
+			if (god_mode)
+				gwin->center_text("God Mode Enabled");
+			else
+				gwin->center_text("God Mode Disabled");
+
+		} else if (cheat && !ctrl && !alt) {	// g :  Change Avatars gender
 			if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex))
 				gwin->get_main_actor()->clear_type_flag(Actor::tf_sex);
 			else
@@ -857,25 +855,30 @@ static void Handle_keystroke
 			gwin->set_all_dirty();
 		}
 		break;
-	case SDLK_h:	// Help keys, ctrl = cheat keys
-		{
+	case SDLK_h:
+		if (alt)
+			break;
 
 		Scroll_gump *scroll;
 		scroll = new Scroll_gump();
 
-		if (!ctrl) {
+		if (!ctrl) {		// h : show keyboard commands
 			scroll->add_text("Keyboard commands~");
 			scroll->add_text("+/- - Change brightness\n");
 			scroll->add_text("c - Combat mode\n");
+			scroll->add_text("f - Use food\n");
 			scroll->add_text("i - Show inventory\n");
+			scroll->add_text("k - Try keys\n");
 			scroll->add_text("m - Toggle music\n");
 			scroll->add_text("p - Repaint screen\n");
 			scroll->add_text("ctrl-s - Quick Save\n");
 			scroll->add_text("ctrl-r - Restore\n");
 			scroll->add_text("s - Show save box\n");
+			scroll->add_text("w - Watch\n");
 			scroll->add_text("F4 - Toggle fullscreen\n");
 			scroll->add_text("ctrl-h - Cheat Commands\n");
-		} else {
+
+		} else {		// Ctrl-h : show cheat commands
 			scroll->add_text("Cheat commands~");
 			scroll->add_text("Arrow keys - scroll map\n");
 			scroll->add_text("Home - recenter map\n");
@@ -888,15 +891,15 @@ static void Handle_keystroke
 			scroll->add_text("g - Change Avatar gender\n");
 			scroll->add_text("alt-i - Toggle infravision\n");
 			scroll->add_text("ctrl-m - Get 100 gold coins\n");
-			scroll->add_text("ctrl-alt-m - Toggle hack-mover\n");
-			scroll->add_text("alt-n  - Toggle Naked flag (SI)\n");
-			scroll->add_text("alt-p  - Toggle Petra mode (SI)\n");
-			scroll->add_text("alt-s - Change skin color (SI)\n");
-			scroll->add_text("ctrl-t - Fake time period change\n");
+			scroll->add_text("ctrl-alt-m - Hack-Mover\n");
+			scroll->add_text("ctrl-t - Next time period\n");
 			scroll->add_text("alt-t  - Teleport\n");
 			scroll->add_text("ctrl-alt-t - Map Teleport\n");
-			scroll->add_text("alt-w - Toggle Archwizard Mode\n");
-			scroll->add_text("ctrl-w - Test weather\n");
+			scroll->add_text("alt-w - Archwizard mode~");
+			scroll->add_text("SI-only keys~");
+			scroll->add_text("alt-n - Toggle Naked flag\n");
+			scroll->add_text("alt-p - Toggle Petra mode\n");
+			scroll->add_text("alt-s - Change skin color\n");
 		}
 
 		scroll->paint(gwin);
@@ -907,68 +910,16 @@ static void Handle_keystroke
 		gwin->paint();
 		delete scroll;
 		break;
-
-/*
-		char buf[1024];
-
-		if (!ctrl)
-			{
-			sprintf(buf, "Keyboard commands\n"
-				"  +/- - Higher/Lower brightness\n"
-				"  c - Combat mode\n"
-				"  i - Show inventory\n"
-				"  m - Turn on/off music\n"
-				"  p - Repaint screen\n"
-				"  ctrl-s/r - Quick Save/Restore\n"
-				"  s - Show save box\n"
-				"  z - Show stats\n"
-				"  F4 - Toggle fullscreen\n"
-				"  alt-x, F10, ESC - Exit\n"
-				"  ctrl-h - Cheat Commands\n"
-			);
-			}
-		else
-			{
-			sprintf(buf, "Cheat commands\n"
-				"  Arrow keys - scroll map\n"
-				"  Home - recenter map\n"
-				"  alt-+/- - Switch resolution\n"
-				"  ctrl-b - Shape Browser\n"
-				"  ctrl-c - Create Object\n"
-				"  ctrl-d - Delete Object\n"
-				"  e - Toggle Egg display\n"
-				"  alt-g - Toggle God Mode\n"
-				"  g - Change Avatar gender\n"
-				"  alt-i - Toggle infravision\n"
-				"  ctrl-m - Get 100 gold coins\n"
-				"  ctrl-alt-m - Toggle hack-mover\n"
-				"  alt-n  - Toggle Naked flag (SI)\n"
-				"  alt-p  - Toggle Petra mode (SI)\n"
-				"  alt-s - Change skin color (SI)\n"
-				"  ctrl-t - Fake time period change\n"
-				"  alt-t  - Teleport\n"
-				"  ctrl-alt-t - Map Teleport\n"
-				"  alt-w - Toggle Archwizard Mode\n"
-				"  ctrl-w - Test weather\n"
-			);
-			}
-
-		gwin->paint_text_box(MAINSHP_FONT1, buf, 
-			5, 5, 300, 400);
-		gwin->get_win()->show();
-		break;
-*/
-		}
 	case SDLK_i:
-		if (alt && cheat) {    // infravision
+		if (cheat && alt && !ctrl) {    // Alt-i : infravision
 			infravision = !infravision;
 			if (infravision) {
 				gwin->center_text("Infravision Enabled");
 				gwin->set_palette(0);
 			} else
 				gwin->center_text("Infravision Disabled");		
-		} else {
-			// Show Inventory
+
+		} else if (!alt && !ctrl) {	// i : show inventory
 			if (gwin->get_mode() != Game_window::gump)
 				inventory_page = stats_page = -1;
 			if(inventory_page<gwin->get_usecode()->get_party_count())
@@ -982,83 +933,85 @@ static void Handle_keystroke
 				mouse->set_shape(Mouse::hand);
 		}
 		break;
-	case SDLK_k:			// Find key.
-		Try_key(gwin);
+	case SDLK_k:
+		if (!alt && !ctrl) {	// k : find key
+			Try_key(gwin);
+		}
 		break;
-	case SDLK_l:			// Decrement skip_lift.
-		if(!cheat)
-			break;
-		if (gwin->skip_lift == 16)
-			gwin->skip_lift = 11;
-		else
-			gwin->skip_lift--;
-		if (gwin->skip_lift <= 0)
-			gwin->skip_lift = 16;
+	case SDLK_l:
+		if(cheat && !alt && !ctrl) {	// l : decrement skip_lift
+			if (gwin->skip_lift == 16)
+				gwin->skip_lift = 11;
+			else
+				gwin->skip_lift--;
+			if (gwin->skip_lift <= 0)
+				gwin->skip_lift = 16;
 #if DEBUG
-		cout << "Skip_lift = " << gwin->skip_lift << endl;
+			cout << "Skip_lift = " << gwin->skip_lift << endl;
 #endif
-		gwin->paint();
+			gwin->paint();
+		}
 		break;
 	case SDLK_m:
-		if (ctrl && alt && cheat) {  //ctrl-alt-m: hack mover
+		if (cheat && ctrl && alt) {  		// Ctrl-Alt-m : hack mover
 			hack_mover = !hack_mover;
 			if (hack_mover)
 				gwin->center_text("Hack-mover Enabled");
 			else
 				gwin->center_text("Hack-mover Disabled");			
-		} else if (ctrl && cheat) {	// CTRL-m:  get 100 gold coins!
+
+		} else if (cheat && ctrl && !alt) {	// Ctrl-m : 100 gold coins
 			gwin->get_main_actor()->add_quantity(100, 644);
 			gwin->center_text("Added 100 gold coins");
 			break;
-		} else if (alt) {
+
+		} else if (alt && !ctrl) {		// Alt-m : next song
+							// Shift-Alt-m : previous song
 			static int mnum = 0;
 			if (shift && mnum > 0)
 				audio->start_music(--mnum, 0);
 			else
 				audio->start_music(mnum++, 0);
-		} else			// Show map.
+
+		} else if (!alt && !ctrl) {		// m : Show map.
 			gwin->activate_item(178);	//++++Black gate.
+		}
 		break;
-	case SDLK_n:		// Toggle Naked flag
-		if(!cheat || (Game::get_game_type() == BLACK_GATE))
-			break;
-		if (gwin->get_main_actor()->get_siflag(Actor::naked))
-			gwin->get_main_actor()->clear_siflag(Actor::naked);
-		else
-			gwin->get_main_actor()->set_siflag(Actor::naked);
-		gwin->set_all_dirty();
+	case SDLK_n:			// Alt-n : Toggle Naked flag
+		if (cheat && alt && !ctrl && (Game::get_game_type() != BLACK_GATE)) {
+			if (gwin->get_main_actor()->get_siflag(Actor::naked))
+				gwin->get_main_actor()->clear_siflag(Actor::naked);
+			else
+				gwin->get_main_actor()->set_siflag(Actor::naked);
+			gwin->set_all_dirty();
+		}
 		break;
-	case SDLK_p:			// Rerender image.
-		// Toggle petra mode
-		if(alt && cheat && (Game::get_game_type() != BLACK_GATE))
-		{
+	case SDLK_p:			// Alt-p : Toggle Petra mode
+		if(cheat && alt && !ctrl && (Game::get_game_type() != BLACK_GATE)) {
 			if (gwin->get_main_actor()->get_flag(Actor::petra))
 				gwin->get_main_actor()->clear_flag(Actor::petra);
 			else
 				gwin->get_main_actor()->set_flag(Actor::petra);
 			gwin->set_all_dirty();
-			break;
-		}
 
-		gwin->paint();
+		} else if (!alt && !ctrl) {	// p : Rerender screen
+			gwin->paint();
+		}
 		break;
 	case SDLK_r:
-		if (ctrl)		// Restore from 'gamedat'.
-			{
+		if (ctrl && !alt) {	// Ctrl-r : Restore from 'gamedat'
 			if (gwin->read())
 				gwin->center_text("Game restored");
 			gwin->paint();
-			break;
-			}
+		}
 		break;
 	case SDLK_s:
-		if (ctrl)		// Save to 'gamedat'.
-			{
+		if (ctrl && !alt) {		// Ctrl-s : Save to 'gamedat'
 			if (gwin->write())
 				gwin->center_text("Game saved");
-			}
-		else if (alt)		// Change skin color
-			{
+
+						// Alt-s : Change skin color
+		} else if (cheat && alt && !ctrl && (Game::get_game_type() != BLACK_GATE)) {
 			int color = gwin->get_main_actor()->get_skin_color();
 
 			if (color < 0 || color > 2)
@@ -1066,18 +1019,17 @@ static void Handle_keystroke
 			color = (color + 4) %3;
 			gwin->get_main_actor()->set_skin_color(color);
 			gwin->set_all_dirty();
-			}
-		else
-			{
+
+		} else if (!alt && !ctrl) { 	// s : save/restore gump
 			File_gump_object *fileio = new File_gump_object();
 			Modal_gump(fileio, Mouse::hand);
 			delete fileio;
-			}
+		}
 		break;
-	case SDLK_t:			// 'Target' mode.
-		{
-		if (ctrl && alt && cheat) {	// map teleport
-			// Display map.
+	case SDLK_t:
+		if (cheat && ctrl && alt) {	// Ctrl-Alt-t : map teleport
+			// Display map.         
+			//++++Black gate
 			Shape_frame *map = gwin->get_sprite_shape(22, 0);
 					// Get coords. for centered view.
 			int x = (gwin->get_width() - map->get_width())/2 + map->get_xleft();
@@ -1108,17 +1060,13 @@ static void Handle_keystroke
 			Tile_coord t(tx,ty,0);
 			gwin->teleport_party(t);
 			gwin->center_text("Teleport!!!");
-			break;
-		}
-		if (ctrl&&cheat)		// 'T':  Fake next time change.
-			{
+
+		} else if (cheat && ctrl && !alt) {	// Ctrl-t :  Fake next time change.
 			gwin->fake_next_period();
 			gwin->center_text("Game clock incremented");
-			break;
-			}
-		int x, y;
-		if (alt&&cheat)		// Teleport.
-			{
+
+		} else if (cheat && alt && !ctrl) { 	// Alt-t : Teleport to cursor
+			int x, y;
 			SDL_GetMouseState(&x, &y);
 			x = x>>scale;
 			y = y>>scale;
@@ -1126,99 +1074,103 @@ static void Handle_keystroke
 				gwin->get_scrollty() + y/tilesize, 0);
 			gwin->teleport_party(t);
 			gwin->center_text("Teleport!!!");
-			break;
-			}
-		if (!Get_click(x, y, Mouse::greenselect))
-			break;
-		gwin->double_clicked(x, y);
-		if (gwin->get_mode() == Game_window::gump)
-			mouse->set_shape(Mouse::hand);
-		break;
+
+		} else if (!alt && !ctrl) {		// t : Target mode.
+			int x, y;
+			if (!Get_click(x, y, Mouse::greenselect))
+				break;
+			gwin->double_clicked(x, y);
+			if (gwin->get_mode() == Game_window::gump)
+				mouse->set_shape(Mouse::hand);
 		}
+		break;
 	case SDLK_w:
-		if (alt && cheat) {  // toggle archwizard mode
+		if (cheat && alt && !ctrl) {  	// Alt-w : toggle archwizard mode
 			wizard_mode = !wizard_mode;
 			if (wizard_mode)
 				gwin->center_text("Archwizard Mode Enabled");
 			else
 				gwin->center_text("Archwizard Mode Disabled");
-		 } else			// Activate watch.
+
+		} else if (!alt && !ctrl) {	// w : Activate watch.
 			gwin->activate_item(159);	// ++++Blackgate.
-		break;
-	case SDLK_x:			// Alt-x means quit.
-		if (alt)
-			Okay_to_quit();
-		break;
-	case SDLK_z:			// Show stats.
-		{
-		if (gwin->get_mode() != Game_window::gump)
-			stats_page = -1;
-		if (stats_page < gwin->get_usecode()->get_party_count())
-			++stats_page;
-		else
-			stats_page = 0;
-		Actor *actor = Get_party_member(stats_page);
-		if (actor)
-			gwin->show_gump(actor, Game::get_game()->get_shape("gumps/statsdisplay"));
-		if (gwin->get_mode() == Game_window::gump)
-			mouse->set_shape(Mouse::hand);
-		break;
 		}
-	case SDLK_ESCAPE:		// ESC key.
-		inventory_page = stats_page = -1;
-		if (gwin->get_mode() == Game_window::gump)
-			gwin->end_gump_mode();
-		else			// For now, quit.
+		break;
+	case SDLK_x:
+		if (alt && !ctrl) {	// Alt-x : quit
 			Okay_to_quit();
+		}
+		break;
+	case SDLK_z:
+		if (!alt && !ctrl) { 	// z : Show stats
+			if (gwin->get_mode() != Game_window::gump)
+				stats_page = -1;
+			if (stats_page < gwin->get_usecode()->get_party_count())
+				++stats_page;
+			else
+				stats_page = 0;
+			Actor *actor = Get_party_member(stats_page);
+			if (actor)
+				gwin->show_gump(actor, Game::get_game()->get_shape("gumps/statsdisplay"));
+			if (gwin->get_mode() == Game_window::gump)
+				mouse->set_shape(Mouse::hand);
+		}
+		break;
+	case SDLK_ESCAPE:
+		if (!alt && !ctrl) {	// ESC : close gumps or quit
+			inventory_page = stats_page = -1;
+			if (gwin->get_mode() == Game_window::gump)
+				gwin->end_gump_mode();
+			else			// For now, quit.
+				Okay_to_quit();
+		}
 		break;
 	case SDLK_RIGHT:
-		if(!cheat)
-			break;
-		for (int i = 16; i; i--)
-			gwin->view_right();
+		if (cheat && !alt && !ctrl) {
+			for (int i = 16; i; i--)
+				gwin->view_right();
+		}
 		break;
 	case SDLK_LEFT:
-		if(!cheat)
-			break;
-		for (int i = 16; i; i--)
-			gwin->view_left();
+		if (cheat && !alt && !ctrl) {
+			for (int i = 16; i; i--)
+				gwin->view_left();
+		}
 		break;
 	case SDLK_DOWN:
-		if(!cheat)
-			break;
-		for (int i = 16; i; i--)
-			gwin->view_down();
+		if (cheat && !alt && !ctrl) {
+			for (int i = 16; i; i--)
+				gwin->view_down();
+		}
 		break;
 	case SDLK_UP:
-		if(!cheat)
-			break;
-		for (int i = 16; i; i--)
-			gwin->view_up();
+		if (cheat && !alt && !ctrl) {
+			for (int i = 16; i; i--)
+				gwin->view_up();
+		}
 		break;
 	case SDLK_HOME:
-		if(!cheat)
-			break;
-		gwin->center_view(gwin->get_main_actor()->get_abs_tile_coord());
-		gwin->paint();
+		if (cheat && !alt && !ctrl) {	// Home : center screen on avatar
+			gwin->center_view(gwin->get_main_actor()->get_abs_tile_coord());
+			gwin->paint();
+		}
 		break;
 	case SDLK_F4:
-		gwin->get_win()->toggle_fullscreen();
-		gwin->paint();
+		if (!alt && !ctrl) {		// F4 : Toggle fullscreen mode
+			gwin->get_win()->toggle_fullscreen();
+			gwin->paint();
+		}
 		break;
 	case SDLK_F10:
-		if(!cheat)
-			break;
-		{
+		if (cheat && !alt && !ctrl) {	// F10 : show endgame
 			Game::get_game()->end_game(shift==0);
 			gwin->set_palette(0);
 			gwin->paint();
 			gwin->fade_palette (50, 1, 0);
 		}
 		break;
-	case SDLK_F11:
-		if(!cheat && Game::get_game_type() != SERPENT_ISLE)
-			break;
-		{
+	case SDLK_F11:				// F11 : show SI intro 
+		if (cheat && !alt && !ctrl && Game::get_game_type() == SERPENT_ISLE) {
 			Game::get_game()->set_jive();
 			Game::get_game()->play_intro();
 			Game::get_game()->clear_jive();
