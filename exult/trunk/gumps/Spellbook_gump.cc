@@ -381,7 +381,7 @@ void Spellbook_gump::paint
 			if (num > 0 && num < 1000)
 				{
 				snprintf(text, 6, "%d", num);
-				sman->paint_text(4, text,
+				sman->paint_text(5, text,
 					x + spell->x + numx -
 						sman->get_text_width(4, text),
 					y + spell->y + numy);
@@ -391,9 +391,9 @@ void Spellbook_gump::paint
 				std::strcpy(text, "oo");
 				int px = x + spell->x + numx + 2 -
 						sman->get_text_width(4, text);
-				sman->paint_text(4, text + 1, px,
+				sman->paint_text(5, text + 1, px,
 					y + spell->y + numy);
-				sman->paint_text(4, text + 1, px + 3,
+				sman->paint_text(5, text + 1, px + 3,
 					y + spell->y + numy);
 				}
 		}
@@ -402,9 +402,9 @@ void Spellbook_gump::paint
 	{
 		char *circ = item_names[CIRCLE];
 		char *cnum = item_names[CIRCLENUM + page];
-		sman->paint_text(4, cnum, x + 40 + 
+		sman->paint_text(5, cnum, x + 40 + 
 			(44 - sman->get_text_width(4, cnum))/2, y + 20);
-		sman->paint_text(4, circ, x + 92 +
+		sman->paint_text(5, circ, x + 92 +
 			(44 - sman->get_text_width(4, circ))/2, y + 20);
 	}
 	if (book->bookmark >= 0 &&	// Bookmark?
