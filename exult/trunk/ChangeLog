@@ -1,5 +1,7 @@
 2001-01-14  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamewin.cc (Game_window): "userusecode" entry in .exult.cfg
+	allows for custom Usecode functions.
 	* npcnear.cc: Faster response for SI's rabbit, and storms cleaned
 	up a bit more.
 
