@@ -134,6 +134,7 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/firewand.shp \
 	data/bg/knife.shp \
 	data/bg/starburst.shp \
+	data/bg/hawk.shp \
 	data/bg/flx.in
 
 
