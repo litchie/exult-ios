@@ -1278,13 +1278,35 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					// if it's the character representation of a text data string we want
 					else if(c=='t')
 					{
+						bool commentformat=false;
 						i++; c = asmstr[i];
+						
+						// if we only want to output the 'short' format of the text (comment format)
+						if(c=='c')
+						{
+							commentformat=true;
+							i++; c = asmstr[i];
+						}
+						
 						unsigned int t = charnum2uint(c);
 						
 						assert(params.size()>=t);
 						assert(t!=0);
 						string s = ucf._data.find(params[t-1])->second;
-						if(s.size()>17) s = s.substr(0, 17) + string("...");
+						
+						if(commentformat)
+							if(s.size()>17) s = s.substr(0, 17) + string("...");
+						
+						// escape the appropriate characters...
+						// we'll only do it in the 'full' text output for the moment.
+						if(!commentformat)
+							for(string::iterator z=s.begin(); z!=s.end(); z++)
+								if(((*z)=='\"') || ((*z)=='\\'))
+								{
+									z = s.insert(z, 1, '\\');
+									++z;
+								}
+						
 						str << s;
 						break;
 					}
