@@ -51,6 +51,7 @@
 #define MONSTERS	"static/monsters.dat"
 #define EQUIP		"static/equip.dat"
 #define READY		"static/ready.dat"
+#define WIHH		"static/wihh.dat"
 #define IDENTITY	"gamedat/identity"
 #define ENDGAME		"static/endgame.dat"
 #define MIDITMPFILE     "u7midi"

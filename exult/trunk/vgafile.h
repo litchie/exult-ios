@@ -69,7 +69,7 @@ public:
 	int get_ybelow()
 		{ return ybelow; }
 	~Shape_frame()
-		{ delete data; }
+		{ delete [] data; }
 	};
 
 /*
@@ -90,6 +90,7 @@ public:
 	friend class Vga_file;
 	Shape() : frames(0), num_frames(0)
 		{  }
+	~Shape();
 	Shape_frame *get(ifstream& shapes, int shnum, int frnum)
 		{ 
 		return (frames && frnum < num_frames && frames[frnum]) ? 
@@ -122,6 +123,7 @@ protected:
 	Shape *shapes;			// List of ->'s to shapes' lists
 public:
 	Vga_file(const char *nm);
+	~Vga_file();
 	int get_num_shapes()
 		{ return num_shapes; }
 	int is_good()
@@ -161,17 +163,24 @@ class Shape_info
 	unsigned char shpdims[2];	// From "shpdims.dat".
 	unsigned char ready_type;	// From "ready.dat":  where item can
 					//   be worn.
+	unsigned char *weapon_offsets;	// From "wihh.dat": pixel offsets
+					//   for drawing weapon in hand
 	void set_tfa_data()		// Set fields from tfa.
 		{
 		xtiles = 1 + (tfa[2]&7);
 		ytiles = 1 + ((tfa[2]>>3)&7);
 		ztiles = (tfa[0] >> 5);
 		}
+	// This private copy constructor and assignment operator are never
+	// defined so copying will cause a link error (intentional)
+	Shape_info(const Shape_info & other);
+	const Shape_info & operator = (const Shape_info & other);
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : xtiles(0), ytiles(0), ztiles(0), weight(0), volume(0),
-		ready_type(0)
+		ready_type(0), weapon_offsets(0)
 		{ tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0; }
+	~Shape_info();
 	int get_weight()		// Get weight, volume.
 		{ return weight; }
 	int get_volume()
@@ -229,6 +238,18 @@ public:
 		{ return (Shape_class) (tfa[1]&15); }
 	unsigned char get_ready_type()
 		{ return ready_type; }
+	// Sets x to 255 if there is no weapon offset
+	void get_weapon_offset(int frame, unsigned char& x, unsigned char& y)
+		{
+		if(!weapon_offsets)
+			x = 255;
+		else
+			{
+			// x could be 255 (see read_info())
+			x = weapon_offsets[frame * 2];
+			y = weapon_offsets[frame * 2 + 1];
+			}
+		}
 	};
 
 /*
@@ -241,6 +262,7 @@ class Shapes_vga_file : public Vga_file
 public:
 	Shapes_vga_file() : Vga_file(SHAPES_VGA)
 		{ info = new Shape_info[num_shapes]; }
+	~Shapes_vga_file();
 	int read_info();		// Read additional data files.
 	Shape_info& get_info(int shapenum)
 		{ return info[shapenum]; }
