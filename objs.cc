@@ -251,7 +251,7 @@ int Game_object::lt
 			return (0);
 		else if (y2 > y1)
 			return (1);
-		else if (z1 < z2)	// The narrower one?
+		else if (z1 < z2)	// The shorter one?
 			return (0);
 		else if (z1 > z2)
 			return (1);
@@ -263,13 +263,13 @@ int Game_object::lt
 			return (1);
 		else if (aty1 > aty2)
 			return (0);
+		else if (z1 < z2)	// The shorter one?
+			return (0);
+		else if (z1 > z2)
+			return (1);
 		else if (x1 < x2)	// Take the narrower one as greater.
 			return (0);
 		else if (x1 > x2)
-			return (1);
-		else if (z1 < z2)	// The narrower one?
-			return (0);
-		else if (z1 > z2)
 			return (1);
 		}
 					// If y's overlap, see if to left.

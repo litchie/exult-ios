@@ -92,6 +92,7 @@ public:
 	virtual int get_flag(int flag);
 	virtual int get_npc_num()	// Get its ID (1-num_npcs).
 		{ return npc_num; }
+#if 0	/* ++++++ Trying to init. 1st-day schedules in gameclk.cc. */
 	struct	{
 		int cx;
 		int cy;
@@ -111,6 +112,7 @@ public:
 		initial_location.frame=new_frame;
 		initial_location.lift=new_lift;
 		};
+#endif
 	};
 
 /*
