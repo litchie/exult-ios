@@ -27,8 +27,20 @@ To build in Windows using MinGW
 -----------------------------------
 (Thanks to Travis Howell)
 
-Download and install MinGW from:
-http://prdownloads.sourceforge.net/mingw/MinGW-2.0.0-3.exe
+Download MinGW from:
+http://prdownloads.sourceforge.net/mingw/gcc-3.2.3-20030504-1.tar.gz
+http://prdownloads.sourceforge.net/mingw/binutils-2.13.90-20021006-2.tar.gz
+http://prdownloads.sourceforge.net/mingw/mingw-runtime-3.0.tar.gz
+http://prdownloads.sourceforge.net/mingw/w32api-2.3.tar.gz
+
+Create a directory called mingw in the root directory of drive 
+(ie C:\mingw\ )
+
+Extract the MinGW files into the mingw directory in the follow order!  
+gcc-3.2.3-20030504-1.tar.gz
+binutils-2.13.90-20021006-2.tar.gz  (Overwrite any existing files)
+mingw-runtime-3.0.tar.gz 
+w32api-2.3.tar.gz
 
 Download and install MSYS from:
 http://prdownloads.sourceforge.net/mingw/MSYS-1.0.8.exe
@@ -40,10 +52,6 @@ Unzip this file into the main directory of Exult source code. (it should add a S
 Download the other required developer tools from:
 http://exult.sourceforge.net/snapshots/exult_dev_win32.zip
 Unzip this file into the MinGW directory.
-
-Download getopt header from:
-http://subversions.gnu.org/cgi-bin/viewcvs/*checkout*/gcc/gcc/include/getopt.h?rev=HEAD&content-type=text/x-chdr
-Move file to the include directory of MinGW 
 
 If you want to compile Exult Studio get the additional required developer tools from:
 http://exult.sourceforge.net/snapshots/exult_studio_dev_win32.zip
