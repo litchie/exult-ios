@@ -53,7 +53,7 @@ MenuChoice::MenuChoice(Shape_frame *on, Shape_frame *off, int xpos, int ypos, Fo
 	choice = -1;
 	font = fnt;
 	max_choice_width = 0;
-	choices = new Vector();
+	choices = new FeatureVector<char*>();
 }
 
 void MenuChoice::add_choice(char *s)
@@ -73,7 +73,7 @@ void MenuChoice::paint(Game_window *gwin)
 	gwin->paint_shape(x-shape->get_width(), y, shape);
 	if(choice>=0) {
 		gwin->get_win()->fill8(0, x+32+max_choice_width, y+font->get_text_height(), x+32, y);
-		font->draw_text(gwin, x+32, y, (char *)choices->get(choice));
+		font->draw_text(gwin, x+32, y, choices->at(choice));
 	}
 }
 
@@ -83,11 +83,11 @@ bool MenuChoice::handle_event(SDL_Event& event)
 	case SDLK_LEFT:
 		choice--;
 		if(choice<0)
-			choice = choices->get_cnt()-1;
+			choice = choices->size()-1;
 		break;
 	case SDLK_RIGHT:
 		choice++;
-		if(choice==choices->get_cnt())
+		if(choice==choices->size())
 			choice = 0;
 		break;
 	default:
@@ -99,8 +99,8 @@ bool MenuChoice::handle_event(SDL_Event& event)
 MenuList::~MenuList()
 {
 	MenuObject *entry;
-	for(int i=0; i<entries->get_cnt(); i++) {
-		entry = (MenuObject *)entries->get(i);
+	for(int i=0; i<entries->size(); i++) {
+		entry = entries->at(i);
 		delete entry;
 	}
 	delete entries;
@@ -111,25 +111,25 @@ void MenuList::set_selected(int sel)
 	MenuObject *entry;
 	// deselect the previous entry
 	if(selected>=0) {
-		entry = (MenuObject *)entries->get(selected);
+		entry = entries->at(selected);
 		entry->set_selected(false);
 	}
 	// select the new one
 	selected = sel;
-	entry = (MenuObject *)entries->get(selected);
+	entry = entries->at(selected);
 	entry->set_selected(true);
 }
 
 int MenuList::handle_events(Game_window *gwin)
 {
-	int count = entries->get_cnt();
+	int count = entries->size();
 	bool exit_loop = false;
 	bool redraw = true;
 	SDL_Event event;
 	do {
 		if (redraw) {
 			for(int i=0; i<count; i++) {
-				MenuObject *entry = (MenuObject *)entries->get(i);
+				MenuObject *entry = entries->at(i);
 				entry->paint(gwin);
 			}
 			gwin->get_win()->show();
@@ -158,7 +158,7 @@ int MenuList::handle_events(Game_window *gwin)
 				continue;
 			default:
 				{
-					MenuObject *entry = (MenuObject *)entries->get(selected);
+					MenuObject *entry = entries->at(selected);
 					exit_loop = entry->handle_event(event);
 				}
 				break;

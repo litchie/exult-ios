@@ -103,12 +103,12 @@ int Actor::ready_ammo
 	Game_object *aobj = get_readied(Actor::ammo);
 	if (aobj && Ammo_info::is_in_family(aobj->get_shapenum(), ammo))
 		return 1;		// Already readied.
-	Vector vec(0, 50);		// Get list of all possessions.
+	GOVector vec(50);		// Get list of all possessions.
 	int cnt = get_objects(vec, -359, -359, -359);
 	Game_object *found = 0;
 	for (int i = 0; i < cnt && !found; i++)
 		{
-		Game_object *obj = (Game_object *) vec.get(i);
+		Game_object *obj = vec.at(i);
 		if (Ammo_info::is_in_family(obj->get_shapenum(), ammo))
 			found = obj;
 		}
@@ -138,14 +138,14 @@ void Actor::ready_best_weapon
 		return;			// Already have one.
 		}
 	Game_window *gwin = Game_window::get_game_window();
-	Vector vec(0, 50);		// Get list of all possessions.
+	GOVector vec(50);		// Get list of all possessions.
 	int cnt = get_objects(vec, -359, -359, -359);
 	Game_object *best = 0;
 	int best_damage = -20;
 	Ready_type wtype;
 	for (int i = 0; i < cnt; i++)
 		{
-		Game_object *obj = (Game_object *) vec.get(i);
+		Game_object *obj = vec.at(i);
 		Shape_info& info = gwin->get_info(obj);
 		Weapon_info *winf = info.get_weapon_info();
 		if (!winf)
@@ -1656,8 +1656,8 @@ static int Is_draco
 	Actor *dragon
 	)
 	{
-	Vector vec;			// Gets list.
-					// Should have a special scroll.
+	GOVector vec;		// Gets list.
+						// Should have a special scroll.
 	int cnt = dragon->get_objects(vec, 797, 241, 4);
 	return cnt > 0;
 	}
@@ -1709,19 +1709,19 @@ void Actor::die
 	body->move(pos);
 	body->set_flag(okay_to_take);	// Okay to take its contents.
 	Game_object *item;		// Move all the items.
-	Vector tooheavy;		// Some shouldn't be moved.
+	GOVector tooheavy;		// Some shouldn't be moved.
 	while ((item = get_first_object()) != 0)
 		{
 		remove(item);
 		if (item->is_dragable())
 			body->add(item, 1);// Always succeed at adding.
 		else
-			tooheavy.append(item);
+			tooheavy.push_back(item);
 		}
 					// Put the heavy ones back.
-	int cnt = tooheavy.get_cnt();
+	int cnt = tooheavy.size();
 	for (int i = 0; i < cnt; i++)
-		add((Game_object *) tooheavy.get(i), 1);
+		add( tooheavy.at(i), 1);
 	gwin->add_dirty(body);
 	}
 

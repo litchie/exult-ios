@@ -2703,13 +2703,13 @@ void Game_window::theft
 		theft_cy = cy;
 		theft_warnings = 0;
 		}
-	Vector npcs;			// See if someone is nearby.
+	GOVector npcs;			// See if someone is nearby.
 	int cnt = main_actor->find_nearby(npcs, -359, 12, 8);
 	Actor *closest_npc = 0;
 	int best_dist = 5000;
 	for (int i = 0; i < cnt; i++)
 		{
-		Actor *npc = (Actor *) npcs.get(i);
+		Actor *npc = (Actor *) npcs.at(i);
 		if (npc->is_monster() || npc == main_actor ||
 		    npc->get_party_id() >= 0)
 			continue;

@@ -50,7 +50,7 @@ public:
 
 class MenuChoice: public MenuObject {
 private:
-	Vector *choices;
+	FeatureVector<char*> *choices;
 	int choice;
 	Font *font;
 	int max_choice_width;
@@ -67,10 +67,10 @@ public:
 
 class MenuList {
 private:
-	Vector *entries;
+	FeatureVector<MenuObject*> *entries;
 	int selected;
 public:
-	MenuList(): selected(-1) { entries = new Vector(); }
+	MenuList(): selected(-1) { entries = new FeatureVector<MenuObject*>(); }
 	~MenuList();
 	void add_entry(MenuObject *entry) { entries->append(entry); }
 	void paint(Game_window *gwin);
