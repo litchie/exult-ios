@@ -1692,9 +1692,9 @@ void Game_window::double_clicked
 		obj = gump->find_object(x, y);
 	else				// Search rest of world.
 		obj = find_object(x, y);
-	remove_all_effects();		// Remove text msgs. from screen.
 	if (obj)
 		{
+		remove_all_effects();	// Remove text msgs. from screen.
 		cout << "Object name is " << obj->get_name() << endl;
 		init_faces();		// Be sure face list is empty.
 		Game_mode savemode = mode;

@@ -214,7 +214,7 @@ inline void X_Delay
 	fd_set rfds;
 	struct timeval timer;
 	timer.tv_sec = 0;
-	timer.tv_usec = 20000;		// Try 1/50 second.
+	timer.tv_usec = 10000;		// Try 1/100 second.
 	FD_ZERO(&rfds);
 	FD_SET(xfd, &rfds);
 					// Wait for timeout or event.

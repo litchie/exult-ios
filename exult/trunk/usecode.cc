@@ -772,6 +772,12 @@ Tile_coord Usecode_machine::get_position
 		return Tile_coord(itemval.get_elem(0).get_int_value(),
 				itemval.get_elem(1).get_int_value(),
 				itemval.get_elem(2).get_int_value());
+	else if (itemval.get_array_size() == 4)
+					// Result of click_on_item() with
+					//  array = (null, tx, ty, tz)?
+		return Tile_coord(itemval.get_elem(1).get_int_value(),
+				itemval.get_elem(2).get_int_value(),
+				itemval.get_elem(3).get_int_value());
 	else				// Else assume caller_item.
 		return caller_item->get_abs_tile_coord();
 	}
