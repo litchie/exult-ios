@@ -235,6 +235,14 @@ public:
 		{ return xtiles; }
 	int get_3d_ytiles()		// Dimension in tiles - Y.
 		{ return ytiles; }
+#if 0	/* ++++Might be going to these, which check for reflected frames: */
+					// Get tile dims., flipped for
+					//   reflected (bit 5) frames.
+	int get_3d_xtiles(unsigned int framenum = 0)
+		{ return tiledims[(framenum >> 5)&1]; }
+	int get_3d_ytiles(unsigned int framenum = 0)
+		{ return tiledims[1 ^ ((framenum >> 5)&1)]; }
+#endif
 	unsigned char get_tfa(int i)	// For debugging:
 		{ return tfa[i]; }
 	int is_animated()
