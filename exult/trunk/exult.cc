@@ -82,7 +82,7 @@ int main
 	char *argv[]
 	)
 	{
-	cout << "Exult V0.10.  Copyright (C) 2000 J. S. Freedman\n";
+	cout << "Exult V0.11.  Copyright (C) 2000 J. S. Freedman\n";
 	cout << "Text rendering done using the 'FreeType' font engine.\n";
 	Init();				// Create main window.
 #if 0	/* Make this an option. */

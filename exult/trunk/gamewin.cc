@@ -665,7 +665,8 @@ cout << "ents 6, 7, 8 = " << (void *) entry[6] << ' ' <<
 				new Container_game_object(
 				entry[2], entry[3], shapex, shapey, lift);
 					// Read container's objects.
-			read_ireg_objects(ireg, scx, scy, cobj);
+			if (type)	// ???Don't understand this yet.
+				read_ireg_objects(ireg, scx, scy, cobj);
 			obj = cobj;
 			}
 		else
@@ -842,7 +843,7 @@ void Game_window::paint
 		{
 		int x = 15, y = 15;
 		int w = get_width() - x, h = get_height() - y;
-		win->draw_text_box(font, "Welcome to EXULT V 0.10, a free RPG game engine.\n\nCopyright 2000 J. S. Freedman\nGraphics copyrighted by Origin\nText rendered by FreeType", x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
+		win->draw_text_box(font, "Welcome to EXULT V 0.11, a free RPG game engine.\n\nCopyright 2000 J. S. Freedman\nGraphics copyrighted by Origin\nText rendered by FreeType", x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
 		}
 					// Draw text.
 	for (Text_object *txt = texts; txt; txt = txt->next)

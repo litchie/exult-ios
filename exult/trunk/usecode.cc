@@ -626,7 +626,6 @@ Usecode_value Usecode_machine::call_intrinsic
 		get_user_choice();
 		char *choice = user_choice;
 		user_choice = 0;
-cout << "Choice = " << choice << '\n';
 		return choice;
 		}
 	case 0xb:			// Show choices and wait for click.
@@ -684,8 +683,14 @@ cout << "Choice = " << choice << '\n';
 		return arr;
 		}
 	case 0x1b:			// Takes -npc.  Returns index?
+		{
+		long val = parms[0].get_int_value();
+		if ((val >= 0 && val < gwin->get_num_npcs()) ||
+		    (val < 0 && -val < gwin->get_num_npcs()))
 					// Just return -npc for now.++++++
-		return Usecode_value(-parms[0].get_int_value());
+			return Usecode_value(-val);
+		return parms[0];
+		}
 	case 0x1c:			// GetSchedule(npc).  Rets. schedtype.
 		{
 		Game_object *obj = get_item(parms[0].get_int_value());
