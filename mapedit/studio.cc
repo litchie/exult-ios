@@ -951,14 +951,14 @@ void add_to_tree(GtkTreeStore *model, const char *folderName, const char *files,
 			pattern = strdup(startpos);
 			adding_children = 0;
 		} else {
-			pattern = strndup(startpos, commapos-startpos);
+			pattern = g_strndup(startpos, commapos-startpos);
 			startpos = commapos+1;
 		}
 		
 		string spath("<STATIC>"), ppath("<PATCH>");
 	        spath = get_system_path(spath);
         	ppath = get_system_path(ppath);
-        	char *ext = index(pattern,'*');
+        	char *ext = strstr(pattern,"*");
 		if(!ext)
 			ext = pattern;
 		else
