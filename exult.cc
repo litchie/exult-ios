@@ -56,6 +56,7 @@ Configuration	config;
 Game_window *gwin = 0;
 unsigned char quitting_time = 0;	// Time to quit.
 Mouse *mouse = 0;
+bool	usecode_trace=false;	// Do we trace Usecode-intrinsics?
 
 /*
  *	Local functions:
@@ -91,12 +92,16 @@ int main
 	cout << "Low level graphics use the 'SDL' library.\n";
 
 	config.read_config_file(USER_CONFIGURATION_FILE);
-	string	data_directory;
+	string	data_directory,tracing;
 	config.value("config/disk/u7path",data_directory,".");
 	if(data_directory==".")
 		config.set("config/disk/u7path",data_directory,true);
 	cout << "chdir to " << data_directory << endl;
 	chdir(data_directory.c_str());
+
+	config.value("config/debug/trace/intrinsics",tracing,"no");
+	if(tracing=="yes")
+		usecode_trace=true;	// Enable tracing of intrinsics
 
 	Init();				// Create main window.
 #if 0	/* Make this an option. */

@@ -39,7 +39,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <Audio.h>
 #include <iomanip>
 
-#define	TRACE_INTRINSIC_CALLS 1
+
+// External globals..
+
+extern	bool	usecode_trace;
 
 /*
  *	A class for executing usecode at a scheduled time:
@@ -874,7 +877,8 @@ static void Usecode_Trace
 	Usecode_value parms[12]
 	)
 	{
-#if TRACE_INTRINSIC_CALLS
+	if(!usecode_trace)
+		return;
 	cout << hex << "[0x" << setfill(0x30)
 		<< intrinsic << "]: " << name << "(";
 	for (int i = 0; i < num_parms; i++)
@@ -885,15 +889,14 @@ static void Usecode_Trace
 		}
 	cout <<") = ";
 	cout << dec;
-#endif
 	}
 
 static	void	Usecode_TraceReturn(Usecode_value &v)
 {
-#if TRACE_INTRINSIC_CALLS
+	if(!usecode_trace)
+		return;
 	v.print(cout);
 	cout << dec << endl;
-#endif
 }
 
 static void Unhandled
