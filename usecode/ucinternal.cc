@@ -934,7 +934,7 @@ Usecode_value Usecode_internal::add_party_items
 					// Look through whole party.
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
-	Usecode_value result((Game_object*) NULL);  // +++++ Itemref or integer?
+	Usecode_value result(0, 0);	// Start with empty array.
 	for (int i = 0; i < cnt && quantity > 0; i++)
 		{
 		Game_object *obj = get_item(party.get_elem(i));
@@ -943,13 +943,33 @@ Usecode_value Usecode_internal::add_party_items
 		int prev = quantity;
 		quantity = obj->add_quantity(quantity, shapenum,
 							quality, framenum);
-		if (quantity < prev)
-			{		// Added to this NPC.
-			if (!result.is_array())
-				result = Usecode_value(1, &party.get_elem(i));
-			else
-				result.concat(party.get_elem(i));
-			}
+		if (quantity < prev)	// Added to this NPC.
+			result.concat(party.get_elem(i));
+		}
+	int todo = quantity;		// Put remaining on the ground.
+	if (framenum == c_any_framenum)
+		framenum = 0;
+	while (todo > 0)
+		{
+		Tile_coord pos = Map_chunk::find_spot(
+			gwin->get_main_actor()->get_abs_tile_coord(), 3,
+				shapenum, framenum, 2);
+		if (pos.tx == -1)	// Hope this rarely happens.
+			break;
+		Shape_info& info = gwin->get_info(shapenum);
+					// Create and place.
+		Game_object *newobj = gwin->create_ireg_object(
+					info, shapenum, framenum, 0, 0, 0);
+		newobj->move(pos);
+		todo--;
+		if (todo > 0)		// Create quantity if possible.
+			todo = newobj->modify_quantity(todo);
+		}
+					// SI?  Append # left on ground.
+	if (Game::get_game_type() == SERPENT_ISLE)
+		{
+		Usecode_value ground(quantity - todo);
+		result.concat(ground);
 		}
 	return result;
 	}
