@@ -115,3 +115,54 @@ void Uc_int_expression::gen_value
 	Write2(out, value);
 	}
 
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_string_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	out.put((char) UC_PUSHS);
+	Write2(out, offset);
+	}
+
+/*
+ *	Delete a list of expressions.
+ */
+
+Uc_array_expression::~Uc_array_expression
+	(
+	)
+	{
+	for (vector<Uc_expression *>::iterator it = exprs.begin(); 
+						it != exprs.end(); it++)
+		delete (*it);
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_array_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	int actual = 0;			// (Just to be safe.)
+					// Push backwards, so #0 pops first.
+	for (vector<Uc_expression *>::reverse_iterator it = exprs.rbegin();
+						it != exprs.rend(); it++)
+		{
+		Uc_expression *expr = *it;
+		if (expr)
+			{
+			actual++;
+			expr->gen_value(out);
+			}
+		}
+	out.put((char) UC_ARRC);
+	Write2(out, actual);
+	}
+

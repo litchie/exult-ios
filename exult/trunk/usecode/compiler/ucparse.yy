@@ -52,6 +52,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 	class Uc_statement *stmt;
 	class vector<char *> *strvec;
 	class Uc_block_statement *block;
+	class Uc_array_expression *exprlist;
 	int intval;
 	char *strval;
 	}
@@ -91,7 +92,9 @@ static Uc_function *function = 0;	// Current function being parsed.
 %type <funsym> function_proto
 %type <strvec> identifier_list opt_identifier_list
 %type <stmt> statement assignment_statement if_statement while_statement
-%type <block> statement_list statement_block
+%type <stmt> statement_block return_statement
+%type <block> statement_list
+%type <exprlist> opt_expression_list expression_list
 
 %%
 
@@ -156,9 +159,7 @@ statement:
 	| function_call_statement
 		{ $$ = 0; /* ++++++++ */ }
 	| return_statement
-		{ $$ = 0; /* ++++++++ */ }
 	| statement_block
-		{ $$ = 0; /* ++++++++ */ }
 	| ';'				/* Null statement */
 		{ $$ = 0; }
 	;
@@ -204,6 +205,9 @@ function_call_statement:
 
 return_statement:
 	RETURN expression ';'
+		{ $$ = new Uc_return_statement($2); }
+	| RETURN ';'
+		{ $$ = new Uc_return_statement(); }
 	;
 
 expression:
@@ -229,19 +233,25 @@ expression:
 	| NOT primary
 		{ $$ = new Uc_unary_expression(UC_NOT, $2); }
 	| '[' expression_list ']'	/* Concat. into an array. */
-		{ $$ = 0; /* ++++++ */ }
-/*	| STRING_LITERAL  For now require string constants. */
+		{ $$ = $2; }
+	| STRING_LITERAL
+		{ $$ = new Uc_string_expression(function->add_string($1)); }
 	;
 
 opt_expression_list:
 	expression_list
 	|
+		{ $$ = new Uc_array_expression(); }
 	;
 
 expression_list:
 	expression_list ',' expression
+		{ $$->add($3); }
 	| expression
-		{  }			/* ++++++++ */
+		{
+		$$ = new Uc_array_expression();
+		$$->add($1);
+		}
 	;
 
 primary:
