@@ -1,10 +1,13 @@
+2001-07-30  Willem Jan Palenstijn <wjpalenstijn@users.soureforge.net>
+	* objs.cc: fixed books in SI
+
 2001-07-30 Ryan Nunn <triforce@merlin.net.au>
 	* gumps/Face_stats.cc: Fixed nasty bug with higher resolutions
 
 2001-07-30 Ryan Nunn <triforce@merlin.net.au>
 	* gumps/Spellbook_gump.cc: Fixed incorrect drawing of spells.
 
-2001-07-30 Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+2001-07-30 Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: made it compile on Linux again
 	* cheat.cc: heal-party now also restores mana
 	
