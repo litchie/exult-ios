@@ -2296,7 +2296,8 @@ USECODE_INTRINSIC(nap_time)
 {
 	// nap_time(bed)
 	Game_object *bed = get_item(parms[0]);
-	if (bed)			// !!! Seems 622 handles sleeping.
+	if (bed)
+					// !!! Seems 622 handles sleeping.
 		call_usecode(0x622, bed, double_click);
 	return(no_ret);
 }
