@@ -1575,7 +1575,7 @@ void Actor::set_actor_shape()
 	Actor *avatar = gwin->get_main_actor();
 	if (!avatar) return;
 
-	int sn;
+	int sn = get_shapenum();
 
 	if (Game::get_game_type() == SERPENT_ISLE)
 	{
