@@ -150,6 +150,8 @@ public:
 		{  }
 	Game_object() : ShapeID()	// Create fake entry.
 		{  }
+	virtual ~Game_object()
+		{  }
 	int get_tx()			// Get tile (0-15) within chunk.
 		{ return (shape_pos >> 4) & 0xf; }
 	int get_ty()
@@ -346,6 +348,7 @@ public:
 				unsigned int shapey, unsigned int lft = 0);
 	Animated_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0);
+	virtual ~Animated_object();
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// For Time_sensitive:

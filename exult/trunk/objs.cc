@@ -337,6 +337,19 @@ Animated_object::Animated_object
 	}
 
 /*
+ *	When we delete, better remove from queue.
+ */
+
+Animated_object::~Animated_object
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	while (gwin->get_tqueue()->remove(this))
+		;
+	}
+
+/*
  *	Render.
  */
 

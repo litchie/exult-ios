@@ -233,6 +233,7 @@ public:
 	void set_item_frame(Usecode_value& item_arg, Usecode_value& frame_arg);
 	int get_item_shape(Usecode_value& item_arg);
 	int get_item_frame(Usecode_value& item_arg);
+	void remove_item(Game_object *obj);
 	int npc_in_party(Game_object *npc);
 	void add_to_party(Game_object *npc);
 	void remove_from_party(Game_object *npc);
