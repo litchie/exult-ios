@@ -1819,7 +1819,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(remove_answer), // 6
 	USECODE_INTRINSIC_PTR(push_answers), // 7
 	USECODE_INTRINSIC_PTR(pop_answers), // 8
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 9
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 9 +++++Something to do with convs.
 	USECODE_INTRINSIC_PTR(select_from_menu), // 0x0a
 	USECODE_INTRINSIC_PTR(select_from_menu2), // 0x0b
 	USECODE_INTRINSIC_PTR(input_numeric_value), // 0xc
@@ -1847,11 +1847,13 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(get_avatar_ref), // 0x22
 	USECODE_INTRINSIC_PTR(get_party_list), // 0x23
 	USECODE_INTRINSIC_PTR(create_new_object), // 0x24
-	USECODE_INTRINSIC_PTR(mystery_1), // 0x25
+	USECODE_INTRINSIC_PTR(mystery_1), // 0x25 ++++++ Set last_created=item
+	// Looks like set_last_created(item).  Rets 1 if successful?
 	USECODE_INTRINSIC_PTR(update_last_created), // 0x26
 	USECODE_INTRINSIC_PTR(get_npc_name), // 0x27
 	USECODE_INTRINSIC_PTR(count_objects), // 0x28
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x29
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x29 ++++++++++++++
+	// take_from_npc(npc, itemshape, -359 (qual?), -359 (frame?))??
 	USECODE_INTRINSIC_PTR(get_cont_items), // 0x2a
 	USECODE_INTRINSIC_PTR(remove_party_items), // 0x2b
 	USECODE_INTRINSIC_PTR(add_party_items), // 0x2c
@@ -1862,25 +1864,29 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(is_npc),  // 0x31
 	USECODE_INTRINSIC_PTR(display_runes), // 0x32
 	USECODE_INTRINSIC_PTR(click_on_item), // 0x33
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x34
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x34 UNUSED
 	USECODE_INTRINSIC_PTR(find_nearby), // 0x35
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x36
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x36 ++++++Think it's 
+	// give_last_created(to_npc).  Rets. 0 if no room in inventory.
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x37 +++++++It is is_dead(npc).
 	USECODE_INTRINSIC_PTR(game_hour), // 0x38
 	USECODE_INTRINSIC_PTR(game_minute), // 0x39
 	USECODE_INTRINSIC_PTR(get_npc_number),	// 0x3a
 	USECODE_INTRINSIC_PTR(part_of_day),	// 0x3b
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3c
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3d
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3c+++++get_allignment(npc)?
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3d+++++set_allignment(npc, newval)
+	// 2,3==bad towards Ava. 0==good.
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f
 	USECODE_INTRINSIC_PTR(item_say),	// 0x40
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x41
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x41++++++++Some kind of animation?
+	// something(npc/item, item, wand/powderkeg-shape).
 	USECODE_INTRINSIC_PTR(get_lift),	// 0x42
 	USECODE_INTRINSIC_PTR(set_lift),	// 0x43
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x44
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x45
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x46
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x44++++Get_something() (0-3)
+	// 3==can't do magic here?
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x45++++Set_something(i)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x46++++Sitdown(npc, chair)???
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x47
 	USECODE_INTRINSIC_PTR(display_map),	// 0x48
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x49
