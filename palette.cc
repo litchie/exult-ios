@@ -22,6 +22,7 @@
 #include "files/U7file.h" 
 #include "gamewin.h"
 #include "palette.h"
+#include "ibuf8.h"
 
 using std::memcpy;
 using std::memset;

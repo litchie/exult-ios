@@ -22,9 +22,6 @@ AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 
 AM_CONFIG_HEADER(autoconfig.h)
 
-dnl Just for record-keeping
-AC_DEFINE(AUTOCONFIGURED)
-
 
 dnl -------------------------
 dnl Host system settings

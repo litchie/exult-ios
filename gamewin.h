@@ -31,12 +31,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objs.h"
 #include "shapevga.h"
 #include "gameclk.h"
-#include "fnames.h"
-#include "palette.h"
 
 #include <string>	// STL string
 #include <vector>	// STL container
 
+class Palette;
 class Barge_object;
 class Main_actor;
 class Monster_info;

@@ -12,7 +12,7 @@ SDL_INCLUDES=-I/boot/develop/tools/gnupro/include/SDL
 SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
-	-DNO_INTRO -DAUTOCONFIGURED -I$(SRC)/imagewin -I$(SRC)/shapes\
+	-DNO_INTRO -I$(SRC)/imagewin -I$(SRC)/shapes\
 	-I$(SRC)/files -I$(SRC) -I$(SRC)/audio -I$(SRC)/conf \
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
 	$(SDL_INCLUDES)
@@ -24,7 +24,7 @@ LIBS=$(SDL_LIBS) -lmidi -lbe
 EXEC=exult
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	args.o bggame.o browser.o cheat.o \
-	combat.o delobjs.o dir.o drag.o effects.o exult.o  \
+	combat.o delobjs.o dir.o drag.o effects.o exult.o exultmenu.o \
 	game.o gameclk.o gamedat.o gamerend.o gamewin.o \
 	menulist.o mouse.o npcnear.o npctime.o palette.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o
