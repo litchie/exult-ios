@@ -269,25 +269,23 @@ static	string	encode_entity(const string &s)
 static	string	decode_entity(string &s,std::size_t &pos)
 {
 	std::size_t			old_pos = pos;
-	string::size_type	entity_name_len = s.find_last_not_of("; \t\r\n", pos) -pos ;
+	string::size_type	entity_name_len = s.find_first_of("; \t\r\n", pos) -pos -1;
+	
+	/* Call me paranoid... but I don't think having an end-of-line or similar
+		inside a &...; expression is 'good', valid though it may be. */
+	assert(s[pos+entity_name_len+1]==';');
+	
 	string				entity_name = s.substr(pos+1, entity_name_len);
 	
 	pos += entity_name_len + 2;
 	
-	if(s == "amp")
-		return string("&");
-	else
-	if(s == "apos")
-		return string("'");
-	else
-	if(s == "quot")
-		return string("\"");
-	else
-	if(s == "lt")
-		return string("<");
-	else
-	if(s == "gt")
-		return string(">");
+	// std::cout << "DECODE: " << entity_name << endl;
+	
+	if     (entity_name == "amp")  return string("&");
+	else if(entity_name == "apos") return string("'");
+	else if(entity_name == "quot") return string("\"");
+	else if(entity_name == "lt")   return string("<");
+	else if(entity_name == "gt")   return string(">");
 	
 	return s.substr(old_pos, entity_name_len+2);
 }
@@ -350,6 +348,12 @@ void	XMLnode::xmlparse(string &s,std::size_t &pos)
 					{
 						++pos;
 						return; // An empty tag
+					}
+					else
+					{
+						++pos;
+						no_close=true;
+						return;
 					}
 				}
 				else if((id[0]=='!') && (id[1]=='-') && (id[2]=='-'))
