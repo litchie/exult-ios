@@ -279,6 +279,7 @@ public:
         USECODE_INTRINSIC_DECL(count_npc_inventory);
         USECODE_INTRINSIC_DECL(set_npc_inventory_count);
         USECODE_INTRINSIC_DECL(get_object_position);
+	USECODE_INTRINSIC_DECL(get_distance);
         USECODE_INTRINSIC_DECL(find_direction);
         USECODE_INTRINSIC_DECL(get_npc_object);
         USECODE_INTRINSIC_DECL(get_schedule_type);
@@ -290,7 +291,7 @@ public:
         USECODE_INTRINSIC_DECL(get_avatar_ref);
         USECODE_INTRINSIC_DECL(get_party_list);
         USECODE_INTRINSIC_DECL(create_new_object);
-        USECODE_INTRINSIC_DECL(mystery_1);
+        USECODE_INTRINSIC_DECL(set_last_created);
         USECODE_INTRINSIC_DECL(update_last_created);
         USECODE_INTRINSIC_DECL(get_npc_name);
         USECODE_INTRINSIC_DECL(count_objects);
@@ -304,10 +305,13 @@ public:
         USECODE_INTRINSIC_DECL(display_runes);
         USECODE_INTRINSIC_DECL(click_on_item);
         USECODE_INTRINSIC_DECL(find_nearby);
+        USECODE_INTRINSIC_DECL(give_last_created);
         USECODE_INTRINSIC_DECL(game_hour);
         USECODE_INTRINSIC_DECL(game_minute);
 	USECODE_INTRINSIC_DECL(get_npc_number);
 	USECODE_INTRINSIC_DECL(part_of_day);
+	USECODE_INTRINSIC_DECL(get_allignment);
+	USECODE_INTRINSIC_DECL(set_allignment);
 	USECODE_INTRINSIC_DECL(item_say);
 	USECODE_INTRINSIC_DECL(get_lift);
 	USECODE_INTRINSIC_DECL(set_lift);

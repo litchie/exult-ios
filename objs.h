@@ -66,6 +66,16 @@ public:
 	Tile_coord() { }
 	int operator==(Tile_coord& t2)
 		{ return t2.tx == tx && t2.ty == ty && t2.tz == tz; }
+	int distance(Tile_coord t2)	// Distance to another tile?
+		{
+		int dy = t2.ty - ty;
+		int dx = t2.tx - tx;
+		if (dy < 0)		// Just take longer abs. value.
+			dy = -dy;
+		if (dx < 0)
+			dx = -dx;
+		return (dy > dx ? dy : dx);
+		}
 	};
 					// Add two coords.
 inline Tile_coord operator+(Tile_coord a, Tile_coord b)
@@ -237,11 +247,16 @@ public:
 	virtual char *get_name();
 	virtual Game_object *clone()	// Create a copy.
 		{ return new Game_object(*this); }
-	virtual void remove();		// Remove/delete this object.
+					// Remove/delete this object.
+	virtual void remove(int nodel = 0);
 	virtual void set_property(int prop, int val)
 		{  }
 	virtual int get_property(int prop)
 		{ return 0; }
+	virtual int get_allignment()	// Get/set 'allignment'.
+		{ return 0; }
+	virtual void set_allignment(short)
+		{  }
 	virtual Container_game_object *get_owner()
 		{ return 0; }
 	virtual void set_owner(Container_game_object *o)
@@ -307,7 +322,8 @@ public:
 		{  }
 	virtual Game_object *clone()	// Create a copy.
 		{ return new Ireg_game_object(*this); }
-	virtual void remove();		// Remove/delete this object.
+					// Remove/delete this object.
+	virtual void remove(int nodel = 0);
 	virtual Container_game_object *get_owner()
 		{ return owner; }
 	virtual void set_owner(Container_game_object *o)

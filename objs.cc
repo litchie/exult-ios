@@ -293,13 +293,15 @@ char *Game_object::get_name
 
 void Game_object::remove
 	(
+	int nodel			// 1 to not delete.
 	)
 	{
 	Chunk_object_list *chunk = 
 			Game_window::get_game_window()->get_objects(cx, cy);
 	if (chunk)
 		chunk->remove(this);
-	delete this;
+	if (!nodel)
+		delete this;
 	}
 
 /*
@@ -433,6 +435,7 @@ int Game_object::lt
 
 void Ireg_game_object::remove
 	(
+	int nodel			// 1 to not delete.
 	)
 	{
 	if (owner)			// In a bag, box, or person.
@@ -444,7 +447,8 @@ void Ireg_game_object::remove
 		if (chunk)
 			chunk->remove(this);
 		}
-	delete this;
+	if (!nodel)
+		delete this;
 	}
 
 /*

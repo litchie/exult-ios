@@ -67,19 +67,13 @@ int Neighbor_iterator::coords[2][8] = {
  *	Estimate cost from one point to another.
  */
 
-static int Cost_to_goal
+inline int Cost_to_goal
 	(
 	Tile_coord& from,
 	Tile_coord& to
 	)
 	{
-	int dy = to.ty - from.ty;
-	int dx = to.tx - from.tx;
-	if (dy < 0)			// Just take longer abs. value.
-		dy = -dy;
-	if (dx < 0)
-		dx = -dx;
-	return (dy > dx ? dy : dx);
+	return from.distance(to);
 	}
 
 /*

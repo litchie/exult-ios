@@ -354,7 +354,7 @@ Npc_actor::Npc_actor
 	int uc
 	) : Actor(nm, shapenum, fshape, uc), next(0), nearby(0),
 		schedule_type((int) Schedule::loiter), num_schedules(0), 
-		schedules(0), schedule(0), dormant(1)
+		schedules(0), schedule(0), dormant(1), allignment(0)
 	{
 	}
 
