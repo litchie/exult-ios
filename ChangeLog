@@ -1,3 +1,6 @@
+2000-05-26  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
+	* Configuration.cc: added a temp. BeOS config file section
+
 2000-05-25  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Orb of Moons, Moongates working (but not perfect visually)
