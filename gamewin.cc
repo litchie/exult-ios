@@ -1199,6 +1199,7 @@ void Game_window::fade_palette
 	int pal_num			// 0-11, or -1 for current.
 	)
 	{
+	  if (pal_num == -1) pal_num = palette;
 	  pal->load(PALETTES_FLX, pal_num);
 	  if(inout)
 		  pal->fade_in(cycles);
