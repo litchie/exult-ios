@@ -52,7 +52,7 @@ void bg_out(const string &fname)
 	
 	o << "<intrinsics>" << endl;
 	for(unsigned int i=0; i<0x100; i++)
-		o << "\t<0x" << setw(2) << i << "> " << bgut[i] << " </>" << endl;
+		o << "\t<0x" << setw(2) << i << "> " << bgut[i] << "_" << setw(2) << i << " </>" << endl;
 	o << "</>" << endl;
 	
 	o.close();
@@ -81,7 +81,7 @@ void si_out(const string &fname)
 	
 	o << "<intrinsics>" << endl;
 	for(unsigned int i=0; i<0x100; i++)
-		o << "\t<0x" << setw(2) << i << "> " << siut[i] << " </>" << endl;
+		o << "\t<0x" << setw(2) << i << "> " << siut[i] << "_" << setw(2) << i << " </>" << endl;
 	o << "</>" << endl;
 	
 	o.close();
