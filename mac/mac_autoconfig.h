@@ -26,8 +26,12 @@
 #define HAVE_FREETYPE 1
 
       
+
+// missing defines:
 #define PACKAGE "exult"
-#define VERSION "0.35"
+#define MAJOR	"0.90"
+#define	RELNUM	"alpha1"
+#define VERSION MAJOR RELNUM
 
 /* Was debugging selected from configure? */
 #define DEBUG 1
