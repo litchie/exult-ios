@@ -39,6 +39,8 @@ class Uc_statement;
 class Uc_function
 	{
 	static Uc_scope globals;	// For finding intrinsics, funs.
+					// Intrinsics, indexed by number:
+	static vector<Uc_intrinsic_symbol *> intrinsics;
 	Uc_scope top;			// Top-level scope.
 	Uc_function_symbol *proto;	// Function declaration.
 	Uc_scope *cur_scope;		// Current scope.
@@ -84,6 +86,8 @@ public:
 		Uc_symbol *sym = cur_scope->search_up(nm);
 		return (sym ? sym : globals.search(nm));
 		}
+	static Uc_intrinsic_symbol *get_intrinsic(int i)
+		{ return (i >= 0 && i < intrinsics.size())? intrinsics[i] : 0;}
 					// Already declared?
 	static bool is_dup(Uc_scope *scope, char *nm);
 	Uc_var_symbol *add_symbol(char *nm);// Add var. to current scope.
