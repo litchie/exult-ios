@@ -818,11 +818,7 @@ void Storm_effect::handle_event
 		{
 		start = 0;
 					// Darken sky.
-		int brightness = gwin->get_users_brightness();
-		brightness -= 20 + rand()%30;
-		if (brightness < 20)
-			brightness = 20;
-		gwin->set_palette(-1, brightness);
+		gwin->get_clock()->set_storm(true);
 					// Nothing more to do but end.
 		gwin->get_tqueue()->add(stop_time, this, udata);
 		}
@@ -839,7 +835,8 @@ Storm_effect::~Storm_effect
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->set_palette(-1, gwin->get_users_brightness());
+					// Restore palette.
+	gwin->get_clock()->set_storm(false);
 	}
 
 /*
