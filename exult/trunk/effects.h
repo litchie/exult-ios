@@ -120,7 +120,7 @@ public:
 class Weather_effect : public Time_sensitive
 	{
 protected:
-	long stop_time;			// Time in 1/1000 secs. to stop.
+	unsigned long stop_time;		// Time in 1/1000 secs. to stop.
 public:
 	Weather_effect(int duration);
 	};
@@ -134,7 +134,7 @@ class Raindrop
 	unsigned char yperx;		// Move this many y-pixels for each x.
 	short x, y;			// Coords. where drawn.
 public:
-	Raindrop() : oldpix(0), x(-1), y(-1), yperx(1)
+	Raindrop() : oldpix(0), yperx(1), x(-1), y(-1)
 		{  }
 					// Move to next position.
 	void next(Image_window8 *iwin, unsigned char *xform, int w, int h);
