@@ -1,3 +1,6 @@
+2005-01-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* forked_player.cc: fixed execlp call (patch #1101126)
+
 2005-01-13    <jeff@mini.nerble.net>
 
 	* gumps/Notebook_gump.cc (Notebook_gump): Online journal support
