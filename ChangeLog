@@ -1,3 +1,8 @@
+2002-07-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/egg.cc (Egg_object): Fixed bug that was corrupting
+	moongates in the sphere-generator, and added fix for old games.
+
 2002-07-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* chunks.cc: worked around compiler bug (gcc 2.96-110) for is_blocked
 
