@@ -271,7 +271,7 @@ int Game_window::get_text_baseline
 
 bool Game_window::setup_endgame_fonts ()
 {
-	static setup_done = false;
+	static bool setup_done = false;
 
 	if(setup_done)
 		return true;
