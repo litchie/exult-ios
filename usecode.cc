@@ -177,6 +177,14 @@ void Scheduled_usecode::handle_event
 			usecode->set_item_frame(objval, fval);
 			break;
 			}
+		case 0x4e:		// Guessing: Show next frame?
+			{
+			int nframes = gwin->get_shapes().get_num_frames(
+							obj->get_shapenum());
+			Usecode_value fval((1 + obj->get_framenum())%nframes);
+			usecode->set_item_frame(objval, fval);
+			break;
+			}
 		case 0x50:		// ??
 			break;
 		case 0x52:		// Say string.

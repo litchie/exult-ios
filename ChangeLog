@@ -1,3 +1,9 @@
+2000-05-18  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Improved rendering when climbing stairs.
+	* Realized Usecode array-opcode 0x4e means 'increment frame'.
+	* Improved object placement within backpacks.
+
 2000-05-18  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc, win_MCI.cc: preliminary work on Windows Midi repeats
 
