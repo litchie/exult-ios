@@ -2513,7 +2513,8 @@ int Usecode_internal::call_usecode
 	)
 	{
 					// Avoid these when already execing.
-	if (call_depth && event == npc_proximity && Game::get_game_type() ==
+	if (!call_stack.empty() && 
+		event == npc_proximity && Game::get_game_type() ==
 								BLACK_GATE)
 		return (0);
 
