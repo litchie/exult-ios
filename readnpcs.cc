@@ -55,12 +55,13 @@ void Game_window::read_npcs
 	camera_actor = npcs[0] = main_actor = new Main_actor("", 0);
 	ifstream nfile;
 	int num_npcs;
+	bool fix_unused = false;	// Get set for old savegames.
 	try
 		{
 		U7open(nfile, NPC_DAT);
 		num_npcs1 = Read2(nfile);	// Get counts.
 		num_npcs = num_npcs1 + Read2(nfile);
-		main_actor->read(nfile, 0, 0);
+		main_actor->read(nfile, 0, false, fix_unused);
 		}
 	catch(exult_exception &e)
 		{
@@ -79,27 +80,12 @@ void Game_window::read_npcs
 
 	// Don't like it... no i don't.
 	center_view(main_actor->get_tile());
-					// Set ranges to skip.
-	int skip1f, skip1t, skip2f, skip2t;
-	if (Game::get_game_type() == SERPENT_ISLE)
-		{			// SI: 231-255 are bogus automatons(?).
-		skip1f = 233; skip1t = 256;
-					// SI: 296-355 are bogus trappers.
-		skip2f = 296; skip2t = 356;
-		}
-	else if (Game::get_game_type() == BLACK_GATE)
-		{			// BG: 293-297 are extra mages.
-		skip1f = 293; skip1t = 298;
-		skip2f = skip2t = 10000;
-		}
-	else
-		skip1f = skip1t = skip2f = skip2t = 10000;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 	{
 		npcs[i] = new Npc_actor("", 0);
-		npcs[i]->read(nfile, i, i < num_npcs1);
-		if ((i >= skip1f && i < skip1t) || (i >= skip2f && i < skip2t))
-			{
+		npcs[i]->read(nfile, i, i < num_npcs1, fix_unused);
+		if (npcs[i]->is_unused())
+			{		// Not part of the game.
 			npcs[i]->remove_this(1);
 			npcs[i]->set_schedule_type(Schedule::wait);
 			}
@@ -128,7 +114,7 @@ void Game_window::read_npcs
 			if (!okay || sid.get_num_frames() < 16)
 				break;	// Watch for corrupted file.
 			Monster_actor *act = Monster_actor::create(shnum);
-			act->read(nfile, -1, 1);
+			act->read(nfile, -1, false, fix_unused);
 			act->restore_schedule();
 			CYCLE_RED_PLASMA();
 		}

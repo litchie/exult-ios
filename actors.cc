@@ -414,7 +414,7 @@ Actor::Actor
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
 	) : Container_game_object(), name(nm),usecode(uc), 
-	    usecode_assigned(false),
+	    usecode_assigned(false), unused(false),
 	    npc_num(num), face_num(num), party_id(-1), shape_save(-1), 
 	    oppressor(-1), target(0), attack_mode(nearest),
 	    schedule_type(static_cast<int>(Schedule::loiter)), schedule(0),

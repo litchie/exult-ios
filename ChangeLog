@@ -1,5 +1,8 @@
 2002-06-09  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* actors.{cc,h},actorio.cc,readnpcs.cc: Use iflag2 correctly.  If
+	0, it means NPC is unused in game (like the extra trappers).
+
 	* conf/Configuration.cc: Not everyone has sstream!
 	* usecode/ucxt/src/ucfunc.cc: Same here.
 
