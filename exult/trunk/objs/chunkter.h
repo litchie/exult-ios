@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Chunkter.h - Chunk terrain (16x16 flat tiles) on the map.
  **
  **	Written: 7/6/01 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Tqueue.cc - A queue of time-based events for animation.
  **
  **	Written: 2/15/00 - JSF

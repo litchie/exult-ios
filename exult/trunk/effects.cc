@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Effects.cc - Special effects.
  **
  **	Written: 5/25/2000 - JSF

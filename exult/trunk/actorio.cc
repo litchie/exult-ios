@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Actorio.cc - I/O for the Actor class.
  **
  **	Written: 5/12/2000 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
-**
+/**
  **	Gameclk.cc - Keep track of time.
  **
  **	Written: 2/16/00 - JSF

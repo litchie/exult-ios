@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	ucmachine.cc - Interpreter for usecode.
  **
  **	Written: 8/12/99 - JSF

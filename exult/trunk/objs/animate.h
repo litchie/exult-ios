@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Animate.h - Animated game objects.
  **
  **	Written: 7/27/2000 - JSF

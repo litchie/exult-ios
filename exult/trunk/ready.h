@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Ready.h - Information from the 'ready.dat' file.
  **
  **	Written: 5/1/2000 - JSF

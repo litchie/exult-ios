@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Actions.h - Action controllers for actors.
  **
  **	Written: 4/20/2000 - JSF

@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Iwin8.h - 8-bit image window.
  **
  **	Written: 8/13/98 - JSF

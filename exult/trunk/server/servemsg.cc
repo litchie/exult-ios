@@ -1,5 +1,4 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
+/**
  **	Servemsg.cc - Server msgs.
  **	NOTE:	This is for inclusion by both client and server.
  **
