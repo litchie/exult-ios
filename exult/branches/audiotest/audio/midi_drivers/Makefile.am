@@ -9,8 +9,8 @@ libmididrv_la_SOURCES =	\
 	Timidity_binary.h	\
 	forked_player.cc	\
 	forked_player.h		\
-	win_midiout.cc		\
-	win_midiout.h		\
+	mixer_midiout.cc	\
+	mixer_midiout.h		\
 	be_midi.cc		\
 	be_midi.h		\
 	mac_midi.cc		\
