@@ -106,35 +106,6 @@ void Game_window::read_npcs
 		set_moving_barge(b);
 		}
 	read_schedules();		// Now get their schedules.
-	if (!monster_info)		// Might be a 'restore'.
-		{
-		ifstream mfile;		// Now get monster info.
-		U7open(mfile, MONSTERS);
-		num_monsters = Read1(mfile);
-					// Create list, and read it in.
-		monster_info = new Monster_info[num_monsters];
-		for (i = 0; i < num_monsters; i++)
-			monster_info[i].read(mfile);
-		mfile.close();
-		U7open(mfile, EQUIP);	// Get 'equip.dat'.
-		int num_recs = Read1(mfile);
-		Equip_record *equip = new Equip_record[num_recs];
-		for (i = 0; i < num_recs; i++)
-			{
-			Equip_record& rec = equip[i];
-					// 10 elements/record.
-			for (int elem = 0; elem < 10; elem++)
-				{
-				int shnum = Read2(mfile);
-				unsigned prob = Read1(mfile);
-				unsigned quant = Read1(mfile);
-				Read2(mfile);
-				rec.set(elem, shnum, prob, quant);
-				}
-			}
-					// Monster_info owns this.
-		Monster_info::set_equip(equip, num_recs);
-		}
 	center_view(main_actor->get_abs_tile_coord());
 	}
 

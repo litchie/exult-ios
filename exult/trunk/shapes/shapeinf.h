@@ -25,6 +25,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+class Monster_info;
+
 /*
  *	Specific information about weapons from 'weapons.dat':
  *	MAYBE:  Move this and ammo. to separate source file(s).
@@ -131,6 +133,7 @@ class Shape_info
 					//   for drawing weapon in hand
 	unsigned char armor;		// Armor, from armor.dat.
 	Weapon_info *weapon;		// From weapon.dat, if a weapon.
+	Monster_info *monstinf;		// From monster.dat.
 	void set_tfa_data()		// Set fields from tfa.
 		{
 		dims[0] = 1 + (tfa[2]&7);
@@ -144,7 +147,8 @@ class Shape_info
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : weight(0), volume(0),
-		ready_type(0), weapon_offsets(0), armor(0), weapon(0)
+		ready_type(0), weapon_offsets(0), armor(0), weapon(0),
+		monstinf(0)
 		{
 		tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
 		dims[0] = dims[1] = dims[2] = 0;
@@ -158,6 +162,8 @@ public:
 		{ return armor; }
 	Weapon_info *get_weapon_info()
 		{ return weapon; }
+	Monster_info *get_monster_info()
+		{ return monstinf; }
 					// Get tile dims., flipped for
 					//   reflected (bit 5) frames.
 	int get_3d_xtiles(unsigned int framenum = 0)

@@ -547,7 +547,8 @@ void Egg_object::activate
 			{
 			int shnum = data2&1023;
 			int frnum = data2>>10;
-			Monster_info *inf = gwin->get_monster_info(shnum);
+			Monster_info *inf = 
+			      gwin->get_info(shnum).get_monster_info();
 			if (inf)
 				{
 				int sched = data1>>8;
@@ -556,7 +557,8 @@ void Egg_object::activate
 				while (cnt--)
 					{
 					Monster_actor *monster = 
-						inf->create(get_cx(),
+						Monster_actor::create(shnum,
+						get_cx(),
 						get_cy(), get_tx(), get_ty(),
 						get_lift(), sched, align);
 					gwin->add_dirty(monster);

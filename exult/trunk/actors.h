@@ -560,24 +560,20 @@ class Monster_actor : public Npc_actor
 	static int in_world_cnt;	// # in list.
 					// Links for 'in_world' list.
 	Monster_actor *next_monster, *prev_monster;
-	Monster_info *info;		// Info. about this monster.
 	Animator *animator;		// For wounded men.
 	int is_blocked(Tile_coord& t);	// Are new tiles blocked?
-	void set_info(Monster_info *i = 0);
-	Monster_info *get_info()
-		{
-		if (!info)
-			set_info();
-		return info;
-		}
 	void init();			// For constructors.
 public:
-	friend class Monster_info;
 	Monster_actor(const std::string &nm, int shapenum, int num = -1, 
 							int uc = -1);
 					// Read from file.
 	Monster_actor(std::istream& nfile, int num, int has_usecode);
 	virtual ~Monster_actor();
+					// Create an instance.
+	static Monster_actor *create(int shnum, int chunkx, int chunky, 
+		int tilex, int tiley, 
+		int lift, int sched = -1, int align = (int) Actor::neutral, 
+							bool tempoary = true);
 					// Methods to retrieve them all:
 	static Monster_actor *get_first_in_world()
 		{ return in_world; }
@@ -603,91 +599,6 @@ public:
 		{ return 1; }
 	virtual void die();		// We're dead.
 	void write(std::ostream& nfile);// Write out (to 'monsnpc.dat').
-	};
-
-/*
- *	An element from 'equip.dat', describing a monster's equipment:
- */
-class Equip_element
-	{
-	unsigned short shapenum;	// What to create, or 0 for nothing.
-	unsigned char probability;	// 0-100:  probabilit of creation.
-	unsigned char quantity;		// # to create.
-public:
-	friend class Monster_info;
-	Equip_element()
-		{  }
-	void set(int shnum, int prob, int quant)
-		{
-		shapenum = shnum;
-		probability = prob;
-		quantity = quant;
-		}
-	};
-
-/*
- *	A record from 'equip.dat' consists of 10 elements.
- */
-class Equip_record
-	{
-	Equip_element elements[10];
-public:
-	friend class Monster_info;
-	Equip_record()
-		{  }
-					// Set i'th element.
-	void set(int i, int shnum, int prob, int quant)
-		{ elements[i].set(shnum, prob, quant); }
-	};
-
-/*
- *	Monster info. from 'monsters.dat':
- */
-class Monster_info
-	{
-	static Equip_record *equip;	// ->equipment info.
-	static int equip_cnt;		// # entries in equip.
-	int shapenum;			// Shape #.
-	unsigned char strength;		// Attributes.
-	unsigned char dexterity;
-	unsigned char intelligence;
-	unsigned char alignment;	// Default alignment.
-	unsigned char combat;
-	unsigned char armor;		// These are unarmed stats.
-	unsigned char weapon;
-	unsigned char reach;
-	unsigned char flags;		// Defined below.
-	unsigned char equip_offset;	// Offset in 'equip.dat' (1 based;
-	bool splits;			// For slimes.
-	bool cant_die;
-					//   if 0, there's none.)
-public:
-	friend class Monster_actor;
-	Monster_info() {  }
-	void read(std::istream& mfile);	// Read in from file.
-					// Done by Game_window:
-	static void set_equip(Equip_record *eq, int cnt)
-		{
-		equip = eq;
-		equip_cnt = cnt;
-		}
-	enum Flags {
-		fly = 0,
-		swim = 1,
-		walk = 2,
-		ethereal = 3		// Can walk through walls.
-					// 5:  gazer, hook only.
-//Don't think so magic_only = 7,	// Can only be hurt by magic weapons.
-					// 8:  bat only.
-//		slow = 9		// E.g., slime, corpser.
-					// 10:  skeleton only.
-		};
-	int get_shapenum()
-		{ return shapenum; }
-					// Create an instance.
-	Monster_actor *create(int chunkx, int chunky, int tilex, int tiley, 
-		int lift, int sched = -1, int align = (int) Actor::neutral, 
-							bool tempoary = true);
 	};
 
 #endif

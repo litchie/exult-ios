@@ -52,6 +52,7 @@
 #include "npctime.h"
 #include "ready.h"
 #include "ucmachine.h"
+#include "monstinf.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -144,8 +145,6 @@ const char scorpion_attack_frames[] = {7, 8, 9};
 inline int Is_attack_frame(int i) { return i == 6 || i == 9; }
 inline int Get_dir_from_frame(int i)
 	{ return ((((i&16)/8) - ((i&32)/32)) + 4)%4; }
-Equip_record *Monster_info::equip = 0;
-int Monster_info::equip_cnt = 0;
 Monster_actor *Monster_actor::in_world = 0;
 int Monster_actor::in_world_cnt = 0;
 
@@ -3541,22 +3540,6 @@ int Monster_actor::is_blocked
 	}
 
 /*
- *	Set ->info.
- */
-
-void Monster_actor::set_info
-	(
-	Monster_info *i			// May be 0.
-	)
-	{
-	if (!i)
-					// Not set?  Look it up.
-		i = Game_window::get_game_window()->get_monster_info(
-							get_shapenum());
-	info = i;
-	}
-
-/*
  *	Initialize a new monster.
  */
 
@@ -3585,7 +3568,7 @@ Monster_actor::Monster_actor
 	int shapenum, 
 	int num,			// Generally -1.
 	int uc
-	) : Npc_actor(nm, shapenum, num, uc), prev_monster(0), info(0),
+	) : Npc_actor(nm, shapenum, num, uc), prev_monster(0),
 	    animator(0)
 	{
 	init();
@@ -3609,6 +3592,118 @@ Monster_actor::~Monster_actor
 		in_world = next_monster;
 	if (!is_dead())			// Dying decrements count.
 		in_world_cnt--;
+	}
+
+/*
+ *	Another set of constants that should be in a data file (or that's
+ *	probably already in one of the U7 data files), this one correlating
+ *	a 'monster' shape with the food frame you get when you kill it.
+ */
+static int Monster_food[] = {
+	498, 10,			// Chicken.
+	500,  9,			// Cow - beef steaks.
+	502,  14,			// Deer - meat.
+	509, 12,			// Fish.
+	811, 14,			// Rabbit - small leg.
+	970, 8,				// Sheep - mutton.
+	727, 23				// Horse - ribs.
+	};
+
+/*
+ *	Find food frame for given monster shape.
+ *
+ *	Output:	Frame if found, else a random frame (0-31).
+ */
+
+static int Find_monster_food
+	(
+	int shnum			// Monster shape.
+	)
+	{
+	const int cnt = sizeof(Monster_food)/(2*sizeof(Monster_food[0]));
+	for (int i = 0; i < cnt; i++)
+		if (Monster_food[2*i] == shnum)
+			return Monster_food[2*i + 1];
+	return rand()%32;
+	}
+
+/*
+ *	Create an instance of a monster.
+ */
+
+Monster_actor *Monster_actor::create
+	(
+	int shnum,			// Shape to use.
+	int chunkx, int chunky,		// Chunk to place it in.
+	int tilex, int tiley,		// Tile within chunk.
+	int lift,			// Lift.
+	int sched,			// Schedule type.
+	int align,			// Alignment.
+	bool temporary
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Get 'monsters.dat' info.
+	const Monster_info *inf = gwin->get_info(shnum).get_monster_info();
+	if (!inf)
+		inf = Monster_info::get_default();
+					// Usecode = shape.
+	Monster_actor *monster = new Monster_actor("", shnum, -1, shnum);
+	monster->set_alignment(align == (int) Actor::neutral 
+						? inf->alignment : align);
+	// Movement flags
+	if ((inf->flags >> Monster_info::fly)&1)
+	{
+		monster->set_type_flag(Actor::tf_fly);
+	}
+	if ((inf->flags >> Monster_info::swim)&1)
+	{
+		monster->set_type_flag(Actor::tf_swim);
+	}
+	if ((inf->flags >> Monster_info::walk)&1)
+	{
+		monster->set_type_flag(Actor::tf_walk);
+	}
+	if ((inf->flags >> Monster_info::ethereal)&1)
+	{
+		monster->set_type_flag(Actor::tf_ethereal);
+	}
+	monster->set_property(Actor::strength, inf->strength);
+					// Max. health = strength.
+	monster->set_property(Actor::health, inf->strength);
+	monster->set_property(Actor::dexterity, inf->dexterity);
+	monster->set_property(Actor::intelligence, inf->intelligence);
+	monster->set_property(Actor::combat, inf->combat);
+
+	// Set temporary
+	if (temporary) monster->set_flag (Obj_flags::is_temporary);
+					// Place in world.
+	Map_chunk *olist = gwin->get_chunk(chunkx, chunky);
+	monster->movef(0, olist, tilex, tiley, 0, lift);
+					// Get equipment.
+	int equip_offset = inf->equip_offset;
+	Equip_record *equip = inf->equip;
+	if (equip_offset && equip_offset - 1 < inf->equip_cnt)
+		{
+		Equip_record& rec = equip[equip_offset - 1];
+		for (size_t i = 0;
+			i < sizeof(equip->elements)/sizeof(equip->elements[0]);
+							i++)
+			{		// Give equipment.
+			Equip_element& elem = rec.elements[i];
+			if (!elem.shapenum || 1 + rand()%100 > 
+							elem.probability)
+				continue;// You lose.
+			int frnum = (elem.shapenum == 377) ? 
+					Find_monster_food(shnum) : 0;
+			monster->create_quantity(elem.quantity, elem.shapenum, 
+						c_any_qual, frnum, temporary);
+			}
+		}
+	if (sched < 0)			// Set sched. AFTER equipping.
+		sched = (int) Schedule::loiter;
+	monster->set_schedule_type(sched);
+	return (monster);
 	}
 
 /*
@@ -3722,7 +3817,8 @@ int Monster_actor::get_armor_points
 	(
 	)
 	{
-	Monster_info *inf = get_info();
+	Monster_info *inf =
+	    Game_window::get_game_window()->get_info(this).get_monster_info();
 					// Kind of guessing here.
 	return Actor::get_armor_points() + (inf ? inf->armor : 0);
 	}
@@ -3737,13 +3833,13 @@ Weapon_info *Monster_actor::get_weapon
 	int& shape
 	)
 	{
-	Monster_info *inf = get_info();
+	Game_window *gwin = Game_window::get_game_window();
+	Monster_info *inf = gwin->get_info(this).get_monster_info();
 					// Kind of guessing here.
 	Weapon_info *winf = Actor::get_weapon(points, shape);
 	if (!winf)			// No readied weapon?
 		{			// Look up monster itself.
 		shape = 0;
-		Game_window *gwin = Game_window::get_game_window();
 		winf = gwin->get_info(get_shapenum()).get_weapon_info();
 		if (winf)
 			points = winf->get_damage();
@@ -3768,111 +3864,6 @@ void Monster_actor::die
 	in_world_cnt--;			// So... Decrement 'live' count here.
 	}
 
-/*
- *	Another set of constants that should be in a data file (or that's
- *	probably already in one of the U7 data files), this one correlating
- *	a 'monster' shape with the food frame you get when you kill it.
- */
-static int Monster_food[] = {
-	498, 10,			// Chicken.
-	500,  9,			// Cow - beef steaks.
-	502,  14,			// Deer - meat.
-	509, 12,			// Fish.
-	811, 14,			// Rabbit - small leg.
-	970, 8,				// Sheep - mutton.
-	727, 23				// Horse - ribs.
-	};
-
-/*
- *	Find food frame for given monster shape.
- *
- *	Output:	Frame if found, else a random frame (0-31).
- */
-
-static int Find_monster_food
-	(
-	int shnum			// Monster shape.
-	)
-	{
-	const int cnt = sizeof(Monster_food)/(2*sizeof(Monster_food[0]));
-	for (int i = 0; i < cnt; i++)
-		if (Monster_food[2*i] == shnum)
-			return Monster_food[2*i + 1];
-	return rand()%32;
-	}
-
-/*
- *	Create an instance of a monster.
- */
-
-Monster_actor *Monster_info::create
-	(
-	int chunkx, int chunky,		// Chunk to place it in.
-	int tilex, int tiley,		// Tile within chunk.
-	int lift,			// Lift.
-	int sched,			// Schedule type.
-	int align,			// Alignment.
-	bool temporary
-	)
-	{
-					// Usecode = shape.
-	Monster_actor *monster = new Monster_actor("", shapenum, -1, shapenum);
-	monster->set_info(this);
-	monster->set_alignment(align == (int) Actor::neutral 
-							? alignment : align);
-	// Movement flags
-	if ((flags >> fly)&1)
-	{
-		monster->set_type_flag(Actor::tf_fly);
-	}
-	if ((flags >> swim)&1)
-	{
-		monster->set_type_flag(Actor::tf_swim);
-	}
-	if ((flags >> walk)&1)
-	{
-		monster->set_type_flag(Actor::tf_walk);
-	}
-	if ((flags >> ethereal)&1)
-	{
-		monster->set_type_flag(Actor::tf_ethereal);
-	}
-	monster->set_property(Actor::strength, strength);
-					// Max. health = strength.
-	monster->set_property(Actor::health, strength);
-	monster->set_property(Actor::dexterity, dexterity);
-	monster->set_property(Actor::intelligence, intelligence);
-	monster->set_property(Actor::combat, combat);
-
-	// Set temporary
-	if (temporary) monster->set_flag (Obj_flags::is_temporary);
-					// Place in world.
-	Game_window *gwin = Game_window::get_game_window();
-	Map_chunk *olist = gwin->get_chunk(chunkx, chunky);
-	monster->movef(0, olist, tilex, tiley, 0, lift);
-					// Get equipment.
-	if (equip_offset && equip_offset - 1 < equip_cnt)
-		{
-		Equip_record& rec = equip[equip_offset - 1];
-		for (size_t i = 0;
-			i < sizeof(equip->elements)/sizeof(equip->elements[0]);
-							i++)
-			{		// Give equipment.
-			Equip_element& elem = rec.elements[i];
-			if (!elem.shapenum || 1 + rand()%100 > 
-							elem.probability)
-				continue;// You lose.
-			int frnum = (elem.shapenum == 377) ? 
-					Find_monster_food(shapenum) : 0;
-			monster->create_quantity(elem.quantity, elem.shapenum, 
-						c_any_qual, frnum, temporary);
-			}
-		}
-	if (sched < 0)			// Set sched. AFTER equipping.
-		sched = (int) Schedule::loiter;
-	monster->set_schedule_type(sched);
-	return (monster);
-	}
 /*
  *	Create a sequence of frames.
  */
