@@ -1,3 +1,7 @@
+2000-07-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Support ABRT & CATCH opcodes; fixes Skara Brae problems.
+
 2000-07-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Several risky Usecode changes.

@@ -340,7 +340,8 @@ void Scheduled_usecode::handle_event
 					// Don't get stuck in conv. mode.
 	if (gwin->get_mode() == Game_window::conversation)
 		{
-		gwin->set_mode(Game_window::normal);
+//		gwin->set_mode(Game_window::normal);
+		gwin->end_gump_mode();	// This also sets mode=normal.
 		gwin->paint();
 		}
 	delete this;			// Hope this is safe.
@@ -925,21 +926,12 @@ static Barge_object *Get_barge
 	Game_object *obj
 	)
 	{
-#if 0
-					// Check for piece of barge.
-	Game_object *owner = obj->get_owner();
-	if (owner)
-		return dynamic_cast<Barge_object *> (owner);
-	obj = obj->find_beneath();	// Maybe it's sitting on a barge.
-	return (obj ? Get_barge(obj) : 0);
-#else
 	int barge_shape = 961;
 	Game_object *found = obj->find_closest(&barge_shape, 1);
 	if (found)
 		return dynamic_cast<Barge_object *> (found);
 	else
 		return 0;
-#endif
 	}
 
 /*
@@ -997,6 +989,7 @@ Usecode_value Usecode_machine::find_nearby
 		Game_object *obj = get_item(objval);
 		if (!obj)
 			return Usecode_value(0, 0);
+		obj = obj->get_outermost();	// Might be inside something.
 		cnt = obj->find_nearby(vec, shapeval.get_int_value(),
 			qval.get_int_value(), mval.get_int_value());
 		}
@@ -1025,6 +1018,7 @@ Usecode_value Usecode_machine::find_nearest
 	if (!obj)
 		return Usecode_value(0);
 	Vector vec;			// Gets list.
+	obj = obj->get_outermost();	// Might be inside something.
 	int cnt = obj->find_nearby(vec, shapeval.get_int_value(), -359, 0);
 	Game_object *closest = 0;
 	unsigned long bestdist = 100000;// Distance-squared in tiles.
@@ -2270,8 +2264,10 @@ USECODE_INTRINSIC(halt_scheduled)
 
 USECODE_INTRINSIC(run_endgame)
 {
+#if 0	/* +++++This isn't right.  CauseBlackout sounds more plausible. */
 	Titles titles;
 	titles.end_game(true);
+#endif
 	return(no_ret);
 }
 
@@ -3369,8 +3365,13 @@ int Usecode_machine::run
 					256*externals[2*offset + 1], event))
 				{	// Catch ABRT.
 				abort = 1;
-				if (catch_ip)	//++++++If 0?? exit???
+				if (catch_ip)
 					ip = catch_ip;
+				else	// No catch?  I think we should exit.
+					{
+					sp = save_sp;
+					ip = endp;
+					}
 				}
 			break;
 		case 0x25:		// RET.
@@ -3556,8 +3557,13 @@ int Usecode_machine::run
 			if (!call_usecode_function(offset, event))
 				{	// Catch ABRT.
 				abort = 1;
-				if (catch_ip)	//++++++If 0?? exit???
+				if (catch_ip)
 					ip = catch_ip;
+				else	// No catch?  I think we should exit.
+					{
+					sp = save_sp;
+					ip = endp;
+					}
 				}
 			caller_item = prev_item;
 			break;
