@@ -100,6 +100,8 @@ static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl);
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
 static void Try_key(Game_window *);
+void increase_resolution (void);
+void decrease_resolution (void);
 
 /*
  *	A handy breakpoint.
@@ -749,14 +751,7 @@ static void Handle_keystroke
 	case SDLK_PLUS:
 	case SDLK_KP_PLUS:
 		if(cheat() && alt && !ctrl) {		// Alt-+ : Increase resolution
-			current_res++;
-			if(current_res>=num_res)
-				current_res = 0;
-			gwin->resized(res_list[current_res].x,
-					res_list[current_res].y,
-					res_list[current_res].scale);
-					// Get scale factor for mouse.
-			scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
+			increase_resolution();
 
 		} else if (!alt && !ctrl) {		// + : Brighten
 			gwin->brighten(20);
@@ -765,13 +760,7 @@ static void Handle_keystroke
 	case SDLK_MINUS:
 	case SDLK_KP_MINUS:
 		if(cheat() && alt && !ctrl) {		// Alt-- : Decrease resolution
-			current_res--;
-			if(current_res<0)
-				current_res = num_res-1;
-			gwin->resized(res_list[current_res].x,
-					res_list[current_res].y,
-					res_list[current_res].scale);
-			scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
+			decrease_resolution();
 
 		} else if (!alt && !ctrl) {		// - : Darken
 			gwin->brighten(-20);
@@ -787,15 +776,8 @@ static void Handle_keystroke
 			gwin->activate_item(761);
 		break;
 	case SDLK_c:
-		if (cheat() && ctrl && !alt) {		// Ctrl-c : Create last shape viewed.
-			int current_shape = 0;
-			int current_frame = 0;
-			if(browser->get_shape(current_shape, current_frame))
-				gwin->get_main_actor()->add(
-					new Ireg_game_object(current_shape,
-					current_frame, 0, 0), 1);
-			else
-				gwin->center_text("Can only create from 'shapes.vga'");
+		if (ctrl && !alt) {			// Ctrl-c : Create last shape viewed.
+			cheat.create_last_shape();
 
 		} else if (!ctrl && !alt) {		// c : Combat mode
 			gwin->toggle_combat();
@@ -806,26 +788,13 @@ static void Handle_keystroke
 		}
 		break;
 	case SDLK_d:			// Ctrl-d : delete what mouse is on.
-		if (cheat() && ctrl && !alt) {
-			int x, y;
-			SDL_GetMouseState(&x, &y);
-			x = x>>scale;
-			y = y>>scale;
-			Game_object *obj = gwin->find_object(x, y);
-			if (obj) {
-				obj->remove_this();
-				gwin->paint();
-			}
+		if (ctrl && !alt) {
+			cheat.delete_object();
 		}
 		break;
 	case SDLK_e:			// e : toggle eggs display
-		if (cheat() && !alt && !ctrl) {
-			gwin->paint_eggs = !gwin->paint_eggs;
-			if(gwin->paint_eggs)
-				gwin->center_text("Eggs display enabled");
-			else
-				gwin->center_text("Eggs display disabled");
-			gwin->paint();
+		if (!alt && !ctrl) {
+			cheat.toggle_eggs();
 		}
 		break;
 	case SDLK_f:			// f : Feed food.
@@ -837,12 +806,8 @@ static void Handle_keystroke
 		if (alt && !ctrl) {		// Alt-g : toggle god-mode
 			cheat.toggle_god();
 
-		} else if (cheat() && !ctrl && !alt) {	// g :  Change Avatars gender
-			if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex))
-				gwin->get_main_actor()->clear_type_flag(Actor::tf_sex);
-			else
-				gwin->get_main_actor()->set_type_flag(Actor::tf_sex);
-			gwin->set_all_dirty();
+		} else if (!ctrl && !alt) {	// g :  Change Avatars gender
+			cheat.change_gender();
 		}
 		break;
 	case SDLK_h:
@@ -924,27 +889,16 @@ static void Handle_keystroke
 		}
 		break;
 	case SDLK_l:
-		if(cheat() && !alt && !ctrl) {	// l : decrement skip_lift
-			if (gwin->skip_lift == 16)
-				gwin->skip_lift = 11;
-			else
-				gwin->skip_lift--;
-			if (gwin->skip_lift <= 0)
-				gwin->skip_lift = 16;
-#if DEBUG
-			cout << "Skip_lift = " << gwin->skip_lift << endl;
-#endif
-			gwin->paint();
+		if(!alt && !ctrl) {		// l : decrement skip_lift
+			cheat.dec_skip_lift();
 		}
 		break;
 	case SDLK_m:
 		if (ctrl && alt) {  		// Ctrl-Alt-m : hack mover
 			cheat.toggle_hack_mover();
 
-		} else if (cheat() && ctrl && !alt) {	// Ctrl-m : 100 gold coins
-			gwin->get_main_actor()->add_quantity(100, 644);
-			gwin->center_text("Added 100 gold coins");
-			break;
+		} else if (ctrl && !alt) {	// Ctrl-m : 100 gold coins
+			cheat.create_coins();
 
 		} else if (alt && !ctrl) {		// Alt-m : next song
 							// Shift-Alt-m : previous song
@@ -994,22 +948,14 @@ static void Handle_keystroke
 		}
 		break;
 	case SDLK_t:
-		if (ctrl && alt) {	// Ctrl-Alt-t : map teleport
+		if (ctrl && alt) {		// Ctrl-Alt-t : map teleport
 			cheat.map_teleport();
 
-		} else if (cheat() && ctrl && !alt) {	// Ctrl-t :  Fake next time change.
-			gwin->fake_next_period();
-			gwin->center_text("Game clock incremented");
+		} else if (ctrl && !alt) {	// Ctrl-t :  Fake next time change.
+			cheat.fake_time_period();
 
-		} else if (cheat() && alt && !ctrl) { 	// Alt-t : Teleport to cursor
-			int x, y;
-			SDL_GetMouseState(&x, &y);
-			x = x>>scale;
-			y = y>>scale;
-			Tile_coord t(gwin->get_scrolltx() + x/tilesize,
-				gwin->get_scrollty() + y/tilesize, 0);
-			gwin->teleport_party(t);
-			gwin->center_text("Teleport!!!");
+		} else if (alt && !ctrl) { 	// Alt-t : Teleport to cursor
+			cheat.cursor_teleport();
 
 		} else if (!alt && !ctrl) {		// t : Target mode.
 			int x, y;
@@ -1442,3 +1388,23 @@ static void Try_key
 	mouse->flash_shape(Mouse::redx);	// Nothing matched.
 	}
 
+void decrease_resolution (void) {
+	current_res--;
+	if(current_res<0)
+		current_res = num_res-1;
+	gwin->resized(res_list[current_res].x,
+			res_list[current_res].y,
+			res_list[current_res].scale);
+	scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
+}
+
+void increase_resolution (void) {
+	current_res++;
+	if(current_res>=num_res)
+		current_res = 0;
+	gwin->resized(res_list[current_res].x,
+			res_list[current_res].y,
+			res_list[current_res].scale);
+	// Get scale factor for mouse.
+	scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
+}
