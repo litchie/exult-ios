@@ -1109,7 +1109,7 @@ void Usecode_internal::create_script
 					// ++++Better to 'steal' array; this
 					//   ends up making a copy.
 	Usecode_value *code = new Usecode_value(codeval);
-	(new Usecode_script(this, obj, code))->start(delay);
+	(new Usecode_script(obj, code))->start(delay);
 	}
 
 /*

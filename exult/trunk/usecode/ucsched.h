@@ -44,8 +44,7 @@ class Usecode_script : public Time_sensitive
 	Usecode_script(Game_object *item, Usecode_value *cd, int findex,
 						int nhalt, int del);
 public:
-	Usecode_script(Usecode_internal *usecode, Game_object *o, 
-						Usecode_value *cd);
+	Usecode_script(Game_object *o, Usecode_value *cd = 0);
 	~Usecode_script();
 	void start(long delay = 1);	// Start after 'delay' msecs.
 	void halt()			// Stop executing.
@@ -55,6 +54,10 @@ public:
 		}
 	int is_activated()		// Started already?
 		{ return i > 0; }
+	void add(int v1);		// Append new instructions:
+	void add(int v1, int v2);
+	void add(int v1, char *str);
+	void add(int *vals, int cnt);
 	inline void activate_egg(Usecode_internal *usecode, 
 				 Game_object *e, int type);
 

@@ -75,17 +75,25 @@ Usecode_script::Usecode_script
 
 Usecode_script::Usecode_script
 	(
-	Usecode_internal *usecode,
 	Game_object *o,
-	Usecode_value *cd
-	) : obj(o), code(cd), i(0), frame_index(0), no_halt(0),
+	Usecode_value *cd		// May be NULL for empty script.
+	) : obj(o), code(cd), cnt(0), i(0), frame_index(0), no_halt(0),
 	    delay(0)
 	{
-	cnt = code->get_array_size();
-	if (!cnt)			// Not an array??  (This happens.)
-		{			// Create with single element.
-		code = new Usecode_value(1, code);
-		cnt = 1;
+	if (!code)			// Empty?
+		code = new Usecode_value(0, 0);
+	else
+		{
+		cnt = code->get_array_size();
+		if (!cnt)		// Not an array??  (This happens.)
+			{		// Create with single element.
+			code = new Usecode_value(1, code);
+			cnt = 1;
+			}
+					//++++This should be done in start():
+		int opval0 = code->get_elem(0).get_int_value();
+		if (opval0 == 0x23)		// PURE GUESS:
+			no_halt = 1;
 		}
 	count++;			// Keep track of total.
 	next = first;			// Put in chain.
@@ -93,9 +101,6 @@ Usecode_script::Usecode_script
 	if (first)
 		first->prev = this;
 	first = this;
-	int opval0 = code->get_elem0().get_int_value();
-	if (opval0 == 0x23)		// PURE GUESS:
-		no_halt = 1;
 	}
 
 /*
@@ -126,6 +131,32 @@ void Usecode_script::start
 	Game_window *gwin = Game_window::get_game_window();
 	gwin->get_tqueue()->add(delay + SDL_GetTicks(), this,
 					(long) gwin->get_usecode());
+	}
+
+/*
+ *	Append instructions.
+ */
+void Usecode_script::add(int v1)
+	{
+	code->append(&v1, 1);
+	}
+void Usecode_script::add(int v1, int v2)
+	{
+	int vals[2];
+	vals[0] = v1;
+	vals[1] = v2;
+	code->append(vals, 2);
+	}
+void Usecode_script::add(int v1, char *str)
+	{
+	int sz = code->get_array_size();
+	code->resize(sz + 2);
+	code[sz] = v1;
+	code[sz + 1] = str;
+	}
+void Usecode_script::add(int *vals, int cnt)
+	{
+	code->append(vals, cnt);
 	}
 
 /*
@@ -362,16 +393,13 @@ void Usecode_script::handle_event
 			{
 			Usecode_value& val = code->get_elem(++i);
 			int fun = val.get_int_value();
-					// REALLY guessing (for Forge):
+					// Watch for eggs:
 			Usecode_internal::Usecode_events ev = 
 					Usecode_internal::internal_exec;
 			if (obj && obj->is_egg() && 
 				((Egg_object *)obj)->get_type() ==
 			    				Egg_object::usecode)
-				{
 				ev = Usecode_internal::egg_proximity;
-				cout << "0x55:  guessing with egg" << endl;
-				}
 			usecode->call_usecode(fun, obj, ev);
 			break;
 			}
