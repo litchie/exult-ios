@@ -320,7 +320,7 @@ void Container_game_object::activate
 		return;
 
 		case 800:			// Chest.
-		gwin->show_gump(this, game->get_shape("gumps/chest"));	// ???Guessing.
+		gwin->show_gump(this, game->get_shape("gumps/chest"));
 		return;
 
 		case 801:			// Backpack.
@@ -372,8 +372,15 @@ void Container_game_object::activate
 		return;
 
 		case 800:			// Chest.
-		case 486:
-		gwin->show_gump(this, game->get_shape("gumps/chest"));	// ???Guessing.
+		if (get_quality() >= 251)	// Trapped?
+			{		// Run normal usecode fun.
+			umachine->call_usecode(shnum, this,
+				(Usecode_machine::Usecode_events) event);
+			return;
+			}
+						// FALL THROUGH to 486.
+		case 486:			// Usecode container.
+		gwin->show_gump(this, game->get_shape("gumps/chest"));
 		return;
 
 		case 801:			// Backpack.
