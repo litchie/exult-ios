@@ -505,6 +505,10 @@ if test x$enable_gimp_plugin = xyes; then
 		GLIB_INCLUDES=`glib-config --cflags`
 		save_cppflags="$CPPFLAGS"
 		CPPFLAGS="$CPPFLAGS $GLIB_INCLUDES"
+		if test -z "$GTK_INCLUDES"; then
+			GTK_INCLUDES=`gtk-config --cflags`
+			AC_SUBST(GTK_INCLUDES)
+		fi
 		AC_CHECK_HEADER(libgimp/gimp.h,GIMP_H=true)
 		if test -n "$GIMP_H"; then
 			AC_MSG_CHECKING(for GIMP version)

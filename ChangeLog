@@ -1,3 +1,7 @@
+2001-04-18  Tristan Tarrant <nadir@users.sourceforge.net>
+
+	* configure.in: fix GIMP checks to support recent GTK+'s
+
 2001-04-17  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* First pass at world-wrapping.  (Doesn't work yet!)
