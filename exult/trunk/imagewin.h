@@ -74,7 +74,7 @@ protected:
 public:
 	~Image_buffer_base()
 		{
-		delete bits;		// In case Image_window didn't.
+		// delete bits;		// In case Image_window didn't.
 		}
 	friend class Image_window;
 	void clear_clip()		// Reset clip to whole window.
