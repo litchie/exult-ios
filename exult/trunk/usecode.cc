@@ -71,6 +71,7 @@ void Earthquake::handle_event
 	)
 	{
 	Image_window *win = gwin->get_win();
+#ifndef WIN32
 	int w = win->get_width(), h = win->get_height();
 	int dx = rand()%9 - 4;
 	int dy = rand()%9 - 4;
@@ -79,6 +80,7 @@ void Earthquake::handle_event
 	gwin->show();
 					// Shake back.
 	win->copy(0, 0, w, h, -dx, -dy);
+#endif
 	if (++i < len)			// More to do?  Put back in queue.
 		gwin->get_tqueue()->add(curtime + 100, this, udata);
 	else
