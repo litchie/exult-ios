@@ -176,7 +176,7 @@ unsigned char *Chunk_chooser::get_chunk
 		data = new unsigned char[512];
 		chunklist[chunknum] = data;
 		chunkfile.seekg(chunknum*512);
-		chunkfile.read(data, 512);
+		chunkfile.read(reinterpret_cast<char *>(data), 512);
 		}
 	else
 		set_chunk(buf, datalen);
