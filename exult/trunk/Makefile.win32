@@ -205,7 +205,7 @@ tools/wud.exe : tools/wud.o tools/uctools.h usecode/bgintrinsics.h usecode/siint
 tools/wuc.exe : tools/wuc.o
 	$(CXX) $(LFLAGS) -o tools/wuc.exe tools/wuc.o -mconsole
 
-UCXT_OBJS=conf/Configuration.o conf/XMLEntity.o files/utils.o usecode/ucxt/src/opcodec_.o usecode/ucxt/src/printucc.o usecode/ucxt/src/stacki.o usecode/ucxt/src/ucdata.o usecode/ucxt/src/ucdump.o usecode/ucxt/src/ucfunc.o usecode/ucxt/src/opcodes.o
+UCXT_OBJS=conf/Configuration.o conf/XMLEntity.o files/utils.o usecode/ucxt/src/ucdata.o usecode/ucxt/src/ucdump.o usecode/ucxt/src/ucfunc.o usecode/ucxt/src/opcodes.o
 
 usecode/ucxt/src/ucxt.exe : $(UCXT_OBJS)
 	$(CXX) $(LFLAGS) -o usecode/ucxt/src/ucxt.exe $(UCXT_OBJS) -mconsole
