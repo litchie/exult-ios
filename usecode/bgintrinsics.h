@@ -12,7 +12,7 @@
 	USECODE_INTRINSIC_PTR(remove_answer), // 6
 	USECODE_INTRINSIC_PTR(push_answers), // 7
 	USECODE_INTRINSIC_PTR(pop_answers), // 8
-	USECODE_INTRINSIC_PTR(clear_answers), // 9 +++++Testing. WJP
+	USECODE_INTRINSIC_PTR(clear_answers), // 9
 	USECODE_INTRINSIC_PTR(select_from_menu), // 0x0a
 	USECODE_INTRINSIC_PTR(select_from_menu2), // 0x0b
 	USECODE_INTRINSIC_PTR(input_numeric_value), // 0xc
@@ -96,11 +96,11 @@
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
 	USECODE_INTRINSIC_PTR(armageddon),	// 0x5b
 	USECODE_INTRINSIC_PTR(halt_scheduled),	// 0x5c
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5d  +++++CauseBlackout (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5d  +++++white flash? (lightning)
 	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
 	USECODE_INTRINSIC_PTR(mark_virtue_stone),	// 0x5f
 	USECODE_INTRINSIC_PTR(recall_virtue_stone),	// 0x60
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x61
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x61  +++++do some kind of damage
 	USECODE_INTRINSIC_PTR(is_pc_inside),	// 0x62
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63     SetOrreryState (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x64     UNUSED

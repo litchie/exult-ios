@@ -1,3 +1,7 @@
+2001-06-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* bgintrinsics.h: added 2 guesses
+	* exult.cc: don't show hand cursor when clicking left mouse button
+
 2001-06-14  Dancer Vesperman <dancer@users.sourceforge.net>
 	- Code Nazi
 	* server/objserial.cc: std::string, std::memcpy, std::strlen
