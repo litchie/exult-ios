@@ -6,7 +6,7 @@
 
 /*
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2002  The Exult Team
+ *  Copyright (C) 2000-2004  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -185,7 +185,7 @@ static bool run_si = false;		// skip menu and run si
 static string arg_gamename = "default";	// cmdline arguments
 static string arg_configfile = "";
 static int arg_buildmap = -1;
-static 	bool arg_nomenu = false;
+static bool arg_nomenu = false;
 
 /*
  *	A handy breakpoint.
@@ -336,7 +336,6 @@ int exult_main(const char *runpath)
 
 	// Setup virtual directories
 	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
-	cout << "Data path = " << data_path << endl;
 	add_system_path("<DATA>", data_path);
 	if (!U7exists("<DATA>/exult.flx"))
 	{
@@ -367,13 +366,19 @@ int exult_main(const char *runpath)
 			}
 		}
 	}
-	config->value("config/disk/music_path",music_path,EXULT_DATADIR "/music");
-	cout << "Music path = " << music_path << endl;
+	std::string default_music = get_system_path("<DATA>/music");
+	config->value("config/disk/music_path",music_path,default_music.c_str());
+
 	add_system_path("<MUSIC>", music_path);
 	add_system_path("<STATIC>", "static");
 	add_system_path("<GAMEDAT>", "gamedat");
 //	add_system_path("<SAVEGAME>", "savegame");
 	add_system_path("<SAVEGAME>", ".");
+
+	std::cout << "Exult path settings:" << std::endl;
+	std::cout << "Data          : " << get_system_path("<DATA>") << std::endl;
+	std::cout << "Digital music : " << get_system_path("<MUSIC>") << std::endl;
+	std::cout << std::endl;
 
 
 	// Check CRCs of our .flx files
