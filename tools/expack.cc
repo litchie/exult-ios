@@ -232,7 +232,8 @@ int main(int argc, char **argv)
 	char ext[] = "u7o";
 	int index;
 	vector<string>	file_names;
-  
+  	hname[0] = 0;
+
 	if(argc>2) {
 		strncpy(fname, argv[2], 1024);
 		if((argv[1][0]=='-')&&(strlen(argv[1])==2)) {
@@ -335,8 +336,17 @@ int main(int argc, char **argv)
 		{
 			if(argc==4) {
 				U7object f(fname,atoi(argv[3]));
+				int nobjs = f.number_of_objects();
+				int n = atoi(argv[3]);
+				if (n >= nobjs) {
+					cerr << "Obj. #(" << n <<
+						") is too large.  ";
+					cerr << "Flex size is " << 
+						nobjs << '.' << endl;
+					exit(1);
+				}
 				char outfile[32];
-				snprintf(outfile,32,"%d.%s",atoi(argv[3]),ext);
+				snprintf(outfile,32,"%d.%s", n, ext);
 				f.retrieve(outfile);	// may throw!
 			} else {
 				U7FileManager fm;
@@ -371,8 +381,12 @@ int main(int argc, char **argv)
 
 			char hline[1024];
 			ofstream header;
-
-		
+			if (!hname[0]) {	// Need header name.
+				strncpy (hprefix, fname, 1024);
+				make_header_name(hprefix);
+				strncat (hname, hprefix, 1024);
+				strncat (hname, ".h", 1024);
+			}		
 			try {
 				U7open(header, hname, true);
 			} catch (const file_open_exception& e) {
