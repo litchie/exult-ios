@@ -51,7 +51,7 @@ void printdataseg(FILE* f, unsigned short ds)
 // Prints first characters of strings referenced
 unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 	unsigned char* pdataseg,unsigned short* pextern,
-	unsigned short externsize)
+	unsigned short externsize, const char **func_table, int funsize)
 {
 	unsigned short nbytes;
 	unsigned short i;
@@ -131,7 +131,7 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 		{
 			// Print call operand
 			unsigned short func = *(unsigned short*)( ptrc + 1 );
-			if( ( func < ( sizeof(func_table) / sizeof(const char *) ) ) &&
+			if( ( func < funsize ) &&
 				 func_table[func] )
 				// Known function
 				printf("\t_%s@%d\t\t; %04X\n", func_table[func], ptrc[3], func);
@@ -166,7 +166,8 @@ unsigned short print_opcode(unsigned char* ptrc, unsigned short coffset,
 	return nbytes;
 }
 
-void printcodeseg(FILE* f, unsigned short ds, unsigned short s)
+void printcodeseg(FILE* f, unsigned short ds, unsigned short s,
+				const char **func_table, int funsize)
 {
 	long pos;
 	unsigned short size;
@@ -222,7 +223,8 @@ void printcodeseg(FILE* f, unsigned short ds, unsigned short s)
 	// Print opcodes
 	while( offset < size )
 	{
-		nbytes = print_opcode(pp, offset, pdata, pextern, externsize);
+		nbytes = print_opcode(pp, offset, pdata, pextern, externsize,
+						func_table, funsize);
 		pp += nbytes;
 		offset += nbytes;
 	}
@@ -230,7 +232,7 @@ void printcodeseg(FILE* f, unsigned short ds, unsigned short s)
 	free(pdata);
 }
 
-void printfunc(FILE* f, long func, int i)
+void printfunc(FILE* f, long func, int i, const char **func_table, int funsize)
 {
 	unsigned short s, ds, funcnum;	
 	long off, bodyoff;
@@ -250,7 +252,7 @@ void printfunc(FILE* f, long func, int i)
 		printf("\t\t.funcnumber\t%04XH\n", funcnum);
 		// Dump function contents
 		printdataseg(f, ds);
-		printcodeseg(f, ds, s);
+		printcodeseg(f, ds, s, func_table, funsize);
 	}
 	// Seek back, then to next function
 	fseek(f, bodyoff, SEEK_SET);
@@ -263,34 +265,45 @@ int main(int argc, char** argv)
 	long sz;
 	int i = 0;
 	FILE* f;
-	
+	int findex = 1;			// Argv index of file.
+	const char **func_table = bg_intrinsic_table;
+	int funsize = bg_intrinsic_size;
+
+
 	if(argc<2) {
-		fprintf(stderr, "Usage\n%s usecode_file [func_num]\n", argv[0]);
+		fprintf(stderr, "Usage\n%s [-s] usecode_file [func_num]\n", argv[0]);
 		return -1;
 	}
-	f = fopen(argv[1], "rb");
+					// Serpent Isle?
+	if (strcmp(argv[1], "-s") == 0)
+		{
+		findex++;
+		func_table = si_intrinsic_table;
+		funsize = si_intrinsic_size;
+		}
+	f = fopen(argv[findex], "rb");
 	if( f == NULL )
 	{
-		fprintf(stderr,"Failed to open %s\n\n", argv[1]);
+		fprintf(stderr,"Failed to open %s\n\n", argv[findex]);
 		return 0;
 	}
 	fseek(f, 0, SEEK_END);
 	sz = ftell(f);
 	fseek(f, 0, SEEK_SET);
-	if( argc > 2 )
+	if( argc > findex + 1 )
 	{
 		char* stopstr;
-		func = strtoul(argv[2], &stopstr, 16);
+		func = strtoul(argv[findex + 1], &stopstr, 16);
 	}
 	while( ftell(f) < sz )
 	{		
-		printfunc(f, func, i);
+		printfunc(f, func, i, func_table, funsize);
 		i++;
 	}
 	if( func == -1 )
 	{
 		if( ftell(f) != sz )
-			fprintf(stderr,"Problem, tell = %d!\n", ftell(f));
+			fprintf(stderr,"Problem, tell = %ld!\n", ftell(f));
 		printf("Functions: %d\n", i);
 	}
 	fclose(f);

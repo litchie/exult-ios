@@ -1,4 +1,4 @@
-INCLUDES = -I. -I../files $(DEBUG_FLAGS) $(CPPFLAGS)
+INCLUDES = -I. -I../files -I../usecode $(DEBUG_FLAGS) $(CPPFLAGS)
 
 if LEXYACC
 UCC= ucc
