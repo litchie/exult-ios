@@ -1,3 +1,6 @@
+2003-03-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Spellbook_gump.cc: bookmark doesn't stop clicking on buttons
+
 2003-03-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/objbrowse.h (public): Get_selected() now returns correct
