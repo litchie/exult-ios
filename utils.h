@@ -90,6 +90,21 @@ inline unsigned int Read2
 	}
 
 /*
+ *	Read a 2-byte value from a file.
+ */
+
+inline unsigned int Read2
+	(
+	std::FILE* in
+	)
+	{
+	unsigned char b0, b1;
+	fread(&b0,sizeof(unsigned char),1,in);
+	fread(&b1,sizeof(unsigned char),1,in);
+	return (b0 + (b1 << 8));
+	}
+
+/*
  *	Read a 4-byte long value, lsb first.
  */
 
@@ -119,6 +134,23 @@ inline unsigned long Read4
 	unsigned char b1 = *in++;
 	unsigned char b2 = *in++;
 	unsigned char b3 = *in++;
+	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+	}
+
+/*
+ *	Read a 4-byte value from a file.
+ */
+
+inline unsigned long Read4
+	(
+	std::FILE* in
+	)
+	{
+	unsigned char b0, b1, b2, b3;
+	fread(&b0,sizeof(unsigned char),1,in);
+	fread(&b1,sizeof(unsigned char),1,in);
+	fread(&b2,sizeof(unsigned char),1,in);
+	fread(&b3,sizeof(unsigned char),1,in);
 	return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
 	}
 
