@@ -310,6 +310,8 @@ int Egg_object::is_active
 					//   been reset.
 	if (cri == cached_in && !solid_area)
 		cri = avatar_near;
+	int deltaz = get_lift() - tz;
+	deltaz = deltaz < 0 ? -deltaz : deltaz;
 	switch (cri)
 		{
 	case cached_in:			// Anywhere in square.
@@ -317,12 +319,12 @@ int Egg_object::is_active
 	case party_near:
 		return (obj->get_party_id() >= 0 || 
 					obj == gwin->get_main_actor()) &&
-			area.has_point(tx, ty) && tz == get_lift() &&
+			area.has_point(tx, ty) && deltaz <= 1 &&
 					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
 	case external_criteria:		// For now, just guessing.
 		return obj == gwin->get_main_actor() && 
-			(tz == get_lift() || 
+			(deltaz <= 1 || 
 				(type == missile && tz/5 == get_lift()/5)) &&
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty);
@@ -336,15 +338,15 @@ int Egg_object::is_active
 			!inside.has_point(tx, ty);
 		}
 	case avatar_footpad:
-		return obj == gwin->get_main_actor() && tz == get_lift() &&
+		return obj == gwin->get_main_actor() && deltaz == 0 &&
 						area.has_point(tx, ty);
 	case party_footpad:
-		return area.has_point(tx, ty) && tz == get_lift() &&
+		return area.has_point(tx, ty) && deltaz == 0 &&
 			(obj->get_party_id() >= 0 || 
 						obj == gwin->get_main_actor());
 	case something_on:
 		return obj != gwin->get_main_actor() && 
-			tz >= get_lift() && tz - get_lift() <= 3 &&
+			tz >= get_lift() && deltaz <= 3 &&
 			area.has_point(tx, ty) && obj->get_npc_num() <= 0;
 	default:
 		return 0;

@@ -1059,6 +1059,8 @@ void Actor::clear_flag
 		flags2 &= ~((unsigned long) 1 << (flag-32));
 	if (flag == invisible)		// Restore normal palette.
 		Game_window::get_game_window()->set_palette();
+	else if (flag == asleep && schedule_type == Schedule::sleep)
+		set_schedule_type(Schedule::stand);
 	set_actor_shape();
 	}
 
