@@ -1938,9 +1938,9 @@ int Usecode_machine::run
 					// Save/set function.
 	Usecode_function *save_fun = cur_function;
 	cur_function = fun;
-	unsigned char *ip = fun->code;	// Instruction pointer.
+	uint8 *ip = fun->code;	// Instruction pointer.
 					// Where it ends.
-	unsigned char *endp = ip + fun->len;
+	uint8 *endp = ip + fun->len;
 	int data_len = Read2(ip);	// Get length of (text) data.
 	char *data = (char *) ip;	// Save ->text.
 	ip += data_len;			// Point past text.

@@ -479,7 +479,7 @@ void Container_game_object::write_ireg
 	{
 	unsigned char buf[13];		// 13-byte entry + length-byte.
 	buf[0] = 12;
-	unsigned char *ptr = &buf[1];	// To avoid confusion about offsets.
+	uint8 *ptr = &buf[1];	// To avoid confusion about offsets.
 	write_common_ireg(ptr);		// Fill in bytes 1-4.
 	ptr += 4;
 	Game_object *first = objects.get_first(); // Guessing: +++++

@@ -913,7 +913,7 @@ void Game_window::read_ireg_objects
 			memcpy(&circles[0], &entry[4], 5);
 			lift = entry[9] >> 4;
 			memcpy(&circles[5], &entry[10], 4);
-			unsigned char *ptr = &entry[14];
+			uint8 *ptr = &entry[14];
 			unsigned long flags = Read4(ptr);
 			obj = new Spellbook_object(
 				shnum, frnum, tilex, tiley, lift,
