@@ -282,24 +282,28 @@ void	Audio::play(Uint8 *sound_data,Uint32 len,bool wait)
 		own_audio_data=true;
 		}
 
-	mixer->play(sound_data,len);
+	if(mixer)
+		mixer->play(sound_data,len);
 	if(own_audio_data)
 		delete [] sound_data;
 }
 
 void	Audio::cancel_raw(void)
 {
-	mixer->cancel_raw();
+	if(mixer)
+		mixer->cancel_raw();
 }
 
 void	Audio::cancel_streams(void)
 {
-	mixer->cancel_streams();
+	if(mixer)
+		mixer->cancel_streams();
 }
 
 void	Audio::mix(Uint8 *sound_data,Uint32 len)
 {
-	mixer->play(sound_data,len);
+	if(mixer)
+		mixer->play(sound_data,len);
 }
 
 static	size_t calc_sample_buffer(Uint16 _samplerate)

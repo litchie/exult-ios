@@ -78,9 +78,9 @@ public:
 	bool	are_effects_enabled() { return effects_enabled; }
 	void	set_effects_enabled(bool ena) { effects_enabled = ena; }
 
-	ProducerConsumerBuf	*Create_Audio_Stream(void) { return mixer->Create_Audio_Stream(); }
-	void    Destroy_Audio_Stream(Uint32 id) { mixer->Destroy_Audio_Stream(id); }
-	bool	is_playing(Uint32 id) { return mixer->is_playing(id); }
+	ProducerConsumerBuf	*Create_Audio_Stream(void) { return !mixer?0:mixer->Create_Audio_Stream(); }
+	void    Destroy_Audio_Stream(Uint32 id) { if(mixer) mixer->Destroy_Audio_Stream(id); }
+	bool	is_playing(Uint32 id) { return !mixer?0:mixer->is_playing(id); }
 
 	static	const	unsigned int	ringsize=3000;
 //	static	const	int	samplerate=11025;
