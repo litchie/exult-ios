@@ -663,7 +663,9 @@ static void Init
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
 
+#ifndef MACOSX		// Don't set icon on OS X; the external icon is *much* nicer
 	SetIcon();
+#endif
 
 	int w, h, sc, sclr;
 
