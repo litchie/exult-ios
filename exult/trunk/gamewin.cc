@@ -686,7 +686,7 @@ void Game_window::paint
 		int x = 15, y = 15;
 		int w = get_width() - x, h = get_height() - y;
 		char buf[512];
-		sprintf(buf, "Welcome to EXULT V 0.%02d, a free RPG game engine.\n\nCopyright 2000 J. S. Freedman\nGraphics copyrighted by Origin\nText rendered by FreeType", RELNUM);
+		sprintf(buf, "Welcome to EXULT V 0.%02d,\na free RPG game engine.\n\nCopyright 2000 J. S. Freedman\n              and Dancer Vesperman\n\nGraphics and audio remain\n the property of Origin Systems\n\nText rendered by FreeType", RELNUM);
 		win->draw_text_box(font, buf, 
 				x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
 		}
