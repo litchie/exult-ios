@@ -28,6 +28,7 @@ exult_studio_SOURCES = \
 	execbox.cc \
 	locator.cc \
 	locator.h \
+	maps.cc \
 	npcedit.cc \
 	objedit.cc \
 	shapeedit.cc \
