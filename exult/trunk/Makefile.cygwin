@@ -7,7 +7,7 @@ U7PATH=C:/Ultima7
 CC=gcc
 # Base of the exult source
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs:$(SRC)/data
+VPATH=$(SRC):$(SRC)/files:$(SRC)/files/zip:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs:$(SRC)/data
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
@@ -25,7 +25,7 @@ EXTRA_OPTIONS=
 # mingw automatically defines WIN32
 CPPFLAGS=-DVERSION=\"0.95cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
-	-I$(SRC)/files -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
+	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
 	-I$(SRC)/usecode -I$(SRC)/data $(SDL_CFLAGS) -DHAVE_SNPRINTF \
 	 $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
