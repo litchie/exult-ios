@@ -3,7 +3,7 @@ INCLUDES = -I.. \
 
 YFLAGS = -d				# Want ucparse.h.
 
-ucc_SOURCES = ucparse.yy
+ucc_SOURCES = ucparse.yy uclex.ll ucmain.cc
 
 bin_PROGRAMS = ucc
 
