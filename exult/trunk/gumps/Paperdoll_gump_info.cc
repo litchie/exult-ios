@@ -608,7 +608,7 @@ Paperdoll_gump::Paperdoll_npc *Paperdoll_gump::GetCharacterInfo(int shape)
 		i++;
 	}
 	
-	return Characters;
+	return NULL;
 }
 
 Paperdoll_gump::Paperdoll_item *Paperdoll_gump::GetItemInfo(int shape, int frame, int spot)

@@ -359,6 +359,7 @@ USECODE_INTRINSIC(add_to_party)
 	if (!npc || party_count == PARTY_MAX || npc_in_party(npc))
 		return no_ret;		// Can't add.
 	npc->set_party_id(party_count);
+	npc->set_flag (Obj_flags::in_party);
 	party[party_count++] = npc->get_npc_num();
 	npc->set_schedule_type(Schedule::follow_avatar);
 // cout << "NPC " << npc->get_npc_num() << " added to party." << endl;
@@ -387,6 +388,7 @@ USECODE_INTRINSIC(remove_from_party)
 			npc2->set_party_id(i - 1);
 		party[i - 1] = party[i];
 		}
+	npc->clear_flag (Obj_flags::in_party);
 	party_count--;
 	party[party_count] = 0;
 	npc->set_party_id(-1);
@@ -1569,7 +1571,7 @@ USECODE_INTRINSIC(is_not_blocked)
 		info.get_3d_xtiles(), info.get_3d_ytiles(), 
 		new_lift, MOVE_ALL_TERRAIN);
 //Don't know why this is causing trouble in Forge with mage at end:
-//	blocked = (blocked || new_lift != tile.tz);
+	blocked = (blocked || new_lift != tile.tz);
 	if (lcpos.tx != -1)		// Put back last_created.
 		last_created->move(lcpos);
 	return Usecode_value(!blocked);
@@ -1733,18 +1735,15 @@ USECODE_INTRINSIC(play_sound_effect)
 
 USECODE_INTRINSIC(get_npc_id)
 {
-	// GetSchedule(npc).  Rets. schedtype.
-	Actor *obj = (Actor *) get_item(parms[0]);
-	Usecode_value u(obj ? obj->get_ident() : 0);
-	return(u);
+	Actor *actor = as_actor(get_item(parms[0]));
+	if (!actor) return(no_ret);
+	return Usecode_value (actor->get_ident());
 }
 
 USECODE_INTRINSIC(set_npc_id)
 {
-	Actor *obj = (Actor *) get_item(parms[0]);
-	if (obj)
-		obj->set_ident(parms[1].get_int_value());
-
+	Actor *actor = as_actor(get_item(parms[0]));
+	if (actor) actor->set_ident(parms[1].get_int_value());
 	return(no_ret);
 }
 
@@ -1752,9 +1751,16 @@ USECODE_INTRINSIC(set_npc_id)
 USECODE_INTRINSIC(add_cont_items)
 {
 	// Add items(num, item, ??quality?? (-359), frame (or -359), T/F).
-	add_cont_items(parms[0], parms[1], parms[2],
+	return add_cont_items(parms[0], parms[1], parms[2],
 					parms[3], parms[4], parms[5]);
-	return(no_ret);
+}
+
+// Is this SI Only
+USECODE_INTRINSIC(remove_cont_items)
+{
+	// Add items(num, item, ??quality?? (-359), frame (or -359), T/F).
+	return remove_cont_items(parms[0], parms[1], parms[2],
+					parms[3], parms[4], parms[5]);
 }
 
 /*
@@ -1795,6 +1801,37 @@ USECODE_INTRINSIC(si_path_run_usecode)
 	// Npc should walk to loc and then execute usecode.
 	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2],
 						parms[5].get_int_value());
+	return no_ret;
+}
+
+USECODE_INTRINSIC(error_message)
+{
+	// exec(array)
+	// Output everything to stdout
+
+	for (int i = 0; i < num_parms; i++)
+	{
+		if (parms[i].is_int()) std::cout << parms[i].get_int_value() ;
+		else if (parms[i].is_ptr()) std::cout << parms[i].get_ptr_value();
+		else if (!parms[i].is_array()) std::cout << parms[i].get_str_value();
+		else for (int j = 0; j < parms[i].get_array_size(); j++)
+		{
+			if (parms[i].get_elem(j).is_int()) std::cout << parms[i].get_elem(j).get_int_value() ;
+			else if (parms[i].get_elem(j).is_ptr()) std::cout << parms[i].get_elem(j).get_ptr_value();
+			else if (!parms[i].get_elem(j).is_array()) std::cout << parms[i].get_elem(j).get_str_value();
+		}
+	}
+
+	std::cout << std::endl;
+	return no_ret;
+}
+
+USECODE_INTRINSIC(set_polymorph)
+{
+	// exec(npc, shape).
+	// Npc's shape is change to shape.
+	Actor *actor = as_actor(get_item(parms[0]));
+	if (actor) actor->set_polymorph(parms[1].get_int_value());
 	return no_ret;
 }
 

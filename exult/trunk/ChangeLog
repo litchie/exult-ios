@@ -1,3 +1,19 @@
+2001-01-12  Ryan Nunn <triforce@merlin.net.au>
+	* Added Serpent Isle intrinsics set_polymorph (b3), remove_cont_items (37)
+	  and error_message (40).
+	* Added full support for polymorph mode for Serpent Isle NPCs.
+	* Added in_party flag.
+	* Modified add_cont_items intrinsic to return the number created.
+	* Changed formatting in siintrinsics.h.
+	* Stop SI NPCs going to first time schedule after being activated.
+	* Don't set BG gameplay settings (i.e. have password) when playing SI.
+	* Shapes_vga_file::get_info returns info[721] for all male Avatar shapes
+	  and info[989] for all female Avatar shapes. Removed previous code that
+	  delt with Avatar shapes >= 1024.
+	* Fixed another potential divide by zero in objs/contain.cc.
+	* Modifed Makefile.win32 to make things easier for me if it gets updated by
+	  someone else.
+
 2001-01-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Serpent Isle conversations improved.

@@ -335,7 +335,7 @@ Actor::Actor
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
 	) : Container_game_object(), name(nm),usecode(uc), 
-	    npc_num(num), party_id(-1), attack_mode(nearest),
+	    npc_num(num), party_id(-1), shape_save(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
 	    alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
@@ -1277,12 +1277,8 @@ void Actor::set_flag
 	{
 //	cout << "Set flag for NPC " << get_npc_num() << " = " << flag << endl;
 
-	// Small hack to stop SI from hiding the avatar
-	if (get_npc_num() == 0
-		&& flag == 16
-		&& Game::get_game_type() == SERPENT_ISLE)
-		return;
-		
+	if (flag == Obj_flags::dont_render) return;
+
 	if (flag >= 0 && flag < 32)
 		flags |= ((uint32) 1 << flag);
 	else if (flag >= 32 && flag < 64)
@@ -2243,57 +2239,88 @@ void Main_actor::die
 	}
 
 /*
- *	Set the shapenum based on skin color, sex, naked flag and petra flag
+ *	Set the shapenum based on skin color, sex, naked flag and petra and polymorph flag
  */
 void Actor::set_actor_shape()
 {
-	if ((get_npc_num() != 0) && (get_npc_num() != 28))
+	if (get_npc_num() != 0 || get_siflag (polymorph))
 		return;
 
-	Game_window *gwin = Game_window::get_game_window();
-	Actor *avatar = Game_window::get_game_window()->get_main_actor();
-
-	if (!avatar) return;
-
-	int sn = get_shapenum();
+	int sn;
 
 	if (Game::get_game_type() == SERPENT_ISLE)
 	{
-		if ((avatar->get_flag (Obj_flags::petra) && npc_num == 0) ||
-			(!avatar->get_flag (Obj_flags::petra) && npc_num != 0))
+		if (get_skin_color() == 0) // WH
 		{
-			sn = 658;
+			sn = 1028+get_type_flag(tf_sex)+6*get_siflag(naked);
 		}
-		else if (avatar->get_skin_color() == 0) // WH
+		else if (get_skin_color() == 1) // BN
 		{
-			sn = 1028+avatar->get_type_flag(Actor::tf_sex)+
-					6*avatar->get_siflag(Actor::naked);
+			sn = 1026+get_type_flag(tf_sex)+6*get_siflag(naked);
 		}
-		else if (avatar->get_skin_color() == 1) // BN
+		else if (get_skin_color() == 2) // BK
 		{
-			sn = 1026+avatar->get_type_flag(Actor::tf_sex)+
-					6*avatar->get_siflag(Actor::naked);
-		}
-		else if (avatar->get_skin_color() == 2) // BK
-		{
-			sn = 1024+avatar->get_type_flag(Actor::tf_sex)+
-					6*avatar->get_siflag(Actor::naked);
+			sn = 1024+get_type_flag(tf_sex)+6*get_siflag(naked);
 		}
 	}
-					// Here if Black Gate:
-	else if (get_npc_num() == 0)
-		{
-		if (avatar->get_type_flag(Actor::tf_sex))
-			sn = 989;
-		else
-			sn = 721;
-		}
+	else if (get_type_flag(Actor::tf_sex))
+		sn = 989;
+	else
+		sn = 721;
 
 	set_shape (sn, get_framenum());
+}
 
-	// Set petra
-	if (npc_num != 28 && gwin->get_npc(28))
-		gwin->get_npc(28)->set_actor_shape();
+// Sets the polymorph to shape
+void Actor::set_polymorph (int shape)
+{
+	// Polymorph is only SI
+	if (Game::get_game_type() != SERPENT_ISLE) return;
+
+	// Want to set to Avatar
+	if (shape == 721)
+	{
+		Actor *avatar = Game_window::get_game_window()->get_main_actor();
+		if (!avatar) return;
+
+		if (avatar->get_skin_color() == 0) // WH
+			shape = 1028+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
+		else if (avatar->get_skin_color() == 1) // BN
+			shape = 1026+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
+		else // BK
+			shape = 1024+avatar->get_type_flag(tf_sex)+6*avatar->get_siflag(naked);
+	}
+
+	if (shape == shape_save)
+	{
+		set_shape (shape_save, get_framenum());
+		shape_save = -1;
+		clear_siflag(polymorph);
+		return;
+	}
+	if (shape_save != -1) shape_save = get_shapenum();
+	set_shape (shape, get_framenum());
+	set_siflag (polymorph);
+}
+
+// Sets polymorph shape to defaults based on flags and npc num
+void Actor::set_polymorph_defualt()
+{
+	// Polymorph is only SI
+	if (Game::get_game_type() != SERPENT_ISLE || !get_siflag(polymorph)
+				|| (get_npc_num() != 0 && get_npc_num() != 28))
+		return;
+
+	set_actor_shape();
+
+	shape_save = get_shapenum();
+
+	if (get_npc_num() == 28)		// Handle Petra First
+		set_polymorph (721);
+	else if (get_flag(Obj_flags::petra))	// Avatar as petra
+		set_polymorph (658);
+	else	// Snake
+		set_polymorph (530);
 }
 
 /*
@@ -2462,7 +2489,7 @@ void Npc_actor::activate
 					// Converse, etc.
 	Actor::activate(umachine, event);
 	int i;				// Past 6:00pm first day?
-	if (gwin->get_total_hours() >= 18 ||
+	if (gwin->get_total_hours() >= 18 || Game::get_game_type() == SERPENT_ISLE ||
 					// Or party member/asleep?
 	    (i = find_schedule_change(gwin->get_hour()/3)) < 0 ||
 					// Or schedule is already correct?
