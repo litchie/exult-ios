@@ -1,4 +1,4 @@
-# Never ever change the ordere here: Exult depends on it
+# Never ever change the order here: Exult depends on it
 EXULT_FLX_OBJECTS = \
 	exult_quotes.shp	\
 	exult_credits.shp	\
@@ -26,14 +26,17 @@ EXULT_FLX_OBJECTS = \
 
 flexdir = $(datadir)/exult
 
-flex_DATA = exult.flx midisfx.flx
+if DATA_FILES
+EXULT_FLX = exult.flx
+else
+EXULT_FLX =
+endif
 
-CLEANFILES = \
-	exult.flx *~
+flex_DATA = $(EXULT_FLX) midisfx.flx
+
+CLEANFILES = exult.flx *~
 
 EXTRA_DIST = $(EXULT_FLX_OBJECTS) midisfx.flx
-
-all-local: exult.flx
 
 exult.flx: $(EXULT_FLX_OBJECTS)
 	../tools/expack -c exult.flx $(EXULT_FLX_OBJECTS)
