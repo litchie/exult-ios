@@ -150,11 +150,11 @@ Actor::Actor
 		else
 			set_property((int) Actor::mana, magic_val);
 
-		set_siflag (Actor::met);
+		set_flag (Actor::met);
 	}
 	else
 	{
-		if ((mana_val << 0) & 1) set_siflag (Actor::met);
+		if ((mana_val << 0) & 1) set_flag (Actor::met);
 		if ((mana_val << 1) & 1) set_siflag (Actor::no_spell_casting);
 		if ((mana_val << 2) & 1) set_siflag (Actor::zombie);
 	}
@@ -361,7 +361,7 @@ void Actor::write
 	}
 	else
 	{
-		if (get_siflag (Actor::met)) mana_val |= 1;
+		if (get_flag (Actor::met)) mana_val |= 1;
 		if (get_siflag (Actor::no_spell_casting)) mana_val |= 1 << 1;
 		if (get_siflag (Actor::zombie)) mana_val |= 1 << 2;
 	}

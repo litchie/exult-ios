@@ -739,10 +739,10 @@ void Actor::paint_weapon
 /*
  *	Run usecode when double-clicked.
  */
-
 void Actor::activate
 	(
-	Usecode_machine *umachine
+	Usecode_machine *umachine,
+	int event
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -759,10 +759,11 @@ void Actor::activate
 		return;			// Asleep.  +++++Check flag too?
 	else if (usecode == -1)
 		umachine->call_usecode(get_shapenum(), this,
-				Usecode_machine::double_click);
+			(Usecode_machine::Usecode_events) event);
 	else
 		umachine->call_usecode(usecode, this, 
-					Usecode_machine::double_click);
+			(Usecode_machine::Usecode_events) event);
+	
 	}
 
 /*
@@ -787,7 +788,7 @@ string Actor::get_name
 	(
 	) const
 	{
-	return (name.empty() || !get_siflag (met)) ? Game_object::get_name() : name;
+	return (name.empty() || !get_flag (met)) ? Game_object::get_name() : name;
 	}
 
 /*
