@@ -14,6 +14,10 @@
 	* Spellbook_gump.cc: use real infinity symbol in SI
 	* Spellbook_gump.cc: show infinity (in SI) or 99 (in BG) in wizard mode
 
+2004-08-03  Max Horn  <max@quendi.de>
+
+	* exult.cc: Don't set icon on OS X; the external icon is *much* nicer.
+
 2004-07-11    <jeff@mini.nerble.net>
 
 	* actors.cc,combat.cc,etc.:  Support for 'charmed' flag.
