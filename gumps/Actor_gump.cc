@@ -243,7 +243,7 @@ void Actor_gump::paint
 	for (size_t i = 0; i < sizeof(coords)/2*sizeof(coords[0]); i++)
 	{			// Set object coords.
 		Game_object *obj = container->get_readied(i);
-		if (obj && !obj->get_cx() && !obj->get_cy())
+		if (obj)//&& !obj->get_cx() && !obj->get_cy())
 			set_to_spot(obj, i);
 	}
 	Gump::paint(gwin);	// Paint gump & objects.

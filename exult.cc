@@ -260,6 +260,12 @@ int exult_main(void)
 		vs.push_back(s);
 	}
 
+	// This is for Serpent Isle Paperdolls in Black Gate
+	string	serp_static;
+	config->value("config/disk/game/serpentisle/path",serp_static,".");
+	serp_static += "/static";
+	add_system_path("<SERPENT_STATIC>", serp_static.c_str());
+
 	string	tracing;
 	config->value("config/debug/trace/intrinsics",tracing,"no");
 	if(tracing=="yes")

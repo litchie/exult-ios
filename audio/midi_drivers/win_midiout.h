@@ -30,10 +30,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../autoconfig.h"
 #endif
 
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#include <windows.h>
+#include <mmsystem.h>
+
 #include "Midi.h"
 #include "xmidi.h"
-#include "SDL_syswm.h"
-#include "mmsystem.h"
 #include "exceptions.h"
 
 class	Windows_MidiOut : virtual public MidiAbstract
@@ -98,19 +103,19 @@ private:
 	Uint32 sfx_start;
 
 	inline void wmoInitClock ()
-	{ start = SDL_GetTicks(); }
+	{ start = GetTickCount(); }
 
 	inline double wmoGetTime ()
-	{ return (SDL_GetTicks() - start) * 1000.0; }
+	{ return (GetTickCount() - start) * 1000.0; }
 
 	inline void wmoInitSFXClock ()
-	{ sfx_start = SDL_GetTicks(); }
+	{ sfx_start = GetTickCount(); }
 
 	inline double wmoGetSFXTime ()
-	{ return (SDL_GetTicks() - sfx_start) * 1000.0; }
+	{ return (GetTickCount() - sfx_start) * 1000.0; }
 
 	inline void wmoDelay (const double mcs_delay)
-	{ if (mcs_delay >= 0) SDL_Delay ((int) (mcs_delay / 1000.0)); }
+	{ if (mcs_delay >= 0) Sleep ((int) (mcs_delay / 1000.0)); }
 
 };
 

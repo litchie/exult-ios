@@ -1,3 +1,12 @@
+2001-01-19  Ryan Nunn <triforce@merlin.net.au>
+	* actors.*, exult.cc, gamewin.*, NEWS, gumps/*.* :
+	  SI paperdolls in BG
+	* gameclk.*, gamewin.h : Time now counts in minutes not per 15 minutes.
+	  Also added timerate variable for potential cheat useage like the
+	  originals.
+	* audio/midi_drivers/win_midiout.* : Replaced all SDL calls with the
+	  equivilant Win32 calls.
+
 2001-01-18  Tristan Tarrant <nadir@users.sourceforge.net>
 	* data/exult_logo.shp: removed spurious pixels
 
