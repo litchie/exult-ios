@@ -30,7 +30,8 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
 	gumps.o imagescl.o imagewin.o items.o lists.o mouse.o npcnear.o \
 	npctime.o  objs.o palette.o paths.o readnpcs.o scale.o schedule.o \
 	segfile.o sigame.o spells.o tqueue.o usecode.o \
-        useval.o utils.o vec.o vgafile.o virstone.o
+        useval.o utils.o vec.o vgafile.o virstone.o \
+	font.o menulist.o txtscroll.o
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
@@ -53,7 +54,8 @@ EXULT_FLX_OBJECTS = \
 	data/exult0.pal \
 	data/black_gate.shp \
 	data/serpent_isle.shp \
-	data/marketpl.mid
+	data/meditown.mid \
+	data/font.shp
 
 $(EXEC) : $(OBJS) data/exult.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)

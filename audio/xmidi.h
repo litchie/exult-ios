@@ -33,7 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define XMIDI_CONVERT_NOCONVERSION	0
 #define XMIDI_CONVERT_MT32_TO_GM	1
 #define XMIDI_CONVERT_MT32_TO_GS	2
-#define XMIDI_CONVERT_GSMT_TO_GS	3
+#define XMIDI_CONVERT_MT32_TO_GS127	3
+#define XMIDI_CONVERT_GS127_TO_GS	4
 
 struct midi_event
 {
