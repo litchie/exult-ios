@@ -70,6 +70,8 @@ using std::rand;
 using std::string;
 using std::swap;
 
+Actor *Actor::editing = 0;
+
 // Party positions
 // Direction, Party num, xy (tile) from leader
 //
@@ -1445,9 +1447,10 @@ void Actor::activate
 	{
 	Game_window *gwin = Game_window::get_game_window();
 #ifdef XWIN
-	if (client_socket >= 0)		// Talking to ExultStudio?
+	if (client_socket >= 0 &&	// Talking to ExultStudio?
+	    cheat.in_map_editor())
 		{
-//+++		editing = 0;
+		editing = 0;
 		Tile_coord t = get_abs_tile_coord();
 		unsigned long addr = (unsigned long) this;
 		int num_schedules;	// Set up schedule-change list.
@@ -1469,7 +1472,7 @@ void Actor::activate
 				num_schedules, schedules) != -1)
 			{
 			cout << "Sent npc data to ExultStudio" << endl;
-//++++Later			editing = this;
+			editing = this;
 			}
 		else
 			cout << "Error sending npc data to ExultStudio" <<endl;
@@ -1505,6 +1508,100 @@ void Actor::activate
 			(Usecode_machine::Usecode_events) event);
 	
 	}
+
+/*
+ *	Message to update from ExultStudio.
+ */
+
+void Actor::update_from_studio
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+#ifdef XWIN
+	unsigned long addr;
+	int tx, ty, tz;
+	int shape, frame;
+	std::string name;
+	short ident;
+	int usecode;
+	short properties[12];
+	short attack_mode, alignment;
+	unsigned long oflags;		// Object flags.
+	unsigned long siflags;		// Extra flags for SI.
+	unsigned long type_flags;	// Movement flags.
+	short num_schedules;
+	Serial_schedule schedules[8];
+	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame,
+		name, ident, usecode, properties, attack_mode, alignment,
+			oflags, siflags, type_flags, num_schedules, schedules))
+		{
+		cout << "Error decoding npc" << endl;
+		return;
+		}
+	Actor *npc = (Actor *) addr;
+	if (npc && npc != editing)
+		{
+		cout << "Npc from ExultStudio is not being edited" << endl;
+		return;
+		}
+	editing = 0;
+	Game_window *gwin = Game_window::get_game_window();
+	if (!npc)			// Create a new one?
+		{
+		extern int Get_click(int&, int&, Mouse::Mouse_shapes, char *);
+		int x, y;
+		if (!Get_click(x, y, Mouse::hand, 0))
+			{
+			if (client_socket >= 0)
+				Send_data(client_socket, Exult_server::cancel);
+			return;
+			}
+					// Create.  Gets initialized below.
+		npc = new Npc_actor(name, shape, frame, usecode);
+		npc->npc_num = -1;	// For now++++++++++
+		npc->set_invalid();	// Set to invalid position.
+		int lift;		// Try to drop at increasing hts.
+		for (lift = 0; lift < 12; lift++)
+			if (gwin->drop_at_lift(npc, x, y, lift))
+				break;
+		if (lift == 12)
+			{
+			if (client_socket >= 0)
+				Send_data(client_socket, Exult_server::cancel);
+			delete npc;
+			return;
+			}
+		if (client_socket >= 0)
+			Send_data(client_socket, Exult_server::user_responded);
+		}
+	else				// Old.
+		{
+		npc->add_dirty(gwin);
+		npc->set_shape(shape, frame);
+		npc->add_dirty(gwin);
+		npc->usecode = usecode;
+		}
+	//++++Got to set NPC#.
+	npc->set_ident(ident);
+	for (int i = 0; i < 12; i++)
+		npc->set_property(i, properties[i]);
+	npc->set_attack_mode((Actor::Attack_mode) attack_mode);
+	npc->set_alignment(alignment);
+	npc->flags = oflags;
+	npc->siflags = siflags;
+	npc->type_flags = type_flags;
+	Schedule_change *scheds = num_schedules ? 
+				new Schedule_change[num_schedules] : 0;
+	for (int i = 0; i < num_schedules; i++)
+		scheds[i].set(schedules[i].tx, schedules[i].ty, 
+				schedules[i].type, schedules[i].time);
+	npc->set_schedules(scheds, num_schedules);
+	cout << "Npc updated" << endl;
+#endif
+	}
+
 
 void Actor::show_inventory()
 {

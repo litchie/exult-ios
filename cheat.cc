@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "browser.h"
 #include "soundtest.h"
 #include "cheat_screen.h"
+#include "server.h"
 
 using std::cout;
 using std::endl;
@@ -136,10 +137,9 @@ void Cheat::toggle_map_editor (void) {
 					gwin->paint_eggs = 1;
 					gwin->paint();
 				}
-			static bool launched = false;
-			if (!launched && !gwin->get_win()->is_fullscreen())
+			if (client_socket < 0 && 
+					!gwin->get_win()->is_fullscreen())
 				{
-					launched = true;
 					char cmnd[256];		// Set up command.
 					strcpy(cmnd, "exult_studio -x");
 					std::string data_path;

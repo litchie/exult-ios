@@ -130,6 +130,86 @@ static void Npc_shape_dropped
 		((ExultStudio *) udata)->set_npc_shape(shape, frame);
 	}
 
+					// Schedule names.
+static char *sched_names[32] = {
+		"Combat", "Horiz. Pace", "Vert. Pace", "Talk", "Dance",
+		"Eat", "Farm", "Tend Shop", "Miner", "Hound", "Stand",
+		"Loiter", "Wander", "Blacksmith", "Sleep", "Wait", "Sit",
+		"Graze", "Bake", "Sew", "Shy", "Lab Work", "Thief", "Waiter",
+		"Special", "Kid Games", "Eat at Inn", "Duel", "Preach",
+		"Patrol", "Desk Work", "Follow"};
+
+/*
+ *	Set a line in the schedule page.
+ */
+
+static void Set_schedule_line
+	(
+	GladeXML *app_xml,
+	int time,			// 0-7.
+	int type,			// Activity (0-31, or -1 for none).
+	int tx, int ty, int tz = 0	// Location.
+	)
+	{
+	char *lname = g_strdup_printf("npc_sched%d", time);
+	GtkLabel *label = GTK_LABEL(glade_xml_get_widget(app_xml, lname));
+	g_free(lname);
+					// User data = schedule #.
+	gtk_object_set_user_data(GTK_OBJECT(label), (gpointer) type);
+	gtk_label_set_text(label, 
+			type >= 0 && type < 32 ? sched_names[type] : "-----");
+					// Set location.
+	char *locname = g_strdup_printf("sched_loc%d", time);
+	GtkBox *box = GTK_BOX(glade_xml_get_widget(app_xml, locname));
+	g_free(locname);
+	GList *list = g_list_first(box->children);
+	GtkWidget *spin = ((GtkBoxChild *) list->data)->widget;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tx);
+	list = g_list_next(list);
+	spin = ((GtkBoxChild *) list->data)->widget;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), ty);
+	list = g_list_next(list);
+	spin = ((GtkBoxChild *) list->data)->widget;
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tz);
+	}
+
+/*
+ *	Get info. from line in the schedule page.
+ *
+ *	Output:	False if schedule isn't set.
+ */
+
+static bool Get_schedule_line
+	(
+	GladeXML *app_xml,
+	int time,			// 0-7.
+	Serial_schedule& sched		// Filled in if 'true' returned.
+	)
+	{
+	char *lname = g_strdup_printf("npc_sched%d", time);
+	GtkLabel *label = GTK_LABEL(glade_xml_get_widget(app_xml, lname));
+	g_free(lname);
+					// User data = schedule #.
+	sched.type = (int) gtk_object_get_user_data(GTK_OBJECT(label));
+	if (sched.type < 0 || sched.type > 31)
+		return false;
+					// Get location.
+	char *locname = g_strdup_printf("sched_loc%d", time);
+	GtkBox *box = GTK_BOX(glade_xml_get_widget(app_xml, locname));
+	g_free(locname);
+	GList *list = g_list_first(box->children);
+	GtkWidget *spin = ((GtkBoxChild *) list->data)->widget;
+	sched.tx = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
+	list = g_list_next(list);
+	spin = ((GtkBoxChild *) list->data)->widget;
+	sched.ty = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
+//	list = g_list_next(list);
+//	spin = ((GtkBoxChild *) list->data)->widget;
+//	sched.tz = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(spin));
+	sched.time = time;
+	return true;
+	}
+
 /*
  *	Open the npc-editing window.
  */
@@ -152,6 +232,8 @@ void ExultStudio::open_npc_window
 		npc_ctx = gtk_statusbar_get_context_id(
 			GTK_STATUSBAR(glade_xml_get_widget(
 				app_xml, "npc_status")), "Npc Editor");
+		for (int i = 0; i < 24/3; i++)	// Init. schedules' user_data.
+			Set_schedule_line(app_xml, i, -1, 0, 0, 0);
 		}
 					// Init. npc address to null.
 	gtk_object_set_user_data(GTK_OBJECT(npcwin), 0);
@@ -241,6 +323,7 @@ static bool Get_flag_cbox
 	return (fnum >= 0 && fnum < 32);
 	}
 
+
 /*
  *	Init. the npc editor with data from Exult.
  *
@@ -314,58 +397,16 @@ int ExultStudio::init_npc_window
 		}
 					// Set schedules.
 	for (int i = 0; i < 24/3; i++)	// First init. to empty.
-		set_schedule_line(i, -1, 0, 0, 0);
+		Set_schedule_line(app_xml, i, -1, 0, 0, 0);
 	for (int i = 0; i < num_schedules; i++)
 		{
 		Serial_schedule& sched = schedules[i];
 		int time = sched.time;	// 0-7.
 		if (time < 0 || time > 7)
 			continue;	// Invalid.
-		set_schedule_line(time, sched.type, sched.tx, sched.ty);
+		Set_schedule_line(app_xml,time,sched.type, sched.tx, sched.ty);
 		}
 	return 1;
-	}
-
-					// Schedule names.
-static char *sched_names[32] = {
-		"Combat", "Horiz. Pace", "Vert. Pace", "Talk", "Dance",
-		"Eat", "Farm", "Tend Shop", "Miner", "Hound", "Stand",
-		"Loiter", "Wander", "Blacksmith", "Sleep", "Wait", "Sit",
-		"Graze", "Bake", "Sew", "Shy", "Lab Work", "Thief", "Waiter",
-		"Special", "Kid Games", "Eat at Inn", "Duel", "Preach",
-		"Patrol", "Desk Work", "Follow"};
-
-/*
- *	Set a line in the schedule page.
- */
-
-void ExultStudio::set_schedule_line
-	(
-	int time,			// 0-7.
-	int type,			// Activity (0-31, or -1 for none).
-	int tx, int ty, int tz		// Location.
-	)
-	{
-	char *lname = g_strdup_printf("npc_sched%d", time);
-	GtkLabel *label = GTK_LABEL(glade_xml_get_widget(app_xml, lname));
-	g_free(lname);
-					// User data = schedule #.
-	gtk_object_set_user_data(GTK_OBJECT(label), (gpointer) type);
-	gtk_label_set_text(label, 
-			type >= 0 && type < 32 ? sched_names[type] : "-----");
-					// Set location.
-	char *locname = g_strdup_printf("sched_loc%d", time);
-	GtkBox *box = GTK_BOX(glade_xml_get_widget(app_xml, locname));
-	g_free(locname);
-	GList *list = g_list_first(box->children);
-	GtkWidget *spin = ((GtkBoxChild *) list->data)->widget;
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tx);
-	list = g_list_next(list);
-	spin = ((GtkBoxChild *) list->data)->widget;
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), ty);
-	list = g_list_next(list);
-	spin = ((GtkBoxChild *) list->data)->widget;
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), tz);
 	}
 
 /*
@@ -440,13 +481,15 @@ int ExultStudio::save_npc_window
 			properties[pnum] = 
 				gtk_spin_button_get_value_as_int(spin);
 		}
-#if 0	/* +++Finish */
-	short num_schedules;
+	short num_schedules = 0;
 	Serial_schedule schedules[8];
-+++++++++++++++++
-	if (Npc_object_out(server_socket, addr, tx, ty, tz,
-		shape, frame, type, criteria, probability, distance,
-		nocturnal, once, hatched, auto_reset, data1, data2) == -1)
+	for (int i = 0; i < 8; i++)
+		if (Get_schedule_line(app_xml, i, schedules[num_schedules]))
+			num_schedules++;
+	if (Npc_actor_out(server_socket, addr, tx, ty, tz, shape, frame,
+		name, ident, usecode, properties, attack_mode, alignment,
+			oflags, siflags, type_flags, 
+			num_schedules, schedules) == -1)
 		{
 		cout << "Error sending npc data to server" <<endl;
 		return 0;
@@ -462,7 +505,6 @@ int ExultStudio::save_npc_window
 		waiting_for_server = Npc_response;
 		return 1;		// Leave window open.
 		}
-#endif
 	close_npc_window();
 	return 1;
 	}
