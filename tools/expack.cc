@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 				U7object f(fname,atoi(argv[3]));
 				char outfile[32];
 				sprintf(outfile,"%d.%s",atoi(argv[3]),ext);
-				!f.retrieve(outfile);	// may throw!
+				f.retrieve(outfile);	// may throw!
 			} else {
 				U7FileManager fm;
 				U7file *f = fm.get_file_object(fname);
