@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 #include "exult_constants.h"
 #include "utils.h"
+#include "fnames.h"
 
 using	std::cout;
 using	std::endl;
@@ -107,6 +108,29 @@ void ExultStudio::new_map_dialog
 	}
 
 /*
+ *	Copy from patch, else from static directory to new map in patch.
+ */
+
+static bool Copy_static_file
+	(
+	char *sname,			// Name in static, from fnames.h.
+	char *pname,			// Name in patch.
+	int frommap,			// # of map to copy from.
+	int tomap			// # of map to copy to.
+	)
+	{
+	char srcname[128], destname[128];
+	Get_mapped_name(pname, tomap, destname);
+	Get_mapped_name(pname, frommap, srcname);	// Patch?
+	if (U7exists(srcname) && EStudio::Copy_file(srcname, destname))
+		return true;
+	Get_mapped_name(sname, frommap, srcname);	// Static next.
+	if (U7exists(srcname))
+		return EStudio::Copy_file(srcname, destname);
+	return true;
+	}
+
+/*
  *	Create new map.
  */
 C_EXPORT void on_newmap_ok_clicked
@@ -128,7 +152,35 @@ C_EXPORT void on_newmap_ok_clicked
 		return;			// Leave dialog open.
 		}
 	U7mkdir(fname, 0755);		// Create map directory in 'patch'.
-	// ++++++FINISH
+	int frommap = studio->get_spin("newmap_copy_num");
+	if (studio->get_toggle("newmap_copy_flats"))
+		Copy_static_file(U7MAP, PATCH_U7MAP, frommap, num);
+	if (studio->get_toggle("newmap_copy_fixed"))
+		{
+		for (int schunk = 0; schunk < 12*12; schunk++)
+			{
+			char pname[128], sname[128];
+			sprintf(pname, "%s%02x", PATCH_U7IFIX, schunk);
+			sprintf(sname, "%s%02x", U7IFIX, schunk);
+			if (!Copy_static_file(sname, pname, frommap, num))
+				break;
+			}
+		}
+	if (studio->get_toggle("newmap_copy_ireg"))
+		{
+		char fname[128], tname[128];
+		U7mkdir(Get_mapped_name("<GAMEDAT>/", num, fname), 0755);
+		for (int schunk = 0; schunk < 12*12; schunk++)
+			{
+			Get_mapped_name(U7IREG, frommap, fname);
+			sprintf(fname + strlen(fname), "%02x", schunk);
+			Get_mapped_name(U7IREG, num, tname);
+			sprintf(tname + strlen(tname), "%02x", schunk);
+			if (U7exists(fname))
+				if (!EStudio::Copy_file(fname, tname))
+					break;
+			}
+		}
 	studio->setup_maps_list();
 	gtk_widget_hide(win);
 	}

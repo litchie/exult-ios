@@ -146,7 +146,8 @@ public:
 	void new_game();
 	void choose_game_path();
 	Object_browser  *create_browser(const char *fname);
-	void set_game_path(const char *path, const char *patchpath = 0);
+	void set_game_path(const char *path, const char *patchpath = 0,
+						const char *gdatpath = 0);
 	void setup_file_list();
 	void save_all();		// Write out everything.
 	bool need_to_save();		// Anything modified?
@@ -275,6 +276,7 @@ GtkWidget *Add_menu_item(GtkWidget *menu, const char *label = 0,
 	GtkSignalFunc func = 0, gpointer func_data = 0, GSList *group = 0);
 GtkWidget *Create_arrow_button(GtkArrowType dir, GtkSignalFunc clicked,
 							gpointer func_data);
+bool Copy_file(const char *src, const char *dest);
 }
 
 #endif
