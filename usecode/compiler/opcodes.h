@@ -57,5 +57,8 @@ const char UC_CALLE = 0x47;
 const char UC_PUSHEVENTID = 0x48;
 const char UC_ARRA = 0x4a;
 const char UC_POPEVENTID = 0x4b;
+					// Added for Exult:
+const char UC_PUSHSTATIC = 0x50;	// Push static.
+const char UC_POPSTATIC = 0x51;		// Pop static.
 
 #endif

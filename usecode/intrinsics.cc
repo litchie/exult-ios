@@ -54,6 +54,7 @@
 #include "ucscriptop.h"
 #include "ucfunction.h"
 #include "palette.h"
+#include "stackframe.h"
 
 using std::cerr;
 using std::cout;
@@ -961,7 +962,7 @@ USECODE_INTRINSIC(move_object)
 					// If Freedom exit teleport, don't ac-
 					//   tivate eggs when you arrive.
 		gwin->teleport_party(tile, Game::get_game_type() ==
-			SERPENT_ISLE && cur_function->id == 0x7df && 
+			SERPENT_ISLE && frame->function->id == 0x7df && 
 				caller_item->get_quality() == 0xcf);
 		return (no_ret);
 		}
