@@ -85,8 +85,11 @@ Actor::Actor
 	int usefun = Read2(nfile);	// Get usecode function #.
 	set_lift(usefun >> 12);		// Lift is high 4 bits.
 	usecode = usefun & 0xfff;
-	if (!npc_num)			// Avatar is always first.
-		usecode = 0x400;
+//	if (!npc_num)			// Avatar is always first.
+//		usecode = 0x400;
+					// Need this for BG. (Not sure if SI.)
+	if (npc_num >= 0 && npc_num < 256)
+		usecode = 0x400 + npc_num;
 					// Watch for new NPC's added.
 	else if ((!has_usecode && usecode != 0x400 + npc_num) ||
 	    usecode == 0xfff)
