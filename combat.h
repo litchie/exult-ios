@@ -82,6 +82,23 @@ public:
 	};
 
 /*
+ *	Combat options:
+ */
+class Combat
+	{
+public:
+	static int difficulty;		// 0=normal, >0 harder, <0 easier.
+	enum Mode
+		{
+		original,		// All automatic,
+		keypause,		// Kbd (space) suspends/resumes.
+		round			// (Later).  Pause after each 'round'.
+		};
+	static Mode mode;
+	static bool show_hits;		// Display #'s.
+	};
+
+/*
  *	Dueling is like combat, but nobody gets hurt.
  */
 

@@ -50,6 +50,7 @@
 #include "cheat.h"
 #include "chunks.h"
 #include "chunkter.h"
+#include "combat.h"
 #include "delobjs.h"
 #include "dir.h"
 #include "effects.h"
@@ -353,9 +354,12 @@ Game_window::Game_window
 		double_click_closes_gumps = true;
 	config->set("config/gameplay/double_click_closes_gumps", str, true);
 	config->value("config/gameplay/combat/difficulty",
-							combat_difficulty, 0);
+							Combat::difficulty, 0);
 	config->set("config/gameplay/combat/difficulty",
-						combat_difficulty, true);
+						Combat::difficulty, true);
+	config->value("config/gameplay/combat/show_hits", str, "no");
+	Combat::show_hits = (str == "yes");
+	config->set("config/gameplay/combat/show_hits", str, true);
 	config->value("config/audio/disablepause", str, "no");
 	config->set("config/audio/disablepause", str, true);
 
