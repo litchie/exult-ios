@@ -1577,7 +1577,8 @@ Game_object *Game_map::locate_shape
 	}
 
 /*
- *	Do a cache out. (x, y) is the center
+ *	Do a cache out. (x, y) is the center.
+ *	If x == -1, cache out whole map.
  */
 
 void Game_map::cache_out(int cx, int cy)
@@ -1593,19 +1594,20 @@ void Game_map::cache_out(int cx, int cy)
 	std::memset(chunk_flags, 0, sizeof(chunk_flags));
 
 	// We cache out all but the 9 directly around the pov
+	if (cx != -1 && cy != -1)
+		{
+		chunk_flags[(sy+11)%12][(sx+11)%12] = true;
+		chunk_flags[(sy+11)%12][sx] = true;
+		chunk_flags[(sy+11)%12][(sx+1)%12] = true;
 
-	chunk_flags[(sy+11)%12][(sx+11)%12] = true;
-	chunk_flags[(sy+11)%12][sx] = true;
-	chunk_flags[(sy+11)%12][(sx+1)%12] = true;
+		chunk_flags[sy][(sx+11)%12] = true;
+		chunk_flags[sy][sx] = true;
+		chunk_flags[sy][(sx+1)%12] = true;
 
-	chunk_flags[sy][(sx+11)%12] = true;
-	chunk_flags[sy][sx] = true;
-	chunk_flags[sy][(sx+1)%12] = true;
-
-	chunk_flags[(sy+1)%12][(sx+11)%12] = true;
-	chunk_flags[(sy+1)%12][sx] = true;
-	chunk_flags[(sy+1)%12][(sx+1)%12] = true;
-
+		chunk_flags[(sy+1)%12][(sx+11)%12] = true;
+		chunk_flags[(sy+1)%12][sx] = true;
+		chunk_flags[(sy+1)%12][(sx+1)%12] = true;
+		}
 	for (sy = 0; sy < 12; sy++) for (sx = 0; sx < 12; sx++) {
 		if (chunk_flags[sy][sx]) continue;
 

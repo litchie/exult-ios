@@ -3457,7 +3457,8 @@ void Main_actor::switched_chunks
 	{
 	int newcx = nlist->get_cx(), newcy = nlist->get_cy();
 	int xfrom, xto, yfrom, yto;	// Get range of chunks.
-	if (!olist)			// No old?  Use all 9.
+	if (!olist ||			// No old, or new map?  Use all 9.
+	     olist->get_map() != nlist->get_map())
 		{
 		xfrom = newcx > 0 ? newcx - 1 : newcx;
 		xto = newcx < c_num_chunks - 1 ? newcx + 1 : newcx;
@@ -3503,8 +3504,7 @@ void Main_actor::switched_chunks
 			gmap->get_chunk(x, y)->setup_cache();
 
 	// If change in Superchunk number, apply Old Style caching emulation
-	if (olist) gwin->emulate_cache(olist->get_cx(), olist->get_cy(), newcx, newcy);
-	else gwin->emulate_cache(-1, -1, newcx, newcy);
+	gwin->emulate_cache(olist, nlist);
 	}
 
 /*
