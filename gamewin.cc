@@ -1917,7 +1917,8 @@ void Game_window::start_actor
 	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
 	    main_actor->get_schedule_type() == Schedule::sleep)
 		return;			// Zzzzz....
-	if (main_actor->get_siflag(Actor::dont_move))
+	if (main_actor->get_siflag(Actor::dont_move) ||
+	    main_actor->Actor::get_flag(Obj_flags::dont_render))
 		{
 //		stop_actor();  Causes problems in animations.
 		return;

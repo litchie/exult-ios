@@ -1,3 +1,9 @@
+2001-05-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Fixed FoV and resurrection bugs.
+	* ExultStudio:  Open egg editor.  Use
+	'glade_xml_signal_autoconnect()' to set up signal handlers.
+
 2001-05-02  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/faq/faq_html.xsl: begin counting sections at 0 to make room for changes
 	* docs/faq/exult_faq.xml: FAQ updated see FAQ for details

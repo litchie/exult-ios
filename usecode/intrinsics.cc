@@ -553,23 +553,25 @@ USECODE_INTRINSIC(update_last_created)
 		Tile_coord dest(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
 			  arr.get_elem(2).get_int_value());
+		Tile_coord pos = dest;
 					// Skip 'blocked' check if it looks
 					//   structural. (For SI maze).
 		Shape_info& info = gwin->get_info(last_created);
-		Tile_coord pos = dest;	// Something there?
-		while (info.get_3d_height() < 5 &&
-			Chunk_object_list::is_blocked(pos) &&
-			Game_object::find_blocking(dest) != last_created)
-			{		// Try up to ceiling.
-			if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
-				{
-//				cerr << " Failed to find space" << endl;
-				gwin->delete_object(last_created);
-				return Usecode_value(0);
+		if (info.get_3d_height() < 5 &&
+					// And skip if BG.  Causes FoV probs.
+		    Game::get_game_type() != BLACK_GATE)
+			while (Chunk_object_list::is_blocked(pos) &&
+			      Game_object::find_blocking(dest) != last_created)
+				{	// Try up to ceiling.
+				if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
+					{
+//					cerr << " Failed to find space"<< endl;
+					gwin->delete_object(last_created);
+					return Usecode_value(0);
+					}
+				dest.tz++;
+				pos.tz = dest.tz;
 				}
-			dest.tz++;
-			pos.tz = dest.tz;
-			}
 		last_created->move(dest.tx, dest.ty, dest.tz);
 		}
 					// Taking a guess here:
