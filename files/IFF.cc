@@ -42,15 +42,6 @@ using std::memcmp;
 using std::memset;
 using std::size_t;
 
-
-// Used to swap the length
-long longswap(long x) {
-  return ((x & 0xFF) << 24) | ((x & 0xFF00) << 8) |
-    ((x & 0xFF0000) >> 8) | ((x & 0xFF000000) >> 24);
-}
-
-
-
 IFF::IFF(const string &n) : U7file(n)
 {
 	IndexIFFFile();
@@ -74,7 +65,7 @@ void	IFF::IndexIFFFile(void)
 		}
 	cout << "Okay. It looks like an IFF file chunk" << endl;
 	long	full_length;
-	full_length = longswap(Read4(fp));
+	full_length = Read4high(fp);
 	cout << "length looks like: " << full_length << endl;
 	fseek(fp,4,SEEK_CUR);	// We don't really need to know what the general data type is
 
@@ -108,7 +99,7 @@ void	IFF::IndexIFFFile(void)
 			continue;
 			}
 			
-		r.size=longswap(Read4(fp));	// 4 bytes for len
+		r.size=Read4high(fp);	// 4 bytes for len
 		r.offset=ftell(fp);
 		
 		if(r.size==0||r.offset==0)
