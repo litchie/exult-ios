@@ -87,7 +87,8 @@ int main
 	int errs = Uc_location::get_num_errors();
 	if (errs > 0)			// Check for errors.
 		return errs;
-	ofstream out(outname);		// Open output.
+					// Open output.
+	ofstream out(outname, ios::binary|ios::out);
 	for (std::vector<Uc_function *>::iterator it = functions.begin();
 					it != functions.end(); it++)
 		{
