@@ -146,6 +146,8 @@ static int Get_click(int& x, int& y, char *chr);
 static int find_resolution(int w, int h, int s);
 static void set_resolution (int new_res, bool save);
 #ifdef USE_EXULTSTUDIO
+static void Move_dragged_shape(int shape, int frame, int x, int y,
+							int prevx, int prevy);
 static void Drop_dragged_shape(int shape, int frame, int x, int y);
 static void Drop_dragged_chunk(int chunknum, int x, int y);
 #endif
@@ -530,7 +532,8 @@ static void Init
         xfd = ConnectionNumber(info.info.x11.display);
 	Server_init();			// Initialize server (for map-editor).
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
-		info.info.x11.window, Drop_dragged_shape, Drop_dragged_chunk);
+		info.info.x11.window, Move_dragged_shape, 
+				Drop_dragged_shape, Drop_dragged_chunk);
 #endif
 }
 
@@ -1341,6 +1344,68 @@ void BuildGameMap()
 
 
 #ifdef USE_EXULTSTUDIO
+
+/*
+ *	Show where a shape dragged from a shape-chooser will go.
+ */
+
+static void Move_dragged_shape
+	(
+	int shape, int frame,		// What to create.
+	int x, int y,			// Mouse coords. within window.
+	int prevx, int prevy		// Prev. coords, or -1.
+	)
+	{
+	int scale = gwin->get_win()->get_scale();
+	x /= scale;			// Watch for scaled window.
+	y /= scale;
+	int tx = x/c_tilesize;		// Figure tile on ground.
+	int ty = y/c_tilesize;
+	Shape_info& info = gwin->get_info(shape);
+					// Get footprint in tiles.
+	int xtiles = info.get_3d_xtiles(frame),
+	    ytiles = info.get_3d_ytiles(frame);
+	if (prevx != -1)		// See if moved to a new tile.
+		{
+		prevx /= scale;
+		prevy /= scale;
+		int ptx = prevx/c_tilesize, pty = prevy/c_tilesize;
+		if (tx == ptx && ty == pty)
+			return;		// Will be in same tile.
+					// Repaint over old area.
+		const int pad = 8;
+		Rectangle r((ptx - xtiles + 1)*c_tilesize - pad,
+			    (pty - ytiles + 1)*c_tilesize - pad,
+			    xtiles*c_tilesize + 2*pad,
+			    ytiles*c_tilesize + 2*pad);
+		r = gwin->clip_to_win(r);
+		gwin->add_dirty(r);
+		gwin->paint_dirty();
+		}
+	int sclass = info.get_shape_class();
+					// Is it an ireg (changeable) obj?
+	bool ireg = (sclass != Shape_info::unusable &&
+		     sclass != Shape_info::building);
+					// First see if it's a gump.
+	if (ireg && gwin->get_gump_man()->find_gump(x, y))
+		return;			// Skip if so.
+	tx -= xtiles - 1;		// Get top-left of footprint.
+	ty -= ytiles - 1;
+					// Let's try a green outline.
+	int pix = gwin->get_poison_pixel();
+	Image_window8 *win = gwin->get_win();
+	win->set_clip(0, 0, win->get_width(), win->get_height());
+	for (int y = 0; y <= ytiles; y++)
+		win->fill8(pix, xtiles*c_tilesize, 1, 
+					tx*c_tilesize, (ty + y)*c_tilesize);
+	for (int x = 0; x <= xtiles; x++)
+		win->fill8(pix, 1, ytiles*c_tilesize,
+				(tx + x)*c_tilesize, ty*c_tilesize);
+	win->clear_clip();
+	gwin->set_painted();
+	gwin->show();
+	}
+
 /*
  *	Drop a shape dragged from a shape-chooser via drag-and-drop.  Dnd is
  *	only supported under X for now.
