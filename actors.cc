@@ -146,7 +146,6 @@ const char scorpion_attack_frames[] = {7, 8, 9};
 inline int Is_attack_frame(int i) { return i == 6 || i == 9; }
 inline int Get_dir_from_frame(int i)
 	{ return ((((i&16)/8) - ((i&32)/32)) + 4)%4; }
-Dead_body *Dead_body::in_world = 0;
 Equip_record *Monster_info::equip = 0;
 int Monster_info::equip_cnt = 0;
 Monster_actor *Monster_actor::in_world = 0;
@@ -2483,11 +2482,15 @@ void Actor::die
 		}
 					// Put body here.
 	Dead_body *body = new Dead_body(shnum, frnum, 0, 0, 0, 
-					npc_num > 0 ? npc_num : -1, 1);
-	if (body->Dead_body::get_live_npc_num() != -1)
+					npc_num > 0 ? npc_num : -1);
+	if (npc_num > 0)
+		{
 		body->set_quality(1);	// Flag for dead body of NPC.
-	else
-		body->set_quality(2);	// Set to decay.
+		gwin->set_body(npc_num, body);
+		}
+					// Tmp. monster => tmp. body.
+	if (get_flag(Obj_flags::is_temporary))
+		body->set_flag(Obj_flags::is_temporary);
 	body->move(pos);
 					// Okay to take its contents.
 	body->set_flag_recursively(Obj_flags::okay_to_take);
@@ -2519,15 +2522,17 @@ Actor *Actor::resurrect
 	Dead_body *body			// Must be this actor's body.
 	)
 	{
-	if (body->get_owner())		// Must be on ground.
+	Game_window *gwin = Game_window::get_game_window();
+	if (body->get_owner() ||	// Must be on ground.
+	    npc_num <= 0 || gwin->get_body(npc_num) != body)
 		return (0);
+	gwin->set_body(npc_num, 0);	// Clear from gwin's list.
 	Game_object *item;		// Get back all the items.
 	while ((item = body->get_objects().get_first()) != 0)
 		{
 		body->remove(item);
 		add(item, 1);		// Always succeed at adding.
 		}
-	Game_window *gwin = Game_window::get_game_window();
 	gwin->add_dirty(body);		// Need to repaint here.
 	Tile_coord pos = body->get_abs_tile_coord();
 	body->remove_this();		// Remove and delete body.
@@ -3352,54 +3357,6 @@ void Npc_actor::move
 	}
 
 /*
- *	Link body into global list, and set decay time.
- */
-
-void Dead_body::link
-	(
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-	uint32 cur_hour = gwin->get_total_hours();
-	if (npc_num >= 0)		// Can be resurrected?  Give 3 days.
-		decay_hour = cur_hour + 72;
-	else				// Else give it several hours.
-		decay_hour = cur_hour + 4 + rand()%4;
-					// Store sorted by decay_hour.
-	Dead_body *prev = 0, *each;
-	for (each = in_world; each && each->decay_hour < decay_hour;
-							each = each->next_body)
-		prev = each;
-	next_body = each;		// First one with later hour.
-	prev_body = prev;
-	if (prev)
-		prev->next_body = this;
-	else				// New head of chain.
-		in_world = this;
-	if (each)
-		each->prev_body = this;
-	}
-
-/*
- *	Unlink from chain.
- */
-
-void Dead_body::unlink
-	(
-	)
-	{
-	if (!next_body && !prev_body && in_world != this)
-		return;			// Not in chain.
-	if (next_body)
-		next_body->prev_body = prev_body;
-	if (prev_body)
-		prev_body->next_body = next_body;
-	else				// We're at start of list.
-		in_world = next_body;
-	next_body = prev_body = 0;	// So we don't do it again.
-	}
-
-/*
  *	Delete.
  */
 
@@ -3407,9 +3364,6 @@ Dead_body::~Dead_body
 	(
 	)
 	{
-	if (!decayable)
-		return;
-	unlink();			// Remove from chain.
 	}
 
 /*
@@ -3424,56 +3378,20 @@ int Dead_body::find_dead_companions
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	int cnt = 0;			// # found.
-	for (Dead_body *each = in_world; each && cnt < 8; 
-							each = each->next_body)
+	Actor *party[8];
+	int cnt = gwin->get_party(party);// Get companions.
+	int found = 0;
+	for (int i = 0; i < cnt; i++)
 		{
-		Actor *npc = gwin->get_npc(each->npc_num);
-		if (npc && npc->get_party_id() >= 0)
-			list[cnt++] = each;
-		}
-	return cnt;
-	}
-
-/*
- *	Delete all bodies.  (Should only be called after deleting chunks.)
- */
-
-void Dead_body::delete_all
-	(
-	)
-	{
-	while (in_world)
-		delete in_world;
-	}
-
-/*
- *	Remove all 'decayed' bodies.
- */
-
-void Dead_body::decay
-	(
-	unsigned long hour		// Current game hour.
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-					// Get those that are due.
-	while (in_world && in_world->decay_hour <= hour)
-		{
-		Dead_body *obj = in_world;
-					// In something?
-		if (obj->get_owner())
-			{		// Don't delete.  Add back.
-			if (obj->next_body)
-				obj->next_body->prev_body = 0;
-			in_world = obj->next_body;
-			obj->link();	// Try again later.
-			continue;
+		int npc_num = party[i]->get_npc_num();
+		if (npc_num > 0)
+			{
+			list[found] = (Dead_body *) gwin->get_body(npc_num);
+			if (list[found])
+				found++;
 			}
-		gwin->add_dirty(obj);
-					// Schedule for deletion.
-		gwin->delete_object(obj);
 		}
+	return found;
 	}
 
 /*
@@ -3485,20 +3403,6 @@ int Dead_body::get_live_npc_num
 	)
 	{
 	return npc_num;
-	}
-
-/*
- *	Remove an object from its container, or from the world.
- *	The object is deleted.
- */
-
-void Dead_body::remove_this
-	(
-	int nodel			// 1 to not delete.
-	)
-	{
-	unlink();			// Remove from 'decay' chain.
-	Container_game_object::remove_this(nodel);
 	}
 
 /*

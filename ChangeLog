@@ -1,3 +1,9 @@
+2001-07-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin,actors: Dead_bodies are created with the is_temporary
+	flag if their owners had it.  The old dead-bodies queue and
+	associated methods are no longer needed, and have been removed.
+
 2001-07-05  Ryan Nunn <triforce@merlin.net.au>
 	* msvcstuff: Files required to compile Exult with MSVC++ 6
 	* Most files: Changes to get Exult to compile with MSVC++ 6

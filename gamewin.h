@@ -101,6 +101,7 @@ private:
 	int skip_above_actor;		// Level above actor to skip rendering.
 	int num_npcs1;			// Number of type1 NPC's.
 	Actor_vector npcs;		// Array of NPC's + the Avatar.
+	Game_object_vector bodies;	// Corresponding Dead_body's.
 	int num_monsters;		// Number of monster types.
 	Monster_info *monster_info;	// Array from 'monsters.dat'.
 	std::vector<Egg_object *> path_eggs;// Path eggs, indexed by 'quality'.
@@ -264,6 +265,10 @@ public:
 				npcs[npc_num] : 0; }
 	int add_npc(Actor *npc)		// Add new one & return #.
 		{ return npcs.append(npc); }
+	void set_body(int npc_num, Game_object *body)
+		{ bodies.put(npc_num, body); }
+	Game_object *get_body(int npc_num)
+		{ return bodies[npc_num]; }
 	inline bool was_teleported()
 		{ return teleported; }
 					// Find monster info. for shape.
