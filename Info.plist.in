@@ -18,8 +18,6 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>@VERSION@</string>
-	<key>CFBundleSignature</key>
-	<string>@SDL_APPLE_CREATOR@</string>
 	<key>CFBundleVersion</key>
 	<string>@VERSION@</string>
 	<key>NSMainNibFile</key>

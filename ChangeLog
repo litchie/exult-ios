@@ -1,3 +1,7 @@
+2001-11-28  Max Horn  <max@quendi.de>
+
+	* Info.plist.in: removed some unnecessary crap
+
 2001-11-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* npctime.cc (Npc_hunger_timer): End hunger/poison if dead.
