@@ -341,4 +341,5 @@ files/Makefile \
 pathfinder/Makefile \
 flic/Makefile \
 tools/Makefile \
-data/Makefile )
+data/Makefile \
+docs/Makefile)
