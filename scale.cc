@@ -51,6 +51,25 @@ inline void Interp_vert
 #endif
 	}
 
+#if 0
+ send( to, from, count )
+     register short *to, *from;
+     register count;
+     {
+         register n = ( count + 7 ) / 8;
+         switch( count % 8 ) {
+             case 0: do { *to = *from++;
+             case 7:      *to = *from++;
+             case 6:      *to = *from++;
+             case 5:      *to = *from++;
+             case 4:      *to = *from++;
+             case 3:      *to = *from++;
+             case 2:      *to = *from++;
+             case 1:      *to = *from++;
+                       } while( --n > 0 );
+         }
+     }
+#endif
 /*
  *	Scale X2 with bilinear interpolation.
  */
@@ -75,10 +94,22 @@ void Scale2x
 					// Do each row, interpolating horiz.
 	for (int y = 0; y < sheight; y++)
 		{
-		Source_pixel *source_line = from;
-		Dest_pixel *dest_line = to;
-		for (int x = 0; x < swidth - 1; x++)
-			Interp_horiz(from, to, manip);
+		int count = swidth - 1;
+		register Source_pixel *source_line = from;
+		register Dest_pixel *dest_line = to;
+		register int n = ( count + 7 ) / 8;
+		switch( count % 8 )
+			{
+	             	case 0: do { Interp_horiz(from, to, manip);
+        	     	case 7:      Interp_horiz(from, to, manip);
+	             	case 6:      Interp_horiz(from, to, manip);
+        	     	case 5:      Interp_horiz(from, to, manip);
+	             	case 4:      Interp_horiz(from, to, manip);
+        	     	case 3:      Interp_horiz(from, to, manip);
+	             	case 2:      Interp_horiz(from, to, manip);
+        	     	case 1:      Interp_horiz(from, to, manip);
+                	       } while( --n > 0 );
+			}
 		manip.copy(*to++, *from);// End of row.
 		manip.copy(*to++, *from++);
 		from = source_line + sline_pixels;
@@ -92,15 +123,25 @@ void Scale2x
 		to = from0 + dline_pixels;
 		from1 = to + dline_pixels;
 		Dest_pixel *source_line1 = from1;
-		for (int x = 0; x < dline_pixels; x++)
-			Interp_vert(from0, from1, to, manip);
+		int count = dline_pixels;
+		int n = ( count + 7 ) / 8;
+		switch( count % 8 )
+			{
+	             	case 0: do { Interp_vert(from0, from1, to, manip);
+        	     	case 7:      Interp_vert(from0, from1, to, manip);
+	             	case 6:      Interp_vert(from0, from1, to, manip);
+        	     	case 5:      Interp_vert(from0, from1, to, manip);
+	             	case 4:      Interp_vert(from0, from1, to, manip);
+        	     	case 3:      Interp_vert(from0, from1, to, manip);
+	             	case 2:      Interp_vert(from0, from1, to, manip);
+        	     	case 1:      Interp_vert(from0, from1, to, manip);
+                	       } while( --n > 0 );
+			}
 					// Doing every other line.
 		from0 = source_line1;
 		}
 					// Just copy last row.
-#if 0
-	memcpy(to, from0, dline_pixels*sizeof(*from0));
-#endif
+	memcpy(from0 + dline_pixels, from0, dline_pixels*sizeof(*from0));
 	}
 
 #if 0	/* Testing */

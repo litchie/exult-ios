@@ -24,10 +24,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <string.h>
-#include "vgafile.h"
 #include "utils.h"
 #include "objs.h"
 #include "imagewin.h"
+#include "vgafile.h"
 
 /*
  *	+++++Debugging
@@ -355,6 +355,125 @@ void Shape_frame::get_rle_shape
 	data[len] = 0;			// 0-delimit.
 	data[len + 1] = 0;
 	rle = 1;
+	}
+
+/*
+ *	Show a Run-Length_Encoded shape.
+ */
+
+void Shape_frame::paint_rle
+	(
+	Image_buffer8 *win,		// Buffer to paint in.
+	int xoff, int yoff		// Where to show in iwin.
+	)
+	{
+	int w = get_width(), h = get_height();
+	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+		if (!win->is_visible(xoff - xleft, 
+						yoff - yabove, w, h))
+			return;
+	unsigned char *in = data; // Point to data.
+	int scanlen;
+	while ((scanlen = Read2(in)) != 0)
+		{
+					// Get length of scan line.
+		int encoded = scanlen&1;// Is it encoded?
+		scanlen = scanlen>>1;
+		short scanx = Read2(in);
+		short scany = Read2(in);
+		if (!encoded)		// Raw data?
+			{
+			win->copy_line8(in, scanlen,
+					xoff + scanx, yoff + scany);
+			in += scanlen;
+			continue;
+			}
+		for (int b = 0; b < scanlen; )
+			{
+			unsigned char bcnt = *in++;
+					// Repeat next char. if odd.
+			int repeat = bcnt&1;
+			bcnt = bcnt>>1; // Get count.
+			if (repeat)
+				{
+				unsigned char pix = *in++;
+				win->fill_line8(pix, bcnt,
+					xoff + scanx + b, yoff + scany);
+				}
+			else		// Get that # of bytes.
+				{
+				win->copy_line8(in, bcnt,
+					xoff + scanx + b, yoff + scany);
+				in += bcnt;
+				}
+			b += bcnt;
+			}
+		}
+	}
+
+/*
+ *	Show a Run-Length_Encoded shape with translucency.
+ */
+
+void Shape_frame::paint_rle_translucent
+	(
+	Image_buffer8 *win,		// Buffer to paint in.
+	int xoff, int yoff,		// Where to show in iwin.
+	Xform_palette *xforms,		// Transforms translucent colors
+	int xfcnt			// Number of xforms.
+	)
+	{
+	int w = get_width(), h = get_height();
+	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+		if (!win->is_visible(xoff - xleft, 
+						yoff - yabove, w, h))
+			return;
+					// First pix. value to transform.
+	const int xfstart = 0xff - xfcnt;
+	unsigned char *in = data; // Point to data.
+	int scanlen;
+	while ((scanlen = Read2(in)) != 0)
+		{
+					// Get length of scan line.
+		int encoded = scanlen&1;// Is it encoded?
+		scanlen = scanlen>>1;
+		short scanx = Read2(in);
+		short scany = Read2(in);
+		if (!encoded)		// Raw data?
+			{
+			win->copy_line_translucent8(in, scanlen,
+					xoff + scanx, yoff + scany,
+					xfstart, 0xfe, xforms);
+			in += scanlen;
+			continue;
+			}
+		for (int b = 0; b < scanlen; )
+			{
+			unsigned char bcnt = *in++;
+					// Repeat next char. if odd.
+			int repeat = bcnt&1;
+			bcnt = bcnt>>1; // Get count.
+			if (repeat)
+				{
+				unsigned char pix = *in++;
+				if (pix >= xfstart && pix <= 0xfe)
+					win->fill_line_translucent8(pix, bcnt,
+						xoff + scanx + b, yoff + scany,
+						xforms[pix - xfstart]);
+				else
+					win->fill_line8(pix, bcnt,
+					      xoff + scanx + b, yoff + scany);
+				}
+			else		// Get that # of bytes.
+				{
+				win->copy_line_translucent8(in, bcnt,
+					xoff + scanx + b, yoff + scany,
+					xfstart, 0xfe, xforms);
+				in += bcnt;
+				}
+			b += bcnt;
+			}
+		}
 	}
 
 /*

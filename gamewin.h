@@ -341,9 +341,11 @@ public:
 			win->copy8(shape->data, 8, 8, xoff - tilesize, 
 						yoff - tilesize);
 		else if (!translucent)
-			paint_rle_shape(*shape, xoff, yoff);
+			shape->paint_rle(win->get_ib8(), xoff, yoff);
 		else
-			paint_rle_shape_translucent(*shape, xoff, yoff);
+			shape->paint_rle_translucent(win->get_ib8(), 
+					xoff, yoff, xforms, 
+					sizeof(xforms)/sizeof(xforms[0]));
 		}
 	void paint_shape(int xoff, int yoff, int shapenum, int framenum)
 		{
@@ -372,10 +374,6 @@ public:
 		if (shape)		// They have translucency.
 			paint_shape(xoff, yoff, shape, 1);
 		}
-					// Read encoded show into window.
-	void paint_rle_shape(Shape_frame& shape, int xoff, int yoff);
-	void paint_rle_shape_translucent(Shape_frame& shape, 
-							int xoff, int yoff);
 					// Get "map" superchunk objs/scenery.
 	void get_map_objects(int schunk);
 					// Get "chunk" objects/scenery.
