@@ -1,4 +1,7 @@
 2001-08-20  Ryan Nunn <triforce@merlin.net.au>
+	* cheat_screen.cc/.h : Added 'Advanced' numerical NPC Flag editor.
+
+2001-08-20  Ryan Nunn <triforce@merlin.net.au>
 	* actorio.cc : Save and restore all 64 flags.
 	* audio/midi_drivers/win_midiout.cc : Implimented fix for hung notes
 	  (bug #449990)
