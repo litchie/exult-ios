@@ -1963,6 +1963,7 @@ Random
 	    <can_focus>True</can_focus>
 	    <items>North
 Northeast
+East
 Southeast
 South
 Southwest
