@@ -1549,7 +1549,7 @@ void Actor::paint
 		if (flags & (1L << Obj_flags::invisible))
 			paint_invisible(xoff, yoff);
 		else 
-			paint_shape(xoff, yoff);
+			paint_shape(xoff, yoff, true);
 
 		paint_weapon();
 		if (hit)		// Want a momentary red outline.
