@@ -1,3 +1,8 @@
+2002-02-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Don't call 'unreadied' usecode if Actor is dead.
+	This caused hangs when getting Black Sword in Mtns. of Freedom.
+
 2002-01-30  Ryan Nunn  <triforce@merlin.net.au>
 	* sigame.cc : Added the thunder sfx to intro. Clear the screen between
 	  the flics to prevent palette corruption.
