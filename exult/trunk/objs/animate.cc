@@ -180,8 +180,10 @@ int Object_sfx::get_shape_sfx
 		table[776] = 77;
 		table[777] = 77;
 		if (GAME_BG)
+			{
+			table[305] = 78;	// Black gate.
 			table[786] = 79;	// Vortex cube.
-
+			}
 		// Grandfather clock tick tock, only in the SQSFX files,
 		 if (Audio::get_ptr()->get_sfx_file() != 0)
 			{
@@ -240,14 +242,16 @@ void Object_sfx::play
 
 Animator *Animator::create
 	(
-	Game_object *ob,		// Animated object.
-	bool ireg			// 1 if an IREG object.
+	Game_object *ob			// Animated object.
 	)
 	{
 	int shnum = ob->get_shapenum();
 	int frames = ob->get_num_frames();
-	if (frames > 1)
-		return new Frame_animator(ob, ireg);
+	Shape_info& info = ob->get_info();
+	if (!info.is_animated())	// Assume it's just SFX.
+		return new Sfx_animator(ob);
+	else if (frames > 1)
+		return new Frame_animator(ob);
 	else
 		return new Wiggle_animator(ob);
 	}
@@ -294,10 +298,8 @@ int Animator::get_framenum()
 
 Frame_animator::Frame_animator
 	(
-	Game_object *o,
-	bool ir
-	) : Animator(o, Object_sfx::get_shape_sfx(o->get_shapenum())),
-		ireg(ir)
+	Game_object *o
+	) : Animator(o, Object_sfx::get_shape_sfx(o->get_shapenum()))
 {
 	Initialize();
 }
@@ -507,6 +509,49 @@ void Frame_animator::handle_event
 }
 
 /*
+ *	Create a pure SFX player.
+ */
+
+Sfx_animator::Sfx_animator
+	(
+	Game_object *o
+	) : Animator(o, Object_sfx::get_shape_sfx(o->get_shapenum()))
+{
+}
+
+/*
+ *	Play SFX.
+ */
+
+void Sfx_animator::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata			// Game window.
+	)
+{
+	const int delay = 200;		// Guessing this will be enough.
+	unsigned int ticks = Game::get_ticks();
+
+	Game_window *gwin = (Game_window *) udata;
+	Rectangle rect = gwin->clip_to_win(gwin->get_shape_rect(obj));
+	if (rect.w <= 0 || rect.h <= 0)
+	{				// No longer on screen.
+		animating = 0;
+					// Stop playing sound.
+		Object_sfx::play(obj, sfxnum, true);
+		return;
+	}
+
+	if (sfxnum >= 0)		// Sound effect?
+		Object_sfx::play(obj, sfxnum);
+					// Add back to queue for next time.
+	if (animating)
+		// Ensure all animations are synced
+		gwin->get_tqueue()->add(ticks  + delay- (ticks%delay), 
+								this, udata);
+}
+
+/*
  *	Create a field frame animator.
  */
 
@@ -591,7 +636,7 @@ Animated_object::Animated_object
 	unsigned int lft
 	) : Terrain_game_object(shapenum, framenum, tilex, tiley, lft)
 	{
-	animator = Animator::create(this, 0);
+	animator = Animator::create(this);
 	}
 
 /*
@@ -629,7 +674,7 @@ Animated_ireg_object::Animated_ireg_object
 	unsigned int lft
 	) : Ireg_game_object(shapenum, framenum, tilex, tiley, lft)
 	{
-	animator = Animator::create(this, 1);
+	animator = Animator::create(this);
 	}
 
 /*
@@ -679,7 +724,7 @@ Animated_ifix_object::Animated_ifix_object
 	unsigned int lft
 	) : Ifix_game_object(shapenum, framenum, tilex, tiley, lft)
 	{
-	animator = Animator::create(this, 0);
+	animator = Animator::create(this);
 	}
 
 /*
@@ -688,7 +733,7 @@ Animated_ifix_object::Animated_ifix_object
 
 Animated_ifix_object::Animated_ifix_object(unsigned char *ifix) : Ifix_game_object(ifix)
 	{
-	animator = Animator::create(this, 0);
+	animator = Animator::create(this);
 	}
 
 /*

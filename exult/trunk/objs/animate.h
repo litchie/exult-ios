@@ -43,7 +43,7 @@ public:
 	Animator(Game_object *o, int snum = -1) 
 		: obj(o), deltax(0), deltay(0), animating(false), sfxnum(snum)
 		{  }
-	static Animator *create(Game_object *ob, bool ireg);
+	static Animator *create(Game_object *ob);
 	~Animator();
 	void want_animation()		// Want animation on.
 		{
@@ -64,7 +64,6 @@ class Frame_animator : public Animator
 	{
 	unsigned char first_frame;	// First frame of animation.
 	unsigned char frames;		// # of frames.
-	bool ireg;			// 1 if from an IREG file.
 	unsigned int created;		// Time created
 	unsigned int delay;		// Rate of animation
 	unsigned short last_shape;	// To check if we need to re init
@@ -77,8 +76,19 @@ class Frame_animator : public Animator
 	} type;
 	void Initialize();
 public:
-	Frame_animator(Game_object *o, bool ir);
+	Frame_animator(Game_object *o);
 	virtual int get_framenum();
+					// For Time_sensitive:
+	virtual void handle_event(unsigned long time, long udata);
+	};
+
+/*
+ *	Just play SFX.
+ */
+class Sfx_animator : public Animator
+	{
+public:
+	Sfx_animator(Game_object *o);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 	};
