@@ -256,10 +256,14 @@ Exult_Game ExultMenu::run()
 	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", EXULT_FLX_MEDITOWN_MID);
 	XMIDI midfile(midi_data, XMIDI_CONVERT_NOCONVERSION);
 	
-	if(Audio::get_ptr()->get_midi()->get_music_conversion() == XMIDI_CONVERT_OGG)
-		Audio::get_ptr()->start_music(99,true);
-	else
-		Audio::get_ptr()->start_music(midfile.GetEventList(0), true);
+	if(Audio::get_ptr()->audio_enabled)		//Must check this or it will crash as midi 
+											//may not be initialised
+	{
+		if(Audio::get_ptr()->get_midi()->get_music_conversion() == XMIDI_CONVERT_OGG)
+			Audio::get_ptr()->start_music(99,true);
+		else
+			Audio::get_ptr()->start_music(midfile.GetEventList(0), true);
+	}
 	
 	ExultDataSource mouse_data("<DATA>/exult.flx", EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
