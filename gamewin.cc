@@ -72,7 +72,7 @@ Game_window::Game_window
             tqueue(new Time_queue()), clock(tqueue),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
-	    conv_choices(0), painted(0), focus(1), shapes(),
+	    conv_choices(0), render_seq(0), painted(0), focus(1), shapes(),
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
 	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
 	    endshape(ENDSHAPE_FLX),
@@ -396,18 +396,16 @@ void Game_window::center_view
 	if (scrollty + th > num_chunks*tiles_per_chunk)
 		scrollty = num_chunks*tiles_per_chunk - th - 1;
 	set_scroll_bounds();		// Set scroll-control.
-	paint();			// This pulls in objects.
+	read_map_data();		// This pulls in objects.
 					// Set where to skip rendering.
-	
-	Chunk_object_list *nlist = get_objects(main_actor->get_cx(), main_actor->get_cy());
-							 
-	if (set_above_main_actor(nlist->is_roof (
-					main_actor->get_cx(),
-					main_actor->get_ty(),
-					main_actor->get_lift()
-					)))
-		paint();		// Changed, so paint again.
-		
+	int cx = main_actor->get_cx(), cy = main_actor->get_cy();	
+	Chunk_object_list *nlist = get_objects(cx, cy);
+	nlist->setup_cache();					 
+	set_above_main_actor(nlist->is_roof (
+				main_actor->get_tx(), main_actor->get_ty(),
+						main_actor->get_lift()
+					));
+	paint();
 					// See who's nearby.
 	add_nearby_npcs(scrolltx/tiles_per_chunk, scrollty/tiles_per_chunk,
 		(scrolltx + get_width()/tilesize)/tiles_per_chunk,
@@ -994,6 +992,7 @@ void Game_window::paint
 	{
 	if (!win->ready())
 		return;
+	render_seq++;			// Increment sequence #.
 	win->set_clip(x, y, w, h);	// Clip to this area.
 	int light_sources = 0;		// Count light sources found.
 	int scrolltx = get_scrolltx(), scrollty = get_scrollty();
@@ -1016,63 +1015,6 @@ void Game_window::paint
 		stop_chunky = num_chunks;
 
 
-#if 0	/* +++++Old way. */
-					// Which chunks to start with:
-					// Watch for shapes 1 chunk to left.
-	int start_chunkx = chunkx + x/chunksize - 1;
-	if (start_chunkx < 0)
-		start_chunkx = 0;
-	int start_chunky = chunky + y/chunksize - 1;
-	if (start_chunky < 0)
-		start_chunky = 0;
-	int stopx = x + w;
-	int stopy = y + h;
-					// Go 1 chunk past end.
-	int stop_chunkx = chunkx + stopx/chunksize + 
-						(stopx%chunksize != 0) + 1;
-	if (stop_chunkx > num_chunks)
-		stop_chunkx = num_chunks;
-	int stop_chunky = chunky + stopy/chunksize + 
-						(stopy%chunksize != 0) + 1;
-	if (stop_chunky > num_chunks)
-		stop_chunky = num_chunks;
-#endif
-#if 0	/*+++++++Done in read_map_data().  Called from paint(void). */
-					// Read in "map", "ifix" objects for
-					//  all visible superchunks.
-	for (cy = start_chunky; cy < stop_chunky; )
-		{
-		int schunky = cy/16;	// 16 chunks/superchunk.
-					// How far to bottom of superchunk?
-		int num_chunks_y = 16 - (cy%16);
-		if (cy + num_chunks_y > stop_chunky)
-			{
-			num_chunks_y = stop_chunky - cy;
-			if (num_chunks_y <= 0)
-				break;	// Past end of world.
-			}
-		for (cx = start_chunkx; cx < stop_chunkx; )
-			{
-			int schunkx = cx/16;
-			int num_chunks_x = 16 - (cx%16);
-			if (cx + num_chunks_x > stop_chunkx)
-				{
-				num_chunks_x = stop_chunkx - cx;
-				if (num_chunks_x <= 0)
-					break;
-				}
-					// Figure superchunk #.
-			int schunk = 12*schunky + schunkx;
-					// Read it if necessary.
-			if (!schunk_read[schunk])
-				get_superchunk_objects(schunk);
-					// Increment x coords.
-			cx += num_chunks_x;
-			}
-					// Increment y coords.
-		cy += num_chunks_y;
-		}
-#endif
 	int cx, cy;			// Chunk #'s.
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy < stop_chunky; cy++)
@@ -1162,11 +1104,13 @@ void Game_window::paint_chunk_objects
 		skip_lift = skip_above_actor;
 					// +++++Clear flag.
 	Object_iterator next(olist);
+#if 0
 	while ((obj = next.get_next()) != 0)
 		obj->rendered = 0;
 	next.reset();
+#endif
 	while ((obj = next.get_next()) != 0)
-		if (!obj->rendered)
+		if (obj->render_seq != render_seq)
 			paint_object(obj, at_lift, flat_only);
 	skip_lift = save_skip;
 	}
@@ -1183,7 +1127,6 @@ void Game_window::paint_object
 					//   >0 height if 0.
 	)
 	{
-	obj->rendered = 1;
 	int lift = obj->get_lift();
 	if (at_lift >= 0 && at_lift != lift)
 		return;
@@ -1193,11 +1136,12 @@ void Game_window::paint_object
 	Shape_info& info = shapes.get_info(obj->get_shapenum());
 	if ((info.get_3d_height() == 0) != flat_only)
 		return;
+	obj->render_seq = render_seq;
 	int cnt = obj->get_dependency_count();
 	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *dep = obj->get_dependency(i);
-		if (dep && !dep->rendered)
+		if (dep && dep->render_seq != render_seq)
 			paint_object(dep, at_lift, flat_only);
 		}
 	obj->paint(this);		// Finally, paint this one.

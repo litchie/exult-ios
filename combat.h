@@ -71,6 +71,7 @@ public:
 	virtual void im_dormant();	// Npc calls this when it goes dormant.
 					// Set opponent in combat.
 	virtual void set_opponent(Game_object *obj);
+	virtual Game_object *get_opponent();	// Get opponent.
 	};
 
 #endif
