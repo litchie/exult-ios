@@ -634,9 +634,9 @@ string Game_object::get_name
 			if (frnum <= 1) {
 				// when frame = 0,1, the quality is an NPC num
 				// the item name is then the name of that NPC + "'s ashes"
-				// (quality == 0: 'urn of ashes')
+				// (quality == 0,255: 'urn of ashes')
 				Actor* npc = gwin->get_npc(get_quality());
-				if (get_quality() > 0 && npc) {
+				if (get_quality() > 0 && npc && !npc->is_unused()) {
 					string tmp = npc->get_npc_name();
 					if (tmp != "") {
 						tmp += item_names[0x65e]; // 's ashes
