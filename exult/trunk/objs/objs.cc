@@ -907,8 +907,7 @@ string Game_object::get_name
 
 
 	} else if (Game::get_game_type() == SERPENT_ISLE) {
-		//TODO: yourself, oilskin, broken glass, throne
-		//TODO: Dave, >= text.flx nr. 1540
+		//TODO: yourself, misc. checks/fixes
 		
 		switch (shnum)			// More special cases!
 		{
