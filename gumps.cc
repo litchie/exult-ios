@@ -964,9 +964,13 @@ int Gump_object::add
 					// Dropping on same thing?
 	Game_object *onobj = find_object(mx, my);
 					// If possible, combine.
+
 	if (onobj && onobj != obj && onobj->drop(obj))
 		return (1);
-	container->add(obj);
+
+	if (!container->add(obj))
+		return (0);
+
 					// Not a valid spot?
 	if (sx == -1 && sy == -1 && mx == -1 && my == -1)
 					// Let paint() set spot.
