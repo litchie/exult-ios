@@ -134,4 +134,6 @@ int bgconv[] = {
 	21,			//CradleRock
 	5,			//Beeezzzzz 
 	74,			//Machines  
+	255,			//Static - not used in SI
+	136			//Tick Tock
 };

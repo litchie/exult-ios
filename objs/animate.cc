@@ -163,8 +163,8 @@ int Object_sfx::get_shape_sfx
 			to_uppercase(s);
 			if(s.find("SQSFX") != std::string::npos)
 				{
-				table[252] = 17;	// Grandfather clock 
-				table[695] = 17;	// Grandfather clock 
+				table[252] = 116;	// Grandfather clock 
+				table[695] = 116;	// Grandfather clock 
 	 			}
 			}		
 
