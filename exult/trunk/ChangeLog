@@ -1,5 +1,7 @@
 2002-10-18  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* exult.cc,mapedit/chunklst.cc,etc: "Paint with chunks" mode added.
+
 	* mapedit/shapelst.cc,etc:  Keep shape browsers around so that
 	they're at the same spot and selection when you return to them.
 

@@ -745,7 +745,7 @@ static int Play()
  *	Add a shape while map-editing.
  */
 
-static void Drop_in_map_editor
+static void Paint_with_shape
 	(
 	SDL_Event& event,
 	bool dragging			// Painting terrain.
@@ -780,6 +780,31 @@ static void Drop_in_map_editor
 	else
 		frnum = cheat.get_edit_frame();
 	Drop_dragged_shape(shnum, frnum, event.button.x, event.button.y, 0);
+	}
+
+/*
+ *	Set a complete chunk while map-editing.
+ */
+
+static void Paint_with_chunk
+	(
+	SDL_Event& event,
+	bool dragging			// Painting terrain.
+	)
+	{
+	static int lastcx = -1, lastcy = -1;
+	int scale = gwin->get_win()->get_scale();
+	int x = event.button.x/scale, y = event.button.y/scale;
+	int cx = (gwin->get_scrolltx() + x/c_tilesize)/c_tiles_per_chunk;
+	int cy = (gwin->get_scrollty() + y/c_tilesize)/c_tiles_per_chunk;
+	if (dragging)			// See if moving to a new chunk.
+		{
+		if (cx == lastcx && cy == lastcy)
+			return;
+		}
+	lastcx = cx; lastcy = cy;
+	int chnum = cheat.get_edit_chunknum();
+	Drop_dragged_chunk(chnum, event.button.x, event.button.y, 0);
 	}
 #endif
 
@@ -912,7 +937,13 @@ static void Handle_event
 			    	    (cheat.get_edit_mode() == Cheat::paint ||
 					(SDL_GetModState() & KMOD_SHIFT)))
 					{
-					Drop_in_map_editor(event, false);
+					Paint_with_shape(event, false);
+					break;
+					}
+				else if (cheat.get_edit_chunknum() >= 0 &&
+				  cheat.get_edit_mode() == Cheat::paint_chunks)
+					{
+					Paint_with_chunk(event, false);
 					break;
 					}
 					// Don't drag if not in 'move' mode.
@@ -1029,13 +1060,21 @@ static void Handle_event
 		if (event.motion.state & SDL_BUTTON(1))
 			{
 #ifdef USE_EXULTSTUDIO			// Painting?
-			if (cheat.in_map_editor() && 
-			    cheat.get_edit_shape() >= 0 &&
-			    (cheat.get_edit_mode() == Cheat::paint ||
+			if (cheat.in_map_editor())
+				{ 
+				if (cheat.get_edit_shape() >= 0 &&
+				    (cheat.get_edit_mode() == Cheat::paint ||
 					(SDL_GetModState() & KMOD_SHIFT)))
-				{
-				Drop_in_map_editor(event, true);
-				break;
+					{
+					Paint_with_shape(event, true);
+					break;
+					}
+				else if (cheat.get_edit_chunknum() >= 0 &&
+				  cheat.get_edit_mode() == Cheat::paint_chunks)
+					{
+					Paint_with_chunk(event, true);
+					break;
+					}
 				}
 #endif
 			dragged = gwin->drag(event.motion.x / scale, 
