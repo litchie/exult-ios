@@ -57,4 +57,32 @@ public:
 	virtual void gen_value(ostream& out);
 	};
 
+/*
+ *	Unary expressions.
+ */
+class Uc_unary_expression : public Uc_expression
+	{
+	int opcode;			// Should be the UC_<opcode>
+	Uc_expression *operand;
+public:
+	Uc_unary_expression(int o, Uc_expression *r)
+		: opcode(o), operand(r)
+		{  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
+	};
+
+/*
+ *	Integer value.
+ */
+class Uc_int_expression : public Uc_expression
+	{
+	int value;
+public:
+	Uc_int_expression(int v) : value(v)
+		{  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
+	};
+
 #endif

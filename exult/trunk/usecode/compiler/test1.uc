@@ -2,9 +2,9 @@
 //	Return sum.
 //
 
-int adder(int a, int b)
+adder 0x480 (a, b)
 	{
-	int c;
-(	c = a + b;
+	var c;
+	c = a + b;
 	return c;
 	}

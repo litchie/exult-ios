@@ -1,3 +1,7 @@
+2001-01-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* More usecode-compiler coding:  Symbols.
+
 2001-01-03  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* bggame.cc, game.cc/h, menulist.cc, exult.cc: you can now take
 	screenshots in the menus and during the intro. (maybe endgame too)
