@@ -235,6 +235,7 @@ class Usecode_machine
 						Usecode_value& shapeval);
 	Usecode_value get_objects(Usecode_value& objval,
 						Usecode_value& shapeval);
+	Usecode_value click_on_item();
 	void exec_array(Usecode_value& objval, Usecode_value& arrayval);
 
 	/*
