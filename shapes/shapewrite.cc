@@ -210,7 +210,7 @@ void Weapon_info::write
 	*ptr++ = (range<<3) | (uses<<1);
 	unsigned char flags1 = m_returns ? 1 : 0;
 	*ptr++ = flags1;
-	*ptr++ = 0;			// Unknown.
+	*ptr++ = actor_frames;
 	*ptr++ = powers;
 	*ptr++ = 0;			// ??
 	Write2(ptr, usecode);
