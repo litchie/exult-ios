@@ -1,3 +1,10 @@
+2002-07-24  Dominik Reichardt  <dominus@users.sourceforge.net>
+	* exult.cc: little correction of the --help screen (--bg, --si instead of 
+	  -bg -si)
+	* Readme, FAQ: updated.
+	* docs/xml/docs.xml, faq.xml: updated
+	* docs/readme.html, faq.html: updated
+
 2002-07-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: SIGCHLD handler to clean up forked playmidi processes
 	* configure.in: check for sys/wait.h, signal.h (see above)
