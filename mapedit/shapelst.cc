@@ -62,6 +62,8 @@ using EStudio::Add_menu_item;
 std::vector<Editing_file*> Shape_chooser::editing_files;
 int Shape_chooser::check_editing_timer = -1;
 
+#define IS_FLAT(shnum)	((shnum) < c_first_obj_shape)
+
 /*
  *	Here's a description of a file being edited by an external program
  *	like Gimp or Photoshop.
@@ -851,7 +853,7 @@ time_t Shape_chooser::export_tiled_png
 	int shnum = info[selected].shapenum;
 	ExultStudio *studio = ExultStudio::get_instance();
 					// Low shape in 'shapes.vga'?
-	assert (shnum < 0x96 && file_info == studio->get_vgafile());
+	assert (IS_FLAT(shnum) && file_info==studio->get_vgafile());
 	Shape *shape = ifile->extract_shape(shnum);
 	assert(shape != 0);
 	cout << "Writing " << fname << " tiled" 
@@ -1128,7 +1130,7 @@ static void Import_png
 	Convert_indexed_image(pixels, h*rowsize, oldpal, palsize, pal);
 	delete oldpal;
 					// Low shape in 'shapes.vga'?
-	bool flat = shapenum < 0x96 && finfo == studio->get_vgafile();
+	bool flat = IS_FLAT(shapenum) && finfo == studio->get_vgafile();
 	int xleft, yabove;
 	if (flat)
 		{
@@ -1344,7 +1346,7 @@ void Shape_chooser::new_frame
 		return;
 					// Low shape in 'shapes.vga'?
 	ExultStudio *studio = ExultStudio::get_instance();
-	bool flat = shnum < 0x96 && file_info == studio->get_vgafile();
+	bool flat = IS_FLAT(shnum) && file_info == studio->get_vgafile();
 	int w = 0, h = 0;
 	int xleft, yabove;
 	if (flat)
@@ -1523,7 +1525,7 @@ void Shape_chooser::new_shape
 	gtk_adjustment_set_value(adj, shstart);
 	spin = glade_xml_get_widget(xml, "new_shape_nframes");
 	adj = gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(spin));
-	bool flat = shnum < 0x96 && file_info == studio->get_vgafile();
+	bool flat = IS_FLAT(shnum) && file_info == studio->get_vgafile();
 	if (flat)
 		adj->upper = 31;
 	else
@@ -1582,7 +1584,7 @@ void Shape_chooser::create_new_shape
 		return;
 		}
 					// Create frames.
-	bool flat = shnum < 0x96 && file_info == studio->get_vgafile();
+	bool flat = IS_FLAT(shnum) && file_info == studio->get_vgafile();
 	bool use_font = false;
 #ifdef HAVE_FREETYPE2
 					// Want to create from a font?
@@ -2125,7 +2127,7 @@ GtkWidget *Shape_chooser::create_popup
 			Add_menu_item(popup, "Edit...",
 				GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate),
 								 this);
-			if (info[selected].shapenum < 0x96 && 
+			if (IS_FLAT(info[selected].shapenum) && 
 					file_info == studio->get_vgafile())
 				Add_menu_item(popup, "Edit tiled...",
 				    GTK_SIGNAL_FUNC(

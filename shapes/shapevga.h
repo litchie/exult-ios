@@ -33,6 +33,8 @@
 #include "vgafile.h"
 #include "shapeinf.h"
 
+#define c_first_obj_shape	0x96	// 0-0x95 are 8x8 flat shapes.
+
 /*
  *	The "shapes.vga" file:
  */
