@@ -195,18 +195,20 @@ class ByteBuffer
 		return len;
 		}
 
-	iterator	begin()           // return iterator pointing to beginning of buffer
+	iterator	begin()         // return iterator pointing to 
+					//   beginning of buffer
 		{
 		return (data + low);
 		}
 
-	iterator	end()             // return iterator pointing to one past end of buffer
+	iterator	end()   	// return iterator pointing to one 
+					//   past end of buffer
 		{
 			return (data + high);
 		}
-
+#if 0
 	void	erase(iterator pos)   // erase from the front 
-                                     //  ONLY WORKS IF THE iterator == begin() !
+                                     //  ONLY WORKS IF iterator == begin() !
 		{
 		if (!data)
 			return;    // Perhaps we should throw a range_error instead?
@@ -267,7 +269,7 @@ class ByteBuffer
 		// We could optionally throw a range_error here, as well,
 		// as the erase simply doesn't happen if we get here.
 		}
-
+#endif
 	void          clear(void)           // wipe the whole buffer
 		{
 		low = high = cap = 0;
@@ -280,7 +282,6 @@ class ByteBuffer
 		data = 0;
 
 		}
-
 	size_t        size(void)            // return number of bytes currently buffered
 		{
 		return (high - low);
@@ -315,6 +316,7 @@ private:
 	ByteBuffer Buffer;
 	SDL_mutex	*mutex;
 	size_t	window;
+	bool	producing,consuming;
 	inline 	void	lock(void)
 		{
 		if(SDL_mutexP(mutex)!=0)
@@ -329,8 +331,8 @@ public:
 	static	int	counter;
 	int	mycounter;
 #endif
-	bool	producing,consuming;
-	Uint32	id;
+	bool is_active()
+		{ return consuming || producing; }
 	void	produce(const void *p,size_t l)
 		{
 		if(!l||!consuming)
@@ -364,7 +366,16 @@ public:
 		unlock();
 		return l?l:(producing?0:-1);
 		}
-	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),window(32768),producing(true),consuming(true),id(0)
+	void init()			// Initialize prior to use/reuse.
+		{
+		lock();
+		producing = consuming = true;
+		Buffer.clear();
+		unlock();
+		}
+
+	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),
+			window(32768),producing(false),consuming(false)
 		{
 #if DEBUG
 		mycounter=++counter;
@@ -385,10 +396,7 @@ public:
 #endif
 		lock();
 		producing=false;
-		if(!consuming)
-			delete this;
-		else
-			unlock();
+		unlock();
 		}
 	void	end_consumption(void)
 		{
@@ -397,10 +405,7 @@ public:
 #endif
 		lock();
 		consuming=false;
-		if(!producing)
-			delete this;
-		else
-			unlock();
+		unlock();
 		}
 	size_t	size(void) { return Buffer.size(); }
 	};

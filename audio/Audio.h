@@ -66,7 +66,6 @@ public:
 	Mixer	*mixer;
 
 	void	honest_sample_rates(void) { truthful_=true; }
-	void	cancel_raw(void);	// Cancel mixed samples
 	void	cancel_streams(void);	// Dump any audio streams
 	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,bool);

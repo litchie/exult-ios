@@ -732,6 +732,8 @@ static void Handle_event
 		Okay_to_quit();
 		break;
 	case SDL_KEYDOWN:		// Keystroke.
+			//+++++++++TESTING:
+//		Audio::get_ptr()->playwave("/home/jeff/exult/test.wav", false);
 		keybinder->HandleEvent(event);
 		break;
 #ifdef XWIN
