@@ -106,7 +106,17 @@ void getVersionInfo(ostream& out)
  
 	out << "Compiler: ";
 #if (defined(__GNUC__))
-	out << "gcc, version: " << __VERSION__ << endl;
+	out << "gcc";
+#if defined(__VERSIO__)
+	out << ", version: " << __VERSION__ << endl;
+#elif (defined(__GNUC_MINOR__))
+	out << ", version " << __GNUC__ << "." << __GNUC_MINOR__;
+#if (defined(__GNUC_PATCHLEVEL__))
+	out << "." << __GNUC_PATCHLEVEL__;
+#endif
+	out << endl;
+#endif
+
 #elif (defined(__MSC_VER))
 	out << "MSVC" << endl;
 #else
