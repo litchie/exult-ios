@@ -611,10 +611,11 @@ public:
 	int get_text_baseline(int fontnum);
 private:
 	void drop(int x, int y);
-	bool drop_at_lift(Game_object *to_drop, int at_lift);
 public:
+	bool drop_at_lift(Game_object *to_drop, int x, int y, int at_lift);
 	bool init_gamedat(bool create); // Initialize gamedat directory
-	void restore_gamedat(const char *fname);// Explode a savegame into "gamedat".
+					// Explode a savegame into "gamedat".
+	void restore_gamedat(const char *fname);
 	void restore_gamedat(int num);
 					// Save "gamedat".
 	void save_gamedat(const char *fname, const char *savename);
