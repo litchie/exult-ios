@@ -2,6 +2,7 @@
 	* exult.cc: Ctrl-P: repaint screen, P: use lockpick
 	* configure.in: added -Wno-long-long as default option
 	* actors.cc: small fix for God mode. (some monsters have zero str.??)
+	* exult.cc,cheat.h/cc: Ctrl-L levels up entire party, up to level 10.
 
 2000-12-02  Ryan Nunn  <triforce@merlin.net.au>
 	* added audio/soundtest.cc
