@@ -57,24 +57,26 @@ private:
 		Usecode_value *array;
 		Game_object *ptr;
 		} value;
+
+	bool undefined;
 					// Count array elements.
 	static int count_array(const Usecode_value& val);
 public:
-	inline Usecode_value() : type(int_type)
+	inline Usecode_value() : type(int_type), undefined(true)
 		{ value.intval = 0; }
-	inline Usecode_value(int ival) : type(int_type)
+	inline Usecode_value(int ival) : type(int_type), undefined(false)
 		{ value.intval = ival; }
 	Usecode_value(const char *s);
 					// Create array with 1st element.
 	Usecode_value(int size, Usecode_value *elem0) 
-			: type(array_type)
+			: type(array_type), undefined(false)
 		{
 		value.array = new Usecode_value[size + 1];
 		value.array[size].type = end_of_array_type;
 		if (elem0)
 			value.array[0] = *elem0;
 		}
-	Usecode_value(Game_object *ptr) : type(pointer_type)
+	Usecode_value(Game_object *ptr) : type(pointer_type), undefined(false)
 		{ value.ptr = ptr; }
 	~Usecode_value();
 	Usecode_value &operator=(const Usecode_value& v2);
@@ -146,6 +148,9 @@ public:
 	inline bool is_true() const
 		{ return !is_false(); }
 
+	inline bool is_undefined() const
+		{ return undefined; }
+
 	int resize(int new_size);	// Resize array.
 					// Look in array for given value.
 	int find_elem(const Usecode_value& val);
@@ -154,6 +159,8 @@ public:
 					// Add value(s) to an array.
 	int add_values(int index, Usecode_value& val2);
 	void print(std::ostream& out);	// Print in ASCII.
+
+
 	};
 
 #endif
