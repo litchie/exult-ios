@@ -39,12 +39,25 @@ public:
 	};
 
 /*
- *	A pool of removed game objects, waiting to be deleted:
+ *	For testing if two game objects match:
  */
-class Deleted_objects : public hash_set<Game_object *, Hash_objs>
+class Equal_objs
 	{
 public:
-	Deleted_objects() : hash_set<Game_object *, Hash_objs> (1013)
+     bool operator() (const Game_object *a, const Game_object *b) const
+     	{
+			return a == b;
+		}
+	};
+
+
+/*
+ *	A pool of removed game objects, waiting to be deleted:
+ */
+class Deleted_objects : public hash_set<Game_object *, Hash_objs, Equal_objs>
+	{
+public:
+	Deleted_objects() : hash_set<Game_object *, Hash_objs, Equal_objs> (1013)
 		{  }
 	void flush();			// Delete them now.
 	~Deleted_objects()
