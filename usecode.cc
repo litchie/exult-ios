@@ -617,12 +617,12 @@ Game_object *Usecode_machine::get_item
 	Game_object *obj = 0;
 	if (val == -356)		// Avatar.
 		return gwin->get_main_actor();
-	if (val < 0)
+	if (val < 0 && val > -356)
 		obj = gwin->get_npc(-val);
-	else if (val < gwin->get_num_npcs())
+	else if (val >= 0 && val < gwin->get_num_npcs())
 		obj = gwin->get_npc(val);
 					// Special case:  palace guards.
-	else if (val < 0x400)		// Looks like a shape #?
+	else if (val >= 0 && val < 0x400)		// Looks like a shape #?
 		{
 		if (!itemref.is_array() &&
  		    caller_item && val == caller_item->get_shapenum())
@@ -630,7 +630,7 @@ Game_object *Usecode_machine::get_item
 		else
 			return 0;	// Can't be an object.
 		}
-	return obj ? obj : val > 0x1000 ? (Game_object *) val : 0;
+	return obj ? obj : (val < -356 || val > 0x1000) ? (Game_object *) val : 0;
 	}
 
 /*
