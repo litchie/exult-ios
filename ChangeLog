@@ -1,3 +1,8 @@
+2001-07-03  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/faq/ and docs/readme/ : added makefile.win32 as Unix uses ':' 
+	  as seperator and Win32 uses ';'. Changed makefile to output *.dat 
+	  instead of *.inc
+
 2001-08-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gumps/Jawbone_gump.cc: fixed Jawbone display bug
 

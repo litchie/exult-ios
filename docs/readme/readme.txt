@@ -1,0 +1,2 @@
+To build the FAQ you need Xalan (http://xml.apache.org/xalan-j/) and on that page see what else you need. Then you need to add xalan.jar and xerces.jar (from the Xalan package) to the system classpath.
+Running "java org.apache.xalan.xslt.Process -IN readme.xml -XSL readme_html.xsl -OUT doc.html" will build the file then.
