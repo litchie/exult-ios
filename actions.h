@@ -85,7 +85,6 @@ protected:
 	PathFinder *path;		// Allocated pathfinder.
 private:
 	int original_dir;		// From src. to dest. (0-7).
-	int frame_index;		// Index within frame sequence.
 	int speed;			// Time between frames.
 	bool from_offscreen;		// Walking from offscreen.
 	Actor_action *subseq;		// For opening doors.

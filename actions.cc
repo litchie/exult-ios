@@ -148,7 +148,7 @@ Path_walking_actor_action::Path_walking_actor_action
 	PathFinder *p,			// Pathfinder, or 0 for Astar.
 	int maxblk			// Max. retries when blocked.
 	) : reached_end(false), path(p), from_offscreen(false),
-	    subseq(0), blocked(0), frame_index(0), max_blocked(maxblk)
+	    subseq(0), blocked(0), max_blocked(maxblk)
 	{
 	if (!path)
 		path = new Astar();
@@ -249,10 +249,11 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	int newdir = static_cast<int>(Get_direction4(cur.ty - tile.ty, 
 							tile.tx - cur.tx));
 	Frames_sequence *frames = actor->get_frames(newdir);
-	if (!frame_index)		// First time?  Init.
-		frame_index = frames->find_unrotated(actor->get_framenum());
-					// Get next (updates frame_index).
-	int frame = frames->get_next(frame_index);
+	int& step_index = actor->get_step_index();
+	if (!step_index)		// First time?  Init.
+		step_index = frames->find_unrotated(actor->get_framenum());
+					// Get next (updates step_index).
+	int frame = frames->get_next(step_index);
 	int cur_speed = speed;		// Step() might delete us!
 	if (from_offscreen)		// Teleport to 1st spot.
 		{
@@ -267,6 +268,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		return cur_speed;
 		}
 	reached_end = false;
+	frames->decrement(step_index);	// We didn't take the step.
 					// Blocked by a door?
 	if (actor->get_tile().distance(tile) == 1 &&
 	    !cheat.in_map_editor())	// And NOT map-editing?

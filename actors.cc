@@ -450,7 +450,7 @@ Actor::Actor
 	    two_handed(false), two_fingered(false), light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), ident(0),
 	    skin_color(-1), action(0), 
-	    frame_time(0), timers(0),
+	    frame_time(0), step_index(0), timers(0),
 	    weapon_rect(0, 0, 0, 0), rest_time(0)
 	{
 	set_shape(shapenum, 0); 
@@ -848,6 +848,7 @@ void Actor::stop
 	(
 	)
 	{
+	/* +++ This might cause jerky walking. Needs to be done above? */
 	if (action)
 		{
 		action->stop(this);
