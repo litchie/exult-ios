@@ -23,37 +23,34 @@ these files can help.
 there are two sections below describing how.
 
 
-To build in Windows using Mingw32
+To build in Windows using MinGW
 -----------------------------------
 (Thanks to Travis Howell)
 
-Download Mingw32 from (for example):    (one line)
-ftp://ftp.xraylith.wisc.edu/pub/khan/gnu-win32/
-  mingw32/gcc-2.95.2/gcc-2.95.2-msvcrt.exe
+Download MinGW 1.0 or later from (for example):    (one line)
+http://prdownloads.sourceforge.net/mingw/Mingw-1.0.1-20010726.tar.gz
 
-Run this file to install Mingw32. (default location is ok)
+Extract the files to a mingw directory in root directory of drive
+(ie C:\mingw\ )
 
 Get the SDL binaries & headers from:
-ftp://exult.sourceforge.net/pub/exult/exult_sdl_w32.zip
-Unzip this into the Exult directory. (it should add a SDL subdirectory)
+http://exult.on.openave.net/SDL-1.2.2.zip
+Unzip this file into the Exult directory. (it should add a SDL subdirectory)
 
-Open Command Prompt/MS-DOS Prompt
-Go to the location where you installed Mingw32
-(cd C:\gcc-2.95.2\)
+Open Command Prompt or MS-DOS Prompt
 
-Type 'mingw32' (without quotes) to setup the environmental variables for Mingw32.
+Type 'PATH=drive:\mingw\bin;%PATH%' where drive is the letter of the hard disk you installed mingw on to, without quotes to add mingw to the path
+(ie PATH=C:\mingw\bin;%PATH% )
 
 Change to the directory where you unpacked the Exult source code.
 (cd C:\exult\)
 
-Copy Makefile.win32 to Makefile
-(copy Makefile.win32 Makefile)
+Open makefile.win32 from the Exult directory in a text editor and change C:\\Ultima7 to the directory you want Exult to be installed to.
+(ie C:\\Games\\Ultima7 )
 
-Type 'make' (without quotes) to compile Exult for Windows.
+Type 'make -f makefile.win32 install' without quotes to compile and install Exult for Windows
 
-Once compile has finished exit Command Prompt/MS-DOS Prompt
-
-Copy Exult.exe to the location of your Ultima 7 directory
+Once compile has finished and been installed exit the Command Prompt or MS-DOS Prompt
 
 Run Exult.exe and enjoy the game :-)
 

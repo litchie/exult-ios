@@ -1,8 +1,8 @@
-# Exult makefile for use in Windows with mingw32
+# Exult makefile for use in Windows with mingw 1.0 or later
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
-U7PATH=C:\\UC\\Ultima7
+U7PATH=C:\\Ultima7
 
 CC=gcc
 # Base of the exult source
@@ -15,7 +15,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw32 automatically defines WIN32
-CPPFLAGS=-DVERSION=\\\"0.94cvs\\\" -DEXULT_DATADIR=\\\"data\\\" -DDEBUG \
+CPPFLAGS=-DVERSION=\"0.94cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/gumps -I$(SRC)/objs \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
