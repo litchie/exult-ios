@@ -137,6 +137,8 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 		walk_after_teleport = state;
 	else if (btn == buttons[8])
 		frames = state;
+	else if (btn == buttons[11])
+		rightclick_close = state;
 }
 
 void GameplayOptions_gump::build_buttons()
@@ -199,6 +201,8 @@ void GameplayOptions_gump::build_buttons()
 										   59, mouse3rd);
 	buttons[3] = new GameplayEnabledToggle(this, colx[3], rowy[5],
 										   59, doubleclick);
+	buttons[11] = new GameplayEnabledToggle(this, colx[3], rowy[6],
+										   59, rightclick_close);
 	buttons[4] = new GameplayEnabledToggle(this, colx[3], rowy[7],
 										   59, cheats);
 	buttons[8] = new GameplayTextToggle(this, frametext, colx[3], rowy[8], 
@@ -218,6 +222,7 @@ void GameplayOptions_gump::load_settings()
 	string pdolls;
 	paperdolls = gwin->get_bg_paperdolls();
 	doubleclick = gwin->get_double_click_closes_gumps();
+	rightclick_close = gwin->get_gump_man()->can_right_click_close();
 	text_bg = gwin->get_text_bg()+1;
 	int realframes = 1000/gwin->get_std_delay();
 	int i;
@@ -285,6 +290,9 @@ void GameplayOptions_gump::save_settings()
 	gwin->set_double_click_closes_gumps(doubleclick!=false);
 	config->set("config/gameplay/double_click_closes_gumps", 
 				doubleclick ? "yes" : "no", true);
+	gwin->get_gump_man()->set_right_click_close(rightclick_close!=false);
+	config->set("config/gameplay/right_click_closes_gumps", 
+				rightclick_close ? "yes" : "no" , true);
 	cheat.set_enabled(cheats!=false);
 	while (facestats != Face_stats::get_state() + 1)
 		Face_stats::AdvanceState();
@@ -311,6 +319,7 @@ void GameplayOptions_gump::paint(Game_window* gwin)
 	gwin->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[3] + 1);
 	gwin->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
 	gwin->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
+	gwin->paint_text(2, "Right click closes Gumps:", x + colx[0], y + rowy[6] + 1);
 	gwin->paint_text(2, "Cheats:", x + colx[0], y + rowy[7] + 1);
 	gwin->paint_text(2, "Speed:", x + colx[0], y + rowy[8] + 1);
 	gwin->set_painted();

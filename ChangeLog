@@ -1,3 +1,10 @@
+2002-03-05  Ryan Nunn  <triforce@merlin.net.au>
+	* exult.cc , gumps/GameplayOptions_gump.*, gumps/Gump_manager.*
+	  gumps/gump_utils.cc : Right click now closes all gumps. Added config
+	  setting and updated game options gump with the setting. The setting
+	  also effects Modal gumps which previously always closed on a right
+	  click. Default enabled.
+
 2002-03-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* tools/ipack.cc,ipack.txt:  Can now have all 'flat' frames in a
