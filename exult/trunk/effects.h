@@ -97,7 +97,7 @@ protected:
 	Tile_coord pos;			// Position within world.
 	int xoff, yoff;			// Offset from position in pixels.
 	int deltax, deltay;		// Add to xoff, yoff on each frame.
-	void add_dirty(Game_window *gwin, int frnum);
+	void add_dirty(int frnum);
 public:
 	Sprites_effect(int num, Tile_coord p, int dx = 0, int dy = 0);
 	Sprites_effect(int num, Game_object *it, 
@@ -135,7 +135,7 @@ class Projectile_effect : public Special_effect
 	Tile_coord pos;			// Current position.
 	bool return_path;		// Returning a boomerang.
 					// Add dirty rectangle.
-	void add_dirty(Game_window *gwin);
+	void add_dirty();
 	void init(Tile_coord s, Tile_coord t);
 public:
 	Projectile_effect(Actor *att, Game_object *to, int shnum,
@@ -163,7 +163,7 @@ class Death_vortex : public Special_effect
 	int frames;			// # frames.
 	uint32 stop_time;		// Time in 1/1000 secs. to stop.
 	uint32 next_damage_time;	// When to check for NPC's beneath us.
-	int add_dirty(Game_window *gwin);
+	int add_dirty();
 public:
 	Death_vortex(Game_object *trg, Tile_coord tp);
 					// For Time_sensitive:
