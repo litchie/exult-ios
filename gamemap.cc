@@ -1588,7 +1588,12 @@ void Game_map::cache_out(int cx, int cy)
 	bool chunk_flags[12][12];
 
 #ifdef DEBUG
-	std::cout << "Want to cache out around super chunk: " << (sy*12 + sx) << " = "  << sx << ", " << sy << std::endl;
+	if (cx == -1)
+		std::cout << "Want to cache out entire map #" <<
+				get_num() << std::endl;
+	else
+		std::cout << "Want to cache out around super chunk: " << 
+		(sy*12 + sx) << " = "  << sx << ", " << sy << std::endl;
 #endif
 
 	std::memset(chunk_flags, 0, sizeof(chunk_flags));

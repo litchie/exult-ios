@@ -1362,11 +1362,11 @@ void Ifix_game_object::move
 	)
 	{
 	Game_object::move(newtx, newty, newlift);
-					// Mark superchunk as 'modified'.
-	int cx = get_cxi(), cy = get_cyi();
-	if (cx >= 0 && cx < c_num_chunks &&
-	    cy >= 0 && cy < c_num_chunks)
-		gmap->set_ifix_modified(cx, cy);
+	if (chunk)			// Mark superchunk as 'modified'.
+		{
+		int cx = chunk->get_cx(), cy = chunk->get_cy();
+		chunk->get_map()->set_ifix_modified(cx, cy);
+		}
 	}
 
 /*
@@ -1379,11 +1379,11 @@ void Ifix_game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-					// Mark superchunk as 'modified'.
-	int cx = get_cxi(), cy = get_cyi();
-	if (cx >= 0 && cx < c_num_chunks &&
-	    cy >= 0 && cy < c_num_chunks)
-		gmap->set_ifix_modified(cx, cy);
+	if (chunk)			// Mark superchunk as 'modified'.
+		{
+		int cx = chunk->get_cx(), cy = chunk->get_cy();
+		chunk->get_map()->set_ifix_modified(cx, cy);
+		}
 	Game_object::remove_this(nodel);
 	}
 
