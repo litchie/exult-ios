@@ -50,25 +50,6 @@ public:
 	virtual	~MidiAbstract() {};
 };
 
-//---- MidiAbstract -----------------------------------------------------------
-
-#undef HAVE_TIMIDITY_BIN	// Disabled for now
-#if HAVE_TIMIDITY_BIN
-class	Timidity_binary : virtual public MidiAbstract
-{
-public:
-	virtual void	start_track(const char *,int repeats);
-	virtual void	stop_track(void);
-	virtual	bool	is_playing(void);
-	virtual const	char *copyright(void);
-
-	Timidity_binary();
-	virtual ~Timidity_binary();
-private:
-	pid_t	forked_job;
-};
-#endif
-
 
 //---- MyMidiPlayer -----------------------------------------------------------
 
@@ -78,12 +59,16 @@ public:
 	MyMidiPlayer();
 	~MyMidiPlayer();
 	MyMidiPlayer(const char *flexfile);
-	void	start_music(int num,int repeats=0);
-	void	start_track(int num,int repeats=0);
+	void	start_music(int num,int repeats=0,int bank=0);
+	void	start_track(int num,int repeats=0,int bank=0);
+
+	bool	add_midi_bank(const char *s);
+
 
 private:
 	void    kmidi_start_track(int num,int repeats=0);
-	Flex midi_tracks;
+	vector<string>	midi_bank;
+	vector<Flex> midi_tracks;
 	Table instrument_patches;
 	int	current_track;
 	MidiAbstract	*midi_device;

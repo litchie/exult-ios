@@ -32,13 +32,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern	Configuration	config;
 
 
-void    MyMidiPlayer::start_track(int num,int repeats)
+void    MyMidiPlayer::start_track(int num,int repeats,int bank)
 {
 #if DEBUG
         cout << "Audio subsystem request: Music track # " << num << endl;
 #endif
         uint32  length;
-        char    *music=midi_tracks.read_object(num,length);
+        char    *music=midi_tracks[bank].read_object(num,length);
         if(!music)
                 return;
         FILE    *fp;
@@ -56,7 +56,7 @@ void    MyMidiPlayer::start_track(int num,int repeats)
 	midi_device->start_track("/tmp/u7midi",repeats);
 }
 
-void	MyMidiPlayer::start_music(int num,int repeats)
+void	MyMidiPlayer::start_music(int num,int repeats,int bank)
 {
 	if(!midi_device)
 		return;
@@ -66,6 +66,17 @@ void	MyMidiPlayer::start_music(int num,int repeats)
 	start_track(num);
 }
 
+bool	MyMidiPlayer::add_midi_bank(const char *bankname)
+{
+	string	bank(bankname);
+	Flex	tracks=AccessFlexFile(bankname);
+	midi_bank.push_back(bank);
+	midi_tracks.push_back(tracks);
+#if DEBUG
+	cerr << "Read in " << tracks.object_list.size() << " tracks" << endl;
+#endif
+	return true;
+}
 
 #include "midi_drivers/Timidity_binary.h"
 #include "midi_drivers/KMIDI.h"
@@ -74,11 +85,10 @@ void	MyMidiPlayer::start_music(int num,int repeats)
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 {
 	bool	no_device=true;
-	midi_tracks=AccessFlexFile(ADLIBMUS);
+
+	add_midi_bank(ADLIBMUS);
+
 	instrument_patches=AccessTableFile(XMIDI_MT);
-#if DEBUG
-	cerr << "Read in " << midi_tracks.object_list.size() << " tracks" << endl;
-#endif
 	string	s;
 	config.value("config/audio/midi/enabled",s,"---");
 	if(s=="---")
