@@ -77,6 +77,7 @@ enum Msg_type
 	paste = 27,			// ... from clipboard.
 	select_status = 28,		// Flags:  selection, clipboard avail.
 	npc_info = 29,			// Get #NPC's, first unused.
+	edit_selected = 30,		// Edit selected object.
 	usecode_debugging = 128
 	};
 
