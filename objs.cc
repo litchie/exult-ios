@@ -1605,7 +1605,7 @@ void Chunk_cache::activate_eggs
 	Usecode_machine *usecode = 
 				Game_window::get_game_window()->get_usecode();
 	int i;				// Go through eggs.
-	for (i = 0; i < 8*sizeof(eggbits) - 1 && eggbits; 
+	for (i = 0; i < 8*(int)sizeof(eggbits) - 1 && eggbits; 
 						i++, eggbits = eggbits >> 1)
 		{
 		Egg_object *egg;

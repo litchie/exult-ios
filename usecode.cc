@@ -1047,7 +1047,7 @@ Usecode_value Usecode_machine::find_nearest
 		int x2, y2, z2;
 		each->get_abs_tile(x2, y2, z2);
 		int dx = x1 - x2, dy = y1 - y2, dz = z1 - z2;
-		long dist = dx*dx + dy*dy + dz*dz;
+		unsigned long dist = dx*dx + dy*dy + dz*dz;
 		if (dist < bestdist)
 			{
 			bestdist = dist;
@@ -3151,7 +3151,7 @@ int Usecode_machine::write
 	if (!U7open(out, USEDAT))
 		return (0);
 	Write2(out, party_count);	// Write party.
-	for (int i = 0; i < sizeof(party)/sizeof(party[0]); i++)
+	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		Write2(out, party[i]);
 	out.flush();
 	return out.good();
@@ -3175,7 +3175,7 @@ int Usecode_machine::read
 	if (!U7open(in, USEDAT))
 		return (0);
 	party_count = Read2(in);	// Read party.
-	for (int i = 0; i < sizeof(party)/sizeof(party[0]); i++)
+	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		party[i] = Read2(in);
 	link_party();
 	return in.good();
