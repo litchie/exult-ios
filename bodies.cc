@@ -38,98 +38,140 @@ using std::size_t;
  */
 
 short Body_lookup::table[] = {
-				// Monsters:
-	491,	892,	12,	// acid slug
-	492,	892,	13,	// alligator
-	493,	762,	9,	// bat   (no body!)
-	494,	892,	15,	// bee
-	716,	892,	16,	// bird
-	495,	892,	18,	// cat
-	498,	892,	20,	// chicken
-	499,	892,	21,	// corpser
-	500,	778,	11,	// cow
-	501,	778,	6,	// cyclops
-	502,	778,	12,	// deer
-	496,	892,	24,	// dog
-	504,	778,	7,	// dragon
-	505,	778,	8,	// drake
-	784,	892,	25,	// emp
-	230,	762,	2,	// ethereal monster (no body!)
-	884,	892,	5,	// Fellowship member
-	929,	400,	10,	// Fellowship member
-	155,	762,	2,	// Ferryman
-	259,	400,	20,	// fighter
-	509,	892,	26,	// fish
-	510,	892,	27,	// fox
-	883,	762,	1,	// Gargoyle, wingless
-	511,	762,	2,	// gazer
-	337,	762,	0,	// ghost	(invisible).
-	299,	762,	0,	// ghost
-	317,	762,	0,	// ghost
-	1015,	414,	4,	// Golem
-	513,	762,	4,	// gremlin
-	394,	892,	10,	// guard
-	806,	892,	7,	// guard
-	946,	892,	8,	// guard
-	532,	762,	5,	// harpie
-	514,	762,	6,	// headless
-	727,	778,	1,	// horse
-	381,	778,	3,	// hydra, three headed
-	382,	414,	7,	// Kissme
-	517,	892,	15,	// insects
-	354,	762,	8,	// liche
-	519,	762,	8,	// liche (Horatius?)
-	466,	414,	12,	// Lord British
-	154,	762,	22,	// mage
-	661,	762,	9,	// mongbat
-	521,	762,	10,	// mouse
-	247,	762,	23,	// paladin
-	401,	762,	25,	// pirate
-	811,	892,	17,	// rabbit
-	523,	762,	11,	// rat
-	524,	762,	12,	// reaper
-	706,	762,	26,	// scorpion
-	525,	762,	2,	// sea serpent (no body!)
-	970,	762,	14,	// sheep
-	528,	762,	16,	// skeleton
-	529,	762,	0,	// slime (invisible).
-	530,	762,	18,	// snake
-	865,	762,	19,	// spider
-	753,	762,	20,	// stone harpie
-	536,	762,	0,	// tentacles (invisible).
-	533,	778,	5,	// troll
-	534,	762,	0,	// wisp
-	537,	762,	21,	// wolf
-	447,	892,	11,	// wounded man
-				// NCPs:
-	318,	400,	5,	// Sage.
-	319,	400,	9,	// Male peasant.
-//	403,	892,	3,	// Batlin.
-	403,	414,	16,	// Batlin.
-//	482,	892,	3,	// Batlin.
-	403,	414,	16,	// Batlin.
-	451,	400,	13,	// Male noble.
-	452,	400,	10,	// Female peasant.
-	454,	400,	12,	// Female shopkeeper.
-	455,	400,	11,	// Male shopkeeper.
-	456,	400,	14,	// Female noble.
-	457,	400,	15,	// Male gypsy.
-	458,	400,	16,	// Pirate.
-	459,	400,	17,	// Female gypsy.
-	401,	400,	16,	// Pirate.
-	460,	400,	18,	// Male ranger
-	461,	400,	19,	// Female ranger
-	462,	400,	20,	// Male fighter.
-	463,	400,	21,	// Female fighter.
-	465,	400,	3,	// Iolo.
-	468,	400,	25,	// Male entertainer.
-	469,	400,	26,	// Female entertainer.
-	489,	414,	21,	// Spark.
-	506,	892,	19,	// Hook.
-	720,	400,	23,	// Guard.
-	805,	892,	4,	// Forksis.
-	881,	892,	2,	// Elizabeth.
-	882,	892,	1,	// Abraham.
+/*
+                              Artaxerxes
+  Hi,
+  here is the newest (Oct 4 2000 11am EST) bodies.cc file
+  hope it helps
+*/
+
+  154, 762, 22, 			// x mage
+  155, 762, 2, 				// X Ferryman
+  226, 892, 29, 			// X flying gargoyle
+  227, 400, 5, 				// X monk male
+  228, 414, 28, 			// X naked man
+  229, 414, 27, 			// X naked woman
+  230, 762, 0, 				// x ethereal monster -- there should
+					//    not be a body.. just blood
+  247, 762, 23, 			// x paladin
+  259, 400, 20, 			// x fighter
+  265, 400, 27, 			// X townsman
+  274, 414, 2, 				// X gargoyle -- Healer (?)
+  299, 762, 0, 				// x ghost
+  304, 400, 28, 			// X forger
+  317, 762, 0, 				// x ghost
+  318, 400, 5, 				// x monk
+  319, 400, 9, 				// x male peasant
+  337, 762, 0, 				// x ghost (invisible)
+  354, 762, 8, 				// x liche
+  375, 778, 2, 				// X unicorn
+  380, 778, 4, 				// X cyclop
+  381, 778, 3, 				// x three headed hydra
+  382, 414, 7, 				// x Kissme
+  394, 892, 10, 			// x guard
+  401, 762, 25, 			// x pirate
+  401, 400, 16, 			// x pirate.
+  403, 414, 16, 			// x Batlin
+  445, 400, 3, 				// X mage male
+  446, 400, 4, 				// X mage female
+  447, 892, 11, 			// x wounded man
+  448, 400, 6, 				// X monk female
+  449, 400, 7, 				// X beggar
+  450, 400, 8, 				// X beggar
+  451, 400, 13, 			// x male noble.
+  452, 400, 10, 			// x female peasant.
+  454, 400, 12, 			// x female shopkeeper.
+  455, 400, 11, 			// x male shopkeeper.
+  456, 400, 14, 			// x female noble.
+  457, 400, 15, 			// x male gypsy 
+  458, 400, 16, 			// x pirate.
+  459, 400, 17, 			// x female gypsy
+  460, 400, 18, 			// x male ranger
+  461, 400, 19, 			// x female ranger
+  462, 400, 20, 			// x male fighter.
+  463, 400, 21, 			// x female fighter.
+  464, 400, 22, 			// X paladin
+  465, 414, 18, 			// x Iolo.
+  466, 414, 12, 			// x Lord British
+  467, 400, 24, 			// X chuck jester
+  468, 400, 25, 			// x male entertainer.
+  469, 400, 26, 			// x female entertainer.
+  471, 400, 30, 			// X kid
+  472, 400, 31, 			// X noble Kid
+  473, 414, 1, 				// X noble Gargoyle
+  475, 892, 4, 				// X Gargoyle -- Forksis (?)
+  476, 778, 1, 				// X Smith (?) -- Iolo's Horse
+  477, 414, 6, 				// X Honest fox
+  478, 414, 10, 			// X Sherry
+  479, 414, 11, 			// X emp
+  480, 414, 14, 			// X noble Gargoyle
+  482, 414, 16, 			// x Batlin
+  485, 414, 17, 			// X thief -- Isle of the Avatar
+  487, 414, 19, 			// X Shamino
+  488, 414, 20, 			// X Dupre
+  489, 414, 21, 			// x Spark.
+  490, 414, 22, 			// X Jaana
+  491, 892, 12, 			// x acid slug
+  492, 892, 13, 			// x alligator
+  493, 762, 0, 				// x bat -- there is no body for 
+					//   bat... just blood
+  494, 892, 15, 			// x bee
+  495, 892, 18, 			// x cat
+  496, 892, 24, 			// x dog 
+  498, 892, 20, 			// x chicken
+  499, 892, 21, 			// x corpser
+  500, 778, 11, 			// x cow
+  501, 778, 6, 				// x cyclops
+  502, 778, 12, 			// x deer
+  504, 778, 7, 				// x dragon
+  505, 778, 8, 				// x drake
+  506, 892, 19,				// x Hook.
+  509, 892, 26, 			// x fish
+  510, 892, 27, 			// x fox
+  511, 762, 2, 				// x gazer
+  513, 762, 4, 				// x gremlin
+  514, 762, 6, 				// x headless
+  517, 762, 7, 				// X insects 
+  519, 762, 8, 				// X black shadow dead
+  521, 762, 10, 			// x mouse
+  523, 762, 11, 			// x rat
+  524, 762, 12, 			// x reaper
+  525, 762, 13, 			// X sea serpent -- should disappear
+  528, 762, 16, 			// x skeleton
+  529, 762, 17, 			// X slime
+  530, 762, 18, 			// x snake
+  532, 762, 5, 				// x harpie
+  533, 778, 5, 				// x troll
+  534, 762, 0, 				// x wisp
+  536, 762, 0, 				// x tentacles (invisible).
+  537, 762, 21, 			// x wolf
+  617, 414, 23, 			// X Time Lord (live shape = 617:16)
+  661, 762, 9, 				// x mongbat
+  706, 762, 26, 			// x scorpion
+  716, 892, 16, 			// x bird
+  720, 400, 23, 			// x Guard
+  721, 400, 1, 				// X Avatar male
+  727, 778, 9, 				// x horse
+  753, 762, 20, 			// x stone harpie
+  784, 892, 25, 			// x emp
+  805, 892, 4, 				// x Forksis
+  806, 892, 7, 				// x guard
+  811, 892, 17, 			// x rabbit
+  861, 778, 5, 				// X troll
+  864, 400, 29, 			// X Baby
+  865, 762, 19, 			// x spider
+  881, 892, 2, 				// x Elizabeth
+  882, 892, 1, 				// x Abraham
+  883, 762, 1, 				// x wingless Gargoyle
+  884, 892, 5, 				// x Fellowship member
+  929, 400, 10, 			// x Fellowship member
+  946, 892, 8, 				// x guard
+  952, 762, 2, 				// X Skara Brae Liche
+  957, 400, 11, 			// X shopkeeper
+  965, 400, 30, 			// X little boy
+  970, 762, 14, 			// x sheep
+  989, 400, 2, 				// X avatar female
+  1015, 414, 4	 			// x Stone Golem
 	};
 
 /*
