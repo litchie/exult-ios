@@ -151,7 +151,8 @@ int main
 	    "                   Willem Jan Palenstijn, Tristan Tarrant, " << endl <<
 	    "                   Max Horn, Luke Dunstan, Ryan Nunn" << endl;
 	cout << "Low level graphics use the 'SDL' library."<< endl;
-
+	cout << "2xSaI scaling filter contributed by Derek Liauw Kie Fa."
+								<< endl;
         config = new Configuration;	// Create configuration object
 	config->read_config_file(USER_CONFIGURATION_FILE);
 	audio = new Audio;
