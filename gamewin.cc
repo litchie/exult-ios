@@ -728,6 +728,7 @@ void Game_window::resized
 	)
 	{			
 	win->resized(neww, newh, newsc, newsclr);
+	pal->apply(false);
 	Set_renderer(win, pal);
 	if (!main_actor)		// In case we're before start.
 		return;
@@ -1987,6 +1988,7 @@ void Game_window::show_items
 			static_cast<int>(obj->get_flag(Obj_flags::okay_to_take)) <<
 			", flag0x1d = " << static_cast<int>(obj->get_flag(0x1d)) <<
 			", hp = " << obj->get_obj_hp() << ", weight = "<< obj->get_weight()
+			 << ", volume = " << obj->get_volume()
 			<< endl;
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))
