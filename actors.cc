@@ -1012,8 +1012,8 @@ void Actor::die
 	int shnum = 400;		// +++++Figure out correct shape.
 	int frnum = 3;			// +++++
 					// Put body here.
-	Container_game_object *body = new Container_game_object(
-							shnum, frnum, 0, 0);
+	Container_game_object *body = 
+			new Container_game_object(shnum, frnum, 0, 0);
 	body->move(pos);
 	Game_object *item;		// Move all the items.
 	while ((item = get_first_object()) != 0)
@@ -1207,6 +1207,20 @@ void Main_actor::move
 	if (nlist != olist)
 		switched_chunks(olist, nlist);
 	gwin->set_above_main_actor(nlist->is_roof(), newlift);
+	}
+
+/*
+ *	We're dead.
+ */
+
+void Main_actor::die
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Special function for dying:
+	gwin->get_usecode()->call_usecode(
+				0x60e, this, Usecode_machine::weapon);
 	}
 
 /*

@@ -1498,7 +1498,7 @@ USECODE_INTRINSIC(find_direction)
 
 USECODE_INTRINSIC(get_npc_object)
 {
-	// Takes -npc.  Returns object.
+	// Takes -npc.  Returns object.++++++Should operate on an array, too.
 	Game_object *obj = get_item(parms[0]);
 	Usecode_value u((long) obj);
 	return(u);
@@ -2526,7 +2526,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x90
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x92
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x93
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x93    +++++GetDeadPartyMembers().
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x94    SetupOrrery (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x95
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x96
