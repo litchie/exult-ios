@@ -1829,6 +1829,14 @@ USECODE_INTRINSIC(give_last_created)
 	return(u);
 }
 
+USECODE_INTRINSIC(is_dead)
+{
+	// Return 1 if parm0 is a dead NPC.
+	Game_object *npc = get_item(parms[0]);
+	Usecode_value u(npc->is_dead_npc());
+	return(u);
+}
+
 USECODE_INTRINSIC(game_hour)
 {
 	// Return. game time hour (0-23).
@@ -2190,7 +2198,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x34 UNUSED
 	USECODE_INTRINSIC_PTR(find_nearby), // 0x35
 	USECODE_INTRINSIC_PTR(give_last_created), // 0x36
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x37 +++++++It is is_dead(npc).
+	USECODE_INTRINSIC_PTR(is_dead), // 0x37
 	USECODE_INTRINSIC_PTR(game_hour), // 0x38
 	USECODE_INTRINSIC_PTR(game_minute), // 0x39
 	USECODE_INTRINSIC_PTR(get_npc_number),	// 0x3a

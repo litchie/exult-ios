@@ -243,6 +243,8 @@ public:
 		{  }
 	virtual int get_property(int prop)
 		{ return 0; }
+	virtual int is_dead_npc()
+		{ return 0; }
 	virtual int get_alignment()	// Get/set 'alignment'.
 		{ return 0; }
 	virtual void set_alignment(short)
