@@ -210,10 +210,8 @@ Spellbook_gump::Spellbook_gump
 	{
 					// Where to paint page marks:
 	const int lpagex = 38, rpagex = 142, lrpagey = 25;
-	book_owner = book;		// Get book's top owner.
-	Game_object *above;
-	while ((above = book_owner->get_owner()) != 0)
-		book_owner = above;
+					// Get book's top owner.
+	book_owner = book->get_outermost();
 	set_avail();			// Figure spell counts.
 	Game_window *gwin = Game_window::get_game_window();
 	if (book->bookmark >= 0)	// Set to bookmarked page.
