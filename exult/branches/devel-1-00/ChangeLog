@@ -1,3 +1,6 @@
+2002-06-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.cc: typo
+
 2002-06-06  Ryan Nunn  <triforce@merlin.net.au>
 	* browser.cc, gamerend.cc, gumps/gump_utils.cc : Fixing problems
 	  introduced by Kirben when getting Exult Exult to compile with GCC3.1
