@@ -119,7 +119,9 @@ void Actor::read
 			fix_unused = true;
 		else
 			unused = true;
+#ifdef DEBUG
 		cout << "NPC #" << num << " is unused" << endl;
+#endif
 		}
 
 	bool has_contents = fix_first ? (iflag1 && !unused) : (iflag1&1);
