@@ -321,7 +321,8 @@ bool Game::show_menu()
 			end_game(true);
 			top_menu();
 			break;
-		case 6:
+		case 6: // Return to Menu
+			play = false;
 			menu->set_selection(2);
 			break;
 		default:
