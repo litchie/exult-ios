@@ -487,6 +487,7 @@ void Usecode_machine::show_npc_face
 	int shape = npc->get_face_shapenum();
 	int frame = arg2.get_int_value();
 	gwin->show_face(shape, frame);
+	user_choice = 0;		// Seems like a good idea.
 	}
 
 /*
@@ -1132,7 +1133,7 @@ USECODE_INTRINSIC(pop_answers)
 		answers=answer_stack.front();
 		answer_stack.pop_front();
 		}
-	user_choice = 0;		// Seems like a good idea.
+// +++Maybe not	user_choice = 0;		// Seems like a good idea.
 	USECODE_RETURN(no_ret);
 }
 
