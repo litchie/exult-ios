@@ -27,6 +27,11 @@ TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp
 	shapes = shp;
 	U7object txtobj(archive, index);
 	size_t len;
+#ifdef MACOS
+	const char	CR = '\n', LF = '\r';
+#else
+	const char	CR = '\r', LF = '\n';
+#endif
 		
 	char *txt, *ptr, *end;
 	txtobj.retrieve(&txt, len);
@@ -36,9 +41,9 @@ TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp
 	text = new vector<char *>();
 	while(ptr<end) {
 		char *start = ptr;
-		ptr = strchr(ptr, '\n');
+		ptr = strchr(ptr, LF);
 		if(ptr) {
-			if(*(ptr-1)=='\r') // It's CR/LF
+			if(*(ptr-1)==CR) // It's CR/LF
 				*(ptr-1) = 0;
 			else
 				*ptr = 0;
