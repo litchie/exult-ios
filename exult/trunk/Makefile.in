@@ -301,7 +301,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -428,7 +428,7 @@ exult.o: exult.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h 
 gameclk.o: gameclk.cc gameclk.h tqueue.h gamewin.h imagewin.h actors.h objs.h vec.h usecode.h vgafile.h fnames.h
 gamedat.o: gamedat.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h utils.h
 gametxt.o: gametxt.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h
-gamewin.o: gamewin.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h items.h utils.h npcnear.h gumps.h
+gamewin.o: gamewin.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h items.h utils.h npcnear.h gumps.h audio/Audio.h autoconfig.h audio/SDL_mapping.h audio/Flex.h audio/common.h audio/Mixer.h audio/Midi.h audio/Table.h conf/Configuration.h conf/XMLEntity.h
 gumps.o: gumps.cc gumps.h objs.h vec.h usecode.h tqueue.h gamewin.h imagewin.h actors.h vgafile.h fnames.h gameclk.h
 imagewin.o: imagewin.cc imagewin.h conf/Configuration.h conf/XMLEntity.h
 items.o: items.cc items.h utils.h
