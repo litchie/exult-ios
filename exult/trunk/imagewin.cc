@@ -27,6 +27,9 @@ Boston, MA  02111-1307, USA.
 #include "imagewin.h"
 #include <string.h>
 #include <iostream.h>
+#include <string>
+#include <Configuration.h>
+extern	Configuration config;
 
 /*
  *	Create buffer.
@@ -675,9 +678,14 @@ void Image_window::create_surface
 	unsigned int h
 	)
 	{
+	string	fullscreenstr;
+	bool	fullscreen=false;
+	config.value("config/video/fullscreen",fullscreenstr,"no");
+	if(fullscreenstr=="yes")
+		fullscreen=true;
 	ibuf->width = w;
 	ibuf->height = h;
-	surface = SDL_SetVideoMode(w, h, ibuf->depth, 
+	surface = SDL_SetVideoMode(w, h, ibuf->depth, (fullscreen?SDL_FULLSCREEN:0) |
 					SDL_SWSURFACE |  SDL_HWPALETTE);
 	if (!surface)
 		{
