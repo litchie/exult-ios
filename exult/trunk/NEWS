@@ -1,3 +1,19 @@
+6/2/00:		Save/load implemented.
+
+		MIDI improvements in Windows version.
+
+		More animations:  You can see the weapons being carried.
+
+		Better object identification and inventory management.
+
+		View the endgame movie by hitting F10.
+
+		NPC schedules/pathfinding improved.
+
+		Moongates work.
+
+		Sleeping works (but animation not done).
+
 5/8/00:		MIDI in Windows version!!
 
 		Correct Avatar/NPC animation frames (finally), and improvements
