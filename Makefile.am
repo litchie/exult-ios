@@ -74,27 +74,53 @@ clean:
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
-# dependencies
+# dependencies generated with:
+# makedepend -f Makefile.am -Y -I. -Iconf -Ipathfinder -Iaudio -- *.cc
+# DO NOT DELETE
 
+actions.o: actions.h actors.h objs.h vec.h usecode.h tqueue.h utils.h
+actors.o: gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h
+actors.o: utils.h vgafile.h fnames.h gameclk.h actions.h ready.h
 args.o: args.h
-actors.o: actors.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h
-drag.o: drag.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h gumps.h mouse.h
-exult.o: exult.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h audio/Audio.h autoconfig.h audio/SDL_mapping.h audio/Flex.h audio/common.h audio/Mixer.h audio/Midi.h audio/Table.h conf/Configuration.h conf/XMLEntity.h mouse.h
-gameclk.o: gameclk.cc gameclk.h tqueue.h gamewin.h imagewin.h actors.h objs.h vec.h usecode.h vgafile.h fnames.h
-gamedat.o: gamedat.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h utils.h
-gametxt.o: gametxt.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h
-gamewin.o: gamewin.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h items.h utils.h npcnear.h gumps.h audio/Audio.h autoconfig.h audio/SDL_mapping.h audio/Flex.h audio/common.h audio/Mixer.h audio/Midi.h audio/Table.h conf/Configuration.h conf/XMLEntity.h
-gumps.o: gumps.cc gumps.h objs.h vec.h usecode.h tqueue.h gamewin.h imagewin.h actors.h vgafile.h fnames.h gameclk.h
-imagewin.o: imagewin.cc imagewin.h conf/Configuration.h conf/XMLEntity.h
-items.o: items.cc items.h utils.h
-lists.o: lists.cc lists.h
-mouse.o: mouse.cc mouse.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h imagewin.h gamewin.h actors.h gameclk.h
-npcnear.o: npcnear.cc npcnear.h tqueue.h gamewin.h imagewin.h actors.h objs.h vec.h usecode.h vgafile.h fnames.h gameclk.h
-objs.o: objs.cc objs.h vec.h usecode.h tqueue.h gamewin.h imagewin.h actors.h vgafile.h fnames.h gameclk.h audio/Audio.h autoconfig.h audio/SDL_mapping.h audio/Flex.h audio/common.h audio/Mixer.h audio/Midi.h audio/Table.h
-readnpcs.o: readnpcs.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h utils.h
-segfile.o: segfile.cc segfile.h utils.h
-tqueue.o: tqueue.cc tqueue.h
-usecode.o: usecode.cc utils.h usecode.h gamewin.h imagewin.h actors.h objs.h vec.h tqueue.h vgafile.h fnames.h gameclk.h gumps.h mouse.h audio/Audio.h autoconfig.h audio/SDL_mapping.h audio/Flex.h audio/common.h audio/Mixer.h audio/Midi.h audio/Table.h
-utils.o: utils.cc
-vec.o: vec.cc vec.h
-vgafile.o: vgafile.cc vgafile.h fnames.h utils.h objs.h vec.h usecode.h tqueue.h
+drag.o: gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h utils.h
+drag.o: vgafile.h fnames.h gameclk.h gumps.h mouse.h
+exult.o: gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h
+exult.o: utils.h vgafile.h fnames.h gameclk.h audio/Audio.h autoconfig.h
+exult.o: audio/SDL_mapping.h audio/Mixer.h audio/Midi.h conf/Configuration.h
+exult.o: conf/XMLEntity.h mouse.h gumps.h args.h
+gameclk.o: gameclk.h tqueue.h gamewin.h imagewin.h actors.h objs.h vec.h
+gameclk.o: usecode.h utils.h vgafile.h fnames.h
+gamedat.o: gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h
+gamedat.o: utils.h vgafile.h fnames.h gameclk.h
+gametxt.o: gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h
+gametxt.o: utils.h vgafile.h fnames.h gameclk.h
+gamewin.o: gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h
+gamewin.o: utils.h vgafile.h fnames.h gameclk.h items.h npcnear.h gumps.h
+gamewin.o: segfile.h audio/Audio.h autoconfig.h audio/SDL_mapping.h
+gamewin.o: audio/Mixer.h audio/Midi.h
+gumps.o: gumps.h objs.h vec.h usecode.h tqueue.h gamewin.h imagewin.h
+gumps.o: actors.h utils.h vgafile.h fnames.h gameclk.h
+imagetxt.o: imagewin.h text.h
+imagewin.o: imagewin.h conf/Configuration.h conf/XMLEntity.h
+items.o: items.h utils.h
+lists.o: lists.h
+mouse.o: mouse.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h
+mouse.o: imagewin.h gamewin.h actors.h utils.h gameclk.h
+npcnear.o: npcnear.h tqueue.h gamewin.h imagewin.h actors.h objs.h vec.h
+npcnear.o: usecode.h utils.h vgafile.h fnames.h gameclk.h
+npctest.o: actors.h objs.h vec.h usecode.h tqueue.h utils.h
+objs.o: objs.h vec.h usecode.h tqueue.h gamewin.h imagewin.h actors.h utils.h
+objs.o: vgafile.h fnames.h gameclk.h audio/Audio.h autoconfig.h
+objs.o: audio/SDL_mapping.h audio/Mixer.h audio/Midi.h
+readnpcs.o: gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h
+readnpcs.o: utils.h vgafile.h fnames.h gameclk.h
+segfile.o: segfile.h utils.h
+text.o: text.h
+tqueue.o: tqueue.h
+usecode.o: utils.h usecode.h gamewin.h imagewin.h actors.h objs.h vec.h
+usecode.o: tqueue.h vgafile.h fnames.h gameclk.h gumps.h mouse.h
+usecode.o: pathfinder/Astar.h pathfinder/PathFinder.h audio/Audio.h
+usecode.o: autoconfig.h audio/SDL_mapping.h audio/Mixer.h audio/Midi.h
+vec.o: vec.h
+vgafile.o: vgafile.h fnames.h utils.h objs.h vec.h usecode.h tqueue.h
+vgafile.o: imagewin.h
