@@ -558,11 +558,17 @@ void ExultStudio::set_static_path(const char *path)
 	int num_names = vgafile->get_ifile()->get_num_shapes();
 	names = new char *[num_names];
 	char *txtname = g_strdup_printf("%s%s", static_path, "text.flx");
-	Flex *items = new Flex(txtname);
+	if (U7exists(txtname))
+		{
+		Flex *items = new Flex(txtname);
+		for (int i = 0; i < num_names; i++)
+			names[i] = items->retrieve(i, len);
+		delete items;
+		}
+	else
+		for (int i = 0; i < num_names; i++)
+			names[i] = 0;
 	g_free(txtname);
-	for (int i = 0; i < num_names; i++)
-		names[i] = items->retrieve(i, len);
-	delete items;
 	GtkWidget *file_list = glade_xml_get_widget( app_xml, "file_list" );
 	
 	gtk_clist_clear( GTK_CLIST( file_list ) );
