@@ -406,6 +406,15 @@ gint Chunk_chooser::mouse_press
 	)
 	{
 	Chunk_chooser *chooser = (Chunk_chooser *) data;
+
+    if (event->button == 4) {
+        chooser->scroll(true);
+        return(TRUE);
+    } else if (event->button == 5) {
+        chooser->scroll(false);
+        return(TRUE);
+    }
+
 	int old_selected = chooser->selected;
 					// Search through entries.
 	for (int i = 0; i < chooser->info_cnt; i++)
