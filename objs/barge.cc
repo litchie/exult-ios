@@ -298,6 +298,7 @@ void Barge_object::gather
 			Shape_info& info = obj->get_info();
 					// Above barge, within 5-tiles up?
 			if (tiles.has_point(t.tx, t.ty) &&
+			    t.tz >= lift - 1 &&
 			    t.tz + info.get_3d_height() > lift && 
 			    (info.is_barge_part() || t.tz < lift + 5) &&
 			    obj->get_owner() != this)
