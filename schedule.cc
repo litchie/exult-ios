@@ -239,7 +239,7 @@ void Street_maintenance_schedule::now_what
 			" done with street maintenance" << endl;
 				// Set back to old schedule.
 	int period = gwin->get_hour()/3;
-	npc->update_schedule(gwin, period, 7, 0);
+	npc->update_schedule(period, 7, 0);
 	}
 
 /*
@@ -713,9 +713,9 @@ void Talk_schedule::now_what
 		npc->stop();		// Stop moving.
 					// NOTE:  This could DESTROY us!
 		if (Game::get_game_type() == SERPENT_ISLE)
-			npc->activate(ucmachine, 9);
+			npc->activate(9);
 		else
-			npc->activate(ucmachine, 1);
+			npc->activate(1);
 					// SO don't refer to any instance
 					//   variables from here on.
 		gwin->paint();
@@ -2685,9 +2685,9 @@ void Forge_schedule::now_what
 		if (!tongs)
 			tongs = new Ireg_game_object(994, 0, 0, 0);
 
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 		npc->add_readied(tongs, Actor::rhand);
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 
 		state = sword_on_anvil;
 		break;
@@ -2740,13 +2740,13 @@ void Forge_schedule::now_what
 		if (!hammer)
 			hammer = new Ireg_game_object(623, 0, 0, 0);
 
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 		if (tongs) {
 			tongs->remove_this();
 			tongs = 0;
 		}
 		npc->add_readied(hammer, Actor::rhand);
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 
 		state = use_hammer;
 		break;
@@ -2784,12 +2784,12 @@ void Forge_schedule::now_what
 	}
 	case walk_to_trough:
 	{
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 		if (hammer) {
 			hammer->remove_this();
 			hammer = 0;
 		}
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 
 		trough = npc->find_closest(719);
 		if (!trough) {
@@ -2841,9 +2841,9 @@ void Forge_schedule::now_what
 		if (!tongs)
 			tongs = new Ireg_game_object(994, 0, 0, 0);
 
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 		npc->add_readied(tongs, Actor::rhand);
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 
 		state = use_trough;
 		break;
@@ -2897,12 +2897,12 @@ void Forge_schedule::now_what
 	}
 	case done:
 	{
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 		if (tongs) {
 			tongs->remove_this();
 			tongs = 0;
 		}
-		npc->add_dirty(gwin);
+		npc->add_dirty();
 		
 
 		state = put_sword_on_firepit;

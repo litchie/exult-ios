@@ -1984,7 +1984,7 @@ void Game_window::activate_item
 		Game_object *obj = person->find_item(shnum, qual, frnum);
 		if (obj)
 			{
-			obj->activate(usecode);
+			obj->activate();
 			return;
 			}
 		}
@@ -2078,7 +2078,7 @@ int Game_window::find_objects
 				Rectangle r = get_shape_rect(obj);
 				if (!r.has_point(x, y) || 
 					// Don't find invisible eggs.
-						!obj->is_findable(this))
+						!obj->is_findable())
 					continue;
 					// Check the shape itself.
 				Shape_frame *s = obj->get_shape();
@@ -2396,7 +2396,7 @@ void Game_window::double_clicked
 	cout << "Object name is " << obj->get_name() << endl;
 #endif
 	usecode->init_conversation();
-	obj->activate(usecode);
+	obj->activate();
 	npc_prox->wait(4);		// Delay "barking" for 4 secs.
 	}
 
@@ -2489,7 +2489,7 @@ void Game_window::schedule_npcs
 		Npc_actor *npc = (Npc_actor *) *it;
 					// Don't want companions leaving.
 		if (npc && npc->get_schedule_type() != Schedule::wait)
-			npc->update_schedule(this, hour3, backwards);
+			npc->update_schedule(hour3, backwards);
 		}
 
 	if (repaint)

@@ -794,7 +794,7 @@ void Usecode_internal::activate_cached
 		{
 		Egg_object *egg = *it;
 		if (egg->get_criteria() == Egg_object::cached_in)
-			egg->activate(this);
+			egg->activate();
 		}
 	}
 

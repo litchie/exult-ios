@@ -414,7 +414,6 @@ Game_object *Container_game_object::find_item
 
 void Container_game_object::activate
 	(
-	Usecode_machine *umachine,
 	int event
 	)
 	{
@@ -502,7 +501,7 @@ void Container_game_object::activate
 		case 800:			// Chest.
 		if (get_quality() >= 251)	// Trapped?
 			{		// Run normal usecode fun.
-			umachine->call_usecode(shnum, this,
+			ucmachine->call_usecode(shnum, this,
 				(Usecode_machine::Usecode_events) event);
 			return;
 			}
@@ -545,7 +544,7 @@ void Container_game_object::activate
 	}
 
 					// Try to run normal usecode fun.
-	umachine->call_usecode(shnum, this,
+	ucmachine->call_usecode(shnum, this,
 				(Usecode_machine::Usecode_events) event);
 	}
 

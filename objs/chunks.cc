@@ -467,7 +467,7 @@ void Chunk_cache::activate_eggs
 		if ((eggbits&1) && i < egg_objects.size() &&
 		    (egg = egg_objects[i]) &&
 		    egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
-			egg->activate(ucmachine, obj);
+			egg->activate(obj);
 		}
 	if (eggbits)			// Check 15th bit.
 		{			// DON'T use an iterator here, since
@@ -481,7 +481,7 @@ void Chunk_cache::activate_eggs
 			Egg_object *egg = egg_objects[i];
 			if (egg && egg->is_active(obj,
 						tx, ty, tz, from_tx, from_ty))
-				egg->activate(ucmachine, obj);
+				egg->activate(obj);
 			}
 		}
 	}
@@ -1163,7 +1163,7 @@ void Map_chunk::try_all_eggs
 		}
 	for (Egg_vector::const_iterator it = eggs.begin(); it != eggs.end();
 									++it)
-		(*it)->activate(gwin->get_usecode(), obj);
+		(*it)->activate(obj);
 	norecurse--;
 	}
 
