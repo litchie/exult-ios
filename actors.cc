@@ -2068,7 +2068,20 @@ bool Actor::reduce_health
 		hit = true;		// Flash red outline.
 		add_dirty();
 		Clear_hit *c = new Clear_hit();
-		gwin->get_tqueue()->add(Game::get_ticks() + 200, c, reinterpret_cast<long>(this));
+		gwin->get_tqueue()->add(Game::get_ticks() + 200, c, 
+					reinterpret_cast<long>(this));
+		}
+	if (oldhp >= maxhp/2 && val < maxhp/2 && rand()%2 != 0)
+		{			// A little oomph.
+					// Goblin?
+		if (GAME_SI &&
+			 (get_shapenum() == 0x1de ||
+			  get_shapenum() == 0x2b3 ||
+			  get_shapenum() == 0x2d5 ||
+			  get_shapenum() == 0x2e8))
+			say(0x4d2, 0x4da);
+		else if (!minf || !minf->cant_yell())
+			say(first_ouch, last_ouch);
 		}
 	Game_object_vector vec;		// Create blood.
 	const int blood = 912;
@@ -2997,20 +3010,8 @@ bool Actor::figure_hit_points
 				properties[static_cast<int>(strength)] + 1;
 	int newhp = oldhealth - hp;	// Subtract from health.
 
-	if (oldhealth >= maxhealth/2 && newhp < maxhealth/2 && rand()%3 != 0)
-					// A little oomph.
-		if (instant_death)
-			say("\"Cheater!\"");
-					// Goblin?
-		else if (GAME_SI &&
-			 (get_shapenum() == 0x1de ||
-			  get_shapenum() == 0x2b3 ||
-			  get_shapenum() == 0x2d5 ||
-			  get_shapenum() == 0x2e8))
-			say(0x4d2, 0x4da);
-		else if (!minf || !minf->cant_yell())
-			say(first_ouch, last_ouch);
-
+	if (instant_death)
+		say("\"Cheater!\"");
 	bool defeated = reduce_health(hp, attacker);
 	if (Combat::show_hits)
 		{
