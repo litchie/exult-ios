@@ -1394,7 +1394,33 @@ int Game_object::get_rotated_frame
 	int quads			// 1=90, 2=180, 3=270.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	int curframe = get_framenum();
+	int shapenum = get_shapenum();
+	Shape_info& info = gwin->get_info(shapenum);
+	if (shapenum == 292)		// Seat is a special case.
+		{
+		int dir = curframe%4;	// Current dir (0-3).
+		return (curframe - dir) + (dir + quads)%4;
+		}
+	else if (info.is_barge_part())	// Piece of a barge?
+		switch (quads)
+			{
+		case 1:
+			return (curframe^32)^((curframe&32) ? 3 : 1);
+		case 2:
+			return curframe^2;
+		case 3:
+			return (curframe^32)^((curframe&32) ? 1 : 3);
+		default:
+			return curframe;
+			}
+	else
+					// Reflect.  Bit 32==horizontal.
+		return curframe ^ ((quads%2)<<5);
+	}
+
+#if 0	/* The old way ++++++++++*/
 	switch (get_shapenum())		// Wish I knew a better way...
 		{
 	case 251:			// Sails.  Wind direction?
@@ -1564,6 +1590,7 @@ int Game_object::get_rotated_frame
 		return curframe ^ ((quads%2)<<5);
 		}
 	}
+#endif
 
 /*
  *	Figure attack points against an object, and also run weapon's usecode.

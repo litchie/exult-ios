@@ -267,6 +267,7 @@ void Barge_object::gather
 	(
 	)
 	{
+	ice_raft = false;		// We'll just detect it each time.
 	objects.resize(perm_count);	// Start fresh.
 					// Get footprint in tiles.
 	Rectangle foot = get_tile_footprint();
@@ -276,6 +277,7 @@ void Barge_object::gather
 	Chunk_intersect_iterator next_chunk(foot);
 	Rectangle tiles;
 	int cx, cy;
+	bool si = Game::get_game_type() == SERPENT_ISLE;
 	while (next_chunk.get_next(tiles, cx, cy))
 		{
 		Map_chunk *chunk = gwin->get_chunk(cx, cy);
@@ -294,10 +296,14 @@ void Barge_object::gather
 			    obj->get_owner() != this)
 				{
 				objects.append(obj);
+				if (si)
+					{
+					if (obj->get_shapenum() == 0x1f8)
+						ice_raft = true;
 					// Kludge for SI turtle.
-				if (obj->get_shapenum() == 0xd7 &&
-				    Game::get_game_type() == SERPENT_ISLE)
-					xtiles = 20;
+					else if (obj->get_shapenum() == 0xd7)
+						xtiles = 20;
+					}
 				}
 			}
 		}
@@ -416,7 +422,8 @@ void Barge_object::travel_to_tile
 		int dy = Tile_coord::delta(cur.ty, dest.ty),
 		    dx = Tile_coord::delta(cur.tx, dest.tx);
 		int ndir = Get_direction4(-dy, dx);
-		face_direction(ndir);
+		if (!ice_raft)		// Ice-raft doesn't rotate.
+			face_direction(ndir);
 		if (!in_queue())	// Not already in queue?
 			gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
 		}

@@ -1,3 +1,9 @@
+2001-08-07  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/barge.cc (Barge_object): Don't rotate ice raft.
+	* objs/objs.cc: Much simpler ::get_rotated_frame().
+	* usecode/ucsched.cc (Scheduled_usecode): Opcode 0x21 = 'nop'.
+
 2001-08-07  Max Horn <max@quendi.de>
 	* audio/Audio.h/.cc: added is_track_playing method; also fixed speech on MacOS
 	  (my first speech bug fix was breaking the second, real fix)
