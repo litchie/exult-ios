@@ -205,22 +205,15 @@ tools/wud.exe : tools/wud.o tools/uctools.h usecode/bgintrinsics.h usecode/siint
 tools/wuc.exe : tools/wuc.o
 	$(CXX) $(LFLAGS) -o tools/wuc.exe tools/wuc.o -mconsole
 
-UCXT_OBJS=conf/Configuration.o conf/XMLEntity.o files/utils.o usecode/ucxt/src/ucdata.o usecode/ucxt/src/ucdump.o usecode/ucxt/src/ucfunc.o usecode/ucxt/src/opcodes.o
+UCXT_OBJS=conf\Configuration.o conf\XMLEntity.o files\utils.o usecode\ucxt\src\ucdata.o usecode\ucxt\src\ucdump.o usecode\ucxt\src\ucfunc.o usecode\ucxt\src\opcodes.o
 
 usecode/ucxt/src/ucxt.exe : $(UCXT_OBJS)
 	$(CXX) $(LFLAGS) -o usecode/ucxt/src/ucxt.exe $(UCXT_OBJS) -mconsole
 
 clean:
-	del $(OBJS)
-	del tools\expack.exe
-	del tools\expack.o
-	del $(EXEC)
-	del data\exult.flx 
-	del data\exult_flx.h
-	del data\exult_bg.flx
-	del data\exult_bg_flx.h
-	del data\exult_si.flx
-	del data\exult_si_flx.h
+	del $(OBJS) $(EXEC)
+	del tools\expack.exe tools\expack.o
+	del data\exult.flx  data\exult_flx.h data\exult_bg.flx data\exult_bg_flx.h data\exult_si.flx data\exult_si_flx.h
 
 
 install: $(EXEC)
@@ -258,22 +251,14 @@ dist:   $(EXEC)
 tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe usecode/ucxt/src/ucxt.exe
 
 toolsclean:
-	del tools\mklink.o 
-	del tools\mklink.exe 
-	del tools\rip.o 
-	del tools\rip.exe
-	del tools\shp2pcx.o 
-	del tools\shp2pcx.exe
-	del tools\splitshp.o 
-	del tools\splitshp.exe
-	del tools\ucdump.o 
-	del tools\ucdump.exe 
-	del tools\wuc.o 
-	del tools\wuc.exe 
-	del tools\wud.o 
-	del tools\wud.exe 
-	del $(UCXT_OBJS)
-	del usecode\ucxt\src\ucxt.exe
+	del tools\mklink.o tools\mklink.exe 
+	del tools\rip.o tools\rip.exe
+	del tools\shp2pcx.o tools\shp2pcx.exe
+	del tools\splitshp.o tools\splitshp.exe
+	del tools\ucdump.o tools\ucdump.exe 
+	del tools\wuc.o tools\wuc.exe 
+	del tools\wud.o tools\wud.exe 
+	del $(UCXT_OBJS) usecode\ucxt\src\ucxt.exe
 
 toolsinstall: tools
 	if not exist $(U7PATH)\tools md $(U7PATH)\tools
