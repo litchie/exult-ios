@@ -31,6 +31,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL.h"
 #include "SDL_syswm.h"
 
+#ifdef WIN32
+#include <mmsystem.h>   //for MM_MCINOTIFY message
+#endif
+
 #include "gamewin.h"
 #include "fnames.h"
 #include "Audio.h"
@@ -237,6 +241,10 @@ static void Init
 	gwin = new Game_window(w, h);
 #else
 	gwin = new Game_window(640, 480);
+
+	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
+	//(for MIDI repeats)
+	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
 	string yn;			// Skip intro. scene?
 	config->value("config/gameplay/skip_intro", yn, "no");
@@ -532,6 +540,15 @@ static void Handle_event
 			event.key.keysym.mod & KMOD_ALT,
 			event.key.keysym.mod & KMOD_CTRL);
 		break;
+#ifdef WIN32
+	case SDL_SYSWMEVENT:
+//		printf("SYSWMEVENT received, %x\n", event.syswm.msg->msg);
+		if (event.syswm.msg->msg == MM_MCINOTIFY) {
+			// call repeat MIDI function here
+			cerr << "MCINOTIFY message received!\n";
+		}
+		break;
+#endif
 		}
 	}
 
