@@ -2,6 +2,9 @@
 	* docs/xml/exult_studio.xml: converted JPGs to PNGs
 	* docs/exult_studio.html: converted JPGs to PNGs
 	* docs/images/*.jpg removed, *.png added instead
+	* docs/xml/faq.xml: eliminated another jpg
+	* docs/faq.html, readme.html: updated
+	* ReadMe, FAQ: updated
 
 2004-02-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gumps/Gump_manager.cc: don't disable unicode if any modal gumps left
