@@ -50,7 +50,8 @@ EXULT_FLX_OBJECTS = \
 	data/exult_logo.shp \
 	data/exult0.pal \
 	data/black_gate.shp \
-	data/serpent_isle.shp
+	data/serpent_isle.shp \
+	data/marketpl.mid
 
 $(EXEC) : Makefile data/exult.flx $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
