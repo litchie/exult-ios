@@ -134,7 +134,7 @@ int main
 	d+=gamename;
 	config->value(d.c_str(),data_directory,".");
 	if(data_directory==".")
-		config->set("config/disk/blackgate",data_directory,true);
+		config->set("config/disk/game/blackgate",data_directory,true);
 	cout << "chdir to " << data_directory << endl;
 	chdir(data_directory.c_str());
 	}
