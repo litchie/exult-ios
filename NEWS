@@ -2,13 +2,31 @@
 
 		Massive code restructuring and cleanup (use STL wherever
 		possible, pervasive use of namespaces, more portable C++
-		conformance, etc.)
+		conformance, etc.) These changes have the side effect of
+		improving stability.
 
-		New cheats
+		Improved shape browser
 
-		Reworked audio subsystem
+		Serpent Isle paperdolls
 
-		Loads of bug fixes
+		Support for the French version of BG (Frederic Wagner)
+	
+		Alpha/Linux cxx support (Christoph Reichenbach)
+
+		Allow for disabling/enabling of palette fades
+
+		Improved BG intro (plasma screen, animations, etc)
+
+		New cheats (Heal, Resurrect, Max Party Level)
+
+		Sound Tester (Alt-1)
+
+		Screen Shots (Ctrl-Alt-S)
+
+		Reworked audio subsystem (including MIDI repeat support for 
+		Timidity)
+
+		Loads of bug fixes (Read ChangeLog for details)
 
 
 11/20/00:	v0.90 alpha 1
