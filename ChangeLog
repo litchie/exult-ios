@@ -1,3 +1,8 @@
+2002-07-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc,chunks.{cc,h},egg.{cc,h},ucsched.cc:  Have initial
+	eggs execute immediately.  Fixed Avatar appearance at start of SI.
+
 2002-07-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs.cc: fixes to SI item names (thanks sb-x)
 

@@ -2833,7 +2833,8 @@ void Game_window::setup_game
 	olist->setup_cache();
 
 	Tile_coord t = main_actor->get_tile();
-	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1);
+					// Do them immediately.
+	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1, true);
 	
 	// Force entire repaint.
 	set_all_dirty();
