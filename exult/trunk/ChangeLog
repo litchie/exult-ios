@@ -1,6 +1,7 @@
 2001-06-12  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gumps/AudioOptions_gump.cc: removed SFX conversion option
 	* exultmenu.cc: same for Exult setup menu
+	* ucmachine.cc: set party flag on avatar (for spells like magic storm)
 
 2001-06-12  Ryan Nunn <triforce@merlin.net.au>
 	* audio/xmidi.cc, audio/midi_drivers/win_midiout.cc : Changes to make
@@ -9,6 +10,7 @@
 2001-06-12  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* configure.in: HAVE_GLADE is false if no GTK available
 
+>>>>>>> 1.708
 2001-06-12  Jeff Freedman  <jeff@amy.nerble.net>
 	* shapes: SFX fields read from weapons.dat.
 	* combat.cc,actors.cc: Play weapon SFX.
