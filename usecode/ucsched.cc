@@ -250,7 +250,10 @@ void Usecode_script::purge
 		if (each->obj && 
 		    each->obj->get_outermost()->get_abs_tile_coord().distance(
 								spot) > dist)
+			{		// Force it to halt.
+			each->no_halt = false;
 			each->halt();
+			}
 		}
 	}			
 
