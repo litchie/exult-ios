@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <glib.h>
 #include "shapelst.h"
-#include "vgafile.h"
+#include "shapevga.h"
 #include "ibuf8.h"
 #include "Flex.h"
 #include "u7drag.h"
@@ -142,7 +142,7 @@ void Shape_chooser::render
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width, winh = draw->allocation.height;
 					// Provide more than enough room.
-	info = new Shape_info[1024];
+	info = new Shape_entry[1024];
 					// Clear window first.
 	iwin->fill8(0);			// ++++Which color?
 	int x = 0;
@@ -272,12 +272,30 @@ gint Shape_chooser::mouse_press
 	if (chooser->selected == old_selected && old_selected >= 0)
 		{			// Same square.  Check for dbl-click.
 		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
-			{
-			ExultStudio *studio = ExultStudio::get_instance();
-			studio->open_shape_window(0, 0, 0);//++++++Finish.
-			}
+			chooser->edit_shape();
 		}
 	return (TRUE);
+	}
+
+/*
+ *	Bring up the shape-info editor for the selected shape.
+ */
+
+void Shape_chooser::edit_shape
+	(
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	int shnum = info[selected].shapenum,
+	    frnum = info[selected].framenum;
+	Shape_info *info = 0;
+	if (shapes_file)
+		{			// Read info. the first time.
+		shapes_file->read_info(false, true);//+++++BG?
+		info = &shapes_file->get_info(shnum);
+		}
+	studio->open_shape_window(shnum, frnum, ifile,
+					names ? names[shnum] : 0, info);
 	}
 
 /*
@@ -302,7 +320,7 @@ void Shape_chooser::drag_data_get
 	int file = chooser->ifile->get_u7drag_type();
 	if (file == U7_SHAPE_UNK)
 		U7_SHAPE_SHAPES;	// Just assume it's shapes.vga.
-	Shape_info& shinfo = chooser->info[chooser->selected];
+	Shape_entry& shinfo = chooser->info[chooser->selected];
 	int len = Store_u7_shapeid(buf, file, shinfo.shapenum, 
 							shinfo.framenum);
 	cout << "Setting selection data (" << shinfo.shapenum <<
@@ -348,7 +366,7 @@ gint Shape_chooser::drag_begin
 	if (chooser->selected < 0)
 		return FALSE;		// ++++Display a halt bitmap.
 					// Get ->shape.
-	Shape_info& shinfo = chooser->info[chooser->selected];
+	Shape_entry& shinfo = chooser->info[chooser->selected];
 	Shape_frame *shape = chooser->ifile->get_shape(shinfo.shapenum, 
 							shinfo.framenum);
 	if (!shape)
@@ -452,7 +470,7 @@ cout << "Frame changed to " << adj->value << '\n';
 	gint newframe = (gint) adj->value;
 	if (chooser->selected >= 0)
 		{
-		Shape_info& shinfo = chooser->info[chooser->selected];
+		Shape_entry& shinfo = chooser->info[chooser->selected];
 		int nframes = chooser->ifile->get_num_frames(shinfo.shapenum);
 		if (newframe >= nframes)	// Just checking
 			return;
@@ -596,7 +614,7 @@ Shape_chooser::Shape_chooser
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h			// Dimensions.
 	) : Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
-		shapenum0(0),
+		shapes_file(0), shapenum0(0),
 		info(0), info_cnt(0), num_per_row(0), 
 		selected(-1), sel_changed(0)
 	{

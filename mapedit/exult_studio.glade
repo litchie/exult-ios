@@ -6291,6 +6291,11 @@ Manual
 	    <name>shinfo_draw</name>
 	    <width>96</width>
 	    <height>96</height>
+	    <signal>
+	      <name>expose_event</name>
+	      <handler>on_shinfo_draw_expose_event</handler>
+	      <last_modification_time>Fri, 11 Jan 2002 07:31:25 GMT</last_modification_time>
+	    </signal>
 	  </widget>
 	</widget>
 

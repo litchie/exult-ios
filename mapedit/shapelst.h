@@ -31,16 +31,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Vga_file;
 class Image_buffer8;
+class Shapes_vga_file;
 
 /*
  *	Store information about an individual shape shown in the list.
  */
-class Shape_info
+class Shape_entry
 	{
 	friend class Shape_chooser;
 	int shapenum, framenum;		// The given shape/frame.
 	Rectangle box;			// Box where drawn.
-	Shape_info() {  }
+	Shape_entry() {  }
 	void set(int shnum, int frnum, int rx, int ry, int rw, int rh)
 		{
 		shapenum = shnum; framenum = frnum;
@@ -53,6 +54,7 @@ class Shape_info
  */
 class Shape_chooser: public Object_browser, public Shape_draw
 	{
+	Shapes_vga_file *shapes_file;	// Non-null if 'shapes.vga'.
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
 	GtkWidget *fspin;		// Spin button for frame #.
@@ -61,7 +63,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
 	int shapenum0;			// Shape, frame # of leftmost in
 					//   displayed list.
-	Shape_info *info;		// An entry for each shape drawn.
+	Shape_entry *info;		// An entry for each shape drawn.
 	int info_cnt;			// # entries in info.
 	int num_per_row;		// Average # painted per line.
 	int selected;			// Index of user-selected entry.
@@ -79,7 +81,8 @@ class Shape_chooser: public Object_browser, public Shape_draw
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h);
 	virtual ~Shape_chooser();
-	
+	void set_shapes_file(Shapes_vga_file *sh)
+		{ shapes_file = sh; }	
 	void search(char *srch, int dir);
 					// Turn off selection.
 	void unselect(bool need_render = true);
@@ -107,6 +110,7 @@ public:
 					// Handle mouse press.
 	static gint mouse_press(GtkWidget *widget, GdkEventButton *event,
 							gpointer data);
+	void edit_shape();		// Edit selected shape.
 					// Give dragged shape.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
 		GtkSelectionData *data, guint info, guint time, gpointer data);

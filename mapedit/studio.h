@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 
 class Shape_info;
+class Shapes_vga_file;
 
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
@@ -128,8 +129,10 @@ public:
 	void set_npc_face(int shape, int frame);
 	static void schedule_btn_clicked(GtkWidget *btn, gpointer data);
 					// Shapes:
-	void open_shape_window(int shnum, int frnum, Shape_info *info = 0);
+	void open_shape_window(int shnum, int frnum, Vga_file *ifile,
+					char *shname, Shape_info *info = 0);
 	void close_shape_window();
+	void show_shinfo_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 
 	void run();
 	bool send_to_server(Exult_server::Msg_type id,
