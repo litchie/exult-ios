@@ -25,6 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef OBJSERIAL_H
 #define OBJSERIAL_H	1
 
+#include <string>
+
 extern int Object_out
 	(
 	int fd,				// Socket.
