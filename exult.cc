@@ -177,6 +177,7 @@ int main
 	config->value("config/debug/debugger/enable",u_debugging,"no");
 	if(u_debugging=="yes")
 		usecode_debugging=true;	// Enable usecode debugger
+	initialise_usecode_debugger();
 #endif
 
 	Init();				// Create main window.

@@ -2866,7 +2866,8 @@ audio/midi_drivers/Makefile \
 conf/Makefile \
 files/Makefile \
 pathfinder/Makefile \
-flic/Makefile  autoconfig.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
+flic/Makefile \
+tools/Makefile  autoconfig.h" | sed "s/:[^ ]*//g"` conftest*; exit 1' 1 2 15
 EOF
 cat >> $CONFIG_STATUS <<EOF
 
@@ -2989,7 +2990,8 @@ audio/midi_drivers/Makefile \
 conf/Makefile \
 files/Makefile \
 pathfinder/Makefile \
-flic/Makefile "}
+flic/Makefile \
+tools/Makefile "}
 EOF
 cat >> $CONFIG_STATUS <<\EOF
 for ac_file in .. $CONFIG_FILES; do if test "x$ac_file" != x..; then

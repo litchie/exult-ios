@@ -59,6 +59,21 @@ extern Mouse *mouse;
 
 #if USECODE_DEBUGGER
 vector<int> intrinsic_breakpoints;
+
+void	initialise_usecode_debugger(void)
+{
+	// Summon up the configuration file
+
+	// List all the keys.
+
+	// Render intrinsic names to numbers (unless already given as
+	// a number (which might be hex. Convert from that.
+
+	// push them all onto the list
+
+
+}
+
 #endif
 
 /*
