@@ -32,7 +32,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "browser.h"
 #include "soundtest.h"
 #include "cheat_screen.h"
+#ifdef XWIN
 #include "server.h"
+#endif
 
 using std::cout;
 using std::endl;
