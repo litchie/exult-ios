@@ -1,5 +1,8 @@
 2001-10-03  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* paths.cc (Actor_pathfinder_client): Handles 'dist' option now.
+	* actors.cc (follow()):  Another attempt to avoid hanging/slowdowns.
+
 	* actors.cc,monstinf.cc:  poison_safe detected.
 	* audio/Audio.cc (Audio): Disable audio if device can't be opened.
 

@@ -649,12 +649,13 @@ int Actor::walk_path_to_tile
 					//   location to try path from.
 	Tile_coord dest,		// Destination.
 	int speed,			// Time between frames (msecs).
-	int delay			// Delay before starting (msecs) (only
+	int delay,			// Delay before starting (msecs) (only
 					//   if not already moving).
+	int dist			// Distance to get within dest.
 	)
 	{
 	set_action(new Path_walking_actor_action(new Astar()));
-	set_action(action->walk_to_tile(src, dest, get_type_flags()));
+	set_action(action->walk_to_tile(src, dest, get_type_flags(), dist));
 	if (action)			// Successful at setting path?
 		{
 		start(speed, delay);
@@ -835,7 +836,8 @@ void Actor::follow
 			next_path_time = Game::get_ticks() + 1000;
 			return;
 			}
-		if (walk_path_to_tile(goal, speed - speed/4, 0))
+					// Succeed if within 3 tiles of goal.
+		if (walk_path_to_tile(goal, speed - speed/4, 0, 3))
 			return;		// Success.
 		else
 			{
