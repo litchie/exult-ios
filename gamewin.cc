@@ -88,7 +88,7 @@ Game_window::Game_window
 
 	// Discover the game we are running (BG, SI, ...)
 	char *static_identity = get_game_identity(INITGAME);
-	game = Game::get_game(static_identity);
+	game = Game::create_game(static_identity);
 
 	// Go to starting chunk
 	scrolltx = game->get_start_tile_x();
@@ -2313,10 +2313,10 @@ void Game_window::show_gump
 		shapenum <= ACTOR_LAST_GUMP) ?
 			new Actor_gump_object((Container_game_object *) obj, 
 							x, y, shapenum)
-			: shapenum == STATSDISPLAY ?
+			: shapenum == Game::get_game()->get_shape("gumps/statsdisplay") ?
 				new Stats_gump_object(
 					(Container_game_object *) obj, x, y)
-			: shapenum == SPELLBOOK ?
+			: shapenum == Game::get_game()->get_shape("gumps/spellbook") ?
 				new Spellbook_gump((Spellbook_object *) obj)
 			: new Gump_object((Container_game_object *) obj, 
 							x, y, shapenum);

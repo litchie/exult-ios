@@ -24,6 +24,24 @@
 
 BG_Game::BG_Game()
 	{
+		add_shape("gumps/check",2);
+		add_shape("gumps/fileio",3);
+		add_shape("gumps/fntext",4);
+		add_shape("gumps/loadbtn",5);
+		add_shape("gumps/savebtn",6);
+		add_shape("gumps/disk",24);
+		add_shape("gumps/heart",25);
+		add_shape("gumps/statatts",26);
+		add_shape("gumps/musicbtn",29);
+		add_shape("gumps/speechbtn",30);
+		add_shape("gumps/soundbtn",31);	
+		add_shape("gumps/spellbook",43);
+		add_shape("gumps/statsdisplay",47);
+		add_shape("gumps/combat",46);
+		add_shape("gumps/quitbtn",56);
+		add_shape("gumps/yesnobox",69);
+		add_shape("gumps/yesbtn",70);
+		add_shape("gumps/nobtn",71);
 	}
 
 BG_Game::~BG_Game()
