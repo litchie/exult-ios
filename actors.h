@@ -389,8 +389,10 @@ class Npc_actor : public Actor
 protected:
 	unsigned char num_schedules;	// # entries below.
 	Schedule_change *schedules;	// List of schedule changes.
+	int find_schedule_change(int hour3);
 public:
-	Npc_actor(const std::string &nm, int shapenum, int fshape = -1, int uc = -1);
+	Npc_actor(const std::string &nm, int shapenum, int fshape = -1, 
+								int uc = -1);
 					// Read from file.
 	Npc_actor(istream& nfile, int num, int has_usecode);
 	~Npc_actor();
@@ -412,6 +414,8 @@ public:
 	void update_schedule(Game_window *gwin, int hour3);
 					// Render.
 	virtual void paint(Game_window *gwin);
+					// Run usecode function.
+	virtual void activate(Usecode_machine *umachine, int event = 1);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Step onto an (adjacent) tile.

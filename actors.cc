@@ -576,7 +576,8 @@ int Actor::find_best_spot
 		return (!spots[lhand] && !spots[rhand]) ? lrhand : -1;
 	case gloves:
 		// Gloves occupy both finger spots
-		return (!spots[lfinger] && !spots[rfinger]) ? lrfinger : free_hand();
+		return (!spots[lfinger] && !spots[rfinger]) ? lrfinger 
+							: free_hand();
 					// ++++++What about belt?
 	case other:
 	default:
@@ -752,15 +753,16 @@ void Actor::activate
 	Game_window *gwin = Game_window::get_game_window();
 					// In gump mode?  Or Avatar?
 	if (!npc_num)			// Avatar?
-		gwin->show_gump(this, ACTOR_FIRST_GUMP);// ++++58 if female.
+		gwin->show_gump(this, ACTOR_FIRST_GUMP);
 					// Gump/combat mode?
 	else if ((gwin->get_mode() == Game_window::gump || gwin->in_combat())&&
 		 get_party_id() >= 0 &&
 		 npc_num >= 1 && npc_num <= 10)
 					// Show companions' pictures.
 			gwin->show_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
-	else if (get_schedule_type() == (int) Schedule::sleep)
-		return;			// Asleep.  +++++Check flag too?
+	else if (get_schedule_type() == (int) Schedule::sleep ||
+		 get_flag(Actor::asleep))
+		return;			// Asleep.
 	else if (usecode == -1)
 		umachine->call_usecode(get_shapenum(), this,
 			(Usecode_machine::Usecode_events) event);
@@ -1725,6 +1727,26 @@ inline void Npc_actor::movef
 	}
 
 /*
+ *	Find day's schedule for a given time-of-day.
+ *
+ *	Output:	index of schedule change.
+ *		-1 if not found, or if a party member.
+ */
+
+int Npc_actor::find_schedule_change
+	(
+	int hour3			// 0=midnight, 1=3am, etc.
+	)
+	{
+	if (Npc_actor::get_party_id() >= 0 || Npc_actor::is_dead_npc())
+		return (-1);		// Fail if a party member or dead.
+	for (int i = 0; i < num_schedules; i++)
+		if (schedules[i].get_time() == hour3)
+			return i;
+	return -1;
+	}
+
+/*
  *	Update schedule at a 3-hour time change.
  */
 
@@ -1734,32 +1756,27 @@ void Npc_actor::update_schedule
 	int hour3			// 0=midnight, 1=3am, etc.
 	)
 	{
-	if (Npc_actor::get_party_id() >= 0 || Npc_actor::is_dead_npc())
-		return;			// Skip if a party member or dead.
-	for (int i = 0; i < num_schedules; i++)
-		if (schedules[i].get_time() == hour3)
-			{		// Found entry.
-			stop();		// Stop moving.
-			if (schedule)	// End prev.
-				schedule->ending(schedules[i].get_type());
-			Tile_coord dest = schedules[i].get_pos();
-			if (!gwin->is_chunk_read(get_cx(), get_cy()) &&
-			    !gwin->is_chunk_read(dest.tx/tiles_per_chunk,
+	int i = find_schedule_change(hour3);
+	if (i < 0)
+		return;
+	stop();				// Stop moving.
+	if (schedule)			// End prev.
+		schedule->ending(schedules[i].get_type());
+	Tile_coord dest = schedules[i].get_pos();
+	if (!gwin->is_chunk_read(get_cx(), get_cy()) &&
+	    !gwin->is_chunk_read(dest.tx/tiles_per_chunk,
 						dest.ty/tiles_per_chunk))
-				{	// Src, dest. are off the screen.
-				move(dest.tx, dest.ty, dest.tz);
-				set_schedule_type(schedules[i].get_type());
-				return;
-				}
+		{			// Src, dest. are off the screen.
+		move(dest.tx, dest.ty, dest.tz);
+		set_schedule_type(schedules[i].get_type());
+		return;
+		}
 					// Going to walk there.
-			schedule_type = Schedule::walk_to_schedule;
-			delete schedule;
-			schedule = new Walk_to_schedule(this, dest,
-						schedules[i].get_type());
-			dormant = 0;
-			schedule->now_what();
-			return;
-			}
+	schedule_type = Schedule::walk_to_schedule;
+	delete schedule;
+	schedule = new Walk_to_schedule(this, dest, schedules[i].get_type());
+	dormant = 0;
+	schedule->now_what();
 	}
 
 /*
@@ -1776,18 +1793,38 @@ void Npc_actor::paint
 		{
 		dormant = 0;		// But clear out old entries first.??
 		gwin->get_tqueue()->remove(this);
-//+++++NOOOOOOOOO!  Messes up iterator during painting!
-#if 0
-		schedule->now_what();	// Ask scheduler what to do.
-#else
 					// Force schedule->now_what().
+					// DO NOT call now_what here!!!
 		unsigned long curtime = SDL_GetTicks();
 		gwin->get_tqueue()->add(curtime, this, (long) gwin);
 		set_action(new Null_action());
-#endif
 		}
 	if (!nearby)			// Make sure we're in 'nearby' list.
 		gwin->add_nearby_npc(this);
+	}
+
+/*
+ *	Run usecode when double-clicked.
+ */
+void Npc_actor::activate
+	(
+	Usecode_machine *umachine,
+	int event
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Converse, etc.
+	Actor::activate(umachine, event);
+	int i;				// Past 6:00pm first day?
+	if (gwin->get_total_hours() >= 18 ||
+					// Or party member/asleep?
+	    (i = find_schedule_change(gwin->get_hour()/3)) < 0 ||
+					// Or schedule is already correct?
+	    schedules[i].get_type() == schedule_type)
+		return;
+	cout << "Setting '" << get_name() << "' to 1st schedule" << endl;
+					// Maybe a delay here?  Okay for now.
+	update_schedule(gwin, gwin->get_hour()/3);
 	}
 
 /*
