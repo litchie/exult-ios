@@ -690,7 +690,7 @@ int Main_actor::step
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
 					// Move it.
-	move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
+	Game_object::move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
 	gwin->add_dirty(this);		// Set to update new.
 					// Near an egg?
 	nlist->activate_eggs(tx, ty);
@@ -764,6 +764,28 @@ void Main_actor::switched_chunks
 	for (int y = yfrom; y <= yto; y++)
 		for (int x = xfrom; x <= xto; x++)
 			gwin->get_objects(x, y)->setup_cache();
+	}
+
+/*
+ *	Move (teleport) to a new spot.
+ */
+
+void Main_actor::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Store old chunk list.
+	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
+					// Move it.
+	Game_object::move(newtx, newty, newlift);
+	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
+	if (nlist != olist)
+		switched_chunks(olist, nlist);
+	gwin->set_above_main_actor(nlist->is_roof(), newlift);
 	}
 
 /*

@@ -33,6 +33,7 @@ class Game_object;
 class Text_gump;
 class Vector;
 
+#include "tiles.h"
 #include <vector>	// STL container
 #include <deque>	// STL container
 #include <string>	// STL string
@@ -216,6 +217,8 @@ class Usecode_machine
 	deque< Answers > answer_stack;
 					// Get ->obj. from 'itemref'.
 	Game_object *get_item(Usecode_value& itemref);
+					// Get position.
+	Tile_coord get_position(Usecode_value& itemref);
 	/*
 	 *	Built-in usecode functions:
 	 */
@@ -320,6 +323,7 @@ public:
 	USECODE_INTRINSIC_DECL(part_of_day);
 	USECODE_INTRINSIC_DECL(get_alignment);
 	USECODE_INTRINSIC_DECL(set_alignment);
+	USECODE_INTRINSIC_DECL(move_object);
 	USECODE_INTRINSIC_DECL(item_say);
 	USECODE_INTRINSIC_DECL(get_lift);
 	USECODE_INTRINSIC_DECL(set_lift);
@@ -337,6 +341,7 @@ public:
 	USECODE_INTRINSIC_DECL(get_equipment_list);
 	USECODE_INTRINSIC_DECL(advance_time);
 	USECODE_INTRINSIC_DECL(run_usecode);
+	USECODE_INTRINSIC_DECL(is_not_blocked);
 	USECODE_INTRINSIC_DECL(direction_from);
 	USECODE_INTRINSIC_DECL(get_npc_flag);
 	USECODE_INTRINSIC_DECL(set_npc_flag);
