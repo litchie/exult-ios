@@ -262,13 +262,12 @@ static int Check_mask
 	if (mask == 4)			// Party members.
 		return (obj->get_party_id() >= 0 || 
 					obj == gwin->get_main_actor());
-	if (mask == 8)			// Non-party NPCs.
+	if (mask == 8)			// All NPCs.
 		{
 		if (obj->is_monster())
 			return 1;
-		if (obj->get_npc_num() <= 0 || obj->get_party_id() >= 0 ||
-		    obj == gwin->get_main_actor())
-			return 0;	// Not an NPC || is a party member.
+		if (obj->get_npc_num() <= 0 && obj != gwin->get_main_actor())
+			return 0;	// Not an NPC & not the Avatar.
 		return 1;
 		}
 	if (mask == 16)			// Egg or barge.
@@ -296,7 +295,7 @@ int Game_object::find_nearby
 	int delta,			// # tiles to look in each direction.
 	int mask,			// Guessing+++:
 					//   4 == party members only.
-					//   8 == non-party NPC's only.
+					//   8 == all NPC's.
 					//  16 == egg or barge.
 					//  32 == monsters? 
 	int qual,			// Quality, or -359 for any.

@@ -2655,12 +2655,13 @@ void Game_window::theft
 		}
 	Vector npcs;			// See if someone is nearby.
 	int cnt = main_actor->find_nearby(npcs, -359, 12, 8);
-	Npc_actor *closest_npc = 0;
+	Actor *closest_npc = 0;
 	int best_dist = 5000;
 	for (int i = 0; i < cnt; i++)
 		{
-		Npc_actor *npc = (Npc_actor *) npcs.get(i);
-		if (npc->is_monster())
+		Actor *npc = (Actor *) npcs.get(i);
+		if (npc->is_monster() || npc == main_actor ||
+		    npc->get_party_id() >= 0)
 			continue;
 		int dist = npc->distance(main_actor);
 		if (dist < best_dist && Fast_pathfinder_client::is_grabable(
