@@ -15,7 +15,7 @@ INCLUDES += $(SDL_INCLUDES)
 INCLUDES += -I$(FREETYPE_DIR)
 INCLUDES += $(KMID_INCLUDES)
 
-LIBS += $(SDL_LIBS) -Laudio
+LIBS += $(SDL_LIBS) -Laudio -Lconf 
 LIBS += $(KMID_LIBS)
 
 CXXFLAGS += -DRELNUM=$(RELNUM)
@@ -28,7 +28,7 @@ CXXFLAGS += $(WINDOWING_SYSTEM)
 
 				# X-windows.
 LFLAGS += -g -L /usr/X11R6/lib -L /usr/local/lib
-LIBS += -lttf -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -laudio
+LIBS += -lttf -lSDL -lX11 -lXext -lstdc++ -lgcc -lc -lgcc -lpthread -laudio -lconf
 
 all-local: exult
 

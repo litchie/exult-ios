@@ -23,21 +23,35 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMLEntity.h"
 #include <iostream>
 
-void	xmldump(string &s,XMLnode *x)
+void	xmldump(string &s,XMLnode *x,int depth)
 {
+	for(int i=0;i<depth;i++)
+		s+=' ';
+	
 	s+="<";
 	s+=x->entity.id;
 	s+=">\n";
+	
 	for(vector<XMLnode>::iterator it=x->nodelist.begin();
 		it!=x->nodelist.end();
 		++it)
 		{
-		xmldump(s,it);
+		for(int i=0;i<depth;i++)
+			s+=' ';
+		xmldump(s,it,depth+1);
 		}
+	for(int i=0;i<depth+1;i++)
+		s+=' ';
 	s+=x->entity.content;
-	if(x->entity.id[0]=='?'||x->entity.content[x->entity.content.length()-1]=='/')
+	if(x->entity.id[0]=='?')
+		{
 		return;
-	s+="\n</";
+		}
+	s+="\n";
+	for(int i=0;i<=depth;i++)
+		s+=' ';
+	
+	s+="</";
 	s+=x->entity.id;
 	s+=">\n";
 }
