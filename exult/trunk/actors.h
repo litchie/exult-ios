@@ -278,6 +278,8 @@ public:
 		};
 	virtual void now_what() = 0;	// Npc calls this when it's done
 					//   with its last task.
+	virtual void im_dormant()	// Npc calls this when it goes from
+		{  }			//   being active to dormant.
 	};
 
 /*
@@ -348,6 +350,7 @@ class Walk_to_schedule : public Schedule
 public:
 	Walk_to_schedule(Npc_actor *n, Tile_coord d, int new_sched);
 	virtual void now_what();	// Now what should NPC do?
+	virtual void im_dormant();	// Just went dormant.
 	};
 
 /*
@@ -431,6 +434,19 @@ public:
 					// Update chunks after NPC moved.
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);
+					// Move to new abs. location.
+	void move(int newtx, int newty, int newlift);
+					// Move and change shape/frame.
+	void move(Chunk_object_list *old_chunk, int new_cx, int new_cy, 
+			Chunk_object_list *new_chunk, 
+			int new_sx, int new_sy, int new_frame, 
+			int new_lift = -1)
+		{
+		Game_object::move(old_chunk, new_cx, new_cy, new_chunk,
+				new_sx, new_sy, new_frame, new_lift);
+		if (old_chunk != new_chunk)	// In new chunk?
+			switched_chunks(old_chunk, new_chunk);
+		}
 	};
 
 /*
