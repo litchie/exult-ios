@@ -1926,9 +1926,11 @@ USECODE_INTRINSIC(run_usecode)
 		Tile_coord dest(dx, dy, dz);
 		cout << "\nRun_usecode:  first walk to (" << dx << ", " <<
 				dy << ", " << dz << ")\n";
-#if 0
-		if (!gwin->get_main_actor()->walk_path_to_tile(dest));
+#if 1
+		if (!gwin->get_main_actor()->walk_path_to_tile(dest))
+			{		// Need brackets.
 			USECODE_RETURN(u);
+			}
 #else
 					// ++++++Should use pathfinding here.
 		gwin->get_main_actor()->walk_to_tile(dx, dy, dz);

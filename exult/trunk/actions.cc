@@ -90,8 +90,9 @@ int Path_walking_actor_action::handle_event
 	Tile_coord t;
 	if (!path->GetNextStep(t))
 		return (0);
-					// ++++For now, just use original dir.
-	Frames_sequence *frames = actor->get_frames(original_dir);
+	Tile_coord cur = actor->get_abs_tile_coord();
+	int newdir = (int) Get_direction4(cur.ty - t.ty, t.tx - cur.tx);
+	Frames_sequence *frames = actor->get_frames(newdir);
 					// Get frame (updates frame_index).
 	int frame = frames->get_next(frame_index);
 	return actor->step(t, frame);

@@ -26,6 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <hash_set>
 #include "objs.h"
 
+#define DEBUG 1
+
 /*
  *	Iterate through neighbors of a tile (in 2 dimensions).
  */
@@ -133,6 +135,32 @@ public:
 			}
 		return result;
 		}
+#if DEBUG
+					// Returns 0 if bad chain.
+	int verify_chain(Search_node *last, int removed = 0)
+		{
+		if (!last)
+			return (1);
+		int found = 0;
+		Search_node *prev = last;
+		int cnt = 0;
+		do
+			{
+			Search_node *next = prev->priority_next;
+			if (next == this)
+				found = 1;
+			prev = next;
+			if (cnt > 10000)
+				break;
+			}
+		while (prev != last);
+		if (!found && !removed)
+			return (0);
+		if (cnt == 10000)
+			return (0);
+		return (1);
+		}
+#endif
 					// Add to chain of same priorities.
 	void add_to_chain(Search_node *&last)
 		{
@@ -146,10 +174,18 @@ public:
 			last = this;
 			priority_next = this;
 			}
+#if DEBUG
+		if (!verify_chain(last))
+			cout << "Bad chain after adding.\n";
+#endif
 		}
 					// Remove this from its chain.
 	void remove_from_chain(Search_node *&last)
 		{
+#if DEBUG
+		if (!verify_chain(last))
+			cout << "Bad chain before removing.\n";
+#endif
 		if (priority_next == this)
 					// Only one in chain?
 			last = 0;
@@ -172,6 +208,10 @@ public:
 				}
 			}
 		priority_next = 0;	// No longer in 'open'.
+#if DEBUG
+		if (!verify_chain(last, 1))
+			cout << "Bad chain after removing.\n";
+#endif
 		}
 					// Remove 1st from a priority chain.
 	static Search_node *remove_first_from_chain(Search_node *&last)
@@ -253,9 +293,10 @@ public:
 		int total_cost = nd->get_total_cost();
 		Search_node *last = (Search_node *) open.get(total_cost);
 		nd->remove_from_chain(last);
+					// Store updated 'last'.
+		open.put(total_cost, last);
 		if (!last)		// Last in chain?
 			{
-			open.put(total_cost, (Search_node *) 0);
 			if (total_cost == best)
 				{
 				int cnt = open.get_cnt();
@@ -272,9 +313,10 @@ public:
 			return (0);
 					// Return 1st in list.
 		Search_node *node = Search_node::remove_first_from_chain(last);
+					// Store updated 'last'.
+		open.put(best, last);
 		if (!last)		// List now empty?
 			{
-			open.put(best, (Search_node *) 0);
 			int cnt = open.get_cnt();
 			for (best++; best < cnt; best++)
 				if (open.get(best) != 0)
