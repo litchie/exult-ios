@@ -632,7 +632,7 @@ static void Handle_event
 			dragging = gwin->start_dragging(
 					event.button.x >> scale,
 					event.button.y >> scale);
-			Mouse::mouse->set_shape(Mouse::hand);
+			//Mouse::mouse->set_shape(Mouse::hand);
 			dragged = false;
 			}
 					// Move sprite toward mouse
