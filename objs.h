@@ -690,7 +690,7 @@ public:
 		return seq != 0 ? seq->get_resting() : -1;
 		}
 	int get_frame_time()		// Return frame time if moving.
-		{ return is_moving() ? frame_time : 0; }
+		{ return is_walking() ? frame_time : 0; }
 					// Move to new chunk, shape coords.
 	void move(int new_cx, int new_cy, Chunk_object_list *new_chunk, 
 			int new_sx, int new_sy, int new_frame, 
@@ -706,7 +706,7 @@ public:
 			set_lift(new_lift);
 		chunk->add(this);
 		}
-	int is_moving()
+	int is_walking()
 		{ return major_dir != 0; }
 	void stop();			// Stop motion.
 					// Start moving.
