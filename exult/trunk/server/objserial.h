@@ -98,7 +98,7 @@ int Npc_actor_out
 	short npc_num,
 	short ident,
 	int usecode,
-	short *properties,		// 12 entries.
+	int *properties,		// 12 entries.
 	short attack_mode,
 	short alignment,
 	unsigned long oflags,		// Object flags.
@@ -118,7 +118,7 @@ int Npc_actor_in
 	short& npc_num,
 	short& ident,
 	int& usecode,
-	short *properties,		// Must have room for 12.
+	int *properties,		// Must have room for 12.
 	short& attack_mode,
 	short& alignment,
 	unsigned long& oflags,		// Object flags.
