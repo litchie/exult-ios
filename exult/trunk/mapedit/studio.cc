@@ -494,6 +494,23 @@ int ExultStudio::get_num_entry
 	}
 
 /*
+ *	Get text from a text field.
+ *
+ *	Output:	->text, or null if not found.
+ */
+
+char *ExultStudio::get_text_entry
+	(
+	char *name
+	)
+	{
+	GtkWidget *field = glade_xml_get_widget(app_xml, name);
+	if (!field)
+		return 0;
+	return gtk_entry_get_text(GTK_ENTRY(field));
+	}
+
+/*
  *	Find and set a text field to a number.
  */
 

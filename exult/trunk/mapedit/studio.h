@@ -58,6 +58,7 @@ private:
 	int get_spin(char *name);
 	void set_spin(char *name, int val, bool sensitive = true);
 	int get_num_entry(char *name);
+	char *get_text_entry(char *name);
 	void set_entry(char *name, int val, bool hex = false,
 						bool sensitive = true);
 	void set_entry(char *name, const char *val, bool sensitive = true);
@@ -88,6 +89,7 @@ public:
 	void close_npc_window();
 	int init_npc_window(unsigned char *data, int datalen);
 	void set_schedule_line(int time, int type, int tx, int ty, int tz = 0);
+	int save_npc_window();
 	void show_npc_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_npc_shape(int shape, int frame);
 	static void schedule_btn_clicked(GtkWidget *btn, gpointer data);
