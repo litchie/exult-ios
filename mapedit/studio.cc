@@ -210,7 +210,8 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	names(0), glade_path(0),
 	vgafile(0), facefile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
-	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), 
+	static_path(0), 
+	browser(0), palbuf(0), egg_monster_draw(0), 
 	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
@@ -316,6 +317,7 @@ ExultStudio::~ExultStudio()
 	if (server_socket >= 0)
 		Exult_server::disconnect_from_server();
 #endif
+	g_free(static_path);
 	self = 0;
 }
 
@@ -335,9 +337,7 @@ void ExultStudio::set_browser(const char *name, Object_browser *obj)
 
 Object_browser *ExultStudio::create_browser(const char *fname)
 {
-	char *fullname = g_strdup_printf("%s%s", static_path, fname);
-	curfile = files->create(fname, fullname);
-	g_free(fullname);
+	curfile = files->create(fname);
 
 	Object_browser *chooser = curfile->create_browser(vgafile, names,
 								palbuf);
@@ -406,18 +406,14 @@ void ExultStudio::choose_static_path()
 GtkCTreeNode *create_subtree( GtkCTree *ctree,
 			      GtkCTreeNode *previous,
 			      const char *name,
-			      const char *path,
 			      const char *ext,  // Or whole filename.
 			      gpointer data
 			    )
 {
 	struct dirent *entry;
-	DIR *dir = opendir(path);
-	if(!dir)
-		return 0;
-	GtkCTreeNode *parent, *sibling;
+	GtkCTreeNode *parent, *sibling = 0;
 	char *text[1];
-	text[0] = (char *)name;
+	text[0] = (char *) name;
 	parent = gtk_ctree_insert_node( ctree,
 					0,
 					previous,
@@ -429,30 +425,60 @@ GtkCTreeNode *create_subtree( GtkCTree *ctree,
 	gtk_ctree_node_set_selectable( ctree,
 				       parent, 
 				       FALSE );
-	sibling = 0;
 	int extlen = strlen(ext);
-	while(entry=readdir(dir)) {
-		char *fname = entry->d_name;
-		int flen = strlen(fname);
+	string spath("<STATIC>/"), ppath("<PATCH>/");
+	spath = get_system_path(spath);
+	ppath = get_system_path(ppath);
+	DIR *dir = opendir(ppath.c_str());// Get names from 'patch' first.
+	if (dir) {
+		while(entry=readdir(dir)) {
+			char *fname = entry->d_name;
+			int flen = strlen(fname);
 					// Ignore case of extension.
-		if(!strcmp(fname,".")||!strcmp(fname,"..") ||
+			if(!strcmp(fname,".")||!strcmp(fname,"..") ||
 				strcasecmp(fname + flen - extlen, ext) != 0)
-			continue;
-		text[0] = fname;
-		sibling = gtk_ctree_insert_node( ctree,
-						 parent,
-						 sibling,
-						 text,
-						 0,
-						 0,0,0,0,
-						 TRUE,
-						 FALSE );
-		gtk_ctree_node_set_row_data( ctree,
-					     sibling,
-					     data );
+				continue;
+			text[0] = fname;
+			sibling = gtk_ctree_insert_node( ctree,
+							 parent,
+							 sibling,
+							 text,
+							 0,
+							 0,0,0,0,
+							 TRUE, FALSE );
+			gtk_ctree_node_set_row_data( ctree, sibling,data );
 		
+		}
+		closedir(dir);
 	}
-	closedir(dir);			
+	dir = opendir(spath.c_str());	// Now go through 'static'.
+	if (dir) {
+		while(entry=readdir(dir)) {
+			char *fname = entry->d_name;
+			int flen = strlen(fname);
+					// Ignore case of extension.
+			if(!strcmp(fname,".")||!strcmp(fname,"..") ||
+				strcasecmp(fname + flen - extlen, ext) != 0)
+				continue;
+					// See if also in 'patch'.
+			string fullpath(ppath);
+			fullpath += "/";
+			fullpath += fname;
+			if (U7exists(fullpath))
+				continue;
+			text[0] = fname;
+			sibling = gtk_ctree_insert_node( ctree,
+							 parent,
+							 sibling,
+							 text,
+							 0,
+							 0,0,0,0,
+							 TRUE, FALSE );
+			gtk_ctree_node_set_row_data( ctree, sibling,data );
+		
+		}
+		closedir(dir);
+	}
 	return parent;
 }
 
@@ -462,9 +488,9 @@ void ExultStudio::set_static_path(const char *path)
 		g_free(static_path);
 	static_path = g_strdup(path);	// Set up palette for showing shapes.
 	add_system_path("<STATIC>", static_path);
-	char *patch = g_strdup_printf("%s../%s", static_path, "patch");
-	add_system_path("<PATCH>", patch);
-	g_free(patch);
+	char *patch_path = g_strdup_printf("%s../%s", static_path, "patch");
+	add_system_path("<PATCH>", patch_path);
+	g_free(patch_path);
 	char *palname = g_strdup_printf("%s%s", static_path, "palettes.flx");
 	U7object pal(palname, 0);
 	g_free(palname);
@@ -481,12 +507,8 @@ void ExultStudio::set_static_path(const char *path)
 	}
 	delete files;			// Close old shape files.
 	files = new Shape_file_set();
-	char *fullname = g_strdup_printf("%s%s", static_path, "shapes.vga");
-	vgafile = files->create("shapes.vga", fullname);
-	g_free(fullname);
-	fullname = g_strdup_printf("%s%s", static_path, "faces.vga");
-	facefile = files->create("faces.vga", fullname);
-	g_free(fullname);
+	vgafile = files->create("shapes.vga");
+	facefile = files->create("faces.vga");
 					// Read in shape names.
 	int num_names = vgafile->get_ifile()->get_num_shapes();
 	names = new char *[num_names];
@@ -505,25 +527,21 @@ void ExultStudio::set_static_path(const char *path)
 	GtkCTreeNode *shapefiles = create_subtree( GTK_CTREE( file_list ),
 						   0,
 						   "Shape Files",
-						   static_path,
 						   ".vga",
 						   (gpointer)ShapeArchive );
 	GtkCTreeNode *chunkfiles = create_subtree( GTK_CTREE( file_list ),
 						   0,
 						   "Map Files",
-						   static_path,
 						   "u7chunks",
 						   (gpointer)ChunkArchive );
 	GtkCTreeNode *palettefiles = create_subtree( GTK_CTREE( file_list ),
 						   shapefiles,
 						   "Palette Files",
-						   static_path,
 						   ".pal",
 						   (gpointer)PaletteFile );
 	GtkCTreeNode *flexfiles = create_subtree( GTK_CTREE( file_list ),
 						   palettefiles,
 						   "FLEX Files",
-						   static_path,
 						   ".flx",
 						   (gpointer)FlexArchive );
 	gtk_clist_thaw( GTK_CLIST( file_list ) );

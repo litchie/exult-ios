@@ -97,13 +97,8 @@ Chunk_terrain *Game_map::read_terrain
 	{
 	assert(chunk_num >= 0 && chunk_num < chunk_terrains.size());
 	unsigned char buf[16*16*2];	
-	if (chunks)			// NULL if map-editing 1st time.
-		{
-		chunks->seekg(chunk_num * 512);
-		chunks->read(reinterpret_cast<char*>(buf), sizeof(buf));
-		}
-	else
-		memset(&buf[0], 0, sizeof(buf));
+	chunks->seekg(chunk_num * 512);
+	chunks->read(reinterpret_cast<char*>(buf), sizeof(buf));
 	Chunk_terrain *ter = new Chunk_terrain(&buf[0]);
 	chunk_terrains.put(chunk_num, ter);
 	return ter;
@@ -147,7 +142,8 @@ void Game_map::init
 		delete chunks;
 	chunks = new ifstream;
 	int num_chunk_terrains;
-	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_U7CHUNKS))
+	bool patch_exists = is_system_path_defined("<PATCH>");
+	if (patch_exists && U7exists(PATCH_U7CHUNKS))
 		U7open(*chunks, PATCH_U7CHUNKS);
 	else try
 		{
@@ -155,19 +151,22 @@ void Game_map::init
 		}
 	catch(const file_exception & f)
 		{
-		if (!Game::is_editing())	// Ok if map-editing.
+		if (!Game::is_editing() ||	// Ok if map-editing.
+		    !patch_exists)	// But only if patch exists.
 			throw f;
-		delete chunks;
-		chunks = 0;
-		num_chunk_terrains = 1;	// We'll create 1st one.
+		ofstream ochunks;	// Create one in 'patch'.
+		U7open(ochunks, PATCH_U7CHUNKS);
+		unsigned char buf[16*16*2];	
+		memset(&buf[0], 0, sizeof(buf));
+		ochunks.write(&buf[0], sizeof(buf));
+		ochunks.close();
+		U7open(*chunks, PATCH_U7CHUNKS);
 		}
-	if (chunks)			// Have it?
-		{			// Get to end so we can get length.
-		chunks->seekg(0, ios::end);
+					// Get to end so we can get length.
+	chunks->seekg(0, ios::end);
 					// 2 bytes/tile.
-		num_chunk_terrains = chunks->tellg()/
+	num_chunk_terrains = chunks->tellg()/
 				(c_tiles_per_chunk*c_tiles_per_chunk*2);
-		}
 					// Resize list to hold all.
 	chunk_terrains.resize(num_chunk_terrains);
 	read_all_terrain = modified_terrain = false;
