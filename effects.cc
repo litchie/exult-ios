@@ -1136,7 +1136,7 @@ void Rain_effect::paint
 	(
 	)
 	{
-	if (gwin->is_main_actor_inside() || gumpman->showing_gumps(true))
+	if (gwin->is_main_actor_inside())
 		return;			// Inside.
 					// Get transform table.
 	Xform_palette& xform = sman->get_xform(8);//++++Experiment.
@@ -1478,7 +1478,7 @@ void Clouds_effect::paint
 	(
 	)
 	{
-	if (!gwin->is_main_actor_inside() && !gumpman->showing_gumps(true))
+	if (!gwin->is_main_actor_inside())
 		for (int i = 0; i < num_clouds; i++)
 			clouds[i]->paint();
 	}
