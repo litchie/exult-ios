@@ -45,16 +45,14 @@ void Combat_schedule::find_opponents
 	{
 	opponents.clear();
 	Game_window *gwin = Game_window::get_game_window();
-#if 0
-	if (npc->is_monster())		// Monster?  Return party.
-#else
 	if (npc->get_alignment() == Npc_actor::hostile)
-#endif
 		{
 		Actor *party[9];
 		int cnt = gwin->get_party(party, 1);
 		for (int i = 0; i < cnt; i++)
-			opponents.append(party[i]);
+					// But ignore invisible ones.
+			if (!party[i]->get_flag(Actor::invisible))
+				opponents.append(party[i]);
 		return;
 		}
 	Slist nearby;			// Get all nearby NPC's.
@@ -311,7 +309,9 @@ inline int Need_new_opponent
 	)
 	{
 					// Nonexistent or dead?
-	if (!opponent || opponent->is_dead_npc())
+	if (!opponent || opponent->is_dead_npc() ||
+					// Or invisible?
+	    opponent->get_flag(Game_object::invisible))
 		return 1;
 					// See if off screen.
 	Tile_coord t = opponent->get_abs_tile_coord();

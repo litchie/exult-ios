@@ -18,6 +18,7 @@ const int PALETTE_DAY = 0;
 const int PALETTE_DUSK = 1;
 const int PALETTE_NIGHT = 2;
 const int PALETTE_DAWN = 1;		// Think this is it.
+const int PALETTE_INVISIBLE = 3;	// When Avatar is invisible.
 
 /*
  *	Set palette.
@@ -28,7 +29,13 @@ void Game_clock::set_time_palette
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	Actor *main_actor = gwin->get_main_actor();
 	int new_palette;
+	if (main_actor && main_actor->get_flag(Actor::invisible))
+		{
+		gwin->set_palette(PALETTE_INVISIBLE);
+		return;
+		}
 	if (gwin->is_in_dungeon() || hour < 5)
 		new_palette = PALETTE_NIGHT;
 	else if (hour < 6)

@@ -107,6 +107,8 @@ void Game_window::set_window_size(int width, int height, int scale)
 	pal->brighten(20);		// Brighten 20%.
 					// Get a bright green.
 	poison_pixel = pal->find_color(4, 63, 4);
+					// Get a light gray.
+	protect_pixel = pal->find_color(62, 62, 55);
 }
 
 

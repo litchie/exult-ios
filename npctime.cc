@@ -60,20 +60,50 @@ class Npc_sleep_timer : public Npc_timer
 	{
 	unsigned long end_time;		// Time when it wears off.
 public:
-	Npc_sleep_timer(Npc_timer_list *l);
-	virtual ~Npc_sleep_timer();
+	Npc_sleep_timer(Npc_timer_list *l) : Npc_timer(l)
+		{			// Lasts 5-10 seconds..
+		end_time = SDL_GetTicks() + 5000 + rand()%5000;
+		}
+	virtual ~Npc_sleep_timer()
+		{ list->sleep = 0; }
 					// Handle events:
 	void handle_event(unsigned long curtime, long udata);
 	};
-#if 0
+
 /*
  *	Invisibility timer.
  */
-class Invisibility_timer : public Npc_timer
+class Npc_invisibility_timer : public Npc_timer
 	{
+	unsigned long end_time;		// Time when it wears off.
 public:
-	
-#endif
+	Npc_invisibility_timer(Npc_timer_list *l) : Npc_timer(l)
+		{			// Lasts 10-20 seconds..
+		end_time = SDL_GetTicks() + 10000 + rand()%10000;
+		}
+	virtual ~Npc_invisibility_timer()
+		{ list->invisibility = 0; }
+					// Handle events:
+	void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
+ *	Protection timer.
+ */
+class Npc_protection_timer : public Npc_timer
+	{
+	unsigned long end_time;		// Time when it wears off.
+public:
+	Npc_protection_timer(Npc_timer_list *l) : Npc_timer(l)
+		{			// Lasts 10-20 seconds..
+		end_time = SDL_GetTicks() + 10000 + rand()%10000;
+		}
+	virtual ~Npc_protection_timer()
+		{ list->protection = 0; }
+					// Handle events:
+	void handle_event(unsigned long curtime, long udata);
+	};
+
 /*
  *	Delete list.
  */
@@ -85,6 +115,8 @@ Npc_timer_list::~Npc_timer_list
 	delete hunger;
 	delete poison;
 	delete sleep;
+	delete invisibility;
+	delete protection;
 	}
 
 /*
@@ -123,6 +155,32 @@ void Npc_timer_list::start_sleep
 	if (sleep)			// Remove old one.
 		delete sleep;
 	sleep = new Npc_sleep_timer(this);
+	}
+
+/*
+ *	Start invisibility.
+ */
+
+void Npc_timer_list::start_invisibility
+	(
+	)
+	{
+	if (invisibility)			// Remove old one.
+		delete invisibility;
+	invisibility = new Npc_invisibility_timer(this);
+	}
+
+/*
+ *	Start protection.
+ */
+
+void Npc_timer_list::start_protection
+	(
+	)
+	{
+	if (protection)			// Remove old one.
+		delete protection;
+	protection = new Npc_protection_timer(this);
 	}
 
 /*
@@ -268,30 +326,6 @@ void Npc_poison_timer::handle_event
 	}
 
 /*
- *	Initialize sleep timer.
- */
-
-Npc_sleep_timer::Npc_sleep_timer
-	(
-	Npc_timer_list *l
-	) : Npc_timer(l)
-	{
-					// Lasts 5-10 seconds..
-	end_time = SDL_GetTicks() + 5000 + rand()%5000;
-	}
-
-/*
- *	Done with sleep timer.
- */
-
-Npc_sleep_timer::~Npc_sleep_timer
-	(
-	)
-	{
-	list->sleep = 0;
-	}
-
-/*
  *	Time to see if we should wake up.
  */
 
@@ -318,6 +352,84 @@ void Npc_sleep_timer::handle_event
 				gwin->add_dirty(npc);
 				}
 			}
+		delete this;
+		return;
+		}
+					// Check again in 2 secs.
+	gwin->get_tqueue()->add(curtime + 2000, this, 0L);
+	}
+
+/*
+ *	Check for a given ring.
+ */
+
+inline int Wearing_ring
+	(
+	Actor *actor,
+	int shnum			// Ring shape to look for.
+	)
+	{
+					// See if wearing ring.
+	Game_object *ring = actor->get_readied(Actor::lfinger);
+	if (ring && ring->get_shapenum() == shnum)
+		return 1;
+	ring = actor->get_readied(Actor::rfinger);
+	if (ring && ring->get_shapenum() == shnum)
+		return 1;
+	return 0;
+	}
+
+/*
+ *	See if invisibility wore off.
+ */
+
+void Npc_invisibility_timer::handle_event
+	(
+	unsigned long curtime, 
+	long udata
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Actor *npc = list->npc;
+	if (Wearing_ring(npc, 296))
+		{			// Wearing invisibility ring.
+		delete this;		// Don't need timer.
+		return;
+		}
+	if (curtime >= end_time ||	// Long enough?  Or cleared.
+	    npc->get_flag(Actor::invisible) == 0)
+		{
+		npc->clear_flag(Actor::invisible);
+		gwin->add_dirty(npc);
+		delete this;
+		return;
+		}
+					// Check again in 2 secs.
+	gwin->get_tqueue()->add(curtime + 2000, this, 0L);
+	}
+
+/*
+ *	See if protection wore off.
+ */
+
+void Npc_protection_timer::handle_event
+	(
+	unsigned long curtime, 
+	long udata
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Actor *npc = list->npc;
+	if (Wearing_ring(npc, 296))
+		{			// Wearing protection ring.
+		delete this;		// Don't need timer.
+		return;
+		}
+	if (curtime >= end_time ||	// Long enough?  Or cleared.
+	    npc->get_flag(Actor::protection) == 0)
+		{
+		npc->clear_flag(Actor::protection);
+		gwin->add_dirty(npc);
 		delete this;
 		return;
 		}
