@@ -66,15 +66,15 @@ void SoundTester::test_sound()
 		        {
 			scroll = new Scroll_gump();
 			
-			scroll->add_text("Sound Tester~");
+			scroll->add_text("Sound Tester\n");
 			
-			scroll->add_text("Keys~");
+			scroll->add_text("Keys\n");
 			
-			scroll->add_text("Up - Previous Type\n");
-			scroll->add_text("Down - Next Type\n");
-			scroll->add_text("Left - Previous Number\n");
-			scroll->add_text("Right - Next Number\n");
-			scroll->add_text("Enter - Play it~");
+			scroll->add_text("Up - Previous Type\n"
+					 "Down - Next Type\n"
+					 "Left - Previous Number\n"
+					 "Right - Next Number\n"
+					 "Enter - Play it\n");
 
 			sprintf (buf, "%2s Music %c %3i %c~",
 				active==0?"->":"",
