@@ -75,6 +75,12 @@ int Container_game_object::add
 	{
 	if (obj->get_shapenum() == get_shapenum() && !dont_check)
 		return (0);		// Can't put a bag in a bag.
+
+	// ugly hack for SI urn (shouldn't be a container)
+	if (Game::get_game_type() == SERPENT_ISLE && get_shapenum() == 914) {
+		return 0;
+	}
+
 	int objvol = obj->get_volume();
 
 	// Always check this. ALWAYS!
