@@ -168,14 +168,23 @@ void Game_window::restore_gamedat
 /*
  *	List of 'gamedat' files to save (in addition to 'iregxx'):
  */
-static const char *savefiles[] = {
+static const char *bgsavefiles[] = {
+	GSCRNSHOT,	GSAVEINFO,	// MUST BE FIRST!!
+	NPC_DAT,	MONSNPCS,
+	IDENTITY,	USEDAT,
+	FLAGINIT,	GWINDAT,
+	GSCHEDULE
+	};
+static const int bgnumsavefiles = sizeof(bgsavefiles)/sizeof(bgsavefiles[0]);
+
+static const char *sisavefiles[] = {
 	GSCRNSHOT,	GSAVEINFO,	// MUST BE FIRST!!
 	NPC_DAT,	MONSNPCS,
 	IDENTITY,	USEDAT,
 	FLAGINIT,	GWINDAT,
 	GSCHEDULE,	KEYRINGDAT
 	};
-static const int numsavefiles = sizeof(savefiles)/sizeof(savefiles[0]);
+static const int sinumsavefiles = sizeof(sisavefiles)/sizeof(sisavefiles[0]);
 
 /*
  *	Save a single file into an IFF repository.
@@ -245,6 +254,12 @@ void Game_window::save_gamedat
 	const char *savename			// User's savegame name.
 	)
 	{
+	// setup correct file list 
+	int numsavefiles = (Game::get_game_type() == BLACK_GATE) ?
+			bgnumsavefiles : sinumsavefiles;
+	const char **savefiles = (Game::get_game_type() == BLACK_GATE) ?
+			bgsavefiles : sisavefiles;	
+
 	ofstream out;
 	U7open(out, fname);
 					// Doing all IREG's + what's listed.
