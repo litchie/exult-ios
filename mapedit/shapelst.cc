@@ -239,7 +239,8 @@ void Shape_chooser::render
 				sh = winh;
 				}
 					// Store info. about where drawn.
-			info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
+			info[info_cnt].set(index,
+					shapenum, framenum, x, sy, sw, sh);
 			if (shapenum == selshape)
 						// Found the selected shape.
 				new_selected = info_cnt;
@@ -360,7 +361,8 @@ void Shape_chooser::render_frames
 				sh = winh;
 				}
 					// Store info. about where drawn.
-			info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
+			info[info_cnt].set(index, 
+					shapenum, framenum, x, sy, sw, sh);
 			if (shapenum == selshape && framenum == selframe)
 						// Found the selected shape.
 				new_selected = info_cnt;
@@ -520,7 +522,7 @@ void Shape_chooser::goto_index
 			index0 = row_indices[--row0];
 		while (index < index0);
 		}
-	else if (index >= index0 + info_cnt)
+	else if (index >= index0 + (frames_mode ? nrows : info_cnt))
 		{			// Below current view.
 		do
 			{
@@ -1225,10 +1227,10 @@ void Shape_chooser::search
 	if (!total)
 		return;			// Empty.
 					// Start with selection, or top.
-	int start = index0 + (selected >= 0 ? selected : 0) + dir;
-//	int start = info[selected >= 0 ? selected : 0].shapenum + dir;
-	int stop = dir == -1 ? -1 : total;
+	int start = selected >= 0 ? info[selected].index : index0;
 	int i;
+	start += dir;
+	int stop = dir == -1 ? -1 : total;
 	for (i = start; i != stop; i += dir)
 		{
 		int shnum = group ? (*group)[i] : i;
@@ -1243,7 +1245,16 @@ void Shape_chooser::search
 	if (row0 >= adj->value)		// Beyond apparent end?
 		adjust_vscrollbar();	// Needs updating.
 	gtk_adjustment_set_value(adj, row0);
-	int newsel = i - row_indices[row0];
+	int newsel;			// Get new selection index.
+	if (!frames_mode)		// Easy if showing 1 shape/spot.
+		newsel = i - row_indices[row0];
+	else
+		{
+		int shnum = group ? (*group)[i] : i;
+		for (newsel = 0; newsel < info_cnt &&
+				info[newsel].shapenum != shnum; newsel++)
+			;
+		}
 	if (newsel >= 0 && newsel < info_cnt)
 		select(newsel);
 	show();
