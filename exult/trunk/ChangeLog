@@ -1,3 +1,7 @@
+2002-04-04  Darke <darkepaw@users.sourceforge.net>
+	* conf/Configuration.cc conf/xmain.cc: Added some #define-able tracing
+	code, fixed a few bugs in confregress.
+
 2002-04-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/studio.cc: Show Exult logo in 'Prompt' box.

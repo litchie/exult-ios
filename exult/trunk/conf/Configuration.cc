@@ -56,6 +56,14 @@ using std::ostream;
 using std::isspace;
 #endif
 
+#define TRACE_CONF 0
+
+#if TRACE_CONF
+	#define CTRACE(X) cerr << X << endl
+#else
+	#define CTRACE(X)
+#endif
+
 void	Configuration::value(const string key,std::string &ret,const char *defaultvalue) const
 {
 	const XMLnode *sub=xmltree->subtree(key);
@@ -138,6 +146,8 @@ bool	Configuration::read_config_string(const std::string &s)
 
 bool	Configuration::read_config_file(const string input_filename, const string root)
 {
+	CTRACE("Configuration::read_config_file");
+	
 	clear(root);
 	
 	filename=input_filename;
@@ -194,6 +204,9 @@ bool	Configuration::read_config_file(const string input_filename, const string r
 	}
 	
 	ifile.close();
+	
+	CTRACE("Configuration::read_config_file - file read");
+	
 	read_config_string(sbuf);
 	
 	is_file=true;
@@ -247,10 +260,15 @@ std::vector<std::string>	Configuration::listkeys(const char *key,bool longformat
 
 void Configuration::clear(std::string new_root)
 {
+	CTRACE("Configuration::clear");
+
 	delete xmltree;
+	CTRACE("Configuration::clear - xmltree deleted");
 	if(new_root.size())
 		rootname=new_root;
+	CTRACE("Configuration::clear - new root specified");
 	xmltree = new XMLnode(rootname);
+	CTRACE("Configuration::clear - fin");
 }
 
 void Configuration::getsubkeys(KeyTypeList &ktl, const string basekey)
