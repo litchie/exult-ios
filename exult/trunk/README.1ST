@@ -38,9 +38,9 @@ immediately before triggering the bug, and a description of your
 computer's configuration (OS, CPU, soundcard, videocard). Remember:
 Exult runs on many platforms, not just yours.
 As usual, we are available on the mailing list
-(mailto:exult-general@lists.sourceforge.net), on the forum
+(mailto:exult-general@lists.sourceforge.net), on our forum
 (http://exult.sourceforge.net/forum/list.php?f=1) and on IRC (#exult on
-irc.openprojects.net) and we will try and help as much as we can.
+irc.openprojects.net) and we will try to help as much as we can.
 
 Have fun
 
@@ -53,12 +53,12 @@ As 1.0.x is only for bug fixes new features have only been added to 1.1.x.
 These features are:
 - Exult Studio works only with 1.1.x now
 - Only the 1.1.x branch has been ported to the Zaurus
-- keyboard movement
+- Keyboard movement
 - Digital music as better sounding alternative to MIDI music
 - FM Synth emulation, another alternative to MIDI music
 - Gumps now optionally pause the game
 - Combat with the Spellbook works now
-- bookmarked Spell is saved and restored
+- Bookmarked Spell is saved and restored
 - Using "evil" spells can now get you into trouble with the guards
 - Feeding also uses drinks now
 - Avatar always uses the correct bed now
