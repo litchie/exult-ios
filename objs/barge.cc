@@ -292,7 +292,13 @@ void Barge_object::gather
 			    t.tz + info.get_3d_height() > lift && 
 			    (info.is_barge_part() || t.tz < lift + 5) &&
 			    obj->get_owner() != this)
+				{
 				objects.append(obj);
+					// Kludge for SI turtle.
+				if (obj->get_shapenum() == 0xd7 &&
+				    Game::get_game_type() == SERPENT_ISLE)
+					xtiles = 20;
+				}
 			}
 		}
 					// Test landscape under center.
@@ -300,7 +306,8 @@ void Barge_object::gather
 	if (boat == -1)			// Test for boat the first time.
 		{
 		Map_chunk *chunk = gwin->get_chunk(
-			center.tx/c_tiles_per_chunk, center.ty/c_tiles_per_chunk);
+			center.tx/c_tiles_per_chunk, 
+					center.ty/c_tiles_per_chunk);
 		ShapeID flat = chunk->get_flat(center.tx%c_tiles_per_chunk,
 						center.ty%c_tiles_per_chunk);
 		if (flat.is_invalid())
@@ -311,6 +318,7 @@ void Barge_object::gather
 			boat = info.is_water();
 			}
 		}
+	gathered = true;
 	}
 
 /*
@@ -670,6 +678,8 @@ void Barge_object::paint
 	{
 					// DON'T paint barge shape itself.
 					// The objects are in the chunk too.
+	if(gwin->paint_eggs)
+		Game_object::paint(gwin);
 	}
 
 /*
@@ -685,6 +695,8 @@ int Barge_object::step
 	int				// Frame (ignored).
 	)
 	{
+	if (!gathered)			// Happens in SI with turtle.
+		gather();
 	Tile_coord cur = get_abs_tile_coord();
 					// Blocked? (Assume ht.=4, for now.)
 	int move_type;
@@ -767,6 +779,6 @@ void Barge_object::elements_read
 	perm_count = objects.size();
 #endif
 	perm_count = 0;			// So we don't get haystack!
-	complete = 1;
+	complete = true;
 	}
 
