@@ -792,6 +792,7 @@ string Game_object::get_name
 	string display_name;
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
+	int qual = get_quality();
 	if (Game::get_game_type() == BLACK_GATE) {
 		//TODO: yourself 
 		switch (shnum)			// Some special cases!
@@ -821,7 +822,7 @@ string Game_object::get_name
 
 
 	} else if (Game::get_game_type() == SERPENT_ISLE) {
-		//TODO: yourself, oilskin, ice dragon blood, water of ...
+		//TODO: yourself, oilskin
 		//TODO: Dave, >= text.flx nr. 1502
 		
 		switch (shnum)			// More special cases!
@@ -830,7 +831,12 @@ string Game_object::get_name
 			name = item_names[0x500 + frnum];
 			break;
 		case 0x32a:			// Bucket
-			name = item_names[0x55b + frnum];
+			if (frnum == 1 && qual >= 10 & qual <= 15)
+				name = item_names[0x55b + qual];
+			else if (frnum == 2 && qual == 9)
+				name = item_names[0x55b + qual];
+			else
+				name = item_names[0x55b + frnum];
 			break;
 		case 0x179:			// Food items
 			name = item_names[0x510 + frnum];
