@@ -76,7 +76,7 @@ Path_walking_actor_action::Path_walking_actor_action
 	(
 	PathFinder *p,			// Already set to path.
 	int maxblk			// Max. retries when blocked.
-	) : path(p), frame_index(0), from_offscreen(0),
+	) : path(p), frame_index(0), from_offscreen(false),
 	    blocked(0), max_blocked(maxblk)
 	{
 	Tile_coord src = p->get_src(), dest = p->get_dest();
@@ -133,7 +133,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	int frame = frames->get_next(frame_index);
 	if (from_offscreen)		// Teleport to 1st spot.
 		{
-		from_offscreen = 0;
+		from_offscreen = false;
 		actor->move(tile.tx, tile.ty, tile.tz);
 		return speed;
 		}
@@ -177,7 +177,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	blocked = 0;			// Clear 'blocked' count.
-	from_offscreen = 0;
+	from_offscreen = false;
 					// Set up new path.
 					// Don't care about 1 coord.?
 	if (dest.tx == -1 || dest.ty == -1)
@@ -203,7 +203,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 			Offscreen_pathfinder_client cost(gwin, move_flags);
 			if (!path->NewPath(dest, src, &cost))
 				return (0);
-			from_offscreen = 1;
+			from_offscreen = true;
 			}
 		else
 			{

@@ -71,7 +71,7 @@ public:
 private:
 	Usecode_machine *usecode;	// Drives game plot.
 	Game_mode mode;			// Mode we're in.
-	unsigned char combat;		// 1 if in combat.
+	bool combat;		// 1 if in combat.
 	Time_queue *tqueue;		// Time-based queue.
 	Game_clock clock;		// Keeps track of time.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
@@ -83,12 +83,12 @@ private:
 	Rectangle avatar_face;		// Area take by Avatar in conversation.
 	Rectangle *conv_choices;	// Choices during a conversation.
 	unsigned long render_seq;	// For marking rendered objects.
-	unsigned char painted;		// 1 if we updated image buffer.
-	unsigned char focus;		// Do we have focus?
+	bool painted;		// 1 if we updated image buffer.
+	bool focus;		// Do we have focus?
 	unsigned char poison_pixel;	// For rendering poisoned actors.
 	unsigned char protect_pixel;	// For rendering protected actors.
-	unsigned char teleported;	// 1 if just teleported.
-	unsigned char in_dungeon;	// 1 if inside a dungeon.
+	bool teleported;	// 1 if just teleported.
+	bool in_dungeon;	// 1 if inside a dungeon.
 	std::ifstream chunks;		// "u7chunks" file.
 	Shapes_vga_file shapes;		// "shapes.vga" file.
 	Vga_file faces;			// "faces.vga" file.
@@ -112,13 +112,13 @@ private:
 	std::vector<Egg_object *> path_eggs;	// Path eggs, indexed by 'quality'.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[num_chunks][num_chunks];
-	unsigned char schunk_read[144]; // Flag for reading in each "ifix".
+	bool schunk_read[144]; // Flag for reading in each "ifix".
 	int scrolltx, scrollty;
 	Rectangle scroll_bounds;	// Walking outside this scrolls.
 	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
 	int user_brightness;		// User's setting for brightness.
-	unsigned char faded_out;	// 1 if faded palette to black.
+	bool faded_out;	// 1 if faded palette to black.
 	unsigned long special_light;	// Game minute when light spell ends.
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
@@ -444,7 +444,7 @@ public:
 	Ireg_game_object *create_ireg_object(Shape_info& info, int shnum, 
 			int frnum, int tilex, int tiley, int lift);
 					// Create special objects.
-	Egg_object *create_egg(unsigned char *entry, int animated);
+	Egg_object *create_egg(unsigned char *entry, bool animated);
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
 	int write();			// Write out to 'gamedat'.

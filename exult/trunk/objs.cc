@@ -349,7 +349,7 @@ int Game_object::find_nearby
 				obj->get_abs_tile(tx, ty, tz);
 					// +++++Check tz too?
 				if (tiles.has_point(tx, ty))
-					vec.push_back((T*)obj);
+					vec.push_back(dynamic_cast<T*>(obj));
 				}
 			}
 					// Return # added.

@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <TextUtils.h>
 
 #include "Midi.h"
+#include "exceptions.h"
 
 
 class	Mac_QT_midi : virtual public MidiAbstract
