@@ -553,6 +553,7 @@ int Game_window::write_ireg_objects
 			for (Game_object *obj = chunk->get_first(); obj;
 						obj = chunk->get_next(obj))
 				obj->write_ireg(ireg);
+			Write2(ireg, 0);// End with 2 0's.
 			}
 	ireg.flush();
 	int result = ireg.good();
@@ -727,7 +728,9 @@ int Game_window::write
 					// Only write what we've read.
 		if (schunk_read[schunk] && !write_ireg_objects(schunk))
 			return (0);
-	// +++++Write npc.dat, party,  +++++Write global flags to???
+	if (!write_npcs())		// Write out npc.dat.
+		return (0);
+	// +++++Write party, monsters?? mapcoords.dat? +++++Write global flags to???
 	return (1);
 	}
 

@@ -194,47 +194,46 @@ int Game_window::write_npcs
 		unsigned char buf4[4];	// Write coords., shape, frame.
 		actor->Game_object::write_common_ireg(buf4);
 		nfile.write(buf4, sizeof(buf4));
-#if 0
-//++++++++++++++++
-					// Get shape, frame #.
-		unsigned char shape[2];
-		nfile.read(shape, 2);
-		int iflag1 = Read2(nfile);// Inventory flag.
+					// Inventory flag.
+		Write2(nfile, actor->get_last_object() ? 1 : 0);
 					// Superchunk #.
-		int schunk = Read1(nfile);
-		Read1(nfile);		// Skip next byte.
-					// Get usecode function #.
-		int usefun = Read2(nfile);
-					// Lift is high 4 bits.
-		int lift = usefun >> 12;
-		usefun &= 0xfff;
-		if (i >= num_npcs1)	// Type2?
-			usefun = -1;	// Let's try this.
-					// Guessing:  !!
-		int food_level = Read1(nfile);
-		nfile.seekg(3, ios::cur);// Skip 3 bytes.
-					// Another inventory flag.
-		int iflag2 = Read2(nfile);
-					// Skip next 2.
-		nfile.seekg(2, ios::cur);
-					// Get char. atts.
-		int strength = Read1(nfile);
-		int dexterity = Read1(nfile);
-		int intelligence = Read1(nfile);
-		int combat = Read1(nfile);
-		int schedtype = Read1(nfile);
-		nfile.seekg(4, ios::cur); //??
-		int mana = Read1(nfile);// ??
-		nfile.seekg(4, ios::cur);
-		int exp = Read2(nfile);	// Could this be 4 bytes?
-		nfile.seekg(2, ios::cur);
-		int train = Read1(nfile);
-					// Get name.
-		nfile.seekg(0x40, ios::cur);
-		char namebuf[17];
-		nfile.read(namebuf, 16);
-		namebuf[16] = 0;	// Be sure it's 0-delimited.
-#endif
+		nfile.put((actor->get_cy()/16)*12 + actor->get_cx()/16);
+		nfile.put(0);		// Unknown.
+					// Usecode.
+		int usefun = actor->get_usecode() & 0xfff;
+					// Lift is in high 4 bits.
+		usefun |= ((actor->get_lift()&15) << 12);
+		Write2(nfile, usefun);
+		nfile.put(actor->get_property(Actor::food_level));
+		nfile.put(0);		// Unknown 3 bytes.
+		Write2(nfile, 0);
+					// ??Another inventory flag.
+		Write2(nfile, actor->get_last_object() ? 1 : 0);
+		Write2(nfile, 0);	// 2 more unknown bytes.
+					// Write char. attributes.
+		nfile.put(actor->get_property(Actor::strength));
+		nfile.put(actor->get_property(Actor::dexterity));
+		nfile.put(actor->get_property(Actor::intelligence));
+		nfile.put(actor->get_property(Actor::combat));
+		nfile.put(actor->get_schedule_type());
+		Write2(nfile, 0);	// Skip 4.
+		Write2(nfile, 0);
+		nfile.put(actor->get_property(Actor::mana));
+		Write2(nfile, 0);	// Skip 4 again.
+		Write2(nfile, 0);
+		Write2(nfile, actor->get_property(Actor::exp));
+		Write2(nfile, 0);	// Skip 2.
+		nfile.put(actor->get_property(Actor::training));
+					// 0x40 unknown.
+		for (int i = 0; i < 0x40; i++)
+			nfile.put(0);
+		char namebuf[16];	// Write 16-byte name.
+		memset(namebuf, 0, 16);
+		strncpy(namebuf, actor->get_name(), 16);
+		nfile.write(namebuf, 16);
+					// Write what he holds.
+		if (actor->get_last_object())
+			actor->write_contents(nfile);
 		}
 	//++++++++++++Don't forget monsters.
 	nfile.flush();

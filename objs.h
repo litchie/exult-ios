@@ -391,6 +391,8 @@ public:
 							int framenum = -359);
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
+					// Write contents in IREG format.
+	void write_contents(ostream& out);
 	};
 
 /*
