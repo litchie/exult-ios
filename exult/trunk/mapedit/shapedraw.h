@@ -32,7 +32,8 @@ class Vga_file;
 class Shape_frame;
 class Image_buffer8;
 
-typedef void (*Drop_callback)(void *udata, int shapenum, int framenum);
+typedef void (*Drop_callback)(int filenum,
+				int shapenum, int framenum, void *udata);
 
 /*
  *	This class can draw shapes from a .vga file.
@@ -47,6 +48,8 @@ protected:
 	GdkGC *drawgc;			// For drawing in 'draw'.
 	Image_buffer8 *iwin;		// What we render into.
 	GdkRgbCmap *palette;		// For gdk_draw_indexed_image().
+	Drop_callback drop_callback;	// Called when a shape is dropped here.
+	void *drop_user_data;
 public:
 	Shape_draw(Vga_file *i, unsigned char *palbuf, GtkWidget *drw);
 	virtual ~Shape_draw();
@@ -66,9 +69,11 @@ public:
 	void configure()
 		{ configure(draw); }
 					// Handler for drop.
-	static gboolean drag_drop(GtkWidget *widget, 
-		GdkDragContext *context, gint x, gint y, guint time);
-	void set_drag_dest(Drop_callback callback, void *udata);
+	static void drag_data_received(GtkWidget *widget, 
+		GdkDragContext *context, gint x, gint y, 
+		GtkSelectionData *selection_data, guint info, guint time,
+		gpointer udata);
+	void enable_drop(Drop_callback callback, void *udata);
 	};
 
 #endif

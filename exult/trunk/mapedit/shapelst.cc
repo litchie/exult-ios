@@ -228,7 +228,8 @@ gint Shape_chooser::mouse_press
 			tents[0].flags = 0;
 			tents[0].info = U7_TARGET_SHAPEID;
 			gtk_drag_source_set (chooser->draw, 
-				GDK_BUTTON1_MASK, tents, 1,GDK_ACTION_DEFAULT);
+				GDK_BUTTON1_MASK, tents, 1,
+			   (GdkDragAction)(GDK_ACTION_COPY | GDK_ACTION_MOVE));
 			chooser->selected = i;
 			chooser->render();
 			chooser->show();

@@ -91,7 +91,8 @@ Shape_draw::Shape_draw
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	GtkWidget *drw			// Drawing area to use.
 	) : ifile(i),
-		iwin(0), palette(0), names(0), draw(drw), drawgc(0)
+	    iwin(0), palette(0), names(0), draw(drw), drawgc(0),
+	    drop_callback(0), drop_user_data(0)
 	{
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
@@ -153,41 +154,51 @@ void Shape_draw::configure
  *	Shape was dropped.
  */
 
-gboolean Shape_draw::drag_drop
+void Shape_draw::drag_data_received
 	(
 	GtkWidget *widget,
 	GdkDragContext *context,
 	gint x,
 	gint y,
-	guint time
+	GtkSelectionData *seldata,
+	guint info,
+	guint time,
+	gpointer udata			// Should point to Shape_draw.
 	)
 	{
-	cout << "Shape was dropped" << endl;
-	//++++++++
-	return FALSE;
+	Shape_draw *draw = (Shape_draw *) udata;
+	cout << "drag_data_received" << endl;
+	if (draw->drop_callback &&
+	    seldata->type == gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0) &&
+	    seldata->format == 8 && seldata->length > 0)
+		{
+		int file, shape, frame;
+		Get_u7_shapeid(seldata->data, file, shape, frame);
+		(*draw->drop_callback)(file, shape, frame,
+							draw->drop_user_data);
+		}
 	}
 
 /*
  *	Set to accept drops from drag-n-drop of a shape.
  */
 
-void Shape_draw::set_drag_dest
+void Shape_draw::enable_drop
 	(
 	Drop_callback callback,		// Call this when shape dropped.
 	void *udata			// Passed to callback.
 	)
 	{
+	gtk_widget_realize(draw);//???????
+	drop_callback = callback;
+	drop_user_data = udata;
 	GtkTargetEntry tents[1];
 	tents[0].target = U7_TARGET_SHAPEID_NAME;
 	tents[0].flags = 0;
 	tents[0].info = U7_TARGET_SHAPEID;
-	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_HIGHLIGHT, tents, 1,
-							GDK_ACTION_DEFAULT);
-//	gtk_signal_connect(GTK_OBJECT(draw), "drag_drop",
-//				GTK_SIGNAL_FUNC(drag_drop), this);
-//+++++++Testing
+	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_ALL, tents, 1,
+			(GdkDragAction) (GDK_ACTION_COPY | GDK_ACTION_MOVE));
+
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_data_received",
-				GTK_SIGNAL_FUNC(drag_drop), this);
-//	gtk_signal_connect(GTK_OBJECT(draw), "drag_leave",
-//				GTK_SIGNAL_FUNC(drag_drop), this);
+				GTK_SIGNAL_FUNC(drag_data_received), this);
 	}
