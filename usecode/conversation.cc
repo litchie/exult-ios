@@ -44,13 +44,14 @@ using std::vector;
  */
 class Npc_face_info {
  public:
-  int shape;			// NPC's shape #.
+  int shape;			// NPC's face shape #.
+  int frame;
   bool text_pending;	// Text has been written, but user
   //   has not yet been prompted.
   Rectangle face_rect;		// Rectangle where face is shown.
   Rectangle text_rect;		// Rectangle NPC statement is shown in.
   int last_text_height;		// Height of last text painted.
-  Npc_face_info(int sh) : shape(sh), text_pending(0)
+  Npc_face_info(int sh, int fr) : shape(sh), frame(fr), text_pending(0)
   {  }
 };
 
@@ -206,17 +207,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 	}
 					// Get screen dims.
 	int screenw = gwin->get_width(), screenh = gwin->get_height();
-					// Get character's portrait.
-	Shape_frame *face = shape >= 0 ? gwin->get_face(shape, frame) : 0;
-	int face_w = 32, face_h = 32, face_xleft = 0, face_yabove = 0;
-	if (face)
-		{
-		face_w = face->get_width(); face_h = face->get_height();
-		face_xleft = face->get_xleft();
-		face_yabove = face->get_yabove();
-		}
 	Npc_face_info *info = 0;
-	Rectangle actbox;		// Gets box where face goes.
 					// See if already on screen.
 	for (int i = 0; i < max_faces; i++)
 		if (face_info[i] && face_info[i]->shape == shape)
@@ -230,7 +221,7 @@ void Conversation::show_face(int shape, int frame, int slot)
 		if (num_faces == max_faces)
 					// None free?  Steal last one.
 			remove_slot_face(max_faces - 1);
-		info = new Npc_face_info(shape);
+		info = new Npc_face_info(shape, frame);
 		if (slot == -1)		// Want next one?
 			slot = num_faces;
 					// Get last one shown.
@@ -244,6 +235,15 @@ void Conversation::show_face(int shape, int frame, int slot)
 					// Get text height.
 		int text_height = gwin->get_text_height(0);
 					// Figure starting y-coord.
+					// Get character's portrait.
+		Shape_frame *face = shape >= 0 ? 
+					gwin->get_face(shape, frame) : 0;
+		int face_w = 32, face_h = 32;
+		if (face)
+			{
+			face_w = face->get_width(); 
+			face_h = face->get_height();
+			}
 		int starty;
 		if (prev)
 			{
@@ -256,13 +256,13 @@ void Conversation::show_face(int shape, int frame, int slot)
 			}
 		else
 			starty = 1;
-		actbox = gwin->clip_to_win(Rectangle(8, starty,
+		info->face_rect = gwin->clip_to_win(Rectangle(8, starty,
 			face_w + 4, face_h + 4));
-		info->face_rect = actbox;
+		Rectangle& fbox = info->face_rect;
 					// This is where NPC text will go.
 		info->text_rect = gwin->clip_to_win(Rectangle(
-			actbox.x + actbox.w + 3, actbox.y + 3,
-			screenw - actbox.x - actbox.w - 6, 4*text_height));
+			fbox.x + fbox.w + 3, fbox.y + 3,
+			screenw - fbox.x - fbox.w - 6, 4*text_height));
 					// No room?  (Serpent?)
 		if (info->text_rect.w < 16 || info->text_rect.h < 16)
 					// Show in lower center.
@@ -270,13 +270,8 @@ void Conversation::show_face(int shape, int frame, int slot)
 						screenw/2, screenh/4);
 		info->last_text_height = info->text_rect.h;
 		}
-	else
-		actbox = info->face_rect;
 	gwin->get_win()->set_clip(0, 0, screenw, screenh);
-					// Draw whom we're talking to, using
-					//   translucency.
-	gwin->paint_shape(actbox.x + face_xleft,
-			actbox.y + face_yabove, face, 1);
+	paint();			// Paint all faces.
 	gwin->get_win()->clear_clip();
 	}
 
@@ -533,6 +528,39 @@ int Conversation::conversation_choice(int x, int y)
 	else
 		return (-1);
 }
+
+/*
+ *	Repaint the faces.   Assumes clip has already been set to screen.
+ *	???Maybe we should paint text too.  We'd have to keep better track.
+ */
+
+void Conversation::paint
+	(
+	)
+	{
+	if (!num_faces)
+		return;
+	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
+	for (int i = 0; i < max_faces; i++)
+		{
+		Npc_face_info *finfo = face_info[i];
+		if (!finfo)
+			continue;
+		Shape_frame *face = finfo->shape >= 0 ? 
+				gwin->get_face(finfo->shape, finfo->frame) : 0;
+		int face_xleft = 0, face_yabove = 0;
+		if (face)
+			{
+			face_xleft = face->get_xleft();
+			face_yabove = face->get_yabove();
+					// Use translucency.
+			gwin->paint_shape(
+				finfo->face_rect.x + face_xleft,
+				finfo->face_rect.y + face_yabove, face, 1);
+			}
+		}
+	}
+
 
 /*
  *  return nr. of conversation option 'str'. -1 if not found

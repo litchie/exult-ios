@@ -62,3 +62,4 @@ int Usecode_machine::get_num_faces_on_screen() const
 {
 	 return conv->get_num_faces_on_screen();
 }
+
