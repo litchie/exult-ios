@@ -33,7 +33,7 @@ EXTRA_OPTIONS=
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw automatically defines WIN32
-CPPFLAGS=-DVERSION=\"0.99.2cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
+CPPFLAGS=-DVERSION=\"1.00\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
