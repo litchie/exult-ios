@@ -4,6 +4,10 @@
 	actions.  Fixes double-conversation in Knight's banquet, and
 	likely fixes and/or breaks lots of other things.
 
+2001-05-19  Tristan Tarrant  <nadir@users.sourceforge.net>
+
+	* bggame.cc: fixed "emerging Guardian" part in intro
+
 2001-05-19  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
 	* keyactions.cc: fixed typo breaking UseItem
 
@@ -21,12 +25,10 @@
 2001-05-17  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* sigame.cc: allow splash screen to be interrupted
-	
 	* gamewin.cc, audio/Audio.cc, audio/Mixer.cc, 
 	  audio/midi_drivers/Timidity_binary.cc, actors.cc,
 	  schedule.cc:
 	  be verbose only when compiled with debugging
-
 	* tools/.cvsignore: Add splitshp
 
 2001-05-17  Jeff Freedman  <jeff@amy.nerble.net>

@@ -249,7 +249,7 @@ void BG_Game::play_intro()
 	backup = backup2 = backup3 = 0;
 	cbackup = cbackup2 = cbackup3 = 0;
 	noise = plasma = 0;
-
+#if 0
 	// Lord British presents...  (sh. 0x11)
 	pal.load("<STATIC>/intropal.dat",3);
 	gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
@@ -333,9 +333,8 @@ void BG_Game::play_intro()
 
 	// Enter guardian
 	//TODO: reduce sudden facial movements in speech
-
+#endif
 	play_midi(2);
-
 	// create buffers containing a blue 'plasma' screen and noise
 	noise = win->create_buffer(gwin->get_width(),
 						gwin->get_height());
@@ -350,7 +349,6 @@ void BG_Game::play_intro()
 	pal.load("<STATIC>/intropal.dat",2);
 	pal.set_color(1,0,0,0); //UGLY hack... set font background to black
 	pal.apply();
-
 	//TODO: sound effects here!
 	//TODO: timing?
 	win->show();
@@ -372,14 +370,14 @@ void BG_Game::play_intro()
 	// First 'popup' (sh. 0x21)
 	s = shapes.get_shape(0x21, 0);
 	backup = win->create_buffer(s->get_width(), s->get_height());
-	win->get(backup, centerx- s->get_xleft(), centery-45- s->get_yabove());
+	win->get(backup, centerx-53-s->get_xleft(), centery-68-s->get_yabove());
 	for(int i=8; i>=-8; i--) {
-		gwin->paint_shape(centerx,centery-45,
+		gwin->paint_shape(centerx-53,centery-68,
 				  shapes.get_shape(0x21,1+abs(i)));
 		win->show();
 		WAITDELAYCYCLE(70);
-		win->put(backup, centerx - s->get_xleft(), 
-			 centery-45 - s->get_yabove());
+		win->put(backup, centerx-53-s->get_xleft(), 
+			 centery-68-s->get_yabove());
 	}
 	delete backup; backup = 0;
 
@@ -412,6 +410,7 @@ void BG_Game::play_intro()
 		win->put(backup, centerx - s->get_xleft(),
 			 centery-1 - s->get_yabove());
 	}
+	
 	win->put(cbackup, centerx- s->get_xleft(), centery-1- s->get_yabove());
 	delete backup; backup = 0;
 	delete cbackup; cbackup = 0;
