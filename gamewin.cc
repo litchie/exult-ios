@@ -634,7 +634,11 @@ void Game_window::read_ireg_objects
 		unsigned int lift, quality, type;
 		Game_object *obj;
 		if (shapeid == 275)	// An "egg"?
-			obj = create_egg(entry);
+			{
+			Egg_object *egg = create_egg(entry);
+			get_objects(scx + cx, scy + cy)->add_egg(egg);
+			continue;
+			}
 		else if (entlen == 6)	// Simple entry?
 			{
 			type = 0;
@@ -656,7 +660,7 @@ void Game_window::read_ireg_objects
 			obj = cobj;
 			}
 		else
-			return;		// FOR NOW.
+			continue;	// FOR NOW.
 		obj->set_quality(quality);
 		if (!container)
 			get_objects(scx + cx, scy + cy)->add(obj);
@@ -679,7 +683,7 @@ void Game_window::read_ireg_objects
  *	Create an "egg".
  */
 
-Game_object *Game_window::create_egg
+Egg_object *Game_window::create_egg
 	(
 	unsigned char *entry		// 1-byte ireg entry.
 	)
@@ -699,7 +703,7 @@ Game_object *Game_window::create_egg
 	unsigned char auto_reset = (type >> 15) & 1;
 
 	Egg_object *obj = new Egg_object(entry[2], entry[3], 
-		entry[0]&0xf, entry[1]&0xf, lift, egg_type, prob,
+		entry[0]&0xf, entry[1]&0xf, lift, type, prob,
 		data1, data2);
 	return (obj);
 	}
@@ -1042,8 +1046,13 @@ void Game_window::animate
 					old_cy = main_actor->get_cy();
 					// Get old rectangle.
 		Rectangle oldrect = get_shape_rect(main_actor);
+		Chunk_object_list *olist = get_objects(cx, cy);
 					// Move it.
-		main_actor->move(cx, cy, get_objects(cx, cy), sx, sy, frame);
+		main_actor->move(cx, cy, olist, sx, sy, frame);
+					// Near an egg?
+		Egg_object *egg = olist->find_egg(sx, sy);
+		if (egg)
+			egg->activate(usecode);
 		int inside;		// See if moved inside/outside.
 					// In a new chunk?
 		if ((main_actor->get_cx() != old_cx ||

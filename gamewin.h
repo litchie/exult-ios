@@ -116,6 +116,8 @@ public:
 		{ return main_actor; }
 	Actor *get_npc(int npc_num)
 		{ return npc_num < num_npcs ? npcs[npc_num] : 0; }
+	int get_num_npcs()
+		{ return num_npcs; }
 	int get_num_shapes()
 		{ return shapes.get_num_shapes(); }
 	int get_num_faces()
@@ -229,7 +231,7 @@ public:
 	void read_ireg_objects(ifstream& ireg, int scx, int scy,
 					Container_game_object *container = 0);
 					// Create special objects.
-	Game_object *create_egg(unsigned char *entry);
+	Egg_object *create_egg(unsigned char *entry);
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
 	void init_actors();		// Place actors in the world.

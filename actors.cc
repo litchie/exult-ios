@@ -82,7 +82,7 @@ void Actor::activate
 	if (usecode == -1)
 		Game_object::activate(umachine);
 	else
-		umachine->call_usecode(usecode, this,
+		umachine->call_usecode(usecode, this, 
 					Usecode_machine::double_click);
 	}
 
