@@ -190,9 +190,9 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 			}
 		} while (ypos<endy);
 		pal.apply();
-		while (next_time > SDL_GetTicks())
-			;
-		if(SDL_PollEvent(&event)) {
+		do {
+		  // this could be a problem when too many events are produced
+		  while (SDL_PollEvent(&event)) {
 			switch(event.type) {
 			case SDL_KEYDOWN:
 				if(event.key.keysym.sym==SDLK_RSHIFT || event.key.keysym.sym==SDLK_LSHIFT)
@@ -211,8 +211,9 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 			default:
 				break;
 			}
-		}
-		next_time += incr;
+		  }
+		} while (next_time > SDL_GetTicks());
+		next_time = SDL_GetTicks() + incr;
 		if(!looping)
 			pal.fade_out(c_fade_out_time);
 		starty --;
