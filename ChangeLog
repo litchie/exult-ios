@@ -1,8 +1,29 @@
-2001-09-17  Dancer Vesperman  <dancer@users.sourceforge.net>
+2001-09-16  Ryan Nunn <triforce@merlin.net.au>
+	* audio/xmidi.cc : Fixed compiling errors.
+	* bggame.cc : Change the butterfly sequence to use 32 bit ints for
+	  timing calcs.
+	* cheat.cc : Made create object cheat use Game_window::create_ireg_obj
+	  instead of new Ireg_game_object.
+	* game.cc, game.h, combat.cc, exult.cc, gamewin.cc, effects.cc,
+	  npcnear.cc, npctime.cc, objs/barge.cc, objs/egg.cc,
+	  usecode/intrinsics.cc, usecode/ucsched.cc :
+	  Added Game::get_ticks() method to get the ticks at the start of this
+	  iteration of the main game loop. The idea is to improve general game
+	  syncronization. If possible Game::get_ticks() should be used instead
+	  of SDL_GetTicks().	  
+	* gamewin.cc, objs/animate.cc, objs/animate.h : Rewrote much of the
+	  Frame_animator to ensure that animated shapes always remain
+	  syncronized. Added new Animated_ifix_object. Fixed LOTS of broken SI
+	  animations. Fixed BG 'gear' animation. New game required for some
+	  changes to take effect.
+	* msvcstuff/*.* : Misc changes to project settings
+	* ChangeLog : Changed dates on Dancer's recent additions to GMT
+
+2001-09-16  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* Here's a bit of joy: WIN32 isn't SMP safe if we use operator new and delete. On the other hand, nothing else is thread-safe if we use malloc()/free(). So, we wrap the implementations and use malloc()/calloc()/free() for WIN32, and the C++ thread-safe allocator for other platforms.
 
-2001-09-17  Dancer Vesperman  <dancer@users.sourceforge.net>
+2001-09-16  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* Watch and learn. C++ _does_ have semantic eqivalents to malloc() and free(). They are ::operator new() and ::operator delete() (which are not the same as new and delete). This ensures we end up using the same thread-safe allocators. calloc() and malloc() semantics and type-casts are all bound up in two simple inline templates.
 

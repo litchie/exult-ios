@@ -35,6 +35,7 @@
 #include "game.h"
 #include "monstinf.h"
 #include "ucmachine.h"
+#include "game.h"
 
 using std::cout;
 using std::endl;
@@ -54,7 +55,7 @@ void Combat_schedule::start_battle
 					// But only if Avatar is main char.
 	if (gwin->get_camera_actor() != gwin->get_main_actor())
 		return;
-	unsigned long curtime = SDL_GetTicks();
+	unsigned long curtime = Game::get_ticks();
 					// .5 minute since last start?
 	if (!started_battle && curtime - battle_time >= 30000)
 		{

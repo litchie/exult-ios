@@ -27,8 +27,7 @@
 #include "actors.h"
 #include "items.h"
 #include "schedule.h"
-
-#include "SDL_timer.h"
+#include "game.h"
 
 using std::rand;
 
@@ -83,7 +82,7 @@ class Npc_sleep_timer : public Npc_timer
 public:
 	Npc_sleep_timer(Npc_timer_list *l) : Npc_timer(l)
 		{			// Lasts 5-10 seconds..
-		end_time = SDL_GetTicks() + 5000 + rand()%5000;
+		end_time = Game::get_ticks() + 5000 + rand()%5000;
 		}
 	virtual ~Npc_sleep_timer()
 		{ list->sleep = 0; }
@@ -100,7 +99,7 @@ class Npc_invisibility_timer : public Npc_timer
 public:
 	Npc_invisibility_timer(Npc_timer_list *l) : Npc_timer(l)
 		{			// Lasts 60-80 seconds..
-		end_time = SDL_GetTicks() + 60000 + rand()%20000;
+		end_time = Game::get_ticks() + 60000 + rand()%20000;
 		}
 	virtual ~Npc_invisibility_timer()
 		{ list->invisibility = 0; }
@@ -117,7 +116,7 @@ class Npc_protection_timer : public Npc_timer
 public:
 	Npc_protection_timer(Npc_timer_list *l) : Npc_timer(l)
 		{			// Lasts 60-80 seconds..
-		end_time = SDL_GetTicks() + 60000 + rand()%20000;
+		end_time = Game::get_ticks() + 60000 + rand()%20000;
 		}
 	virtual ~Npc_protection_timer()
 		{ list->protection = 0; }
@@ -227,7 +226,7 @@ Npc_timer::Npc_timer
 	) : list(l)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->get_tqueue()->add(SDL_GetTicks() + start_delay, this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks() + start_delay, this, 0L);
 	}
 
 /*
@@ -302,7 +301,7 @@ Npc_poison_timer::Npc_poison_timer
 	) : Npc_timer(l, 5000)
 	{
 					// Lasts 1-3 minutes.
-	end_time = SDL_GetTicks() + 60000 + rand()%120000;
+	end_time = Game::get_ticks() + 60000 + rand()%120000;
 	}
 
 /*

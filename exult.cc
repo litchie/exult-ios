@@ -478,11 +478,14 @@ static void Handle_events
 		Mouse::mouse->hide();		// Turn off mouse.
 		Mouse::mouse_update = false;
 
+					// Get current time.
+		uint32 ticks = SDL_GetTicks();
+		Game::set_ticks(ticks);
+
 		SDL_Event event;
 		while (!quitting_time && SDL_PollEvent(&event))
 			Handle_event(event);
-					// Get current time.
-		uint32 ticks = SDL_GetTicks();
+
 					// Animate unless dormant.
 		if (gwin->have_focus() && !dragging)
 			gwin->get_tqueue()->activate(ticks);

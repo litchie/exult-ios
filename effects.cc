@@ -30,6 +30,7 @@
 #include "chunks.h"
 #include "Audio.h"
 #include "Gump_manager.h"
+#include "game.h"
 
 #include "SDL_timer.h"
 
@@ -68,7 +69,7 @@ Sprites_effect::Sprites_effect
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_sprite_num_frames(num);
 					// Start immediately.
-	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	}
 
 /*
@@ -88,7 +89,7 @@ Sprites_effect::Sprites_effect
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_sprite_num_frames(num);
 					// Start immediately.
-	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	}
 
 /*
@@ -255,7 +256,7 @@ void Projectile_effect::init
 	else
 		frame_num = -1;		// We just won't show it.
 					// Start immediately.
-	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	}
 
 
@@ -423,9 +424,9 @@ Death_vortex::Death_vortex
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_sprite_num_frames(8);
 					// Go for 20 seconds.
-	stop_time = SDL_GetTicks() + 20*1000;
+	stop_time = Game::get_ticks() + 20*1000;
 					// Start immediately.
-	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
 	}
 
 /*
@@ -597,9 +598,9 @@ Weather_effect::Weather_effect
 		eggloc = egg->get_abs_tile_coord();
 	else
 		eggloc = Tile_coord(-1, -1, -1);
-	stop_time = SDL_GetTicks() + delay + 1000*((duration*60)/time_factor);
+	stop_time = Game::get_ticks() + delay + 1000*((duration*60)/time_factor);
 					// Start immediately.
-	gwin->get_tqueue()->add(SDL_GetTicks() + delay, this, 0L);
+	gwin->get_tqueue()->add(Game::get_ticks() + delay, this, 0L);
 	}
 
 /*
@@ -986,7 +987,7 @@ inline void Cloud::next
 					// Set start time randomly.
 		start_time = curtime + 2000*randcnt + rand()%2000;
 		randcnt = (randcnt + 1)%4;
-		start_time = SDL_GetTicks() + 2000*randcnt + rand()%500;
+		start_time = Game::get_ticks() + 2000*randcnt + rand()%500;
 cout << "Cloud: start_time = " << start_time << endl;
 		count = max_count;
 		frame = rand()%gwin->get_sprite_num_frames(CLOUD);

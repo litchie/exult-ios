@@ -129,7 +129,7 @@ void Usecode_script::start
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->get_tqueue()->add(delay + SDL_GetTicks(), this,
+	gwin->get_tqueue()->add(delay + Game::get_ticks(), this,
 					(long) gwin->get_usecode());
 	}
 

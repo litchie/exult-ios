@@ -51,7 +51,7 @@ template<class T>
 inline T* Malloc(size_t num=1)
 {
 #ifdef WIN32
-	return std::malloc(num);
+	return static_cast<T*>(std::malloc(num));
 #else
 	return static_cast<T*>(::operator new(num));
 #endif
@@ -63,19 +63,19 @@ inline T* Calloc(size_t num=1,size_t sz=0)
 	if(!sz)
 		sz=sizeof(T);
 #ifdef WIN32
-	return std::calloc(num,sz);
+	return static_cast<T*>(std::calloc(num,sz));
 #else
 	size_t	total=sz*num;
 	T *tmp=Malloc<T>(total);
 	std::memset(tmp,0,total);
-#endif
 	return tmp;
+#endif
 }
 
 inline void	Free(void *ptr)
 {
 #ifdef WIN32
-	free(ptr);
+	std::free(ptr);
 #else
 	::operator delete(ptr);
 #endif

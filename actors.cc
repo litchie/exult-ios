@@ -647,7 +647,7 @@ void Actor::start
 		if (delay)
 			gwin->get_tqueue()->remove(this);
 
-		uint32 curtime = SDL_GetTicks();
+		uint32 curtime = Game::get_ticks();
 		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
 		}
 	}
@@ -776,7 +776,7 @@ void Actor::follow
 			return;
 			}
 		}
-	uint32 curtime = SDL_GetTicks();
+	uint32 curtime = Game::get_ticks();
 	if ((dist2lead >= 5 ||
 	     (dist2lead >= 4 && !leader->is_moving()) || leaderpath) && 
 	      get_party_id() >= 0 && curtime >= next_path_time && 
@@ -796,7 +796,7 @@ void Actor::follow
 		if (goal.tx == -1)	// No free spot?  Give up.
 			{
 			cout << "... but is blocked." << endl;
-			next_path_time = SDL_GetTicks() + 1000;
+			next_path_time = Game::get_ticks() + 1000;
 			return;
 			}
 		if (walk_path_to_tile(goal, speed - speed/4, 0))
@@ -805,7 +805,7 @@ void Actor::follow
 			{
 			cout << "... but failed to find path." << endl;
 					// On screen (roughly)?
-			bool ok;
+			int ok;
 			if (wrect.has_point(pos.tx - pos.tz/2,
 							pos.ty - pos.tz/2))
 					// Try walking off-screen.
@@ -814,7 +814,7 @@ void Actor::follow
 			else		// Off screen already?
 				ok = approach_another(leader);
 			if (!ok)	// Failed? Don't try again for a bit.
-				next_path_time = SDL_GetTicks() + 1000;
+				next_path_time = Game::get_ticks() + 1000;
 			return;
 			}
 		}
@@ -1843,7 +1843,7 @@ bool Actor::reduce_health
 		hit = true;		// Flash red outline.
 		add_dirty(gwin);
 		Clear_hit *c = new Clear_hit();
-		gwin->get_tqueue()->add(SDL_GetTicks() + 200, c, (long) this);
+		gwin->get_tqueue()->add(Game::get_ticks() + 200, c, (long) this);
 		}
 	Game_object_vector vec;		// Create blood.
 	const int blood = 912;
@@ -3375,7 +3375,7 @@ void Npc_actor::paint
 		gwin->get_tqueue()->remove(this);
 					// Force schedule->now_what() in .5secs
 					// DO NOT call now_what here!!!
-		uint32 curtime = SDL_GetTicks();
+		uint32 curtime = Game::get_ticks();
 		gwin->get_tqueue()->add(curtime + 500, this, (long) gwin);
 		}
 	if (!nearby)			// Make sure we're in 'nearby' list.
@@ -3867,9 +3867,10 @@ void Monster_actor::paint
 	Game_window *gwin
 	)
 	{
-	Npc_actor::paint(gwin);		// Draw on screen.
+	// Animate first
 	if (animator)			// Be sure animation is on.
 		animator->want_animation();
+	Npc_actor::paint(gwin);		// Draw on screen.
 	}
 
 /*

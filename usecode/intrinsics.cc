@@ -1417,7 +1417,7 @@ USECODE_INTRINSIC(get_barge)
 USECODE_INTRINSIC(earthquake)
 {
 	int len = parms[0].get_int_value();
-	gwin->get_tqueue()->add(SDL_GetTicks() + 10,
+	gwin->get_tqueue()->add(Game::get_ticks() + 10,
 		new Earthquake(len), (long) this);
 	return(no_ret);
 }

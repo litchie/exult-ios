@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "animate.h"
 #include "gamewin.h"
-#include "SDL_timer.h"
+#include "game.h"
 #include "Audio.h"
 #include "actors.h"			/* Only need this for Object_sfx. */
 #include "dir.h"
@@ -234,9 +234,18 @@ void Animator::start_animation
 	Game_window *gwin = Game_window::get_game_window();
 					// Clean out old entry if there.
 	gwin->get_tqueue()->remove(this);
-	gwin->get_tqueue()->add(SDL_GetTicks() + 100, this, (long) gwin);
+	gwin->get_tqueue()->add(Game::get_ticks() + 20, this, (long) gwin);
 	animating = 1;
 	}
+
+/*
+ *	Retrieve current frame
+ */
+
+int Animator::get_framenum()
+{
+	return obj->get_framenum();
+}
 
 /*
  *	Create a frame animator.
@@ -246,12 +255,177 @@ Frame_animator::Frame_animator
 	(
 	Game_object *o,
 	bool ir
-	) : Animator(o, Object_sfx::get_shape_sfx(o->get_shapenum())), ireg(ir)
-	{
+	) : Animator(o, Object_sfx::get_shape_sfx(o->get_shapenum())),
+		ireg(ir)
+{
+	Initialize();
+}
+
+/*
+ *	Initialize a frame animator.
+ */
+void Frame_animator::Initialize()
+{
 	Game_window *gwin = Game_window::get_game_window();
-	int shapenum = obj->get_shapenum();
-	frames = gwin->get_shape_num_frames(shapenum);
+
+	first_frame = 0;
+	created = 0;
+	delay = 100;
+	type = FA_LOOPING;
+
+	last_shape = obj->get_shapenum();
+	last_frame = obj->get_framenum();
+	frames = gwin->get_shape_num_frames(last_shape);
+
+	// Serpent Isle
+	if (Game::get_game_type() == SERPENT_ISLE)
+	{
+		switch (last_shape)
+		{
+		
+		case 284:		// Sundial is a special case.
+			type = FA_SUNDIAL;
+			break;
+		
+		case 768:		// Energy field.  Stop at top.
+			type = FA_ENERGY_FIELD;
+			created = Game::get_ticks();
+			first_frame = last_frame;
+			break;
+		
+		case 153:		// Fountain
+		case 184:		// Lava
+		case 222:		// Pennant
+		case 289:		// Fire 
+		case 305:		// Serpent Statue
+		case 326:		// Fountain
+		case 456:		// Flux Analyzer
+		case 614:		// Magic music box
+		case 655:		// Planets 
+		case 695:		// Grandfather clock
+		case 726:		// Pulsating Object
+		case 743:		// Statue??
+		case 794:		// Severed limb
+		case 992:		// Burning urn
+			first_frame = 6*(last_frame/6);
+			frames = 6;
+			created = last_frame%6;
+			break;
+
+		case 779:		// Magic Wave.
+			first_frame = 6*(last_frame/6);
+			frames = 6;
+			if (last_frame < 6) created = 1;
+			else created = 0;
+			break;
+
+		case 335:		// Bubbles
+			created = last_frame;
+			if (last_frame < 6)
+			{
+				first_frame = 0;
+				frames = 6;
+			}
+			else
+			{
+				first_frame = 6;
+				frames = last_frame-6;
+			}
+			break;
+
+		case 322:		// Basin
+		case 714:		// Basin
+			created = last_frame;
+			if (last_frame != frames-1)
+			{
+				first_frame = 0;
+				frames = frames - 1;
+			}
+			else
+			{
+				first_frame = frames -1;
+				frames = 1;
+			}
+			break;
+
+
+		default:
+			break;
+		}
 	}
+	// Black Gate
+	else
+	{
+		switch (last_shape)
+		{
+		
+		case 284:		// Sundial is a special case.
+			type = FA_SUNDIAL;
+			break;
+		
+		case 768:		// Energy field.  Stop at top.
+			type = FA_ENERGY_FIELD;
+			created = Game::get_ticks();
+			first_frame = last_frame;
+			break;
+		
+					// First frame isn't animated
+		case 862:		// Shafts
+		case 880:
+			if (last_frame == 0)
+			{
+				first_frame = 0;
+				frames = 1;
+			}
+			else
+			{
+				frames = frames -1;
+				first_frame = 1;
+			}
+			break;
+
+		default:
+			break;
+		}
+	}
+}
+
+/*
+ *	Retrieve current frame
+ */
+
+int Frame_animator::get_framenum()
+{
+	unsigned int ticks = Game::get_ticks();
+	int framenum = 0;
+
+	Game_window *gwin = Game_window::get_game_window();
+
+	bool dirty_first = gwin->add_dirty(obj);
+
+	if (last_shape != obj->get_shapenum() || last_frame != obj->get_framenum())
+		Initialize();
+
+	switch (type)
+	{
+	case FA_SUNDIAL:
+		framenum = gwin->get_hour() % frames;  
+		break;
+
+	case FA_ENERGY_FIELD:
+		framenum = (ticks - created) / delay + first_frame;
+		if (framenum >= frames) framenum = frames-1;
+		break;
+
+	case FA_LOOPING:
+		framenum = (ticks / delay) + created;
+		framenum %= frames;
+		framenum += first_frame;
+		break;
+	}
+
+	return framenum;
+}
 
 /*
  *	Animation.
@@ -263,52 +437,32 @@ void Frame_animator::handle_event
 	long udata			// Game window.
 	)
 	{
-	int delay = 100;		// Delay between frames.
+	unsigned int ticks = Game::get_ticks();
+
 	Game_window *gwin = (Game_window *) udata;
-	if (!gwin->add_dirty(obj))
-		{			// No longer on screen.
+
+	bool dirty_first = gwin->add_dirty(obj);
+
+	if (last_shape != obj->get_shapenum() || last_frame != obj->get_framenum())
+		Initialize();
+
+	int framenum = get_framenum();
+
+	obj->set_frame(last_frame = framenum);
+
+	if (!dirty_first && !gwin->add_dirty(obj))
+	{				// No longer on screen.
 		animating = 0;
 					// Stop playing sound.
 		Object_sfx::play(obj, sfxnum, true);
 		return;
-		}
-	int framenum = obj->get_framenum();
-	if (ireg)			// For IREG, increment frames.
-		switch (obj->get_shapenum())
-			{
-		case 284:		// Sundial is a special case.
-			framenum = gwin->get_hour(); 
-			break;
-		case 768:		// Energy field.  Stop at top.
-			if (framenum < frames - 1)
-				framenum++;
-			break;
-		case 222:		// Pennant (SI).
-		case 289:		// Fire (SI).
-		case 326:		// Fountain (SI).
-		case 614:		// Magic music box (SI).
-		case 655:		// Planets (SI). (Groups of 6).
-		case 695:		// Grandfather clock (SI).
-		case 794:		// Severed limb (SI).
-		case 992:		// Burning urn (SI).
-					// 0-5 face one way, 6-11 the other.
-			framenum = (framenum + 1)%6 + 6*(framenum/6);
-			break;
-		default:
-			framenum++;
-			break;
-			}
-	else				// Want fixed shapes synchronized.
-					// Testing -WJP
-		framenum = (curtime / 100);
-	framenum %= frames;
-	obj->set_frame(framenum);
-	gwin->add_dirty(obj);
+	}
+
 	if (!framenum && sfxnum >= 0)	// Sound effect?
 		Object_sfx::play(obj, sfxnum);
 					// Add back to queue for next time.
 	if (animating)
-		gwin->get_tqueue()->add(curtime + delay, this, udata);
+		gwin->get_tqueue()->add(curtime + delay/5, this, udata);
 	}
 
 /*
@@ -419,8 +573,8 @@ void Animated_object::paint
 	Game_window *gwin
 	)
 	{
-	Game_object::paint(gwin);
 	animator->want_animation();	// Be sure animation is on.
+	Game_object::paint(gwin);
 	}
 
 /*
@@ -458,6 +612,81 @@ void Animated_ireg_object::paint
 	Game_window *gwin
 	)
 	{
-	Game_object::paint(gwin);
 	animator->want_animation();	// Be sure animation is on.
+	Game_object::paint(gwin);
 	}
+
+/*
+ *	Write out.
+ */
+
+void Animated_ireg_object::write_ireg(ostream& out)
+{
+	int oldframe = get_framenum();
+	set_frame(animator->get_framenum());
+	Ireg_game_object::write_ireg(out);
+	set_frame(oldframe);
+}
+
+/*
+ *	Create at given position.
+ */
+
+Animated_ifix_object::Animated_ifix_object
+	(
+	int shapenum, 
+	int framenum, 
+	unsigned int tilex, unsigned int tiley, 
+	unsigned int lft
+	) : Ifix_game_object(shapenum, framenum, tilex, tiley, lft)
+	{
+	animator = Animator::create(this, 0);
+	}
+
+/*
+ *	Create from IFIX
+ */
+
+Animated_ifix_object::Animated_ifix_object(unsigned char *ifix) : Ifix_game_object(ifix)
+	{
+	animator = Animator::create(this, 0);
+	}
+
+/*
+ *	When we delete, better remove from queue.
+ */
+
+Animated_ifix_object::~Animated_ifix_object
+	(
+	)
+	{
+	delete animator;
+	}
+
+/*
+ *	Render.
+ */
+
+void Animated_ifix_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	animator->want_animation();	// Be sure animation is on.
+	Game_object::paint(gwin);
+	}
+
+/*
+ *	Write out an IFIX object.
+ */
+
+void Animated_ifix_object::write_ifix(ostream& ifix)
+
+{
+	int oldframe = get_framenum();
+	set_frame(animator->get_framenum());
+	Ifix_game_object::write_ifix(ifix);
+	set_frame(oldframe);
+}
+
+
