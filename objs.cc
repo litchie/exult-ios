@@ -1213,7 +1213,8 @@ int Container_game_object::add_quantity
 					// Get volume of 1 object.
 	int objvol = Game_window::get_game_window()->get_info(
 			shapenum).get_volume();
-	int roomfor = (get_volume() - volume_used)/objvol;
+	int ourvol = get_volume();	// 0 means anything (NPC's?).
+	int roomfor = ourvol ? (ourvol - volume_used)/objvol : 20000;
 	int todo = delta < roomfor ? delta : roomfor;
 	Game_object *obj = last_object;
 	if (last_object)
@@ -1265,7 +1266,8 @@ int Container_game_object::create_quantity
 					// Get volume of 1 object.
 	int objvol = Game_window::get_game_window()->get_info(
 			shapenum).get_volume();
-	int roomfor = (get_volume() - volume_used)/objvol;
+	int ourvol = get_volume();	// 0 means anything (NPC's?).
+	int roomfor = ourvol ? (ourvol - volume_used)/objvol : 20000;
 	int todo = delta < roomfor ? delta : roomfor;
 	while (todo)			// Create them here first.
 		{
