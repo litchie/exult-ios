@@ -579,14 +579,13 @@ fi
 # GTK stuff
 AC_MSG_CHECKING(for GTK development files)
 if test "x`gtk-config --version`" = "x"; then
-
+	have_gtk=no
 	AC_MSG_RESULT(no gtk)
-	AM_CONDITIONAL(HAVE_GTK,false)
-	else
+else
+	have_gtk=yes
 	AC_MSG_RESULT(yes..)
 	AC_PATH_PROG(GTKCONFIG, gtk-config)
 	AC_DEFINE(HAVE_GTK)
-	AM_CONDITIONAL(HAVE_GTK,true)
 	GTK_INCLUDES=`gtk-config --cflags`
 	GTK_LIBS=`gtk-config --libs`
 	AC_SUBST(GTK_INCLUDES)
@@ -596,14 +595,12 @@ fi
 
 AC_PATH_PROG(GLADECONFIG, libglade-config)
 if test -n "$GLADECONFIG"; then
-	AM_CONDITIONAL(HAVE_LIBGLADE, true)
 	have_libglade=yes
 	LIBGLADE_LIBS=`libglade-config --libs`
 	AC_SUBST(LIBGLADE_LIBS)
 	LIBGLADE_INCLUDES=`libglade-config --cflags`
 	AC_SUBST(LIBGLADE_INCLUDES)
 else
-	AM_CONDITIONAL(HAVE_LIBGLADE, false)
 	have_libglade=no
 fi
 
@@ -614,10 +611,17 @@ if test x$enable_exult_studio = xyes; then
 	AC_MSG_RESULT(yes)
 	if test x$have_libglade = xno; then
 		echo "Umm, but we don't have any libglade stuff."
-		echo "Try again, either with libglade, or with --enable-exult-studio=no"
+		echo "Try again, either with libglade, or with --disable-exult-studio"
 		exit 1
 	fi
+	if test x$have_gtk = xno; then
+		echo "GTK not found."
+		echo "Try again, either with gtk, or with --disable-exult-studio"
+		exit 1
+	fi 
+	AM_CONDITIONAL(BUILD_STUDIO, true)
 else
+	AM_CONDITIONAL(BUILD_STUDIO, false)
 	AC_MSG_RESULT(no)
 fi
 
@@ -737,3 +741,13 @@ echo Build ExultStudio.......... : $enable_exult_studio
 
 echo
 echo "Now type 'make' to build Exult"
+
+
+
+
+
+
+
+
+
+
