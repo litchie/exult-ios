@@ -1429,6 +1429,12 @@ USECODE_INTRINSIC(pop_answers)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(clear_answers)
+{
+	answers.clear();
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(select_from_menu)
 {
 	user_choice = 0;
@@ -2260,7 +2266,7 @@ struct
 	USECODE_INTRINSIC_PTR(remove_answer), // 6
 	USECODE_INTRINSIC_PTR(push_answers), // 7
 	USECODE_INTRINSIC_PTR(pop_answers), // 8
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 9 +++++Something to do with convs.
+	USECODE_INTRINSIC_PTR(clear_answers), // 9 +++++Testing. WJP
 	USECODE_INTRINSIC_PTR(select_from_menu), // 0x0a
 	USECODE_INTRINSIC_PTR(select_from_menu2), // 0x0b
 	USECODE_INTRINSIC_PTR(input_numeric_value), // 0xc
