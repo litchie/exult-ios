@@ -64,7 +64,8 @@ void GL_texshape::create
 	glGenTextures(1, &tex);		// Generate (empty) texture.
 	texture = tex;
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texsize, texsize, 0, GL_RGBA,
+//	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texsize, texsize, 0, GL_RGBA,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB5_A1,texsize, texsize, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, pixels);
 	delete pixels;
 					// Linear filtering.
