@@ -14,6 +14,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <iostream>
 #include "files/U7file.h" 
 #include "gamewin.h"
 #include "game.h"
@@ -69,39 +70,44 @@ void ShapeBrowser::browse_shapes()
 		if(!shapes)
 			shapes = new Vga_file(fname);
 		bool looping = true;
+		bool redraw = true;
 		SDL_Event event;
 		int active;
 		
 		do {
-			Game::get_game()->clear_screen();
-			sprintf(buf,"palettes/%d",current_palette);
-			pal_tuple = Game::get_game()->get_resource(buf);
-			pal.load(pal_tuple.str,pal_tuple.num);
-			sprintf(buf,"VGA File: '%s'", fname);
-			gwin->paint_text(MAINSHP_FONT1, buf, 0, 170);
-			num_shapes = shapes->get_num_shapes();
-			sprintf(buf,"Shape: %3d/%3d", current_shape, num_shapes-1);
-			gwin->paint_text(MAINSHP_FONT1, buf, 0, 180);
+ 		        if (redraw) {
+			        Game::get_game()->clear_screen();
+			        sprintf(buf,"palettes/%d",current_palette);
+				pal_tuple = Game::get_game()->get_resource(buf);
+				pal.load(pal_tuple.str,pal_tuple.num);
+				sprintf(buf,"VGA File: '%s'", fname);
+				gwin->paint_text(MAINSHP_FONT1, buf, 0, 170);
+				num_shapes = shapes->get_num_shapes();
+				sprintf(buf,"Shape: %3d/%3d", current_shape, num_shapes-1);
+				gwin->paint_text(MAINSHP_FONT1, buf, 0, 180);
 			
-			num_frames = shapes->get_num_frames(current_shape);
-			sprintf(buf,"Frame: %3d/%3d", current_frame, num_frames-1);
-			gwin->paint_text(MAINSHP_FONT1, buf, 160, 180);
-			sprintf(buf,"Palette: %s, %d", pal_tuple.str, pal_tuple.num);
-			gwin->paint_text(MAINSHP_FONT1, buf, 0, 190);
+			        num_frames = shapes->get_num_frames(current_shape);
+				sprintf(buf,"Frame: %3d/%3d", current_frame, num_frames-1);
+				gwin->paint_text(MAINSHP_FONT1, buf, 160, 180);
+				sprintf(buf,"Palette: %s, %d", pal_tuple.str, pal_tuple.num);
+				gwin->paint_text(MAINSHP_FONT1, buf, 0, 190);
 			
-			if (num_frames) {
-				Shape_frame *frame = shapes->get_shape(
-					current_shape, current_frame);
-				if (frame)
-					gwin->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
-				else
-					gwin->paint_text(MAINSHP_FONT1, "No Shape", centerx-20, centery-5);
-			} else
-				gwin->paint_text(MAINSHP_FONT1, "No Shape", centerx-20, centery-5);
-	
-			pal.apply();
-			SDL_WaitEvent(&event);
+			        if (num_frames) {
+				        Shape_frame *frame = shapes->get_shape(
+					        current_shape, current_frame);
+ 				        if (frame)
+					        gwin->paint_shape(gwin->get_width()/2, gwin->get_height()/2, frame, 1);
+				        else
+					        gwin->paint_text(MAINSHP_FONT1, "No Shape", centerx-20, centery-5);
+ 			        } else
+				        gwin->paint_text(MAINSHP_FONT1, "No Shape", centerx-20, centery-5);
+ 	
+			        pal.apply();
+				redraw = false;
+			}
+  			SDL_WaitEvent(&event);
 			if(event.type==SDL_KEYDOWN) {
+               			redraw = true;
 				int shift = event.key.keysym.mod & KMOD_SHIFT;
 				int ctrl = event.key.keysym.mod & KMOD_CTRL;
 				switch(event.key.keysym.sym) {
