@@ -12,6 +12,7 @@
 #define MSVC_KLUDGES_H
 
 #define USE_EXULTSTUDIO
+#define HAVE_SSTREAM 1
 
 // Fisrtly some things that need to be defined
 #define VERSION "0.97cvs"
@@ -115,6 +116,7 @@ using std::tm;
 using std::_dev_t;
 using std::_ino_t;
 using std::_off_t;
+using std::isspace;
 
 // Nope, stat isn't defined
 #ifdef _STAT_DEFINED

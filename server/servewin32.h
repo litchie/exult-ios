@@ -37,7 +37,7 @@ namespace Exult_server
 	// Server Functions
 	bool create_pipe (const char *static_path);	
 	void setup_connect();
-	bool try_connect_to_client();
+	bool try_connect_to_client(const char *static_path);
 	void disconnect_from_client();
 	void close_pipe();
 
@@ -47,6 +47,9 @@ namespace Exult_server
 
 	// General Functions
 	int peek_pipe();
+	bool is_broken();
+	bool notify_connection_lost();
+	bool is_win9x();
 };
 
 #endif

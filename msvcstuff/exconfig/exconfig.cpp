@@ -247,7 +247,8 @@ EXCONFIG_API LONG APIENTRY GetPaths(HWND hwnd, LPLONG lpIValue, LPSTR lpszValue)
 	try
 	{
 		//chdir (lpszValue);
-		Configuration config(p);
+		Configuration config;
+		config.read_config_file(p);
 
 		std::string data_directory;
 
@@ -312,7 +313,8 @@ EXCONFIG_API LONG APIENTRY WriteConfig(HWND hwnd, LPLONG lpIValue, LPSTR lpszVal
 	try
 	{
 		//chdir (lpszValue);
-		Configuration config(p);
+		Configuration config;
+		config.read_config_file(p);
 
 		for (j = 0, i = bgstart; i < len && lpszValue[i] != '\n'; j++, i++) p[j] = lpszValue[i];
 		p[j] = 0;

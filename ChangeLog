@@ -1,3 +1,11 @@
+2002-01-24  Ryan Nunn  <triforce@merlin.net.au>
+	* msvcstuff/msvc_kludges.h : HAVE_SSTREAM
+	* msvcstuff/exconfig/exconfig.cpp : Updated for new config constructors
+	* mapedit/exult_studio.cc : Console redirection for Win32
+	* server/server.cc, server/servewin32.* : Communications for Win9x/ME.
+	  May have 'issues' if multiple copies of Exult and Exult Studio are
+	  running. Doesn't properly detect if the connection is lost.
+
 2002-01-24  Darke  <darkepaw@users.sourceforge.net>
 	* conf/Configuration.cc: istream::rdbuf() under win32 seems to be
 	slightly broken. It _should_ work now. Code is a mess, but I want to
