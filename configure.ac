@@ -681,7 +681,7 @@ AC_MSG_CHECKING(whether to build the GIMP plugin)
 if test x$enable_gimp_plugin = xyes; then
 	AC_MSG_RESULT(yes)
 	AC_MSG_CHECKING(for gimptool)
-	AC_CHECK_PROGS(GIMPTOOL, gimptool-1.2 gimptool-2.0 gimptool-1.3 gimptool-1.2 gimptool)
+	AC_CHECK_PROGS(GIMPTOOL, gimptool-2.0 gimptool-1.3 gimptool-1.2 gimptool)
 	if test -z "$GIMPTOOL"; then
 		AC_MSG_RESULT(no, not building GIMP plugin)
 	else
