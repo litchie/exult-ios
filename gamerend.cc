@@ -297,10 +297,17 @@ void Game_window::paint
 	int light_sources = render->paint_map(x, y, w, h);
 
 	effects->paint();		// Draw sprites.
-					// Draw gumps unless in dont_move mode.
-	if (!main_actor_dont_move() || gump_man->modal_gump_mode())
+	if (gump_man->modal_gump_mode())// Modal gumps?
+		{			// Draw text, then gumps.
+		effects->paint_text();
 		gump_man->paint();
-	effects->paint_text();		// Draw text.
+		}
+	else
+		{			// Draw gumps unless in dont_move mode.
+		if (!main_actor_dont_move())
+			gump_man->paint();
+		effects->paint_text();	// Draw text over gumps.
+		}
 	if (dragging)
 		dragging->paint();	// Paint what user is dragging.
 	win->clear_clip();
