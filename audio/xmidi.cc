@@ -175,7 +175,7 @@ int XMIDI::retrieve (uint32 track, DataSource *dest)
 			DeleteEventList (events[i]);
 			
 		delete [] events;
-		events = new (midi_event*)[1];
+		events = new midi_event *[1];
 		events[0] = list;
 
 		info.tracks = 1;
@@ -499,7 +499,7 @@ void XMIDI::DuplicateAndMerge (int num)
 		end += num;
 	}
 	
-	track = new (midi_event*)[info.tracks];
+	track = new midi_event *[info.tracks];
 	
 	for (i = 0; i < info.tracks; i++) track[i] = events[i];
 	
@@ -1086,7 +1086,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 
 		// Ok it's an XMID, so pass it to the ExtractCode
 
-		events = new (midi_event*)[info.tracks];
+		events = new midi_event *[info.tracks];
 		timing = new short[info.tracks];
 		fixed = new bool[info.tracks];
 		info.type = 0;
@@ -1132,7 +1132,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 		
 		info.tracks = source->read2high();
 		
-		events = new (midi_event*)[info.tracks];
+		events = new midi_event *[info.tracks];
 		timing = new short[info.tracks];
 		fixed = new bool[info.tracks];
 		timing[0] = source->read2high();
