@@ -369,7 +369,8 @@ void Game_window::clear_world
 	}
 
 /*
- *	Center view around a given tile.
+ *	Center view around a given tile.  This is called during a 'restore'
+ *	to init. stuff as well.
  */
 
 void Game_window::center_view
@@ -390,7 +391,15 @@ void Game_window::center_view
 	if (scrollty + th > num_chunks*tiles_per_chunk)
 		scrollty = num_chunks*tiles_per_chunk - th - 1;
 	set_scroll_bounds();		// Set scroll-control.
+	Barge_object *old_active_barge = moving_barge;
 	read_map_data();		// This pulls in objects.
+					// Found active barge?
+	if (!old_active_barge && moving_barge)
+		{			// Do it right.
+		Barge_object *b = moving_barge;
+		moving_barge = 0;
+		set_moving_barge(b);
+		}
 					// Set where to skip rendering.
 	int cx = main_actor->get_cx(), cy = main_actor->get_cy();	
 	Chunk_object_list *nlist = get_objects(cx, cy);
@@ -792,10 +801,15 @@ void Game_window::read_ireg_objects
 			    ((entry[11]&1) << Game_object::invisible) |
 			    (((entry[11]>>3)&1) << Game_object::okay_to_take);
 			if (shapeid == 961)
-				obj = new Barge_object(
+				{
+				Barge_object *b = new Barge_object(
 				    entry[2], entry[3], tilex, tiley, lift,
 					entry[4], entry[5],
 					(quality>>1)&3);
+				obj = b;
+				if (!moving_barge && (quality&(1<<3)))
+					moving_barge = b;
+				}
 			else if (quality == 1 && entry[8] >= 0x80)
 				obj = new Dead_body(
 				    entry[2], entry[3], tilex, tiley, lift,
@@ -989,8 +1003,11 @@ int Game_window::read
 	clear_world();			// Wipe clean.
 	if (!read_gwin())		// Read our data.
 		return (0);
+					// DON'T do anything that might paint()
+					//   before calling read_npcs!!
+	read_npcs();			// Read in NPC's, monsters, and get
+					//   active gump.
 	end_gump_mode();		// Kill gumps, and paint new data.
-	read_npcs();			// Read in NPC's, monsters.
 	
 	if (!usecode->read())		// Usecode.dat (party, global flags).
 	{
@@ -1050,7 +1067,8 @@ int Game_window::read_gwin
 	clock.set_day(Read2(gin));
 	clock.set_hour(Read2(gin));
 	clock.set_minute(Read2(gin));
-	return (gin.good());
+	int okay = gin.good();		// Next ones were added recently.
+	return (okay);
 	}
 
 /*
@@ -1208,7 +1226,6 @@ int Game_window::paint_chunk_objects
 	int save_skip = skip_lift;
 	if (skip_above_actor < skip_lift)
 		skip_lift = skip_above_actor;
-					// +++++Clear flag.
 	Object_iterator next(olist);
 	while ((obj = next.get_next()) != 0)
 		if (obj->render_seq != render_seq)
@@ -1314,7 +1331,6 @@ void Game_window::brighten
 		new_brightness = 20;
 	user_brightness = new_brightness;
 	set_palette(palette, new_brightness);
-//	paint();	++++Not needed since we're always 8-bit now.
 	}
 
 /*

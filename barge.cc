@@ -685,8 +685,11 @@ void Barge_object::write_ireg
 	*ptr++ = xtiles;
 	*ptr++ = ytiles;
 	*ptr++ = 0;			// Unknown.
-					// Flags (quality):
-	*ptr++ = (dir<<1);
+					// Flags (quality).  Taking B3 to in-
+					//   dicate barge mode.
+	*ptr++ = (dir<<1) | 
+		((Game_window::get_game_window()->get_moving_barge() == this)
+								<<3);
 	*ptr++ = 0;			// (Quantity).
 	*ptr++ = (get_lift()&15)<<4;
 	*ptr++ = 0;			// Data2.
