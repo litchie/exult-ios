@@ -270,6 +270,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				monster->set_alignment(data1&3);
 				monster->set_creator(this);
 				gwin->add_dirty(monster);
+				gwin->add_nearby_npc(monster);
 				}
 			break;
 			}

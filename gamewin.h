@@ -515,7 +515,9 @@ public:
 	void end_gump_mode();		// Remove gumps from screen.
 					// Remove a gump from screen.
 	void remove_gump(Gump_object *gump);
-					// Queue up npcs in range of chunks.
+					// Add npc to 'nearby' list.
+	void add_nearby_npc(Npc_actor *npc);
+					// Track npcs in range of chunks.
 	void add_nearby_npcs(int from_cx, int from_cy,
 						int stop_cx, int stop_cy);
 					// Get all nearby NPC's.

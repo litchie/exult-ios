@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actions.h"
 #include "items.h"
 
+#if 0
 /*
  *	Find monsters in given chunk.
  */
@@ -47,6 +48,7 @@ void Combat_schedule::find_monsters
 		if (npc->distance(each) < maxdist && each->is_monster())
 			opponents.append(each);
 	}
+#endif
 
 /*
  *	Find nearby opponents in the 9 surrounding chunks.
@@ -72,6 +74,14 @@ void Combat_schedule::find_opponents
 			}
 		return;
 		}
+	Slist nearby;			// Get all nearby NPC's.
+	gwin->get_nearby_npcs(nearby);
+	Actor *actor;
+	Slist_iterator next(nearby);
+	while ((actor = (Actor *) next()) != 0)
+		if (actor->is_monster() && !actor->is_dead_npc())
+			opponents.append(actor);
+#if 0
 	//+++++Switch to using gwin->get_nearby_npcs(opponents);
 					// Get top-left chunk.
 	int startcx = npc->get_cx() - 1, startcy = npc->get_cy() - 1;
@@ -88,6 +98,7 @@ void Combat_schedule::find_opponents
 	for (int cy = startcy; cy <= endcy; cy++)
 		for (int cx = startcx; cx <= endcx; cx++)
 			find_monsters(gwin->get_objects(cx, cy));
+#endif
 	}		
 
 /*
@@ -220,7 +231,8 @@ void Combat_schedule::approach_foe
 	failures = 0;			// Clear count.  We succeeded.
 	cout << npc->get_name() << " is pursuing " << opponent->get_name() <<
 		endl;
-	if (!yelled++)			// First time (or 256th)?
+	if (!yelled++ &&		// First time (or 256th)?
+	    !npc->is_monster())
 		npc->say(first_to_battle, last_to_battle);
 					// Walk there, but don't retry if
 					//   blocked.
@@ -246,6 +258,24 @@ void Combat_schedule::start_strike
 	}
 
 /*
+ *	See if we need a new opponent.
+ */
+
+inline Need_new_opponent
+	(
+	Game_window *gwin,
+	Game_object *opponent
+	)
+	{
+					// Nonexistent or dead?
+	if (!opponent || opponent->is_dead_npc())
+		return 1;
+					// See if off screen.
+	Tile_coord t = opponent->get_abs_tile_coord();
+	return !gwin->get_win_tile_rect().enlarge(2).has_point(t.tx, t.ty);
+	}
+
+/*
  *	Previous action is finished.
  */
 
@@ -257,7 +287,7 @@ void Combat_schedule::now_what
 	if (npc->get_attack_mode() == Actor::manual)
 		return;
 					// Check if opponent still breathes.
-	if (opponent && opponent->is_dead_npc())
+	if (Need_new_opponent(gwin, opponent))
 		{
 		opponent = 0;
 		state = approach;

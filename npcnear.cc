@@ -45,7 +45,7 @@ void Npc_proximity_handler::handle_event
 	Npc_actor *npc = (Npc_actor *) udata;
 	int extra_delay = 0;		// For next time.
 					// See if still on visible screen.
-	Rectangle tiles = gwin->get_win_tile_rect();
+	Rectangle tiles = gwin->get_win_tile_rect().enlarge(1);
 	int tx, ty, tz;
 	npc->get_abs_tile(tx, ty, tz);
 	if (!tiles.has_point(tx, ty) ||	// No longer visible?

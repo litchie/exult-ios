@@ -249,10 +249,11 @@ void Game_window::toggle_combat
 		{
 		int party_member=usecode->get_party_member(i);
 		Actor *person=get_npc(party_member);
-		if (person)
+		if (person && person->get_schedule_type() != newsched)
 			person->set_schedule_type(newsched);
 		}
-	main_actor->set_schedule_type(newsched);	//+++++Testing.
+	if (main_actor->get_schedule_type() != newsched)
+		main_actor->set_schedule_type(newsched);
 	}
 
 /*
@@ -1863,6 +1864,9 @@ void Game_window::double_clicked
 		if (combat && !gump && obj != main_actor &&
 						obj->get_party_id() < 0)
 			{		// In combat mode.
+					// Want everyone to be in combat.
+			combat = 0;
+			toggle_combat();
 			main_actor->set_opponent(obj);
 			return;
 			}
@@ -2260,6 +2264,22 @@ void Game_window::remove_gump
 	delete gump;
 	if (!open_gumps)		// Last one?  Out of gump mode.
 		mode = normal;
+	}
+
+/*
+ *	Add an NPC to the 'nearby' list.
+ */
+
+void Game_window::add_nearby_npc
+	(
+	Npc_actor *npc
+	)
+	{
+	if (!npc->is_nearby())
+		{
+		npc->set_nearby();
+		npc_prox->add(SDL_GetTicks(), npc);
+		}
 	}
 
 /*
