@@ -26,6 +26,7 @@
 #include "mouse.h"
 #include "font.h"
 
+extern void make_screenshot(bool silent=false);
  
 SoundTester::SoundTester() : song(0), sfx(0), voice(0), active(0), repeat(true)
 	{
@@ -174,11 +175,14 @@ void SoundTester::test_sound()
 				}
 				break;
 				
-			case 'r':
+			case SDLK_r:
 				repeat = repeat?false:true;
 				break;
-			case 's':
-				audio->stop_music();
+			case SDLK_s:
+				if ((event.key.keysym.mod & KMOD_ALT) && (event.key.keysym.mod & KMOD_CTRL)) 
+					make_screenshot(true);
+				else
+					audio->stop_music();
 				break;
 			case SDLK_UP:
 				active = (active + 2) % 3;
