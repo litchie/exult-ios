@@ -61,7 +61,7 @@ public:
    virtual	char *	retrieve(uint32 objnum,std::size_t &len); // To a memory block
 	virtual const char *get_archive_type() { return "FLEX"; };
 					// Write header for a Flex file.
-	static void write_header(ostream& out, const char *title, int count);
+	static void write_header(std::ostream& out, const char *title, int count);
 private:
 	Flex();	// No default constructor
 	void IndexFlexFile(void);

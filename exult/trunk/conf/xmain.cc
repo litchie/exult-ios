@@ -33,8 +33,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string>
 
 Configuration	config;
+using std::cout;
+using std::cerr;
+using std::endl;
 
-void	dump_stringvec(vector<string> &vs,int expect=-2)
+void	dump_stringvec(std::vector<std::string> &vs,int expect=-2)
 {
 	size_t	n;
 	cout << "vs is " << vs.size() << " entries" << endl;
@@ -53,17 +56,17 @@ void	test1(void)
 	config.value("config/audio/midi/device",n,-1);
 	cout << "Returned from reference. Got '" << n << "'" << endl;
 	assert(n==5);
-	string	r;
+	std::string	r;
 	config.value("config/audio/midi/enabled",r,"--nil--");
 	cout << "Returned from reference. Got '" << r << "'" << endl;
 	assert(r=="yes");
 
 	config.set("config/something/something/else","wibble",false);
 
-	string	out=config.dump();
+	std::string	out=config.dump();
 	cout << out << endl;
 
-	vector<string> vs;
+	std::vector<std::string> vs;
 
 	vs=config.listkeys("config");
 	dump_stringvec(vs,4);

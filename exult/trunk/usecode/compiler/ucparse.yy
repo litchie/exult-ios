@@ -38,7 +38,7 @@ extern int yylex();
 
 #define YYERROR_VERBOSE 1
 
-vector<Uc_function *> functions;	// THIS is what we produce.
+std::vector<Uc_function *> functions;	// THIS is what we produce.
 
 static Uc_function *function = 0;	// Current function being parsed.
 
@@ -51,7 +51,7 @@ static Uc_function *function = 0;	// Current function being parsed.
 	class Uc_call_expression *funcall;
 	class Uc_function_symbol *funsym;
 	class Uc_statement *stmt;
-	class vector<char *> *strvec;
+	class std::vector<char *> *strvec;
 	class Uc_block_statement *block;
 	class Uc_arrayloop_statement *arrayloop;
 	class Uc_array_expression *exprlist;
@@ -417,7 +417,7 @@ function_call:
 opt_identifier_list:
 	identifier_list
 	|
-		{ $$ = new vector<char *>; }
+		{ $$ = new std::vector<char *>; }
 	;
 
 identifier_list:
@@ -425,7 +425,7 @@ identifier_list:
 		{ $1->push_back($3); }
 	| IDENTIFIER
 		{
-		$$ = new vector<char *>;
+		$$ = new std::vector<char *>;
 		$$->push_back($1);
 		}
 	;

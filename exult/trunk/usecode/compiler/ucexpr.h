@@ -43,13 +43,13 @@ public:
 		{  }
 	virtual ~Uc_expression() {  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out) = 0;
+	virtual void gen_value(std::ostream& out) = 0;
 					// Gen. to assign from stack.
-	virtual void gen_assign(ostream& out);
+	virtual void gen_assign(std::ostream& out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return -1; }
 					// Get/create var == this.
-	virtual Uc_var_symbol *need_var(ostream& out, Uc_function *fun);
+	virtual Uc_var_symbol *need_var(std::ostream& out, Uc_function *fun);
 	};
 
 /*
@@ -63,11 +63,11 @@ public:
 	Uc_var_expression(Uc_var_symbol *v) : var(v)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(ostream& out);
+	virtual void gen_assign(std::ostream& out);
 	virtual int get_string_offset();// Get offset in text_data.
-	virtual Uc_var_symbol *need_var(ostream& , Uc_function *)
+	virtual Uc_var_symbol *need_var(std::ostream& , Uc_function *)
 		{ return var; }
 	};
 
@@ -85,9 +85,9 @@ public:
 	~Uc_arrayelem_expression()
 		{ delete index; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(ostream& out);
+	virtual void gen_assign(std::ostream& out);
 	};
 
 /*
@@ -101,9 +101,9 @@ public:
 		: index(i)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(ostream& out);
+	virtual void gen_assign(std::ostream& out);
 	};
 
 /*
@@ -118,7 +118,7 @@ public:
 		: opcode(o), left(l), right(r)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 	};
 
 /*
@@ -133,7 +133,7 @@ public:
 		: opcode(o), operand(r)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 	};
 
 /*
@@ -146,7 +146,7 @@ public:
 	Uc_int_expression(int v) : value(v)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 	};
 
 /*
@@ -159,7 +159,7 @@ public:
 	Uc_bool_expression(bool t) : tf(t)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 	};
 
 /*
@@ -170,9 +170,9 @@ class Uc_event_expression : public Uc_expression
 public:
 	Uc_event_expression() {  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 					// Gen. to assign from stack.
-	virtual void gen_assign(ostream& out);
+	virtual void gen_assign(std::ostream& out);
 	};
 
 /*
@@ -183,7 +183,7 @@ class Uc_item_expression : public Uc_expression
 public:
 	Uc_item_expression() {  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 	};
 
 /*
@@ -196,7 +196,7 @@ public:
 	Uc_string_expression(int o) : offset(o)
 		{  }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return offset; }
 	};
@@ -206,16 +206,16 @@ public:
  */
 class Uc_array_expression : public Uc_expression
 	{
-	vector<Uc_expression*> exprs;
+		std::vector<Uc_expression*> exprs;
 public:
 	Uc_array_expression() {  }
 	~Uc_array_expression();
 	void add(Uc_expression *e)	// Append an expression.
 		{ exprs.push_back(e); }
-	const vector<Uc_expression*>& get_exprs()
+	const std::vector<Uc_expression*>& get_exprs()
 		{ return exprs; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 	};
 
 /*
@@ -238,7 +238,7 @@ public:
 	void set_no_return()
 		{ return_value = false; }
 					// Gen. code to put result on stack.
-	virtual void gen_value(ostream& out);
+	virtual void gen_value(std::ostream& out);
 	};
 
 #endif

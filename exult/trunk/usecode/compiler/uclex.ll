@@ -31,8 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
  *	Want a stack of files for implementing '#include'.
  */
-vector<Uc_location *> locstack;
-vector<YY_BUFFER_STATE> bufstack;
+std::vector<Uc_location *> locstack;
+std::vector<YY_BUFFER_STATE> bufstack;
 
 /*
  *	Parse out a name in quotes.

@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Uc_location
 	{
-	static vector<char *> source_names;// All filenames.
+	static std::vector<char *> source_names;// All filenames.
 	static char *cur_source;	// Source filename.
 	static int cur_line;		// Line #.
 	static int num_errors;		// Total #.

@@ -35,7 +35,7 @@ class	exult_exception : public std::exception {
 public:
 	exult_exception (const char *what_arg): what_ (what_arg), errno_(errno) {  }	
 	exult_exception (const std::string& what_arg): what_ (what_arg), errno_(errno) {  }
-	const char *what() const { return what_.c_str(); }
+	const char *what() const throw () { return what_.c_str(); }
 	int get_errno(void) const { return errno_; }
 	virtual ~exult_exception () throw() {}
 };
