@@ -9,6 +9,9 @@ Expack currently supports 5 modes of operation:
 
 Add
 ===
+
+--NOT IMPLEMENTED YET.  FUTURE ENHANCEMENT--
+
 This command adds one or more files to the end of a Flex file.
 
 Syntax:
