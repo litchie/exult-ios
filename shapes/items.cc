@@ -89,8 +89,11 @@ static void Setup_item_names (ifstream& items, ifstream& msgs) {
 			first_msg = num_text_msgs;
 	}
 	item_names = new char *[num_item_names];
+	memset(item_names, 0, num_item_names*sizeof(item_names[0]));
 	text_msgs = new char *[total_msgs];
+	memset(text_msgs, 0, total_msgs*sizeof(text_msgs[0]));
 	misc_names = new char *[num_misc_names];
+	memset(misc_names, 0, num_misc_names*sizeof(misc_names[0]));
 	int i;
 	for(i=0; i < flxcnt; i++) {
 		items.seekg(0x80+i*8);
