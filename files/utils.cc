@@ -126,7 +126,8 @@ bool base_to_uppercase
 
 	int todo = count;
 					// Go backwards.
-	for(string::reverse_iterator X = str.rbegin(); X != str.rend(); ++X)
+	string::reverse_iterator X;
+	for(X = str.rbegin(); X != str.rend(); ++X)
 		{
 					// Stop at separator.
 		if (*X == '/' || *X == '\\' || *X == ':')
@@ -140,6 +141,8 @@ bool base_to_uppercase
 		*X = std::toupper(*X);
 #endif         
 	}
+	if (X == str.rend())
+		todo--; // start of pathname counts as separator too
 
 	// false if it didn't reach 'count' parts
 	return (todo <= 0);
