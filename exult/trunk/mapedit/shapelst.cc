@@ -1436,11 +1436,14 @@ void Shape_chooser::new_shape
 	gtk_adjustment_changed(adj);
 					// Unset 'From font:'.
 	studio->set_toggle("new_shape_font", false);
-	gtk_widget_show(win);
+#ifndef HAVE_FREETYPE2			/* No freetype?  No fonts.	*/
+	studio->set_sensitive("new_shape_font", false);
+#endif
 					// Store our pointer in color drawer.
 	GtkWidget *draw = glade_xml_get_widget(xml, 
 						"new_shape_font_color_draw");
 	gtk_object_set_user_data(GTK_OBJECT(draw), this);
+	gtk_widget_show(win);
 	}
 
 /*
@@ -1481,6 +1484,11 @@ void Shape_chooser::create_new_shape
 	use_font = use_font && (fontname != 0) && *fontname != 0;
 	if (use_font)
 		{
+		if (flat)
+			{
+			Alert("Can't load font into a 'flat' shape");
+			return;
+			}
 		int ht = studio->get_spin("new_shape_font_height");
 		int fg = studio->get_spin("new_shape_font_color");
 		if (!Gen_font_shape(shape, fontname, nframes,
