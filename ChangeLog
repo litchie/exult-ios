@@ -1,3 +1,9 @@
+2002-04-16  Ryan Nunn  <triforce@merlin.net.au>
+	* game.cc : Don't pass trailing slashes in calls to get_system_path
+	  when setting up static, gamedat, savegame and patch paths.
+	* files/utils.cc : Fixing get_system_path so it doesn't search for a
+	  slash. It now searches for the < and > around the path name.
+
 2002-04-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* *game.cc: made output for is_installed slightly more useful
 	* *game.cc, files/utils.*: patch by Paul Hebble:
