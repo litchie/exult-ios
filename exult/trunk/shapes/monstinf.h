@@ -134,6 +134,24 @@ public:
 		};
 	bool has_no_body() const	// No dead body?
 		{ return (flags>>no_body)&1; }
+	int get_strength() const	
+		{ return strength; }
+	int get_dexterity() const
+		{ return dexterity; }
+	int get_intelligence() const
+		{ return intelligence; }
+	int get_alignment() const
+		{ return alignment; }
+	int get_combat() const
+		{ return combat; }
+	int get_armor() const
+		{ return armor; }
+	int get_weapon() const
+		{ return weapon; }
+	int get_reach() const
+		{ return reach; }
+	int get_equip_offset() const
+		{ return equip_offset; }
 	};
 
 

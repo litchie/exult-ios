@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_constants.h"
 #include "utils.h"
 #include "shapeinf.h"
+#include "monstinf.h"
 
 using	std::cout;
 using	std::endl;
@@ -133,15 +134,40 @@ void ExultStudio::init_shape_notebook
 	Weapon_info *winfo = info.get_weapon_info();
 	set_toggle("shinfo_weapon_check", winfo != 0);
 	set_visible("shinfo_weapon_box", winfo != 0);
+	if (winfo)			// Setup weapon page.
+		{
+		//++++++++Finish.
+		}
 	Ammo_info *ainfo = Ammo_info::find(shnum);
 	set_toggle("shinfo_ammo_check", ainfo != 0);
 	set_visible("shinfo_ammo_box", ainfo != 0);
+	if (ainfo)			// Setup armor page.
+		{
+		// +++++++++Finish.
+		}
 	int armor = info.get_armor();	// (Should eventually become a class.)
 	set_toggle("shinfo_armor_check", armor > 0);
 	set_visible("shinfo_armor_box", armor > 0);
+	if (armor > 0)			// Setup armor page.
+		{
+		set_spin("shinfo_armor_value", armor);
+		}
 	Monster_info *minfo = info.get_monster_info();
 	set_toggle("shinfo_monster_check", minfo != 0);
 	set_visible("shinfo_monster_box", minfo != 0);
+	if (minfo)			// Setup monster page.
+		{
+		set_spin("shinfo_monster_str", minfo->get_strength());
+		set_spin("shinfo_monster_dex", minfo->get_dexterity());
+		set_spin("shinfo_monster_intel", minfo->get_intelligence());
+		set_spin("shinfo_monster_cmb", minfo->get_combat());
+		set_spin("shinfo_monster_armor", minfo->get_armor());
+		set_spin("shinfo_monster_wpn", minfo->get_weapon());
+		set_spin("shinfo_monster_reach", minfo->get_reach());
+		set_spin("shinfo_monster_equip", minfo->get_equip_offset());
+		set_optmenu("shinfo_monster_align", minfo->get_alignment());
+			// +++++++Finish:  Flags.
+		}
 	gtk_widget_show(book);
 	}
 
