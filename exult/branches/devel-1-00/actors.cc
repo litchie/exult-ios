@@ -2018,6 +2018,7 @@ bool Actor::reduce_health
 	    rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
 		{			// Create blood where actor stands.
 		Game_object *bobj = gwin->create_ireg_object(blood, 0);
+		bobj->set_flag(Obj_flags::is_temporary);
 		bobj->move(get_tile());
 		}
 	if (Actor::is_dying())
