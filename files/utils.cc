@@ -39,6 +39,10 @@
 #endif
 #include <unistd.h>
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include "exceptions.h"
 #include "utils.h"
 
@@ -138,6 +142,15 @@ string get_system_path(const string &path)
 	}
 #endif
 	switch_slashes(new_path);
+#ifdef WIN32
+	int num_chars = GetShortPathName(new_path.c_str(), NULL, 0);
+	if (num_chars > 0) {
+		char *short_path = new char [num_chars+1];
+		GetShortPathName(new_path.c_str(), short_path, num_chars+1);
+		new_path = short_path;
+		delete [] short_path;
+	}
+#endif
 	return new_path;
 }
 
