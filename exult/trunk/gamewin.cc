@@ -532,7 +532,10 @@ void Game_window::read_ireg_objects
 			lift = entry[4] >> 4;
 			quality = entry[5];
 			Shape_info& info = shapes.get_info(shapeid);
-			obj = (info.is_animated()) ?
+			obj = info.is_light_source() ?
+				new Lightsource_object(
+				   entry[2], entry[3], shapex, shapey, lift)
+				: info.is_animated() ?
 				new Animated_object(
 				   entry[2], entry[3], shapex, shapey, lift)
 				: new Ireg_game_object(
