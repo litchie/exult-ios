@@ -1,6 +1,6 @@
 2001-03-12  Jeff Freedman  <jeff@amy.nerble.net>
 
-	* Timidity - Fixed bug that Wilem figured out.
+	* Timidity - Fixed bug that Willem Jan figured out.
 
 2001-03-12  Wilem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.*: added new art to dependencies
