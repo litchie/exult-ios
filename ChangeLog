@@ -1,3 +1,6 @@
+2002-03-08  Ryan Nunn  <triforce@merlin.net.au>
+	* audio/xmidi.cc : A MSVCism
+
 2002-03-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* conf/Configuration.cc: only use std::isspace if it isn't a macro
 
