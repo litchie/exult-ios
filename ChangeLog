@@ -1,3 +1,6 @@
+2002-04-09  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* configure.in, mapedit/Makefile.am: cleaned up gtk/libglade conditionals
+
 2002-04-08  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/xml: added exult_studio.xml (ExultStudio Documentation)
 		    updated docs.xml, faq.xml, docs.dtd, *.xsl

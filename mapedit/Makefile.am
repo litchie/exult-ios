@@ -11,16 +11,10 @@ endif
 
 GTK_LIBS = @GTK_LIBS@
 
-if HAVE_GTK
-OUTPUT_LIBS = libmapedit.la
+if BUILD_STUDIO
+bin_PROGRAMS = exult_studio 
 else
-OUTPUT_LIBS =
-endif
-
-if HAVE_LIBGLADE 
-LIBGLADE_APPS = exult_studio
-else
-LIBGLADE_APPS =
+bin_PROGRAMS =
 endif
 
 u7shp_SOURCES = u7shp.c
@@ -38,14 +32,24 @@ exult_studio_SOURCES = \
 	shapeedit.cc \
 	studio.cc \
 	studio.h \
-	exult_studio.cc
+	exult_studio.cc \
+	objbrowse.h \
+	objbrowse.cc \
+	paledit.cc \
+	paledit.h \
+	shapedraw.cc \
+	shapedraw.h \
+	shapefile.cc \
+	shapefile.h \
+	shapegroup.cc \
+	shapegroup.h \
+	shapelst.cc \
+	shapelst.h
 
-bin_PROGRAMS = $(LIBGLADE_APPS)
 
 noinst_PROGRAMS = $(GIMP_PLUGINS)
 
 exult_studio_LDADD = \
-	./libmapedit.la			\
 	../conf/libconf.la		\
 	../files/libu7file.la		\
 	../imagewin/libimagewin.la	\
@@ -59,22 +63,6 @@ exult_studio_CFLAGS = $(LIBGLADE_INCLUDES)
 mapeditdir = $(datadir)/exult
 
 mapedit_DATA = exult_studio.glade
-
-noinst_LTLIBRARIES = $(OUTPUT_LIBS)
-
-libmapedit_la_SOURCES = \
-	objbrowse.h \
-	objbrowse.cc \
-	paledit.cc \
-	paledit.h \
-	shapedraw.cc \
-	shapedraw.h \
-	shapefile.cc \
-	shapefile.h \
-	shapegroup.cc \
-	shapegroup.h \
-	shapelst.cc \
-	shapelst.h
 
 u7shp$(EXEEXT): u7shp.c
 	gimptool --build $<
