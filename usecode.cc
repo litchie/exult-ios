@@ -200,6 +200,9 @@ void Scheduled_usecode::handle_event
 					// Look in that dir.
 			Usecode_value& val = arrval.get_elem(++i);
 			obj->set_usecode_dir(val.get_int_value());
+			Usecode_value v(obj->get_dir_framenum(
+					val.get_int_value(), Actor::standing));
+			usecode->set_item_frame(objval, v);
 			break;
 			}
 		default:
@@ -209,6 +212,14 @@ void Scheduled_usecode::handle_event
 				Usecode_value v(obj->get_dir_framenum(
 					obj->get_usecode_dir(), opcode));
 				usecode->set_item_frame(objval, v);
+				}
+					// ++++Guessing:
+			else if (opcode >= 0x30 && opcode <= 0x38)
+				{	// Step in dir. opcode&7.????
+				static short offsets[8] = {
+					-1,0, -1,1, 1,0, 1,-1, 0,-1,
+					-1,-1, -1,0, -1,1 };
+//++++++++++++
 				}
 			else
 				printf("Unhanded sched. opcode %02x\n",opcode);
