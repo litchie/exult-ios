@@ -1,3 +1,7 @@
+2001-04-20  Tristan Tarrant <nadir@users.sourceforge.net>
+
+	* configure.in: Don't build GIMP plugin by default
+
 2001-04-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* World-wrapping is kind-of working a little (on occasion).
