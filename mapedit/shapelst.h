@@ -129,8 +129,7 @@ public:
 		return (1);
 		}
 					// Configure when created/resized.
-	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
-							gpointer data);
+	gint configure(GdkEventConfigure *event);
 					// Blit to screen.
 	static gint expose(GtkWidget *widget, GdkEventExpose *event,
 							gpointer data);

@@ -40,6 +40,7 @@ protected:
 	GtkWidget *loc_down, *loc_up;	// 'Locate' buttons.
 					// 'Move' buttons:
 	GtkWidget *move_down, *move_up;
+	int config_width, config_height;// For storing prev. dims.
 
 	void set_widget(GtkWidget *w);
 public:
@@ -47,8 +48,6 @@ public:
 	virtual ~Object_browser();
 	
 	GtkWidget *get_widget();
-	void save_pos();		// Save scroll/selection.
-	void restore_pos();
 	Shape_group *get_group()
 		{ return group; }
 	int get_selected()		// Return index of selected item.
