@@ -527,9 +527,11 @@ void Game_window::read_ireg_objects
 				obj = new Ireg_game_object(
 				   entry[2], entry[3], tilex, tiley, lift);
 //+++++++++Testing.  Fixes crash after splash screen.
+#if 0
 			int num_frames = shapes.get_num_frames(shapeid);
 			if (obj->get_framenum() >= num_frames)
 				obj->set_frame(num_frames - 1);
+#endif
 //+++++++++++++++^^^^^^^^
 			}
 		else if (entlen == 12)	// Container?
