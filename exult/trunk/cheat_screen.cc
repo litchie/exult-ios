@@ -73,6 +73,80 @@ const char *CheatScreen::schedules[33] = {
 	"Follow Avt",
 	"Move2Sched"
 };
+
+const char *CheatScreen::flag_names[64] = {
+	"invisible",		// 0x00
+	"asleep",		// 0x01
+	"charmed",		// 0x02
+	"cursed",		// 0x03
+	0,			// 0x04
+	0,			// 0x05
+	"in_party",		// 0x06
+	"paralyzed",		// 0x07
+
+	"poisoned",		// 0x08
+	"protection",		// 0x09
+	"on_moving_barge",	// 0x0A
+	"okay_to_take",		// 0x0B
+	"tremor",		// 0x0C
+	"cant_die",		// 0x0D
+	"dancing",		// 0x0E
+	"dont_render",		// 0x0F
+
+	0,			// 0x10
+	"si_on_moving_barge",	// 0x11
+	"is_temporary",		// 0x12
+	0,			// 0x13
+	0,			// 0x14
+	"okay_to_land",		// 0x15
+	0,			// 0x16
+	0,			// 0x17
+
+	0,			// 0x18
+	"confused",		// 0x19
+	"in_motion",		// 0x1A
+	0,			// 0x1B
+	"met",			// 0x1C
+	"si_tournament",	// 0x1D
+	"misc",			// 0x1E
+	0,			// 0x1F
+
+	0,			// 0x20
+	"tattooed",		// 0x21
+	0,			// 0x22
+	"petra",		// 0x23
+	0,			// 0x24
+	0,			// 0x25
+	0,			// 0x26
+	0,			// 0x27
+
+	0,			// 0x28
+	0,			// 0x29
+	0,			// 0x2A
+	0,			// 0x2B
+	0,			// 0x2C
+	0,			// 0x2D
+	0,			// 0x2E
+	0,			// 0x2F
+
+	0,			// 0x30
+	0,			// 0x31
+	0,			// 0x32
+	0,			// 0x33
+	0,			// 0x34
+	0,			// 0x35
+	0,			// 0x36
+	0,			// 0x37
+
+	0,			// 0x38
+	0,			// 0x39
+	0,			// 0x3A
+	0,			// 0x3B
+	0,			// 0x3C
+	0,			// 0x3D
+	0,			// 0x3E
+	0,			// 0x3F
+};
 	
 CheatScreen::CheatScreen() : grabbed(NULL)
 	{
@@ -235,6 +309,10 @@ void CheatScreen::SharedPrompt (char *input, const Cheat_Prompt &mode)
 
 		case CP_GFlagNum:
 		font->paint_text_fixedwidth(ibuf, "Enter Global Flag 0-1023. (-1 to cancel.)", 0, maxy-9, 8);
+		break;
+
+		case CP_NFlagNum:
+		font->paint_text_fixedwidth(ibuf, "Enter NPC Flag 0-63. (-1 to cancel.)", 0, maxy-9, 8);
 		break;
 
 
@@ -1303,6 +1381,9 @@ void CheatScreen::FlagMenu (Actor *actor)
 	std::snprintf (buf, 512, "[F] Prtctd.%c", actor->get_flag(Obj_flags::protection)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-63, 8);
 
+	// Advanced Editor
+	font->paint_text_fixedwidth(ibuf, "[*] Advanced", 0, maxy-45, 8);
+
 	// Exit
 	font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy-36, 8);
 
@@ -1635,6 +1716,14 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 
 		break;
 
+		// Advanced Numeric Flag Editor
+		case '*':
+		if (i < -1) mode = CP_InvalidValue;
+		else if (i > 63) mode = CP_InvalidValue;
+		else if (i == -1 || !input[0]) mode = CP_Canceled;
+		else mode = AdvancedFlagLoop(i, actor);
+		break;
+
 		default:
 		break;
 	}
@@ -1740,6 +1829,16 @@ bool CheatScreen::FlagCheck (char *input, int &command, Cheat_Prompt &mode, bool
 		else mode = CP_NotAvail;
 		input[0] = command;
 		break;
+
+		// NPC Flag Editor
+
+		case SDLK_KP_MULTIPLY:
+		case '8':
+		command = '*';
+		input[0] = 0;
+		mode = CP_NFlagNum;
+		break;
+
 
 		// X and Escape leave
 		case SDLK_ESCAPE:
@@ -2238,3 +2337,152 @@ bool CheatScreen::StatCheck (char *input, int &command, Cheat_Prompt &mode, bool
 	return true;
 }
 
+
+//
+// Advanced Flag Edition
+//
+
+CheatScreen::Cheat_Prompt CheatScreen::AdvancedFlagLoop (int num, Actor *actor)
+{
+	int npc_num = actor->get_npc_num();
+	bool looping = true;
+
+	// This is for the prompt message
+	Cheat_Prompt mode = CP_Command;
+
+	// This is the command
+	char input[17];
+	int i;
+	int command;
+	bool activate = false;
+	char	buf[512];
+		
+	for (i = 0; i < 17; i++) input[i] = 0;
+
+	while (looping)
+	{
+		gwin->clear_screen();
+
+		NPCDisplay(actor, npc_num);
+
+		if (num < 0) num = 0;
+		else if (num > 63) num = 63;
+
+		// First the info
+		if (flag_names[num])
+			std::snprintf (buf, 512, "NPC Flag %i: %s", num, flag_names[num]);
+		else
+			std::snprintf (buf, 512, "NPC Flag %i", num);
+
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-108, 8);
+
+		std::snprintf (buf, 512, "Flag is %s", actor->get_flag(num)?"SET":"UNSET");
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-90, 8);
+
+
+		// Now the Menu Column
+		if (!actor->get_flag(num)) font->paint_text_fixedwidth(ibuf, "[S]et Flag", 160, maxy-90, 8);
+		else font->paint_text_fixedwidth(ibuf, "[U]nset Flag", 160, maxy-90, 8);
+
+		// Change Flag
+		font->paint_text_fixedwidth(ibuf, "[*] Change Flag", 0, maxy-72, 8);
+		if (num > 0 && num < 63) font->paint_text_fixedwidth(ibuf, "[+-] Scroll Flags", 0, maxy-63, 8);
+		else if (num == 0) font->paint_text_fixedwidth(ibuf, "[+] Scroll Flags", 0, maxy-63, 8);
+		else font->paint_text_fixedwidth(ibuf, "[-] Scroll Flags", 0, maxy-63, 8);
+
+		font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy-36, 8);
+
+		// Finally the Prompt...
+		SharedPrompt(input, mode);
+
+		// Draw it!
+		pal.apply();
+
+		// Check to see if we need to change menus
+		if (activate)
+		{
+			if (command == '-')		// Decrement
+			{
+				num--;
+				if (num < 0) num = 0;
+			}
+			else if (command == '+')	// Increment
+			{
+				num++;
+				if (num > 63) num = 63;
+			}
+			else if (command == '*')	// Change Flag
+			{
+				i = std::atoi(input);
+				if (i < -1 || i > 63) mode = CP_InvalidValue;
+				else if (i == -1) mode = CP_Canceled;
+				else if (input[0]) num = i;
+			}
+			else if (command == 's')	// Set
+			{
+				actor->set_flag(num);
+			}
+			else if (command == 'u')	// Unset
+			{
+				actor->clear_flag(num);
+			}
+
+			for (i = 0; i < 17; i++) input[i] = 0;
+			mode = CP_Command;
+			command = 0;
+			activate = false;
+			continue;			
+		}
+
+		if (SharedInput (input, 17, command, mode, activate))
+		{
+			switch(command)
+			{
+				// Simple commands
+				case 's':	// Set Flag
+				case 'u':	// Unset flag
+				input[0] = command;
+				activate = true;
+				break;
+
+				// Decrement
+				case SDLK_KP_MINUS:
+				case '-':
+				command = '-';
+				input[0] = command;
+				activate = true;
+				break;
+
+				// Increment
+				case SDLK_KP_PLUS:
+				case '=':
+				command = '+';
+				input[0] = command;
+				activate = true;
+				break;
+
+				// * Change Flag
+				case SDLK_KP_MULTIPLY:
+				case '8':
+				command = '*';
+				input[0] = 0;
+				mode = CP_NFlagNum;
+				break;
+
+				// X and Escape leave
+				case SDLK_ESCAPE:
+				case 'x':
+				input[0] = command;
+				looping = false;
+				break;
+
+				default:
+				mode = CP_InvalidCom;
+				input[0] = command;
+				command = 0;
+				break;
+			}
+		}
+	}
+	return CP_Command;
+}
