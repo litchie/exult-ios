@@ -250,8 +250,13 @@ public:
 						delta, mask, qual, framenum); }
 	Game_object *find_closest(int *shapenums, int num_shapes);
 					// Find nearby unblocked tile.
-	Tile_coord find_unblocked_tile(int dist, int height = 1,
+	static Tile_coord find_unblocked_tile(Tile_coord pos,
+				int dist, int height = 1,
 				const int move_flags = MOVE_WALK);
+	Tile_coord find_unblocked_tile(int dist, int height = 1,
+				const int move_flags = MOVE_WALK)
+		{ return find_unblocked_tile(get_abs_tile_coord(), dist, 
+						height, move_flags); }
 	Rectangle get_footprint();	// Get tile footprint.
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);

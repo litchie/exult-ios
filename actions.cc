@@ -243,6 +243,22 @@ int Move_actor_action::handle_event
 	}
 
 /*
+ *	Handle a time event.
+ *
+ *	Output:	0 if done with this action, else delay for next frame.
+ */
+
+int Activate_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	obj->activate(gwin->get_usecode());
+	return 0;			// That's all.
+	}
+
+/*
  *	Create sequence of frames.
  */
 
