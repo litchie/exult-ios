@@ -594,6 +594,8 @@ void Barge_object::move
 	int newlift
 	)
 	{
+	if (!gathered)			// Happens in SI with turtle.
+		gather();
 					// Want to repaint old position.
 	add_dirty(Game_window::get_game_window());
 					// Get current location.
