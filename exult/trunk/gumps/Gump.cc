@@ -454,10 +454,11 @@ int Gump::add
 	(
 	Game_object *obj,
 	int mx, int my,			// Mouse location.
-	int sx, int sy			// Screen location of obj's hotspot.
+	int sx, int sy,			// Screen location of obj's hotspot.
+	bool dont_check			// Skip volume check.
 	)
 {
-	if (!container || !container->has_room(obj))
+	if (!container || (!dont_check && !container->has_room(obj)))
 		return (0);		// Full.
 					// Dropping on same thing?
 	Game_object *onobj = find_object(mx, my);
@@ -466,7 +467,7 @@ int Gump::add
 	if (onobj && onobj != obj && onobj->drop(obj))
 		return (1);
 
-	if (!container->add(obj))
+	if (!container->add(obj, dont_check))
 		return (0);
 
 					// Not a valid spot?

@@ -167,7 +167,8 @@ int Actor_gump::add
 	(
 	Game_object *obj,
 	int mx, int my,			// Screen location of mouse.
-	int sx, int sy			// Screen location of obj's hotspot.
+	int sx, int sy,			// Screen location of obj's hotspot.
+	bool dont_check			// Skip volume check.
 	)
 #if 1
 {
@@ -181,7 +182,7 @@ int Actor_gump::add
 	if (index != -1 && container->add_readied(obj, index))
 		return (1);
 
-	if (container->add(obj))
+	if (container->add(obj, dont_check))
 		return (1);
 
 	return (0);

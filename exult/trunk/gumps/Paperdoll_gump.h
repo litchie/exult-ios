@@ -200,7 +200,8 @@ public:
 	virtual Game_object *find_object(int mx, int my);
 
 	// Add object.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1, int sx = -1, int sy = -1);
+	virtual int add(Game_object *obj, int mx = -1, int my = -1, 
+			int sx = -1, int sy = -1, bool dont_check = false);
 
 	// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
