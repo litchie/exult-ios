@@ -30,8 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define XMIDI_CONVERT_MT32_TO_GM		1
 #define XMIDI_CONVERT_MT32_TO_GS		2
 #define XMIDI_CONVERT_MT32_TO_GS127		3
-#define XMIDI_CONVERT_MT32_TO_GS127DRUM	4
-#define XMIDI_CONVERT_GS127_TO_GS		5
+#define XMIDI_CONVERT_GS127_TO_GS		4
 
 // Midi Status Bytes
 #define MIDI_STATUS_NOTE_OFF	0x8
@@ -88,8 +87,8 @@ private:
 	int			chorus_value;
 	int			reverb_value;
 
-	// Gamma Table - Move to it's own class??
-	static GammaTable<unsigned char>	MidiGamma;
+	// Midi Volume Curve Modification
+	static GammaTable<unsigned char>	VolumeCurve;
 
 public:
 	XMIDI(DataSource *source, int pconvert);

@@ -98,7 +98,6 @@ void ExultMenu::setup()
 	  midiconv->add_choice("GM");
 	  midiconv->add_choice("GS");
 	  midiconv->add_choice("GS127");
-	  midiconv->add_choice("GS127DRUM");
 	  midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
 	  menu.add_entry(midiconv);
 	

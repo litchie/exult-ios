@@ -1,3 +1,15 @@
+2001-03-16  Ryan Nunn <triforce@merlin.net.au>
+	* exult.cc: Video Gamma correction is now written to the config file.
+	  Also fixed problem with gamma up making the screen darker and gamma
+	  down making the screen lighter.
+	* exultmenu.cc, Midi.cc, xmidi.*, MidiInfo.txt: Removed broken
+	  GS127DRUM converstion mode. GS127DRUM config options will now default
+	  to GS conversion. Config file will be updated to reflect the change.
+	  MidiInfo textfile has been modified to reflect the changes.
+	* xmidi.cc: Renamed config/audio/midi/gamma config option to
+	  config/audio/midi/volume_curve so it's function will be more obvious.
+	* docs/serpentsfx.txt: File containing 'names' of Serpent Isle SFX.
+
 2001-03-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/faces.shp: paperdoll art by Philip Gottschalk! Thanks!
 	* gumps/Paperdoll_gump_info.cc, data/flx.in, Makefile*: include art

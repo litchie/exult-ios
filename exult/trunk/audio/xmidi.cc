@@ -319,7 +319,7 @@ const char XMIDI::mt32asgs[256] = {
 	121, 0	// 127	Jungle Tune set to Breath Noise
 };
 
-GammaTable<unsigned char> XMIDI::MidiGamma(128);
+GammaTable<unsigned char> XMIDI::VolumeCurve(128);
 
 // Constructor
 XMIDI::XMIDI(DataSource *source, int pconvert) : events(NULL),timing(NULL),
@@ -830,8 +830,7 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 		bank127[status&0xF] = false;
 		
 		if (convert_type == XMIDI_CONVERT_MT32_TO_GM || convert_type == XMIDI_CONVERT_MT32_TO_GS
-			|| convert_type == XMIDI_CONVERT_MT32_TO_GS127 ||
-			(convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM && (status&0xF) == 9))
+			|| convert_type == XMIDI_CONVERT_MT32_TO_GS127)
 			return 2;
 
 		CreateNewEvent (time);
@@ -853,8 +852,7 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 			data = mt32asgm[data];
 		}
 		else if ((convert_type == XMIDI_CONVERT_GS127_TO_GS && bank127[status&0xF]) ||
-				convert_type == XMIDI_CONVERT_MT32_TO_GS ||
-				convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM)
+				convert_type == XMIDI_CONVERT_MT32_TO_GS)
 		{
 			CreateNewEvent (time);
 			current->status = 0xB0 | (status&0xF);
@@ -870,14 +868,6 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 			current->data[0] = 0;
 			current->data[1] = 127;
 		}
-	}	// Drum track handling 
-	else if ((status >> 4) == 0xC && (status&0xF) == 9 && 
-		(convert_type == XMIDI_CONVERT_MT32_TO_GS127DRUM || convert_type == XMIDI_CONVERT_MT32_TO_GS127))
-	{
-		CreateNewEvent (time);
-		current->status = 0xB9;
-		current->data[0] = 0;
-		current->data[1] = 127;			
 	}
 
 	CreateNewEvent (time);
@@ -892,7 +882,7 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 
 	// Volume modify the note on's, only if converting
 	if (convert_type && (current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
-		current->data[1] = MidiGamma[current->data[1]];
+		current->data[1] = VolumeCurve[current->data[1]];
 
 	if (size == 2)
 		return 2;
@@ -1271,10 +1261,11 @@ int XMIDI::ExtractTracks (DataSource *source)
 	else if (chorus_value < 0) chorus_value = 0;
 	config->set("config/audio/midi/chorus/level",chorus_value,true);
 	
-	config->value("config/audio/midi/gamma",s,"1");
-	MidiGamma.set_gamma (atof(s.c_str()));
-	snprintf (buf, 32, "%f", MidiGamma.get_gamma ());
-	config->set("config/audio/midi/gamma",buf,true);
+	config->value("config/audio/midi/volume_curve",s,"---");
+	if (s == "---") config->value("config/audio/midi/gamma",s,"1");
+	VolumeCurve.set_gamma (atof(s.c_str()));
+	snprintf (buf, 32, "%f", VolumeCurve.get_gamma ());
+	config->set("config/audio/midi/volume_curve",buf,true);
 	
 
 	// Read first 4 bytes of header
