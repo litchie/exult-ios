@@ -1,3 +1,7 @@
+2002-08-12  Aurelien Marchand  <artaxerxes@users.sf.net>
+
+	* shapes/fontgen.cc: prevent freetype if building for Zaurus.
+
 2002-08-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.h,usecode/intrinsics.cc:  Always use bed that was
