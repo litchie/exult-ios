@@ -306,6 +306,7 @@ int exult_main(const char *runpath)
 			if(!U7exists("<DATA>/exult.flx"))
 			{
 				char *sep = std::strrchr(runpath,'/');
+				if (!sep) sep = std::strrchr(runpath,'\\');
 				int plen = sep-runpath;
 				char *dpath = new char[plen+10];
 				std::strncpy(dpath, runpath, plen+1);
