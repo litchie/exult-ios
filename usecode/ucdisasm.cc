@@ -45,7 +45,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 	int opcode = *ip++;
 	uint8* param_ip = ip;
 	_opcode_desc* pdesc = &(opcode_table[opcode]);
-	unsigned short immed;
+	signed short immed;
 	unsigned short offset;
 	unsigned short varref;
 	unsigned short func;
@@ -65,7 +65,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 			case IMMED:
 				// Print immediate operand
 				immed = Read2(ip);
-				std::printf("\t%04XH\t\t; %d", immed, immed);
+				std::printf("\t%04hXH\t\t; %d", immed, immed);
 				break;
 			case DATA_STRING:
 				{
@@ -106,7 +106,7 @@ void Usecode_internal::uc_trace_disasm(Usecode_value* locals, int num_locals,
 			case IMMED_AND_RELATIVE_JUMP:
 				immed = Read2(ip);
 				offset = Read2(ip);
-				std::printf("\t%04XH, %04X", immed, 
+				std::printf("\t%04hXH, %04X", immed, 
 					   (offset + func_ip+1+pdesc->nbytes)&0xFFFF);
 				break;
 			case CALL:

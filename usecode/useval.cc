@@ -521,3 +521,9 @@ bool Usecode_value::restore
 		}
 	}
 
+
+ostream& operator<<(ostream& out, Usecode_value& val)
+{
+	val.print(out, true);
+	return out;
+}
