@@ -1,3 +1,6 @@
+2000-05-19  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc, Audio.h, win_MCI.h, win_MCI.cc: Windows MIDI repeating support
+
 2000-05-19  Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* gamewin.cc: Blank screen after intro...

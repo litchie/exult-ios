@@ -31,19 +31,23 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "Midi.h"
+#include "SDL_syswm.h"
 
 class	Windows_MCI : virtual public MidiAbstract
 {
 public:
-	virtual void	start_track(const char *,bool repeat);
-	virtual void	stop_track(void);
-	virtual	bool	is_playing(void);
-	virtual const	char *copyright(void);
+  virtual void start_track(const char *,bool repeat);
+  virtual void stop_track(void);
+  virtual bool is_playing(void);
+  virtual const char *copyright(void);
 
-	Windows_MCI();
-	virtual ~Windows_MCI();
+  void callback(WPARAM wParam, HWND hWnd);
+  
+  Windows_MCI();
+  virtual ~Windows_MCI();
 private:
-	bool device_open;
+  bool device_open;
+  bool repeating;
 };
 
 #endif
