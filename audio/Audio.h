@@ -42,9 +42,10 @@ class Audio
 private:
 	static	Audio	*self;
 	bool speech_enabled, music_enabled, effects_enabled;
+	bool SDL_open;
 	UNREPLICATABLE_CLASS(Audio);
+	Audio();
 public:
-    Audio();
     void	Init(void);
     void	Init(int _samplerate,int _channels);
     ~Audio();
@@ -95,7 +96,5 @@ private:
 	void build_speech_vector(void);
 
 };
-
-extern	Audio *audio;
 
 #endif

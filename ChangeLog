@@ -1,4 +1,18 @@
 2000-11-24  Dancer Vesperman <dancer@users.sourceforge.net>
+	* GLOBAL: Eliminate the global audio pointer.
+	* Complete conversion of audio subsystem to self-initialising, self-managing singleton object
+	* Update all audio references.
+	* Change mixer and midi subsystem construction/destruction.
+	* Remove default initialiser code for Audio
+	* Allow multiple variant initialisation for Audio subsystem
+	* Base calculations on actual values adopted by the SDL/hardware layer
+	* Actors.cc: wtype initialised to other, in case no value is assigned.
+	* files/utils.cc: Eliminate use of malloc/free/strdup
+	* files/utils.cc: const police.
+	* All speech now plays via audio streams
+	* Ring buffers obsolete. Remove them
+
+2000-11-24  Dancer Vesperman <dancer@users.sourceforge.net>
 	* files/utils.h: Make the hash function inlineable
 
 2000-11-23  Jeff Freedman  <jeff@amy.nerble.net>

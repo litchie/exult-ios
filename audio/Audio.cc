@@ -58,12 +58,18 @@ using std::vector;
 
 Audio::~Audio()
 {
+	if(mixer)
+		{
+		delete mixer;
+		mixer=0;
+		}
 	if(midi)
 		{
 		delete midi;
 		midi=0;
 		}
 	SDL::CloseAudio();
+	SDL_open=false;
 	self=0;
 }
 
@@ -103,19 +109,6 @@ static	void resample(Uint8 *sourcedata,Uint8 **destdata,size_t sourcelen,size_t 
 		last=pos;
 		}
 	cerr << "End resampling. Resampled " << sourcelen << " bytes to " << *destlen << " bytes" << endl;
-}
-
-static 	void debug_speech(void)
-{
-
-	
-	//audio.start_speech(31,false);
-	return;
-	for(int i=0;i<32;i++)
-		{
-		Audio::get_ptr()->start_speech(i,false);
-		SDL::Delay(1000);
-		}
 }
 
 #include <iostream>
@@ -317,38 +310,10 @@ static	size_t calc_sample_buffer(Uint16 _samplerate)
 	return _buffering_unit;
 }
 	
-void Audio::Init()
-{
-	Uint16 _rate=11025;
-	int	_channels=2;
-	Uint32 _buffering_unit=calc_sample_buffer(_rate);
-	// Initialise the speech vectors
-	build_speech_vector();
-	midi=new MyMidiPlayer();
-         
-
-         /* Set the audio format */
-         wanted.freq = _rate;
-         wanted.format = AUDIO_U8;
-         wanted.channels = _channels;    /* 1 = mono, 2 = stereo */
-         wanted.samples = _buffering_unit/_channels;  /* Good low-latency value for callback */
-#if DEBUG
-         cout << "Stream buffer = " << wanted.samples << endl;
-#endif
-         wanted.callback = fill_audio;
-         wanted.userdata = NULL;
-
-         /* Open the audio device, forcing the desired format */
-         if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
-                 fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
-         }
-	mixer=new Mixer(_buffering_unit,ringsize,actual.silence);
-}
-
 Audio *Audio::self=0;
 
 Audio::Audio() : speech_enabled(true), music_enabled(true),
-			effects_enabled(true), midi(0)
+			effects_enabled(true), SDL_open(false),mixer(0),midi(0)
 {
 	self=this;
 	string s;
@@ -365,29 +330,59 @@ void Audio::Init(int _samplerate,int _channels)
 	// Initialise the speech vectors
 	Uint32 _buffering_unit=calc_sample_buffer(_samplerate);
 	build_speech_vector();
-	midi=new MyMidiPlayer();
+	if(midi)
+		{
+		delete midi;
+		midi=0;
+		}
+	if(mixer)
+		{
+		delete mixer;
+		mixer=0;
+		}
          
 
          /* Set the audio format */
          wanted.freq = _samplerate;
          wanted.format = AUDIO_U8;
          wanted.channels = _channels;    /* 1 = mono, 2 = stereo */
-         wanted.samples = _buffering_unit/_channels;  /* Good low-latency value for callback */
-#if DEBUG
-         cout << "Stream buffer = " << wanted.samples << endl;
-#endif
+         wanted.samples = _buffering_unit;  /* Good low-latency value for callback */
          wanted.callback = fill_audio;
          wanted.userdata = NULL;
+
+#if 1
+	if(SDL_open)
+		SDL::CloseAudio();
+#endif
 
          /* Open the audio device, forcing the desired format */
          if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
                  fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
          }
+#if 1
+	SDL::CloseAudio();
+#endif
+#if DEBUG
+         cout << "We think SDL will call-back for " << actual.samples <<" bytes at a time." << endl;
+#endif
+
+	wanted=actual;
+	_buffering_unit=actual.samples/_channels;
+#if DEBUG
+         cout << "Each buffer in the mixing ring is " << _buffering_unit <<" bytes." << endl;
+#endif
+         if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
+                 fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
+         }
+	SDL_open=true;
 #if DEBUG
 	cout << "Audio system assembled. Ring buffers at "<<_buffering_unit<<endl;
 #endif
+	midi=new MyMidiPlayer();
 	mixer=new Mixer(_buffering_unit,ringsize,actual.silence);
-	debug_speech();
+#if DEBUG
+	cout << "Audio initialisation OK" << endl;
+#endif
 }
 
 void	Audio::playfile(const char *fname,bool wait)
@@ -501,6 +496,12 @@ void	Audio::terminate_external_signal(void)
 
 Audio	*Audio::get_ptr(void)
 {
+	if(!self)
+		{
+		self=new Audio();
+		self->Init(44100,2);
+		}
+
 	return self;
 }
 

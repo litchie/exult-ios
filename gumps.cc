@@ -1861,13 +1861,13 @@ File_gump_object::File_gump_object
 					// 2nd row.
 	buttons[3] = new Sound_gump_button(this, btn_cols[0], btn_rows[1], 
 			game->get_shape("gumps/musicbtn"),
-						audio->is_music_enabled());
+						Audio::get_ptr()->is_music_enabled());
 	buttons[4] = new Sound_gump_button(this, btn_cols[1], btn_rows[1],
 			game->get_shape("gumps/speechbtn"),
-						audio->is_speech_enabled());
+						Audio::get_ptr()->is_speech_enabled());
 	buttons[5] = new Sound_gump_button(this, btn_cols[2], btn_rows[1],
 			game->get_shape("gumps/soundbtn"),
-						audio->are_effects_enabled());
+						Audio::get_ptr()->are_effects_enabled());
 	}
 
 /*
@@ -1978,10 +1978,10 @@ int File_gump_object::toggle_option
 	{
 	if (btn == buttons[3])		// Music?
 		{
-		bool music = !audio->is_music_enabled();
-		audio->set_music_enabled(music);
+		bool music = !Audio::get_ptr()->is_music_enabled();
+		Audio::get_ptr()->set_music_enabled(music);
 		if (!music)		// Stop what's playing.
-			audio->stop_music();
+			Audio::get_ptr()->stop_music();
 		string s = music ? "yes" : "no";
 					// Write option out.
 		config->set("config/audio/midi/enabled", s, true);
@@ -1989,8 +1989,8 @@ int File_gump_object::toggle_option
 		}
 	if (btn == buttons[4])		// Speech?
 		{
-		bool speech = !audio->is_speech_enabled();
-		audio->set_speech_enabled(speech);
+		bool speech = !Audio::get_ptr()->is_speech_enabled();
+		Audio::get_ptr()->set_speech_enabled(speech);
 		string s = speech ? "yes" : "no";
 					// Write option out.
 		config->set("config/audio/speech/enabled", s, true);
@@ -1998,8 +1998,8 @@ int File_gump_object::toggle_option
 		}
 	if (btn == buttons[5])		// Sound effects?
 		{
-		bool effects = !audio->are_effects_enabled();
-		audio->set_effects_enabled(effects);
+		bool effects = !Audio::get_ptr()->are_effects_enabled();
+		Audio::get_ptr()->set_effects_enabled(effects);
 		string s = effects ? "yes" : "no";
 					// Write option out.
 		config->set("config/audio/effects/enabled", s, true);
