@@ -180,13 +180,26 @@ void Scheduled_usecode::handle_event
 			}
 		case 0x0c:		// Loop with 3 parms.???
 			{		// Loop(offset, cnt1, cnt2?).++++
+				//+++ guessing: loop cnt1 each round. use cnt2 as loop var.
+				//This is necessary for loop nesting.
+				//(used in mining machine, orb of the moons)
+
+				// maybe cnt1 and cnt2 should be swapped... not sure
+
 			do_another = 1;
-			Usecode_value& cntval = arrval.get_elem(i + 2);
+			Usecode_value& cntval = arrval.get_elem(i + 3);
+			Usecode_value& origval = arrval.get_elem(i + 2);
 			int cnt = cntval.get_int_value();
-			if (cnt <= 0)
+			int orig = origval.get_int_value();
+			if (cnt > orig) { // ++++ First pass? Set to orig or not?
+				cntval = origval;
+				cnt = orig;
+			}
+			if (cnt <= 0) {
 					// Done.
 				i += 3;
-			else
+				cntval = origval; // restore counter
+			} else
 				{	// Decr. and loop.
 				cntval = Usecode_value(cnt - 1);
 				Usecode_value& offval = arrval.get_elem(i + 1);

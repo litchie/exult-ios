@@ -1,5 +1,6 @@
 2001-05-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* objs/objs.cc: add special name for gold sextant (TODO: same for SI)
+	* ucsched.cc: guessing at 0x0c opcode. probably used for nesting loops.
 	
 2001-05-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* ucsched.cc: changed 0x0b, 0x0c and 0x4d scheduled opcodes (fixing SI gates & wells)
