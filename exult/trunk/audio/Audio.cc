@@ -390,8 +390,8 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 				}
 				COUT("Channels " << (old_data[6+data_offset]&0xff));
 				chunk_length=l+4;
-//sqdebug naughty, but it fixes it on the start speech
-//needs work to get rid of click
+				//workaround here to exit this loop, it fixes start speech which was
+				//causing this function to go exit too early.
 				last_chunk=true;
 
 				break;
@@ -487,18 +487,15 @@ void	Audio::play(uint8 *sound_data,uint32 len,bool wait)
 		own_audio_data=true;
 	}
 	
-	//Now we need to build a WAVE "file" out of this raw sample as SDL_Mixer
-	//does not have the ability to read a raw sample, only WAVE etc.
-	//Structure to create the WAVE header
-	//We will feed it a mono, 8bit, 22khz sample from the VOC conversion above
-	//The above resample to 22khz gives better sound quality than SDL/SDL_Mixers code!
-	
+	//Play voice sample using RAW sample we created above. ConvertVOC() produced a stereo, 22KHz, 16bit
+	//sample. Currently SDL does not resample very well so we do it in ConvertVOC()
 	wavechunk = Mix_QuickLoad_RAW(sound_data, len);
 	
 	int channel;
 	channel = Mix_PlayChannel(-1, wavechunk, 0);
 	Mix_SetPosition(channel, 0, 0);
 	Mix_Volume(channel, MIX_MAX_VOLUME - 40);		//Voice is loud compared to other SFX,music
+								//so adjust to match volumes
 }
 
 void	Audio::cancel_streams(void)
