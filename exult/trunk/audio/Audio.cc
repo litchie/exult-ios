@@ -225,6 +225,11 @@ void	Audio::play(Uint8 *sound_data,Uint32 len,bool wait)
 		delete [] sound_data;
 }
 
+void	Audio::cancel(void)
+{
+	mixer->cancel();
+}
+
 void	Audio::mix(Uint8 *sound_data,Uint32 len)
 {
 	mixer->play(sound_data,len);

@@ -98,6 +98,12 @@ void	compress_audio_sample(Uint8 *buf,int len)
 	delete [] dbuf;
 }
 
+void Mixer::cancel(void)
+{
+	while(buffers.begin()->num_samples)
+		advance();
+}
+
 void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 {
 #if DEBUG

@@ -48,6 +48,7 @@ public:
 	static	Audio	*get_ptr(void);
 	Mixer	*mixer;
 
+	void	cancel(void);
 	void	play(Uint8 *sound_data,Uint32 len,bool);
 	void	playfile(const char *,bool);
 	void	mix_audio(void);
