@@ -71,9 +71,8 @@
 	USECODE_INTRINSIC_PTR(projectile_effect),	// 0x41
 	USECODE_INTRINSIC_PTR(get_lift),	// 0x42
 	USECODE_INTRINSIC_PTR(set_lift),	// 0x43
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x44++++Get_something() (0-3)
-	// 3==can't do magic here?         GetWeather (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x45++++SetWeather(0-3) (ucdump.c)
+	USECODE_INTRINSIC_PTR(get_weather),	// 0x44
+	USECODE_INTRINSIC_PTR(set_weather),	// 0x45
 	USECODE_INTRINSIC_PTR(sit_down),// 0x46
 	USECODE_INTRINSIC_PTR(summon),	// 0x47     SummonCreature (ucdump.c)
 	USECODE_INTRINSIC_PTR(display_map),	// 0x48

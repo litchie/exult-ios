@@ -2051,7 +2051,7 @@ void Game_window::center_text
 	}
 
 /*
- *	Add an effect.
+ *	Add an effect at the start of the chain.
  */
 
 void Game_window::add_effect
@@ -2146,6 +2146,29 @@ void Game_window::remove_weather_effects
 		each = next;
 		}
 	set_all_dirty();
+	}
+
+/*
+ *	Find last numbered weather effect added.
+ */
+
+int Game_window::get_weather
+	(
+	)
+	{
+	Special_effect *each = effects;
+	while (each)
+		{
+		Special_effect *next = each->next;
+		if (each->is_weather())
+			{
+			Weather_effect *weather = (Weather_effect *) each;
+			if (weather->get_num() >= 0)
+				return weather->get_num();
+			}
+		each = next;
+		}
+	return 0;
 	}
 
 /*

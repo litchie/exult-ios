@@ -557,21 +557,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			}
 		case weather:
 			{
-			int len = data1>>8;
-			switch (data1&0xff)
-				{
-			case 0:		// Back to normal.
-				gwin->remove_weather_effects();
-				break;
-			case 2:		// Storm.
-				gwin->add_effect(new Storm_effect(len));
-				break;
-			case 6:		// Clouds.
-				gwin->add_effect(new Clouds_effect(len));
-				break;
-			default:
-				break;
-				}
+			set_weather(gwin, data1&0xff, data1>>8);
 			break;
 			}
 		case button:		// Set off all in given area.
@@ -604,6 +590,39 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			chk->add_egg(this);	// Add back.
 			}
 		solid_area = 0;		// Clear flag.
+		}
+	}
+
+/*
+ *	Set the weather (static).
+ */
+
+void Egg_object::set_weather
+	(
+	Game_window *gwin,
+	int weather,			// 0-6.
+	int len				// In game minutes (I think).
+	)
+	{
+	if (!len)			// ???Not sure about this.
+		len = 15;
+	switch (weather)
+		{
+	case 0:		// Back to normal.
+		gwin->remove_weather_effects();
+		break;
+	case 2:		// Storm.
+		gwin->add_effect(new Storm_effect(len));
+		break;
+	case 3:		// (On Ambrosia).
+		gwin->remove_weather_effects();
+		gwin->add_effect(new Sparkle_effect(len));
+		break;
+	case 6:		// Clouds.
+		gwin->add_effect(new Clouds_effect(len));
+		break;
+	default:
+		break;
 		}
 	}
 

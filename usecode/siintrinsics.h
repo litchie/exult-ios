@@ -118,10 +118,8 @@
 	USECODE_INTRINSIC_PTR(get_lift),	// 0x4f
 	USECODE_INTRINSIC_PTR(set_lift),	// 0x50
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52++++Get_something() (0-3)
-	// 3==can't do magic here?         GetWeather (ucdump.c)
-	
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x53, set Weather
+	USECODE_INTRINSIC_PTR(get_weather),	// 0x52
+	USECODE_INTRINSIC_PTR(set_weather),	// 0x53
 
 	USECODE_INTRINSIC_PTR(sit_down),// 0x54 - Known
 
