@@ -1,3 +1,8 @@
+2002-07-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* effects.cc,gamerend.cc:  Text_effects are in a separate list.
+	* gamerend.cc:  Show sprites below gumps, text over them.
+
 2002-07-28  Ryan Nunn  <triforce@merlin.net.au>
 	* pathfinder/path.cc : Fixed seriously broken non hash pathfinding (z 
 	  coord was being ignored in comparisons of nodes). This fixes the

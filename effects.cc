@@ -68,13 +68,13 @@ void Effects_manager::add_text
 	if (!msg)			// Happens with edited games.
 		return;
 					// Don't duplicate for item.
-	for (Special_effect *each = effects; each; each = each->next)
+	for (Text_effect *each = texts; each; each = each->next)
 		if (each->is_text(item))
 			return;		// Already have text on this.
 	Text_effect *txt = new Text_effect(msg, item);
 //	txt->paint(this);		// Draw it.
 //	painted = 1;
-	add_effect(txt);
+	add_text_effect(txt);
 	}
 
 /*
@@ -90,7 +90,7 @@ void Effects_manager::add_text
 	Text_effect *txt = new Text_effect(msg,
 		gwin->get_scrolltx() + x/c_tilesize, 
 		gwin->get_scrollty() + y/c_tilesize);
-	add_effect(txt);
+	add_text_effect(txt);
 	}
 
 /*
@@ -125,6 +125,22 @@ void Effects_manager::add_effect
 	}
 
 /*
+ *	Add a text effect at the start of the chain.
+ */
+
+void Effects_manager::add_text_effect
+	(
+	Text_effect *effect
+	)
+	{
+	effect->next = texts;		// Insert into chain.
+	effect->prev = 0;
+	if (effect->next)
+		effect->next->prev = effect;
+	texts = effect;
+	}
+
+/*
  *	Remove a given object's text effect.
  */
 
@@ -133,17 +149,17 @@ void Effects_manager::remove_text_effect
 	Game_object *item		// Item text was added for.
 	)
 	{
-	for (Special_effect *each = effects; each; each = each->next)
+	for (Text_effect *each = texts; each; each = each->next)
 		if (each->is_text(item))
 			{		// Found it.
-			remove_effect(each);
+			remove_text_effect(each);
 			gwin->paint();
 			return;
 			}
 	}
 
 /*
- *	Remove a text item/sprite from the chain and delete it.
+ *	Remove a sprite from the chain and delete it.
  */
 
 void Effects_manager::remove_effect
@@ -163,6 +179,26 @@ void Effects_manager::remove_effect
 	}
 
 /*
+ *	Remove text from the chain and delete it.
+ */
+
+void Effects_manager::remove_text_effect
+	(
+	Text_effect *txt
+	)
+	{
+	if (txt->in_queue())
+		gwin->get_tqueue()->remove(txt);
+	if (txt->next)
+		txt->next->prev = txt->prev;
+	if (txt->prev)
+		txt->prev->next = txt->next;
+	else				// Head of chain.
+		texts = txt->next;
+	delete txt;
+	}
+
+/*
  *	Remove all text items.
  */
 
@@ -171,10 +207,12 @@ void Effects_manager::remove_all_effects
 	 bool repaint
 	)
 	{
-	if (!effects)
+	if (!effects && !texts)
 		return;
 	while (effects)
 		remove_effect(effects);
+	while (texts)
+		remove_text_effect(texts);
 	if (repaint)
 		gwin->paint();		// Just paint whole screen.
 	}
@@ -187,14 +225,8 @@ void Effects_manager::remove_text_effects
 	(
 	)
 	{
-	Special_effect *each = effects;
-	while (each)
-		{
-		Special_effect *next = each->next;
-		if (each->is_text())
-			remove_effect(each);
-		each = next;
-		}
+	while (texts)
+		remove_text_effect(texts);
 	gwin->set_all_dirty();
 	}
 
@@ -256,7 +288,19 @@ void Effects_manager::paint
 	(
 	)
 	{
-	for (Special_effect *txt = effects; txt; txt = txt->next)
+	for (Special_effect *effect = effects; effect; effect = effect->next)
+		effect->paint();
+	}
+
+/*
+ *	Paint all text.
+ */
+
+void Effects_manager::paint_text
+	(
+	)
+	{
+	for (Text_effect *txt = texts; txt; txt = txt->next)
 		txt->paint();
 	}
 
@@ -891,7 +935,7 @@ void Text_effect::handle_event
 	if (++num_ticks == 10)		// About 1-2 seconds.
 		{			// All done.
 		add_dirty();
-		eman->remove_effect(this);
+		eman->remove_text_effect(this);
 		return;
 		}
 					// Back into queue.

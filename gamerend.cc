@@ -286,10 +286,11 @@ void Game_window::paint
 	win->set_clip(x, y, w, h);	// Clip to this area.
 	int light_sources = render->paint_map(x, y, w, h);
 
+	effects->paint();		// Draw sprites.
 					// Draw gumps unless in dont_move mode.
 	if (!main_actor_dont_move())
         	gump_man->paint();
-	effects->paint();		// Draw text, sprites.
+	effects->paint_text();		// Draw text.
 	if (dragging)
 		dragging->paint();	// Paint what user is dragging.
 	win->clear_clip();
