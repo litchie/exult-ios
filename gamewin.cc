@@ -1661,6 +1661,8 @@ void Game_window::teleport_party
 	)
 	{
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
+	paint();			// Show first.
+	show();
 	int cnt = usecode->get_party_count();
 	for (int i = 0; i < cnt; i++)
 		{
@@ -2603,5 +2605,5 @@ void Game_window::setup_game
 			main_actor->get_cx(), main_actor->get_cy());
 	olist->setup_cache();
 	Tile_coord t = main_actor->get_abs_tile_coord();
-	olist->activate_eggs(main_actor, t.tx, t.ty, -1, -1);
+	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1);
 	}
