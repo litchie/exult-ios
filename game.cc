@@ -218,11 +218,11 @@ str_int_pair Game::get_resource(const char *name)
 }
 
 
-bool Game::show_menu()
+bool Game::show_menu(bool skip)
 {
 	int menuy = topy+120;
 					// Brand-new game in development?
-	if (is_editing() && !U7exists(MAINSHP_FLX))
+	if (skip || (is_editing() && !U7exists(MAINSHP_FLX)))
 		{
 		bool first = !U7exists(IDENTITY);
 		if (first)

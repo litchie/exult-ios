@@ -37,6 +37,7 @@
 #include "game.h"
 #include "gamewin.h"
 #include "gamemap.h"
+#include "gameclk.h"
 #include "keyring.h"
 #include "mouse.h"
 #include "rect.h"
@@ -878,14 +879,14 @@ USECODE_INTRINSIC(is_dead)
 USECODE_INTRINSIC(game_hour)
 {
 	// Return. game time hour (0-23).
-	Usecode_value u(gwin->get_hour());
+	Usecode_value u(gclock->get_hour());
 	return(u);
 }
 
 USECODE_INTRINSIC(game_minute)
 {
 	// Return minute (0-59).
-	Usecode_value u(gwin->get_minute());
+	Usecode_value u(gclock->get_minute());
 	return(u);
 }
 
@@ -907,7 +908,7 @@ USECODE_INTRINSIC(get_npc_number)
 USECODE_INTRINSIC(part_of_day)
 {
 	// Return 3-hour # (0-7, 0=midnight).
-	Usecode_value u(gwin->get_hour()/3);
+	Usecode_value u(gclock->get_hour()/3);
 	return(u);
 }
 
@@ -1600,7 +1601,7 @@ USECODE_INTRINSIC(get_timer)
 	if (tnum >= 0 && tnum < (int)(sizeof(timers)/sizeof(timers[0])))
 					// Return 0 if not set.
 		ret = timers[tnum] > 0 ?
-			(gwin->get_total_hours() - timers[tnum]) : 0;
+			(gclock->get_total_hours() - timers[tnum]) : 0;
 	else
 		{
 		cerr << "Attempt to use invalid timer " << tnum << endl;
@@ -1613,7 +1614,7 @@ USECODE_INTRINSIC(set_timer)
 {
 	int tnum = parms[0].get_int_value();
 	if (tnum >= 0 && tnum < (int)(sizeof(timers)/sizeof(timers[0])))
-		timers[tnum] = gwin->get_total_hours();
+		timers[tnum] = gclock->get_total_hours();
 	else
 		cerr << "Attempt to use invalid timer " << tnum << endl;
 	return(no_ret);
@@ -1952,7 +1953,7 @@ USECODE_INTRINSIC(nap_time)
 USECODE_INTRINSIC(advance_time)
 {
 	// Incr. clock by (parm[0]*.04min.).
-	gwin->increment_clock(parms[0].get_int_value()/25);
+	gclock->increment(parms[0].get_int_value()/25);
 	return(no_ret);
 }
 
@@ -2553,7 +2554,7 @@ USECODE_INTRINSIC(run_schedule)
 	
 	if (actor)
 	{
-		actor->update_schedule(gwin->get_hour()/3, 7);
+		actor->update_schedule(gclock->get_hour()/3, 7);
 
 	}
 
@@ -2794,7 +2795,7 @@ USECODE_INTRINSIC(infravision)
 		else
 			{
 			cheat.set_infravision(false);
-			gwin->set_palette();
+			gclock->set_palette();
 			}
 		}
 	return no_ret;

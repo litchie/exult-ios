@@ -45,6 +45,7 @@ Game_map *Game_singletons::gmap = 0;
 Effects_manager *Game_singletons::eman = 0;
 Shape_manager *Game_singletons::sman = 0;
 Usecode_machine *Game_singletons::ucmachine = 0;
+Game_clock *Game_singletons::gclock = 0;
 
 void Game_singletons::init
 	(
@@ -56,6 +57,7 @@ void Game_singletons::init
 	eman = g->get_effects();
 	sman = Shape_manager::get_instance();
 	ucmachine = g->get_usecode();
+	gclock = g->get_clock();
 	}
 
 /*

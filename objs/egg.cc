@@ -30,6 +30,7 @@
 #include "egg.h"
 #include "exult.h"
 #include "game.h"
+#include "gameclk.h"
 #include "gamewin.h"
 #include "gamemap.h"
 #include "items.h"
@@ -296,7 +297,7 @@ int Egg_object::is_active
 		return (0);		// For now... Already hatched.
 	if (flags & (1 << (int) nocturnal))
 		{			// Nocturnal.
-		int hour = gwin->get_hour();
+		int hour = gclock->get_hour();
 		if (!(hour >= 9 || hour <= 5))
 			return (0);	// It's not night.
 		}
