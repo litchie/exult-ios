@@ -69,7 +69,7 @@ the relative {offset}.
 
 Jumps to the relative {offset} provided.
 
-> 0x07	CMPS	"cmps\t%1H, %2"	"\t\t;"	"cmps()"		4	{short,offset} 0xFF	0	0	0
+> 0x07	CMPS	"cmps\t%1H, %2"	"\t\t;"	"cmps(%p,)"		4	{short,offset} 0xFF	0	0	0
 
 Pop {short} number of values from the stack, compare each one to the
 last response from the user, and jumps to the {offset} if it's not found,
@@ -172,7 +172,7 @@ Appends a string from the data segment {dataoffset} to the string register.
 
 Pushes the string at {dataoffset} onto the stack.
 
-> 0x1E	ARRC	"arrc\t%1H"	"\t\t\t;"	"arrc()"	2	{short}	0xFF	1	0	0
+> 0x1E	ARRC	"arrc\t%1H"	"\t\t\t;"	"arrc(%p,)"	2	{short}	0xFF	1	0	0
 
 Pops {short} number of elements from the stack, and creates an array of
 them, first off the stack is the first appended to the end of the array

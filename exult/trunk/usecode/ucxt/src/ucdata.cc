@@ -13,7 +13,8 @@
 #include "opcodes.h"
 #include "files/utils.h"
 
-UCData::UCData() : _noconf(false), _rawops(false), _autocomment(false),
+UCData::UCData() : _noconf(false), _rawops(false),
+                   _autocomment(false), _uselesscomment(false),
                    _verbose(false), _mode(MODE_NONE), _game(GAME_BG),
                    _output_list(false), _output_asm(false), _output_ucs(false),
                    _output_ucz(false), _mode_all(false), _mode_dis(false),
@@ -40,12 +41,12 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 
 		else if(strcmp(argv[i], "-a" )==0)  { _mode  = MODE_ALL; _mode_all=true; }
 		else if(strcmp(argv[i], "-f" )==0)  _mode    = MODE_FLAG_DUMP;
-//		else if(strcmp(argv[i], "-a" )==0)  _mode    = MODE_DISASSEMBLE_ALL;
 //		else if(strcmp(argv[i], "-c" )==0)  _mode    = MODE_OPCODE_SCAN; // Opcode scan mode
 
 		else if(strcmp(argv[i], "-nc")==0)  _noconf  = true;
 		else if(strcmp(argv[i], "-ro")==0)  _rawops  = true;
-		else if(strcmp(argv[i], "-ac")==0)  _autocomment  = true;
+		else if(strcmp(argv[i], "-ac")==0)  _autocomment = true;
+		else if(strcmp(argv[i], "-uc")==0)  _uselesscomment = true;
 		else if(strcmp(argv[i], "-v" )==0)  _verbose = true;
 
 		else if(strcmp(argv[i], "-fl" )==0)  _output_list = true;
@@ -78,32 +79,6 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 			cout << "unsupported parameter " << argv[i] << " detected. countinuing." << endl;
 		}
 	}
-/*  if( argc == 3 )
-  {
-    if( !strcmp(argv[1], "-o") )
-    {
-      char* stopstr;
-      // Opcode search
-      _search_opcode = strtoul(argv[2], &stopstr, 16);
-      if( stopstr - argv[2] < strlen(argv[2]) )
-        _search_opcode = (unsigned long) -1;
-      else
-        // Hex opcode OK
-        _mode = MODE_OPCODE_SEARCH;
-    }
-    else if( !strcmp(argv[1], "-i") )
-    {
-      char* stopstr;
-      // Intrinsic function search
-      _search_intrinsic = strtoul(argv[2], &stopstr, 16);
-      if( stopstr - argv[2] < strlen(argv[2]) )
-        _search_intrinsic = (unsigned long) -1;
-      else
-        // Hex opcode OK
-        _mode = MODE_INTRINSIC_SEARCH;
-    }
-  }
-  else*/
 }
 
 void UCData::open_usecode(const string &filename)
@@ -142,7 +117,7 @@ void UCData::disassamble()
 			if(output_ucz())
 			{
 				_funcs[i]->parse_ucs(_funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics));
-				_funcs[i]->output_ucs(cout, _funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), false);
+				_funcs[i]->output_ucs(cout, _funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), uselesscomment(), false);
 				_func_printed=true;
 			}
 
