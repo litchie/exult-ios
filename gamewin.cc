@@ -546,10 +546,7 @@ void Game_window::get_chunk_objects
 					    data[0], data[1], tilex, tiley)
 					: new Game_object(
 					    data[0], data[1], tilex, tiley);
-				if (info.get_3d_height() > 0)
-					olist->add(obj);
-				else
-					olist->add_flat(obj);
+				olist->add(obj);
 				}
 			else		// Flat.
 				olist->set_flat(tilex, tiley, id);
@@ -617,10 +614,7 @@ void Game_window::get_ifix_chunk_objects
 	for (int i = 0; i < cnt; i++, ent += 4)
 		{
 		Game_object *obj = new Game_object(ent);
-		if (obj->get_lift() == 0 && get_info(obj).get_3d_height() == 0)
-			olist->add_flat(obj);
-		else
-			olist->add(obj);
+		olist->add(obj);
 		}
 	delete[] entries;		// Done with buffer.
 	}
@@ -1236,7 +1230,7 @@ int Game_window::paint_chunk_objects
 	int save_skip = skip_lift;
 	if (skip_above_actor < skip_lift)
 		skip_lift = skip_above_actor;
-	Object_iterator next(olist);
+	Nonflat_object_iterator next(olist);
 	while ((obj = next.get_next()) != 0)
 		if (obj->render_seq != render_seq)
 			paint_object(obj);
