@@ -24,6 +24,8 @@ libgumps_la_SOURCES = \
 	misc_buttons.cc	\
 	misc_buttons.h	\
 	Modal_gump.h	\
+	Notebook_gump.cc	\
+	Notebook_gump.h		\
 	Paperdoll_gump.cc	\
 	Paperdoll_gump.h	\
 	Paperdoll_gump_info.cc	\

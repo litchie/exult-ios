@@ -98,6 +98,7 @@ void ActionPlayMusic(int* params);
 void ActionNaked(int* params);
 void ActionPetra(int* params);
 void ActionSkinColour(int* params);
+void ActionNotebook(int* params);
 void ActionSoundTester(int* params);
 void ActionTest(int* params);
 
