@@ -29,6 +29,7 @@
 #include "party.h"
 #include "actors.h"
 #include "gamewin.h"
+#include "frameseq.h"
 
 using std::cout;
 using std::endl;
@@ -94,7 +95,6 @@ bool Party_manager::remove_from_party
 					// Shift the rest down.
 	for (int i = id + 1; i < party_count; i++)
 		{
-		Game_window *gwin = Game_window::get_instance();
 		Actor *npc2 = gwin->get_npc(party[i]);
 		if (npc2)
 			npc2->set_party_id(i - 1);
@@ -200,7 +200,6 @@ void Party_manager::link_party
 	)
 	{
 	// avatar is a party member too
-	Game_window *gwin = Game_window::get_instance();
 	gwin->get_main_actor()->set_flag(Obj_flags::in_party);
 					// You own your own stuff.
 	gwin->get_main_actor()->set_flag_recursively(Obj_flags::okay_to_take);
@@ -239,5 +238,118 @@ void Party_manager::link_party
 		npc->set_flag_recursively(Obj_flags::okay_to_take);
 		npc->set_flag (Obj_flags::in_party);
 		}
+	}
+
+/*
+ *	For each party member, this array has the party ID's (or -1) of the
+ *	two member's followers, arrayed as follows:
+ *			A
+ *		       0 1
+ *		      2 3 4
+ *		     5 6 7 8
+ */
+static int followers[EXULT_PARTY_MAX + 1][2] = {
+	{0, 1},				// These follow Avatar (ID = -1).
+	{2, 3},				// Follow 0.
+	{-1, 4},			// Follow 1.
+	{5, 6},				// Follow 2.
+	{-1, -1},			// Nobody follows 3.
+	{7, 8},				// Follow 4.
+	{-1, -1}, {-1, -1}, {-1, -1}};
+
+/*
+ *	Offsets for the follower, depending on direction (0-3, with
+ *	0 = North, 1 = East, 2 = South, 3 = West).
+ */
+static int left_offsets[4][2] = {	// Follower is behind and to left.
+	{-2, 2},			// North.
+	{-2, -2},			// East.
+	{2, -2},			// South.
+	{2, 2} };			// West.
+static int right_offsets[4][2] = {	// Follower is behind and to right.
+	{2, 2},				// North.
+	{-2, 2},			// East.
+	{-2, -2},			// South.
+	{2, -2} };			// West.
+
+/*
+ *	To walk in formation, each party member will have one or two other
+ *	party members who will follow him on each step.
+ */
+
+void Party_manager::move_followers
+	(
+	Actor *npc,			// Party member who just stepped.
+	int dir				// Direction (0-7) they're going.
+	)
+	{
+	int id = npc->get_party_id();	// (-1 if Avatar).
+	Tile_coord pos = npc->get_tile();
+	int lnum = followers[1 + id][0], rnum = followers[1 + id][1];
+	if (lnum == -1 && rnum == -1)
+		return;			// Nothing to do.
+	int dir4 = dir/2;		// 0-3 now.
+	Actor *lnpc = lnum == -1 ? 0 : gwin->get_npc(lnum);
+	Actor *rnpc = rnum == -1 ? 0 : gwin->get_npc(rnum);
+					// Have each take a step.
+	if (lnpc)
+		step(lnpc, dir, pos + Tile_coord(
+			left_offsets[dir4][0], left_offsets[dir4][1], 0));
+	if (rnpc)
+		step(rnpc, dir, pos + Tile_coord(
+			right_offsets[dir4][0], right_offsets[dir4][1], 0));
+	if (lnpc)
+		move_followers(lnpc, dir);
+	if (rnpc)
+		move_followers(rnpc, dir);
+	}
+
+/*
+ *	Move one follower to its destination (if possible).
+ */
+
+void Party_manager::step
+	(
+	Actor *npc,
+	int dir,			// Direction we're walking (0-7).
+	Tile_coord dest			// Destination tile.
+	)
+	{
+	Tile_coord pos = npc->get_tile();	// Current position.
+					// Get adjacent tile in given dir.
+	Tile_coord adj = pos.get_neighbor(dir);
+					// See if we're past desired spot.
+	if (dest.tx < pos.tx)		// Dest. to our left?
+		{
+		if (adj.tx > pos.tx)	// But walking right.
+			dest.tx = pos.tx;
+		}
+	else if (dest.tx > pos.tx)
+		{
+		if (adj.tx < pos.tx)	// Walking left?
+			dest.tx = pos.tx;
+		}
+	if (dest.ty < pos.ty)		// Dest. North?
+		{
+		if (adj.ty > pos.ty)	// But walking South?
+			dest.ty = pos.ty;
+		}
+	else if (dest.ty > pos.ty)	// Dest. South?
+		{
+		if (adj.ty < pos.ty)
+			dest.ty = pos.ty;
+		}
+	if (pos == dest)
+		return;			// Stay pat.
+	Frames_sequence *frames = npc->get_frames(dir);
+	int& step_index = npc->get_step_index();
+	if (!step_index)		// First time?  Init.
+		step_index = frames->find_unrotated(npc->get_framenum());
+					// Get next (updates step_index).
+	int frame = frames->get_next(step_index);
+	if (npc->step(dest, frame))
+		return;			// Succeeded.
+	//+++++Obviously, we should work around obstacles.
+	frames->decrement(step_index);	// We didn't take the step.
 	}
 
