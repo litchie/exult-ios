@@ -75,7 +75,7 @@ void Shape_draw::draw_shape_centered
 	)
 	{
 	iwin->fill8(0);			// ++++Which color?
-	if (shapenum < 0)
+	if (shapenum < 0 || shapenum >= ifile->get_num_shapes())
 		return;
 	Shape_frame *shape = ifile->get_shape(shapenum, framenum);
 	if (!shape)

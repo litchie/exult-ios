@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "dirbrowser.h"
 #include "servemsg.h"
 #include "utils.h"
+#include "u7drag.h"
 
 ExultStudio *ExultStudio::self = 0;
 
@@ -130,11 +131,12 @@ extern "C" void on_main_window_destroy_event
 
 
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
-	vgafile(0), chunkfile(0), eggwin(0), 
+	vgafile(0), facefile(0), chunkfile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
 	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), 
 	egg_ctx(0),
-	waiting_for_server(0), npcwin(0), npc_draw(0), npc_ctx(0)
+	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
+	npc_ctx(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -194,6 +196,7 @@ ExultStudio::~ExultStudio()
 	delete npc_draw;
 	npcwin = 0;
 	delete vgafile;
+	delete facefile;
 	delete chunkfile;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
@@ -221,16 +224,26 @@ void ExultStudio::set_browser(const char *name, Object_browser *obj)
 Object_browser *ExultStudio::create_shape_browser(const char *fname)
 {
 	delete_shape_browser();
+	int u7drag_type = U7_SHAPE_UNK;
+	if (strcasecmp(fname, "shapes.vga") == 0)
+		u7drag_type = U7_SHAPE_SHAPES;
+	else if (strcasecmp(fname, "gumps.vga") == 0)
+		u7drag_type = U7_SHAPE_GUMPS;
+	else if (strcasecmp(fname, "faces.vga") == 0)
+		u7drag_type = U7_SHAPE_FACES;
+	else if (strcasecmp(fname, "sprites.vga") == 0)
+		u7drag_type = U7_SHAPE_SPRITES;
 					// Get image file for this path.
 	char *fullname = g_strdup_printf("%s%s", static_path, fname);	
-	ifile = new Vga_file(fullname);	// (We should share 'shapes.vga'.).
+					// (We should share 'shapes.vga'.).
+	ifile = new Vga_file(fullname, u7drag_type);
 	g_free(fullname);
 	if (!ifile->is_good()) {
 		cerr << "Error opening image file '" << fname << "'.\n";
 		abort();
 	}
 	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64);
-	if(!strcasecmp(fname,"shapes.vga")) {
+	if(u7drag_type == U7_SHAPE_SHAPES) {
 		// Read in shape names.
 		int num_names = ifile->get_num_shapes();
 		names = new char *[num_names];
@@ -385,7 +398,11 @@ void ExultStudio::set_static_path(const char *path)
 	palbuf = (unsigned char *) pal.retrieve(len);
 	delete vgafile;			// Same for shapes file.
 	char *fullname = g_strdup_printf("%s%s", static_path, "shapes.vga");
-	vgafile = new Vga_file(fullname);
+	vgafile = new Vga_file(fullname, U7_SHAPE_SHAPES);
+	g_free(fullname);
+	delete facefile;			// Same for shapes file.
+	fullname = g_strdup_printf("%s%s", static_path, "faces.vga");
+	facefile = new Vga_file(fullname, U7_SHAPE_FACES);
 	g_free(fullname);
 	GtkWidget *file_list = glade_xml_get_widget( app_xml, "file_list" );
 	

@@ -870,15 +870,16 @@ void Shape_file::save(DataSource& shape_source)
 
 Vga_file::Vga_file
 	(
-	const char *nm			// Path to file.
-	) : shape_source(0), num_shapes(0), shapes(0)
+	const char *nm,			// Path to file.
+	int u7drag			// # from u7drag.h, or -1.
+	) : shape_source(0), num_shapes(0), shapes(0), u7drag_type(u7drag)
 	{
 	load(nm);
 	}
 
 Vga_file::Vga_file
 	(
-	) : shape_source(0), num_shapes(0), shapes(0)
+	) : shape_source(0), num_shapes(0), shapes(0), u7drag_type(-1)
 	{
 		// Nothing to see here !!!
 	}

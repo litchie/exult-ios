@@ -159,12 +159,15 @@ class Vga_file
 	{
 	std::ifstream file;
 	DataSource *shape_source;
+	int u7drag_type;		// # from u7drag.h, or -1.
 protected:
 	int num_shapes;			// Total # of shapes.
 	Shape *shapes;			// List of ->'s to shapes' lists
 public:
-	Vga_file(const char *nm);
+	Vga_file(const char *nm, int u7drag = -1);
 	Vga_file();
+	int get_u7drag_type() const
+		{ return u7drag_type; }
 	void load(const char *nm);
 	virtual ~Vga_file();
 	int get_num_shapes()

@@ -1465,7 +1465,7 @@ void Actor::activate
 			schedules[i].ty = p.ty;
 			}
 		if (Npc_actor_out(client_socket, addr, t.tx, t.ty, t.tz,
-			get_shapenum(), get_framenum(), 
+			get_shapenum(), get_framenum(), get_face_shapenum(),
 			name, npc_num, ident, usecode, properties, attack_mode,
 			alignment, flags, siflags, type_flags,
 				num_schedules, schedules) != -1)
@@ -1522,7 +1522,7 @@ void Actor::update_from_studio
 #ifdef XWIN
 	unsigned long addr;
 	int tx, ty, tz;
-	int shape, frame;
+	int shape, frame, face;
 	std::string name;
 	short npc_num, ident;
 	int usecode;
@@ -1534,7 +1534,7 @@ void Actor::update_from_studio
 	short num_schedules;
 	Serial_schedule schedules[8];
 	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame,
-		name, npc_num, ident, usecode, 
+		face, name, npc_num, ident, usecode, 
 			properties, attack_mode, alignment,
 			oflags, siflags, type_flags, num_schedules, schedules))
 		{
@@ -1574,7 +1574,6 @@ void Actor::update_from_studio
 			return;
 			}
 		npc->npc_num = gwin->add_npc(npc);
-		npc->face_num = 49;	//++++++Testing.  Add to GUI.
 		if (npc->npc_num != npc_num)
 			cerr << "New NPC was assigned a different #" << endl;
 		if (client_socket >= 0)
@@ -1587,7 +1586,7 @@ void Actor::update_from_studio
 		npc->add_dirty(gwin);
 		npc->usecode = usecode;
 		}
-	//++++Got to set NPC#.
+	npc->face_num = face;
 	npc->set_ident(ident);
 	for (int i = 0; i < 12; i++)
 		npc->set_property(i, properties[i]);
