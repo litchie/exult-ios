@@ -385,6 +385,43 @@ void Monster_actor::die
 #if 0	/* ++++Developing: */
 
 /*
+ *	Get the tiles where slimes adjacent to one in a given position should
+ *	be found.
+ */
+
+static void Get_slime_neighbors
+	(
+	Tile_coord pos,			// Position to look around.
+	Tile_coord *neighbors		// N,E,S,W tiles returned.
+	)
+	{
+					// Offsets to neighbors 2 tiles away.
+	static int neighbors[8] = {0,-2, 2,0, 0,2, -2,0};
+	for (ind dir = 0; dir < 4; dir++)
+		neighbors[dir] = pos +Tile_coord(neighbors[2*dir],
+						    neighbors[2*dir + 1], 0);
+	}
+
+/*
+ *	Find whether a slime is a neighbor of a given spot.
+ *
+ *	Output:	Direction (0-3 for N,E,S,W), or -1 if not found.
+ */
+
+int Find_neighbor
+	(
+	Game_object *slime,
+	Tile_coord *neighbors		// Neighboring spots to check.
+	)
+	{
+	Tile_coord pos = slime->get_abs_tile_coord();
+	for (int dir = 0; dir < 4; dir++)
+		if (pos == neighbors[dir])
+			return dir;
+	return -1;			// Not found.
+	}
+
+/*
  *	Update the frame of a slime and its neighbors after it has been moved.
  *	The assumption is that slimes are 2x2 tiles, and that framenum/2 is
  *	based on whether there are adjoining slimes to the N, W, S, or E, with
@@ -399,8 +436,8 @@ void Slime_actor::update_frames
 					//   most 2 tiles apart.
 	)
 	{
-					// Offsets to neighbors 2 tiles away.
-	static int neighbors[8] = {0,-2, 2,0, 0,2, -2,0};
+	Tile_coord neighbors[4];	// Gets surrounding spots for slimes.
+	int dir;			// Get direction of neighbor.
 	Game_window *gwin = Game_window::get_game_window();
 	Actor_vector nearby;		// Get nearby slimes.
 	if (src.tx != -1)
@@ -412,56 +449,42 @@ void Slime_actor::update_frames
 		Game_object::find_nearby_actors(nearby, dest, 529, 2);
 	if (src.tx != -1)		// Update neighbors we moved from.
 		{
+		Get_slime_neighbors(src, neighbors);
 		for (Actor_vector::const_iterator it = nearby.begin();
 						it != nearby.end(); ++it)
 			{
 			Game_object *slime = *it;
-			if (*it == this)
-				continue;
-			Tile_coord pos = slime->get_abs_tile_coord();
-			for (ind dir = 0; dir < 4; dir++)
-					// In a neighboring spot?
-				if (pos == src + Tile_coord(neighbors[2*dir],
-						    neighbors[2*dir + 1], 0))
-					{
-					int ndir = (dir+2)%4;
+			if (slime != this && 
+			    (dir = Find_neighbor(slime, neighbors)) >= 0)
+				{
+				int ndir = (dir+2)%4;
 					// Turn off bit (1<<ndir)*2, and set
 					//   bit 0 randomly.
-					slime->set_frame(
-					 (slime->get_framenum()&
-							~(((1<<ndir)*2)|1))
-						|(rand()%2));
-					gwin->add_dirty(slime);
-					break;
-					}
+				slime->set_frame((slime->get_framenum()&
+					~(((1<<ndir)*2)|1)) |(rand()%2));
+				gwin->add_dirty(slime);
+				}
 			}
 		}
 	if (dest.tx != -1)		// Update neighbors we moved to.
 		{
 		int frnum = 0;		// Figure our new frame too.
+		Get_slime_neighbors(dest, neighbors);
 		for (Actor_vector::const_iterator it = nearby.begin();
 						it != nearby.end(); ++it)
 			{
 			Game_object *slime = *it;
-			if (*it == this)
-				continue;
-			Tile_coord pos = slime->get_abs_tile_coord();
-			for (ind dir = 0; dir < 4; dir++)
-					// In a neighboring spot?
-				if (pos == dest + Tile_coord(neighbors[2*dir],
-						    neighbors[2*dir + 1], 0))
-					{
-					frnum |= (1<<dir)*2;
-					int ndir = (dir+2)%4;
+			if (slime != this && 
+			    (dir = Find_neighbor(slime, neighbors)) >= 0)
+				{	// In a neighboring spot?
+				frnum |= (1<<dir)*2;
+				int ndir = (dir+2)%4;
 					// Turn on bit (1<<ndir)*2, and set
 					//   bit 0 randomly.
-					slime->set_frame(
-					 (slime->get_framenum()|
-							(((1<<ndir)*2)|1))
-						|(rand()%2));
-					gwin->add_dirty(slime);
-					break;
-					}
+				slime->set_frame((slime->get_framenum()&~1)|
+						((1<<ndir)*2)|(rand()%2));
+				gwin->add_dirty(slime);
+				}
 			}
 		set_frame(frnum|(rand()%2));
 		gwin->add_dirty(this);
