@@ -180,7 +180,7 @@ void Palette::fade_out(int cycles)
 		        win->set_palette(pal1, max_val, brightness);
 			win->show();
 		}
-	        win->set_palette(pal1, max_val, brightness);
+//Messes up sleep.	        win->set_palette(pal1, max_val, brightness);
 	}
 
 //	Find index (0-255) of closest color (r,g,b < 64).
