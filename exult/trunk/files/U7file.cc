@@ -2,9 +2,9 @@
 #include "Flex.h"
 #include "IFF.h"
 #include "Table.h"
-#include "utils.h"
 #include <cstdio>
 #include <iostream>
+#include "utils.h"
 
 using std::string;
 

@@ -25,10 +25,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	DEBUGFLEX 0
 
 #include "Flex.h"
-#include "utils.h"
 
 #include <cstdio>
 #include <iostream>
+#include "utils.h"
 
 using std::string;
 
