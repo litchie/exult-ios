@@ -1,3 +1,6 @@
+2001-11-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Audio.h: the other is_track_playing didn't check if midi==NULL either
+
 2001-11-23  Dominik Reichardt <gigdr@tesionmail.de>
 	* Faq, Readme deleted
 	* docs/ added FAQ.html and ReadMe.html
