@@ -863,7 +863,7 @@ static void Handle_keystroke
 		switch (chr)
 			{
 			case '1':
-				if(ctrl && !alt) {		// Ctrl-1 : Sound Testser
+				if(!ctrl && alt) {		// Alt-1 : Sound Testser
 					cheat.sound_tester();
 				}
 				break;

@@ -52,6 +52,7 @@ class Npc_face_info;
 class Egg_object;
 class Fonts_vga_file;
 class Ireg_game_object;
+class Font;
 
 /*
  *	The main game window:
@@ -609,6 +610,7 @@ public:
 					// Get text height, baseline.
 	int get_text_height(int fontnum);
 	int get_text_baseline(int fontnum);
+	Font *get_font(int fontnum);
 private:
 	void drop(int x, int y);
 public:

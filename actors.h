@@ -68,6 +68,9 @@ public:
 		manual = 9
 		};
 private:
+					// Party positions
+	const static short Actor::party_pos[4][10][2];
+
 	Attack_mode attack_mode;
 					// A frame sequence for each dir.:
 	static Frames_sequence *frames[8];
@@ -83,7 +86,7 @@ protected:
 	Schedule *schedule;		// Current schedule.
 	bool dormant;		// I.e., off-screen.
 	short alignment;		// 'Feelings' towards Ava. See below.
-	Game_object *spots[14];		// Where things can go.  See 'Spots'
+	Game_object *spots[18];		// Where things can go.  See 'Spots'
 					//   below for description.
 	bool two_handed;		// Carrying a two-handed item.
 	bool two_fingered;			// Carrying gauntlets (both fingers)
@@ -142,7 +145,12 @@ public:
 		torso = 9,
 		neck = 10,
 		ammo = 11,
-		back2 = 12,
+		back2h_spot = 12,	// SI (2 Handed weapons, Bedroll, Bodies)
+		shield_spot = 13,	// SI (Sheild behind Backpack)
+		ears_spot = 14,		// SI
+		cloak_spot = 15,	// SI
+		hands2_spot = 16,	// SI (gloves, gauntlets)
+		ucont_spot = 17,	// SI Usecode Container
 		lrhand = 100,		// Special:  uses lhand & rhand.
 		lrfinger = 101		// Special:  uses lfinger & rfinger
 		};

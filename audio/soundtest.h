@@ -19,6 +19,11 @@
 
 class SoundTester
 	{
+	int song;
+	int sfx;
+	int voice;
+	int active;
+	bool repeat;
 public:
 		SoundTester();
 		~SoundTester();

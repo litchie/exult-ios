@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Game_window;
 class ShapeBrowser;
+class SoundTester;
 
 class Cheat {
  public:
@@ -33,6 +34,7 @@ class Cheat {
 private:
   Game_window *gwin;
   ShapeBrowser *browser;
+  SoundTester *tester;
 
   bool god_mode;
   bool wizard_mode;

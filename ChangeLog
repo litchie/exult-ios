@@ -1,3 +1,30 @@
+2001-01-04  Ryan Nunn <triforce@merlin.net.au>
+	* gamewin.cc : Font *get_font(fontnum) method
+	* gamewin.h : Font *get_font(fontnum) method
+	* shapes/fontvga.h : Font *get_font(fontnum) method
+	* shapes/font.cc : paint font fixedwidth methods
+	* shapes/font.h : paint font fixedwidth methods
+	* browser.cc : Non 320x200 resolution fixes. Added extra info. Now
+	               uses fixed width font rendering. Some tweaks. Arrow,
+	               PageUp and PageDown keys can now be used.
+	* cheat.cc : Only 1 SoundTester is created
+	* cheat.h : Only 1 SoundTester is created
+	* exult.cc : SoundTester is now Alt-1 instead of Ctrl-1
+	* audio/soundtest.h :  SoundTester remembers settings.
+	* audio/soundtest.cc : SoundTester remembers settings. Now uses fixed
+	                       width font rendering.
+	* ready.h : Work on SI ready types
+	* actorio.cc : Don't think i did much of anything here
+	* gumps/Paperdoll_gump.h : Work on SI readied spots. Work on paperdolls
+	* gumps/Paperdoll_gump.cc : Work on SI readied spots.
+	* actors.h : Work on SI readied spots
+	* actors.cc : Some work on Party Formations. Work on SI ready types and
+	              readied sport
+	* game.cc : Correct Mouse shape now used for game menus.
+	* objs/contain.cc : Fixed divide by zero problem.
+	* fnames.h : Added SISPEECH.
+	* audio/Audio.cc : SISPEECH is now used when playing Serpent Isle.
+
 2001-01-03  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode/compiler/Makefile.am: don't build ucc with --disable-tools
 	* usecode/compiler/.cvsignore: added

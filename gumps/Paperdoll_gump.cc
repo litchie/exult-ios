@@ -39,14 +39,16 @@ short Paperdoll_gump::diskx = 123, Paperdoll_gump::disky = 137;
 short Paperdoll_gump::heartx = 98, Paperdoll_gump::hearty = 137;
 short Paperdoll_gump::combatx = 51, Paperdoll_gump::combaty = 142;
 short Paperdoll_gump::cstatx = 73, Paperdoll_gump::cstaty = 137;
-short Paperdoll_gump::coords[26] = {
-	114, 10,	/* ears */	115, 24,	/* back */
-	115, 37,	/* belt */	37, 56,		/* lhand */
+short Paperdoll_gump::coords[36] = {
+	114, 10,	/* head */	115, 24,	/* back */
+	115, 37,	/* belt */	115, 55,	/* lhand */
 	115, 71,	/* lfinger */	114, 85,	/* legs */
 	76, 98,		/* feet */	35, 70,		/* rfinger */
-	115, 55,	/* rhand */	37, 37,		/* torso */
-	37, 24,		/* head */	37, 11,		/* ammo */
-	57, 51		/* back2 */
+	37, 56,		/* rhand */	37, 37,		/* torso */
+	37, 24,		/* neck */	37, 11,		/* ammo */
+	57, 51,		/* back2 */	51, 12,		/* back 3 (shield) */
+	57, 51,		/* ears */	13, 25,		/* cloak */
+	25, 14,		/* gloves */	-1, -1		/* usecode container */
 	};
 
 /*

@@ -221,7 +221,7 @@ str_int_pair Game::get_resource(const char *name)
 void Game::show_menu()
 {
 	int menuy = topy+120;
-	ExultDataSource mouse_data("<DATA>/exult.flx", 16);
+	ExultDataSource mouse_data(MAINSHP_FLX, 19);
 	menu_mouse = new Mouse(gwin, mouse_data);
 	
 	top_menu();

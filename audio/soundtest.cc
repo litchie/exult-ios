@@ -21,8 +21,9 @@
 #include "soundtest.h"
 #include "Scroll_gump.h"
 #include "mouse.h"
+#include "font.h"
  
-SoundTester::SoundTester()
+SoundTester::SoundTester() : song(0), sfx(0), voice(0), active(0), repeat(true)
 	{
 	}
 
@@ -46,62 +47,95 @@ void SoundTester::test_sound()
 {
 		
 	Game_window *gwin = Game_window::get_game_window();
+	Image_buffer8 *ibuf = gwin->get_win()->get_ib8();
+	Font *font = gwin->get_font(4);
+
 	Audio *audio = Audio::get_ptr();
 	Scroll_gump *scroll = NULL;
 
-	int song = 0;
-	int sfx = 0;
-	int voice = 0;
-	int active = 0;
-
-	char buf[255];
+	char buf[256];
 	bool looping = true;
 	bool redraw = true;
 	SDL_Event event;
-	//int active;
 
+	int centerx = gwin->get_width()/2;
+	int centery = gwin->get_height()/2;
+	int left = centerx - 65;
+	int first_line = centery-53;
+	int line;
+	int height = 6;
+	int width = 6;
+	
 	Mouse::mouse->hide();
 	
 	do
 	{
 		        if (redraw)
 		        {
+		     
 			scroll = new Scroll_gump();
-			
-			scroll->add_text("Sound Tester\n");
-			
-			scroll->add_text("Keys\n");
-			
-			scroll->add_text("Up - Previous Type\n"
-					 "Down - Next Type\n"
-					 "Left - Previous Number\n"
-					 "Right - Next Number\n"
-					 "Enter - Play it\n");
-
-			sprintf (buf, "%2s Music %c %3i %c~",
-				active==0?"->":"",
-				active==0?'<':' ',
-				song,
-				active==0?'>':' ');
-				
-			scroll->add_text(buf);
-
-			sprintf (buf, "%2s SFX   %c %3i %c~",
-				active==1?"->":"",
-				active==1?'<':' ',
-				sfx,
-				active==1?'>':' ');
-			scroll->add_text(buf);
-
-			sprintf (buf, "%2s Voice %c %3i %c~",
-				active==2?"->":"",
-				active==2?'<':' ',
-				voice,
-				active==2?'>':' ');
-			scroll->add_text(buf);
-
-
+			scroll->add_text(" ~");
 			scroll->paint(gwin);
+
+			line = first_line;
+			font->paint_text_fixedwidth(ibuf, "Sound Tester", left, line, width);
+			line += height;
+			font->paint_text_fixedwidth(ibuf, "------------", left, line, width);
+
+			line += height*2;
+			font->paint_text_fixedwidth(ibuf, "   Up - Previous Type", left, line, width);
+			
+			line += height;
+			font->paint_text_fixedwidth(ibuf, " Down - Next Type", left, line, width);
+			
+			line += height;
+			font->paint_text_fixedwidth(ibuf, " Left - Previous Number", left, line, width);
+			
+			line += height;
+			font->paint_text_fixedwidth(ibuf, "Right - Next Number", left, line, width);
+
+			line += height;
+			font->paint_text_fixedwidth(ibuf, "Enter - Play it", left, line, width);
+
+			line += height;
+			font->paint_text_fixedwidth(ibuf, "  ESC - Leave", left, line, width);
+
+			line += height;
+			font->paint_text_fixedwidth(ibuf, "    R - Repeat Music", left, line, width);
+
+			line += height;
+			font->paint_text_fixedwidth(ibuf, "    S - Stop Music", left, line, width);
+
+
+			sprintf (buf,	"%2s Music %c %3i %c %s",
+					active==0?"->":"",
+					active==0?'<':' ',
+					song,
+					active==0?'>':' ',
+					repeat?"- Repeat":"");
+			line += height*2;
+			font->paint_text_fixedwidth(ibuf, buf, left, line, width);
+			
+			
+			sprintf (buf,	"%2s SFX   %c %3i %c",
+					active==1?"->":"",
+						active==1?'<':' ',
+					sfx,
+					active==1?'>':' ');
+
+			line += height*2;
+			font->paint_text_fixedwidth(ibuf, buf, left, line, width);
+
+
+			sprintf (buf,	"%2s Voice %c %3i %c",
+					active==2?"->":"",
+					active==2?'<':' ',
+					voice,
+					active==2?'>':' ');
+
+			line += height*2;
+			font->paint_text_fixedwidth(ibuf, buf, left, line, width);
+
 			gwin->show();
 			delete scroll;
 			redraw = false;
@@ -123,7 +157,7 @@ void SoundTester::test_sound()
 				if (active == 0)
 				{
 					audio->stop_music();
-					audio->start_music (song, false, 0);
+					audio->start_music (song, repeat, 0);
 				}
 				else if (active == 1)
 				{
@@ -136,6 +170,12 @@ void SoundTester::test_sound()
 				}
 				break;
 				
+			case 'r':
+				repeat = repeat?false:true;
+				break;
+			case 's':
+				audio->stop_music();
+				break;
 			case SDLK_UP:
 				active = (active + 2) % 3;
 				break;

@@ -835,6 +835,11 @@ void Game_window::read_ireg_objects
 		Ireg_game_object *obj;
 		int is_egg = 0;		// Fields are eggs.
 					// An "egg"?
+		
+		if (shnum == 486 && Game::get_game_type() == SERPENT_ISLE)
+		{
+			cerr << "Usecode Container. Entlen = " << entlen << endl;
+		}
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
 			int anim = info.is_animated() ||
@@ -2879,6 +2884,8 @@ int Game_window::get_text_height(int fontnum)
 int Game_window::get_text_baseline(int fontnum)
 	{ return fonts->get_text_baseline(fontnum); }
 
+Font *Game_window::get_font(int fontnum)
+	{ return fonts->get_font(fontnum); }
 
 
 
