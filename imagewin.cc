@@ -953,6 +953,30 @@ void Image_window::show
 		SDL_UpdateRect(surface, 0, 0, ibuf->width, ibuf->height);
 	}
 
+/*
+ *	Repaint portion of window.
+ */
+
+void Image_window::show
+	(
+	int x, int y, int w, int h
+	)
+	{
+	if (!ready())
+		return;
+	int srcx = 0, srcy = 0;
+	if (!ibuf->clip(srcx, srcy, w, h, x, y))
+		return;
+	if (show_scaled)		// 2X scaling?
+		(this->*show_scaled)();	//+++++Not implemented yet.
+	else
+		SDL_UpdateRect(surface, x, y, w, h);
+	}
+
+
+/*
+ *	Toggle fullscreen.
+ */
 void Image_window::toggle_fullscreen() {
         Uint32 flags;
         int w, h, bpp;

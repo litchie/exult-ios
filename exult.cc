@@ -367,6 +367,7 @@ static int Filter_intro_events
  */
 static int dragging = 0;		// Object or gump being moved.
 static int dragged = 0;			// Flag for when obj. moved.
+static int mouse_update = 0;		// Mouse moved/changed.
 static unsigned int altkeys = 0;	// SDL doesn't seem to handle ALT
 					//   right, so we'll keep track.
 					// 1/6, 1/10, 1/20 frame rates.
@@ -393,6 +394,7 @@ static void Handle_events
 		Delay();		// Wait a fraction of a second.
 #ifdef MOUSE
 		mouse->hide();		// Turn off mouse.
+		mouse_update = 0;
 #endif
 		SDL_Event event;
 		while (!*stop && SDL_PollEvent(&event))
@@ -431,7 +433,9 @@ static void Handle_events
 			gwin->get_win()->rotate_colors(0xe8, 8, 0);
 			gwin->get_win()->rotate_colors(0xe0, 8, 1);
 			}
-		gwin->show();		// Blit to screen if necessary.
+		if (!gwin->show() &&	// Blit to screen if necessary.
+		    mouse_update)	// If not, did mouse change?
+			mouse->blit_dirty();
 		}
 	}
 
@@ -538,7 +542,7 @@ static void Handle_event
 				avatar_speed = fast_speed;
 				}
 			}
-		gwin->set_painted();	// We'll need to blit.
+		mouse_update = 1;	// Need to blit mouse.
 #endif
 		if (gwin->get_mode() != Game_window::normal &&
 		    gwin->get_mode() != Game_window::gump)
@@ -565,6 +569,7 @@ static void Handle_event
 				SDL_GetMouseState(&x, &y);
 				mouse->set_location(x, y);
 				}
+			gwin->set_painted();
 			}
 #endif
 		if (event.active.state & SDL_APPINPUTFOCUS)
@@ -915,6 +920,7 @@ static int Get_click
 		Delay();		// Wait a fraction of a second.
 #ifdef MOUSE
 		mouse->hide();		// Turn off mouse.
+		mouse_update = 0;
 #endif
 		while (SDL_PollEvent(&event))
 			switch (event.type)
@@ -930,7 +936,7 @@ static int Get_click
 			case SDL_MOUSEMOTION:
 #ifdef MOUSE
 				mouse->move(event.motion.x, event.motion.y);
-				gwin->set_painted();
+				mouse_update = 1;
 #endif
 				break;
 			case SDL_QUIT:
@@ -954,7 +960,9 @@ static int Get_click
 #ifdef MOUSE
 		mouse->show();		// Turn on mouse.
 #endif
-		gwin->show();		// Blit to screen if necessary.
+		if (!gwin->show() &&	// Blit to screen if necessary.
+		    mouse_update)
+			mouse->blit_dirty();
 		}
 	return (0);			// Shouldn't get here.
 	}

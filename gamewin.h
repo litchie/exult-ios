@@ -231,18 +231,21 @@ public:
 	void resized(unsigned int neww, unsigned int newh);
 	inline void set_painted()		// Force blit.
 		{ painted = 1; }
-	void show()
+	int show()			// Returns 1 if blit occurred.
 		{
 		if (painted)
 			{
 			win->show();
 			painted = 0;
+			return 1;
 			}
+		return 0;
 		}
-	void show(int)
+	int show(int)
 		{
 		win->show();
 		painted = 0;
+		return 1;
 		}
 	void center_view(Tile_coord t);	// Center view around t.
 					// Scroll if necessary.
