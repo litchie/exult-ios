@@ -1248,8 +1248,9 @@ void Game_window::read_ireg_objects
 							entry[10]);
 					// Read container's objects.
 			if (type)	// (0 if empty.)
-				{
-				read_ireg_objects(ireg, scx, scy, obj, oflags);
+				{	// Don't pass along invisibility!
+				read_ireg_objects(ireg, scx, scy, obj, 
+					oflags & ~(1<<Obj_flags::invisible));
 				obj->elements_read();
 				}
 			}
