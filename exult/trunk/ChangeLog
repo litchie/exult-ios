@@ -1,3 +1,7 @@
+2002-01-07  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* tools/expack.cc broken. Locally provided getline() fails to operate correctly on the last line. Use standard fstream getline() instead. Made sure it handles MAC line-endings.
+
 2002-01-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* exult.cc: Init. map for BuildGameMap().
