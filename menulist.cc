@@ -250,12 +250,6 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 		} else if(event.type==SDL_KEYDOWN) {
 			mouse->hide();
 			mouse->blit_dirty();
-			if (!selected)
-			{
-			// if unselected (by 'MouseOut' event), just re-select
-				set_selection(selection);
-				continue;
-			}
 			switch(event.key.keysym.sym) {
 			case SDLK_x:
 				if(event.key.keysym.mod & KMOD_ALT) {
@@ -270,12 +264,24 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 				break;
 #endif
 			case SDLK_UP:
+				if (!selected)
+				{
+					// if unselected (by 'MouseOut' event), just re-select
+					set_selection(selection);
+					continue;
+				}
 				if(selection<=0)
 					set_selection(count-1);
 				else
 					set_selection(selection-1);
 				continue;
 			case SDLK_DOWN:
+				if (!selected)
+				{
+					// if unselected (by 'MouseOut' event), just re-select
+					set_selection(selection);
+					continue;
+				}
 				if(selection>=(count-1))
 					set_selection(0);
 				else
@@ -296,7 +302,7 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 				break;
 			}
 		} else if(event.type==SDL_QUIT) {
-                        return -1;
+			return -1;
 		}
 	} while(!exit_loop);
 	mouse->hide();
