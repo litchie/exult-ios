@@ -436,9 +436,11 @@ void BG_Game::scene_lord_british()
 }
 
 
+#define	BUTTERFLY_FRAME_DURATION	16
+
 #define	BUTTERFLY_SUB_FRAMES	3
 
-#define	BUTTERFLY(x,y,frame,delay)	do { \
+#define	BUTTERFLY(x,y,frame,delay)	do {	\
 		win->get(backup, topx + (x) - butterfly->get_xleft(),	\
 				topy + (y) - butterfly->get_yabove());	\
 		gwin->paint_shape(topx + x, topy + y, shapes.get_shape(butterfly_shp, frame));	\
@@ -447,6 +449,15 @@ void BG_Game::scene_lord_british()
 		win->put(backup, topx + (x) - butterfly->get_xleft(),	\
 				topy + (y) - butterfly->get_yabove());	\
 		} while(0)
+
+#define	BUTTERFLY_FLAP()	do {	\
+			if ((rand() % 5)<4) {	\
+				if (frame == 3)	\
+					dir = -1;	\
+				else if (frame == 0)	\
+					dir = +1;	\
+				frame += dir;	\
+			} } while(0)
 
 static int butterfly_x[] =
 {
@@ -513,7 +524,7 @@ void BG_Game::scene_butterfly()
 
 	// Finally fade in
 	pal.fade_in(c_fade_in_time);
-//	WAITDELAY(12500);
+	WAITDELAY(12500);
 
 	// clear 'Exult' text
 	gwin->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
@@ -524,22 +535,42 @@ void BG_Game::scene_butterfly()
 	// Move the butterfly along its path
 	//
 	frame = 0;
+	Sint16 delay = BUTTERFLY_FRAME_DURATION;
+	Uint16 ticks = SDL_GetTicks();
 	for(i=0; i < butterfly_num_coords-1; ++i)
 	{
 		for(j=0; j < BUTTERFLY_SUB_FRAMES; ++j)
 		{
+			ticks = SDL_GetTicks();
 			int x = butterfly_x[i] + j*(butterfly_x[i+1] - butterfly_x[i])/BUTTERFLY_SUB_FRAMES;
 			int y = butterfly_y[i] + j*(butterfly_y[i+1] - butterfly_y[i])/BUTTERFLY_SUB_FRAMES;
-			BUTTERFLY(x, y, frame, 16);
+			BUTTERFLY(x, y, frame, delay);
 
 			// Flap the wings; but not always, so that the butterfly "glides" from time to time
-			if ((rand() % 5)<4)
+			BUTTERFLY_FLAP();
+			
+			// Calculate the difference between the time we wanted to spent and the time
+			// we actually spent; then adjust 'delay' accordingly
+			ticks = SDL_GetTicks() - ticks;
+			delay = (delay + (2*BUTTERFLY_FRAME_DURATION - ticks)) / 2;
+			
+			// ... but maybe we also have to skip frames..
+			if( delay < 0 )
 			{
-				if (frame == 3)
-					dir = -1;
-				else if (frame == 0)
-					dir = +1;
-				frame += dir;
+				// Calculate how many frames we should skip
+				int frames_to_skip = (-delay) / BUTTERFLY_FRAME_DURATION + 1;
+				int new_index = i*BUTTERFLY_SUB_FRAMES + j + frames_to_skip;
+				i = new_index / BUTTERFLY_SUB_FRAMES;
+				j = new_index % BUTTERFLY_SUB_FRAMES;
+				
+				// Did we skip over the end?
+				if ( i >= butterfly_num_coords-1 )
+					break;
+
+				while(frames_to_skip--)
+					BUTTERFLY_FLAP();
+
+				delay = 0;
 			}
 		}
 	}
@@ -570,6 +601,7 @@ void BG_Game::scene_guardian()
 	{
 		char *txt_ptr, *txt_end, *next_txt;
 		Shape_frame *s, *s2, *s3;
+		Uint32 ticks;
 		int i;
 
 		// Start background music
@@ -588,32 +620,40 @@ void BG_Game::scene_guardian()
 		//TODO: sound effects here!
 		//TODO: timing?
 		win->show();
-		WAITDELAY(100);
+		WAITDELAYCYCLE(100);
 
-		for(i = 0; i < 20; ++i)
+		ticks = SDL_GetTicks();
+		while(1)
 		{
 			win->get_ibuf()->fill_static(0, 7, 15);
 			win->show();
 			WAITDELAY(0);
+			if (SDL_GetTicks() > ticks + 400)
+				break;
 		}
 		win->put(plasma,0,0); win->show();
-		WAITDELAY(200);
+		WAITDELAYCYCLE(100);
 
-		for(i = 0; i < 10; ++i)
+		ticks = SDL_GetTicks();
+		while(1)
 		{
 			win->get_ibuf()->fill_static(0, 7, 15);
 			win->show();
 			WAITDELAY(0);
+			if (SDL_GetTicks() > ticks + 200)
+				break;
 		}
 		win->put(plasma,0,0); win->show();
+		WAITDELAYCYCLE(200);
 
-		WAITDELAY(100);
-
-		for(i = 0; i < 5; ++i)
+		ticks = SDL_GetTicks();
+		while(1)
 		{
 			win->get_ibuf()->fill_static(0, 7, 15);
 			win->show();
 			WAITDELAY(0);
+			if (SDL_GetTicks() > ticks + 100)
+				break;
 		}
 		win->put(plasma,0,0); win->show();
 
