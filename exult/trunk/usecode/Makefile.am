@@ -3,6 +3,8 @@ INCLUDES = -I.. -I../files -I../imagewin -I../shapes -I../objs -I../audio -I../g
 noinst_LTLIBRARIES = libusecode.la
 
 libusecode_la_SOURCES = \
+	bgintrinsics.h	\
+	siintrinsics.h	\
 	intrinsics.cc	\
 	ucmachine.cc	\
 	ucmachine.h	\
