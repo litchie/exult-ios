@@ -60,15 +60,23 @@ void set_mode(Arch_mode &mode, Arch_mode new_mode)
 long get_file_size(const char *fname)
 {
 	char *mode = "rb";
-	if (is_text_file(fname)) mode = "r";
+	bool text;
+	if (text = is_text_file(fname)) mode = "r";
 
 	FILE *fp = U7open (fname, mode);
 	if (!fp) {
 		cerr << "Could not open file " << fname << endl;
 		exit(1);
 	}
-	fseek(fp, 0, SEEK_END);
-	long len = ftell(fp);
+	long len = 0;
+	if (!text)
+	{
+		fseek(fp, 0, SEEK_END);
+		len = ftell(fp);
+	}
+	else while (fgetc(fp) != EOF)
+		len++;
+
 	fclose(fp);
 	return len;
 }

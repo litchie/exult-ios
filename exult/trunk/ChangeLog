@@ -1,3 +1,6 @@
+2001-02-07  Ryan Nunn <triforce@merlin.net.au>
+	* tools/expack.cc : Finally fixed the Win32 End of Line problem. 
+
 2001-02-07  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* Makefile.be, Makefile.win32, Makefile.cygwin, configure.in: 
 	  set version to 0.91alpha2
