@@ -531,6 +531,26 @@ void Notebook_gump::paint
 }
 
 /*
+ *	Move to end of prev. page.
+ */
+
+void Notebook_gump::prev_page
+	(
+	)
+	{
+	if (!curpage)
+		return;
+	One_note *note = notes[curnote];
+	Notebook_top &pinfo = page_info[curpage];
+	--curpage;
+	curnote = page_info[curpage].notenum;
+	if (!pinfo.offset)		// Going to new note?
+		cursor.offset = notes[curnote]->textlen;
+	else
+		cursor.offset = pinfo.offset - 1;
+	}
+
+/*
  *	Handle keystroke.
  */
 bool Notebook_gump::handle_kbd_event
@@ -547,7 +567,8 @@ bool Notebook_gump::handle_kbd_event
 		return false;
 	if (curpage >= page_info.size())
 		return false;		// Shouldn't happen.
-	One_note *note = notes[page_info[curpage].notenum];
+	Notebook_top& pinfo = page_info[curpage];
+	One_note *note = notes[pinfo.notenum];
 	switch (chr) {
 	case SDLK_RETURN:
 		note->insert('\n', cursor.offset);
@@ -557,7 +578,8 @@ bool Notebook_gump::handle_kbd_event
 	case SDLK_BACKSPACE:
 		if (note->del(cursor.offset - 1))
 			{
-			--cursor.offset;
+			if (--cursor.offset < pinfo.offset && curpage%2 == 0)
+				prev_page();
 			paint();
 			}
 		break;
@@ -568,7 +590,8 @@ bool Notebook_gump::handle_kbd_event
 	case SDLK_LEFT:
 		if (cursor.offset)
 			{
-			--cursor.offset;
+			if (--cursor.offset < pinfo.offset && curpage%2 == 0)
+				prev_page();
 			paint();
 			}
 		break;
