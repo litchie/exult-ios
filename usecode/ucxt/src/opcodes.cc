@@ -3,6 +3,7 @@
 #endif
 
 #include "opcodes.h"
+#include "files/utils.h"
 #include <cstdlib>
 #include <iomanip>
 #include <fstream>
@@ -16,6 +17,7 @@
 	#endif
 #endif
 
+#define MAX_NO_OPCODES 256
 vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
 
 map<unsigned int, string> bg_uc_intrinsics;
@@ -47,7 +49,7 @@ void init_static_usecodetables(const Configuration &config)
 }
 
 /* constructs the usecode tables from datafiles in the /ucxt hierachy */
-void init_usecodetables(const Configuration &config, bool noconf, bool verbose)//const UCData &uc)
+void init_usecodetables(const Configuration &config, bool noconf, bool verbose)
 {
 	string ucxtroot;
 	// just to handle if people are going to compile with makefile.unix, unsupported, but occasionally useful
@@ -63,7 +65,7 @@ void init_usecodetables(const Configuration &config, bool noconf, bool verbose)/
 
 	ifstream file;
 
-	file.open(ucxtroot.c_str(), ios::in);
+	U7open(file, ucxtroot.c_str(), true);
 	
 	if(file.fail())
 	{
@@ -82,11 +84,7 @@ void init_usecodetables(const Configuration &config, bool noconf, bool verbose)/
 			opcode_table_data[uco.opcode] = uco;
 		}	
 	}
-	#if 0 //test
-	for(vector<UCOpcodeData>::iterator i=opcode_table_data.begin(); i!=opcode_table_data.end(); i++)
-		if(i->asm_nmo!="" || i->ucs_nmo!="")
-			cout << i->opcode << "\t" << i->asm_nmo << "\t" << i->ucs_nmo << "\t" << i->num_bytes << "\t" << i->param_types << endl;
-	#endif ///test
+	file.close();
 }
 
 /* To be depricated when I get the complex vector<string> splitter online */

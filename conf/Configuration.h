@@ -27,10 +27,13 @@ class	Configuration
 public:
 	Configuration() : xmltree("config"),filename(),is_file(false)
 		{ }
-	Configuration(const char *s) : xmltree("config"),filename(),is_file(false)
+	Configuration(const char *s) : xmltree("config"), filename(), is_file(false)
 		{ read_config_file(s); }
 
-	bool	read_config_file(const char *);
+	bool	read_config_file(const char *input_filename)
+			{ read_config_file(std::string(input_filename)); };
+	bool	read_config_file(const string &input_filename);
+	
 	bool	read_config_string(const std::string &);
 	void	value(const char *key,std::string &ret,const char *defaultvalue="") const;
 	void	value(const char *key,bool &ret,bool defaultvalue=false) const;

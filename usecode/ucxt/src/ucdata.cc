@@ -2,15 +2,16 @@
 #  include <config.h>
 #endif
 
-#include "ucdata.h"
+#include <algorithm>
 #include <iostream>
 #include <iomanip>
 #include <cstring>
 #include <cstdlib>
 #include <vector>
+#include "ucdata.h"
 #include "printucc.h"
-#include <algorithm>
 #include "opcodes.h"
+#include "files/utils.h"
 
 UCData::UCData() : _noconf(false), _rawops(false), _autocomment(false),
                    _verbose(false), _mode(MODE_NONE), _game(GAME_BG),
@@ -283,7 +284,8 @@ void UCData::list_funcs()
 void UCData::file_open(const string &filename)
 {
 	/* Open a usecode file */
-	_file.open(filename.c_str(), ios::in | ios::binary);
+//	_file.open(filename.c_str(), ios::in | ios::binary);
+	U7open(_file, filename.c_str(), false);
 }
 
 

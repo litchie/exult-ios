@@ -28,13 +28,14 @@
 #  include <cstdio>
 #endif
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include "utils.h"
 
 
 using std::atoi;
 using std::cerr;
 using std::endl;
-using std::FILE;
 using std::snprintf;
 using std::string;
 
@@ -113,12 +114,9 @@ bool	Configuration::read_config_string(const std::string &s)
 	return true;
 }
 
-bool	Configuration::read_config_file(const char *n)
+bool	Configuration::read_config_file(const string &input_filename)
 {
-	char		buf[4096];
-	std::string	sbuf;
-
-	filename=n;
+	filename=input_filename;
 	// Don't frob the filename if it starts with a dot and
 	// a slash.
 	if(filename.find("./")!=0)
@@ -134,38 +132,40 @@ bool	Configuration::read_config_file(const char *n)
 #else
 			filename+="/config/settings/";
 #endif
-			filename+=n;
+			filename+=input_filename;
 		}
 		else
-			filename=n;
+			filename=input_filename;
 #else
 		// Probably something to do with deteriming the username
 		// and generating a filename in their personal setup area.
 
 		// For now, just read file from current directory
-		filename=n;
+		filename=input_filename;
 #endif
 	}
 
 	is_file=true; // set to file, even if file not found
 
-	FILE *fp;
+	std::ifstream ifile;
 	try {
-	        fp=U7open(filename.c_str(),"r");
+	        U7open(ifile, filename.c_str(), true);
 	}
 	catch(exult_exception &e) {
 	        // configuration file not found
 	        return false;
 	}
 
-	if(!fp)
+	if(ifile.fail())
 		return false;
 
-	while(fgets(buf,sizeof(buf),fp))
-		sbuf+=buf;
+    std::ostringstream sbuf;
 
-	fclose(fp);
-	read_config_string(sbuf);
+	// copies the entire contents of the input file into sbuf
+	sbuf << ifile.rdbuf() << ends;
+
+	ifile.close();
+	read_config_string(sbuf.str());
 	is_file=true;
 	return true;
 }
@@ -181,15 +181,16 @@ void	Configuration::write_back(void)
 {
 	if(!is_file)
 		return;	// Don't write back if not from a file
-	std::string	s=dump();
-	FILE *fp=U7open(filename.c_str(),"w");
-	if(!fp)
+	
+	std::ofstream ofile;
+	U7open(ofile, filename.c_str(), true);
+	if(ofile.fail())
 	{
 		std::perror("Failed to write configuration file");
 		return;
 	}
-	fwrite(s.c_str(),s.size(),1,fp);
-	fclose(fp);
+	ofile << dump() << endl;
+	ofile.close();
 }
 
 
