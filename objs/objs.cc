@@ -42,6 +42,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <cstdio>
 #endif
 
+#ifdef XWIN
+#include "cheat.h"
+#include "server.h"
+#include "objserial.h"
+#include "servemsg.h"
+#endif
+
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -56,7 +63,7 @@ using std::string;
 					// Offset to each neighbor, dir=0-7.
 short Tile_coord::neighbors[16] = {0,-1, 1,-1, 1,0, 1,1, 0,1,
 							-1,1, -1,0, -1,-1 };
-
+Game_object *Game_object::editing = 0;
 					// Bit 5=S, Bit6=reflect. on diag.
 unsigned char Game_object::rotate[8] = { 0, 0, 48, 48, 16, 16, 32, 32};
 
@@ -683,6 +690,8 @@ void Game_object::activate
 	int event
 	)
 	{
+	if (edit())
+		return;			// Map-editing.
 	int usefun = get_shapenum();
 					// Serpent Isle spell scrolls:
 	if (usefun == 0x2cb && Game::get_game_type() == SERPENT_ISLE)
@@ -696,6 +705,78 @@ void Game_object::activate
 		usefun = Game::get_game_type() == BLACK_GATE ? 0x638 : 0x63b;
 	umachine->call_usecode(usefun, this,
 			(Usecode_machine::Usecode_events) event);
+	}
+
+/*
+ *	Edit in ExultStudio.
+ */
+
+bool Game_object::edit
+	(
+	)
+	{
+#ifdef XWIN
+	if (client_socket >= 0 &&	// Talking to ExultStudio?
+	    cheat.in_map_editor())
+		{
+		editing = 0;
+		Tile_coord t = get_abs_tile_coord();
+		unsigned long addr = (unsigned long) this;
+		std::string name = get_name();
+		if (Object_out(client_socket, addr, t.tx, t.ty, t.tz,
+			get_shapenum(), get_framenum(), get_quality(),
+								name) != -1)
+			{
+			cout << "Sent object data to ExultStudio" << endl;
+			editing = this;
+			}
+		else
+			cout << "Error sending object to ExultStudio" <<endl;
+		return true;
+		}
+#endif
+	return false;
+	}
+
+/*
+ *	Message to update from ExultStudio.
+ */
+
+void Game_object::update_from_studio
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+#ifdef XWIN
+	unsigned long addr;
+	int tx, ty, tz;
+	int shape, frame, quality;
+	std::string name;
+	if (!Object_in(data, datalen, addr, tx, ty, tz, shape, frame,
+		quality, name))
+		{
+		cout << "Error decoding object" << endl;
+		return;
+		}
+	Game_object *obj = (Game_object *) addr;
+	if (!editing || obj != editing)
+		{
+		cout << "Obj from ExultStudio is not being edited" << endl;
+		return;
+		}
+	editing = 0;
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->add_dirty(obj);
+	obj->set_shape(shape, frame);
+	gwin->add_dirty(obj);
+	obj->set_quality(quality);
+	int oldtx, oldty, oldtz;	// See if it moved.
+	obj->get_abs_tile(oldtx, oldty, oldtz);
+	if (oldtx != tx || oldty != ty || oldtz != tz)
+		obj->move(tx, ty, tz);
+	cout << "Object updated" << endl;
+#endif
 	}
 
 /*

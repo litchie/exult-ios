@@ -126,6 +126,28 @@ void Common_obj_io
  *	Output:	1 if successful, else 0.
  */
 template <class Serial> 
+void Object_io
+	(
+	unsigned char *& buf,		// Where to store data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	int& quality,
+	std::string& name
+	)
+	{
+	Serial io(buf);
+	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
+	io << quality << name;
+	}
+
+/*
+ *	Low-level serialization for use both by Exult and ExultStudio (so
+ *	don't put in anything that will pull in all of Exult).
+ *
+ *	Output:	1 if successful, else 0.
+ */
+template <class Serial> 
 void Egg_object_io
 	(
 	unsigned char *& buf,		// Where to store data.
@@ -186,6 +208,52 @@ void Npc_actor_io
 	for (int i = 0; i < num_schedules; i++)
 		io << schedules[i].time << schedules[i].type <<
 				schedules[i].tx << schedules[i].ty;
+	}
+
+/*
+ *	Send out an object.
+ *
+ *	Output:	-1 if unsuccessful.  0 if okay.
+ */
+
+int Object_out
+	(
+	int fd,				// Socket.
+	unsigned long addr,		// Address.
+	int tx, int ty, int tz,		// Absolute tile coords.
+	int shape, int frame,
+	int quality,
+	std::string name
+	)
+	{
+	unsigned char buf[Exult_server::maxlength];
+	unsigned char *ptr = &buf[0];
+	Object_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame, quality,
+		name);
+	return Exult_server::Send_data(fd, Exult_server::obj, buf, ptr - buf);
+	}
+
+/*
+ *	Decode an object.
+ *
+ *	Output:	0 if unsuccessful.
+ */
+
+int Object_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	int& quality,
+	std::string& name
+	)
+	{
+	unsigned char *ptr = data;
+	Object_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame, quality,
+		name);
+	return (ptr - data) == datalen;
 	}
 
 /*
