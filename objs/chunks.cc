@@ -400,8 +400,8 @@ int Chunk_cache::is_blocked
 		}
 	else
 		{			// Not blocked.
-					// See if going down if not flying.
-		new_lift =  (move_flags & MOVE_FLY) ? lift :
+					// See if going down if not levitating.
+		new_lift =  (move_flags & MOVE_NODROP) ? lift :
 				get_highest_blocked(lift, tflags) + 1;
 		new_high = get_lowest_blocked (new_lift, tflags);
 	
