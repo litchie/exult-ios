@@ -1,16 +1,35 @@
 Source: exult
-Section: games
-Priority: optional
-Maintainer: Dancer Vesperman <dancer@users.sourceforge.net>
-Standards-Version: 2.3.0.1
+Section: contrib/games
+Priority: extra
+Maintainer: Michael Zinn <michael.z@acm.org>
+Build-Depends: debhelper (>> 3.0.0)
+Standards-Version: 3.5.2
 
 Package: exult
-Architecture: i386
-Depends: libsdl1.1, ${shlibs:Depends}
+Architecture: any
+Depends: ${shlibs:Depends}
 Recommends: timidity
-Description: Exult is an open source engine for playing Ultima VII on a variety
- of operating systems and environments.
+Description: An engine for Ultima VII (BG, FOV, SI, SS)
+ Exult is an open source engine for playing Ultima VII on a variety of
+ modern operating systems and environments.
  .
- Visit Exult's homepage: http://exult.sourceforge.net/
+ Visit the Exult homepage at http://exult.sourceforge.net/
  .
  You must own Ultima VII in order to use this package.
+
+Package: exult-tools
+Architecture: any
+Depends: exult, ${shlibs:Depends}
+Description: Tools for editting & viewing exult games; includes exult-studio
+ Includes:
+ .
+ ucc          - A usecode compiler
+ shapetest    - ?
+ paltest      - ?
+ exult_studio - An editor for games using the Exult engine
+ .
+ These are all works in progress, and are currently of very limited
+ functionality.
+ .
+ For more information, visit the Exult homepage at
+ http://exult.sourceforge.net/.

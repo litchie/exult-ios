@@ -39,7 +39,7 @@ MIDI_DRV_OBJS=be_midi.o
 AUDIO_OBJS=Audio.o conv.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 FLIC_OBJS=playfli.o
-FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o
+FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o
 FILE_ZIP_OBJS=zip.o unzip.o
 GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	gump_utils.o  Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \

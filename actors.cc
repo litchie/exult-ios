@@ -3348,7 +3348,7 @@ void Main_actor::move
 	Map_chunk *olist = gwin->get_chunk_safely(
 						get_cx(), get_cy());
 					// Move it.
-	Game_object::move(newtx, newty, newlift);
+	Actor::move(newtx, newty, newlift);
 	Map_chunk *nlist = gwin->get_chunk(get_cx(), get_cy());
 	if (nlist != olist)
 		Main_actor::switched_chunks(olist, nlist);
@@ -3934,7 +3934,7 @@ void Npc_actor::remove_this
 	gwin->remove_nearby_npc(this);	// Remove from nearby list.
 					// Store old chunk list.
 	Map_chunk *olist = gwin->get_chunk_safely(get_cx(), get_cy());
-	Actor::remove_this(nodel);	// Remove.
+	Actor::remove_this(1);	// Remove, but don't ever delete an NPC
 	Npc_actor::switched_chunks(olist, 0);
 	cx = cy = 0xff;			// Set to invalid chunk coords.
 	}
@@ -3992,7 +3992,7 @@ void Npc_actor::move
 					// Store old chunk list.
 	Map_chunk *olist = gwin->get_chunk_safely(get_cx(), get_cy());
 					// Move it.
-	Game_object::move(newtx, newty, newlift);
+	Actor::move(newtx, newty, newlift);
 	Map_chunk *nlist = gwin->get_chunk_safely(get_cx(), get_cy());
 	if (nlist != olist)
 		Npc_actor::switched_chunks(olist, nlist);

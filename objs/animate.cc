@@ -616,7 +616,7 @@ void Animated_ireg_object::paint
 	)
 	{
 	animator->want_animation();	// Be sure animation is on.
-	Game_object::paint(gwin);
+	Ireg_game_object::paint(gwin);
 	}
 
 /*
@@ -676,7 +676,7 @@ void Animated_ifix_object::paint
 	)
 	{
 	animator->want_animation();	// Be sure animation is on.
-	Game_object::paint(gwin);
+	Ifix_game_object::paint(gwin);
 	}
 
 /*
