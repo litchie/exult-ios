@@ -626,6 +626,7 @@ class Chunk_object_list
 	Game_object *objects;		// ->first in list of all objs.  'Flat'
 					//   obs. (lift=0,ht=0) stored 1st.
 	Game_object *first_nonflat;	// ->first nonflat in 'objects'.
+	unsigned char *dungeon_bits;	// A 'dungeon' bit flag for each tile.
 	Npc_actor *npcs;		// List of NPC's in this chunk.
 					//   (Managed by Npc_actor class.)
 	Chunk_cache *cache;		// Data for chunks near player.
@@ -709,12 +710,18 @@ public:
 					// Use this when teleported in.
 	static void try_all_eggs(Game_object *obj, int tx, int ty, int tz,
 						int from_tx, int from_ty);
+	void setup_dungeon_bits();	// Set up after IFIX objs. read.
+	int has_dungeon()		// Any tiles within dungeon?
+		{ return dungeon_bits != 0; }
+					// NOTE:  The following should only be
+					//   called if has_dungeon()==1.
 	int in_dungeon(int tx, int ty)	// Is object within dungeon?
-		{ return 1; }		// ++++++Implement.
+		{
+		int tnum = ty*tiles_per_chunk + tx;
+		return dungeon_bits[tnum/8] & (1 << (tnum%8));
+		}
 	int in_dungeon(Game_object *obj)// Is object within dungeon?
 		{ return in_dungeon(obj->get_tx(), obj->get_ty()); }
-	int has_dungeon()		// Any tiles within dungeon?
-		{ return 0; }		// +++++Need to implement.
 	};
 
 /*
