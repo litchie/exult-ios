@@ -44,9 +44,8 @@ using std::string;
 	if(!uf) \
 	try {	\
 		uf=new CLASS_NAME(s);	\
-	} catch(const wrong_file_type_exception &e)	\
+	} catch(const wrong_file_type_exception &)	\
 		{	\
-		e;	\
 		}
 
 U7file  *U7FileManager::get_file_object(const string &s)
