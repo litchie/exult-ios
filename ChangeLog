@@ -1,3 +1,8 @@
+2001-09-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/chunks.cc:  Rewrote part of is_blocked() to handle the way
+	SI specifies locations in path_run_usecode().
+
 2001-09-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.in: fixed minor bug
 
