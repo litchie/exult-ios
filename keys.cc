@@ -27,6 +27,7 @@
 #include "mouse.h"
 #include "gamewin.h"
 #include "utils.h"
+#include "keyactions.h"
 
 extern Cheat cheat;
 
@@ -42,9 +43,15 @@ using std::vector;
 extern void to_uppercase(string &str);
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 
+typedef void(*ActionFunc)(int*);
 
-/* keybinding-file should be able to override 'show' and/or 'cheat' ? */
-Action ExultActions[] = {
+struct Action {
+  ActionFunc func;
+  char* desc;
+  bool show;
+  bool cheat;
+  Exult_Game game;
+} ExultActions[] = {
   { ActionQuit, "Quit", true, false, NONE },
   { ActionFileGump, "Save/restore", true, false, NONE },
   { ActionQuicksave, "Quick-save", true, false, NONE },
