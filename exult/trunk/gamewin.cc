@@ -1077,7 +1077,13 @@ void Game_window::show_items
 	)
 	{
 	Game_object *found[100];	// See what was clicked on.
-	int cnt = find_objects(x, y, found);
+	int cnt;
+					// Look for obj. in open gump.
+	Gump_object *gump = find_gump(x, y);
+	if (gump)
+		cnt = gump->find_objects(this, x, y, found);
+	else				// Search rest of world.
+		cnt = find_objects(x, y, found);
 #if 0
 	for (int i = 0; i < cnt; i++)	// Go through them.
 		{
@@ -1187,7 +1193,13 @@ void Game_window::double_clicked
 	)
 	{
 	Game_object *found[100];	// See what was clicked on.
-	int cnt = find_objects(x, y, found);
+	int cnt;
+					// Look for obj. in open gump.
+	Gump_object *gump = find_gump(x, y);
+	if (gump)
+		cnt = gump->find_objects(this, x, y, found);
+	else				// Search rest of world.
+		cnt = find_objects(x, y, found);
 //	cout << cnt << " objects found.\n";
 	remove_all_text();		// Remove text msgs. from screen.
 	for (int i = 0; i < cnt; i++)	// Go through them.
