@@ -123,7 +123,8 @@ C_EXPORT gint on_loc_draw_expose_event
 
 Locator::Locator
 	(
-	) : drawgc(0), tx(0), ty(0), txs(40), tys(25), scale(1)
+	) : drawgc(0), tx(0), ty(0), txs(40), tys(25), scale(1),
+	    dragging(false)
 	{
 	GladeXML *app_xml = ExultStudio::get_instance()->get_xml();
 	win = glade_xml_get_widget(app_xml, "loc_window");
@@ -226,6 +227,8 @@ void Locator::render
 					// Draw location in yellow.
 	gdk_rgb_gc_set_foreground(drawgc, (255<<16) + (255<<8));
 	gdk_draw_rectangle(draw->window, drawgc, FALSE, x, y, w, h);
+	viewbox.x = x; viewbox.y = y;	// Save location.
+	viewbox.width = w; viewbox.height = h;
 					// Put a light-red box around it.
 	gdk_rgb_gc_set_foreground(drawgc, (255<<16) + (128<<8) + 128);
 	gdk_draw_rectangle(draw->window, drawgc, FALSE, 
@@ -310,4 +313,77 @@ void Locator::send_location
 	Write4(ptr, -1);		// Don't change.
 	ExultStudio::get_instance()->send_to_server(Exult_server::view_pos,
 					&data[0], ptr - data);
+	}
+
+/*
+ *	Go to a mouse location in the draw area.
+ */
+
+void Locator::goto_mouse
+	(
+	int mx, int my			// Pixel coords. in draw area.
+	)
+	{
+	int newtx = (mx*c_num_tiles)/draw->allocation.width;
+	int newty = (my*c_num_tiles)/draw->allocation.height;
+	int cx = newtx/c_tiles_per_chunk, cy = newty/c_tiles_per_chunk;
+	if (cx > c_num_chunks - 2)
+		cx = c_num_chunks - 2;
+	if (cy > c_num_chunks - 2)
+		cy = c_num_chunks - 2;
+					// Update scrolls.  This will result in
+					//   tx, ty being updated and Exult
+					//   getting the message.
+	gtk_adjustment_set_value(hadj, cx);
+	gtk_adjustment_set_value(vadj, cy);
+	}
+
+/*
+ *	Handle a mouse-press event.
+ */
+
+gint Locator::mouse_press
+	(
+	GdkEventButton *event
+	)
+	{
+	dragging = false;
+	if (event->button != 1)
+		return FALSE;		// Handling left-click.
+					// Get mouse position, draw dims.
+	int mx = (int) event->x, my = (int) event->y;
+	int draww = draw->allocation.width,
+	    drawh = draw->allocation.height;
+					// Double-click?
+	if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
+		{
+		goto_mouse(mx, my);
+		return TRUE;
+		}
+					// On (or close to) view box?
+	if (mx < viewbox.x - 3 || my < viewbox.y - 3 ||
+	    mx > viewbox.x + viewbox.width + 6 ||
+	    my > viewbox.y + viewbox.height + 6)
+		return FALSE;
+	dragging = true;
+	drag_relx = mx - viewbox.x;	// Save rel. pos.
+	drag_rely = my - viewbox.y;
+	return (TRUE);
+	}
+
+/*
+ *	Handle a mouse-motion event.
+ */
+
+gint Locator::mouse_motion
+	(
+	GdkEventMotion *event
+	)
+	{
+	if (!dragging || !(event->state & GDK_BUTTON1_MASK))
+		return FALSE;		// Not dragging with left button.
+	int mx = (int) event->x, my = (int) event->y;
+	cout << "Locator dragging: (" << mx << ',' << my << ')' << endl;
+	goto_mouse(mx + drag_relx, my + drag_rely);
+	return TRUE;
 	}
