@@ -166,7 +166,7 @@ Game_window::~Game_window
 
 void Game_window::abort
 	(
-	char *msg,
+	const char *msg,
 	...
 	)
 	{
@@ -1100,7 +1100,7 @@ void Game_window::set_palette
 
 void Game_window::set_palette
 	(
-	char *fname,
+	const char *fname,
 	int pal_num,
 	int fade
 	)
@@ -2015,7 +2015,7 @@ void Game_window::end_splash
 		}
 	}
 
-char *Game_window::get_shape_file_name
+const char *Game_window::get_shape_file_name
 	(
 	int n
 	)

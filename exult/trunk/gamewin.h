@@ -116,18 +116,18 @@ public:
 					// Get the one game window.
 	static Game_window *get_game_window()
 		{ return game_window; }
-	void abort(char *msg, ...);	// Fatal error.
+	void abort(const char *msg, ...);	// Fatal error.
 	int get_width()
 		{ return win->get_width(); }
 	int get_height()
 		{ return win->get_height(); }
-	int get_scrolltx()		// Get window offsets in tiles.
+	inline int get_scrolltx() const		// Get window offsets in tiles.
 		{ return chunkx*tiles_per_chunk; }
-	int get_scrollty()
+	inline int get_scrollty() const
 		{ return chunky*tiles_per_chunk; }
-	Usecode_machine *get_usecode()
+	inline Usecode_machine *get_usecode() const
 		{ return usecode; }
-	Rectangle get_win_rect()	// Get window's rectangle.
+	inline Rectangle get_win_rect() const	// Get window's rectangle.
 		{ return Rectangle(0, 0, win->get_width(), win->get_height());}
 	Rectangle get_win_tile_rect()	// Get it in tiles, rounding up.
 		{ return Rectangle(get_scrolltx(), get_scrollty(),
@@ -139,9 +139,9 @@ public:
 		Rectangle wr = get_win_rect();
 		return (r.intersect(wr));
 		}
-	Image_window *get_win()
+	inline Image_window *get_win() const
 		{ return win; }
-	Time_queue *get_tqueue()
+	inline Time_queue *get_tqueue() const
 		{ return tqueue; }
 	int get_hour()			// Get current time.
 		{ return clock.get_hour(); }
@@ -161,7 +161,7 @@ public:
 		}
 	Chunk_object_list *get_objects(Game_object *obj)
 		{ return get_objects(obj->get_cx(), obj->get_cy()); }
-	Actor *get_main_actor()
+	inline Actor *get_main_actor() const
 		{ return main_actor; }
 	int set_above_main_actor(int inside, int lift)
 		{			// Use ht=4, round up to nearest 5.
@@ -176,7 +176,7 @@ public:
 		}
 	int is_main_actor_inside()
 		{ return skip_above_actor < 31 ; }
-	Actor *get_npc(long npc_num)
+	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < num_npcs) ? npcs[npc_num] 
 									: 0; }
 					// Find monster info. for shape.
@@ -193,13 +193,13 @@ public:
 		{ return fonts.get_num_shapes(); }
 	int get_num_sprites()
 		{ return sprites.get_num_shapes(); }
-	void set_mode(Game_mode md)
+	inline void set_mode(Game_mode md)
 		{ mode = md; }
-	Game_mode get_mode()
+	inline Game_mode get_mode() const
 		{ return mode; }
 					// Resize event occurred.
 	void resized(unsigned int neww, unsigned int newh);
-	void set_painted()		// Force blit.
+	inline void set_painted()		// Force blit.
 		{ painted = 1; }
 	void show()
 		{
@@ -224,7 +224,7 @@ public:
 					// Show abs. location of mouse.
 	void show_game_location(int x, int y);
 #endif
-	Shapes_vga_file& get_shapes()	// Get 'shapes.vga' file.
+	inline Shapes_vga_file& get_shapes()	// Get 'shapes.vga' file.
 		{ return shapes; }
 	Shape_info& get_info(int shnum)	// Get shape info.
 		{ return shapes.get_info(shnum); }
@@ -389,7 +389,7 @@ public:
 		else
 			return 0;
 		}
-	char *get_save_name(int i)	// Get ->saved-game name.
+	inline char *get_save_name(int i) const	// Get ->saved-game name.
 		{ return save_names[i]; }
 					// Paint a bit of text.
 	void paint_text_object(Text_object *txt);
@@ -401,7 +401,7 @@ public:
 					// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj, int at_lift, int flat_only);
 	void set_palette(int pal_num);	// Set desired palette.
-	void set_palette(char *fname, int res, int fade=0);	// Set palette from Flex
+	void set_palette(const char *fname, int res, int fade=0);	// Set palette from Flex
 	void brighten(int per);		// Brighten/darken by percentage.
 	void view_right();		// Move view 1 chunk to right.
 	void view_left();		// Move view left by 1 chunk.
@@ -433,7 +433,7 @@ public:
 					// Show a "face" on the screen.
 	void show_face(int shape, int frame);
 	void remove_face(int shape);	// Remove "face" from screen.
-	int get_num_faces_on_screen()	// # of faces on screen.
+	inline int get_num_faces_on_screen() const	// # of faces on screen.
 		{ return num_faces; }
 					// Show what NPC said.
 	void show_npc_message(char *msg);
@@ -453,9 +453,9 @@ public:
 						int stop_cx, int stop_cy);
 	void schedule_npcs(int hour3);	// Update NPCs' schedules.
 	void get_focus();		// Get/lose focus.
-	void lose_focus()
+	inline void lose_focus()
 		{ focus = 0; }
-	int have_focus()
+	inline int have_focus() const
 		{ return focus; }
 	void end_splash();		// End splash screen.
 	void read_npcs();		// Read in npc's.
@@ -487,7 +487,7 @@ public:
 	int save_gamedat(char *fname, char *savename);
 	int save_gamedat(int num, char *savename);
 	char *get_game_identity(char *fname);
-	char *get_shape_file_name(int n);
+	const char *get_shape_file_name(int n);
 	Vga_file *get_shape_file_data(int n);
 	int get_shape_file_count();
 	void play_flic(char *archive, int index);
