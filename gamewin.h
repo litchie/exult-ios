@@ -482,6 +482,7 @@ public:
 					// Start moving actor.
 	void start_actor(int winx, int winy, int speed = 125);
 	void stop_actor();		// Stop main actor.
+	void teleport_party(Tile_coord t);
 					// Find gump (x, y) is in.
 	Gump_object *find_gump(int x, int y);
 					// Find gump object is in.

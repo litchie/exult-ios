@@ -930,6 +930,16 @@ static void Handle_keystroke
 			break;
 			}
 		int x, y;
+		if (alt)		// Teleport.
+			{
+			SDL_GetMouseState(&x, &y);
+			x = x>>scale;
+			y = y>>scale;
+			Tile_coord t(gwin->get_scrolltx() + x/tilesize,
+				gwin->get_scrollty() + y/tilesize, 0);
+			gwin->teleport_party(t);
+			break;
+			}
 		if (!Get_click(x, y, Mouse::greenselect))
 			break;
 		gwin->double_clicked(x, y);

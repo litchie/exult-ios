@@ -395,11 +395,16 @@ void Game_window::center_view
 	if (scrollty + th > num_chunks*tiles_per_chunk)
 		scrollty = num_chunks*tiles_per_chunk - th - 1;
 	set_scroll_bounds();		// Set scroll-control.
+	paint();			// This pulls in objects.
+					// Set where to skip rendering.
+	if (set_above_main_actor(get_objects(main_actor->get_cx(),
+				main_actor->get_cy())->is_roof(),
+				main_actor->get_lift()))
+		paint();		// Changed, so paint again.
 					// See who's nearby.
 	add_nearby_npcs(scrolltx/tiles_per_chunk, scrollty/tiles_per_chunk,
 		(scrolltx + get_width()/tilesize)/tiles_per_chunk,
 		(scrollty + get_height()/tilesize)/tiles_per_chunk);
-	paint();
 	}
 
 /*
@@ -1481,50 +1486,51 @@ void Game_window::start_actor_alt
 		delete path;
 		}
 		
+	const int delta = 8*tilesize;	// Trying to avoid 'chicken dance'.
 	switch (dir)
 		{
 		case north:
 		//cout << "NORTH" << endl;
-		ay -= tilesize;
+		ay -= delta;
 		break;
 
 		case northeast:
 		//cout << "NORTH EAST" << endl;
-		ay -= tilesize;
-		ax += tilesize;
+		ay -= delta;
+		ax += delta;
 		break;
 
 		case east:
 		//cout << "EAST" << endl;
-		ax += tilesize;
+		ax += delta;
 		break;
 
 		case southeast:
 		//cout << "SOUTH EAST" << endl;
-		ay += tilesize;
-		ax += tilesize;
+		ay += delta;
+		ax += delta;
 		break;
 
 		case south:
 		//cout << "SOUTH" << endl;
-		ay += tilesize;
+		ay += delta;
 		break;
 
 		case southwest:
 		//cout << "SOUTH WEST" << endl;
-		ay += tilesize;
-		ax -= tilesize;
+		ay += delta;
+		ax -= delta;
 		break;
 
 		case west:
 		//cout << "WEST" << endl;
-		ax -= tilesize;
+		ax -= delta;
 		break;
 
 		case northwest:
 		//cout << "NORTH WEST" << endl;
-		ay -= tilesize;
-		ax -= tilesize;
+		ay -= delta;
+		ax -= delta;
 		break;
 		}
 
@@ -1587,6 +1593,33 @@ void Game_window::stop_actor
 		paint();	// ++++++Necessary?
 		main_actor->get_followers();
 		}
+	}
+
+/*
+ *	Teleport the party.
+ */
+
+void Game_window::teleport_party
+	(
+	Tile_coord t			// Where to go.
+	)
+	{
+	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
+	int cnt = usecode->get_party_count();
+	for (int i = 0; i < cnt; i++)
+		{
+		int party_member=usecode->get_party_member(i);
+		Actor *person = get_npc(party_member);
+		if (person)
+			{
+			Tile_coord t1(-1, -1, -1);
+			for (int dist = 1; dist < 8 && t1.tx == -1; dist++)
+				t1 = main_actor->find_unblocked_tile(dist, 3);
+			if (t1.tx != -1)
+				person->move(t1);
+			}
+		}
+	center_view(t);			// Bring pos. into view.
 	}
 
 #if 0

@@ -98,7 +98,7 @@ void Egg_object::set_area
 		break;
 	default:
 		area = Rectangle(tx - distance, ty - distance, 
-					2*distance + 1, 2*distance + 1);
+					2*distance, 2*distance);
 		break;
 		}
 					// Don't go outside the world.
@@ -172,30 +172,6 @@ static	inline int	distance_between_points(int ax,int ay,int bx,int by)
 	return	(int)sqrt(float(dx*dx+dy*dy));			// the cast to float is required to prevent ambiguity!
 }
 
-#if 0	/* +++++Going away. */
-/*
- *	Is a given tile within this egg's influence?
- */
-
-int Egg_object::within_distance
-	(
-	int abs_tx, int abs_ty		// Tile coords. within entire world.
-	) const
-	{
-	int egg_tx = ((int) cx)*tiles_per_chunk + get_tx();
-	int egg_ty = ((int) cy)*tiles_per_chunk + get_ty();
-	if (criteria == avatar_footpad)	// Must step on it?
-		{
-		Game_window *gwin = Game_window::get_game_window();
-		Shape_info& info = gwin->get_info(this);
-		return (abs_tx <= egg_tx && 
-		        abs_tx > egg_tx - info.get_3d_xtiles() &&
-		        abs_ty <= egg_ty &&
-			abs_ty > egg_ty - info.get_3d_ytiles());
-		}
-	return distance_between_points(abs_tx,abs_ty,egg_tx,egg_ty)<=distance;
-	}
-#endif
 
 /*
  *	Paint at given spot in world.
@@ -220,36 +196,6 @@ void Egg_object::activate
 	)
 	{
 	activate(umachine, 0);
-	}
-
-/*
- *	Teleport the party.
- */
-
-static void Teleport
-	(
-	Game_window *gwin,
-	Tile_coord t			// Where to go.
-	)
-	{
-	Actor *av = gwin->get_main_actor();
-	av->move(t);			// Move Avatar.
-	Usecode_machine *usecode = gwin->get_usecode();
-	int cnt = usecode->get_party_count();
-	for (int i = 0; i < cnt; i++)
-		{
-		int party_member=usecode->get_party_member(i);
-		Actor *person = gwin->get_npc(party_member);
-		if (person)
-			{
-			Tile_coord t1(-1, -1, -1);
-			for (int dist = 1; dist < 8 && t1.tx == -1; dist++)
-				t1 = av->find_unblocked_tile(dist, 3);
-			if (t1.tx != -1)
-				person->move(t1);
-			}
-		}
-	gwin->center_view(t);		// Bring pos. into view.
 	}
 
 /*
@@ -341,7 +287,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			if (obj && (obj == gwin->get_main_actor() ||
 					obj->get_party_id() >= 0))
 					// Teleport everyone!!!
-				Teleport(gwin, pos);
+				gwin->teleport_party(pos);
 #if 0
 			Usecode_value tmp(pos.tx);
 			Usecode_value u(1,&tmp);

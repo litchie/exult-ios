@@ -1,3 +1,8 @@
+2000-07-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Teleports work now.
+	* Fixed bug where monsters walked through walls.
+
 2000-07-20 Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* files/databuf.h: implemented an abstract DataSource class and Buffer, Stream and 
