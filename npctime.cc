@@ -399,8 +399,6 @@ void Npc_poison_timer::handle_event
 		return;
 		}
 	int penalty = rand()%3;
-	if (penalty && rand()%4)
-		npc->say(first_ouch, last_ouch);
 	npc->reduce_health(penalty);
 
 //	npc->set_property(static_cast<int>(Actor::health),
