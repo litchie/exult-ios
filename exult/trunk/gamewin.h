@@ -516,6 +516,7 @@ public:
 	void view_up();			// Move view up.
 					// Start moving actor.
 	void start_actor(int winx, int winy, int speed = 125);
+	void start_actor_along_path(int winx, int winy, int speed = 125);
 	void stop_actor();		// Stop main actor.
 	void teleport_party(Tile_coord t);
 					// Get ->party members.

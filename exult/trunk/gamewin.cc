@@ -1716,6 +1716,31 @@ void Game_window::start_actor
 	}
 
 /*
+ *	Find path to where user double-right-clicked.
+ */
+
+void Game_window::start_actor_along_path
+	(
+	int winx, int winy, 		// Mouse position to aim for.
+	int speed			// Msecs. between frames.
+	)
+	{
+	if (main_actor->Actor::get_flag(Obj_flags::asleep) ||
+	    main_actor->get_schedule_type() == Schedule::sleep ||
+	    moving_barge)		// For now, don't do barges.
+		return;			// Zzzzz....
+	teleported = 0;
+	int lift = main_actor->get_lift();
+	int liftpixels = 4*lift;	// Figure abs. tile.
+	Tile_coord dest(get_scrolltx() + (winx + liftpixels)/c_tilesize,
+	    get_scrollty() + (winy + liftpixels)/c_tilesize, lift);
+	if (!main_actor->walk_path_to_tile(dest, speed))
+		cout << "Couldn't find path for Avatar." << endl;
+	else
+		main_actor->get_followers();
+	}
+
+/*
  *	Stop the actor.
  */
 
