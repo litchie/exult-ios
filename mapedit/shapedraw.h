@@ -42,7 +42,6 @@ class Shape_draw
 	{
 protected:
 	Vga_file *ifile;		// Where the shapes come from.
-	int num_shapes;			// Total # shapes in ifile.
 	char **names;			// Names of shapes (or null).
 	GtkWidget *draw;		// GTK draw area to display them in.
 	GdkGC *drawgc;			// For drawing in 'draw'.

@@ -1,3 +1,8 @@
+2002-04-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/studio.cc: "New shape" menu items.
+	* files/Flex.cc:  Fixed bug in if_flex().
+
 2002-04-01  Darke <darkepaw@users.sourceforge.net>
 	* conf/Configuration.h: Removed memory leak.
 	* usecode/ucxt/*: Removed memory leak, cleaned code.
