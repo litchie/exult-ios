@@ -551,6 +551,7 @@ void Text_effect::handle_event
 	rect = gwin->clip_to_win(rect);
 	gwin->remove_effect(this);	// Remove & delete this.
 	if (rect.w > 0 && rect.h > 0)	// Watch for negatives.
+					// +++++Should this be add_dirty()?
 		gwin->paint(rect.x, rect.y, rect.w, rect.h);
 
 	}
@@ -570,6 +571,14 @@ void Text_effect::paint
 	int len = strlen(ptr);
 	if (ptr[len - 1] == '@')
 		len--;
+#if 0	/* ++++++Got to save old rectangle */
+	if (item && !item->get_owner())	// Reposition for object.
+		{
+		Rectangle box = gwin->get_shape_rect(item);
+		tx = gwin->get_scrolltx() + box.x/c_tilesize;
+		ty = gwin->get_scrollty() + box.y/c_tilesize;
+		}
+#endif
 	gwin->paint_text(0, ptr, len, (tx - gwin->get_scrolltx())*c_tilesize,
 				(ty - gwin->get_scrollty())*c_tilesize);
 	}
