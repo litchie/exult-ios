@@ -646,7 +646,7 @@ void SI_Game::play_intro()
 
 		const char *tis_my[3] = {"'Tis my worst fear!",
 					"I must send the Avatar through",
-					"the pilars to the Serpent Isle!" };
+					"the pillars to the Serpent Isle!" };
 
 
 		if (speech && !jive)
@@ -978,9 +978,8 @@ bool SI_Game::new_game(Vga_file &shapes)
 
 bool SI_Game::is_installed(const char *path)
 {
-	char buf[2048];
-	std::strcpy(buf, path);
-	std::strcat(buf, "/static/sispeech.spc");
+	std::string buf=path;
+	buf+="/static/sispeech.spc";
 	std::cout << "is_installed: " << buf << std::endl;
 	return U7exists(buf)!=0;
 }
