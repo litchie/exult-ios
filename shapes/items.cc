@@ -32,8 +32,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #include "utils.h"
 #include "msgfile.h"
+#include "fnames.h"
 
 using std::ifstream;
+using std::ofstream;
 using std::cerr;
 using std::endl;
 using std::vector;
@@ -53,7 +55,7 @@ int num_misc_names = 0;
  *	Frame names start at entry 0x500 (reagents,medallions,food,etc.).
  */
 
-void Setup_item_names (ifstream& items, ifstream& msgs) {
+static void Setup_item_names (ifstream& items, ifstream& msgs) {
 	vector<char *> msglist;
 	int first_msg;			// First in exultmsg.txt.  Should
 					//   follow those in text.flx.
@@ -112,43 +114,102 @@ void Setup_item_names (ifstream& items, ifstream& msgs) {
 	num_text_msgs = total_msgs - num_item_names;
 } 
 
+#define SHAPES_SECT 	"shapes"
+#define MSGS_SECT	"msgs"
+#define MISC_SECT	"miscnames"
+
 /*
- *	This sets up item names and messages from Exult's new set of files,
- *	"shapes.txt", "msgs.txt", and "miscnms.txt".
+ *	This sets up item names and messages from Exult's new file,
+ *	"textmsgs.txt".
  */
 
-void Setup_text
+static void Setup_text
 	(
-	ifstream& shfile,		// Shapes.
-	ifstream& msgfile,		// Msgs.
-	ifstream& miscfile		// Frames, etc.
+	ifstream& txtfile		// All text.
 	)
 	{
-	Read_text_msg_file(shfile, item_names, num_item_names);
-	Read_text_msg_file(msgfile, text_msgs, num_text_msgs);
-	Read_text_msg_file(miscfile, misc_names, num_misc_names);
+	Read_text_msg_file(txtfile, item_names, num_item_names, SHAPES_SECT);
+	Read_text_msg_file(txtfile, text_msgs, num_text_msgs, MSGS_SECT);
+	Read_text_msg_file(txtfile, misc_names, num_misc_names, MISC_SECT);
 	}
-#if 0
+
 /*
  *	Setup item names and text messages.
  */
 
 void Setup_text()
 	{
-	ifstream textflx, exultmsg;	
+	bool is_patch = is_system_path_defined("<PATCH>");
 
 					// Exult new-style messages?
-	if (U7exists(SHAPESTXT) || U7exists(PATCH_SHAPESTXT)
+	if (is_patch && U7exists(PATCH_TEXTMSGS))
 		{
-		ifstream shfile, msgfile, miscfile;
+		ifstream txtfile;
+		U7open(txtfile, PATCH_TEXTMSGS);
+		Setup_text(txtfile);
+		}
+	else if (U7exists(TEXTMSGS))
+		{
+		ifstream txtfile;
+		U7open(txtfile, TEXTMSGS);
+		Setup_text(txtfile);
+		}
+	else 
+		{
+		ifstream textflx, exultmsg;
+		if (is_patch && U7exists(PATCH_TEXT))
+			U7open(textflx, PATCH_TEXT);
+		else
+  			U7open(textflx, TEXT_FLX);
+		if (U7exists(EXULTMSG))
+			U7open(exultmsg, EXULTMSG, true);
+		Setup_item_names(textflx, exultmsg);
+		}
+	}
 
-		if 
+/*
+ *	Write out new-style Exult text file.
+ */
 
-	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_TEXT))
-		U7open(textflx, PATCH_TEXT);
-	else
-  		U7open(textflx, TEXT_FLX);
-	if (U7exists(EXULTMSG))
-		U7open(exultmsg, EXULTMSG, true);
-	Setup_item_names(textflx, exultmsg);	// Set up list of item names.
-#endif
+void Write_text_file
+	(
+	)
+	{
+	ofstream out;
+	int i, cnt;
+
+	U7open(out, PATCH_TEXTMSGS, true);	// (It's a text file.)
+	out << "Exult " << VERSION << " text message file." <<
+		"  Written by ExultStudio." << endl;
+	Write_msg_file_section(out, SHAPES_SECT, item_names, num_item_names);
+	Write_msg_file_section(out, MSGS_SECT, text_msgs, num_text_msgs);
+	Write_msg_file_section(out, MISC_SECT, misc_names, num_misc_names);
+	out.close();
+	}
+
+/*
+ *	Update/add an item name.
+ */
+
+void Set_item_name
+	(
+	int num,
+	const char *name
+	)
+	{
+	if (num >= num_item_names)
+		{
+		char **newlist = new char*[num + 1];
+		int i;
+		memcpy(newlist, item_names, num_item_names*sizeof(char *));
+		if (num > num_item_names)
+			memchr(newlist + num_item_names, 0, 
+				(num - num_item_names)*sizeof(char *));
+		delete [] item_names;
+		item_names = newlist;
+		num_item_names = num + 1;
+		}
+	delete item_names[num];
+	item_names[num] = newstrdup(name);
+	}
+

@@ -125,12 +125,8 @@
 #define GNEWGAMEVER	"<GAMEDAT>/newgame.ver"
 #define KEYRINGDAT	"<GAMEDAT>/keyring.dat"
 
-#define SHAPESTXT	"<STATIC>/shapes.txt"
 #define TEXTMSGS	"<STATIC>/textmsg.txt"
-#define MISCNMS		"<STATIC>/miscnms.txt"
-#define PATCH_SHAPESTXT	"<PATCH>/shapes.txt"
 #define PATCH_TEXTMSGS	"<PATCH>/textmsg.txt"
-#define PATCH_MISCNMS	"<PATCH>/miscnms.txt"
 
 #define NUM_FONTS	(20)
 

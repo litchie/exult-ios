@@ -24,11 +24,15 @@
 
 #include <iostream>
 #include <vector>
+#include <ctype.h>
+#include <iomanip>
 #include "utils.h"
 
 using std::istream;
+using std::ostream;
 using std::cerr;
 using std::endl;
+using std::hex;
 using std::vector;
 
 /*
@@ -39,6 +43,10 @@ using std::vector;
  *			or decimal.
  *		Max. text length is 1024.
  *		A line beginning with a '#' is a comment.
+ *		A 'section' can be marked:
+ *			%%section shapes
+ *				....
+ *			%%endsection
  *	Output:	# of first message (i.e., lowest-numbered msg), or -1 if
  *		error.
  */
@@ -46,8 +54,10 @@ using std::vector;
 int Read_text_msg_file
 	(
 	istream& in,
-	vector<char *>& strings		// Strings returned here, each
+	vector<char *>& strings,	// Strings returned here, each
 					//   allocated on heap.
+	char *section			// Section name, or NULL.  If given
+					//   the section must be next infile.
 	)
 	{
 	strings.resize(0);		// Initialize.
@@ -70,6 +80,24 @@ int Read_text_msg_file
 		if (!buf[0])
 			continue;	// Empty line.
 		char *ptr = &buf[0];
+		if (section)
+			{
+			if (buf[0] != '%' || 
+					strncmp(ptr + 1, "%section", 8) != 0)
+				continue;
+			for (ptr = &buf[9]; isspace(*ptr); ++ptr)
+				;
+			if (strncmp(ptr, section, strlen(ptr)) == 0)
+				{	// Found the section.
+				section = 0;
+				continue;
+				}
+			cerr << "Line #" << linenum << 
+				" has the wrong section name" << endl;
+			return -1;
+			}
+		if (buf[0] == '%' && strncmp(ptr + 1, "%endsection", 11) == 0)
+			break;
 		char *endptr;		// Get line# in decimal, hex, or oct.
 		long index = strtol(ptr, &endptr, 0);
 		if (endptr == ptr)	// No #?
@@ -104,14 +132,34 @@ int Read_text_msg_file
 	istream& in,
 	char **& strings,		// Strings returned here, each
 					//   allocated on heap.
-	int& count
+	int& count,
+	char *section
 	)
 	{
 	vector<char *> txtlist;
-	int first = Read_text_msg_file(in, txtlist);
+	int first = Read_text_msg_file(in, txtlist, section);
 	count = txtlist.size();
 	strings = new char *[count];
 	for (int i = 0; i < count; ++i)
 		strings[i] = txtlist[i];
 	return first;
 	}
+
+/*
+ *	Write one section.
+ */
+
+void Write_msg_file_section
+	(
+	ostream& out, 
+	char *section, 
+	char **items, 
+	int num_items
+	)
+	{
+	out << "%%section " << section << endl;
+	for (int i = 0; i < num_items; ++i)
+		out << hex << "0x" << i << ':' << items[i] << endl;
+	out << "%%endsection " << section << endl;
+	}
+
