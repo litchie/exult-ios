@@ -336,10 +336,14 @@ GtkCTreeNode *create_subtree( GtkCTree *ctree,
 	gtk_ctree_node_set_selectable( ctree,
 				       parent, 
 				       FALSE );
-	sibling = 0;	
+	sibling = 0;
+	int extlen = strlen(ext);
 	while(entry=readdir(dir)) {
 		char *fname = entry->d_name;
-		if(!strcmp(fname,".")||!strcmp(fname,"..")||!strstr(fname,ext))
+		int flen = strlen(fname);
+					// Ignore case of extension.
+		if(!strcmp(fname,".")||!strcmp(fname,"..") ||
+				strcasecmp(fname + flen - extlen, ext) != 0)
 			continue;
 		text[0] = fname;
 		sibling = gtk_ctree_insert_node( ctree,
