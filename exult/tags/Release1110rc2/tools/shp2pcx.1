@@ -1,0 +1,51 @@
+.\" -*- nroff -*-
+.TH shp2pcx 1 2002-03-24 Exult
+
+.SH NAME
+shp2pcx \- extract images from a Shape (SHP) file into PCX files
+
+.SH SYNOPSIS
+.B shp2pcx
+.I SHAPE PREFIX PALETTE
+
+.SH DESCRIPTION
+.B shp2pcx
+converts all frames contained in a Shape file into PCX-format image
+files. Shape files are used for storage of all visible elements (from
+UI buttons to terrain features) of the games
+.I Exult
+supports.
+
+.I SHAPE
+is the name of the Shape file acting as the source. Frames contained
+therein are saved as PCX files named
+.IB PREFIXnn .pcx
+with
+.I nn
+replaced by the frame number (counting from zero). All PCX files get
+their palette from
+.IR PALETTE .
+
+Before extraction the number of frames, and the Shape's origin
+coordinates are shown. Additionally, extraction progress is
+communicated by printing a message containing the resulting file's
+name for every processed frame.
+
+.SH EXAMPLES
+.TP
+.B shp2pcx orc.shp orc std.pal
+Takes the frames contained in the Shape file
+.BR orc.shp ,
+and saves them with the palette from
+.B std.pal
+into PCX files
+.BR orc00.pcx ", " orc01.pcx ", " orc02.pcx ", etc."
+
+.SH AUTHOR
+This manpage was written by Robert Bihlmeyer. It may be freely
+redistributed and modified under the terms of the GNU General Public
+License version 2 or higher.
+
+.SH SEE ALSO
+.BR exult "(6), " pcxtoppm "(1), " splitshp (1)
+

@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="expack"
+	SccProjectName=""
+	SccLocalPath="">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Release Install|Win32"
+			OutputDirectory=".\..\tools"
+			IntermediateDirectory=".\expack_release"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="1"
+				EnableIntrinsicFunctions="TRUE"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="TRUE"
+				EnableFiberSafeOptimizations="FALSE"
+				OptimizeForProcessor="2"
+				OptimizeForWindowsApplication="TRUE"
+				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				PreprocessorDefinitions="NDEBUG,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
+				StringPooling="TRUE"
+				ExceptionHandling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				RuntimeTypeInfo="FALSE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="msvc_kludges.h"
+				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+				AssemblerListingLocation=".\expack_release/"
+				ObjectFile=".\expack_release/"
+				ProgramDataBaseFileName=".\expack_release/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="2"
+				ForcedIncludeFiles="msvc_kludges.h"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Installing $(InputName).exe and Creating buildflx_inst.bat"
+				CommandLine="echo cd &quot;%%1&quot; &gt;  $(SolutionDir)\buildflx_inst.bat
+echo $(TargetPath) -i flx.in &gt;&gt; $(SolutionDir)\buildflx_inst.bat
+echo @if not exist &quot;$(EXULT_INSTALL_PATH)\%%4&quot; md &quot;$(EXULT_INSTALL_PATH)\%%4&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
+echo cd &quot;%%2&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
+echo copy &quot;%%3&quot; &quot;$(EXULT_INSTALL_PATH)\%%4&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
+if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;
+copy $(TargetPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
+"
+				Outputs="buildflx_inst.bat;$(EXULT_INSTALL_PATH)\tools\$(InputName).exe"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile=".\..\tools/expack.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				ProgramDatabaseFile=".\..\tools/expack.pdb"
+				SubSystem="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\..\tools/expack.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="3081"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory=".\..\tools"
+			IntermediateDirectory=".\expack_release"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				GlobalOptimizations="TRUE"
+				InlineFunctionExpansion="1"
+				EnableIntrinsicFunctions="TRUE"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="TRUE"
+				EnableFiberSafeOptimizations="FALSE"
+				OptimizeForProcessor="2"
+				OptimizeForWindowsApplication="TRUE"
+				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				PreprocessorDefinitions="NDEBUG,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
+				StringPooling="TRUE"
+				ExceptionHandling="TRUE"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="msvc_kludges.h"
+				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+				AssemblerListingLocation=".\expack_release/"
+				ObjectFile=".\expack_release/"
+				ProgramDataBaseFileName=".\expack_release/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="2"
+				ForcedIncludeFiles="msvc_kludges.h"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Creating buildflx.bat"
+				CommandLine="echo cd &quot;%%1&quot; &gt;  $(SolutionDir)\buildflx.bat
+echo $(TargetPath) -i flx.in &gt;&gt; $(SolutionDir)\buildflx.bat
+"
+				Outputs="buildflx.bat"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile=".\..\tools/expack.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				ProgramDatabaseFile=".\..\tools/expack.pdb"
+				SubSystem="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\..\tools/expack.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="3081"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug Install|Win32"
+			OutputDirectory=".\..\tools"
+			IntermediateDirectory=".\expack_debug"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				PreprocessorDefinitions="_DEBUG,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				RuntimeTypeInfo="FALSE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="msvc_kludges.h"
+				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+				AssemblerListingLocation=".\expack_debug/"
+				ObjectFile=".\expack_debug/"
+				ProgramDataBaseFileName=".\expack_debug/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="2"
+				ForcedIncludeFiles="msvc_kludges.h"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Installing $(InputName).exe and Creating buildflx_inst.bat"
+				CommandLine="echo cd &quot;%%1&quot; &gt;  $(SolutionDir)\buildflx_inst.bat
+echo $(TargetPath) -i flx.in &gt;&gt; $(SolutionDir)\buildflx_inst.bat
+echo @if not exist &quot;$(EXULT_INSTALL_PATH)\%%4&quot; md &quot;$(EXULT_INSTALL_PATH)\%%4&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
+echo cd &quot;%%2&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
+echo copy &quot;%%3&quot; &quot;$(EXULT_INSTALL_PATH)\%%4&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
+if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;
+copy $(TargetPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
+"
+				Outputs="buildflx_inst.bat;$(EXULT_INSTALL_PATH)\tools\$(InputName).exe"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile=".\..\tools/expack.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\..\tools/expack.pdb"
+				SubSystem="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\..\tools/expack.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="3081"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\..\tools"
+			IntermediateDirectory=".\expack_debug"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				PreprocessorDefinitions="_DEBUG,_CONSOLE,WIN32,USING_PRECOMPILED_HEADER"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				RuntimeTypeInfo="FALSE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="msvc_kludges.h"
+				PrecompiledHeaderFile="$(IntDir)/$(TargetName).pch"
+				AssemblerListingLocation=".\expack_debug/"
+				ObjectFile=".\expack_debug/"
+				ProgramDataBaseFileName=".\expack_debug/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="2"
+				ForcedIncludeFiles="msvc_kludges.h"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Creating buildflx.bat"
+				CommandLine="echo cd &quot;%%1&quot; &gt;  $(SolutionDir)\buildflx.bat
+echo $(TargetPath) -i flx.in &gt;&gt; $(SolutionDir)\buildflx.bat
+"
+				Outputs="buildflx.bat"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib"
+				OutputFile=".\..\tools/expack.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\..\tools/expack.pdb"
+				SubSystem="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\..\tools/expack.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="3081"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath="..\files\Flat.cc">
+			</File>
+			<File
+				RelativePath="..\files\Flex.cc">
+			</File>
+			<File
+				RelativePath="..\files\IFF.cc">
+			</File>
+			<File
+				RelativePath="..\files\Table.cc">
+			</File>
+			<File
+				RelativePath="..\files\U7file.cc">
+			</File>
+			<File
+				RelativePath="..\files\crc.cc">
+			</File>
+			<File
+				RelativePath="..\tools\expack.cc">
+			</File>
+			<File
+				RelativePath="..\files\listfiles.cc">
+			</File>
+			<File
+				RelativePath=".\msvc_kludges.cc">
+				<FileConfiguration
+					Name="Release Install|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug Install|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\files\utils.cc">
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath="..\files\Flat.h">
+			</File>
+			<File
+				RelativePath="..\files\Flex.h">
+			</File>
+			<File
+				RelativePath="..\files\IFF.h">
+			</File>
+			<File
+				RelativePath="..\files\Table.h">
+			</File>
+			<File
+				RelativePath="..\files\U7file.h">
+			</File>
+			<File
+				RelativePath="..\files\crc.h">
+			</File>
+			<File
+				RelativePath="..\files\databuf.h">
+			</File>
+			<File
+				RelativePath="..\exceptions.h">
+			</File>
+			<File
+				RelativePath="..\exult_types.h">
+			</File>
+			<File
+				RelativePath="..\files\listfiles.h">
+			</File>
+			<File
+				RelativePath=".\msvc_kludges.h">
+			</File>
+			<File
+				RelativePath=".\unistd.h">
+			</File>
+			<File
+				RelativePath="..\files\utils.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

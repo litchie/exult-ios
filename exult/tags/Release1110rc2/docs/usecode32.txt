@@ -1,0 +1,50 @@
+Additional specs for 32 bit usecode:
+
+Function header:
+this usually is:
+<16 bit: function id><16 bit: function length><16 bit: data length>
+
+for 32 bit usecode this is: (marked by the 'extended' flag in Usecode_function)
+<16: 0xFFFF><16: function id><32: function length><32: data length>
+
+
+
+Extra opcodes: (0x80 + old opcode. See original opcodes for details)
+
+0x84: CONV32
+0x84 <32 bit rel. code offset>
+
+0x85: JNE32
+0x85 <32 bit rel. code offset>
+
+0x86: JMP32
+0x86 <32 bit rel. code offset>
+
+0x87: CMPS32
+0x87: <16 bit string count><32 bit rel. code offset>
+
+0x9C: ADDSI32
+0x9C <32 bit data offset>
+
+0x9D: PUSHS32
+0x9D <32 bit data offset>
+
+0x9F: PUSHI32
+0x9F <32 bit immediate>
+
+0xAE 0x82: LOOP
+0xAE 0x82 <4 16-bit local var indices><32 bit rel. code offset>
+
+0xB1: ....32
+0xB1 <16 bit unknown><32 bit rel. code offset>
+
+0xCD: INIT32
+0xCD <32 bit data offset><32 bit data offset>
+
+
+
+Changes to wud/wuc:
+
+wuc will output an extended function header if there is a '.ext32' keyword
+directly between the .funcnumber and .data lines.
+wud will output this keyword automatically.

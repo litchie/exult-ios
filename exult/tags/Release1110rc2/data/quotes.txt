@@ -1,0 +1,139 @@
+\CEXULT QUOTES
+
+\C"Feel free to release without me."
+\L- Tristan
+
+\C"Heh. New law of physics: Actors are not
+\Csupporters."
+\L- Dancer
+
+\C"Code is now less 'Dubious'"
+\L- Colourless
+
+\C"All this stuff is driving me to Java!"
+\L- Jeff
+
+\C"I haven't touched the original in a while
+\CExult is so much better"
+\L- Tristan
+
+\C"The few crashes just made it
+\Cfeel more authentic!"
+\L- Jeff
+
+\C"Holy S!*@!"
+\L- Jeff 
+\C(on Horizons Tavern
+\Cafter seeing a screenshot 
+\Cof Exult with 2xSaI)
+
+\C"Working on Forge (but Love broken now)"
+\L- Jeff
+
+\C"Paladin reproduces infinitely"
+\L- Dominik
+\C(on Jackchaos)
+
+\C"Oh Wow. Boom!
+\CIt crashed good an proper for me."
+\L- Colourless
+
+\C"Exult - X-windows Ultima7 map browser."
+\L- Top of exult.cc
+\L(Alpha version)
+
+\C"Luckily the world is not a donut,
+\Celse Homer Simpson might have eaten it."
+\L- Max
+
+\C"It's not our fault, the data files
+\Care telling us what to do!"
+\L- Dancer, 
+\C(explaining things clearly)
+
+\C"If we stack kids, 
+\Cwe should use a proper stack!"
+\L- Max
+
+\C"I know what a stack is.
+\CBut what's a `kid`?"
+\L- Tony
+
+\C"A young person..."
+\L- Willem Jan
+
+\C"Damn, we're probably popular enough to
+\Cwin a US presidency election."
+\L- Dancer
+
+\C"Only if we release on punchcards."
+\L- Jeff
+
+\C"BTW I don't stack kids anymore,
+\CI now put them into a queue."
+\L- Max on ##exult
+
+\C"Uh oh, Iolo is upset at me
+\Cfor moving a tree."
+\L- Willem Jan
+
+\C"You guys rule !!!"
+\L- Chimera on ##exult
+
+\C"Yeah, we do :-)"
+\L- Willem Jan on ##exult
+
+\C"Anybody home? Exultbot?"
+\C"Ah, well, guess I'm in the wrong timezone"
+\L - Jeff on ##exult
+
+\C"We leave it any longer,
+\Cand I could become more difficult"
+\L - Ryan,
+\L on world-wrapping
+
+\C"On a more positive note,
+\Ctry dying in SI. 
+\CIt's working much better now."
+\L - Jeff on Jackchaos
+
+\C"Say, maybe we could make some money
+\Cselling tours to Britannia"
+\L - Jeff,
+\L replying to spam
+
+\C"Using missing functionality to
+\C work-around a bug? Clever."
+\L - Amy
+
+\C"Hmm, 'stumbled' is an apt description 
+\Cof my development process in Exult.
+\CMaybe I should write a software-engineering
+\Cbook about it :-)"
+\L - Jeff
+
+\C"There are two types of people. 
+\CExult Developers and everyone else"
+\L - Colourless
+
+\C"There are definitely bugs to be
+\Cfound on the List Field."
+\L - Jeff
+
+\C"I love freedman"
+\L - Fingolfin on ##exult
+
+\Cusecode = -1; // Let's try this.
+\L - actorio.cc:89 cvs 1.1
+\L   (jsf 13-May-00)
+
+\C"a comment to inspire confidence :-)"
+\L - Wumpus on ##exult
+
+\C"People will love this"
+\L - Dominus on April
+\L   Fools 2002
+
+\C"and hate us"
+\L - Colourless on April
+\L   Fools 2002
