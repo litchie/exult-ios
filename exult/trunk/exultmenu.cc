@@ -189,11 +189,15 @@ Exult_Game ExultMenu::run()
 		
 	int menuchoices[] = { 0x06, 0x07, 0x0A, 0x01, 0x00 , 0x11 };
 	int num_choices = sizeof(menuchoices)/sizeof(int);
-		
+	
+	int ypos = menuy-24;	
 	for(int i=0; i<num_choices; i++) {
 		menu->add_entry(new MenuEntry(exult_flx.get_shape(menuchoices[i],1),
 					      exult_flx.get_shape(menuchoices[i],0),
-					      centerx, menuy+i*11+(i<2?0:11)));
+					      centerx, ypos));
+		ypos += exult_flx.get_shape(menuchoices[i],0)->get_height()+2;
+		if(i<2)
+			ypos+=5;
 	}
 	menu->set_selection(0);
 	Exult_Game sel_game = NONE;
