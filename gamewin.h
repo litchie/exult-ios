@@ -109,6 +109,7 @@ private:
 	int u7open(ifstream& in, const char *fname, int dont_abort = 0);
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
+	void read_map_data();		// Read in 'ifix', 'ireg', etc.
 public:
 	int skip_lift;			// Skip objects with lift > 0.
 	int paint_eggs;
@@ -375,6 +376,7 @@ public:
 		{ paint(r.x, r.y, r.w, r.h); }
 	void paint()			// Paint whole image.
 		{
+		read_map_data();	// Gather in all objs., etc.
 		paint(0, 0, get_width(), get_height());
 		clear_dirty();
 		}
