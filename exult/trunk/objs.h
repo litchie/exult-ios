@@ -94,9 +94,10 @@ protected:
 					//   is in a container, coords. within
 					//   gump's rectangle.
 public:
-	friend class Chunk_object_list;
+	friend class Object_list;
 	friend class Object_iterator;
 	friend class Object_iterator_backwards;
+	friend class Chunk_object_list;
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
@@ -185,6 +186,7 @@ public:
 		{ return next; }
 	Game_object *get_prev()
 		{ return prev; }
+#if 0
 					// Insert, and return new first.
 	Game_object *insert_in_chain(Game_object *first)
 		{
@@ -217,6 +219,7 @@ public:
 		prev->next = next;
 		}
 	void delete_chain();		// Delete chain this is head of.
+#endif
 	static int lt(class Ordering_info& inf1, Game_object *obj2);
 	int lt(Game_object& obj2) const;// Is this less than another in pos.?
 					// Return chunk coords.
@@ -383,6 +386,71 @@ public:
 	};
 
 /*
+ *	A list of objects chained together with the 'next' and 'prev'
+ *	fields:
+ */
+class Object_list
+	{
+	Game_object *first;		// ->first in (circular) chain.
+	unsigned short iter_count;	// # of iterators.
+public:
+	friend class Object_iterator;
+	friend class Flat_object_iterator;
+	friend class Object_iterator_backwards;
+	Object_list(Game_object *f = 0) : first(f), iter_count(0)
+		{  }
+	~Object_list();
+	void report_problem();		// Message if iterators exist.
+	int is_empty()
+		{ return first == 0; }
+	void add_iterator()
+		{ iter_count++; }
+	void remove_iterator()
+		{ iter_count--; }
+	Game_object *get_first()
+		{ return first; }
+					// Insert at head of chain.
+	void insert(Game_object *nobj)
+		{
+		if (iter_count)
+			report_problem();
+		if (!first)		// First one.
+			nobj->next = nobj->prev = nobj;
+		else
+			{
+			nobj->next = first;
+			nobj->prev = first->prev;
+			first->prev->next = nobj;
+			first->prev = nobj;
+			}
+		first = nobj;
+		}
+					// Insert before given obj.
+	void insert_before(Game_object *nobj, Game_object *before)
+		{
+		if (iter_count)
+			report_problem();
+		nobj->next = before;
+		nobj->prev = before->prev;
+		before->prev->next = nobj;
+		before->prev = nobj;
+		first = before == first ? nobj : first;
+		}
+					// Append.
+	void append(Game_object *nobj)
+		{ insert(nobj); first = nobj->next; }
+	void remove(Game_object *dobj)
+		{
+		if (iter_count)
+			report_problem();
+		if (dobj == first)
+			first = dobj->next != first ? dobj->next : 0;
+		dobj->next->prev = dobj->prev;
+		dobj->prev->next = dobj->next;
+		}
+	};
+
+/*
  *	A moveable game object (from 'ireg' files):
  */
 class Ireg_game_object : public Game_object
@@ -485,7 +553,7 @@ class Container_game_object : public Ireg_game_object
 	int volume_used;		// Amount of volume occupied.
 	unsigned char resistance;	// Resistance to attack.
 protected:
-	Game_object *objects;		// ->first object.
+	Object_list objects;		// ->first object.
 	int get_max_volume() const	// Max. we'll hold. (0 == infinite).
 		{ return 4*get_volume(); }
 public:
@@ -499,7 +567,7 @@ public:
 		objects(0) {  }
 	virtual ~Container_game_object();
 	Game_object *get_first_object()	// Get first inside.
-		{ return objects; }
+		{ return objects.get_first(); }
 					// For when an obj's quantity changes:
 	void modify_volume_used(int delta)
 		{ volume_used += delta; }
@@ -623,7 +691,7 @@ class Chunk_object_list
 	{
 	ShapeID flats[256];		// Flat (non-RLE) shapes.  The unused
 					//   are "invalid" entries.
-	Game_object *objects;		// ->first in list of all objs.  'Flat'
+	Object_list objects;		// ->first in list of all objs.  'Flat'
 					//   obs. (lift=0,ht=0) stored 1st.
 	Game_object *first_nonflat;	// ->first nonflat in 'objects'.
 	unsigned char *dungeon_bits;	// A 'dungeon' bit flag for each tile.

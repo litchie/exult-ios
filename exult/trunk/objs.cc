@@ -784,26 +784,6 @@ public:
 	};
 
 /*
- *	Delete the chain that starts with this object.
- */
-
-void Game_object::delete_chain
-	(
-	)
-	{
-	Game_object *objects = this;
-	Game_object *first = objects;
-	Game_object *obj;
-	do
-		{
-		obj = objects;
-		objects = obj->get_next();
-		delete obj;
-		}
-	while (obj != first);
-	}
-
-/*
  *	Should obj1 be rendered before obj2?
  *
  *	Output:	1 if so, 0 if not, -1 if cannot compare.
@@ -1173,6 +1153,40 @@ void Game_object::write_common_ireg
 	}
 
 /*
+ *	Delete the chain.
+ */
+
+Object_list::~Object_list
+	(
+	)
+	{
+	if (!first)
+		return;
+	Game_object *objects = first;
+	Game_object *obj;
+	do
+		{
+		obj = objects;
+		objects = obj->get_next();
+		delete obj;
+		}
+	while (obj != first);
+	}
+
+/*
+ *	Report iterator problem.
+ */
+
+void Object_list::report_problem
+	(
+	)
+	{
+	cerr << "Danger! Danger! Object list modified while being iterated." 
+						<< endl;
+	cerr.flush();
+	}
+
+/*
  *	Move to a new absolute location.  This should work even if the old
  *	location is invalid (cx=cy=255).
  */
@@ -1327,8 +1341,6 @@ Container_game_object::~Container_game_object
 	(
 	)
 	{
-	if (objects)
-		objects->delete_chain();
 	}
 
 /*
@@ -1340,17 +1352,11 @@ void Container_game_object::remove
 	Game_object *obj
 	)
 	{
-	if (!objects)
+	if (objects.is_empty())
 		return;
 	volume_used -= obj->get_volume();
 	obj->set_owner(0);
-	if (obj == objects)		// Head of list?
-		{
-		objects = obj->get_next();
-		if (obj == objects)	// Last in chain?
-			objects = 0;
-		}
-	obj->remove_from_chain();
+	objects.remove(obj);
 	}
 
 /*
@@ -1377,8 +1383,7 @@ int Container_game_object::add
 		volume_used += objvol;
 		}
 	obj->set_owner(this);		// Set us as the owner.
-					// Append to chain.
-	objects = obj->append_to_chain(objects);
+	objects.append(obj);		// Append to chain.
 					// Guessing:
 	if (get_flag(okay_to_take))
 		obj->set_flag(okay_to_take);
@@ -1424,7 +1429,7 @@ int Container_game_object::add_quantity
 	int roomfor = maxvol ? (maxvol - volume_used)/objvol : 20000;
 	int todo = delta < roomfor ? delta : roomfor;
 	Game_object *obj;
-	if (objects)
+	if (!objects.is_empty())
 		{			// First try existing items.
 		Object_iterator next(objects);
 		while ((obj = next.get_next()) != 0)
@@ -1495,7 +1500,7 @@ int Container_game_object::create_quantity
 		return (0);
 					// Now try those below.
 	Game_object *obj;
-	if (!objects)
+	if (objects.is_empty())
 		return (delta);
 	Object_iterator next(objects);
 	while ((obj = next.get_next()) != 0)
@@ -1518,9 +1523,9 @@ int Container_game_object::remove_quantity
 	int framenum			// Frame, or -359 for any.
 	)
 	{
-	if (!objects)
+	if (objects.is_empty())
 		return delta;		// Empty.
-	Game_object *obj = objects;
+	Game_object *obj = objects.get_first();
 	Game_object *next;
 	int done = 0;
 	while (!done && delta)
@@ -1536,7 +1541,7 @@ int Container_game_object::remove_quantity
 			delta = obj->remove_quantity(delta, shapenum, 
 							qual, framenum);
 		obj = next;
-		done = (!obj || obj == objects);
+		done = (!obj || obj == objects.get_first());
 		}
 	return (delta);
 	}
@@ -1554,7 +1559,7 @@ Game_object *Container_game_object::find_item
 	int framenum			// Frame, or -359 for any.
 	)
 	{
-	if (!objects)
+	if (objects.is_empty())
 		return 0;		// Empty.
 	Game_object *obj;
 	Object_iterator next(objects);
@@ -1719,8 +1724,8 @@ void Container_game_object::write_ireg
 	unsigned char *ptr = &buf[1];	// To avoid confusion about offsets.
 	write_common_ireg(ptr);		// Fill in bytes 1-4.
 	ptr += 4;
-					// Guessing: +++++
-	unsigned short tword = objects ? objects->get_prev()->get_shapenum() 
+	Game_object *first = objects.get_first(); // Guessing: +++++
+	unsigned short tword = first ? first->get_prev()->get_shapenum() 
 									: 0;
 	Write2(ptr, tword);
 	*ptr++ = 0;			// Unknown.
@@ -1746,7 +1751,7 @@ void Container_game_object::write_contents
 	ostream& out
 	)
 	{
-	if (objects)			// Now write out what's inside.
+	if (!objects.is_empty())	// Now write out what's inside.
 		{
 		Game_object *obj;
 		Object_iterator next(objects);
@@ -2220,8 +2225,6 @@ Chunk_object_list::~Chunk_object_list
 	(
 	)
 	{
-	if (objects)
-		objects->delete_chain();
 	delete cache;
 	delete dungeon_bits;
 	}
@@ -2275,9 +2278,9 @@ void Chunk_object_list::add
 	Ordering_info ord(gwin, newobj);
 					// Put past flats.
 	if (first_nonflat)
-		objects = newobj->insert_before(objects, first_nonflat);
+		objects.insert_before(newobj, first_nonflat);
 	else
-		objects = newobj->append_to_chain(objects);
+		objects.append(newobj);
 					// Not flat?
 	if (newobj->get_lift() || ord.info.get_3d_height())
 		{			// Deal with dependencies.
@@ -2374,16 +2377,10 @@ void Chunk_object_list::remove
 	if (remove == first_nonflat)	// First nonflat?
 		{			// Update.
 		first_nonflat = remove->get_next();
-		if (first_nonflat == objects)
+		if (first_nonflat == objects.get_first())
 			first_nonflat = 0;
 		}
-	if (remove == objects)		// First one?
-		{
-		objects = remove->get_next();
-		if (objects == remove)	// Very last?
-			objects = 0;
-		}
-	remove->remove_from_chain();
+	objects.remove(remove);		// Remove from list.
 	}
 
 /*
@@ -2568,6 +2565,8 @@ void Chunk_object_list::try_all_eggs
 	Chunk_intersect_iterator next_chunk(area);
 	Rectangle tiles;		// (Ignored).
 	int eachcx, eachcy;
+	Vector eggs(0, 40);		// Get them here first, as activating
+					//   an egg could affect chunk's list.
 	while (next_chunk.get_next(tiles, eachcx, eachcy))
 		{
 		Chunk_object_list *chunk = gwin->get_objects_safely(
@@ -2585,9 +2584,14 @@ void Chunk_object_list::try_all_eggs
 				if (egg->get_type() != Egg_object::jukebox &&
 			    	    egg->is_active(obj,
 						tx, ty, tz, from_tx, from_ty))
-					egg->activate(
-						gwin->get_usecode(), obj);
+					eggs.append(egg);
 				}
+		}
+	int eggcnt = eggs.get_cnt();
+	for (int i = 0; i < eggcnt; i++)
+		{
+		Egg_object *egg = (Egg_object *) eggs.get(i);
+		egg->activate(gwin->get_usecode(), obj);
 		}
 	norecurse--;
 	}
