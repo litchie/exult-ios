@@ -925,8 +925,7 @@ void ExultStudio::save_shape_window
 	Shape_file_info *file_info = (Shape_file_info *)
 		gtk_object_get_data(GTK_OBJECT(shapewin), "file_info");
 	Vga_file *ifile = file_info->get_ifile();
-	if (info &&			// If 'shapes.vga', get name.
-	    shnum < 1024)		// But only for the first 1024.
+	if (info)			// If 'shapes.vga', get name.
 		{
 		const gchar *nm = get_text_entry("shinfo_name");
 		if (!nm)
