@@ -106,7 +106,7 @@ Replace it with:
 01C3: 1F 05 00 		pushi	0005H			; 5
 01C6: 1F 99 FE 		pushi	FE99H			; -359
 01C9: 1F BB 03 		pushi	03BBH			; 955
-01CC: 1F 01 00 		pushi	0001H			; 8
+01CC: 1F 01 00 		pushi	0008H			; 8
 01CF: 1F 6B FF 		pushi	FF6BH			; -149
 01D2: 1F FD FF 		pushi	FFFDH			; -3
 01D5: 24 06 00 		call	[0006]			; 0996H
