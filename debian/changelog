@@ -1,3 +1,9 @@
+exult (1:0.98rc1-1) unstable; urgency=low
+
+  * Release candidate 1
+
+ -- Tristan Tarrant <nadir@users.sf.net>  Wed, 13 Mar 2002 10:32:11 +0100
+
 exult (1:0.97cvs-1) unstable; urgency=low
 
   * exult-tools updated for new tools, and included some extra
