@@ -1,3 +1,7 @@
+2000-05-23  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* Makefile.win32: added
+	* Makefile.am: added Makefile.win32 to dist_targets
+
 2000-05-22  Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* */Makefile.am, configure.in, etc...: Rehauled build mechanism,
