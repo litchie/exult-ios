@@ -2383,7 +2383,8 @@ void Actor::remove
 					// Note:  gwin->drop() also does this,
 					//   but it needs to be done before
 					//   removal too.
-	if (!gwin->get_usecode()->in_usecode())
+					// Definitely DO NOT call if dead!
+	if (!gwin->get_usecode()->in_usecode() && !is_dead())
 		call_readied_usecode(gwin, index, obj,
 						Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
@@ -2999,7 +3000,9 @@ void Actor::die
 	delete schedule;
 	schedule = 0;
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
-	Actor::set_flag(Obj_flags::dead);
+	Actor::set_flag(Obj_flags::dead);// IMPORTANT:  Set this before moving
+					//   objs. so Usecode(eventid=6) isn't
+					//   called.
 	int shnum = get_shapenum();
 					// Special case:  Hook, Dracothraxus.
 	if (((shnum == 0x1fa || (shnum == 0x1f8 && Is_draco(this))) && 
