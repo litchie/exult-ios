@@ -31,11 +31,14 @@ private:
 	char 			*static_path;
 	static ExultStudio	*self;
 	Vga_file		*ifile;
+	Vga_file		*vgafile;	// Main 'shapes.vga'.
 	char			**names;
 	Object_browser		*browser;
 	GtkWidget		*eggwin;// Egg window.
 	int			server_socket;
 	gint			server_input_tag;
+	unsigned char 		*palbuf;
+	Shape_draw		*egg_monster_draw;
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();
@@ -54,6 +57,7 @@ public:
 	void close_egg_window();
 	int init_egg_window(unsigned char *data, int datalen);
 	int save_egg_window();
+	void show_egg_monster(int x, int y, int w, int h);
 	void run();
 	void read_from_server();
 	void connect_to_server();

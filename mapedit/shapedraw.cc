@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapedraw.h"
 #include "vgafile.h"
 #include "ibuf8.h"
+#include "u7drag.h"
 
 /*
  *	Blit onto screen.
@@ -90,7 +91,7 @@ Shape_draw::Shape_draw
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	GtkWidget *drw			// Drawing area to use.
 	) : ifile(i),
-		iwin(0), palette(0), names(0), draw(drw)
+		iwin(0), palette(0), names(0), draw(drw), drawgc(0)
 	{
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
@@ -111,34 +112,82 @@ Shape_draw::~Shape_draw
 	gdk_rgb_cmap_free(palette);
 	delete iwin;
 	}
+
+/*
+ *	Default render.
+ */
+
+void Shape_draw::render
+	(
+	)
+	{
+	}
 	
 /*
  *	Configure the viewing window.
  */
 
-gint Shape_draw::configure
+void Shape_draw::configure
 	(
-	GtkWidget *widget,		// The view window.
-	GdkEventConfigure *event,
-	gpointer data			// ->Shape_chooser
+	GtkWidget *widget		// The view window.
 	)
 	{
-	Shape_draw *draw = (Shape_draw *) data;
-	if (!draw->iwin)		// First time?
+	if (!iwin)		// First time?
 		{
-		draw->drawgc = gdk_gc_new(widget->window);
+		drawgc = gdk_gc_new(widget->window);
 					// Foreground = yellow.
-		gdk_rgb_gc_set_foreground(draw->drawgc,
-							(255<<16) + (255<<8));
-		draw->iwin = new Image_buffer8(
+		gdk_rgb_gc_set_foreground(drawgc, (255<<16) + (255<<8));
+		iwin = new Image_buffer8(
 			widget->allocation.width, widget->allocation.height);
 		}
-	else
+	else if (iwin->get_width() != widget->allocation.width ||
+		 iwin->get_height() != widget->allocation.height)
 		{
-		delete draw->iwin;
-		draw->iwin = new Image_buffer8(
+		delete iwin;
+		iwin = new Image_buffer8(
 			widget->allocation.width, widget->allocation.height);
 		}
-	draw->render();
-	return (TRUE);
+	}
+
+/*
+ *	Shape was dropped.
+ */
+
+gboolean Shape_draw::drag_drop
+	(
+	GtkWidget *widget,
+	GdkDragContext *context,
+	gint x,
+	gint y,
+	guint time
+	)
+	{
+	cout << "Shape was dropped" << endl;
+	//++++++++
+	return FALSE;
+	}
+
+/*
+ *	Set to accept drops from drag-n-drop of a shape.
+ */
+
+void Shape_draw::set_drag_dest
+	(
+	Drop_callback callback,		// Call this when shape dropped.
+	void *udata			// Passed to callback.
+	)
+	{
+	GtkTargetEntry tents[1];
+	tents[0].target = U7_TARGET_SHAPEID_NAME;
+	tents[0].flags = 0;
+	tents[0].info = U7_TARGET_SHAPEID;
+	gtk_drag_dest_set(draw, GTK_DEST_DEFAULT_HIGHLIGHT, tents, 1,
+							GDK_ACTION_DEFAULT);
+//	gtk_signal_connect(GTK_OBJECT(draw), "drag_drop",
+//				GTK_SIGNAL_FUNC(drag_drop), this);
+//+++++++Testing
+	gtk_signal_connect(GTK_OBJECT(draw), "drag_data_received",
+				GTK_SIGNAL_FUNC(drag_drop), this);
+//	gtk_signal_connect(GTK_OBJECT(draw), "drag_leave",
+//				GTK_SIGNAL_FUNC(drag_drop), this);
 	}

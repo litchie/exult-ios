@@ -168,18 +168,30 @@ extern "C" gboolean on_egg_monster_draw_expose_event
 	gpointer data			// ->Shape_chooser.
 	)
 	{
-#if 0
-	ExultStudio::get_instance()->paint_egg_monster(
+	ExultStudio::get_instance()->show_egg_monster(
 		event->area.x, event->area.y, event->area.width,
 							event->area.height);
-#endif
 	return (TRUE);
+	}
+
+/*
+ *	Monster shape # lost focus, so update shape displayed.
+ */
+extern "C" gboolean on_monst_shape_focus_out_event
+	(
+	GtkWidget *widget,
+	GdkEventFocus *event,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->show_egg_monster(0, 0, -1, -1);
+	return TRUE;
 	}
 
 
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
-	eggwin(0), server_socket(-1), server_input_tag(-1), 
-	static_path(0), browser(0)
+	vgafile(0), eggwin(0), server_socket(-1), server_input_tag(-1), 
+	static_path(0), browser(0), palbuf(0), egg_monster_draw(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -240,9 +252,13 @@ ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 ExultStudio::~ExultStudio()
 {
 	delete_shape_browser();
+	delete [] palbuf;
+	palbuf = 0;
 	if (eggwin)
 		gtk_widget_destroy(eggwin);
+	delete egg_monster_draw;
 	eggwin = 0;
+	delete vgafile;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 	if (server_input_tag >= 0)
@@ -269,22 +285,15 @@ void ExultStudio::set_browser(const char *name, Object_browser *obj)
 Object_browser *ExultStudio::create_shape_browser(const char *fname)
 {
 	delete_shape_browser();
-	char *fullname = g_strdup_printf("%s%s", static_path, fname);
-	
-	ifile = new Vga_file(fullname);
+					// Get image file for this path.
+	char *fullname = g_strdup_printf("%s%s", static_path, fname);	
+	ifile = new Vga_file(fullname);	// (We should share 'shapes.vga'.).
 	g_free(fullname);
 	if (!ifile->is_good()) {
 		cerr << "Error opening image file '" << fname << "'.\n";
 		abort();
 	}
-	char *palname = g_strdup_printf("%s%s", static_path, "palettes.flx");
-	U7object pal(palname, 0);
-	g_free(palname);
-	size_t len;
-	unsigned char *palbuf;		// this may throw an exception
-	palbuf = (unsigned char *) pal.retrieve(len);
 	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64);
-	delete [] palbuf;
 	if(!strcasecmp(fname,"shapes.vga")) {
 		// Read in shape names.
 		int num_names = ifile->get_num_shapes();
@@ -404,7 +413,18 @@ void ExultStudio::set_static_path(const char *path)
 {
 	if(static_path)
 		g_free(static_path);
-	static_path = g_strdup(path);	
+	static_path = g_strdup(path);	// Set up palette for showing shapes.
+	char *palname = g_strdup_printf("%s%s", static_path, "palettes.flx");
+	U7object pal(palname, 0);
+	g_free(palname);
+	size_t len;
+	delete palbuf;			// Delete old.
+					// this may throw an exception
+	palbuf = (unsigned char *) pal.retrieve(len);
+	delete vgafile;			// Same for shapes file.
+	char *fullname = g_strdup_printf("%s%s", static_path, "shapes.vga");
+	vgafile = new Vga_file(fullname);
+	g_free(fullname);
 	GtkWidget *file_list = glade_xml_get_widget( app_xml, "file_list" );
 	
 	gtk_clist_clear( GTK_CLIST( file_list ) );
@@ -444,7 +464,15 @@ void ExultStudio::open_egg_window
 	)
 	{
 	if (!eggwin)			// First time?
+		{
 		eggwin = glade_xml_get_widget( app_xml, "egg_window" );
+		if (vgafile && palbuf)
+			{
+			egg_monster_draw = new Shape_draw(vgafile, palbuf,
+			    glade_xml_get_widget(app_xml, "egg_monster_draw"));
+			egg_monster_draw->set_drag_dest(0, 0); //+++++++
+			}
+		}
 	if (data)
 		if (!init_egg_window(data, datalen))
 			return;
@@ -656,12 +684,15 @@ int ExultStudio::init_egg_window
 	switch (type)			// Set notebook page.
 		{
 	case 1:				// Monster:
-		Set_entry(app_xml, "monst_shape", data2&1023);
-		Set_entry(app_xml, "monst_frame", data2>>10);
+		{
+		int shnum = data2&1023, frnum = data2>>10;
+		Set_entry(app_xml, "monst_shape", shnum);
+		Set_entry(app_xml, "monst_frame", frnum);
 		Set_optmenu(app_xml, "monst_schedule", data1>>8);
 		Set_optmenu(app_xml, "monst_align", data1&3);
 		Set_spin(app_xml, "monst_count", (data1&0xff)>>2);
 		break;
+		}
 	case 2:				// Jukebox:
 		Set_spin(app_xml, "juke_song", data1&0xff);
 		Set_toggle(app_xml, "juke_cont", (data1>>8)&0x01);
@@ -820,19 +851,27 @@ int ExultStudio::save_egg_window
 	return 1;
 	}
 
-#if 0
 /*
  *	Paint the shape in the egg 'monster' notebook page.
  */
 
-void ExultStudio::paint_egg_monster
+void ExultStudio::show_egg_monster
 	(
-	int x, int y, int w, int h	// Rectangle.
+	int x, int y, int w, int h	// Rectangle. w=-1 to show all.
 	)
-+++++++++++++++++++
-		event->area.x, event->area.y, event->area.width,
-							event->area.height);
-#endif
+	{
+	if (!egg_monster_draw)
+		return;
+	egg_monster_draw->configure();
+					// Yes, this is kind of redundant...
+	int shnum = Get_num_entry(app_xml, "monst_shape");
+	int frnum = Get_num_entry(app_xml, "monst_frame");
+	egg_monster_draw->draw_shape_centered(shnum, frnum);
+	if (w != -1)
+		egg_monster_draw->show(x, y, w, h);
+	else
+		egg_monster_draw->show();
+	}
 
 void ExultStudio::run()
 {
