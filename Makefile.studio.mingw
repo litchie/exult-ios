@@ -78,7 +78,7 @@ clean:
 install: $(EXEC)
 	mkdir -p $(U7PATH)
 	strip $(EXEC) -o $(U7PATH)/$(EXEC)
-	mkdir -p $(U7PATH)\data
+	mkdir -p $(U7PATH)/data
 	cp mapedit/exult_studio.glade $(U7PATH)/data
 
 tools: u7shp.exe
