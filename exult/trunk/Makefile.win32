@@ -11,7 +11,7 @@ CC=gcc
 SRC=.
 VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SRC)/files:$(SRC)/files/zip:$(SRC)/flic: \
 $(SRC)/gumps:$(SRC)/imagewin:$(SRC)/objs:$(SRC)/pathfinder:$(SRC)/shapes:$(SRC)/server:$(SRC)/tools: \
-$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt/src
+$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src
 
 ### Modify these paths
 SDL_CFLAGS=-I$(SRC)/sdl/include
