@@ -49,7 +49,6 @@ public:
 					// Create "end-of-list"/invalid entry.
 	ShapeID() : shapenum(-1)
 		{  }
-	virtual ~ShapeID() {};
 	int is_invalid() const		// End-of-list or invalid?
 		{ return shapenum == -1; }
 	int is_eol() const
