@@ -89,7 +89,7 @@ void Egg_object::set_area
 	(
 	)
 	{
-	if (!probability)		// No chance of normal activation?
+	if (!probability || type == path)// No chance of normal activation?
 		{
 		area = Rectangle(0, 0, 0, 0);
 		return;
@@ -369,7 +369,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
                 }
 	if (flags & (1 << (int) once))
 		remove_this();		// All done, so go away.
-	else if (criteria == cached_in && solid_area && type == monster)
+	else if (criteria == cached_in && solid_area && type != usecode)
 		{			// Replace solid area with outline.
 		Chunk_object_list *chk = gwin->get_objects(get_cx(), get_cy());
 		chk->remove_egg(this);	// Remove from chunk.

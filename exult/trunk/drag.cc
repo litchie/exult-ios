@@ -218,6 +218,10 @@ void Game_window::drop
 	)
 	{
 	extern int Prompt_for_number(int, int, int, int);
+					// Get orig. loc. info.
+	int oldcx = dragging->get_cx(), oldcy = dragging->get_cy();
+	int oldtx = oldcx*tiles_per_chunk + dragging->get_tx(),
+	    oldty = oldcy*tiles_per_chunk + dragging->get_ty();
 	int dropped = 0;		// 1 when dropped.
 	Game_object *to_drop = dragging;// If quantity, split it off.
 					// Save original footprint.
@@ -265,6 +269,10 @@ void Game_window::drop
 			}
 		}
 	if (dropped)			// Successful?
+		{
+		if (!dragging_gump)	// Do eggs where it came from.
+			get_objects(oldcx, oldcy)->activate_eggs(dragging,
+			    oldtx, oldty, dragging->get_lift(), oldtx, oldty);
 		if (to_drop == dragging)// Whole thing?
 			{		// Watch for stuff on top of it.
 			if (old_foot.w > 0)
@@ -273,6 +281,7 @@ void Game_window::drop
 			}
 		else			// Subtract quantity moved.
 			dragging->modify_quantity(-dragging_quantity);
+		}
 	if (dragging_gump)		// Put back remaining/orig. piece.
 		dragging_gump->add(dragging, -2, -2, -2, -2);
 	else

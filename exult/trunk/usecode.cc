@@ -1066,7 +1066,7 @@ Usecode_value Usecode_machine::find_nearest
 	(
 	Usecode_value& objval,		// Find near this.
 	Usecode_value& shapeval,	// Shape to find
-	Usecode_value& unknown		// Might be distance??
+	Usecode_value& distval		// Guessing it's distance.
 	)
 	{
 	Game_object *obj = get_item(objval);
@@ -1074,7 +1074,8 @@ Usecode_value Usecode_machine::find_nearest
 		return Usecode_value(0);
 	Vector vec;			// Gets list.
 	obj = obj->get_outermost();	// Might be inside something.
-	int cnt = obj->find_nearby(vec, shapeval.get_int_value(), -359, 0);
+	int cnt = obj->find_nearby(vec, shapeval.get_int_value(), 
+						distval.get_int_value(), 0);
 	Game_object *closest = 0;
 	unsigned long bestdist = 100000;// Distance-squared in tiles.
 	int x1, y1, z1;
@@ -1400,6 +1401,11 @@ USECODE_INTRINSIC(execute_usecode_array)
 USECODE_INTRINSIC(delayed_execute_usecode_array)
 {
 	// Delay = .20 sec.?
+					// +++++Special problem with inf. loop:
+	if (Game::get_game_type() == BLACK_GATE &&
+	    event == internal_exec && parms[1].get_array_size() == 3 &&
+	    parms[1].get_elem(2).get_int_value() == 0x6f7)
+		return(no_ret);
 	int delay = parms[2].get_int_value();
 	gwin->get_tqueue()->add(SDL_GetTicks() + 200*delay,
 		new Scheduled_usecode(this, parms[0], parms[1]),
