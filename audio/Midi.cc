@@ -120,14 +120,21 @@ KMIDI::KMIDI()
 	int	devnum;
 	bool	changed=false;
 
-	config.value("config/audio/midi/kmidi/device",devnum,-1);
+	config.value("config/audio/midi/kmidi/device",devnum,-2);
 	if(devnum==-1)
+		{
+		// kmidi is disabled
+		throw 0;
+		}
+	if(devnum==-2)
 		{
 		devnum=kmidi_device_selection();
 		changed=true;
 		if(devnum==-1)
 			{
-			cerr << "No midi device set. Falling back.";
+			// User disabled kmidi
+			devnum=-2;
+			config.set("config/audio/midi/kmidi/device",devnum,true);
 			throw 0;
 			}
 		}
@@ -206,7 +213,7 @@ void	MyMidiPlayer::start_music(int num,int repeats)
 }
 
 
-MyMidiPlayer::MyMidiPlayer()	: current_track(-1)
+MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 {
 	// chdir("/home/projects/dancer/exult/u7");	// Only if you're me. &&&& Take this out sometime
 	bool	no_device=true;
@@ -214,6 +221,19 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1)
 #if DEBUG
 	cerr << "Read in " << midi_tracks.object_list.size() << " tracks" << endl;
 #endif
+	string	s;
+	config.value("config/audio/midi/enabled",s,"---");
+	if(s=="---")
+		{
+		cout << "Config does not specify MIDI. Assuming yes" << endl;
+		s="yes";
+		}
+	if(s=="no")
+		{
+		cout << "Config says no midi. MIDI disabled";
+		no_device=false;
+		}
+	config.set("config/audio/midi/enabled",s,true);
 
 	if(no_device)
 		{
