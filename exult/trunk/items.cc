@@ -26,7 +26,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #include "utils.h"
 
-char *item_names[1024];			// Names of U7 items.
+//char *item_names[1024];			// Names of U7 items.
+char **item_names;			// Names of U7 items.
+int num_item_names;
 
 #if 0
 /*
@@ -50,8 +52,9 @@ public:
 
 void Setup_item_names (ifstream& items) {
 	items.seekg(0x54);
-//	int num_items = Read4(items);
-	for(int i=0; i<1024; i++) {
+	num_item_names = Read4(items);
+	item_names = new char *[num_item_names];
+	for(int i=0; i<num_item_names; i++) {
 		items.seekg(0x80+i*8);
 		int itemoffs = Read4(items);
 		if(!itemoffs)
