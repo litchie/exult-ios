@@ -1,0 +1,8 @@
+2000-04-26  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* .cvsignore: added cvsignore files everywhere
+	* ChangeLog: started changelog using standard GNU notation. Emacs 
+	has a major mode which enables easy editing of this beast.
+	* autogen.sh: script which generates automake/autoconf stuff.
+	
+
