@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="10 January 2002(GMT)">
+<faqs title="Exult" changed="7 March 2002(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="07032002">
+			<header>- 7 March 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="pentagram"/> rewritten a bit.</li>
+				<li><ref1 target="virtue_stones"/> this comes up from time to time.</li>				
+				<li><ref1 target="paperdoll_issues"/> Why Sparks Paperdoll looks odd.</li>				
+				<li><ref1 target="need_to_run"/> runs on Win32 now.</li>
+				<li><ref1 target="port_platforms"/> also noted that it runs on Win32.</li>				
+				<li><ref1 target="how_to_run"/> some notes on Win32 mode.</li>
+				<li><ref1 target="bug_report"/> Cookies need to be enabled to attach savegames.</li>
+				<li><ref1 target="by_design"/> combat difficulty option mentioned and linked.</li>				
+				<li><ref1 target="known_issues"/> Alternate SI intro is fully working now and 
+					force_waveout is now default.</li>
+													
+				</ul>
+			</body>
+		</sub>
 		<sub name="10012002">
 			<header>- 10 January 2002</header>
 			<body>
@@ -35,85 +53,7 @@
 				</ul>
 			</body>
 		</sub>
-		<sub name="23112001">
-			<header>- 23 November 2001</header>
-			<body>
-				<ul>
-				<li><ref1 target="latest_version"/> Beta1 release.</li>
-				<li><ref1 target="what_platforms"/> added Windows XP and changed NT to NT4.</li>				
-				<li><ref1 target="play_through_u7"/> SI is now playable.</li>				
-				<li><ref1 target="si_support"/> is now playable.</li>
-				<li><ref1 target="improvements"/> added compressed savegames.</li>
-				<li><ref1 target="bug_report"/> Zipping up savegames for bug reports is no longer 
-					needed with Beta1.</li>
-				</ul>
-			</body>
-		</sub>		
-		<sub name="06112001">
-			<header>- 06 November 2001</header>
-			<body>
-				<ul>
-				<li>a lot of spelling checked and corrected.</li>
-				<li><ref1 target="u7_download"/> nicely asked people not to bother us.</li>
-				<li><ref1 target="walkthroughs"/> for people who need help with the game itself.</li>
-				<li><ref1 target="improvements"/> added wheelmouse support.</li>
-				<li><ref1 target="bug_report"/> some more information how to do it properly.</li>
-				<li><ref1 target="by_design"/> added as suggested by Patrick Burke. This lists features 
-					that differ from the way that BG/SI works.</li>
-				<li><ref1 target="known_issues"/> added bug with C-Media sound cards and MIDI music.</li>
-				</ul>
-			</body>
-		</sub>		
-		<sub name="28102001">
-			<header>- 28 October 2001</header>
-			<body>
-				<ul>
-				<li><ref1 target="whereis_exult"/> added Jack Burtons BeOS binary snapshot link.</li>
-				<li><ref1 target="si_support"/> mentioned that I could finish it and that it will 
-					probably be playable with the next version</li>
-				<li><ref1 target="improvements"/> total overhaul of that one</li>
-				<li><ref1 target="disable_improvements"/> changed a bit to reflect the Gameplay 
-					Options.</li>
-				<li><ref1 target="known_issues"/> deleted some that have been fixed recently</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="03092001">
-			<header>- 03 September 2001</header>
-			<body>
-				<ul>
-				<li><ref1 target="latest_version"/> Version updated</li>
-				<li><ref1 target="known_issues"/> added note about stealing, killing NPCs</li>
-				<li><ref1 target="compile_issues"/> added this with information on compiling in 
-					UNIX and the bug with the flex bundled with some Linux systems.</li>
-				</ul>	
-			</body>
-		</sub>
-		<sub name="10082001">
-			<header>- 10 August 2001</header>
-			<body>
-				<ul>
-				<li><ref1 target="origin_exult"/> noted praise from LB and Ken Demarest.</li>				
-				<li><ref1 target="multiplayer"/> this gets asked quite often.</li>
-				<li><ref1 target="whatis_snapshot"/> added some more information.</li>
-				<li><ref1 target="compile_snapshot"/> made this generic for all the OS'.</li>
-				<li><ref1 target="what_platforms"/> added OSX.</li>
-				<li><ref1 target="addon_support"/> reported both as bug-free.</li>			
-				<li><ref1 target="bug_report"/> not that anyone reads the FAQ anyway. But it should get
-					 all the alpha testers on the right track.</li>
-				</ul>	
-			</body>
-		</sub>
-		<sub name="19072001">
-			<header>- 19 July 2001</header>
-			<body>
-				<ul>
-				<li>With the updated Documentation parts of the FAQ are no longer 
-					necessary and thus left out. So see the <extref target="docs.php">Documentation</extref>
-					for all your configuration problems</li>
-				</ul>	
-			</body>
-		</sub>
+
 	</section>
 	<section title="Introduction">
 		<sub name="why_name_exult">
@@ -187,16 +127,15 @@
 			</body>
 		</sub>
 		<sub name="pentagram">
-			<header>What is the rumored <Pentagram/> then?</header>
+			<header>But isn't <Pentagram/> some kind of <Exult/> for U8?</header>
 			<body>
 				<para>
-					<Pentagram/> is a pet project by Willem. It is a basic shapes and map browser
-					for now and Willem is also investing time to disassemble the Usecode of Ultima 8.
-					It isn't meant to be something similar to <Exult/>. It is rather a clever plan
-					by Willem to stir up interest in other coders to carry his basic work further.
-					Along with Willem some other members of the <Exult/> team are putting some effort
-					into the map viewer.<br/>
-					Any <strong>developer</strong> is welcome to take a look and contact Willem.
+					<Pentagram/> is a pet project by some members of the <Exult/>team (currently mostly 
+					Willem, Colourless, Fingolfin and Darke). It is a <strong>map and shapes viewer</strong> 
+					and nothing more (although the team does indeed invest some time to disassemble the Usecode 
+					of U8). It isn't meant to be something similar to <Exult/>. It is rather a clever plan
+					to stir up interest in other coders to carry this basic work further.<br/>
+					Any <strong>developer</strong> is welcome to take a look and contact us.
 				</para>
 			</body>
 		</sub>
@@ -479,9 +418,7 @@
 			<header>Why can't I hear the Sound Effects?</header>
 			<body>				
 				<para>
-					Please read the documentation of Exult at 
-					<extref target="http://exult.sourceforge.net/docs.php"/>.
-					Especially the Audio section is a must read for you.
+					Please read the Audio section of our <extref2 target="wave_sfx"/>.					
 				</para>
 			</body>
 		</sub>
@@ -495,6 +432,15 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="virtue_stones">
+			<header>Why can't I cast mark/recall on the Virtue Runes?</header>
+			<body>				
+				<para>
+					You never could do this in the original as well. You have to use the 
+					<strong>Virtue Stones</strong> that you find in the same building as the runes.
+				</para>
+			</body>
+		</sub>		
 		<sub name="improvements">
 			<header>
 				What are the improvements in <Exult/> over the original Ultima 7?</header>
@@ -566,6 +512,11 @@
 					<li>If an item seems to have disappeared disable the paperdolls in the Game 
 					Options, retrieve the item and enable the paperdolls again.</li>
 				</ul>
+				<para>
+					Sparks paperdoll looks very odd (Spark on steroids) as there is no paperdoll
+					for kids in SI and we have to use the adult paperdoll. Unless someone draws
+					heaps of art we can't do anything.
+				</para>
 			</body>
 		</sub>
 		<sub name="disable_improvements">
@@ -642,24 +593,28 @@
 					library installed as well as 
 					<extref target="http://developer.gnome.org/doc/API/libglade/libglade.html">libglade</extref>
 				</para>
+				<para>
+					Recently Colourless, Kirben and Mark Siewert made <Studio/> run on Win32 platforms.
+				</para>
 			</body>
 		</sub>
 		<sub name="port_platforms">
 			<header>When will it be ported to other platforms?</header>
 			<body>
 				<para>
-					That depends on when someone volunteers to do the work :-) There are
-					three issues:
+					That depends on when someone volunteers to do the work :-)
+					Colourless, Kirben and Mark Siewert already did this for Win32. 
+					There are three issues:
 				</para>
 				<ul>
-   				<li>GTK has to be ported to the platform. I think this is already
+   				<li>GTK has to be ported to the platform. This is already
 					true for Win32.</li>
    				<li><Studio/> uses sockets to communicate with <Exult/>.  This also 
 					shouldn't be a problem for Win32.</li>
    				<li>X drag-n-drop is used to put new objects on the landscape.  The
-					'drop' part of this will have to be rewritten for Win32 <Exult/>, OR,
-					drag-n-drop could be an enhancement to SDL someday.</li>
-				<li>As an alternative to dragging objects, you can now select a shape,
+					'drop' part of this had to be rewritten for Win32 <Exult/>, OR,
+					drag-n-drop could be an enhancement to SDL someday.<br/>
+					As an alternative to dragging objects, you can now select a shape,
 					then insert it into the game window by left-clicking while holding the
 					Shift key down.</li>
 				</ul>
@@ -674,11 +629,13 @@
 				</para>
 				<ul>
    				<li>Put 'exult_studio.glade' in the <Exult/> 'data' directory.</li>
-   				<li>Be sure 'exult_studio' is in your path.</li>
-   				<li>Run <Exult/>.</li>
+   				<li>Be sure 'exult_studio' is in your path. (on Win32 
+   					'exult_studio.exe' needs to be in the same directory as exult.exe)</li>
+   				<li>Run <Exult/> in windowed mode (not fullscreen).</li>
    				<li>Press 'alt-ctrl-m' to go into 'map-editor' mode.  If all is set
 					up correctly, exult_studio will start up, and will have a list of files
-					on the left side of its window (you need to have cheats enabled in <Exult/>.</li>
+					on the left side of its window (you need to have cheats enabled in <Exult/>,  
+					see the <extref2 target="gameplay_gump"/>).</li>
 				</ul>
 				<para>
 					Starting up one or the other separately will reconnect them:
@@ -879,6 +836,10 @@
 				<li><em>One</em> bug per subject please.</li>			
 				</ol>
 				<para>
+					<strong>Note</strong> that SourceForge requires users to enable cookies to attach files.
+					If you use Internet Explorer 6.0 your Cookies Security needs to be at medium or below.
+				</para>
+				<para>
 					You can also use our 
 					<extref target="http://exult.sourceforge.net/forum/">forum</extref> 
 					to report bugs. But if you do please follow the guidelines mentioned above (you can't
@@ -916,7 +877,9 @@
 					<li>Combat works differently. We don't have any hard data or formulae 
 						that tell us how combat worked in BG/SI, so DrCode put something 
 						together. If you have any information you've worked out related to 
-						this, please tell either the forum or the exult-general mailing list.</li>
+						this, please tell either the forum or the exult-general mailing list.<br/>
+						Recently Jeff added an option to change the combat difficulty in exult.cfg.
+						See the <extref2 target="exult_config"/>.</li>
 					<li>Negative health and unconsciousness. Yes, it may look weird to have 
 						people walking around with negative health, but that's the way it 
 						currently works.</li>
@@ -943,7 +906,6 @@
 						working on this right now and it is already a lot faster.</li>
 					<li>The speech in the intro is out of synch with the lips animation. But now it 
 						matches the speed of the text.</li>
-					<li>The SI-Endgame cutscene is currently playing without speech and subtitles.</li>
 					<li>There are reported problems with digital sound effects or speech when 
 						using Vortex series sound cards (like the Diamond MX 300) under Win9x/ME. <Exult/>
 						is triggering a bug in the drivers.</li>
@@ -959,17 +921,9 @@
 					DirectSound. Using this option may fix problems some people have with sound in
 	  				Exult under Windows. Additionally it seems to fix the popping sound when starting 
 	  				Exult in Win9x/ME/2k.<br/>
-	  				Example:
+	  				This setting is now the default setting so downloading the latest snapshot is the 
+	  				only thing you need to do.
 				</para>
-				<configdesc>
-					<line>&lt;audio&gt;</line>
-					<line>&lt;enabled&gt;</line>
-					<line>yes</line>
-					<line>&lt;/enabled&gt;</line>
-					<line>&lt;force_waveout&gt;</line>
-					<line>yes</line>
-					<line>&lt;/force_waveout&gt;</line>
-				</configdesc>
 			</body>
 		</sub>
 		<sub name="compile_issues">
@@ -1016,7 +970,9 @@
 					way from there (this is an online Ultima fanclub)
 				</para>
 				<para>
-					Some <Exult/> developers like to hang out on IRC on irc.openprojects.net, channel #exult.
+					Some <Exult/> developers like to hang out on IRC on irc.openprojects.net, channel #exult.<br/>
+					The logs of #exult can be found at 
+					<extref target="http://www.math.leidenuniv.nl/~wpalenst/exultlog.php3"/>.
 				</para>
 			</body>
 		</sub>
@@ -1028,8 +984,8 @@
 					<extref target="http://www.udic.org">UDIC</extref>
 					AKA <extref target="mailto:gigdr@tesionmail.de">Dominik Reichardt</extref>.
 					Feel free to contact me with improvements or complaints regarding
-					the FAQ. I recently became part of the <Exult/> Team though I only
-					write the FAQ and don't code at all.
+					the FAQ. I am part of the <Exult/> Team though I only
+					write the FAQ and Documentation and don't code at all.
 				</para>
 			</body>
 		</sub>
@@ -1038,12 +994,12 @@
 		<sub name="main_links">
 			<header>Important Links</header>
 			<body>
-				<para>
-					<Exult/> homepage at <extref target="http://exult.sourceforge.net/"/><br/>
-					Daily code snapshot at <extref target="http://exult.sourceforge.net/download.php"/><br/>
-					Message board at <extref target="http://exult.sourceforge.net/forum/"/><br/>
-					Bugreports to <extref target="http://sourceforge.net/bugs/?group_id=2335"/>
-				</para>
+				<ul>
+					<li><Exult/> homepage at <extref target="http://exult.sourceforge.net/"/></li>
+					<li>Daily code snapshot at <extref target="http://exult.sourceforge.net/download.php"/></li>
+					<li>Message board at <extref target="http://exult.sourceforge.net/forum/"/></li>
+					<li>Bugreports to <extref target="http://sourceforge.net/bugs/?group_id=2335"/></li>
+				</ul>
 			</body>
 		</sub>
 		<sub name="thanks">

@@ -256,7 +256,6 @@
 	</a>
 </xsl:template>
 
-
 <!-- External Link Template -->
 <xsl:template match="extref">
 	<a href="{@target}">
@@ -271,6 +270,19 @@
 	</a>
 </xsl:template>
 
+<!-- External Link Template to link between the FAQ/Readme -->
+<xsl:template match="extref1">
+	<a><xsl:attribute name="href">faq.html#<xsl:value-of select="@target"/></xsl:attribute>
+		<xsl:text>FAQ</xsl:text>
+	</a>
+</xsl:template>
+
+<xsl:template match="extref2">
+	<a><xsl:attribute name="href">ReadMe.html#<xsl:value-of select="@target"/></xsl:attribute>
+		<xsl:text>ReadMe</xsl:text>
+	</a>
+</xsl:template>
+<!-- makefile generates docs.html, so you have to rename this file to readme.html -->
 
 <!-- Misc Templates -->
 <xsl:template match="Exult">

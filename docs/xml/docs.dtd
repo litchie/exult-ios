@@ -1,6 +1,6 @@
 <!-- block and inline elements -->
 
-<!ENTITY % inline "br|em|extref|Exult|kbd|key|q|ref|strong|ref1|ref2|Studio|Pentagram" >
+<!ENTITY % inline "br|em|extref|Exult|kbd|key|q|ref|strong|ref1|ref2|extref1|extref2|Studio|Pentagram" >
 
 <!ENTITY % lists "ul|ol" >
 
@@ -30,6 +30,8 @@
 <!ELEMENT ref1 (#PCDATA)>
 <!ELEMENT ref2 (#PCDATA)>
 <!ELEMENT extref (#PCDATA)>
+<!ELEMENT extref1 (#PCDATA)>
+<!ELEMENT extref2 (#PCDATA)>
 
 <!ELEMENT q (#PCDATA)>
 
@@ -62,3 +64,5 @@
 <!ATTLIST	ref1		target	CDATA	#REQUIRED>
 <!ATTLIST	ref2		target	CDATA	#REQUIRED>
 <!ATTLIST	extref		target	CDATA	#REQUIRED>
+<!ATTLIST	extref1		target	CDATA	#REQUIRED>
+<!ATTLIST	extref2		target	CDATA	#REQUIRED>
