@@ -429,7 +429,9 @@ void Npc_sleep_timer::handle_event
 			{
 			npc->clear_flag(Obj_flags::asleep);
 			int frnum = npc->get_framenum();
-			if ((frnum&0xf) == Actor::sleep_frame)
+			if ((frnum&0xf) == Actor::sleep_frame &&
+					// Slimes don't change.
+			    !npc->get_info().has_strange_movement())
 					// Stand up.
 				npc->change_frame(
 					Actor::standing | (frnum&0x30));
