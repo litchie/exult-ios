@@ -676,7 +676,7 @@ void Egg_object::activate
 			cout << "Egg not actioned" << endl;
                 }
 	if (flags & (1 << (int) once))
-		gwin->delete_object(this);// All done, so go away.
+		remove_this(0);
 	}
 
 /*
@@ -734,21 +734,6 @@ void Egg_object::set_weather
 	default:
 		break;
 		}
-	}
-
-
-void Egg_object::remove_this
-	(
-	int nodel			// 1 to not delete.
-	)
-	{
-	Map_chunk *chunk = 
-			Game_window::get_game_window()->get_chunk_safely(
-								cx, cy);
-	if (chunk)
-		chunk->remove_egg(this);
-	if (!nodel)
-		Game_window::get_game_window()->delete_object(this);
 	}
 
 /*

@@ -114,7 +114,10 @@ static int Has_hitpoints(int shnum)
 {
 	Game_window *gwin = Game_window::get_game_window();
 	Shape_info& info = gwin->get_info(shnum);
-	return (info.get_shape_class() == Shape_info::has_hp);
+	return ((info.get_shape_class() == Shape_info::has_hp) ||
+			(info.get_shape_class() == Shape_info::container));
+
+	// containers have hitpoints too ('resistance')
 }
 
 const int MAX_QUANTITY = 100;		// Highest quantity possible.
@@ -1543,10 +1546,29 @@ Game_object *Game_object::attacked
 				if (frnum < 3 || (frnum >= 8 && frnum <= 10) ||
 					(frnum >= 16 && frnum <= 18)) // no magic or steel doors
 					hp = 6;
+
+#if 0
+		if (shnum == 522 && frnum < 2) // locked normal chest
+			if (get_quality() == 0 || get_quality() == 255)
+				hp = 6;
+#endif
+
 	}
 
-	if (hp == 0) // indestructible
+	string name = "<trap>";
+	if (attacker)
+		name = attacker->get_name();
+
+
+	if (hp == 0) { // indestructible
+		cout << name << " attacks " << get_name() <<
+			". No effect." << endl;
 		return this;
+	}
+
+	cout << name << " hits " << get_name() <<
+		" for " << wpoints << " hit points, leaving " <<
+		 hp - wpoints << " remaining" << endl;
 
 	if (wpoints >= hp) {
 		// object destroyed
@@ -1559,7 +1581,6 @@ Game_object *Game_object::attacked
 
 		return this;
 	}
-
 }
 
 /*

@@ -2525,9 +2525,6 @@ void Actor::die
 			return;
 		}
 	properties[(int) health] = -50;
-	add_dirty(gwin);		// Want to repaint area.
-	remove_this(1);			// Remove (but don't delete this).
-	cx = cy = 0xff;			// Set to invalid chunk coords.
 	int frnum;			// Lookup body shape/frame.
 	if (!Body_lookup::find(get_shapenum(), shnum, frnum))
 		{
@@ -2562,6 +2559,12 @@ void Actor::die
 	for (Game_object_vector::const_iterator it = tooheavy.begin(); 
 						it != tooheavy.end(); ++it)
 		add(*it, 1);
+
+	add_dirty(gwin);		// Want to repaint area.
+	delete_contents();      // remove what's left of inventory
+	remove_this(1);			// Remove (but don't delete this).
+	set_invalid();
+
 	gwin->add_dirty(body);
 	}
 

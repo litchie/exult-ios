@@ -91,9 +91,6 @@ public:
 					// Get contained objs.
 	virtual int get_objects(Game_object_vector& vec, int shapenum, int qual,
 						int framenum);
-					// Under attack.
-	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
-					int ammo_shape = 0);
 	virtual void set_flag_recursively(int flag);
 					// Write out to IREG file.
 	virtual void write_ireg(std::ostream& out);
@@ -102,6 +99,12 @@ public:
 
 	virtual int get_obj_hp() const { return resistance; }
 	virtual void set_obj_hp(int hp) { resistance = (char)hp; }
+
+	bool extract_contents();
+
+	virtual void delete_contents();
+	
+	virtual void remove_this(int nodel = 0);
 	};
 
 #endif

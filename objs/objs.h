@@ -379,6 +379,8 @@ public:
 	virtual void reset_cached_in()
 		{ }
 
+	virtual void delete_contents() { }
+
 	};
 
 /*

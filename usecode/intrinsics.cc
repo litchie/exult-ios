@@ -582,7 +582,8 @@ USECODE_INTRINSIC(update_last_created)
 				if (dest.tz >= (dest.tz + 5) - dest.tz%5 - 1)
 					{
 //					cerr << " Failed to find space"<< endl;
-					gwin->delete_object(last_created);
+					last_created->remove_this(0);
+					last_created = 0; // added 20010810, wjp
 					return Usecode_value(0);
 					}
 				dest.tz++;
@@ -2587,7 +2588,7 @@ USECODE_INTRINSIC(remove_from_area)
 		{
 		Game_object *obj = *it;
 		gwin->add_dirty(obj);
-		gwin->delete_object(obj);
+		obj->remove_this(0);
 		}
 	return no_ret;
 }

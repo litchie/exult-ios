@@ -33,6 +33,7 @@ public:
 		~CheatScreen();
 	void	show_screen();
 	void	SetGrabbedActor (Actor *g) { grabbed = g; }
+	void	ClearThisGrabbedActor (Actor *g) const { if (g==grabbed) g = 0; }
 private:
 	enum Cheat_Prompt
 	{

@@ -33,6 +33,9 @@
 #include "browser.h"
 #include "soundtest.h"
 #include "cheat_screen.h"
+#include "Gump_manager.h"
+#include "Gump.h"
+
 #ifdef USE_EXULTSTUDIO  /* Only needed for exult studio. */
 #include "server.h"
 #endif
@@ -424,7 +427,15 @@ void Cheat::delete_object (void) const {
 	SDL_GetMouseState(&x, &y);
 	x = x / gwin->get_win()->get_scale();
 	y = y / gwin->get_win()->get_scale();
-	Game_object *obj = gwin->find_object(x, y);
+
+	Game_object *obj;
+	Gump *gump = gwin->get_gump_man()->find_gump(x, y);
+	if (gump) {
+		obj = gump->find_object(x, y);
+	} else {			// Search rest of world.
+		obj = gwin->find_object(x, y);
+	}
+
 	if (obj) {
 		obj->remove_this();
 		gwin->center_text("Object deleted");
@@ -516,6 +527,12 @@ void Cheat::set_grabbed_actor (Actor *actor) const {
 	if (!enabled||!cscreen) return;
 
 	cscreen->SetGrabbedActor(actor);	
+}
+
+void Cheat::clear_this_grabbed_actor(Actor *actor) const {
+	if (!enabled||!cscreen) return;
+
+	return cscreen->ClearThisGrabbedActor(actor);
 }
 
 void Cheat::toggle_number_npcs (void) {
