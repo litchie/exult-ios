@@ -42,7 +42,8 @@ protected:
 		strike = 4,		// In the process of striking.
 		fire = 5,		// In process of firing range weapon.
 		parry = 6,		// In the process of parrying a blow.
-		stunned = 7		// Just been hit.
+		stunned = 7,		// Just been hit.
+		wait_return = 8		// Wait for boomerang.
 		} state;
 	Schedule_types prev_schedule;	// Before going into combat.
 	Actor_queue opponents;		// Possible opponents.
@@ -53,6 +54,7 @@ protected:
 					//   0 means not applicable.
 	unsigned char strike_range, projectile_range, max_range;
 	bool is_thrown;			// Daggers, etc.
+	bool returns;			// Boomerang, magic axe.
 	unsigned char yelled;		// Yell when first opponent targeted.
 	bool started_battle;		// 1st opponent targeted.
 	unsigned char fleed;		// Incremented when fleeing.
