@@ -57,7 +57,7 @@ Firedoom staff		553		Adam
 Death Scythe		562		Willem Jan
 Fellowship staff	885		Willem Jan
 Triple crossbow		647		Willem Jan
-Musket			278		-
+Musket			278		Sam
 Musket ammo		581		WishStone Dragon
 Fire wand		630		Willem Jan
 Avatar costume		838		-
