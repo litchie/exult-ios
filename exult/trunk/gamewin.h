@@ -266,21 +266,6 @@ public:
 #endif
 			return Rectangle(0,0,0,0);
 			}
-#if 0	/* ++++Old way */
-		int cx = obj->get_cx(), cy = obj->get_cy();
-		int lft = 4*obj->get_lift();
-//		return Rectangle(
-		Rectangle rect(
-			(cx - chunkx)*chunksize +
-				obj->get_tx()*tilesize + 
-						tilesize - 1 - s->xleft - lft,
-			(cy - chunky)*chunksize +
-				obj->get_ty()*tilesize + 
-						tilesize - 1 - s->yabove - lft,
-			s->get_width(),
-			s->get_height()
-			);
-#endif
 		int tx, ty, tz;		// Get tile coords.
 		obj->get_abs_tile(tx, ty, tz);
 		int lftpix = 4*tz;

@@ -91,6 +91,10 @@ public:
 		clipw = w;
 		cliph = h;
 		}
+					// Is rect. visible within clip?
+	int is_visible(int x, int y, int w, int h)
+		{ return (!(x >= clipx + clipw || y >= clipy + cliph ||
+			x + w <= clipx || y + h <= clipy)); }
 	/*
 	 *	16-bit color methods.  Default is to ignore them.
 	 */
@@ -482,6 +486,9 @@ public:
 		: Image_buffer(w, h, dpth), surface(0)
 		{ create_surface(w, h); }
 	virtual ~Image_window();
+					// Is rect. visible within clip?
+	int is_visible(int x, int y, int w, int h)
+		{ return ibuf->is_visible(x, y, w, h); }
 					// Set title.
 	void set_title(const char *title)
 		{
