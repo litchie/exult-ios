@@ -911,8 +911,7 @@ cout << "(x,y) rel. to gump is (" << (event.button.x - gump->get_x()) <<
 		if (event.key.keysym.sym == SDLK_ESCAPE)
 			return (0);
 		int chr = event.key.keysym.sym;
-		if (isascii(chr))
-			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
+		gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
 					? toupper(chr) : chr);
 		break;
 		}
