@@ -45,6 +45,7 @@ with		return WITH;
 to		return TO;
 var		return VAR;
 string		return STRING;
+extern		return EXTERN;
 true		return UCTRUE;
 false		return UCFALSE;
 
