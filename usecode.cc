@@ -624,6 +624,9 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0x1b:			// Takes -npc.  Returns index?
 					// Just return -npc for now.++++++
 		return Usecode_value(-parms[0].get_int_value());
+	case 0x1c:			// GetSchedule(npc).  Rets. schedtype.
+		//++++++++++++++++++++
+		break;
 	case 0x1d:			// SetSchedule?(npc, schedtype).
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
@@ -712,17 +715,23 @@ cout << "Say '" << parms[1].get_str_value() << "' near an item.\n";
 	case 0x68:			// Returns 1 if mouse exists.
 		return Usecode_value(1);
 	case 0x88:		// Get npc flag(item, flag#).
-		//+++++++++++++++
-	case 0x89:		// Set npc flag(item, flag#).
-		//+++++++++++++
-	case 0x8a:		// Clear npc flag(item, flag#).
-		//++++++++++++++ Not sure if item is always an NPC.
 		{
-		extern char *item_names[];
+		Game_object *obj = get_item(parms[0].get_int_value());
+		return Usecode_value(obj ? 
+			obj->get_flag(parms[1].get_int_value())	: 0);
+		}
+	case 0x89:		// Set npc flag(item, flag#).
+		{
 		Game_object *obj = get_item(parms[0].get_int_value());
 		if (obj)
-		cout << "Flag intrinsic called for " <<
-				obj->get_shapenum() << '\n';
+			obj->set_flag(parms[1].get_int_value());
+		break;
+		}
+	case 0x8a:		// Clear npc flag(item, flag#).
+		{
+		Game_object *obj = get_item(parms[0].get_int_value());
+		if (obj)
+			obj->clear_flag(parms[1].get_int_value());
 		break;
 		}
 	default:

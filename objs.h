@@ -146,6 +146,10 @@ public:
 		{  }
 	virtual int get_property(int prop)
 		{ return 0; }
+					// Set/clear/get actor flag.
+	virtual void set_flag(int flag) { }
+	virtual void clear_flag(int flag) { }
+	virtual int get_flag(int flag) { return 0; }
 	};
 
 /*

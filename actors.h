@@ -39,6 +39,7 @@ class Actor : public Sprite
 	int usecode;			// # of usecode function.
 	int npc_num;			// # in Game_window::npcs list, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
+	unsigned long flags;		// 32 flags used in 'usecode'.
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
@@ -70,6 +71,10 @@ public:
 		}
 	virtual int get_property(int prop)
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
+					// Set/clear/get actor flag.
+	virtual void set_flag(int flag);
+	virtual void clear_flag(int flag);
+	virtual int get_flag(int flag);
 	};
 
 /*
