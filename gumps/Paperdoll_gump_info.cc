@@ -998,7 +998,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Magebane
 	{     559, -1,      Actor::lhand,   OT_Single,  false, paperdoll,    67,     0},
 	{     559, -1,       Actor::belt,   OT_Single,  false, paperdoll,    67,     1},
-	// Great Dagger **NEEDS ART**
+	// Great Dagger
 	{     561, -1,      Actor::lhand,   OT_Single,  false, exult_flx,    28,     0 },
 	{     561, -1,       Actor::belt,   OT_Single,  false, exult_flx,    28,     1 },
 	// Blowgun
