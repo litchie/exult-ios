@@ -1,9 +1,14 @@
+2003-06-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* gamewin.cc, gumps/VideoOptions_gump.cc: fixed screen corruption
+	  when changing scaler from video options gump
+
 2003-06-24  Max Horn  <max@quendi.de>
-	* audio/midi_drivers/mac_midi.cc: Fixed pan controller in QuickTime midi.
+	* audio/midi_drivers/mac_midi.cc: Fixed pan controller in QuickTime 
+	  midi.
 
 2003-06-24  Max Horn  <max@quendi.de>
 	* files/rwregress.cc, conf/xmain.cc, usecode/compiler/ucfun.cc,
-	  usecode/ucxt/include/ops.h: added #include <cassert> to please GCC 3.3
+	  usecode/ucxt/include/ops.h: added #include <cassert> to please GCC3.3
 
 2003-05-21  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* files/databuf.h, tools/cmanip.cc: added #include <cassert> to
