@@ -34,6 +34,7 @@
 #endif
 #endif
 
+unsigned long exult_mem = 0L;		// Keep track of total memory allocated
 
 #ifdef WANT_ALTERNATE_ALLOCATOR
 #ifdef POISON_ALLOCATED_BLOCKS
@@ -53,6 +54,7 @@ void	*operator new(size_t n) throw (std::bad_alloc)
 #ifdef INITIALISE_ALLOCATED_BLOCKS
 	memset(r,INITIALISE_ALLOCATED_BLOCKS,n);
 #endif
+	exult_mem += n;
 	return r;
 }
 
@@ -64,6 +66,7 @@ void	*operator new[](size_t n) throw (std::bad_alloc)
 #ifdef INITIALISE_ALLOCATED_BLOCKS
 	memset(r,INITIALISE_ALLOCATED_BLOCKS,n);
 #endif
+	exult_mem += n;
 	return r;
 }
 

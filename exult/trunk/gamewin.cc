@@ -1818,9 +1818,7 @@ Game_object *Game_window::find_object
 cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 		get_scrollty() + y/c_tilesize << ")"<<endl;
 #endif
-	int not_above = skip_lift;
-	if (skip_above_actor < not_above)
-		not_above = skip_above_actor;
+	int not_above = get_render_skip_lift();
 					// Figure chunk #'s.
 	int start_cx = ((scrolltx + 
 		x/c_tilesize)/c_tiles_per_chunk)%c_num_chunks;
