@@ -401,6 +401,7 @@ C_EXPORT gint on_main_window_configure_event
 					// Configure "Hide lift" spin range.
 	studio->set_spin("hide_lift_spin", 
 				studio->get_spin("hide_lift_spin"), 1, 16);
+	return FALSE;
 	}
 
 /*
