@@ -1707,25 +1707,19 @@ void Game_window::activate_item
 	int shnum			// Desired shape.
 	)
 	{
-					// First check Avatar.
-	Game_object *obj = main_actor->find_item(shnum, -359, -359);
-	if (obj)
-		{
-		obj->activate(usecode);
-		return;
-		}
-	int cnt = usecode->get_party_count();
+	Actor *party[9];		// Get party.
+	int cnt = get_party(party, 1);
 	for (int i = 0; i < cnt; i++)
 		{
-		int party_member=usecode->get_party_member(i);
-		Actor *person = get_npc(party_member);
-		if (person)
+		Actor *person = party[i];
+		Game_object *obj = person->find_item(shnum, -359, -359);
+		if (obj)
 			{
-			if ((obj = person->find_item(shnum, -359, -359)) != 0)
-				{
-				obj->activate(usecode);
-				return;
-				}
+			Game_mode savemode = mode;
+			obj->activate(usecode);
+			if (mode == conversation)
+				mode = savemode;
+			return;
 			}
 		}
 	}
