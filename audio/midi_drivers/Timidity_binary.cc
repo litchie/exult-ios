@@ -167,6 +167,11 @@ void	Timidity_binary::player(void)
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
 	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream(
 					Timidity_binary_magic);
+	if (!audiostream)
+		{
+		cerr << "Timidity_binary(): All audio streams in use" << endl;
+		return;
+		}
 	char buf[4096];
 	std::string newfilename;
 	pid_t timidity_pid;
