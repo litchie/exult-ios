@@ -337,6 +337,8 @@ bool Dragging_info::drop
 		to_drop = gwin->create_ireg_object(
 				obj->get_shapenum(), obj->get_framenum());
 		to_drop->modify_quantity(quantity - 1);
+		if (okay_to_move)	// Make sure copy is okay to take.
+			to_drop->set_flag(Obj_flags::okay_to_take);
 		}
 	if (on_gump)			// Dropping on a gump?
 		{
