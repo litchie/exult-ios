@@ -14,8 +14,8 @@ gltest1: gltest1.o
 gltest2: gltest2.o
 	$(CC) $(CXXFLAGS) -o gltest2 $< $(LIBS)
 
-gltest3: gltest3.o
-	$(CC) $(CXXFLAGS) -o gltest3 $< $(LIBS)
+gltest3: gltest3.o model3ds.o model.o
+	$(CC) $(CXXFLAGS) -o $@ $^ $(LIBS)
 
 clean:
 	@echo Cleaning up...
