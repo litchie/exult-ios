@@ -6,7 +6,7 @@
 #include	"mac_autoconfig.h"
 
 // missing defines:
-#define		RELNUM	30
+#define		RELNUM	35
 
 
 // missing functions:
