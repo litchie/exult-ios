@@ -811,7 +811,7 @@ int Chunk_object_list::is_blocked
 					//   to right/left.
 					// !Watch for wrapping.
 	horizx0 = (to.tx + 1 - xtiles + c_num_tiles)%c_num_tiles;
-	horizx1 = to.tx;
+	horizx1 = INCR_TILE(to.tx);
 	if (Tile_coord::gte(to.tx, from.tx))		// Moving right?
 		{			// Start to right of hot spot.
 		vertx0 = INCR_TILE(from.tx);
