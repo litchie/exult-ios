@@ -120,25 +120,6 @@ with the X11 libraries. You can add:
 (or whatever your X11 library path is) to the configure command-line to get
 around this problem.
 
-
-Version 0.10 has a "usecode" interpreter.  The "usecode" file is a compiled
-script that drives the plot and conversations of the game.  My interpreter is
-missing many of the builtin functions which are not yet known, so things do
-not work perfectly.  Still, you can double-click on most of the characters
-you see, and you'll be able to have conversations with them.  You can also
-walk around using the right mouse button, or use the cursor keys to more
-quickly browse around Britannia.
-
-Version 0.09 is the first WIN32 release, done entirely by W.J. Palenstijn.
-Please see his "readme.w95" file.
-
-Version 0.08 has greatly improved object identification, thanks to
-contributor Tristan Tarrant.
-
-This program is based on the work of Gary Thompson, Maxim Shatskih,
-Jakob Shonberg, and Wouter Dijkslag in uncovering the format of the Ultima 7 
-data files.
-
 Requirements:	Ultima7 must be installed and visible.  The "exult" executable
 		should be placed in the top-level u7 directory (where "static"
 		appears as a subdirectory).
@@ -146,10 +127,7 @@ Requirements:	Ultima7 must be installed and visible.  The "exult" executable
 		Your X display must be in 8-bit or 16-bit color.
 		(24-bit is left as an exercise to the user :-)).
 
-Installation:	On a RedHat Linux system, just type './configure', then
-		'make' in the directory where you unpacked "exult".  On other
-		systems, I'm afraid you'll have to modify the "makefile" by
-		hand.  Then copy "exult" to your Ultima7 directory.
+Installation:	Refer to the INSTALL file in the source distribution
 
 Caveats:	The program is a memory hog.  Really makes me appreciate
 		Origin's accomplishment in making it run under DOS.
@@ -176,8 +154,6 @@ Credits:	The paper by Gary Thompson on the structure of the U7 data
 		Work by Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag 
 		made the "usecode" interpreter possible.
 		
-		Font rendering is done using the FreeType font engine.
-
 		Thanks also go to the person who wrote u7items.txt and the
 		contributor of the "avatar.ttf" font.
 
