@@ -143,8 +143,8 @@ Actor *Combat_schedule::find_foe
 		{
 		opponents.remove(new_opponent);
 		unsigned long curtime = SDL_GetTicks();
-					// A minute since last start?
-		if (!started_battle && curtime - battle_time >= 60000)
+					// .5 minute since last start?
+		if (!started_battle && curtime - battle_time >= 30000)
 			{
 			audio->start_music(rand()%2 ? ATTACKED1 : ATTACKED2,
 									0);
