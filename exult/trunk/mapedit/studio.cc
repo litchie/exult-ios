@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapelst.h"
 #include "chunklst.h"
 #include "paledit.h"
-#include "vgafile.h"
+#include "shapevga.h"
 #include "ibuf8.h"
 #include "Flex.h"
 #include "studio.h"
@@ -289,21 +289,25 @@ void ExultStudio::set_browser(const char *name, Object_browser *obj)
 
 Object_browser *ExultStudio::create_shape_browser(const char *fname)
 {
-	delete_shape_browser();
+	delete_shape_browser();		// Should set ifile = 0.
 	int u7drag_type = U7_SHAPE_UNK;
 	if (strcasecmp(fname, "shapes.vga") == 0)
+		{
 		u7drag_type = U7_SHAPE_SHAPES;
+		ifile = vgafile;	// Special case.
+		}
 	else if (strcasecmp(fname, "gumps.vga") == 0)
 		u7drag_type = U7_SHAPE_GUMPS;
 	else if (strcasecmp(fname, "faces.vga") == 0)
 		u7drag_type = U7_SHAPE_FACES;
 	else if (strcasecmp(fname, "sprites.vga") == 0)
 		u7drag_type = U7_SHAPE_SPRITES;
-					// Get image file for this path.
-	char *fullname = g_strdup_printf("%s%s", static_path, fname);	
-					// (We should share 'shapes.vga'.).
-	ifile = new Vga_file(fullname, u7drag_type);
-	g_free(fullname);
+	if (!ifile)			// Not assigned to vgafile?
+		{			// Get image file for this path.
+		char *fullname = g_strdup_printf("%s%s", static_path, fname);
+		ifile = new Vga_file(fullname, u7drag_type);
+		g_free(fullname);
+		}
 	if (!ifile->is_good()) {
 		cerr << "Error opening image file '" << fname << "'.\n";
 		abort();
@@ -323,6 +327,7 @@ Object_browser *ExultStudio::create_shape_browser(const char *fname)
 			names[i] = items->retrieve(i, len);
 		delete items;
 		chooser->set_shape_names(names);
+		chooser->set_shapes_file((Shapes_vga_file *) vgafile);
 	}	
 		
 	return chooser;
@@ -332,7 +337,8 @@ void ExultStudio::delete_shape_browser()
 {
 	if(ifile) {
 		int num_shapes = ifile->get_num_shapes();
-		delete ifile;
+		if (ifile != vgafile)
+			delete ifile;
 		ifile = 0;
 		if(names) {
 			for (int i = 0; i < num_shapes; i++)
@@ -471,6 +477,7 @@ void ExultStudio::set_static_path(const char *path)
 	if(static_path)
 		g_free(static_path);
 	static_path = g_strdup(path);	// Set up palette for showing shapes.
+	add_system_path("<STATIC>", static_path);
 	char *palname = g_strdup_printf("%s%s", static_path, "palettes.flx");
 	U7object pal(palname, 0);
 	g_free(palname);
@@ -480,7 +487,7 @@ void ExultStudio::set_static_path(const char *path)
 	palbuf = (unsigned char *) pal.retrieve(len);
 	delete vgafile;			// Same for shapes file.
 	char *fullname = g_strdup_printf("%s%s", static_path, "shapes.vga");
-	vgafile = new Vga_file(fullname, U7_SHAPE_SHAPES);
+	vgafile = new Shapes_vga_file(fullname, U7_SHAPE_SHAPES);
 	g_free(fullname);
 	delete facefile;			// Same for shapes file.
 	fullname = g_strdup_printf("%s%s", static_path, "faces.vga");

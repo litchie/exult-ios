@@ -40,11 +40,14 @@ class Shapes_vga_file : public Vga_file
 {
 	autoarray<Shape_info> info;	// Extra info. about each shape.
 	Shape_info zinfo;		// A fake one (all 0's).
+	bool info_read;			// True when info is set.
 public:
-	Shapes_vga_file() : info() {  }
+	Shapes_vga_file() : info(), info_read(false) {  }
+	Shapes_vga_file(const char *nm, int u7drag = -1);
 	void init();
 	virtual ~Shapes_vga_file();
-	void read_info(bool bg);	// Read additional data files.
+					// Read additional data files.
+	void read_info(bool bg, bool editing = false);
 	Shape_info& get_info(int shapenum)
 	{
 		// Shapes 1024 -> 1035 in SI are alternative player chars.

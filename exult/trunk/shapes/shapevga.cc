@@ -27,12 +27,45 @@
 #include "shapevga.h"
 #include "monstinf.h"
 #include "utils.h"
+#include "exceptions.h"
 
 using std::ifstream;
 using std::ios;
 
 // For convienience
 #define patch_exists(p) (have_patch_path && U7exists(p))
+#define patch_name(p) (patch_exists(p) ? (p) : 0)
+
+/*
+ *	Open, but don't quit if editing.  We first try the patch name if it's
+ *	given.
+ */
+
+static bool U7open2
+	(
+	ifstream& in,			// Stream to open.
+	const char *pname,		// Patch name, or null.
+	const char *fname,		// File name.
+	bool editing
+	)
+	{
+	if (pname)
+		{
+		U7open(in, pname);
+		return true;
+		}
+	try
+		{
+		U7open(in, fname);
+		}
+	catch(const file_exception & f)
+		{
+		if (editing)
+			return false;
+		throw f;
+		}
+	return true;
+	}
 
 /*
  *	Read in data files about shapes.
@@ -42,9 +75,13 @@ using std::ios;
 
 void Shapes_vga_file::read_info
 	(
-	bool bg				// True if BlackGate.
+	bool bg,			// True if BlackGate.
+	bool editing			// True to allow files to not exist.
 	)
 	{
+	if (info_read)
+		return;
+	info_read = true;
 	int i, cnt;
 	bool have_patch_path = is_system_path_defined("<PATCH>");
 
@@ -52,33 +89,30 @@ void Shapes_vga_file::read_info
 
 	// Starts at 0x96'th shape.
 	ifstream shpdims;
-	if (patch_exists(PATCH_SHPDIMS)) U7open(shpdims, PATCH_SHPDIMS);
-	else U7open(shpdims, SHPDIMS);
-	for (i = 0x96; i < num_shapes && !shpdims.eof(); i++)
-		{
-		shpdims.get((char&) info[i].shpdims[0]);
-		shpdims.get((char&) info[i].shpdims[1]);
-		}
+	if (U7open2(shpdims, patch_name(PATCH_SHPDIMS), SHPDIMS, editing))
+		for (i = 0x96; i < num_shapes && !shpdims.eof(); i++)
+			{
+			shpdims.get((char&) info[i].shpdims[0]);
+			shpdims.get((char&) info[i].shpdims[1]);
+			}
 
 	// WGTVOL
 	ifstream wgtvol;
-	if (patch_exists(PATCH_WGTVOL)) U7open(wgtvol, PATCH_WGTVOL);
-	else U7open(wgtvol, WGTVOL);
-	for (i = 0; i < num_shapes && !wgtvol.eof(); i++)
-		{
-		wgtvol.get((char&) info[i].weight);
-		wgtvol.get((char&) info[i].volume);
-		}
+	if (U7open2(wgtvol, patch_name(PATCH_WGTVOL), WGTVOL, editing))
+		for (i = 0; i < num_shapes && !wgtvol.eof(); i++)
+			{
+			wgtvol.get((char&) info[i].weight);
+			wgtvol.get((char&) info[i].volume);
+			}
 
 	// TFA
 	ifstream tfa;
-	if (patch_exists(PATCH_TFA)) U7open(tfa, PATCH_TFA);
-	else U7open(tfa, TFA);
-	for (i = 0; i < num_shapes && !tfa.eof(); i++)
-		{
-		tfa.read((char*)&info[i].tfa[0], 3);
-		info[i].set_tfa_data();
-		}
+	if (U7open2(tfa, patch_name(PATCH_TFA), TFA, editing))
+		for (i = 0; i < num_shapes && !tfa.eof(); i++)
+			{
+			tfa.read((char*)&info[i].tfa[0], 3);
+			info[i].set_tfa_data();
+			}
 
 	if (bg) {
 		// set Spark to translucent. Otherwise his pant will palette-cycle
@@ -87,61 +121,66 @@ void Shapes_vga_file::read_info
 	}
 
 	ifstream ready;
-	if (patch_exists(PATCH_READY)) U7open(ready, PATCH_READY);
-	else U7open(ready, READY);
-	cnt = Read1(ready);		// Get # entries.
-	for (i = 0; i < cnt; i++)
+	if (U7open2(ready, patch_name(PATCH_READY), READY, editing))
 		{
-		unsigned short shapenum = Read2(ready);
-		unsigned char type = Read1(ready);
-		info[shapenum].ready_type = type;
-		ready.seekg(6, ios::cur);// Skip 9 bytes.
+		cnt = Read1(ready);		// Get # entries.
+		for (i = 0; i < cnt; i++)
+			{
+			unsigned short shapenum = Read2(ready);
+			unsigned char type = Read1(ready);
+			info[shapenum].ready_type = type;
+			ready.seekg(6, ios::cur);// Skip 9 bytes.
+			}
+		ready.close();
 		}
-	ready.close();
 	ifstream armor;
-	if (patch_exists(PATCH_ARMOR)) U7open(armor, PATCH_ARMOR);
-	else U7open(armor, ARMOR);
-	cnt = Read1(armor);
-	for (i = 0; i < cnt; i++)
+	if (U7open2(armor, patch_name(PATCH_ARMOR), ARMOR, editing))
 		{
-		unsigned short shapenum = Read2(armor);
-		unsigned char points = Read1(armor);
-		info[shapenum].armor = points;
-		armor.seekg(7, ios::cur);// Skip 7 bytes.
+		cnt = Read1(armor);
+		for (i = 0; i < cnt; i++)
+			{
+			unsigned short shapenum = Read2(armor);
+			unsigned char points = Read1(armor);
+			info[shapenum].armor = points;
+			armor.seekg(7, ios::cur);// Skip 7 bytes.
+			}
+		armor.close();
 		}
-	armor.close();
 	ifstream weapon;
-	if (patch_exists(PATCH_WEAPONS)) U7open(weapon, PATCH_WEAPONS);
-	else U7open(weapon, WEAPONS);
-	cnt = Read1(weapon);
-	for (i = 0; i < cnt; i++)
+	if (U7open2(weapon, patch_name(PATCH_WEAPONS), WEAPONS, editing))
 		{
-		Weapon_info *winf = new Weapon_info();
-		unsigned short shapenum = winf->read(weapon, bg);
-		info[shapenum].weapon = winf;
+		cnt = Read1(weapon);
+		for (i = 0; i < cnt; i++)
+			{
+			Weapon_info *winf = new Weapon_info();
+			unsigned short shapenum = winf->read(weapon, bg);
+			info[shapenum].weapon = winf;
+			}
+		weapon.close();	
 		}
-	weapon.close();	
 	ifstream ammo;
-	if (patch_exists(PATCH_AMMO)) U7open(ammo, PATCH_AMMO);
-	else U7open(ammo, AMMO);
-	cnt = Read1(ammo);
-	Ammo_info::create();		// Create table.
-	for (i = 0; i < cnt; i++)
+	if (U7open2(ammo, patch_name(PATCH_AMMO), AMMO, editing))
 		{
-		Ammo_info ent;
-		unsigned short shapenum = ent.read(ammo);
-		Ammo_info::insert(shapenum, ent);
+		cnt = Read1(ammo);
+		Ammo_info::create();		// Create table.
+		for (i = 0; i < cnt; i++)
+			{
+			Ammo_info ent;
+			unsigned short shapenum = ent.read(ammo);
+			Ammo_info::insert(shapenum, ent);
+			}
+		ammo.close();
 		}
-	ammo.close();
-
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;
 	unsigned short offsets[1024];
-	if (patch_exists(PATCH_WIHH)) U7open(wihh, PATCH_WIHH);
-	else U7open(wihh, WIHH);
-	for (i = 0; i < 1024; i++)
+	if (U7open2(wihh, patch_name(PATCH_WIHH), WIHH, editing))
+		cnt = 1024;
+	else
+		cnt = 0;
+	for (i = 0; i < cnt; i++)
 		offsets[i] = Read2(wihh);
-	for (i = 0; i < 1024; i++)
+	for (i = 0; i < cnt; i++)
 		// A zero offset means there is no record
 		if(offsets[i] == 0)
 			info[i].weapon_offsets = 0;
@@ -163,53 +202,71 @@ void Shapes_vga_file::read_info
 				info[i].weapon_offsets[j * 2 + 1] = y;
 				}
 			}
-	wihh.close();
+	if (cnt)
+		wihh.close();
 	ifstream mfile;			// Now get monster info.
-	U7open(mfile, MONSTERS);
-	int num_monsters = Read1(mfile);
-	for (i = 0; i < num_monsters; i++)
+	if (U7open2(mfile, 0, MONSTERS, editing))// +++++++Patch?
 		{
-		Monster_info *minf = new Monster_info();
-		int shnum = minf->read(mfile);
-		info[shnum].monstinf = minf;
-		}
-	mfile.close();
-	U7open(mfile, EQUIP);		// Get 'equip.dat'.
-	int num_recs = Read1(mfile);
-	Equip_record *equip = new Equip_record[num_recs];
-	for (i = 0; i < num_recs; i++)
-		{
-		Equip_record& rec = equip[i];
-					// 10 elements/record.
-		for (int elem = 0; elem < 10; elem++)
+		int num_monsters = Read1(mfile);
+		for (i = 0; i < num_monsters; i++)
 			{
-			int shnum = Read2(mfile);
-			unsigned prob = Read1(mfile);
-			unsigned quant = Read1(mfile);
-			Read2(mfile);
-			rec.set(elem, shnum, prob, quant);
+			Monster_info *minf = new Monster_info();
+			int shnum = minf->read(mfile);
+			info[shnum].monstinf = minf;
 			}
+		mfile.close();
 		}
-					// Monster_info owns this.
-	Monster_info::set_equip(equip, num_recs);
-	mfile.close();
-	ifstream(occ);			// Read flags from occlude.dat.
-	U7open(occ, OCCLUDE);
-	unsigned char occbits[128];	// 1024 bit flags.
-	occ.read((char *)occbits, sizeof(occbits));
-	for (i = 0; i < sizeof(occbits); i++)
+	if (U7open2(mfile, 0, EQUIP, editing))		// Get 'equip.dat'.
 		{
-		unsigned char bits = occbits[i];
-		int shnum = i*8;	// Check each bit.
-		for (int b = 0; bits; b++, bits = bits>>1)
-			if (bits&1)
+		int num_recs = Read1(mfile);
+		Equip_record *equip = new Equip_record[num_recs];
+		for (i = 0; i < num_recs; i++)
+			{
+			Equip_record& rec = equip[i];
+					// 10 elements/record.
+			for (int elem = 0; elem < 10; elem++)
 				{
-				info[shnum + b].occludes_flag = true;
-//				cout << "Occludes: " << shnum + b << endl;
+				int shnum = Read2(mfile);
+				unsigned prob = Read1(mfile);
+				unsigned quant = Read1(mfile);
+				Read2(mfile);
+				rec.set(elem, shnum, prob, quant);
 				}
+			}
+					// Monster_info owns this.
+		Monster_info::set_equip(equip, num_recs);
+		mfile.close();
+		}
+	ifstream(occ);			// Read flags from occlude.dat.
+	if (U7open2(occ, 0, OCCLUDE, editing))
+		{
+		unsigned char occbits[128];	// 1024 bit flags.
+		occ.read((char *)occbits, sizeof(occbits));
+		for (i = 0; i < sizeof(occbits); i++)
+			{
+			unsigned char bits = occbits[i];
+			int shnum = i*8;	// Check each bit.
+			for (int b = 0; bits; b++, bits = bits>>1)
+				if (bits&1)
+					{
+					info[shnum + b].occludes_flag = true;
+					}
+			}
 		}
 	}
 
+/*
+ *	Open/close file.
+ */
+
+Shapes_vga_file::Shapes_vga_file
+	(
+	const char *nm,			// Path to file.
+	int u7drag			// # from u7drag.h, or -1.
+	) : Vga_file(nm, u7drag)
+	{
+	info.set_size(num_shapes);
+	}
 
 Shapes_vga_file::~Shapes_vga_file()
 	{
