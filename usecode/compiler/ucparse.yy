@@ -23,6 +23,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <iostream.h>
+
+void yyerror(char *);
+extern int yylex();
+
 %}
 
 /*
@@ -132,6 +137,7 @@ expression:
 	| expression OR expression
 	| '-' primary
 	| NOT primary
+	| '[' expression_list ']'	/* Concat. into an array. */
 	| STRING_LITERAL
 	;
 
@@ -162,3 +168,14 @@ identifier:
 	;
 
 %%
+
+/*
+ *	Report error.
+ */
+void yyerror
+	(
+	char *s
+	)
+	{
+	cout << s << endl;
+	}
