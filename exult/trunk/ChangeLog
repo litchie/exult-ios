@@ -1,3 +1,9 @@
+2000-11-20  Tristan Tarrant <nadir@users.sourceforge.net>
+
+	* configure.in: check if Gnome is installed
+	* Makefile.am: add desktop dir
+	* desktop/*: Gnome desktop entry and icon
+
 2000-11-17  Max Horn  <max@quendi.de>
 
 	* exult.cc, menulist.cc: Added Cmd-Q which quits exult (MacOS only)
