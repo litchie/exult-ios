@@ -573,9 +573,15 @@ USECODE_INTRINSIC(update_last_created)
 				pos.tz = dest.tz;
 				}
 		obj->move(dest.tx, dest.ty, dest.tz);
+		if (GAME_BG) {
+			Usecode_value u(1);
+			return u;
+		} else {
+			Usecode_value u(obj);
+			return u;
 		}
 					// Taking a guess here:
-	else if (parms[0].get_int_value() == -358)
+	} else if (sz == 1)
 		{
 		obj->remove_this();
 		}
