@@ -22,12 +22,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <stdio.h>
 #include <strstream.h>
 #include "ucstmt.h"
 #include "ucexpr.h"
 #include "ucsym.h"
 #include "opcodes.h"
 #include "utils.h"
+#include "ucfun.h"
 
 /*
  *	Delete.
@@ -181,6 +183,74 @@ void Uc_while_statement::gen
 	char *stmtstr = stmt_code.str();
 	out.put((char) UC_JNE);		// Put cond. jmp. after test.
 	Write2(out, stmtlen);		// Skip around body if false.
+	out.write(stmtstr, stmtlen);	// Write out body.
+	delete stmtstr;			// We own this.
+	}
+
+/*
+ *	Delete.
+ */
+
+Uc_arrayloop_statement::~Uc_arrayloop_statement
+	(
+	)
+	{
+	delete stmt;
+	}
+
+/*
+ *	Finish up creation.
+ */
+
+void Uc_arrayloop_statement::finish
+	(
+	Uc_function *fun
+	)
+	{
+	char buf[100];
+	if (!index)			// Create vars. if not given.
+		{
+		sprintf(buf, "_%s_index", array->get_name());
+		index = fun->add_symbol(buf);
+		}
+	if (!array_size);
+		{
+		sprintf(buf, "_%s_size", array->get_name());
+		array_size = fun->add_symbol(buf);
+		}
+	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_arrayloop_statement::gen
+	(
+	ostream& out,
+	Uc_function *fun
+	)
+	{
+	if (!stmt)
+		return;			// Nothing useful to do.
+	out.put((char) UC_LOOP);	// Start of loop.
+	int top = out.tellp();		// This is where to jump back to.
+	out.put((char) UC_LOOPTOP);
+	Write2(out, index->get_offset());// Counter, total-count variables.
+	Write2(out, array_size->get_offset());
+	Write2(out, var->get_offset());	// Loop variable, than array.
+	Write2(out, array->get_offset());
+					// Still need to write offset to end.
+	int testlen = out.tellp() + 2 - top;
+	ostrstream stmt_code;
+	stmt->gen(stmt_code, fun);	// Generate statement's code.
+					// Back to top includes JMP at end.
+	int dist = testlen + stmt_code.pcount() + 3;
+	stmt_code.put((char) UC_JMP);	// Generate JMP back to top.
+	Write2(stmt_code, -dist);
+	int stmtlen = stmt_code.pcount();// Get total length.
+	Write2(out, stmtlen);		// Finally, offset past loop stmt.
+					// Get -> to code.
+	char *stmtstr = stmt_code.str();
 	out.write(stmtstr, stmtlen);	// Write out body.
 	delete stmtstr;			// We own this.
 	}

@@ -52,7 +52,7 @@ public:
 	friend class Uc_scope;
 	Uc_symbol(char *nm) : name(nm)
 		{  }
-	const char *get_name() { return name.data(); }
+	const char *get_name() { return name.c_str(); }
 					// Gen. code to put result on stack.
 	virtual int gen_value(ostream& out);
 					// Gen. to assign from stack.
@@ -149,8 +149,9 @@ public:
 class Uc_scope
 	{
 	Uc_scope *parent;		// ->parent.
+					// For finding syms. by name.
 	typedef map<char *, Uc_symbol *, String_compare> Sym_map;
-	Sym_map symbols;		// For finding syms. by name.
+	Sym_map symbols;
 	vector<Uc_scope *> scopes;	// Scopes within.
 public:
 	Uc_scope(Uc_scope *p) : parent(p)
@@ -169,8 +170,9 @@ public:
 	Uc_symbol *search_up(char *nm);	// Search upwards through scopes.
 	void add(Uc_symbol *sym)	// Add (does NOT check for dups.)
 		{
-		char *nm = (char *) sym->name.data();
-		symbols[nm] = sym; 
+		const char *nm = sym->name.c_str();
+		char *nm1 = (char *)nm;	// ???Can't figure this out!
+		symbols[nm1] = sym; 
 		}
 	Uc_scope *add_scope()		// Create new scope.
 		{

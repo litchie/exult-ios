@@ -41,6 +41,8 @@ return		return RETURN;
 while		return WHILE;
 for		return FOR;
 in		return IN;
+with		return WITH;
+to		return TO;
 var		return VAR;
 string		return STRING;
 true		return UCTRUE;
