@@ -57,6 +57,7 @@ public:
 	bool remove_gump(Gump *gump);		// Detatch a gump from the list
 	bool close_gump(Gump *gump);		// Close a gump
 	void close_all_gumps(bool pers = false);// Close all gumps
+	void set_kbd_focus(Gump *gump);
 
 	bool showing_gumps(bool no_pers = false) const;	// Are gumps showing?
 	bool gump_mode() const				// Fast check.

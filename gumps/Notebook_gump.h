@@ -43,6 +43,7 @@ public:
 	~One_note()
 		{ delete [] text; }
 	void insert(int chr, int offset);	// Insert text.
+	bool del(int offset);			// Delete text.
 };
 
 /*
