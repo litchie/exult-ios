@@ -2736,11 +2736,11 @@ USECODE_INTRINSIC(nap_time)
 	if (!bed)
 		return no_ret;
 					// !!! Seems 622 handles sleeping.
-	GOVector npcs;			// See if bed is occupied by an NPC.
-	int cnt = bed->find_nearby(npcs, -359, 0, 8);
+	ActorVector npcs;			// See if bed is occupied by an NPC.
+	int cnt = bed->find_nearby_actors(npcs, -359, 0);
 	if (cnt > 0)
 		{
-		GOVector::const_iterator it;
+		ActorVector::const_iterator it;
 		for (it = npcs.begin(); it != npcs.end(); ++it)
 			{
 			Game_object *npc = *it;
@@ -2784,9 +2784,9 @@ USECODE_INTRINSIC(in_usecode)
 USECODE_INTRINSIC(attack_avatar)
 {
 	// Attack thieving Avatar.
-	GOVector npcs;			// See if someone is nearby.
-	gwin->get_main_actor()->find_nearby(npcs, -359, 12, 8);
-	for (GOVector::const_iterator it = npcs.begin(); it != npcs.end();++it)
+	ActorVector npcs;			// See if someone is nearby.
+	gwin->get_main_actor()->find_nearby_actors(npcs, -359, 12);
+	for (ActorVector::const_iterator it = npcs.begin(); it != npcs.end();++it)
 		{
 		Actor *npc = (Actor *) *it;
 		if (!npc->is_monster() && npc != gwin->get_main_actor() &&

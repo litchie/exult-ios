@@ -402,9 +402,9 @@ void Kid_games_schedule::now_what
 		}
 	else				// No more kids?  Search.
 		{
-		GOVector vec;
-		npc->find_nearby(vec, -359, 16, 8);
-		for (GOVector::const_iterator it = vec.begin();
+		ActorVector vec;
+		npc->find_nearby_actors(vec, -359, 16);
+		for (ActorVector::const_iterator it = vec.begin();
 						it != vec.end(); ++it)
 			{
 			Actor *act = (Actor *) *it;
@@ -599,9 +599,9 @@ void Sleep_schedule::ending
 			floorloc = npc->find_unblocked_tile(dist, 4);
 					// Make bed.
 		int frnum = bed->get_framenum();
-		GOVector occ;		// Unless there's another occupant.
+		ActorVector occ;		// Unless there's another occupant.
 		if (frnum >= 4 && frnum <= 16 && !(frnum%2) &&
-				bed->find_nearby(occ, -359, 0, 8) < 2)
+				bed->find_nearby_actors(occ, -359, 0) < 2)
 			bed->set_frame(frnum - 1);
 		}
 	if (floorloc.tx >= 0)		// Get back on floor.
@@ -725,9 +725,9 @@ void Waiter_schedule::get_customer
 	customer = (Actor *) customers.remove_first();
 	if (!customer)			// Got to search?
 		{
-		GOVector vec;		// Look within 32 tiles;
-		npc->find_nearby(vec, -359, 32, 8);
-		for (GOVector::const_iterator it = vec.begin();
+		ActorVector vec;		// Look within 32 tiles;
+		npc->find_nearby_actors(vec, -359, 32);
+		for (ActorVector::const_iterator it = vec.begin();
 							it != vec.end(); ++it)
 			{		// Filter them.
 			Actor *npc = (Actor *) *it;
