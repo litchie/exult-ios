@@ -79,7 +79,8 @@ public:
 					// Set actor to walk somewhere, then
 					//   do something.
 	static void set_action_sequence(Actor *actor, Tile_coord dest,
-			Actor_action *when_there, int from_off_screen = 0);
+			Actor_action *when_there, int from_off_screen = 0,
+							int delay = 0);
 	virtual void now_what() = 0;	// Npc calls this when it's done
 					//   with its last task.
 	virtual void im_dormant()	// Npc calls this when it goes from
@@ -253,10 +254,12 @@ public:
 class Sit_schedule : public Schedule
 	{
 	Game_object *chair;		// What to sit in.
+	bool sat;			// True if we already sat down.
 public:
 	Sit_schedule(Actor *n, Game_object *ch = 0);
 	virtual void now_what();	// Now what should NPC do?
-	static void set_action(Actor *actor, Game_object *chairobj);
+	static void set_action(Actor *actor, Game_object *chairobj,
+					int delay = 0);
 	};
 
 /*
