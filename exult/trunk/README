@@ -8,6 +8,56 @@ create the "gamedat" directory and files the first time you run it.  And al-
 though I've tried to be safe about this, I don't recommend trying it on a
 game which you're actually in the middle of playing.
 
+** NEW for this release **
+
+CONFIGURATION
+-------------
+Exult now keeps a configuration file. You can specify where your Ultima7
+installation is, whether you want full-screen graphics, or windowed, and
+midi devices and midi settings.
+
+If you do not already have a configuration file, Exult will make one for you
+prompting you for some information along the way, or filling in sensible
+defaults by itself. The location of this file varies slightly. On unix systems
+you can expect to find it called $HOME/.exult.cfg while other operating systems
+will probably locate it as 'exult.cfg' in the same directory as the exult
+binary.
+
+The file uses a simple hierarchical XML-like syntax, which should be simple to
+understand and modify. Take care though. Handling of syntax errors in this file
+is not well tested.
+
+AUDIO
+-----
+Exult can now play the Guardian's sound-bites through SDL, and it's own
+internal mixer. No configuration or tuning of this is available in this
+release
+
+midi
+----
+MIDI audio is available for a small subset of people.
+What you need:
+1) Linux
+2) A system capable of playing audio through kmidi. If playing a file 
+   through kmidi Does The Right Thing then you should be able to hear
+   in-game music.
+3) (Alternative to 2): A system capable of playing midi through 'playmidi -e'.
+   This doesn't sound as nice as option 2, above, but it's the fallback and
+   will work for some setups.
+
+If you don't have linux, or your system doesn't support either of the two
+given MIDI audio options, then you'll have to wait. We're still working on
+how to generate MIDI on cards without explicit MIDI support, and on multiple
+operating system platforms.
+
+Limitation: None of the game-specific instrument voices are loaded. You'll hear
+them as whatever the general midi system maps them to. In the case of the Kmidi
+driver it's usually a fairly close match. The playmidi driver does rather less
+well. Either way, the music still sounds alright. It'll sound better once we
+get the right voices in.
+
+--------------------------------------------------------------------------
+
 Starting with version 0.12, Exult uses the multiplatform library SDL by Sam
 Lantinga of LokiGames.  SDL provides low-level graphics, timing and sound
 capabilities, so a Windows (or Be or Mac) port should be much easier now.
