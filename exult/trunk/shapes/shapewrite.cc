@@ -128,12 +128,12 @@ void Shapes_vga_file::write_info
 	ofstream wihh;
 	U7open(wihh, PATCH_WIHH);
 	cnt = 0;			// Keep track of actual entries.
-	for (i = 0; i < 1024; i++)
+	for (i = 0; i < num_shapes; i++)
 		if (info[i].weapon_offsets == 0)
 			Write2(wihh, 0);// None for this shape.
 		else			// Write where it will go.
 			Write2(wihh, 2*1024 + 64*(cnt++));
-	for (i = 0; i < 1024; i++)
+	for (i = 0; i < num_shapes; i++)
 		if (info[i].weapon_offsets)
 				// There are two bytes per frame: 64 total
 			wihh.write((char *)(info[i].weapon_offsets), 64);
@@ -171,12 +171,16 @@ void Shapes_vga_file::write_info
 	ofstream(occ);			// Write occlude.dat.
 	U7open(occ, PATCH_OCCLUDE);
 	unsigned char occbits[128];	// 1024 bit flags.
+					// +++++This could be rewritten better!
+	memset(&occbits[0], 0, sizeof(occbits));
 	for (i = 0; i < sizeof(occbits); i++)
 		{
 		unsigned char bits = 0;
 		int shnum = i*8;	// Check each bit.
 		for (int b = 0; b < 8; b++)
-			if (info[shnum + b].occludes_flag)
+			if (shnum + b >= num_shapes)
+				break;
+			else if (info[shnum + b].occludes_flag)
 				bits |= (1<<b);
 		occbits[i] = bits;	
 		}
