@@ -132,6 +132,21 @@ int Container_game_object::add_quantity
 	int dontcreate			// If 1, don't create new objs.
 	)
 	{
+	int cant_add = 0;		// # we can't add due to weight.
+	int maxweight = get_max_weight();// Check weight.
+	if (maxweight)
+		{	
+		maxweight *= 10;	// Work in .1 stones.
+		int avail = maxweight - get_outermost()->get_weight();
+		int objweight = Game_object::get_weight(shapenum, delta);
+		if (objweight && objweight > avail)
+			{		// Limit what we can add.
+					// Work in 1/100ths.
+			int weight1 = (10*objweight)/delta;
+			cant_add = delta - (10*avail)/weight1;
+			delta -= cant_add;
+			}
+		}
 					// Note:  quantity is ignored for
 					//   figuring volume.
 	Game_object *obj;
@@ -152,14 +167,15 @@ int Container_game_object::add_quantity
 					delta, shapenum, qual, framenum, 1);
 		}
 	if (!delta || dontcreate)	// All added?
-		return (delta);
+		return (delta + cant_add);
 	else
-		return (create_quantity(delta, shapenum, qual,
-				framenum == c_any_framenum ? 0 : framenum));
+		return cant_add + create_quantity(delta, shapenum, qual,
+				framenum == c_any_framenum ? 0 : framenum);
 	}
 
 /*
- *	Recursively create a quantity of an item.
+ *	Recursively create a quantity of an item.  Assumes weight check has
+ *	already been done.
  *
  *	Output:	Delta decremented # added.
  */
