@@ -54,8 +54,6 @@ exult_SOURCES =	\
 	gametxt.cc	\
 	gamewin.cc	\
 	gamewin.h	\
-	gumps.cc	\
-	gumps.h		\
 	items.cc	\
 	items.h		\
 	lists.cc	\
@@ -84,9 +82,9 @@ exult_SOURCES =	\
 	segfile.h	\
 	shapeid.h	\
 	sigame.cc	\
+	tiles.h		\
 	spells.cc	\
 	spells.h	\
-	tiles.h		\
 	tqueue.cc	\
 	tqueue.h	\
 	txtscroll.cc	\
