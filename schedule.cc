@@ -1102,6 +1102,8 @@ void Sit_schedule::now_what
 
 class Sit_actor_action : public Frames_actor_action
 	{
+	Game_object *chair;		// Chair.
+	Tile_coord chairloc;		// Original chair location.
 	Tile_coord sitloc;		// Actually where NPC sits.
 	char frames[2];
 	static short offsets[8];	// Offsets where NPC should sit.
@@ -1128,13 +1130,27 @@ class Sit_actor_action : public Frames_actor_action
 				    frnum == Actor::to_sit_frame)
 					return true;
 				}
+#if 1	/* Seems to work.  Added Nov. 2, 2001 */
+		if (actor->get_abs_tile_coord() == sitloc)
+			return false;	// We're standing there.
+					// See if spot is blocked.
+		Game_window *gwin = Game_window::get_game_window();
+		Map_chunk *ch = gwin->get_chunk(sitloc.tx/c_tiles_per_chunk,
+						sitloc.ty/c_tiles_per_chunk);
+		int new_lift;
+		ch->setup_cache();	// ++++Maybe a simpler interface??
+		if (ch->is_blocked(3, sitloc.tz, sitloc.tx%c_tiles_per_chunk,
+				sitloc.ty%c_tiles_per_chunk, new_lift, 
+				MOVE_WALK, 0))
+			return true;
+#endif
 		return false;
 		}
 public:
-	Sit_actor_action(Game_object *o, Actor *actor) : 
+	Sit_actor_action(Game_object *o, Actor *actor) : chair(o),
 			Frames_actor_action(init(o, actor), 2)
 		{
-		sitloc = o->get_abs_tile_coord();
+		sitloc = chairloc = o->get_abs_tile_coord();
 					// Frame 0 faces N, 1 E, etc.
 		int nsew = o->get_framenum()%4;
 		sitloc.tx += offsets[2*nsew];
@@ -1164,9 +1180,20 @@ int Sit_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	if (get_index() == 0 &&		// First time?
-	    is_occupied(sitloc, actor))
-		return 0;		// Abort.
+	if (get_index() == 0)		// First time?
+		{
+		if (is_occupied(sitloc, actor))
+			return 0;	// Abort.
+		if (chair->get_abs_tile_coord() != chairloc)
+			{		// Chair was moved!
+			static char *msgs[] = {"Put that chair back!",
+					"Thief!!", "Thou scoundrel!!",
+					"Not funny!", "Who moved my chair??"};
+			const int nmsgs = sizeof(msgs)/sizeof(msgs[0]);
+			actor->say(msgs[rand()%nmsgs]);
+			return 0;
+			}
+		}
 	return Frames_actor_action::handle_event(actor);
 	}
 
