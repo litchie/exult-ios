@@ -1,4 +1,9 @@
 2004-02-11  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/bg/shoes.shp: shoes paperdoll art
+	* data/bg/triple_xbow.shp: triple crossbow paperdoll art
+	* data/bg/musket_ammo.shp: musket ammo paperdoll art (by WishStone)
+
+2004-02-11  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gumps/AudioOptions_gump.cc: only display midi settings when relevant
 	* audio/Midi.cc: label music player id output
 
