@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "paths.h"
 #include "dir.h"
 #include "ucmachine.h"
+#include "frameseq.h"
 
 /*
  *	Set to walk from one point to another the dumb way.
