@@ -2741,7 +2741,7 @@ bool Actor::figure_hit_points
 		wpoints = winf ? winf->get_damage() : 0;
 		}
 	else
-		winf = attacker->get_weapon(wpoints);
+		winf = attacker->get_weapon(wpoints, weapon_shape);
 					// Get bonus ammo points.
 	Ammo_info *ainf = Ammo_info::find(ammo_shape);
 	if (ainf)
@@ -2776,6 +2776,11 @@ bool Actor::figure_hit_points
 	cout << "Hit probability is " << prob << endl;
 	if (rand()%100 > prob)
 		return false;		// Missed.
+					// Compute hit points to lose.
+	int attacker_str = Get_effective_prop(attacker, strength, 8)/4;
+	int hp = attacker_str + (rand()%attacker_level) + wpoints - armor;
+	if (hp < 1)
+		hp = 1;
 	if (powers)			// Special attacks?
 		{
 		if ((powers&Weapon_info::poison) && roll_to_win(
@@ -2788,6 +2793,17 @@ bool Actor::figure_hit_points
 			int mana = properties[(int) Actor::mana];
 			set_property((int) Actor::mana, 
 					mana > 1 ? rand()%(mana - 1) : 0);
+					// Vasculio the Vampire?
+			if (npc_num == 294 && Game::get_game_type() ==
+								SERPENT_ISLE)
+				{
+				hp *= 3;
+				if (weapon_shape == 231)
+					{// I really want to see this.
+					gwin->remove_text_effect(this);
+					say(item_names[0x49b]);
+					}
+				}
 			}
 		if ((powers&Weapon_info::curse) && roll_to_win(
 			Get_effective_prop(attacker, Actor::intelligence),
@@ -2795,11 +2811,6 @@ bool Actor::figure_hit_points
 			set_flag(Obj_flags::cursed);
 		// ++++++++++MORE in shapeinf.h
 		}
-					// Compute hit points to lose.
-	int attacker_str = Get_effective_prop(attacker, strength, 8)/4;
-	int hp = attacker_str + (rand()%attacker_level) + wpoints - armor;
-	if (hp < 1)
-		hp = 1;
 	int sfx;			// Play 'hit' sfx.
 	if (winf && (sfx = winf->get_hitsfx()) >= 0 &&
 					// But only if Ava. involved.

@@ -83,6 +83,9 @@ class Monster_info
 	unsigned char weapon;
 	unsigned char reach;
 	unsigned char flags;		// Defined below.
+					// The following are bits corresponding
+					//   to Weapon_info::Damage_type.
+	unsigned char vulnerable, immune;
 	unsigned char equip_offset;	// Offset in 'equip.dat' (1 based;
 					//   if 0, there's none.)
 	bool m_splits;			// For slimes.
@@ -111,6 +114,12 @@ public:
 		{ return m_cant_bleed; }
 	bool poison_safe() const
 		{ return m_poison_safe; }
+					// Get bits indicating
+					//   Weapon_info::damage_type:
+	unsigned char get_vulnerable() const
+		{ return vulnerable; }
+	unsigned char get_immune() const
+		{ return immune; }
 	enum Flags {
 		fly = 0,
 		swim = 1,
