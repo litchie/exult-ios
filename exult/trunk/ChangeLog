@@ -1,3 +1,7 @@
+2000-12-31  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Started writing usecode parser.
+
 2000-12-29  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Bugs fixed:  Can break glass counters.  Don't ready torches.
