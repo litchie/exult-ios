@@ -24,7 +24,7 @@
 using std::cout;
 using std::endl;
 using std::isspace;
-using std::string;
+// using std::string;
 
 /*
  *	Fonts in 'fonts.vga':
