@@ -1,3 +1,7 @@
+2001-03-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Digital sound effects (from .wav's in a Flex file).
+
 2001-03-11  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/(magic)gorget.shp: paperdoll art for gorget & magic gorget, created by Adam Delman. (Thanks!)
 	* data/flx.in, gunps/Paperdoll_gump_info.cc: include new art

@@ -32,6 +32,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Midi.h"
 #include "exceptions.h"
 
+class SFX_cached;
+class Flex;
+
 /*
  *	Music:
  */
@@ -45,7 +48,6 @@ enum Combat_song
 	CSDanger,
 	CSHidden_Danger
 };
-
 //---- Audio -----------------------------------------------------------
 
 class Audio 
@@ -55,6 +57,8 @@ private:
         bool truthful_;
 	bool audio_enabled, speech_enabled, music_enabled, effects_enabled;
 	bool SDL_open;
+	SFX_cached *sfxs;		// ->list of cached .wav snd. effects.
+	Flex *sfx_file;			// Holds .wav sound effects.
 	UNREPLICATABLE_CLASS(Audio);
 protected:
 	Audio();
@@ -81,6 +85,7 @@ public:
 	bool	start_music_combat(Combat_song song,bool continuous,int bank=0);
 	void	stop_music();
 	void	play_sound_effect (int num);
+	void	play_wave_sfx(int num);
 	bool	start_speech(int num,bool wait=false);
 	void	set_external_signal(int);
 	void	terminate_external_signal(void);
