@@ -54,6 +54,7 @@ protected:
 	short face_num;			// Which shape for conversations.
 	short party_id;			// Index in party, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
+	unsigned char temperature;	// Measure of coldness (0-63).
 	short shape_save;		// Our old shape, or -1.
 	short oppressor;		// NPC ID (>= 0) of oppressor, or -1.
 	Game_object *target;		// Who/what we're attacking.
@@ -127,6 +128,7 @@ public:
 	int add_dirty(Game_window *gwin, int figure_rect = 0);
 	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
 	void use_food();		// Decrement food level.
+	void check_temperature();	// Increment/decrement temperature.
 					// Get frame seq. for given dir.
 	static Frames_sequence *get_frames(int dir)
 		{ return frames[dir]; }
@@ -192,8 +194,6 @@ public:
 		{ oppressor = opp; }
 	// This is not even a guess, it's a place holder
 	enum Serpent_flags {		// Bit #'s of flags:
-		freeze = 0,
-//		tournament = 2,  This is really !si_killable in Usecode funs.
 		// petra = 4,
 		// met = 5,
 		no_spell_casting = 6,
@@ -349,6 +349,10 @@ public:
 
 	virtual unsigned char get_ident() { return is_dead() ? 0 : ident; }
 	virtual void set_ident(unsigned char id) { ident = id; }
+
+	int get_temperature() const	// Get/set measure of coldness.
+		{ return temperature; }
+	void set_temperature(int t);
 
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return npc_num; }

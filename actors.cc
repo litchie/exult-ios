@@ -2105,6 +2105,22 @@ void Actor::set_type_flags
 	}
 
 /*
+ *	Set temperature.
+ */
+
+void Actor::set_temperature
+	(
+	int v				// Should be 0-63.
+	)
+	{
+	if (v < 0)
+		v = 0;
+	else if (v > 63)
+		v = 63;
+	temperature = v;
+	}
+
+/*
  *	Get maximum weight in stones that can be held.
  *
  *	Output:	Max. allowed, or 0 if no limit (i.e., not carried by an NPC).

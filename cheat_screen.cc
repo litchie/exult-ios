@@ -1488,7 +1488,8 @@ void CheatScreen::FlagMenu (Actor *actor)
 	}
 
 	// Freeze
-	std::snprintf (buf, 512, "[W] Freeze.%c", actor->get_siflag(Actor::freeze)?'Y':'N');
+	std::snprintf (buf, 512, "[W] Freeze.%c", actor->get_flag(
+						Obj_flags::freeze)?'Y':'N');
 	font->paint_text_fixedwidth(ibuf, buf, 208, maxy-63, 8);
 
 	// Party
@@ -1681,10 +1682,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 
 		case 'w':	// Freeze
-		if (actor->get_siflag(Actor::freeze))
-			actor->clear_siflag(Actor::freeze);
+		if (actor->get_flag(Obj_flags::freeze))
+			actor->clear_flag(Obj_flags::freeze);
 		else
-			actor->set_siflag(Actor::freeze);
+			actor->set_flag(Obj_flags::freeze);
 		break;
 
 		case 'i':	// Party
