@@ -499,7 +499,11 @@ void Game_object::activate
 	Usecode_machine *umachine
 	)
 	{
-	umachine->call_usecode(get_shapenum(), this,
+	int usefun = get_shapenum();
+					// !!!Special case:  books in BG.
+	if (usefun == 0x282 && get_quality() >= 100)
+		usefun = 0x638;
+	umachine->call_usecode(usefun, this,
 				Usecode_machine::double_click);
 	}
 
@@ -2116,12 +2120,15 @@ int Chunk_cache::is_blocked
 				return 1;
 		}
 		else	// Other
+			return 0;
+#if 0	/* Let's be liberal so carts don't get blocked by flowers. */
 		{
 			if (move_flags & MOVE_FLY)
 				return 0;
 			else
 				return 1;
 		}
+#endif
 	}
 	else if (move_flags & (MOVE_FLY|MOVE_WALK))
 		return 0;

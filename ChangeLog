@@ -1,3 +1,9 @@
+2000-08-15  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* All books should work now.
+	* Projectile-firing checks for clear path to target.
+	* Another attempt to fix random-crash bug.
+
 2000-08-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs.cc: Lengthed distance in ::find_nearby from 16 to 24 so

@@ -325,10 +325,12 @@ void Game::show_menu()
 				SDL_WaitEvent(&event);
 				if(event.type==SDL_KEYDOWN) {
 					switch(event.key.keysym.sym) {
+#if DEBUG	/* This has been reported as a bug. */
 					case SDLK_ESCAPE:
 						pal.fade_out(30);
 						exit(0);
 						break;
+#endif
 					case SDLK_UP:
 						--selected;
 						if(selected<0)
