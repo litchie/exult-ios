@@ -2035,7 +2035,9 @@ void Game_window::double_clicked
 	else				// Search rest of world.
 		{
 		obj = find_object(x, y);
-	    	if (obj && !Fast_pathfinder_client::is_grabable(
+					// Check path, except if an NPC.
+	    	if (obj && obj->get_npc_num() <= 0 &&
+			!Fast_pathfinder_client::is_grabable(
 					main_actor->get_abs_tile_coord(),
 					obj->get_abs_tile_coord()))
 			{
