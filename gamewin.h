@@ -72,6 +72,8 @@ class Game_map;
 class Shape_manager;
 class ShapeID;
 class Shape_info;
+class Game_render;
+
 					// Special pixels.
 enum Pixel_colors {POISON_PIXEL = 0, PROTECT_PIXEL, CURSED_PIXEL, HIT_PIXEL,
 			NPIXCOLORS};
@@ -95,7 +97,7 @@ class Game_window
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
 	Special_effect *effects;	// Text snippets, sprite effects.
 	Gump_manager *gump_man;		// Open containers on screen.
-	unsigned long render_seq;	// For marking rendered objects.
+	Game_render *render;		// Helps with rendering.
 	bool painted;			// true if we updated image buffer.
 	bool focus;			// Do we have focus?
 	unsigned char special_pixels[NPIXCOLORS];	// Special colors.
@@ -136,12 +138,6 @@ class Game_window
 	void set_scroll_bounds();	// Set scroll-controller.
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
-	void paint_terrain_only(int start_chunkx, int start_chunky,
-				int stop_chunkx, int stop_chunky);
-					// Render the map & objects.
-	int paint_map(int x, int y, int w, int h);
-					// Render dungeon blackness
-	void paint_blackness(int cx, int cy, int stop_chunkx, int stop_chunky, int index=0);
 
 	bool mouse3rd;			// use third (middle) mouse button
 	bool fastmouse;
@@ -156,6 +152,7 @@ class Game_window
 #endif
 	
 public:
+	friend class Game_render;
 	int skip_lift;			// Skip objects with lift >= this.  0
 					//   means 'terrain-editing' mode.
 	bool paint_eggs;
@@ -449,15 +446,6 @@ public:
 		}
 	inline char *get_save_name(int i) const	// Get ->saved-game name.
 		{ return save_names[i]; }
-					// Paint "flat" scenery in a chunk.
-	void paint_chunk_flats(int cx, int cy, int xoff, int yoff);
-	//				// Paint blackness in a dungeon
-	//void paint_dungeon_black(int cx, int cy, int xoff, int yoff, int index=0);
-					// Paint objects in given chunk at
-					//   given lift.
-	int paint_chunk_objects(int cx, int cy);
-					// Paint an obj. after dependencies.
-	void paint_object(Game_object *obj);
 					// Fade palette in/out.
 	void fade_palette(int cycles, int inout, int pal_num = -1);
 	bool is_palette_faded_out()

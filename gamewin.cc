@@ -62,6 +62,7 @@
 #include "game.h"
 #include "gamewin.h"
 #include "gamemap.h"
+#include "gamerend.h"
 #include "items.h"
 #include "jawbone.h"
 #include "keys.h"
@@ -271,8 +272,8 @@ Game_window::Game_window
             tqueue(new Time_queue()), clock(tqueue), time_stopped(0),
 	    std_delay(c_std_delay),
 	    npc_prox(new Npc_proximity_handler(this)),
-	    effects(0), gump_man(new Gump_manager),
-	    render_seq(0), painted(false), focus(true), 
+	    effects(0), gump_man(new Gump_manager), render(new Game_render),
+	    painted(false), focus(true), 
 	    teleported(false), in_dungeon(0), ice_dungeon(false), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
@@ -3110,7 +3111,7 @@ Shape_file* Game_window::create_mini_screenshot()
 	unsigned char* img = 0;
 
 	set_all_dirty();
-	paint_map(0, 0, get_width(), get_height());
+	render->paint_map(0, 0, get_width(), get_height());
 
 	img = win->mini_screenshot();
 	
