@@ -110,7 +110,7 @@ void SI_Game::play_intro()
 
 		const char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
 				"Willem Jan Palenstijn, Tristan Tarrant,", 
-				"Max Horn, Luke Dunstan, Ryan Nunn",
+				"Max Horn, Luke Dunstan, Ryan Nunn, Derek Liauw Kie Fa",
 				"Driven by the Exult game engine V" VERSION };
 
 		for (j = 0; j < 20; j++)
