@@ -69,6 +69,7 @@ public:
 	void	start_track(const char *fname,int num,bool continuous=false);
 	void	start_track(XMIDI *midfile, bool continuous=false);
 	void	start_sound_effect(int num);
+	void	stop_sound_effects();
 
 	void	stop_music();
 	

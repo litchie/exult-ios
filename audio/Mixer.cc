@@ -59,7 +59,6 @@ using std::memcpy;
 using std::memset;
 using std::vector;
 
-static const int Mixer_Sample_Magic_Number=0x55443322;
 
 //---- AudioID ---------------------------------------------------------
 
@@ -317,10 +316,7 @@ void	Mixer::Destroy_Audio_Stream(uint32 type)
 	stream_lock();
 	for (int i = 0; i < MAX_AUDIO_STREAMS; i++)
 		if (streams[i]->get_type() == type)
-			{
 			streams[i]->end_consumption();
-			break;
-			}
 	stream_unlock();
 	SDL::UnlockAudio();
 }
