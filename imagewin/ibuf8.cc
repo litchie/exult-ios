@@ -345,8 +345,9 @@ void Image_buffer8::copy_transparent8
 	}
 
 // Slightly Optimized RLE Painter
-void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *in)
+void Image_buffer8::paint_rle (int xoff, int yoff, unsigned char *inptr)
 {
+	uint8* in = inptr;
 	int scanlen;
 	const int right = clipx+clipw;
 	const int bottom = clipy+cliph;

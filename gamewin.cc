@@ -319,7 +319,7 @@ void Game_window::init_files()
 		u7map.read((char*)buf, sizeof(buf));
 		int scy = 16*(schunk/12);// Get abs. chunk coords.
 		int scx = 16*(schunk%12);
-		unsigned char *mapdata = buf;
+		uint8 *mapdata = buf;
 					// Go through chunks.
 		for (int cy = 0; cy < 16; cy++)
 			for (int cx = 0; cx < 16; cx++)
@@ -1636,8 +1636,8 @@ void Game_window::write_map
 		{
 		int scy = 16*(schunk/12);// Get abs. chunk coords.
 		int scx = 16*(schunk%12);
-		unsigned char buf[16*16*2];
-		unsigned char *mapdata = buf;
+		uint8 buf[16*16*2];
+		uint8 *mapdata = buf;
 					// Go through chunks.
 		for (int cy = 0; cy < 16; cy++)
 			for (int cx = 0; cx < 16; cx++)
