@@ -225,9 +225,9 @@ class Shape_info
 	bool occludes_flag;		// Flagged in 'occlude.dat'.  Roof.
 	unsigned char *weapon_offsets;	// From "wihh.dat": pixel offsets
 					//   for drawing weapon in hand
+	Armor_info *armor;		// From armor.dat.
 	Weapon_info *weapon;		// From weapon.dat, if a weapon.
 	Ammo_info *ammo;		// From ammo.dat, if ammo.
-	Armor_info *armor;		// From armor.dat.
 	Monster_info *monstinf;		// From monster.dat.
 	void set_tfa_data()		// Set fields from tfa.
 		{
@@ -245,9 +245,8 @@ class Shape_info
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : weight(0), volume(0),
-		ready_type(255), weapon_offsets(0), 
-		armor(0), weapon(0), ammo(0),
-		monstinf(0), occludes_flag(false)
+		ready_type(255), occludes_flag(false), weapon_offsets(0), 
+		armor(0), weapon(0), ammo(0), monstinf(0)
 		{
 		tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0;
 		dims[0] = dims[1] = dims[2] = 0;

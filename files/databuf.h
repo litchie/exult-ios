@@ -390,7 +390,7 @@ public:
 	
 	unsigned char *getPtr() { return buf_ptr; };
 
-	virtual bool eof() { return (buf_ptr-buf) >= size; } 
+	virtual bool eof() { return (buf_ptr-buf) >= (int)size; } 
 
 };
 
