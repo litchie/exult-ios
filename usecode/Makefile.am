@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin \
+INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin \
 		-I$(srcdir)/../shapes -I$(srcdir)/../objs -I$(srcdir)/../audio\
 		-I$(srcdir)/../gumps -I$(srcdir)/../tools \
 	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)

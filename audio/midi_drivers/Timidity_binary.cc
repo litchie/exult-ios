@@ -274,9 +274,10 @@ void	Timidity_binary::start_track(XMIDIEventList *event_list,bool repeat)
 		perror("pthread_create");
 }
 
+/*
 virtual void	start_track( *, bool repeat);
 virtual void	start_sfx(XMIDIEventList *);
-
+*/
 
 void	Timidity_binary::start_sfx(XMIDIEventList *event_list)
 {

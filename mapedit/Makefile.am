@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../shapes -I$(srcdir)/../imagewin \
+INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../shapes -I$(srcdir)/../imagewin \
 	-I$(srcdir)/../files -I$(srcdir)/../server \
 	$(GTK_INCLUDES) $(LIBGLADE_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 

@@ -1,3 +1,6 @@
+2002-02-08  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* */Makefile.am: include headers dir
+
 2002-02-08  Ryan Nunn  <triforce@merlin.net.au>
 	* audio/*.*, audio/midi_drivers/*.*, exultmenu.cc : Changes to the midi
 	  system. Now evern faster, and safer too. New super accurate integer
