@@ -1,5 +1,10 @@
+2001-02-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/great_dagger.shp, data/magic_boomerang.shp: added some more art
+	* data/flx.in, Makefile.*, gumps/Paperdoll_gump_info.cc: added shapes
+
 2001-02-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/caddellite_helmet.shp: attempt at a caddellite helmet
+	* gumps/Paperdoll_gump_info.cc: added caddellite helmet
 	* data/flx.in, Makefile.*: added caddellite_helmet.shp
 	
 2001-02-14  Ryan Nunn  <triforce@merlin.net.au>

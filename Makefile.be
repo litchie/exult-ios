@@ -79,6 +79,8 @@ EXULT_FLX_OBJECTS = \
 	data/defaultkeys.txt \
 	data/hoe_of_destruction.shp \
 	data/caddellite_helmet.shp \
+	data/great_dagger.shp \
+	data/magic_boomerang.shp \
 	data/flx.in
 
 $(EXEC) : Makefile data/exult.flx $(OBJS) beos/exult.rsrc
