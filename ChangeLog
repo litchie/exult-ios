@@ -6,6 +6,10 @@
 	including local vars, return var and semicolons in the appropriate
 	places.
 
+	* usecode/ucxt/*: Added a 'basic' option (-b), to not do any of the
+	more complex optimisations. Fixed a bug caused by the abovementioned
+	'parenthesis flag' under -fa output.
+
 2001-12-29  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Added output for -fl to show whether the function
 	returns a value or not. Polishing off -fz output, including outputting
