@@ -132,8 +132,8 @@ public:
 					// Get attack frames.
 	int get_attack_frames(int dir, char *frames) const;
 	enum Alignment {		// Describes alignment field.
-		friendly = 0,
-		neutral = 1,
+		neutral = 0,
+		friendly = 1,
 		hostile = 2,
 		unknown_align = 3 };	// Bees have this, & don't attack until
 					// Spots where items are carried.
@@ -648,15 +648,20 @@ class Monster_info
 	unsigned char strength;		// Attributes.
 	unsigned char dexterity;
 	unsigned char intelligence;
+	unsigned char alignment;	// Default alignment.
 	unsigned char combat;
-	unsigned char armor;
-	unsigned char weapon;		// Guessing.
-	unsigned short flags;		// Defined below.
+	unsigned char armor;		// These are unarmed stats.
+	unsigned char weapon;
+	unsigned char reach;
+	unsigned char flags;		// Defined below.
 	unsigned char equip_offset;	// Offset in 'equip.dat' (1 based;
+	bool splits;			// For slimes.
+	bool cant_die;
 					//   if 0, there's none.)
 public:
 	friend class Monster_actor;
 	Monster_info() {  }
+	void read(istream& mfile);	// Read in from file.
 					// Done by Game_window:
 	static void set_equip(Equip_record *eq, int cnt)
 		{
@@ -667,11 +672,11 @@ public:
 		fly = 0,
 		swim = 1,
 		walk = 2,
-		ethereal = 3,		// Can walk through walls.
+		ethereal = 3		// Can walk through walls.
 					// 5:  gazer, hook only.
-		magic_only = 7,		// Can only be hurt by magic weapons.
+//Don't think so magic_only = 7,	// Can only be hurt by magic weapons.
 					// 8:  bat only.
-		slow = 9		// E.g., slime, corpser.
+//		slow = 9		// E.g., slime, corpser.
 					// 10:  skeleton only.
 		};
 	int get_shapenum()
@@ -691,7 +696,8 @@ public:
 		}
 					// Create an instance.
 	Monster_actor *create(int chunkx, int chunky, int tilex, int tiley, 
-				int lift, int sched = -1, int align = -1, bool tempoary = true);
+		int lift, int sched = -1, int align = (int) Actor::neutral, 
+							bool tempoary = true);
 	};
 
 #endif
