@@ -215,7 +215,7 @@ Actor *Combat_schedule::find_foe
 			Actor *opp = *it;
 			int dist = npc->distance(opp);
 			if (opp->get_attack_mode() == Actor::flee)
-				dist += 10;	// Avoid fleeing.
+				dist += 16;	// Avoid fleeing.
 			if (dist < best_dist)
 				{
 				best_dist = dist;
