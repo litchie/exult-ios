@@ -41,13 +41,13 @@ It has been partly rewritten to use an SDL surface as input.
 #define qtohs(x) (x)
 #else
 #define qtohl(x) \
-        ((unsigned long int)((((unsigned long int)(x) & 0x000000ffU) << 24) | \
-                             (((unsigned long int)(x) & 0x0000ff00U) <<  8) | \
-                             (((unsigned long int)(x) & 0x00ff0000U) >>  8) | \
-                             (((unsigned long int)(x) & 0xff000000U) >> 24)))
+        ((Uint32)((((Uint32)(x) & 0x000000ffU) << 24) | \
+                  (((Uint32)(x) & 0x0000ff00U) <<  8) | \
+                  (((Uint32)(x) & 0x00ff0000U) >>  8) | \
+                  (((Uint32)(x) & 0xff000000U) >> 24)))
 #define qtohs(x) \
-        ((unsigned short int)((((unsigned short int)(x) & 0x00ff) << 8) | \
-                              (((unsigned short int)(x) & 0xff00) >> 8)))
+        ((Uint16)((((Uint16)(x) & 0x00ff) << 8) | \
+                  (((Uint16)(x) & 0xff00) >> 8)))
 #endif
 #define htoql(x) qtohl(x)
 #define htoqs(x) qtohs(x)
