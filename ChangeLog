@@ -1,4 +1,8 @@
 2001-12-03  Ryan Nunn <triforce@merlin.net.au>
+	* objs/animate.cc : Fixed Minoc millsaw animation. Requires new game to
+	  work 100% properly.
+
+2001-12-03  Ryan Nunn <triforce@merlin.net.au>
 	* msvcstuff/exconfig/exconfig.cpp : Updated installer stuff
 	* msvcstuff/exconfig/exconfig.rc, win32/exultico.rc : 0.97cvs
 

@@ -372,6 +372,7 @@ void Frame_animator::Initialize()
 					// First frame isn't animated
 		case 862:		// Shafts
 		case 880:
+		case 933:		// Millsaw
 			if (last_frame == 0)
 			{
 				first_frame = 0;
