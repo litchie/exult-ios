@@ -748,19 +748,16 @@ inline void Send_location
 	}
 
 /*
- *	Set the scroll position so that a given tile is centered.  (Used by
- *	center_view.)
+ *	Set the scroll position to a given tile.
  */
 
 void Game_window::set_scrolls
 	(
-	Tile_coord cent			// Want center here.
+	int newscrolltx, int newscrollty
 	)
 	{
-					// Figure in tiles.
-	int tw = get_width()/c_tilesize, th = get_height()/c_tilesize;
-	scrolltx = DECR_TILE(cent.tx, tw/2);
-	scrollty = DECR_TILE(cent.ty, th/2);
+	scrolltx = newscrolltx;
+	scrollty = newscrollty;
 	set_scroll_bounds();		// Set scroll-control.
 	Barge_object *old_active_barge = moving_barge;
 	map->read_map_data();		// This pulls in objects.
@@ -781,6 +778,21 @@ void Game_window::set_scrolls
 	set_in_dungeon(nlist->has_dungeon()?nlist->is_dungeon(tx, ty):0);
 	set_ice_dungeon(nlist->is_ice_dungeon(tx, ty));
 	Send_location(this);		// Tell ExultStudio.
+	}
+
+/*
+ *	Set the scroll position so that a given tile is centered.  (Used by
+ *	center_view.)
+ */
+
+void Game_window::set_scrolls
+	(
+	Tile_coord cent			// Want center here.
+	)
+	{
+					// Figure in tiles.
+	int tw = get_width()/c_tilesize, th = get_height()/c_tilesize;
+	set_scrolls(DECR_TILE(cent.tx, tw/2), DECR_TILE(cent.ty, th/2));
 	}
 
 /*

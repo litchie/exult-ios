@@ -26,6 +26,7 @@
 #include "SDL_events.h"
 
 #include "gump_utils.h"
+#include "Gump_manager.h"
 #include "Configuration.h"
 #include "Gump_button.h"
 #include "Gump_ToggleButton.h"

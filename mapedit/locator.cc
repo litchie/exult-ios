@@ -135,8 +135,8 @@ Locator::Locator
 	scale = glade_xml_get_widget(app_xml, "loc_vscale");
 	vadj = gtk_range_get_adjustment(GTK_RANGE(scale));
 	hadj->upper = vadj->upper = c_num_chunks;
-	hadj->page_increment = vadj->page_increment = 
-		hadj->page_size = vadj->page_size = c_chunks_per_schunk;
+	hadj->page_increment = vadj->page_increment = c_chunks_per_schunk;
+	hadj->page_size = vadj->page_size = 2;
 	gtk_signal_emit_by_name(GTK_OBJECT(hadj), "changed");
 	gtk_signal_emit_by_name(GTK_OBJECT(vadj), "changed");
 					// Set scrollbar handlers.
@@ -226,10 +226,10 @@ void Locator::render
 					// Draw location in yellow.
 	gdk_rgb_gc_set_foreground(drawgc, (255<<16) + (255<<8));
 	gdk_draw_rectangle(draw->window, drawgc, FALSE, x, y, w, h);
-					// Put a red box around it.
-	gdk_rgb_gc_set_foreground(drawgc, (255<<16) + (64<<8) + 64);
+					// Put a light-red box around it.
+	gdk_rgb_gc_set_foreground(drawgc, (255<<16) + (128<<8) + 128);
 	gdk_draw_rectangle(draw->window, drawgc, FALSE, 
-					x - 2, y - 2, w + 4, h + 4);
+					x - 3, y - 3, w + 6, h + 6);
 	}
 
 /*
@@ -248,6 +248,7 @@ void Locator::view_changed
 	ty = Read4(data);
 	txs = Read4(data);
 	tys = Read4(data);
+					// ++++Scale?  Later.
 //	render(&area);
 					// Update scrolls.
 	gtk_adjustment_set_value(hadj, tx/c_tiles_per_chunk);
@@ -265,8 +266,10 @@ void Locator::vscrolled			// For vertical scrollbar.
 	)
 	{
 	Locator *loc = (Locator *) data;
-	loc->tx = ((gint) adj->value)*c_tiles_per_chunk;
-	loc->render();	//++++Maybe wrong.  Should send msg. to Exult.
+	loc->ty = ((gint) adj->value)*c_tiles_per_chunk;
+	cout << "Vscrolled:  New ty is " << loc->ty << endl;
+	loc->render();
+	loc->send_location();
 	}
 void Locator::hscrolled			// For horizontal scrollbar.
 	(
@@ -275,7 +278,27 @@ void Locator::hscrolled			// For horizontal scrollbar.
 	)
 	{
 	Locator *loc = (Locator *) data;
-	loc->ty = ((gint) adj->value)*c_tiles_per_chunk;
-	loc->render();	//++++Maybe wrong.  Should send msg. to Exult.
+	loc->tx = ((gint) adj->value)*c_tiles_per_chunk;
+	cout << "Hscrolled:  New tx is " << loc->tx << endl;
+	loc->render();
+	loc->send_location();
 	}
 
+/*
+ *	Send location to Exult.
+ */
+
+void Locator::send_location
+	(
+	)
+	{
+	unsigned char data[50];
+	unsigned char *ptr = &data[0];
+	Write4(ptr, tx);
+	Write4(ptr, ty);
+	Write4(ptr, txs);
+	Write4(ptr, tys);
+	Write4(ptr, -1);		// Don't change.
+	ExultStudio::get_instance()->send_to_server(Exult_server::view_pos,
+					&data[0], ptr - data);
+	}

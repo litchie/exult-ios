@@ -34,6 +34,7 @@
 #include "Modal_gump.h"
 #include "Slider_gump.h"
 #include "Yesno_gump.h"
+#include "Gump_manager.h"
 
 using std::cout;
 using std::endl;

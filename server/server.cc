@@ -296,8 +296,8 @@ static void Handle_client_message
 		bool dup = *ptr++ ? true : false;
 		bool okay = gwin->get_map()->insert_terrain(tnum, dup);
 		*ptr++ = okay ? 1 : 0;
-		Exult_server::Send_data(client_socket, Exult_server::insert_terrain, data,
-							ptr - data);
+		Exult_server::Send_data(client_socket, 
+			Exult_server::insert_terrain, data, ptr - data);
 		break;
 		}
 	case Exult_server::send_terrain:
@@ -307,8 +307,8 @@ static void Handle_client_message
 		Chunk_terrain *ter = gwin->get_map()->get_terrain(tnum);
 		ter->write_flats(ptr);	// Serialize it.
 		ptr += 512;		// I just happen to know the length...
-		Exult_server::Send_data(client_socket, Exult_server::send_terrain, data,
-							ptr - data);
+		Exult_server::Send_data(client_socket, 
+			Exult_server::send_terrain, data, ptr - data);
 		break;
 		}
 	case Exult_server::terrain_editing_mode:
@@ -333,6 +333,25 @@ static void Handle_client_message
 		int shnum = (short) Read2(ptr);
 		int frnum = (short) Read2(ptr);
 		cheat.set_edit_shape(shnum, frnum);
+		break;
+		}
+	case Exult_server::view_pos:
+		{
+		int tx = Read4(ptr);
+		int ty = Read4(ptr);
+		// +++Later int txs = Read4(ptr);
+		// int tys = Read4(ptr);
+		// int scale = Read4(ptr);
+					// Only set if chunk changed.
+		if (tx/c_tiles_per_chunk != 
+			gwin->get_scrolltx()/c_tiles_per_chunk || 
+		    ty/c_tiles_per_chunk != 
+			gwin->get_scrollty()/c_tiles_per_chunk)
+			{
+			gwin->set_scrolls(tx, ty);
+			gwin->set_all_dirty();
+			}
+		break;
 		}
 		}
 	}

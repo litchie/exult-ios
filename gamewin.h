@@ -348,6 +348,8 @@ public:
 			}
 		return false;
 		}
+					// Set view (upper-left).
+	void set_scrolls(int newscrolltx, int newscrollty);
 	void center_view(Tile_coord t);	// Center view around t.
 	void set_camera_actor(Actor *a);
 	Actor *get_camera_actor()
