@@ -112,6 +112,8 @@ public:
 							gpointer data);
 					// Handle scrollbar.
 	static void scrolled(GtkAdjustment *adj, gpointer data);
+	void locate(bool upwards);	// Locate terrain on game map.
+	void locate_response(unsigned char *data, int datalen);
 	};
 
 #endif

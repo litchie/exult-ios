@@ -44,7 +44,8 @@ class Game_map
 	{
 					// Flat chunk areas:
 	Exult_vector<Chunk_terrain *> chunk_terrains;
-	int num_chunk_terrains;		// Total #.
+	bool read_all_terrain;		// True if we've read them all.
+	bool modified_terrain;
 					// Chunk_terrain index for each chunk:
 	short terrain_map[c_num_chunks][c_num_chunks];
 					// A list of objects in each chunk:
@@ -55,6 +56,7 @@ class Game_map
 	Map_patch_collection *map_patches;
 
 	Map_chunk *create_chunk(int cx, int cy);
+	Chunk_terrain *read_terrain(int chunk_num);
 public:
 	Game_map();
 	~Game_map();
@@ -92,6 +94,7 @@ public:
 	void get_map_objects(int schunk);
 					// Get "chunk" objects/scenery.
 	void get_chunk_objects(int cx, int cy);
+	void get_all_terrain();		// Read in all terrains.
 					// Set new terrain chunk.
 	void set_chunk_terrain(int cx, int cy, int chunknum);
 					// Get ifixxxx/iregxx name.

@@ -23,9 +23,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapelst.h"
 #include "paledit.h"
 #include "vgafile.h"
+#include "servemsg.h"
 
 					// Callback for msgs.
-typedef void (*Msg_callback)(int id, unsigned char *data, int datalen);
+typedef void (*Msg_callback)(Exult_server::Msg_type id, 
+			unsigned char *data, int datalen, void *client);
 
 class ExultStudio {
 private:
@@ -55,6 +57,7 @@ private:
 	int			server_socket;
 	gint			server_input_tag;
 	Msg_callback		waiting_for_server;
+	void			*waiting_client;
 					// GTK/Glade utils:
 	bool get_toggle(char *name);
 	void set_toggle(char *name, bool val);
@@ -77,6 +80,8 @@ public:
 	GladeXML *get_xml() 
 		{ return app_xml; }
 
+	void set_response_callback(Msg_callback callback, void *client = 0)
+		{ waiting_for_server = callback; waiting_client = client; }
 	void set_browser(const char *name, Object_browser *obj);
 
 	void choose_static_path();
@@ -118,6 +123,8 @@ public:
 	static void schedule_btn_clicked(GtkWidget *btn, gpointer data);
 
 	void run();
+	bool send_to_server(Exult_server::Msg_type id,
+				unsigned char *data = 0, int datalen = 0);
 	void read_from_server();
 	bool connect_to_server();
 };
