@@ -52,6 +52,7 @@ using std::ifstream;
 using std::ofstream;
 using std::istream;
 using std::ostream;
+using std::setw;
 using std::size_t;
 using std::strdup;
 using std::strlen;
@@ -524,55 +525,55 @@ void Write_palettes
 	Flex_writer writer(out, "Exult palette by Ipack", 11);
 					// Entry 0 (DAY):
 	Convert_palette63(palette, &palbuf[0], palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 1 (DUSK):
 	Modify_palette(palette, palbuf, palsize, 0, 0, 0, -64, -64, -64);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 2 (NIGHT):
 	Modify_palette(palette, palbuf, palsize, 0, 0, 0, -128, -128, -128);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 3 (INVISIBLE):
 	Greyify_palette(palette, palbuf, palsize);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 4 (unknown):
 	Convert_palette63(palette, palbuf, palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 5 (HAZE):
 	Modify_palette(palette, palbuf, palsize, 184, 184, 184, -32, -32, -32);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 6 (a bit brighter than 2):
 	Modify_palette(palette, palbuf, palsize, 0, 0, 0, -96, -96, -96);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 7 (a bit warmer):
 	Modify_palette(palette, palbuf, palsize, 30, 0, 0, -96, -96, -96);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 8 (hit in combat):
 	Modify_palette(palette, palbuf, palsize, 64, 0, 0, 384, -20, -20);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 9 (unknown):
 	Convert_palette63(palette, palbuf, palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 					// Entry 10 (LIGHTNING):
 	Modify_palette(palette, palbuf, palsize, 32, 32, 0, 256, 256, -20);
 	Convert_palette63(palbuf, palbuf, palsize);
-	out.write(&palbuf[0], sizeof(palbuf));
+	out.write((const char*)&palbuf[0], sizeof(palbuf));
 	writer.mark_section_done();
 	if (!writer.close())
 		throw file_write_exception(palname);
@@ -701,7 +702,7 @@ static void Write_exult
 			Write2(out, yabove);
 			Write2(out, ybelow);
 			}
-		out.write(pixels, datalen);	// The frame data.
+		out.write((const char*)pixels, datalen);	// The frame data.
 		delete pixels;
 		if (palname)
 			{

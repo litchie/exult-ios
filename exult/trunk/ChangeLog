@@ -1,3 +1,6 @@
+2002-03-07  Max Horn  <max@quendi.de>
+	* tools/ipack.cc, tools/textpack.cc: fixed compile problems with gcc 3
+
 2002-03-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* imagewin/imagewin.h: include <string>
 	* imagewin/imagewin.cc: include utils.h
