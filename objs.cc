@@ -1095,7 +1095,7 @@ Sprite::Sprite
 	(
 	int shapenum
 	)  : Container_game_object(), chunk(0),
-		x_dir(0), major_frame_incr(8), frames_seq(0)
+		major_dir(0), major_frame_incr(8), frames_seq(0)
 	{
 	set_shape(shapenum, 0); 
 	for (int i = 0; i < 8; i++)
@@ -1110,7 +1110,7 @@ void Sprite::stop
 	(
 	)
 	{
-	x_dir = 0;
+	major_dir = 0;
 	if (frames_seq)			// Set to "resting" frame.
 		set_frame(frames_seq->get_resting());
 	}
@@ -1145,6 +1145,7 @@ void Sprite::start
 	long deltax = destx + liftpixels - curx;
 	long deltay = desty + liftpixels - cury;
 	unsigned long abs_deltax, abs_deltay;
+	int x_dir, y_dir;
 	if (deltay >= 0)		// Figure directions.
 		{
 		y_dir = 1;
@@ -1168,17 +1169,24 @@ void Sprite::start
 	if (abs_deltay >= abs_deltax)	// Moving faster along y?
 		{
 		dir = y_dir > 0 ? south : north;
-		major_axis = yaxis;
+		major_coord = &cury;
+		minor_coord = &curx;
+		major_dir = y_dir;
+		minor_dir = x_dir;
 		major_delta = abs_deltay;
 		minor_delta = abs_deltax;
 		}
 	else				// Moving faster along x?
 		{
 		dir = x_dir > 0 ? east : west;
-		major_axis = xaxis;
+		major_coord = &curx;
+		minor_coord = &cury;
+		major_dir = x_dir;
+		minor_dir = y_dir;
 		major_delta = abs_deltax;
 		minor_delta = abs_deltay;
 		}
+	major_distance = major_delta;	// How far to go.
 					// Different dir. than before?
 	if (frames[(int) dir] != frames_seq)
 		{			// Set frames sequence.
@@ -1208,7 +1216,7 @@ int Sprite::next_frame
 	(
 	unsigned long time,		// Current time.
 	int& new_cx, int& new_cy,	// New chunk coords. returned.
-	int& new_sx, int& new_sy,	// New shape coords. returned.
+	int& new_tx, int& new_ty,	// New tile coords. returned.
 	int& next_frame			// Next frame # returned.
 	)
 	{
@@ -1216,25 +1224,20 @@ int Sprite::next_frame
 		return (0);
 					// Figure change in faster axis.
 	int new_major = major_frame_incr;
+					// Subtract from distance to go.
+	major_distance -= major_frame_incr;
 					// Accumulate change.
 	sum += major_frame_incr * minor_delta;
 					// Figure change in slower axis.
 	int new_minor = sum/major_delta;
 	sum = sum % major_delta;	// Remove what we used.
-	if (major_axis == xaxis)	// Which axis?
-		{
-		curx += x_dir*new_major;
-		cury += y_dir*new_minor;
-		}
-	else
-		{
-		cury += y_dir*new_major;
-		curx += x_dir*new_minor;
-		}
+					// Update coords. within world.
+	*major_coord += major_dir*new_major;
+	*minor_coord += minor_dir*new_minor;
 	new_cx = curx/chunksize;	// Return new chunk pos.
 	new_cy = cury/chunksize;
-	new_sx = (curx%chunksize)/tilesize;
-	new_sy = (cury%chunksize)/tilesize;
+	new_tx = (curx%chunksize)/tilesize;
+	new_ty = (cury%chunksize)/tilesize;
 	if (frames_seq)			// Got a sequence of frames?
 		next_frame = frames_seq->get_next(frame_index);
 	else

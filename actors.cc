@@ -280,7 +280,8 @@ cout << "Npc " << get_name() << " has new schedule " << schedule << '\n';
 	}
 
 /*
- *	Animation.
+ *	Animation.  An NPC stops when it reaches the destination specified in
+ *	start().
  */
 
 void Npc_actor::handle_event
@@ -291,15 +292,40 @@ void Npc_actor::handle_event
 	{
 					// Store old chunk.
 	int old_cx = get_cx(), old_cy = get_cy();
-	Sprite::handle_event(curtime, udata);
-					// In new chunk?
-	if (get_cx() != old_cx || get_cy() != old_cy)
+	Game_window *gwin = (Game_window *) udata;
+	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
+	int frame;
+	if (next_frame(curtime, cx, cy, sx, sy, frame))
 		{
-		Game_window *gwin = (Game_window *) udata;
-		Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
-		Chunk_object_list *nlist = gwin->get_objects(get_cx(),
-								get_cy());
-		switched_chunks(olist, nlist);
+		Chunk_object_list *olist = gwin->get_objects(cx, cy);
+		olist->setup_cache();
+		int new_lift;		// Might climb/descend.
+		if (olist->is_blocked(get_lift(), sx, sy, new_lift) ||
+		    at_destination())
+			{
+			stop();		// ++++Notify scheduler here?
+			return;
+			}
+					// Add back to queue for next time.
+		gwin->get_tqueue()->add(curtime + frame_time,
+							this, udata);
+					// Get old rectangle.
+		Rectangle rect = gwin->clip_to_win(gwin->get_shape_rect(this));
+		gwin->add_dirty(rect);	// Force repaint.
+					// Move it.
+		move(cx, cy, gwin->get_objects(cx, cy), sx, sy, frame);
+					// In new chunk?
+		if (cx != old_cx || cy != old_cy)
+			{
+			Chunk_object_list *nlist = gwin->get_objects(cx, cy);
+			switched_chunks(olist, nlist);
+			}
+		rect = gwin->clip_to_win(gwin->get_shape_rect(this));
+					// No longer on screen?
+		if (rect.w <= 0 || rect.h <= 0)
+			stop();
+		else			// Force paint.
+			gwin->add_dirty(rect);
 		}
 	}
 
