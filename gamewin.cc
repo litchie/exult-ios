@@ -352,7 +352,7 @@ void Game_window::init_files(bool cycle)
 	mainshp.load(MAINSHP_FLX);
 	CYCLE_RED_PLASMA();
 	shapes.init();
-	map->init();
+//	map->init();	++++++Moved to setup_game().
 
 	ifstream textflx;	
   	U7open(textflx, TEXT_FLX);
@@ -2546,6 +2546,7 @@ void Game_window::setup_game
 	(
 	)
 	{
+	map->init();
 				// Init. current 'tick'.
 	Game::set_ticks(SDL_GetTicks());
 	init_actors();		// Set up actors if not already done.
