@@ -1554,12 +1554,16 @@ void Actor::paint
 		if (hit)		// Want a momentary red outline.
 			ShapeID::paint_outline(xoff, yoff, HIT_PIXEL);
 		else if (flags & ((1L<<Obj_flags::protection) | 
-		    (1L << Obj_flags::poisoned) | (1 << Obj_flags::cursed)))
+		    (1L << Obj_flags::poisoned) | (1 << Obj_flags::cursed) |
+		    	(1 << Obj_flags::charmed)))
 			{
 			if (flags & (1L << Obj_flags::poisoned))
 				ShapeID::paint_outline(xoff,yoff,POISON_PIXEL);
 			else if (flags & (1L << Obj_flags::cursed))
 				ShapeID::paint_outline(xoff,yoff,CURSED_PIXEL);
+			else if (flags & (1L << Obj_flags::charmed))
+				ShapeID::paint_outline(xoff, yoff,
+								CHARMED_PIXEL);
 			else
 				ShapeID::paint_outline(xoff, yoff,
 								PROTECT_PIXEL);
@@ -2191,6 +2195,9 @@ void Actor::set_flag
 		break;
 	case Obj_flags::cursed:
 		need_timers()->start_curse();
+		break;
+	case Obj_flags::charmed:
+		need_timers()->start_charm();
 		break;
 	case Obj_flags::paralyzed:
 		need_timers()->start_paralyze();
@@ -2997,6 +3004,10 @@ bool Actor::figure_hit_points
 			Get_effective_prop(attacker, Actor::intelligence),
 			Get_effective_prop(this, Actor::intelligence)))
 			set_flag(Obj_flags::cursed);
+		if ((powers&Weapon_info::charm) && roll_to_win(
+			Get_effective_prop(attacker, Actor::intelligence),
+			Get_effective_prop(this, Actor::intelligence)))
+			set_flag(Obj_flags::charmed);
 		if ((powers&Weapon_info::sleep) && roll_to_win(
 			Get_effective_prop(attacker, Actor::intelligence),
 			Get_effective_prop(this, Actor::intelligence)))
