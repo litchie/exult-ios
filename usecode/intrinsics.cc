@@ -372,12 +372,9 @@ USECODE_INTRINSIC(get_schedule_type)
 	Actor *npc = as_actor(get_item(parms[0]));
 	if (!npc)
 		return Usecode_value(0);
-	int sched = npc->get_schedule_type();
-	if (sched == Schedule::street_maintenance)
-		{
-		if (npc->get_schedule())
-			sched = npc->get_schedule()->get_prev_type();
-		}
+	Schedule *schedule = npc->get_schedule();
+	int sched = schedule ? schedule->get_actual_type(npc) 
+			     : npc->get_schedule_type();
 					// Path_run_usecode?  (This is to fix
 					//   a bug in the Fawn Trial.)
 					//+++++Should be a better way to check.

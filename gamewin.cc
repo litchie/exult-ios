@@ -3336,6 +3336,9 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 		return;			// Seems like there's nothing to do.
 	remove_weather_effects(120);	// Cancel weather from eggs that are
 					//   far away.
+					// Cancel scripts 4 chunks from this.
+	Usecode_script::purge(Tile_coord(newx*c_tiles_per_chunk,
+			newy*c_tiles_per_chunk, 0), 4*c_tiles_per_chunk);
 	int nearby[5][5];		// Chunks within 3.
 	// Set to 0
 	// No casting _should_ be necessary at this point.

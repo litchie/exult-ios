@@ -232,6 +232,28 @@ void Usecode_script::clear
 		delete first;
 	}
 
+/*
+ *	Terminate all scripts for objects that are more than a given distance
+ *	from a particular spot.
+ */
+
+void Usecode_script::purge
+	(
+	Tile_coord spot,
+	int dist			// In tiles.
+	)
+	{
+	Usecode_script *next = 0;
+	for (Usecode_script *each = first; each; each = next)
+		{
+		next = each->next;	// Get next in case we delete 'each'.
+		if (each->obj && 
+		    each->obj->get_outermost()->get_abs_tile_coord().distance(
+								spot) > dist)
+			each->halt();
+		}
+	}			
+
 inline void Usecode_script::activate_egg(Usecode_internal *usecode,
 				     Game_object *e)
 {
