@@ -26,6 +26,7 @@ public:
 		{ return minute; }
 	int get_day()
 		{ return day; }
+	void increment(int num_minutes);// Increment clock.
 	virtual void handle_event(unsigned long curtime, long udata);
 	void fake_next_period();	// For debugging.
 	};

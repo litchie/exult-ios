@@ -1491,6 +1491,9 @@ Usecode_value Usecode_machine::call_intrinsic
 		Unhandled(intrinsic, num_parms, parms);
 		//+++++++++++++++++++++
 		break;
+	case 0x78:			// Incr. clock by (parm[0]*.04min.).
+		gwin->increment_clock(parms[0].get_int_value()/25);
+		break;
 	case 0x87:			// ?Direction from parm[0] -> parm[1].
 					// Rets. 0-7.  Is 0 north?
 					// Same as 0x1a??
@@ -1533,10 +1536,11 @@ Usecode_value Usecode_machine::call_intrinsic
 			}
 		break;
 		}
-	case 0x8d:		// ?? Returns party?
-//+++++++++++++++++++++
-		Unhandled(intrinsic, num_parms, parms);
-		break;
+//	case 0x8c:			// Cycles palettes dark-light.
+//					//   ++++Takes 3 parms.(12 or 36, 
+//						always 1?, 0/1?).
+	case 0x8d:			// Return party.  Same as 0x23?
+		return get_party();
 	default:
 		Unhandled(intrinsic, num_parms, parms);
 		break;

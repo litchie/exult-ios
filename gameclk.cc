@@ -28,14 +28,41 @@ inline void Set_palette
 	int hour
 	)
 	{
-	if (hour == 5)
-		gwin->set_palette(PALETTE_DAWN);
-	if (hour == 6)
-		gwin->set_palette(PALETTE_DAY);
-	if (hour == 19)
-		gwin->set_palette(PALETTE_DUSK);
-	if (hour == 21)
+	if (hour < 5)
 		gwin->set_palette(PALETTE_NIGHT);
+	else if (hour < 6)
+		gwin->set_palette(PALETTE_DAWN);
+	else if (hour < 19)
+		gwin->set_palette(PALETTE_DAY);
+	else if (hour < 21)
+		gwin->set_palette(PALETTE_DUSK);
+	else
+		gwin->set_palette(PALETTE_NIGHT);
+	}
+
+/*
+ *	Increment clock.
+ */
+
+void Game_clock::increment
+	(
+	int num_minutes			// # of minutes to increment.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int old_3hour = hour/3;		// Remember current 3-hour period.
+	num_minutes += 6;		// Round to nearest 12 minutes.
+	num_minutes -= num_minutes%12;
+	long new_min = minute + num_minutes;
+	hour += new_min/60;		// Update hour.
+	minute = new_min%60;
+	day += hour/24;			// Update day.
+	hour %= 24;
+	Set_palette(gwin, hour);	// Update palette to new time.
+	int new_3hour = hour/3;		// New 3-hour period.
+	if (new_3hour != old_3hour)	// In a new period?
+					// Update NPC schedules.
+		gwin->schedule_npcs(new_3hour);
 	}
 
 /*
