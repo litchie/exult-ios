@@ -2911,6 +2911,52 @@ void Game_window::theft
 	}
 
 /*
+ *	Have nearby residents attack the Avatar.
+ */
+
+void Game_window::attack_avatar
+	(
+	int create_guards		// # of extra guards to create.
+	)
+	{
+	Monster_info *inf = get_monster_info(0x3b2);
+	while (create_guards--)
+		{
+		if (!inf)
+			break;		// (Shouldn't happen.)
+					// Create it off-screen.
+		Monster_actor *guard = inf->create(
+			main_actor->get_cx() + 8, 
+			main_actor->get_cy() + 8, 0, 0, 0);
+		add_nearby_npc(guard);
+		Tile_coord dest = main_actor->get_abs_tile_coord();
+		guard->set_opponent(main_actor);
+		Actor_action *act = new Path_walking_actor_action();
+		if (!act->walk_to_tile(Tile_coord(-1, -1, 0), dest,
+						guard->get_type_flags()))
+			delete act;
+		else			
+			{
+			guard->set_action(act);
+			guard->start(150);	// Walk fairly fast.
+			}
+		}
+
+	Actor_vector npcs;		// See if someone is nearby.
+	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12);
+	for (Actor_vector::const_iterator it = npcs.begin(); 
+							it != npcs.end();++it)
+		{
+		Actor *npc = (Actor *) *it;
+					// No monsters, except guards.
+		if ((npc->get_shapenum() == 0x3b2 || !npc->is_monster()) && 
+		    npc != main_actor &&
+		    npc->get_party_id() < 0)
+			npc->set_opponent(main_actor);
+		}
+	}
+
+/*
  *	Gain/lose focus.
  */
 
