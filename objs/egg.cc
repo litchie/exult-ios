@@ -173,6 +173,10 @@ Egg_object::Egg_object
 			(htch << hatched) + (ar << auto_reset);
 	if (type == usecode || type == teleport || type == path)
 		set_quality(data1&0xff);
+					// Party_near & auto_reset don't mix
+					//   well.
+	if (criteria == party_near && (flags&(1<<auto_reset)))
+		criteria = avatar_near;
 	}
 
 /*
