@@ -23,3 +23,4 @@
 \CSourceForge & VA Linux|\CFor making it easy to code together.
 \CJackchaos.com|\CFor hosting the Exult message board
 \CTravis Howell|\CFor making daily Windows binaries
+\CSam Lantinga|\CAuthor of SDL, for making porting easier
