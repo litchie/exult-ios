@@ -294,12 +294,14 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 			}
 		break;
 	case SDL_MOUSEMOTION:
+		{
 #ifdef MOUSE
 		mouse->move(event.motion.x, event.motion.y);
 #if 0	/* Try this next. */
-		mouse->set_short_arrow(Get_direction(
-			event.motion.y - ???,
-			event.motion.x - ???));
+		int ax, ay;		// Get Avatar screen location.
+		gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
+		mouse->set_short_arrow(Get_direction(event.motion.y - ay,
+							event.motion.x - ax));
 #endif
 		gwin->set_painted();	// We'll need to blit.
 #endif
@@ -316,6 +318,7 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 		if (event.motion.state & SDL_BUTTON(3))
 			gwin->start_actor(event.motion.x, event.motion.y);
 		break;
+		}
 	case SDL_ACTIVEEVENT:
 #ifdef MOUSE
 		if (event.active.state & SDL_APPMOUSEFOCUS)
