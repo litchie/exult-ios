@@ -79,6 +79,7 @@
 #include "utils.h"
 #include "version.h"
 #include "u7drag.h"
+#include "drag.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
@@ -1768,6 +1769,10 @@ static void Drop_dragged_shape
 								endl;
 	bool ireg;			// Create object.
 	Game_object *newobj = Create_object(shape, frame, ireg);
+	Dragging_info drag(newobj);
+	drag.drop(x, y, true);		// (Dels if it fails.)
+
+#if 0
 					// First see if it's a gump.
 	Gump *on_gump = ireg ? gwin->get_gump_man()->find_gump(x, y) : 0;
 	if (on_gump)
@@ -1790,6 +1795,7 @@ static void Drop_dragged_shape
 				}
 		delete newobj;	// Failed.
 		}
+#endif
 	}
 
 /*
