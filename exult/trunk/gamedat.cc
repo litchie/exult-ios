@@ -864,6 +864,8 @@ bool Game_window::restore_gamedat_zip
 	U7remove ("<STATIC>/flags.flg");
 	U7remove (GSCRNSHOT);
 	U7remove (GSAVEINFO);
+	U7remove (GNEWGAMEVER);
+	U7remove (GEXULTVER);
 	U7remove (KEYRINGDAT);
 
 	cout.flush();
