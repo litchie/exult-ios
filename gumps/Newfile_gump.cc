@@ -257,9 +257,6 @@ void Newfile_gump::load()
 	done = true;
 	restored = 1;
 	
-	// Since we just loaded a new game, we don't want do_modal_gump to restore the background.
-	restore_background = false;
-
 	// Reset Selection
 	selected = -3;
 
