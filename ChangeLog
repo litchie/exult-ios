@@ -1,3 +1,8 @@
+2002-05-27  Ryan Nunn  <triforce@merlin.net.au>
+	* shapes/font.cc : orig_font_buf needs to be set to 0 in both Font
+	  constructors.
+	* actors.cc : Fixed a bug with combat and the multiracial bg hack.
+
 2002-05-27  Dominik Reichardt <gigdr@tesionmail.de>
 	* content/data/: added this dir for our custom data, like *.png files
 	* Content/data/dominus00.png: added face for patch character. I'm asking

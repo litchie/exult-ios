@@ -485,7 +485,7 @@ int Font::get_text_baseline
 	return highest;
 	}
 
-Font::Font(): font_shapes(0), font_data(0), font_buf(0)
+Font::Font(): font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0)
 {
 }
 
