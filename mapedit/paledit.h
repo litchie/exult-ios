@@ -38,6 +38,7 @@ class Palette_edit
 	GtkWidget *draw;		// GTK draw area to display them in.
 	GdkGC *drawgc;			// For drawing in 'draw'.
 	GdkRgbCmap *palette;		// The palette to display.
+	GtkColorSelectionDialog *colorsel;// Open color selector.
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
 	int selected;			// Index of user-selected entry.
@@ -48,6 +49,12 @@ class Palette_edit
 		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
 	void select(int new_sel);	// Show new selection.
 	void render();			// Draw list.
+					// Handle color-selector buttons.
+	static int color_closed(GtkWidget *widget, GdkEvent *event, 
+							gpointer data);
+	static void color_cancel(GtkWidget *widget, gpointer data);
+	static void color_okay(GtkWidget *widget, gpointer data);
+	void double_clicked();		// Handle double-click on a color.
 public:
 	Palette_edit(guint32 *colors, GtkWidget *box, int w, int h);
 	~Palette_edit();
