@@ -2456,7 +2456,8 @@ int Chunk_object_list::is_blocked
 		{
 		horizy0 = from.ty + 1;	// Start below hot spot.
 		horizy1 = to.ty;	// End at dest.
-		verty1--;		// Includes bottom of vert. area.
+		if (to.ty != from.ty)
+			verty1--;	// Includes bottom of vert. area.
 		}
 	else				// Moving up?
 		{

@@ -67,10 +67,6 @@ void Game_window::read_npcs
 			}
 		}
 	center_view(main_actor->get_abs_tile_coord());
-					// Set where to skip rendering.
-	set_above_main_actor(get_objects(main_actor->get_cx(),
-				main_actor->get_cy())->is_roof(),
-				main_actor->get_lift());
 	read_schedules();		// Now get their schedules.
 	usecode->link_party();		// Make sure party ID's are set.
 	if (!monster_info)		// Might be a 'restore'.
