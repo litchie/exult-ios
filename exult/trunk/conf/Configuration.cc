@@ -40,7 +40,7 @@
 	using std::ends;
 	using std::ostrstream;
 	typedef ostrstream ostringstream;
-	// NOTE: strstreams need to be 'ends' terminated, whilst strstreams don't.
+	// NOTE: strstreams need to be 'ends' terminated, whilst stringstreams don't.
 #endif
 
 
