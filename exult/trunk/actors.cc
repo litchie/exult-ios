@@ -139,23 +139,6 @@ void Actor::walk_to_point
 	}
 
 /*
- *	Find index of spot where an object is readied.
- *
- *	Output:	Index, or -1 if not found.
- */
-
-int Actor::find_spot
-	(
-	Game_object *obj
-	)
-	{
-	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
-		if (spots[i] == obj)
-			return (i);
-	return (-1);
-	}
-
-/*
  *	Find the best spot where an item may be readied.
  *
  *	Output:	Index, or -1 if none found.
@@ -305,7 +288,7 @@ void Actor::remove
 	)
 	{
 	Container_game_object::remove(obj);
-	int index = find_spot(obj);	// Remove from spot.
+	int index = Actor::find_readied(obj);	// Remove from spot.
 	if (index >= 0)
 		{
 		spots[index] = 0;
@@ -382,6 +365,23 @@ int Actor::add_readied
 		return (1);
 		}
 	return (0);
+	}
+
+/*
+ *	Find index of spot where an object is readied.
+ *
+ *	Output:	Index, or -1 if not found.
+ */
+
+int Actor::find_readied
+	(
+	Game_object *obj
+	)
+	{
+	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+		if (spots[i] == obj)
+			return (i);
+	return (-1);
 	}
 
 /*

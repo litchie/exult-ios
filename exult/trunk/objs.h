@@ -377,6 +377,9 @@ public:
 					// Add to NPC 'ready' spot.
 	virtual int add_readied(Game_object *obj, int index)
 		{ return add(obj); }
+					// Find object's spot.
+	virtual int find_readied(Game_object *obj)
+		{ return -1; }
 	virtual Game_object *get_readied(int index)
 		{ return 0; }
 					// Add/remove quantities of objs.
