@@ -286,7 +286,7 @@ void Actor::walk_to_tile
 	{
 	if (!action)
 		action = new Path_walking_actor_action(new Zombie());
-	set_action(action->walk_to_tile(get_abs_tile_coord(), dest));
+	set_action(action->walk_to_tile(get_abs_tile_coord(), dest, get_type_flags()));
 	if (action)			// Successful at setting path?
 		start(speed, delay);
 	else
@@ -310,7 +310,7 @@ int Actor::walk_path_to_tile
 	)
 	{
 	set_action(new Path_walking_actor_action(new Astar()));
-	set_action(action->walk_to_tile(src, dest));
+	set_action(action->walk_to_tile(src, dest, get_type_flags()));
 	if (action)			// Successful at setting path?
 		{
 		start(speed, delay);
@@ -439,7 +439,7 @@ void Actor::follow
 		cout << get_name() << " trying to catch up." << endl;
 					// Don't try again for a few seconds.
 		next_path_time = SDL_GetTicks() + 4000;
-		if (Chunk_object_list::is_blocked(goal, 3))
+		if (Chunk_object_list::is_blocked(goal, 3, get_type_flags()))
 					// Find a free spot.
 			goal = leader->find_unblocked_tile(1, 3);
 		if (goal.tx == -1 ||	// No free spot?  Give up.
@@ -1046,7 +1046,7 @@ int Actor::move_aside
 			{
 			to = cur.get_neighbor(i);
 					// Assume height = 3.
-			if (!Chunk_object_list::is_blocked(to, 3))
+			if (!Chunk_object_list::is_blocked(to, 3, get_type_flags()))
 				break;
 			}
 	int stepdir = i;		// This is the direction.
@@ -1377,12 +1377,12 @@ int Main_actor::step
 	get_tile_info(gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 	Game_object *block;		// Just assume height==3.
-	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift) &&
+	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift, get_type_flags()) &&
 	   (!(block = Game_object::find_blocking(t)) || block == this
 					// Try to get blocker to move aside.
 	                     || !block->move_aside(get_direction(block)) ||
 					// If okay, try one last time.
-   			nlist->is_blocked(3, old_lift, tx, ty, new_lift)))
+   			nlist->is_blocked(3, old_lift, tx, ty, new_lift, get_type_flags())))
 		{
 		stop();
 		return (0);
@@ -1519,30 +1519,35 @@ void Main_actor::die
  */
 int Actor::get_shapenum() const
 {
-	if (get_npc_num() == 0)
+	if (get_npc_num() == 0 || get_npc_num() == 28)
 	{
-		if (get_siflag (Actor::petra))
+		Game_window *gwin = Game_window::get_game_window();
+		Actor *avatar = gwin->get_main_actor();
+		if (!avatar) return ShapeID::get_shapenum();
+
+		if ((avatar->get_siflag (Actor::petra) && get_npc_num() == 0) ||
+			(!avatar->get_siflag (Actor::petra) && get_npc_num() != 0))
 		{
 			return 658;
 		}
-		else if (get_skin_color() == 0) // WH
+		else if (avatar->get_skin_color() == 0) // WH
 		{
-			return 1028+get_type_flag(Actor::tf_sex)+6*get_siflag(Actor::naked);
+			return 1028+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
 		}
-		else if (get_skin_color() == 1) // BN
+		else if (avatar->get_skin_color() == 1) // BN
 		{
-			return 1026+get_type_flag(Actor::tf_sex)+6*get_siflag(Actor::naked);
+			return 1026+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
 		}
-		else if (get_skin_color() == 2) // BK
+		else if (avatar->get_skin_color() == 2) // BK
 		{
-			return 1024+get_type_flag(Actor::tf_sex)+6*get_siflag(Actor::naked);
+			return 1024+avatar->get_type_flag(Actor::tf_sex)+6*avatar->get_siflag(Actor::naked);
 		}
-		else if (get_type_flag(Actor::tf_sex))
+		else if (avatar->get_type_flag(Actor::tf_sex))
 		{
 			return 989;
 		}
 
-		return 721;//ShapeID::get_shapenum();
+		return 721;
 	}
 
 	return ShapeID::get_shapenum();
@@ -1721,8 +1726,7 @@ int Npc_actor::step
 	get_tile_info(gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 					// Just assume height==3.
-	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift) ||
-	    (water && new_lift == 0))
+	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift, get_type_flags()))
 		{
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);
@@ -1952,9 +1956,8 @@ int Monster_actor::is_blocked
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
 	int ztiles = info.get_3d_height();
 	Tile_coord cur = get_abs_tile_coord();
-	int terrain;			// Gets 1=land, 2=sea, 3=both.+++++Use
 	return Chunk_object_list::is_blocked(xtiles, ytiles, ztiles,
-			cur, Tile_coord(destx, desty, cur.tz), terrain);
+			cur, Tile_coord(destx, desty, cur.tz), get_type_flags());
 	}
 
 /*

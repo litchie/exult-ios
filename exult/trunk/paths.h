@@ -39,6 +39,8 @@ class Game_object;
 class Actor_pathfinder_client : public Pathfinder_client
 	{
 public:
+	Actor_pathfinder_client(int mf = 1 << 5)
+		{ set_move_flags(mf); }
 					// Figure cost for a single step.
 	virtual int get_step_cost(Tile_coord from, Tile_coord& to);
 					// Estimate cost between two points.
@@ -56,6 +58,8 @@ public:
 class Onecoord_pathfinder_client : public Actor_pathfinder_client
 	{
 public:
+	Onecoord_pathfinder_client(int mf = 1 << 5)
+		{ set_move_flags(mf); }
 					// Estimate cost between two points.
 	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
 					// Is tile at the goal?
@@ -70,8 +74,8 @@ class Fast_pathfinder_client : public Pathfinder_client
 	{
 	int dist;			// Succeeds at this distance from goal.
 public:
-	Fast_pathfinder_client(int d = 0) : dist(d)
-		{  }
+	Fast_pathfinder_client(int d = 0, int mf = 1 << 5) : dist(d)
+		{ set_move_flags(mf); }
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
 					// Figure cost for a single step.

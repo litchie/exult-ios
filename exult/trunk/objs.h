@@ -53,6 +53,13 @@ enum Exult_Game {
 	SERPENT_ISLE
 };
 
+#define MOVE_FLY (1<<4)
+#define	MOVE_WALK (1<<5)
+#define MOVE_SWIM (1<<6)
+#define	MOVE_ALL_TERRAIN ((1<<5)|(1<<6))
+#define MOVE_ETHEREAL (1<<7)
+#define MOVE_ALL (MOVE_FLY|MOVE_WALK|MOVE_SWIM|MOVE_ETHEREAL)
+
 
 /*
  *	Sizes:
@@ -577,7 +584,7 @@ class Chunk_cache
 	int get_lowest_blocked(int lift, int tx, int ty);
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift,
-							int max_drop = 1, int move_flags = 1 << 5);
+							const int move_flags, int max_drop = 1);
 					// Activate eggs nearby.
 	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
 			int tx, int ty, 
@@ -659,18 +666,18 @@ public:
 		{ return need_cache()->get_lowest_blocked(lift, tx, ty); }
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift,
-							int max_drop = 1, int move_flags = 1 << 5)
+							const int move_flags, int max_drop = 1)
 		{ return cache->is_blocked(height, lift, tx, ty, new_lift,
-								max_drop, move_flags); }
+								move_flags, max_drop); }
 					// Check range.
 	static int is_blocked(int height, int lift, int startx, int starty,
-		int xtiles, int ytiles, int& new_lift, int max_drop = 1);
+		int xtiles, int ytiles, int& new_lift, const int move_flags, int max_drop = 1);
 					// Check absolute tile.
 	static int is_blocked(Tile_coord& tile, int height = 1,
-							int max_drop = 1);
+							const int move_flags = MOVE_ALL_TERRAIN, int max_drop = 1);
 					// Check for > 1x1 object.
 	static int is_blocked(int xtiles, int ytiles, int ztiles,
-				Tile_coord from, Tile_coord to, int& terrain);
+				Tile_coord from, Tile_coord to, const int move_flags);
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles, int add)
 		{ need_cache()->set_egged(egg, tiles, add); }

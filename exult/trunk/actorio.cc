@@ -176,7 +176,7 @@ Actor::Actor
 	int tflags = Read2 (nfile);
 
 	// First time round, all the flags are garbage
-	if (Game::get_avname() && num >= 0)
+	if (Game::get_avname())
 		set_type_flags (1 << Actor::tf_walk);
 	else
 		set_type_flags (tflags);
