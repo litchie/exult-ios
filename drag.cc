@@ -103,9 +103,26 @@ void Game_window::drop_dragged
 	if (!dragging)
 		return;
 	drag(x, y);			// Get object to mouse pos.
-//	Chunk_object_list *chunk = get_objects(dragging_cx, dragging_cy);
-	//+++++For now, just put it back.
-	get_objects(dragging_cx, dragging_cy)->add(dragging);
+//++++++See if dropping on a container or gump. Else...
+					// Find where to drop it.
+//++++++Take lift into account.  add 4*lift?
+	dragging_paintx += tilesize/2;	// Round.
+	dragging_painty += tilesize/2;
+	int cx = chunkx + dragging_paintx/chunksize;
+	int cy = chunky + dragging_painty/chunksize;
+	int tx = (dragging_paintx/tilesize)%tiles_per_chunk;
+	int ty = (dragging_painty/tilesize)%tiles_per_chunk;
+	Chunk_object_list *chunk = get_objects(cx, cy);
+	chunk->setup_cache();		// Be sure cache is set up.
+	int lift;			// Can we put it here?
+	if (!chunk->is_blocked(dragging->get_lift(), tx, ty, lift))
+		{
+		dragging->set_lift(lift);
+		dragging->set_shape_pos(tx, ty);
+		chunk->add(dragging);
+		}
+	else				// Just put it back.
+		get_objects(dragging_cx, dragging_cy)->add(dragging);
 	dragging = 0;
 	paint();
 	}
