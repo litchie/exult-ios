@@ -167,9 +167,8 @@ public:
 	Actor *get_npc(long npc_num)
 		{ return (npc_num > 0 && npc_num < num_npcs) ? npcs[npc_num] 
 									: 0; }
-	Monster_info *get_monster_info(int num)
-		{ return (num >=0 && num < num_monsters) ? &monster_info[num]
-									: 0; }
+					// Find monster info. for shape.
+	Monster_info *get_monster_info(int shapenum);
 	int get_num_npcs()
 		{ return num_npcs; }
 	int get_num_shapes()
@@ -350,7 +349,13 @@ public:
 		Rectangle rect = get_shape_rect(obj);
 		rect.enlarge(5);
 		rect = clip_to_win(rect);
-		return (rect.w > 0 && rect.h > 0);
+		if (rect.w > 0 && rect.h > 0)
+			{
+			add_dirty(rect);
+			return 1;
+			}
+		else
+			return 0;
 		}
 					// Paint a bit of text.
 	void paint_text_object(Text_object *txt);
