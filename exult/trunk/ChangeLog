@@ -1,5 +1,11 @@
+2001-05-28  Dancer Vesperman <dancer@users.sourceforge.net>
+	* mapedit/shapelst.cc: std::cout,std::endl
+	* audio/midi_drivers/Timidity_binary.cc: std::cout,std::endl,
+		std::string
+	* audio/midi_drivers/Timidity_binary.h: std::string
+	* mapedit/paledit.cc: std::cout,std::endl,include iostream
+	* mapedit/shapetest.cc: std::cout,std::endl,include iostream
 2001-05-28  Jeff Freedman  <jeff@amy.nerble.net>
-
 	* actors.cc: 'Stop Time' spell implemented.
 
 2001-05-26  Jeff Freedman  <jeff@amy.nerble.net>
