@@ -190,6 +190,9 @@ void Container_game_object::activate
 	case 802:
 		gwin->show_gump(this, 9);
 		return;
+	case 803:			// Basket.
+		gwin->show_gump(this, 11);
+		return;
 	case 804:			// Crate.
 		gwin->show_gump(this, 1);
 		return;

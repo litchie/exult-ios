@@ -44,25 +44,40 @@ Gump_object::Gump_object
 		{
 	case 1:				// Crate.
 		object_area = Rectangle(50, 20, 80, 24);
+		checkx = 8; checky = 64;
 		break;
 	case 8:				// Barrel.
 		object_area = Rectangle(32, 32, 40, 40);
+		checkx = 12; checky = 124;
 		break;
 	case 9:				// Bag.
 		object_area = Rectangle(48, 20, 66, 44);
-		checkx = 8; checky = 64;
+		checkx = 8; checky = 68;
 		break;
 	case 10:			// Backpack.
 		object_area = Rectangle(36, 36, 72, 40);
+		checkx = 8; checky = 62;
+		break;
+	case 11:			// Basket.
+		object_area = Rectangle(42, 32, 70, 26);
+		checkx = 8; checky = 56;
 		break;
 	case 22:			// Chest.
 		object_area = Rectangle(40, 20, 60, 32);
+		checkx = 8; checky = 46;
 		break;
 	case 27:			// Drawer.
 		object_area = Rectangle(38, 12, 70, 26);
+		checkx = 8; checky = 46;
 		break;
 	default:
-		object_area = Rectangle(52, 22, 60, 40);
+		if (shnum >= 57 && shnum <= 68)
+			{
+			object_area = Rectangle(0, 0, 0, 0);
+			checkx = 0; checky = 127;
+			}
+		else
+			object_area = Rectangle(52, 22, 60, 40);
 		}
 	checkx += 16; checky -= 12;
 	}
