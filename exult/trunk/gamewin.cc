@@ -3123,6 +3123,28 @@ void Game_window::mend_npcs
 	}
 
 /*
+ *	Get guard shape.
+ */
+
+int Get_guard_shape
+	(
+	Tile_coord pos			// Position to use.
+	)
+	{
+	if (!GAME_SI)			// Default (BG).
+		return (0x3b2);
+					// Moonshade?
+	if (pos.tx >= 2054 && pos.ty >= 1698 &&
+	    pos.tx < 2590 && pos.ty < 2387)
+		return 0x103;		// Ranger.
+					// Fawn?
+	if (pos.tx >= 895 && pos.ty >= 1604 &&
+	    pos.tx < 1173 && pos.ty < 1960)
+		return 0x17d;		// Fawn guard.
+	return 0xe4;			// Pikeman.
+	}
+
+/*
  *	Handle theft.
  */
 
@@ -3175,8 +3197,9 @@ void Game_window::theft
 		}
 	closest_npc->say(first_call_guards, last_call_guards);
 					// Show guard running up.
+	int gshape = Get_guard_shape(main_actor->get_tile());
 					// Create it off-screen.
-	Monster_actor *guard = Monster_actor::create(0x3b2,
+	Monster_actor *guard = Monster_actor::create(gshape,
 		main_actor->get_tile() + Tile_coord(128, 128, 0));
 	add_nearby_npc(guard);
 	Tile_coord actloc = main_actor->get_tile();
@@ -3192,7 +3215,7 @@ void Game_window::theft
 		frames[1] = guard->get_dir_framenum(dir, 3);
 		Actor_action *action = new Sequence_actor_action(
 				new Frames_actor_action(frames, 2),
-				new Usecode_actor_action(0x625, main_actor,
+				new Usecode_actor_action(0x625, guard,
 					Usecode_machine::double_click));
 		Schedule::set_action_sequence(guard, dest, action, true);
 		}
@@ -3207,12 +3230,12 @@ void Game_window::attack_avatar
 	int create_guards		// # of extra guards to create.
 	)
 	{
+	int gshape = Get_guard_shape(main_actor->get_tile());
 	while (create_guards--)
 		{
 					// Create it off-screen.
-		Monster_actor *guard = Monster_actor::create(0x3b2,
-			main_actor->get_tile() + 
-						Tile_coord(128, 128, 0));
+		Monster_actor *guard = Monster_actor::create(gshape,
+			main_actor->get_tile() + Tile_coord(128, 128, 0));
 		add_nearby_npc(guard);
 		guard->set_target(main_actor, true);
 		guard->approach_another(main_actor);
@@ -3225,7 +3248,7 @@ void Game_window::attack_avatar
 		{
 		Actor *npc = (Actor *) *it;
 					// No monsters, except guards.
-		if ((npc->get_shapenum() == 0x3b2 || !npc->is_monster()) && 
+		if ((npc->get_shapenum() == gshape || !npc->is_monster()) && 
 		    npc != main_actor &&
 		    npc->get_party_id() < 0)
 			npc->set_target(main_actor, true);
