@@ -1551,6 +1551,7 @@ Game_object *Game_object::attacked
 	int wpoints = attack_object(gwin,
 					attacker, weapon_shape, ammo_shape);
 	int shnum = get_shapenum();
+	int frnum = get_framenum();
 	if (shnum == 518)		// Glass countertop?
 		{
 		if (rand()%4 >= wpoints)// Easy to break.
@@ -1567,8 +1568,9 @@ Game_object *Game_object::attacked
 		gwin->theft();		// +++Shouldn't just be warning!
 		return 0;
 		}
-					// Door?
-	if (shnum != 433 && shnum != 432 && shnum != 270 && shnum != 376)
+					// Door / debris?
+	if (shnum != 433 && shnum != 432 && shnum != 270 && shnum != 376 &&
+		!(shnum == 202 && (frnum%4)==0) )
 		return this;
 	if (wpoints < 4)		// Make it much harder.
 		return this;		// Fail.
