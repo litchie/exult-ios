@@ -160,8 +160,7 @@ Actor::Actor
 	nfile.seekg(1	, ios::cur);	// Index2???? (refer to U7tech.txt)
 	nfile.seekg(2	, ios::cur);	// Unknown
 
-	set_property((int) Actor::exp, Read2(nfile));
-	nfile.seekg(2, ios::cur);
+	set_property((int) Actor::exp, Read4(nfile));
 	set_property((int) Actor::training, Read1(nfile));
 
 
@@ -175,7 +174,14 @@ Actor::Actor
 	
 	// Type flags 2
 	int tflags = Read2 (nfile);
-	set_type_flags (tflags);
+
+	// First time round, all the flags are garbage
+	if (Game::get_avname() && num >= 0)
+		set_type_flags (1 << Actor::tf_walk);
+	else
+		set_type_flags (tflags);
+
+
 	if (num == 0 && Game::get_avsex() == 0)
 	{
 		clear_type_flag (Actor::tf_sex);
@@ -213,6 +219,14 @@ Actor::Actor
 		name = namebuf;		// Store copy of it.
 
 
+	cout << name << " (" << num << ") flags ";
+	if (get_type_flag(tf_fly)) cout << "fly ";
+	if (get_type_flag(tf_swim)) cout << "swim ";
+	if (get_type_flag(tf_walk)) cout << "walk ";
+	if (get_type_flag(tf_ethereal)) cout << "etheral ";
+	if (get_type_flag(tf_in_party)) cout << "in party ";
+	cout << endl;
+	
 	Game_window *gwin = Game_window::get_game_window();
 					// Get abs. chunk. coords. of schunk.
 	int scy = 16*(schunk/12);

@@ -491,6 +491,7 @@ public:
  */
 class Chunk_cache
 	{
+	Chunk_object_list	*obj_list;
 	unsigned char setup_done;	// Already setup.
 	unsigned short blocked[256];	// For each tile, a bit for each lift
 					//   level if it's blocked by an obj.
@@ -538,7 +539,7 @@ class Chunk_cache
 	int get_lowest_blocked(int lift, int tx, int ty);
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift,
-							int max_drop = 1);
+							int max_drop = 1, int move_flags = 1 << 5);
 					// Activate eggs nearby.
 	void activate_eggs(Game_object *obj, Chunk_object_list *chunk, 
 			int tx, int ty, 
@@ -620,9 +621,9 @@ public:
 		{ return need_cache()->get_lowest_blocked(lift, tx, ty); }
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift,
-							int max_drop = 1)
+							int max_drop = 1, int move_flags = 1 << 5)
 		{ return cache->is_blocked(height, lift, tx, ty, new_lift,
-								max_drop); }
+								max_drop, move_flags); }
 					// Check range.
 	static int is_blocked(int height, int lift, int startx, int starty,
 		int xtiles, int ytiles, int& new_lift, int max_drop = 1);
