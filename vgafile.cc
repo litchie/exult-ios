@@ -53,17 +53,25 @@ unsigned char Shape_frame::read
 		int nframes = (hdrlen - 4)/4;
 		if (framenum >= nframes)// Bug out if bad frame #.
 			return (nframes);
-					// Get frame offset.
-		unsigned long frameoff;
+					// Get frame offset, lengeth.
+		unsigned long frameoff, framelen;
 		if (framenum == 0)
+			{
 			frameoff = hdrlen + 8;
+			framelen = (Read4(shapes) - 8) - frameoff;
+			}
 		else
 			{
 			shapes.seekg((framenum - 1) * 4, ios::cur);
 			frameoff = 8 + Read4(shapes);
+					// Last frame?
+			if (framenum == nframes - 1)	//++++++Check this:
+				framelen = (shapeoff + 4 + datalen) - frameoff;
+			else
+				framelen = (Read4(shapes) - 8) - frameoff;
 			}
 					// Get compressed data.
-		get_rle_shape(shapes, shapeoff + frameoff);
+		get_rle_shape(shapes, shapeoff + frameoff, framelen);
 					// Return # frames.
 		return (nframes);
 		}
@@ -82,7 +90,8 @@ unsigned char Shape_frame::read
 void Shape_frame::get_rle_shape
 	(
 	ifstream& shapes,		// "Shapes.vga" file to read.
-	long filepos			// Position in file.
+	long filepos,			// Position in file.
+	long len			// Length of frame data.
 	)
 	{
 	shapes.seekg(filepos - 8);	// Get to extents.
@@ -90,61 +99,8 @@ void Shape_frame::get_rle_shape
 	xleft = Read2(shapes);
 	yabove = Read2(shapes);
 	ybelow = Read2(shapes);
-	unsigned char bbuf[16000];
-	unsigned char *out = &bbuf[0];	// ->where to store.
-	unsigned char *end = &bbuf[sizeof(bbuf)];
-	int scanlen;
-#if 0
-	int minx = 20000, miny = 20000;	// ++++++++DEBUGGING.
-	int maxx = -20000, maxy = -20000;
-#endif
-	do
-		{
-		shapes.read(out, 2);	// Get length of scan line.
-		scanlen = out[0] + (out[1] << 8);
-		out += 2;
-		if (!scanlen)
-			break;		// All done.
-		int encoded = scanlen&1;// Is it encoded?
-		scanlen = scanlen>>1;
-		shapes.read(out, 4);	// Get x, y offsets.
-		short scanx = out[0] + (out[1] << 8);
-		short scany = out[2] + (out[3] << 8);
-		out += 4;
-		if (!encoded)		// Raw data?
-			{
-			if (out + scanlen > end)
-				break;	// Shouldn't happen.
-			shapes.read(out, scanlen);
-			out += scanlen;
-			continue;
-			}
-		for (int b = 0; b < scanlen; )
-			{
-			unsigned char bcnt;
-			shapes.get((char&) bcnt);
-			*out++ = bcnt;
-					// Repeat next char. if odd.
-			int repeat = bcnt&1;
-			bcnt = bcnt>>1;	// Get count.
-			if (repeat)
-				{
-				unsigned char pix;
-				shapes.get((char&)pix);
-				*out++ = pix;
-				}
-			else		// Get that # of bytes.
-				{
-				shapes.read(out, bcnt);
-				out += bcnt;
-				}
-			b += bcnt;
-			}
-		}
-	while (out + 64 <= end);	// Leave space for next.
-	int len = out - &bbuf[0];
-	data = new unsigned char[len];	// Store data.
-	memcpy(data, bbuf, len);
+	data = new unsigned char[len];	// Allocate and read data.
+	shapes.read(data, len);
 	rle = 1;
 	}
 
