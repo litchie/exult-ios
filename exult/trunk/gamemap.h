@@ -95,6 +95,14 @@ public:
 					// Get "chunk" objects/scenery.
 	void get_chunk_objects(int cx, int cy);
 	void get_all_terrain();		// Read in all terrains.
+					// Get desired terrain.
+	Chunk_terrain *get_terrain(int tnum)
+		{
+		Chunk_terrain *ter = chunk_terrains[tnum];
+		return ter ? ter : read_terrain(tnum);
+		}
+	inline int get_num_chunk_terrains() const
+		{ return chunk_terrains.size(); }
 					// Set new terrain chunk.
 	void set_chunk_terrain(int cx, int cy, int chunknum);
 					// Get ifixxxx/iregxx name.

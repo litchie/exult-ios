@@ -157,13 +157,72 @@ unsigned char *Chunk_chooser::get_chunk
 	unsigned char *data = chunklist[chunknum];
 	if (data)
 		return data;		// Already have it.
-	data = new unsigned char[512];
-	chunklist[chunknum] = data;
-	chunkfile.seekg(chunknum*512);
-	chunkfile.read(data, 512);
-	return data;
+					// Get from server.
+	unsigned char buf[Exult_server::maxlength];
+	unsigned char *ptr = &buf[0];
+	unsigned char *newptr = &buf[0];
+	Write2(ptr, chunknum);
+	ExultStudio *studio = ExultStudio::get_instance();
+	int server_socket = studio->get_server_socket();
+	Exult_server::Msg_type id;	// Expect immediate answer.
+	int datalen;
+	if (!studio->send_to_server(Exult_server::send_terrain, 
+							buf, ptr - buf) ||
+		(datalen = Exult_server::Receive_data(server_socket, 
+						id, buf, sizeof(buf))) == -1 ||
+		id != Exult_server::send_terrain ||
+		Read2(newptr) != chunknum)
+		{			// No server?  Get from file.
+		data = new unsigned char[512];
+		chunklist[chunknum] = data;
+		chunkfile.seekg(chunknum*512);
+		chunkfile.read(data, 512);
+		}
+	else
+		set_chunk(buf, datalen);
+	return chunklist[chunknum];
 	}
 
+/*
+ *	Set chunk with data from 'Exult'.
+ *
+ *	NOTE:  Don't call 'show()' or 'render()' here, since this gets called
+ *		from 'render()'.
+ */
+
+void Chunk_chooser::set_chunk
+	(
+	unsigned char *data,		// Message from server.
+	int datalen
+	)
+	{
+	int tnum = Read2(data);		// First the terrain #.
+	int new_num_chunks = Read2(data);	// Always sends total.
+	datalen -= 4;
+	if (datalen != 512)
+		{
+		cout << "Set_chunk:  Wrong data length" << endl;
+		return;
+		}
+	if (tnum < 0 || tnum >= new_num_chunks)
+		{
+		cout << "Set_chunk:  Bad terrain # (" << tnum <<
+						") received" << endl;
+		return;
+		}
+	if (new_num_chunks != num_chunks)
+		{			// Update total #.
+		num_chunks = new_num_chunks;
+		GtkAdjustment *adj = 
+			gtk_range_get_adjustment(GTK_RANGE(chunk_scroll));
+		adj->upper = num_chunks;
+		gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+		}
+	unsigned char *chunk = chunklist[tnum];
+	if (!chunk)			// Not read yet?
+		chunk = chunklist[tnum] = new unsigned char[512];
+	memcpy(chunk, data, 512);	// Copy it in.
+	}
 
 /*
  *	Render one chunk.
@@ -741,6 +800,11 @@ bool Chunk_chooser::server_response
 		return true;
 	case Exult_server::swap_terrain:
 		swap_response(data, datalen);
+		return true;
+	case Exult_server::send_terrain:
+		set_chunk(data, datalen);
+		render();
+		show();
 		return true;
 	default:
 		return false;

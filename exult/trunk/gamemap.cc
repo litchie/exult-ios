@@ -95,6 +95,7 @@ Chunk_terrain *Game_map::read_terrain
 	int chunk_num			// Want this one from u7chunks.
 	)
 	{
+	assert(chunk_num >= 0 && chunk_num < chunk_terrains.size());
 	chunks->seekg(chunk_num * 512);
 	unsigned char buf[16*16*2];	
 	chunks->read(reinterpret_cast<char*>(buf), sizeof(buf));
@@ -266,11 +267,7 @@ void Game_map::get_chunk_objects
 					// Get list we'll store into.
 	Map_chunk *chunk = get_chunk(cx, cy);
 	int chunk_num = terrain_map[cx][cy];
-					// Already have this one?
-	Chunk_terrain *ter = chunk_num < chunk_terrains.size() ?
-					chunk_terrains[chunk_num] : 0;
-	if (!ter)			// No?  Got to read it.
-		ter = read_terrain(chunk_num);
+	Chunk_terrain *ter = get_terrain(chunk_num);
 	chunk->set_terrain(ter);
 	}
 
@@ -1056,15 +1053,11 @@ bool Game_map::swap_terrains
 	{
 	if (tnum < 0 || tnum >= chunk_terrains.size() - 1)
 		return false;		// Out of bounds.
-	if (!chunk_terrains[tnum])	// Make sure both are read.
-		read_terrain(tnum);
-	if (!chunk_terrains[tnum + 1])
-		read_terrain(tnum + 1);
 	modified_terrain = true;
 					// Swap in list.
-	Chunk_terrain *tmp = chunk_terrains[tnum];
+	Chunk_terrain *tmp = get_terrain(tnum);
 	tmp->set_modified();
-	chunk_terrains[tnum] = chunk_terrains[tnum + 1];
+	chunk_terrains[tnum] = get_terrain(tnum + 1);
 	chunk_terrains[tnum]->set_modified();
 	chunk_terrains[tnum + 1] = tmp;
 					// Update terrain map.

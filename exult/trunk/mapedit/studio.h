@@ -79,6 +79,8 @@ public:
 		{ return self; }
 	GladeXML *get_xml() 
 		{ return app_xml; }
+	int get_server_socket() const
+		{ return server_socket; }
 
 	void set_browser(const char *name, Object_browser *obj);
 

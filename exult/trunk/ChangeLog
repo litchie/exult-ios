@@ -1,5 +1,7 @@
 2001-12-30  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamemap.cc,server.cc: Send terrain data to client.
+
 	* mapedit/chunklst.cc (Chunk_chooser): 'Move' is working (somewhat).
 
 2001-12-30  Patrick Burke  <takhisisii@yahoo.com.au>
