@@ -115,9 +115,6 @@ void Game::play_midi(int track)
 void Game::refresh_screen ()
 {
 	clear_screen();
-	gwin->set_palette(0);
-	gwin->paint();
-	gwin->fade_palette (50, 1, 0);
 }
 
 void Game::add_shape(const char *name, int shapenum) 
@@ -238,6 +235,12 @@ void Game::destroy_text(vector<char *> *text)
 	for(int i=0; i<text->size(); i++)
 		delete [] (*text)[i];
 	delete text;
+}
+
+int Game::center_text(int font, const char *s, int x, int y)
+{
+	gwin->paint_text(font, s, x-gwin->get_text_width(font, s)/2, y);
+	return y+gwin->get_text_height(font);
 }
 
 void Game::scroll_text(vector<char *> *text)

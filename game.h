@@ -80,6 +80,7 @@ public:
 	vector<char *> *load_text(const char *archive, int index);
 	void destroy_text(vector<char *> *text);
 	void scroll_text(vector<char *> *text);
+	int center_text(int font, const char *s, int x, int y);
 	void show_menu();
 	};
 
