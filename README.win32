@@ -40,7 +40,7 @@ Create a directory called mingw in the root directory of drive
 The mingw packages must be installed in the following order!
 Extract gcc-3_1-core-20020516-1.tar.gz to the mingw directory
 (ie C:\mingw\ )
-Extract binutils-2_12_90-info-html.tar.gz to the mingw directory (Overwrite any existing files)
+Extract bunutils-2_12_90-20020518-1.tar.gz to the mingw directory (Overwrite any existing files)
 (ie C:\mingw\ )
 Extract w32api-1.4-2.tar.gz in root directory of drive (Overwrite any existing files)
 (ie C:\ )
