@@ -34,10 +34,11 @@
 
 Actor_pathfinder_client::Actor_pathfinder_client
 	(
-	Actor *npc, 
+	Actor *n,
 	int d
-	) : dist(d)
+	) : dist(d), npc(n)
 	{
+					// +++++Shouldn't need this anymore?
 	set_move_flags(npc->get_type_flags());
 	}
 
@@ -80,9 +81,10 @@ int Actor_pathfinder_client::get_step_cost
 	olist->setup_cache();		// Make sure cache is valid.
 	int water, poison;		// Get tile info.
 	Actor::get_tile_info(0, gwin, olist, tx, ty, water, poison);
-	int new_lift;			// Might climb/descend.
-					// For now, assume height=3.
-	if (olist->is_blocked(3, to.tz, tx, ty, new_lift, get_move_flags()))
+	int old_lift = to.tz;		// Might climb/descend.
+//	if (olist->is_blocked(aztiles, to.tz, tx, ty, new_lift, 
+//							get_move_flags()))
+	if (npc->is_blocked(to))
 		{			// Blocked, but check for a door.
 		Game_object *block = Game_object::find_blocking(to);
 		if (!block)
@@ -101,20 +103,16 @@ int Actor_pathfinder_client::get_step_cost
 			return -1;
 		if (foot.has_point(from.tx, from.ty))
 			return -1;	// Don't walk within doorway.
-		new_lift = to.tz;	// We can open doors.
 		cost++;			// But try to avoid them.
 		}
-	if (new_lift != to.tz)
-		{
+	if (old_lift != to.tz)
 		cost++;
-		to.tz = new_lift;
-		}
 					// On the diagonal?
 	if (from.tx != to.tx || from.ty != to.ty)
 		cost *= 3;		// Make it 50% more expensive.
 	else
 		cost *= 2;
-	if (poison && new_lift == 0)
+	if (poison && to.tz == 0)
 		cost *= 2;		// And avoid poison if possible.
 					// Get 'flat' shapenum.
 	ShapeID flat = olist->get_flat(tx, ty);
@@ -229,9 +227,9 @@ int Onecoord_pathfinder_client::at_goal
 
 Offscreen_pathfinder_client::Offscreen_pathfinder_client
 	(
-	Game_window *gwin,
-	int mf				// Move-flags.
-	) : screen(gwin->get_win_tile_rect().enlarge(3))
+	Actor *n
+	) : Actor_pathfinder_client(n), screen(
+		Game_window::get_game_window()->get_win_tile_rect().enlarge(3))
 	{
 	}
 

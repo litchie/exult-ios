@@ -111,7 +111,6 @@ protected:
 	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
 	Rectangle weapon_rect;		// Screen area weapon was drawn in.
 	void init();			// Clear stuff during construction.
-	int is_blocked(Tile_coord& t);	// Blocked moving onto tile 't'?
 					// Move and change frame.
 	void movef(Map_chunk *old_chunk, Map_chunk *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
@@ -120,6 +119,7 @@ public:
 	static void init_default_frames();	// Set usual frame sequence.
 	Actor(const std::string &nm, int shapenum, int num = -1, int uc = -1);
 	~Actor();
+	int is_blocked(Tile_coord& t);	// Blocked moving onto tile 't'?
 	int ready_ammo();		// Find and ready appropriate ammo.
 	void ready_best_weapon();	// Find best weapon and ready it.
 	void unready_weapon(int spot);	// Try to sheath weapon.

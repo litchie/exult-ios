@@ -36,9 +36,10 @@ class Game_window;
 class Actor_pathfinder_client : public Pathfinder_client
 	{
 	int dist;			// Distance for success.
+	Actor *npc;			// Who this represents.
 public:
-	Actor_pathfinder_client(int mf = 1 << 5, int d = 0) : dist(d)
-		{ set_move_flags(mf); }
+//	Actor_pathfinder_client(Actor *npc, int d = 0) : dist(d)
+//		{ set_move_flags(mf); }
 	Actor_pathfinder_client(Actor *npc, int d = 0);
 					// Figure when to give up.
 	virtual int get_max_cost(int cost_to_goal);
@@ -57,8 +58,8 @@ public:
 class Onecoord_pathfinder_client : public Actor_pathfinder_client
 	{
 public:
-	Onecoord_pathfinder_client(int mf = 1 << 5)
-		{ set_move_flags(mf); }
+	Onecoord_pathfinder_client(Actor *n) : Actor_pathfinder_client(n)
+		{  }
 					// Estimate cost between two points.
 	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
 					// Is tile at the goal?
@@ -73,7 +74,7 @@ class Offscreen_pathfinder_client : public Actor_pathfinder_client
 	{
 	Rectangle screen;		// Screen rect. in tiles.
 public:
-	Offscreen_pathfinder_client(Game_window *gwin, int mf = 1 << 5);
+	Offscreen_pathfinder_client(Actor *n);
 					// Estimate cost between two points.
 	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
 					// Is tile at the goal?
@@ -109,8 +110,8 @@ public:
 class Monster_pathfinder_client : public Fast_pathfinder_client
 	{
 	Rectangle destbox;		// Got to intersect this box.
-	int axtiles, aytiles, aztiles;	// NPC's dims. in tiles.
 	int intelligence;		// NPC's intelligence.
+	int axtiles, aytiles, aztiles;	// NPC's dims. in tiles.
 public:
 	Monster_pathfinder_client(Actor *npc, Tile_coord dest, int dist);
 					// For combat:
