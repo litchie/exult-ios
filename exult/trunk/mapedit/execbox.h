@@ -27,6 +27,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <gtk/gtk.h>
 
+class Exec_box;
+					// Called when child is done:
+typedef void (*Exec_done_fun)(int exit_code, Exec_box *box, 
+							gpointer user_data);
+
 /*
  *	This class can execute a command-line program and display its output.
  */
@@ -38,12 +43,18 @@ class Exec_box
 	gint stdout_tag, stderr_tag;	// GDK tags for getting child's output.
 	GtkText *box;			// Where we show responses.
 	GtkStatusbar *status;		// For showing status.
+	guint status_ctx;		// Context for status.
+	Exec_done_fun done_fun;		// Called when child has exited.
+	gpointer user_data;		// Passed to done_fun.
 public:
-	Exec_box(GtkText *b, GtkStatusbar *s);
+	Exec_box(GtkText *b, GtkStatusbar *s, Exec_done_fun dfun = 0,
+							gpointer udata = 0);
 	~Exec_box();
 	void kill_child();		// Kill process.
-	bool check_child();		// Is child still running?
+	void show_status(const char *msg);	// Set status bar.
+	bool check_child(int& exit_code);	// Is child still running?
 	void read_from_child(int id);	// Read and display.
+	void add_message(const char *txt);	// Add text to box.
 					// Execute.
 	bool exec(const char *file, char *argv[]);
 	};

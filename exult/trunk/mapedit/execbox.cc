@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <signal.h>
 #include <sys/wait.h>
 #include <iostream.h>	/* Debugging only */
+#include <string>
 
 /*
  *	Create.
@@ -38,11 +39,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Exec_box::Exec_box
 	(
 	GtkText *b,
-	GtkStatusbar *s
-	) : box(b), status(s),
+	GtkStatusbar *s,
+	Exec_done_fun dfun,		// Called when child exits.
+	gpointer udata			// Passed to dfun.
+	) : box(b), status(s), done_fun(dfun), user_data(udata),
 	    child_stdin(-1), child_stdout(-1), child_stderr(-1),
 	    child_pid(-1), stdout_tag(-1), stderr_tag(-1)
 	{
+	status_ctx = gtk_statusbar_get_context_id(status, "execstatus");
+					// Keep one msg. always on stack.
+	gtk_statusbar_push(status, status_ctx, "");
 	}
 
 /*
@@ -108,13 +114,28 @@ static void Close_pipes
 	}
 
 /*
+ *	Show status.
+ */
+
+void Exec_box::show_status
+	(
+	const char *msg
+	)
+	{
+	gtk_statusbar_pop(status, status_ctx);
+	gtk_statusbar_push(status, status_ctx, msg);
+	}
+
+/*
  *	See if child is still alive.
  *
  *	Output:	True if child is still running.
+ *		If false, exit code is returned in 'exit_code'.
  */
 
 bool Exec_box::check_child
 	(
+	int& exit_code			// Exit code returned.
 	)
 	{
 	if (child_pid < 0)
@@ -127,7 +148,7 @@ bool Exec_box::check_child
 	else
 		{
 		cout << "Exec_box:  Child done." << endl;
-		//+++++++++Set status bar.
+		exit_code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
 		return false;
 		}
 	}
@@ -158,8 +179,31 @@ void Exec_box::read_from_child
 		gtk_text_insert(box, NULL, NULL, NULL, buf, len);
 
 	gtk_text_thaw(box);
-	if (!check_child())		// Child done?
+	int exit_code;
+	if (!check_child(exit_code))	// Child done?
+		{
 		kill_child();		// Clean up.
+		if (exit_code == 0)
+			show_status("Done:  Success");
+		else
+			show_status("Done:  Errors occurred");
+		if (done_fun)
+			done_fun(exit_code, this, user_data);
+		}
+	}
+
+/*
+ *	Add a message to the box.
+ */
+
+void Exec_box::add_message
+	(
+	const char *txt
+	)
+	{
+	gtk_text_freeze(box);		// Looks better this way.
+	gtk_text_insert(box, NULL, NULL, NULL, txt, strlen(txt));
+	gtk_text_thaw(box);
 	}
 
 /*
@@ -221,6 +265,8 @@ cout << "Child_stdout is " << child_stdout << ", Child_stderr is " <<
 			GDK_INPUT_READ, Read_from_child, this);
 	stderr_tag = gdk_input_add(child_stderr,
 			GDK_INPUT_READ, Read_from_child, this);
+	string msg = string("Executing '") + file + "'";
+	show_status(msg.c_str());
 	return true;
 	}
 

@@ -1,3 +1,8 @@
+2002-10-08  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/execbox.cc,compile.cc:  Added a 'compile' window for
+	running the usecode compiler and seeing the errors.
+
 2002-10-07  Max Horn  <max@quendi.de>
 
 	* data/credits.txt: Jackchaos.com hosted the old forum
