@@ -1,5 +1,8 @@
 2002-05-26  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* shapes/vgafile.cc (Vga_file): Constructor takes optional patch name.
+	
+	
 	* gamewin.cc,etc: Accept ES message to reload shape files.
 	* mapedit/shapelst.cc: Don't create 1st shape for flex-shape files.
 

@@ -157,6 +157,8 @@ public:
 class Shape_file_set
 	{
 	std::vector<Shape_file_info *> files;
+	Shape_file_info *append(Shape_file_info *fi)
+		{ files.push_back(fi); return fi; }
 public:
 	Shape_file_set() {  }
 	~Shape_file_set();

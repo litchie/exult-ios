@@ -1138,12 +1138,13 @@ void Shape_file::save(DataSource* shape_source)
 Vga_file::Vga_file
 	(
 	const char *nm,			// Path to file.
-	int u7drag			// # from u7drag.h, or -1.
+	int u7drag,			// # from u7drag.h, or -1.
+	const char *nm2			// Patch file, or null.
 	) : shape_source(0), shape_source2(0),
 	    num_shapes(0), num_shapes1(0), num_shapes2(0), 
 	    shapes(0), u7drag_type(u7drag), flex(true)
 	{
-	load(nm);
+	load(nm, nm2);
 	}
 
 Vga_file::Vga_file

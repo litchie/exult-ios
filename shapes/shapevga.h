@@ -43,7 +43,7 @@ class Shapes_vga_file : public Vga_file
 	bool info_read;			// True when info is set.
 public:
 	Shapes_vga_file() : info(), info_read(false) {  }
-	Shapes_vga_file(const char *nm, int u7drag = -1);
+	Shapes_vga_file(const char *nm, int u7drag = -1, const char *nm2 = 0);
 	void init();
 	virtual ~Shapes_vga_file();
 					// Read additional data files.
