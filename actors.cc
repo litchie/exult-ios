@@ -94,6 +94,25 @@ Actor::~Actor
 	}
 
 /*
+ *	Decrement food level and print complaints if it gets too low.
+ */
+
+void Actor::use_food
+	(
+	)
+	{
+	int food = get_property((int) food_level);
+	food--;
+	set_property((int) food_level, food);
+	if (food <= 0)			// Really low?
+		say(first_starving, first_starving + 2);
+	else if (food <= 4)
+		say(first_needfood, first_needfood + 2);
+	else if (food <= 8)
+		say(first_hunger, first_hunger + 2);
+	}
+
+/*
  *	Get sequence of frames for an attack.
  *
  *	Output:	# of frames stored.

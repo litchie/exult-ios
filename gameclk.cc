@@ -76,6 +76,29 @@ void Game_clock::set_light_source_level
 	}
 
 /*
+ *	Decrement food level and check hunger of the party members.
+ */
+
+void Game_clock::check_hunger
+	(
+	)
+	{
+	int forceawarning;	//+++++Remove.
+	return;			//+++++Remove when we can test this.
+	Game_window *gwin = Game_window::get_game_window();
+	Usecode_machine *uc = gwin->get_usecode();
+	int cnt = uc->get_party_count();
+	for (int i = 0; i < cnt; i++)
+		{
+		Npc_actor *npc = (Npc_actor *) gwin->get_npc(
+						uc->get_party_member(i));
+		npc->use_food();
+		}
+					// Player needs to eat too.
+	gwin->get_main_actor()->use_food();
+	}
+
+/*
  *	Update palette according to weather we're in a dungeon.
  */
 
@@ -137,8 +160,11 @@ void Game_clock::handle_event
 			}
 		set_time_palette();
 		if (hour%3 == 0)	// New 3-hour period?
+			{
+			check_hunger();	// Use food, and print complaints.
 					// Update NPC schedules.
 			gwin->schedule_npcs(hour/3);
+			}
 		}
 	else if (first_day &&		// Set 6am schedules after start.
 		 (first_hour_passed || gwin->get_usecode()->get_global_flag(
@@ -167,3 +193,4 @@ void Game_clock::fake_next_period
 	gwin->schedule_npcs(hour/3);
 	cout << "The hour is now " << hour << endl;
 	}
+
