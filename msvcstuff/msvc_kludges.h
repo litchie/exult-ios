@@ -14,7 +14,7 @@
 #define HAVE_SSTREAM 1
 
 // Fisrtly some things that need to be defined
-#define VERSION "1.1.0cvs"
+#define VERSION "1.1Beta1"
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
@@ -37,7 +37,7 @@
 #define FORCE_44KHZ
 
 #ifndef DEBUG
-#define DEBUG 1
+//#define DEBUG 1
 #endif
 
 #endif
@@ -111,7 +111,7 @@ namespace std {
 		va_end (argptr);
 		return ret;
 	}
-#elif 1
+#elif 0
 	__declspec(naked) static int __cdecl snprintf(char *out, size_t len, const char *format, ...)
 	{
 		using ::_snprintf;
@@ -128,6 +128,7 @@ namespace std {
 
 // We've got snprintf
 #define HAVE_SNPRINTF
+//using std::snprintf;
 
 // These get put in std when they otherwise should be, or are required by other headers
 using std::memcmp;
@@ -143,6 +144,7 @@ using std::_off_t;
 using std::isspace;
 using std::_alloca;
 using std::wcslen;
+using std::strtol;
 
 // Nope, stat isn't defined
 #ifdef _STAT_DEFINED
@@ -158,6 +160,7 @@ using std::wcslen;
 
 // Some often used headers that could be included in out precompiled header
 #include <fstream>
+#include <sstream>
 #include <exception>
 #include <vector>
 #include <iostream>
@@ -171,6 +174,8 @@ using std::wcslen;
 #include <windows.h>
 #include <mmsystem.h>
 #include <windef.h>
+
+using std::getline;
 
 // Why oh why!
 // MSVC thinks near and far are actually supposed to be used with pointers

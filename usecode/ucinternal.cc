@@ -2621,7 +2621,7 @@ void Usecode_internal::write
 	out.close();
 	U7open(out, USEDAT);
 	Write2(out, partyman->get_count());	// Write party.
-	size_t i;	// Blame MSVC
+	int i;	// Blame MSVC
 	for (i = 0; i < EXULT_PARTY_MAX; i++)
 		Write2(out, partyman->get_member(i));
 					// Timers.
@@ -2641,10 +2641,10 @@ void Usecode_internal::write
 		Write_useval(out, *it);
 					// Now do the local statics.
 	int num_slots = sizeof(funs)/sizeof(funs[0]);
-	for (int i = 0; i < num_slots; i++)
+	for (i = 0; i < num_slots; i++)
 		{
 		vector<Usecode_function*>& slot = funs[i];
-		for (vector<Usecode_function*>::iterator fit = slot.begin();
+		for (std::vector<Usecode_function*>::iterator fit = slot.begin();
 						fit != slot.end(); ++fit)
 			{
 			Usecode_function *fun = *fit;

@@ -1,3 +1,7 @@
+2002-07-22  Ryan Nunn  <colourles@users.sourceforge.net>
+	* Minor changes to fix errors in MSVC
+	* Updating Win32 stuff for 1.1Beta1
+
 2003-07-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc (public): Dont_move flag stops Avatar.  Also rewrote
@@ -415,13 +419,13 @@
 	* usecode/intrinsics.cc (public): Explosion should explode the
 	outermost container.
 
-2002-08-09  Ryan Nunn  <triforce@merlin.net.au>
+2002-08-09  Ryan Nunn  <colourles@users.sourceforge.net>
 	* audio/midi_drivers/fmopl_midi.*, audio/midi_drivers/fmopldrv.cc,
 	  gumps/AudioOptions_gump.cc : Fixing compiling issues
 	* audio/midi_drivers/Makefile.am: Added fmopl files to the makefile,
 	  but I'm not going to touch the configure script.
 
-2002-08-07  Ryan Nunn  <triforce@merlin.net.au>
+2002-08-07  Ryan Nunn  <colourles@users.sourceforge.net>
 	* cheat_screen.cc : Added missing tqueue header.
 
 	* exultmenu.cc, audio/Midi.cc, audio/xmidi.h,
@@ -437,7 +441,7 @@
 
 	* files/*.* : Some initial changes for PocketPC support
 
-2002-08-06  Ryan Nunn  <triforce@merlin.net.au>
+2002-08-06  Ryan Nunn  <colourles@users.sourceforge.net>
 	* midi_drivers/fmopl*.* : Emulatled FM Synth. Compiling in by defining
 	  USE_FMOPL_MIDI. Makefiles will probably need updating. Has a 'dual'
 	  mode for stereo sound. Use "config/audio/midi/dual_opl" set to "yes"
@@ -510,7 +514,7 @@
 	* effects.cc,gamerend.cc:  Text_effects are in a separate list.
 	* gamerend.cc:  Show sprites below gumps, text over them.
 
-2002-07-28  Ryan Nunn  <triforce@merlin.net.au>
+2002-07-28  Ryan Nunn  <colourles@users.sourceforge.net>
 	* pathfinder/path.cc : Fixed seriously broken non hash pathfinding (z
 	  coord was being ignored in comparisons of nodes). This fixes the
 	  Monitor Training problem. Probably fixes countless other pathfinding
@@ -815,11 +819,11 @@
 	* gamewin.cc: Commented out add_nearby_npcs().  I think it's not
 	needed anymore.
 
-2002-06-24  Ryan Nunn  <triforce@merlin.net.au>
+2002-06-24  Ryan Nunn  <colourles@users.sourceforge.net>
 	* ChangeLog : Added comment that was meant for this branch, but I
 	  accidently put in the other branch
 
-2002-06-24  Ryan Nunn  <triforce@merlin.net.au>
+2002-06-24  Ryan Nunn  <colourles@users.sourceforge.net>
 	* actors.cc : Fixed a problem with gloves not using both fingers in BG.
 	* actors.cc, gumps/Gump_manager.cc : Fixed a problem where using a
 	  Female avatar in BG with ye olde style inventories would stop the 'I'
@@ -837,7 +841,7 @@
 
 	* actions.h,usecode/intrinsics.cc: as_usecode_path().
 
-2002-06-23  Ryan Nunn  <triforce@merlin.net.au>
+2002-06-23  Ryan Nunn  <colourles@users.sourceforge.net>
 	* msvcstuff/find_nearby.h : Removed because it's now shared for all
 	* Makefile.am : Removed msvcstuff/find_nearby.h
 	* objs/find_nearby.h : Added so it can be used by all
@@ -845,7 +849,7 @@
 	* objs/*.* : Removed old Game_object::find_nearby template and now use
 	  find_nearby.h and macros.
 
-2002-06-22  Ryan Nunn  <triforce@merlin.net.au>
+2002-06-22  Ryan Nunn  <colourles@users.sourceforge.net>
 	* LOTS OF FILES : Added code to do caching out to memory. However, it's
 	  disabled for the moment. Need to #define WANT_MAP_CACHE_OUT to enable
 	  it. Added lots of get_ireg_size() methods that return the size
@@ -909,11 +913,11 @@
 2002-06-13 Simon Quinn <email@simonquinn.co.uk>
 	* Fixed sound crashing on startup and in-game when sound was disabled
 
-2002-06-13  Ryan Nunn  <triforce@merlin.net.au>
+2002-06-13  Ryan Nunn  <colourles@users.sourceforge.net>
 	* exult.cc, audio/xmidi.cc : Getting around some problems with (our)
 	  snprintf not supporting floating point types.
 
-2002-06-13  Ryan Nunn  <triforce@merlin.net.au>
+2002-06-13  Ryan Nunn  <colourles@users.sourceforge.net>
 	* Any file that I changed, but not the 2 below : Changed lots of things
 	  to use DataSources rather than directly use streams. Hopefully
 	  nothing is broken. I expect that there will be numerous
@@ -1010,7 +1014,7 @@
 	* cheat.cc,drag.cc,drag.h:  Use Dragging_info for Paste so items
 	get dropped properly.
 
-2002-06-06  Ryan Nunn  <triforce@merlin.net.au>
+2002-06-06  Ryan Nunn  <colourles@users.sourceforge.net>
 	* browser.cc, gamerend.cc, gumps/gump_utils.cc : Fixing problems
 	  introduced by Kirben when getting Exult Exult to compile with GCC3.1
 	  in Windows.
@@ -1018,7 +1022,7 @@
 	  changes for MSVC. Not required, but I though it would be a good idea
 	  since the CVS Tag is being moved to include Kirbens changes
 
-2002-06-05  Ryan Nunn  <triforce@merlin.net.au>
+2002-06-05  Ryan Nunn  <colourles@users.sourceforge.net>
 	* actors.cc : Removed the allow any item in back slot code.
 	* gumps/Paperdoll_gump.cc : Fixed bug where items were in wrong places.
 	* gumps/Paperdoll_gump_info.cc : Allow bags, barrels, boxes, crates,
@@ -1044,7 +1048,7 @@
 	* various: applied patches by Robert Bihlmeyer
 	* data/credits.txt: added Robert Bihlmeyer
 
-2002-06-04  Ryan Nunn  <triforce@merlin.net.au>
+2002-06-04  Ryan Nunn  <colourles@users.sourceforge.net>
 	* files/utils.cc : Working around the evil Windows 'Long Filename
 	  Problem', even though it's actually got very little to do with
 	  filenames at all. Hopefully it's gone now! Also added in a work
@@ -1088,7 +1092,7 @@
 
 	* objs/objiter.h (public): Iterators to get all objects recursively.
 
-2002-05-27  Ryan Nunn  <triforce@merlin.net.au>
+2002-05-27  Ryan Nunn  <colourles@users.sourceforge.net>
 	* shapes/font.cc : orig_font_buf needs to be set to 0 in both Font
 	  constructors.
 	* actors.cc : Fixed a bug with combat and the multiracial bg hack.
@@ -1115,7 +1119,7 @@
 	* created "audiotest" branch to cvs for testing my new SDL_mixer/MP3 audio code.
 	  You'll also need the MP3 sound pack from the Sourceforge Exult site
 
-2002-05-24  Ryan Nunn  <triforce@merlin.net.au>
+2002-05-24  Ryan Nunn  <colourles@users.sourceforge.net>
 	* effects.cc : Fixing weather problem with facestats.
 
 2002-05-23  Tristan Tarrant  <nadir@users.sf.net>
@@ -1168,7 +1172,7 @@
 2002-05-17  Tristan Tarrant  <nadir@users.sf.net>
 	* schedule.cc: #include "SDL_timer.h" to appease gcc
 
-2002-05-16  Ryan Nunn  <triforce@merlin.net.au>
+2002-05-16  Ryan Nunn  <colourles@users.sourceforge.net>
 	* files/listfiles.cc, files/utils.cc : Fixing up Win32 U7ListFiles().
 
 2002-05-16  Simon Quinn <email@simonquinn.co.uk>
@@ -1180,7 +1184,7 @@
 	keyring.  Also ignore frame when combining some items (coins,
 	arrows, etc.)
 
-2002-05-14  Ryan Nunn  <triforce@merlin.net.au>
+2002-05-14  Ryan Nunn  <colourles@users.sourceforge.net>
 	* cheat.*, gamerend.cc, objs/objs.h : Fixing Namespace, and forcing int
 	  to bool problems.
 	* gumps/Face_stats.cc : Fixed old problem with stat bars not being
@@ -1228,7 +1232,7 @@
 	whether it's selected.
 	* gamerend.cc:  Show selected objects.
 
-2002-05-09  Ryan Nunn  <triforce@merlin.net.au>
+2002-05-09  Ryan Nunn  <colourles@users.sourceforge.net>
 	* files/Table.cc : Namespace
 	* exult.cc, windrag.*, xdrag.h, shapes/u7drag.*, mapedit/*.* :
 	  Modifications to Win32 DnD. Combo's now work. Also shape and combo
@@ -1280,7 +1284,7 @@
 	* mapedit/studio.cc:  Look in $HOME/.exult for socket file.  Also,
 	removed the "-d" option.
 
-2002-04-25  Ryan Nunn  <triforce@merlin.net.au>
+2002-04-25  Ryan Nunn  <colourles@users.sourceforge.net>
 	* exult.cc : Added missing parenthesis
 	* gamedat.cc : Namespace stuff
 
@@ -1314,7 +1318,7 @@
 2002-04-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* game.cc, exult.cc: fixed setting the PATCH directory
 
-2002-04-16  Ryan Nunn  <triforce@merlin.net.au>
+2002-04-16  Ryan Nunn  <colourles@users.sourceforge.net>
 	* game.cc : Don't pass trailing slashes in calls to get_system_path
 	  when setting up static, gamedat, savegame and patch paths.
 	* files/utils.cc : Fixing get_system_path so it doesn't search for a
@@ -1328,7 +1332,7 @@
 2002-04-15  Max Horn  <max@quendi.de>
 	* docs/xml/*: Makeover of the XML doc system.
 
-2002-04-14  Ryan Nunn  <triforce@merlin.net.au>
+2002-04-14  Ryan Nunn  <colourles@users.sourceforge.net>
 	* exult.cc : Fixed a path problem
 	* palette.cc : std namespace stuff
 	* game.cc : DON'T write the savegame config setting by default at the
@@ -1454,7 +1458,7 @@
 	* exult_studio.glade:  'Mode' menu added (but modes not
 	implemented yet.)
 
-2002-03-22  Ryan Nunn  <triforce@merlin.net.au>
+2002-03-22  Ryan Nunn  <colourles@users.sourceforge.net>
 	* usecode/ucinternal.cc : Added break in opcode 0xCD.
 
 2002-03-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
@@ -1465,10 +1469,10 @@
 	* mapedit/shapelst.cc: "New shape", "Edit tiled" added to popup in
 	shape browser.
 
-2002-03-20  Ryan Nunn  <triforce@merlin.net.au>
+2002-03-20  Ryan Nunn  <colourles@users.sourceforge.net>
 	* game.cc : Fixing allignment problem in German BG Menu
 
-2002-03-20  Ryan Nunn  <triforce@merlin.net.au>
+2002-03-20  Ryan Nunn  <colourles@users.sourceforge.net>
 	* bggame.cc : Fixing problems with overlapping text in German create
 	  new game screen.
 
@@ -1513,7 +1517,7 @@
 	* mapedit/studio.cc,Makefile.am: Start using 'exult.cfg' to get paths,
 	  and to save/restore window size.
 
-2002-03-08  Ryan Nunn  <triforce@merlin.net.au>
+2002-03-08  Ryan Nunn  <colourles@users.sourceforge.net>
 	* audio/xmidi.cc : A MSVCism
 
 2002-03-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
@@ -1547,7 +1551,7 @@
 	* imagewin/imagewin.h: include <string>
 	* imagewin/imagewin.cc: include utils.h
 
-2002-03-06  Ryan Nunn  <triforce@merlin.net.au>
+2002-03-06  Ryan Nunn  <colourles@users.sourceforge.net>
 	* exult.cc, exultmenu.cc, gumps/VideoOptions_gump.cc,
 	  imagewin/imagescl.cc, imagewin/imagewin.*, imagewin/scale.* :
 	  Added Kreed's BilinearPlus scaler. Also added some utility functions
@@ -1561,7 +1565,7 @@
 	* gamewin.cc:  Public set_scrolls(tx, ty) added.
 	* mapedit/locator.cc:  Locator scrollbars update view in Exult.
 
-2002-03-05  Ryan Nunn  <triforce@merlin.net.au>
+2002-03-05  Ryan Nunn  <colourles@users.sourceforge.net>
 	* exult.cc , gumps/GameplayOptions_gump.*, gumps/Gump_manager.*
 	  gumps/gump_utils.cc : Right click now closes all gumps. Added config
 	  setting and updated game options gump with the setting. The setting
@@ -1629,7 +1633,7 @@
 	* shapes/vgafile.h (public): Public encode_rle() added.
 	* tools/ipack.cc:  Coding 'Create()'.
 
-2002-02-20  Ryan Nunn  <triforce@merlin.net.au>
+2002-02-20  Ryan Nunn  <colourles@users.sourceforge.net>
 	* actors.cc : Fixing Serpent Isle change of portrait bug. Polymorphing
 	  to 721 or 989 will now polymorph to the Avatar's actual shape.
 	* gumps/Face_stats.cc : No stat bars for non 'party' npcs. Fixes the
@@ -1696,11 +1700,11 @@
 	* audio/xmidi.cc: Fixed const.
 	* mapedit/studio.cc: Fixed namespaces.
 
-2002-02-09  Ryan Nunn  <triforce@merlin.net.au>
+2002-02-09  Ryan Nunn  <colourles@users.sourceforge.net>
 	* usecode/intrinsics.cc, usecode/siintrinsics.h, usecode/ucinternal.h :
 	  Fixed skin colour problem in sex scenes.
 
-2002-02-09  Ryan Nunn  <triforce@merlin.net.au>
+2002-02-09  Ryan Nunn  <colourles@users.sourceforge.net>
 	* game.cc : Namespace stuff
 	* gamemap.cc : Compiling error
 	* msvcstuff/msvc_kludges.h : Headers dir
@@ -1719,7 +1723,7 @@
 2002-02-08  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* */Makefile.am: include headers dir
 
-2002-02-08  Ryan Nunn  <triforce@merlin.net.au>
+2002-02-08  Ryan Nunn  <colourles@users.sourceforge.net>
 	* audio/*.*, audio/midi_drivers/*.*, exultmenu.cc : Changes to the midi
 	  system. Now evern faster, and safer too. New super accurate integer
 	  timing method for Windows. Improved XMIDI looping for Pentagram in
@@ -1752,7 +1756,7 @@
 	* readnpcs.cc: Handle case where 'npc.dat' and/or 'schedule.dat'
 	don't yet exist.
 
-2002-02-08  Ryan Nunn  <triforce@merlin.net.au>
+2002-02-08  Ryan Nunn  <colourles@users.sourceforge.net>
 	* server/servewin32.cc : Fixed the GetLongPathName issue. Exult and
 	  Exult Studio both need to be recompiled, because this effects
 	  communications.
@@ -1788,7 +1792,7 @@
 	* actors.cc: Don't call 'unreadied' usecode if Actor is dead.
 	This caused hangs when getting Black Sword in Mtns. of Freedom.
 
-2002-01-30  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-30  Ryan Nunn  <colourles@users.sourceforge.net>
 	* sigame.cc : Added the thunder sfx to intro. Clear the screen between
 	  the flics to prevent palette corruption.
 	* audio/Audio.cc : Handle voc chunk type '5' as a text message. Also
@@ -1799,7 +1803,7 @@
 
 	* mapedit/chunklst.cc,etc:  'Groups' work for 'u7chunks' now.
 
-2002-01-28  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-28  Ryan Nunn  <colourles@users.sourceforge.net>
 	* sigame.cc : Reworking SI endgame. Now has correct timing and speech.
 	  Text message for when speech is disabled is yet to be included.
 	* audio/Audio.cc : Needed to add unknown voc chunk type '5' for some
@@ -1837,11 +1841,11 @@
 2002-01-25  Darke  <darkepaw@users.sourceforge.net>
 	* mapedit/, usecode/compiler/: Namespaces.
 
-2002-01-24  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-24  Ryan Nunn  <colourles@users.sourceforge.net>
 	* server/servewin32.cc : Accidently force WinNT/2K/XP to use the Win9x
 	  comms.
 
-2002-01-24  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-24  Ryan Nunn  <colourles@users.sourceforge.net>
 	* msvcstuff/msvc_kludges.h : HAVE_SSTREAM
 	* msvcstuff/exconfig/exconfig.cpp : Updated for new config constructors
 	* mapedit/exult_studio.cc : Console redirection for Win32
@@ -1886,7 +1890,7 @@
 	display, somewhat.
 	* xdrag.cc:  Compile err. fixed.
 
-2002-01-21  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-21  Ryan Nunn  <colourles@users.sourceforge.net>
 	* exult.cc, windrag.*, xdrag.*, mapedit/Makefile.mingw,
 	  mapedit/chunklst.cc, mapedit/eggedit.cc, mapedit/npcedit.cc
 	  mapedit/objedit.cc, mapedit/shapedraw.cc: More Win32 Drag and Drop.
@@ -1903,14 +1907,14 @@
 	basic u8 disassembler functions.
 	* Pawnote: Blame Fingolfin for me commiting as my alter ego. <grin>
 
-2002-01-21  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-21  Ryan Nunn  <colourles@users.sourceforge.net>
 	* windrag.* : Don't need GDK
 
-2002-01-20  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-20  Ryan Nunn  <colourles@users.sourceforge.net>
 	* data/credits.txt : Added Mark Siewert to credits for Win32 Exult
 	  studio.
 
-2002-01-20  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-20  Ryan Nunn  <colourles@users.sourceforge.net>
 	* Makefile.cygwin, Makefile.win32, exult.cc, mapedit/Makefile.mingw,
 	  mapedit/chunklst.cc, mapedit/chunklst.*, mapedit/shapelst.*,
 	  mapedit/studio.cc, msvcstuff/Exult.dsp, msvcstuff/msvc_kludges.h :
@@ -1932,7 +1936,7 @@
 	* usecode/ucxt: Changed from using opcodes.txt to u7opcodes.data,
 	which is opcodes.txt with conf/ based formatting.
 
-2002-01-18  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-18  Ryan Nunn  <colourles@users.sourceforge.net>
 	* actors.cc, conf/XMLEntity.cc, server/objserial.cc,
 	  objs/egg.cc, exult.cc : MSVCisms
 
@@ -1984,7 +1988,7 @@
 	* shapeinf.{cc,h}:  Added Armor_info class.  Includes 'immune' field.
 	* fnames.h:  More PATCH names added.
 
-2002-01-16  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-16  Ryan Nunn  <colourles@users.sourceforge.net>
 	* mapedit/Makefile.mingw : Use $(SRC) instead of .. when compiling the
 	  icon. Also other updates
 
@@ -2012,7 +2016,7 @@
 	of functions, and removed all the warnings generated by
 	--enable-paranoid-warnings.
 
-2002-01-14  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-14  Ryan Nunn  <colourles@users.sourceforge.net>
 	* audio/Audio.cc : Force waveout as defualt for Windows. Don't use
 	  DirectSound as it's buggy with SDL.
 
@@ -2133,7 +2137,7 @@
 	* args.cc: fixed bug with missing arguments
 	* exult.cc: more minor commandline syntax changes/fixes
 
-2002-01-06  Ryan Nunn  <triforce@merlin.net.au>
+2002-01-06  Ryan Nunn  <colourles@users.sourceforge.net>
 	* Makefile.win32, Makefile.cygwin : Just added some stuff to allow
 	  people to compile Exult as a console win32 application. Read the
 	  makefiles to find out how.
@@ -2193,7 +2197,7 @@
 	* ucparse.yy, opcodes.txt: added 'append arrays' operator (&) to ucc
 	* gamemap.h: include fstream
 
-2002-01-03  Ryan Nunn <triforce@merlin.net.au>
+2002-01-03  Ryan Nunn <colourles@users.sourceforge.net>
 	* gamemap.*, usecode/useval.h,  objs/chunkter.cc: std namespace stuff.
 	  Note to Jeff, doing "class ifstream;" and using fstream.h was a
 	  really really really bad idea :-)
@@ -2345,7 +2349,7 @@
 	* actors.cc (approach_another):  Fiddled with speed/delay.
 	* schedule.cc (Hound_schedule):  Speed it up a bit.
 
-2001-12-23  Ryan Nunn  <triforce@merlin.net.au>
+2001-12-23  Ryan Nunn  <colourles@users.sourceforge.net>
 	* gumps/AudioOptions_gump.cc, gumps/GameplayOptions_gump.cc,
 	  gumps/VideoOptions_gump.cc : Errors, Errors, Errors
 	* msvcstuff/Exult.dsp : Adding Enabled_button.*
@@ -2396,7 +2400,7 @@
 	* configure.in: fixed output at end of configure run to do what it is
 	supposed to (e.g. print out the SDL version instead of "sdl-config --version").
 
-2001-12-21  Ryan Nunn  <triforce@merlin.net.au>
+2001-12-21  Ryan Nunn  <colourles@users.sourceforge.net>
 	* combat.cc, drag.cc, conf/Configuration.* : Warnings and errors
 	* audio/Audio.cc, msvcstuff/msvc_kludges.h : Added a config file option
 	  for Windows "config/audio/force_waveout" that when set to "yes" will
@@ -2546,7 +2550,7 @@
 	* usecode/ucxt/*: many changes to automake/autoconf logic. Made ucxt
 	installable and make it look for opcodes.txt in EXULT_DATADIR as well
 
-2001-12-05  Ryan Nunn <triforce@merlin.net.au>
+2001-12-05  Ryan Nunn <colourles@users.sourceforge.net>
 	* gamewin.cc, objs/egg.cc, objs/egg.h : Polishing Mirrors
 	* Actors.cc : NPC Actors can now kind of activate eggs (only when
 	  stepping). A more global solution is required to all types of Actors
@@ -2576,7 +2580,7 @@
 2001-12-04  Patrick Burke  <takhisisii@yahoo.com.au>
         * usecode/ucxt : Removed a bug, added support for 'callis' and 'calli'
 
-2001-12-04  Ryan Nunn <triforce@merlin.net.au>
+2001-12-04  Ryan Nunn <colourles@users.sourceforge.net>
 	* files/crc.cc : Now actually works because it now actually reads files
 	  as binary. Also did std namespace, and some casting.
 	* msvcstuff/Exult.dsp, msvcstuff/expack.dsp, msvcstuff/msvc_kludges.h :
@@ -2605,11 +2609,11 @@
 	* barge.cc, animate.cc, actors.cc, contain.cc: call inherited functions
 	of direct parent, not Game_object
 
-2001-12-03  Ryan Nunn <triforce@merlin.net.au>
+2001-12-03  Ryan Nunn <colourles@users.sourceforge.net>
 	* objs/animate.cc : Fixed Minoc millsaw animation. Requires new game to
 	  work 100% properly.
 
-2001-12-03  Ryan Nunn <triforce@merlin.net.au>
+2001-12-03  Ryan Nunn <colourles@users.sourceforge.net>
 	* msvcstuff/exconfig/exconfig.cpp : Updated installer stuff
 	* msvcstuff/exconfig/exconfig.rc, win32/exultico.rc : 0.97cvs
 
@@ -2672,10 +2676,10 @@
 	* version.cc: fixed Metrowerks detection; factored out some std::endl into a single spot
 	* vgafile.cc: get_frame() now checks for lower bound, too (fixing a crash)
 
-2001-11-25 Ryan Nunn <triforce@merlin.net.au>
+2001-11-25 Ryan Nunn <colourles@users.sourceforge.net>
 	 * audio/Audio.cc : Note to self, Copy and Paste not so good
 
-2001-11-25 Ryan Nunn <triforce@merlin.net.au>
+2001-11-25 Ryan Nunn <colourles@users.sourceforge.net>
 	 * version.cc : Will this ever end... Windows and MSC stuff
 	 * msvcstuff/Exult.dsp : Add in the version files to the project
 	 * msvcstuff/msvc_kludges.h : Finally updated version to 0.95cvs
@@ -2697,7 +2701,7 @@
 	* Newfile_gump.cc: reset 'filename' in FreeSaveGameDetails
 	* version.*: more namespaces, expanded linux version a bit
 
-2001-11-24 Ryan Nunn <triforce@merlin.net.au>
+2001-11-24 Ryan Nunn <colourles@users.sourceforge.net>
 	* version.* : Windows stuff and std namespace stuff.
 
 2001-11-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
@@ -2722,23 +2726,23 @@
 2001-11-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Midi.h: is_track_playing didn't check if midi_device == NULL (Thanks Michael Z.)
 
-2001-11-22 Ryan Nunn <triforce@merlin.net.au>
+2001-11-22 Ryan Nunn <colourles@users.sourceforge.net>
 	* msvcstuff/Exult.dsp : Getting rid of a link warning
 
-2001-11-22 Ryan Nunn <triforce@merlin.net.au>
+2001-11-22 Ryan Nunn <colourles@users.sourceforge.net>
 	* Makefile.*, msvcstuff/*, win32/exultico.rc : Unify Win32 Resource
 	  scripts, add Version Table to all Win32 Exult exes.
 
 2001-11-22  Tristan Tarrant <nadir@users.sourceforge.net>
 	* data/Makefile.am: added forgotten files so that make dist works again
 
-2001-11-21 Ryan Nunn <triforce@merlin.net.au>
+2001-11-21 Ryan Nunn <colourles@users.sourceforge.net>
 	* Makefile.am: Yes I did kill something (backslashes vs slashes)
 
-2001-11-21 Ryan Nunn <triforce@merlin.net.au>
+2001-11-21 Ryan Nunn <colourles@users.sourceforge.net>
 	* README.win32: Typo
 
-2001-11-21 Ryan Nunn <triforce@merlin.net.au>
+2001-11-21 Ryan Nunn <colourles@users.sourceforge.net>
 	* Makefile.am: Added msvcstuff files to EXTRA_DIST
 	* README.win32: Added MSVC build instructions.
 	* msvcstuff/Zip.dsp: ZIP File support project for MSVC.
@@ -2753,7 +2757,7 @@
 	* configure.in: remove check for zutil.h
 	* configure.in: link dynamically against zlib
 
-2001-11-18 Ryan Nunn <triforce@merlin.net.au>
+2001-11-18 Ryan Nunn <colourles@users.sourceforge.net>
 	* actors.cc, gamewin.*, gamerend.cc, objs/chunks.* : Ice Dungeons
 	* audio/Audio.cc : can_sfx() also looks for Midi SFX, if compiled
 	* files/zip/zip.c : Removed dependency on zutil.h
@@ -2814,12 +2818,12 @@
 	* configure.in: re-aligned ./configure --help options
 	* configure.in: check for zlib headers instead of library
 
-2001-11-09  Ryan Nunn  <triforce@merlin.net.au>
+2001-11-09  Ryan Nunn  <colourles@users.sourceforge.net>
 	* gumps/Newfile_gump.* : Added "File" field to Save game info display.
 	  Fixed crash on delete.
 	* audio/midi_drivers/win32_midiout.cc : Not much
 
-2001-11-09  Ryan Nunn  <triforce@merlin.net.au>
+2001-11-09  Ryan Nunn  <colourles@users.sourceforge.net>
 	* actorio.cc, combat.cc, gameclk.cc, gumps/GameplayOptions_gump.cc :
 	  Fixed up some bool warnings.
 	* cheat_screen.cc : Can put spaces in names and added feedback after
@@ -2835,7 +2839,7 @@
 	  compression. Valid values are 0 (normal flex saves), 1 (normal zip,
 	  default) and 2 (zip with combined files).
 
-2001-11-08  Ryan Nunn  <triforce@merlin.net.au>
+2001-11-08  Ryan Nunn  <colourles@users.sourceforge.net>
 	* bggame.cc : Fixed BG Endgame crash
 
 2001-11-07  Jeff Freedman  <jeff@amy.nerble.net>
@@ -2970,7 +2974,7 @@
 	chaotic).
 	* gamewin.cc,objs/citerate.h,chunks.cc:  World-wrapping yet again.
 
-2001-10-24  Ryan Nunn <triforce@merlin.net.au>
+2001-10-24  Ryan Nunn <colourles@users.sourceforge.net>
 	* Too many files to even think about listing:
 	  Added support for BG multiracial and added shapes. SI Required!
 	  Changed lots of things to use ShapeID methods rather than the
@@ -3321,7 +3325,7 @@
 	* drag.cc: Pass MOVE_WALK instead of MOVE_FLY.  Fixes bug where
 	things get dropped into walls, and (hopefully!) doesn't break anything.
 
-2001-09-26  Ryan Nunn <triforce@merlin.net.au>
+2001-09-26  Ryan Nunn <colourles@users.sourceforge.net>
 	* actorio.cc, actors.h, cheat_screen.cc, gumps/Book_gump.*,
 	  gumps/Scroll_gump.* gumps/Sign_gump.*, gumps/Text_gump.*,
 	  objs/flags.h, usecode/intrinsics.cc :
@@ -3389,13 +3393,13 @@
 	the new (painfully verbose) usecode instruction trace mode.
 	(only works when DEBUG is defined)
 
-2001-09-21  Ryan Nunn <triforce@merlin.net.au>
+2001-09-21  Ryan Nunn <colourles@users.sourceforge.net>
 	* msvcstuff/.cvsignore : Fixed some problems added more files
 	* msvcstuff/Exult.dsw : Forgot to re-add this ages ago.
 	* msvcstuff/exconfig/* : Files for exconfig helper dll used with the
 	  new windows installer.
 
-2001-09-21  Ryan Nunn <triforce@merlin.net.au>
+2001-09-21  Ryan Nunn <colourles@users.sourceforge.net>
 	* objs/animate.cc : Fixing bubbles
 
 2001-09-21  Max Horn  <max@quendi.de>
@@ -3410,7 +3414,7 @@
 	* objs/contain.cc: save correct dead-body-npc-number in SI
 	* readnpcs.cc: only skip SI NPCs >= 233 (instead of >= 231)
 
-2001-09-20  Ryan Nunn <triforce@merlin.net.au>
+2001-09-20  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/Midi.h : Fixed the crash when saving a game with midi disabled
 	* keyactions.cc, readnpcs.cc, conf/Configuration.cc,
 	  usecode/keyring.cc, usecode/ucinternal.cc: Replaced catch(...) with
@@ -3434,7 +3438,7 @@
 	barge bug.
 	* effects.cc:  Text effect follows object when it moves.
 
-2001-09-19  Ryan Nunn <triforce@merlin.net.au>
+2001-09-19  Ryan Nunn <colourles@users.sourceforge.net>
 	* actorio.cc : Finally save all flags for actors
 	* exult.cc : Improved rendering timing and palette cycling timing
 	* objs/animate.cc : Improved Frame_animator timing
@@ -3454,10 +3458,10 @@
 	* usecode/ucsched.cc: Save()/restore() work.
 	* tqueue.h (public): find_delay() returns time when due.
 
-2001-09-18  Ryan Nunn <triforce@merlin.net.au>
+2001-09-18  Ryan Nunn <colourles@users.sourceforge.net>
 	* exult.cc : Always do full speed palette cycling in 8 bit modes
 
-2001-09-18  Ryan Nunn <triforce@merlin.net.au>
+2001-09-18  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/Midi.cc, audio/Midi.h : Fixed some potential bugs and added
 	  some extra methods to retreive the current playing track and if the
 	  current track is repeating.
@@ -3473,14 +3477,14 @@
 	* actors.cc: Set_polymorph() sets the frame to 'standing'.  This
 	is a guess to make using the SI/SS amulet animation work right.
 
-2001-09-17  Ryan Nunn <triforce@merlin.net.au>
+2001-09-17  Ryan Nunn <colourles@users.sourceforge.net>
 	* objs/animate.cc : Fixed potential problem when saving
 
 2001-09-17  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/*:  Set_item_frame_rot() added.
 
-2001-09-16  Ryan Nunn <triforce@merlin.net.au>
+2001-09-16  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/xmidi.cc : Fixed compiling errors.
 	* bggame.cc : Change the butterfly sequence to use 32 bit ints for
 	  timing calcs.
@@ -3667,7 +3671,7 @@
 2001-09-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.in: fixed minor bug
 
-2001-09-03  Ryan Nunn <triforce@merlin.net.au>
+2001-09-03  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/midi_drivers/win_midiout.cc : Fixed 'Lising' typo.
 	* objs/chunks.cc : Namespace
 
@@ -3708,7 +3712,7 @@
 
 	* actors.cc,gameclk.cc,gamewin.cc:  Restore HP's, mana hourly.
 
-2001-08-29  Ryan Nunn <triforce@merlin.net.au>
+2001-08-29  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/midi_drivers/win_midiout.* : Enumerate the midi devices and
 	  output the list to stdout. Allow setting of the midi device with the
 	  config key "config/audio/midi/win32_device". -1 (Midi Mapper) is
@@ -3718,7 +3722,7 @@
 	* audio/midi_drivers/mac_midi.cc: OS X build via makefile fixed
 	* macosx/exult.icns: added icon file for OS X
 
-2001-08-28  Ryan Nunn <triforce@merlin.net.au>
+2001-08-28  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/midi_drivers/win_midiout.cc : Fixed new hanging note problem
 
 2001-08-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
@@ -3792,7 +3796,7 @@
 	* conversation.cc: Limit to two spots, & replace 2nd if no room.
 	* actions.cc: 'handle_event_safely()' checks for being deleted.
 
-2001-08-21  Ryan Nunn <triforce@merlin.net.au>
+2001-08-21  Ryan Nunn <colourles@users.sourceforge.net>
 	* gamedat.cc : Fixed endian issue with save counts.
 
 2001-08-21  Max Horn <max@quendi.de>
@@ -3819,10 +3823,10 @@
 2001-08-20  Max Horn <max@quendi.de>
 	* mouse.cc: changed set_speed_cursor() to set hand cursor when in dont_move mode
 
-2001-08-20  Ryan Nunn <triforce@merlin.net.au>
+2001-08-20  Ryan Nunn <colourles@users.sourceforge.net>
 	* cheat_screen.cc/.h : Added 'Advanced' numerical NPC Flag editor.
 
-2001-08-20  Ryan Nunn <triforce@merlin.net.au>
+2001-08-20  Ryan Nunn <colourles@users.sourceforge.net>
 	* actorio.cc : Save and restore all 64 flags.
 	* audio/midi_drivers/win_midiout.cc : Implimented fix for hung notes
 	  (bug #449990)
@@ -3855,7 +3859,7 @@
 	* Makefile.*: added Text_button.cc
 	* Text_button.cc: added legal header, include config.h and Gump.h
 
-2001-08-18  Ryan Nunn <triforce@merlin.net.au>
+2001-08-18  Ryan Nunn <colourles@users.sourceforge.net>
 	* gumps\Text_button.*, gumps\Gump_ToggleButton.* : New Text_button and
 	  Gump_ToggleTextButton button classes.
 	* gumps/VideoOptions_gump.cc, data/*.*, Makefile.* : Made the scaler
@@ -3887,7 +3891,7 @@
 
 	  fixed screen redrawal after loading a game.
 
-2001-08-17  Ryan Nunn <triforce@merlin.net.au>
+2001-08-17  Ryan Nunn <colourles@users.sourceforge.net>
 	* actors.cc : Swamp boots should now work in SI
 	* cheat.cc : Namespace stuff
 	* msvcstuff/Exult.dsp : Added extra files to the project
@@ -4060,7 +4064,7 @@
 	* usecode/ucxt/*: integrated reading from usecode.txt, which broke
 	  old-usecode-script output and assembler "comments" (';')
 
-2001-08-08  Ryan Nunn <triforce@merlin.net.au>
+2001-08-08  Ryan Nunn <colourles@users.sourceforge.net>
 	* conf/XMLEntity.cc, usecode/useval.cc: std namespace stuff.
 	* actorio.cc, actors.cc, actors.h, usecode/intrinsics.cc: A fix for the bridge
 	  crash in Serpent Isle.
@@ -4275,7 +4279,7 @@
 	this is really a bug in the script, and the original SI just found
 	the eggs in a different order than Exult.)
 
-2001-07-31 Ryan Nunn <triforce@merlin.net.au>
+2001-07-31 Ryan Nunn <colourles@users.sourceforge.net>
 	* exultmenu.cc, bggame.cc, sigame.cc : Namespace, need I say more?
 	* fnames.h, shapes/*.*: Allow patch reading for vga files. Made
 	  shapes.vga and all shape info files to read patches.
@@ -4302,7 +4306,7 @@
 	standard animation delay.
 	* intrinsics.cc:  okay_to_flay=>on_barge.  Turtle in SI now works.
 
-2001-07-30 Ryan Nunn <triforce@merlin.net.au>
+2001-07-30 Ryan Nunn <colourles@users.sourceforge.net>
 	* cheat_screen.cc, gamewin.h, shapeid.cc, shapeid.h, gumps/Gump.cc:
 	  ShapeID now also can specify if a shape is translucent. This fixes
 	  some problems where translucent objects weren't drawn as translucent.
@@ -4312,17 +4316,17 @@
 2001-07-30  Willem Jan Palenstijn <wjpalenstijn@users.soureforge.net>
 	* objs.cc: fixed books in SI
 
-2001-07-30 Ryan Nunn <triforce@merlin.net.au>
+2001-07-30 Ryan Nunn <colourles@users.sourceforge.net>
 	* gumps/Face_stats.cc: Fixed nasty bug with higher resolutions
 
-2001-07-30 Ryan Nunn <triforce@merlin.net.au>
+2001-07-30 Ryan Nunn <colourles@users.sourceforge.net>
 	* gumps/Spellbook_gump.cc: Fixed incorrect drawing of spells.
 
 2001-07-30 Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: made it compile on Linux again
 	* cheat.cc: heal-party now also restores mana
 
-2001-07-30 Ryan Nunn <triforce@merlin.net.au>
+2001-07-30 Ryan Nunn <colourles@users.sourceforge.net>
 
 	*.* :
 
@@ -4453,7 +4457,7 @@
 	* actors.cc: Call usecode for sleep arrow hit.
 	* intrinsics.cc: click_on_item special case for weapon.
 
-2001-07-21 Ryan Nunn <triforce@merlin.net.au>
+2001-07-21 Ryan Nunn <colourles@users.sourceforge.net>
 	* Makefile.cygwin, Makefile.win32: Create Flexes and Flex headers first
 
 2001-07-21  Jeff Freedman  <jeff@amy.nerble.net>
@@ -4504,7 +4508,7 @@
 	* exult.cc: palette-cycle 248-541 too
 	* various: re-added Hack-mover mode (Alt-H)
 
-2001-07-16  Ryan Nunn <triforce@merlin.net.au>
+2001-07-16  Ryan Nunn <colourles@users.sourceforge.net>
 	* usecode/intrinsics.cc: Modified si_path_run_usecode to fix the, to
 	  quote WJP, "most important part of SI" aka the Figidazzi sex scene.
 
@@ -4555,7 +4559,7 @@
 	* data/quotes.txt: new quote ;)
 	* various files: removed the emacs header that force the fundamental mode to be used
 
-2001-07-11  Ryan Nunn <triforce@merlin.net.au>
+2001-07-11  Ryan Nunn <colourles@users.sourceforge.net>
 	* objs/chunks.cc : Added shapes 394 and 941 as mountain types for
 	  dungeon checking in Serpent Isle. Removed the per Superchuck dungeon
 	  hack for Knights Test and Silver Seed quest. This should fix all the
@@ -4580,7 +4584,7 @@
 	* docs/faq/: updated FAQ and changed the layout and the layout files
 	* Faq: updated
 
-2001-07-09  Ryan Nunn <triforce@merlin.net.au>
+2001-07-09  Ryan Nunn <colourles@users.sourceforge.net>
 	* gamewin.cc: Casting an unsigned char* to char*
 	* tools/expack.cc: Expack will now produce a header for any flex it
 	  creates. The Header is called name_flx.h or simlar. The header
@@ -4636,7 +4640,7 @@
 2001-07-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* ibuf8.cc, Makefile.am: include utils.h
 
-2001-07-06  Ryan Nunn <triforce@merlin.net.au>
+2001-07-06  Ryan Nunn <colourles@users.sourceforge.net>
 	* cheat.cc, exult.cc, menulist.cc, gumps/gump_utils.cc: Fixed all
 	  problems with scale factors other 2.
 	* exult.cc, imagewin/imagewin.cc, imagewin/imagewin.h: Only repaint the
@@ -4662,7 +4666,7 @@
 	flag if their owners had it.  The old dead-bodies queue and
 	associated methods are no longer needed, and have been removed.
 
-2001-07-05  Ryan Nunn <triforce@merlin.net.au>
+2001-07-05  Ryan Nunn <colourles@users.sourceforge.net>
 	* msvcstuff: Files required to compile Exult with MSVC++ 6
 	* Most files: Changes to get Exult to compile with MSVC++ 6
 
@@ -4694,7 +4698,7 @@
 	* NEWS, Makefile.*, configure.in, README.*: updated for release
 	* exult.cc: clarified "exult.flx not found" error msg a bit
 
-2001-06-28  Ryan Nunn <triforce@merlin.net.au>
+2001-06-28  Ryan Nunn <colourles@users.sourceforge.net>
 	* objs/animate.cc: Fix for pennant flag animation in SI.
 
 2001-06-27  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
@@ -4715,7 +4719,7 @@
 2001-06-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* actors.cc: put reduce_health() call back in combat :-)
 
-2001-06-24  Ryan Nunn <triforce@merlin.net.au>
+2001-06-24  Ryan Nunn <colourles@users.sourceforge.net>
 	* objs/animate.*: Removed unrequired write_ireg() method.
 
 	* exult.cc: Fixed up a SI movement bug.
@@ -4763,7 +4767,7 @@
 	implemented Silver Seed keyring. Data is saved in 'gamedat/keyring.dat'
 	* /data/si/defaultkeys.txt: mapped 'k' to use keyring
 
-2001-06-24  Ryan Nunn <triforce@merlin.net.au>
+2001-06-24  Ryan Nunn <colourles@users.sourceforge.net>
 	* actors.cc: Fixed a minor bug with two handed/two fingered items.
 
 2001-06-23  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
@@ -4773,7 +4777,7 @@
 	* bgintrinsics.h: 0x96 = a_or_an
 	* siintrinsics.h: 0xC2 = IsOnKeyring(qual.), 0xC3 = AddToKeyring(qual.)
 
-2001-06-23  Ryan Nunn <triforce@merlin.net.au>
+2001-06-23  Ryan Nunn <colourles@users.sourceforge.net>
 	* actors.cc, actors.h: Almost complete rewrite of the add_readied and
 	  get_best_spot functions to make them cleaner and to remove all bugs.
 
@@ -4781,7 +4785,7 @@
 	* mapedit/u7shp.c: disabled debugging messages
 	* data/bg/amulets.shp, Paperdoll_gump_info.cc: added FoV amulets
 
-2001-06-22  Ryan Nunn <triforce@merlin.net.au>
+2001-06-22  Ryan Nunn <colourles@users.sourceforge.net>
 	* actors.cc: Fixing a variety of bugs to do the add_readied code.
 	* gumps/Paperdoll_gump.cc: Fixed problem with items being hidden in BG
 	  when using Paperdoll.
@@ -4824,7 +4828,7 @@
 	* contain.cc: fixed spellbook-creation bug
 	* Makefile.am: fixed build order (server before mapedit)
 
-2001-06-17  Ryan Nunn <triforce@merlin.net.au>
+2001-06-17  Ryan Nunn <colourles@users.sourceforge.net>
 	* cheat_screen.cc : Added global flag modifier. Enabled NPC Experience,
 	  training, and general stat modifying.
 
@@ -4876,7 +4880,7 @@
 	* exultmenu.cc: same for Exult setup menu
 	* ucmachine.cc: set party flag on avatar (for spells like magic storm)
 
-2001-06-12  Ryan Nunn <triforce@merlin.net.au>
+2001-06-12  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/xmidi.cc, audio/midi_drivers/win_midiout.cc : Changes to make
 	  Exult SMP safe in Win32.
 
@@ -4903,11 +4907,11 @@
 	* gumps/misc_buttons.cc: implemented the combat stats button
 
 
-2001-06-08  Ryan Nunn <triforce@merlin.net.au>
+2001-06-08  Ryan Nunn <colourles@users.sourceforge.net>
 	* exult.cc, keyactions.cc, mouse.h: When gumps are open, the cursor
 	  will now only be the hand when the mouse is actually over a gump.
 
-2001-06-08  Ryan Nunn <triforce@merlin.net.au>
+2001-06-08  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/xmidi.cc : Volume curve now modifies Volume Controller events as
 	  well as Note On Velocity values. Volume Curve now has a greater
 	  impact and works "better". The difference is anything but subtle in
@@ -4917,7 +4921,7 @@
 	- Code Nazi
 	* mapedit/shapedraw.cc: std::cout, std::endl
 
-2001-06-07  Ryan Nunn <triforce@merlin.net.au>
+2001-06-07  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/xmidi.cc : Fixed Pub Music (BG Track 20) "Bug"
 
 2001-06-07  Dominik Reichardt <gigdr@tesionmail.de>
@@ -4979,7 +4983,7 @@
 	* gamewin.cc:  Risky change:  Reset all eggs in
 	emulate_swapout().  Needed to recreate List Field manager (crit = 2).
 
-2001-05-29  Ryan Nunn <triforce@merlin.net.au>
+2001-05-29  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/midi_drivers/win_midiout.cc : Fixed a spelling error
 	* gumps/AudioOptions_gump.cc : Fixed reverb & chorus config problem
 
@@ -5042,7 +5046,7 @@
 	So, except for Avatar being too dumb to open doors, trial seems
 	to work.
 
-2001-05-23  Ryan Nunn <triforce@merlin.net.au>
+2001-05-23  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/Audio.cc: Put #ifdef ENABLE_MIDISFX around MIDI SFX code to
 	  disable MIDI sfx's. Simply defining ENABLE_MIDISFX will re-enable
 	  MIDI SFX.
@@ -5095,7 +5099,7 @@
 
 	* NPC's (along with guards) attack you if you attack them.
 
-2001-05-15  Ryan Nunn <triforce@merlin.net.au>
+2001-05-15  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/xmidi.cc: Amazing optimization. 2 Lines of code added,
 	  potential 100x speed increase when reading .xmi files.
 
@@ -5151,7 +5155,7 @@
 2001-05-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* objs.cc: added a ton of special item names for SI
 
-2001-05-08  Ryan Nunn <triforce@merlin.net.au>
+2001-05-08  Ryan Nunn <colourles@users.sourceforge.net>
 	* gamewin.h, gamedat.cc, Gumps/Newfile_gump.h: Fixed byte ordering
 	  problem with savegame info for Savegump. Savegame info is now cross
 	  platform compatible.
@@ -5234,7 +5238,7 @@
 
 	* Spell-scrolls implemented for SI.
 
-2001-04-23  Ryan Nunn  <triforce@merlin.net.au>
+2001-04-23  Ryan Nunn  <colourles@users.sourceforge.net>
 	* ChangeLog : Fixed Dancer's small date typo... 2001-04-32 :)
 	* keys.*, keyactions.* : Key action "newfile_gump" to activate the new
 	  file gump without having to go into the game menu.
@@ -5256,7 +5260,7 @@
 	* lots of namespace std:: changes, made it compile on MacOS again
 	  (still need to implement U7ListFiles)
 
-2001-04-22  Ryan Nunn <triforce@merlin.net.au>
+2001-04-22  Ryan Nunn <colourles@users.sourceforge.net>
 	* gumps/Newfile_gump.* : Changed Date format display.
 
 2001-04-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
@@ -5266,7 +5270,7 @@
 	* Makefile.am: changed library order
 	* gumps/Newfile_gump.cc: put some debugging output in #ifdef DEBUG's
 
-2001-04-22  Ryan Nunn <triforce@merlin.net.au>
+2001-04-22  Ryan Nunn <colourles@users.sourceforge.net>
 	* Makefiles.* : Added files/listfiles.* and gumps/Newfile_gump.*
 	* actorio.cc : Made a change to the size of the array used when reading
 	  a NPC name from npc.dat.
@@ -5435,7 +5439,7 @@
 	animation.
 	* Draw weapons with translucency if necessary.
 
-2001-04-02  Ryan Nunn <triforce@merlin.net.au>
+2001-04-02  Ryan Nunn <colourles@users.sourceforge.net>
 	* actor*.*: Also fixed rare bug that would occur when saving and a NPC
 	  that had it's activity set to 'move to schedule'. Using S-Vr and Acty
 	  save fields to do this.
@@ -5502,7 +5506,7 @@
 	appearing, except (1) usually Batlin is being chased by Cantra,
 	and (2) somebody ends up dying in the battle.
 
-2001-03-25  Ryan Nunn <triforce@merlin.net.au>
+2001-03-25  Ryan Nunn <colourles@users.sourceforge.net>
 	* Makefile.cygwin, Makefile.win32: Some changes for the tools. Also
 	  fixed expack writing output to text files when using Makefile.cygwin.
 
@@ -5533,7 +5537,7 @@
 	* data/bgfiredoom.shp: more art by Adam
 	* data/flx.in, Makefile.*, gumps/Paperdoll_gump_info.cc: included art
 
-2001-03-21  Ryan Nunn <triforce@merlin.net.au>
+2001-03-21  Ryan Nunn <colourles@users.sourceforge.net>
 	* usecode/siintrinsics.h: Changed 0x44, 0x45, 0x46 to 0x45, 0x46, 0x47
 
 2001-03-21  Jeff Freedman  <jeff@amy.nerble.net>
@@ -5582,7 +5586,7 @@
 	* data/amulets.shp: white heart amulet by Adam D.
 	* gumps/Paperdoll_gump_info.cc, data/flx.in, Makefile*: include art
 
-2001-03-16  Ryan Nunn <triforce@merlin.net.au>
+2001-03-16  Ryan Nunn <colourles@users.sourceforge.net>
 	* exult.cc: Video Gamma correction is now written to the config file.
 	  Also fixed problem with gamma up making the screen darker and gamma
 	  down making the screen lighter.
@@ -5610,7 +5614,7 @@
 	* Bird sounds added.
 	* Adding support for volume change in SFX being played.
 
-2001-03-13  Ryan Nunn <triforce@merlin.net.au>
+2001-03-13  Ryan Nunn <colourles@users.sourceforge.net>
 	* gamewin.cc: Game only attempt to detect Black Gate Actor gumps if
 	  the game is actually Black Gate.
 	* gumps/Gump.cc, objs/contain.cc: Added Tree Gump
@@ -5756,7 +5760,7 @@
 	* keys.*: applied Grant's patch
 	* actors.h: fixed warning/bug
 
-2001-02-20  Ryan Nunn  <triforce@merlin.net.au>
+2001-02-20  Ryan Nunn  <colourles@users.sourceforge.net>
 	* exult.cc, exultmenu.cc imagewin/*.*: Added in Derek Liauw Kie Fa's
 	  SuperEagle scaler.
 
@@ -5764,7 +5768,7 @@
 	* exult.cc: cleaned up 'build game map' code. Now accessible using a
 	cmdline parameter. (-buildmap 0|1|2), where 0,1,2 determines skiplift
 
-2001-02-16  Ryan Nunn  <triforce@merlin.net.au>
+2001-02-16  Ryan Nunn  <colourles@users.sourceforge.net>
 	* actor*.*, gamewin.*, objs/eggs.*, objs/objs.h: Caching system of the
 	  originals is now emulated by Exult. This solves the Army of Darkness
 	  Bug as well as many of the bugs in SI related to cached in Usecode
@@ -5784,7 +5788,7 @@
 	* gumps/Paperdoll_gump_info.cc: added caddellite helmet
 	* data/flx.in, Makefile.*: added caddellite_helmet.shp
 
-2001-02-14  Ryan Nunn  <triforce@merlin.net.au>
+2001-02-14  Ryan Nunn  <colourles@users.sourceforge.net>
 	* paperdoll_gump_info.cc: Hoe of Destruction no longer marked as
 	  needing art.
 
@@ -5795,7 +5799,7 @@
 	* configure.in, Makefile.win32, Makefile.cygwin: bump up version to
 	  0.92cvs to avoid confusion
 
-2001-02-13  Ryan Nunn  <triforce@merlin.net.au>
+2001-02-13  Ryan Nunn  <colourles@users.sourceforge.net>
 	* gamewin.*, paperdoll_gump*.*: Support for paperdoll shapes in other
 	  files. Only <DATA>/exult.flx at the moment.
 	* Makefile.*, data/flx.in, paperdoll_gump_info.cc: Added Hoe of
@@ -5812,7 +5816,7 @@
 2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* mapedit/studio.cc: set current dir in directory browser
 
-2001-02-13  Ryan Nunn  <triforce@merlin.net.au>
+2001-02-13  Ryan Nunn  <colourles@users.sourceforge.net>
 	* cheat_screen.cc : Fixed text issue in Schedule screen
 
 2001-02-13  Tristan Tarrant  <nadir@users.sourceforge.net>
@@ -5840,7 +5844,7 @@
 2001-02-12  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* lots-of-files: fixed warnings
 
-2001-02-12  Ryan Nunn <triforce@merlin.net.au>
+2001-02-12  Ryan Nunn <colourles@users.sourceforge.net>
 	* exult.cc : <SAVEGAME> default set to "."
 	* fnames.h : SAVENAME change to "<SAVEGAME>/game%02d.u7"
 	* game.cc : Removed U7chdir and replaced it with added the gamepath to
@@ -5854,7 +5858,7 @@
 	* gamewin.h: added a check for NULL shape data. (avoids sword crash)
 	* txtscroll.cc: fixed unresponsiveness
 
-2001-02-12  Ryan Nunn <triforce@merlin.net.au>
+2001-02-12  Ryan Nunn <colourles@users.sourceforge.net>
 	* makefile.* : cheat_screen.cc
 	* NEWS, exult.cc, imagewin/*.* : Multiple Scalers.
 	* actors*.* : Polymorph debugging, Schedules Changing, Pick pocket
@@ -5922,7 +5926,7 @@
 	* tools/expack.cc: change all uses of strcpy/strcat to strncpy/strncat
 	  and also did some namespace std:: fixing
 
-2001-02-07  Ryan Nunn <triforce@merlin.net.au>
+2001-02-07  Ryan Nunn <colourles@users.sourceforge.net>
 	* tools/expack.cc : Finally fixed the Win32 End of Line problem.
 
 2001-02-07  Tristan Tarrant  <nadir@users.sourceforge.net>
@@ -5932,7 +5936,7 @@
 2001-02-07  Christoph Reichenbach  <jameson@linuxgames.com>
 	* files/utils.cc (U7open): Explicitly exported two U7open functions
 
-2001-02-08  Ryan Nunn <triforce@merlin.net.au>
+2001-02-08  Ryan Nunn <colourles@users.sourceforge.net>
 	* tools/expack.cc: Added .txt file detection to fix some bugs caused
 	  by "stupid dos conventions".
 	* files/utils.cc: I removed the "bad code" ;)
@@ -5950,7 +5954,7 @@
 2001-02-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.be, exult_types.h, actors.cc: building on BeOS again
 
-2001-02-07  Ryan Nunn <triforce@merlin.net.au>
+2001-02-07  Ryan Nunn <colourles@users.sourceforge.net>
 	* tools/expack.cc, files/utils.*: Removed the Win32 fix and replaced it
 	  with text file reading modes.
 
@@ -5958,7 +5962,7 @@
 	* FAQ: added Dominik's FAQ to the distribution
 	* */Makefile.am, configure.in: get "make dist" to work
 
-2001-02-07  Ryan Nunn <triforce@merlin.net.au>
+2001-02-07  Ryan Nunn <colourles@users.sourceforge.net>
 	* tools/expack.cc: Fix end of line bug on Win32
 
 2001-02-06  Tristan Tarrant  <nadir@users.sourceforge.net>
@@ -6079,7 +6083,7 @@
 	* SI:  You can now start the Knight's Test (but you'll get stuck
 	after entering).
 
-2001-01-25  Ryan Nunn <triforce@merlin.net.au>
+2001-01-25  Ryan Nunn <colourles@users.sourceforge.net>
 	* mingw_kuldges.h: Added so Exult can once again be compiled in Win32
 	* makefile.win32, makefile.cygwin: -include mingw_kludges.h
 
@@ -6133,7 +6137,7 @@
 	  guides to identify the hotspot. Caveat: only the hotspot of the first
 	  frame is considered
 
-2001-01-19  Ryan Nunn <triforce@merlin.net.au>
+2001-01-19  Ryan Nunn <colourles@users.sourceforge.net>
 	* actors.*, exult.cc, gamewin.*, NEWS, gumps/*.* :
 	  SI paperdolls in BG
 	* gameclk.*, gamewin.h : Time now counts in minutes not per 15 minutes.
@@ -6188,7 +6192,7 @@
 	* Implemented 'shy' and 'hound' schedules.
 	* Fixed 'hang' bug upon entering Monitor.
 
-2001-01-12  Ryan Nunn <triforce@merlin.net.au>
+2001-01-12  Ryan Nunn <colourles@users.sourceforge.net>
 	* Actors.* : When in SI Intercept dont_render item flag and change to
 	  dont_move SI flag.
 	* Actorsio.cc : In actor constructor only call ready_best_weapon for
@@ -6221,12 +6225,12 @@
 	* Audio.cc: rearranged the #includes at the top of the file a bit
 	* various other files: changed header comment a bit (to read: (c) 2000-2001 The Exult Team)
 
-2001-01-12  Ryan Nunn <triforce@merlin.net.au>
+2001-01-12  Ryan Nunn <colourles@users.sourceforge.net>
 	* usecode/ucmachine.cc : add_cont_items returns num not added.
 	  remove_cont_items changed to return num removed. These changes now
 	  properly remove and add items during the initial SI teleport storm.
 
-2001-01-12  Ryan Nunn <triforce@merlin.net.au>
+2001-01-12  Ryan Nunn <colourles@users.sourceforge.net>
 	* Added Serpent Isle intrinsics set_polymorph (b3), remove_cont_items (37)
 	  and error_message (40).
 	* Added full support for polymorph mode for Serpent Isle NPCs.
@@ -6276,7 +6280,7 @@
 	wait several seconds, hanging around the bunny.)
 	* Usecode compiler - 1st pass pretty much complete.
 
-2001-01-10  Ryan Nunn <triforce@merlin.net.au>
+2001-01-10  Ryan Nunn <colourles@users.sourceforge.net>
 	* gamma.h : Gamma Table Class
 	* Makefile.am : Added gamma.h
 	* Makefile.Win32 : Fixed 'Clean'
@@ -6352,7 +6356,7 @@
 	* flic/Makefile.am: added ../objs, ../shapes include dirs
 	* sigame.cc: fixed display loop in SI's create new game
 
-2001-01-07  Ryan Nunn <triforce@merlin.net.au>
+2001-01-07  Ryan Nunn <colourles@users.sourceforge.net>
 	* Makefile.* : Paperdoll_gump_info.cc
 	* actors.cc : Paperdolls, Game specific combat music
 	* actors.h : Paperdolls
@@ -6387,10 +6391,10 @@
 2001-01-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* shapes/font.cc: applied Frederic Wagner's french-version patch
 
-2001-01-04  Ryan Nunn <triforce@merlin.net.au>
+2001-01-04  Ryan Nunn <colourles@users.sourceforge.net>
 	* game.cc : Fixed a divide be zero
 
-2001-01-04  Ryan Nunn <triforce@merlin.net.au>
+2001-01-04  Ryan Nunn <colourles@users.sourceforge.net>
 	* gamewin.cc : Font *get_font(fontnum) method
 	* gamewin.h : Font *get_font(fontnum) method
 	* shapes/fontvga.h : Font *get_font(fontnum) method
@@ -6435,7 +6439,7 @@
 	* gamewin.cc: corrected some text rendering in conversations,
 	experimenting with plasma effect
 
-2001-01-02  Ryan Nunn <triforce@merlin.net.au>
+2001-01-02  Ryan Nunn <colourles@users.sourceforge.net>
 	* Makefile.cygwin: Should fixed crash on exit problem expirenced by Dominik on JackChaos
                            Added U7PATH to specify where Ultima 7 is installed (for make install)
 	* Makefile.win32: Also Added U7PATH to this as well
@@ -6639,7 +6643,7 @@
 	* actors.cc: small fix for God mode. (some monsters have zero str.??)
 	* exult.cc,cheat.h/cc: Ctrl-L levels up entire party, up to level 10.
 
-2000-12-02  Ryan Nunn  <triforce@merlin.net.au>
+2000-12-02  Ryan Nunn  <colourles@users.sourceforge.net>
 	* added audio/soundtest.cc
 	* exult.cc, cheat.cc, audio/soundtest.cc: Added Sound Tester (Ctrl-1)
 	* audio/xmidi.cc: Fixed Midi crash problem
@@ -6667,7 +6671,7 @@
 2000-11-30  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* quotes.txt: new quote
 
-2000-12-01  Ryan Nunn  <triforce@merlin.net.au>
+2000-12-01  Ryan Nunn  <colourles@users.sourceforge.net>
 	* Added MidiInfo.txt: Contains some information about midi. Unfinished.
 	* Makefile.win32: Was broken, now works. Also removed -g added -O2
 	* audio/Midi.cc: Added SFX conversion option gs127 (same as none)
@@ -7098,7 +7102,7 @@
 	* data/font.shp: Menu font
 	* files/utils.h: Moved eqstr, hashstr in here so they can be shared
 
-2000-11-05  Ryan Nunn <triforce@merlin.net.au>
+2000-11-05  Ryan Nunn <colourles@users.sourceforge.net>
 	* audio/Midi.*: Changes so midi drivers other than Win_midiout can play SFX.
 	* audio/xmidi.*: New midi conversion types
 	* audio/Midi.cc: Music and SFX conversion options can be set in the config file
@@ -7123,7 +7127,7 @@
 	* exult.cc: keycommands only get activated when ctrl/alt status is exactly correct
 	* exult.cc: updated help screens
 
-2000-11-04  Ryan Nunn <triforce@merlin.net.au>
+2000-11-04  Ryan Nunn <colourles@users.sourceforge.net>
 	* gumps.cc, audio/Audio.cc: Sound Effects button now works and state is saved.
 	* audio/Midi.*: sfx.dat is now called midisfx.flx. It must be in the data dir.
 	Fixed bug causing midi to never be played.
