@@ -1,3 +1,8 @@
+2001-08-22  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* game.cc (Game): Made get_game_type() inlined.
+	* actors.cc:  Automatons don't need to eat.
+
 2001-08-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* npcnear.cc, actors.h: fixed problem with lenses to view Banes
 

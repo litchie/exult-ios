@@ -47,6 +47,7 @@ enum Exult_Game {
 class Game {
 private:
 	static bool new_game_flag;
+	static Exult_Game game_type;
 #ifndef DONT_HAVE_HASH_MAP
 	hash_map<const char*, int, hashstr, eqstr> shapes;
 	hash_map<const char*, str_int_pair, hashstr, eqstr> resources;
@@ -74,7 +75,8 @@ public:
 	static bool is_new_game() { return new_game_flag; }
 	static char *get_game_identity(const char *savename);
 	static Game *create_game(Exult_Game mygame);
-	static Exult_Game get_game_type();
+	static Exult_Game get_game_type()
+		{ return game_type; }
 
 	static const char *get_avname ();
 	static int get_avsex ();
