@@ -823,7 +823,7 @@
 				      <property name="spacing">0</property>
 
 				      <child>
-					<widget class="GtkOptionMenu" id="optionmenu1">
+					<widget class="GtkOptionMenu" id="builtin_group">
 					  <property name="border_width">2</property>
 					  <property name="visible">True</property>
 					  <property name="can_focus">True</property>
