@@ -60,6 +60,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "egg.h"
 #include "actors.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "cheat.h"
 
 using std::cout;
@@ -186,6 +187,7 @@ static void Handle_client_message
 	int datalen = Exult_server::Receive_data(fd, id, data, sizeof(data));
 	if (datalen < 0)
 		return;
+	unsigned char *ptr = &data[0];
 	Game_window *gwin = Game_window::get_game_window();
 	switch (id)
 		{
@@ -215,7 +217,6 @@ static void Handle_client_message
 		break;
 	case Exult_server::map_editing_mode:
 		{
-		unsigned char *ptr = &data[0];
 		int onoff = Read2(ptr);
 		if ((onoff != 0) != cheat.in_map_editor())
 			cheat.toggle_map_editor();
@@ -223,7 +224,6 @@ static void Handle_client_message
 		}
 	case Exult_server::tile_grid:
 		{
-		unsigned char *ptr = &data[0];
 		int onoff = Read2(ptr);
 		if ((onoff != 0) != cheat.show_tile_grid())
 			cheat.toggle_tile_grid();
@@ -231,7 +231,6 @@ static void Handle_client_message
 		}
 	case Exult_server::edit_lift:
 		{
-		unsigned char *ptr = &data[0];
 		int lift = Read2(ptr);
 		cheat.set_edit_lift(lift);
 		break;
@@ -239,6 +238,41 @@ static void Handle_client_message
 	case Exult_server::reload_usecode:
 		gwin->reload_usecode();
 		break;
+	case Exult_server::locate_terrain:
+		{
+		int tnum = Read2(ptr);
+		int cx = (short) Read2(ptr);
+		int cy = (short) Read2(ptr);
+		bool up = *ptr++ ? true : false;
+		bool okay = gwin->get_map()->locate_terrain(tnum, cx, cy, up);
+		ptr = &data[2];		// Set back reply.
+		Write2(ptr, cx);
+		Write2(ptr, cy);
+		ptr++;			// Skip 'up' flag.
+		*ptr++ = okay ? 1 : 0;
+		Send_data(client_socket, Exult_server::locate_terrain, data,
+							ptr - data);
+		break;
+		}
+	case Exult_server::swap_terrain:
+		{
+		int tnum = Read2(ptr);
+		bool okay = gwin->get_map()->swap_terrains(tnum);
+		*ptr++ = okay ? 1 : 0;
+		Send_data(client_socket, Exult_server::swap_terrain, data,
+							ptr - data);
+		break;
+		}
+	case Exult_server::insert_terrain:
+		{
+		int tnum = Read2(ptr);
+		bool dup = *ptr++ ? true : false;
+		bool okay = gwin->get_map()->insert_terrain(tnum, dup);
+		*ptr++ = okay ? 1 : 0;
+		Send_data(client_socket, Exult_server::insert_terrain, data,
+							ptr - data);
+		break;
+		}
 		}
 	}
 
