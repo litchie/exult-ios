@@ -10,7 +10,8 @@ endif
 
 if HAVE_GTK
 GTK_APPS = shapetest paltest
-GTK_LIBS = -lgtk -lgdk
+#GTK_LIBS = -lgtk -lgdk
+GTK_LIBS = @GTK_LIBS@
 OUTPUT_LIBS = libmapedit.la
 else
 GTK_APPS = 
@@ -23,6 +24,8 @@ GLADE_APPS = exult_studio
 else
 GLADE_APPS =
 endif
+
+u7shp_SOURCES = u7shp.cc
 
 shapetest_SOURCES = shapetest.cc
 
@@ -70,7 +73,7 @@ libmapedit_la_SOURCES = \
 	shapelst.cc \
 	shapelst.h
 
-u7shp: u7shp.c
+u7shp$(EXEEXT): u7shp.c
 	gimptool --build $<
 
 EXTRA_DIST=	\
