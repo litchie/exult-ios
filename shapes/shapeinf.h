@@ -146,12 +146,18 @@ public:
 	void write(int shapenum, std::ostream& mfile);
 	int get_family_shape()
 		{ return family_shape; }
+	void set_family_shape(int f)
+		{ family_shape = f; }
 	int get_damage()
 		{ return damage; }
-	unsigned char get_powers() const
-		{ return powers; }
 	int get_damage_type() const
 		{ return damage_type; }
+	void set_damage(int dmg, int dtype)
+		{ damage = dmg; damage_type = dtype; }
+	unsigned char get_powers() const
+		{ return powers; }
+	void set_powers(unsigned char p)
+		{ powers = p; }
 	};
 
 /*
@@ -169,8 +175,12 @@ public:
 	void write(int shapenum, std::ostream& mfile);
 	unsigned char get_prot() const
 		{ return prot; }
+	void set_prot(unsigned char p)
+		{ prot = p; }
 	unsigned char get_immune() const
 		{ return immune; }
+	void set_immune(unsigned char i)
+		{ immune = i; }
 	};
 
 /*
