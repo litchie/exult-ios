@@ -34,6 +34,9 @@
 /* Compiling with CXX on Alpha */
 #undef ALPHA_LINUX_CXX
 
+/* Compiling on OpenBSD */
+#undef OPENBSD
+
 @BOTTOM@
 
 #ifdef ALPHA_LINUX_CXX
