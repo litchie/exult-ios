@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE studiodoc SYSTEM "docs.dtd">
+<studiodoc title="Exult" changed="07 April 2002(GMT)">
+	<section title="Changes to the Documentation">		
+		<sub name="07042002">
+			<header>07 April 2002</header>
+			<body>
+				<para>
+					This is the first draft of the <Studio/> documentation. So please bear with me. It
+					is by no means perfect and I ask you to send me all your comments on how to better
+					express some stuff or to point out what I just plain forgot. 
+					<extref target="mailto:gigdr@tesionmail.de">Dominus</extref>
+				</para>
+			</body>
+		</sub>
+	</section>			
+	<section title="Introduction">
+		<sub name="whatis_studio">
+			<header>What is <Studio/>?</header>
+			<body>
+				<para>
+					<Exult/> is not only capable of playing Ultima 7 but it is also intended as
+					an engine in the style of the one used by Ultima 7. <Studio/> started it's life
+					as a simple map editor but it is slowly developing into a full fledged editor
+					enabling users to create a new game. Tristan came up with the cool name!
+				</para>
+				<para>
+					Currently there are many steps required to create a new game but at the moment 
+					the main goal of Jeff is to make it as user-friendly as possible.
+				</para>
+				<para>
+					Editing a copyrighted game may or may not be allowed. Please exercise caution especially
+					if you want to distribute your changes.
+				</para>
+			</body>
+		</sub>
+		<sub name="studio_terms">
+			<header>Terms we use in regard to Exult and Ultima 7</header>
+			<body>
+				<para>
+					Along with the terms explained in <extref2 target="terms"/> there are
+					some more terms that need to be explained for the usage of <Studio/>
+				</para>
+				<ul>
+					<li><strong>tile</strong>:<br/>
+						8x8 pixels</li>
+					<li><strong>chunk</strong>:<br/>
+						16x16 tiles</li>
+					<li><strong>superchunk</strong>:<br/>
+						16x16 chunks</li>
+					<li><strong>world</strong>:<br/>
+						12x12 superchunks</li>
+				</ul>
+			</body>
+		</sub>
+	</section>	
+	<section title="Configurations">
+		<sub name="installation">
+			<header>Installation</header>
+			<body>
+				<ul>
+					<li>You need <Exult/> and you need to install it properly 
+						(see <extref2 target="installation"/></li>
+					<li>For U*ix platforms you need to build <Studio/> from the source avillable from our 
+						source snapshot at <extref target="http://exult.sourceforge.net/download.php"/>.<br/>
+						You will also need the GTK+ library installed as well as
+				<extref target="http://developer.gnome.org/doc/API/libglade/libglade.html">libglade</extref>.<br/></li>
+					<li>For Win32 platforms (Win9x,ME,2k,XP) you need to download 
+						<extref target="http://exult.sourceforge.net/snapshots/ExultStudio.exe"/>
+						and install it in the same directory where you installed <Exult/>.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="studio_run">
+			<header>Running <Studio/></header>
+			<body>
+				<para>
+					You can run <Studio/> all by itself, but it isn't useful that way,
+					as it uses <Exult/> as a server.  What you really want to do is:
+				</para>
+				<ul>
+   				<li>Put 'exult_studio.glade' in the <Exult/> 'data' directory.</li>
+   				<li>Be sure 'exult_studio' is in your path. (on Win32
+   					'exult_studio.exe' needs to be in the same directory as exult.exe)</li>
+				<li>On U*ix platforms you need to be running <Exult/> on X.</li>
+   				<li>Run <Exult/> in windowed mode (not fullscreen).</li>
+   				<li>Press 'alt-ctrl-m' to go into 'map-editor' mode.  If all is set
+					up correctly, exult_studio will start up, and will have a list of files
+					on the left side of its window (you need to have cheats enabled in <Exult/>,
+					see the <extref2 target="gameplay_gump"/>).</li>
+				</ul>
+				<para>
+					Starting up one or the other separately will reconnect them:
+				</para>
+				<ul>
+    			<li>If <Exult/> isn't running, start it up.  Then, in <Studio/>,
+					use the 'File' menu to choose the static directory (for the game you're
+					playing).</li>
+   				<li>If <Studio/> isn't running start it up with:
+        			exult_studio -x (path to dir containing exult_studio.glade) -d
+        			(path to game directory)</li>
+				</ul>
+				<para>
+					You can also reconnect by selecting File-Connect in <Studio/>'s
+					menus.
+				</para>
+			</body>
+		</sub>
+		<sub name="studio_cfg">
+			<header>Settings in exult.cfg.</header>
+			<body>
+				<para>
+					You can change the settings of <Studio/> either with the prefernces dialog or 
+					via exult.cfg. Those settings are:
+				</para>
+				<configdesc>
+					<line>&lt;config&gt;</line>
+					<line>&lt;estudio&gt;</line>
+					<line>&lt;main&gt;</line>
+					<line>&lt;width&gt;</line>
+					<line>640
+						<comment>** width of the program window 
+						</comment></line>
+					<line>&lt;/width&gt;</line>
+					<line>&lt;height&gt;</line>
+					<line>400
+						<comment>** height of the program window
+						</comment></line>					
+					<line>&lt;/height&gt;</line>
+					<line>&lt;/main&gt;</line>
+					<line>&lt;default_game&gt;</line>
+					<line>gamename
+						<comment>** default game to edit (games must be specified in 
+						&lt;game&gt; part of exult.cfg)
+						</comment></line>					
+					<line>&lt;/default_game&gt;</line>
+					<line>&lt;image_editor&gt;</line>
+					<line>gimp-remote -n
+						<comment>** command that calls the image editor. Only usefull on U*ix 
+						platforms for now.
+						</comment></line>
+					<line>&lt;/image_editor&gt;</line>
+					<line>&lt;background_color&gt;</line>
+					<line>0
+						<comment>** background color for the shape-chooser. Use the preference 
+						dialog of Exult Studio for this.
+						</comment></line>
+					<line>&lt;/background_color&gt;</line>
+					<line>&lt;/estudio&gt;</line>
+					<line>&lt;/config&gt;</line>
+				</configdesc>
+			</body>
+		</sub>
+		<sub name="command_line">
+			<header>Command line options</header>
+			<body>
+				<para>
+					<Studio/> offers some "hidden" command line options:
+				</para>
+				<ul>
+					<li>-g GAMENAME<br/>
+						specifies GAMENAME and <Studio/> will read the game base directory from exult.cfg.
+						GAMENAME can be choosen from the games specified in &lt;game&gt; part of exult.cfg.</li>
+					<li>-d DIRECTORY<br/>
+						specifies DIRECTORY as the game base directory.</li>
+					<li>-x DIRECTORY<br/>
+						tells exult_studio to look in DIRECTORY for its user-interface specification 
+						(exult_studio.glade).<br/>
+  						This option is only useful to developers who want to edit exult_studio.glade 
+  						themselves.</li>
+				</ul>
+			</body>
+		</sub>
+	</section>
+	<section title="Editing a Game">
+		<sub name="description">
+			<header>Description</header>
+			<body>
+				<para>
+					Once <Studio/> runs correctly , a tree of game files is displayed to the left of 
+					the main window, while the currently selected file is viewed in detail to the right. 
+					At the moment, the following types of files are supported:
+				</para>
+				<ul>
+					<li><strong>Shape files</strong><br/>
+						Shapes are the basic graphical elements of the game. Each shape has one or more 
+						frames that typically represent different states or angles of the same thing. 
+						E.g. a button shape could have frames for pressed, and released; a character 
+						could have frames depicting her sitting, standing up facing one way, or another, 
+						swinging a punch, etc.<br/> 
+						When a shape file is selected, the right part of the main window will show frame 
+						zero of the shapes contained therein. Shapes can be selected by clicking, which 
+						will show there number, number of frames, and name if known. Other frames can be 
+						viewed by changing the frame number.</li>
+					<li><strong>Map files</strong><br/>
+						These files contain so called chunks that serve as templates in the final map. 
+						The chunks of the selected map file are shown to the right of the main window.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="can_do_atm">
+			<header>What you can do at the moment</header>
+			<body>
+				<para>
+					With the latest source you can
+				</para>
+					<ul>
+						<li>browse shapes in the main window.</li>
+   						<li>drag a shape from the shape browser to <Exult/>, and that
+							object will be placed in the game.</li>
+   						<li>edit an 'egg' by double-clicking on it.  An edit box
+							should appear.</li>
+   						<li>create a new 'egg' using the pull-down menu in <Studio/>.
+							In the Egg edit box, after you hit 'Apply', you'll be prompted to
+							click in <Exult/> where you want the egg to appear.</li>
+   						<li>If editing a 'monster' egg, you can set the monster by dragging
+							the shape from the browser to the area that displays the monster.</li>
+						<li>edit an NPC by double-clicking on it, and also create a new
+							NPC using the pull-down menu.  Attributes, flags, and schedules can
+							all be viewed and modified.</li>
+						<li>can edit other objects' position and quality by double-clicking on them.</li>
+						<li>browse the 'u7chunks' file, and drag them into <Exult/> to change
+							the terrain.  In this browser, you can also create new terrains and
+							modify their order.</li>
+						<li>edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit
+							terrain" checkbox in <Studio/>.  This is a special mode where
+							dragging with the left mouse button 'paints' the currently-selected
+							shape (generally one of the flat tiles near the top of the shapes
+							browser).  Note that a 'terrain' is generally used in multiple places
+							in the map.</li>
+						<li>save the map using ExultStudio's "File-Save map" pulldown.
+							In order to avoid writing over files inadvertantly, the files that
+							would normally go into the 'static' directory, will, instead, go into
+							a 'patch' directory that you specify in your 'exult.cfg' file.  Here's
+							an example for editing BG:</li>
+					</ul>
+				<configdesc>
+					<line>&lt;game&gt;</line>
+					<line>&lt;blackgate&gt;</line>
+					<line>&lt;path&gt;</line>
+					<line>blackgate</line>
+					<line>&lt;/path&gt;</line>
+					<line>&lt;patch&gt;</line>
+					<line>blackgate/patch</line>
+					<line>&lt;/patch&gt;</line>
+					<line>&lt;title&gt;</line>
+					<line>blackgate</line>
+					<line>&lt;/title&gt;</line>
+					<line>.</line>
+					<line>&lt;/blackgate&gt;</line>
+				</configdesc>
+				<para>
+					<Exult/> will also read files from 'patch' if it exists on starting a new game.
+				</para>
+			</body>
+		</sub>
+		<sub name="shape_edit">
+			<header>The shape editor</header>
+			<body>
+				<para>
+					When you right click on a shape in the Shape browser (e.g. Files-Shapes.vga) you 
+					get some options of how to edit the shapes.
+				</para>
+				<ul>
+					<li><strong>Edit...</strong>:<br/>
+						Brings up your image-editor on the chosen frame.  When you save 
+						in the image-editor, ES will read the changes back within 5 seconds.  This is 
+						especially convenient if you have 'gimp-remote', as it will open a window for 
+						the frame in an already-running gimp.</li>
+					<li><strong>Edit tiled</strong>:<br/>
+						This is only for 'flat' (8x8) shapes.  It forms an image 
+						from all the frames and brings it up in the image-editor.  This is really 
+						handy for making lots of terrain frames like grass.  A dialog lets you choose 
+						the dimensions.</li>
+					<li><strong>New frame</strong>:<br/>
+						Creates a new frame after the currently-selected one.  The 'insert' key 
+						also does this (and the 'del' key deletes a frame, though it's 
+						buggy if there's just one frame left).</li>
+					<li><strong>New shape</strong>:<br/>
+						Gives you a dialog for choosing the shape #, as well as the 
+						initial # of frames.</li>
+					<li><strong>Import/Export frame</strong>:<br/>
+						Let's you import a single frame from a .png file or 
+						export to a .png.</li>
+				</ul>
+				<para>
+					<em>Note:</em><strong>Edit...</strong> doesn't work on Windows system. It stores 
+					the sahpe as PNG file in GAMEDIR/itmp/ (e.g. blackgate/itmp). If you manually
+					open the file with an image editor of your liking and then save it, ES doesn't 
+					read the changes back.
+				</para>
+			</body>
+		</sub>
+		<sub name="usecode_edit">
+			<header>Custom Usecode</header>
+			<body>
+				<para>
+					As hinted at (see <extref2 target="terms"/>) Usecode is actually what runs Ultima 7
+					and therefore any game created with <Studio/>.<br/>
+					As of yet we do not have a Usecode editor/debugger. So writing your own Usecode is not 
+					that easy.
+				</para>
+				<para>
+					For an example of how Usecode may look like download our experimental patch for BG at
+					<extref target="http://prdownloads.sourceforge.net/exult/bgpatch3.zip"/>.<br/>
+					In that zip you'll find a readme.txt which tells you how to run it.<br/>
+					You will also see two files called usecode.uc and usecode.
+				</para>
+				<para>
+					Usecode is the usecode script that will help you understand our usecode language.<br/>
+					When you run ucc (see <ref target="tools"/> with that file (e.g. "ucc usecode.uc" you 
+					will get a file called usecode.uco. Rename usecode.uco to usecode and you will have the 
+					actual usecode that can be run with exult.
+				</para>
+			</body>
+		</sub>
+	</section>
+	<section title="Miscellaneous">
+		<sub name="tools">
+			<header>Other tools that might be usefull</header>
+			<body>
+				<para>
+					In the process of creating <Exult/> the team came up with some usefull 
+					tools that might help in editing/making a game.<br/>
+					These can be built from the <Exult/> source or you can download
+					the Windows binary snapshot. The source and binary snapshot can be found at
+					<extref target="http://exult.sourceforge.net/download.php"/>.<br/>
+					The tools are:
+				</para>
+				<ul>
+					<li><strong>expack</strong>:<br/>
+						lets you extract and create Flex files. 
+						See <extref target="http://exult.sourceforge.net/expack.txt">manual</extref>.</li>
+					<li><strong>ipack</strong>:<br/>
+						a tool for creating and updating Exult and U7 image archives,  such as 'shapes.vga'. 
+						See <extref target="http://exult.sourceforge.net/ipack.txt">manual</extref>.</li>
+					<li><strong>shp2pcx</strong>:<br/>
+						converts all frames contained in a Shape file into PCX-format image files. 
+						See <extref target="http://exult.sourceforge.net/shp2pcx.txt">manual</extref>.</li>
+					<li><strong>splitshp</strong>:<br/>
+						can be used to combine frames of a Shape file into one file, or split a Shape 
+						file into its component frames. 
+						See <extref target="http://exult.sourceforge.net/splitshp.txt">manual</extref>.</li>
+					<li><strong>textpack</strong>:<br/>
+						can be used edit text flex files. 
+						See <extref target="http://exult.sourceforge.net/textpack.txt">manual</extref>.</li>
+					<li><strong>ucc</strong>:<br/>
+						can be used to create custom usecode (see <ref target="usecode_edit"/>.</li>
+					<li><strong>The GIMP Plug-in</strong>:<br/>
+						can be used for editing shapes in the GIMP. Handles multiframe Shape files. 
+						See <extref target="http://www.gimp.org"/> for inormation on the GIMP.</li>
+					<li><strong>Photoshop Plug-in</strong>:<br/>
+						can be used for editing shapes in Photoshop. Can't handle multiframe Shape files. And 
+						also can't handle indexed images with Alpha correctly.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="port_platforms">
+			<header>Porting <Studio/> to other platforms</header>
+			<body>
+				<para>
+					Currently <Studio/> runs on U*ix and Windows platforms. First it only
+					ran on U*ix but with some effort by Colourless, Kirben and Mark Siewert
+					it was succesfully ported to Win32.
+				</para>
+				<para>
+					A port to other platforms depends on when someone volunteers to do the work :-)
+					There are three issues:
+				</para>
+				<ul>
+   				<li>GTK has to be ported to the platform.</li>
+   				<li><Studio/> uses sockets to communicate with <Exult/>.</li>
+   				<li>X drag-n-drop is used to put new objects on the landscape.  The
+					'drop' part of this had to be rewritten for Win32 <Exult/>, OR,
+					drag-n-drop could be an enhancement to SDL someday.<br/>
+					As an alternative to dragging objects, you can now select a shape,
+					then insert it into the game window by left-clicking while holding the
+					Shift key down.</li>
+				</ul>
+			</body>
+		</sub>	
+		<sub name="client_server_stuff">
+			<header>About this client/server stuff?</header>
+			<body>
+				<para>
+					A map-editor needs to provide the ability to display the game, place
+					objects on the map, and move objects around.  That functionality is already in
+					<Exult/>, and it makes sense to reuse it.  So we could have made <Exult/> a part of
+					<Studio/>.  However, <Exult/> is already a huge program, and is getting
+					unwieldy to work on.
+				</para>
+				<para>
+					With this architecture, <Studio/> can have all the messy code for
+					displaying/editing dialog boxes, while <Exult/> only needs a little bit
+					of work to handle requests.
+				</para>
+				<para>
+					Also, I (Jeff) wanted to get a little experience programming with
+					sockets:-)
+				</para>
+			</body>
+		</sub>
+		<sub name="terrain_stuff">
+			<header>About this 'terrain-editing' stuff and why you can't just
+  					drag objects to where you want.</header>
+			<body>
+				<para>
+					This confused me too, and I originally planned on doing away with it.
+					But do a little arithmetic:  U7's world has 3072x3072 tiles; that's
+					over 9 million that need to be set.  My guess is that they came up
+					with the idea behind 'u7chunks' to save artists time and to give the
+					map a consistent look.
+				</para>
+				<para>
+					The basic idea is that each 'chunk' of flat terrain, 16x16 tiles, is
+					stored in 'u7chunks', and is indexed by its position in this file (0,
+					1, 2, ....  The 'u7map' file specifies, for each 'chunk' in the U7
+					map, which of the terrains is to be used.  Since the entire map has
+					192x192 chunks, or a total of 36,864, and since 'u7chunks' has 3072
+					entries, each terrain is shared an average of over 10 times.  When you
+					go into map-editing mode in Exult, the numbers displayed are the
+					indices from 'u7chunks'.
+				</para>
+				<para>
+					So here are the three sorts of scenery that you can see and edit:
+				</para>
+				<ol>
+					<li>The 'terrain' (flat landscape, rocks, shrubs, and first-story
+    					buildings) specified in 'u7chunks' and 'u7map'.</li>
+    				<li>Other non-moveable objects (second-floor structures, trees) specified in
+    					the 'ifixnn' files.</li>
+    				<li>Moveable and changeable objects specified in the 'iregnn' files.</li>
+				</ol>
+				<para>
+					The challenge of writing a map-editor is keeping the above straight,
+					and reading/storing from/to the correct files.  It's sorta-kinda
+					working now :-)
+				</para>
+				<para>
+					For a more detailed explanation, see Gary Thompson's paper,
+					'u7edit.txt' in our 'docs' directory.
+				</para>
+			</body>
+		</sub>
+		<sub name="what_next">
+			<header>What's next?</header>
+			<body>
+				<para>
+					The next things to be implemented are:
+				</para>
+				<ul>
+   				<li>The main menu needs a 'Save' that saves all the various files.  Right 
+					now, saving is an inconsistent mess.</li>
+				<li><Studio/>needs to be able to automatically create palettes 1-n from palette 0 
+					using the code from ipack. </li>
+   				<li>A way to to create an entirely new game.  This is a fairly big issue,
+					since it involves having <Exult/> run when many of its files don't yet
+					exist (this is currently in progress).</li>
+				<li>It will also be very nice to have a Usecode debugger someday as well 
+					(Willem is actually working on it).</li>
+   				<li>A 'flags' editor for viewing and editing the global Usecode flags by name.</li>
+				<li>A 'barge' editor for creating things like ships and carts.</li>
+				</ul>
+			</body>
+		</sub>
+	</section>
+  	<section title="Credits">
+		<sub name="thanks">
+			<header>Thanks</header>
+			<body>
+				<ul>
+					<li>Colourless, Kirben and Mark Siewart invested a lot of effort to port
+					<Studio/> to Win32.</li>
+				</ul>
+			</body>
+		</sub>
+	</section>
+</studiodoc>

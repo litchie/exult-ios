@@ -40,7 +40,7 @@
 	</xsl:for-each>
 </xsl:template>
 
-
+<!-- FAQ Template -->
 <xsl:template match="faqs">
 <test>
 	<p>last changed: <xsl:value-of select="@changed"/></p>
@@ -67,6 +67,26 @@
 	<hr/>
 	<p>
 		A text only version can be found <a href="http://exult.sourceforge.net/docs.txt">here</a> 
+	</p>
+	<br/>
+	
+	<!-- BEGIN TOC -->
+	<xsl:call-template name="TOC"/>
+	<!-- END TOC -->
+	
+	<!-- BEGIN CONTENT -->
+	<xsl:apply-templates select="section"/>
+	<!-- END CONTENT -->
+</test>
+</xsl:template>
+
+<!-- Studio Docs Template -->
+<xsl:template match="studiodoc">
+<test>
+	<p>last changed: <xsl:value-of select="@changed"/></p>
+	<hr/>
+	<p>
+		A text only version can be found <a href="http://exult.sourceforge.net/exultstudio.txt">here</a> 
 	</p>
 	<br/>
 	
@@ -190,7 +210,7 @@
 	</a>
 </xsl:template>
 
-<!-- External Link Template to link between the FAQ/Readme -->
+<!-- External Link Template to link between the FAQ/Readme/Studio Docs -->
 <xsl:template match="extref1">
 	<a><xsl:attribute name="href">faq.php#<xsl:value-of select="@target"/></xsl:attribute>
 		<xsl:text>FAQ</xsl:text>
@@ -200,6 +220,12 @@
 <xsl:template match="extref2">
 	<a><xsl:attribute name="href">docs.php#<xsl:value-of select="@target"/></xsl:attribute>
 		<xsl:text>Documentation</xsl:text>
+	</a>
+</xsl:template>
+
+<xsl:template match="extref3">
+	<a><xsl:attribute name="href">studio.php#<xsl:value-of select="@target"/></xsl:attribute>
+		<xsl:text>Studio Documentation</xsl:text>
 	</a>
 </xsl:template>
 

@@ -1,16 +1,18 @@
-ExultDocumentation
-last changed: 07 March 2002(GMT)
+Exult Documentation
+last changed: 07 April 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 07 March 2002
-0.2. - 07 January 2002
-0.3. - 25 November 2001
+0.1. - 07 April 2002
+0.2. - 07 March 2002
+0.3. - 07 January 2002
+0.4. - 25 November 2001
 
 1. Introduction
 1.1. What is Exult?
+1.2. Terms we use in regard to Exult and Ultima 7
 
 2. Configurations
 2.1. Installation
@@ -55,7 +57,15 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 07 March 2002
+0.1. - 07 April 2002
+* 1.1. What is Exult? somehow we didn't mention Serpent Isle.
+* 1.2. Terms we use in regard to Exult and Ultima 7 added so people know what we are actually talking about.
+* 2.2. Settings in exult.cfg fixed error with save_compression_level.
+* 2.3. Path-Settings warned of spaces in paths.
+
+
+
+0.2. - 07 March 2002
 * 2.2. Settings in exult.cfg added <combat><difficulty> and <right_click_closes_gumps>.
 * 2.4. Command line options buildmap requires Exult to run in windowed mode.
 * 4.2. Scaler BillinearPlus.
@@ -63,7 +73,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 07 January 2002
+0.3. - 07 January 2002
 * 2.2. Settings in exult.cfg added <force_wavout> and <looping>.
 * 2.4. Command line options Some parameters for whoever dares to use them.
 * 6.4. Audio Options looping added.
@@ -71,7 +81,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.3. - 25 November 2001
+0.4. - 25 November 2001
 * 2.2. Settings in exult.cfg added <save_compression_level> to zip up savegames, <waves> no longer needs path set if in data dir.
 * 3.4. Digital Wave Sound Effects no longer needs paths for sfx pack (if in data dir).
 * 4.2. Scaler updated link To Derek Liauw's scaler page.
@@ -85,7 +95,21 @@ The latest version of this document can be found at http://exult.sourceforge.net
 1.1. What is Exult?
 Ultima 7, an RPG from the early 1990's, still has a huge following. But, being a DOS game with a very nonstandard memory manager, it is difficult to run it on the latest computers. Exult is a project to create an Ultima 7 game engine that runs on modern operating systems, capable of using the data and graphics files that come with the game.
 Exult is being developed in C++ under Linux, MacOS and Windows using the SDL library to make porting to other platforms relatively easy. The current version supports much of the game's plot, allowing you to talk to NPCs, use items, solve quests, and even fight monsters. Music, speech, and the full introduction are also implemented. This, and further development, is only possible due to the work done by other fans who have decoded the various Ultima 7 data files, especially Gary Thompson, Maxim Shatskih, Jakob Shonberg, and Wouter Dijkslag.
-Exult aims to let those people who own Ultima 7 (copyright 1993) play the game on modern hardware, in as close to (or perhaps even surpassing) its original splendor as is possible. You need to own "Ultima 7: The Black Gate" in order to use Exult, and we encourage you to buy a legal copy.
+Exult aims to let those people who own Ultima 7 (copyright 1993) play the game on modern hardware, in as close to (or perhaps even surpassing) its original splendor as is possible. You need to own "Ultima 7: The Black Gate" "Ultima 7: Serpent Isle" and all the add-ons in order to use Exult, and we encourage you to buy a legal copy.
+
+
+1.2. Terms we use in regard to Exult and Ultima 7
+We are using many terms in this documentation, the FAQ and other documentation files that people may have difficulties to understand. Here we will try to give some explanations.
+* BG, SI, FoV or SS: we refer to "Ultima 7: The Black Gate" as BG and to "Ultima 7: Serpent Isle" as SI. The add-ons "Forge of Virtue" and "Silver Seed" are called FoV and SS.
+* eggs: these are trip-wires that cause monsters to spawn,execute scripts,play music, change weather, trigger traps, teleport when you get near them.
+* flex files: or flexes are used by the original to store the data files. Also when you choose not use compressed savegames (see save_compression_level in 2.2.) our savegames are also "flexed".
+* gumps: the windows used in the game interface for containers, characters, menus, etc..
+* paperdoll: when pressing 'i' you get the inventory display. It's the picture of your characters body (or the bodies of your party memebrs) onto which you can drag all kinds of equipment. The way this is displayed in SI is what we call paperdoll. We integrated this for BG as well. (see FAQ.txt).
+* shapes: shape files are the format used for storage of all graphics elements (from UI buttons to terrain features) of the games Exult supports. Shapes may contain one or more frames (a frame is a single image).
+* snapshot: see FAQ.txt.
+* usecode: that's the scripting language that drives all of U7 (conversations, objects...).
+* Exult data directory: that's the directory where Exult stores its data files (exult.flx, exult_bg.flx and exult_si.flx).
+
 
 
 
@@ -113,8 +137,8 @@ Note: yes means enabled, no means disabled
 <disk>
 <save_compression_level>
 1
-						**Savegames are now compressed as zip files. 1 enables compression,
-						2 disables it.
+						**Savegames are now compressed as zip files. 0 disables compression,
+						1 enables it, 2 compresses even a bit better. Default is 1.
 						
 </save_compression_level>
 <data_path>
@@ -363,6 +387,7 @@ blackgate
 </game>
 </disk>
 You can either use the relative (./blackgate) or absolute (c:\ultima\blackgate) path to point to the correct directory.
+Note: Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\). Some people seem to have problems with that.
 
 
 2.4. Command line options

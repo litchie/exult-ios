@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="13 March 2002(GMT)">
+<faqs title="Exult" changed="07 April 2002(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="07042002">
+			<header>- 07 April 2002</header>
+			<body>
+				<ul>
+				<li>Removed the FAQ part for <Studio/> and integrated it in the <Studio/> documentation.</li>
+				<li><ref1 target="what_platforms"/> MacOS needs to be 8.5 or higher.</li>
+				<li><ref1 target="exult_engine"/> linked to the new <Studio/> documentation.</li>
+				<li><ref1 target="known_issues"/> possible bug with spaces in path.</li>
+				<li><ref1 target="compile_issues"/> makefile.cygwin uses Cygwin only as shell.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="12032002">
 			<header>- 12 March 2002</header>
 			<body>
@@ -10,56 +22,6 @@
 				<li><ref1 target="save_crash"/> restore an earlier savegame.</li>
 				<li><ref1 target="hawk_ship"/> a user could run into this bug.</li>
 				<li><ref1 target="not_yet_implemented"/> All spells should work now, right?</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="07032002">
-			<header>- 7 March 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="pentagram"/> rewritten a bit.</li>
-				<li><ref1 target="virtue_stones"/> this comes up from time to time.</li>
-				<li><ref1 target="paperdoll_issues"/> Why Sparks Paperdoll looks odd.</li>
-				<li><ref1 target="need_to_run"/> runs on Win32 now.</li>
-				<li><ref1 target="port_platforms"/> also noted that it runs on Win32.</li>
-				<li><ref1 target="how_to_run"/> some notes on Win32 mode.</li>
-				<li><ref1 target="bug_report"/> Cookies need to be enabled to attach savegames.</li>
-				<li><ref1 target="by_design"/> combat difficulty option mentioned and linked.</li>
-				<li><ref1 target="known_issues"/> Alternate SI intro is fully working now and
-					force_waveout is now default.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="10012002">
-			<header>- 10 January 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="walkthroughs"/> updated changed links.</li>
-				<li><ref1 target="si_ext_intro"/> this gets asked from time to time.</li>
-				<li><ref1 target="need_to_run"/> libglade needed as well.</li>
-				<li><ref1 target="how_to_run"/> You need to have cheats enabled.</li>
-				<li><ref1 target="bug_report"/> Added a screenshot of the upload checkbox.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="07012002">
-			<header>- 07 January 2002</header>
-			<body>
-				<ul>
-				<li><ref1 target="pentagram"/> some information on the U8 shapes/map viewer.</li>
-				<li><ref1 target="whereis_exult"/> added link to AmigaOS/MorphOS port.</li>
-				<li><ref1 target="what_platforms"/> updated with AmigaOS/MorphOS port.</li>
-				<li><ref1 target="u7_versions"/> Spanish SI version.</li>
-				<li><ref1 target="choppy_game"/> some help for people that have choppy gameplay.</li>
-				<li><ref1 target="no_sfx"/> people still ask so this should be in the FAQ.</li>
-				<li><ref1 target="diferent_volume"/> added.</li>
-				<li><ref1 target="paperdoll_issues"/> some issues with the Paperdolls.</li>
-				<li><ref2 target="Exult Studio"/> too many changes to list. A must read.</li>
-				<li><ref1 target="by_design"/> looping music explained.</li>
-				<li><ref1 target="known_issues"/> Neither speech nor subtitles in SI-Endgame.
-					Also possible <strong>workaround</strong> for sound issues on Windows.</li>
-				<li><ref1 target="compile_issues"/> Max is working to make <Exult/> compile on OSX.
-					Don't forget the exult*.flx files</li>
 				</ul>
 			</body>
 		</sub>
@@ -232,8 +194,8 @@
 				<para>
 					<Exult/> should be able to be compiled (with minor modifications) on
 					any platform that SDL supports. Right now the source can be compiled
-					in Linux/i386, Linux/Alpha, MacOS, OSX, OpenBSD, FreeBSD, Solaris, BeOS and 
-					Win32 (Windows 9x/ME/NT4/2000/XP).
+					in Linux/i386, Linux/Alpha, MacOS (requires at least MacOS 8.5 or higher), 
+					OSX, OpenBSD, FreeBSD, Solaris, BeOS and Win32 (Windows 9x/ME/NT4/2000/XP).
 				</para>
 				<para>
 					Recently we discovered that there is also a working port of <Exult/> for
@@ -598,236 +560,12 @@
 					a <extref target="http://www.gimp.org/">Gimp</extref> plug-in to edit shapes.
 				</para>
 				<para>
-					For much more information "<Studio/>" see <ref2 target="Exult Studio"/>.
+					For much more information "<Studio/>" see <extref3 target="whatis_studio"/>.
 				</para>
 				<cite name="Jeff">
 					As for the future, my main plan is to add editing capabilities,
 					with the long-range goal of writing an original RPG.
 				</cite>
-			</body>
-		</sub>
-	</section>
-	<section title="Exult Studio">
-		<sub name="what_is_studio">
-			<header>What is it?</header>
-			<body>
-				<para>
-					<Studio/> is a map-editor for <Exult/>, allowing you to modify the map of a
-					game and, eventually, to create a completely new landscape for a new game.
-				</para>
-			</body>
-		</sub>
-		<sub name="cool_name">
-			<header>Who came up with the cool name?</header>
-			<body>
-				<para>
-					Tristan
-				</para>
-			</body>
-		</sub>
-		<sub name="need_to_run">
-			<header>What do you need to run it?</header>
-			<body>
-				<para>
-					Currently, you need to be running <Exult/> on X (Linux, UNIX, etc.), with
-					<Exult/> set to run in a window (not fullscreen).  You also need the GTK+
-					library installed as well as
-					<extref target="http://developer.gnome.org/doc/API/libglade/libglade.html">libglade</extref>
-				</para>
-				<para>
-					Recently Colourless, Kirben and Mark Siewert made <Studio/> run on Win32 platforms.
-				</para>
-			</body>
-		</sub>
-		<sub name="port_platforms">
-			<header>When will it be ported to other platforms?</header>
-			<body>
-				<para>
-					That depends on when someone volunteers to do the work :-)
-					Colourless, Kirben and Mark Siewert already did this for Win32.
-					There are three issues:
-				</para>
-				<ul>
-   				<li>GTK has to be ported to the platform. This is already
-					true for Win32.</li>
-   				<li><Studio/> uses sockets to communicate with <Exult/>.  This also
-					shouldn't be a problem for Win32.</li>
-   				<li>X drag-n-drop is used to put new objects on the landscape.  The
-					'drop' part of this had to be rewritten for Win32 <Exult/>, OR,
-					drag-n-drop could be an enhancement to SDL someday.<br/>
-					As an alternative to dragging objects, you can now select a shape,
-					then insert it into the game window by left-clicking while holding the
-					Shift key down.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="how_to_run">
-			<header>How do you run it?</header>
-			<body>
-				<para>
-					You can run <Studio/> all by itself, but it isn't useful that way,
-					as it uses <Exult/> as a server.  What you really want to do is:
-				</para>
-				<ul>
-   				<li>Put 'exult_studio.glade' in the <Exult/> 'data' directory.</li>
-   				<li>Be sure 'exult_studio' is in your path. (on Win32
-   					'exult_studio.exe' needs to be in the same directory as exult.exe)</li>
-   				<li>Run <Exult/> in windowed mode (not fullscreen).</li>
-   				<li>Press 'alt-ctrl-m' to go into 'map-editor' mode.  If all is set
-					up correctly, exult_studio will start up, and will have a list of files
-					on the left side of its window (you need to have cheats enabled in <Exult/>,
-					see the <extref2 target="gameplay_gump"/>).</li>
-				</ul>
-				<para>
-					Starting up one or the other separately will reconnect them:
-				</para>
-				<ul>
-    			<li>If <Exult/> isn't running, start it up.  Then, in <Studio/>,
-					use the 'File' menu to choose the static directory (for the game you're
-					playing).</li>
-   				<li>If <Studio/> isn't running start it up with:
-        			exult_studio -x (path to dir containing exult_studio.glade) -d
-        			(path to game directory)</li>
-				</ul>
-				<para>
-					You can also reconnect by selecting File-Connect in <Studio/>'s
-					menus.
-				</para>
-			</body>
-		</sub>
-		<sub name="what_can_do_at_moment">
-			<header>What can you do at the moment?</header>
-			<body>
-				<para>
-					With the latest source you can
-				</para>
-				<ul>
-				<li>browse shapes in the main window.</li>
-   				<li>drag a shape from the shape browser to <Exult/>, and that
-					object will be placed in the game.</li>
-   				<li>edit an 'egg' by double-clicking on it.  An edit box
-					should appear.</li>
-   				<li>create a new 'egg' using the pull-down menu in <Studio/>.
-					In the Egg edit box, after you hit 'Apply', you'll be prompted to
-					click in <Exult/> where you want the egg to appear.</li>
-   				<li>If editing a 'monster' egg, you can set the monster by dragging
-					the shape from the browser to the area that displays the monster.</li>
-				<li>edit an NPC by double-clicking on it, and also create a new
-					NPC using the pull-down menu.  Attributes, flags, and schedules can
-					all be viewed and modified.</li>
-				<li>can edit other objects' position and quality by double-clicking on them.</li>
-				<li>browse the 'u7chunks' file, and drag them into <Exult/> to change
-					the terrain.  In this browser, you can also create new terrains and
-					modify their order.</li>
-				<li>edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit
-					terrain" checkbox in <Studio/>.  This is a special mode where
-					dragging with the left mouse button 'paints' the currently-selected
-					shape (generally one of the flat tiles near the top of the shapes
-					browser).  Note that a 'terrain' is generally used in multiple places
-					in the map.</li>
-				<li>save the map using ExultStudio's "File-Save map" pulldown.
-					In order to avoid writing over files inadvertantly, the files that
-					would normally go into the 'static' directory, will, instead, go into
-					a 'patch' directory that you specify in your 'exult.cfg' file.  Here's
-					mine:</li>
-				</ul>
-				<configdesc>
-					<line>&lt;game&gt;</line>
-					<line>&lt;blackgate&gt;</line>
-					<line>&lt;path&gt;</line>
-					<line>./blackgate</line>
-					<line>&lt;/path&gt;</line>
-					<line>&lt;patch&gt;</line>
-					<line>/home/jeff/exult/data/bg/static</line>
-					<line>&lt;/patch&gt;</line>
-					<line>&lt;title&gt;</line>
-					<line>blackgate</line>
-					<line>&lt;/title&gt;</line>
-					<line>.</line>
-					<line>&lt;/blackgate&gt;</line>
-				</configdesc>
-				<para>
-					<Exult/> will also read files from 'patch' if it exists.
-				</para>
-			</body>
-		</sub>
-		<sub name="what_next">
-			<header>What's next?</header>
-			<body>
-				<para>
-					The next things to be implemented are:
-				</para>
-				<ul>
-    			<li>A 'barge' editor for creating things like ships and carts.</li>
-   				<li>A 'flags' editor for viewing and editing the global Usecode flags by name.</li>
-   				<li>A way to to create an entirely new game.  This is a fairly big issue,
-					since it involves having <Exult/> run when many of its files don't yet
-					exist.</li>
-				<li>It will also be very nice to have a Usecode debugger someday as well.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="client_server_stuff">
-			<header>What's with this client/server stuff?</header>
-			<body>
-				<para>
-					A map-editor needs to provide the ability to display the game, place
-					objects on the map, and move objects around.  That functionality is already in
-					<Exult/>, and it makes sense to reuse it.  So we could have made <Exult/> a part of
-					<Studio/>.  However, <Exult/> is already a huge program, and is getting
-					unwieldy to work on.
-				</para>
-				<para>
-					With this architecture, <Studio/> can have all the messy code for
-					displaying/editing dialog boxes, while <Exult/> only needs a little bit
-					of work to handle requests.
-				</para>
-				<para>
-					Also, I (Jeff) wanted to get a little experience programming with
-					sockets:-)
-				</para>
-			</body>
-		</sub>
-		<sub name="terrain_stuff">
-			<header>What's with this 'terrain-editing' stuff?  Why can't I just
-  					drag objects to where I want?</header>
-			<body>
-				<para>
-					This confused me too, and I originally planned on doing away with it.
-					But do a little arithmetic:  U7's world has 3072x3072 tiles; that's
-					over 9 million that need to be set.  My guess is that they came up
-					with the idea behind 'u7chunks' to save artists time and to give the
-					map a consistent look.
-				</para>
-				<para>
-					The basic idea is that each 'chunk' of flat terrain, 16x16 tiles, is
-					stored in 'u7chunks', and is indexed by its position in this file (0,
-					1, 2, ....  The 'u7map' file specifies, for each 'chunk' in the U7
-					map, which of the terrains is to be used.  Since the entire map has
-					192x192 chunks, or a total of 36,864, and since 'u7chunks' has 3072
-					entries, each terrain is shared an average of over 10 times.  When you
-					go into map-editing mode in Exult, the numbers displayed are the
-					indices from 'u7chunks'.
-				</para>
-				<para>
-					So here are the three sorts of scenery that you can see and edit:
-				</para>
-				<ol>
-					<li>The 'terrain' (flat landscape, rocks, shrubs, and first-story
-    					buildings) specified in 'u7chunks' and 'u7map'.</li>
-    				<li>Other non-moveable objects (second-floor structures, trees) specified in
-    					the 'ifixnn' files.</li>
-    				<li>Moveable and changeable objects specified in the 'iregnn' files.</li>
-				</ol>
-				<para>
-					The challenge of writing a map-editor is keeping the above straight,
-					and reading/storing from/to the correct files.  It's sorta-kinda
-					working now :-)
-				</para>
-				<para>
-					For a more detailed explanation, see Gary Thompson's paper,
-					'u7edit.txt' in our 'docs' directory.
-				</para>
 			</body>
 		</sub>
 	</section>
@@ -935,6 +673,8 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
+					<li>There might be a bug when you have any of the games installed in a 
+						path with spaces in it (see <extref2 target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>
 					<li>Movement is sometimes jerky or slow.</li>
 					<li>We don't know what all the data in 'weapons.dat' and 'ammo.dat'
@@ -971,8 +711,7 @@
 			<header>Known Compile Issues</header>
 			<body>
 				<ul>
-					<li>Max is working to make Exult compile on OSX like it does on all UNIX systems but that
-						requires SDL 1.2.3 or newer.</li>
+					<li>makefile.cygwin uses cygwin only as shell. Mingw is used for compiling.</li>
 					<li>There is a bug/incompatibility with the flex bundled Linux distributions
 						(RH7.0, for example) that breaks compilation. Upgrading to a more recent version
 						of flex should fix it.</li>
