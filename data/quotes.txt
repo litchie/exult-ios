@@ -91,3 +91,8 @@
 \Cand I could become more difficult"
 \L - Ryan,
 \L on world-wrapping
+
+\C"On a more positive note,
+\Ctry dying in SI. 
+\CIt's working much better now."
+\L - Jeff on Jackchaos

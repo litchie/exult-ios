@@ -1,3 +1,7 @@
+2001-03-30  Tristan Tarrant <nadir@users.sourceforge.net>
+
+	* data/quotes.txt: New quote from Jeff
+
 2001-03-30  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Added 'dead' flag, 'killable' flag.  SI combat is
