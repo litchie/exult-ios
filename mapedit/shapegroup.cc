@@ -511,8 +511,7 @@ void ExultStudio::open_group_window
 	GladeXML *xml = glade_xml_new(glade_path, "group_window");
 	glade_xml_signal_autoconnect(xml);
 	GtkWidget *grpwin = glade_xml_get_widget(xml, "group_window");
-	Object_browser *chooser = curfile->create_browser(vgafile, names,
-							palbuf, grp);
+	Object_browser *chooser = curfile->create_browser(vgafile,palbuf, grp);
 					// Set xml as data on window.
 	gtk_object_set_data(GTK_OBJECT(grpwin), "xml", xml);
 	gtk_object_set_data(GTK_OBJECT(grpwin), "browser", chooser);

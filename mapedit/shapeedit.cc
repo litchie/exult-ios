@@ -297,7 +297,7 @@ void ExultStudio::init_equip_window
 		int shnum = elem.get_shapenum();
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(widgets.shape), 
 									shnum);
-		const char *nm = (names && shnum > 0) ? names[shnum] : "";
+		const char *nm = get_shape_name(shnum);
 		gtk_label_set_text(GTK_LABEL(widgets.name), nm);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(widgets.chance),
 						elem.get_probability());
@@ -881,7 +881,25 @@ void ExultStudio::save_shape_window
 	int frnum = get_num_entry("shinfo_frame");
 	Shape_info *info = (Shape_info *)
 			gtk_object_get_user_data(GTK_OBJECT(shapewin));
-	//+++++++Save origin, name?
+	if (info &&			// If 'shapes.vga', get name.
+	    shnum < 1024)		// But only for the first 1024.
+		{
+		char *nm = get_text_entry("shinfo_name");
+		if (!nm)
+			nm = "";
+		char *oldname = get_shape_name(shnum);
+		if (!oldname)
+			oldname = "";
+		if (strcmp(nm, oldname) != 0)
+			{		// Name changed.
+			if (shnum >= names.size())
+				names.resize(shnum + 1);
+			delete names[shnum];
+			names[shnum] = nm ? newstrdup(nm) : 0;
+			shape_names_modified = true;
+			}
+		}
+	//+++++++Save origin.
 	//++++Then add:  shape_info_modified = true;
 	if (info)
 		save_shape_notebook(*info, shnum, frnum);

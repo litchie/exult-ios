@@ -103,7 +103,7 @@ static void Shape_dropped_here
 	{
 	((Shape_chooser *) udata)->shape_dropped_here(file, shape, frame);
 	}
-					// Schedule names.
+
 /*
  *	Blit onto screen.
  */
@@ -170,11 +170,12 @@ void Shape_chooser::select
 	char buf[150];			// Show new selection.
 	g_snprintf(buf, sizeof(buf), "Shape %d (%d frames)",
 						shapenum, nframes);
-	if (names && names[shapenum])
+	ExultStudio *studio = ExultStudio::get_instance();
+	if (shapes_file && studio->get_shape_name(shapenum))
 		{
 		int len = strlen(buf);
 		g_snprintf(buf + len, sizeof(buf) - len, 
-						":  '%s'", names[shapenum]);
+				":  '%s'", studio->get_shape_name(shapenum));
 		}
 	gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
 	}
@@ -861,13 +862,14 @@ void Shape_chooser::edit_shape_info
 	int shnum = info[selected].shapenum,
 	    frnum = info[selected].framenum;
 	Shape_info *info = 0;
+	char *name = 0;
 	if (shapes_file)
 		{			// Read info. the first time.
 		shapes_file->read_info(false, true);//+++++BG?
 		info = &shapes_file->get_info(shnum);
+		name = studio->get_shape_name(shnum);
 		}
-	studio->open_shape_window(shnum, frnum, ifile,
-					names ? names[shnum] : 0, info);
+	studio->open_shape_window(shnum, frnum, ifile, name, info);
 	}
 
 /*
@@ -1826,11 +1828,12 @@ void Shape_chooser::search
 	int dir				// 1 or -1.
 	)
 	{
-	if (!names)
+	if (!shapes_file)		// Not 'shapes.vga'.
 		return;			// In future, maybe find shape #?
 	int total = get_count();
 	if (!total)
 		return;			// Empty.
+	ExultStudio *studio = ExultStudio::get_instance();
 					// Start with selection, or top.
 	int start = selected >= 0 ? info[selected].index : index0;
 	int i;
@@ -1839,7 +1842,8 @@ void Shape_chooser::search
 	for (i = start; i != stop; i += dir)
 		{
 		int shnum = group ? (*group)[i] : i;
-		if (strstr(names[shnum], srch))
+		char *nm = studio->get_shape_name(shnum);
+		if (nm && strstr(nm, srch))
 			break;		// Found it.
 		}
 	if (i == stop)

@@ -96,7 +96,7 @@ Shape_draw::Shape_draw
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	GtkWidget *drw			// Drawing area to use.
 	) : ifile(i),
-	    iwin(0), palette(0), names(0), draw(drw), drawgc(0),
+	    iwin(0), palette(0), draw(drw), drawgc(0),
 	    drop_callback(0), drop_user_data(0)
 	{
 	guint32 colors[256];

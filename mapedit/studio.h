@@ -60,13 +60,13 @@ private:
 	guint32			background_color;
 	static ExultStudio	*self;
 						// Modified one of the .dat's?
-	bool			shape_info_modified;
+	bool			shape_info_modified, shape_names_modified;
 	Shape_file_set		*files;		// All the shape files.
 	std::vector<GtkWindow*>	group_windows;	// All 'group' windows.
 	Shape_file_info		*curfile;	// Current browser file info.
 	Shape_file_info		*vgafile;	// Main 'shapes.vga'.
 	Shape_file_info		*facefile;	// 'faces.vga'.
-	char			**names;
+	std::vector<char *>	names;
 	Object_browser		*browser;
 	unsigned char 		*palbuf;
 					// Egg editor:
@@ -116,7 +116,7 @@ public:
 	guint32 get_background_color() const
 		{ return background_color; }
 	char *get_shape_name(int shnum)
-		{ return names ? names[shnum] : 0; }
+		{ return shnum >= 0 && shnum < names.size() ?names[shnum] : 0;}
 	const char *get_image_editor()
 		{ return image_editor; }
 	Shape_file_set *get_files()
