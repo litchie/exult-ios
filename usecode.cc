@@ -1773,14 +1773,13 @@ USECODE_INTRINSIC(get_npc_name)
 		for (int i = 0; i < cnt; i++)
 			{
 			Game_object *obj = get_item(parms[0].get_elem(i));
-			char *nm = obj ? obj->get_name() : 0;
-			Usecode_value v(nm ? nm : unknown);
+			Usecode_value v(obj->get_name().c_str());
 			arr.put_elem(i, v);
 			}
 		return(arr);
 		}
 	Game_object *obj = get_item(parms[0]);
-	Usecode_value u(obj ? obj->get_name() : unknown);
+	Usecode_value u(obj ? obj->get_name().c_str() : unknown);
 	return(u);
 }
 

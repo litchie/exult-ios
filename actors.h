@@ -90,18 +90,18 @@ public:
 		lrhand = 100,		// Special:  uses lhand & rhand.
 		lrfinger = 101		// Special:  uses lfinger & rfinger
 		};
-	int free_hand()			// Get index of a free hand, or -1.
+	int free_hand() const		// Get index of a free hand, or -1.
 		{ 
 		return two_handed ? -1 :
 			(!spots[lhand] ? lhand : (!spots[rhand] ? rhand : -1));
 		}
-	int free_finger()		// Get index of a free finger, or -1.
+	int free_finger() const		// Get index of a free finger, or -1.
 		{ 
 		return two_fingered ? -1 :
 			(!spots[lfinger] ? lfinger
 			 	: (!spots[rfinger] ? rfinger : -1));
 		}
-	int has_light_source()		// Carrying a torch?
+	int has_light_source() const	// Carrying a torch?
 		{ return light_sources > 0; }
 	enum Item_flags {		// Bit #'s of flags:
 		poisoned = 8,
@@ -126,13 +126,13 @@ public:
 		to_sit_frame = 11,
 		sleep_frame = 13
 		};
-	int get_face_shapenum()		// Get "portrait" shape #.
+	int get_face_shapenum() const	// Get "portrait" shape #.
 		{ return npc_num; }	// It's the NPC's #.
-	int get_usecode()
+	int get_usecode() const
 		{ return usecode; }
-	int get_frame_time()		// Return frame time if moving.
+	int get_frame_time() const	// Return frame time if moving.
 		{ return frame_time; }
-	int is_moving()
+	int is_moving() const
 		{ return frame_time != 0; }
 	Actor_action *get_action()	// Return action.
 		{ return action; }
@@ -164,32 +164,33 @@ public:
 	virtual void activate(Usecode_machine *umachine);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
-	virtual char *get_name();
+	virtual string get_name() const;
 	virtual void set_property(int prop, int val)
 		{
 		if (prop >= 0 && prop < 12)
 			properties[prop] = (short) val;
 		}
-	virtual int get_property(int prop)
+	virtual int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
-	virtual int is_dead_npc()	// Dead when health goes to 0.
+	virtual int is_dead_npc() const	// Dead when health goes to 0.
 		{ return properties[(int) health] <= 0; }
-	int get_level()			// Get experience level.
+	int get_level() const		// Get experience level.
 		{ return 1 + Log2(get_property(exp)/50); }
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag);
 	virtual void clear_flag(int flag);
-	virtual int get_flag(int flag);
-	virtual int get_npc_num()	// Get its ID (1-num_npcs).
+	virtual int get_flag(int flag) const;
+	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return npc_num; }
-	virtual int get_party_id()	// Get/set index within party.
+					// Get/set index within party.
+	virtual int get_party_id() const
 		{ return party_id; }
 	virtual void set_party_id(int i)
 		{ party_id = i; }
 					// Set for Usecode animations.
 	virtual void set_usecode_dir(int d)
 		{ usecode_dir = d&7; }
-	virtual int get_usecode_dir()
+	virtual int get_usecode_dir() const
 		{ return usecode_dir; }
 					// Remove an object.
 	virtual void remove(Game_object *obj);
@@ -198,7 +199,7 @@ public:
 					// Add to NPC 'readied' spot.
 	virtual int add_readied(Game_object *obj, int index);
 	virtual int find_readied(Game_object *obj);
-	virtual Game_object *get_readied(int index)
+	virtual Game_object *get_readied(int index) const
 		{
 		return index >= 0 && 
 			index < (int)(sizeof(spots)/sizeof(spots[0])) ? 
@@ -432,11 +433,11 @@ public:
 	Schedule_change() : time(0), type(0), x(0), y(0), superchunk(0)
 		{  }
 	void set(unsigned char *ent);	// Create from 5-byte entry.
-	int get_type()
+	int get_type() const
 		{ return type; }
-	int get_time()
+	int get_time() const
 		{ return time; }
-	Tile_coord get_pos()		// Get position chunk, tile.
+	Tile_coord get_pos() const	// Get position chunk, tile.
 		{
 		int cx = 16*(superchunk%12) + x/16,
 		    cy = 16*(superchunk/12) + y/16,
@@ -472,7 +473,7 @@ public:
 		{ nearby = 1; }
 	void clear_nearby()
 		{ nearby = 0; }
-	int is_nearby()
+	int is_nearby() const
 		{ return nearby != 0; }
 					// Set schedule list.
 	void set_schedules(Schedule_change *list, int cnt)
@@ -481,7 +482,8 @@ public:
 		schedules = list;
 		num_schedules = cnt;
 		}
-	virtual int get_alignment()	// Get/set 'alignment'.
+					// Get/set 'alignment'.
+	virtual int get_alignment() const
 		{ return alignment; }
 	virtual void set_alignment(short a)
 		{ alignment = a; }
@@ -489,7 +491,7 @@ public:
 	void update_schedule(Game_window *gwin, int hour3);
 					// Set new schedule.
 	virtual void set_schedule_type(int new_schedule_type);
-	virtual int get_schedule_type()
+	virtual int get_schedule_type() const
 		{ return schedule_type; }
 					// Render.
 	virtual void paint(Game_window *gwin);

@@ -76,13 +76,13 @@ public:
 	ShapeID() : low(0xff), high(0xff)
 		{  }
 	~ShapeID() {};
-	int is_invalid()		// End-of-list or invalid?
+	int is_invalid() const		// End-of-list or invalid?
 		{ return (low == 0xff && high == 0xff); }
-	int is_eol()
+	int is_eol() const
 		{ return is_invalid(); }
-	int get_shapenum()
+	int get_shapenum() const
 		{ return low + 256*(high&0x3); }
-	int get_framenum()
+	int get_framenum() const
 		{ return (high >> 2); }
 					// Set to given shape.
 	void set_shape(int shapenum, int framenum)
@@ -144,7 +144,7 @@ public:
 				lift(lft), quality(0), cx(255), cy(255)
 		{  }
 					// Copy constructor.
-	Game_object(Game_object& obj2)
+	Game_object(const Game_object& obj2)
 		: ShapeID(obj2), shape_pos(obj2.shape_pos), lift(obj2.lift),
 		  quality(obj2.quality), cx(obj2.cx), cy(obj2.cy)
 		{  }
@@ -152,35 +152,36 @@ public:
 		{  }
 	virtual ~Game_object()
 		{  }
-	int get_tx()			// Get tile (0-15) within chunk.
+	int get_tx() const		// Get tile (0-15) within chunk.
 		{ return (shape_pos >> 4) & 0xf; }
-	int get_ty()
+	int get_ty() const
 		{ return shape_pos & 0xf; }
-	int get_lift()
+	int get_lift() const
 		{ return lift; }
-	int get_worldx()		// Get x-coord. within world.
+	int get_worldx() const		// Get x-coord. within world.
 		{ return cx*chunksize + get_tx()*tilesize; }
-	int get_worldy()		// Get y-coord. within world.
+	int get_worldy() const		// Get y-coord. within world.
 		{ return cy*chunksize + get_ty()*tilesize; }
 					// Get location in abs. tiles.
-	void get_abs_tile(int& atx, int& aty, int& atz)
+	void get_abs_tile(int& atx, int& aty, int& atz) const
 		{
 		atz = get_lift();
 		atx = cx*tiles_per_chunk + get_tx();
 		aty = cy*tiles_per_chunk + get_ty();
 		}
-	Tile_coord get_abs_tile_coord()	// Same thing.
+					// Same thing.
+	Tile_coord get_abs_tile_coord() const
 		{
 		int x, y, z;
 		get_abs_tile(x, y, z);
 		return Tile_coord(x, y, z);
 		}
-	int get_quality()
+	int get_quality() const
 		{ return quality; }
 	void set_quality(int q)
 		{ quality = q; }
-	int get_quantity();		// Like # of coins.
-	int get_volume();		// Get space taken.
+	int get_quantity() const;	// Like # of coins.
+	int get_volume() const;		// Get space taken.
 					// Add/remove to/from quantity.
 	int modify_quantity(int delta);
 					// Set shape coord. within chunk.
@@ -192,14 +193,14 @@ public:
 		{ return next; }
 	void set_next(Game_object *obj) // Set next in list.
 		{ next = obj; }
-	int lt(Game_object& obj2);	// Is this less than another in pos.?
+	int lt(Game_object& obj2) const;// Is this less than another in pos.?
 					// Return chunk coords.
-	int get_cx()
+	int get_cx() const
 		{ return cx; }
-	int get_cy()
+	int get_cy() const
 		{ return cy; }
 					// Get frame for desired direction.
-	int get_dir_framenum(int dir, int frnum)
+	int get_dir_framenum(int dir, int frnum) const
 		{ return (frnum&0xf) + rotate[dir]; }
 					// Move to new abs. location.
 	virtual void move(int newtx, int newty, int newlift);
@@ -225,7 +226,7 @@ public:
 	Game_object *find_closest(int *shapenums, int num_shapes);
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
-	int is_closed_door();		// Checking for a closed door.
+	int is_closed_door() const;	// Checking for a closed door.
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
@@ -233,20 +234,23 @@ public:
 					// Set new NPC schedule.
 	virtual void set_schedule_type(int new_schedule_type)
 		{  }
-	virtual int get_schedule_type()	// Return NPC schedule.
+					// Return NPC schedule.
+	virtual int get_schedule_type()	const
 		{ return 11; }		// Loiter.
-	virtual char *get_name();
-	virtual Game_object *clone()	// Create a copy.
+	virtual string get_name() const;
+					// Create a copy.
+	virtual Game_object *clone() const
 		{ return new Game_object(*this); }
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual void set_property(int prop, int val)
 		{  }
-	virtual int get_property(int prop)
+	virtual int get_property(int prop) const
 		{ return 0; }
-	virtual int is_dead_npc()
+	virtual int is_dead_npc() const
 		{ return 0; }
-	virtual int get_alignment()	// Get/set 'alignment'.
+					// Get/set 'alignment'.
+	virtual int get_alignment() const
 		{ return 0; }
 	virtual void set_alignment(short)
 		{  }
@@ -254,25 +258,25 @@ public:
 		{ return 0; }
 	virtual void set_owner(Container_game_object *o)
 		{  }
-	virtual int is_dragable();	// Can this be dragged?
+	virtual int is_dragable() const;// Can this be dragged?
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag) { }
 	virtual void clear_flag(int flag) { }
-	virtual int get_flag(int flag) { return 0; }
-	virtual int get_npc_num()	// Get its ID (1-num_npcs).
+	virtual int get_flag(int flag) const { return 0; }
+	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return 0; }
-	virtual int get_party_id()	// Get/set index within party.
+	virtual int get_party_id() const// Get/set index within party.
 		{ return -1; }
 	virtual void set_party_id(int i)
 		{  }
 					// Set for Usecode animations.
 	virtual void set_usecode_dir(int d)
 		{  }
-	virtual int get_usecode_dir()
+	virtual int get_usecode_dir() const
 		{ return 0; }
-	virtual int is_egg()		// An egg?
+	virtual int is_egg() const	// An egg?
 		{ return 0; }
 					// Count contained objs.
 	virtual int count_objects(int shapenum, int framenum = -359)
@@ -297,7 +301,7 @@ public:
 								int framenum)
 		{ return 0; }
 					// Get coord. where this was placed.
-	virtual Tile_coord get_original_tile_coord()
+	virtual Tile_coord get_original_tile_coord() const
 		{ return get_abs_tile_coord(); }
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out)
@@ -325,14 +329,15 @@ public:
 						owner(0)
 		{  }
 					// Copy constructor.
-	Ireg_game_object(Ireg_game_object& obj2)
+	Ireg_game_object(const Ireg_game_object& obj2)
 		: Game_object(obj2), owner(0)
 		{  }
 	Ireg_game_object() : owner(0)	// Create fake entry.
 		{  }
 	virtual ~Ireg_game_object()
 		{  }
-	virtual Game_object *clone()	// Create a copy.
+					// Create a copy.
+	virtual Game_object *clone() const
 		{ return new Ireg_game_object(*this); }
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
@@ -340,7 +345,7 @@ public:
 		{ return owner; }
 	virtual void set_owner(Container_game_object *o)
 		{ owner = o; }
-	virtual int is_dragable();	// Can this be dragged?
+	virtual int is_dragable() const;// Can this be dragged?
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
 	};
@@ -369,7 +374,8 @@ public:
 					// For when an obj's quantity changes:
 	void modify_volume_used(int delta)
 		{ volume_used += delta; }
-	int has_room(Game_object *obj)	// Room for this object?
+					// Room for this object?
+	int has_room(Game_object *obj) const
 		{ return obj->get_volume() + volume_used <= get_volume(); }
 					// Remove an object.
 	virtual void remove(Game_object *obj);
@@ -383,7 +389,7 @@ public:
 					// Find object's spot.
 	virtual int find_readied(Game_object *obj)
 		{ return -1; }
-	virtual Game_object *get_readied(int index)
+	virtual Game_object *get_readied(int index) const
 		{ return 0; }
 					// Add/remove quantities of objs.
 	virtual int add_quantity(int delta, int shapenum, int qual = -359,
@@ -459,7 +465,7 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Get coord. where this was placed.
-	virtual Tile_coord get_original_tile_coord()
+	virtual Tile_coord get_original_tile_coord() const
 		{ return get_abs_tile_coord() + 
 					Tile_coord(-deltax, -deltay, 0); }
 					// Write out to IREG file.
@@ -504,16 +510,16 @@ public:
 		unsigned char prob, short d1, short d2);
 	virtual ~Egg_object()
 		{  }
-	int get_distance()
+	int get_distance() const
 		{ return distance; }
-	int is_active()			// Can it be activated?
+	int is_active() const		// Can it be activated?
 		{ return !(flags & (1 << (int) hatched)); }
-	int within_distance(int abs_tx, int abs_ty);
+	int within_distance(int abs_tx, int abs_ty) const;
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
-	virtual int is_egg()		// An egg?
+	virtual int is_egg() const	// An egg?
 		{ return 1; }
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
@@ -599,20 +605,20 @@ public:
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add an egg.
 	void remove(Game_object *obj);	// Remove an object.
-	int is_roof()			// Is there a roof?
+	int is_roof() const		// Is there a roof?
 		{ return roof; }
-	int get_cx()
+	int get_cx() const
 		{ return cx; }
-	int get_cy()
+	int get_cy() const
 		{ return cy; }
 	Npc_actor *get_npcs()		// Get ->first npc in chunk.
 		{ return npcs; }
-	int get_light_sources()		// Get #lights.
+	int get_light_sources() const	// Get #lights.
 		{ return light_sources; }
 					// Set/get flat shape.
 	void set_flat(int tilex, int tiley, ShapeID id)
 		{ flats[16*tiley + tilex] = id; }
-	ShapeID get_flat(int tilex, int tiley)
+	ShapeID get_flat(int tilex, int tiley) const
 		{ return flats[16*tiley + tilex]; }
 	Game_object *get_first()	// Return first object.
 		{ return objects; }
@@ -690,11 +696,12 @@ public:
 	Frames_sequence(int cnt, unsigned char *f);
 	~Frames_sequence()
 		{ delete frames; }
-	unsigned char get_resting()	// Get resting frame.
+					// Get resting frame.
+	unsigned char get_resting() const
 		{ return frames[0]; }
 					// Get next frame.  Call
 					//   with index = 0 for first one.
-	unsigned char get_next(int& index)
+	unsigned char get_next(int& index) const
 		{
 		if (++index >= num_frames)
 			index = 1;
@@ -714,10 +721,13 @@ public:					// Let's make it all public.
 			: x(xin), y(yin), w(win), h(hin)
 		{  }
 	Rectangle() { }			// An uninitialized one.
-	int has_point(int px, int py)	// Is this point in it?
+					// Is this point in it?
+	int has_point(int px, int py) const
 		{ return (px >= x && px < x + w && py >= y && py < y + h); }
-	Rectangle add(Rectangle& r2)	// Add another to this one to get
-		{			//  a rect. that encloses both.
+					// Add another to this one to get
+					//  a rect. that encloses both.
+	Rectangle add(Rectangle& r2) const
+		{
 		int xend = x + w, yend = y + h;
 		int xend2 = r2.x + r2.w, yend2 = r2.y + r2.h;
 		Rectangle r;		// Return this.
@@ -728,7 +738,7 @@ public:					// Let's make it all public.
 		return (r);
 		}
 					// Intersect another with this.
-	Rectangle intersect(Rectangle& r2)
+	Rectangle intersect(Rectangle& r2) const
 		{
 		int xend = x + w, yend = y + h;
 		int xend2 = r2.x + r2.w, yend2 = r2.y + r2.h;
@@ -739,7 +749,8 @@ public:					// Let's make it all public.
 		r.h = (yend <= yend2 ? yend : yend2) - r.y;
 		return (r);
 		}
-	int intersects(Rectangle r2)	// Does it intersect another?
+					// Does it intersect another?
+	int intersects(Rectangle r2) const
 		{
 		return (x >= r2.x + r2.w ? 0 : r2.x >= x + w ? 0 :
 			y >= r2.y + r2.h ? 0 : r2.y >= y + h ? 0 : 1);
