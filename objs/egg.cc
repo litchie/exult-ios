@@ -1079,7 +1079,10 @@ void Mirror_object::activate(Usecode_machine *umachine, Game_object *obj, int mu
 int Mirror_object::is_active(Game_object *obj, int tx, int ty, int tz, int from_tx, int from_ty)
 {
 	// These are broken, so dont touch
-	if ((get_framenum()%3) == 2)  return 0;
+	int frnum = get_framenum();
+	if (frnum%3 == 2)  return 0;
+	if (frnum >= 3 && GAME_BG)	// Demon mirror in FOV.
+		return 0;
 
 	return 1;
 }
