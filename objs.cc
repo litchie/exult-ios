@@ -1107,6 +1107,42 @@ int Container_game_object::remove_quantity
 	}
 
 /*
+ *	Remove and return a desired item.
+ *
+ *	Output:	->object if found, else 0.
+ */
+
+Game_object *Container_game_object::remove_and_return
+	(
+	int shapenum,			// Shape #.
+	int qual,			// Quality, or -359 for any. ???+++++
+	int framenum			// Frame, or -359 for any. ???+++++++
+	)
+	{
+	if (!last_object)
+		return 0;		// Empty.
+	Game_object *obj = last_object;
+	do
+		{
+		obj = obj->get_next();
+		if (obj->get_shapenum() == shapenum &&
+		    (framenum == -359 || obj->get_framenum() == framenum))
+					// ++++++Quality???
+			{		// Found.
+			remove(obj);
+			return (obj);
+			}
+					// Do it recursively.
+		Game_object *found = 
+			obj->remove_and_return(shapenum, qual, framenum);
+		if (found)
+			return (found);
+		}
+	while (obj != last_object);
+	return (0);
+	}
+
+/*
  *	Run usecode when double-clicked.
  */
 
