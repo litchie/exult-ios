@@ -32,7 +32,6 @@ The latest version of this document can be found at http://exult.sourceforge.net
 4.3. Map files
 4.4. Palettes files
 4.5. Groups files
-4.6. Right-Click on Shapes Menu
 
 5. Editing a Game
 5.1. What you can do at the moment
@@ -59,8 +58,8 @@ The latest version of this document can be found at http://exult.sourceforge.net
 0.1. 06 May 2002
 * 2.4. Command line options -d option no longer exists.
 * 3.3. Mode more information on Pick- and Combo-mode.
-* 5.1. What you can do at the moment shift-clicking adds currently selected shape in any mode.
 * 4. Main Working Window added (working title only).
+* 5.1. What you can do at the moment shift-clicking adds currently selected shape in any mode.
 * 5.5. Creating Combination files when it gets saved combos.flx gets used.
 
 
@@ -232,13 +231,13 @@ Once Exult Studio runs correctly , a tree of game files is displayed to the left
 4.2. Shape files
 Shapes are the basic graphical elements of the game. Each shape has one or more frames that typically represent different states or angles of the same thing. E.g. a button shape could have frames for pressed, and released; a character could have frames depicting her sitting, standing up facing one way, or another, swinging a punch, etc. When a shape file is selected, the right part of the main window will show frame zero of the shapes contained therein. Shapes can be selected by clicking, which will show there number, number of frames, and name if known. Other frames can be viewed by changing the frame number.
 When the selected file contains shapes that have names in their info you can also use the find option to find shapes that have that name (e.g. in shapes.vga you can search for 'door' to find all shapes that have door frames). You can search down or up in the selected file.
-Shape files also have a special right-click-menu. See 4.6. Right-Click on Shapes Menu.
+Shape files also have a special right-click-menu. See 5.2. The shape editor.
 
 
 4.3. Map files
 These files contain so called chunks that serve as templates in the final map. The chunks of the selected map file are shown in the right part of the main window. When a chunk is selected you have some options:
 * Locate shows places in the Exult game where that chunk is used.
-* Inset New Creates a new chunk. More information will follow shortly. Dupe Duplicates a chunk. More information will follow shortly.
+* Insert New Creates a new chunk. Drag the new chunk onto the game and edit it by dragging shapes on it. Dupe Duplicates a chunk. Drag the duplicate chunk onto the map to edit it.
 * Move Moves a chunk in the chunk file. This does not effect the display on the map.
 
 
@@ -259,17 +258,6 @@ Editing a game can become quite cumbersome when you have to choose between a lot
 * Frame: select the frame displayed.
 * Frames shows all the frames of a shape next to each others.
 * Find Lets you search for a specified shape in the group.
-
-
-
-4.6. Right-Click on Shapes Menu
-* Info... Displays the information of an object. You can change a lot of stuff there and caution is adviced. The information is saved by 3.1. File.
-* Add to group... If you set up groups you can add shapes to them with this.
-* Edit Launches the image editor specified in 3.1. File with the current frame as target. The image itself is saved in a subdir called 'itmp' in the file-format chosen in 'Preferences'.
-* New Frame Should add a new frame to the shape.
-* Export frame... Exports the current frame of a shape to a png file in a directory you specify.
-* Import frame... Imports a png file in a directory you specify to the selected shape.
-* New shape... Lets you add a new shape. You can choose the shape number, number of frames. You can also add a new font - information on this coming soon (TM).
 
 
 
@@ -309,13 +297,15 @@ In any mode, you can add the currently selected shape by shift-clicking..
 
 5.2. The shape editor
 When you right click on a shape in the Shape browser (e.g. Files-Shapes.vga) you get some options of how to edit the shapes.
+* Info... Displays the information of an object. You can change a lot of stuff there and caution is adviced. The information is saved by 3.1. File.
+* Add to group... If you set up groups you can add shapes to them with this.
 * Edit...: Brings up your image-editor on the chosen frame. When you save in the image-editor, ES will read the changes back within 5 seconds. This is especially convenient if you have 'gimp-remote', as it will open a window for the frame in an already-running gimp.
 * Edit tiled: This is only for 'flat' (8x8) shapes. It forms an image from all the frames and brings it up in the image-editor. This is really handy for making lots of terrain frames like grass. A dialog lets you choose the dimensions.
 * New frame: Creates a new frame after the currently-selected one. The 'insert' key also does this (and the 'del' key deletes a frame, though it's buggy if there's just one frame left).
 * New shape: Gives you a dialog for choosing the shape #, as well as the initial # of frames.
 * Import/Export frame: Let's you import a single frame from a .png file or export to a .png.
 
-Note:Edit... doesn't work on Windows system. It stores the sahpe as PNG file in GAMEDIR/itmp/ (e.g. blackgate/itmp). If you manually open the file with an image editor of your liking and then save it, ES doesn't read the changes back.
+Note:Edit... doesn't work on Windows system. It stores the shape as PNG file in GAMEDIR/itmp/ (e.g. blackgate/itmp). If you manually open the file with an image editor of your liking and then save it, ES doesn't read the changes back.
 
 
 5.3. Creating/editing Eggs
