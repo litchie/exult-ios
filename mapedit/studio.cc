@@ -92,9 +92,15 @@ extern "C" gboolean on_main_window_delete_event
 	gpointer user_data
 	)
 	{
-// Crashes	delete ExultStudio::get_instance();
-	gtk_main_quit();
 	return FALSE;
+	}
+extern "C" void on_main_window_destroy_event
+	(
+	GtkWidget *widget,
+	gpointer data
+	)
+	{
+	gtk_main_quit();
 	}
 
 /*
@@ -177,7 +183,7 @@ ExultStudio::~ExultStudio()
 	if (eggwin)
 		gtk_widget_destroy(eggwin);
 	eggwin = 0;
-	gtk_widget_destroy( app );
+//Should be done in destroy handler	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
 	if (server_socket >= 0)
 		close(server_socket);
@@ -209,13 +215,23 @@ Object_browser *ExultStudio::create_shape_browser(const char *fname)
 		cerr << "Error opening image file '" << fname << "'.\n";
 		abort();
 	}
-	
-	Shape_chooser *chooser = new Shape_chooser(ifile, 400, 64);
+	char *palname = g_strdup_printf("%s%s", static_path, "palettes.flx");
+	U7object pal(palname, 0);
+	g_free(palname);
+	size_t len;
+	unsigned char *palbuf;		// this may throw an exception
+	palbuf = (unsigned char *) pal.retrieve(len);
+	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64);
+	delete [] palbuf;
 	if(!strcasecmp(fname,"shapes.vga")) {
 		// Read in shape names.
 		int num_names = ifile->get_num_shapes();
 		names = new char *[num_names];
-		Flex *items = new Flex("static/text.flx");
+		char *txtname = g_strdup_printf("%s%s", static_path, 
+							"text.flx");
+
+		Flex *items = new Flex(txtname);
+		g_free(txtname);
 		size_t len;
 		for (int i = 0; i < num_names; i++)
 			names[i] = items->retrieve(i, len);

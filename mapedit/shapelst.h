@@ -77,7 +77,7 @@ class Shape_chooser: public Object_browser
 	void render();			// Draw list.
 	void scroll(int newindex);	// Scroll.
 public:
-	Shape_chooser(Vga_file *i, int w, int h);
+	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h);
 	virtual ~Shape_chooser();
 	
 	void set_shape_names(char **nms);

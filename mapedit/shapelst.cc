@@ -78,7 +78,7 @@ void Shape_chooser::select
 	gtk_adjustment_changed(frame_adj);
 	gtk_widget_set_sensitive(fspin, true);
 					// Remove prev. selection msg.
-	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	char buf[150];			// Show new selection.
 	g_snprintf(buf, sizeof(buf), "Shape %d (%d frames)",
 						shapenum, nframes);
@@ -128,7 +128,7 @@ void Shape_chooser::render
 	do {
 		while (shapenum<num_shapes) {
 			if(shape) {
-					// Check if we've exceeded our max width
+					// Check if we've exceeded max width
 				if (x + (sw = shape->get_width()) > winw)
 					break;
 						// Get height, top y-coord.
@@ -137,15 +137,16 @@ void Shape_chooser::render
 					row_h = sh;
 				int sy = curr_y+border;
 				shape->paint(iwin, x + shape->get_xleft(),
-							sy + shape->get_yabove());
+						sy + shape->get_yabove());
 				if (sh > winh) {
 					sy += sh - winh;
 					sh = winh;
 				}
-						// Store info. about where drawn.
-				info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
+					// Store info. about where drawn.
+				info[info_cnt].set(shapenum, framenum, 
+								x, sy, sw, sh);
 				if (shapenum == selshape)
-							// Found the selected shape.
+						// Found the selected shape.
 					new_selected = info_cnt;
 			}
 			shapenum++;		// Next shape.
@@ -159,7 +160,7 @@ void Shape_chooser::render
 		}
 		curr_y += row_h + border;
 		x = 0;
-	} while(shapenum<num_shapes && (curr_y+72<winh));
+	} while(shapenum<num_shapes && (curr_y + 36 < winh));
 	if (new_selected == -1)
 		unselect(false);
 	else
@@ -425,19 +426,16 @@ cout << "Frame changed to " << adj->value << '\n';
 Shape_chooser::Shape_chooser
 	(
 	Vga_file *i,			// Where they're kept.
+	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h			// Dimensions.
 	) : ifile(i),
 		iwin(0), shapenum0(0), palette(0), names(0),
 		info(0), info_cnt(0), selected(-1), sel_changed(0)
 	{
-	U7object pal("static/palettes.flx", 0);
-	size_t len;
-	unsigned char *buf;		// this may throw an exception
-	buf = (unsigned char *) pal.retrieve(len);
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
-		colors[i] = (buf[3*i]<<16)*4 + (buf[3*i+1]<<8)*4 + 
-							buf[3*i+2]*4;
+		colors[i] = (palbuf[3*i]<<16)*4 + (palbuf[3*i+1]<<8)*4 + 
+							palbuf[3*i+2]*4;
 	palette = gdk_rgb_cmap_new(colors, 256);
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
@@ -561,6 +559,14 @@ void Shape_chooser::unselect
 			}
 		if (sel_changed)	// Tell client.
 			(*sel_changed)();
+		}
+	char buf[150];			// Show new selection.
+	if (info_cnt > 0)
+		{
+		gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
+		g_snprintf(buf, sizeof(buf), "Shapes %d to %d",
+			info[0].shapenum, info[info_cnt - 1].shapenum);
+		gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
 		}
 	}
 
