@@ -37,6 +37,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 /*
+ *	Initialize.
+ */
+
+void Actor::init
+	(
+	)
+	{
+	if (!frames[(int) north])
+		set_default_frames();
+	for (int i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
+		properties[i] = 0;
+	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+		spots[i] = 0;
+	}
+
+/*
  *	Create character.
  */
 
@@ -50,14 +66,9 @@ Actor::Actor
 	    frame_time(0),
 	    usecode(uc), flags(0), action(0), usecode_dir(0), two_handed(0)
 	{
-	set_shape(shapenum, 0); 
-	if (!frames[(int) north])
-		set_default_frames();
 	name = nm == 0 ? 0 : strdup(nm);
-	for (int i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
-		properties[i] = 0;
-	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
-		spots[i] = 0;
+	set_shape(shapenum, 0); 
+	init();
 	}
 
 /*

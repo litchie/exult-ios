@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS=foreign
 SUBDIRS=$(TOP_LEVEL_SUBDIRS)
 
 OBJECTS = args.o actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o \
-	actions.o gametxt.o \
+	actorio.o actions.o gametxt.o \
 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o \
 	tqueue.o gameclk.o mouse.o items.o lists.o vec.o
 
