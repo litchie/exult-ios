@@ -876,7 +876,7 @@ void Actor::set_property
 	)
 	{
 	if (prop == health && ((party_id != -1) || (npc_num == 0)) && 
-							god_mode && val < 1)
+		god_mode && val < properties[prop])
 		return;
 	if (prop >= 0 && prop < 12)
 		if (prop == (int) exp)
