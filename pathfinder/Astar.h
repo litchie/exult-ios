@@ -40,7 +40,7 @@ public:
 						Pathfinder_client *client);
 
 	// Retrieve the coordinates of the next step on the path
-	virtual	int	GetNextStep(Tile_coord& n);
+	virtual	int	GetNextStep(Tile_coord& n, bool& done);
 	// Set to retrieve in opposite order.
 	virtual int set_backwards();
 	virtual int following_smart_path()	// Astar?
