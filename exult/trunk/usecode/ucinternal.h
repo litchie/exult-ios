@@ -29,11 +29,12 @@
 #  include <iosfwd>
 #endif
 
-class Text_gump;
-class Vector;
 class Actor;
+class Barge_object;
 class Npc_actor;
 class Usecode_value;
+class Text_gump;
+class Vector;
 
 #ifdef MACOS
 // With Metrowerks Codewarrior, we *have* to include useval.h, otherwise this will fail to compile:

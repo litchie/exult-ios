@@ -30,7 +30,7 @@
 
 #include "Configuration.h"
 #include "exult.h"
-#include "../../fnames.h"
+#include "fnames.h"
 #include "forked_player.h"
 
 
