@@ -780,6 +780,123 @@ void Sign_gump::paint
 	}
 
 /*
+ *	Add to the text.
+ */
+
+void Text_gump::add_text
+	(
+	char *str
+	)
+	{
+	int slen = strlen(str);		// Length of new text.
+					// Allocate new space.
+	char *newtext = new char[textlen + slen + 1];
+	if (textlen)			// Copy over old.
+		strcpy(newtext, text);
+	strcpy(newtext + textlen, str);	// Append new.
+	delete text;
+	text = newtext;
+	textlen += slen;
+	}
+
+/*
+ *	Paint a page and find where its text ends.
+ *
+ *	Output:	Index past end of displayed page.
+ */
+
+int Text_gump::paint_page
+	(
+	Game_window *gwin,
+	Rectangle box,			// Display box rel. to gump.
+	int start			// Starting offset into text.
+	)
+	{
+	const int font = 2;		// Normal black.
+	int ypos = 0;
+	int textheight = gwin->get_text_height(font);
+	char *str = text + start;
+	while (*str && *str != '*' && ypos + textheight <= box.h)
+		{
+					// Look for page break.
+		char *epage = strchr(str, '*');
+					// Look for line break.
+		char *eol = strchr(str, '~');
+		if (epage && eol > epage)
+			eol = epage;
+		if (!eol)		// No end found?
+			eol = text + textlen;
+		char eolchr = *eol;	// Save char. at EOL.
+		*eol = 0;
+		int endoff = gwin->paint_text_box(font, str, x + box.x,
+				y + box.y + ypos, box.w, box.h - ypos);
+		*eol = eolchr;		// Restore char.
+		if (endoff > 0)		// All painted?
+			{		// Value returned is height.
+			str = eol;
+			ypos += endoff;
+			}
+		else			// Out of room.
+			{
+			str += -endoff;
+			break;
+			}
+		if (*str == '~')	// End of paragraph?
+			{
+			ypos += textheight;
+			str++;
+			}
+		}
+	gwin->set_painted();		// Force blit.
+	return (str - text);		// Return offset past end.
+	}
+
+/*
+ *	Show next page(s) of book or scroll.
+ *
+ *	Output:	0 if already at end.
+ */
+
+int Text_gump::show_next_page
+	(
+	Game_window *gwin
+	)
+	{
+	if (curend >= textlen)
+		return (0);		// That's all, folks.
+	curtop = curend;		// Start next page or pair of pages.
+	paint(gwin);			// Paint.  This updates curend.
+	return (1);
+	}
+
+/*
+ *	Paint book.  Updates curend.
+ */
+
+void Book_gump::paint
+	(
+	Game_window *gwin
+	)
+	{
+					// Paint left page.
+	curend = paint_page(gwin, Rectangle(2, 2, 50, 100), curtop);
+					// Paint right page.
+	curend = paint_page(gwin, Rectangle(52, 2, 50, 100), curend);
+	}
+
+/*
+ *	Paint scroll.  Updates curend.
+ */
+
+void Scroll_gump::paint
+	(
+	Game_window *gwin
+	)
+	{
+	curend = paint_page(gwin, Rectangle(2, 2, 50, 100), curtop);
+	}
+
+/*
  *	Set slider value.
  */
 

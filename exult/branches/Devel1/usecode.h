@@ -30,7 +30,9 @@ class istream;
 class ostream;
 class Game_window;
 class Game_object;
+class Text_gump;
 class Vector;
+
 #include <vector>	// STL container
 #include <deque>	// STL container
 #include <string>	// STL string
@@ -177,11 +179,14 @@ struct Usecode_machine
 	unsigned char gflags[1024];	// Global flags.
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
+	Text_gump *book;		// Book/scroll being displayed.
 	Game_object *caller_item;	// Item this is being called on.
 	Game_object *last_created;	// Last item created with intrins. x24.
 	const char *user_choice;	// String user clicked on.
 	char *String;			// The single string register.
 	void append_string(const char *txt);	// Append to string.
+	void show_pending_text();	// Make sure user's seen all text.
+	void show_book();		// "Say" book/scroll text.
 	void say_string();		// "Say" the string.
 	Usecode_value *stack;		// Stack.
 	Usecode_value *sp;		// Stack ptr.  Grows upwards.
@@ -316,6 +321,7 @@ public:
 	USECODE_INTRINSIC_DECL(get_lift);
 	USECODE_INTRINSIC_DECL(set_lift);
 	USECODE_INTRINSIC_DECL(display_map);
+	USECODE_INTRINSIC_DECL(book_mode);
 	USECODE_INTRINSIC_DECL(earthquake);
 	USECODE_INTRINSIC_DECL(is_pc_female);
 	USECODE_INTRINSIC_DECL(run_endgame);
@@ -342,6 +348,7 @@ public:
 					// Call instrinsic function.
 	Usecode_value call_intrinsic(int event, int intrinsic, int num_parms);
 	void click_to_continue();	// Wait for user to click.
+	void set_book(Text_gump *b);	// Set book/scroll to display.
 	const char *get_user_choice();	// Get user's choice.
 	int get_user_choice_num();
 					// Run the function.
@@ -386,6 +393,7 @@ public:
 		answers.clear();
 		Usecode_value parm(0);	// They all seem to take 1 parm.
 		int ret = call_usecode_function(id, event, &parm);
+		set_book(0);
 		caller_item = prev_item;
 		return ret;
 		}
