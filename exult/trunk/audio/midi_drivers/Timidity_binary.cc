@@ -91,6 +91,17 @@ static	void	copy_to_fh(std::string name,int number)
 	close(fh);
 }
 
+static	void copy_to_name(std::string name1,std::string name2)
+{
+	int	fh=::open(name2.c_str(),O_WRONLY);
+	if(fh==-1)
+		{
+		perror("open");
+		return;
+		}
+	copy_to_fh(name1,fh);
+}
+
 void	Timidity_binary::player(void)
 {
 	Audio::get_ptr()->Destroy_Audio_Stream(Timidity_binary_magic);
@@ -110,8 +121,8 @@ void	Timidity_binary::player(void)
 #else
 	char newfn[L_tmpnam];
 	string	newfilename=tmpnam(newfn);
-	rename(filename.c_str(),newfilename.c_str());
-	// This could be across filesystems, you naughty boy.
+	copy_to_name(filename,newfilename);
+	unlink(filename.c_str());
 #endif
 
 	audiostream->id=Timidity_binary_magic;
@@ -154,8 +165,8 @@ void	Timidity_binary::sfxplayer(void)
 #else
 	char newfn[L_tmpnam];
 	string	newfilename=tmpnam(newfn);
-	rename(sfxname.c_str(),newfilename.c_str());
-	// This could be across filesystems, you naughty boy.
+	copy_to_name(sfxname,newfilename);
+	unlink(sfxname.c_str());
 #endif
 
 	audiostream->id=Timidity_binary_magic_sfx;
