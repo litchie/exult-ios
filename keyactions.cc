@@ -234,14 +234,29 @@ void ActionTarget(int *params)
 void ActionInventory(int *params)
 {
 	static int inventory_page = -1;
+	Actor *actor;
 	
 	if (params[0] == -1) {
-		if (!gwin->get_gump_man()->showing_gumps())
-			inventory_page = -1;
-		if(inventory_page<gwin->get_usecode()->get_party_count())
-			++inventory_page;
-		else
-			inventory_page = 0;
+		Gump_manager *gump_man = gwin->get_gump_man();
+		int party_count = gwin->get_usecode()->get_party_count();
+		int shapenum;
+		
+		for(int i=0;i<=party_count;++i)
+		{
+			actor = Get_party_member(i);
+			if (!actor)
+				continue;
+
+			shapenum = actor->inventory_shapenum();
+			// Check if this actor's inventory page is open or not
+			if (!gump_man->find_gump(actor, shapenum))
+			{
+				gump_man->add_gump(actor, shapenum); //force showing inv.
+				inventory_page = i;
+				return;
+			}
+		}
+		inventory_page = (inventory_page+1)%(party_count+1);
 	} else {
 		inventory_page = params[0];
 		if (inventory_page < 0 ||
@@ -249,7 +264,7 @@ void ActionInventory(int *params)
 			return;
 	}
 	
-	Actor *actor = Get_party_member(inventory_page);
+	actor = Get_party_member(inventory_page);
 	if (actor) {
 		actor->show_inventory(); //force showing inv.
 	}
@@ -292,14 +307,28 @@ void ActionTryKeys(int *params)
 void ActionStats(int *params)
 {
 	static int stats_page = -1;
+	Actor *actor;
 	
 	if (params[0] == -1) {
-		if (!gwin->get_gump_man()->showing_gumps())
-			stats_page = -1;
-		if (stats_page < gwin->get_usecode()->get_party_count())
-			++stats_page;
-		else
-			stats_page = 0;
+		Gump_manager *gump_man = gwin->get_gump_man();
+		int party_count = gwin->get_usecode()->get_party_count();
+		int shapenum = game->get_shape("gumps/statsdisplay");
+
+		for(int i=0;i<=party_count;++i)
+		{
+			actor = Get_party_member(i);
+			if (!actor)
+				continue;
+
+			// Check if this actor's stats page is open or not
+			if (!gump_man->find_gump(actor, shapenum))
+			{
+				gump_man->add_gump(actor, shapenum); //force showing stats.
+				stats_page = i;
+				return;
+			}
+		}
+		stats_page = (stats_page+1)%(party_count+1);
 	} else {
 		stats_page = params[0];
 		if (stats_page < 0 ||
@@ -307,7 +336,7 @@ void ActionStats(int *params)
 			stats_page = 0;
 	}
 	
-	Actor *actor = Get_party_member(stats_page);
+	actor = Get_party_member(stats_page);
 	if (actor) gwin->get_gump_man()->add_gump(actor, game->get_shape("gumps/statsdisplay"));
 
 	Mouse::mouse->set_speed_cursor();
