@@ -11,10 +11,10 @@ Alternatively, the 'Ultima Collection' already contains a
 pre-installed version of U7. (in the directory /ultima7)
 
 When you run Exult for the first time, it will generate a default
-~/.exult.cfg. (Quit from the main menu, since Exult won't be able
-to find U7). You need point the paths in this file to the ultima7
-directory and the Exult data directory. The relevant entries should
-read something like this:
+~/config/settings/exult.cfg. (Quit from the main menu, since Exult 
+won't be able to find U7). You need point the paths in this file 
+to the ultima7 directory and the Exult data directory. The relevant 
+entries should read something like this:
 
 <config>
  <disk>
@@ -39,13 +39,6 @@ Have fun!
 
 Notes
 ------
-* so far, only BlackGate (BG) plus Forge of Virtue (FoV)
-are supported by exult. We are working heavily on getting 
-Serpent Isle and The Silver Seed to work as well, though.
-Please be patient.
-
-* If you're brave, you can try and twiddle with ~/.exult.cfg.
-
 * You can build exult from source yourself if you want.
 To do this, you obviously need the Exult source code. You'll
 also need the development SDL binaries or the SDL source.

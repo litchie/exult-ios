@@ -112,15 +112,20 @@ add the following to the <video> section of .exult.cfg:
    </scale>
 
 Within the game you can use the "ALT +" and "ALT -" to switch 
-resolution/scaling modes. The game will save the last selected mode and reuse
-it the next time you run Exult.
+resolution/scaling modes.
 
 AUDIO
 -----
 Exult can play the Ultima VII's speech through SDL, and its own
 internal mixer. Configuration is managed through Exult's configuration file.
-Support for sound effects has been implemented, but the output may not be
-what is expected, as the original sound effects cannot be reproduced directly.
+Since version 0.93alpha4 Exult supports digital SFX from .wav files.
+Joseph Morris has made recordings of the SFX from the original U7,
+which you can find through our SourceForge download page at
+http://sourceforge.net/project/showfiles.php?group_id=2335
+(look for jmsfx.zip and jmsfxsi.zip)
+
+For more information see the FAQ (in the file 'FAQ' or at 
+http://exult.sourceforge.net/faq.shtml)
 
 MIDI
 ----
@@ -134,7 +139,8 @@ COMPILING
 
 Exult uses the multiplatform library SDL by Sam Lantinga of LokiGames.  
 SDL provides low-level graphics, timing and sound capabilities.
-Windows, Be and Mac ports are much easier now.
+This made it much easier to create the ports to Windows, BeOS, MacOS, *BSD,
+Solaris.
 
 Unusual library dependencies
 ----------------------------
@@ -148,17 +154,13 @@ around this problem.
 
 Requirements:	Ultima7 must be installed and visible.  The "exult" executable
 		should be placed in the top-level u7 directory (where "static"
-		appears as a subdirectory).
-
-		Your X display must be in 8-bit or 16-bit color.
-		(24-bit is left as an exercise to the user :-)).
+		appears as a subdirectory), or the exult.cfg should contain
+		the path to the U7 directory.
 
 Installation:	Refer to the INSTALL file in the source distribution
 
 Caveats:	The program is a memory hog.  Really makes me appreciate
 		Origin's accomplishment in making it run under DOS.
-
-		I'm not sure if the program works with a 2-button mouse.
 
 Running:	Hold right mouse button down to move Avatar.
 		Click on objects with left button to identify them.
@@ -166,13 +168,10 @@ Running:	Hold right mouse button down to move Avatar.
 		Double-click on doors, shutters with left button to open or
 			close them.
 		Arrow keys scroll around the "universe" when in 'cheat' mode.
+
+		Some other useful keys:
 		'h' brings up a 'help' scroll.
-		'p' repaints the screen.
-		'i' brings up inventory.
-		'l' cycles through the "lift factors", causing roofs to
-			disappear so you can see inside buildings.
-		'+' brightens the palette.
-		'-' darkens the palette.
+		'ctrl-h' brings up a 'cheat help' scroll.
 
 Credits:	The paper by Gary Thompson on the structure of the U7 data
 		files was crucial to the early development of Exult.
