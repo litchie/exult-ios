@@ -313,7 +313,8 @@ public:
 		}
 					// Change member shape.
 	virtual void change_member_shape(Game_object *obj, int newshape);
-	virtual int move_aside(int dir);// Move out of the way.
+					// Move out of the way.
+	virtual int move_aside(Actor *for_actor, int dir);
 					// Get frame if rotated clockwise.
 	virtual int get_rotated_frame(int quads);
 	virtual int get_armor_points();	// Get total armor value.

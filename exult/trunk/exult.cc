@@ -161,6 +161,11 @@ int main
 	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
 	cout << "Data path = " << data_path << endl;
 	add_system_path("<DATA>", data_path.c_str());
+	if (!U7exists("<DATA>/exult.flx") && U7exists("data/exult.flx"))
+		{
+		add_system_path("<DATA>", "data");
+		cout << "Using local 'data' directory" << endl;
+		}
 	add_system_path("<STATIC>", "static");
 	add_system_path("<GAMEDAT>", "gamedat");
 	add_system_path("<SAVEGAME>", "savegame");

@@ -1,3 +1,9 @@
+2000-10-17  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* exult.cc: Look for local 'data' if necessary.
+	* If motion blocked, try to swap positions with actor
+	that's in the way.
+
 2000-10-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* exult.cc: Try_key handles the 'k' key.

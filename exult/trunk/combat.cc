@@ -197,7 +197,7 @@ void Combat_schedule::approach_foe
 		npc != Game_window::get_game_window()->get_main_actor() &&
 					npc->get_property(Actor::health) < 3))
 		{
-		if (!fleed)
+		if (npc->get_party_id() >= 0 && !fleed)
 			{
 			fleed = 1;
 			audio->start_music(RUN_AWAY, 0);

@@ -188,6 +188,34 @@ void Game_object::move
 	}
 
 /*
+ *	Swap positions with another object (of the same footprint).
+ *
+ *	Output: 1 if successful, else 0.
+ */
+
+int Game_object::swap_positions
+	(
+	Game_object *obj2
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& inf1 = gwin->get_info(this);
+	Shape_info& inf2 = gwin->get_info(obj2);
+	if (inf1.get_3d_xtiles() != inf2.get_3d_xtiles() ||
+	    inf1.get_3d_ytiles() != inf2.get_3d_ytiles())
+		return 0;		// Not the same size.
+	Tile_coord p1 = get_abs_tile_coord();
+	Tile_coord p2 = obj2->get_abs_tile_coord();
+	remove_this(1);			// Remove (but don't delete) each.
+	set_invalid();
+	obj2->remove_this(1);
+	obj2->set_invalid();
+	move(p2.tx, p2.ty, p2.tz);	// Move to new locations.
+	obj2->move(p1.tx, p1.ty, p1.tz);
+	return (1);
+	}
+
+/*
  *	Remove all dependencies.
  */
 

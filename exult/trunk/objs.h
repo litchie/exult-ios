@@ -207,6 +207,8 @@ public:
 	virtual void move(int newtx, int newty, int newlift);
 	void move(Tile_coord t)
 		{ move(t.tx, t.ty, t.tz); }
+					// Swap positions.
+	int swap_positions(Game_object *obj2);
 	int get_dependency_count()	// Get objs. to paint first.
 		{ return dependencies.get_cnt(); }
 	Game_object *get_dependency(int i)
@@ -325,7 +327,8 @@ public:
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
 		{ return get_abs_tile_coord(); }
-	virtual int move_aside(int dir)	// Move out of the way.
+					// Move out of the way.
+	virtual int move_aside(Actor *for_actor, int dir)
 		{ return 0; }		// For now.
 					// Get frame if rotated clockwise.
 	virtual int get_rotated_frame(int quads);
