@@ -8,12 +8,15 @@ Exult Release Checklist
         (FILEVERSION, PRODUCTVERSION, "FileVersion" and "ProductVersion")
   - msvcstuff\msvc_kludges.h
   - msvcstuff\exconfig\exconfig.rc
+        (PRODUCTVERSION and "ProductVersion")
 
 * update NEWS; make sure version and date are correct
 
 * make sure all (visible) copyright dates are up to date
   - version dialog in ActionAbout (keyactions.cc)
   - Info.plist.in
+  - win32/exultico.rc, win32/exultstudioico.rc
+  - msvcstuff\exconfig\exconfig.rc
 
 * documentation: make sure the readme/faq packaged are up to date
   - version numbers
