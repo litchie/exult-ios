@@ -1,3 +1,6 @@
+2001-12-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* usecode/ucxt/src/Makefile.am: fixed include dirs
+	
 2001-12-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/chunks.cc: Found a case where it's BAD to use an iterator,
