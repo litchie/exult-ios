@@ -20,16 +20,13 @@ LIBS=$(SDL_LIBS) -lmidi -lbe
 
 EXEC=exult
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o animate.o \
-	args.o barge.o bodies.o browser.o cheat.o\
-	combat.o delobjs.o dir.o drag.o effects.o egg.o\
-	exult.o gameclk.o gamedat.o gamerend.o \
-	gametxt.o gamewin.o gumps.o imagescl.o imagewin.o items.o \
-	lists.o mouse.o \
-	npcnear.o npctime.o objs.o palette.o paths.o readnpcs.o \
-	scale.o schedule.o \
-	segfile.o spells.o tqueue.o usecode.o \
-	useval.o utils.o vgafile.o game.o sigame.o bggame.o virstone.o \
-	font.o menulist.o txtscroll.o
+	args.o barge.o bggame.o bodies.o browser.o cheat.o\
+	combat.o delobjs.o dir.o drag.o effects.o egg.o exult.o font.o \
+	game.o gameclk.o gamedat.o gamerend.o gametxt.o gamewin.o \
+	gumps.o imagescl.o imagewin.o items.o lists.o menulist.o mouse.o \
+	npcnear.o npctime.o objs.o palette.o paths.o readnpcs.o scale.o schedule.o \
+	segfile.o sigame.o spells.o tqueue.o txtscroll.o usecode.o \
+    useval.o utils.o vgafile.o virstone.o
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
@@ -53,7 +50,14 @@ EXULT_FLX_OBJECTS = \
 	data/black_gate.shp \
 	data/serpent_isle.shp \
 	data/meditown.mid \
-	data/font.shp
+	data/font.shp \
+	data/setup.shp \
+	data/play_intro.shp \
+	data/full_screen.shp \
+	data/cheating.shp \
+	data/ok.shp \
+	data/cancel.shp \
+	data/pointers.shp
 
 $(EXEC) : Makefile data/exult.flx $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
