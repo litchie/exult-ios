@@ -35,7 +35,7 @@ const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
 
 void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const map<unsigned int, string> &intrinsics, const UCc &op);
-string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op);
+string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output);
 
 /* Assumption the 'var's are in their 'zeroed' state on initialization,
    unless something else is assigned to them. */
@@ -140,7 +140,7 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsig
 
 void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, const map<unsigned int, string> &intrinsics, unsigned int indent)
 {
-	tab_indent(indent, o) << demunge_ocstring(*this, funcmap, optab[op._id].ucs_nmo, optab[op._id].param_types, op._params_parsed, intrinsics, op) << ';' << endl;
+	tab_indent(indent, o) << demunge_ocstring(*this, funcmap, optab[op._id].ucs_nmo, optab[op._id].param_types, op._params_parsed, intrinsics, op, true) << ';' << endl;
 	
 	#ifdef DEBUG_PRINT
 	for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end(); i++)
@@ -187,7 +187,7 @@ inline void gc_gotoset(vector<GotoSet> &gotoset)
 	}
 }
 
-void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &intrinsics)
+void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool basic)
 {
 	for(vector<UCc>::iterator i=_opcodes.begin(); i!=_opcodes.end(); i++)
 		node.nodelist.push_back(new UCNode(i));
@@ -195,7 +195,11 @@ void UCFunc::parse_ucs(const FuncMap &funcmap, const map<unsigned int, string> &
 	parse_ucs_pass1(node.nodelist);
 	parse_ucs_pass2(gotoset, funcmap, intrinsics);
 	gc_gotoset(gotoset);
-	parse_ucs_pass3(gotoset, intrinsics);
+	
+	if(!basic)
+	{
+		parse_ucs_pass3(gotoset, intrinsics);
+	}
 	
 	#ifdef DEBUG_PARSE2
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); i++)
@@ -400,82 +404,7 @@ void UCFunc::parse_ucs_pass3(vector<GotoSet> &gotoset, const map<unsigned int, s
 
 }
 
-/* Prints module's data segment */
-/*void UCFunc::process_data_seg()
-{
-	streampos pos = _file->tellg();
-	
-	unsigned short off = 0;
-
-	// Load all strings & their offsets
-	while( off < _datasize )
-	{
-		assert(!eof());
-
-		char c;
-		string data;
-
-		while((c=get())!=0x00)
-			data+=c;
-
-		_data.insert(pair<unsigned int, string>(off, data));
-
-		off+=data.size()+1;
-
-	}
-	fseekbeg(pos);
-}*/
-
-/*
- Prints single opcode
- Return number of bytes to advance the code pointer
- Prints first characters of strings referenced
-*/
-/*unsigned short UCFunc::print_opcode(unsigned char* ptrc, unsigned short coffset,
-                            unsigned char* pdataseg,
-                            unsigned short* pextern,
-                            unsigned short externsize,
-                            vector<unsigned char> &intrinsic_buf,
-                            int mute,
-                            int count_all_opcodes,
-                            int count_all_intrinsic,
-                            const char** func_table)
-{
-//  if( count_all_opcodes )
-//  _unknown_opcode_count[*ptrc]++;
-
-  // Find the description
-  const opcode_desc *pdesc = ( *ptrc >= ( sizeof(opcode_table) / sizeof( opcode_desc ) ) ) ?
-                        NULL : opcode_table + ( *ptrc );
-  // Unknown opcode
-  if( pdesc && ( pdesc->mnemonic == NULL ) )
-    pdesc = NULL;
-
-    // Unknown opcode
-//  if( ( pdesc == NULL ) && !count_all_opcodes )
-//    _unknown_opcode_count[*ptrc]++;
-
-  // Number of bytes to print
-  unsigned int nbytes = pdesc ? ( pdesc->nbytes + 1 ) : 1;
-
-  UCc ucc;
-  ucc._offset = coffset;
-
-  // Print bytes
-  for(unsigned int i = 0; i < nbytes; i++ )
-  {
-    if(i==0) ucc._id = ptrc[i];
-    else     ucc._params.push_back(ptrc[i]);
-  }
-
-  _codes.push_back(ucc);//PATRICK
-  _raw_opcodes.push_back(NewOpcode(ucc._offset, ucc._id, ucc._params));
-  //new MiscOpcode(ucc._offset, ucc._id, ucc._params)
-  // Print operands if any
-  return nbytes;
-}
-
-void UCFunc::process_code_seg(vector<unsigned char> &intrinsic_buf,
+/*void UCFunc::process_code_seg(vector<unsigned char> &intrinsic_buf,
                           int mute,
                           int count_all_opcodes,
                           int count_all_intrinsic,
@@ -1214,7 +1143,6 @@ void print_asm_data(UCFunc &ucf, ostream &o)
 	}
 }
 
-string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op);
 void output_raw_opcodes(ostream &o, const UCc &op);
 
 extern UCData uc;
@@ -1227,10 +1155,10 @@ void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vec
 	if(uc.rawops()) output_raw_opcodes(o, op);
 	else            o << '\t';
 
-	o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_nmo, optab[op._id].param_types, op._params_parsed, intrinsics, op);
+	o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_nmo, optab[op._id].param_types, op._params_parsed, intrinsics, op, false);
 
 	if(uc.autocomment())
-		o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_comment, optab[op._id].param_types, op._params_parsed, intrinsics, op);
+		o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_comment, optab[op._id].param_types, op._params_parsed, intrinsics, op, false);
 
 	o << endl;
 }
@@ -1279,7 +1207,7 @@ inline unsigned int charnum2uint(const char c)
 	return 0; // can't happen
 }
 
-string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op)
+string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op, bool ucs_output)
 {
 	strstream str;
 	str << setfill('0') << setbase(16);
@@ -1292,7 +1220,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 	unsigned int i=0; // istr index
 	unsigned int width=0; // width value for setw()
 
-	if(opcode_table_data[op._id].flag_paren) str << '(';
+	if(ucs_output && opcode_table_data[op._id].flag_paren) str << '(';
 	
 	while(!finished&&i<len)
 	{
@@ -1408,7 +1336,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 						
 							for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end();)
 							{
-								str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*i)->_id].ucs_nmo, opcode_table_data[(*i)->_id].param_types, (*i)->_params_parsed, intrinsics, **i);
+								str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*i)->_id].ucs_nmo, opcode_table_data[(*i)->_id].param_types, (*i)->_params_parsed, intrinsics, **i, ucs_output);
 								if(++i!=op._popped.end())
 									str << ", ";
 							}
@@ -1421,7 +1349,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 							else
 							{
 								UCc &ucc(*op._popped[t-1]);
-								str << demunge_ocstring(ucf, funcmap, opcode_table_data[ucc._id].ucs_nmo, opcode_table_data[ucc._id].param_types, ucc._params_parsed, intrinsics, ucc);
+								str << demunge_ocstring(ucf, funcmap, opcode_table_data[ucc._id].ucs_nmo, opcode_table_data[ucc._id].param_types, ucc._params_parsed, intrinsics, ucc, ucs_output);
 							}
 						}
 						break;
@@ -1448,7 +1376,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 		if(i==asmstr.size()) finished=true;
 	}
 	
-	if(opcode_table_data[op._id].flag_paren) str << ')';
+	if(ucs_output && opcode_table_data[op._id].flag_paren) str << ')';
 	
 	str << ends;
 	return str.str();

@@ -16,6 +16,7 @@
 UCData::UCData() : _noconf(false), _rawops(false),
                    _autocomment(false), _uselesscomment(false),
                    _verbose(false), _ucdebug(false),
+                   _basic(false),
                    _mode(MODE_NONE), _game(GAME_BG),
                    _output_list(false), _output_asm(false), _output_ucs(false),
                    _output_ucz(false), _mode_all(false), _mode_dis(false),
@@ -50,6 +51,7 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 		else if(strcmp(argv[i], "-uc" )==0)  _uselesscomment = true;
 		else if(strcmp(argv[i], "-v"  )==0)  _verbose = true;
 		else if(strcmp(argv[i], "-dbg")==0)  _ucdebug = true;
+		else if(strcmp(argv[i], "-b"  )==0)  _basic = true;
 
 		else if(strcmp(argv[i], "-fl" )==0)  _output_list = true;
 		else if(strcmp(argv[i], "-fa" )==0)  _output_asm  = true;
@@ -123,7 +125,7 @@ void UCData::disassamble()
 
 			if(output_ucz())
 			{
-				_funcs[i]->parse_ucs(_funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics));
+				_funcs[i]->parse_ucs(_funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), _basic);
 				_funcs[i]->output_ucs(cout, _funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), uselesscomment(), false);
 				_func_printed=true;
 			}
