@@ -41,7 +41,7 @@ SDL: http://www.devolution.com/~slouken/SDL/
 Mingw32: http://www.devolution.com/~slouken/SDL/Xmingw32/
 
 Installation instructions can be found on the same pages.
-(make sure to build SDL for the cross compiler)
+(make sure to get the DirectX headers, and build SDL for the cross compiler)
 
 2) build exult:
 
