@@ -1128,6 +1128,8 @@ bool Game_window::init_gamedat(bool create)
 			out << gametitlestr.c_str() << endl;
 			out.close();
 			}
+
+		// log version of exult that was used to start this game
 		U7open(out, GNEWGAMEVER);
 		getVersionInfo(out);
 		out.close();
