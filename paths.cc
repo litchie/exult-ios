@@ -441,6 +441,9 @@ int Monster_pathfinder_client::at_goal
 	Tile_coord& goal
 	)
 	{
+	int dz = tile.tz - goal.tz;	// Got to be on same floor.
+	if (dz/5 != 0)
+		return 0;
 	Rectangle abox(tile.tx - axtiles + 1, tile.ty - aytiles + 1,
 						axtiles, aytiles);
 	return abox.intersects(destbox);

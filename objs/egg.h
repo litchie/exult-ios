@@ -135,7 +135,7 @@ public:
 	static void set_weather(Game_window *gwin, int weather, int len = 15,
 						Game_object *egg = 0);
 					// Remove/delete this object.
-//	virtual void remove_this(int nodel = 0);
+	virtual void remove_this(int nodel = 0);
 	virtual int is_egg() const	// An egg?
 		{ return 1; }
 					// Write out to IREG file.
