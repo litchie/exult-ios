@@ -374,21 +374,31 @@ void ExultStudio::del_group
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
 	GList *list = clist->selection; 
-	if (list)			// Selection?
+	if (!list)			// Selection?
+		return;
+	int row = (int) list->data;
+	Shape_group *grp = groups->get(row);
+	string msg("Delete group '");
+	msg += grp->get_name();
+	msg += "'?";
+	int choice = prompt(msg.c_str(), "Yes", "No");
+	if (choice != 0)		// Yes?
+		return;
+	groups->remove(row, true);
+	gtk_clist_remove(clist, row);
+					// Close the group's windows.
+	vector<GtkWindow*> toclose;
+	vector<GtkWindow*>::const_iterator it;
+	for (it = group_windows.begin(); it != group_windows.end(); ++it)
 		{
-		int row = (int) list->data;
-		Shape_group *grp = groups->get(row);
-		string msg("Delete group '");
-		msg += grp->get_name();
-		msg += "'?";
-		int choice = prompt(msg.c_str(), "Yes", "No");
-		if (choice == 0)	// Yes?
-			{
-			groups->remove(row, true);
-			gtk_clist_remove(clist, row);
-			//+++++++What about open windows for the group??
-			}
+		Object_browser *chooser = (Object_browser *) 
+			gtk_object_get_data(GTK_OBJECT(*it), "browser");
+		if (chooser->get_group() == grp)
+					// A match?
+			toclose.push_back(*it);
 		}
+	for (it = toclose.begin(); it != toclose.end(); ++it)
+		close_group_window(GTK_WIDGET(*it));
 	}
 
 /*
@@ -538,12 +548,6 @@ void ExultStudio::update_group_windows
 			{		// A match?
 			chooser->render();
 			chooser->show();
-#if 0	/* +++Crashes sometimes. */
-			gboolean ret;
-			gtk_signal_emit_by_name(
-				GTK_OBJECT(chooser->get_widget()), 
-						"expose_event", &ret);
-#endif
 			}
 		}
 	}
