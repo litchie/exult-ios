@@ -28,6 +28,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "game.h"
 #include "Audio.h"
+#include "Configuration.h"
+
+extern Configuration *config;
 
 /*
  *	Some gump shape numbers:
@@ -1713,7 +1716,7 @@ void Slider_gump_object::mouse_drag
 File_gump_object::File_gump_object
 	(
 	) : Modal_gump_object(0, Game::get_game()->get_shape("gumps/fileio")),
-				pushed_text(0), focus(0), restored(0)
+		pushed_text(0), focus(0), restored(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	size_t i;
@@ -1852,18 +1855,25 @@ int File_gump_object::toggle_option
 		audio->set_music_enabled(music);
 		if (!music)		// Stop what's playing.
 			audio->stop_music();
+		string s = music ? "yes" : "no";
+					// Write option out.
+		config->set("config/audio/midi/enabled", s, true);
 		return music ? 1 : 0;
 		}
 	if (btn == buttons[4])		// Speech?
 		{
 		bool speech = !audio->is_speech_enabled();
 		audio->set_speech_enabled(speech);
+		string s = speech ? "yes" : "no";
+					// Write option out.
+		config->set("config/audio/speech/enabled", s, true);
 		return speech ? 1 : 0;
 		}
 	if (btn == buttons[5])		// Sound effects?
 		{
 		bool effects = !audio->are_effects_enabled();
 		audio->set_effects_enabled(effects);
+					// +++++When we support effects.
 		return effects ? 1 : 0;
 		}
 	return false;			// Shouldn't get here.
