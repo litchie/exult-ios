@@ -52,7 +52,7 @@ int Monster_info::equip_cnt = 0;
 Monster_actor *Monster_actor::in_world = 0;
 int Monster_actor::in_world_cnt = 0;
 
-extern bool no_damage;
+extern bool god_mode;
 
 /*
  *	Get/create timers.
@@ -799,7 +799,7 @@ void Actor::set_property
 	int val
 	)
 	{
-	if (prop == health && npc_num == 0 && no_damage && val < 1)
+	if (prop == health && ((party_id != -1) || (npc_num == 0)) && god_mode && val < 1)
 		return;
 	if (prop >= 0 && prop < 12)
 		if (prop == (int) exp)
@@ -1193,7 +1193,7 @@ int Actor::figure_hit_points
 	int ammo_shape
 	)
 	{
-	if (npc_num == 0 && no_damage)
+	if (((party_id != -1) || (npc_num == 0)) && god_mode)
 		return 0;
 
 	Game_window *gwin = Game_window::get_game_window();
@@ -1218,12 +1218,17 @@ int Actor::figure_hit_points
 					Usecode_machine::weapon);
 	if (!wpoints && (!winf || !winf->get_special_atts()))
 		return 0;		// No harm can be done.
+
 	int attacker_level = attacker->get_level();
 	int prob = 40 + attacker_level + 
 			attacker->get_property((int) combat) +
 			attacker->get_property((int) dexterity) -
 			get_property((int) dexterity) +
 			wpoints - armor;
+
+	if (god_mode && ((attacker->party_id != -1) || (attacker->npc_num == 0)))
+		prob = 200;	// always hits
+
 	cout << "Hit probability is " << prob << endl;
 	if (rand()%100 > prob)
 		return 0;		// Missed.
@@ -1236,7 +1241,12 @@ int Actor::figure_hit_points
 		hp = 1;
 	int oldhealth = properties[(int) health];
 	int maxhealth = properties[(int) strength];
+
+	if (god_mode && ((attacker->party_id != -1) || (attacker->npc_num == 0)))
+		hp = properties[(int) health] + properties[(int) strength];	//instant death
+	
 	properties[(int) health] -= hp;	// Subtract from health.
+
 	if (oldhealth >= maxhealth/2 && properties[(int) health] <
 					maxhealth/2 && rand()%3 != 0)
 					// A little oomph.

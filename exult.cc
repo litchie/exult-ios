@@ -70,7 +70,7 @@ Mouse *mouse = 0;
 ShapeBrowser *browser;
 int scale = 0;				// 1 if scaling X2.
 bool    cheat=true;			// Enable cheating keys
-bool	no_damage = false;
+bool	god_mode = false;
 bool	usecode_trace=false;		// Do we trace Usecode-intrinsics?
 #if USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
@@ -853,16 +853,7 @@ static void Handle_keystroke
 				obj->remove_this();
 				gwin->paint();
 				}
-			}		// alt-d toggle avatar damage
-		else if (alt&&cheat)
-			{
-			no_damage = 1 - no_damage;
-			if(no_damage)
-				gwin->center_text("Player Damage Disabled");
-			else
-				gwin->center_text("Player Damage Enabled");
 			}
-		break;
 		}
 	case SDLK_h:	// Help keys, ctrl = cheat keys
 		{
@@ -892,7 +883,7 @@ static void Handle_keystroke
 				"  ctrl-b - Shape Browser\n"
 				"  ctrl-c - Create Object\n"
 				"  ctrl-d - Delete Object\n"
-				"  alt-d - Toggle Player Damage\n"
+				"  alt-g - Toggle God Mode\n"
 				"  g - Change Avatar gender\n"
 				"  ctrl-m - Get 100 gold coins\n"
 				"  alt-n  - Toggle Naked flag (SI)\n"
@@ -966,14 +957,24 @@ static void Handle_keystroke
 			gwin->center_text("Eggs display disabled");
 		gwin->paint();
 		break;
-	case SDLK_g:		// Change Avatars gender
-		if(!cheat)
-			break;
-		if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex))
-			gwin->get_main_actor()->clear_type_flag(Actor::tf_sex);
-		else
-			gwin->get_main_actor()->set_type_flag(Actor::tf_sex);
-		gwin->set_all_dirty();
+	case SDLK_g:
+		if (alt) {	// toggle god-mode
+			if (cheat) {
+				god_mode = 1 - god_mode;
+				if (god_mode)
+					gwin->center_text("God Mode Enabled");
+				else
+					gwin->center_text("God Mode Disabled");
+			}
+		} else {	// Change Avatars gender
+			if(!cheat)
+				break;
+			if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex))
+				gwin->get_main_actor()->clear_type_flag(Actor::tf_sex);
+			else
+				gwin->get_main_actor()->set_type_flag(Actor::tf_sex);
+			gwin->set_all_dirty();
+		}
 		break;
 	case SDLK_n:		// Toggle Naked flag
 		if(!cheat || (Game::get_game_type() == BLACK_GATE))

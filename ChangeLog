@@ -1,3 +1,8 @@
+2000-08-21  Willem Jan Palenstijn  <palenstijn@wanadoo.nl>
+
+	* exult.cc, actors.cc: alt-G toggles God Mode, making your party
+	invulnerable, and every strike lethal.
+
 2000-08-04  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	game.cc: Alt-X now quits the menu (same as the original), although a
