@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "tiles.h"
 #include "vec.h"
+#include "lists.h"
 
 #ifdef WIN32
 #define Rectangle RECTX
@@ -171,6 +172,25 @@ public:
 	Sit_schedule(Actor *n, Game_object *ch = 0);
 	virtual void now_what();	// Now what should NPC do?
 	static void set_action(Actor *actor, Game_object *chairobj);
+	};
+
+/*
+ *	Wait tables.
+ */
+class Waiter_schedule : public Schedule
+	{
+	int first;			// 1 if first 'what_next()' called.
+	Tile_coord startpos;		// Starting position.
+	Actor *customer;		// Current customer.
+	Slist customers;		// List of customers.
+	Vector tables;			// Prep. tables.
+	void get_customer();
+	void find_prep_table(int shapenum);
+	int find_serving_spot(Tile_coord& spot);
+public:
+	Waiter_schedule(Actor *n);
+	virtual void now_what();	// Now what should NPC do?
+	virtual void ending(int newtype);// Switching to another schedule.
 	};
 
 /*
