@@ -49,6 +49,8 @@ ucc_SOURCES = \
 ucc: uccparse.o
 	$(LINK) uccparse.o
 
+uccparse.o: ucclex.c
+
 
 EXTRA_DIST = \
 	intrins1.txt \

@@ -1,3 +1,7 @@
+2001-09-11  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* uccparse.o depends on ucclex.c being created first.
+
 2001-09-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/egg.cc (Egg_object): Party_near uses same test as avatar_near.
