@@ -116,6 +116,7 @@ public:
   void toggle_selected(Game_object *obj);
   void clear_selected();
   void delete_selected();
+  void move_selected(int dx, int dy, int dz);
   const vector<Game_object *>& get_selected() const
 	{ return selected; }
 

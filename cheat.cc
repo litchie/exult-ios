@@ -409,6 +409,44 @@ void Cheat::delete_selected() {
 		}
 }
 
+/*
+ *	Move the selected objects by given #tiles.
+ */
+void Cheat::move_selected(int dx, int dy, int dz) {
+	if (selected.empty())
+		return;			// Nothing to do.
+	vector<Tile_coord> tiles;	// Store locations here.
+	int lowz = 1000, highz = -1000;	// Get min/max lift.
+					// Remove & store old locations.
+	vector<Game_object *>::iterator it;
+	for (it = selected.begin(); it != selected.end(); ++it)
+		{
+					// Get location.
+		Tile_coord tile = (*it)->get_tile();
+		tiles.push_back(tile);
+		gwin->add_dirty(*it);
+		(*it)->remove_this(true);
+		if (tile.tz < lowz)
+			lowz = tile.tz;
+		if (tile.tz > highz)
+			highz = tile.tz;
+		}
+	if (lowz + dz < 0)		// Too low?
+		dz = -lowz;
+	if (highz + dz > 15)		// Too high?
+		dz = 15 - highz;
+					// Add back in new locations.
+	for (it = selected.begin(); it != selected.end(); ++it)
+		{
+		Tile_coord tile = tiles[it - selected.begin()];
+		int newtx = (tile.tx + dx + c_num_tiles)%c_num_tiles;
+		int newty = (tile.ty + dy + c_num_tiles)%c_num_tiles;
+		int newtz = (tile.tz + dz + 16)%16;
+		(*it)->set_invalid();
+		(*it)->move(newtx, newty, newtz);
+		}
+	}
+
 void Cheat::map_teleport (void) const {
 	if (!enabled) return;
 
