@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_UTILS
 #define INCL_UTILS	1
 
-#include <iostream>
+#include <iosfwd>
 
 #include <exception>
 #include <string>
