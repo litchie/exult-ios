@@ -1,3 +1,8 @@
+2003-09-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* delobjs.cc: Adding a timestamp, so objects don't get deleted
+	until they've been there a few minutes.
+
 2003-09-01  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/animate.cc,gamemap.cc:  Check for 'sfx' objs. that aren't

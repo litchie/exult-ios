@@ -22,8 +22,20 @@
 #  include <config.h>
 #endif
 
+#include <vector>
 #include "objs.h"
+#include <SDL_timer.h>
 #include "delobjs.h"
+
+using std::vector;
+
+struct Obj_with_time
+	{
+	Game_object *obj;
+	unsigned int ticks;
+	Obj_with_time(Game_object *o, unsigned int t) : obj(o), ticks(t)
+		{  }
+	};
 
 /*
  *	Remove and delete all objects.
@@ -32,9 +44,26 @@ void Deleted_objects::flush
 	(
 	)
 	{
-	for(std::set<Game_object *,Less_objs>::iterator X = begin(); 
-						X != end(); ++X)
-		delete *X;
-	clear();
+	typedef vector<Obj_with_time> Obj_time_list;
+
+	if (empty())
+		return;
+	Obj_time_list keep;
+	keep.reserve(100);
+					// Wait at least 3 minutes.
+	unsigned int curtime = SDL_GetTicks();
+	for(std::map<Game_object *,unsigned int,Less_objs>::iterator X = 
+					begin(); X != end(); ++X)
+		{
+		Game_object *obj = (*X).first;
+		int ticks = (*X).second;
+		if (ticks < curtime)
+			delete obj;
+		else
+			keep.push_back(Obj_with_time(obj, ticks));
+		}
+	clear();			// Clear map.
+	for (Obj_time_list::iterator it = keep.begin(); it != keep.end(); ++it)
+		(*this)[(*it).obj] = (*it).ticks;
 	}
 
