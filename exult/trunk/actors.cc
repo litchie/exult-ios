@@ -91,15 +91,15 @@ void Actor::ready_best_weapon
 	(
 	)
 	{
-	int hand = free_hand();		// Find a free hand.
 	int points;
-	if (hand == -1 || Actor::get_weapon(points) != 0)
+	if (Actor::get_weapon(points) != 0)
 		return;			// Already have one (or hands full).
 	Game_window *gwin = Game_window::get_game_window();
 	Vector vec(0, 50);		// Get list of all possessions.
 	int cnt = get_objects(vec, -359, -359, -359);
 	Game_object *best = 0;
 	int best_damage = -20;
+	Ready_type wtype;
 	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *obj = (Game_object *) vec.get(i);
@@ -114,15 +114,33 @@ void Actor::ready_best_weapon
 					// Check for ammo.
 		    (!ammo || find_item(ammo, -359, -359)))
 			{
+			wtype = (Ready_type) info.get_ready_type();
 			best = obj;
 			best_damage = damage;
 			}
 		}
-	if (best)			// Found one?
+	if (!best)
+		return;
+	Game_object *remove1 = 0, *remove2 = 0;
+	if (wtype == two_handed_weapon)
 		{
-		best->remove_this(1);
-		add_readied(best, hand);
+		remove1 = spots[lhand];
+		remove2 = spots[rhand];
 		}
+	else
+		if (free_hand() == -1)
+			remove1 = spots[lhand];
+					// Free the spot(s).
+	if (remove1)
+		remove1->remove_this(1);
+	if (remove2)
+		remove2->remove_this(1);
+	best->remove_this(1);
+	add(best, 1);			// Should go to the right place.
+	if (remove1)			// Put back other things.
+		add(remove1, 1);
+	if (remove2)
+		add(remove2, 1);
 	}
 
 /*

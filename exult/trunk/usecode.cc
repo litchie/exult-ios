@@ -359,8 +359,9 @@ void Scheduled_usecode::handle_event
 					// REALLY guessing (for Forge):
 			Usecode_machine::Usecode_events ev = 
 					Usecode_machine::internal_exec;
-			if (obj->is_egg() && ((Egg_object *)obj)->get_type() ==
-			    Egg_object::usecode)
+			if (obj && obj->is_egg() && 
+				((Egg_object *)obj)->get_type() ==
+			    				Egg_object::usecode)
 				{
 				ev = Usecode_machine::egg_proximity;
 				cout << "0x55:  guessing with egg" << endl;
