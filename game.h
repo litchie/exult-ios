@@ -43,6 +43,7 @@ private:
 	hash_map<const char*, str_int_pair, hash<const char*>, eqstr> resources;
 protected:
 	int topx, topy, centerx, centery;
+	Vga_file menushapes;
 public:
 	Game_window *gwin;
 	Image_window8 *win;
@@ -57,7 +58,7 @@ public:
 	
 	virtual void play_intro() =0;
 	virtual void end_game(bool success) =0;
-	virtual void top_menu(Vga_file &shapes) =0;
+	virtual void top_menu() =0;
 	virtual void show_quotes() =0;
 	virtual void show_credits() =0;
 	virtual bool new_game(Vga_file &shapes) =0;
@@ -75,9 +76,10 @@ public:
 	int get_shape(const char *name);
 	void add_resource(const char *name, const char *str, int num);
 	str_int_pair get_resource(const char *name);
-	void show_text_line(int x, int y, const char *s);
+	int show_text_line(int left, int right, int y, const char *s);
 	vector<char *> *load_text(const char *archive, int index);
 	void destroy_text(vector<char *> *text);
+	void scroll_text(vector<char *> *text);
 	void show_menu();
 	};
 
@@ -89,7 +91,7 @@ public:
 	
 	virtual void play_intro();
 	virtual void end_game(bool success);
-	virtual void top_menu(Vga_file &shapes);
+	virtual void top_menu();
 	virtual void show_quotes();
 	virtual void show_credits();
 	virtual bool new_game(Vga_file &shapes);
@@ -109,7 +111,7 @@ public:
 	
 	virtual void play_intro();
 	virtual void end_game(bool success);
-	virtual void top_menu(Vga_file &shapes);
+	virtual void top_menu();
 	virtual void show_quotes();
 	virtual void show_credits();
 	virtual bool new_game(Vga_file &shapes);

@@ -2,6 +2,8 @@
 		Better introduction sequence. Can be interrupted by
 		keypress.
 
+		Main menu implemented.
+
 		Proper instruments in MIDI music and XMI support.
 		
 		Cheating mode: any keys which enable additional features can

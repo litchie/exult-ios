@@ -1,5 +1,9 @@
 2000-08-03  Tristan Tarrant  <tarrant_tristan@emc.com>
 
+	* bggame.cc, sigame.cc, game.cc: Credits & Quotes
+
+2000-08-03  Tristan Tarrant  <tarrant_tristan@emc.com>
+
 	* bggame.cc, sigame.cc: Implement main menu (SI's is incomplete)
 	* gamewin.cc: move creation of 'gamedat' to separate function to 
 	be invoked by main menu

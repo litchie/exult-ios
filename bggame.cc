@@ -273,11 +273,11 @@ void BG_Game::play_intro()
 		clear_screen();
 	}
 	
-void BG_Game::top_menu(Vga_file &shapes)
+void BG_Game::top_menu()
 {
 	play_midi(3);
 		
-	gwin->paint_shape(topx,topy,shapes.get_shape(0x2,0));
+	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	pal.load("static/intropal.dat",0);
 	pal.fade_in(60);	
 }
@@ -291,7 +291,7 @@ void BG_Game::end_game(bool success)
 
 		
 		if(!success) {
-			
+			// FIXME: show text for failure
 			return;
 		}
 
@@ -764,14 +764,18 @@ void BG_Game::end_game(bool success)
 
 void BG_Game::show_quotes()
 	{
+		play_midi(5);
 		vector<char *> *text = load_text("static/mainshp.flx", 0x10);
+		scroll_text(text);
 		destroy_text(text);
 	}
 
 void BG_Game::show_credits()
 	{
+		
 		vector<char *> *text = load_text("static/mainshp.flx", 0x0E);
-		destroy_text(text);		
+		scroll_text(text);
+		destroy_text(text);
 	}
 
 bool BG_Game::new_game(Vga_file &shapes)
