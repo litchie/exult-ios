@@ -875,6 +875,8 @@ bool SI_Game::new_game(Vga_file &shapes)
 {
 	int menuy = topy+110;
 	Font *font = fontManager.get_font("MENU_FONT");
+
+	Vga_file faces_vga(FACES_VGA);
 	
 	const int max_len = 16;
 	char npc_name[max_len+1];
@@ -896,7 +898,8 @@ bool SI_Game::new_game(Vga_file &shapes)
 			gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
 			gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
-			gwin->paint_face(topx+300,menuy+50,0,sex);
+			Shape_frame *sh = faces_vga.get_shape(0,sex);
+			gwin->paint_shape(topx+300,menuy+50,sh);
 			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
 			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
 			if(selected==0)

@@ -1,5 +1,6 @@
 2001-07-28  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* configure.in, acconfig.h, various: --disable-exult-studio-support
+	* sigame.cc: fixed crash when starting new SI game
 
 2001-07-28  Jeff Freedman  <jeff@amy.nerble.net>
 
