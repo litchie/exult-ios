@@ -253,7 +253,7 @@ static void Handle_client_message
 			gwin->skip_lift,
 			cheat.in_map_editor(),
 			cheat.show_tile_grid(),
-			gwin->get_map()->was_map_modified(),
+			gwin->was_map_modified(),
 			(int) cheat.get_edit_mode());
 		break;
 		}
@@ -453,7 +453,6 @@ static void Handle_client_message
 	case Exult_server::set_edit_chunknum:
 		cheat.set_edit_chunknum((short) Read2(ptr));
 		break;
-
 	case Exult_server::game_pos:
 		{
 		Tile_coord pos = gwin->get_main_actor()->get_tile();
@@ -464,7 +463,16 @@ static void Handle_client_message
 			Exult_server::game_pos, data, ptr - data);
 		break;
 		}
-
+	case Exult_server::goto_map:
+		{
+		char msg[80];
+		Tile_coord pos = gwin->get_main_actor()->get_tile();
+		int num = Read2(ptr);
+		gwin->teleport_party(pos, true, num);
+		sprintf(msg, "Map #%02x", num);
+		gwin->get_effects()->center_text(msg);
+		break;
+		}
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:
 		Handle_debug_message(&data[0], datalen);

@@ -81,6 +81,7 @@ enum Msg_type
 	edit_selected = 31,		// Edit selected object.
 	set_edit_chunknum = 32,		// Set chunk# to paint with.
 	game_pos = 33,			// Returns tx, ty, tz of main char.
+	goto_map = 34,			// Teleport to map #n.
 	usecode_debugging = 128
 	};
 

@@ -66,6 +66,7 @@
 #define U7IFIX		"<STATIC>/u7ifix"
 #define PATCH_U7IFIX	"<PATCH>/u7ifix"
 #define U7IREG		"<GAMEDAT>/u7ireg"
+#define MULTIMAP_DIR	"/map"
 #define PALETTES_FLX	"<STATIC>/palettes.flx"
 #define U7NBUF_DAT	"<GAMEDAT>/u7nbuf.dat"
 #define NPC_DAT		"<GAMEDAT>/npc.dat"

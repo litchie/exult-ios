@@ -1342,7 +1342,7 @@ void Actor::restore_schedule
 	)
 	{
 					// Make sure it's in valid chunk.
-	Map_chunk *olist = gmap->get_chunk_safely(get_cx(), get_cy());
+	Map_chunk *olist = get_chunk();
 					// Activate schedule if not in party.
 	if (olist && party_id < 0)
 		{
@@ -2582,7 +2582,7 @@ bool Actor::add
 	spots[index] = obj;		// Store in correct spot.
 	if (index == lhand && schedule)
 		schedule->set_weapon();	// Tell combat-schedule about it.
-	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
+	obj->set_shape_pos(0, 0);	// Clear coords. (set by gump).
 					// (Readied usecode now in drop().)
 	if (obj->get_info().is_light_source())
 		light_sources++;
@@ -2629,7 +2629,7 @@ int Actor::add_readied
 	spots[index] = obj;
 
 	// Clear coords. (set by gump).
-	obj->set_chunk(0, 0);
+	obj->set_shape_pos(0, 0);
 
 	// Must be a two-handed weapon.
 	if (type == FIS_2Hand && index == lhand) two_handed = true;
@@ -2765,12 +2765,14 @@ int Actor::get_armor_points
 Weapon_info *Actor::get_weapon
 	(
 	int& points,
-	int& shape
+	int& shape,
+	Game_object *& obj		// ->weapon itself returned, or 0.
 	)
 	{
 	points = 1;			// Bare hands = 1.
 	Weapon_info *winf = 0;
 	Game_object *weapon = spots[static_cast<int>(lhand)];
+	obj = weapon;
 	if (weapon)
 		if ((winf = weapon->get_info().get_weapon_info()) != 0)
 			{
@@ -2788,6 +2790,7 @@ Weapon_info *Actor::get_weapon
 			winf = rwinf;
 			points = rpoints;
 			shape = weapon->get_shapenum();
+			obj = weapon;
 			}
 		}
 	return winf;
@@ -2872,7 +2875,8 @@ bool Actor::figure_hit_points
 		}
 	else
 		{
-		winf = attacker->get_weapon(wpoints, weapon_shape);
+		Game_object *w;
+		winf = attacker->get_weapon(wpoints, weapon_shape, w);
 		if (!wpoints)
 			wpoints = 1;	// Always give at least one.
 		}
@@ -2917,7 +2921,8 @@ bool Actor::figure_hit_points
 	if (GAME_SI && attacker && attacker->npc_num == 294)
 		{
 		int pts, sh;		// Do we have Magebane?
-	    	if (get_weapon(pts, sh) && sh == 0xe7)
+		Game_object *w;
+	    	if (get_weapon(pts, sh, w) && sh == 0xe7)
 			{
 			prob -= (70 + rand()%20);
 			eman->remove_text_effect(attacker);
@@ -3132,7 +3137,7 @@ void Actor::die
 		{			// Exec. usecode before dying.
 		ucmachine->call_usecode(shnum, this, 
 					Usecode_machine::internal_exec);
-		if (get_cx() == 255)	// Invalid now?
+		if (is_pos_invalid())	// Invalid now?
 			return;
 		}
 	properties[static_cast<int>(health)] = -50;
@@ -3419,7 +3424,7 @@ int Main_actor::step
 	gwin->scroll_if_needed(this, t);
 	add_dirty();			// Set to update old location.
 					// Get old chunk, old tile.
-	Map_chunk *olist = gmap->get_chunk(get_cx(), get_cy());
+	Map_chunk *olist = get_chunk();
 	Tile_coord oldtile = get_tile();
 					// Move it.
 	Actor::movef(olist, nlist, tx, ty, frame, t.tz);
@@ -3457,7 +3462,8 @@ void Main_actor::switched_chunks
 	{
 	int newcx = nlist->get_cx(), newcy = nlist->get_cy();
 	int xfrom, xto, yfrom, yto;	// Get range of chunks.
-	if (!olist)			// No old?  Use all 9.
+	if (!olist ||			// No old, or new map?  Use all 9.
+	     olist->get_map() != nlist->get_map())
 		{
 		xfrom = newcx > 0 ? newcx - 1 : newcx;
 		xto = newcx < c_num_chunks - 1 ? newcx + 1 : newcx;
@@ -3500,11 +3506,10 @@ void Main_actor::switched_chunks
 		}
 	for (int y = yfrom; y <= yto; y++)
 		for (int x = xfrom; x <= xto; x++)
-			gmap->get_chunk(x, y)->setup_cache();
+			nlist->get_map()->get_chunk(x, y)->setup_cache();
 
 	// If change in Superchunk number, apply Old Style caching emulation
-	if (olist) gwin->emulate_cache(olist->get_cx(), olist->get_cy(), newcx, newcy);
-	else gwin->emulate_cache(-1, -1, newcx, newcy);
+	gwin->emulate_cache(olist, nlist);
 	}
 
 /*
@@ -3519,11 +3524,10 @@ void Main_actor::move
 	)
 	{
 					// Store old chunk list.
-	Map_chunk *olist = gmap->get_chunk_safely(
-						get_cx(), get_cy());
+	Map_chunk *olist = get_chunk();
 					// Move it.
 	Actor::move(newtx, newty, newlift);
-	Map_chunk *nlist = gmap->get_chunk(get_cx(), get_cy());
+	Map_chunk *nlist = get_chunk();
 	if (nlist != olist)
 		Main_actor::switched_chunks(olist, nlist);
 	int tx = get_tx(), ty = get_ty();
@@ -4015,11 +4019,11 @@ int Npc_actor::step
 	int frame			// New frame #.
 	)
 	{
-	if (get_flag(Obj_flags::paralyzed))
+	if (get_flag(Obj_flags::paralyzed) || chunk->get_map() != gmap)
 		return 0;
-					// Store old chunk.
 	Tile_coord oldtile = get_tile();
-	int old_cx = get_cx(), old_cy = get_cy();
+					// Get old chunk.
+	Map_chunk *olist = get_chunk();
 					// Get chunk.
 	int cx = t.tx/c_tiles_per_chunk, cy = t.ty/c_tiles_per_chunk;
 					// Get rel. tile coords.
@@ -4050,8 +4054,6 @@ int Npc_actor::step
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
 	add_dirty();			// Set to repaint old area.
-					// Get old chunk.
-	Map_chunk *olist = gmap->get_chunk(old_cx, old_cy);
 					// Move it.
 	movef(olist, nlist, tx, ty, frame, t.tz);
 
@@ -4091,10 +4093,9 @@ void Npc_actor::remove_this
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
 	gwin->remove_nearby_npc(this);	// Remove from nearby list.
 					// Store old chunk list.
-	Map_chunk *olist = gmap->get_chunk_safely(get_cx(), get_cy());
+	Map_chunk *olist = get_chunk();
 	Actor::remove_this(1);	// Remove, but don't ever delete an NPC
 	Npc_actor::switched_chunks(olist, 0);
-	cx = cy = 0xff;			// Set to invalid chunk coords.
 	if (!nodel && npc_num > 0)	// Really going?
 		unused = true;		// Mark unused if a numbered NPC.
 	}
@@ -4124,10 +4125,10 @@ void Npc_actor::move
 	)
 	{
 					// Store old chunk list.
-	Map_chunk *olist = gmap->get_chunk_safely(get_cx(), get_cy());
+	Map_chunk *olist = get_chunk();
 					// Move it.
 	Actor::move(newtx, newty, newlift);
-	Map_chunk *nlist = gmap->get_chunk_safely(get_cx(), get_cy());
+	Map_chunk *nlist = get_chunk();
 	if (nlist != olist)
 		{
 		Npc_actor::switched_chunks(olist, nlist);

@@ -84,7 +84,8 @@ class Game_window
 	Dragging_info *dragging;	// Dragging info:
 	Effects_manager *effects;	// Manages special effects.
 	Game_clock *clock;		// Keeps track of time.
-	Game_map *map;			// Holds all terrain.
+	Exult_vector<Game_map*> maps;	// Hold all terrain.
+	Game_map *map;			// The current map.
 	Game_render *render;		// Helps with rendering.
 	Gump_manager *gump_man;		// Open containers on screen.
 	Party_manager *party_man;	// Keeps party list.
@@ -218,6 +219,8 @@ public:
 	 */
 	inline Game_map *get_map() const
 		{ return map; }
+	inline const Exult_vector<Game_map*>& get_maps() const
+		{ return maps; }
 	inline Usecode_machine *get_usecode() const
 		{ return usecode; }
 	inline Image_window8 *get_win() const
@@ -232,6 +235,8 @@ public:
 	inline Party_manager *get_party_man() { return party_man; }
 	inline Npc_proximity_handler *get_npc_prox()  { return npc_prox; }
 	Game_clock *get_clock () { return clock; }
+	Game_map *get_map(int num);	// Read in additional map.
+	void set_map(int num);		// Make map #num the current map.
 	/*
 	 *	ExultStudio support:
 	 */
@@ -396,6 +401,7 @@ public:
 	void read();			// Read in 'gamedat'.
 	void write_gwin();		// Write gamedat/gamewin.dat.
 	void read_gwin();		// Read gamedat/gamewin.dat.
+	bool was_map_modified();	// Was any map modified?
 	void write_map();		// Write map data to <PATCH> dir.
 	void read_map();		// Reread initial game map.
 	void reload_usecode();		// Reread (patched) usecode.
@@ -464,7 +470,8 @@ public:
 	inline int get_step_tile_delta() { return step_tile_delta; };
 	inline void set_allow_double_right_move(bool a) { allow_double_right_move = a; }
 	inline bool get_allow_double_right_move() { return allow_double_right_move; }
-	void teleport_party(Tile_coord t, bool skip_eggs = false);
+	void teleport_party(Tile_coord t, bool skip_eggs = false, 
+							int new_map = -1);
 	bool activate_item(int shnum, int frnum=c_any_framenum,
 			   int qual=c_any_qual); // Activate item in party.
 					// Find object (x, y) is in.
@@ -490,7 +497,7 @@ public:
 	 *	Chunk-caching:
 	 */
 	// Old Style Caching Emulation. Called if player has changed chunks
-	void emulate_cache(int oldx, int oldy, int newx, int newy);
+	void emulate_cache(Map_chunk *olist, Map_chunk *nlist);
 	// Is a specific move by a monster or item allowed
 	bool emulate_is_move_allowed(int tx, int ty);
 	// Swapping a superchunk to disk emulation

@@ -609,8 +609,10 @@ Game_object *Chunk_cache::find_door
 
 Map_chunk::Map_chunk
 	(
+	Game_map *m,			// Map we'll belong to.
 	int chunkx, int chunky		// Absolute chunk coords.
-	) : objects(0), terrain(0), first_nonflat(0), ice_dungeon(0x00),
+	) : map(m), 
+	    objects(0), terrain(0), first_nonflat(0), ice_dungeon(0x00),
 	    dungeon_levels(0), cache(0), roof(0),
 	    dungeon_lights(0), non_dungeon_lights(0),
 	    cx(chunkx), cy(chunky), from_below(0), from_right(0),
@@ -733,7 +735,7 @@ inline Map_chunk *Map_chunk::add_outside_dependencies
 /*
  *	Add a game object to a chunk's list.
  *
- *	Newobj's cx and cy fields are set to this chunk.
+ *	Newobj's chunk field is set to this chunk.
  */
 
 void Map_chunk::add
@@ -741,8 +743,7 @@ void Map_chunk::add
 	Game_object *newobj		// Object to add.
 	)
 	{
-	newobj->cx = get_cx();		// Set object's chunk.
-	newobj->cy = get_cy();
+	newobj->chunk = this;		// Set object's chunk.
 	Ordering_info ord(gwin, newobj);
 					// Put past flats.
 	if (first_nonflat)
@@ -827,8 +828,8 @@ void Map_chunk::remove_egg
 	}
 
 /*
- *	Remove a game object from this list.  The object's cx and cy fields
- *	are set to invalid #'s (255,255).
+ *	Remove a game object from this list.  The object's 'chunk' field
+ *	is set to NULL.
  */
 
 void Map_chunk::remove

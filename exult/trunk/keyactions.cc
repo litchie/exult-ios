@@ -662,6 +662,12 @@ void ActionTeleport(int *params)
 	cheat.cursor_teleport();
 }
 
+//  { ActionNextMapTeleport, 0, "Teleport to next map", true, true, NONE },
+void ActionNextMapTeleport(int *params)
+{
+	cheat.next_map_teleport();
+}
+
 //  { ActionTime, 0, "Next time period", true, true, NONE },
 void ActionTime(int *params)
 {

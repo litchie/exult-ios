@@ -92,7 +92,7 @@ Alt-S		change_skin
 Ctrl-Alt-S	screenshot
 Ctrl-S		quicksave
 S		save_restore
-Ctrl-Alt-T	map_teleport
+Ctrl-Alt-T	next_map_teleport
 Ctrl-T		next_time_period
 Alt-T		cursor_teleport
 T		target_mode

@@ -74,6 +74,39 @@ unsigned char Game_object::rotate[8] = { 0, 0, 48, 48, 16, 16, 32, 32};
 extern bool combat_trace;
 
 /*
+ *	Get chunk coords, or 255.
+ */
+inline int Game_object::get_cxi() const
+	{ return chunk ? chunk->cx : 255; }
+inline int Game_object::get_cyi() const
+	{ return chunk ? chunk->cy : 255; }
+int Game_object::get_cx() const
+	{ return chunk ? chunk->cx : 255; }
+int Game_object::get_cy() const
+	{ return chunk ? chunk->cy : 255; }
+
+/*
+ *	Get tile.
+ */
+
+Tile_coord Game_object::get_tile
+	(
+	) const
+	{
+	if (!chunk)
+		{
+#if DEBUG
+		cout << "Asking tile for obj. " << get_shapenum()
+				<< " not on map" << endl;
+#endif
+		return Tile_coord(255*c_tiles_per_chunk, 255*c_tiles_per_chunk,
+								0);
+		}
+	return Tile_coord(chunk->cx*c_tiles_per_chunk + tx,
+				chunk->cy*c_tiles_per_chunk + ty, lift);
+	}
+
+/*
  *	Get direction to another object.
  */
 
@@ -100,17 +133,6 @@ int Game_object::get_direction
 	Tile_coord t1 = get_tile();
 					// Treat as cartesian coords.
 	return (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
-	}
-
-/*
- *	Get chunk this is in.
- */
-
-Map_chunk *Game_object::get_chunk
-	(
-	)
-	{
-	return gmap->get_chunk(cx, cy);
 	}
 
 /*
@@ -270,7 +292,7 @@ int Game_object::get_dir_facing
 
 /*
  *	Move to a new absolute location.  This should work even if the old
- *	location is invalid (cx=cy=255).
+ *	location is invalid (chunk = 0).
  */
 
 void Game_object::move
@@ -285,16 +307,16 @@ void Game_object::move
 	Map_chunk *newchunk = gmap->get_chunk_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
-					// Remove from old.
-	Map_chunk *oldchunk = gmap->get_chunk_safely(cx, cy);
+	Map_chunk *oldchunk = chunk;	// Remove from old.
 	if (oldchunk)
 		{
 		gwin->add_dirty(this);	// Want to repaint old area.
 		oldchunk->remove(this);
 		}
 	set_lift(newlift);		// Set new values.
-	shape_pos = ((newtx%c_tiles_per_chunk) << 4) + newty%c_tiles_per_chunk;
-	newchunk->add(this);		// Updates cx, cy.
+	tx = newtx%c_tiles_per_chunk;
+	ty = newty%c_tiles_per_chunk;
+	newchunk->add(this);		// Updates 'chunk'.
 	gwin->add_dirty(this);		// And repaint new area.
 	}
 
@@ -837,7 +859,6 @@ void Game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	Map_chunk *chunk = gmap->get_chunk_safely(cx, cy);
 	if (chunk)
 		chunk->remove(this);
 	if (!nodel)
@@ -1312,8 +1333,8 @@ void Game_object::write_common_ireg
 	)
 	{
 					// Coords:
-	buf[0] = ((get_cx()%16) << 4) | get_tx();
-	buf[1] = ((get_cy()%16) << 4) | get_ty();
+	buf[0] = ((get_cxi()%16) << 4) | get_tx();
+	buf[1] = ((get_cyi()%16) << 4) | get_ty();
 	int shapenum = get_shapenum(), framenum = get_framenum();
 	buf[2] = shapenum&0xff;
 	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
@@ -1332,7 +1353,7 @@ void Terrain_game_object::paint_terrain
 
 /*
  *	Move to a new absolute location.  This should work even if the old
- *	location is invalid (cx=cy=255).
+ *	location is invalid (chunk = 0).
  */
 
 void Ifix_game_object::move
@@ -1343,11 +1364,11 @@ void Ifix_game_object::move
 	)
 	{
 	Game_object::move(newtx, newty, newlift);
-					// Mark superchunk as 'modified'.
-	int cx = get_cx(), cy = get_cy();
-	if (cx >= 0 && cx < c_num_chunks &&
-	    cy >= 0 && cy < c_num_chunks)
-		gmap->set_ifix_modified(cx, cy);
+	if (chunk)			// Mark superchunk as 'modified'.
+		{
+		int cx = chunk->get_cx(), cy = chunk->get_cy();
+		chunk->get_map()->set_ifix_modified(cx, cy);
+		}
 	}
 
 /*
@@ -1360,11 +1381,11 @@ void Ifix_game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-					// Mark superchunk as 'modified'.
-	int cx = get_cx(), cy = get_cy();
-	if (cx >= 0 && cx < c_num_chunks &&
-	    cy >= 0 && cy < c_num_chunks)
-		gmap->set_ifix_modified(cx, cy);
+	if (chunk)			// Mark superchunk as 'modified'.
+		{
+		int cx = chunk->get_cx(), cy = chunk->get_cy();
+		chunk->get_map()->set_ifix_modified(cx, cy);
+		}
 	Game_object::remove_this(nodel);
 	}
 
@@ -1378,7 +1399,7 @@ void Ifix_game_object::write_ifix
 	)
 	{
 	unsigned char buf[4];
-	buf[0] = shape_pos;
+	buf[0] = (tx<<4)|ty;
 	buf[1] = lift;
 	int shapenum = get_shapenum(), framenum = get_framenum();
 	buf[2] = shapenum&0xff;

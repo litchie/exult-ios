@@ -350,18 +350,24 @@ GtkWidget *Object_browser::create_controls
 		gtk_container_add (GTK_CONTAINER(frame), hbox2);
 
 		find_text = gtk_entry_new ();
+		gtk_editable_set_editable(GTK_EDITABLE(find_text), TRUE);
+		gtk_entry_set_visibility(GTK_ENTRY(find_text), TRUE);
+		GTK_OBJECT_SET_FLAGS(find_text, GTK_CAN_FOCUS);
 		gtk_widget_show (find_text);
 		gtk_box_pack_start(GTK_BOX(hbox2), find_text, FALSE, FALSE, 0);
 		gtk_widget_set_usize (find_text, 110, -2);
+		GtkWidget *hbox3 = gtk_hbox_new (TRUE, 0);
+		gtk_widget_show(hbox3);
+		gtk_box_pack_start(GTK_BOX(hbox2), hbox3, FALSE, FALSE, 0);
 
 		GtkWidget *find_down = Create_arrow_button(
 				GTK_ARROW_DOWN, 
 			GTK_SIGNAL_FUNC(on_find_down), this);
-		gtk_box_pack_start(GTK_BOX(hbox2), find_down, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(hbox3), find_down, TRUE, TRUE, 2);
 
 		GtkWidget *find_up = Create_arrow_button(GTK_ARROW_UP,
 				GTK_SIGNAL_FUNC(on_find_up), this);
-		gtk_box_pack_start(GTK_BOX(hbox2), find_up, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(hbox3), find_up, TRUE, TRUE, 2);
 		gtk_signal_connect (GTK_OBJECT(find_text), "key-press-event",
 		      	GTK_SIGNAL_FUNC(on_find_key), this);
 		}
@@ -379,11 +385,11 @@ GtkWidget *Object_browser::create_controls
 
 		loc_down = Create_arrow_button(GTK_ARROW_DOWN,
 				GTK_SIGNAL_FUNC(on_loc_down), this);
-		gtk_box_pack_start(GTK_BOX (bbox), loc_down, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX (bbox), loc_down, TRUE, TRUE, 2);
 
 		loc_up = Create_arrow_button(GTK_ARROW_UP,
 	                    	GTK_SIGNAL_FUNC(on_loc_up), this);
-		gtk_box_pack_start(GTK_BOX (bbox), loc_up, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX (bbox), loc_up, TRUE, TRUE, 2);
 		}
 	/*
 	 *	The 'Move' controls.
@@ -399,10 +405,10 @@ GtkWidget *Object_browser::create_controls
 
 		move_down = Create_arrow_button(GTK_ARROW_DOWN,
 				GTK_SIGNAL_FUNC(on_move_down), this);
-		gtk_box_pack_start(GTK_BOX (bbox), move_down, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX (bbox), move_down, TRUE, TRUE, 2);
 		move_up = Create_arrow_button(GTK_ARROW_UP,
 			GTK_SIGNAL_FUNC(on_move_up), this);
-		gtk_box_pack_start (GTK_BOX (bbox), move_up, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (bbox), move_up, TRUE, TRUE, 2);
 		}
 	return topframe;
 	}
