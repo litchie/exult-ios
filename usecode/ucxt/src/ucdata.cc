@@ -140,8 +140,8 @@ void UCData::disassamble()
 
 			if(output_ucz())
 			{
-				_funcs[i]->parse_ucs();
-				_funcs[i]->output_ucs(cout, false);
+				_funcs[i]->parse_ucs(_funcmap);
+				_funcs[i]->output_ucs(cout, _funcmap, false);
 				_func_printed=true;
 			}
 
@@ -159,7 +159,7 @@ void UCData::disassamble()
 
 			// if we haven't printed one by now, we'll print an asm output.
 			if(output_asm() || (_func_printed==false))
-				print_asm(*_funcs[i], cout, *this);
+				print_asm(*_funcs[i], cout, _funcmap, *this);
 		}
 	}
 
@@ -313,6 +313,14 @@ void UCData::load_funcs()
 			_file.unget();
 		}
 	}
+	
+	for(vector<UCFunc *>::iterator i=_funcs.begin(); i!=_funcs.end(); i++)
+	{
+		_funcmap.insert(FuncMapPair((*i)->_funcid, UCFuncSet((*i)->_funcid, (*i)->_num_args)));
+	}
+/*	for(map<unsigned short, UCFuncSet>::iterator i=_funcmap.begin(); i!=_funcmap.end(); i++)
+		cout << i->first << "\t" << i->second.num_args << endl;*/
+		
 }
 
 

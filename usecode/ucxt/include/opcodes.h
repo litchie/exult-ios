@@ -110,14 +110,14 @@ class UCOpcodeData
 		UCOpcodeData(const vector<string> &v)
 		{
 			#if 0 // debugging
-			if((v.size()==10)==false)
+			if((v.size()==11)==false)
 			{
 				for(unsigned int i=0; i<v.size(); i++)
 					cout << v[i] << '\t';
 				cout << endl;
 			}
 			#endif
-			assert(v.size()==10);
+			assert(v.size()==11);
 			opcode = strtol(v[1].c_str(), 0, 0);
 			name = v[2];
 			asm_nmo = v[3];
@@ -127,7 +127,7 @@ class UCOpcodeData
 			param_types = qnd_ocsplit(v[7]);
 			num_pop = strtol(v[8].c_str(), 0, 0);
 			num_push = strtol(v[9].c_str(), 0, 0);
-			
+			call_effect = strtol(v[10].c_str(), 0, 0);
 		};
 		
 		unsigned int   opcode;
@@ -139,6 +139,7 @@ class UCOpcodeData
 		vector<string> param_types;
 		unsigned int   num_pop;
 		unsigned int   num_push;
+		unsigned int   call_effect;
 };
 
 extern vector<UCOpcodeData> opcode_table_data;
