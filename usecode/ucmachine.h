@@ -356,6 +356,7 @@ public:
 		weapon = 4,		// From weapons.dat.
 		readied = 5,		// Wear an item.
 		unreadied = 6,		// Removed an item.
+		died = 7,		// In SI only, I think.
 		chat = 9	// When a NPC wants to talk to you in SI
 		};
 	enum Global_flag_names {

@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "bodies.h"
 #include "hash_utils.h"
+#include "game.h"
 
 using std::size_t;
 
@@ -36,7 +37,7 @@ using std::size_t;
  *	Each triple here is <live shape>, <body shape>, <body frame>.
  */
 
-short Body_lookup::table[] = {
+short Body_lookup::bg_table[] = {	// BLACK GATE.
 /*
                               Artaxerxes
   Hi,
@@ -173,6 +174,11 @@ short Body_lookup::table[] = {
   1015, 414, 4	 			// x Stone Golem
 	};
 
+short Body_lookup::si_table[] = {	// SERPENT_ISLE.
+  537, 892, 7,				// Wolf.
+  805, 402, 4				// Fighter.
+	};
+
 #ifndef DONT_HAVE_HASH_SET
 
 /*
@@ -236,9 +242,19 @@ int Body_lookup::find
 #else
 		htable = new set<short *, Less_shapes>();
 #endif
-		int cnt = sizeof(table)/(3*sizeof(table[0]));
-		short *ptr = &table[0];	// Add values.
-		while (cnt--)
+		short *ptr;
+		int cnt;
+		if (Game::get_game_type() == BLACK_GATE)
+			{
+			cnt = sizeof(bg_table)/(3*sizeof(bg_table[0]));
+			ptr = &bg_table[0];
+			}
+		else
+			{
+			cnt = sizeof(si_table)/(3*sizeof(si_table[0]));
+			ptr = &si_table[0];
+			}
+		while (cnt--)		// Add values.
 			{
 			htable->insert(ptr);
 			ptr += 3;

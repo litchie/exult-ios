@@ -174,7 +174,7 @@ void Mixer::modify_stereo16
 		128,50,     128,70,     128,90,    128,110
 	};
 	int lfact = factors[dir16*2], rfact = factors[dir16*2 + 1];
-#if DEBUG && !defined(MACOS)
+#if 0 && DEBUG && !defined(MACOS)
 	cout << "Mixer::modify_stereo16:  lfact = " << lfact <<
 		", rfact = " << rfact << endl;
 #endif
