@@ -58,6 +58,67 @@ Image_buffer_base::Image_buffer_base
 
 
 /*
+ *	Convert rgb value.
+ */
+
+inline unsigned short Get_color8
+	(
+	unsigned char val,
+	int maxval,
+	int brightness			// 100=normal.
+	)
+	{
+	unsigned long c = (((unsigned long) val)*brightness*255L)/
+							(100*(maxval + 1));
+	return (c <= 255L ? (unsigned short) c : 255);
+	}
+
+/*
+ *	Set palette.
+ */
+
+void Image_buffer8::set_palette
+	(
+	SDL_Surface *surface,		// Surface to set.
+	unsigned char *rgbs,		// 256 3-byte entries.
+	int maxval,			// Highest val. for each color.
+	int brightness			// Brightness control (100 = normal).
+	)
+	{
+					// Get the colors.
+	for (int i = 0; i < 256; i++)
+		{
+		colors[i].r = Get_color8(rgbs[3*i], maxval, brightness);
+		colors[i].g = Get_color8(rgbs[3*i + 1], maxval,
+							brightness);
+		colors[i].b = Get_color8(rgbs[3*i + 2], maxval,
+							brightness);
+		}
+	SDL_SetColors(surface, colors, 0, 256);
+	}
+
+/*
+ *	Rotate a range of colors.
+ */
+
+void Image_buffer8::rotate_colors
+	(
+	SDL_Surface *surface,		// Surface to set.
+	int first,			// Palette index of 1st.
+	int num,			// # in range.
+	int upd				// 1 to update hardware palette.
+	)
+	{
+	int cnt = num - 1;		// Shift downward.
+	SDL_Color c0 = colors[first];
+	for (int i = first; cnt; i++, cnt--)
+		colors[i] = colors[i + 1];
+	colors[first + num - 1] = c0;	// Shift 1st to end.
+	if (upd)			// Take effect now?
+		SDL_SetColors(surface, colors, 0, 256);
+	}
+
+/*
  *	Copy an area of the image within itself.
  */
 
@@ -563,6 +624,7 @@ inline unsigned char Get_color16
 
 void Image_buffer16::set_palette
 	(
+	SDL_Surface *surface,		// Surface to set (ignored).
 	unsigned char *rgbs,		// 256 3-byte entries.
 	int maxval,			// Highest val. for each color.
 	int brightness			// Brightness control (100 = normal).
@@ -576,6 +638,26 @@ void Image_buffer16::set_palette
 		unsigned char b = Get_color16(rgbs[i + 2], maxval, brightness);
 		set_palette_color(i/3, r, g, b);
 		}
+	}
+
+/*
+ *	Rotate a range of colors.
+ */
+
+void Image_buffer16::rotate_colors
+	(
+	SDL_Surface *surface,		// Surface to set (ignored).
+	int first,			// Palette index of 1st.
+	int num,			// # in range.
+	int upd				// 1 to update hardware now.
+	)
+	{
+	int cnt = num - 1;		// Shift downward.
+	int c0 = palette[first];
+	for (int i = first; cnt; i++, cnt--)
+		palette[i] = palette[i + 1];
+	palette[first + num - 1] = c0;	// Shift 1st to end.
+					// +++++upd?
 	}
 
 /*
@@ -810,50 +892,5 @@ void Image_window::show
 	if (!ready())
 		return;
 	SDL_UpdateRect(surface, 0, 0, ibuf->width, ibuf->height);
-	}
-
-/*
- *	Convert rgb value.
- */
-
-inline unsigned short Get_color8
-	(
-	unsigned char val,
-	int maxval,
-	int brightness			// 100=normal.
-	)
-	{
-	unsigned long c = (((unsigned long) val)*brightness*255L)/
-							(100*(maxval + 1));
-	return (c <= 255L ? (unsigned short) c : 255);
-	}
-
-/*
- *	Set palette.
- */
-
-void Image_window::set_palette
-	(
-	unsigned char *rgbs,		// 256 3-byte entries.
-	int maxval,			// Highest val. for each color.
-	int brightness			// Brightness control (100 = normal).
-	)
-	{
-	if (ibuf->depth != 8)		// Need to handle in software?
-		{
-		Image_buffer::set_palette(rgbs, maxval, brightness);
-		return;
-		}
-	SDL_Color colors[256];
-					// Get the colors.
-	for (int i = 0; i < 256; i++)
-		{
-		colors[i].r = Get_color8(rgbs[3*i], maxval, brightness);
-		colors[i].g = Get_color8(rgbs[3*i + 1], maxval,
-							brightness);
-		colors[i].b = Get_color8(rgbs[3*i + 2], maxval,
-							brightness);
-		}
-	SDL_SetColors(surface, colors, 0, 256);
 	}
 

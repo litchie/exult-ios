@@ -116,8 +116,11 @@ public:
 	 *	8-bit color methods:
 	 */
 					// Set palette.
-	virtual void set_palette(unsigned char *rgbs, int maxval, 
-						int brightness = 100) = 0;
+	virtual void set_palette(SDL_Surface *surface, 
+		unsigned char *rgbs, int maxval, int brightness = 100) = 0;
+					// Rotate palette colors.
+	virtual void rotate_colors(SDL_Surface *surface,
+					int first, int num, int upd) = 0;
 					// Fill with given (8-bit) value.
 	virtual void fill8(unsigned char val) = 0;
 					// Fill rect. with pixel.
@@ -178,6 +181,7 @@ public:
  */
 class Image_buffer8 : public Image_buffer_base
 	{
+	SDL_Color colors[256];		// Palette.
 public:
 	Image_buffer8(unsigned int w, unsigned int h)
 		: Image_buffer_base(w, h, 8)
@@ -196,9 +200,11 @@ public:
 	 *	8-bit color methods:
 	 */
 					// Set palette.
-	virtual void set_palette(unsigned char *rgbs, int maxval, 
-						int brightness = 100)
-		{  }
+	virtual void set_palette(SDL_Surface *surface, 
+		unsigned char *rgbs, int maxval, int brightness = 100);
+					// Rotate palette colors.
+	virtual void rotate_colors(SDL_Surface *surface, int first, int num,
+								int upd);
 					// Fill with given (8-bit) value.
 	virtual void fill8(unsigned char val);
 					// Fill rect. wth pixel.
@@ -283,8 +289,11 @@ public:
 	 *	8-bit color methods:
 	 */
 					// Set palette.
-	virtual void set_palette(unsigned char *rgbs, int maxval, 
-						int brightness = 100);
+	virtual void set_palette(SDL_Surface *surface, 
+		unsigned char *rgbs, int maxval, int brightness = 100);
+					// Rotate palette colors.
+	virtual void rotate_colors(SDL_Surface *surface, int first, int num,
+								int upd);
 					// Fill with given (8-bit) value.
 	virtual void fill8(unsigned char val)
 		{ Image_buffer16::fill16(palette[val]); }
@@ -361,10 +370,6 @@ public:
 	/*
 	 *	8-bit color methods:
 	 */
-					// Set palette.
-	void set_palette(unsigned char *rgbs, int maxval, 
-						int brightness = 100)
-		{ ibuf->set_palette(rgbs, maxval, brightness); }
 					// Fill with given (8-bit) value.
 	void fill8(unsigned char val)
 		{ ibuf->fill8(val); }
@@ -476,12 +481,16 @@ public:
 		{
 		SDL_WM_SetCaption(title, 0);
 		}
+					// Set palette.
+	void set_palette(unsigned char *rgbs, int maxval, 
+						int brightness = 100)
+		{ ibuf->set_palette(surface, rgbs, maxval, brightness); }
+					// Rotate palette colors.
+	virtual void rotate_colors(int first, int num, int upd)
+		{ ibuf->rotate_colors(surface, first, num, upd); }
 					// Resize event occurred.
 	void resized(unsigned int neww, unsigned int nehh);
 	void show();			// Repaint entire window.
-					// Set palette.
-	void set_palette(unsigned char *rgbs, int maxval, 
-						int brightness = 100);
 	};
 
 #endif	/* INCL_IMAGEWIN	*/
