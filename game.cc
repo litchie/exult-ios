@@ -300,6 +300,8 @@ bool Game::show_menu()
 			if(!created) {
 				if(new_game(menushapes))
 					menu->set_selection(2);
+				else
+					break;
 			} else
 				menu->set_selection(2); // This will start the game
 			play = true;
