@@ -49,6 +49,7 @@ const int TURNINGPAGE = 41;		// Animation?? (4 frames).
 const int BOOKMARK = 42;		// Red ribbon, 5 frames.
 const int LEFTPAGE = 44;		// At top-left of left page.
 const int RIGHTPAGE = 45;		// At top-right of right page.
+const int SCROLLSPELLS = 66;		// First group of scroll spells (SI).
 
 /*
  *	Flags for required reagants.  Bits match shape #.
@@ -152,8 +153,8 @@ class Spell_button : public Gump_button
 	{
 	int spell;			// Spell # (0 - 71).
 public:
-	Spell_button(Gump *par, int px, int py, int sp)
-		: Gump_button(par, SPELLS + sp%8, px, py), spell(sp)
+	Spell_button(Gump *par, int px, int py, int sp, int first = SPELLS)
+		: Gump_button(par, first + sp%8, px, py), spell(sp)
 		{
 		framenum = sp/8;	// Frame # is circle.
 		}
@@ -171,7 +172,7 @@ void Spell_button::activate
 	Game_window *gwin
 	)
 	{
-	((Spellbook_gump *) parent)->set_bookmark(spell);
+	((Spelltype_gump *) parent)->select_spell(spell);
 	}
 
 /*
@@ -183,7 +184,7 @@ void Spell_button::double_clicked
 	Game_window *gwin
 	)
 	{
-	((Spellbook_gump *) parent)->do_spell(spell);
+	((Spelltype_gump *) parent)->do_spell(spell);
 	}
 
 /*
@@ -223,7 +224,7 @@ void Spellbook_gump::set_avail
 Spellbook_gump::Spellbook_gump
 	(
 	Spellbook_object *b
-	) : Gump(0, 43), page(0), book(b)
+	) : Spelltype_gump(43), page(0), book(b)
 {
 					// Where to paint page marks:
 	const int lpagex = 38, rpagex = 142, lrpagey = 25;
@@ -335,7 +336,7 @@ void Spellbook_gump::change_page
  *	Set bookmark.
  */
 
-void Spellbook_gump::set_bookmark
+void Spellbook_gump::select_spell
 	(
 	int spell
 	)
@@ -450,3 +451,115 @@ void Spellbook_gump::paint
 	}
 	gwin->set_painted();
 }
+
+/*
+ *	Create spellscroll display.
+ */
+
+Spellscroll_gump::Spellscroll_gump
+	(
+	Game_object *s
+	) : Spelltype_gump(65), scroll(s), spell(0)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Get dims. of a spell.
+	Shape_frame *spshape = gwin->get_gump_shape(SCROLLSPELLS, 0);
+	spwidth = spshape->get_width();
+	spheight = spshape->get_height();
+	int spellnum = scroll->get_quality() - 1;
+	if (spellnum >= 0 && spellnum < 8*9)
+		spell = new Spell_button(this, 
+				object_area.x + 4 + spshape->get_xleft(), 
+				object_area.y + 4 + spshape->get_yabove(), 
+				spellnum, SCROLLSPELLS);
+	}
+
+/*
+ *	Delete.
+ */
+
+Spellscroll_gump::~Spellscroll_gump
+	(
+	)
+	{
+	delete spell;
+	}
+
+/*
+ *	Perform the spell.
+ */
+
+void Spellscroll_gump::do_spell
+	(
+	int spellnum
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	scroll->remove_this();		// Scroll is gone.
+	scroll = 0;
+	close(gwin);			// We've just been deleted!
+	gwin->paint();
+	gwin->show();
+	gwin->get_usecode()->call_usecode(Get_usecode(spellnum),
+			gwin->get_main_actor(), Usecode_machine::double_click);
+	}
+
+/*
+ *	Return scroll.
+ */
+
+Game_object *Spellscroll_gump::get_owner
+	(
+	)
+	{
+	return scroll;
+	}
+
+/*
+ *	Is a given screen point on one of our buttons?
+ *
+ *	Output: ->button if so.
+ */
+
+Gump_button *Spellscroll_gump::on_button
+	(
+	Game_window *gwin,
+	int mx, int my			// Point in window.
+	)
+	{
+	Gump_button *btn = Gump::on_button(gwin, mx, my);
+	if (btn)
+		return btn;
+	else if (spell && spell->on_button(gwin, mx, my))
+		return spell;
+	return 0;
+	}
+
+/*
+ *	Our buttons are never drawn 'pushed'.
+ */
+
+void Spellscroll_gump::paint_button
+	(
+	Game_window *gwin,
+	Gump_button *btn
+	)
+	{
+	gwin->paint_gump(x + btn->x, y + btn->y, btn->shapenum, btn->framenum);
+	}
+
+/*
+ *	Render.
+ */
+
+void Spellscroll_gump::paint
+	(
+	Game_window *gwin
+	)
+	{
+	Gump::paint(gwin);		// Paint outside & checkmark.
+	if (spell)
+		paint_button(gwin, spell);
+	gwin->set_painted();
+	}
+
