@@ -29,8 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "SDL_events.h"
 #include "Configuration.h"
+#include "msgfile.h"
+#include "fnames.h"
 
 using std::ofstream;
+using std::ifstream;
 using std::ostream;
 using std::endl;
 using std::string;
@@ -38,8 +41,10 @@ using std::cout;
 
 vector<One_note *> Notebook_gump::notes;
 bool Notebook_gump::initialized = false;	// Set when read in.
+bool Notebook_gump::initialized_auto_text = false;
 Notebook_gump *Notebook_gump::instance = 0;
 vector<Notebook_top> Notebook_gump::page_info;
+vector<char *> Notebook_gump::auto_text;
 
 /*
  *	Defines in 'gumps.vga':
@@ -59,25 +64,31 @@ class One_note
 	char *text;			// Text, 0-delimited.
 	int textlen;			// Length, not counting ending NULL.
 	int textmax;			// Max. space.
+	int gflag;			// >=0 if created automatically when
+					//   the global flag was set.
 	bool is_new;			// Newly created at cur. time/place.
 public:
 	friend class Notebook_gump;
 	One_note() : day(0), hour(0), minute(0), tx(0), ty(0), 
-					text(0), textlen(0), textmax(0)
+				text(0), textlen(0), textmax(0), gflag(-1)
 		{  }
 	void set_time(int d, int h, int m)
 		{ day = d; hour = h; minute = m; }
 	void set_loc(int x, int y)
 		{ tx = x; ty = y; }
 	void set_text(char *txt);
-	void set(int d, int h, int m, int x, int y, char *txt = 0)
+	void set_gflag(int gf)
+		{ gflag = gf; }
+	void set(int d, int h, int m, int x, int y, char *txt = 0, int gf = -1)
 		{
 		set_time(d, h,m);
 		set_loc(x, y);
 		set_text(txt);
+		gflag = gf;
 		}
-	One_note(int d, int h, int m, int x, int y, char *txt = 0) : text(0)
-		{ set(d, h, m, x, y, txt); }
+	One_note(int d, int h, int m, int x, int y, char *txt = 0, int gf = -1)
+		: text(0)
+		{ set(d, h, m, x, y, txt, gf); }
 	~One_note()
 		{ delete [] text; }
 	void insert(int chr, int offset);	// Insert text.
@@ -171,6 +182,8 @@ void One_note::write
 	out << "<time> " << day << ':' << hour << ':' << minute <<
 		" </time>" << endl;
 	out << "<place> " << tx << ':' << ty << " </place>" << endl;
+	if (gflag >= 0)
+		out << "<gflag> " << gflag << " </gflag>" << endl;
 	out << "<text>" << endl;
 	out.write(text, textlen);
 	out << endl << "</text>" << endl;
@@ -265,6 +278,8 @@ void Notebook_gump::clear
 
 void Notebook_gump::add_new
 	(
+	char *text,
+	int gflag
 	)
 	{
 	Game_clock *clk = gwin->get_clock();
@@ -274,7 +289,7 @@ void Notebook_gump::add_new
 	    lng = (t.ty - 0x46e)/10;
 #endif
 	One_note *note = new One_note(clk->get_day(), clk->get_hour(),
-			clk->get_minute(), t.tx, t.ty);
+			clk->get_minute(), t.tx, t.ty, text, gflag);
 	note->is_new = true;
 	notes.push_back(note);
 	}
@@ -364,7 +379,9 @@ bool Notebook_gump::paint_page
 		snprintf(buf, sizeof(buf), "Day %d, %02d:%02d%s",
 			note->day, h?h:12, note->minute, ampm);
 		sman->paint_text(2, buf, x + box.x, y + pagey);
-		gwin->get_win()->fill8(sman->get_special_pixel(CHARMED_PIXEL),
+		// Use bright green for automatic text.
+		gwin->get_win()->fill8(sman->get_special_pixel(
+			note->gflag >= 0 ? POISON_PIXEL : CHARMED_PIXEL),
 			box.w, 1, x + box.x, y + box.y - 3);
 		}
 	int textheight = sman->get_text_height(font) + vlead;
@@ -770,6 +787,26 @@ bool Notebook_gump::handle_kbd_event
 	}
 
 /*
+ *	Automatically add a text entry when a usecode global flag is set.
+ */
+
+void Notebook_gump::add_gflag_text
+	(
+	int gflag,
+	char *text
+	)
+	{
+	if (!initialized)
+		initialize();
+	// See if already there.
+	for (vector<One_note*>::iterator it = notes.begin();
+					it != notes.end(); ++it)
+		if ((*it)->gflag == gflag)
+			return;
+	add_new(strdup(text), gflag);
+	}
+
+/*
  *	Write it out.
  */
 
@@ -843,5 +880,28 @@ void Notebook_gump::read
 				note->set_text(
 					strdup(notend.second.c_str()));
 			}
+		else if (notend.first == "note/gflag")
+			{
+			int gf;
+			sscanf(notend.second.c_str(), "%d", &gf);
+			if (note)
+				note->set_gflag(gf);
+			}
 		}
 	}
+
+/*
+ *	Read in text to be inserted automatically when global flags are set.
+ */
+
+void Notebook_gump::read_auto_text
+	(
+	)
+	{
+	ifstream in;
+	initialized_auto_text = true;
+	if (!U7open_static(in, AUTONOTES, true))
+		return;
+	Read_text_msg_file(in, auto_text);
+	}
+

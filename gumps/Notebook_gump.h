@@ -51,6 +51,8 @@ class Notebook_gump : public Gump
 	static vector<Notebook_top> page_info;
 	static Notebook_gump *instance;
 	static bool initialized;
+	static bool initialized_auto_text;
+	static vector<char *> auto_text;// Auto-text for global flags.
 	int curnote;			// Current note # being edited.
 	int curpage;			// Current page # (from 0).
 	Cursor_info cursor;		// Cursor loc. within current note.
@@ -59,7 +61,8 @@ class Notebook_gump : public Gump
 	Gump_button *leftpage, *rightpage;
 
 	static void initialize();
-	void add_new();			// Add new note.
+					// Add new note.
+	static void add_new(char *text = 0, int gflag = -1);
 	bool paint_page(Rectangle box, One_note *note, int& offset, 
 								int pagenum);
 	bool need_next_page() const
@@ -85,8 +88,17 @@ public:
 	virtual Gump_button *on_button(int mx, int my);
 	virtual void paint();		// Paint it and its contents.
 	virtual bool handle_kbd_event(void *ev);
+	static void add_gflag_text(int gflag, char *text);
+	static void add_gflag_text(int gflag)
+		{
+		if (!initialized_auto_text)
+			read_auto_text();
+		if (gflag < auto_text.size() && auto_text[gflag])
+			add_gflag_text(gflag, auto_text[gflag]);
+		}
 	static void write();		// Write it out to gamedat.
 	static void read();		// Read it in.
+	static void read_auto_text();
 };
 
 #endif

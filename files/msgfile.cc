@@ -61,7 +61,7 @@ int Read_text_msg_file
 	)
 	{
 	strings.resize(0);		// Initialize.
-	strings.reserve(2000);
+	strings.reserve(1000);
 	char buf[1024];
 	int linenum = 0;
 #define NONEFOUND 0xffffffff

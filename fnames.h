@@ -131,6 +131,8 @@
 #define TEXTMSGS	"<STATIC>/textmsg.txt"
 #define PATCH_TEXTMSGS	"<PATCH>/textmsg.txt"
 
+#define AUTONOTES	"autonotes.txt"
+
 #define NUM_FONTS	(20)
 
 #endif
