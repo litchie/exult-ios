@@ -96,7 +96,7 @@ const struct Action {
 	  ActionCombatStats, "Show combat stats", true, false, SERPENT_ISLE },
 	
 	{ "SHOW_SI_INTRO",
-	  ActionSIIntro, "Show SI intro", true, true, SERPENT_ISLE },
+	  ActionSIIntro, "Show Alternate SI intro", true, true, SERPENT_ISLE },
 	{ "SHOW_ENDGAME", ActionEndgame, "Show endgame", true, true, NONE },
 	{ "SCROLL_LEFT", ActionScrollLeft, "Scroll left", true, true, NONE },
 	{ "SCROLL_RIGHT", ActionScrollRight, "Scroll right", true, true, NONE },

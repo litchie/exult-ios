@@ -1,3 +1,7 @@
+2001-07-09  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* keys.cc: renamed 'SI intro' to 'alternate SI intro'
+	* useval.*: added an undefined state to fix various display issues
+
 2001-07-09  Tristan Tarrant <nadir@users.sourceforge.net>
 	* gumps/Slider_gump.cc: handle left/right arrows (as suggested on IRC
 	  by Dominus)
