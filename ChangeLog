@@ -1,6 +1,7 @@
 2002-03-16  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* tools/uctools.h: added 32 bit opcodes
 	* usecode/*, tools/wud.c: support for 32 bit opcodes and headers
+	* tools/wuc.c: support for 32 bit opcodes
 
 2002-03-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* docs/usecode32.txt: attempt at specs for 32 bit usecode
