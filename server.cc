@@ -26,15 +26,32 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
  *	For the time being, we'll only inflict this on X users.
  */
+#include "config.h"	// All the ifdefs aren't useful if we don't do this
+
 #ifdef XWIN
 
 #include <unistd.h>
 #include <fcntl.h>
+
+#if HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
+
+#if HAVE_SYS_TIME_H
 #include <sys/time.h>
+#endif
+
+#if HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
-#include <sys/un.h>
+#endif
+
 #include <stdio.h>
+
+#if HAVE_NETDB_H
+#include <netdb.h>
+#endif
+
+#include <sys/un.h>
 
 #include "server.h"
 #include "config.h"
@@ -74,21 +91,47 @@ void Server_init
 	(
 	)
 	{
+	// Get location of socket file.
+	std::string servename = get_system_path("<GAMEDAT>/exultserver");
+	// Make sure it isn't there.
+	unlink(servename.c_str());
+#if HAVE_GETADDRINFO
+	// Don't use the old deprecated network API
+	int r;
+	struct addrinfo hints,*ai;
+
+	memset(&hints,0,sizeof(hints));
+	hints.ai_flags=AI_PASSIVE;
+	r=getaddrinfo(	0,
+			servename.c_str(),
+			&hints,
+			&ai);
+	if(r!=0)
+		{
+		cerr << "getaddrinfo(): "<<gai_strerror(r) << endl;
+		return;
+		}
+
+	listen_socket = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+#else
+	// Deprecated
 	listen_socket = socket(PF_LOCAL, SOCK_STREAM, 0);
+#endif
 	if (listen_socket < 0)
 		perror("Failed to open map-editor socket");
 	else 
 		{
-					// Get location of socket file.
-		std::string servename = get_system_path("<GAMEDAT>/exultserver");
-					// Make sure it isn't there.
-		unlink(servename.c_str());
+#if HAVE_GETADDRINFO
+		if(bind(listen_socket,ai->ai_addr,ai->ai_addrlen) == -1 ||
+			listen(listen_socket,1) == -1)
+#else
 		struct sockaddr_un addr;
 		addr.sun_family = AF_UNIX;
 		strcpy(addr.sun_path, servename.c_str());
 		if (bind(listen_socket, (struct sockaddr *) &addr, 
 		      sizeof(addr.sun_family) + strlen(addr.sun_path)) == -1 ||
 		    listen(listen_socket, 1) == -1)
+#endif
 			{
 			perror("Bind or listen on socket failed");
 			close(listen_socket);
@@ -101,6 +144,9 @@ void Server_init
 			fcntl(listen_socket, F_SETFL, 
 				fcntl(listen_socket, F_GETFL) | O_NONBLOCK);
 			}
+#if HAVE_GETADDRINFO
+		freeaddrinfo(ai);
+#endif
 		}
 	Set_highest_fd();
 	}

@@ -43,6 +43,9 @@
 /* Compiling in Cygwin */
 #undef CYGWIN
 
+/* getaddrinfo() available? */
+#undef HAVE_GETADDRINFO
+
 @BOTTOM@
 
 #ifdef ALPHA_LINUX_CXX
