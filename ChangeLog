@@ -1,3 +1,6 @@
+2001-08-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* gumps/Jawbone_gump.cc: fixed Jawbone display bug
+
 2001-08-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/conversation.cc (Conversation): Show faces with
