@@ -285,6 +285,13 @@ on_groups_new_name_key_press		(GtkEntry	*entry,
 	return FALSE;			// Let parent handle it.
 }
 
+C_EXPORT void
+on_open_builtin_group_clicked          (GtkButton       *button,
+                                        gpointer         user_data)
+{
+//+++++++++++
+}
+
 /*
  *	Groups list signals:
  */
@@ -404,6 +411,8 @@ void ExultStudio::setup_groups
 	g_signal_handler_block(model, chgsig);
 	gtk_tree_store_clear(model);
 	set_visible("groups_frame", TRUE);
+					// Show builtins for shapes.vga.
+	set_visible("builtin_groups", curfile == vgafile);
 	gtk_tree_view_set_reorderable(tview, TRUE);
 	int cnt = groups->size();	// Add groups from file.
 	GtkTreeIter iter;
