@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>	/* Debugging */
 #include "gamewin.h"
 #include "gumps.h"
+#include "mouse.h"
 
 /*
  *	Begin a possible drag when the mouse button is depressed.  Also detect
@@ -39,6 +40,7 @@ int Game_window::start_dragging
 	int x, int y			// Position in window.
 	)
 	{
+	extern Mouse *mouse;
 	dragging = 0;
 	dragging_gump = 0;
 	dragging_gump_button = 0;
@@ -84,6 +86,17 @@ cout << "(x,y) rel. to gump is (" << (x-dragging_paintx) << ", " <<
 					// Don't want to move walls.
 		if (!dragging->is_dragable())	
 			{
+			Mouse::Mouse_shapes saveshape = mouse->get_shape();
+			mouse->hide();
+			mouse->set_shape(Mouse::tooheavy);
+			mouse->show();
+			painted = 1;
+			show();
+			SDL_Delay(600);
+			mouse->hide();
+			paint();
+			mouse->set_shape(saveshape);
+			painted = 1;
 			dragging = 0;
 			return (0);
 			}

@@ -1107,6 +1107,7 @@ void Game_window::show_items
 		cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << '\n';
 		cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << '\n';
 		cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << '\n';
+		cout << "Weight = " << info.get_weight() << '\n';
 		if (info.is_animated())
 			cout << "Object is ANIMATED\n";
 		if (info.has_transparency())
@@ -1115,10 +1116,6 @@ void Game_window::show_items
 			cout << "Object is TRANSPARENT\n";
 		if (info.is_light_source())
 			cout << "Object is LIGHT_SOURCE\n";
-		if (info.is_xobstacle())
-			cout << "Object is XOBSTACLE\n";
-		if (info.is_yobstacle())
-			cout << "Object is YOBSTACLE\n";
 #endif
 		}
 #endif

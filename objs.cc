@@ -187,7 +187,9 @@ int Ireg_game_object::is_dragable
 	(
 	)
 	{
-	return (1);			// Yes.
+	Game_window *gwin = Game_window::get_game_window();
+					// 0 weight means 'too heavy'.
+	return gwin->get_shapes().get_info(get_shapenum()).get_weight() > 0;
 	}
 
 /*
