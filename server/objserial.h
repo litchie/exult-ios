@@ -127,6 +127,27 @@ int Npc_actor_in
 	short& num_schedules,		// # of schedule changes.
 	Serial_schedule *schedules	// Schedule changes.  Room for 8.
 	);
+
+extern int Game_info_out
+	(
+	int fd,				// Socket.
+	int num_npcs,			// # in game.
+	int edit_lift,			// Lift being edited.
+	bool map_editing,		// In 'map-editing' mode.
+	bool tile_grid,			// Showing tile grid.
+	bool map_modified		// Map was changed.
+	);
+extern int Game_info_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	int& num_npcs,			// # in game.
+	int& edit_lift,			// Lift being edited.
+	bool& map_editing,		// In 'map-editing' mode.
+	bool& tile_grid,		// Showing tile grid.
+	bool& map_modified		// Map was changed.
+	);
+
 #endif
 
 
