@@ -62,6 +62,13 @@
 \C"A young person..."
 \L- Willem Jan
 
-\C"BTW I don't stack kids anymore,"
-\C"I now put them into a queue."
+\C"Damn, we're probably popular enough to
+\Cwin a US presidency election."
+\L- Dancer
+
+\C"Only if we release on punchcards."
+\L- Jeff
+
+\C"BTW I don't stack kids anymore,
+\CI now put them into a queue."
 \L- Max on #exult
