@@ -1,3 +1,7 @@
+2000-11-23  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+
+	* paths.h: fixed pathfinding on BeOS.
+
 2000-11-23  Tristan Tarrant <nadir@users.sourceforge.net>
 
 	* browser.cc: show shape name
