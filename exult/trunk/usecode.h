@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Usecode.h - Interpreter for usecode.
  **
  **	Written: 8/12/99 - JSF
@@ -331,6 +332,13 @@ public:
 		internal_exec = 2,	// Internal call via intr. 1 or 2.
 		egg_proximity = 3
 		};
+	enum Global_flag_names {
+		did_first_scene = 0x3b	// Went through 1st scene with Iolo.
+		};
+	int get_global_flag(int i)	// Get/set ith flag.
+		{ return gflags[i]; }
+	void set_global_flag(int i, int val = 1)
+		{ gflags[i] = (val == 1); }
 					// Call desired function.
 	int call_usecode(int id, Game_object *obj, Usecode_events event)
 		{

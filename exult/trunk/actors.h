@@ -45,14 +45,15 @@ class Actor : public Sprite
 	short properties[12];		// Properties set/used in 'usecode'.
 protected:
 	unsigned long flags;		// 32 flags used in 'usecode'.
-	enum Item_flags {		// Bit #'s of flags:
-		poisoned = 8
-		};
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
 	~Actor()
 		{ delete name; }
+	enum Item_flags {		// Bit #'s of flags:
+		poisoned = 8,
+		dont_render = 16	// Completely invisible.
+		};
 	enum Item_properties {		// Trying to figure out properties.
 		strength = 0,		// Or is max_health 0????
 		dexterity = 1,
@@ -73,6 +74,8 @@ public:
 	void walk_to_tile(int tx, int ty, int tz);
 	void walk_to_tile(Tile_coord p)
 		{ walk_to_tile(p.tx, p.ty, p.tz); }
+					// Render.
+	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	virtual char *get_name();
