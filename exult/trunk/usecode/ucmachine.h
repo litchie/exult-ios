@@ -37,6 +37,7 @@ class Vector;
 class Deleted_objects;
 class Actor;
 class Usecode_machine;
+class Conversation;
 
 #include "useval.h"
 
@@ -44,7 +45,6 @@ class Usecode_machine;
 #include "tiles.h"
 #include "utils.h"
 #include "vec.h"	// Includes STL vector.
-#include "conversation.h"
 #include <string>	// STL string
 
 
@@ -108,7 +108,7 @@ private:
 	int popi();
 					// Push/pop strings.
 	void pushs(char *s);
-	Conversation conv;		// What user can click on.
+	Conversation *conv;		// Handles conversations
 					// Get ->obj. from 'itemref'.
 	Game_object *get_item(Usecode_value& itemref);
 					// "Safe" cast to Actor.
@@ -317,7 +317,7 @@ public:
 		weapon = 4,		// From weapons.dat.
 		readied = 5,		// Wear an item.
 		unreadied = 6,		// Removed an item.
-		chat = 9		// When a NPC wants to talk to you in SI
+		chat = 9	// When a NPC wants to talk to you in SI
 		};
 	enum Global_flag_names {
 		did_first_scene = 0x3b,	// Went through 1st scene with Iolo.
@@ -343,8 +343,7 @@ public:
 	void link_party();		// Set party's id's.
 
 	void init_conversation();
-	int get_num_faces_on_screen() const
-		{ return conv.get_num_faces_on_screen(); }
+	int get_num_faces_on_screen() const;
 
 	};
 

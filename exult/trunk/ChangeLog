@@ -1,3 +1,6 @@
+2001-01-08  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* usecode/*: removed conversation.h from ucmachine.h
+
 2001-01-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Bug fixes:  Cannons now fire, and lightning stops in dungeons.
