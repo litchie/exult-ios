@@ -68,8 +68,9 @@ void Npc_proximity_handler::handle_event
 		npc->set_schedule_type(Schedule::stand);
 		npc->say(first_awakened, last_awakened);
 		}
-					// Hostile?  ATTACK!
+					// Hostile monster?  ATTACK!
 	else if (npc->get_alignment() == Npc_actor::hostile &&
+		npc->is_monster() &&
 		npc->get_schedule_type() != (int) Schedule::combat)
 		{
 		npc->set_schedule_type(Schedule::combat);

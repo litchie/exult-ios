@@ -102,6 +102,7 @@ static int Play();
 static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl);
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
 int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
+static void Try_key(Game_window *);
 
 /*
  *	A handy breakpoint.
@@ -922,6 +923,9 @@ static void Handle_keystroke
 				mouse->set_shape(Mouse::hand);
 		}
 		break;
+	case SDLK_k:			// Find key.
+		Try_key(gwin);
+		break;
 	case SDLK_l:			// Decrement skip_lift.
 		if(!cheat)
 			break;
@@ -1455,5 +1459,43 @@ int Prompt_for_number
 	int ret = !ok ? 0 : slider->get_val();
 	delete slider;
 	return (ret);
+	}
+
+/*
+ *	Handle the 'k' key by looking for a key to unlock a door or chest.
+ */
+
+static void Try_key
+	(
+	Game_window *gwin
+	)
+	{
+	int x, y;
+	if (!Get_click(x, y, Mouse::greenselect))
+		return;
+					// Look for obj. in open gump.
+	Gump_object *gump = gwin->find_gump(x, y);
+	Game_object *obj;
+	if (gump)
+		obj = gump->find_object(x, y);
+	else				// Search rest of world.
+		obj = gwin->find_object(x, y);
+	if (!obj)
+		return;
+	int qual = obj->get_quality();	// Key quality should match.
+	Actor *party[10];		// Get ->party members.
+	int party_cnt = gwin->get_party(&party[0], 1);
+	for (int i = 0; i < party_cnt; i++)
+		{
+		Actor *act = party[i];
+		Vector keys;		// Get keys.
+		if (act->get_objects(keys, 641, qual, -359))
+			{
+			((Game_object *) keys.get(0))->activate(
+						gwin->get_usecode());
+			return;
+			}
+		}
+	mouse->flash_shape(Mouse::redx);	// Nothing matched.
 	}
 
