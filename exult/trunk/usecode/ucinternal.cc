@@ -2064,6 +2064,17 @@ int Usecode_internal::run
 		case 0x4b:		// POP EVENTID.
 			event = popi();
 			break;
+		case 0x4c: // debugging stuff from spanish SI (linenum)
+			{
+				int linenum = Read2(ip);
+				break;
+			}
+		case 0x4d: // debugging stuff from spanish SI (function init)
+			{
+				int funcname = Read2(ip);
+				int paramnames = Read2(ip);
+				break;
+			}
 		default:
 			cout << "Opcode " << opcode << " not known." << endl;
 			break;
