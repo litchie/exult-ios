@@ -1,3 +1,10 @@
+2005-01-16    <jeff@mini.nerble.net>
+
+	* shapes/font.cc: Don't skip linefeeds when handling spaces.
+	(Needed for notebook, and I hope this doesn't mess up conversations.)
+
+	* gumps/Notebook_gump.cc (Notebook_gump): Working on auto-paging.
+
 2005-01-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* forked_player.cc: fixed execlp call (patch #1101126)
 

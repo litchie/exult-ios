@@ -61,6 +61,12 @@ class Notebook_gump : public Gump
 	void add_new();			// Add new note.
 	bool paint_page(Rectangle box, One_note *note, int& offset, 
 								int pagenum);
+	bool need_next_page() const
+		{
+ 		return (curpage%2 == 1 && curpage < page_info.size() - 1 &&
+			page_info[curpage + 1].offset > 0 &&
+			cursor.offset >= page_info[curpage + 1].offset);
+		}
 	void prev_page();
 	void next_page();
 public:
