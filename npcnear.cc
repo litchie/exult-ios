@@ -159,6 +159,8 @@ void Npc_proximity_handler::handle_event
 		 (rand()%2 == 1 || npc->get_shapenum() == 811)  &&
 					// And not for party members.
 			!npc->is_in_party() &&
+					// And not if walking to sched. spot.
+		 sched != Schedule::walk_to_schedule &&
 					// And not for patrollers/monsters
 					//  in SI. !!Guessing.
 		 (Game::get_game_type() != SERPENT_ISLE ||

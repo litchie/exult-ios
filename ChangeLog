@@ -1,3 +1,11 @@
+2003-10-26    <jeff@mini.nerble.net>
+
+	* schedule.cc (Walk_to_schedule): Changed pathfinding so you can
+	follow Patterson to his tryst.  
+
+	* npcnear.cc: Don't call usecode for NPC's walking to schedule, so
+	we don't see them snoring while they're walking.
+
 2003-10-26  Max Horn  <max@quendi.de>
 	* configure.ac: Patch #794229: OpenGL on Mac OS X
 	* conf/Configuration.cc: Patch #794231: Find exult.cfg in
