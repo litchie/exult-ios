@@ -48,6 +48,12 @@ public:
 		probability = prob;
 		quantity = quant;
 		}
+	int get_shapenum() const
+		{ return shapenum; }
+	int get_probability() const
+		{ return probability; }
+	int get_quantity() const
+		{ return quantity; }
 	};
 
 /*
@@ -64,6 +70,8 @@ public:
 					// Set i'th element.
 	void set(int i, int shnum, int prob, int quant)
 		{ elements[i].set(shnum, prob, quant); }
+	Equip_element& get(int i)
+		{ assert(i >= 0 && i < 10); return elements[i]; }
 	};
 
 /*
@@ -104,6 +112,10 @@ public:
 		equip = eq;
 		equip_cnt = cnt;
 		}
+	static int get_equip_cnt()
+		{ return equip_cnt; }
+	static Equip_record& get_equip(int i)
+		{ assert(i >= 0 && i < equip_cnt); return equip[i]; }
 	bool splits() const
 		{ return m_splits; }
 	bool cant_die() const

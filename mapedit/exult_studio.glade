@@ -9761,6 +9761,11 @@ Random
 	<class>GtkSpinButton</class>
 	<name>equip_recnum</name>
 	<can_focus>True</can_focus>
+	<signal>
+	  <name>changed</name>
+	  <handler>on_equip_recnum_changed</handler>
+	  <last_modification_time>Wed, 16 Jan 2002 08:08:00 GMT</last_modification_time>
+	</signal>
 	<climb_rate>1</climb_rate>
 	<digits>0</digits>
 	<numeric>False</numeric>

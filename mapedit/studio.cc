@@ -749,6 +749,27 @@ void ExultStudio::set_spin
 	}
 
 /*
+ *	Find and set a spin button, along with its range.
+ */
+
+void ExultStudio::set_spin
+	(
+	char *name,
+	int val,
+	int low, int high		// Range.
+	)
+	{
+	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
+	if (btn)
+		{
+		gtk_spin_button_set_adjustment(GTK_SPIN_BUTTON(btn),
+			GTK_ADJUSTMENT(
+			gtk_adjustment_new (0, low, high, 1, 10, 10)));
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(btn), val);
+		}
+	}
+
+/*
  *	Get number from a text field.
  *
  *	Output:	Number, or -1 if not found.

@@ -63,6 +63,22 @@ extern "C" gboolean on_equip_window_delete_event
 	}
 
 /*
+ *	Record # changed, so update what's displayed.
+ */
+extern "C" gboolean on_equip_recnum_changed
+	(
+	GtkWidget *widget,
+	GdkEventFocus *event,
+	gpointer user_data
+	)
+	{
+	int recnum = gtk_spin_button_get_value_as_int(
+						GTK_SPIN_BUTTON(widget));
+	ExultStudio::get_instance()->init_equip_window(recnum);
+	return TRUE;
+	}
+
+/*
  *	Widgets in one row of the 'equipment' dialog:
  */
 struct Equip_row_widgets
@@ -170,14 +186,45 @@ static void Setup_equip
 	}
 
 /*
+ *	Set the fields to a given record.
+ */
+
+void ExultStudio::init_equip_window
+	(
+	int recnum			// Record # to start with (1-based).
+	)
+	{
+					// Fill in the record.
+	Equip_record& rec = Monster_info::get_equip(recnum - 1);
+					// Go through rows.
+	for (int row = 0; row < 10; row++)
+		{
+		Equip_element& elem = rec.get(row);
+		Equip_row_widgets& widgets = equip_rows[row];
+		int shnum = elem.get_shapenum();
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(widgets.shape), 
+									shnum);
+		const char *nm = (names && shnum > 0) ? names[shnum] : "";
+		gtk_label_set_text(GTK_LABEL(widgets.name), nm);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(widgets.chance),
+						elem.get_probability());
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(widgets.count),
+						elem.get_quantity());
+		}
+	}
+
+/*
  *	Open the equip-editing window.
  */
 
 void ExultStudio::open_equip_window
 	(
-	int recnum			// Record # to start with.
+	int recnum			// Record # to start with (1-based).
 	)
 	{
+	int ecnt = Monster_info::get_equip_cnt();
+	if (recnum <= 0 || recnum > ecnt)
+		return;
 	if (!equipwin)			// First time?
 		{
 		equipwin = glade_xml_get_widget( app_xml, "equip_window" );
@@ -185,7 +232,8 @@ void ExultStudio::open_equip_window
 								"equip_table");
 		Setup_equip(GTK_TABLE(table), equip_rows);
 		}
-	set_spin("equip_recnum", recnum);
+					// This will cause the data to be set:
+	set_spin("equip_recnum", recnum, 1, ecnt);
 #if 0
 	if (shape_draw)			// Ifile might have changed.
 		delete shape_draw;

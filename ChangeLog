@@ -1,6 +1,7 @@
 2002-01-15  Jeff Freedman  <jeff@amy.nerble.net>
 
-	* mapedit/shapeedit.cc: Building 'equip' dialog.
+	* mapedit/shapeedit.cc: Show 'equip' dialog.
+	* shapes/monstinf.h:  Interface methods added.
 	* objs/chunks.cc: Don't check terrain if MOVE_MAPEDITOR.
 
 2002-01-14  Patrick Burke  <takhisisii@yahoo.com.au>
