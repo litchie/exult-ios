@@ -19,7 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef CHEAT_H
 #define CHEAT_H
 
-#include "gamewin.h"
+class Game_window;
 
 class Cheat {
  public:
@@ -27,6 +27,7 @@ class Cheat {
   ~Cheat();
 
   void init (void);
+  void init_gwin (void);
 
 private:
   Game_window *gwin;
