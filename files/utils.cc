@@ -81,13 +81,16 @@ void reset_system_paths()
 
 void add_system_path(const string& key, const string& value)
 {
-	path_map[key] = value;
+	if (!value.empty()) {
+		path_map[key] = value;
+	}
 }
 
 void clone_system_path(const string& new_key, const string& old_key)
 {
-	if (path_map.find(old_key) != path_map.end())
+	if (is_system_path_defined(old_key)) {
 		path_map[new_key] = path_map[old_key];
+	}
 }
 
 void clear_system_path(const string& key)
@@ -101,9 +104,9 @@ void clear_system_path(const string& key)
  *	Has a path been entered?
  */
 bool is_system_path_defined(const string& path)
-	{
-	return path_map.find(path) != path_map.end();
-	}
+{
+	return (path_map.find(path) != path_map.end());
+}
 
 /*
  *  Convert an exult path (e.g. "<DATA>/exult.flx") into a system path
@@ -133,11 +136,11 @@ string get_system_path(const string &path)
   {
 	  pos += 1;
 	  // See if we can translate this prefix
-	  string new_prefix(path_map[new_path.substr(0, pos).c_str()]);
-
-	  // If the prefix path is not recognised, return the path as is
-	  if(!new_prefix.empty())
+	  string syspath = new_path.substr(0, pos);
+	  if (is_system_path_defined(syspath)) {
+		  string new_prefix = path_map[syspath];
 		  new_path = new_prefix + new_path.substr(pos);
+	  }
   }
 #else
 	pos = path.find('>');
@@ -150,13 +153,12 @@ string get_system_path(const string &path)
 	{
 		pos += 1;
 		// See if we can translate this prefix
-		string new_prefix(path_map[path.substr(0, pos).c_str()]);
-
-		// If the prefix path is not recognised, return the path as is
-		if(new_prefix.empty()) {
-			new_path = path;
-		} else {
+		string syspath = path.substr(0, pos);
+		if (is_system_path_defined(syspath)) {
+			string new_prefix = path_map[syspath];
 			new_path = new_prefix + path.substr(pos);
+		} else {
+			new_path = path;
 		}
 	}
 #endif
