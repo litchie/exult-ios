@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 #include "exult_constants.h"
 #include "utils.h"
+#include "shapeinf.h"
 
 using	std::cout;
 using	std::endl;
@@ -77,6 +78,74 @@ extern "C" gboolean on_shinfo_draw_expose_event
 	}
 
 /*
+ *	Fill in the shape-editing notebook.
+ */
+
+void ExultStudio::init_shape_notebook
+	(
+	Shape_info& info,
+	GtkWidget *book,		// The notebook.
+	int shnum,			// Shape #.
+	int frnum			// Frame #.
+	)
+	{
+//	static int classes[] = {0, 2, 3, 4, 6, 7, 8, 9, 11, 12, 13, 14};
+	static int classes[] = {0, 0, 1, 2, 3, 0, 4, 5, 6, 7, 0, 
+							8, 9, 10, 11, 0};
+	const int numclasses = sizeof(classes)/sizeof(classes[0]);
+	int shclass = (unsigned int) info.get_shape_class();
+	set_optmenu("shinfo_shape_class", shclass < numclasses ?
+					classes[shclass] : 0);
+	set_spin("shinfo_xtiles", info.get_3d_xtiles());
+	set_spin("shinfo_ytiles", info.get_3d_ytiles());
+	set_spin("shinfo_ztiles", info.get_3d_height());
+	int spot = info.get_ready_type();
+	if (spot < 0)
+		spot = 3;		// Left hand if looks invalid.
+	else if (spot == 100)
+		spot = 18;		// LR Hand.  Not sure about this.
+	else if (spot > 17)
+		spot = 3;
+	set_optmenu("shinfo_ready_spot", spot);
+	set_spin("shinfo_weight", info.get_weight());
+	set_spin("shinfo_volume", info.get_volume());
+	unsigned char wx, wy;		// Weapon-in-hand offset.
+	info.get_weapon_offset(frnum, wx, wy);
+	set_spin("shinfo_wihx", wx);
+	set_spin("shinfo_wihy", wy);
+					// Bunch of flags:
+	set_toggle("shinfo_sfx_check", info.has_sfx());
+	set_toggle("shinfo_strange_check", info.has_strange_movement());
+	set_toggle("shinfo_animated_check", info.is_animated());
+	set_toggle("shinfo_solid_check", info.is_solid());
+	set_toggle("shinfo_water_check", info.is_water());
+	set_toggle("shinfo_poison_check", info.is_poisonous());
+	set_toggle("shinfo_field_check", info.is_field());
+	set_toggle("shinfo_door_check", info.is_door());
+	set_toggle("shinfo_barge_check", info.is_barge_part());
+	set_toggle("shinfo_transp_check", info.is_transparent());
+	set_toggle("shinfo_light_check", info.is_light_source());
+	set_toggle("shinfo_transl_check", info.has_translucency());
+	set_toggle("shinfo_obstaclex_check", info.is_xobstacle());
+	set_toggle("shinfo_obstacley_check", info.is_yobstacle());
+	set_toggle("shinfo_occludes_check", info.occludes());
+					// Extras.
+	Weapon_info *winfo = info.get_weapon_info();
+	set_toggle("shinfo_weapon_check", winfo != 0);
+	set_visible("shinfo_weapon_box", winfo != 0);
+	Ammo_info *ainfo = Ammo_info::find(shnum);
+	set_toggle("shinfo_ammo_check", ainfo != 0);
+	set_visible("shinfo_ammo_box", ainfo != 0);
+	int armor = info.get_armor();	// (Should eventually become a class.)
+	set_toggle("shinfo_armor_check", armor > 0);
+	set_visible("shinfo_armor_box", armor > 0);
+	Monster_info *minfo = info.get_monster_info();
+	set_toggle("shinfo_monster_check", minfo != 0);
+	set_visible("shinfo_monster_box", minfo != 0);
+	gtk_widget_show(book);
+	}
+
+/*
  *	Open the shape-editing window.
  */
 
@@ -114,8 +183,10 @@ void ExultStudio::open_shape_window
 	set_spin("shinfo_originy", shape->get_ybelow());
 					// Get info. notebook.
 	GtkWidget *notebook = glade_xml_get_widget(app_xml, "shinfo_notebook");
-	gtk_widget_set_sensitive(notebook, info != 0);
-	//+++++++Fill in notebook.
+	if (info)
+		init_shape_notebook(*info, notebook, shnum, frnum);
+	else
+		gtk_widget_hide(notebook);
 	gtk_widget_show(shapewin);
 	show_shinfo_shape();		// Be sure picture is updated.
 	}

@@ -816,6 +816,26 @@ void ExultStudio::set_statusbar
 		gtk_statusbar_push(GTK_STATUSBAR(sbar), context, msg);
 	}
 
+/*
+ *	Show/hide a widget.
+ */
+
+void ExultStudio::set_visible
+	(
+	char *name,
+	bool vis
+	)
+	{
+	GtkWidget *widg = glade_xml_get_widget(app_xml, name);
+	if (widg)
+		{
+		if (vis)
+			gtk_widget_show(widg);
+		else
+			gtk_widget_hide(widg);
+		}
+	}
+
 
 void ExultStudio::run()
 {
