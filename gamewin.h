@@ -74,6 +74,8 @@ private:
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	Vga_file fonts;			// "fonts.vga" file.
 	ifstream u7map;			// "u7map" file.
+	Xform_palette xforms[15];	// Transforms translucent colors
+					//   0xf0 through 0xfe.
 	Actor *main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
 	int num_npcs;			// Number of NPC's.
