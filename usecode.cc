@@ -1683,6 +1683,7 @@ USECODE_INTRINSIC(take_from_owner)
 	// Take_from_owner(container(-357=party), shapenum, qual?? (-359=any), 
 	//						frame??(-359=any)).
 	// Remove object and return it.
+//++++++++++I think it shouldn't be removed++++++++++++
 	int oval  = parms[0].get_int_value(),
 	    shnum = parms[1].get_int_value(),
 	    qual  = parms[2].get_int_value(),
@@ -1693,6 +1694,8 @@ USECODE_INTRINSIC(take_from_owner)
 		if (!obj)
 			return Usecode_value(0);
 		Game_object *f = obj->remove_and_return(shnum, qual, frnum);
+		if (f)			// Add it back.+++++++++
+			obj->add(f);
 		return Usecode_value((long) f);
 		}
 					// Look through whole party.
@@ -1706,7 +1709,10 @@ USECODE_INTRINSIC(take_from_owner)
 			Game_object *f = obj->remove_and_return(shnum, qual,
 									frnum);
 			if (f)
+				{	// +++++Add it back.
+				obj->add(f);
 				return Usecode_value((long) f);
+				}
 			}
 		}
 	return Usecode_value(0);
