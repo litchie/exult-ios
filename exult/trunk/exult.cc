@@ -477,6 +477,7 @@ void get_game_paths(const string &gametitle)
 	config_path = "config/disk/game/" + gametitle + "/gamedat_path";
 	default_dir = data_directory + "/gamedat";
 	config->value(config_path.c_str(), gamedat_dir, "");
+#if !defined(WIN32) && !defined(MACOS))
 	if (gamedat_dir == "" &&	// Not set?
 					// And default doesn't exist?
 	    !U7exists(default_dir.c_str()) && (home = getenv("HOME")) != 0)
@@ -497,6 +498,7 @@ void get_game_paths(const string &gametitle)
 		else
 			home_game = "";	// Failed.
 		}
+#endif
 	if (gamedat_dir == "")		// Didn't create it in $HOME/.exult?
 		gamedat_dir = default_dir;
 	add_system_path("<" + system_path_tag + "_GAMEDAT>", gamedat_dir);
