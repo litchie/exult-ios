@@ -36,6 +36,7 @@
 #include "txtscroll.h"
 #include "data/exult_flx.h"
 #include "palette.h"
+#include "shapeid.h"
 
 static bool get_play_intro(void);
 static void set_play_intro(bool);
@@ -234,6 +235,7 @@ void ExultMenu::setup()
 
 Exult_Game ExultMenu::run()
 {
+	Shape_manager *sman = Shape_manager::get_instance();
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	// Check for the games in the designated directories.
 	bool bg_installed = BG_Game::is_installed();
@@ -272,7 +274,7 @@ Exult_Game ExultMenu::run()
 	ExultDataSource mouse_data("<DATA>/exult.flx", EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
 	
-	gwin->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0));
+	sman->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0));
 	pal.load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
 	pal.fade_in(c_fade_in_time);
 	wait_delay(2000);
@@ -311,13 +313,13 @@ Exult_Game ExultMenu::run()
 	Exult_Game sel_game = NONE;
 	
 	do {
-		gwin->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1));
+		sman->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 1));
 		font->draw_text(gwin->get_win()->get_ib8(), 
 					topx+320-font->get_text_width(VERSION), topy+190, VERSION);
 		if (sfx_bg_ypos >= 0)
-			gwin->paint_shape(centerx-80,sfx_bg_ypos, exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("blackgate")?1:0));
+			sman->paint_shape(centerx-80,sfx_bg_ypos, exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("blackgate")?1:0));
 		if (sfx_si_ypos >= 0)
-			gwin->paint_shape(centerx-80,sfx_si_ypos,exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("serpentisle")?1:0));
+			sman->paint_shape(centerx-80,sfx_si_ypos,exult_flx.get_shape(EXULT_FLX_SFX_ICON_SHP, Audio::get_ptr()->can_sfx("serpentisle")?1:0));
 		int choice = menu->handle_events(gwin, menu_mouse);
 		switch(choice<0?choice:menuentries[choice]) {
 		case 5:

@@ -1045,19 +1045,6 @@ void Game_window::get_shape_location(Tile_coord t, int&x, int& y)
 }
 
 /*
- *	Paint shape.
- */
-void Game_window::paint_shape
-	(
-	int xoff, int yoff, 
-	Shape_frame *shape, 
-	int trans			// Translucent.
-	)
-	{
-	shape_man->paint_shape(xoff, yoff, shape, trans);
-	}
-
-/*
  *	Put the actor(s) in the world.
  */
 
