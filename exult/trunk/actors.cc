@@ -2859,6 +2859,11 @@ Game_object *Actor::attacked
 	int ammo_shape			// Also may be 0.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (is_dead() ||		// Already dead?
+					// Or party member of dead Avatar?
+	    (party_id >= 0 && gwin->get_main_actor()->is_dead()))
+		return 0;
 	if (attacker)
 		{ 
 		if (attacker->get_schedule_type() == Schedule::duel)
@@ -2870,7 +2875,7 @@ Game_object *Actor::attacked
 		}
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
-	    Game_window::get_game_window()->get_info(this).has_translucency())
+				gwin->get_info(this).has_translucency())
 		return this;
 	bool defeated = figure_hit_points(attacker, weapon_shape, ammo_shape);
 	if (attacker && defeated)
@@ -3308,6 +3313,7 @@ void Main_actor::die
 	Game_window *gwin = Game_window::get_game_window();
 	if (gwin->in_combat())
 		gwin->toggle_combat();	// Hope this is safe....
+	Actor::set_flag(Obj_flags::dead);
 	gwin->get_gump_man()->close_all_gumps();	// Obviously.
 					// Special function for dying:
 	if (Game::get_game_type() == BLACK_GATE)
