@@ -19,6 +19,12 @@ const int IF_MET = 28;
 extern Ask_yesno 0x90a();		// Returns true if 'Yes', false if 'No.
 
 /*
+ *	NPC #'s:
+ */
+const int AMY = 0x168;
+const int AVATAR = -356;
+
+/*
  *	Egg on island created just E. of Trinsic.
  */
 
@@ -54,64 +60,76 @@ DrCode 0x564 ()
 	else if (event != 1)
 		return;
 	UI_show_npc_face(item);
+	var answers;
 	if (gflags[TALKED_DRCODE])
 		{
 		say("I knew you would return!");
-		UI_add_answer("How??");
+		answers = "How??";
 		}
 	else
 		{
 		say("Hello!  How may I help you?");
 		gflags[TALKED_DRCODE] = true;
-		UI_add_answer("Name");
-		UI_add_answer("Job");
+		answers = ["Name", "Job"];
 		}
-	UI_add_answer("Bye");
-	converse
+	converse ([answers, "Bye"])
 		{
-		if (response == "Bye")
-			break;
-		else if (response == "Name")
+	case "Bye":
+		break;
+	case "Name" (remove):
+		say("I'm DrCode");
+	case "Job" (remove):
+		say("I search...");
+		UI_add_answer("Search for what?");
+	case "Search for what?" (remove):
+		say("... for Usecode!!");
+		UI_add_answer("Usecode");
+	case "How??" (remove):
+		say("I felt a great disturbance in the Usecode...");
+		if (gflags[WILL_FIND_FAQ] &&
+		    UI_get_npc_object(AMY) in UI_get_party_list())
 			{
-			say("I'm DrCode");
-			UI_remove_answer("Name");
+			UI_show_npc_face(AMY);
+			say("Say, Dr. Code...");
+			say("You certainly have a lot of papers and books ",
+						"strewn about");
+			UI_show_npc_face(item);
+			say("Er, yes, I suppose I do.");
+			UI_show_npc_face(AMY);
+			say("Are you sure the FAQ isn't somewhere amongst ",
+							"them?");
+			UI_remove_npc_face(AMY);
+			say("Dr.Code looks away from Amy as he hides his ",
+					"shaking hands in his pockets.");
+			UI_add_answer("FAQ");
 			}
-		else if (response == "Job")
-			{
-			say("I search...");
-			UI_add_answer("Search for what?");
-			}
-		else if (response == "Search for what?")
-			{
-			say("... for Usecode!!");
-			UI_remove_answer("Search for what?");
-			UI_add_answer("Usecode");
-			}
-		else if (response == "How??")
-			{
-			say(
-			  "I felt a great disturbance in the Usecode...");
-			gflags[1000] = false;
-			UI_remove_answer("How??");
-			}
-		else if (response == "Usecode")
-			{
-			say("Usecode is a mythical force.~",
+	case "Usecode" (remove):
+		say("Usecode is a mythical force.~",
 		"Some believe it controls the fate of all in our world. ",
 		"And to control it would give one ultimate power. ");
-			UI_remove_answer("Usecode");
-			UI_add_answer("Power");
-			}
-		else if (response == "Power")
-			{
-			say("It MUST not fall into evil hands.~",
+		UI_add_answer("Power");
+	case "Power":
+		say("It MUST not fall into evil hands.~",
 				"I can not let it...~",
 				"No!  NO!~", "NOOooooooo!!");
 					// Put in combat/flee mode.
-			UI_set_attack_mode(item, 7);
-			UI_set_schedule_type(item, 0);
-			break;
-			}
+		UI_set_attack_mode(item, 7);
+		UI_set_schedule_type(item, 0);
+		break;
+	case "FAQ" (remove):
+		say("I don't know what you are talking about!");
+		UI_show_npc_face(AMY);
+		say("Are you sure?");
+		UI_remove_npc_face(AMY);
+		say("YES!  I can stand the guilt no more!");
+		say("But... I only meant to borrow it.  I, er, hoped that it ",
+			"would help me with my research into Usecode.");
+		say("Dominik was asleep, and I planned to return it before he",
+							" awoke");
+		UI_show_npc_face(AVATAR);
+		say("May we have it back then?");
+		UI_remove_npc_face(AVATAR);
+		say("I'm afraid to tell you...~ ...it's gone!");
 		}
 	UI_remove_npc_face(item);
 	}
@@ -143,108 +161,79 @@ Dominik 0x565 ()
 		return;
 	UI_show_npc_face(item);
 	say("I'm very busy, so please be brisk!");
+	var answers;
 	if (gflags[ASKED_ABOUT_PYRO])
-		{
-		UI_add_answer("Name");
-		UI_add_answer("Job");
-		UI_add_answer("Where is Pyro-X?");
-		}
+		answers = ["Name", "Job", "Where is Pyro-X?"];
 	else
-		{
-		UI_add_answer("Name");
-		UI_add_answer("Job");
-		}
-	UI_add_answer("Bye");
+		answers = ["Name", "Job"];
+	answers = [answers, "Bye"];
 	var faqcnt = 0;
-	converse
+	converse (answers)
 		{
-		if (response == "Bye")
-			break;
-		else if (response == ["Name", "Job"])
+	case "Bye":
+		break;
+	case "Name" (remove):
+		say("Dominik");
+	case "Job":
+		faqcnt = faqcnt + 1;
+		if (faqcnt == 1)
 			{
-			faqcnt = faqcnt + 1;
-			if (faqcnt == 1)
-				{
-				say("Please see the FAQ.");
-				UI_add_answer("FAQ");
-				}
-			else if (faqcnt == 2)
-				say("I said:  See the FAQ.");
-			else if (faqcnt >= 3)
-				{
-				say("I've told you ", faqcnt - 1,
+			say("Please see the FAQ.");
+			UI_add_answer("FAQ");
+			}
+		else if (faqcnt == 2)
+			say("I said:  See the FAQ.");
+		else if (faqcnt >= 3)
+			say("I've told you ", faqcnt - 1,
 					" times already...~",
 					"SEE THE FAQ!!!");
-				}
-			}
-		else if (response == "FAQ")
-			{
-			say("All of life's answers may be found there.~",
+	case "FAQ" (remove):
+		say("All of life's answers may be found there.~",
 			"Though... there are some who think otherwise.");
-			UI_remove_answer("FAQ");
-			UI_add_answer("Otherwise?");
-			if (!gflags[LOST_FAQ])
-				UI_add_answer("May I see it?");
-			else if (!gflags[WILL_FIND_FAQ])
-				UI_add_answer("Find");
-			}
-		else if (response == "Otherwise?")
-			{
-			UI_remove_answer("Otherwise?");
-			say("There is a crackpot who wanders this island.  ",
-			"He calls himself 'DrCode', and mutters incessantly about 
-			something called 'Usecode'");
-			UI_add_answer("Usecode?");
-			}
-		else if (response == "Usecode?")
-			{
-			UI_remove_answer("Usecode?");
-			say("Don't bother me with that silly prattle! ",
-					"I must work on the FAQ.~",
-								"Begone!");
-			break;
-			}
-		else if (response == "May I see it?")
-			{
-			gflags[LOST_FAQ] = true;
-			UI_remove_answer("May I see it?");
-			say("Yes, of course.");
-			say("You wait while he looks on his desk.");
-			say("You wait a bit more while he hastily pulls out the drawers and peers in each.");
-			say("Finally, he turns back, looking markedly upset.");
-			say("It' gone!!  Where can it be?~",  
+		UI_add_answer("Otherwise?");
+		if (!gflags[LOST_FAQ])
+			UI_add_answer("May I see it?");
+		else if (!gflags[WILL_FIND_FAQ])
+			UI_add_answer("Find");
+	case "Otherwise?" (remove):
+		say("There is a crackpot who wanders this island.  ",
+		"He calls himself 'DrCode', and mutters incessantly about ",
+				"something called 'Usecode'");
+		UI_add_answer("Usecode?");
+	case "Usecode?" (remove):
+		say("Don't bother me with that silly prattle! ",
+				"I must work on the FAQ.~", "Begone!");
+		break;
+	case "May I see it?" (remove):
+		gflags[LOST_FAQ] = true;
+		say("Yes, of course.");
+		say("You wait while he looks on his desk.");
+		say("You wait a bit more while he hastily pulls out the drawers and peers in each.");
+		say("Finally, he turns back, looking markedly upset.");
+		say("It' gone!!  Where can it be?~",  
 							"He turns to you.");
-			say("Avatar!  It's vital that the FAQ be recovered.",
+		say("Avatar!  It's vital that the FAQ be recovered.",
 				"  Our users will be lost without it!");
-			say("Would you help me recover it?");
-			if (Ask_yesno())
-				{
-				gflags[WILL_FIND_FAQ] = true;
-				say("Thank you, Avatar!",
-					"  All Brittania awaits the recovery",
-					" of this vital document.");
-				}
-			else
-				say("Woe to us!  Our efforts are doomed.");
-			}
-		else if (response == "Find")
+		say("Would you help me recover it?");
+		if (Ask_yesno())
 			{
 			gflags[WILL_FIND_FAQ] = true;
-			UI_remove_answer("Find");
-			say("I KNEW you would reconsider.",
+			say("Thank you, Avatar!",
+					"  All Brittania awaits the recovery",
+					" of this vital document.");
+			}
+		else
+			say("Woe to us!  Our efforts are doomed.");
+	case "Find" (remove):
+		gflags[WILL_FIND_FAQ] = true;
+		say("I KNEW you would reconsider.",
 				"  Thank you, Avatar!");
-			}
-		else if (response == "Where is Pyro-X?")
-			{
-			say("As I wrote in the FAQ you have to ask Colourless!");
-			UI_remove_answer("Where is Pyro-X?");
-			UI_add_answer("Who is Colourless?");
-			gflags[ASKED_WHERE_PYRO] = true;
-			}
-		else if (response == "Who is Colourless?")
-			{say("Read the FAQ!!!");
-			UI_remove_answer("Who is Colourless?");
-			}
+	case "Where is Pyro-X?" (remove):
+		say("As I wrote in the FAQ you have to ask Colourless!");
+		UI_add_answer("Who is Colourless?");
+		gflags[ASKED_WHERE_PYRO] = true;
+	case "Who is Colourless?" (remove):
+		say("Read the FAQ!!!");
 		}
 	UI_remove_npc_face(item);
 	}
@@ -390,48 +379,33 @@ Amy 0x568 ()
 		UI_show_npc_face(item);
 		say("Hello again Avatar!");
 		}
-	UI_add_answer("Name");
+	var answers = "Name";
 	var party = UI_get_party_list();
 	if (item in party)
-		UI_add_answer("Leave");
+		answers = [answers, "Leave"];
 	else
-		UI_add_answer("Job");
-	UI_add_answer("Bye");	
-	converse
+		answers = [answers, "Job"];
+	answers = [answers, "Bye"];
+	converse (answers)
 		{
-		if (response == "Bye")
-			break;
-		else if (response == "Name")
-			{
-			say("I'm Amy.");
-			UI_remove_answer("Name");
-			}
-		else if (response == "Job")
-			{
-			UI_remove_answer("Job");
-			say("I don't have a job. I'm just hanging out here and 
+	case "Bye":
+		break;
+	case "Name" (remove):
+		say("I'm Amy.");
+	case "Job" (remove):
+		say("I don't have a job. I'm just hanging out here and 
 			 give information about the people on this island");
-			UI_add_answer("What is the name of this Island?");
-			UI_add_answer("Who lives on this Island?");
-			UI_add_answer("Are you happy here?");
-			}
-		else if (response == "What is the name of this Island?")
+		UI_add_answer("What is the name of this Island?");
+		UI_add_answer("Who lives on this Island?");
+		UI_add_answer("Are you happy here?");
+	case "What is the name of this Island?" (remove):
+		say("It is called SourceForge Island. To remember the ",
+			"smithy who provided them with their tools");
+	case "Are you happy here?" (remove):
+		say("It's okay...~", "...but I'd rather be more useful");
+		converse (["Join", "Good luck"])
 			{
-			say("It is called SourceForge Island. To remember the smithy who provided 
-			 them with their tools");
-			UI_remove_answer("What is the name of this Island?");
-			}
-		else if (response == "Are you happy here?")
-			{
-			say("It's okay...~", 
-					"...but I'd rather be more useful");
-			UI_remove_answer("Are you happy here?");
-			UI_push_answers();
-			UI_add_answer("Join");
-			UI_add_answer("Good luck");
-			}
-		else if (response == "Join")
-			{
+		case "Join":
 			if (gflags[WILL_FIND_FAQ])
 				{
 				say("Ah, yes!  I hear you are searching for",
@@ -445,76 +419,51 @@ Amy 0x568 ()
 				say("But you have not work for me!",
 					"  All you do is wander aimlessly.");
 				}
-			UI_remove_answer("Job");
-			UI_pop_answers();
-			}
-		else if (response == "Leave")
-			{
-			UI_remove_from_party(item);
-			say("Goodbye, for now, Avatar");
+			break;
+		case "Good luck":
 			break;
 			}
-		else if (response == "Good luck")
-			UI_pop_answers();
-		else if (response == "Who lives on this Island?")
+	case "Leave" (remove):
+		UI_remove_from_party(item);
+		say("Goodbye, for now, Avatar");
+		break;
+	case "Who lives on this Island?" (remove):
+		say("Of whom do you want to speak?");
+		converse ([	"Dr.Code",
+				"Willem",
+				"Colourless",
+				"Fingolfin",
+				"Darke",
+				"Dominus",
+				"EsBee-Ex",
+				"Nobody" ])
 			{
-			say("Of whom do you want to speak?");
- 			UI_remove_answer("Who lives on this Island?");
-			UI_push_answers();
-			UI_add_answer("Dr.Code");
-			UI_add_answer("Willem");
-			UI_add_answer("Colourless");
-			UI_add_answer("Fingolfin");
-			UI_add_answer("Darke");
-			UI_add_answer("Dominus");
-			UI_add_answer("EsBee-Ex");
-			UI_add_answer("Nobody");
-			}
-		else if (response == "Dr.Code")
-			{
+		case "Dr.Code" (remove):
 			say("He's the master of this group. Unfortunately he got mad.");
-			UI_remove_answer("Dr.Code");
-			}
-		else if (response == "Willem")
-			{
+		case "Willem" (remove):
 			say("Some people refer to him as Arthuris Dragon or wjp. ",
 			"He's working on some strange magical device.");
-			UI_remove_answer("Willem");
-			}
-		else if (response == "Colourless")
-			{
+		case "Colourless" (remove):
 			say("He's also a member of that mystical group called The Dragons. ",
 			"Among other things he works with Willem on this magical device.");
-			UI_remove_answer("Colourless");
-			}
-		else if (response == "Fingolfin")
-			{
+		case "Fingolfin" (remove):
 			say("If he's not working on other things he helps other members of this group.");
-			UI_remove_answer("Fingolfin");
-			}
-		else if (response == "Darke")
-			{
+		case "Darke" (remove):
 			say("Darke thinks he is a dangerous rabbit but he's just a cute bunny. ",
 			"Unfortunately he is also getting slowly as mad as Dr.Code.");
-			UI_remove_answer("Darke");
-			}
-		else if (response == "Dominus")
-			{
+		case "Dominus" (remove):
 			say("Don't bother talking to him. ",
 			"He's always refering to some book called FAQ which no one ever read.");
-			UI_remove_answer("Dominus");
-			}
-		else if (response == "EsBee-Ex")
-			{
+		case "EsBee-Ex" (remove):
 			say("EsBee-Ex is a gargoyle. ",
-			"He believes his twin brother is evil.");
-			UI_remove_answer("EsBee-Ex");
+				"He believes his twin brother is evil.");
+		case "Nobody":
+			break;
 			}
-		else if (response == "Nobody")
-			UI_pop_answers();
 		}
 	UI_remove_npc_face(item);
 	}
+
 /*
  *	'Colourless' on island.
  */
