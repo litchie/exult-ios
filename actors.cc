@@ -3880,7 +3880,10 @@ void Npc_actor::paint
 	)
 	{
 	Actor::paint();			// Draw on screen.
-	if (dormant && schedule)	// Resume schedule.
+	if (dormant && schedule &&	// Resume schedule.
+					// FOR NOW:  Not when in formation.
+	    (party_id < 0 || !gwin->walk_in_formation || 
+				schedule_type != Schedule::follow_avatar))
 		{
 		dormant = false;	// But clear out old entries first.??
 		gwin->get_tqueue()->remove(this);
