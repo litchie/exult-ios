@@ -195,7 +195,7 @@ Game_object *Usecode_internal::get_item
 	)
 	{
 					// If array, take 1st element.
-	Usecode_value& elemval = itemref.get_elem(0);
+	Usecode_value& elemval = itemref.get_elem0();
 
 	if (elemval.is_ptr())
 		return elemval.get_ptr_value();
@@ -1762,7 +1762,7 @@ int Usecode_internal::run
 			{
 			Usecode_value arr = pop();
 					// If an array, use 1st elem.
-			Usecode_value val = pop().get_elem(0);
+			Usecode_value val = pop().get_elem0();
 			pushi(arr.find_elem(val) >= 0);
 			break;
 			}
