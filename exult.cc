@@ -60,6 +60,7 @@
 #include "font.h"
 #include "game.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "gump_utils.h"
 #include "keyactions.h"
 #include "keys.h"
@@ -1329,7 +1330,8 @@ static void Drop_dragged_shape
 		     sclass != Shape_info::building);
 	Game_object *newobj;
 	if (ireg)
-		newobj = gwin->create_ireg_object(info, shape, frame, 0, 0, 0);
+		newobj = gwin->get_map()->create_ireg_object(
+						info, shape, frame, 0, 0, 0);
 	else
 		newobj = new Ifix_game_object(shape, frame, 0, 0, 0);
 					// First see if it's a gump.
@@ -1347,8 +1349,8 @@ static void Drop_dragged_shape
 		for (int lift = edit_lift; lift <= 11; lift++)
 			if (gwin->drop_at_lift(newobj, x, y, lift))
 				{	// Success.
-				gwin->set_ifix_modified(newobj->get_cx(),
-							newobj->get_cy());
+				gwin->get_map()->set_ifix_modified(
+					newobj->get_cx(), newobj->get_cy());
 				return;
 				}
 		delete newobj;	// Failed.
@@ -1377,7 +1379,7 @@ static void Drop_dragged_chunk
 	int tx = gwin->get_scrolltx() + x/c_tilesize,
 	    ty = gwin->get_scrollty() + y/c_tilesize;
 	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
-	gwin->set_chunk_terrain(cx, cy, chunknum);
+	gwin->get_map()->set_chunk_terrain(cx, cy, chunknum);
 	gwin->paint();
 	}
 #endif

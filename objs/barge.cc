@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "barge.h"
 #include "gamewin.h"
+#include "gamemap.h"
 #include "actors.h"
 #include "Zombie.h"
 #include "citerate.h"
@@ -272,6 +273,7 @@ void Barge_object::gather
 	Rectangle foot = get_tile_footprint();
 	int lift = get_lift();		// How high we are.
 	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = gwin->get_map();
 					// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
 	Rectangle tiles;
@@ -279,7 +281,7 @@ void Barge_object::gather
 	bool si = Game::get_game_type() == SERPENT_ISLE;
 	while (next_chunk.get_next(tiles, cx, cy))
 		{
-		Map_chunk *chunk = gwin->get_chunk(cx, cy);
+		Map_chunk *chunk = gmap->get_chunk(cx, cy);
 		Game_object *obj;
 		Object_iterator next(chunk->get_objects());
 		while ((obj = next.get_next()) != 0)
@@ -312,7 +314,7 @@ void Barge_object::gather
 	set_center();
 	if (boat == -1)			// Test for boat the first time.
 		{
-		Map_chunk *chunk = gwin->get_chunk(
+		Map_chunk *chunk = gmap->get_chunk(
 			center.tx/c_tiles_per_chunk, 
 					center.ty/c_tiles_per_chunk);
 		ShapeID flat = chunk->get_flat(center.tx%c_tiles_per_chunk,
@@ -574,14 +576,14 @@ int Barge_object::okay_to_land
 	{
 	Rectangle foot = get_tile_footprint();
 	int lift = get_lift();		// How high we are.
-	Game_window *gwin = Game_window::get_game_window();
+	Game_map *gmap = Game_window::get_game_window()->get_map();
 					// Go through intersected chunks.
 	Chunk_intersect_iterator next_chunk(foot);
 	Rectangle tiles;
 	int cx, cy;
 	while (next_chunk.get_next(tiles, cx, cy))
 		{			// Check each tile.
-		Map_chunk *chunk = gwin->get_chunk(cx, cy);
+		Map_chunk *chunk = gmap->get_chunk(cx, cy);
 		for (int ty = tiles.y; ty < tiles.y + tiles.h; ty++)
 			for (int tx = tiles.x; tx < tiles.x + tiles.w; tx++)
 				if (chunk->get_highest_blocked(lift, tx, ty)
@@ -809,7 +811,7 @@ void Barge_object::write_ireg
 		}
 	out.put(0x01);			// A 01 terminates the list.
 					// Write scheduled usecode.
-	Game_window::write_scheduled(out, this);	
+	Game_map::write_scheduled(out, this);	
 	}
 
 /*

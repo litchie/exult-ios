@@ -55,6 +55,8 @@ exult_SOURCES =	\
 	gameclk.cc	\
 	gameclk.h	\
 	gamedat.cc	\
+	gamemap.cc	\
+	gamemap.h	\
 	gamerend.cc	\
 	gamewin.cc	\
 	gamewin.h	\
