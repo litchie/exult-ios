@@ -83,6 +83,40 @@ static int Cost_to_goal
 	}
 
 /*
+ *	Figure cost going from one tile to an adjacent tile.
+ *
+ *	Output:	Cost, or -1 if blocked.
+ *		The 'tz' field in tile may be modified.
+ */
+
+static int Get_cost
+	(
+	Game_window *gwin,
+	Tile_coord& tile		// The tile we're going to.  The 'tz'
+					//   field may be modified.
+	)
+	{
+	int cx = tile.tx/tiles_per_chunk, cy = tile.ty/tiles_per_chunk;
+	int tx = tile.tx%tiles_per_chunk, ty = tile.ty%tiles_per_chunk;
+	Chunk_object_list *olist = gwin->get_objects(cx, cy);
+	olist->setup_cache();		// Make sure cache is valid.
+	int new_lift;			// Might climb/descend.
+	if (olist->is_blocked(tile.tz, tx, ty, new_lift))
+		{			//+++++++Check for door.
+					//+++++++Need method to get shape.
+		return -1;
+		}
+	int cost = 1;
+	if (new_lift != tile.tz)
+		{
+		cost++;
+		tile.tz = new_lift;
+		}
+					// Maybe check types of ground?
+	return (cost);
+	}
+
+/*
  *	A node for our search:
  */
 class Search_node
@@ -120,6 +154,24 @@ public:
 		goal_cost = gcost;
 		total_cost = gcost + scost;
 		parent = p;
+		}
+	Tile_coord *create_path()	// Create path back to start, ending
+					//   with Tile_coord(-1, -1, -1).
+		{
+		int cnt = 2;		// This, and fake after it.
+					// Count back to start.
+		Search_node *each = this;
+		while ((each = each->parent) != 0)
+			cnt++;
+		Tile_coord *result = new Tile_coord[cnt];
+		result[cnt - 1] = Tile_coord(-1, -1, -1);
+		each = this;
+		for (int i = cnt - 2; i >= 0; i--)
+			{
+			result[i] = each->tile;
+			each = each->parent;
+			}
+		return result;
 		}
 					// Add to chain of same priorities.
 	void add_to_chain(Search_node *&last)
@@ -180,7 +232,7 @@ public:
 class Hash_node
 	{
 public:
-	size_t operator() (const Search_node *a)
+	size_t operator() (const Search_node *a) const
 		{
 		const Tile_coord t = a->get_tile();
 		return ((t.tz << 16) + (t.ty << 8) + t.tx);
@@ -214,6 +266,10 @@ public:
 	A_star_queue() : open(256), lookup(1000)
 		{  
 		best = open.get_cnt();	// Best is past end.
+		}
+	~A_star_queue()
+		{
+		lookup.clear();		// Remove all nodes.
 		}
 	void add_back(Search_node *nd)	// Add an existing node back to 'open'.
 		{
@@ -270,8 +326,9 @@ public:
 	Search_node *find(Tile_coord tile)
 		{
 		Search_node key(tile);
-//+++++		return lookup.find(&key);
-		return 0;	//++++++++++
+		hash_set<Search_node *, Hash_node, Equal_nodes>::iterator it =
+							lookup.find(&key);
+		return *it;
 		}
 	};
 
@@ -281,9 +338,9 @@ public:
  *	Output:	->(allocated) array of Tile_coords to follow, or 0 if failed.
  */
 
-//Tile_coord *Game_window::find_path
 Tile_coord *Find_path
 	(
+	Game_window *gwin,
 	Tile_coord start,		// Where to start from.
 	Tile_coord goal			// Where to end up.
 	)
@@ -295,17 +352,19 @@ Tile_coord *Find_path
 	while ((node = nodes.pop()) != 0)
 		{
 		if (node->get_tile() == goal)
-			{		// Success.
-			//++++++create path.
-			return 0;// ++++++
-			}
+					// Success.
+			return node->create_path();
 					// Go through surrounding tiles.
 		Neighbor_iterator get_next(node->get_tile());
 		Tile_coord ntile(0, 0, 0);
 		while (get_next(ntile))
-			{		// Calc. cost from start.
-					// +++++See if occupied. For now:  1.
-			int new_cost = node->get_start_cost() + 1;
+			{		// Get cost to next tile.
+			int step_cost = Get_cost(gwin, ntile);
+					// Blocked?
+			if (step_cost == -1)
+				continue;
+					// Get cost from start to ntile.
+			int new_cost = node->get_start_cost() + step_cost;
 					// See if next tile already seen.
 			int open_index, closed_index = -1;
 			Search_node *next = nodes.find(ntile);
