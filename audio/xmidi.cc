@@ -338,7 +338,8 @@ XMIDI::~XMIDI()
 	{
 		for (int i=0; i < info.tracks; i++)
 			DeleteEventList (events[i]);
-		delete [] events;
+		//delete [] events;
+		free (events);
 	}
 	if (timing) delete [] timing;
 	if (fixed) delete [] fixed;
@@ -362,8 +363,10 @@ int XMIDI::retrieve (uint32 track, DataSource *dest)
 		for (int i=0; i < info.tracks; i++)
 			DeleteEventList (events[i]);
 			
-		delete [] events;
-		events = new midi_event *[1];
+		//delete [] events;
+		free (events);
+		//events = new midi_event *[1];
+		events = (midi_event **) malloc (sizeof (midi_event *));
 		events[0] = list;
 
 		info.tracks = 1;
@@ -442,8 +445,11 @@ void XMIDI::DeleteEventList (midi_event *mlist)
 	while ((event = next))
 	{
 		next = event->next;
-		if (event->buffer) delete [] event->buffer;
-		delete event;
+		if (event->buffer) 
+			//delete [] event->buffer;
+			free (event->buffer);
+		//delete event;
+		free (event);
 	}
 }
 
@@ -452,7 +458,7 @@ void XMIDI::CreateNewEvent (int time)
 {
 	if (!list)
 	{
-		list = current = new midi_event;
+		list = current = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 		current->next = NULL;
 		if (time < 0)
 			current->time = 0;
@@ -465,7 +471,7 @@ void XMIDI::CreateNewEvent (int time)
 
 	if (time < 0)
 	{
-		midi_event *event = new midi_event;
+		midi_event *event = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 		event->next = list;
 		list = current = event;
 		current->time = 0;
@@ -481,7 +487,7 @@ void XMIDI::CreateNewEvent (int time)
 	{
 		if (current->next->time > time)
 		{
-			midi_event *event = new midi_event;
+			midi_event *event = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 			
 			event->next = current->next;
 			current->next = event;
@@ -495,7 +501,7 @@ void XMIDI::CreateNewEvent (int time)
 		current = current->next;
 	}
 
-	current->next = new midi_event;
+	current->next = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 	current = current->next;
 	current->next = NULL;
 	current->time = time;
@@ -613,7 +619,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 	// Copy Patch Change Event
 	temp = patch;
-	patch = new midi_event;
+	patch = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 	patch->time = temp->time;
 	patch->status = channel|(MIDI_STATUS_PROG_CHANGE << 4);
 	patch->len = 0;
@@ -626,7 +632,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 		vol = NULL;
 
 	temp = vol;
-	vol = new midi_event;
+	vol = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 	vol->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 	vol->data[0] = 7;
 	vol->len = 0;
@@ -647,7 +653,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 	temp = bank;
 	
-	bank = new midi_event;
+	bank = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 	bank->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 	bank->data[0] = 0;
 	bank->len = 0;
@@ -663,7 +669,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 		pan = NULL;
 
 	temp = pan;
-	pan = new midi_event;
+	pan = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 	pan->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 	pan->data[0] = 10;
 	pan->len = 0;
@@ -676,7 +682,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 	if (do_reverb)
 	{
-		reverb = new midi_event;
+		reverb = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 		reverb->time = 0;
 		reverb->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 		reverb->len = 0;
@@ -687,7 +693,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 	if (do_chorus)
 	{
-		chorus = new midi_event;
+		chorus = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 		chorus->time = 0;
 		chorus->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 		chorus->len = 0;
@@ -734,7 +740,7 @@ void XMIDI::DuplicateAndMerge (int num)
 		end += num;
 	}
 	
-	track = new midi_event *[info.tracks];
+	track = (midi_event **) malloc (sizeof (midi_event*)*info.tracks); //new midi_event *[info.tracks];
 	
 	for (i = 0; i < info.tracks; i++) track[i] = events[i];
 	
@@ -779,11 +785,11 @@ void XMIDI::DuplicateAndMerge (int num)
 		
 		if (current)
 		{
-			current->next = new midi_event;
+			current->next = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 			current = current->next;
 		}
 		else
-			list = current = new midi_event;
+			list = current = (midi_event *) malloc (sizeof (midi_event)); //new midi_event;
 			
 		current->next = NULL;
 		
@@ -1372,7 +1378,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 
 		// Ok it's an XMID, so pass it to the ExtractCode
 
-		events = new midi_event *[info.tracks];
+		events = (midi_event **) malloc (sizeof (midi_event*)*info.tracks); //new midi_event *[info.tracks];
 		timing = new short[info.tracks];
 		fixed = new bool[info.tracks];
 		info.type = 0;
@@ -1394,7 +1400,8 @@ int XMIDI::ExtractTracks (DataSource *source)
 			for (i = 0; i < info.tracks; i++)
 				DeleteEventList (events[i]);
 			
-			delete [] events;
+			//delete [] events;
+			free (events);
 			delete [] timing;
 			
 			return 0;		
@@ -1418,7 +1425,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 		
 		info.tracks = source->read2high();
 		
-		events = new midi_event *[info.tracks];
+		events = (midi_event **) malloc (sizeof (midi_event*)*info.tracks); //new midi_event *[info.tracks];
 		timing = new short[info.tracks];
 		fixed = new bool[info.tracks];
 		timing[0] = source->read2high();
@@ -1438,7 +1445,8 @@ int XMIDI::ExtractTracks (DataSource *source)
 			for (i = 0; i < info.tracks; i++)
 				DeleteEventList (events[i]);
 			
-			delete [] events;
+			//delete [] events;
+			free (events);
 			delete [] timing;
 			
 			return 0;
