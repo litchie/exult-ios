@@ -185,7 +185,9 @@ void Game_clock::handle_event
 	//	}
 	int min_old = minute;
 	int hour_old = hour;
-	minute += time_rate;
+				// Time stopped?  Don't advance.
+	if (!gwin->is_time_stopped())
+		minute += time_rate;
 
 	while (minute >= 60)	// advance to the correct hour (and day)
 		{
