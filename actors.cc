@@ -3307,7 +3307,7 @@ int Npc_actor::step
 					// Offscreen, but not in party?
 	if (!add_dirty(gwin, 1) && Npc_actor::get_party_id() < 0 &&
 					// And > a screenful away?
-	    distance(gwin->get_main_actor()) > 320/c_tilesize &&
+	    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize &&
 			//++++++++Try getting rid of the 'talk' line:
 	    get_schedule_type() != Schedule::talk &&
 	    get_schedule_type() != Schedule::street_maintenance)
@@ -3613,7 +3613,9 @@ int Monster_actor::step
 					// Get rel. tile coords.
 	int tx = t.tx%c_tiles_per_chunk, ty = t.ty%c_tiles_per_chunk;
 	movef(olist, nlist, tx, ty, frame, t.tz);
-	if (!add_dirty(gwin, 1))
+	if (!add_dirty(gwin, 1) &&
+					// And > a screenful away?
+	    distance(gwin->get_camera_actor()) > 1 + 320/c_tilesize)
 		{			// No longer on screen.
 		stop();
 		dormant = true;
