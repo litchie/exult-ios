@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objs.h"
 
 class Image_window;
+class Game_window;
 
 /*
  *	An actor:
@@ -89,11 +90,21 @@ class Schedule
 	unsigned char x, y;		// Location within superchunk.
 	unsigned char superchunk;	// 0-143.
 public:
-	Schedule(unsigned char *ent);	// Create from 5-byte entry.
+	Schedule() : time(0), type(0), x(0), y(0), superchunk(0)
+		{  }
+	void set(unsigned char *ent);	// Create from 5-byte entry.
 	int get_type()
 		{ return type; }
 	int get_time()
 		{ return time; }
+					// Get position chunk, tile.
+	void get_pos(int& cx, int& cy, int& tx, int& ty)
+		{
+		cx = 16*(superchunk%12) + x/16;
+		cy = 16*(superchunk/12) + y/16;
+		tx = x%16;
+		ty = y%16;
+		}
 	enum Schedule_types {		// Here are the types:
 		combat = 0,	horiz_pace = 1,
 		vert_pace = 2,	talk = 3,
@@ -123,6 +134,8 @@ class Npc_actor : public Actor
 	unsigned char nearby;		// Queued as a 'nearby' NPC.  This is
 					//   to avoid being added twice.
 	unsigned char schedule;		// Schedule type (Schedule_type).
+	unsigned char num_schedules;	// # entries below.
+	Schedule *schedules;		// List of schedules.
 public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
 	~Npc_actor();
@@ -134,6 +147,15 @@ public:
 		{ nearby = 0; }
 	int is_nearby()
 		{ return nearby != 0; }
+					// Set schedule list.
+	void set_schedules(Schedule *list, int cnt)
+		{
+		delete [] schedules;
+		schedules = list;
+		num_schedules = cnt;
+		}
+					// Update schedule for new 3-hour time.
+	void update_schedule(Game_window *gwin, int hour3);
 	virtual int get_schedule()
 		{ return schedule; }
 					// For Time_sensitive:

@@ -114,7 +114,6 @@ void Game_window::read_schedules
 	(
 	)
 	{
-#if 1
 	ifstream sfile;
 	u7open(sfile, SCHEDULE_DAT);
 	int num_npcs = Read4(sfile);	// # of NPC's, not include Avatar.
@@ -130,21 +129,22 @@ void Game_window::read_schedules
 #if 0
 		cout << "Schedule for " << npc->get_name() << ":\n";
 #endif
-					// Read each schedule. ++++++Store.
+					// Read schedules into this array.
+		Schedule *schedules = new Schedule[cnt];
 		for (int j = 0; j < cnt; j++)
 			{
 			unsigned char ent[4];
 			sfile.read(ent, 4);
-			Schedule *sched = new Schedule(ent);
+			schedules[j].set(ent);
 #if 0
 			cout << "    " << sched->get_type() << 
 				", time = " << sched->get_time() << '\n';
 #endif
-			// +++++Store in npc.
 			}
+					// Store in NPC.
+		npc->set_schedules(schedules, cnt);
 		}
 	delete [] offsets;		// Done with this.
-#endif
 	}
 
 
