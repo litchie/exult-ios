@@ -28,6 +28,7 @@ int     Astar::NewPath(Tile_coord &source,Tile_coord &dest,int (*tileclassifier)
 		calculated_path.push_back(t[i]);
 		++i;
 		}
+	delete [] t;
 	return 1;
 }
 
