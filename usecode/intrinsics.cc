@@ -712,7 +712,7 @@ USECODE_INTRINSIC(add_party_items)
 
 USECODE_INTRINSIC(play_music)
 {
-	// Play music(item, songnum).
+	// Play music(songnum, item).
 	// ??Show notes by item?
 #ifdef DEBUG
 	cout << "Music request in usecode" << endl;
@@ -724,7 +724,15 @@ USECODE_INTRINSIC(play_music)
 	if (track == 0xff)		// I think this is right:
 		Audio::get_ptr()->cancel_streams();	// Stop playing.
 	else
-		Audio::get_ptr()->start_music(track, (parms[0].get_int_value()>>8)&0x01);
+		{
+		Audio::get_ptr()->start_music(track, 
+					(parms[0].get_int_value()>>8)&0x01);
+					// Show notes.
+		Game_object *obj = get_item(parms[1]);
+		if (obj)
+			gwin->get_effects()->add_effect(
+				new Sprites_effect(24, obj, 0, 0, -2, -2));
+		}
 	return(no_ret);
 }
 
