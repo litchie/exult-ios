@@ -890,4 +890,6 @@ Vga_file::~Vga_file()
 	{
 	if( shapes )
 		delete [] shapes;
+	if( shape_source )
+		delete shape_source;
 	}

@@ -154,11 +154,18 @@ class ByteBuffer
 			}
 		else
 			{
-			// We have a buffer. Check if it will hold the data. If
-			// not, add double the requested length to the size
+			// Will this chunk fit at the end with current capacity ?
 			if(cap-high<len)
 				{
-				reserve(cap + (len * 2));
+				// Maybe if we reshuffle things a bit ?
+				if(cap-high+low>len)
+					{
+						std::memmove(data, (data+low), (high-low));
+						high -= low;
+						low = 0;
+					}
+				else	// No luck...
+					reserve(cap + (len * 2));
 				}
 			}
 
@@ -355,11 +362,9 @@ public:
 		lock();
 		l=Buffer.pop_front((char *)p,l);
 		unlock();
-		if(l>0)
-			window+=(l>>3);
 		return l?l:(producing?0:-1);
 		}
-	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),window(16384),producing(true),consuming(true),id(0)
+	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),window(32768),producing(true),consuming(true),id(0)
 		{
 #if DEBUG
 		mycounter=++counter;

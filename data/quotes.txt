@@ -82,3 +82,7 @@
 
 \C"Yeah, we do :-)"
 \L- Willem Jan on ##exult
+
+\C"Anybody home? Exultbot?"
+\C"Ah, well, guess I'm in the wrong timezone"
+\L - Jeff on ##exult
