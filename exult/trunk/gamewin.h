@@ -94,7 +94,7 @@ private:
 	Shape_file *end_fonts[4];	// fonts from "endgame.dat" file
 	Vga_file sprites;		// "sprites.vga" file.
 	Vga_file mainshp;
-	Vga_file endshape;		
+	Vga_file *xtrashapes;		
 	ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
@@ -135,13 +135,13 @@ public:
 	int skip_lift;			// Skip objects with lift > 0.
 	int paint_eggs;
 	int debug;
-	Game_window(int width = 0, int height = 0);
+	Game_window(int width = 0, int height = 0, int scale = 1);
 	~Game_window();
 					// Get the one game window.
 	static Game_window *get_game_window()
 		{ return game_window; }
 		
-	void set_window_size(int w, int h);
+	void set_window_size(int w, int h, int s);
 	void abort(const char *msg, ...);	// Fatal error.
 	int get_width()
 		{ return win->get_width(); }
