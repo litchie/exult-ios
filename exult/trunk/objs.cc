@@ -1482,47 +1482,6 @@ int Chunk_cache::is_blocked
 	}
 
 /*
- *	Is a given rectangle of tiles blocked at a given lift?
- *
- *	Output: 1 if so, else 0.
- *		If 0 (tile is free), new_lift contains the new height that
- *		   an actor will be at if he walks onto the tile.
- */
-
-int Chunk_object_list::is_blocked
-	(
-	int height,			// Height (along lift) to check.
-	int lift,			// Starting lift.
-	int startx, int starty,		// Starting tile coords.
-	int xtiles, int ytiles,		// Width, height in tiles.
-	int& new_lift			// New lift returned.
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-	int tx, ty;
-	new_lift = 0;
-	int stopy = starty + ytiles, stopx = startx + xtiles;
-	for (ty = starty; ty < stopy; ty++)
-		{			// Get y chunk, tile-in-chunk.
-		int cy = ty/tiles_per_chunk, rty = ty%tiles_per_chunk;
-		for (tx = startx; tx < stopx; tx++)
-			{
-			int this_lift;
-			Chunk_object_list *olist = gwin->get_objects(
-					tx/tiles_per_chunk, cy);
-			olist->setup_cache();
-			if (olist->is_blocked(height, lift, tx%tiles_per_chunk,
-							rty, this_lift))
-				return (1);
-					// Take highest one.
-			new_lift = this_lift > new_lift ?
-					this_lift : new_lift;
-			}
-		}
-	return (0);
-	}
-
-/*
  *	Activate nearby eggs.
  */
 
@@ -1669,6 +1628,71 @@ void Chunk_object_list::remove
 		;
 	if (obj)			// This is before it.
 		obj->next = remove->next;
+	}
+
+/*
+ *	Is a given rectangle of tiles blocked at a given lift?
+ *
+ *	Output: 1 if so, else 0.
+ *		If 0 (tile is free), new_lift contains the new height that
+ *		   an actor will be at if he walks onto the tile.
+ */
+
+int Chunk_object_list::is_blocked
+	(
+	int height,			// Height (along lift) to check.
+	int lift,			// Starting lift.
+	int startx, int starty,		// Starting tile coords.
+	int xtiles, int ytiles,		// Width, height in tiles.
+	int& new_lift			// New lift returned.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int tx, ty;
+	new_lift = 0;
+	int stopy = starty + ytiles, stopx = startx + xtiles;
+	for (ty = starty; ty < stopy; ty++)
+		{			// Get y chunk, tile-in-chunk.
+		int cy = ty/tiles_per_chunk, rty = ty%tiles_per_chunk;
+		for (tx = startx; tx < stopx; tx++)
+			{
+			int this_lift;
+			Chunk_object_list *olist = gwin->get_objects(
+					tx/tiles_per_chunk, cy);
+			olist->setup_cache();
+			if (olist->is_blocked(height, lift, tx%tiles_per_chunk,
+							rty, this_lift))
+				return (1);
+					// Take highest one.
+			new_lift = this_lift > new_lift ?
+					this_lift : new_lift;
+			}
+		}
+	return (0);
+	}
+
+/*
+ *	Check an absolute tile position.
+ *
+ *	Output:	1 if blocked, 0 otherwise.
+ *		Tile.tz may be updated for stepping onto square.
+ */
+
+int Chunk_object_list::is_blocked
+	(
+	Tile_coord& tile
+	)
+	{
+					// Get chunk tile is in.
+	Game_window *gwin = Game_window::get_game_window();
+	Chunk_object_list *chunk = gwin->get_objects(
+			tile.tx/tiles_per_chunk, tile.ty/tiles_per_chunk);
+	int new_lift;			// Check it within chunk.
+	if (chunk->is_blocked(tile.tz, tile.tx%tiles_per_chunk,
+				tile.ty%tiles_per_chunk, new_lift))
+		return (1);
+	tile.tz = new_lift;
+	return (0);
 	}
 
 #if 0	/* +++++ May use this for pathfinding. */
