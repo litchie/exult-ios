@@ -1,6 +1,3 @@
-/* Do we have a version of SDL that we can compile against? */
-#undef HAVE_SDL
-
 /* Do we have a version of libkmidi that we can compile against? */
 #undef HAVE_LIBKMIDI
 
@@ -32,3 +29,5 @@
 /* Define if the libraries have mkstemp() */
 #undef HAVE_MKSTEMP
 
+/* disable SDL parachute? */
+#undef NO_SDL_PARACHUTE
