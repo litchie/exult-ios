@@ -1192,7 +1192,7 @@ int Game_object::attack_object
 		return 0;
 	if (attacker)
 		wpoints += attacker->get_level() +
-			attacker->get_property((int) Actor::strength);
+			attacker->get_effective_prop((int) Actor::strength);
 	return wpoints;
 	}
 

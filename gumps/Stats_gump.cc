@@ -106,13 +106,13 @@ void Stats_gump::paint
 	std::string nm = act->get_name();
 	sman->paint_text(2, nm.c_str(), x + namex +
 		(namew - sman->get_text_width(2, nm.c_str()))/2, y + namey);
-	gman->paint_num(act->get_property(Actor::strength),
+	gman->paint_num(act->get_effective_prop(Actor::strength),
 						x + textx, y + texty[0]);
-	gman->paint_num(act->get_property(Actor::dexterity),
+	gman->paint_num(act->get_effective_prop(Actor::dexterity),
 						x + textx, y + texty[1]);
-	gman->paint_num(act->get_property(Actor::intelligence),
+	gman->paint_num(act->get_effective_prop(Actor::intelligence),
 						x + textx, y + texty[2]);
-  	gman->paint_num(act->get_property(Actor::combat),
+  	gman->paint_num(act->get_effective_prop(Actor::combat),
 						x + textx, y + texty[3]);
   	gman->paint_num(act->get_property(Actor::magic),
 						x + textx, y + texty[4]);

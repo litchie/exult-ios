@@ -89,7 +89,7 @@ void CombatStats_gump::paint()
 	for (int i = 0; i < party_size; i++) {
 		face_btn[i]->paint();
 
-		gman->paint_num(party[i]->get_property(Actor::combat),
+		gman->paint_num(party[i]->get_effective_prop(Actor::combat),
 				  x + colx + i*coldx, y + rowy[1]);		
 		gman->paint_num(party[i]->get_property(Actor::health),
 				  x + colx + i*coldx, y + rowy[2]);
