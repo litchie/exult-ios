@@ -1264,7 +1264,7 @@ Random
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton7</name>
+	    <name>usecode_quality</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
