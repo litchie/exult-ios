@@ -95,7 +95,7 @@ void Actor::ready_best_weapon
 		return;			// Already have one (or hands full).
 	Game_window *gwin = Game_window::get_game_window();
 	Vector vec(0, 50);		// Get list of all possessions.
-	int cnt = get_objects(vec, -359, -359);
+	int cnt = get_objects(vec, -359, -359, -359);
 	Game_object *best = 0;
 	int best_damage = -20;
 	for (int i = 0; i < cnt; i++)
