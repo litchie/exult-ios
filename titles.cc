@@ -295,7 +295,8 @@ void Titles::show_menu()
 			gwin->paint_shape(centerx-shape->get_width()/2,topy+110+i*10,shape);
 		}		
 		win->show();
-		while(!wait_delay(100));
+		while(!wait_delay(100))
+			;
 		pal.fade_out(30);
 		clear_screen();
 	}
@@ -356,7 +357,11 @@ void Titles::show_credits()
 			++lines;
 		}
 		printf("Credits lines: %d\n", lines);
+#if defined(MACOS)
+		char **text = new char*[lines] ;
+#else
 		char **text = new (char*)[lines];
+#endif
 		ptr = credits;
 		while(ptr<end) {
 			text[lines] = ptr;
