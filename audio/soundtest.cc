@@ -36,18 +36,6 @@ SoundTester::~SoundTester()
 	{
 	}
 
-static void handle_key(int shift, int& value, int max, int amt = 1)
-{
-	if(shift)
-		value -= amt;
-	else
-		value += amt;
-	if(value<0)
-		value = max-1;
-	else if(value>=max)
-		value = 0;
-}
-	
 void SoundTester::test_sound()
 {
 		
@@ -149,8 +137,6 @@ void SoundTester::test_sound()
 		if(event.type==SDL_KEYDOWN)
 		{
        			redraw = true;
-			int shift = event.key.keysym.mod & KMOD_SHIFT;
-			//int ctrl = event.key.keysym.mod & KMOD_CTRL;
 			switch(event.key.keysym.sym)
 			{
 

@@ -48,9 +48,8 @@ public:
 	friend class Shape_info;
 	Weapon_info(char d, unsigned char r1, unsigned char r2,
 			unsigned char sp, short am, short pr, short uc) 
-		: damage(d), range1(r1), range2(r2),
-		  special_atts(sp), ammo(am), projectile(pr),
-		  usecode(uc)
+		: damage(d),  special_atts(sp), ammo(am), projectile(pr),
+	          usecode(uc), range1(r1), range2(r2)
 		{  }
 	int get_damage()
 		{ return damage; }

@@ -107,7 +107,7 @@
 typedef struct _opcode_desc
 {
 	/* Mnemonic - NULL if not known yet */
-	unsigned char* mnemonic;
+	const char* mnemonic;
 	/* Number of operand bytes */
 	int nbytes;
 	/* Type flags */

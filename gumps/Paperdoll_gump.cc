@@ -774,80 +774,80 @@ Game_object * Paperdoll_gump::find_object
 			return obj;
 		#endif
 
-		if (obj = check_object      (gwin, mx, my, info, Actor::rhand,       rhandx, rhandy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::rhand,       rhandx, rhandy)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::ammo,        ahandx, ahandy, 2, -1, Actor::lhand))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::ammo,        ahandx, ahandy, 2, -1, Actor::lhand)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::lhand,       lhandx, lhandy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::lhand,       lhandx, lhandy)))
 			return obj;
-		if (obj = check_object_arms (gwin, mx, my, info, Actor::hands2_spot, handsx, handsy, 0))
+		if ((obj = check_object_arms (gwin, mx, my, info, Actor::hands2_spot, handsx, handsy, 0)))
 			return obj;
-		if (obj = check_object_arms (gwin, mx, my, info, Actor::rfinger,     lhandx, lhandy, 0))
+		if ((obj = check_object_arms (gwin, mx, my, info, Actor::rfinger,     lhandx, lhandy, 0)))
 			return obj;
-		if (obj = check_object_arms (gwin, mx, my, info, Actor::lfinger,     rhandx, rhandy, 0))
+		if ((obj = check_object_arms (gwin, mx, my, info, Actor::lfinger,     rhandx, rhandy, 0)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::cloak_spot,  bodyx,  bodyy,  0, Actor::special_spot))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::cloak_spot,  bodyx,  bodyy,  0, Actor::special_spot)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::head,        headx,  heady))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::head,        headx,  heady)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::ears_spot,   headx,  heady))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::ears_spot,   headx,  heady)))
 			return obj;
-		if (obj = check_object_arms (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy,  1, Actor::torso))
+		if ((obj = check_object_arms (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy,  1, Actor::torso)))
 			return obj;
 		if (check_arms              (gwin, mx, my, info))
 			return NULL;
-		if (obj = check_object      (gwin, mx, my, info, Actor::belt,        beltx,  belty))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::belt,        beltx,  belty)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::neck,        neckx,  necky))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::neck,        neckx,  necky)))
 			return obj;
 		if (check_head              (gwin, mx, my, info))
 			return NULL;
 		if (check_belt              (gwin, mx, my, info))
 			return NULL;
-		if (obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::ammo,        ammox,  ammoy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::ammo,        ammox,  ammoy)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::feet,        feetx,  feety))		
+		if ((obj = check_object      (gwin, mx, my, info, Actor::feet,        feetx,  feety)))	
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::legs,        legsx,  legsy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::legs,        legsx,  legsy)))
 			return obj;
 		if (check_body        (gwin, mx, my, info))
 			return NULL;
-		if (obj = check_object      (gwin, mx, my, info, Actor::cloak_spot,  bodyx,  bodyy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::cloak_spot,  bodyx,  bodyy)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::back,        backx,  backy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::back,        backx,  backy)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::back2h_spot, back2x, back2y))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::back2h_spot, back2x, back2y)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::shield_spot,shieldx,shieldy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::shield_spot,shieldx,shieldy)))
 			return obj;
 	}
 	else
 	{
 		Paperdoll_item *item1, *item2;
 
-		if (obj = check_object      (gwin, mx, my, info, Actor::rhand,       rhandx, rhandy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::rhand,       rhandx, rhandy)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::ammo,        ahandx, ahandy, 2, -1, Actor::lhand))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::ammo,        ahandx, ahandy, 2, -1, Actor::lhand)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::lhand,       lhandx, lhandy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::lhand,       lhandx, lhandy)))
 			return obj;
 
 		obj = container->get_readied(Actor::lfinger);
 		item1 = !obj?NULL:GetItemInfo (obj->get_shapenum(), obj->get_framenum(), Actor::hands2_spot);
 		if (!item1 && (obj = check_object_arms (gwin, mx, my, info, Actor::lfinger,     rhandx, rhandy, 0)))
 			return obj;
-		else if (obj = check_object_arms (gwin, mx, my, info, Actor::lfinger,     rhandx, rhandy, 0, Actor::hands2_spot))
+		else if ((obj = check_object_arms (gwin, mx, my, info, Actor::lfinger,     rhandx, rhandy, 0, Actor::hands2_spot)))
 			return obj;
 
-		if (obj = check_object_arms (gwin, mx, my, info, Actor::rfinger,     lhandx, lhandy, 0))
+		if ((obj = check_object_arms (gwin, mx, my, info, Actor::rfinger,     lhandx, lhandy, 0)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy,  0, Actor::special_spot))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy,  0, Actor::special_spot)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::head,        headx,  heady))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::head,        headx,  heady)))
 			return obj;
-		if (obj = check_object_arms (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy,  1, Actor::torso))
+		if ((obj = check_object_arms (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy,  1, Actor::torso)))
 			return obj;
 		if (check_arms              (gwin, mx, my, info))
 			return NULL;
@@ -858,7 +858,7 @@ Game_object * Paperdoll_gump::find_object
 		if (!item1 && !item2 && (obj = check_object      (gwin, mx, my, info, Actor::belt,        beltx,  belty)))
 			return obj;
 
-		if (obj = check_object      (gwin, mx, my, info, Actor::neck,        neckx,  necky))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::neck,        neckx,  necky)))
 			return obj;
 		if (check_head              (gwin, mx, my, info))
 			return NULL;
@@ -871,24 +871,24 @@ Game_object * Paperdoll_gump::find_object
 		if (!item1 && !item2 && (obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy)))
 			return obj;
 
-		if (obj = check_object      (gwin, mx, my, info, Actor::ammo,        ammox,  ammoy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::ammo,        ammox,  ammoy)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::feet,        feetx,  feety))		
+		if ((obj = check_object      (gwin, mx, my, info, Actor::feet,        feetx,  feety)))	
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::legs,        legsx,  legsy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::legs,        legsx,  legsy)))
 			return obj;
 
 		if (check_body        (gwin, mx, my, info))
 			return NULL;
 			
-		if (obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy, 0, Actor::cloak_spot))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::torso,       bodyx,  bodyy, 0, Actor::cloak_spot)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::back,        backx,  backy))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::back,        backx,  backy)))
 			return obj;
 
-		if (obj = check_object      (gwin, mx, my, info, Actor::belt,        back2x, back2y, 0, Actor::back2h_spot))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::belt,        back2x, back2y, 0, Actor::back2h_spot)))
 			return obj;
-		if (obj = check_object      (gwin, mx, my, info, Actor::belt,       shieldx,shieldy, 0, Actor::shield_spot))
+		if ((obj = check_object      (gwin, mx, my, info, Actor::belt,       shieldx,shieldy, 0, Actor::shield_spot)))
 			return obj;
 	}
 	return NULL;

@@ -51,7 +51,7 @@ typedef void(*ActionFunc)(int*);
 
 struct Action {
   ActionFunc func;
-  char* desc;
+  const char* desc;
   bool show;
   bool cheat;
   Exult_Game game;
