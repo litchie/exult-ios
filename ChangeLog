@@ -1,3 +1,7 @@
+2004-07-11    <jeff@mini.nerble.net>
+
+	* actors.cc,combat.cc,etc.:  Support for 'charmed' flag.
+
 2004-07-04    <jeff@mini.nerble.net>
 
 	* gamemap.cc,iregobjs.cc, etc.:  Save/restore pos. of items within

@@ -117,7 +117,7 @@ void Combat_schedule::monster_died
 		Actor *actor = *it;
 		if (!actor->is_dead() && 
 			actor->get_attack_mode() != Actor::flee &&
-				actor->get_alignment() >= Npc_actor::hostile)
+			actor->get_effective_alignment() >= Npc_actor::hostile)
 			return;		// Still possible enemies.
 		}
 	battle_end_time = Game::get_ticks();
@@ -212,7 +212,7 @@ void Combat_schedule::find_opponents
 {
 	opponents.clear();
 	Game_window *gwin = Game_window::get_instance();
-	if (npc->get_alignment() >= Npc_actor::hostile)
+	if (npc->get_effective_alignment() >= Npc_actor::hostile)
 	{
 		Actor *party[10];
 		int cnt = gwin->get_party(party, 1);
@@ -239,7 +239,7 @@ void Combat_schedule::find_opponents
 		Actor *actor = *it;
 		if (actor->is_dead() || actor->get_flag(Obj_flags::invisible))
 			continue;	// Dead or invisible.
-		if (actor->get_alignment() >= Npc_actor::hostile)
+		if (actor->get_effective_alignment() >= Npc_actor::hostile)
 		{
 			opponents.push(actor);
 		}
@@ -318,8 +318,15 @@ Game_object *Combat_schedule::find_foe
 	)
 {
 	if (combat_trace) {
-		cout << "'" << npc->get_name() << "' is looking for a foe" << endl;
+		cout << "'" << npc->get_name() << "' is looking for a foe" << 
+									endl;
 	}
+	int new_align = npc->get_effective_alignment();
+	if (new_align != alignment)
+		{			// Alignment changed.
+		opponents.clear();
+		alignment = new_align;
+		}
 					// Remove any that died.
 	for (Actor_queue::const_iterator it = opponents.begin(); 
 						it != opponents.end(); )
@@ -858,7 +865,7 @@ Combat_schedule::Combat_schedule
 		practice_target(0), is_thrown(false), yelled(0),
 		no_blocking(false), uses_charges(false),
 		started_battle(false), fleed(0), failures(0), teleport_time(0),
-		dex_points(0)
+		dex_points(0), alignment(n->get_effective_alignment())
 	{
 	Combat_schedule::set_weapon();
 					// Cache some data.
@@ -1062,7 +1069,7 @@ void Combat_schedule::im_dormant
 	(
 	)
 	{
-	if (npc->get_alignment() == Npc_actor::friendly && 
+	if (npc->get_effective_alignment() == Npc_actor::friendly && 
 		prev_schedule != npc->get_schedule_type() && npc->is_monster())
 					// Friendly, so end combat.
 		npc->set_schedule_type(prev_schedule);

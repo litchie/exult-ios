@@ -1532,6 +1532,29 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 }
 
 /*
+ *	Get alignment, taking into account 'charmed' flag.
+ */
+
+int Actor::get_effective_alignment
+	(
+	) const
+	{
+	if (!(flags&(1<<Obj_flags::charmed)))
+		return alignment;
+	else switch(alignment)
+		{
+	case neutral:
+		return unknown_align;
+	case friendly:
+		return hostile;
+	case hostile:
+		return friendly;
+	case unknown_align:
+		return neutral;
+		}
+	}
+
+/*
  *	Render.
  */
 
@@ -2044,6 +2067,7 @@ bool Actor::reduce_health
 	if (attacker && attacker->is_in_party() && GAME_BG &&
 	    npc_num > 0 &&
 	    (alignment == Actor::friendly || alignment == Actor::neutral) &&
+	    !(flags & (1<<Obj_flags::charmed)) &&
 	    get_info().get_shape_class() == Shape_info::human)
 		{
 		static long lastcall = 0L;	// Last time yelled.
@@ -2198,6 +2222,7 @@ void Actor::set_flag
 		break;
 	case Obj_flags::charmed:
 		need_timers()->start_charm();
+		set_target(0);		// Need new opponent if in combat.
 		break;
 	case Obj_flags::paralyzed:
 		need_timers()->start_paralyze();
@@ -2269,6 +2294,8 @@ void Actor::clear_flag
 			change_frame(Actor::standing);
 			}
 		}
+	else if (flag == Obj_flags::charmed)
+		set_target(0);			// Need new opponent.
 	set_actor_shape();
 	}
 
