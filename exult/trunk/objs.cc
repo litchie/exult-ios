@@ -320,7 +320,8 @@ Game_object *Game_object::find_closest
 Tile_coord Game_object::find_unblocked_tile
 	(
 	int dist,			// 1 means adjacent.
-	int height			// Height to check for unblocked.
+	int height,			// Height to check for unblocked.
+	const int move_flags		// What sort of motion is allowed.
 	)
 	{
 	Tile_coord pos = get_abs_tile_coord();
@@ -333,7 +334,8 @@ Tile_coord Game_object::find_unblocked_tile
 		for (int x = box.x; x < stopx; x++)
 			{		// Check this spot.
 			Tile_coord spot(x, y, pos.tz);
-			if (!Chunk_object_list::is_blocked(spot, height))
+			if (!Chunk_object_list::is_blocked(spot, height, 
+								move_flags))
 				return spot;
 			}
 	return Tile_coord(-1, -1, -1);
