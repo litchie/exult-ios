@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Barge_object : public Container_game_object, public Time_sensitive
 	{
+	static Barge_object *editing;	// Egg being edited by ExultStudio.
 	Game_object_vector objects;	// All objects in/on barge.
 	int perm_count;			// Counts permanent parts of barge,
 					//   which proceed those placed on it.
@@ -104,6 +105,10 @@ public:
 	virtual int drop(Game_object *obj);
 					// Render.
 	virtual void paint();
+	virtual void activate(int event = 1);
+	virtual bool edit();		// Edit in ExultStudio.
+					// Saved from ExultStudio.
+	static void update_from_studio(unsigned char *data, int datalen);
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame = -1);
 					// Write out to IREG file.

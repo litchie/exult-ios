@@ -112,6 +112,28 @@ void Object_io
  *	Output:	1 if successful, else 0.
  */
 template <class Serial> 
+void Barge_object_io
+	(
+	Serial &io,			// Where to store data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+ 	int& shape, int& frame,
+	int& xtiles,
+	int& ytiles,
+	int& dir
+	)
+	{
+	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
+	io << xtiles << ytiles << dir;
+	}
+
+/*
+ *	Low-level serialization for use both by Exult and ExultStudio (so
+ *	don't put in anything that will pull in all of Exult).
+ *
+ *	Output:	1 if successful, else 0.
+ */
+template <class Serial> 
 void Egg_object_io
 	(
 	Serial &io,			// Where to store data.
@@ -219,6 +241,56 @@ int Object_in
 	Serial_in io(ptr);
 	Object_io(io, addr, tx, ty, tz, shape, frame, quality,
 		name);
+	return (ptr - data) == datalen;
+	}
+
+/*
+ *	Send out an barge object.
+ *
+ *	Output:	-1 if unsuccessful.  0 if okay.
+ */
+
+int Barge_object_out
+	(
+	int fd,				// Socket.
+	unsigned long addr,		// Address.
+	int tx, int ty, int tz,	// Absolute tile coords.
+	int shape, int frame,
+	int xtiles,
+	int ytiles,
+	int dir
+	)
+	{
+	static unsigned char buf[Exult_server::maxlength];
+	unsigned char *ptr = &buf[0];
+	Serial_out io(ptr);
+	Barge_object_io(io, addr, tx, ty, tz, shape, frame,
+		xtiles, ytiles, dir);
+	return Exult_server::Send_data(fd, Exult_server::barge, buf,ptr - buf);
+	}
+
+/*
+ *	Decode an barge object.
+ *
+ *	Output:	0 if unsuccessful.
+ */
+
+int Barge_object_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	int &xtiles,
+	int &ytiles,
+	int &dir
+	)
+	{
+	unsigned char *ptr = data;
+	Serial_in io(ptr);
+	Barge_object_io(io, addr, tx, ty, tz, shape, frame,
+		xtiles, ytiles, dir);
 	return (ptr - data) == datalen;
 	}
 
