@@ -165,8 +165,9 @@ Actor::Actor
 
 	schedule_type = Read1(nfile);
 	int amode = Read1(nfile);	// Default attack mode
-					// Just stealing a spare bit:
+					// Just stealing 2 spare bits:
 	combat_protected = (amode&(1<<4)) != 0;
+	user_set_attack = (amode&(1<<5)) != 0;
 	attack_mode = (Attack_mode) (amode&0xf);
 
 	nfile.seekg(3, ios::cur); 	//Unknown
@@ -429,7 +430,10 @@ void Actor::write
 	
 
 	nfile.put(get_schedule_type());
-	nfile.put(attack_mode | (combat_protected ? (1<<4) : 0));
+	unsigned char amode = attack_mode | 
+		(combat_protected ? (1<<4) : 0) |
+		(user_set_attack ? (1<<5) : 0);
+	nfile.put(amode);
 	nfile.put(0);		// Skip 3.
 	Write2(nfile, 0);
 
