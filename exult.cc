@@ -1148,6 +1148,8 @@ static int Get_click
 		SDL_Event event;
 		Delay();		// Wait a fraction of a second.
 
+		uint32 ticks = SDL_GetTicks();
+		Game::set_ticks(ticks);
 		Mouse::mouse->hide();		// Turn off mouse.
 		Mouse::mouse_update = false;
 
@@ -1175,10 +1177,10 @@ static int Get_click
 					{
 					x = event.button.x / scale;
 					y = event.button.y / scale;
-					bool drg = dragging;
-					dragging = false;
+					bool drg = dragging, drged = dragged;
+					dragging = dragged = false;
 					if (!drg ||
-					    !gwin->drop_dragged(x, y, dragged))
+					    !gwin->drop_dragged(x, y, drged))
 						{
 						if (chr) *chr = 0;
 						return (1);
@@ -1252,8 +1254,9 @@ static int Get_click
 			if (paint)
 				paint->paint();
 			}
+		else if (dragging)
+			gwin->paint_dirty();
 		Mouse::mouse->show();		// Turn on mouse.
-
 		if (!gwin->show() &&	// Blit to screen if necessary.
 		    Mouse::mouse_update)
 			Mouse::mouse->blit_dirty();

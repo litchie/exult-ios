@@ -227,6 +227,37 @@ void Time_queue::activate0
 	}
 
 /*
+ *	Remove & activate entries marked 'always'.  This is called when
+ *	the queue is paused.
+ */
+
+void Time_queue::activate_always
+	(
+	uint32 curtime		// Current time.
+	)
+	{
+	if(data.size()==0)
+		return;
+	Queue_entry ent;
+	for(Temporal_sequence::iterator it=data.begin();
+		it!=data.end(); )
+		{
+		Temporal_sequence::iterator next = it;
+		++next;			// Get ->next in case we erase.
+		ent = *it;
+		Time_sensitive *obj = ent.handler;
+		if (obj->always && !(curtime < ent.time))
+			{
+			obj->queue_cnt--;
+			long udata = ent.udata;
+			data.erase(it);
+			obj->handle_event(curtime, udata);
+			}
+		it = next;
+		}
+	}
+
+/*
  *	Resume after a pause.
  */
 
@@ -235,7 +266,7 @@ void Time_queue::resume
 	uint32 curtime
 	)
 	{
-	if (!pause_time)
+	if (!paused || --paused > 0)	// Only unpause when stack empty.
 		return;			// Not paused.
 	int diff = curtime - pause_time;
 	pause_time = 0;

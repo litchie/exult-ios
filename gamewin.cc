@@ -2307,6 +2307,7 @@ void Game_window::theft
 		closest_npc->say(first_theft, last_theft);
 		return;
 		}
+	gump_man->close_all_gumps();	// Get gumps off screen.
 	closest_npc->say(first_call_guards, last_call_guards);
 					// Show guard running up.
 	int gshape = Get_guard_shape(main_actor->get_tile());
