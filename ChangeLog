@@ -1,3 +1,10 @@
+2001-09-25  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* sigame.cc: Use a std::string instead of a fixed-length buffer
+	* ibid: Fixed spelling error.
+	* bggame.cc: Use a std::string instead of a fixed-length buffer
+	* files/utils.h: Add an inline wrapper so that U7exists() can take a std::string
+
 2001-09-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Fix Fawn Tower in old savegames.
