@@ -418,17 +418,26 @@ public:
 	};
 
 /*
- *	A 'barge', such as a ship or horse-and-cart.  +++++For now, the
- *	objects aren't really added or kept track of, since they have to
- *	be rendered in the outside world.+++++
+ *	A 'barge', such as a ship or horse-and-cart.  The elements of a barge
+ *	are stored in the outside world, so rendering and obstacle detection
+ *	don't have to be reimplemented.
  */
-class Barge_object : public Ireg_game_object
+class Barge_object : public Container_game_object
 	{
+	Vector objects;			// All objects in/on barge.
+	int perm_count;			// Counts permanent parts of barge,
+					//   which proceed those placed on it.
+	unsigned char xtiles, ytiles;	// Tiles covered (when vert?).
+	unsigned char horizontal;	// Flag:  1 if horizontal.
+	Game_object *get_object(int i)
+		{ return (Game_object *) objects.get(i); }
 public:
 	Barge_object(unsigned char l, unsigned char h, 
-				unsigned int shapex,
-				unsigned int shapey, unsigned int lft = 0)
-		: Ireg_game_object(l, h, shapex, shapey, lft)
+		unsigned int shapex, unsigned int shapey, unsigned int lft,
+			int xt, int yt, int horiz)
+		: Container_game_object(l, h, shapex, shapey, lft),
+			perm_count(0),
+			xtiles(xt), ytiles(yt), horizontal(horiz)
 		{  }
 #if 0
 	Barge_object() : Ireg_game_object()
@@ -436,8 +445,14 @@ public:
 #endif
 	virtual ~Barge_object()
 		{  }
+					// Move to new abs. location.
+	virtual void move(int newtx, int newty, int newlift);
+					// Remove an object.
+	virtual void remove(Game_object *obj);
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0);
+					// Drop another onto this.
+	virtual int drop(Game_object *obj);
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Write out to IREG file.
