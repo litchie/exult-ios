@@ -69,7 +69,7 @@ Makefile: Makefile.be
 	cp Makefile.be Makefile
 
 clean:
-	rm -f $(OBJS) $(EXEC) /data/exult.flx /tools/expack
+	rm -f $(OBJS) $(EXEC) data/exult.flx tools/expack tools/expack.o
 
 install:
 	strip $(EXEC)
