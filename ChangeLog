@@ -1,5 +1,8 @@
 2001-08-11  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* effects.cc,intrinsics.cc:  Added intrinsic npc_sprite_effect()
+	for BG.
+
 	* objs/egg.cc: Put back Egg_object::remove_this.  It's needed.
 	* combat.cc:  Try to avoid striking someone on a different level.
 
