@@ -57,7 +57,9 @@ EXULT_FLX_OBJECTS = \
 	data/cheating.shp \
 	data/ok.shp \
 	data/cancel.shp \
-	data/pointers.shp
+	data/pointers.shp \
+	data/exit.shp \
+	data/play_1st_scene.shp
 
 $(EXEC) : Makefile data/exult.flx $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)

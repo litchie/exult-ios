@@ -1,35 +1,41 @@
-EXULT lets you, to some extent, play Ultima7 in a window under Linux,
-Windows, and possibly other Unix systems.  It is released under the GNU 
-General Public License, and contains source code.
+                                    EXULT
+                                    =====
+
+WHAT IS IT ?
+------------
+EXULT lets you, to some extent, play Ultima 7 natively under Linux,
+Windows, and possibly other platforms.  It is released under the GNU 
+General Public License, and source code is available.
 
 See the "NEWS" and "ChangeLog" files for the latest changes.
 
-IMPORTANT:  Run "exult" in a clean installation of Ultima7; "exult" should be
-installed in a directory where you see the "static" subdirectory.  "Exult" will
+IMPORTANT: Make sure you have a valid configuration file (see below).
+Run "exult" on a clean installation of Ultima7; "exult" should either be
+installed in a directory where you see the "static" subdirectory or the 
+configuration file should point to the static directory.  "Exult" will
 create the "gamedat" directory and files the first time you run it.  And al-
 though I've tried to be safe about this, I don't recommend trying it on a
 game which you're actually in the middle of playing.
 
 CONFIGURATION
 -------------
-Exult now keeps a configuration file. You can specify where your Ultima7
+Exult keeps a configuration file. You can specify where your Ultima 7
 installation is, whether you want full-screen graphics, or windowed, and
-midi devices and midi settings.
+midi devices and midi settings. Some of these options can be set from the
+"Setup" menu when you run Exult.
 
 If you do not already have a configuration file, Exult will make one for you
-prompting you for some information along the way, or filling in sensible
-defaults by itself. The location of this file varies slightly. On unix systems
-you can expect to find it called $HOME/.exult.cfg while other operating systems
+filling in sensible defaults by itself. The location of this file varies slightly. On unix systems
+you can expect to find it in $HOME/.exult.cfg while other operating systems
 will probably locate it as 'exult.cfg' in the same directory as the exult
-binary.
+binary. However it is recommended that you edit this file by hand to achieve
+optimal results for your system.
 
 The file uses a simple hierarchical XML-like syntax, which should be simple to
 understand and modify. Take care though. Handling of syntax errors in this file
 is not well tested.
 
-Exult will create this file for you, with some sensible defaults, and you can
-then edit it to suit your preferences. Here is an example of what it looks
-like:
+Here is an example exult.cfg:
 
 <config>
  <video>
@@ -84,8 +90,13 @@ like:
  </audio>
 </config>
 
-Scaling:  Exult uses the 2xSaI scaling engine by Derek Liauw. More information
-is available at http://members.xoom.com/derek_liauw/
+VIDEO
+-----
+By default Exult runs at 320x200 (which is the resolution the original
+Ultima VII used). Exult uses the 2xSaI scaling engine by Derek Liauw to
+double the size to 640x400 and increase the quality of the graphics.
+More information on this excellent scaling engine is available at 
+http://members.xoom.com/derek_liauw/
 Your screen should be set to 16-bit color mode, and you need to
 add the following to the <video> section of .exult.cfg:
 
@@ -99,31 +110,33 @@ add the following to the <video> section of .exult.cfg:
    2
    </scale>
 
+Within the game you can use the "ALT +" and "ALT -" to switch 
+resolution/scaling modes. The game will save the last selected mode and reuse
+it the next time you run Exult.
 
 AUDIO
 -----
-Exult can now play the Guardian's sound-bites through SDL, and its own
+Exult can play the Ultima VII's speech through SDL, and its own
 internal mixer. Configuration is managed through Exult's configuration file.
+Support for sound effects has been implemented, but the output may not be
+what is expected, as the original sound effects cannot be reproduced directly.
 
 MIDI
 ----
-MIDI audio is now available for both Linux and Windows users.
+MIDI audio is available for both Linux and Windows users.
+Exult automatically remaps the Ultima VII Midi music (which is in the XMIDI
+format) to GM/GS instrument mapping, so the end result should be as close as
+(or better) than the original.
 
-Limitation: None of the game-specific instrument voices are loaded. You'll hear
-them as whatever the general midi system maps them to. In the case of the Kmidi
-driver it's usually a fairly close match. The playmidi driver does rather less
-well. Either way, the music still sounds alright. It'll sound better once we
-get the right voices in.
+COMPILING
+---------
 
---------------------------------------------------------------------------
-
-Starting with version 0.12, Exult uses the multiplatform library SDL by Sam
-Lantinga of LokiGames.  SDL provides low-level graphics, timing and sound
-capabilities, so a Windows (or Be or Mac) port should be much easier now.
+Exult uses the multiplatform library SDL by Sam Lantinga of LokiGames.  
+SDL provides low-level graphics, timing and sound capabilities.
+Windows, Be and Mac ports are much easier now.
 
 Unusual library dependencies
-============================
-
+----------------------------
    Some of you may have SDL or other libraries that have been compiled with
 unusual or inappropriate dynamic link paths. This typically affects linking
 with the X11 libraries. You can add:
