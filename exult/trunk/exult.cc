@@ -46,6 +46,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/time.h>
 #endif
 #include "xdrag.h"
+#include "server.h"
 #endif
 
 #ifdef WIN32
@@ -128,8 +129,6 @@ int current_res = 0;
 int xfd = 0;			// X connection #.
 static class Xdnd *xdnd = 0;
 
-extern void Server_init();
-extern void Server_delay();
 #endif
 
 

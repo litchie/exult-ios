@@ -54,6 +54,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/un.h>
 
 #include "server.h"
+#include "servemsg.h"
 #include "config.h"
 #include "utils.h"
 
@@ -176,38 +177,12 @@ static void Handle_client_message
 	int& fd				// Socket to client.  May be closed.
 	)
 	{
-	unsigned char buf[256];		// +++++We should buffer reads.
-	int len = read(fd, buf, 1);	// Get magic.
-	cerr << "Client message read: " << len << " bytes" << endl;
-	if (!len)			// Closed?
-		{
-		close(fd);
-		fd = -1;
-		Set_highest_fd();
+	unsigned char data[Exult_server::maxlength];
+	Exult_server::Msg_type id;
+	int datalen = Exult_server::Receive_data(fd, id, data, sizeof(data));
+	if (!datalen)
 		return;
-		}
-	if (len == -1)			// Nothing available?
-		return;
-	if (buf[0] != Exult_server::magic)
-		{
-		cout << "Bad magic read" << endl;
-		return;
-		}
-	if (read(fd, buf, 3) != 3)
-		{
-		cout << "Couldn't read length+type" << endl;
-		return;
-		}
-	int datalen = buf[0] | (buf[1]<<8);
-	int type = buf[2];		// Message type.
-	if (datalen > Exult_server::maxlength)
-		{
-		cout << "Length " << datalen << " exceeds max" << endl;
-		//+++++++++Eat the chars.
-		return;
-		}
-	datalen = read(fd, buf, datalen);// Read data.
-	//+++++++++++
+	//+++++++++++Handle id/data.
 	}
 
 /*
@@ -247,7 +222,12 @@ void Server_delay
 			Set_highest_fd();
 			}
 		if (client_socket >= 0 && FD_ISSET(client_socket, &rfds))
+			{
 			Handle_client_message(client_socket);
+					// Client gone?
+			if (client_socket == -1)
+				Set_highest_fd();
+			}
 		}
 	}
 

@@ -613,5 +613,6 @@ shapes/Makefile
 usecode/Makefile
 usecode/compiler/Makefile
 mapedit/Makefile
+server/Makefile
 ])
 
