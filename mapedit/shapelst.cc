@@ -43,10 +43,54 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "u7drag.h"
 #include "studio.h"
 #include "utils.h"
+#include "shapegroup.h"
 
 using std::cout;
 using std::endl;
 using std::strlen;
+
+/*
+ *	Set up popup menu for shape browser.
+ *
+ *	Output:	->popup menu created.
+ */
+
+static GtkWidget *Create_browser_popup
+	(
+	Shape_group *group		// Chooser's group, or 0 if none.
+	)
+	{
+					// Create popup menu.
+	GtkWidget *popup = gtk_menu_new();
+	GtkWidget *mitem = gtk_menu_item_new_with_label("Info...");
+	gtk_widget_show(mitem);
+	gtk_menu_append(GTK_MENU(popup), mitem);
+					// Use our group, or assume we're in
+					//   the main window.
+	Shape_group_file *groups = group ? group->get_file()
+			: ExultStudio::get_instance()->get_cur_groups();
+	int gcnt = groups ? groups->size() : 0;
+	if (gcnt > 1 ||			// Groups besides ours?
+	    (gcnt == 1 && !group))
+		{
+		mitem = gtk_menu_item_new_with_label("Add to group...");
+		gtk_widget_show(mitem);
+		gtk_menu_append(GTK_MENU(popup), mitem);
+		GtkWidget *group_menu = gtk_menu_new();
+		gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), group_menu);
+		for (int i = 0; i < gcnt; i++)
+			{
+			Shape_group *grp = groups->get(i);
+			if (grp == group)
+				continue;// Skip ourself.
+			GtkWidget *gitem = gtk_menu_item_new_with_label(
+							grp->get_name());
+			gtk_widget_show(gitem);
+			gtk_menu_append(GTK_MENU(group_menu), gitem);
+			}
+		}
+	return popup;
+	}
 
 /*
  *	Blit onto screen.
@@ -327,6 +371,13 @@ gint Shape_chooser::mouse_press
 		{			// Same square.  Check for dbl-click.
 		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
 			chooser->edit_shape();
+		}
+	if (event->button == 3 && chooser->selected >= 0)
+		{	//++++++Doesn't do anything yet.
+		GtkWidget *popup = Create_browser_popup(chooser->group);
+		gtk_menu_popup(GTK_MENU(popup), 0, 0, 0, 0, event->button,
+							event->time);
+//		gtk_widget_destroy(popup); //+++++Where do we destroy it???
 		}
 	return (TRUE);
 	}
@@ -681,37 +732,6 @@ GtkWidget *Shape_chooser::create_search_controls
 		      this);
 	return frame;
 	}
-#if 0
-/*
- *	Set up popup menu for shape browser.
- */
-
-static void Create_browser_popup
-	(
-	)
-	{
-					// Create popup menu.
-	GtkWidget *popup = gtk_menu_new();
-	GtkWidget *mitem = gtk_menu_item_new_with_label("Info...");
-	gtk_menu_append(GTK_MENU(popup), mitem);
-	Shape_group_file *groups = ExultStudio::instance()->get_groups();
-	int gcnt = groups ? groups->size() : 0;
-	if (gcnt > 0)			// Groups?
-		{
-		mitem = gtk_menu_item_new_with_label("Add to group...");
-		gtk_menu_append(GTK_MENU(popup), mitem);
-		GtkWidget *group_menu = gtk_menu_new();
-		gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), group_menu);
-		for (int i = 0; i < gcnt; i++)
-			{
-			Shape_group *grp = groups->get(i);
-			GtkWidget *gitem = gtk_menu_item_new_with_label(
-							grp->get_name());
-			gtk_menu_append(GTK_MENU(group_menu), gitem)
-			}
-		}
-	}
-#endif
 
 /*
  *	Create the list.
@@ -723,7 +743,7 @@ Shape_chooser::Shape_chooser
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h			// Dimensions.
 	) : Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
-		shapes_file(0), shapenum0(0), framenum0(0),
+		shapes_file(0), group(0), shapenum0(0), framenum0(0),
 		info(0), info_cnt(0), num_per_row(0), 
 		selected(-1), sel_changed(0)
 	{

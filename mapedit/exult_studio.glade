@@ -10150,6 +10150,11 @@ Random
   <class>GtkWindow</class>
   <name>group_window</name>
   <visible>False</visible>
+  <signal>
+    <name>delete_event</name>
+    <handler>on_group_window_delete_event</handler>
+    <last_modification_time>Fri, 25 Jan 2002 07:15:16 GMT</last_modification_time>
+  </signal>
   <title>Exult Shape Group</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
@@ -10327,7 +10332,7 @@ Random
 
     <widget>
       <class>GtkFrame</class>
-      <name>frame118</name>
+      <name>group_shapes_frame</name>
       <label_xalign>0</label_xalign>
       <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
       <child>
@@ -10339,6 +10344,7 @@ Random
       <widget>
 	<class>GtkVBox</class>
 	<name>group_shapes</name>
+	<height>200</height>
 	<homogeneous>False</homogeneous>
 	<spacing>0</spacing>
       </widget>
