@@ -20,38 +20,7 @@ void Scale2x
 	const Manip_pixels& manip	// Manipulator methods.
 	);
 
-/*
- *	Manipulate from 8-bit to 16-bit pixels.
- */
-class Manip8to16
-	{
-	SDL_Color *colors;		// Lookup table (palette).
-	SDL_PixelFormat *fmt;		// Format of dest. pixels.
-public:
-	Manip8to16(SDL_PixelFormat *f)
-		: fmt(f), colors(f->palette->colors)
-		{  }
-	unsigned short rgb(unsigned short r, unsigned short g,
-							unsigned short b) const
-		{
-		return ((r>>fmt->Rloss)<<fmt->Rshift) |
-		       ((g>>fmt->Gloss)<<fmt->Gshift) |
-		       ((b>>fmt->Bloss)<<fmt->Bshift);
-		}
-	void copy(unsigned short& dest, unsigned char src) const
-		{
-		SDL_Color& color = colors[src];
-		dest = rgb(color.r, color.g, color.b);
-		}
-	void split(unsigned char pix, unsigned short& r,
-				unsigned short& g, unsigned short& b) const
-		{
-		SDL_Color& color = colors[pix];
-		r = color.r;
-		g = color.g;
-		b = color.b;
-		}
-	};
+#include "scale.cc"		/* Seems to be needed. */
 
 #endif
 

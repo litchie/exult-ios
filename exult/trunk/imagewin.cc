@@ -29,6 +29,7 @@ Boston, MA  02111-1307, USA.
 #include <iostream.h>
 #include <string>
 #include "Configuration.h"
+
 extern	Configuration *config;
 
 /*
@@ -820,7 +821,7 @@ Image_window::Image_window
 	unsigned int w,			// Desired width, height.
 	unsigned int h
 	) : Image_buffer(w, h, Get_best_depth()),
-	    surface(0)
+	    surface(0), scaled_surface(0), scale(1), show_scaled(0)
 	{
 	create_surface(w, h);
 	}
@@ -854,8 +855,9 @@ void Image_window::create_surface
 	config->set("config/video/fullscreen",fullscreenstr,true);
 	ibuf->width = w;
 	ibuf->height = h;
-	surface = SDL_SetVideoMode(w, h, ibuf->depth, (fullscreen?SDL_FULLSCREEN:0) |
-					SDL_SWSURFACE |  SDL_HWPALETTE);
+	int flags = (fullscreen?SDL_FULLSCREEN:0) |
+					SDL_SWSURFACE |  SDL_HWPALETTE;
+	surface = SDL_SetVideoMode(w, h, ibuf->depth, flags);
 	if (!surface)
 		{
 		cout << "Couldn't set video mode (" << w << ", " << h <<
@@ -866,6 +868,20 @@ void Image_window::create_surface
 	ibuf->bits = (unsigned char *) surface->pixels;
 					// Update line size in words.
 	ibuf->line_width = surface->pitch/ibuf->pixel_size;
+	if (scale == 2)			// We support 2X scaling.
+		{
+		show_scaled = 0;
+		int hwdepth = Get_best_depth();
+		if ((hwdepth != 16 && hwdepth != 32) || ibuf->depth != 8)
+			cout << "Doubling from " << ibuf->depth << "bits to "
+				<< hwdepth << " not yet supported." << endl;
+		else if (scaled_surface = SDL_SetVideoMode(2*w, 2*h, 
+							hwdepth, flags))
+			show_scaled = hwdepth == 16 ? &show_scaled8to16
+						    : &show_scaled8to32;
+		else
+			cout << "Couldn't create scaled surface" << endl;
+		}
 	}
 
 /*
@@ -881,6 +897,11 @@ void Image_window::free_surface
 	SDL_FreeSurface(surface);
 	ibuf->bits = 0;
 	surface = 0;
+	if (scaled_surface)
+		{
+		SDL_FreeSurface(scaled_surface);
+		scaled_surface = 0;
+		}
 	}
 
 /*
@@ -912,7 +933,10 @@ void Image_window::show
 	{
 	if (!ready())
 		return;
-	SDL_UpdateRect(surface, 0, 0, ibuf->width, ibuf->height);
+	if (show_scaled)		// 2X scaling?
+		(this->*show_scaled)();
+	else
+		SDL_UpdateRect(surface, 0, 0, ibuf->width, ibuf->height);
 	}
 
 void Image_window::toggle_fullscreen() {
@@ -946,38 +970,3 @@ void Image_window::toggle_fullscreen() {
         }
 }
 
-#if 0
-
-/*
- *	Repaint window.
- */
-
-void Image_window8::show
-	(
-	)
-	{
-	if (!ready())
-		return;
-	if (surface_x2)		// Doubling?
-		{
-		switch (surface_x2->format->BytesPerPixel)
-			{
-		case 2:
-			{
-			Manip8to16 manip(surface_x2->format);
-			Scale2x<unsigned char, unsigned short, Manip8to16>
-				(ib8->get_bits(), ibuf->width, ibuf->height, 
-					(unsigned short *) surface_x2->pixels, 
-							manip);
-			break;
-			}
-		default:		// ???
-			break;
-			}
-		SDL_UpdateRect(surface_x2, 0, 0, 2*ibuf->width,
-							2*ibuf->height);
-		}
-	else
-		SDL_UpdateRect(surface, 0, 0, ibuf->width, ibuf->height);
-	}
-#endif
