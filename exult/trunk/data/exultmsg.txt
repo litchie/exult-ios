@@ -16,3 +16,83 @@
 0x50d:Thou shan't lose me so easily!
 0x50e:Ah, there thou art!
 0x50f:Found ye!
+# Intro messages
+0x510:with help from
+0x511:The Exult Team
+0x512:Driven by Exult
+# Ending Messages
+0x513:The end of Ultima VII
+0x514:The end of Britannia as you know it!
+0x515:No. You cannot do that! You must not!
+0x516:Damn you Avatar!  Damn you!
+0x517:The Black Gate is destroyed.
+0x518:The Guardian has been stopped.
+# End1
+0x519:Avatar! You think you have won?
+0x51A:Think again! You are unable to
+0x51B:leave britannia, whereas I am free
+0x51C:to enter other worlds
+0x51D:Perhaps your puny Earth shall be
+0x51E:my NEXT target!.
+# End2
+0x51F:In the months following the climactic
+0x520:battle at The Black Gate, Britannia
+0x521:is set upon the long road to recovery
+0x522:from its various plights.
+0x523: 
+0x524:Upon your return to Britain,
+0x525:Lord British decreed that
+0x526:The Fellowship be outlawed
+0x527:and all of the branches were
+0x528:soon destroyed.
+# End3
+0x529:The frustration you feel at having been
+0x52A:stranded in Britannia is somewhat
+0x52B:alleviated by the satisfaction that you
+0x52C:solved the gruesome murders committed
+0x52D:by The Fellowship and even avenged the
+0x52E:death of Spark's father.
+# End4
+0x52F:And although you are, at the moment,
+0x530:helpless to do anything about
+0x531:The Guardian's final threat,
+0x532:another thought nags at you...
+0x533:what became of Batlin, the fiend
+0x534:who got away?
+# End5
+0x535:That is another story...
+0x536:one that will take you
+0x537:to a place called
+0x538:The Serpent Isle...
+#SI intro
+0x539:Lord British's Castle
+0x53A:Dick British's Castle
+0x53B:Eighteen months after the destruction
+0x53C:of the Black Gate and the
+0x53D:dismantling of The Fellowship
+0x53E:My leige
+0x53F:Yo, homes
+0x540:All we found among Batlin's
+0x541:belongings was this enchanted scroll..
+0x542:and a map showing the way to
+0x543:a place called the Serpent Isle
+0x544:Indeed.
+0x545:Put it on the table.
+0x546:Iree. Slap it down there!
+0x547:Stand Back!
+0x548:Jump Back!
+0x549:Batlin! In the event that the
+0x54A:Avatar destroys the Black Gate
+0x54B:you shall follow the unwitting
+0x54C:human Gwenno to the Serpent Isle
+0x54D:There I shall outline my plan
+0x54E:to destroy Britannia!
+0x54F:Batlin! Know that my face is most
+0x550:muppet like!
+0x551:You must go to the Serpent Isl
+0x552:to learn the secret of Acne Medication
+0x553:Soon I and my horde of muppets will
+0x554:destroy Britannia!
+0x555:'Tis my worst fear!
+0x556:I must send the Avatar through
+0x557:the pillars to the Serpent Isle!

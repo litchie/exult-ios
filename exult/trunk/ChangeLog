@@ -1,3 +1,8 @@
+2005-03-12    <jeff@mini.nerble.net>
+
+	* data/exultmsg.txt: Applied "international support" patch from
+	dk@pollodigomma.net.
+
 2005-02-18    <jeff@mini.nerble.net>
 
 	* gumps/Notebook_gump.cc: Add text automatically from

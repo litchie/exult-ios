@@ -23,6 +23,7 @@
 #include "SDL_events.h"
 
 #include <typeinfo>
+#include "items.h"
 #include "files/U7file.h"
 #include "files/utils.h"
 #include "flic/playfli.h"
@@ -288,16 +289,18 @@ void BG_Game::scene_lord_british()
 {
 	Font *font = fontManager.get_font("END2_FONT");
 
+	/*
 	const char *txt_msg[] = { "with help from",
 			"The Exult Team"};
+	*/
 
 	// Lord British presents...  (sh. 0x11)
 	pal->load("<STATIC>/intropal.dat",3);
 	sman->paint_shape(topx,topy,shapes.get_shape(lord_british_shp,0));
 	
 	// insert our own intro text
-	font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
-	font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
+	font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
+	font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
 
 	pal->fade_in(c_fade_in_time);
 	if(1 == wait_delay(2000))
@@ -369,7 +372,7 @@ void BG_Game::scene_butterfly()
 	Font *font = fontManager.get_font("END2_FONT");
 	Image_buffer *backup = 0;
 	Shape_frame *butterfly = 0;
-	const char *txt_msg = "Driven by Exult";
+	//const char *txt_msg = "Driven by Exult";
 	int	i, j, frame, dir;
 	
 	try
@@ -388,7 +391,7 @@ void BG_Game::scene_butterfly()
 		sman->paint_shape(topx+160,topy+50,shapes.get_shape(ultima_text_shp,0));
 		
 		// again display our own text
-		font->center_text(ibuf, centerx, centery+50, txt_msg);
+		font->center_text(ibuf, centerx, centery+50, text_msgs[driven_by_exult]);
 
 		// Keep it dark for some more time, playing the music 
 		WAITDELAY(3500);
@@ -958,13 +961,13 @@ void BG_Game::end_game(bool success)
 		pal->fade_out(c_fade_out_time);
 		
 		gwin->clear_screen();
-		font->center_text(ibuf, centerx, centery-10, "The end of Ultima VII");
+		font->center_text(ibuf, centerx, centery-10, text_msgs[end_of_ultima7]);
 		pal->fade_in(c_fade_in_time);
 		wait_delay(4000);
 	    pal->fade_out(c_fade_out_time);
 		
 		gwin->clear_screen();
-		font->center_text(ibuf, centerx, centery-10, "The end of Britannia as you know it!");
+		font->center_text(ibuf, centerx, centery-10, text_msgs[end_of_britannia]);
 		pal->fade_in(c_fade_in_time);
 		wait_delay(4000);
 		pal->fade_out(c_fade_out_time);
@@ -1048,7 +1051,7 @@ void BG_Game::end_game(bool success)
 		Font *endfont3 = fontManager.get_font("END3_FONT");
 		Font *normal = fontManager.get_font("NORMAL_FONT");
 
-		const char 	*message = "No. You cannot do that! You must not!";
+		const char 	*message = text_msgs[you_cannot_do_that];
 		int	height = topy+200 - endfont2->get_text_height()*2;
 		int	width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
@@ -1071,7 +1074,7 @@ void BG_Game::end_game(bool success)
 		if (audio) audio->play (buffer+8, size-8, false);
 		FORGET_ARRAY(buffer);
 
-		message = "Damn you Avatar!  Damn you!";
+		message = text_msgs[damn_avatar];
 		width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
 		for (i = 0; i < 100; i++)
@@ -1108,7 +1111,7 @@ void BG_Game::end_game(bool success)
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
 		// Paint text
-		message = "The Black Gate is destroyed.";
+		message = text_msgs[blackgate_destroyed];
 		width = (gwin->get_width() - normal->get_text_width(message)) / 2;
 		height = (gwin->get_height() - normal->get_text_height()) / 2;
 		
@@ -1132,7 +1135,7 @@ void BG_Game::end_game(bool success)
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
 		// Paint text
-		message = "The Guardian has been stopped.";
+		message = text_msgs[guardian_has_stopped];
 		width = (gwin->get_width() - normal->get_text_width(message)) / 2;
 
 		normal->draw_text (ibuf, width, height, message);
@@ -1173,15 +1176,6 @@ void BG_Game::end_game(bool success)
 		fli3.info (&finfo);
 		
 		int	m;
-		const char *txt_screen0[] = {
-			"Avatar! You think you have won>",
-			"Think again! You are unable to",
-			"leave britannia, whereas I am free",
-			"to enter other worlds",
-			"Perhaps your puny Earth shall be",
-			"my NEXT target!."
-		};
-
 		starty = (gwin->get_height() - endfont3->get_text_height()*8)/2;
 
 		next = SDL_GetTicks();
@@ -1191,7 +1185,7 @@ void BG_Game::end_game(bool success)
 			{
 				next = fli3.play(win, j, j, next);
 				for(m=0; m<6; m++)
-					endfont3->center_text(ibuf, centerx, starty+endfont3->get_text_height()*m, txt_screen0[m]);
+					endfont3->center_text(ibuf, centerx, starty+endfont3->get_text_height()*m, text_msgs[txt_screen0 + m]);
 
 				win->show ();
 				if (wait_delay (10)) { do_break = true; break; }
@@ -1222,24 +1216,13 @@ void BG_Game::end_game(bool success)
 		// Paint backgound black
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
-
-		const char *txt_screen1[] = {
-			"In the months following the climactic",
-			"battle at The Black Gate, Britannia",
-			"is set upon the long road to recovery",
-			"from its various plights.",
-			" ",
-			"Upon your return to Britain,",
-			"Lord British decreed that",
-			"The Fellowship be outlawed",
-			"and all of the branches were",
-			"soon destroyed."
-		};
-
 		starty = (gwin->get_height() - normal->get_text_height()*10)/2;
 		
 		for(i=0; i<10; i++)
-			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen1[i])/2, starty+normal->get_text_height()*i, txt_screen1[i]);
+		{
+			message = text_msgs[txt_screen1 + i];
+			normal->draw_text (ibuf, centerx-normal->get_text_width(message)/2, starty+normal->get_text_height()*i, message);
+		}
 
 		// Fade in for 1 sec (50 cycles)
 		pal->fade (50, 1, 0);
@@ -1259,20 +1242,13 @@ void BG_Game::end_game(bool success)
 		// Paint backgound black
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
-		const char *txt_screen2[] = {
-			"The frustration you feel at having been",
-			"stranded in Britannia is somewhat",
-			"alleviated by the satisfaction that you",
-			"solved the gruesome murders committed",
-			"by The Fellowship and even avenged the",
-			"death of Spark's father."
-		};
-
 		starty = (gwin->get_height() - normal->get_text_height()*6)/2;
 		
 		for(i=0; i<6; i++)
-			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen2[i])/2, starty+normal->get_text_height()*i, txt_screen2[i]);
-
+		{
+			message = text_msgs[txt_screen2 + i];
+			normal->draw_text (ibuf, centerx-normal->get_text_width(message)/2, starty+normal->get_text_height()*i, message);
+		}
 
 		// Fade in for 1 sec (50 cycles)
 		pal->fade (50, 1, 0);
@@ -1291,19 +1267,13 @@ void BG_Game::end_game(bool success)
 		// Paint backgound black
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
-		const char *txt_screen3[] = {
-			"And although you are, at the moment,",
-			"helpless to do anything about",
-			"The Guardian's final threat,",
-			"another thought nags at you...",
-			"what became of Batlin, the fiend",
-			"who got away?"
-		};
-
 		starty = (gwin->get_height() - normal->get_text_height()*6)/2;
 		
 		for(i=0; i<6; i++)
-			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen3[i])/2, starty+normal->get_text_height()*i, txt_screen3[i]);
+		{
+			message = text_msgs[txt_screen3 + i];		
+			normal->draw_text (ibuf, centerx-normal->get_text_width(message)/2, starty+normal->get_text_height()*i, message);
+		}
 
 		// Fade in for 1 sec (50 cycles)
 		pal->fade (50, 1, 0);
@@ -1322,18 +1292,13 @@ void BG_Game::end_game(bool success)
 		// Paint backgound black
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
-		const char *txt_screen4[] = {
-			"That is another story...", 
-			"one that will take you",
-			"to a place called",
-			"The Serpent Isle..."
-		};
-
 		starty = (gwin->get_height() - normal->get_text_height()*4)/2;
 		
 		for(i=0; i<4; i++)
-			normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen4[i])/2, starty+normal->get_text_height()*i, txt_screen4[i]);
-
+		{
+			message = text_msgs[txt_screen4 + i];
+			normal->draw_text (ibuf, centerx-normal->get_text_width(message)/2, starty+normal->get_text_height()*i, message);
+		}
 
 		// Fade in for 1 sec (50 cycles)
 		pal->fade (50, 1, 0);

@@ -92,6 +92,31 @@ const int first_waiter_banter = 0x105, last_waiter_banter = 0x107;
 const int first_waiter_serve = 0x108, last_waiter_serve = 0x109;
 const int first_bed_occupied = 0x10a, num_bed_occupied = 3;
 const int first_catchup = 0x10d, last_catchup = 0x10f;
+const int with_help_from = 0x110, exult_team = 0x111, driven_by_exult = 0x112;
+const int end_of_ultima7 = 0x113, end_of_britannia = 0x114;
+const int you_cannot_do_that = 0x115, damn_avatar = 0x116;
+const int blackgate_destroyed = 0x117, guardian_has_stopped = 0x118;
+const int txt_screen0 = 0x119; //to 0x11E
+const int txt_screen1 = 0x11F; //to 0x128
+const int txt_screen2 = 0x129; //to 0x12E
+const int txt_screen3 = 0x12F; //to 0x134
+const int txt_screen4 = 0x135; //to 0x138
+const int lord_castle = 0x139, dick_castle = 0x13A;
+const int bg_fellow = 0x13B; //to 0x13D
+const int my_leige = 0x13E, yo_homes = 0x53F;
+const int all_we0 = 0x140; //to 0x541
+const int and_a0 = 0x142; //to 0x543
+const int indeed = 0x144; //to 0x545
+const int iree = 0x146;
+const int stand_back = 0x147;
+const int jump_back = 0x148;
+const int batlin = 0x149;
+const int you_shall = 0x14B;
+const int there_i = 0x14D;
+const int batlin2 = 0x14F;
+const int you_must = 0x151;
+const int soon_i = 0x153;
+const int tis_my = 0x155;
 
 //	Misc. text (frames, etc.) start at 0x500 in text.flx.
 const int misc_name0 = 0x500;
