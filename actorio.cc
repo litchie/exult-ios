@@ -95,8 +95,8 @@ Actor::Actor
 	    usecode == 0xfff)
 		usecode = -1;		// Let's try this.
 					// Guessing:  !!  (Want to get signed.)
-	int health_val = (int) (char) Read1(nfile);
-	set_property((int) Actor::health, health_val);
+	int health_val = static_cast<int>(Read1(nfile));
+	set_property(static_cast<int>(Actor::health), health_val);
 	nfile.seekg(3, ios::cur);	// Skip 3 bytes.
 	int iflag2 = Read2(nfile);	// Another inventory flag.
 
@@ -133,11 +133,11 @@ Actor::Actor
 
 	if (Game::get_game_type() == BLACK_GATE)
 	{
-		set_property((int) Actor::strength, strength_val);
+		set_property(static_cast<int>(Actor::strength), strength_val);
 	}
 	else
 	{
-		set_property((int) Actor::strength, strength_val & 0x1F);
+		set_property(static_cast<int>(Actor::strength), strength_val & 0x1F);
 		
 		if (num == 0)
 		{
@@ -155,13 +155,13 @@ Actor::Actor
 	dead = is_dying();		// Now we know health, strength.
 
 	// Dexterity
-	set_property((int) Actor::dexterity, Read1(nfile));
+	set_property(static_cast<int>(Actor::dexterity), Read1(nfile));
 
 
 	// Intelligence (0-4), read(5), Tournament (6), polymorph (7)
 	int intel_val = Read1(nfile);
 
-	set_property((int) Actor::intelligence, intel_val & 0x1F);
+	set_property(static_cast<int>(Actor::intelligence), intel_val & 0x1F);
 	if ((intel_val >> 5) & 1) set_siflag (Actor::read);
 					// Tournament.
 	if ((intel_val >> 6) & 1) 
@@ -171,7 +171,7 @@ Actor::Actor
 
 	// Combat skill (0-6), Petra (7)
 	int combat_val = Read1(nfile);
-	set_property((int) Actor::combat, combat_val & 0x7F);
+	set_property(static_cast<int>(Actor::combat), combat_val & 0x7F);
 	if ((combat_val << 7) & 1) set_flag (Obj_flags::petra);
 
 	schedule_type = Read1(nfile);
@@ -191,13 +191,13 @@ Actor::Actor
 
 	if (num == 0)
 	{
-		set_property((int) Actor::magic, magic_val);
+		set_property(static_cast<int>(Actor::magic), magic_val);
 		
 		// Need to make sure that mana is less than magic
 		if ((mana_val & 0x1F) < (magic_val & 0x1F))
-			set_property((int) Actor::mana, mana_val);
+			set_property(static_cast<int>(Actor::mana), mana_val);
 		else
-			set_property((int) Actor::mana, magic_val);
+			set_property(static_cast<int>(Actor::mana), magic_val);
 
 		set_flag (Obj_flags::met);
 	}
@@ -218,8 +218,8 @@ Actor::Actor
 		face_num = npc_num;
 	nfile.seekg(2	, ios::cur);	// Unknown
 
-	set_property((int) Actor::exp, Read4(nfile));
-	set_property((int) Actor::training, Read1(nfile));
+	set_property(static_cast<int>(Actor::exp), Read4(nfile));
+	set_property(static_cast<int>(Actor::training), Read1(nfile));
 
 
 	nfile.seekg (2, ios::cur);	// Primary Attacker
@@ -301,9 +301,9 @@ Actor::Actor
 	nfile.seekg (17, ios::cur);
 
 					// Get (signed) food level.
-	int food_read = (int) (char) Read1(nfile);
+	int food_read = static_cast<int>(Read1(nfile));
 	if (fix_first) food_read = 18;
-	set_property((int) Actor::food_level, food_read);
+	set_property(static_cast<int>(Actor::food_level), food_read);
 
 	// Skip 7
 	nfile.seekg(7, ios::cur);
@@ -478,8 +478,8 @@ void Actor::write
 	
 	if (get_npc_num() == 0)
 	{
-		mana_val = get_property((int) Actor::mana);
-		magic_val = get_property((int) Actor::magic);
+		mana_val = get_property(static_cast<int>(Actor::mana));
+		magic_val = get_property(static_cast<int>(Actor::magic));
 	}
 	else
 	{
@@ -645,7 +645,7 @@ void Actor::write_contents
 {
 	if (!objects.is_empty())	// Now write out what's inside.
 	{
-		const int num_spots = (int)(sizeof(spots)/sizeof(spots[0]));
+		const int num_spots = static_cast<int>(sizeof(spots)/sizeof(spots[0]));
 		sint8 i;
 
 		for (i = 0; i < num_spots; ++i)
@@ -655,7 +655,7 @@ void Actor::write_contents
 			{
 				// Write 2 byte index id
 				out.put(0x02);
-				Write2 (out, (uint8) i);
+				Write2 (out, static_cast<uint8>(i));
 				spots[i]->write_ireg(out);
 			}
 		}
@@ -674,7 +674,7 @@ void Actor::write_contents
 				// Write 2 byte index id (-1 = no slot)
 				i = -1;
 				out.put(0x02);
-				Write2 (out, (uint8) i);
+				Write2 (out, static_cast<uint8>(i));
 				obj->write_ireg(out);
 			}
 		}
