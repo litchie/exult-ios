@@ -3220,6 +3220,7 @@ Actor *Actor::resurrect
 					// Restore health to max.
 	properties[static_cast<int>(health)] = properties[static_cast<int>(strength)];
 	Actor::clear_flag(Obj_flags::dead);
+	Actor::clear_flag(Obj_flags::asleep);
 					// Restore to party if possible.
 	ucmachine->update_party_status(this);
 	return (this);
