@@ -66,7 +66,7 @@ enum Ready_type_SI {
 	leggings_si = 0x70,
 	backpack_si = 0x78,			// Diaper as well?????
 	two_handed_si = 0xa0,
-	other_spell_si = 0xa1,		// #676,
+	other_spell_si = 0xa1		// #676,
 	};
 	
 #endif	/* INCL_READY	*/
