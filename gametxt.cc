@@ -77,6 +77,121 @@ static const char *Pass_word
 	return (text);
 	}
 
+#if 0	/* New code to break up text: */
+
+/*
+ *	Draw text within a rectangular area.
+ *	Special characters handled are:
+ *		\n	New line.
+ *		space	Word break.
+ *		tab	Treated like a space for now.
+ *
+ *	Output:	If out of room, -offset of end of text painted.
+ *		Else height of text painted.
+ */
+
+int Game_window::paint_text_box
+	(
+	int fontnum,			// Font # from fonts.vga (0-9).
+	const char *text,
+	int x, int y,			// Top-left corner of box.
+	int w, int h,			// Dimensions.
+	int vert_lead,			// Extra spacing between lines.
+	int sentence_break		// End at sentence boundary.
+	)
+	{
+	const char *start = text;	// Remember the start.
+	win->set_clip(x, y, w, h);
+	int endx = x + w;		// Figure where to stop.
+	int curx = x, cury = y;
+	int height = get_text_height(fontnum) + vert_lead;
+	int space_width = get_text_width(fontnum, " ", 1);
+	int max_lines = h/height;	// # lines that can be shown.
+	string *lines = new string[max_lines + 1];
+	int cur_line = 0;
+	char *last_sentence_end = 0;	// ->last period, qmark, etc.
+					// Last sentence in 'lines':
+	int last_sentence_line = -1, last_sentence_offset = -1;
+
+	while (*text)
+		{
+		switch (*text)		// Special cases.
+			{
+		case '\n':		// Next line.
+			curx = x;
+			text++;
+			cur_line++;
+			if (cur_line == max_lines)
+				break;	// No more room.
+			continue;
+		case ' ':		// Space.
+		case '\t':
+			{		// Pass space.
+			char *wrd = Pass_space(text);
+			if (wrd != text)
+				{
+				int w = get_text_width(fontnum, text, 
+								wrd - text);
+				if (!w)
+					w = space_width;
+				int nsp = w/space_width;
+				lines[cur_line].append(nsp, ' ');
+				curx += nsp*space_width;
+				}
+			text = wrd;
+			break;
+			}
+			}
+					// Pass word & get its width.
+		const char *ewrd = Pass_word(text);
+		int width = get_text_width(fontnum, text, ewrd - text);
+		if (curx + width > endx)
+			{		// Word-wrap.
+			curx = x;
+			cur_line++;
+			if (cur_line == max_lines)
+				break;	// No more room.
+			}
+					// Store word.
+		lines[cur_line].append(text, ewrd - text);
+		curx += width;
+		text = ewrd;		// Continue past the word.
+					// Keep loc. of sentence endings.
+		if (text[-1] == '.' || text[-1] == '?' || text[-1] == '!')
+			{
+			last_sentence_end = text;
+			last_sentence_line = cur_line;
+			last_sentence_offset = lines[cur_line].length();
+			}
+		}
+	if (*text &&			// Out of room?
+					// Break off at end of sentence.
+	     sentence_break && last_sentence_end)
+		text = Pass_space(last_sentence_end);
+	else
+		last_sentence_line = -1;
+					// Render text.
+	for (int i = 0; i <= cur_line; i++)
+		{
+		char *str = lines[i].data();
+		int len = lines[i].length();
+		if (i == last_sentence_line)
+			len = last_sentence_offset;
+		paint_text(fontnum, str, len, x, cury);
+		cury += height;
+		if (i == last_sentence_line)
+			break;
+		}
+	win->clear_clip();
+	delete [] lines;
+	if (*text)			// Out of room?
+		return -(text - start);	// Return -offset of end.
+	else				// Else return height.
+		return (cury - y);
+	}
+
+#endif
+
 /*
  *	Draw text within a rectangular area.
  *	Special characters handled are:
