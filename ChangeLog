@@ -1,3 +1,7 @@
+2000-11-17  Max Horn  <max@quendi.de>
+
+	* Added Cmd-Q which quits exult (MacOS only) 
+
 2000-11-17  Tristan Tarrant <nadir@users.sourceforge.net>
 
 	* exult.cc: Game_window::splash is not needed now, so I've
@@ -27,6 +31,11 @@
 2000-11-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Finished work on removing class Vector that Max started.
+
+2000-11-15  Max Horn  <max@quendi.de>
+
+	* Begun removing class Vector.
+	* Made some mac specific changes
 
 2000-11-13  Tristan Tarrant <nadir@users.sourceforge.net>
 
