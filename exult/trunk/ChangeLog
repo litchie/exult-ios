@@ -2,6 +2,7 @@
 
 	* Moved flags to objs.h.  Set 'okay_to_take' for containers and
 	their members.
+	* Implemented health-point penalties for hunger poison.
 
 2000-08-04  Tristan Tarrant  <nadir@users.sourceforge.net>
 
