@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunks.h"
 #include "cheat.h"
 
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 #include "server.h"
 #include "objserial.h"
 #include "mouse.h"
@@ -391,7 +391,7 @@ void Egg_object::activate
 	int /* event */
 	)
 	{
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 	if (client_socket >= 0 &&	// Talking to ExultStudio?
 	    cheat.in_map_editor())
 		{
@@ -426,7 +426,7 @@ void Egg_object::update_from_studio
 	int datalen
 	)
 	{
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 	unsigned long addr;
 	int tx, ty, tz;
 	int shape, frame;

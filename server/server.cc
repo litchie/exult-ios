@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 /*
  *	For the time being, we'll only inflict this on X users.
  */
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 
 #include <unistd.h>
 #include <fcntl.h>
