@@ -1,3 +1,7 @@
+2002-05-03  Dominik Reichardt <gigdr@tesionmail.de>
+	* tools/*.1: finally added Robert Bihlmeyer man pages. Added them 
+	to /tools as the *txt files are there too.
+
 2002-05-01  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* usecode/compiler/uclex.ll,ucmain.cc: Added "-o outfile" option
