@@ -2827,7 +2827,8 @@ USECODE_INTRINSIC(is_not_blocked)
 	if (pval.get_array_size() < 3)
 		return fail;
 	Tile_coord lcpos(-1, -1, -1);	// Don't let last_created block.
-	if (last_created && !last_created->get_owner())
+	if (last_created && !last_created->get_owner() &&
+	    gwin->get_info(last_created).is_solid())
 		{
 		lcpos = last_created->get_abs_tile_coord();
 		last_created->remove_this(1);
@@ -2849,7 +2850,8 @@ USECODE_INTRINSIC(is_not_blocked)
 		tile.ty - info.get_3d_ytiles() + 1,
 		info.get_3d_xtiles(), info.get_3d_ytiles(), 
 		new_lift, MOVE_ALL_TERRAIN);
-	blocked = (blocked || new_lift != tile.tz);
+//Don't know why this is causing trouble in Forge with mage at end:
+//	blocked = (blocked || new_lift != tile.tz);
 	if (lcpos.tx != -1)		// Put back last_created.
 		last_created->move(lcpos);
 	return Usecode_value(!blocked);
