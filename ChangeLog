@@ -1,3 +1,15 @@
+2001-10-17  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Special case:  Magebane vs Vasculio.
+
+	* shapes/monstinf.h (public): Immunity, vulnerability.
+	* shapes/shapeinf.h: Damage_type.
+	
+	* objs/contain.cc (Container_game_object): Fixed dumb goof I made
+	when I added the weight check.
+	* actors.cc: Don't let Avatar die more than once, or let party be
+	hurt if Avatar is dead.
+
 2001-10-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/intrinsics.cc,etc: set_telekenesis_fun(),
