@@ -11,9 +11,7 @@ libconf_la_SOURCES =	\
 	Configuration.cc	\
 	Configuration.h		\
 	XMLEntity.cc		\
-	XMLEntity.h		\
-	xmldump.cc		\
-	xmlparse.cc
+	XMLEntity.h
 
 confregress_SOURCES =	\
 	xmain.cc
