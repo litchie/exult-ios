@@ -790,13 +790,6 @@ int Audio::play_wave_sfx
 		delete each;
 	}
 
-#ifdef DEBUG
-	if(foundcache)
-		cerr  << "AUDIO Retrieve cached SFX" << endl;
-	else
-		cerr  << "AUDIO Retrieve file SFX" << endl;
-#endif
-	
 	// Retrieve the .wav data from the SFX file
 	if(!foundcache)
 	{
@@ -818,16 +811,9 @@ int Audio::play_wave_sfx
 		return -1;
 	}
 
-#ifdef DEBUG
-	cout << "Volume is " << volume << endl;
-#endif 
-
 	int sfxchannel;
 	sfxchannel = Mix_PlayChannel(-1, wave, repeat);
 
-#ifdef DEBUG
-	cout << "Channel is " << sfxchannel << endl;
-#endif 
 	Mix_Volume(sfxchannel, volume);
 	Mix_SetPosition(sfxchannel, (dir * 22), 0);
 	return sfxchannel;
