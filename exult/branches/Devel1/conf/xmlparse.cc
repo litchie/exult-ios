@@ -39,6 +39,32 @@ static	void	trim(string &s)
 		}
 }
 
+static	bool	grab_entity(string &s,size_t &pos,const char *ent)
+{
+	string	t(s.substr(pos));
+	if(t.find(ent)==0)
+		{
+		pos+=strlen(ent)+1;
+		return true;
+		}
+	return false;
+}
+
+static	string	entity_decode(string &s,size_t &pos)
+{
+	// This is ugly and slow
+	++pos;	// Advance past amp
+	if(grab_entity(s,pos,"amp"))
+		return string("&");
+	else
+	if(grab_entity(s,pos,"gt"))
+		return string(">");
+	else
+	if(grab_entity(s,pos,"lt"))
+		return string("<");
+	return string("&");
+}
+
 void	xmlparse(string &s,size_t &pos,XMLnode *x)
 {
 	bool	intag=true;
@@ -68,6 +94,9 @@ void	xmlparse(string &s,size_t &pos,XMLnode *x)
 			case '>':
 				// End of tag
 				++pos; intag=false; if(s[pos]<32) ++pos;
+				break;
+			case '&':
+				x->entity.content+=entity_decode(s,pos);
 				break;
 			default:
 				if(intag)

@@ -61,7 +61,7 @@ int	main(int argc,char **argv)
 	vs=config.listkeys("config/audio");
 	dump_stringvec(vs);
 
-	vs=config.listkeys("config/something");
+	vs=config.listkeys("config/something",false);
 	dump_stringvec(vs);
 
 	vs=config.listkeys("config/somenonexistantthing");
