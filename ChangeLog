@@ -1,3 +1,9 @@
+2000-07-17  Tristan Tarrant  <tarrant_tristan@emc.com>
+	
+	* *: Moved utils.* here where it should have been all along.
+	Rearranged everything else to take this into account.
+	* tools/expack.cc: The beginnings of a U7 archiver. More soon.
+
 2000-07-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* barge.cc (Barge_object): Flying carpet is flying (somewhat)

@@ -87,6 +87,7 @@ public:
         virtual int     number_of_objects(const char *) { return object_list.size(); };
         virtual int     retrieve(int objnum,char **,std::size_t *len); // To a memory block
         virtual int     retrieve(int objnum,const char *);       // To a file
+	virtual const char *get_archive_type() { return "IFF"; };
 private:
         IFF(); // No default constructor
         void IndexIFFFile(void);
