@@ -469,7 +469,7 @@ void Npc_actor::handle_event
 		Rectangle rect = gwin->clip_to_win(gwin->get_shape_rect(this));
 		gwin->add_dirty(rect);	// Force repaint.
 					// Move it.
-		move(cx, cy, gwin->get_objects(cx, cy), sx, sy, frame);
+		move(cx, cy, nlist, sx, sy, frame, new_lift);
 					// In new chunk?
 		if (cx != old_cx || cy != old_cy)
 			{

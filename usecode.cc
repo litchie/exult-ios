@@ -1073,18 +1073,16 @@ USECODE_FUNCTION(set_npc_inventory_count)
 
 USECODE_FUNCTION(get_object_position)
 	// Takes itemref.  ?Think it rets.
-	//  hotspot coords: (x, y, z, obj).
+	//  hotspot coords: (x, y, z).
 	int tx, ty, tz;		// Get tile coords.
 	Game_object *obj = get_item(parms[0].get_int_value());
-	if (obj)
-		obj->get_abs_tile(tx, ty, tz);
-	else
-		tx = ty = tz = 0;
-	Usecode_value vx(tx), vy(ty), vz(tz), vobj((long) obj);
-	Usecode_value arr(4, &vx);
+	Tile_coord c(0, 0, 0);
+	if (obj)		// (Watch for animated objs' wiggles.)
+		c = obj->get_original_tile_coord();
+	Usecode_value vx(c.tx), vy(c.ty), vz(c.tz);
+	Usecode_value arr(3, &vx);
 	arr.put_elem(1, vy);
 	arr.put_elem(2, vz);
-	arr.put_elem(3, vobj);
 	USECODE_RETURN(arr);
 }
 
