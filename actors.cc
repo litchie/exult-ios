@@ -987,11 +987,6 @@ int Actor::approach_another
 	)
 	{
 	Tile_coord dest = other->get_tile();
-#if 0
-	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
-	for (int i = 2; dest.tx == -1 && i < 8; i++)
-		dest = Game_object::find_unblocked_tile(startdest, i);
-#endif
 					// Look outwards for free spot.
 	dest = Map_chunk::find_spot(dest, 8, get_shapenum(), get_framenum());
 	if (dest.tx == -1)

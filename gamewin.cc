@@ -2000,14 +2000,6 @@ void Game_window::show_items
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))
 			cout << "ASLEEP" << endl;
-#if 0	/* Want to get rid of dynamic_casts. */
-		if (dynamic_cast<Ireg_game_object*> (obj))
-			cout << "IREG object" << endl;
-		else if (dynamic_cast<Ifix_game_object*> (obj))
-			cout << "IFIX object" << endl;
-		else
-			cout << "TERRAIN object" << endl;
-#endif
 		if (obj->is_egg())	// Show egg info. here.
 			((Egg_object *)obj)->print_debug();
 		}
@@ -2134,14 +2126,6 @@ void Game_window::delete_object
 	Game_object *obj
 	)
 	{
-#if 0
-		// don't do this, since this function is only called from
-		// Game_object::remove_this (and inherited's)
-
-	obj->remove_this(1);		// Remove from world or container, but
-								//   don't delete.
-#endif
-
 	obj->set_invalid();		// Set to invalid chunk.
 	if (!obj->is_monster())		// Don't delete these!
 		removed->insert(obj);	// Add to pool instead.

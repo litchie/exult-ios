@@ -690,7 +690,7 @@ void Usecode_internal::set_item_frame
 	{
 	if (!item)
 		return;
-					// +++Added 9/16/2001:
+					// Added 9/16/2001:
 	if (!set_rotated)		// Leave bit alone?
 		frame = (item->get_framenum()&32)|(frame&31);
 	if (frame == item->get_framenum())
@@ -1135,7 +1135,7 @@ Usecode_value Usecode_internal::remove_party_items
 		if (!obj)
 			return Usecode_value(0);
 
-		// +++++++++ problem: we need to really delete this object, but
+		// Problem: we need to really delete this object, but
 		// it also has to remain long enough to be processed by the
 		// calling usecode function...
 		// for now: use temp_to_be_deleted to store the object and
@@ -1276,35 +1276,6 @@ Usecode_value Usecode_internal::remove_cont_items
 	return Usecode_value(0);
 	}
 
-#if 0	/* ++++Old way */
-/*
- *	Find an unblocked tile within a distance of 3 from a given point.
- *
- *	Output:	Returns tile, or original if not found.
- */
-
-static Tile_coord Find_unblocked
-	(
-	Tile_coord dest,		// Where to go.
-	int ht,				// Height of obj. that needs space.
-	int src_tz			// Current lift.
-	)
-	{
-	Tile_coord start = dest, startz = dest;
-	startz.tz = src_tz;		// This one is at source height.
-	dest.tx = -1;
-	for (int i = 0; dest.tx == -1 && i < 3; i++)
-		{			// First at given level.
-		dest = Game_object::find_unblocked_tile(start, i, ht);
-		if (dest.tx == -1)	// Then at source level.
-			dest = Game_object::find_unblocked_tile(startz, i, ht);
-		}
-	if (dest.tx == -1)
-		return start;
-	else
-		return dest;
-	}
-#endif
 
 /*
  *	Have an NPC walk somewhere and then execute usecode.
@@ -1343,7 +1314,7 @@ int Usecode_internal::path_run_usecode
 		dest.tz = 0;
 	if (find_free)
 		{
-#if 1	/* Now works with SI lightning platform */
+		/* Now works with SI lightning platform */
 					// Allow rise of 3 (for SI lightning).
 		Tile_coord d = Map_chunk::find_spot(dest, 3, npc, 3);
 		if (d.tx == -1)		// No?  Try at source level.
@@ -1352,10 +1323,6 @@ int Usecode_internal::path_run_usecode
 									0);
 		if (d.tx != -1)		// Found it?
 			dest = d;
-#else	/* ++++Old way */
-		int ht = npc->get_info().get_3d_height();
-		dest = Find_unblocked(dest, ht, src.tz);
-#endif
 		if (usefun == 0x60a &&	// ++++Added 7/21/01 to fix Iron
 		    src.distance(dest) <= 1)
 			return 1;	// Maiden loop in SI.  Kludge+++++++

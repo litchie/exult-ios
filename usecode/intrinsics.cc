@@ -99,15 +99,6 @@ USECODE_INTRINSIC(get_random)
 USECODE_INTRINSIC(execute_usecode_array)
 {
 	COUT("Executing intrinsic 1");
-#if 0	/* Old way. */
-					// 9/17/00:  New guess to make it
-					//   possible to heat Black sword.
-	Game_object *item = get_item(parms[0]);
-	Usecode_script *uc;
-	if (item && (uc = Usecode_script::find(item)) != 0 &&
-	    uc->is_activated())
-		uc->halt();		// Stop current one.
-#endif
 					// Start on next tick.
 	create_script(parms[0], parms[1], 1);
 
@@ -318,7 +309,6 @@ USECODE_INTRINSIC(set_item_quantity)
 		int delta = newquant - oldquant;
 					// Note:  This can delete the obj.
 		int newdelta = obj->modify_quantity(delta);
-					// ++++Maybe repaint?
 		}
 	return(ret);
 }
@@ -1040,19 +1030,6 @@ USECODE_INTRINSIC(item_say)
 	// Show str. near item (item, str).
 	if (!conv->is_npc_text_pending())
 		item_say(parms[0], parms[1]);	// Do it now.
-#if 0	/* ++++Crashes. */
-	else
-		{
-		Game_object *obj = get_item(parms[0]);
-		const char *str = parms[1].get_str_value();
-		if (obj && str)
-			{
-			Usecode_script *scr = new Usecode_script(obj);
-			scr->add(Ucscript::say, str);
-			scr->start();
-			}
-		}
-#endif
 	return(no_ret);
 }
 
@@ -1134,11 +1111,6 @@ USECODE_INTRINSIC(sit_down)
 	Game_object *chair = get_item(parms[1]);
 	if (!chair)
 		return (no_ret);
-#if 0	/* ++++Makes it hard to seat party on boats. */
-					// See if someone already there.
-	if (!Sit_schedule::is_occupied(chair, npc))
-		return(no_ret);
-#endif
 	npc->set_schedule_type(Schedule::sit, new Sit_schedule(npc, chair));
 	return(no_ret);
 }
@@ -1341,9 +1313,6 @@ USECODE_INTRINSIC(set_oppressor)
 			npc->set_oppressor(opp->get_npc_num());
 					// Need this for SI ListField training:
 		npc->set_target(opp);
-#if 0	/* +++++But this causes Avatar to attack wrong person. */
-		opp->set_target(npc);
-#endif
 		}
 	return no_ret;
 }
@@ -2078,7 +2047,6 @@ USECODE_INTRINSIC(path_run_usecode)
 
 USECODE_INTRINSIC(close_gumps)
 {
-	// Guessing+++++ close all gumps.
 	if (!gwin->is_dragging())	// NOT while dragging stuff.
 		gumpman->close_all_gumps();
 	return(no_ret);
@@ -2278,21 +2246,6 @@ USECODE_INTRINSIC(set_path_failure)
 				new Usecode_actor_action(fun, item, eventid));
 		}
 	return no_ret;
-
-#if 0	/* ++++++Think it's 'set failure'. */
-	// run_usecode(fun, itemref, eventid)
-	Game_object *obj = get_item(parms[1]);
-	int ucfun = parms[0].get_int_value();
-#if 1	/* ++++++++Another guess to try to fix SI problems. */
-	if (obj && Game::get_game_type() == SERPENT_ISLE &&
-	    Usecode_script::find(obj))	// Usecode scheduled?
-		return no_ret;
-#endif
-	if (obj)
-		call_usecode(ucfun, obj, 
-				(Usecode_events) parms[2].get_int_value());
-#endif
-	return(no_ret);
 }
 
 USECODE_INTRINSIC(fade_palette)
@@ -2497,48 +2450,6 @@ USECODE_INTRINSIC(si_path_run_usecode)
 	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2], 1,
 							always);
 	return no_ret;
-
-#if 0	/* Old way++++++++ */
-	Actor *npc = as_actor(get_item(parms[0]));
-	Game_object *obj = get_item(parms[3]);
-	int sz = parms[1].get_array_size();
-	if (!npc || !obj || sz < 2)
-		{
-		CERR("Si_path_run_usecode: bad inputs");
-		return no_ret;		// Bad data.
-		}
-	Tile_coord src = npc->get_tile();
-	Tile_coord dest(parms[1].get_elem(0).get_int_value(),
-			parms[1].get_elem(1).get_int_value(),
-			sz == 3 ? parms[1].get_elem(2).get_int_value() : 0);
-	Tile_coord start = dest;
-	if (dest != src)
-		{
-		dest.tx = -1;		// Look outwards (with npc ht=4).
-		for (int i = 0; dest.tx == -1 && i < 4; i++)
-			dest = Game_object::find_unblocked_tile(start, i, 4);
-		}
-	if (dest.tx == -1)
-		{			// Try again at npc's level.
-		start.tz = src.tz;
-		for (int i = 0; dest.tx == -1 && i < 4; i++)
-			dest = Game_object::find_unblocked_tile(start, i, 4);
-		if (dest.tx == -1)
-			{
-			cout << "Couldn't find free tile" << endl;
-			return no_ret;
-			}
-		}
-					// Walk there and execute.
-		//++++++Wrong!  Mustn't teleport if no path!
-	npc->set_action(Actor_action::create_action_sequence(
-			npc, dest, new Usecode_actor_action(
-					parms[4].get_elem0().get_int_value(), 
-					obj, parms[2].get_int_value()),
-			false, true));	// Don't teleport if path not found.
-	npc->start(200, 0);		// Get into time queue.
-	return no_ret;
-#endif
 }
 
 USECODE_INTRINSIC(error_message)

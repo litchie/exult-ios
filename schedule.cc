@@ -271,9 +271,6 @@ void Follow_avatar_schedule::now_what
 	    npc->get_flag(Obj_flags::paralyzed) ||
 	    gwin->main_actor_dont_move())	// Under Usecode control.
 		return;			// Disabled.
-#if 0
-	cout << npc->get_name() << " in Follow_avatar::now_what()" << endl;
-#endif
 	Actor *av = gwin->get_main_actor();
 	Tile_coord leaderpos = av->get_tile();
 	Tile_coord pos = npc->get_tile();

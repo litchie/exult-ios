@@ -355,8 +355,8 @@ int Usecode_script::exec
 			break;
 			}
 		case repeat2:		// Loop with 3 parms.???
-			{		// Loop(offset, cnt1, cnt2?).++++
-				//+++ guessing: loop cnt1 each round. use cnt2 as loop var.
+			{		// Loop(offset, cnt1, cnt2?).
+				//Guessing: loop cnt1 each round. use cnt2 as loop var.
 				//This is necessary for loop nesting.
 				//(used in mining machine, orb of the moons)
 
@@ -582,7 +582,6 @@ int Usecode_script::exec
 					opcode - 0x61);
 				usecode->set_item_frame(obj, v, 1, 1);
 				}
-					// ++++Guessing:
 			else if (opcode >= 0x30 && opcode < 0x38)
 				{	// Step in dir. opcode&7.
 				step(usecode, opcode&7);

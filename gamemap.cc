@@ -916,11 +916,6 @@ void Game_map::read_ireg_objects
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
 			bool anim = info.is_animated() || info.has_sfx();
-#if 0	/* ++++Should be handled by has_sfx(). */
-					// Watch for BG itself.
-				(Game::get_game_type() == BLACK_GATE &&
-						shnum == 305);
-#endif
 			Egg_object *egg = Create_egg(entry, anim);
 			get_chunk(scx + cx, scy + cy)->add_egg(egg);
 			last_obj = egg;

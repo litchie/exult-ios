@@ -155,35 +155,6 @@ Chunk_terrain::~Chunk_terrain
 	remove_from_queue();
 	}
 
-#if 0	/* +++++ I think this can go away */
-/*
- *	Less-than another?  This is used for STL Map.
- */
-
-bool Chunk_terrain::operator<
-	(
-	const Chunk_terrain& c2
-	) const
-	{
-	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
-		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
-			{
-			ShapeID id1 = get_flat(tilex, tiley);
-			ShapeID id2 = c2.get_flat(tilex, tiley);
-			int sh1 = id1.get_shapenum(), sh2 = id2.get_shapenum();
-			if (sh1 < sh2)
-				return true;
-			else if (sh1 > sh2)
-				return false;
-			int fr1 = id1.get_framenum(), fr2 = id2.get_framenum();
-			if (fr1 < fr2)
-				return true;
-			else if (fr1 > fr2)
-				return false;
-			}
-	return false;			// Equal if we got here.
-	}
-#endif
 
 /*
  *	Set tile's shape.

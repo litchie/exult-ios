@@ -763,13 +763,9 @@ void Map_chunk::add
 			add_outside_dependencies(INCR_CHUNK(cx), 
 					INCR_CHUNK(cy), newobj, ord);
 					// See if newobj extends outside.
-#if 0
-		bool ext_left = (newobj->get_tx() - ord.xs) < -1 && cx > 0;
-		bool ext_above = (newobj->get_ty() - ord.ys) < -1 && cy > 0;
-#else	/* Let's try boundary. YES.  This helps with statues through roofs!*/
+	/* Let's try boundary. YES.  This helps with statues through roofs!*/
 		bool ext_left = (newobj->get_tx() - ord.xs) < 0 && cx > 0;
 		bool ext_above = (newobj->get_ty() - ord.ys) < 0 && cy > 0;
-#endif
 		if (ext_left)
 			{
 			add_outside_dependencies(DECR_CHUNK(cx), cy, 
@@ -846,13 +842,9 @@ void Map_chunk::remove
 					// See if it extends outside.
 	int frame = remove->get_framenum(), tx = remove->get_tx(),
 					ty = remove->get_ty();
-#if 0
-	bool ext_left = (tx - info.get_3d_xtiles(frame)) < -1 && cx > 0;
-	bool ext_above = (ty - info.get_3d_ytiles(frame)) < -1 && cy > 0;
-#else	/* Let's try boundary. YES.  Helps with statues through roofs. */
+	/* Let's try boundary. YES.  Helps with statues through roofs. */
 	bool ext_left = (tx - info.get_3d_xtiles(frame)) < 0 && cx > 0;
 	bool ext_above = (ty - info.get_3d_ytiles(frame)) < 0 && cy > 0;
-#endif
 	if (ext_left)
 		{
 		gmap->get_chunk(cx - 1, cy)->from_below_right--;

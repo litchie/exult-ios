@@ -1432,12 +1432,6 @@ Clouds_effect::Clouds_effect
 		dx = 1 + rand()%2;
 		dy = 1 - rand()%3;
 		}
-#if 0
-	if (dx != 0)			// Move a bit faster.
-		dx += dx > 0 ? 1 : -1;
-	if (dy != 0)
-		dy += dy > 0 ? 1 : -1;
-#endif
 	for (int i = 0; i < num_clouds; i++)
 		{			// Modify speed of some.
 		int deltax = dx, deltay = dy;

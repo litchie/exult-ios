@@ -91,24 +91,6 @@ static int Get_best_depth
 	return (vinfo->vfmt->BitsPerPixel);
 	}
 
-#if 0
-/*
- *	Create window with best color depth to match screen.
- */
-
-Image_window::Image_window
-	(
-	unsigned int w,			// Desired width, height.
-	unsigned int h,
-	bool fs				// Fullscreen.
-	) : Image_buffer(w, h, Get_best_depth()),
-	    scale(1), scaler(point), uses_palette(true), fullscreen(fs),
-	    surface(0), scaled_surface(0), unscaled_surface(0), show_scaled(0)
-	{
-	create_surface(w, h);
-	}
-#endif
-
 /*
  *	Destroy window.
  */

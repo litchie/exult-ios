@@ -483,49 +483,6 @@ int Shape_chooser::next_row
 	return index;
 	}	
 
-#if 0	/* ++++++I think not needed */
-/*
- *	Find start of prev. row.
- *
- *	Output:	Index of start of prev row, or -1 if given is first.
- */
-
-int Shape_chooser::prev_row
-	(
-	int start			// Index of row to start at.
-	)
-	{
-	if (start == 0)
-		return -1;		// Easy.
-	int selshape = -1, selframe = -1;
-	if (selected >= 0)		// Save selection info.
-		{
-		selshape = info[selected].shapenum;
-		selframe = info[selected].framenum;
-		}
-	int x = draw->allocation.width;
-	int index = start;
-	while (index > 0)
-		{
-					// Look at preceding shape.
-		int shapenum = group ? (*group)[index - 1] : index;
-		int framenum = shapenum == selshape ? selframe : framenum0;
-		Shape_frame *shape = ifile->get_shape(shapenum, framenum);
-		if(shape)
-			{
-			int sw = shape->get_width();
-			if (x - sw < 0)
-				break;	// Done.
-			x -= sw + border;
-			}
-		index--;
-		}
-	if (index == start)		// Always advance at least 1.
-		index--;
-	return index;
-	}	
-#endif
-
 /*
  *	Scroll so a desired index is in view.
  */
