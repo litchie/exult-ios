@@ -121,7 +121,7 @@ void Cheat::toggle_infravision (void) {
     gwin->center_text("Infravision Disabled");	
 }
 
-void Cheat::change_gender (void) {
+void Cheat::change_gender (void) const {
   if (!enabled) return;
 
   if (gwin->get_main_actor()->get_type_flag(Actor::tf_sex)) {
@@ -134,7 +134,7 @@ void Cheat::change_gender (void) {
   gwin->set_all_dirty();
 }
 
-void Cheat::toggle_eggs (void) {
+void Cheat::toggle_eggs (void) const {
   if (!enabled) return;
 
   gwin->paint_eggs = !gwin->paint_eggs;
@@ -145,7 +145,7 @@ void Cheat::toggle_eggs (void) {
   gwin->paint();
 }
 
-void Cheat::toggle_Petra (void) {
+void Cheat::toggle_Petra (void) const {
   if (!enabled || (Game::get_game_type() != SERPENT_ISLE)) return;
 
   if (gwin->get_main_actor()->get_flag(Actor::petra))
@@ -155,7 +155,7 @@ void Cheat::toggle_Petra (void) {
   gwin->set_all_dirty();
 }
 
-void Cheat::toggle_naked (void) {
+void Cheat::toggle_naked (void) const {
   if (!enabled || (Game::get_game_type() != SERPENT_ISLE)) return;
 
   if (gwin->get_main_actor()->get_siflag(Actor::naked))
@@ -165,7 +165,7 @@ void Cheat::toggle_naked (void) {
   gwin->set_all_dirty();
 }
 
-void Cheat::change_skin (void) {
+void Cheat::change_skin (void) const {
   if (!enabled || (Game::get_game_type() != SERPENT_ISLE)) return;
 
   int color = gwin->get_main_actor()->get_skin_color();
@@ -177,14 +177,14 @@ void Cheat::change_skin (void) {
   gwin->set_all_dirty();
 }
 
-void Cheat::fake_time_period (void) {
+void Cheat::fake_time_period (void) const {
   if (!enabled) return;
 
   gwin->fake_next_period();
   gwin->center_text("Game clock incremented");
 }
 
-void Cheat::dec_skip_lift (void) {
+void Cheat::dec_skip_lift (void) const {
   if (!enabled) return;
 
   if (gwin->skip_lift == 16)
@@ -199,7 +199,7 @@ void Cheat::dec_skip_lift (void) {
   gwin->paint();
 }
 
-void Cheat::map_teleport (void) {
+void Cheat::map_teleport (void) const {
   if (!enabled) return;
 
   // display map
@@ -237,7 +237,7 @@ void Cheat::map_teleport (void) {
   gwin->center_text("Teleport!!!");
 }
 
-void Cheat::cursor_teleport (void) {
+void Cheat::cursor_teleport (void) const {
   if (!enabled) return;
 
   int x, y;
@@ -250,7 +250,7 @@ void Cheat::cursor_teleport (void) {
   gwin->center_text("Teleport!!!");
 }
 
-void Cheat::create_coins (void) {
+void Cheat::create_coins (void) const {
   if (!enabled) return;
 
   gwin->get_main_actor()->add_quantity(100, 644);
@@ -258,7 +258,7 @@ void Cheat::create_coins (void) {
 }
 
 
-void Cheat::create_last_shape (void) {
+void Cheat::create_last_shape (void) const {
   if (!enabled) return;
 
   int current_shape = 0;
@@ -270,7 +270,7 @@ void Cheat::create_last_shape (void) {
     gwin->center_text("Can only create from 'shapes.vga'");
 }
 
-void Cheat::delete_object (void) {
+void Cheat::delete_object (void) const {
   if (!enabled) return;
 
   int x, y;
@@ -285,7 +285,7 @@ void Cheat::delete_object (void) {
   }
 }
 
-void Cheat::shape_browser (void) {
+void Cheat::shape_browser (void) const {
   if (!enabled) return;
 
   browser->browse_shapes();
