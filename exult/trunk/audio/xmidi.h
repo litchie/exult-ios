@@ -59,19 +59,11 @@ struct midi_event
 
 	unsigned char	data[2];
 
-	union {
-		struct {
-			uint32			len;		// Length of SysEx Data
-			unsigned char	*buffer;	// SysEx Data
-		};
-
-		struct {
-			int				duration;	// Duration of note (120 Hz)
-			midi_event		*next_note;	// The next note on the stack
-			uint32			note_time;	// Time note stops playing (6000th of second)
-		};
-	};
-
+	uint32			len;		// Length of SysEx Data
+	unsigned char	*buffer;	// SysEx Data
+	int				duration;	// Duration of note (120 Hz)
+	midi_event		*next_note;	// The next note on the stack
+	uint32			note_time;	// Time note stops playing (6000th of second)
 	midi_event	*next;
 };
 

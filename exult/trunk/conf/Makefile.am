@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files $(SDL_CFLAGS) $(INCDIRS) \
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../headers -I$(srcdir)/../files $(SDL_CFLAGS) $(INCDIRS) \
 		 $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) $(WARNINGS)
 
 if BUILD_TOOLS

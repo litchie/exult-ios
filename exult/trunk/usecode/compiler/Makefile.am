@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../../files -I$(srcdir)/../.. \
+INCLUDES = -I$(srcdir)/../../headers -I$(srcdir)/.. -I$(srcdir)/../../files -I$(srcdir)/../.. \
 	$(INCDIRS) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 YFLAGS = -d				# Want ucparse.h.

@@ -50,7 +50,7 @@ typedef pair<DoOps, vector<string> > DoListPair;
 typedef vector<DoListPair> DoList;
 
 DoList			dolist;
-Configuration	config;
+Configuration	*config;
 string			config_file_name;
 bool			verbose=false; // dump verbose output to cerr
 
@@ -143,12 +143,12 @@ void process_ops()
 			if(verbose)
 			{
 				string s;
-				config.value(i->second[0].c_str(),s,"---nil---");
+				config->value(i->second[0].c_str(),s,"---nil---");
 				cerr << "Original value of " << i->second[0] << " was " << s << endl;
 			
 			}
 			
-			config.set(i->second[0].c_str(), i->second[1].c_str(), false);
+			config->set(i->second[0].c_str(), i->second[1].c_str(), false);
 			
 			if(verbose)
 				cerr << "Added " << i->second[1] << " to " << i->second[0] << endl;
@@ -159,12 +159,12 @@ void process_ops()
 			if(verbose)
 			{
 				string s;
-				config.value(i->second[0].c_str(),s,"---nil---");
+				config->value(i->second[0].c_str(),s,"---nil---");
 				cerr << "Original value was " << i->second[0] << " was " << s << endl;
 			
 			}
 			
-			config.set(i->second[0].c_str(), "", false);
+			config->set(i->second[0].c_str(), "", false);
 			
 			if(verbose)
 				cerr << "Removed " << i->second[0] << endl;
@@ -191,11 +191,11 @@ int main(int argc, char *argv[])
 		}
 	}
 	
-	config.read_config_file(config_file_name.c_str());
+	config->read_config_file(config_file_name.c_str());
 	
 	process_ops();
 	
-	config.write_back();
+	config->write_back();
 	
 	return 0;
 }

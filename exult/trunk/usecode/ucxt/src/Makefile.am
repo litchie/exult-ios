@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/../include -I$(srcdir)/../../../conf -I$(srcdir)/../.. \
+INCLUDES = -I$(srcdir)/../../../headers -I$(srcdir)/../include -I$(srcdir)/../../../conf -I$(srcdir)/../.. \
 	-I$(srcdir)/../../.. $(INCDIRS) $(DEBUG_FLAGS) $(CPPFLAGS) \
 	-DEXULT_DATADIR=\"$(EXULT_DATADIR)\" $(WARNINGS)
 
