@@ -24,23 +24,36 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string.h>
 #include <iostream.h>
+#include "databuf.h"
 #include "playfli.h"
 #include "utils.h"
 
 playfli::playfli(const char *fli_name)
 {
+    ifstream fli_stream; 
     U7open(fli_stream, fli_name);
-    fli_stream.seekg(8);
-    fli_size = Read4(fli_stream);
-    fli_magic = Read2(fli_stream);
-    fli_frames = Read2(fli_stream);
-    fli_width = Read2(fli_stream);
-    fli_height = Read2(fli_stream);
-    fli_depth = Read2(fli_stream);
-    fli_flags = Read2(fli_stream);
-    fli_speed = Read2(fli_stream);
-    fli_stream.seekg(110, ios::cur);
-    streampos = streamstart = fli_stream.tellg();
+    fli_data = new StreamDataSource(&fli_stream);
+
+    initfli();
+}
+
+playfli::playfli(char *buffer, size_t len): fli_data(new BufferDataSource(buffer, len))
+{
+    initfli();
+}
+
+void playfli::initfli()
+{
+    fli_size = fli_data->read4();
+    fli_magic = fli_data->read2();
+    fli_frames = fli_data->read2();
+    fli_width = fli_data->read2();
+    fli_height = fli_data->read2();
+    fli_depth = fli_data->read2();
+    fli_flags = fli_data->read2();
+    fli_speed = fli_data->read2();
+    fli_data->skip(110);
+    streampos = streamstart = fli_data->getPos();
     frame = 0;
 }
 
@@ -95,21 +108,21 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
     // Play frames...
     for ( ; frame < last_frame; frame++)
       {
-	  fli_stream.seekg(streampos);
-	  frame_size = Read4(fli_stream);
-	  frame_magic = Read2(fli_stream);
-	  frame_chunks = Read2(fli_stream);
-	  fli_stream.seekg(8, ios::cur);
+	  fli_data->seek(streampos);
+	  frame_size = fli_data->read4();
+	  frame_magic = fli_data->read2();
+	  frame_chunks = fli_data->read2();
+          fli_data->skip(8);
 	  for (int chunk = 0; chunk < frame_chunks; chunk++)
 	    {
-		chunk_size = Read4(fli_stream);
-		chunk_type = Read2(fli_stream);
+		chunk_size = fli_data->read4();
+		chunk_type = fli_data->read2();
 
 		switch (chunk_type)
 		  {
 		  case 11:
 		      {
-			  int packets = Read2(fli_stream);
+			  int packets = fli_data->read2();
 			  unsigned char colors[3 * 256];
 
 			  memset(colors, 0, 3 * 256);
@@ -118,43 +131,43 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 			  for (int p_count = 0; p_count < packets;
 			       p_count++)
 			    {
-				int skip = Read1(fli_stream);
+				int skip = fli_data->read1();
 
 				current += skip;
-				int change = Read1(fli_stream);
+				int change = fli_data->read1();
 
 				if (change == 0)
 				    change = 256;
-				fli_stream.read((char*)&colors[current*3], change*3);
+				fli_data->read((char*)&colors[current*3], change*3);
 			    }
 			  // Set palette
 			  if(win)
-				win->set_palette(colors, 63, brightness);
+				win->set_palette(colors, 32, brightness);
 		      }
 		      break;
 		  case 12:
 		      {
-			  int skip_lines = Read2(fli_stream);
-			  int change_lines = Read2(fli_stream);
+			  int skip_lines = fli_data->read2();
+			  int change_lines = fli_data->read2();
 			  for (int line = 0; line < change_lines; line++)
 			    {
-				int packets = Read1(fli_stream);
+				int packets = fli_data->read1();
 				int pixpos = xoffset;
 				for (int p_count = 0; p_count < packets;
 				     p_count++)
 				  {
-				      int skip_count = Read1(fli_stream);
+				      int skip_count = fli_data->read1();
 				      pixpos += skip_count;
-				      char size_count = Read1(fli_stream);
+				      char size_count = fli_data->read1();
 				      if (size_count < 0)
 					{
-					    unsigned char data = Read1(fli_stream);
+					    unsigned char data = fli_data->read1();
 					    memset(pixbuf, data, -size_count);
 					    win->copy8(pixbuf,-size_count,1,pixpos,skip_lines+line+yoffset);
 					    pixpos -= size_count;
 					    
 				        } else {
-					    fli_stream.read((char*)pixbuf, size_count);
+					    fli_data->read((char*)pixbuf, size_count);
 					    win->copy8(pixbuf,size_count,1,pixpos, skip_lines+line+yoffset);
 					    pixpos += size_count;
 					}
@@ -167,19 +180,19 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 		  case 15:
 		      for (int line = 0; line < fli_height; line++)
 			{
-			    int packets = Read1(fli_stream);
+			    int packets = fli_data->read1();
 			    int pixpos = 0;
 			    for (int p_count = 0; p_count < packets;
 				 p_count++)
 			      {
-				  char size_count = Read1(fli_stream);
+				  char size_count = fli_data->read1();
 				  if (size_count > 0)
 				    {
-					unsigned char data = Read1(fli_stream);
+					unsigned char data = fli_data->read1();
 					memset(&pixbuf[pixpos], data, size_count);
 					pixpos += size_count;
 				    } else {
-					fli_stream.read((char*)&pixbuf[pixpos],
+					fli_data->read((char*)&pixbuf[pixpos],
 							-size_count);
 					pixpos -= size_count;
 				    }
@@ -189,7 +202,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 			}
 		      break;
 		  case 16:
-		      fli_stream.seekg(fli_width * fli_height, ios::cur);
+		      fli_data->skip(fli_width * fli_height);
 		      break;
 		  default:
 		      cout << "UNKNOWN FLIC FRAME" << endl;
@@ -215,5 +228,5 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 
 playfli::~playfli()
 {
-    // Clean up...
+	delete fli_data;
 }
