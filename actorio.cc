@@ -51,7 +51,12 @@ Actor::Actor
 	unsigned locy = Read1(nfile);
 					// Read & set shape #, frame #.
 	unsigned short shnum = Read2(nfile);
-	set_shape(shnum & 0x3ff);
+
+	if (num == 0 && Game::get_game_type() != BLACK_GATE && (shnum & 0x3ff) < 12)
+		set_shape((shnum & 0x3ff) | 0x400);
+	else
+		set_shape(shnum & 0x3ff);
+
 	set_frame(shnum >> 10);
 	int iflag1 = Read2(nfile);	// Inventory flag.
 	int schunk = Read1(nfile);	// Superchunk #.

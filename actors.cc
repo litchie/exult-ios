@@ -822,6 +822,14 @@ void Actor::set_flag
 	)
 	{
 	cout << "Set flag for NPC " << get_npc_num() << " = " << flag << endl;
+
+	// Small hack to stop SI from hiding the avatar
+	if (get_npc_num() == 0
+		&& flag == 16
+		&& Game::get_game_type() == SERPENT_ISLE)
+		return;
+		
+
 	if (flag >= 0 && flag < 32)
 		flags |= ((unsigned long) 1 << flag);
 	if (flag == asleep)
@@ -1590,11 +1598,12 @@ void Main_actor::die
  */
 void Actor::set_actor_shape()
 {
-	if (get_npc_num() != 0 && get_npc_num() != 28)
+	if ((get_npc_num() != 0) && (get_npc_num() != 28))
 		return;
 
 	Game_window *gwin = Game_window::get_game_window();
-	Actor *avatar = gwin->get_main_actor();
+	Actor *avatar = Game_window::get_game_window()->get_main_actor();
+
 	if (!avatar) return;
 
 	int sn = get_shapenum();

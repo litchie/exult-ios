@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "useval.h"
 #include "effects.h"
+#include "game.h"
 
 // #include <math.h>
 
@@ -326,6 +327,13 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			}
 		case usecode:
 			{		// Data2 is the usecode function.
+
+			//Not allowing SI lightning usecode eggs
+			if (Game::get_game_type() == SERPENT_ISLE
+				&& data2 == 1965
+				&& !(flags & (1 << (int) once)))
+				break;
+				
 			Game_window::Game_mode savemode = gwin->get_mode();
 			umachine->call_usecode(data2, this,
 					Usecode_machine::egg_proximity);
