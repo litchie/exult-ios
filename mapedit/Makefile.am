@@ -10,7 +10,6 @@ endif
 
 if HAVE_GTK
 GTK_APPS = shapetest paltest
-#GTK_LIBS = -lgtk -lgdk
 GTK_LIBS = @GTK_LIBS@
 OUTPUT_LIBS = libmapedit.la
 else
@@ -25,7 +24,7 @@ else
 GLADE_APPS =
 endif
 
-u7shp_SOURCES = u7shp.cc
+u7shp_SOURCES = u7shp.c
 
 shapetest_SOURCES = shapetest.cc
 
