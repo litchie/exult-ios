@@ -247,6 +247,7 @@ private:
 	USECODE_INTRINSIC_DECL(move_object);
 	USECODE_INTRINSIC_DECL(remove_npc);
 	USECODE_INTRINSIC_DECL(item_say);
+	USECODE_INTRINSIC_DECL(clear_item_say);
 	USECODE_INTRINSIC_DECL(projectile_effect);
 	USECODE_INTRINSIC_DECL(get_lift);
 	USECODE_INTRINSIC_DECL(set_lift);
