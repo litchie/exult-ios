@@ -497,8 +497,10 @@ class Monster_actor : public Npc_actor
 public:
 	Monster_actor(char *nm, int shapenum, int fshape = -1, int uc = -1)
 		: Npc_actor(nm, shapenum, fshape, uc), prev_monster(0)
-		{ 
-		next_monster = in_world ? in_world->next_monster : 0;
+		{
+		if (in_world)
+			in_world->prev_monster = this;
+		next_monster = in_world;
 		in_world = this;
 		in_world_cnt++;
 		}

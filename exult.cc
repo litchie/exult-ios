@@ -164,7 +164,6 @@ int main
 		gwin->set_chunk_offsets(atoi(argv[1]), atoi(argv[2]));
 	else				// Else start in Trinsic.
 #endif
-		gwin->set_chunk_offsets(64, 136);
 	mouse = new Mouse(gwin);
 	mouse->set_shape(Mouse::hand);
 #ifdef MOUSE

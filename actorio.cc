@@ -45,7 +45,7 @@ Actor::Actor
 	unsigned locy = Read1(nfile);
 					// Read & set shape #, frame #.
 	unsigned short shnum = Read2(nfile);
-	set_shape(shnum & 0x3f);
+	set_shape(shnum & 0x3ff);
 	set_frame(shnum >> 10);
 	int iflag1 = Read2(nfile);	// Inventory flag.
 	int schunk = Read1(nfile);	// Superchunk #.
@@ -183,11 +183,14 @@ Npc_actor::Npc_actor
 	istream& nfile,			// 'npc.dat', generally.
 	int num,			// NPC #.
 	int has_usecode			// 1 if a 'type1' NPC.
-	) : Actor(nfile, num, has_usecode)
+	) : Actor(nfile, num, has_usecode), num_schedules(0), 
+		schedules(0), schedule(0), dormant(1), alignment(0)
 	{
 	Chunk_object_list *olist = Game_window::get_game_window()->
 				get_objects(get_cx(), get_cy());
 	switched_chunks(0, olist);	// Put in chunk's NPC list.
+					// Activate schedule.
+	set_schedule_type(schedule_type);
 	}
 
 /*
@@ -201,7 +204,9 @@ Monster_actor::Monster_actor
 	int has_usecode			// 1 if a 'type1' MONSTER.
 	) : Npc_actor(nfile, num, has_usecode), prev_monster(0)
 	{
-	next_monster = in_world ? in_world->next_monster : 0;
+	if (in_world)
+		in_world->prev_monster = this;
+	next_monster = in_world;
 	in_world = this;
 	in_world_cnt++;
 	}
