@@ -31,6 +31,7 @@
 namespace QuickTime {
 #include <QuickTime/QuickTimeMusic.h>
 }
+using QuickTime::TunePlayer;
 #endif
 
 #include "Midi.h"
@@ -55,7 +56,7 @@ public:
 private:
 	UNREPLICATABLE_CLASS(Mac_QT_midi);
 	
-	QuickTime::TunePlayer	mTunePlayer;
+	TunePlayer	mTunePlayer;
 	uint32		*mTuneSequence;
 	uint32		*mTuneHeader;
 };
