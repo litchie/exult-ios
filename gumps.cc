@@ -480,13 +480,13 @@ int Actor_gump_object::find_closest
 	mx -= x; my -= y;		// Get point rel. to us.
 	long closest_squared = 1000000;	// Best distance squared.
 	int closest = -1;		// Best index.
-	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+	for (int i = 0; i < sizeof(coords)/(2*sizeof(coords[0])); i++)
 		{
 		int dx = mx - spotx(i), dy = my - spoty(i);
 		long dsquared = dx*dx + dy*dy;
 					// Better than prev.?
 		if (dsquared < closest_squared && (!only_empty ||
-						    !spots[i].obj))
+						!container->get_readied(i)))
 			{
 			closest_squared = dsquared;
 			closest = i;
@@ -508,22 +508,6 @@ Actor_gump_object::Actor_gump_object
 	{
 	heart_button = new Heart_gump_button(this, heartx, hearty);
 	disk_button = new Disk_gump_button(this, diskx, disky);
-					// Store objs. in their spots.
-	Game_object *last_object = container->get_last_object();
-	if (!last_object)
-		return;			// Empty.
-	Game_object *obj = last_object;
-	do
-		{
-		obj = obj->get_next();
-		int ox, oy;		// Get screen location.
-		get_shape_location(obj, ox, oy);
-					// Find an empty spot.
-		int index = find_closest(ox, oy, 1);
-		if (index >= 0)		// And if it fails???
-			add_to_spot(obj, index);
-		}
-	while (obj != last_object);
 	}
 
 /*
@@ -562,34 +546,28 @@ int Actor_gump_object::add
 	{
 					// Find index of closest spot.
 	int index = find_closest(mx, my);
-	Actor_gump_spot *spot = &spots[index];
-	if (spot->obj)			// Already something there?
-		{			// Try to put into container.
-		if (spot->obj->drop(obj))
-			return (1);
+	if (!container->add_readied(obj, index))
+		{			// Can't add it there?
 					// Try again for an empty spot.
 		index = find_closest(mx, my, 1);
-		if (index < 0)
+		if (index < 0 || !container->add_readied(obj, index))
 			return (0);
 		}
-	container->add(obj);		// Add to whom we represent.
-	add_to_spot(obj, index);
+	set_to_spot(obj, index);	// Set obj. coords.
 	return (1);
 	}
 
 /*
- *	Add object to an empty spot.
+ *	Set object's coords. to given spot.
  */
 
-void Actor_gump_object::add_to_spot
+void Actor_gump_object::set_to_spot
 	(
 	Game_object *obj,
 	int index			// Spot index.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Actor_gump_spot *spot = &spots[index];
-	spot->obj = obj;		// Put in spot. ++++Check types??
 					// Get shape info.
 	Shape_frame *shape = gwin->get_shape(*obj);
 	int w = shape->get_width(), h = shape->get_height();
@@ -608,25 +586,6 @@ void Actor_gump_object::add_to_spot
 		obj->cx -= x1 - object_area.w;
 	if (y1 > object_area.h)
 		obj->cy -= y1 - object_area.h;
-	}
-
-/*
- *	Remove an object.
- */
-
-void Actor_gump_object::remove
-	(
-	Game_object *obj
-	)
-	{
-	Gump_object::remove(obj);
-					// Find its spot.
-	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
-		if (spots[i].obj == obj)
-			{
-			spots[i].obj = 0;
-			break;
-			}
 	}
 
 /*
