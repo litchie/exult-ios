@@ -1,14 +1,15 @@
 Exult Documentation
-last changed: 14 August 2004(GMT)
+last changed: 14 March 2005(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 14 August 2004
-0.2. - 23 May 2004
-0.3. - 11 February 2004
-0.4. - 12 December 2003
+0.1. - 14 March 2005
+0.2. - 14 August 2004
+0.3. - 23 May 2004
+0.4. - 11 February 2004
+0.5. - 12 December 2003
 
 1. Introduction
 1.1. Exult Version
@@ -75,18 +76,23 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 14 August 2004
+0.1. - 14 March 2005
+* 8. Zaurus Guide Newest ROM instructions updated.
+
+
+
+0.2. - 14 August 2004
 * 2.1. Installation on Windows you can use Notepad to edit exult.cfg.
 
 
 
-0.2. - 23 May 2004
+0.3. - 23 May 2004
 * 1.1. Exult Version I'm confident that the new Version will be 1.2.
 * 7.1. How to get the Zaurus port working we shouldn't call our data files shared files..
 
 
 
-0.3. - 11 February 2004
+0.4. - 11 February 2004
 * A lot of clean up and small changes, too numerous to list.
 * 2.3. Path-Settings fixed some outdated instructions.
 * 3.5. Installation of the digital music packs added as the instructions in the music-pack readme.txt are no longer valid.
@@ -97,7 +103,7 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.4. - 12 December 2003
+0.5. - 12 December 2003
 * 2.2. Settings in exult.cfg fixed bad path settings and updated audio settings.
 * 2.3. Path-Settings moved stuff over to next point.
 * 2.4. Further directory customizations added to give some explanation for Static/Gamedat.
@@ -854,7 +860,7 @@ Introduced in April 2002, this PDA is really a pico-computer (one degree of magn
 
 
 8.3. Zaurus SL5x00 and ROMs
-Sharp occasionnally releases new versions of its ROM for Zaurus. Consider a new ROM like a new Linux distribution: new packages, new look, new kernel etc. It is possible to update the ROM thanks to information found on the Zaurus web site mentioned earlier. The current Exult package for the Zaurus is created for the stock SL-5500 ROM v2.12. It has been reported to work on the SL5000-D (the earlier and less capable version). However, it has been reported that the package will not run properly using the latest ROM (no matter what version of the Zaurus you use). More detailed information on how to fix this problem will be found further down this document.
+Sharp occasionnally releases new versions of its ROM for Zaurus. Consider a new ROM like a new Linux distribution: new packages, new look, new kernel etc. It is possible to update the ROM thanks to information found on the Zaurus web site mentioned earlier. The current Exult package for the Zaurus is created for the stock SL-5500 ROM v2.12, but will work with some modifications on more recent ROMs. It has been reported to work on the SL5000-D (the earlier and less capable version). The package will not run of-the-shelf using the latest ROM (no matter what version of the Zaurus you use) unless you make a couple of changes. More detailed information on how to fix this problem will be found further down this document.
 
 
 8.4. Exult and Zaurus
@@ -862,11 +868,11 @@ Exult uses SDL for multimedia access to the computer (music and video in particu
 
 
 8.5. Installing new packages
-The first step to install a new package is to have the package downloaded and accessible from your Zaurus. I use a method I am comfortable with. If you have your own method and if it works, please keep using it! To copy packages on my Zaurus, I plug the cradle via USB to my Linux machine (Mandrake 8.2). I've changed the modules.usbmap file so that inserting the Zaurus on the cradle will automatically use the usbdnet module to access the Zaurus via USB-over-ethernet. Search the net to find out how. Once the connection is done, I upload the file via FTP to /mnt/cf/Documents/application/ipkg/. Then I start the add/remove package, select add new package and choose the file I just uploaded.
+The first step to install a new package is to have the package downloaded and accessible from your Zaurus. I use a method I am comfortable with. If you have your own method and if it works, please keep using it! To copy packages on my Zaurus, I plug the cradle via USB to my Linux machine (Mandrake 10.1). Inserting the Zaurus on the cradle will automatically use the usbnet module to access the Zaurus via USB-over-ethernet. I then assign an IP to the net device usb0. Search the net to find out how. Once the connection is done, I upload the file via FTP to /mnt/cf/Documents/application/ipkg/. Then I start the add/remove package, select add new package and choose the file I just uploaded.
 
 
 8.6. Using the standard ROM
-If like me you still use the standard ROM, simply install the SDL, SDL-mixer and Exult packages. You will also have to transfer the U7 data files to the Zaurus. I chose to install the data files on my Compact Flash card (/mnt/cf/) on the /mnt/cf/exult-data/si/static directory. Simply copy the content of your U7's static/ dir to this dir and you'll be done. The previous example is for Serpent Isle ("si" as you can see in the file path). For Black Gate, you would put "bg" instead of "si". Only the static dir is relevant. You can copy everything if you want to but it will space for nothing.
+Using the standard ROM has lead people to some issues. I recommend you install a newer version, in particular v3.10 (at this time of writing). All the current package for Exult and SDL will work fine. Simply install the SDL, SDL-mixer and Exult packages. You will also have to transfer the U7 data files to the Zaurus. I chose to install the data files on my Compact Flash card (/mnt/cf/) on the /mnt/cf/exult-data/si/static directory. Simply copy the content of your U7's static/ dir to this dir and you'll be done. The previous example is for Serpent Isle ("si" as you can see in the file path). For Black Gate, you would put "bg" instead of "si". Only the static dir is relevant. You can copy everything if you want to but it will take space for nothing.
 
 
 8.7. Installing the non-required packages
@@ -874,16 +880,17 @@ Two additional packages exist and are not required. They hold the new musics for
 
 
 8.8. Using the latest ROM
-As mentioned earlier, Exult won't run properly on the latest ROM (v3.10 as of 20030801). There are a few reason why. First, since I haven't installed this ROM, I cannot test it. Then, I know they have changed the default user to be "zaurus" instead of "root", which mess up the paths and the config file. Indeed, by default, Exult reads its config file on ~/.exult.cfg which gets expanded to /home/root/.exult.cfg on the default ROM but to /home/zaurus/.exult.cfg on the newest ROM. Since the package installs all user-related files to /home/root, Exult won't find them on the latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/ which contains the gamedat (current runing game) and the savegames. Finally, the files' owner is set to "root" so the user "zaurus" won't be able to alter files and directories.
+As mentioned earlier, Exult won't run properly on the latest ROM (v3.10 as of 20030801) without some changes. There are a few reason why. I know they have changed the default user to be "zaurus" instead of "root", which mess up the paths and the config file. Indeed, by default, Exult reads its config file on ~/.exult.cfg which gets expanded to /home/root/.exult.cfg on the default ROM but to /home/zaurus/.exult.cfg on the newest ROM. Since the package installs all user-related files to /home/root, Exult won't find them on the latest ROM. Not only ~/.exult.cfg is concerned, but also ~/.exult/ which contains the gamedat (current runing game) and the savegames. Finally, the files' owner is set to "root" so the user "zaurus" won't be able to alter files and directories.
 
 
 8.9. Solving the problems with the latest ROM
-In order to play, you'll have to change the location of the files installed by the package to /home/zaurus/ instead of /home/root/. I have not done this, but I expect you'd have to "su" to be able to change it. "su" is a command to become superuser (root). Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but you also want to edit the ~/.exult.cfg so that every occurence of /home/root/ is replaced with /home/zaurus. Please remember I have not done nor tested this, but here are the commands I suppose you'd have to type. First, open a terminal (install one if you don't have one).
+In order to play, you'll have to change the location of the files installed by the package to /home/zaurus/ instead of /home/root/. You'll have to type "su" to be able to change it. "su" is a command to become superuser (root). Not only you want to move the files ~/.exult.cfg and ~/.exult/ to /home/zaurus/ but you also want to edit the ~/.exult.cfg so that every occurence of /home/root/ is replaced with /home/zaurus. First, open a terminal (install one if you don't have one).
 From the terminal, verify who you are by typing ($ is the prompt): $ cd ~/ $ whoami $ pwd
 The "whoami" command should return "zaurus". The "pwd" command should return "/home/zaurus/". Then copy the Exult files: $ cp /home/root/.exult* ~/ -rf
 And change ownership to yourself. You might have to become root to do so: $ su # chown zaurus:zaurus /home/zaurus/.exult* -R # chown zaurus:zaurus /opt/QtPalmtop/share/exult -R # chown zaurus:zaurus /opt/QtPalmtop/bin/exult* -R # chown zaurus:zaurus /opt/QtPalmtop/pics/exult.png -R # chown zaurus:zaurus /opt/QtPalmtop/apps/Games/exult.desktop -R # exit
 The # is the root's prompt. The "exit" command will stop the "su" command and make you return to the "zaurus" user. It is now time to edit the .exult.cfg. A fast way to do it: $ sed -e 's/root/zaurus/' >~/.exult.cfg ~/.exult.cfg_new $ mv ~/.exult.cfg_new ~/.exult.cfg
 Normally, you should be able to start and play the game normally. Let me know if I am missing anything.
+Updated packages will come up soon so that no additional work will be required.
 
 
 8.10. Useful tidbits
