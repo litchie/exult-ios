@@ -60,8 +60,7 @@ int Monster_info::read
 	m_poison_safe = (*ptr&1) != 0;	// This looks reasonable, as it
 					//   includes automaton, slug, spider.
 //	if (poison_safe)
-//		cout << "Shape " << item_names[shapenum] << " is poison_safe"<<
-					endl;
+//		cout << "Shape " << item_names[shapenum] << " is poison_safe"<< endl;
 	intelligence = (*ptr++ >> 2) & 63;	// Byte 4.
 	alignment = *ptr & 3;		// Byte 5.
 	combat = (*ptr++ >> 2) & 63;
