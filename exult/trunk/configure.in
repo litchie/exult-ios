@@ -122,31 +122,28 @@ AC_MSG_RESULT(Now we know lots about how SDL is installed locally)
 dnl this is for kmid
 AC_MSG_CHECKING(whether to disable kmid)
 if test x$disable_kmid = xno; then
-  AC_MSG_RESULT(no)
-AC_MSG_CHECKING(for libkmid)
+	AC_MSG_RESULT(no)
+	AC_MSG_CHECKING(for libkmid)
 
-KMID_INCLUDES=""
-KMID_LIBS=""
-for i in /usr/include/libkmid.h /usr/include/libkmid/libkmid.h /usr/local/include/libkmid.h /usr/local/include/libkmid/libkmid.h
-	do
-	test -f "$i" && KMID_INCLUDES=`dirname $i` && HAVE_KMID="yes"
+	KMID_INCLUDES=""
+	KMID_LIBS=""
+	for i in /usr/include/libkmid.h /usr/include/libkmid/libkmid.h /usr/local/include/libkmid.h /usr/local/include/libkmid/libkmid.h; do
+		test -f "$i" && KMID_INCLUDES=`dirname $i` && HAVE_KMID="yes"
 	done
-for i in /lib /usr/lib /usr/local/lib
-	do
-	test -f "$i/libkmid.so" && KMID_LIBS="-L$i -lkmid"
+	for i in /lib /usr/lib /usr/local/lib; do
+		test -f "$i/libkmid.so" && KMID_LIBS="-L$i -lkmid"
 	done
-if test "$HAVE_KMID" != "yes" ; then
-	echo "If you don't have kmid installed try $0 --disable-kmid"
-	exit 1
+	if test "$HAVE_KMID" != "yes" ; then
+		AC_MSG_RESULT(no)
+		echo "Disabling kmid after all..."	
+	else
+		AC_MSG_RESULT(Found it. Neat.)
+		AC_DEFINE(HAVE_LIBKMIDI)
+		KMID_INCLUDES="-I$KMID_INCLUDES"
+	fi
 else
-	AC_MSG_RESULT(Found it. Neat.)
-	AC_DEFINE(HAVE_LIBKMIDI)
-fi
-KMID_INCLUDES="-I$KMID_INCLUDES"
-
-else
-  AC_MSG_RESULT(yes)
-  echo "Okay. No Kmid in this binary."
+	AC_MSG_RESULT(yes)
+	echo "Okay. No Kmid in this binary."
 fi
 
 AC_SUBST(DEBUG_FLAGS)
