@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Gump_object;
 class Gump_button;
-class Text_effect;
+class Special_effect;
 class Slist;
 class Usecode_machine;
 class Actor;
@@ -62,7 +62,7 @@ private:
 	Time_queue *tqueue;		// Time-based queue.
 	Game_clock clock;		// Keeps track of time.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
-	Text_effect *texts;		// Text snippets shown on screen.
+	Special_effect *effects;	// Text snippets, sprite effects.
 	Gump_object *open_gumps;	// Open containers on screen.
 	Npc_face_info *face_info[3];	// NPC's on-screen faces in convers.
 	int num_faces;			// # of faces.
@@ -398,8 +398,6 @@ public:
 		}
 	inline char *get_save_name(int i) const	// Get ->saved-game name.
 		{ return save_names[i]; }
-					// Paint a bit of text.
-	void paint_Text_effect(Text_effect *txt);
 					// Paint "flat" scenery in a chunk.
 	void paint_chunk_flats(int cx, int cy);
 					// Paint objects in given chunk at
@@ -431,9 +429,10 @@ public:
 	void show_items(int x, int y);	// Show names of items clicked on.
 					// Add text item.
 	void add_text(const char *msg, int x, int y);
+	void add_effect(Special_effect *effect);
 					// Remove text item & delete it.
-	void remove_text(Text_effect *txt);
-	void remove_all_text();
+	void remove_effect(Special_effect *txt);
+	void remove_all_effects();
 					// Handle a double-click in window.
 	void double_clicked(int x, int y);
 	void init_faces();		// Clear out face list.

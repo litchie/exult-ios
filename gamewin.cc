@@ -54,7 +54,7 @@ Game_window::Game_window
 	    mode(splash),
             tqueue(new Time_queue()), clock(tqueue),
 	    npc_prox(new Npc_proximity_handler(this)),
-	    texts(0), open_gumps(0), num_faces(0), last_face_shown(-1),
+	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
 	    conv_choices(0), painted(0), focus(1), shapes(),
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
 	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
@@ -997,9 +997,9 @@ void Game_window::paint
 					// Draw gumps.
 	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
 		gmp->paint(this);
-					// Draw text.
-	for (Text_effect *txt = texts; txt; txt = txt->next)
-		paint_Text_effect(txt);
+					// Draw text, sprites.
+	for (Special_effect *txt = effects; txt; txt = txt->next)
+		txt->paint(this);
 	win->clear_clip();
 					// Complete repaint?
 	if (!x && !y && w == get_width() && h == get_height() && main_actor)
@@ -1012,26 +1012,6 @@ void Game_window::paint
 					// Set palette for lights.
 		clock.set_light_source(carried_light + (light_sources > 0));
 		}
-	painted = 1;
-	}
-
-/*
- *	Paint a text object.
- */
-
-void Game_window::paint_Text_effect
-	(
-	Text_effect *txt
-	)
-	{
-	const char *msg = txt->msg;
-	if (*msg == '@')
-		msg++;
-	int len = strlen(msg);
-	if (msg[len - 1] == '@')
-		len--;
-	paint_text(0, msg, len, (txt->tx - get_scrolltx())*tilesize,
-				(txt->ty - get_scrollty())*tilesize);
 	painted = 1;
 	}
 
@@ -1544,50 +1524,63 @@ void Game_window::add_text
 		get_scrolltx() + x/tilesize, get_scrollty() + y/tilesize,
 				8 + get_text_width(0, msg),
 				8 + get_text_height(0));
-	paint_Text_effect(txt);		// Draw it.
-	txt->next = texts;		// Insert into chain.
-	txt->prev = 0;
-	if (txt->next)
-		txt->next->prev = txt;
-	texts = txt;
+	txt->paint(this);		// Draw it.
+	painted = 1;
+	add_effect(txt);
 					// Show for a couple seconds.
 	unsigned long curval = SDL_GetTicks();
 	tqueue->add(curval + 2000, txt, (long) this);
 	}
 
 /*
- *	Remove a text item from the chain and delete it.
+ *	Add an effect.
+ */
+
+void Game_window::add_effect
+	(
+	Special_effect *effect
+	)
+	{
+	effect->next = effects;		// Insert into chain.
+	effect->prev = 0;
+	if (effect->next)
+		effect->next->prev = effect;
+	effects = effect;
+	}
+
+/*
+ *	Remove a text item/sprite from the chain and delete it.
  *	Note:  It better not still be in the time queue.
  */
 
-void Game_window::remove_text
+void Game_window::remove_effect
 	(
-	Text_effect *txt
+	Special_effect *effect
 	)
 	{
-	if (txt->next)
-		txt->next->prev = txt->prev;
-	if (txt->prev)
-		txt->prev->next = txt->next;
+	if (effect->next)
+		effect->next->prev = effect->prev;
+	if (effect->prev)
+		effect->prev->next = effect->next;
 	else				// Head of chain.
-		texts = txt->next;
-	delete txt;
+		effects = effect->next;
+	delete effect;
 	}
 
 /*
  *	Remove all text items.
  */
 
-void Game_window::remove_all_text
+void Game_window::remove_all_effects
 	(
 	)
 	{
-	if (!texts)
+	if (!effects)
 		return;
-	while (texts)
+	while (effects)
 		{
-		tqueue->remove(texts);	// Remove from time queue if there.
-		remove_text(texts);
+		tqueue->remove(effects);// Remove from time queue if there.
+		remove_effect(effects);
 		}
 	paint();			// Just paint whole screen.
 	}
@@ -1608,7 +1601,7 @@ void Game_window::double_clicked
 		obj = gump->find_object(x, y);
 	else				// Search rest of world.
 		obj = find_object(x, y);
-	remove_all_text();		// Remove text msgs. from screen.
+	remove_all_effects();		// Remove text msgs. from screen.
 	if (obj)
 		{
 		cout << "Object name is " << obj->get_name() << endl;
