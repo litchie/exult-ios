@@ -855,15 +855,20 @@ static void Handle_event
 		int x = event.button.x/scale, y = event.button.y/scale;
 		if (event.button.button == 1)
 			{
-#ifdef USE_EXULTSTUDIO			// Shift-click means 'paint'.
-			if (cheat.in_map_editor() && 
-			    cheat.get_edit_shape() >= 0 &&
+#ifdef USE_EXULTSTUDIO
+			if (cheat.in_map_editor())
+				{	// Paint if shift-click.
+				if (cheat.get_edit_shape() >= 0 &&
 					// But always if painting.
-			    (cheat.get_edit_mode() == Cheat::paint ||
+			    	    (cheat.get_edit_mode() == Cheat::paint ||
 					(SDL_GetModState() & KMOD_SHIFT)))
-				{
-				Drop_in_map_editor(event, false);
-				break;
+					{
+					Drop_in_map_editor(event, false);
+					break;
+					}
+					// Don't drag if not in 'move' mode.
+				else if (cheat.get_edit_mode() != Cheat::move)
+					break;
 				}
 #endif
 			dragging = gwin->start_dragging(x, y);

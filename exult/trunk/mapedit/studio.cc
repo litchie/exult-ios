@@ -993,26 +993,7 @@ void ExultStudio::save_all
 		Shape_chooser::check_editing_files();
 		files->flush();		// Write out the .vga files.
 		}
-	if (shape_info_modified)
-		write_shape_info();
-	if (shape_names_modified)
-		{
-		shape_names_modified = false;
-		int cnt = names.size();
-		ofstream out;
-		U7open(out, "<PATCH>/text.flx");
-		Flex_writer writer(out, "Text created by ExultStudio", cnt);
-		for (int i = 0; i < cnt; i++)
-			{
-			char *str = names[i];
-			if (str)
-				out << str;
-			out.put((char) 0);	// 0-delimit.
-			writer.mark_section_done();
-			}
-		if (!writer.close())
-			EStudio::Alert("Error writing 'text.flx'");
-		}
+	write_shape_info();
 	write_map();
 	}
 
@@ -1074,14 +1055,14 @@ void ExultStudio::read_map
 	}
 
 /*
- *	Write out shape info.
+ *	Write out shape info. and text.
  */
 
 void ExultStudio::write_shape_info
 	(
 	)
 	{
-	if (vgafile)
+	if (shape_info_modified && vgafile)
 		{
 		Shapes_vga_file *svga = 
 				(Shapes_vga_file *) vgafile->get_ifile();
@@ -1090,6 +1071,24 @@ void ExultStudio::write_shape_info
 		svga->write_info(false);//++++BG?
 		}
 	shape_info_modified = false;
+	if (shape_names_modified)
+		{
+		shape_names_modified = false;
+		int cnt = names.size();
+		ofstream out;
+		U7open(out, "<PATCH>/text.flx");
+		Flex_writer writer(out, "Text created by ExultStudio", cnt);
+		for (int i = 0; i < cnt; i++)
+			{
+			char *str = names[i];
+			if (str)
+				out << str;
+			out.put((char) 0);	// 0-delimit.
+			writer.mark_section_done();
+			}
+		if (!writer.close())
+			EStudio::Alert("Error writing 'text.flx'");
+		}
 	}
 
 /*
