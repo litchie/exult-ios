@@ -28,8 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "objs.h"
 #include "vgafile.h"
-
-class Image_buffer;
+#include "imagewin.h"
 
 /*
  *	Handle custom mouse pointers.
@@ -38,11 +37,13 @@ class Mouse
 	{
 	Shape_file pointers;		// Pointers from 'pointers.shp'.
 	Game_window *gwin;		// Where to draw.
+	Image_window *iwin;		// From gwin.
 	Image_buffer *backup;		// Stores image below mouse shape.
 	Rectangle box;			// Area backed up.
 	int mousex, mousey;		// Last place where mouse was.
 	Shape_frame *cur;		// Current shape.
 	unsigned char focus;		// 1 if we have focus.
+	unsigned char onscreen;		// 1 if mouse is drawn on screen.
 	static short short_arrows[8];	// Frame #'s of short arrows, indexed
 					//   by direction (0-7, 0=east).
 	static short med_arrows[8];	// Medium arrows.
@@ -62,10 +63,24 @@ public:
 		greensquare = 23,
 		blocked = 49
 		};
+	void show();			// Paint it.
+	void hide()			// Restore area under mouse.
+		{
+		if (onscreen)
+			{
+			onscreen = 0;
+			iwin->put(backup, box.x, box.y);	
+			}
+		}
 	void set_shape(int framenum);	// Set to desired shape.
-	void move(int x, int y);	// Move to new location.
-	void gain_focus(int x, int y);	// Turn on mouse.
-	void lose_focus();		// Turn off mouse.
+	void move(int x, int y)		// Move to new location (mouse motion).
+		{
+		mousex = x;
+		mousey = y;
+					// Shift to new position.
+		box.shift(x - mousex, y - mousey);
+		}
+	void set_location(int x, int y);// Set to given location.
 					// Set to short arrow.
 	void set_short_arrow(Direction dir)
 		{ set_shape(short_arrows[(int) dir]); }

@@ -205,6 +205,9 @@ static void Handle_events
 	while (!*stop)
 		{
 		Delay();		// Wait a fraction of a second.
+#ifdef MOUSE
+		mouse->hide();		// Turn off mouse.
+#endif
 		SDL_Event event;
 		while (!*stop && SDL_PollEvent(&event))
 			Handle_event(event);
@@ -214,6 +217,9 @@ static void Handle_events
 		if (gwin->have_focus() && gwin->get_mode() == 
 							Game_window::normal)
 			gwin->get_tqueue()->activate(ticks);
+#ifdef MOUSE
+		mouse->show();		// Re-display mouse.
+#endif
 		gwin->show();		// Blit to screen if necessary.
 		}
 	}
@@ -284,19 +290,21 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 			dragging = 0;
 			}
 		break;
-	case SDL_MOUSEMOTION:		// Moving with right button down.
+	case SDL_MOUSEMOTION:
 #ifdef MOUSE
 		mouse->move(event.motion.x, event.motion.y);
-		gwin->set_painted();
+		gwin->set_painted();	// We'll need to blit.
 #endif
 		if (gwin->get_mode() != Game_window::normal &&
 		    gwin->get_mode() != Game_window::gump)
 			break;
+					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
 			{
 			gwin->drag(event.motion.x, event.motion.y);
 			dragged = 1;
 			}
+					// Dragging with right?
 		if (event.motion.state & SDL_BUTTON(3))
 			gwin->start_actor(event.motion.x, event.motion.y);
 		break;
@@ -305,9 +313,7 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 		if (event.active.state & SDL_APPMOUSEFOCUS)
 			{
 			if (event.active.gain)
-				mouse->gain_focus(0, 0);//+++++Pos.
-			else
-				mouse->lose_focus();
+				mouse->set_location(0, 0); //++++Location.
 			}
 #endif
 		if (event.active.state & SDL_APPINPUTFOCUS)
@@ -459,6 +465,9 @@ int Get_click
 		{
 		SDL_Event event;
 		Delay();		// Wait a fraction of a second.
+#ifdef MOUSE
+		mouse->hide();		// Turn off mouse.
+#endif
 #if 0
 					// Let animations happen.
 		gwin->get_tqueue()->activate(SDL_GetTicks());
@@ -474,6 +483,12 @@ int Get_click
 					return (1);
 					}
 				break;
+			case SDL_MOUSEMOTION:
+#ifdef MOUSE
+				mouse->move(event.motion.x, event.motion.y);
+				gwin->set_painted();
+#endif
+				break;
 			case SDL_QUIT:
 				quitting_time = 1;
 				return (0);
@@ -482,6 +497,9 @@ int Get_click
 					return (0);
 				break;
 				}
+#ifdef MOUSE
+		mouse->show();		// Turn on mouse.
+#endif
 		gwin->show();		// Blit to screen if necessary.
 		}
 	return (0);			// Shouldn't get here.

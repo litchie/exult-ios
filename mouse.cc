@@ -39,7 +39,7 @@ Mouse::Mouse
 	(
 	Game_window *gw			// Where to draw.
 	) : pointers(POINTERS), gwin(gw), backup(0), cur(0), mousex(-1),
-	    mousey(-1), focus(0)
+	    mousey(-1), iwin(gwin->get_win())
 	{
 					// Get max. backup size.
 	int cnt = pointers.get_num_frames();
@@ -54,7 +54,7 @@ Mouse::Mouse
 			maxh = h;
 		}
 					// Create backup buffer.
-	backup = gwin->get_win()->create_buffer(maxw, maxh);
+	backup = iwin->create_buffer(maxw, maxh);
 	box.w = maxw;
 	box.h = maxh;
 	set_short_arrow(east);		// +++++For now.
@@ -72,6 +72,24 @@ Mouse::~Mouse
 	}
 
 /*
+ *	Show the mouse.
+ */
+
+void Mouse::show
+	(
+	)
+	{
+	if (!onscreen)
+		{
+		onscreen = 1;
+					// Save background.
+		iwin->get(backup, box.x, box.y);
+					// Paint new location.
+		gwin->paint_rle_shape(*cur, mousex, mousey);
+		}
+	}
+
+/*
  *	Set to new shape.
  */
 
@@ -80,77 +98,24 @@ void Mouse::set_shape
 	int framenum
 	)
 	{
-	if (focus)			// Restore area under mouse.
-		gwin->get_win()->put(backup, box.x, box.y);	
 	cur = pointers.get_frame(framenum); 
 					// Set backup box to cover mouse.
 	box.x = mousex - cur->get_xleft();
 	box.y = mousey - cur->get_yabove();
-	if (!focus)
-		return;
-					// Save background.
-	gwin->get_win()->get(backup, box.x, box.y);
-					// Paint new location.
-	gwin->paint_rle_shape(*cur, mousex, mousey);
 	}
 
 /*
- *	Move it.
+ *	Set to an arbitrary location.
  */
 
-void Mouse::move
-	(
-	int x, int y			// New location.
-	)
-	{
-					// Restore area under mouse.
-	gwin->get_win()->put(backup, box.x, box.y);	
-	int deltax = x - mousex, deltay = y - mousey;
-	mousex = x;
-	mousey = y;
-					// Shift to new position.
-	box.shift(deltax, deltay);
-					// Save background.
-	gwin->get_win()->get(backup, box.x, box.y);
-					// Paint new location.
-	gwin->paint_rle_shape(*cur, mousex, mousey);
-	}
-
-/*
- *	Gain mouse coverage.
- */
-
-void Mouse::gain_focus
+void Mouse::set_location
 	(
 	int x, int y			// Mouse position.
 	)
 	{
-	if (!focus)
-		{
-		focus = 1;
-		mousex = x;
-		mousey = y;
-		box.x = mousex - cur->get_xleft();
-		box.y = mousey - cur->get_yabove();
-					// Save background.
-		gwin->get_win()->get(backup, box.x, box.y);
-					// Paint new location.
-		gwin->paint_rle_shape(*cur, mousex, mousey);
-		}
+	mousex = x;
+	mousey = y;
+	box.x = mousex - cur->get_xleft();
+	box.y = mousey - cur->get_yabove();
 	}
 
-/*
- *	Lose mouse coverage.
- */
-
-void Mouse::lose_focus
-	(
-	)
-	{
-	if (focus)
-		{
-		focus = 0;
-					// Restore area under mouse.
-		gwin->get_win()->put(backup, box.x, box.y);	
-		}
-	}
