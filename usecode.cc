@@ -2002,7 +2002,7 @@ USECODE_INTRINSIC(sit_down)
 	    (nobj->get_npc_num() < 0 && nobj != gwin->get_main_actor()))
 		return (no_ret);	// Doesn't look like an NPC.
 	Actor *npc = (Actor *) nobj;
-	Game_object *chair = get_item(parm[1]);
+	Game_object *chair = get_item(parms[1]);
 	if (!chair)
 		return(no_ret);
 	Sit_schedule::set_action(npc, chair);
