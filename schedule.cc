@@ -1784,7 +1784,8 @@ void Lab_schedule::now_what
 							340, 0, 0);
 			if (t.tx != -1 && t.tz == spot_on_table.tz)
 				{
-				int nframes = ShapeID(340, 0).get_num_frames();
+				// create a potion randomly, but don't use the last frame
+				int nframes = ShapeID(340, 0).get_num_frames() - 1;
 				Game_object *p = gmap->create_ireg_object(
 					ShapeID::get_info(340), 340,
 					rand()%nframes, 0, 0, 0);
