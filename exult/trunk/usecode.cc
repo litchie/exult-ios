@@ -380,7 +380,7 @@ void Scheduled_usecode::handle_event
 					}
 				}
 			else
-			        cout << "Unhandled sched. opcode " << hex << 
+			        cout << "Und sched. opcode " << hex << 
 			"0x" << setfill((char)0x30) << setw(2) << opcode << endl;
 
 			break;
@@ -737,6 +737,10 @@ void Usecode_machine::show_npc_face
 		return;
 	int shape = npc->get_face_shapenum();
 	int frame = arg2.get_int_value();
+	gwin->remove_text_effects();
+	gwin->end_gump_mode();
+	gwin->set_all_dirty();
+	gwin->paint();
 	gwin->show_face(shape, frame);
 	user_choice = 0;		// Seems like a good idea.
 	}
@@ -1722,27 +1726,70 @@ USECODE_INTRINSIC(get_party_list)
 
 USECODE_INTRINSIC(create_new_object)
 {
-	// Takes shape, rets. new obj?
-	// Show frames in seq.? (animate?)
 	int shapenum = parms[0].get_int_value();
+	unsigned int tx;
+	unsigned int ty;
+	unsigned int cx;
+	unsigned int cy;
+	unsigned int lift;
 	extern int Is_body(int);// +++++Pretty kludgy.
-				// Guessing:
-	Game_object *at = caller_item;
-	if (!at)
-		at = gwin->get_main_actor();
-	at = at->get_outermost();	// In case it's inside something.
-	Shape_info& info = gwin->get_info(shapenum);
-	Game_object *obj;		// Create to be written to Ireg.
-	if (info.is_animated())
-		obj = new Animated_ireg_object(shapenum, 0,
-			  at->get_tx(), at->get_ty(), at->get_lift());
-	else if (Is_body(shapenum))
-		obj = new Dead_body(shapenum, 0, at->get_tx(), at->get_ty(),
-							at->get_lift(), -1);
+
+	if (num_parms == 2)
+	{
+		tx = parms[1].get_elem(0).get_int_value()%tiles_per_chunk;
+		ty = parms[1].get_elem(1).get_int_value()%tiles_per_chunk;
+		cx = parms[1].get_elem(0).get_int_value()/tiles_per_chunk;
+		cy = parms[1].get_elem(1).get_int_value()/tiles_per_chunk;
+		lift = parms[1].get_elem(2).get_int_value();
+		cout << "LOC " << endl;
+	}
 	else
-		obj = new Ireg_game_object(shapenum, 0,
-			  at->get_tx(), at->get_ty(), at->get_lift());
-	gwin->get_objects(at->get_cx(), at->get_cy())->add(obj);
+	{
+		Game_object *at = caller_item;
+		if (!at)
+			at = gwin->get_main_actor();
+		at = at->get_outermost();	// In case it's inside something.
+		
+		tx = at->get_tx();
+		ty = at->get_ty();
+		cx = at->get_cx();
+		cy = at->get_cy();
+		lift = at->get_lift();
+		cout << " AT " << endl;
+	}
+
+	Game_object *obj;		// Create to be written to Ireg.
+	Monster_info *inf = gwin->get_monster_info(shapenum);
+
+	if (inf)
+	{
+		Monster_actor *monster = inf->create(
+			cx, cy, tx, ty, lift);
+		gwin->add_dirty(monster);
+		gwin->add_nearby_npc(monster);
+		obj = monster;
+	}
+	else
+	{
+		Shape_info& info = gwin->get_info(shapenum);
+		if (info.is_animated())
+		{
+			obj = new Animated_ireg_object(shapenum, 0, tx, ty, lift);
+			cout << " animated " << endl;
+		}
+		else if (Is_body(shapenum))
+		{
+			obj = new Dead_body(shapenum, 0, tx, ty, lift, -1);
+			cout << " body " << endl;
+		}
+		else
+		{
+			obj = new Ireg_game_object(shapenum, 0, tx, ty, lift);
+			cout << " normal " << endl;
+		}
+		gwin->get_objects(cx, cy)->add(obj);
+	}
+
 	gwin->show();
 	last_created = obj;
 	Usecode_value u((long) obj);
@@ -1925,7 +1972,7 @@ USECODE_INTRINSIC(is_npc)
 		return(u);
 		}
 	Usecode_value u(obj == gwin->get_main_actor() ||
-			obj->get_npc_num() > 0);
+			obj->get_npc_num());// > 0);
 	return(u);
 }
 
@@ -2812,6 +2859,22 @@ USECODE_INTRINSIC(play_sound_effect)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(get_npc_id)
+{
+	// GetSchedule(npc).  Rets. schedtype.
+	Actor *obj = (Actor *) get_item(parms[0]);
+	Usecode_value u(obj ? obj->get_ident() : 0);
+	return(u);
+}
+
+USECODE_INTRINSIC(set_npc_id)
+{
+	Actor *obj = (Actor *) get_item(parms[0]);
+	if (obj)
+		obj->set_ident(parms[1].get_int_value());
+	return(no_ret);
+}
+
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
 // missing from mingw32 header files, so included manually
@@ -2843,7 +2906,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(input_numeric_value), // 0xc
 	USECODE_INTRINSIC_PTR(set_item_shape), // 0xd
 	USECODE_INTRINSIC_PTR(find_nearest), // 0xe
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xf - Sound effect
+	USECODE_INTRINSIC_PTR(play_sound_effect), // 0xf - Sound effect
 	USECODE_INTRINSIC_PTR(die_roll), // 0x10
 	USECODE_INTRINSIC_PTR(get_item_shape), // 0x11
 	USECODE_INTRINSIC_PTR(get_item_frame), // 0x12
@@ -3099,35 +3162,35 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(execute_usecode_array), // 1
 	USECODE_INTRINSIC_PTR(delayed_execute_usecode_array), // 2
 
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xd
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xe
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 3
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 4
 	
-	USECODE_INTRINSIC_PTR(show_npc_face), // 3
-	USECODE_INTRINSIC_PTR(remove_npc_face), // 4
+	USECODE_INTRINSIC_PTR(show_npc_face), // 5
+	USECODE_INTRINSIC_PTR(remove_npc_face), // 6
 
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xf
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x10
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x11
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x12
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x13
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 7
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 8
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 9
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xa
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0xb
 
-	USECODE_INTRINSIC_PTR(add_answer), // 5
-	USECODE_INTRINSIC_PTR(remove_answer), // 6
-	USECODE_INTRINSIC_PTR(push_answers), // 7
-	USECODE_INTRINSIC_PTR(pop_answers), // 8
-	USECODE_INTRINSIC_PTR(clear_answers), // 9
+	USECODE_INTRINSIC_PTR(add_answer), // 0xc
+	USECODE_INTRINSIC_PTR(remove_answer), // 0xd
+	USECODE_INTRINSIC_PTR(push_answers), // 0xe
+	USECODE_INTRINSIC_PTR(pop_answers), // 0xf
+	USECODE_INTRINSIC_PTR(clear_answers), // 0x10
 
-	USECODE_INTRINSIC_PTR(select_from_menu), // 0x0a
-	USECODE_INTRINSIC_PTR(select_from_menu2), // 0x0b
-	USECODE_INTRINSIC_PTR(input_numeric_value), // 0xc
+	USECODE_INTRINSIC_PTR(select_from_menu), // 0x11
+	USECODE_INTRINSIC_PTR(select_from_menu2), // 0x12
+	USECODE_INTRINSIC_PTR(input_numeric_value), // 0x13
 
 	USECODE_INTRINSIC_PTR(set_item_shape), // 0x14
 
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x15
-
-	USECODE_INTRINSIC_PTR(find_nearest), // 0x16
+	USECODE_INTRINSIC_PTR(find_nearest), // 0x15
+	USECODE_INTRINSIC_PTR(play_sound_effect), // 0x16
+	
 	USECODE_INTRINSIC_PTR(die_roll), // 0x17
-	USECODE_INTRINSIC_PTR(get_item_shape), // appears to be get_item_shape
+	USECODE_INTRINSIC_PTR(get_item_shape), // appears to be get_item_shape for some odd reason
 	
 	USECODE_INTRINSIC_PTR(get_item_shape), // 0x19
 	USECODE_INTRINSIC_PTR(get_item_frame), // 0x1a
@@ -3152,8 +3215,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(get_party_list), // 0x2b
 	
 	USECODE_INTRINSIC_PTR(create_new_object), // 0x2c - Known
-
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x2d UNUSED
+	USECODE_INTRINSIC_PTR(create_new_object), // 0x2d
 
 	USECODE_INTRINSIC_PTR(set_last_created), // 0x2e 
 	USECODE_INTRINSIC_PTR(update_last_created), // 0x2f - Known
@@ -3166,18 +3228,18 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x36 UNUSED.
 
 	// Packing
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x37 UNUSED
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x38 UNUSED
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x37
+	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x38
 	// End pack
 
-
-	USECODE_INTRINSIC_PTR(play_music), // 0x39
-	USECODE_INTRINSIC_PTR(npc_nearby), // 0x3a
-	USECODE_INTRINSIC_PTR(find_nearby_avatar), // 0x3b
+	USECODE_INTRINSIC_PTR(play_music), // 0x39 - Known
 
 	// Si Pack
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x3c UNUSED
+	USECODE_INTRINSIC_PTR(npc_nearby), // 0x3c
 
+
+	USECODE_INTRINSIC_PTR(npc_nearby), // 0x3a
+	USECODE_INTRINSIC_PTR(find_nearby_avatar), // 0x3b
 
 	USECODE_INTRINSIC_PTR(is_npc),  // 0x3d - Known
 	USECODE_INTRINSIC_PTR(display_runes), // 0x3e
@@ -3192,45 +3254,49 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(game_minute), // 0x45
 	
 	USECODE_INTRINSIC_PTR(get_npc_number),	// 0x46
+
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4c
+
 	USECODE_INTRINSIC_PTR(part_of_day),	// 0x47
 	USECODE_INTRINSIC_PTR(get_alignment),	// 0x48
 	USECODE_INTRINSIC_PTR(set_alignment),	// 0x49
 	USECODE_INTRINSIC_PTR(move_object),	// 0x4a
 	USECODE_INTRINSIC_PTR(remove_npc),	// 0x4b
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4c
 	
 	USECODE_INTRINSIC_PTR(item_say),	// 0x4d
-	USECODE_INTRINSIC_PTR(projectile_effect),	// 0x4e
-	USECODE_INTRINSIC_PTR(get_lift),	// 0x4e
-	USECODE_INTRINSIC_PTR(set_lift),	// 0x4f
-
 	// Si Pack
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x61
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51 Gets an Array??
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50++++Get_something() (0-3)
+	USECODE_INTRINSIC_PTR(projectile_effect),	// 0x4e
+	USECODE_INTRINSIC_PTR(get_lift),	// 0x4f
+	USECODE_INTRINSIC_PTR(set_lift),	// 0x50
+
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52++++Get_something() (0-3)
 	// 3==can't do magic here?         GetWeather (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51++++SetWeather(0-3) (ucdump.c)
-	USECODE_INTRINSIC_PTR(sit_down),// 0x52
-	USECODE_INTRINSIC_PTR(summon),	// 0x53     SummonCreature (ucdump.c)
-	USECODE_INTRINSIC_PTR(display_map),	// 0x54
-	USECODE_INTRINSIC_PTR(kill_npc),// 0x55
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56
-	USECODE_INTRINSIC_PTR(set_attack_mode),	// 0x57
-	USECODE_INTRINSIC_PTR(set_opponent),	// 0x58
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x59     CloneNPC (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5a UNUSED
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b ++++called when you dbl-click
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x53++++SetWeather(0-3) (ucdump.c)
+
+	USECODE_INTRINSIC_PTR(sit_down),// 0x54 - Known
+	
+	USECODE_INTRINSIC_PTR(summon),	// 0x55     SummonCreature (ucdump.c)
+	USECODE_INTRINSIC_PTR(display_map),	// 0x56
+	USECODE_INTRINSIC_PTR(kill_npc),// 0x57
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x58
+	USECODE_INTRINSIC_PTR(set_attack_mode),	// 0x59
+	USECODE_INTRINSIC_PTR(set_opponent),	// 0x5a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b     CloneNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5c UNUSED
+	USECODE_INTRINSIC_PTR(display_area),	// 0x5d ++++called when you dbl-click
                          	// on FoV gem. (gift from LB) display area???
                                 // ShowCrystalBall  (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5c     ShowWizardEye (ucdump.c)
-	USECODE_INTRINSIC_PTR(resurrect),// 0x5d     ResurrectNPC (ucdump.c)
-	USECODE_INTRINSIC_PTR(add_spell),// 0x5e     AddSpellToBook (ucdump.c)
-	USECODE_INTRINSIC_PTR(sprite_effect),// 0x5f ExecuteSprite (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x60  ++++Explode???
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5e     ShowWizardEye (ucdump.c)
+	USECODE_INTRINSIC_PTR(resurrect),// 0x5f     ResurrectNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(add_spell),// 0x60     AddSpellToBook (ucdump.c)
+	USECODE_INTRINSIC_PTR(sprite_effect),// 0x61 ExecuteSprite (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x62  ++++Explode???
 
 	// Packing
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x62
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x64
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x65
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x66
@@ -3274,7 +3340,11 @@ struct Usecode_machine::IntrinsicTableEntry
 
 
 	USECODE_INTRINSIC_PTR(remove_item),	// 0x84 - Known
-	
+
+	// Packing!!!
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
+	// End Pack
+
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x70
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x71
 	USECODE_INTRINSIC_PTR(is_readied),	// 0x72
@@ -3288,7 +3358,13 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b ++++Another sprite animation?
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7c
-	USECODE_INTRINSIC_PTR(path_run_usecode),	// 0x7d
+
+	// Packing
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
+	// End Pack
+
+	USECODE_INTRINSIC_PTR(path_run_usecode),	// 0x94 - Known
+	
 	USECODE_INTRINSIC_PTR(close_gumps),	// 0x7e
 	USECODE_INTRINSIC_PTR(item_say),	// 0x7f ItemSay in gump.
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80 ++++Open_gump(item)???
@@ -3302,45 +3378,43 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
 	// End Pack
 
 	USECODE_INTRINSIC_PTR(is_not_blocked),	// 0x85
 	
 	USECODE_INTRINSIC_PTR(play_sound_effect),	// 0xA1 - Known
 	
-	USECODE_INTRINSIC_PTR(direction_from),	// 0x87
+	USECODE_INTRINSIC_PTR(direction_from),	// 0xa2
 	
 	USECODE_INTRINSIC_PTR(get_item_flag),	// 0xA3 - Known
 	USECODE_INTRINSIC_PTR(set_item_flag),	// 0xA4 - Known
 	USECODE_INTRINSIC_PTR(clear_item_flag),	// 0xA5 - Known
 	
-	USECODE_INTRINSIC_PTR(run_usecode),	// 0x8b 
-	USECODE_INTRINSIC_PTR(fade_palette),	// 0x8c 
-	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d
-	USECODE_INTRINSIC_PTR(in_combat),	// 0x8e
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8f +++++Play speech/music?? Only
+	USECODE_INTRINSIC_PTR(run_usecode),	// 0xa6 
+	USECODE_INTRINSIC_PTR(fade_palette),	// 0xa7 
+	USECODE_INTRINSIC_PTR(get_party_list2),	// 0xa8
+	USECODE_INTRINSIC_PTR(in_combat),	// 0xa9
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xaa +++++Play speech/music?? Only
 		//  called right before endgame.
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x90
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x92
-	USECODE_INTRINSIC_PTR(get_dead_party),	// 0x93
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x94    SetupOrrery (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x95
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x96
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x97
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x98
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x99
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9a
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9b
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9c
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9d
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9e
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x9f
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa0
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa1
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa2
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xab
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xac
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xad
+	USECODE_INTRINSIC_PTR(get_dead_party),	// 0xae
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xaf    SetupOrrery (ucdump.c)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb0
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb1
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb2
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb3
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb4
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb5
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb6
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb7
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb8
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xb9
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xba
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xbb
+	USECODE_INTRINSIC_PTR(get_npc_id),	// 0xbc - Known
+	USECODE_INTRINSIC_PTR(set_npc_id),	// 0xbd - Known
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa3
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa4
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0xa5
@@ -3638,7 +3712,7 @@ Usecode_machine::~Usecode_machine
 	}
 
 #if DEBUG
-int debug = 0;				// 2 for more stuff.
+int debug = 1;				// 2 for more stuff.
 static int ucbp_fun = -1, ucbp_ip = -1;	// Breakpoint.
 void Setbreak(int fun, int ip)
 	{ ucbp_fun = fun; ucbp_ip = ip; }
@@ -3937,7 +4011,7 @@ int Usecode_machine::run
 			sval--;		// It's 1 based.
 					// Get # of local to index.
 			offset = Read2(ip);
-			if (offset < 0 || offset >= num_locals)
+			if (sval < 0 || offset < 0 || offset >= num_locals)
 				{
 				cerr << "Local #" << offset << 
 							"out of range" << endl;

@@ -44,7 +44,7 @@ Actor::Actor
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
 	    light_sources(0),
 	    usecode_dir(0), siflags(0), type_flags(0), action(0), 
-	    frame_time(0), next_path_time(0), timers(0)
+	    frame_time(0), next_path_time(0), timers(0), ident(0)
 	{
 	init();				// Clear rest of stuff.
 	unsigned locx = Read1(nfile);	// Get chunk/tile coords.
@@ -58,6 +58,7 @@ Actor::Actor
 		set_shape(shnum & 0x3ff);
 
 	set_frame(shnum >> 10);
+	
 	int iflag1 = Read2(nfile);	// Inventory flag.
 	int schunk = Read1(nfile);	// Superchunk #.
 	Read1(nfile);			// Skip next byte.
@@ -127,7 +128,7 @@ Actor::Actor
 	// Combat skill (0-6), Petra (7)
 	int combat_val = Read1(nfile);
 	set_property((int) Actor::combat, combat_val & 0x7F);
-	if ((combat_val << 7) & 1) set_siflag (Actor::petra);
+	if ((combat_val << 7) & 1) set_flag (Actor::petra);
 
 	schedule_type = Read1(nfile);
 	nfile.seekg(1, ios::cur);	// Default attack mode
@@ -154,6 +155,7 @@ Actor::Actor
 	}
 	else
 	{
+		set_ident(magic_val&0x1F);
 		if ((mana_val << 0) & 1) set_flag (Actor::met);
 		if ((mana_val << 1) & 1) set_siflag (Actor::no_spell_casting);
 		if ((mana_val << 2) & 1) set_siflag (Actor::zombie);
@@ -239,18 +241,6 @@ Actor::Actor
 		name = namebuf;		// Store copy of it.
 
 
-	if (name.empty()) cout << get_name();
-	else cout << name;
-
-	cout << " (" << num << ") flags ";
-
-	if (get_type_flag(tf_fly)) cout << "fly ";
-	if (get_type_flag(tf_swim)) cout << "swim ";
-	if (get_type_flag(tf_walk)) cout << "walk ";
-	if (get_type_flag(tf_ethereal)) cout << "ethereal ";
-	if (get_type_flag(tf_in_party)) cout << "in party ";
-	cout << endl;
-	
 	Game_window *gwin = Game_window::get_game_window();
 					// Get abs. chunk. coords. of schunk.
 	int scy = 16*(schunk/12);
@@ -272,13 +262,29 @@ Actor::Actor
 			0, scx + cx, scy + cy, olist, tilex, tiley, -1, -1);
 #endif
 	ready_best_weapon();		// Get best weapon in hand.
-#if 0
-cout << i << " Creating " << namebuf << ", shape = " << 
-	actor->get_shapenum() <<
-	", frame = " << actor->get_framenum() << ", usecode = " <<
+#ifdef DEBUG
+
+	cout << get_npc_num() << " Creating ";
+
+	if (name.empty()) cout << get_name();
+	else cout << name;
+
+	cout << ", shape = " << 
+		get_shapenum() <<
+		", frame = " << get_framenum() << ", usecode = " <<
 				usefun << endl;
-cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
-	<< lift << endl;
+
+	cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
+		<< get_lift() << endl;
+
+	cout << "Type Flags: ";
+	if (get_type_flag(tf_fly)) cout << "fly ";
+	if (get_type_flag(tf_swim)) cout << "swim ";
+	if (get_type_flag(tf_walk)) cout << "walk ";
+	if (get_type_flag(tf_ethereal)) cout << "ethereal ";
+	if (get_type_flag(tf_in_party)) cout << "in party ";
+	cout << endl;
+
 #endif
 	}
 
@@ -342,7 +348,7 @@ void Actor::write
 
 
 	iout = get_property(Actor::combat);
-	if (get_siflag (Actor::petra)) iout |= 1 << 7;
+	if (get_flag (Actor::petra)) iout |= 1 << 7;
 	nfile.put(iout);
 	
 
@@ -361,6 +367,7 @@ void Actor::write
 	}
 	else
 	{
+		magic_val = get_ident() & 0x1F;
 		if (get_flag (Actor::met)) mana_val |= 1;
 		if (get_siflag (Actor::no_spell_casting)) mana_val |= 1 << 1;
 		if (get_siflag (Actor::zombie)) mana_val |= 1 << 2;

@@ -832,13 +832,17 @@ void Actor::set_flag
 		&& Game::get_game_type() == SERPENT_ISLE)
 		return;
 		
-
 	if (flag >= 0 && flag < 32)
 		flags |= ((unsigned long) 1 << flag);
+	else if (flag >= 32 && flag < 64)
+		flags2 |= ((unsigned long) 1 << (flag-32));
+		
 	if (flag == asleep)
 		set_schedule_type(Schedule::sleep);
 	if (flag == poisoned)
 		need_timers()->start_poison();
+
+	set_actor_shape();
 	}
 
 void Actor::set_siflag
@@ -875,9 +879,13 @@ void Actor::clear_flag
 	cout << "Clear flag for NPC " << get_npc_num() << " = " << flag << endl;
 	if (flag >= 0 && flag < 32)
 		flags &= ~((unsigned long) 1 << flag);
+	else if (flag >= 32 && flag < 64)
+		flags2 &= ~((unsigned long) 1 << (flag-32));
 
 	if (flag == asleep)
 		set_schedule_type(Schedule::stand);
+
+	set_actor_shape();
 	}
 
 void Actor::clear_siflag
@@ -1609,8 +1617,8 @@ void Actor::set_actor_shape()
 
 	if (Game::get_game_type() == SERPENT_ISLE)
 	{
-		if ((avatar->get_siflag (Actor::petra) && npc_num == 0) ||
-			(!avatar->get_siflag (Actor::petra) && npc_num != 0))
+		if ((avatar->get_flag (Actor::petra) && npc_num == 0) ||
+			(!avatar->get_flag (Actor::petra) && npc_num != 0))
 		{
 			sn = 658;
 		}
@@ -1638,10 +1646,11 @@ void Actor::set_actor_shape()
 		else
 			sn = 721;
 		}
+
 	set_shape (sn, get_framenum());
 
 	// Set petra
-	if (npc_num != 28)
+	if (npc_num != 28 && gwin->get_npc(28))
 		gwin->get_npc(28)->set_actor_shape();
 }
 

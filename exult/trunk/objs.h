@@ -140,7 +140,9 @@ public:
 		okay_to_land = 21,	// Used for flying-carpet.
 		confused = 25,		// ??Guessing.
 		in_motion = 26,		// ??Guessing (cart, boat)??
-		met = 28			// Met flag from Serpent Isle
+		met = 28,			// Has the npc been met
+		// Flags > 31
+		petra = 35			// Guess
 		};
 	int get_tx() const		// Get tile (0-15) within chunk.
 		{ return (shape_pos >> 4) & 0xf; }
@@ -305,6 +307,10 @@ public:
 	virtual int get_flag(int flag) const  { return 0; }
 	virtual int get_siflag(int flag) const { return 0; }
 	virtual int get_type_flag(int flag) const { return 0; }
+
+	virtual unsigned char get_ident() { return 0; }
+	virtual void set_ident(unsigned char id) {  }
+
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return 0; }
 	virtual int get_party_id() const// Get/set index within party.
@@ -378,26 +384,27 @@ class Ireg_game_object : public Game_object
 	Container_game_object *owner;	// Container this is in, or 0.
 protected:
 	unsigned flags:32;		// 32 flags used in 'usecode'.
+	unsigned flags2:32;		// Another 32 flags used in 'usecode'.
 public:
 					// Create from ireg. data.
 	Ireg_game_object(unsigned char l, unsigned char h, 
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
 		: Game_object(l, h, shapex, shapey, lft), owner(0), 
-			flags(0),lowlift(-1), highshape (-1)
+			flags(0),flags2(0),lowlift(-1), highshape (-1)
 		{  }
 	Ireg_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
-				owner(0), flags(0), lowlift(-1), highshape (-1)
+				owner(0), flags(0), flags2(0), lowlift(-1), highshape (-1)
 		{  }
 					// Copy constructor.
 	Ireg_game_object(const Ireg_game_object& obj2)
-		: Game_object(obj2), owner(0), flags(0),
+		: Game_object(obj2), owner(0), flags(0), flags2(0),
 					lowlift(-1), highshape (-1)
 		{  }
 					// Create fake entry.
-	Ireg_game_object() : owner(0), flags(0), lowlift(-1), highshape (-1)
+	Ireg_game_object() : owner(0), flags(0), flags2(0), lowlift(-1), highshape (-1)
 		{  }
 	virtual ~Ireg_game_object()
 		{  }
@@ -421,16 +428,23 @@ public:
 		{
 		if (flag >= 0 && flag < 32)
 			flags |= ((unsigned long) 1 << flag);
+		else if (flag >= 32 && flag < 64)
+			flags2 |= ((unsigned long) 1 << (flag-32));
 		}
 	virtual void clear_flag(int flag)
 		{
 		if (flag >= 0 && flag < 32)
 			flags &= ~((unsigned long) 1 << flag);
+		else if (flag >= 32 && flag < 64)
+			flags2 &= ~((unsigned long) 1 << (flag-32));
 		}
 	virtual int get_flag(int flag) const
 		{
-		return (flag >= 0 && flag < 32) ? 
-			(flags & ((unsigned long) 1 << flag)) != 0 : 0;
+		if (flag >= 0 && flag < 32)
+			return flags & ((unsigned long) 1 << flag);
+		else if (flag >= 32 && flag < 64)
+			return flags2 & ((unsigned long) 1 << (flag-32));
+		return 0;
 		}
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
