@@ -176,7 +176,7 @@
 </xsl:template>
 
 
-<!-- Internal Link Template -->
+<!-- Internal Link Templates -->
 <xsl:template match="ref">
 	<a href="#{generate-id(key('faq_ref',@target))}">
 	<xsl:choose>
@@ -187,10 +187,32 @@
 			<xsl:value-of select="count(key('faq_ref',@target)/parent::section/preceding-sibling::section)"/>
 			<xsl:text>.</xsl:text>
 			<xsl:value-of select="count(key('faq_ref',@target)/preceding-sibling::faq)+1"/>
+			<xsl:text>.</xsl:text>					
 		</xsl:otherwise>
 	</xsl:choose>
 	</a>
 </xsl:template>
+
+
+<xsl:template match="ref1">		
+	<a href="#{generate-id(key('faq_ref',@target))}">		
+		<xsl:value-of select="count(key('faq_ref',@target)/parent::section/preceding-sibling::section)"/>
+		<xsl:text>.</xsl:text>
+		<xsl:value-of select="count(key('faq_ref',@target)/preceding-sibling::faq)+1"/>
+		<xsl:text>. </xsl:text>
+		<xsl:apply-templates select="key('faq_ref',@target)/child::question"/>
+	</a>
+</xsl:template>
+
+
+<xsl:template match="ref2">		
+	<a href="#{generate-id(key('section_ref',@target))}">		
+		<xsl:value-of select="count(key('section_ref',@target)/preceding-sibling::section)"/>
+		<xsl:text>. </xsl:text>
+  		<xsl:apply-templates select="key('section_ref',@target)/@title"/>  		
+	</a>
+</xsl:template>
+
 
 <!-- External Link Template -->
 <xsl:template match="extref">
