@@ -2339,7 +2339,7 @@ int Main_actor::step
 	if (poison)
 		Actor::set_flag((int) Obj_flags::poisoned);
 					// Check for scrolling.
-	gwin->scroll_if_needed(t);
+	gwin->scroll_if_needed(this, t);
 	add_dirty(gwin);		/// Set to update old location.
 					// Get old chunk, old tile.
 	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
@@ -2933,6 +2933,8 @@ int Npc_actor::step
 		}
 	if (poison)
 		Actor::set_flag((int) Obj_flags::poisoned);
+					// Check for scrolling.
+	gwin->scroll_if_needed(this, t);
 	add_dirty(gwin);		// Set to repaint old area.
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
@@ -3313,6 +3315,8 @@ int Monster_actor::step
 			dormant = true;	// Off-screen.
 		return (0);		// Done.
 		}
+					// Check for scrolling.
+	gwin->scroll_if_needed(this, t);
 	add_dirty(gwin);		// Set to repaint old area.
 					// Get old chunk.
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);

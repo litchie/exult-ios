@@ -1,3 +1,9 @@
+2001-03-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* SI - Added 'camera_actor' to Game_window, and a usecode
+	intrinsic that sets it.  Crystal ball is half-working (and then
+	you're stuck in space!)
+
 2001-03-23  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.cygwin: committed Travis' changes
 
