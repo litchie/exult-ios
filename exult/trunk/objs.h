@@ -410,7 +410,7 @@ public:
 		{ return cache->is_blocked(lift, tx, ty, new_lift); }
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles)
-		{ cache->set_egged(egg, tiles); }
+		{ need_cache()->set_egged(egg, tiles); }
 	void activate_eggs(int tx, int ty)
 		{ need_cache()->activate_eggs(this, tx, ty); }
 	};
