@@ -2147,11 +2147,31 @@ Monster_actor *Monster_info::create
 	Monster_actor *monster = new Monster_actor("", shapenum);
 	monster->set_info(this);
 	
+	cout << monster->get_name() << " flags ";
+	
 	// Movement flags
-	if ((flags >> fly)&1) monster->set_type_flag(Actor::tf_fly);
-	if ((flags >> swim)&1) monster->set_type_flag(Actor::tf_swim);
-	if ((flags >> walk)&1) monster->set_type_flag(Actor::tf_walk);
-	if ((flags >> ethereal)&1) monster->set_type_flag(Actor::tf_ethereal);
+	if ((flags >> fly)&1)
+	{
+		cout << "fly ";
+		monster->set_type_flag(Actor::tf_fly);
+	}
+	if ((flags >> swim)&1)
+	{
+		cout << "swim ";
+		monster->set_type_flag(Actor::tf_swim);
+	}
+	if ((flags >> walk)&1)
+	{
+		cout << "walk ";
+		monster->set_type_flag(Actor::tf_walk);
+	}
+	if ((flags >> ethereal)&1)
+	{
+		cout << "ethereal ";
+		monster->set_type_flag(Actor::tf_ethereal);
+	}
+	
+	cout << endl;
 	
 					// Seems like the #'s are x4.
 	monster->set_property(Actor::strength, strength/4);

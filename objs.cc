@@ -1869,6 +1869,9 @@ void Chunk_cache::setup
 			update_egg(chunk, (Egg_object *) obj, 1);
 		else
 			update_object(chunk, obj, 1);
+			
+	obj_list = chunk;
+	
 	setup_done = 1;
 	}
 
@@ -1940,6 +1943,29 @@ int Chunk_cache::get_lowest_blocked
 	}
 
 /*
+ *	See if a tile is water or land.
+ */
+
+inline void Check_terrain
+	(
+	Game_window *gwin,
+	Chunk_object_list *nlist,	// Chunk.
+	int tx, int ty,			// Tile within chunk.
+	int& terrain			// Sets: bit0 if land, bit1 if water.
+	)
+	{
+	ShapeID flat = nlist->get_flat(tx, ty);
+	if (!flat.is_invalid())
+		{
+		if (gwin->get_info(flat.get_shapenum()).is_water())
+			terrain |= 2;
+		else
+			terrain |= 1;
+		}
+
+	}
+
+/*
  *	Is a given square occupied at a given lift?
  *
  *	Output: 1 if so, else 0.
@@ -1954,16 +1980,26 @@ int Chunk_cache::is_blocked
 	int lift,			// Given lift.
 	int tx, int ty,			// Square to test.
 	int& new_lift,			// New lift returned.
-	int max_drop			// Max. drop allowed.
+	int max_drop,			// Max. drop allowed.
+	int move_flags
 	)
+{
+
+	// Ethereal beings always return not blocked
+	// and can only move horizontally
+	if (move_flags & (1 << Actor::tf_ethereal))
 	{
+		new_lift = lift;
+		return 0;
+	}
+
 					// Get bits.
 	unsigned short tflags = blocked[ty*tiles_per_chunk + tx];
 
 	int new_high;
 					// Something there?
 	if (tflags & (1 << lift))		
-		{
+	{
 		new_lift = lift + 1;	// Maybe we can step up.
 		new_high = get_lowest_blocked (new_lift, tflags);
 		if (new_lift > 15)
@@ -1972,18 +2008,56 @@ int Chunk_cache::is_blocked
 			return (1);	// Next step up also blocked
 		else if (new_high != -1 && new_high < (new_lift + height))
 			return (1);	// Blocked by something above
-		else
-			return (0);
-		}
-					// See if we're going down.
-	new_lift = get_highest_blocked(lift, tflags) + 1;
-	new_high = get_lowest_blocked (new_lift, tflags);
-	
-	if (new_high != -1 && new_high < (new_lift + height)) return 1;
-	
-					// Don't allow fall of > 1.
-	return (lift - new_lift > max_drop ? 1 : 0);
 	}
+	else
+	{
+					// See if we're going down.
+		new_lift = get_highest_blocked(lift, tflags) + 1;
+		new_high = get_lowest_blocked (new_lift, tflags);
+	
+		// Make sure that where we want to go is tall enough for us
+		if (new_high != -1 && new_high < (new_lift + height)) return 1;
+	
+					// Don't allow fall of > max_drop.
+		if (lift - new_lift > max_drop) return 1;
+	}
+		
+	
+	// Found a new place to go, lets test to see if we can actually move there
+	
+	// Lift 0 tests
+	if (new_lift == 0)
+	{
+		int ter = 0;
+		Check_terrain (Game_window::get_game_window(), obj_list, tx, ty, ter);
+			
+		if (ter & 2)	// Water
+		{
+			if (move_flags & ((1 << Actor::tf_swim)|(1 << Actor::tf_fly)))
+				return 0;
+			else
+				return 1;
+		}
+		else if (ter & 1)	// Land
+		{
+			if (move_flags & ((1 << Actor::tf_walk)|(1 << Actor::tf_fly)))
+				return 0;
+			else
+				return 1;
+		}
+		else	// Other
+		{
+			if (move_flags & (1 << Actor::tf_fly))
+				return 0;
+			else
+				return 1;
+		}
+	}
+	else if (move_flags & ((1 << Actor::tf_walk)|(1 << Actor::tf_fly)))
+		return 0;
+
+	return 1;
+}
 
 /*
  *	Activate nearby eggs.
@@ -2226,28 +2300,6 @@ int Chunk_object_list::is_blocked
 	}
 
 /*
- *	See if a tile is water or land.
- */
-
-inline void Check_terrain
-	(
-	Game_window *gwin,
-	Chunk_object_list *nlist,	// Chunk.
-	int tx, int ty,			// Tile within chunk.
-	int& terrain			// Sets: bit0 if land, bit1 if water.
-	)
-	{
-	ShapeID flat = nlist->get_flat(tx, ty);
-	if (!flat.is_invalid())
-		{
-		if (gwin->get_info(flat.get_shapenum()).is_water())
-			terrain |= 2;
-		else
-			terrain |= 1;
-		}
-	}
-
-/*
  *	This one is used to see if an object of dims. possibly > 1X1 can
  *	step onto an adjacent square.  For now, changes in lift aren't
  *	allowed.
@@ -2311,7 +2363,7 @@ int Chunk_object_list::is_blocked
 					x/tiles_per_chunk, cy);
 			olist->setup_cache();
 			int rtx = x%tiles_per_chunk;
-			if (olist->is_blocked(ztiles, from.tz, rtx, rty, 
+			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
 								new_lift) ||
 			    new_lift != from.tz)
 				return (1);
@@ -2332,7 +2384,7 @@ int Chunk_object_list::is_blocked
 					cx, y/tiles_per_chunk);
 			olist->setup_cache();
 			int rty = y%tiles_per_chunk;
-			if (olist->is_blocked(ztiles, from.tz, rtx, rty, 
+			if (olist->is_blocked(ztiles, from.tz, rtx, rty,
 								new_lift) ||
 			    new_lift != from.tz)
 				return (1);
