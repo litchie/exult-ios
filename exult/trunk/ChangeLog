@@ -1,3 +1,6 @@
+2004-01-17  Ryan Nunn  <colourles@users.sourceforge.net>
+	audio/midi_drivers/fmopldrv.cc : 'Fixing' hanging note problem
+
 2004-01-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* files/utils.cc: make sure path_map contains no invalid/empty entries
 	* audio/Audio.cc: use Mix_GetError after Mix_OpenAudio
