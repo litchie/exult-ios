@@ -856,6 +856,8 @@ void ExultStudio::set_game_path(const char *gamepath)
 	add_system_path("<STATIC>", static_path);
 	char *patch_path = g_strdup_printf("%s/patch", gamepath);
 	add_system_path("<PATCH>", patch_path);
+	if (!U7exists(patch_path))	// Create patch if not there.
+		U7mkdir(patch_path, 0755);
 	g_free(patch_path);
 					// Clear file cache!
 	U7FileManager::get_ptr()->reset();
