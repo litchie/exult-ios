@@ -452,11 +452,19 @@ void Projectile_effect::init
 	Tile_coord d			// Destination.
 	)
 	{
+	no_blocking = false;		// We'll check the ammo & weapon.
 	Game_window *gwin = Game_window::get_instance();
 	Shape_info& info = ShapeID::get_info(projectile_shape);
 	Weapon_info *winfo = info.get_weapon_info();
-	if (winfo && winfo->get_projectile())	// Different sprite to show?
-		sprite.set_shape(winfo->get_projectile());
+	if (winfo)
+		{
+		if (winfo->get_projectile())	// Different sprite to show?
+			sprite.set_shape(winfo->get_projectile());
+		no_blocking = no_blocking || winfo->no_blocking();
+		}
+	Ammo_info *ainfo = info.get_ammo_info();
+	if (ainfo)
+		no_blocking = no_blocking || ainfo->no_blocking();
 	frames = sprite.get_num_frames();
 	pos = s;			// Get starting position.
 	if (attacker)			// Try to set start better.
@@ -608,7 +616,7 @@ void Projectile_effect::handle_event
 	Tile_coord epos = pos;		// Save pos.
 	if (!path->GetNextStep(pos) ||	// Get next spot.
 					// If missile egg, detect target.
-			(!target && (target = Find_target(gwin, pos)) != 0))
+	  (!target && !no_blocking && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
 		int delay = 0;		// For explosions.
 		switch (projectile_shape)

@@ -1,3 +1,10 @@
+2002-07-26  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/intrinsics.cc,objs/flags.h,drag.cc:  In_dungeon flag.
+	Also don't assume theft if inside a dungeon.
+	* shapeinf.{cc,h},combat.cc,effects.cc:  Not_blocked flag for
+	weapons and ammo.
+
 2002-07-26  Aurelien Marchand <artaxerxes@users.sourceforge.net>
 	* README.Qtopia: updated
 	* imagewin/ibuf8.cc: added a test to prevent fast copy on the zaurus

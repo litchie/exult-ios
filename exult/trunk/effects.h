@@ -136,6 +136,7 @@ class Projectile_effect : public Special_effect
 	PathFinder *path;		// Determines path.
 	Tile_coord pos;			// Current position.
 	bool return_path;		// Returning a boomerang.
+	bool no_blocking;		// Don't get blocked by things.
 					// Add dirty rectangle.
 	void add_dirty();
 	void init(Tile_coord s, Tile_coord t);
