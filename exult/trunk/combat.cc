@@ -61,13 +61,8 @@ void Combat_schedule::find_opponents
 	Actor *actor;
 	Slist_iterator next(nearby);
 	while ((actor = (Actor *) next()) != 0)
-#if 0	/* Old way */
-		if (actor->is_monster() && !actor->is_dead_npc() &&
-		    actor->get_alignment() != Npc_actor::friendly)
-#else
 		if (actor->get_alignment() == Npc_actor::hostile &&
 		    !actor->is_dead_npc())
-#endif
 			{
 			opponents.append(actor);
 					// And set hostile monsters.

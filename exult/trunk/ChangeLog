@@ -1,3 +1,8 @@
+2000-10-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Support ring-of-protection (which doesn't seem to
+	work in the original U7).
+
 2000-10-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Rings work now.
