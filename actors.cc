@@ -1672,8 +1672,7 @@ void Actor::activate
 		(get_framenum()&0xf) == Actor::sleep_frame) ||
 		 get_flag(Obj_flags::asleep))
 		return;
-	else if (sched == Schedule::combat && party_id < 0 &&
-		 alignment != Actor::friendly && alignment != Actor::neutral)
+	else if (sched == Schedule::combat && party_id < 0)
 		return;			// Too busy fighting.
 					// Usecode
 					// Failed copy-protection?
