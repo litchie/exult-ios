@@ -1,4 +1,7 @@
 2001-08-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: fixed problem with killing Banes
+
+2001-08-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: replaced unsigned char by uint8
 	* Makefile.be: updated
 	* gamewin.cc: fixed compile error
