@@ -1,4 +1,8 @@
 2002-07-24  Dominik Reichardt  <dominus@users.sourceforge.net>
+	* docs/xml/exult_studio.xml: updated
+	* docs/exult_studio.html, exult_studio.txt: updated
+	
+2002-07-24  Dominik Reichardt  <dominus@users.sourceforge.net>
 	* exult.cc: little correction of the --help screen (--bg, --si instead of 
 	  -bg -si)
 	* Readme, FAQ: updated.
