@@ -19,16 +19,13 @@
 #ifndef SHAPEID_H
 #define SHAPEID_H	1
 
-/*
- *	A shape ID contains a shape # and a frame # within the shape encoded
- *	as a 2-byte quantity.
- */
+#include "shapevga.h"
 
 class Shape_frame;
 class Shape_info;
 
 enum ShapeFile {
-	SF_SHAPES_VGA = 0,	// <STATIC>/shapes.vga
+	SF_SHAPES_VGA = 0,	// <STATIC>/shapes.vga.  MUST be first.
 	SF_GUMPS_VGA,		// <STATIC>/gumps.vga
 	SF_PAPERDOL_VGA,	// <STATIC>/paperdol.vga
 	SF_SPRITES_VGA,		// <STATIC>/sprites.vga
@@ -40,9 +37,54 @@ enum ShapeFile {
 	// Not yet
 	//SF_FONTS_VGA,		// <STATIC>/fonts.vga
 
-	SF_OTHER		// Other unknown FLX
+	SF_OTHER,		// Other unknown FLX
+	SF_COUNT		// # of preceding entries.
 };
 
+/*
+ *	Manage the set of shape files.
+ */
+class Shape_manager
+	{
+	static Shape_manager *instance;	// There shall be only one.
+	Shapes_vga_file shapes;		// Main 'shapes.vga' file.
+	Vga_file files[(int) SF_COUNT];	// The files we manage.
+	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
+					//   is found when playing BG
+	bool bg_paperdolls;		// True if paperdolls are wanted in BG
+	bool bg_multiracial_allowed;	// Set true if the SI shapes file 
+					//   is found when playing BG
+public:
+	friend class ShapeID;
+	Shape_manager();
+	~Shape_manager();
+	static Shape_manager *get_instance()
+		{ return instance; }
+	void load();			// Read in files.
+	Vga_file& get_file(enum ShapeFile f)
+		{ return files[(int) f]; };
+	Shapes_vga_file& get_shapes()
+		{ return shapes; }
+	Shape_info& get_info(int shnum)	// Get info. about shape.
+		{ return shapes.get_info(shnum); }
+	// BG Only
+	inline bool can_use_paperdolls() const
+	{ return bg_paperdolls_allowed; }
+
+	inline bool get_bg_paperdolls() const
+	{ return bg_paperdolls; }
+
+	inline void set_bg_paperdolls(bool p)
+	{ bg_paperdolls = p; }
+
+	inline bool can_use_multiracial() const
+	{ return bg_multiracial_allowed; }
+	};
+
+/*
+ *	A shape ID contains a shape # and a frame # within the shape encoded
+ *	as a 2-byte quantity.
+ */
 class ShapeID
 	{
 	short shapenum;			// Shape #.

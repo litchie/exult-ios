@@ -293,7 +293,7 @@ void Cheat::toggle_naked (void) const {
 }
 
 void Cheat::change_skin (void) const {
-	if (!enabled || (Game::get_game_type() != SERPENT_ISLE && !gwin->can_use_multiracial())) return;
+	if (!enabled || (Game::get_game_type() != SERPENT_ISLE && !Shape_manager::get_instance()->can_use_multiracial())) return;
 
 	int color = gwin->get_main_actor()->get_skin_color();
   
