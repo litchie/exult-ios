@@ -953,6 +953,10 @@ gint Shape_chooser::check_editing_files
 	gpointer
 	)
 	{
+	ExultStudio *studio = ExultStudio::get_instance();
+					// Is focus in main window?
+	if (!studio->is_exiting() && !studio->has_focus())
+		return 1;		// No, so try again later.
 	bool modified = false;
 	for (std::vector<Editing_file*>::iterator it = editing_files.begin();
 				it != editing_files.end(); it++)
@@ -973,7 +977,6 @@ gint Shape_chooser::check_editing_files
 		}
 	if (modified)			// Write out changed files.
 		{
-		ExultStudio *studio = ExultStudio::get_instance();
 		studio->get_files()->flush();
 		Object_browser *browser = studio->get_browser();
 		if (browser)
