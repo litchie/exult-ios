@@ -2729,7 +2729,7 @@ USECODE_INTRINSIC(run_endgame)
 USECODE_INTRINSIC(nap_time)
 {
 	// nap_time(bed)
-	char *msgs[] = {"Avatar!  Please restrain thyself!",
+	const char *msgs[] = {"Avatar!  Please restrain thyself!",
 			"Hast thou noticed that this bed is occupied?",
 			"Please, Avatar, the resident of this bed may not be desirouth of company at the moment."
 			};
@@ -4448,7 +4448,7 @@ int Usecode_machine::call_usecode_function
 		removed->flush();	// Flush removed objects.
 					// Look up in table.
 	vector<Usecode_function*>& slot = funs[id/0x100];
-	int index = id%0x100;
+	size_t index = id%0x100;
 	Usecode_function *fun = index < slot.size() ? slot[index] : 0;
 	if (!fun)
 		{

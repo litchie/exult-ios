@@ -75,7 +75,7 @@ MenuChoice::MenuChoice(Shape_frame *on, Shape_frame *off, int xpos, int ypos, Fo
 	choices = new std::vector<std::string>();
 }
 
-void MenuChoice::add_choice(char *s)
+void MenuChoice::add_choice(const char *s)
 {
 	choices->push_back(std::string(s));
 	int len = font->get_text_width(s);

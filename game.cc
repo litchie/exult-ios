@@ -198,7 +198,7 @@ int Game::get_shape(const char *name)
 
 void Game::add_resource(const char *name, const char *str, int num) 
 {
-	resources[name].str = (char *)str;
+	resources[name].str = str;
 	resources[name].num = num;
 }
 
