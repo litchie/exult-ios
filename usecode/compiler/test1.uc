@@ -20,5 +20,6 @@ adder 0x480 (a, b)
 	a[13] = 46;
 	c = UcItem;
 	UcEvent = UcEvent + 7;
+	c = UI_get_item_flag(UcItem, 10);
 	return c;
 	}

@@ -285,3 +285,23 @@ void Uc_array_expression::gen_value
 	Write2(out, actual);
 	}
 
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_call_expression::gen_value
+	(
+	ostream& out
+	)
+	{
+	if (!sym)
+		return;			// Already failed once.
+	if (!sym->gen_call(out, parms, true))
+		{
+		char buf[150];
+		sprintf(buf, "'%' isn't a function or intrinsic",
+						sym->get_name());
+		sym = 0;		// Avoid repeating error if in loop.
+		error(buf);
+		}
+	}
