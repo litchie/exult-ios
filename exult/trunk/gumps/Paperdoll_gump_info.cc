@@ -624,17 +624,17 @@ Paperdoll_gump::Paperdoll_npc Paperdoll_gump::Characters_BG[] = {
 	// Dupre
 	{  488, false, paperdoll,  14,  0, 124,  0,  1,   7,  1,  3,  5 },
 
-	// Janna
-	{  490,  true, paperdoll,  13,  0, 155,  0,  1,   7,  0,  2,  4 },
+	// Jaana
+	{  490,  true, exult_flx,  13,  0,  32,  0,  1,   7,  0,  2,  4 },
 
 	// Sentri
 	{  462, false, paperdoll,  14,  0, 158,  0,  1,   7,  1,  3,  5 },
 
 	// Julia
-	{  454,  true, paperdoll,  13,  0, 127,  0,  1,   7,  0,  2,  4 },
+	{  454,  true, exult_flx,  13,  0,  32,  2,  3,   7,  0,  2,  4 },
 
 	// Katrina
-	{  452,  true, paperdoll,  13,  0, 127,  0,  1,   7,  0,  2,  4 },
+	{  452,  true, exult_flx,  13,  0,  32,  4,  5,   7,  0,  2,  4 },
 
 	// Tseramed
 	{  460, false, paperdoll,  14,  0, 156,  0,  1,   7,  1,  3,  5 },
@@ -761,7 +761,7 @@ Paperdoll_gump::Paperdoll_npc Paperdoll_gump::Characters_BG[] = {
 
 Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 {
-	// wshape, wf,        Equip spot, Object Type, Gender, shape, frame, frame2,  f3,  f4
+	// wshape, wf,        Equip spot, Object Type, Gender, file, shape, frame, frame2,  f3,  f4
 
 	// MISC ITEMS
 
