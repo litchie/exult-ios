@@ -1,3 +1,12 @@
+2002-05-09  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* keys.cc,defaultkeys.txt,etc:  DEL key deletes selected objects.
+	* cheat.cc (Cheat): Maintain list of selected objects.
+	* exult.cc:  Select dropped object/combo.
+	* gamewin.cc:  In 'select' mode, clicking an object toggles
+	whether it's selected.
+	* gamerend.cc:  Show selected objects.
+
 2002-05-09  Ryan Nunn  <triforce@merlin.net.au>
 	* files/Table.cc : Namespace
 	* exult.cc, windrag.*, xdrag.h, shapes/u7drag.*, mapedit/*.* :

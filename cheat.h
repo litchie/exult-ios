@@ -19,11 +19,14 @@
 #ifndef CHEAT_H
 #define CHEAT_H
 
+#include <vector>
+
 class Game_window;
 class ShapeBrowser;
 class SoundTester;
 class CheatScreen;
 class Actor;
+class Game_object;
 
 class Cheat
 {
@@ -53,6 +56,7 @@ private:
   Map_editor_mode edit_mode;
   int  edit_lift;
   int  edit_shape, edit_frame;		// What to 'paint' with.
+  vector<Game_object *> selected;	// Selected objects (map-editing).
   bool infravision;
   bool pickpocket;
   bool grab_actor;
@@ -108,12 +112,19 @@ public:
   void dec_skip_lift (void) const;
   void set_skip_lift (int skip) const;
 
+  void append_selected(Game_object *obj);
+  void toggle_selected(Game_object *obj);
+  void clear_selected();
+  void delete_selected();
+  const vector<Game_object *>& get_selected() const
+	{ return selected; }
+
   void map_teleport (void) const;
   void cursor_teleport (void) const;
 
   void create_coins (void) const;
   void create_last_shape (void) const;
-  void delete_object (void) const;
+  void delete_object (void);
   void shape_browser (void) const;
   bool get_browser_shape (int &shape, int &frame) const;
   void sound_tester (void) const;
