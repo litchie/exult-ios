@@ -365,8 +365,6 @@ public:
 		{ return shapes; }
 	Shape_info& get_info(int shnum)	// Get shape info.
 		{ return shapes.get_info(shnum); }
-	Shape_info& get_info(const Game_object *obj);
-
 					// Get screen area of shape at pt.
 	Rectangle get_shape_rect(const Shape_frame *s, int x, int y) const
 		{

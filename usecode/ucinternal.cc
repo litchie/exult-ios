@@ -641,7 +641,7 @@ void Usecode_internal::set_item_shape
 	if (!item)
 		return;
 					// See if light turned on/off.
-	int light_changed = gwin->get_info(item).is_light_source() !=
+	int light_changed = item->get_info().is_light_source() !=
 			    gwin->get_info(shape).is_light_source();
 	if (item->get_owner())		// Inside something?
 		{
@@ -1345,7 +1345,7 @@ int Usecode_internal::path_run_usecode
 		if (d.tx != -1)		// Found it?
 			dest = d;
 #else	/* ++++Old way */
-		int ht = gwin->get_info(npc).get_3d_height();
+		int ht = npc->get_info().get_3d_height();
 		dest = Find_unblocked(dest, ht, src.tz);
 #endif
 		if (usefun == 0x60a &&	// ++++Added 7/21/01 to fix Iron

@@ -1105,13 +1105,6 @@ void Game_window::show_game_location
 	cout << "Game location is (" << x << ", " << y << ")"<<endl;
 	}
 
-
-Shape_info& Game_window::get_info(const Game_object *obj)
-{
-	return get_info(obj->get_shapenum());
-}
-
-
 /*
  *	Get screen area used by object.
  */
@@ -1732,8 +1725,7 @@ void Game_window::start_actor_alt
 	int blocked[8];
 	get_shape_location(main_actor, ax, ay);
 
-	int height = shapes.get_info(
-				main_actor->get_shapenum()).get_3d_height();
+	int height = main_actor->get_info().get_3d_height();
 	
 	Tile_coord start = main_actor->get_tile();
 	int dir;
@@ -2067,13 +2059,12 @@ cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 					// Find 'best' one.
 	Game_object *obj = found[cnt - 1];
 					// Try to avoid 'transparent' objs.
-	int trans = shapes.get_info(obj->get_shapenum()).is_transparent();
+	int trans = obj->get_info().is_transparent();
 	Game_object_vector::iterator it;
 	for (it = found.begin(); it != found.end(); ++it)
 		if (obj->lt(*(*it)) == 1 || trans)
 			{
-			int ftrans = shapes.get_info((*it)->get_shapenum()).
-							is_transparent();
+			int ftrans = (*it)->get_info().is_transparent();
 			if (!ftrans || trans)
 				{
 				obj = *it;
@@ -2204,7 +2195,7 @@ void Game_window::show_items
 	if (obj)
 		{
 		shnum = obj->get_shapenum(), frnum = obj->get_framenum();
-		Shape_info& info = shapes.get_info(shnum);
+		Shape_info& info = obj->get_info();
 		cout << "Object " << shnum << ':' << frnum <<
 					" has 3d tiles (x, y, z): " <<
 			info.get_3d_xtiles(frnum) << ", " <<
@@ -2626,7 +2617,7 @@ void Game_window::double_clicked
 					(align == Actor::friendly ||
 						align == Actor::neutral);
 				}
-			if (bully && get_info(obj).get_shape_class() ==
+			if (bully && obj->get_info().get_shape_class() ==
 							Shape_info::human &&
 			   Game::get_game_type() == BLACK_GATE)
 				attack_avatar(1 + rand()%3);

@@ -104,7 +104,7 @@ void Chunk_cache::update_object
 	{
 	Game_window *gwin = Game_window::get_instance();
 	Game_map *gmap = gwin->get_map();
-	Shape_info& info = gwin->get_info(obj);
+	Shape_info& info = obj->get_info();
 	int ztiles = info.get_3d_height(); 
 	if (!ztiles || !info.is_solid())
 		return;			// Skip if not an obstacle.
@@ -324,7 +324,6 @@ int Chunk_cache::get_lowest_blocked
 
 inline void Check_terrain
 	(
-	Game_window *gwin,
 	Map_chunk *nlist,	// Chunk.
 	int tx, int ty,			// Tile within chunk.
 	int& terrain			// Sets: bit0 if land, bit1 if water,
@@ -334,9 +333,9 @@ inline void Check_terrain
 	ShapeID flat = nlist->get_flat(tx, ty);
 	if (!flat.is_invalid())
 		{
-		if (gwin->get_info(flat.get_shapenum()).is_water())
+		if (flat.get_info().is_water())
 			terrain |= 2;
-		else if (gwin->get_info(flat.get_shapenum()).is_solid())
+		else if (flat.get_info().is_solid())
 			terrain |= 4;
 		else
 			terrain |= 1;
@@ -423,8 +422,7 @@ int Chunk_cache::is_blocked
 		if (move_flags & MOVE_MAPEDIT)
 			return 0;	// Map-editor, so anything is okay.
 		int ter = 0;
-		Check_terrain (Game_window::get_instance(), obj_list, 
-								tx, ty, ter);
+		Check_terrain (obj_list, tx, ty, ter);
 		if (ter & 2)		// Water
 		{
 			if (move_flags & (MOVE_FLY+MOVE_SWIM))
@@ -559,7 +557,7 @@ void Map_chunk::set_terrain
 				{
 				int shapenum = id.get_shapenum(),
 				    framenum = id.get_framenum();
-				Shape_info& info = gwin->get_info(shapenum);
+				Shape_info& info = id.get_info();
 				Game_object *obj = info.is_animated() ?
 					new Animated_object(shapenum,
 					    	framenum, tilex, tiley)
@@ -734,7 +732,7 @@ void Map_chunk::remove
 	remove->clear_dependencies();	// Remove all dependencies.
 	Game_window *gwin = Game_window::get_instance();
 	Game_map *gmap = gwin->get_map();
-	Shape_info& info = gwin->get_info(remove);
+	Shape_info& info = remove->get_info();
 					// See if it extends outside.
 	int frame = remove->get_framenum(), tx = remove->get_tx(),
 					ty = remove->get_ty();
@@ -1298,7 +1296,7 @@ void Map_chunk::gravity
 		while ((obj = objs.get_next()) != 0)
 			{		// We DO want NPC's to fall.
 			if (!obj->is_dragable() && 
-						!gwin->get_info(obj).is_npc())
+						!obj->get_info().is_npc())
 				continue;
 			Tile_coord t = obj->get_tile();
 					// Get footprint.
@@ -1328,7 +1326,7 @@ void Map_chunk::gravity
 			{		// Drop & recurse.
 			obj->move(t.tx, t.ty, new_lift);
 			gravity(foot, obj->get_lift() +
-					gwin->get_info(obj).get_3d_height());
+					obj->get_info().get_3d_height());
 			}
 		}
 #if 0
@@ -1338,7 +1336,7 @@ void Map_chunk::gravity
 					// Get footprint.
 		Rectangle foot = obj->get_footprint();
 		gravity(foot, obj->get_lift() +
-					gwin->get_info(obj).get_3d_height());
+					obj->get_info().get_3d_height());
 		}
 #endif
 	}

@@ -245,7 +245,7 @@ void Projectile_effect::init
 	pos = s;			// Get starting position.
 	if (attacker)			// Try to set start better.
 		{
-		Shape_info& info = gwin->get_info(attacker);
+		Shape_info& info = attacker->get_info();
 					// Try for around the heat.
 		pos.tz += info.get_3d_height() - 1;
 		if (d.tx < pos.tx)	// Start on proper side.

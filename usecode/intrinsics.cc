@@ -261,7 +261,7 @@ USECODE_INTRINSIC(get_item_quality)
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
 		return Usecode_value(0);
-	Shape_info& info = gwin->get_info(obj);
+	Shape_info& info = obj->get_info();
 	return Usecode_value(info.has_quality() ? obj->get_quality() : 0);
 }
 
@@ -275,7 +275,7 @@ USECODE_INTRINSIC(set_item_quality)
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
 		{
-		Shape_info& info = gwin->get_info(obj);
+		Shape_info& info = obj->get_info();
 		if (info.has_quality())
 			{
 			obj->set_quality((unsigned int) qual);
@@ -302,7 +302,7 @@ USECODE_INTRINSIC(set_item_quantity)
 	Usecode_value ret(0);
 	Game_object *obj = get_item(parms[0]);
 	int newquant = parms[1].get_int_value();
-	if (obj && gwin->get_info(obj).has_quantity())
+	if (obj && obj->get_info().has_quantity())
 		{
 		ret = Usecode_value(1);
 					// If not in world, don't delete!
@@ -560,7 +560,7 @@ USECODE_INTRINSIC(update_last_created)
 		Tile_coord pos = dest;
 					// Skip 'blocked' check if it looks
 					//   structural. (For SI maze).
-		Shape_info& info = gwin->get_info(obj);
+		Shape_info& info = obj->get_info();
 		if (info.get_3d_height() < 5 &&
 					// Weed out drawbridge, etc:
 		    info.get_3d_xtiles() + info.get_3d_ytiles() < 8 &&
@@ -1845,7 +1845,7 @@ USECODE_INTRINSIC(is_water)
 		if (t.tz != 0 || gwin->find_object(x, y))
 			return Usecode_value(0);
 		ShapeID sid = gwin->get_flat(x, y);
-		Shape_info& info = gwin->get_info(sid.get_shapenum());
+		Shape_info& info = sid.get_info();
 		return Usecode_value(info.is_water());
 		}
 	return Usecode_value(0);
@@ -2080,7 +2080,7 @@ USECODE_INTRINSIC(get_item_flag)
 		}
 	else if (fnum == (int) Obj_flags::cant_die)
 		{
-		Monster_info *inf = gwin->get_info(obj).get_monster_info();
+		Monster_info *inf = obj->get_info().get_monster_info();
 		return Usecode_value(inf != 0 && inf->cant_die());
 		}
 					// +++++0x18 is used in testing for
@@ -2611,7 +2611,7 @@ USECODE_INTRINSIC(add_removed_npc)
 	int ey = rect.y + rect.h;	// x end
 
 	// The height of the Actor we are checking
-	int height = gwin->get_info(actor->get_shapenum()).get_3d_height();
+	int height = actor->get_info().get_3d_height();
 
 	int i = 0, nlift = 0;
 	int tx, ty;

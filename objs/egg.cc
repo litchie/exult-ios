@@ -254,7 +254,7 @@ void Egg_object::set_area
 	case avatar_footpad:
 	case party_footpad:
 		{
-		Shape_info& info = gwin->get_info(this);
+		Shape_info& info = get_info();
 		int xtiles = info.get_3d_xtiles(), 
 		    ytiles = info.get_3d_ytiles();
 		area = Rectangle(t.tx - xtiles + 1, t.ty - ytiles + 1,

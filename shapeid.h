@@ -25,6 +25,7 @@
  */
 
 class Shape_frame;
+class Shape_info;
 
 enum ShapeFile {
 	SF_SHAPES_VGA = 0,	// <STATIC>/shapes.vga
@@ -110,6 +111,7 @@ public:
 		{ shapefile = shfile; shape = 0; }
 
 	int get_num_frames() const;
+	Shape_info& get_info() const;	// Get info. about shape.
 	};
 
 #endif
