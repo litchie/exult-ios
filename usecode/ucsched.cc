@@ -624,7 +624,6 @@ void Usecode_script::step
 		}
 	else if ((barge = obj->as_barge()) != 0)
 		{
-		barge->face_direction(dir);
 		for (int i = 0; i < 4; i++)
 			{
 			Tile_coord t = obj->get_tile().get_neighbor(
