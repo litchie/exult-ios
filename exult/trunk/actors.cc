@@ -333,9 +333,11 @@ int Actor::add_dirty
 			int shnum = weapon->get_shapenum();
 			Shape_frame *wshape = gwin->get_shape(
 							shnum, weapon_frame);
-					// Set dirty area rel. to NPC.
-			weapon_rect = gwin->get_shape_rect(wshape, 
+			if (wshape)	// Set dirty area rel. to NPC.
+				weapon_rect = gwin->get_shape_rect(wshape, 
 							weapon_x, weapon_y);
+			else
+				weapon_rect.w = 0;
 			}
 		else
 			weapon_rect.w = 0;
@@ -1403,6 +1405,11 @@ void Actor::paint_weapon
 		Game_object * weapon = spots[lhand];
 		int shnum = weapon->get_shapenum();
 		Shape_frame *wshape = gwin->get_shape(shnum, weapon_frame);
+		if (!wshape)
+			{
+			weapon_rect.w = 0;
+			return;
+			}
 					// Set dirty area rel. to NPC.
 		weapon_rect = gwin->get_shape_rect(wshape, weapon_x, weapon_y);
 		// Paint the weapon shape using the actor's coordinates
@@ -1478,6 +1485,13 @@ int Actor::figure_weapon_pos
 			if (weapon_frame == 1)
 				weapon_frame |= 32;
 			}
+#if 0	/* +++++Philanderer's Wand looks strange. */
+					// Watch for valid frame.
+		int nframes = gwin->get_shape_num_frames(
+						weapon->get_shapenum());
+		if ((weapon_frame&31) >= nframes)
+			weapon_frame = (nframes - 1)|(weapon_frame&32);
+#endif
 		return 1;
 		}
 	else
