@@ -28,7 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 
 /*
- *	Begin a possible drag when the mouse button is depressed.
+ *	Begin a possible drag when the mouse button is depressed.  Also detect
+ *	if the 'close' checkmark on a gump is being depressed.
  *
  *	Output:	1 if object selected for dragging, else 0.
  */
@@ -40,6 +41,7 @@ int Game_window::start_dragging
 	{
 	dragging = 0;
 	dragging_gump = 0;
+	closing_gump = 0;
 	dragging_mousex = x;
 	dragging_mousey = y;
 	dragging_rect = Rectangle(0, 0, 0, 0);
@@ -55,6 +57,13 @@ int Game_window::start_dragging
 			dragging = found[cnt - 1];
 			dragging_gump->get_shape_location(dragging,
 					dragging_paintx, dragging_painty);
+			}
+		else if (dragging_gump->on_checkmark(this, x, y))
+			{
+			closing_gump = dragging_gump;
+			dragging_gump = 0;
+			closing_gump->push_checkmark(this);
+			painted = 1;
 			}
 		else
 			{		// Dragging whole gump.
@@ -147,6 +156,18 @@ void Game_window::drop_dragged
 	int x, int y			// Mouse pos.
 	)
 	{
+	if (closing_gump)
+		{
+		if (closing_gump->on_checkmark(this, x, y))
+			{		// Clicked on checkmark.
+			closing_gump->remove_from_chain(open_gumps);
+			delete closing_gump;
+			if (!open_gumps)// Last one?  Out of gump mode.
+				mode = normal;
+			}
+		closing_gump = 0;
+		paint();
+		}
 	if (!dragging && !dragging_gump)
 		return;
 	drop(x, y);			// Drop it.

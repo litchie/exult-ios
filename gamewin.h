@@ -82,7 +82,7 @@ private:
 	int brightness;			// Palette brightness.
 					// Dragging info:
 	Game_object *dragging;		// What's being dragged.
-	Gump_object *dragging_gump;
+	Gump_object *dragging_gump, *closing_gump;
 					// Last mouse, paint positions:
 	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
 	Rectangle dragging_rect;	// Rectangle to repaint.
@@ -210,6 +210,8 @@ public:
 			s->get_height()
 			);
 		}
+	Shape_frame *get_gump_shape(int shapenum, int framenum)
+		{ return gumps.get_shape(shapenum, framenum); }
 					// Get screen area of a gump.
 					//   for painting it.
 	Rectangle get_gump_rect(Gump_object *gump);
