@@ -451,8 +451,8 @@ int Game_object::lt
 		return (-1);		// No overlap on screen.
 	Shapes_vga_file& shapes = gwin->get_shapes();
 	int shapenum1 = get_shapenum(), shapenum2 = obj2.get_shapenum();
-	Shape_info& info1 = shapes.get_info(shapenum1),
-		    info2 = shapes.get_info(shapenum2);
+	Shape_info& info1 = shapes.get_info(shapenum1);
+	Shape_info& info2 = shapes.get_info(shapenum2);
 					// Get absolute tile positions.
 	int atx1, aty1, atz1, atx2, aty2, atz2;
 	int x1, x2, y1, y2, z1, z2;	// Dims. in tiles.
