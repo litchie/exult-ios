@@ -567,7 +567,12 @@ void Container_game_object::write_ireg
 	*ptr++ = 0;			// Unknown.
 	*ptr++ = get_quality();
 	int npc = get_live_npc_num();	// If body, get source.
-	int quant = (npc >= 0 && npc <= 127) ? (npc + 0x80) : 0;
+	int quant;
+	if (Game::get_game_type() == SERPENT_ISLE)
+		quant = npc + 0x80;
+	else
+		quant = (npc >= 0 && npc <= 127) ? (npc + 0x80) : 0;
+
 	*ptr++ = quant&0xff;		// "Quantity".
 	*ptr++ = (get_lift()&15)<<4;	// Lift 
 	*ptr++ = (unsigned char)resistance;		// Resistance.
