@@ -151,6 +151,8 @@ static void Handle_event(SDL_Event& event);
 static bool show_mouse = true;		// display mouse in main loop?
 static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
+static bool run_bg = false;		// skip menu and run bg
+static bool run_si = false;		// skip menu and run si
 
 static string arg_gamename = "default";	// cmdline arguments
 static int arg_buildmap = -1;
@@ -199,6 +201,8 @@ int main
 	parameters.declare("--help",&needhelp,true);
 	parameters.declare("/?",&needhelp,true);
 	parameters.declare("/h",&needhelp,true);
+	parameters.declare("-bg",&run_bg,true);
+	parameters.declare("-si",&run_si,true);
 	parameters.declare("-v",&showversion,true);
 	parameters.declare("--version",&showversion,true);
 	parameters.declare("-game",&arg_gamename,"default");
@@ -209,8 +213,10 @@ int main
 
 	if(needhelp)
 	{
-		cerr << "Usage: exult [--help|-h|/?|/h] [-v|--version] [-game GAMENAME] [-buildmap 0|1|2]" << endl <<
+		cerr << "Usage: exult [--help|-h|/?|/h] [-v|--version] [-bg|-si] [-game GAMENAME] [-buildmap 0|1|2]" << endl <<
 			"--help\t\tShow this information" << endl <<
+			"-bg\t\tSkip menu and run Black Gate" << endl <<
+			"-si\t\tSkip menu and run Serpent Isle" << endl <<
 			"--version\t\tShow version info" << endl <<
 			"-game GAMENAME\tSet the game data name to play" << endl <<
 			"\t(refer to the documentation)" << endl <<
@@ -218,6 +224,11 @@ int main
 			"\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl <<
 			"\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl;
 			
+		exit(1);
+	}
+	
+	if (run_bg && run_si) {
+		cerr << "Error: You may only specify either -bg or -si!" << endl;
 		exit(1);
 	}
 
@@ -439,10 +450,18 @@ static void Init
 
 		if(game)
 			delete game;
-		ExultMenu exult_menu(gwin);
-		mygame = exult_menu.run();
+		
+		if (run_bg) {
+			mygame = BLACK_GATE;
+			run_bg = false;
+		} else if (run_si) {
+			mygame = SERPENT_ISLE;
+			run_si = false;
+		} else {
+			ExultMenu exult_menu(gwin);
+			mygame = exult_menu.run();
+		}
 		Game::create_game(mygame);
-
 		
 					// Skip splash screen?
 		bool skip_splash;

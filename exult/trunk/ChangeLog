@@ -1,3 +1,6 @@
+2001-11-26  Christian Ohm  <chr.ohm@gmx.net>
+	* exult.cc: added -bg/-si command line options
+
 2001-11-26  Max Horn  <max@quendi.de>
 	* version.cc: fixed Metrowerks detection; factored out some std::endl into a single spot
 	* vgafile.cc: get_frame() now checks for lower bound, too (fixing a crash)
