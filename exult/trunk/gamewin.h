@@ -293,6 +293,8 @@ public:
 					// Find objects that (x,y) is in.
 	int find_objects(int lift, int x, int y, Game_object **list);
 	void show_items(int x, int y);	// Show names of items clicked on.
+					// Add text item.
+	void add_text(char *msg, int x, int y);
 					// Remove text item & delete it.
 	void remove_text(Text_object *txt);
 					// Handle a double-click in window.
