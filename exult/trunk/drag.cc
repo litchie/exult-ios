@@ -242,6 +242,7 @@ bool Game_window::drop_dragged
 	else if (!moved)		// For now, if not moved, leave it.
 		{
 		dragging = 0;
+		dragging_gump = 0;
 		return handled;
 		}
 	else

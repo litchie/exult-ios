@@ -82,9 +82,7 @@ int Actor_pathfinder_client::get_step_cost
 	int water, poison;		// Get tile info.
 	Actor::get_tile_info(0, gwin, olist, tx, ty, water, poison);
 	int old_lift = to.tz;		// Might climb/descend.
-//	if (olist->is_blocked(aztiles, to.tz, tx, ty, new_lift, 
-//							get_move_flags()))
-	if (npc->is_blocked(to))
+	if (npc->is_blocked(to, &from))
 		{			// Blocked, but check for a door.
 		Game_object *block = Game_object::find_blocking(to);
 		if (!block)
