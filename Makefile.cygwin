@@ -27,7 +27,7 @@ CPPFLAGS=-DVERSION=\"0.97cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
-	-I$(SRC)/usecode -I$(SRC)/data $(SDL_CFLAGS) -DHAVE_SNPRINTF \
+	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/data $(SDL_CFLAGS) -DHAVE_SNPRINTF \
 	 $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 	
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
@@ -216,6 +216,11 @@ tools/wud.exe : tools/wud.o tools/uctools.h usecode/bgintrinsics.h usecode/siint
 tools/wuc.exe : tools/wuc.o
 	$(CXX) $(LFLAGS) -o tools/wuc.exe tools/wuc.o -mconsole
 
+UCXT_OBJS=conf/Configuration.o conf/XMLEntity.o files/utils.o usecode/ucxt/src/opcodec_.o usecode/ucxt/src/printucc.o usecode/ucxt/src/stacki.o usecode/ucxt/src/ucdata.o usecode/ucxt/src/ucdump.o usecode/ucxt/src/ucfunc.o usecode/ucxt/src/opcodes.o
+
+usecode/ucxt/src/ucxt.exe : $(UCXT_OBJS)
+	$(CXX) $(LFLAGS) -o usecode/ucxt/src/ucxt.exe $(UCXT_OBJS) -mconsole
+
 # This should work with the Cygwin rm
 clean:
 	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx data/exult_flx.h data/exult_bg.flx data/exult_bg_flx.h data/exult_si.flx data/exult_si_flx.h
@@ -239,6 +244,7 @@ dist:   $(EXEC)
 	cp COPYING $(U7PATH)/Exult/COPYING.txt
 	cp FAQ $(U7PATH)/Exult/FAQ.txt
 	cp docs/faq.html $(U7PATH)/Exult/faq.html
+	mkdir -p $(U7PATH)/Exult/images
 	cp docs/images/back.gif $(U7PATH)/Exult/images/back.gif
 	cp docs/images/exult_logo.gif $(U7PATH)/Exult/images/exult_logo.gif
 	cp NEWS $(U7PATH)/Exult/NEWS.txt
@@ -253,7 +259,7 @@ dist:   $(EXEC)
 	u2d $(U7PATH)/Exult/AUTHORS.txt $(U7PATH)/Exult/ChangeLog.txt $(U7PATH)/Exult/COPYING.txt $(U7PATH)/Exult/FAQ.txt $(U7PATH)/Exult/NEWS.txt $(U7PATH)/Exult/README.txt $(U7PATH)/Exult/README.1ST.txt $(U7PATH)/Exult/README.win32.txt
 	u2d $(U7PATH)/Exult/bgdefaultkeys.txt $(U7PATH)/Exult/sidefaultkeys.txt
 
-tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe
+tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe usecode/ucxt/src/ucxt.exe
 
 toolsclean:
 	rm -f tools/mklink.o tools/mklink.exe
@@ -263,6 +269,7 @@ toolsclean:
 	rm -f tools/ucdump.o tools/ucdump.exe
 	rm -f tools/wuc.o tools/wuc.exe
 	rm -f tools/wud.o tools/wud.exe
+	rm -fr $(UCXT_OBJS) usecode/ucxt/src/ucxt.exe
 
 toolsinstall: tools
 	mkdir -p $(U7PATH)/tools
@@ -274,6 +281,11 @@ toolsinstall: tools
 	strip tools/ucdump.exe -o $(U7PATH)/tools/ucdump.exe
 	strip tools/wuc.exe -o $(U7PATH)/tools/wuc.exe
 	strip tools/wud.exe -o $(U7PATH)/tools/wud.exe
+	strip usecode/ucxt/src/ucxt.exe -o $(U7PATH)/tools/ucxt.exe
+	mkdir -p $(U7PATH)/tools/data
+	cp usecode/ucxt/data/events.data $(U7PATH)/tools/data/events.data
+	cp usecode/ucxt/data/flags.data $(U7PATH)/tools/data/flags.data
+	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/tools/data/opcodes.txt
 
 toolsdist: toolsinstall
 	cp tools/expack.txt $(U7PATH)/tools/expack.txt
