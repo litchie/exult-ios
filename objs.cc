@@ -762,7 +762,7 @@ public:
 		{ init(obj); }
 	};
 
-#if 1	/* This will be the new version: */
+
 /*
  *	Should obj1 be rendered before obj2?
  *
@@ -890,133 +890,6 @@ int Game_object::lt
 	return lt(ord, &obj2);
 	}
 
-#else	/* Old version: */
-
-/*
- *	Should this object be rendered before obj2?
- *
- *	Output:	1 if so, 0 if not, -1 if cannot compare.
- */
-int Game_object::lt
-	(
-	Game_object& obj2
-	) const
-	{
-	Game_window *gwin = Game_window::get_game_window();
-					// See if there's no overlap.
-	Rectangle r1 = gwin->get_shape_rect(this),
-		  r2 = gwin->get_shape_rect(&obj2);
-	if (!r1.intersects(r2))
-		return (-1);		// No overlap on screen.
-	Shapes_vga_file& shapes = gwin->get_shapes();
-	int shapenum1 = get_shapenum(), shapenum2 = obj2.get_shapenum();
-	int framenum1 = get_framenum(), framenum2 = obj2.get_framenum();
-	Shape_info& info1 = shapes.get_info(shapenum1);
-	Shape_info& info2 = shapes.get_info(shapenum2);
-					// Get absolute tile positions.
-	int atx1, aty1, atz1, atx2, aty2, atz2;
-	int x1, x2, y1, y2, z1, z2;	// Dims. in tiles.
-	get_abs_tile(atx1, aty1, atz1);
-	obj2.get_abs_tile(atx2, aty2, atz2);
-#ifdef DEBUGLT
-	Debug_lt(atx1, aty1, atx2, aty2);
-#endif
-	x1 = info1.get_3d_xtiles(framenum1);
-	x2 = info2.get_3d_xtiles(framenum2);
-	y1 = info1.get_3d_ytiles(framenum1); 
-	y2 = info2.get_3d_ytiles(framenum2);
-	z1 = info1.get_3d_height(), z2 = info2.get_3d_height();
-	int result = -1;		// Watch for conflicts.
-	if (atz1 != atz2)		// Is one obj. on top of another?
-		{
-		if (atz1 + z1 <= atz2)
-			result = 1;	// It's above us.
-		else if (atz2 + z2 <= atz1)
-			result = 0;	// We're above.
-		}
-	if (aty1 != aty2)		// Is one obj. in front of the other?
-		{
-		if (aty1 <= aty2 - y2)
-			{		// Obj2 is in front.
-			if (result == 0)// Conflict, so return 'neither'.
-				return -1;
-			result = 1;
-			}
-		else if (aty2 <= aty1 - y1)
-			{		// We're in front.
-			if (result == 1)
-				return -1;
-			result = 0;
-			}
-		}
-	if (atx1 != atx2)		// Is one obj. to right of the other?
-		{
-		if (atx1 <= atx2 - x2)
-			{		// Obj2 is to right of us.
-			if (result == 0)
-				return -1;
-			result = 1;
-			}
-		if (atx2 <= atx1 - x1)
-			{		// We're to the right.
-			if (result == 1)
-				return -1;
-			result = 0;
-			}
-		}
-	if (result != -1)		// Consistent result?
-		return result;
-	if (!z1 && atz1 <= atz2)	// We're flat and below?
-		return (1);
-	if (!z2 && atz2 <= atz1)	// It's below us?
-		return (0);
-#if 0					// Below 2nd?
-	if (atz1 < atz2 && atz1 + z1 <= atz2 + z2)
-		return (1);
-					// Above 2nd?
-	else if (atz2 < atz1 && atz2 + z2 <= atz1 + z1)
-		return (0);
-#endif
-					// Handle intersecting objects.
-	if (atx1 == atx2 &&		// Watch for paintings on NS walls.
-	    x1 == x2)
-		if (y1 < y2)		// Take narrower 2nd.
-			return (0);
-		else if (y2 > y1)
-			return (1);
-		else if (z1 < z2)	// The shorter one?
-			return (0);
-		else if (z1 > z2)
-			return (1);
-					// If x's overlap, see if in front.
-	if ((atx1 > atx2 - x2 && atx1 <= atx2) ||
-	    (atx2 > atx1 - x1 && atx2 <= atx1))
-		{
-		if (aty1 < aty2)
-			return (1);
-		else if (aty1 > aty2)
-			return (0);
-		else if (z1 < z2)	// The shorter one?
-			return (0);
-		else if (z1 > z2)
-			return (1);
-		else if (x1 < x2)	// Take the narrower one as greater.
-			return (0);
-		else if (x1 > x2)
-			return (1);
-		}
-					// If y's overlap, see if to left.
-	if ((aty1 > aty2 - y2 && aty1 <= aty2) ||
-	    (aty2 > aty1 - y1 && aty2 <= aty1))
-		{
-		if (atx1 < atx2)
-			return (1);
-		else if (atx1 > atx2)
-			return (0);
-		}
-	return (-1);
-	}
-#endif
 
 /*
  *	Get frame if rotated 1, 2, or 3 quadrants clockwise.  This is to
@@ -2310,8 +2183,11 @@ void Chunk_object_list::add_dependencies
 		int cmp = Game_object::lt(newinfo, obj);
 		if (!cmp)		// Bigger than this object?
 			{
-			newobj->dependencies.put(obj);
-			obj->dependors.put(newobj);
+			if (newobj->cx == obj->cx && newobj->cy == obj->cy)
+				{
+				newobj->dependencies.put(obj);
+				obj->dependors.put(newobj);
+				}
 			}
 		else if (cmp == 1)	// Smaller than?
 			{
@@ -2336,9 +2212,8 @@ void Chunk_object_list::add
 	newobj->cy = get_cy();
 	Game_window *gwin = Game_window::get_game_window();
 	Ordering_info ord(gwin, newobj);// Figure dependencies.
-//	if (ord.xs == 1 && ord.ys == 1)	// Simplest case?
+	if (ord.xs == 1 && ord.ys == 1)	// Simplest case?
 		add_dependencies(newobj, ord);
-#if 0	/* Not working very well: */
 	else
 		{
 		Rectangle footprint(ord.tx - ord.xs + 1, ord.ty - ord.ys + 1, 
@@ -2352,7 +2227,6 @@ void Chunk_object_list::add
 				gwin->get_objects(eachcx, eachcy)->
 						add_dependencies(newobj, ord);
 		}
-#endif
 					// Just put in front.
 	objects = newobj->insert_in_chain(objects);
 			// +++++Maybe should skip test, do update_object(...).
