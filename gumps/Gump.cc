@@ -99,6 +99,8 @@ Rectangle Gump::get_shape_rect
 	)
 {
 	Shape_frame *s = Game_window::get_game_window()->get_shape(*obj);
+	if (!s)
+		return Rectangle(0, 0, 0, 0);
 	return Rectangle(x + object_area.x + obj->get_cx() - s->get_xleft(), 
 			 y + object_area.y + obj->get_cy() - s->get_yabove(), 
 				 s->get_width(), s->get_height());
@@ -305,6 +307,8 @@ void Gump::paint
 	while ((obj = next.get_next()) != 0)
 	{
 		Shape_frame *shape = obj->get_shape();
+		if (!shape)
+			continue;
 		int objx = obj->get_cx() - shape->get_xleft() + 
 							1 + object_area.x;
 		int objy = obj->get_cy() - shape->get_yabove() + 

@@ -223,6 +223,8 @@ void Actor_gump::set_to_spot
 	Game_window *gwin = Game_window::get_game_window();
 					// Get shape info.
 	Shape_frame *shape = gwin->get_shape(*obj);
+	if (!shape)
+		return;			// Not much we can do.
 	int w = shape->get_width(), h = shape->get_height();
 					// Set object's position.
 	obj->set_chunk(spotx(index) + shape->get_xleft() - w/2 - object_area.x,
