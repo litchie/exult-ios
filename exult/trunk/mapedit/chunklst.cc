@@ -201,13 +201,13 @@ unsigned char *Chunk_chooser::get_chunk
 		id != Exult_server::send_terrain ||
 		Read2(newptr) != chunknum)
 		{			// No server?  Get from file.
-		data = new unsigned char[512];
+		data = new unsigned char[chunksz];
 		chunklist[chunknum] = data;
-		chunkfile.seekg(chunknum*512);
-		chunkfile.read(reinterpret_cast<char *>(data), 512);
+		chunkfile.seekg(headersz + chunknum*chunksz);
+		chunkfile.read(reinterpret_cast<char *>(data), chunksz);
 		if (!chunkfile.good())
 			{
-			memset(data, 0, 512);
+			memset(data, 0, chunksz);
 			cout << "Error reading chunk file" << endl;
 			}
 		}
@@ -247,7 +247,7 @@ void Chunk_chooser::set_chunk
 	int tnum = Read2(data);		// First the terrain #.
 	int new_num_chunks = Read2(data);	// Always sends total.
 	datalen -= 4;
-	if (datalen != 512)
+	if (datalen != chunksz)
 		{
 		cout << "Set_chunk:  Wrong data length" << endl;
 		return;
@@ -266,8 +266,8 @@ void Chunk_chooser::set_chunk
 		}
 	unsigned char *chunk = chunklist[tnum];
 	if (!chunk)			// Not read yet?
-		chunk = chunklist[tnum] = new unsigned char[512];
-	memcpy(chunk, data, 512);	// Copy it in.
+		chunk = chunklist[tnum] = new unsigned char[datalen];
+	memcpy(chunk, data, datalen);	// Copy it in.
 	}
 
 /*
@@ -288,10 +288,19 @@ void Chunk_chooser::render_chunk
 		for (int tx = 0; tx < c_tiles_per_chunk; tx++,
 							x += c_tilesize)
 			{
+			int shapenum, framenum;
 			unsigned char l = *data++;
 			unsigned char h = *data++;
-			int shapenum = l + 256*(h&0x3);
-			int framenum = h >> 2;
+			if (!headersz)
+				{
+				shapenum = l + 256*(h&0x3);
+				framenum = h >> 2;
+				}
+			else		// Version 2.
+				{
+				shapenum = l + 256*h;
+				framenum = *data++;
+				}
 			Shape_frame *s = ifile->get_shape(shapenum, framenum);
 			if (s)
 				s->paint(iwin, xoff + x - 1, yoff + y -1);
@@ -795,6 +804,7 @@ GtkWidget *Chunk_chooser::create_popup
 	return popup;
 	}
 
+const int V2_CHUNK_HDR_SIZE = 4+4+2;	// 0xffff, "exlt", vers.
 /*
  *	Create the list.
  */
@@ -802,17 +812,27 @@ GtkWidget *Chunk_chooser::create_popup
 Chunk_chooser::Chunk_chooser
 	(
 	Vga_file *i,			// Where they're kept.
-	std::istream& cfile,		// Chunks file (512bytes/entry).
+	std::istream& cfile,		// Chunks file.
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h,			// Dimensions.
 	Shape_group *g			// Filter, or null.
 	) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
-		chunkfile(cfile), 
+		chunkfile(cfile), headersz(0),
+		chunksz(c_tiles_per_chunk*c_tiles_per_chunk*2),
 		info(0), info_cnt(0), sel_changed(0),
 		locate_cx(-1), locate_cy(-1), drop_enabled(false), to_del(-1)
 	{
+	static char v2hdr[] = {0xff, 0xff, 0xff, 0xff, 'e', 'x', 'l', 't',
+								0, 0};
+	char v2buf[V2_CHUNK_HDR_SIZE];	// Check for V2 chunks.
+	chunkfile.read(v2buf, sizeof(v2buf));
+	if (memcmp(v2hdr, v2buf, sizeof(v2buf)) == 0)
+		{
+		headersz = V2_CHUNK_HDR_SIZE;
+		chunksz = c_tiles_per_chunk*c_tiles_per_chunk*3;
+		}
 	chunkfile.seekg(0, std::ios::end);	// Figure total #chunks.
-	num_chunks = chunkfile.tellg()/(c_tiles_per_chunk*c_tiles_per_chunk*2);
+	num_chunks = (chunkfile.tellg() - (long) headersz)/chunksz;
 	chunklist.resize(num_chunks);	// Init. list of ->'s to chunks.
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
@@ -1132,11 +1152,11 @@ void Chunk_chooser::insert_response
 		EStudio::Alert("Terrain insert failed.");
 	else
 		{			// Insert in our list.
-		unsigned char *data = new unsigned char[512];
+		unsigned char *data = new unsigned char[chunksz];
 		if (dup && tnum >= 0 && tnum < num_chunks && chunklist[tnum])
-			memcpy(data, chunklist[tnum], 512);
+			memcpy(data, chunklist[tnum], chunksz);
 		else
-			memset(data, 0, 512);
+			memset(data, 0, chunksz);
 		if (tnum >= 0 && tnum < num_chunks - 1)
 			chunklist.insert(chunklist.begin() + tnum + 1, data);
 		else			// If -1, append to end.

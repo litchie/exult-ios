@@ -84,6 +84,10 @@ bool Game_map::v2_chunks = false;
 bool Game_map::read_all_terrain = false;
 bool Game_map::chunk_terrains_modified = false;
 
+const int V2_CHUNK_HDR_SIZE = 4+4+2;	// 0xffff, "exlt", vers.
+static char v2hdr[] = {0xff, 0xff, 0xff, 0xff, 'e', 'x', 'l', 't',
+								0, 0};
+
 /*
  *	Create a chunk.
  */
@@ -96,7 +100,6 @@ Map_chunk *Game_map::create_chunk
 	return (objects[cx][cy] = new Map_chunk(this, cx, cy));
 	}
 
-const int V2_CHUNK_HDR_SIZE = 4+4+2;	// 0xffff, "exlt", vers.
 /*
  *	Read in a terrain chunk.
  */
@@ -177,17 +180,26 @@ void Game_map::init_chunks
 			throw f;
 		ofstream ochunks;	// Create one in 'patch'.
 		U7open(ochunks, PATCH_U7CHUNKS);
-		unsigned char buf[16*16*2];	
+		unsigned char buf[16*16*3];	
+		ochunks.write(v2hdr, sizeof(v2hdr));
 		memset(&buf[0], 0, sizeof(buf));
 		ochunks.write((char *) buf, sizeof(buf));
 		ochunks.close();
 		U7open(*chunks, PATCH_U7CHUNKS);
 		}
+	char v2buf[V2_CHUNK_HDR_SIZE];	// Check for V2.
+	chunks->read(v2buf, sizeof(v2buf));
+	int hdrsize = 0, chunksz = c_tiles_per_chunk*c_tiles_per_chunk*2;
+	if (memcmp(v2hdr, v2buf, sizeof(v2buf)) == 0)
+		{
+		v2_chunks = true;
+		hdrsize = V2_CHUNK_HDR_SIZE;
+		chunksz = c_tiles_per_chunk*c_tiles_per_chunk*3;
+		}
 					// Get to end so we can get length.
 	chunks->seekg(0, ios::end);
 					// 2 bytes/tile.
-	num_chunk_terrains = chunks->tellg()/
-				(c_tiles_per_chunk*c_tiles_per_chunk*2);
+	num_chunk_terrains = (chunks->tellg() - (long) hdrsize)/chunksz;
 	if (!chunk_terrains)
 		chunk_terrains = new Exult_vector<Chunk_terrain*>();
 					// Resize list to hold all.
@@ -442,6 +454,18 @@ char *Game_map::get_schunk_file_name
 	}
 
 /*
+ *	Have shapes been added?
+ */
+
+static bool New_shapes()
+	{
+	int u7nshapes = GAME_SI ? 1036 : 1024;
+	int nshapes = 
+		Shape_manager::get_instance()->get_shapes().get_num_shapes();
+	return nshapes > u7nshapes;
+	}
+
+/*
  *	Write out the chunks descriptions.
  */
 
@@ -450,7 +474,6 @@ void Game_map::write_chunk_terrains
 	)
 	{
 	const int ntiles = c_tiles_per_chunk*c_tiles_per_chunk;
-	int nbytes = v2_chunks ? 3 : 2;
 	int cnt = chunk_terrains->size();
 	int i;				// Any terrains modified?
 	for (i = 0; i < cnt; i++)
@@ -463,12 +486,10 @@ void Game_map::write_chunk_terrains
 		ofstream ochunks;	// Open file for chunks data.
 					// This truncates the file.
 		U7open(ochunks, PATCH_U7CHUNKS);
+		v2_chunks = New_shapes();
+		int nbytes = v2_chunks ? 3 : 2;
 		if (v2_chunks)
-			{
-			Write4(ochunks, 0xffffffff);
-			ochunks.write("exlt", 4);
-			Write2(ochunks, 0);	// Will be vers. #.
-			}
+			ochunks.write(v2hdr, sizeof(v2hdr));
 		for (i = 0; i < cnt; i++)
 			{
 			Chunk_terrain *ter = (*chunk_terrains)[i];
@@ -554,8 +575,7 @@ void Game_map::write_ifix_objects
 	int u7nshapes = GAME_SI ? 1036 : 1024;
 	int nshapes = 
 		Shape_manager::get_instance()->get_shapes().get_num_shapes();
-	Flex::Flex_vers vers = nshapes <= u7nshapes ? Flex::orig
-						: Flex::exult_v2;
+	Flex::Flex_vers vers = !New_shapes() ? Flex::orig : Flex::exult_v2;
 	bool v2 = vers == Flex::exult_v2;
 	Flex_writer writer(&ifix, "Exult",  count, vers);
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
