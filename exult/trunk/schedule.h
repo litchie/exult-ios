@@ -163,11 +163,49 @@ public:
  */
 class Loiter_schedule : public Schedule
 	{
+protected:
 	Tile_coord center;		// Center of rectangle.
 	int dist;			// Distance in tiles to roam in each
 					//   dir.
 public:
 	Loiter_schedule(Actor *n, int d = 12);
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
+ *	Dance.
+ */
+class Dance_schedule : public Loiter_schedule
+	{
+public:
+	Dance_schedule(Actor *n) : Loiter_schedule(n, 4)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
+ *	Miner/farmer:
+ */
+class Tool_schedule : public Loiter_schedule
+	{
+	int toolshape;			// Pick/scythe shape.
+	Game_object *tool;
+public:
+	Tool_schedule(Actor *n, int shnum) : Loiter_schedule(n, 12), 
+					toolshape(shnum), tool(0)
+		{  }
+	virtual void now_what();	// Now what should NPC do?
+	virtual void ending(int newtype);// Switching to another schedule.
+	};
+
+/*
+ *	Wander all over the place, using pathfinding.
+ */
+class Wander_schedule : public Loiter_schedule
+	{
+public:
+	Wander_schedule(Actor *n) : Loiter_schedule(n, 128)
+		{  }
 	virtual void now_what();	// Now what should NPC do?
 	};
 

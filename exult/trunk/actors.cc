@@ -621,21 +621,47 @@ void Actor::set_schedule_type
 		case Schedule::talk:
 			schedule = new Talk_schedule(this);
 			break;
+		case Schedule::dance:
+			schedule = new Dance_schedule(this);
+			break;
+		case Schedule::farm:	// Use a scythe.
+			schedule = new Tool_schedule(this, 618);
+			break;
+		case Schedule::tend_shop:// For now.
+			schedule = new Loiter_schedule(this, 3);
+			break;
+		case Schedule::miner:	// Use a pick.
+			schedule = new Tool_schedule(this, 624);
+			break;
 		case Schedule::loiter:
 		case Schedule::hound:	// For now.
 		case Schedule::graze:
 			schedule = new Loiter_schedule(this);
 			break;
-		case Schedule::tend_shop:// For now.
-			schedule = new Loiter_schedule(this, 3);
+		case Schedule::wander:
+			schedule = new Wander_schedule(this);
 			break;
+		case Schedule::blacksmith:
+			break;		//++++++++++
 		case Schedule::sleep:
 			schedule = new Sleep_schedule(this);
+			break;
+		case Schedule::wait:	// Loiter just a little
+//Figure out why this messes up Mayor's talk at intro.
+//			schedule = new Loiter_schedule(this, 1);
 			break;
 		case Schedule::eat:		// For now.
 		case Schedule::sit:
 			schedule = new Sit_schedule(this);
 			break;
+		case Schedule::bake:
+			break;		//+++++++
+		case Schedule::sew:
+			break;		//+++++++
+		case Schedule::shy:
+			break;		//+++++++
+		case Schedule::lab:
+			break;		//+++++++
 		case Schedule::thief:		// Just face north, for now.
 			gwin->add_dirty(this);
 			set_frame(get_dir_framenum(0, Actor::standing));
@@ -644,19 +670,21 @@ void Actor::set_schedule_type
 		case Schedule::waiter:
 			schedule = new Waiter_schedule(this);
 			break;
+		case Schedule::kid_games:
+			break;		//+++++++
 		case Schedule::eat_at_inn:
 			schedule = new Eat_at_inn_schedule(this);
 			break;
+		case Schedule::duel:
+			break;		//+++++++
 		case Schedule::preach:
 			schedule = new Preach_schedule(this);
 			break;
 		case Schedule::patrol:
 			schedule = new Patrol_schedule(this);
 			break;
-		case Schedule::wait:	// Loiter just a little
-//+++++Figure out why this messes up Mayor's talk at intro.
-//			schedule = new Loiter_schedule(this, 1);
-			break;
+		case Schedule::desk_work:
+			break;		//+++++++
 		default:
 			break;
 			}
