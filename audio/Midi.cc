@@ -158,6 +158,15 @@ void	MyMidiPlayer::start_music(const char *fname,int num,bool repeat)
 	start_track(fname,num,repeat);
 }
 
+void	MyMidiPlayer::stop_music()
+{
+	if(!midi_device)
+		return;
+	
+	midi_device->stop_track();
+	current_track=-1;
+}
+
 bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 {
 	string	bank(bankname);
