@@ -2831,7 +2831,11 @@ bool Actor::figure_hit_points
 		wpoints = winf ? winf->get_damage() : 0;
 		}
 	else
+		{
 		winf = attacker->get_weapon(wpoints, weapon_shape);
+		if (!wpoints)
+			wpoints = 1;	// Always give at least one.
+		}
 					// Get bonus ammo points.
 	Ammo_info *ainf = ammo_shape > 0 ? 
 			ShapeID::get_info(ammo_shape).get_ammo_info() : 0;

@@ -1,3 +1,9 @@
+2003-02-20  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* combat.cc (Combat): Wisps can teleport (partly done).
+	* actors.cc:  Wisps (and others) always get at least 1 attack
+	point for their builtin weapon.
+
 2003-02-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Exploding weapons implemented.

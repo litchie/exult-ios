@@ -89,6 +89,58 @@ void Combat_schedule::start_battle
 	}
 
 /*
+ *	Can a given shape teleport?
+ */
+
+inline bool Can_teleport
+	(
+	Actor *npc
+	)
+	{
+	switch (npc->get_shapenum())
+		{
+	case 534:			// Wisp.
+	case 445:
+	case 446:			// Mages.
+	case 519:			// Liche.
+		return true;
+	default:
+		return false;
+		}
+	}
+
+/*
+ *	Certain monsters (wisps, mages) can teleport during battle.
+ */
+
+bool Combat_schedule::teleport
+	(
+	)
+	{
+	Game_object *trg = npc->get_target();	// Want to get close to targ.
+	if (!trg)
+		return false;
+	unsigned int curtime = SDL_GetTicks();
+	if (curtime < teleport_time)
+		return false;
+	teleport_time = curtime + 2000 + rand()%2000;
+	Tile_coord dest = trg->get_tile();
+	dest.tx += 4 - rand()%8;
+	dest.ty += 4 - rand()%8;
+	dest = Map_chunk::find_spot(dest, 3, npc, 1);
+	if (dest.tx == -1)
+		return false;		// No spot found.
+	if (dest.distance(npc->get_tile()) > 6 && rand()%5 != 0)
+		return false;		// Got to give Avatar a chance to
+					//   get away.
+	//+++++Original creates a fire field here that burns out shortly.
+	npc->move(dest.tx, dest.ty, dest.tz);
+					// Show the stars.
+	eman->add_effect(new Sprites_effect(7, npc, 0, 0, 0, 0));
+	return true;
+	}
+
+/*
  *	Off-screen?
  */
 
@@ -348,6 +400,12 @@ void Combat_schedule::approach_foe
 					npc->get_property(Actor::health) < 3))
 		{
 		run_away();
+		return;
+		}
+	if (Can_teleport(npc) && rand()%4 == 0 &&	// Try 1/4 to teleport.
+	    teleport())
+		{
+		npc->start(gwin->get_std_delay(), gwin->get_std_delay());
 		return;
 		}
 	PathFinder *path = new Astar();
@@ -735,7 +793,7 @@ Combat_schedule::Combat_schedule
 		strike_range(0), projectile_range(0), max_range(0),
 		practice_target(0), is_thrown(false), yelled(0),
 		no_blocking(false),
-		started_battle(false), fleed(0), failures(0)
+		started_battle(false), fleed(0), failures(0), teleport_time(0)
 	{
 	Combat_schedule::set_weapon();
 					// Cache some data.
