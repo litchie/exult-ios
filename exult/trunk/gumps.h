@@ -93,7 +93,7 @@ class Actor_gump_spot
 	short x, y;			// Location rel. to gump.
 	Game_object *obj;		// Object that is here.
 	int usecode_id;			// ID # used in intrinsic 0x72.
-	Actor_gump_spot()
+	Actor_gump_spot() : x(0), y(0), obj(0)
 		{  }
 	};
 

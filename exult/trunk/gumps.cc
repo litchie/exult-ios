@@ -334,6 +334,7 @@ Actor_gump_object::Actor_gump_object
 	int shnum			// Shape #.
 	) : Gump_object(cont, initx, inity, shnum)
 	{
+	// +++++++++Init spot locations, ids.
 	}
 
 /*
