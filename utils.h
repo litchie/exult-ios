@@ -193,6 +193,12 @@ int U7open
 	const char *fname			// May be converted to upper-case.
 	);
 
+std::FILE* U7open
+	(
+	const char *fname,			// May be converted to upper-case.
+	const char *mode			// File access mode.
+	);
+
 int Log2
 	(
 	unsigned int n
