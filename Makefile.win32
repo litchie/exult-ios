@@ -2,7 +2,7 @@
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
-U7PATH=C:\\Ultima7
+U7PATH=C:\\UC\\Ultima7
 
 CC=gcc
 # Base of the exult source
@@ -15,11 +15,11 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw32 automatically defines WIN32
-CPPFLAGS=-DVERSION=\"0.94cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
+CPPFLAGS=-DVERSION=\\\"0.94cvs\\\" -DEXULT_DATADIR=\\\"data\\\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/gumps -I$(SRC)/objs \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
-	-I$(SRC)/usecode $(SDL_INCLUDES)
+	-I$(SRC)/usecode -I$(SRC)/data $(SDL_INCLUDES) 
 
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
 CXXFLAGS=-O2 -mwindows -Wno-long-long -include mingw_kludges.h
@@ -34,7 +34,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	game.o gameclk.o gamedat.o gamerend.o gamewin.o keys.o keyactions.o \
 	menulist.o mouse.o npcnear.o npctime.o palette.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
-	exultico.o cheat_screen.o
+	exultico.o cheat_screen.o shapeid.o
 # unused: npctest.o
 
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
@@ -58,7 +58,7 @@ GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	Spellbook_gump.o Stats_gump.o Text_gump.o  Yesno_gump.o \
 	Gamemenu_gump.o Newfile_gump.o Gump_ToggleButton.o \
 	AudioOptions_gump.o Face_button.o CombatStats_gump.o \
-	Jawbone_gump.o VideoOptions_gump.o
+	Jawbone_gump.o VideoOptions_gump.o Face_stats.o Gump_manager.o
 
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o

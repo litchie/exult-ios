@@ -49,6 +49,7 @@ private:
 		CP_ShapeSet = 11,
 		CP_ValueSet = 12,
 		CP_NameSet = 13,
+		CP_WrongShapeFile = 14,
 
 		CP_ChooseNPC = 16,
 		CP_EnterValue = 17,

@@ -89,8 +89,7 @@ void Game_clock::set_time_palette
 			new_palette = PALETTE_DAWN;
 		}
 					// Gump mode, or light spell?
-	if ((gwin->showing_gumps() || gwin->is_special_light()) &&
-					new_palette == PALETTE_NIGHT)
+	if (gwin->is_special_light() && new_palette == PALETTE_NIGHT)
 		new_palette = PALETTE_DAWN;
 	gwin->set_palette(new_palette);
 	}

@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actions.h"
 #include "keyring.h"
 #include "cheat.h"
+#include "gump_manager.h"
 
 using std::cerr;
 using std::cout;
@@ -784,9 +785,12 @@ USECODE_INTRINSIC(click_on_item)
 		ty = gwin->get_scrollty() + y/c_tilesize;
 		tz = 0;
 					// Look for obj. in open gump.
-		Gump *gump = gwin->find_gump(x, y);
+		Gump *gump = gwin->get_gump_man()->find_gump(x, y);
 		if (gump)
+		{
 			obj = gump->find_object(x, y);
+			if (!obj) obj = gump->find_actor(x, y);
+		}
 		else			// Search rest of world.
 			{
 			obj = gwin->find_object(x, y);
@@ -1416,7 +1420,7 @@ USECODE_INTRINSIC(recall_virtue_stone)
 	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *> (obj);
 	if (vs)
 		{
-		gwin->end_gump_mode();
+		gwin->get_gump_man()->close_all_gumps();
 					// Pick it up if necessary.
 		Game_object *owner = obj->get_outermost();
 		if (owner != gwin->get_main_actor() && !npc_in_party(owner))
@@ -1793,13 +1797,14 @@ USECODE_INTRINSIC(path_run_usecode)
 USECODE_INTRINSIC(close_gumps)
 {
 	// Guessing+++++ close all gumps.
-	gwin->end_gump_mode();
+	gwin->get_gump_man()->close_all_gumps();
 	return(no_ret);
 }
 
 USECODE_INTRINSIC(in_gump_mode)
 {
-	return Usecode_value(gwin->showing_gumps());
+								// No persistent
+	return Usecode_value(gwin->get_gump_man()->showing_gumps(true));
 }
 
 USECODE_INTRINSIC(is_not_blocked)

@@ -43,6 +43,8 @@ static const int rowy[7] = {15, 29, 42, 73, 87, 93, 106};
 CombatStats_gump::CombatStats_gump(int initx, int inity) : 
 	Gump(0, initx, inity, game->get_shape("gumps/cstats/1"))
 {
+	set_object_area(Rectangle(0,0,0,0), 7, 95);
+
 	Game_window *gwin = Game_window::get_game_window();
 
 	party_size = gwin->get_party(party, 1);
@@ -84,15 +86,15 @@ void CombatStats_gump::paint(Game_window *gwin)
 
 	// stats for all party members
 	for (int i = 0; i < party_size; i++) {
-		paint_button(gwin, face_btn[i]);
+		face_btn[i]->paint(gwin);
 
 		Paint_num(gwin, party[i]->get_property(Actor::combat),
 				  x + colx + i*coldx, y + rowy[1]);		
 		Paint_num(gwin, party[i]->get_property(Actor::health),
 				  x + colx + i*coldx, y + rowy[2]);
 
-		paint_button(gwin, halo_btn[i]);
-		paint_button(gwin, cmb_btn[i]);
+		halo_btn[i]->paint(gwin);
+		cmb_btn[i]->paint(gwin);
 	}
 
 	// magic stats only for Avatar

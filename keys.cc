@@ -94,6 +94,8 @@ const struct Action {
 	{ "STATS", ActionStats, "Show stats", true, false, NONE },
 	{ "COMBAT_STATS",
 	  ActionCombatStats, "Show combat stats", true, false, SERPENT_ISLE },
+	{ "FACE_STATS",
+	  ActionFaceStats, "Change Face Stats State", true, false, NONE },
 	
 	{ "SHOW_SI_INTRO",
 	  ActionSIIntro, "Show Alternate SI intro", true, true, SERPENT_ISLE },

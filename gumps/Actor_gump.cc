@@ -92,6 +92,8 @@ Actor_gump::Actor_gump
 	int shnum			// Shape #.
 	) : Gump(cont, initx, inity, shnum)
 {
+	set_object_area(Rectangle(26, 0, 104, 132), 6, 136);
+
 	heart_button = new Heart_button(this, heartx, hearty);
 	if (cont->get_npc_num() == 0)
 		disk_button = new Disk_button(this, diskx, disky);
@@ -259,11 +261,11 @@ void Actor_gump::paint
 	}
 	Gump::paint(gwin);	// Paint gump & objects.
 					// Paint buttons.
-	if (heart_button) paint_button(gwin, heart_button);
-	if (disk_button) paint_button(gwin, disk_button);
-	if (combat_button) paint_button(gwin, combat_button);
-	if (halo_button) paint_button(gwin, halo_button);
-	if (cmode_button) paint_button(gwin, cmode_button);
+	if (heart_button) heart_button->paint(gwin);
+	if (disk_button) disk_button->paint(gwin);
+	if (combat_button) combat_button->paint(gwin);
+	if (halo_button) halo_button->paint(gwin);
+	if (cmode_button) cmode_button->paint(gwin);
 					// Show weight.
 	int max_weight = 2*container->get_property(Actor::strength);
 	int weight = container->get_weight()/10;
@@ -272,4 +274,9 @@ void Actor_gump::paint
 	int twidth = gwin->get_text_width(2, text);
 	const int boxw = 102;
 	gwin->paint_text(2, text, x + 28 + (boxw - twidth)/2, y + 120);
+}
+
+Game_object * Actor_gump::find_actor(int mx, int my)
+{
+	return container;
 }

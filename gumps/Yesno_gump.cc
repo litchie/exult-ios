@@ -79,6 +79,7 @@ Yesno_gump::Yesno_gump
 	const std::string &txt
 	) : Modal_gump(0, game->get_shape("gumps/yesnobox")), text(txt), answer(-1)
 {
+	set_object_area(Rectangle(6, 6, 116, 30));
 	yes_button = new Yesno_button(this, yesx, yesnoy, 1);
 	no_button = new Yesno_button(this, nox, yesnoy, 0);
 }
@@ -105,10 +106,10 @@ void Yesno_gump::paint
 	)
 {
 					// Paint the gump itself.
-	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+	gwin->paint_shape(x, y, *this);
 					// Paint buttons.
-	paint_button(gwin, yes_button);
-	paint_button(gwin, no_button);
+	yes_button->paint(gwin);
+	no_button->paint(gwin);
 					// Paint text.
 	gwin->paint_text_box(2, text.c_str(), x + object_area.x, y + object_area.y,
 			object_area.w, object_area.h, 2);

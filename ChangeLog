@@ -1,3 +1,42 @@
+2001-07-21 Ryan Nunn <triforce@merlin.net.au>
+
+	*.* :
+
+	Can now specify the flex file for ShapeIDs. Added Shape_frame 
+	*ShapeID::get_shape() to be used as a universal method to get a shape
+	for an object. Added Game_window::paint_shape(int x, int y, ShapeID &s)
+	Removed some of the Game_window::paint_???_shape() method because
+	paint_shape(int x, int y, Shape_frame *shape) or 
+	paint_shape(int x, int y, ShapeID &shape) can be used instead.
+
+	Added Face Stats for on screen display of stats. Added some shapes for
+	the Face Stats. Gump_widget now inherit ShapeID. Made lots of changes
+	to the Gumps to  use the new ShapeID::get_shape(). All gumps that use
+	custom shapes use the expack generatedheaders.
+	
+	Added Gump_manager class to manage gumps and to remove gump management
+	code from Game_window. Note, some of the method names have changed for
+	Gump_manager compared to Game_window. Added call to
+	Gump_mananger::update_gumps() so the Face_stats will be updated when
+	required.
+
+	Now saving and loaded 16 bit numbers for NPC shapes and polymorph
+	shapes. Allows for use of Shapes above 1023 and polymorph shape will
+	now be correct across game restorying. NPC's now have the is_temporary
+	flag saved and restored. This will fix up a problem where if a
+	temporary NPC was saved, when reloaded it wouldn't get culled by calls
+	to emulate_cache_out.
+
+	Can now use the shape brower to specify shapes in the F2 cheat screen.
+	Added support for changing polymorphs in the NPC Flags screen.
+
+	Made a few changes so clicking on a gump will report the name of the
+	gumps owner. Also made it so if you click on a gump when Uscode
+	Intrinsic "click_on_item" is called the owner of the gump is returned.
+	This allows for using potions, food, spells, etc and clicking on a gump
+	for that person. That included the face stats gumps.
+
+
 2001-07-30  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* ExultStudio:  Added generic object editing dialog.

@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "ucmachine.h"
 #include "files/utils.h"
+#include "Gump_manager.h"
 
 using std::rand;
 using std::ostream;
@@ -78,17 +79,20 @@ int Container_game_object::add
 	if (obj->get_shapenum() == get_shapenum())
 		return (0);		// Can't put a bag in a bag.
 	int objvol = obj->get_volume();
+
+	// Always check this. ALWAYS!
+	Game_object *parent = this;
+	do			// Watch for snake eating itself.
+		if (obj == parent)
+			return 0;
+	while ((parent = parent->get_owner()) != 0);
+
 	if (!dont_check)
 		{			// Note:  NPC's have 0 volume.
 		int maxvol = get_max_volume();
 //		if (maxvol > 0 &&
 		if (objvol + volume_used > maxvol)
 			return (0);	// Doesn't fit.
-		Game_object *parent = this;
-		do			// Watch for snake eating itself.
-			if (obj == parent)
-				return 0;
-		while ((parent = parent->get_owner()) != 0);
 		}
 	volume_used += objvol;
 	obj->set_owner(this);		// Set us as the owner.
@@ -309,12 +313,12 @@ void Container_game_object::activate
 	if (edit())
 		return;			// Map-editing.
 	int shnum = get_shapenum();
-	Game_window *gwin = Game_window::get_game_window();
+	Gump_manager *gump_man = Game_window::get_game_window()->get_gump_man();
 
 	if (Game::get_game_type() == BLACK_GATE)  switch(shnum)	// Watch for gumps.
 	{
 		case 405:			// Ship's hold
-		gwin->show_gump(this, game->get_shape("gumps/shipshold"));
+		gump_man->add_gump(this, game->get_shape("gumps/shipshold"));
 		return;
 
 		case 406:			// Nightstand.
@@ -323,7 +327,7 @@ void Container_game_object::activate
 		case 203:
 		case 416:			// Chest of drawers.
 		case 679:
-		gwin->show_gump(this, game->get_shape("gumps/drawer"));
+		gump_man->add_gump(this, game->get_shape("gumps/drawer"));
 		return;
 
 		case 400:			// Bodies.
@@ -332,41 +336,41 @@ void Container_game_object::activate
 		case 778:
 		case 892:
 		case 507: 			// Bones
-		gwin->show_gump(this, game->get_shape("gumps/body"));
+		gump_man->add_gump(this, game->get_shape("gumps/body"));
 		return;
 
 		case 800:			// Chest.
-		gwin->show_gump(this, game->get_shape("gumps/chest"));
+		gump_man->add_gump(this, game->get_shape("gumps/chest"));
 		return;
 
 		case 801:			// Backpack.
-		gwin->show_gump(this, game->get_shape("gumps/backpack"));
+		gump_man->add_gump(this, game->get_shape("gumps/backpack"));
 		return;
 
 		case 799:			// Unsealed box
-		gwin->show_gump(this, game->get_shape("gumps/box"));
+		gump_man->add_gump(this, game->get_shape("gumps/box"));
 		return;
 
 		case 802:			// Bag.
-		gwin->show_gump(this, game->get_shape("gumps/bag"));
+		gump_man->add_gump(this, game->get_shape("gumps/bag"));
 		return;
 
 		case 803:			// Basket.
-		gwin->show_gump(this, game->get_shape("gumps/basket"));
+		gump_man->add_gump(this, game->get_shape("gumps/basket"));
 		return;
 	
 		case 804:			// Crate.
-		gwin->show_gump(this, game->get_shape("gumps/crate"));
+		gump_man->add_gump(this, game->get_shape("gumps/crate"));
 		return;
 
 		case 819:			// Barrel.
-		gwin->show_gump(this, game->get_shape("gumps/barrel"));
+		gump_man->add_gump(this, game->get_shape("gumps/barrel"));
 		return;
 	}
 	else if (Game::get_game_type() == SERPENT_ISLE) switch(shnum)	// Watch for gumps.
 	{
 		case 405:			// Ship's hold
-		gwin->show_gump(this, game->get_shape("gumps/shipshold"));
+		gump_man->add_gump(this, game->get_shape("gumps/shipshold"));
 		return;
 
 		case 406:			// Nightstand.
@@ -374,7 +378,7 @@ void Container_game_object::activate
 		case 283:
 		case 416:			// Chest of drawers.
 		case 679:
-		gwin->show_gump(this, game->get_shape("gumps/drawer"));
+		gump_man->add_gump(this, game->get_shape("gumps/drawer"));
 		return;
 
 		case 400:			// Bodies.
@@ -384,7 +388,7 @@ void Container_game_object::activate
 		case 778:
 		case 892:
 		case 507: 			// Bones
-		gwin->show_gump(this, game->get_shape("gumps/body"));
+		gump_man->add_gump(this, game->get_shape("gumps/body"));
 		return;
 
 		case 800:			// Chest.
@@ -396,39 +400,39 @@ void Container_game_object::activate
 			}
 						// FALL THROUGH to 486.
 		case 486:			// Usecode container.
-		gwin->show_gump(this, game->get_shape("gumps/chest"));
+		gump_man->add_gump(this, game->get_shape("gumps/chest"));
 		return;
 
 		case 801:			// Backpack.
-		gwin->show_gump(this, game->get_shape("gumps/backpack"));
+		gump_man->add_gump(this, game->get_shape("gumps/backpack"));
 		return;
 
 		case 799:			// Unsealed box
-		gwin->show_gump(this, game->get_shape("gumps/box"));
+		gump_man->add_gump(this, game->get_shape("gumps/box"));
 		return;
 
 		case 802:			// Bag.
-		gwin->show_gump(this, game->get_shape("gumps/bag"));
+		gump_man->add_gump(this, game->get_shape("gumps/bag"));
 		return;
 
 		case 803:			// Basket.
-		gwin->show_gump(this, game->get_shape("gumps/basket"));
+		gump_man->add_gump(this, game->get_shape("gumps/basket"));
 		return;
 	
 		case 804:			// Crate.
-		gwin->show_gump(this, game->get_shape("gumps/crate"));
+		gump_man->add_gump(this, game->get_shape("gumps/crate"));
 		return;
 
 		case 819:			// Barrel.
-		gwin->show_gump(this, game->get_shape("gumps/barrel"));
+		gump_man->add_gump(this, game->get_shape("gumps/barrel"));
 		return;
 
 		case 297:			// Hollow Tree
-		gwin->show_gump(this, game->get_shape("gumps/tree"));
+		gump_man->add_gump(this, game->get_shape("gumps/tree"));
 		return;
 
 		case 555:			// Serpent Jawbone
-		gwin->show_gump(this, game->get_shape("gumps/jawbone"));
+		gump_man->add_gump(this, game->get_shape("gumps/jawbone"));
 		return;
 	}
 

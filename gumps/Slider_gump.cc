@@ -101,6 +101,9 @@ Slider_gump::Slider_gump
 	    min_val(mival), max_val(mxval), step_val(step),
 	    val(defval), dragging(0), prev_dragx(0)
 {
+	diamond = ShapeID(game->get_shape("gumps/slider_diamond"), 0, SF_GUMPS_VGA);
+	set_object_area(Rectangle(0, 0, 0, 0), 6, 30);
+
 #ifdef DEBUG
 	cout << "Slider:  " << min_val << " to " << max_val << " by " << step << endl;
 #endif
@@ -167,14 +170,14 @@ void Slider_gump::paint
 {
 	const int textx = 128, texty = 7;
 					// Paint the gump itself.
-	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+	gwin->paint_shape(x, y, *this);
 					// Paint red "checkmark".
-	paint_button(gwin, check_button);
+	check_button->paint(gwin);
 					// Paint buttons.
-	paint_button(gwin, left_arrow);
-	paint_button(gwin, right_arrow);
+	left_arrow->paint(gwin);
+	right_arrow->paint(gwin);
 					// Paint slider diamond.
-	gwin->paint_gump(x + diamondx, y + diamondy, game->get_shape("gumps/slider_diamond"), 0);
+	gwin->paint_shape(x + diamondx, y + diamondy, diamond);
 					// Print value.
   	Paint_num(gwin, val, x + textx, y + texty);
 	gwin->set_painted();

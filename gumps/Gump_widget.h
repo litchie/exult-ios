@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "exceptions.h"
 #include "gump_types.h"
+#include "shapeid.h"
+#include "rect.h"
 
 class Gump;
 class Game_window;
@@ -28,29 +30,33 @@ class Game_window;
 /*
  *	A gump widget, such as a button or text field:
  */
-class Gump_widget
+class Gump_widget : public ShapeID
 {
 	UNREPLICATABLE_CLASS(Gump_widget);
 
 protected:
 	Gump_widget() : parent(0) {  }
 	Gump *parent;		// Who this is in.
-	Gumpshapefile shapefile;
-	int shapenum;			// In "gumps.vga".
-	int framenum;			// Frame # (usually 0) when unpushed.
 	short x, y;			// Coords. relative to parent.
 
 public:
 	friend class Gump;
 	friend class Spellbook_gump;
 	friend class Spellscroll_gump;
-	Gump_widget(Gump *par, int shnum, int px, int py,
-				Gumpshapefile shfile = GSF_GUMPS_VGA)
-		: parent(par), shapenum(shnum), framenum(0), x(px), y(py),
-		shapefile(shfile)
+	Gump_widget(Gump *par, int shnum, int px, int py, ShapeFile shfile = SF_GUMPS_VGA)
+		: ShapeID(shnum, 0, shfile), parent(par), x(px), y(py)
 		{  }
 					// Is a given point on the widget?
-	int on_widget(Game_window *gwin, int mx, int my);
+	virtual int on_widget(Game_window *gwin, int mx, int my);
+
+	virtual void paint(Game_window *gwin);
+
+	virtual Rectangle get_rect();
+					// update the widget, if required
+	virtual void update_widget(Game_window *gwin) { }
+
+	virtual bool is_draggable() { return true; }
+
 };
 
 #endif

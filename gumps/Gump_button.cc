@@ -35,7 +35,7 @@ void Gump_button::push
 	)
 {
 	pushed = 1;
-	parent->paint_button(gwin, this);
+	paint(gwin);
 	gwin->set_painted();
 }
 
@@ -49,7 +49,7 @@ void Gump_button::unpush
 	)
 {
 	pushed = 0;
-	parent->paint_button(gwin, this);
+	paint(gwin);
 	gwin->set_painted();
 }
 
@@ -59,7 +59,33 @@ void Gump_button::unpush
 
 void Gump_button::double_clicked
 	(
+	Game_window *gwin,
+	int x, int y
+	)
+{
+}
+
+/*
+ *	Repaint checkmark, etc.
+ */
+
+void Gump_button::paint
+	(
 	Game_window *gwin
 	)
 {
+	int px = 0;
+	int py = 0;
+
+	if (parent)
+	{
+		px = parent->get_x();
+		py = parent->get_y();
+	}
+
+	int prev_frame = get_framenum();
+	set_frame(prev_frame + pushed);
+	gwin->paint_shape(x+px, y+py, get_shape());
+	set_frame(prev_frame);
+
 }

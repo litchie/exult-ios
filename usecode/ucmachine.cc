@@ -37,9 +37,9 @@ Usecode_machine::Usecode_machine
 	) : gwin(gw), call_depth(0), keyring(0), conv(0), party_count(0)
 	{
 					// Clear global flags.
-	memset(gflags, 0, sizeof(gflags));
+	std::memset(gflags, 0, sizeof(gflags));
 					// Clear party list.
-	memset((char *) &party[0], 0, sizeof(party));
+	std::memset((char *) &party[0], 0, sizeof(party));
 	conv = new Conversation;
 	keyring = new Keyring;
 	}

@@ -53,6 +53,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "frameseq.h"
 #include "Paperdoll_gump.h"
 #include "animate.h"
+#include "Gump_manager.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -390,8 +391,8 @@ Actor::Actor
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
 	    dead(false), hit(false), combat_protected(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
-	    usecode_dir(0), siflags(0), type_flags(0), skin_color(-1), 
-	    action(0), 
+	    usecode_dir(0), siflags(0), type_flags(0), ident(0),
+	    skin_color(-1), action(0), 
 	    frame_time(0), next_path_time(0), timers(0),
 	    weapon_rect(0, 0, 0, 0)
 	{
@@ -1483,7 +1484,7 @@ void Actor::activate
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||
 		(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
 	
-	bool show_party_inv = gwin->showing_gumps() || gwin->in_combat();
+	bool show_party_inv = gwin->get_gump_man()->showing_gumps(true) || gwin->in_combat();
 
 	if (!npc_num ||		// Avatar
 			(show_party_inv && get_party_id() >= 0 && // Party
@@ -1610,31 +1611,32 @@ void Actor::update_from_studio
 void Actor::show_inventory()
 {
 	Game_window *gwin = Game_window::get_game_window();
+	Gump_manager *gump_man = gwin->get_gump_man();
 
 	// We are serpent if we can use serpent isle paperdolls
 	bool serpent = Game::get_game_type()==SERPENT_ISLE||(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls());
 	
 	if (!npc_num && !serpent)	// Avatar No paperdolls
-		gwin->show_gump(this, ACTOR_FIRST_GUMP);
+		gump_man->add_gump(this, ACTOR_FIRST_GUMP);
 	else if (!npc_num && serpent)	// Avatar Paperdolls
-		gwin->show_gump(this, 123);
+		gump_man->add_gump(this, 123);
 					// Gump/combat mode?
 	else if (get_party_id() >= 0 &&
 		 npc_num >= 1 && npc_num <= 10 && !serpent)
 					// Show companions' pictures. (BG)
-			gwin->show_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
+			gump_man->add_gump(this, ACTOR_FIRST_GUMP + 1 + npc_num);
 	else if (get_party_id() >= 0 && serpent)
 					// Show companions' pictures. (SI)
-			gwin->show_gump(this, 123);
+			gump_man->add_gump(this, 123);
 					// Pickpocket Cheat Female no paperdolls
 	else if (!serpent && Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
-		gwin->show_gump(this, 66);
+		gump_man->add_gump(this, 66);
 					// Pickpocket Cheat Male no paperdolls
 	else if (!serpent && !Paperdoll_gump::IsNPCFemale(this->get_shapenum()))
-		gwin->show_gump(this, 65);
+		gump_man->add_gump(this, 65);
 					// Pickpocket Cheat paperdolls
 	else if (serpent)
-		gwin->show_gump(this, 123);
+		gump_man->add_gump(this, 123);
 }
 
 /*
@@ -1711,7 +1713,7 @@ void Actor::set_property
 		else
 			properties[prop] = (short) val;
 		Game_window *gwin = Game_window::get_game_window();
-		if (gwin->showing_gumps())
+		if (gwin->get_gump_man()->showing_gumps())
 			gwin->set_all_dirty();
 		}
 	}
@@ -1849,7 +1851,7 @@ void Actor::set_flag
 		gwin->set_palette();
 		}
 					// Update stats if open.
-	if (gwin->showing_gumps())
+	if (gwin->get_gump_man()->showing_gumps())
 		gwin->set_all_dirty();
 	set_actor_shape();
 	}
@@ -2819,7 +2821,7 @@ void Main_actor::die
 	Game_window *gwin = Game_window::get_game_window();
 	if (gwin->in_combat())
 		gwin->toggle_combat();	// Hope this is safe....
-	gwin->end_gump_mode();		// Obviously.
+	gwin->get_gump_man()->close_all_gumps();	// Obviously.
 					// Special function for dying:
 	if (Game::get_game_type() == BLACK_GATE)
 		gwin->get_usecode()->call_usecode(
@@ -2874,9 +2876,11 @@ void Actor::set_polymorph (int shape)
 	// Polymorph is only SI
 	if (Game::get_game_type() != SERPENT_ISLE) return;
 
+#ifdef DEBUG
 	cerr << "Setting polymorph for " << get_npc_num() << endl;
 	cerr << "Shape " << shape << endl;
 	cerr << "Save shape " << shape_save << endl;
+#endif
 	
 	// Want to set to Avatar
 	if (shape == 721)
@@ -2894,7 +2898,7 @@ void Actor::set_polymorph (int shape)
 
 	if (shape == shape_save)
 	{
-		set_shape (shape_save, get_framenum());
+		set_shape (shape_save);
 		shape_save = -1;
 		clear_siflag(polymorph);
 		return;

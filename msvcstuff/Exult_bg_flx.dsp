@@ -45,6 +45,7 @@ CFG=Exult_bg_flx - Win32 Release
 # PROP Intermediate_Dir "Exult_bg_flx___Win32_Release0"
 # PROP Cmd_Line "buildflx.bat ..\data\bg"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_bg_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -65,6 +66,7 @@ CFG=Exult_bg_flx - Win32 Release
 # PROP Intermediate_Dir "Exult_bg_flx___Win32_Debug"
 # PROP Cmd_Line "buildflx.bat ..\data\bg"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_bg_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -85,6 +87,7 @@ CFG=Exult_bg_flx - Win32 Release
 # PROP Intermediate_Dir "Exult_bg_flx___Win32_Release_Install"
 # PROP Cmd_Line "buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_bg_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -105,6 +108,7 @@ CFG=Exult_bg_flx - Win32 Release
 # PROP Intermediate_Dir "Exult_bg_flx___Win32_Debug_Install"
 # PROP Cmd_Line "buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data"
 # PROP Rebuild_Opt ""
+# PROP Target_File "..\data\exult_bg_flx.h"
 # PROP Bsc_Name ""
 # PROP Target_Dir ""
 
@@ -162,6 +166,10 @@ SOURCE=..\data\bg\cleaver.shp
 # End Source File
 # Begin Source File
 
+SOURCE=..\data\bg\dupre_face.shp
+# End Source File
+# Begin Source File
+
 SOURCE=..\data\bg\faces.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
@@ -177,6 +185,10 @@ SOURCE=..\data\bg\faces2.shp
 SOURCE=..\data\bg\fellowshipstaff.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\bg\fem_av_face.shp
 # End Source File
 # Begin Source File
 
@@ -198,6 +210,10 @@ SOURCE=..\data\bg\hoe_of_destruction.shp
 # End Source File
 # Begin Source File
 
+SOURCE=..\data\bg\iolo_face.shp
+# End Source File
+# Begin Source File
+
 SOURCE=..\data\bg\magic_boomerang.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
@@ -207,6 +223,14 @@ SOURCE=..\data\bg\magic_boomerang.shp
 SOURCE=..\data\bg\magicgorget.shp
 # PROP BASE Intermediate_Dir "."
 # PROP Intermediate_Dir "."
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\bg\male_av_face.shp
+# End Source File
+# Begin Source File
+
+SOURCE=..\data\bg\shamino_face.shp
 # End Source File
 # End Group
 # Begin Group "Misc"

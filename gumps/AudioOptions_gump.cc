@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_button.h"
 #include "Gump_ToggleButton.h"
 #include "gamewin.h"
+#include "exult_flx.h"
 
 using std::cerr;
 using std::endl;
@@ -46,7 +47,7 @@ static const int colx[] = { 35, 55, 130 };
 class AudioOptions_button : public Gump_button {
 public:
 	AudioOptions_button(Gump *par, int px, int py, int shapenum)
-		: Gump_button(par, shapenum, px, py, GSF_EXULT_FLX)
+		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -54,11 +55,11 @@ public:
 
 void AudioOptions_button::activate(Game_window *gwin)
 {
-	switch (shapenum) {
-	case 47: // cancel
+	switch (get_shapenum()) {
+	case EXULT_FLX_AUD_CANCEL_SHP: // cancel
 		((AudioOptions_gump*)parent)->cancel();
 		break;
-	case 46: // ok
+	case EXULT_FLX_AUD_OK_SHP: // ok
 		((AudioOptions_gump*)parent)->close(gwin);
 		break;
 	}
@@ -145,40 +146,40 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 void AudioOptions_gump::build_buttons()
 {
 	// audio on/off
-    buttons[0] = new AudioToggle(this, colx[2], rowy[0], 44, audio_enabled, 2);
+    buttons[0] = new AudioToggle(this, colx[2], rowy[0], EXULT_FLX_AUD_ENABLED_SHP, audio_enabled, 2);
 
 	if (audio_enabled) {
 
 		// midi on/off
-		buttons[1] = new AudioToggle(this, colx[2], rowy[2],44,midi_enabled,2);
+		buttons[1] = new AudioToggle(this, colx[2], rowy[2],EXULT_FLX_AUD_ENABLED_SHP,midi_enabled,2);
 		if (midi_enabled)
 			build_midi_buttons();
 
 		// sfx on/off
-		buttons[5] = new AudioToggle(this, colx[2], rowy[7], 44,sfx_enabled,2);
+		buttons[5] = new AudioToggle(this, colx[2], rowy[7], EXULT_FLX_AUD_ENABLED_SHP,sfx_enabled,2);
 		if (sfx_enabled)
 			build_sfx_buttons();
 
 		// speech on/off
-		buttons[7] =new AudioToggle(this,colx[2],rowy[10],44,speech_enabled,2);
+		buttons[7] =new AudioToggle(this,colx[2],rowy[10],EXULT_FLX_AUD_ENABLED_SHP,speech_enabled,2);
 	}
 }
 
 void AudioOptions_gump::build_midi_buttons()
 {
 	// midi conversion
-	buttons[2] = new AudioToggle(this, colx[2], rowy[3], 45,midi_conversion,4);
+	buttons[2] = new AudioToggle(this, colx[2], rowy[3], EXULT_FLX_AUD_CONVERSION_SHP,midi_conversion,4);
 	// reverb on/off
-	buttons[3] = new AudioToggle(this, colx[2], rowy[4], 44, midi_reverb, 2);
+	buttons[3] = new AudioToggle(this, colx[2], rowy[4], EXULT_FLX_AUD_ENABLED_SHP, midi_reverb, 2);
 	// chorus on/off
-	buttons[4] = new AudioToggle(this, colx[2], rowy[5], 44, midi_chorus, 2);
+	buttons[4] = new AudioToggle(this, colx[2], rowy[5], EXULT_FLX_AUD_ENABLED_SHP, midi_chorus, 2);
 }
 
 void AudioOptions_gump::build_sfx_buttons()
 {
 #ifdef ENABLE_MIDISFX
 	// sfx conversion
-	buttons[6] = new AudioToggle(this, colx[2], rowy[8],45,sfx_conversion/2,2);
+	buttons[6] = new AudioToggle(this, colx[2], rowy[8],EXULT_FLX_AUD_CONVERSION_SHP,sfx_conversion/2,2);
 #endif
 }
 
@@ -226,8 +227,10 @@ void AudioOptions_gump::load_settings()
 	midi_chorus = (s == "yes" ? 1 : 0);
 }
 
-AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, 43, GSF_EXULT_FLX)
+AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, EXULT_FLX_AUDIOOPTIONS_SHP, SF_EXULT_FLX)
 {
+	set_object_area(Rectangle(0,0,0,0), 8, 162);//++++++ ???
+
 	for (int i=0; i<10; i++) buttons[i] = 0;
 
 	load_settings();
@@ -235,9 +238,9 @@ AudioOptions_gump::AudioOptions_gump() : Modal_gump(0, 43, GSF_EXULT_FLX)
 	build_buttons();
 
 	// Ok
-	buttons[8] = new AudioOptions_button(this, colx[0], rowy[11], 46);
+	buttons[8] = new AudioOptions_button(this, colx[0], rowy[11], EXULT_FLX_AUD_OK_SHP);
 	// Cancel
-	buttons[9] = new AudioOptions_button(this, colx[2], rowy[11], 47);
+	buttons[9] = new AudioOptions_button(this, colx[2], rowy[11], EXULT_FLX_AUD_CANCEL_SHP);
 }
 
 AudioOptions_gump::~AudioOptions_gump()
@@ -302,7 +305,7 @@ void AudioOptions_gump::paint(Game_window* gwin)
 	Gump::paint(gwin);
 	for (int i=0; i<10; i++)
 		if (buttons[i])
-			paint_button(gwin, buttons[i]);
+			buttons[i]->paint(gwin);
 
 	gwin->paint_text(2, "Audio:", x + colx[0], y + rowy[0] + 1);
 	if (audio_enabled) {

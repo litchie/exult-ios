@@ -138,7 +138,7 @@ int Do_Modal_gump
 	gwin->show(1);
 	int escaped = 0;
 					// Get area to repaint when done.
-	Rectangle box = gwin->get_gump_rect(gump);
+	Rectangle box = gump->get_rect();
 	box.enlarge(2);
 	box = gwin->clip_to_win(box);
 					// Create buffer to backup background.

@@ -417,6 +417,8 @@ public:
 	{ list = NULL, cnt = 0; }
 
 	void show_inventory();
+
+	bool was_hit() { return hit; }
 	};
 
 /*

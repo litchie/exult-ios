@@ -61,18 +61,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 #include "mouse.h"
 #include "gump_utils.h"
-#include "File_gump.h"
 #include "Scroll_gump.h"
 #include "effects.h"
 #include "args.h"
 #include "game.h"
-#include "barge.h"
 #include "cheat.h"
 #include "exultmenu.h"
 #include "keys.h"
+#include "Gump_manager.h"
 #include "font.h"
 #include "utils.h"
-
 
 using std::atof;
 using std::cerr;
@@ -225,9 +223,6 @@ int main
 			perror("Error Description");
 		cerr << "============================" << endl;
 	}
-	catch(...)
-	{
-	}
 	
 	return result;
 }
@@ -337,7 +332,6 @@ static void Init
 #ifdef NO_SDL_PARACHUTE
 	init_flags |= SDL_INIT_NOPARACHUTE;
 #endif
-
 	if (SDL_Init(init_flags) < 0)
 	{
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << endl;
@@ -467,9 +461,7 @@ cerr.flush();
 static bool show_mouse = true;		// display mouse in main loop?
 static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
-const int slow_speed = 166, medium_speed = 100, fast_speed = 50;
-static int avatar_speed = slow_speed;	// Avatar speed (frame delay in
-					//    1/1000 secs.)
+
 #if 0
 /*
  *	Filter out events during the intro. sequence.
@@ -559,7 +551,7 @@ static void Handle_events
 							Usecode_machine::did_first_scene)))
 					gwin->start_actor(x / scale, 
 							  y / scale, 
-							  avatar_speed);
+							  Mouse::mouse->avatar_speed);
 				}
 			}
 
@@ -585,55 +577,6 @@ static void Handle_events
 	}
 
 /*
- *	Set mouse and speed.
- */
-
-void Set_mouse_and_speed
-	(
-	int mousex, int mousey		// Physical mouse location.
-	)
-	{
-	int ax, ay;			// Get Avatar/barge screen location.
-	int scale = gwin->get_win()->get_scale();
-	Barge_object *barge = gwin->get_moving_barge();
-	if (barge)
-		{			// Use center of barge.
-		gwin->get_shape_location(barge, ax, ay);
-		ax -= barge->get_xtiles()*(c_tilesize/2);
-		ay -= barge->get_ytiles()*(c_tilesize/2);
-		}
-	else				
-		gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
-	int dy = ay - (mousey / scale), dx = (mousex / scale) - ax;
-	Direction dir = Get_direction(dy, dx);
-	int dist = dy*dy + dx*dx;
-	if (dist < 40*40)
-		{
-		if(gwin->in_combat())
-			Mouse::mouse->set_short_combat_arrow(dir);
-		else
-			Mouse::mouse->set_short_arrow(dir);
-		avatar_speed = slow_speed;
-		}
-	else if (dist < 75*75)
-		{
-		if(gwin->in_combat())
-			Mouse::mouse->set_medium_combat_arrow(dir);
-		else
-			Mouse::mouse->set_medium_arrow(dir);
-		avatar_speed = medium_speed;
-		}
-	else
-		{		// No long arrow in combat: use medium
-		if(gwin->in_combat())
-			Mouse::mouse->set_medium_combat_arrow(dir);
-		else
-			Mouse::mouse->set_long_arrow(dir);
-		avatar_speed = fast_speed;
-		}
-	}
-
-/*
  *	Handle an event.  This should work for all platforms, and should only
  *	be called in 'normal' and 'gump' modes.
  */
@@ -645,6 +588,7 @@ static void Handle_event
 	{
 	// Mouse scale factor
 	int scale = gwin->get_win()->get_scale();
+	Gump_manager *gump_man = gwin->get_gump_man();
 
 					// For detecting double-clicks.
 	static uint32 last_b1_click = 0, last_b3_click = 0;
@@ -662,11 +606,11 @@ static void Handle_event
 			}
 					// Move sprite toward mouse
 					//  when right button pressed.
-		if (event.button.button == 3 && !gwin->showing_gumps())
+		if (event.button.button == 3)
 			{		// Try removing old queue entry.
 			gwin->get_tqueue()->remove(gwin->get_main_actor());
 			gwin->start_actor(event.button.x / scale, 
-				event.button.y / scale, avatar_speed);
+				event.button.y / scale, Mouse::mouse->avatar_speed);
 			}
 		break;
 	case SDL_MOUSEBUTTONUP:
@@ -677,7 +621,7 @@ static void Handle_event
 			if (curtime - last_b3_click < 500)
 				gwin->start_actor_along_path(
 					event.button.x / scale, 
-					event.button.y / scale, avatar_speed);
+					event.button.y / scale, Mouse::mouse->avatar_speed);
 			else
 				gwin->stop_actor();
 			last_b3_click = curtime;
@@ -697,9 +641,7 @@ static void Handle_event
 				dragging = false;
 				gwin->double_clicked(event.button.x / scale, 
 						event.button.y / scale);
-				if (gwin->showing_gumps() && gwin->find_gump(event.motion.x / scale, 
-						event.motion.y / scale))
-					Mouse::mouse->set_shape(Mouse::hand);
+				Mouse::mouse->set_speed_cursor();
 				break;
 				}
 			last_b1_click = curtime;
@@ -712,16 +654,12 @@ static void Handle_event
 		break;
 	case SDL_MOUSEMOTION:
 		{
-		Mouse::mouse->move(event.motion.x / scale, 
-						event.motion.y / scale);
-		if (!(gwin->showing_gumps() && gwin->find_gump(event.motion.x / scale, 
-						event.motion.y / scale)) && !dragging)
-			Set_mouse_and_speed(event.motion.x, event.motion.y);
-		else if ((gwin->showing_gumps() && gwin->find_gump(event.motion.x / scale, 
-						event.motion.y / scale)) || dragging)
-					Mouse::mouse->set_shape(Mouse::hand);
+		Gump *gmp = 0;
 
+		Mouse::mouse->move(event.motion.x / scale, event.motion.y / scale);
+		Mouse::mouse->set_speed_cursor();
 		Mouse::mouse_update = true;	// Need to blit mouse.
+
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
 			dragged = gwin->drag(event.motion.x / scale, 
@@ -731,7 +669,7 @@ static void Handle_event
 					// But not right after teleport.
 		    !gwin->was_teleported())
 			gwin->start_actor(event.motion.x / scale, 
-					event.motion.y / scale, avatar_speed);
+			event.motion.y / scale, Mouse::mouse->avatar_speed);
 		break;
 		}
 	case SDL_ACTIVEEVENT:
