@@ -80,7 +80,7 @@ int Game_object::get_quantity
 	) const
 	{
 	int shnum = get_shapenum();
-	if (Has_quantity(shnum))	// +++++Until we find a flag.
+	if (Has_quantity(shnum))
 		{
 		int qual = quality & 0x7f;
 		return qual ? qual : 1;
@@ -2263,12 +2263,14 @@ void Chunk_object_list::add
 	newobj->cy = get_cy();
 	Game_window *gwin = Game_window::get_game_window();
 	Ordering_info ord(gwin, newobj);
-					// Flat?  Just insert at start.
-	if (!newobj->get_lift() && !ord.info.get_3d_height())
-		objects = newobj->insert_in_chain(objects);
-					// Deal with dependencies.
-	else 
-		{
+					// Put past flats.
+	if (first_nonflat)
+		objects = newobj->insert_before(objects, first_nonflat);
+	else
+		objects = newobj->append_to_chain(objects);
+					// Not flat?
+	if (newobj->get_lift() || ord.info.get_3d_height())
+		{			// Deal with dependencies.
 		if (ord.xs == 1 && ord.ys == 1)	// Simplest case?
 			add_dependencies(newobj, ord);
 		else
@@ -2284,13 +2286,7 @@ void Chunk_object_list::add
 					gwin->get_objects(eachcx, eachcy)->
 						add_dependencies(newobj, ord);
 			}
-					// Put past flats.
-		if (first_nonflat)
-			objects = newobj->insert_before(objects, 
-							first_nonflat);
-		else
-			objects = newobj->append_to_chain(objects);
-		first_nonflat = newobj;
+		first_nonflat = newobj;	// Inserted before old first_nonflat.
 		}
 			// +++++Maybe should skip test, do update_object(...).
 	if (cache)			// Add to cache.
