@@ -69,6 +69,7 @@ private:
 	Npc_face_info *face_info[3];	// NPC's on-screen faces in convers.
 	int num_faces;			// # of faces.
 	int last_face_shown;		// Index of last npc face shown.
+	Rectangle avatar_face;		// Area take by Avatar in conversation.
 	Rectangle *conv_choices;	// Choices during a conversation.
 	unsigned char painted;		// 1 if we updated image buffer.
 	unsigned char focus;		// Do we have focus?
