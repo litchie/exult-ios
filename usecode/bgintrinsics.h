@@ -159,8 +159,7 @@
 	USECODE_INTRINSIC_PTR(get_item_flag),	// 0x88
 	USECODE_INTRINSIC_PTR(set_item_flag),	// 0x89
 	USECODE_INTRINSIC_PTR(clear_item_flag),	// 0x8a
-	USECODE_INTRINSIC_PTR(run_usecode),	// 0x8b +++++++Function to run
-// if path-walking is blocked.
+	USECODE_INTRINSIC_PTR(set_path_failure),// 0x8b
 	USECODE_INTRINSIC_PTR(fade_palette),	// 0x8c 
 	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d
 	USECODE_INTRINSIC_PTR(in_combat),	// 0x8e

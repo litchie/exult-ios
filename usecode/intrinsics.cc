@@ -48,6 +48,7 @@
 #include "actors.h"
 #include "egg.h"
 #include "monstinf.h"
+#include "actions.h"
 
 using std::cerr;
 using std::cout;
@@ -2066,8 +2067,25 @@ USECODE_INTRINSIC(clear_item_flag)
 	return(no_ret);
 }
 
-USECODE_INTRINSIC(run_usecode)
+USECODE_INTRINSIC(set_path_failure)
 {
+	// set_path_failure(fun, itemref, eventid) for the last NPC in
+	//  a path_run_usecode() call.
+
+	int fun = parms[0].get_int_value(),
+	    eventid = parms[2].get_int_value();
+	Game_object *item = get_item(parms[1]);
+	if (path_npc && item)		// Set in path_run_usecode().
+		{
+		If_else_path_actor_action *action = 
+			dynamic_cast<If_else_path_actor_action *>(
+						path_npc->get_action());
+		if (action)		// Set in in path action.
+			action->set_failure(
+				new Usecode_actor_action(fun, item, eventid));
+		}
+	return no_ret;
+
 #if 0	/* ++++++Think it's 'set failure'. */
 	// run_usecode(fun, itemref, eventid)
 	Game_object *obj = get_item(parms[1]);
@@ -2296,7 +2314,7 @@ USECODE_INTRINSIC(si_path_run_usecode)
 {
 	// exec(npc, loc(x,y,z)?, eventid, itemref, usecode#, ??true/false).
 	// Schedule Npc to walk to loc and then execute usecode.
-	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2]);
+	path_run_usecode(parms[0], parms[1], parms[4], parms[3], parms[2], 1);
 	return no_ret;
 
 #if 0	/* Old way++++++++ */
