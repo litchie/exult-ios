@@ -1,3 +1,8 @@
+2000-05-02  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* gamewin.cc (Game_window): Free string used to determine game
+	identity.
+
 2000-04-30  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Use direction to get correct frames for Usecode animations.
