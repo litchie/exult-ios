@@ -1,3 +1,10 @@
+2001-08-18  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*.[cc|h]: Removed imbedded usecode table; which broke
+	old-ucs script output; fixed that (kinda); added more correct jump
+	table generation.
+	* Docs/opcodes.txt: more documentation about format; slightly changed
+	asm output format.
+
 2001-08-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/objs.cc: Experimental render-orderer 'compare()'.  Not enabled.

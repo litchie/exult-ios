@@ -727,10 +727,13 @@ void readbin_UCFunc(ifstream &f, UCFunc &ucf)
 			for(unsigned int i=0; i<otd.num_bytes; i++)
 				ucop._params.push_back(read_ubyte(f));
 
+			// parse the parameters
 			ucc_parse_parambytes(ucop, otd);
+
 			code_offset+=otd.num_bytes;
 
 			ucf._opcodes.push_back(ucop);
+
 			#ifdef DEBUG_READ
 			cout << setw(4) << code_size << "\t" << setw(4) << code_offset << "\t" << setw(4) << (unsigned int)ucop._offset << "\t" << setw(2) << (unsigned int)ucop._id << "\t";
 			for(unsigned int i=0; i<ucop._params.size(); i++)
@@ -741,6 +744,21 @@ void readbin_UCFunc(ifstream &f, UCFunc &ucf)
 	}
 }
 
+/* calculates the relative offset jump location, used in opcodes jmp && jne */
+inline int calcreloffset(const UCc &op, unsigned int param)
+{
+	/* forumla:
+	   real offset = offset of start of current opcode
+	               + int of parameter (since you can jump backwards)
+	               + 1 (size of "opcode")
+	               + size of "opcode" parameter data
+	   NOTE: since param is unsigned, a twos-complimant is required:
+	         formula: 0xFFFF - (unsigned short)param + 1
+	                  ^^^^^^ max of unsighed short
+	*/
+	return op._offset + ((param>>15) ? (-1 * (0xFFFF - (unsigned short)param + 1)) : (int)param) + 1 + op._params.size();
+}
+
 void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 {
 	unsigned int first=0;
@@ -749,13 +767,14 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 	{
 		assert(first<ucop._params.size());
 		unsigned int ssize=0;
+		bool offset_munge=false;
 		// all these are two bytes
 		if(*s=="short")           ssize=2;
 		else if(*s=="flag")       ssize=2;
 		else if(*s=="extoffset")  ssize=2;
 		else if(*s=="dataoffset") ssize=2;
 		else if(*s=="varoffset")  ssize=2;
-		else if(*s=="offset")     ssize=2;
+		else if(*s=="offset")     { ssize=2; offset_munge=true; }
 		// and the single one byte type
 		else if(*s=="byte")       ssize=1;
 		else
@@ -768,7 +787,14 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 		if(ssize==1)
 			ucop._params_parsed.push_back((unsigned short)((unsigned int)ucop._params[first++]));
 		else if(ssize==2)
-			ucop._params_parsed.push_back((unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
+			if(offset_munge)
+			{
+				unsigned int reloffset = calcreloffset(ucop, (unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
+				ucop._params_parsed.push_back(reloffset);
+				ucop._jump_offsets.push_back(reloffset);
+			}
+			else
+				ucop._params_parsed.push_back((unsigned short) ((unsigned int)ucop._params[first++] + (((unsigned int)ucop._params[first++]) << 8)));
 	}
 }
 
@@ -874,21 +900,6 @@ void output_raw_opcodes(ostream &o, const UCc &op)
 		o << "\t\t\t";
 }
 
-/* calculates the relative offset jump location, used in opcodes jmp && jne */
-inline int calcreloffset(const UCc &op, unsigned int param)
-{
-	/* forumla:
-	   real offset = offset of start of current opcode
-	               + int of parameter (since you can jump backwards)
-	               + 1 (size of "opcode")
-	               + size of "opcode" parameter data
-	   NOTE: since param is unsigned, a twos-complimant is required:
-	         formula: 0xFFFF - (unsigned short)param + 1
-	                  ^^^^^^ max of unsighed short
-	*/
-	return op._offset + ((param>>15) ? (-1 * (0xFFFF - (unsigned short)param + 1)) : (int)param) + 1 + op._params.size();
-}
-
 string demunge_ocstring(const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op)
 {
 	strstream str;
@@ -903,7 +914,6 @@ string demunge_ocstring(const string &asmstr, const vector<string> &param_types,
 
 	while(!finished)
 	{
-		bool relative(false);
 		char c = asmstr[i];
 		switch(c)
 		{
@@ -931,24 +941,21 @@ string demunge_ocstring(const string &asmstr, const vector<string> &param_types,
 					if(c=='b')      { i++; c = asmstr[i]; width=2; }
 					// if it's a "short" set width to 4, and get the next char
 					else if(c=='s') { i++; c = asmstr[i]; width=4; }
-					// if it's a relative we need to do some calcs befor outputing it
-					// set width to 4 for the moment, and get the next char
-					else if(c=='r') { i++; c = asmstr[i]; width=4; relative=true;}
 					// width defaults to 4 if it's not specified
 					else            width=4;
 					
 					switch(c)
 					{
 						case '%': str << '%'; break;
-						case '1': assert(params.size()>=1); str << setw(width) << ((relative) ? calcreloffset(op, params[0]) : params[0]); break;
-						case '2': assert(params.size()>=2); str << setw(width) << ((relative) ? calcreloffset(op, params[1]) : params[1]); break;
-						case '3': assert(params.size()>=3); str << setw(width) << ((relative) ? calcreloffset(op, params[2]) : params[2]); break;
-						case '4': assert(params.size()>=4); str << setw(width) << ((relative) ? calcreloffset(op, params[3]) : params[3]); break;
-						case '5': assert(params.size()>=5); str << setw(width) << ((relative) ? calcreloffset(op, params[4]) : params[4]); break;
-						case '6': assert(params.size()>=6); str << setw(width) << ((relative) ? calcreloffset(op, params[5]) : params[5]); break;
-						case '7': assert(params.size()>=7); str << setw(width) << ((relative) ? calcreloffset(op, params[6]) : params[6]); break;
-						case '8': assert(params.size()>=8); str << setw(width) << ((relative) ? calcreloffset(op, params[7]) : params[7]); break;
-						case '9': assert(params.size()>=9); str << setw(width) << ((relative) ? calcreloffset(op, params[8]) : params[8]); break;
+						case '1': assert(params.size()>=1); str << setw(width) << params[0]; break;
+						case '2': assert(params.size()>=2); str << setw(width) << params[1]; break;
+						case '3': assert(params.size()>=3); str << setw(width) << params[2]; break;
+						case '4': assert(params.size()>=4); str << setw(width) << params[3]; break;
+						case '5': assert(params.size()>=5); str << setw(width) << params[4]; break;
+						case '6': assert(params.size()>=6); str << setw(width) << params[5]; break;
+						case '7': assert(params.size()>=7); str << setw(width) << params[6]; break;
+						case '8': assert(params.size()>=8); str << setw(width) << params[7]; break;
+						case '9': assert(params.size()>=9); str << setw(width) << params[8]; break;
 						default:   // we'll silently drop errors... it's the only "clean" way
 							str << '%' << c;
 					}

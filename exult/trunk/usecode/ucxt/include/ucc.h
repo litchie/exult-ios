@@ -19,6 +19,8 @@ class UCc
   vector<unsigned char> _params;
 	vector<unsigned int>  _params_parsed;
   bool                  _tagged;
+	vector<unsigned int>  _jump_offsets;
+
 };
 
 #endif
