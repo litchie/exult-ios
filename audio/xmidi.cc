@@ -2,10 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "utils.h"
-#include "../files/U7file.h"
 #include "xmidi.h"
-
-#define PATCH_CONVERT_DEFAULT true
 
 // This is a default set of patches to convert from MT32 to GM
 // The index is the MT32 Patch nubmer and the value is the GM Patch
@@ -48,7 +45,7 @@ unsigned char XMIDI::mt32asgm[128] = {
 	92,	// 35	Glass
 	97,	// 36	Soundtrack
 	99,	// 37	Atmosphere
-	98,	// 38	Warmbell, sounds kind of link crystal(98) perhaps Tubular Bells(14) would be better 
+	14,	// 38	Warmbell, sounds kind of like crystal(98) perhaps Tubular Bells(14) would be better. It is!
 	109,	// 39	FunnyVox, sounds alot like Bagpipe(109) and Shania(111)
 	98,	// 40	EchoBell, no real equiv, sounds like Crystal(88
 	96,	// 41	IceRain
@@ -140,20 +137,11 @@ unsigned char XMIDI::mt32asgm[128] = {
 	121,	// 127	Jungle Tune set to Breath Noise
 };
 
-// Constructors
-XMIDI::XMIDI(const char *fname) : events(NULL),timing(NULL), convert_from_mt32(PATCH_CONVERT_DEFAULT)
+// Constructor
+XMIDI::XMIDI(DataSource *source, bool pconvert) : events(NULL),timing(NULL)
 {
-	ExtractTracksFromFile (fname);
-}
-
-XMIDI::XMIDI(const std::string &fname) : events(NULL),timing(NULL), convert_from_mt32(PATCH_CONVERT_DEFAULT)
-{	
-	ExtractTracksFromFile (fname.c_str());
-}
-
-XMIDI::XMIDI(const unsigned char *stream, std::size_t len):events(NULL), timing(NULL), convert_from_mt32(PATCH_CONVERT_DEFAULT)
-{
-	ExtractTracks (stream);
+	convert_from_mt32 = pconvert;
+	ExtractTracks (source);
 }
 
 XMIDI::~XMIDI()
@@ -167,9 +155,9 @@ XMIDI::~XMIDI()
 	if (timing) delete [] timing;
 }
 
-int XMIDI::retrieve (uint32 track, unsigned char **buffer, std::size_t *len)
+int XMIDI::retrieve (uint32 track, DataSource *dest)
 {
-	*len = 0;
+	int len = 0;
 	
 	if (!events)
 	{
@@ -177,102 +165,58 @@ int XMIDI::retrieve (uint32 track, unsigned char **buffer, std::size_t *len)
 		return 0;
 	}
 	
-	if ((info.type == 1 && track != 0) ||  (track >= info.tracks))
+	if (info.type == 1 && track != 0)
+		cerr << "Warning: Type 1 midi's only have one effective track. Result may be unexpected" << endl;
+	
+	if (track >= info.tracks)
 	{
 		cerr << "Can't retrieve MIDI data, track out of range" << endl;
 		return 0;
 	}
 
-	int	i;
-
-	*len += 14;
-
-	if (info.type == 1)
-	{
-		for (i = 0; i < info.tracks; i++)
-			*len += ConvertListToMTrk (NULL, events[i]);
-	}
-	else
-	{
-		*len += ConvertListToMTrk (NULL, events[track]);
-	}
-	
-	if (!*len) return 0;
-		
-	*buffer = new unsigned char[*len];
-
-	(*buffer)[0] = 'M';
-	(*buffer)[1] = 'T';
-	(*buffer)[2] = 'h';
-	(*buffer)[3] = 'd';
-	
-	(*buffer)[4] = 0;
-	(*buffer)[5] = 0;
-	(*buffer)[6] = 0;
-	(*buffer)[7] = 6;
-
-	(*buffer)[12] = timing[track] >> 8;
-	(*buffer)[13] = timing[track] & 0xFF;
+	// Header is 14 bytes long
+	len += 14;
 
 	if (info.type == 1)
 	{
-		(*buffer)[8] = 0;
-		(*buffer)[9] = 1;
-
-		(*buffer)[10] = 0;
-		(*buffer)[11] = info.tracks;
-
-		int count = 14;
-		
-		for (i = 0; i < info.tracks; i++)
-			count += ConvertListToMTrk ((*buffer)+count, events[i]);
+		for (int i = 0; i < info.tracks; i++)
+			len += ConvertListToMTrk (NULL, events[i]);
 	}
 	else
 	{
-		(*buffer)[8] = 0;
-		(*buffer)[9] = 0;
-
-		(*buffer)[10] = 0;
-		(*buffer)[11] = 1;
+		len += ConvertListToMTrk (NULL, events[track]);
+	}
+	
+	// This is so if using buffer datasource, the caller can know how big to make the buffer
+	if (!len || ! dest) return len;
 		
-		ConvertListToMTrk ((*buffer)+14, events[track]);
-	}
-
-	return *len;
-}
-
-int XMIDI::retrieve (uint32 track, const char *fname)
-{
-	FILE *mfile;
+	dest->write1 ('M');
+	dest->write1 ('T');
+	dest->write1 ('h');
+	dest->write1 ('d');
 	
-	unsigned char	*buffer;
-	size_t		len;
-	
-	if (!events)
+	dest->write4high (6);
+
+	if (info.type == 1)
 	{
-		cerr << "No midi data in loaded." << endl;
-		return 0;
-	}
+		dest->write2high (1);
+		dest->write2high (info.tracks);
+		dest->write2high (timing[0]);
 
-	if (retrieve (track, &buffer, &len))
+		for (int i = 0; i < info.tracks; i++)
+			ConvertListToMTrk (dest, events[i]);
+	}
+	else
 	{
-		mfile = U7open (fname, "wb");
-	
-		if (!mfile)
-		{
-			cerr << "Unable to open midi '" << fname << "' file for writing" << endl;
-			delete [] buffer;
-			return 0;
-		}
+		dest->write2high (0);
+		dest->write2high (1);
+		dest->write2high (timing[track]);
 		
-		fwrite (buffer, len, 1, mfile);
-
-		delete [] buffer;
-		fclose (mfile);
+		ConvertListToMTrk (dest, events[track]);
 	}
+
 	return len;
 }
-
 
 void XMIDI::DeleteEventList (midi_event *mlist)
 {
@@ -285,7 +229,7 @@ void XMIDI::DeleteEventList (midi_event *mlist)
 	while ((event = next))
 	{
 		next = event->next;
-		if (event->stream) delete [] event->stream;
+		if (event->buffer) delete [] event->buffer;
 		delete event;
 	}
 }
@@ -298,7 +242,7 @@ void XMIDI::CreateNewEvent (int time)
 		list = current = new midi_event;
 		current->next = NULL;
 		current->time = time;
-		current->stream = NULL;
+		current->buffer = NULL;
 		return;
 	}
 
@@ -315,7 +259,7 @@ void XMIDI::CreateNewEvent (int time)
 			current->next = event;
 			current = event;
 			current->time = time;
-			current->stream = NULL;
+			current->buffer = NULL;
 			return;
 		}
 		
@@ -326,154 +270,170 @@ void XMIDI::CreateNewEvent (int time)
 	current = current->next;
 	current->next = NULL;
 	current->time = time;
-	current->stream = NULL;
+	current->buffer = NULL;
 }
 
 
-int XMIDI::GetVLQ (const unsigned char *stream, uint32 *quant)
+// Conventional Variable Length Quantity
+int XMIDI::GetVLQ (DataSource *source, uint32 &quant)
 {
 	int i;
-	*quant = 0;
-	
+	quant = 0;
+	unsigned int data;
+
 	for (i = 0; i < 4; i++)
 	{
-		*quant <<= 7;
-		*quant |= stream[i] & 0x7F;
-		
-		if (!(stream[i] & 0x80))
+		data = source->read1();
+		quant <<= 7;
+		quant |= data & 0x7F;
+
+		if (!(data & 0x80))
 		{
 			i++;
 			break;
 		}
-	}
 
+	}
 	return i;
 }
 
-int XMIDI::GetVLQ2 (const unsigned char *stream, uint32 *quant)
+// XMIDI Delta Variable Length Quantity
+int XMIDI::GetVLQ2 (DataSource *source, uint32 &quant)
 {
 	int i;
-	*quant = 0;
+	quant = 0;
+	int data = 0;
 	
-	for (i = 0; i < 4 && !(stream[i] & 0x80); i++)
-		*quant += stream[i];
-	
+	for (i = 0; i < 4; i++)
+	{
+		data = source->read1();
+		if (data & 0x80)
+		{
+			source->skip(-1);
+			break;
+		}
+		quant += data;
+	}
 	return i;
 }
 
-int XMIDI::PutVLQ(unsigned char *stream, uint32 value)
+int XMIDI::PutVLQ(DataSource *dest, uint32 value)
 {
 	int buffer;
 	int i = 1;
-	int j = 0;
 	buffer = value & 0x7F;
-
-	while ( (value >>= 7) )
+	while (value >>= 7)
 	{
 		buffer <<= 8;
 		buffer |= ((value & 0x7F) | 0x80);
 		i++;
 	}
 
-	while (stream)
+	if (!dest) return i;
+	for (int j = 0; j < 4; j++)
 	{
-		stream[j] = buffer;// & 0x7F;
+		dest->write1(buffer & 0xFF);
 		if (buffer & 0x80)
 			buffer >>= 8;
 		else
 			break;
 		j++;
 	}
-
 	return i;
 }
 
 
 // Converts Events
 //
-// Pointer to stream is at the status byte
+// Source is at the first data byte
 // size 1 is single data byte
 // size 2 is dual data byte
 // size 3 is XMI Note on
 // Returns bytes converted
 
-int XMIDI::ConvertEvent (const int time, const unsigned char status, const unsigned char *stream, const int size)
+int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size)
 {
-	int i;
-	uint32 delta = 0;
+	uint32	delta = 0;
+	int	data;
 	
 	CreateNewEvent (time);
 	current->status = status;
 
+	data = current->data[0] = source->read1();
+
+	// Handling for patch change mt32 conversion, probably should go elsewhere
 	if (((status >> 4) == 0xC) && convert_from_mt32) 
-		current->data[0] = mt32asgm[stream[0]];
-	else
-		current->data[0] = stream[0];
+		current->data[0] = mt32asgm[current->data[0]];
 
 	if (size == 1)
 		return 1;
 
-	current->data[1] = stream[1];
+	current->data[1] = source->read1();
 
 	if (size == 2)
 		return 2;
 
-	i = GetVLQ (stream+2, &delta);
-
-	CreateNewEvent (time+delta);
+	// XMI Note On handling
+		
+	int i = GetVLQ (source, delta);
+	CreateNewEvent (time+delta*3);
 
 	current->status = status;
-	current->data[0] = stream[0];
+	current->data[0] = data;
 	current->data[1] = 0;
 	
 	return i + 2;
 }
 
 // Simple routine to convert system messages
-int XMIDI::ConvertSystemMessage (const int time, const unsigned char *stream)
+int XMIDI::ConvertSystemMessage (const int time, const unsigned char status, DataSource *source)
 {
-	int i=1;
+	int i=0;
 	
 	CreateNewEvent (time);
-	current->status = stream[0];
+	current->status = status;
 	
 	// Handling of Meta events
-	if (stream[0] == 0xFF)
+	if (status == 0xFF)
 	{
-		current->data[0] = stream[1];
+		current->data[0] = source->read1();
 		i++;	
 	}
 
-	i += GetVLQ (stream+i, &current->len);
+	i += GetVLQ (source, current->len);
 
 	if (!current->len) return i;
 
-	current->stream = new unsigned char[current->len];	
+	current->buffer = new unsigned char[current->len];	
 
-	memcpy (current->stream, stream+i, current->len);
+	source->read ((char *) current->buffer, current->len);
 
 	return i+current->len;
 }
 
 // XMIDI to List
 // Returns PPQN
-int XMIDI::ConvertEVNTtoList (const unsigned char *stream)
+int XMIDI::ConvertEVNTtoList (DataSource *source)
 {
-	int time = 0;
-	uint32 delta;
-	int end = 0;
-	int	tempo = 500000;
-	int	tempo_set = 0;
+	int 		time = 0;
+	uint32 		delta;
+	int		end = 0;
+	int		tempo = 500000;
+	int		tempo_set = 0;
+	uint32		status;
 	
-	int i = 0;
-	
-	for (i = 0; !end; )
+	while (!end && source->getPos() < source->getSize())
 	{
-		switch (stream[i] >> 4)
+		GetVLQ2 (source, delta);
+		time += delta*3;
+
+		status = source->read1();
+		
+		switch (status >> 4)
 		{
 			// Note Off
 			case 0x8:
-			cerr << "Note off not valid in XMIDI " << endl;
+			cerr << "Note off is not valid in XMIDI" << endl;
 			DeleteEventList (list);
 			list = NULL;
 			return 0;
@@ -481,106 +441,109 @@ int XMIDI::ConvertEVNTtoList (const unsigned char *stream)
 			
 			// Note On
 			case 0x9:
-			i+= 1+ConvertEvent (time, stream[i], stream+i+1, 3);
+			ConvertEvent (time, status, source, 3);
 			break;
 
 			// 2 byte data
 			// Aftertouch, Controller and Pitch Wheel
 			case 0xA: case 0xB: case 0xE:
-			i+= 1+ConvertEvent (time, stream[i], stream+i+1, 2);
+			ConvertEvent (time, status, source, 2);
 			break;
 			
 
 			// 1 byte data
 			// Program Change and Channel Pressure
 			case 0xC: case 0xD:
-			i+= 1+ConvertEvent (time, stream[i], stream+i+1, 1);
+			ConvertEvent (time, status, source, 1);
 			break;
 			
 
 			// SysEx
 			case 0xF:
-			if (stream[i] == 0xFF)
+			if (status == 0xFF)
 			{
-				if (stream[i+1] == 0x2F) // End
+				int	pos = source->getPos();
+				uint32	data = source->read1();
+				
+				if (data == 0x2F) // End
 					end = 1;
-				else if (stream[i+1] == 0x51 && !tempo_set) // Tempo. Need it for PPQN
+				else if (data == 0x51 && !tempo_set) // Tempo. Need it for PPQN
 				{
-					tempo = stream[i+5];
-					tempo |= stream[i+4] << 8;
-					tempo |= stream[i+3] << 16;
+					source->skip(1);
+					tempo = source->read1() << 16;
+					tempo += source->read1() << 8;
+					tempo += source->read1();
+					tempo *= 3;
 					tempo_set = 1;
 				}
+				else if (data == 0x51 && tempo_set) // Skip any other tempo changes
+				{
+					GetVLQ (source, data);
+					source->skip(data);
+					break;
+				}
+				
+				source->seek (pos);
 			}
-			i+= ConvertSystemMessage (time, stream+i);
+			ConvertSystemMessage (time, status, source);
 			break;
 
 
-			// Delta T
 			default:
-			i+= GetVLQ2 (stream+i, &delta);
-			time += delta;
 			break;
 		}
 
 	}
-	
-	return ((tempo*3)+1)/25000;
+	return (tempo*3)/25000;
 }
 
 // MIDI to List
 // Returns 0 if failed
-int XMIDI::ConvertMTrktoList (const unsigned char *stream)
+int XMIDI::ConvertMTrktoList (DataSource *source)
 {
 	int time = 0;
-	uint32 delta;
 	int end = 0;
 	unsigned char	status = 0;
+	uint32		data;
 	
-	int i = 0;
-	
-	for (i = 0; !end; )
+	// This is now safe!! Yeah!
+	while (!end && source->getPos() < source->getSize())
 	{
-		i+= GetVLQ (stream+i, &delta);
-		time += delta;
+		GetVLQ (source, data);
+		time += data;
 
-		switch (stream[i] >> 4)
-		{
-			case 0x8: case 0x9: case 0xA: case 0xB:
-			case 0xC: case 0xD: case 0xE:
-			status = stream[i];
-			i++;
-			break;
-			
-			case 0xF:
-			status = stream[i];
-			break;
-			
-			default:
-			break;
-		}
+		data = source->read1();
 		
+		if (data >= 0x80)
+		{
+			status = data;
+		}
+		else
+			source->skip (-1);
+	
 		switch (status >> 4)
 		{
 			// 2 byte data
 			// Note Off, Note On, Aftertouch, Controller and Pitch Wheel
 			case 0x8: case 0x9: case 0xA: case 0xB: case 0xE:
-			i+= ConvertEvent (time, status, stream+i, 2);
+			ConvertEvent (time, status, source, 2);
 			break;
 			
 
 			// 1 byte data
 			// Program Change and Channel Pressure
 			case 0xC: case 0xD:
-			i+= ConvertEvent (time, status, stream+i, 1);
+			ConvertEvent (time, status, source, 1);
 			break;
 			
 
 			// SysEx
 			case 0xF:
-			if (stream[i] == 0xFF && stream[i+1] == 0x2F) // End of data
+			data = source->read1();
+			if (status == 0xFF && data == 0x2F) // End of data
 				end = 1;
-			i+= ConvertSystemMessage (time, stream+i);
+			source->skip(-1);
+			ConvertSystemMessage (time, status, source);
 			break;
 
 			default:
@@ -588,7 +551,6 @@ int XMIDI::ConvertMTrktoList (const unsigned char *stream)
 		}
 
 	}
-	
 	return 1;
 }
 
@@ -596,7 +558,7 @@ int XMIDI::ConvertMTrktoList (const unsigned char *stream)
 // Converts and event list to a MTrk
 // Returns bytes of the array
 // buf can be NULL
-uint32 XMIDI::ConvertListToMTrk (unsigned char *buf, midi_event *mlist)
+uint32 XMIDI::ConvertListToMTrk (DataSource *dest, midi_event *mlist)
 {
 	int time = 0;
 	midi_event	*event;
@@ -604,34 +566,30 @@ uint32 XMIDI::ConvertListToMTrk (unsigned char *buf, midi_event *mlist)
 	unsigned char	last_status = 0;
 	uint32 	i = 8;
 	uint32 	j;
-	uint32	size;
+	uint32	size_pos;
+	bool end = false;
 
-	if (buf)
+	if (dest)
 	{
-		size = ConvertListToMTrk (NULL, mlist) - 8;
-		
-		buf[0] = 'M';
-		buf[1] = 'T';
-		buf[2] = 'r';
-		buf[3] = 'k';
+		dest->write1('M');
+		dest->write1('T');
+		dest->write1('r');
+		dest->write1('k');
 
-		buf[4] = (unsigned char) ((size >> 24) & 0xFF);
-		buf[5] = (unsigned char) ((size >> 16) & 0xFF);
-		buf[6] = (unsigned char) ((size >> 8) & 0xFF);
-		buf[7] = (unsigned char) (size & 0xFF);
+		size_pos = dest->getPos();
+		dest->skip(4);
 	}
 
-	for (event = mlist; event; event=event->next)
+	for (event = mlist; event && !end; event=event->next)
 	{
 		delta = (event->time - time);
 		time = event->time;
 
-		if (buf) i += PutVLQ (buf+i, delta);
-		else i += PutVLQ (NULL, delta);
+		i += PutVLQ (dest, delta);
 
 		if ((event->status != last_status) || (event->status >= 0xF0))
 		{
-			if (buf) buf[i] = event->status;
+			if (dest) dest->write1(event->status);
 			i++;
 		}
 		
@@ -642,10 +600,10 @@ uint32 XMIDI::ConvertListToMTrk (unsigned char *buf, midi_event *mlist)
 			// 2 bytes data
 			// Note off, Note on, Aftertouch, Controller and Pitch Wheel
 			case 0x8: case 0x9: case 0xA: case 0xB: case 0xE:
-			if (buf)
+			if (dest)
 			{
-				buf[i] = event->data[0];
-				buf[i+1] = event->data[1];
+				dest->write1(event->data[0]);
+				dest->write1(event->data[1]);
 			}
 			i += 2;
 			break;
@@ -654,7 +612,7 @@ uint32 XMIDI::ConvertListToMTrk (unsigned char *buf, midi_event *mlist)
 			// 1 bytes data
 			// Program Change and Channel Pressure
 			case 0xC: case 0xD:
-			if (buf) buf[i] = event->data[0];
+			if (dest) dest->write1(event->data[0]);
 			i++;
 			break;
 			
@@ -664,18 +622,18 @@ uint32 XMIDI::ConvertListToMTrk (unsigned char *buf, midi_event *mlist)
 			case 0xF:
 			if (event->status == 0xFF)
 			{
-				if (buf) buf[i] = event->data[0];
+				if (event->data[0] == 0x2f) end = true;
+				if (dest) dest->write1(event->data[0]);
 				i++;
 			}
 	
-			if (buf) i += PutVLQ (buf+i, event->len);
-			else i += PutVLQ (NULL, event->len);
+			i += PutVLQ (dest, event->len);
 			
 			if (event->len)
 			{
 				for (j = 0; j < event->len; j++)
 				{
-					if (buf) buf[i] = event->stream[j]; 
+					if (dest) dest->write1(event->buffer[j]); 
 					i++;
 				}
 			}
@@ -689,51 +647,62 @@ uint32 XMIDI::ConvertListToMTrk (unsigned char *buf, midi_event *mlist)
 			break;
 		}
 	}
-		
+
+	if (dest)
+	{
+		int cur_pos = dest->getPos();
+		dest->seek (size_pos);
+		dest->write4high (i-8);
+		dest->seek (cur_pos);
+	}
 	return i;
 }
 
-int XMIDI::ExtractTracksFromXmi (const unsigned char *stream, const uint32 size)
+// Assumes correct xmidi
+int XMIDI::ExtractTracksFromXmi (DataSource *source)
 {
-	uint32		i = 0;
 	int		num = 0;
 	signed short	ppqn;
-	
-	uint32	len = 0;
+	uint32		len = 0;
+	char		buf[32];
 
-	while (i < size && num != info.tracks)
+	while (source->getPos() < source->getSize() && num != info.tracks)
 	{
-		// Allign
-		i+= (len+1)&~1;
+		// Read first 4 bytes of name
+		source->read (buf, 4);
+		len = source->read4high();
 
 		// Skip the FORM entries
-		if (!memcmp(stream+i,"FORM",4))
-			i+= 12;
+		if (!memcmp(buf,"FORM",4))
+		{
+			source->skip (4);
+			source->read (buf, 4);
+			len = source->read4high();
+		}
 
-		len = stream[i+7];
-		len |= stream[i+6] << 8;
-		len |= stream[i+5] << 16;
-		len |= stream[i+4] << 24;
-
-		i+= 8;
-
-		if (memcmp(stream+i-8,"EVNT",4))
+		if (memcmp(buf,"EVNT",4))
+		{
+			source->skip ((len+1)&~1);
 			continue;
+		}
 
 		list = NULL;
-
+		int begin = source->getPos ();
+		
 		// Convert it
-		if (!(ppqn = ConvertEVNTtoList (stream+i)))
+		if (!(ppqn = ConvertEVNTtoList (source)))
 		{
 			cerr << "Unable to convert data" << endl;
 			break;
 		}
-
 		timing[num] = ppqn;
 		events[num] = list;
 	
 		// Increment Counter
 		num++;
+
+		// go to start of next track
+		source->seek (begin + ((len+1)&~1));
 	}
 
 
@@ -741,31 +710,29 @@ int XMIDI::ExtractTracksFromXmi (const unsigned char *stream, const uint32 size)
 	return num;
 }
 
-int XMIDI::ExtractTracksFromMid (const unsigned char *stream, const uint32 size)
+int XMIDI::ExtractTracksFromMid (DataSource *source)
 {
-	uint32	i = 0;
-	int		num = 0;
-	
+	int	num = 0;
 	uint32	len = 0;
+	char	buf[32];
 
-	while (i < size && num != info.tracks)
+	while (source->getPos() < source->getSize() && num != info.tracks)
 	{
-		i+= len;
+		// Read first 4 bytes of name
+		source->read (buf, 4);
+		len = source->read4high();
 
-		len = stream[i+7];
-		len |= stream[i+6] << 8;
-		len |= stream[i+5] << 16;
-		len |= stream[i+4] << 24;
-
-		i+= 8;
-
-		if (memcmp(stream+i-8,"MTrk",4))
+		if (memcmp(buf,"MTrk",4))
+		{
+			source->skip (len);
 			continue;
+		}
 
 		list = NULL;
+		int begin = source->getPos ();
 
 		// Convert it
-		if (!ConvertMTrktoList (stream+i))
+		if (!ConvertMTrktoList (source))
 		{
 			cerr << "Unable to convert data" << endl;
 			break;
@@ -775,6 +742,7 @@ int XMIDI::ExtractTracksFromMid (const unsigned char *stream, const uint32 size)
 		
 		// Increment Counter
 		num++;		
+		source->seek (begin+len);
 	}
 
 
@@ -782,56 +750,61 @@ int XMIDI::ExtractTracksFromMid (const unsigned char *stream, const uint32 size)
 	return num;
 }
 
-int XMIDI::ExtractTracks (const unsigned char *stream)
+int XMIDI::ExtractTracks (DataSource *source)
 {
-	uint32	i = 0;
-	int		j = 0;
-	uint32	len;
-	uint32	chunk_len;
+	uint32		i = 0;
+	int		start;
+	uint32		len;
+	uint32		chunk_len;
 	int 		count;
+	char		buf[32];
 	
+	// Read first 4 bytes of header
+	source->read (buf, 4);
+
 	// Could be XMIDI
-	if (!memcmp (stream, "FORM", 4))
+	if (!memcmp (buf, "FORM", 4))
 	{
-		// XDIRless XMIDI
-		if (!memcmp (stream+8, "XMID", 4))
+		// Read length of 
+		len = source->read4high();
+
+		start = source->getPos();
+		
+		// Read 4 bytes of type
+		source->read (buf, 4);
+
+		// XDIRless XMIDI, we can handle them here.
+		if (!memcmp (buf, "XMID", 4))
 		{	
-			cerr << "Warning: Xmidi might not be valid" << endl;
+			cerr << "Warning: XMIDI doesn't have XDIR" << endl;
 			info.tracks = 1;
-			i+=4;
 			
-		} // Not an XMIDI
-		else if (memcmp (stream+8, "XDIR", 4))
+		} // Not an XMIDI that we recognise
+		else if (memcmp (buf, "XDIR", 4))
 		{	
-			cerr << "Not a XMID" << endl;
+			cerr << "Not a recognised XMID" << endl;
 			return 0;
 			
 		} // Seems Valid
 		else 
 		{
-			// Is an XMIDI
-			// Assume correct length??
-			// No way!
-			
-			len = stream[7];
-			len |= stream[6] << 8;
-			len |= stream[5] << 16;
-			len |= stream[4] << 24;
-			
 			info.tracks = 0;
 		
-			for (i = 12; i < len; i++)
+			for (i = 4; i < len; i++)
 			{
-				chunk_len = stream[i+3];
-				chunk_len |= stream[i+2] << 8;
-				chunk_len |= stream[i+1] << 16;
-				chunk_len |= stream[i] << 24;
+				// Read 4 bytes of type
+				source->read (buf, 4);
+
+				// Read length of chunk
+				chunk_len = source->read4high();
 			
+				// Add eight bytes
 				i+=8;
 				
-				if (memcmp (stream+i-8, "INFO", 4))
+				if (memcmp (buf, "INFO", 4))
 				{	
 					// Must allign
+					source->skip((chunk_len+1)&~1);
 					i+= (chunk_len+1)&~1;
 					continue;
 				}
@@ -840,9 +813,7 @@ int XMIDI::ExtractTracks (const unsigned char *stream)
 				if (chunk_len < 2)
 					break;
 				
-				info.tracks = stream[i];
-				info.tracks |= stream[i+1] << 8;
-			
+				info.tracks = source->read2();
 				break;
 			}
 		
@@ -854,71 +825,67 @@ int XMIDI::ExtractTracks (const unsigned char *stream)
 			}
 		
 			// Ok now to start part 2
-
-			i = len + 8;
+			// Goto the right place
+			source->seek (start+((len+1)&~1));
 		
+			// Read 4 bytes of type
+			source->read (buf, 4);
+
 			// Not an XMID
-			if (memcmp (stream+i, "CAT ", 4))
+			if (memcmp (buf, "CAT ", 4))
 			{
-				cerr << "Not a recognised XMID (" << stream[i] << stream[i+1] << stream[i+2] << stream[i+3] << ")" << endl;
+				cerr << "Not a recognised XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (CAT )" << endl;
 				return 0;	
 			}
-			i += 4;
-		}
-		
-		len = stream[i+3];
-		len |= stream[i+2] << 8;
-		len |= stream[i+1] << 16;
-		len |= stream[i] << 24;
-	
-		i+=4;
+			
+			// Now read length of this track
+			len = source->read4high();
+			
+			// Read 4 bytes of type
+			source->read (buf, 4);
 
-		// Not an XMID
-		if (memcmp (stream+i, "XMID", 4))
-		{
-			cerr << "Not a recognised XMID (" << stream[i] << stream[i+1] << stream[i+2] << stream[i+3] << ")" << endl;
-			return 0;	
+			// Not an XMID
+			if (memcmp (buf, "XMID", 4))
+			{
+				cerr << "Not a recognised XMID (" << buf[0] << buf[1] << buf[2] << buf[3] << ") should be (XMID)" << endl;
+				return 0;	
+			}
+
 		}
-		
-		i+=4;
 
 		// Ok it's an XMID, so pass it to the ExtractCode
 
-		events = new midi_event*[info.tracks];
+		events = new (midi_event*)[info.tracks];
 		timing = new short[info.tracks];
 		info.type = 0;
 		
-		for (j = 0; j < info.tracks; j++)
-			events[j] = NULL;
+		for (i = 0; i < info.tracks; i++)
+			events[i] = NULL;
 
-		count = ExtractTracksFromXmi (stream+i, len);
+		count = ExtractTracksFromXmi (source);
 
 		if (count != info.tracks)
 		{
 			cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from XMIDI. Only ("<< count << ")" << endl;
 			
-			int j = 0;
+			int i = 0;
 			
-			for (j = 0; j < info.tracks; j++)
+			for (i = 0; i < info.tracks; i++)
 				DeleteEventList (events[i]);
 			
 			delete [] events;
 			delete [] timing;
 			
-			return 0;
-				
+			return 0;		
 		}
 
 		return 1;
 		
 	}// Definately a Midi
-	else if (!memcmp (stream, "MThd", 4))
+	else if (!memcmp (buf, "MThd", 4))
 	{
 		// Simple read length of header
-		len = stream[7];
-		len |= stream[6] << 8;
-		len |= stream[5] << 16;
-		len |= stream[4] << 24;
+		len = source->read4high();
 
 		if (len < 6)
 		{
@@ -926,31 +893,26 @@ int XMIDI::ExtractTracks (const unsigned char *stream)
 			return 0;
 		}
 
-		info.type = stream[8] << 8;
-		info.type |= stream[9];
+		info.type = source->read2high();
 		
-		info.tracks = stream[10] << 8;
-		info.tracks |= stream[11];
+		info.tracks = source->read2high();
 		
-		
-		events = new midi_event*[info.tracks];
+		events = new (midi_event*)[info.tracks];
 		timing = new short[info.tracks];
-		for (j = 0; j < info.tracks; j++)
+		timing[0] = source->read2high();
+		for (i = 0; i < info.tracks; i++)
 		{
-			timing[j] = stream[12] << 8;
-			timing[j] |= stream[13];
-			events[j] = NULL;
+			timing[i] = timing[0];
+			events[i] = NULL;
 		}
 
-		count = ExtractTracksFromMid (stream+14, 0xFFFFFFFF);
+		count = ExtractTracksFromMid (source);
 
 		if (count != info.tracks)
 		{
 			cerr << "Error: unable to extract all (" << info.tracks << ") tracks specified from MIDI. Only ("<< count << ")" << endl;
 			
-			int j = 0;
-			
-			for (j = 0; j < info.tracks; j++)
+			for (i = 0; i < info.tracks; i++)
 				DeleteEventList (events[i]);
 			
 			delete [] events;
@@ -962,80 +924,49 @@ int XMIDI::ExtractTracks (const unsigned char *stream)
 		
 		return 1;
 		
-	}// A RIFF Midi, just pass the stream back to this function at an offset
-	else if (!memcmp (stream, "RIFF", 4))
+	}// A RIFF Midi, just pass the source back to this function at the start of the midi file
+	else if (!memcmp (buf, "RIFF", 4))
 	{
+		// Read len
+		len = source->read4();
+
+		// Read 4 bytes of type
+		source->read (buf, 4);
+		
 		// Not an RMID
-		if (memcmp (stream+8, "RMID", 4))
+		if (memcmp (buf, "RMID", 4))
 		{
 			cerr << "Invalid RMID" << endl;
 			return 0;
 		}
 
-
 		// Is a RMID
-		// Assume correct length??
-		// No way!
-			
-		len = stream[4];
-		len |= stream[5] << 8;
-		len |= stream[6] << 16;
-		len |= stream[7] << 24;
 
-		for (i = 12; i < len; i++)
+		for (i = 4; i < len; i++)
 		{
-			chunk_len = stream[i];
-			chunk_len |= stream[i+1] << 8;
-			chunk_len |= stream[i+2] << 16;
-			chunk_len |= stream[i+3] << 24;
+			// Read 4 bytes of type
+			source->read (buf, 4);
+			
+			chunk_len = source->read4();
 			
 			i+=8;
 				
-			if (memcmp (stream+i-8, "data", 4))
+			if (memcmp (buf, "data", 4))
 			{	
 				// Must allign
+				source->skip ((chunk_len+1)&~1);
 				i+= (chunk_len+1)&~1;
 				continue;
 			}
 			
-			return ExtractTracks (stream+i);
+			return ExtractTracks (source);
 
 		}
 		
-		cerr << "Failed to find midi data in RMI" << endl;
+		cerr << "Failed to find midi data in RIFF Midi" << endl;
 		return 0;
 	}
 	
 	return 0;	
 }
-
-int XMIDI::ExtractTracksFromFile (const char *fname)
-{
-	FILE	*mfile;
-	
-	mfile = U7open (fname, "rb");
-	
-	if (!mfile)
-	{
-		cerr << "Unable to open midi file" << endl;
-		return 1;
-	}
-	
-	fseek (mfile, 0, SEEK_END);	
-	int size = ftell (mfile);
-	rewind (mfile);
-	
-	unsigned char *stream = new unsigned char[size];
-	
-	fread (stream, size, 1, mfile);
-	
-	fclose (mfile);
-	
-	int ret_valu = ExtractTracks (stream);
-	
-	delete [] stream;
-	
-	return ret_valu;
-}
-
 

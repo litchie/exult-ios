@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000  Dancer A.L Vesperman
+Copyright (C) 2000  Ryan Nunn
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -18,8 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // Tab Size = 4
 
-#ifndef __IFF_h_
-#define __IFF_h_
+#ifndef __XMIDI_h_
+#define __XMIDI_h_
 
 #if !AUTOCONFIGURED
 #include "../autoconfig.h"
@@ -27,8 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <string>
 #include "common_types.h"
-#include "U7file.h"
-
+#include "databuf.h"
 
 class   XMIDI
 {
@@ -47,7 +46,7 @@ public:
 		unsigned char	data[2];
 
 		uint32	len;
-		unsigned char	*stream;		;
+		unsigned char	*buffer;
 
 		midi_event	*next;
 	};
@@ -66,13 +65,8 @@ private:
 	bool			convert_from_mt32;
 
 public:
-	// Reading from a file
-	XMIDI(const char *fname);
-	XMIDI(const std::string &fname);
+	XMIDI(DataSource *source, bool pconvert = true);
 	~XMIDI();
-
-	// Reading from a byte stream
-	XMIDI(const unsigned char *stream, std::size_t len);
 
 	int number_of_tracks()
 	{
@@ -82,12 +76,10 @@ public:
 			return 1;
 	};
 
-	int retrieve (uint32 track, unsigned char **bufffer, std::size_t *len);	// Extract to a memory block
-	int retrieve (uint32 track, const char *fname);					// Extract to a file
+	int retrieve (uint32 track, DataSource *dest);
 	
 	// Not yet implimented
-	// int apply_patch (int track, const char *fname);
-	// int apply_patch (int track, const std::string &fname);
+	// int apply_patch (int track, DataSource *source);
 
 private:
 	XMIDI(); // No default constructor
@@ -97,23 +89,21 @@ private:
 	void CreateNewEvent (int time);
 
 	// Variable length quantity
-	int GetVLQ (const unsigned char *stream, uint32 *quant);
-	int GetVLQ2 (const unsigned char *stream, uint32 *quant);
-	int PutVLQ(unsigned char *stream, uint32 value);
+	int GetVLQ (DataSource *source, uint32 &quant);
+	int GetVLQ2 (DataSource *source, uint32 &quant);
+	int PutVLQ(DataSource *dest, uint32 value);
 
-	int ConvertEvent (const int time, const unsigned char status, const unsigned char *stream, const int size);
-	int ConvertSystemMessage (const int time, const unsigned char *stream);
+	int ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size);
+	int ConvertSystemMessage (const int time, const unsigned char status, DataSource *source);
 
-	int ConvertEVNTtoList (const unsigned char *stream);
-	int ConvertMTrktoList (const unsigned char *stream);
-	uint32 ConvertListToMTrk (unsigned char *buf, midi_event *mlist);
+	int ConvertEVNTtoList (DataSource *source);
+	int ConvertMTrktoList (DataSource *source);
+	uint32 ConvertListToMTrk (DataSource *dest, midi_event *mlist);
 
-	int ExtractTracksFromXmi (const unsigned char *stream, const uint32 size);
-	int ExtractTracksFromMid (const unsigned char *stream, const uint32 size);
+	int ExtractTracksFromXmi (DataSource *source);
+	int ExtractTracksFromMid (DataSource *source);
 	
-	int ExtractTracks (const unsigned char *stream);
-	int ExtractTracksFromFile (const char *fname);
-
+	int ExtractTracks (DataSource *source);
 };
 
 #endif
