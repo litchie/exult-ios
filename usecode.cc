@@ -224,7 +224,9 @@ void Usecode_machine::say_string
 	)
 	{
 	if (string)
-		cout << "\nSaying:  " << string << '\n';//+++++++Testing.
+		{
+		gwin->show_npc_message(string);
+		}
 	delete string;
 	string = 0;
 	user_choice = 0;		// Clear user's response.
@@ -473,15 +475,32 @@ void Usecode_machine::get_user_choice
 	{
 	if (!num_answers)
 		return;			// Shouldn't happen.
-	while (!user_choice)		// May have already been done.
+	if (!user_choice)		// May have already been done.
 		{
 		cout << "Choose: ";	// TESTING.
 		for (int i = 0; i < num_answers; i++)
 			cout << ' ' << answers[i] << '(' << i << ") ";
-		int response;
-		cin >> response;
-		if (response >= 0 && response < num_answers)
-			user_choice = answers[response];
+		gwin->show_avatar_choices(num_answers, answers);
+		extern void Handle_events(unsigned char *); //++++For now.
+		choice_made = 0;
+					// Handle events until response made.
+		Handle_events(&choice_made);
+		}
+	}
+
+/*
+ *	User chose a response.
+ */
+
+void Usecode_machine::chose_response
+	(
+	int response
+	)
+	{
+	if (response >= 0 && response < num_answers)
+		{
+		user_choice = answers[response];
+		choice_made = 1;	// Return from event loop.
 		}
 	}
 
@@ -692,7 +711,6 @@ void Usecode_machine::run
 		case 0x1f:		// PUSHI.
 			{		// Might be negative.
 			short ival = Read2(ip);
-cout << "Ival = " << ival << '\n';
 			pushi(ival);
 			break;
 			}
