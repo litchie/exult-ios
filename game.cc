@@ -248,6 +248,8 @@ bool Game::show_menu()
 	char npc_name[16];
 	snprintf(npc_name, 16, "Exult");
 	bool play = false;
+	bool fadeout = true;
+	bool exitmenu = false;
 	
 	do {
 		int entries = 0;
@@ -286,15 +288,19 @@ bool Game::show_menu()
 				menu->set_selection(1);
 				break;
 			}
-			// else fall through
+			exitmenu = true;
+			fadeout = true;
+			play = true;
+			break;
 		case 1: // New Game
 			if(!created) {
 				if(new_game(menushapes))
-					menu->set_selection(2);
+					exitmenu = true;
 				else
 					break;
 			} else
-				menu->set_selection(2); // This will start the game
+				exitmenu = true;
+			fadeout = false;
 			play = true;
 			break;
 		case 3: // Credits
@@ -316,14 +322,15 @@ bool Game::show_menu()
 			break;
 		case 6: // Return to Menu
 			play = false;
-			menu->set_selection(2);
+			exitmenu = true;
+			fadeout = true;
 			break;
 		default:
 			break;
 		}
-	} while(!menu || menu->get_selection()!=2);
+	} while(!exitmenu);
 
-	if (!play) {
+	if (fadeout) {
 		pal.fade_out(c_fade_out_time);
 		gwin->clear_screen(true);
 	}

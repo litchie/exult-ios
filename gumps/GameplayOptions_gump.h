@@ -37,6 +37,8 @@ class GameplayOptions_gump : public Modal_gump
 	int cheats;
 	int paperdolls;
 	int text_bg;
+	std::string *stats;
+	std::string *textbgcolor;
 
  public:
 	GameplayOptions_gump();
