@@ -2145,8 +2145,7 @@ void Usecode_internal::read
 	{
 		U7open(in, FLAGINIT);	// Read global flags.
 	}
-	catch(...)
-	{
+	catch(exult_exception &e) {
 		// +++++Eventually, remove this:
 		U7open(in, "<STATIC>/flaginit.dat");
 	}
@@ -2156,8 +2155,7 @@ void Usecode_internal::read
 	{
 		U7open(in, USEDAT);
 	}
-	catch(...)
-	{
+	catch(exult_exception &e) {
 		return;		// Not an error if no saved game yet.
 	}
 	party_count = Read2(in);	// Read party.

@@ -96,8 +96,7 @@ void Game_window::read_npcs
 			CYCLE_RED_PLASMA();
 		}
 	}
-	catch(...)
-	{
+	catch(exult_exception &e) {
 		cerr << "Error reading saved monsters.  Clearing list." << endl;
 		Monster_actor::give_up();
 	}

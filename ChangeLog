@@ -1,3 +1,9 @@
+2001-09-20  Ryan Nunn <triforce@merlin.net.au>
+	* audio/Midi.h : Fixed the crash when saving a game with midi disabled
+	* keyactions.cc, readnpcs.cc, conf/Configuration.cc,
+	  usecode/keyring.cc, usecode/ucinternal.cc: Replaced catch(...) with
+	  catch (exult_exception &e)
+
 2001-09-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: fixed crash when saving with sound disabled
 	* utils.h: added Write4s (s = signed)
