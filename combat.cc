@@ -622,7 +622,10 @@ void Combat_schedule::now_what
 		{			//   usecode can, e.g., set opponent.
 					// Way far away (50 tiles)?
 		if (npc->distance(gwin->get_camera_actor()) > 50)
+			{
+			npc->set_dormant();
 			return;		// Just go dormant.
+			}
 		state = approach;
 		npc->start(200, 200);
 		return;
