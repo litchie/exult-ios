@@ -32,7 +32,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Vga_file;
 class Image_buffer8;
 class Shapes_vga_file;
-class Shape_group;
 
 /*
  *	Store information about an individual shape shown in the list.
@@ -56,7 +55,6 @@ class Shape_entry
 class Shape_chooser: public Object_browser, public Shape_draw
 	{
 	Shapes_vga_file *shapes_file;	// Non-null if 'shapes.vga'.
-	Shape_group *group;		// Non-null to use filter.
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
 	GtkWidget *fspin;		// Spin button for frame #.
@@ -136,6 +134,11 @@ public:
 	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
 		gpointer data);
 #endif
+					// Menu items:
+	static void on_shapes_popup_info_activate(
+					GtkMenuItem *item, gpointer udata);
+	static void on_shapes_popup_add2group_activate(
+					GtkMenuItem *item, gpointer udata);
 	};
 
 #endif

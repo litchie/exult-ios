@@ -986,38 +986,52 @@ void ExultStudio::set_sensitive
 static int prompt_choice = 0;		// Gets prompt choice.
 
 C_EXPORT void
-on_prompt2_yes_clicked			(GtkToggleButton *button,
+on_prompt3_yes_clicked			(GtkToggleButton *button,
 					 gpointer	  user_data)
 {
 	prompt_choice = 0;
 }
 C_EXPORT void
-on_prompt2_no_clicked			(GtkToggleButton *button,
+on_prompt3_no_clicked			(GtkToggleButton *button,
 					 gpointer	  user_data)
 {
 	prompt_choice = 1;
 }
+C_EXPORT void
+on_prompt3_cancel_clicked		(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	prompt_choice = 2;
+}
 
 
 /*
- *	Prompt for one of two answers.
+ *	Prompt for one of two/three answers.
  *
- *	Output:	0 for 1st choice, 1 for 2nd.
+ *	Output:	0 for 1st choice, 1 for 2nd, 2 for 3rd.
  */
 
-int ExultStudio::prompt2
+int ExultStudio::prompt
 	(
 	const char *msg,		// Question to ask.
 	const char *choice0,		// 1st choice.
-	const char *choice1		// 2nd choice
+	const char *choice1,		// 2nd choice
+	const char *choice2		// 3rd choice, or NULL.
 	)
 	{
-	GtkWidget *dlg = glade_xml_get_widget(app_xml, "prompt2_dialog");
+	GtkWidget *dlg = glade_xml_get_widget(app_xml, "prompt3_dialog");
 	gtk_label_set_text(
-		GTK_LABEL(glade_xml_get_widget(app_xml, "prompt2_label")),
+		GTK_LABEL(glade_xml_get_widget(app_xml, "prompt3_label")),
 								msg);
-	set_button("prompt2_yes", choice0);
-	set_button("prompt2_no", choice1);
+	set_button("prompt3_yes", choice0);
+	set_button("prompt3_no", choice1);
+	if (choice2)			// 3rd choice?  Show btn if so.
+		{
+		set_button("prompt3_cancel", choice2);
+		set_visible("prompt3_cancel", true);
+		}
+	else
+		set_visible("prompt3_cancel", false);
 	prompt_choice = -1;
 	gtk_window_set_modal(GTK_WINDOW(dlg), true);
 	gtk_widget_show(dlg);		// Should be modal.
