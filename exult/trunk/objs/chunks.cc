@@ -94,7 +94,7 @@ void Chunk_cache::set_blocked
 
 void Chunk_cache::update_object
 	(
-	Chunk_object_list *chunk,
+	Map_chunk *chunk,
 	Game_object *obj,
 	bool add				// 1 to add, 0 to remove.
 	)
@@ -127,7 +127,7 @@ void Chunk_cache::update_object
 	Rectangle tiles;
 	int cx, cy;
 	while (next_chunk.get_next(tiles, cx, cy))
-		gwin->get_objects(cx, cy)->set_blocked(tiles.x, tiles.y, 
+		gwin->get_chunk(cx, cy)->set_blocked(tiles.x, tiles.y, 
 			tiles.x + tiles.w - 1, tiles.y + tiles.h - 1, lift,
 								ztiles, add);
 	}
@@ -187,7 +187,7 @@ void Chunk_cache::set_egged
 
 void Chunk_cache::update_egg
 	(
-	Chunk_object_list *chunk,
+	Map_chunk *chunk,
 	Egg_object *egg,
 	bool add				// 1 to add, 0 to remove.
 	)
@@ -203,7 +203,7 @@ void Chunk_cache::update_egg
 		{			// Do solid rectangle.
 		Chunk_intersect_iterator all(foot);
 		while (all.get_next(crect, cx, cy))
-			gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
+			gwin->get_chunk(cx, cy)->set_egged(egg, crect, add);
 		return;
 		}
 					// Just do the perimeter.
@@ -214,16 +214,16 @@ void Chunk_cache::update_egg
 					// Go through intersected chunks.
 	Chunk_intersect_iterator tops(top);
 	while (tops.get_next(crect, cx, cy))
-		gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
+		gwin->get_chunk(cx, cy)->set_egged(egg, crect, add);
 	Chunk_intersect_iterator bottoms(bottom);
 	while (bottoms.get_next(crect, cx, cy))
-		gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
+		gwin->get_chunk(cx, cy)->set_egged(egg, crect, add);
 	Chunk_intersect_iterator lefts(left);
 	while (lefts.get_next(crect, cx, cy))
-		gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
+		gwin->get_chunk(cx, cy)->set_egged(egg, crect, add);
 	Chunk_intersect_iterator rights(right);
 	while (rights.get_next(crect, cx, cy))
-		gwin->get_objects(cx, cy)->set_egged(egg, crect, add);
+		gwin->get_chunk(cx, cy)->set_egged(egg, crect, add);
 
 	}
 
@@ -233,7 +233,7 @@ void Chunk_cache::update_egg
 
 void Chunk_cache::setup
 	(
-	Chunk_object_list *chunk
+	Map_chunk *chunk
 	)
 	{
 	Game_object *obj;		// Set 'blocked' tiles.
@@ -323,7 +323,7 @@ int Chunk_cache::get_lowest_blocked
 inline void Check_terrain
 	(
 	Game_window *gwin,
-	Chunk_object_list *nlist,	// Chunk.
+	Map_chunk *nlist,	// Chunk.
 	int tx, int ty,			// Tile within chunk.
 	int& terrain			// Sets: bit0 if land, bit1 if water,
 					//   bit2 if solid.
@@ -460,7 +460,7 @@ int Chunk_cache::is_blocked
 void Chunk_cache::activate_eggs
 	(
 	Game_object *obj,		// Object (actor) that's near.
-	Chunk_object_list *chunk,	// Chunk this is attached to.
+	Map_chunk *chunk,	// Chunk this is attached to.
 	int tx, int ty, int tz,		// Tile (absolute).
 	int from_tx, int from_ty,	// Tile walked from.
 	unsigned short eggbits		// Eggs[tile].
@@ -496,7 +496,7 @@ void Chunk_cache::activate_eggs
  *	Create list for a given chunk.
  */
 
-Chunk_object_list::Chunk_object_list
+Map_chunk::Map_chunk
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
 	) : objects(0), terrain(0), first_nonflat(0), dungeon_bits(0),
@@ -510,7 +510,7 @@ Chunk_object_list::Chunk_object_list
  *	Delete all objects contained within.
  */
 
-Chunk_object_list::~Chunk_object_list
+Map_chunk::~Map_chunk
 	(
 	)
 	{
@@ -522,7 +522,7 @@ Chunk_object_list::~Chunk_object_list
  *	Set terrain.
  */
 
-void Chunk_object_list::set_terrain
+void Map_chunk::set_terrain
 	(
 	Chunk_terrain *ter
 	)
@@ -573,7 +573,7 @@ void Chunk_object_list::set_terrain
  *	Add rendering dependencies for a new object.
  */
 
-void Chunk_object_list::add_dependencies
+void Map_chunk::add_dependencies
 	(
 	Game_object *newobj,		// Object to add.
 	Ordering_info& newinfo		// Info. for new object's ordering.
@@ -605,7 +605,7 @@ void Chunk_object_list::add_dependencies
  *	Output:	->chunk that was checked.
  */
 
-inline Chunk_object_list *Chunk_object_list::add_outside_dependencies
+inline Map_chunk *Map_chunk::add_outside_dependencies
 	(
 	int cx, int cy,			// Chunk to check.
 	Game_object *newobj,		// Object to add.
@@ -613,7 +613,7 @@ inline Chunk_object_list *Chunk_object_list::add_outside_dependencies
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+	Map_chunk *chunk = gwin->get_chunk(cx, cy);
 	chunk->add_dependencies(newobj, newinfo);
 	return chunk;
 	}
@@ -624,7 +624,7 @@ inline Chunk_object_list *Chunk_object_list::add_outside_dependencies
  *	Newobj's cx and cy fields are set to this chunk.
  */
 
-void Chunk_object_list::add
+void Map_chunk::add
 	(
 	Game_object *newobj		// Object to add.
 	)
@@ -683,7 +683,7 @@ void Chunk_object_list::add
  *	Add a flat, fixed object.
  */
 
-void Chunk_object_list::add_flat
+void Map_chunk::add_flat
 	(
 	Game_object *newobj		// Should be 0 height, lift=0.
 	)
@@ -698,7 +698,7 @@ void Chunk_object_list::add_flat
  *	Add an egg.
  */
 
-void Chunk_object_list::add_egg
+void Map_chunk::add_egg
 	(
 	Egg_object *egg
 	)
@@ -713,7 +713,7 @@ void Chunk_object_list::add_egg
  *	Remove an egg.
  */
 
-void Chunk_object_list::remove_egg
+void Map_chunk::remove_egg
 	(
 	Egg_object *egg
 	)
@@ -728,7 +728,7 @@ void Chunk_object_list::remove_egg
  *	are left set to this chunk.
  */
 
-void Chunk_object_list::remove
+void Map_chunk::remove
 	(
 	Game_object *remove
 	)
@@ -745,12 +745,12 @@ void Chunk_object_list::remove
 	bool ext_above = (ty - info.get_3d_ytiles(frame)) < -1 && cy > 0;
 	if (ext_left)
 		{
-		gwin->get_objects(cx - 1, cy)->from_below_right--;
+		gwin->get_chunk(cx - 1, cy)->from_below_right--;
 		if (ext_above)
-			gwin->get_objects(cx - 1, cy - 1)->from_below_right--;
+			gwin->get_chunk(cx - 1, cy - 1)->from_below_right--;
 		}
 	if (ext_above)
-		gwin->get_objects(cx, cy - 1)->from_below--;
+		gwin->get_chunk(cx, cy - 1)->from_below--;
 	if (info.is_light_source())	// Count light sources.
 		light_sources--;
 	if (remove == first_nonflat)	// First nonflat?
@@ -770,7 +770,7 @@ void Chunk_object_list::remove
  *		   an actor will be at if he walks onto the tile.
  */
 
-int Chunk_object_list::is_blocked
+int Map_chunk::is_blocked
 	(
 	int height,			// Height (along lift) to check.
 	int lift,			// Starting lift.
@@ -792,7 +792,7 @@ int Chunk_object_list::is_blocked
 		for (tx = startx; tx != stopx; tx = INCR_TILE(tx))
 			{
 			int this_lift;
-			Chunk_object_list *olist = gwin->get_objects(
+			Map_chunk *olist = gwin->get_chunk(
 					tx/c_tiles_per_chunk, cy);
 			olist->setup_cache();
 			if (olist->is_blocked(height, lift, 
@@ -814,7 +814,7 @@ int Chunk_object_list::is_blocked
  *		Tile.tz may be updated for stepping onto square.
  */
 
-int Chunk_object_list::is_blocked
+int Map_chunk::is_blocked
 	(
 	Tile_coord& tile,
 	int height,			// Height in tiles to check.
@@ -824,7 +824,7 @@ int Chunk_object_list::is_blocked
 	{
 					// Get chunk tile is in.
 	Game_window *gwin = Game_window::get_game_window();
-	Chunk_object_list *chunk = gwin->get_objects_safely(
+	Map_chunk *chunk = gwin->get_chunk_safely(
 			tile.tx/c_tiles_per_chunk, tile.ty/c_tiles_per_chunk);
 	if (!chunk)			// Outside the world?
 		return 0;		// Then it's not blocked.
@@ -842,7 +842,7 @@ int Chunk_object_list::is_blocked
  *	step onto an adjacent square.
  */
 
-int Chunk_object_list::is_blocked
+int Map_chunk::is_blocked
 	(
 					// Object dims:
 	int xtiles, int ytiles, int ztiles,
@@ -904,7 +904,7 @@ int Chunk_object_list::is_blocked
 		int cy = y/c_tiles_per_chunk, rty = y%c_tiles_per_chunk;
 		for (x = horizx0; x != horizx1; x = INCR_TILE(x))
 			{
-			Chunk_object_list *olist = gwin->get_objects(
+			Map_chunk *olist = gwin->get_chunk(
 					x/c_tiles_per_chunk, cy);
 			olist->setup_cache();
 			int rtx = x%c_tiles_per_chunk;
@@ -924,7 +924,7 @@ int Chunk_object_list::is_blocked
 		int cx = x/c_tiles_per_chunk, rtx = x%c_tiles_per_chunk;
 		for (y = verty0; y != verty1; y = INCR_TILE(y))
 			{
-			Chunk_object_list *olist = gwin->get_objects(
+			Map_chunk *olist = gwin->get_chunk(
 					cx, y/c_tiles_per_chunk);
 			olist->setup_cache();
 			int rty = y%c_tiles_per_chunk;
@@ -948,7 +948,7 @@ int Chunk_object_list::is_blocked
  *	Output:	# found, appended to vec.
  */
 
-int Chunk_object_list::find_in_area
+int Map_chunk::find_in_area
 	(
 	Game_object_vector& vec,	// Returned here.
 	Rectangle area,			// Area to search.
@@ -964,7 +964,7 @@ int Chunk_object_list::find_in_area
 	Game_window *gwin = Game_window::get_game_window();
 	while (next_chunk.get_next(tiles, eachcx, eachcy))
 		{
-		Chunk_object_list *chunk = gwin->get_objects_safely(
+		Map_chunk *chunk = gwin->get_chunk_safely(
 							eachcx, eachcy);
 		if (!chunk)
 			continue;
@@ -985,7 +985,7 @@ int Chunk_object_list::find_in_area
  *	Test all nearby eggs when you've teleported in.
  */
 
-void Chunk_object_list::try_all_eggs
+void Map_chunk::try_all_eggs
 	(
 	Game_object *obj,		// Object (actor) that's near.
 	int tx, int ty, int tz,		// Tile (absolute).
@@ -1008,7 +1008,7 @@ void Chunk_object_list::try_all_eggs
 					//   an egg could affect chunk's list.
 	while (next_chunk.get_next(tiles, eachcx, eachcy))
 		{
-		Chunk_object_list *chunk = gwin->get_objects_safely(
+		Map_chunk *chunk = gwin->get_chunk_safely(
 							eachcx, eachcy);
 		if (!chunk)
 			continue;
@@ -1038,7 +1038,7 @@ void Chunk_object_list::try_all_eggs
  *	Add a rectangle of dungeon tiles.
  */
 
-void Chunk_object_list::add_dungeon_bits
+void Map_chunk::add_dungeon_bits
 	(
 	Rectangle& tiles
 	)
@@ -1061,7 +1061,7 @@ void Chunk_object_list::add_dungeon_bits
  *	Set up the dungeon flags (after IFIX objects read).
  */
 
-void Chunk_object_list::setup_dungeon_bits
+void Map_chunk::setup_dungeon_bits
 	(
 	)
 	{
@@ -1091,7 +1091,7 @@ void Chunk_object_list::setup_dungeon_bits
 			Rectangle tiles;// Rel. tiles.
 			int cx, cy;
 			while (next_chunk.get_next(tiles, cx, cy))
-				gwin->get_objects(cx, cy)->add_dungeon_bits(
+				gwin->get_chunk(cx, cy)->add_dungeon_bits(
 								tiles);
 			}
 		}
@@ -1102,7 +1102,7 @@ void Chunk_object_list::setup_dungeon_bits
  *	unblocked below a given lift.
  */
 
-void Chunk_object_list::gravity
+void Map_chunk::gravity
 	(
 	Rectangle area,			// Unblocked tiles (in abs. coords).
 	int lift			// Lift where tiles are free.
@@ -1116,7 +1116,7 @@ void Chunk_object_list::gravity
 	int cx, cy;
 	while (next_chunk.get_next(tiles, cx, cy))
 		{
-		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+		Map_chunk *chunk = gwin->get_chunk(cx, cy);
 		Object_iterator objs(chunk->objects);
 		Game_object *obj;
 		while ((obj = objs.get_next()) != 0)
@@ -1161,7 +1161,7 @@ void Chunk_object_list::gravity
  *  A return of 31 means no roof
  *
  */
-int Chunk_object_list::is_roof(int tx, int ty, int lift)
+int Map_chunk::is_roof(int tx, int ty, int lift)
 {
 #if 1		/* Might be lying on bed at lift==2. */
 	int height = get_lowest_blocked (lift+4, tx, ty);
@@ -1176,7 +1176,7 @@ int Chunk_object_list::is_roof(int tx, int ty, int lift)
 /*
  *  Is object within dungeon?
  */
-int Chunk_object_list::in_dungeon(Game_object *obj) // Is object within dungeon?
+int Map_chunk::in_dungeon(Game_object *obj) // Is object within dungeon?
 {
 	return in_dungeon(obj->get_tx(), obj->get_ty());
 }

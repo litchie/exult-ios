@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "objlist.h"
 
-class	Chunk_object_list;
+class	Map_chunk;
 class	Game_object;
 
 /*
@@ -89,7 +89,7 @@ public:
 		{ reset(); }
 	};
 
-typedef T_Nonflat_object_iterator<Game_object *, Chunk_object_list *> Nonflat_object_iterator;
+typedef T_Nonflat_object_iterator<Game_object *, Map_chunk *> Nonflat_object_iterator;
 
 /*
  *	Iterate through a chunk's flat objects.
@@ -124,7 +124,7 @@ public:
 		}
 	};
 
-typedef T_Flat_object_iterator<Game_object *, Chunk_object_list *> Flat_object_iterator;
+typedef T_Flat_object_iterator<Game_object *, Map_chunk *> Flat_object_iterator;
 
 /*
  *	Iterate backwards through list of objects.
@@ -152,6 +152,6 @@ public:
 		}
 	};
 
-typedef T_Object_iterator_backwards<Game_object *, Chunk_object_list *> Object_iterator_backwards;
+typedef T_Object_iterator_backwards<Game_object *, Map_chunk *> Object_iterator_backwards;
 
 #endif

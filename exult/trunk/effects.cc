@@ -328,7 +328,7 @@ inline Game_object *Find_target
 	if (pos.tz%5 == 0)		// On floor?
 		pos.tz++;		// Look up 1 tile.
 	Tile_coord dest = pos;		// This gets modified.
-	if (!Chunk_object_list::is_blocked(pos, 1, MOVE_FLY, 0) &&
+	if (!Map_chunk::is_blocked(pos, 1, MOVE_FLY, 0) &&
 	    dest == pos)
 		return (0);
 	return Game_object::find_blocking(pos);

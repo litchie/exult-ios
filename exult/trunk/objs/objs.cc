@@ -206,11 +206,11 @@ void Game_object::move
 	Game_window *gwin = Game_window::get_game_window();
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
-	Chunk_object_list *newchunk = gwin->get_objects_safely(newcx, newcy);
+	Map_chunk *newchunk = gwin->get_chunk_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
 					// Remove from old.
-	Chunk_object_list *oldchunk = gwin->get_objects_safely(cx, cy);
+	Map_chunk *oldchunk = gwin->get_chunk_safely(cx, cy);
 	if (oldchunk)
 		{
 		gwin->add_dirty(this);	// Want to repaint old area.
@@ -362,7 +362,7 @@ int Game_object::find_nearby
 	for (int cy = start_cy; cy <= end_cy; cy++)
 		for (int cx = start_cx; cx <= end_cx; cx++)
 			{		// Go through objects.
-			Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+			Map_chunk *chunk = gwin->get_chunk(cx, cy);
 			Object_iterator next(chunk->get_objects());
 			Game_object *obj;
 			while ((obj = next.get_next()) != 0)
@@ -521,7 +521,7 @@ Tile_coord Game_object::find_unblocked_tile
 		for (int x = box.x; x < stopx; x++)
 			{		// Check this spot.
 			Tile_coord spot(x, y, pos.tz);
-			if (!Chunk_object_list::is_blocked(spot, height, 
+			if (!Map_chunk::is_blocked(spot, height, 
 								move_flags))
 				return spot;
 			}
@@ -559,8 +559,8 @@ Game_object *Game_object::find_blocking
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Chunk_object_list *chunk = gwin->get_objects(tile.tx/c_tiles_per_chunk,
-						     tile.ty/c_tiles_per_chunk);
+	Map_chunk *chunk = gwin->get_chunk(tile.tx/c_tiles_per_chunk,
+						    tile.ty/c_tiles_per_chunk);
 	Game_object *obj;
 	Object_iterator next(chunk->get_objects());
 	while ((obj = next.get_next()) != 0)
@@ -611,8 +611,8 @@ int Game_object::is_closed_door
 		after = doortile + Tile_coord(0, 1, 0);
 		}
 					// Should be blocked before/after.
-	return (Chunk_object_list::is_blocked(before) &&
-	    	Chunk_object_list::is_blocked(after));
+	return (Map_chunk::is_blocked(before) &&
+	    	Map_chunk::is_blocked(after));
 	}
 
 /*
@@ -1067,8 +1067,8 @@ void Game_object::remove_this
 	int nodel			// 1 to not delete.
 	)
 	{
-	Chunk_object_list *chunk = 
-			Game_window::get_game_window()->get_objects_safely(
+	Map_chunk *chunk = 
+			Game_window::get_game_window()->get_chunk_safely(
 								cx, cy);
 	if (chunk)
 		chunk->remove(this);

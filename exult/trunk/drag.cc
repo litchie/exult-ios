@@ -153,7 +153,7 @@ bool Game_window::drag
 				dragging_gump->remove_from_chain(
 							open_gumps);
 		else {
-			get_objects(dragging->get_cx(), 
+			get_chunk(dragging->get_cx(), 
 				dragging->get_cy())->remove(dragging);
 		}
 					// Make a little bigger.
@@ -352,7 +352,7 @@ void Game_window::drop
 	if (dropped)			// Successful?
 		{
 		if (!dragging_gump)	// Do eggs where it came from.
-			get_objects(oldcx, oldcy)->activate_eggs(dragging,
+			get_chunk(oldcx, oldcy)->activate_eggs(dragging,
 			    oldtx, oldty, dragging->get_lift(), oldtx, oldty);
 					// Check for theft.
 		if (!okay_to_move && !cheat.in_map_editor() &&
@@ -365,7 +365,7 @@ void Game_window::drop
 		if (to_drop == dragging)// Whole thing?
 			{		// Watch for stuff on top of it.
 			if (old_foot.w > 0)
-				Chunk_object_list::gravity(old_foot, old_top);
+				Map_chunk::gravity(old_foot, old_top);
 			return;		// All done.
 			}
 		else			// Subtract quantity moved.
@@ -375,7 +375,7 @@ void Game_window::drop
 					// And don't check for volume!
 		dragging_gump->add(dragging, -2, -2, -2, -2, true);
 	else
-		get_objects(dragging->get_cx(), 
+		get_chunk(dragging->get_cx(), 
 				dragging->get_cy())->add(dragging);
 	}
 
@@ -399,12 +399,12 @@ bool Game_window::drop_at_lift
 	int ty = scrollty + y/c_tilesize;
 	int cx = (scrolltx + x/c_tilesize)/c_tiles_per_chunk;
 	int cy = (scrollty + y/c_tilesize)/c_tiles_per_chunk;
-	Chunk_object_list *chunk = get_objects(cx, cy);
+	Map_chunk *chunk = get_chunk(cx, cy);
 	int lift;			// Can we put it here?
 	Shape_info& info = shapes.get_info(to_drop->get_shapenum());
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
 					// Allow drop up to 5.
-	if (!Chunk_object_list::is_blocked(info.get_3d_height(), at_lift,
+	if (!Map_chunk::is_blocked(info.get_3d_height(), at_lift,
 		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, 
 			lift, MOVE_FLY, 5) && (cheat.in_map_editor() ||
 					// Check for path to location.
