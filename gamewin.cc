@@ -2213,9 +2213,9 @@ void Game_window::show_face
 		info->face_rect = actbox;
 					// This is where NPC text will go.
 		info->text_rect = clip_to_win(Rectangle(
-			actbox.x + actbox.w + 3, actbox.y,
+			actbox.x + actbox.w + 3, actbox.y + 3,
 			get_width() - actbox.x - actbox.w - 6,
-							11*text_height));
+							4*text_height));
 		info->last_text_height = info->text_rect.h;
 		}
 	else
@@ -2261,14 +2261,24 @@ void Game_window::show_npc_message
 	char *msg
 	)
 	{
+	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, 
+								char *key = 0);
 	if (last_face_shown == -1)
 		return;
 	Npc_face_info *info = face_info[last_face_shown];
 	Rectangle& box = info->text_rect;
 	paint(box);			// Clear what was there before.
-	int height = paint_text_box(0, msg, box.x, box.y, box.w, box.h);
+	int height;			// Break at punctuation.
+	while ((height = paint_text_box(0, msg, box.x, box.y, box.w, box.h, 
+								0, 1)) < 0)
+		{			// More to do?
+		int x, y; char c;
+		Get_click(x, y, Mouse::hand, &c);
+		paint(box);		// Clear area again.
+		msg += -height;
+		}
 					// All fit?  Store height painted.
-	info->last_text_height = height > 0 ? height : box.h;
+	info->last_text_height = height;
 	info->text_pending = 1;
 	painted = 1;
 	show();
@@ -2315,7 +2325,7 @@ void Game_window::show_avatar_choices
 	Rectangle sbox = get_win_rect();
 	int x = 0, y = 0;		// Keep track of coords. in box.
 	int height = get_text_height(0);
-	int space_width = get_text_width(0, "   ");
+	int space_width = get_text_width(0, " ");
 
 
 					// Get main actor's portrait.
@@ -2369,7 +2379,7 @@ void Game_window::show_avatar_choices
 					// Draw portrait.
 	paint_shape(mbox.x + face->xleft, mbox.y + face->yabove, face);
 					// Set to where to draw sentences.
-	Rectangle tbox(mbox.x + mbox.w + 16, mbox.y + 4,
+	Rectangle tbox(mbox.x + mbox.w + 8, mbox.y + 4,
 				sbox.w - mbox.x - mbox.w - 16,
 				sbox.h - mbox.y - 16);
 	tbox = tbox.intersect(sbox);
@@ -2378,9 +2388,11 @@ void Game_window::show_avatar_choices
 	conv_choices = new Rectangle[num_choices + 1];
 	for (int i = 0; i < num_choices; i++)
 		{
-		char *text = choices[i];
+		char text[256];
+		text[0] = 127;		// A circle.
+		strcpy(&text[1], choices[i]);
 		int width = get_text_width(0, text);
-		if (x > 0 && x + width > tbox.w)
+		if (x > 0 && x + width >= tbox.w)
 			{		// Start a new line.
 			x = 0;
 			y += height;

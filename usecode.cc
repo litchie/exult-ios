@@ -3636,15 +3636,12 @@ void Usecode_machine::click_to_continue
 	(
 	)
 	{
-	Answers save_answers;		// Save answers list.
-	save_answers = answers;
-	answers.clear();
 	int xx, yy;
+	char c;
 	if (!gwin->is_palette_faded_out())// If black screen, skip!
-		Get_click(xx, yy, Mouse::hand);
+		Get_click(xx, yy, Mouse::hand, &c);
 	gwin->clear_text_pending();
 	user_choice = 0;		// Clear it.
-	answers = save_answers;
 	}
 
 /*
