@@ -49,7 +49,12 @@ class Xdnd
 	unsigned long xdnd_version;
 	int num_types;
 	Atom drag_types[max_types];	// Data type atoms source can supply.
+					// Current drag info:
 	int lastx, lasty;		// Last mouse pos. during drag.public:
+	int file, shape, frame;		// Set when a shape is being dragged.
+	int chunknum;			// Set when a chunk is dragged.
+	bool data_valid;		// True when the above is retrieved.
+
 	Drop_shape_handler_fun shape_handler;	// For dropping shapes.
 	Drop_chunk_handler_fun chunk_handler;	// For dropping chunks.
 public:
