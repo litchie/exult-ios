@@ -8,6 +8,292 @@
 #include "SDL.h"
 #include <string.h>
 
+
+/** 
+ ** 2xSaI scaling filter source code adapted for Exult
+ ** August 29 2000, originally written in May 1999
+ ** by Derek Liauw Kie Fa (derek-liauw@usa.net)
+ ** Use of this source is free for non-commercial use
+ ** I'd appreciate it I am given credit in the program or documentation 
+ **/
+
+
+template <class Source_pixel, class Dest_pixel, class Manip_pixels>
+inline Dest_pixel Interpolate_2xSaI (Source_pixel colorA, Source_pixel colorB, const Manip_pixels &manip)
+{
+	unsigned int r0, r1, g0, g1, b0, b1;
+	manip.split_source(colorA, r0, g0, b0);
+	manip.split_source(colorB, r1, g1, b1);
+	int r = (r0 + r1)>>1;
+	int g = (g0 + g1)>>1;
+	int b = (b0 + b1)>>1;
+	return manip.rgb(r, g, b);
+}
+
+template <class Source_pixel, class Dest_pixel, class Manip_pixels>
+inline Dest_pixel QInterpolate_2xSaI (Source_pixel colorA, Source_pixel colorB, Source_pixel colorC, Source_pixel colorD, const Manip_pixels &manip)
+{
+	unsigned int r0, r1, g0, g1, b0, b1;
+	unsigned int r2, r3, g2, g3, b2, b3;
+	manip.split_source(colorA, r0, g0, b0);
+	manip.split_source(colorB, r1, g1, b1);
+	manip.split_source(colorC, r2, g2, b2);
+	manip.split_source(colorD, r3, g3, b3);
+	unsigned int r = (r0 + r1 + r2 + r3)>>2;
+	unsigned int g = (g0 + g1 + g2 + g3)>>2;
+	unsigned int b = (b0 + b1 + b2 + b3)>>2;
+	return manip.rgb(r, g, b);
+}
+
+template <class Source_pixel>
+inline int GetResult1(Source_pixel A, Source_pixel B, Source_pixel C, Source_pixel D, Source_pixel E)
+{
+	int x = 0;
+	int y = 0;
+	int r = 0;
+	if (A == C) x+=1; else if (B == C) y+=1;
+	if (A == D) x+=1; else if (B == D) y+=1;
+	if (x <= 1) r+=1; 
+	if (y <= 1) r-=1;
+	return r;
+}
+
+template <class Source_pixel>
+inline int GetResult2(Source_pixel A, Source_pixel B, Source_pixel C, Source_pixel D, Source_pixel E) 
+{
+	int x = 0; 
+	int y = 0;
+	int r = 0;
+	if (A == C) x+=1; else if (B == C) y+=1;
+	if (A == D) x+=1; else if (B == D) y+=1;
+	if (x <= 1) r-=1; 
+	if (y <= 1) r+=1;
+	return r;
+}
+
+
+template <class Source_pixel, class Dest_pixel, class Manip_pixels>
+//void _2xSaI
+void Scale2x
+	(
+	Source_pixel *source,	// ->source pixels.
+	int srcx, int srcy,		// Start of rectangle within src.
+	int srcw, int srch,		// Dims. of rectangle.
+	int sline_pixels,		// Pixels (words)/line for source.
+	int sheight,			// Source height.
+	Dest_pixel *dest,		// ->dest pixels.
+	int dline_pixels,		// Pixels (words)/line for dest.
+	const Manip_pixels& manip	// Manipulator methods.
+	)
+{
+	Source_pixel *srcPtr = source + (srcx + srcy*sline_pixels);
+	Dest_pixel *dstPtr = dest + (2*srcy*dline_pixels + 2*srcx);
+
+	if (srcx + srcw >= sline_pixels)
+	{
+		srcw = sline_pixels - srcx;
+	}
+			
+    for (int y = 0; y < srch; y++)
+	{
+		Source_pixel *bP = srcPtr;
+		Dest_pixel *dP = dstPtr;
+
+			for (int x = 0; x < srcw; x++)
+			{
+				Source_pixel colorA, colorB;
+				Source_pixel colorC, colorD,
+					   colorE, colorF, colorG, colorH,
+					   colorI, colorJ, colorK, colorL,
+					   colorM, colorN, colorO, colorP;
+				Dest_pixel product, product1, product2, orig;
+
+				//---------------------------------------
+				// Map of the pixels:                    I|E F|J
+				//                                       G|A B|K
+				//                                       H|C D|L
+				//                                       M|N O|P
+				colorI = *(bP- sline_pixels - 1);
+				colorE = *(bP- sline_pixels);
+				colorF = *(bP- sline_pixels + 1);
+				colorJ = *(bP- sline_pixels + 2);
+
+				colorG = *(bP - 1);
+				colorA = *(bP);
+				colorB = *(bP + 1);
+				colorK = *(bP + 2);
+
+				colorH = *(bP + sline_pixels - 1);
+				colorC = *(bP + sline_pixels);
+				colorD = *(bP + sline_pixels + 1);
+				colorL = *(bP + sline_pixels + 2);
+
+				colorM = *(bP + sline_pixels + sline_pixels - 1);
+				colorN = *(bP + sline_pixels + sline_pixels);
+				colorO = *(bP + sline_pixels + sline_pixels + 1);
+				colorP = *(bP + sline_pixels + sline_pixels + 2);
+
+					if ((colorA == colorD) && (colorB != colorC))
+					{
+					   if ( ((colorA == colorE) && (colorB == colorL)) ||
+							((colorA == colorC) && (colorA == colorF) && (colorB != colorE) && (colorB == colorJ)) )
+					   {
+						  //product = colorA;
+							manip.copy(product, colorA);
+					   }
+					   else
+					   {
+						  //product = INTERPOLATE(colorA, colorB);
+						  product = Interpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorB, manip);
+					   }
+
+					   if (((colorA == colorG) && (colorC == colorO)) ||
+						   ((colorA == colorB) && (colorA == colorH) && (colorG != colorC) && (colorC == colorM)) )
+					   {
+						  //product1 = colorA;
+							manip.copy(product1, colorA);
+					   }
+					   else
+					   {
+						  //product1 = INTERPOLATE(colorA, colorC);
+						  product1 = Interpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorC, manip);
+					   }
+					   //product2 = colorA;
+					   manip.copy(product2, colorA);
+					}
+					else
+					if ((colorB == colorC) && (colorA != colorD))
+					{
+					   if (((colorB == colorF) && (colorA == colorH)) ||
+						   ((colorB == colorE) && (colorB == colorD) && (colorA != colorF) && (colorA == colorI)) )
+					   {
+						  //product = colorB;
+						  manip.copy(product, colorB);
+					   }
+					   else
+					   {
+						  //product = INTERPOLATE(colorA, colorB);
+  						  product = Interpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorB, manip);
+					   }
+
+					   if (((colorC == colorH) && (colorA == colorF)) ||
+						   ((colorC == colorG) && (colorC == colorD) && (colorA != colorH) && (colorA == colorI)) )
+					   {
+						  //product1 = colorC;
+						  manip.copy(product1, colorC);
+					   }
+					   else
+					   {
+						  //product1 = INTERPOLATE(colorA, colorC);
+  						  product1 = Interpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorC, manip);
+					   }
+					   //product2 = colorB;
+					   manip.copy(product2, colorB);
+					}
+					else
+					if ((colorA == colorD) && (colorB == colorC))
+					{
+					   if (colorA == colorB)
+					   {
+						  //product = colorA;
+						  manip.copy(product, colorA);
+						  //product1 = colorA;
+						  manip.copy(product1, colorA);
+						  //product2 = colorA;
+						  manip.copy(product2, colorA);
+					   }
+					   else
+					   {
+						  register int r = 0;
+						  //product1 = INTERPOLATE(colorA, colorC);
+  						  product1 = Interpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorC, manip);
+						  //product = INTERPOLATE(colorA, colorB);
+						  product = Interpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorB, manip);
+
+						  r += GetResult1 <Source_pixel>(colorA, colorB, colorG, colorE, colorI);
+						  r += GetResult2 <Source_pixel>(colorB, colorA, colorK, colorF, colorJ);
+						  r += GetResult2 <Source_pixel>(colorB, colorA, colorH, colorN, colorM);
+						  r += GetResult1 <Source_pixel>(colorA, colorB, colorL, colorO, colorP);
+
+						  if (r > 0)
+							  //product2 = colorA;
+							  manip.copy(product2, colorA);
+						  else
+						  if (r < 0)
+							  //product2 = colorB;
+							  manip.copy(product2, colorB);
+						  else
+						  {
+							  //product2 = Q_INTERPOLATE(colorA, colorB, colorC, colorD);
+							  product2 = QInterpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorB, colorC, colorD, manip);
+						  }
+					   }
+					}
+					else
+					{
+					   //product2 = Q_INTERPOLATE(colorA, colorB, colorC, colorD);
+					   product2 = QInterpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorB, colorC, colorD, manip);
+
+					   if ((colorA == colorC) && (colorA == colorF) && (colorB != colorE) && (colorB == colorJ))
+					   {
+						  //product = colorA;
+						  manip.copy(product, colorA);
+					   }
+					   else
+					   if ((colorB == colorE) && (colorB == colorD) && (colorA != colorF) && (colorA == colorI))
+					   {
+						  //product = colorB;
+						  manip.copy(product, colorB);
+					   }
+					   else
+					   {
+						  //product = INTERPOLATE(colorA, colorB);
+						  product = Interpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorB, manip);
+					   }
+
+					   if ((colorA == colorB) && (colorA == colorH) && (colorG != colorC) && (colorC == colorM))
+					   {
+						  //product1 = colorA;
+						  manip.copy(product1, colorA);
+					   }
+					   else
+					   if ((colorC == colorG) && (colorC == colorD) && (colorA != colorH) && (colorA == colorI))
+					   {
+						  //product1 = colorC;
+						  manip.copy(product1, colorC);
+					   }
+					   else
+					   {
+						  //product1 = INTERPOLATE(colorA, colorC);
+						  product1 = Interpolate_2xSaI< Source_pixel,  Dest_pixel,  Manip_pixels>(colorA, colorC, manip);
+					   }
+					}
+
+
+                	//product = colorA | (product << 16);
+					//product1 = product1 | (product2 << 16);
+					manip.copy(orig, colorA);
+					*dP = orig;
+					*(dP+1) = product;
+					*(dP+dline_pixels) = product1;
+					*(dP+dline_pixels+1) = product2;
+
+					bP += 1;
+					dP += 2;
+				}//end of for ( finish= width etc..)
+
+		srcPtr += sline_pixels;
+		dstPtr += 2*dline_pixels;
+	}; 
+}
+
+/** 
+ ** End of 2xSaI code
+ **/
+
+
+
+
 /*
  *	Going horizontally, split one pixel into two.
  */
@@ -47,20 +333,22 @@ inline void Interp_vert
 	*to++ = manip.rgb((r0 + r1)>>1, (g0 + g1)>>1, (b0 + b1)>>1);
 	}
 
+
+#if 0
 /*
  *	Scale X2 with bilinear interpolation.
  */
 template <class Source_pixel, class Dest_pixel, class Manip_pixels>
 void Scale2x
-	(
+(
 	Source_pixel *source,		// ->source pixels.
 	int sline_pixels,		// Pixels (words)/line for source.
 	int sheight,			// Source height.
 	Dest_pixel *dest,		// ->dest pixels.
 	int dline_pixels,		// Pixels (words)/line for dest.
 	const Manip_pixels& manip	// Manipulator methods.
-	)
-	{
+)
+{
 	Source_pixel *from = source;
 	Dest_pixel *to = dest;
 	int swidth = dline_pixels/2;	// Take min. of pixels/line.
@@ -118,14 +406,16 @@ void Scale2x
 					// Just copy last row.
 	memcpy(from0 + dline_pixels, from0, dline_pixels*sizeof(*from0));
 	}
+#endif
 
-#if 1
+
+#if 0
 /*
  *	Scale a rectangle X2 with bilinear interpolation.
  */
 template <class Source_pixel, class Dest_pixel, class Manip_pixels>
 void Scale2x
-	(
+(
 	Source_pixel *source,		// ->source pixels.
 	int srcx, int srcy,		// Start of rectangle within src.
 	int srcw, int srch,		// Dims. of rectangle.
@@ -134,12 +424,15 @@ void Scale2x
 	Dest_pixel *dest,		// ->dest pixels.
 	int dline_pixels,		// Pixels (words)/line for dest.
 	const Manip_pixels& manip	// Manipulator methods.
-	)
-	{
+)
+{
+
 	Source_pixel *from = source + srcy*sline_pixels + srcx;
 	Dest_pixel *to = dest + 2*srcy*dline_pixels + 2*srcx;
+
 	Dest_pixel *from0 = to;		// We'll use in 2nd pass.
 	int right_edge = 0;		// Row ends at rt. edge of window.
+
 	int swidth = srcw;
 	if (srcx + swidth >= sline_pixels)
 		{
@@ -225,3 +518,5 @@ void test()
 					(src8, 20, 40, dest, manip8);
 	}
 #endif
+
+
