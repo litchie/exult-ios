@@ -456,7 +456,8 @@ void Chunk_cache::activate_eggs
 	Map_chunk *chunk,	// Chunk this is attached to.
 	int tx, int ty, int tz,		// Tile (absolute).
 	int from_tx, int from_ty,	// Tile walked from.
-	unsigned short eggbits		// Eggs[tile].
+	unsigned short eggbits,		// Eggs[tile].
+	bool now			// Do them immediately.
 	)
 	{
 	int i;				// Go through eggs.
@@ -467,7 +468,7 @@ void Chunk_cache::activate_eggs
 		if ((eggbits&1) && i < egg_objects.size() &&
 		    (egg = egg_objects[i]) &&
 		    egg->is_active(obj, tx, ty, tz, from_tx, from_ty))
-			egg->activate(obj);
+			egg->activate(obj, now);
 		}
 	if (eggbits)			// Check 15th bit.
 		{			// DON'T use an iterator here, since
@@ -475,13 +476,11 @@ void Chunk_cache::activate_eggs
 					//   activated, causing a CRASH!
 		int sz = egg_objects.size();
 		for (  ; i < sz; i++)
-//		for (Egg_vector::const_iterator it = egg_objects.begin() + i;
-//					it != egg_objects.end(); ++it)
 			{
 			Egg_object *egg = egg_objects[i];
 			if (egg && egg->is_active(obj,
 						tx, ty, tz, from_tx, from_ty))
-				egg->activate(obj);
+				egg->activate(obj, now);
 			}
 		}
 	}

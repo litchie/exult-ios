@@ -594,7 +594,8 @@ void Egg_object::activate_teleport
 void Egg_object::activate
 	(
 	Game_object *obj,		// Object (actor) that came near it.
-	int must			// If 1, skip dice roll.
+	bool must			// If 1, skip dice roll & execute
+					//   usecode eggs immediately.
 	)
 	{
 #ifdef DEBUG
@@ -1027,7 +1028,7 @@ void Field_object::activate
 void Field_object::activate
 	(
 	Game_object *obj,		// Object (actor) that came near it.
-	int /* must */			// If 1, skip dice roll.
+	bool /* must */			// If 1, skip dice roll.
 	)
 	{
 	Main_actor *av = gwin->get_main_actor();
@@ -1072,7 +1073,7 @@ void Mirror_object::activate(int event)
 	Ireg_game_object::activate(event);
 }
 
-void Mirror_object::activate(Game_object *obj, int must)
+void Mirror_object::activate(Game_object *obj, bool must)
 {
 	// These are broken, so dont touch
 	if ((get_framenum()%3) == 2)  return;

@@ -98,17 +98,17 @@ class Chunk_cache : public Game_singletons
 				const int move_flags, int max_drop = 1);
 					// Activate eggs nearby.
 	void activate_eggs(Game_object *obj, Map_chunk *chunk, 
-			int tx, int ty, int tz,
-			int from_tx, int from_ty, unsigned short eggbits);
+			int tx, int ty, int tz, int from_tx, int from_ty, 
+					unsigned short eggbits, bool now);
 	void activate_eggs(Game_object *obj, Map_chunk *chunk, 
-			int tx, int ty, int tz, int from_tx, int from_ty)
+		int tx, int ty, int tz, int from_tx, int from_ty, bool now)
 		{
 		unsigned short eggbits = eggs[
 			(ty%c_tiles_per_chunk)*c_tiles_per_chunk + 
-							(tx%c_tiles_per_chunk)];
+						(tx%c_tiles_per_chunk)];
 		if (eggbits)
 			activate_eggs(obj, chunk, tx, ty, tz,
-						from_tx, from_ty,  eggbits);
+					from_tx, from_ty, eggbits, now);
 		}
 
 public:
@@ -234,9 +234,9 @@ public:
 	void set_egged(Egg_object *egg, Rectangle& tiles, bool add)
 		{ need_cache()->set_egged(egg, tiles, add); }
 	void activate_eggs(Game_object *obj, int tx, int ty, int tz,
-						int from_tx, int from_ty)
+				int from_tx, int from_ty, bool now = false)
 		{ need_cache()->activate_eggs(obj, 
-					this, tx, ty, tz, from_tx, from_ty);}
+				this, tx, ty, tz, from_tx, from_ty, now);}
 	static int find_in_area(Game_object_vector& vec, Rectangle area,
 					int shapenum, int framenum);
 					// Use this when teleported in.
