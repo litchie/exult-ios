@@ -982,8 +982,10 @@ void ExultStudio::show_shinfo_shape
 					// Yes, this is kind of redundant...
 	int shnum = get_num_entry("shinfo_shape");
 	int frnum = get_num_entry("shinfo_frame");
+#if 0	/* ?? Why was this here?  */
 	if (!shnum)			// Don't draw shape 0.
 		shnum = -1;
+#endif
 	shape_draw->draw_shape_centered(shnum, frnum);
 	if (w != -1)
 		shape_draw->show(x, y, w, h);
