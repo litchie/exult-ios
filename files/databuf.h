@@ -354,7 +354,7 @@ public:
 class StackBufferDataSource : protected BufferDataSource
 {
 	public:
-		StackBufferDataSource(unsigned int len=32768) : BufferDataSource(new char[len], len)
+		StackBufferDataSource(unsigned int len=0x1000) : BufferDataSource(new char[len], len)
 		{
 			buf_ptr = const_cast<unsigned char *>(buf)+len;
 		};
@@ -362,40 +362,70 @@ class StackBufferDataSource : protected BufferDataSource
 			delete [] const_cast<unsigned char *>(buf);
 		};
 		
-		void push2(uint16 val)
+		inline void push2(uint16 val)
 		{
 			buf_ptr-=2;
 			buf_ptr[0] =  val     & 0xFF;
 			buf_ptr[1] = (val>>8) & 0xFF;
 		}
 		
-		void push4(uint32 val)
+		inline void push4(uint32 val)
 		{
 			buf_ptr-=4;
 			buf_ptr[0] =  val      & 0xFF;
 			buf_ptr[1] = (val>>8)  & 0xFF;
 			buf_ptr[2] = (val>>16) & 0xFF;
-			buf_ptr[4] = (val>>24) & 0xFF;
+			buf_ptr[3] = (val>>24) & 0xFF;
 		}
-		
-		uint16 access2(const uint32 offset) const
-		{
-			return (buf_ptr[offset] | (buf_ptr[offset+1] << 8));
+
+		// Push an arbitrary number of bytes of 0
+		inline void push0(const uint32 newsize) { 
+			buf_ptr -= newsize;
+			if (newsize > 0) std::memset (buf_ptr, 0, newsize);
 		};
 		
-		uint32 access4(const uint32 offset) const
+		// Pop 2 bytes
+		inline uint16 pop2() { return read2(); }
+
+		// Pop 4 bytes
+		inline uint32 pop4() { return read4(); }
+		
+		inline uint8 access(const uint32 offset) const
 		{
-			return (buf_ptr[offset] | (buf_ptr[offset+1]<<8) | (buf_ptr[offset+2]<<16) | (buf_ptr[offset+3]<<24));
+			return buf[offset];
 		};
 		
-		uint32 stacksize() const { return buf+size-buf_ptr; };
-		void resize(const uint32 newsize) { buf_ptr = const_cast<unsigned char *>(buf)+size-newsize; };
+		inline uint16 access2(const uint32 offset) const
+		{
+			return (buf[offset] | (buf[offset+1] << 8));
+		};
 		
+		inline uint32 access4(const uint32 offset) const
+		{
+			return buf[offset] | (buf[offset+1]<<8) | (buf[offset+2]<<16) | (buf[offset+3]<<24);
+		};
+		
+		inline uint32 stacksize() const { return buf+size-buf_ptr; };
+
+		inline void resize(const uint32 newsize) { 
+			buf_ptr = const_cast<unsigned char *>(buf)+size-newsize;
+		};
+		
+		inline void addSP(const sint32 offset) {
+			skip(offset);
+		}
+
+		virtual unsigned int getSP() { return getPos(); };
+
 		/* temp debugging */
-		std::ostream &print(std::ostream &o)
+		inline std::ostream &print(std::ostream &o, uint32 bp)
 		{
-			for(const unsigned char *c=buf_ptr; c!=buf+size; ++c)
-				printf(" %02X", static_cast<unsigned int>(*c));
+			for(const unsigned char *c=buf_ptr; c!=buf+size; ++c) {
+				if (c != buf+bp)
+					printf(" %02X", static_cast<unsigned int>(*c));
+				else
+					printf(":%02X", static_cast<unsigned int>(*c));
+			}
 			return o;
 		}
 		
