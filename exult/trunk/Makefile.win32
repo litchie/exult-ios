@@ -2,12 +2,12 @@
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
-U7PATH=C:\\UC\\Ultima7
+U7PATH=C:\\Ultima7
 
 CC=gcc
 # Base of the exult source
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs
+VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs:$(SRC)/data
 
 ### Modify these paths
 SDL_INCLUDES=-I$(SRC)/sdl/include
