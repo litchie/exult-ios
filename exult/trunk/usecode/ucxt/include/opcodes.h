@@ -5,11 +5,12 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <iostream>
 #include "Configuration.h"
 
-vector<string> qnd_ocsplit(const string &s);
+std::vector<std::string> qnd_ocsplit(const std::string &s);
 
-void map_type_size(const vector<string> &param_types, vector<pair<unsigned int, bool> > &param_sizes);
+void map_type_size(const std::vector<std::string> &param_types, std::vector<std::pair<unsigned int, bool> > &param_sizes);
 
 class UCOpcodeData
 {
@@ -20,14 +21,14 @@ class UCOpcodeData
 		                 flag_indent_dec(false), flag_indent_tmpinc(false),
 		                 flag_indent_tmpdec(false)
 		{};
-		UCOpcodeData(const vector<string> &v)
+		UCOpcodeData(const std::vector<std::string> &v)
 		{
 			if((v.size()==12)==false)
 			{
-				cerr << "Error in opcodes file:" << endl;
+				std::cerr << "Error in opcodes file:" << std::endl;
 				for(unsigned int i=0; i<v.size(); i++)
-					cerr << v[i] << '\t';
-				cerr << endl;
+					std::cerr << v[i] << '\t';
+				std::cerr << std::endl;
 			}
 			
 			assert(v.size()==12);
@@ -52,10 +53,10 @@ class UCOpcodeData
 		};
 		
 		unsigned int   opcode;
-		string         name;
-		string         asm_nmo;
-		string         asm_comment;
-		string         ucs_nmo;
+		std::string         name;
+		std::string         asm_nmo;
+		std::string         asm_comment;
+		std::string         ucs_nmo;
 		unsigned int   num_bytes;
 		
 		unsigned int   num_pop;
@@ -68,17 +69,17 @@ class UCOpcodeData
 		bool           flag_indent_tmpinc;
 		bool           flag_indent_tmpdec;
 		
-		vector<string> param_types;
+		std::vector<std::string> param_types;
 		// values caluclated from param_types
-		vector<pair<unsigned int, bool> > param_sizes; // .first==size of parameter in bytes .second==whether to treat it as a relative offset and calculate for it
+		std::vector<std::pair<unsigned int, bool> > param_sizes; // .first==size of parameter in bytes .second==whether to treat it as a relative offset and calculate for it
 		
 };
 
-extern vector<UCOpcodeData> opcode_table_data;
-extern vector<pair<unsigned int, unsigned int> > opcode_jumps;
+extern std::vector<UCOpcodeData> opcode_table_data;
+extern std::vector<std::pair<unsigned int, unsigned int> > opcode_jumps;
 
-extern map<unsigned int, string> bg_uc_intrinsics;
-extern map<unsigned int, string> si_uc_intrinsics;
+extern std::map<unsigned int, std::string> bg_uc_intrinsics;
+extern std::map<unsigned int, std::string> si_uc_intrinsics;
 
 void init_static_usecodetables(const Configuration &config);
 void init_usecodetables(const Configuration &config, bool noconf, bool verbose);

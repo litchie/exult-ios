@@ -18,41 +18,41 @@
 #endif
 
 #define MAX_NO_OPCODES 512
-vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
-vector<pair<unsigned int, unsigned int> > opcode_jumps;
+std::vector<UCOpcodeData> opcode_table_data(MAX_NO_OPCODES);
+std::vector<std::pair<unsigned int, unsigned int> > opcode_jumps;
 
-map<unsigned int, string> bg_uc_intrinsics;
-map<unsigned int, string> si_uc_intrinsics;
+std::map<unsigned int, std::string> bg_uc_intrinsics;
+std::map<unsigned int, std::string> si_uc_intrinsics;
 
-vector<string> str2vec(const string &s);
+std::vector<std::string> str2vec(const std::string &s);
 
 /* constructs the static usecode tables from other include files in the /exult hierachy,
    static by compilation.
 */
 void init_static_usecodetables(const Configuration &config)
 {
-	#define	USECODE_INTRINSIC_PTR(NAME)	string(__STRING(NAME))
-	string bgut[] = 
+	#define	USECODE_INTRINSIC_PTR(NAME)	std::string(__STRING(NAME))
+	std::string bgut[] = 
 	{
 	#include "bgintrinsics.h"
 	};
-	string siut[] =
+	std::string siut[] =
 	{
 	#include "siintrinsics.h"
 	};
 	#undef USECODE_INTRINSIC_PTR
 	
 	for(unsigned int i=0; i<0x100; i++)
-		bg_uc_intrinsics.insert(pair<unsigned int, string>(bg_uc_intrinsics.size(), bgut[i]));
+		bg_uc_intrinsics.insert(std::pair<unsigned int, std::string>(bg_uc_intrinsics.size(), bgut[i]));
 	
 	for(unsigned int i=0; i<0x100; i++)
-		si_uc_intrinsics.insert(pair<unsigned int, string>(si_uc_intrinsics.size(), siut[i]));
+		si_uc_intrinsics.insert(std::pair<unsigned int, std::string>(si_uc_intrinsics.size(), siut[i]));
 }
 
 /* constructs the usecode tables from datafiles in the /ucxt hierachy */
 void init_usecodetables(const Configuration &config, bool noconf, bool verbose)
 {
-	string ucxtroot;
+	std::string ucxtroot;
 	// just to handle if people are going to compile with makefile.unix, unsupported, but occasionally useful
 	#ifdef HAVE_CONFIG_H
 	if(noconf == false) config.value("config/ucxt/root", ucxtroot, EXULT_DATADIR);
@@ -60,21 +60,21 @@ void init_usecodetables(const Configuration &config, bool noconf, bool verbose)
 	if(noconf == false) config.value("config/ucxt/root", ucxtroot, "data/");
 	#endif
 	
-	if(verbose) cout << "ucxtroot: " << ucxtroot << endl;
+	if(verbose) std::cout << "ucxtroot: " << ucxtroot << std::endl;
 	if(ucxtroot.size() && ucxtroot[ucxtroot.size()-1]!='/' && ucxtroot[ucxtroot.size()-1]!='\\') ucxtroot+='/';
 	ucxtroot+= "opcodes.txt";
 
-	ifstream file;
+	std::ifstream file;
 
 	U7open(file, ucxtroot.c_str(), true);
 	
 	if(file.fail())
 	{
-		cout << "error. could not locate " << ucxtroot << ". exiting." << endl;
+		std::cout << "error. could not locate " << ucxtroot << ". exiting." << std::endl;
 		exit(1);
 	}
 	
-	string s;
+	std::string s;
 	while(!file.eof())
 	{
 		getline(file, s);
@@ -89,33 +89,33 @@ void init_usecodetables(const Configuration &config, bool noconf, bool verbose)
 	
 	/* Create an {opcode, parameter_index} array of all opcodes that
 		execute a 'jump' statement */
-	for(vector<UCOpcodeData>::iterator op=opcode_table_data.begin(); op!=opcode_table_data.end(); op++)
+	for(std::vector<UCOpcodeData>::iterator op=opcode_table_data.begin(); op!=opcode_table_data.end(); op++)
 	{
 		for(unsigned int i=0; i<op->param_sizes.size(); i++)
 		{
 			if(op->param_sizes[i].second==true) // this is a calculated offset
 			{
-				opcode_jumps.push_back(pair<unsigned int, unsigned int>(op->opcode, i+1)); // parameters are stored as base 1
+				opcode_jumps.push_back(std::pair<unsigned int, unsigned int>(op->opcode, i+1)); // parameters are stored as base 1
 			}
 		}
 	}
 	
 	#if 0
-	cout << "Calculated Opcode pairs:" << endl;
-	for(vector<pair<unsigned int, unsigned int> >::iterator i=opcode_jumps.begin(); i!=opcode_jumps.end(); i++)
-		cout << setw(4) << i->first << '\t' << setw(4) << i->second << endl;
+	std::cout << "Calculated Opcode pairs:" << std::endl;
+	for(std::vector<std::pair<unsigned int, unsigned int> >::iterator i=opcode_jumps.begin(); i!=opcode_jumps.end(); i++)
+		std::cout << setw(4) << i->first << '\t' << setw(4) << i->second << std::endl;
 	#endif
 }
 
-/* To be depricated when I get the complex vector<string> splitter online */
-vector<string> qnd_ocsplit(const string &s)
+/* To be depricated when I get the complex std::vector<std::string> splitter online */
+std::vector<std::string> qnd_ocsplit(const std::string &s)
 {
 	assert((s[0]=='{') && (s[s.size()-1]=='}'));
 
-	vector<string> vs;
-	string tstr;
+	std::vector<std::string> vs;
+	std::string tstr;
 
-	for(string::const_iterator i=s.begin(); i!=s.end(); ++i)
+	for(std::string::const_iterator i=s.begin(); i!=s.end(); ++i)
 	{
     if(*i==',')
 		{
@@ -133,9 +133,9 @@ vector<string> qnd_ocsplit(const string &s)
 	return vs;
 }
 
-vector<string> str2vec(const string &s)
+std::vector<std::string> str2vec(const std::string &s)
 {
-	vector<string> vs;
+	std::vector<std::string> vs;
 	unsigned int lasti=0;
 
 	// if it's empty return null
@@ -175,15 +175,15 @@ vector<string> str2vec(const string &s)
 
 	#if 0 //test
 	for(unsigned int i=0; i<vs.size(); i++)
-		cout << "\t\"" << vs[i] << "\"" << endl;
+		std::cout << "\t\"" << vs[i] << "\"" << std::endl;
 	#endif ///test
 
 	return vs;
 }
 
-void map_type_size(const vector<string> &param_types, vector<pair<unsigned int, bool> > &param_sizes)
+void map_type_size(const std::vector<std::string> &param_types, std::vector<std::pair<unsigned int, bool> > &param_sizes)
 {
-	for(vector<string>::const_iterator s=param_types.begin(); s!=param_types.end(); ++s)
+	for(std::vector<std::string>::const_iterator s=param_types.begin(); s!=param_types.end(); ++s)
 	{
 		unsigned int ssize=0;
 		bool offset_munge=false;
@@ -199,20 +199,20 @@ void map_type_size(const vector<string> &param_types, vector<pair<unsigned int, 
 		else if(*s=="byte")       ssize=1;
 		else
 		{
-			cout << "error: data type '" << *s << "' is not defined. exiting." << endl;
+			std::cout << "error: data type '" << *s << "' is not defined. exiting." << std::endl;
 			exit(1);
 		}
 		assert(ssize!=0);
-		param_sizes.push_back(pair<unsigned int, bool>(ssize, offset_munge));
+		param_sizes.push_back(std::pair<unsigned int, bool>(ssize, offset_munge));
 	}
 }
 
-/*vector<string> str2vec(const string &s)
+/*std::vector<std::string> str2vec(const std::string &s)
 {
-	vector<string> vs; // the resulting strings
+	std::vector<std::string> vs; // the resulting strings
 	stack<char> vbound; // the "bounding" chars used to deonte collections of characters
 	unsigned int lasti=0;
-  string currstr; // the current string, gets appended to vs
+  std::string currstr; // the current string, gets appended to vs
 
 	// if it's empty return null
 	if(s.size()==0) return vs;
@@ -284,7 +284,7 @@ void map_type_size(const vector<string> &param_types, vector<pair<unsigned int, 
 
 	#if 1 //test
 	for(unsigned int i=0; i<vs.size(); i++)
-		cout << "\t\"" << vs[i] << "\"" << endl;
+		std::cout << "\t\"" << vs[i] << "\"" << std::endl;
 	#endif ///test
 
 	return vs;
