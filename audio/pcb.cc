@@ -21,10 +21,6 @@
 #endif
 
 #include "pcb.h"
-#ifndef ALPHA_LINUX_CXX
-#  include <cassert>
-#endif
-#include <iostream>
 
 uint32 ProducerConsumerBuf::sequence_cnt=0;
 

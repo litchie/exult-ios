@@ -1,3 +1,9 @@
+2001-08-17  Max Horn <max@quendi.de>
+	* audio/pcb.*: fixed possible crash on MacOS, some clean up
+	* audio/midi_drivers/mac_midi.*: compiles again on classic MacOS
+	* fnames.h: changed for MacOS X again (set default value for EXULT_DATADIR)
+	* gamewin.*: red plasma is now blue in SI
+
 2001-08-17  Ryan Nunn <triforce@merlin.net.au>
 	* actors.cc : Swamp boots should now work in SI
 	* cheat.cc : Namespace stuff
