@@ -62,13 +62,13 @@ public:
  */
 class Sprites_effect : public Special_effect
 	{
+protected:
 	int sprite_num;			// Which one.
 	int frame_num;			// Current frame.
 	int frames;			// # frames.
-	short tx, ty;			// Tile coords. within world of upper-
-					//   left corner.
+	Tile_coord pos;			// Position within world.
 public:
-	Sprites_effect(int num, int xpos, int ypos);
+	Sprites_effect(int num, Tile_coord p);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.
@@ -82,8 +82,8 @@ class Explosion_effect : public Sprites_effect
 	{
 	Game_object *explode;		// What's exploding, or 0.
 public:
-	Explosion_effect(int xpos, int ypos, Game_object *exp) 
-		: Sprites_effect(1, xpos, ypos), explode(exp)
+	Explosion_effect(Tile_coord p, Game_object *exp) 
+		: Sprites_effect(1, p), explode(exp)
 		{  }
 	virtual ~Explosion_effect();
 	};

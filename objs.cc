@@ -1164,18 +1164,19 @@ int Game_object::get_rotated_frame
 	}
 
 /*
- *	Being attacked.
+ *	Figure attack points against an object, and also run weapon's usecode.
  */
 
-void Game_object::attacked
+static int Attack_object
 	(
+	Game_window *gwin,
+	Game_object *obj,		// What's being attacked.
 	Actor *attacker,
 	int weapon_shape,		// Weapon shape, or 0 to use readied.
 	int ammo_shape
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
-	int wpoints;
+	int wpoints = 0;
 	Weapon_info *winf;
 	if (weapon_shape > 0)
 		winf = gwin->get_info(weapon_shape).get_weapon_info();
@@ -1185,8 +1186,45 @@ void Game_object::attacked
 		winf = attacker->get_weapon(wpoints);
 	int usefun;			// Run usecode if present.
 	if (winf && (usefun = winf->get_usecode()) != 0)
-		gwin->get_usecode()->call_usecode(usefun, this,
+		gwin->get_usecode()->call_usecode(usefun, obj,
 					Usecode_machine::weapon);
+	int shnum = obj->get_shapenum();	// Only do doors for now.
+	if (!wpoints && winf)
+		wpoints = winf->get_damage();
+	return wpoints;
+	}
+
+/*
+ *	Being attacked.
+ *
+ *	Output:	0 if destroyed, else object itself.
+ */
+
+Game_object *Game_object::attacked
+	(
+	Actor *attacker,
+	int weapon_shape,		// Weapon shape, or 0 to use readied.
+	int ammo_shape
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int wpoints = Attack_object(gwin, this, 
+					attacker, weapon_shape, ammo_shape);
+	if (wpoints < 10)
+		return this;		// Fail.
+	if (wpoints < 20)
+		wpoints = wpoints/2;	// Unlikely.
+	int shnum = get_shapenum();	// Only do doors for now.
+	if (shnum != 433 && shnum != 432 && shnum != 270 && shnum != 376)
+		return this;
+					// Let's guess points = percentage.
+	if (rand()%100 < wpoints)
+		{
+		gwin->add_dirty(this);
+		remove_this();
+		return 0;
+		}
+	return this;
 	}
 
 /*
@@ -1762,6 +1800,50 @@ int Container_game_object::get_objects
 		obj->get_objects(vec, shapenum, qual, framenum);
 		}
 	return (vec.get_cnt() - vecsize);
+	}
+
+/*
+ *	Being attacked.
+ *
+ *	Output:	0 if destroyed, else object itself.
+ */
+
+Game_object *Container_game_object::attacked
+	(
+	Actor *attacker,
+	int weapon_shape,		// Weapon shape, or 0 to use readied.
+	int ammo_shape
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int wpoints = Attack_object(gwin, this, 
+					attacker, weapon_shape, ammo_shape);
+	if (wpoints < 8)
+		return this;		// Fail.
+	if (wpoints < 16)
+		wpoints = wpoints/2;	// Unlikely.
+					// Let's guess points = percentage.
+	if (rand()%100 >= wpoints)
+		return this;		// Failed.
+	Tile_coord pos = get_abs_tile_coord();
+	gwin->add_dirty(this);
+	remove_this(1);			// Remove, but don't delete yet.
+	Game_object *obj;		// Remove objs. inside.
+	Object_iterator next(objects);
+	while ((obj = next.get_next()) != 0)
+		{
+		Shape_info& info = gwin->get_info(obj);
+		Tile_coord p(-1, -1, -1);
+		for (int i = 1; p.tx < 0 && i < 8; i++)
+			p = Game_object::find_unblocked_tile(pos,
+					i, info.get_3d_height());
+		if (p.tx == -1)
+			obj->remove_this();
+		else
+			obj->move(p.tx, p.ty, p.tz);
+		}
+	delete this;
+	return 0;
 	}
 
 /*

@@ -49,8 +49,8 @@ void Special_effect::paint
 Sprites_effect::Sprites_effect
 	(
 	int num,			// Index.
-	int px, int py			// Screen location.
-	) : sprite_num(num), frame_num(0), tx(px), ty(py)
+	Tile_coord p			// Position within world.
+	) : sprite_num(num), frame_num(0), pos(p)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_sprite_num_frames(num);
@@ -92,8 +92,10 @@ void Sprites_effect::paint
 	Game_window *gwin
 	)
 	{
-	gwin->paint_sprite((tx - gwin->get_scrolltx())*tilesize,
-		(ty - gwin->get_scrollty())*tilesize, sprite_num, frame_num);
+	int lp = pos.tz/2;		// Account for lift.
+	gwin->paint_sprite((pos.tx - lp - gwin->get_scrolltx())*tilesize,
+		(pos.ty - lp - gwin->get_scrollty())*tilesize, 
+						sprite_num, frame_num);
 	}
 
 /*
@@ -106,9 +108,15 @@ Explosion_effect::~Explosion_effect
 	{
 	if (explode)
 		{
-		// +++++Destroy stuff?
 		Game_window::get_game_window()->add_dirty(explode);
 		explode->remove_this();
+		}
+	Vector vec;			// Find objects near explosion.
+	int cnt = Game_object::find_nearby(vec, pos, -359, 3, 0);
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *obj = (Game_object *) vec.get(i);
+		obj->attacked(0, 704, 0);
 		}
 	}
 
@@ -274,8 +282,7 @@ void Projectile_effect::handle_event
 			(!target && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
 		if (shape_num == 704)	// Powder keg?
-			gwin->add_effect(new Explosion_effect(
-				epos.tx - epos.tz/2, epos.ty - epos.tz/2, 0));
+			gwin->add_effect(new Explosion_effect(epos, 0));
 		else if (target)
 			target->attacked(attacker, weapon, shape_num);
 		pos.tx = -1;		// Signal we're done.

@@ -368,7 +368,7 @@ public:
 	virtual int is_monster()
 		{ return 0; }
 					// Under attack.
-	virtual void attacked(Actor *attacker, int weapon_shape = 0,
+	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out)
@@ -608,6 +608,9 @@ public:
 					// Get contained objs.
 	virtual int get_objects(Vector& vec, int shapenum, int qual,
 						int framenum);
+					// Under attack.
+	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
+					int ammo_shape = 0);
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
 					// Write contents in IREG format.

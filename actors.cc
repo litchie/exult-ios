@@ -1381,9 +1381,11 @@ int Actor::figure_hit_points
 
 /*
  *	Being attacked.
+ *
+ *	Output:	0 if destroyed, else object itself.
  */
 
-void Actor::attacked
+Game_object *Actor::attacked
 	(
 	Actor *attacker,		// 0 if from a trap.
 	int weapon_shape,		// Weapon shape, or 0 to use readied.
@@ -1391,7 +1393,7 @@ void Actor::attacked
 	)
 	{
 	if (attacker && attacker->get_schedule_type() == Schedule::duel)
-		return;			// Just play-fighting.
+		return this;			// Just play-fighting.
 	figure_hit_points(attacker, weapon_shape, ammo_shape);
 	if (is_dead_npc())
 		{
@@ -1401,7 +1403,9 @@ void Actor::attacked
 					// Attacker gains experience.
 			attacker->set_property((int) exp,
 				attacker->get_property((int) exp) + expval);
+		return 0;
 		}
+	return this;
 	}
 
 /*
