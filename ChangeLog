@@ -1,4 +1,16 @@
 2001-08-05  Max Horn <max@quendi.de>
+	* audio/midi_drivers: changed Makefile.am
+	* audio/midi_drivers/forked_player.cc:  removed the unuses "../.." stuff
+	* usecode/ucinternal.h: added "class Barge_object;"
+	* exult.h: added some "class XYZ;"
+
+2001-08-05  Max Horn <max@quendi.de>
+	* audio/Audio.cc, cheat.cc: properly uses Game::get_gametitle() now
+	* game.cc: tweaked source a bit
+	* exult_constants.h: changed #if DEBUG to #ifdef DEBUG to match rest of exult
+	* mac: ExultHeaders.pch fixed
+
+2001-08-05  Max Horn <max@quendi.de>
 	* keys.cc, gumps/Gamemenu.cc: added forgotten #include "exult.h"
 
 2001-08-05  Max Horn <max@quendi.de>
