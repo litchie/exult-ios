@@ -143,8 +143,8 @@ public:
 					// Write out to IREG file.
 	virtual void write_ireg(std::ostream& out);
 
-	virtual void reset_cached_in() 
-	{ if(criteria == cached_in) flags &= ~(1 << hatched); }
+	virtual void reset() 
+		{ flags &= ~(1 << hatched); }
 
 	};
 

@@ -3168,8 +3168,10 @@ void Game_window::emulate_swapout (int scx, int scy)
 		Game_object *each;
 		while ((each = it.get_next()) != 0)
 		{
+		// SI needs List Field egg reset, so I took out the test for
+		//  cached_in May29-01.  Let's see if it's okay.
 			if (each->is_egg())
-				each->reset_cached_in();
+				((Egg_object *) each)->reset();
 			else if (each->get_npc_num() == -1)
 				removes.push_back(each);
 		}
