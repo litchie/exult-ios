@@ -640,7 +640,7 @@ public:
 					// Get all nearby NPC's.
 	void get_nearby_npcs(Actor_queue& list);
 					// Update NPCs' schedules.
-	void schedule_npcs(int hour3, int backwards = 0);
+	void schedule_npcs(int hour3, int backwards = 0, bool repaint = true);
 	void mend_npcs();		// Restore HP's each hour.
 	void theft();			// Handle thievery.
 	void attack_avatar(int num_guards = 0);
