@@ -2426,6 +2426,12 @@ void Game_window::show_items
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))
 			cout << "ASLEEP" << endl;
+		if (dynamic_cast<Ireg_game_object*> (obj))
+			cout << "IREG object" << endl;
+		else if (dynamic_cast<Ifix_game_object*> (obj))
+			cout << "IFIX object" << endl;
+		else
+			cout << "TERRAIN object" << endl;
 		if (obj->is_egg())	// Show egg info. here.
 			((Egg_object *)obj)->print_debug();
 		}

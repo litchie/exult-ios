@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objiter.h"
 #include "Gump.h"
 #include "effects.h"
+#include "cheat.h"
 
 /*
  *	Paint just the map with given top-left-corner tile.
@@ -58,6 +59,24 @@ void Game_window::paint_map_at_tile
 	scrolltx = savescrolltx;
 	scrollty = savescrollty;
 	skip_lift = saveskip;
+	}
+
+/*
+ *	Figure offsets on screen.
+ */
+
+inline int Figure_screen_offset
+	(
+	int ch,				// Chunk #
+	int scroll			// Top/left tile of screen.
+	)
+	{
+					// Watch for wrapping.
+	int t = ch*c_tiles_per_chunk - scroll;
+	if (t < -c_num_tiles/2)
+		t += c_num_tiles;
+	t %= c_num_tiles;
+	return t*c_tilesize;
 	}
 
 /*
@@ -94,11 +113,24 @@ int Game_window::paint_map
 	int cx, cy;			// Chunk #'s.
 					// Paint all the flat scenery.
 	for (cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
+		{
+		int yoff = Figure_screen_offset(cy, scrollty);
 		for (cx = start_chunkx; cx != stop_chunkx; cx = INCR_CHUNK(cx))
+			{
+			int xoff = Figure_screen_offset(cx, scrolltx);
 			if (in_dungeon)
-				paint_dungeon_chunk_flats(cx, cy);
+				paint_dungeon_chunk_flats(cx, cy, xoff, yoff);
 			else
-				paint_chunk_flats(cx, cy);
+				paint_chunk_flats(cx, cy, xoff, yoff);
+			if (cheat.in_map_editor())
+				{	// Show lines around chunks.
+				win->fill8(hit_pixel, c_chunksize, 1, 
+								xoff, yoff);
+				win->fill8(hit_pixel, 1, c_chunksize, 
+								xoff, yoff);
+				}
+			}
+		}
 					// Draw the chunks' objects
 					//   diagonally NE.
 	int tmp_stopy = DECR_CHUNK(start_chunky);
@@ -159,41 +191,15 @@ void Game_window::paint
 	}
 
 /*
- *	Figure offsets on screen.
- */
-
-inline void Figure_screen_offsets
-	(
-	int cx, int cy,			// Chunk.
-	int scrolltx, int scrollty,	// Top-left tile of screen.
-	int& xoff, int& yoff		// Offsets returned.
-	)
-	{
-					// Watch for wrapping.
-	int tx = cx*c_tiles_per_chunk - scrolltx;
-	if (tx < -c_num_tiles/2)
-		tx += c_num_tiles;
-	tx %= c_num_tiles;
-	int ty = cy*c_tiles_per_chunk - scrollty;
-	if (ty < -c_num_tiles/2)
-		ty += c_num_tiles;
-	ty %= c_num_tiles;
-	xoff = tx*c_tilesize;
-	yoff = ty*c_tilesize;
-	}
-
-/*
  *	Paint the flat (non-rle) shapes in a chunk.
  */
 
 void Game_window::paint_chunk_flats
 	(
-	int cx, int cy			// Chunk coords (0 - 12*16).
+	int cx, int cy,			// Chunk coords (0 - 12*16).
+	int xoff, int yoff		// Pixel offset of top-of-screen.
 	)
 	{
-	int xoff, yoff;
-	Figure_screen_offsets(cx, cy, get_scrolltx(), get_scrollty(),
-						xoff, yoff);
 	Chunk_object_list *olist = get_objects(cx, cy);
 					// Paint flat tiles.
 	Image_buffer8 *cflats = olist->get_rendered_flats();
@@ -211,12 +217,10 @@ void Game_window::paint_chunk_flats
 
 void Game_window::paint_dungeon_chunk_flats
 	(
-	int cx, int cy			// Chunk coords (0 - 12*16).
+	int cx, int cy,			// Chunk coords (0 - 12*16).
+	int xoff, int yoff		// Pixel offset of top-of-screen.
 	)
 	{
-	int xoff, yoff;
-	Figure_screen_offsets(cx, cy, get_scrolltx(), get_scrollty(),
-						xoff, yoff);
 	Chunk_object_list *olist = get_objects(cx, cy);
 	if (!olist->has_dungeon())	// No dungeon in this chunk?
 		{
