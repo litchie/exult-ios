@@ -2,7 +2,7 @@ VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SR
 $(SRC)/gumps:$(SRC)/imagewin:$(SRC)/mapedit/tools/mockup:$(SRC)/mapedit/tools/smooth:$(SRC)/objs:$(SRC)/pathfinder \
 $(SRC)/shapes:$(SRC)/server:$(SRC)/tools:$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src
 
-VERSION=1.1.10rc2
+VERSION=1.1.11cvs
 
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	args.o bggame.o browser.o cheat.o  \
