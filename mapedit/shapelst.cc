@@ -474,12 +474,27 @@ Shape_chooser::Shape_chooser
 	gtk_signal_connect(GTK_OBJECT(shape_adj), "value_changed",
 					GTK_SIGNAL_FUNC(scrolled), this);
 	gtk_widget_show(shape_scroll);
-					// Finally, a status bar.
+					// At the bottom, status bar & frame:
+	GtkWidget *hbox = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+	gtk_widget_show(hbox);
+					// At left, a status bar.
 	sbar = gtk_statusbar_new();
 	sbar_sel = gtk_statusbar_get_context_id(GTK_STATUSBAR(sbar),
 							"selection");
-	gtk_box_pack_start(GTK_BOX(vbox), sbar, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), sbar, TRUE, TRUE, 0);
 	gtk_widget_show(sbar);
+	GtkWidget *label = gtk_label_new("Frame:");
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
+	gtk_widget_show(label);
+					// Finally, a spin button for frame#.
+	GtkObject *frame_adj = gtk_adjustment_new(0, 0, 
+				16, 1, 
+				4, 1.0);
+	GtkWidget *fspin = gtk_spin_button_new(GTK_ADJUSTMENT(frame_adj), 
+									1, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), fspin, FALSE, FALSE, 0);
+	gtk_widget_show(fspin);
 	}
 
 /*
