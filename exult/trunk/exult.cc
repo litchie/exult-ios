@@ -892,6 +892,7 @@ static void Handle_events
 		if (ticks > last_rotate + rot_speed &&
 		    !GL_manager::get_instance())	//++++Disable in OGL.
 			{		// (Blits in simulated 8-bit mode.)
+			gwin->get_win()->rotate_colors(0xfc, 3, 0);
 			gwin->get_win()->rotate_colors(0xf8, 4, 0);
 			gwin->get_win()->rotate_colors(0xf4, 4, 0);
 			gwin->get_win()->rotate_colors(0xf0, 4, 0);
