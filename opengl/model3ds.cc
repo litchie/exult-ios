@@ -157,6 +157,8 @@ bool Model3d::import3ds
 	if (Read_chunk(this, in, length) < 0)
 		return false;
 	compute_normals();		// Set vertex normals.
+	load_textures();		// Load texture files. (Maybe this
+					//   should be done above???)
 	return true;
 	}
 

@@ -90,6 +90,7 @@ void InitGL
  */
 void Render
 	(
+	Model3d& model			// Render this one model.
 	)
 	{
 					// Clear screen & depth buffer.
@@ -112,6 +113,10 @@ void Render
 			}
 		}
 	glEnd();
+	glTranslatef(0, -12, 0);
+	glRotatef(45, 1, 0, 0);
+	glScalef(.5, .5, .5);
+	model.render();			// Show model.
 	SDL_GL_SwapBuffers();		// Blit.
 	}
 
@@ -199,7 +204,7 @@ int main
 			done = true;
 			}
 		if (active)
-			Render();	// Paint it all.
+			Render(model);	// Paint it all.
 		}
 	Quit(0);
 	return 0;
