@@ -29,7 +29,7 @@ static gint32 save_image (gchar  *filename,
 	    gint32  image_ID,
 	    gint32  drawable_ID,
 	    gint32  orig_image_ID);
-static GimpRunModeType run_mode;
+static GimpRunMode run_mode;
 static guchar   gimp_cmap[768] = {
 0x00, 0x00, 0x00, 0xF8, 0xF0, 0xCC, 0xF4, 0xE4, 0xA4, 0xF0, 0xDC, 0x78, 
 0xEC, 0xD0, 0x50, 0xEC, 0xC8, 0x28, 0xD8, 0xAC, 0x20, 0xC4, 0x94, 0x18, 
@@ -683,7 +683,7 @@ static gint32 save_image (gchar  *filename,
 #endif
 		orientation = gimp_image_get_guide_orientation(image_ID, guide_ID);
 		switch(orientation) {
-		case GIMP_HORIZONTAL:
+		case GIMP_ORIENTATION_HORIZONTAL:
 			if(hoty<0) {
 				hoty = gimp_image_get_guide_position(image_ID, guide_ID);
 #ifdef DEBUG
@@ -691,7 +691,7 @@ static gint32 save_image (gchar  *filename,
 #endif
 			}
 			break;
-		case GIMP_VERTICAL:
+		case GIMP_ORIENTATION_VERTICAL:
 			if(hotx<0) {
 				hotx = gimp_image_get_guide_position(image_ID, guide_ID);
 #ifdef DEBUG

@@ -70,7 +70,7 @@ mapeditdir = $(datadir)/exult
 mapedit_DATA = exult_studio.glade
 
 u7shp$(EXEEXT): u7shp.c
-	gimptool --build $<
+	$(GIMPTOOL) --build $<
 
 EXTRA_DIST=	\
 	exult_studio.glade \
