@@ -23,11 +23,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifdef XWIN
-
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
 #endif
+
+#ifdef USE_EXULTSTUDIO
 
 #include <unistd.h>
 #include <iostream.h>			/* For debugging msgs. */
@@ -122,5 +122,5 @@ int Receive_data
 
 }
 
-#endif	/* XWIN */
+#endif	/* USE_EXULTSTUDIO */
 

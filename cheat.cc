@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "browser.h"
 #include "soundtest.h"
 #include "cheat_screen.h"
-#ifdef XWIN  /* Only needed in XWIN. */
+#ifdef USE_EXULTSTUDIO  /* Only needed for exult studio. */
 #include "server.h"
 #endif
 
@@ -136,7 +136,7 @@ void Cheat::toggle_map_editor (void) {
 			gwin->center_text("Map Editor Mode Enabled");
 					// Stop time.
 			gwin->set_time_stopped(-1);
-#ifdef XWIN			/* Launch ExultStudio! */
+#ifdef USE_EXULTSTUDIO			/* Launch ExultStudio! */
 			if (!gwin->paint_eggs)	// Show eggs too.
 				{
 					gwin->paint_eggs = 1;

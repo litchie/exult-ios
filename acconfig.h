@@ -13,6 +13,9 @@
 /* Do we appear to have a runnable copy of Timidity in our path? */
 #undef HAVE_TIMIDITY_BIN
 
+/* Enable support for communication with Exult Studio? */
+#undef USE_EXULTSTUDIO
+
 /* Using alternative memory scheme? */
 #undef WANT_ALTERNATE_ALLOCATOR
 

@@ -54,7 +54,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Paperdoll_gump.h"
 #include "animate.h"
 
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 #include "server.h"
 #include "objserial.h"
 #include "mouse.h"
@@ -1446,7 +1446,7 @@ void Actor::activate
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 	if (client_socket >= 0 &&	// Talking to ExultStudio?
 	    cheat.in_map_editor())
 		{
@@ -1520,7 +1520,7 @@ void Actor::update_from_studio
 	int datalen
 	)
 	{
-#ifdef XWIN
+#ifdef USE_EXULTSTUDIO
 	unsigned long addr;
 	int tx, ty, tz;
 	int shape, frame, face;

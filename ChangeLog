@@ -1,8 +1,11 @@
+2001-07-28  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* configure.in, acconfig.h, various: --disable-exult-studio-support
+
 2001-07-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* effects.cc (Storm_effect): Now uses method in Game_clock to set
 	palette.
-	
+
 2001-07-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Makefile.win32, README.win32: Travis' changes for latest mingw
 
