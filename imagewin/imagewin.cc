@@ -44,6 +44,7 @@ Boston, MA  02111-1307, USA.
 bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst);
 
 using std::cout;
+using std::cerr;
 using std::endl;
 using std::exit;
 
