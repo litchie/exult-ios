@@ -67,6 +67,9 @@ using std::vector;
 
 Audio::~Audio()
 {
+	stop_music();
+	SDL::CloseAudio();		// 14-jan-2001 - jsf experiment. Gets
+					//   rid of crash at end.
 	if(mixer)
 		{
 		cancel_streams();
