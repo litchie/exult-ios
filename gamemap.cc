@@ -353,6 +353,7 @@ void Game_map::write_static
 				ter->write_flats(data);
 				ochunks.write(reinterpret_cast<char*>(data), 
 									512);
+				ter->set_modified(false);
 				}
 			}
 		if (!ochunks.good())

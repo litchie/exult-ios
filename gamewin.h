@@ -143,6 +143,8 @@ class Game_window
 	void set_scroll_bounds();	// Set scroll-controller.
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
+	void paint_terrain_only(int start_chunkx, int start_chunky,
+				int stop_chunkx, int stop_chunky);
 					// Render the map & objects.
 	int paint_map(int x, int y, int w, int h);
 					// Render dungeon blackness
@@ -175,6 +177,7 @@ public:
 	int skip_lift;			// Skip objects with lift > 0.
 	bool paint_eggs;
 	bool armageddon;		// Spell was cast.
+	bool terrain_editing;		// Special mode for editing chunks.
 	int debug;
 	Game_window(int width = 0, int height = 0, int scale = 1, 
 							int scaler = 0);
@@ -418,6 +421,7 @@ public:
 
 					// Get screen loc. of object.
 	void get_shape_location(Game_object *obj, int& x, int& y);
+	void get_shape_location(Tile_coord t, int& x, int& y);
 					// Paint shape in window.
 	void paint_shape(int xoff, int yoff, Shape_frame *shape,
 						int translucent = 0)

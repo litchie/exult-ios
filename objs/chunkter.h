@@ -65,10 +65,12 @@ public:
 		{ num_clients--; }
 	inline bool is_modified()
 		{ return modified; }
-	inline void set_modified()
-		{ modified = true; }
+	inline void set_modified(bool tf = true)
+		{ modified = tf; }
+#if 0
 					// Less-than c2 (for STL Map)?
 	bool operator<(const Chunk_terrain& c2) const;
+#endif
 					// Get tile's shape ID.
 	inline ShapeID get_flat(int tilex, int tiley) const
 		{ return shapes[16*tiley + tilex]; }
@@ -86,6 +88,7 @@ public:
 		return rendered_flats
 			? rendered_flats : render_flats();
 		}
+	void render_all(int cx, int cy);// Render (in terrain-editing mode).
 					// Write out to chunk.
 	void write_flats(unsigned char *chunk_data);
 	};
