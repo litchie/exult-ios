@@ -240,8 +240,9 @@ void BG_Game::play_intro()
 	skip = wait_delay(2000);
 	play_midi(0);	// Start the birdsongs just before we fade
 	pal.fade_out(c_fade_out_time);
+	gwin->clear_screen(true);
+
 	if(skip) {
-		gwin->clear_screen(true);
 		return;
 	}
 
