@@ -88,24 +88,29 @@ cout << "(x,y) rel. to gump is (" << (x-dragging_paintx) << ", " <<
 
 /*
  *	Mouse was moved while dragging.
+ *
+ *	Output:	1 if movement started/continued.
  */
 
-void Game_window::drag
+int Game_window::drag
 	(
 	int x, int y			// Mouse pos. in window.
 	)
 	{
 	if (!dragging && !dragging_gump)
-		return;
+		return (0);
 	if (dragging_rect.w == 0)
 		{			// First motion.
+		if (x - dragging_mousex <= 2 && dragging_mousex - x <= 2 &&
+		    y - dragging_mousey <= 2 && dragging_mousey - y <= 2)
+			return (0);	// Wait for greater motion.
 		if (dragging)
 			{		// Don't want to move walls.
 			if (!dragging->is_dragable())	
 				{
 				mouse->flash_shape(Mouse::tooheavy);
 				dragging = 0;
-				return;
+				return (0);
 				}
 			Game_object *owner = dragging->get_outermost();
 			if (owner == dragging)
@@ -116,7 +121,7 @@ void Game_window::drag
 					{
 					mouse->flash_shape(Mouse::blocked);
 					dragging = 0;
-					return;
+					return (0);
 					}
 				}
 			else		// Inside something else?  Set lift.
@@ -169,6 +174,7 @@ void Game_window::drag
 		dragging_gump->paint(this);
 		}
 	painted = 1;
+	return (1);
 	}
 
 /*
