@@ -1,3 +1,6 @@
+2001-11-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* version.*: added getVersionInfo to produce basic version info
+
 2001-11-24 Max Horn <max@quendi.de>
 	* bggame.cc, combat.cc, gamedat.cc: removed unused declarations
 	* files/utils.c: fixed stat() to simply do a call through (buf may legally be 0)
