@@ -116,8 +116,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items[] =
 	// Usecode container (not drawn normally)
 	{     486, -1, Actor::ucont_spot,   OT_Normal,   false, paperdoll,    6,     0 },
 	// Bed roll
-	{     583, -1,       Actor::back,   OT_Normal,   true, paperdoll,     9,     0 },
-	{     583, -1,Actor::back2h_spot,   OT_Normal,   true, paperdoll,     9,     1 },
+	{     583, -1,       Actor::back,   OT_Normal,   false, paperdoll,     9,     0 },
+	{     583, -1,Actor::back2h_spot,   OT_Normal,   false, paperdoll,     9,     1 },
 	// Kidney Belt
 	{     584, -1,       Actor::belt,   OT_Normal,   true, paperdoll,    54,     0 },
 	// Serpent Earings
@@ -773,8 +773,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     414, -1,      Actor::lhand,   OT_Single,  false, paperdoll,   135,     0 },
 	{     414, -1,      Actor::rhand,   OT_Single,  false, paperdoll,   135,     1 },
 	// Bed roll
-	{     583, -1,       Actor::back,   OT_Normal,   true, paperdoll,     9,     0 },
-	{     583, -1,Actor::back2h_spot,   OT_Normal,   true, paperdoll,     9,     1 },
+	{     583, -1,       Actor::back,   OT_Normal,   false, paperdoll,     9,     0 },
+	{     583, -1,Actor::back2h_spot,   OT_Normal,   false, paperdoll,     9,     1 },
 	// Kidney Belt
 	{     584, -1,       Actor::belt,   OT_Normal,   true, paperdoll,    54,     0 },
 	// Torch
