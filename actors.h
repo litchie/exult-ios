@@ -49,6 +49,7 @@ class Actor : public Sprite
 protected:
 	unsigned long flags;		// 32 flags used in 'usecode'.
 	Actor_action *action;		// Controls current animation.
+	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
@@ -78,7 +79,7 @@ public:
 					// Walk to a desired spot.
 	void walk_to_tile(int tx, int ty, int tz, int speed = 250, 
 							int delay = 0);
-	void walk_to_tile(Tile_coord p, int speed, int delay)
+	void walk_to_tile(Tile_coord p, int speed = 250, int delay = 0)
 		{ walk_to_tile(p.tx, p.ty, p.tz, speed, delay); }
 					// Walk to desired point.
 	void walk_to_point(unsigned long destx, unsigned long desty, 
@@ -107,6 +108,11 @@ public:
 		{ return party_id; }
 	virtual void set_party_id(int i)
 		{ party_id = i; }
+					// Set for Usecode animations.
+	virtual void set_usecode_dir(int d)
+		{ usecode_dir = d&7; }
+	virtual int get_usecode_dir()
+		{ return usecode_dir; }
 #if 0	/* ++++++ Trying to init. 1st-day schedules in gameclk.cc. */
 	struct	{
 		int cx;

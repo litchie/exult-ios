@@ -42,7 +42,7 @@ Actor::Actor
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
 	) : Sprite(shapenum), npc_num(num), party_id(-1),
-	    usecode(uc), flags(0), action(0)
+	    usecode(uc), flags(0), action(0), usecode_dir(0)
 	{
 	set_default_frames();
 	name = nm == 0 ? 0 : strdup(nm);
@@ -286,8 +286,7 @@ int Main_actor::walk
 		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
 		int new_lift;		// Might climb/descend.
 					// Just assume height==3.
-		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift) ||
-		    at_destination())
+		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift))
 			{
 			stop();
 			return (0);
@@ -325,6 +324,11 @@ int Main_actor::walk
 			}
 		else
 			gwin->repaint_sprite(this, oldrect);
+		if (at_destination())
+			{
+			stop();
+			return (0);
+			}
 		return (frame_time);	// Add back to queue for next time.
 		}
 	return (0);			// Done.
@@ -740,8 +744,7 @@ int Npc_actor::walk
 		nlist->setup_cache();	// Setup cache if necessary.
 		int new_lift;		// Might climb/descend.
 					// Just assume height==3.
-		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift) ||
-		    at_destination())
+		if (nlist->is_blocked(3, get_lift(), sx, sy, new_lift))
 			{
 			stop();
 			return (0);	// Done.
@@ -753,6 +756,11 @@ int Npc_actor::walk
 		move(olist, cx, cy, nlist, sx, sy, frame, new_lift);
 		if (olist != nlist)	// In new chunk?
 			switched_chunks(olist, nlist);
+		if (at_destination())
+			{
+			stop();
+			return (0);
+			}
 		if (!gwin->add_dirty(this))
 			{		// No longer on screen.
 			stop();
@@ -976,10 +984,9 @@ int Monster_actor::walk
 					// Get ->new chunk.
 		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
 		nlist->setup_cache();	// Setup cache if necessary.
-					// Blocked, or at dest?
-		if (is_blocked(cx*tiles_per_chunk + sx, 
-						cy*tiles_per_chunk + sy) ||
-		    at_destination())
+					// Blocked.
+		if (is_blocked(cx*tiles_per_chunk + sx,
+						cy*tiles_per_chunk + sy))
 			{
 			stop();
 			return (0);	// Done.
@@ -991,6 +998,11 @@ int Monster_actor::walk
 		move(olist, cx, cy, nlist, sx, sy, frame, -1);
 		if (olist != nlist)	// In new chunk?
 			switched_chunks(olist, nlist);
+		if (at_destination())
+			{
+			stop();
+			return (0);
+			}
 		if (!gwin->add_dirty(this))
 			{		// No longer on screen.
 			stop();

@@ -279,6 +279,11 @@ public:
 		{ return -1; }
 	virtual void set_party_id(int i)
 		{  }
+					// Set for Usecode animations.
+	virtual void set_usecode_dir(int d)
+		{  }
+	virtual int get_usecode_dir()
+		{ return 0; }
 	virtual int is_egg()		// An egg?
 		{ return 0; }
 					// Count contained objs.
@@ -615,6 +620,15 @@ public:
  */
 enum Direction
 	{
+	north = 0,
+	northeast = 1,
+	east = 2,
+	southeast = 3,
+	south = 4,
+	southwest = 5,
+	west = 6,
+	northwest = 7
+#if 0
 	east = 0,
 	northeast = 1,
 	north = 2,
@@ -623,6 +637,7 @@ enum Direction
 	southwest = 5,
 	south = 6,
 	southeast = 7
+#endif
 	};
 
 Direction Get_direction
