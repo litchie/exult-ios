@@ -793,8 +793,9 @@ string Game_object::get_name
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
 	bool si = Game::get_game_type() == SERPENT_ISLE;
+
 	switch (shnum)			// Some special cases!
-		{
+	{
 	case 0x34a:			// Reagants.
 		name = item_names[0x500 + frnum];
 		break;
@@ -806,6 +807,10 @@ string Game_object::get_name
 		break;
 	case 0x179:			// Food items.
 		name = item_names[0x50b + (si ? 5 : 0) + frnum];
+		break;
+	case 0x28a:			// Sextant
+		// TODO: fix this for SI
+		name = si ? item_names[shnum] : item_names[0x52c - frnum];
 		break;
 	case 0x2a3:			// Desk item.
 		name = item_names[0x52d + (si ? 5 : 0) + frnum];
