@@ -191,55 +191,67 @@ void Mouse::flash_shape
 void Mouse::set_speed_cursor()
 {
 	Game_window *gwin = Game_window::get_game_window();
-
+    Main_actor *main_actor = gwin->get_main_actor();
+	Gump_manager *gump_man = gwin->get_gump_man();
+   
 	int cursor = dontchange;
 	int ax, ay;			// Get Avatar/barge screen location.
 
-	Barge_object *barge = gwin->get_moving_barge();
-	if (barge)
-	{			// Use center of barge.
-		gwin->get_shape_location(barge, ax, ay);
-		ax -= barge->get_xtiles()*(c_tilesize/2);
-		ay -= barge->get_ytiles()*(c_tilesize/2);
-	}
-	else				
-		gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
-
-	int dy = ay - mousey, dx = mousex - ax;
-	Direction dir = Get_direction(dy, dx);
-	int dist = dy*dy + dx*dx;
-	if (dist < 40*40)
-	{
-		if(gwin->in_combat())
-			cursor = get_short_combat_arrow(dir);
-		else
-			cursor = get_short_arrow(dir);
-		avatar_speed = slow_speed;
-	}
-	else if (dist < 75*75)
-	{
-		if(gwin->in_combat())
-			cursor = get_medium_combat_arrow(dir);
-		else
-			cursor = get_medium_arrow(dir);
-		avatar_speed = medium_speed;
-	}
-	else
-	{		// No long arrow in combat: use medium
-		if(gwin->in_combat())
-			cursor = get_medium_combat_arrow(dir);
-		else
-			cursor = get_long_arrow(dir);
-		avatar_speed = fast_speed;
-	}
-
-	Gump_manager *gump_man = gwin->get_gump_man();
-	Gump *gump = 0;
-
-	if (gump_man->showing_gumps())
-		if (gump = gump_man->find_gump(mousex, mousey))
-			if (!gump->no_handcursor())
-				cursor = hand;
-
-	set_shape(cursor);
+    // Check if we are in dont_move mode, in this case display the hand cursor
+	if (main_actor->get_siflag(Actor::dont_move)
+            || main_actor->get_flag(Obj_flags::dont_render))
+    {
+        cursor = hand;
+    }
+    else if (gump_man->showing_gumps())
+    {
+    	Gump *gump = gump_man->find_gump(mousex, mousey);
+        
+        if (gump && !gump->no_handcursor())
+            cursor = hand;
+    }
+    
+    if (cursor == dontchange)
+    {
+        Barge_object *barge = gwin->get_moving_barge();
+        if (barge)
+        {			// Use center of barge.
+            gwin->get_shape_location(barge, ax, ay);
+            ax -= barge->get_xtiles()*(c_tilesize/2);
+            ay -= barge->get_ytiles()*(c_tilesize/2);
+        }
+        else				
+            gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
+    
+        int dy = ay - mousey, dx = mousex - ax;
+        Direction dir = Get_direction(dy, dx);
+        int dist = dy*dy + dx*dx;
+        if (dist < 40*40)
+        {
+            if(gwin->in_combat())
+                cursor = get_short_combat_arrow(dir);
+            else
+                cursor = get_short_arrow(dir);
+            avatar_speed = slow_speed;
+        }
+        else if (dist < 75*75)
+        {
+            if(gwin->in_combat())
+                cursor = get_medium_combat_arrow(dir);
+            else
+                cursor = get_medium_arrow(dir);
+            avatar_speed = medium_speed;
+        }
+        else
+        {		// No long arrow in combat: use medium
+            if(gwin->in_combat())
+                cursor = get_medium_combat_arrow(dir);
+            else
+                cursor = get_long_arrow(dir);
+            avatar_speed = fast_speed;
+        }
+    }
+    
+    if (cursor != dontchange)
+        set_shape(cursor);
 }
