@@ -1,8 +1,7 @@
-%{
 /**
- **	Uclex.ll - Usecode lexical scanner.
+ **	Ucloc.cc - Source location.
  **
- **	Written: 12/30/2000 - JSF
+ **	Written: 1/0/01 - JSF
  **/
 
 /*
@@ -23,41 +22,34 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <string>
-#include "ucparse.h"
+#include <iostream.h>
 #include "ucloc.h"
 
-extern "C" int yywrap() { return 1; }		/* Stop at EOF. */
+set<char *> Uc_location::source_names;
+char *Uc_location::cur_source = 0;
+int Uc_location::cur_line = 0;
 
-%}
+/*
+ *	Print error for stored position.
+ */
 
+void Uc_location::error
+	(
+	char *s
+	)
+	{
+	cout << source << ':' << line + 1 << ": " << s << endl;
+	}
 
-%%
+/*
+ *	Print error for current parse location.
+ */
 
-if		return IF;
-else		return ELSE;
-return		return RETURN;
-while		return WHILE;
-for		return FOR;
-in		return IN;
-void		return VOID;
-string		return STRING;
-int		return INT;
-array		return ARRAY;
+void Uc_location::yyerror
+	(
+	char *s
+	)
+	{
+	cout << cur_source << ':' << cur_line + 1 << ": " << s << endl;
+	}
 
-"&&"		return AND;
-"||"		return OR;
-"!"		return NOT;
-
-[a-zA-Z][a-zA-Z0-9_]*	return IDENTIFIER;	/* Return string. */
-\"[^"]*\"		return STRING_LITERAL;
-[0-9]+			return INT_LITERAL;
-0x[0-9a-f]+		return INT_LITERAL;
-
-[ \t]+						/* Ignore spaces. */
-"//".*						/* Comments. */
-\n			{ Uc_location::increment_cur_line(); }
-.			return *yytext;		/* Being lazy. */
-
-
-%%
