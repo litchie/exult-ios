@@ -211,6 +211,22 @@ void Slider_gump::mouse_down
 	{			// Start to drag it.
 		dragging = 1;
 		prev_dragx = mx;
+	} else {
+		if(my-get_y()<diamondy || my-get_y()>diamondy+diamond->get_height())
+			return;
+		diamondx = mx-get_x();
+		if(diamondx<xmin)
+			diamondx = xmin;
+		if(diamondx>xmax)
+			diamondx = xmax;
+		static int xdist = xmax - xmin;
+		int delta = (diamondx - xmin)*(max_val - min_val)/xdist;
+					// Round down to nearest step.
+		delta -= delta%step_val;
+		int newval = min_val + delta;
+		if (newval != val)		// Set value.
+			val = newval;
+		paint(Game_window::get_game_window());
 	}
 }
 
