@@ -47,7 +47,6 @@ class Gump;
 class Gump_button;
 class Ireg_game_object;
 class Main_actor;
-class Monster_info;
 class Npc_actor;
 class Npc_face_info;
 class Npc_proximity_handler;
@@ -105,8 +104,6 @@ class Game_window
 	int num_npcs1;			// Number of type1 NPC's.
 	Actor_vector npcs;		// Array of NPC's + the Avatar.
 	Game_object_vector bodies;	// Corresponding Dead_body's.
-	int num_monsters;		// Number of monster types.
-	Monster_info *monster_info;	// Array from 'monsters.dat'.
 					// Path eggs, indexed by 'quality'.
 	Exult_vector<Egg_object *> path_eggs;
 					// Flat chunk areas:
@@ -289,8 +286,6 @@ public:
 		{ return bodies[npc_num]; }
 	inline bool was_teleported()
 		{ return teleported; }
-					// Find monster info. for shape.
-	Monster_info *get_monster_info(int shapenum);
 	Egg_object *get_path_egg(int q)	// Get path egg by quality.
 		{ return q < path_eggs.size() ? path_eggs[q] : 0; }
 	void add_path_egg(Egg_object *egg);

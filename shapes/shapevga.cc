@@ -25,6 +25,7 @@
 
 #include <iomanip>			/* For debugging only. */
 #include "shapevga.h"
+#include "monstinf.h"
 #include "utils.h"
 
 using std::ifstream;
@@ -203,6 +204,35 @@ void Shapes_vga_file::read_info
 				info[i].weapon_offsets[j * 2 + 1] = y;
 				}
 			}
+	wihh.close();
+	ifstream mfile;			// Now get monster info.
+	U7open(mfile, MONSTERS);
+	int num_monsters = Read1(mfile);
+	for (i = 0; i < num_monsters; i++)
+		{
+		Monster_info *minf = new Monster_info();
+		int shnum = minf->read(mfile);
+		info[shnum].monstinf = minf;
+		}
+	mfile.close();
+	U7open(mfile, EQUIP);		// Get 'equip.dat'.
+	int num_recs = Read1(mfile);
+	Equip_record *equip = new Equip_record[num_recs];
+	for (i = 0; i < num_recs; i++)
+		{
+		Equip_record& rec = equip[i];
+					// 10 elements/record.
+		for (int elem = 0; elem < 10; elem++)
+			{
+			int shnum = Read2(mfile);
+			unsigned prob = Read1(mfile);
+			unsigned quant = Read1(mfile);
+			Read2(mfile);
+			rec.set(elem, shnum, prob, quant);
+			}
+		}
+					// Monster_info owns this.
+	Monster_info::set_equip(equip, num_recs);
 	}
 
 

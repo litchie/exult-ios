@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "shapeinf.h"
+#include "monstinf.h"
 
 Ammo_table *Ammo_info::table = 0;
 
@@ -113,4 +114,5 @@ Shape_info::~Shape_info()
 	delete weapon;
 	if(weapon_offsets)
 		delete [] weapon_offsets;
+	delete monstinf;
 	}

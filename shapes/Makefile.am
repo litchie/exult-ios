@@ -12,6 +12,8 @@ libshapes_la_SOURCES = \
 	fontvga.h \
 	items.cc \
 	items.h \
+	monstinf.cc \
+	monstinf.h \
 	shapeinf.cc \
 	shapeinf.h \
 	shapevga.cc \
