@@ -33,7 +33,7 @@ extern	Configuration	config;
 
 static  void    playFJmidifile(const char *name)
 {
-        execlp("playmidi","-v","-v","-e",name,0);
+	execlp("playmidi","-v","-v","-e",name,0);
 }
 
 forked_player::forked_player() : forked_job(-1)
@@ -64,8 +64,9 @@ bool	forked_player::is_playing(void)
 }
 
 
-void	forked_player::start_track(const char *name,int repeats)
+void	forked_player::start_track(const char *name,int numrepeats)
 {
+	repeats=numrepeats;
 #if DEBUG
 	cerr << "Starting midi sequence with forked_player" << endl;
 #endif
@@ -79,8 +80,9 @@ void	forked_player::start_track(const char *name,int repeats)
         forked_job=fork();
         if(!forked_job)
                 {
-                playFJmidifile(name);
-                raise(SIGKILL);
+		for(int i=0;repeats==-2||i<=repeats;i++)
+			playFJmidifile(name);
+		raise(SIGKILL);
                 }
 }
 
