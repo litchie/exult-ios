@@ -2366,6 +2366,7 @@ USECODE_INTRINSIC(end_conversation)
 {
 	show_pending_text();		// Wait for click if needed.
 	conv->init_faces();		// Removes faces from screen.
+	gwin->set_all_dirty();
 	return no_ret;
 }
 

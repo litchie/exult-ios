@@ -1,3 +1,11 @@
+2001-09-18  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucinternal.cc: Run_usecode() handles case where obj==0.
+	Fixes end of monks' fight.
+
+	* actors.cc: Set_polymorph() sets the frame to 'standing'.  This
+	is a guess to make using the SI/SS amulet animation work right.
+
 2001-09-17  Ryan Nunn <triforce@merlin.net.au>
 	* objs/animate.cc : Fixed potential problem when saving
 
