@@ -1,3 +1,7 @@
+2000-11-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Finished work on removing class Vector that Max started.
+
 2000-11-13  Tristan Tarrant <nadir@users.sourceforge.net>
 
 	* bggame.cc: Load endgame fonts using Font class

@@ -42,7 +42,7 @@ class Actor;
 
 #include "tiles.h"
 #include "utils.h"
-#include <vector>	// STL container
+#include "vec.h"	// Includes STL vector.
 #include <deque>	// STL container
 #include <string>	// STL string
 
@@ -91,8 +91,9 @@ class Usecode_machine
 	Usecode_machine(const Usecode_machine &u) { throw replication_error("Cannot replicate Usecode_machine"); };
 	Usecode_machine &operator =(const Usecode_machine &u) { throw replication_error("Cannot replicate Usecode_machine"); return *this; };
 	Game_window *gwin;		// Game window.
-	Vector *funs;			// I'th entry contains funs for ID's
+					// I'th entry contains funs for ID's
 					//    256*i + n.
+	FeatureVector<Usecode_function*> funs[16];
 	int call_depth;			// How far deep we are.
 	Usecode_function *cur_function;	// Current function being executed.
 	unsigned char gflags[1024];	// Global flags.
