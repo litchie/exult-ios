@@ -1513,6 +1513,8 @@ int Usecode_machine::run
 							v2.get_str_value());
 					sum = Usecode_value(buf);
 					}
+				else
+					sum = v1;
 				}
 			push(sum);
 			break;
