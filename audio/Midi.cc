@@ -269,6 +269,10 @@ void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
 		return;
 	if(current_track==num&&midi_device->is_playing())
 		return;	// Already playing it
+
+	if(num == 0 && bank == 0 && Game::get_game_type() == BLACK_GATE)
+		return;		//Gets around Usecode bug where track 0 is played at Intro Earthquake
+
 	start_track(num,repeat,bank);
 }
 
@@ -603,7 +607,7 @@ void OGG_MIDI::stop_sfx(void)
 
 bool OGG_MIDI::is_playing(void)
 {
-	return Mix_PlayingMusic();
+	return Mix_PlayingMusic()!=0;
 }
 
 const char * OGG_MIDI::copyright(void)
