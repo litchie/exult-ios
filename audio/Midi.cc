@@ -71,13 +71,21 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 }
 
 
-#include "midi_drivers/Timidity_binary.h"
-#include "midi_drivers/KMIDI.h"
-#ifndef MACOS
-#include "midi_drivers/forked_player.h"
+#if HAVE_TIMIDITY_BIN
+  #include "midi_drivers/Timidity_binary.h"
 #endif
-#include "midi_drivers/win_MCI.h"
-#include "midi_drivers/be_midi.h"
+#if HAVE_LIBKMIDI
+  #include "midi_drivers/KMIDI.h"
+#endif
+#ifndef MACOS
+  #include "midi_drivers/forked_player.h"
+#endif
+#ifdef WIN32
+  #include "midi_drivers/win_MCI.h"
+#endif
+#ifdef BEOS
+  #include "midi_drivers/be_midi.h"
+#endif
 
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 {

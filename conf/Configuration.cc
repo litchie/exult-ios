@@ -113,21 +113,21 @@ static	void	xmlassign(XMLnode *walk,string &key,string &value)
 		string k;
 		k=key.substr(key.find('/')+1);
 		string k2=k.substr(0,k.find('/'));
-		for(vector<XMLnode>::iterator it=walk->nodelist.begin();
+		for(vector<XMLnode*>::iterator it=walk->nodelist.begin();
 			it!=walk->nodelist.end();++it)
 			{
-			if(it->entity.id==k2)
+			if((*it)->entity.id==k2)
 				{
-				xmlassign(it,k,value);
+				xmlassign(*it,k,value);
 				return;
 				}
 			}
-		XMLnode t;
-		t.entity.id=k2;
+		XMLnode *t = new XMLnode;
+		t->entity.id=k2;
 		walk->nodelist.push_back(t);
 		// cout << "New node " << k2 << endl;
-		vector<XMLnode>::reverse_iterator rit=walk->nodelist.rbegin();
-		xmlassign(&*rit,k,value);
+		vector<XMLnode*>::reverse_iterator rit=walk->nodelist.rbegin();
+		xmlassign(*rit,k,value);
 		return;
 
 
@@ -269,14 +269,14 @@ vector<string>	Configuration::listkeys(string &key,bool longformat)
 	if(!sub)
 		return vs;
 
-	for(vector<XMLnode>::const_iterator it=sub->nodelist.begin();
+	for(vector<XMLnode*>::const_iterator it=sub->nodelist.begin();
 		it!=sub->nodelist.end(); ++it)
 		{
 		string	s=key;
 		s+="/";
 		if(!longformat)
 			s="";
-		s+=it->entity.id;
+		s+=(*it)->entity.id;
 		vs.push_back(s);
 		}
 

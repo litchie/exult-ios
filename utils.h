@@ -30,12 +30,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <exception>
 #include <string>
-        class replication_error : public exception
+        class replication_error : public std::exception
                 {
-                string  what_;
+                std::string  what_;
                 public:
 		 replication_error (const char *what_arg): what_ (what_arg) {  }
-                 replication_error (const string& what_arg): what_ (what_arg) {  }
+                 replication_error (const std::string& what_arg): what_ (what_arg) {  }
                  const char *what(void) { return what_.c_str(); }
                 };
 
@@ -52,7 +52,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 inline unsigned char Read1
 	(
-	istream& in
+	std::istream& in
 	)
 	{
 	unsigned char c;
@@ -66,7 +66,7 @@ inline unsigned char Read1
 
 inline unsigned int Read2
 	(
-	istream& in
+	std::istream& in
 	)
 	{
 	unsigned char b0, b1;
@@ -95,7 +95,7 @@ inline unsigned int Read2
 
 inline unsigned long Read4
 	(
-	istream& in
+	std::istream& in
 	)
 	{
 	unsigned char b0, b1, b2, b3;
@@ -128,7 +128,7 @@ inline unsigned long Read4
 
 inline void Write2
 	(
-	ostream& out,
+	std::ostream& out,
 	int val
 	)
 	{
@@ -156,7 +156,7 @@ inline void Write2
 
 inline void Write4
 	(
-	ostream& out,
+	std::ostream& out,
 	int val
 	)
 	{
@@ -184,12 +184,12 @@ inline void Write4
 
 int U7open
 	(
-	ifstream& in,			// Input stream to open.
+	std::ifstream& in,			// Input stream to open.
 	const char *fname			// May be converted to upper-case.
 	);
 int U7open
 	(
-	ofstream& out,			// Output stream to open.
+	std::ofstream& out,			// Output stream to open.
 	const char *fname			// May be converted to upper-case.
 	);
 

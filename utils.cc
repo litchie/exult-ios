@@ -22,8 +22,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <fstream.h>
-#include <ctype.h>
+#include <fstream>
+#include <cctype>
 
 #include "utils.h"
 
@@ -42,7 +42,7 @@ static char *To_upper
 	char *ret = buf;
 	while (*buf)
 		{
-		*buf = toupper(*buf);
+		*buf = std::toupper(*buf);
 		buf++;
 		}
 	return (ret);
@@ -71,17 +71,21 @@ static char *Switch_slash(
 
 int U7open
 	(
-	ifstream& in,			// Input stream to open.
+	std::ifstream& in,			// Input stream to open.
 	const char *fname			// May be converted to upper-case.
 	)
 	{
 #ifndef XWIN
+  #ifdef MACOS
+	std::ios_base::openmode mode = std::ios::in | std::ios::binary;
+  #else
 	int mode = ios::in | ios::binary;
+  #endif
 #else
 	int mode = ios::in;
 #endif
 	char name[512];
-	strcpy(name, fname);
+	std::strcpy(name, fname);
 	Switch_slash(name);
 	in.open(name, mode);		// Try to open original name.
 	if (!in.good())			// No good?  Try upper-case.
@@ -104,12 +108,16 @@ int U7open
 
 int U7open
 	(
-	ofstream& out,			// Output stream to open.
+	std::ofstream& out,			// Output stream to open.
 	const char *fname			// May be converted to upper-case.
 	)
 	{
 #ifndef XWIN
+  #ifdef MACOS
+	std::ios_base::openmode mode = std::ios::out | std::ios::trunc | std::ios::binary;
+  #else
 	int mode = ios::out | ios::trunc | ios::binary;
+  #endif
 #else
 	int mode = ios::out | ios::trunc;
 #endif
@@ -117,7 +125,7 @@ int U7open
 	if (!out.good())		// No good?  Try upper-case.
 		{
 		char upper[512];
-		out.open(To_upper(strcpy(upper, fname)), mode);
+		out.open(To_upper(std::strcpy(upper, fname)), mode);
 		if (!out.good())
 			return (0);
 		}
