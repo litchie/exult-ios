@@ -150,6 +150,7 @@ public:
 	void set_play(gboolean play);
 	void set_tile_grid(gboolean grid);
 	void set_edit_lift(int lift);
+	void set_hide_lift(int lift);
 	void set_edit_terrain(gboolean terrain);
 	void set_edit_mode(int md);
 					// Open/create shape files:

@@ -68,6 +68,7 @@ enum Msg_type
 					//   shown in gamewin.  Sent both ways.
 	set_edit_mode = 20,		// Move(0), paint(1), select(2).
 	combo_pick = 21,		// Sending shape to add to combo.
+	hide_lift = 22,			// Lift passed: 1-16.
 	usecode_debugging = 128
 	};
 
