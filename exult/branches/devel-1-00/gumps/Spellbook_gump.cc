@@ -36,7 +36,10 @@
 #  include <cstdio>
 #endif
 
-
+using std::strcpy;
+#ifdef __MWERKS__	// Bug in CodeWarrior 7: it incorrectly has snprintf in namespace std
+using std::snprintf;
+#endif
 
 const int REAGENTS = 842;		// Shape #.
 

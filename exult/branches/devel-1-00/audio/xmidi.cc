@@ -42,6 +42,9 @@ using std::memcpy;
 using std::memset;
 using std::size_t;
 using std::string;
+#ifdef __MWERKS__	// Bug in CodeWarrior 7: it incorrectly has snprintf in namespace std
+using std::snprintf;
+#endif
 
 #include "gamma.h"
 

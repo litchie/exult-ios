@@ -30,6 +30,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 using std::size_t;
+#ifdef __MWERKS__	// Bug in CodeWarrior 7: it incorrectly has snprintf in namespace std
+using std::snprintf;
+#endif
 
 #define TWO_HANDED_BROWN_SHAPE	48
 #define TWO_HANDED_BROWN_FRAME	0
