@@ -69,8 +69,8 @@ else
 mapedit_DATA =
 endif
 
-u7shp$(EXEEXT): u7shp.c
-	$(GIMPTOOL) --build $<
+u7shp$(EXEEXT): u7shp.c $(top_builddir)/config.h
+	CFLAGS="-I$(top_srcdir)" $(GIMPTOOL) --build $<
 
 EXTRA_DIST=	\
 	exult_studio.glade \
