@@ -45,6 +45,7 @@ namespace  Obj_flags
 		in_motion = 26,		// ??Guessing (cart, boat)??
 		met = 28,			// Has the npc been met
 		si_tournament = 29,	// SI-Call usecode (eventid=7)
+		si_zombie = 30,		// Used for sick Neyobi.
 		// Flags > 31
 		polymorph = 32,		// SI.  Pretty sure about this.
 		tattooed = 33,			// Guess (SI).
