@@ -2299,7 +2299,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4f ++++called when you dbl-click
-				on FoV gem. (gift from LB) display area???
+                         	// on FoV gem. (gift from LB) display area???
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52
