@@ -1,3 +1,9 @@
+2002-06-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc (Npc_actor): Fixed a nasty bug I caused which could
+	make NPC's disappear when they're moved.
+	* content/islefaq: Find the missing FAQ:-)
+
 2002-06-10 Simon Quinn <email@simonquinn.co.uk>
 	* added more details to the audio/README
 

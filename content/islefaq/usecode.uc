@@ -10,7 +10,8 @@ enum Isleflags
 	LOST_FAQ,			// Talked to Dom about lost FAQ.
 	WILL_FIND_FAQ,
 	RABBIT_TRACKS,
-	CHURCH_CARROTS
+	CHURCH_CARROTS,
+	RETURNED_FAQ
 	};
 
 /*
@@ -23,6 +24,7 @@ const int IF_MET = 28;
  *	Existing functions in BG.
  */
 extern Ask_yesno 0x90a();		// Returns true if 'Yes', false if 'No.
+extern Add_experience 0x911(var incr);	// Add exper. to each party member.
 
 /*
  *	NPC #'s:
@@ -50,6 +52,34 @@ new_island_egg0 0x740 ()
 			". . . the smell of Usecode?");
 		npc->hide();
 		}
+	}
+
+/*
+ *	Egg behind church by the carrots.
+ */
+
+new_island_egg1 0x741 ()
+	{
+	if (!gflags[CHURCH_CARROTS])
+		{
+		AVATAR->say("Mmmm... They do make a tasty snack.");
+		return;
+		}
+	if (!UI_get_item_flag(AMY, IN_PARTY))
+		{
+		AVATAR->say("There's something hidden here, but I cannot",
+				" find it.  If only Amy were here.");
+		return;
+		}
+					// Create book.
+	var faq = UI_create_new_object(0x282);
+	UI_set_item_quality(faq, 0x88);	// BOOK OF CIRCLES.  Good enough...
+					// Place on top of egg.
+	UI_update_last_created(UI_get_object_position(item));
+	UI_remove_item(item);		// Done with this egg.
+	AMY->say("Look!  There appears to be a book here!");
+	AVATAR->say("Can it be...");
+	AMY->say("Yes!  It is!  The lost FAQ!");
 	}
 
 /*
@@ -164,6 +194,10 @@ Dominik 0x565 ()
 		answers = ["Name", "Job", "Where is Pyro-X?"];
 	else
 		answers = ["Name", "Job"];
+					// Find "FAQ" in party.
+	var faq = UI_find_object(-357, 0x282, 0x88, -359);
+	if (faq)
+		answers = [answers, "Found the FAQ"];
 	answers = [answers, "Bye"];
 	var faqcnt = 0;
 	converse (answers)
@@ -226,6 +260,18 @@ Dominik 0x565 ()
 		gflags[WILL_FIND_FAQ] = true;
 		say("I KNEW you would reconsider.",
 				"  Thank you, Avatar!");
+	case "Found the FAQ" (remove):
+		AVATAR->say("Thanks to Amy's sharp eyes, we hath found",
+							" the missing FAQ.");
+		AVATAR->hide();
+		UI_remove_item(faq);
+		item->say("At last, I can rest, assured that our users' ",
+				" questions shall be answered.");
+		Add_experience(20);
+		item->say("And, Avatar... I believe the presence of the FAQ",
+			" may even have increased thy knowledge!");
+		UI_set_npc_prop(AVATAR, 2, 3);	// Gain 3 intel. pts.
+		gflags[RETURNED_FAQ] = true;
 	case "Where is Pyro-X?" (remove):
 		say("As I wrote in the FAQ you have to ask Colourless!");
 		add("Who is Colourless?");
