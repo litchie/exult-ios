@@ -1,3 +1,4 @@
+#include "ucdefs.h"
 
 extern adder 0x480(a, b);	// Declaration.
 
@@ -5,7 +6,7 @@ extern adder 0x480(a, b);	// Declaration.
 //	Return sum.
 //
 
-adder1 0x481 (a, b)
+adder1 0x481 (a, b) xxxxx
 	{
 	var c;
 	var d;

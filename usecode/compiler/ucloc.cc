@@ -25,10 +25,38 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>
 #include "ucloc.h"
 
-set<char *> Uc_location::source_names;
+vector<char *> Uc_location::source_names;
 char *Uc_location::cur_source = 0;
 int Uc_location::cur_line = 0;
 int Uc_location::num_errors = 0;
+
+/*
+ *	Set current source and line #.
+ */
+
+void Uc_location::set_cur
+	(
+	char *s, 
+	int l
+	)
+	{
+	cur_line = l;
+	cur_source = 0;			// See if already here.
+	for (vector<char *>::const_iterator it = source_names.begin();
+			it != source_names.end(); it++)
+		if (strcmp(s, *it) == 0)
+			{
+			cur_source = *it;
+			break;
+			}
+	if (!cur_source)		// 1st time.
+		{
+		int len = strlen(s);
+		cur_source = new char[len + 1];
+		strcpy(cur_source, s);
+		source_names.push_back(cur_source);
+		}
+	}
 
 /*
  *	Print error for stored position.
