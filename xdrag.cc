@@ -32,6 +32,33 @@
 #include "u7drag.h"
 
 /*
+ *	Get a window's screen coords.
+ */
+
+static void Get_window_coords
+	(
+	Display *display,
+	Window win,
+	int &sx, int& sy		// Coords. returned.
+	)
+	{
+	Window root, parent;		// Get parent window.
+	Window *children;
+	unsigned int nchildren;
+	XQueryTree(display, win, &root, &parent, &children, &nchildren);
+	if (children)
+		XFree(children);
+	if (parent && parent != root)	// Recurse on parent.
+		Get_window_coords(display, parent, sx, sy);
+	else
+		sx = sy = 0;
+	XWindowAttributes atts;		// Get position within parent.
+	XGetWindowAttributes(display, win, &atts);
+	sx += atts.x;
+	sy += atts.y;
+	}
+
+/*
  *	Initialize.
  */
 
@@ -44,6 +71,8 @@ Xdnd::Xdnd
 	Drop_chunk_handler_fun cfun
 	) : display(d), xwmwin(xw), xgamewin(xgw),
 		num_types(0), lastx(-1), lasty(-1),
+		file(-1), shape(-1), frame(-1), chunknum(-1), 
+		data_valid(false),
 		shape_handler(shapefun), chunk_handler(cfun)
 	{
 	shapeid_atom = XInternAtom(display, U7_TARGET_SHAPEID_NAME, 0);
@@ -87,6 +116,7 @@ void Xdnd::client_msg
 	xev.xclient.data.l[0] = xwmwin;
 	if (cev.message_type == xdnd_enter)
 		{
+		data_valid = false;
 		if (cev.data.l[1]&1)	// More than 3 types?
 			{
 			Atom type;
@@ -96,7 +126,8 @@ void Xdnd::client_msg
 			XGetWindowProperty(display, drag_win,
 				xdnd_typelist, 0, 65536,
 				false, XA_ATOM, &type, &format, &nitems,
-			  	&after, reinterpret_cast<unsigned char **>(&data));
+			  	&after, reinterpret_cast<unsigned char **>(
+								&data));
 			if (format != 32 || type != XA_ATOM)
 				return;	// No good.
 			if (nitems > max_types)
@@ -132,9 +163,19 @@ void Xdnd::client_msg
 					// Save mouse position.
 		lastx = (cev.data.l[2]>>16)&0xffff;
 		lasty = cev.data.l[2]&0xffff;
+					// Get timestamp.
+		unsigned long time = 0;	//????++++++++++++++++
+		if (!data_valid)	// Tell owner we want data.
+			XConvertSelection(display, xdnd_selection, 
+				drag_types[i], xdnd_selection, xwmwin, time);
+		else
+			;		// +++++++Show where it will go.
 		}
 	else if (cev.message_type == xdnd_leave)
+		{
 		num_types = 0;		// Clear list.
+		data_valid = false;
+		}
 	else if (cev.message_type == xdnd_drop)
 		{
 		int i;			// For now, just do shapes, chunks.
@@ -142,45 +183,71 @@ void Xdnd::client_msg
 			if (drag_types[i] == shapeid_atom ||
 			    drag_types[i] == chunkid_atom)
 				break;
-		bool okay = i < num_types;
+		bool okay = data_valid && i < num_types;
 		num_types = 0;
 		if (!okay)
 			return;
-					// Get timestamp.
-		unsigned long time = cev.data.l[2];
-					// Tell owner we want it.
-		XConvertSelection(display, xdnd_selection, drag_types[i],
-			xdnd_selection, xwmwin, time);
+		int x, y;		// Figure relative pos. within window.
+		Get_window_coords(display, xgamewin, x, y);
+		x = lastx - x;
+		y = lasty - y;
+		if (shape >= 0)		// Dropping a shape?
+			{
+			if (file == U7_SHAPE_SHAPES)
+					// For now, just allow "shapes.vga".
+				(*shape_handler)(shape, frame, x, y);
+			}
+		else if (chunknum >= 0)	// A whole chunk.
+			(*chunk_handler)(chunknum, x, y);
+
+		data_valid = false;
 		}
 	}
 
 /*
- *	Get a window's screen coords.
+ *	Get the selection data.
  */
 
-static void Get_window_coords
+void Xdnd::select_msg
 	(
-	Display *display,
-	Window win,
-	int &sx, int& sy		// Coords. returned.
+	XSelectionEvent& sev
 	)
 	{
-	Window root, parent;		// Get parent window.
-	Window *children;
-	unsigned int nchildren;
-	XQueryTree(display, win, &root, &parent, &children, &nchildren);
-	if (children)
-		XFree(children);
-	if (parent && parent != root)	// Recurse on parent.
-		Get_window_coords(display, parent, sx, sy);
-	else
-		sx = sy = 0;
-	XWindowAttributes atts;		// Get position within parent.
-	XGetWindowAttributes(display, win, &atts);
-	sx += atts.x;
-	sy += atts.y;
+	cout << "SelectionEvent received with target type: " <<
+		XGetAtomName(display, sev.target) << endl;
+	if (sev.selection != xdnd_selection || 
+		(sev.target != shapeid_atom && sev.target != chunkid_atom) ||
+	    sev.property == None)
+		return;			// Wrong type.
+	Atom type = None;		// Get data.
+	int format;
+	unsigned long nitems, after;
+	unsigned char *data;		
+	if (XGetWindowProperty(display, sev.requestor, sev.property,
+		      0, 65000, False, AnyPropertyType,
+		      &type, &format, &nitems, &after, &data) != Success)
+		{
+		cout << "Error in getting selection" << endl;
+		return;
+		}
+	if (sev.target == shapeid_atom)	// Dropping a shape?
+		{
+					// Get shape info.
+		Get_u7_shapeid(data, file, shape, frame);
+		XFree(data);
+		chunknum = -1;
+		data_valid = true;
+		}
+	else if (sev.target == chunkid_atom)
+		{			// A whole chunk.
+		Get_u7_chunkid(data, chunknum);
+		XFree(data);
+		file = shape = frame = -1;
+		data_valid = true;
+		}
 	}
 
+#if 0	/* ++++++Old */
 /*
  *	Get the selection and paste it in.
  */
@@ -228,6 +295,7 @@ void Xdnd::select_msg
 		(*chunk_handler)(chunknum, x, y);
 		}
 	}
+#endif
 
 #endif	/* USE_EXULTSTUDIO */
 
