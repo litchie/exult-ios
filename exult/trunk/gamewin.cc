@@ -717,6 +717,28 @@ void Game_window::get_ireg_objects
 	}
 
 /*
+ *	Recognize dead body shapes.  +++++++Hopefully, there's a better way.
+ */
+
+static int Is_body
+	(
+	int shapeid
+	)
+	{
+	switch (shapeid)
+		{
+	case 400:
+	case 414:
+	case 762:
+	case 778:
+	case 892:
+		return 1;
+	default:
+		return 0;
+		}
+	}
+
+/*
  *	Read a list of ireg objects.  They are either placed in the desired
  *	game chunk, or added to their container.
  */
@@ -791,10 +813,15 @@ void Game_window::read_ireg_objects
 				obj = new Dead_body(
 				    entry[2], entry[3], tilex, tiley, lift,
 							entry[8] - 0x80);
+			else if (Is_body(shapeid))
+				obj = new Dead_body(
+				    entry[2], entry[3], tilex, tiley, lift,-1);
 			else
 				obj = new Container_game_object(
 				    entry[2], entry[3], tilex, tiley, lift);
 					// Read container's objects.
+//			printf("Container %s has flags %02x\n",
+//				item_names[(int) shapeid], (int) entry[10]);
 			if (type)	// ???Don't understand this yet.
 				{
 				read_ireg_objects(ireg, scx, scy, obj);

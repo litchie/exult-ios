@@ -887,6 +887,7 @@ int Game_object::get_rotated_frame
 			return swaps180[subframe] | (curframe&32);
 			}
 		}
+	case 301:			// Step onto cart.
 	case 292:			// Seat.  Sequential frames for dirs.
 		{
 		int dir = curframe%4;	// Current dir (0-3).
@@ -969,6 +970,30 @@ int Game_object::get_rotated_frame
 			return swaps180[subframe]|(curframe&32);
 			}
 		}
+	case 660:
+	case 652:
+	case 757:			// Piece of the cart.
+		{			// Groups of 4.
+		static char swaps180[4] = {2, 3, 0, 1};
+		static char swaps90r[4] = {1, 0, 3, 2};
+		int subframe = curframe&3;
+		switch (quads)
+			{
+		case 3:			// 90 left.
+			subframe = swaps180[subframe];
+					// FALL through.
+		case 1:			// 90 right.
+			{
+			int swapped = swaps90r[subframe];
+			return (curframe&32) ? swaps180[swapped]
+					     : (swapped|32);
+			}
+		case 2:
+		default:
+			return swaps180[subframe]|(curframe&32);
+			}
+		}
+		
 	case 796:			// Draft horse.
 		{
 					// Groups of 4:  0, 3 are N, 1, 2 S.
