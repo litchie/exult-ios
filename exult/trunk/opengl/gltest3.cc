@@ -122,8 +122,7 @@ void Render
 	pos[2] = 3*(high.z + 2);
 	pos[3] = 1.0;
 	glLightfv(GL_LIGHT1, GL_POSITION, pos);
-
-	glRotatef(22.5, 1, 0, 0);
+//	glRotatef(22.5, 1, 0, 0);
 	model.render();			// Show model.
 	SDL_GL_SwapBuffers();		// Blit.
 	}

@@ -133,7 +133,7 @@ const struct Action {
 	{ "SKIPLIFT_DECREMENT",
 	  ActionSkipLift, "Decrement skiplift", true, true, NONE, false },
 	{ "TOGGLE_MAP_EDITOR",
-	  ActionMapEditor, "Toggle map-editor mode", true, true, NONE, false },
+	  ActionMapEditor, "Toggle map-editor mode", true, true, NONE, true },
 	{ "TOGGLE_HACK_MOVER",
 	  ActionHackMover, "Toggle hack-mover mode", true, true, NONE, false },
 	{ "MAP_TELEPORT", ActionMapTeleport, "Map teleport", true, true, NONE, false },
@@ -267,7 +267,8 @@ bool KeyBinder::DoAction(ActionType a)
 	
        // Restrict key actions in dont_move mode
 	if (a.action->allow_during_dont_move
-        || !Game_window::get_game_window()->main_actor_dont_move())
+        || !Game_window::get_game_window()->main_actor_dont_move()
+	|| cheat.in_map_editor())	// But not if map-editing.
     {
         a.action->func(a.params);
     }
