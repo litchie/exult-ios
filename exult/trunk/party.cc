@@ -316,10 +316,8 @@ void Party_manager::move_followers
 	if (lnum == -1 && rnum == -1)
 		return;			// Nothing to do.
 	int dir4 = dir/2;		// 0-3 now.
-	Actor *lnpc = (lnum == -1 || lnum >= party_count) ? 0 
-					: valid[lnum];
-	Actor *rnpc = (rnum == -1 || rnum >= party_count) ? 0 
-					: valid[rnum];
+	Actor *lnpc = (lnum == -1 || lnum >= validcnt) ? 0 : valid[lnum];
+	Actor *rnpc = (rnum == -1 || rnum >= validcnt) ? 0 : valid[rnum];
 	int ldir = -1, rdir = -1;
 					// Have each take a step.
 	if (lnpc)
@@ -589,6 +587,9 @@ int Party_manager::step
 	Tile_coord to = Get_step_tile(pos, dest, dir);
 	if (to.tx == pos.tx && to.ty == pos.ty)
 		return dir;		// Not moving.
+//++++++TEST:
+	if (npc->in_queue() || npc->is_moving())
+		cout << npc->get_name() << " shouldn't be stepping!" << endl;
 	Frames_sequence *frames = npc->get_frames(dir);
 	int& step_index = npc->get_step_index();
 	if (!step_index)		// First time?  Init.
