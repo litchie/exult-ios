@@ -34,7 +34,8 @@ EXULT_FLX_OBJECTS = \
 	cleaver.shp		\
 	faces.shp		\
 	faces2.shp		\
-	amulets.shp
+	amulets.shp		\
+	bgfiredoom.shp
 
 flexdir = $(datadir)/exult
 
