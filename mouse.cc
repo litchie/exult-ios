@@ -180,7 +180,7 @@ void Mouse::set_shape0
 	cur_framenum = framenum;
 	cur = pointers.get_frame(framenum); 
 	while (!cur)			// For newly-created games.
-		cur = pointers.get_frame(--cur_framenum);
+		cur = pointers.get_frame(--framenum);
 					// Set backup box to cover mouse.
 	box.x = mousex - cur->get_xleft();
 	box.y = mousey - cur->get_yabove();
