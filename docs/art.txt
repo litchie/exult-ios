@@ -20,8 +20,6 @@ Items:
 
 Name			shape/frame	Artist		Notes
 
-Silver sextant		650/0		-		(hanging from belt)
-Gold sextant		650/1		-		(hanging from belt)
 Leather Collar		582		Sam Matthews
 Gorget			586		Adam Delman
 Magic gorget		843		Adam
