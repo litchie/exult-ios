@@ -75,7 +75,8 @@ Configuration *config = 0;
 const std::string c_empty_string;	// Used by config. library.
 
 					// Mode menu items:
-static char *mode_names[3] = {"move1", "paint1", "pick_for_combo1"};
+static char *mode_names[4] = {"move1", "paint1", "paint_with_chunks1", 
+							"pick_for_combo1"};
 
 enum ExultFileTypes {
 	ShapeArchive =1,
@@ -276,11 +277,19 @@ on_paint1_activate	               (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
-on_pick_for_combo1_activate            (GtkMenuItem     *menuitem,
+on_paint_with_chunks1_activate         (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
 		ExultStudio::get_instance()->set_edit_mode(2);
+}
+
+C_EXPORT void
+on_pick_for_combo1_activate            (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
+		ExultStudio::get_instance()->set_edit_mode(3);
 }
 
 C_EXPORT void
