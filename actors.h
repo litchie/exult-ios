@@ -533,6 +533,10 @@ public:
 	virtual ~Dead_body();
 	static int find_dead_companions(Dead_body *list[]);
 	virtual int get_live_npc_num();
+					// Under attack.
+	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
+					int ammo_shape = 0)
+		{ return this; }	// Not affected.
 	};
 
 /*
