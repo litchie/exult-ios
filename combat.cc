@@ -506,7 +506,8 @@ void Combat_schedule::start_strike
 	cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
 	int dir = npc->get_direction(opponent);
 	char frames[12];		// Get frames to show.
-	int cnt = npc->get_attack_frames(dir, frames);
+	int cnt = npc->get_attack_frames(weapon_shape, projectile_range > 0,
+							dir, frames);
 	if (cnt)
 		npc->set_action(new Frames_actor_action(frames, cnt));
 	npc->start();			// Get back into time queue.

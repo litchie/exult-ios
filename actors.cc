@@ -590,7 +590,7 @@ void Actor::check_temperature
 
 static void Get_weapon_frames
 	(
-	Game_object *weapon,		// Weapon, or 0.
+	int weapon,			// Weapon shape.
 	bool projectile,		// Shooting/throwing.
 	bool two_handed,		// Held in both hands.
 	char *frames			// Four frames stored here.
@@ -605,7 +605,7 @@ static void Get_weapon_frames
 					Actor::strike2_frame};
 	unsigned char frame_flags;	// Get Actor_frame flags.
 	Weapon_info *winfo;
-	if (weapon && (winfo = weapon->get_info().get_weapon_info()) != 0)
+	if ((winfo = ShapeID::get_info(weapon).get_weapon_info()) != 0)
 		frame_flags = winfo->get_actor_frames(projectile);
 	else				// Default to normal swing.
 		frame_flags = projectile ? 0 : Weapon_info::raise|
@@ -627,11 +627,11 @@ static void Get_weapon_frames
  *	Output:	# of frames stored.
  */
 
-#if 0	/* ++++++My new version. */
-++++++Remove old attack_frames arrays near top of file.+++++++++++
+#if 1	/* ++++++My new version. */
+//++++++Remove old attack_frames arrays near top of file.+++++++++++
 int Actor::get_attack_frames
 	(
-	Game_object *weapon,		// Weapon, or 0.
+	int weapon,			// Weapon shape.
 	bool projectile,		// Shooting/throwing.
 	int dir,			// 0-7 (as in dir.h).
 	char *frames			// Frames stored here.
@@ -652,8 +652,6 @@ int Actor::get_attack_frames
 		Get_weapon_frames(weapon, projectile, two_handed, baseframes);
 		break;
 		}
-					// If empty, the other usually isn't.
-		which = two_handed ? attack_frames1 : attack_frames2;
 	for (int i = 0; i < cnt; i++)	// Copy frames with correct dir.
 		{
 		int frame = get_dir_framenum(dir, *which++);
@@ -662,10 +660,10 @@ int Actor::get_attack_frames
 		Shape_frame *shape = id.get_shape();
 		if (!shape || shape->is_empty())
 			{		// Swap 1hand <=> 2hand frames.
-			frame = visible_frames[frame&15];
+			frame = get_dir_framenum(dir,visible_frames[frame&15]);
 			id.set_frame(frame);
 			if (!(shape = id.get_shape()) || shape->is_empty())
-				frame = Actor::standing;
+				frame = get_dir_framenum(dir, Actor::standing);
 			}
 		*frames++ = frame;
 		}
