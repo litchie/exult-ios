@@ -22,22 +22,31 @@ const int PALETTE_DAWN = 3;
  *	Set palette.
  */
 
-inline void Set_palette
+void Game_clock::set_time_palette
 	(
-	Game_window *gwin,
-	int hour
 	)
 	{
-	if (hour < 5)
-		gwin->set_palette(PALETTE_NIGHT);
+	Game_window *gwin = Game_window::get_game_window();
+	int new_palette;
+	if (in_dungeon || hour < 5)
+		new_palette = PALETTE_NIGHT;
 	else if (hour < 6)
-		gwin->set_palette(PALETTE_DAWN);
+		new_palette = PALETTE_DAWN;
 	else if (hour < 19)
-		gwin->set_palette(PALETTE_DAY);
+		new_palette = PALETTE_DAY;
 	else if (hour < 21)
-		gwin->set_palette(PALETTE_DUSK);
+		new_palette = PALETTE_DUSK;
 	else
-		gwin->set_palette(PALETTE_NIGHT);
+		new_palette = PALETTE_NIGHT;
+	if (light_source_level)
+		{
+		if (new_palette == PALETTE_NIGHT)
+			new_palette = light_source_level == 1 ? PALETTE_DUSK
+							: PALETTE_DAWN;
+		else if (new_palette == PALETTE_DUSK)
+			new_palette = PALETTE_DAWN;
+		}
+	gwin->set_palette(new_palette);
 	}
 
 /*
@@ -48,8 +57,34 @@ void Game_clock::set_palette
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
-	Set_palette(gwin, hour);	// Update palette to new time.
+					// Update palette to new time.
+	set_time_palette();
+	}
+
+/*
+ *	Set the palette for a changed light source level.
+ */
+
+void Game_clock::set_light_source_level
+	(
+	int lev
+	)
+	{
+	light_source_level = lev;
+	set_time_palette();
+	}
+
+/*
+ *	Update palette according to weather we're in a dungeon.
+ */
+
+void Game_clock::set_in_dungeon
+	(
+	int tf				// 1 if yes, else 0.
+ 	)
+	{
+	in_dungeon = tf;
+	set_time_palette();
 	}
 
 /*
@@ -70,7 +105,8 @@ void Game_clock::increment
 	minute = new_min%60;
 	day += hour/24;			// Update day.
 	hour %= 24;
-	Set_palette(gwin, hour);	// Update palette to new time.
+					// Update palette to new time.
+	set_time_palette();
 	int new_3hour = hour/3;		// New 3-hour period.
 	if (new_3hour != old_3hour)	// In a new period?
 					// Update NPC schedules.
@@ -97,7 +133,7 @@ void Game_clock::handle_event
 			hour -= 24;
 			day++;
 			}
-		Set_palette(gwin, hour);
+		set_time_palette();
 		if (hour%3 == 0)	// New 3-hour period?
 					// Update NPC schedules.
 			gwin->schedule_npcs(hour/3);
@@ -127,7 +163,7 @@ void Game_clock::fake_next_period
 	minute = 0;
 	hour = ((hour/3 + 1)*3)%24;
 	Game_window *gwin = Game_window::get_game_window();
-	Set_palette(gwin, hour);
+	set_time_palette();
 	gwin->schedule_npcs(hour/3);
 	cout << "The hour is now " << hour << '\n';
 	}

@@ -68,7 +68,7 @@ public:
 /*
  *	Go through a series of frames.
  */
-class Frames_actor_action
+class Frames_actor_action : public Actor_action
 	{
 	char *frames;			// List to go through (a -1 means to
 					//   leave frame alone.)
