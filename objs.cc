@@ -1954,7 +1954,8 @@ int Chunk_cache::is_blocked
 	for (i = lift - 1; i >= 0 && !(tflags & (1<<i)); i--)
 		;
 	new_lift = i + 1;
-	return (0);
+					// Don't allow fall of > 2.
+	return (lift - new_lift > 2 ? 1 : 0);
 	}
 
 /*
