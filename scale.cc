@@ -93,11 +93,23 @@ void Scale2x
 	{
 		srcw = sline_pixels - srcx;
 	}
-			
-    for (int y = 0; y < srch; y++)
+					// Init offset to prev. line, next 2.
+    int prev1_yoff = srcy ? sline_pixels : 0;
+    int next1_yoff = sline_pixels, next2_yoff = 2*sline_pixels;
+					// Figure threshholds for counters.
+    int ybeforelast = sheight - 2 - srcy;
+    int xbeforelast = sline_pixels - 2 - srcx;
+    for (int y = 0; y < srch; y++, prev1_yoff = sline_pixels)
 	{
+		if (y >= ybeforelast)	// Last/next-to-last row?
+			if (y == ybeforelast)
+				next2_yoff = sline_pixels;
+			else		// Very last line?
+				next2_yoff = next1_yoff = 0;
 		Source_pixel *bP = srcPtr;
 		Dest_pixel *dP = dstPtr;
+		int prev1_xoff = srcx ? 1 : 0;
+		int next1_xoff = 1, next2_xoff = 2;
 
 			for (int x = 0; x < srcw; x++)
 			{
@@ -108,30 +120,37 @@ void Scale2x
 					   colorM, colorN, colorO, colorP;
 				Dest_pixel product, product1, product2, orig;
 
+					// Last/next-to-last row?
+				if (x >= xbeforelast)
+					if (x == xbeforelast)
+						next2_xoff = 1;
+					else
+						next2_xoff = next1_xoff = 0;
+
 				//---------------------------------------
 				// Map of the pixels:                    I|E F|J
 				//                                       G|A B|K
 				//                                       H|C D|L
 				//                                       M|N O|P
-				colorI = *(bP- sline_pixels - 1);
-				colorE = *(bP- sline_pixels);
-				colorF = *(bP- sline_pixels + 1);
-				colorJ = *(bP- sline_pixels + 2);
+				colorI = *(bP- prev1_yoff - prev1_xoff);
+				colorE = *(bP- prev1_yoff);
+				colorF = *(bP- prev1_yoff + next1_xoff);
+				colorJ = *(bP- prev1_yoff + next2_xoff);
 
-				colorG = *(bP - 1);
+				colorG = *(bP - prev1_xoff);
 				colorA = *(bP);
-				colorB = *(bP + 1);
-				colorK = *(bP + 2);
+				colorB = *(bP + next1_xoff);
+				colorK = *(bP + next2_xoff);
 
-				colorH = *(bP + sline_pixels - 1);
-				colorC = *(bP + sline_pixels);
-				colorD = *(bP + sline_pixels + 1);
-				colorL = *(bP + sline_pixels + 2);
+				colorH = *(bP + next1_yoff - prev1_xoff);
+				colorC = *(bP + next1_yoff);
+				colorD = *(bP + next1_yoff + next1_xoff);
+				colorL = *(bP + next1_yoff + next2_xoff);
 
-				colorM = *(bP + sline_pixels + sline_pixels - 1);
-				colorN = *(bP + sline_pixels + sline_pixels);
-				colorO = *(bP + sline_pixels + sline_pixels + 1);
-				colorP = *(bP + sline_pixels + sline_pixels + 2);
+				colorM = *(bP + next2_yoff - prev1_xoff);
+				colorN = *(bP + next2_yoff);
+				colorO = *(bP + next2_yoff + next1_xoff);
+				colorP = *(bP + next2_yoff + next2_xoff);
 
 					if ((colorA == colorD) && (colorB != colorC))
 					{
@@ -284,7 +303,7 @@ void Scale2x
 
 		srcPtr += sline_pixels;
 		dstPtr += 2*dline_pixels;
-	}; 
+	};
 }
 
 /** 
