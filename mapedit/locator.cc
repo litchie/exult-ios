@@ -408,7 +408,7 @@ void Locator::send_location
 	Write4(ptr, ty);
 	Write4(ptr, txs);
 	Write4(ptr, tys);
-	Write4(ptr, -1);		// Don't change.
+	Write4(ptr, static_cast<uint32>(-1));		// Don't change.
 	cout << "Locator::send_location" << endl;
 	ExultStudio::get_instance()->send_to_server(Exult_server::view_pos,
 					&data[0], ptr - data);
@@ -424,11 +424,11 @@ void Locator::query_location
 	{
 	unsigned char data[50];
 	unsigned char *ptr = &data[0];
-	Write4(ptr, -1);
-	Write4(ptr, -1);
-	Write4(ptr, -1);
-	Write4(ptr, -1);
-	Write4(ptr, -1);
+	Write4(ptr, static_cast<uint32>(-1));
+	Write4(ptr, static_cast<uint32>(-1));
+	Write4(ptr, static_cast<uint32>(-1));
+	Write4(ptr, static_cast<uint32>(-1));
+	Write4(ptr, static_cast<uint32>(-1));
 	ExultStudio::get_instance()->send_to_server(Exult_server::view_pos,
 					&data[0], ptr - data);
 	}
