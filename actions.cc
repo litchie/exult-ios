@@ -94,7 +94,9 @@ Actor_action *Actor_action::create_action_sequence
 					// And teleport if blocked walking.
 		Actor_action *tel = new Move_actor_action(dest);
 					// Walk there, then do whatever.
-		act = new Sequence_actor_action(w2, tel, act);
+		Sequence_actor_action *seq;
+		act = seq = new Sequence_actor_action(w2, tel, act);
+		seq->set_speed(0);	// No delay between actions.
 		}
 	return act;
 	}
@@ -544,7 +546,7 @@ Sequence_actor_action::Sequence_actor_action
 	Actor_action *a1,
 	Actor_action *a2,
 	Actor_action *a3
-	) : index(0)
+	) : index(0), speed(100)
 	{
 	actions = new Actor_action *[5];// Create list.
 	actions[0] = a0;
@@ -590,7 +592,9 @@ int Sequence_actor_action::handle_event
 	if (!delay)
 		{
 		index++;		// That one's done now.
-		delay = 100;		// 1/10 second.
+		if (!speed)		// Immediately?  Run with next.
+			return handle_event(actor);
+		delay = speed;
 		}
 	return (delay);
 	}

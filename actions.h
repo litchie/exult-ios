@@ -190,13 +190,18 @@ class Sequence_actor_action : public Actor_action
 	{
 	Actor_action **actions;		// List of actions, ending with null.
 	int index;			// Index into list.
+	int speed;			// Frame delay in 1/1000 secs. between
+					//   actions.
 public:
 					// Create with allocated list.
-	Sequence_actor_action(Actor_action **act) : actions(act), index(0)
+	Sequence_actor_action(Actor_action **act, int spd = 100) 
+					: actions(act), index(0), speed(spd)
 		{  }
 					// Create with up to 4.
 	Sequence_actor_action(Actor_action *a0, Actor_action *a1,
 				Actor_action *a2 = 0, Actor_action *a3 = 0);
+	void set_speed(int spd)
+		{ speed = spd; }
 	virtual ~Sequence_actor_action();
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
