@@ -199,6 +199,76 @@ Usecode_function::Usecode_function
 	}
 
 /*
+ *	Add a possible 'answer'.
+ */
+
+void Answers::add_answer
+	(
+	char *str
+	)
+	{
+	if (num_answers < max_answers)
+		answers[num_answers++] = str;
+	}
+
+/*
+ *	Add an answer to the list.
+ */
+
+void Answers::add_answer
+	(
+	Usecode_value& val		// Array or string.
+	)
+	{
+	char *str;
+	int size = val.get_array_size();
+	if (size)			// An array?
+		{
+		for (int i = 0; i < size; i++)
+			add_answer(val.get_elem(i));
+		}
+	else if ((str = val.get_str_value()) != 0)
+		add_answer(str);
+	}
+
+/*
+ *	Remove an answer from the list.
+ */
+
+void Answers::remove_answer
+	(
+	Usecode_value& val		// String.
+	)
+	{
+	char *str = val.get_str_value();
+	if (!str)
+		return;
+	int i;				// Look for answer.
+	for (i = 0; i < num_answers; i++)
+		if (strcmp(answers[i], str) == 0)
+			break;		// Found it.
+	if (i == num_answers)
+		return;			// Not found.
+	for (i++; i < num_answers; i++)	// Shift others left.
+		answers[i - 1] = answers[i];
+	num_answers--;
+	}
+
+/*
+ *	Make a shallow copy.
+ */
+
+void Answers::operator=
+	(
+	Answers& cpy
+	)
+	{
+	num_answers = cpy.num_answers;
+	for (int i = 0; i < num_answers; i++)
+		answers[i] = cpy.answers[i];
+	}
+
+/*
  *	Append a string.
  */
 
@@ -253,63 +323,6 @@ void Usecode_machine::stack_error
 	else
 		cerr << "Stack overflow.\n";
 	exit(1);
-	}
-
-/*
- *	Add a possible 'answer'.
- */
-
-void Usecode_machine::add_answer
-	(
-	char *str
-	)
-	{
-	if (num_answers < max_answers)
-		answers[num_answers++] = str;
-	}
-
-/*
- *	Add an answer to the list.
- */
-
-void Usecode_machine::add_answer
-	(
-	Usecode_value& val		// Array or string.
-	)
-	{
-	char *str;
-	int size = val.get_array_size();
-	if (size)			// An array?
-		{
-		for (int i = 0; i < size; i++)
-			if ((str = val.get_elem(i).get_str_value()) != 0)
-				add_answer(str);
-		}
-	else if ((str = val.get_str_value()) != 0)
-		add_answer(str);
-	}
-
-/*
- *	Remove an answer from the list.
- */
-
-void Usecode_machine::remove_answer
-	(
-	Usecode_value& val		// String.
-	)
-	{
-	char *str = val.get_str_value();
-	if (!str)
-		return;
-	int i;				// Look for answer.
-	for (i = 0; i < num_answers; i++)
-		if (strcmp(answers[i], str) == 0)
-			break;		// Found it.
-	if (i == num_answers)
-		return;			// Not found.
-	for (i++; i < num_answers; i++)	// Shift others left.
-		answers[i - 1] = answers[i];
-	num_answers--;
 	}
 
 /*
@@ -517,23 +530,33 @@ Usecode_value Usecode_machine::call_intrinsic
 		remove_npc_face(parms[0]);
 		break;
 	case 5:				// Add possible 'answer'.
-		add_answer(parms[0]);
+		answers.add_answer(parms[0]);
 		break;
 	case 6:				// Remove answer.
-		remove_answer(parms[0]);
+		answers.remove_answer(parms[0]);
 		break;
 	case 7:				// Save answers. (0)
-		//++++++++++++++
+		answer_stack[saved_answers] = new Answers;
+		*(answer_stack[saved_answers++]) = answers;
+		answers.num_answers = 0;
 		break;
 	case 8:				// Restore answers. (0)
-		//++++++++++++++
+		if (saved_answers > 0)
+			{
+			answers = *(answer_stack[saved_answers - 1]);
+			delete answer_stack[--saved_answers];
+			}
 		break;
-	case 0xa:			// Get answer from player.  (0)
-		// ++++++++++++++++
-		break;
+	case 0xb:			// Show choices and wait for click.
+		{
+		user_choice = 0;
+		Usecode_value val(get_user_choice() + 1);
+		return val;
+		}
 	case 0xc:			// Ask for # (min, max, step, default).
 					// (Show slider.)
 		//+++++++++++++
+		return Usecode_value(parms[0].get_int_value() + 1);
 		break;
 	case 0xd:			// Set item shape.
 		set_item_shape(parms[0], parms[1]);
@@ -580,11 +603,20 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 	case 0x20:			// Get NPC prop (item, prop_id).
 					//   (9 is food level).
-		//+++++++++++
+		{
+		Game_object *obj = (Game_object *) parms[0].get_int_value();
+		return Usecode_value(obj ? 
+			obj->get_property(parms[1].get_int_value()) : 0);
 		break;
+		}
 	case 0x21:			// Set NPC prop (item, prop_id, value).
-		//+++++++++++++
+		{
+		Game_object *obj = (Game_object *) parms[0].get_int_value();
+		if (obj)
+			obj->set_property(parms[1].get_int_value(),
+						parms[2].get_int_value());
 		break;
+		}
 	case 0x22:			// Guessing it's Avatar's itemref.
 		return Usecode_value((long) gwin->get_main_actor());
 	case 0x23:			// Return array with party members.
@@ -594,12 +626,22 @@ Usecode_value Usecode_machine::call_intrinsic
 		Game_object *obj = (Game_object *) parms[0].get_int_value();
 		return Usecode_value(obj ? obj->get_name() : "player");
 		}
+	case 0x28:			// How many 
+					// ((npc?-357==any, -356=avatar), 
+					//   item, quality?, quality?).
+					// Quality -359 means any?
+		//++++++++++++
+		break;
 	case 0x2a:			// Get cont. items(item, type, qual,?).
+				// Think it rets. array of them.
 		//++++++++++++
 		break;
 	case 0x2b:			// Remove items(num, item, 
-					//   -x?, -x?, -x?).  Often -359.???
+					//   -x?, -x?, T/F).  Often -359.???
 		//+++++++++++
+		break;
+	case 0x2c:			// Add items(num, item, ??, ??, T/F).
+		//++++++++++
 		break;
 	case 0x2e:			// Play music(item, songnum).
 		//++++++++++++
@@ -653,25 +695,30 @@ Usecode_value Usecode_machine::call_intrinsic
 
 /*
  *	Get user's choice from among the possible responses.
+ *
+ *	Output:	User choice is set, with choice # returned.
+ *		-1 if no possible choices.
  */
 
-void Usecode_machine::get_user_choice
+int Usecode_machine::get_user_choice
 	(
 	)
 	{
-	if (!num_answers)
-		return;			// Shouldn't happen.
+	if (!answers.num_answers)
+		return (-1);		// Shouldn't happen.
 	if (!user_choice)		// May have already been done.
 		{
 		cout << "Choose: ";	// TESTING.
-		for (int i = 0; i < num_answers; i++)
-			cout << ' ' << answers[i] << '(' << i << ") ";
-		gwin->show_avatar_choices(num_answers, answers);
+		for (int i = 0; i < answers.num_answers; i++)
+			cout << ' ' << answers.answers[i] << '(' << i << ") ";
+		gwin->show_avatar_choices(answers.num_answers, 
+						answers.answers);
 		extern void Handle_events(unsigned char *); //++++For now.
 		choice_made = 0;
 					// Handle events until response made.
 		Handle_events(&choice_made);
 		}
+	return (user_choice_num);	// Return choice #.
 	}
 
 /*
@@ -683,9 +730,10 @@ void Usecode_machine::chose_response
 	int response
 	)
 	{
-	if (response >= 0 && response < num_answers)
+	if (response >= 0 && response < answers.num_answers)
 		{
-		user_choice = answers[response];
+		user_choice = answers.answers[response];
+		user_choice_num = response;
 		choice_made = 1;	// Return from event loop.
 		}
 	}
@@ -699,7 +747,8 @@ Usecode_machine::Usecode_machine
 	istream& file,
 	Game_window *gw
 	) : num_funs(0), string(0), gwin(gw), caller_item(0),
-	    stack(new Usecode_value[1024]), user_choice(0), num_answers(0)
+	    stack(new Usecode_value[1024]), user_choice(0),
+	    saved_answers(0)
 	{
 	sp = stack;
 					// Clear global flags.
@@ -744,12 +793,9 @@ void Usecode_machine::run
 	{
 	printf("Running usecode %04x\n", fun->id);
 	Usecode_value *save_sp = sp;	// Save TOS.
-					// Save answers list.
-	int save_num_answers = num_answers;
-	char *save_answers[max_answers];
-	for (int i = 0; i < num_answers; i++)
-		save_answers[i] = answers[i];
-	num_answers = 0;
+	Answers save_answers;		// Save answers list.
+	save_answers = answers;
+	answers.num_answers = 0;
 	unsigned char *ip = fun->code;	// Instruction pointer.
 					// Where it ends.
 	unsigned char *endp = ip + fun->len;
@@ -789,14 +835,18 @@ void Usecode_machine::run
 			{
 		case 0x04:		// Jump if done with function.
 			offset = (short) Read2(ip);
-			if (set_ret_value || !num_answers)
+			if (set_ret_value || !answers.num_answers)
 				ip += offset;
 			break;
 		case 0x05:		// JNE.
+			{
 			offset = (short) Read2(ip);
-			if (!popi())
+			Usecode_value val = pop();
+			if (val.get_int_value() == 0 &&
+			    val.get_array_size() == 0)
 				ip += offset;
 			break;
+			}
 		case 0x06:		// JMP.
 			offset = (short) Read2(ip);
 			ip += offset;
@@ -987,9 +1037,20 @@ void Usecode_machine::run
 			break;
 			}
 		case 0x2f:		// ADDSV.
+			{
 			offset = Read2(ip);
-			append_string(locals[offset].get_str_value());
+			char *str = locals[offset].get_str_value();
+			if (str)
+				append_string(str);
+			else		// Convert integer.
+				{
+				char buf[20];
+				sprintf(buf, "%d",
+					locals[offset].get_int_value());
+				append_string(buf);
+				}
 			break;
+			}
 		case 0x30:		// IN.  Is a val. in an array?
 			{
 			Usecode_value arr = pop();
@@ -1083,9 +1144,7 @@ void Usecode_machine::run
 		}
 	delete [] locals;
 					// Restore list of answers.
-	num_answers = save_num_answers;
-	for (int i = 0; i < num_answers; i++)
-		answers[i] = save_answers[i];
+	answers = save_answers;
 	printf("RETurning from usecode %04x\n", fun->id);
 	}
 
