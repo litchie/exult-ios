@@ -83,9 +83,12 @@ bool Container_game_object::add
 					//   cause obj to be deleted.
 	)
 	{
-	if (obj->get_shapenum() == get_shapenum() && !dont_check)
-		return false;		// Can't put a bag in a bag.
-
+	if (!dont_check)
+		{			// Can't put a bag in a bag.
+		if (obj->get_shapenum() == get_shapenum() ||
+		    get_shapenum() == 522)	// Can't put into locked chest.
+		return false;
+		}
 	// ugly hack for SI urn (shouldn't be a container)
 	if (Game::get_game_type() == SERPENT_ISLE && get_shapenum() == 914) {
 		return false;
