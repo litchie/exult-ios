@@ -1609,9 +1609,10 @@ class Chunk_intersect_iterator
 	int curcx, curcy;		// Next chunk to return.
 public:
 	Chunk_intersect_iterator(Rectangle t) : tiles(t),
-		  firstcx(t.x/tiles_per_chunk), curcy(t.y/tiles_per_chunk),
+		  firstcx(t.x/tiles_per_chunk),
 		  lastcx((t.x + t.w - 1)/tiles_per_chunk),
-		  lastcy((t.y + t.h - 1)/tiles_per_chunk)
+		  lastcy((t.y + t.h - 1)/tiles_per_chunk),
+		  curcy(t.y/tiles_per_chunk)
 		{
 		curcx = firstcx;
 		if (t.x <= 0 || t.y <= 0)
