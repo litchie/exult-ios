@@ -203,6 +203,20 @@ Monster_info *Game_window::get_monster_info
 	}
 
 /*
+ *	Add a 'path' egg to our list.
+ */
+
+void Game_window::add_path_egg
+	(
+	Egg_object *egg
+	)
+	{
+	int qual = egg->get_quality();
+	if (qual >= 0 && qual < 255)
+		path_eggs[qual] = egg;
+	}
+
+/*
  *	Resize event occurred.
  */
 
@@ -2302,7 +2316,7 @@ void Game_window::end_splash
 		Chunk_object_list *olist = get_objects(
 				main_actor->get_cx(), main_actor->get_cy());
 		olist->setup_cache();
-		olist->activate_eggs(main_actor->get_tx(), 
+		olist->activate_eggs(main_actor, main_actor->get_tx(), 
 						main_actor->get_ty(), -1, -1);
 		}
 	}

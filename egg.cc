@@ -55,6 +55,8 @@ Egg_object::Egg_object
 			(htch << hatched) + (ar << auto_reset);
 	if (type == usecode || type == teleport || type == path)
 		set_quality(data1&0xff);
+	if (type == path)		// Store paths.
+		Game_window::get_game_window()->add_path_egg(this);
 	}
 
 /*
@@ -175,12 +177,25 @@ void Egg_object::paint
 	}
 
 /*
- *	Run usecode when double-clicked or when activated by proximity.
+ *	Run usecode when double-clicked.
  */
 
 void Egg_object::activate
 	(
 	Usecode_machine *umachine
+	)
+	{
+	activate(umachine, 0);
+	}
+
+/*
+ *	Run usecode when double-clicked or when activated by proximity.
+ */
+
+void Egg_object::activate
+	(
+	Usecode_machine *umachine,
+	Game_object *obj		// Object (actor) that came near it.
 	)
 	{
 #if DEBUG
@@ -236,6 +251,32 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				gwin->set_mode(savemode);
 				gwin->set_all_dirty();
 				}
+			break;
+			}
+		case teleport:
+			{
+			Tile_coord pos;	// Get position to jump to.
+			if (get_quality() == 255)
+				{	// Jump to coords.
+				int schunk = data1 >> 8;
+				pos = Tile_coord((schunk%12)*tiles_per_schunk +
+								(data2&0xff), 
+					(schunk/12)*tiles_per_schunk +
+								(data2>>8), 0);
+				}
+			else
+				{
+				Egg_object *path =
+					gwin->get_path_egg(get_quality());
+				if (!path)
+					break;
+				pos = path->get_abs_tile_coord();
+				}
+			cout << "Should teleport to (" << pos.tx << ", " <<
+					pos.ty << ')' << endl;
+			//+++++if (obj) obj->move(pos);
+					// Can keep doing it.
+			flags &= ~((1 << (int) hatched));
 			break;
 			}
 		default:
