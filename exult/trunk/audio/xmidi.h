@@ -192,13 +192,20 @@ class XMIDIEventList
 	int				PutVLQ(DataSource *dest, uint32 value);
 	uint32			ConvertListToMTrk (DataSource *dest);
 
+	static void		DeleteEventList (midi_event *list);
+
 public:
-	friend class XMIDI;
 	midi_event		*events;
 
 	// Write this list to a file/buffer
 	int				Write (const char *filename);	
 	int				Write (DataSource *dest);	
+
+	// Increments the counter
+	void			IncerementCounter () { counter++; }
+
+	// Decrement the counter and delete the event list, if possible
+	void			DecerementCounter ();
 };
 
 class   XMIDI
@@ -234,7 +241,6 @@ public:
 
 	// External Event list functions
 	XMIDIEventList *GetEventList (uint32 track);
-	static void DeleteEventList (XMIDIEventList *list);
 
 	// Not yet implimented
 	// int apply_patch (int track, DataSource *source);
@@ -269,7 +275,5 @@ private:
 	int ExtractTracksFromMid (DataSource *source, const uint32 ppqn, const int num_tracks, const bool type1);
 	
 	int ExtractTracks (DataSource *source);
-	static void DeleteEventList (midi_event *list);
-
 };
 #endif

@@ -290,7 +290,7 @@ void Windows_MidiOut::thread_play ()
 			for (int i = 0; i < 16; i++) reset_channel (i); 
 			midiOutReset (midi_port);
 			giveinfo();
-			if (evntlist) XMIDI::DeleteEventList (evntlist);
+			if (evntlist) evntlist->DecerementCounter();
 			giveinfo();
 			evntlist = NULL;
 			event = NULL;
@@ -375,7 +375,7 @@ void Windows_MidiOut::thread_play ()
 		 			// Clean up
 					for (int i = 0; i < 16; i++) reset_channel (i); 
 					midiOutReset (midi_port);
-					if (evntlist) XMIDI::DeleteEventList (evntlist);
+					if (evntlist) evntlist->DecerementCounter();
 					evntlist = NULL;
 					event = NULL;
 
@@ -415,7 +415,7 @@ void Windows_MidiOut::thread_play ()
 			for (int i = 0; i < 16; i++) reset_channel (i);
 			midiOutReset (midi_port);
 
-			if (evntlist) XMIDI::DeleteEventList (evntlist);
+			if (evntlist) evntlist->DecerementCounter();
 			evntlist = NULL;
 			event = NULL;
 			InterlockedExchange (&playing, FALSE);
@@ -490,7 +490,7 @@ void Windows_MidiOut::thread_play ()
 		 	// Also reset the played tracks
 			for (int i = 0; i < 16; i++) if ((s_track >> i)&1) reset_channel (i);
 
-			XMIDI::DeleteEventList (s_evntlist);
+			s_evntlist->DecerementCounter();
 			s_evntlist = NULL;
 			s_event = NULL;
 			InterlockedExchange (&s_playing, false);
@@ -565,8 +565,10 @@ void Windows_MidiOut::thread_play ()
 	while (note = s_notes_on.PopTime(wmoGetRealTime()))
 		midiOutShortMsg (midi_port, note->status + (note->data[0] << 8));
 
-	if (evntlist) XMIDI::DeleteEventList (evntlist);
-	if (s_evntlist) XMIDI::DeleteEventList (s_evntlist);
+	if (evntlist) evntlist->DecerementCounter();
+	evntlist = NULL;
+	if (s_evntlist) s_evntlist->DecerementCounter();
+	s_evntlist = NULL;
 	for (int i = 0; i < 16; i++) reset_channel (i); 
 	midiOutReset (midi_port);
 }
@@ -624,6 +626,7 @@ void Windows_MidiOut::start_track (XMIDIEventList *xmidi, bool repeat)
 	while (thread_com != W32MO_THREAD_COM_READY) Sleep (1);
 	
 	giveinfo();
+	xmidi->IncerementCounter();
 	data.list = xmidi;
 	data.repeat = repeat;
 //	xmidi->Write("winmidi_out.mid");
@@ -649,6 +652,7 @@ void Windows_MidiOut::start_sfx(XMIDIEventList *xmidi)
 	while (sfx_com != W32MO_THREAD_COM_READY) Sleep (1);
 
 	giveinfo();
+	xmidi->IncerementCounter();
 	sdata.list = xmidi;
 	sdata.repeat;
 	
