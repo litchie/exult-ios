@@ -750,7 +750,8 @@ USECODE_INTRINSIC(display_runes)
 	Sign_gump *sign = new Sign_gump(parms[0].get_int_value(), cnt);
 	for (int i = 0; i < cnt; i++)
 		{			// Paint each line.
-		Usecode_value& lval = parms[1].get_elem(i);
+		Usecode_value& lval = !i ? parms[1].get_elem0() 
+					: parms[1].get_elem(i);
 		sign->add_text(i, lval.get_str_value());
 		}
 	sign->paint(gwin);		// Paint it, and wait for click.

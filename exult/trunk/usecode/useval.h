@@ -129,6 +129,7 @@ public:
 	inline Usecode_value& get_elem(int i) const
 		{
 		static Usecode_value zval(0);
+//		assert(type == array_type);//+++++Testing.
 		return (type == array_type) ? value.array[i] : zval;
 		}
 					// Get array elem. 0, or this.

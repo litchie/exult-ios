@@ -53,6 +53,11 @@ Scheduled_usecode::Scheduled_usecode
 	{
 	cnt = arrval.get_array_size();
 	obj = usecode->get_item(objval);
+	if (!cnt)			// Not an array??  (This happens.)
+		{			// Create with single element.
+		arrval = Usecode_value(1, &aval);
+		cnt = 1;
+		}
 					// Pure kludge for SI wells:
 	if (objval.get_array_size() == 2 && 
 	    Game::get_game_type() == SERPENT_ISLE &&
