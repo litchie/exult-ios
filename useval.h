@@ -89,6 +89,12 @@ public:
 		{ return type == (int) int_type; }
 	long get_int_value() const	// Get integer value.
 		{ return (type == (int) int_type ? value.intval : 0); }
+	long need_int_value() const
+		{
+					// Convert strings.
+		const char *str = get_str_value();
+		return str ? atoi(str) : get_int_value();
+		}
 					// Get string value.
 	const char *get_str_value() const
 		{ return (type == (int) string_type ? value.str : 0); }

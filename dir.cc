@@ -116,7 +116,7 @@ int Get_direction16
 			angle += 8;
 	else if (deltax < 0)
 		angle = 16 - angle;
-	return angle;
+	return angle % 16;
 	}
 
 #if 0

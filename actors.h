@@ -226,11 +226,7 @@ public:
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 	virtual string get_name() const;
-	virtual void set_property(int prop, int val)
-		{
-		if (prop >= 0 && prop < 12)
-			properties[prop] = (short) val;
-		}
+	virtual void set_property(int prop, int val);
 	virtual int get_property(int prop) const
 		{ return (prop >= 0 && prop < 12) ? properties[prop] : 0; }
 	virtual int is_dead_npc() const	// Dead when health below -1/3 str.
