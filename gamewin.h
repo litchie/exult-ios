@@ -443,5 +443,6 @@ private:
 	int drop_at_lift(int at_lift);
 public:
 	void write_gamedat(char *fname);// Explode a savegame into "gamedat".
+	char *get_game_identity(char *fname);
 	};
 

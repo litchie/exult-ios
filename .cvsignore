@@ -23,3 +23,4 @@ stamp.h
 version.h
 config.h.in
 confdefs.h
+gamedat
