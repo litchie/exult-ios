@@ -65,6 +65,9 @@
 <test>
 	<p>last changed: <xsl:value-of select="@changed"/></p>
 	<hr/>
+	<p>
+		A text only version can be found <a href="http://exult.sourceforge.net/docs.txt">here</a> 
+	</p>
 	<br/>
 	
 	<!-- BEGIN TOC -->
@@ -187,6 +190,18 @@
 	</a>
 </xsl:template>
 
+<!-- External Link Template to link between the FAQ/Readme -->
+<xsl:template match="extref1">
+	<a><xsl:attribute name="href">faq.php#<xsl:value-of select="@target"/></xsl:attribute>
+		<xsl:text>FAQ</xsl:text>
+	</a>
+</xsl:template>
+
+<xsl:template match="extref2">
+	<a><xsl:attribute name="href">docs.php#<xsl:value-of select="@target"/></xsl:attribute>
+		<xsl:text>Documentation</xsl:text>
+	</a>
+</xsl:template>
 
 <!-- Misc Templates -->
 <xsl:template match="Exult">
