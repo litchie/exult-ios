@@ -450,6 +450,30 @@ void Eat_at_inn_schedule::now_what
 	}
 
 /*
+ *	Find someone listening to the preacher.
+ */
+
+Actor *Find_congregant
+	(
+	Actor *npc
+	)
+	{
+	Actor_vector vec, vec2;
+	if (!npc->find_nearby_actors(vec, c_any_shapenum, 16))
+		return 0;
+	vec2.reserve(vec.size());	// Get list of ones to consider.
+	for (Actor_vector::const_iterator it = vec.begin();
+						it != vec.end(); ++it)
+		{
+		Actor *act = *it;
+		if (act->get_schedule_type() == Schedule::sit &&
+							!act->is_in_party())
+			vec2.push_back(act);
+		}
+	return vec2[rand()%vec2.size()];
+	}
+
+/*
  *	Preach:
  */
 
@@ -457,29 +481,84 @@ void Preach_schedule::now_what
 	(
 	)
 	{
-	if (first)			// Find podium.
+	switch (state)
 		{
-		first = 0;
+	case find_podium:
+		{
 		Game_object_vector vec;
-		if (npc->find_nearby(vec, 697, 5, 0))
+		if (!npc->find_nearby(vec, 697, 8, 0))
 			{
-			Game_object *podium = vec[0];
-			npc->walk_to_tile(podium->get_tile());
+			npc->set_schedule_type(loiter);
 			return;
 			}
+		Game_object *podium = vec[0];
+		Tile_coord pos = podium->get_tile();
+		static int deltas[4][2] = {{-2, 0},{1, 0},{0, -2},{0, 1}};
+		int frnum = podium->get_framenum()%4;
+		pos.tx += deltas[frnum][0];
+		pos.ty += deltas[frnum][1];
+		Actor_pathfinder_client cost(npc, 0);
+		Actor_action *pact = Path_walking_actor_action::create_path(
+			npc->get_tile(), pos, cost);
+		if (pact)
+			{
+			state = at_podium;
+			npc->set_action(new Sequence_actor_action(pact,
+				new Face_pos_actor_action(podium, 200)));
+			npc->start(gwin->get_std_delay());
+			return;
+			}
+		npc->start(250, 5000 + rand()%5000);	// Try again later.
+		return;
 		}
-	char frames[8];			// Frames.
-	int cnt = 1 + rand()%(sizeof(frames) - 1);
+	case at_podium:
+		if (rand()%2)		// Just wait a little.
+			npc->start(gwin->get_std_delay(), rand()%3000);
+		else 
+			{
+			if (rand()%3)
+				state = exhort;
+			else
+				state = visit;
+			npc->start(gwin->get_std_delay(), 2000 + rand()%2000);
+			}
+		return;
+	case exhort:
+		{
+		char frames[8];		// Frames.
+		int cnt = 1 + rand()%(sizeof(frames) - 1);
 					// Frames to choose from:
-	static char choices[3] = {0, 9, 14};
-	for (int i = 0; i < cnt - 1; i++)
-		frames[i] = npc->get_dir_framenum(
+		static char choices[3] = {0, 8, 9};
+		for (int i = 0; i < cnt - 1; i++)
+			frames[i] = npc->get_dir_framenum(
 					choices[rand()%(sizeof(choices))]);
 					// Make last one standing.
-	frames[cnt - 1] = npc->get_dir_framenum(Actor::standing);
-	npc->set_action(new Frames_actor_action(frames, cnt, 250));
-					// Do it in 3-?? seconds.
-	npc->start(250, 3000 + rand()%8000);
+		frames[cnt - 1] = npc->get_dir_framenum(Actor::standing);
+		npc->set_action(new Frames_actor_action(frames, cnt, 250));
+		npc->start(gwin->get_std_delay());
+		npc->say(first_preach, last_preach);
+		state = at_podium;
+		Actor *member = Find_congregant(npc);
+		if (member)
+			{
+			Usecode_script *scr = new Usecode_script(member);
+			scr->add(Ucscript::delay_ticks, 3);
+			scr->add(Ucscript::say, item_names[first_amen +
+					rand()%(last_amen - first_amen + 1)]);
+			scr->start();	// Start next tick.
+			}
+		return;
+		}
+	case visit:
+		// ++++++Later.
+		state = at_podium;	// +++Change to find_podium.
+		npc->start(250, 1000 + rand()%2000);
+		return;
+	default:
+		state = find_podium;
+		npc->start(250);
+		return;
+		}
 	}
 
 /*

@@ -174,9 +174,14 @@ public:
  */
 class Preach_schedule : public Schedule
 	{
-	int first;
+	enum {
+		find_podium,
+		at_podium,
+		exhort,
+		visit
+		} state;
 public:
-	Preach_schedule(Actor *n) : Schedule(n), first(1)
+	Preach_schedule(Actor *n) : Schedule(n), state(find_podium)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	};
