@@ -81,38 +81,43 @@ void Object3d::render
 	(
 	)
 	{
-	if (material && material->texture_loaded)	// Texture?
-		{
-		glEnable(GL_TEXTURE_2D);
-					// Bind texture.
-		glBindTexture(GL_TEXTURE_2D, material->texture_id);
-		}
-	else
-		glDisable(GL_TEXTURE_2D);
+	Material *prev_mat = (Material *)-1;
 	glColor3ub(255, 255, 255);	// Reset color to white.
 	glBegin(GL_TRIANGLES);		// Start drawing.
-	if (material)			// Set colors.
-		{
-		glMaterialfv(GL_FRONT, GL_AMBIENT,
-					material->colors[Material::ambient]);
-		glMaterialfv(GL_FRONT, GL_SPECULAR,
-					material->colors[Material::specular]);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE,
-					material->colors[Material::diffuse]);
-		}
-	else
-		{
-		static float a[] = {.2, .2, .2, 1.0};
-		static float d[] = {.8, .8, .8, 1.0};
-		static float s[] = {0, 0, 0, 1.0};
-		glMaterialfv(GL_FRONT, GL_AMBIENT, a);
-		glMaterialfv(GL_FRONT, GL_DIFFUSE, d);
-		glMaterialfv(GL_FRONT, GL_SPECULAR, s);
-		}
 					// Go through faces.
 	for (vector<Face>::const_iterator faceit = faces.begin();
 					faceit != faces.end(); ++faceit)
 		{
+		Material *mat = (*faceit).get_material();
+		if (mat != prev_mat)	// Different than prev.?
+			{
+			prev_mat = mat;
+			if (mat && mat->texture_loaded)	// Texture?
+				{
+				glEnable(GL_TEXTURE_2D);// Bind texture.
+				glBindTexture(GL_TEXTURE_2D, mat->texture_id);
+				}
+			else
+				glDisable(GL_TEXTURE_2D);
+			if (mat)			// Set colors.
+				{
+				glMaterialfv(GL_FRONT, GL_AMBIENT,
+					mat->colors[Material::ambient]);
+				glMaterialfv(GL_FRONT, GL_SPECULAR,
+					mat->colors[Material::specular]);
+				glMaterialfv(GL_FRONT, GL_DIFFUSE,
+					mat->colors[Material::diffuse]);
+				}
+			else
+				{
+				static float a[] = {.2, .2, .2, 1.0};
+				static float d[] = {.8, .8, .8, 1.0};
+				static float s[] = {0, 0, 0, 1.0};
+				glMaterialfv(GL_FRONT, GL_AMBIENT, a);
+				glMaterialfv(GL_FRONT, GL_DIFFUSE, d);
+				glMaterialfv(GL_FRONT, GL_SPECULAR, s);
+				}
+			}		
 					// Go through triangle's vertices.
 		for (int v = 0; v < 3; v++)
 			{
@@ -120,14 +125,11 @@ void Object3d::render
 					// Set normal for vertex.
 			glNormal3f(normals[vindex].x, normals[vindex].y,
 							normals[vindex].z);
-			if (material)
-				{
-				if (material->texture_loaded &&
+			if (mat && mat->texture_loaded &&
 				    vindex < tex_vertices.size())
 					// Set texture coord.
-					glTexCoord2f(tex_vertices[vindex].x,
+				glTexCoord2f(tex_vertices[vindex].x,
 						tex_vertices[vindex].y);
-				}
 					// Finally, the vertex:
 			Vector3& vert = vertices[vindex];
 			glVertex3f(vert.x, vert.y, vert.z);

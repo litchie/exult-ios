@@ -56,7 +56,8 @@ static int Read_object_chunk(Model3d *model,
 				istream& in, int top_len, Object3d *obj);
 static int Read_vertices_chunk(istream& in, int top_len, Object3d *obj);
 static int Read_texture_vertices_chunk(istream& in, int top_len,Object3d *obj);
-static int Read_faces_chunk(istream& in, int top_len, Object3d *obj);
+static int Read_faces_chunk(Model3d *model, 
+				istream& in, int top_len, Object3d *obj);
 static int Read_object_material_chunk(Model3d *model,
 				istream& in, int top_len, Object3d *obj);
 
@@ -392,13 +393,7 @@ static int Read_object_chunk
 			read += Read_vertices_chunk(in, len, obj);
 			break;
 		case OBJECT_FACES:
-			read += Read_faces_chunk(in, len, obj);
-			break;
-		case OBJECT_MATERIAL:
-//+++++This should be part of Read_faces_chunk(), and there is a list of faces
-// that the material applies to.
-			read += Read_object_material_chunk(model, 
-								in, len, obj);
+			read += Read_faces_chunk(model, in, len, obj);
 			break;
 		case OBJECT_UV:		// UV texture coordinates.
 			read += Read_texture_vertices_chunk(in, len, obj);
@@ -479,6 +474,7 @@ static int Read_texture_vertices_chunk
 
 static int Read_faces_chunk
 	(
+	Model3d *model,
 	istream& in, 			// Header already read.
 	int top_len,			// Total length of this chunk.
 	Object3d *obj			// New object to set up.
@@ -496,7 +492,24 @@ static int Read_faces_chunk
 		Read2(in);		// Ignore visibility flag.
 		top_read += 4*2;	// Read 4 shorts.
 		}
-//	assert (top_read == top_len);
+	while (top_read < top_len)	// Go through subchunks.
+		{
+		int id, len;
+		int read = Get_chunk_header(in, id, len);
+		switch (id)
+			{
+		case OBJECT_MATERIAL:
+			read += Read_object_material_chunk(model, 
+								in, len, obj);
+			break;
+		default:		// Don't care.
+			cerr << "3ds id 0x" << hex << id << " skipped" << endl;
+			in.seekg(len - read, ios::cur);
+			read = len;
+			break;
+			}
+		top_read += read;	// Add to top's total.
+		}
 	return top_read - CHUNK_HEADER_LENGTH;
 	}
 
@@ -517,12 +530,17 @@ static int Read_object_material_chunk
 	int top_read = CHUNK_HEADER_LENGTH;
 	string name;			// Read material name.
 	top_read += Get_string(in, name);
-	if (!obj->get_material())	//+++++FOR NOW.  Material really
-//+++++ applies to the list of faces that follow.
-		obj->set_material(model->find_material(name.c_str()));
-					// Skip the rest.
-	in.seekg(top_len - top_read, ios::cur);
-	top_read = top_len;
+	Material *mat = model->find_material(name.c_str());
+	int num_faces = Read2(in);	// Get #faces it applies to.
+	top_read += 2;
+	for (int i = 0; i < num_faces; i++)
+		{
+		int index = Read2(in);
+		top_read += 2;
+		assert(index < obj->faces_size());
+		obj->get_face(index).set_material(mat);
+		}
+	assert (top_read = top_len);
 	return top_read - CHUNK_HEADER_LENGTH;
 	}
 
