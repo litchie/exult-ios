@@ -34,8 +34,8 @@ class Vector;
 #include <deque>	// STL container
 #include <string>	// STL string
 
-#define	USECODE_FUNCTION(NAME)	Usecode_value	Usecode_machine::UI_ ## NAME ## (int event,int intrinsic,Usecode_value parms[12])
-#define	USECODE_FUNCTION_DECL(NAME)	Usecode_value	UI_ ## NAME ## (int event,int intrinsic,Usecode_value parms[12])
+#define	USECODE_FUNCTION(NAME)	Usecode_value	Usecode_machine::UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
+#define	USECODE_FUNCTION_DECL(NAME)	Usecode_value	UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 #define	USECODE_FUNCTION_PTR(NAME)	&Usecode_machine::UI_ ## NAME
 
 /*
@@ -268,6 +268,11 @@ public:
 	USECODE_FUNCTION_DECL(get_item_shape);
 	USECODE_FUNCTION_DECL(get_item_frame);
 	USECODE_FUNCTION_DECL(set_item_frame);
+	USECODE_FUNCTION_DECL(get_item_quality);
+	USECODE_FUNCTION_DECL(set_item_quality);
+        USECODE_FUNCTION_DECL(count_npc_inventory);
+        USECODE_FUNCTION_DECL(set_npc_inventory_count);
+        USECODE_FUNCTION_DECL(get_object_position);
 
 
 
