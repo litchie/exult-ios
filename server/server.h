@@ -7,7 +7,7 @@
 #ifndef INCL_SERVER
 #define INCL_SERVER 1
 /*
-Copyright (C) 2000-2001 The Exult Team
+Copyright (C) 2000-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -29,8 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 #ifdef USE_EXULTSTUDIO
 
+typedef void(*Message_handler)(int&);
+
 extern int client_socket;
 extern void Server_init();
+extern void Server_delay(Message_handler handle_message);
 extern void Server_delay();
 
 #endif	/* USE_EXULTSTUDIO */

@@ -35,26 +35,6 @@ using std::cout;
 using std::endl;
 
 /*
- *	Encode.
- */
-class Serial_out
-	{
-	unsigned char *& buf;
-public:
-	Serial_out(unsigned char *& b) : buf(b)
-		{  }
-	Serial_out& operator<<(int v)
-		{ Write4(buf, v); return *this; }
-	Serial_out& operator<<(unsigned long v)
-		{ Write4(buf, v); return *this; }
-	Serial_out& operator<<(short v)
-		{ Write2(buf, v); return *this; }
-	Serial_out& operator<<(bool v)
-		{ *buf++ = (v ? 1 : 0); return *this; }
-	Serial_out& operator<<(std::string& s);
-	};
-
-/*
  *	Write out a string.
  */
 Serial_out& Serial_out::operator<<
@@ -70,25 +50,6 @@ Serial_out& Serial_out::operator<<
 	return *this;
 	}
 
-/*
- *	Decode.
- */
-class Serial_in
-	{
-	unsigned char *& buf;
-public:
-	Serial_in(unsigned char *& b) : buf(b)
-		{  }
-	Serial_in& operator<<(int& v)
-		{ v = Read4(buf); return *this; }
-	Serial_in& operator<<(unsigned long& v)
-		{ v = Read4(buf); return *this; }
-	Serial_in& operator<<(short& v)
-		{ v = Read2(buf); return *this; }
-	Serial_in& operator<<(bool &v)
-		{ v = *buf++ ? true : false; return *this; }
-	Serial_in& operator<<(std::string& s);
-	};
 
 /*
  *	Read in a string.

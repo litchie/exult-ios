@@ -8,7 +8,7 @@
 #ifndef INCL_SERVEMSG
 #define INCL_SERVEMSG 1
 /*
-Copyright (C) 2000-2001 The Exult Team
+Copyright (C) 2000-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -66,7 +66,8 @@ enum Msg_type
 	set_edit_shape = 18,		// Set shape/frame to 'paint' with.
 	view_pos = 19,			// Tile loc., size, scale of what's
 					//   shown in gamewin.  Sent both ways.
-	set_edit_mode = 20		// Move(0), paint(1), select(2).
+	set_edit_mode = 20,		// Move(0), paint(1), select(2).
+	usecode_debugging = 128
 	};
 
 // I/O routines:

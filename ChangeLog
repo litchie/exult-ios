@@ -1,6 +1,10 @@
 2002-03-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* usecode/useval.*: fixed stupid output bug
 	* usecode/useval.*: serialize arrays & pointers
+	* server/objserial.*: move Serial_in, Serial_out class to header
+	* server/server.*: Server_delay() now accepts a custom
+	message handling function. (default is still Handle_client_message)
+	* server/servemsg.*: added usecode_debugging message type
 
 2002-03-28  Jeff Freedman  <jeff@amy.nerble.net>
 

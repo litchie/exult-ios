@@ -5,7 +5,7 @@
  **/
 
 /*
-Copyright (C) 2000-2001 The Exult Team
+Copyright (C) 2000-2002 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -26,9 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>	// All the ifdefs aren't useful if we don't do this
 #endif
 
-/*
- *	For the time being, we'll only inflict this on X users.
- */
+// only if compiled with "exult studio support"
 #ifdef USE_EXULTSTUDIO
 
 #include <unistd.h>
@@ -70,6 +68,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "chunkter.h"
 #include "cheat.h"
 #include "objserial.h"
+
+#ifdef USECODE_DEBUGGER
+#include "debugserver.h"
+#endif
 
 #ifdef WIN32
 #include "servewin32.h"
@@ -200,6 +202,7 @@ void Server_close
 	// unlink socket file+++++++
 #endif
 	}
+
 
 /*
  *	A message from a client is available, so handle it.
@@ -368,6 +371,11 @@ static void Handle_client_message
 			cheat.set_edit_mode((Cheat::Map_editor_mode) md);
 		break;
 		}
+#ifdef USECODE_DEBUGGER
+	case Exult_server::usecode_debugging:
+		Handle_debug_message(&data[0], datalen);
+		break;
+#endif
 		}
 	}
 
@@ -378,6 +386,7 @@ static void Handle_client_message
 
 void Server_delay
 	(
+	 Message_handler handle_message
 	)
 	{
 #ifndef WIN32
@@ -410,7 +419,7 @@ void Server_delay
 			}
 		if (client_socket >= 0 && FD_ISSET(client_socket, &rfds))
 			{
-			Handle_client_message(client_socket);
+			handle_message(client_socket);
 					// Client gone?
 			if (client_socket == -1)
 				Set_highest_fd();
@@ -420,7 +429,7 @@ void Server_delay
 	if (listen_socket == -1) return;
 
 	if (Exult_server::is_broken()) {
-		std::cout << "Client disconneted." << endl;
+		std::cout << "Client disconnected." << endl;
 		Exult_server::disconnect_from_client();
 		Exult_server::setup_connect();
 		client_socket = -1;
@@ -439,10 +448,10 @@ void Server_delay
 	}
 
 	if (Exult_server::peek_pipe() > 0)
-		Handle_client_message(client_socket);
+		handle_message(client_socket);
 		
 	if (Exult_server::is_broken()) {
-		if (Exult_server::notify_connection_lost()) std::cout << "Client disconneted." << endl;
+		if (Exult_server::notify_connection_lost()) std::cout << "Client disconnected." << endl;
 		Exult_server::disconnect_from_client();
 		Exult_server::setup_connect();
 		client_socket = -1;
@@ -450,5 +459,10 @@ void Server_delay
 #endif
 
 	}
+
+void Server_delay()
+{
+	Server_delay(Handle_client_message);
+}
 
 #endif
