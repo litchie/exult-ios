@@ -51,6 +51,8 @@ public:
 					// Handle events:
 	virtual void mouse_down(int mx, int my) = 0;
 	virtual void mouse_up(int mx, int my) = 0;
+	virtual void mousewheel_down() { }
+	virtual void mousewheel_up() { }
 	virtual void mouse_drag(int mx, int my)
 		{  }
 	virtual void key_down(int chr)	// Character typed.

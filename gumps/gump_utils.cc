@@ -75,6 +75,10 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 		if (event.button.button == 1)
 			gump->mouse_down(event.button.x / scale_factor, 
 						event.button.y / scale_factor);
+		else if (event.button.button == 4) // mousewheel up
+			gump->mousewheel_up();
+		else if (event.button.button == 5) // mousewheel down
+			gump->mousewheel_down();
 		else if (event.button.button == 2 && Game_window::get_game_window()->get_mouse3rd())
 			gump->key_down(SDLK_RETURN);
 		break;
