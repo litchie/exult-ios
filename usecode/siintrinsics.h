@@ -238,7 +238,7 @@
 	USECODE_INTRINSIC_PTR(set_item_flag),			// 0xA4 - Known
 	USECODE_INTRINSIC_PTR(clear_item_flag),			// 0xA5 - Known
 	
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xa6
+	USECODE_INTRINSIC_PTR(get_skin_colour),			// 0xa6
 	USECODE_INTRINSIC_PTR(set_path_failure),		// 0xa7 
 	USECODE_INTRINSIC_PTR(fade_palette),			// 0xa8
 	// This one is used just for sleeping:
