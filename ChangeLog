@@ -1,3 +1,10 @@
+2001-11-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc (Actor): Restored old walking frames, as they look
+	more like the original.   (Both pieces of code are still there, so
+	maybe this should be an exult.cfg option.)
+	* schedule.cc (Sit_schedule): Check for free spot before sitting.
+
 2001-11-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gump_utils.cc, Modal_gump.h, Newfile_gump.*: added mousewheel support
 	to new file gump (mousewheel = scroll lines, alt-mousewheel = pages)
@@ -16,6 +23,8 @@
 	* added 'walk after teleport'-option for si
 	  
 2001-11-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* schedule.cc (public): Check for chair being moved.
 
 	* npctime.cc (Npc_timer_list): Paralyze timer.
 
