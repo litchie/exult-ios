@@ -1103,9 +1103,9 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Fire Wand
 	{     630, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_FIREWAND_SHP,     0 },
 	{     630, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_FIREWAND_SHP,     1 },
-	// Custom sword **NEEDS ART** ??? (currently Dragon Slayer Sword)
-	{     635, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,    143,     0 },
-	{     635, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,    143,     1 },
+	// Custom sword
+	{     635, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_CUSTOM_SWORD_SHP,     0 },
+	{     635, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_CUSTOM_SWORD_SHP,     1 },
 	// Serpentine Dagger
 	{     636, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     95,     0 },
 	{     636, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     95,     1 },
