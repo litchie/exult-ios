@@ -68,9 +68,13 @@ public:
 		{ return -1; }
 	virtual Game_object *get_readied(int index) const
 		{ return 0; }
+	virtual void call_readied_usecode(Game_window *gwin, int index,
+					Game_object *obj, int eventid)
+		{  }
 					// Add/remove quantities of objs.
-	virtual int add_quantity(int delta, int shapenum, int qual = c_any_qual,
-				int framenum = c_any_framenum, int dontcreate = 0);
+	virtual int add_quantity(int delta, int shapenum, 
+			int qual = c_any_qual,
+			int framenum = c_any_framenum, int dontcreate = 0);
 	virtual int create_quantity(int delta, int shapenum, int qual,
 					int framenum, bool temporary = false);
 	virtual int remove_quantity(int delta, int shapenum, int qual,

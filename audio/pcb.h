@@ -405,12 +405,16 @@ public:
 			repeat(false),
 			type(0), seq(0), volume(SDL_MIX_MAXVOLUME), dir(0)
 		{
+#ifdef DEBUG
 		mycounter = counter++;
 		COUT("Created PCB " << mycounter);
+#endif
 		 }
 	~ProducerConsumerBuf()
 		{
+#ifdef DEBUG
 		COUT("::"<<mycounter<<" ProducerConsumerBuf going away");
+#endif
 		SDL_DestroyMutex(mutex);
 		}
 	uint32	get_type(void) const
@@ -419,14 +423,16 @@ public:
 		{ return seq; }
 	void	end_production(void)
 		{
+#ifdef DEBUG
 		COUT("::" << mycounter << " end_production");
+#endif
 		lock();
 		producing=false;
 		unlock();
 		}
 	void	end_consumption(void)
 		{
-#if !defined(MACOS)
+#if !defined(MACOS) && defined(DEBUG)
 		// As always, no use of cerr etc. on MacOS during Audio Interrupt!
 		COUT("::"<<mycounter<<" end_consumption");
 #endif
