@@ -296,7 +296,7 @@ void Uc_call_expression::gen_value
 	{
 	if (!sym)
 		return;			// Already failed once.
-	if (!sym->gen_call(out, parms, true))
+	if (!sym->gen_call(out, function, parms, return_value))
 		{
 		char buf[150];
 		sprintf(buf, "'%' isn't a function or intrinsic",

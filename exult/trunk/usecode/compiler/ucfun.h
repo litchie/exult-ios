@@ -35,13 +35,14 @@ class ostream;
  */
 class Uc_function
 	{
-	static Uc_scope intrinsics;	// For finding intrinsics.
+	static Uc_scope globals;	// For finding intrinsics, funs.
 	Uc_scope top;			// Top-level scope.
 	Uc_function_symbol *proto;	// Function declaration.
 	Uc_scope *cur_scope;		// Current scope.
 	int num_parms;			// # parameters.
 	int num_locals;			// Counts locals.
-	int num_links;			// # links to external functions.
+					// Links to called functions:
+	vector<Uc_function_symbol *> links;
 	char *text_data;		// All strings.
 	int text_data_size;
 	Uc_statement *statement;	// Statement(s) in function.
@@ -67,12 +68,14 @@ public:
 	Uc_symbol *search_up(char *nm)
 		{ 
 		Uc_symbol *sym = cur_scope->search_up(nm);
-		return (sym ? sym : intrinsics.search(nm));
+		return (sym ? sym : globals.search(nm));
 		}
 	Uc_var_symbol *add_symbol(char *nm);// Add symbol to current scope.
 					// Add string constant.
 	Uc_symbol *add_string_symbol(char *nm, char *text);
 	int add_string(char *text);
+					// Link external function.
+	int link(Uc_function_symbol *fun);
 	void gen(ostream& out);		// Generate Usecode.
 	};
 

@@ -4,6 +4,11 @@
 
 adder 0x480 (a, b)
 	{
+	return a + b;
+	}
+
+adder1 0x481 (a, b)
+	{
 	var c;
 	var d;
 	string hello = "Hello, Avatar!";
@@ -21,5 +26,5 @@ adder 0x480 (a, b)
 	c = UcItem;
 	UcEvent = UcEvent + 7;
 	c = UI_get_item_flag(UcItem, 10);
-	return c;
+	return adder(a, 3);
 	}

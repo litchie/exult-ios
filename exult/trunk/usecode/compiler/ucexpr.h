@@ -207,12 +207,18 @@ class Uc_call_expression : public Uc_expression
 	{
 	Uc_symbol *sym;			// Function or intrinsic.
 	Uc_array_expression *parms;
+	Uc_function *function;		// May need function this is in.
+	bool return_value;		// True for a function (to return
+					//   its value).
 public:
-	Uc_call_expression(Uc_symbol *s, Uc_array_expression *prms)
-		: sym(s), parms(prms)
+	Uc_call_expression(Uc_symbol *s, Uc_array_expression *prms,
+						Uc_function *fun)
+		: sym(s), parms(prms), function(fun), return_value(true)
 		{  }
 	~Uc_call_expression()
 		{ delete parms; }
+	void set_no_return()
+		{ return_value = false; }
 					// Gen. code to put result on stack.
 	virtual void gen_value(ostream& out);
 	};
