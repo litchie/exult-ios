@@ -235,6 +235,20 @@ Actor *Usecode_machine::as_actor
 	}
 
 /*
+ *	Check for an actor.
+ */
+
+Npc_actor *Usecode_machine::as_npcactor
+	(
+	Game_object *obj
+	)
+	{
+	if (!obj)
+		return 0;
+	return (dynamic_cast<Npc_actor *> (obj));
+	}
+
+/*
  *	Get a position.
  */
 

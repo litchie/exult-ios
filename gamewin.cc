@@ -67,6 +67,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Spellbook_gump.h"
 #include "Stats_gump.h"
 
+#include "cheat.h"
+
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -94,7 +96,7 @@ Game_window *Game_window::game_window = 0;
 
 Game_window::Game_window
 	(
-	int width, int height, int scale		// Window dimensions.
+	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
 	    win(0), usecode(0), mode(splash), combat(false),
             tqueue(new Time_queue()), clock(tqueue),
@@ -118,11 +120,11 @@ Game_window::Game_window
 	for (int i=0; i<5; i++)
 		extra_fonts[i] = NULL;
 
-	set_window_size(width, height, scale);
+	set_window_size(width, height, scale, scaler);
 
 	}
 
-void Game_window::set_window_size(int width, int height, int scale)
+void Game_window::set_window_size(int width, int height, int scale, int scaler)
 {
 	if(win) {
 		delete win;
@@ -134,7 +136,7 @@ void Game_window::set_window_size(int width, int height, int scale)
 	if(fullscreenstr=="yes")
 		fullscreen=true;
 	config->set("config/video/fullscreen",fullscreenstr,true);
-	win = new Image_window8(width, height, scale, fullscreen);
+	win = new Image_window8(width, height, scale, fullscreen, scaler);
 	win->set_title("Exult Ultima7 Engine");
 	
 }
@@ -403,10 +405,11 @@ void Game_window::resized
 	(
 	unsigned int neww, 
 	unsigned int newh,
-	unsigned int newsc
+	unsigned int newsc,
+	unsigned int newsclr
 	)
 	{			
-	win->resized(neww, newh, newsc);
+	win->resized(neww, newh, newsc, newsclr);
 	// Do the following only if in game (not for menus)
 	if(usecode) {
 		center_view(get_main_actor()->get_abs_tile_coord());
@@ -1145,7 +1148,7 @@ void Game_window::init_actors
 	read_npcs();			// Read in all U7 NPC's.
 
 	// Was a name, sex or skincolor set in Game
-
+	// this bascially detects 
 	bool	changed = false;
 
 	
@@ -1158,7 +1161,11 @@ void Game_window::init_actors
 	Game::clear_avskin();
 
 	// Update gamedat if there was a change
-	if (changed) write_npcs();
+	if (changed)
+		{
+		if (Game::get_game_type() == SERPENT_ISLE) schedule_npcs(2,7);
+		write_npcs();
+		}
 
 	}
 	
@@ -1247,6 +1254,9 @@ void Game_window::read
 	try
 	{
 		usecode->read();		// Usecode.dat (party, global flags).
+
+		if (Game::get_game_type() == SERPENT_ISLE)
+			usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
 
 		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
 			main_actor->clear_flag(Obj_flags::dont_render);
@@ -1580,11 +1590,12 @@ void Game_window::start_actor_alt
 	int dir;
 	
 	// Check to see if we are allowed to move, if not, stop moving and return
-	if (main_actor->get_siflag(Actor::dont_move))
-	{
-		stop_actor();
-		return;
-	}
+	// Too buggy at the moment, don't do it
+	//if (main_actor->get_siflag(Actor::dont_move))
+	//{
+	//	stop_actor();
+	//	return;
+	//}
 
 	for (dir = 0; dir < 8; dir++)
 	{
@@ -2021,10 +2032,23 @@ void Game_window::show_items
 		obj = gump->find_object(x, y);
 	else				// Search rest of world.
 		obj = find_object(x, y);
-	if (obj)
+
+	// Do we want the NPC number?
+	if (obj && cheat.number_npcs() && (obj->get_npc_num() > 0 || obj==main_actor))
+	{
+		char str[8];
+		snprintf (str, 8, "%i\n", obj->get_npc_num());
+		add_text(str, x, y, obj);
+	}
+	else if (obj)
 					// Show name.
 		add_text(obj->get_name().c_str(), x, y, obj);
-//++++++++Testing
+
+	// If it's an actor and we want to grab the actor, grab it.
+	if (obj && cheat.grabbing_actor() && (obj->get_npc_num() || obj==main_actor))
+		cheat.set_grabbed_actor (static_cast<Actor *>(obj));
+
+	//++++++++Testing
 #if 1
 	int shnum, frnum;
 	if (obj)
@@ -2612,14 +2636,15 @@ void Game_window::setup_game
 				// schedules and positions.
 
 	usecode->read();		// Read the usecode flags
-	string yn;			// Override from config. file.
-					// Skip intro. scene?
-	config->value("config/gameplay/skip_intro", yn, "no");
-	if ((yn == "yes"))
-		usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
 
 	if (Game::get_game_type() == BLACK_GATE)
 	{
+		string yn;		// Override from config. file.
+					// Skip intro. scene?
+		config->value("config/gameplay/skip_intro", yn, "no");
+		if (yn == "yes")
+			usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
+
 					// Have Trinsic password?
 		config->value("config/gameplay/have_trinsic_password", yn, "no");
 		if (yn == "yes")
@@ -2631,6 +2656,8 @@ void Game_window::setup_game
 		else
 			main_actor->set_flag(Obj_flags::dont_render);
 	}
+	else
+		usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
 
 	faded_out = 0;
 	clock.set_palette();		// Set palette for time-of-day.

@@ -173,6 +173,8 @@ public:
 	inline static int GetFaceShape(int shape, int frame, int spot)
 		{ return GetItemInfo(shape, frame, spot)!=NULL?true:false; }
 
+	inline static bool IsNPCFemale(int shape)
+	{ return GetCharacterInfo(shape)?GetCharacterInfo(shape)->is_female:true; }
 
 	// Non Statics
 

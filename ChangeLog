@@ -1,3 +1,19 @@
+2001-02-12  Ryan Nunn <triforce@merlin.net.au>
+	* makefile.* : cheat_screen.cc
+	* NEWS, exult.cc, imagewin/*.* : Multiple Scalers.
+	* actors*.* : Polymorph debugging, Schedules Changing, Pick pocket
+	* NEWS, cheat.*, key*.*, data/defaultkeys.txt : New cheats (cheat
+	  screen, pick pocket, grab npc, npc number)
+	* cheat_screen.* : Cheat screen for advanced options. Includes NPC
+	  schedules changes, flag modifying, info, time rate/set. 
+	* fnames.cc, gamedat.cc, readnpc.cc : Schedule.dat in GAMEDAT dir
+	* gameclk.cc : Schedules in SI always search back
+	* gamewin.* : SI Schedule
+	* schedule.* : Writing and modifying Schedule_change objects
+	* gumps/paperdoll_gump*.* : Bug fixes
+	* objs/iregobjs.cc : So grab npc wont cause problems if NPC removed
+	* usecode/*.* : More SI Intrinsic work
+
 2001-02-11  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* data/black_gate.shp, data/serpent_isle.shp: updated menu entries 
 	  like someone requested a loooong time ago

@@ -102,6 +102,10 @@ struct Action {
   { ActionWizard, "Toggle archwizard mode", true, true, NONE },
   { ActionHeal, "Heal party", true, true, NONE },
   { ActionLevelup, "Level-up party", true, true, NONE },
+  { ActionCheatScreen, "Cheat Screen", true, true, NONE },
+  { ActionPickPocket, "Toggle Pick Pocket", true, true, NONE },
+  { ActionNPCNumbers, "Toggle NPC Numbers", true, true, NONE },
+  { ActionGrabActor, "Grab NPC for Cheat Screen", true, true, NONE },
 
   { ActionPlayMusic, "Play song", false, true, NONE },
   { ActionNaked, "Toggle naked mode", true, true, SERPENT_ISLE },
@@ -401,7 +405,7 @@ void KeyBinder::LoadFromFile(const char* filename)
   clog << "Loading keybindings from file " << filename << endl;
 #endif
 
-  U7open(keyfile, filename);
+  U7open(keyfile, filename, true);
   char temp[1024]; // 1024 should be long enough
   while(!keyfile.eof()) {
     keyfile.getline(temp, 1024);
@@ -531,6 +535,10 @@ void KeyBinder::FillParseMaps()
   codes["TOGGLE_WIZARD_MODE"] = ACTION_TOGGLE_WIZARD_MODE;
   codes["PARTY_HEAL"] = ACTION_PARTY_HEAL;
   codes["PARTY_INCREASE_LEVEL"] = ACTION_PARTY_INCREASE_LEVEL;
+  codes["CHEAT_SCREEN"] = ACTION_CHEAT_SCREEN;
+  codes["PICK_POCKET"] = ACTION_PICK_POCKET;
+  codes["NPC_NUMBERS"] = ACTION_NPC_NUMBERS;
+  codes["GRAB_ACTOR"] = ACTION_GRAB_ACTOR;
   
   codes["PLAY_MUSIC"] = ACTION_PLAY_MUSIC;
   codes["TOGGLE_NAKED"] = ACTION_TOGGLE_NAKED;

@@ -325,7 +325,9 @@ class Schedule_change
 public:
 	Schedule_change() : time(0), type(0), x(0), y(0), superchunk(0)
 		{  }
-	void set(unsigned char *ent);	// Create from 5-byte entry.
+	void set(unsigned char *ent);	// Create from 4-byte entry.
+	void get(unsigned char *ent);	// Get 4-byte entry.
+	void set(int ax, int ay, unsigned char stype, unsigned char stime);
 	int get_type() const
 		{ return type; }
 	int get_time() const

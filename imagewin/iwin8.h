@@ -46,7 +46,7 @@ class Image_window8 : public Image_window
 	static GammaTable<unsigned char>	GammaBlue;
 public:
 	Image_window8(unsigned int w, unsigned int h, int scl = 1, 
-							bool fs = false);
+							bool fs = false, int sclr = point);
 	~Image_window8();
 
 	Image_buffer8 *get_ib8() const

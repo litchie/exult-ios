@@ -162,6 +162,7 @@ void Game_window::write_npcs
 	if (!result)
 		throw file_write_exception(NPC_DAT);
 	nfile.close();
+	write_schedules();		// Write schedules
 					// Now write out monsters in world.
 	U7open(nfile, MONSNPCS);
 	int cnt = 0;
@@ -191,7 +192,17 @@ void Game_window::read_schedules
 	)
 	{
 	ifstream sfile;
-	U7open(sfile, SCHEDULE_DAT);
+
+	try
+	{
+		U7open(sfile, GSCHEDULE);
+	}
+	catch(...)
+	{
+		cerr << "Couldn't Open "<< GSCHEDULE << ", trying " << SCHEDULE_DAT << endl;
+		U7open(sfile, SCHEDULE_DAT);
+	}
+
 	int num_npcs = Read4(sfile);	// # of NPC's, not include Avatar.
 
 	short *offsets = new short[num_npcs];
@@ -203,6 +214,7 @@ void Game_window::read_schedules
 					// Avatar isn't included here.
 		Npc_actor *npc = (Npc_actor *) npcs[i + 1];
 		int cnt = offsets[i + 1] - offsets[i];
+		//if (!cnt) continue;	// If none, don't try
 					// Read schedules into this array.
 		Schedule_change *schedules = new Schedule_change[cnt];
 		for (int j = 0; j < cnt; j++)
@@ -215,6 +227,48 @@ void Game_window::read_schedules
 		npc->set_schedules(schedules, cnt);
 		}
 	delete [] offsets;		// Done with this.
+	cout.flush();
 	}
 
+
+/*
+ *	Write NPC schedules.
+ */
+
+void Game_window::write_schedules ()
+{
+
+	ofstream sfile;
+	Schedule_change *schedules;
+	int cnt;
+	short offset = 0;
+	int i;
+	int num;
+
+	// So do I allow for all NPCs (type1 and type2) - Yes i will
+	num = num_npcs;
+
+	U7open(sfile, GSCHEDULE);
+
+	Write4(sfile, num);		// # of NPC's, not include Avatar.
+	Write2(sfile, 0);		// First offfset
+
+	for (i = 1; i < num; i++)	// write offsets with list of scheds.
+	{
+		npcs[i]->get_schedules(schedules, cnt);
+		offset += cnt;
+		Write2(sfile, offset);
+	}
+
+	for (i = 1; i < num; i++)	// Do each NPC, except Avatar.
+	{
+		npcs[i]->get_schedules(schedules, cnt);
+		for (int j = 0; j < cnt; j++)
+		{
+			unsigned char ent[4];
+			schedules[j].get(ent);
+			sfile.write((char*)ent, 4);
+		}
+	}
+}
 

@@ -149,14 +149,14 @@ public:
 	int skip_lift;			// Skip objects with lift > 0.
 	bool paint_eggs;
 	int debug;
-	Game_window(int width = 0, int height = 0, int scale = 1);
+	Game_window(int width = 0, int height = 0, int scale = 1, int scaler = 0);
 	~Game_window();
 					// Get the one game window.
 	static Game_window *get_game_window()
 		{ return game_window; }
 	void clear_screen();
 		
-	void set_window_size(int w, int h, int s);
+	void set_window_size(int w, int h, int s, int sclr);
 	void abort(const char *msg, ...);	// Fatal error.
 	int get_width()
 		{ return win->get_width(); }
@@ -274,7 +274,7 @@ public:
 		{ return combat; }
 	void toggle_combat();
 					// Resize event occurred.
-	void resized(unsigned int neww, unsigned int newh, unsigned int newsc);
+	void resized(unsigned int neww, unsigned int newh, unsigned int newsc, unsigned int newsclr);
 	inline void set_painted()		// Force blit.
 		{ painted = 1; }
 	inline bool was_painted()
@@ -564,6 +564,7 @@ public:
 	void read_npcs();		// Read in npc's.
 	void write_npcs();		// Write them back.
 	void read_schedules();		// Read npc's schedules.
+	void write_schedules();		// Write npc's schedules.
 					// Start dragging.
 	bool start_dragging(int x, int y);
 	bool drag(int x, int y);	// During dragging.
@@ -613,5 +614,4 @@ private:
 
 
 	};
-
 #endif

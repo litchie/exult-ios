@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Game_window;
 class ShapeBrowser;
 class SoundTester;
+class CheatScreen;
+class Actor;
 
 class Cheat
 {
@@ -36,11 +38,15 @@ private:
   Game_window *gwin;
   ShapeBrowser *browser;
   SoundTester *tester;
+  CheatScreen *cscreen;
 
   bool god_mode;
   bool wizard_mode;
   bool map_editor;
   bool infravision;
+  bool pickpocket;
+  bool grab_actor;
+  bool npc_numbers;
 
   bool enabled;
 
@@ -52,6 +58,7 @@ public:
   bool in_wizard_mode (void) const { return wizard_mode; }
   bool in_map_editor(void) const { return map_editor; }
   bool in_infravision (void) const { return infravision; }
+  bool in_pickpocket (void) const {return pickpocket; }
   
   void toggle_god (void);
   void set_god (bool god) { god_mode = god; }
@@ -61,6 +68,8 @@ public:
   void set_map_editor (bool map) { map_editor = map; }
   void toggle_infravision (void);
   void set_infravision (bool infra) { infravision = infra; }
+  void toggle_pickpocket (void);
+  void set_pickpocket (bool pick) { pickpocket = pick; }
 
   void toggle_eggs (void) const;
   void change_gender (void) const;
@@ -84,6 +93,19 @@ public:
   void delete_object (void) const;
   void shape_browser (void) const;
   void sound_tester (void) const;
+
+  void cheat_screen (void) const;
+
+  bool grabbing_actor (void) const { return grab_actor; }
+  void toggle_grab_actor(void);
+  void set_grab_actor(bool grab) { grab_actor = grab; }
+  void set_grabbed_actor (Actor *actor) const;
+
+  bool number_npcs (void) const { return npc_numbers; }
+  void toggle_number_npcs(void);
+  void set_number_npcs(bool num) { npc_numbers = num; }
 };
+
+extern Cheat cheat;
 
 #endif

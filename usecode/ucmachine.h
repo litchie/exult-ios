@@ -36,6 +36,7 @@ class Text_gump;
 class Vector;
 class Deleted_objects;
 class Actor;
+class Npc_actor;
 class Usecode_machine;
 class Conversation;
 class Usecode_value;
@@ -120,8 +121,9 @@ private:
 	Conversation *conv;		// Handles conversations
 					// Get ->obj. from 'itemref'.
 	Game_object *get_item(Usecode_value& itemref);
-					// "Safe" cast to Actor.
+					// "Safe" cast to Actor and Npc_actor.
 	Actor *as_actor(Game_object *obj);
+	Npc_actor *as_npcactor(Game_object *obj);
 					// Get position.
 	Tile_coord get_position(Usecode_value& itemref);
 	/*
@@ -315,12 +317,13 @@ private:
 	USECODE_INTRINSIC_DECL(si_path_run_usecode);
 	USECODE_INTRINSIC_DECL(error_message);
 	USECODE_INTRINSIC_DECL(set_polymorph);
-	USECODE_INTRINSIC_DECL(teleport);
-	USECODE_INTRINSIC_DECL(prev_schedule);
 	USECODE_INTRINSIC_DECL(show_npc_face0);
 	USECODE_INTRINSIC_DECL(show_npc_face1);
 	USECODE_INTRINSIC_DECL(remove_last_face);
 	USECODE_INTRINSIC_DECL(set_conversation_slot);
+	USECODE_INTRINSIC_DECL(run_schedule);
+	USECODE_INTRINSIC_DECL(set_new_schedules);
+	USECODE_INTRINSIC_DECL(add_removed_npc);
 
 	/*
 	 *	Other private methods:
