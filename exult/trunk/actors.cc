@@ -1758,7 +1758,18 @@ void Npc_actor::update_schedule
 	{
 	int i = find_schedule_change(hour3);
 	if (i < 0)
-		return;
+		{
+		long hour = gwin->get_total_hours();
+		if (hour != 12)		// Noon of first day?
+			return;
+					// Check for 9am or 6am schedule.
+		if ((i = find_schedule_change(9/3)) == -1 &&
+		    (i = find_schedule_change(6/3)) == -1)
+			return;		// No schedule.
+		if (schedule_type == schedules[i].get_type())
+			return;		// Already in it.
+					// Put that schedule in effect now.
+		}
 	stop();				// Stop moving.
 	if (schedule)			// End prev.
 		schedule->ending(schedules[i].get_type());
