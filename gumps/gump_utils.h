@@ -74,7 +74,6 @@ inline void Delay
 	/*
 	 *	Here's a somewhat better way to delay in X:
 	 */
-	static Display *display = 0;
 	static int xfd = -1;			// X connection #.
 
 	fd_set rfds;
