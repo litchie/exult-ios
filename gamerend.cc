@@ -393,9 +393,9 @@ int Game_render::paint_chunk_objects
 	Game_object *obj;
 	Game_window *gwin = Game_window::get_instance();
 	Map_chunk *olist = gwin->map->get_chunk(cx, cy);
-	int light_sources = 0;		// Also check for light sources.
-//	if (is_main_actor_inside() && olist->is_roof()) +++++Correct??
-		light_sources += olist->get_light_sources();
+	int light_sources =		// Also check for light sources.
+			gwin->is_in_dungeon() ? olist->get_dungeon_lights()
+					: olist->get_non_dungeon_lights();
 	skip = gwin->get_render_skip_lift();
 	Nonflat_object_iterator next(olist);
 
