@@ -71,7 +71,8 @@ void Actor::ready_best_weapon
 	)
 	{
 	int hand = free_hand();		// Find a free hand.
-	if (hand == -1 || Actor::get_weapon_points() > 0)
+	int points;
+	if (hand == -1 || Actor::get_weapon(points) != 0)
 		return;			// Already have one (or hands full).
 	Game_window *gwin = Game_window::get_game_window();
 	Vector vec(0, 50);		// Get list of all possessions.
@@ -882,24 +883,31 @@ int Actor::get_armor_points
  *	Get weapon value.
  */
 
-int Actor::get_weapon_points
+Weapon_info *Actor::get_weapon
 	(
+	int& points
 	)
 	{
-	int points = 0;
+	points = 0;
+	Weapon_info *winf = 0;
 	Game_window *gwin = Game_window::get_game_window();
 	Game_object *weapon = spots[(int) lhand];
 	if (weapon)
-		points = gwin->get_info(weapon).get_weapon_damage();
+		if ((winf = gwin->get_info(weapon).get_weapon_info()) != 0)
+			points = winf->get_damage();
 					// Try both hands.
 	weapon = spots[(int) rhand];
 	if (weapon)
 		{
-		int rpoints = gwin->get_info(weapon).get_weapon_damage();
-		if (rpoints > points)
+		Weapon_info *rwinf = gwin->get_info(weapon).get_weapon_info();
+		int rpoints;
+		if (rwinf && (rpoints = rwinf->get_damage()) > points)
+			{
+			winf = rwinf;
 			points = rpoints;
+			}
 		}
-	return points;
+	return winf;
 	}
 
 /*
@@ -910,26 +918,41 @@ int Actor::get_weapon_points
 
 int Actor::figure_hit_points
 	(
-	Actor *attacker
+	Actor *attacker,
+	int weapon_shape
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	int armor = get_armor_points();
-	int weapon = attacker->get_weapon_points();
-	if (!weapon)
-		weapon = 1;
+	int wpoints;
+	Weapon_info *winf;
+	if (weapon_shape > 0)
+		{
+		winf = gwin->get_info(weapon_shape).get_weapon_info();
+		wpoints = winf ? winf->get_damage() : 0;
+		}
+	else
+		winf = attacker->get_weapon(wpoints);
+	int usefun;			// See if there's usecode for it.
+	if (winf && (usefun = winf->get_usecode()) != 0)
+		gwin->get_usecode()->call_usecode(usefun, this,
+					Usecode_machine::weapon);
+	if (!wpoints && (!winf || !winf->get_special_atts()))
+		return 0;		// No harm can be done.
 	int attacker_level = attacker->get_level();
-	int prob = 30 + attacker_level + 
+	int prob = 40 + attacker_level + 
 			attacker->get_property((int) combat) +
 			attacker->get_property((int) dexterity) -
 			get_property((int) dexterity) +
-			weapon - armor;
+			wpoints - armor;
 	cout << "Hit probability is " << prob << endl;
 	if (rand()%100 > prob)
 		return 0;		// Missed.
+					// +++++Do special atts. too.
 					// Compute hit points to lose.
 	int hp = attacker->get_property((int) strength)/4 +
 			(rand()%attacker_level) +
-			weapon - armor;
+			wpoints - armor;
 	if (hp < 1)
 		hp = 1;
 	int oldhealth = properties[(int) health];
@@ -950,10 +973,11 @@ int Actor::figure_hit_points
 
 void Actor::attacked
 	(
-	Actor *attacker
+	Actor *attacker,
+	int weapon_shape		// Weapon shape, or 0 to use readied.
 	)
 	{
-	figure_hit_points(attacker);
+	figure_hit_points(attacker, weapon_shape);
 	if (is_dead_npc())
 		{
 		die();
@@ -1621,17 +1645,24 @@ int Monster_actor::get_armor_points
  *	Get weapon value.
  */
 
-int Monster_actor::get_weapon_points
+Weapon_info *Monster_actor::get_weapon
 	(
+	int& points
 	)
 	{
 	Monster_info *inf = get_info();
 					// Kind of guessing here.
-	int points = Actor::get_weapon_points();
-	if (!points)			// No readied weapon?
-		return inf ? inf->weapon/4 : 0;
-	else
-		return points;
+	Weapon_info *winf = Actor::get_weapon(points);
+	if (!winf)			// No readied weapon?
+		{			// Look up monster itself.
+		Game_window *gwin = Game_window::get_game_window();
+		winf = gwin->get_info(get_shapenum()).get_weapon_info();
+		if (winf)
+			points = winf->get_damage();
+		else			// Guessing:
+			points = inf ? inf->weapon/4 : 0;
+		}
+	return winf;
 	}
 
 /*

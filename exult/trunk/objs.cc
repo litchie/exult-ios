@@ -815,6 +815,29 @@ int Game_object::lt
 	}
 
 /*
+ *	Being attacked.
+ */
+
+void Game_object::attacked
+	(
+	Actor *attacker,
+	int weapon_shape		// Weapon shape, or 0 to use readied.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int wpoints;
+	Weapon_info *winf;
+	if (weapon_shape > 0)
+		winf = gwin->get_info(weapon_shape).get_weapon_info();
+	else
+		winf = attacker->get_weapon(wpoints);
+	int usefun;			// Run usecode if present.
+	if (winf && (usefun = winf->get_usecode()) != 0)
+		gwin->get_usecode()->call_usecode(usefun, this,
+					Usecode_machine::weapon);
+	}
+
+/*
  *	Write the common IREG data for an entry.
  */
 
