@@ -1,3 +1,11 @@
+2002-11-04  Max Horn  <max@quendi.de>
+	* conf/Configuration.*, conf/XMLEntity.*: some cleanup (in function args,
+	  using 'const string &' instead of just 'string' or 'const string' is more
+	  efficient as the string doesn't have to be cloned temporarily)
+	* menulist.cc: do not swallow certain command combos (Cmd-Q, Alt-X, ...) when
+	  nothing is selected
+	* game.cc, file/utils.*: Added and make use of clone_system_path()
+
 2002-11-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: fixed division by zero
 	* shapes/Makefile.am: removed outdated OMIT_DEPENDENCIES

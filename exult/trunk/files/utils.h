@@ -2,7 +2,7 @@
  *	utils.h - Common utility routines.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,9 +32,6 @@
 
 #ifndef HAVE_SNPRINTF
 extern int snprintf(char *, size_t, const char *, /*args*/ ...);
-namespace std {
-using ::snprintf;
-}
 #endif
 
 
@@ -390,6 +387,7 @@ void store_system_paths();
 void reset_system_paths();
 void clear_system_path(const std::string& key);
 void add_system_path(const std::string& key, const std::string& value);
+void clone_system_path(const std::string& new_key, const std::string& old_key);
 std::string get_system_path(const std::string &path);
 
 void to_uppercase(std::string &str);

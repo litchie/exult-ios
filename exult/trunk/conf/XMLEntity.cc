@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -190,7 +190,7 @@ void XMLnode::dump(ostream &o, const string &indentstr, const unsigned int depth
 }
 
 // This function does not make sense here. It should be in XMLEntity
-void	XMLnode::xmlassign(string &key,string &value)
+void	XMLnode::xmlassign(const string &key, const string &value)
 {
 	if(key.find('/')==string::npos)
 	{
@@ -265,7 +265,7 @@ static	string	encode_entity(const string &s)
 	return ret;
 }
 
-static	string	decode_entity(string &s,std::size_t &pos)
+static	string	decode_entity(const string &s, std::size_t &pos)
 {
 	std::size_t			old_pos = pos;
 	string::size_type	entity_name_len = s.find_first_of("; \t\r\n", pos) -pos -1;
@@ -312,7 +312,7 @@ static	void	trim(string &s)
 	}
 }
 
-void	XMLnode::xmlparse(string &s,std::size_t &pos)
+void	XMLnode::xmlparse(const string &s,std::size_t &pos)
 {
 	bool	intag = true;
 
