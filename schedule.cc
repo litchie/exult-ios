@@ -161,7 +161,7 @@ void Eat_at_inn_schedule::now_what
 				food = obj;
 				}
 			}
-		if (rand()%3 == 0)
+		if (rand()%5 == 0)
 			{
 			gwin->add_dirty(food);
 			food->remove_this();
@@ -171,7 +171,7 @@ void Eat_at_inn_schedule::now_what
 		npc->say(msgs[n]);
 		}
 					// Wake up in a little while.
-	npc->start(250, 4000 + rand()%10000);
+	npc->start(250, 5000 + rand()%12000);
 	}
 
 /*
@@ -589,7 +589,9 @@ int Waiter_schedule::find_serving_spot
 	)
 	{
 	Vector plates;			// First look for a nearby plate.
-	int cnt = npc->find_nearby(plates, 717, 2, 0);
+	int cnt = npc->find_nearby(plates, 717, 1, 0);
+	if (!cnt)
+		cnt = npc->find_nearby(plates, 717, 2, 0);
 	int floor = npc->get_lift()/5;	// Make sure it's on same floor.
 	for (int i = 0; i < cnt; i++)
 		{
@@ -655,6 +657,7 @@ void Waiter_schedule::now_what
 		get_customer();		// Find one, and walk to a prep. table.
 		return;
 		}
+	Game_window *gwin = Game_window::get_game_window();
 	if (dist < 3)			// Close enough to customer?
 		{
 		Vector foods;
@@ -679,6 +682,11 @@ void Waiter_schedule::now_what
 						"Specialty of the house!",
 						""
 						};
+				gwin->add_dirty(npc);
+				npc->set_frame(npc->get_dir_framenum(
+					npc->get_direction(customer),
+							Actor::standing));
+				gwin->add_dirty(npc);
 				npc->remove(food);
 				food->set_invalid();
 				food->move(spot);
@@ -693,7 +701,6 @@ void Waiter_schedule::now_what
 					// Walk to customer with food.
 	if (!npc->get_readied(Actor::lhand))
 		{			// Acquire some food.
-		Game_window *gwin = Game_window::get_game_window();
 		int nfoods = gwin->get_shape_num_frames(377);
 		int frame = rand()%nfoods;
 		Game_object *food = new Ireg_game_object(377, frame, 0, 0, 0);
