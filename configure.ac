@@ -472,14 +472,14 @@ else
 fi
 
 # Usecode debugger
-AC_ARG_ENABLE(usecode-debugger, [  --enable-usecode-debugger       Support for usecode debugging [default no]],,enable_usecode_debugger=no)
-AC_MSG_CHECKING(whether to enable the usecode debugger)
-if test x$enable_usecode_debugger = xyes; then
-	AC_MSG_RESULT(yes)
-	AC_DEFINE(USECODE_DEBUGGER, 1, [Enable Usecode debugging])
-else
-	AC_MSG_RESULT(no)
-fi
+#AC_ARG_ENABLE(usecode-debugger, [  --enable-usecode-debugger       Support for usecode debugging [default no]],,enable_usecode_debugger=no)
+#AC_MSG_CHECKING(whether to enable the usecode debugger)
+#if test x$enable_usecode_debugger = xyes; then
+#	AC_MSG_RESULT(yes)
+#	AC_DEFINE(USECODE_DEBUGGER, 1, [Enable Usecode debugging])
+#else
+#	AC_MSG_RESULT(no)
+#fi
 
 
 # ---------------------------------------------------------------------
