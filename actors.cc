@@ -764,6 +764,40 @@ void Actor::follow
 	}
 
 /*
+ *	Approach another actor from offscreen.
+ *
+ *	Output:	0 if failed.
+ */
+
+int Actor::approach_another
+	(
+	Actor *other,
+	bool wait			// If true, game hangs until arrival.
+	)
+	{
+	extern void Wait_for_arrival(Actor *actor, Tile_coord dest);
+	Tile_coord startdest = other->get_abs_tile_coord();
+	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
+	for (int i = 2; dest.tx == -1 && i < 8; i++)
+		dest = Game_object::find_unblocked_tile(startdest, i);
+	if (dest.tx == -1)
+		return 0;
+					// Want to approach from offscreen.
+	Actor_action *action = new Path_walking_actor_action();
+	if (!action->walk_to_tile(Tile_coord(-1, -1, 0), dest,
+						get_type_flags()))
+		{
+		delete action;
+		return 0;
+		}
+	set_action(action);
+	start(150);			// Walk fairly fast.
+	if (wait)
+		Wait_for_arrival(this, dest);
+	return 1;
+	}
+
+/*
  *	Get information about a tile that an actor is about to step onto.
  */
 

@@ -2369,23 +2369,9 @@ USECODE_INTRINSIC(approach_avatar)
 	Actor *actor = as_actor(get_item(parms[0]));
 	if (!actor)
 		return Usecode_value(0);
-	Tile_coord start = gwin->get_main_actor()->get_abs_tile_coord();
-	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
-	for (int i = 2; dest.tx == -1 && i < 8; i++)
-		dest = Game_object::find_unblocked_tile(start, i);
-	if (dest.tx == -1)
+					// Approach, and wait_for_arrival().
+	if (!actor->approach_another(gwin->get_main_actor(), true))
 		return Usecode_value(0);
-					// Want to approach from offscreen.
-	Actor_action *action = new Path_walking_actor_action();
-	if (!action->walk_to_tile(Tile_coord(-1, -1, 0), dest,
-						actor->get_type_flags()))
-		{
-		delete action;
-		return Usecode_value(0);
-		}
-	actor->set_action(action);
-	actor->start(150);		// Walk fairly fast.
-	Wait_for_arrival(actor, dest);	// Wait.
 	return Usecode_value(actor->distance(gwin->get_main_actor()) < 10);
 	}
 
