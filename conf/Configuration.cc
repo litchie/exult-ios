@@ -210,8 +210,7 @@ bool	Configuration::read_config_file(const char *n)
 		}
 	else
 		filename=n;
-#endif
-#ifdef WIN32
+#else
 	// Probably something to do with deteriming the username
 	// and generating a filename in their personal setup area.
 
