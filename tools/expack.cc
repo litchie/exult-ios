@@ -370,6 +370,7 @@ int main(int argc, char **argv)
 						infile.close();
 
 						strncpy (hline, file_names[i].c_str(), 1024);
+						strip_path(hline);
 						make_header_name(hline);
 						make_uppercase(hline);
 						header << "#define\t" << hprefix << "_" << hline << "\t\t" << i << std::endl;
