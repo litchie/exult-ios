@@ -63,7 +63,7 @@ Xdnd::Xdnd
 					// Create XdndAware property.
 	if (xwmwin)
 		XChangeProperty(display, xwmwin, xdnd_aware, XA_ATOM, 32,
-			PropModeReplace, (unsigned char *) &xdnd_version, 1);
+			PropModeReplace, reinterpret_cast<unsigned char *>(&xdnd_version), 1);
 	}
 
 /*
@@ -96,7 +96,7 @@ void Xdnd::client_msg
 			XGetWindowProperty(display, drag_win,
 				xdnd_typelist, 0, 65536,
 				false, XA_ATOM, &type, &format, &nitems,
-			  	&after, (unsigned char **)&data);
+			  	&after, reinterpret_cast<unsigned char **>(&data));
 			if (format != 32 || type != XA_ATOM)
 				return;	// No good.
 			if (nitems > max_types)
