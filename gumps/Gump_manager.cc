@@ -206,7 +206,6 @@ void Gump_manager::add_gump
 	)
 {
 	Game_window *gwin = Game_window::get_game_window();
-	Main_actor *main_actor = gwin->get_main_actor();
 	int paperdoll = 0;
 	
 	if (shapenum >= ACTOR_FIRST_GUMP && shapenum <= ACTOR_LAST_GUMP
@@ -217,8 +216,6 @@ void Gump_manager::add_gump
 	if (shapenum == 123 && (Game::get_game_type() == SERPENT_ISLE ||
 		(gwin->can_use_paperdolls() && gwin->get_bg_paperdolls())))
 		paperdoll=2;
-	else if (paperdoll && obj == main_actor)
-		shapenum += main_actor->get_type_flag(Actor::tf_sex);
 	
 	Gump *dragged = gwin->get_dragging_gump();
 	

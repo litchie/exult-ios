@@ -176,6 +176,8 @@ public:
 			(!spots[lfinger] ? lfinger
 			 	: (!spots[rfinger] ? rfinger : -1));
 		}
+	inline bool is_two_handed() const {	return two_handed; }
+	inline bool is_two_fingered() const { return two_fingered; }
 	int has_light_source() const	// Carrying a torch?
 		{ return light_sources > 0; }
 	Attack_mode get_attack_mode()
