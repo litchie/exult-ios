@@ -2,6 +2,18 @@
 <!DOCTYPE faqs SYSTEM "faqs.dtd">
 <faqs title="Exult" changed="09 July 2001(GMT)">
 	<section title="Changes to the FAQ">
+				<faq name="18072001">
+			<question>- 18 July 2001</question>
+			<answer>
+				<ul>
+				<li><ref1 target="whereis_exult"/> and <ref1 target="main_links"/> changed snapshot link and Forum link.</li>
+				<li><ref1 target="exult_cheats"/> added Hackmover cheat <key>Alt-h</key>.</li>
+				<li><ref1 target="party_formation"/> this gets asked quite often and I always forgot to include it.</li>
+				<li><ref1 target="howto_get_answers"/> point link of the forum to the new one. Good bye Jackchaos,
+					it was a great time with you.</li>
+				</ul>	
+			</answer>
+		</faq>
 		<faq name="09072001">
 			<question>- 09 July 2001</question>
 			<answer>
@@ -52,33 +64,7 @@
 					problem with SI sfx playback.</li>
 				</ul>
 			</answer>
-		</faq>
-		<faq name="02052001">
-			<question>- 02 May 2001</question>
-			<answer>
-				<ul>
-				<li><ref2 target="Changes to the FAQ"/> added on popular demand and began numbering of XSL
-					style sheet at "0" with a lot of help from Fingolfin (I don't know much about XSL).</li>
-				<li><ref1 target="latest_version"/> updated to Alpha3</li>
-				<li><ref1 target="what_platforms"/> added OpenBSD, FreeBSD, Solaris.</li>
-				<li><ref1 target="u7_versions"/> added info that a Spanish version of BG
-					exists and that SI was English-only.</li>
-				<li><ref1 target="si_support"/> updated.</li>
-				<li><ref1 target="play_through_u7"/> moved from Section 1 to 2.</li>
-				<li><ref1 target="old_savegames"/> added for those that
-					don't bother with the readme file.</li>
-				<li><ref1 target="exult_config"/> added gamma and volume_curve settings, also aplied
-					changes made necessary by the new game menu in snapshots later than 29.04.2001.</li>
-				<li><ref1 target="sound_turnoff"/> changed to point to new game menu.</li>
-				<li><ref1 target="scaler"/> added some more info from the News file as people
-					don't seem to read it.</li>
-				<li><ref1 target="exult_keys"/> added <key>Esc</key> for game menu.</li>
-				<li><ref1 target="other_improvements"/> praise to the new game menu and savegame box.</li>
-				<li><ref1 target="disable_improvements"/> added as this was asked on Jackchaos
-					and might interest others (don't see why actually).</li>
-				</ul>
-			</answer>
-		</faq>
+		</faq>		
 	</section>
 	<section title="Introduction">
 		<faq name="whatis_exult">
@@ -703,7 +689,7 @@
 					<keydesc name="s">Show save/load box</keydesc>
 					<keydesc name="Esc">Show Game menu box and closes all open boxes</keydesc>
 					<keydesc name="t">Target, instead of double clicking, shows a cursor and 
-					pauses the game until you click on something</keydesc>
+									pauses the game until you click on something</keydesc>
 					<keydesc name="v">About screen</keydesc>
 					<keydesc name="w">Use watch, shows the time if you got a watch</keydesc>
 					<keydesc name="Alt-x">Exit game</keydesc>
@@ -740,7 +726,7 @@
 					<keydesc name="Arrow keys">Scroll map</keydesc>
 					<keydesc name="Home">Recenter map</keydesc>
 					<keydesc name="F2">Cheat screen similar to the originals'. Allows for some level of
-					NPC editing and other cheat otpions</keydesc>
+									NPC editing and other cheat otpions</keydesc>
 					<keydesc name="F3">Map teleport</keydesc>
 					<keydesc name="F10">Show endgame</keydesc>
 					<keydesc name="F11">SI: Play alternate intro</keydesc>
@@ -754,8 +740,9 @@
 					<keydesc name="Alt-i">Toggle infravision</keydesc>
 					<keydesc name="Ctrl-l">Level up party</keydesc>
 					<keydesc name="l">Decrement skiplift</keydesc>
-					<keydesc name="Ctrl-Alt-m">Toggle Map editor(you are able to move anything and 
-					it disables weight check)</keydesc>
+					<keydesc name="Alt-h">Hackmover (you can move all objects around and it 
+									disables weight check</keydesc>
+					<keydesc name="Ctrl-Alt-m">Toggle Map editor (usefull for <Studio/>)</keydesc>
 					<keydesc name="Ctrl-m">Get 100 gold coins</keydesc>
 					<keydesc name="Alt-Shift-m">Play previous song</keydesc>
 					<keydesc name="Alt-m">Play next song</keydesc>
@@ -769,9 +756,9 @@
 					<keydesc name="Alt-1">Test music, sfx, speech</keydesc>
 					<keydesc name="Ctrl-Alt-g">Grab NPC for cheat screen</keydesc>
 					<keydesc name="Ctrl-Alt-p">Pick pocket cheat, when enabled double-clicking on a 
-					NPC displays the actors inventory</keydesc>
+									NPC displays the actors inventory</keydesc>
 					<keydesc name="Ctrl-n">NPC number, When enabled, clicking an a NPC will 
-					display their number instead of their name. Usefull for the cheat screen.</keydesc>
+									display their number instead of their name. Usefull for the cheat screen.</keydesc>
 				</keytable>
 			</answer>
 		</faq>
@@ -798,6 +785,22 @@
 					Yes. The sail of ships look odd sometimes but otherwise these means of
 					transportations work quite well.
 				</para>
+			</answer>
+		</faq>
+		<faq name="party_formation">
+			<question>Why is the party formation different?</question>
+			<answer>				
+				<para>
+					In <Exult/> the party (the Avatar and his companions) move quite differently than
+					they do in the original. This is actually not a bug but a disliking of the old
+					style.
+				</para>
+				<cite name="Jeff">
+					It's not a bug, it's a feature! I like it that way.  Everyone is sensitive to 
+					different things, and I always though the formation-walking in the original 
+					U7 looked really stupid. Eventually, someone may add the original type of walking 
+					to Exult, probably as an option.
+				</cite>
 			</answer>
 		</faq>
 		<faq name="bg_improvements">
@@ -1080,7 +1083,7 @@
 			<answer>
 				<para>
 					The best way to get answers to questions is to go to the Online discussion forum at:<br/>
-					<extref target="http://www.jackchaos.com/cgi-bin/UltraBoard/UltraBoard.pl?Action=ShowBoard&amp;Board=exult"/>
+					<extref target="http://exult.sourceforge.net/forum/"/>
 				</para>
 				<para>
 					The best way to submit bugreports is to use Sourceforge's bug database at:<br/>
@@ -1120,7 +1123,7 @@
 				<para>
 					<Exult/> homepage at <extref target="http://exult.sourceforge.net/"/><br/>
 					Daily code snapshot at <extref target="http://exult.on.openave.net/"/><br/>
-					Message board at <extref target="http://www.jackchaos.com/cgi-bin/UltraBoard/UltraBoard.pl?Action=ShowBoard&amp;Board=exult"/><br/>
+					Message board at <extref target="http://exult.sourceforge.net/forum/"/><br/>
 					Bugreports to <extref target="http://sourceforge.net/bugs/?group_id=2335"/>
 				</para>
 			</answer>
