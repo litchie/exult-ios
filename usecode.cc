@@ -62,64 +62,6 @@ vector<int> intrinsic_breakpoints;
 #endif
 
 /*
- *	Earthquakes.
- */
-class Earthquake : public Time_sensitive
-	{
-	Game_window *gwin;
-	int len;			// From Usecode intrinsic.
-	int i;				// Current index.
-public:
-	Earthquake(Game_window *g, int l) : gwin(g), len(l), i(0)
-		{
-		}
-					// Execute when due.
-	virtual void handle_event(unsigned long curtime, long udata);
-	};
-
-/*
- *	Shake the screen.
- */
-
-void Earthquake::handle_event
-	(
-	unsigned long curtime,		// Current time of day.
-	long udata			// ->usecode machine.
-	)
-	{
-	Image_window *win = gwin->get_win();
-	int w = win->get_width(), h = win->get_height();
-	int sx = 0, sy = 0;
-	int dx = rand()%9 - 4;
-	int dy = rand()%9 - 4;
-	if (dx > 0)
-		w -= dx;
-	else
-		{
-		w += dx;
-		sx -= dx;
-		dx = 0;
-		}
-	if (dy > 0)
-		h -= dy;
-	else
-		{
-		h += dy;
-		sy -= dy;
-		dy = 0;
-		}
-	win->copy(sx, sy, w, h, dx, dy);
-	gwin->set_painted();
-	gwin->show();
-					// Shake back.
-	win->copy(dx, dy, w, h, sx, sy);
-	if (++i < len)			// More to do?  Put back in queue.
-		gwin->get_tqueue()->add(curtime + 100, this, udata);
-	else
-		delete this;
-	}
-
-/*
  *	A class for executing usecode at a scheduled time:
  */
 class Scheduled_usecode : public Time_sensitive
@@ -2051,7 +1993,7 @@ USECODE_INTRINSIC(earthquake)
 {
 	int len = parms[0].get_int_value();
 	gwin->get_tqueue()->add(SDL_GetTicks() + 10,
-		new Earthquake(gwin, len), (long) this);
+		new Earthquake(len), (long) this);
 	return(no_ret);
 }
 

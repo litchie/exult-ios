@@ -238,6 +238,11 @@ public:
 					// Copy rect. with transp. color.
 	virtual void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty);
+					// Get/put a single pixel.
+	unsigned char get_pixel8(int x, int y)
+		{ return bits[y*line_width + x]; }
+	void put_pixel8(unsigned char pix, int x, int y)
+		{ bits[y*line_width + x] = pix; }
 	};
 
 /*
@@ -563,6 +568,11 @@ public:
 					int srch, int destx, int desty)
 		{ ib8->Image_buffer8::copy_transparent8(src_pixels, srcw, srch,
 							destx, desty); }
+					// Get/put a single pixel.
+	unsigned char get_pixel8(int x, int y)
+		{ return ib8->Image_buffer8::get_pixel8(x, y); }
+	void put_pixel8(unsigned char pix, int x, int y)
+		{ ib8->Image_buffer8::put_pixel8(pix, x, y); }
 	};
 
 #endif	/* INCL_IMAGEWIN	*/

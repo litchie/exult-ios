@@ -151,10 +151,12 @@ public:
 		Rectangle wr = get_win_rect();
 		return (r.intersect(wr));
 		}
-	inline Image_window *get_win() const
+	inline Image_window8 *get_win() const
 		{ return win; }
 	inline Time_queue *get_tqueue() const
 		{ return tqueue; }
+	inline Xform_palette get_xform(int i) const
+		{ return xforms[i]; }
 	int get_hour()			// Get current time.
 		{ return clock.get_hour(); }
 	int get_minute()
@@ -436,7 +438,10 @@ public:
 	void paint_object(Game_object *obj, int at_lift, int flat_only);
 					// Fade palette in/out.
 	void fade_palette(int cycles, int inout, int pal_num = -1);
-	void set_palette(int pal_num);	// Set desired palette.
+					// Set desired palette.
+	void set_palette(int pal_num, int new_brightness = -1);
+	int get_brightness()		// Percentage:  100 = normal.
+		{ return brightness; }
 					// Set palette from Flex
 	void set_palette(const char *fname, int res, int fade=0);
 	void brighten(int per);		// Brighten/darken by percentage.

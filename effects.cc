@@ -23,8 +23,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include "effects.h"
 #include "gamewin.h"
+#include "effects.h"
 #include "Zombie.h"
 
 /*
@@ -219,3 +219,157 @@ void Text_effect::paint
 	gwin->paint_text(0, ptr, len, (tx - gwin->get_scrolltx())*tilesize,
 				(ty - gwin->get_scrollty())*tilesize);
 	}
+
+/*
+ *	Init. a weather effect.
+ */
+
+Weather_effect::Weather_effect
+	(
+	int duration			// Length in game minutes.
+	)
+	{
+	stop_time = SDL_GetTicks() + 1000*((duration*60)/time_factor);
+	}
+
+/*
+ *	Move raindrop.
+ */
+
+inline void Raindrop::next
+	(
+	Image_window8 *iwin,		// Where to draw.
+	Xform_palette xform,		// Transform array.
+	int w, int h			// Dims. of window.
+	)
+	{
+	if (x >= 0)			// Not the first time?  Restore pix.
+		iwin->put_pixel8(oldpix, x, y);
+					// Time to restart?
+	if (x < 0 || x == w - 1 || y == h - 3)
+		{			
+		int r = rand();
+					// Have a few fall faster.
+		yperx = (r%4) ? 1 : 2;
+		int vert = (7*h)/8;	// Top of vert. area.
+		int horiz = (7*w)/8;	// Left part of horiz. area.
+		int start = r%(vert + horiz);
+		if (start < vert)	// Start on left edge.
+			{ x = 0; y = h - start; }
+		else
+			{ x = start - vert; y = 0; };
+		}
+	else				// Next spot.
+		{
+		x++;
+		y += yperx;
+		}
+	oldpix = iwin->get_pixel8(x, y);	// Get pixel.
+	iwin->put_pixel8(xform[oldpix], x, y);
+	}
+
+/*
+ *	Rain.
+ */
+
+void Rain_effect::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Image_window8 *win = gwin->get_win();
+	int w = win->get_width(), h = win->get_height();
+					// Get transform table.
+	Xform_palette xform = gwin->get_xform(10);	//++++Experiment.
+	const int num_drops = sizeof(drops)/sizeof(drops[0]);
+					// Move drops.
+	for (int i = 0; i < num_drops; i++)
+		drops[i].next(win, xform, w, h);
+	gwin->set_painted();
+	if (curtime < stop_time)	// Keep going?
+		gwin->get_tqueue()->add(curtime + 100, this, udata);
+	else
+		delete this;
+	}
+
+/*
+ *	Lightning.
+ */
+
+void Lightning_effect::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->set_painted();
+	int r = rand();			// Get a random #.
+	int delay = 100;		// Delay for next time.
+	if (save_brightness > 0)	// Just turned white?  Restore.
+		{
+		gwin->set_palette(-1, save_brightness);
+		if (curtime >= stop_time)
+			{		// Time to stop.
+			delete this;
+			return;
+			}
+		if (r%4 == 0)		// Occassionally flash again.
+			delay = (1 + r%3)*100;
+		else			// Otherwise, wait several secs.
+			delay = (5000 + r%4);
+		}
+	else				// Time to flash.
+		{
+		save_brightness = gwin->get_brightness();
+		gwin->set_palette(-1, 200);
+		delay = (1 + r%3)*50;
+		}
+	gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
+ *	Shake the screen.
+ */
+
+void Earthquake::handle_event
+	(
+	unsigned long curtime,		// Current time of day.
+	long udata
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Image_window *win = gwin->get_win();
+	int w = win->get_width(), h = win->get_height();
+	int sx = 0, sy = 0;
+	int dx = rand()%9 - 4;
+	int dy = rand()%9 - 4;
+	if (dx > 0)
+		w -= dx;
+	else
+		{
+		w += dx;
+		sx -= dx;
+		dx = 0;
+		}
+	if (dy > 0)
+		h -= dy;
+	else
+		{
+		h += dy;
+		sy -= dy;
+		dy = 0;
+		}
+	win->copy(sx, sy, w, h, dx, dy);
+	gwin->set_painted();
+	gwin->show();
+					// Shake back.
+	win->copy(dx, dy, w, h, sx, sy);
+	if (++i < len)			// More to do?  Put back in queue.
+		gwin->get_tqueue()->add(curtime + 100, this, udata);
+	else
+		delete this;
+	}
+
