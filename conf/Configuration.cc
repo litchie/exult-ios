@@ -195,7 +195,7 @@ std::string	Configuration::dump(void)
 }
 
 
-void	Configuration::write_back(void)
+void Configuration::write_back(void)
 {
 	if(!is_file)
 		return;	// Don't write back if not from a file
