@@ -1,10 +1,14 @@
+AUTOMAKE_OPTIONS=foreign
 #
 #	Makefile for NPC's.
 #
 
+
 OBJECTS = convers.o fsm.o npc.o cond.o vec.o event.o hash.o lists.o
 
-CXXFLAGS = -g
+CXXFLAGS += -g
+
+all-local: test2
 
 test2:	libnpc.a test2.o
 	g++ -g -o test2 test2.o libnpc.a
@@ -22,6 +26,6 @@ libnpc.a: $(OBJECTS)
 #	$(AR) r $@ $*.o
 
 clean:
-	-rm *.o *.a
+	-rm -f *.o *.a
 
 
