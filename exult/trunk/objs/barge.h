@@ -85,8 +85,7 @@ public:
 	void turn_around();
 	void stop()			// Stop moving.
 		{ frame_time = 0; }
-	void done()			// No longer being operated.
-		{ gathered = false; }	// Clear for next time.
+	void done();			// No longer being operated.
 	int okay_to_land();		// See if clear to land.
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
