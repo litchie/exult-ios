@@ -114,6 +114,9 @@
 \CDominik "Dominus" Reichardt
 \CFor maintaining the Exult FAQ
 
+\CJoseph Morris
+\CFor the digital SFX packs
+
 \Cand...
 
 
