@@ -342,7 +342,7 @@ Shape_frame::Shape_frame
  *	Output:	# of frames.
  */
 
-unsigned char Shape_frame::read
+unsigned int Shape_frame::read
 	(
 	DataSource* shapes,		// Shapes data source to read.
 	uint32 shapeoff,		// Offset of shape in file.
@@ -969,8 +969,9 @@ Shape_frame *Shape::store_frame
 	if (framenum >= frames_size)	// Something fishy?
 		{
 		delete frame;
-		cerr << "Shape::store_frame:  framenum >= frames_size"
-								<< endl;
+		cerr << "Shape::store_frame:  framenum >= frames_size ("
+			 << framenum << " >= " << (unsigned int)(frames_size)
+			 << ")" << endl;
 		return (0);
 		}
 	if (!frames)	// First one?
