@@ -2391,21 +2391,25 @@ int Chunk_object_list::is_blocked
 	}
 
 /*
- *	See if a tile is water.
+ *	See if a tile is water or land.
  */
 
-inline int Is_water
+inline void Check_terrain
 	(
 	Game_window *gwin,
 	Chunk_object_list *nlist,	// Chunk.
-	int tx, int ty			// Tile within chunk.
+	int tx, int ty,			// Tile within chunk.
+	int& terrain			// Sets: bit0 if land, bit1 if water.
 	)
 	{
 	ShapeID flat = nlist->get_flat(tx, ty);
-	if (flat.is_invalid())
-		return 0;
-	else
-		return gwin->get_info(flat.get_shapenum()).is_water();
+	if (!flat.is_invalid())
+		{
+		if (gwin->get_info(flat.get_shapenum()).is_water())
+			terrain |= 2;
+		else
+			terrain |= 1;
+		}
 	}
 
 /*
@@ -2475,8 +2479,8 @@ int Chunk_object_list::is_blocked
 								new_lift) ||
 			    new_lift != from.tz)
 				return (1);
-			if (new_lift == 0 && Is_water(gwin, olist, rtx, rty))
-				terrain |= 2;
+			if (new_lift == 0)
+				Check_terrain(gwin, olist, rtx, rty, terrain);
 			else
 				terrain |= 1;
 			}
@@ -2496,8 +2500,8 @@ int Chunk_object_list::is_blocked
 								new_lift) ||
 			    new_lift != from.tz)
 				return (1);
-			if (new_lift == 0 && Is_water(gwin, olist, rtx, rty))
-				terrain |= 2;
+			if (new_lift == 0)
+				Check_terrain(gwin, olist, rtx, rty, terrain);
 			else
 				terrain |= 1;
 			}
