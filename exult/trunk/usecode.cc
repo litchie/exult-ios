@@ -2415,7 +2415,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x76     FireCannon (ucdump.c)
 	USECODE_INTRINSIC_PTR(nap_time),	// 0x77
 	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x79
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x79+++++in_usecode(obj)?
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b ++++Another sprite animation?
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7c
