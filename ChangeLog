@@ -1,3 +1,7 @@
+2002-07-18  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.cc: SIGCHLD handler to clean up forked playmidi processes
+	* configure.in: check for sys/wait.h, signal.h (see above)
+
 2002-07-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/flags.h,actors.h,etc:  Moved 'dont_move' and
