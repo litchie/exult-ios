@@ -121,7 +121,7 @@
 				<tr>
 					<td align="center">
 						<div align="center">
-							<xsl:comment>#exec cgi="cgi-bin/vipcounter.pl"</xsl:comment></div>
+							<xsl:comment>#exec cgi="cgi-bin/vipcounter_xml.pl"</xsl:comment></div>
 					</td>
 				</tr>
 			</table>
