@@ -606,7 +606,7 @@ void Usecode_machine::item_say
 		else
 			box = gwin->get_shape_rect(obj->get_outermost());
 		gwin->add_text(str, box.x, box.y, obj);
-		gwin->show();		// Not sure.+++++testing.
+//		gwin->show();		// Not sure.+++++testing.
 		}
 	}
 

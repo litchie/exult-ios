@@ -336,11 +336,14 @@ void Scheduled_usecode::step
 		for (int i = 0; i < 4; i++)
 			{
 			Tile_coord t = obj->get_abs_tile_coord().get_neighbor(dir);
+			obj->step(t, 0);
+#if 0	/* ++++Doesn't help SI.  Definitely not for BG. */
 			if (!obj->step(t, 0))
 				{	// Blocked, so try to turn.
-				barge->face_direction((dir + 2)%8);
+				barge->face_direction((dir - 2 + 8)%8);
 				obj->step(t, 0);
 				}
+#endif
 			}
 		}
 	}
