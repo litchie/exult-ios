@@ -771,8 +771,11 @@ void Game_window::read_ireg_objects
 					// An "egg"?
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
-			Egg_object *egg = create_egg(entry,
-							info.is_animated());
+			int anim = info.is_animated() ||
+					// Watch for BG itself.
+				(Game::get_game_type() == BLACK_GATE &&
+						shapeid == 305);
+			Egg_object *egg = create_egg(entry, anim);
 			get_objects(scx + cx, scy + cy)->add_egg(egg);
 			continue;
 			}

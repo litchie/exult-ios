@@ -243,10 +243,11 @@ static	inline int	distance_between_points(int ax,int ay,int bx,int by)
 
 void Egg_object::activate
 	(
-	Usecode_machine *umachine
+	Usecode_machine *umachine,
+	int /* event */
 	)
 	{
-	activate(umachine, 0);
+	activate(umachine, 0, 0);
 	}
 
 /*

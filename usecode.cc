@@ -1964,8 +1964,8 @@ USECODE_INTRINSIC(find_nearby_avatar)
 {
 	// Find objs. with given shape near Avatar?
 	Usecode_value av((long) gwin->get_main_actor());
-	Usecode_value qual(-359), mask(0);
-	Usecode_value u(find_nearby(av, parms[0], qual, mask));
+	Usecode_value dist(64), mask(0);
+	Usecode_value u(find_nearby(av, parms[0], dist, mask));
 	return(u);
 }
 
