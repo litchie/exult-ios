@@ -42,6 +42,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	bool complete;			// Flag:  all members have been read.
 	bool gathered;			// Items on barge have been gathered.
 	bool ice_raft;			// For Serpent Isle.
+	bool first_step;		// So first motion can just be 1 tile.
 	char boat;			// 1 if a boat, 0 if not; -1=untested.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   not moving.
@@ -64,7 +65,7 @@ public:
 			perm_count(0),
 			xtiles(xt), ytiles(yt), dir(d),
 			complete(false), gathered(false), ice_raft(false),
-			boat(-1), frame_time(0), path(0)
+			first_step(true), boat(-1), frame_time(0), path(0)
 		{  }
 	Rectangle get_tile_footprint();
 	bool is_moving()
@@ -84,7 +85,7 @@ public:
 	void turn_left();
 	void turn_around();
 	void stop()			// Stop moving.
-		{ frame_time = 0; }
+		{ frame_time = 0; first_step = true; }
 	void done();			// No longer being operated.
 	int okay_to_land();		// See if clear to land.
 					// For Time_sensitive:

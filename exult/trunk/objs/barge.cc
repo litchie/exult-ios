@@ -608,10 +608,12 @@ void Barge_object::handle_event
 					// Take two steps for speed.
 	if (!path->GetNextStep(tile) || !step(tile))
 		frame_time = 0;
-	else if (!path->GetNextStep(tile) || !step(tile))
+					// But not when just starting.
+	else if (!first_step && (!path->GetNextStep(tile) || !step(tile)))
 		frame_time = 0;
 	else
 		gwin->get_tqueue()->add(curtime + frame_time, this, udata);
+	first_step = false;		// After 1st, move 2 at a time.
 	}
 
 /*
