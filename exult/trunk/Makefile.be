@@ -88,6 +88,7 @@ EXULT_FLX_OBJECTS = \
 	data/sav_up.shp \
 	data/sav_upup.shp \
 	data/sav_slider.shp \
+	data/sav_selected.shp \
 	data/gamemenu.shp \
 	data/gam_loadsave.shp \
 	data/gam_audio.shp \

@@ -1,3 +1,7 @@
+2001-04-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/flx.in,Makefile.*,data/sav_selected.shp: new shape for savegump
+	* Gump.cc, Gamemenu_gump.cc: changed shapenrs. because of sav_selected
+
 2001-04-20  Tristan Tarrant <nadir@users.sourceforge.net>
 
 	* configure.in: Don't build GIMP plugin by default

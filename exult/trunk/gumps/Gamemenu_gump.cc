@@ -43,31 +43,31 @@ public:
 void Gamemenu_button::activate(Game_window *gwin)
 {
 	switch (shapenum) {
-	case 36: // load/save
+	case 37: // load/save
 		((Gamemenu_gump*)parent)->loadsave();
 		break;
-	case 37: // video options
+	case 38: // video options
 		((Gamemenu_gump*)parent)->video_options();
 		break;
-	case 38: // audio options
+	case 39: // audio options
 		((Gamemenu_gump*)parent)->audio_options();
 		break;
-	case 39: // gameplay options
+	case 40: // gameplay options
 		((Gamemenu_gump*)parent)->gameplay_options();
 		break;
-	case 40: // quit to menu
+	case 41: // quit to menu
 		((Gamemenu_gump*)parent)->quit(true);
 		break;
-	case 41: // quit
+	case 42: // quit
 		((Gamemenu_gump*)parent)->quit(false);
 		break;
 	}
 }
 
-Gamemenu_gump::Gamemenu_gump() : Modal_gump(0, 35, GSF_EXULT_FLX)
+Gamemenu_gump::Gamemenu_gump() : Modal_gump(0, 36, GSF_EXULT_FLX)
 {
 	for (int i=0; i<6; i++)
-		buttons[i] = new Gamemenu_button(this, colx, rowy[i], 36+i);
+		buttons[i] = new Gamemenu_button(this, colx, rowy[i], 37+i);
 }
 
 Gamemenu_gump::~Gamemenu_gump()

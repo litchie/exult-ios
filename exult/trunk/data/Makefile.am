@@ -35,6 +35,7 @@ EXULT_FLX_OBJECTS = \
 	sav_up.shp		\
 	sav_upup.shp		\
 	sav_slider.shp		\
+	sav_selected.shp	\
 	gamemenu.shp		\
 	gam_loadsave.shp	\
 	gam_audio.shp		\
