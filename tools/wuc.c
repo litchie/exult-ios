@@ -409,6 +409,7 @@ int main(int argc,char *argv[])
 														emit_dword(-1);
 													break;
 												case SLOOP:
+#if 0
 													emit_byte(0x2E);
 													if (pass == 0) {
 														sscanf(curlabel, "%x:",&word);
@@ -416,6 +417,7 @@ int main(int argc,char *argv[])
 														printf("adding sloop label %s (curlabel=%s)\n", token, curlabel);
 														add_label();
 													}
+#endif
 													emit_byte(0x02);
 													read_token(fi);
 													sscanf(token,"[%x]",&word);
@@ -439,6 +441,7 @@ int main(int argc,char *argv[])
 														emit_word(-1);
 													break;
 												case SLOOP32:
+#if 0
 													emit_byte(0xAE);
 													if (pass == 0) {
 														sscanf(curlabel, "%x:",&word);
@@ -446,6 +449,7 @@ int main(int argc,char *argv[])
 														printf("adding sloop label %s (curlabel=%s)\n", token, curlabel);
 														add_label();
 													}
+#endif
 													emit_byte(0x82);
 													read_token(fi);
 													sscanf(token,"[%x]",&word);

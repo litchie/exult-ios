@@ -47,7 +47,7 @@ static opcode_desc opcode_table[] =
 {
 	{ NULL, 0, 0 },						// 00
 	{ NULL, 0, 0 },						// 01
-	{ "sloop_iter", 10, SLOOP },		// 02
+	{ "loop", 10, SLOOP },		// 02
 	{ NULL, 0, 0 },						// 03
 	{ "startconv", 2, RELATIVE_JUMP },	// 04
 	{ "jne", 2, RELATIVE_JUMP },				// 05
@@ -91,7 +91,7 @@ static opcode_desc opcode_table[] =
 	{ NULL, 0, 0 },						// 2b
 	{ "ret2", 0, 0 },					// 2c
 	{ "setr", 0, 0 },					// 2d
-	{ "sloop", 11, SLOOP },				// 4e
+	{ "initloop", 0, 0 },				// 2e
 	{ "addsv", 2, VARREF },				// 2f
 	{ "in", 0, 0 },						// 30
 	{ "conv_something", 4, IMMED_AND_RELATIVE_JUMP },			// 31

@@ -19,6 +19,9 @@
 /* Enable support for communication with Exult Studio? */
 #undef USE_EXULTSTUDIO
 
+/* Enable support for usecode debugging */
+#undef USECODE_DEBUGGER
+
 /* Using alternative memory scheme? */
 #undef WANT_ALTERNATE_ALLOCATOR
 
