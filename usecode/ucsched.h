@@ -69,6 +69,8 @@ public:
 					Usecode_script *last_found = 0);
 	static void terminate(Game_object *obj);
 	static void clear();		// Delete all.
+					// Remove all whose objs. are too far.
+	static void purge(Tile_coord pos, int dist);
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Move object in given direction.
 	void step(Usecode_internal *usecode, int dir);

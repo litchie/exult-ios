@@ -86,6 +86,8 @@ public:
 		{  }			//   being active to dormant.
 	virtual void ending(int newtype)// Switching to another schedule.
 		{  }
+					// For Usecode intrinsic.
+	virtual int get_actual_type(Actor *npc);
 	};
 
 /*
@@ -99,6 +101,8 @@ class Street_maintenance_schedule : public Schedule
 public:
 	Street_maintenance_schedule(Actor *n, Actor_action *p, Game_object *o);
 	virtual void now_what();
+					// For Usecode intrinsic.
+	virtual int get_actual_type(Actor *npc);
 	};
 
 /*
@@ -463,6 +467,8 @@ public:
 							int delay = -1);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void im_dormant();	// Just went dormant.
+					// For Usecode intrinsic.
+	virtual int get_actual_type(Actor *npc);
 	};
 
 /*
