@@ -209,7 +209,7 @@ void Paint_num
 {
 	const int font = 2;
 	char buf[20];
-  	sbprintf(buf, 20, "%d", num);
+  	snprintf(buf, 20, "%d", num);
 	gwin->paint_text(font, buf, x - gwin->get_text_width(font, buf), y);
 }
 
