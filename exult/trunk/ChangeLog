@@ -1,3 +1,6 @@
+2000-11-27  Dancer Vesperman <dancer@users.sourceforge.net>
+	* A quotable quote.
+
 2000-11-27  Tristan Tarrant <nadir@users.sourceforge.net>
 	* bggame.c: load the right palette for credits/quotes,
 	  corrected horizontal spacing of menu font
