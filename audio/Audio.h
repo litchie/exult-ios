@@ -121,6 +121,7 @@ public:
 	void	set_effects_enabled(bool ena) { effects_enabled = ena; }
 	bool	is_audio_enabled() const { return audio_enabled; }
 	void	set_audio_enabled(bool ena);
+	bool	can_sfx(const std::string &game) const;
 
 	ProducerConsumerBuf	*Create_Audio_Stream(uint32 id) { return !mixer?0:mixer->Create_Audio_Stream(id); }
 	void    Destroy_Audio_Stream(uint32 id) { if(mixer) mixer->Destroy_Audio_Stream(id); }
