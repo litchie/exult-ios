@@ -176,7 +176,7 @@ Actor *Combat_schedule::find_foe
 					// .5 minute since last start?
 		if (!started_battle && curtime - battle_time >= 30000)
 		{
-			Audio::get_ptr()->start_music(rand()%2 ? ATTACKED1 : ATTACKED2,
+			Audio::get_ptr()->start_music_combat(rand()%2 ? CSAttacked1 : CSAttacked2,
 									0);
 			battle_time = curtime;
 		}
@@ -224,7 +224,7 @@ void Combat_schedule::approach_foe
 		if (npc->get_party_id() >= 0 && !fleed)
 			{
 			fleed = 1;
-			Audio::get_ptr()->start_music(RUN_AWAY, 0);
+			Audio::get_ptr()->start_music_combat(CSRun_Away, 0);
 			}
 		int rx = rand();	// Get random position away from here.
 		int ry = rand();

@@ -61,6 +61,13 @@ private:
 		bool		repeat;
 	};
 
+	static const unsigned short	centre_value;
+	static const unsigned char	fine_value;
+	static const unsigned char	coarse_value;
+	static const unsigned short	combined_value;
+	int							reverb_value;
+	int							chorus_value;
+
 	HMIDIOUT	midi_port;
 	
 	HANDLE	 	*thread_handle;
@@ -84,6 +91,7 @@ private:
 	void init_device();
 	DWORD thread_main();
 	void thread_play ();
+	void reset_channel (int i);
 
 	// Microsecond Clock
 	Uint32 start;

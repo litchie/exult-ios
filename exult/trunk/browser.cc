@@ -46,6 +46,8 @@ ShapeBrowser::~ShapeBrowser()
 
 static void handle_key(int shift, int& value, int max, int amt = 1)
 {
+	if (max == 0) return;
+	
 	if(shift)
 		value -= amt;
 	else

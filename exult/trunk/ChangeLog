@@ -1,3 +1,26 @@
+2001-01-07  Ryan Nunn <triforce@merlin.net.au>
+	* Makefile.* : Paperdoll_gump_info.cc
+	* actors.cc : Paperdolls, Game specific combat music
+	* actors.h : Paperdolls
+	* browser.cc : Fixes infinite loop bug
+	* combat.cc : Game specific combat music
+	* gamewin.cc : Brightness
+	* gamewin.h, palette.cc, flic/playfli.cc : Frame Skipping
+	* audio/Audio.* : Game specific combat music
+	* audio/Midi.cc : Tracks -1 and 255 now stop the track
+	* audio/xmidi.* : Reverb, Chorus, Volume gamma
+	* audio/midi_drivers/win_midiout.* : Reverb, Chorus, General Fixes,
+	  'warble' should now be gone
+	* gumps/Actor_gump.cc : Rewrote Actor_gump::add to be more accurate
+	* gumps/Gump.cc : Removing an item now forces entire screen repaint so
+	  Weight changes are visible when moving items.
+	* gumps/Gump.h : find_object made virtual so paperdolls would work
+	* gumps/Paperdoll_gump.* : Umm, everything
+	* gumps/Paperdoll_gump_info.cc : Info about items and NPCs. I could not
+	  find this information in the Serpent Isle data files.
+	* gumps/misc_buttons.* : Moved Cstats_button class to here.
+	* shapes/items.h : Removed Combat Music #defines
+
 2001-01-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in, various Makefile.am: added quick'n'dirty ucxt makefile,
 	not yet included in main build (like ucc)
