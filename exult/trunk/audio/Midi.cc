@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
-#ifndef WIN32
+//#ifndef WIN32
 
 #include "Midi.h"
 
@@ -36,17 +36,27 @@ extern	Configuration	*config;
 
 void    MyMidiPlayer::start_track(int num,int repeats,int bank)
 {
-#if DEBUG
+  #if DEBUG
         cout << "Audio subsystem request: Music track # " << num << endl;
-#endif
+  #endif
 	U7object	track(midi_bank[bank].c_str(),num);
 
+#ifndef WIN32
 	if(!track.retrieve("/tmp/u7midi"))
 		return;
+#else
+	if(!track.retrieve("u7midi"))
+	        return;
+#endif
 
 	if(!midi_device)
 		return;
+
+#ifndef WIN32
 	midi_device->start_track("/tmp/u7midi",repeats);
+#else
+	midi_device->start_track("u7midi",repeats);
+#endif
 }
 
 void	MyMidiPlayer::start_music(int num,int repeats,int bank)
@@ -69,6 +79,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 #include "midi_drivers/Timidity_binary.h"
 #include "midi_drivers/KMIDI.h"
 #include "midi_drivers/forked_player.h"
+#include "midi_drivers/win_MCI.h"
 
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 {
@@ -90,6 +101,16 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 		no_device=false;
 		}
 	config->set("config/audio/midi/enabled",s,true);
+
+#ifdef WIN32
+	if(no_device)
+	        {
+                midi_device=new Windows_MCI();
+
+                no_device=false;
+                cerr << midi_device->copyright() << endl;
+                }
+#endif
 
 	if(no_device)
 		{
@@ -122,7 +143,6 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 			}
 		}
 
-
 	if(no_device)
 		{
 		try {
@@ -148,4 +168,4 @@ MyMidiPlayer::~MyMidiPlayer()
 		midi_device->stop_track();
 }
 
-#endif
+//#endif
