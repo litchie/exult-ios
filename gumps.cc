@@ -753,7 +753,8 @@ void Gump_object::paint_button
 int Gump_object::add
 	(
 	Game_object *obj,
-	int mx, int my			// Screen location.
+	int mx, int my,			// Mouse location.
+	int sx, int sy			// Screen location of obj's hotspot.
 	)
 	{
 	if (!container->has_room(obj))
@@ -764,15 +765,26 @@ int Gump_object::add
 	if (onobj && onobj != obj && onobj->drop(obj))
 		return (1);
 	container->add(obj);
-	mx -= x + object_area.x;	// Get point rel. to object_area.
-	my -= y + object_area.y;
-	if (mx < 0)			// Not a valid spot?
+	sx -= x + object_area.x;	// Get point rel. to object_area.
+	sy -= y + object_area.y;
+	if (sx < 0)			// Not a valid spot?
 					// Let paint() set spot.
 		obj->cx = obj->cy = 255;	
 	else
 		{			// Put it where desired.
-		obj->cx = mx;
-		obj->cy = my;
+		Shape_frame *shape = Game_window::get_game_window()->get_shape(
+									*obj);
+					// But shift within range.
+		if (sx - shape->get_xleft() < 0)
+			sx = shape->get_xleft();
+		else if (sx + shape->get_xright() > object_area.w)
+			sx = object_area.w - shape->get_xright();
+		if (sy - shape->get_yabove() < 0)
+			sy = shape->get_yabove();
+		else if (sy + shape->get_ybelow() > object_area.h)
+			sy = object_area.h - shape->get_ybelow();
+		obj->cx = sx;
+		obj->cy = sy;
 		}
 	return (1);
 	}
@@ -809,8 +821,8 @@ void Gump_object::paint
 		int objy = obj->cy - shape->get_yabove() + object_area.y;
 					// Does obj. appear to be placed?
 		if (!object_area.has_point(objx, objy) ||
-		    !object_area.has_point(objx + shape->get_width() - 2,
-					objy + shape->get_height() - 2))
+		    !object_area.has_point(objx + shape->get_xright() - 1,
+					objy + shape->get_ybelow() - 1))
 			{		// No.
 			int px = curx + shape->get_width(),
 			    py = cury + shape->get_height();
@@ -818,10 +830,9 @@ void Gump_object::paint
 				px = endx;
 			if (py > endy)
 				py = endy;
-			obj->cx = px - shape->get_width() + 
-					shape->get_xleft();
-			obj->cy = py - shape->get_height() + 
-					shape->get_yabove();
+			obj->cx = px - shape->get_width() + shape->get_xleft();
+			obj->cy = py - shape->get_height() +
+							shape->get_yabove();
 			curx += 8;
 			if (curx >= endx)
 				{
@@ -831,10 +842,8 @@ void Gump_object::paint
 					cury = 2*(++loop);
 				}
 			}
-		gwin->paint_shape(box.x + obj->cx,
-				  box.y + obj->cy, 
-						obj->get_shapenum(),
-						obj->get_framenum());
+		gwin->paint_shape(box.x + obj->cx, box.y + obj->cy, 
+				obj->get_shapenum(), obj->get_framenum());
 		}
 	while (obj != last_object);
 	}
@@ -945,7 +954,8 @@ Gump_button *Actor_gump_object::on_button
 int Actor_gump_object::add
 	(
 	Game_object *obj,
-	int mx, int my			// Screen location.
+	int mx, int my,			// Screen location of mouse.
+	int sx, int sy			// Screen location of obj's hotspot.
 	)
 	{
 					// Find index of closest spot.

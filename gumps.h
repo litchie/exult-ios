@@ -134,7 +134,8 @@ public:
 					// Paint button.
 	void paint_button(Game_window *gwin, Gump_button *btn);
 					// Add object.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1);
+	virtual int add(Game_object *obj, int mx = -1, int my = -1,
+						int sx = -1, int sy = -1);
 	virtual void remove(Game_object *obj)
 		{ container->remove(obj); }
 					// Paint it and its contents.
@@ -166,7 +167,8 @@ public:
 					// Is a given point on a button?
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Add object.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1);
+	virtual int add(Game_object *obj, int mx = -1, int my = -1,
+						int sx = -1, int sy = -1);
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};
@@ -185,7 +187,8 @@ public:
 	~Stats_gump_object()
 		{  }
 					// Add object.
-	virtual int add(Game_object *obj, int mx = -1, int my = -1)
+	virtual int add(Game_object *obj, int mx = -1, int my = -1,
+						int sx = -1, int sy = -1)
 		{ return 0; }		// Can't drop onto it.
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
