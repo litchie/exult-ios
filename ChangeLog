@@ -1,3 +1,8 @@
+2001-07-09  Tristan Tarrant <nadir@users.sourceforge.net>
+	* bggame.cc: worked on getting correct timing of Guardian in intro.
+	  It should work at all resolutions/scaling factors.
+	* gamewin.cc: made plasma 8 times faster
+
 2001-07-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamerend.cc: Show chunk outlines when in map-editor mode.
