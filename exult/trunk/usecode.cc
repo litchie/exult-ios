@@ -729,8 +729,9 @@ Usecode_value Usecode_machine::call_intrinsic
 		return (get_party());
 	case 0x27:			// Get player name.
 		{
+		static char *unknown = "player";
 		Game_object *obj = get_item(parms[0].get_int_value());
-		return Usecode_value(obj ? obj->get_name() : "player");
+		return Usecode_value(obj ? obj->get_name() : unknown);
 		}
 	case 0x28:			// How many 
 					// ((npc?-357==any, -356=avatar), 

@@ -154,7 +154,7 @@ void Main_actor::handle_event
 		{
 		Chunk_object_list *olist = gwin->get_objects(cx, cy);
 #if 1 /* Need to fix renderer first. */
-		olist->setup_cache(gwin, cx, cy);	//++++++++++++++++
+		olist->setup_cache(gwin);	//++++++++++++++++
 //++++++++TESTING Remove the above!!!!!!!+++++++++++++++++++++++++++++
 		int new_lift;		// Might climb/descend.
 		if (olist->is_blocked(get_lift(), sx, sy, new_lift))
@@ -186,8 +186,7 @@ void Main_actor::handle_event
 					// Get old rectangle.
 		Rectangle oldrect = gwin->get_shape_rect(this);
 					// Move it.
-		move(cx, cy, olist, sx, sy, frame);
-		set_lift(new_lift);
+		move(cx, cy, olist, sx, sy, frame, new_lift);
 				// Near an egg?
 		Egg_object *egg = olist->find_egg(sx, sy);
 		if (egg)
