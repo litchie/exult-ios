@@ -1,29 +1,26 @@
-/**
- **	Iregobjs.h - Ireg (moveable) game objects.
- **
- **	Written: 10/1/98 - JSF
- **/
-
 /*
-Copyright (C) 1998  Jeffrey S. Freedman
+ *	iregobjs.h - Ireg (moveable) game objects.
+ *
+ *  Copyright (C) 1998-1999  Jeffrey S. Freedman
+ *  Copyright (C) 2000-2001  The Exult Team
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
-
-#ifndef INCL_IREGOBJS
-#define INCL_IREGOBJS	1
+#ifndef IREGOBJS_H
+#define IREGOBJS_H	1
 
 #include "exult_types.h"
 #include "objs.h"
@@ -56,9 +53,6 @@ public:
 		{  }
 	void set_flags(uint32 f)	// For initialization.
 		{ flags = f; }
-					// Create a copy.
-	virtual Game_object *clone() const
-		{ return new Ireg_game_object(*this); }
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Move to new abs. location.

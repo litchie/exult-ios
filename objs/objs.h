@@ -255,9 +255,6 @@ public:
 	virtual int get_schedule_type()	const
 		{ return 11; }		// Loiter.
 	virtual std::string get_name() const;
-					// Create a copy.
-	virtual Game_object *clone() const
-		{ return new Game_object(*this); }
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual void set_property(int prop, int val)

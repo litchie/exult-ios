@@ -55,11 +55,6 @@ static bool base_to_uppercase(string& str, int count);
 // Wrap a few functions
 inline int stat(const std::string &file_name, struct stat *buf)
 {
-	if(!buf)
-		{
-		errno=EFAULT;
-		return -1;
-		}
 	return stat(file_name.c_str(),buf);
 }
 
