@@ -61,7 +61,7 @@ Egg_object::Egg_object
 	short d1, short d2
 	) : Egglike_game_object(l, h, shapex, shapey, lft),
 	    probability(prob), data1(d1), data2(d2),
-	    area(Rectangle(0, 0, 0, 0))
+	    area(Rectangle(0, 0, 0, 0)), monster_created(0)
 	{
 	type = itype&0xf;
 	criteria = (itype & (7<<4)) >> 4;
@@ -79,6 +79,18 @@ Egg_object::Egg_object
 		set_quality(data1&0xff);
 	if (type == path)		// Store paths.
 		Game_window::get_game_window()->add_path_egg(this);
+	}
+
+/*
+ *	Destructor:
+ */
+
+Egg_object::~Egg_object
+	(
+	)
+	{
+	if (monster_created)
+		monster_created->set_creator(0);
 	}
 
 /*
@@ -134,13 +146,14 @@ void Egg_object::set_area
  *	This is called by the monster that this egg created.
  */
 
-void Egg_object::monster_died
+void Egg_object::monster_gone
 	(
 	)
 	{
 					// In future, may want to set a time
 					//   before 'hatched' is cleared.
 	flags &= ~((1 << (int) hatched));
+	monster_created = 0;
 	}
 
 /*
@@ -254,14 +267,15 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	((flags & (1<<(int)auto_reset)) != 0) << ", data1 = " << data1
 		<< ", data2 = " << data2 << '\n';
 #endif
-#if 0
-					// Don't recreate monster if not reset.
-	if (type == monster && (flags & (1 << (int) hatched)))
-		return;
-#endif
 	int roll = must ? 0 : 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
+	if (monster_created)
+		{
+		if (!must)
+			return;
+		monster_created->set_creator(0);
+		}
 	if ((flags & (1 << (int) auto_reset)) == 0)
 					// Flag it as done if not auto-reset.
 		flags |= (1 << (int) hatched);
@@ -289,6 +303,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 								get_lift());
 				monster->set_alignment(data1&3);
 				monster->set_creator(this);
+				monster_created = monster;
 				gwin->add_dirty(monster);
 				gwin->add_nearby_npc(monster);
 				}
