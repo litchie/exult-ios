@@ -10,7 +10,7 @@
 #include "npcnear.h"
 #include "gamewin.h"
 #include "actors.h"
-#include "usecode.h"
+#include "ucmachine.h"
 #include "schedule.h"
 #include "items.h"
 #include "lists.h"

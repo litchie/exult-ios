@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "actors.h"
 #include "imagewin.h"
-#include "usecode.h"
+#include "ucmachine.h"
 #include "actions.h"
 #include "ready.h"
 #include "combat.h"
