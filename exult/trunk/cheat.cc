@@ -465,6 +465,24 @@ void Cheat::move_selected(int dx, int dy, int dz) {
 	}
 
 /*
+ *	Want lowest, southmost, then eastmost first.
+ */
+class Clip_compare
+	{
+public:
+	bool operator()(const Game_object *o1, const Game_object *o2)
+		{
+		Tile_coord t1 = o1->get_tile(),
+			   t2 = o2->get_tile();
+		if (t1.tz != t2.tz)
+			return t1.tz < t2.tz;
+		else if (t1.ty != t2.ty)
+			return t1.ty > t2.ty;
+		else return t1.tx >= t2.tx;
+		}
+	};
+
+/*
  *	Cut/copy.
  */
 void Cheat::cut(bool copy)
@@ -494,6 +512,8 @@ void Cheat::cut(bool copy)
 		obj->set_chunk(t.tx/c_tiles_per_chunk, t.ty/c_tiles_per_chunk);
 		clipboard.push_back(obj);
 		}
+					// Sort.
+	std::sort(selected.begin(), selected.end(), Clip_compare());
 	}
 
 /*
@@ -501,10 +521,40 @@ void Cheat::cut(bool copy)
  */
 void Cheat::paste
 	(
-	Tile_coord pos			// Position.
+	int mx, int my			// Mouse position.
 	)
 	{
-	cout << "FINISH++++++++++" << endl;
+	if (selected.empty())
+		return;			// Nothing there.
+					// Use lowest/south/east for position.
+	Tile_coord hot = selected[0]->get_tile();
+	clear_selected();		// Remove old selected.
+					// First see if spot is in a gump.
+	Gump *on_gump = gwin->get_gump_man()->find_gump(mx, my);
+	Game_object_vector::iterator it;
+	for (it = clipboard.begin(); it != clipboard.end(); ++it)
+		{
+		Game_object *obj = *it;
+		Tile_coord t = obj->get_tile();
+					// Figure spot rel. to hot-spot.
+		int liftpix = ((t.tz - hot.tz)*c_tilesize)/2;
+		int x = mx + (t.tx - hot.tx)*c_tilesize - liftpix,
+		    y = my + (t.ty - hot.ty)*c_tilesize - liftpix;
+					// +++++Use clone().
+		obj = gwin->create_ireg_object(obj->get_shapenum(),
+						obj->get_framenum());
+		bool ok = false;
+		if (on_gump)
+			ok = on_gump->add(obj, mx, my, x, y);
+		else			// Try to drop at increasing hts.
+			for (int lift = edit_lift; !ok && lift <= 11; lift++)
+				ok = gwin->drop_at_lift(obj, x, y, lift);
+		if (ok)
+			append_selected(obj);
+		else
+			delete obj;
+		}
+	gwin->set_all_dirty();		// Just repaint all.
 	}
 
 void Cheat::map_teleport (void) const {

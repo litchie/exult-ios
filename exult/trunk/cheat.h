@@ -123,7 +123,7 @@ public:
 	{ return selected.size() ? (selected.find(o) != -1) : false; }
 
   void cut(bool copy = false);
-  void paste(Tile_coord pos);
+  void paste(int mx, int my);
   const Game_object_vector& get_clipboard() const
 	{ return clipboard; }
 
