@@ -603,6 +603,8 @@ void Usecode_machine::remove_item
 	{
 	if (!obj)
 		return;
+	if (obj == last_created)
+		last_created = 0;
 	obj->remove();			// Remove from world or container.
 	gwin->paint();
 	}
