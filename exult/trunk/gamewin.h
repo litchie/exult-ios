@@ -304,7 +304,8 @@ public:
 				showing_rect.w, showing_rect.h);
 			}
 		}
-	void read_npcs();		// Read in npc's.
+	void read_npcs();		// Read in npc's & schedules.
+	void read_schedules();
 	void write_gamedat(char *fname);// Explode a savegame into "gamedat".
 	};
 

@@ -98,6 +98,19 @@ char *Actor::get_name
 	}
 
 /*
+ *	Create a schedule.
+ */
+
+Schedule::Schedule
+	(
+	unsigned char *entry		// 5 bytes read from schedule.dat.
+	) : x(entry[2]), y(entry[3]), superchunk(entry[4])
+	{
+	time = entry[0]&7;
+	type = entry[0]>>3;
+	}
+
+/*
  *	Create NPC.
  */
 

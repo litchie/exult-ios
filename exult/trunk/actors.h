@@ -73,6 +73,37 @@ public:
 	};
 
 /*
+ *	An NPC schedule:
+ */
+class Schedule
+	{
+	unsigned char time;		// Time*3hours when this takes effect.
+	unsigned char type;		// Types defined below.
+	unsigned char x, y;		// Location within superchunk.
+	unsigned char superchunk;	// 0-143.
+public:
+	Schedule(unsigned char *ent);	// Create from 5-byte entry.
+	enum Schedule_types {		// Here are the types:
+		combat = 0,	horiz_pace = 1,
+		vert_pace = 2,	talk = 3,
+		dance = 4,	eat = 5,
+		farm = 6,	tend_shop = 7,
+		miner = 8,	hound = 9,
+		stand = 10,	loiter = 11,
+		wander = 12,	blacksmith = 13,
+		sleep = 14,	wait = 15,
+		sit = 16,	graze = 17,
+		bake = 18,	sew = 19,
+		shy = 20,	lab = 21,
+		thief = 22,	waiter = 23,
+		special = 24,	kid_games = 25,
+		eat_at_inn = 26,duel = 27,
+		preach = 28,	patrol = 29,
+		desk_work = 30,	follow_avatar = 31
+		};
+	};
+
+/*
  *	A non-player-character that one can converse with:
  */
 class Npc_actor : public Actor
