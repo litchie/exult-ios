@@ -401,7 +401,7 @@ void Game_window::write_saveinfo()
 	out.put(timeinfo->tm_sec);	// 15
 
 	// Packing for the rest of the structure
-	for (j = (int)&(((SaveGame_Details *)0)->reserved0); j < sizeof(SaveGame_Details); j++)
+	for (j = (long)&(((SaveGame_Details *)0)->reserved0); j < sizeof(SaveGame_Details); j++)
 		out.put(0);
 
 	for (i=0; i<party_size ; i++)
@@ -433,7 +433,7 @@ void Game_window::write_saveinfo()
 		Write2(out, npc->get_property(Actor::health));
 
 		// Packing for the rest of the structure
-		for (j = (int)&(((SaveGame_Party *)0)->reserved0); j < sizeof(SaveGame_Party); j++)
+		for (j = (long)&(((SaveGame_Party *)0)->reserved0); j < sizeof(SaveGame_Party); j++)
 			out.put(0);
 	}
 
@@ -475,7 +475,7 @@ void Game_window::read_saveinfo(std::ifstream &in,
 	in.get(details->real_second);	// 15
 
 	// Packing for the rest of the structure
-	for (j = (int)&(((SaveGame_Details *)0)->reserved0); j < sizeof(SaveGame_Details); j++)
+	for (j = (long)&(((SaveGame_Details *)0)->reserved0); j < sizeof(SaveGame_Details); j++)
 		in.get();
 
 	party = new SaveGame_Party[details->party_size];
@@ -500,7 +500,7 @@ void Game_window::read_saveinfo(std::ifstream &in,
 		party[i].health = Read2(in);
 
 		// Packing for the rest of the structure
-		for (j = (int)&(((SaveGame_Party *)0)->reserved0); j < sizeof(SaveGame_Party); j++)
+		for (j = (long)&(((SaveGame_Party *)0)->reserved0); j < sizeof(SaveGame_Party); j++)
 			in.get();
 	}
 }
