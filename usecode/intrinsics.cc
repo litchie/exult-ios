@@ -506,8 +506,9 @@ USECODE_INTRINSIC(create_new_object)
 
 	if (inf)
 	{
+					// (Wait sched. added for FOV.)
 		Monster_actor *monster = Monster_actor::create(shapenum,
-			cx, cy, tx, ty, lift);
+			cx, cy, tx, ty, lift, Schedule::wait);
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
