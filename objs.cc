@@ -328,12 +328,12 @@ Game_object *Game_object::find_closest
 
 Tile_coord Game_object::find_unblocked_tile
 	(
+	Tile_coord pos,			// Position to look from.
 	int dist,			// 1 means adjacent.
 	int height,			// Height to check for unblocked.
 	const int move_flags		// What sort of motion is allowed.
 	)
 	{
-	Tile_coord pos = get_abs_tile_coord();
 					// Get box to go through.
 	Rectangle box(pos.tx - dist, pos.ty - dist, 2*dist + 1, 2*dist + 1);
 	Rectangle world(0, 0, num_tiles, num_tiles);
