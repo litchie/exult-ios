@@ -265,12 +265,12 @@ int exult_main(const char *runpath)
 			add_system_path("<DATA>", "data");
 			if(!U7exists("<DATA>/exult.flx"))
 			{
-				char *sep = strrchr(runpath,'/');
+				char *sep = std::strrchr(runpath,'/');
 				int plen = sep-runpath;
 				char *dpath = new char[plen+10];
-				strncpy(dpath, runpath, plen+1);
+				std::strncpy(dpath, runpath, plen+1);
 				dpath[plen+1] = 0;
-				strcat(dpath,"data");
+				std::strcat(dpath,"data");
 				cerr << "dpath = " << dpath << endl;
 				add_system_path("<DATA>",dpath);
 				if(!U7exists("<DATA>/exult.flx"))

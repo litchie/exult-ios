@@ -165,7 +165,7 @@ void Background_noise::handle_event
 
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
-
+//
 /*
  *	Create game window.
  */
@@ -180,7 +180,7 @@ Game_window::Game_window
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), gump_man(new Gump_manager),
 	    render_seq(0), painted(false), focus(true), 
-	    teleported(false), in_dungeon(0), fonts(0),
+	    teleported(false), in_dungeon(0), ice_dungeon(false), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
             text_bg(false), chunk_terrains(0), num_chunk_terrains(0),
@@ -758,6 +758,7 @@ void Game_window::set_scrolls
 	set_above_main_actor(nlist->is_roof (tx, ty,
 						camera_actor->get_lift()));
 	set_in_dungeon(nlist->has_dungeon()?nlist->is_dungeon(tx, ty):0);
+	set_ice_dungeon(nlist->is_ice_dungeon(tx, ty));
 	}
 
 /*

@@ -94,6 +94,7 @@ class Game_window
 	unsigned char hit_pixel;	// For rendering 'hit' actors.
 	bool teleported;		// true if just teleported.
 	unsigned int in_dungeon;	// true if inside a dungeon.
+	bool ice_dungeon;		// true if inside ice dungeon
 	std::ifstream chunks;		// "u7chunks" file.
 	Vga_file exult_flx;		// "<data>/exult.flx"
 	Vga_file gameflx;		// "<data>/exult_bg.flx" or 
@@ -164,7 +165,7 @@ class Game_window
 					// Render the map & objects.
 	int paint_map(int x, int y, int w, int h);
 					// Render dungeon blackness
-	void paint_blackness(int cx, int cy, int stop_chunkx, int stop_chunky);
+	void paint_blackness(int cx, int cy, int stop_chunkx, int stop_chunky, int index=0);
 
 	// For Paperdolls in BG
 	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
@@ -314,6 +315,7 @@ public:
 		in_dungeon = lift;
 		return true;
 		}
+	inline void set_ice_dungeon(bool ice) { ice_dungeon = ice; }
 	inline unsigned int is_in_dungeon()
 		{ return in_dungeon; }
 	inline bool is_special_light()	// Light spell in effect?
@@ -607,8 +609,8 @@ public:
 		{ return save_names[i]; }
 					// Paint "flat" scenery in a chunk.
 	void paint_chunk_flats(int cx, int cy, int xoff, int yoff);
-					// Paint blackness in a dungeon
-	void paint_dungeon_black(int cx, int cy, int xoff, int yoff);
+	//				// Paint blackness in a dungeon
+	//void paint_dungeon_black(int cx, int cy, int xoff, int yoff, int index=0);
 					// Paint objects in given chunk at
 					//   given lift.
 	int paint_chunk_objects(int cx, int cy);

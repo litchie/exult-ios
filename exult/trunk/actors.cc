@@ -3252,6 +3252,7 @@ int Main_actor::step
 	if (olist != nlist)
 		Main_actor::switched_chunks(olist, nlist);
 	int roof_height = nlist->is_roof (tx, ty, t.tz);
+	gwin->set_ice_dungeon(nlist->is_ice_dungeon(tx, ty));
 	if (gwin->set_above_main_actor (roof_height))
 		{
 		gwin->set_in_dungeon(nlist->has_dungeon()?
@@ -3352,6 +3353,7 @@ void Main_actor::move
 	if (nlist != olist)
 		Main_actor::switched_chunks(olist, nlist);
 	int tx = get_tx(), ty = get_ty();
+	gwin->set_ice_dungeon(nlist->is_ice_dungeon(tx, ty));
 	if (gwin->set_above_main_actor(nlist->is_roof(tx, ty, newlift)))
 		gwin->set_in_dungeon(nlist->has_dungeon()?
 		nlist->is_dungeon(tx, ty):0);
