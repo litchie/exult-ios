@@ -1,16 +1,33 @@
 ??/??/01	current
 
-		New in-game menu, with audio options.
+		There is a new in-game menu (invoked with ESC) from which 
+		various setup actions can be performed. Currently this 
+		includes a nice audio configurator.
 
-		New save gump with mini-screenshot, infinite savegames, etc.
+		The save gump has been improved greatly with support for a
+		mini-screenshot, save-game details and infinite savegames.
 
-		World wrapping
+		World wrapping has been implemented
 
-		Lots of work on SI (spell scrolls, spellbook, general fixes)
+		Lots of work on SI (spell scrolls, spellbook, jawbone and 
+		combat gumps, general fixes)
+
+		We now have Near Pixel Perfect Maps (tm) which are displayed
+		when using the teleport cheats.
+
+		MIDI SFX are unsupported now by default. The use of digital 
+		SFX is strongly encouraged, even though there are still a few
+		problems. See the FAQ for details.
+
+		Combat has been improved: NPCs now flash red when they are
+		hit, Protection mode is supported and many bugs have been 
+		fixed
+
+		Win32 SMP-safeness
 
 		More work on ExultStudio (Linux only for now)
 
-		Tons of bugfixes
+		Tons of bugfixes (see the ChangeLog for details)
 
 04/11/01	v0.92 alpha 3
 
