@@ -1,6 +1,7 @@
 2000-07-30  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* combat.cc: Monsters attack automatically; midi's played.
+	* actors.cc, gamewin.{cc,h}:  Show poisoned auras.
 
 2000-07-29  Jeff Freedman  <jeff@amy.nerble.net>
 
