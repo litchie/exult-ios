@@ -2078,7 +2078,7 @@ void Game_window::double_clicked
 #endif
 		// Check path, except if an NPC, sign, or if editing.
 	    	if (obj && !obj->as_actor() &&
-			!cheat.in_map_editor() &&
+			!cheat.in_hack_mover() &&
 			!Is_sign(obj->get_shapenum()) &&
 			!Fast_pathfinder_client::is_grabable(
 				main_actor->get_tile(),
