@@ -37,3 +37,7 @@
 \C"Oh Wow. Boom!
 \CIt crashed good an proper for me."
 \L- Colourless
+
+\C"Exult - X-windows Ultima7 map browser."
+\L- Top of exult.cc
+\L(Alpha version)
