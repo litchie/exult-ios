@@ -1683,6 +1683,16 @@ void Game_window::end_splash
 		audio.start_speech(31,false);
 		SDL_Delay(500);
 		audio.start_music(35,0);
+
+		// At this point we want to start the schedules for timeslice 2
+		// for every character except:
+		// The Avatar
+		// Iolo
+		// Petre
+		// Finnigan
+		// Spark?
+		// I think everyone else is more or less fair game to get an
+		// initial schedule.
 //+++++not here		schedule_npcs(2);	//++++++Test??
 		}
 	}
