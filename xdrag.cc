@@ -45,12 +45,14 @@ Xdnd::Xdnd
 	Display *d,
 	Window xw,			// Window-manager window.
 	Window xgw,			// Game's display window in xw.
-	Drop_handler_fun dropfun
+	Drop_shape_handler_fun shapefun,
+	Drop_chunk_handler_fun cfun
 	) : display(d), xwmwin(xw), xgamewin(xgw),
 		num_types(0), lastx(-1), lasty(-1),
-		drop_handler(dropfun)
+		shape_handler(shapefun), chunk_handler(cfun)
 	{
 	shapeid_atom = XInternAtom(display, U7_TARGET_SHAPEID_NAME, 0);
+	chunkid_atom = XInternAtom(display, U7_TARGET_CHUNKID_NAME, 0);
 					// Atom for Xdnd protocol:
 	xdnd_aware = XInternAtom(display, "XdndAware", 0);
 	xdnd_enter = XInternAtom(display, "XdndEnter", 0);
@@ -121,7 +123,8 @@ void Xdnd::client_msg
 		{
 		int i;			// For now, just do shapeid.
 		for (i = 0; i < num_types; i++)
-			if (drag_types[i] == shapeid_atom)
+			if (drag_types[i] == shapeid_atom ||
+			    drag_types[i] == chunkid_atom)
 				break;
 		xev.xclient.message_type = xdnd_status;
 					// Flags??:  3=good, 0=can't accept.
@@ -139,9 +142,10 @@ void Xdnd::client_msg
 		num_types = 0;		// Clear list.
 	else if (cev.message_type == xdnd_drop)
 		{
-		int i;			// For now, just do shapeid.
+		int i;			// For now, just do shapes, chunks.
 		for (i = 0; i < num_types; i++)
-			if (drag_types[i] == shapeid_atom)
+			if (drag_types[i] == shapeid_atom ||
+			    drag_types[i] == chunkid_atom)
 				break;
 		bool okay = i < num_types;
 		num_types = 0;
@@ -150,7 +154,7 @@ void Xdnd::client_msg
 					// Get timestamp.
 		unsigned long time = cev.data.l[2];
 					// Tell owner we want it.
-		XConvertSelection(display, xdnd_selection, shapeid_atom,
+		XConvertSelection(display, xdnd_selection, drag_types[i],
 			xdnd_selection, xwmwin, time);
 		}
 	}
@@ -193,7 +197,8 @@ void Xdnd::select_msg
 	{
 	cout << "SelectionEvent received with target type: " <<
 		XGetAtomName(display, sev.target) << endl;
-	if (sev.selection != xdnd_selection || sev.target != shapeid_atom ||
+	if (sev.selection != xdnd_selection || 
+		(sev.target != shapeid_atom && sev.target != chunkid_atom) ||
 	    sev.property == None)
 		return;			// Wrong type.
 	Atom type = None;		// Get data.
@@ -207,14 +212,25 @@ void Xdnd::select_msg
 		cout << "Error in getting selection" << endl;
 		return;
 		}
-	int file, shape, frame;		// Get shape info.
-	Get_u7_shapeid(data, file, shape, frame);
-	XFree(data);
-	if (file == U7_SHAPE_SHAPES)	// For now, just allow "shapes.vga".
+	int x, y;			// Figure relative pos. within window.
+	Get_window_coords(display, xgamewin, x, y);
+	x = lastx - x;
+	y = lasty - y;
+	if (sev.target == shapeid_atom)	// Dropping a shape?
 		{
-		int x, y;		// Figure relative pos. within window.
-		Get_window_coords(display, xgamewin, x, y);
-		(*drop_handler)(shape, frame, lastx - x, lasty - y);
+		int file, shape, frame;	// Get shape info.
+		Get_u7_shapeid(data, file, shape, frame);
+		XFree(data);
+		if (file == U7_SHAPE_SHAPES)
+					// For now, just allow "shapes.vga".
+			(*shape_handler)(shape, frame, x, y);
+		}
+	else if (sev.target == chunkid_atom)
+		{			// A whole chunk.
+		int chunknum;
+		Get_u7_chunkid(data, chunknum);
+		XFree(data);
+		(*chunk_handler)(chunknum, x, y);
 		}
 	}
 

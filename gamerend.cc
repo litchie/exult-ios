@@ -28,6 +28,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
+#include <stdio.h>
+
+using std::snprintf;
+
 #include "gamewin.h"
 #include "actors.h"
 #include "chunks.h"
@@ -128,6 +132,9 @@ int Game_window::paint_map
 								xoff, yoff);
 				win->fill8(hit_pixel, 1, c_chunksize, 
 								xoff, yoff);
+				char text[8];	// Show chunk #.
+				snprintf(text, 8, "%d", terrain_map[cx][cy]);
+				paint_text(7, text, xoff + 2, yoff + 2);
 				}
 			}
 		}

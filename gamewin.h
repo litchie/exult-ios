@@ -458,6 +458,8 @@ public:
 	void get_map_objects(int schunk);
 					// Get "chunk" objects/scenery.
 	void get_chunk_objects(int cx, int cy);
+					// Set new terrain chunk.
+	void set_chunk_terrain(int cx, int cy, int chunknum);
 					// Get ifixxxx/iregxx name.
 	static char *get_schunk_file_name(char *prefix,
 						int schunk, char *fname);

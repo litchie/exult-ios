@@ -856,7 +856,8 @@ void Game_window::get_map_objects
 	}
 
 /*
- *	Read in terrain graphics data into window's image.
+ *	Read in terrain graphics data into window's image.  (May also be
+ *	called during map-editing if the chunknum changes.)
  */
 
 void Game_window::get_chunk_objects
@@ -879,27 +880,21 @@ void Game_window::get_chunk_objects
 		chunk_terrains.put(chunk_num, ter);
 		}
 	chunk->set_terrain(ter);
-					// Get RLE objects in chunk.
-	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
-		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
-			{
-			ShapeID id = ter->get_flat(tilex, tiley);
-			Shape_frame *shape = get_shape(id);
-			if (shape && shape->rle)
-				{
-				int shapenum = id.get_shapenum(),
-				    framenum = id.get_framenum();
-				Shape_info& info = shapes.get_info(shapenum);
-				Game_object *obj = info.is_animated() ?
-					new Animated_object(shapenum,
-					    	framenum, tilex, tiley)
-					: new Game_object(shapenum,
-					    	framenum, tilex, tiley);
-				chunk->add(obj);
-				}
-			}
 	}
 
+/*
+ *	Set a chunk to a new terrain (during map-editing).
+ */
+
+void Game_window::set_chunk_terrain
+	(
+	int cx, int cy,			// Coords. of chunk to change.
+	int chunknum			// New chunk #.
+	)
+	{
+	terrain_map[cx][cy] = chunknum;	// Set map.
+	get_chunk_objects(cx, cy);	// Set chunk to it.
+	}
 
 /*
  *	Get the name of an ireg or ifix file.

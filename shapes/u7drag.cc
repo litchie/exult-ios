@@ -92,7 +92,7 @@ int Store_u7_chunkid
  *	Retrieve cnum#.
  */
 
-void Get_u7_cnumid
+void Get_u7_chunkid
 	(
 	unsigned char *data, 		// At least 4 bytes.
 	int& cnum			// 0-0xffff returned.

@@ -332,6 +332,7 @@ unsigned char Shape_frame::read
 					// Return # frames.
 		return (nframes);
 		}
+	framenum &= 31;			// !!!Guessing here.
 	xleft = yabove = 8;		// Just an 8x8 bitmap.
 	xright= ybelow = -1;
 	shapes.seek(shapeoff + framenum*64);
@@ -689,9 +690,9 @@ Shape_frame *Shape::read
 	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
 	if (!num_frames)		// 1st time?
 		create_frames_list(nframes);
-	if (!frame->rle)		// Flat?
-		framenum &= 31;		// !!!Guessing here.
-	else if (framenum >= nframes &&	// Compare against #frames in file.
+	if (!frame->rle)
+		framenum &= 31;		// !!Guessing.
+	if (framenum >= nframes &&	// Compare against #frames in file.
 	    (framenum&32))		// Reflection desired?
 		{
 		delete frame;

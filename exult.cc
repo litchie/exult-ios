@@ -147,6 +147,7 @@ void set_play_intro (bool);
 void make_screenshot (bool silent = false);
 void change_gamma (bool down);
 static void Drop_dragged_shape(int shape, int frame, int x, int y);
+static void Drop_dragged_chunk(int chunknum, int x, int y);
 static void BuildGameMap();
 
 /*
@@ -400,7 +401,7 @@ static void Init
         xfd = ConnectionNumber(info.info.x11.display);
 	Server_init();			// Initialize server (for map-editor).
 	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
-				info.info.x11.window, Drop_dragged_shape);
+		info.info.x11.window, Drop_dragged_shape, Drop_dragged_chunk);
 #endif
 }
 
@@ -1161,6 +1162,7 @@ static void Drop_dragged_shape
 		     sclass != Shape_info::building);
 	Game_object *newobj = ireg ? gwin->create_ireg_object(
 						info, shape, frame, 0, 0, 0)
+					//+++++++S.B. Ifix_game_object!!!
 			: new Game_object(shape, frame, 0, 0, 0);
 					// First see if it's a gump.
 	Gump *on_gump = gwin->find_gump(x, y);
@@ -1178,5 +1180,31 @@ static void Drop_dragged_shape
 				return;
 		delete newobj;	// Failed.
 		}
+	}
+
+/*
+ *	Drop a chunk dragged from a chunk-chooser via drag-and-drop.  Dnd is
+ *	only supported under X for now.
+ */
+
+static void Drop_dragged_chunk
+	(
+	int chunknum,			// Index in 'u7chunks'.
+	int x, int y			// Mouse coords. within window.
+	)
+	{
+	int scale = gwin->get_win()->get_scale();
+	if (!cheat.in_map_editor())	// Get into editing mode.
+		cheat.toggle_map_editor();
+	x /= scale;			// Watch for scaled window.
+	y /= scale;
+	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;
+	cout << "Set chunk (" << chunknum << ')' << endl;
+					// Need chunk-coordinates.
+	int tx = gwin->get_scrolltx() + x/c_tilesize,
+	    ty = gwin->get_scrollty() + y/c_tilesize;
+	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
+	gwin->set_chunk_terrain(cx, cy, chunknum);
+	gwin->paint();
 	}
 #endif
