@@ -1470,7 +1470,7 @@ void show_help (void) {
 	scroll->add_text("f - Use food\n");
 	scroll->add_text("i - Show inventory\n");
 	scroll->add_text("k - Try keys\n");
-	scroll->add_text("m - Toggle music\n");
+	scroll->add_text("m - Show map\n");
 	scroll->add_text("p - Repaint screen\n");
 	scroll->add_text("ctrl-s - Quick Save\n");
 	scroll->add_text("ctrl-r - Restore\n");
