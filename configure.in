@@ -2,9 +2,9 @@ dnl Process this file with autoconf to produce a configure script.
 AC_INIT(exult.cc)
 
 
-dnl ----------------------
+dnl ---------------------------------------------------------------------
 dnl System/version info
-dnl ----------------------
+dnl ---------------------------------------------------------------------
 
 PACKAGE=exult
 VER_MAJOR=0
@@ -27,9 +27,9 @@ AC_DEFINE_UNQUOTED(VER_EXTRA, "$VER_EXTRA")
 AM_CONFIG_HEADER(config.h)
 
 
-dnl -------------------------
+dnl ---------------------------------------------------------------------
 dnl Host system settings
-dnl -------------------------
+dnl ---------------------------------------------------------------------
 
 AC_EXEEXT
 
@@ -100,10 +100,11 @@ case "$host_os" in
 		;;
 esac
 
-dnl ----------------------------
+dnl ---------------------------------------------------------------------
 dnl Compilers and other tools
-dnl ----------------------------
+dnl ---------------------------------------------------------------------
 
+AC_PROG_AWK
 AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
@@ -139,9 +140,9 @@ AM_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 
 
-dnl --------------------------
+dnl ---------------------------------------------------------------------
 dnl Compilation environment
-dnl --------------------------
+dnl ---------------------------------------------------------------------
 
 AC_DEFUN(AC_CHECK_ALPHA_LINUX_CXX,
 [
@@ -160,14 +161,18 @@ AC_TRY_RUN([
 ])
 
 
+dnl ---------------------------------------------------------------------
 dnl Check sizes of integer types.
 dnl Cross-compiling sizes set to 2,4,4,8. (May need to be changed...)
+dnl ---------------------------------------------------------------------
 AC_CHECK_SIZEOF(short, 2)
 AC_CHECK_SIZEOF(int, 4)
 AC_CHECK_SIZEOF(long, 4)
 AC_CHECK_SIZEOF(long long, 8)
 
+dnl ---------------------------------------------------------------------
 dnl Checks for header files.
+dnl ---------------------------------------------------------------------
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(limits.h sys/time.h unistd.h)
@@ -177,9 +182,12 @@ AC_CHECK_ALPHA_LINUX_CXX
 AC_CHECK_HEADERS(hash_map hash_set)
 AC_LANG_C
 
+dnl ---------------------------------------------------------------------
 dnl Checks for typedefs, structures, and compiler characteristics.
+dnl ---------------------------------------------------------------------
 AC_C_CONST
 AC_C_INLINE
+AC_TYPE_SIZE_T
 AC_HEADER_TIME
 AC_STRUCT_TM
 
@@ -188,6 +196,14 @@ if test "$ac_cv_c_compiler_gnu" = "yes"; then
 	CFLAGS="$CFLAGS -Wall"
 fi
 
+dnl ---------------------------------------------------------------------
+dnl Checks for library functions
+dnl ---------------------------------------------------------------------
+AC_FUNC_MALLOC
+AC_FUNC_MEMCMP
+
+AC_CHECK_FUNCS([atexit dup2 getcwd isascii memchr memmove memset mkdir pow select socket strcasecmp
+ strchr strstr strtol strtoul])
 
 AC_MSG_CHECKING(for getaddrinfo())
 AC_TRY_COMPILE([
@@ -258,20 +274,9 @@ else
 fi
 
 
-dnl ------
+dnl ---------------------------------------------------------------------
 dnl SDL
-dnl ------
-dnl This needs improving. Maybe steal it from the configure.in for the
-dnl SDL test programs?
-
-
-#AC_CHECK_PROG(HAVE_SDL_CONFIG, sdl-config, found it, not found)
-#
-#if test "$HAVE_SDL_CONFIG" = "not found"; then
-#	AC_MSG_ERROR(You must have SDL installed.)
-#fi
-#SDL_CFLAGS=`sdl-config --cflags`
-#SDL_LIBS=`sdl-config --libs`
+dnl ---------------------------------------------------------------------
 
 SDL_VERSION=1.2.0
 AM_PATH_SDL($SDL_VERSION,
@@ -280,9 +285,9 @@ AM_PATH_SDL($SDL_VERSION,
 )
 
 
-dnl ----------------------
+dnl ---------------------------------------------------------------------
 dnl Optional components
-dnl ----------------------
+dnl ---------------------------------------------------------------------
 
 dnl Timidity MIDI driver
 AC_MSG_CHECKING(whether to enable timidity)
@@ -324,7 +329,9 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+dnl ---------------------------------------------------------------------
 dnl support for Exult Studio
+dnl ---------------------------------------------------------------------
 AC_MSG_CHECKING(whether to enable support for Exult Studio)
 AC_ARG_ENABLE(exult-studio-support, [  --enable-exult-studio-support   Enable ExultStudio support [default yes]],,enable_exult_studio_support=yes)
 if test $WINDOWING_SYSTEM != -DXWIN ; then
@@ -339,10 +346,9 @@ else
 fi
 
 
-dnl ---------------------------
+dnl ---------------------------------------------------------------------
 dnl Memory allocation scheme
-dnl ---------------------------
-
+dnl ---------------------------------------------------------------------
 AC_MSG_CHECKING(checking memory allocation scheme)
 
 dnl For the alternate allocator
@@ -386,9 +392,9 @@ else
 fi
 
 
-dnl --------------------
+dnl ---------------------------------------------------------------------
 dnl Debugging options
-dnl --------------------
+dnl ---------------------------------------------------------------------
 
 dnl basic debugging mode
 AC_ARG_ENABLE(debug, [  --enable-debug          Enable debug messages [default no]],,enable_debug=no)
@@ -434,9 +440,9 @@ else
 fi
 
 
-dnl ----------------
+dnl ---------------------------------------------------------------------
 dnl Warning level
-dnl ----------------
+dnl ---------------------------------------------------------------------
 
 dnl determine warning level
 AC_MSG_CHECKING(warning level)
