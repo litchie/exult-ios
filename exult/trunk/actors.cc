@@ -140,7 +140,7 @@ Actor::Actor
 	    npc_num(num), party_id(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(1),
 	    two_handed(0), two_fingered(false), light_sources(0),
-	    usecode_dir(0), flags(0), action(0), frame_time(0),
+	    usecode_dir(0), flags(0), siflags(0), type_flags(0), action(0), frame_time(0),
 	    next_path_time(0)
 	{
 	set_shape(shapenum, 0); 
@@ -751,7 +751,7 @@ string Actor::get_name
 	(
 	) const
 	{
-	return name.empty() ? Game_object::get_name() : name;
+	return (name.empty() || !get_siflag (met)) ? Game_object::get_name() : name;
 	}
 
 /*
@@ -792,6 +792,24 @@ void Actor::set_flag
 		set_schedule_type(Schedule::sleep);
 	}
 
+void Actor::set_siflag
+	(
+	int flag
+	)
+	{
+	if (flag >= 0 && flag < 32)
+		siflags |= ((unsigned long) 1 << flag);
+	}
+
+void Actor::set_type_flag
+	(
+	int flag
+	)
+	{
+	if (flag >= 0 && flag < 16)
+		type_flags |= ((unsigned long) 1 << flag);
+	}
+
 /*
  *	Clear flag.
  */
@@ -807,6 +825,24 @@ void Actor::clear_flag
 		set_schedule_type(Schedule::stand);
 	}
 
+void Actor::clear_siflag
+	(
+	int flag
+	)
+	{
+	if (flag >= 0 && flag < 32)
+		siflags &= ~((unsigned long) 1 << flag);
+	}
+
+void Actor::clear_type_flag
+	(
+	int flag
+	)
+	{
+	if (flag >= 0 && flag < 16)
+		type_flags &= ~((unsigned long) 1 << flag);
+	}
+
 /*
  *	Get flag.
  */
@@ -818,6 +854,36 @@ int Actor::get_flag
 	{
 	return (flag >= 0 && flag < 32) ? (flags & ((unsigned long) 1 << flag))
 			!= 0 : 0;
+	}
+
+int Actor::get_siflag
+	(
+	int flag
+	) const
+	{
+	return (flag >= 0 && flag < 32) ? (siflags & ((unsigned long) 1 << flag))
+			!= 0 : 0;
+	}
+
+int Actor::get_type_flag
+	(
+	int flag
+	) const
+	{
+	return (flag >= 0 && flag < 16) ? (type_flags & ((unsigned long) 1 << flag))
+			!= 0 : 0;
+	}
+
+/*
+ *	SetFlags
+ */
+
+void Actor::set_type_flags
+	(
+	unsigned short tflags
+	)
+	{
+	type_flags = tflags;
 	}
 
 /*
@@ -2001,6 +2067,13 @@ Monster_actor *Monster_info::create
 	{
 	Monster_actor *monster = new Monster_actor("", shapenum);
 	monster->set_info(this);
+	
+	// Movement flags
+	if ((flags >> fly)&1) monster->set_type_flag(Actor::tf_fly);
+	if ((flags >> swim)&1) monster->set_type_flag(Actor::tf_swim);
+	if ((flags >> walk)&1) monster->set_type_flag(Actor::tf_walk);
+	if ((flags >> ethereal)&1) monster->set_type_flag(Actor::tf_ethereal);
+	
 					// Seems like the #'s are x4.
 	monster->set_property(Actor::strength, strength/4);
 					// Max. health = strength.

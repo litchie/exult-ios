@@ -268,8 +268,11 @@ public:
 	virtual int drop(Game_object *obj);
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag) { }
+	virtual void set_siflag(int flag) { }
+	virtual void clear_siflag(int flag) { }
 	virtual void clear_flag(int flag) { }
 	virtual int get_flag(int flag) const { return 0; }
+	virtual int get_siflag(int flag) const { return 0; }
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return 0; }
 	virtual int get_party_id() const// Get/set index within party.

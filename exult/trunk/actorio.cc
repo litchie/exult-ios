@@ -42,7 +42,7 @@ Actor::Actor
 	    attack_mode(nearest), schedule(0), dormant(1), two_handed(0),
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
 	    light_sources(0),
-	    usecode_dir(0), flags(0), action(0), frame_time(0),
+	    usecode_dir(0), flags(0), siflags(0), type_flags(0), action(0), frame_time(0),
 	    next_path_time(0)
 	{
 	init();				// Clear rest of stuff.
@@ -65,29 +65,127 @@ Actor::Actor
 	set_property((int) Actor::health, health_val);
 	nfile.seekg(3, ios::cur);	// Skip 3 bytes.
 	int iflag2 = Read2(nfile);	// Another inventory flag.
-	nfile.seekg(2, ios::cur);	// Skip next 2.
+
+	// Read first set of flags
+	int rflags = Read2(nfile);
+	
+	if ((rflags >> 0x7) & 1) set_flag (Actor::asleep);
+	if ((rflags >> 0x8) & 1) set_flag (Actor::charmed);
+	if ((rflags >> 0x9) & 1) set_flag (Actor::cursed);
+	if ((rflags >> 0xD) & 1) set_flag (Actor::poisoned);
+	if ((rflags >> 0xC) & 1) set_flag (Actor::paralyzed);
+	if ((rflags >> 0xE) & 1) set_flag (Actor::protection);
+
+	// Guess
+	if ((rflags >> 0xA) & 1) set_flag (Actor::on_moving_barge);
+
+/*	Not used by exult
+	if ((rflags >> 0xB) & 1) set_flag (Actor::in_party);
+	if ((rflags >> 0xF) & 1) set_flag (Actor::dead);
+
+	Unknown in U7tech
+	if ((rflags >> 0x5) & 1) set_flag (Actor::unknown);
+	if ((rflags >> 0x6) & 1) set_flag (Actor::unknown);
+*/
+	
 					// Get char. atts.
+
+	// Strength (0-4), skin colour(5-6), freeze (7)
 	int strength_val = Read1(nfile);
+
 	set_property((int) Actor::strength, strength_val);
+	// set_skin_color ((strength_val << 2) & 0x2);
+	if ((strength_val << 7) & 1) set_siflag (Actor::freeze);
+	
+
+	// Dexterity
 	set_property((int) Actor::dexterity, Read1(nfile));
-	set_property((int) Actor::intelligence, Read1(nfile));
-	set_property((int) Actor::combat, Read1(nfile));
-					// +++++For now (cheating):
-	set_property((int) Actor::food_level, 18);
+
+
+	// Intelligence (0-4), read(5), Tournament (6), polymorph (7)
+	int intel_val = Read1(nfile);
+
+	set_property((int) Actor::intelligence, intel_val);
+	if ((intel_val << 5) & 1) set_siflag (Actor::read);
+	if ((intel_val << 6) & 1) set_siflag (Actor::tournament);
+	if ((intel_val << 7) & 1) set_siflag (Actor::polymorph);
+
+
+	// Combat skill (0-6), Petra (7)
+	int combat_val = Read1(nfile);
+	set_property((int) Actor::combat, combat_val & 0x7F);
+	if ((combat_val << 7) & 1) set_siflag (Actor::petra);
+
 	schedule_type = Read1(nfile);
-	nfile.seekg(4, ios::cur); 	//??
-	int mana_val = Read1(nfile);	// ??
-	set_property((int) Actor::mana, mana_val);
-	set_property((int) Actor::magic, mana_val);
-	nfile.seekg(4, ios::cur);
+	nfile.seekg(1, ios::cur);	// Default attack mode
+	
+	nfile.seekg(3, ios::cur); 	//Unknown
+
+	// If NPC 0: MaxMagic (0-4), TempHigh (5-7) and Mana(0-4), TempLow (5-7)
+	// Else: ID# (0-4) ???, TempHigh (5-7) and Mat (0), No Spell Casting (1), Zombie (3), TempLow (5-7)
+	int magic_val = Read1(nfile);
+	int mana_val = Read1(nfile);
+	
+
+//	set_temperature (((magic_val >> 2) & 0x38) + (mana_val >> 5));
+
+	nfile.seekg(1	, ios::cur);	// Index2???? (refer to U7tech.txt)
+	nfile.seekg(2	, ios::cur);	// Unknown
+
 	set_property((int) Actor::exp, Read2(nfile));
 	nfile.seekg(2, ios::cur);
 	set_property((int) Actor::training, Read1(nfile));
-	nfile.seekg(0x40, ios::cur);	// Get name.
+
+
+	nfile.seekg (2, ios::cur);	// Primary Attacker
+	nfile.seekg (2, ios::cur);	// Secondary Attacker
+	nfile.seekg (2, ios::cur);	// Opressor Attacker
+
+	nfile.seekg (4, ios::cur);	//I-Vr ??? (refer to U7tech.txt)
+
+	nfile.seekg (4, ios::cur);	//S-Vr Where npc is supposed to be for schedule)
+	
+	// Type flags 2
+	int tflags = Read2 (nfile);
+	set_type_flags (tflags);
+
+	nfile.seekg (5, ios::cur);	// Unknown
+
+	nfile.seekg (1, ios::cur);	// Acty ????? what is this??
+
+	nfile.seekg (1, ios::cur);	// SN ????? (refer to U7tech.txt)
+	nfile.seekg (2, ios::cur);	// V1 ????? (refer to U7tech.txt)
+	nfile.seekg (2, ios::cur);	// V2 ????? (refer to U7tech.txt)
+
+	nfile.seekg (29, ios::cur);
+
+	set_property((int) Actor::food_level, Read1(nfile));
+
+	nfile.seekg(7, ios::cur);
+
+
 	char namebuf[17];
 	nfile.read(namebuf, 16);
 	namebuf[16] = 0;		// Be sure it's 0-delimited.
 	name = namebuf;		// Store copy of it.
+
+	if (num == 0)
+	{
+		set_property((int) Actor::magic, magic_val);
+		
+		// Need to make sure that mana is less than magic
+		if ((mana_val & 0x1F) < (magic_val & 0x1F))
+			set_property((int) Actor::mana, mana_val);
+		else
+			set_property((int) Actor::mana, magic_val);
+	}
+	else
+	{
+		if ((mana_val << 0) & 1) set_siflag (Actor::met);
+		if ((mana_val << 1) & 1) set_siflag (Actor::no_spell_casting);
+		if ((mana_val << 2) & 1) set_siflag (Actor::zombie);
+	}
+
 	Game_window *gwin = Game_window::get_game_window();
 					// Get abs. chunk. coords. of schunk.
 	int scy = 16*(schunk/12);
@@ -146,29 +244,113 @@ void Actor::write
 	Write2(nfile, 0);
 					// ??Another inventory flag.
 	Write2(nfile, get_first_object() ? 1 : 0);
-	Write2(nfile, 0);		// 2 more unknown bytes.
+
+
+	//Write first set of flags
+	int iout = 0;
+	
+	if (get_flag (Actor::asleep)) iout |= 1 << 0x7;
+	if (get_flag (Actor::charmed)) iout |= 1 << 0x8;
+	if (get_flag (Actor::cursed)) iout |= 1 << 0x9;
+	if (get_flag (Actor::paralyzed)) iout |= 1 << 0xC;
+	if (get_flag (Actor::poisoned)) iout |= 1 << 0xD;
+	if (get_flag (Actor::protection)) iout |= 1 << 0xE;
+
+	// Guess
+	if (get_flag (Actor::on_moving_barge)) iout |= 1 << 0xA;
+
+	Write2(nfile, iout);
+	
 					// Write char. attributes.
-	nfile.put(get_property(Actor::strength));
+	iout = get_property(Actor::strength);
+	// iout += get_skin_color () << 5;
+	if (get_siflag (Actor::freeze)) iout |= 1 << 7;
+	nfile.put(iout);
+	
 	nfile.put(get_property(Actor::dexterity));
-	nfile.put(get_property(Actor::intelligence));
-	nfile.put(get_property(Actor::combat));
+	
+	iout = get_property(Actor::intelligence);
+	if (get_siflag (Actor::read)) iout |= 1 << 5;
+	if (get_siflag (Actor::tournament)) iout |= 1 << 6;
+	if (get_siflag (Actor::polymorph)) iout |= 1 << 7;
+	nfile.put(iout);
+
+
+	iout = get_property(Actor::combat);
+	if (get_siflag (Actor::petra)) iout |= 1 << 7;
+	nfile.put(iout);
+	
+
 	nfile.put(get_schedule_type());
 	Write2(nfile, 0);		// Skip 4.
 	Write2(nfile, 0);
-	nfile.put(get_property(Actor::mana));
-	Write2(nfile, 0);		// Skip 4 again.
+
+	// Magic
+	int mana_val = 0;
+	int magic_val = 0;
+	
+	if (get_npc_num() == 0)
+	{
+		mana_val = get_property((int) Actor::mana);
+		magic_val = get_property((int) Actor::magic);
+	}
+	else
+	{
+		if (get_siflag (Actor::met)) mana_val |= 1;
+		if (get_siflag (Actor::no_spell_casting)) mana_val |= 1 << 1;
+		if (get_siflag (Actor::zombie)) mana_val |= 1 << 2;
+	}
+
+	// Tempertures
+//	mana_val |= (get_temperature () & 0x1F) << 5;
+//	magic_val |= (get_temperature () & 0x38) << 2;
+
+	nfile.put (magic_val);
+	nfile.put (mana_val);
+
+	nfile.put(0);		// Skip 3
 	Write2(nfile, 0);
+
 	Write2(nfile, get_property(Actor::exp));
 	Write2(nfile, 0);		// Skip 2.
 	nfile.put(get_property(Actor::training));
 			// 0x40 unknown.
-	for (int i = 0; i < 0x40; i++)
+
+	Write2(nfile, 0);	// Skip 3*2
+	Write2(nfile, 0);
+	Write2(nfile, 0);
+
+	Write4(nfile, 0);	// Skip 2*4
+	Write4(nfile, 0);
+
+	Write2(nfile, get_type_flags());	// Typeflags
+	
+	Write4(nfile, 0);	// Skip 5
+	nfile.put(0);
+
+	nfile.put(0);		// Skip 1
+
+	nfile.put(0);		// Skip 1
+	Write2(nfile,0);	// Skip 2
+	Write2(nfile,0);	// Skip 2
+
+	// Skip 29
+	for (int i = 0; i < 29; i++)
 		nfile.put(0);
-	char namebuf[16];		// Write 16-byte name.
+	
+	// Food
+	nfile.put(get_property (Actor::food_level));
+
+	// Skip 7
+	for (int i = 0; i < 7; i++)
+		nfile.put(0);
+
+	char namebuf[17];		// Write 16-byte name.
 	memset(namebuf, 0, 16);
 	strncpy(namebuf, get_name().c_str(), 16);
 	nfile.write(namebuf, 16);
 	write_contents(nfile);		// Write what he holds.
+	namebuf[16] = 0;
 	}
 
 /*

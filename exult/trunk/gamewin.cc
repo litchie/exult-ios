@@ -1969,6 +1969,8 @@ void Game_window::double_clicked
 		npc_prox->wait(4);	// Delay "barking" for 4 secs.
 		if (mode == conversation)
 			{
+			// We had a conversation with an NPC, set the met flag true (BG Only)
+			obj->set_siflag (Actor::met);
 			mode = savemode;
 			paint();
 			}
