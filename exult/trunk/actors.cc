@@ -2385,6 +2385,8 @@ void Actor::remove
 			two_handed = false;
 		if (index == rfinger || index == lfinger)
 			two_fingered = false;
+		if (index == lhand && schedule)
+			schedule->set_weapon();	
 		}
 	}
 
@@ -2445,6 +2447,8 @@ int Actor::add
 		index = lfinger;
 
 	spots[index] = obj;		// Store in correct spot.
+	if (index == lhand && schedule)
+		schedule->set_weapon();	// Tell combat-schedule about it.
 	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
 	Game_window *gwin = Game_window::get_game_window();
 					// (Readied usecode now in drop().)
@@ -2510,6 +2514,8 @@ int Actor::add_readied
 	// Lightsource?
 	if (gwin->get_info(obj).is_light_source()) light_sources++;
 
+	if (index == lhand && schedule)
+		schedule->set_weapon();	// Tell combat-schedule about it.
 	return 1;
 }
 
