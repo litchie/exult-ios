@@ -10,13 +10,6 @@ libconf_la_SOURCES =	\
 	xmldump.cc		\
 	xmlparse.cc
 
-noinst_PROGRAMS = testxml
-
-testxml_SOURCES =	\
-	xmain.cc
-
-testxml_LDADD = libconf.la
-
 EXTRA_DIST = 		\
 	config.xml	\
 	README
