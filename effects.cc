@@ -1341,7 +1341,7 @@ void Cloud::paint
 	Game_window *gwin = Game_window::get_instance();
 	if (count > 0)			// Might not have been started.
 		cloud.paint_shape(wx - gwin->get_scrolltx()*c_tilesize, 
-			wy - gwin->get_scrollty()*c_tilesize, true);
+			wy - gwin->get_scrollty()*c_tilesize);
 	}
 
 /*
