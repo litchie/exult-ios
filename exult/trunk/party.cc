@@ -326,28 +326,28 @@ inline Tile_coord Get_step_tile
 					// See if we're past desired spot.
 	if (dx < 0)			// Dest. to our left?
 		{
-		if (adj.tx > pos.tx)	// But walking right.
+		if (adj.tx > pos.tx && dx >= -4)// But walking right.
 			dx = 0;
 		else if (dx < -1)
 			dx = -1;	// Can only step by 1 tile.
 		}
 	else if (dx > 0)
 		{
-		if (adj.tx < pos.tx)	// Walking left?
+		if (adj.tx < pos.tx && dx <= 4)	// Walking left?
 			dx = 0;
 		else if (dx > 1)
 			dx = 1;
 		}
 	if (dy < 0)			// Dest. North?
 		{
-		if (adj.ty > pos.ty)	// But walking South?
+		if (adj.ty > pos.ty && dy >= -4)	// But walking South?
 			dy = 0;
 		else if (dy < -1)
 			dy = -1;
 		}
 	else if (dy > 0)		// Dest. South?
 		{
-		if (adj.ty < pos.ty)
+		if (adj.ty < pos.ty && dy <= 4)
 			dy = 0;
 		else if (dy > 1)
 			dy = 1;
@@ -388,12 +388,14 @@ bool Party_manager::step
 		return true;		// Moved.
 		}
 	int destdir = npc->get_direction(dest);
-					// Try next dir. clockwise.
-	to = pos.get_neighbor((dir + 1)%8);
-	if (npc->step(to, frame))
+					// Try next/prev dir.
+	if (npc->step(pos.get_neighbor((dir + 1)%8), frame))
 		return true;
-	to = pos.get_neighbor((dir + 7)%8);	// Now counterclockwise.
-	if (npc->step(to, frame))
+	if (npc->step(pos.get_neighbor((dir + 7)%8), frame))
+		return true;
+	if (npc->step(pos.get_neighbor((dir + 2)%8), frame))
+		return true;
+	if (npc->step(pos.get_neighbor((dir + 6)%8), frame))
 		return true;
 	frames->decrement(step_index);	// We didn't take the step.
 	return false;
