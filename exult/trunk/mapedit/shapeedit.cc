@@ -344,6 +344,46 @@ extern "C" void on_open_equip_button_clicked
 	}
 
 /*
+ *	Special-shapes toggles:
+ */
+extern "C" void on_shinfo_weapon_check_toggled
+	(
+	GtkToggleButton *btn,
+        gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_visible("shinfo_weapon_box", on);
+	}
+extern "C" void on_shinfo_ammo_check_toggled
+	(
+	GtkToggleButton *btn,
+        gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_visible("shinfo_ammo_box", on);
+	}
+extern "C" void on_shinfo_armor_check_toggled
+	(
+	GtkToggleButton *btn,
+        gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_visible("shinfo_armor_box", on);
+	}
+extern "C" void on_shinfo_monster_check_toggled
+	(
+	GtkToggleButton *btn,
+        gpointer user_data
+	)
+	{
+	bool on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(btn));
+	ExultStudio::get_instance()->set_visible("shinfo_monster_box", on);
+	}
+
+/*
  *	Fill in the shape-editing notebook.
  */
 
