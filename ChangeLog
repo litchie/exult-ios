@@ -1,3 +1,7 @@
+2003-02-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* monsters.cc: Cyclops cause quakes when they walk.
+
 2003-02-05 Aurelien Marchand <artaxerxes@users.sourceforge.net>
 	* README.Qtopia: few changes to match the current compile method
 	* configure.in: reverted the zaurus/embeddix $host_vendor variable
