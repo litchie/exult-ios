@@ -39,7 +39,7 @@ class Image_buffer8;
  */
 class Shape_frame
 	{
-	unsigned char rle;		// 1 if run-length encoded.
+	bool rle;			// Run-length encoded.
 	unsigned char *data;		// The actual data.
 	int datalen;
 	short xleft;			// Extent to left of origin.
@@ -58,8 +58,11 @@ public:
 	friend class Shape_file;
 	Shape_frame() : data(0), datalen(0)
 		{  }
+					// Create frame from data.
+	Shape_frame(unsigned char *pixels, int w, int h, int xoff, int yoff,
+								bool setrle);
 	unsigned char *get_data() { return data; }
-	bool is_rle() const { return rle != 0; }
+	bool is_rle() const { return rle; }
 					// Convert raw image to RLE.
 	static unsigned char *encode_rle(unsigned char *pixels, int w, int h,
 					int xoff, int yoff, int& datalen);
@@ -109,7 +112,9 @@ protected:
 	Shape_frame *reflect(DataSource* shapes, int shnum, int frnum);
 	void create_frames_list(int nframes);
 					// Read in shape/frame.
-	Shape_frame *read(DataSource* shapes, int shnum, int frnum, DataSource *shapes2 = 0, int count1 = -1, int count2 = -1);
+	Shape_frame *read(DataSource* shapes, int shnum, int frnum, 
+		DataSource *shapes2 = 0, int count1 = -1, int count2 = -1);
+	void write(ostream& out);	// Write out.
 					// Store shape that was read.
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
 public:
@@ -118,18 +123,23 @@ public:
 	Shape() : frames(0), frames_size(0), num_frames(0)
 		{  }
 	Shape(Shape_frame* fr);
-	
+	Shape(int n);			// Create with given #frames.	
 	virtual ~Shape();
 	void reset();
-	Shape_frame *get(DataSource* shapes, int shnum, int frnum, DataSource *shapes2 = 0, int count1 = -1, int count2 = -1)
+	Shape_frame *get(DataSource* shapes, int shnum, int frnum, 
+		DataSource *shapes2 = 0, int count1 = -1, int count2 = -1)
 		{ 
 		return (frames && frnum < frames_size && frames[frnum]) ? 
-			frames[frnum] : read(shapes, shnum, frnum, shapes2, count1, count2); 
+			frames[frnum] : 
+			read(shapes, shnum, frnum, shapes2, count1, count2); 
 		}
 	int get_num_frames()
 		{ return num_frames; }
 	Shape_frame *get_frame(int framenum)
-		{ return 0 <= framenum && framenum < frames_size ? frames[framenum] : 0L; }
+		{ return 0 <= framenum && framenum < frames_size 
+						? frames[framenum] : 0L; }
+					// Set frame.
+	void set_frame(Shape_frame *f, int framenum);
 	};
 
 /*

@@ -78,7 +78,7 @@ Shape_frame *Shape_frame::reflect
 	else
 		h = w;			// Use max. dim.
 	Shape_frame *reflected = new Shape_frame();
-	reflected->rle = 1;		// Set data.
+	reflected->rle = true;		// Set data.
 	reflected->xleft = yabove;
 	reflected->yabove = xleft;
 	reflected->xright = ybelow;
@@ -300,6 +300,30 @@ unsigned char *Shape_frame::encode_rle
 	}
 
 /*
+ *	Create from data.
+ */
+
+Shape_frame::Shape_frame
+	(
+	unsigned char *pixels, 		// (A copy is made.)
+	int w, int h,			// Dimensions.
+	int xoff, int yoff,		// Xleft, yabove.
+	bool setrle			// Run-length-encode.
+	) : xleft(xoff), yabove(yoff), xright(w - xoff - 1),
+	    ybelow(h - yoff - 1), rle(setrle)
+	{
+	if (!rle)
+		{
+		assert(w == 8 && h == 8);
+		datalen = 64;
+		data = new unsigned char[64];
+		memcpy(data, pixels, 64);
+		}
+	else
+		data = encode_rle(pixels, w, h, xleft, yabove, datalen);
+	}
+
+/*
  *	Read in a desired shape.
  *
  *	Output:	# of frames.
@@ -314,7 +338,7 @@ unsigned char Shape_frame::read
 	)
 	{
 	int framenum = frnum;
-	rle = 0;
+	rle = false;
 	if (!shapelen && !shapeoff) return 0;
 					// Get to actual shape.
 	shapes->seek(shapeoff);
@@ -322,7 +346,7 @@ unsigned char Shape_frame::read
 	uint32 hdrlen = shapes->read4();
 	if (datalen == shapelen)
 		{
-		rle = 1;		// It's run-length-encoded.
+		rle = true;		// It's run-length-encoded.
 					// Figure # frames.
 		int nframes = (hdrlen - 4)/4;
 		if (framenum >= nframes)// Bug out if bad frame #.
@@ -382,7 +406,7 @@ void Shape_frame::get_rle_shape
 	shapes->read((char*)data, len);
 	data[len] = 0;			// 0-delimit.
 	data[len + 1] = 0;
-	rle = 1;
+	rle = true;
 	}
 	
 /*
@@ -750,6 +774,59 @@ Shape_frame *Shape::read
 	}
 
 /*
+ *	Write a shape's frames as an entry in an Exult .vga file.  Note that
+ *	a .vga file is a .FLX file with one shape/entry.
+ *
+ *	NOTE:  This should only be called if all frames have been read.
+ */
+
+void Shape::write
+	(
+	ostream& out			// What to write to.
+	)
+	{
+	int frnum;
+	assert(frames != 0 && *frames != 0);
+	bool flat = !frames[0]->is_rle();
+					// Save starting position.
+	unsigned long startpos = out.tellp();
+	
+	if (!flat)
+		{
+		Write4(out, 0);		// Place-holder for total length.
+					// Also for frame locations.
+		for (frnum = 0; frnum < num_frames; frnum++)
+			Write4(out, 0);
+		}
+	for (frnum = 0; frnum < num_frames; frnum++)
+		{
+		Shape_frame *frame = frames[frnum];
+		assert(frame != 0);	// Better all be the same type.
+		assert(flat == !frame->is_rle());
+		if (frame->is_rle())
+			{		
+					// Get position of frame.
+			unsigned long pos = out.tellp();
+			out.seekp(startpos + (frnum + 1)*4);
+			Write4(out, pos - startpos);	// Store pos.
+			out.seekp(pos);			// Get back.
+			Write2(out, frame->xright);
+			Write2(out, frame->xleft);
+			Write2(out, frame->yabove);
+			Write2(out, frame->ybelow);
+			}
+		out.write(frame->data, frame->datalen);	// The frame data.
+		}
+	if (!flat)
+		{
+		unsigned long pos = out.tellp();// Ending position.
+		out.seekp(startpos);		// Store total length.
+		Write4(out, pos - startpos);
+		out.seekp(pos);			// And get back to end.
+		}
+	}
+
+/*
  *	Store frame that was read.
  *
  *	Output:	->frame, or 0 if not valid.
@@ -777,6 +854,9 @@ Shape_frame *Shape::store_frame
 	return (frame);
 	}
 
+/*
+ *	Create with a single frame.
+ */
 
 Shape::Shape(Shape_frame* fr)
 {
@@ -784,6 +864,18 @@ Shape::Shape(Shape_frame* fr)
 	frames = new Shape_frame*[1];
 	frames[0] = fr;
 }
+
+/*
+ *	Create with space for a given number of frames.
+ */
+
+Shape::Shape
+	(
+	int n				// # frames.
+	)
+	{
+	create_frames_list(n);
+	}
 
 void Shape::reset()
 	{
@@ -801,6 +893,21 @@ void Shape::reset()
 Shape::~Shape()
 	{
 	reset();
+	}
+
+/*
+ *	Set desired frame.
+ */
+
+void Shape::set_frame
+	(
+	Shape_frame *frame,		// Must be allocated.
+	int framenum
+	)
+	{
+	assert (framenum < frames_size);
+	delete frames[framenum];	// Delete existing.
+	frames[framenum] = frame;
 	}
 
 /*
