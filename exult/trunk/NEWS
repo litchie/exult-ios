@@ -1,3 +1,15 @@
+7/6/00:		Scrolling works like the original.  Same for conversations.
+
+		First attempt at combat:  You can attack/kill monsters, but
+		generally (with a few exceptions), they don't fight back.
+
+		Spellbook and magic (some spells at least) work.
+
+		Weather:  Storms, clouds.
+
+		Scaling:  2X scaling with antialiasing.  See README for
+		details.
+
 6/2/00:		Save/load implemented.
 
 		MIDI improvements in Windows version.
