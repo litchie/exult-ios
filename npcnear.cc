@@ -10,6 +10,8 @@
 #include "npcnear.h"
 #include "gamewin.h"
 #include "usecode.h"
+#include "schedule.h"
+#include "items.h"
 
 /*
  *	Add an npc to the time queue.
@@ -22,8 +24,8 @@ void Npc_proximity_handler::add
 	int additional_secs		// More secs. to wait.
 	)
 	{
-					// Wait between 5 & 20 secs.
-	int msecs = (rand() % 15000) + 5000;
+					// Wait between 3 & 10 secs.
+	int msecs = (rand() % 10000) + 3000;
 	unsigned long newtime = curtime + msecs;
 	newtime += 1000*additional_secs;
 	gwin->get_tqueue()->add(newtime, this, (long) npc);
@@ -40,6 +42,7 @@ void Npc_proximity_handler::handle_event
 	)
 	{
 	Npc_actor *npc = (Npc_actor *) udata;
+	int extra_delay = 0;		// For next time.
 					// See if still on visible screen.
 	Rectangle tiles = gwin->get_win_tile_rect();
 	int tx, ty, tz;
@@ -49,10 +52,23 @@ void Npc_proximity_handler::handle_event
 		npc->clear_nearby();
 		return;
 		}
-	if (!(curtime < wait_until))
+	if (npc->get_schedule_type() == (int) Schedule::sleep &&
+	    gwin->is_main_actor_inside() &&
+	    npc->distance(gwin->get_main_actor()) < 6 && rand()%3 != 0)
+		{
+		npc->set_schedule_type(Schedule::stand);
+		Rectangle box = gwin->get_shape_rect(npc);
+		int i = rand()%(last_awakened - first_awakened + 1);
+		gwin->add_text(item_names[first_awakened + i], box.x, box.y);
+		}
+					// Do it 50% of the time.
+	else if (!(curtime < wait_until) && rand()%2 == 1)
+		{
 		gwin->get_usecode()->call_usecode(npc->get_usecode(), npc,
 					Usecode_machine::npc_proximity);
-	add(curtime, npc, 3);		// Add back for next time.
+		extra_delay = 3;
+		}
+	add(curtime, npc, extra_delay);	// Add back for next time.
 	}
 
 /*

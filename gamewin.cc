@@ -316,6 +316,10 @@ void Game_window::center_view
 	if (scrollty + th > num_chunks*tiles_per_chunk)
 		scrollty = num_chunks*tiles_per_chunk - th - 1;
 	set_scroll_bounds();		// Set scroll-control.
+					// See who's nearby.
+	add_nearby_npcs(scrolltx/tiles_per_chunk, scrollty/tiles_per_chunk,
+		(scrolltx + get_width()/tilesize)/tiles_per_chunk,
+		(scrollty + get_height()/tilesize)/tiles_per_chunk);
 	paint();
 	}
 

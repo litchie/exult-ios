@@ -15,8 +15,10 @@ template <class Source_pixel, class Dest_pixel, class Manip_pixels>
 void Scale2x
 	(
 	Source_pixel *source,		// ->source pixels.
-	int swidth, int sheight,	// Source height.
+	int sline_pixels,		// Pixels (words)/line for source.
+	int sheight,			// Source height.
 	Dest_pixel *dest,		// ->dest pixels.
+	int dline_pixels,		// Pixels (words)/line for dest.
 	const Manip_pixels& manip	// Manipulator methods.
 	);
 

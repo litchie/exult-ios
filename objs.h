@@ -176,6 +176,12 @@ public:
 		get_abs_tile(x, y, z);
 		return Tile_coord(x, y, z);
 		}
+					// Get distance to another object.
+	int distance(Game_object *o2) const
+		{ return get_abs_tile_coord().distance(
+					o2->get_abs_tile_coord()); }
+					// Get direction to another object.
+	int get_direction(Game_object *o2) const;
 	int get_quality() const
 		{ return quality; }
 	void set_quality(int q)
