@@ -1,33 +1,22 @@
-AUTOMAKE_OPTIONS=foreign
+INCLUDES = -I.. $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
-all-local:	libconf.a 
+lib_LTLIBRARIES = libconf.la
 
-CXXFLAGS += $(INCDIRS) -Wall
-CXXFLAGS += $(WINDOWING_SYSTEM)
-CXXFLAGS += $(DEBUG_FLAGS)
+libconf_la_SOURCES =	\
+	Configuration.cc	\
+	Configuration.h		\
+	XMLEntity.cc		\
+	XMLEntity.h		\
+	xmldump.cc		\
+	xmlparse.cc
 
+noinst_PROGRAMS = testxml
 
+testxml_SOURCES =	\
+	xmain.cc
 
+testxml_LDADD = libconf.la
 
-OFILES=	xmlparse.o xmldump.o XMLEntity.o Configuration.o
-
-SOURCES= Configuration.cc Configuration.h XMLEntity.cc XMLEntity.h \
-		xmain.cc xmldump.cc xmlparse.cc
-
-libconf.a:	$(OFILES)
-	ar rs libconf.a $(OFILES)
-
-clean:
-	rm -f libconf.a core $(OFILES)
-
-test: libconf.a xmain.o
-	g++ -L. xmain.o -o test $(OFILES)
-
-%.o : %.cc
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
-
-Configuration.o: Configuration.h XMLEntity.h
-XMLEntity.o: XMLEntity.h
-xmain.o: Configuration.h XMLEntity.h
-xmldump.o: XMLEntity.h
-xmlparse.o: XMLEntity.h
+EXTRA_DIST = 		\
+	config.xml	\
+	README

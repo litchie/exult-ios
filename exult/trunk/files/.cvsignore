@@ -4,3 +4,6 @@ Makefile
 *~
 *.a
 filetest
+*.la
+*.lo
+.deps
