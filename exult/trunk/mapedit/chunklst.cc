@@ -79,6 +79,8 @@ void Chunk_chooser::select
 	int new_sel
 	)
 	{
+	if (new_sel < 0 || new_sel >= info_cnt)
+		return;			// Bad value.
 	selected = new_sel;
 	enable_controls();
 	int chunknum = info[selected].num;
@@ -397,6 +399,24 @@ void Chunk_chooser::scroll
 		chunknum0 = newindex >= 0 ? newindex : 0;
 	render();
 	show();
+	}
+
+/*
+ *	Scroll up/down by one row.
+ */
+
+void Chunk_chooser::scroll
+	(
+	bool upwards
+	)
+	{
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(chunk_scroll));
+	float delta = adj->step_increment;
+	if (upwards)
+		delta = -delta;
+	adj->value += delta;
+	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
+	scroll((gint) adj->value);
 	}
 
 /*
@@ -872,11 +892,13 @@ void Chunk_chooser::move
 	bool upwards
 	)
 	{
-	if (selected < 0 || (selected == 0 && upwards))
+	if (selected < 0)
 		return;			// Shouldn't happen.
 	unsigned char data[Exult_server::maxlength];
 	unsigned char *ptr = &data[0];
 	int tnum = info[selected].num;
+	if ((tnum == 0 && upwards) || (tnum == num_chunks - 1 && !upwards))
+		return;
 	if (upwards)			// Going to swap tnum & tnum+1.
 		tnum--;
 	Write2(ptr, tnum);
@@ -908,16 +930,16 @@ void Chunk_chooser::swap_response
 		if (selected >= 0)	// Update selected.
 			{
 			if (info[selected].num == tnum)
-				{
-				if (selected < info_cnt - 1)
-					select(selected + 1);
-				//+++++Else want to scroll down.
+				{	// Moving downwards.
+				if (selected >= info_cnt - 1)
+					scroll(false);
+				select(selected + 1);
 				}
 			else if (info[selected].num == tnum + 1)
 				{
-				if (selected > 0)
-					select(selected - 1);
-				// +++++Else want to scroll up.
+				if (selected <= 0)
+					scroll(true);
+				select(selected - 1);
 				}
 			}
 		render();

@@ -1,3 +1,7 @@
+2001-12-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/chunklst.cc (Chunk_chooser): 'Move' is working (somewhat).
+
 2001-12-30  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/data/opcodes.txt: Added a parenthesis flag to help with
 	pretty printing output under -fz, modified the usecode-script output
