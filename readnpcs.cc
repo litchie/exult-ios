@@ -62,6 +62,7 @@ void Game_window::read_npcs
 	int cnt2 = Read2(nfile);
 	int num_npcs = num_npcs1 + cnt2;
 	npcs.resize(num_npcs);
+	bodies.resize(num_npcs);
 					// Create main actor.
 	camera_actor = npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
 	int i;

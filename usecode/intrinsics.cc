@@ -502,7 +502,7 @@ USECODE_INTRINSIC(create_new_object)
 	{
 		if (Is_body(shapenum))
 		{
-			obj = new Dead_body(shapenum, 0, tx, ty, lift, -1, 0);
+			obj = new Dead_body(shapenum, 0, tx, ty, lift, -1);
 			cout << " body " << endl;
 		}
 		else
