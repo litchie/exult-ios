@@ -901,14 +901,21 @@ void Combat_schedule::now_what
 			npc->set_dormant();
 			}
 		else if (npc->get_alignment() == Npc_actor::friendly &&
-				prev_schedule != combat)
-					// Return to normal schedule.
-			{
+				prev_schedule != Schedule::combat)
+			{		// Return to normal schedule.
 			npc->update_schedule(gclock->get_hour()/3, 7);
-#if 0	/* I think this isn't needed. */
-			else
+			if (npc->get_schedule_type() == Schedule::combat)
 				npc->set_schedule_type(prev_schedule);
-#endif
+			}
+		else
+			{		// Wander randomly.
+			Tile_coord t = npc->get_tile();
+			int dist = 2+rand()%3;
+			int newx = t.tx - dist + rand()%(2*dist);
+			int newy = t.ty - dist + rand()%(2*dist);
+					// Wait a bit.
+			npc->walk_to_tile(newx, newy, t.tz, 
+					2*gwin->get_std_delay(), rand()%1000);
 			}
 		}
 	}
