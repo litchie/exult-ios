@@ -192,7 +192,7 @@ extern "C" gboolean on_monst_shape_focus_out_event
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
 	vgafile(0), eggwin(0), server_socket(-1), server_input_tag(-1), 
 	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), egg_ctx(0),
-	waiting_for_server(0)
+	waiting_for_server(0), npcwin(0), npc_ctx(0)
 {
 	// Initialize the various subsystems
 	self = this;
@@ -958,6 +958,106 @@ void ExultStudio::set_egg_monster
 	Set_entry(app_xml, "monst_frame", frame);
 	show_egg_monster();
 	}
+
+/*
+ *	Open npc window.
+ */
+
+extern "C" void on_open_npc_activate
+	(
+	GtkMenuItem     *menuitem,
+        gpointer         user_data
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->open_npc_window();
+	}
+
+/*
+ *	Npc window's Apply button.
+ */
+extern "C" void on_npc_apply_btn_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+//++++++++	ExultStudio::get_instance()->save_npc_window();
+	}
+
+/*
+ *	Npc window's Cancel button.
+ */
+extern "C" void on_npc_cancel_btn_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->close_npc_window();
+	}
+
+/*
+ *	Npc window's close button.
+ */
+extern "C" gboolean on_npc_window_delete_event
+	(
+	GtkWidget *widget,
+	GdkEvent *event,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->close_npc_window();
+	return TRUE;
+	}
+
+/*
+ *	Open the npc-editing window.
+ */
+
+void ExultStudio::open_npc_window
+	(
+	unsigned char *data,		// Serialized npc, or null.
+	int datalen
+	)
+	{
+	if (!npcwin)			// First time?
+		{
+		npcwin = glade_xml_get_widget( app_xml, "npc_window" );
+		if (vgafile && palbuf)
+			{
+//			npc_monster_draw = new Shape_draw(vgafile, palbuf,
+//			    glade_xml_get_widget(app_xml, "npc_monster_draw"));
+//			npc_monster_draw->enable_drop(Npc_monster_dropped,
+//								this);
+			}
+		npc_ctx = gtk_statusbar_get_context_id(
+			GTK_STATUSBAR(glade_xml_get_widget(
+				app_xml, "npc_status")), "Npc Editor");
+		}
+					// Init. npc address to null.
+	gtk_object_set_user_data(GTK_OBJECT(npcwin), 0);
+					// Make 'apply' sensitive.
+	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
+						"npc_apply_btn"), true);
+//	if (data)
+//		if (!init_npc_window(data, datalen))
+//			return;
+	gtk_widget_show(npcwin);
+	}
+
+/*
+ *	Close the npc-editing window.
+ */
+
+void ExultStudio::close_npc_window
+	(
+	)
+	{
+	if (npcwin)
+		gtk_widget_hide(npcwin);
+	}
+
 
 void ExultStudio::run()
 {
