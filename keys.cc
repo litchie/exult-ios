@@ -43,6 +43,7 @@ using std::ifstream;
 using std::isspace;
 using std::strchr;
 using std::string;
+using std::strlen;
 using std::vector;
 
 extern void to_uppercase(string &str);

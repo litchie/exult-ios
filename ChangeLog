@@ -1,3 +1,13 @@
+2001-03-11  Max Horn  <max@quendi.de>
+	* docs/interview: added a lot of babble there ;) you all should ;)
+	* actions.cc: added missing using directive
+	* keys.cc: added missing using directive
+	* files/utils.cc: added missing using directive
+	* audio/midi_drivers/mac_midi.cc: removed some warnings (this file
+	  is not doing anything)
+	* audio/Audio.cc: fixed compilation error on MacOS (Metrowerks does
+	  ANSI compliant type checking unlike gcc <g>)
+
 2001-03-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* audio/Midi.h/cc: fixed no-midi-device-found bug
 	* shp2pcx.cc: output origin
