@@ -1,3 +1,8 @@
+2000-12-07  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Stealing food is now a crime.
+	* objs.h, chunks.cc:  Fixed my recent breakage of is_blocked().
+
 2000-12-07  Dancer Vesperman <dancer@users.sourceforge.net>
 	* Give a useful diagnostic if pthread_create() fails in the timidity driver
 	* Remove a redundant bit of output.

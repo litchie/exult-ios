@@ -54,7 +54,9 @@ enum Exult_Game {
 	SERPENT_ISLE
 };
 
+#define MOVE_NODROP (1<<3)
 #define MOVE_FLY (1<<4)
+#define MOVE_LEVITATE (MOVE_FLY|MOVE_NODROP)
 #define	MOVE_WALK (1<<5)
 #define MOVE_SWIM (1<<6)
 #define	MOVE_ALL_TERRAIN ((1<<5)|(1<<6))
