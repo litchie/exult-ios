@@ -1187,7 +1187,8 @@ void Actor::set_schedule_type
 			schedule = new Wander_schedule(this);
 			break;
 		case Schedule::blacksmith:
-			break;		//++++++++++
+			schedule = new Forge_schedule(this);
+			break;
 		case Schedule::sleep:
 			schedule = new Sleep_schedule(this);
 			break;

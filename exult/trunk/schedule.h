@@ -391,6 +391,37 @@ public:
 	};
 
 /*
+ *	Blacksmith schedule
+ */
+class Forge_schedule : public Schedule
+{
+	Game_object *tongs;
+	Game_object *hammer;
+	Game_object *blank;
+	Game_object *firepit;
+	Game_object *anvil;
+	Game_object *trough;
+	Game_object *bellows;
+	enum {
+		put_sword_on_firepit,
+		use_bellows,
+		get_tongs,
+		sword_on_anvil,
+		get_hammer,
+		use_hammer,
+		walk_to_trough,
+		fill_trough,
+		get_tongs2,
+		use_trough,
+		done
+	} state;
+public:
+	Forge_schedule(Actor *n);
+	virtual void now_what();	// Now what should NPC do?
+	virtual void ending(int newtype); // Switching to another schedule
+};
+
+/*
  *	Walk to the destination for a new schedule.
  */
 class Walk_to_schedule : public Schedule

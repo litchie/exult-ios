@@ -163,8 +163,9 @@ class Frames_actor_action : public Actor_action
 	int cnt;			// Size of list.
 	int index;			// Index for next.
 	int speed;			// Frame delay in 1/1000 secs.
+	Game_object *obj;		// Object to animate
 public:
-	Frames_actor_action(char *f, int c, int spd = 200);
+	Frames_actor_action(char *f, int c, int spd = 200, Game_object *o = 0);
 	virtual ~Frames_actor_action()
 		{ delete [] frames; }
 					// Handle time event.
@@ -221,6 +222,7 @@ class Object_animate_actor_action : public Actor_action
 	int speed;			// Time between frames.
 public:
 	Object_animate_actor_action(Game_object *o, int cy, int spd);
+	Object_animate_actor_action(Game_object *o, int nframes, int cy, int spd);
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
 	};
