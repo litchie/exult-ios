@@ -812,24 +812,31 @@ int Text_gump::paint_page
 	int start			// Starting offset into text.
 	)
 	{
-	const int font = 2;		// Normal black.
+	const int font = 4;		// Black.
+	const int vlead = 2;		// Extra inter-line spacing.
 	int ypos = 0;
-	int textheight = gwin->get_text_height(font);
+	int textheight = gwin->get_text_height(font) + vlead;
 	char *str = text + start;
 	while (*str && *str != '*' && ypos + textheight <= box.h)
 		{
+		if (*str == '~')	// End of paragraph?
+			{
+			ypos += textheight;
+			str++;
+			continue;
+			}
 					// Look for page break.
 		char *epage = strchr(str, '*');
 					// Look for line break.
 		char *eol = strchr(str, '~');
-		if (epage && eol > epage)
+		if (epage && (!eol || eol > epage))
 			eol = epage;
 		if (!eol)		// No end found?
 			eol = text + textlen;
 		char eolchr = *eol;	// Save char. at EOL.
 		*eol = 0;
 		int endoff = gwin->paint_text_box(font, str, x + box.x,
-				y + box.y + ypos, box.w, box.h - ypos);
+				y + box.y + ypos, box.w, box.h - ypos, vlead);
 		*eol = eolchr;		// Restore char.
 		if (endoff > 0)		// All painted?
 			{		// Value returned is height.
@@ -841,12 +848,9 @@ int Text_gump::paint_page
 			str += -endoff;
 			break;
 			}
-		if (*str == '~')	// End of paragraph?
-			{
-			ypos += textheight;
-			str++;
-			}
 		}
+	if (*str == '*')		// Saw end of page?
+		str++;
 	gwin->set_painted();		// Force blit.
 	return (str - text);		// Return offset past end.
 	}
@@ -878,10 +882,12 @@ void Book_gump::paint
 	Game_window *gwin
 	)
 	{
+					// Paint the gump itself.
+	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
 					// Paint left page.
-	curend = paint_page(gwin, Rectangle(2, 2, 50, 100), curtop);
+	curend = paint_page(gwin, Rectangle(36, 10, 122, 130), curtop);
 					// Paint right page.
-	curend = paint_page(gwin, Rectangle(52, 2, 50, 100), curend);
+	curend = paint_page(gwin, Rectangle(174, 10, 122, 130), curend);
 	}
 
 /*
@@ -893,7 +899,9 @@ void Scroll_gump::paint
 	Game_window *gwin
 	)
 	{
-	curend = paint_page(gwin, Rectangle(2, 2, 50, 100), curtop);
+					// Paint the gump itself.
+	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+	curend = paint_page(gwin, Rectangle(48, 30, 146, 118), curtop);
 	}
 
 /*
