@@ -120,6 +120,124 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
+	    <name>save_all1</name>
+	    <accelerator>
+	      <modifiers>GDK_CONTROL_MASK</modifiers>
+	      <key>GDK_S</key>
+	      <signal>activate</signal>
+	    </accelerator>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_save_all1_activate</handler>
+	      <last_modification_time>Fri, 22 Mar 2002 04:38:14 GMT</last_modification_time>
+	    </signal>
+	    <label>Save all</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>separator4</name>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>save1</name>
+	    <label>Save...</label>
+	    <right_justify>False</right_justify>
+
+	    <widget>
+	      <class>GtkMenu</class>
+	      <name>save1_menu</name>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>save_map_menu</name>
+		<signal>
+		  <name>activate</name>
+		  <handler>on_save_map_menu_activate</handler>
+		  <last_modification_time>Thu, 12 Jul 2001 05:47:48 GMT</last_modification_time>
+		</signal>
+		<label>_Map</label>
+		<right_justify>False</right_justify>
+	      </widget>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>save_shape_info1</name>
+		<signal>
+		  <name>activate</name>
+		  <handler>on_save_shape_info1_activate</handler>
+		  <last_modification_time>Sat, 19 Jan 2002 01:33:26 GMT</last_modification_time>
+		</signal>
+		<label>_Shape info</label>
+		<right_justify>False</right_justify>
+	      </widget>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>save_groups1</name>
+		<signal>
+		  <name>activate</name>
+		  <handler>on_save_groups1_activate</handler>
+		  <last_modification_time>Sat, 26 Jan 2002 08:02:09 GMT</last_modification_time>
+		</signal>
+		<label>_Groups</label>
+		<right_justify>False</right_justify>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>reload1</name>
+	    <label>_Reload...</label>
+	    <right_justify>False</right_justify>
+
+	    <widget>
+	      <class>GtkMenu</class>
+	      <name>reload1_menu</name>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>read_map_menu</name>
+		<accelerator>
+		  <modifiers>GDK_CONTROL_MASK</modifiers>
+		  <key>GDK_R</key>
+		  <signal>activate</signal>
+		</accelerator>
+		<signal>
+		  <name>activate</name>
+		  <handler>on_read_map_menu_activate</handler>
+		  <last_modification_time>Wed, 18 Jul 2001 16:15:53 GMT</last_modification_time>
+		</signal>
+		<label>_Map</label>
+		<right_justify>False</right_justify>
+	      </widget>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>reload_usecode_menu</name>
+		<signal>
+		  <name>activate</name>
+		  <handler>on_reload_usecode_menu_activate</handler>
+		  <last_modification_time>Wed, 18 Jul 2001 16:16:35 GMT</last_modification_time>
+		</signal>
+		<label>_Usecode</label>
+		<right_justify>False</right_justify>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>separator3</name>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
 	    <name>connect</name>
 	    <signal>
 	      <name>activate</name>
@@ -132,101 +250,13 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
-	    <name>separator1</name>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>read_map_menu</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_R</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_read_map_menu_activate</handler>
-	      <last_modification_time>Wed, 18 Jul 2001 16:15:53 GMT</last_modification_time>
-	    </signal>
-	    <label>Read map</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>save_map_menu</name>
-	    <accelerator>
-	      <modifiers>GDK_CONTROL_MASK</modifiers>
-	      <key>GDK_S</key>
-	      <signal>activate</signal>
-	    </accelerator>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_save_map_menu_activate</handler>
-	      <last_modification_time>Thu, 12 Jul 2001 05:47:48 GMT</last_modification_time>
-	    </signal>
-	    <label>Save map</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>save_shape_info1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_save_shape_info1_activate</handler>
-	      <last_modification_time>Sat, 19 Jan 2002 01:33:26 GMT</last_modification_time>
-	    </signal>
-	    <label>Save shape info</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>reload_usecode_menu</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_reload_usecode_menu_activate</handler>
-	      <last_modification_time>Wed, 18 Jul 2001 16:16:35 GMT</last_modification_time>
-	    </signal>
-	    <label>Reload usecode</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>separator2</name>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>save_groups1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>on_save_groups1_activate</handler>
-	      <last_modification_time>Sat, 26 Jan 2002 08:02:09 GMT</last_modification_time>
-	    </signal>
-	    <label>Save groups</label>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>separator3</name>
-	    <right_justify>False</right_justify>
-	  </widget>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
 	    <name>preferences</name>
 	    <signal>
 	      <name>activate</name>
 	      <handler>on_preferences_activate</handler>
 	      <last_modification_time>Sun, 17 Mar 2002 05:59:05 GMT</last_modification_time>
 	    </signal>
-	    <label>Preferences...</label>
+	    <label>_Preferences...</label>
 	    <right_justify>False</right_justify>
 	  </widget>
 

@@ -205,3 +205,17 @@ void Shape_file_set::flush
 		(*it)->flush();
 	}
 
+/*
+ *	Any files modified?
+ */
+
+bool Shape_file_set::is_modified
+	(
+	)
+	{
+	for (vector<Shape_file_info *>::iterator it = files.begin(); 
+					it != files.end(); ++it)
+		if ((*it)->modified)
+			return true;
+	return false;
+	}

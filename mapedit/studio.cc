@@ -121,6 +121,14 @@ on_connect_activate                    (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
+on_save_all1_activate                  (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	ExultStudio::get_instance()->save_all();
+}
+
+
+C_EXPORT void
 on_save_map_menu_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -209,7 +217,7 @@ C_EXPORT gboolean on_main_window_delete_event
 	gpointer user_data
 	)
 	{
-	if (!ExultStudio::get_instance()->okay_to_quit())
+	if (!ExultStudio::get_instance()->okay_to_close())
 		return TRUE;		// Can't quit.
 	return FALSE;
 	}
@@ -228,7 +236,7 @@ C_EXPORT void
 on_main_window_quit                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	if (ExultStudio::get_instance()->okay_to_quit())
+	if (ExultStudio::get_instance()->okay_to_close())
 		gtk_main_quit();
 }
 
@@ -236,7 +244,7 @@ on_main_window_quit                    (GtkMenuItem     *menuitem,
 
 
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
-	names(0), glade_path(0), exiting(false),
+	names(0), glade_path(0), exiting(false), shape_info_modified(false),
 	vgafile(0), facefile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
 	static_path(0), image_editor(0), default_game(0), background_color(0),
@@ -406,15 +414,22 @@ ExultStudio::~ExultStudio()
 }
 
 /*
- *	Okay to quit?
+ *	Okay to close game?
  */
 
-bool ExultStudio::okay_to_quit
+bool ExultStudio::okay_to_close
 	(
 	)
 	{
-	if (browser && !browser->closing(true))
-		return false;		// User cancelled.
+	if (need_to_save())
+		{
+		int choice = prompt("File(s) modified.  Save?",
+						"Yes", "No", "Cancel");
+		if (choice == 2)	// Cancel?
+			return false;
+		if (choice == 0)
+			save_all();	// Write out changes.
+		}
 	return true;
 	}
 
@@ -489,6 +504,8 @@ Shape_group_file *ExultStudio::get_cur_groups
  */
 void ExultStudio::choose_game_path()
 {
+	if (!okay_to_close())		// Okay to close prev. game?
+		return;
 	size_t	bufsize=128;
 	char * cwd(new char[bufsize]);
 	while(!getcwd(cwd,bufsize))
@@ -707,6 +724,51 @@ void ExultStudio::set_game_path(const char *gamepath)
 }
 
 /*
+ *	Save all the files we've changed:
+ *		Object browser.
+ *		Group files.
+ *		Shape files.
+ *		Shape info (tfa.dat, weapons.dat, etc.)
+ *		Game map.
+ */
+
+void ExultStudio::save_all
+	(
+	)
+	{
+	if (browser)
+		browser->save();	// Browser-owned files.
+	save_groups();			// Group files.
+	if (files)
+		{			// Get back any changed images.
+		Shape_chooser::check_editing_files();
+		files->flush();		// Write out the .vga files.
+		}
+	if (shape_info_modified)
+		write_shape_info();
+	write_map();
+	}
+
+/*
+ *	Any files need saving?
+ */
+
+bool ExultStudio::need_to_save
+	(
+	)
+	{
+	if (browser && browser->is_modified())
+		return true;
+	if (groups_modified())
+		return true;
+	if (files && files->is_modified())
+		return true;
+	if (shape_info_modified)
+		return true;
+//++++++++++++map
+	}
+
+/*
  *	Write out map.
  */
 
@@ -744,6 +806,7 @@ void ExultStudio::write_shape_info
 		svga->read_info(false, true);//+++++BG?
 		svga->write_info(false);//++++BG?
 		}
+	shape_info_modified = false;
 	}
 
 /*

@@ -901,6 +901,8 @@ void Palette_edit::save
 	(
 	)
 	{
+	if (!modified)
+		return;
 	modified = false;
 	string fname("<PATCH>/");	// Write to 'patch' directory.
 	fname += basename;

@@ -585,6 +585,27 @@ void ExultStudio::save_groups
 	}
 
 /*
+ *	Return TRUE if any groups have been modified.
+ */
+
+bool ExultStudio::groups_modified
+	(
+	)
+	{
+	if (!files)
+		return false;
+	int cnt = files->size();
+	for (int i = 0; i < cnt; i++)	// Check each file.
+		{
+		Shape_file_info *info = (*files)[i];
+		Shape_group_file *gfile = info->get_groups();
+		if (gfile && gfile->is_modified())
+			return true;
+		}
+	return false;
+	}
+
+/*
  *	Update all windows showing a given group.
  */
 
