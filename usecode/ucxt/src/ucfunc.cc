@@ -34,8 +34,8 @@ const string VARNAME = "uvar";
 const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
 
-void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op);
-string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op);
+void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const map<unsigned int, string> &intrinsics, const UCc &op);
+string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op);
 
 /* Assumption the 'var's are in their 'zeroed' state on initialization,
    unless something else is assigned to them. */
@@ -61,7 +61,7 @@ inline ostream &tab_indent(const unsigned int indent, ostream &o)
 	return o;
 }
 
-void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, bool gnubraces)
+void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, bool gnubraces)
 {
 	unsigned int indent=0;
 	// output the "function name"
@@ -75,12 +75,12 @@ void UCFunc::output_ucs(ostream &o, const FuncMap &funcmap, bool gnubraces)
 	// start of func
 	tab_indent(indent++, o) << '{' << endl;
 	
-	output_ucs_data(o, funcmap, indent);
+	output_ucs_data(o, funcmap, intrinsics, indent);
 	
 	tab_indent(--indent, o) << '}' << endl;
 }
 
-void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, unsigned int indent)
+void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, unsigned int indent)
 {
 	for(vector<GotoSet>::iterator i=gotoset.begin(); i!=gotoset.end(); ++i)
 	{
@@ -97,7 +97,7 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, unsigned int in
 			//if we've already done this
 			if(ucc._tagged!=true)
 			{
-					output_ucs_opcode(o, funcmap, opcode_table_data, ucc, indent);
+					output_ucs_opcode(o, funcmap, opcode_table_data, ucc, intrinsics, indent);
 			}
 		}
 		if(i!=gotoset.begin()) --indent; //decrement it again to skip the label statement.
@@ -105,9 +105,9 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, unsigned int in
 	}
 }
 
-void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, unsigned int indent)
+void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op, const map<unsigned int, string> &intrinsics, unsigned int indent)
 {
-	tab_indent(indent, o) << demunge_ocstring(*this, funcmap, optab[op._id].ucs_nmo, optab[op._id].param_types, op._params_parsed, op) << endl;
+	tab_indent(indent, o) << demunge_ocstring(*this, funcmap, optab[op._id].ucs_nmo, optab[op._id].param_types, op._params_parsed, intrinsics, op) << endl;
 	
 	#ifdef DEBUG_PRINT
 	for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end(); i++)
@@ -121,20 +121,20 @@ void UCFunc::output_ucs_opcode(ostream &o, const FuncMap &funcmap, const vector<
 	#endif
 }
 
-void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, unsigned int indent)
+void UCFunc::output_ucs_node(ostream &o, const FuncMap &funcmap, UCNode* ucn, const map<unsigned int, string> &intrinsics, unsigned int indent)
 {
 	//if(gnubraces) o << '\t';
 	if(!ucn->nodelist.empty()) tab_indent(indent, o) << '{' << endl;
 	
 	//assert(ucn->ucc!=0);
 	if(ucn->ucc!=0)
-		print_asm_opcode(tab_indent(indent, o), *this, funcmap, opcode_table_data, *(ucn->ucc));
+		print_asm_opcode(tab_indent(indent, o), *this, funcmap, opcode_table_data, intrinsics, *(ucn->ucc));
 	
 	if(ucn->nodelist.size())
 		for(vector<UCNode *>::iterator i=ucn->nodelist.begin(); i!=ucn->nodelist.end(); i++)
 		{
 			//tab_indent(indent, o);
-			output_ucs_node(o, funcmap, *i, indent+1);
+			output_ucs_node(o, funcmap, *i, intrinsics, indent+1);
 		}
 			
 	// end of func
@@ -238,84 +238,88 @@ vector<UCc *> UCFunc::parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_itera
 		print_asm_opcode(tab_indent(3, cout), *this, funcmap, opcode_table_data, *(current->first));
 		#endif
 		
-		/* Include proper munging of opsneeded, it has special effects for numbers
-		   greater then 0x7F. Currently we just 'ignore' it. */
-		if((opcode_table_data[current->first->_id].num_pop!=0) || (opcode_table_data[current->first->_id].call_effect!=0))
+		//if(current->second==false);
 		{
-			//if(opcode_table_data[current->first->_id].num_pop<0x7F)
+			/* Include proper munging of opsneeded, it has special effects for numbers
+			   greater then 0x7F. Currently we just 'ignore' it. */
+			if((opcode_table_data[current->first->_id].num_pop!=0) || (opcode_table_data[current->first->_id].call_effect!=0))
 			{
-				#ifdef DEBUG_PARSE2
-				print_asm_opcode(tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-"), *this, funcmap, opcode_table_data, *(current->first));
-				tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-") << opcode_table_data[current->first->_id].num_pop << endl;
-				#endif
-				
-				unsigned int num_args=0;
-				
-				if(opcode_table_data[current->first->_id].num_pop>0x7F)
-				{
-					#ifdef DEBUG_PARSE2a
-					cout << "CALL EFFECT: " << opcode_table_data[current->first->_id].num_pop << '\t';
-					#endif
-					
-					num_args = 0x100 - opcode_table_data[current->first->_id].num_pop;
-					
-					#ifdef DEBUG_PARSE2a
-					cout << num_args << endl;
-					#endif
-				}
-				else if(opcode_table_data[current->first->_id].call_effect!=0)
-				{
-					assert(current->first->_params_parsed.size()>=1);
-					assert(_externs.size()>=current->first->_params_parsed[0]);
-					FuncMap::const_iterator fmp = funcmap.find(_externs[current->first->_params_parsed[0]]);
-					#ifdef DEBUG_PARSE2
-					cout << "CALL:     " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
-					#endif
-					
-					num_args = fmp->second.num_args;
-				}
-				else
+				//if(opcode_table_data[current->first->_id].num_pop<0x7F)
 				{
 					#ifdef DEBUG_PARSE2
-					cout << "Non-CALL: \t" << opcode_table_data[current->first->_id].num_pop << endl;
+					print_asm_opcode(tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-"), *this, funcmap, opcode_table_data, *(current->first));
+					tab_indent(3, cout << "0x" << setw(2) << current->first->_id << "-") << opcode_table_data[current->first->_id].num_pop << endl;
 					#endif
-					num_args = opcode_table_data[current->first->_id].num_pop;
+					
+					unsigned int num_args=0;
+					
+					if(opcode_table_data[current->first->_id].num_pop>0x7F)
+					{
+						#ifdef DEBUG_PARSE2a
+						cout << "CALL EFFECT: " << opcode_table_data[current->first->_id].num_pop << '\t';
+						#endif
+						
+						num_args = 0x100 - opcode_table_data[current->first->_id].num_pop;
+						
+						#ifdef DEBUG_PARSE2a
+						cout << num_args << endl;
+						#endif
+					}
+					else if(opcode_table_data[current->first->_id].call_effect!=0)
+					{
+						assert(current->first->_params_parsed.size()>=1);
+						assert(_externs.size()>=current->first->_params_parsed[0]);
+						FuncMap::const_iterator fmp = funcmap.find(_externs[current->first->_params_parsed[0]]);
+						#ifdef DEBUG_PARSE2
+						cout << "CALL:     " << fmp->second.funcid << '\t' << fmp->second.num_args << endl;
+						#endif
+						
+						num_args = fmp->second.num_args;
+					}
+					else
+					{
+						#ifdef DEBUG_PARSE2
+						cout << "Non-CALL: \t" << opcode_table_data[current->first->_id].num_pop << endl;
+						#endif
+						num_args = opcode_table_data[current->first->_id].num_pop;
+					}
+					
+					if(num_args>0)
+					{
+						/* save the 'current' value as the return value and increment it so it's
+						   pointing at the 'next' current value */
+						vector<pair<UCc *, bool> >::reverse_iterator ret(current);
+						ret->first->_popped = parse_ucs_pass2b(++current, vec, num_args, funcmap);
+						--current;
+						//ret->second=false;
+						assert(current==ret);
+						#ifdef DEBUG_PARSE2a
+						print_asm_opcode(tab_indent(1, cout), *this, funcmap, opcode_table_data, intrinsics, *(ret->first));
+						
+						for(vector<UCc *>::iterator i=ret->first->_popped.begin(); i!=ret->first->_popped.end(); i++)
+							print_asm_opcode(tab_indent(2, cout), *this, funcmap, opcode_table_data, **i);
+						#endif
+					}
 				}
-				
-				if(num_args>0)
+			}
+			if(opsneeded!=0)
+			{
+				// if it's a 'push' opcode and we need items to return that we've popped off the stack...
+				if(opcode_table_data[current->first->_id].num_push!=0)
 				{
-					/* save the 'current' value as the return value and increment it so it's
-					   pointing at the 'next' current value */
-					vector<pair<UCc *, bool> >::reverse_iterator ret(current);
-					ret->first->_popped = parse_ucs_pass2b(++current, vec, num_args, funcmap);
-					--current;
-					
-					#ifdef DEBUG_PARSE2a
-					print_asm_opcode(tab_indent(3, cout << "OP"), *this, funcmap, opcode_table_data, *(ret->first));
-					
-					for(vector<UCc *>::iterator i=ret->first->_popped.begin(); i!=ret->first->_popped.end(); i++)
-						print_asm_opcode(tab_indent(4, cout << "PARAM"), *this, funcmap, opcode_table_data, **i);
+					#ifdef DEBUG_PARSE2
+					print_asm_opcode(tab_indent(4, cout << "P-"), *this, funcmap, opcode_table_data, *(current->first));
 					#endif
+					
+					opsfound+=opcode_table_data[current->first->_id].num_push;
+					vucc.push_back(current->first);
+					current->second=true;
 				}
-			}
-		}
-		if(opsneeded!=0)
-		{
-			// if it's a 'push' opcode and we need items to return that we've popped off the stack...
-			if(opcode_table_data[current->first->_id].num_push!=0)
-			{
-				#ifdef DEBUG_PARSE2
-				print_asm_opcode(tab_indent(4, cout << "P-"), *this, funcmap, opcode_table_data, *(current->first));
-				#endif
-				
-				opsfound+=opcode_table_data[current->first->_id].num_push;
-				vucc.push_back(current->first);
-				current->second=true;
-			}
-			// if we've found all the ops we were searching for, return them
-			if(opsfound>=opsneeded)
-			{
-				return vucc;
+				// if we've found all the ops we were searching for, return them
+				if(opsfound>=opsneeded)
+				{
+					return vucc;
+				}
 			}
 		}
 	}
@@ -1093,11 +1097,11 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 
 
 void print_asm_data(UCFunc &ucf, ostream &o);
-void print_asm_opcodes(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab);
+void print_asm_opcodes(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const vector<UCOpcodeData> &optab);
 
 /* prints the "assembler" output of the usecode, currently trying to duplicate
    the output of the original ucdump... */
-void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const UCData &uc)
+void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const map<unsigned int, string> &intrinsics, const UCData &uc)
 {
 	if(uc.verbose()) cout << "Printing function..." << endl;
 
@@ -1121,7 +1125,7 @@ void print_asm(UCFunc &ucf, ostream &o, const FuncMap &funcmap, const UCData &uc
 	//o << "-----" << endl;
     //_opcodes[i]->print_asm(cout);
 	for(vector<UCc>::iterator op=ucf._opcodes.begin(); op!=ucf._opcodes.end(); op++)
-		print_asm_opcode(o, ucf, funcmap, opcode_table_data, *op);
+		print_asm_opcode(o, ucf, funcmap, opcode_table_data, intrinsics, *op);
 }
 
 void print_asm_data(UCFunc &ucf, ostream &o)
@@ -1146,12 +1150,12 @@ void print_asm_data(UCFunc &ucf, ostream &o)
 	}
 }
 
-string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op);
+string demunge_ocstring(UCFunc &ucf, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op);
 void output_raw_opcodes(ostream &o, const UCc &op);
 
 extern UCData uc;
 
-void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const UCc &op)
+void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vector<UCOpcodeData> &optab, const map<unsigned int, string> &intrinsics, const UCc &op)
 {
 	// offset
 	o << setw(4) << op._offset << ':';
@@ -1159,10 +1163,10 @@ void print_asm_opcode(ostream &o, UCFunc &ucf, const FuncMap &funcmap, const vec
 	if(uc.rawops()) output_raw_opcodes(o, op);
 	else            o << '\t';
 
-	o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_nmo, optab[op._id].param_types, op._params_parsed, op);
+	o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_nmo, optab[op._id].param_types, op._params_parsed, intrinsics, op);
 
 	if(uc.autocomment())
-		o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_comment, optab[op._id].param_types, op._params_parsed, op);
+		o << demunge_ocstring(ucf, funcmap, optab[op._id].asm_comment, optab[op._id].param_types, op._params_parsed, intrinsics, op);
 
 	o << endl;
 }
@@ -1193,7 +1197,7 @@ void output_raw_opcodes(ostream &o, const UCc &op)
 		o << "\t\t\t";
 }
 
-string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op)
+string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const map<unsigned int, string> &intrinsics, const UCc &op)
 {
 	strstream str;
 	str << setfill('0') << setbase(16);
@@ -1262,6 +1266,31 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 						str << s;
 						break;
 					}
+					// if it's the intrinsic name we want
+					else if(c=='i')
+					{
+						i++; c = asmstr[i];
+						unsigned int t=0;
+						switch(c)
+						{
+							case '1': assert(params.size()>=1); t=1; break;
+							case '2': assert(params.size()>=2); t=2; break;
+							case '3': assert(params.size()>=3); t=3; break;
+							case '4': assert(params.size()>=4); t=4; break;
+							case '5': assert(params.size()>=5); t=5; break;
+							case '6': assert(params.size()>=6); t=6; break;
+							case '7': assert(params.size()>=7); t=7; break;
+							case '8': assert(params.size()>=8); t=8; break;
+							case '9': assert(params.size()>=9); t=9; break;
+							default:   // we'll silently drop errors... it's the only "clean" way
+								str << '%' << c;
+						}
+						assert(t!=0);
+						string s = intrinsics.find(params[t-1])->second;
+						//if(s.size()>17) s = s.substr(0, 17) + string("...");
+						str << s;
+						break;
+					}
 					// if it's external function name we want
 					else if(c=='f')
 					{
@@ -1308,7 +1337,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 								
 								for(vector<UCc *>::const_iterator i=op._popped.begin(); i!=op._popped.end();)
 								{
-									str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*i)->_id].ucs_nmo, opcode_table_data[(*i)->_id].param_types, (*i)->_params_parsed, **i);
+									str << demunge_ocstring(ucf, funcmap, opcode_table_data[(*i)->_id].ucs_nmo, opcode_table_data[(*i)->_id].param_types, (*i)->_params_parsed, intrinsics, **i);
 									if(++i!=op._popped.end())
 										str << ", ";
 								}
@@ -1325,7 +1354,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 							else
 							{
 								UCc &ucc(*op._popped[t-1]);
-								str << demunge_ocstring(ucf, funcmap, opcode_table_data[ucc._id].ucs_nmo, opcode_table_data[ucc._id].param_types, ucc._params_parsed, ucc);
+								str << demunge_ocstring(ucf, funcmap, opcode_table_data[ucc._id].ucs_nmo, opcode_table_data[ucc._id].param_types, ucc._params_parsed, intrinsics, ucc);
 							}
 						}
 						break;
