@@ -138,6 +138,7 @@ public:
 		{ return action; }
 					// Set new action.
 	void set_action(Actor_action *newact);
+	Tile_coord get_dest();		// Get destination.
 					// Walk to a desired spot.
 	void walk_to_tile(Tile_coord dest, int speed = 250, int delay = 0);
 	void walk_to_tile(int tx, int ty, int tz, int speed = 250, 
@@ -407,6 +408,7 @@ public:
 class Walk_to_schedule : public Schedule
 	{
 	Tile_coord dest;		// Where we're going.
+	int first_delay;		// Starting delay (1/1000's sec.)
 	int new_schedule;		// Schedule to set when we get there.
 	int retries;			// # failures at finding path.
 	int legs;			// # times restarted walk.

@@ -321,6 +321,21 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	}
 
 /*
+ *	Return current destination.
+ *
+ *	Output:	0 if none.
+ */
+
+int Path_walking_actor_action::get_dest
+	(
+	Tile_coord& dest		// Returned here.
+	)
+	{
+	dest = path->get_dest();
+	return (1);
+	}
+
+/*
  *	Create sequence of frames.
  */
 

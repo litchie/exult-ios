@@ -128,6 +128,21 @@ void Actor::set_action
 	}
 
 /*
+ *	Get destination, or current spot if no destination.
+ */
+
+Tile_coord Actor::get_dest
+	(
+	)
+	{
+	Tile_coord dest;
+	if (action && action->get_dest(dest))
+		return dest;
+	else
+		return get_abs_tile_coord();
+	}
+
+/*
  *	Walk towards a given tile.
  */
 
@@ -143,16 +158,7 @@ void Actor::walk_to_tile
 		action = new Path_walking_actor_action(new Zombie());
 	set_action(action->walk_to_tile(get_abs_tile_coord(), dest));
 	if (action)			// Successful at setting path?
-		{
-		frame_time = speed;
-		Game_window *gwin = Game_window::get_game_window();
-		if (!in_queue())	// Not already in queue?
-			{
-			unsigned long curtime = SDL_GetTicks();
-			gwin->get_tqueue()->add(curtime + delay, this, 
-								(long) gwin);
-			}
-		}
+		start(speed, delay);
 	else
 		frame_time = 0;		// Not moving.
 	}
@@ -177,14 +183,7 @@ int Actor::walk_path_to_tile
 	set_action(action->walk_to_tile(src, dest));
 	if (action)			// Successful at setting path?
 		{
-		frame_time = speed;
-		Game_window *gwin = Game_window::get_game_window();
-		if (!in_queue())	// Not already in queue?
-			{
-			unsigned long curtime = SDL_GetTicks();
-			gwin->get_tqueue()->add(curtime + delay, this, 
-								(long) gwin);
-			}
+		start(speed, delay);
 		return (1);
 		}
 	frame_time = 0;			// Not moving.
@@ -221,8 +220,10 @@ void Actor::start
 	{
 	frame_time = speed;
 	Game_window *gwin = Game_window::get_game_window();
-	if (!in_queue())		// Not already in queue?
+	if (!in_queue() || delay)	// Not already in queue?
 		{
+		if (delay)
+			gwin->get_tqueue()->remove(this);
 		unsigned long curtime = SDL_GetTicks();
 		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
 		}
@@ -1119,6 +1120,7 @@ Walk_to_schedule::Walk_to_schedule
 	int new_sched			// Schedule when we get there.
 	) : Schedule(n), dest(d), new_schedule(new_sched), retries(0), legs(0)
 	{
+	first_delay = 2*(rand()%10000);	// Delay 0-20 secs.
 	}
 
 /*
@@ -1174,10 +1176,11 @@ void Walk_to_schedule::now_what
 	cout << "Finding path to schedule for " << npc->get_name() << endl;
 					// Create path to dest., delaying
 					//   0 to 2 seconds.
-	if (!npc->walk_path_to_tile(from, to, 200, rand()%2000))
-		{			// Wait 1/3 sec., then try again.
+	if (!npc->walk_path_to_tile(from, to, 200, 
+						first_delay + rand()%2000))
+		{			// Wait 1 sec., then try again.
 		cout << "Failed to find path for " << npc->get_name() << endl;
-		npc->walk_to_tile(dest, 200, 300);
+		npc->walk_to_tile(dest, 200, 1000);
 		retries++;		// Failed.  Try again next tick.
 		}
 	else				// Okay.  He's walking there.
@@ -1185,6 +1188,7 @@ void Walk_to_schedule::now_what
 		legs++;
 		retries = 0;
 		}
+	first_delay = 0;
 	}
 
 /*
@@ -1446,16 +1450,19 @@ void Npc_actor::follow
 	{
 					// How close to aim for.
 	int dist = 2 + Npc_actor::get_party_id()/3;
+					// Aim for leader's dest.
+// ++++Try later.	Tile_coord goal = leader->get_dest();
 	Tile_coord goal = leader->get_abs_tile_coord();
 	Tile_coord pos = get_abs_tile_coord();
-	int goaldist = goal.distance(pos);	// Tiles to goal.
+					// Tiles to leader.
+	int goaldist = goal.distance(pos);
 	if (goaldist < dist)		// Already close enough?
 		return;
 					// Figure where to aim.
-	int newtx = Approach(pos.tx, goal.tx, dist);
-	int newty = Approach(pos.ty, goal.ty, dist);
-	newtx += 1 - rand()%3;		// Jiggle a bit.
-	newty += 1 - rand()%3;
+	goal.tx = Approach(pos.tx, goal.tx, dist);
+	goal.ty = Approach(pos.ty, goal.ty, dist);
+	goal.tx += 1 - rand()%3;	// Jiggle a bit.
+	goal.ty += 1 - rand()%3;
 					// Get his speed.
 	int speed = leader->get_frame_time();
 	if (!speed)			// Not moving?
@@ -1468,7 +1475,7 @@ void Npc_actor::follow
 		Game_window *gwin = Game_window::get_game_window();
 		if (pixels > gwin->get_width() + 16)
 			{
-			Npc_actor::move(newtx, newty, goal.tz);
+			Npc_actor::move(goal.tx, goal.ty, goal.tz);
 			Rectangle box = gwin->get_shape_rect(this);
 			gwin->add_text("Thou shan't lose me so easily!", 
 							box.x, box.y);
@@ -1476,7 +1483,13 @@ void Npc_actor::follow
 			return;
 			}
 		}
-	walk_to_tile(newtx, newty, goal.tz, speed);
+	if (!leader->is_moving())	// Leader stopped?
+		{			// A little stuck?
+		if (goaldist >= 8 && get_party_id() >= 0)
+			walk_path_to_tile(goal, speed);
+		return;			// Otherwise, take a rest.
+		}
+	walk_to_tile(goal, speed);
 	}
 
 /*

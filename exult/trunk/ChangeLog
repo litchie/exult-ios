@@ -1,5 +1,6 @@
 2000-05-28  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* Party members use pathfinding.
 	* exult.cc: Alt keys work now (by catching their events).
 	* 't' key does 'target' as in original game.
 	* Scrolling/moving with gumps fixed.
