@@ -3006,27 +3006,30 @@ if test x$enable_debug = xyes; then
 #define DEBUG 1
 EOF
 
+  DEBUG_FLAGS="-g"
 else
   echo "$ac_t""no" 1>&6
 fi
 
 
+
+
 echo $ac_n "checking for inline""... $ac_c" 1>&6
-echo "configure:3016: checking for inline" >&5
+echo "configure:3019: checking for inline" >&5
 if eval "test \"`echo '$''{'ac_cv_c_inline'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_cv_c_inline=no
 for ac_kw in inline __inline__ __inline; do
   cat > conftest.$ac_ext <<EOF
-#line 3023 "configure"
+#line 3026 "configure"
 #include "confdefs.h"
 
 int main() {
 } int $ac_kw foo() {
 ; return 0; }
 EOF
-if { (eval echo configure:3030: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:3033: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   ac_cv_c_inline=$ac_kw; break
 else
@@ -3232,6 +3235,7 @@ s%@WINDOWING_SYSTEM@%$WINDOWING_SYSTEM%g
 s%@RELNUM@%$RELNUM%g
 s%@KMID_INCLUDES@%$KMID_INCLUDES%g
 s%@KMID_LIBS@%$KMID_LIBS%g
+s%@DEBUG_FLAGS@%$DEBUG_FLAGS%g
 
 CEOF
 EOF

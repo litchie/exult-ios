@@ -7,6 +7,7 @@ INCLUDES +=	$(KMID_INCLUDES)
 INCLUDES +=	-I../conf
 
 CXXFLAGS += $(INCDIRS) -Wall 
+CXXFLAGS += $(DEBUG_FLAGS)
 
 #LIBS +=  -L/usr/X11R6/lib/ -lc -lstdc++ -lgcc -lm -lXi -lXext -lX11 
 
