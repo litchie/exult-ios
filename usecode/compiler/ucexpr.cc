@@ -408,6 +408,35 @@ void Uc_string_expression::gen_value
 	}
 
 /*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
+void Uc_string_prefix_expression::gen_value
+	(
+	vector<char>& out
+	)
+	{
+	out.push_back((char) UC_PUSHS);
+	Write2(out, get_string_offset());
+	}
+
+/*
+ *	Get offset in function's text_data.
+ *
+ *	Output:	Offset.
+ */
+
+int Uc_string_prefix_expression::get_string_offset
+	(
+	)
+	{ 
+	if (offset < 0)			// First time?
+					// Look up & print errors.
+		offset = fun->find_string_prefix(*this, prefix.c_str());
+	return offset;
+	}
+
+/*
  *	Delete a list of expressions.
  */
 
