@@ -1,3 +1,7 @@
+2001-12-26  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* tools/uctools.h, usecode/ucinternal.cc: added opcodes 4C and 4D,
+	spanish SI works now
+
 2001-12-26  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/data/opcodes.txt: Cleaned up callis and calli output
 	under -fz. Fixed a 'bug' with the output of the binary math/comparison
