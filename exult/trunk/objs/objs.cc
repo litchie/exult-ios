@@ -216,9 +216,12 @@ int Game_object::modify_quantity
 	int new_frame = newquant - 1;
 	if (new_frame > 7)		// Range is 0-7.
 		new_frame = 7;
-	if (shapenum != 842)		// ++++Kludge:  reagents.
+	if (shapenum == 565)		// Starbursts are special.
+		set_frame(0);		// (Fixes messed-up games.)
+	else if (shapenum != 842)	// Leave reagants alone.
 					// Guessing:  Works for ammo, arrows.
 		set_frame(num_frames == 32 ? 24 + new_frame : new_frame);
+
 	Container_game_object *owner = get_owner();
 	if (owner)			// Update owner's volume.
 		owner->modify_volume_used(get_volume() - oldvol);
