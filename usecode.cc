@@ -2406,6 +2406,26 @@ USECODE_INTRINSIC(get_party_list2)
 	return(u);
 }
 
+USECODE_INTRINSIC(in_combat)
+{
+	// Are we in combat mode?
+	return Usecode_value(gwin->in_combat());
+}
+
+USECODE_INTRINSIC(get_dead_party)
+{
+	// Return list of dead companions' bodies.
+	Dead_body *list[10];
+	int cnt = Dead_body::find_dead_companions(list);
+	Usecode_value ret(cnt, 0);
+	for (int i = 0; i < cnt; i++)
+		{
+		Usecode_value v((long) list[i]);
+		ret.put_elem(i, v);
+		}
+	return ret;
+}
+
 typedef	Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
 // missing from mingw32 header files, so included manually
@@ -2571,13 +2591,13 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(run_usecode),	// 0x8b 
 	USECODE_INTRINSIC_PTR(fade_palette),	// 0x8c 
 	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8e  In_combat().
+	USECODE_INTRINSIC_PTR(in_combat),	// 0x8e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x8f +++++Play speech/music?? Only
 		//  called right before endgame.
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x90
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x92
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x93    +++++GetDeadPartyMembers().
+	USECODE_INTRINSIC_PTR(get_dead_party),	// 0x93
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x94    SetupOrrery (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x95
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x96
