@@ -243,8 +243,8 @@ static int Check_mask
 			return 0;	// Not an NPC || is a party member.
 		return 1;
 		}
-	if (mask == 16)
-		return obj->is_egg();
+	if (mask == 16)			// Egg or barge.
+		return obj->is_egg() || obj->get_shapenum() == 0x3c1;
 	if (mask == 32)
 		return obj->is_monster();
 	if (!mask)			// Guessing a bit here.
@@ -269,7 +269,7 @@ int Game_object::find_nearby
 	int mask,			// Guessing+++:
 					//   4 == party members only.
 					//   8 == non-party NPC's only.
-					//  16 == eggs.
+					//  16 == egg or barge.
 					//  32 == monsters? 
 	int qual,			// Quality, or -359 for any.
 	int framenum			// Frame #, or -359 for any.
