@@ -44,3 +44,7 @@ glade_xml_signal_connect(app_xml, "on_shinfo_draw_expose_event",(void(*)())on_sh
 glade_xml_signal_connect(app_xml, "on_find_shape_down_clicked",(void(*)())on_find_shape_down_clicked);
 glade_xml_signal_connect(app_xml, "on_find_shape_up_clicked",(void(*)())on_find_shape_up_clicked);
 glade_xml_signal_connect(app_xml, "on_find_shape_key",(void(*)())on_find_shape_key);
+glade_xml_signal_connect(app_xml, "on_equip_cancel_clicked",(void(*)())on_equip_cancel_clicked);
+glade_xml_signal_connect(app_xml, "on_equip_window_delete_event",(void(*)())on_equip_window_delete_event);
+glade_xml_signal_connect(app_xml, "on_equip_recnum_changed",(void(*)())on_equip_recnum_changed);
+glade_xml_signal_connect(app_xml, "on_open_equip_button_clicked",(void(*)())on_open_equip_button_clicked);

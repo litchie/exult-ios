@@ -30,3 +30,7 @@ extern "C" gboolean on_shinfo_draw_expose_event(GtkWidget *widget, GdkEventExpos
 extern "C" void on_find_shape_down_clicked(GtkButton *button, gpointer user_data);
 extern "C" void on_find_shape_up_clicked(GtkButton *button, gpointer user_data);
 extern "C" gboolean on_find_shape_key(GtkEntry *entry, GdkEventKey *event, gpointer user_data);
+extern "C" void on_equip_cancel_clicked(GtkButton *btn, gpointer user_data);
+extern "C" gboolean on_equip_window_delete_event(GtkWidget *widget, GdkEvent *event, gpointer user_data);
+extern "C" gboolean on_equip_recnum_changed(GtkWidget *widget, GdkEventFocus *event, gpointer user_data);
+extern "C" void on_open_equip_button_clicked(GtkButton *btn, gpointer user_data);

@@ -30,7 +30,7 @@ EXEC=exult_studio.exe
 SERVER_OBJS=objserial.o servemsg.o server.o
 
 MAPEDIT_OBJS=chunklst.o dirbrowser.o eggedit.o exult_studio.o npcedit.o objbrowse.o objedit.o paledit.o  \
-	shapedraw.o shapeedit.o shapelst.o studio.o
+	shapedraw.o shapeedit.o shapelst.o studio.o exultstudioico.o
 
 FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o Table.o U7file.o utils.o
 
@@ -39,6 +39,9 @@ IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 SHAPES_OBJS=font.o fontvga.o items.o monstinf.o shapeinf.o shapevga.o u7drag.o vgafile.o
 
 OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS)
+
+exultstudioico.o: ../win32/exultstudioico.rc ../win32/exultstudio.ico
+	windres --include-dir ../win32 ../win32/exultstudioico.rc exultstudioico.o
 
 $(EXEC): $(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LIBS)
