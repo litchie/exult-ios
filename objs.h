@@ -111,6 +111,7 @@ protected:
 public:
 	friend class Chunk_object_list;
 	friend class Gump_object;
+	friend class Actor_gump_object;
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),

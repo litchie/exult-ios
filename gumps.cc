@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Gumps.cc - Open containers and their contents.
  **
  **	Written: 3/4/2000 - JSF
@@ -26,6 +27,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 
 const int CHECKMARK = 2;		// Shape # in gumps.vga for checkmark.
+const int DISK = 2;			// Diskette shape #.+++++++++
+const int STATS = 2;			// Stats button shape #.+++++++++
+
+/*
+ *	Statics:
+ */
+short Actor_gump_object::diskx = 20, Actor_gump_object::disky = 20;//++++++++
+short Actor_gump_object::statx = 30, Actor_gump_object::staty = 30;
+
 
 /*
  *	Create a gump.
@@ -73,7 +83,7 @@ Gump_object::Gump_object
 	default:
 					// Character pictures:
 		if (shnum >= 57 && shnum <= 68)
-			{
+			{		// +++++Want whole rectangle.
 			object_area = Rectangle(32, 4, 92, 126);
 			checkx = 6; checky = 136;
 			}
@@ -200,6 +210,32 @@ void Gump_object::push_checkmark
 	}
 
 /*
+ *	Add an object.
+ *
+ *	Output:	0 if cannot add it.
+ */
+
+int Gump_object::add
+	(
+	Game_object *obj,
+	int mx, int my			// Screen location.
+	)
+	{
+	container->add(obj);
+	mx -= x + object_area.x;	// Get point rel. to object_area.
+	my -= y + object_area.y;
+	if (mx < 0)			// Not a valid spot?
+					// Let paint() set spot.
+		obj->cx = obj->cy = 255;	
+	else
+		{			// Put it where desired.
+		obj->cx = mx;
+		obj->cy = my;
+		}
+	return (1);
+	}
+
+/*
  *	Paint on screen.
  */
 
@@ -238,8 +274,6 @@ void Gump_object::paint
 				px = endx;
 			if (py > endy)
 				py = endy;
-					// Take into account that objs. are
-					//   normally located by tile.
 			obj->cx = px - shape->get_width() + 
 					shape->get_xleft();
 			obj->cy = py - shape->get_height() + 
@@ -259,4 +293,87 @@ void Gump_object::paint
 						obj->get_framenum());
 		}
 	while (obj != last_object);
+	}
+
+/*
+ *	Find the index of the closest 'spot' to a mouse point.
+ *
+ *	Output:	Index.
+ */
+
+int Actor_gump_object::find_closest
+	(
+	int mx, int my			// Mouse point in window.
+	)
+	{
+	mx -= x; my -= y;		// Get point rel. to us.
+	long closest_squared = 1000000;	// Best distance squared.
+	int closest = -1;		// Best index.
+	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+		{
+		int dx = mx - spots[i].x, dy = my - spots[i].y;
+		long dsquared = dx*dx + dy*dy;
+					// Better than prev.?
+		if (dsquared < closest_squared)
+			{
+			closest_squared = dsquared;
+			closest = i;
+			}
+		}
+	return (closest);
+	}
+
+/*
+ *	Create the gump display for an actor.
+ */
+
+Actor_gump_object::Actor_gump_object
+	(
+	Container_game_object *cont,	// Container it represents.
+	int initx, int inity, 		// Coords. on screen.
+	int shnum			// Shape #.
+	) : Gump_object(cont, initx, inity, shnum)
+	{
+	}
+
+/*
+ *	Add an object.
+ *
+ *	Output:	0 if cannot add it.
+ */
+
+int Actor_gump_object::add
+	(
+	Game_object *obj,
+	int mx, int my			// Screen location.
+	)
+	{
+					// Find index of closest spot.
+	int index = find_closest(mx, my);
+	Actor_gump_spot& spot = spots[index];
+	if (spot.obj)			// Already something there?
+					// Try to put into container.
+		return (spot.obj->drop(obj));
+	spot.obj = obj;			// Put in spot. ++++Check types??
+	container->add(obj);		// Add to whom we represent.
+					// Set object's position.
+	obj->cx = spot.x - object_area.x;
+	obj->cy = spot.y - object_area.y;
+	return (1);
+	}
+
+/*
+ *	Paint on screen.
+ */
+
+void Actor_gump_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+	Gump_object::paint(gwin);	// Paint objects, checkmark.
+					// Paint buttons.
+	gwin->paint_gump(x + checkx, y + checky, CHECKMARK, 0);
+	gwin->paint_gump(x + diskx, y + disky, DISK, 0);
+	gwin->paint_gump(x + statx, y + staty, STATS, 0);
 	}
