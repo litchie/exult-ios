@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 #include "objbrowse.h"
 #include "shapedraw.h"
+#include "rect.h"
 
 class Shapes_vga_file;
 
@@ -96,5 +97,99 @@ public:
 	bool is_visible()
 		{ return GTK_WIDGET_VISIBLE(win); }
 	};
+
+/**********************************************************************
+ *	Below are classes for the combo-browser.
+ **********************************************************************/
+#if 0	/* Working on this */
+
+/*
+ *	Store information about an individual combo shown in the list.
+ */
+class Combo_info
+	{
+	friend class Combo_chooser;
+	int num;
+	Rectangle box;			// Box where drawn.
+	Combo_info() {  }
+	void set(int n, int rx, int ry, int rw, int rh)
+		{
+		num = n;
+		box = Rectangle(rx, ry, rw, rh);
+		}
+	};
+
+/*
+ *	This class manages the list of combos.
+ */
+class Combo_chooser: public Object_browser, public Shape_draw
+	{
+	vector<Combo *> combos;		// List of all combination-objects.
+	GtkWidget *sbar;		// Status bar.
+	guint sbar_sel;			// Status bar context for selection.
+	GtkWidget *vscroll;		// Vertical scrollbar.
+	int index0;			// Index (combo) # of leftmost in
+					//   displayed list.
+	Combo_info *info;		// An entry for each combo drawn.
+	int info_cnt;			// # entries in info.
+					// Various controls.
+	GtkWidget *move_combo_down, *move_combo_up;
+	void (*sel_changed)();		// Called when selection changes.
+					// Blit onto screen.
+	virtual void show(int x, int y, int w, int h);
+	virtual void show()
+		{ Combo_chooser::show(0, 0, 
+			draw->allocation.width, draw->allocation.height);}
+	void select(int new_sel);	// Show new selection.
+	virtual void render();		// Draw list.
+	virtual void set_background_color(guint32 c)
+		{ Shape_draw::set_background_color(c); }
+	virtual int get_selected_id()
+		{ return selected < 0 ? -1 : info[selected].num; }
+	void render_combo(int combonum, int xoff, int yoff);
+	void scroll(int newindex);	// Scroll.
+	void scroll(bool upwards);
+	GtkWidget *create_controls();
+	void enable_controls();		// Enable/disable controls after sel.
+					//   has changed.
+public:
+	Combo_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
+				Shape_group *g = 0, Shape_file_info *fi = 0);
+	virtual ~Combo_chooser();
+					// Turn off selection.
+	void unselect(bool need_render = true);
+	int is_selected()		// Is a combo selected?
+		{ return selected >= 0; }
+	void set_selected_callback(void (*fun)())
+		{ sel_changed = fun; }
+	int get_selected()		// Get selected combo, or return -1.
+		{ return selected >= 0 ? info[selected].num : -1; }
+					// Configure when created/resized.
+	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
+							gpointer data);
+					// Blit to screen.
+	static gint expose(GtkWidget *widget, GdkEventExpose *event,
+							gpointer data);
+					// Handle mouse press.
+	static gint mouse_press(GtkWidget *widget, GdkEventButton *event,
+							gpointer data);
+					// Give dragged combo.
+	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
+		GtkSelectionData *data, guint info, guint time, gpointer data);
+					// Someone else selected.
+	static gint selection_clear(GtkWidget *widget,
+				GdkEventSelection *event, gpointer data);
+	static gint drag_begin(GtkWidget *widget, GdkDragContext *context,
+							gpointer data);
+					// Handle scrollbar.
+	static void scrolled(GtkAdjustment *adj, gpointer data);
+	void move(bool upwards);	// Move current selected combo.
+#ifdef WIN32
+	static gint win32_drag_motion(GtkWidget *widget, GdkEventMotion *event,
+		gpointer data);
+#endif
+	};
+
+#endif	/* #if 0 */
 
 #endif	/* INCL_COMBO_H */
