@@ -1,5 +1,8 @@
 *.o
 *~
+*.u7
+*.mid
+*.fli
 exult.exe
 exult
 Makefile
