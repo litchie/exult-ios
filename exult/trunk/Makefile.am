@@ -53,7 +53,6 @@ exult_SOURCES =	\
 	gamerend.cc	\
 	gamewin.cc	\
 	gamewin.h	\
-	lists.cc	\
 	lists.h		\
 	menulist.cc	\
 	menulist.h	\

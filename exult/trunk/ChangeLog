@@ -1,4 +1,7 @@
 2000-12-01  Max Horn  <max@quendi.de>
+	* removed lists.cc from CVS and the makefile
+
+2000-12-01  Max Horn  <max@quendi.de>
 	* list.cc: removed class Slist & consorts
 	* list.h: added class Exult_queue and Actor_queue which replace Slist & consorts
 	* combat.*, schedule.*: use Actor_queue instead of Slist
