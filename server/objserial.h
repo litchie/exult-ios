@@ -32,12 +32,30 @@ extern int Egg_object_out
 	unsigned long addr,		// Address.
 	int tx, int ty, int tz,	// Absolute tile coords.
 	int shape, int frame,
+	int type,
 	int criteria,
 	int probability,
 	int distance,
 	bool nocturnal,
 	bool once,
-	bool auto_reset
+	bool auto_reset,
+	int data1, int data2
+	);
+extern int Egg_object_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	int& type,
+	int& criteria,
+	int& probability,
+	int& distance,
+	bool& nocturnal,
+	bool& once,
+	bool& auto_reset,
+	int& data1, int& data2
 	);
 
 #endif

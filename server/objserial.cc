@@ -98,22 +98,27 @@ void Egg_object_io
 	unsigned long& addr,		// Address.
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
 	int& shape, int& frame,
+	int& type,
 	int& criteria,
 	int& probability,
 	int& distance,
 	bool& nocturnal,
 	bool& once,
-	bool& auto_reset
+	bool& auto_reset,
+	int& data1, int& data2
 	)
 	{
 	Serial io(buf);
 	Common_obj_io<Serial>(io, addr, tx, ty, tz, shape, frame);
+	io.trans(type);
 	io.trans(criteria);
 	io.trans(probability);
 	io.trans(distance);
 	io.trans(nocturnal);
 	io.trans(once);
 	io.trans(auto_reset);
+	io.trans(data1);
+	io.trans(data2);
 	}
 
 /*
@@ -128,18 +133,52 @@ int Egg_object_out
 	unsigned long addr,		// Address.
 	int tx, int ty, int tz,	// Absolute tile coords.
 	int shape, int frame,
+	int type,
 	int criteria,
 	int probability,
 	int distance,
 	bool nocturnal,
 	bool once,
-	bool auto_reset
+	bool auto_reset,
+	int data1, int data2
 	)
 	{
 	unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
 	Egg_object_io<Serial_out>(ptr, addr, tx, ty, tz, shape, frame,
-		criteria, probability, distance, nocturnal, once, auto_reset);
+		type, criteria, probability, distance, 
+		nocturnal, once, auto_reset,
+		data1, data2);
 	return Exult_server::Send_data(fd, Exult_server::egg, buf, ptr - buf);
+	}
+
+/*
+ *	Decode an egg object.
+ *
+ *	Output:	0 if unsuccessful.
+ */
+
+int Egg_object_in
+	(
+	unsigned char *data,		// Data that was read.
+	int datalen,			// Length of data.
+	unsigned long& addr,		// Address.
+	int& tx, int& ty, int& tz,	// Absolute tile coords.
+	int& shape, int& frame,
+	int& type,
+	int& criteria,
+	int& probability,
+	int& distance,
+	bool& nocturnal,
+	bool& once,
+	bool& auto_reset,
+	int& data1, int& data2
+	)
+	{
+	unsigned char *ptr = data;
+	Egg_object_io<Serial_in>(ptr, addr, tx, ty, tz, shape, frame,
+		type, criteria, probability, distance, 
+		nocturnal, once, auto_reset, data1, data2);
+	return (ptr - data) == datalen;
 	}
 

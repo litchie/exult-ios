@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "studio.h"
 #include "dirbrowser.h"
 #include "servemsg.h"
+#include "objserial.h"
 
 ExultStudio *ExultStudio::self = 0;
 
@@ -401,23 +402,187 @@ void ExultStudio::set_static_path(const char *path)
 }
 
 /*
- *	Open/close the egg-editing window.
+ *	Open the egg-editing window.
  */
 
 void ExultStudio::open_egg_window
 	(
+	unsigned char *data,		// Serialized egg, or null.
+	int datalen
 	)
 	{
 	if (!eggwin)			// First time?
 		eggwin = glade_xml_get_widget( app_xml, "egg_window" );
+	if (data)
+		if (!init_egg_window(data, datalen))
+			return;
 	gtk_widget_show(eggwin);
 	}
+
+/*
+ *	Close the egg-editing window.
+ */
+
 void ExultStudio::close_egg_window
 	(
 	)
 	{
 	if (eggwin)
 		gtk_widget_hide(eggwin);
+	}
+
+/*
+ *	Find and set a toggle/checkbox button.
+ */
+
+static void Set_toggle
+	(
+	GladeXML *app_xml,
+	char *name,
+	bool val
+	)
+	{
+	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
+	if (btn)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(btn), val);
+	}
+
+/*
+ *	Find and set an option-menu button.
+ */
+
+static void Set_optmenu
+	(
+	GladeXML *app_xml,
+	char *name,
+	int val
+	)
+	{
+	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
+	if (btn)
+		gtk_option_menu_set_history(GTK_OPTION_MENU(btn), val);
+	}
+
+/*
+ *	Find and set a spin button.
+ */
+
+static void Set_spin
+	(
+	GladeXML *app_xml,
+	char *name,
+	int val
+	)
+	{
+	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
+	if (btn)
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(btn), val);
+	}
+
+/*
+ *	Find and set a text field to a number.
+ */
+
+static void Set_entry
+	(
+	GladeXML *app_xml,
+	char *name,
+	int val,
+	bool hex = false
+	)
+	{
+	GtkWidget *field = glade_xml_get_widget(app_xml, name);
+	if (field)
+		{
+		char *txt = hex ? g_strdup_printf("0x%x", val)
+				: g_strdup_printf("%d", val);
+		gtk_entry_set_text(GTK_ENTRY(field), txt);
+		g_free(txt);
+		}
+	}
+
+/*
+ *	Init. the egg editor with data from Exult.
+ *
+ *	Output:	0 if error (reported).
+ */
+
+int ExultStudio::init_egg_window
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+	unsigned long addr;
+	int tx, ty, tz;
+	int shape, frame;
+	int type;
+	int criteria;
+	int probability;
+	int distance;
+	bool nocturnal;
+	bool once;
+	bool auto_reset;
+	int data1, data2;
+	if (!Egg_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
+		type, criteria, probability, distance, 
+		nocturnal, once, auto_reset,
+		data1, data2))
+		{
+		cout << "Error decoding egg" << endl;
+		return 0;
+		}
+	GtkWidget *notebook = glade_xml_get_widget(app_xml, "notebook1");
+	if (notebook)			// 1st is monster (1).
+		gtk_notebook_set_page(GTK_NOTEBOOK(notebook), type - 1);
+	Set_spin(app_xml, "probability", probability);
+	Set_spin(app_xml, "distance", distance);
+	Set_optmenu(app_xml, "criteria", criteria);
+	Set_toggle(app_xml, "nocturnal", nocturnal);
+	Set_toggle(app_xml, "once", once);
+//	Set_toggle(app_xml, "hatched", hatched);  Need value+++++++++
+	Set_toggle(app_xml, "autoreset", auto_reset);
+	switch (type)			// Set notebook page.
+		{
+	case 1:				// Monster:
+		Set_entry(app_xml, "monst_shape", data2&1023);
+		Set_entry(app_xml, "monst_frame", data2>>10);
+		Set_optmenu(app_xml, "monst_schedule", data1>>8);
+		Set_optmenu(app_xml, "monst_aligh", data1&3);
+		Set_spin(app_xml, "monst_count", (data1&0xff)>>2);
+		break;
+	case 2:				// Jukebox:
+		Set_spin(app_xml, "juke_song", data1&0xff);
+		Set_toggle(app_xml, "juke_cont", (data1>>8)&0x01);
+		break;
+	case 3:				// Sound effect:
+		break;			// +++++++Later!
+	case 4:				// Voice:
+		Set_spin(app_xml, "speech_number", data1&0xff);
+		break;
+	case 5:				// Usecode:
+		Set_entry(app_xml, "usecode_number", data2, true);
+		Set_spin(app_xml, "usecode_quality", data1&0xff);
+		break;
+	case 6:				// Missile:
+		Set_entry(app_xml, "missile_shape", data1); 
+		Set_optmenu(app_xml, "missile_dir", data2&0xff);
+		Set_spin(app_xml, "missile_delay", data2>>8);
+		break;
+	case 7:				// Teleport:
+		break;	// +++++finish
+	case 8:				// Weather:
+		Set_optmenu(app_xml, "weather_type", data1&0xff); 
+		Set_spin(app_xml, "weather_length", data1>>8);
+		break;
+	case 9:				// Path:
+	case 10:			// Button:
+		break;	//+++++++++
+	default:
+		break;
+		}
+	//+++++++++++
+	return 1;
 	}
 
 void ExultStudio::run()
@@ -461,7 +626,7 @@ void ExultStudio::read_from_server
 	cout << "Read " << datalen << " bytes from server" << endl;
 	cout << "ID = " << (int) id << endl;
 	if (id == Exult_server::egg)
-		open_egg_window();	//+++++++Set data!!!!
+		open_egg_window(data, datalen);
 	}
 
 /*

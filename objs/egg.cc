@@ -387,9 +387,9 @@ void Egg_object::activate
 		unsigned long addr = (unsigned long) this;
 		if (Egg_object_out(client_socket, addr, t.tx, t.ty, t.tz,
 			get_shapenum(), get_framenum(), 
-			criteria, probability, distance,
+			type, criteria, probability, distance,
 			(flags>>nocturnal)&1, (flags>>once)&1,
-			(flags>>auto_reset)&1))
+			(flags>>auto_reset)&1, data1, data2))
 			cout << "Sent egg data to ExultStudio" << endl;
 		else
 			cout << "Error sending egg data to ExultStudio" <<endl;

@@ -327,7 +327,7 @@
 
 	  <widget>
 	    <class>GtkOptionMenu</class>
-	    <name>optionmenu3</name>
+	    <name>criteria</name>
 	    <can_focus>True</can_focus>
 	    <items>Cached in
 Party near
@@ -335,7 +335,7 @@ Avatar near
 Avatar far
 Avatar footpad
 Party footpad
-Somethin on
+Something on
 External
 </items>
 	    <initial_choice>0</initial_choice>
@@ -357,7 +357,7 @@ External
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton1</name>
+	    <name>probability</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -410,7 +410,7 @@ External
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton4</name>
+	      <name>nocturnal</name>
 	      <can_focus>True</can_focus>
 	      <label>Nocturnal	</label>
 	      <active>False</active>
@@ -433,9 +433,9 @@ External
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton5</name>
+	      <name>once</name>
 	      <can_focus>True</can_focus>
-	      <label>Once</label>
+	      <label>Once-only</label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <child>
@@ -456,7 +456,7 @@ External
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton6</name>
+	      <name>hatched</name>
 	      <can_focus>True</can_focus>
 	      <label>Hatched</label>
 	      <active>False</active>
@@ -479,7 +479,7 @@ External
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton7</name>
+	      <name>autoreset</name>
 	      <can_focus>True</can_focus>
 	      <label>Auto-reset</label>
 	      <active>False</active>
@@ -517,7 +517,7 @@ External
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton2</name>
+	    <name>distance</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -596,7 +596,7 @@ External
 
 	    <widget>
 	      <class>GtkEntry</class>
-	      <name>entry1</name>
+	      <name>monst_shape</name>
 	      <can_focus>True</can_focus>
 	      <editable>True</editable>
 	      <text_visible>True</text_visible>
@@ -619,7 +619,7 @@ External
 
 	    <widget>
 	      <class>GtkEntry</class>
-	      <name>entry2</name>
+	      <name>monst_frame</name>
 	      <can_focus>True</can_focus>
 	      <editable>True</editable>
 	      <text_visible>True</text_visible>
@@ -654,11 +654,12 @@ External
 
 	    <widget>
 	      <class>GtkOptionMenu</class>
-	      <name>optionmenu1</name>
+	      <name>monst_schedule</name>
 	      <can_focus>True</can_focus>
 	      <items>Combat
 Horiz. pace
 Vert. pace
+Talk
 Dance
 Eat
 Farm
@@ -705,7 +706,7 @@ Desk work
 
 	    <widget>
 	      <class>GtkOptionMenu</class>
-	      <name>optionmenu2</name>
+	      <name>monst_align</name>
 	      <can_focus>True</can_focus>
 	      <items>Friendly
 Neutral
@@ -730,7 +731,7 @@ Random
 
 	    <widget>
 	      <class>GtkSpinButton</class>
-	      <name>spinbutton3</name>
+	      <name>monst_count</name>
 	      <can_focus>True</can_focus>
 	      <climb_rate>1</climb_rate>
 	      <digits>0</digits>
@@ -782,7 +783,7 @@ Random
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton4</name>
+	    <name>juke_song</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -813,7 +814,7 @@ Random
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>checkbutton8</name>
+	    <name>juke_cont</name>
 	    <can_focus>True</can_focus>
 	    <label>Continuous</label>
 	    <active>False</active>
@@ -855,7 +856,7 @@ Random
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton5</name>
+	    <name>sfx_number</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -886,7 +887,7 @@ Random
 
 	  <widget>
 	    <class>GtkCheckButton</class>
-	    <name>checkbutton9</name>
+	    <name>sfx_cont</name>
 	    <can_focus>True</can_focus>
 	    <label>Continuous</label>
 	    <active>False</active>
@@ -918,7 +919,7 @@ Random
 
 	<widget>
 	  <class>GtkSpinButton</class>
-	  <name>spinbutton6</name>
+	  <name>speech_number</name>
 	  <can_focus>True</can_focus>
 	  <climb_rate>1</climb_rate>
 	  <digits>0</digits>
@@ -969,7 +970,7 @@ Random
 
 	  <widget>
 	    <class>GtkEntry</class>
-	    <name>entry3</name>
+	    <name>usecode_number</name>
 	    <can_focus>True</can_focus>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
@@ -1045,7 +1046,7 @@ Random
 
 	  <widget>
 	    <class>GtkEntry</class>
-	    <name>entry4</name>
+	    <name>missile_shape</name>
 	    <can_focus>True</can_focus>
 	    <editable>True</editable>
 	    <text_visible>True</text_visible>
@@ -1069,7 +1070,7 @@ Random
 
 	  <widget>
 	    <class>GtkOptionMenu</class>
-	    <name>optionmenu4</name>
+	    <name>missile_dir</name>
 	    <can_focus>True</can_focus>
 	    <items>North
 Northeast
@@ -1099,7 +1100,7 @@ Party member
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton8</name>
+	    <name>missile_delay</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
@@ -1342,7 +1343,7 @@ Coordinates</label>
 
 	  <widget>
 	    <class>GtkOptionMenu</class>
-	    <name>optionmenu5</name>
+	    <name>weather_type</name>
 	    <can_focus>True</can_focus>
 	    <items>Halt
 Storm
@@ -1367,7 +1368,7 @@ Clouds
 
 	  <widget>
 	    <class>GtkSpinButton</class>
-	    <name>spinbutton10</name>
+	    <name>weather_length</name>
 	    <can_focus>True</can_focus>
 	    <climb_rate>1</climb_rate>
 	    <digits>0</digits>
