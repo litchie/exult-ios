@@ -796,7 +796,7 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 	}
 
 	// Handling for patch change mt32 conversion, probably should go elsewhere
-	if ((status >> 4) == 0xC && convert_type != XMIDI_CONVERT_NOCOVERSION)
+	if ((status >> 4) == 0xC && convert_type != XMIDI_CONVERT_NOCONVERSION)
 	{
 		if (convert_type == XMIDI_CONVERT_MT32_TO_GM)
 		{
