@@ -50,7 +50,7 @@ Game_window::Game_window
 	    main_actor(0),
 	    conv_choices(0), texts(0), num_faces(0), last_face_shown(-1),
 	    main_actor_inside(0), mode(intro), npcs(0),
-	    shapes(SHAPES_VGA),
+	    shapes(),
 	    faces(FACES_VGA),
 	    gumps(GUMPS_VGA)
 	{
@@ -70,8 +70,9 @@ Game_window::Game_window
   	u7open(textflx, TEST_FLX);
 	Setup_item_names(textflx);	// Set up list of item names.
 					// Read in shape dimensions.
-	if (!shapes.read_dims(SHPDIMS_DAT, 150, 1024 - 150))
-		abort("Can't open 'shpdims.dat' file.");
+	if (!shapes.read_info())
+		abort(
+		"Can't read shape data (tfa.dat, wgtvol.dat, shpdims.dat).");
 					// Create window.
 	win = new Image_window(width, height); //<- error in timer
 

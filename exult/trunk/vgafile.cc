@@ -200,38 +200,37 @@ Vga_file::Vga_file
 	}
 
 /*
- *	Read in a "dimensions" file.  (There's currently only one.)
+ *	Read in data files about shapes.
  *
  *	Output:	0 if error.
  */
 
-int Vga_file::read_dims
+int Shapes_vga_file::read_info
 	(
-	char *nm,			// Filename.
-	int first,			// First shape # in file.
-	int num				// Num. shapes in file.
 	)
 	{
-	ifstream in;
-	if (!U7open(in, nm))
+	ifstream shpdims;
+	if (!U7open(shpdims, SHPDIMS))
 		return (0);
-	int size = 2*num;		// 2 bytes per shape.
-	unsigned char *buf = new unsigned char[size + 1];
-	dims = buf;			// +++++++++++++Debugging.
-	in.read(buf, size);
-	if (in.good())
+					// Starts at 0x96'th shape.
+	for (int i = 0x96; i < num_shapes; i++)
 		{
-		for (int i = 0; i < num; i++)
-			{
-			Shape& shape = shapes[first + i];
-					// (Each dim. is shifted over 1.)
-			shape.dim =	((buf[2*i] << 3)&0xf0) |
-					((buf[2*i + 1] >> 1) & 0xf);
-					// This is my guess:
-			shape.obstacle = (buf[2*i] & 1) != 0 ||
-					(buf[2*i + 1] & 1) != 0;
-			}
+		shpdims.get((char&) info[i].shpdims[0]);
+		shpdims.get((char&) info[i].shpdims[1]);
 		}
-//++++++++Debugging	delete buf;
-	return (in.good());
+	ifstream wgtvol;
+	if (!U7open(wgtvol, WGTVOL))
+		return (0);
+	for (int i = 0; i < num_shapes; i++)
+		{
+		wgtvol.get((char&) info[i].weight);
+		wgtvol.get((char&) info[i].volume);
+		}
+	ifstream tfa;
+	if (!U7open(tfa, TFA))
+		return (0);
+	for (int i = 0; i < num_shapes; i++)
+		tfa.read(&info[i].tfa[0], 3);
+	return (1);
 	}
+
