@@ -1,3 +1,6 @@
+2002-01-07  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* configure.in, mapedit/Makefile.am: it's libglade not glade
+
 2002-01-07  Dancer Vesperman  <dancer@users.sourceforge.net>
 
 	* configure.in: Move glade detection. Offer advice if exult-studio is enabled and glade is not detected.

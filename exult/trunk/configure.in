@@ -588,15 +588,15 @@ fi
 
 AC_PATH_PROG(GLADECONFIG, libglade-config)
 if test -n "$GLADECONFIG"; then
-	AM_CONDITIONAL(HAVE_GLADE, true)
-	have_glade=yes
+	AM_CONDITIONAL(HAVE_LIBGLADE, true)
+	have_libglade=yes
 	LIBGLADE_LIBS=`libglade-config --libs`
 	AC_SUBST(LIBGLADE_LIBS)
 	LIBGLADE_INCLUDES=`libglade-config --cflags`
 	AC_SUBST(LIBGLADE_INCLUDES)
 else
-	AM_CONDITIONAL(HAVE_GLADE, false)
-	have_glade=no
+	AM_CONDITIONAL(HAVE_LIBGLADE, false)
+	have_libglade=no
 fi
 
 # exult-studio
@@ -604,9 +604,9 @@ AC_ARG_ENABLE(exult-studio, [  --enable-exult-studio   Build Exult Studio [defau
 AC_MSG_CHECKING(whether to build Exult Studio)
 if test x$enable_exult_studio = xyes; then
 	AC_MSG_RESULT(yes)
-	if test x$have_glade = xno; then
-		echo "Umm, but we don't have any Glade stuff."
-		echo "Try again, either with Glade, or with --enable-exult-studio=no"
+	if test x$have_libglade = xno; then
+		echo "Umm, but we don't have any libglade stuff."
+		echo "Try again, either with libglade, or with --enable-exult-studio=no"
 		exit 1
 	fi
 else

@@ -16,10 +16,10 @@ else
 OUTPUT_LIBS =
 endif
 
-if HAVE_GLADE 
-GLADE_APPS = exult_studio
+if HAVE_LIBGLADE 
+LIBGLADE_APPS = exult_studio
 else
-GLADE_APPS =
+LIBGLADE_APPS =
 endif
 
 u7shp_SOURCES = u7shp.c
@@ -36,7 +36,7 @@ exult_studio_SOURCES = \
 	studio.h \
 	exult_studio.cc
 
-bin_PROGRAMS = $(GLADE_APPS)
+bin_PROGRAMS = $(LIBGLADE_APPS)
 
 noinst_PROGRAMS = $(GIMP_PLUGINS)
 
