@@ -38,6 +38,7 @@
 #include "exult_types.h"
 #include "mappatch.h"
 #include "shapeid.h"
+#include "items.h"
 
 #ifndef UNDER_CE
 using std::cout;
@@ -202,22 +203,18 @@ void SI_Game::play_intro()
 		playfli fli0(fli_b+8, flisize-8);
 		fli0.info();
 
-		const char *txt_msg[] = { "with help from",
-				"The Exult Team", 
-				"Driven by Exult" };
-
 		for (j = 0; j < 20; j++)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
-			font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
-			font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
+			font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
+			font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
 			win->show();
 		}
 
 
 		next = fli0.play(win, 0, 0, next, 100);
-		font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
-		font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
+		font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
+		font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
 		win->show();
 
 		if (wait_delay (3000))
@@ -226,8 +223,8 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli0.play(win, 0, 0, next, j*5);
-			font->center_text(ibuf, centerx, centery+50, txt_msg[0]);
-			font->center_text(ibuf, centerx, centery+65, txt_msg[1]);
+			font->center_text(ibuf, centerx, centery+50, text_msgs[with_help_from]);
+			font->center_text(ibuf, centerx, centery+65, text_msgs[exult_team]);
 			win->show();
 		}
 
@@ -285,9 +282,6 @@ void SI_Game::play_intro()
 
 		}
 
-		const char *lb_cas = "Lord British's Castle";
-		const char *db_cas = "Dick British's Castle";
-		
 		for (j = 0; j < 50; j++)
 		{
 			num = get_frame();
@@ -296,9 +290,9 @@ void SI_Game::play_intro()
 					fli1.play(win, i, i, next);
 
 			if (jive)
-				sifont->center_text(ibuf, centerx, centery+50, db_cas);
+				sifont->center_text(ibuf, centerx, centery+50, text_msgs[dick_castle]);
 			else 
-				sifont->center_text(ibuf, centerx, centery+50, lb_cas);
+				sifont->center_text(ibuf, centerx, centery+50, text_msgs[lord_castle]);
 
 			prev = num;
 			next += 75;
@@ -329,11 +323,6 @@ void SI_Game::play_intro()
 
 		}
 
-		const char *bg_fellow[] = { "Eighteen months after the destruction", 
-				"of the Black Gate and the", 
-				"dismantling of The Fellowship"};
-
-
 		for (j = 0; j < 75; j++)
 		{
 			num = get_frame();
@@ -342,7 +331,7 @@ void SI_Game::play_intro()
 					fli1.play(win, i, i, next);
 
 			for(i=0; i<3; i++) {
-				sifont->center_text(ibuf, centerx, centery+50+15*i, bg_fellow[i]);
+				sifont->center_text(ibuf, centerx, centery+50+15*i, text_msgs[bg_fellow + i]);
 			}
 
 			prev = num;
@@ -393,9 +382,6 @@ void SI_Game::play_intro()
 		}
 
 		// Guard walks in
-		const char *my_leige = "My leige";
-		const char *yo_homes = "Yo, homes";
-
 		if (speech && !jive)
 		{
 			U7object voc_my_leige("<STATIC>/intro.dat", 16);
@@ -410,9 +396,9 @@ void SI_Game::play_intro()
 			next = fli2.play(win, j, j, next);
 
 			if (jive)
-				sifont->draw_text(ibuf, centerx+30, centery+87, yo_homes);
+				sifont->draw_text(ibuf, centerx+30, centery+87, text_msgs[yo_homes]);
 			else if (!speech)
-				sifont->draw_text(ibuf, centerx+30, centery+87, my_leige);
+				sifont->draw_text(ibuf, centerx+30, centery+87, text_msgs[my_leige]);
 
 			win->show();
 			if (wait_delay (0))
@@ -422,8 +408,7 @@ void SI_Game::play_intro()
 		next = fli2.play(win, j, j, next);
 		win->show();
 
-		const char *all_we[2] = { "All we found among Batlin's",
-					"belongings was this enchanted scroll.." };
+		const char *all_we[2] = { text_msgs[all_we0], text_msgs[all_we0+1] };
 
 		if (speech && !jive)
 		{
@@ -451,8 +436,7 @@ void SI_Game::play_intro()
 			if (wait_delay (10))
 				throw UserBreakException();
 
-		const char *and_a[2] = { "and a map showing the way to",
-					"a place called the Serpent Isle" };
+		const char *and_a[2] = { text_msgs[and_a0], text_msgs[and_a0+1] };
 
 		next = fli2.play(win, j, j, next);
 
@@ -477,11 +461,6 @@ void SI_Game::play_intro()
 			if (wait_delay (10))
 				throw UserBreakException();
 
-		const char *indeed[2] = { "Indeed.",
-					"Put it on the table." };
-
-		const char *iree = "Iree. Slap it down there!";
-
 		if (speech && !jive)
 		{
 			U7object voc_indeed("<STATIC>/intro.dat", 18);
@@ -498,11 +477,11 @@ void SI_Game::play_intro()
 			next = fli2.play(win, j, j, next);
 
 			if (jive)
-				sifont->draw_text(ibuf, topx+40, centery+74, iree);
+				sifont->draw_text(ibuf, topx+40, centery+74, text_msgs[iree]);
 			else if (!speech)
 			{
-				sifont->draw_text(ibuf, topx+40, centery+74, indeed[0]);
-				sifont->draw_text(ibuf, topx+40, centery+87, indeed[1]);
+				sifont->draw_text(ibuf, topx+40, centery+74, text_msgs[indeed]);
+				sifont->draw_text(ibuf, topx+40, centery+87, text_msgs[indeed+1]);
 			}
 
 			win->show();
@@ -538,9 +517,6 @@ void SI_Game::play_intro()
 
 
 		// 'Stand Back'
-		const char *stand_back = "Stand Back!";
-		const char *jump_back = "Jump Back!";
-
 		if (speech && !jive)
 		{
 			U7object voc_stand_back("<STATIC>/intro.dat", 19);
@@ -554,9 +530,9 @@ void SI_Game::play_intro()
 			next = fli3.play(win, j, j, next)+20;
 
 			if (jive)
-				sifont->draw_text(ibuf, topx+70, centery+60, jump_back);
+				sifont->draw_text(ibuf, topx+70, centery+60, text_msgs[jump_back]);
 			else if (!speech)	
-				sifont->draw_text(ibuf, topx+70, centery+60, stand_back);
+				sifont->draw_text(ibuf, topx+70, centery+60, text_msgs[stand_back]);
 
 			win->show();
 			if (wait_delay (0))
@@ -594,24 +570,6 @@ void SI_Game::play_intro()
 		next = 0;
 
 		// Batlin...
-		const char *batlin[2] = { "Batlin! In the event that the",
-					"Avatar destroys the Black Gate" };
-
-		const char *you_shall[2] = { "you shall follow the unwitting",
-					"human Gwenno to the Serpent Isle" };
-
-		const char *there_i[2] = { "There I shall outline my plan",
-					"to destroy Britannia!" };
-
-
-		const char *batlin2[2] = { "Batlin! Know that my face is most",
-					"muppet like!" };
-
-		const char *you_must[2] = { "You must go to the Serpent Isle",
-					"to learn the secret of Acne Medication" };
-
-		const char *soon_i[2] = { "Soon I and my horde of muppets will",
-					"destroy Britannia!" };
 
 		for (j = 0; j < 320; j++)
 		{
@@ -627,33 +585,33 @@ void SI_Game::play_intro()
 
 			if (j < 100 && jive)
 			{
-				sifont->center_text(ibuf, centerx, centery+74, batlin2[0]);
-				sifont->center_text(ibuf, centerx, centery+87, batlin2[1]);
+				sifont->center_text(ibuf, centerx, centery+74, text_msgs[batlin2]);
+				sifont->center_text(ibuf, centerx, centery+87, text_msgs[batlin2+1]);
 			}
 			else if (j < 200 && jive)
 			{
-				sifont->center_text(ibuf, centerx, centery+74, you_must[0]);
-				sifont->center_text(ibuf, centerx, centery+87, you_must[1]);
+				sifont->center_text(ibuf, centerx, centery+74, text_msgs[you_must]);
+				sifont->center_text(ibuf, centerx, centery+87, text_msgs[you_must+1]);
 			}
 			else if (j < 300 && jive)
 			{
-				sifont->center_text(ibuf, centerx, centery+74, soon_i[0]);
-				sifont->center_text(ibuf, centerx, centery+87, soon_i[1]);
+				sifont->center_text(ibuf, centerx, centery+74, text_msgs[soon_i]);
+				sifont->center_text(ibuf, centerx, centery+87, text_msgs[soon_i+1]);
 			}
 			else if (j < 100 && !speech)
 			{
-				sifont->center_text(ibuf, centerx, centery+74, batlin[0]);
-				sifont->center_text(ibuf, centerx, centery+87, batlin[1]);
+				sifont->center_text(ibuf, centerx, centery+74, text_msgs[batlin]);
+				sifont->center_text(ibuf, centerx, centery+87, text_msgs[batlin+1]);
 			}
 			else if (j < 200 && !speech)
 			{
-				sifont->center_text(ibuf, centerx, centery+74, you_shall[0]);
-				sifont->center_text(ibuf, centerx, centery+87, you_shall[1]);
+				sifont->center_text(ibuf, centerx, centery+74, text_msgs[you_shall]);
+				sifont->center_text(ibuf, centerx, centery+87, text_msgs[you_shall+1]);
 			}
 			else if (j < 300 && !speech)
 			{
-				sifont->center_text(ibuf, centerx, centery+74, there_i[0]);
-				sifont->center_text(ibuf, centerx, centery+87, there_i[1]);
+				sifont->center_text(ibuf, centerx, centery+74, text_msgs[there_i]);
+				sifont->center_text(ibuf, centerx, centery+87, text_msgs[there_i+1]);
 			}
 
 			win->show();
@@ -694,12 +652,6 @@ void SI_Game::play_intro()
 				throw UserBreakException();
 		}
 
-
-		const char *tis_my[3] = {"'Tis my worst fear!",
-					"I must send the Avatar through",
-					"the pillars to the Serpent Isle!" };
-
-
 		if (speech && !jive)
 		{
 			U7object voc_tis_my("<STATIC>/intro.dat", 21);
@@ -714,12 +666,12 @@ void SI_Game::play_intro()
 
 			if (j < 20 && (!speech || jive))
 			{
-				sifont->center_text(ibuf, centerx, centery+74, tis_my[0]);
+				sifont->center_text(ibuf, centerx, centery+74, text_msgs[tis_my]);
 			}
 			else if (j > 22 && (!speech || jive))
 			{
-				sifont->center_text(ibuf, centerx, centery+74, tis_my[1]);
-				sifont->center_text(ibuf, centerx, centery+87, tis_my[2]);
+				sifont->center_text(ibuf, centerx, centery+74, text_msgs[tis_my+1]);
+				sifont->center_text(ibuf, centerx, centery+87, text_msgs[tis_my+2]);
 			}
 
 			win->show();
@@ -786,13 +738,13 @@ void SI_Game::play_intro()
 		for (j = 0; j < 20; j++)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
-			font->center_text(ibuf, centerx, centery+75, txt_msg[2]);
+			font->center_text(ibuf, centerx, centery+75, text_msgs[driven_by_exult]);
 			win->show();
 		}
 
 
 		next = fli8.play(win, 0, 0, next, 100);
-		font->center_text(ibuf, centerx, centery+75, txt_msg[2]);
+		font->center_text(ibuf, centerx, centery+75, text_msgs[driven_by_exult]);
 		win->show();
 
 		for (i = 0; i < 300; i++)
@@ -803,7 +755,7 @@ void SI_Game::play_intro()
 		for (j = 20; j; j--)
 		{
 			next = fli8.play(win, 0, 0, next, j*5);
-			font->center_text(ibuf, centerx, centery+75, txt_msg[2]);
+			font->center_text(ibuf, centerx, centery+75, text_msgs[driven_by_exult]);
 			win->show();
 		}
 		

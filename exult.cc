@@ -88,6 +88,7 @@
 #include "exult_bg_flx.h"
 #include "exult_si_flx.h"
 #include "crc.h"
+#include "items.h"
 
 #ifndef UNDER_CE
 using std::atof;
@@ -751,6 +752,8 @@ static void Init
 		Game::create_game(mygame, title);
 
 		Audio::get_ptr()->Init_sfx();
+		
+		Setup_text(); //-DK-		
 		
 					// Skip splash screen?
 		bool skip_splash;
