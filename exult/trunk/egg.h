@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class	Egg_object;
 class	Animated_egg_object;
 class	Animator;
+class   Monster_actor;
 
 #include "objs.h"
 
@@ -64,6 +65,7 @@ protected:
 	unsigned short data1, data2;	// More data, depending on type.
 	Rectangle area;			// Active area.
 	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
+	Monster_actor *monster_created;	// ->monster created.
 public:
 	enum Egg_types {		// Types of eggs:
 		monster = 1,
@@ -97,8 +99,7 @@ public:
 		unsigned int shapey, unsigned int lft, 
 		unsigned short itype,
 		unsigned char prob, short d1, short d2);
-	virtual ~Egg_object()
-		{  }
+	virtual ~Egg_object();
 	void set_area();		// Set up active area.
 	int get_distance() const
 		{ return distance; }
@@ -106,7 +107,7 @@ public:
 		{ return criteria; }
 	int get_type() const
 		{ return type; }
-	void monster_died();		// Monster this created just died.
+	void monster_gone();		// Monster this created just died.
 					// Can it be activated?
 	int is_active(Game_object *obj,
 			int tx, int ty, int tz, int from_tx, int from_ty);
