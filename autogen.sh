@@ -45,7 +45,7 @@ touch configure.in
 aclocal 		# -I /usr/local/share/aclocal
 libtoolize --force --copy
 autoheader
-automake --add-missing --gnu
+automake --add-missing --copy --gnu
 autoconf 
 
 echo "You are now ready to run ./configure"

@@ -1,3 +1,11 @@
+2002-05-21  Max Horn  <max@quendi.de>
+
+	* autogen.sh: use --copy for automake
+	* conf/Configuration.cc: uss std::snprintf will break if we use our emulation
+	of snprintf, and on systems where is available but not in namespace std.
+	* usecode/compiler/ucmain.cc: getopt() comes from unistd.h not getopt.h
+	(at least in POSIX, and on Mac OS X)
+
 2002-05-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Added Nadir to Island Patch, and checked in patch files to CVS.

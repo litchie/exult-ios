@@ -29,6 +29,7 @@
 #  include <cassert>
 #  include <cstdio>
 #endif
+#include <stdio.h>
 #include <iostream>
 #include <fstream>
 
@@ -47,7 +48,6 @@
 using std::atoi;
 using std::cerr;
 using std::endl;
-using std::snprintf;
 using std::string;
 using std::ostream;
 
