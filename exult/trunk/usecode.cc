@@ -829,6 +829,11 @@ Usecode_value Usecode_machine::call_intrinsic
 		return Usecode_value((long) gwin->get_main_actor());
 	case 0x23:			// Return array with party members.
 		return (get_party());
+	case 0x25:			// Take itemref, rets. flag.
+		//++++++++++++++++++
+		Unhandled(intrinsic, num_parms, parms);
+		return Usecode_value(1); //????
+		break;
 	case 0x26:			// Think it takes array from 0x18,
 					//   updates obj. to new pos., &
 					//   renders.  ??guessing??
