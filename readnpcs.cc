@@ -65,11 +65,13 @@ void Game_window::read_npcs
 	// Don't like it... no i don't.
 	center_view(main_actor->get_abs_tile_coord());
 					// SI: 231-255 are bogus automatons(?).
-	int skip = Game::get_game_type() == SERPENT_ISLE ? 233 : 10000;
+	int skip1 = Game::get_game_type() == SERPENT_ISLE ? 233 : 10000;
+					// SI: 296-355 are bogus trappers.
+	int skip2 = Game::get_game_type() == SERPENT_ISLE ? 296 : 10000;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 	{
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
-		if (i >= skip && i < 256)
+		if ((i >= skip1 && i < 256) || (i >= skip2 && i < 356))
 			{
 			npcs[i]->remove_this(1);
 			npcs[i]->set_schedule_type(Schedule::wait);

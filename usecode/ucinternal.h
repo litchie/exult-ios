@@ -273,7 +273,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(get_body_npc);
 	USECODE_INTRINSIC_DECL(add_spell);
 	USECODE_INTRINSIC_DECL(sprite_effect);
-	USECODE_INTRINSIC_DECL(npc_sprite_effect);
+	USECODE_INTRINSIC_DECL(obj_sprite_effect);
 	USECODE_INTRINSIC_DECL(explode);
 	USECODE_INTRINSIC_DECL(book_mode);
 	USECODE_INTRINSIC_DECL(stop_time);
