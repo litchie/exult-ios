@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "effects.h"
 #include "Zombie.h"
+#include "usecode.h"
 
 int Cloud::randcnt = 0;
 
@@ -104,7 +105,7 @@ Projectile_effect::Projectile_effect
 	Game_object *to,		// End here, then run usecode on it.
 	int ufun,			// Usecode function to run.
 	int shnum			// Shape # in 'shapes.vga'.
-	) : usefun(ufun), shape_num(shnum), frame_num(0)
+	) : dest(to), usefun(ufun), shape_num(shnum), frame_num(0)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_shape_num_frames(shnum);
@@ -163,9 +164,10 @@ void Projectile_effect::handle_event
 	if (!path->GetNextStep(pos))	// Get next spot.
 		{			// Done? 
 		pos.tx = -1;		// Signal we're done.
-//++++++++++++ Run usecode.
 		gwin->remove_effect(this);
-		gwin->paint();
+//		gwin->paint();
+		gwin->get_usecode()->call_usecode(usefun, dest, 
+					Usecode_machine::after_projectile);
 		return;
 		}
 					// Next frame.
