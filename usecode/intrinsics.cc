@@ -1139,10 +1139,14 @@ USECODE_INTRINSIC(set_oppressor)
 	Actor *npc = as_actor(get_item(parms[0]));
 	Actor *opp = as_actor(get_item(parms[1]));
 	if (npc && opp)
+		{
 		if (opp == gwin->get_main_actor())
 			npc->set_oppressor(0);
 		else
 			npc->set_oppressor(opp->get_npc_num());
+					// Need this for SI ListField training:
+		npc->set_target(opp);
+		}
 	return no_ret;
 }
 
