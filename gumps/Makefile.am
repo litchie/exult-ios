@@ -41,6 +41,8 @@ libgumps_la_SOURCES = \
 	Text_gump.cc	\
 	Text_gump.h	\
 	Yesno_gump.cc	\
-	Yesno_gump.h
+	Yesno_gump.h	\
+	Newfile_gump.cc	\
+	Newfile_gump.h
 
 CLEANFILES = *~

@@ -98,13 +98,14 @@ SI_Game::SI_Game()
 		add_shape("gumps/cstats/5",62);
 		add_shape("gumps/cstats/6",63);
 
-		add_resource("files/shapes/count", 0, 6);
+		add_resource("files/shapes/count", 0, 7);
 		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);
 		add_resource("files/shapes/1", "<STATIC>/faces.vga", 0);
 		add_resource("files/shapes/2", "<STATIC>/gumps.vga", 0);
 		add_resource("files/shapes/3", "<STATIC>/sprites.vga", 0);
 		add_resource("files/shapes/4", "<STATIC>/mainshp.flx", 0);
 		add_resource("files/shapes/5", "<STATIC>/paperdol.vga", 0);
+		add_resource("files/shapes/6", "<DATA>/exult.flx", 0);
 
 		add_resource("palettes/count", 0, 14);
 		add_resource("palettes/0", "<STATIC>/palettes.flx", 0);

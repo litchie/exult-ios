@@ -253,7 +253,7 @@ Actor::Actor
 	set_property((int) Actor::food_level, food_read);
 	nfile.seekg(7, ios::cur);
 
-	char namebuf[18];
+	char namebuf[17];
 	nfile.read(namebuf, 16);
 	
 	for (int i = 0; i < 16; i++)
@@ -265,7 +265,7 @@ Actor::Actor
 			break;
 		}
 
-	namebuf[17] = 0;		// Be sure it's 0-delimited.
+	namebuf[16] = 0;		// Be sure it's 0-delimited.
 //	cout << "Actor " << namebuf << " has alignment " << align << endl;
 	
 	if (num == 0 && Game::get_avname())

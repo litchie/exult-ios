@@ -41,6 +41,7 @@ enum ActionCode {
 	ACTION_HELP,
 	ACTION_CLOSE_GUMPS,
 	ACTION_SCREENSHOT,
+	ACTION_GAME_MENU,
 	
 	// Game Viewport manipulation
 	ACTION_REPAINT,

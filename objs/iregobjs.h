@@ -99,6 +99,9 @@ public:
 			return flags2 & ((uint32) 1 << (flag-32));
 		return 0;
 		}
+	uint32 get_flags() const { return flags; }
+	uint32 get_flags2() const { return flags2; }
+
 					// Write out to IREG file.
 	virtual void write_ireg(std::ostream& out);
 	int	lowlift;

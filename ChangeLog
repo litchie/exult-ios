@@ -1,3 +1,29 @@
+2001-04-22  Ryan Nunn <triforce@merlin.net.au>
+	* Makefiles.* : Added files/listfiles.* and gumps/Newfile_gump.*
+	* actorio.cc : Made a change to the size of the array used when reading
+	  a NPC name from npc.dat. 
+	* bggame.cc, sigame.cc : Added exult.flx and exultbg.flx to list of
+	  resources so they can be viewed in the shape browser.
+	* fnames.h : Added #defines used by new file gump.
+	* gamedat.cc, gamewin.cc, gamewin.h : Added methods for writing and
+	  reading data for the new save gump. Also fixed a bug when calling
+	  get_gump_rect for a gump that had a shape that was in exult.flx.
+	* keyactions.*, keys.* : Added GAME_MENU action to be used to activate
+	  game menu.
+	* gumps/Gamemenu_gump.cc : Load/Save Game option now create a new style
+	  File Gump not ye olde one.
+	* gumps/Gump.cc : Added checkmark info for NewFile Gump
+	* gumps/Gump.h : Added get_shapefile() method;
+	* gumps/Modal_gump.h : Fixed bug when specifying a shape for a modal
+	  gump that was in anyfile other than gumps.vga.
+	* imagewin/*.* : Fixing bugs a few bug related to scaling (screenshots,
+	  switching to and from fullscreen, resizing)
+	* objs/iregobjs.h : Added get_flags() and get_flags2() methods
+	* files/listfiles.cc, files/listfiles.h : Functions for getting dir
+	  lists and freeing the dir lists.
+	* gumps/Newfile_gump.cc, gumps/Newfile_gump.h: Newfile_gump class
+	  and all related methods.
+
 2001-04-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/flx.in,Makefile.*,data/sav_selected.shp: new shape for savegump
 	* Gump.cc, Gamemenu_gump.cc: changed shapenrs. because of sav_selected

@@ -26,6 +26,7 @@ void ActionQuickrestore(int* params);
 void ActionAbout(int* params);
 void ActionHelp(int* params);
 void ActionCloseGumps(int* params);
+void ActionMenuGump(int* params);
 
 void ActionScreenshot(int* params);
 void ActionRepaint(int* params);
