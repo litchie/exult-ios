@@ -218,6 +218,10 @@ int main
 	{
 		result = exult_main();
 	}
+	catch( const quit_exception & e )
+    {
+        result = 0;
+    }
 	catch( const exult_exception & e )
 	{
 		cerr << "============================" << endl <<
