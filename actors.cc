@@ -804,7 +804,7 @@ int Actor::approach_another
  */
 
 #if !defined(BEOS) && !defined(ALPHA_LINUX_CXX)
-#if __GNUG__ > 2
+#if __GNUG__ < 3
 inline
 #endif
 #endif
