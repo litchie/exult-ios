@@ -288,7 +288,7 @@ Image_buffer8 *Chunk_terrain::render_flats
 #ifdef HAVE_OPENGL
 	delete glflats;
 	glflats = 0;
-	GL_manager *glman = GL_manager->get_instance();
+	GL_manager *glman = GL_manager::get_instance();
 	if (glman)			// Using OpenGL?
 		glflats = glman->create(rendered_flats);
 #endif

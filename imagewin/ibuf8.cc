@@ -572,10 +572,18 @@ unsigned char *Image_buffer8::rgba
 			*ptr32++ = 0;
 		else
 			*ptr32++ = 
+#if 0
 				(static_cast<uint32>(pal[3*pix])<<24) +
 				(static_cast<uint32>(pal[3*pix + 1]) << 16) +
 				(static_cast<uint32>(pal[3*pix + 2]) << 8) +
 				   0xff;	// Alpha = opaque.
+#else
+				(static_cast<uint32>(pal[3*pix])<<0) +
+				(static_cast<uint32>(pal[3*pix + 1]) << 8) +
+				(static_cast<uint32>(pal[3*pix + 2]) << 16) +
+					// Alpha = opaque.
+				(static_cast<uint32>(0xff) << 24);
+#endif
 		}
 	return reinterpret_cast<unsigned char *>(buf32);
 	}

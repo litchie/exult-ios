@@ -181,22 +181,31 @@ bool Image_window::try_scaler(int w, int h, uint32 flags)
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 					// Allocate surface.
 		int hwdepth = vinfo->vfmt->BitsPerPixel;
-		surface = SDL_SetVideoMode(w, h, hwdepth, video_flags);
-		if (!surface)
+					// +++++For now create 8-bit surface
+					//   to avoid crashing places we
+					//   haven't converted yet.
+		if ((scaled_surface = SDL_SetVideoMode(w, h, hwdepth, 
+							video_flags)) != 0 &&
+		    (unscaled_surface = surface = SDL_CreateRGBSurface(
+					SDL_SWSURFACE, w, h,
+						8, 0, 0, 0, 0)) != 0)
+			{
+			show_scaled = &Image_window::show_scaledOpenGL;
+			}
+		else
 			{
 			cerr << "Couldn't allocate surface: " << 
 					SDL_GetError() << endl;
-			return false;
+			delete surface;
+			delete scaled_surface;
+			surface = scaled_surface = 0;
 			}
-		show_scaled = &Image_window::show_scaledOpenGL;
-		return true;
 #else
 		cerr << "OpenGL not supported" << endl;
-		return false;
 #endif
 		}
 	// 2xSaI scaler
-	if (scale == 2 && scaler ==  SaI)
+	else if (scale == 2 && scaler ==  SaI)
 	{
 		int hwdepth;
 		
