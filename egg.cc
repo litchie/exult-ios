@@ -254,7 +254,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		case voice:
 			audio->start_speech((data1)&0xff);
 			break;
-		case monster:
+		case monster:		// +++++Not just for monsters!
 			{
 			Monster_info *inf = gwin->get_monster_info(data2&1023);
 			if (inf)
@@ -266,6 +266,16 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				monster->set_creator(this);
 				gwin->add_dirty(monster);
 				gwin->add_nearby_npc(monster);
+				}
+			else		// Create item.
+				{
+				Game_object *nobj = new Ireg_game_object(
+					data2&1023, data2>>10, get_tx(),
+					get_ty(), get_lift());
+				gwin->get_objects(get_cx(), get_cy())->add(
+									nobj);
+				gwin->add_dirty(nobj);
+				nobj->set_flag(okay_to_take);
 				}
 			break;
 			}
