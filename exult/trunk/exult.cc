@@ -1239,6 +1239,8 @@ static int Get_click
 				case SDLK_LMETA:
 					altkeys &= ~2;
 					break;
+				default:
+					break;
 					}
 				break;
 				}
