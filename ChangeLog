@@ -1,3 +1,6 @@
+2002-07-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* chunks.cc: worked around compiler bug (gcc 2.96-110) for is_blocked
+
 2002-07-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc (public): Call_guards logic moved to
