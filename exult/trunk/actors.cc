@@ -39,7 +39,7 @@ Actor::Actor
 	int shapenum, 
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
-	) : Sprite(shapenum), npc_num(num), usecode(uc)
+	) : Sprite(shapenum), npc_num(num), usecode(uc), flags(0)
 	{
 	next = prev = this;
 	set_default_frames();
@@ -95,6 +95,45 @@ char *Actor::get_name
 	)
 	{
 	return name ? name : Game_object::get_name();
+	}
+
+/*
+ *	Set flag.
+ */
+
+void Actor::set_flag
+	(
+	int flag
+	)
+	{
+	if (flag >= 0 && flag < 32)
+		flags |= ((unsigned long) 1 << flag);
+	}
+
+/*
+ *	Clear flag.
+ */
+
+void Actor::clear_flag
+	(
+	int flag
+	)
+	{
+	if (flag >= 0 && flag < 32)
+		flags &= ~((unsigned long) 1 << flag);
+	}
+
+/*
+ *	Get flag.
+ */
+
+int Actor::get_flag
+	(
+	int flag
+	)
+	{
+	return (flag >= 0 && flag < 32) ? (flags & ((unsigned long) 1 << flag))
+			!= 0 : 0;
 	}
 
 /*
