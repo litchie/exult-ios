@@ -26,8 +26,10 @@ class Exult_vector : public std::vector<T>
 {
 private:
 	typedef	std::vector<T>	baseClass;
-	typedef typename		baseClass::size_type       size_type;
 public:
+	typedef typename		baseClass::size_type       size_type;
+	typedef typename		baseClass::iterator		   iterator;
+
 	Exult_vector<T>() : baseClass()
 		{}
 	Exult_vector<T>(size_type n) : baseClass()
@@ -73,18 +75,15 @@ public:
 
 	void		remove( const T& obj )
 		{
-#if __GNUG__ > 2
 			// Correct way. An iterator isn't a pointer, necessarily
-			for(typename std::vector<T>::iterator X = begin(); X != end(); ++X)
-#else
-			// If an iterator _is_ a pointer, then this is a little faster
-			for(T *X = begin(); X != end(); ++X)
-#endif
+			for(iterator X = begin(); X != end(); ++X)
+			{
 				if( *X == obj )
 				{
 					erase(X);
 					return;
 				}
+			}
 		}
 };
 

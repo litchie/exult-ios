@@ -128,12 +128,12 @@ void AudioOptions_gump::toggle(Gump_button* btn, int state)
 			build_midi_buttons();
 		}
 		paint();
-	} else if (btn == buttons[2]) { // midi conversion
+	} else if (btn == buttons[2]) { // midi driver
+		midi_driver = state;
+	} else if (btn == buttons[3]) { // midi conversion
 		midi_conversion = state;
-	} else if (btn == buttons[3]) { // midi reverb
-		midi_reverb = state;
-	} else if (btn == buttons[4]) { // midi chorus
-		midi_chorus = state;
+	} else if (btn == buttons[4]) { // midi reverb/chorus
+		midi_reverb_chorus = state;
 	} else if (btn == buttons[5]) { // midi looping
 		midi_looping = state;
 	} else if (btn == buttons[6]) { // sfx on/off
@@ -185,28 +185,37 @@ void AudioOptions_gump::build_buttons()
 
 void AudioOptions_gump::build_midi_buttons()
 {
+	std::string* midi_drivertext = new std::string[NUM_MIDI_DRIVER_TYPES];
+	midi_drivertext[MIDI_DRIVER_NORMAL] = std::string("Normal");
+	midi_drivertext[MIDI_DRIVER_OGG] = std::string("Digital");
 #ifdef USE_FMOPL_MIDI
-	const int mct_array_size = 6;
-#else
-	const int mct_array_size = 5;
+	midi_drivertext[MIDI_DRIVER_FMSYNTH] = std::string("FMSynth");
 #endif
-	std::string* midi_conversiontext = new std::string[mct_array_size];
+#ifdef USE_MT32EMU_MIDI
+	midi_drivertext[MIDI_DRIVER_MT32EMU] = std::string("MT32Emu");
+#endif
+
+	std::string* midi_conversiontext = new std::string[4];
 	midi_conversiontext[0] = std::string("None");
 	midi_conversiontext[1] = std::string("GM");
 	midi_conversiontext[2] = std::string("GS");
 	midi_conversiontext[3] = std::string("GS127");
-	midi_conversiontext[4] = std::string("Digital");
-#ifdef USE_FMOPL_MIDI
-	midi_conversiontext[5] = std::string("FMSynth");
-#endif
 
+	std::string* midi_reverbchorustext = new std::string[4];
+	midi_reverbchorustext[0] = std::string("Disabled");
+	midi_reverbchorustext[1] = std::string("Reverb");
+	midi_reverbchorustext[2] = std::string("Chorus");
+	midi_reverbchorustext[3] = std::string("Both");
+
+	// midi driver
+	buttons[2] = new AudioTextToggle(this, midi_drivertext, 
+									 colx[2], rowy[3], 59, midi_driver, NUM_MIDI_DRIVER_TYPES);
 	// midi conversion
-	buttons[2] = new AudioTextToggle(this, midi_conversiontext, 
-									 colx[2], rowy[3], 59, midi_conversion, mct_array_size);
-	// reverb on/off
-	buttons[3] = new AudioEnabledToggle(this, colx[2], rowy[4], midi_reverb);
-	// chorus on/off
-	buttons[4] = new AudioEnabledToggle(this, colx[2], rowy[5], midi_chorus);
+	buttons[3] = new AudioTextToggle(this, midi_conversiontext, 
+									 colx[2], rowy[4], 59, midi_conversion, 4);
+	// reverb/chorus combo
+	buttons[4] = new AudioTextToggle(this, midi_reverbchorustext, 
+									 colx[2], rowy[5], 59, midi_reverb_chorus, 4);
 	// looping on/off
 	buttons[5] = new AudioEnabledToggle(this, colx[2], rowy[6], midi_looping);
 
@@ -236,10 +245,14 @@ void AudioOptions_gump::load_settings()
 
 	if (Audio::get_ptr()->get_midi()) {
 		midi_conversion = Audio::get_ptr()->get_midi()->get_music_conversion();
+		midi_driver = Audio::get_ptr()->get_midi()->get_output_driver_type();
 #ifdef ENABLE_MIDISFX
 		sfx_conversion =Audio::get_ptr()->get_midi()->get_effects_conversion();
 #endif
 	} else {
+		// String for default value for driver type
+		std::string driver_default = "normal";
+
 		config->value("config/audio/midi/convert",s,"gm");
 		if (s == "gs")
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GS;
@@ -249,14 +262,34 @@ void AudioOptions_gump::load_settings()
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GS127;
 		else if (s == "gs127drum")
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GS;
-		else if (s == "digital")
-			midi_conversion = XMIDI_CONVERT_OGG;
+		else
+		{
+			midi_conversion = XMIDI_CONVERT_MT32_TO_GM;
+			config->set("config/audio/midi/convert","gm",true);
+
+			driver_default = "s";
+		}
+
+		config->value("config/audio/midi/driver",s,driver_default.c_str());
+		if (s == "digital") 
+		{
+			midi_driver = MIDI_DRIVER_OGG;
+			config->set("config/audio/effects/driver","digital",true);
+		}
 #ifdef USE_FMOPL_MIDI
 		else if (s == "fmsynth")
-			midi_conversion = XMIDI_CONVERT_FMSYNTH;
+		{
+			midi_driver = MIDI_DRIVER_FMSYNTH;
+			config->set("config/audio/effects/driver","fmsynth",true);
+		}
+#endif
+#ifdef USE_MT32EMU_MIDI
+		else if (s == "mt32emu")
+			midi_driver = MIDI_DRIVER_MT32EMU;
 #endif
 		else
-			midi_conversion = XMIDI_CONVERT_MT32_TO_GM;
+			midi_driver = MIDI_DRIVER_NORMAL;
+
 
 #ifdef ENABLE_MIDISFX
 		config->value("config/audio/effects/convert",s,"gs");
@@ -270,10 +303,10 @@ void AudioOptions_gump::load_settings()
 	}
 
 	config->value("config/audio/midi/reverb/enabled",s,"no");
-	midi_reverb = (s == "yes" ? 1 : 0);
+	midi_reverb_chorus = (s == "yes" ? 1 : 0);
 
 	config->value("config/audio/midi/chorus/enabled",s,"no");
-	midi_chorus = (s == "yes" ? 1 : 0);
+	midi_reverb_chorus |= (s == "yes" ? 2 : 0);
 	
 	
 }
@@ -317,13 +350,14 @@ void AudioOptions_gump::save_settings()
 	config->set("config/audio/effects/enabled",sfx_enabled?"yes":"no", true);
 	config->set("config/audio/speech/enabled",speech_enabled?"yes":"no", true);
 
-	config->set("config/audio/midi/chorus/enabled", midi_chorus ? "yes" : "no", true);
-	config->set("config/audio/midi/reverb/enabled", midi_reverb ? "yes" : "no", true);
+	config->set("config/audio/midi/chorus/enabled", (midi_reverb_chorus&2) ? "yes" : "no", true);
+	config->set("config/audio/midi/reverb/enabled", (midi_reverb_chorus&1)? "yes" : "no", true);
 	config->set("config/audio/midi/looping", midi_looping ? "yes" : "no", true);
 
 	if (Audio::get_ptr()->get_midi()) {
 		Audio::get_ptr()->get_midi()->set_music_conversion(midi_conversion);
 		Audio::get_ptr()->get_midi()->set_effects_conversion(sfx_conversion);
+		Audio::get_ptr()->get_midi()->set_output_driver_type(midi_driver);
 	} else {
 		switch(midi_conversion) {
 		case XMIDI_CONVERT_MT32_TO_GS:
@@ -335,16 +369,27 @@ void AudioOptions_gump::save_settings()
 		case XMIDI_CONVERT_MT32_TO_GS127:
 			config->set("config/audio/midi/convert","gs127",true);
 			break;
-		case XMIDI_CONVERT_OGG:
-			config->set("config/audio/midi/convert","digital",true);
+		default:
+			config->set("config/audio/midi/convert","gm",true);
+			break;
+		}
+
+		switch(midi_driver) {
+		case MIDI_DRIVER_OGG:
+			config->set("config/audio/midi/driver","digital",true);
 			break;
 #ifdef USE_FMOPL_MIDI
-		case XMIDI_CONVERT_FMSYNTH:
-			config->set("config/audio/midi/convert","fmsynth",true);
+		case MIDI_DRIVER_FMSYNTH:
+			config->set("config/audio/midi/driver","fmsynth",true);
+			break;
+#endif
+#ifdef USE_MT32EMU_MIDI
+		case MIDI_DRIVER_MT32EMU:
+			config->set("config/audio/midi/driver","mt32emu",true);
 			break;
 #endif
 		default:
-			config->set("config/audio/midi/convert","gm",true);
+			config->set("config/audio/midi/driver","normal",true);
 			break;
 		}
 
@@ -373,9 +418,9 @@ void AudioOptions_gump::paint()
 		sman->paint_text(2, "Music options:", x + colx[0], y + rowy[1] + 1);
 		sman->paint_text(2, "music", x + colx[1], y + rowy[2] + 1);
 		if (midi_enabled) {
-			sman->paint_text(2, "conversion", x + colx[1], y + rowy[3] + 1);
-			sman->paint_text(2, "reverb", x + colx[1], y + rowy[4] + 1);
-			sman->paint_text(2, "chorus", x + colx[1], y + rowy[5] + 1);
+			sman->paint_text(2, "driver", x + colx[1], y + rowy[3] + 1);
+			sman->paint_text(2, "conversion", x + colx[1], y + rowy[4] + 1);
+			sman->paint_text(2, "effects", x + colx[1], y + rowy[5] + 1);
 			sman->paint_text(2, "looping", x + colx[1], y + rowy[6] + 1);
 		}
 		sman->paint_text(2, "SFX options:", x + colx[0], y + rowy[7] + 1);

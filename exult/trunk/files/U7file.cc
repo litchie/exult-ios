@@ -85,7 +85,7 @@ U7FileManager	*U7FileManager::get_ptr(void)
 
 void U7FileManager::reset()
 {
-	std::map<const std::string,U7file *>::iterator i;
+	std::map<std::string,U7file *>::iterator i;
 
 	for (i = file_list.begin(); i != file_list.end(); ++i)
 		delete (*i).second;

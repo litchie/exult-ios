@@ -107,10 +107,6 @@ void ExultMenu::setup()
 	  midiconv->add_choice("GM");
 	  midiconv->add_choice("GS");
 	  midiconv->add_choice("GS127");
-	  midiconv->add_choice("DigitalMusic");
-#ifdef USE_FMOPL_MIDI
-	  midiconv->add_choice("FM Synth");
-#endif
 
 	  midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
 	  menu.add_entry(midiconv);
@@ -270,7 +266,7 @@ Exult_Game ExultMenu::run()
 	if(Audio::get_ptr()->audio_enabled)		//Must check this or it will crash as midi 
 											//may not be initialised
 	{
-		if(Audio::get_ptr()->get_midi()->get_music_conversion() == XMIDI_CONVERT_OGG)
+		if(Audio::get_ptr()->get_midi()->get_output_driver_type() == MIDI_DRIVER_OGG)
 			Audio::get_ptr()->start_music(99,true);
 		else
 			Audio::get_ptr()->start_music(midfile.GetEventList(0), true);
