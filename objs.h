@@ -84,9 +84,9 @@ class Game_object : public ShapeID
 	unsigned char lift;		// Raise by 4* this number.
 	short quality;			// Some sort of game attribute.
 	Game_object *next, *prev;	// ->next in chunk list or container.
-	GOVector dependencies;		// Objects which must be painted before
+	Game_object_vector dependencies;		// Objects which must be painted before
 					//   this can be rendered.
-	GOVector dependors;		// Objects which must be painted after.
+	Game_object_vector dependors;		// Objects which must be painted after.
 	static unsigned char rotate[8];	// For getting rotated frame #.
 public:
 	unsigned long render_seq;	// Render sequence #.
@@ -218,13 +218,13 @@ public:
 
 					// Find nearby objects.
 	template<class T>
-	static int find_nearby(FeatureVector<T*>& vec, Tile_coord pos,
+	static int find_nearby(Exult_vector<T*>& vec, Tile_coord pos,
 			int shapenum, int delta, int mask, 
 			int qual = -359, int framenum = -359);
 
-	int find_nearby_actors(ActorVector& vec, int shapenum, int delta) const;
-	int find_nearby_eggs(EggVector& vec, int shapenum, int delta) const;
-	int find_nearby(GOVector& vec, int shapenum, int delta, int mask,
+	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta) const;
+	int find_nearby_eggs(Egg_vector& vec, int shapenum, int delta) const;
+	int find_nearby(Game_object_vector& vec, int shapenum, int delta, int mask,
 			int qual = -359, int framenum = -359) const;
 
 	Game_object *find_closest(int *shapenums, int num_shapes);
@@ -312,7 +312,7 @@ public:
 							int framenum = -359)
 		{ return 0; }
 					// Get contained objs.
-	virtual int get_objects(GOVector& vec, int shapenum, int qual,
+	virtual int get_objects(Game_object_vector& vec, int shapenum, int qual,
 						int framenum)
 		{ return 0; }
 					// Add an object.
@@ -582,7 +582,7 @@ public:
 	virtual int count_objects(int shapenum, int qual = -359,
 							int framenum = -359);
 					// Get contained objs.
-	virtual int get_objects(GOVector& vec, int shapenum, int qual,
+	virtual int get_objects(Game_object_vector& vec, int shapenum, int qual,
 						int framenum);
 					// Under attack.
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,

@@ -50,7 +50,7 @@ protected:
 		stunned = 7		// Just been hit.
 		} state;
 	Schedule_types prev_schedule;	// Before going into combat.
-	Slist opponents;		// Possible opponents.
+	Actor_queue opponents;		// Possible opponents.
 	Game_object *opponent;		// Current opponent.
 	int weapon_shape;		// Weapon's shape in shapes.vga.
 	int max_reach;			// Max. weapon reach in tiles.

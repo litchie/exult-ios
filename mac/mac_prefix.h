@@ -8,4 +8,3 @@
 
 // missing functions:
 #define		isascii(x)	(!((x) & 0x80))
-char*		strdup( const char *x );

@@ -90,7 +90,7 @@ class Usecode_machine
 	Game_window *gwin;		// Game window.
 					// I'th entry contains funs for ID's
 					//    256*i + n.
-	FeatureVector<Usecode_function*> funs[16];
+	Exult_vector<Usecode_function*> funs[16];
 	int call_depth;			// How far deep we are.
 	Usecode_function *cur_function;	// Current function being executed.
 	unsigned char gflags[1024];	// Global flags.

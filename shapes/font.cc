@@ -24,6 +24,8 @@
 using std::cout;
 using std::endl;
 using std::isspace;
+using std::size_t;
+using std::string;
 using std::strncmp;
 
 FontManager fontManager;

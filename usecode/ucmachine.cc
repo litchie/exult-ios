@@ -678,7 +678,7 @@ Usecode_value Usecode_machine::find_nearby
 					//  32 == monsters? invisible?
 	)
 	{
-	GOVector vec;			// Gets list.
+	Game_object_vector vec;			// Gets list.
 					// It might be (tx, ty, tz).
 	int arraysize = objval.get_array_size();
 	if (arraysize >= 3 && objval.get_elem(0).get_int_value() < num_tiles)
@@ -708,7 +708,7 @@ Usecode_value Usecode_machine::find_nearby
 		}
 	Usecode_value nearby(vec.size(), 0);	// Create return array.
 	int i = 0;
-	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *each = *it;
 		Usecode_value val(each);
@@ -731,7 +731,7 @@ Usecode_value Usecode_machine::find_nearest
 	Game_object *obj = get_item(objval);
 	if (!obj)
 		return Usecode_value((Game_object*) NULL);
-	GOVector vec;			// Gets list.
+	Game_object_vector vec;			// Gets list.
 	obj = obj->get_outermost();	// Might be inside something.
 	int dist = distval.get_int_value();
 	int shnum = shapeval.get_int_value();
@@ -743,7 +743,7 @@ Usecode_value Usecode_machine::find_nearest
 	unsigned long bestdist = 100000;// Distance-squared in tiles.
 	int x1, y1, z1;
 	obj->get_abs_tile(x1, y1, z1);
-	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *each = *it;
 		int x2, y2, z2;
@@ -831,13 +831,13 @@ Usecode_value Usecode_machine::get_objects
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int qual = qualval.get_int_value();
-	GOVector vec;			// Gets list.
+	Game_object_vector vec;			// Gets list.
 	obj->get_objects(vec, shapenum, qual, framenum);
 
 //	cout << "Container objects found:  " << cnt << << endl;
 	Usecode_value within(vec.size(), 0);	// Create return array.
 	int i = 0;
-	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *each = *it;
 		Usecode_value val(each);

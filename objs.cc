@@ -234,7 +234,7 @@ void Game_object::clear_dependencies
 	(
 	)
 	{
-	GOVector::const_iterator	X;
+	Game_object_vector::const_iterator	X;
 	
 	// First do those we depend on.
 	for(X = dependencies.begin(); X != dependencies.end(); ++X )
@@ -289,7 +289,7 @@ static int Check_mask
 template <class T>
 int Game_object::find_nearby
 	(
-	FeatureVector<T*>& vec,	// Objects appended to this.
+	Exult_vector<T*>& vec,	// Objects appended to this.
 	Tile_coord pos,			// Look near this point.
 	int shapenum,			// Shape to look for.  
 					//   -1=any (but always use mask?),
@@ -362,7 +362,7 @@ int Game_object::find_nearby
 
 int Game_object::find_nearby_actors
 	(
-	ActorVector& vec,
+	Actor_vector& vec,
 	int shapenum,
 	int delta
 	) const
@@ -373,7 +373,7 @@ int Game_object::find_nearby_actors
 
 int Game_object::find_nearby_eggs
 	(
-	EggVector& vec,
+	Egg_vector& vec,
 	int shapenum,
 	int delta
 	) const
@@ -384,7 +384,7 @@ int Game_object::find_nearby_eggs
 
 int Game_object::find_nearby
 	(
-	GOVector& vec,
+	Game_object_vector& vec,
 	int shapenum,
 	int delta,
 	int mask,
@@ -408,7 +408,7 @@ Game_object *Game_object::find_closest
 	int num_shapes			// Size of shapenums.
 	)
 	{
-	GOVector vec;			// Gets objects found.
+	Game_object_vector vec;			// Gets objects found.
 	int i;
 	for (i = 0; i < num_shapes; i++)
 		find_nearby(vec, shapenums[i], 24, 0);
@@ -419,7 +419,7 @@ Game_object *Game_object::find_closest
 	int best_dist = 10000;		// In tiles.
 					// Get our location.
 	Tile_coord loc = get_abs_tile_coord();
-	for (GOVector::const_iterator it = vec.begin();
+	for (Game_object_vector::const_iterator it = vec.begin();
 						it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
@@ -1857,7 +1857,7 @@ int Container_game_object::count_objects
 
 int Container_game_object::get_objects
 	(
-	GOVector& vec,			// Objects returned here.
+	Game_object_vector& vec,			// Objects returned here.
 	int shapenum,			// Shape#, or -359 for any.
 	int qual,			// Quality, or -359 for any.
 	int framenum			// Frame#, or -359 for any.

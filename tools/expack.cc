@@ -7,11 +7,17 @@
 #include "utils.h"
 #include "databuf.h"
 
+using std::atoi;
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::exit;
+using std::FILE;
 using std::ifstream;
 using std::ofstream;
+using std::size_t;
+using std::sprintf;
+using std::strlen;
 
 enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD };
 
@@ -84,10 +90,8 @@ int main(int argc, char **argv)
 {
 	Arch_mode mode = NONE;
 	char *fname = 0;
-	char *ext;
+	char ext[] = "u7o";
 	int index;
-	
-	ext = strdup("u7o");
   
 	if(argc>2) {
 		fname = argv[2];

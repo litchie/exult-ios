@@ -154,13 +154,13 @@ void Eat_at_inn_schedule::now_what
 		return;
 		}
 	Game_window *gwin = Game_window::get_game_window();
-	GOVector foods;			// Food nearby?
+	Game_object_vector foods;			// Food nearby?
 	int cnt = npc->find_nearby(foods, 377, 2, 0);
 	if (cnt)			// Found?
 		{			// Find closest.
 		Game_object *food = 0;
 		int dist = 500;
-		for (GOVector::const_iterator it = foods.begin();
+		for (Game_object_vector::const_iterator it = foods.begin();
 					it != foods.end(); ++it)
 			{
 			Game_object *obj = *it;
@@ -195,7 +195,7 @@ void Preach_schedule::now_what
 	if (first)			// Find podium.
 		{
 		first = 0;
-		GOVector vec;
+		Game_object_vector vec;
 		if (npc->find_nearby(vec, 697, 5, 0))
 			{
 			Game_object *podium = vec[0];
@@ -231,9 +231,9 @@ void Patrol_schedule::now_what
 	Game_object *path =  pathnum < paths.size() ? paths[pathnum] : 0;
 	if (!path)			// No, so look around.
 		{
-		GOVector nearby;
+		Game_object_vector nearby;
 		npc->find_nearby(nearby, PATH_SHAPE, 26, 0);
-		for (GOVector::const_iterator it = nearby.begin();
+		for (Game_object_vector::const_iterator it = nearby.begin();
 						it != nearby.end(); ++it)
 			{
 			Game_object *obj = *it;
@@ -383,37 +383,42 @@ void Kid_games_schedule::now_what
 	)
 	{
 	Tile_coord pos = npc->get_abs_tile_coord();
-	Actor *kid;			// Get a kid to chase.
+	Actor *kid = 0;			// Get a kid to chase.
 					// But don't run too far.
-	while ((kid = (Actor *) kids.remove_first()) != 0 &&
-						npc->distance(kid) >= 16)
-		;
+	while (!kids.empty())
+	{
+		kid = kids.pop();
+		if (npc->distance(kid) < 16)
+			break;
+		kid = 0;
+	}
+
 	if (kid)
-		{
+	{
 		Fast_pathfinder_client cost(1);
 		PathFinder *path = new Astar();
 		if (path->NewPath(pos, kid->get_abs_tile_coord(), &cost))
-			{
+		{
 			npc->set_action(new Path_walking_actor_action(
 								path, 0));
-			npc->start(100, 250);// Run.
+			npc->start(100, 250); // Run.
 			return;
-			}
 		}
-	else				// No more kids?  Search.
-		{
-		ActorVector vec;
-		npc->find_nearby_actors(vec, -359, 16);
-		for (ActorVector::const_iterator it = vec.begin();
-						it != vec.end(); ++it)
-			{
-			Actor *act = (Actor *) *it;
-			if (act->get_schedule_type() == kid_games)
-				kids.append(act);
-			}
-		}
-	Loiter_schedule::now_what();	// Wander around the start.
 	}
+	else				// No more kids?  Search.
+	{
+		Actor_vector vec;
+		npc->find_nearby_actors(vec, -359, 16);
+		for (Actor_vector::const_iterator it = vec.begin();
+						it != vec.end(); ++it)
+		{
+			Actor *act = *it;
+			if (act->get_schedule_type() == kid_games)
+				kids.push(act);
+		}
+	}
+	Loiter_schedule::now_what();	// Wander around the start.
+}
 
 /*
  *	Schedule change for 'dance':
@@ -550,9 +555,9 @@ void Sleep_schedule::now_what
 		gwin->add_dirty(npc);
 		return;
 		}
-	GOVector tops;			// Want to find top of bed.
+	Game_object_vector tops;			// Want to find top of bed.
 	bed->find_nearby(tops, bed->get_shapenum(), 1, 0);
-	for (GOVector::const_iterator it = tops.begin(); it != tops.end();
+	for (Game_object_vector::const_iterator it = tops.begin(); it != tops.end();
 									++it)
 			{
 			Game_object *top = *it;
@@ -599,7 +604,7 @@ void Sleep_schedule::ending
 			floorloc = npc->find_unblocked_tile(dist, 4);
 					// Make bed.
 		int frnum = bed->get_framenum();
-		ActorVector occ;		// Unless there's another occupant.
+		Actor_vector occ;		// Unless there's another occupant.
 		if (frnum >= 4 && frnum <= 16 && !(frnum%2) &&
 				bed->find_nearby_actors(occ, -359, 0) < 2)
 			bed->set_frame(frnum - 1);
@@ -651,7 +656,7 @@ void Sit_schedule::now_what
 		Game_object *barge = chair->find_closest(&bargeshape, 1);
 		if (!barge)
 			return;
-		GOVector fman;		// See if Ferryman nearby.
+		Game_object_vector fman;		// See if Ferryman nearby.
 		int usefun = 0x634;	// I hate using constants like this.
 		if (chair->find_nearby(fman, 155, 8, 0) == 1)
 			{
@@ -721,35 +726,36 @@ Waiter_schedule::Waiter_schedule
 void Waiter_schedule::get_customer
 	(
 	)
+{
+	if (customers.empty())			// Got to search?
 	{
-	customer = (Actor *) customers.remove_first();
-	if (!customer)			// Got to search?
-		{
-		ActorVector vec;		// Look within 32 tiles;
+		Actor_vector vec;		// Look within 32 tiles;
 		npc->find_nearby_actors(vec, -359, 32);
-		for (ActorVector::const_iterator it = vec.begin();
+		for (Actor_vector::const_iterator it = vec.begin();
 							it != vec.end(); ++it)
-			{		// Filter them.
+		{		// Filter them.
 			Actor *npc = (Actor *) *it;
-			int sched = npc->get_schedule_type();
-			if (sched == Schedule::eat_at_inn)
-				customers.append(npc);
-			}
-		customer = (Actor *) customers.remove_first();
+			if (npc->get_schedule_type() == Schedule::eat_at_inn)
+				customers.push(npc);
 		}
+	}
+
+	if (!customers.empty())
+		customer = customers.pop();
+	
 	if (prep_tables.size())	// Walk to a 'prep' table.
-		{
+	{
 		Game_object *table = prep_tables[rand()%prep_tables.size()];
 		Tile_coord pos = table->find_unblocked_tile(1, 3);
 		if (pos.tx != -1 &&
 		    npc->walk_path_to_tile(pos, 200, 1000 + rand()%1000))
 			return;
-		}
+	}
 	const int dist = 8;		// Bad luck?  Walk randomly.
 	int newx = startpos.tx - dist + rand()%(2*dist);
 	int newy = startpos.ty - dist + rand()%(2*dist);
 	npc->walk_to_tile(newx, newy, startpos.tz, 350, rand()%2000);
-	}
+}
 
 /*
  *	Find tables and categorize them.
@@ -760,16 +766,16 @@ void Waiter_schedule::find_tables
 	int shapenum
 	)
 	{
-	GOVector vec;
+	Game_object_vector vec;
 	npc->find_nearby(vec, shapenum, 32, 0);
 	int floor = npc->get_lift()/5;	// Make sure it's on same floor.
-	for (GOVector::const_iterator it = vec.begin(); it != vec.end();
+	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end();
 								++it)
 		{
 		Game_object *table = *it;
 		if (table->get_lift()/5 != floor)
 			continue;
-		GOVector chairs;		// No chairs by it?
+		Game_object_vector chairs;		// No chairs by it?
 		if (!table->find_nearby(chairs, 873, 3, 0) &&
 		    !table->find_nearby(chairs, 292, 3, 0))
 			prep_tables.append(table);
@@ -789,12 +795,12 @@ int Waiter_schedule::find_serving_spot
 	Tile_coord& spot
 	)
 	{
-	GOVector plates;		// First look for a nearby plate.
+	Game_object_vector plates;		// First look for a nearby plate.
 	int cnt = npc->find_nearby(plates, 717, 1, 0);
 	if (!cnt)
 		cnt = npc->find_nearby(plates, 717, 2, 0);
 	int floor = npc->get_lift()/5;	// Make sure it's on same floor.
-	for (GOVector::const_iterator it = plates.begin();
+	for (Game_object_vector::const_iterator it = plates.begin();
 					it != plates.end(); ++it)
 		{
 		Game_object *plate = *it;
@@ -808,7 +814,7 @@ int Waiter_schedule::find_serving_spot
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord cpos = customer->get_abs_tile_coord();
 					// Go through tables.
-	for (GOVector::const_iterator it = eating_tables.begin();
+	for (Game_object_vector::const_iterator it = eating_tables.begin();
 					it != eating_tables.end(); ++it)
 		{
 		Game_object *table = *it;
@@ -863,7 +869,7 @@ void Waiter_schedule::now_what
 	Game_window *gwin = Game_window::get_game_window();
 	if (dist < 3)			// Close enough to customer?
 		{
-		GOVector foods;
+		Game_object_vector foods;
 		if (customer->find_nearby(foods, 377, 2, 0) > 0)
 			{
 			const char *msgs[] = {"You look like you're doing fine.",

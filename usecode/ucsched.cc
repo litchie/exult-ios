@@ -67,11 +67,11 @@ static void Activate_cached
 	if (Game::get_game_type() != BLACK_GATE)
 		return;			// ++++Since we're not sure about it.
 	const int dist = 16;
-	GOVector vec;			// Find all usecode eggs.
+	Egg_vector vec;			// Find all usecode eggs.
 	Game_object::find_nearby(vec, pos, 275, dist, 16, -359, 7);
-	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Egg_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Egg_object *egg = (Egg_object *) *it;
+		Egg_object *egg = *it;
 		if (egg->get_criteria() == Egg_object::cached_in)
 			egg->activate(uc);
 		}
