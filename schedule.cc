@@ -273,6 +273,8 @@ void Sleep_schedule::ending
 		{
 		npc->move(floorloc);
 		npc->set_frame(Actor::standing);
+		Game_window *gwin = Game_window::get_game_window();
+		gwin->set_all_dirty();	// Update all, since Av. stands up.
 		}
 	}
 
