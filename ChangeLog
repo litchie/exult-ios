@@ -1,3 +1,6 @@
+2001-09-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* animate.cc: fixed division by zero in the 'bubbles' animation
+
 2001-09-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Configuration.cc, keyring.cc: added missing #include
 	* objs/contain.cc: save correct dead-body-npc-number in SI
