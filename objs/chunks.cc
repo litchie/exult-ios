@@ -499,7 +499,7 @@ Chunk_object_list::Chunk_object_list
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
 	) : objects(0), first_nonflat(0), dungeon_bits(0),
-	    npcs(0), cache(0), roof(0), light_sources(0),
+	    npcs(0), cache(0), rendered_flats(0), roof(0), light_sources(0),
 	    cx(chunkx), cy(chunky), from_below(0), from_right(0),
 	    from_below_right(0)
 	{
@@ -514,6 +514,7 @@ Chunk_object_list::~Chunk_object_list
 	)
 	{
 	delete cache;
+	delete rendered_flats;
 	delete [] dungeon_bits;
 	}
 
@@ -564,6 +565,47 @@ inline Chunk_object_list *Chunk_object_list::add_outside_dependencies
 	Chunk_object_list *chunk = gwin->get_objects(cx, cy);
 	chunk->add_dependencies(newobj, newinfo);
 	return chunk;
+	}
+
+/*
+ *	Paint a flat tile into our cached buffer.
+ */
+
+inline void Chunk_object_list::paint_tile
+	(
+	int tilex, int tiley		// Tile within chunk.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	ShapeID id = get_flat(tilex, tiley);
+	if (!id.is_invalid())
+		rendered_flats->copy8(gwin->get_shape(id)->get_data(), 
+			c_tilesize, c_tilesize, tilex*c_tilesize,
+						tiley*c_tilesize);
+	}
+
+/*
+ *	Create rendered_flats buffer.
+ */
+
+Image_buffer8 *Chunk_object_list::render_flats
+	(
+	bool in_dungeon
+	)
+	{
+	rendered_dungeon = in_dungeon;	// Save type of rendering.
+	if (!rendered_flats)
+		rendered_flats = new Image_buffer8(c_chunksize, c_chunksize);
+					// Go through array of tiles.
+	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
+		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
+			if (!in_dungeon || this->in_dungeon(tilex, tiley))
+				paint_tile(tilex, tiley);
+			else		// Paint black if outside dungeon.
+				rendered_flats->fill8(0, 
+					c_tilesize, c_tilesize, 
+					tilex*c_tilesize, tiley*c_tilesize);
+	return rendered_flats;
 	}
 
 /*
@@ -1115,6 +1157,18 @@ void Chunk_object_list::gravity
 		gravity(foot, obj->get_lift() +
 					gwin->get_info(obj).get_3d_height());
 		}
+	}
+
+/*
+ *	Free pre-rendered landscape.
+ */
+
+void Chunk_object_list::free_rendered_flats
+	(
+	)
+	{
+	delete rendered_flats; 
+	rendered_flats = 0; 
 	}
 
 /*
