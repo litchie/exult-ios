@@ -137,8 +137,12 @@ void Image_window::create_surface
 	uses_palette = true;
 	show_scaled = 0;
 	unscaled_surface = surface = scaled_surface = 0;
-
-	if (try_scaler(w, h, flags)) return;
+	
+#if defined(__zaurus__)
+	flags &= ~SDL_FULLSCREEN; // Zaurus would crash in fullscreen mode
+#else
+	if (try_scaler(w, h, flags)) return; // everyone else can test the try_scaler function
+#endif
 
 	if (!surface)			// No scaling, or failed?
 		{
