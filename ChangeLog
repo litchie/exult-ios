@@ -1,3 +1,6 @@
+2001-07-21 Ryan Nunn <triforce@merlin.net.au>
+	* Makefile.cygwin, Makefile.win32: Create Flexes and Flex headers first
+
 2001-07-21  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* intrinsics.cc:  Guessing at SI intrinsics 0x74, 0x75 for fixing
