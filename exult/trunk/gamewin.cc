@@ -1818,8 +1818,9 @@ void Game_window::end_splash
 					//   schedules and positions.
 		paint();
 					// Want to activate first egg.
+#if 0
 		main_actor->walk_to_tile(1075, 2214, 0);
-#if 0	/* ++++Didn't work. */
+#else
 		Chunk_object_list *olist = get_objects(
 				main_actor->get_cx(), main_actor->get_cy());
 		olist->setup_cache();

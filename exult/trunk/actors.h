@@ -105,6 +105,7 @@ public:
 		};
 	enum Frames {			// Frames 0-15.  16-31 are the same,
 					//   only S instead of N.
+		standing = 0,
 		sit_frame = 10,
 		to_sit_frame = 11,
 		sleep_frame = 13
