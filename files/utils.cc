@@ -252,6 +252,7 @@ void U7open
 		in.open(name.c_str(), mode);		// Try to open
 		if (in.good())
 			return; // found it!
+		in.clear();	// Must do this again
 	} while (base_to_uppercase(name, ++uppercasecount));
 
 	// file not found.
@@ -307,7 +308,7 @@ void U7open
 		out.open(name.c_str(), mode);		// Try to open
 		if (out.good())
 			return; // found it!
-		
+		out.clear();	// Forget ye not
 	} while (base_to_uppercase(name, ++uppercasecount));
 
 	// file not found.
