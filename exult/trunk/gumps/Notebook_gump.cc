@@ -339,6 +339,7 @@ Notebook_gump::~Notebook_gump
  *	Paint a page and find where its text ends.
  *
  *	Output:	True if finished entire note.
+ *		Cursor.x is possibly set.
  */
 
 bool Notebook_gump::paint_page
@@ -349,7 +350,7 @@ bool Notebook_gump::paint_page
 	int pagenum
 	)
 {
-	bool in_curnote = (note == notes[curnote]);
+	bool find_cursor = (note == notes[curnote] && cursor.x < 0);
 	if (offset == 0)		// Print note info. at start.
 		{
 		char buf[60];
@@ -371,7 +372,7 @@ bool Notebook_gump::paint_page
 	cursor.offset -= offset;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
 			y + box.y, box.w, box.h, vlead,
-			0, -1, in_curnote? &cursor : 0);
+			0, -1, find_cursor? &cursor : 0);
 	cursor.offset += offset;
 	if (endoff > 0)			// All painted?
 		{			// Value returned is height.
@@ -379,7 +380,7 @@ bool Notebook_gump::paint_page
 		}
 	else				// Out of room.
 		str += -endoff;
-	if (in_curnote && cursor.x >= 0)
+	if (find_cursor && cursor.x >= 0)
 		{
 		gwin->get_win()->fill8(sman->get_special_pixel(POISON_PIXEL), 
 			1, 
@@ -502,6 +503,7 @@ void Notebook_gump::paint
 		return;
 	int offset = page_info[topleft].offset;
 	One_note *note = notes[notenum];
+	cursor.x = -1;
 					// Paint left page.
 	if (paint_page(Get_text_area(false, offset == 0), 
 						note, offset, topleft))
@@ -572,6 +574,25 @@ void Notebook_gump::next_page
 	}
 
 /*
+ *	See if on last/first line of current page.
+ */
+
+bool Notebook_gump::on_last_page_line
+	(
+	)
+	{
+	int notenum = page_info[curpage].notenum;
+	One_note *note = notes[notenum];
+	char *txt = note->text + cursor.offset;
+	char *eol = strchr(txt, '\n');
+	if (!eol)
+		return true;
+	return (curpage < page_info.size() - 1 && 
+	    page_info[curpage + 1].notenum == notenum &&
+	    (eol + 1) - note->text >= page_info[curpage + 1].offset);
+	}
+
+/*
  *	Handle down/up arrows.
  */
 
@@ -579,19 +600,21 @@ void Notebook_gump::down_arrow
 	(
 	)
 	{
-	int ht = sman->get_text_height(font);
 	int offset = page_info[curpage].offset;
 	Rectangle box = Get_text_area(curpage%2, offset == 0);
-	box.shift(x, y);		// Window coords.
-	int mx = box.x + updnx, my = cursor.y + ht + ht/2;
-	if (my > box.y + box.h)		// Below bottom?
+	int ht = sman->get_text_height(font);
+	if (on_last_page_line())
 		{
-		if (curpage >= page_info.size())
+		if (curpage >= page_info.size() - 1)
 			return;
 		next_page();
-		down_arrow();
-		return;
+		paint();
+		offset = page_info[curpage].offset;
+		box = Get_text_area(curpage%2, offset == 0);
+		cursor.y = y + box.y - ht;
 		}
+	box.shift(x, y);		// Window coords.
+	int mx = box.x + updnx + 1, my = cursor.y + ht + ht/2;
 	int notenum = page_info[curpage].notenum;
 	One_note *note = notes[notenum];
 	int coff = sman->find_cursor(font, note->text + offset, box.x,
@@ -611,7 +634,7 @@ void Notebook_gump::up_arrow
 	int offset = page_info[curpage].offset;
 	Rectangle box = Get_text_area(curpage%2, offset == 0);
 	box.shift(x, y);		// Window coords.
-	int mx = box.x + updnx, my = cursor.y - ht/2;
+	int mx = box.x + updnx + 1, my = cursor.y - ht/2;
 	if (my < box.y)			// Above top.
 		{
 		if (!curpage)
