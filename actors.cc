@@ -1125,9 +1125,7 @@ void Actor::set_schedule_type
 		case Schedule::sleep:
 			schedule = new Sleep_schedule(this);
 			break;
-		case Schedule::wait:	// Loiter just a little
-//Figure out why this messes up Mayor's talk at intro.
-//			schedule = new Loiter_schedule(this, 1);
+		case Schedule::wait:
 			break;
 		case Schedule::eat:		// For now.
 		case Schedule::sit:
@@ -1136,7 +1134,8 @@ void Actor::set_schedule_type
 		case Schedule::bake:
 			break;		//+++++++
 		case Schedule::sew:
-			break;		//+++++++
+			schedule = new Sew_schedule(this);
+			break;
 		case Schedule::shy:
 			schedule = new Shy_schedule(this);
 			break;

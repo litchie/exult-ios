@@ -1165,6 +1165,79 @@ void Waiter_schedule::ending
 	}
 
 /*
+ *	Sew/weave schedule.
+ */
+
+Sew_schedule::Sew_schedule
+	(
+	Actor *n
+	) : Schedule(n), state(get_wool)
+	{
+	int shnum = 653;
+	bale = npc->find_closest(&shnum, 1);
+	shnum = 873;
+	chair = npc->find_closest(&shnum, 1);
+	shnum = 651;
+	spinwheel = npc->find_closest(&shnum, 1);
+	}
+
+/*
+ *	Sew/weave.
+ */
+
+void Sew_schedule::now_what
+	(
+	)
+	{
+	switch (state)
+		{
+	case get_wool:
+		{
+		if (!bale)		// Just skip this step.
+			{
+			state = sit_at_wheel;
+			break;
+			}
+		Astar *path = new Astar();
+		Tile_coord npcpos = npc->get_abs_tile_coord();
+					// Get to within 1 tile.
+		Actor_pathfinder_dist_client cost(1);
+		if (path->NewPath(npcpos, bale->get_abs_tile_coord(), &cost))
+			{
+			int dir = npc->get_direction(bale);
+			char frames[2];
+			frames[0] = npc->get_dir_framenum(dir, 
+							Actor::standing);
+			frames[1] = npc->get_dir_framenum(dir, 11);
+			npc->set_action(new Sequence_actor_action(
+				new Path_walking_actor_action(path),
+				new Pickup_actor_action(bale, 250),
+				new Pickup_actor_action(bale,
+					bale->get_abs_tile_coord(), 250)));
+			state = sit_at_wheel;
+			}
+		else
+			delete path;
+		break;
+		}
+	case sit_at_wheel:
+		Sit_schedule::set_action(npc, chair, 200);
+		state = spin_wool;
+		break;
+	case spin_wool:			// Cycle spinning wheel 8 times.
+		npc->set_action(new Object_animate_actor_action(spinwheel,
+								8, 200));
+		state = get_cloth;
+		break;
+	default:			// Back to start.
+		state = get_wool;
+		break;
+		}
+	npc->start(250, 100);		// Back in queue.
+	}
+
+
+/*
  *	Modify goal to walk off the screen.
  */
 

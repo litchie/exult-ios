@@ -537,5 +537,94 @@ int Sequence_actor_action::handle_event
 	return (delay);
 	}
 
+/*
+ *	Create object animator.
+ */
+Object_animate_actor_action::Object_animate_actor_action
+	(
+	Game_object *o,
+	int cy,				// # of cycles.
+	int spd				// Time between frames.
+	) : obj(o), cycles(cy), speed(spd)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	nframes = gwin->get_shape_num_frames(obj->get_shapenum());
+	}
 
+/*
+ *	Handle tick of the clock.
+ */
 
+int Object_animate_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	int frnum = (obj->get_framenum() + 1) % nframes;
+	if (!frnum)			// New cycle?
+		if (!--cycles)
+			return 0;	// Done.
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->add_dirty(obj);		// Paint over old.
+	obj->set_frame(frnum);
+	gwin->add_dirty(obj);
+	return speed;
+	}
+
+/*
+ *	Pick up/put down an object.
+ */
+Pickup_actor_action::Pickup_actor_action(Game_object *o, int spd)
+	: obj(o), pickup(1), speed(spd), cnt(0), 
+	  objpos(obj->get_abs_tile_coord()), dir(0)
+	{
+	}
+					// To put down an object:
+Pickup_actor_action::Pickup_actor_action(Game_object *o, Tile_coord opos, 
+								int spd)
+	: obj(o), pickup(0), speed(spd), cnt(0), objpos(opos), dir(0)
+	{
+	}
+
+/*
+ *	Pick up an item (or put it down).
+ */
+
+int Pickup_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int frnum = -1;
+	switch (cnt)
+		{
+	case 0:				// Face object.
+		dir = actor->get_direction(objpos);
+		frnum = actor->get_dir_framenum(dir, Actor::standing);
+		cnt++;
+		break;
+	case 1:				// Bend down.
+		frnum = actor->get_dir_framenum(dir, Actor::to_sit_frame);
+		cnt++;
+		if (pickup)
+			{
+			gwin->add_dirty(obj);
+			obj->remove_this(1);
+			actor->add(obj, 1);
+			}
+		else
+			{
+			obj->remove_this(1);
+			obj->move(objpos);
+			gwin->add_dirty(obj);
+			}
+		break;
+	default:
+		return 0;		// Done.
+		}
+	actor->add_dirty(gwin);		// Get weapon to redraw too.
+	actor->set_frame(frnum);
+	actor->add_dirty(gwin, 1);
+	return speed;
+	}

@@ -229,6 +229,8 @@ public:
 		{ return frame_time != 0; }
 	bool is_dormant() const		// Inactive (i.e., off-screen)?
 		{ return dormant; }
+	void set_dormant()
+		{ dormant = true; }
 	Actor_action *get_action()	// Return action.
 		{ return action; }
 					// Set new action.
