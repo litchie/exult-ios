@@ -85,7 +85,6 @@ protected:
 	bool two_fingered;		// Carrying gauntlets (both fingers)
 	unsigned char light_sources;	// # of light sources readied.
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
-	unsigned flags:32;		// 32 flags used in 'usecode'.
 	unsigned siflags:32;	// 32 flags used in 'usecode'.
 	unsigned type_flags:32;	// 32 flags used in movement among other things
 	int	skin_color;
@@ -146,25 +145,6 @@ public:
 		{ return attack_mode; }
 	void set_attack_mode(Attack_mode amode)
 		{ attack_mode = amode; }
-					//+++++These really apply to all items.
-	enum Item_flags {		// Bit #'s of flags:
-		invisible = 0,
-		asleep = 1,
-		charmed = 2,
-		cursed = 3,
-		paralyzed = 7,
-		poisoned = 8,
-		protection = 9,
-		on_moving_barge = 10,	// ??Guessing.
-		okay_to_take = 11,	// Okay to take??
-		tremor = 12,		// ??Earthquake??
-		dancing = 15,		// ??Not sure.
-		dont_render = 16,	// Completely invisible.
-		unknown1 = 18,		// ??Used for Usecode-created items.
-		okay_to_land = 21,	// Used for flying-carpet.
-		confused = 25,		// ??Guessing.
-		in_motion = 26		// ??Guessing (cart, boat)??
-		};
 	// This is not even a guess, it's a place holder
 	enum Serpent_flags {		// Bit #'s of flags:
 		freeze = 0,
@@ -275,7 +255,6 @@ public:
 	virtual void clear_flag(int flag);
 	virtual void clear_siflag(int flag);
 	void clear_type_flag(int flag);
-	virtual int get_flag(int flag) const;
 	virtual int get_siflag(int flag) const;
 	int get_type_flag(int flag) const;
 	void set_type_flags(unsigned short tflags);

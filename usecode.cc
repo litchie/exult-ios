@@ -1664,8 +1664,8 @@ USECODE_INTRINSIC(create_new_object)
 	Shape_info& info = gwin->get_info(shapenum);
 	Game_object *obj;		// Create to be written to Ireg.
 	if (info.is_animated())
-		obj = new Animated_object(shapenum, 0,
-			  at->get_tx(), at->get_ty(), at->get_lift(), 1);
+		obj = new Animated_ireg_object(shapenum, 0,
+			  at->get_tx(), at->get_ty(), at->get_lift());
 	else
 		obj = new Ireg_game_object(shapenum, 0,
 			  at->get_tx(), at->get_ty(), at->get_lift());
@@ -2496,7 +2496,7 @@ USECODE_INTRINSIC(direction_from)
 	return(u);
 }
 
-USECODE_INTRINSIC(get_npc_flag)
+USECODE_INTRINSIC(get_item_flag)
 {
 	// Get npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
@@ -2523,7 +2523,7 @@ USECODE_INTRINSIC(get_npc_flag)
 	return(u);
 }
 
-USECODE_INTRINSIC(set_npc_flag)
+USECODE_INTRINSIC(set_item_flag)
 {
 	// Set npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
@@ -2547,7 +2547,7 @@ USECODE_INTRINSIC(set_npc_flag)
 	return(no_ret);
 }
 
-USECODE_INTRINSIC(clear_npc_flag)
+USECODE_INTRINSIC(clear_item_flag)
 {
 	// Clear npc flag(item, flag#).
 	Game_object *obj = get_item(parms[0]);
@@ -2776,9 +2776,9 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(is_not_blocked),	// 0x85
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x86  +++++A sound??  Animation??
 	USECODE_INTRINSIC_PTR(direction_from),	// 0x87
-	USECODE_INTRINSIC_PTR(get_npc_flag),	// 0x88
-	USECODE_INTRINSIC_PTR(set_npc_flag),	// 0x89
-	USECODE_INTRINSIC_PTR(clear_npc_flag),	// 0x8a
+	USECODE_INTRINSIC_PTR(get_item_flag),	// 0x88
+	USECODE_INTRINSIC_PTR(set_item_flag),	// 0x89
+	USECODE_INTRINSIC_PTR(clear_item_flag),	// 0x8a
 	USECODE_INTRINSIC_PTR(run_usecode),	// 0x8b 
 	USECODE_INTRINSIC_PTR(fade_palette),	// 0x8c 
 	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d

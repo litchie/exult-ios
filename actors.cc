@@ -140,7 +140,7 @@ Actor::Actor
 	    npc_num(num), party_id(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(1),
 	    two_handed(0), two_fingered(false), light_sources(0),
-	    usecode_dir(0), flags(0), siflags(0), type_flags(0), action(0), frame_time(0),
+	    usecode_dir(0), siflags(0), type_flags(0), action(0), frame_time(0),
 	    next_path_time(0)
 	{
 	set_shape(shapenum, 0); 
@@ -848,17 +848,8 @@ void Actor::clear_type_flag
 	}
 
 /*
- *	Get flag.
+ *	Get flags.
  */
-
-int Actor::get_flag
-	(
-	int flag
-	) const
-	{
-	return (flag >= 0 && flag < 32) ? (flags & ((unsigned long) 1 << flag))
-			!= 0 : 0;
-	}
 
 int Actor::get_siflag
 	(

@@ -96,13 +96,13 @@ public:
 	Game_object(unsigned char l, unsigned char h, unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
 		: ShapeID(l, h), shape_pos((shapex << 4) + shapey), 
-					lift(lft), quality(0), cx(255), cy(255)
+			lift(lft), quality(0), cx(255), cy(255)
 		{  }
 	Game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: ShapeID(shapenum, framenum),
 				shape_pos((tilex << 4) + tiley),
-				lift(lft), quality(0), cx(255), cy(255)
+			lift(lft), quality(0), cx(255), cy(255)
 		{  }
 					// Copy constructor.
 	Game_object(const Game_object& obj2)
@@ -113,6 +113,24 @@ public:
 		{  }
 	virtual ~Game_object()
 		{  }
+	enum Item_flags {		// Bit #'s of flags:
+		invisible = 0,
+		asleep = 1,
+		charmed = 2,
+		cursed = 3,
+		paralyzed = 7,
+		poisoned = 8,
+		protection = 9,
+		on_moving_barge = 10,	// ??Guessing.
+		okay_to_take = 11,	// Okay to take??
+		tremor = 12,		// ??Earthquake??
+		dancing = 15,		// ??Not sure.
+		dont_render = 16,	// Completely invisible.
+		unknown1 = 18,		// ??Used for Usecode-created items.
+		okay_to_land = 21,	// Used for flying-carpet.
+		confused = 25,		// ??Guessing.
+		in_motion = 26		// ??Guessing (cart, boat)??
+		};
 	int get_tx() const		// Get tile (0-15) within chunk.
 		{ return (shape_pos >> 4) & 0xf; }
 	int get_ty() const
@@ -270,11 +288,11 @@ public:
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 					// Set/clear/get actor flag.
-	virtual void set_flag(int flag) { }
+	virtual void set_flag(int flag) {  }
 	virtual void set_siflag(int flag) { }
 	virtual void clear_siflag(int flag) { }
 	virtual void clear_flag(int flag) { }
-	virtual int get_flag(int flag) const { return 0; }
+	virtual int get_flag(int flag) const  { return 0; }
 	virtual int get_siflag(int flag) const { return 0; }
 	virtual int get_type_flag(int flag) const { return 0; }
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
@@ -349,26 +367,33 @@ public:
 class Ireg_game_object : public Game_object
 	{
 	Container_game_object *owner;	// Container this is in, or 0.
+protected:
+	unsigned flags:32;		// 32 flags used in 'usecode'.
 public:
 					// Create from ireg. data.
 	Ireg_game_object(unsigned char l, unsigned char h, 
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
-		: Game_object(l, h, shapex, shapey, lft), owner(0), lowlift(-1), highshape (-1)
+		: Game_object(l, h, shapex, shapey, lft), owner(0), 
+			flags(0),lowlift(-1), highshape (-1)
 		{  }
 	Ireg_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
-						owner(0), lowlift(-1), highshape (-1)
+				owner(0), flags(0), lowlift(-1), highshape (-1)
 		{  }
 					// Copy constructor.
 	Ireg_game_object(const Ireg_game_object& obj2)
-		: Game_object(obj2), owner(0), lowlift(-1), highshape (-1)
+		: Game_object(obj2), owner(0), flags(0),
+					lowlift(-1), highshape (-1)
 		{  }
-	Ireg_game_object() : owner(0), lowlift(-1), highshape (-1)	// Create fake entry.
+					// Create fake entry.
+	Ireg_game_object() : owner(0), flags(0), lowlift(-1), highshape (-1)
 		{  }
 	virtual ~Ireg_game_object()
 		{  }
+	void set_flags(unsigned long f)	// For initialization.
+		{ flags = f; }
 					// Create a copy.
 	virtual Game_object *clone() const
 		{ return new Ireg_game_object(*this); }
@@ -383,6 +408,16 @@ public:
 	virtual void set_owner(Container_game_object *o)
 		{ owner = o; }
 	virtual int is_dragable() const;// Can this be dragged?
+	virtual void clear_flag(int flag)
+		{
+		if (flag >= 0 && flag < 32)
+			flags &= ~((unsigned long) 1 << flag);
+		}
+	virtual int get_flag(int flag) const
+		{
+		return (flag >= 0 && flag < 32) ? 
+			(flags & ((unsigned long) 1 << flag)) != 0 : 0;
+		}
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
 	int	lowlift;
@@ -420,6 +455,7 @@ public:
 class Container_game_object : public Ireg_game_object
 	{
 	int volume_used;		// Amount of volume occupied.
+	unsigned char resistance;	// Resistance to attack.
 protected:
 	Game_object *objects;		// ->first object.
 	int get_max_volume() const	// Max. we'll hold. (0 == infinite).
@@ -427,16 +463,18 @@ protected:
 public:
 	Container_game_object(unsigned char l, unsigned char h, 
 				unsigned int shapex,
-				unsigned int shapey, unsigned int lft = 0)
+				unsigned int shapey, unsigned int lft,
+				unsigned char res)
 		: Ireg_game_object(l, h, shapex, shapey, lft),
-		  volume_used(0), objects(0)
+		  volume_used(0), resistance(res), objects(0)
 		{  }
 	Container_game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
-		  volume_used(0), objects(0)
+		  volume_used(0), resistance(0), objects(0)
 		{  }
-	Container_game_object() : volume_used(0), objects(0) {  }
+	Container_game_object() : volume_used(0), resistance(0),
+		objects(0) {  }
 	virtual ~Container_game_object();
 	Game_object *get_first_object()	// Get first inside.
 		{ return objects; }
