@@ -33,7 +33,7 @@ ipack_LDADD = \
 	../files/libu7file.la \
 	../shapes/libshapes.la \
 	../imagewin/libimagewin.la \
-	$(SYSLIBS)
+	-lpng $(SYSLIBS)
 
 wuc_SOURCES = \
 	wuc.c \

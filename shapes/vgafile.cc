@@ -212,6 +212,24 @@ void Shape_frame::create_rle
 	int w, int h			// Width, height.
 	)
 	{
+	delete [] data;			// Delete old data if there.
+	data = encode_rle(pixels, w, h, xleft, yabove, datalen);
+	}
+
+/*
+ *	Encode an 8-bit image into an RLE frame.
+ *
+ *	Output:	->allocated RLE data.
+ */
+
+unsigned char *Shape_frame::encode_rle
+	(
+	unsigned char *pixels,		// 8-bit uncompressed data.
+	int w, int h,			// Width, height.
+	int xoff, int yoff,		// Origin (xleft, yabove).
+	int& datalen			// Length of RLE data returned.
+	)
+	{
 					// Create an oversized buffer.
 	uint8 *buf = new uint8[w*h*2 + 16*h];
 	uint8 *out = buf;
@@ -228,8 +246,8 @@ void Shape_frame::create_rle
 				int len = runs[0] >> 1;
 				Write2(out, runs[0]);
 					// Write position.
-				Write2(out, x - xleft);
-				Write2(out, y - yabove);
+				Write2(out, x - xoff);
+				Write2(out, y - yoff);
 				memcpy(out, pixels, len);
 				pixels += len;
 				out += len;
@@ -238,8 +256,8 @@ void Shape_frame::create_rle
 					// Encoded, so write it with bit0==1.
 			Write2(out, ((newx - x)<<1)|1);
 					// Write position.
-			Write2(out, x - xleft);
-			Write2(out, y - yabove);
+			Write2(out, x - xoff);
+			Write2(out, y - yoff);
 					// Go through runs.
 			for (int i = 0; runs[i]; i++)
 				{
@@ -275,10 +293,10 @@ void Shape_frame::create_rle
 		cout << "create_rle: datalen: " << datalen << " w: " << w
 			<< " h: " << h << endl;
 #endif
-	delete [] data;			// Delete old data if there.
-	data = new unsigned char[datalen];
+	unsigned char *data = new unsigned char[datalen];
 	memcpy(data, buf, datalen);
 	delete [] buf;
+	return data;
 	}
 
 /*

@@ -60,6 +60,9 @@ public:
 		{  }
 	unsigned char *get_data() { return data; }
 	bool is_rle() const { return rle != 0; }
+					// Convert raw image to RLE.
+	static unsigned char *encode_rle(unsigned char *pixels, int w, int h,
+					int xoff, int yoff, int& datalen);
 					// Read in shape/frame.
 	unsigned char read(DataSource* shapes, uint32 shapeoff,
 					uint32 shapelen, int frnum);
