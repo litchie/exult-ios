@@ -309,9 +309,14 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				}
 			else		// Create item.
 				{
-				Game_object *nobj = new Ireg_game_object(
-					shnum, frnum, get_tx(),
-					get_ty(), get_lift());
+				Shape_info& info = gwin->get_info(shnum);
+				Game_object *nobj = info.is_animated() ?
+					new Animated_ireg_object(
+						shnum, frnum, get_tx(),
+						get_ty(), get_lift())
+					: new Ireg_game_object(
+						shnum, frnum, get_tx(),
+						get_ty(), get_lift());
 				gwin->get_objects(get_cx(), get_cy())->add(
 									nobj);
 				gwin->add_dirty(nobj);

@@ -1598,7 +1598,7 @@ USECODE_INTRINSIC(get_object_position)
 	Game_object *obj = get_item(parms[0]);
 	Tile_coord c(0, 0, 0);
 	if (obj)		// (Watch for animated objs' wiggles.)
-		c = obj->get_original_tile_coord();
+		c = obj->get_outermost()->get_original_tile_coord();
 	Usecode_value vx(c.tx), vy(c.ty), vz(c.tz);
 	Usecode_value arr(3, &vx);
 	arr.put_elem(1, vy);
