@@ -1,6 +1,12 @@
 INCLUDES = -I. $(DEBUG_FLAGS) $(CPPFLAGS) -DRELNUM=$(RELNUM)
 
-noinst_PROGRAMS = wuc wud mklink rip ucdump ucc
+if LEXYACC
+UCC= ucc
+else
+UCC=
+endif
+
+noinst_PROGRAMS = wuc wud mklink rip ucdump $(UCC)
 
 wuc_SOURCES = \
 	wuc.c \
