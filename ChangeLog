@@ -1,3 +1,6 @@
+2003-03-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* wuc.c: 256 bytes just isn't large enough for a static string buffer
+
 2003-03-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* exult.cc: ignore fullscreen mode for --buildmap (in a hackish way)
 	* ucinternal.cc: fixed sleeping crash
