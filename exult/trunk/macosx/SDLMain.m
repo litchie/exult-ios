@@ -11,8 +11,6 @@
 
 static int    gArgc;
 static char  **gArgv;
-extern char exult_datadir[MAXPATHLEN];
-
 
 /* The main class of the application, the application's delegate */
 @implementation SDLMain
@@ -28,10 +26,11 @@ extern char exult_datadir[MAXPATHLEN];
 /* Set the working directory to the .app's parent directory */
 - (void) setupWorkingDirectory
 {
+    char parentdir[MAXPATHLEN];
     char *c;
     
-    strncpy ( exult_datadir, gArgv[0], MAXPATHLEN );
-    c = (char*) exult_datadir;
+    strncpy ( parentdir, gArgv[0], MAXPATHLEN );
+    c = (char*) parentdir;
     
     while (*c != '\0')     /* go to end */
         c++;
@@ -40,10 +39,9 @@ extern char exult_datadir[MAXPATHLEN];
         c--;
     
     *c = '\0';             /* cut off last part (binary name) */
-    assert ( chdir (exult_datadir) == 0 );   /* chdir to the binary app's parent */
+    
+    assert ( chdir (parentdir) == 0 );   /* chdir to the binary app's parent */
     assert ( chdir ("../../../") == 0 ); /* chdir to the .app's parent */
-
-    strncat ( exult_datadir, "/../../Resources/data/", MAXPATHLEN );
 }
 
 /* Called when the internal event loop has just started running */

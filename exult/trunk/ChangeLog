@@ -1,3 +1,13 @@
+2001-08-20  Max Horn <max@quendi.de>
+	* exult.cc: disabled mouse clicks during dont_move mode
+	* gamerend.cc: disabled gump rendering during dont_move mode
+	* gamewin.*: fixed Game_window destructor to not crash anymore;
+	  added main_actor_dont_move() method
+	* keys.cc, mouse.cc: now uses main_actor_dont_move()
+	* menulist.cc: enabled Cmd-Q quit command for OS X, too
+	* sigame.cc: quick fix to lessen the palette issues a bit; real fix needed
+	* macosx/SDLMain.m: reverted to basic SDL version of this file
+
 2001-08-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* intrinsics.cc: *_execute_uc_array return true (fixes bedroll bug)
 

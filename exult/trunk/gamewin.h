@@ -270,6 +270,7 @@ public:
 		skip_above_actor = lift;
 		return true;
 		}
+    bool main_actor_dont_move();
 	inline bool set_in_dungeon(unsigned int lift)
 		{ 
 		if (in_dungeon == lift)

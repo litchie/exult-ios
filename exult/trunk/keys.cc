@@ -56,7 +56,7 @@ const struct Action {
 	bool show;
 	bool cheat;
 	Exult_Game game;
-    bool during_dont_move;
+    bool allow_during_dont_move;
 } ExultActions[] = {
 	{ "QUIT", ActionQuit, "Quit", true, false, NONE, true },
 	{ "SAVE_RESTORE", ActionFileGump, "Save/restore", true, false, NONE, true },
@@ -254,11 +254,8 @@ bool KeyBinder::DoAction(ActionType a)
 		return true;
 	
        // Restrict key actions in dont_move mode
-    Main_actor *main_actor = Game_window::get_game_window()->get_main_actor();
-	if (a.action->during_dont_move
-        || (!main_actor->get_siflag(Actor::dont_move)
-            && !main_actor->get_flag(Obj_flags::dont_render))
-        )
+	if (a.action->allow_during_dont_move
+        || !Game_window::get_game_window()->main_actor_dont_move())
     {
         a.action->func(a.params);
     }

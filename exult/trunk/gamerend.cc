@@ -188,8 +188,9 @@ void Game_window::paint
 	win->set_clip(x, y, w, h);	// Clip to this area.
 	int light_sources = paint_map(x, y, w, h);
 
-					// Draw gumps.
-	gump_man->paint(this);
+					// Draw gumps unless in dont_move mode.
+    if (!main_actor_dont_move())
+        gump_man->paint(this);
 					// Draw text, sprites.
 	for (Special_effect *txt = effects; txt; txt = txt->next)
 		txt->paint(this);
@@ -291,8 +292,9 @@ void Game_window::paint_object
 
 void Game_window::paint_dirty()
 {
-	// Update the gumps before painting (may change dirty area)
-	gump_man->update_gumps(this);
+	// Update the gumps before painting, unless in dont_move mode (may change dirty area)
+    if (!main_actor_dont_move())
+        gump_man->update_gumps(this);
 
 	Rectangle box = clip_to_win(dirty);
 	if (box.w > 0 && box.h > 0)

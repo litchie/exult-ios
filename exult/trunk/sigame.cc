@@ -198,7 +198,7 @@ void SI_Game::play_intro()
 		win->show();
 
 		if (wait_delay (3000))
-			return;
+			throw UserBreakException();
 
 		for (j = 20; j; j--)
 		{
@@ -212,7 +212,7 @@ void SI_Game::play_intro()
 		FORGET_ARRAY(fli_b);
 
 		if (wait_delay (0))
-			return;
+			throw UserBreakException();
 
 		gwin->clear_screen(true);
 
@@ -323,7 +323,7 @@ void SI_Game::play_intro()
 		FORGET_ARRAY(fli_b);
 
 		if (wait_delay (0))
-			return;
+			throw UserBreakException();
 
 
 		// Guard walks in
@@ -757,6 +757,17 @@ void SI_Game::play_intro()
 		FORGET_ARRAY(shape_buf);
 		FORGET_ARRAY(fli_b);
 	}
+	
+	// Fade out the palette...
+//	pal.fade_out(c_fade_out_time);
+// this doesn't work right ATM since the FLIC player has its own palette handling
+
+	
+	// ... and clean the screen.
+	gwin->clear_screen(true);
+	
+	// Stop all audio output
+	Audio::get_ptr()->cancel_streams();
 }
 
 void SI_Game::top_menu()

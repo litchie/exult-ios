@@ -66,11 +66,6 @@
 #include "ucmachine.h"
 #include "utils.h"
 
-#ifdef MACOSX
-#import <sys/param.h> /* for MAXPATHLEN */
-char exult_datadir[MAXPATHLEN];
-#endif
-
 using std::atof;
 using std::cerr;
 using std::cout;
@@ -546,6 +541,7 @@ static void Handle_event
 	{
 	// Mouse scale factor
 	int scale = gwin->get_win()->get_scale();
+    bool dont_move_mode = gwin->main_actor_dont_move();
 
 					// For detecting double-clicks.
 	static uint32 last_b1_click = 0, last_b3_click = 0;
@@ -553,6 +549,8 @@ static void Handle_event
 	switch (event.type)
 		{
 	case SDL_MOUSEBUTTONDOWN:
+        if (dont_move_mode)
+            break;
 		if (event.button.button == 1)
 			{
 			dragging = gwin->start_dragging(
@@ -571,6 +569,8 @@ static void Handle_event
 			}
 		break;
 	case SDL_MOUSEBUTTONUP:
+        if (dont_move_mode)
+            break;
 		if (event.button.button == 3)
 			{
 			uint32 curtime = SDL_GetTicks();
