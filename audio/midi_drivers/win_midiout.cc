@@ -34,10 +34,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "win_midiout.h"
 
 static HMIDIOUT		midi_port;
-static bool		playing;
 	
 static void		init_device();
-static bool		is_available;
 	
 static DWORD		thread_main(void *data);
 static void		thread_play();
@@ -45,8 +43,10 @@ static HANDLE	 	*thread_handle;
 static DWORD		thread_id;
 
 // Thread communicatoins
-static int		thread_com;
-static int		sfx_com;
+static LONG		is_available;
+static LONG		playing;
+static LONG		thread_com;
+static LONG		sfx_com;
 
 #define W32MO_THREAD_COM_READY		0
 #define W32MO_THREAD_COM_PLAY		1
@@ -79,8 +79,8 @@ Windows_MidiOut::Windows_MidiOut()
 		return;
 	}
 	in_use = true;
-	playing = false;
-	is_available = false;
+	InterlockedExchange (&playing, false);
+	InterlockedExchange (&is_available, false);
 	init_device();
 }
 
@@ -90,7 +90,8 @@ Windows_MidiOut::~Windows_MidiOut()
 	if (!is_available) return;
 
 	while (thread_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
-	thread_com = W32MO_THREAD_COM_EXIT;
+	
+	InterlockedExchange (&thread_com, W32MO_THREAD_COM_EXIT);
 
 	int count = 0;
 	
@@ -102,25 +103,27 @@ Windows_MidiOut::~Windows_MidiOut()
 		// Wait 1 MS before trying again
 		if (code == STILL_ACTIVE) SDL_Delay (10);
 		else break;
+		
+		count++;
 	}
 
 	// We waited a second and it still didn't terminate
 	if (count == 100 && is_available)
 		TerminateThread (thread_handle, 1);
 
-	is_available = false;
+	InterlockedExchange (&is_available, false);
 }
 
 static void init_device()
 {
 	// Opened, lets open the thread
-	thread_com = W32MO_THREAD_COM_INIT;
+	InterlockedExchange (&thread_com, W32MO_THREAD_COM_INIT);
 	
 	thread_handle = (HANDLE*) CreateThread (NULL, 0, thread_main, NULL, 0, &thread_id);
 	
 	while (thread_com == W32MO_THREAD_COM_INIT) SDL_Delay (1);
 	
-	if (thread_com == W32MO_THREAD_COM_INIT_FAILED) cout << "Failier to initialize midi playing thread" << endl;
+	if (thread_com == W32MO_THREAD_COM_INIT_FAILED) cerr << "Failier to initialize midi playing thread" << endl;
 }
 
 static DWORD thread_main(void *data)
@@ -137,20 +140,20 @@ static DWORD thread_main(void *data)
 
 		mciGetErrorString(mmsys_err, buf, 512);
 		cerr << "Unable to open device: " << buf << endl;
-		thread_com = W32MO_THREAD_COM_INIT_FAILED;
+		InterlockedExchange (&thread_com, W32MO_THREAD_COM_INIT_FAILED);
 		return 1;
 	}
-	is_available = true;
+	InterlockedExchange (&is_available, true);
 	
 	SetThreadPriority (thread_handle, THREAD_PRIORITY_HIGHEST);
 	
-	thread_com = W32MO_THREAD_COM_READY;
-	sfx_com = W32MO_SFX_COM_READY;
+	InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
+	InterlockedExchange (&sfx_com, W32MO_SFX_COM_READY);
 
 	thread_play();
 
 	midiOutClose (midi_port);
-	is_available = false;
+	InterlockedExchange (&is_available, false);
 	return 0;
 }
 
@@ -260,11 +263,11 @@ static void thread_play ()
 					XMIDI::DeleteEventList (evntlist);
 					evntlist = NULL;
 					event = NULL;
-					playing = false;
+					InterlockedExchange (&playing, false);
 					
 					// If stop was requested, we are ready to receive another song
 					if (thread_com == W32MO_THREAD_COM_STOP)
-						thread_com = W32MO_THREAD_COM_READY;
+						InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
 		 		}
 	 			else
 	 			{
@@ -286,7 +289,7 @@ static void thread_play ()
 				XMIDI::DeleteEventList (evntlist);
 				evntlist = NULL;
 				event = NULL;
-				playing = false;
+				InterlockedExchange (&playing, false);
 			}
 			
 			// Reset pitch wheel
@@ -300,8 +303,8 @@ static void thread_play ()
 			repeat = thread_data->repeat;
 
 			ppqn = thread_data->ppqn;
-			thread_data = NULL;
-			thread_com = W32MO_THREAD_COM_READY;
+			InterlockedExchange ((LONG*) &thread_data, (LONG) NULL);
+			InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
 			
 			event = evntlist;
 			tempo = 0x07A120;
@@ -352,7 +355,7 @@ static void thread_play ()
 				s_evntlist = NULL;
 				s_event = NULL;
 				s_playing = false;
-				sfx_com = W32MO_SFX_COM_READY;
+				InterlockedExchange (&sfx_com, W32MO_SFX_COM_READY);
 		 	}
 		}
 
@@ -368,8 +371,8 @@ static void thread_play ()
 			s_evntlist = sfx_data->list;
 
 			s_ppqn = sfx_data->ppqn;
-			sfx_data = NULL;
-			sfx_com = W32MO_SFX_COM_READY;
+			InterlockedExchange ((LONG*) &sfx_data, (LONG) NULL);
+			InterlockedExchange (&sfx_com, W32MO_SFX_COM_READY);
 			
 			s_event = s_evntlist;
 			s_tempo = 0x07A120;
@@ -425,9 +428,8 @@ void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool re
 	data.ppqn = ppqn;
 	data.repeat = repeat;
 	
-	thread_data = &data;
-	
-	thread_com = W32MO_THREAD_COM_PLAY;
+	InterlockedExchange ((LONG*) &thread_data, (LONG) &data);
+	InterlockedExchange (&thread_com, W32MO_THREAD_COM_PLAY);
 }
 
 static mid_data sdata;
@@ -447,9 +449,8 @@ void Windows_MidiOut::start_sfx(midi_event *evntlist, int ppqn)
 	sdata.list = evntlist;
 	sdata.ppqn = ppqn;
 	
-	sfx_data = &sdata;
-	
-	sfx_com = W32MO_SFX_COM_PLAY;
+	InterlockedExchange ((LONG*) &sfx_data, (LONG) &sdata);
+	InterlockedExchange (&sfx_com, W32MO_SFX_COM_PLAY);
 }
 
 
@@ -461,7 +462,7 @@ void Windows_MidiOut::stop_track(void)
 	if (!playing) return;
 
 	while (thread_com != W32MO_THREAD_COM_READY) SDL_Delay (1);
-	thread_com = W32MO_THREAD_COM_STOP;
+	InterlockedExchange (&thread_com, W32MO_THREAD_COM_STOP);
 }
 
 bool Windows_MidiOut::is_playing(void)
