@@ -66,7 +66,7 @@ A html version can be found at http://exult.sourceforge.net/faq.shtml
 
 0. Changes to the FAQ
 0.1. - 19 July 2001
-* With the updated ReadMe parts of the FAQ are no longer necessary and thus left out. So see the ReadMe for all your configuration problems
+* With the updated Documentation parts of the FAQ are no longer necessary and thus left out. So see the Documentation for all your configuration problems
 
 
 
@@ -194,7 +194,7 @@ It's not a bug, it's a feature! I like it that way. Everyone is sensitive to dif
 3.5. Serpent Isle had many more improvements over Black Gate (keyring, better paperdoll...). Will these be implemented?
 Right now the main goal is to get the Black Gate 100% working. After that it could be that some more things will be improved as far as it is possible to implement these.
 The keyring is not in Black Gate but there is the 'k' key which tries all the keys in the inventory to open a lock.
-Recently Ryan added paperdoll support in Black Gate. Though it is still buggy (some items disappear to Neverneverland) it is beautiful to look at. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see 0.1.). If an item seems to have disappeared press 'F2' to activate the cheat menu and disable Paperdolls. Now you should find that missing item in your inventory.
+Recently Ryan added paperdoll support in Black Gate. Though it is still buggy (some items disappear to Neverneverland) it is beautiful to look at. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see the Documentation). If an item seems to have disappeared press 'F2' to activate the cheat menu and disable Paperdolls. Now you should find that missing item in your inventory.
 
 
 3.6. Any other improvements/features?
@@ -204,9 +204,9 @@ In Exult, you can still move your party even if there is a box/body/stats open/o
 
 3.7. How do I disable all improvements?
 To get an Ultima 7 that looks and behaves as close to the original as possible there are several things to do (though I wonder why you'd want to do that):
-* make custom keybindings files (see 0.1.) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. Since the Alpha 4 release you have to assign 's' to old_file_gump to enable the old savegame menu (the line in your custom keybindings file should look like: S old_file_gump)
+* make custom keybindings files (see Documentation) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. Since the Alpha 4 release you have to assign 's' to old_file_gump to enable the old savegame menu (the line in your custom keybindings file should look like: S old_file_gump)
 * Edit the exult.cfg file to point to those custom keys.
-* Don't set the path to the Serpent Isle files (see 0.1.) and put SI and a second copy of Exult in a seperate directory (note: you can no longer launch both BG and SI from the same exult.exe). This disables SI paperdolls in BG.
+* Don't set the path to the Serpent Isle files (see Documentation) and put SI and a second copy of Exult in a seperate directory (note: you can no longer launch both BG and SI from the same exult.exe). This disables SI paperdolls in BG.
 * Alternatively you can leave the cheat menu binding in the keybindings file ( 'F2' ) and disable "Paperdolls" each time you run Exult.
 * Edit the exult.cfg to use the resolution of 320x200, to run in full screen and disable scalers.
 * The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot be altered. Sorry!

@@ -6,8 +6,8 @@
 			<question>- 19 July 2001</question>
 			<answer>
 				<ul>
-				<li>With the updated ReadMe parts of the FAQ are no longer 
-					necessary and thus left out. So see the <extref target="readme.shtml">ReadMe</extref>
+				<li>With the updated Documentation parts of the FAQ are no longer 
+					necessary and thus left out. So see the <extref target="docs.php">Documentation</extref>
 					for all your configuration problems</li>
 				</ul>	
 			</answer>
@@ -309,9 +309,9 @@
 					still buggy (some items disappear to Neverneverland) it is beautiful
 					to look at. Very impressive. For this you need to have Serpent Isle
 					installed on your hard drive and you must set the path to it in exult.cfg
-					(see <ref target="path_config"/>). If an item seems to have disappeared
-					press <key>F2</key> to activate the cheat menu and disable Paperdolls. Now 
-					you should find that missing item in your inventory. 
+					(see the <extref target="docs.php">Documentation</extref>). If an item 
+					seems to have disappeared press <key>F2</key> to activate the cheat menu 
+					and disable Paperdolls. Now you should find that missing item in your inventory. 
 				</para>
 			</answer>
 		</faq>
@@ -344,14 +344,15 @@
 					are several things to do (though I wonder why you'd want to do that):
 				</para>
 				<ul>
-				<li>make custom keybindings files (see <ref target="exult_keys"/>) in which you disable 
-					all the keys that were not in the original for Black Gate and Serpents Isle. 
+				<li>make custom keybindings files (see <extref target="docs.php">Documentation</extref>) 
+					in which you disable all the keys that were not in the original for Black Gate and 
+					Serpents Isle.<br/> 
 					Since the Alpha 4 release you have to assign <key>s</key> to old_file_gump
 					to enable the old savegame menu (the line in your custom keybindings file should look 
 					like: S old_file_gump)</li>
 				<li>Edit the exult.cfg file to point to those custom keys.</li>
-				<li>Don't set the path to the Serpent Isle files (see <ref target="path_config"/>) and put
-					SI and a second copy of <Exult/> in a seperate directory (note: you can no longer 
+				<li>Don't set the path to the Serpent Isle files (see <extref target="docs.php">Documentation</extref>)
+					 and put SI and a second copy of <Exult/> in a seperate directory (note: you can no longer 
 					launch both BG and SI from the same exult.exe). This disables SI paperdolls in BG.</li>
 				<li>Alternatively you can leave the cheat menu binding in the keybindings file (<key>F2</key>) 
 					and disable "Paperdolls" each time you run <Exult/>.</li>
