@@ -32,6 +32,7 @@
 
 using std::ifstream;
 using std::ios;
+using std::ofstream;
 
 /*
  *	Write out data files about shapes.
@@ -136,7 +137,7 @@ void Shapes_vga_file::write_info
 	for (i = 0; i < 1024; i++)
 		if (info[i].weapon_offsets)
 				// There are two bytes per frame: 64 total
-			wihh.write(info[i].weapon_offsets, 64);
+			wihh.write((char *)(info[i].weapon_offsets), 64);
 	wihh.close();
 	ofstream mfile;			// Now get monster info.
 	U7open(mfile, PATCH_MONSTERS);
