@@ -74,6 +74,7 @@ int Npc_actor_out
 	int tx, int ty, int tz,		// Absolute tile coords.
 	int shape, int frame,
 	std::string name,
+	short npc_num,
 	short ident,
 	int usecode,
 	short *properties,		// 12 entries.
@@ -93,6 +94,7 @@ int Npc_actor_in
 	int& tx, int& ty, int& tz,	// Absolute tile coords.
 	int& shape, int& frame,
 	std::string& name,
+	short& npc_num,
 	short& ident,
 	int& usecode,
 	short *properties,		// Must have room for 12.

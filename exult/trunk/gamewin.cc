@@ -584,10 +584,10 @@ void Game_window::clear_world
 	Dead_body::delete_all();
 	main_actor = 0;
 	camera_actor = 0;
-	num_npcs = num_npcs1 = 0;
+	num_npcs1 = 0;
 	theft_cx = theft_cy = -1;
 	combat = 0;
-	delete [] npcs;			// NPC's already deleted above.
+	npcs.resize(0);			// NPC's already deleted above.
 	moving_barge = 0;		// Get out of barge mode.
 	special_light = 0;		// Clear out light spells.
 		//++++++++Clear monsters list when we have it.
@@ -2918,10 +2918,11 @@ void Game_window::schedule_npcs
 	int backwards			// Extra periods to look backwards.
 	)
 	{
-					// Go through npc's.
-	for (int i = 1; i < num_npcs; i++)
+					// Go through npc's, skipping Avatar.
+	for (Actor_vector::iterator it = npcs.begin() + 1; 
+						it != npcs.end(); it++)
 		{
-		Npc_actor *npc = (Npc_actor *) npcs[i];
+		Npc_actor *npc = (Npc_actor *) *it;
 					// Don't want companions leaving.
 		if (npc && npc->get_schedule_type() != Schedule::wait)
 			npc->update_schedule(this, hour3, backwards);
@@ -2949,7 +2950,8 @@ void Game_window::theft
 	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12);
 	Actor *closest_npc = 0;
 	int best_dist = 5000;
-	for (Actor_vector::const_iterator it = npcs.begin(); it != npcs.end();++it)
+	for (Actor_vector::const_iterator it = npcs.begin(); 
+							it != npcs.end();++it)
 		{
 		Actor *npc = *it;
 		if (npc->is_monster() || npc == main_actor ||
