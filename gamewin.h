@@ -343,6 +343,9 @@ public:
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
 	int write();			// Write out to 'gamedat'.
+	int read();			// Read in 'gamedat'.
+	int write_gwin();		// Write gamedat/gamewin.dat.
+	int read_gwin();		// Read gamedat/gamewin.dat.
 	void init_actors();		// Place actors in the world.
 					// Paint area of image.
 	void paint(int x, int y, int w, int h);

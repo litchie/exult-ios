@@ -2521,6 +2521,7 @@ Usecode_machine::Usecode_machine
 					// Clear party list.
 	memset((char *) &party[0], 0, sizeof(party));
 	party_count = 0;
+	read();				// Read saved data (might be absent).
 	file.seekg(0, ios::end);
 	int size = file.tellg();	// Get file size.
 	file.seekg(0);
@@ -3033,25 +3034,53 @@ int Usecode_machine::call_usecode_function
 	return (1);
 	}
 
-#if 0
 /*
- *	Testing...
+ *	Write out global data to 'gamedat/usecode.dat'.
+ *
+ *	Output:	0 if error.
  */
 
-int main(int argc, char **argv)
+int Usecode_machine::write
+	(
+	)
 	{
-	ifstream ufile("static/usecode");
-	Usecode_machine interp(ufile);
-	Usecode_value parm(0);		// They all seem to take 1 parm.
-	int id;
-	if (argc > 1)
-		{
-		char *stop;
-		id = strtoul(argv[1], &stop, 16);
-		}
-	else
-		id = 0x269;
-	interp.call_usecode(id, &parm);
-	return (0);
+	ofstream out;
+	if (!U7open(out, USEDAT))
+		return (0);
+					// Write global flags.
+	out.write(gflags, sizeof(gflags));
+	Write2(out, party_count);	// Write party.
+	for (int i = 0; i < sizeof(party)/sizeof(party[0]); i++)
+		Write2(out, party[i]);
+	out.flush();
+	return out.good();
 	}
-#endif
+
+/*
+ *	Read in global data to 'gamedat/usecode.dat'.
+ *
+ *	Output:	0 if error.
+ */
+
+int Usecode_machine::read
+	(
+	)
+	{
+	ifstream in;
+	if (!U7open(in, USEDAT))
+		return (0);
+					// Read global flags.
+	in.read(gflags, sizeof(gflags));
+	party_count = Read2(in);	// Read party.
+	for (int i = 0; i < sizeof(party)/sizeof(party[0]); i++)
+		{
+		party[i] = Read2(in);
+		if (i < party_count)
+			{		// Set NPC.
+			Actor *npc = gwin->get_npc(party[i]);
+			if (npc)
+				npc->set_party_id(i);
+			}
+		}
+	return in.good();
+	}
