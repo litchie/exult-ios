@@ -1,3 +1,10 @@
+2002-01-16  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* shapes/*:  Ammo is now a field in Shape_info instead of in a
+	hash table.
+	* shapeinf.{cc,h}:  Added Armor_info class.  Includes 'immune' field.
+	* fnames.h:  More PATCH names added.
+
 2002-01-16  Ryan Nunn  <triforce@merlin.net.au>
 	* mapedit/Makefile.mingw : Use $(SRC) instead of .. when compiling the
 	  icon. Also other updates

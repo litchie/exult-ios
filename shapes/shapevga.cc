@@ -139,10 +139,9 @@ void Shapes_vga_file::read_info
 		cnt = Read1(armor);
 		for (i = 0; i < cnt; i++)
 			{
-			unsigned short shapenum = Read2(armor);
-			unsigned char points = Read1(armor);
-			info[shapenum].armor = points;
-			armor.seekg(7, ios::cur);// Skip 7 bytes.
+			Armor_info *ainf = new Armor_info();
+			unsigned short shapenum = ainf->read(armor);
+			info[shapenum].armor = ainf;
 			}
 		armor.close();
 		}
@@ -162,12 +161,11 @@ void Shapes_vga_file::read_info
 	if (U7open2(ammo, patch_name(PATCH_AMMO), AMMO, editing))
 		{
 		cnt = Read1(ammo);
-		Ammo_info::create();		// Create table.
 		for (i = 0; i < cnt; i++)
 			{
-			Ammo_info ent;
-			unsigned short shapenum = ent.read(ammo);
-			Ammo_info::insert(shapenum, ent);
+			Ammo_info *ainf = new Ammo_info();
+			unsigned short shapenum = ainf->read(ammo);
+			info[shapenum].ammo = ainf;
 			}
 		ammo.close();
 		}
@@ -205,7 +203,7 @@ void Shapes_vga_file::read_info
 	if (cnt)
 		wihh.close();
 	ifstream mfile;			// Now get monster info.
-	if (U7open2(mfile, 0, MONSTERS, editing))// +++++++Patch?
+	if (U7open2(mfile, patch_name(PATCH_MONSTERS), MONSTERS, editing))
 		{
 		int num_monsters = Read1(mfile);
 		for (i = 0; i < num_monsters; i++)
@@ -216,7 +214,8 @@ void Shapes_vga_file::read_info
 			}
 		mfile.close();
 		}
-	if (U7open2(mfile, 0, EQUIP, editing))		// Get 'equip.dat'.
+					// Get 'equip.dat'.
+	if (U7open2(mfile, patch_name(PATCH_EQUIP), EQUIP, editing))
 		{
 		int num_recs = Read1(mfile);
 		Equip_record *equip = new Equip_record[num_recs];
@@ -238,7 +237,7 @@ void Shapes_vga_file::read_info
 		mfile.close();
 		}
 	ifstream(occ);			// Read flags from occlude.dat.
-	if (U7open2(occ, 0, OCCLUDE, editing))
+	if (U7open2(occ, patch_name(PATCH_OCCLUDE), OCCLUDE, editing))
 		{
 		unsigned char occbits[128];	// 1024 bit flags.
 		occ.read((char *)occbits, sizeof(occbits));

@@ -8589,7 +8589,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton73</name>
+	      <name>shinfo_armor_immun0</name>
 	      <can_focus>True</can_focus>
 	      <label>Normal</label>
 	      <active>False</active>
@@ -8612,7 +8612,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton74</name>
+	      <name>shinfo_armor_immun1</name>
 	      <can_focus>True</can_focus>
 	      <label>Fire</label>
 	      <active>False</active>
@@ -8635,7 +8635,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton75</name>
+	      <name>shinfo_armor_immun2</name>
 	      <can_focus>True</can_focus>
 	      <label>Magic</label>
 	      <active>False</active>
@@ -8658,7 +8658,7 @@ Poison
 
 	    <widget>
 	      <class>GtkCheckButton</class>
-	      <name>checkbutton76</name>
+	      <name>shinfo_armor_immun3</name>
 	      <can_focus>True</can_focus>
 	      <label>Poison</label>
 	      <active>False</active>

@@ -195,15 +195,16 @@ int Actor::ready_ammo
 		return 0;		// No weapon, or ammo not needed.
 					// See if already have ammo.
 	Game_object *aobj = get_readied(Actor::ammo);
-	if (aobj && Ammo_info::is_in_family(aobj->get_shapenum(), ammo))
+	if (aobj && In_ammo_family(aobj->get_shapenum(), ammo))
 		return 1;		// Already readied.
 	Game_object_vector vec(50);		// Get list of all possessions.
 	get_objects(vec, c_any_shapenum, c_any_qual, c_any_framenum);
 	Game_object *found = 0;
-	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
+	for (Game_object_vector::const_iterator it = vec.begin(); 
+							it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
-		if (Ammo_info::is_in_family(obj->get_shapenum(), ammo))
+		if (In_ammo_family(obj->get_shapenum(), ammo))
 			found = obj;
 		}
 	if (!found)
@@ -2764,7 +2765,8 @@ bool Actor::figure_hit_points
 	else
 		winf = attacker->get_weapon(wpoints, weapon_shape);
 					// Get bonus ammo points.
-	Ammo_info *ainf = Ammo_info::find(ammo_shape);
+	Ammo_info *ainf = ammo_shape > 0 ? 
+			gwin->get_info(ammo_shape).get_ammo_info() : 0;
 	if (ainf)
 		wpoints += ainf->get_damage();
 	int usefun;			// See if there's usecode for it.
