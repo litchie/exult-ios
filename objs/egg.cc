@@ -324,20 +324,17 @@ int Egg_object::is_active
 		return !area.has_point(from_tx, from_ty);
 		}
 	case party_near:
-		return (obj->get_party_id() >= 0 || 
-					obj == gwin->get_main_actor()) &&
-			area.has_point(tx, ty) && 
-			(deltaz == 0 || deltaz == 1) &&
-					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
-		return obj == gwin->get_main_actor() && 
-			(absdeltaz <= 1 || 
+		if (!((absdeltaz <= 1 || 
 					// Using trial&error here:
 			 (Game::get_game_type() == SERPENT_ISLE &&
 				(type != teleport || absdeltaz <= 4)) ||
 				(type == missile && tz/5 == get_lift()/5)) &&
 			area.has_point(tx, ty) &&
-					!area.has_point(from_tx, from_ty);
+					!area.has_point(from_tx, from_ty)))
+			return 0;
+		return (obj == gwin->get_main_actor() ||
+		    (type == party_near && obj->get_party_id() >= 0));
 	case avatar_far:		// New tile is outside, old is inside.
 		{
 		if (obj != gwin->get_main_actor() || !area.has_point(tx, ty))
