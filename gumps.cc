@@ -52,7 +52,7 @@ Gump_object::Gump_object
 		break;
 	case 9:				// Bag.
 		object_area = Rectangle(48, 20, 66, 44);
-		checkx = 8; checky = 68;
+		checkx = 8; checky = 66;
 		break;
 	case 10:			// Backpack.
 		object_area = Rectangle(36, 36, 72, 40);

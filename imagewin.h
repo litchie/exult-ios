@@ -102,7 +102,7 @@ public:
 						int destx, int desty)
 		{  }
 					// Copy rectangle into here.
-	virtual void copy16(unsigned short *src_pixels, int srcx, int srcy,
+	virtual void copy16(unsigned short *src_pixels,
 				int srcw, int srch, int destx, int desty)
 		{  }
 					// Copy rect. with transp. color.
@@ -124,7 +124,7 @@ public:
 	virtual void fill_line8(unsigned char val, int srcw,
 						int destx, int desty) = 0;
 					// Copy rectangle into here.
-	virtual void copy8(unsigned char *src_pixels, int srcx, int srcy,
+	virtual void copy8(unsigned char *src_pixels,
 				int srcw, int srch, int destx, int desty) = 0;
 					// Copy line to here.
 	virtual void copy_line8(unsigned char *src_pixels, int srcw,
@@ -195,7 +195,7 @@ public:
 	virtual void fill_line8(unsigned char val, int srcw,
 						int destx, int desty);
 					// Copy rectangle into here.
-	virtual void copy8(unsigned char *src_pixels, int srcx, int srcy,
+	virtual void copy8(unsigned char *src_pixels,
 				int srcw, int srch, int destx, int desty);
 					// Copy line to here.
 	virtual void copy_line8(unsigned char *src_pixels, int srcw,
@@ -246,7 +246,7 @@ public:
 	virtual void fill_line16(unsigned short pix, int srcw,
 						int destx, int desty);
 					// Copy rectangle into here.
-	virtual void copy16(unsigned short *src_pixels, int srcx, int srcy,
+	virtual void copy16(unsigned short *src_pixels,
 				int srcw, int srch, int destx, int desty);
 	/*
 	 *	Depth-independent methods:
@@ -278,7 +278,7 @@ public:
 		{ Image_buffer16::fill_line16(palette[val], srcw,
 							destx, desty); }
 					// Copy rectangle into here.
-	virtual void copy8(unsigned char *src_pixels, int srcx, int srcy,
+	virtual void copy8(unsigned char *src_pixels,
 				int srcw, int srch, int destx, int desty);
 					// Copy line to here.
 	virtual void copy_line8(unsigned char *src_pixels, int srcw,
@@ -319,10 +319,9 @@ public:
 						int destx, int desty)
 		{ ibuf->fill16(pix, srcw, srch, destx, desty); }
 					// Copy rectangle into here.
-	void copy16(unsigned short *src_pixels, int srcx, int srcy,
+	void copy16(unsigned short *src_pixels,
 				int srcw, int srch, int destx, int desty)
-		{ ibuf->copy16(src_pixels, srcx, srcy, 
-						srcw, srch, destx, desty); }
+		{ ibuf->copy16(src_pixels, srcw, srch, destx, desty); }
 					// Copy rect. with transp. color.
 	void copy_transparent16(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty)
@@ -347,10 +346,9 @@ public:
 						int destx, int desty)
 		{ ibuf->fill_line8(val, srcw, destx, desty); }
 					// Copy rectangle into here.
-	void copy8(unsigned char *src_pixels, int srcx, int srcy,
+	void copy8(unsigned char *src_pixels,
 				int srcw, int srch, int destx, int desty)
-		{ ibuf->copy8(src_pixels, srcx, srcy,
-						srcw, srch, destx, desty); }
+		{ ibuf->copy8(src_pixels, srcw, srch, destx, desty); }
 					// Copy line to here.
 	virtual void copy_line8(unsigned char *src_pixels, int srcw,
 						int destx, int desty)
