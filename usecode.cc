@@ -2598,6 +2598,7 @@ void Usecode_machine::click_to_continue
 #else
 	int xx, yy;
 	Get_click(xx, yy, Mouse::hand);
+	gwin->clear_text_pending();
 #endif
 	user_choice = 0;		// Clear it.
 	answers = save_answers;

@@ -106,17 +106,20 @@ void Game_window::drag
 				dragging = 0;
 				return;
 				}
-#if 0	/* +++++++Test first. */
-			if (!dragging->get_owner() &&
-			    !Fast_pathfinder_client::is_grabable(
+			Game_object *owner = dragging->get_outermost();
+			if (owner == dragging)
+				{
+			    	if (!Fast_pathfinder_client::is_grabable(
 					main_actor->get_abs_tile_coord(),
 					dragging->get_abs_tile_coord()))
-				{
-				mouse->flash_shape(Mouse::blocked);
-				dragging = 0;
-				return;
+					{
+					mouse->flash_shape(Mouse::blocked);
+					dragging = 0;
+					return;
+					}
 				}
-#endif
+			else		// Inside something else?  Set lift.
+				dragging->set_lift(owner->get_lift());
 			}
 					// Store original pos. on screen.
 		dragging_rect = dragging_gump ?
