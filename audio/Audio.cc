@@ -352,6 +352,8 @@ Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
 	string s;
 	config->value("config/audio/enabled",s,"yes");
 	audio_enabled = (s!="no");
+	config->set("config/audio/enabled", audio_enabled?"yes":"no",true);
+
 	config->value("config/audio/speech/enabled",s,"yes");
 	speech_enabled = (s!="no");
 	config->value("config/audio/midi/enabled",s,"---");
