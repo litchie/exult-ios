@@ -45,7 +45,8 @@ using std::rand;
 Schedule::Schedule
 	(
 	Actor *n
-	) : npc(n), blocked(-1, -1, -1)
+	) : npc(n), blocked(-1, -1, -1), street_maintenance_failures(0),
+	    street_maintenance_time(0)
 	{
 	prev_type = npc ? npc->get_schedule_type() : -1;
 	}
@@ -85,10 +86,16 @@ int Schedule::try_street_maintenance
 	static int sinight[] = {290, 291, 889};
 	static int day[] = {290, 291, 526};
 
+	long curtime = Game::get_ticks();
+	if (curtime < street_maintenance_time)
+		return 0;		// Not time yet.
 	Game_window *gwin = Game_window::get_game_window();
 	if (npc->Actor::get_npc_num() <= 0 ||
 	    npc == gwin->get_camera_actor())
 		return 0;		// Only want normal NPC's.
+					// At least 30secs. before next one.
+	street_maintenance_time = curtime + 30000 + 
+				street_maintenance_failures*5000;
 	int *shapes;
 	int hour = gwin->get_hour();
 	bool bg = (Game::get_game_type() == BLACK_GATE);
@@ -129,6 +136,7 @@ int Schedule::try_street_maintenance
 				found = obj;
 				break;
 				}
+			street_maintenance_failures++;
 			}
 		}
 	if (!found)
@@ -136,6 +144,7 @@ int Schedule::try_street_maintenance
 					// Set actor to walk there.
 	npc->set_schedule_type(Schedule::street_maintenance,
 			new Street_maintenance_schedule(npc, pact, found));
+	street_maintenance_failures = 0;// We did it, so clear failures.
 	return 1;
 	}
 

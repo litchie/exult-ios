@@ -43,6 +43,8 @@ protected:
 	Actor *npc;			// Who this controls.
 	Tile_coord blocked;		// Tile where actor was blocked.
 	short prev_type;		// Actor's previous schedule.
+	int street_maintenance_failures;// # times failed to find path.
+	long street_maintenance_time;	// Time (msecs) when last tried.
 public:
 	Schedule(Actor *n);
 	virtual ~Schedule()
