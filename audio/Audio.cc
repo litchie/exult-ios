@@ -234,10 +234,8 @@ void	Audio::Init_sfx()
 	else
 		bg2si_sfxs = 0;
 					// Collection of .wav's?
-	string gametitle = Game::get_game_type() == BLACK_GATE ?
-		"blackgate" : "serpentisle";
 	string s;
-	string d = "config/disk/game/" + gametitle + "/waves";
+	string d = "config/disk/game/" + Game::get_gametitle() + "/waves";
 	config->value(d.c_str(), s, "---");
 	if (s != "---")
 	{
