@@ -124,7 +124,7 @@ void	Configuration::set(const char *key,int value,bool write_out)
 	std::string	k(key),v;
 	char	buf[32];
 
-	snprintf(buf,32,"%d",value);
+	std::snprintf(buf,32,"%d",value);
 	v=buf;
 	set(k,v,write_out);
 }
