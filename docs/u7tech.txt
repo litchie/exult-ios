@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.5 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.6 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -377,6 +377,9 @@ Content for Serpent Isle/Silver Seed
   $1B..$27  empty
 
 ENDSHAPE.FLX: flex file with various objects used in intro (Black Gate only)
+  The palettes from the FLEX file INTROPAL.DAT should be used - the palette
+  index is specified in brackets
+
   $0        Thorns on left
   $1        Thorns on right
   $2        Top left moongate
@@ -394,7 +397,7 @@ ENDSHAPE.FLX: flex file with various objects used in intro (Black Gate only)
   $E        Butterfly
   $F        "Ultima VII The Black Gate The Quest Begins Christmas 1991"
   $10       "The Quest Begins Christmas 1991"
-  $11       "Lord British presents..."
+  $11       "Lord British presents..." (3)
   $12       Trees
   $15       "Something is obviously amiss"
   $16       "It has been a long time since your last visit to Britannia"

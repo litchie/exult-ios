@@ -391,7 +391,7 @@ public:
 					// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj, int at_lift, int flat_only);
 	void set_palette(int pal_num);	// Set desired palette.
-	void set_palette(char *fname, int res);	// Set palette from Flex
+	void set_palette(char *fname, int res, int fade=0);	// Set palette from Flex
 	void brighten(int per);		// Brighten/darken by percentage.
 	void view_right();		// Move view 1 chunk to right.
 	void view_left();		// Move view left by 1 chunk.
@@ -477,5 +477,6 @@ public:
 	void play_flic(char *archive, int index);
 	void paint_splash();
 	void end_game();
+	int find_roof(int cx, int cy);
 	};
 
