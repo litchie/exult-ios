@@ -159,6 +159,11 @@ public:
 					// Get shape.
 	Shape_frame *get_shape(int shapenum, int framenum = 0)
 		{
+		assert(shapes!=0);	// Because if shapes is NULL
+					// here, we won't die on the dereference
+					// but we will return rubbish.
+		// I've put this assert in _before_ you know...
+		// So this isn't the first time we've had trouble here
 		Shape_frame *r=(shapes[shapenum].get(*shape_source, shapenum, framenum));
 		if(!r)
 			{
