@@ -28,6 +28,7 @@
 #include "game.h"
 #include "frameseq.h"
 #include "gamewin.h"
+#include "gameclk.h"
 #include "egg.h"
 #include "actors.h"
 #include "ucscriptop.h"

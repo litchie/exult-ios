@@ -24,6 +24,7 @@
 
 #include "combat.h"
 #include "gamewin.h"
+#include "gameclk.h"
 #include "gamemap.h"
 #include "actors.h"
 #include "paths.h"
@@ -843,7 +844,7 @@ void Combat_schedule::now_what
 				prev_schedule != combat)
 					// Return to normal schedule.
 			{
-			npc->update_schedule(gwin->get_hour()/3, 7);
+			npc->update_schedule(gclock->get_hour()/3, 7);
 #if 0	/* I think this isn't needed. */
 			else
 				npc->set_schedule_type(prev_schedule);

@@ -38,6 +38,7 @@
 #include "actors.h"
 #include "exult.h"
 #include "game.h"
+#include "gameclk.h"
 #include "gamewin.h"
 #include "listfiles.h"
 #include "mouse.h"
@@ -996,9 +997,9 @@ void Newfile_gump::LoadSaveGameDetails()
 	else cur_details->save_count = 0;
 
 	cur_details->party_size = ucmachine->get_party_count()+1;
-	cur_details->game_day = gwin->get_total_hours() / 24;;
-	cur_details->game_hour = gwin->get_hour();
-	cur_details->game_minute = gwin->get_minute();
+	cur_details->game_day = gclock->get_total_hours() / 24;;
+	cur_details->game_hour = gclock->get_hour();
+	cur_details->game_minute = gclock->get_minute();
 	
 	time_t t = std::time(0);
 	struct tm *timeinfo = std::localtime (&t);	

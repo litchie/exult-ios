@@ -43,6 +43,7 @@
 #include "exceptions.h"
 #include "fnames.h"
 #include "gamewin.h"
+#include "gameclk.h"
 #include "gamemap.h"
 #include "utils.h"
 #include "gump_utils.h"
@@ -446,9 +447,9 @@ void Game_window::write_saveinfo()
 	out.write2(timeinfo->tm_year + 1900);
 
 	// The Game Time that the save was done at
-	out.write1(clock.get_minute());
-	out.write1(clock.get_hour());
-	out.write2(clock.get_day());
+	out.write1(clock->get_minute());
+	out.write1(clock->get_hour());
+	out.write2(clock->get_day());
 
 	out.write2(save_count);
 	out.write1(party_size);

@@ -36,6 +36,7 @@ using std::snprintf;
 
 #include "gamewin.h"
 #include "gamerend.h"
+#include "gameclk.h"
 #include "gamemap.h"
 #include "actors.h"
 #include "chunks.h"
@@ -297,10 +298,10 @@ void Game_window::paint
 		for (int i = 0; !carried_light && i < cnt; i++)
 			carried_light = party[i]->has_light_source();
 					// Also check light spell.
-		if (special_light && clock.get_total_minutes() > special_light)
+		if (special_light && clock->get_total_minutes() >special_light)
 			special_light = 0;
 					// Set palette for lights.
-		clock.set_light_source(carried_light + (light_sources > 0));
+		clock->set_light_source(carried_light + (light_sources > 0));
 		}
 	}
 
