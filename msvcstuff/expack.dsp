@@ -203,6 +203,10 @@ BuildCmds= \
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
+SOURCE=..\files\crc.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\tools\expack.cc
 # End Source File
 # Begin Source File
@@ -242,6 +246,10 @@ SOURCE=..\files\utils.cc
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=..\files\crc.h
+# End Source File
 # Begin Source File
 
 SOURCE=..\files\databuf.h
