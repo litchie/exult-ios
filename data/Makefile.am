@@ -70,7 +70,17 @@ EXULT_SI_FLX_OBJECTS = \
 	si/SImap.shp			\
 	si/defaultkeys.txt
 
+ESTUDIO_NEW_FILES = \
+	estudio/new/combos.flx \
+	estudio/new/faces.vga \
+	estudio/new/gumps.vga \
+	estudio/new/palettes.flx \
+	estudio/new/shapes.vga \
+	estudio/new/sprites.vga \
+	estudio/new/text.flx
+
 flexdir = $(datadir)/exult
+estudionewdir = $(datadir)/exult/estudio/new
 
 if DATA_FILES
 EXULT_FLX = exult.flx
@@ -83,11 +93,12 @@ EXULT_SI_FLX =
 endif
 
 flex_DATA = $(EXULT_FLX) $(EXULT_BG_FLX) $(EXULT_SI_FLX) midisfx.flx
+estudionew_DATA = $(ESTUDIO_NEW_FILES)
 
 CLEANFILES = exult.flx exult_bg.flx exult_si.flx *~
 
 EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) $(EXULT_BG_FLX_OBJECTS) \
-	$(EXULT_SI_FLX_OBJECTS) midisfx.flx
+	$(EXULT_SI_FLX_OBJECTS) $(ESTUDIO_NEW_FILES) midisfx.flx
 
 exult.flx: $(EXULT_FLX_OBJECTS)
 	../tools/expack -i $(srcdir)/flx.in
