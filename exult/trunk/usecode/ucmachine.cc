@@ -475,6 +475,10 @@ void Usecode_machine::set_item_frame
 	int frame = frame_arg.get_int_value();
 	if (frame == item->get_framenum())
 		return;			// Already set to that.
+					// Check for empty frame.
+	Shape_frame *shape = gwin->get_shape(item->get_shapenum(), frame);
+	if (!shape || shape->is_empty())
+		return;
 	// cout << "Set_item_frame: " << item->get_shapenum() 
 	//				<< ", " << frame << endl;
 					// (Don't mess up rotated frames.)
