@@ -1,3 +1,8 @@
+2000-11-27  Tristan Tarrant <nadir@users.sourceforge.net>
+	* data/palette_fades.shp: new shape
+	* game.cc: allow user to enable/disable fades
+	* menulist.h: return index of entry in menu from add_entry
+
 2000-11-27  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* acconfig.h, configure.in: complete overhaul of configure.in
 	* exult.cc: included '--disable-sdl-parachute' configure option
