@@ -209,6 +209,9 @@ shp2pcx.exe : shp2pcx.o
 splitshp.exe : splitshp.o
 	$(CXX) $(LFLAGS) -o splitshp.exe splitshp.o -mconsole
 
+textpack.exe : textpack.o $(FILE_OBJS) 
+	$(CXX) $(LFLAGS) -o textpack.exe textpack.o $(FILE_OBJS) -mconsole
+
 ucdump.exe : ucdump.o
 	$(CXX) $(LFLAGS) -o ucdump.exe ucdump.o -mconsole
 
@@ -285,13 +288,14 @@ dist:   $(EXEC)
 	copy SDL\README-SDL.txt $(U7PATH)\Exult\README-SDL.txt
 	copy SDL\lib\SDL.dll $(U7PATH)\Exult\SDL.dll
 
-tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
+tools:  expack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
 toolsclean:
 	del mklink.o mklink.exe 
 	del rip.o rip.exe
 	del shp2pcx.o shp2pcx.exe
 	del splitshp.o splitshp.exe
+	del textpack.o textpack.exe
 	del ucdump.o ucdump.exe 
 	del wuc.o wuc.exe 
 	del wud.o wud.exe 
@@ -307,6 +311,7 @@ toolsinstall: tools
 	strip rip.exe -o $(U7PATH)\tools\rip.exe
 	strip shp2pcx.exe -o $(U7PATH)\tools\shp2pcx.exe
 	strip splitshp.exe -o $(U7PATH)\tools\splitshp.exe
+	strip textpack.exe -o $(U7PATH)\tools\textpack.exe
 	strip ucdump.exe -o $(U7PATH)\tools\ucdump.exe
 	strip wuc.exe -o $(U7PATH)\tools\wuc.exe
 	strip wud.exe -o $(U7PATH)\tools\wud.exe
@@ -328,6 +333,7 @@ toolsdist: tools
 	strip rip.exe -o $(TOOLSPATH)\tools\rip.exe
 	strip shp2pcx.exe -o $(TOOLSPATH)\tools\shp2pcx.exe
 	strip splitshp.exe -o $(TOOLSPATH)\tools\splitshp.exe
+	strip textpack.exe -o $(TOOLSPATH)\tools\textpack.exe
 	strip ucdump.exe -o $(TOOLSPATH)\tools\ucdump.exe
 	strip wuc.exe -o $(TOOLSPATH)\tools\wuc.exe
 	strip wud.exe -o $(TOOLSPATH)\tools\wud.exe
