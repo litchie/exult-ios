@@ -403,7 +403,32 @@ void ExultStudio::choose_static_path()
 	delete [] cwd;	// Prevent leakage
 }
 
-GtkCTreeNode *create_subtree( GtkCTree *ctree,
+/*
+ *	Add a node to a tree.
+ */
+static GtkCTreeNode *Create_tree_node
+	(
+	GtkCTree *ctree,
+	char *fname,			// Filename to add.
+	GtkCTreeNode *parent,		// Subtree this is to go under.
+	GtkCTreeNode *sibling,		// Sibling to go after.
+	gpointer data
+	)
+	{
+	char *text[1];
+	text[0] = fname;
+	GtkCTreeNode *newnd = gtk_ctree_insert_node(ctree, parent, sibling, 
+			text, 0,0,0,0,0, TRUE, FALSE );
+	gtk_ctree_node_set_row_data(ctree, newnd, data);
+	return newnd;
+	}
+
+/*
+ *	Add a subtree to a clist using files from the patch or static dirs.
+ *
+ *	Output:	Parent of subtree.
+ */
+GtkCTreeNode *Create_subtree( GtkCTree *ctree,
 			      GtkCTreeNode *previous,
 			      const char *name,
 			      const char *ext,  // Or whole filename.
@@ -438,16 +463,8 @@ GtkCTreeNode *create_subtree( GtkCTree *ctree,
 			if(!strcmp(fname,".")||!strcmp(fname,"..") ||
 				strcasecmp(fname + flen - extlen, ext) != 0)
 				continue;
-			text[0] = fname;
-			sibling = gtk_ctree_insert_node( ctree,
-							 parent,
-							 sibling,
-							 text,
-							 0,
-							 0,0,0,0,
-							 TRUE, FALSE );
-			gtk_ctree_node_set_row_data( ctree, sibling,data );
-		
+			sibling = Create_tree_node(ctree, fname, parent,
+							sibling, data);
 		}
 		closedir(dir);
 	}
@@ -466,16 +483,8 @@ GtkCTreeNode *create_subtree( GtkCTree *ctree,
 			fullpath += fname;
 			if (U7exists(fullpath))
 				continue;
-			text[0] = fname;
-			sibling = gtk_ctree_insert_node( ctree,
-							 parent,
-							 sibling,
-							 text,
-							 0,
-							 0,0,0,0,
-							 TRUE, FALSE );
-			gtk_ctree_node_set_row_data( ctree, sibling,data );
-		
+			sibling = Create_tree_node(ctree, fname, parent,
+							sibling, data);
 		}
 		closedir(dir);
 	}
@@ -524,22 +533,25 @@ void ExultStudio::set_static_path(const char *path)
 	
 	gtk_clist_freeze( GTK_CLIST( file_list ) );
 	
-	GtkCTreeNode *shapefiles = create_subtree( GTK_CTREE( file_list ),
+	GtkCTreeNode *shapefiles = Create_subtree( GTK_CTREE( file_list ),
 						   0,
 						   "Shape Files",
 						   ".vga",
 						   (gpointer)ShapeArchive );
-	GtkCTreeNode *chunkfiles = create_subtree( GTK_CTREE( file_list ),
+	GtkCTreeNode *chunkfiles = Create_subtree( GTK_CTREE( file_list ),
 						   0,
 						   "Map Files",
 						   "u7chunks",
 						   (gpointer)ChunkArchive );
-	GtkCTreeNode *palettefiles = create_subtree( GTK_CTREE( file_list ),
+	GtkCTreeNode *palettefiles = Create_subtree( GTK_CTREE( file_list ),
 						   shapefiles,
 						   "Palette Files",
 						   ".pal",
 						   (gpointer)PaletteFile );
-	GtkCTreeNode *flexfiles = create_subtree( GTK_CTREE( file_list ),
+					// Always include main palettes file.
+	Create_tree_node(GTK_CTREE(file_list), "palettes.flx", palettefiles, 0,
+						   (gpointer)PaletteFile );
+	GtkCTreeNode *flexfiles = Create_subtree( GTK_CTREE( file_list ),
 						   palettefiles,
 						   "FLEX Files",
 						   ".flx",
