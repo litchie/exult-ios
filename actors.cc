@@ -1737,6 +1737,8 @@ void Npc_actor::update_schedule
 		if (schedules[i].get_time() == hour3)
 			{		// Found entry.
 			stop();		// Stop moving.
+			if (schedule)	// End prev.
+				schedule->ending(schedules[i].get_type());
 					// Going to walk there.
 			schedule_type = Schedule::walk_to_schedule;
 			delete schedule;
