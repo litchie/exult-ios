@@ -1,3 +1,9 @@
+2002-07-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Fade palette back in at end of setup().
+	* usecode/ucinternal.cc:  Always call link_party(), even if new
+	game, and set party_count to 0.
+
 2002-07-03  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objnames.cc: implemented "x's ashes" name in SI
 	* font.cc: fixed word wrapping off-by-hlead
