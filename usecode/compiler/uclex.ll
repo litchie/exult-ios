@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <string>
+#include <vector>
 #include "ucparse.h"
 #include "ucloc.h"
 
@@ -40,19 +41,29 @@ return		return RETURN;
 while		return WHILE;
 for		return FOR;
 in		return IN;
-void		return VOID;
+var		return VAR;
 string		return STRING;
-int		return INT;
-array		return ARRAY;
 
 "&&"		return AND;
 "||"		return OR;
 "!"		return NOT;
 
-[a-zA-Z][a-zA-Z0-9_]*	return IDENTIFIER;	/* Return string. */
-\"[^"]*\"		return STRING_LITERAL;
-[0-9]+			return INT_LITERAL;
-0x[0-9a-f]+		return INT_LITERAL;
+[a-zA-Z][a-zA-Z0-9_]*	{
+			yylval.strval = strdup(yytext);
+			return IDENTIFIER;
+			}
+\"[^"]*\"		{
+			yylval.strval = strdup(yytext);
+			return STRING_LITERAL;
+			}
+[0-9]+			{
+			yylval.intval = atoi(yytext);
+			return INT_LITERAL;
+			}
+0x[0-9a-f]+		{
+			yylval.intval = strtol(yytext + 2, 0, 16);
+			return INT_LITERAL;
+			}
 
 [ \t]+						/* Ignore spaces. */
 "//".*						/* Comments. */
