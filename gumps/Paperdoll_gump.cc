@@ -1124,7 +1124,7 @@ bool Paperdoll_gump::check_shape
 	return true;
 }
 
-Game_object *Paperdoll_gump::find_actor(int mx, int my)
+Container_game_object *Paperdoll_gump::find_actor(int mx, int my)
 {
 	return container;
 }

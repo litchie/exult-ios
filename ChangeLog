@@ -1,3 +1,15 @@
+2001-01-03  Ryan Nunn <triforce@merlin.net.au>
+	* gamemap.*, usecode/useval.h,  objs/chunkter.cc: std namespace stuff.
+	  Note to Jeff, doing "class ifstream;" and using fstream.h was a
+	  really really really bad idea :-)
+
+	* drag.cc, gamewin.cc, gumps/Actor_gump.*, gumps/Face_stats.*,
+	  gumps/Gump.h, gumps/Paperdoll_gump.* : Fixing up dropping items on to
+	  faces problem, and potential problems.
+
+	* msvcstuff/Exult.dsp : Adding gamemap.*
+
+
 2002-01-03  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Cleaned up output so it's possible to pipe ucxt
 	straight to ucc.

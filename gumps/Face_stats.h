@@ -66,7 +66,7 @@ public:
 	virtual int add(Game_object *obj, int mx = -1, int my = -1,
 			int sx = -1, int sy = -1, bool dont_check = false);
 
-	virtual Game_object *find_actor(int mx, int my);
+	virtual Container_game_object *find_actor(int mx, int my);
 
 	static int get_state() {
 		return self ? mode : -1;

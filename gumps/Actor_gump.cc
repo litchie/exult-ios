@@ -278,7 +278,7 @@ void Actor_gump::paint
 	gwin->paint_text(2, text, x + 28 + (boxw - twidth)/2, y + 120);
 }
 
-Game_object * Actor_gump::find_actor(int mx, int my)
+Container_game_object * Actor_gump::find_actor(int mx, int my)
 {
 	return container;
 }
