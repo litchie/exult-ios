@@ -1,6 +1,9 @@
 2002-10-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/exult_studio.glade: East is a direction too :-)
 	* objs/egg.cc: use shape 200, frame 1-5 for new missile eggs
+	* mapedit/exult_studio.glade: removed tabs from two names
+	* mapedit/exult_studio.glade: made egg_window notebook unscrollable,
+	since the scrollable option is apparently broken in windows
 
 2002-10-10  Max Horn  <max@quendi.de>
 
