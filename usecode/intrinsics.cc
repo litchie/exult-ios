@@ -859,7 +859,9 @@ USECODE_INTRINSIC(click_on_item)
 	return (ret);
 }
 
-/*	Set item to be returned by next call to click_on_item().	*/
+/*	Set item to be returned by next call to click_on_item().
+ *	Added for Exult.
+ */
 USECODE_INTRINSIC(set_intercept_item)
 {
 	intercept_item = get_item(parms[0]);
@@ -2924,5 +2926,51 @@ USECODE_INTRINSIC(get_skin_colour)
 	// Gets skin colour of avatar. 0 (wh), 1 (br) or 2 (bl)
 	Main_actor *av = gwin->get_main_actor();
 	return Usecode_value(av->get_skin_color());
+}
+
+/*
+ *	This is like the C version, but only '%s' is supported, and all the
+ *	parms should be packed into one array.
+ *	Added for Exult.
+ */
+USECODE_INTRINSIC(printf)
+{
+	Usecode_value ret("");
+	const char *fmt = parms[0].get_elem0().get_str_value();
+	int count;
+	cout << endl;			// For now...
+	if (!fmt || (count = parms[0].get_array_size()) <= 1)
+		{
+		parms[0].print(cout);
+		return ret;
+		}
+	int i = 1;			// Parm. #.
+	while (*fmt)
+		{
+		const char *spec = strchr(fmt, '%');
+		if (!spec)
+			spec = fmt + strlen(fmt);
+		cout.write(fmt, spec - fmt);
+		if (*spec == '%')
+			{
+			if (spec[1] == 's')
+				{
+				Usecode_value p = i < count ? parms[0][i]
+							: Usecode_value(0);
+				if (p.get_type() == Usecode_value::int_type)
+					cout << p.get_int_value();
+				else
+					p.print(cout);
+				spec += 2;
+				}
+			else
+				{
+				cout << '%';
+				spec++;
+				}
+			}
+		fmt = spec;
+		}
+	return ret;
 }
 
