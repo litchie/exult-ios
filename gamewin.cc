@@ -106,16 +106,6 @@ Game_window::~Game_window
 	)
 	{
 	win->close_font(font12);
-
-#if !(defined(XWIN) || defined(DOS)) //avoid crash
-  DeleteObject(win->BMHan);
-  if (shapewin)
-    DeleteObject(shapewin->BMHan);
-  return;
-#endif
-		   //Crashes in Win95 somehow :-(
-		   //Only happens when CreateDIBSection() has been called.
-		   //crash after last instruction of ~image_window
 	delete win;
 	delete [] conv_choices;
 	}
@@ -249,7 +239,7 @@ void Game_window::get_rle_shape
 		short scany = Read2(in);
 		if (!encoded)		// Raw data?
 			{
-			iwin->copy8(in, scanlen, 1,
+			iwin->copy_line8(in, scanlen,
 					xoff + scanx, yoff + scany);
 			in += scanlen;
 			continue;
@@ -263,12 +253,12 @@ void Game_window::get_rle_shape
 			if (repeat)
 				{
 				unsigned char pix = *in++;
-				iwin->fill8(pix, bcnt, 1,
+				iwin->fill_line8(pix, bcnt,
 					xoff + scanx + b, yoff + scany);
 				}
 			else		// Get that # of bytes.
 				{
-				iwin->copy8(in, bcnt, 1,
+				iwin->copy_line8(in, bcnt,
 					xoff + scanx + b, yoff + scany);
 				in += bcnt;
 				}
