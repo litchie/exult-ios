@@ -863,7 +863,8 @@ void BG_Game::end_game(bool success)
 	{
 		// Speed related frame skipping detection
 		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
-		while (SDL_GetTicks() < next);
+		while (SDL_GetTicks() < next)
+			;
 		if (!skip_frame)
 		{
 			pal->set_brightness ((i - next) / 10);
@@ -949,7 +950,8 @@ void BG_Game::end_game(bool success)
 	{
 		// Speed related frame skipping detection
 		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
-		while (SDL_GetTicks() < next);
+		while (SDL_GetTicks() < next)
+			;
 		if (!skip_frame)
 		{
 			pal->set_brightness (100 - (i-next) / 10);
@@ -1011,7 +1013,8 @@ void BG_Game::end_game(bool success)
 	{
 		// Speed related frame skipping detection
 		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
-		while (SDL_GetTicks() < next);
+		while (SDL_GetTicks() < next)
+			;
 		if (!skip_frame)
 		{
 			pal->set_brightness ((i - next) / 10);
