@@ -1,3 +1,6 @@
+2000-12-03  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* objs/.cvsignore: added
+
 2000-12-03  Dancer Vesperman <dancer@users.sourceforge.net>
 	* Clean up audio-streams before terminating.
 	* Discovered a bug with termination of timidity. SIGPIPE is getting masked out. NOT FIXED YET. popen() looks like the wrong way to go.
