@@ -581,8 +581,6 @@ static void Handle_keystroke
 	
 	static int inventory_page = -1;
 	int stepping = 1;
-	int shift = modifier & KMOD_SHIFT;
-	int alt = modifier & KMOD_ALT;
 	
 	if(alt)
 		stepping = 10;	// If the user is pressing alt, use a
