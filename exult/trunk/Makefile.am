@@ -1,10 +1,10 @@
-INCLUDES = -I. -Iimagewin -Iconf -Ifiles -Iaudio -Ipathfinder \
+INCLUDES = -I. -Iimagewin -Iconf -Ifiles -Iaudio -Ipathfinder -Iusecode\
 	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
 	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\""$(datadir)/exult"\"
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
-SUBDIRS = audio pathfinder files conf flic tools data docs desktop imagewin
+SUBDIRS = audio pathfinder files conf flic tools data docs desktop imagewin usecode
 
 bin_PROGRAMS = exult
 
@@ -91,10 +91,6 @@ exult_SOURCES =	\
 	tqueue.h	\
 	txtscroll.cc	\
 	txtscroll.h	\
-	usecode.cc	\
-	usecode.h	\
-	useval.cc	\
-	useval.h	\
 	vec.h		\
 	vgafile.cc	\
 	vgafile.h	\
@@ -109,6 +105,7 @@ exult_LDADD = 			\
 	conf/libconf.la		\
 	files/libu7file.la	\
 	imagewin/libimagewin.la	\
+	usecode/libusecode.la	\
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS) $(x_libraries) $(ICON_FILE)
 
 exult_DEPENDENCIES = $(ICON_FILE)
