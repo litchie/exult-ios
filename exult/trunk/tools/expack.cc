@@ -32,6 +32,23 @@ using std::string;
 
 enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD, RESPONSE };
 
+bool is_text_file(const char *fname)
+{
+	int len = strlen(fname);
+
+	// only if the filename is greater than 4 chars
+	if (len > 4 && fname[len-4] == '.' &&
+		(fname[len-3] == 't' || fname[len-3] == 'T') &&
+		(fname[len-2] == 'x' || fname[len-2] == 'X') &&
+		(fname[len-1] == 't' || fname[len-1] == 'T'))
+	{
+		cout << fname << endl;
+		return true;
+	}
+
+	return false;
+}
+
 void set_mode(Arch_mode &mode, Arch_mode new_mode)
 {
 	if(mode!=NONE) {
@@ -43,7 +60,10 @@ void set_mode(Arch_mode &mode, Arch_mode new_mode)
 
 long get_file_size(const char *fname)
 {
-	FILE *fp = U7open (fname, "rb");
+	char *mode = "rb";
+	if (is_text_file(fname)) mode = "r";
+
+	FILE *fp = U7open (fname, mode);
 	if (!fp) {
 		cerr << "Could not open file " << fname << endl;
 		exit(1);
@@ -230,7 +250,7 @@ int main(int argc, char **argv)
 			for(int i=0; i<file_names.size(); i++) {
 				if(file_sizes[i]) {
 					ifstream infile;
-					U7open(infile, file_names[i].c_str());
+					U7open(infile, file_names[i].c_str(), is_text_file(file_names[i].c_str()));
 					StreamDataSource ifs(&infile);
 					char *buf = new char[file_sizes[i]];
 					ifs.read(buf, file_sizes[i]);

@@ -94,7 +94,9 @@ EXULT_FLX_OBJECTS = \
 	data/extras.shp \
 	data/midi_conversion.shp \
 	data/sfx_conversion.shp \
-	data/palette_fades.shp
+	data/palette_fades.shp \
+	data/defaultkeys.txt \
+	data/flx.in 
 
 $(EXEC) : $(OBJS) data/exult.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
@@ -114,6 +116,7 @@ clean:
 
 install: $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
+	mkdir -p $(U7PATH)/data
 	cp data/exult.flx  $(U7PATH)/data/exult.flx
 	cp data/midisfx.flx  $(U7PATH)/data/midisfx.flx
 
