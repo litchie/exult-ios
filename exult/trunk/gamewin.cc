@@ -282,7 +282,7 @@ Game_window::Game_window
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    background_noise(new Background_noise(this)),
 	    double_click_closes_gumps(false),
-	    walk_after_teleport(false), removed(new Deleted_objects()), 
+	    removed(new Deleted_objects()), 
 	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0)
 #ifdef RED_PLASMA
 	    ,load_palette_timer(0), plasma_start_color(0), plasma_cycle_range(0)
@@ -310,10 +310,6 @@ Game_window::Game_window
 	if (str == "yes")
 		double_click_closes_gumps = true;
 	config->set("config/gameplay/double_click_closes_gumps", str, true);
-	config->value("config/gameplay/walk_after_teleport", str, "no");
-	if (str == "yes")
-		walk_after_teleport = true;
-	config->set("config/gameplay/walk_after_teleport", str, true);
 	config->value("config/gameplay/combat/difficulty",
 							combat_difficulty, 0);
 	config->set("config/gameplay/combat/difficulty",
