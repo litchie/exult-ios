@@ -65,6 +65,13 @@ public:
 		return (i);
 		}
 	int find(void *v);		// Find an entry.
+	int remove(void *v)		// Remove an entry.
+		{
+		int i = find(v);
+		if (i >= 0)
+			values[i] = 0;
+		return i;
+		}
 	int put(void *v)		// Put in a free spot & return it.
 		{
 		int i = find(0);

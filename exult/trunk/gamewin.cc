@@ -2049,7 +2049,7 @@ void Game_window::double_clicked
 	else				// Search rest of world.
 		{
 		obj = find_object(x, y);
-	    	if (!Fast_pathfinder_client::is_grabable(
+	    	if (obj && !Fast_pathfinder_client::is_grabable(
 					main_actor->get_abs_tile_coord(),
 					obj->get_abs_tile_coord()))
 			{
@@ -2613,13 +2613,22 @@ void Game_window::setup_game
 				// This also sets up initial 
 				// schedules and positions.
 
-	if (usecode->read())	// Read the usecode flags
-	{
-		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-			main_actor->clear_flag(Actor::dont_render);
-		else
-			main_actor->set_flag(Actor::dont_render);
-	}
+	usecode->read();		// Read the usecode flags
+	string yn;			// Override from config. file.
+					// Skip intro. scene? Always if not BG
+	config->value("config/gameplay/skip_intro", yn, "no");
+	if ((yn == "yes") || (Game::get_game_type() != BLACK_GATE))
+		usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
+					// Have Trinsic password?
+	config->value("config/gameplay/have_trinsic_password", yn, "no");
+	if (yn == "yes")
+		usecode->set_global_flag(
+				Usecode_machine::have_trinsic_password, 1);
+					// Should Avatar be visible?
+	if (usecode->get_global_flag(Usecode_machine::did_first_scene))
+		main_actor->clear_flag(Actor::dont_render);
+	else
+		main_actor->set_flag(Actor::dont_render);
 
 	clock.set_palette();		// Set palette for time-of-day.
 	set_all_dirty();		// Force entire repaint.

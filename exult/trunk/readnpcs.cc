@@ -54,7 +54,6 @@ void Game_window::read_npcs
 		main_actor->clear_flag(Actor::dont_render);
 	else
 		main_actor->set_flag(Actor::dont_render);
-
 	int i;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
@@ -179,6 +178,7 @@ void Game_window::read_schedules
 	ifstream sfile;
 	u7open(sfile, SCHEDULE_DAT);
 	int num_npcs = Read4(sfile);	// # of NPC's, not include Avatar.
+
 	short *offsets = new short[num_npcs];
 	int i;				// Read offsets with list of scheds.
 	for (i = 0; i < num_npcs; i++)
@@ -188,9 +188,6 @@ void Game_window::read_schedules
 					// Avatar isn't included here.
 		Npc_actor *npc = (Npc_actor *) npcs[i + 1];
 		int cnt = offsets[i + 1] - offsets[i];
-#if 0
-		cout << "Schedule for " << npc->get_name() << ":"<<endl;
-#endif
 					// Read schedules into this array.
 		Schedule_change *schedules = new Schedule_change[cnt];
 		for (int j = 0; j < cnt; j++)
@@ -198,20 +195,9 @@ void Game_window::read_schedules
 			unsigned char ent[4];
 			sfile.read((char*)ent, 4);
 			schedules[j].set(ent);
-#if 0
-			cout << "    " << sched->get_type() << 
-				", time = " << sched->get_time() << endl;
-#endif
 			}
 					// Store in NPC.
 		npc->set_schedules(schedules, cnt);
-#if 0	/* ++++++++ Now done in gameclk.cc. */
-		// Start their initial schedule
-		npc->update_schedule(this,2);
-		// Set their starting location
-		npc->move(npc->initial_location.cx, npc->initial_location.cy, npc->initial_location.chunk,
-				npc->initial_location.sx, npc->initial_location.sy, npc->initial_location.frame, npc->initial_location.lift);
-#endif
 		}
 	delete [] offsets;		// Done with this.
 	}

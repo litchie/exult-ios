@@ -64,42 +64,9 @@ static int Has_quantity
 	int shnum			// Shape number.
 	)
 	{
-#if 1
 	Game_window *gwin = Game_window::get_game_window();
 	Shape_info& info = gwin->get_info(shnum);
 	return info.get_shape_class() == Shape_info::has_quantity;
-#else
-	switch (shnum)
-		{
-	case 417:			// Magic bolts.
-	case 554:			// Various arrows.
-	case 556:
-	case 558:
-	case 560:
-	case 565:
-	case 568:
-	case 592:			// Spears, axes, daggers.
-	case 593:
-	case 594:
-	case 615:			// Knives.
-	case 623:			// Hammers.
-	case 627:			// Lockpicks.
-	case 636:			// Serp. dagger.
-	case 644:			// Gold.
-	case 645:
-	case 656:
-	case 722:			// Arrows.
-	case 723:
-	case 769:			// Smokebombs.
-	case 827:			// Bandages.
-	case 842:			// Reagants.
-	case 947:
-	case 948:
-		return 1;
-	default:
-		return 0;
-		}
-#endif
 	}
 
 const int MAX_QUANTITY = 0x7f;		// Highest quantity possible.
@@ -227,9 +194,27 @@ void Game_object::clear_dependencies
 	(
 	)
 	{
-	int cnt = get_dependency_count();
-	for (int i = 0; i < cnt; i++)
-		dependencies.put(i, 0);
+	int cnt = dependencies.get_cnt();// First do those we depend on.
+	int i;
+	for (i = 0; i < cnt; i++)
+		{
+		Game_object *dep = (Game_object *) dependencies.get(i);
+		if (dep)
+			{
+			dependencies.put(i, 0);
+			dep->dependors.remove(this);
+			}
+		}
+	cnt = dependors.get_cnt();	// Now those who depend on this.
+	for (i = 0; i < cnt; i++)
+		{
+		Game_object *dep = (Game_object *) dependors.get(i);
+		if (dep)
+			{
+			dependors.put(i, 0);
+			dep->dependencies.remove(this);
+			}
+		}
 	}
 
 /*
@@ -2314,27 +2299,25 @@ Chunk_object_list::~Chunk_object_list
 
 void Chunk_object_list::add_dependencies
 	(
-#if 1	/* This will be the new way: */
 	Game_object *newobj,		// Object to add.
 	Ordering_info& newinfo		// Info. for new object's ordering.
-#else
-	Game_object *newobj		// Object to add.
-#endif
 	)
 	{
 	Game_object *obj;		// Figure dependencies.
 	Object_iterator next(objects);
 	while ((obj = next.get_next()) != 0)
 		{
-#if 1
 		int cmp = Game_object::lt(newinfo, obj);
-#else
-		int cmp = newobj->lt(*obj);
-#endif
 		if (!cmp)		// Bigger than this object?
+			{
 			newobj->dependencies.put(obj);
+			obj->dependors.put(newobj);
+			}
 		else if (cmp == 1)	// Smaller than?
+			{
 			obj->dependencies.put(newobj);
+			newobj->dependors.put(obj);
+			}
 		}
 	}
 
@@ -2351,25 +2334,35 @@ void Chunk_object_list::add
 	{
 	newobj->cx = get_cx();		// Set object's chunk.
 	newobj->cy = get_cy();
+	Game_window *gwin = Game_window::get_game_window();
+	Ordering_info ord(gwin, newobj);// Figure dependencies.
+//	if (ord.xs == 1 && ord.ys == 1)	// Simplest case?
+		add_dependencies(newobj, ord);
+#if 0	/* Not working very well: */
+	else
+		{
+		Rectangle footprint(ord.tx - ord.xs + 1, ord.ty - ord.ys + 1, 
+							ord.xs, ord.ys);
+					// Go through interesected chunks.
+		Chunk_intersect_iterator next_chunk(footprint);
+		Rectangle tiles;	// (Ignored).
+		int eachcx, eachcy;
+		while (next_chunk.get_next(tiles, eachcx, eachcy))
+			if (eachcx <= cx && eachcy <= cy)
+				gwin->get_objects(eachcx, eachcy)->
+						add_dependencies(newobj, ord);
+		}
+#endif
 					// Just put in front.
 	objects = newobj->insert_in_chain(objects);
-#if 1	/* This will be the new way: */
-	Game_window *gwin = Game_window::get_game_window();
-	Ordering_info ord(gwin, newobj);
-	add_dependencies(newobj, ord);	// Figure dependencies.
-#else
-	add_dependencies(newobj);	// Figure dependencies.
-#endif
+			// +++++Maybe should skip test, do update_object(...).
 	if (cache)			// Add to cache.
 		cache->update_object(this, newobj, 1);
-	Shape_info& info = Game_window::get_game_window()->get_info(newobj);
-	if (info.is_light_source())	// Count light sources.
+	if (ord.info.is_light_source())	// Count light sources.
 		light_sources++;
 	if (newobj->get_lift() >= 5)	// Looks like a roof?
 		{
-#if 1 /* Not sure yet. */
-		if (info.get_shape_class() == Shape_info::building)
-#endif
+		if (ord.info.get_shape_class() == Shape_info::building)
 			roof = 1;
 		}
 	}
@@ -2419,11 +2412,6 @@ void Chunk_object_list::remove
 	Shape_info& info = Game_window::get_game_window()->get_info(remove);
 	if (info.is_light_source())	// Count light sources.
 		light_sources--;
-	Game_object *obj;
-	Object_iterator next(objects);
-	while ((obj = next.get_next()) != 0)
-		obj->remove_dependency(remove);
-
 	if (remove == objects)		// First one?
 		{
 		objects = remove->get_next();

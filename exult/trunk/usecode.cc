@@ -3737,7 +3737,7 @@ int Usecode_machine::read
 	in.read((char*)gflags, sizeof(gflags));
 	in.close();
 	if (!U7open(in, USEDAT))
-		return (0);
+		return (1);		// Not an error if no saved game yet.
 	party_count = Read2(in);	// Read party.
 	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		party[i] = Read2(in);
