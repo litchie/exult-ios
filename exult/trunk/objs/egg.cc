@@ -88,11 +88,11 @@ void Missile_launcher::handle_event
 	if (dir < 8)			// Direction given?
 		{			// Get adjacent tile in direction.
 		Tile_coord adj = src.get_neighbor(dir%8);
-					// Make it go 12 tiles.
+					// Make it go 20 tiles.
 		int dx = adj.tx - src.tx, dy = adj.ty - src.ty;
 		Tile_coord dest = src;
-		dest.tx += 12*dx;
-		dest.ty += 12*dy;
+		dest.tx += 20*dx;
+		dest.ty += 20*dy;
 		proj = new Projectile_effect(src, dest, shapenum, weapon);
 		}
 	else				// Target a party member.
@@ -642,7 +642,7 @@ void Egg_object::activate
 				proj = 856;// Fireball.  Shouldn't get here.
 			if (!launcher)
 				launcher = new Missile_launcher(this, weapon,
-						proj, dir, 1000*delay);
+						proj, dir, c_std_delay*delay);
 			if (!launcher->in_queue())
 				gwin->get_tqueue()->add(0L, launcher, 0);
 			break;
