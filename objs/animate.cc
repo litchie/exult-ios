@@ -271,9 +271,20 @@ void Frame_animator::handle_event
 		}
 	int framenum;
 	if (ireg)			// For IREG, increment frames.
-					// Sundial is a special case.
-		framenum = obj->get_shapenum() == 284 ? gwin->get_hour()
-				: obj->get_framenum() + 1;
+		switch (obj->get_shapenum())
+			{
+		case 284:		// Sundial is a special case.
+			framenum = gwin->get_hour(); 
+			break;
+		case 695:		// Grandfather clock.
+			framenum = obj->get_framenum();
+					// 0-5 face one way, 6-11 the other.
+			framenum = (framenum + 1)%6 + 6*(framenum/6);
+			break;
+		default:
+			framenum = obj->get_framenum() + 1;
+			break;
+			}
 	else				// Want fixed shapes synchronized.
 					// Testing -WJP
 		framenum = (curtime / 100);

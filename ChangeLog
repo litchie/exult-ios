@@ -1,3 +1,8 @@
+2001-03-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* SI - Companions wait while you take the Test.  Grandfather clock
+	animation fixed.  Books work.
+
 2001-03-22  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/credits.txt: added Aurelien Marchand (Artaxerxes)
 	* data/bg/: added subdir. with bg shapes
@@ -14,6 +19,7 @@
 2001-03-21  Ryan Nunn <triforce@merlin.net.au>
 	* usecode/siintrinsics.h: Changed 0x44, 0x45, 0x46 to 0x45, 0x46, 0x47
 
+>>>>>>> 1.558
 2001-03-21  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SI - Fixing bugs (and not necessarily successfully).

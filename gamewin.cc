@@ -456,7 +456,8 @@ void Game_window::toggle_combat
 		if (!person)
 			continue;
 		int sched = person->get_schedule_type();
-		if (sched != newsched && sched != Schedule::wait)
+		if (sched != newsched && sched != Schedule::wait &&
+		    sched != Schedule::loiter)
 			person->set_schedule_type(newsched);
 		}
 	if (main_actor->get_schedule_type() != newsched)
