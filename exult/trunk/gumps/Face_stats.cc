@@ -365,7 +365,7 @@ void Face_stats::create_buttons(Game_window *gwin)
 
 	resx = gwin->get_width();
 	resy = gwin->get_height();
-	x = resx /2 - 160;
+	x = 0;
 	y = resy;
 
 	Usecode_machine *uc = gwin->get_usecode();

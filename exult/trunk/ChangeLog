@@ -1,4 +1,7 @@
 2001-07-30 Ryan Nunn <triforce@merlin.net.au>
+	* gumps/Face_stats.cc: Fixed nasty bug with higher resolutions
+
+2001-07-30 Ryan Nunn <triforce@merlin.net.au>
 	* gumps/Spellbook_gump.cc: Fixed incorrect drawing of spells.
 
 2001-07-30 Willem Jan Palenstijn <palenstijn@wanadoo.nl>
