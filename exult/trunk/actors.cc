@@ -1468,16 +1468,16 @@ int Main_actor::step
 					// Move it.
 	Actor::movef(olist, nlist, tx, ty, frame, new_lift);
 	gwin->add_dirty(this);		// Set to update new.
-					// Near an egg?
-	nlist->activate_eggs(this, t.tx, t.ty, new_lift, 
-						oldtile.tx, oldtile.ty);
 					// In a new chunk?
 	if (olist != nlist)
 		switched_chunks(olist, nlist);
 
 	if (gwin->set_above_main_actor (nlist->is_roof (tx, ty, new_lift)))
 		gwin->set_all_dirty();
-
+					// Near an egg?  (Do this last, since
+					//   it may teleport.)
+	nlist->activate_eggs(this, t.tx, t.ty, new_lift, 
+						oldtile.tx, oldtile.ty);
 	return (1);
 	}
 

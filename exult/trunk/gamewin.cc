@@ -74,7 +74,8 @@ Game_window::Game_window
             tqueue(new Time_queue()), clock(tqueue),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
-	    conv_choices(0), render_seq(0), painted(0), focus(1), shapes(),
+	    conv_choices(0), render_seq(0), painted(0), focus(1), 
+	    teleported(0), shapes(),
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA),
 	    sprites(SPRITES_VGA), mainshp(MAINSHP_FLX),
 	    moving_barge(0), main_actor(0), skip_above_actor(31), npcs(0),
@@ -1616,6 +1617,7 @@ void Game_window::start_actor
 	int speed			// Msecs. between frames.
 	)
 	{
+	teleported = 0;
 	int lift = main_actor->get_lift();
 	int liftpixels = 4*lift;	// Figure abs. tile.
 	int tx = get_scrolltx() + (winx + liftpixels)/tilesize,
@@ -1671,6 +1673,7 @@ void Game_window::teleport_party
 	Tile_coord t			// Where to go.
 	)
 	{
+	main_actor->set_action(0);	// I think this is right.
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
 	paint();			// Show first.
 	show();
@@ -1681,6 +1684,7 @@ void Game_window::teleport_party
 		Actor *person = get_npc(party_member);
 		if (person)
 			{
+			person->set_action(0);
 			Tile_coord t1(-1, -1, -1);
 			for (int dist = 1; dist < 8 && t1.tx == -1; dist++)
 				t1 = main_actor->find_unblocked_tile(dist, 3);
@@ -1689,6 +1693,41 @@ void Game_window::teleport_party
 			}
 		}
 	center_view(t);			// Bring pos. into view.
+	main_actor->get_followers();
+	teleported = 1;
+	}
+
+/*
+ *	Find a given shaped item amongst the party, and 'activate' it.  This
+ *	is used, for example, by the 'f' command to feed.
+ */
+
+void Game_window::activate_item
+	(
+	int shnum			// Desired shape.
+	)
+	{
+					// First check Avatar.
+	Game_object *obj = main_actor->find_item(shnum, -359, -359);
+	if (obj)
+		{
+		obj->activate(usecode);
+		return;
+		}
+	int cnt = usecode->get_party_count();
+	for (int i = 0; i < cnt; i++)
+		{
+		int party_member=usecode->get_party_member(i);
+		Actor *person = get_npc(party_member);
+		if (person)
+			{
+			if ((obj = person->find_item(shnum, -359, -359)) != 0)
+				{
+				obj->activate(usecode);
+				return;
+				}
+			}
+		}
 	}
 
 /*
@@ -1885,7 +1924,7 @@ void Game_window::show_items
 			return;
 		}
 	Shape_info& info = shapes.get_info(shnum);
-#if 1
+#if 0
 	cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << endl;
 	cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << endl;
 	cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << endl;
@@ -1900,6 +1939,8 @@ void Game_window::show_items
 		cout << "Object is LIGHT_SOURCE" << endl;
 	if (info.is_door())
 		cout << "Object is a DOOR" << endl;
+	if (info.is_solid())
+		cout << "Object is SOLID" << endl;
 #endif
 	}
 

@@ -336,8 +336,7 @@ public:
 	virtual int remove_quantity(int delta, int shapenum, int qual,
 								int framenum)
 		{ return delta; }
-	virtual Game_object *remove_and_return(int shapenum, int qual,
-								int framenum)
+	virtual Game_object *find_item(int shapenum, int qual, int framenum)
 		{ return 0; }
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
@@ -518,8 +517,7 @@ public:
 							int framenum);
 	virtual int remove_quantity(int delta, int shapenum, int qual,
 								int framenum);
-	virtual Game_object *remove_and_return(int shapenum, int qual,
-								int framenum);
+	virtual Game_object *find_item(int shapenum, int qual, int framenum);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 					// Drop another onto this.

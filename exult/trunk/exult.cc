@@ -472,10 +472,13 @@ static void Handle_events
 				last_repaint = ticks;
 				rotate = 1;
 				int x, y;// Check for 'stuck' Avatar.
-//				if (!gwin->is_moving())
+				if (!gwin->is_moving() &&
+				    !gwin->was_teleported())
+#if 0	/* Seems to work fine as above. */
 				if ((gwin->get_moving_barge() && 
 					!gwin->is_moving()) || 
 						!gwin->get_moving_barge())
+#endif
 					{
 					int ms = SDL_GetMouseState(&x, &y);
 					if ((SDL_BUTTON(3) & ms) &&
@@ -637,7 +640,9 @@ static void Handle_event
 			dragged = 1;
 			}
 					// Dragging with right?
-		if (event.motion.state & SDL_BUTTON(3))
+		if ((event.motion.state & SDL_BUTTON(3)) &&
+					// But not right after teleport.
+		    !gwin->was_teleported())
 			gwin->start_actor(event.motion.x >> scale, 
 					event.motion.y >> scale, avatar_speed);
 		break;
@@ -763,7 +768,8 @@ static void Handle_keystroke
 			current_res++;
 			if(current_res>=num_res)
 				current_res = 0;
-			gwin->resized(res_list[current_res].x,res_list[current_res].y,
+			gwin->resized(res_list[current_res].x,
+					res_list[current_res].y,
 					res_list[current_res].scale);
 		} else
 			gwin->brighten(20);
@@ -774,7 +780,8 @@ static void Handle_keystroke
 			current_res--;
 			if(current_res<0)
 				current_res = num_res-1;
-			gwin->resized(res_list[current_res].x,res_list[current_res].y,
+			gwin->resized(res_list[current_res].x,
+					res_list[current_res].y,
 					res_list[current_res].scale);
 		} else
 			gwin->brighten(-20);
@@ -784,8 +791,11 @@ static void Handle_keystroke
 			browser->browse_shapes();
 			gwin->paint();
 			gwin->set_palette(-1,-1);
-		} else	
-			Breakpoint();
+		} else			// Open spellbook.
+			gwin->activate_item(761);
+		break;
+	case SDLK_f:			// Feed food.
+		gwin->activate_item(377);	// +++++Black gate.
 		break;
 	case SDLK_i:
 		{
@@ -912,13 +922,14 @@ static void Handle_keystroke
 			gwin->get_main_actor()->add_quantity(100, 644);
 			gwin->center_text("Added 100 gold coins");
 			break;
-		} else {
+		} else if (alt) {
 			static int mnum = 0;
 			if (shift && mnum > 0)
 				audio->start_music(--mnum, 0);
 			else
 				audio->start_music(mnum++, 0);
-		}
+		} else			// Show map.
+			gwin->activate_item(178);	//++++Black gate.
 		break;
 	case SDLK_l:			// Decrement skip_lift.
 		if(!cheat)
@@ -1055,6 +1066,8 @@ static void Handle_keystroke
 						new Lightning_effect(2));
 			wcnt = (wcnt + 1)%wmax;
 			}
+		else			// Activate watch.
+			gwin->activate_item(159);	// ++++Blackgate.
 		break;
 	case SDLK_x:			// Alt-x means quit.
 		if (alt)
