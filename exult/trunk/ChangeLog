@@ -1,3 +1,6 @@
+2001-10-23  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: limit 'adding to actor container' warnings to party
+
 2001-10-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* game.h: added 'GAME_SI' and 'GAME_BG' macros for checking gametype
 	* intrinsics.cc: update_last_created returns obj* in SI
