@@ -244,7 +244,7 @@ public:
 	int get_face_shapenum() const	// Get "portrait" shape #.
 		{ return face_num; }	// It's the NPC's #.
 	int get_usecode() const
-		{ return usecode; }
+		{ return usecode == -1 ? get_shapenum() : usecode; }
 	Schedule *get_schedule() const
 		{ return schedule; }
 	int get_frame_time() const	// Return frame time if moving.

@@ -1,3 +1,6 @@
+2001-08-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* npcnear.cc, actors.h: fixed problem with lenses to view Banes
+
 2001-08-22  Max Horn <max@quendi.de>
 	* audio/midi_drivers/mac_midi.*: changed copyright back to "Max Horn"
 	  with consent of the team. This was done so that the code can be used
