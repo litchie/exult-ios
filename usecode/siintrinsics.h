@@ -274,7 +274,7 @@
 	USECODE_INTRINSIC_PTR(add_to_keyring),		// 0xc3
 	USECODE_INTRINSIC_PTR(remove_from_area),		// 0xc4
 	USECODE_INTRINSIC_PTR(infravision),			// 0xc5
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xc6
+	USECODE_INTRINSIC_PTR(set_intercept_item),		// 0xc6 (Exult)
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xc7
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xc8
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xc9

@@ -859,6 +859,13 @@ USECODE_INTRINSIC(click_on_item)
 	return (ret);
 }
 
+/*	Set item to be returned by next call to click_on_item().	*/
+USECODE_INTRINSIC(set_intercept_item)
+{
+	intercept_item = get_item(parms[0]);
+	return no_ret;
+}
+
 USECODE_INTRINSIC(find_nearby)
 {
 	// Think it rets. objs. near parm0.
