@@ -45,7 +45,7 @@ bool Load_texture
 		if (pixels[4*i + 3] != 255)
 			cout << "Alpha detected" << endl;
 #endif
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, pixels);
 	delete pixels;
 #if 0
@@ -130,8 +130,9 @@ void InitGL
 	glEnable(GL_DEPTH_TEST);	// Enable depth-testing.
 	glDepthFunc(GL_LEQUAL);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	// ??
+#if 1
 					// Ambient light.
-	static GLfloat ambient[] = {.4, .4, .4, 1.0};
+	static GLfloat ambient[] = {.5, .5, .5, 1.0};
 	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
 					// A diffuse light source.
 	static GLfloat diffuse[] = {1, 1, 1, 1.0};
@@ -140,9 +141,40 @@ void InitGL
 	glLightfv(GL_LIGHT1, GL_POSITION, diffuse_pos);
 	glEnable(GL_LIGHT1);
 	glEnable(GL_LIGHTING);		// Enable lighting.
-//	glEnable(GL_NORMALIZE);		// Compute automatic normals.  May be
-					//   CPU-intensive.
+#endif
 	}
+
+/*
+ *	Just draw the texture as a 'sprite'.
+ */
+void Draw_sprite
+	(
+	float x, float y, float z,	// Where to draw.
+	float w, float h,		// Dimensions of rectangle to draw.
+	GLuint texture			// Texture to use.
+	)
+	{
+	glPushMatrix();
+	glTranslatef(x, y, z);
+	glEnable(GL_BLEND);		// !These two calls do the trick.
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+					// Choose texture.
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glBegin(GL_QUADS);
+		{
+		glTexCoord2f(0, 0);		glVertex3f(0, 0, 0);
+		glTexCoord2f(0, 1);		glVertex3f(0, 0, h);
+		glTexCoord2f(1, 1);		glVertex3f(w, 0, h);
+		glTexCoord2f(1, 0);		glVertex3f(w, 0, 0);
+		}
+	glEnd();
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
+	}
+
 
 /*
  *	Draw a block.
@@ -156,7 +188,9 @@ void Draw_block
 	{
 	glPushMatrix();
 	glTranslatef(x, y, z);
+	glDisable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);	// Enable texture-mapping.
+	glEnable(GL_LIGHTING);
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 					// Choose texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -234,12 +268,16 @@ void Render
 			}
 		}
 	glEnd();
+#if 1
 	Draw_block(-8, 8, 0, 1, 1, 4, texture);	// Draw a block 4 units high.
 					// Draw a wall:
 	Draw_block(0, 0, 0, 8, 1, 5, texture);	// Horizontals.
 	Draw_block(0, 5, 0, 8, 1, 5, texture);
 	Draw_block(0, 1, 0, 1, 4, 5, texture);	// Verticals.
 	Draw_block(7, 1, 0, 1, 4, 5, texture);
+#endif
+	Draw_sprite(-6, 0, 0, 4, 4, texture);	// A 'sprite'.
+	Draw_sprite(-5, 0, 0, 4, 4, texture);	// A 'sprite'.
 	SDL_GL_SwapBuffers();		// Blit.
 	}
 
