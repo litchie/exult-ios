@@ -504,7 +504,7 @@ void Chunk_cache::activate_eggs
 Map_chunk::Map_chunk
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
-	) : objects(0), terrain(0), first_nonflat(0), dungeon_bits(0),
+	) : objects(0), terrain(0), first_nonflat(0), dungeon_levels(0),
 	    npcs(0), cache(0), roof(0), light_sources(0),
 	    cx(chunkx), cy(chunky), from_below(0), from_right(0),
 	    from_below_right(0)
@@ -520,7 +520,7 @@ Map_chunk::~Map_chunk
 	)
 	{
 	delete cache;
-	delete [] dungeon_bits;
+	delete [] dungeon_levels;
 	}
 
 /*
@@ -1040,67 +1040,72 @@ void Map_chunk::try_all_eggs
 	}
 
 /*
- *	Add a rectangle of dungeon tiles.
+ *	Add a rectangle of dungeon tiles (but only if higher!).
  */
 
-void Map_chunk::add_dungeon_bits
+void Map_chunk::add_dungeon_levels
 	(
-	Rectangle& tiles
+	Rectangle& tiles, unsigned int lift
 	)
-	{
-	if (!dungeon_bits)
-		{			// First one found.
-		dungeon_bits = new unsigned char[256/8];
-		memset(dungeon_bits, 0, 256/8);
-		}
+{
+	if (!dungeon_levels)
+	{			// First one found.
+		dungeon_levels = new unsigned char[256/2];
+		memset(dungeon_levels, 0, 256/2);
+	}
 	int endy = tiles.y + tiles.h, endx = tiles.x + tiles.w;
 	for (int ty = tiles.y; ty < endy; ty++)
+	{
 		for (int tx = tiles.x; tx < endx; tx++)
+		{
+			int tnum = (ty*c_tiles_per_chunk + tx)/2;
+
+			if (tx % 2)
 			{
-			int tnum = ty*c_tiles_per_chunk + tx;
-			dungeon_bits[tnum/8] |= (1 << (tnum%8));
+				dungeon_levels[tnum] &= 0x0F;
+				dungeon_levels[tnum] |= lift << 4;
 			}
+			else
+			{
+				dungeon_levels[tnum] &= 0xF0;
+				dungeon_levels[tnum] |= lift;
+			}
+		}
 	}
+}
 
 /*
- *	Set up the dungeon flags (after IFIX objects read).
+ *	Set up the dungeon levels (after IFIX objects read).
  */
 
-void Map_chunk::setup_dungeon_bits
+void Map_chunk::setup_dungeon_levels
 	(
 	)
-	{
+{
 	Game_window *gwin = Game_window::get_game_window();
 
 	Object_iterator next(objects);
 	Game_object *each;
 	while ((each = next.get_next()) != 0)
-		{
+	{
 		int shnum = each->get_shapenum();
 					// Test for mountain-tops.
 		if (shnum == 983 || shnum == 969 || shnum == 183 ||
-		    shnum == 182 || shnum == 180 || shnum == 324 || 
-		    (Game::get_game_type() == SERPENT_ISLE &&
-		     (shnum == 394 || shnum == 941)))
-			{
+				shnum == 182 || shnum == 180 || shnum == 324 || 
+				(shnum == 941 && Game::get_game_type() == SERPENT_ISLE))
+		{
 			Rectangle area = each->get_footprint();
-					// Try to fix Courage Test:
-			if (shnum == 969 && each->get_framenum() == 12)
-				{
-				area.enlarge(1);
-				Rectangle wrld(0, 0, c_num_tiles, c_num_tiles);
-				area = area.intersect(wrld);
-				}
+
 					// Go through interesected chunks.
 			Chunk_intersect_iterator next_chunk(area);
 			Rectangle tiles;// Rel. tiles.
 			int cx, cy;
 			while (next_chunk.get_next(tiles, cx, cy))
-				gwin->get_chunk(cx, cy)->add_dungeon_bits(
-								tiles);
-			}
+				gwin->get_chunk(cx, cy)->add_dungeon_levels(
+								tiles, each->get_lift());
 		}
 	}
+}
 
 /*
  *	Recursively apply gravity over a given rectangle that is known to be
@@ -1177,11 +1182,3 @@ int Map_chunk::is_roof(int tx, int ty, int lift)
 	return height;
 }
 
-
-/*
- *  Is object within dungeon?
- */
-int Map_chunk::in_dungeon(Game_object *obj) // Is object within dungeon?
-{
-	return in_dungeon(obj->get_tx(), obj->get_ty());
-}

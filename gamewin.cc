@@ -174,7 +174,7 @@ Game_window::Game_window
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), gump_man(new Gump_manager),
 	    render_seq(0), painted(false), focus(true), 
-	    teleported(false), in_dungeon(false), fonts(0),
+	    teleported(false), in_dungeon(0), fonts(0),
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0),
 	    monster_info(0), chunk_terrains(0), num_chunk_terrains(0),
@@ -697,7 +697,7 @@ void Game_window::set_scrolls
 	int tx = camera_actor->get_tx(), ty = camera_actor->get_ty();
 	set_above_main_actor(nlist->is_roof (tx, ty,
 						camera_actor->get_lift()));
-	set_in_dungeon(nlist->has_dungeon() && nlist->in_dungeon(tx, ty));
+	set_in_dungeon(nlist->has_dungeon()?nlist->is_dungeon(tx, ty):0);
 	}
 
 /*
@@ -1033,7 +1033,7 @@ void Game_window::get_ifix_chunk_objects
 		olist->add(obj);
 		}
 	delete[] entries;		// Done with buffer.
-	olist->setup_dungeon_bits();	// Should have all dungeon pieces now.
+	olist->setup_dungeon_levels();	// Should have all dungeon pieces now.
 	}
 
 /*

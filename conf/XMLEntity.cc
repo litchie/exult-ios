@@ -54,7 +54,7 @@ const string	&XMLnode::reference(const string &h,bool &exists)
 		string k;
 		k=h.substr(h.find('/')+1);
 		string k2=k.substr(0,k.find('/'));
-		for(vector<XMLnode*>::iterator it=nodelist.begin();
+		for(std::vector<XMLnode*>::iterator it=nodelist.begin();
 			it!=nodelist.end();++it)
 		{
 			if((*it)->id==k2)
@@ -84,7 +84,7 @@ XMLnode *XMLnode::subtree(const string &h)
 		string k;
 		k=h.substr(h.find('/')+1);
 		string k2=k.substr(0,k.find('/'));
-		for(vector<XMLnode*>::iterator it=nodelist.begin();
+		for(std::vector<XMLnode*>::iterator it=nodelist.begin();
 			it!=nodelist.end();++it)
 		{
 			if((*it)->id==k2)
@@ -105,7 +105,7 @@ string	XMLnode::dump(int depth)
 	s+=">\n";
 	if(id[id.length()-1]!='/')
 	{
-		for(vector<XMLnode*>::const_iterator it=nodelist.begin();
+		for(std::vector<XMLnode*>::const_iterator it=nodelist.begin();
 			it!=nodelist.end();
 			++it)
 		{
@@ -149,7 +149,7 @@ void	XMLnode::xmlassign(string &key,string &value)
 	string k;
 	k=key.substr(key.find('/')+1);
 	string k2=k.substr(0,k.find('/'));
-	for(vector<XMLnode*>::iterator it=nodelist.begin();it!=nodelist.end();++it)
+	for(std::vector<XMLnode*>::iterator it=nodelist.begin();it!=nodelist.end();++it)
 	{
 		if((*it)->id==k2)
 		{
@@ -170,7 +170,7 @@ void	XMLnode::listkeys(const string &key,vector<string> &vs, bool longformat)
 	string s(key);
 	s+="/";
 
-	for(vector<XMLnode*>::const_iterator it=nodelist.begin();
+	for(std::vector<XMLnode*>::const_iterator it=nodelist.begin();
 		it!=nodelist.end(); ++it)
 	{
 		if(!longformat)

@@ -369,6 +369,10 @@ SOURCE=..\audio\Audio.cc
 # End Source File
 # Begin Source File
 
+SOURCE=..\audio\conv.cc
+# End Source File
+# Begin Source File
+
 SOURCE=..\audio\Makefile.am
 # End Source File
 # Begin Source File
@@ -417,15 +421,7 @@ SOURCE=..\conf\README
 # End Source File
 # Begin Source File
 
-SOURCE=..\conf\xmldump.cc
-# End Source File
-# Begin Source File
-
 SOURCE=..\conf\XMLEntity.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\conf\xmlparse.cc
 # End Source File
 # End Group
 # Begin Group "Exult"

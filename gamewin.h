@@ -83,7 +83,7 @@ class Game_window
 	unsigned char protect_pixel;	// For rendering protected actors.
 	unsigned char hit_pixel;	// For rendering 'hit' actors.
 	bool teleported;		// true if just teleported.
-	bool in_dungeon;		// true if inside a dungeon.
+	unsigned int in_dungeon;	// true if inside a dungeon.
 	std::ifstream chunks;		// "u7chunks" file.
 	Vga_file exult_flx;		// "<data>/exult.flx"
 	Vga_file gameflx;		// "<data>/exult_bg.flx" or 
@@ -154,6 +154,8 @@ class Game_window
 	void read_map_data();		// Read in 'ifix', 'ireg', etc.
 					// Render the map & objects.
 	int paint_map(int x, int y, int w, int h);
+					// Render dungeon blackness
+	void paint_blackness(int cx, int cy, int stop_chunkx, int stop_chunky);
 
 	// For Paperdolls in BG
 	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
@@ -256,14 +258,14 @@ public:
 		skip_above_actor = lift;
 		return true;
 		}
-	inline bool set_in_dungeon(bool tf)
+	inline bool set_in_dungeon(unsigned int lift)
 		{ 
-		if (in_dungeon == tf)
+		if (in_dungeon == lift)
 			return false;
-		in_dungeon = tf;
+		in_dungeon = lift;
 		return true;
 		}
-	inline bool is_in_dungeon()
+	inline unsigned int is_in_dungeon()
 		{ return in_dungeon; }
 	inline bool is_special_light()	// Light spell in effect?
 		{ return special_light != 0; }
@@ -549,13 +551,13 @@ public:
 		{ return save_names[i]; }
 					// Paint "flat" scenery in a chunk.
 	void paint_chunk_flats(int cx, int cy, int xoff, int yoff);
-	void paint_dungeon_chunk_flats(int cx, int cy, int xoff, int yoff);
+					// Paint blackness in a dungeon
+	void paint_dungeon_black(int cx, int cy, int xoff, int yoff);
 					// Paint objects in given chunk at
 					//   given lift.
 	int paint_chunk_objects(int cx, int cy);
 					// Paint an obj. after dependencies.
 	void paint_object(Game_object *obj);
-	void paint_dungeon_object(Map_chunk *olist, Game_object *obj);
 					// Fade palette in/out.
 	void fade_palette(int cycles, int inout, int pal_num = -1);
 	bool is_palette_faded_out()
@@ -653,7 +655,6 @@ public:
 					// Save "gamedat".
 	void save_gamedat(const char *fname, const char *savename);
 	void save_gamedat(int num, const char *savename);
-	int find_roof(int cx, int cy);
 
 	void plasma(int w, int h, int x, int y, int startc, int endc);
 	
