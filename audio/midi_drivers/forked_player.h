@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _MIDI_driver_forked_player_h_
 #define _MIDI_driver_forked_player_h_
 
-#if __GNUG__ >= 2
+#if (__GNUG__ >= 2) && (!defined WIN32)
 #  pragma interface
 #endif
 
