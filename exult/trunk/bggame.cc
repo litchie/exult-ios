@@ -42,6 +42,10 @@ BG_Game::BG_Game()
 		add_shape("gumps/yesnobox",69);
 		add_shape("gumps/yesbtn",70);
 		add_shape("gumps/nobtn",71);
+
+		if (!gwin->setup_endgame_fonts())
+			gwin->abort ("Unable to setup fonts from 'endgame.dat' file.");
+		
 	}
 
 BG_Game::~BG_Game()
@@ -53,11 +57,6 @@ void BG_Game::play_intro()
 		Vga_file shapes(ENDSHAPE_FLX);
 		bool skip = false;
 		Palette pal;
-
-		int topx = (gwin->get_width()-320)/2;
-		int topy = (gwin->get_height()-200)/2;
-		int centerx = gwin->get_width()/2;
-		int centery = gwin->get_height()/2;
 
 		// Lord British presents...
 		pal.load("static/intropal.dat",3);
@@ -274,35 +273,15 @@ void BG_Game::play_intro()
 		clear_screen();
 	}
 	
-void BG_Game::show_menu()
-	{
-		Vga_file menushapes(MAINSHP_FLX);
-		Palette pal;
-
-		int topx = (gwin->get_width()-320)/2;
-		int topy = (gwin->get_height()-200)/2;
-		int centerx = gwin->get_width()/2;
+void BG_Game::top_menu(Vga_file &shapes)
+{
+	play_midi(3);
 		
-		play_midi(3);
-		
-		gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
-		pal.load("static/intropal.dat",0);
-		pal.fade_in(60);
-		
-		int menuchoices[] = { 0x04, 0x05, 0x08, 0x06, 0x11, 0x12 };
-		int selected = 2;
-		for(int i=0; i<6; i++) {
-			Shape_frame *shape = menushapes.get_shape(menuchoices[i],i==selected);
-			gwin->paint_shape(centerx-shape->get_width()/2,topy+110+i*10,shape);
-		}		
-		win->show();
-		while(!wait_delay(100))
-			;
-		pal.fade_out(30);
-		clear_screen();
-		audio->stop_music();
-	}
-
+	gwin->paint_shape(topx,topy,shapes.get_shape(0x2,0));
+	pal.load("static/intropal.dat",0);
+	pal.fade_in(60);	
+}
+	
 void BG_Game::end_game(bool success) 
 	{
 		int	i, j, next = 0;
@@ -310,8 +289,11 @@ void BG_Game::end_game(bool success)
 		int	centerx = gwin->get_width() /2;
 		int 	topy = (gwin->get_height()-200)/2;
 
-		if (!gwin->setup_endgame_fonts())
-			gwin->abort ("Unable to setup fonts from 'endgame.dat' file.");
+		
+		if(!success) {
+			
+			return;
+		}
 
 		// Audio buffer
 		size_t	size;
@@ -782,37 +764,101 @@ void BG_Game::end_game(bool success)
 
 void BG_Game::show_quotes()
 	{
+		vector<char *> *text = load_text("static/mainshp.flx", 0x10);
+		destroy_text(text);
 	}
 
 void BG_Game::show_credits()
 	{
-		U7object mainshp("static/mainshp.flx", 0x0E);
-		size_t len;
+		vector<char *> *text = load_text("static/mainshp.flx", 0x0E);
+		destroy_text(text);		
+	}
+
+bool BG_Game::new_game(Vga_file &shapes)
+	{
+		int menuy = topy+110;
 		
-		char * credits, *ptr, *end;
-		mainshp.retrieve(&credits, len);
-		ptr = credits;
-		end = ptr+len;
-		int lines = 0;
-		while(ptr<end) {
-			ptr = strchr(ptr, '\r');
-			ptr += 2;
-			++lines;
-		}
-		printf("Credits lines: %d\n", lines);
-
-		char **text = new charptr[lines];
-
-		ptr = credits;
-		while(ptr<end) {
-			text[lines] = ptr;
-			ptr = strchr(ptr, '\r');
-			*ptr = 0;
-			ptr += 2;
-			++lines;
-		}
-		for(int i=0; i<lines; i++)
-			printf("%d - %s\n", i, text[i]);
-		delete [] text;
-		delete [] credits;
+		char npc_name[9];
+		char disp_name[10];
+		int max_len = 8;
+		npc_name[0] = 0;
+		int sex = 0;
+		int selected = 0;
+		int num_choices = 4;
+		pal.load("static/intropal.dat",6);
+		SDL_Event event;
+		bool editing = true;
+		bool ok = true;
+		do {
+			win->fill8(0,gwin->get_width(),90,0,menuy);
+			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
+			gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0xA, selected==1?1:0));
+			gwin->paint_shape(topx+50,menuy+25,shapes.get_shape(0xB,sex));
+			gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
+			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
+			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
+			if(selected==0)
+				sprintf(disp_name, "%s_", npc_name);
+			else
+				sprintf(disp_name, "%s", npc_name);
+			gwin->paint_text(MAINSHP_FONT1, disp_name, topx+50,menuy+10);
+			pal.apply();
+			SDL_WaitEvent(&event);
+			if(event.type==SDL_KEYDOWN) {
+				switch(event.key.keysym.sym) {
+				case SDLK_SPACE:
+					if(selected==1)
+						sex = 1-sex;
+					break;
+				case SDLK_ESCAPE:
+					editing = false;
+					ok = false;
+					break;
+				case SDLK_DOWN:
+					++selected;
+					if(selected==num_choices)
+						selected = 0;
+					break;
+				case SDLK_UP:
+					--selected;
+					if(selected<0)
+						selected = num_choices-1;
+					break;
+				case SDLK_RETURN:
+					if(selected<2) 
+						++selected;
+					else if(selected==2) {
+						editing=false;
+						ok = true;
+					} else {
+						editing = false;
+						ok = false;
+					}
+					break;
+				case SDLK_BACKSPACE:
+					if(selected==0) {
+						if(strlen(npc_name)>0)
+							npc_name[strlen(npc_name)-1] = 0;
+					}
+					break;
+				default:
+					{
+					int c = event.key.keysym.sym;
+					if(selected==0 && c>=SDLK_0 && c<=SDLK_z) {
+						int len = strlen(npc_name);
+						char chr = (event.key.keysym.mod & KMOD_SHIFT) ? toupper(c) : c;
+						if(len<max_len) {
+							npc_name[len] = chr;
+							npc_name[len+1] = 0;
+						}
+					}
+					}
+					break;
+				}
+			}
+		} while(editing);
+		if(ok)
+			gwin->init_gamedat(true);  // FIXME: we need to set the player's name/sex
+		win->fill8(0,gwin->get_width(),90,0,menuy);
+		return ok;
 	}
