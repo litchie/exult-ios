@@ -4,8 +4,8 @@
 WHAT IS IT ?
 ------------
 EXULT lets you play Ultima 7 - The Black Gate natively under Linux,
-Windows, and possibly BeOS and the Mac.  It is released under the GNU 
-General Public License, and source code is available.
+Windows, BeOS and MacOS.  It is released under the GNU General Public 
+License, and source code is available.
 
 See the "NEWS" and "ChangeLog" files for the latest changes.
 
@@ -26,11 +26,11 @@ midi devices and midi settings. Some of these options can be set from the
 "Setup" menu when you run Exult.
 
 If you do not already have a configuration file, Exult will make one for you
-filling in sensible defaults by itself. The location of this file varies slightly. On unix systems
-you can expect to find it in $HOME/.exult.cfg while other operating systems
-will probably locate it as 'exult.cfg' in the same directory as the exult
-binary. However it is recommended that you edit this file by hand to achieve
-optimal results for your system.
+filling in sensible defaults by itself. The location of this file varies 
+slightly. On unix systems you can expect to find it in $HOME/.exult.cfg while 
+other operating systems will probably locate it as 'exult.cfg' in the same 
+directory as the exult binary. However it is recommended that you edit this 
+file by hand to achieve optimal results for your system.
 
 The file uses a simple hierarchical XML-like syntax, which should be simple to
 understand and modify. Take care though. Handling of syntax errors in this file
