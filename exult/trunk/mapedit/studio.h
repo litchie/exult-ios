@@ -20,17 +20,34 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
+#include "shapelst.h"
+#include "paledit.h"
+#include "vgafile.h"
 
 class ExultStudio {
 private:
-	GtkWidget *app;
-	GladeXML  *app_xml;
+	GtkWidget		*app;
+	GladeXML		*app_xml;
+	char 			*static_path;
+	static ExultStudio	*self;
+	Vga_file		*ifile;
+	char			**names;
+	Shape_chooser		*chooser;
+	Palette_edit 		*paled;
+
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();
+	
+	static ExultStudio *get_instance()
+		{ return self; }
+		
+	void set_browser_frame_name(const char *name);	
 
-	void create_shape_browser();
+	void create_shape_browser(const char *fname);
+	void delete_shape_browser();
 	void create_palette_browser();
+	void scan_static_path();
 	void run();
 	};
 
