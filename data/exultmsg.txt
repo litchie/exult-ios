@@ -30,10 +30,10 @@
 # End1
 0x519:Avatar! You think you have won?
 0x51A:Think again! You are unable to
-0x51B:leave britannia, whereas I am free
-0x51C:to enter other worlds
+0x51B:leave Britannia, whereas I am free
+0x51C:to enter other worlds!
 0x51D:Perhaps your puny Earth shall be
-0x51E:my NEXT target!.
+0x51E:my NEXT target!
 # End2
 0x51F:In the months following the climactic
 0x520:battle at The Black Gate, Britannia
@@ -70,12 +70,12 @@
 0x53B:Eighteen months after the destruction
 0x53C:of the Black Gate and the
 0x53D:dismantling of The Fellowship
-0x53E:My leige
+0x53E:My liege
 0x53F:Yo, homes
 0x540:All we found among Batlin's
-0x541:belongings was this enchanted scroll..
+0x541:belongings was this enchanted scroll...
 0x542:and a map showing the way to
-0x543:a place called the Serpent Isle
+0x543:a place called the Serpent Isle.
 0x544:Indeed.
 0x545:Put it on the table.
 0x546:Iree. Slap it down there!
