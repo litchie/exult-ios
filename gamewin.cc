@@ -1990,9 +1990,13 @@ void Game_window::show_items
 			npc->get_alignment() << ", npcnum = " <<
 			npc->get_npc_num();
 		cout << endl;
-		Tile_coord t = obj->get_tile();
-		cout << "tx = " << t.tx << ", ty = " << t.ty << ", tz = " <<
-			t.tz << ", quality = " <<
+		if (obj->get_chunk())
+			{
+			Tile_coord t = obj->get_tile();
+			cout << "tx = " << t.tx << ", ty = " << t.ty <<
+				", tz = " << t.tz << ", ";
+			}
+		cout << "quality = " <<
 			obj->get_quality() << 
 			", okay_to_take = " <<
 			static_cast<int>(obj->get_flag(Obj_flags::okay_to_take)) <<
