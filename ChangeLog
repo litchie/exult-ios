@@ -12,6 +12,8 @@
 	* audio/Audio.*: added is_audio_enabled(), set_audio_enabled() funcs
 	* audio/Midi.cc: fixed midi conversion typo
 	* schedule.cc: fixing bake_schedule for SI
+	* objs/chunks.cc: hack for dungeon weirdness in silver seed
+	(same as for Knight's Test)
 
 2001-04-29  Christoph Reichenbach  <jameson@linuxgames.com>
 
