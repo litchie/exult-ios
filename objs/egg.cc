@@ -39,6 +39,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "npctime.h"
 #include "paths.h"
 #include "chunks.h"
+#ifdef XWIN
+#include "server.h"
+#include "objserial.h"
+#endif
 
 using std::cout;
 using std::endl;
@@ -376,6 +380,22 @@ void Egg_object::activate
 	int /* event */
 	)
 	{
+#ifdef XWIN
+	if (client_socket >= 0)		// Talking to ExultStudio?
+		{
+		Tile_coord t = get_abs_tile_coord();
+		unsigned long addr = (unsigned long) this;
+		if (Egg_object_out(client_socket, addr, t.tx, t.ty, t.tz,
+			get_shapenum(), get_framenum(), 
+			criteria, probability, distance,
+			(flags>>nocturnal)&1, (flags>>once)&1,
+			(flags>>auto_reset)&1))
+			cout << "Sent egg data to ExultStudio" << endl;
+		else
+			cout << "Error sending egg data to ExultStudio" <<endl;
+		return;
+		}
+#endif
 	activate(umachine, 0, 0);
 	}
 
