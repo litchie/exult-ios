@@ -1,3 +1,8 @@
+2000-06-05  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Trying to gain speed by skipping the rendering of objects
+	  totally outside the clip area.
+
 2000-06-05  Jeff Freedman  <jeff@patches.simutech.com>
 
 	* Allow numeric keys in conversations (like U9).
