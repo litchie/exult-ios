@@ -356,7 +356,8 @@ int Egg_object::is_active
 						obj == gwin->get_main_actor());
 	case something_on:
 		return obj != gwin->get_main_actor() && 
-			tz >= get_lift() && deltaz <= 3 &&
+					// Guessing.  At SI end, deltaz == -1.
+			deltaz >= -1 && deltaz <= 3 &&
 			area.has_point(tx, ty) && obj->get_npc_num() <= 0;
 	case external_criteria:
 	default:
