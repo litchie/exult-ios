@@ -53,7 +53,7 @@ class Chunk_info
  */
 class Chunk_chooser: public Object_browser, public Shape_draw
 	{
-	std::istream& chunkfile;		// Where chunks are read from (each is
+	std::istream& chunkfile;	// Where chunks are read from (each is
 					//   256 shape ID's = 512 bytes).
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
@@ -64,6 +64,10 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	Chunk_info *info;		// An entry for each chunk drawn.
 	int info_cnt;			// # entries in info.
 	int selected;			// Index of user-selected entry.
+	int locate_cx, locate_cy;	// Last chunk found by 'locate'.
+					// Various controls.
+	GtkWidget *loc_chunk_down, *loc_chunk_up, *insert_chunk_dup,
+		  *move_chunk_down, *move_chunk_up;
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
 	void show(int x, int y, int w, int h);
@@ -74,6 +78,8 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	void render_chunk(int xoff, int yoff);
 	void scroll(int newindex);	// Scroll.
 	GtkWidget *create_controls();
+	void enable_controls();		// Enable/disable controls after sel.
+					//   has changed.
 public:
 	Chunk_chooser(Vga_file *i, std::istream& cfile, unsigned char *palbuf, 
 							int w, int h);
