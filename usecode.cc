@@ -2571,7 +2571,9 @@ USECODE_INTRINSIC(get_timer)
 	int tnum = parms[0].get_int_value();
 	int ret;
 	if (tnum >= 0 && tnum < (int)(sizeof(timers)/sizeof(timers[0])))
-		ret = gwin->get_total_hours() - timers[tnum];
+					// Return 0 if not set.
+		ret = timers[tnum] > 0 ?
+			(gwin->get_total_hours() - timers[tnum]) : 0;
 	else
 		{
 		cerr << "Attempt to use invalid timer " << tnum << endl;
