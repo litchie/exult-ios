@@ -404,6 +404,9 @@ void Spellbook_gump::do_spell
 		gwin->paint();
 		gwin->get_usecode()->call_usecode(Get_usecode(spell),
 			gwin->get_main_actor(), Usecode_machine::double_click);
+					// Close all gumps so animations can
+					//   start.
+		gwin->get_gump_man()->close_all_gumps();
 	}
 }
 
