@@ -1,3 +1,9 @@
+2002-01-28  Darke  <darkepaw@users.sourceforge.net>
+	* mapedit/studio.h: std::;
+	* usecode/ucxt/*: Added -ftt option, which outputs, something that
+	looks suspiciously like a conf/ file containing all the string 'data'
+	for the specifed functions.
+
 2002-01-27  Darke  <darkepaw@users.sourceforge.net>
 	* usecode/ucxt/head2data*: Creates data/u7bgintrinsics.data and
 	data/u7siintrinsics.data from their respective *intrinsics.h files.

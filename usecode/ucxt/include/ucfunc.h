@@ -207,7 +207,6 @@ class UCFunc
 
 		void output_list(std::ostream &o, unsigned int funcno, const UCOptions &options);
 		
-		// temp passing UCData, probably shouldn't need it.
 		void output_ucs(std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options);
 		std::ostream &output_ucs_funcname(std::ostream &o, const FuncMap &funcmap,
                                     unsigned int funcid,
@@ -224,6 +223,7 @@ class UCFunc
 		                               const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics);
 		void parse_ucs_pass3(std::vector<GotoSet> &gotoset, const std::map<unsigned int, std::string> &intrinsics);
 
+		void output_tt(std::ostream &o);
 //	private:
 	
 		std::vector<GotoSet> gotoset;
@@ -261,7 +261,6 @@ class UCFunc
 
 void readbin_U7UCFunc(std::ifstream &f, UCFunc &ucf, const UCOptions &options);
 void readbin_U8UCFunc(std::ifstream &f, UCFunc &ucf);
-class UCData;
 void print_asm(UCFunc &ucf, std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options);
 
 #endif
