@@ -96,8 +96,8 @@ dist: $(EXEC)
 	cp docs/exult_studio.html $(STUDIOPATH)
 	cp docs/exult_studio.txt $(STUDIOPATH)
 	mkdir -p $(STUDIOPATH)/images
-	cp docs/images/back.gif $(STUDIOPATH)/images
-	cp docs/images/exult_logo.gif $(STUDIOPATH)/images
+	cp docs/images/*.gif $(STUDIOPATH)/images
+	cp docs/images/*.jpg $(STUDIOPATH)/images
 	cp mapedit/exult_studio.glade $(STUDIOPATH)/data
 	mkdir -p $(STUDIOPATH)/data/estudio
 	mkdir -p $(STUDIOPATH)/data/estudio/new
