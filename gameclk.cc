@@ -9,8 +9,9 @@
 #include "gameclk.h"
 #include "gamewin.h"
 #include "actors.h"
+#include "cheat.h"
 
-extern bool infravision;
+extern Cheat cheat;
 
 /*
  *	Palette #'s in 'palettes.flx'.  Just need them here for now.
@@ -39,7 +40,7 @@ void Game_clock::set_time_palette
 		return;
 		}
 
-	if (infravision) {
+	if (cheat.in_infravision()) {
 		gwin->set_palette(PALETTE_DAY);
 		return;
 	}

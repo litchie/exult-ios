@@ -29,8 +29,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "paths.h"
 #include "actors.h"
+#include "cheat.h"
 
-extern bool hack_mover;
+extern Cheat cheat;
 extern Mouse *mouse;
 
 /*
@@ -107,7 +108,7 @@ int Game_window::drag
 			return (0);	// Wait for greater motion.
 		if (dragging)
 			{		// Don't want to move walls.
-			if (!hack_mover && !dragging->is_dragable())	
+			if (!cheat.in_hack_mover() && !dragging->is_dragable())	
 				{
 				mouse->flash_shape(Mouse::tooheavy);
 				dragging = 0;
@@ -116,7 +117,7 @@ int Game_window::drag
 			Game_object *owner = dragging->get_outermost();
 			if (owner == dragging)
 				{
-			    	if (!hack_mover && !Fast_pathfinder_client::is_grabable(
+			    	if (!cheat.in_hack_mover() && !Fast_pathfinder_client::is_grabable(
 					main_actor->get_abs_tile_coord(),
 					dragging->get_abs_tile_coord()))
 					{
@@ -228,7 +229,7 @@ static int Check_weight
 	Game_object *owner		// Who the new owner will be.
 	)
 	{
-	if (hack_mover)		// hack_mover -> no weight checking
+	if (cheat.in_hack_mover())		// hack_mover -> no weight checking
 		return 1;
 
 	if (!owner)
@@ -374,7 +375,7 @@ int Game_window::drop_at_lift
 					// Allow drop up to 5.
 	if (!Chunk_object_list::is_blocked(info.get_3d_height(), at_lift,
 		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, 
-					lift, MOVE_FLY, 5) && (hack_mover ||
+					lift, MOVE_FLY, 5) && (cheat.in_hack_mover() ||
 					// Check for path to location.
 	    Fast_pathfinder_client::is_grabable(
 		main_actor->get_abs_tile_coord(), Tile_coord(tx, ty, lift))))

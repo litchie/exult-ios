@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 #include "npctime.h"
 #include "game.h"
+#include "cheat.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 const char Actor::attack_frames1[4] = {3, 4, 5, 6};
@@ -52,7 +53,7 @@ int Monster_info::equip_cnt = 0;
 Monster_actor *Monster_actor::in_world = 0;
 int Monster_actor::in_world_cnt = 0;
 
-extern bool god_mode;
+extern Cheat cheat;
 
 /*
  *	Get/create timers.
@@ -972,7 +973,7 @@ void Actor::set_property
 	)
 	{
 	if (prop == health && ((party_id != -1) || (npc_num == 0)) && 
-		god_mode && val < properties[prop])
+		cheat.in_god_mode() && val < properties[prop])
 		return;
 	if (prop >= 0 && prop < 12)
 		if (prop == (int) exp)
@@ -996,7 +997,7 @@ void Actor::reduce_health
 	int delta			// # points to lose.
 	)
 	{
-	if (god_mode && ((party_id != -1) || (npc_num == 0)))
+	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
 		return;
 	int oldhp = properties[(int) health];
 	int maxhp = properties[(int) strength];
@@ -1497,9 +1498,9 @@ int Actor::figure_hit_points
 	{
 
 	// godmode effects:
-	if (((party_id != -1) || (npc_num == 0)) && god_mode)
+	if (((party_id != -1) || (npc_num == 0)) && cheat.in_god_mode())
 		return 0;
-	bool instant_death = (god_mode && attacker &&
+	bool instant_death = (cheat.in_god_mode() && attacker &&
 		((attacker->party_id != -1) || (attacker->npc_num == 0)));
 
 	Game_window *gwin = Game_window::get_game_window();
