@@ -1,3 +1,8 @@
+2001-05-23  Ryan Nunn <triforce@merlin.net.au>
+	* audio/Audio.cc: Put #ifdef ENABLE_MIDISFX around MIDI SFX code to
+	  disable MIDI sfx's. Simply defining ENABLE_MIDISFX will re-enable
+	  MIDI SFX.
+
 2001-05-21  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Rewrote intrinsic si_path_run_usecode() so it now schedules the
