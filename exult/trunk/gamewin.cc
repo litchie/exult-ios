@@ -721,7 +721,8 @@ void Game_window::read_ireg_objects
 	(
 	istream& ireg,			// File to read from.
 	int scx, int scy,		// Abs. chunk coords. of superchunk.
-	Game_object *container		// Container, or null.
+	Game_object *container,		// Container, or null.
+	unsigned long flags		// Usecode item flags.
 	)
 	{
 	int entlen;			// Gets entry length.
@@ -733,6 +734,8 @@ void Game_window::read_ireg_objects
 				return;	// Skip 0's & ends of containers.
 			else
 				continue;
+					// Get copy of flags.
+		unsigned long oflags = flags;
 		if (entlen != 6 && entlen != 12 && entlen != 18)
 			{
 			long pos = ireg.tellg();
@@ -752,7 +755,7 @@ void Game_window::read_ireg_objects
 		int shapeid = entry[2]+256*(entry[3]&3);
 		Shape_info& info = shapes.get_info(shapeid);
 		unsigned int lift, quality, type;
-		Game_object *obj;
+		Ireg_game_object *obj;
 					// An "egg"?
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
@@ -767,8 +770,8 @@ void Game_window::read_ireg_objects
 			lift = entry[4] >> 4;
 			quality = entry[5];
 			if (info.is_animated())
-				obj = new Animated_object(
-				   entry[2], entry[3], tilex, tiley, lift, 1);
+				obj = new Animated_ireg_object(
+				   entry[2], entry[3], tilex, tiley, lift);
 			else if (shapeid == 607)
 				obj = new Egglike_game_object(
 				   entry[2], entry[3], tilex, tiley, lift);
@@ -784,6 +787,9 @@ void Game_window::read_ireg_objects
 			type = entry[4] + 256*entry[5];
 			lift = entry[9] >> 4;
 			quality = entry[7];
+			oflags =	// Override flags (I think).
+			    ((entry[11]&1) << Game_object::invisible) |
+			    (((entry[11]>>3)&1) << Game_object::okay_to_take);
 			if (shapeid == 961)
 				obj = new Barge_object(
 				    entry[2], entry[3], tilex, tiley, lift,
@@ -798,13 +804,12 @@ void Game_window::read_ireg_objects
 				    entry[2], entry[3], tilex, tiley, lift,-1);
 			else
 				obj = new Container_game_object(
-				    entry[2], entry[3], tilex, tiley, lift);
+				    entry[2], entry[3], tilex, tiley, lift,
+							entry[10]);
 					// Read container's objects.
-//			printf("Container %s has flags %02x\n",
-//				item_names[(int) shapeid], (int) entry[10]);
-			if (type)	// ???Don't understand this yet.
+			if (type)	// (0 if empty.)
 				{
-				read_ireg_objects(ireg, scx, scy, obj);
+				read_ireg_objects(ireg, scx, scy, obj, oflags);
 				obj->elements_read();
 				}
 			}
@@ -822,6 +827,7 @@ void Game_window::read_ireg_objects
 				&circles[0], flags);
 			}
 		obj->set_quality(quality);
+		obj->set_flags(oflags);
 					// Add, but skip volume check.
 		if (!container || !container->add(obj, 1))
 			get_objects(scx + cx, scy + cy)->add(obj);
@@ -1841,7 +1847,8 @@ void Game_window::show_items
 			tz << ", quality = " <<
 			obj->get_quality() << ", low lift = " <<
 			obj->get_low_lift() << ", high shape = " <<
-			obj->get_high_shape () << endl;
+			obj->get_high_shape () << ", okay_to_take = " <<
+			(int) obj->get_flag(Game_object::okay_to_take) << endl;
 		cout << "Volume = " << info.get_volume() << endl;
 		cout << "obj = " << (void *) obj << endl;
 		}
@@ -2385,9 +2392,11 @@ void Game_window::show_gump
 	int shapenum			// Shape # in 'gumps.vga'.
 	)
 	{
+	int paperdoll = (shapenum >= ACTOR_FIRST_GUMP &&
+					shapenum <= ACTOR_LAST_GUMP);
 	// overinde for avatar
 // Messes up other gumps	if (obj->get_npc_num() == 0)  How about:
-	if (obj == main_actor)
+	if (paperdoll && obj == main_actor)
 	{
 		if (main_actor->get_siflag(Actor::petra)) // Petra
 		{
@@ -2437,8 +2446,7 @@ void Game_window::show_gump
 		x = get_width()/10;
 		y = get_width()/10;
 		}
-	Gump_object *new_gump = (shapenum >= ACTOR_FIRST_GUMP &&
-		shapenum <= ACTOR_LAST_GUMP) ?
+	Gump_object *new_gump = paperdoll ?
 			new Actor_gump_object((Container_game_object *) obj, 
 							x, y, shapenum)
 			: shapenum == Game::get_game()->get_shape("gumps/statsdisplay") ?

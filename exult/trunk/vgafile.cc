@@ -665,9 +665,12 @@ Shape_frame *Shape::store_frame
 
 Shape::~Shape()
 	{
-	for(int i = 0; i < num_frames; i++)
-		delete frames[i];
-	delete [] frames;
+	if (frames)
+		{
+		for(int i = 0; i < num_frames; i++)
+			delete frames[i];
+		delete [] frames;
+		}
 	}
 
 /*

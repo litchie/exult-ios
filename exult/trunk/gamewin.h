@@ -404,7 +404,8 @@ public:
 					// Get moveable objects.
 	void get_ireg_objects(int schunk);
 	void read_ireg_objects(istream& ireg, int scx, int scy,
-					Game_object *container = 0);
+					Game_object *container = 0,
+			unsigned long flags = (1<<Game_object::okay_to_take));
 					// Create special objects.
 	Egg_object *create_egg(unsigned char *entry, int animated);
 					// Get all superchunk objects.

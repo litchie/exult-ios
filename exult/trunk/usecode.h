@@ -278,9 +278,9 @@ class Usecode_machine
 	USECODE_INTRINSIC_DECL(in_gump_mode);
 	USECODE_INTRINSIC_DECL(is_not_blocked);
 	USECODE_INTRINSIC_DECL(direction_from);
-	USECODE_INTRINSIC_DECL(get_npc_flag);
-	USECODE_INTRINSIC_DECL(set_npc_flag);
-	USECODE_INTRINSIC_DECL(clear_npc_flag);
+	USECODE_INTRINSIC_DECL(get_item_flag);
+	USECODE_INTRINSIC_DECL(set_item_flag);
+	USECODE_INTRINSIC_DECL(clear_item_flag);
 	USECODE_INTRINSIC_DECL(run_usecode);
 	USECODE_INTRINSIC_DECL(fade_palette);
 	USECODE_INTRINSIC_DECL(get_party_list2);
