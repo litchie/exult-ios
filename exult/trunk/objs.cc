@@ -235,7 +235,7 @@ int Game_object::find_nearby
 	{
 	int vecsize = vec.get_cnt();
 	Game_window *gwin = Game_window::get_game_window();
-	const int delta = 16;		// Let's try 16 tiles each dir.
+	const int delta = 24;		// Let's try 24 tiles each dir.
 	Rectangle tiles(pos.tx - delta, pos.ty - delta, 2*delta, 2*delta);
 					// Stay within world.
 	Rectangle world(0, 0, num_chunks*tiles_per_chunk, 
@@ -855,6 +855,17 @@ int Game_object::lt
 			return (0);
 		else if (inf1.zs > inf2.zs)
 			return (1);
+#if 1	/* +++++Added 8/14/00: */
+					// Item on table?
+	if (inf1.zs > 1 && inf2.tz == inf1.tz + inf1.zs - 1 &&
+	    inf2.tx - inf2.xs >= inf1.tx - inf1.xs && inf2.tx <= inf1.tx &&
+	    inf2.ty - inf2.ys >= inf1.ty - inf1.ys && inf2.ty <= inf1.ty)
+		return 1;
+	if (inf2.zs > 1 && inf1.tz == inf2.tz + inf2.zs - 1 &&
+	    inf1.tx - inf1.xs >= inf2.tx - inf2.xs && inf1.tx <= inf2.tx &&
+	    inf1.ty - inf1.ys >= inf2.ty - inf2.ys && inf1.ty <= inf2.ty)
+		return 0;
+#endif
 					// If x's overlap, see if in front.
 	if ((inf1.tx > inf2.tx - inf2.xs && inf1.tx <= inf2.tx) ||
 	    (inf2.tx > inf1.tx - inf1.xs && inf2.tx <= inf1.tx))
@@ -931,6 +942,21 @@ int Game_object::get_rotated_frame
 			}
 		}
 	case 301:			// Step onto cart.
+		{
+		static char swaps180[4] = {2, 3, 0, 1};
+		int subframe = curframe&3;
+		switch (quads)
+			{
+		case 1:			// 90 right.
+			return (curframe&32) ? swaps180[subframe]
+					: (curframe|32);
+		case 3:			// 90 left.
+			return (curframe&32) ? subframe
+					: (swaps180[subframe]|32);
+		case 2:			// 180.
+			return swaps180[subframe] | (curframe&32);
+			}
+		}
 	case 292:			// Seat.  Sequential frames for dirs.
 		{
 		int dir = curframe%4;	// Current dir (0-3).
