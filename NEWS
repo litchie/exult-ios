@@ -1,4 +1,10 @@
-07/20/03	v1.1 Beta
+08/08/03	v1.1 Beta2
+
+		Fixed missing item descriptions in Windows
+		Fixed missing exultmsg.txt on some platforms
+
+
+07/20/03	v1.1 Beta1
 
 		Party Formation
 		Improved combat system with pausing, hit display and targeting
