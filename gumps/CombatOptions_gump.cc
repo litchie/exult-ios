@@ -130,14 +130,14 @@ void CombatOptions_gump::build_buttons()
 	diffs[5] = "Harder (+2)";
 	diffs[6] = "Hardest (+3)";
 	buttons[0] = new CombatTextToggle (this, diffs, colx[3], rowy[0], 
-						59, difficulty, 7);
+									   85, difficulty, 7);
 	buttons[1] = new CombatEnabledToggle(this, colx[3], rowy[1],
-							   59, show_hits);
+										 85, show_hits);
 	std::string *modes = new std::string[2];
 	modes[0] = "Original";
 	modes[1] = "Space pauses";
 	buttons[2] = new CombatTextToggle (this, modes, colx[3], rowy[2],
-						59, mode, 2);
+									   85, mode, 2);
 }
 
 void CombatOptions_gump::load_settings()
