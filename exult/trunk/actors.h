@@ -441,18 +441,23 @@ public:
  */
 class Dead_body : public Container_game_object
 	{
-	static Dead_body *in_world;	// All dead bodies. 
+	static Dead_body *in_world;	// All decayable dead bodies. 
 	short npc_num;			// # of NPC it came from, or -1.
+	unsigned char decayable;
 	unsigned long decay_hour;	// Game hour when body decays.
 					// Links for 'in_world' list.
 	Dead_body *next_body, *prev_body;
 	void link();			// Add to list & set decay hour.
 public:
 	Dead_body(int shapenum, int framenum, unsigned int tilex, 
-				unsigned int tiley, unsigned int lft, int n)
+		unsigned int tiley, unsigned int lft, int n, int decble)
 		: Container_game_object(shapenum, framenum, tilex, tiley, lft),
-			npc_num(n)
-		{ link(); }
+			npc_num(n), decayable(decble), next_body(0),
+			prev_body(0)
+		{
+		if (decayable)		// (Qual = 1 or 2.)
+			link(); 
+		}
 	virtual ~Dead_body();
 	static int find_dead_companions(Dead_body *list[]);
 	static void delete_all();	// Clear out all bodies.
