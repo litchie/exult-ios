@@ -1,3 +1,11 @@
+2001-08-14  Patrick Burke  <takhisisii@yahoo.com.au>
+	* usecode/ucxt/Docs/opcodes.txt: more updates, changes to handle
+	additional output format options
+	* usecode/ucxt/*.[cc|h]: fiddled with command line options; added
+	additional assembler output options; old-ucs format "works" extremely
+	brokenly rather then assert() failing; can now output entire
+	USECODE file; squished obscure crash bug.
+
 2001-08-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc: Test 'dont_die' flag during combat.

@@ -33,17 +33,23 @@ class UCData
 		void disassamble_all(const char **func_table);
 		void dump_flags(const char **func_table);
 		
-		bool noconf() const { return _noconf; };
-		bool verbose() const { return _verbose; };
+ 		void mode(const unsigned int mode) { _mode=mode; };
+		string output_redirect() const { return _output_redirect; };
+		
+		bool noconf()      const { return _noconf;      };
+		bool rawops()      const { return _rawops;      };
+		bool autocomment() const { return _autocomment; };
+		bool verbose()     const { return _verbose;     };
 		
  		unsigned int mode() const { return _mode; };
- 		void mode(const unsigned int mode) { _mode=mode; };
 		unsigned int game() const { return _game; };
-		string output_redirect() const { return _output_redirect; };
 		
 		bool output_list() const { return _output_list; };
 		bool output_asm()  const { return _output_asm;  };
 		bool output_ucs()  const { return _output_ucs;  };
+		
+		bool mode_all()    const { return _mode_all;    };
+		bool mode_dis()    const { return _mode_dis;    };
 		
 		bool fail() const { return _file.fail(); };
 	
@@ -57,6 +63,8 @@ class UCData
 		ifstream _file;
 		
 		bool _noconf;
+		bool _rawops;
+		bool _autocomment;
 		bool _verbose;
 		
 		unsigned int _mode;
@@ -65,6 +73,9 @@ class UCData
 		bool _output_list;
 		bool _output_asm;
 		bool _output_ucs;
+		
+		bool _mode_all;
+		bool _mode_dis;
 		
 		string _output_redirect;
 		
