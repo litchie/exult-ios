@@ -45,6 +45,11 @@ public:
 		{ return x; }
 	int get_y()
 		{ return y; }
+	void set_pos(int newx, int newy)// Set new spot on screen.
+		{
+		x = newx;
+		y = newy;
+		}
 					// Append to end of chain.
 	void append_to_chain(Gump_object *& chain);
 					// Remove from chain.
