@@ -1,3 +1,8 @@
+2002-01-04  Patrick Burke <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*: Code cleanup and added a 'flag output' option (-ff).
+	It will output all the flags used in the usecode file, sorted both by
+	"flags within a function" and "functions using flags".
+
 2002-01-04  Dominik Reichardt <gigdr@tesionmail.de>
 	* docs/FAQ.html and ReadMe.html updated
 	* docs/xml: updated faq.xml, docs.xml, html.xsl, php.xsl, docs.dtd

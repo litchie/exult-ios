@@ -102,9 +102,9 @@ int main(int argc, char** argv)
 	{
 		uc.disassamble();
 	}
-	else if( uc.mode() == MODE_FLAG_DUMP )
+	else if( uc.output_flag() )
 	{
-		uc.dump_flags();
+		uc.dump_flags(cout);
 	}
 	else
 		usage();
@@ -168,7 +168,7 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 	string mucc_cc(string("/") + mucc_sc + "/" + mucc_uc);
 	
 	string path, ucspecial, mucc_u7l, mucc_u7c;
-	if(uc.game()==GAME_BG)
+	if(uc.game_bg())
 	{
 		if(uc.verbose()) cout << "Configuring for bg." << endl;
 		path      = bgpath;
@@ -176,7 +176,7 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 		mucc_u7l  = mucc_bgl;
 		mucc_u7c  = mucc_bgc;
 	}
-	else if(uc.game()==GAME_SI)
+	else if(uc.game_si())
 	{
 		if(uc.verbose()) cout << "Configuring for si." << endl;
 		path      = sipath;
@@ -284,6 +284,9 @@ void usage()
 	     << "\t\t-fa\t- output using \"assembler\" format (default)" << endl
 	     << "\t\t-fs\t- output using \"exult script\" format" << endl
 	     << "\t\t-fz\t- output using \"exult script\" format" << endl
+	     << "\t\t-ff\t- outputs all flags referenced in the usecode file" << endl
+	     << "\t\t\t  sorted both by \"flags within a function\" and" << endl
+	     << "\t\t\t  \"functions using flag\"" << endl
 	     ;
   exit(1);
 }
