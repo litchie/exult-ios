@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // #ifdef HAVE_SYS_TIME_H
 #ifdef XWIN  /* Only needed in XWIN. */
 #include <sys/time.h>
+#include "mapedit/u7drag.h"
 #endif
 #include <unistd.h>
 
@@ -112,6 +113,10 @@ int current_res = 0;
 #ifdef XWIN
 int xfd = -1;			// X connection #.
 static Display *display = 0;
+static Window xwin = 0;
+static Atom shapeid_atom = 0;		// For drag-and-drop.
+static Atom xdnd_atom = 0;		// For XdndAware.
+static unsigned long xdnd_version = 3;
 #endif
 
 
@@ -315,7 +320,17 @@ static void Init
 #ifdef XWIN
         SDL_GetWMInfo(&info);
         display = info.info.x11.display;
+	xwin = info.info.x11.window;
         xfd = ConnectionNumber(display);
+					// Get target for drag-and-drop.
+	shapeid_atom = XInternAtom(display, U7_TARGET_SHAPEID_NAME, 0);
+					// Atom for Xdnd protocol:
+	xdnd_atom = XInternAtom(display, "XdndAware", 0);
+					// Create XdndAware property.
+	XChangeProperty(display, xwin, xdnd_atom, XA_ATOM, 32,
+			PropModeReplace, (unsigned char *) &xdnd_version, 1);
+					// Want drag-and-drop events.
+	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
 	
 	int w, h, sc;
@@ -702,6 +717,20 @@ static void Handle_event
 		default: break;
 			}
 		break;
+#ifdef XWIN
+	case SDL_SYSWMEVENT:
+		{
+		XEvent& ev = event.syswm.msg->event.xevent;
+		if (ev.type == ClientMessage)
+			{
+			XClientMessageEvent *cev = (XClientMessageEvent *) &ev;
+			cout << "Xwin client msg. received." << endl;
+			if (cev->message_type == xdnd_atom)
+				cout << "Dragging shape!" << endl;
+			}
+		break;
+		}
+#endif
 #if 0
 //#ifdef WIN32
 	case SDL_SYSWMEVENT:
