@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objbrowse.h"
 
 class Shape_draw;
+class Shapes_vga_file;
 
 /*
  *	A single object:
@@ -49,13 +50,14 @@ public:
  */
 class Combo
 	{
+	Shapes_vga_file *shapes_file;	// Where shapes come from.
 	vector<Combo_member *> members;	// Members of this combination.
 	int hot_index;			// Index of obj. whose 'hot spot' we'll
 					//   use.
-	int tx, ty;			// Offset represented by top-left.
+	int starttx, startty;		// Offset represented by top-left.
 	int xtiles, ytiles, ztiles;	// Dimensions.
 public:
-	Combo();
+	Combo(Shapes_vga_file *svga);
 	~Combo();
 					// Add a new object.
 	void add(int tx, int ty, int tz, int shnum, int frnum);
