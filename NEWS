@@ -1,4 +1,4 @@
-??/??/??	???
+??/??/??	v0.98 RC 1
 
 		UCC, Exult's Usecode compiler works again
 
@@ -14,6 +14,10 @@
 		SI's intro and ending are complete
 
 		Music looping is user-configurable
+
+		New scaler from Kreed: BilinearPlus
+
+		Configurable combat difficulty
 
 		Tons of bugfixes (see ChangeLog for details)
 		
