@@ -1,8 +1,11 @@
 usr/games/expack
+usr/games/ipack
+usr/games/textpack
 usr/games/splitshp
 usr/games/shp2pcx
 usr/games/ucxt
 usr/games/ucc
 usr/games/exult_studio
-usr/share/games/exult/opcodes.txt
+usr/share/games/exult/u7opcodes.data
+usr/share/games/exult/u7misc.data
 usr/share/games/exult/exult_studio.glade
