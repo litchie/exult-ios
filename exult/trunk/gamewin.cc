@@ -197,7 +197,7 @@ Game_window::Game_window
 		extra_fonts[i] = NULL;
 
 	set_window_size(width, height, scale, scaler);
-
+	pal = new Palette();
 	}
 
 void Game_window::set_window_size(int width, int height, int scale, int scaler)
@@ -276,7 +276,6 @@ void Game_window::abort
 
 void Game_window::init_files()
 {
-	pal = new Palette();
 	
 	// Determine some colors based on the default palette
 	set_palette(0);
