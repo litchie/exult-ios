@@ -110,8 +110,9 @@ private:
 	std::vector<Egg_object *> path_eggs;	// Path eggs, indexed by 'quality'.
 					// A list of objects in each chunk.
 	Chunk_object_list *objects[c_num_chunks][c_num_chunks];
-	bool schunk_read[144]; // Flag for reading in each "ifix".
-	int scrolltx, scrollty;
+	bool schunk_read[144]; 		// Flag for reading in each "ifix".
+	int scrolltx, scrollty;		// Top-left tile of screen.
+	Actor *camera_actor;		// What to center view around.
 	Rectangle scroll_bounds;	// Walking outside this scrolls.
 	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
@@ -137,6 +138,7 @@ private:
 					// Open a U7 file, throw an
 					//    exception if failed
 	Chunk_object_list *create_chunk(int cx, int cy);
+	void set_scrolls(Tile_coord cent);
 	void set_scroll_bounds();	// Set scroll-controller.
 	void clear_world();		// Clear out world's contents.
 	void read_save_names();		// Read in saved-game names.
@@ -145,9 +147,11 @@ private:
 	int paint_map(int x, int y, int w, int h);
 
 	// For Paperdolls in BG
-	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file is found when playing BG
-	bool bg_paperdolls;		// Set true if paperdolls are wanted in BG
-	Vga_file bg_serpgumps;		// "gumps.vga" - from serpent isle for BG Paperdolls
+	bool bg_paperdolls_allowed;	// Set true if the SI paperdoll file 
+					//   is found when playing BG
+	bool bg_paperdolls;		// True if paperdolls are wanted in BG
+	Vga_file bg_serpgumps;		// "gumps.vga" - from serpent isle 
+					//   for BG Paperdolls
 public:
 	int skip_lift;			// Skip objects with lift > 0.
 	bool paint_eggs;
@@ -301,8 +305,11 @@ public:
 		return true;
 		}
 	void center_view(Tile_coord t);	// Center view around t.
+	void set_camera_actor(Actor *a);
 					// Scroll if necessary.
 	int scroll_if_needed(Tile_coord t);
+	int scroll_if_needed(Actor *a, Tile_coord t)
+		{ if (a == camera_actor) scroll_if_needed(t); }
 #if 1
 					// Show abs. location of mouse.
 	void show_game_location(int x, int y);

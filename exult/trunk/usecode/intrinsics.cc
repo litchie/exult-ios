@@ -1681,8 +1681,9 @@ USECODE_INTRINSIC(set_item_flag)
 		obj->set_flag(flag);
 		if (flag == Obj_flags::dont_render)
 			{	// Show change in status.
-			gwin->paint();
-			gwin->show();
+//			gwin->paint();
+//			gwin->show();  Mar 24, 01:  Changed to:
+			gwin->set_all_dirty();
 			}
 		else if (flag == (int) Obj_flags::on_moving_barge ||
 					flag == (int) Obj_flags::in_motion)
@@ -1739,6 +1740,14 @@ USECODE_INTRINSIC(fade_palette)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(fade_in)
+{
+	// ++++PURE GUESS:  fadein(0 or 1?).
+	gwin->paint();			// Want to show new view in SI.
+	gwin->fade_palette(0x0c, 1);
+	return no_ret;
+}
+
 USECODE_INTRINSIC(get_party_list2)
 {
 	// Return party.  Same as 0x23
@@ -1762,6 +1771,15 @@ USECODE_INTRINSIC(get_party_ids)
 		arr.put_elem(num_added++, val);
 		}
 	return arr;
+}
+
+USECODE_INTRINSIC(set_camera)
+{
+	// Set_camera(actor)
+	Actor *actor = as_actor(get_item(parms[0]));
+	if (actor)
+		gwin->set_camera_actor(actor);
+	return no_ret;
 }
 
 USECODE_INTRINSIC(in_combat)

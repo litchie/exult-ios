@@ -304,8 +304,10 @@ private:
 	USECODE_INTRINSIC_DECL(clear_item_flag);
 	USECODE_INTRINSIC_DECL(run_usecode);
 	USECODE_INTRINSIC_DECL(fade_palette);
+	USECODE_INTRINSIC_DECL(fade_in);
 	USECODE_INTRINSIC_DECL(get_party_list2);
 	USECODE_INTRINSIC_DECL(get_party_ids);
+	USECODE_INTRINSIC_DECL(set_camera);
 	USECODE_INTRINSIC_DECL(in_combat);
 	USECODE_INTRINSIC_DECL(center_view);
 	USECODE_INTRINSIC_DECL(get_dead_party);
