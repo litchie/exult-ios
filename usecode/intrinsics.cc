@@ -269,10 +269,12 @@ USECODE_INTRINSIC(set_item_quality)
 		{
 					// Fail if it has quantity.
 		Shape_info& info = gwin->get_info(obj);
-		if (info.get_shape_class() == Shape_info::has_quantity &&
+		//+++++++++++++USE has_quality()!!!
+		if (info.has_quantity() &&
 		    Game::get_game_type() == SERPENT_ISLE)
 			return Usecode_value(0);
 		obj->set_quality((unsigned int) qual);
+		return Usecode_value(1);
 		}
 	return Usecode_value(0);
 }

@@ -104,7 +104,7 @@ static int Has_quantity
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Shape_info& info = gwin->get_info(shnum);
-	return info.get_shape_class() == Shape_info::has_quantity;
+	return info.has_quantity();
 	}
 
 static int Has_hitpoints(int shnum)
