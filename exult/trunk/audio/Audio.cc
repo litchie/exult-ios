@@ -68,7 +68,8 @@ Audio::~Audio()
 		delete midi;
 		midi=0;
 		}
-	SDL::CloseAudio();
+	// Avoid closing SDL audio. This seems to trigger a segfault
+	// SDL::CloseAudio();
 	SDL_open=false;
 	self=0;
 }
@@ -350,8 +351,9 @@ void Audio::Init(int _samplerate,int _channels)
          wanted.callback = fill_audio;
          wanted.userdata = NULL;
 
-	if(SDL_open)
-		SDL::CloseAudio();
+	// Avoid closing SDL audio. This seems to trigger a segfault
+	// if(SDL_open)
+		// SDL::CloseAudio();
 
          /* Open the audio device, forcing the desired format */
          if ( SDL::OpenAudio(&wanted, &actual) < 0 ) {
