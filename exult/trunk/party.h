@@ -65,7 +65,7 @@ public:
 	void link_party();		// Set party's id's.
 					// Formation-walking:
 	void move_followers(Actor *npc, int dir);
-	void step(Actor *npc, int dir, Tile_coord dest);
+	bool step(Actor *npc, int dir, Tile_coord dest);
 	};
 
 
