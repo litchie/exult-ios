@@ -253,6 +253,18 @@ on_unhide1_activate	               (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
+on_unused_shapes1_activate             (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	if (EStudio::Prompt(
+		"Finding unused shapes may take several minutes\nProceed?",
+					"Yes", "No") != 0)
+		return;
+	ExultStudio::get_instance()->send_to_server(
+						Exult_server::unused_shapes);
+}
+
+C_EXPORT void
 on_play_button_clicked			(GtkToggleButton *button,
 					 gpointer	  user_data)
 {

@@ -394,6 +394,16 @@ static void Handle_client_message
 	case Exult_server::reload_shapes:
 		gwin->reload_shapes(Read2(ptr));
 		break;
+	case Exult_server::unused_shapes:
+		{			// Send back shapes not used in game.
+		unsigned char data[Exult_server::maxlength];
+		int sz = 1024/8;	// Gets bits for unused shapes.
+		sz = sz > sizeof(data) ? sizeof(data) : sz;
+		gwin->get_map()->find_unused_shapes(data, sz);
+		Exult_server::Send_data(client_socket, 
+				Exult_server::unused_shapes, data, sz);
+		break;
+		}
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:
 		Handle_debug_message(&data[0], datalen);
