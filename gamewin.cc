@@ -237,6 +237,7 @@ void Game_window::toggle_combat
 		if (person)
 			person->set_schedule_type(newsched);
 		}
+	main_actor->set_schedule_type(newsched);	//+++++Testing.
 	}
 
 /*

@@ -198,7 +198,7 @@ void Combat_schedule::approach_foe
 		int diry = 2*(ry%2) - 1;
 		pos.tx += dirx*(8 + rx%8);
 		pos.ty += diry*(8 + ry%8);
-		npc->walk_path_to_tile(pos, 100, 0);
+		npc->walk_to_tile(pos, 100, 0);
 		return;
 		}
 	// +++++npc->get_weapon_range(mindist, max_reach);
