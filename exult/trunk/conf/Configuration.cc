@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #include "Configuration.h"
+#include "utils.h"
 
 #include <cstdio>
 #include <iostream>
@@ -35,7 +36,6 @@ using std::atoi;
 using std::cerr;
 using std::endl;
 using std::FILE;
-using std::fopen;
 using std::perror;
 using std::size_t;
 using std::sprintf;
@@ -217,7 +217,7 @@ bool	Configuration::read_config_file(const char *n)
         // For now, just read file from current directory
 	filename=n;
 #endif
-	FILE	*fp=fopen(filename.c_str(),"r");
+	FILE	*fp=U7open(filename.c_str(),"r");
 
 	is_file=true; // set to file, even if file not found
 
@@ -250,7 +250,7 @@ void	Configuration::write_back(void)
 	if(!is_file)
 		return;	// Don't write back if not from a file
 	string	s=dump();
-	FILE *fp=fopen(filename.c_str(),"w");
+	FILE *fp=U7open(filename.c_str(),"w");
 	if(!fp)
 		{
 		perror("Failed to write configuration file");
