@@ -81,6 +81,11 @@ short File_gump_object::btn_cols[3] = {94, 163, 232};
 short File_gump_object::textx = 237, File_gump_object::texty = 14,
       File_gump_object::texth = 13;
 
+short Yesno_gump_object::yesx = 10;	//++++++Guessing.
+short Yesno_gump_object::yesnoy = 44;
+short Yesno_gump_object::nox = 30;	//++++++Guessing.
+
+
 /*
  *	An editable text field:
  */
@@ -158,6 +163,20 @@ class Disk_gump_button : public Gump_button
 public:
 	Disk_gump_button(Gump_object *par, int px, int py)
 		: Gump_button(par, DISK, px, py)
+		{  }
+					// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+	};
+
+/*
+ *	A 'yes' or 'no' button.
+ */
+class Yesno_gump_button : public Gump_button
+	{
+	int isyes;			// 1 for 'yes', 0 for 'no'.
+public:
+	Yesno_gump_button(Gump_object *par, int px, int py, int yes)
+		: Gump_button(par, yes ? YESBTN : NOBTN, px, py), isyes(yes)
 		{  }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -389,6 +408,18 @@ void Disk_gump_button::activate
 	}
 
 /*
+ *	Handle 'yes' or 'no' button.
+ */
+
+void Yesno_gump_button::activate
+	(
+	Game_window *gwin
+	)
+	{
+	((Yesno_gump_object *) parent)->set_answer(isyes);
+	}
+
+/*
  *	Handle click on a slider's arrow.
  */
 
@@ -455,7 +486,7 @@ void Gump_object::initialize
 		object_area = Rectangle(50, 20, 80, 24);
 		checkx = 8; checky = 64;
 		break;
-	case 3:				// Load/save.
+	case FILEIO:			// Load/save.
 		checkx = 8, checky = 150;
 		break;
 	case 8:				// Barrel.
@@ -502,6 +533,10 @@ void Gump_object::initialize
 	case 53:			// Bodies.
 		object_area = Rectangle(36, 46, 84, 40);
 		checkx = 8; checky = 70;
+		break;
+	case YESNOBOX:
+		object_area = Rectangle(4, 4, 40, 40); //++++++Guessing.
+					// No checkmark.
 		break;
 	default:
 					// Character pictures:
@@ -1503,7 +1538,9 @@ void File_gump_object::load
 	int num = get_save_index(focus);// Which one is it?
 	if (num == -1)
 		return;			// Shouldn't ever happen.
-					// +++++Ask if sure.
+	if (!Yesno_gump_object::ask(
+			"Okay to load over your current game?"))
+		return;
 	Game_window *gwin = Game_window::get_game_window();
 	gwin->restore_gamedat(num);	// Aborts if unsuccessful.
 	done = 1;
@@ -1526,7 +1563,9 @@ void File_gump_object::save
 		return;			// Shouldn't ever happen.
 	Game_window *gwin = Game_window::get_game_window();
 	if (*gwin->get_save_name(num))	// Already a game in this slot?
-		;			// ++++++++++Ask if sure!
+		if (!Yesno_gump_object::ask(
+			"Okay to overwrite existing saved game?"))
+			return;
 	if (gwin->save_gamedat(num, focus->get_text()))
 		cout << "Saved game #" << num << " successfully.\n";
 	}
@@ -1540,7 +1579,8 @@ void File_gump_object::quit
 	)
 	{
 	extern unsigned char quitting_time;
-					// ++++++++Is he sure?
+	if (!Yesno_gump_object::ask("Do you really want to quit?"))
+		return;
 	quitting_time = 1;
 	done = 1;
 	}
@@ -1680,5 +1720,126 @@ void File_gump_object::key_down
 								buttons[1]);
 			}
 		}
+	}
+
+/*
+ *	Create a yes/no box.
+ */
+
+Yesno_gump_object::Yesno_gump_object
+	(
+	char *txt
+	) : Modal_gump_object(0, YESNOBOX), text(strdup(txt)), answer(-1)
+	{
+	yes_button = new Yesno_gump_button(this, yesx, yesnoy, 1);
+	no_button = new Yesno_gump_button(this, nox, yesnoy, 0);
+	}
+
+/*
+ *	Done with yes/no box.
+ */
+
+Yesno_gump_object::~Yesno_gump_object
+	(
+	)
+	{
+	delete yes_button;
+	delete no_button;
+	delete text;
+	}
+
+/*
+ *	Paint on screen.
+ */
+
+void Yesno_gump_object::paint
+	(
+	Game_window *gwin
+	)
+	{
+					// Paint the gump itself.
+	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
+					// Paint buttons.
+	paint_button(gwin, yes_button);
+	paint_button(gwin, no_button);
+	}
+
+/*
+ *	Handle mouse-down events.
+ */
+
+void Yesno_gump_object::mouse_down
+	(
+	int mx, int my			// Position in window.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Check buttons.
+	if (yes_button->on_button(gwin, mx, my))
+		pushed = yes_button;
+	else if (no_button->on_button(gwin, mx, my))
+		pushed = no_button;
+	else
+		{
+		pushed = 0;
+		return;
+		}
+	pushed->push(gwin);		// Show it.
+	}
+
+/*
+ *	Handle mouse-up events.
+ */
+
+void Yesno_gump_object::mouse_up
+	(
+	int mx, int my			// Position in window.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (pushed)			// Pushing a button?
+		{
+		pushed->unpush(gwin);
+		if (pushed->on_button(gwin, mx, my))
+			pushed->activate(gwin);
+		pushed = 0;
+		}
+	}
+
+/*
+ *	Handle ASCII character typed.
+ */
+
+void Yesno_gump_object::key_down
+	(
+	int chr
+	)
+	{
+	if (chr == 'y' || chr == 'Y')
+		set_answer(1);
+	else if (chr == 'n' || chr == 'N')
+		set_answer(0);
+	}
+
+/*
+ *	Get an answer to a question.
+ *
+ *	Output:	1 if yes, 0 if no or ESC.
+ */
+
+int Yesno_gump_object::ask
+	(
+	char *txt			// What to ask.
+	)
+	{
+	extern int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
+	Yesno_gump_object *dlg = new Yesno_gump_object(txt);
+	int answer;
+	if (!Modal_gump(dlg, Mouse::hand))
+		answer = 0;
+	else
+		answer = dlg->get_answer();
+	delete dlg;
+	return (answer);
 	}
 
