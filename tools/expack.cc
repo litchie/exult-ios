@@ -53,6 +53,9 @@ using std::strncat;
 using std::strlen;
 using std::vector;
 using std::string;
+#ifdef __MWERKS__	// Bug in CodeWarrior 7: it incorrectly has snprintf in namespace std
+using std::snprintf;
+#endif
 
 enum Arch_mode { NONE, LIST, EXTRACT, CREATE, ADD, RESPONSE };
 
