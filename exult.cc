@@ -124,8 +124,9 @@ int main
 #endif
 		// Convert from the older format
 		config->value("config/disk/u7path",data_directory,".");
-		config->set("config/disk/game/blackgate",data_directory,true);
+		config->set("config/disk/game/blackgate/path",data_directory,true);
 		string	s("blackgate");
+		config->set("config/disk/game/blackgate/title",s,true);
 		vs.push_back(s);
 		}
 	if(gamename=="default")
@@ -136,13 +137,19 @@ int main
 		cerr << "Setting default game to " << gamename << endl;
 #endif
 		}
-	string d("config/disk/game/");
+	string d("config/disk/game/"),gametitle;
 	d+=gamename;
+	d+="/path";
 	config->value(d.c_str(),data_directory,".");
 	if(data_directory==".")
-		config->set("config/disk/game/blackgate",data_directory,true);
+		config->set("config/disk/game/blackgate/path",data_directory,true);
 	cout << "chdir to " << data_directory << endl;
 	chdir(data_directory.c_str());
+	d="config/disk/game/";
+	d+=gamename;
+	d+="/title";
+	config->value(d.c_str(),data_directory,"(unnamed)");
+	cout << "Loading game: " << data_directory << endl;
 	}
 
 	string	tracing;
