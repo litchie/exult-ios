@@ -2623,10 +2623,40 @@ USECODE_INTRINSIC(run_endgame)
 USECODE_INTRINSIC(nap_time)
 {
 	// nap_time(bed)
+	char *msgs[] = {"Avatar!  Please restrain thyself!",
+			"Hast thou noticed that this bed is occupied?",
+			"Please, Avatar, the resident of this bed may not be desirouth of company at the moment."
+			};
+	const int nummsgs = sizeof(msgs)/sizeof(msgs[0]);
 	Game_object *bed = get_item(parms[0]);
-	if (bed)
+	if (!bed)
+		return no_ret;
 					// !!! Seems 622 handles sleeping.
-		call_usecode(0x622, bed, double_click);
+	Vector npcs;			// See if bed is occupied.
+	int cnt = bed->find_nearby(npcs, -359, 0, 0);
+	if (cnt > 0)
+		{
+		int i;
+		for (i = 0; i < cnt; i++)
+			{
+			Game_object *npc = (Game_object *) npcs.get(i);
+			int zdiff = npc->get_lift() - bed->get_lift();
+			if (npc != gwin->get_main_actor() &&
+						zdiff <= 2 && zdiff >= -2)
+				break;	// Found one.
+			}
+		if (i < cnt)
+			{		// Show party member's face.
+			int npcnum = get_party_member(
+						rand()%get_party_count());
+			Usecode_value actval(-npcnum), frval(0);
+			show_npc_face(actval, frval);
+			gwin->show_npc_message(msgs[rand()%nummsgs]);
+			remove_npc_face(actval);
+			return no_ret;
+			}
+		}
+	call_usecode(0x622, bed, double_click);
 	return(no_ret);
 }
 
