@@ -67,6 +67,9 @@ void ExultStudio::open_combo_window
 	delete combowin;		// Delete old (svga may have changed).
 	combowin = new Combo_editor(svga, palbuf);
 	combowin->show(true);
+					// Set edit-mode to pick.
+	GtkWidget *mitem = glade_xml_get_widget(app_xml, "pick_for_combo1");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(mitem), TRUE);
 	}
 
 /*
@@ -98,7 +101,9 @@ C_EXPORT void
 on_combo_apply_clicked                 (GtkButton       *button,
                                         gpointer         user_data)
 {
-	//+++++++++++++
+	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	combo->save();
 }
 
 C_EXPORT void
@@ -106,7 +111,9 @@ on_combo_ok_clicked                    (GtkButton       *button,
                                         gpointer         user_data)
 {
 	GtkWidget *win = gtk_widget_get_toplevel(GTK_WIDGET(button));
-	//+++++++++++++
+	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
+							GTK_OBJECT(win));
+	combo->save();
 	gtk_widget_hide(win);
 }
 
@@ -174,6 +181,25 @@ Combo::Combo
 	{
 					// Read info. the first time.
 	shapes_file->read_info(false, true);//+++++BG?
+	}
+
+/*
+ *	Copy another.
+ */
+
+Combo::Combo
+	(
+	const Combo& c2
+	) : shapes_file(c2.shapes_file), starttx(c2.starttx),
+	    startty(c2.startty), xtiles(c2.xtiles), ytiles(c2.ytiles),
+	    ztiles(c2.ztiles), hot_index(c2.hot_index)
+	{
+	for (vector<Combo_member *>::const_iterator it = c2.members.begin();
+					it != c2.members.end(); ++it)
+		{
+		Combo_member *m = *it;
+		add(m->tx, m->ty, m->tz, m->shapenum, m->framenum);
+		}
 	}
 
 /*
@@ -421,6 +447,7 @@ Combo_editor::~Combo_editor
 	(
 	)
 	{
+	delete combo;
 	}
 
 /*
@@ -605,6 +632,24 @@ void Combo_editor::remove
 		set_controls();
 		render();
 		}
+	}
+
+/*
+ *	Save combo.
+ */
+
+void Combo_editor::save
+	(
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	Combo_chooser *browser = dynamic_cast<Combo_chooser *>(
+						studio->get_browser());
+	if (browser)			// Browser open?
+					// +++++What if editing existing??
+		browser->add(new Combo(*combo));
+	else
+		;	//+++++++++Got to store in Flex_file_info!!!!!
 	}
 
 /*
@@ -919,15 +964,15 @@ void Combo_chooser::enable_controls
 Combo_chooser::Combo_chooser
 	(
 	Vga_file *i,			// Where they're kept.
-	Flex *cfile,			// Combos file, or null.
+	Flex_file_info *flinfo,		// Flex-file info.
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h,			// Dimensions.
 	Shape_group *g			// Filter, or null.
 	) : Object_browser(g), Shape_draw(i, palbuf, gtk_drawing_area_new()),
-		index0(0),
+		flex_info(flinfo), index0(0),
 		info(0), info_cnt(0), sel_changed(0)
 	{
-	int num_combos = cfile ? cfile->number_of_objects() : 0;
+	int num_combos = flinfo->size();
 					// We need 'shapes.vga'.
 	Shape_file_info *svga_info = 
 				ExultStudio::get_instance()->get_vgafile();
@@ -940,11 +985,10 @@ Combo_chooser::Combo_chooser
 	for (int i = 0; i < num_combos; i++)
 		{
 		size_t len;
-		unsigned char *buf = (unsigned char *) cfile->retrieve(i, len);
+		unsigned char *buf = (unsigned char *) flex_info->get(i, len);
 		Combo *combo = new Combo(svga);
 		combo->read(buf, len);
 		combos[i] = combo;	// Store in list.
-		delete buf;
 		}
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
@@ -1034,6 +1078,26 @@ Combo_chooser::~Combo_chooser
 	int cnt = combos.size();
 	for (i = 0; i < cnt; i++)	// Delete all the combos.
 		delete combos[i];
+	}
+
+/*
+ *	Add a new combo.
+ */
+
+void Combo_chooser::add
+	(
+	Combo *newcombo			// We'll own this.
+	)
+	{
+	combos.push_back(newcombo);
+	int num = combos.size() - 1;	// Index of new entry.
+	flex_info->set_modified();
+	int len;			// Serialize.
+	unsigned char *newbuf = newcombo->write(len);
+	flex_info->set(num, (char *) newbuf, len);	// Update.
+					// ++++++Vert. scrollbar???
+	render();
+	show();
 	}
 
 /*
