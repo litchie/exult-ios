@@ -27,6 +27,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include "chunkter.h"
 #include "gamewin.h"
+#ifdef INCL_OPENGL
+#include "glshape.h"
+#endif
 
 Chunk_terrain *Chunk_terrain::render_queue = 0;
 int Chunk_terrain::queue_size = 0;
@@ -106,7 +109,8 @@ Chunk_terrain::Chunk_terrain
 	(
 	unsigned char *data		// Chunk data.
 	) : undo_shapes(0),
-	    rendered_flats(0), num_clients(0), render_queue_next(0),
+	    rendered_flats(0), glflats(0), 
+	    num_clients(0), render_queue_next(0),
 	    render_queue_prev(0), modified(false)
 	{
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
@@ -126,7 +130,8 @@ Chunk_terrain::Chunk_terrain
 	(
 	const Chunk_terrain& c2
 	) : undo_shapes(0),
-	    rendered_flats(0), num_clients(0), render_queue_next(0),
+	    rendered_flats(0), glflats(0),
+	    num_clients(0), render_queue_next(0),
 	    render_queue_prev(0), modified(true)
 	{
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
@@ -144,6 +149,9 @@ Chunk_terrain::~Chunk_terrain
 	{
 	delete [] undo_shapes;
 	delete rendered_flats;
+#ifdef HAVE_OPENGL
+	delete glflats;
+#endif
 	remove_from_queue();
 	}
 
@@ -277,6 +285,13 @@ Image_buffer8 *Chunk_terrain::render_flats
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			paint_tile(tilex, tiley);
+#ifdef HAVE_OPENGL
+	delete glflats;
+	glflats = 0;
+	GL_manager *glman = GL_manager->get_instance();
+	if (glman)			// Using OpenGL?
+		glflats = glman->create(rendered_flats);
+#endif
 	return rendered_flats;
 	}
 
@@ -290,6 +305,10 @@ void Chunk_terrain::free_rendered_flats
 	{
 	delete rendered_flats; 
 	rendered_flats = 0; 
+#ifdef HAVE_OPENGL
+	delete glflats;
+	glflats = 0;
+#endif
 	}
 
 /*

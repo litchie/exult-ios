@@ -34,31 +34,24 @@
 #include "exult_constants.h"
 #include "ibuf8.h"
 
+GL_manager *GL_manager::instance = 0;
+
+const unsigned char transp = 255;	// Transparent pixel.
+
 /*
- *	Create for a given frame.
+ *	Create from a given source.  Assumes src is square, with texsize
+ *	already set to length.
  */
 
-GL_texshape::GL_texshape
+void GL_texshape::create
 	(
-	Shape_frame *f,
+	Image_buffer8 *src,		// Source image.
 	unsigned char *pal		// 3*256 bytes (rgb).
-	) : frame(f), lru_next(0), lru_prev(0)
+	)
 	{
 	assert(pal != 0);
-	int w = frame->get_width(), h = frame->get_height();
-					// Figure texture size as 2^n, rounding
-					//   up.
-	int logw = Log2(2*w - 1), logh = Log2(2*h - 1);
-	texsize = 1<<(logw > logh ? logw : logh);
-					// Render frame.
-	Image_buffer8 buf8(texsize, texsize);
-	const unsigned char transp = 255;
-	buf8.fill8(transp);		// Fill with transparent value.
-					// ++++Guessing a bit on the offset:
-	frame->paint(&buf8, texsize - frame->get_xright() - 1,
-					texsize - frame->get_ybelow() - 1);
 					// Convert to rgba.
-	unsigned char *pixels = buf8.rgba(pal, transp);
+	unsigned char *pixels = src->rgba(pal, transp);
 	glGenTextures(1, &texture);	// Generate (empty) texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texsize, texsize, 0, GL_RGBA,
@@ -75,6 +68,46 @@ GL_texshape::GL_texshape
 	}
 
 /*
+ *	Create for a given frame.
+ */
+
+GL_texshape::GL_texshape
+	(
+	Shape_frame *f,
+	unsigned char *pal		// 3*256 bytes (rgb).
+	) : frame(f), lru_next(0), lru_prev(0)
+	{
+	int w = frame->get_width(), h = frame->get_height();
+					// Figure texture size as 2^n, rounding
+					//   up.
+	int logw = Log2(2*w - 1), logh = Log2(2*h - 1);
+	texsize = 1<<(logw > logh ? logw : logh);
+					// Render frame.
+	Image_buffer8 buf8(texsize, texsize);
+	buf8.fill8(transp);		// Fill with transparent value.
+					// ++++Guessing a bit on the offset:
+	frame->paint(&buf8, texsize - frame->get_xright() - 1,
+					texsize - frame->get_ybelow() - 1);
+	create(&buf8, pal);
+	}
+
+/*
+ *	Create from a given (square, size 2^n) image.
+ */
+
+GL_texshape::GL_texshape
+	(
+	Image_buffer8 *src,		// Must be square.
+	unsigned char *pal		// 3*256 bytes (rgb).
+	) : frame(f), lru_next(0), lru_prev(0)
+	{
+	int w = src->get_width(), h = src->get_height();
+	assert (w == h);
+	assert ((1<<Log2(w)) == w);
+	create(src, pal);
+	}
+
+/*
  *	Free resources.
  */
 
@@ -83,6 +116,8 @@ GL_texshape::~GL_texshape
 	)
 	{
 	glDeleteTextures(1, &texture);	// Free the texture.
+	if (frame)
+		frame->glshape = 0;	// Tell owner.
 	}
 
 /*
@@ -124,6 +159,8 @@ GL_manager::GL_manager
 	(
 	) : shapes(0), num_shapes(0), palette(0)
 	{
+	assert (instance == 0);		// Should only be one.
+	instance = this;
 	glShadeModel(GL_SMOOTH);	// Smooth shading.
 	glClearColor(1, 1, 1, 0);	// Background is white.
 	glClearDepth(1);
@@ -142,12 +179,14 @@ GL_manager::~GL_manager
 	(
 	)
 	{
+	assert (this == instance);
 	while (shapes)
 		{
 		GL_texshape *next = shapes->lru_next;
 		delete shapes;
 		shapes = next;
 		}
+	instance = 0;
 	}
 
 /*
@@ -178,6 +217,7 @@ void GL_manager::paint
 	int px, int py			// 'Pixel' position from top-left.
 	)
 	{
+#if 0	/*  ++++++Disable for testing terrain painting. */
 	GL_texshape *tex = frame->glshape;
 	if (!tex)			// Need to create texture?
 		{
@@ -198,6 +238,7 @@ void GL_manager::paint
 		shapes->lru_prev = tex;
 	shapes = tex;
 	tex->paint(px, py);
+#endif
 	}
 
 #endif	/* HAVE_OPENGL */
