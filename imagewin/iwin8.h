@@ -64,7 +64,8 @@ public:
 					// Fill rect. wth pixel.
 	void fill8(unsigned char val, int srcw, int srch,
 						int destx, int desty)
-		{ ib8->Image_buffer8::fill8(val, srcw, srch, destx, desty); }
+		{ IF_OPENGL(opengl_fill8(val, srcw, srch, destx, desty),
+		  ib8->Image_buffer8::fill8(val, srcw, srch, destx, desty)); }
 					// Fill line with pixel.
 	void fill_line8(unsigned char val, int srcw,
 						int destx, int desty)

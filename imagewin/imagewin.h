@@ -187,7 +187,8 @@ public:
 					// Fill rect. wth pixel.
 	void fill8(unsigned char val, int srcw, int srch,
 						int destx, int desty)
-		{ ibuf->fill8(val, srcw, srch, destx, desty); }
+		{ IF_OPENGL(opengl_fill8(val, srcw, srch, destx, desty),
+			ibuf->fill8(val, srcw, srch, destx, desty)); }
 					// Fill line with pixel.
 	void fill_line8(unsigned char val, int srcw,
 						int destx, int desty)
@@ -215,8 +216,9 @@ public:
 					// Apply translucency to a rectangle
 	virtual void fill_translucent8(unsigned char val, int srcw, int srch, 
 				int destx, int desty, Xform_palette xform)
-		{ ibuf->fill_translucent8(val, 
-					srcw, srch, destx, desty, xform); }
+		{ IF_OPENGL(opengl_fill_translucent8(val, srcw, srch,
+			destx, desty, xform), ibuf->fill_translucent8(val, 
+					srcw, srch, destx, desty, xform)); }
 					// Copy rect. with transp. color.
 	void copy_transparent8(unsigned char *src_pixels, int srcw,
 					int srch, int destx, int desty)
@@ -226,18 +228,20 @@ public:
 	 *	OpenGL:
 	 */
 #ifdef HAVE_OPENGL
-	void opengl_clear_clip();
-	void opengl_set_clip(int x, int y, int w, int h);
+					// Fill rect. wth pixel.
+	void opengl_fill8(unsigned char val, int srcw, int srch,
+						int destx, int desty);
+	virtual void opengl_fill_translucent8(unsigned char val, 
+		int srcw, int srch, int destx, int desty, Xform_palette xform);
 #endif
 	/*
 	 *	Depth-independent methods:
 	 */
 	void clear_clip()		// Reset clip to whole window.
-		{ IF_OPENGL(opengl_clear_clip(), ibuf->clear_clip()); }
+		{ ibuf->clear_clip(); }
 					// Set clip.
 	void set_clip(int x, int y, int w, int h)
-		{ IF_OPENGL(opengl_set_clip(x, y, w, h), 
-					ibuf->set_clip(x, y, w, h)); }
+		{ ibuf->set_clip(x, y, w, h); }
 					// Copy within itself.
 	void copy(int srcx, int srcy, int srcw, int srch, 
 						int destx, int desty)
