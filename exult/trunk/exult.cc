@@ -270,6 +270,7 @@ int main
 			 << "--bg\t\tSkip menu and run Black Gate" << endl
 			 << "--si\t\tSkip menu and run Serpent Isle" << endl
 			 << "--nomenu\tSkip BG/SI game menu" << endl
+			 << "--game <game>\tRun original game" << endl
 			 << "--buildmap\tCreate a fullsize map of the game world in u7map??.pcx" << endl
 			 << "\t\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl
 			 << "\t\tonly valid when used together with --bg or --si" << endl
