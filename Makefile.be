@@ -9,7 +9,7 @@ VPATH=$(SRC):$(SRC)/files:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio
 SDL_INCLUDES=-I/boot/develop/tools/gnupro/include/SDL
 SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
-CPPFLAGS=-DRELNUM=30 -DBEOS -DDEBUG -DAUTOCONFIGURED -I$(SRC)/files \
+CPPFLAGS=-DVERSION=\"0.35\" -DBEOS -DDEBUG -DAUTOCONFIGURED -I$(SRC)/files \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
 	$(SDL_INCLUDES)
 CXXFLAGS=-g -Wall
@@ -22,8 +22,8 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o args.o barge.o bodies.o\
 	combat.o delobjs.o dir.o drag.o effects.o egg.o\
 	exult.o gameclk.o gamedat.o \
 	gametxt.o gamewin.o gumps.o imagescl.o imagewin.o items.o lists.o mouse.o \
-	npcnear.o objs.o paths.o readnpcs.o scale.o schedule.o \
-	segfile.o spells.o tqueue.o usecode.o \
+	npcnear.o objs.o palette.o paths.o readnpcs.o scale.o schedule.o \
+	segfile.o spells.o titles.o tqueue.o usecode.o \
 	useval.o utils.o vec.o vgafile.o
 # unused: npctest.o
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
