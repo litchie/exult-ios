@@ -46,10 +46,10 @@ void Game_window::restore_gamedat
 	{
 	ifstream in;
 	u7open(in, fname);		// Open file & abort if error.
-#if defined(XWIN) || defined(BEOS)
-	mkdir("gamedat", 0755);		// Create dir. if not already there.
-#else
+#ifdef WIN32
 	mkdir("gamedat");
+#else
+	mkdir("gamedat", 0755);		// Create dir. if not already there.
 #endif
 	in.seekg(0x54);			// Get to where file count sits.
 	int numfiles = Read4(in);
