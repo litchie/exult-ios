@@ -1,3 +1,8 @@
+2001-01-08  Christoph Reichenbach  <jameson@linuxgames.com>
+
+	* usecode/conversation.cc: Included alpha_kludges.h
+	* audio/xmidi.cc: Moved xmidi.h into non-Alpha block
+
 2001-01-08  Tristan Tarrant <nadir@users.sourceforge.net>
 	* NEWS: updated
 	* audio/midi_drivers/Timidity_binary.cc: tiny useless fixes

@@ -62,6 +62,7 @@ namespace std {
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+#include <math.h>
 }
 #include <iomanip>
 #include <fstream>

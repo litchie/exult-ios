@@ -22,6 +22,7 @@
 #  include <unistd.h>
 #  include <cstdio>
 #  include <iostream>
+#  include <cmath>
 #endif
 #include "utils.h"
 #include "xmidi.h"
@@ -32,8 +33,6 @@ using std::cerr;
 using std::endl;
 using std::memcmp;
 using std::memcpy;
-
-#include <cmath>
 
 // This is used to correct incorrect patch, vol and pan changes in midi files
 // The bias is just a value to used to work out if a vol and pan belong with a 
