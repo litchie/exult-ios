@@ -49,9 +49,9 @@ static int hlead[10] = {0, 0, 0, 0, 1, 0, 0, 0, 0, 0};
  *	Pass space.
  */
 
-static char *Pass_space
+static const char *Pass_space
 	(
-	char *text
+	const char *text
 	)
 	{
 	while (isspace(*text))
@@ -63,9 +63,9 @@ static char *Pass_space
  *	Pass a word.
  */
 
-static char *Pass_word
+static const char *Pass_word
 	(
-	char *text
+	const char *text
 	)
 	{
 	while (*text && !isspace(*text))
@@ -87,20 +87,20 @@ static char *Pass_word
 int Game_window::paint_text_box
 	(
 	int fontnum,			// Font # from fonts.vga (0-9).
-	char *text,
+	const char *text,
 	int x, int y,			// Top-left corner of box.
 	int w, int h,			// Dimensions.
 	int vert_lead			// Extra spacing between lines.
 	)
 	{
-	char *start = text;		// Remember the start.
+	const char *start = text;		// Remember the start.
 	win->set_clip(x, y, w, h);
 	int endx = x + w, endy = y + h;	// Figure where to stop.
 	int curx = x, cury = y;
 	int height = get_text_height(fontnum) + vert_lead;
 	while (*text)
 		{
-		char *wrd;		// ->start of word.
+		const char *wrd;		// ->start of word.
 		switch (*text)		// Special cases.
 			{
 		case '\n':		// Next line.
@@ -121,7 +121,7 @@ int Game_window::paint_text_box
 			break;
 			}
 					// Pass word & get its width.
-		char *ewrd = Pass_word(text);
+		const char *ewrd = Pass_word(text);
 		int width = get_text_width(fontnum, text, ewrd - text);
 		if (curx + width > endx)
 			{		// Word-wrap.

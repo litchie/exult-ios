@@ -358,7 +358,7 @@ public:
 class Yesno_gump_object : public Modal_gump_object
 	{
 	static short yesx, yesnoy, nox;	// Coords. of the buttons.
-	char *text;			// Text of question.  It is drawn in
+	const char *text;			// Text of question.  It is drawn in
 					//   object_area.
 	int answer;			// 1 for yes, 0 for no.
 	Yesno_gump_button *yes_button, *no_button;
@@ -369,7 +369,7 @@ class Yesno_gump_object : public Modal_gump_object
 		}
 public:
 	friend class Yesno_gump_button;
-	Yesno_gump_object(char *txt);
+	Yesno_gump_object(const char *txt);
 	~Yesno_gump_object();
 	int get_answer()
 		{ return answer; }
@@ -379,7 +379,7 @@ public:
 	virtual void mouse_down(int mx, int my);
 	virtual void mouse_up(int mx, int my);
 	virtual void key_down(int chr);	// Character typed.
-	static int ask(char *txt);	// Ask question, get answer.
+	static int ask(const char *txt);	// Ask question, get answer.
 	};
 
 #endif	/* INCL_GUMPS */

@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "playfli.h"
 #include "utils.h"
 
-playfli::playfli(char *fli_name)
+playfli::playfli(const char *fli_name)
 {
     U7open(fli_stream, fli_name);
     fli_stream.seekg(4);

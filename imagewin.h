@@ -487,7 +487,7 @@ public:
 	int ready()			// Ready to draw?
 		{ return (ibuf->bits != 0); }
 					// Set title.
-	void set_title(char *title)
+	void set_title(const char *title)
 		{
 		SDL_WM_SetCaption(title, 0);
 		}

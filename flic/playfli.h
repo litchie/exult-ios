@@ -37,7 +37,7 @@ class playfli {
     int fli_flags;
     int fli_speed;
  public:
-    playfli(char *fli_name);
+    playfli(const char *fli_name);
     ~playfli();
     void info();
     void play(Image_window *win);

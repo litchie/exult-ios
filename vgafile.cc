@@ -496,7 +496,7 @@ Shape_frame *Shape::store_frame
 
 Shape_file::Shape_file
 	(
-	char *nm			// Path to file.
+	const char *nm			// Path to file.
 	) : Shape()
 	{
 	ifstream file;

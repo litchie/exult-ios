@@ -35,7 +35,7 @@ class Segment_file
 	ifstream file;			// For reading.
 	int num_segments;
 public:
-	Segment_file(char *nm);
+	Segment_file(const char *nm);
 	int get_num_segments()
 		{ return num_segments; }
 	int is_good()
