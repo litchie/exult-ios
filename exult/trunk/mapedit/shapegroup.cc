@@ -261,6 +261,13 @@ on_groups_new_name_key_press		(GtkEntry	*entry,
 /*
  *	Groups list signals:
  */
+C_EXPORT void
+on_group_list_cursor_changed		(GtkTreeView	*tview)
+{
+	ExultStudio::get_instance()->setup_group_controls();
+}
+
+#if 0
 C_EXPORT gboolean
 on_group_list_select_row		(GtkCList	*clist,
 					 gint		row,
@@ -280,6 +287,7 @@ on_group_list_unselect_row		(GtkCList	*clist,
 {
 	ExultStudio::get_instance()->setup_group_controls();
 }
+#endif
 
 C_EXPORT void
 on_group_list_row_move			(GtkCList	*clist,
@@ -303,6 +311,14 @@ on_group_list_button_press_event	(GtkCList	*clist,
 	return false;
 }
 
+/* columns */
+enum
+{
+  GRP_FILE_COLUMN = 0,
+  GRP_ROWNUM_COLUMN,
+  GRP_NUM_COLUMNS
+};
+
 /*
  *	Initialize the list of shape groups for the file being shown in the
  *	browser.
@@ -312,28 +328,41 @@ void ExultStudio::setup_groups
 	(
 	)
 	{
-	GtkCList *clist = GTK_CLIST(
-				glade_xml_get_widget(app_xml, "group_list"));
 	Shape_group_file *groups = curfile->get_groups();
-	gtk_clist_clear(clist);		// Clear out list.
 	if (!groups)			// No groups?
 		{
 		set_visible("groups_frame", FALSE);
 		return;
 		}
+	GtkTreeView *tview = GTK_TREE_VIEW(
+				glade_xml_get_widget(app_xml, "group_list"));
+  	GtkTreeStore *model = gtk_tree_store_new(GRP_NUM_COLUMNS, 
+						G_TYPE_STRING, G_TYPE_INT);
 	set_visible("groups_frame", TRUE);
-	gtk_clist_freeze(clist);
 	int cnt = groups->size();	// Add groups from file.
+	GtkTreeIter iter;
 	for (int i = 0; i < cnt; i++)
 		{
 		Shape_group *grp = groups->get(i);
-		char *nm0 = g_strdup(grp->get_name());
-		gtk_clist_append(clist, &nm0);
-		g_free(nm0);
+		gtk_tree_store_append(model, &iter, NULL);
+		gtk_tree_store_set(model, &iter,
+			GRP_FILE_COLUMN, grp->get_name(),
+			GRP_ROWNUM_COLUMN, i,
+			-1);
 		}
-	gtk_clist_thaw(clist);
-					// Enable reordering.
-	gtk_clist_set_reorderable(clist, true);
+	gtk_tree_view_set_model(tview, GTK_TREE_MODEL(model));
+	g_object_unref(model);
+	gtk_tree_view_set_rules_hint(tview, TRUE);
+					// Create column.
+  	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+	g_object_set (renderer, "xalign", 0.0, NULL);
+	gint col_offset = gtk_tree_view_insert_column_with_attributes(tview,
+		-1, "Names",
+		renderer, "text",
+		GRP_FILE_COLUMN, NULL);
+	GtkTreeViewColumn *column = gtk_tree_view_get_column(tview, 
+							col_offset - 1);
+	gtk_tree_view_column_set_clickable(column, TRUE);
 	setup_group_controls();		// Enable/disable the controls.
 	}
 
@@ -346,12 +375,12 @@ void ExultStudio::setup_group_controls
 	)
 	{
 	set_visible("groups_frame", true);
-	GtkCList *clist = GTK_CLIST(
+	GtkTreeView *tview = GTK_TREE_VIEW(
 				glade_xml_get_widget(app_xml, "group_list"));
-	GList *list = clist->selection; 
+	GtkTreeSelection *list = gtk_tree_view_get_selection(tview);
 	if (list)
 		{
-		int row = (int) list->data;
+//		int row = (int) list->data;
 //		set_sensitive("groups_open", true);
 		set_sensitive("groups_del", true);
 //		set_sensitive("groups_up_arrow", row > 0);
@@ -376,15 +405,22 @@ void ExultStudio::add_group
 	{
 	if (!curfile)
 		return;
-	GtkCList *clist = GTK_CLIST(
+	GtkTreeView *tview = GTK_TREE_VIEW(
 				glade_xml_get_widget(app_xml, "group_list"));
+  	GtkTreeStore *model = GTK_TREE_STORE(gtk_tree_view_get_model(tview));
 	const char *nm = get_text_entry("groups_new_name");
 	Shape_group_file *groups = curfile->get_groups();
 					// Make sure name isn't already there.
 	if (nm && *nm && groups->find(nm) < 0)
 		{
+		int num = groups->size();
 		groups->add(new Shape_group(nm, groups));
-		gtk_clist_append(clist, (gchar **)&nm);
+		GtkTreeIter iter;
+		gtk_tree_store_append(model, &iter, NULL);
+		gtk_tree_store_set(model, &iter,
+			GRP_FILE_COLUMN, nm,
+			GRP_ROWNUM_COLUMN, num,
+			-1);
 		}
 	set_entry("groups_new_name", "");
 	}
@@ -395,6 +431,7 @@ void ExultStudio::del_group
 	{
 	if (!curfile)
 		return;
+//++++++Rewrite.
 	Shape_group_file *groups = curfile->get_groups();
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
@@ -438,6 +475,7 @@ void ExultStudio::move_group
 	{
 	if (!curfile)
 		return;
+//++++++Rewrite.
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
 //	cout << "Row " << src_row << " moved to row " << dest_row << endl;
@@ -518,6 +556,7 @@ void ExultStudio::open_group_window
 	(
 	)
 	{
+//++++++Rewrite.
 	GtkCList *clist = GTK_CLIST(
 				glade_xml_get_widget(app_xml, "group_list"));
 	GList *list = clist->selection; 
