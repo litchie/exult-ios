@@ -153,12 +153,21 @@ void Scheduled_usecode::handle_event
 		case 0x01:		// ??
 			break;
 		case 0x0b:		// ?? 2 parms, 1st one < 0.
-			printf(
-	"Unhanded sched. opcode %02x with parms %d, %d\n",opcode,
-		arrval.get_elem(i+1).get_int_value(),
-		arrval.get_elem(i+2).get_int_value());
-			i += 2;
+			{		// Loop(offset, cnt).
+			do_another = 1;
+			Usecode_value& cntval = arrval.get_elem(i + 2);
+			int cnt = cntval.get_int_value();
+			if (cnt <= 0)
+					// Done.
+				i += 2;
+			else
+				{	// Decr. and loop.
+				cntval = Usecode_value(cnt - 1);
+				Usecode_value& offval = arrval.get_elem(i + 1);
+				i += offval.get_int_value() - 1;
+				}
 			break;
+			}
 		case 0x23:		// ??
 			break;
 		case 0x27:		// ?? 1 parm. Guessing:
@@ -177,7 +186,7 @@ void Scheduled_usecode::handle_event
 			usecode->set_item_frame(objval, fval);
 			break;
 			}
-		case 0x4e:		// Guessing: Show next frame?
+		case 0x4e:		// Guessing: Show next frame.
 			{
 			int nframes = gwin->get_shapes().get_num_frames(
 							obj->get_shapenum());
@@ -185,8 +194,15 @@ void Scheduled_usecode::handle_event
 			usecode->set_item_frame(objval, fval);
 			break;
 			}
-		case 0x50:		// ??
+		case 0x50:		// Guessing: Show prev. frame.
+			{
+			int nframes = gwin->get_shapes().get_num_frames(
+							obj->get_shapenum());
+			int pframe = obj->get_framenum() - 1;
+			Usecode_value fval((pframe + nframes)%nframes);
+			usecode->set_item_frame(objval, fval);
 			break;
+			}
 		case 0x52:		// Say string.
 			{
 			Usecode_value& strval = arrval.get_elem(++i);
@@ -201,7 +217,7 @@ void Scheduled_usecode::handle_event
 			break;
 			}
 		case 0x58:		// ?? 1 parm, fairly large byte.
-			i++;		// Perhaps a soundfx or sprite??
+			i++;		// Perhaps timing??
 			break;
 		case 0x59:		// Parm. is dir. (0-7).  0=north?
 			{
