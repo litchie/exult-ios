@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.21 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.22 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -343,7 +343,7 @@ Content for Black Gate/Forge of Virtue - palette from INTROPAL.DAT
   $C        shape ("name")
   $D        text (Guardian speech...)
   $E        text (Credits)
-  $F        ???
+  $F        data (Guardian Face animation events)
   $10       text (Quotes)
   $11       shape ("view quotes")
   $12       shape ("view endgame")
