@@ -24,6 +24,7 @@ exult_SOURCES =	\
 	args.h		\
 	autoarray.h	\
 	bggame.cc	\
+	bggame.h	\
 	browser.cc	\
 	browser.h	\
 	cheat.cc	\
@@ -41,6 +42,7 @@ exult_SOURCES =	\
 	effects.h	\
 	exceptions.h	\
 	exult.cc	\
+	exult.h		\
 	exultmenu.cc	\
 	exultmenu.h	\
 	exult_types.h	\
@@ -84,6 +86,7 @@ exult_SOURCES =	\
 	shapeid.cc	\
 	shapeid.h	\
 	sigame.cc	\
+	sigame.h	\
 	tiles.h		\
 	tqueue.cc	\
 	tqueue.h	\

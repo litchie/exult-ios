@@ -9,7 +9,7 @@ dnl ----------------------
 PACKAGE=exult
 VER_MAJOR=0
 VER_MINOR=94
-VER_EXTRA=cvs
+VER_EXTRA=alpha5
 VERSION=$VER_MAJOR.$VER_MINOR$VER_EXTRA
 
 dnl check host/build systems. For now, only host is used
