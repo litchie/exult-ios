@@ -234,7 +234,8 @@ void Egg_object::activate
 void Egg_object::activate
 	(
 	Usecode_machine *umachine,
-	Game_object *obj		// Object (actor) that came near it.
+	Game_object *obj,		// Object (actor) that came near it.
+	int must			// If 1, skip dice roll.
 	)
 	{
 #if DEBUG
@@ -247,7 +248,11 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	((flags & (1<<(int)auto_reset)) != 0) << ", data1 = " << data1
 		<< ", data2 = " << data2 << '\n';
 #endif
-	int roll = 1 + rand()%100;
+#if 0
+					// Guessing:  Cached_in always works??
+	int roll = criteria == cached_in ? 0 : 1 + rand()%100;
+#endif
+	int roll = must ? 0 : 1 + rand()%100;
 	if (roll > probability)
 		return;			// Out of luck.
 	if ((flags & (1 << (int) auto_reset)) == 0)
