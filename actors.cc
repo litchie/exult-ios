@@ -3075,7 +3075,9 @@ void Actor::set_polymorph (int shape)
 		return;
 	}
 	if (shape_save == -1) shape_save = get_shapenum();
-	set_shape (shape, get_framenum());
+//	set_shape (shape, get_framenum());
+					// ++++Taking a guess for SI amulet:
+	set_shape (shape, get_dir_framenum(Actor::standing));
 	set_siflag (polymorph);
 }
 

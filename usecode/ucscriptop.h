@@ -53,6 +53,7 @@ enum Ucscript_ops
 	prev_frame_min =0x4f,		// Prev frame, but stop at 0.
 	prev_frame =	0x50,		// Prev. frame, but wrap.
 	say =		0x52,		// Say(string).
+	step =		0x53,		// Step(dir).
 	music =		0x54,		// Play(track#).
 	usecode =	0x55,		// Call usecode(fun).
 	speech =	0x56,		// Speech(track#).
