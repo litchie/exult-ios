@@ -12,11 +12,10 @@
 <!ELEMENT section (faq*)>
 <!ELEMENT faq (question, answer)>
 <!ELEMENT question (#PCDATA|Exult)*>
-<!ELEMENT answer ( #PCDATA | %block; )*>
+<!ELEMENT answer (%block;)*>
 
 <!ELEMENT para ( #PCDATA | %inline; )*>
-<!ELEMENT cite (#PCDATA|para|q)*>
-<!ELEMENT q (#PCDATA)>
+<!ELEMENT cite ( #PCDATA | %inline; )*>
 <!ELEMENT ol (li*)>
 <!ELEMENT ul (li*)>
 <!ELEMENT li ( #PCDATA | %inline; )*>
@@ -30,6 +29,8 @@
 <!ELEMENT ref1 (#PCDATA)>
 <!ELEMENT ref2 (#PCDATA)>
 <!ELEMENT extref (#PCDATA)>
+
+<!ELEMENT q (#PCDATA)>
 
 <!-- Empty elements -->
 <!ELEMENT br (#PCDATA)>
