@@ -14,9 +14,4 @@ ucxt_DATA = \
 EXTRA_DIST = \
 	events.data	\
 	flags.data	\
-	opcodes.txt	\
-	u7opcodes.data	\
-	u7misc.data	\
-	u7bgintrinsics.data \
-	u7siintrinsics.data
-
+	opcodes.txt
