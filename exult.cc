@@ -71,6 +71,7 @@ ShapeBrowser *browser;
 int scale = 0;				// 1 if scaling X2.
 bool    cheat=true;			// Enable cheating keys
 bool	god_mode = false;
+bool    wizard_mode = false;
 bool	usecode_trace=false;		// Do we trace Usecode-intrinsics?
 #if USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
@@ -902,6 +903,7 @@ static void Handle_keystroke
 				"  ctrl-t - Fake time period change\n"
 				"  alt-t  - Teleport\n"
 				"  ctrl-alt-t - Map Teleport\n"
+				"  alt-w - Toggle Archwizard Mode\n"
 				"  ctrl-w - Test weather\n"
 			);
 			}
@@ -972,7 +974,7 @@ static void Handle_keystroke
 	case SDLK_g:
 		if (alt) {	// toggle god-mode
 			if (cheat) {
-				god_mode = 1 - god_mode;
+				god_mode = !god_mode;
 				if (god_mode)
 					gwin->center_text("God Mode Enabled");
 				else
@@ -1092,7 +1094,13 @@ static void Handle_keystroke
 						new Lightning_effect(2));
 			wcnt = (wcnt + 1)%wmax;
 			}
-		else			// Activate watch.
+		else if (alt && cheat) {  // toggle archwizard mode
+			wizard_mode = !wizard_mode;
+			if (wizard_mode)
+				gwin->center_text("Archwizard Mode Enabled");
+			else
+				gwin->center_text("Archwizard Mode Disabled");
+		 } else			// Activate watch.
 			gwin->activate_item(159);	// ++++Blackgate.
 		break;
 	case SDLK_x:			// Alt-x means quit.
