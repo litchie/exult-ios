@@ -67,7 +67,6 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	Shape_entry *info;		// An entry for each shape drawn.
 	int info_cnt;			// # entries in info.
 	int num_per_row;		// Average # painted per line.
-	int selected;			// Index of user-selected entry.
 	void (*sel_changed)();		// Called when selection changes.
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h);

@@ -29,6 +29,7 @@ class Object_browser {
 private:
 	GtkWidget *widget;
 protected:
+	int selected;			// Index of user-selected entry.
 	Shape_group *group;		// Non-null to use filter.
 	GtkWidget *popup;		// Popup menu in draw area.
 	void set_widget(GtkWidget *w);
@@ -39,6 +40,8 @@ public:
 	GtkWidget *get_widget();
 	Shape_group *get_group()
 		{ return group; }
+	int get_selected()		// Return index of selected item.
+		{ return selected; }	// (-1 if none.)
 	virtual void render() = 0;
 					// Blit onto screen.
 	virtual void show(int x, int y, int w, int h) = 0;

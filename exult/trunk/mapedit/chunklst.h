@@ -67,7 +67,6 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 					//   displayed list.
 	Chunk_info *info;		// An entry for each chunk drawn.
 	int info_cnt;			// # entries in info.
-	int selected;			// Index of user-selected entry.
 	int locate_cx, locate_cy;	// Last chunk found by 'locate'.
 	bool drop_enabled;		// So we only do it once.
 					// Various controls.
