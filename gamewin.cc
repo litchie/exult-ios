@@ -743,6 +743,14 @@ void Game_window::paint_chunk_objects
 	{
 	Game_object *obj;
 	Chunk_object_list *olist = get_objects(cx, cy);
+	int above_actor;		// If inside, figure height above
+	if (main_actor_inside)		//   actor's head.
+		{
+		above_actor = main_actor->get_lift() + 
+		  shapes.get_info(main_actor->get_shapenum()).get_3d_height();
+		}
+	else
+		above_actor = 32;
 	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))
 		{
 		int shapex = obj->get_shape_pos_x();
@@ -753,7 +761,7 @@ void Game_window::paint_chunk_objects
 		if (lift != at_lift || lift >= skip_lift)
 			continue;	// Don't show things off ground.
 					// Is actor inside?  Skip roofs if so.
-		if (main_actor_inside && lift >= 5)
+		if (lift >= above_actor)
 			continue;
 					// Get shape & frame.
 		int shapenum = obj->get_shapenum();
