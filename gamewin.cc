@@ -1953,6 +1953,14 @@ void Game_window::show_items
 	}
 	else				// Search rest of world.
 		obj = find_object(x, y);
+					// Selection mode?
+	if (cheat.in_map_editor() && cheat.get_edit_mode() == Cheat::select)
+		{
+		if (obj && !obj->get_owner())
+			cheat.toggle_selected(obj);
+		}
+	else				// All other cases:  unselect.
+		cheat.clear_selected();	
 
 	// Do we want the NPC number?
 	if (obj && cheat.number_npcs() && (obj->get_npc_num() > 0 || obj==main_actor))

@@ -464,6 +464,12 @@ void ActionDeleteObject(int *params)
 	cheat.delete_object();
 }
 
+//  { ActionDeleteSelected, "Delete selected", true, ture, NONE, false },
+void ActionDeleteSelected(int *params)
+{
+	cheat.delete_selected();
+}
+
 //  { ActionToggleEggs, 0, "Toggle egg display", true, true, NONE },
 void ActionToggleEggs(int *params)
 {

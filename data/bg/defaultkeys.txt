@@ -10,6 +10,9 @@ left		scroll_left
 up		scroll_up
 down		scroll_down
 home		center_screen
+
+Del		delete_selected
+
 F2		cheat_screen
 F3		map_teleport
 F4		toggle_fullscreen

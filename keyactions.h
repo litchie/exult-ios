@@ -57,6 +57,7 @@ void ActionCenter(int* params);
 void ActionShapeBrowser(int* params);
 void ActionCreateShape(int* params);
 void ActionDeleteObject(int* params);
+void ActionDeleteSelected(int *params);
 void ActionToggleEggs(int* params);
 void ActionGodMode(int* params);
 void ActionGender(int* params);
