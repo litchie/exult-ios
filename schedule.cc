@@ -470,7 +470,7 @@ Actor *Find_congregant
 							!act->is_in_party())
 			vec2.push_back(act);
 		}
-	return vec2[rand()%vec2.size()];
+	return vec2.size() ? vec2[rand()%vec2.size()] : 0;
 	}
 
 /*
