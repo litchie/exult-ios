@@ -104,9 +104,9 @@ short Body_lookup::table[] = {
 				// NCPs:
 	318,	400,	5,	// Sage.
 	319,	400,	9,	// Male peasant.
-#	403,	892,	3,	// Batlin.
+//	403,	892,	3,	// Batlin.
 	403,	414,	16,	// Batlin.
-#	482,	892,	3,	// Batlin.
+//	482,	892,	3,	// Batlin.
 	403,	414,	16,	// Batlin.
 	451,	400,	13,	// Male noble.
 	452,	400,	10,	// Female peasant.
