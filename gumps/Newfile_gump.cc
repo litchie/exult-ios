@@ -45,6 +45,10 @@ using std::memmove;
 using std::string;
 using std::strlen;
 using std::strncpy;
+using std::strcpy;
+using std::strcat;
+using std::memcpy;
+using std::memset;
 
 extern Configuration *config;
 

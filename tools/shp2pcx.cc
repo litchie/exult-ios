@@ -52,6 +52,9 @@ using std::cout;
 using std::endl;
 using std::cerr;
 using std::string;
+using std::strlen;
+using std::memset;
+using std::memcpy;
 
 typedef struct PCX_Header {
   uint8 manufacturer;
