@@ -1,5 +1,7 @@
 2001-08-25  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* shapes/monstinfo.cc:  Cant_yell, cant_bleed flags.
+	* actors.cc,combat.cc:  Check above flags.
 	* gamewin.cc: At start of BG, no longer refrain from
 	setting 6:00 am schedules.
 

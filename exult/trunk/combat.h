@@ -54,8 +54,9 @@ protected:
 	unsigned char strike_range, projectile_range, max_range;
 	bool is_thrown;			// Daggers, etc.
 	unsigned char yelled;		// Yell when first opponent targeted.
-	unsigned char started_battle;	// 1st opponent targeted.
-	unsigned char fleed;		// Set 1st time fleeing.
+	bool started_battle;		// 1st opponent targeted.
+	unsigned char fleed;		// Incremented when fleeing.
+	bool can_yell;
 	int failures;			// # failures to find opponent.
 	void start_battle();		// Play music at start of battle.
 	virtual void find_opponents();
@@ -67,15 +68,7 @@ protected:
 	void run_away();
 	void set_weapon_info();		// Set 'max_reach' of weapon.
 public:
-	Combat_schedule(Actor *n, Schedule_types prev_sched) 
-		: Schedule(n), state(initial), prev_schedule(prev_sched),
-			weapon_shape(0),
-			ammo_shape(0), projectile_shape(0), 
-			strike_range(0), projectile_range(0), max_range(0),
-			is_thrown(false),
-			yelled(0), 
-			started_battle(0), fleed(0), failures(0)
-		{ set_weapon_info(); }
+	Combat_schedule(Actor *n, Schedule_types prev_sched);
 	virtual void now_what();	// Npc calls this when it's done
 	virtual void im_dormant();	// Npc calls this when it goes dormant.
 	virtual void ending(int newtype);// Switching to another schedule.

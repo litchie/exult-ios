@@ -1787,8 +1787,8 @@ void Actor::reduce_health
 	if (cheat.in_god_mode() && ((party_id != -1) || (npc_num == 0)))
 		return;
 	Game_window *gwin = Game_window::get_game_window();
-	Monster_info *inf = gwin->get_info(this).get_monster_info();
-	if (inf && inf->cant_die())	// In BG, this is Batlin/LB.
+	Monster_info *minf = gwin->get_info(this).get_monster_info();
+	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
 		return;
 					// Watch for Skara Brae ghosts.
 	if (npc_num > 0 && Game::get_game_type() == BLACK_GATE &&
@@ -1811,7 +1811,8 @@ void Actor::reduce_health
 		}
 	Game_object_vector vec;		// Create blood.
 	const int blood = 912;
-	if (delta >= 3 && rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
+	if (delta >= 3 && (!minf || !minf->cant_bleed()) &&
+	    rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
 		{			// Create blood where actor stands.
 		Game_object *bobj = gwin->create_ireg_object(blood, 0);
 		bobj->move(get_abs_tile_coord());
@@ -1829,7 +1830,8 @@ void Actor::reduce_health
 				 (attacker->get_flag(Obj_flags::in_party) ||
 							attacker == c)))
 				gwin->get_usecode()->call_usecode(
-					get_usecode(), this, Usecode_machine::died);
+					get_usecode(), this, 
+							Usecode_machine::died);
 
 				// Still 'tournament'?  Set hp = 1.
 			if (get_flag(Obj_flags::si_tournament) &&
@@ -2400,8 +2402,8 @@ int Actor::figure_hit_points
 	if (((party_id != -1) || (npc_num == 0)) && cheat.in_god_mode())
 		return 0;
 	Game_window *gwin = Game_window::get_game_window();
-	Monster_info *inf = gwin->get_info(this).get_monster_info();
-	if (inf && inf->cant_die())	// In BG, this is Batlin/LB.
+	Monster_info *minf = gwin->get_info(this).get_monster_info();
+	if (minf && minf->cant_die())	// In BG, this is Batlin/LB.
 		return 0;
 	bool instant_death = (cheat.in_god_mode() && attacker &&
 		((attacker->party_id != -1) || (attacker->npc_num == 0)));
@@ -2482,7 +2484,7 @@ int Actor::figure_hit_points
 			  get_shapenum() == 0x2d5 ||
 			  get_shapenum() == 0x2e8))
 			say(0x4d2, 0x4da);
-		else
+		else if (!minf || !minf->cant_yell())
 			say(first_ouch, last_ouch);
 
 	reduce_health(hp, attacker);

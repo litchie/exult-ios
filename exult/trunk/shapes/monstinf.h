@@ -84,9 +84,11 @@ class Monster_info
 	unsigned char reach;
 	unsigned char flags;		// Defined below.
 	unsigned char equip_offset;	// Offset in 'equip.dat' (1 based;
+					//   if 0, there's none.)
 	bool m_splits;			// For slimes.
 	bool m_cant_die;
-					//   if 0, there's none.)
+	bool m_cant_yell;		// Can't yell during combat.
+	bool m_cant_bleed;
 public:
 	friend class Monster_actor;
 	Monster_info() {  }
@@ -102,6 +104,10 @@ public:
 		{ return m_splits; }
 	bool cant_die() const
 		{ return m_cant_die; }
+	bool cant_yell() const
+		{ return m_cant_yell; }
+	bool cant_bleed() const
+		{ return m_cant_bleed; }
 	enum Flags {
 		fly = 0,
 		swim = 1,
