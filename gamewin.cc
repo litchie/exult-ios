@@ -204,25 +204,6 @@ Rectangle Game_window::get_gump_rect
 	}
 
 /*
- *	Get a shape onto the screen.
- */
-
-void Game_window::paint_shape
-	(
-	int xoff, int yoff,		// Where to draw in window (bottom
-					//   right of tile where it goes).
-	Shape_frame *shape		// What to paint.
-	)
-	{
-	if (!shape->rle)		// Not RLE?
-		win->copy8(shape->data, 8, 8, xoff - tilesize, 
-						yoff - tilesize);
-	else
-					// Get compressed data.
-		paint_rle_shape(*shape, xoff, yoff);
-	}
-
-/*
  *	Show a Run-Length_Encoded shape.
  */
 
@@ -272,6 +253,66 @@ void Game_window::paint_rle_shape
 	}
 
 /*
+ *	Show a Run-Length_Encoded shape with translucency.
+ */
+
+void Game_window::paint_rle_shape_translucent
+	(
+	Shape_frame& shape,		// Shape to display.
+	int xoff, int yoff		// Where to show in iwin.
+	)
+	{
+					// # of tables:
+	const int xfcnt = sizeof(xforms)/sizeof(xforms[0]);
+					// First pix. value to transform.
+	const int xfstart = 0xff - xfcnt;
+	unsigned char *in = shape.data; // Point to data.
+	int scanlen;
+	while ((scanlen = Read2(in)) != 0)
+		{
+					// Get length of scan line.
+		int encoded = scanlen&1;// Is it encoded?
+		scanlen = scanlen>>1;
+		short scanx = Read2(in);
+		short scany = Read2(in);
+		if (!encoded)		// Raw data?
+			{
+			win->copy_line_translucent8(in, scanlen,
+					xoff + scanx, yoff + scany,
+					xfstart, 0xfe, xforms);
+			in += scanlen;
+			continue;
+			}
+		for (int b = 0; b < scanlen; )
+			{
+			unsigned char bcnt = *in++;
+					// Repeat next char. if odd.
+			int repeat = bcnt&1;
+			bcnt = bcnt>>1; // Get count.
+			if (repeat)
+				{
+				unsigned char pix = *in++;
+				if (pix >= xfstart && pix <= 0xfe)
+					win->fill_line_translucent8(pix, bcnt,
+						xoff + scanx + b, yoff + scany,
+						xforms[pix - xfstart]);
+				else
+					win->fill_line8(pix, bcnt,
+					      xoff + scanx + b, yoff + scany);
+				}
+			else		// Get that # of bytes.
+				{
+				win->copy_line_translucent8(in, bcnt,
+					xoff + scanx + b, yoff + scany,
+					xfstart, 0xfe, xforms);
+				in += bcnt;
+				}
+			b += bcnt;
+			}
+		}
+	}
+
+/*
  *	Get the map objects and scenery for a superchunk.
  */
 
@@ -296,8 +337,6 @@ void Game_window::get_map_objects
 			get_chunk_objects(scx + cx, scy + cy, chunk_num);
 			}
 	}
-
-static int rlecount = 0;	//+++++++++++DEBUGGING.
 
 /*
  *	Read in graphics data into window's image.
@@ -333,7 +372,6 @@ void Game_window::get_chunk_objects
 				else
 					rles = obj;
 				last_rle = obj;
-				rlecount++;
 				}
 			else		// Flat.
 				olist->set_flat(shapex, shapey, id);
@@ -412,7 +450,6 @@ void Game_window::get_ifix_chunk_objects
 		{
 		Game_object *obj = new Game_object(ent);
 		olist->add(obj);
-		rlecount++;		//++++++++++++++++++++DEBUGGING
 		}
 	delete[] entries;		// Done with buffer.
 	}
@@ -527,16 +564,6 @@ cout << '\n';
 		obj->set_quality(quality);
 		if (!container || !container->add(obj))
 			get_objects(scx + cx, scy + cy)->add(obj);
-#if 0	/* Not sure about this yet. */
-		if (entlen == 12 &&	// Container?
-					// Not an egg or ??.
-		    !(entry[2]==0x13 && ((entry[3]&3)==1)) &&
-		    !(entry[2]==0xc1 && entry[3]==3))
-					// Skip contents
-			while ((entlen = Read1(ireg)) > 1 && ireg.good())
-				ireg.read(entry, entlen);
-#endif
-		rlecount++;		//++++++++++++++++++++DEBUGGING
 		}
 	}
 
@@ -586,7 +613,6 @@ void Game_window::get_superchunk_objects
 	get_ifix_objects(schunk);	// Get objects from ifix.
 	get_ireg_objects(schunk);	// Get moveable objects.
 	schunk_read[schunk] = 1;	// Done this one now.
-// cout << "Rlecount = " << rlecount << '\n';
 	}
 
 /*
@@ -1149,8 +1175,8 @@ void Game_window::show_items
 #endif
 		if (info.is_animated())
 			cout << "Object is ANIMATED\n";
-		if (info.has_transparency())
-			cout << "Object has TRANSPARENCY\n";
+		if (info.has_translucency())
+			cout << "Object has TRANSLUCENCY\n";
 		if (info.is_transparent())
 			cout << "Object is TRANSPARENT\n";
 		if (info.is_light_source())

@@ -175,7 +175,7 @@ public:
 		{ return (tfa[2] & (1<<6)) != 0; }
 	int is_transparent()		// ??
 		{ return (tfa[1] & (1<<7)) != 0; }
-	int has_transparency()
+	int has_translucency()
 		{ return (tfa[2] & (1<<7)) != 0; }
 	int is_solid()			// Guessing.  Means can't walk through.
 		{ return (tfa[0] & (1<<3)) != 0; }
@@ -197,7 +197,7 @@ public:
 		{ info = new Shape_info[num_shapes]; }
 	int read_info();		// Read additional data files.
 	Shape_info& get_info(int shapenum)
-		{ return shapenum < num_shapes ? info[shapenum] : zinfo; }
+		{ return info[shapenum]; }
 	};
 
 #endif

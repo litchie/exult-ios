@@ -245,12 +245,23 @@ public:
 						- 4*obj->get_lift();
 		}
 					// Paint shape in window.
-	void paint_shape(int xoff, int yoff, Shape_frame *shape);
+	void paint_shape(int xoff, int yoff, Shape_frame *shape,
+						int translucent = 0)
+		{
+		if (!shape->rle)	// Not RLE?
+			win->copy8(shape->data, 8, 8, xoff - tilesize, 
+						yoff - tilesize);
+		else if (!translucent)
+			paint_rle_shape(*shape, xoff, yoff);
+		else
+			paint_rle_shape_translucent(*shape, xoff, yoff);
+		}
 	void paint_shape(int xoff, int yoff, int shapenum, int framenum)
 		{
 		Shape_frame *shape = get_shape(shapenum, framenum);
 		if (shape)
-			paint_shape(xoff, yoff, shape);
+			paint_shape(xoff, yoff, shape, 
+				shapes.get_info(shapenum).has_translucency());
 		}
 					// A "face" is used in conversations.
 	void paint_face(int xoff, int yoff, int shapenum, int framenum)
@@ -267,8 +278,9 @@ public:
 			paint_shape(xoff, yoff, shape);
 		}
 					// Read encoded show into window.
-					// Read encoded show into window.
 	void paint_rle_shape(Shape_frame& shape, int xoff, int yoff);
+	void paint_rle_shape_translucent(Shape_frame& shape, 
+							int xoff, int yoff);
 					// Get "map" superchunk objs/scenery.
 	void get_map_objects(int schunk);
 					// Get "chunk" objects/scenery.
