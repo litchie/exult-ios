@@ -91,7 +91,6 @@ void Shapes_vga_file::write_info
 
 	ofstream armor;
 	U7open(armor, PATCH_ARMOR);
-//++++++Need an Armor_info class!!
 	cnt = 0;
 	for (i = 0; i < num_shapes; i++)
 		if (info[i].armor != 0)
@@ -117,7 +116,7 @@ void Shapes_vga_file::write_info
 	U7open(ammo, PATCH_AMMO);
 	cnt = 0;
 	for (i = 0; i < num_shapes; i++)
-		if (info[i].ammo)	//+++++Ammo field instead of table.
+		if (info[i].ammo)
 			cnt++;
 	ammo.put(cnt);
 	for (i = 0; i < num_shapes; i++)
@@ -221,7 +220,7 @@ void Weapon_info::write
 	}
 
 /*
- *	Write out an amm-info entry to 'amms.dat'.
+ *	Write out an ammo-info entry to 'ammo.dat'.
  */
 
 void Ammo_info::write
@@ -233,13 +232,34 @@ void Ammo_info::write
 	uint8 buf[13];			// Entry length.
 	uint8 *ptr = buf;
 	Write2(ptr, shapenum);
-	Write2(ptr, shapenum);
+	Write2(ptr, family_shape);
 	Write2(ptr, type2);
 	*ptr++ = damage;
 	Write2(ptr, 0);			// Unknown.
 	*ptr++ = damage_type<<4;
 	*ptr++ = powers;
 	Write2(ptr, 0);			// Unknown.
+	out.write((char *) buf, sizeof(buf));
+	}
+
+/*
+ *	Write out an armor-info entry to 'armor.dat'.
+ */
+
+void Armor_info::write
+	(
+	int shapenum,
+	std::ostream& out		// Write to here.
+	)
+	{
+	uint8 buf[10];			// Entry length.
+	uint8 *ptr = buf;
+	Write2(ptr, shapenum);
+	*ptr++ = prot;			// Protection value.
+	*ptr++ = 0;			// Unknown.
+	*ptr++ = immune;		// Immunity flags.
+       	Write4(ptr, 0);			// Last 5 are unknown/unused.
+	*ptr = 0;
 	out.write((char *) buf, sizeof(buf));
 	}
 
