@@ -126,15 +126,26 @@ void Npc_proximity_handler::handle_event
 					// Trick:  Stand, but stay in
 					//   sleep_schedule.
 		npc->get_schedule()->ending(Schedule::stand);
-		npc->say(first_awakened, last_awakened);
-		npc->start(0, 10000);	// In 10 seconds, go back to sleep.
-		extra_delay = 11;	// And don't run Usecode while up.
+					// Hostile monster?
+		if (npc->get_alignment() == Npc_actor::hostile &&
+		    npc != gwin->get_camera_actor() && npc->is_monster())
+			{
+			npc->say("Aaargggh!!");
+			npc->set_schedule_type(Schedule::combat);
+			}
+		else
+			{
+			npc->say(first_awakened, last_awakened);
+					// In 10 seconds, go back to sleep.
+			npc->start(0, 10000);
+			extra_delay = 11;// And don't run Usecode while up.
+			}
 		}
 					// Hostile monster?  ATTACK!
 	else if (npc->get_alignment() == Npc_actor::hostile &&
 		npc != gwin->get_camera_actor() &&
 		npc->is_monster() &&
-		sched != Schedule::combat &&
+		sched != Schedule::combat && sched != Schedule::sleep &&
 					// jsf-Trying to fix mage in
 					// Test of Courage:
 		sched != Schedule::wait)
