@@ -91,7 +91,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  */
 %left AND OR
 %left EQUALS NEQUALS LTEQUALS GTEQUALS '<' '>' IN
-%left '-' '+'
+%left '-' '+' '&'
 %left '*' '/' '%'
 %left NOT
 
