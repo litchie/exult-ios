@@ -20,10 +20,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#if defined( AMIGA ) || defined( __MORPHOS__ )
+#if defined(__MORPHOS__) || defined( AMIGA )
 
 #define NO_PPCINLINE_STDARG
 #include <proto/exec.h>
+
+// "Remove" has been defined as a macro in ppcinline/exec.h and it will clash with a
+// definition in xmidi.h so I better undefine this here.
+#undef Remove
 #include "amiga_midi.h"
 #include "Configuration.h"
 extern	Configuration	*config;
@@ -73,8 +77,7 @@ void AmigaMIDI::stop_track(void)
 	{
 		if( amMidiRequest->amr_Std.io_Command == CMD_WRITE )
 		{
-			if( !CheckIO( (struct IORequest *)amMidiRequest ) )
-				AbortIO( (struct IORequest *)amMidiRequest );
+			AbortIO( (struct IORequest *)amMidiRequest );
 			WaitIO( (struct IORequest *)amMidiRequest );
 		}
 
@@ -94,11 +97,11 @@ bool AmigaMIDI::is_playing(void)
 
 void AmigaMIDI::start_track(XMIDIEventList *event_list,bool repeat)
 {
-	const char *name = MIDITMPFILE;
-	event_list->Write(name);
-
 	if( amMidiRequest )
 	{
+		const static char *name = "T:u7midi";
+		event_list->Write(name);
+		
 		stop_track();
 
 		FileOpen = true;
@@ -120,3 +123,4 @@ const	char *AmigaMIDI::copyright(void)
 }
 
 #endif
+

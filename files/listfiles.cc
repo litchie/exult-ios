@@ -288,6 +288,8 @@ int U7ListFiles(const std::string pathMask, FileList& files)
 
 #elif defined(__MORPHOS__) || defined(AMIGA)
 
+#define NO_PPCINLINE_VARARGS
+#define NO_PPCINLINE_STDARG
 #include <proto/dos.h>
 
 static struct AnchorPath ap __attribute__((aligned(4)));
