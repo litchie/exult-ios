@@ -47,7 +47,7 @@ install-sh
 ltmain.sh
 exult*.tar.gz
 nadirconf
-autom4te.cache
+autom4te*.cache
 stamp-h1
 expack.exe
 exult_studio.exe
