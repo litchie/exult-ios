@@ -67,7 +67,7 @@ int Actor_pathfinder_client::get_step_cost
 	int cost = 1;
 	olist->setup_cache();		// Make sure cache is valid.
 	int water, poison;		// Get tile info.
-	Actor::get_tile_info(gwin, olist, tx, ty, water, poison);
+	Actor::get_tile_info(0, gwin, olist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 					// For now, assume height=3.
 	if (olist->is_blocked(3, to.tz, tx, ty, new_lift, get_move_flags()))

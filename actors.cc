@@ -499,6 +499,7 @@ void Actor::follow
 
 inline void Actor::get_tile_info
 	(
+	Actor *actor,			// May be 0 if not known.
 	Game_window *gwin,
 	Chunk_object_list *nlist,	// Chunk.
 	int tx, int ty,			// Tile within chunk.
@@ -514,6 +515,11 @@ inline void Actor::get_tile_info
 		Shape_info& finfo = gwin->get_info(flat.get_shapenum());
 		water = finfo.is_water();
 		poison = finfo.is_poisonous();
+		Game_object *boots;	// Check for swamp/swamp boots.
+		if (poison && actor && 
+		    (boots = actor->Actor::get_readied(Actor::feet)) != 0 &&
+		    boots->get_shapenum() == 588)
+			poison = 0;
 		}
 	}
 
@@ -1537,7 +1543,7 @@ int Main_actor::step
 	Chunk_object_list *nlist = gwin->get_objects(cx, cy);
 	int old_lift = get_lift();
 	int water, poison;		// Get tile info.
-	get_tile_info(gwin, nlist, tx, ty, water, poison);
+	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 	Game_object *block;		// Just assume height==3.
 	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift, 
@@ -1975,7 +1981,7 @@ int Npc_actor::step
 		}
 	nlist->setup_cache();		// Setup cache if necessary.
 	int water, poison;		// Get tile info.
-	get_tile_info(gwin, nlist, tx, ty, water, poison);
+	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
 					// Just assume height==3.
 	if (nlist->is_blocked(3, get_lift(), tx, ty, new_lift, 
