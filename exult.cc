@@ -337,6 +337,7 @@ static int Filter_intro_events
  */
 static int dragging = 0;		// Object or gump being moved.
 static int dragged = 0;			// Flag for when obj. moved.
+static int run_avatar = 0;		// 1 if shift key held down.
 
 /*
  *	Handle events until a flag is set.
@@ -419,7 +420,11 @@ static void Handle_event
 					//  when right button pressed.
 		if (event.button.button == 3 && 
 		    gwin->get_mode() == Game_window::normal)
-			gwin->start_actor(event.button.x, event.button.y);
+			{
+			run_avatar = ((SDL_GetModState() & KMOD_SHIFT) != 0);
+			gwin->start_actor(event.button.x, event.button.y,
+								run_avatar);
+			}
 		break;
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 3)
@@ -484,7 +489,8 @@ static void Handle_event
 			}
 					// Dragging with right?
 		if (event.motion.state & SDL_BUTTON(3))
-			gwin->start_actor(event.motion.x, event.motion.y);
+			gwin->start_actor(event.motion.x, event.motion.y,
+								run_avatar);
 		break;
 		}
 	case SDL_ACTIVEEVENT:

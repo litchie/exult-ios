@@ -1245,22 +1245,6 @@ void Game_window::view_up
 	}
 
 /*
- *	Start moving the actor.
- */
-
-void Game_window::start_actor
-	(
-	int winx, int winy		// Move towards this win. location.
-	)
-	{
-	if (mode != normal)
-		return;
-					// Move every 1/8 sec.
-	main_actor->walk_to_point(
-		chunkx*chunksize + winx, chunky*chunksize + winy, 125);
-	}
-
-/*
  *	Stop the actor.
  */
 
