@@ -54,6 +54,9 @@ using std::string;
 
 void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 {
+	if (!midi_device && !init_device())
+	        return;
+
 
   #if DEBUG
         cout << "Audio subsystem request: Music track # " << num << endl;
@@ -66,9 +69,6 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 	}
 
 	U7object	track(midi_bank[bank].c_str(),num);
-
-	if (!midi_device && !init_device())
-	        return;
 
 //Not needed anymore
 //#ifdef WIN32
@@ -125,6 +125,9 @@ void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 
 void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 {
+	if (!fname || (!midi_device && !init_device()))
+	        return;
+
   #if DEBUG
         cout << "Audio subsystem request: Music track # " << num << " in file "<< fname << endl;
   #endif
@@ -135,9 +138,6 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
 		midi_device->stop_track();
 		return;
 	}
-
-	if ((!midi_device && !init_device()) || !fname)
-	        return;
 
 // Not Needed anymore
 //#ifdef WIN32
@@ -229,7 +229,7 @@ void	MyMidiPlayer::start_music(int num,bool repeat,int bank)
 
 void	MyMidiPlayer::start_music(const char *fname,int num,bool repeat)
 {
-	if((!midi_device && !init_device()) || !fname)
+	if(!fname || (!midi_device && !init_device()))
 		return;
 	current_track=-1;
 	start_track(fname,num,repeat);
@@ -341,12 +341,6 @@ bool MyMidiPlayer::init_device(void)
 
 	config->set("config/audio/midi/enabled",s,true);
 
-	if(!sfx && !music)
-		{
-		//cout << "Audio says no midi. MIDI disabled" << endl;
-		no_device=false;
-		}
-
 
 	config->value("config/audio/midi/convert",s,"gm");
 
@@ -376,6 +370,16 @@ bool MyMidiPlayer::init_device(void)
 		config->set("config/audio/effects/convert","gs",true);
 	}
 
+	// already initialized?
+	if (initialized)
+		return (midi_device != 0);
+
+	// no need for a MIDI device (for now)
+	if (!sfx && !music)
+	{
+		midi_device = 0;
+		return false;
+	}
 
 #ifdef WIN32
 //	TRY_MIDI_DRIVER(Windows_MCI)
@@ -397,16 +401,20 @@ bool MyMidiPlayer::init_device(void)
 	TRY_MIDI_DRIVER(Mac_QT_midi)
 #endif
 
+	initialized = true;
+
 	if(no_device)
-		{
+	{
 		midi_device=0;
-		cerr << "Unable to create a music device. No music will be played" << endl;
-		}
+		cerr << "Unable to create a MIDI device. No music will be played." << endl;
+		return false;
+	}
 		
-	return no_device;
+	return true;
 }
 
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0),
+				  initialized(false),
 				  music_conversion(XMIDI_CONVERT_MT32_TO_GM),
 				  effects_conversion(XMIDI_CONVERT_GS127_TO_GS)
 {
