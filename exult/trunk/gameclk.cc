@@ -10,6 +10,8 @@
 #include "gamewin.h"
 #include "actors.h"
 
+extern bool infravision;
+
 /*
  *	Palette #'s in 'palettes.flx'.  Just need them here for now.
 	++++++Need to verify #'s.
@@ -36,6 +38,12 @@ void Game_clock::set_time_palette
 		gwin->set_palette(PALETTE_INVISIBLE);
 		return;
 		}
+
+	if (infravision) {
+		gwin->set_palette(PALETTE_DAY);
+		return;
+	}
+
 	if (gwin->is_in_dungeon() || hour < 5)
 		new_palette = PALETTE_NIGHT;
 	else if (hour < 6)
