@@ -165,7 +165,7 @@ public:
 	int is_main_actor_inside()
 		{ return main_actor_inside; }
 	Actor *get_npc(long npc_num)
-		{ return (npc_num > 0 && npc_num < num_npcs) ? npcs[npc_num] 
+		{ return (npc_num >= 0 && npc_num < num_npcs) ? npcs[npc_num] 
 									: 0; }
 					// Find monster info. for shape.
 	Monster_info *get_monster_info(int shapenum);
