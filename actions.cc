@@ -120,7 +120,7 @@ Path_walking_actor_action::Path_walking_actor_action
 	PathFinder *p,			// Pathfinder, or 0 for Astar.
 	int maxblk			// Max. retries when blocked.
 	) : path(p), frame_index(0), from_offscreen(false), subseq(0),
-	    blocked(0), max_blocked(maxblk)
+	    blocked(0), max_blocked(maxblk), reached_end(false)
 	{
 	if (!path)
 		path = new Astar();
@@ -208,7 +208,10 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	if (!speed)
 		return 0;		// Not moving.
 	if (!path->GetNextStep(tile))
+		{
+		reached_end = true;	// Did it.
 		return (0);
+		}
 	Tile_coord cur = actor->get_abs_tile_coord();
 	int newdir = (int) Get_direction4(cur.ty - tile.ty, tile.tx - cur.tx);
 	Frames_sequence *frames = actor->get_frames(newdir);
@@ -353,6 +356,7 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	blocked = 0;			// Clear 'blocked' count.
+	reached_end = false;		// Starting new path.
 	from_offscreen = false;
 					// Set up new path.
 					// Don't care about 1 coord.?
@@ -504,8 +508,7 @@ int If_else_path_actor_action::handle_event
 	delay = Path_walking_actor_action::handle_event(actor);
 	if (delay)
 		return delay;
-	Tile_coord dest;
-	if (!get_dest(dest) || actor->get_abs_tile_coord() != dest)
+	if (!reached_end)
 		{			// Didn't get there.
 		if (failure)
 			{

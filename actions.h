@@ -71,6 +71,9 @@ public:
  */
 class Path_walking_actor_action : public Actor_action
 	{
+protected:
+	bool reached_end;		// Reached end of path.
+private:
 	PathFinder *path;		// Allocated pathfinder.
 	int original_dir;		// From src. to dest. (0-7).
 	int frame_index;		// Index within frame sequence.
