@@ -3,6 +3,12 @@ INCLUDES = -I$(srcdir)/.. $(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
 
 noinst_LTLIBRARIES = libu7file.la
 
+if HAVE_SNPRINTF
+SNPRINTF =
+else
+SNPRINTF = snprintf.cc
+endif
+
 libu7file_la_SOURCES =	\
 	Flat.cc		\
 	Flat.h		\
@@ -18,7 +24,8 @@ libu7file_la_SOURCES =	\
 	utils.h		\
 	databuf.h	\
 	listfiles.cc	\
-	listfiles.h
+	listfiles.h	\
+	$(SNPRINTF)
 
 EXTRA_DIST = 		\
 	README

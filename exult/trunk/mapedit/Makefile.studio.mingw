@@ -1,4 +1,4 @@
-# Exult Studio makefile for use in Windows with cygwin
+# Exult Studio makefile for use in Windows with mingw 1.0
 # Where is Exult Studio will be installed
 STUDIOPATH=C:/Studio
 
@@ -16,7 +16,7 @@ LIBGLADE_INCLUDES = `libglade-config --cflags`
 LIBGLADE_LIBS = `libglade-config --libs`
 
 INCLUDES = -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
-	-I$(SRC)/files -I(SRC)/server $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
+	-I$(SRC)/files -I$(SRC)/server $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
 
 CPPFLAGS = -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 $(INCLUDES)
 
@@ -24,14 +24,14 @@ CXXFLAGS = -fnative-struct
 
 CXX=g++
 
-LFLAGS=
+LFLAGS=-lmingw32 -lberty
 LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS)
 EXEC=exult_studio.exe
 
 SERVER_OBJS=server.o servemsg.o objserial.o 
 
 MAPEDIT_OBJS=dirbrowser.o studio.o exult_studio.o objbrowse.o shapelst.o \
-	paledit.o chunklst.o eggedit.o npcedit.o
+	paledit.o chunklst.o
 
 FILES_OBJS=Flat.o Flex.o Table.o IFF.o U7file.o utils.o listfiles.o
 

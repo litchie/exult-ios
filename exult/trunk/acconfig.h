@@ -52,6 +52,9 @@
 /* getaddrinfo() available? */
 #undef HAVE_GETADDRINFO
 
+/* Some platforms don't have snprintf */
+#undef HAVE_SNPRINTF
+
 @BOTTOM@
 
 #ifdef ALPHA_LINUX_CXX
