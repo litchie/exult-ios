@@ -30,6 +30,7 @@ class Actor;
 class Game_object;
 class Tile_coord;
 class Effects_manager;
+class Map_chunk;
 
 class Cheat : public Game_singletons
 {
@@ -43,7 +44,8 @@ class Cheat : public Game_singletons
 	move = 0,			// Normal dragging.
 	paint = 1,			// Left-mouse dragging paints shapes.
 	paint_chunks = 2,		// Left-dragging paints whole chunks.
-	combo_pick = 3			// Left-click adds item to combo.
+	combo_pick = 3,			// Left-click adds item to combo.
+	select_chunks = 4		// Select whole chunks.
   };
 private:
   ShapeBrowser *browser;
@@ -67,6 +69,8 @@ private:
   bool hack_mover;
 
   bool enabled;
+  // Rectangle containing selected chunks:
+  int chunksel_left, chunksel_right, chunksel_top, chunksel_bottom;
 
   void send_select_status();
 public:
@@ -93,6 +97,8 @@ public:
   void toggle_map_editor (void);
   void toggle_tile_grid (void);
   void set_edit_mode(Map_editor_mode md) { edit_mode = md; }
+  void clear_chunksel();
+  void add_chunksel(Map_chunk *chunk, bool extend = false);
   void set_edit_lift(int lift);
   void set_edit_shape(int sh, int fr);
   void set_edit_chunknum(int chnum) { edit_chunknum = chnum; }
