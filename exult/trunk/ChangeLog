@@ -1,3 +1,6 @@
+2001-06-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* actors.*, keyactions.cc: double clicking avatar shows inventory again
+
 2001-06-08  Ryan Nunn <triforce@merlin.net.au>
 	* exult.cc, keyactions.cc, mouse.h: When gumps are open, the cursor
 	  will now only be the hand when the mouse is actually over a gump.
