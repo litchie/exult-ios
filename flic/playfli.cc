@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "databuf.h"
 #include "playfli.h"
 #include "utils.h"
+#include "gamewin.h"
 
 using std::ifstream;
 using std::memset;
@@ -227,6 +228,9 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	  if (frame < first_frame)
 		  continue;
 
+	  // Speed related frame skipping detection
+	  int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= ticks;
+
           if(win && fli_buf) win->put (fli_buf, xoffset, yoffset);
 
 	  while (SDL_GetTicks() < ticks)
@@ -234,7 +238,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	  
 	  ticks += fli_speed*10;
 
-	  if(win && !dont_show)
+	  if(win && !dont_show && !skip_frame)
              win->show();
       }
     delete[] pixbuf;

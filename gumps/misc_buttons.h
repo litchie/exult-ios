@@ -90,5 +90,17 @@ public:
 	virtual void activate(Game_window *gwin);
 };
 
+/*
+ *	The Serpent Isle Combat Stats Button
+ */
+class Cstats_button : public Gump_button
+{
+public:
+	Cstats_button(Gump *par, int px, int py);
+
+ 	// What to do when 'clicked':
+	virtual void activate(Game_window *gwin);
+};
+
 #endif
 

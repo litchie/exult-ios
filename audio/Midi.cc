@@ -51,9 +51,17 @@ using std::string;
 
 void    MyMidiPlayer::start_track(int num,bool repeat,int bank)
 {
+
   #if DEBUG
         cout << "Audio subsystem request: Music track # " << num << endl;
   #endif
+	// -1 and 255 are stop tracks
+	if (num == -1 || num == 255)
+	{
+		midi_device->stop_track();
+		return;
+	}
+
 	U7object	track(midi_bank[bank].c_str(),num);
 
 	if (!midi_device && !init_device())
@@ -117,6 +125,13 @@ void    MyMidiPlayer::start_track(const char *fname,int num,bool repeat)
   #if DEBUG
         cout << "Audio subsystem request: Music track # " << num << " in file "<< fname << endl;
   #endif
+
+	// -1 and 255 are stop tracks
+	if (num == -1 || num == 255)
+	{
+		midi_device->stop_track();
+		return;
+	}
 
 	if ((!midi_device && !init_device()) || !fname)
 	        return;

@@ -152,7 +152,8 @@ public:
 		hands2_spot = 16,	// SI (gloves, gauntlets)
 		ucont_spot = 17,	// SI Usecode Container
 		lrhand = 100,		// Special:  uses lhand & rhand.
-		lrfinger = 101		// Special:  uses lfinger & rfinger
+		lrfinger = 101,		// Special:  uses lfinger & rfinger
+		special_spot = 102	// Special:  SI non placeable
 		};
 	int free_hand() const		// Get index of a free hand, or -1.
 		{ 

@@ -38,6 +38,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exceptions.h"
 #include "utils.h"
 
+/*
+ *	Music:
+ */
+enum Combat_song
+{
+	CSBattle_Over,
+	CSAttacked1,
+	CSAttacked2,
+	CSVictory,
+	CSRun_Away,
+	CSDanger,
+	CSHidden_Danger
+};
+
 //---- Audio -----------------------------------------------------------
 
 class Audio 
@@ -68,6 +82,7 @@ public:
 	bool	start_music(int num,bool continuous,int bank=0);
 	void	start_music(const char *fname,int num,bool continuous);
 	void	start_music(XMIDI *midfile,bool continuous);
+	bool	start_music_combat(Combat_song song,bool continuous,int bank=0);
 	void	stop_music();
 	void	play_sound_effect (int num);
 	bool	start_speech(int num,bool wait=false);

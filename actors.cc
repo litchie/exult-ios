@@ -51,6 +51,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "cheat.h"
 #include "frameseq.h"
+#include "Paperdoll_gump.h"
 
 using std::cerr;
 using std::cout;
@@ -816,14 +817,26 @@ int Actor::find_best_spot
 		{
 			case spell_si:
 			case other_spell_si:
-			case one_handed_si:			//
-			{					// FIXME
-				int spot = free_hand();		//
-				if (spot == -1 && !spots[belt])	// Only certain things are
-					spot = belt;		// Allowed to be put in your
-				return spot;			// belt. How do i differentiate?
-			}					//
+			case one_handed_si:
+
+			// First check for preferences
+			if (!two_handed && !spots[lhand] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), lhand))
+				return lhand;
+			else if (!two_handed && !spots[rhand] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), rhand))
+				return rhand;
+						
+			// Ok, no spot found, now check for free hand
+			if (free_hand() != -1) return free_hand();
+				
+			// Still, no spot found, lastly check for secondary places
+			if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), belt))
+				return belt;
+			else if (!spots[shield_spot] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), shield_spot))
+				return shield_spot;
 			
+			return -1;
+			
+
 			case cloak_si:
 			return !spots[cloak_spot] ? cloak_spot : free_hand();
 			
@@ -843,9 +856,9 @@ int Actor::find_best_spot
 			return (free_finger() != -1 ? free_finger() : free_hand());
 
 			case earrings_si:
-			return !spots[ears_spot] ? ears_spot : -free_hand();
+			return !spots[ears_spot] ? ears_spot : free_hand();
 
-			case ammo_si:		// ++++++++Check SI.
+			case ammo_si:
 			return !spots[ammo] ? ammo : free_hand();
 			
 			case belt_si:
@@ -862,20 +875,29 @@ int Actor::find_best_spot
 			
 			case backpack_si:
 			return !spots[back] ? back : free_hand();
+		
 			
 			case two_handed_si:
-			return (!spots[lhand] && !spots[rhand]) ? lrhand :
-					!spots[back2h_spot] ? back2h_spot : -1;
+			
+			// First check hands
+			if (!spots[lhand] && !spots[rhand]) return lrhand;
+				
+			// Check storage
+			if (!spots[belt] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), belt))
+				return belt;
+			else if (!spots[back2h_spot] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), back2h_spot))
+				return back2h_spot;
+				
+			return -1;
 
 
-			// What about Bedroll in SI
 			case other:
 			
-			if (obj->get_shapenum() == 802 && !spots[belt])	// Bag
+			if (obj->get_shapenum() == 802 && !spots[belt])			// Bag
 				return belt;
 			else if (obj->get_shapenum() == 583 && !spots[back2h_spot])	// Bed roll
 				return back2h_spot;
-			else if (obj->get_shapenum() == 583 && !spots[back])	// Bed roll
+			else if (obj->get_shapenum() == 583 && !spots[back])		// Bed roll
 				return back;
 		
 			return free_hand();
@@ -890,6 +912,8 @@ int Actor::find_best_spot
 			return free_hand();
 		}
 	}
+
+	return -1;
 }
 
 /*
@@ -1546,14 +1570,6 @@ int Actor::add_readied
 	int index			// Spot #.
 	)
 	{
-#ifdef DEBUG
-	if (Game::get_game_type() == SERPENT_ISLE)
-	{
-		cerr << "NPC " << get_npc_num() << "  Name: " << item_names[obj->get_shapenum()] << endl;
-		cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
-		cerr << endl;
-	}
-#endif //DEBUG
 
 	if (index < 0 || index >= (int)(sizeof(spots)/sizeof(spots[0])))
 		return (0);		// Out of range.
@@ -1564,6 +1580,43 @@ int Actor::add_readied
 	int best_index = find_best_spot(obj);
 	if (best_index == -1)		// No place?
 		return (0);
+
+#ifdef DEBUG
+	if (Game::get_game_type() == SERPENT_ISLE)
+	{
+		cerr << "NPC " << get_npc_num() << "  Name: " << item_names[obj->get_shapenum()] << endl;
+		cerr << "Shape: " << obj->get_shapenum() << "  Frame: " << obj->get_framenum() << endl;
+		cerr << "Index: " << index << "  Best Index: " << best_index << endl;
+	}
+#endif //DEBUG
+
+	// If it's a two handed weapon and put on a hand change to lhand
+	if (best_index == lrhand && index == rhand) index = lhand;
+
+	// Special Serpent Isle Code for if something is not going in a hand
+	if (Game::get_game_type() == SERPENT_ISLE && index != best_index)
+	{
+		Shape_info& info =  Game_window::get_game_window()->get_info(obj);
+		Ready_type_SI type = (Ready_type_SI) info.get_ready_type();
+
+		// Can it go where we want? If so set best index to this
+		// Otherwise set this to best index
+		if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), index) && index != lhand && index != rhand)
+ 			best_index = index;
+		else if (best_index == lrhand)
+			index = lhand;
+		else if (type != spell_si && type != other_spell_si)
+			index = best_index;
+	}
+
+#ifdef DEBUG
+	if (Game::get_game_type() == SERPENT_ISLE)
+	{
+		cerr << "Index2: " << index << "  Best Index2: " << best_index << endl;
+		cerr << endl;
+	}
+#endif //DEBUG
+
 	if (index == best_index || (!two_handed && index == lhand)
 			|| (!two_handed && index == rhand
 				&& best_index != lrhand) ||
@@ -2893,7 +2946,7 @@ void Monster_actor::die
 	if (creator)
 		creator->monster_gone();
 	creator = 0;
-	Audio::get_ptr()->start_music(VICTORY, 0);
+	Audio::get_ptr()->start_music_combat ( CSVictory, 0);
 					// Got to delete this somewhere, but
 					//   doing it here crashes.
 	in_world_cnt--;			// So... Decrement 'live' count here.

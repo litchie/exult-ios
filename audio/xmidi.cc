@@ -25,17 +25,22 @@
 #endif
 #include "utils.h"
 #include "xmidi.h"
+#include "Configuration.h"
+extern	Configuration	*config;
 
 using std::cerr;
 using std::endl;
 using std::memcmp;
 using std::memcpy;
 
+#include <cmath>
+
 // This is used to correct incorrect patch, vol and pan changes in midi files
 // The bias is just a value to used to work out if a vol and pan belong with a 
 // patch change. This is to ensure that the default state of a midi file is with
 // the tracks centred, unless the first patch change says otherwise.
 #define PATCH_VOL_PAN_BIAS	5
+
 
 // This is a default set of patches to convert from MT32 to GM
 // The index is the MT32 Patch nubmer and the value is the GM Patch
@@ -304,6 +309,10 @@ const char XMIDI::mt32asgs[256] = {
 	98, 0,	// 126	Water Bell set to Crystal Pad(98)
 	121, 0	// 127	Jungle Tune set to Breath Noise
 };
+
+float XMIDI::gamma_value=-1;
+unsigned char XMIDI::gamma_table[128];
+
 // Constructor
 XMIDI::XMIDI(DataSource *source, int pconvert) : events(NULL),timing(NULL),
 						convert_type(pconvert),fixed(NULL)
@@ -568,6 +577,8 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	midi_event *vol = NULL;
 	midi_event *pan = NULL;
 	midi_event *bank = NULL;
+	midi_event *reverb = NULL;
+	midi_event *chorus = NULL;
 	midi_event *temp;
 	
 	for (current = list; current; )
@@ -595,7 +606,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	temp = patch;
 	patch = new midi_event;
 	patch->time = temp->time;
-	patch->status = channel + 0xC0;
+	patch->status = channel|(MIDI_STATUS_PROG_CHANGE << 4);
 	patch->len = 0;
 	patch->buffer = NULL;
 	patch->data[0] = temp->data[0];
@@ -607,7 +618,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 	temp = vol;
 	vol = new midi_event;
-	vol->status = channel + 0xB0;
+	vol->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 	vol->data[0] = 7;
 	vol->len = 0;
 	vol->buffer = NULL;
@@ -625,7 +636,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	temp = bank;
 	
 	bank = new midi_event;
-	bank->status = channel + 0xB0;
+	bank->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 	bank->data[0] = 0;
 	bank->len = 0;
 	bank->buffer = NULL;
@@ -641,7 +652,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 	temp = pan;
 	pan = new midi_event;
-	pan->status = channel + 0xB0;
+	pan->status = channel|(MIDI_STATUS_CONTROLLER << 4);
 	pan->data[0] = 10;
 	pan->len = 0;
 	pan->buffer = NULL;
@@ -651,17 +662,35 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	else
 		pan->data[1] = temp->data[1];
 
-	
+	reverb = new midi_event;
+	reverb->time = 0;
+	reverb->status = channel|(MIDI_STATUS_CONTROLLER << 4);
+	reverb->len = 0;
+	reverb->buffer = NULL;
+	reverb->data[0] = 91;
+	reverb->data[1] = reverb_value;
+
+	chorus = new midi_event;
+	chorus->time = 0;
+	chorus->status = channel|(MIDI_STATUS_CONTROLLER << 4);
+	chorus->len = 0;
+	chorus->buffer = NULL;
+	chorus->data[0] = 93;
+	chorus->data[1] = chorus_value;
+
 	vol->time = 0;
 	pan->time = 0;
 	patch->time = 0;
 	bank->time = 0;
 	
+	reverb->next = chorus;
+	chorus->next = bank;
 	bank->next = vol;
 	vol->next = pan;
 	pan->next = patch;
+	
 	patch->next = list;
-	list = bank;
+	list = reverb;
 }
 
 // DuplicateAndMerge
@@ -842,6 +871,10 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 		return 1;
 
 	current->data[1] = source->read1();
+
+	// Volume modify the note on's, only if converting
+	if (convert_type && (current->status >> 4) == MIDI_STATUS_NOTE_ON && current->data[1])
+		current->data[1] = gamma_table[current->data[1]];
 
 	if (size == 2)
 		return 2;
@@ -1195,7 +1228,26 @@ int XMIDI::ExtractTracks (DataSource *source)
 	uint32		chunk_len;
 	int 		count;
 	char		buf[32];
+
+	string s;
 	
+	config->value("config/audio/midi/reverb",s,"64");
+	reverb_value = atoi(s.data());
+	if (reverb_value > 127) reverb_value = 127;
+	else if (reverb_value < 0) reverb_value = 0;
+	config->set("config/audio/midi/reverb",reverb_value,true);
+	
+	config->value("config/audio/midi/chorus",s,"16");
+	chorus_value = atoi(s.data());
+	if (chorus_value > 127) reverb_value = 127;
+	else if (chorus_value < 0) reverb_value = 0;
+	config->set("config/audio/midi/chorus",chorus_value,true);
+	
+	config->value("config/audio/midi/gamma",s,"1");
+	BuildGammaTable (atof(s.data()));
+	config->set("config/audio/midi/gamma",s,true);
+	
+
 	// Read first 4 bytes of header
 	source->read (buf, 4);
 
@@ -1411,5 +1463,21 @@ int XMIDI::ExtractTracks (DataSource *source)
 	}
 	
 	return 0;	
+}
+
+void XMIDI::BuildGammaTable (float gamma)
+{
+	if (gamma <= 0) gamma = 0.00001;
+	gamma = 1 / gamma;
+	if (gamma == gamma_value) return;	
+	gamma_value = gamma;
+
+	for (int i = 0; i < 128; i++)
+		gamma_table[i] = GetGamma(i);
+}
+
+unsigned char XMIDI::GetGamma (int v)
+{
+	return (unsigned char) (pow ((v / 127.0F), gamma_value) * 127.0F);
 }
 

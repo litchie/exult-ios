@@ -144,7 +144,10 @@ void Palette::fade_in(int cycles)
 			        for(int c=0; c < 768; c++)
 				        fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
 				win->set_palette(fade_pal, 63);
-				win->show();
+								// Frame skipping on slow systems
+				if (i == cycles || ticks >= SDL_GetTicks() ||
+							!Game_window::get_game_window()->get_frame_skipping())
+					win->show();
 				while (ticks >= SDL_GetTicks())
 					;
 				ticks+= 20;
@@ -164,7 +167,10 @@ void Palette::fade_out(int cycles)
 			        for(int c=0; c < 768; c++)
 				        fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
 				win->set_palette(fade_pal, 63);
-				win->show();
+								// Frame skipping on slow systems
+				if (i == 0 || ticks >= SDL_GetTicks() ||
+							 !Game_window::get_game_window()->get_frame_skipping())
+					win->show();
 				while (ticks >= SDL_GetTicks())
 				  ;
 				ticks+= 20;
@@ -173,6 +179,7 @@ void Palette::fade_out(int cycles)
 		        win->set_palette(pal1, 63);
 			win->show();
 		}
+	        win->set_palette(pal1, 63);
 	}
 
 //	Find index (0-255) of closest color (r,g,b < 64).
