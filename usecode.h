@@ -298,7 +298,8 @@ public:
 		npc_proximity = 0,
 		double_click = 1,
 		internal_exec = 2,	// Internal call via intr. 1 or 2.
-		egg_proximity = 3
+		egg_proximity = 3,
+		after_projectile = 4	// For intrinsic 0x41.
 		};
 	enum Global_flag_names {
 		did_first_scene = 0x3b,	// Went through 1st scene with Iolo.
