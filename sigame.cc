@@ -149,6 +149,11 @@ SI_Game::SI_Game()
 				Tile_coord(1034, 2571, 6), 483, 1, 0)));
 		mp->add(new Map_patch_remove(Object_spec(
 				Tile_coord(1034, 2571, 5), 483, 1, 0), true));
+					// Neyobi under a fur:
+		mp->add(new Map_patch_modify(Object_spec(
+				Tile_coord(1012, 873, 0), 867, 13, 0), 
+					Object_spec(
+				Tile_coord(1013, 873, 1), 867, 13, 0)));
 
 	}
 
