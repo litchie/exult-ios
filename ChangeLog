@@ -1,3 +1,8 @@
+2001-03-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Added 'dead' flag, 'killable' flag.  SI combat is
+	still really buggy, but perhaps more on the right track.
+
 2001-03-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* keys.h: fixed 'double help' when using custom keybindings
 
