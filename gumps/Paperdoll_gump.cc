@@ -198,7 +198,7 @@ Paperdoll_gump::Paperdoll_gump
 	// Create Cstats button or Halo and Cmode
 	if (Game::get_game_type() == BLACK_GATE)
 	{
-		if (cont->get_npc_num() == 0)
+		if (actor->get_npc_num() == 0)
 			halo_button = new Halo_button(this, halox, haloy, 
 									actor);
 		else
@@ -219,14 +219,14 @@ Paperdoll_gump::Paperdoll_gump
 
 
 	// If Avatar create Disk Button
-	if (cont->get_npc_num() == 0)
+	if (actor->get_npc_num() == 0)
 		disk_button = new Disk_button(this, diskx, disky);
 	else
 		disk_button = NULL;
 		
 
 	// If Avtar create Combat Button
-	if (cont->get_npc_num() == 0)
+	if (actor->get_npc_num() == 0)
 		combat_button = new Combat_button(this, combatx, combaty);
 	else
 		combat_button = NULL;

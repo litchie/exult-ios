@@ -390,8 +390,7 @@ void Pace_schedule::now_what
 		{
 		Game_object *obj = Game_object::find_blocking(blocked);
 		blocked.tx = -1;
-		if (obj && (obj->get_npc_num() > 0 || 
-					obj == gwin->get_main_actor()))
+		if (obj && dynamic_cast<Actor *>(obj) != 0)
 			{
 			npc->say(first_move_aside, last_move_aside);
 			delay = 1200;	// Wait longer.

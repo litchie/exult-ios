@@ -130,6 +130,7 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual bool edit();		// Edit in ExultStudio.
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
 	virtual void activate(Usecode_machine *umachine, Game_object *obj,

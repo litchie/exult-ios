@@ -238,28 +238,12 @@ public:
 		{ return 1; }
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
-	bool edit();			// Edit in ExultStudio.
+	virtual bool edit();		// Edit in ExultStudio.
 					// Saved from ExultStudio.
 	static void update_from_studio(unsigned char *data, int datalen);
-					// Set new NPC schedule.
-	virtual void set_schedule_type(int new_schedule_type,
-						Schedule *newsched = 0)
-		{  }
-					// Return NPC schedule.
-	virtual int get_schedule_type()	const
-		{ return 11; }		// Loiter.
 	virtual std::string get_name() const;
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
-	virtual void set_property(int prop, int val)
-		{  }
-	virtual int get_property(int prop) const
-		{ return 0; }
-					// Get/set 'alignment'.
-	virtual int get_alignment() const
-		{ return 0; }
-	virtual void set_alignment(short)
-		{  }
 	virtual Container_game_object *get_owner()
 		{ return 0; }
 	virtual void set_owner(Container_game_object *o)
@@ -283,8 +267,6 @@ public:
 	virtual unsigned char get_ident() { return 0; }
 	virtual void set_ident(unsigned char id) {  }
 
-	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
-		{ return 0; }
 	virtual int get_party_id() const// Get/set index within party.
 		{ return -1; }
 	virtual void set_party_id(int i)

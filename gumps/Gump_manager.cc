@@ -260,12 +260,11 @@ void Gump_manager::add_gump
 	}
 
 	Gump *new_gump = 0;
-	if (paperdoll == 2)
-		new_gump = new Paperdoll_gump((Container_game_object *) obj,
-						 x, y, obj->get_npc_num());
-	else if (paperdoll)
-		new_gump = new Actor_gump((Container_game_object *) obj,
-						 x, y, shapenum);
+	Actor *npc = dynamic_cast<Actor *>(obj);
+	if (npc && paperdoll == 2)
+		new_gump = new Paperdoll_gump(npc, x, y, npc->get_npc_num());
+	else if (npc && paperdoll)
+		new_gump = new Actor_gump(npc, x, y, shapenum);
 	else if (shapenum == game->get_shape("gumps/statsdisplay"))
 		new_gump = new Stats_gump((Container_game_object *) obj, x, y);
 	else if (shapenum == game->get_shape("gumps/spellbook"))
