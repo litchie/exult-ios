@@ -38,6 +38,7 @@ class Xdnd
 	Window xgamewin;		// Game window within xwmwin.
 	Atom shapeid_atom;		// For drag-and-drop of shapes.
 	Atom chunkid_atom;		// For chunks.
+	Atom comboid_atom;		// For combos.
 	Atom xdnd_aware;		// For XdndAware.
 	Atom xdnd_enter;
 	Atom xdnd_leave;

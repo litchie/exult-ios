@@ -78,6 +78,7 @@ Xdnd::Xdnd
 	{
 	shapeid_atom = XInternAtom(display, U7_TARGET_SHAPEID_NAME, 0);
 	chunkid_atom = XInternAtom(display, U7_TARGET_CHUNKID_NAME, 0);
+	comboid_atom = XInternAtom(display, U7_TARGET_COMBOID_NAME, 0);
 					// Atom for Xdnd protocol:
 	xdnd_aware = XInternAtom(display, "XdndAware", 0);
 	xdnd_enter = XInternAtom(display, "XdndEnter", 0);
@@ -153,7 +154,8 @@ void Xdnd::client_msg
 		int i;			// For now, just do shapeid.
 		for (i = 0; i < num_types; i++)
 			if (drag_types[i] == shapeid_atom ||
-			    drag_types[i] == chunkid_atom)
+			    drag_types[i] == chunkid_atom ||
+			    drag_types[i] == comboid_atom)
 				break;
 		xev.xclient.message_type = xdnd_status;
 					// Flags??:  3=good, 0=can't accept.
@@ -168,6 +170,8 @@ void Xdnd::client_msg
 		int y = (cev.data.l[2]&0xffff) - winy;
 					// Get timestamp.
 		unsigned long time = 0;	//????++++++++++++++++
+		if (i == num_types)
+			return;
 		if (!data_valid)	// Tell owner we want data.
 			XConvertSelection(display, xdnd_selection, 
 				drag_types[i], xdnd_selection, xwmwin, time);

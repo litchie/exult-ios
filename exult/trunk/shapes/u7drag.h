@@ -49,5 +49,16 @@ void Get_u7_shapeid(unsigned char *data, int& file, int& shape, int& frame);
 int Store_u7_chunkid(unsigned char *data, int cnum);
 void Get_u7_chunkid(unsigned char *data, int& cnum);
 
+//	Target information for dragging a 'combo' (group of shapes):
+#define U7_TARGET_COMBOID_NAME "U7COMBOID"
+#define U7_TARGET_COMBOID 139
+
+//	Store/get combo and its elements:
+typedef struct U7_combo_data 
+	{ int cnt, tx, ty, tz, shape, frame; } U7_combo_data;
+int Store_u7_comboid(unsigned char *data, int cnt, U7_combo_data *ents);
+void Get_u7_comboid(unsigned char *data, int& cnt, U7_combo_data *& ents);
+
+
 #endif
 
