@@ -227,8 +227,8 @@ int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 		} else if(event.type==SDL_MOUSEBUTTONDOWN) {
 		        if (!mouse_visible) {
 			        // if invisible, redraw mouse
-			        set_selection(event.motion.x >> scale, 
-					      event.motion.y >> scale); 
+			        set_selection(event.button.x >> scale, 
+					      event.button.y >> scale); 
 			        mouse->show();
 			        mouse->blit_dirty();
 			}
