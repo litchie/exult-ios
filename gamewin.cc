@@ -2728,8 +2728,12 @@ void Game_window::double_clicked
 			main_actor->set_target(obj);
 			toggle_combat();
 					// Being a bully?
-			if (obj->get_npc_num() > 0 && obj->get_alignment() ==
-							Actor::friendly &&
+			int align = obj->get_alignment();
+			bool bully = (align == Actor::friendly ||
+						align == Actor::neutral);
+			if (obj->get_npc_num() > 0 && bully &&
+			   get_info(obj).get_shape_class() ==
+							Shape_info::human &&
 			   Game::get_game_type() == BLACK_GATE)
 				attack_avatar(1 + rand()%3);
 			return;
@@ -2889,6 +2893,11 @@ void Game_window::theft
 		}
 	if (!closest_npc)
 		return;			// Didn't get caught.
+	int dir = closest_npc->get_direction(main_actor);
+	closest_npc->add_dirty(this);	// Face avatar.
+	closest_npc->set_frame(closest_npc->get_dir_framenum(dir,
+							Actor::standing));
+	closest_npc->add_dirty(this);
 	theft_warnings++;
 	if (theft_warnings < 3 + rand()%3)
 		{			// Just a warning this time.
@@ -2941,7 +2950,7 @@ void Game_window::attack_avatar
 		}
 
 	Actor_vector npcs;		// See if someone is nearby.
-	main_actor->find_nearby_actors(npcs, c_any_shapenum, 12);
+	main_actor->find_nearby_actors(npcs, c_any_shapenum, 20);
 	for (Actor_vector::const_iterator it = npcs.begin(); 
 							it != npcs.end();++it)
 		{

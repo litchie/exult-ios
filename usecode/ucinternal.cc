@@ -2060,7 +2060,10 @@ int Usecode_internal::call_usecode
 	caller_item = prev_item;
 					// Left hanging (BG)?
 	if (conv->get_num_faces_on_screen() > 0)
+		{
+		conv->init_faces();	// Remove them.
 		gwin->set_all_dirty();	// Force repaint.
+		}
 	return ret;
 	}
 
