@@ -871,9 +871,9 @@ bool SI_Game::new_game(Vga_file &shapes)
 				else
 				        sprintf(disp_name, "%s", npc_name);
 				font->draw_text(ibuf, topx+50, menuy+10, disp_name );
+				pal.apply();
 				redraw = false;
 			}
-			pal.apply();
 			SDL_WaitEvent(&event);
 			if(event.type==SDL_KEYDOWN) {
  			        redraw = true;
