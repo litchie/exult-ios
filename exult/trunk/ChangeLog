@@ -1,3 +1,6 @@
+2002-01-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.cc: changed command line parameter syntax. See 'exult --help'
+
 2002-01-05  Max Horn  <max@quendi.de>
 
 	* mapedit/Makefile.am: fixed occurance of LIBGLADE_CFLAGS to LIBGLADE_INCLUDES

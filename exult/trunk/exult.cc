@@ -210,29 +210,29 @@ int main
 	parameters.declare("--help",&needhelp,true);
 	parameters.declare("/?",&needhelp,true);
 	parameters.declare("/h",&needhelp,true);
-	parameters.declare("-bg",&run_bg,true);
-	parameters.declare("-si",&run_si,true);
+	parameters.declare("--bg",&run_bg,true);
+	parameters.declare("--si",&run_si,true);
 	parameters.declare("-v",&showversion,true);
 	parameters.declare("--version",&showversion,true);
-	parameters.declare("-game",&arg_gamename,"default");
-	parameters.declare("-buildmap",&arg_buildmap,-1);
-	parameters.declare("-nocrc",&ignore_crc,true);
+	//	parameters.declare("-game",&arg_gamename,"default");
+	parameters.declare("--buildmap",&arg_buildmap,-1);
+	parameters.declare("--nocrc",&ignore_crc,true);
 
 	// Process the args
 	parameters.process(argc,argv);
 
 	if(needhelp)
 	{
-		cerr << "Usage: exult [--help|-h|/?|/h] [-v|--version] [-bg|-si] [-game GAMENAME] [-buildmap 0|1|2]" << endl <<
+		cerr << "Usage: exult [--help|-h] [-v|--version] [--bg|--si] [--buildmap 0|1|2] [--nocrc]" << endl <<
 			"--help\t\tShow this information" << endl <<
-			"-bg\t\tSkip menu and run Black Gate" << endl <<
-			"-si\t\tSkip menu and run Serpent Isle" << endl <<
-			"--version\t\tShow version info" << endl <<
-			"-game GAMENAME\tSet the game data name to play" << endl <<
-			"\t(refer to the documentation)" << endl <<
-			"-buildmap\tCreate a fullsize map of the game world in u7map??.pcx" << endl <<
-			"\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl <<
-			"\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl;
+			"--bg\t\tSkip menu and run Black Gate" << endl <<
+			"--si\t\tSkip menu and run Serpent Isle" << endl <<
+			"--version\tShow version info" << endl <<
+			"--buildmap\tCreate a fullsize map of the game world in u7map??.pcx" << endl <<
+			"\t\t(0 = all roofs, 1 = no level 2 roofs, 2 = no roofs)" << endl <<
+			"\t\tonly valid when used together with -bg or -si" << endl <<
+			"\t\t(WARNING: requires big amounts of RAM, HD space and time!)" << endl <<
+			"--nocrc\t\tDon't check crc's of .flx files" << endl;
 			
 		exit(1);
 	}
@@ -1298,14 +1298,20 @@ void BuildGameMap()
 	// WARNING!! Takes up lots of memory and diskspace!
 	if (arg_buildmap >= 0) {
 		int maplift = 16;
-		Exult_Game gametype = BLACK_GATE;
+		Exult_Game gametype;
 		switch(arg_buildmap) {
 			case 0: maplift = 16; break;
 			case 1: maplift = 10; break;
 			case 2: maplift = 5; break;
 		}
-		if (arg_gamename == "serpentisle")
+		if (run_bg)
+			gametype = BLACK_GATE;
+		else if (run_si)
 			gametype = SERPENT_ISLE;
+		else {
+			cerr << "You have to specify -bg or -si when using -buildmap" << endl;
+		}
+
 		h = w = c_tilesize * c_tiles_per_schunk; sc = 1, sclr = Image_window::point;
 		Image_window8::set_gamma(1, 1, 1);
 		gwin = new Game_window(w, h, sc, sclr);
