@@ -118,7 +118,7 @@ char *	IFF::retrieve(uint32 objnum, size_t &len)
 	char	*buffer;
 
 	if (objnum >= object_list.size())
-		throw exult_exception("objnum too large in retrieve()");
+		throw exult_exception("objnum too large in IFF::retrieve()");
 
 	fp = U7open(filename.c_str(), "rb");
 	fseek(fp, object_list[objnum].offset, SEEK_SET);
