@@ -213,12 +213,20 @@ public:
 	static int is_blocked(int xtiles, int ytiles, int ztiles,
 			Tile_coord from, Tile_coord& to, const int move_flags,
 							int max_drop = 1);
+	enum Find_spot_where		// For find_spot() below.
+		{
+		anywhere = 0,
+		inside,			// Must be inside.
+		outside			// Must be outside,
+		};
 					// Find spot for an object.
 	static Tile_coord find_spot(Tile_coord pos, int dist,
-		int shapenum, int framenum, int max_drop = 0,int dir = -1);
+		int shapenum, int framenum, int max_drop = 0,int dir = -1,
+				Find_spot_where where = anywhere);
 					// For approaching 'pos' by an object:
 	static Tile_coord find_spot(Tile_coord pos, int dist,
-				Game_object *obj, int max_drop = 0);
+				Game_object *obj, int max_drop = 0,
+					Find_spot_where where = anywhere);
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles, bool add)
 		{ need_cache()->set_egged(egg, tiles, add); }
