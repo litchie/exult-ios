@@ -9,6 +9,7 @@ ucc_SOURCES = ucparse.yy uclex.ll ucmain.cc \
 	ucexpr.h	\
 	ucfun.cc	\
 	ucfun.h		\
+	uclabel.h	\
 	ucloc.cc	\
 	ucloc.h		\
 	ucparse.h	\

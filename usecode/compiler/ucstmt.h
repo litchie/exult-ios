@@ -26,8 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_UCSTMT
 
 #include <vector>
-using std::vector;
 #include "ucloc.h"
+#include "uclabel.h"
 
 class Uc_expression;
 class Uc_call_expression;
@@ -49,7 +49,7 @@ public:
 		{  }
 	virtual ~Uc_statement() {  }
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun) = 0;
+	virtual void gen(std::vector<char>& out, Uc_function *fun) = 0;
 	};
 
 /*
@@ -65,7 +65,7 @@ public:
 	void add(Uc_statement *stmt)
 		{ statements.push_back(stmt); }
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -80,7 +80,7 @@ public:
 		{  }
 	~Uc_assignment_statement();
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -97,7 +97,7 @@ public:
 		{  }
 	~Uc_if_statement();
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -113,7 +113,7 @@ public:
 		{  }
 	~Uc_while_statement();
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -139,7 +139,7 @@ public:
 		{ array_size = as; }
 	void finish(Uc_function *fun);	// Create tmps. if necessary.
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -153,7 +153,7 @@ public:
 		{  }
 	~Uc_return_statement();
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -164,8 +164,34 @@ class Uc_break_statement : public Uc_statement
 public:
 	Uc_break_statement() {  }
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
+
+/*
+ *  a LABEL statement:
+ */
+class Uc_label_statement : public Uc_statement
+{
+	Uc_label *label;
+ public:
+	Uc_label_statement(Uc_label *l) : label(l)
+		{ }
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
+};
+
+/*
+ *  a GOTO statement:
+ */
+class Uc_goto_statement : public Uc_statement
+{
+	char *label;
+ public:
+	Uc_goto_statement(char *l) : label(l)
+		{ }
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
+};
+
+
 
 /*
  *	A CONVERSE statement is a loop that prompts for a user response at
@@ -180,7 +206,7 @@ public:
 		{  }
 	~Uc_converse_statement();
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -192,7 +218,7 @@ class Uc_message_statement : public Uc_statement
 public:
 	Uc_message_statement(Uc_array_expression *m) : msgs(m) {  }
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -204,7 +230,7 @@ public:
 	Uc_say_statement(Uc_array_expression *m) : Uc_message_statement(m) 
 		{  }
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
 /*
@@ -217,7 +243,7 @@ public:
 	Uc_call_statement(Uc_call_expression *f);
 	~Uc_call_statement();
 					// Generate code.
-	virtual void gen(vector<char>& out, Uc_function *fun);
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
 #endif
