@@ -1,0 +1,54 @@
+<!-- block and inline elements -->
+
+<!ENTITY % inline "br|em|extref|Exult|kbd|key|q|ref|strong" >
+
+<!ENTITY % lists "ul|ol" >
+
+<!ENTITY % block "cite|configdesc|keytable|para|%lists;" >
+
+
+<!-- ****************** elements ****************** -->
+<!ELEMENT faqs (section*)>
+<!ELEMENT section (faq*)>
+<!ELEMENT faq (question, answer)>
+<!ELEMENT question (#PCDATA|Exult)*>
+<!ELEMENT answer ( #PCDATA | %block; )*>
+
+<!ELEMENT para ( #PCDATA | %inline; )*>
+<!ELEMENT cite (#PCDATA|para|q)*>
+<!ELEMENT q (#PCDATA)>
+<!ELEMENT ol (li*)>
+<!ELEMENT ul (li*)>
+<!ELEMENT li ( #PCDATA | %inline; )*>
+
+<!ELEMENT key (#PCDATA)>
+<!ELEMENT kbd (#PCDATA)>
+<!ELEMENT strong (#PCDATA)>
+<!ELEMENT em (#PCDATA)>
+
+<!ELEMENT ref (#PCDATA)>
+<!ELEMENT extref (#PCDATA)>
+
+<!-- Empty elements -->
+<!ELEMENT br (#PCDATA)>
+<!ELEMENT Exult (#PCDATA)>
+
+<!ELEMENT configdesc (line*)>
+<!ELEMENT line (#PCDATA|comment)*>
+<!ELEMENT comment (#PCDATA|ref|key|q)*>
+
+<!ELEMENT keytable (keydesc*)>
+<!ELEMENT keydesc (#PCDATA)>
+
+<!-- ****************** attributes ****************** -->
+<!ATTLIST	faqs		title	CDATA	#REQUIRED>
+<!ATTLIST	faqs		changed	CDATA	"">
+<!ATTLIST	section		title	CDATA	#REQUIRED>
+
+<!ATTLIST	faq		name	CDATA	"">
+<!ATTLIST	cite		name	CDATA	"">
+<!ATTLIST	keytable	title	CDATA	#REQUIRED>
+<!ATTLIST	keydesc		name	CDATA	"">
+
+<!ATTLIST	ref		target	CDATA	#REQUIRED>
+<!ATTLIST	extref		target	CDATA	#REQUIRED>
