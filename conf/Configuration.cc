@@ -30,6 +30,20 @@ string	&Configuration::value(const char *key)
 	return xmltree.reference(s);
 }
 
+void	Configuration::value(const char *key,string &s)
+{
+	s=value(key);
+}
+
+void	Configuration::value(const char *key,int &n)
+{
+	n=0;
+	string	s;
+
+	s=value(key);
+	n=atoi(s.c_str());
+}
+
 
 extern	void    xmlparse(string &s,size_t &pos,XMLnode *x);
 
