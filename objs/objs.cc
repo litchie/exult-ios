@@ -76,10 +76,6 @@ extern bool combat_trace;
 /*
  *	Get chunk coords, or 255.
  */
-inline int Game_object::get_cxi() const
-	{ return chunk ? chunk->cx : 255; }
-inline int Game_object::get_cyi() const
-	{ return chunk ? chunk->cy : 255; }
 int Game_object::get_cx() const
 	{ return chunk ? chunk->cx : 255; }
 int Game_object::get_cy() const
@@ -1325,23 +1321,6 @@ Game_object *Game_object::attacked
 		return this;
 	}
 }
-
-/*
- *	Write the common IREG data for an entry.
- */
-
-void Game_object::write_common_ireg
-	(
-	unsigned char *buf		// 4-byte buffer to be filled.
-	)
-	{
-					// Coords:
-	buf[0] = ((get_cxi()%16) << 4) | get_tx();
-	buf[1] = ((get_cyi()%16) << 4) | get_ty();
-	int shapenum = get_shapenum(), framenum = get_framenum();
-	buf[2] = shapenum&0xff;
-	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
-	}
 
 /*
  *	Paint terrain objects only.

@@ -967,8 +967,17 @@ void Game_map::read_ireg_objects
 		int cx = entry[0] >> 4; // Get chunk indices within schunk.
 		int cy = entry[1] >> 4;
 					// Get coord. #'s where shape goes.
-		int tilex = entry[0] & 0xf;
-		int tiley = entry[1] & 0xf;
+		int tilex, tiley;
+		if (container)		// In container?  Get gump coords.
+			{
+			tilex = entry[0];
+			tiley = entry[1];
+			}
+		else
+			{
+		 	tilex = entry[0] & 0xf;
+			tiley = entry[1] & 0xf;
+			}
 					// Get shape #, frame #.
 		int shnum = entry[2]+256*(entry[3]&3);
 		int frnum = entry[3] >> 2;

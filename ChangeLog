@@ -1,3 +1,8 @@
+2004-07-04    <jeff@mini.nerble.net>
+
+	* gamemap.cc,iregobjs.cc, etc.:  Save/restore pos. of items within
+	their containers.
+
 2004-07-03    <jeff@mini.nerble.net>
 
 	* cheat.cc (public): When creating an object with <insert>, place
