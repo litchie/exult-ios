@@ -51,6 +51,9 @@ void	Table::IndexTableFile(void)
 		throw 0;
 		return;
 		}
+	fseek(fp,0,SEEK_END);
+	size_t file_size=ftell(fp);
+	fseek(fp,0,SEEK_SET);
 	unsigned int i=0;
 	while(1)
 		{
@@ -59,6 +62,8 @@ void	Table::IndexTableFile(void)
 		if(f.size==65535)
 			break;
 		fread(&f.offset,sizeof(uint32),1,fp);
+		if(f.size>file_size||f.offset>file_size)
+			throw 0;
 #if 0
 		cout << "Item " << i << ": " << f.size << " @ " << f.offset << endl;
 #endif
