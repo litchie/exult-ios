@@ -198,7 +198,7 @@ public:
 	int is_main_actor_inside()
 		{ return skip_above_actor < 31 ; }
 	inline Actor *get_npc(long npc_num) const
-		{ return (npc_num >= 0 && npc_num < num_npcs) ? npcs[npc_num] 
+		{ return (npc_num >= 0 && npc_num < num_npcs) ? (dynamic_cast<Actor *>(npcs[npc_num]))
 									: 0; }
 					// Find monster info. for shape.
 	Monster_info *get_monster_info(int shapenum);

@@ -57,7 +57,7 @@ Game_window::Game_window
 	(
 	int width, int height		// Window dimensions.
 	) : 
-	    mode(splash), combat(0),
+	    usecode(new Usecode_machine(this)),mode(splash), combat(0),
             tqueue(new Time_queue()), clock(tqueue),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
@@ -87,10 +87,6 @@ Game_window::Game_window
 	
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);
-	ifstream ucfile;		// Read in usecode.
-	u7open(ucfile, USECODE);
-	usecode = new Usecode_machine(ucfile, this);
-	ucfile.close();
 	ifstream textflx;	
   	u7open(textflx, TEXT_FLX);
 	Setup_item_names(textflx);	// Set up list of item names.
@@ -167,6 +163,7 @@ Game_window::~Game_window
 	delete win;
 	delete dragging_save;
 	delete [] conv_choices;
+	delete usecode;
 	}
 
 /*
@@ -1176,9 +1173,12 @@ void Game_window::paint
 		int carried_light = main_actor->has_light_source();
 		int cnt = usecode->get_party_count();
 		for (int i = 0; !carried_light && i < cnt; i++)
-			carried_light = get_npc(usecode->get_party_member(i))->
-							has_light_source();
-					// Set palette for lights.
+			{
+			int	party_member=usecode->get_party_member(i);
+			Actor *person=get_npc(party_member);
+			carried_light = person->has_light_source();
+			}
+			// Set palette for lights.
 		clock.set_light_source(carried_light + (light_sources > 0));
 		}
 	painted = 1;
