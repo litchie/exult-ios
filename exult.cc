@@ -913,6 +913,127 @@ void Wait_for_arrival
 
 	}
 
+/*
+ *	Shift 'wizard's view' according to mouse position.
+ */
+
+static void Shift_wizards_eye
+	(
+	int mx, int my
+	)
+	{
+					// Figure dir. from center.
+	int cx = gwin->get_width()/2, cy = gwin->get_height()/2;
+        int dy = cy - my, dx = mx - cx;
+        Direction dir = Get_direction(dy, dx);
+	static int deltas[16] = {0,-1, 1,-1, 1,0, 1,1, 0,1, 
+						-1,1, -1,0, -1,-1};
+	int dirx = deltas[2*dir], diry = deltas[2*dir + 1];
+	if (dirx == 1)
+		gwin->view_right();
+	else if (dirx == -1)
+		gwin->view_left();
+	if (diry == 1)
+		gwin->view_down();
+	else if (diry == -1)
+		gwin->view_up();
+	}
+
+/*
+ *	Do the 'wizard's eye' spell by letting the user browse around.
+ */
+
+void Wizard_eye
+	(
+	long msecs			// Length of time in milliseconds.
+	)
+	{
+	// Mouse scale factor
+	int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
+					// Center of screen.
+	int cx = gwin->get_width()/2, cy = gwin->get_height()/2;
+
+	unsigned char os = Mouse::mouse->is_onscreen();
+	uint32 last_repaint = 0;	// For insuring animation repaints.
+	uint32 stop_time = SDL_GetTicks() + msecs;
+	bool timeout = false;
+	while (!timeout)
+		{
+		Delay();		// Wait a fraction of a second.
+
+		Mouse::mouse->hide();		// Turn off mouse.
+		Mouse::mouse_update = false;
+
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+			switch (event.type)
+				{
+			case SDL_MOUSEMOTION:
+				{
+				int mx = event.motion.x/scale,
+				    my = event.motion.y/scale;
+				Mouse::mouse->move(mx, my);
+				Mouse::mouse->set_shape(
+					Mouse::mouse->get_short_arrow(
+					Get_direction(cy - my, mx - cx)));
+				Mouse::mouse_update = true;
+				break;
+				}
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLK_ESCAPE)
+					timeout = true;
+				}
+					// Get current time, & animate.
+		uint32 ticks = SDL_GetTicks();
+		Game::set_ticks(ticks);
+		if (ticks > stop_time)
+			timeout = true;
+		if (gwin->have_focus())
+			gwin->get_tqueue()->activate(ticks);
+					// Show animation every 1/20 sec.
+		if (ticks > last_repaint + 50 || gwin->was_painted())
+			{		// Right mouse button down?
+			int x, y;
+			int ms = SDL_GetMouseState(&x, &y);
+			if (SDL_BUTTON(3) & ms)
+				Shift_wizards_eye(x/scale, y/scale);
+			gwin->paint_dirty();
+					// Paint sprite over view.
+			Shape_frame *spr = gwin->get_sprite_shape(10, 0);
+					// Center it.
+			int w = gwin->get_width(), h = gwin->get_height();
+			int sw = spr->get_width(), sh = spr->get_height();
+			int topx = (w - sw)/2,
+			    topy = (h - sh)/2;
+			gwin->paint_shape(topx + spr->get_xleft(),
+					topy + spr->get_yabove(), spr, 1);
+			if (topy > 0)	// Black-fill area around sprite.
+				{
+				gwin->get_win()->fill8(0, w, topy, 0, 0);
+				gwin->get_win()->fill8(0, w, h - topy - sh,
+								0, topy + sh);
+				}
+			if (topx > 0)
+				{
+				gwin->get_win()->fill8(0, topx, sh, 0, topy);
+				gwin->get_win()->fill8(0, w - topx - sw, sh,
+							topx + sw, topy);
+				}
+			while (ticks > last_repaint+50)last_repaint += 50;
+			}
+
+		Mouse::mouse->show();		// Re-display mouse.
+		if (!gwin->show() &&	// Blit to screen if necessary.
+		    Mouse::mouse_update)	// If not, did mouse change?
+			Mouse::mouse->blit_dirty();
+		}
+
+	if (!os)
+		Mouse::mouse->hide();
+	gwin->center_view(gwin->get_main_actor()->get_abs_tile_coord());
+	}
+
+
 int find_resolution(int w, int h, int s)
 {
 	int res = 0;

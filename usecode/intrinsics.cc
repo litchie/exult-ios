@@ -1296,6 +1296,15 @@ USECODE_INTRINSIC(display_area)
 	return (no_ret);
 }
 
+USECODE_INTRINSIC(wizard_eye)
+{
+	// wizard_eye(#ticks, ??);
+	extern void Wizard_eye(long);
+					// Let's give 50% longer.
+	Wizard_eye(parms[0].get_int_value()*(3*gwin->get_std_delay())/2);
+	return no_ret;
+}
+
 USECODE_INTRINSIC(resurrect)
 {
 	// resurrect(body).  Returns actor if successful.

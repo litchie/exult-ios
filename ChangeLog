@@ -1,3 +1,7 @@
+2001-10-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* exult.cc,intrinsics.cc: Wizards_eye implemented.
+
 2001-10-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* game.cc, gamewin.*, gamedat.cc: fixed some more display glitches on
 	starting a new game
