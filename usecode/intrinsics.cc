@@ -1985,6 +1985,9 @@ USECODE_INTRINSIC(nap_time)
 			return no_ret;
 			}
 		}
+	Schedule *sched = gwin->get_main_actor()->get_schedule();
+	if (sched)			// Tell (sleep) sched. to use bed.
+		sched->set_bed(bed);
 					// Give him a chance to get there (at
 					//   most 5 seconds.)
 	Wait_for_arrival(gwin->get_main_actor(), bed->get_tile(),

@@ -89,6 +89,9 @@ public:
 		{  }
 	virtual void set_weapon()	// Set weapon info.
 		{  }
+					// Set where to sleep.
+	virtual void set_bed(Game_object *b)
+		{  }
 					// Notify that schedule's obj. has
 					//   been moved.
 	virtual void notify_object_gone(Game_object *obj)
@@ -292,6 +295,9 @@ public:
 	Sleep_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?
 	virtual void ending(int newtype);// Switching to another schedule.
+					// Set where to sleep.
+	virtual void set_bed(Game_object *b)
+		{ bed = b; state = 0; }
 	};
 
 /*
