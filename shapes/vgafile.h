@@ -114,7 +114,6 @@ protected:
 					// Read in shape/frame.
 	Shape_frame *read(DataSource* shapes, int shnum, int frnum, 
 		DataSource *shapes2 = 0, int count1 = -1, int count2 = -1);
-	void write(ostream& out);	// Write out.
 					// Store shape that was read.
 	Shape_frame *store_frame(Shape_frame *frame, int framenum);
 public:
@@ -126,6 +125,7 @@ public:
 	Shape(int n);			// Create with given #frames.	
 	virtual ~Shape();
 	void reset();
+	void write(ostream& out);	// Write out.
 	Shape_frame *get(DataSource* shapes, int shnum, int frnum, 
 		DataSource *shapes2 = 0, int count1 = -1, int count2 = -1)
 		{ 
