@@ -44,6 +44,7 @@ class Game_window;
 class Npc_actor;
 class Rectangle;
 class Container_game_object;
+class ostream;
 
 /*
  *	Sizes:
@@ -117,6 +118,8 @@ protected:
 	unsigned char cx, cy;		// (Absolute) chunk coords., or if this
 					//   is in a container, coords. within
 					//   gump's rectangle.
+					// Write common IREG data.
+	void write_common_ireg(unsigned char *buf);
 public:
 	friend class Chunk_object_list;
 	friend class Barge_object;
@@ -286,6 +289,9 @@ public:
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord()
 		{ return get_abs_tile_coord(); }
+					// Write out to IREG file.
+	virtual void write_ireg(ostream& out)
+		{  }
 	};
 
 /*
@@ -323,6 +329,8 @@ public:
 	virtual void set_owner(Container_game_object *o)
 		{ owner = o; }
 	virtual int is_dragable();	// Can this be dragged?
+					// Write out to IREG file.
+	virtual void write_ireg(ostream& out);
 	};
 
 /*
@@ -380,6 +388,8 @@ public:
 					// Get contained objs.
 	virtual int get_objects(Vector& vec, int shapenum, 
 							int framenum = -359);
+					// Write out to IREG file.
+	virtual void write_ireg(ostream& out);
 	};
 
 /*
@@ -405,6 +415,8 @@ public:
 	virtual int add(Game_object *obj, int dont_check = 0);
 					// Render.
 	virtual void paint(Game_window *gwin);
+					// Write out to IREG file.
+	virtual void write_ireg(ostream& out);
 	};
 
 /*
@@ -483,6 +495,8 @@ public:
 	virtual void activate(Usecode_machine *umachine);
 	virtual int is_egg()		// An egg?
 		{ return 1; }
+					// Write out to IREG file.
+	virtual void write_ireg(ostream& out);
 	};
 
 /*
