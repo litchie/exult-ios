@@ -2176,7 +2176,8 @@ int Chunk_cache::is_blocked
 					//   tested.
 	int lift,			// Given lift.
 	int tx, int ty,			// Square to test.
-	int& new_lift			// New lift returned.
+	int& new_lift,			// New lift returned.
+	int max_drop			// Max. drop allowed.
 	)
 	{
 					// Get bits.
@@ -2204,7 +2205,7 @@ int Chunk_cache::is_blocked
 	if (new_high != -1 && new_high < (new_lift + height)) return 1;
 	
 					// Don't allow fall of > 1.
-	return (lift - new_lift > 1 ? 1 : 0);
+	return (lift - new_lift > max_drop ? 1 : 0);
 	}
 
 /*
@@ -2405,7 +2406,8 @@ int Chunk_object_list::is_blocked
 	int lift,			// Starting lift.
 	int startx, int starty,		// Starting tile coords.
 	int xtiles, int ytiles,		// Width, height in tiles.
-	int& new_lift			// New lift returned.
+	int& new_lift,			// New lift returned.
+	int max_drop			// Max. drop allowed.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -2422,7 +2424,7 @@ int Chunk_object_list::is_blocked
 					tx/tiles_per_chunk, cy);
 			olist->setup_cache();
 			if (olist->is_blocked(height, lift, tx%tiles_per_chunk,
-							rty, this_lift))
+						rty, this_lift, max_drop))
 				return (1);
 					// Take highest one.
 			new_lift = this_lift > new_lift ?
@@ -2442,7 +2444,8 @@ int Chunk_object_list::is_blocked
 int Chunk_object_list::is_blocked
 	(
 	Tile_coord& tile,
-	int height			// Height in tiles to check.
+	int height,			// Height in tiles to check.
+	int max_drop
 	)
 	{
 					// Get chunk tile is in.
@@ -2452,7 +2455,7 @@ int Chunk_object_list::is_blocked
 	chunk->setup_cache();		// Be sure cache is present.
 	int new_lift;			// Check it within chunk.
 	if (chunk->is_blocked(height, tile.tz, tile.tx%tiles_per_chunk,
-				tile.ty%tiles_per_chunk, new_lift))
+				tile.ty%tiles_per_chunk, new_lift, max_drop))
 		return (1);
 	tile.tz = new_lift;
 	return (0);
@@ -2577,39 +2580,6 @@ int Chunk_object_list::is_blocked
 		}
 	return (0);			// All clear.
 	}
-
-#if 0	/* +++++ May use this for pathfinding. */
-/*
- *	Find a closed door occupying a given tile 
- *	(which may not be in this chunk).
- *
- *	Output:	->object found, or 0.
- */
-
-Game_object *Chunk_object_list::find_closed_door
-	(
-	int tx, int ty, int tz		// Absolute tile coords.
-	)
-	{
-	Game_object *obj;
-	for (obj = get_first(); obj; obj = get_next(obj))
-		{
-		int shnum = obj->get_shapenum();
-		// if closed-door, continue.+++++++++++
-		int ox, oy, oz;		// Get object's lower-right point.
-		obj->get_abs_tile(ox, oy, oz);
-		if (oz > tz || ox < tx || oy < ty)
-			continue;	// Above, or left of, or back of pt.
-		Shape_info& info = shapes.get_info(shnum);
-		if (tz >= oz + info.get_3d_height() ||
-		    tx <= ox - info.get_3d_xtiles() ||
-		    ty <= oy - info.get_3d_ytiles())
-			continue;
-		return (obj);
-		}
-	return (0);
-	}
-#endif
 
 /*
  *  Finds if there is a 'roof' above lift in tile (tx, ty)
