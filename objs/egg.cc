@@ -336,7 +336,7 @@ int Egg_object::is_active
 					!area.has_point(from_tx, from_ty)))
 			return 0;
 		return (obj == gwin->get_main_actor() ||
-		    (type == party_near && obj->get_party_id() >= 0));
+		    (cri == party_near && obj->get_party_id() >= 0));
 	case avatar_far:		// New tile is outside, old is inside.
 		{
 		if (obj != gwin->get_main_actor() || !area.has_point(tx, ty))
