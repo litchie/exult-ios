@@ -448,7 +448,6 @@ void ActionWalkUp(int *params)
 {
 	Game_window *gwin = Game_window::get_instance();
 	gwin->start_actor(gwin->get_width()/2, gwin->get_height()/2-50);
-	gwin->start_actor(160, 50);
 }
 
 //  { ActionWalkDown, 0, "Walk down", true, true, NONE },
