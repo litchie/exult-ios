@@ -173,4 +173,7 @@ public:
 	bool restore(unsigned char *& ptr, int len);
 	};
 
+
+ostream& operator<<(ostream& out, Usecode_value& val);
+
 #endif

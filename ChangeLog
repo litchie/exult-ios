@@ -1,6 +1,8 @@
 2001-12-26  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* usecode/ucsched.cc: use eventid 3 for usecode functions on all eggs,
 	not just usecode eggs. Fixes serpent gates in SI without SS
+	* usecode/ucdisasm.cc: changed output of 16-bit immediates to signed
+	* usecode/useval.*: added "operator<<(ostream&, Usecode_value&)"
 
 2001-12-26  Patrick Burke  <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Added opcodes 4C and 4D. Also added option to load
