@@ -1,3 +1,7 @@
+2000-11-22  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode.cc:  0x58 in scheduled uc means 'play sound effect'.
+
 2000-11-20  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode.cc/h, useval.cc/h: added pointer type to Usecode_value
 

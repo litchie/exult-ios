@@ -370,10 +370,13 @@ void Scheduled_usecode::handle_event
 			usecode->call_usecode(fun, obj, ev);
 			break;
 			}
-		case 0x58:		// ?? 1 parm, fairly large byte.
-			i++;		// Wield weapon (tmporarily). parm=?+++
+		case 0x58:		// Play sound effect!
+			{
+			Usecode_value& val = arrval.get_elem(++i);
+			audio->play_sound_effect(val.get_int_value());
 					// Or play sound effect??
 			break;
+			}
 		case 0x59:		// Parm. is dir. (0-7).  0=north?
 			{
 					// Look in that dir.
