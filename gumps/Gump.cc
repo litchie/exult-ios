@@ -310,11 +310,21 @@ Game_object *Gump::find_object
 		return (0);
 	Object_iterator next(container->get_objects());
 	Game_object *obj;
+	Shape_frame *s;
+	Game_window *gwin = Game_window::get_game_window();
+
+	int ox, oy;
+
 	while ((obj = next.get_next()) != 0)
 	{
 		Rectangle box = get_shape_rect(obj);
 		if (box.has_point(mx, my))
-			list[cnt++] = obj;
+		{
+			s = gwin->get_shape(*obj);
+			get_shape_location(obj, ox, oy);
+			if (s->has_point(mx-ox, my-oy))
+				list[cnt++] = obj;
+		}
 		obj = obj->get_next();
 	}
 					// ++++++Return top item.
@@ -445,6 +455,15 @@ void Gump::remove
 	)
 {
 	container->remove(obj); 
+
+	// Paint Objects
+	Rectangle box = object_area;	// Paint objects inside.
+	box.shift(x, y);		// Set box to screen location.
+
+	Game_window *gwin = Game_window::get_game_window();
+
+	gwin->set_all_dirty();
+	gwin->paint_dirty();
 }
 
 /*

@@ -162,3 +162,26 @@ void Combat_mode_button::activate
 	parent->paint_button(gwin, this);
 	gwin->set_painted();
 }
+
+
+/*
+ *	The Serpent Isle Combat Stats Button.
+ */
+
+Cstats_button::Cstats_button(Gump *par, int px, int py)
+	: Gump_button(par, game->get_shape("gumps/combat_stats"), px, py)
+
+{
+}
+
+/*
+ *	Handle click on a combat stats button
+ */
+
+void Cstats_button::activate
+	(
+	Game_window *gwin
+	)
+{
+					// ++++++Later.
+}

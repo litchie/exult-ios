@@ -84,6 +84,16 @@ private:
 	bool 				bank127[16];
 	int					convert_type;
 	bool				*fixed;
+	
+	int					chorus_value;
+	int					reverb_value;
+
+	// Gamma Table - Move to it's own class??
+	static float		gamma_value;
+	static unsigned char	gamma_table[128];
+
+	static void BuildGammaTable (float gamma);
+	static unsigned char GetGamma (int v);
 
 public:
 	XMIDI(DataSource *source, int pconvert);
@@ -131,6 +141,6 @@ private:
 	int ExtractTracksFromMid (DataSource *source);
 	
 	int ExtractTracks (DataSource *source);
-};
 
+};
 #endif

@@ -626,6 +626,9 @@ public:
 
 	void plasma(int w, int h, int x, int y, int startc, int endc);
 	
+	bool get_frame_skipping()	// This needs doing
+	{ return true; }
+	
 private:
 	void start_actor_alt (int winx, int winy, int speed);
 

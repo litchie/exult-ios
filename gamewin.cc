@@ -191,7 +191,6 @@ void Game_window::init_files()
 	{
 		pal = new Palette();
 		clock.set_palette();		// Set palette for correct time.
-		pal->brighten(20);		// Brighten 20%.
 					// Get a bright green.
 		poison_pixel = pal->find_color(4, 63, 4);
 					// Get a light gray.
@@ -2823,8 +2822,7 @@ void Game_window::setup_game
 	
 	mode = normal;
 	set_palette(0);
-	brighten(20);
-		
+
 	init_actors();		// Set up actors if not already done.
 				// This also sets up initial 
 				// schedules and positions.

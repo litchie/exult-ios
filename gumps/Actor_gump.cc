@@ -158,6 +158,24 @@ int Actor_gump::add
 	int mx, int my,			// Screen location of mouse.
 	int sx, int sy			// Screen location of obj's hotspot.
 	)
+#if 1
+{
+	Game_object *cont = find_object(mx, my);
+	
+	if (cont && cont->add(obj))
+		return (1);
+	
+	int index = find_closest(mx, my, 1);
+	
+	if (index != -1 && container->add_readied(obj, index))
+		return (1);
+
+	if (container->add(obj))
+		return (1);
+
+	return (0);
+}
+#else
 {
 					// Find index of closest spot.
 	int index = find_closest(mx, my);
@@ -176,6 +194,7 @@ int Actor_gump::add
 		set_to_spot(obj, index);// Set obj. coords.
 	return (1);
 }
+#endif
 
 /*
  *	Set object's coords. to given spot.

@@ -22,6 +22,7 @@ libgumps_la_SOURCES = \
 	Modal_gump.h	\
 	Paperdoll_gump.cc	\
 	Paperdoll_gump.h	\
+	Paperdoll_gump_info.cc	\
 	Scroll_gump.cc	\
 	Scroll_gump.h	\
 	Sign_gump.cc	\

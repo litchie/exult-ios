@@ -1,3 +1,5 @@
+//-*-Mode: C++;-*-
+
 /*
 Copyright (C) 2000  Ryan Nunn
 
@@ -33,12 +35,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL.h"
 #include "win_midiout.h"
 
+#include "Configuration.h"
+extern	Configuration	*config;
+
 #define W32MO_THREAD_COM_READY		0
 #define W32MO_THREAD_COM_PLAY		1
 #define W32MO_THREAD_COM_STOP		2
 #define W32MO_THREAD_COM_INIT		3
 #define W32MO_THREAD_COM_INIT_FAILED	4
 #define W32MO_THREAD_COM_EXIT		-1
+
+const unsigned short Windows_MidiOut::centre_value = 0x2000;
+const unsigned char Windows_MidiOut::fine_value = centre_value & 127;
+const unsigned char Windows_MidiOut::coarse_value = centre_value >> 7;
+const unsigned short Windows_MidiOut::combined_value = (coarse_value << 8) | fine_value;
 
 Windows_MidiOut::Windows_MidiOut()
 {
@@ -79,6 +89,20 @@ Windows_MidiOut::~Windows_MidiOut()
 
 void Windows_MidiOut::init_device()
 {
+	string s;
+	
+	config->value("config/audio/midi/reverb",s,"64");
+	reverb_value = atoi(s.data());
+	if (reverb_value > 127) reverb_value = 127;
+	else if (reverb_value < 0) reverb_value = 0;
+	config->set("config/audio/midi/reverb",reverb_value,true);
+	
+	config->value("config/audio/midi/chorus",s,"16");
+	chorus_value = atoi(s.data());
+	if (chorus_value > 127) reverb_value = 127;
+	else if (chorus_value < 0) reverb_value = 0;
+	config->set("config/audio/midi/chorus",chorus_value,true);
+	
 	// Opened, lets open the thread
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_INIT);
 	
@@ -114,7 +138,8 @@ DWORD Windows_MidiOut::thread_main()
 	}
 	InterlockedExchange (&is_available, true);
 	
-	SetThreadPriority (thread_handle, THREAD_PRIORITY_HIGHEST);
+//	SetThreadPriority (thread_handle, THREAD_PRIORITY_HIGHEST);
+	SetThreadPriority (thread_handle, THREAD_PRIORITY_TIME_CRITICAL);
 	
 	InterlockedExchange (&thread_com, W32MO_THREAD_COM_READY);
 	InterlockedExchange (&sfx_com, W32MO_THREAD_COM_READY);
@@ -150,6 +175,7 @@ void Windows_MidiOut::thread_play ()
 	double	s_last_time = 0;
 	double	s_aim = 0;
 	double	s_diff = 0;
+	int	s_track = 0;
 	
 	midi_event *s_evntlist = NULL;
 	midi_event *s_event = NULL;
@@ -172,7 +198,7 @@ void Windows_MidiOut::thread_play ()
 			last_tick = event->time;
 			last_time = aim;
 		
-			if (event->status < 0xF0)
+			if ((event->status >> 4) != MIDI_STATUS_SYSEX)
 			{
 				midiOutShortMsg (midi_port, event->status + (event->data[0] << 8) + (event->data[1] << 16));
 			}
@@ -223,14 +249,9 @@ void Windows_MidiOut::thread_play ()
 				event = NULL;
 				InterlockedExchange (&playing, false);
 			}
-			
-			// Reset pitch wheel
-			for (int i = 0; i < 16; i++)
-			{
-				midiOutShortMsg (midi_port, (i | 0xE0) | (0x40 << 16));
-				midiOutShortMsg (midi_port, (i | 0xB0) | (1 << 8) | (0x40 << 16));
-				midiOutShortMsg (midi_port, (i | 0xB0) | (33 << 8));
-			}
+
+			// Manual Reset since I don't trust midiOutReset()
+			for (int i = 0; i < 16; i++) reset_channel (i);
 			
 			// Make sure that the data exists
 			while (!thread_data) SDL_Delay(1);
@@ -271,9 +292,10 @@ void Windows_MidiOut::thread_play ()
 			s_last_tick = s_event->time;
 			s_last_time = s_aim;
 		
-			if (s_event->status < 0xF0)
+			if ((s_event->status >> 4) != MIDI_STATUS_SYSEX)
 			{
 				midiOutShortMsg (midi_port, s_event->status + (s_event->data[0] << 8) + (s_event->data[1] << 16));
+				s_track |= 1 << (s_event->status & 0xF);
 			}
 			else if (s_event->status == 0xFF && s_event->data[0] == 0x51) // Tempo change
 			{
@@ -287,13 +309,18 @@ void Windows_MidiOut::thread_play ()
 		 	s_event = s_event->next;
 	 		if ((!s_event) || (thread_com == W32MO_THREAD_COM_EXIT) || (sfx_com != W32MO_THREAD_COM_READY))
 		 	{
-		 		// Play through
+		 		// Play all the remaining note offs 
 		 		while (s_event)
 		 		{
-					if (s_event->status < 0xF0)
+					if ((s_event->status >> 4) == MIDI_STATUS_NOTE_OFF || 
+						((s_event->status >> 4) == MIDI_STATUS_NOTE_OFF && s_event->data[1] == 0 ))
+						
 						midiOutShortMsg (midi_port, s_event->status + (s_event->data[0] << 8) + (s_event->data[1] << 16));
 				 	s_event = s_event->next;
 		 		}
+		 		
+		 		// Also reset the played tracks
+				for (int i = 0; i < 16; i++) if ((s_track >> i)&1) reset_channel (i);
 
 				XMIDI::DeleteEventList (s_evntlist);
 				s_evntlist = NULL;
@@ -330,6 +357,9 @@ void Windows_MidiOut::thread_play ()
 			wmoInitSFXClock ();
 
 			InterlockedExchange (&s_playing, true);
+			
+			// Reset thet track counter
+			s_track = 0;
 		}
 
 
@@ -354,6 +384,44 @@ void Windows_MidiOut::thread_play ()
 		if (diff > 0 && s_diff > 0) wmoDelay (1000);
 	}
 	midiOutReset (midi_port);
+}
+
+void Windows_MidiOut::reset_channel (int i)
+{
+	// Pitch Wheel
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_PITCH_WHEEL << 4) | (combined_value << 8));
+	
+	// All controllers off
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (121 << 8));
+
+	// All notes off
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (123 << 8));
+
+	// Bank Select
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (0 << 8));
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (32 << 8));
+
+	// Modulation Wheel
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (1 << 8) | (coarse_value << 16));
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (33 << 8) | (fine_value << 16));
+	
+	// Volume
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (7 << 8) | (coarse_value << 16));
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (39 << 8) | (fine_value << 16));
+
+	// Pan
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (8 << 8) | (coarse_value << 16));
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (40 << 8) | (fine_value << 16));
+
+	// Balance
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (10 << 8) | (coarse_value << 16));
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (42 << 8) | (fine_value << 16));
+
+	// Effects (Reverb)
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (91 << 8) | (reverb_value << 16));
+
+	// Chorus
+	midiOutShortMsg (midi_port, i | (MIDI_STATUS_CONTROLLER << 4) | (93 << 8) | (chorus_value << 16));
 }
 
 void Windows_MidiOut::start_track (midi_event *evntlist, const int ppqn, bool repeat)

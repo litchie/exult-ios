@@ -453,6 +453,82 @@ void Audio::start_music(XMIDI *mid_file,bool repetition)
 	}
 }
 
+bool	Audio::start_music_combat (Combat_song song, bool repetition, int bank)
+{
+	int num = -1;
+	
+	if (Game::get_game_type()!=SERPENT_ISLE) switch (song)
+	{
+		case CSBattle_Over:
+		num = 9;
+		break;
+		
+		case CSAttacked1:
+		num = 11;
+		break;
+		
+		case CSAttacked2:
+		num = 12;
+		break;
+		
+		case CSVictory:
+		num = 15;
+		break;
+		
+		case CSRun_Away:
+		num = 16;
+		break;
+		
+		case CSDanger:
+		num = 10;
+		break;
+		
+		case CSHidden_Danger:
+		num = 18;
+		break;
+		
+		default:
+		cerr << "Error: Unable to Find combat track for song " << song << "." << endl;
+		break;
+	}
+	else switch (song)
+	{
+		case CSBattle_Over:
+		num = 0;
+		break;
+		
+		case CSAttacked1:
+		num = 2;
+		break;
+		
+		case CSAttacked2:
+		num = 3;
+		break;
+		
+		case CSVictory:
+		num = 6;
+		break;
+		
+		case CSRun_Away:
+		num = 7;
+		break;
+		
+		case CSDanger:
+		num = 1;
+		break;
+		
+		case CSHidden_Danger:
+		num = 9;
+		break;
+		
+		default:
+		cerr << "Error: Unable to Find combat track for song " << song << "." << endl;
+		break;
+	}
+
+	return start_music (num, repetition, bank);
+}
+
 void	Audio::stop_music()
 {
 	if(midi)
