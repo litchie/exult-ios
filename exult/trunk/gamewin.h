@@ -105,7 +105,6 @@ class Game_window
 	unsigned int in_dungeon;	// true if inside a dungeon.
 	bool ice_dungeon;		// true if inside ice dungeon
 	Fonts_vga_file *fonts;		// "fonts.vga" file.
-	Shape_file *extra_fonts[5];	// extra font shapes
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
 	Xform_palette invis_xform;	// For showing invisible NPC's.
