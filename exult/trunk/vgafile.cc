@@ -318,7 +318,10 @@ int Shapes_vga_file::read_info
 	if (!U7open(tfa, TFA))
 		return (0);
 	for (int i = 0; i < num_shapes; i++)
+		{
 		tfa.read(&info[i].tfa[0], 3);
+		info[i].set_tfa_data();
+		}
 	return (1);
 	}
 
