@@ -412,17 +412,24 @@ public:
  */
 class Dead_body : public Container_game_object
 	{
+	static Dead_body *in_world;	// All dead bodies.  ->last added.
 	short npc_num;			// # of NPC it came from, or -1.
+					// Links for 'in_world' list.
+	Dead_body *next_body, *prev_body;
+	void link();			// Add to end of list.
 public:
 	Dead_body(unsigned char l, unsigned char h, unsigned int shapex,
 				unsigned int shapey, unsigned int lft, int n)
 		: Container_game_object(l, h, shapex, shapey, lft), npc_num(n)
-		{  }
+		{ link(); }
 	Dead_body(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft, int n)
 		: Container_game_object(shapenum, framenum, tilex, tiley, lft),
 			npc_num(n)
-		{  }
+		{ link(); }
+	virtual ~Dead_body();
+	static int find_dead_companions(Dead_body *list[]);
+	static void delete_all();	// Clear out all bodies.
 	virtual int get_live_npc_num();
 	};
 
