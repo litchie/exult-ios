@@ -1415,27 +1415,29 @@ void Game_window::start_actor_alt
 	)
 	{
 	int ax, ay;
-	
+	int nlift;
+	int blocked[8];
 	get_shape_location(main_actor, ax, ay);
 
-	Direction dir = Get_direction (ay - winy, winx - ax);
-
-	if (dir % 2)
-		{
-		Tile_coord start = main_actor->get_abs_tile_coord();
+	int	height = shapes.get_info(main_actor->get_shapenum()).get_3d_height();
+	
+	Tile_coord start = main_actor->get_abs_tile_coord();
+	int dir;
+	for (dir = 0; dir < 8; dir++)
+	{
 		Tile_coord dest = start;
-		Tile_coord n = start;
-		Tile_coord s = start;
-		Tile_coord e = start;
-		Tile_coord w = start;
-
-		PathFinder *path = new Astar();
-		Fast_pathfinder_client	pclient;
-			
 		switch (dir)
-			{
+		{
+			case north:
+			dest.ty -= 1;
+			break;
+
 			case northeast:
 			dest.ty -= 1;
+			dest.tx += 1;
+			break;
+
+			case east:
 			dest.tx += 1;
 			break;
 
@@ -1444,8 +1446,16 @@ void Game_window::start_actor_alt
 			dest.tx += 1;
 			break;
 
+			case south:
+			dest.ty += 1;
+			break;
+
 			case southwest:
 			dest.ty += 1;
+			dest.tx -= 1;
+			break;
+
+			case west:
 			dest.tx -= 1;
 			break;
 
@@ -1453,45 +1463,27 @@ void Game_window::start_actor_alt
 			dest.ty -= 1;
 			dest.tx -= 1;
 			break;
-				
-			default:
-			return;
-			}
-
-		n.ty -= 1;
-		s.ty += 1;
-		e.tx += 1;
-		w.tx -= 1;
-			
-		if (!(path->NewPath(start, dest, &pclient)))
-			{
-			if ((dir == northeast || dir == northwest) && (path->NewPath(start, n, &pclient)))
-				{
-				dir = north;			
-				}
-			else if ((dir == southeast || dir == southwest) && (path->NewPath(start, s, &pclient)))
-				{
-				dir = south;			
-				}
-			else if ((dir == northeast || dir == southeast) && (path->NewPath(start, e, &pclient)))
-				{
-				dir = east;			
-				}
-			else if ((dir == southwest || dir == northwest) && (path->NewPath(start, w, &pclient)))
-				{
-				dir = west;			
-				}
-			else
-				{
-				delete path;
-				return;
-				}
-			}
-
-
-		delete path;
 		}
-		
+		int cx = dest.tx/tiles_per_chunk, cy = dest.ty/tiles_per_chunk;
+		int tx = dest.tx%tiles_per_chunk, ty = dest.ty%tiles_per_chunk;
+
+		Chunk_object_list *clist = get_objects_safely(cx, cy);
+		clist->setup_cache();
+		blocked[dir] = clist->is_blocked (height, main_actor->get_lift(), tx, ty, nlift);
+	}
+
+	dir = Get_direction (ay - winy, winx - ax);
+
+	if (blocked[dir] && !blocked[(dir+1)%8])
+		dir = (dir+1)%8;
+	else if (blocked[dir] && !blocked[(dir+7)%8])
+		dir = (dir+7)%8;
+	else if (blocked[dir])
+	{
+		stop_actor();
+		return;
+	}
+
 	const int delta = 8*tilesize;	// Trying to avoid 'chicken dance'.
 	switch (dir)
 		{
