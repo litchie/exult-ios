@@ -44,10 +44,17 @@ inline void Shape_chooser::show
 			GDK_RGB_DITHER_NORMAL,
 			iwin->get_bits() + y*stride + x, 
 			stride, palette);
+	if (selected >= 0)		// Show selected.
+		{
+		Rectangle b = info[selected].box;
+					// Draw yellow box.
+		gdk_draw_rectangle(draw->window, drawgc, FALSE, 
+							b.x, b.y, b.w, b.h);
+		}
 	}
 
 /*
- *	Select an entry (and show it).  This should be called after rendering
+ *	Select an entry.  This should be called after rendering
  *	the shape.
  */
 
@@ -65,15 +72,6 @@ void Shape_chooser::select
 	g_snprintf(buf, sizeof(buf), "Selected shape %d, frame %d",
 			shapenum, info[selected].framenum);
 	gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
-	if (!iwin)
-		return;
-	Rectangle b = info[selected].box;
-#if 0	/* ++++++++*/
-					// Draw yellow box.
-					// FOR NOW, black:
-	gdk_draw_rectangle(iwin, draw->style->black_gc, FALSE,
-						b.x, b.y, b.w, b.h);
-#endif
 	}
 
 /*
@@ -84,6 +82,7 @@ void Shape_chooser::render
 	(
 	)
 	{
+	const int border = 4;		// Border at bottom, sides.
 					// Look for selected frame.
 	int selshape = -1, selframe = -1;
 	int prev_selected = selected;
@@ -110,14 +109,18 @@ void Shape_chooser::render
 	info_cnt = 0;			// Count them.
 	while (shape && x + (sw = shape->get_width()) <= winw)
 		{
-					// Get height.
+					// Get height, top y-coord.
 		int sh = shape->get_height();
+		int sy = winh - sh - border;
 		shape->paint(iwin, x + shape->get_xleft(),
-					winh - sh + shape->get_yabove());
+						sy + shape->get_yabove());
 		if (sh > winh)
+			{
+			sy += sh - winh;
 			sh = winh;
+			}
 					// Store info. about where drawn.
-		info[info_cnt].set(shapenum, framenum, x, winh - sh, sw, sh);
+		info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
 		if (shapenum == selshape && framenum == selframe)
 					// Found the selected shape.
 			select(info_cnt);
@@ -127,7 +130,7 @@ void Shape_chooser::render
 		framenum = 0;
 		shape = shapenum >= num_shapes ? 0 
 				: ifile->get_shape(shapenum, framenum);
-		x += sw;
+		x += sw + border;
 		info_cnt++;
 		}
 	if (selected != prev_selected && sel_changed)
@@ -149,6 +152,9 @@ gint Shape_chooser::configure
 	if (!chooser->iwin)		// First time?
 		{
 		chooser->drawgc = gdk_gc_new(widget->window);
+					// Foreground = yellow.
+		gdk_rgb_gc_set_foreground(chooser->drawgc,
+							(255<<16) + (255<<8));
 		chooser->iwin = new Image_buffer8(
 			widget->allocation.width, widget->allocation.height);
 		}
