@@ -92,8 +92,8 @@
 	USECODE_INTRINSIC_PTR(remove_cont_items),		// 0x37 - SI Only ???
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x38 - Si Only
 	USECODE_INTRINSIC_PTR(play_music),			// 0x39 - Known
-	USECODE_INTRINSIC_PTR(npc_nearby),			// 0x3a - ???
-	USECODE_INTRINSIC_PTR(npc_nearby),			// 0x3b
+	USECODE_INTRINSIC_PTR(npc_nearby),			// 0x3a
+	USECODE_INTRINSIC_PTR(npc_nearby2),			// 0x3b Guess.
 	USECODE_INTRINSIC_PTR(find_nearby_avatar),		// 0x3c
 
 	USECODE_INTRINSIC_PTR(is_npc),				// 0x3d - Known
@@ -243,7 +243,8 @@
 	USECODE_INTRINSIC_PTR(fade_palette),			// 0xa8
 	// This one is used just for sleeping:
 	USECODE_INTRINSIC_PTR(fade_palette),			// 0xa9
-	USECODE_INTRINSIC_PTR(get_party_ids),			// 0xaa
+//	USECODE_INTRINSIC_PTR(get_party_ids),			// 0xaa
+	USECODE_INTRINSIC_PTR(get_party_list2),			// 0xaa
 
 	USECODE_INTRINSIC_PTR(in_combat),			// 0xab
 	USECODE_INTRINSIC_PTR(is_water),			// 0xac

@@ -749,6 +749,20 @@ USECODE_INTRINSIC(npc_nearby)
 	return(u);
 }
 
+USECODE_INTRINSIC(npc_nearby2)
+{	// Guessing wildly (SI).  Handles start of Moonshade trial where
+	//   companions are a fair distance away.
+
+	Game_object *npc = get_item(parms[0]);
+	int is_near = (npc != 0 && 
+		npc->get_tile().distance(gwin->get_main_actor()->get_tile()) 
+								< 40 &&
+					// FALSE if asleep.
+		!npc->get_flag(Obj_flags::asleep));
+	Usecode_value u(is_near);
+	return(u);
+}
+
 USECODE_INTRINSIC(find_nearby_avatar)
 {
 	// Find objs. with given shape near Avatar?
@@ -2267,27 +2281,6 @@ USECODE_INTRINSIC(get_party_list2)
 	// List of live chars? Dead chars?
 	Usecode_value u(get_party());
 	return(u);
-}
-
-//+++++++Remove this if things work okay.  It's just get_party_list().
-USECODE_INTRINSIC(get_party_ids)
-{
-	Usecode_value u(get_party());
-	return u;
-#if 0	/* ++++++Pretty sure this is wrong.  Just return party objs. */
-	// Return list of party ID's, including -356 for Avatar.
-	Usecode_value arr(1 + party_count, 0);
-					// Add avatar.
-	Usecode_value aval(-356);
-	arr.put_elem(0, aval);	
-	int num_added = 1;
-	for (int i = 0; i < party_count; i++)
-		{
-		Usecode_value val(party[i]);
-		arr.put_elem(num_added++, val);
-		}
-	return arr;
-#endif
 }
 
 USECODE_INTRINSIC(set_camera)

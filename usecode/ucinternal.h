@@ -221,6 +221,7 @@ class Usecode_internal : public Usecode_machine
         USECODE_INTRINSIC_DECL(add_party_items);
         USECODE_INTRINSIC_DECL(play_music);
         USECODE_INTRINSIC_DECL(npc_nearby);
+	USECODE_INTRINSIC_DECL(npc_nearby2);
         USECODE_INTRINSIC_DECL(find_nearby_avatar);
         USECODE_INTRINSIC_DECL(is_npc);
         USECODE_INTRINSIC_DECL(display_runes);
@@ -312,7 +313,6 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(set_path_failure);
 	USECODE_INTRINSIC_DECL(fade_palette);
 	USECODE_INTRINSIC_DECL(get_party_list2);
-	USECODE_INTRINSIC_DECL(get_party_ids);
 	USECODE_INTRINSIC_DECL(set_camera);
 	USECODE_INTRINSIC_DECL(in_combat);
 	USECODE_INTRINSIC_DECL(center_view);
