@@ -2998,6 +2998,9 @@ int Npc_actor::step
 	movef(olist, nlist, tx, ty, frame, new_lift);
 					// Offscreen, but not in party?
 	if (!add_dirty(gwin, 1) && Npc_actor::get_party_id() < 0 &&
+					// And > a screenful away?
+	    distance(gwin->get_main_actor()) > 320/c_tilesize &&
+			//++++++++Try getting rid of the 'talk' line:
 	    get_schedule_type() != Schedule::talk &&
 	    get_schedule_type() != Schedule::street_maintenance)
 		{			// No longer on screen.
