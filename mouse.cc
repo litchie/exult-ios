@@ -43,16 +43,22 @@ Mouse::Mouse
 	{
 					// Get max. backup size.
 	int cnt = pointers.get_num_frames();
-	int maxw = 0, maxh = 0;
+	int maxleft = 0, maxright = 0, maxabove = 0, maxbelow = 0;
 	for (int i = 0; i < cnt; i++)
 		{
 		Shape_frame *frame = pointers.get_frame(i);
-		int w = frame->get_width(), h = frame->get_height();
-		if (w > maxw)
-			maxw = w;
-		if (h > maxh)
-			maxh = h;
+		int xleft = frame->get_xleft(), xright = frame->get_xright();
+		int yabove = frame->get_yabove(), ybelow = frame->get_ybelow();
+		if (xleft > maxleft)
+			maxleft = xleft;
+		if (xright > maxright)
+			maxright = xright;
+		if (yabove > maxabove)
+			maxabove = yabove;
+		if (ybelow > maxbelow)
+			maxbelow = ybelow;
 		}
+	int maxw = maxleft + maxright, maxh = maxabove + maxbelow;
 					// Create backup buffer.
 	backup = iwin->create_buffer(maxw, maxh);
 	box.w = maxw;
