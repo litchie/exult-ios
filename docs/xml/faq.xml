@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="04 January 2002(GMT)">
+<faqs title="Exult" changed="07 January 2002(GMT)">
 	<section title="Changes to the FAQ">
-		<sub name="04012002">
-			<header>- 04 January 2002</header>
+		<sub name="07012002">
+			<header>- 07 January 2002</header>
 			<body>
 				<ul>
 				<li><ref1 target="pentagram"/> some information on the U8 shapes/map viewer.</li>				
@@ -169,8 +169,8 @@
 					<Exult/> supports only Ultima 7 (BG/SI and the add-ons). It will never support
 					any other Ultima nor do members of the team plan to develop something similar.
 					The reasons for this are that no other Ultima is similar to Ultima 7 in the 
-					internal workings and also the team is quite sick of reverse engineering a game
-					already. 
+					internal workings and also the team used to be quite sick of reverse engineering 
+					a game already. 
 				</para>
 			</body>
 		</sub>
@@ -182,6 +182,8 @@
 					for now and Willem is also investing time to disassemble the Usecode of Ultima 8.
 					It isn't meant to be something similar to <Exult/>. It is rather a clever plan
 					by Willem to stir up interest in other coders to carry his basic work further.
+					Along with Willem some other members of the <Exult/> team are putting some effort
+					into the map viewer.<br/>
 					Any <strong>developer</strong> is welcome to take a look and contact Willem.
 				</para>
 			</body>
@@ -668,9 +670,7 @@
 				<ul>
 				<li>browse shapes in the main window.</li>
    				<li>drag a shape from the shape browser to <Exult/>, and that
-					object will be placed in the game.  (Note:  Not all such objects 
-					are saved with the game yet; saving things like buildings will be 
-					implemented soon.)</li>
+					object will be placed in the game.</li>
    				<li>edit an 'egg' by double-clicking on it.  An edit box
 					should appear.</li>
    				<li>create a new 'egg' using the pull-down menu in <Studio/>.  
