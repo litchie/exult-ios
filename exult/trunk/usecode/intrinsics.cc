@@ -1917,8 +1917,12 @@ USECODE_INTRINSIC(get_party_list2)
 	return(u);
 }
 
+//+++++++Remove this if things work okay.  It's just get_party_list().
 USECODE_INTRINSIC(get_party_ids)
 {
+	Usecode_value u(get_party());
+	return u;
+#if 0	/* ++++++Pretty sure this is wrong.  Just return party objs. */
 	// Return list of party ID's, including -356 for Avatar.
 	Usecode_value arr(1 + party_count, 0);
 					// Add avatar.
@@ -1931,6 +1935,7 @@ USECODE_INTRINSIC(get_party_ids)
 		arr.put_elem(num_added++, val);
 		}
 	return arr;
+#endif
 }
 
 USECODE_INTRINSIC(set_camera)

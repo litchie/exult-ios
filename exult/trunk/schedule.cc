@@ -417,8 +417,17 @@ void Patrol_schedule::now_what
 		{
 		Game_window *gwin = Game_window::get_game_window();
 		Actor *safenpc = npc;	// Next stmt. can delete 'this'!
-		safenpc->activate(gwin->get_usecode(), 
+		safenpc->activate(gwin->get_usecode(),
 					Usecode_machine::npc_proximity);
+#if 0
+		if (npc == gwin->get_main_actor() ||
+		    npc->get_party_id() >= 0)
+			return;		// Avatar/party?  Done. (Guessing)
+		int ucfun = npc->get_usecode();
+		gwin->get_usecode()->call_usecode(
+			ucfun == -1 ? npc->get_shapenum() : ucfun, npc,
+					Usecode_machine::npc_proximity);
+#endif
 		if (safenpc->get_schedule() != this)
 			return;		// We're gone.
 		}
