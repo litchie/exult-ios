@@ -28,7 +28,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "schedule.h"
 
-class Npc_actor;
+class Actor;
+class Chunk_object_list;
+class Vector;
 
 /*
  *	Combat schedule:
@@ -44,9 +46,17 @@ class Combat_schedule : public Schedule
 		parry = 4,		// In the process of parrying a blow.
 		stunned = 5		// Just been hit.
 		} state;
-	Npc_actor *opponent;		// Current opponent.
+	Actor *opponent;		// Current opponent.
+	int max_reach;			// Max. weapon reach in tiles.
+					// Find monsters, opponents.
+	void find_monsters(Chunk_object_list *chunk, Vector& vec);
+	void find_opponents(Vector& vec);
+	Actor *find_foe(int mode);	// Find a new opponent.
+	Actor *find_foe();
+	void approach_foe();		// Approach foe.
 public:
-	Combat_schedule(Actor *n) : Schedule(n), state(approach), opponent(0)
+	Combat_schedule(Actor *n) : Schedule(n), state(approach), opponent(0),
+			max_reach(1)
 		{  }
 	virtual void now_what();	// Npc calls this when it's done
 	};

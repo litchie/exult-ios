@@ -192,16 +192,16 @@ public:
 		return (new_skip == skip_above_actor ? 0
 				: ((skip_above_actor = new_skip), 1));
 		}
+	int is_main_actor_inside()
+		{ return skip_above_actor < 31 ; }
 	int set_above_main_actor(int lift)// Use this if chunk didn't change.
 		{
 		return !is_main_actor_inside() ? 0 : 
 			((skip_above_actor = ((lift + 4 + 4)/5)*5), 1);
 		}
-	int is_main_actor_inside()
-		{ return skip_above_actor < 31 ; }
 	inline Actor *get_npc(long npc_num) const
-		{ return (npc_num >= 0 && npc_num < num_npcs) ? (dynamic_cast<Actor *>(npcs[npc_num]))
-									: 0; }
+		{ return (npc_num >= 0 && npc_num < num_npcs) ? 
+				(dynamic_cast<Actor *>(npcs[npc_num])) : 0; }
 					// Find monster info. for shape.
 	Monster_info *get_monster_info(int shapenum);
 	Egg_object *get_path_egg(int q)	// Get path egg by quality.
@@ -403,6 +403,8 @@ public:
 	int write_gwin();		// Write gamedat/gamewin.dat.
 	int read_gwin();		// Read gamedat/gamewin.dat.
 	void init_actors();		// Place actors in the world.
+	void clear_dirty()		// Clear dirty rectangle.
+		{ dirty.w = 0; }
 					// Paint area of image.
 	void paint(int x, int y, int w, int h);
 	void paint(Rectangle& r)
@@ -413,8 +415,6 @@ public:
 		paint(0, 0, get_width(), get_height());
 		clear_dirty();
 		}
-	void clear_dirty()		// Clear dirty rectangle.
-		{ dirty.w = 0; }
 	void paint_dirty()		// Paint 'dirty' rectangle.
 		{
 		if (dirty.w > 0)

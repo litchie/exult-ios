@@ -265,6 +265,8 @@ public:
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
 	virtual int get_weapon_points();	
+	virtual int is_monster()
+		{ return 0; }
 					// Hit-point algorithm:
 	int figure_hit_points(Actor *attacker);
 					// Under attack.
@@ -428,6 +430,8 @@ public:
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
 	virtual int get_weapon_points();	
+	virtual int is_monster()
+		{ return 1; }
 	};
 
 /*
