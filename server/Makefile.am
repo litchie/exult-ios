@@ -6,6 +6,8 @@ noinst_LTLIBRARIES = libserver.la
 libserver_la_SOURCES = 	\
 	objserial.cc	\
 	objserial.h	\
+	servemsg.cc	\
+	servemsg.h	\
 	server.cc	\
 	server.h
 
