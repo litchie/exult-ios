@@ -198,6 +198,10 @@ void Gump_object::initialize
 	case 51:			// Gold signs.
 		object_area = Rectangle(0, 4, 232, 96);
 		break;
+	case 53:			// Bodies.
+		object_area = Rectangle(36, 46, 84, 40);
+		checkx = 8; checky = 70;
+		break;
 	default:
 					// Character pictures:
 		if (shnum >= 57 && shnum <= 68)

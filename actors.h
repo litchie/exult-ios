@@ -130,6 +130,8 @@ public:
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
+					// Drop another onto this.
+	virtual int drop(Game_object *obj);
 	virtual char *get_name();
 	virtual void set_property(int prop, int val)
 		{
@@ -270,7 +272,9 @@ public:
 		special = 24,	kid_games = 25,
 		eat_at_inn = 26,duel = 27,
 		preach = 28,	patrol = 29,
-		desk_work = 30,	follow_avatar = 31
+		desk_work = 30,	follow_avatar = 31,
+					// Our own:
+		walk_to_schedule = 32
 		};
 	virtual void now_what() = 0;	// Npc calls this when it's done
 					//   with its last task.
@@ -333,6 +337,20 @@ public:
 	};
 
 /*
+ *	Walk to the destination for a new schedule.
+ */
+class Walk_to_schedule : public Schedule
+	{
+	Tile_coord dest;		// Where we're going.
+	int new_schedule;		// Schedule to set when we get there.
+	int retries;			// # failures at finding path.
+	int legs;			// # times restarted walk.
+public:
+	Walk_to_schedule(Npc_actor *n, Tile_coord d, int new_sched);
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	An NPC schedule change:
  */
 class Schedule_change
@@ -349,13 +367,14 @@ public:
 		{ return type; }
 	int get_time()
 		{ return time; }
-					// Get position chunk, tile.
-	void get_pos(int& cx, int& cy, int& tx, int& ty)
+	Tile_coord get_pos()		// Get position chunk, tile.
 		{
-		cx = 16*(superchunk%12) + x/16;
-		cy = 16*(superchunk/12) + y/16;
-		tx = x%16;
-		ty = y%16;
+		int cx = 16*(superchunk%12) + x/16,
+		    cy = 16*(superchunk/12) + y/16,
+		    tx = x%16,
+		    ty = y%16;
+		return Tile_coord(cx*tiles_per_chunk + tx,
+				  cy*tiles_per_chunk + ty, 0);
 		}
 	};
 

@@ -547,8 +547,11 @@ static void shape_showcase(
 	gwin->paint();
 	// First of all draw the shape
 	Vga_file *shape_file = gwin->get_shape_file_data(current_file);
-	gwin->paint_shape(gwin->get_width()/2, gwin->get_height()/2,
-		shape_file->get_shape(current_shape, current_frame));
+	Shape_frame *frame = shape_file->get_shape(
+						current_shape, current_frame);
+	if (frame)
+		gwin->paint_shape(
+			gwin->get_width()/2, gwin->get_height()/2, frame);
 	// Then show some info about it
 	sprintf(buf, "Shape file: \"%s\"", gwin->get_shape_file_name(current_file));
 	gwin->paint_text_box(2, buf, 

@@ -263,8 +263,8 @@ void Game_object::paint
 	{
 	int xoff = (cx - gwin->get_chunkx())*chunksize;
 	int yoff = (cy - gwin->get_chunky())*chunksize;
-	gwin->paint_shape(xoff + (1 + get_tx())*tilesize - 4*lift, 
-				yoff + (1 + get_ty())*tilesize - 4*lift,
+	gwin->paint_shape(xoff + (1 + get_tx())*tilesize - 1 - 4*lift, 
+				yoff + (1 + get_ty())*tilesize - 1 - 4*lift,
 					get_shapenum(), get_framenum());
 	}
 
@@ -937,18 +937,18 @@ void Container_game_object::activate
 	switch(shnum)			// Watch for gumps.
 		{
 	case 406:			// Nightstand.
-		gwin->show_gump(this, 27);	//+++++++++
+		gwin->show_gump(this, 27);
 		return;
 	case 407:			// Desk.
 	case 203:
-		gwin->show_gump(this, 27);//+++++++++
+		gwin->show_gump(this, 27);
 		return;
 	case 400:			// Bodies.
 	case 414:
 	case 762:
 	case 778:
 	case 892:
-		gwin->show_gump(this, 27);//+++++++++
+		gwin->show_gump(this, 53);
 		return;
 	case 416:			// Chest of drawers.
 		gwin->show_gump(this, 27);
