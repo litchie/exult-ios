@@ -770,6 +770,7 @@ void Game_window::read_ireg_objects
 		Shape_info& info = shapes.get_info(shnum);
 		unsigned int lift, quality, type;
 		Ireg_game_object *obj;
+		int is_egg = 0;		// Fields are eggs.
 					// An "egg"?
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
@@ -788,6 +789,7 @@ void Game_window::read_ireg_objects
 			quality = entry[5];
 			obj = create_ireg_object(info, shnum, frnum,
 							tilex, tiley, lift);
+			is_egg = obj->is_egg();
 			obj->set_low_lift (entry[4] & 0xF);
 			obj->set_high_shape (entry[3] >> 7);
 			}
@@ -844,7 +846,14 @@ void Game_window::read_ireg_objects
 		obj->set_flags(oflags);
 					// Add, but skip volume check.
 		if (!container || !container->add(obj, 1))
-			get_objects(scx + cx, scy + cy)->add(obj);
+			{
+			Chunk_object_list *chunk = get_objects(
+					scx + cx, scy + cy);
+			if (is_egg)
+				chunk->add_egg((Egg_object *) obj);
+			else
+				chunk->add(obj);
+			}
 		}
 	}
 
@@ -1712,7 +1721,8 @@ void Game_window::start_actor
 					// Set schedule.
 		int sched = main_actor->get_schedule_type();
 		if (sched != Schedule::follow_avatar &&
-						sched != Schedule::combat)
+						sched != Schedule::combat &&
+		    !main_actor->get_flag(Actor::asleep))
 			main_actor->set_schedule_type(Schedule::follow_avatar);
 		// Going to use the alternative function for this at the moment
 		start_actor_alt (winx, winy, speed);

@@ -154,6 +154,7 @@ public:
 class Sleep_schedule : public Schedule
 	{
 	Tile_coord floorloc;		// Where NPC was standing before.
+	Game_object *bed;		// Bed being slept on, or 0.
 public:
 	Sleep_schedule(Actor *n);
 	virtual void now_what();	// Now what should NPC do?

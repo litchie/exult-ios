@@ -99,7 +99,6 @@ protected:
 	unsigned long next_path_time;	// Next time we're allowed to use
 					//   pathfinding to follow leader.
 	Npc_timer_list *timers;		// Timers for poison, hunger, etc.
-	Npc_timer_list *need_timers();
 	void init();			// Clear stuff during construction.
 	void ready_best_weapon();	// Find best weapon and ready it.
 					// Move and change frame.
@@ -265,6 +264,7 @@ public:
 					-(properties[(int) strength]/3); }
 	int get_level() const		// Get experience level.
 		{ return 1 + Log2(get_property(exp)/50); }
+	Npc_timer_list *need_timers();
 					// Set/clear/get actor flag.
 	virtual void set_flag(int flag);
 	virtual void set_siflag(int flag);
