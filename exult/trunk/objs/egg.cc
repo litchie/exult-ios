@@ -662,7 +662,7 @@ Animated_egg_object::Animated_egg_object
 	case fire_field:
 		recycle = 8; break;
 	case caltrops_field:
-		recycle = 0; break;
+		animator = 0; return;	// This doesn't get animated.
 		}
 	animator = new Field_frame_animator(this, recycle); 
 	}
@@ -685,7 +685,8 @@ void Animated_egg_object::paint
 	)
 	{
 	Ireg_game_object::paint(gwin);	// Always paint these.
-	animator->want_animation();	// Be sure animation is on.
+	if (animator)
+		animator->want_animation();	// Be sure animation is on.
 	}
 
 /*
