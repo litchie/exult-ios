@@ -1,3 +1,6 @@
+2001-09-05  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc:fixed crash on transferring items from leaving party member
+
 2001-09-05  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actors.cc (Actor): Fiddling with follow() again.
