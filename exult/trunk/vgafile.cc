@@ -470,6 +470,64 @@ void Shape_frame::paint_rle_translucent
 	}
 
 /*
+ *	Paint outline around a shape.
+ */
+
+void Shape_frame::paint_rle_outline
+	(
+	Image_buffer8 *win,		// Buffer to paint in.
+	int xoff, int yoff,		// Where to show in win.
+	unsigned char color		// Color to use.
+	)
+	{
+	int w = get_width(), h = get_height();
+	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+		if (!win->is_visible(xoff - xleft, 
+						yoff - yabove, w, h))
+			return;
+	int firsty = -10000;		// Finds first line.
+	unsigned char *in = data; // Point to data.
+	int scanlen;
+	while ((scanlen = Read2(in)) != 0)
+		{
+					// Get length of scan line.
+		int encoded = scanlen&1;// Is it encoded?
+		scanlen = scanlen>>1;
+		short scanx = Read2(in);
+		short scany = Read2(in);
+		int x = xoff + scanx;
+		int y = yoff + scany;
+		if (firsty == -10000)
+			firsty = y;
+					// Put pixel at both ends.
+		win->put_pixel8(color, x, y);
+		win->put_pixel8(color, x + scanlen - 1, y);
+
+		if (!encoded)		// Raw data?
+			{
+			if (y == firsty)// First line?
+				win->fill_line8(color, scanlen, x, y);
+			in += scanlen;
+			continue;
+			}
+		for (int b = 0; b < scanlen; )
+			{
+			unsigned char bcnt = *in++;
+					// Repeat next char. if odd.
+			int repeat = bcnt&1;
+			bcnt = bcnt>>1; // Get count.
+			if (repeat)	// Pass repetition byte.
+				in++;
+			else		// Skip that # of bytes.
+				in += bcnt;
+			if (y == firsty)// First line?
+				win->fill_line8(color, bcnt, x + b, y);
+			b += bcnt;
+			}
+		}
+	}
+
+/*
  *	See if a point, relative to the shape's 'origin', actually within the
  *	shape.
  */

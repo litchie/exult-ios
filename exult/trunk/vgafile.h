@@ -64,6 +64,8 @@ public:
 		{ paint_rle(win->get_ib8(), xoff, yoff); }
 	void paint_rle_translucent(Image_buffer8 *win, int xoff, int yoff,
 					Xform_palette *xforms, int xfcnt);
+	void paint_rle_outline(Image_buffer8 *win, int xoff, int yoff,
+							unsigned char color);
 	int has_point(int x, int y);	// Is a point within the shape?
 	int get_width() const		// Get dimensions.
 		{ return xleft + xright; }
