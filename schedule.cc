@@ -715,7 +715,7 @@ void Dance_schedule::now_what
 	)
 	{
 	Tile_coord dest = center;	// Pick new spot to walk to.
-	dest.tx += center.tx -dist + rand()%(2*dist);
+	dest.tx += -dist + rand()%(2*dist);
 	dest.ty += -dist + rand()%(2*dist);
 	Tile_coord cur = npc->get_abs_tile_coord();
 	int dir = (int) Get_direction4(cur.ty - dest.ty, dest.tx - cur.tx);
