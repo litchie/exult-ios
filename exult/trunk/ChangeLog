@@ -1,3 +1,7 @@
+2000-05-20  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* lots_of_files: changed most #ifndef WIN32 to #ifdef XWIN since that's what
+	they were supposed to mean
+
 2000-05-19  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc, Audio.h, win_MCI.h, win_MCI.cc: Windows MIDI repeating support
 
