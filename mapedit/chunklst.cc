@@ -87,7 +87,7 @@ void Chunk_chooser::tell_server
 		return;
 	unsigned char buf[Exult_server::maxlength];
 	unsigned char *ptr = &buf[0];
-	Write2(ptr, selected);
+	Write2(ptr, info[selected].num);
 	ExultStudio *studio = ExultStudio::get_instance();
 	studio->send_to_server(Exult_server::set_edit_chunknum, 
 							buf, ptr - buf);
