@@ -45,13 +45,14 @@ void Game_window::read_npcs
 	int cnt2 = Read2(nfile);
 	num_npcs = num_npcs1 + cnt2;
 	npcs = new Actor *[num_npcs];
-	int i;
+	memset(npcs, 0, num_npcs*sizeof(npcs[0]));
 					// Create main actor.
 	npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
 	if (usecode->get_global_flag(Usecode_machine::did_first_scene))
 		main_actor->clear_flag(Actor::dont_render);
 	else
 		main_actor->set_flag(Actor::dont_render);
+	int i;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
 	center_view(main_actor->get_abs_tile_coord());
