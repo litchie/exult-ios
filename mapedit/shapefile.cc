@@ -104,7 +104,7 @@ Shape_file_info *Shape_file_set::create
 	{
 	for (vector<Shape_file_info *>::iterator it = files.begin(); 
 					it != files.end(); ++it)
-		if ((*it)->pathname == fullname)
+		if (strcasecmp((*it)->pathname.c_str(), fullname) == 0)
 			return *it;	// Found it.
 	string group_name(basename);	// Create groups file.
 	group_name += ".grp";
