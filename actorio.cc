@@ -90,7 +90,9 @@ void Actor::read
 		usecode_assigned = true;
 
 	int schunk = nfile->read1();	// Superchunk #.
-	nfile->read1();			// Skip next byte.
+					// For multi-map:
+	int map_num = fix_first ? 0 : nfile->read1();
+	Game_map *npcmap = gwin->get_map(map_num);
 	int usefun = nfile->read2();	// Get usecode function #.
 	set_lift(usefun >> 12);		// Lift is high 4 bits.
 	usecode = usefun & 0xfff;
@@ -388,20 +390,21 @@ void Actor::read
 	int scy = 16*(schunk/12);
 	int scx = 16*(schunk%12);
 	if (has_contents)		// Inventory?  Read.
-		gwin->get_map()->read_ireg_objects(nfile, scx, scy, this);
+		npcmap->read_ireg_objects(nfile, scx, scy, this);
 	if (read_sched_usecode)		// Read in scheduled usecode.
-		gwin->get_map()->read_special_ireg(nfile, this);
+		npcmap->read_special_ireg(nfile, this);
 	int cx = locx >> 4;		// Get chunk indices within schunk.
 	int cy = locy >> 4;
 					// Get tile #'s.
 	int tilex = locx & 0xf;
 	int tiley = locy & 0xf;
 	set_shape_pos(tilex, tiley);
-	Map_chunk *olist = gmap->get_chunk_safely(scx + cx, scy + cy);
+	Map_chunk *olist = npcmap->get_chunk_safely(scx + cx, scy + cy);
 	set_invalid();			// Not in world yet.
 	if (olist && !is_dead() &&	// Valid & alive?  Put into chunk list.
 	    !unused)
 		{
+		// +++++TODO:  Got to move to proper map.
 		move((scx + cx)*c_tiles_per_chunk + tilex,
 		     (scy + cy)*c_tiles_per_chunk + tiley, get_lift());
 //		olist->add(this);
@@ -471,7 +474,10 @@ void Actor::write
 	nfile->write2(iflag1);
 			// Superchunk #.
 	nfile->write1((get_cy()/16)*12 + get_cx()/16);
-	nfile->write1(0);			// Unknown.
+	Map_chunk *chunk = get_chunk();
+	int map_num = chunk ? chunk->get_map()->get_num() : 0;
+	assert(map_num >= 0 && map_num < 256);
+	nfile->write1(map_num);		// Borrowing for map #.
 					// Usecode.
 	int usefun = get_usecode() & 0xfff;
 					// Lift is in high 4 bits.

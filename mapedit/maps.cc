@@ -166,10 +166,10 @@ C_EXPORT void on_newmap_ok_clicked
 				break;
 			}
 		}
+	U7mkdir(Get_mapped_name("<GAMEDAT>/", num, fname), 0755);
 	if (studio->get_toggle("newmap_copy_ireg"))
 		{
-		char fname[128], tname[128];
-		U7mkdir(Get_mapped_name("<GAMEDAT>/", num, fname), 0755);
+		char tname[128];
 		for (int schunk = 0; schunk < 12*12; schunk++)
 			{
 			Get_mapped_name(U7IREG, frommap, fname);
