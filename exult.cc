@@ -70,7 +70,10 @@ bool    cheat=true;			// Enable cheating keys
 bool	god_mode = false;
 bool    wizard_mode = false;
 bool	hack_mover = false;
-bool	usecode_trace=false;		// Do we trace Usecode-intrinsics?
+bool	infravision = false;
+
+bool	usecode_trace = false;		// Do we trace Usecode-intrinsics?
+
 #if USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
 #endif
@@ -877,6 +880,7 @@ static void Handle_keystroke
 				"  e - Toggle Egg display\n"
 				"  alt-g - Toggle God Mode\n"
 				"  g - Change Avatar gender\n"
+				"  alt-i - Toggle infravision\n"
 				"  ctrl-m - Get 100 gold coins\n"
 				"  ctrl-alt-m - Toggle hack-mover\n"
 				"  alt-n  - Toggle Naked flag (SI)\n"
@@ -896,21 +900,28 @@ static void Handle_keystroke
 		break;
 		}
 	case SDLK_i:
-		{
-		// Show Inventory
-		if (gwin->get_mode() != Game_window::gump)
-			inventory_page = stats_page = -1;
-		if(inventory_page<gwin->get_usecode()->get_party_count())
-			++inventory_page;
-		else
-			inventory_page = 0;
-		Actor *actor = Get_party_member(inventory_page);
-		if (actor)
-			actor->activate(gwin->get_usecode());
-		if (gwin->get_mode() == Game_window::gump)
-			mouse->set_shape(Mouse::hand);
-		break;
+		if (alt && cheat) {    // infravision
+			infravision = !infravision;
+			if (infravision) {
+				gwin->center_text("Infravision Enabled");
+				gwin->set_palette(0);
+			} else
+				gwin->center_text("Infravision Disabled");		
+		} else {
+			// Show Inventory
+			if (gwin->get_mode() != Game_window::gump)
+				inventory_page = stats_page = -1;
+			if(inventory_page<gwin->get_usecode()->get_party_count())
+				++inventory_page;
+			else
+				inventory_page = 0;
+			Actor *actor = Get_party_member(inventory_page);
+			if (actor)
+				actor->activate(gwin->get_usecode());
+			if (gwin->get_mode() == Game_window::gump)
+				mouse->set_shape(Mouse::hand);
 		}
+		break;
 	case SDLK_l:			// Decrement skip_lift.
 		if(!cheat)
 			break;
