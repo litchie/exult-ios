@@ -540,7 +540,7 @@ public:
 	int find_objects(int lift, int x, int y, Game_object **list);
 	void show_items(int x, int y);	// Show names of items clicked on.
 					// Add text item.
-	void add_text(const char *msg, int x, int y);
+	void add_text(const char *msg, int x, int y, Game_object *item = 0);
 	void center_text(const char *msg);
 	void add_effect(Special_effect *effect);
 					// Remove text item & delete it.

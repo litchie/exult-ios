@@ -1870,7 +1870,7 @@ int Game_window::find_objects
 	}
 
 /*
- *	Show the names of the items the mouse is clicked on.
+ *	Show the name of the item the mouse is clicked on.
  */
 
 void Game_window::show_items
@@ -1887,7 +1887,7 @@ void Game_window::show_items
 		obj = find_object(x, y);
 	if (obj)
 					// Show name.
-		add_text(obj->get_name().c_str(), x, y);
+		add_text(obj->get_name().c_str(), x, y, obj);
 //++++++++Testing
 #if 1
 	int shnum, frnum;
@@ -1959,10 +1959,16 @@ void Game_window::show_items
 void Game_window::add_text
 	(
 	const char *msg,
-	int x, int y			// Pixel coord. on screen.
+	int x, int y,			// Pixel coord. on screen.
+	Game_object *item		// Item text ID's, or null.
 	)
 	{
-	Text_effect *txt = new Text_effect(msg,
+	if (item)			// Don't duplicate for item.
+		for (Special_effect *each = effects; each; each = each->next)
+			if (each->is_text(item))
+				return;	// Already have text on this.
+
+	Text_effect *txt = new Text_effect(msg, item,
 		get_scrolltx() + x/tilesize, get_scrollty() + y/tilesize,
 				8 + get_text_width(0, msg),
 				8 + get_text_height(0));

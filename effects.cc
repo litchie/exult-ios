@@ -323,9 +323,10 @@ void Projectile_effect::paint
 Text_effect::Text_effect
 	(
 	const char *m, 			// A copy is made.
+	Game_object *it,		// Item text is on, or null.
 	int t_x, int t_y, 		// Abs. tile coords.
 	int w, int h
-	) : msg(strdup(m)), tx(t_x), ty(t_y), width(w), height(h)
+	) : msg(strdup(m)), item(it), tx(t_x), ty(t_y), width(w), height(h)
 	{
 	}
 
