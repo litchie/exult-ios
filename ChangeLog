@@ -1,3 +1,7 @@
+2001-08-20  Max Horn <max@quendi.de>
+	* keys.cc: key handling during dont_move is now properly restricted;
+	  each key Action now has a flag determing if it can be used during dont_move
+	
 2001-08-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/shapeinf.h,shapevga.cc:  Read in 'occludes.dat' & set
