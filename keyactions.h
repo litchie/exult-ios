@@ -39,6 +39,7 @@ void ActionDarker(int* params);
 void ActionFullscreen(int* params);
 
 void ActionUseItem(int* params);
+void ActionUseFood(int*params);
 void ActionCombat(int* params);
 void ActionTarget(int* params);
 void ActionInventory(int* params);
