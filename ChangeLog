@@ -1,3 +1,7 @@
+2000-11-26  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* beos/exult.rsrc: BeOS resource file
+	* Makefile.be: include resource file in binary
+
 2000-11-26  Max Horn  <max@quendi.de>
 	* mouse.cc: mouse is now positioned correctly directly after creation
 
