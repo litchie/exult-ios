@@ -88,7 +88,7 @@ public:
 		{
 #if DEBUG
 		if (onscreen)
-			cerr << "Trying to move mouse while onscreen!\n";
+			cerr << "Trying to move mouse while onscreen!" << endl;
 #endif
 					// Shift to new position.
 		box.shift(x - mousex, y - mousey);

@@ -70,7 +70,7 @@ int Game_window::start_dragging
 			dragging_paintx = dragging_gump->get_x();
 			dragging_painty = dragging_gump->get_y();
 cout << "(x,y) rel. to gump is (" << (x-dragging_paintx) << ", " <<
-		(y-dragging_painty) << ")\n";
+		(y-dragging_painty) << ")"<<endl;
 			}
 		}
 	else if (!dragging)		// Not found in gump?
@@ -286,7 +286,7 @@ int Game_window::drop_at_lift
 		dragging->set_shape_pos(tx%tiles_per_chunk, 
 							ty%tiles_per_chunk);
 cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
-							<< ")\n";
+							<< ")"<<endl;
 		chunk->add(dragging);
 		return (1);
 		}
