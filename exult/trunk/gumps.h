@@ -41,6 +41,8 @@ class Checkmark_gump_button;
 class Heart_gump_button;
 class Disk_gump_button;
 class Combat_gump_button;
+class Halo_gump_button;
+class Combat_mode_gump_button;
 class Yesno_gump_button;
 class Slider_gump_button;
 
@@ -164,6 +166,8 @@ class Actor_gump_object : public Gump_object
 	Heart_gump_button *heart_button;// For bringing up stats.
 	Disk_gump_button *disk_button;	// For bringing up 'save' box.
 	Combat_gump_button *combat_button;
+	Halo_gump_button *halo_button;
+	Combat_mode_gump_button *cmode_button;
 	static short coords[24];	// Coords. of where to draw things,
 					//   indexed by spot # (0-11).
 	static int spotx(int i) { return coords[2*i]; }
@@ -174,6 +178,8 @@ class Actor_gump_object : public Gump_object
 	static short diskx, disky;	// Where to show 'diskette' button.
 	static short heartx, hearty;	// Where to show 'stats' button.
 	static short combatx, combaty;	// Combat button.
+	static short halox, haloy;	// "Protected" halo.
+	static short cmodex, cmodey;	// Combat mode.
 public:
 	Actor_gump_object(Container_game_object *cont, int initx, int inity, 
 								int shnum);

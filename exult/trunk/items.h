@@ -38,6 +38,9 @@ const int first_ouch = 0x429;
 const int last_ouch = 0x42c;
 const int first_to_battle = 0x439;
 const int last_to_battle = 0x43b;
+const int first_hunger0 = 0x477;	// A little hungry.  (3 of each).
+const int first_hunger1 = 0x47a;	// Must have food.
+const int first_hunger2 = 0x47b;	// Starving.
 const int first_awakened = 0x495;
 const int last_awakened = 0x49a;
 

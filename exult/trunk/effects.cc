@@ -140,7 +140,7 @@ inline void Projectile_effect::add_dirty
 	{
 	if (pos.tx == -1)
 		return;			// Already at destination.
-	Shape_frame *shape = gwin->get_sprite_shape(shape_num, frame_num);
+	Shape_frame *shape = gwin->get_shape(shape_num, frame_num);
 					// Force repaint of prev. position.
 	int liftpix = pos.tz*tilesize/2;
 	gwin->add_dirty(gwin->clip_to_win(gwin->get_shape_rect(shape,
