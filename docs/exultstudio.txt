@@ -1,0 +1,102 @@
+Exult Studio Documentation - Rough first draft
+==============================================
+ 
+  
+NAME
+====
+
+exult_studio - a world editor for Exult 
+  
+
+SYNOPSIS
+========
+
+exult_studio [options] 
+
+  
+DESCRIPTION
+===========
+
+exult_studio can be used to view graphics and map snippets of Exult games. Used 
+in conjunction with exult the map can be changed as well. 
+Currently it is not feasable to create a game from scratch. You must point 
+exult_studio at an existing game instead, either via the -d commandline option 
+(see below), or by selecting Open static... in the File menu. The latter will 
+pop up a file requester, where you can choose an appropriate directory. 
+Once an appropriate directory has been located, a tree of game files is 
+displayed to the left of the main window, while the currently selected file is 
+viewed in detail to the right. At the moment, the following types of files are 
+supported: 
+  
+Shape files
+Shapes are the basic graphical elements of the game. Each shape has one or more 
+frames that typically represent different states or angles of the same thing. 
+E.g. a button shape could have frames for pressed, and released; a character 
+could have frames depicting her sitting, standing up facing one way, or another, 
+swinging a punch, etc. 
+When a shape file is selected, the right part of the main window will show frame 
+zero of the shapes contained therein. Shapes can be selected by clicking, which 
+will show there number, number of frames, and name if known. Other frames can be 
+viewed by changing the frame number. 
+  
+Map files
+These files contain so called chunks that serve as templates in the final map. 
+The chunks of the selected map file are shown to the right of the main window. 
+  
+
+OPTIONS
+=======
+
+  -d DIRECTORY
+  specifies DIRECTORY as the game base directory. 
+  -x DIRECTORY
+  tells exult_studio to look in DIRECTORY for its user-interface specification. 
+  This option is only useful to developers. 
+  
+
+FILES
+=====
+
+  /usr/share/exult/exult_studio.glade 
+  Default location of the user-interface specification. 
+  
+
+NOTES
+=====
+
+See also newgame.txt
+
+For more help and information with exult_studio go to: 
+  http://exult.sourceforge.net/
+  http://sourceforge.net/projects/exult/
+
+Editing a copyrighted game may or may not be allowed. Please exercise caution. 
+  
+
+BUGS
+====
+
+Closing the directory selector (via Ok or Cancel) induces a crash. Double 
+clicking the directory works, just move the selector out of the way after that. 
+Invalid arguments to commandline options will not be taken lightly. Avoid that 
+for now. 
+
+More bugs? Surely! Please report them at: 
+http://sourceforge.net/bugs/?group_id=2335
+
+(Be sure to mention information about your operating system, and which version 
+of exult_studio you are running!) 
+  
+
+AUTHORS
+=======
+
+The Exult Team 
+  
+
+HISTORY
+=======
+
+exult_studio started it's life as a map-browser for Ultima VII and has evolved 
+from there, thanks to the open source-model, and contributions of time and code 
+from many people. 
