@@ -210,6 +210,43 @@ public:
 	};
 
 /*
+ *	Conversation CASE statement:
+ */
+class Uc_converse_case_statement : public Uc_statement
+	{
+	int string_offset;		// Offset of string to compare.
+	bool remove;			// True to remove answer.
+	Uc_statement *statements;	// Execute these.
+public:
+	Uc_converse_case_statement(int soff, bool rem, Uc_statement *stmts)
+		: string_offset(soff), remove(rem), statements(stmts)
+		{  }
+	~Uc_converse_case_statement()
+		{ delete statements; }
+					// Generate code.
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	};
+
+/*
+ *	A CONVERSE2 statement provides a less wordy way to implement a
+ *	conversation.  It provides for CASE entries for the comparisons, and
+ *	also generates push/pop-answers so these can be nested.
+ */
+class Uc_converse2_statement : public Uc_statement
+	{
+	static int nest;		// Keeps track of nesting.
+	Uc_expression *answers;		// Answers to add.
+	Uc_statement *cases;		// What to execute.
+public:
+	Uc_converse2_statement(Uc_expression *a, Uc_statement *cs)
+		: answers(a), cases(cs)
+		{  }
+	~Uc_converse2_statement();
+					// Generate code.
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	};
+
+/*
  *	Add string to current message (for conversations).
  */
 class Uc_message_statement : public Uc_statement
