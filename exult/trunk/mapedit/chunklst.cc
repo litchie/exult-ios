@@ -832,7 +832,7 @@ Chunk_chooser::Chunk_chooser
 		chunksz = c_tiles_per_chunk*c_tiles_per_chunk*3;
 		}
 	chunkfile.seekg(0, std::ios::end);	// Figure total #chunks.
-	num_chunks = (chunkfile.tellg() - (long) headersz)/chunksz;
+	num_chunks = ((int)chunkfile.tellg() - headersz)/chunksz;
 	chunklist.resize(num_chunks);	// Init. list of ->'s to chunks.
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
