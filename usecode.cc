@@ -105,7 +105,8 @@ public:
 		{
 		cnt = arrval.get_array_size();
 		obj = usecode->get_item(objval);
-		objpos = obj->get_abs_tile_coord();
+		objpos = obj ? obj->get_abs_tile_coord() 
+				: Tile_coord(-1, -1, -1);
 					// Not an array?
 		if (!cnt && !arrval.is_array())
 			cnt = 1;	// Get_elem(0) works for non-arrays.
@@ -435,7 +436,8 @@ void Scheduled_usecode::handle_event
 		gwin->end_gump_mode();	// This also sets mode=normal.
 		gwin->paint();
 		}
-	if (count == 1)			// Last one?  GUESSING:
+	if (count == 1 &&		// Last one?  GUESSING:
+	    objpos.tx != -1)		// And valid pos.
 		Activate_cached(usecode, objpos);
 	delete this;			// Hope this is safe.
 	}
@@ -1837,7 +1839,9 @@ USECODE_INTRINSIC(create_new_object)
 			cx, cy, tx, ty, lift);
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
-		obj = monster;
+		gwin->show();
+		last_created = monster;
+		return Usecode_value((long) monster);
 	}
 	else
 	{
@@ -2823,7 +2827,7 @@ USECODE_INTRINSIC(is_not_blocked)
 	if (pval.get_array_size() < 3)
 		return fail;
 	Tile_coord lcpos(-1, -1, -1);	// Don't let last_created block.
-	if (last_created)
+	if (last_created && !last_created->get_owner())
 		{
 		lcpos = last_created->get_abs_tile_coord();
 		last_created->remove_this(1);
@@ -2846,7 +2850,7 @@ USECODE_INTRINSIC(is_not_blocked)
 		info.get_3d_xtiles(), info.get_3d_ytiles(), 
 		new_lift, MOVE_ALL_TERRAIN);
 	blocked = (blocked || new_lift != tile.tz);
-	if (last_created)		// Put back last_created.
+	if (lcpos.tx != -1)		// Put back last_created.
 		last_created->move(lcpos);
 	return Usecode_value(!blocked);
 }

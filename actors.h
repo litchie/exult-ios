@@ -319,8 +319,6 @@ public:
 	virtual Weapon_info *get_weapon(int& points, int& shape);	
 	Weapon_info *get_weapon(int& points)
 		{ int sh; return get_weapon(points, sh); }
-	virtual int is_monster()
-		{ return 0; }
 					// Hit-point algorithm:
 	int figure_hit_points(Actor *attacker, int weapon_shape, 
 							int ammo_shape);
