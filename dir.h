@@ -52,4 +52,10 @@ Direction Get_direction4
 	int deltax
 	);
 
+int Get_direction16
+	(
+	int deltay,
+	int deltax
+	);
+
 #endif

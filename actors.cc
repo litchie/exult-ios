@@ -1802,7 +1802,7 @@ Monster_actor *Monster_info::create
 	int lift			// Lift.
 	)
 	{
-	Monster_actor *monster = new Monster_actor(0, shapenum);
+	Monster_actor *monster = new Monster_actor("", shapenum);
 	monster->set_info(this);
 					// Seems like the #'s are x4.
 	monster->set_property(Actor::strength, strength/4);
