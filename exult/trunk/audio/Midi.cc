@@ -215,7 +215,6 @@ void	MyMidiPlayer::start_music(int num,int repeats)
 
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 {
-	// chdir("/home/projects/dancer/exult/u7");	// Only if you're me. &&&& Take this out sometime
 	bool	no_device=true;
 	midi_tracks=AccessFlexFile("static/adlibmus.dat");
 #if DEBUG
