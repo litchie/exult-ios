@@ -222,7 +222,7 @@ public:
 	void clear_dependencies();	// Remove all dependencies.
 					// Find nearby objects.
 	int find_nearby(Vector& vec, int shapenum, int quality, int mask);
-	Game_object *find_closest(int shapenum, int quality = -359);
+	Game_object *find_closest(int *shapenums, int num_shapes);
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
 					// Render.

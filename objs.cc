@@ -258,27 +258,29 @@ int Game_object::find_nearby
 	}
 
 /*
- *	Find the closest nearby object with a given shape.
+ *	Find the closest nearby object with a shape in a given list.
  *
  *	Output:	->object, or 0 if none found.
  */
 
 Game_object *Game_object::find_closest
 	(
-	int shapenum,			// Shape to look for.  -1=any,
-					//   -359=any NPC.
-	int quality			// +++Not used/understood.
+	int *shapenums,			// Shapes to look for. -359=any NPC.
+	int num_shapes			// Size of shapenums.
 	)
 	{
 	Vector vec;			// Gets objects found.
-	int cnt = find_nearby(vec, shapenum, quality, 0);
+	int cnt = 0;
+	int i;
+	for (i = 0; i < num_shapes; i++)
+		cnt += find_nearby(vec, shapenums[i], -359, 0);
 	if (!cnt)
 		return (0);
 	Game_object *closest = 0;	// Get closest.
 	int best_dist = 10000;		// In tiles.
 					// Get our location.
 	Tile_coord loc = get_abs_tile_coord();
-	for (int i = 0; i < cnt; i++)
+	for (i = 0; i < cnt; i++)
 		{
 		Game_object *obj = (Game_object *) vec.get(i);
 		int dist = obj->get_abs_tile_coord().distance(loc);
