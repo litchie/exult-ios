@@ -1,9 +1,9 @@
 #CXX = gpp
 CXX = g++
 SRC = src/
-IDIR   = include
+IDIR   = -Iinclude -I../
 
-CXXFLAGS = -O -I$(IDIR)
+CXXFLAGS = -O $(IDIR)
 
 PGM = ucxt
 OBJS = $(SRC)opcodec_.o $(SRC)printucc.o $(SRC)stacki.o \

@@ -2,6 +2,10 @@
 #ifndef OPCODES_H
 #define OPCODES_H
 
+#include <map>
+#include <string>
+#include <vector>
+
 /* Opcode descriptor */
 typedef struct _opcode_desc
 {
@@ -96,6 +100,11 @@ typedef struct _opcode_desc
 //76, 113
 extern const opcode_desc opcode_table[76];//[76];
 extern const char* bg_func_table[113];
+
+extern map<unsigned int, string> bg_uc_intrinsics;
+extern map<unsigned int, string> si_uc_intrinsics;
+
+void init_usecodetables();
 
 #endif
 
