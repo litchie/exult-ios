@@ -57,7 +57,8 @@ public:
 	void close_egg_window();
 	int init_egg_window(unsigned char *data, int datalen);
 	int save_egg_window();
-	void show_egg_monster(int x, int y, int w, int h);
+	void show_egg_monster(int x = 0, int y = 0, int w = -1, int h = -1);
+	void set_egg_monster(int shape, int frame);
 	void run();
 	void read_from_server();
 	void connect_to_server();
