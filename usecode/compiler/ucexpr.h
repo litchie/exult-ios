@@ -194,6 +194,25 @@ public:
 	~Uc_array_expression();
 	void add(Uc_expression *e)	// Append an expression.
 		{ exprs.push_back(e); }
+	const vector<Uc_expression*>& get_exprs()
+		{ return exprs; }
+					// Gen. code to put result on stack.
+	virtual void gen_value(ostream& out);
+	};
+
+/*
+ *	A function or intrinsic call.
+ */
+class Uc_call_expression : public Uc_expression
+	{
+	Uc_symbol *sym;			// Function or intrinsic.
+	Uc_array_expression *parms;
+public:
+	Uc_call_expression(Uc_symbol *s, Uc_array_expression *prms)
+		: sym(s), parms(prms)
+		{  }
+	~Uc_call_expression()
+		{ delete parms; }
 					// Gen. code to put result on stack.
 	virtual void gen_value(ostream& out);
 	};

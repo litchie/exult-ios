@@ -35,6 +35,7 @@ class ostream;
  */
 class Uc_function
 	{
+	static Uc_scope intrinsics;	// For finding intrinsics.
 	Uc_scope top;			// Top-level scope.
 	Uc_function_symbol *proto;	// Function declaration.
 	Uc_scope *cur_scope;		// Current scope.
@@ -47,6 +48,12 @@ class Uc_function
 public:
 	Uc_function(Uc_function_symbol *p);
 	~Uc_function();
+	enum Intrinsic_type
+		{
+		bg,			// Black gate.
+		si			// Serpent isle.
+		};
+	static void set_intrinsics(Intrinsic_type ty);
 	void set_statement(Uc_statement *s)
 		{ statement = s; }
 	void push_scope()		// Start a new scope.
@@ -58,7 +65,10 @@ public:
 	Uc_symbol *search(char *nm)	// Search current scope.
 		{ return cur_scope->search(nm); }
 	Uc_symbol *search_up(char *nm)
-		{ return cur_scope->search_up(nm); }
+		{ 
+		Uc_symbol *sym = cur_scope->search_up(nm);
+		return (sym ? sym : intrinsics.search(nm));
+		}
 	Uc_var_symbol *add_symbol(char *nm);// Add symbol to current scope.
 					// Add string constant.
 	Uc_symbol *add_string_symbol(char *nm, char *text);

@@ -29,6 +29,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <map>
 #include <vector>
 
+class Uc_array_expression;
+
+/*
+ *	For comparing names:
+ */
+class String_compare
+	{
+public:
+	bool operator()(char * const &x, char * const &y) const;
+	};
+
 /*
  *	A formal parameter or local symbol within a function.
  */
@@ -45,6 +56,9 @@ public:
 	virtual int gen_value(ostream& out);
 					// Gen. to assign from stack.
 	virtual int gen_assign(ostream& out);
+					// Generate function/procedure call.
+	virtual int gen_call(ostream& out, Uc_array_expression *parms,
+							bool retvalue);
 	virtual int get_string_offset()	// Get offset in text_data.
 		{ return -1; }
 	};
@@ -86,6 +100,26 @@ public:
 	};
 
 /*
+ *	An intrinsic symbol:
+ */
+class Uc_intrinsic_symbol : public Uc_symbol
+	{
+	int intrinsic_num;		// Intrinsic #.
+	int num_parms;			// # parms. +++++Not used/set yet.
+public:
+	Uc_intrinsic_symbol(char *nm, int n) : Uc_symbol(nm), intrinsic_num(n),
+		num_parms(0)
+		{  }
+	int get_intrinsic_num()
+		{ return intrinsic_num; }
+	int get_num_parms()		// ++++Not valid yet.
+		{ return num_parms; }
+					// Generate function/procedure call.
+	virtual int gen_call(ostream& out, Uc_array_expression *parms,
+							bool retvalue);
+	};
+
+/*
  *	A function-prototype symbol:
  */
 class Uc_function_symbol : public Uc_symbol
@@ -103,15 +137,11 @@ public:
 		{ return usecode_num; }
 	int get_num_parms()
 		{ return parms.size(); }
-	};
-
-/*
- *	For comparing names:
- */
-class String_compare
-	{
-public:
-	bool operator()(char * const &x, char * const &y) const;
+#if 0	/* +++++Do this */
+					// Generate function/procedure call.
+	virtual int gen_call(ostream& out, Uc_array_expression *parms,
+							bool retvalue);
+#endif
 	};
 
 /*
