@@ -38,8 +38,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "lists.h"
 #include "usecode.h"
+#include "tqueue.h"
 
 class Vga_file;
+class Game_window;
 
 /*
  *	Sizes:
@@ -334,7 +336,7 @@ inline long Time_passed
 /*
  *	A sprite is a game object which can change shape and move around.
  */
-class Sprite : public Container_game_object
+class Sprite : public Container_game_object, public Time_sensitive
 	{
 	int cx, cy;			// (Absolute) chunk coords.
 	Chunk_object_list *chunk;	// The chunk list we're on.
@@ -355,7 +357,7 @@ class Sprite : public Container_game_object
 	int x_dir, y_dir;		// 1 or -1 for dir. along each axis.
 	Frames_sequence *frames_seq;	// ->sequence of frames to display.
 	int frame_index;		// Index into frames_seq.
-	timeval last_frame_time;	// When last frame was computed.
+protected:
 	int frame_time;			// Time between frames in microsecs.
 public:
 	Sprite(int shapenum);
@@ -402,11 +404,14 @@ public:
 		{ return x_dir != 0; }
 	void stop();			// Stop motion.
 					// Start moving.
-	void start(unsigned long destx, unsigned long desty, int speed);
+	void start(Game_window *gwin,
+			unsigned long destx, unsigned long desty, int speed);
 					// Figure next frame location.
 	virtual int next_frame(timeval& time,
 		int& new_cx, int& new_cy, int& new_sx, int& new_sy,
 		int& new_frame);
+					// For Time_sensitive:
+	virtual void handle_event(timeval curtime, long udata);
 	};
 
 /*

@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream.h>			/* Debugging. */
 #include <stdlib.h>
 #include <string.h>
-#include "actors.h"
+#include "gamewin.h"
 #include "imagewin.h"
 #include "usecode.h"
 
@@ -137,6 +137,59 @@ int Actor::get_flag
 	}
 
 /*
+ *	Animation.
+ */
+
+void Main_actor::handle_event
+	(
+	timeval curtime,		// Current time of day.
+	long udata			// Ignored.
+	)
+	{
+	Game_window *gwin = (Game_window *) udata;
+	int cx, cy, sx, sy;		// Get chunk, shape within chunk.
+	int frame;
+	if (next_frame(curtime, cx, cy, sx, sy, frame))
+		{
+					// Add back to queue for next time.
+		gwin->get_tqueue()->add(Add_usecs(curtime, frame_time),
+							this, udata);
+					// Check for scrolling.
+		int chunkx = gwin->get_chunkx(), chunky = gwin->get_chunky();
+					// At left?
+		if (cx - chunkx <= 0 && sx < 6)
+			gwin->view_left();
+					// At right?
+		else if ((cx - chunkx)*16 + sx >= gwin->get_width()/8 - 4)
+			gwin->view_right();
+					// At top?
+		if (cy - chunky <= 0 && sy < 6)
+			gwin->view_up();
+					// At bottom?
+		else if ((cy - chunky)*16 + sy >= gwin->get_height()/8 - 4)
+			gwin->view_down();
+					// Get old chunk it's in.
+		int old_cx = get_cx(), old_cy = get_cy();
+					// Get old rectangle.
+		Rectangle oldrect = gwin->get_shape_rect(this);
+		Chunk_object_list *olist = gwin->get_objects(cx, cy);
+					// Move it.
+		move(cx, cy, olist, sx, sy, frame);
+				// Near an egg?
+		Egg_object *egg = olist->find_egg(sx, sy);
+		if (egg)
+			egg->activate(gwin->get_usecode());
+		int inside;		// See if moved inside/outside.
+					// In a new chunk?
+		if ((get_cx() != old_cx || get_cy() != old_cy) &&
+		    gwin->check_main_actor_inside())
+			gwin->paint();
+		else
+			gwin->repaint_sprite(this, oldrect);
+		}
+	}
+
+/*
  *	Create a schedule.
  */
 
@@ -173,7 +226,7 @@ Npc_actor::~Npc_actor
 	)
 	{
 	}
-
+#if 0
 /*
  *	Figure where the sprite will be in the next frame.
  *
@@ -221,3 +274,4 @@ int Area_actor::next_frame
 		return (0);
 		}
 	}
+#endif
