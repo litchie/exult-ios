@@ -43,7 +43,7 @@ using std::string;
 
 void	Configuration::value(const char *key,std::string &ret,const char *defaultvalue) const
 {
-	const XMLnode *sub=xmltree.subtree(string(key));
+	const XMLnode *sub=xmltree->subtree(string(key));
 	if(sub)
 		ret = sub->value();
 	else
@@ -52,7 +52,7 @@ void	Configuration::value(const char *key,std::string &ret,const char *defaultva
 
 void	Configuration::value(const char *key,bool &ret,bool defaultvalue) const
 {
-	const XMLnode *sub=xmltree.subtree(string(key));
+	const XMLnode *sub=xmltree->subtree(string(key));
 	if(sub)
 		ret = (to_uppercase(sub->value()) == "YES");
 	else
@@ -61,7 +61,7 @@ void	Configuration::value(const char *key,bool &ret,bool defaultvalue) const
 
 void	Configuration::value(const char *key,int &ret,int defaultvalue) const
 {
-	const XMLnode *sub=xmltree.subtree(string(key));
+	const XMLnode *sub=xmltree->subtree(string(key));
 	if(sub)
 		ret = atoi(sub->value().c_str());
 	else
@@ -79,7 +79,7 @@ void	Configuration::set(std::string &key,std::string &value,bool write_out)
 	// We must also properly encode the value before writing it out.
 	// Must remember that.
 
-	xmltree.xmlassign(key,value);
+	xmltree->xmlassign(key,value);
 	if(write_out)
 		write_back();
 }
@@ -111,13 +111,15 @@ bool	Configuration::read_config_string(const std::string &s)
 {
 	std::string	sbuf(s);
 	std::size_t	nn=1;
-	xmltree.xmlparse(sbuf,nn);
+	xmltree->xmlparse(sbuf,nn);
 	is_file=false;
 	return true;
 }
 
 bool	Configuration::read_config_file(const string &input_filename)
 {
+	clear();
+	
 	filename=input_filename;
 	// Don't frob the filename if it starts with a dot and
 	// a slash.
@@ -189,7 +191,7 @@ bool	Configuration::read_config_file(const string &input_filename)
 
 std::string	Configuration::dump(void)
 {
-	return xmltree.dump();
+	return xmltree->dump();
 }
 
 
@@ -213,7 +215,7 @@ void	Configuration::write_back(void)
 std::vector<std::string>	Configuration::listkeys(const std::string &key,bool longformat)
 {
 	std::vector<std::string>	vs;
-	const XMLnode *sub=xmltree.subtree(key);
+	const XMLnode *sub=xmltree->subtree(key);
 	if(sub)
 		sub->listkeys(key,vs,longformat);
 	

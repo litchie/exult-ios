@@ -1,6 +1,6 @@
 <config>
 	<audio>
-		<enabled> yes </enabled>
+		<enabled> yes </>
 		<speech>
 			<enabled> yes </enabled>
 			<device> /dev/dsp </device>
