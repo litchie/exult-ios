@@ -174,7 +174,7 @@ Locator::Locator
 					// Indicate the events we want.
 	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | 
 		GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK |
-		GDK_BUTTON1_MOTION_MASK);
+		GDK_BUTTON1_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK);
 					// Set up scales.
 	GtkWidget *scale = glade_xml_get_widget(app_xml, "loc_hscale");
 	hadj = gtk_range_get_adjustment(GTK_RANGE(scale));
@@ -244,12 +244,15 @@ void Locator::render
 	GdkRectangle *area		// 0 for whole draw area.
 	)
 	{
+					// Get dims.
+	int draww = draw->allocation.width,
+	    drawh = draw->allocation.height;
 	GdkRectangle all;
 	if (!area)
 		{
 		all.x = all.y = 0;
-		all.width = draw->allocation.width;
-		all.height = draw->allocation.height;
+		all.width = draww;
+		all.height = drawh;
 		area = &all;
 		}
 	gdk_gc_set_clip_rectangle(drawgc, area);
@@ -257,9 +260,31 @@ void Locator::render
 	gdk_rgb_gc_set_foreground(drawgc, 64);
 	gdk_draw_rectangle(draw->window, drawgc, TRUE, area->x, area->y,
 					area->width, area->height);
+					// Show superchunks with dotted lines.
+	gdk_gc_set_line_attributes(drawgc, 1, GDK_LINE_ON_OFF_DASH, 
+					GDK_CAP_BUTT, GDK_JOIN_BEVEL);
+					// Paint in light grey.
+	gdk_rgb_gc_set_foreground(drawgc, 0xe0e0e0);
+	int i;
+	int cur = 0;			// Cur. pixel.
+					// First the rows.
+	for (i = 0; i < c_num_schunks - 1; i++)
+		{
+		int rowht = (drawh - cur)/(c_num_schunks - i);
+		cur += rowht;
+		gdk_draw_line(draw->window, drawgc, 0, cur, draww, cur);
+		}
+	cur = 0;			// Now the columns.
+	for (i = 0; i < c_num_schunks - 1; i++)
+		{
+		int colwd = (draww - cur)/(c_num_schunks - i);
+		cur += colwd;
+		gdk_draw_line(draw->window, drawgc, cur, 0, cur, drawh);
+		}
+					// Back to solid lines for loc. box.
+	gdk_gc_set_line_attributes(drawgc, 1, GDK_LINE_SOLID, 
+					GDK_CAP_BUTT, GDK_JOIN_BEVEL);
 					// Figure where to draw box.
-	int draww = draw->allocation.width,
-	    drawh = draw->allocation.height;
 	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
 	int x = (cx*draww)/c_num_chunks,
 	    y = (cy*drawh)/c_num_chunks;
@@ -391,7 +416,7 @@ void Locator::goto_mouse
 	gtk_adjustment_set_value(vadj, cy);
 					// Now we just send it once.
 	if (tx != oldtx || ty != oldty)
-		send_location();
+		send_location();	// +++Maybe need render() here too.
 	}
 
 /*
@@ -449,15 +474,19 @@ gint Locator::mouse_motion
 	GdkEventMotion *event
 	)
 	{
-	int mx = (int) event->x, my = (int) event->y;
-	cout << "Locator dragging: (" << mx << ',' << my << ')' << endl;
-	if (!dragging || !(event->state & GDK_BUTTON1_MASK))
-		return FALSE;		// Not dragging with left button.
-	if (gtk_events_pending())	//+++++Never seems to return TRUE.
+	int mx, my;
+	GdkModifierType state;
+	if (event->is_hint)
+		gdk_window_get_pointer(event->window, &mx, &my, &state);
+	else
 		{
-		cout << "Motion:  events pending" << endl;
-		return TRUE;		// Takes a while to set location.
+		mx = (int) event->x;
+		my = (int) event->y;
+		state = (GdkModifierType) event->state;
 		}
+	cout << "Locator dragging: (" << mx << ',' << my << ')' << endl;
+	if (!dragging || !(state & GDK_BUTTON1_MASK))
+		return FALSE;		// Not dragging with left button.
 	goto_mouse(mx + drag_relx, my + drag_rely);
 	return TRUE;
 	}
