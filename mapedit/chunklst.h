@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapedraw.h"
 
 class Image_buffer8;
+class Shape_group;
 #include <iosfwd>
 
 /*
@@ -62,7 +63,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	int num_chunks;			// Total # of chunks.
 					// List of chunks we've read in.
 	std::vector<unsigned char *> chunklist;
-	int chunknum0;			// Chunk # of leftmost in
+	int index0;			// Index (chunk) # of leftmost in
 					//   displayed list.
 	Chunk_info *info;		// An entry for each chunk drawn.
 	int info_cnt;			// # entries in info.
@@ -88,7 +89,7 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 					//   has changed.
 public:
 	Chunk_chooser(Vga_file *i, std::istream& cfile, unsigned char *palbuf, 
-							int w, int h);
+					int w, int h, Shape_group *g = 0);
 	virtual ~Chunk_chooser();
 	virtual bool server_response(int id, unsigned char *data, int datalen);
 	virtual void end_terrain_editing();

@@ -32,6 +32,7 @@ class Vga_file;
 class Shape_group_file;
 class ifstream;
 class Object_browser;
+class Shape_group;
 
 /*
  *	A shape file:
@@ -59,7 +60,7 @@ public:
 	Shape_group_file *get_groups()
 		{ return groups; }
 	Object_browser *create_browser(Shape_file_info *vgafile, char **names,
-						unsigned char *palbuf);
+				unsigned char *palbuf, Shape_group *g = 0);
 	};
 
 /*
