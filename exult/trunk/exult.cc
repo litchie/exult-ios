@@ -372,6 +372,7 @@ int exult_main(const char *runpath)
 	add_system_path("<MUSIC>", music_path);
 	add_system_path("<STATIC>", "static");
 	add_system_path("<GAMEDAT>", "gamedat");
+	add_system_path("<PATCH>", "patch");
 //	add_system_path("<SAVEGAME>", "savegame");
 	add_system_path("<SAVEGAME>", ".");
 
@@ -570,12 +571,12 @@ void get_game_paths(const string &gametitle)
 		<< " savegame directory to: " << savegame_dir << endl;
 #endif
 
-	// A patch directory is optional.
 	config_path = "config/disk/game/" + gametitle + "/patch";
 	string patch_directory;
-	config->value(config_path.c_str(), patch_directory, "");
-	if (patch_directory != "")
-		add_system_path("<" + system_path_tag + "_PATCH>", patch_directory.c_str());
+	default_dir = data_directory + "/patch";
+	config->value(config_path.c_str(), patch_directory, 
+							default_dir.c_str());
+	add_system_path("<" + system_path_tag + "_PATCH>", patch_directory.c_str());
 }
 
 /*
@@ -1854,7 +1855,7 @@ static Game_object *Create_object
 		newobj = gwin->get_map()->create_ireg_object(
 						info, shape, frame, 0, 0, 0);
 	else
-		newobj = new Ifix_game_object(shape, frame, 0, 0, 0);
+		newobj = gwin->get_map()->create_ifix_object(shape, frame);
 	return newobj;
 	}
 
