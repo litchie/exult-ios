@@ -380,7 +380,7 @@ void Usecode_internal::show_npc_face
 	)
 	{
 	show_pending_text();
-	Actor *npc = (Actor *) get_item(arg1);
+	Actor *npc = as_actor(get_item(arg1));
 	if (!npc)
 		return;
 	if (Game::get_game_type() == BLACK_GATE && npc->get_npc_num() != -1) 
@@ -412,7 +412,10 @@ void Usecode_internal::remove_npc_face
 	)
 	{
 	show_pending_text();
-	int shape = -arg1.get_int_value();
+	Actor *npc = as_actor(get_item(arg1));
+	if (!npc)
+		return;
+	int shape = npc->get_face_shapenum();
 	conv->remove_face(shape);
 	}
 
