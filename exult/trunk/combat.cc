@@ -622,6 +622,7 @@ void Combat_schedule::start_strike
 			pos.ty += rand()%7 - 3;
 			npc->walk_to_tile(pos, gwin->get_std_delay(), 0);
 			state = approach;
+			npc->set_target(0);	// And try another enemy.
 			return;
 			}
 		if (!started_battle)
