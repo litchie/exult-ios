@@ -365,6 +365,8 @@ static void Write_text_palette
 	delete txtpal;
 	}
 
+const unsigned char transp = 255;	// Transparent pixel.
+
 /*
  *	Write out one frame as a .png.
  */
@@ -383,7 +385,6 @@ static void Write_frame
 	cout << "Writing " << fullname << endl;
 	int w = frame->get_width(), h = frame->get_height();
 	Image_buffer8 img(w, h);	// Render into a buffer.
-	unsigned char transp = 255;
 	img.fill8(transp);		// Fill with transparent pixel.
 	frame->paint(&img, frame->get_xleft(), frame->get_yabove());
 	int xoff = 0, yoff = 0;
@@ -397,6 +398,60 @@ static void Write_frame
 					palette, 256))
 		throw file_write_exception(fullname);
 	delete fullname;
+	}
+
+/*
+ *	Write out all (8x8 flat) frames by tiling them into one file.
+ */
+
+static void Write_tiled_frames
+	(
+	char *filename,			// Filename to write.
+	Shape *shape,			// What to write.
+	int shnum,			// For printing errors.
+	bool bycol,			// If true, go down each column first,
+					//   else go across each row first.
+	int dim0_cnt,			// If bycol, #rows; else #cols.
+	unsigned char *palette		// 3*256 bytes.
+	)
+	{
+	assert(shape != 0);
+	cout << "Writing " << filename << " tiled" 
+		<< (bycol ? ", by cols" : ", by rows") << " first" << endl;
+	int nframes = shape->get_num_frames();
+					// Figure #tiles in other dim.
+	int dim1_cnt = (nframes + dim0_cnt - 1)/dim0_cnt;
+	int w, h;
+	if (bycol)
+		{ h = dim0_cnt*8; w = dim1_cnt*8; }
+	else
+		{ w = dim0_cnt*8; h = dim1_cnt*8; }
+	Image_buffer8 img(w, h);
+	img.fill8(transp);		// Fill with transparent pixel.
+	for (int f = 0; f < nframes; f++)
+		{
+		Shape_frame *frame = shape->get_frame(f);
+		if (!frame)
+			continue;	// We'll just leave empty ones blank.
+		if (!frame->is_rle() || frame->get_width() != 8 ||
+					frame->get_height() != 8)
+			{
+			cerr << "Can only tile 8x8 flat shapes, but shape "
+				<< shnum << " doesn't qualify" << endl;
+			exit(1);
+			}
+		int x, y;
+		if (bycol)
+			{ y = f%dim0_cnt; x = f/dim0_cnt; }
+		else
+			{ x = f%dim0_cnt; y = f/dim0_cnt; }
+		frame->paint(&img, x*8 + frame->get_xleft(), 
+						x*8 + frame->get_yabove());
+		}
+					// Write out to the .png.
+	if (!Export_png8(filename, transp, w, h, w, 0, 0, img.get_bits(),
+					palette, 256))
+		throw file_write_exception(filename);
 	}
 
 /*
