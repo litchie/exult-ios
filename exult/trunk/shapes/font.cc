@@ -189,7 +189,14 @@ int Font::paint_text_box
 	     pbreak && last_punct_end)
 		text = Pass_space(last_punct_end);
 	else
+		{
 		last_punct_line = -1;
+		if (text - start == coff)	// Cursor at very end?
+			{
+			cursor->x = curx;
+			cursor->y = cury;
+			}
+		}
 	cury = y;			// Render text.
 	for (int i = 0; i <= cur_line; i++)
 		{
@@ -593,6 +600,9 @@ int Font::find_cursor
 		curx += width;
 		text = ewrd;		// Continue past the word.
 		}
+	if (cy >= cury && cy < cury + height &&		// End of last line?
+	    cx >= curx && cx < x + w)
+		return text - start;
 	return -(text - start);		// Failed, so indicate where we are.
 	}
 

@@ -286,14 +286,14 @@ Shapes_vga_file::~Shapes_vga_file()
 	}
 
 
-void Shapes_vga_file::init()
+void Shapes_vga_file::init(int min_info_size)
 {
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_SHAPES))
 		load(SHAPES_VGA, PATCH_SHAPES);
 	else
 		load(SHAPES_VGA);
 
-	info.set_size(num_shapes);
+	info.set_size(min_info_size > num_shapes ? min_info_size : num_shapes);
 }
 
 /*
