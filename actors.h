@@ -574,7 +574,7 @@ public:
 	static Monster_actor *create(int shnum, int chunkx, int chunky, 
 		int tilex, int tiley, 
 		int lift, int sched = -1, int align = (int) Actor::neutral, 
-							bool tempoary = true);
+					bool tempoary = true, bool equipment = true);
 					// Methods to retrieve them all:
 	static Monster_actor *get_first_in_world()
 		{ return in_world; }
