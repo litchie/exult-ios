@@ -56,6 +56,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "u7drag.h"
 #include "shapegroup.h"
+#include "shapefile.h"
 
 using std::cerr;
 using std::cout;
@@ -198,11 +199,12 @@ C_EXPORT void on_main_window_destroy_event
 	gtk_main_quit();
 	}
 
-ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
+ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
+	names(0),
 	vgafile(0), facefile(0), chunkfile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
 	static_path(0), browser(0), palbuf(0), egg_monster_draw(0), 
-	egg_ctx(0), groups(0),
+	egg_ctx(0),
 	waiting_for_server(0), npcwin(0), npc_draw(0), npc_face_draw(0),
 	npc_ctx(0), objwin(0), obj_draw(0), shapewin(0), shape_draw(0),
 	equipwin(0)
@@ -263,8 +265,16 @@ ExultStudio::~ExultStudio()
 #ifdef WIN32
     OleUninitialize();
 #endif
-	delete_shape_browser();
+	if(names) {
+		int num_shapes = vgafile->get_ifile()->get_num_shapes();
+		for (int i = 0; i < num_shapes; i++)
+			delete names[i];
+		delete [] names;
+		names = 0;
+	}
 	delete_chunk_browser();
+	delete files;
+	files = 0;
 	delete [] palbuf;
 	palbuf = 0;
 	if (objwin)
@@ -285,8 +295,6 @@ ExultStudio::~ExultStudio()
 	if (equipwin)
 		gtk_widget_destroy(equipwin);
 	equipwin = 0;
-	delete vgafile;
-	delete facefile;
 	delete chunkfile;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
@@ -320,70 +328,23 @@ void ExultStudio::set_browser(const char *name, Object_browser *obj)
 
 Object_browser *ExultStudio::create_shape_browser(const char *fname)
 {
-	delete_shape_browser();		// Should set ifile = 0.
-	int u7drag_type = U7_SHAPE_UNK;
-	if (strcasecmp(fname, "shapes.vga") == 0)
-		{
-		u7drag_type = U7_SHAPE_SHAPES;
-		ifile = vgafile;	// Special case.
-		}
-	else if (strcasecmp(fname, "gumps.vga") == 0)
-		u7drag_type = U7_SHAPE_GUMPS;
-	else if (strcasecmp(fname, "faces.vga") == 0)
-		u7drag_type = U7_SHAPE_FACES;
-	else if (strcasecmp(fname, "sprites.vga") == 0)
-		u7drag_type = U7_SHAPE_SPRITES;
-	if (!ifile)			// Not assigned to vgafile?
-		{			// Get image file for this path.
-		char *fullname = g_strdup_printf("%s%s", static_path, fname);
-		ifile = new Vga_file(fullname, u7drag_type);
-		g_free(fullname);
-		}
-	if (!ifile->is_good()) {
-		cerr << "Error opening image file '" << fname << "'.\n";
-		abort();
-	}
-	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64);
+	char *fullname = g_strdup_printf("%s%s", static_path, fname);
+	curfile = files->create(fname, fullname);
+	g_free(fullname);
+
+	Shape_chooser *chooser = new Shape_chooser(curfile->get_ifile(), 
+							palbuf, 400, 64);
 					// Fonts?  Show 'A' as the default.
 	if (strcasecmp(fname, "fonts.vga") == 0)
 		chooser->set_framenum0('A');
-	if(u7drag_type == U7_SHAPE_SHAPES) {
-		// Read in shape names.
-		int num_names = ifile->get_num_shapes();
-		names = new char *[num_names];
-		char *txtname = g_strdup_printf("%s%s", static_path, 
-							"text.flx");
-
-		Flex *items = new Flex(txtname);
-		g_free(txtname);
-		size_t len;
-		for (int i = 0; i < num_names; i++)
-			names[i] = items->retrieve(i, len);
-		delete items;
+	if (curfile == vgafile)		// Main 'shapes.vga' file?
+		{
 		chooser->set_shape_names(names);
-		chooser->set_shapes_file((Shapes_vga_file *) vgafile);
-	}	
+		chooser->set_shapes_file(
+			(Shapes_vga_file *) vgafile->get_ifile());
+		}	
 	setup_groups(fname);		// Set up 'groups' page.
 	return chooser;
-}
-
-void ExultStudio::delete_shape_browser()
-{
-	if(ifile) {
-		int num_shapes = ifile->get_num_shapes();
-		if (ifile != vgafile)
-			delete ifile;
-		ifile = 0;
-		if(names) {
-			for (int i = 0; i < num_shapes; i++)
-				delete names[i];
-			delete [] names;
-			names = 0;
-		}
-		delete groups;
-		groups = 0;
-		set_visible("groups_frame", false);
-	}
 }
 
 /*
@@ -401,8 +362,10 @@ Object_browser *ExultStudio::create_chunk_browser(const char *fname)
 		cerr << "Error opening file '" << fname << "'.\n";
 		abort();
 	}
-	setup_groups(fname);		// Set up 'groups' page.
-	return new Chunk_chooser(vgafile, *chunkfile, palbuf, 400, 64);
+//+++++ Add back when 'chunks' is put in the 'files' set.
+//+++++	setup_groups(fname);		// Set up 'groups' page.
+	return new Chunk_chooser(vgafile->get_ifile(), *chunkfile, palbuf, 
+								400, 64);
 }
 
 void ExultStudio::delete_chunk_browser()
@@ -410,8 +373,6 @@ void ExultStudio::delete_chunk_browser()
 	if(chunkfile) {
 		delete chunkfile;
 		chunkfile = 0;
-		delete groups;
-		groups = 0;
 		set_visible("groups_frame", false);
 	}
 }
@@ -529,14 +490,30 @@ void ExultStudio::set_static_path(const char *path)
 	delete palbuf;			// Delete old.
 					// this may throw an exception
 	palbuf = (unsigned char *) pal.retrieve(len);
-	delete vgafile;			// Same for shapes file.
+	if(names) {			// Delete old names.
+		int num_shapes = vgafile->get_ifile()->get_num_shapes();
+		for (int i = 0; i < num_shapes; i++)
+			delete names[i];
+		delete [] names;
+		names = 0;
+	}
+	delete files;			// Close old shape files.
+	files = new Shape_file_set();
 	char *fullname = g_strdup_printf("%s%s", static_path, "shapes.vga");
-	vgafile = new Shapes_vga_file(fullname, U7_SHAPE_SHAPES);
+	vgafile = files->create("shapes.vga", fullname);
 	g_free(fullname);
-	delete facefile;			// Same for shapes file.
 	fullname = g_strdup_printf("%s%s", static_path, "faces.vga");
-	facefile = new Vga_file(fullname, U7_SHAPE_FACES);
+	facefile = files->create("faces.vga", fullname);
 	g_free(fullname);
+					// Read in shape names.
+	int num_names = vgafile->get_ifile()->get_num_shapes();
+	names = new char *[num_names];
+	char *txtname = g_strdup_printf("%s%s", static_path, "text.flx");
+	Flex *items = new Flex(txtname);
+	g_free(txtname);
+	for (int i = 0; i < num_names; i++)
+		names[i] = items->retrieve(i, len);
+	delete items;
 	GtkWidget *file_list = glade_xml_get_widget( app_xml, "file_list" );
 	
 	gtk_clist_clear( GTK_CLIST( file_list ) );

@@ -32,6 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objserial.h"
 #include "exult_constants.h"
 #include "utils.h"
+#include "shapefile.h"
 
 using std::cout;
 using std::endl;
@@ -162,7 +163,7 @@ void ExultStudio::open_obj_window
 		objwin = glade_xml_get_widget( app_xml, "obj_window" );
 		if (vgafile && palbuf)
 			{
-			obj_draw = new Shape_draw(vgafile, palbuf,
+			obj_draw = new Shape_draw(vgafile->get_ifile(), palbuf,
 			    glade_xml_get_widget(app_xml, "obj_draw"));
 			obj_draw->enable_drop(Obj_shape_dropped, this);
 			}
@@ -233,7 +234,7 @@ int ExultStudio::init_obj_window
 		{
 		GtkAdjustment *adj = gtk_spin_button_get_adjustment(
 						GTK_SPIN_BUTTON(btn));
-		int nframes = vgafile->get_num_frames(shape);
+		int nframes = vgafile->get_ifile()->get_num_frames(shape);
 		adj->upper = nframes - 1;
 		gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
 		}		

@@ -31,6 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "servemsg.h"
 #include "objserial.h"
 #include "exult_constants.h"
+#include "shapefile.h"
 
 using std::cout;
 using std::cerr;
@@ -161,7 +162,8 @@ void ExultStudio::open_egg_window
 		eggwin = glade_xml_get_widget( app_xml, "egg_window" );
 		if (vgafile && palbuf)
 			{
-			egg_monster_draw = new Shape_draw(vgafile, palbuf,
+			egg_monster_draw = new Shape_draw(vgafile->get_ifile(),
+								 palbuf,
 			    glade_xml_get_widget(app_xml, "egg_monster_draw"));
 			egg_monster_draw->enable_drop(Egg_monster_dropped,
 								this);
