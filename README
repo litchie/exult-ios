@@ -145,311 +145,277 @@ The file uses a simple hierarchical XML-like syntax, which should be simple to u
 The default file looks like this (do not copy the **and following - these are my remarks).
 Note: yes means enabled, no means disabled
 <config>
-<disk>
-<save_compression_level>
-1
-						**save games are now compressed as zip files. 0 disables compression,
-						1 enables it, 2 compresses even a bit better. Default is 1.
-						
-</save_compression_level>
-<data_path>
-data
-						**see  for pathsettings
-						
-</data_path>
-<game>
-<blackgate>
-<title>
-blackgate
-</title>
-<path>
-./blackgate
-</path>
-<savegame_path>
-./blackgate
-						**optional. Default is the same as <path>, change to whatever you like.
-						Also see  before changing it.
-						
-</savegame_path>
-<static_path>
-./blackgate/static
-						**optional. See  before changing it.
-						
-</static_path>
-<gamedat_path>
-./blackgate/gamedat
-						**optional. See  before changing it.
-						
-</gamedat_path>
-<keys>
-(default)
-						**configure custom key bindings or leave the (default)
-						- see 
-</keys>
-<waves>
-jmsfx.flx
-						**optional setting see  for configuration
-						
-</waves>
-</blackgate>
-<serpentisle>
-<path>
-./serpentisle
-</path>
-<savegame_path>
-./serpentisle
-						**optional. Default is the same as <path>, change to whatever you like.
-						Also see  before changing it.
-						
-</savegame_path>
-<static_path>
-./serpentisle/static
-						**optional. See  before changing it.
-						
-</static_path>
-<gamedat_path>
-./serpentisle/gamedat
-						**optional. See  before changing it.
-						
-</gamedat_path>
-<keys>
-(default)
-</keys>
-<waves>
-jmsisfx.flx
-						**optional setting see  for configuration
-						
-</waves>
-</serpentisle>
-</game>
-</disk>
-<debug>
-<trace>
-<usecode>
-no
-						**options are yes/no/verbose. This is used to trace the
-						executed Usecode (you shouldn't need this unless you are a programmer).
-						
-</usecode>
-</trace>
-</debug>
-<gameplay>
-<double_click_closes_gumps>
-no
-						**doesn't need an explanation, right?
-						
-<double_click_closes_gumps>
-<right_click_closes_gumps>
-no
-						**same as above
-						
-<right_click_closes_gumps>
-<cheat>
-yes
-						**enable/disable cheats for that
-						
-</cheat>
-<skip_intro>
-no
-						**this skips the intro in BG when you started a new game; Iolo talks to
-						Peter, the Avatar appears, Iolo talks to you, the mayor talks to you and so on.
-						
-</skip_intro>
-<skip_splash>
-no
-						**this skips the splash screen, the intro before you get to the
-						game menu, disabling it brings you straight to the game menu
-						
-</skip_splash>
-<facestats>
-0
-						**activates the status faces and the position on the screen.
-						-1 disable,0 right, 1 middle, 2 right.
-						
-</facestats>
-<mouse3rd>
-no
-						**yes enables using of the middle mouse button.
-						
-</mouse3rd>
-<fastmouse>
-no
-						**yes enables faster cursor movement in full screen mode.
-						
-</fastmouse>
-<bg_paperdolls>
-no
-						**yes enables SI style paperdolls in BG.
-						
-</bg_paperdolls>
-<combat>
-<difficulty>
-0
-						**0 is default, negative values make combat easier, positive makes it
-						harder. It affects the chance of a hit, and the HP's lost if a hit occurs.
-						Ranges from -3 to 3 (easiest to hardest)
-						
-</difficulty>
-<mode>
-original
-						**original or keypause. On keypause the game pauses when you hit space
-						so you can make changes in combat.
-						
-</mode>
-<show_hits>
-no
-						**no is default. With yes you see the hitpoints of NPCs in brackets
-						after their name.
-						
-</show_hits>
-</combat>
-<gumps_dont_pause_game>
-no
-						**yes doesn't pause the game when gumps are shown.
-						
-</gumps_dont_pause_game>
-<step_tile_delta>
-8
-						**Controls how far the Avatar will move before Exult recalculates the
-						Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other
-						problems.
-						
-</step_tile_delta>
-<allow_double_right_move>
-yes
-						**double right-click lets the Avatar walk automatically
-						to where you clicked.
-						
-</allow_double_right_move>
-<formation>
-no
-						**yes forces the party to walk in a formation similar to the
-						original game.
-						
-</formation>
-</gameplay>
-<audio>
-<enabled>
-yes
-						**enable/disable all audio - this takes precedence over the
-						other audio settings (you can change this in game via
-						Esc - the setting is saved)
-						
-</enabled>
-<disablepause>
-no
-						**enable/disable the pausing of SFX and digital music when the
-						game pauses (e.g. not the focused window). MIDI music is currently not paused.
-						
-</disablepause>
-<force_waveout>
-no
-						**yes forces Exult to use waveout instead of directsound. This may
-						fix problems some people have with Exult and sound in Windows
-						(it's a Windows-only option)
-						
-</force_waveou>
-<effects>
-<enabled>
-yes
-						**enable/disable sound effects (you can change this in game via
-						Esc - the setting is saved)
-						
-</enabled>
-</effects>
-<driver>
-normal
-						**choose your music driver between normal, digital, fmsynth. See  for details.
-						
-</driver>
-<midi>
-<enabled>
-yes
-						**enable/disable MIDI effects (you can change this in game via
-						Esc - the setting is saved)
-						
-</enabled>
-<convert>
-gm
-						**see 
-</convert>
-<volume_curve>
-1.000000
-   						**set volume (kind of at least, best don't change)
-   						
-</volume_curve>
-<win32_device>
--1
-   						**choose the Windows MIDI Device. See 
-</win32_device>
-<looping>
-Yes
-   						**No disables music looping. See 
-</looping>
-<dual_opl>
-Yes
-   						**No disables 'dual' mode for stereo sound when <driver> is set to fmsynth.
-   						
-</dual_opl>
-</midi>
-<speech>
-<enabled>
-yes
-						**enable/disable speech (you can change this in game via
-						Esc - the setting is saved)
-						
-</enabled>
-</speech>
-</audio>
-<video>
-<width>
-320
-						**here you choose your resolution, it can be as big as your
-						monitor allows. 320x200 is the resolution of the original.
-						
-</width>
-<height>
-200
-</height>
-<scale>
-2
-						**2 enables / 1 disables scaling, some scalers support higher values.
-						See .
-						
-</scale>
-<fullscreen>
-yes
-						**do you want to play full screen?
-						
-</fullscreen>
-<disable_fades>
-no
-						**"no" enables fading between different menu points
-						
-</disable_fades>
-<scale_method>
-SuperEagle
-						**choose different scalers here - see 
-</scale_method>
-<gamma>
-						**set gamma levels to adjust brightness, same as +/- in game
-						
-<red>
-1
-</red>
-<green>
-1
-</green>
-<blue>
-1
-</blue>
-</gamma>
-<fps>
-10
-   						**Speed setting. Might help when the game seems too slow or too fast.
-   						
-</fps>
-</video>
+  <disk>
+    <save_compression_level>
+    1
+				**save games are now compressed as zip files. 0 disables compression,
+				1 enables it, 2 compresses even a bit better. Default is 1.
+    </save_compression_level>
+    <data_path>
+    data
+				**see 2.3. for pathsettings
+    </data_path>
+    <game>
+      <blackgate>
+        <title>
+        blackgate
+        </title>
+        <path>
+        ./blackgate
+        </path>
+        <savegame_path>
+        ./blackgate
+				**optional. Default is the same as <path>, change to whatever you like.
+				Also see 2.4. before changing it.
+        </savegame_path>
+        <static_path>
+        ./blackgate/static
+				**optional. See 2.4. before changing it.
+        </static_path>
+        <gamedat_path>
+        ./blackgate/gamedat
+				**optional. See 2.4. before changing it.
+        </gamedat_path>
+        <keys>
+        (default)
+				**configure custom key bindings or leave the (default)
+				- see 5.2.
+        </keys>
+        <waves>
+        jmsfx.flx
+				**optional setting see 3.5. for configuration
+        </waves>
+      </blackgate>
+      <serpentisle>
+        <title>
+        serpentisle
+        </title>
+        <path>
+        ./serpentisle
+        </path>
+        <savegame_path>
+        ./serpentisle
+				**optional. Default is the same as <path>, change to whatever you like.
+				Also see 2.4. before changing it.
+        </savegame_path>
+        <static_path>
+        ./serpentisle/static
+				**optional. See 2.4. before changing it.
+        </static_path>
+        <gamedat_path>
+        ./serpentisle/gamedat
+				**optional. See 2.4. before changing it.
+        </gamedat_path>
+        <keys>
+        (default)
+				**configure custom key bindings or leave the (default)
+				- see 5.2.
+        </keys>
+        <waves>
+        jmsisfx.flx
+				**optional setting see 3.5. for configuration
+        </waves>
+      </serpentisle>
+    </game>
+  </disk>
+  <debug>
+    <trace>
+      <usecode>
+      no
+				**options are yes/no/verbose. This is used to trace the
+				executed Usecode. (You shouldn't need this unless you are a programmer.)
+      </usecode>
+      <intrinsics>
+      no
+				**options are yes/no. Used to trace intrinsics.
+				(You shouldn't need this unless you are a programmer.)
+      </intrinsics>
+    </trace>
+  </debug>
+  <gameplay>
+    <double_click_closes_gumps>
+    no
+    </double_click_closes_gumps>
+    <right_click_closes_gumps>
+    no
+    </right_click_closes_gumps>
+    <cheat>
+    yes
+				**enable/disable cheats
+    </cheat>
+    <skip_intro>
+    no
+				**this skips the in-game intro in BG; Iolo talks to Petre, the Avatar appears,
+				Iolo talks to you, the mayor talks to you and so on.
+    </skip_intro>
+    <skip_splash>
+    no
+				**this skips the splash screen, the intro before you get to the
+				game menu. Disabling it brings you straight to the game menu.
+    </skip_splash>
+    <facestats>
+    0
+				**activates the status faces and the position on the screen.
+				-1 disable,0 right, 1 middle, 2 right.
+    </facestats>
+    <mouse3rd>
+    no
+				**yes enables using of the middle mouse button.
+    </mouse3rd>
+    <fastmouse>
+    no
+				**yes enables faster cursor movement in full screen mode.
+    </fastmouse>
+    <bg_paperdolls>
+    no
+				**yes enables SI style paperdolls in BG.
+    </bg_paperdolls>
+    <combat>
+      <difficulty>
+      0
+				**0 is default, negative values make combat easier, positive makes it
+				harder. It affects the chance of a hit, and the HP's lost if a hit occurs.
+				Ranges from -3 to 3 (easiest to hardest).
+      </difficulty>
+      <mode>
+      original
+				**original or keypause. On keypause the game pauses when you hit space
+				so you can make changes in combat.
+      </mode>
+      <show_hits>
+      no
+				**no is default. With yes you see the hitpoints of NPCs
+				in brackets after their name.
+      </show_hits>
+    </combat>
+    <gumps_dont_pause_game>
+    no
+				**yes doesn't pause the game when gumps are shown.
+    </gumps_dont_pause_game>
+    <step_tile_delta>
+    8
+				**Controls how far the Avatar will move before Exult recalculates the
+				Avatar's and the party's movement. Bigger # avoids jerkiness, but may cause other
+				problems.
+    </step_tile_delta>
+    <allow_double_right_move>
+    yes
+				**double right-click lets the Avatar walk automatically
+				to where you clicked.
+    </allow_double_right_move>
+    <formation>
+    no
+				**yes forces the party to walk in a formation similar to the original game.
+    </formation>
+  </gameplay>
+  <audio>
+    <enabled>
+    yes
+				**enable/disable all audio - this takes precedence over the
+				other audio settings. (You can change this in game via
+				'Esc' - the setting is saved.)
+    </enabled>
+    <disablepause>
+    no
+				**enable/disable the pausing of SFX and digital music when the
+				game pauses (e.g. not the focused window). MIDI music is currently not paused.
+    </disablepause>
+    <force_waveout>
+    no
+				**yes forces Exult to use waveout instead of directsound. This may
+				fix problems some people have with Exult and sound in Windows.
+				(This is a Windows-only option.)
+    </force_waveout>
+    <effects>
+      <enabled>
+      yes
+				**enable/disable sound effects. (You can change this in game via
+				'Esc' - the setting is saved.)
+      </enabled>
+    </effects>
+    <driver>
+    normal
+				**choose your music driver between normal, digital, fmsynth.
+				See 3.1. for details.
+    </driver>
+    <midi>
+      <enabled>
+      yes
+				**enable/disable MIDI effects. (You can change this in game via
+				'Esc' - the setting is saved.)
+      </enabled>
+      <convert>
+      gm
+				**see 3.1.
+      </convert>
+      <volume_curve>
+      1.000000
+				**set volume (kind of at least, best don't change)
+      </volume_curve>
+      <win32_device>
+      -1
+				**choose the Windows MIDI Device. See 3.3.
+      </win32_device>
+      <looping>
+      yes
+				**No disables music looping. See 6.4.
+      </looping>
+      <dual_opl>
+      yes
+				**No disables 'dual' mode for stereo sound when <driver> is set to fmsynth.
+      </dual_opl>
+    </midi>
+    <speech>
+      <enabled>
+      yes
+				**enable/disable speech. (You can change this in game via
+				'Esc' - the setting is saved.)
+      </enabled>
+    </speech>
+  </audio>
+  <video>
+    <width>
+    320
+				**here you choose your resolution, it can be as big as your
+				monitor allows. 320x200 is the resolution of the original.
+    </width>
+    <height>
+    200
+    </height>
+    <scale>
+    2
+				**2 enables / 1 disables scaling, some scalers support higher values.
+				See 4.2..
+    </scale>
+    <fullscreen>
+    yes
+				**do you want to play full screen?
+    </fullscreen>
+    <disable_fades>
+    no 
+				**"no" enables fading between different menu points
+    </disable_fades>
+    <scale_method>
+    SuperEagle
+				**choose different scalers here - see 4.2.
+    </scale_method>
+    <gamma>
+      <red>
+      1
+				**set gamma levels to adjust brightness, same as +/- in game
+      </red>
+      <green>
+      1
+      </green>
+      <blue>
+      1
+      </blue>
+    </gamma>
+    <fps>
+    10
+				**Speed setting. Might help when the game seems too slow or too fast.
+    </fps>
+  </video>
 </config>
 
 
@@ -457,26 +423,30 @@ SuperEagle
 You have two choices on how to setup Exult.
 The first one is very easy, just extract all the files from the compiled snapshot archive to the directory where you have The Black Gate or Serpent Isle installed. Concerning the paths you don't have to configure anything.
 The other is a little more complicated but appeals to control freaks like me: Make a directory c:\ultima7 make two subfolders named "blackgate" and "serpentisle" (without the quotes of course) Extract or install the two Ultima 7 games into the appropriate folder ("The Black Gate" to c:\ultima7\blackgate and "Serpent Isle" to c:\ultima7\serpentisle) Extract the compiled Exult to c:\ultima7 Now you have to edit the exult.cfg file like this:
-<disk>
-<data_path>
-data
-</data_path>
-<game>
-<blackgate>
-<title>
-blackgate
-</title>
-<path>
-./blackgate
-</path>
-</blackgate>
-<serpentisle>
-<path>
-./serpentisle
-</path>
-</serpentisle>
-</game>
-</disk>
+<config>
+  <disk>
+    <data_path>
+    data
+    </data_path>
+    <game>
+      <blackgate>
+        <title>
+        blackgate
+        </title>
+        <path>
+        ./blackgate
+        </path>
+      </blackgate>
+      <serpentisle>
+        <title>
+        serpentisle 
+        </title>
+        <path>
+        ./serpentisle
+        </path>
+      </serpentisle>
+    </game>
+  </disk>
 You can either use the relative (e.g. ./blackgate) or absolute (e.g. c:\ultima\blackgate) path to point to the correct directory.
 Note: Better don't use spaces in the path (e.g. c:\ultima 7\the black gate\). Some people seem to have problems with that.
 Note: path settings in exult.cfg are the same on all operating systems. Of course you need to make adjustments on UNIX based systems when you enter the absolute path.
@@ -488,30 +458,31 @@ You can also specify whereExult reads and stores the game specific data, like th
 * Static the most important dir. Here you have the data files from the original game. You should never touch these files.
 * Gamedat contains the (dynamic) data for the game you're currently playing. It's where the "journey onward" 'savegame' is stored.
 
-If you don't change the loaction of either the Static or Gamedat directories, Exult expects to find both directories in the path you specified in <path>. Don't ever point these two at the same directory.
+If you don't change the location of either the Static or Gamedat directories, Exult expects to find both directories in the path you specified in <path>. Don't ever point these two at the same directory.
 My recommendations and example for BG (for SI use the same syntax) are:
-<disk>
-<data_path>
-data
-</data_path>
-<game>
-<blackgate>
-<title>
-blackgate
-</title>
-<path>
-./blackgate
-</path>
-<savegame_path>
-./blackgate/savegames
-</savegame_path>
-<static_path>
-./blackgate/static
-</static_path>
-<gamedat_path>
-./blackgate/gamedat
-</gamedat_path>
-</blackgate>
+<config>
+  <disk>
+    <data_path>
+    data
+    </data_path>
+    <game>
+      <blackgate>
+        <title>
+        blackgate 
+        </title>
+        <path>
+        ./blackgate
+        </path>
+        <savegame_path>
+        ./blackgate
+        </savegame_path>
+        <static_path>
+        ./blackgate/static
+        </static_path>
+        <gamedat_path>
+        ./blackgate/gamedat
+        </gamedat_path>
+      </blackgate>
 
 
 2.5. Command line options
@@ -535,7 +506,7 @@ Exult offers some "hidden" command line options:
 3.1. Music
 There are three ways that music is played in Exult. One is using MIDI, which plays the music through any GM MIDI device, Timidity can be used in Linux. Another way is Digital Music encoded into OGG (similar to MP3) which was recorded directly from a Roland MT-32. The third option is FMSynth which emulates Opl2/Adlib. The MIDI files are converted on-the-fly from the original Ultima 7 MT-32 files to General Midi format so that they will be playable on modern General Midi and General Midi/GS supporting sound cards.
 The options for changing the Music driver are in the opening Exult menu Setup screen or in the actual game's audio options. Currently only the in game options menu works correctly. You can choose between:
-* Nromal This setting utilizes the MIDI driver of your system. See the MIDI conversion order below.
+* Normal This setting utilizes the MIDI driver of your system. See the MIDI conversion order below.
 * Digital Digital Music plays the OGG files which must be located in the Exult data/music directory. This does not use MIDI but plays the music digitally through any soundcard.
 * FMSynth This is a Software FM Synthesizer (also known as a emulated Opl2/Adlib). It has a 'dual'mode for stereo sound. Use "config/audio/midi/dual_opl" set to "yes" or "no" to enable/disable it. Default is "yes". You don't have to restart Exult anymore if you change this in the game.
 
@@ -574,14 +545,14 @@ Note that configuring your soundfonts is not needed for digital wave sfx.
 We currently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on our download page at http://exult.sourceforge.net/download.php.
 Extract the zip files into your Exult data directory and write down the name of the pack in your exult.cfg file (see 2.2.). You don't need to set correct paths anymore if the pack is in the data directory. An example of how the relevant part of exult.cfg looks with these packs:
 <blackgate>
-<waves>
-jmsfx.flx
-</waves>
+  <waves>
+  jmsfx.flx
+  </waves>
 </blackgate>
 <serpentisle>
-<waves>
-jmsisfx.flx
-</waves>
+  <waves>
+  jmsisfx.flx
+  </waves>
 </serpentisle>
 
 
@@ -757,7 +728,7 @@ Ctrl-n : NPC number, When enabled, clicking an a NPC will display their number i
 
 6. Game Menu
 6.1. Access to the Game menu
-You can access the Game menu either by pressing the disk icon in the Avatar's inventory screen or by pressing 'Esc' . You then have the following options.
+You can access the Game menu either by pressing the disk icon in the Avatar's inventory screen or by pressing 'Esc'. You then have the following options.
 
 
 6.2. Load/Save Game
@@ -792,7 +763,7 @@ Look at 3. Audio to see explanation on the settings.
 * Status Bars You can either disable the status bars or choose its position on the bottom of the screen (left, middle, right).
 * Text Background shows a tinted background behind text in conversations to make it easier to read. Either disable it or choose between the colors purple, orange, light gray, green, yellow, pale blue, dark green, red, bright white, dark gray and white.
 * Fast Mouse makes the mouse cursor move faster in full screen modes. Enable or disable it.
-* Use middle mouse button In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't' ). For modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations. Enable or disable it.
+* Use middle mouse button In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't'). For modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations. Enable or disable it.
 * Doubleclick closes gumps pretty straightforward, right?
 * Right click closes gumps the same but different.
 * Double Right Pathfinds Double right-clicking on a spot makes the avatar walk to it.
@@ -887,7 +858,7 @@ Normally, you should be able to start and play the game normally. Let me know if
 
 8.10. Useful tidbits
 The key mappings are found in the files /opt/QtPalmtop/share/exult/keys_bg.txt and /opt/QtPalmtop/share/exult/keys_si.txt
-The Application keys are mapped this way: 'Calendar' = 'F9' = inventory (like pressing 'I' ) 'Address Book' = 'F10' = target mode (like pressing 'T' ) 'Home' = 'F12' = combat mode (like pressing 'C' ) 'Menu Popup' = 'F11' = use all keys (like pressing 'K' or 'Alt-K' ) 'Email' = 'F13' = spellbook (like pressing 'B' )
+The Application keys are mapped this way: 'Calendar' = 'F9' = inventory (like pressing 'I') 'Address Book' = 'F10' = target mode (like pressing 'T') 'Home' = 'F12' = combat mode (like pressing 'C') 'Menu Popup' = 'F11' = use all keys (like pressing 'K' or 'Alt-K') 'Email' = 'F13' = spellbook (like pressing 'B')
 Save often. I have not had a crash since I'm using the latest SDL packages but you never know.
 Report any problem to the Exult forum at http://exult.sf.net/forum/ or email me (see 8.1.).
 
