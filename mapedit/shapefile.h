@@ -123,8 +123,8 @@ class Flex_file_info : public Shape_file_info
 	{
 
 	Flex *flex;			// For 'combos.flx'.
-	vector<char *> entries;		// Entries are stored here.
-	vector<int> lengths;		// Lengths here.
+	std::vector<char *> entries;		// Entries are stored here.
+	std::vector<int> lengths;		// Lengths here.
 public:
 					// We will own flex.
 	Flex_file_info(const char *bnm, const char *pnm,

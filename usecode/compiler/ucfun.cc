@@ -216,7 +216,7 @@ int Uc_function::add_string
 	)
 	{
 					// Search for an existing string.
-	map<std::string, int>::const_iterator exist = text_map.find(text);
+	std::map<std::string, int>::const_iterator exist = text_map.find(text);
 	if (exist != text_map.end())
 		return (*exist).second;
 	int offset = text_data_size;	// This is where it will go.
@@ -248,7 +248,7 @@ int Uc_function::find_string_prefix
 	{
 	int len = strlen(text);
 					// Find 1st entry >= text.
-	map<std::string, int>::const_iterator exist = 
+	std::map<std::string, int>::const_iterator exist = 
 					text_map.lower_bound(text);
 	if (exist == text_map.end() ||
 	    strncmp(text, (*exist).first.c_str(), len) != 0)
@@ -260,7 +260,7 @@ int Uc_function::find_string_prefix
 		delete buf;
 		return 0;
 		}
-	map<std::string, int>::const_iterator next = exist;
+	std::map<std::string, int>::const_iterator next = exist;
 	++next;
 	if (next != text_map.end() &&
 	    strncmp(text, (*next).first.c_str(), len) == 0)
