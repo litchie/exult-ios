@@ -93,6 +93,7 @@ dist: $(EXEC)
 	mkdir -p $(STUDIOPATH)
 	strip $(EXEC) -o  $(STUDIOPATH)/$(EXEC)
 	mkdir -p $(STUDIOPATH)/data
+	cp docs/exult_studio.html $(STUDIOPATH)
 	cp docs/exult_studio.txt $(STUDIOPATH)
 	cp mapedit/exult_studio.glade $(STUDIOPATH)/data
 	mkdir -p $(STUDIOPATH)/data/estudio
