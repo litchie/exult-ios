@@ -37,7 +37,6 @@ class  Gump_manager
 	};
 
 	Gump_list	*open_gumps;
-	bool		dbl_click_close_gump;
 	int		non_persistent_count;		// So we can test for 'gump mode' quickly.
 public:
 	void add_gump(Gump *gump);			// Add a single gump to screen

@@ -513,7 +513,7 @@ static void Handle_events
 
 			int x, y;// Check for 'stuck' Avatar.
 			if (!gwin->is_moving() &&
-			    !gwin->was_teleported())
+			    !((gwin->get_walk_after_teleport() && GAME_SI) ? false : gwin->was_teleported()))
 				{
 				int ms = SDL_GetMouseState(&x, &y);
 				if (SDL_BUTTON(3) & ms)
@@ -646,8 +646,8 @@ static void Handle_event
 						event.motion.y / scale);
 					// Dragging with right?
 		if ((event.motion.state & SDL_BUTTON(3)) &&
-					// But not right after teleport.
-		    !gwin->was_teleported())
+					// But not right after teleport (if disabled).
+		    !((gwin->get_walk_after_teleport() && GAME_SI) ? false : gwin->was_teleported()))
 			gwin->start_actor(event.motion.x / scale, 
 			event.motion.y / scale, Mouse::mouse->avatar_speed);
 		break;
@@ -746,15 +746,6 @@ static int Get_click
 		while (SDL_PollEvent(&event))
 			switch (event.type)
 				{
-			case SDL_MOUSEBUTTONDOWN:
-				if (gwin->get_mouse3rd() && event.button.button == 3) {
-					SDL_Event event;
-					do {
-						SDL_PollEvent(&event);
-					} while (!(event.type == SDL_MOUSEBUTTONUP && event.button.button == 3));
-					return 0;
-				}
-				break;
 			case SDL_MOUSEBUTTONUP:
 				if (event.button.button == 1)
 					{
@@ -764,9 +755,12 @@ static int Get_click
 					return (1);
 					}
 					// May have been moving before.
-				else if (event.button.button == 3)
+				else if (event.button.button == 3) {
 					// Just stop.  Don't get followers!
 					gwin->get_main_actor()->stop();
+					if (gwin->get_mouse3rd())
+						return 0;
+				}
 				break;
 			case SDL_MOUSEMOTION:
 				Mouse::mouse->move(event.motion.x / scale, 

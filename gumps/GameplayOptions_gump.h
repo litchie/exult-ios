@@ -33,6 +33,7 @@ class GameplayOptions_gump : public Modal_gump
 	int facestats;
 	int fastmouse;
 	int mouse3rd;
+	int walk_after_teleport;
 	int doubleclick;
 	int cheats;
 	int paperdolls;

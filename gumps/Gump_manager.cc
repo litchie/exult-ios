@@ -41,10 +41,8 @@
 
 
 Gump_manager::Gump_manager()
-	: open_gumps(0), non_persistent_count(0), dbl_click_close_gump(false)
+	: open_gumps(0), non_persistent_count(0)
 {
-	// Check if user wants U8-style gump closing (i.e., on double click)
-	config->value("config/gameplay/double_click_closes_gumps", dbl_click_close_gump);
 }
 
 
@@ -347,7 +345,7 @@ bool Gump_manager::double_clicked
 			Game_window *gwin = Game_window::get_game_window();
 		 	Gump_button *btn = gump->on_button(gwin, x, y);
 			if (btn) btn->double_clicked(gwin, x, y);
-			else if (dbl_click_close_gump)
+			else if (Game_window::get_game_window()->get_double_click_closes_gumps())
 			{
 				gump->close(gwin);
 				gwin->paint();
