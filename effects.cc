@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "effects.h"
 #include "Zombie.h"
+#include "dir.h"
 
 int Cloud::randcnt = 0;
 
@@ -95,6 +96,22 @@ void Sprites_effect::paint
 	}
 
 /*
+ *	Get direction in 1/16's starting from North.
+ */
+
+inline Get_dir16
+	(
+	Game_object *from,
+	Game_object *to
+	)
+	{
+	Tile_coord t1 = from->get_abs_tile_coord();
+	Tile_coord t2 = to->get_abs_tile_coord();
+					// Treat as cartesian coords.
+	return Get_direction16(t1.ty - t2.ty, t2.tx - t1.tx);
+	}
+
+/*
  *	Create a projectile animation.
  */
 
@@ -116,10 +133,8 @@ Projectile_effect::Projectile_effect
 	path->NewPath(pos, to->get_abs_tile_coord(), 0);
 					// Use frames 8-23, for direction
 					//   going clockwise from North.
-					// ++++++Want a Get_direction16.
-					// +++++Use 8-valued version for now.
-	int dir = att->get_direction(to);
-	frame_num = 8 + 2*dir;		// Seem to range from 8-23.
+	int dir = Get_dir16(attacker, to);
+	frame_num = 8 + dir;
 					// Start immediately.
 	gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
 	}
