@@ -65,8 +65,10 @@ void Container_game_object::remove
 /*
  *	Add an object.
  *
- *	Output:	1, meaning object is completely contained in this,
- *		0 if not enough space.
+ *	Output:	1, meaning object is completely contained in this.  Obj may
+ *			be deleted in this case if combine==true.
+ *		0 if not enough space, although obj's quantity may be
+ *			reduced if combine==true.
  */
 
 bool Container_game_object::add
@@ -97,9 +99,10 @@ bool Container_game_object::add
 		Game_window *gwin = Game_window::get_game_window();
 		Shape_info& info = gwin->get_info(obj->get_shapenum());
 		int quant = obj->get_quantity();
+					// Combine, but don't add.
 		int newquant = add_quantity(quant, obj->get_shapenum(),
 			info.has_quality() ? obj->get_quality() : c_any_qual,
-						obj->get_framenum(), false);
+						obj->get_framenum(), true);
 		if (newquant == 0)	// All added?
 			{
 			obj->remove_this();

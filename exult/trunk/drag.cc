@@ -306,6 +306,9 @@ void Dragging_info::put_back
 
 /*
  *	Drop at given position.
+ *	++++++NOTE:  Potential problems here with 'to_drop' being deleted by
+ *		call to add().  Probably add() should provide feedback if obj.
+ *		is combined with another.
  *
  *	Output:	False if put_back() should be called.
  */
@@ -342,11 +345,18 @@ bool Dragging_info::drop
 		}
 	if (on_gump)			// Dropping on a gump?
 		{
-		if (!Check_weight(gwin, to_drop, on_gump->get_cont_or_actor(x,y)))
+		if (!Check_weight(gwin, to_drop, 
+					on_gump->get_cont_or_actor(x,y)))
 			return false;
 					// Add, and allow to combine.
 		if (!on_gump->add(to_drop, x, y, paintx, painty, false, true))
 			{
+			if (to_drop != obj)
+				{	// Watch for partial drop.
+				int nq = to_drop->get_quantity();
+				if (nq < quantity)
+					obj->modify_quantity(quantity - nq);
+				}
 			Mouse::mouse->flash_shape(Mouse::wontfit);
 			return false;
 			}
