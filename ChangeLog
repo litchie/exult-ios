@@ -1,3 +1,8 @@
+2001-11-12  Tristan Tarrant <nadir@users.sourceforge.net>
+	* NEWS: updated
+	* acinclude.m4, config.guess, config.sub, missing, mkinstalldirs,
+	install-sh, ltconfig: removed generated files once and for all
+
 2001-11-11  Christian Ohm  <chr.ohm@gmx.net>
 	* exult.cc, gumps/gump_utils.cc: test if third mouse button was
 	  pressed before release (fix for bug #480495)
