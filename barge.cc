@@ -199,6 +199,8 @@ int Barge_object::okay_to_rotate
 	)
 	{
 	int lift = get_lift();
+	if (lift >= 11)			// Flying carpet?
+		return 1;
 					// Get footprint in tiles.
 	Rectangle foot = get_tile_footprint();
 	int xts = get_xtiles(), yts = get_ytiles();
@@ -209,26 +211,26 @@ int Barge_object::okay_to_rotate
 					// Check area.  (No dropping allowed.)
 		if (Chunk_object_list::is_blocked(4, lift,
 			newfoot.x, newfoot.y, newfoot.w, foot.y - newfoot.y,
-							new_lift, MOVE_ALL_TERRAIN, 0))
+						new_lift, MOVE_ALL_TERRAIN, 0))
 			return 0;
 	if (foot.y + foot.h < newfoot.y + newfoot.h)
 					// A piece below old one.
 		if (Chunk_object_list::is_blocked(4, lift,
 			newfoot.x, foot.y + foot.h, newfoot.w, 
 				newfoot.y + newfoot.h - (foot.y + foot.h),
-							new_lift, MOVE_ALL_TERRAIN, 0))
+						new_lift, MOVE_ALL_TERRAIN, 0))
 			return 0;
 	if (newfoot.x < foot.x)		// Piece to the left?
 		if (Chunk_object_list::is_blocked(4, lift,
 			newfoot.x, newfoot.y, foot.x - newfoot.x, newfoot.h,
-							new_lift, MOVE_ALL_TERRAIN, 0))
+						new_lift, MOVE_ALL_TERRAIN, 0))
 			return 0;
 	if (foot.x + foot.w < newfoot.x + newfoot.w)
 					// Piece to the right.
 		if (Chunk_object_list::is_blocked(4, lift,
 			foot.x + foot.w, newfoot.y,
 			newfoot.x + newfoot.w - (foot.x + foot.w), newfoot.h,
-							new_lift, MOVE_ALL_TERRAIN, 0))
+						new_lift, MOVE_ALL_TERRAIN, 0))
 			return 0;
 	return 1;
 	}
