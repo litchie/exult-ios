@@ -285,8 +285,7 @@ void Combat_schedule::start_strike
 	{
 	if (ammo_shape)			// Firing?
 		{
-#if 0  /* Can't enable this until we know which ammo is unlimited. */
-		if (!npc->find_item(ammo_shape, -359, -359))
+		if (ammo_consumed && !npc->find_item(ammo_shape, -359, -359))
 			{		// Out of ammo.
 			if (Swap_weapons(npc))
 				set_weapon_info();
@@ -294,7 +293,6 @@ void Combat_schedule::start_strike
 			npc->start(200, 500);
 			return;
 			}
-#endif
 		Tile_coord pos = npc->get_abs_tile_coord();
 		if (!Fast_pathfinder_client::is_straight_path(pos,
 					opponent->get_abs_tile_coord()))
@@ -337,6 +335,7 @@ void Combat_schedule::set_weapon_info
 		max_reach = 1;		// For now.
 	else
 		max_reach = 20;		// Guessing.
+	ammo_consumed = (info != 0 && info->is_ammo_consumed());
 	}
 
 /*
@@ -429,9 +428,8 @@ void Combat_schedule::now_what
 		npc->start(200);	// Back into queue.
 		break;
 	case fire:			// Range weapon.
-#if 0  /* Can't enable this until we know which ammo is unlimited. */
-		if (npc->remove_quantity(1, ammo_shape, -359, -359) == 0)
-#endif
+		if (!ammo_consumed ||
+		    npc->remove_quantity(1, ammo_shape, -359, -359) == 0)
 			gwin->add_effect(new Projectile_effect(npc, opponent,
 						ammo_shape, weapon_shape));
 		state = approach;

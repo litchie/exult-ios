@@ -1119,9 +1119,11 @@ void Actor::remove
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Call_readied_usecode(gwin, this, obj, Usecode_machine::unreadied);
-	Container_game_object::remove(obj);
 	int index = Actor::find_readied(obj);	// Remove from spot.
+	if (index == rfinger || index == lfinger)
+		Call_readied_usecode(gwin, this, 
+					obj, Usecode_machine::unreadied);
+	Container_game_object::remove(obj);
 	if (index >= 0)
 		{			// Update light-source count.
 		if (gwin->get_info(obj).is_light_source())
@@ -1175,7 +1177,8 @@ int Actor::add
 	spots[index] = obj;		// Store in correct spot.
 	obj->set_chunk(0, 0);		// Clear coords. (set by gump).
 	Game_window *gwin = Game_window::get_game_window();
-	if (!dont_check)		// Watch for initialization.
+	if (!dont_check &&		// Watch for initialization.
+	    (index == lfinger || index == rfinger))
 		Call_readied_usecode(gwin, this, obj,Usecode_machine::readied);
 	if (gwin->get_info(obj).is_light_source())
 		light_sources++;
@@ -1241,7 +1244,9 @@ int Actor::add_readied
 		if (best_index == lrfinger)
 			two_fingered = 1;	// Must be gloves
 		Game_window *gwin = Game_window::get_game_window();
-		Call_readied_usecode(gwin, this, obj,Usecode_machine::readied);
+		if (index == lfinger || index == rfinger)
+			Call_readied_usecode(gwin, this, 
+						obj,Usecode_machine::readied);
 		if (gwin->get_info(obj).is_light_source())
 			light_sources++;
 		return (1);

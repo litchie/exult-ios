@@ -196,11 +196,14 @@ class Weapon_info
 	{
 	char damage;			// Damage points (positive).
 	unsigned char special_atts;	// Poison, sleep, charm. flags.
+	unsigned char ammo_consumed;	// Ammo. is consumed when used.
 	short ammo;			// Shape # of ammo., or 0.
 	short usecode;			// Usecode function, or 0.
 public:
+	friend class Shape_info;
 	Weapon_info(char d, unsigned char sp, short am, short uc) 
-		: damage(d), special_atts(sp), ammo(am), usecode(uc)
+		: damage(d), special_atts(sp), ammo_consumed(0),
+		  ammo(am), usecode(uc)
 		{  }
 	int get_damage()
 		{ return damage; }
@@ -208,6 +211,8 @@ public:
 		{ return special_atts; }
 	int get_ammo()
 		{ return ammo; }
+	int is_ammo_consumed()
+		{ return ammo_consumed; }
 	int get_usecode()
 		{ return usecode; }
 	};
@@ -266,6 +271,11 @@ class Shape_info
 	// defined so copying will cause a link error (intentional)
 	Shape_info(const Shape_info & other);
 	const Shape_info & operator = (const Shape_info & other);
+	void set_ammo_consumed()
+		{
+		if (weapon)
+			weapon->ammo_consumed = 1;
+		}
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
 	Shape_info() : weight(0), volume(0),
@@ -283,14 +293,6 @@ public:
 		{ return armor; }
 	Weapon_info *get_weapon_info()
 		{ return weapon; }
-#if 0	/* ++++++++Old way. */
-	int get_3d_height()		// Height (in lifts?).
-		{ return ztiles; }
-	int get_3d_xtiles()		// Dimension in tiles - X.
-		{ return xtiles; }
-	int get_3d_ytiles()		// Dimension in tiles - Y.
-		{ return ytiles; }
-#else
 					// Get tile dims., flipped for
 					//   reflected (bit 5) frames.
 	int get_3d_xtiles(unsigned int framenum = 0)
@@ -299,7 +301,6 @@ public:
 		{ return dims[1 ^ ((framenum >> 5)&1)]; }
 	int get_3d_height()		// Height (in lifts?).
 		{ return dims[2]; }
-#endif
 	unsigned char get_tfa(int i)	// For debugging:
 		{ return tfa[i]; }
 	int is_animated()
@@ -368,7 +369,7 @@ public:
  */
 class Shapes_vga_file : public Vga_file
 	{
-	autoarray<Shape_info> info;		// Extra info. about each shape.
+	autoarray<Shape_info> info;	// Extra info. about each shape.
 	Shape_info zinfo;		// A fake one (all 0's).
 public:
 	Shapes_vga_file() : info()

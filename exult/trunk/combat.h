@@ -55,6 +55,7 @@ protected:
 	int weapon_shape;		// Weapon's shape in shapes.vga.
 	int max_reach;			// Max. weapon reach in tiles.
 	int ammo_shape;			// If required, else 0.
+	unsigned char ammo_consumed;	// Does ammo get used up.
 	unsigned char yelled;		// Yell when first opponent targeted.
 	unsigned char started_battle;	// 1st opponent targeted.
 	unsigned char fleed;		// Set 1st time fleeing.
@@ -69,7 +70,8 @@ public:
 	Combat_schedule(Actor *n, Schedule_types prev_sched) 
 		: Schedule(n), state(initial), prev_schedule(prev_sched),
 			opponent(0), weapon_shape(0),
-			max_reach(1), ammo_shape(0), yelled(0), 
+			max_reach(1), ammo_shape(0), 
+			ammo_consumed(0), yelled(0), 
 			started_battle(0), fleed(0), failures(0)
 		{ set_weapon_info(); }
 	virtual void now_what();	// Npc calls this when it's done
