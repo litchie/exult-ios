@@ -42,10 +42,19 @@ using std::string;
 
 #include "gamma.h"
 
+// Here's a bit of joy: WIN32 isn't SMP safe if we use operator new and delete.
+// On the other hand, nothing else is thread-safe if we use malloc()/free().
+// So, we wrap the implementations and use malloc()/calloc()/free() for WIN32, and
+// the C++ thread-safe allocator for other platforms.
+
 template<class T>
 inline T* Malloc(size_t num=1)
 {
+#ifdef WIN32
+	return std::malloc(num);
+#else
 	return static_cast<T*>(::operator new(num));
+#endif
 }
 
 template<class T>
@@ -53,10 +62,23 @@ inline T* Calloc(size_t num=1,size_t sz=0)
 {
 	if(!sz)
 		sz=sizeof(T);
+#ifdef WIN32
+	return std::calloc(num,sz);
+#else
 	size_t	total=sz*num;
 	T *tmp=Malloc<T>(total);
 	std::memset(tmp,0,total);
+#endif
 	return tmp;
+}
+
+inline void	Free(void *ptr)
+{
+#ifdef WIN32
+	free(ptr);
+#else
+	::operator delete(ptr);
+#endif
 }
 
 // This is used to correct incorrect patch, vol and pan changes in midi files
@@ -353,7 +375,7 @@ XMIDI::~XMIDI()
 		for (int i=0; i < info.tracks; i++)
 			DeleteEventList (events[i]);
 		//delete [] events;
-		::operator delete(events);
+		Free(events);
 	}
 	if (timing) delete [] timing;
 	if (fixed) delete [] fixed;
@@ -378,7 +400,7 @@ int XMIDI::retrieve (uint32 track, DataSource *dest)
 			DeleteEventList (events[i]);
 			
 		//delete [] events;
-		::operator delete (events);
+		Free (events);
 		//events = new midi_event *[1];
 		events = Calloc<midi_event *>();
 		events[0] = list;
@@ -461,9 +483,9 @@ void XMIDI::DeleteEventList (midi_event *mlist)
 		next = event->next;
 		if (event->buffer) 
 			//delete [] event->buffer;
-			::operator delete (event->buffer);
+			Free (event->buffer);
 		//delete event;
-		::operator delete (event);
+		Free (event);
 	}
 }
 
@@ -1394,7 +1416,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 				DeleteEventList (events[i]);
 			
 			//delete [] events;
-			::operator delete (events);
+			Free (events);
 			delete [] timing;
 			
 			return 0;		
@@ -1439,7 +1461,7 @@ int XMIDI::ExtractTracks (DataSource *source)
 				DeleteEventList (events[i]);
 			
 			//delete [] events;
-			::operator delete (events);
+			Free (events);
 			delete [] timing;
 			
 			return 0;
