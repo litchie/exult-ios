@@ -49,6 +49,33 @@ void Time_queue::add
 	}
 
 /*
+ *	Remove first entry containing a given object.
+ */
+
+void Time_queue::remove
+	(
+	Time_sensitive *obj
+	)
+	{
+	if (!head)
+		return;			// Empty.
+	Queue_entry *ent = head;
+	do
+		{
+		if (ent->handler == obj)// Found it?
+			{
+			if (ent == head)
+				remove_head();
+			else
+				remove_non_head(ent);
+			return;
+			}
+		ent = ent->next;
+		}
+	while (ent != head);
+	}
+
+/*
  *	Remove & activate entries that are due, starting with head (already
  *	known to be due).
  */
@@ -61,19 +88,10 @@ void Time_queue::activate0
 	do
 		{
 		Queue_entry *ent = head;
-		ent->handler->handle_event(curtime, ent->udata);
-					// Remove head of chain.
-		if (head == head->next)
-			head = 0;
-		else
-			{
-			head->prev->next = head->next;
-			head->next->prev = head->prev;
-			head = head->next;
-			}
-					// Add to free list.
-		ent->next = free_entries;
-		free_entries = ent;
+		Time_sensitive *obj = head->handler;
+		long udata = head->udata;
+		remove_head();		// Remove from chain.
+		obj->handle_event(curtime, udata);
 		}
 	while (head && !(curtime < head->time));
 	}
