@@ -199,9 +199,13 @@ int main
 	}
 	catch( const exult_exception & e )
 	{
-		cerr << "An exception occured: " << e.what() << " (errno = " << e.get_errno() << endl;
+		cerr << "============================" << endl <<
+			"An exception occured: " << endl << 
+			e.what() << endl << 
+			"errno: " << e.get_errno() << endl;
 		if( e.get_errno() != 0)
 			perror("Error Description");
+		cerr << "============================" << endl;
 	}
 	catch(...)
 	{
@@ -308,7 +312,7 @@ static void Init
 	(
 	)
 {
-	Uint32 init_flags = SDL_INIT_VIDEO|SDL_INIT_TIMER|SDL_INIT_AUDIO;
+	Uint32 init_flags = SDL_INIT_VIDEO|SDL_INIT_TIMER;
 #ifdef NO_SDL_PARACHUTE
 	init_flags |= SDL_INIT_NOPARACHUTE;
 #endif

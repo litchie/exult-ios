@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #include "SDL_mapping.h"
+#include <SDL.h>
 
 void (*SDL::Delay)(Uint32)=::SDL_Delay;
 void (*SDL::PauseAudio)(int)=::SDL_PauseAudio;
@@ -35,6 +36,8 @@ void (*SDL::LockAudio)(void)=::SDL_LockAudio;
 void (*SDL::MixAudio)(Uint8 *dst, Uint8 *src, Uint32 len,int)=::SDL_MixAudio;
 void (*SDL::CloseAudio)(void)=::SDL_CloseAudio;
 int (*SDL::OpenAudio)(SDL_AudioSpec *desired, SDL_AudioSpec *obtained)=::SDL_OpenAudio;
+void (*SDL::QuitSubSystem)(Uint32)=::SDL_QuitSubSystem;
+int (*SDL::InitSubSystem)(Uint32)=::SDL_InitSubSystem;
 
 
 // Thread functions
