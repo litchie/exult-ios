@@ -1,6 +1,6 @@
 <!-- block and inline elements -->
 
-<!ENTITY % inline "br|em|extref|Exult|kbd|key|q|ref|strong|ref1|ref2|Studio" >
+<!ENTITY % inline "br|em|extref|Exult|kbd|key|q|ref|strong|ref1|ref2|Studio|Pentagram" >
 
 <!ENTITY % lists "ul|ol" >
 
@@ -12,7 +12,7 @@
 <!ELEMENT readme (section*)>
 <!ELEMENT section (sub*)>
 <!ELEMENT sub (header, body)>
-<!ELEMENT header (#PCDATA|Exult)*>
+<!ELEMENT header (#PCDATA|Exult|Studio|Pentagram)*>
 <!ELEMENT body (%block;)*>
 
 <!ELEMENT para ( #PCDATA | %inline; )*>
@@ -37,6 +37,7 @@
 <!ELEMENT br (#PCDATA)>
 <!ELEMENT Exult (#PCDATA)>
 <!ELEMENT Studio (#PCDATA)>
+<!ELEMENT Pentagram (#PCDATA)>
 
 <!ELEMENT configdesc (line*)>
 <!ELEMENT line (#PCDATA|comment)*>

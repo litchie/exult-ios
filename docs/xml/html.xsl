@@ -281,6 +281,10 @@
 	<em>Exult Studio</em>
 </xsl:template>
 
+<xsl:template match="Pentagram">
+	<em>Pentagram</em>
+</xsl:template>
+
 <xsl:template match="cite">
                 <p>
                 <xsl:value-of select="@name"/>:<br/>
