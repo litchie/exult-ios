@@ -37,10 +37,12 @@ protected:
 	Game_object *obj;		// Object we're controlling.
 	unsigned char deltax, deltay;	// If wiggling, deltas from
 					//   original position.
-	unsigned char animating;	// 1 if animation turned on.
+	bool animating;			// 1 if animation turned on.
+	int sfxnum;			// Sound effects #, or -1 if none.
 	void start_animation();
 public:
-	Animator(Game_object *o) : obj(o), deltax(0), deltay(0), animating(0)
+	Animator(Game_object *o, int snum = -1) 
+		: obj(o), deltax(0), deltay(0), animating(false), sfxnum(snum)
 		{  }
 	static Animator *create(Game_object *ob, int ireg);
 	~Animator();
@@ -61,9 +63,9 @@ public:
 class Frame_animator : public Animator
 	{
 	unsigned char frames;		// # of frames.
-	unsigned char ireg;		// 1 if from an IREG file.
+	bool ireg;			// 1 if from an IREG file.
 public:
-	Frame_animator(Game_object *o, int ir);
+	Frame_animator(Game_object *o, bool ir);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 	};

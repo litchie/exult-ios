@@ -50,7 +50,7 @@ class Object_sfx
 	int dir;			// Direction (0-15) from Avatar.
 public:
 					// Create & start playing sound.
-	Object_sfx(int snum, Game_object *o) : sfxnum(snum)
+	Object_sfx(int snum, Game_object *o) : sfxnum(snum), distance(0)
 		{ set_obj(o); }
 	bool is_active()		// Is sound still active?
 		{ return sfx.is_active(); }
@@ -59,28 +59,42 @@ public:
 	int get_distance()
 		{ return distance; }
 	void set_obj(Game_object *o);	// Set to new object.
+	void stop(Game_object *o)	// Stop if from given object.
+		{
+		if (o == obj)
+			sfx.set_repeat(false);
+		}
 					// Get sfx to play for given shape.
 	static int get_shape_sfx(int shapenum);
+	static void play(Game_object *o, int snum, bool stop = false);
 	};
 
 /*
- *	Set to new object.
+ *	Set to new object if it's closer than the old object, or we're
+ *	inactive.
  */
 void Object_sfx::set_obj
 	(
 	Game_object *o
 	)
 	{
-	obj = o;
-	dir = 0;
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord apos = gwin->get_main_actor()->get_abs_tile_coord();
-	Tile_coord opos = obj->get_abs_tile_coord();
-	distance = apos.distance(opos);
+	Tile_coord opos = o->get_abs_tile_coord();
+	bool active = sfx.is_active();
+	int new_distance = apos.distance(opos);
+	if (active && new_distance >= distance && o != obj)
+		return;			// Farther than current source.
+	obj = o;
+	dir = 0;
+	bool repeat = true;
+	distance = new_distance;
 	int volume = SDL_MIX_MAXVOLUME;	// Set volume based on distance.
 	if (distance)
 		{			// 160/8 = 20 tiles. 20*20=400.
 		volume = (SDL_MIX_MAXVOLUME*64)/(distance*distance);
+		if (!volume)		// Dead?
+			repeat = false;	// Time to kill it.
 		if (volume < 8)
 			volume = 8;
 		else if (volume > SDL_MIX_MAXVOLUME)
@@ -90,12 +104,12 @@ void Object_sfx::set_obj
 	if (!sfx.is_active())		// First time?
 					// Start playing, and repeat.
 		sfx = Audio::get_ptr()->play_wave_sfx(sfxnum, volume,
-								dir, true);
+							dir, repeat);
 	else				// Set new volume, position.
 		{
 		sfx.set_volume(volume);
 		sfx.set_dir(dir);
-		sfx.set_repeat(true);
+		sfx.set_repeat(repeat);
 		}
 	}
 
@@ -109,7 +123,7 @@ int Object_sfx::get_shape_sfx
 	)
 	{
 	static map<int, int> table;
-	static int first = 0;
+	static int first = 1;
 
 	if (first)			// First time?
 		{
@@ -142,6 +156,34 @@ int Object_sfx::get_shape_sfx
 	}
 
 /*
+ *	Play a sound, or modify its volume/position.
+ */
+
+void Object_sfx::play
+	(
+	Game_object *o,			// Object.
+	int snum,			// Object's sound-effect #.
+	bool stop			// Time to stop.
+	)
+	{
+					// Play a given sfx only once.
+	static map<int, Object_sfx*> play_table;
+					// Already playing?
+	map<int, Object_sfx*>::iterator it = play_table.find(snum);
+	if (it == play_table.end())	// No.
+		{			// Start new SFX for it.
+		if (!stop)
+			play_table[snum] = new Object_sfx(snum, o);
+		return;
+		}
+	Object_sfx *sfx = (*it).second;
+	if (stop)
+		sfx->stop(o);
+	else
+		sfx->set_obj(o);	// Modify/restart.
+	}
+
+/*
  *	Create appropriate animator.
  */
 
@@ -152,7 +194,8 @@ Animator *Animator::create
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	int frames = gwin->get_shape_num_frames(ob->get_shapenum());
+	int shnum = ob->get_shapenum();
+	int frames = gwin->get_shape_num_frames(shnum);
 	if (frames > 1)
 		return new Frame_animator(ob, ireg);
 	else
@@ -195,8 +238,8 @@ void Animator::start_animation
 Frame_animator::Frame_animator
 	(
 	Game_object *o,
-	int ir
-	) : Animator(o), ireg(ir)
+	bool ir
+	) : Animator(o, Object_sfx::get_shape_sfx(o->get_shapenum())), ireg(ir)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int shapenum = obj->get_shapenum();
@@ -218,6 +261,8 @@ void Frame_animator::handle_event
 	if (!gwin->add_dirty(obj))
 		{			// No longer on screen.
 		animating = 0;
+					// Stop playing sound.
+		Object_sfx::play(obj, sfxnum, true);
 		return;
 		}
 	int framenum;
@@ -228,8 +273,11 @@ void Frame_animator::handle_event
 	else				// Want fixed shapes synchronized.
 					// Testing -WJP
 		framenum = (curtime / 100);
-	obj->set_frame(framenum % frames);
+	framenum %= frames;
+	obj->set_frame(framenum);
 	gwin->add_dirty(obj);
+	if (!framenum && sfxnum >= 0)	// Sound effect?
+		Object_sfx::play(obj, sfxnum);
 					// Add back to queue for next time.
 	if (animating)
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
