@@ -73,7 +73,7 @@ void MenuChoice::paint(Game_window *gwin)
 	gwin->paint_shape(x-shape->get_width(), y, shape);
 	if(choice>=0) {
 		gwin->get_win()->fill8(0, x+32+max_choice_width, y+font->get_text_height(), x+32, y);
-		font->draw_text(gwin, x+32, y, choices->at(choice).c_str());
+		font->draw_text(gwin, x+32, y, (*choices)[choice].c_str());
 	}
 }
 
@@ -100,7 +100,7 @@ MenuList::~MenuList()
 {
 	MenuObject *entry;
 	for(int i=0; i<entries->size(); i++) {
-		entry = entries->at(i);
+		entry = (*entries)[i];
 		delete entry;
 	}
 	delete entries;
@@ -111,12 +111,12 @@ void MenuList::set_selected(int sel)
 	MenuObject *entry;
 	// deselect the previous entry
 	if(selected>=0) {
-		entry = entries->at(selected);
+		entry = (*entries)[selected];
 		entry->set_selected(false);
 	}
 	// select the new one
 	selected = sel;
-	entry = entries->at(selected);
+	entry = (*entries)[selected];
 	entry->set_selected(true);
 }
 
@@ -129,7 +129,7 @@ int MenuList::handle_events(Game_window *gwin)
 	do {
 		if (redraw) {
 			for(int i=0; i<count; i++) {
-				MenuObject *entry = entries->at(i);
+				MenuObject *entry = (*entries)[i];
 				entry->paint(gwin);
 			}
 			gwin->get_win()->show();
@@ -158,7 +158,7 @@ int MenuList::handle_events(Game_window *gwin)
 				continue;
 			default:
 				{
-					MenuObject *entry = entries->at(selected);
+					MenuObject *entry = (*entries)[selected];
 					exit_loop = entry->handle_event(event);
 				}
 				break;
