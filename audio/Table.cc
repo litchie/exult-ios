@@ -46,7 +46,7 @@ Table	AccessTableFile(const char *name)
 		if(f.size==65535)
 			break;
 		fread(&f.offset,sizeof(uint32),1,fp);
-#if 1
+#if 0
 		cout << "Item " << i << ": " << f.size << " @ " << f.offset << endl;
 #endif
 		ret.object_list.push_back(f);
