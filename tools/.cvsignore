@@ -16,5 +16,5 @@ ucc
 ucclex.c
 uccparse.c
 expack
-u7shp
+shp2pcx
 *.tab.c

@@ -46,6 +46,7 @@ Alt-Q		quit
 Ctrl-R		quickrestore
 Ctrl-Alt-S	screenshot
 Ctrl-S		quicksave
+Alt-S		change_skin
 S		save_restore
 Ctrl-Alt-T	map_teleport
 Ctrl-T		next_time_period
