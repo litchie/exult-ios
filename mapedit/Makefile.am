@@ -4,9 +4,11 @@ INCLUDES = -I.. -I../shapes -I../imagewin -I../files \
 if GTK_INTERFACE
 GTK_APPS = shapetest
 GTK_LIBS = -lgtk -lgdk
+OUTPUT_LIBS = libmapedit.la
 else
 GTK_APPS = 
 GTK_LIBS =
+OUTPUT_LIBS =
 endif
 
 shapetest_SOURCES = shapelst.cc shapelst.h
@@ -19,13 +21,8 @@ shapetest_LDADD = 			\
 	../shapes/libshapes.la \
 	$(GTK_LIBS) $(SYSLIBS) $(x_libraries)
 
-noinst_LTLIBRARIES = libmapedit.la
+noinst_LTLIBRARIES = $(OUTPUT_LIBS)
 
 libmapedit_la_SOURCES = \
 	shapelst.cc \
 	shapelst.h
-
-
-
-
-
