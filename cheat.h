@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define CHEAT_H
 
 class Game_window;
+class ShapeBrowser;
 
 class Cheat {
  public:
@@ -27,10 +28,11 @@ class Cheat {
   ~Cheat();
 
   void init (void);
-  void init_gwin (void);
+  void finish_init (void);
 
 private:
   Game_window *gwin;
+  ShapeBrowser *browser;
 
   bool god_mode;
   bool wizard_mode;
