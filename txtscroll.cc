@@ -28,6 +28,8 @@
 #include "game.h"
 
 #include "SDL_timer.h"
+#include "SDL_events.h"
+#include "SDL_keysym.h"
 
 using std::atoi;
 using std::strchr;
@@ -167,7 +169,10 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 	uint32 startline = 0;
 	unsigned int maxlines = text->size();
 	bool looping = true;
+	SDL_Event event;
 	uint32 next_time = SDL_GetTicks() + 200;
+	uint32 incr = 120;
+	
 	while(looping) {
 		int ypos = starty;
 		uint32 curline = startline;
@@ -188,8 +193,27 @@ void TextScroller::run(Game_window *gwin, Palette& pal)
 		pal.apply();
 		while (next_time > SDL_GetTicks())
 			;
-		next_time += 120;
-		looping = looping && !wait_delay(0);
+		if(SDL_PollEvent(&event)) {
+			switch(event.type) {
+			case SDL_KEYDOWN:
+				if(event.key.keysym.sym==SDLK_RSHIFT || event.key.keysym.sym==SDLK_LSHIFT)
+					incr = 0;
+				else
+					looping = false;
+				break;
+			
+			case SDL_KEYUP:
+				incr = 120;
+				next_time = SDL_GetTicks();
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				looping = false;
+				break;
+			default:
+				break;
+			}
+		}
+		next_time += incr;
 		if(!looping)
 			pal.fade_out(c_fade_out_time);
 		starty --;
