@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "rect.h"
 
 class Shapes_vga_file;
-class Flex;
+class Flex_file_info;
 
 /*
  *	A single object:
@@ -62,6 +62,7 @@ class Combo
 public:
 	friend class Combo_editor;
 	Combo(Shapes_vga_file *svga);
+	Combo(const Combo& c2);		// Copy.
 	~Combo();
 	Combo_member *get(int i)
 		{ return i >= 0 && i < members.size() ? members[i] : 0; }
@@ -99,6 +100,7 @@ public:
 					// Add object/shape picked from Exult.
 	void add(unsigned char *data, int datalen);
 	void remove();			// Remove selected.
+	void save();			// Save it.
 	bool is_visible()
 		{ return GTK_WIDGET_VISIBLE(win); }
 	};
@@ -128,6 +130,7 @@ class Combo_info
  */
 class Combo_chooser: public Object_browser, public Shape_draw
 	{
+	Flex_file_info *flex_info;	// Where file data is stored.
 	vector<Combo *> combos;		// List of all combination-objects.
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
@@ -156,7 +159,7 @@ class Combo_chooser: public Object_browser, public Shape_draw
 	void enable_controls();		// Enable/disable controls after sel.
 					//   has changed.
 public:
-	Combo_chooser(Vga_file *i, Flex *combos,
+	Combo_chooser(Vga_file *i, Flex_file_info *flinfo,
 			unsigned char *palbuf, int w, int h,
 						Shape_group *g = 0);
 	virtual ~Combo_chooser();
@@ -168,6 +171,7 @@ public:
 		{ sel_changed = fun; }
 	int get_selected()		// Get selected combo, or return -1.
 		{ return selected >= 0 ? info[selected].num : -1; }
+	void add(Combo *newcombo);	// Add new combo.
 					// Configure when created/resized.
 	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
 							gpointer data);
