@@ -138,6 +138,7 @@ class UCOpcodeData
 };
 
 extern vector<UCOpcodeData> opcode_table_data;
+extern vector<pair<unsigned int, unsigned int> > opcode_jumps;
 
 extern map<unsigned int, string> bg_uc_intrinsics;
 extern map<unsigned int, string> si_uc_intrinsics;
