@@ -161,7 +161,7 @@ void Npc_proximity_handler::handle_event
 		gwin->get_usecode()->call_usecode(ucfun, npc,
 					Usecode_machine::npc_proximity);
 		extra_delay += 3;
-		curtime = SDL_GetTicks();// Time may have passed.
+		curtime = Game::get_ticks();// Time may have passed.
 		}
 	add(curtime, npc, extra_delay);	// Add back for next time.
 	}
@@ -177,7 +177,7 @@ void Npc_proximity_handler::wait
 	int secs			// # of seconds.
 	)
 	{
-	wait_until = SDL_GetTicks() + 1000*secs;
+	wait_until = Game::get_ticks() + 1000*secs;
 	}
 
 /*

@@ -414,7 +414,7 @@ void Cheat::create_last_shape (void) const {
 	int current_shape = 0;
 	int current_frame = 0;
 	if(browser->get_shape(current_shape, current_frame)) {
-		gwin->get_main_actor()->add(new Ireg_game_object(current_shape, current_frame, 0, 0), 1);
+		gwin->get_main_actor()->add(gwin->create_ireg_object(current_shape, current_frame), 1);
 		gwin->center_text("Object created");
 	} else
 		gwin->center_text("Can only create from 'shapes.vga'");

@@ -57,6 +57,7 @@ private:
 #endif
 	Mouse *menu_mouse;
 	static std::string gametitle;
+	static unsigned int ticks;
 protected:
 	int topx, topy, centerx, centery;
 	Vga_file menushapes;
@@ -113,6 +114,9 @@ public:
 	void journey_failed_text();
 	void set_jive () {jive = true;}
 	void clear_jive () {jive = false;}
+
+	inline static unsigned int get_ticks() { return ticks; }
+	inline static void set_ticks(unsigned int t) { ticks = t; }
 };
 
 extern Game *game;

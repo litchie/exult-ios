@@ -895,9 +895,9 @@ void Animated_egg_object::paint
 	Game_window *gwin
 	)
 	{
-	Ireg_game_object::paint(gwin);	// Always paint these.
 	if (animator)
 		animator->want_animation();	// Be sure animation is on.
+	Ireg_game_object::paint(gwin);	// Always paint these.
 	}
 
 /*

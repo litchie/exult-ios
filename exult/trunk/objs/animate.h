@@ -54,6 +54,7 @@ public:
 		{ return deltax; }
 	int get_deltay()
 		{ return deltay; }
+	virtual int get_framenum();
 	};
 
 /*
@@ -61,10 +62,23 @@ public:
  */
 class Frame_animator : public Animator
 	{
+	unsigned char first_frame;	// First frame of animation.
 	unsigned char frames;		// # of frames.
 	bool ireg;			// 1 if from an IREG file.
+	unsigned int created;		// Time created
+	unsigned int delay;		// Rate of animation
+	unsigned short last_shape;	// To check if we need to re init
+	unsigned short last_frame;	// To check if we need to re init
+	enum				// Type of animation
+	{
+		FA_LOOPING = 0,
+		FA_SUNDIAL = 1,
+		FA_ENERGY_FIELD = 2
+	} type;
+	void Initialize();
 public:
 	Frame_animator(Game_object *o, bool ir);
+	virtual int get_framenum();
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 	};
@@ -133,6 +147,34 @@ public:
 		{ return get_abs_tile_coord() + 
 			Tile_coord(-animator->get_deltax(), 
 				   -animator->get_deltay(), 0); }
+
+				// Write out to IREG file.
+	virtual void write_ireg(std::ostream& out);
+
+	};
+
+/*
+ *	An object that cycles through its frames, or wiggles if just one
+ *	frame.  This is the IFIX version.
+ */
+class Animated_ifix_object : public Ifix_game_object
+	{
+	Animator *animator;		// Controls animation.
+public:
+	Animated_ifix_object(unsigned char *ifix);
+	Animated_ifix_object(int shapenum, int framenum, unsigned int tilex, 
+	       unsigned int tiley, unsigned int lft = 0);
+	virtual ~Animated_ifix_object();
+					// Render.
+	virtual void paint(Game_window *gwin);
+					// Get coord. where this was placed.
+	virtual Tile_coord get_original_tile_coord() const
+		{ return get_abs_tile_coord() + 
+			Tile_coord(-animator->get_deltax(), 
+				   -animator->get_deltay(), 0); }
+
+	virtual void write_ifix(std::ostream& ifix);
+
 	};
 #endif
 

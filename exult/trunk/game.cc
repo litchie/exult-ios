@@ -62,6 +62,8 @@ static int av_skin = -1;
 
 std::string Game::gametitle;
 
+unsigned int Game::ticks = 0;
+
 Game::Game() : menushapes(MAINSHP_FLX)
 {	
 	jive = false;
