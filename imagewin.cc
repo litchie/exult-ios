@@ -683,6 +683,7 @@ void Image_window::create_surface
 	config.value("config/video/fullscreen",fullscreenstr,"no");
 	if(fullscreenstr=="yes")
 		fullscreen=true;
+	config.set("config/video/fullscreen",fullscreenstr,true);
 	ibuf->width = w;
 	ibuf->height = h;
 	surface = SDL_SetVideoMode(w, h, ibuf->depth, (fullscreen?SDL_FULLSCREEN:0) |
