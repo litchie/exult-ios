@@ -84,9 +84,9 @@ void InitGL
 //    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	// ??
 
-
+#if 1
 					// Ambient light.
-	static GLfloat ambient[] = {.8, .8, .8, 1.0};
+	static GLfloat ambient[] = {.5, .5, .5, 1.0};
 	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
 					// A diffuse light source.
 	static GLfloat diffuse[] = {1, 1, 1, 1.0};
@@ -94,7 +94,7 @@ void InitGL
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, diffuse);
 	glLightfv(GL_LIGHT1, GL_POSITION, diffuse_pos);
 	glEnable(GL_LIGHT1);
-	glEnable(GL_LIGHTING);		// Enable lighting.
+#endif
 	}
 
 /*
@@ -110,6 +110,7 @@ void Render
 	glLoadIdentity();
 					// Note that this is columnwise.
 
+	glDisable(GL_LIGHTING);		// Disble lighting.
 	glBegin(GL_LINES);		// Draw tile grid.
 		{
 		glColor3f(.5, .5, 1.0);	// Light blue for grid.
@@ -125,10 +126,13 @@ void Render
 			}
 		}
 	glEnd();
+	glEnable(GL_LIGHTING);		// Enable lighting.
 	Vector3 center = model.find_center();
-	glTranslatef(-center.x, -center.y + 16, -center.z);
+	glTranslatef(-center.x, -center.y + 6, -center.z - 20);
+//	glTranslatef(-center.x, -center.y + 16, -center.z);
 	glRotatef(45, 1, 0, 0);
-	glScalef(.5, .5, .5);
+	glScalef(.1, .1, .1);
+//	glScalef(.5, .5, .5);
 	model.render();			// Show model.
 	SDL_GL_SwapBuffers();		// Blit.
 	}

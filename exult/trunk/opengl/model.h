@@ -56,6 +56,8 @@ public:
 		{  }
 	};
 
+typedef float Color4[4];		// RGBA.
+
 /*
  *	A material.  Can be a texture or color.
  */
@@ -65,19 +67,34 @@ class Material
 	string texture_filename;	// For a texture, if non-empty.
 	unsigned int texture_id;	// OpenGL texture ID.
 	bool texture_loaded;		// True if texture_id is valid.
-	unsigned char r, g, b;		// Color components, 0-255.
+					// Three kinds of colors (rgba), with
+					//   index defined below.
+	Color4 colors[3];
+	void set_color(float *arr, const unsigned char *c)
+		{ arr[0] = c[0]/255.0; arr[1] = c[1]/255.0; 
+		  arr[2] = c[2]/255.0; arr[3] = 1.0; }
+					// Default color:
+	static unsigned char def_color[3];
 	bool read_texture();		// Read texture & init. for OpenGL.
 public:
 	friend class Model3d;
 	friend class Object3d;
-	Material() : texture_id(0), texture_loaded(false), r(0), g(0), b(0)
-		{  }
+	Material() : texture_id(0), texture_loaded(false)
+		{ set_color(ambient, def_color); set_color(diffuse, def_color);
+		  set_color(specular, def_color); }
 	void set_name(const char *nm)
 		{ name = nm; }
 	void set_texture_filename(const char *nm)
 		{ texture_filename = nm; }
-	void set_color(const unsigned char *c)
-		{ r = c[0]; g = c[1]; b = c[2]; }
+					// Indices into 'color' above:
+	enum Color_index
+		{
+		diffuse = 0,
+		ambient = 1,
+		specular = 2
+		};
+	void set_color(Color_index i, const unsigned char *c)
+		{ set_color(colors[i], c); }
 	bool load()			// Load texture.
 		{ 
 		return (texture_loaded || texture_filename.empty()) ? true
