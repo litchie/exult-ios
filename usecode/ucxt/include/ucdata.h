@@ -4,17 +4,16 @@
 
 #include <string>
 #include <cstdio>
-#include "ucc.h"
-#include "ucfunc.h"
 #include <fstream>
+#include "ucfunc.h"
 
-enum { MODE_NONE=0, MODE_DISASSEMBLY=1, MODE_LIST=2, MODE_OPCODE_SCAN=3, MODE_OPCODE_SEARCH=4, MODE_INTRINSIC_SEARCH=5, MODE_FLAG_DUMP=6, MODE_DISASSEMBLE_ALL=7 };
+class UCc;
+
+enum { MODE_NONE=0, MODE_DISASSEMBLY=1, MODE_ALL=2, MODE_OPCODE_SCAN=3, MODE_OPCODE_SEARCH=4, MODE_INTRINSIC_SEARCH=5, MODE_FLAG_DUMP=6, MODE_DISASSEMBLE_ALL=7 };
 enum { GAME_BG=1, GAME_SI=2 };
 
 const unsigned int MAX_OPCODE_BUF = 256;
 const unsigned int MAX_INTRINSIC_BUF = 256;
-
-class UCFuncNew;
 
 class UCData
 {
@@ -25,7 +24,7 @@ class UCData
 		void dump_unknown_opcodes();
 		void dump_unknown_intrinsics();
 		
-		void parse_params(const int argc, char **argv);
+		void parse_params(const unsigned int argc, char **argv);
 		void open_usecode(const string &filename);
 		void load_funcs(const char **func_table);
 		void list_funcs(const char **func_table);
@@ -40,20 +39,21 @@ class UCData
  		unsigned int mode() const { return _mode; };
  		void mode(const unsigned int mode) { _mode=mode; };
 		unsigned int game() const { return _game; };
- 		//unsigned long filesize() const { return _filesize; }
 		string output_redirect() const { return _output_redirect; };
 		
-		bool fail() const { return _file.fail();/*_fail;*/ };
+		bool output_list() const { return _output_list; };
+		bool output_asm()  const { return _output_asm;  };
+		bool output_ucs()  const { return _output_ucs;  };
+		
+		bool fail() const { return _file.fail(); };
 	
 	private:
 		
 		void file_open(const string &filename);
-		void file_seek_start() { _file.seekg(0, ios::beg); /*fseek(_file, 0, SEEK_SET);*/ };
-		void file_seek_end() { _file.seekg(0, ios::end); /*fseek(_file, 0, SEEK_END);*/ };
-		
-		// temporary
-		void readbin_UCFunc(ifstream &f, UCFuncNew &ucf);
+		void file_seek_start() { _file.seekg(0, ios::beg); };
+		void file_seek_end() { _file.seekg(0, ios::end); };
 
+		
 		ifstream _file;
 		
 		bool _noconf;
@@ -62,9 +62,13 @@ class UCData
 		unsigned int _mode;
 		unsigned int _game;
 		
+		bool _output_list;
+		bool _output_asm;
+		bool _output_ucs;
+		
 		string _output_redirect;
 		
-		unsigned int _funcid;
+		unsigned short _funcid;
 		
 		vector<UCc> _codes;
 		
@@ -73,9 +77,9 @@ class UCData
 		vector<unsigned char> _opcode_buf;
 		vector<unsigned char> _intrinsic_buf;
 		
-		unsigned long _search_opcode;
-		unsigned long _search_intrinsic;
-		unsigned long _search_func;
+		long _search_opcode;
+		long _search_intrinsic;
+		long _search_func;
 
 };
 

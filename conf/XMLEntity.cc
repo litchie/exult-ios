@@ -67,7 +67,7 @@ const string	&XMLnode::reference(const string &h,bool &exists)
 }
 
 
-XMLnode *XMLnode::subtree(const string &h)
+const XMLnode *XMLnode::subtree(const string &h) const
 {
 	if(h.find('/') == string::npos)
 	{
@@ -84,7 +84,7 @@ XMLnode *XMLnode::subtree(const string &h)
 		string k;
 		k=h.substr(h.find('/')+1);
 		string k2=k.substr(0,k.find('/'));
-		for(std::vector<XMLnode*>::iterator it=nodelist.begin();
+		for(std::vector<XMLnode*>::const_iterator it=nodelist.begin();
 			it!=nodelist.end();++it)
 		{
 			if((*it)->id==k2)
@@ -165,7 +165,7 @@ void	XMLnode::xmlassign(string &key,string &value)
 }
 
 
-void	XMLnode::listkeys(const string &key,vector<string> &vs, bool longformat)
+void	XMLnode::listkeys(const string &key,vector<string> &vs, bool longformat) const
 {
 	string s(key);
 	s+="/";

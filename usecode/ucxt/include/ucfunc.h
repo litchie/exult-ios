@@ -6,9 +6,8 @@
 #include <vector>
 #include <cstdio>
 #include <string>
-#include "ucc.h"
-#include "opcodec.h"
 #include <fstream>
+#include "ucc.h"
 
 const unsigned int SIZEOF_USHORT = 2;
 
@@ -78,6 +77,44 @@ class SortFlagDataLessFunc
 };
 
 class UCFunc
+{
+	public:
+		UCFunc() : _offset(0), _funcid(0), _funcsize(0), _bodyoffset(0), _datasize(0),
+		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0) {};
+		
+//	private:
+	
+		streampos      _offset;      // offset to start of function
+		unsigned short _funcid;      // the id of the function
+		unsigned short _funcsize;    // the size of the function (bytes)
+		streampos      _bodyoffset;  // the file position after the header is read
+		
+		unsigned short _datasize;    // the size of the data block
+		
+		map<unsigned int, string, less<unsigned int> > _data;
+			// contains the entire data segment in offset from start of segment, and string data pairs
+		
+		streampos      _codeoffset; // the offset to the start of the code segment
+		
+		unsigned short _num_args;    // the number of arguments
+		unsigned short _num_locals;  // the number of local variables
+		unsigned short _num_externs; // the number of external function id's
+		vector<unsigned short> _externs; // the external function id's
+		//vector<pair<unsigned short, pair<unsigned char, vector<unsigned char> > > > _usecode;
+		vector<UCc> _opcodes;
+
+		// the following vars are for data compatibility with the original UCFunc
+    unsigned short codesize() const { return _funcsize - _datasize; };
+    vector<FlagData *>   _flagcount;
+
+};
+
+class UCData;
+
+void readbin_UCFunc(ifstream &f, UCFunc &ucf);
+void print_asm(UCFunc &ucf, ostream &o, const UCData &uc);
+
+/*class UCFunc
 {
   public:
     UCFunc() : _opcode_count(256, 0), _unknown_opcode_count(256, 0), _unknown_intrinsic_count(256, 0) {};
@@ -162,8 +199,8 @@ class UCFunc
 		streampos ftell() const { return _file->tellg(); };
 		
     //int fseek(const long offset, const int mode) { return ::fseek(_file, offset, mode); };
-    bool eof() const { return _file->eof();/*feof(_file);*/ };
-    int get() { return _file->get();/*getc(_file);*/ };
+    bool eof() const { return _file->eof(); };
+    int get() { return _file->get(); };
 
     // /temp file manipulation functions
 
@@ -192,7 +229,7 @@ class UCFunc
 
     // LEGACY: remove when old c output format is unused
     vector<UCc> _codes;
-};
+};*/
 
 #endif
 

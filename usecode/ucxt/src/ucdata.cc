@@ -12,10 +12,11 @@
 #include <algorithm>
 #include "opcodes.h"
 
-UCData::UCData()  : _search_opcode((unsigned long) -1),
-                    _search_intrinsic((unsigned long) -1),
-                    _search_func((unsigned long)-1), _mode(0), _game(GAME_BG),
-                    _noconf(false), _verbose(false)
+UCData::UCData() : _noconf(false), _verbose(false),
+                   _mode(0), _game(GAME_BG), _output_asm(false),
+                   _output_ucs(false), _search_opcode(-1),
+                   _search_intrinsic(-1),
+                   _search_func(-1)
 {
 	_opcode_buf.resize(MAX_OPCODE_BUF, 0);
 	_intrinsic_buf.resize(MAX_INTRINSIC_BUF, 0);
@@ -63,25 +64,32 @@ void UCData::dump_unknown_intrinsics()
 		}
 }
 
-void UCData::parse_params(const int argc, char **argv)
+void UCData::parse_params(const unsigned int argc, char **argv)
 {
 	/* Parse command line */
 	for(unsigned int i=1; i<argc; i++)
 	{
 		if     (strcmp(argv[i], "-si")==0)  _game    = GAME_SI;
 		else if(strcmp(argv[i], "-bg")==0)  _game    = GAME_BG;
-		else if(strcmp(argv[i], "-l" )==0)  _mode    = MODE_LIST;
+
+		else if(strcmp(argv[i], "-a" )==0)  _mode    = MODE_ALL;
 		else if(strcmp(argv[i], "-f" )==0)  _mode    = MODE_FLAG_DUMP;
 //		else if(strcmp(argv[i], "-a" )==0)  _mode    = MODE_DISASSEMBLE_ALL;
 //		else if(strcmp(argv[i], "-c" )==0)  _mode    = MODE_OPCODE_SCAN; // Opcode scan mode
+
 		else if(strcmp(argv[i], "-nc")==0)  _noconf  = true;
 		else if(strcmp(argv[i], "-v" )==0)  _verbose = true;
+
+		else if(strcmp(argv[i], "-fl" )==0)  _output_list = true;
+		else if(strcmp(argv[i], "-fa" )==0)  _output_asm  = true;
+		else if(strcmp(argv[i], "-fs" )==0)  _output_ucs  = true;
+
 		else if(argv[i][0] != '-')
 		{
 			char* stopstr;
 			/* Disassembly mode */
 			_search_func = strtoul(argv[i], &stopstr, 16);
-			if( stopstr - argv[i] < strlen(argv[i]) )
+			if( stopstr - argv[i] < (int)strlen(argv[i]) )
 				/* Invalid number */
 				_search_func = (unsigned long) -1;
 			else
@@ -142,18 +150,22 @@ void UCData::disassamble(const char **func_table)
 
 	cout << "Looking for function number " << setw(8) << _search_func << endl << endl;
 
+	bool _foundfunc=false; //did we find and print the function?
 	for(unsigned int i=0; i<_funcs.size(); i++)
 	{
-		//cout << _funcs[i]->funcid() << ":" << _funcid << endl;
-		if(_funcs[i]->funcid()==_funcid)
+		//cout << _funcs[i]->_funcid << "\t" << _search_func << endl;
+		if(_funcs[i]->_funcid==_search_func)
 		{
-			output_ucfunc(_funcid, _funcs[i]->data(), _funcs[i]->argc(), _funcs[i]->localc(), _funcs[i]->externs(),
-			              _funcs[i]->codes(), func_table);
-			break;
+			_foundfunc=true;
+			if(output_ucs())
+				output_ucfunc(_funcid, _funcs[i]->_data, _funcs[i]->_num_args, _funcs[i]->_num_locals, _funcs[i]->_externs,
+				              _funcs[i]->_opcodes, func_table);
+			else
+				print_asm(*_funcs[i], cout, *this);
 		}
-		else if(i==_funcs.size()-1)
-			printf("Function not found.\n");
 	}
+	if(!_foundfunc)
+		printf("Function not found.\n");
 
 	if( _search_func == -1 )
 	{
@@ -176,8 +188,8 @@ void UCData::disassamble_all(const char ** func_table)
   for(unsigned int i=0; i<_funcs.size(); i++)
   {
     cout << "Outputting " << i << endl;
-    output_ucfunc(_funcs[i]->funcid(), _funcs[i]->data(), _funcs[i]->argc(), _funcs[i]->localc(), _funcs[i]->externs(),
-                  _funcs[i]->codes(), func_table);
+    output_ucfunc(_funcs[i]->_funcid, _funcs[i]->_data, _funcs[i]->_num_args, _funcs[i]->_num_locals, _funcs[i]->_externs,
+                  _funcs[i]->_opcodes, func_table);
     cout << "Outputted " << i << endl;
   }
 
@@ -192,8 +204,8 @@ void UCData::dump_flags(const char **func_table)
 
   // *BLEH* ugly!
   for(unsigned int i=0; i<_funcs.size(); i++)
-    for(unsigned int j=0; j<_funcs[i]->flags().size(); j++)
-      flags.push_back(_funcs[i]->flags()[j]);
+    for(unsigned int j=0; j<_funcs[i]->_flagcount.size(); j++)
+      flags.push_back(_funcs[i]->_flagcount[j]);
 
   cout << "Number of flags found: " << setbase(10) << flags.size() << endl;
 
@@ -202,7 +214,7 @@ void UCData::dump_flags(const char **func_table)
     sort(flags.begin(), flags.end(), SortFlagDataLessFunc());
 
     cout << setbase(16) << setfill('0');
-    unsigned int currfunc = (unsigned int)-1;
+    int currfunc = -1;
     for(unsigned int i=0; i<flags.size(); i++)
     {
       if(currfunc!=flags[i]->func())
@@ -259,10 +271,10 @@ void UCData::list_funcs(const char **func_table)
   for(unsigned int i=0; i<_funcs.size(); i++)
   {
     cout << "#" << setbase(10) << setw(3) << i << setbase(16) << ": "
-         << setw(4) << _funcs[i]->funcid()   << "H  "
-         << setw(8) << _funcs[i]->offset()   << "  "
-         << setw(4) << _funcs[i]->funcsize() << "  "
-         << setw(4) << _funcs[i]->datasize() << "  "
+         << setw(4) << _funcs[i]->_funcid   << "H  "
+         << setw(8) << _funcs[i]->_offset   << "  "
+         << setw(4) << _funcs[i]->_funcsize << "  "
+         << setw(4) << _funcs[i]->_datasize << "  "
          << setw(4) << _funcs[i]->codesize() << "  "
          << endl;
   }
@@ -275,44 +287,9 @@ void UCData::file_open(const string &filename)
 	_file.open(filename.c_str(), ios::in | ios::binary);
 }
 
-class UCFuncNew
-{
-	public:
-		UCFuncNew() {};
-		
-//	private:
-	
-		streampos      _offset;      // offset to start of function
-		unsigned short _funcid;      // the id of the function
-		unsigned short _funcsize;    // the size of the function (bytes)
-		streampos      _bodyoffset;  // the file position after the header is read
-		
-		unsigned short _datasize;    // the size of the data block
-		
-		map<unsigned int, string, less<unsigned int> > _data;
-			// contains the entire data segment in offset from start of segment, and string data pairs
-		
-		streampos      _code_offset; // the offset to the start of the code segment
-		
-		unsigned short _num_args;    // the number of arguments
-		unsigned short _num_locals;  // the number of local variables
-		unsigned short _num_externs; // the number of external function id's
-		vector<unsigned short> _externs; // the external function id's
-		vector<pair<unsigned short, pair<unsigned char, vector<unsigned char> > > > _usecode;
-/*
-
-    unsigned int _argc; // number of function parameters
-    unsigned int _localc; // number of local variables
-
-    long           _code_offset; // offset to start of code segment in file
-
-*/
-};
 
 void UCData::load_funcs(const char **func_table)
 {
-	int found = 0;
-
 	bool eof=false;
 	while( !eof )
 	{
@@ -322,43 +299,8 @@ void UCData::load_funcs(const char **func_table)
         || ( uc.mode() == MODE_OPCODE_SCAN ) )
        && ( uc._search_opcode == -1 ) && ( uc._search_intrinsic == -1 ) )
       cout << "#" << setbase(10) << setw(3) << func.size() * current function number* << setbase(16) << ": ";*/
-		streampos startpos = _file.tellg();
-		
-		ucfunc->process_old(&_file, _search_func, &found, _intrinsic_buf, ( mode() == MODE_OPCODE_SCAN ),
-		                    _search_opcode, _search_intrinsic, _funcid, func_table);
-		
-		streampos endpos = _file.tellg();
-		
-		_file.seekg(startpos, ios::beg);
-		
-		UCFuncNew foo;
-		readbin_UCFunc(_file, foo);
-		
-		#if 0
-		cout << ucfunc->_code_offset << "\t" << foo._code_offset << endl;
-		cout << ucfunc->argc() << "\t" << foo._num_args << endl;
-		cout << ucfunc->localc() << "\t" << foo._num_locals << endl;
-		cout << ucfunc->_externs.size() << "\t" << foo._num_externs << endl;
-		#endif
-		assert(ucfunc->funcid()==foo._funcid);
-		assert(ucfunc->funcsize()==foo._funcsize);
-		assert(ucfunc->datasize()==foo._datasize);
-		#if 0 // no idea why these fail... but anyway...
-		assert(ucfunc->argc()==foo._num_args);
-		assert(ucfunc->localc()==foo._num_locals);
-		#endif
-		
-		/*if(foo._funcid==_search_func)
-		{
-			cout << ucfunc->_code_offset << "\t" << foo._code_offset << endl;
-			cout << ucfunc->argc() << "\t" << foo._num_args << endl;
-			cout << ucfunc->localc() << "\t" << foo._num_locals << endl;
-			cout << ucfunc->_externs.size() << "\t" << foo._num_externs << endl;
-			for(unsigned int i=0; i<foo._num_externs; i++)
-				cout << "\tExtern: " << setw(4) << foo._externs[i] << endl;
-		}*/
 
-		_file.seekg(endpos, ios::beg);
+		readbin_UCFunc(_file, *ucfunc);
 		
 //    if( ( ( uc.mode() != MODE_OPCODE_SEARCH ) && ( uc.mode() !=MODE_INTRINSIC_SEARCH ) ) || found )
 //      num_functions++;
@@ -374,232 +316,5 @@ void UCData::load_funcs(const char **func_table)
 	}
 }
 
-inline unsigned short read_ushort(ifstream &f)
-{
-  return ((unsigned short) ((unsigned int)f.get() + (((unsigned int)f.get()) << 8)));
-}
-
-inline unsigned char read_ubyte(ifstream &f)
-{
-  return (unsigned char)f.get();
-}
-
-void UCData::readbin_UCFunc(ifstream &f, UCFuncNew &ucf)
-{
-
-	// offset to start of function
-	ucf._offset = f.tellg();
-
-	// Read Function Header
-	
-	ucf._funcid = read_ushort(f);
-	ucf._funcsize = read_ushort(f);	
-	
-	// save body offset in case we need it
-	ucf._bodyoffset = f.tellg();
-	
-	ucf._datasize = read_ushort(f);
-	
-	// process ze data segment!
-	{
-		streampos pos = f.tellg(); // paranoia
-	
-		unsigned short off = 0;
-		// Load all strings & their offsets
-		while( off < ucf._datasize )
-		{
-			assert(!f.eof());
-	
-			char c;
-			string data;
-	
-			while((c=f.get())!=0x00)
-				data+=c;
-	
-			ucf._data.insert(pair<unsigned int, string>(off, data));
-	
-			off+=data.size()+1;
-	
-		}
-		f.seekg(pos, ios::beg); // paranoia
-		f.seekg(ucf._datasize, ios::cur); // paranoia
-	}
-
-	#if 0	
-	if(ucf._funcid==_search_func)
-		for(map<unsigned int, string>::iterator i=ucf._data.begin(); i!=ucf._data.end(); i++)
-			cout << i->first << "\t" << i->second << endl;
-	#endif
-	
-	// process code segment
-	{
-		streampos start_of_code_seg = f.tellg();
-		ucf._code_offset = f.tellg();
-
-		// get the number of arguments to the function
-		ucf._num_args = read_ushort(f);
-
-		// get the number of local variables
-		ucf._num_locals = read_ushort(f);
-
-		// get the number of external function numbers
-		ucf._num_externs = read_ushort(f);
-		
-		// load the external function numbers
-		for(unsigned int i=0; i<ucf._num_externs; i++)
-			ucf._externs.push_back(read_ushort(f));
-		
-		// ok, now to load the usecode
-		unsigned int code_offset=0;
-
-		unsigned int code_size = ucf._funcsize - ucf._datasize - ((3+ucf._num_externs) * SIZEOF_USHORT);
-		
-		//cout << "Code Size: " << code_size << endl;
-
-		while(code_offset<code_size)
-		{
-			pair<unsigned short, pair<unsigned char, vector<unsigned char> > > ucop;
-			
-			ucop.first = code_offset;
-
-			ucop.second.first = read_ubyte(f);
-      code_offset++;
-
-			UCOpcodeData &otd = opcode_table_data[ucop.second.first];
-
-			//cout << "O: " << setw(4) << ucop.first << "\t" << (unsigned int) ucop.second.first << endl;
-			//cout << "OP: " << otd.opcode << "\t" << otd.asm_nmo << "\t" << otd.ucs_nmo << endl;
-			//assert(((otd.asm_nmo.size()==0) && (otd.ucs_nmo.size()==0)));
-			for(unsigned int i=0; i<otd.num_bytes; i++)
-				ucop.second.second.push_back(read_ubyte(f));
-			//for(unsigned int i=0; i<otd.num_bytes; i++)
-			//	cout << "\t" << ucop.second.second[i] << endl;
-			code_offset+=otd.num_bytes;
-
-			ucf._usecode.push_back(ucop);
-		}
-		//if(i->asm_nmo!="" || i->ucs_nmo!="")
-	}
-/*
-
-{
-  // Print argument counter
-  _argc = read_ushort(pp);
-  pp += SIZEOF_USHORT;
-  // Print locals counter  
-  _localc = read_ushort(pp);
-  pp += SIZEOF_USHORT;
-  // Print externs section 
-  externsize = read_ushort(pp);
-
-  pp += SIZEOF_USHORT;
-  if( size < ( ( 3 + externsize ) * SIZEOF_USHORT ) )
-  {
-    printf("Code segment bad!\n");
-    free(p);
-    free(pdata);
-    return;
-  }
-  size -= ( ( 3 + externsize ) * SIZEOF_USHORT );
-  pextern = (unsigned short*)pp;
-  for( i = 0; i < externsize; i++ )
-  {
-    _externs.push_back(read_ushort(pp));
-
-    pp += SIZEOF_USHORT;
-  }
-  offset = 0;
-  // Print opcodes 
-  while( offset < size )
-  {
-    unsigned int nbytes = print_opcode(pp, offset, pdata, pextern, externsize,
-                              intrinsic_buf, mute,
-                              count_all_opcodes,
-                              count_all_intrinsic,
-                              func_table);
-    pp += nbytes;
-    offset += nbytes;
-  }
-  free(p);
-  free(pdata);
-
-// top stuff
-  long pos;
-//  unsigned short size;
-  unsigned short externsize;
-  unsigned short i;
-  unsigned short offset;
-  unsigned char* p;
-  unsigned char* pp;
-  unsigned char* pdata;
-  unsigned short* pextern;
-
-  pos = ftell();
-  unsigned int size = _funcsize - _datasize - SIZEOF_USHORT;
-  pp = p = (unsigned char *)malloc(size);
-  pdata = (unsigned char *)malloc(_datasize);
-  read_vbytes(pdata, _datasize);
-  _code_offset = ftell();
-
-  read_vbytes(p, size);
-  fseekbeg(pos);
-  // Print code segment header
-  if( size < 3 * SIZEOF_USHORT )
-  {
-    printf("Code segment bad!\n");
-    free(p);
-    free(pdata);
-    return;
-  }
-///top stuff
-}
-
-
-    process_code_seg(intrinsic_buf,
-              scan_mode || ( opcode != -1 ) || ( intrinsic != -1 ),
-              ( opcode != -1 ), ( intrinsic != -1 ),
-              func_table);
-    if( !scan_mode && ( opcode == -1 ) && ( intrinsic == -1 ) )
-    {
-      do_decompile();
-      if(TEST_V3) do_print();
-    }
-
-    if( ( ( opcode != -1 ) && _unknown_opcode_count[opcode] > 0 ) ||
-      ( ( intrinsic != -1 ) && intrinsic_buf[intrinsic] > 0 ) )
-    {
-      // Found 
-      *found = 1;
-      if( intrinsic != -1 )
-        printf("\tFound function (%04XH) - %d times\n", _funcid,
-                                intrinsic_buf[intrinsic]);
-      else
-        printf("\tFound function (%04XH) - %d times\n", _funcid, _unknown_opcode_count[opcode]);
-    }
-  }
-
-  genflags();
-  // Seek back, then to next function 
-  fseekbeg(bodyoff);
-  fseekcur(_funcsize);
-*/
-}
-
-/*unsigned short UCFunc::read_ushort(const unsigned char *buff)
-{
-//  assert(((unsigned short) ((unsigned int)buff[0] + (((unsigned int)buff[1]) << 8)))
-//         ==(*(unsigned short *)buff));
-  return ((unsigned short) ((unsigned int)buff[0] + (((unsigned int)buff[1]) << 8)));
-}
-
-void UCFunc::read_vchars(char *buffer, const unsigned long nobytes)
-{
-	_file->read(buffer, nobytes);
-}
-
-void UCFunc::read_vbytes(unsigned char *buffer, const unsigned long nobytes)
-{
-	_file->read(buffer, nobytes);
-}*/
 
 

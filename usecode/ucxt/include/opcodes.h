@@ -5,6 +5,8 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "Configuration.h"
+#include "ucdata.h"
 
 #define MAX_NO_OPCODES 256
 
@@ -100,8 +102,10 @@ typedef struct _opcode_desc
 #define UCC_STRING       0xFFFA
 
 //76, 113
-extern const opcode_desc opcode_table[76];//[76];
+extern const opcode_desc opcode_table[76];
 extern const char* bg_func_table[113];
+
+vector<string> qnd_ocsplit(const string &s);
 
 class UCOpcodeData
 {
@@ -109,20 +113,22 @@ class UCOpcodeData
 		UCOpcodeData() : opcode(0x00), num_bytes(0) {};
 		UCOpcodeData(const vector<string> &v)
 		{
-			assert(v.size()==6);
+			assert(v.size()==7);
 			opcode = strtol(v[1].c_str(), 0, 0);
-			asm_nmo = v[2];
-			ucs_nmo = v[3];
-			num_bytes = strtol(v[4].c_str(), 0, 0);
-			param_types = v[5];
+			name = v[2];
+			asm_nmo = v[3];
+			ucs_nmo = v[4];
+			num_bytes = strtol(v[5].c_str(), 0, 0);
+			param_types = qnd_ocsplit(v[6]);
 			
 		};
 		
-		unsigned int opcode;
-		string       asm_nmo;
-		string       ucs_nmo;
-		unsigned int num_bytes;
-		string       param_types; //TODO: parse them into a vector<string>
+		unsigned int   opcode;
+		string         name;
+		string         asm_nmo;
+		string         ucs_nmo;
+		unsigned int   num_bytes;
+		vector<string> param_types;
 };
 
 extern vector<UCOpcodeData> opcode_table_data;
@@ -130,8 +136,8 @@ extern vector<UCOpcodeData> opcode_table_data;
 extern map<unsigned int, string> bg_uc_intrinsics;
 extern map<unsigned int, string> si_uc_intrinsics;
 
-void init_static_usecodetables();
-void init_usecodetables();
+void init_static_usecodetables(const Configuration &config);
+void init_usecodetables(const Configuration &config, const UCData &uc);
 
 #endif
 

@@ -23,11 +23,11 @@ unsigned int uc_indentlvl=0;
 string ucc_calli_tostr(const UCc &ucc, const char** func_table);
 
 bool print_uccs(ostream &o, const vector<UCc> &uccs, const unsigned int &uc_funcid,
-                const vector<unsigned int> &uc_externs,
+                const vector<unsigned short> &uc_externs,
                 const char** func_table,
                 const map<unsigned int, string> &uc_data);
 void print_ucc(ostream &o, const UCc &ucc, const unsigned int &uc_funcid,
-               const vector<unsigned int> &uc_externs,
+               const vector<unsigned short> &uc_externs,
                const char** func_table,
                const map<unsigned int, string> &uc_data, bool &return_val);
 void indent(ostream &o);
@@ -40,7 +40,7 @@ stack<StackI> stackp;
 void output_ucfunc(const unsigned int uc_funcid,
                    const map<unsigned int, string, less<unsigned int> > &uc_data,
                    const unsigned int &uc_argc, const unsigned int &uc_localc,
-                   const vector<unsigned int> &uc_externs, const vector<UCc> &uc_codes,
+                   const vector<unsigned short> &uc_externs, const vector<UCc> &uc_codes,
                    const char** func_table)
   { //PATRICK
     strstream ss_externs;
@@ -114,7 +114,7 @@ void output_ucfunc(const unsigned int uc_funcid,
   }
 
 bool print_uccs(ostream &o, const vector<UCc> &uccs, const unsigned int &uc_funcid,
-                const vector<unsigned int> &uc_externs,
+                const vector<unsigned short> &uc_externs,
                 const char** func_table,
                 const map<unsigned int, string> &uc_data)
 {
@@ -204,7 +204,7 @@ bool print_uccs(ostream &o, const vector<UCc> &uccs, const unsigned int &uc_func
 }
 
 void print_ucc(ostream &o, const UCc &ucc, const unsigned int &uc_funcid,
-               const vector<unsigned int> &uc_externs, const char** func_table,
+               const vector<unsigned short> &uc_externs, const char** func_table,
                const map<unsigned int, string> &uc_data, bool &return_val)
 {
   switch(ucc._id)
