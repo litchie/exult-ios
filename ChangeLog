@@ -4,6 +4,7 @@
 	* mapedit/u7shp.c: set ingame palette as default palette
 	* gamewin.*, imagewin.*: added create_mini_screenshot to create a 96x60 screenshot
 	* vgafile.*: implemented Shape_file::save
+	* gamedat.cc: added a SavefileFromDataSource function
 
 2001-04-14  Jeff Freedman  <jeff@amy.nerble.net>
 
