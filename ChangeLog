@@ -1,3 +1,8 @@
+2000-09-08  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Split rendering routines off into 'gamerend.cc'.
+	* Added Game_window::get_party().
+
 2000-09-08  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* vgafile.*: Allow empty initialization constructor and implement 

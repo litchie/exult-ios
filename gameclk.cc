@@ -9,7 +9,6 @@
 #include "gameclk.h"
 #include "gamewin.h"
 #include "actors.h"
-#include "usecode.h"
 
 /*
  *	Palette #'s in 'palettes.flx'.  Just need them here for now.
@@ -85,16 +84,10 @@ void Game_clock::check_hunger
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Usecode_machine *uc = gwin->get_usecode();
-	int cnt = uc->get_party_count();
+	Actor *party[9];		// Get party + Avatar.
+	int cnt = gwin->get_party(party, 1);
 	for (int i = 0; i < cnt; i++)
-		{
-		Npc_actor *npc = (Npc_actor *) gwin->get_npc(
-						uc->get_party_member(i));
-		npc->use_food();
-		}
-					// Player needs to eat too.
-	gwin->get_main_actor()->use_food();
+		party[i]->use_food();
 	}
 
 /*
