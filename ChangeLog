@@ -1,3 +1,7 @@
+2001-05-29  Ryan Nunn <triforce@merlin.net.au>
+	* audio/midi_drivers/win_midiout.cc : Fixed a spelling error
+	* gumps/AudioOptions_gump.cc : Fixed reverb & chorus config problem
+
 2001-05-29  Dancer Vesperman <dancer@users.sourceforge.net>
 	- Code Nazi
 	* Timidity_binary.cc: std::strcpy
