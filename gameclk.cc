@@ -42,12 +42,12 @@ void Game_clock::set_time_palette
 	int new_palette;
 	if (main_actor && main_actor->get_flag(Obj_flags::invisible))
 	{
-		gwin->set_palette(PALETTE_INVISIBLE);
+		gwin->get_pal()->set(PALETTE_INVISIBLE);
 		return;
 		}
 
 	if (cheat.in_infravision()) {
-		gwin->set_palette(PALETTE_DAY);
+		gwin->get_pal()->set(PALETTE_DAY);
 		return;
 	}
 
@@ -72,7 +72,7 @@ void Game_clock::set_time_palette
 					// Gump mode, or light spell?
 	if (gwin->is_special_light() && new_palette == PALETTE_NIGHT)
 		new_palette = PALETTE_DAWN;
-	gwin->set_palette(new_palette);
+	gwin->get_pal()->set(new_palette);
 	}
 
 /*

@@ -40,6 +40,7 @@
 #include "Face_stats.h"
 #include "Gump_manager.h"
 #include "effects.h"
+#include "palette.h"
 
 /*
  *	Get the i'th party member, with the 0'th being the Avatar.
@@ -376,9 +377,9 @@ void ActionSIIntro(int *params)
 	game->play_intro();
 	game->clear_jive();
 	gwin->clear_screen(true);
-	gwin->set_palette(0);
+	gwin->get_pal()->set_palette(0);
 	gwin->paint();
-	gwin->fade_palette (50, 1, 0);
+	gwin->get_pal()->fade(50, 1, 0);
 }
 
 //  { ActionEndgame, 1, "Show endgame", true, true, BLACK_GATE },
@@ -388,9 +389,9 @@ void ActionEndgame(int *params)
 	Game_window *gwin = Game_window::get_instance();
 	game->end_game(params[0] != 1);
 	gwin->clear_screen(true);
-	gwin->set_palette(0);
+	gwin->get_pal()->set(0);
 	gwin->paint();
-	gwin->fade_palette (50, 1, 0);
+	gwin->get_pal()->fade(50, 1, 0);
 }
 
 //  { ActionScrollLeft, 0, "Scroll left", true, true, NONE },

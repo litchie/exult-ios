@@ -279,8 +279,6 @@ Game_window::Game_window
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
             text_bg(false), 
-	    palette(-1), brightness(100), user_brightness(100), 
-	    faded_out(false), fades_enabled(true),
 	    special_light(0), last_restore_hour(6),
 	    dragging(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
@@ -1426,89 +1424,6 @@ void Game_window::reload_usecode
 		usecode->read_usecode(file);
 		file.close();
 		}
-	}
-
-/*
- *	Fade the current palette in or out.
- *	Note:  If pal_num != -1, the current palette is set to it.
- */
-
-void Game_window::fade_palette
-	(
-	int cycles,			// Length of fade.
-	int inout,			// 1 to fade in, 0 to fade to black.
-	int pal_num			// 0-11, or -1 for current.
-	)
-	{
-	  if (pal_num == -1) pal_num = palette;
-	  pal->load(PALETTES_FLX, pal_num);
-	  if(inout)
-		  pal->fade_in(cycles);
-	  else
-		  pal->fade_out(cycles);
-	  faded_out = !inout;		// Be sure to set flag.
-	}
-
-/*
- *	Flash the current palette red.
- */
-
-void Game_window::flash_palette_red
-	(
-	)
-	{
-	int savepal = palette;
-	set_palette(PALETTE_RED);		// Palette 8 is the red one.
-	win->show();
-	SDL_Delay(100);
-	set_palette(savepal);
-	painted = 1;
-	}
-
-/*
- *	Read in a palette.
- */
-
-void Game_window::set_palette
-	(
-	int pal_num,			// 0-11, or -1 to leave unchanged.
-	int new_brightness,		// New percentage, or -1.
-	bool repaint
-	)
-	{
-	if (palette == pal_num && brightness == new_brightness)
-		return;			// Already set.
-	if (pal_num != -1)
-		palette = pal_num;	// Store #.
-	if (new_brightness > 0)
-		brightness = new_brightness;
-	if (faded_out)
-		return;			// In the black.
-	
-	pal->load(PALETTES_FLX, palette);	// could throw!
-#if 0
-	// FIX ME - This code is not any longer needed
-	if (!pal->load(PALETTES_FLX, palette))
-		abort("Error reading '%s'.", PALETTES_FLX);
-#endif
-	pal->set_brightness(brightness);
-	pal->apply(repaint);
-	}
-
-/*
- *	Brighten/darken palette for the user.
- */
-
-void Game_window::brighten
-	(
-	int per				// +- percentage to change.
-	)
-	{
-	int new_brightness = brightness + per;
-	if (new_brightness < 20)	// Have a min.
-		new_brightness = 20;
-	user_brightness = new_brightness;
-	set_palette(palette, new_brightness);
 	}
 
 /*
@@ -2709,7 +2624,6 @@ void Game_window::setup_game
 	{
 		party[i]->init_readied();
 	}
-	faded_out = 0;
 	time_stopped = 0;
 //+++++The below wasn't prev. done by ::read(), so maybe it should be
 //+++++controlled by a 'first-time' flag.

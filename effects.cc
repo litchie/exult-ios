@@ -1130,7 +1130,7 @@ void Lightning_effect::handle_event
 		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(62));
 		active = true;
 		flashing = true;
-		gwin->set_palette(PALETTE_LIGHTNING);
+		gwin->get_pal()->set(PALETTE_LIGHTNING);
 		delay = (1 + r%2)*25;
 		}
 	gwin->get_tqueue()->add(curtime + delay, this, udata);

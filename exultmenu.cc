@@ -35,6 +35,7 @@
 #include "Configuration.h"
 #include "txtscroll.h"
 #include "data/exult_flx.h"
+#include "palette.h"
 
 static bool get_play_intro(void);
 static void set_play_intro(bool);
@@ -85,7 +86,7 @@ void ExultMenu::setup()
 			      centerx, menuypos, font);
 	palfades->add_choice("Off");
 	palfades->add_choice("On");
-	palfades->set_choice(gwin->get_fades_enabled()?1:0);
+	palfades->set_choice(gwin->get_pal()->get_fades_enabled()?1:0);
 	menu.add_entry(palfades);
 	menuypos+=11;
 
@@ -192,8 +193,11 @@ void ExultMenu::setup()
 					config->set("config/video/scale_method",Image_window::get_name_for_scaler(scaler),true);
 			}
 			// Palette fades
-			gwin->set_fades_enabled(palfades->get_choice()==1);
-			config->set("config/video/disable_fades",gwin->get_fades_enabled()?"no":"yes",true);
+			Palette *gpal = gwin->get_pal();
+			gpal->set_fades_enabled(
+						palfades->get_choice()==1);
+			config->set("config/video/disable_fades",
+				gpal->get_fades_enabled()?"no":"yes",true);
 
 			if (Audio::get_ptr()->get_midi()) {
 			  if (midiconv) {

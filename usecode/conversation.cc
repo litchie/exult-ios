@@ -194,9 +194,9 @@ void Conversation::show_face(int shape, int frame, int slot)
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 
 	// Make sure mode is set right.
-					// Watch for wierdness (lightning).
-	if (gwin->get_brightness() >= 300)
-		gwin->set_palette(-1, 100);
+	Palette *pal = gwin->get_pal();	// Watch for wierdness (lightning).
+	if (pal->get_brightness() >= 300)
+		pal->set(-1, 100);
 
 	if (SI)				// Serpent Isle?
 	{				// Petra?  ???+++Is this right?

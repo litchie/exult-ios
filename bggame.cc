@@ -1130,8 +1130,9 @@ void BG_Game::end_game(bool success)
 	
 	normal->draw_text (ibuf, width, height, message);
 
+	Palette *gpal = gwin->get_pal();
 	// Fade in for 1 sec (50 cycles)
-	gwin->fade_palette (50, 1, 0);
+	gpal->fade (50, 1, 0);
 
 	// Display text for 3 seconds
 	for (i = 0; i < 30; i++)
@@ -1147,7 +1148,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gwin->fade_palette (50, 0, 0);
+	gpal->fade (50, 0, 0);
 
 	
 	// Now the second text message
@@ -1163,7 +1164,7 @@ void BG_Game::end_game(bool success)
 	normal->draw_text (ibuf, width, height, message);
 
 	// Fade in for 1 sec (50 cycles)
-	gwin->fade_palette (50, 1, 0);
+	gpal->fade (50, 1, 0);
 
 	// Display text for approx 3 seonds
 	for (i = 0; i < 30; i++)
@@ -1179,7 +1180,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gwin->fade_palette (50, 0, 0);
+	gpal->fade (50, 0, 0);
 
 	next = fli3.play(win, 0, 0, next);
 	pal = fli3.get_palette();
@@ -1293,7 +1294,7 @@ void BG_Game::end_game(bool success)
 		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen1[i])/2, starty+normal->get_text_height()*i, txt_screen1[i]);
 
 	// Fade in for 1 sec (50 cycles)
-	gwin->fade_palette (50, 1, 0);
+	gpal->fade (50, 1, 0);
 
 	// Display text for 20 seonds (only 10 at the moment)
 	for (i = 0; i < 100; i++)
@@ -1309,7 +1310,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gwin->fade_palette (50, 0, 0);
+	gpal->fade (50, 0, 0);
 
 	if (wait_delay (10))
 	{
@@ -1341,7 +1342,7 @@ void BG_Game::end_game(bool success)
 
 
 	// Fade in for 1 sec (50 cycles)
-	gwin->fade_palette (50, 1, 0);
+	gpal->fade (50, 1, 0);
 
 	// Display text for 20 seonds (only 8 at the moment)
 	for (i = 0; i < 80; i++)
@@ -1357,7 +1358,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gwin->fade_palette (50, 0, 0);
+	gpal->fade (50, 0, 0);
 
 
 	if (wait_delay (10))
@@ -1390,7 +1391,7 @@ void BG_Game::end_game(bool success)
 		normal->draw_text (ibuf, centerx-normal->get_text_width(txt_screen3[i])/2, starty+normal->get_text_height()*i, txt_screen3[i]);
 
 	// Fade in for 1 sec (50 cycles)
-	gwin->fade_palette (50, 1, 0);
+	gpal->fade (50, 1, 0);
 
 	// Display text for 20 seonds (only 8 at the moment)
 	for (i = 0; i < 80; i++)
@@ -1406,7 +1407,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gwin->fade_palette (50, 0, 0);
+	gpal->fade (50, 0, 0);
 
 
 	if (wait_delay (10))
@@ -1438,7 +1439,7 @@ void BG_Game::end_game(bool success)
 
 
 	// Fade in for 1 sec (50 cycles)
-	gwin->fade_palette (50, 1, 0);
+	gpal->fade (50, 1, 0);
 
 	// Display text for 10 seonds (only 5 at the moment)
 	for (i = 0; i < 50; i++)
@@ -1454,7 +1455,7 @@ void BG_Game::end_game(bool success)
 	}
 
 	// Fade out for 1 sec (50 cycles)
-	gwin->fade_palette (50, 0, 0);
+	gpal->fade (50, 0, 0);
 
 
 	gwin->clear_screen(true);
