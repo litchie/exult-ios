@@ -37,6 +37,8 @@ public:
 		{ return day; }
 	void set_day(int d)
 		{ day = d; }
+	unsigned long get_total_hours()	// Get total # hours.
+		{ return day*24 + hour; }
 	void set_palette();		// Set palette for current hour.
 					// Set light source.  MUST be fast,
 					//   since it's called during paint().

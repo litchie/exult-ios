@@ -177,6 +177,7 @@ class Usecode_machine
 					//    256*i + n.
 	int call_depth;			// How far deep we are.
 	unsigned char gflags[1024];	// Global flags.
+	unsigned long timers[20];	// Each has time in hours when set.
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
 	Text_gump *book;		// Book/scroll being displayed.
@@ -343,6 +344,8 @@ public:
 	USECODE_INTRINSIC_DECL(run_endgame);
 	USECODE_INTRINSIC_DECL(get_array_size);
 	USECODE_INTRINSIC_DECL(is_pc_inside);
+	USECODE_INTRINSIC_DECL(get_timer);
+	USECODE_INTRINSIC_DECL(set_timer);
 	USECODE_INTRINSIC_DECL(mouse_exists);
 	USECODE_INTRINSIC_DECL(get_container);
 	USECODE_INTRINSIC_DECL(remove_item);
@@ -351,6 +354,7 @@ public:
 	USECODE_INTRINSIC_DECL(advance_time);
 	USECODE_INTRINSIC_DECL(path_run_usecode);
 	USECODE_INTRINSIC_DECL(close_gumps);
+	USECODE_INTRINSIC_DECL(in_gump_mode);
 	USECODE_INTRINSIC_DECL(is_not_blocked);
 	USECODE_INTRINSIC_DECL(direction_from);
 	USECODE_INTRINSIC_DECL(get_npc_flag);
@@ -391,7 +395,8 @@ public:
 	enum Global_flag_names {
 		did_first_scene = 0x3b,	// Went through 1st scene with Iolo.
 		have_trinsic_password = 0x3d,
-		found_stable_key = 0x48
+		found_stable_key = 0x48,
+		avatar_is_thief = 0x2eb
 		};
 	int get_global_flag(int i)	// Get/set ith flag.
 		{ return gflags[i]; }

@@ -1129,8 +1129,14 @@ void Usecode_machine::item_say
 	const char *str = strval.get_str_value();
 	if (obj && str && *str)
 		{
-		Rectangle box = gwin->get_shape_rect(obj);
-		gwin->add_text(str, box.x, box.y);	// &&& Fix me later and avoid the ugly cast
+					// See if it's in a gump.
+		Gump_object *gump = gwin->find_gump(obj);
+		Rectangle box;
+		if (gump)
+			box = gump->get_shape_rect(obj);
+		else
+			box = gwin->get_shape_rect(obj);
+		gwin->add_text(str, box.x, box.y);
 		gwin->show();		// Not sure.+++++testing.
 		}
 	}
@@ -2287,6 +2293,31 @@ USECODE_INTRINSIC(is_pc_inside)
 	return(u);
 }
 
+USECODE_INTRINSIC(get_timer)
+{
+	int tnum = parms[0].get_int_value();
+	int ret;
+	if (tnum >= 0 && tnum < sizeof(timers)/sizeof(timers[0]))
+		ret = gwin->get_total_hours() - timers[tnum];
+	else
+		{
+		cerr << "Attempt to use invalid timer " << tnum << endl;
+		ret = 0;
+		}
+	return Usecode_value(ret);
+}
+
+USECODE_INTRINSIC(set_timer)
+{
+	int tnum = parms[0].get_int_value();
+	if (tnum >= 0 && tnum < sizeof(timers)/sizeof(timers[0]))
+		timers[tnum] = gwin->get_total_hours();
+	else
+		cerr << "Attempt to use invalid timer " << tnum << endl;
+	return(no_ret);
+}
+
+
 USECODE_INTRINSIC(mouse_exists)
 {
 	Usecode_value u(1);
@@ -2385,6 +2416,11 @@ USECODE_INTRINSIC(close_gumps)
 	// Guessing+++++ close all gumps.
 	gwin->end_gump_mode();
 	return(no_ret);
+}
+
+USECODE_INTRINSIC(in_gump_mode)
+{
+	return Usecode_value(gwin->get_mode() == Game_window::gump);
 }
 
 USECODE_INTRINSIC(is_not_blocked)
@@ -2577,8 +2613,10 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f  +++++++Vanish NPC?
                      // (according to ucdump.c)
 	USECODE_INTRINSIC_PTR(item_say),	// 0x40
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x41++++++++Some kind of animation?
-	// something(npc/item, item, wand/powderkeg-shape).
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x41 ++++++++++++Know it:
+	// animate(fromitem, toitem, anim_shape_in_shapesdotvga).
+	// ???? When it reaches toitem, caller usecode is called again with
+	//   itemref = toitem, eventid=4.  Returns??
 	USECODE_INTRINSIC_PTR(get_lift),	// 0x42
 	USECODE_INTRINSIC_PTR(set_lift),	// 0x43
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x44++++Get_something() (0-3)
@@ -2600,7 +2638,7 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51     ResurrectNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(add_spell),// 0x52     AddSpellToBook (ucdump.c)
 	USECODE_INTRINSIC_PTR(sprite_effect),// 0x53 ExecuteSprite (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54  ++++Explode???
 	USECODE_INTRINSIC_PTR(book_mode),// 0x55
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.
                            // StopTime (ucdump.c)
@@ -2614,14 +2652,14 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5c  ++++Extinguish(lightsource)?
 	USECODE_INTRINSIC_PTR(run_endgame),	// 0x5d  +++++CauseBlackout (ucdump.c)
 	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5f
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x60
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5f  ++++mark(virtue-stone)
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x60  ++++recall(virtue-stone)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x61
 	USECODE_INTRINSIC_PTR(is_pc_inside),	// 0x62
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63     SetOrreryState (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x64     UNUSED
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x65     GetTimerElapsetHours (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x66     SetTimer (ucdump.c)
+	USECODE_INTRINSIC_PTR(get_timer),	// 0x65
+	USECODE_INTRINSIC_PTR(set_timer),	// 0x66
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x67
 	USECODE_INTRINSIC_PTR(mouse_exists),	// 0x68
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x69     GetSpeechTrack (ucdump.c)
@@ -2642,13 +2680,13 @@ struct
 	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x79
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b ++++Another sprite animation?
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7c
 	USECODE_INTRINSIC_PTR(path_run_usecode),	// 0x7d
-	USECODE_INTRINSIC_PTR(close_gumps),	// 0x7e   PlaySpeech (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7f
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x81
+	USECODE_INTRINSIC_PTR(close_gumps),	// 0x7e
+	USECODE_INTRINSIC_PTR(item_say),	// 0x7f ItemSay in gump.
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80 ++++Open_gump(item)???
+	USECODE_INTRINSIC_PTR(in_gump_mode),	// 0x81
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x82
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x83
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x84
@@ -2898,6 +2936,8 @@ Usecode_machine::Usecode_machine
 	sp = stack;
 					// Clear global flags.
 	memset(gflags, 0, sizeof(gflags));
+					// Clear timers.
+	memset((char *) &timers[0], 0, sizeof(timers));
 					// Clear party list.
 	memset((char *) &party[0], 0, sizeof(party));
 	party_count = 0;
@@ -3437,6 +3477,9 @@ int Usecode_machine::write
 	Write2(out, party_count);	// Write party.
 	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		Write2(out, party[i]);
+					// Timers.
+	for (int t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
+		Write4(out, timers[t]);
 	out.flush();
 	return out.good();
 	}
@@ -3462,7 +3505,11 @@ int Usecode_machine::read
 	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		party[i] = Read2(in);
 	link_party();
-	return in.good();
+	int result = in.good();		// ++++Just added timers.
+					// Timers.
+	for (int t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
+		timers[t] = Read4(in);
+	return result;
 	}
 
 /*
