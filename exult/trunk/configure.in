@@ -169,7 +169,7 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS(limits.h sys/time.h unistd.h)
 AC_CHECK_HEADERS(sys/types.h sys/socket.h netdb.h)
 AC_CHECK_HEADERS(png.h)
-AC_LANG_CPLUSPLUS
+AM_CONDITIONAL(HAVE_PNG, false)
 AC_CHECK_ALPHA_LINUX_CXX
 AC_CHECK_HEADERS(hash_map hash_set ext/hash_map ext/hash_set sstream)
 AC_LANG_C

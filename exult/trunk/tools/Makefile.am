@@ -1,9 +1,16 @@
-INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/../files -I$(srcdir)/../usecode -I$(srcdir)/.. \
-		-I$(srcdir)/../conf $(DEBUG_FLAGS) $(CPPFLAGS) $(SDL_CFLAGS)
+INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/../files -I$(srcdir)/../usecode \
+	-I$(srcdir)/.. -I$(srcdir)/../shapes -I$(srcdir)/../imagewin \
+	-I$(srcdir)/../conf $(DEBUG_FLAGS) $(CPPFLAGS) $(SDL_CFLAGS)
+
+if HAVE_PNG
+IPACK = ipack
+else
+IPACK =
+endif
 
 if BUILD_TOOLS
 NOINSTTOOLS = wuc wud mklink rip ucdump cmanip
-EXTRATOOLS = splitshp shp2pcx textpack
+EXTRATOOLS = splitshp shp2pcx textpack $(IPACK)
 else
 EXTRATOOLS =
 NOINSTTOOLS =
@@ -17,6 +24,15 @@ expack_SOURCES = \
 
 expack_LDADD = \
 	../files/libu7file.la \
+	$(SYSLIBS)
+
+ipack_SOURCES = \
+	ipack.cc
+
+ipack_LDADD = \
+	../files/libu7file.la \
+	../shapes/libshapes.la \
+	../imagewin/libimagewin.la \
 	$(SYSLIBS)
 
 wuc_SOURCES = \
