@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <sys/stat.h>
 #include <stdio.h>
-#if !defined(XWIN)
+#if defined(WIN32)
 #include <dir.h>
 #endif
 #include "gamewin.h"
