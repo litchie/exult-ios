@@ -1,3 +1,9 @@
+2003-03-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Various: Support for 'static' (persistent) usecode variables,
+	both local and global.
+	* usecode/compiler/ucparse.yy:  Can now use '.' instead of '->'.
+
 2003-03-06  Aurelien Marchand <artaxerxes@users.sourceforge.net>
 	* docs/usecode_bugs.txt: added a file for people interested in fixing some usecode bugs
 

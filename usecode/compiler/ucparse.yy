@@ -426,7 +426,7 @@ function_call_statement:
 
 special_method_call_statement:
 					/* Have 'primary' say something.*/
-	primary UCC_POINTS SAY '(' opt_expression_list ')' ';'
+	primary hierarchy_tok SAY '(' opt_expression_list ')' ';'
 		{
 		Uc_block_statement *stmts = new Uc_block_statement();
 					/* Set up 'show' call.		*/
@@ -437,7 +437,7 @@ special_method_call_statement:
 		stmts->add(new Uc_say_statement($5));
 		$$ = stmts;
 		}
-	| primary UCC_POINTS HIDE '(' ')' ';'
+	| primary hierarchy_tok HIDE '(' ')' ';'
 		{
 		$$ = new Uc_call_statement(
 			new Uc_call_expression(Uc_function::get_remove_face(),
@@ -751,11 +751,16 @@ function_call:
 	;
 
 method_call:
-	primary UCC_POINTS routine_call	/* Really a way to do CALLE.	*/
+	primary hierarchy_tok routine_call /* Really a way to do CALLE.	*/
 		{
 		$3->set_itemref($1);
 		$$ = $3;	
 		}
+	;
+
+hierarchy_tok:
+	UCC_POINTS
+	| '.'
 	;
 
 routine_call:
