@@ -1797,7 +1797,9 @@ USECODE_INTRINSIC(book_mode)
 	Text_gump *gump;
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
-		return;
+		{
+		USECODE_RETURN(no_ret);
+		}
 	if (obj->get_shapenum() == 797)
 		gump = new Scroll_gump();
 	else
