@@ -1,3 +1,7 @@
+2000-05-02  Jeff Freedman  <jeff@patches.simutech.com>
+
+	* Use data from 'ready.dat' to place objects on Actor.
+
 2000-05-02  Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* gamewin.cc (Game_window): Free string used to determine game

@@ -47,13 +47,38 @@ class Actor : public Sprite
 	short party_id;			// Index in party, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
 protected:
+	Game_object *spots[12];		// Where things can go.  See 'Spots'
+					//   below for description.
+	unsigned char two_handed;	// Carrying a two-handed item.
+	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 	unsigned long flags;		// 32 flags used in 'usecode'.
 	Actor_action *action;		// Controls current animation.
-	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
 public:
 	void set_default_frames();	// Set usual frame sequence.
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
 	~Actor();
+					// Spots where items are carried.
+	enum Spots {			// Index of each spot, starting at
+					//   upper, rt., going clkwise.
+		head = 0,
+		torso = 1,
+		belt = 2,
+		lhand = 3,
+		lfinger = 4,
+		legs = 5,
+		feet = 6,
+		rfinger = 7,
+		rhand = 8,
+		arms = 9,
+		neck = 10,
+		back = 11,
+		lrhand = 100		// Special:  uses lhand & rhand.
+		};
+	int free_hand()			// Get index of a free hand, or -1.
+		{ 
+		return two_handed ? -1 :
+			(!spots[rhand] ? rhand : (!spots[lhand] ? lhand : -1));
+		}
 	enum Item_flags {		// Bit #'s of flags:
 		poisoned = 8,
 		dont_render = 16	// Completely invisible.
@@ -84,6 +109,9 @@ public:
 					// Walk to desired point.
 	void walk_to_point(unsigned long destx, unsigned long desty, 
 								int speed);
+	int find_spot(Game_object *obj);// Find object's spot.
+					// Find where to put object.
+	int find_best_spot(Game_object *obj);
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
@@ -113,6 +141,17 @@ public:
 		{ usecode_dir = d&7; }
 	virtual int get_usecode_dir()
 		{ return usecode_dir; }
+					// Remove an object.
+	virtual void remove(Game_object *obj);
+					// Add an object.
+	virtual int add(Game_object *obj, int dont_check = 0);
+					// Add to NPC 'readied' spot.
+	virtual int add_readied(Game_object *obj, int index);
+	virtual Game_object *get_readied(int index)
+		{
+		return index >= 0 && index < sizeof(spots)/sizeof(spots[0]) ? 
+				spots[index] : 0; 
+		}
 #if 0	/* ++++++ Trying to init. 1st-day schedules in gameclk.cc. */
 	struct	{
 		int cx;

@@ -361,7 +361,6 @@ public:
 		  volume_used(0), last_object(0)
 		{  }
 	Container_game_object() : volume_used(0), last_object(0) {  }
-	void remove(Game_object *obj);
 	Game_object *get_last_object()
 		{ return last_object; }
 	Game_object *get_first_object()	// Get first inside.
@@ -371,8 +370,15 @@ public:
 		{ volume_used += delta; }
 	int has_room(Game_object *obj)	// Room for this object?
 		{ return obj->get_volume() + volume_used <= get_volume(); }
+					// Remove an object.
+	virtual void remove(Game_object *obj);
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0);
+					// Add to NPC 'ready' spot.
+	virtual int add_readied(Game_object *obj, int index)
+		{ return add(obj); }
+	virtual Game_object *get_readied(int index)
+		{ return 0; }
 					// Add/remove quantities of objs.
 	virtual int add_quantity(int delta, int shapenum, int qual,
 					int framenum, int dontcreate = 0);
