@@ -429,8 +429,8 @@ Actor_action *Path_walking_actor_action::walk_to_tile
 			return (0);
 		}
 					// Reset direction (but not index).
-	original_dir = (int) Get_direction4(
-				src.ty - dest.ty, dest.tx - src.tx);
+	original_dir = static_cast<int>(Get_direction4(
+				src.ty - dest.ty, dest.tx - src.tx));
 	return (this);
 	}
 

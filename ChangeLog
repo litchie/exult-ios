@@ -1,3 +1,8 @@
+2001-10-05  Dancer Vesperman  <dancer@users.sourceforge.net>
+
+	* actors.cc: Cast conversions
+	* actions.cc: ditto
+
 2001-10-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucsched.{cc,h},ucinternal.cc:  terminate() added to
