@@ -63,6 +63,7 @@ public:
 	void	start_speech(int num,bool wait=false);
 	void	set_external_signal(int);
 	void	terminate_external_signal(void);
+	ProducerConsumerBuf	*Create_Audio_Stream(void) { return mixer->Create_Audio_Stream(); }
 
 	static	const	unsigned int	ringsize=3000;
 //	static	const	int	samplerate=11025;
