@@ -385,11 +385,30 @@ void Projectile_effect::handle_event
 					// If missile egg, detect target.
 			(!target && (target = Find_target(gwin, pos)) != 0))
 		{			// Done? 
-		if (shape_num == 704)	// Powder keg?
-			gwin->add_effect(new Explosion_effect(epos, 0));
-		else if (shape_num == 639)
+		switch (shape_num)
+			{
+		case 287:		// Swordstrike.
+			gwin->add_effect(new Sprites_effect(23, epos));
+			break;
+		case 554:		// Burst arrow.
+			gwin->add_effect(new Sprites_effect(19, epos));
+			break;
+		case 565:		// Starburst.
+			gwin->add_effect(new Sprites_effect(18, epos));
+			break;
+		case 639:		// Death Vortex.
 			gwin->add_effect(new Death_vortex(target, epos));
-		else if (target && (!attacker || 
+			target = 0;	// Takes care of attack.
+			break;
+		case 78:		// Explosion.
+		case 82:		// Delayed explosion.
+		case 702:		// Cannon.
+		case 704:		// Powder keg.
+			gwin->add_effect(new Explosion_effect(epos, 0));
+			target = 0;	// Takes care of attack.
+			break;
+			}
+		if (target && (!attacker || 
 					// Watch for teleporting away.
 					attacker->distance(target) < 50))
 			target->attacked(attacker, weapon, shape_num);
