@@ -1,5 +1,7 @@
 2000-07-14  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* barge.cc (Barge_object): Flying carpet is flying (somewhat)
+
 	* effects.cc (Weather_effect): Improved rain effect.
 
 	* Barges working slightly better.
