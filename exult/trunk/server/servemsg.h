@@ -50,8 +50,9 @@ enum Msg_type
 	{
 	say = 0,			// For testing.  Data is text.
 	egg = 1,			// Egg_object.
-	user_responded,			// User performed requested action.
-	cancel				// Cancel operation.
+	npc = 2,			// Editing an NPC.
+	user_responded = 3,		// User performed requested action.
+	cancel = 4			// Cancel operation.
 	};
 
 // I/O routines:
