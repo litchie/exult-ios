@@ -1,3 +1,9 @@
+02/29/04	v1.1.10rc2
+
+		Fixed a number of crashes
+		Fixed some Windows-only problems, including resurrection
+		Added more Black Gate paperdoll art
+
 01/27/04	v1.1.9rc1
 
 		Cleaned up non-MIDI music driver support
