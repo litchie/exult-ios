@@ -555,7 +555,7 @@ void Paperdoll_gump::paint_object
 				box.y + coords_blue[spot*2+1],
 				s);
 		int ox = box.x + obj->get_cx(), oy = box.y + obj->get_cy();
-		gwin->paint_shape(x, y, *obj);
+		gwin->paint_shape(ox, oy, *obj);
 		if (cheat.is_selected(obj))
 					// Outline selected obj.
 			gwin->paint_hit_outline(ox, oy, obj->get_shape());

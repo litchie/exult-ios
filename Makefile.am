@@ -101,7 +101,9 @@ exult_SOURCES =	\
 	version.cc	\
 	version.h	\
 	xdrag.cc	\
-	xdrag.h
+	xdrag.h		\
+	windrag.cc	\
+	windrag.h
 
 EXULTLIBS = \
 	pathfinder/libpathfinder.la		\
@@ -140,10 +142,14 @@ EXTRA_DIST = 	\
 	Makefile.win32 \
 	Makefile.be \
 	Makefile.cygwin \
+	Makefile.mingw \
+	Makefile.MorphOS \
 	Info.plist.in \
 	exult.spec \
 	win32/exult.ico \
 	win32/exultico.rc \
+	win32/exultstudio.ico \
+	win32/exultstudioico.rc \
 	beos/exult.rsrc \
 	mac/exult_icon.rsrc.bin \
 	mac/ExultMac.mcp.xml.sit \
@@ -182,7 +188,9 @@ EXTRA_DIST = 	\
 	msvcstuff/exconfig/StdAfx.h \
 	headers/common_types.h \
 	headers/exceptions.h \
-	headers/gamma.h
+	headers/gamma.h	\
+	server/servewin32.cc \
+	server/servewin32.h
 
 win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
 	-mkdir win32

@@ -10,6 +10,8 @@ libserver_la_SOURCES = 	\
 	servemsg.cc	\
 	servemsg.h	\
 	server.cc	\
-	server.h
+	server.h	\
+	servewin32.cc	\
+	servewin32.h
 
 CLEANFILES = *~

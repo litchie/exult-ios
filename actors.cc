@@ -1079,9 +1079,6 @@ bool Actor::fits_in_spot (Game_object *obj, int spot, FIS_Type type)
 	// If in left or right hand allow it
 	else if (spot == lhand || spot == rhand)
 		return true;
-	// I think the back spot is good for anything too.
-	else if (spot == back)
-		return true;
 	// Special Checks for Belt
 	else if (spot == belt)
 	{
@@ -1277,7 +1274,7 @@ int Actor::find_best_spot
 
 	// Get the preferences
 	get_prefered_slots (obj, prefered, alternate, type);
-	
+
 	// Check Prefered
 	if (fits_in_spot (obj, prefered, type)) return prefered;
 	// Alternate
@@ -2440,6 +2437,7 @@ bool Actor::add
 					//   cause obj to be deleted.
 	)
 	{
+
 	int index, a; 
 	FIS_Type type;
 	get_prefered_slots (obj, index, a, type);
@@ -2507,7 +2505,6 @@ int Actor::add_readied
 	int force_pos
 	)
 {
-
 	// Is Out of range?
 	if (index < 0 || index >= static_cast<int>(sizeof(spots)/sizeof(spots[0])))
 		return (0);		

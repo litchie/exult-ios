@@ -435,7 +435,7 @@ int exult_main(const char *runpath)
 
 	int result = Play();		// start game
 
-#ifdef WIN32
+#if defined(WIN32) && defined(USE_EXULTSTUDIO)
 	// Currently, leaving the game results in destruction of the window.
 	//  Maybe sometime in the future, there is an option like "return to
 	//  main menu and select another scenario". Becaule DnD isn't registered until

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #endif
 
 #include <iostream>
+#include <algorithm>
 
 #include "SDL_mouse.h"
 #include "cheat.h"
@@ -604,7 +605,7 @@ void Cheat::paste
 						obj->get_framenum());
 		bool ok = false;
 		if (on_gump)
-			ok = on_gump->add(obj, mx, my, x, y);
+			ok = on_gump->add(obj, mx, my, x, y)!=0;
 		else			// Try to drop at increasing hts.
 			for (int lift = edit_lift; !ok && lift <= 11; lift++)
 				ok = gwin->drop_at_lift(obj, x, y, lift);
