@@ -1,3 +1,8 @@
+2001-07-09  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/faq/: updated FAQ
+	* docs/IslandAddOn.txt added with all the ideas so far for a BG Add-On
+	* Faq: updated
+
 2001-07-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Testing with EFence:  Fixed a couple memory bugs, including one
