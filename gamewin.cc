@@ -209,7 +209,7 @@ void Game_window::paint_shape
 	)
 	{
 	if (!shape->rle)		// Not RLE?
-		iwin->copy8(shape->data, 8, 8, xoff - tilesize, 
+		iwin->copy8(shape->data, 0, 0, 8, 8, xoff - tilesize, 
 						yoff - tilesize);
 	else
 					// Get compressed data.
@@ -737,7 +737,7 @@ void Game_window::paint_chunk_flats
 			if (!id.is_invalid())
 				{	// Draw flat.
 				Shape_frame *shape = get_shape(id);
-				win->copy8(shape->data, 8, 8, 
+				win->copy8(shape->data, 0, 0, 8, 8, 
 					xoff + shapex*8,
 					yoff + shapey*8);
 				}

@@ -90,6 +90,40 @@ void Image_buffer8::copy
 	}
 
 /*
+ *	Get a rectangle from here into another Image_buffer.
+ */
+
+void Image_buffer8::get
+	(
+	Image_buffer *dest,		// Copy to here.
+	int srcx, int srcy		// Upper-left corner of source rect.
+	)
+	{
+	int srcw = dest->get_width(), srch = dest->get_height();
+	int destx = 0, desty = 0;
+					// Constrain to window's space. (Note
+					//   convoluted use of clip().)
+	if (!clip(destx, desty, srcw, srch, srcx, srcy))
+		return;
+	dest->copy8((unsigned char *) bits, 
+				srcx, srcy, srcw, srch, destx, desty);
+	}
+
+/*
+ *	Retrieve data from another buffer.
+ */
+
+void Image_buffer8::put
+	(
+	Image_buffer *src,		// Copy from here.
+	int destx, int desty		// Copy to here.
+	)
+	{
+	Image_buffer8::copy8((unsigned char *) src->get_ibuf()->bits,
+		0, 0, src->get_width(), src->get_height(), destx, desty);
+	}
+
+/*
  *	Create a compatible buffer.
  */
 
@@ -170,11 +204,11 @@ void Image_buffer8::fill_line8
 void Image_buffer8::copy8
 	(
 	unsigned char *src_pixels,	// Source rectangle pixels.
+	int srcx, int srcy,		// Location of source.
 	int srcw, int srch,		// Dimensions of source.
 	int destx, int desty
 	)
 	{
-	int srcx = 0, srcy = 0;
 	int src_width = srcw;		// Save full source width.
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
@@ -329,11 +363,11 @@ void Image_buffer16::fill_line16
 void Image_buffer16::copy16
 	(
 	unsigned short *src_pixels,	// Source rectangle pixels.
+	int srcx, int srcy,		// Location of source.
 	int srcw, int srch,		// Dimensions of source.
 	int destx, int desty
 	)
 	{
-	int srcx = 0, srcy = 0;
 	int src_width = srcw;		// Save full source width.
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
@@ -387,6 +421,39 @@ void Image_buffer16::copy
 	}
 
 /*
+ *	Get a rectangle from here into another Image_buffer.
+ */
+
+void Image_buffer16::get
+	(
+	Image_buffer *dest,		// Copy to here.
+	int srcx, int srcy		// Upper-left corner of source rect.
+	)
+	{
+	int srcw = dest->get_width(), srch = dest->get_height();
+	int destx = 0, desty = 0;
+					// Constrain to window's space. (Note
+					//   convoluted use of clip().)
+	if (!clip(destx, desty, srcw, srch, srcx, srcy))
+		return;
+	dest->copy16(get_pixels(), srcx, srcy, srcw, srch, destx, desty);
+	}
+
+/*
+ *	Retrieve data from another buffer.
+ */
+
+void Image_buffer16::put
+	(
+	Image_buffer *src,		// Copy from here.
+	int destx, int desty		// Copy to here.
+	)
+	{
+	Image_buffer16::copy16((unsigned short *) src->get_ibuf()->bits,
+		0, 0, src->get_width(), src->get_height(), destx, desty);
+	}
+
+/*
  *	Convert rgb value.
  */
 
@@ -430,11 +497,11 @@ void Image_buffer16::set_palette
 void Image_buffer16::copy8
 	(
 	unsigned char *src_pixels,	// Source rectangle pixels.
+	int srcx, int srcy,		// Location of source.
 	int srcw, int srch,		// Dimensions of source.
 	int destx, int desty
 	)
 	{
-	int srcx = 0, srcy = 0;
 	int src_width = srcw;		// Save full source width.
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
