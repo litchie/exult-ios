@@ -360,7 +360,9 @@ int Chunk_cache::is_blocked
 	int tx, int ty,			// Square to test.
 	int& new_lift,			// New lift returned.
 	const int move_flags,
-	int max_drop			// Max. drop/rise allowed.
+	int max_drop,			// Max. drop/rise allowed.
+	int max_rise			// Max. rise, or -1 to use old beha-
+					//   viour (max_drop if FLY, else 1).
 	)
 {
 
@@ -374,7 +376,9 @@ int Chunk_cache::is_blocked
 					// Get bits.
 	unsigned short tflags = blocked[ty*c_tiles_per_chunk + tx];
 					// Figure max lift allowed.
-	int max_lift = lift + ((move_flags & MOVE_FLY) ? max_drop : 1);
+	if (max_rise == -1)
+		max_rise = (move_flags & MOVE_FLY) ? max_drop : 1;
+	int max_lift = lift + max_rise;
 	if (max_lift > 15)
 		max_lift = 15;		// As high as we can go.
 	for (new_lift = lift; new_lift <= max_lift; new_lift++)

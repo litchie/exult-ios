@@ -87,7 +87,7 @@ using std::vector;
 
 // External globals..
 
-extern bool intrinsic_trace
+extern bool intrinsic_trace;
 extern int usecode_trace;
 
 #if 0 && USECODE_DEBUGGER
