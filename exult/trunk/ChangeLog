@@ -1,5 +1,6 @@
 2003-02-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* version.cc: output HAVE_OPENGL setting
+	* imagewin.h: disable OpenGL in the video options if not HAVE_OPENGL
 
 2003-02-20  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* forked_player.cc: don't go into infinite loop when player fails

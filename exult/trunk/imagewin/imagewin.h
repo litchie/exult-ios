@@ -51,6 +51,7 @@ public:
 	// Firstly just some public scaler stuff
 
 	// The scaler types. ScalerNames needs to match this
+#ifdef HAVE_OPENGL
 	enum ScalerType {
 		point = 0,
 		interlaced = 1,
@@ -64,6 +65,23 @@ public:
 		NoScaler = -1,
 		NumScalers = 8
 	};
+#else
+	enum ScalerType {
+		point = 0,
+		interlaced = 1,
+		bilinear = 2,
+		BilinearPlus = 3,
+		SaI = 4,
+		SuperEagle = 5,
+		Super2xSaI = 6,
+		OpenGL = 7,
+
+		NoScaler = -1,
+		NumScalers = 7 // no OpenGL. (But leave it in the enum.)
+};
+#endif
+
+
 	static const char *ScalerNames[];
 	static ScalerType get_scaler_for_name(const std::string &name);
 	inline static const char *get_name_for_scaler(int num) { return ScalerNames[num]; }
