@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <config.h>
 #endif
 
-#ifdef HAVE_FREETYPE2
+#if defined(HAVE_FREETYPE2) && !defined(__zaurus__)
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
