@@ -63,7 +63,7 @@ inline Tile_coord Rotate90l
 	{
 					// Get cart. coords. rel. to center.
 	int rx = t.tx - c.tx, ry = c.ty - t.ty;
-	return Tile_coord(c.tx - ry, c.ty - rx, t.tz);
+	return Tile_coord(c.tx - ry, c.ty + rx, t.tz);
 	}
 
 /*
@@ -81,7 +81,7 @@ inline Tile_coord Rotate180
 	{
 					// Get cart. coords. rel. to center.
 	int rx = t.tx - c.tx, ry = c.ty - t.ty;
-	return Tile_coord(c.tx - rx, c.ty + ry, t.tz);
+	return Tile_coord(c.tx - rx, c.ty - ry, t.tz);
 	}
 
 /*
@@ -104,7 +104,8 @@ inline Tile_coord Rotate90r
 					// New hotspot is what used to be the
 					//   upper-right corner.
 	r.tx += ytiles - 1;
-	r.ty -= xtiles;
+//	r.ty -= xtiles;
+	r.ty++;
 	return r;
 	}
 
