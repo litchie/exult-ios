@@ -331,8 +331,15 @@ void Cheat::heal_party (void) const {
   Actor* party[9];
   count = gwin->get_party(party, 1);
   for (int i = 0; i < count; i++) {
-    if (!party[i]->is_dead_npc())
+    if (!party[i]->is_dead_npc()) {
+      // heal
       party[i]->set_property(Actor::health, party[i]->get_property(Actor::strength));
+      // cure poison
+      party[i]->clear_flag(Actor::poisoned);
+
+      // remove hunger  +++++ what is "normal" food level??
+      party[i]->set_property(Actor::food_level, 30);
+    }
   }  
  
   gwin->center_text("Party healed");
