@@ -7,6 +7,7 @@
 #  include <fstream>
 #  include <cstdio>
 #  include <cstdlib>
+#  include <cstring>
 #endif
 #include <iostream>
 #include <vector>
@@ -25,7 +26,9 @@ using std::ifstream;
 using std::ofstream;
 using std::size_t;
 using std::snprintf;
-using std::strcpy;
+using std::strrchr;
+using std::strncpy;
+using std::strncat;
 using std::strlen;
 using std::vector;
 using std::string;
@@ -110,7 +113,7 @@ int main(int argc, char **argv)
 	vector<string>	file_names;
   
 	if(argc>2) {
-		strcpy(fname, argv[2]);
+		strncpy(fname, argv[2], 1024);
 		if((argv[1][0]=='-')&&(strlen(argv[1])==2)) {
 			switch(argv[1][1]) {
 			case 'i':
@@ -132,15 +135,15 @@ int main(int argc, char **argv)
 					
 					// Read the output file name
 					respfile.getline(temp, 1024);
-					strcpy(fname, path_prefix);
-					strcat(fname, temp);
+					strncpy(fname, path_prefix, 1024);
+					strncat(fname, temp, 1024);
 					
 					while(!respfile.eof()) {
 						respfile.getline(temp, 1024);
 						if(strlen(temp)>0) {
 							char temp2[1024];
-							strcpy(temp2, path_prefix);
-							strcat(temp2, temp);
+							strncpy(temp2, path_prefix,1024);
+							strncat(temp2, temp, 1024);
 							file_names.push_back(temp2);
 						}
 					}
