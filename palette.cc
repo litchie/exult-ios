@@ -34,12 +34,16 @@ void Palette::apply()
 		win->show();
 	}
 	
-void Palette::load(const char *fname, int index)
+/*
+ *	Returns 0 if file not found.
+ */
+int Palette::load(const char *fname, int index)
 	{
 		U7object pal(fname, index);
 		size_t len;
 		char *buf;
-		pal.retrieve(&buf, len);
+		if (!pal.retrieve(&buf, len))
+			return 0;
 		if(len==768) {	// Simple palette
 			memcpy(pal1,buf,768);	// Set the first palette
 			memset(pal2,0,768);		// The second one is black
@@ -50,6 +54,7 @@ void Palette::load(const char *fname, int index)
 			}
 		}
 		delete [] buf;
+		return 1;
 	}
 	
 void Palette::set_brightness(int bright)
