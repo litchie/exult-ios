@@ -2109,6 +2109,31 @@ bool Actor::reduce_health
 	}
 
 /*
+ *	Get a property, modified by flags.
+ */
+
+int Actor::get_effective_prop
+	(
+	int prop				// Property #.
+	) const
+	{
+	int val = properties[prop];
+	switch (prop)
+		{
+	case Actor::dexterity:
+	case Actor::intelligence:
+	case Actor::combat:
+	case Actor::strength:
+		if (get_flag(Obj_flags::might))
+			val *= 2;	// Mighty.
+		if (get_flag(Obj_flags::cursed))
+			val /= 2;
+		break;
+		}
+	return val;
+	}
+
+/*
  *	Set flag.
  */
 
@@ -2343,7 +2368,7 @@ int Actor::get_max_weight
 	(
 	)
 	{
-	return 2*properties[static_cast<int>(Actor::strength)];
+	return 2*get_effective_prop(static_cast<int>(Actor::strength));
 	}
 
 /*
@@ -2765,32 +2790,17 @@ bool Actor::roll_to_win
 	}
 
 /*
- *	Get a property, modified by flags.
+ *	Get effective property, or default value.
  */
 
-static int Get_effective_prop
+inline int Get_effective_prop
 	(
-	Actor *npc,
+	Actor *npc,			// ...or NULL.
 	Actor::Item_properties prop,	// Property #.
 	int defval = 0			// Default val if npc==0.
 	)
 	{
-	if (!npc)
-		return defval;
-	int val = npc->get_property(static_cast<int>(prop));
-	switch (static_cast<int>(prop))
-		{
-	case Actor::dexterity:
-	case Actor::intelligence:
-	case Actor::combat:
-	case Actor::strength:
-		if (npc->get_flag(Obj_flags::might))
-			val *= 2;	// Mighty.
-		if (npc->get_flag(Obj_flags::cursed))
-			val /= 2;
-		break;
-		}
-	return val;
+	return npc ? npc->get_effective_prop(prop) : defval;
 	}
 
 /*

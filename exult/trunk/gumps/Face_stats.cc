@@ -68,8 +68,8 @@ Stat_bar::Stat_bar (Gump *par, int px, int py, Actor *a, int s, int m, unsigned 
 {
 
 	gwin->add_dirty(get_rect());
-	val = actor->get_property(prop);
-	max_val = actor->get_property(prop_max);
+	val = actor->get_effective_prop(prop);
+	max_val = actor->get_effective_prop(prop_max);
 }
 
 void Stat_bar::double_clicked(int x, int y)
@@ -114,11 +114,11 @@ void Stat_bar::paint
 
 void Stat_bar::update_widget()
 {
-	if (val != actor->get_property(prop) || max_val != actor->get_property(prop_max))
+	if (val != actor->get_effective_prop(prop) || max_val != actor->get_effective_prop(prop_max))
 		gwin->add_dirty(get_rect());
 
-	val = actor->get_property(prop);
-	max_val = actor->get_property(prop_max);
+	val = actor->get_effective_prop(prop);
+	max_val = actor->get_effective_prop(prop_max);
 }
 
 /*
