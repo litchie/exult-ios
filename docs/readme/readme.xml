@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "readme.dtd">
-<readme title="Exult" changed="24 July 2001(GMT)">
+<readme title="Exult" changed="10 August 2001(GMT)">
 	<section title="Introduction">
 		<sub name="whatis_exult">
 			<header>What is <Exult/>?</header>
@@ -503,6 +503,8 @@
 					<keydesc name="m">Show map</keydesc>
 					<keydesc name="p">Use lockpicks</keydesc>
 					<keydesc name="Alt-q">Exit game</keydesc>
+					<keydesc name="r">Brings up status bars. First three strokes change the location 
+									of the bar. The fourth disables it again.</keydesc>
 					<keydesc name="Ctrl-r">Quick restore</keydesc>
 					<keydesc name="Ctrl-Alt-s">Screenshot</keydesc>
 					<keydesc name="Ctrl-s">Quick save</keydesc>
@@ -593,7 +595,7 @@
 			<header>Audio with MacOS</header>
 			<body>	
 				<para>
-					<Exult/> Mac has no Audio/Midi support yet.
+					<Exult/> Mac will have midi, sfx and speech support in the next version.
 				</para>
 			</body>
 		</sub>		

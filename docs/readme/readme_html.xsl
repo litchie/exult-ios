@@ -192,7 +192,7 @@
 
 <xsl:template match="ref1">		
 	<a href="#{generate-id(key('sub_ref',@target))}">		
-		<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)"/>
+		<xsl:value-of select="count(key('sub_ref',@target)/parent::section/preceding-sibling::section)+1"/>
 		<xsl:text>.</xsl:text>
 		<xsl:value-of select="count(key('sub_ref',@target)/preceding-sibling::sub)+1"/>
 		<xsl:text>. </xsl:text>
@@ -203,7 +203,7 @@
 
 <xsl:template match="ref2">		
 	<a href="#{generate-id(key('section_ref',@target))}">		
-		<xsl:value-of select="count(key('section_ref',@target)/preceding-sibling::section)"/>
+		<xsl:value-of select="count(key('section_ref',@target)/preceding-sibling::section)+1"/>
 		<xsl:text>. </xsl:text>
   		<xsl:apply-templates select="key('section_ref',@target)/@title"/>  		
 	</a>
