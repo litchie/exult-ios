@@ -89,17 +89,34 @@ int main(int argc, char **argv)
 			case 'i':
 				{
 					char temp[1024];
+					char path_prefix[1024];
+					
 					ifstream respfile;
+					char *slash = strrchr(fname, '/');
+					if(slash) {
+						int len = slash-fname+1;
+						strncpy(path_prefix, fname, len);
+						path_prefix[len] = 0;
+					} else
+						path_prefix[0] = 0;
 
 					set_mode(mode,RESPONSE);
 					U7open(respfile, fname);
+					
 					// Read the output file name
 					fname = new char[1024];
-					respfile.getline(fname, 1024);
+					respfile.getline(temp, 1024);
+					strcpy(fname, path_prefix);
+					strcat(fname, temp);
+					
 					while(!respfile.eof()) {
 						respfile.getline(temp, 1024);
-						if(strlen(temp)>0)
-							file_names.push_back(temp);
+						if(strlen(temp)>0) {
+							char temp2[1024];
+							strcpy(temp2, path_prefix);
+							strcat(temp2, temp);
+							file_names.push_back(temp2);
+						}
 					}
 					respfile.close();
 				}

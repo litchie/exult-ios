@@ -1,4 +1,8 @@
 2001-02-06  Tristan Tarrant  <nadir@users.sourceforge.net>
+	* tools/expack.cc: allow -i to create flex archives from files not
+	  in the current directory
+
+2001-02-06  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* tools/expack.cc: fix -c behaviour
 	* Makefile.cygwin, Makefile.win32: use new -i switch for expack
 

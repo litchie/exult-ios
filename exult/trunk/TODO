@@ -21,11 +21,6 @@ can have a task which is executed at regular intervals which invalidates
 shapes which haven't been accessed in a while. Other more intelligent
 mechanisms are welcome, though.
 
-User-Defined Keystrokes
-=======================
-
-It would be good if users could assign custom keystrokes to certain actions.
-
 Development Environment
 =======================
 
