@@ -490,7 +490,7 @@ void Actor::use_food
 			return;
 		}
 	int food = get_property(static_cast<int>(food_level));
-	food -= 1;			// 1 level/hour should do.
+	food -= rand()%4;		// Average 1.5 level/hour.
 	set_property(static_cast<int>(food_level), food);
 	if (food <= 0)			// Really low?
 		{
