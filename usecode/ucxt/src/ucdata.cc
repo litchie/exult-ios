@@ -9,7 +9,6 @@
 #include <cstdlib>
 #include <vector>
 #include "ucdata.h"
-#include "printucc.h"
 #include "opcodes.h"
 #include "files/utils.h"
 
@@ -18,7 +17,7 @@ UCData::UCData() : _noconf(false), _rawops(false),
                    _verbose(false), _ucdebug(false),
                    _basic(false),
                    _mode(MODE_NONE), _game(GAME_BG),
-                   _output_list(false), _output_asm(false), _output_ucs(false),
+                   _output_list(false), _output_asm(false),
                    _output_ucz(false), _mode_all(false), _mode_dis(false),
                    _search_opcode(-1),
                    _search_intrinsic(-1),
@@ -55,8 +54,8 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 
 		else if(strcmp(argv[i], "-fl" )==0)  _output_list = true;
 		else if(strcmp(argv[i], "-fa" )==0)  _output_asm  = true;
-		else if(strcmp(argv[i], "-fs" )==0)  _output_ucs  = true;
 		else if(strcmp(argv[i], "-fz" )==0)  _output_ucz  = true;
+		else if(strcmp(argv[i], "-fs" )==0)  _output_ucz  = true;
 
 		else if(argv[i][0] != '-')
 		{
@@ -116,13 +115,6 @@ void UCData::disassamble()
 			_foundfunc=true;
 			bool _func_printed=false; // to test if we've actually printed a function ouput
 
-			if(output_ucs())
-			{
-				output_ucfunc(_funcid, _funcs[i]->_data, _funcs[i]->_num_args, _funcs[i]->_num_locals, _funcs[i]->_externs,
-				              _funcs[i]->_opcodes);
-				_func_printed=true;
-			}
-
 			if(output_ucz())
 			{
 				_funcs[i]->parse_ucs(_funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), _basic);
@@ -167,21 +159,6 @@ void UCData::disassamble()
 	if(output_list())
 	  cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
 
-}
-
-void UCData::disassamble_all()
-{
-	cout << "Loading Funcs..." << endl;
-	load_funcs();
-	cout << "Funcs Loaded..." << endl;
-
-	for(unsigned int i=0; i<_funcs.size(); i++)
-	{
-		cout << "Outputting " << i << endl;
-		output_ucfunc(_funcs[i]->_funcid, _funcs[i]->_data, _funcs[i]->_num_args, _funcs[i]->_num_locals, _funcs[i]->_externs,
-		              _funcs[i]->_opcodes);
-		cout << "Outputted " << i << endl;
-	}
 }
 
 void UCData::dump_flags()

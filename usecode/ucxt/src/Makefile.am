@@ -3,10 +3,7 @@ INCLUDES = -I$(srcdir)/../include -I$(srcdir)/../../../conf -I$(srcdir)/../.. \
 	-DEXULT_DATADIR=\"$(EXULT_DATADIR)\" -Wall -W
 
 ucxt_SOURCES = \
-	opcodec_.cc \
 	opcodes.cc \
-	printucc.cc \
-	stacki.cc \
 	ucdata.cc \
 	ucdump.cc \
 	ucfunc.cc

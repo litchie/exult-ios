@@ -30,7 +30,6 @@ class UCData
 		void list_funcs();
 		
 		void disassamble();
-		void disassamble_all();
 		void dump_flags();
 		
  		void mode(const unsigned int mode) { _mode=mode; };
@@ -50,7 +49,6 @@ class UCData
 		
 		bool output_list()  const { return _output_list; };
 		bool output_asm()   const { return _output_asm;  };
-		bool output_ucs()   const { return _output_ucs;  };
 		bool output_ucz()   const { return _output_ucz;  };
 		
 		bool mode_all()     const { return _mode_all;    };
@@ -82,7 +80,6 @@ class UCData
 		
 		bool _output_list;
 		bool _output_asm;
-		bool _output_ucs;
 		bool _output_ucz;
 		
 		bool _mode_all;
