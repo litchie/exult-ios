@@ -84,7 +84,8 @@ class Game_window
 	Dragging_info *dragging;	// Dragging info:
 	Effects_manager *effects;	// Manages special effects.
 	Game_clock *clock;		// Keeps track of time.
-	Game_map *map;			// Holds all terrain.
+	Exult_vector<Game_map*> maps;	// Hold all terrain.
+	Game_map *map;			// The current map.
 	Game_render *render;		// Helps with rendering.
 	Gump_manager *gump_man;		// Open containers on screen.
 	Party_manager *party_man;	// Keeps party list.

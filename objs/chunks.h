@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class Map_chunk;
 class Egg_object;
 class Game_object;
+class Game_map;
 class Npc_actor;
 class Image_buffer8;
 class Chunk_terrain;
@@ -131,6 +132,7 @@ public:
  */
 class Map_chunk : public Game_singletons
 	{
+	Game_map *map;			// Map we're a part of.
 	Chunk_terrain *terrain;		// Flat landscape tiles.
 	Object_list objects;		// ->first in list of all objs.  'Flat'
 					//   obs. (lift=0,ht=0) stored 1st.
@@ -152,8 +154,10 @@ class Map_chunk : public Game_singletons
 		int cy, Game_object *newobj, class Ordering_info& newinfo);
 public:
 	friend class Npc_actor;
-	Map_chunk(int chunkx, int chunky);
+	Map_chunk(Game_map *m, int chunkx, int chunky);
 	~Map_chunk();			// Delete everything in chunk.
+	Game_map *get_map() const
+		{ return map; }
 	Chunk_terrain *get_terrain() const
 		{ return terrain; }
 	void set_terrain(Chunk_terrain *ter);

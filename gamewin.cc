@@ -303,7 +303,7 @@ Game_window::Game_window
 	(
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
-	    win(0), map(new Game_map()), pal(0),
+	    win(0), map(new Game_map(0)), pal(0),
 	    usecode(0), combat(false), armageddon(false), 
 	    walk_in_formation(false),
             tqueue(new Time_queue()), time_stopped(0),
@@ -331,6 +331,7 @@ Game_window::Game_window
 	game_window = this;		// Set static ->.
 	clock = new Game_clock(tqueue);
 	shape_man = new Shape_manager();// Create the single instance.
+	maps.push_back(map);		// Map #0.
 					// Create window.
 	string	fullscreenstr;		// Check config. for fullscreen mode.
 	config->value("config/video/fullscreen",fullscreenstr,"no");
@@ -423,7 +424,9 @@ Game_window::~Game_window
 	delete win;
 	delete dragging;
 	delete pal;
-	delete map;
+	for (Exult_vector<Game_map*>::iterator it = maps.begin();
+							it != maps.end(); ++it)
+		delete *it;
 	delete usecode;
 	delete removed;
 	delete clock;

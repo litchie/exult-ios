@@ -47,6 +47,7 @@ class DataSource;
  */
 class Game_map
 	{
+	int num;			// Map #.  Index in gwin->maps.
 					// Flat chunk areas:
 	Exult_vector<Chunk_terrain *> chunk_terrains;
 	bool read_all_terrain;		// True if we've read them all.
@@ -68,11 +69,13 @@ class Game_map
 
 	void cache_out_schunk(int schunk);
 public:
-	Game_map();
+	Game_map(int n);
 	~Game_map();
 	void init();			// Set up map.
 	void clear();			// Clear out old map.
 	void read_map_data();		// Read in 'ifix', 'ireg', etc.
+	int get_num() const
+		{ return num; }
 	inline short get_terrain_num(int cx, int cy) const
 		{ return terrain_map[cx][cy]; }
 	inline Map_patch_collection *get_map_patches()
