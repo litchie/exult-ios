@@ -266,8 +266,10 @@ static void Handle_event
 			break;
 		if (event.button.button == 1)
 			{
+#if DEBUG
 cout << "Mouse down at (" << event.button.x << ", " <<
 	event.button.y << ")\n";
+#endif
 			dragging = gwin->start_dragging(event.button.x,
 							event.button.y);
 			dragged = 0;
@@ -422,7 +424,9 @@ static void Handle_keystroke
 		static int mcur = 0;
 		mouse->set_shape(++mcur);
 		gwin->set_painted();
+#if DEBUG
 		cout << "Mouse cursor:  " << mcur << '\n';
+#endif
 #endif
 		break;
 		}
@@ -433,7 +437,9 @@ static void Handle_keystroke
 			gwin->skip_lift--;
 		if (gwin->skip_lift == 0)
 			gwin->skip_lift = 16;
+#if DEBUG
 		cout << "Skip_lift = " << gwin->skip_lift << '\n';
+#endif
 					// FALL THROUGH.
 	case SDLK_p:			// Rerender image.
 		gwin->paint();
@@ -462,7 +468,9 @@ static void Handle_keystroke
 		shape_frame = 0;
 		if (--shape_cnt < 0)
 			shape_cnt = gwin->get_num_shapes() - 1;
+#if DEBUG
 		cout << "Painting shape " << shape_cnt << '\n';
+#endif
 		gwin->paint();
 		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
 		break;
