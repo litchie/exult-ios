@@ -45,7 +45,18 @@ string	&Configuration::value(const char *key,bool &exists)
 {
 	string	s=key;
 	exists=false;
-	return xmltree.reference(s,exists);
+	XMLnode *sub=xmltree.subtree(s);
+	if(!sub)
+		{
+		static string dummy("");
+		exists=false;
+		return dummy;
+		}
+	else
+		{
+		exists=true;
+		return sub->entity.content;
+		}
 }
 
 void	Configuration::value(const char *key,string &s,const char *defaultvalue)
@@ -230,9 +241,7 @@ void	Configuration::write_back(void)
 vector<string>	Configuration::listkeys(string &key,bool longformat)
 {
 	vector<string>	vs;
-	XMLnode *sub;
-
-	sub=xmltree.subtree(key);
+	XMLnode *sub=xmltree.subtree(key);
 	if(!sub)
 		return vs;
 
