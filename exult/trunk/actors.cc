@@ -1200,7 +1200,8 @@ void Actor::set_schedule_type
 			schedule = new Sit_schedule(this);
 			break;
 		case Schedule::bake:
-			break;		//+++++++
+			schedule = new Bake_schedule(this);
+			break;
 		case Schedule::sew:
 			schedule = new Sew_schedule(this);
 			break;
