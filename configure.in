@@ -85,6 +85,13 @@ else
 	SYSLIBS="-lwinmm"
 fi
 
+dnl this is for win32 for now at least
+AC_ARG_ENABLE(usecode-debugger, [  --enable-usecode-debugger          pre-alpha usecode debugger [default no]],,enable_usecode_debugger=no)
+if test x$enable_usecode_debugger = xyes; then
+	echo "Enabling usecode debugger"
+	CXXFLAGS="$CXXFLAGS -DUSECODE_DEBUGGER=1"
+fi
+
 dnl Just for record-keeping
 AC_DEFINE(AUTOCONFIGURED)
 

@@ -57,6 +57,9 @@ Game_window *gwin = 0;
 unsigned char quitting_time = 0;	// Time to quit.
 Mouse *mouse = 0;
 bool	usecode_trace=false;	// Do we trace Usecode-intrinsics?
+#if USECODE_DEBUGGER
+bool	usecode_debugging=false;	// Do we enable the usecode debugger?
+#endif
 
 /*
  *	Local functions:
@@ -162,6 +165,13 @@ int main
 	config->value("config/debug/trace/intrinsics",tracing,"no");
 	if(tracing=="yes")
 		usecode_trace=true;	// Enable tracing of intrinsics
+
+#if USECODE_DEBUGGER
+	string	u_debugging;
+	config->value("config/debug/debugger/enable",u_debugging,"no");
+	if(u_debugging=="yes")
+		usecode_debugging=true;	// Enable usecode debugger
+#endif
 
 	Init();				// Create main window.
 	
