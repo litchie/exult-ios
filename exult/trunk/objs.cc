@@ -230,7 +230,8 @@ int Game_object::find_nearby
 	int shapenum,			// Shape to look for.  -1=any,
 					//   -359=any NPC.
 	int delta,			// # tiles to look in each direction.
-	int mask			// +++Same here.
+	int mask,			// Not used yet++++
+	int qual			// Quality, or -359 for any.
 	)
 	{
 	if (delta < 0)			// +++++Until we check all old callers.
@@ -265,6 +266,8 @@ int Game_object::find_nearby
 				else if (shapenum == -359 &&
 							!obj->get_npc_num() &&
 						 obj != gwin->get_main_actor())
+					continue;
+				if (qual != -359 && obj->get_quality() != qual)
 					continue;
 				int tx, ty, tz;
 				obj->get_abs_tile(tx, ty, tz);
