@@ -15,13 +15,11 @@
 UCData::UCData() : _noconf(false), _rawops(false), _autocomment(false),
                    _verbose(false), _mode(MODE_NONE), _game(GAME_BG),
                    _output_list(false), _output_asm(false), _output_ucs(false),
-                   _mode_all(false), _mode_dis(false),
+                   _output_ucz(false), _mode_all(false), _mode_dis(false),
                    _search_opcode(-1),
                    _search_intrinsic(-1),
                    _search_func(-1)
 {
-	_opcode_buf.resize(MAX_OPCODE_BUF, 0);
-	_intrinsic_buf.resize(MAX_INTRINSIC_BUF, 0);
 }
 
 UCData::~UCData()
@@ -29,41 +27,6 @@ UCData::~UCData()
 	_file.close();
 	for(unsigned int i=0; i<_funcs.size(); i++)
 		delete _funcs[i];
-}
-
-void UCData::dump_unknown_opcodes()
-{
-//  if( ( _mode == MODE_DISASSEMBLY ) || ( _mode == MODE_OPCODE_SCAN ) )
-	int found = 0;
-	for( unsigned int i=0; i<MAX_OPCODE_BUF; i++ )
-		if( _opcode_buf[i] )
-		{
-			if( !found )
-			{
-				cout << "Undefined opcodes found" << endl;
-				found = 1;
-			}
-			cout << "0x" << setbase(16) << setfill('0') << setw(2) << i
-			     << " (" << setbase(10) << (unsigned int)_opcode_buf[i]
-			     << " time" << ((_intrinsic_buf[i]>1) ? "s" : "") << ")" << endl;
-		}
-}
-
-void UCData::dump_unknown_intrinsics()
-{
-	int found = 0;
-	for( unsigned int i=0; i<MAX_INTRINSIC_BUF; i++ )
-		if( _intrinsic_buf[i] )
-		{
-			if( !found )
-			{
-				cout << "Undefined intrinsic functions found" << endl;
-				found = 1;
-			}
-			cout << "0x" << setbase(16) << setfill('0') << setw(2) << i
-			     << " (" << setbase(10) << (unsigned int)_intrinsic_buf[i]
-			     << " time" << ((_intrinsic_buf[i]>1) ? "s" : "") << ")" << endl;
-		}
 }
 
 void UCData::parse_params(const unsigned int argc, char **argv)
@@ -87,6 +50,7 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 		else if(strcmp(argv[i], "-fl" )==0)  _output_list = true;
 		else if(strcmp(argv[i], "-fa" )==0)  _output_asm  = true;
 		else if(strcmp(argv[i], "-fs" )==0)  _output_ucs  = true;
+		else if(strcmp(argv[i], "-fz" )==0)  _output_ucz  = true;
 
 		else if(argv[i][0] != '-')
 		{
@@ -155,7 +119,7 @@ void UCData::disassamble()
 
 	cout << "Looking for function number " << setw(8) << _search_func << endl << endl;
 
-  if(output_list())
+	if(output_list())
 		cout << "Function     offset    size  data  code" << endl;
 
 	bool _foundfunc=false; //did we find and print the function?
@@ -165,23 +129,40 @@ void UCData::disassamble()
 		if(mode_all() || (mode_dis() && (_funcs[i]->_funcid==_search_func)))
 		{
 			_foundfunc=true;
+			bool _func_printed=false; // to test if we've actually printed a function ouput
+
 			if(output_ucs())
+			{
 				output_ucfunc(_funcid, _funcs[i]->_data, _funcs[i]->_num_args, _funcs[i]->_num_locals, _funcs[i]->_externs,
 				              _funcs[i]->_opcodes);
-			else if(output_list())
-			{
-		    cout << "#" << setbase(10) << setw(3) << i << setbase(16) << ": "
-		         << setw(4) << _funcs[i]->_funcid   << "H  "
-		         << setw(8) << _funcs[i]->_offset   << "  "
-		         << setw(4) << _funcs[i]->_funcsize << "  "
-		         << setw(4) << _funcs[i]->_datasize << "  "
-		         << setw(4) << _funcs[i]->codesize() << "  "
-		         << endl;
+				_func_printed=true;
 			}
-			else
+
+			if(output_ucz())
+			{
+				_funcs[i]->parse_ucs();
+				_funcs[i]->output_ucs(cout, false);
+				_func_printed=true;
+			}
+
+			if(output_list())
+			{
+			    cout << "#" << setbase(10) << setw(3) << i << setbase(16) << ": "
+			         << setw(4) << _funcs[i]->_funcid   << "H  "
+			         << setw(8) << _funcs[i]->_offset   << "  "
+			         << setw(4) << _funcs[i]->_funcsize << "  "
+			         << setw(4) << _funcs[i]->_datasize << "  "
+			         << setw(4) << _funcs[i]->codesize() << "  "
+			         << endl;
+				_func_printed=true;
+			}
+
+			// if we haven't printed one by now, we'll print an asm output.
+			if(output_asm() || (_func_printed==false))
 				print_asm(*_funcs[i], cout, *this);
 		}
 	}
+
 	if(!_foundfunc)
 		printf("Function not found.\n");
 
@@ -196,24 +177,21 @@ void UCData::disassamble()
 	if(output_list())
 	  cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
 
-	dump_unknown_opcodes();
-	dump_unknown_intrinsics();
 }
 
 void UCData::disassamble_all()
 {
-  cout << "Loading Funcs..." << endl;
-  load_funcs();
-  cout << "Funcs Loaded..." << endl;
+	cout << "Loading Funcs..." << endl;
+	load_funcs();
+	cout << "Funcs Loaded..." << endl;
 
-  for(unsigned int i=0; i<_funcs.size(); i++)
-  {
-    cout << "Outputting " << i << endl;
-    output_ucfunc(_funcs[i]->_funcid, _funcs[i]->_data, _funcs[i]->_num_args, _funcs[i]->_num_locals, _funcs[i]->_externs,
-                  _funcs[i]->_opcodes);
-    cout << "Outputted " << i << endl;
-  }
-
+	for(unsigned int i=0; i<_funcs.size(); i++)
+	{
+		cout << "Outputting " << i << endl;
+		output_ucfunc(_funcs[i]->_funcid, _funcs[i]->_data, _funcs[i]->_num_args, _funcs[i]->_num_locals, _funcs[i]->_externs,
+		              _funcs[i]->_opcodes);
+		cout << "Outputted " << i << endl;
+	}
 }
 
 void UCData::dump_flags()

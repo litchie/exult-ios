@@ -1,3 +1,10 @@
+
+2001-11-11  Patrick Burke <takhisisii@yahoo.com.au>
+	* usecode/ucxt/* : general debugging, code cleanup and commenting.
+	  also changes relating to updates of usecode/ucxt/Docs/opcodes.txt.
+	* usecode/ucxt/Docs/opcodes.txt: Added information relating to the
+	  number of elements popped/pushed from/to the stack for each opcode.
+
 2001-11-10  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* */Makefile.am, configure.in, acconfig.h: updated for the minizip lib
 	* files/zip/(un)?zip.c: include config.h

@@ -7,18 +7,179 @@
 #include <set>
 #include <strstream>
 
+#include "opcodes.h"
+
+#if 0
+	#define DEBUG_PARSE
+	#define DEBUG_READ
+	#define DEBUG_READ_PAIR(X, Y) cout << '\t' << X << '\t' << Y << endl;
+#else
+	#undef DEBUG_PARSE
+	#undef DEBUG_READ
+	#define DEBUG_READ_PAIR(X, Y)
+#endif
+
+//#define DEBUG_PARSE
+
 const string VARNAME = "uvar";
 const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
 
 extern UCData uc;
 
-//#define TEST_V3 false
-#define TEST_V3 true
+/* Assumption the 'var's are in their 'zeroed' state on initialization,
+   unless something else is assigned to them. */
 
-/*UCFunc::~UCFunc()
+void UCFunc::output_ucs(ostream &o, bool gnubraces)
 {
-}*/
+	// output the "function name"
+	// TODO: Probably want to grab this from a file in the future...
+	o << "Func" << setw(4) << _funcid
+	// output the "function number"
+	  << " 0x" << _funcid
+	// output ObCurly braces
+	  << " ()" << endl;
+	
+	// start of func
+	output_ucs_node(o, &node, 0);
+}
+
+void UCFunc::output_ucs_node(ostream &o, UCNode* ucn, unsigned int indent)
+{
+	//if(gnubraces) o << '\t';
+	if(!ucn->nodelist.empty()) o << '{' << endl;
+	
+	// end of func
+	//if(gnubraces) o << '\t';
+	if(!ucn->nodelist.empty()) o << '}' << endl;
+}
+
+void UCFunc::parse_ucs()
+{
+	for(vector<UCc>::iterator i=_opcodes.begin(); i!=_opcodes.end(); i++)
+		node.nodelist.push_back(new UCNode(i));
+	
+	parse_ucs_pass1(node.nodelist);
+}
+
+/* Pass 1 involves turning the 'list' of opcodes into a tree-like structure
+   based around the the splitting of it into goto opcode -- goto opcode target
+   'pairs'. These are considered the boundaries of 'if...else' and 'for'
+   statements. */
+void UCFunc::parse_ucs_pass1(vector<UCNode *> &nodes)
+{
+	
+	#ifdef DEBUG_PARSE
+	UCNode *begin(*nodes.begin());
+	UCNode *end(nodes[nodes.size()-1]);
+	
+	/* This section will produce debug output that looks similar to:
+		PASS1Split(239): 0000-0662
+			239 is the number of entries in the entire list of nodes
+			0000 is the 'starting' offset of the first opcode in the nodelist
+			0662 is the 'starting' offset of the last opcode in the nodelist
+	*/
+	cout << "PASS1Split(" << nodes.size() << "): "
+	     << setw(4) << begin->ucc->_offset << '-'
+	     << setw(4) << end->ucc->_offset << endl;
+	#endif
+	
+	vector<UCNode *>::iterator first;
+	vector<UCNode *>::iterator last;
+	for(vector<UCNode *>::iterator i(nodes.begin()); i!=nodes.end(); ++i)
+	{
+		first = nodes.end();
+		last  = nodes.end();
+		
+		/* Get the 'first' node which has an opcode attached to it,
+		   which has a jump-to address within it (it's a 'jump' statment) */
+		assert((*i)->ucc!=0); // no ucc's should be null
+		if((*i)->ucc->_id==0x05) // TODO: primitive checking for the moment, something more generic needs to be done later
+		{
+			first = i;
+			assert((*first)->ucc->_params_parsed.size()==1);
+		}
+		else if((*i)->ucc->_id==0x06) // TODO: primitive checking for the moment, something more generic needs to be done later
+		{
+			first = i;
+			assert((*first)->ucc->_params_parsed.size()==1);
+		}
+		
+		/* If we've found a node that fulfuls the above conditions,
+		   then we need to find it's jump-to target opcode. The 'last'
+		   node */
+		if(first!=nodes.end())
+		{
+			#ifdef DEBUG_PARSE
+			cout << "first: " << setw(4) << (*first)->ucc->_offset << "\t"
+			     << setw(2) << (*first)->ucc->_id << "\t"
+			     << setw(4) << (*first)->ucc->_params_parsed[0] << endl;
+			#endif
+			
+			for(vector<UCNode *>::iterator j(nodes.begin()); j!=nodes.end(); ++j)
+			{
+				assert((*j)->ucc!=0); // no ucc's should be null.
+				if((*j)->ucc->_offset == (*first)->ucc->_params_parsed[0])
+				{
+					last = j;
+					break;
+				}
+			}
+		}
+		
+		/* If we've got a first and a last node, then the 'fun' starts. <grin>
+		   We need to copy first...last to a new node, remove (first+1)...last
+		   from the original nodelist, and replace first with the new node,
+		   which contains the new nodelist. Make sense? */
+		if((last!=nodes.end()) && (first!=nodes.end()))
+		{
+			#ifdef DEBUG_PARSE
+			cout << " last: " << setw(4) << (*last)->ucc->_offset << "\t"
+			     << setw(2) << (*last)->ucc->_id << "\t"
+			     << setw(1) << (*last)->ucc->_params_parsed.size() << endl;
+			#endif
+			
+			// ok, we shouldn't have a node 'jumping-to' itself
+			assert(first!=last);
+			
+			/* Lets do the iterator dance. <grin> The range we have is begin...end
+			   inclusive, however all the iterator related functions require begin
+			   inclusive and end exclusive. So we increment the end of the potential
+			   new vector before we create it.
+			
+			   Secondly we need to erase begin+1...end inclusive from the original
+			   vector, and add this range to the node.nodelist pointed to by begin. */
+			vector<UCNode *>::iterator orig;
+			
+			if(first<last)
+			{
+				orig=first;
+				(*orig)->nodelist.insert(0, ++first, ++last);
+				nodes.erase(first, last);
+			}
+			else
+			{
+				orig=last;
+				(*orig)->nodelist.insert(0, ++last, ++first);
+				nodes.erase(last, first);
+			}
+			
+			#ifdef DEBUG_PARSE
+			for(vector<UCNode *>::iterator j((*orig)->nodelist.begin()); j!=(*orig)->nodelist.end(); ++j)
+			{
+				cout << "\t" << setw(4) << (*j)->ucc->_offset << "\t"
+				     << setw(2) << (*j)->ucc->_id << "\t"
+				     << setw(1) << (*j)->ucc->_params_parsed.size() << endl;
+				
+			}
+			
+			cout << "Size: " << setw(2) << (*orig)->nodelist.size() << endl;
+			#endif
+			
+			parse_ucs_pass1((*orig)->nodelist);
+		}	
+	}
+}
 
 /* Prints module's data segment */
 /*void UCFunc::process_data_seg()
@@ -45,8 +206,6 @@ extern UCData uc;
 	}
 	fseekbeg(pos);
 }*/
-
-#include "opcodes.h"
 
 /*
  Prints single opcode
@@ -625,14 +784,6 @@ inline unsigned char read_ubyte(ifstream &f)
   return (unsigned char)f.get();
 }
 
-#if 0
-	#define DEBUG_READ
-	#define DEBUG_READ_PAIR(X, Y) cout << '\t' << X << '\t' << Y << endl;
-#else
-	#undef DEBUG_READ
-	#define DEBUG_READ_PAIR(X, Y)
-#endif
-
 void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd);
 
 void readbin_UCFunc(ifstream &f, UCFunc &ucf)
@@ -708,9 +859,7 @@ void readbin_UCFunc(ifstream &f, UCFunc &ucf)
 
 		unsigned int code_size = ucf._funcsize - ucf._datasize - ((3+ucf._num_externs) * SIZEOF_USHORT);
 		
-		#ifdef DEBUG_READ
-		cout << "Code Size: " << code_size << endl;
-		#endif
+		DEBUG_READ_PAIR("Code Size: ", code_size);
 
 		while(code_offset<(code_size-2)) //TODO: Why the -2?!? it doesn't work otherwise
 		{
@@ -719,7 +868,7 @@ void readbin_UCFunc(ifstream &f, UCFunc &ucf)
 			ucop._offset = code_offset;
 
 			ucop._id = read_ubyte(f);
-      code_offset++;
+			code_offset++;
 
 			const UCOpcodeData &otd = opcode_table_data[ucop._id];
 
@@ -808,48 +957,48 @@ void print_asm(UCFunc &ucf, ostream &o, const UCData &uc)
 {
 	if(uc.verbose()) cout << "Printing function..." << endl;
 
-  o << "Function at file offset " << setw(8) << ucf._offset << "H" << endl;
-  o << "\t.funcnumber " << setw(4) << ucf._funcid << "H" << endl;
-  o << "\t.msize      " << setw(4) << ucf._funcsize << "H" << endl;
-  o << "\t.dsize      " << setw(4) << ucf._datasize << "H" << endl;
+	o << "Function at file offset " << setw(8) << ucf._offset << "H" << endl;
+	o << "\t.funcnumber " << setw(4) << ucf._funcid << "H" << endl;
+	o << "\t.msize      " << setw(4) << ucf._funcsize << "H" << endl;
+	o << "\t.dsize      " << setw(4) << ucf._datasize << "H" << endl;
 
-  // debugging remove comments!
-  if(ucf._data.size())
+	// debugging remove comments!
+	if(ucf._data.size())
     print_asm_data(ucf, o);
 
-  o << "Code segment at file offset " << setw(8) << ucf._codeoffset << "H" << endl;
-  o << "\t.argc       " << setw(4) << ucf._num_args << "H" << endl;
-  o << "\t.localc     " << setw(4) << ucf._num_locals << "H" << endl;
-  o << "\t.externsize " << setw(4) << ucf._externs.size() << "H" << endl;
+	o << "Code segment at file offset " << setw(8) << ucf._codeoffset << "H" << endl;
+	o << "\t.argc       " << setw(4) << ucf._num_args << "H" << endl;
+	o << "\t.localc     " << setw(4) << ucf._num_locals << "H" << endl;
+	o << "\t.externsize " << setw(4) << ucf._externs.size() << "H" << endl;
 
-  for(unsigned int i=0; i<ucf._externs.size(); i++)
-    o << Opcode::SPACER << "  .extern   " << setw(4) << ucf._externs[i] << "H" << endl;
+	for(unsigned int i=0; i<ucf._externs.size(); i++)
+		o << Opcode::SPACER << "  .extern   " << setw(4) << ucf._externs[i] << "H" << endl;
 
-    //o << "-----" << endl;
+	//o << "-----" << endl;
     //_opcodes[i]->print_asm(cout);
-		print_asm_opcodes(o, ucf, opcode_table_data);
+	print_asm_opcodes(o, ucf, opcode_table_data);
 }
 
 void print_asm_data(UCFunc &ucf, ostream &o)
 {
-	static const unsigned int nochars=70;
-  // limit of about 70 chars to a line, wrap to the next line if longer then this...
-  for(map<unsigned int, string, less<unsigned int> >::iterator i=ucf._data.begin(); i!=ucf._data.end(); i++)
-  {
-    for(unsigned int j=0; j<i->second.size(); j++)
-    {
-      if(j==0)
-        o << setw(4) << i->first;
-      if((j!=0) && !(j%nochars))
-        o << "'" << endl;
-      if(!(j%nochars))
-        o << "\tdb\t'";
+	static const unsigned int nochars=60;
+	// limit of about 60 chars to a line, wrap to the next line if longer then this...
+	for(map<unsigned int, string, less<unsigned int> >::iterator i=ucf._data.begin(); i!=ucf._data.end(); i++)
+	{
+		for(unsigned int j=0; j<i->second.size(); j++)
+		{
+			if(j==0)
+				o << setw(4) << i->first;
+			if((j!=0) && !(j%nochars))
+				o << "'" << endl;
+			if(!(j%nochars))
+				o << "\tdb\t'";
 
-      o << i->second[j];
-    }
-    o << "'" << endl;
-    o << "\tdb\t00" << endl;
-  }
+			o << i->second[j];
+		}
+		o << "'" << endl;
+		o << "\tdb\t00" << endl;
+	}
 }
 
 string demunge_ocstring(const string &asmstr, const vector<string> &param_types, const vector<unsigned int> &params, const UCc &op);
@@ -857,8 +1006,8 @@ void output_raw_opcodes(ostream &o, const UCc &op);
 
 void print_asm_opcodes(ostream &o, UCFunc &ucf, const vector<UCOpcodeData> &optab)
 {
-  for(vector<UCc>::iterator op=ucf._opcodes.begin(); op!=ucf._opcodes.end(); op++)
-  {
+	for(vector<UCc>::iterator op=ucf._opcodes.begin(); op!=ucf._opcodes.end(); op++)
+	{
 		// offset
 		o << setw(4) << op->_offset << ':';
 
@@ -871,7 +1020,7 @@ void print_asm_opcodes(ostream &o, UCFunc &ucf, const vector<UCOpcodeData> &opta
 			o << demunge_ocstring(optab[op->_id].asm_comment, optab[op->_id].param_types, op->_params_parsed, *op);
 
 		o << endl;
-  }
+	}
 }
 
 void output_raw_opcodes(ostream &o, const UCc &op)
@@ -910,7 +1059,7 @@ string demunge_ocstring(const string &asmstr, const vector<string> &param_types,
 	if(len==0) return string(); // for the degenerate case
 
 	bool finished=false; // terminating details are at end-of-while
-  unsigned int i=0; // istr index
+	unsigned int i=0; // istr index
 	unsigned int width=0; // width value for setw()
 
 	while(!finished&&i<len)
@@ -967,20 +1116,9 @@ string demunge_ocstring(const string &asmstr, const vector<string> &param_types,
 		}
 
 		i++;
-    if(i==asmstr.size()) finished=true;
+		if(i==asmstr.size()) finished=true;
 	}
 	str << ends;
-  return str.str();
+	return str.str();
 }
-
-
-
-
-
-
-
-
-
-
-
 
