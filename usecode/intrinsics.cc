@@ -383,7 +383,18 @@ USECODE_INTRINSIC(set_schedule_type)
 	// 'bNum' field in schedules.
 	Game_object *obj = get_item(parms[0]);
 	if (obj)
-		obj->set_schedule_type(parms[1].get_int_value());
+		{
+		int newsched = parms[1].get_int_value();
+		obj->set_schedule_type(newsched);
+					// Taking Avatar out of combat?
+		if (obj == gwin->get_main_actor() && gwin->in_combat() &&
+		    newsched != Schedule::combat)
+					// End combat mode (for L.Field).
+			{
+			Audio::get_ptr()->stop_music();
+			gwin->toggle_combat();
+			}
+		}
 	return(no_ret);
 }
 

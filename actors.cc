@@ -1856,22 +1856,16 @@ void Actor::reduce_health
 					// SI 'tournament'?
 		    get_flag(Obj_flags::si_tournament))
 			{
-#if 0	/* Causes problems if companion is fighting on List Field */
-					// Only if one or other is in party:
-			Actor *c = gwin->get_camera_actor();
-			if (get_flag(Obj_flags::in_party) || this == c ||
-				(attacker && 
-				 (attacker->get_flag(Obj_flags::in_party) ||
-							attacker == c)))
-#endif
-				gwin->get_usecode()->call_usecode(
-					get_usecode(), this, 
+			gwin->get_usecode()->call_usecode(get_usecode(), this, 
 							Usecode_machine::died);
-
 				// Still 'tournament'?  Set hp = 1.
 			if (get_flag(Obj_flags::si_tournament) &&
 			    get_property((int) health) < 1)
+				{
 				set_property((int) health, 1);
+				if (attacker)	// Have him attack another.
+					attacker->set_target(0);
+				}
 			}
 		else
 			die();
