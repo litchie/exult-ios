@@ -132,7 +132,7 @@ Actor::Actor
 			if (Game::get_avskin() >= 0 && Game::get_avskin() <= 2)
 				set_skin_color (Game::get_avskin());
 			else
-				set_skin_color ((strength_val << 2) & 0x3);
+				set_skin_color ((strength_val >> 5) & 0x3);
 		}
 		else 
 			set_skin_color (-1);

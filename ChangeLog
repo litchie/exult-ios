@@ -1,3 +1,8 @@
+2001-04-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Wrote 'write_map()' methods (although not complete).
+	* Fixed several SI bugs.
+
 2001-04-14  Willem Jan Palenstijn <palenstijn@wandoo.nl>
 	* gumps/gump_utils.h: include unistd.h by default, not just on *BSD
 
