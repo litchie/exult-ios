@@ -834,6 +834,11 @@ static void Handle_keystroke
 			chr = (int) sym;
 		switch (chr)
 			{
+			case '1':
+				if(ctrl && !alt) {		// Ctrl-1 : Sound Testser
+					cheat.sound_tester();
+				}
+				break;
 			case 'b':
 				if(ctrl && !alt) {		// Ctrl-b : Shape browser
 					cheat.shape_browser();
@@ -1416,6 +1421,7 @@ void show_cheat_help (void)
 	scroll->add_text("Arrow keys - scroll map\n");
 	scroll->add_text("Home - recenter map\n");
 	scroll->add_text("alt-+/- - Switch resolution\n");
+	scroll->add_text("ctrl-1 - Sound Tester\n");
 	scroll->add_text("ctrl-b - Shape Browser\n");
 	scroll->add_text("ctrl-c - Create Object\n");
 	scroll->add_text("ctrl-d - Delete Object\n");

@@ -72,6 +72,7 @@ public:
   void create_last_shape (void) const;
   void delete_object (void) const;
   void shape_browser (void) const;
+  void sound_tester (void) const;
 };
 
 #endif
