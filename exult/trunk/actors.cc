@@ -629,6 +629,13 @@ void Actor::paint
 		{
 		Container_game_object::paint(gwin);
 		paint_weapon(gwin);
+		if (flags & (1L << poisoned))
+			{
+			int xoff, yoff;
+			gwin->get_shape_location(this, xoff, yoff);
+			gwin->paint_outline(xoff, yoff,
+					get_shapenum(), get_framenum());
+			}
 		}
 	}
 
