@@ -319,6 +319,8 @@ private:
 	uint32	type;			// 'Magic' # identifying type.
 	uint32  seq;			// Sequence # assigned.
 	int	volume;				// 0-128.
+	int	dir;			// Dir. (0-15 from N, clockwise) from
+					//   observer to sound source.
 	inline 	void	lock(void)
 		{
 		if(SDL_mutexP(mutex)!=0)
@@ -376,6 +378,7 @@ public:
 		lock();
 		seq = ++sequence_cnt;
 		volume = SDL_MIX_MAXVOLUME;
+		dir = 0;
 		producing = consuming = true;
 		Buffer.clear();
 		unlock();
@@ -385,10 +388,13 @@ public:
 		{ return volume; }
 	void set_volume(int v)		// Should be 0-128.
 		{ volume = v; }
-
+	int get_dir()
+		{ return dir; }
+	void set_dir(int d)		// Should be 0-15.
+		{ dir = d; }
 	ProducerConsumerBuf() : Buffer(),mutex(SDL_CreateMutex()),
 			window(32768),producing(false),consuming(false),
-			type(0), seq(0), volume(SDL_MIX_MAXVOLUME)
+			type(0), seq(0), volume(SDL_MIX_MAXVOLUME), dir(0)
 		{
 #if DEBUG
 		mycounter=++counter;

@@ -1796,28 +1796,31 @@ USECODE_INTRINSIC(play_sound_effect2)
 	if (num_parms < 2) return(no_ret);
 	// Play music(songnum, item).
 	Game_object *obj = get_item(parms[1]);
-	int volume;			// Set volume based on distance.
+	int volume = SDL_MIX_MAXVOLUME;	// Set volume based on distance.
+	int dir = 0;
 	if (obj)
 		{
-		int dist = obj->distance(gwin->get_main_actor());
-		if (!dist)
-			volume = SDL_MIX_MAXVOLUME;
-		else
+		Tile_coord apos = gwin->get_main_actor()->get_abs_tile_coord();
+		Tile_coord opos = obj->get_abs_tile_coord();
+		int dist = apos.distance(opos);
+		if (dist)
 			{		// 160/8 = 20 tiles. 20*20=400.
 			volume = (SDL_MIX_MAXVOLUME*64)/(dist*dist);
 			if (volume < 8)
 				volume = 8;
 			else if (volume > SDL_MIX_MAXVOLUME)
 				volume = SDL_MIX_MAXVOLUME;
+			dir = Get_direction16(apos.ty - opos.ty,
+						opos.tx - apos.tx);
 			}
 		}
-	else
-		volume = SDL_MIX_MAXVOLUME;
 #if DEBUG
 	cout << "Sound effect(2) " << parms[0].get_int_value() << 
-		" request in usecode with volume = " << volume << endl;
+		" request in usecode with volume = " << volume 
+		<< ", dir = " << dir << endl;
 #endif
-	Audio::get_ptr()->play_sound_effect (parms[0].get_int_value(), volume);
+	Audio::get_ptr()->play_sound_effect (parms[0].get_int_value(), volume,
+									dir);
 	return(no_ret);
 }
 
