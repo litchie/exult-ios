@@ -79,7 +79,10 @@ void Actor::activate
 	Usecode_machine *umachine
 	)
 	{
-	if (usecode == -1)
+					// In gump mode?
+	if (Game_window::get_game_window()->get_mode() == Game_window::gump)
+		Container_game_object::activate(umachine);
+	else if (usecode == -1)
 		umachine->call_usecode(get_shapenum(), this,
 				Usecode_machine::double_click);
 	else

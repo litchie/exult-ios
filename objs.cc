@@ -111,6 +111,59 @@ int Egg_object::within_distance
 	}
 
 /*
+ *	Add an object.
+ */
+
+void Container_game_object::add
+	(
+	Game_object *obj
+	)
+	{
+	if (!last_object)		// First one.
+		{
+		last_object = obj;
+		obj->set_next(obj);
+		}
+	else
+		{
+		obj->set_next(last_object->get_next());
+		last_object->set_next(obj);
+		last_object = obj;
+		}
+	}
+
+/*
+ *	Remove an object.
+ */
+
+void Container_game_object::remove
+	(
+	Game_object *obj
+	)
+	{
+	if (!last_object)
+		return;
+	Game_object *prev = last_object;
+	do
+		{
+		if (prev->get_next() == obj)
+			{		// Found it.
+			if (prev == obj)
+				{	// Last one.
+				last_object = 0;
+				return;
+				}
+			prev->set_next(obj->get_next());
+			if (obj == last_object)
+				last_object = prev;
+			return;
+			}
+		prev = prev->get_next();
+		}
+	while (prev != last_object);
+	}
+
+/*
  *	Run usecode when double-clicked.
  */
 
@@ -123,13 +176,25 @@ void Container_game_object::activate
 	Game_window *gwin = Game_window::get_game_window();
 	switch(shnum)			// Watch for gumps.
 		{
+	case 416:			// Chest of drawers.
+		gwin->show_gump(this, 27);
+		break;
 	case 800:			// Chest.
 		gwin->show_gump(this, 22);	// ???Guessing.
+		return;
+	case 801:			// Backpack.
+		gwin->show_gump(this, 10);
 		return;
 	case 798:			// Bag.
 	case 799:
 	case 802:
 		gwin->show_gump(this, 9);
+		return;
+	case 804:			// Crate.
+		gwin->show_gump(this, 1);
+		return;
+	case 819:			// Barrel.
+		gwin->show_gump(this, 8);
 		return;
 		}
 					// Try to run normal usecode fun.
@@ -682,50 +747,6 @@ void Text_object::handle_event
 	if (rect.w > 0 && rect.h > 0)	// Watch for negatives.
 		gwin->paint(rect.x, rect.y, rect.w, rect.h);
 
-	}
-
-/*
- *	Add this gump to the end of a chain.
- */
-
-void Gump_object::append_to_chain
-	(
-	Gump_object *& chain		// Head.
-	)
-	{
-	next = 0;			// Put at end of chain.
-	if (!chain)
-		{
-		chain = this;		// First one.
-		return;
-		}
-	Gump_object *last;
-	for (last = chain; last->next; last = last->next)
-		;
-	if (!last)			// First one?
-		chain = this;
-	else
-		last->next = this;
-	}
-
-/*
- *	Remove from a chain.
- */
-
-void Gump_object::remove_from_chain
-	(
-	Gump_object *& chain		// Head.
-	)
-	{
-	if (chain == this)
-		chain = next;
-	else
-		{
-		Gump_object *p;		// Find prev. to this.
-		for (p = chain; p->next != this; p = p->next)
-			;
-		p->next = next;
-		}
 	}
 
 #if 0

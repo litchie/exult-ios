@@ -102,7 +102,7 @@ class Game_object : public ShapeID
 	unsigned char shape_pos;	// (X,Y) of shape within chunk.
 	unsigned char lift;		// Raise by 4* this number.
 	short quality;			// Some sort of game attribute.
-	Game_object *next;		// ->next in chunk list.
+	Game_object *next;		// ->next in chunk list or container.
 protected:
 	unsigned char cx, cy;		// (Absolute) chunk coords.
 public:
@@ -192,18 +192,21 @@ public:
  */
 class Container_game_object : public Ireg_game_object
 	{
-	Slist objects;			// List of objects contained.
+	Game_object *last_object;	// ->last obj., which pts. to first.
 public:
 	Container_game_object(unsigned char l, unsigned char h, 
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
-		: Ireg_game_object(l, h, shapex, shapey, lft)
+		: Ireg_game_object(l, h, shapex, shapey, lft),
+		  last_object(0)
 		{  }
-	Container_game_object() {  }
-	void add(Game_object *obj)
-		{ objects.append(obj); }
-	void remove(Game_object *obj)
-		{ objects.remove(obj); }
+	Container_game_object() : last_object(0) {  }
+	void add(Game_object *obj);
+	void remove(Game_object *obj);
+	Game_object *get_last_object()
+		{ return last_object; }
+	Game_object *get_first_object()	// Get first inside.
+		{ return last_object ? last_object->get_next() : 0; }
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 					// Drop another onto this.
@@ -572,31 +575,6 @@ public:
 		{  }
 					// At timeout, remove from screen.
 	virtual void handle_event(unsigned long curtime, long udata);
-	};
-
-/*
- *	A gump contains an image of an open container from "gumps.vga".
- */
-class Gump_object : public ShapeID
-	{
-	Gump_object *next;		// ->next to draw.
-	Game_object *container;		// What this gump shows.
-	int x, y;			// Location on screen.
-	unsigned char shapenum;
-public:
-	Gump_object(Game_object *cont, int initx, int inity, int shnum)
-		: container(cont), x(initx), y(inity), ShapeID(shnum, 0)
-		{  }
-	int get_x()			// Get coords.
-		{ return x; }
-	int get_y()
-		{ return y; }
-					// Append to end of chain.
-	void append_to_chain(Gump_object *& chain);
-					// Remove from chain.
-	void remove_from_chain(Gump_object *& chain);
-	Gump_object *get_next()		// (Chain ends with ->next == 0.)
-		{ return next; }
 	};
 
 #endif

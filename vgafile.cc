@@ -92,7 +92,7 @@ void Shape_frame::get_rle_shape
 	xleft = Read2(shapes);
 	yabove = Read2(shapes);
 	ybelow = Read2(shapes);
-	unsigned char bbuf[12000];
+	unsigned char bbuf[16000];
 	unsigned char *out = &bbuf[0];	// ->where to store.
 	unsigned char *end = &bbuf[sizeof(bbuf)];
 	int scanlen;
@@ -149,6 +149,38 @@ void Shape_frame::get_rle_shape
 	memcpy(data, bbuf, len);
 	rle = 1;
 	}
+
+#if 0
+/*
+ *	Find the point in the shape which is first leftmost, and then bottom-
+ *	most.  (This is for placing the checkmark in gumps.)
+ */
+
+void Shape_frame::find_left_bottom
+	(
+	int& left, int& bottom		// (X,Y) coord. returned.
+	)
+	{
+	unsigned char *in = data; 	// Point to data.
+	int scanlen;
+	left = 15000;
+	bottom = -15000;
+	while ((scanlen = Read2(in)) != 0)
+		{
+					// Get length of scan line.
+		int encoded = scanlen&1;// Is it encoded?
+		scanlen = scanlen>>1;
+		short scanx = Read2(in);
+		short scany = Read2(in);
+		if (scanx < left || (scanx == left && scany > bottom))
+			{
+			left = scanx;
+			bottom = scany;
+			}
+		in += scanlen;
+		}
+	}
+#endif
 
 /*
  *	Read in a frame.
