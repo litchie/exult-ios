@@ -282,6 +282,7 @@ void BG_Game::show_menu()
 			;
 		pal.fade_out(30);
 		clear_screen();
+		audio->stop_music();
 	}
 
 void BG_Game::end_game(bool success) 
