@@ -122,6 +122,19 @@ public:
 #endif
 
 /*
+ *	Activate an object.
+ */
+class Activate_actor_action : public Actor_action
+	{
+	Game_object *obj;
+public:
+	Activate_actor_action(Game_object *o) : obj(o)
+		{  }
+					// Handle time event.
+	virtual int handle_event(Actor *actor);
+	};
+
+/*
  *	Go through a series of frames.
  */
 class Frames_actor_action : public Actor_action

@@ -11,7 +11,8 @@ int Pathfinder_client::get_max_cost
 	)
 	{
 	int max_cost = 3*cost_to_goal;
-	return (max_cost < 64 ? 64 : max_cost);
+					// (Raised from 64 on 9/4/2000).
+	return (max_cost < 74 ? 74 : max_cost);
 	}
 
 /*

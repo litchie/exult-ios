@@ -418,7 +418,8 @@ void Sit_schedule::set_action
 	}
 
 /*
- *	Open door that's blocking the NPC.
+ *	Open door that's blocking the NPC, and set action to walk past and
+ *	close it.
  */
 
 void Walk_to_schedule::open_door
@@ -427,9 +428,57 @@ void Walk_to_schedule::open_door
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-					// ++++++Move away from door?++++
+	Tile_coord cur = npc->get_abs_tile_coord();
+					// Get door's footprint in tiles.
+	Rectangle foot = door->get_footprint();
+	Tile_coord past;		// Tile on other side of door.
+	past.tz = cur.tz;
+	int dir;			// Get dir to face door afterwards.
+	if (foot.w > foot.h)		// Horizontal?
+		{
+		past.tx = foot.x + foot.w/2;
+		if (cur.ty <= foot.y)	// N. of door?
+			{
+			past.ty = foot.y + foot.h;
+			dir = 0;
+			}
+		else			// S. of door?
+			{
+			past.ty = foot.y - 1;
+			dir = 4;
+			}
+		}
+	else				// Vertical.
+		{
+		past.ty = foot.y + foot.h/2;
+		if (cur.tx <= foot.x)	// W. of door?
+			{
+			past.tx = foot.x + foot.w;
+			dir = 6;
+			}
+		else			// E. of door?
+			{
+			past.tx = foot.x - 1;
+			dir = 2;
+			}
+		}
+	past = Game_object::find_unblocked_tile(past, 1, 3);
 					// Open it.
 	door->activate(gwin->get_usecode());
+	if (past.tx != -1)		// Succeeded.  Walk past and close it.
+		{
+		char frames[2];
+		frames[0] = npc->get_dir_framenum(dir, Actor::standing);
+		frames[1] = npc->get_dir_framenum(dir, 3);
+		set_action_sequence(npc, past,
+			new Sequence_actor_action(
+				new Frames_actor_action(frames, 
+							sizeof(frames)),
+				new Activate_actor_action(door)));
+
+		}
+	else
+		npc->start();		// Else just put back in queue.
 	}
 
 /*
@@ -528,8 +577,13 @@ void Walk_to_schedule::now_what
 		Game_object *door = Game_object::find_blocking(blocked);
 		if (door != 0 && door->is_closed_door())
 					// Try to open it.
+			{
 			open_door(door);
+			blocked = Tile_coord(-1, -1, -1);
+			return;		// Action is set.
+			}
 		}
+	blocked = Tile_coord(-1, -1, -1);
 	cout << "Finding path to schedule for " << npc->get_name() << endl;
 					// Create path to dest., delaying
 					//   0 to 2 seconds.
