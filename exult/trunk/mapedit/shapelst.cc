@@ -142,8 +142,6 @@ void Shape_chooser::render
 					// Remove "selected" message.
 	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	delete [] info;			// Delete old info. list.
-	int shapenum = shapenum0;
-	int framenum = 0;
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width, winh = draw->allocation.height;
 					// Provide more than enough room.
@@ -151,51 +149,47 @@ void Shape_chooser::render
 					// Clear window first.
 	iwin->fill8(0);			// ++++Which color?
 	int x = 0;
-					// Get first shape.
-	Shape_frame *shape = ifile->get_shape(shapenum, 0);
-	int sw;
 	info_cnt = 0;			// Count them.
 	int curr_y = 0;
 	int row_h = 0;
 	int rows = 0;			// Count rows.
-	do {
-		while (shapenum<num_shapes) {
-			if(shape) {
+	for (int shapenum = shapenum0; 
+			shapenum<num_shapes && curr_y + 36 < winh; shapenum++)
+		{
+		int framenum = shapenum == selshape ? selframe : framenum0;
+		Shape_frame *shape = ifile->get_shape(shapenum, framenum);
+		if(shape)
+			{
+			int sh = shape->get_height(),
+			    sw = shape->get_width();
+			if (sh>row_h)
+				row_h = sh;
 					// Check if we've exceeded max width
-				if (x + (sw = shape->get_width()) > winw)
-					break;
-						// Get height, top y-coord.
-				int sh = shape->get_height();
-				if(sh>row_h)
-					row_h = sh;
-				int sy = curr_y+border;
-				shape->paint(iwin, x + shape->get_xleft(),
+			if (x + sw > winw)
+				{	// Next line.
+				curr_y += row_h + border;
+				row_h = sh;
+				x = 0;
+				rows++;
+				}
+			int sy = curr_y+border;	// Get top y-coord.
+			shape->paint(iwin, x + shape->get_xleft(),
 						sy + shape->get_yabove());
-				if (sh > winh) {
-					sy += sh - winh;
-					sh = winh;
+			if (sh > winh)
+				{
+				sy += sh - winh;
+				sh = winh;
 				}
 					// Store info. about where drawn.
-				info[info_cnt].set(shapenum, framenum, 
-								x, sy, sw, sh);
-				if (shapenum == selshape)
+			info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
+			if (shapenum == selshape)
 						// Found the selected shape.
-					new_selected = info_cnt;
-			}
-			shapenum++;		// Next shape.
-			framenum = shapenum == selshape ? selframe : 0;
-			shape = shapenum >= num_shapes ? 0 
-					: ifile->get_shape(shapenum, framenum);
-			if(shape) {
-				x += sw + border;
-				info_cnt++;
+				new_selected = info_cnt;
+			x += sw + border;
+			info_cnt++;
 			}
 		}
-		curr_y += row_h + border;
-		x = 0;
-		rows++;
-	} while(shapenum<num_shapes && (curr_y + 36 < winh));
-	num_per_row = info_cnt/rows;		// Figure average.
+	num_per_row = rows ? info_cnt/rows : 1;		// Figure average.
 	if (new_selected == -1)
 		unselect(false);
 	else
@@ -698,7 +692,7 @@ Shape_chooser::Shape_chooser
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h			// Dimensions.
 	) : Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
-		shapes_file(0), shapenum0(0),
+		shapes_file(0), shapenum0(0), framenum0(0),
 		info(0), info_cnt(0), num_per_row(0), 
 		selected(-1), sel_changed(0)
 	{

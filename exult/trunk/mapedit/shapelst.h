@@ -63,6 +63,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
 	int shapenum0;			// Shape, frame # of leftmost in
 					//   displayed list.
+	int framenum0;			// Default frame # to display.
 	Shape_entry *info;		// An entry for each shape drawn.
 	int info_cnt;			// # entries in info.
 	int num_per_row;		// Average # painted per line.
@@ -83,6 +84,8 @@ public:
 	virtual ~Shape_chooser();
 	void set_shapes_file(Shapes_vga_file *sh)
 		{ shapes_file = sh; }	
+	void set_framenum0(int f)
+		{ framenum0 = f; }
 	void search(char *srch, int dir);
 					// Turn off selection.
 	void unselect(bool need_render = true);

@@ -196,10 +196,10 @@ void Xdnd::client_msg
 			{
 			if (file == U7_SHAPE_SHAPES)
 					// For now, just allow "shapes.vga".
-				(*shape_handler)(shape, frame, lastx, lasty);
+				(*shape_handler)(shape, frame, lastx,lasty, 0);
 			}
 		else if (chunknum >= 0)	// A whole chunk.
-			(*chunk_handler)(chunknum, lastx, lasty);
+			(*chunk_handler)(chunknum, lastx, lasty, 0);
 
 		data_valid = false;
 		}

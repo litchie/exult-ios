@@ -1,3 +1,11 @@
+2002-01-21  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/studio.cc (ExultStudio): Open 'chunks' file in both
+	binary AND input mode.
+	* mapedit/shapelst.cc:  Cleaned up 'render' loop.  Fonts now
+	display, somewhat.
+	* xdrag.cc:  Compile err. fixed.
+
 2002-01-21  Ryan Nunn  <triforce@merlin.net.au>
 	* exult.cc, windrag.*, xdrag.*, mapedit/Makefile.mingw,
 	  mapedit/chunklst.cc, mapedit/eggedit.cc, mapedit/npcedit.cc
