@@ -64,9 +64,9 @@ private:
 					// Count array elements.
 	static int count_array(const Usecode_value& val);
 public:
-	Usecode_value() : type((unsigned char) int_type)
+	inline Usecode_value() : type((unsigned char) int_type)
 		{ value.intval = 0; }
-	Usecode_value(int ival) : type((unsigned char) int_type)
+	inline Usecode_value(int ival) : type((unsigned char) int_type)
 		{ value.intval = ival; }
 	Usecode_value(const char *s);
 					// Create array with 1st element.
@@ -87,38 +87,38 @@ public:
 		}
 	Usecode_value &operator=(const Usecode_value& v2);
 					// Copy ctor.
-	Usecode_value(const Usecode_value& v2) : type((unsigned char) int_type)
+	inline Usecode_value(const Usecode_value& v2) : type((unsigned char) int_type)
 		{ *this = v2; }
 					// Comparator.
 	int operator==(const Usecode_value& v2);
-	Val_type get_type()
+	inline Val_type get_type() const
 		{ return (Val_type) type; }
-	int get_array_size()		// Get size of array.
+	int get_array_size() const		// Get size of array.
 		{ return type == (int) array_type ? count_array(*this) : 0; }
-	int is_array()
+	bool is_array() const
 		{ return type == (int) array_type; }
-	int is_int()
+	bool is_int() const
 		{ return type == (int) int_type; }
-	unsigned int get_int_value()	// Get integer value.
+	unsigned int get_int_value() const	// Get integer value.
 		{ return (type == (int) int_type ? value.intval : 0); }
 					// Get string value.
-	const char *get_str_value()
+	const char *get_str_value() const
 		{ return (type == (int) string_type ? value.str : 0); }
 					// Add array element. (No checking!)
 	void put_elem(int i, Usecode_value& val)
 		{ value.array[i] = val; }
 					// Get an array element, or *this.
-	Usecode_value& get_elem(int i)
+	inline Usecode_value& get_elem(int i)
 		{
 		return type == (int) array_type ? value.array[i] : *this;
 		}
-	int is_false()			// Represents a FALSE value?
+	inline bool is_false() const			// Represents a FALSE value?
 		{
 		return is_int() ? value.intval == 0
 				: is_array() ? value.array[0].type == 
 					(int) end_of_array_type : 0;
 		}
-	int is_true()
+	inline bool is_true() const
 		{ return !is_false(); }
 
 	int resize(int new_size);	// Resize array.
@@ -144,7 +144,7 @@ class Usecode_function
 	friend class Usecode_machine;
 					// Create from file.
 	Usecode_function(istream& file);
-	~Usecode_function()
+	inline ~Usecode_function()
 		{ delete code; }
 	};
 
@@ -188,26 +188,26 @@ struct Usecode_machine
 	Usecode_value *stack;		// Stack.
 	Usecode_value *sp;		// Stack ptr.  Grows upwards.
 	void stack_error(int under);
-	void push(Usecode_value& val)	// Push/pop stack.
+	inline void push(Usecode_value& val)	// Push/pop stack.
 		{ *sp++ = val; }
-	Usecode_value pop()		// +++++Watch for too many str. copies.
+	inline Usecode_value pop()		// +++++Watch for too many str. copies.
 		{ 
 		if (sp <= stack)
 			stack_error(1);
 		return *--sp; 
 		}
-	void pushi(long val)		// Push/pop integers.
+	inline void pushi(long val)		// Push/pop integers.
 		{
 		Usecode_value v(val);
 		push(v);
 		}
-	int popi()
+	inline int popi()
 		{
 		Usecode_value val = pop();
 		return (val.get_int_value());
 		}
 					// Push/pop strings.
-	void pushs(char *s)
+	inline void pushs(char *s)
 		{
 		Usecode_value val(s);
 		push(val);
