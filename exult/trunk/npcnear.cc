@@ -131,6 +131,7 @@ void Npc_proximity_handler::handle_event
 		}
 					// Hostile monster?  ATTACK!
 	else if (npc->get_alignment() == Npc_actor::hostile &&
+		npc != gwin->get_camera_actor() &&
 		npc->is_monster() &&
 		sched != Schedule::combat &&
 					// jsf-Trying to fix mage in
