@@ -196,7 +196,7 @@ void Shape_chooser::render
 					// Provide more than enough room.
 	info = new Shape_entry[1024];
 					// Clear window first.
-	iwin->fill8(0);			// ++++Which color?
+	iwin->fill8(255);		// Set to background_color.
 	int x = 0;
 	info_cnt = 0;			// Count them.
 	int curr_y = 0;

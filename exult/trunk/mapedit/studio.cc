@@ -311,6 +311,10 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	if (w > 0 && h > 0)
 		gtk_window_set_default_size(GTK_WINDOW(app), w, h);
 	gtk_widget_show( app );
+					// Background color for shape browser.
+	int bcolor;
+	config->value("config/estudio/background_color", bcolor, 0);
+	background_color = bcolor;
 	if (game)			// Game given?
 		{
 		string d("config/disk/game/");
@@ -332,10 +336,6 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 	config->value("config/estudio/image_editor", iedit, "");
 	if (iedit != "")
 		image_editor = g_strdup(iedit.c_str());
-					// Background color for shape browser.
-	int bcolor;
-	config->value("config/estudio/background_color", bcolor, 0);
-	background_color = bcolor;
 #ifdef WIN32
     OleInitialize(NULL);
 #endif
@@ -618,6 +618,10 @@ void ExultStudio::set_game_path(const char *gamepath)
 					// this may throw an exception
 		palbuf = (unsigned char *) pal.retrieve(len);
 		}
+					// Set background color.
+	palbuf[3*255] = (background_color>>18)&0x3f;
+	palbuf[3*255 + 1] = (background_color>>10)&0x3f;
+	palbuf[3*255 + 2] = (background_color>>2)&0x3f;
 	if(names) {			// Delete old names.
 		int num_shapes = vgafile->get_ifile()->get_num_shapes();
 		for (int i = 0; i < num_shapes; i++)
@@ -1199,10 +1203,17 @@ C_EXPORT gboolean on_prefs_background_expose_event
 	gpointer data
 	)
 	{
-#if 0
-	gdk_draw_rectangle(widget->window, drawgc, TRUE, event->area.x, 
+	guint32 color = (guint32) gtk_object_get_user_data(GTK_OBJECT(widget));
+	GdkGC *gc = (GdkGC *) 
+			gtk_object_get_data(GTK_OBJECT(widget), "color_gc");
+	if (!gc)
+		{
+		gc = gdk_gc_new(widget->window);
+		gtk_object_set_data(GTK_OBJECT(widget), "color_gc", gc);
+		}
+	gdk_rgb_gc_set_foreground(gc, color);
+	gdk_draw_rectangle(widget->window, gc, TRUE, event->area.x, 
 			event->area.y, event->area.width, event->area.height);
-#endif
 	return (TRUE);
 	}
 
@@ -1257,6 +1268,10 @@ void ExultStudio::save_preferences
 	background_color = (guint32) gtk_object_get_user_data(
 						GTK_OBJECT(backgrnd));
 	config->set("config/estudio/background_color", background_color, true);
+					// Set background color.
+	palbuf[3*255] = (background_color>>18)&0x3f;
+	palbuf[3*255 + 1] = (background_color>>10)&0x3f;
+	palbuf[3*255 + 2] = (background_color>>2)&0x3f;
 	}
 
 void ExultStudio::run()
