@@ -170,6 +170,8 @@ public:
 	D_Recursive_object_iterator(Object_list& objs)
 		: elems(objs), child(0)
 		{  }
+					// Start at given object.
+	D_Recursive_object_iterator(Game_object *obj);
 	Game_object *get_next();	// Get next, going into containers.
 	};
 
