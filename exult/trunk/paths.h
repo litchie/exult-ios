@@ -73,8 +73,12 @@ public:
 class Offscreen_pathfinder_client : public Actor_pathfinder_client
 	{
 	Rectangle screen;		// Screen rect. in tiles.
+	Tile_coord best;		// Best offscreen pt. to aim for.
 public:
 	Offscreen_pathfinder_client(Actor *n);
+	Offscreen_pathfinder_client(Actor *n, Tile_coord b);
+					// Figure cost for a single step.
+	virtual int get_step_cost(Tile_coord from, Tile_coord& to);
 					// Estimate cost between two points.
 	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
 					// Is tile at the goal?
