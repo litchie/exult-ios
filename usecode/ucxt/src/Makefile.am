@@ -1,4 +1,4 @@
-INCLUDES = -I../include \
+INCLUDES = -I$(srcdir)/../include \
 	$(INCDIRS) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 ucxt_SOURCES = \

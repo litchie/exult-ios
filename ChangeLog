@@ -1,5 +1,7 @@
 2001-03-07  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Audio.cc/h: added a config/audio/enabled switch to kill all audio.
+	* */Makefile.am: added support for VPATH builds
+	* conf/Makefile.am: don't build confregress with --disable-tools
 
 2001-03-04  Jeff Freedman  <jeff@amy.nerble.net>
 

@@ -1,4 +1,5 @@
-INCLUDES = -I. -I../files -I../usecode $(DEBUG_FLAGS) $(CPPFLAGS)
+INCLUDES = -I$(srcdir)/../files -I$(srcdir)/../usecode -I$(srcdir)/.. \
+		$(DEBUG_FLAGS) $(CPPFLAGS)
 
 if LEXYACC
 UCC= ucc
@@ -38,7 +39,7 @@ uccparse.c: uccparse.y
 	$(YACC) $< && mv y.tab.c $@
 
 uccparse.o: ucclex.c uccparse.c
-	$(COMPILE) -o $@ -c uccparse.c
+	$(COMPILE) -o $@ -c $(srcdir)/uccparse.c
 
 ucc: uccparse.o
 	$(LINK) uccparse.o
