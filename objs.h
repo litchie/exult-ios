@@ -34,13 +34,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #endif
 
-#include "lists.h"
+#include "vec.h"
 #include "usecode.h"
 #include "tqueue.h"
 
 class Vga_file;
 class Game_window;
 class Npc_actor;
+class Rectangle;
 
 /*
  *	Sizes:
@@ -125,7 +126,11 @@ public:
 		{  }
 	int get_shape_pos_x()		// Really the tiles.
 		{ return (shape_pos >> 4) & 0xf; }
+	int get_tx()
+		{ return (shape_pos >> 4) & 0xf; }
 	int get_shape_pos_y()
+		{ return shape_pos & 0xf; }
+	int get_ty()
 		{ return shape_pos & 0xf; }
 	int get_lift()
 		{ return lift; }
@@ -172,6 +177,8 @@ public:
 	virtual void clear_flag(int flag) { }
 	virtual int get_flag(int flag) { return 0; }
 	virtual int get_npc_num()	// Get its ID (1-num_npcs).
+		{ return 0; }
+	virtual int is_egg()		// An egg?
 		{ return 0; }
 	};
 
@@ -227,7 +234,7 @@ class Egg_object : public Game_object
 	unsigned char type;		// One of the below types.
 	unsigned char probability;	// 1-100, chance of egg activating.
 	unsigned char criteria;		// Don't know this one.
-	unsigned char distance;		// Distance for activation.
+	unsigned char distance;		// Distance for activation (0-31).
 	unsigned char flags;		// Formed from below flags.
 	unsigned short data1, data2;	// More data, depending on type.
 public:
@@ -267,9 +274,13 @@ public:
 		flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
 		}
+	int get_distance()
+		{ return distance; }
 	int within_distance(int abs_tx, int abs_ty);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
+	virtual int is_egg()		// An egg?
+		{ return 1; }
 	};
 
 /*
@@ -282,8 +293,7 @@ class Chunk_cache
 	unsigned short blocked[256];	// For each tile, a bit for each lift
 					//   level if it's blocked by an obj.
 					// In the process of implementing:+++++
-	Egg_object **egg_objects;	// ->eggs which influence this chunk.
-	short num_eggs;
+	Vector egg_objects;		// ->eggs which influence this chunk.
 	unsigned short eggs[256];	// Bit #i (0-14) set means that the
 					//   tile is within egg_object[i]'s
 					//   influence.  Bit 15 means it's 1 or
@@ -292,12 +302,18 @@ class Chunk_cache
 	friend class Chunk_object_list;
 	Chunk_cache();			// Create empty one.
 	~Chunk_cache();
+	int get_num_eggs()
+		{ return egg_objects.get_cnt(); }
 					// Set/unset blocked region.
 	void set_blocked(int startx, int starty, int endx, int endy,
 						int lift, int ztiles, int set);
 					// Add/remove object.
 	void update_object(Chunk_object_list *chunk,
 						Game_object *obj, int add);
+					// Set area within egg's influence.
+	void set_egged(Egg_object *egg, Rectangle& tiles);
+					// Add egg.
+	void add_egg(Chunk_object_list *chunk, Egg_object *egg);
 					// Set up with chunk's data.
 	void setup(Chunk_object_list *chunk);
 					// Set blocked tile's bits.
@@ -392,6 +408,9 @@ public:
 					// Is a spot occupied?
 	int is_blocked(int lift, int tx, int ty, int& new_lift)
 		{ return cache->is_blocked(lift, tx, ty, new_lift); }
+					// Set area within egg's influence.
+	void set_egged(Egg_object *egg, Rectangle& tiles)
+		{ cache->set_egged(egg, tiles); }
 	void activate_eggs(int tx, int ty)
 		{ need_cache()->activate_eggs(this, tx, ty); }
 	};

@@ -77,3 +77,20 @@ Vector::Vector
 		memset(values, 0, max*sizeof(void *));
 		}
 	}
+
+/*
+ *	Find an entry.
+ *
+ *	Output:	Index if found, or -1 if not.
+ */
+
+int Vector::find
+	(
+	void *v				// Look for this value.
+	)
+	{
+	for (int i = 0; i < cnt; i++)
+		if (get(i) == v)
+			return (i);	// Found.
+	return (-1);
+	}
