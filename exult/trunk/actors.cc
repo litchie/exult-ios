@@ -3694,7 +3694,8 @@ Monster_actor *Monster_info::create
 	int tilex, int tiley,		// Tile within chunk.
 	int lift,			// Lift.
 	int sched,			// Schedule type.
-	int align			// Alignment.
+	int align,			// Alignment.
+	bool temporary
 	)
 	{
 					// Usecode = shape.
@@ -3736,6 +3737,9 @@ Monster_actor *Monster_info::create
 	monster->set_property(Actor::dexterity, dexterity/4);
 	monster->set_property(Actor::intelligence, intelligence/4);
 	monster->set_property(Actor::combat, combat/4);
+
+	// Set temporary
+	if (temporary) monster->set_flag (Obj_flags::is_temporary);
 					// ++++Armor?
 					// Place in world.
 	Game_window *gwin = Game_window::get_game_window();
@@ -3755,8 +3759,8 @@ Monster_actor *Monster_info::create
 				continue;// You lose.
 			int frnum = (elem.shapenum == 377) ? 
 					Find_monster_food(shapenum) : 0;
-			monster->add_quantity(elem.quantity, elem.shapenum, 
-						c_any_qual, frnum);
+			monster->create_quantity(elem.quantity, elem.shapenum, 
+						c_any_qual, frnum, temporary);
 			}
 		}
 	if (sched < 0)			// Set sched. AFTER equipping.

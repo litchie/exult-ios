@@ -321,7 +321,7 @@ public:
 				int framenum = c_any_framenum, int dontcreate = 0)
 		{ return delta; }
 	virtual int create_quantity(int delta, int shapenum, int qual,
-								int framenum)
+						int framenum, bool temporary = false)
 		{ return delta; }
 	virtual int remove_quantity(int delta, int shapenum, int qual,
 								int framenum)

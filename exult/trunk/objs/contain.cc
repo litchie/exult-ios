@@ -177,7 +177,8 @@ int Container_game_object::create_quantity
 	int delta,			// Quantity to add.
 	int shapenum,			// Shape #.
 	int qual,			// Quality, or c_any_qual for any.
-	int framenum			// Frame.
+	int framenum,			// Frame.
+	bool temporary			// Create temporary quantity
 	)
 	{
 	Shape_info& shp_info=Game_window::get_game_window()->get_info(shapenum);
@@ -196,6 +197,10 @@ int Container_game_object::create_quantity
 			delete newobj;
 			break;
 			}
+
+		// Set temporary
+		if (temporary) newobj->set_flag (Obj_flags::is_temporary);
+
 		if (qual != c_any_qual)	// Set desired quality.
 			newobj->set_quality(qual);
 		todo--; delta--;
@@ -596,7 +601,7 @@ void Container_game_object::write_ireg
 	int npc = get_live_npc_num();	// If body, get source.
 	int quant = (npc >= 0 && npc <= 127) ? (npc + 0x80) : 0;
 	*ptr++ = quant&0xff;		// "Quantity".
-	*ptr++ = (get_lift()&15)<<4;
+	*ptr++ = (get_lift()&15)<<4;	// Lift 
 	*ptr++ = resistance;		// Resistance.
 					// Flags:  B0=invis. B3=okay_to_take.
 	*ptr++ = get_flag((Obj_flags::invisible) != 0) +

@@ -526,8 +526,9 @@ static void Handle_events
 				{
 				int ms = SDL_GetMouseState(&x, &y);
 				if ((SDL_BUTTON(3) & ms) &&
-				    gwin->get_usecode()->get_global_flag(
-				    Usecode_machine::did_first_scene))
+						(Game::get_game_type() == SERPENT_ISLE ||
+						gwin->get_usecode()->get_global_flag(
+							Usecode_machine::did_first_scene)))
 					gwin->start_actor(x >> scale, 
 							  y >> scale, 
 							  avatar_speed);

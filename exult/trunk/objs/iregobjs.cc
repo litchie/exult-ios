@@ -120,11 +120,11 @@ void Ireg_game_object::write_ireg
 	ostream& out
 	)
 	{
-	unsigned char buf[7];		// 6-byte entry + length-byte.
-	buf[0] = 6;
+	unsigned char buf[11];		// 10-byte entry + length-byte.
+	buf[0] = 10;
 	write_common_ireg(&buf[1]);
 	buf[5] = (get_lift()&15)<<4;
 	buf[6] = get_quality();
+	buf[7] = (get_flag(Obj_flags::is_temporary) != 0);
 	out.write((char*)buf, sizeof(buf));
 	}
-

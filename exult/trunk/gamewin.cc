@@ -1159,8 +1159,8 @@ void Game_window::read_ireg_objects
 		}
 
 					// Get copy of flags.
-		unsigned long oflags = flags;
-		if (entlen != 6 && entlen != 12 && entlen != 18)
+		unsigned long oflags = flags & ~(1<<Obj_flags::is_temporary);
+		if (entlen != 6 && entlen != 10 && entlen != 12 && entlen != 18)
 			{
 			long pos = ireg.tellg();
 			cout << "Unknown entlen " << entlen << " at pos. " <<
@@ -1178,11 +1178,19 @@ void Game_window::read_ireg_objects
 					// Get shape #, frame #.
 		int shnum = entry[2]+256*(entry[3]&3);
 		int frnum = entry[3] >> 2;
+
 		Shape_info& info = shapes.get_info(shnum);
 		unsigned int lift, quality, type;
 		Ireg_game_object *obj;
 		int is_egg = 0;		// Fields are eggs.
 					// An "egg"?
+
+		// Has flag byte(s)
+		if (entlen == 10)
+		{
+			// Temporary
+			if (entry[6] & 1) oflags |= 1<<Obj_flags::is_temporary;
+		}
 		
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
@@ -1194,7 +1202,7 @@ void Game_window::read_ireg_objects
 			get_objects(scx + cx, scy + cy)->add_egg(egg);
 			continue;
 			}
-		else if (entlen == 6)	// Simple entry?
+		else if (entlen == 6 || entlen == 10)	// Simple entry?
 			{
 			type = 0;
 			lift = entry[4] >> 4;
@@ -1204,6 +1212,7 @@ void Game_window::read_ireg_objects
 			is_egg = obj->is_egg();
 			obj->set_low_lift (entry[4] & 0xF);
 			obj->set_high_shape (entry[3] >> 7);
+
 #if 0	/* Causes too much trouble. */
 			if (!container && // Special case:  food.
 			    shnum == 377)
@@ -3153,7 +3162,7 @@ void Game_window::plasma(int w, int h, int x, int y, int startc, int endc)
 	}
 }
 
-#if 1	/* +++++++++Working on this: */
+	/* +++++++++Working on this: */
 /*
  *	Chunk caching emulation:  swap out chunks which are now at least
  *	3 chunks away.
@@ -3216,103 +3225,19 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 				{
 				if (each->is_egg())
 					((Egg_object *) each)->reset();
-				else if (each->get_npc_num() == -1)
+				else if (each->get_flag(Obj_flags::is_temporary))
 					removes.push_back(each);
 				}
 			}
 	for (Game_object_vector::const_iterator it=removes.begin(); 
 						it!=removes.end(); ++it)
-		delete_object(*it);	// Remove & schedule for deletion.
-	}
-
-#endif
-#if 0
-/*
- *	Superchunk Caching Emulation
- *
- *      TODO: Temp Objects
- */
-void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
-{
-
-	// First check to see if they are the same superchunk
-	// If they are, return
-	int	oldsx = oldx/c_chunks_per_schunk,
-		oldsy = oldy/c_chunks_per_schunk,
-		newsx = newx/c_chunks_per_schunk,
-		newsy = newy/c_chunks_per_schunk;
-	if (oldx != -1 && oldy != -1 && newsx == oldsx && newsy == oldsy)
-		return;
-
-	remove_weather_effects(120);	// Cancel weather from eggs that are
-					//   far away.
-
-	// Which schunks need changing
-	char	schunks[c_num_schunks][c_num_schunks];
-	int	minx, maxx, miny, maxy, x, y;
-	int	aminx = 0, amaxx = c_num_schunks,
-		aminy = 0, amaxy = c_num_schunks;
-
-	// Set to 0
-	memset(schunks, 0, sizeof(schunks));
-
-	// First we write which super chunks we were last near
-	if (oldx != -1 && oldy != -1)
-	{
-		aminx = minx = c_num_schunks + oldsx - 1;
-		aminy = miny = c_num_schunks + oldsy - 1;
-		amaxx = maxx = c_num_schunks + oldsx + 1;
-		amaxy = maxy = c_num_schunks + oldsy + 1;
-		for (y = miny; y <= maxy; y++) for (x = minx; x <= maxx; x++)
-			schunks[x%c_num_schunks][y%c_num_schunks] += 1;
-	}
-	if ((minx = c_num_schunks + newsx - 1) < aminx) aminx = minx;
-	if ((miny = c_num_schunks + newsy - 1) < aminy) aminy = miny;
-	if ((maxx = c_num_schunks + newsx + 1) > amaxx) amaxx = maxx;
-	if ((maxy = c_num_schunks + newsy + 1) > amaxy) amaxy = maxy;
-
-	// Now we write what we are now near
-	for (y = miny; y <= maxy; y++) for (x = minx; x <= maxx; x++)
-		schunks[x%c_num_schunks][y%c_num_schunks] += 2;
-
-//	if (oldx != -1 && oldy != -1)
-//		schunks[oldsx][oldsy] = 1;	// Do one we left. TESTING++++
-	// Swapout any superchanks that are no longer needed (set to 1)
-	for (y = aminy; y <= amaxy; y++) for (x = aminx; x <= amaxx; x++)
-		if (schunks[x%c_num_schunks][y%c_num_schunks] == 1) emulate_swapout(x%c_num_schunks, y%c_num_schunks);
-
-}
-
-// Delete any monster NPCs or Temporary Items in superchunk (scx, scy)
-// ang Reset any Cached in eggs in this superchunk
-void Game_window::emulate_swapout (int scx, int scy)
-{
-
-	int x, y;
-	Game_object_vector removes;
-	for (y = 0; y < c_chunks_per_schunk; y++) for (x = 0; x < c_chunks_per_schunk; x++)
-	{
-		Chunk_object_list *list = get_objects(x+scx*c_chunks_per_schunk, y+scy*c_chunks_per_schunk);
-		if (!list) continue;
-
-		Object_iterator it(list->get_objects());
-		Game_object *each;
-		while ((each = it.get_next()) != 0)
 		{
-		// SI needs List Field egg reset, so I took out the test for
-		//  cached_in May29-01.  Let's see if it's okay.
-			if (each->is_egg())
-				((Egg_object *) each)->reset();
-			else if (each->get_npc_num() == -1)
-				removes.push_back(each);
+#ifdef DEBUG
+		cout << "Culling object: " << (*it)->get_name() << "@" << ((Game_object *)(*it))->get_worldx() << "," << ((Game_object *)(*it))->get_worldy() << "," << ((Game_object *)(*it))->get_lift() <<endl;
+#endif
+		delete_object(*it);	// Remove & schedule for deletion.
 		}
 	}
-
-	for (Game_object_vector::const_iterator it=removes.begin(); it!=removes.end(); ++it)
-		delete_object(*it);	// Remove & schedule for deletion.
-
-}
-#endif
 
 // Tests to see if a move goes out of range of the actors superchunk
 bool Game_window::emulate_is_move_allowed(int tx, int ty)
