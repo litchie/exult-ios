@@ -80,6 +80,7 @@ EXULT_FLX_OBJECTS = \
 	data/play_1st_scene.shp \
 	data/extras.shp \
 	data/midi_conversion.shp \
+	data/notebook.shp \
 	data/sfx_conversion.shp \
 	data/palette_fades.shp \
 	data/scaling_method.shp \
