@@ -1,4 +1,7 @@
 2000-11-29  Max Horn  <max@quendi.de>
+	* updated Makefiles/configure.in to include gumps
+
+2000-11-29  Max Horn  <max@quendi.de>
 	* gumps/*: split up gumps.cc/h and spells.cc/h into separate files
 	* autoarray.h: std:: changes
 	* game.h: made sure this file can be included before gamewin.h (previously, you would get errors)

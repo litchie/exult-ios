@@ -429,6 +429,7 @@ audio/Makefile \
 audio/midi_drivers/Makefile \
 conf/Makefile \
 files/Makefile \
+gumps/Makefile \
 pathfinder/Makefile \
 flic/Makefile \
 tools/Makefile \
