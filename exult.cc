@@ -44,6 +44,8 @@
 #endif
 #include "xdrag.h"
 #include "server.h"
+#include "chunks.h"
+#include "chunkter.h"
 #endif
 
 #include "Audio.h"
@@ -661,13 +663,24 @@ static void Handle_event
 	switch (event.type)
 		{
 	case SDL_MOUSEBUTTONDOWN:
+		{
         	if (dont_move_mode)
         		break;
+		int x = event.button.x/scale, y = event.button.y/scale;
 		if (event.button.button == 1)
 			{
-			dragging = gwin->start_dragging(
-					event.button.x / scale,
-					event.button.y / scale);
+#ifdef USE_EXULTSTUDIO			// Shift-click means 'paint'.
+			if (cheat.in_map_editor() && 
+			    cheat.get_edit_shape() >= 0 &&
+			    		(SDL_GetModState() & KMOD_SHIFT))
+				{
+				Drop_dragged_shape(cheat.get_edit_shape(),
+					cheat.get_edit_frame(),
+					event.button.x, event.button.y);
+				break;
+				}
+#endif
+			dragging = gwin->start_dragging(x, y);
 			//Mouse::mouse->set_shape(Mouse::hand);
 			dragged = false;
 			}
@@ -681,10 +694,10 @@ static void Handle_event
 		if (event.button.button == 3)
 			{		// Try removing old queue entry.
 			gwin->get_tqueue()->remove(gwin->get_main_actor());
-			gwin->start_actor(event.button.x / scale, 
-				event.button.y / scale, Mouse::mouse->avatar_speed);
+			gwin->start_actor(x, y, Mouse::mouse->avatar_speed);
 			}
-		if (event.button.button == 4 || event.button.button == 5) {
+		if (event.button.button == 4 || event.button.button == 5) 
+			{
 			if (!cheat()) break;
 			SDLMod mod = SDL_GetModState();
 			if (event.button.button == 4)
@@ -697,8 +710,9 @@ static void Handle_event
 					ActionScrollRight(0);
 				else
 					ActionScrollDown(0);
-		}
+			}
 		break;
+		}
 	case SDL_MOUSEBUTTONUP:
         if (dont_move_mode)
             break;
@@ -749,10 +763,22 @@ static void Handle_event
 
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
+			{
+#ifdef USE_EXULTSTUDIO			// Paint IFF editing terrain.
+			if (cheat.in_map_editor() && gwin->skip_lift == 0 &&
+			    cheat.get_edit_shape() >= 0)
+				{
+				Drop_dragged_shape(cheat.get_edit_shape(),
+					cheat.get_edit_frame(),
+					event.button.x, event.button.y);
+				break;
+				}
+#endif
 			dragged = gwin->drag(event.motion.x / scale, 
 						event.motion.y / scale);
+			}
 					// Dragging with right?
-		if ((event.motion.state & SDL_BUTTON(3)) &&
+		else if ((event.motion.state & SDL_BUTTON(3)) &&
 					// But not right after teleport (if disabled).
 		    !((gwin->get_walk_after_teleport() && GAME_SI) ? false : gwin->was_teleported()))
 			gwin->start_actor(event.motion.x / scale, 
@@ -1319,6 +1345,27 @@ static void Drop_dragged_shape
 		cheat.toggle_map_editor();
 	x /= scale;			// Watch for scaled window.
 	y /= scale;
+	ShapeID sid(shape, frame);
+	if (gwin->skip_lift == 0)	// Editing terrain?
+		{
+		int tx = (gwin->get_scrolltx() + x/c_tilesize)%c_num_tiles;
+		int ty = (gwin->get_scrollty() + y/c_tilesize)%c_num_tiles;
+		int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
+		Map_chunk *chunk = gwin->get_chunk(cx, cy);
+		Chunk_terrain *ter = chunk->get_terrain();
+		tx %= c_tiles_per_chunk; ty %= c_tiles_per_chunk;
+		ShapeID curid = ter->get_flat(tx, ty);
+		if (sid.get_shapenum() != curid.get_shapenum() ||
+		    sid.get_framenum() != curid.get_framenum())
+			{
+			ter->set_flat(tx, ty, sid);
+			gwin->set_all_dirty();	// ++++++++For now.++++++++++
+			}
+		return;
+		}
+	Shape_frame *sh = sid.get_shape();
+	if (!sh || !sh->is_rle())	// Flats are only for terrain.
+		return;			// Shouldn't happen.
 	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;
 	cout << "Create shape (" << shape << '/' << frame << ')' <<
 								endl;

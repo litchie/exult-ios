@@ -182,7 +182,7 @@ int Game_window::paint_map
 					// Wrap around the world:
 	stop_chunkx = (stop_chunkx + c_num_chunks)%c_num_chunks;
 	stop_chunky = (stop_chunky + c_num_chunks)%c_num_chunks;
-	if (terrain_editing)		// Special mode for editing?
+	if (skip_lift == 0)		// Special mode for editing?
 		{
 		paint_terrain_only(start_chunkx, start_chunky,
 						stop_chunkx, stop_chunky);

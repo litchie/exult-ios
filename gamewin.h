@@ -174,10 +174,10 @@ class Game_window
 #endif
 	
 public:
-	int skip_lift;			// Skip objects with lift > 0.
+	int skip_lift;			// Skip objects with lift >= this.  0
+					//   means 'terrain-editing' mode.
 	bool paint_eggs;
 	bool armageddon;		// Spell was cast.
-	bool terrain_editing;		// Special mode for editing chunks.
 	int debug;
 	Game_window(int width = 0, int height = 0, int scale = 1, 
 							int scaler = 0);
@@ -576,6 +576,7 @@ public:
 	Game_object *find_object(int x, int y);
 	int find_objects(int lift, int x, int y, Game_object_vector& list);
 	void show_items(int x, int y);	// Show names of items clicked on.
+	ShapeID get_flat(int x, int y);	// Return terrain (x, y) is in.
 					// Schedule object for deletion.
 	void delete_object(Game_object *obj);
 					// Add text item.
