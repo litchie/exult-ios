@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //#include <glade/glade.h>
 
 class Shape_group;
+class Shape_file_info;
 
 class Object_browser {
 private:
@@ -32,9 +33,10 @@ protected:
 	int selected;			// Index of user-selected entry.
 	Shape_group *group;		// Non-null to use filter.
 	GtkWidget *popup;		// Popup menu in draw area.
+	Shape_file_info *file_info;	// Our creator (or null).
 	void set_widget(GtkWidget *w);
 public:
-	Object_browser(Shape_group *grp = 0);
+	Object_browser(Shape_group *grp = 0, Shape_file_info *fi = 0);
 	virtual ~Object_browser();
 	
 	GtkWidget *get_widget();

@@ -67,7 +67,8 @@ Object_browser *Shape_file_info::create_browser
 	if (file)			// Must be 'u7chunks' (for now).
 		return new Chunk_chooser(vgafile->get_ifile(), *file, palbuf, 
 								400, 64, g);
-	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64, g);
+	Shape_chooser *chooser = new Shape_chooser(ifile, palbuf, 400, 64, 
+								g, this);
 	int len = pathname.length();	// Fonts?  Show 'A' as the default.
 	if (len >= 9 && strcasecmp(pathname.c_str() - 9, "fonts.vga") == 0)
 		chooser->set_framenum0('A');
@@ -148,8 +149,8 @@ Shape_file_info *Shape_file_set::create
 		cerr << "Error opening image file '" << basename << "'.\n";
 		abort();
 		}
-	Shape_file_info *fi = new Shape_file_info(fullname, ifile, file,
-								groups);
+	Shape_file_info *fi = new Shape_file_info(basename, fullname, 
+							ifile, file, groups);
 	files.push_back(fi);
 	return fi;
 	}
