@@ -62,7 +62,7 @@ class Usecode_function
 	unsigned char *code;		// The code.
 	friend class Usecode_machine;
 					// Create from file.
-	Usecode_function(istream& file);
+	Usecode_function(std::istream& file);
 	inline ~Usecode_function()
 		{ delete code; }
 	};
@@ -74,7 +74,7 @@ class Usecode_function
 struct Answers
 	{
 	friend class Usecode_machine;
-	vector<string> answers;	// What we can click on.
+	std::vector<std::string> answers;	// What we can click on.
 	Answers();
 	void add_answer(const char *str);	// Add to the list.
 	void add_answer(Usecode_value& val);
@@ -124,7 +124,7 @@ private:
 					// Push/pop strings.
 	void pushs(char *s);
 	Answers answers;		// What user can click on.
-	deque< Answers > answer_stack;
+	std::deque< Answers > answer_stack;
 					// Get ->obj. from 'itemref'.
 	Game_object *get_item(Usecode_value& itemref);
 					// "Safe" cast to Actor.
@@ -319,10 +319,10 @@ private:
 	int run(Usecode_function *fun, int event, int stack_elems);
 					// Call desired function.
 	int call_usecode_function(int id, int event, int stack_elems);
-	void	_init_(istream &);
+	void	_init_(std::istream &);
 public:
 	friend class Scheduled_usecode;
-	Usecode_machine(istream& file, Game_window *gw);
+	Usecode_machine(std::istream& file, Game_window *gw);
 	Usecode_machine(Game_window *gw);
 	~Usecode_machine();
 					// Possible events:

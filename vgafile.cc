@@ -30,6 +30,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vgafile.h"
 #include "databuf.h"
 
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::ifstream;
+using std::ios;
+
 #if 1	/* For debugging. */
 #include <iomanip.h>
 #include "items.h"
@@ -37,32 +43,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Ammo_table *Ammo_info::table = 0;
 
+#include <hash_map>
 #ifdef MACOS
-  #include <hashmap.h>
-  #include <map>
-#else
-  #include <hash_map>
+  using Metrowerks::hash_map;
 #endif
 
 /*
  *	For looking up ammo entries:
  */
-#ifdef MACOS
-class Ammo_table
-	{
-	std::map<int, Ammo_info> AmmoMap;
-public:
-	Ammo_table() {  }
-	void insert(int shnum, Ammo_info& ent)
-		{ AmmoMap[shnum] = ent; }
-	Ammo_info *find(int shnum)	// Look up given shape.
-		{
-		std::map<int, Ammo_info>::iterator it = AmmoMap.find(shnum);
-		return it == AmmoMap.end() ? 0 : &((*it).second);
-		}
-	};
-
-#else
 
 class Ammo_table
 	{
@@ -77,7 +65,6 @@ public:
 		return it == map.end() ? 0 : &((*it).second);
 		}
 	};
-#endif
 
 /*
  *	Look up ammo's entry.

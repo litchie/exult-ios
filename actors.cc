@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <iostream>			/* Debugging. */
+#include <algorithm>		/* swap. */
 #include <stdlib.h>
 #include <string.h>
 #include "gamewin.h"
@@ -43,6 +44,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "npctime.h"
 #include "game.h"
 #include "cheat.h"
+
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
+using std::swap;
+
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 const char Actor::attack_frames1[4] = {3, 4, 5, 6};
@@ -853,15 +861,6 @@ void Actor::paint
 			}
 		}
 	}
-
-// Utility function for paint_weapon()
-static inline void swap(unsigned char & a, unsigned char & b)
-	{
-	unsigned char temp = a;
-	a = b;
-	b = temp;
-	}
-
 /*
  *	Draw the weapon in the actor's hand (if any).
  */

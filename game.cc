@@ -14,6 +14,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <stdlib.h>
 #include <unistd.h>
 #include "files/U7file.h"
 #include "flic/playfli.h"
@@ -28,6 +29,11 @@
 #include "menulist.h"
 #include "cheat.h"
 #include "mouse.h"
+
+using std::cout;
+using std::endl;
+using std::ifstream;
+using std::string;
 
 Game *game = 0;
 extern Configuration *config;

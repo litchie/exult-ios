@@ -4,6 +4,9 @@
 #include "utils.h"
 #include "xmidi.h"
 
+using std::cerr;
+using std::endl;
+
 // This is used to correct incorrect patch, vol and pan changes in midi files
 // The bias is just a value to used to work out if a vol and pan belong with a 
 // patch change. This is to ensure that the default state of a midi file is with

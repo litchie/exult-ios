@@ -29,6 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Zombie.h"
 #include "dir.h"
 
+using std::cout;
+using std::endl;
+using std::rand;
+using std::strlen;
+
 int Cloud::randcnt = 0;
 int Lightning_effect::count = 0;
 
