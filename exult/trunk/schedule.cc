@@ -1181,7 +1181,7 @@ class Sit_actor_action : public Frames_actor_action, public Game_singletons
 		{
 					// Frame 0 faces N, 1 E, etc.
 		int dir = 2*(chairobj->get_framenum()%4);
-		frames[0] = actor->get_dir_framenum(dir, Actor::to_sit_frame);
+		frames[0] = actor->get_dir_framenum(dir, Actor::bow_frame);
 		frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
 		return frames;
 		}
@@ -1197,7 +1197,7 @@ class Sit_actor_action : public Frames_actor_action, public Game_singletons
 					continue;
 				int frnum = npc->get_framenum() & 15;
 				if (frnum == Actor::sit_frame ||
-				    frnum == Actor::to_sit_frame)
+				    frnum == Actor::bow_frame)
 					return true;
 				}
 #if 1	/* Seems to work.  Added Nov. 2, 2001 */
@@ -1364,7 +1364,7 @@ void Desk_schedule::now_what
 		{
 		char frames[3];
 		frames[0] = npc->get_dir_framenum(Actor::standing);
-		frames[1] = npc->get_dir_framenum(Actor::to_sit_frame);
+		frames[1] = npc->get_dir_framenum(Actor::bow_frame);
 		frames[2] = npc->get_dir_framenum(Actor::sit_frame);
 		npc->set_action(new Frames_actor_action(frames,
 					sizeof(frames)/sizeof(frames[0])));
@@ -1544,7 +1544,7 @@ void Lab_schedule::now_what
 					// Set random frame (skip last frame).
 		cauldron->change_frame(rand()%(cauldron->get_num_frames() -1));
 		npc->change_frame(
-			npc->get_dir_framenum(dir, Actor::to_sit_frame));
+			npc->get_dir_framenum(dir, Actor::bow_frame));
 		int r = rand()%5;
 		state = !r ? use_cauldron : (r <= 2 ? sit_down
 						: walk_to_table);
@@ -2271,7 +2271,7 @@ void Bake_schedule::now_what()
 
 		int dir = npc->get_direction(flourbag);
 		npc->change_frame(
-			npc->get_dir_framenum(dir,Actor::to_sit_frame));
+			npc->get_dir_framenum(dir,Actor::bow_frame));
 
 		if (flourbag->get_framenum() != 0)
 			flourbag->change_frame(0);
@@ -2822,7 +2822,7 @@ void Forge_schedule::now_what
 		int dir = npc->get_direction(trough);
 		trough->change_frame(3);
 		npc->change_frame(
-			npc->get_dir_framenum(dir, Actor::to_sit_frame));
+			npc->get_dir_framenum(dir, Actor::bow_frame));
 
 		state = get_tongs2;
 		break;
@@ -2871,7 +2871,7 @@ void Forge_schedule::now_what
 			if (troughframe < 0) troughframe = 0;
 
 			int dir = npc->get_direction(trough);
-			char npcframe = npc->get_dir_framenum(dir, Actor::to_sit_frame);
+			char npcframe = npc->get_dir_framenum(dir, Actor::bow_frame);
 
 			Actor_action **a = new Actor_action*[7];
 			a[0] = pact;
