@@ -291,17 +291,21 @@ dist:   $(EXEC)
 	cp SDL/lib/SDL.dll $(U7PATH)/Exult
 	u2d $(U7PATH)/Exult/*.txt
 
-patch: ucc.exe
+patch: ucc.exe ipack.exe
 	mkdir -p $(U7PATH)/patch
 	ucc -o content/islefaq/usecode content/islefaq/usecode.uc
+	ipack -c content/data/faces
+	ipack -c content/data/shapes
 	cp content/islefaq/initgame.dat $(U7PATH)/patch
 	cp content/islefaq/u7ifix0d $(U7PATH)/patch
 	cp content/islefaq/u7ifix64 $(U7PATH)/patch
 	cp content/islefaq/u7ifix65 $(U7PATH)/patch
 	cp content/islefaq/u7map $(U7PATH)/patch
 	cp content/islefaq/usecode $(U7PATH)/patch
+	cp content/data/faces.vga $(U7PATH)/patch
+	cp content/data/shapes.vga $(U7PATH)/patch
 
-patchdist: ucc.exe
+patchdist: ucc.exe ipack.exe
 	mkdir -p $(U7PATH)/Exult
 	mkdir -p $(U7PATH)/Exult/patch
 	ucc -o content/islefaq/usecode content/islefaq/usecode.uc
@@ -311,6 +315,8 @@ patchdist: ucc.exe
 	cp content/islefaq/u7ifix65 $(U7PATH)/Exult/patch
 	cp content/islefaq/u7map $(U7PATH)/Exult/patch
 	cp content/islefaq/usecode $(U7PATH)/Exult/patch
+	cp content/data/faces.vga $(U7PATH)/Exult/patch
+	cp content/data/shapes.vga $(U7PATH)/Exult/patch
 
 tools:  expack.exe ipack.exe mklink.exe rip.exe shp2pcx.exe splitshp.exe textpack.exe ucdump.exe wuc.exe wud.exe ucxt.exe ucc.exe head2data.exe head2data.test
 
