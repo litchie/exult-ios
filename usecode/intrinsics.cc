@@ -1355,7 +1355,8 @@ USECODE_INTRINSIC(get_weapon)
 	if (npc)
 		{
 		int shape, points;
-		if (npc->get_weapon(points, shape))
+		Game_object *w;
+		if (npc->get_weapon(points, shape, w))
 			return Usecode_value(shape);
 		}
 	return Usecode_value(0);

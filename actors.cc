@@ -2765,12 +2765,14 @@ int Actor::get_armor_points
 Weapon_info *Actor::get_weapon
 	(
 	int& points,
-	int& shape
+	int& shape,
+	Game_object *& obj		// ->weapon itself returned, or 0.
 	)
 	{
 	points = 1;			// Bare hands = 1.
 	Weapon_info *winf = 0;
 	Game_object *weapon = spots[static_cast<int>(lhand)];
+	obj = weapon;
 	if (weapon)
 		if ((winf = weapon->get_info().get_weapon_info()) != 0)
 			{
@@ -2788,6 +2790,7 @@ Weapon_info *Actor::get_weapon
 			winf = rwinf;
 			points = rpoints;
 			shape = weapon->get_shapenum();
+			obj = weapon;
 			}
 		}
 	return winf;
@@ -2872,7 +2875,8 @@ bool Actor::figure_hit_points
 		}
 	else
 		{
-		winf = attacker->get_weapon(wpoints, weapon_shape);
+		Game_object *w;
+		winf = attacker->get_weapon(wpoints, weapon_shape, w);
 		if (!wpoints)
 			wpoints = 1;	// Always give at least one.
 		}
@@ -2917,7 +2921,8 @@ bool Actor::figure_hit_points
 	if (GAME_SI && attacker && attacker->npc_num == 294)
 		{
 		int pts, sh;		// Do we have Magebane?
-	    	if (get_weapon(pts, sh) && sh == 0xe7)
+		Game_object *w;
+	    	if (get_weapon(pts, sh, w) && sh == 0xe7)
 			{
 			prob -= (70 + rand()%20);
 			eman->remove_text_effect(attacker);

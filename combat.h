@@ -50,6 +50,7 @@ protected:
 	Schedule_types prev_schedule;	// Before going into combat.
 	Actor_queue opponents;		// Possible opponents.
 	Game_object *practice_target;	// Only for duel schedule.
+	Game_object *weapon;
 	int weapon_shape;		// Weapon's shape in shapes.vga.
 	int ammo_shape;			// If required, else 0.
 	int projectile_shape;		// For shooting, else 0.
@@ -57,6 +58,7 @@ protected:
 					// Ranges in tiles.  
 					//   0 means not applicable.
 	unsigned char strike_range, projectile_range, max_range;
+	bool uses_charges;		// Wands.
 	bool is_thrown;			// Daggers, etc.
 	bool returns;			// Boomerang, magic axe.
 	bool no_blocking;		// Weapon/ammo goes through walls.

@@ -107,7 +107,7 @@ public:
 	bool uses_charges()
 		{ return ammo == -2; }
 	bool is_thrown() const
-		{ return uses == 1 || uses == 2 || m_returns; }
+		{ return ammo == -3; /* uses == 1 || uses == 2 || m_returns;*/}
 	bool returns() const
 		{ return m_returns; }
 	void set_returns(bool tf)

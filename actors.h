@@ -445,9 +445,10 @@ public:
 	virtual int get_rotated_frame(int quads);
 	virtual int get_armor_points();	// Get total armor value.
 					// Get total weapon value.
-	virtual Weapon_info *get_weapon(int& points, int& shape);	
+	virtual Weapon_info *get_weapon(int& points, int& shape,
+						Game_object *& obj);
 	Weapon_info *get_weapon(int& points)
-		{ int sh; return get_weapon(points, sh); }
+		{ int sh; Game_object *o; return get_weapon(points, sh, o); }
 	static bool roll_to_win(int attacker, int defender);
 					// Hit-point algorithm:
 	bool figure_hit_points(Actor *attacker, int weapon_shape, 
