@@ -592,7 +592,6 @@ int Usecode_script::exec
 			        cout << "Und sched. opcode " << hex << 
 					"0x" << setfill((char)0x30) << setw(2) 
 					<< opcode << std::dec << endl;
-				do_another = true; // Don't let it delay us.
 				}
 			break;
 			}
