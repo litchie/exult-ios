@@ -266,30 +266,24 @@ static void Init
 	SDL_SysWMinfo info;		// Get system info.
 	SDL_VERSION(&info.version);
 					// Ignore clicks until splash done.
-	
-	int w, h;
-#ifdef XWIN
-	SDL_GetWMInfo(&info);
-	display = info.info.x11.display;
-	xfd = ConnectionNumber(display);
-	int screen_num = DefaultScreen(display);
-	unsigned int display_width = DisplayWidth(display, screen_num);
-	unsigned int display_height = DisplayHeight(display, screen_num);
-					// Make window 1/2 size of screen.
-	w = display_width/2, h = display_height/2;
-	if (w < 500)
-		w = 500;
-	if (h < 400)
-		h = 400;
-#else
-	w = 640;
-	h = 480;
-#endif //not XWIN
 
-	int sw, sh;			// Get screen size.
+#ifdef XWIN
+        SDL_GetWMInfo(&info);
+        display = info.info.x11.display;
+        xfd = ConnectionNumber(display);
+#endif
+	
+	int w, h, sc;
+
+	w = 320;
+	h = 200;
+	sc = 2;
+
+	int sw, sh, scale;
 	config->value("config/video/width", sw, w);
 	config->value("config/video/height", sh, h);
-	gwin = new Game_window(sw, sh);
+	config->value("config/video/scale", scale, sc);
+	gwin = new Game_window(sw, sh, scale);
 
 #ifdef WIN32
 	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
