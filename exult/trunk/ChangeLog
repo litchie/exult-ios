@@ -1,3 +1,6 @@
+2001-05-16  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* configure.in: fixed checks for getaddrinfo() and mkstemp()
+
 2001-05-16  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* NPC's (along with guards) attack you if you attack them.
