@@ -7,9 +7,9 @@
 
 \CJeff S. "DrCode" Freedman
 \C<jsf@users.sourceforge.net>
-\CThe man who started it all: from usecode to
-\Cmap browser to usecode to animation to usecode
-\Cto ExultStudio to usecode.
+\CThe man who started it all: from usecode 
+\Cto map browser to usecode to animation 
+\Cto usecode to ExultStudio to usecode.
 \CHe's the leader ! (Did we mention usecode?)
 
 
@@ -55,6 +55,11 @@
 \CPatrick Burke
 \C<takhisisii@yahoo.com.au>
 \CUsecode decompiler/disassembler/docs
+
+
+\CDominik "Dominus" Reichardt
+\C<gigdr@tesionmail.de>
+\COur trusty FAQ maintainer
 
 
 \CChristoph "Jameson" Reichenbach
@@ -120,9 +125,6 @@
 \CMatt Kimmich
 \CFor giving us permission to use his MIDI
 \Ctracks
-
-\CDominik "Dominus" Reichardt
-\CFor maintaining the Exult FAQ
 
 \CJoseph Morris
 \CFor the digital SFX packs
