@@ -125,8 +125,9 @@ public:
  */
 class Preach_schedule : public Schedule
 	{
+	int first;
 public:
-	Preach_schedule(Actor *n) : Schedule(n)
+	Preach_schedule(Actor *n) : Schedule(n), first(1)
 		{  }
 	virtual void now_what();	// Now what should NPC do?
 	};

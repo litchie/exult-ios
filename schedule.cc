@@ -130,6 +130,21 @@ void Eat_at_inn_schedule::now_what
 	(
 	)
 	{
+	int frnum = npc->get_framenum();
+	if ((frnum&0xf) != Actor::sit_frame)
+		{			// First have to sit down.
+		static int chairs[] = {873,292};
+		Game_object *chair = npc->find_closest(chairs, 
+					sizeof(chairs)/sizeof(chairs[0]));
+		if (!chair)
+			{		// Try again in a while.
+			npc->start(250, 20000);
+			return;
+			}
+		Sit_schedule::set_action(npc, chair);
+		return;
+		}
+	Game_window *gwin = Game_window::get_game_window();
 	Vector foods;			// Food nearby?
 	int cnt = npc->find_nearby(foods, 377, 2, 0);
 	if (cnt)			// Found?
@@ -146,7 +161,11 @@ void Eat_at_inn_schedule::now_what
 				food = obj;
 				}
 			}
-		food->remove_this();	// Maybe an animation too?
+		if (rand()%3 == 0)
+			{
+			gwin->add_dirty(food);
+			food->remove_this();
+			}
 		char *msgs[] = {"Gulp!", "Mmmmm.", "Yum!", ""};
 		int n = rand()%(sizeof(msgs)/sizeof(msgs[0]));
 		npc->say(msgs[n]);
@@ -163,13 +182,26 @@ void Preach_schedule::now_what
 	(
 	)
 	{
+	if (first)			// Find podium.
+		{
+		first = 0;
+		Vector vec;
+		if (npc->find_nearby(vec, 697, 5, 0))
+			{
+			Game_object *podium = (Game_object *) vec.get(0);
+			npc->walk_to_tile(podium->get_abs_tile_coord());
+			return;
+			}
+		}
 	char frames[8];			// Frames.
 	int cnt = 1 + rand()%(sizeof(frames) - 1);
 					// Frames to choose from:
 	static char choices[3] = {0, 9, 14};
-	for (int i = 0; i < cnt; i++)
+	for (int i = 0; i < cnt - 1; i++)
 		frames[i] = npc->get_dir_framenum(
 					choices[rand()%(sizeof(choices))]);
+					// Make last one standing.
+	frames[cnt - 1] = npc->get_dir_framenum(Actor::standing);
 	npc->set_action(new Frames_actor_action(frames, cnt, 250));
 					// Do it in 3-?? seconds.
 	npc->start(250, 3000 + rand()%8000);
@@ -510,7 +542,7 @@ void Waiter_schedule::get_customer
 				prep_tables.get(rand()%prep_tables.get_cnt());
 		Tile_coord pos = table->find_unblocked_tile(1, 3);
 		if (pos.tx != -1 &&
-		    npc->walk_path_to_tile(pos, 200, rand()%2000))
+		    npc->walk_path_to_tile(pos, 200, 1000 + rand()%1000))
 			return;
 		}
 	const int dist = 8;		// Bad luck?  Walk randomly.
@@ -556,9 +588,22 @@ int Waiter_schedule::find_serving_spot
 	Tile_coord& spot
 	)
 	{
+	Vector plates;			// First look for a nearby plate.
+	int cnt = npc->find_nearby(plates, 717, 2, 0);
+	int floor = npc->get_lift()/5;	// Make sure it's on same floor.
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *plate = (Game_object *) plates.get(i);
+		if (plate->get_lift()/5 == floor)
+			{
+			spot = plate->get_abs_tile_coord();
+			spot.tz++;	// Just above plate.
+			return 1;
+			}
+		}
 	Game_window *gwin = Game_window::get_game_window();
 	Tile_coord cpos = customer->get_abs_tile_coord();
-	int cnt = eating_tables.get_cnt();
+	cnt = eating_tables.get_cnt();	// Go through tables.
 	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *table = (Game_object *) eating_tables.get(i);
@@ -604,13 +649,13 @@ void Waiter_schedule::now_what
 		find_tables(890);
 		find_tables(964);
 		}
-		
-	if (!customer)			// Need a new customer?
+	int dist = customer ? npc->distance(customer) : 5000;
+	if (dist > 32)			// Need a new customer?
 		{
 		get_customer();		// Find one, and walk to a prep. table.
 		return;
 		}
-	if (npc->distance(customer) < 3)// Close enough to customer?
+	if (dist < 3)			// Close enough to customer?
 		{
 		Vector foods;
 		if (customer->find_nearby(foods, 377, 2, 0) > 0)
@@ -661,7 +706,7 @@ void Waiter_schedule::now_what
 								rand()%1000))
 			return;			// Walking there.
 		}
-	npc->start(200, rand()%4000);		// Failed so try again later.
+	npc->start(200, 2000 + rand()%4000);	// Failed so try again later.
 	}
 
 /*
