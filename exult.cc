@@ -214,8 +214,6 @@ int main
 	
 	mouse = new Mouse(gwin);
 	mouse->set_shape(Mouse::hand);
-
-	SDL_ShowCursor(0);
 	
 	int result = Play();		// start game
 //	delete config;			// free configuration object
@@ -263,8 +261,9 @@ static void Init
 		exit(-1);
 		}
 	atexit(SDL_Quit);
-	audio->Init(9615*2,2);
+	
 	SDL_SysWMinfo info;		// Get system info.
+	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
 					// Ignore clicks until splash done.
 
@@ -285,6 +284,13 @@ static void Init
 	config->value("config/video/height", sh, h);
 	config->value("config/video/scale", scale, sc);
 	gwin = new Game_window(sw, sh, scale);
+
+	if (Game::get_game_type() == BLACK_GATE)
+		audio->Init(9615*2,2);
+	else if (Game::get_game_type() == SERPENT_ISLE)
+		audio->Init(11111*2,2);
+	else
+		audio->Init(11025*2,2);
 
 #ifdef WIN32
 	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
@@ -866,6 +872,7 @@ static void Handle_keystroke
 			"  g - Change Avatar gender\n"
 			"  ctrl-m - Get 100 gold coins\n"
 			"  alt-p  - Toggle Petra mode (SI)\n"
+			"  alt-s - Change skin color (SI)\n"
 			"  ctrl-t - Fake time period change\n"
 			"  alt-t  - Teleport\n"
 			"  ctrl-w - Test weather\n"
@@ -940,6 +947,15 @@ static void Handle_keystroke
 			gwin->get_main_actor()->clear_type_flag(Actor::tf_sex);
 		else
 			gwin->get_main_actor()->set_type_flag(Actor::tf_sex);
+		gwin->set_all_dirty();
+		break;
+	case SDLK_n:		// Toggle Naked flag
+		if(!cheat || (Game::get_game_type() == BLACK_GATE))
+			break;
+		if (gwin->get_main_actor()->get_siflag(Actor::naked))
+			gwin->get_main_actor()->clear_siflag(Actor::naked);
+		else
+			gwin->get_main_actor()->set_siflag(Actor::naked);
 		gwin->set_all_dirty();
 		break;
 	case SDLK_r:
@@ -1056,6 +1072,18 @@ static void Handle_keystroke
 			break;
 		{
 			Game::get_game()->end_game(shift==0);
+			gwin->set_palette(0);
+			gwin->paint();
+			gwin->fade_palette (50, 1, 0);
+		}
+		break;
+	case SDLK_F11:
+		if(!cheat && Game::get_game_type() != SERPENT_ISLE)
+			break;
+		{
+			Game::get_game()->set_jive();
+			Game::get_game()->play_intro();
+			Game::get_game()->clear_jive();
 			gwin->set_palette(0);
 			gwin->paint();
 			gwin->fade_palette (50, 1, 0);

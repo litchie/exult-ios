@@ -39,7 +39,8 @@ Game::Game() : menushapes(MAINSHP_FLX)
 	topy = (gwin->get_height()-200)/2;
 	centerx = gwin->get_width()/2;
 	centery = gwin->get_height()/2;
-	
+	jive = false;
+
 	if (!gwin->setup_mainshp_fonts())
 			gwin->abort ("Unable to setup fonts from 'mainshp.flx' file.");
 }
@@ -151,8 +152,10 @@ int Game::show_text_line(int left, int right, int y, const char *s)
 	//indicates the output format of the lines:
 	// \Px   include picture number x (frame of MAINSHP.FLX shape 14h)
 	// \C    center line
-	// \L    left-aligned line
-	// \R	 right-aligned line
+	// \L    left aligned to right center line
+	// \R	 right aligned to left center line
+	// |	 carriage return (stay on same line)
+	// #xxx	 display character with number xxx
 
 	char *txt = new char[strlen(s)+1];
 	char *ptr = (char *)s;
@@ -183,22 +186,21 @@ int Game::show_text_line(int left, int right, int y, const char *s)
 			ptr += 2;
 			align = -1;
 		} else if(*ptr=='|' || *(ptr+1)==0) {
-			if(*(ptr+1)==0)
-				if(*ptr!='|') {
-					*txtptr++ = *ptr;
-					add_line = false;
-				} else
-					add_line = true;
+			if(*(ptr+1)==0 && *ptr!='|')
+			{
+				*txtptr++ = *ptr;
+				add_line = false;
+			}
 			*txtptr = 0;
 			
 			if(align<0)
-				xpos = left;
+				xpos = center-gwin->get_text_width(MAINSHP_FONT1, txt);
 			else if(align==0)
 				xpos = center-gwin->get_text_width(MAINSHP_FONT1, txt)/2;
 			else
-				xpos = center;//right-gwin->get_text_width(MAINSHP_FONT1, txt);
+				xpos = center;
 			gwin->paint_text(MAINSHP_FONT1,txt,xpos,ypos);
-			ypos += gwin->get_text_height(MAINSHP_FONT1)+vspace;
+			if(*ptr!='|') ypos += gwin->get_text_height(MAINSHP_FONT1)+vspace;
 			txtptr = txt;	// Go to beginning of string
 			++ptr;
 		} else if(*ptr=='#') {
@@ -284,7 +286,7 @@ void Game::scroll_text(vector<char *> *text)
 			}
 		} while (ypos<endy);
 		pal.apply();
-		looping = looping && !wait_delay(100);
+		looping = looping && !wait_delay(120);
 		if(!looping)
 			pal.fade_out(30);
 		starty --;

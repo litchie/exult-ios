@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 				if(*c=='\\')
 					output << "\\\\";
 				else if(*c=='"')
-					output << "\"";
+					output << "\\\"";
 				else
 					output << *c;
 			}

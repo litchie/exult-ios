@@ -44,6 +44,7 @@ class playfli {
     int fli_depth;
     int fli_flags;
     int fli_speed;
+    Image_buffer *fli_buf;
     int streamstart;
     int streampos;
     int frame;
