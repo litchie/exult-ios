@@ -70,6 +70,7 @@ public:
 	void	cancel_streams(void);	// Dump any audio streams
 	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,bool);
+	void	playwave(const char *,bool);
 	void	mix_audio(void);
 	void	mix(uint8 *sound_data,uint32 len);
 	void	mixfile(const char *fname);
