@@ -1303,7 +1303,7 @@ void ExultStudio::set_edit_terrain
 		set_spin("hide_lift_spin", 16, true);
 		}
 	else				// Disable "Hide lift".
-		set_spin("hide_lift_spin", 16, false);
+		set_sensitive("hide_lift_spin", false);
 					// Set edit-mode to paint.
 	GtkWidget *mitem = glade_xml_get_widget(app_xml, 
 						terrain ? "paint1" : "move1");
