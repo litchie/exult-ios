@@ -68,6 +68,8 @@ public:
 	void	start_track(int num,bool continuous=false,int bank=0);
 	void	start_track(const char *fname,int num,bool continuous=false);
 
+	void	stop_music();
+
 	bool	add_midi_bank(const char *s);
 
 

@@ -363,6 +363,12 @@ void	Audio::start_music(const char *fname,int num,bool repetition)
 	if(midi)
 		midi->start_music(fname,num,repetition);
 }
+
+void	Audio::stop_music()
+{
+	if(midi)
+		midi->stop_music();
+}
 #if 0	// Unused
 static void	load_buffer(char *buffer,const char *filename,size_t start,size_t len)
 {
