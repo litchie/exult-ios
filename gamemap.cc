@@ -1075,6 +1075,7 @@ bool Game_map::swap_terrains
 			else if (terrain_map[cx][cy] == tnum + 1)
 				terrain_map[cx][cy]--;
 			}
+	Game_window::get_game_window()->set_all_dirty();
 	return true;
 	}
 
@@ -1128,6 +1129,7 @@ bool Game_map::insert_terrain
 			if (terrain_map[cx][cy] > tnum)
 				terrain_map[cx][cy]++;
 			}
+	Game_window::get_game_window()->set_all_dirty();
 	return true;
 	}
 

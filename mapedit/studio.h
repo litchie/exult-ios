@@ -80,8 +80,6 @@ public:
 	GladeXML *get_xml() 
 		{ return app_xml; }
 
-	void set_response_callback(Msg_callback callback, void *client = 0)
-		{ waiting_for_server = callback; waiting_client = client; }
 	void set_browser(const char *name, Object_browser *obj);
 
 	void choose_static_path();
