@@ -2890,9 +2890,9 @@ void Game_window::plasma(int w, int h, int x, int y, int startc, int endc)
 	ibuf->fill8(startc, w, h, x, y);
 
 	for (int i=0; i < w*h*8; i++) {
-		Uint8 pc = startc + random()%(endc-startc+1);
-		int px = x + random()%w;
-		int py = y + random()%h;
+		Uint8 pc = startc + rand()%(endc-startc+1);
+		int px = x + rand()%w;
+		int py = y + rand()%h;
 		ibuf->fill8(pc, 3, 1, px - 1, py);
 		ibuf->fill8(pc, 1, 3, px, py - 1);
 	}
