@@ -56,6 +56,7 @@
 #include "exult_constants.h"
 #include "monsters.h"
 #include "effects.h"
+#include "palette.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"
@@ -1981,7 +1982,7 @@ bool Actor::reduce_health
 	if (this == gwin->get_main_actor() && val < maxhp/8 &&
 					// Flash red if Avatar badly hurt.
 	    rand()%2)
-		gwin->flash_palette_red();
+		gwin->get_pal()->flash_red();
 	else
 		{
 		hit = true;		// Flash red outline.

@@ -1,5 +1,6 @@
 2002-06-27  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
+	* palette.*,etc:  All palette vars/methods moved to Palette.
 	* objs.h:  Added get_chunk().
 	* gamewin.h,etc:  get_chunk* removed (it's in Game_map).
 

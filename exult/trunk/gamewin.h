@@ -118,11 +118,6 @@ class Game_window
 	int scrolltx, scrollty;		// Top-left tile of screen.
 	Actor *camera_actor;		// What to center view around.
 	Rectangle scroll_bounds;	// Walking outside this scrolls.
-	int palette;			// Palette #.
-	int brightness;			// Palette brightness.
-	int user_brightness;		// User's setting for brightness.
-	bool faded_out;			// true if faded palette to black.
-	bool fades_enabled;
 	unsigned long special_light;	// Game minute when light spell ends.
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
@@ -229,8 +224,6 @@ public:
 	void fake_next_period()		// For debugging.
 		{ clock.fake_next_period(); }
 	Game_clock *get_clock () { return &clock; }
-	void set_fades_enabled(bool f) { fades_enabled = f; }		
-	bool get_fades_enabled() const { return fades_enabled; }
 	void set_palette()		// Set for time, flags, lighting.
 		{ clock.set_palette(); }
 	void reload_shapes(int dragtype);	// Reload a shape file.
@@ -441,19 +434,8 @@ public:
 		}
 	inline char *get_save_name(int i) const	// Get ->saved-game name.
 		{ return save_names[i]; }
-					// Fade palette in/out.
-	void fade_palette(int cycles, int inout, int pal_num = -1);
-	bool is_palette_faded_out()
-		{ return faded_out; }
-	void flash_palette_red();	// Flash red for a moment.
-					// Set desired palette.
-	void set_palette(int pal_num, int new_brightness = -1, bool repaint=true);
-	int get_brightness()		// Percentage:  100 = normal.
-		{ return brightness; }
-	void brighten(int per);		// Brighten/darken by percentage for
-					//   the user.
-	int get_users_brightness()	// What user set it at.
-		{ return user_brightness; }
+	Palette *get_pal()
+		{ return pal; }
 	void view_right();		// Move view 1 chunk to right.
 	void view_left();		// Move view left by 1 chunk.
 	void view_down();		// Move view down.

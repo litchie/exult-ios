@@ -52,6 +52,7 @@
 #include "actions.h"
 #include "ucscriptop.h"
 #include "ucfunction.h"
+#include "palette.h"
 
 using std::cerr;
 using std::cout;
@@ -2201,7 +2202,7 @@ USECODE_INTRINSIC(fade_palette)
 	int inout = parms[2].get_int_value();
 	if (inout == 0)
 		show_pending_text();	// Make sure prev. text was seen.
-	gwin->fade_palette(cycles, inout);
+	gwin->get_pal()->fade(cycles, inout);
 	return(no_ret);
 }
 
@@ -2788,7 +2789,7 @@ USECODE_INTRINSIC(infravision)
 		if (parms[1].get_int_value())
 			{		// On?
 			cheat.set_infravision(true);
-			gwin->set_palette(0);
+			gwin->get_pal()->set(0);
 			}
 		else
 			{

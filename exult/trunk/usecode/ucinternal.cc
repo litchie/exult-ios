@@ -1531,7 +1531,7 @@ void Usecode_internal::click_to_continue
 	{
 	int xx, yy;
 	char c;
-	if (!gwin->is_palette_faded_out())// If black screen, skip!
+	if (!gwin->get_pal()->is_faded_out())// If black screen, skip!
 		Get_click(xx, yy, Mouse::hand, &c);
 	conv->clear_text_pending();
 	//	user_choice = 0;		// Clear it.
