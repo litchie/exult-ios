@@ -64,7 +64,7 @@ static 	void debug_speech(void)
 	for(int i=0;i<32;i++)
 		{
 		audio.start_speech(i,false);
-		sleep(1);
+		SDL::Delay(1000);
 		}
 }
 
