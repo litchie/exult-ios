@@ -1,16 +1,16 @@
-??/??/??	v1.1.x
+07/20/03	v1.1 Beta
 
 		Party Formation
 		Improved combat system with pausing, hit display and targeting
 		Spellbook improvements
 		Exult Studio improvements and porting to GTK+2
 		Support for arrow/keypad walking and running
-		Optional OpenGL scaling/rendering
 		OGG Vorbis music system
 		FM Synth emulator
 		Additional paperdoll art (SB-X, Oblivious)
 		Scale2X scaler (Andrea Mazzoleni)
 		Ported to the Zaurus (Artaxerxes)
+		Experimental OpenGL scaling/rendering
 		Tons of bugfixes (see ChangeLog for details)
 
 06/05/02	v0.99 RC 2
