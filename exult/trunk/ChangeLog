@@ -1,5 +1,7 @@
 2001-10-20  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* schedule.cc (public): Better testing for occupied chair.
+
 	* actions.cc,paths.cc:  Changed interface; changed pathfinder to
 	use correct test for being blocked.
 
