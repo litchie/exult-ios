@@ -2391,7 +2391,8 @@ Monster_actor::~Monster_actor
 		prev_monster->next_monster = next_monster;
 	else				// We're at start of list.
 		in_world = next_monster;
-	in_world_cnt--;
+	if (!Actor::is_dead_npc())	// Dying decrements count.
+		in_world_cnt--;
 	}
 
 /*
@@ -2528,6 +2529,7 @@ void Monster_actor::die
 	audio->start_music(VICTORY, 0);
 					// Got to delete this somewhere, but
 					//   doing it here crashes.
+	in_world_cnt--;			// So... Decrement 'live' count here.
 	}
 
 /*
