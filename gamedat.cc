@@ -338,46 +338,57 @@ void Game_window::read_save_names
 void Game_window::write_saveinfo()
 {
 	ofstream out;
-	SaveGame_Details	details;
-	SaveGame_Party		party[8];
+	int	i, j;
 
-	details.save_count = 0;
+	int save_count = 1;
 
 	try
 	{
+		SaveGame_Details details;
 		ifstream in;
 		U7open(in, GSAVEINFO);		// Open file; throws an exception 
 		in.read((char *) &details, sizeof (details));
 		in.close();
+		save_count += details.save_count;
 	}
 	catch(...)
 	{
 	}
 
 	Usecode_machine *uc = get_usecode();
-
-	details.party_size = uc->get_party_count()+1;
-	details.save_count++;
-
-	details.game_day = clock.get_day();
-	details.game_hour = clock.get_hour();
-	details.game_minute = clock.get_minute();
+	int party_size = uc->get_party_count()+1;
 
 	time_t t = std::time(0);
 	struct tm *timeinfo = localtime (&t);	
 
-	details.real_day = timeinfo->tm_mday;
-	details.real_hour = timeinfo->tm_hour;
-	details.real_minute = timeinfo->tm_min;
-	details.real_month = timeinfo->tm_mon+1;
-	details.real_year = timeinfo->tm_year + 1900;
-	details.real_second = timeinfo->tm_sec;
-
 	U7open(out, GSAVEINFO);		// Open file; throws an exception - Don't care
-	out.write((char *) &details, sizeof(details));
 
-	int	i;
-	for (i=0; i<8 && i<details.party_size ; i++)
+	// This order must match struct SaveGame_Details
+
+	// Time that the game was saved
+	out.put(timeinfo->tm_min);
+	out.put(timeinfo->tm_hour);
+	out.put(timeinfo->tm_mday);
+	out.put(timeinfo->tm_mon+1);
+	Write2(out, timeinfo->tm_year + 1900);
+
+	// The Game Time that the save was done at
+	out.put(clock.get_minute());
+	out.put(clock.get_hour());
+	Write2(out, clock.get_day());
+
+	Write2(out, save_count);
+	out.put(party_size);
+
+	out.put(0);			// Unused
+
+	out.put(timeinfo->tm_sec);	// 15
+
+	// Packing for the rest of the structure
+	for (j = (int)&(((SaveGame_Details *)0)->reserved0); j < sizeof(SaveGame_Details); j++)
+		out.put(0);
+
+	for (i=0; i<party_size ; i++)
 	{
 		Actor *npc;
 		if (i == 0)
@@ -385,24 +396,31 @@ void Game_window::write_saveinfo()
 		else
 			npc = (Npc_actor *) get_npc( uc->get_party_member(i-1));
 
-		strncpy (party[i].name, npc->get_npc_name().c_str(), 18);
-		party[i].shape = npc->get_shapenum();
+		char name[18];
+		strncpy (name, npc->get_npc_name().c_str(), 18);
+		out.write(name, 18);
+		Write2(out, npc->get_shapenum());
 
-		party[i].dext = npc->get_property(Actor::dexterity);
-		party[i].str = npc->get_property(Actor::strength);
-		party[i].intel = npc->get_property(Actor::intelligence);
-		party[i].health = npc->get_property(Actor::health);
-		party[i].combat = npc->get_property(Actor::combat);
-		party[i].mana = npc->get_property(Actor::mana);
-		party[i].magic = npc->get_property(Actor::magic);
-		party[i].training = npc->get_property(Actor::training);
-		party[i].exp = npc->get_property(Actor::exp);
-		party[i].food = npc->get_property(Actor::food_level);
-		party[i].flags = npc->get_flags();
-		party[i].flags2 = npc->get_flags2();
+		Write4(out, npc->get_property(Actor::exp));
+		Write4(out, npc->get_flags());
+		Write4(out, npc->get_flags2());
+
+		out.put(npc->get_property(Actor::food_level));
+		out.put(npc->get_property(Actor::strength));
+		out.put(npc->get_property(Actor::combat));
+		out.put(npc->get_property(Actor::dexterity));
+		out.put(npc->get_property(Actor::intelligence));
+		out.put(npc->get_property(Actor::magic));
+		out.put(npc->get_property(Actor::mana));
+		out.put(npc->get_property(Actor::training));
+
+		Write2(out, npc->get_property(Actor::health));
+
+		// Packing for the rest of the structure
+		for (j = (int)&(((SaveGame_Party *)0)->reserved0); j < sizeof(SaveGame_Party); j++)
+			out.put(0);
 	}
 
-	out.write((char *) party, sizeof(SaveGame_Party)*details.party_size );
 	out.close();
 
 	// Save Shape
@@ -412,6 +430,64 @@ void Game_window::write_saveinfo()
 	map->save(ds);
 	out.close();
 	delete map;
+}
+void Game_window::read_saveinfo(std::ifstream &in,
+		SaveGame_Details *&details,
+		SaveGame_Party *& party)
+{
+	int j, i;
+	details = new SaveGame_Details;
+
+	// This order must match struct SaveGame_Details
+
+	// Time that the game was saved
+	in.get(details->real_minute);
+	in.get(details->real_hour);
+	in.get(details->real_day);
+	in.get(details->real_month);
+	details->real_year = Read2(in);
+
+	// The Game Time that the save was done at
+	in.get(details->game_minute);
+	in.get(details->game_hour);
+	details->game_day = Read2(in);
+
+	details->save_count = Read2(in);
+	in.get(details->party_size);
+
+	in.get(details->unused);	// Unused
+
+	in.get(details->real_second);	// 15
+
+	// Packing for the rest of the structure
+	for (j = (int)&(((SaveGame_Details *)0)->reserved0); j < sizeof(SaveGame_Details); j++)
+		in.get();
+
+	party = new SaveGame_Party[details->party_size];
+	for (i=0; i<8 && i<details->party_size ; i++)
+	{
+		in.read(party[i].name, 18);
+		party[i].shape = Read2(in);
+
+		party[i].exp = Read4(in);
+		party[i].flags = Read4(in);
+		party[i].flags2 = Read4(in);
+
+		in.get(party[i].food);
+		in.get(party[i].str);
+		in.get(party[i].combat);
+		in.get(party[i].dext);
+		in.get(party[i].intel);
+		in.get(party[i].magic);
+		in.get(party[i].mana);
+		in.get(party[i].training);
+
+		party[i].health = Read2(in);
+
+		// Packing for the rest of the structure
+		for (j = (int)&(((SaveGame_Party *)0)->reserved0); j < sizeof(SaveGame_Party); j++)
+			in.get();
+	}
 }
 
 void Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_Details *&details, SaveGame_Party *& party)
@@ -470,10 +546,7 @@ void Game_window::get_saveinfo(int num, char *&name, Shape_file *&map, SaveGame_
 		}
 		else if (!strcmp (fname, GSAVEINFO))
 		{
-			details = new SaveGame_Details;
-			in.read((char *) details, sizeof (SaveGame_Details));
-			party = new SaveGame_Party[details->party_size];
-			in.read((char *) party, sizeof (SaveGame_Party)*details->party_size);
+			read_saveinfo (in, details, party);
 		}
 
 	}
@@ -488,10 +561,7 @@ void Game_window::get_saveinfo(Shape_file *&map, SaveGame_Details *&details, Sav
 	{
 		ifstream in;
 		U7open(in, GSAVEINFO);		// Open file; throws an exception 
-		details = new SaveGame_Details;
-		in.read((char *) details, sizeof (SaveGame_Details));
-		party = new SaveGame_Party[details->party_size];
-		in.read((char *) party, sizeof (SaveGame_Party)*details->party_size);
+		read_saveinfo (in, details, party);
 		in.close();
 	}
 	catch(...)
