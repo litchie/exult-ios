@@ -160,6 +160,8 @@ case		return CASE;
 
 converse	return CONVERSE;
 say		return SAY;
+add		return ADD;
+hide		return HIDE;
 message		return MESSAGE;
 response	return RESPONSE;
 script		return SCRIPT;
