@@ -905,10 +905,15 @@ USECODE_INTRINSIC(set_alignment)
 {
 	// Set npc's alignment.
 	// 2,3==bad towards Ava. 0==good.
-	Game_object *obj = get_item(parms[0]);
+	Actor *npc = as_actor(get_item(parms[0]));
 	int val = parms[1].get_int_value();
-	if (obj)
-		obj->set_alignment(val);
+	if (npc)
+		{
+		int oldalign = npc->get_alignment();
+		npc->set_alignment(val);
+		if (oldalign != val)	// Changed?  Force search for new opp.
+			npc->set_target(0);
+		}
 	return(no_ret);
 }
 
@@ -1222,6 +1227,7 @@ USECODE_INTRINSIC(set_oppressor)
 			npc->set_oppressor(opp->get_npc_num());
 					// Need this for SI ListField training:
 		npc->set_target(opp);
+		opp->set_target(npc);
 		}
 	return no_ret;
 }

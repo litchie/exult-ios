@@ -551,15 +551,32 @@ void Combat_schedule::set_weapon_info
 	}
 
 /*
+ *	Off-screen?
+ */
+
+inline bool Off_screen
+	(
+	Game_window *gwin,
+	Game_object *npc
+	)
+	{
+					// See if off screen.
+	Tile_coord t = npc->get_abs_tile_coord();
+	Rectangle screen = gwin->get_win_tile_rect().enlarge(2);
+	return (!screen.has_point(t.tx, t.ty));
+	}
+
+/*
  *	See if we need a new opponent.
  */
 
 inline int Need_new_opponent
 	(
 	Game_window *gwin,
-	Game_object *opponent
+	Actor *npc
 	)
 	{
+	Game_object *opponent = npc->get_target();
 	Actor *act;
 					// Nonexistent or dead?
 	if (!opponent || 
@@ -568,9 +585,7 @@ inline int Need_new_opponent
 	    opponent->get_flag(Obj_flags::invisible))
 		return 1;
 					// See if off screen.
-	Tile_coord t = opponent->get_abs_tile_coord();
-	Rectangle screen = gwin->get_win_tile_rect().enlarge(2);
-	return (!screen.has_point(t.tx, t.ty));
+	return Off_screen(gwin, opponent) && !Off_screen(gwin, npc);
 	}
 
 /*
@@ -683,7 +698,7 @@ void Combat_schedule::now_what
 		return;
 		}
 					// Check if opponent still breathes.
-	if (Need_new_opponent(gwin, npc->get_target()))
+	if (Need_new_opponent(gwin, npc))
 		{
 		npc->set_target(0);
 		state = approach;
