@@ -76,9 +76,9 @@ static Uc_function *function = 0;	// Current function being parsed.
 /*
  *	Keywords:
  */
-%token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN BREAK GOTO
+%token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR INT CONST STRING
-%token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE
+%token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
 %token SCRIPT AFTER TICKS
 
 /*
@@ -116,7 +116,7 @@ static Uc_function *function = 0;	// Current function being parsed.
  */
 %type <expr> expression primary declared_var_value opt_script_delay item
 %type <expr> script_command
-%type <intval> opt_int eventid direction int_literal
+%type <intval> opt_int eventid direction int_literal converse_options
 %type <sym> declared_sym
 %type <var> declared_var
 %type <funsym> function_proto function_decl
@@ -124,9 +124,10 @@ static Uc_function *function = 0;	// Current function being parsed.
 %type <stmt> statement assignment_statement if_statement while_statement
 %type <stmt> statement_block return_statement function_call_statement
 %type <stmt> array_loop_statement var_decl var_decl_list declaration
-%type <stmt> break_statement converse_statement script_statement
+%type <stmt> break_statement converse_statement converse2_statement
+%type <stmt> converse_case script_statement
 %type <stmt> label_statement goto_statement
-%type <block> statement_list
+%type <block> statement_list converse_case_list
 %type <arrayloop> start_array_loop
 %type <exprlist> opt_expression_list expression_list script_command_list
 %type <funcall> function_call routine_call method_call
@@ -203,6 +204,7 @@ statement:
 	| return_statement
 	| statement_block
 	| converse_statement
+	| converse2_statement
 	| script_statement
 	| break_statement
 	| label_statement
@@ -378,6 +380,36 @@ return_statement:
 converse_statement:
 	CONVERSE statement
 		{ $$ = new Uc_converse_statement($2); }
+	;
+
+converse2_statement:			/* A less wordy form.		*/
+	CONVERSE '(' expression ')' '{' converse_case_list '}'
+		{ $$ = new Uc_converse2_statement($3, $6); }
+	;
+
+converse_case_list:
+	converse_case_list converse_case
+		{
+		if ($2)
+			$$->add($2);
+		}
+	|
+		{ $$ = new Uc_block_statement(); }
+	;
+
+converse_case:
+	CASE STRING_LITERAL converse_options ':' statement_list
+		{
+		$$ = new Uc_converse_case_statement(function->add_string($2),
+				($3 ? true : false), $5);
+		}
+	;
+
+converse_options:
+	'(' REMOVE ')'			/* For now, just one.		*/
+		{ $$ = 1; }
+	|
+		{ $$ = 0; }
 	;
 
 script_statement:			/* Yes, this could be an intrinsic. */
