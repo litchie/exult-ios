@@ -191,13 +191,13 @@ void AudioOptions_gump::build_midi_buttons()
 	const int mct_array_size = 5;
 #endif
 	std::string* midi_conversiontext = new std::string[mct_array_size];
-	midi_conversiontext[0] = "None";
-	midi_conversiontext[1] = "GM";
-	midi_conversiontext[2] = "GS";
-	midi_conversiontext[3] = "GS127";
-	midi_conversiontext[4] = "Digital";
+	midi_conversiontext[0] = std::string("None");
+	midi_conversiontext[1] = std::string("GM");
+	midi_conversiontext[2] = std::string("GS");
+	midi_conversiontext[3] = std::string("GS127");
+	midi_conversiontext[4] = std::string("Digital");
 #ifdef USE_FMOPL_MIDI
-	midi_conversiontext[5] = "FMSynth";
+	midi_conversiontext[5] = std::string("FMSynth");
 #endif
 
 	// midi conversion
