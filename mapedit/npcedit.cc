@@ -158,9 +158,9 @@ void ExultStudio::open_npc_window
 					// Make 'apply' sensitive.
 	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
 						"npc_apply_btn"), true);
-//	if (data)
-//		if (!init_npc_window(data, datalen))
-//			return;
+	if (data)
+		if (!init_npc_window(data, datalen))
+			return;
 	gtk_widget_show(npcwin);
 	}
 
@@ -174,6 +174,56 @@ void ExultStudio::close_npc_window
 	{
 	if (npcwin)
 		gtk_widget_hide(npcwin);
+	}
+
+/*
+ *	Init. the npc editor with data from Exult.
+ *
+ *	Output:	0 if error (reported).
+ */
+
+int ExultStudio::init_npc_window
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+	unsigned long addr;
+	int tx, ty, tz;
+	int shape, frame;
+	std::string name;
+	short ident;
+	int usecode;
+	short properties[12];
+	short attack_mode, alignment;
+	unsigned long oflags;		// Object flags.
+	unsigned long siflags;		// Extra flags for SI.
+	unsigned long type_flags;	// Movement flags.
+	if (!Npc_actor_in(data, datalen, addr, tx, ty, tz, shape, frame,
+		name, ident, usecode, properties, attack_mode, alignment,
+			oflags, siflags, type_flags))
+		{
+		cout << "Error decoding npc" << endl;
+		return 0;
+		}
+					// Store address with window.
+	gtk_object_set_user_data(GTK_OBJECT(npcwin), (gpointer) addr);
+	GtkTable *ftable = GTK_TABLE(
+			glade_xml_get_widget(app_xml, "npc_flags_table"));
+					// Set flag checkboxes.
+	for (GList *list = g_list_first(ftable->children); list; 
+						list = g_list_next(list))
+		{
+		GtkTableChild *ent = (GtkTableChild *) list->data;
+		GtkCheckButton *cbox = GTK_CHECK_BUTTON(ent->widget);
+		assert (cbox != 0);
+		const char *name = glade_get_widget_name(GTK_WIDGET(cbox));
+					// Names: npc_flag_xx_nn, where
+					//   xx = si, ob, tf.
+		cout << "Flag: " << name << endl;//++++TESTING.
+		}
+//++++++++++++
+	return 1;
 	}
 
 /*

@@ -2337,7 +2337,7 @@ Manual
 
       <widget>
 	<class>GtkTable</class>
-	<name>table4</name>
+	<name>npc_flags_table</name>
 	<rows>11</rows>
 	<columns>3</columns>
 	<homogeneous>True</homogeneous>
