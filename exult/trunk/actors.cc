@@ -499,9 +499,13 @@ void Actor::set_default_frames
 				east_frames[3] = {48, 49, 50},
 				west_frames[3] = {32, 33, 34};
 	frames[(int) north] = new Frames_sequence(3, north_frames);
+	frames[(int) northeast] = frames[(int) north];
 	frames[(int) south] = new Frames_sequence(3, south_frames);
+	frames[(int) southwest] = frames[(int) south];
 	frames[(int) east] = new Frames_sequence(3, east_frames);
+	frames[(int) southeast] = frames[(int) east];
 	frames[(int) west] = new Frames_sequence(3, west_frames);
+	frames[(int) northwest] = frames[(int) west];
 	}
 
 /*

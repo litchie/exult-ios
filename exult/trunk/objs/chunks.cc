@@ -983,7 +983,11 @@ void Chunk_object_list::setup_dungeon_bits
 			Rectangle area = each->get_footprint();
 					// Try to fix Courage Test:
 			if (shnum == 969 && each->get_framenum() == 12)
+				{
 				area.enlarge(1);
+				Rectangle wrld(0, 0, c_num_tiles, c_num_tiles);
+				area = area.intersect(wrld);
+				}
 					// Go through interesected chunks.
 			Chunk_intersect_iterator next_chunk(area);
 			Rectangle tiles;// Rel. tiles.

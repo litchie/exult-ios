@@ -221,7 +221,10 @@ USECODE_INTRINSIC(die_roll)
 USECODE_INTRINSIC(get_item_shape)
 {
 	Game_object *item = get_item(parms[0]);
-	return Usecode_value(item == 0 ? 0 : item->get_shapenum());
+					// Want the actual, not polymorph'd.
+	Actor *act = as_actor(item);
+	return Usecode_value(item == 0 ? 0 : 
+		(act ? act->get_shape_real() : item->get_shapenum()));
 }
 
 USECODE_INTRINSIC(get_item_frame)
@@ -1426,6 +1429,8 @@ static int Get_spot(int ucspot)
 		spot = Actor::lhand; break;
 	case 2:
 		spot = Actor::rhand; break;
+	case 3:
+		spot = Actor::neck; break;
 	case 6:
 		spot = Actor::lfinger; break;
 	case 7:
