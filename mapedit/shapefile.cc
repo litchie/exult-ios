@@ -31,6 +31,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapegroup.h"
 #include "shapevga.h"
 
+using std::vector;
+using std::string;
+using std::cerr;
+using std::endl;
+
 /*
  *	Delete file and groups.
  */

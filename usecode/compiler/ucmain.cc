@@ -40,6 +40,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::strcpy;
 using std::strrchr;
 using std::strlen;
+using std::ios;
+
 extern std::vector<Uc_function *> functions;	// THIS is what the parser produces.
 
 

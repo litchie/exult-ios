@@ -36,7 +36,7 @@ class Shape_group_file;
  */
 class Shape_file_info
 	{
-	string pathname;		// Full pathname.
+	std::string pathname;		// Full pathname.
 	Vga_file *ifile;		// Contains the images.
 	Shape_group_file *groups;	// Groups within ifile.
 public:
@@ -59,7 +59,7 @@ public:
  */
 class Shape_file_set
 	{
-	vector<Shape_file_info *> files;
+	std::vector<Shape_file_info *> files;
 public:
 	Shape_file_set() {  }
 	~Shape_file_set();
