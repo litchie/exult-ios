@@ -39,6 +39,7 @@
 #include "ucmachine.h"
 #include "Configuration.h"
 #include "SDL.h"
+#include "party.h"
 
 const char *CheatScreen::schedules[33] = {
 	"Combat",
@@ -1735,6 +1736,10 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		break;
 
 		case 'i':	// Party
+		if (actor->get_flag(Obj_flags::in_party))
+			gwin->get_party_man()->remove_from_party(actor);
+		else
+			gwin->get_party_man()->add_to_party(actor);
 		break;
 		
 		case 'o':	// Protectee
