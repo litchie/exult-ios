@@ -1,3 +1,10 @@
+2001-03-12  Max Horn  <max@quendi.de>
+	* docs/faq/: added directory
+	* docs/faq/exult_faq.xml: actual FAQ source (thanks to Dominik Reichardt!)
+	* docs/faq/faqs.dtd: DTD for the FAQ
+	* docs/faq/faq_html.xsl: XSL file to translate the XML FAQ to HTML
+	* docs/faq/faq_text.xsl: XSL file to translate the XML FAQ to text. Not yet working correctly.
+
 2001-03-11  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/cleaver.shp: more art from Adam Delman.
 	* data/flx.in, Paperdoll_gump_info.cc, data/Makefile.am: added cleaver
