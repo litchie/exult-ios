@@ -52,6 +52,8 @@ protected:
 	std::string name;			// Its name.
 	int usecode;			// # of usecode function.
 	bool usecode_assigned;		// Usecode # explicitly assigned.
+	bool unused;			// If npc_num > 0, this NPC is unused
+					//   in the game.
 	short npc_num;			// # in Game_window::npcs list, or -1.
 	short face_num;			// Which shape for conversations.
 	short party_id;			// Index in party, or -1.
@@ -361,6 +363,10 @@ public:
 		{ return temperature; }
 	void set_temperature(int t);
 	int figure_warmth();		// Based on what's worn.
+	bool is_unused() const		// Free NPC?
+		{ return unused; }
+	void set_unused(bool tf)
+		{ unused = tf; }
 
 	virtual int get_npc_num() const	// Get its ID (1-num_npcs).
 		{ return npc_num; }
@@ -415,7 +421,8 @@ public:
 	Monster_actor *clone();		// Create another nearby to this.
 	void mend_hourly();		// Restore HP's hourly.
 					// Read from file.
-	void read(std::istream& nfile, int num, int has_usecode);
+	void read(std::istream& nfile, int num, bool has_usecode,
+							bool& fix_unused);
 					// Don't write out to IREG file.
 	virtual void write_ireg(std::ostream& out)
 		{  }

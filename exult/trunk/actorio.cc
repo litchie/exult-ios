@@ -53,7 +53,10 @@ void Actor::read
 	(
 	istream& nfile,			// 'npc.dat', generally.
 	int num,			// NPC #, or -1.
-	int has_usecode			// 1 if a 'type1' NPC.
+	bool has_usecode,		// 1 if a 'type1' NPC.
+	bool& fix_unused		// Old savegame, so 'unused' isn't
+					//   valid.  Possibly set here.
+		//June9,02:  +++++Fix_unused should go away in a few months.
 	)
 	{
 	npc_num = num;
@@ -107,14 +110,17 @@ void Actor::read
 	int health_val = static_cast<int>(static_cast<char>(Read1(nfile)));
 	set_property(static_cast<int>(Actor::health), health_val);
 	nfile.seekg(3, ios::cur);	// Skip 3 bytes.
-	int iflag2 = Read2(nfile);	// Another inventory flag.
-//+++++++TESTING
-//	if (iflag2 == 0)
-//		cout << "NPC #" << num << " has iflag2 == 0" << endl;
-//^^^^^^^^^I think this (iflag2), if 0, means this NPC should not be
-//   created.   Need to check with the original BG & SI.
+	int iflag2 = Read2(nfile);	// The 'used-in-game' flag.
+	if (iflag2 == 0 && num >= 0 && !fix_unused)
+		{
+		if (num == 0)		// Old (bad) savegame?
+			fix_unused = true;
+		else
+			unused = true;
+		cout << "NPC #" << num << " is unused" << endl;
+		}
 
-	bool has_contents = fix_first ? (iflag1 && iflag2) : (iflag1&1);
+	bool has_contents = fix_first ? (iflag1 && !unused) : (iflag1&1);
 	// Read first set of flags
 	const int rflags = Read2(nfile);
 	
@@ -394,7 +400,8 @@ void Actor::read
 	set_shape_pos(tilex, tiley);
 	Map_chunk *olist = gwin->get_chunk_safely(scx + cx, scy + cy);
 	set_invalid();			// Not in world yet.
-	if (olist && !is_dead())	// Valid & alive?  Put into chunk list.
+	if (olist && !is_dead() &&	// Valid & alive?  Put into chunk list.
+	    !unused)
 		{
 		move((scx + cx)*c_tiles_per_chunk + tilex,
 		     (scy + cy)*c_tiles_per_chunk + tiley, get_lift());
@@ -474,10 +481,7 @@ void Actor::write
 	nfile.put(get_property(Actor::health));
 	nfile.put(0);			// Unknown 3 bytes.
 	Write2(nfile, 0);
-					// ??Another inventory flag.  We're
-					//    keeping it for ourselves now.
-	Write2(nfile, 0);
-
+	Write2(nfile, unused ? 0 : 1);	// Write 0 if unused.
 
 	//Write first set of flags
 	int iout = 0;
