@@ -898,9 +898,14 @@ cout << "(x,y) rel. to gump is (" << (event.button.x - gump->get_x()) <<
 		quitting_time = 1;
 		return (0);
 	case SDL_KEYDOWN:
+		{
 		if (event.key.keysym.sym == SDLK_ESCAPE)
 			return (0);
+		int chr = event.key.keysym.unicode;
+		if (isascii(chr))
+			gump->key_down(chr);
 		break;
+		}
 		}
 	return (1);
 	}
