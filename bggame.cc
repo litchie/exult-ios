@@ -1291,7 +1291,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 				if(selected==0)
 				{
 					int len = strlen(npc_name);
-					if(len<max_len)
+					if(len<max_name_len)
 					{
 						npc_name[len] = ' ';
 						npc_name[len+1] = 0;
@@ -1358,7 +1358,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 					{
 						int len = strlen(npc_name);
 						char chr = (event.key.keysym.mod & KMOD_SHIFT) ? toupper(c) : c;
-						if(len<max_len)
+						if(len<max_name_len)
 						{
 							npc_name[len] = chr;
 							npc_name[len+1] = 0;
