@@ -934,6 +934,20 @@ void Container_game_object::activate
 	Game_window *gwin = Game_window::get_game_window();
 	switch(shnum)			// Watch for gumps.
 		{
+	case 406:			// Nightstand.
+		gwin->show_gump(this, 27);	//+++++++++
+		return;
+	case 407:			// Desk.
+	case 203:
+		gwin->show_gump(this, 27);//+++++++++
+		return;
+	case 400:			// Bodies.
+	case 414:
+	case 762:
+	case 778:
+	case 892:
+		gwin->show_gump(this, 27);//+++++++++
+		return;
 	case 416:			// Chest of drawers.
 		gwin->show_gump(this, 27);
 		return;
