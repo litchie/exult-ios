@@ -23,6 +23,7 @@
 #include "databuf.h"
 
 Game *game = 0;
+Exult_Game game_type = BLACK_GATE;
 
 Game::Game()
 {
@@ -38,11 +39,13 @@ Game *Game::get_game()
 {
 	return game;
 }
+Exult_Game Game::get_game_type()
+{
+	return game_type;
+}
 
 Game *Game::create_game(const char *static_identity)
 {
-
-	Exult_Game game_type;
 
 	if((!strcmp(static_identity,"ULTIMA7"))||(!strcmp(static_identity,"FORGE")))
                 game_type = BLACK_GATE;

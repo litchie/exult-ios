@@ -42,6 +42,7 @@ public:
 	
 	static Game *create_game(const char *identity);
 	static Game *get_game();
+	static Exult_Game get_game_type();
 	
 	virtual void play_intro() =0;
 	virtual void end_game(bool success) =0;
