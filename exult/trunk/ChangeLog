@@ -1,3 +1,6 @@
+2001-02-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* keys.cc/h: moved some declarations from .h to .cc
+
 2001-02-04  Max Horn  <max@quendi.de>
 	* keys.cc: fixed to compile on proper C++ compilers ;). Also, on mac,
 	  "Help" will show "Cmd" instead of "Alt"

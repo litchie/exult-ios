@@ -21,7 +21,6 @@
 
 #include "SDL_events.h"
 #include "game.h"
-#include "keyactions.h"
 
 #include <vector>
 #include <map>
@@ -30,18 +29,6 @@
 class Scroll_gump;
 
 const int c_maxparams = 4;
-
-typedef void(*ActionFunc)(int*);
-
-struct Action {
-  ActionFunc func;
-  char* desc;
-  bool show;
-  bool cheat;
-  Exult_Game game;
-};
-
-
 
 enum ActionCode {
         ACTION_NOTHING = -1,
