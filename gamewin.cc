@@ -136,6 +136,21 @@ void Game_window::abort
 	exit(-1);
 	}
 
+/* 
+ *	Get monster info for a given shape.
+ */
+
+Monster_info *Game_window::get_monster_info
+	(
+	int shapenum
+	)
+	{
+	for (int i = 0; i < num_monsters; i++)
+		if (shapenum == monster_info[i].get_shapenum())
+			return &monster_info[i];
+	return (0);
+	}
+
 /*
  *	Resize event occurred.
  */

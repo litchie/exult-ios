@@ -650,8 +650,8 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		", distance = " << (int) distance << ", crit = " <<
 		(int) criteria << ", once = " <<
 	((flags & (1<<(int)once) != 0)) << ", areset = " <<
-	((flags & (1<<(int)auto_reset) != 0)) << ", data2 = " << data2
-		<< '\n';
+	((flags & (1<<(int)auto_reset) != 0)) << ", data1 = " << data1
+		<< ", data2 = " << data2 << '\n';
 #endif
 	int roll = 1 + rand()%100;
 	if (roll > probability)
@@ -671,7 +671,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		case monster:
 			{
 			Game_window *gwin = Game_window::get_game_window();
-			Monster_info *inf = gwin->get_monster_info(data2);
+			Monster_info *inf = gwin->get_monster_info(data2&1023);
 			if (inf)
 				{
 				Npc_actor *monster = inf->create(get_cx(),
@@ -680,6 +680,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				monster->set_allignment(data1&3);
 				gwin->add_dirty(monster);
 				}
+			break;
 			}
 		case usecode:
 			// Data2 is the usecode function.
