@@ -57,6 +57,7 @@ shapetest_LDADD = \
 paltest_LDADD = $(shapetest_LDADD)
 
 exult_studio_LDADD = $(shapetest_LDADD) $(LIBGLADE_LIBS)
+exult_studio_CFLAGS = $(LIBGLADE_CFLAGS)
 
 mapeditdir = $(datadir)/exult
 
