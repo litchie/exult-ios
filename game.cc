@@ -139,10 +139,6 @@ char *Game::get_game_identity(const char *savename)
 
 Game *Game::create_game(Exult_Game mygame, const char *title)
 {
-	// Choose the startup path
-	string data_directory, keyfilename;
-	string static_dir, gamedat_dir, savegame_dir;
-	
 	switch(mygame) {
 	case EXULT_DEVEL_GAME:
 		assert(title != 0);
@@ -157,38 +153,25 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		gametitle = "blackgate";
 		break;
 	}
-	
-	string d = "config/disk/game/"+gametitle+"/path";
-	config->value(d.c_str(),data_directory,".");
-	if(data_directory==".") config->set(d.c_str(),data_directory,true);
 
-	cout << "setting game directories to: " << data_directory << endl;
-	
-	d = "config/disk/game/" + gametitle + "/static_path";
-	string deflt = data_directory + "/static";
-	config->value(d.c_str(), static_dir, deflt.c_str());
-
-	d = "config/disk/game/" + gametitle + "/gamedat_path";
-	deflt = data_directory + "/gamedat";
-	config->value(d.c_str(), gamedat_dir, deflt.c_str());
-
-	d = "config/disk/game/" + gametitle + "/savegame_path";
-	config->value(d.c_str(), savegame_dir, data_directory.c_str());
-//	if (savegame_dir == data_directory)
-//		config->set(d.c_str(), savegame_dir, true);
-	
-	add_system_path("<STATIC>", static_dir.c_str());
-	add_system_path("<GAMEDAT>", gamedat_dir.c_str());
-	add_system_path("<SAVEGAME>", savegame_dir.c_str());
-					// See if map-editing.
-	d = "config/disk/game/"+gametitle+"/editing";
+	// See if map-editing.
+	string d("config/disk/game/" + gametitle + "/editing");
 	config->value(d.c_str(), editing_flag, false);
-					// A patch directory is optional.
-	d = "config/disk/game/"+gametitle+"/patch";
-	string patch_directory;
-	config->value(d.c_str(), patch_directory, "");
-	if (patch_directory != "")
-		add_system_path("<PATCH>", patch_directory.c_str());
+
+	// Make aliases to the current game's paths.
+	string system_path_tag(gametitle);
+	to_uppercase(system_path_tag);
+	add_system_path("<STATIC>",
+		get_system_path("<" + system_path_tag + "_STATIC>/"));
+	add_system_path("<GAMEDAT>",
+		get_system_path("<" + system_path_tag + "_GAMEDAT>/"));
+	add_system_path("<SAVEGAME>",
+		get_system_path("<" + system_path_tag + "_SAVEGAME>/"));
+	if (is_system_path_defined(system_path_tag + "_PATCH"))
+		add_system_path("<PATCH>",
+						get_system_path("<" + system_path_tag + "_PATCH>/"));
+	else
+		clear_system_path("PATCH");
 
 	// Discover the game we are running (BG, SI, ...)
 	// We do this, because we don't really trust config :-)
