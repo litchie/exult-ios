@@ -37,6 +37,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "U7file.h"
 #include "utils.h"
 #include <iostream>
+#include <iomanip>
+#include <ctype.h>
+#include <stdio.h>
+#include "studio.h"
 
 /*
  *	Blit onto screen.
@@ -54,7 +58,7 @@ inline void Palette_edit::show
 	gdk_draw_indexed_image(draw->window, drawgc, x, y, w, h,
 			GDK_RGB_DITHER_NORMAL,
 			image + y*stride + x, 
-			stride, palette);
+			stride, palettes[cur_pal]);
 	if (selected >= 0)		// Show selected.
 					// Draw yellow box.
 		gdk_draw_rectangle(draw->window, drawgc, FALSE, 
@@ -188,7 +192,8 @@ void Palette_edit::color_okay
 			      g = (unsigned char) (rgb[1]*256),
 			      b = (unsigned char) (rgb[2]*256);
 		if (paled->selected >= 0)
-			paled->palette->colors[paled->selected] = 
+			paled->palettes[paled->cur_pal]->colors[
+							paled->selected] = 
 							(r<<16) + (g<<8) + b;
 		gtk_widget_destroy(GTK_WIDGET(paled->colorsel));
 		paled->render();
@@ -221,7 +226,7 @@ void Palette_edit::double_clicked
 	gtk_signal_connect(GTK_OBJECT(colorsel), "delete_event",
 				GTK_SIGNAL_FUNC(color_closed), this);
 					// Get color.
-	guint32 c = palette->colors[selected];
+	guint32 c = palettes[cur_pal]->colors[selected];
 	gdouble rgb[3];
 	rgb[0] = ((double) ((c>>16)&0xff))/256;
 	rgb[1] = ((double) ((c>>8)&0xff))/256;
@@ -463,6 +468,57 @@ void Palette_edit::palnum_changed
 	}
 
 /*
+ *	Create a modal file selector.
+ */
+
+GtkFileSelection *Create_file_selection
+	(
+	char *title,
+	GtkSignalFunc ok_handler,
+	gpointer user_data
+	)
+	{
+	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_file_selection_new(
+								title));
+	gtk_window_set_modal(GTK_WINDOW(fsel), true);
+	gtk_signal_connect(GTK_OBJECT(fsel->ok_button), "clicked",
+				ok_handler, user_data);
+					// Destroy when done.
+	gtk_signal_connect_object(GTK_OBJECT(fsel->ok_button), "clicked",
+				GTK_SIGNAL_FUNC(gtk_widget_destroy), 
+						GTK_OBJECT(fsel));
+	gtk_signal_connect_object(GTK_OBJECT(fsel->cancel_button), "clicked",
+				GTK_SIGNAL_FUNC(gtk_widget_destroy), 
+						GTK_OBJECT(fsel));
+	return fsel;
+	}	
+
+/*
+ *	Callbacks for buttons:
+ */
+void
+on_exportbtn_clicked                   (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkFileSelection *fsel = Create_file_selection(
+		"Export palette to text format", 
+			GTK_SIGNAL_FUNC(Palette_edit::export_palette), 
+							user_data);
+	gtk_widget_show(GTK_WIDGET(fsel));
+}
+
+void
+on_importbtn_clicked                   (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	GtkFileSelection *fsel = Create_file_selection(
+		"Import palette from text format", 
+			GTK_SIGNAL_FUNC(Palette_edit::import_palette), 
+							user_data);
+	gtk_widget_show(GTK_WIDGET(fsel));
+}
+
+/*
  *	Create box with 'Palette #', 'Import', 'Move' controls.
  */
 
@@ -484,7 +540,7 @@ GtkWidget *Palette_edit::create_controls
 	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
 					// A spin button for palette#.
 	palnum_adj = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 
-				count - 1, 1,
+				palettes.size() - 1, 1,
 				2, 2));
 	GtkWidget *spin = gtk_spin_button_new(palnum_adj, 1, 0);
 	gtk_signal_connect(GTK_OBJECT(palnum_adj), "value_changed",
@@ -573,14 +629,12 @@ GtkWidget *Palette_edit::create_controls
 	gtk_widget_show (exportbtn);
 	gtk_container_add (GTK_CONTAINER (hbuttonbox), exportbtn);
 	GTK_WIDGET_SET_FLAGS (exportbtn, GTK_CAN_DEFAULT);
-#if 0
 	gtk_signal_connect (GTK_OBJECT (importbtn), "clicked",
 			GTK_SIGNAL_FUNC (on_importbtn_clicked),
 			this);
 	gtk_signal_connect (GTK_OBJECT (exportbtn), "clicked",
 			GTK_SIGNAL_FUNC (on_exportbtn_clicked),
 			this);
-#endif
 	return topframe;
 	}
 
@@ -644,14 +698,28 @@ Palette_edit::Palette_edit
 	(
 	const char *fullname		// Full filename.
 	) : image(0), width(0), height(0),
-		palette(0), colorsel(0),
+		colorsel(0),
 		selected(-1), file(g_strdup(fullname))
 	{
 	U7object pal(file, 0);
-	count = U7exists(file) ? pal.number_of_objects() : 0;
+	int count = U7exists(file) ? pal.number_of_objects() : 0;
+	palettes.resize(count);		// Set size of list.
+	cur_pal = count > 0 ? 0 : -1;
+	for (int pnum = 0; pnum < count; pnum++)
+		{
+		U7object pal(file, pnum);
+		size_t len;
+		unsigned char *buf;	// this may throw an exception
+		buf = (unsigned char *) pal.retrieve(len);
+		assert(len = 3*256);
+		guint32 colors[256];
+		for (int i = 0; i < 256; i++)
+			colors[i] = (buf[3*i]<<16)*4 + (buf[3*i+1]<<8)*4 + 
+							buf[3*i+2]*4;
+		palettes[pnum] = gdk_rgb_cmap_new(colors, 256);
+		delete buf;
+		}
 	setup();
-	if (count > 0)
-		show_palette(0);	// Show 1st palette.
 	}
 
 /*
@@ -663,7 +731,9 @@ Palette_edit::~Palette_edit
 	)
 	{
 	g_free(file);
-	gdk_rgb_cmap_free(palette);
+	for (vector<GdkRgbCmap*>::iterator it = palettes.begin();
+					it != palettes.end(); ++it)
+		gdk_rgb_cmap_free(*it);
 	gtk_widget_destroy(get_widget());
 	delete image;
 	}
@@ -677,17 +747,7 @@ void Palette_edit::show_palette
 	int palnum
 	)
 	{
-	U7object pal(file, palnum);
-	size_t len;
-	unsigned char *buf;		// this may throw an exception
-	buf = (unsigned char *) pal.retrieve(len);
-	assert(len = 3*256);
-	guint32 colors[256];
-	for (int i = 0; i < 256; i++)
-		colors[i] = (buf[3*i]<<16)*4 + (buf[3*i+1]<<8)*4 + 
-							buf[3*i+2]*4;
-	palette = gdk_rgb_cmap_new(colors, 256);
-	delete buf;
+	cur_pal = palnum;
 	}
 
 /*
@@ -709,5 +769,103 @@ void Palette_edit::unselect
 			show();
 			}
 		}
+	}
+
+/*
+ *	Export current palette.
+ */
+
+void Palette_edit::export_palette
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	Palette_edit *ed = (Palette_edit *) user_data;
+	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_widget_get_toplevel(
+					GTK_WIDGET(btn)));
+	char *fname = gtk_file_selection_get_filename(fsel);
+	if (!fname || !*fname)
+		return;
+	if (U7exists(fname))
+		{
+		char *msg = g_strdup_printf(
+			"'%s' already exists.  Overwrite?", fname);
+		int answer = ExultStudio::get_instance()->prompt(msg,
+					"Yes", "No");
+		g_free(msg);
+		if (answer != 0)
+			return;
+		}
+					// Write out current palette.
+	GdkRgbCmap *pal = ed->palettes[ed->cur_pal];
+	ofstream out(fname);
+	out << "Palette from ExultStudio" << endl;
+	int i;				// Skip 0's at end.
+	for (i = 255; i > 0; i--)
+		if (pal->colors[i] != 0)
+			break;
+	int last_color = i;
+	for (i = 0; i <= last_color; i++)
+		{
+		int r = (pal->colors[i]>>16)&255,
+		    g = (pal->colors[i]>>8)&255,
+		    b = pal->colors[i]&255;
+		out << setw(3) << r << ' ' << g << ' ' << b << endl;
+		}
+	out.close();
+	}
+
+/*
+ *	Import current palette.
+ */
+
+void Palette_edit::import_palette
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	Palette_edit *ed = (Palette_edit *) user_data;
+	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_widget_get_toplevel(
+					GTK_WIDGET(btn)));
+	char *fname = gtk_file_selection_get_filename(fsel);
+	if (!fname || !*fname)
+		return;
+	char *msg = g_strdup_printf(
+			"Overwrite current palette from '%s'?", fname);
+	int answer = ExultStudio::get_instance()->prompt(msg, "Yes", "No");
+	g_free(msg);
+	if (answer != 0)
+		return;
+					// Read in current palette.
+	GdkRgbCmap *pal = ed->palettes[ed->cur_pal];
+	ifstream in(fname);
+	char buf[256];
+	in.getline(buf, sizeof(buf));	// Skip 1st line.
+	if (!in.good())
+		{
+		char *msg = g_strdup_printf("Error reading '%s'", fname);
+		ExultStudio::get_instance()->prompt(msg, "Okay");
+		g_free(msg);
+		return;
+		}
+	int i = 0;			// Color #.
+	while (i < 256 && !in.eof())
+		{
+		in.getline(buf, sizeof(buf));
+		char *ptr = &buf[0];
+					// Skip spaces.
+		while (ptr < buf + sizeof(buf) && *ptr && isspace(*ptr))
+			ptr++;
+		if (*ptr == '#')
+			continue;	// Comment.
+		int r, g, b;
+		if (sscanf(buf, "%d %d %d", &r, &g, &b) == 3)
+			pal->colors[i++] = (r<<16) + (g<<8) + b;
+		}
+	in.close();
+	ed->render();
+	ed->show();
 	}
 
