@@ -7,16 +7,21 @@
 
 class	Zombie: public virtual PathFinder
 	{
+public:
 	// Find a path from sx,sy to dx,dy
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
-	virtual	int	NewPath(int sx,int sy,int dx,int dy,int (*tileclassifier)(int,int));
+	virtual	int	NewPath(Tile_coord &source,Tile_coord &dest,int (*tileclassifier)(Tile_coord &));
 
 	// Retrieve the coordinates of the next step on the path
-	virtual	int	GetNextStep(int &nx,int &ny);
+	virtual	int	GetNextStep(Tile_coord &);
 
-public:
+	Zombie();
 	virtual ~Zombie();
+
+protected:
+	Tile_coord	destination;
+	Tile_coord	here;
 	};
 
 #endif

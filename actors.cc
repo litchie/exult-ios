@@ -531,6 +531,9 @@ void Npc_actor::set_schedule_type
 #endif
 	}
 
+Patrol_schedule::~Patrol_schedule()
+{}
+
 /*
  *	Render.
  */
