@@ -111,6 +111,7 @@ public:
   void toggle_grab_actor(void);
   void set_grab_actor(bool grab) { grab_actor = grab; }
   void set_grabbed_actor (Actor *actor) const;
+  void clear_this_grabbed_actor (Actor *actor) const;
 
   bool number_npcs (void) const { return npc_numbers; }
   void toggle_number_npcs(void);

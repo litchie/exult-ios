@@ -127,7 +127,7 @@ void Gump_manager::add_gump(Gump *gump)
 	else
 	{
 		Gump_list *last = open_gumps;
-		while (last->next) last = last->next	;
+		while (last->next) last = last->next;
 		last->next = g;
 	}
 }

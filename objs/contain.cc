@@ -529,48 +529,6 @@ int Container_game_object::get_objects
 	return (vec.size() - vecsize);
 	}
 
-/*
- *	Being attacked.
- *
- *	Output:	0 if destroyed, else object itself.
- */
-
-Game_object *Container_game_object::attacked
-	(
-	Actor *attacker,
-	int weapon_shape,		// Weapon shape, or 0 to use readied.
-	int ammo_shape
-	)
-	{
-	if (get_shapenum() == 507)	// Corpse?
-		return this;		// Leave it alone.
-	Game_window *gwin = Game_window::get_game_window();
-	int wpoints = attack_object(gwin, attacker, weapon_shape, ammo_shape);
-	if (wpoints < 4)
-		return this;		// Fail.
-					// Guessing:
-	if (rand()%90 >= wpoints)
-		return this;		// Failed.
-	Tile_coord pos = get_abs_tile_coord();
-	gwin->add_dirty(this);
-	remove_this(1);			// Remove, but don't delete yet.
-	Game_object *obj;		// Remove objs. inside.
-	Object_iterator next(objects);
-	while ((obj = next.get_next()) != 0)
-		{
-		Shape_info& info = gwin->get_info(obj);
-		Tile_coord p(-1, -1, -1);
-		for (int i = 1; p.tx < 0 && i < 8; i++)
-			p = Game_object::find_unblocked_tile(pos,
-					i, info.get_3d_height());
-		if (p.tx == -1)
-			obj->remove_this();
-		else
-			obj->move(p.tx, p.ty, p.tz);
-		}
-	delete this;
-	return 0;
-	}
 
 /*
  *	Set a flag on this and all contents.
@@ -639,3 +597,54 @@ void Container_game_object::write_contents
 		}
 	}
 
+
+bool Container_game_object::extract_contents()
+{
+	if (objects.is_empty())
+		return true;
+
+	bool status = true;
+
+	Container_game_object *owner = get_owner();
+	Game_object *obj;
+
+	while (obj = objects.get_first()) {
+		remove(obj);
+
+		if (owner) {
+			owner->add(obj,1); // add without checking volume
+		} else {
+			obj->set_invalid(); // set to invalid chunk so move() doesn't fail
+			if ((get_cx() == 255) && (get_cy() == 255)) {
+				obj->remove_this(0);
+				status = false;
+			} else {
+				obj->move(get_abs_tile_coord());
+			}
+		}
+	}
+
+	return status;
+}
+
+void Container_game_object::delete_contents()
+{
+	if (objects.is_empty())
+		return;
+
+	Game_object *obj;
+	while (obj = objects.get_first()) {
+		remove(obj);
+
+		obj->delete_contents(); // recurse into contained containers
+		obj->remove_this(0);
+	}
+}
+
+void Container_game_object::remove_this(int nodel)
+{
+	if (!nodel)
+		extract_contents();
+
+	Ireg_game_object::remove_this(nodel);
+}
