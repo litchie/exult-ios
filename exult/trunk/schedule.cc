@@ -1915,10 +1915,16 @@ void Sew_schedule::now_what
 	case get_clothes:
 		{
 		Game_object *shears = npc->get_readied(Actor::lhand);
-		Tile_coord pos = cloth->get_abs_tile_coord();
-		npc->set_action(new Sequence_actor_action(
-				new Pickup_actor_action(cloth, 250),
-				new Pickup_actor_action(shears, pos, 250)));
+		if (shears) {
+			Tile_coord pos = cloth->get_abs_tile_coord();
+			npc->set_action(new Sequence_actor_action(
+								  new Pickup_actor_action(cloth, 250),
+								  new Pickup_actor_action(shears, pos, 250)));
+		} else {
+			// ++++ maybe create shears? anyway, leaving this till after
+			// possible/probable schedule system rewrite
+			npc->set_action(new Pickup_actor_action(cloth, 250));
+		}
 		state = display_clothes;
 		break;
 		}
