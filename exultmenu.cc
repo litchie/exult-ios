@@ -31,6 +31,7 @@
 #include "cheat.h"
 #include "Configuration.h"
 #include "txtscroll.h"
+#include "data/exult_flx.h"
 
 extern Configuration *config;
 extern Cheat cheat;
@@ -44,7 +45,7 @@ ExultMenu::ExultMenu(Game_window *gw)
 	gwin = gw;
 	ibuf = gwin->get_win()->get_ib8();
 	calc_win();
-	fontManager.add_font("CREDITS_FONT", "<DATA>/exult.flx", 9, 1);
+	fontManager.add_font("CREDITS_FONT", "<DATA>/exult.flx", EXULT_FLX_FONT_SHP, 1);
 	exult_flx.load("<DATA>/exult.flx");
 }
 
@@ -69,8 +70,8 @@ void ExultMenu::setup()
 
 	int menuypos = menuy-44;
 	
-	MenuChoice *scalemethod = new MenuChoice(exult_flx.get_shape(0x18,1),
-			      exult_flx.get_shape(0x18,0),
+	MenuChoice *scalemethod = new MenuChoice(exult_flx.get_shape(EXULT_FLX_SCALING_METHOD_SHP,1),
+			      exult_flx.get_shape(EXULT_FLX_SCALING_METHOD_SHP,0),
 			      centerx, menuypos, font);
 	scalemethod->add_choice("Point");
 	scalemethod->add_choice("Bilinear");
@@ -81,8 +82,8 @@ void ExultMenu::setup()
 	menu.add_entry(scalemethod);
 	menuypos+=11;
 	
-	MenuChoice *palfades = new MenuChoice(exult_flx.get_shape(0x16,1),
-			      exult_flx.get_shape(0x16,0),
+	MenuChoice *palfades = new MenuChoice(exult_flx.get_shape(EXULT_FLX_PALETTE_FADES_SHP,1),
+			      exult_flx.get_shape(EXULT_FLX_PALETTE_FADES_SHP,0),
 			      centerx, menuypos, font);
 	palfades->add_choice("Off");
 	palfades->add_choice("On");
@@ -97,8 +98,8 @@ void ExultMenu::setup()
 
 
 	if (Audio::get_ptr()->get_midi()) {
-	  midiconv = new MenuChoice(exult_flx.get_shape(0x14,1),
-				  exult_flx.get_shape(0x14,0),
+	  midiconv = new MenuChoice(exult_flx.get_shape(EXULT_FLX_MIDI_CONVERSION_SHP,1),
+				  exult_flx.get_shape(EXULT_FLX_MIDI_CONVERSION_SHP,0),
 				  centerx, menuypos, font);
 	  midiconv->add_choice("None");
 
@@ -110,8 +111,8 @@ void ExultMenu::setup()
 	  menuypos+=11;
 
 #ifdef ENABLE_MIDISFX	
-	  MenuChoice *sfxconv = new MenuChoice(exult_flx.get_shape(0x15,1),
-					     exult_flx.get_shape(0x15,0),
+	  MenuChoice *sfxconv = new MenuChoice(exult_flx.get_shape(EXULT_FLX_SFX_CONVERSION_SHP,1),
+					     exult_flx.get_shape(EXULT_FLX_SFX_CONVERSION_SHP,0),
 					     centerx, menuypos, font);
 	  sfxconv->add_choice("None");
 	  sfxconv->add_choice("GS");
@@ -122,8 +123,8 @@ void ExultMenu::setup()
 #endif
 	}
 	
-	MenuChoice *playintro = new MenuChoice(exult_flx.get_shape(0x0B,1),
-			      exult_flx.get_shape(0x0B,0),
+	MenuChoice *playintro = new MenuChoice(exult_flx.get_shape(EXULT_FLX_PLAY_INTRO_SHP,1),
+			      exult_flx.get_shape(EXULT_FLX_PLAY_INTRO_SHP,0),
 			      centerx, menuypos, font);
 	playintro->add_choice("Off");
 	playintro->add_choice("On");
@@ -132,8 +133,8 @@ void ExultMenu::setup()
 	menuypos+=11;
 
 	
-	MenuChoice *playscene = new MenuChoice(exult_flx.get_shape(0x12,1),
-			      exult_flx.get_shape(0x12,0),
+	MenuChoice *playscene = new MenuChoice(exult_flx.get_shape(EXULT_FLX_PLAY_1ST_SCENE_SHP,1),
+			      exult_flx.get_shape(EXULT_FLX_PLAY_1ST_SCENE_SHP,0),
 			      centerx, menuypos, font);
 	playscene->add_choice("Off");
 	playscene->add_choice("On");
@@ -142,8 +143,8 @@ void ExultMenu::setup()
 	menuypos+=11;
 
 
-	MenuChoice *fullscreen = new MenuChoice(exult_flx.get_shape(0x0C,1),
-			      exult_flx.get_shape(0x0C,0),
+	MenuChoice *fullscreen = new MenuChoice(exult_flx.get_shape(EXULT_FLX_FULL_SCREEN_SHP,1),
+			      exult_flx.get_shape(EXULT_FLX_FULL_SCREEN_SHP,0),
 			      centerx, menuypos, font);
 	fullscreen->add_choice("Off");
 	fullscreen->add_choice("On");
@@ -151,8 +152,8 @@ void ExultMenu::setup()
 	menu.add_entry(fullscreen);
 	menuypos+=11;
 
-	MenuChoice *cheating = new MenuChoice(exult_flx.get_shape(0x0D,1),
-				      exult_flx.get_shape(0x0D,0),
+	MenuChoice *cheating = new MenuChoice(exult_flx.get_shape(EXULT_FLX_CHEATING_SHP,1),
+				      exult_flx.get_shape(EXULT_FLX_CHEATING_SHP,0),
 				      centerx, menuypos, font);
 	cheating->add_choice("Off");
 	cheating->add_choice("On");
@@ -160,13 +161,13 @@ void ExultMenu::setup()
 	menu.add_entry(cheating);
 	menuypos+=11;
 
-	MenuEntry *ok = new MenuEntry(exult_flx.get_shape(0x0E,1),
-		      exult_flx.get_shape(0x0E,0),
+	MenuEntry *ok = new MenuEntry(exult_flx.get_shape(EXULT_FLX_OK_SHP,1),
+		      exult_flx.get_shape(EXULT_FLX_OK_SHP,0),
 		      centerx-64, menuy+55);
 	int ok_button = menu.add_entry(ok);
 	
-	MenuEntry *cancel = new MenuEntry(exult_flx.get_shape(0x0F,1),
-			 exult_flx.get_shape(0x0F,0),
+	MenuEntry *cancel = new MenuEntry(exult_flx.get_shape(EXULT_FLX_CANCEL_SHP,1),
+			 exult_flx.get_shape(EXULT_FLX_CANCEL_SHP,0),
 			 centerx+64, menuy+55);
 	int cancel_button = menu.add_entry(cancel);
 	
@@ -245,20 +246,27 @@ void ExultMenu::setup()
 
 Exult_Game ExultMenu::run()
 {
-	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", 8);
+	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", EXULT_FLX_MEDITOWN_MID);
 	XMIDI midfile(midi_data, XMIDI_CONVERT_NOCONVERSION);
 	Audio::get_ptr()->start_music(&midfile, true);
 	
-	ExultDataSource mouse_data("<DATA>/exult.flx", 16);
+	ExultDataSource mouse_data("<DATA>/exult.flx", EXULT_FLX_POINTERS_SHP);
 	menu_mouse = new Mouse(gwin, mouse_data);
 	
-	gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 0));
-	pal.load("<DATA>/exult.flx",5);
+	gwin->paint_shape(topx,topy,exult_flx.get_shape(EXULT_FLX_EXULT_LOGO_SHP, 0));
+	pal.load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
 	pal.fade_in(c_fade_in_time);
 	wait_delay(2000);
 	MenuList *menu = new MenuList();
 		
-	int menuchoices[] = { 0x06, 0x07, 0x0A, 0x01, 0x00 , 0x11 };
+	int menuchoices[] = { 
+		EXULT_FLX_BLACK_GATE_SHP,
+		EXULT_FLX_SERPENT_ISLE_SHP,
+		EXULT_FLX_SETUP_SHP,
+		EXULT_FLX_EXULT_CREDITS_SHP,
+		EXULT_FLX_EXULT_QUOTES_SHP,
+		EXULT_FLX_EXIT_SHP 
+	};
 	int num_choices = sizeof(menuchoices)/sizeof(int);
 	
 	int ypos = menuy-24;	
@@ -299,9 +307,9 @@ Exult_Game ExultMenu::run()
 		case 3: // Exult Credits
 			{
 				pal.fade_out(c_fade_out_time);
-				TextScroller credits("<DATA>/exult.flx", 0x03, 
+				TextScroller credits("<DATA>/exult.flx", EXULT_FLX_CREDITS_TXT, 
 						     fontManager.get_font("CREDITS_FONT"),
-						     exult_flx.extract_shape(0x13));
+						     exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
 				credits.run(gwin,pal);
 				gwin->clear_screen(true);
 				pal.apply();
@@ -310,9 +318,9 @@ Exult_Game ExultMenu::run()
 		case 4: // Exult Quotes
 			{
 				pal.fade_out(c_fade_out_time);
-				TextScroller quotes("<DATA>/exult.flx", 0x02, 
+				TextScroller quotes("<DATA>/exult.flx", EXULT_FLX_QUOTES_TXT, 
 						    fontManager.get_font("CREDITS_FONT"),
-			     			    exult_flx.extract_shape(0x13));
+			     			    exult_flx.extract_shape(EXULT_FLX_EXTRAS_SHP));
 				quotes.run(gwin,pal);
 				gwin->clear_screen(true);
 				pal.apply();
