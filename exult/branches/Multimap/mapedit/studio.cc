@@ -1901,12 +1901,19 @@ GtkWidget *Create_arrow_button
 	gpointer func_data		// Passed to 'clicked'.
 	)
 	{
+#if 1
+	GtkWidget *btn = gtk_button_new_from_stock(
+		dir == GTK_ARROW_UP ? GTK_STOCK_GO_UP 
+					: GTK_STOCK_GO_DOWN);
+	gtk_widget_show(btn);
+#else
 	GtkWidget *btn = gtk_button_new();
 	gtk_widget_show(btn);
 	GTK_WIDGET_SET_FLAGS(btn, GTK_CAN_DEFAULT);
 	GtkWidget *arrow = gtk_arrow_new(dir, GTK_SHADOW_OUT);
 	gtk_widget_show(arrow);
 	gtk_container_add(GTK_CONTAINER(btn), arrow);
+#endif
 	gtk_signal_connect(GTK_OBJECT(btn), "clicked", clicked, func_data);
 	return btn;
 	}
