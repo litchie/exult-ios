@@ -393,6 +393,14 @@ void ExultMenu::setup()
 	Font *font = fontManager.get_font("CREDITS_FONT");
 	MenuList menu;
 	
+	MenuChoice *palfades = new MenuChoice(exult_flx.get_shape(0x16,1),
+			      exult_flx.get_shape(0x16,0),
+			      centerx, menuy-33, font);
+	palfades->add_choice("Off");
+	palfades->add_choice("On");
+	palfades->set_choice(gwin->get_fades_enabled()?1:0);
+	menu.add_entry(palfades);
+	
 	MenuChoice *midiconv = new MenuChoice(exult_flx.get_shape(0x14,1),
 			      exult_flx.get_shape(0x14,0),
 			      centerx, menuy-22, font);
@@ -417,10 +425,7 @@ void ExultMenu::setup()
 			      centerx, menuy, font);
 	playintro->add_choice("Off");
 	playintro->add_choice("On");
-	if(get_play_intro())
-		playintro->set_choice(1);
-	else
-		playintro->set_choice(0);
+	playintro->set_choice(get_play_intro()?1:0);
 	menu.add_entry(playintro);
 	
 	MenuChoice *playscene = new MenuChoice(exult_flx.get_shape(0x12,1),
@@ -428,10 +433,7 @@ void ExultMenu::setup()
 			      centerx, menuy+11, font);
 	playscene->add_choice("Off");
 	playscene->add_choice("On");
-	if(get_play_1st_scene())
-		playscene->set_choice(1);
-	else
-		playscene->set_choice(0);
+	playscene->set_choice(get_play_1st_scene()?1:0);
 	menu.add_entry(playscene);
 
 	MenuChoice *fullscreen = new MenuChoice(exult_flx.get_shape(0x0C,1),
@@ -439,10 +441,7 @@ void ExultMenu::setup()
 			      centerx, menuy+22, font);
 	fullscreen->add_choice("Off");
 	fullscreen->add_choice("On");
-	if(gwin->get_win()->is_fullscreen())
-		fullscreen->set_choice(1);
-	else
-		fullscreen->set_choice(0);
+	fullscreen->set_choice(gwin->get_win()->is_fullscreen()?1:0);
 	menu.add_entry(fullscreen);
 	
 	MenuChoice *cheating = new MenuChoice(exult_flx.get_shape(0x0D,1),
@@ -450,30 +449,30 @@ void ExultMenu::setup()
 				      centerx, menuy+33, font);
 	cheating->add_choice("Off");
 	cheating->add_choice("On");
-	if(cheat())
-		cheating->set_choice(1);
-	else
-		cheating->set_choice(0);
+	cheating->set_choice(cheat()?1:0);
 	menu.add_entry(cheating);
 	
 	MenuEntry *ok = new MenuEntry(exult_flx.get_shape(0x0E,1),
 		      exult_flx.get_shape(0x0E,0),
 		      centerx-64, menuy+55);
-	menu.add_entry(ok);
+	int ok_button = menu.add_entry(ok);
 	
 	MenuEntry *cancel = new MenuEntry(exult_flx.get_shape(0x0F,1),
 			 exult_flx.get_shape(0x0F,0),
 			 centerx+64, menuy+55);
-	menu.add_entry(cancel);
+	int cancel_button = menu.add_entry(cancel);
 	
 	menu.set_selection(0);
 	gwin->clear_screen();
 	for(;;) {
 		pal.apply();
-		switch(menu.handle_events(gwin,menu_mouse)) {
-		case 6: // Ok
+		int entry = menu.handle_events(gwin,menu_mouse);
+		if(entry==ok_button) {
 			pal.fade_out(30);
 			gwin->clear_screen();
+			// Palette fades
+			gwin->set_fades_enabled(palfades->get_choice()==1);
+			config->set("config/video/disable_fades",gwin->get_fades_enabled()?"no":"yes",true);
 			// Midi Conversion
 			Audio::get_ptr()->get_midi()->set_music_conversion(midiconv->get_choice());
 			// SFX Conversion
@@ -491,12 +490,10 @@ void ExultMenu::setup()
 			cheat.set_enabled(cheating->get_choice()==1);
 			calc_win();
 			return;
-		case 7: // Cancel
+		} else if (entry==cancel_button) {
 			pal.fade_out(30);
 			gwin->clear_screen();
 			return;
-		default:
-			break;
 		}
 	}
 }

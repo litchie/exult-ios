@@ -3,25 +3,26 @@ It is a very good idea to add things, rather than change them, because this
 would require substantial changes to the code.
 
 Entry		File
-0		"Exult Quotes" shape
-1		"Exult Credits" shape
-2		Quotes
-3		Credits
-4		Exult Logo shape
-5		Exult Palette 0
-6		"Black Gate" shape
-7		"Serpent Isle" shape
-8		Banner Music
-9		Font
-10		"Setup" shape
-11		"Play Introduction" shape
-12		"Full Screen" shape
-13		"Cheating" shape
-14		"Ok" shape
-15		"Cancel" shape
-16		Mouse pointers
-17		"Exit" shape
-18		"Play First Scene" shape
-19		Extra shapes for Credits
-20		"Midi conversion"
-21		"SFX conversion"
+0x00		"Exult Quotes" shape
+0x01		"Exult Credits" shape
+0x02		Quotes
+0x03		Credits
+0x04		Exult Logo shape
+0x05		Exult Palette 0
+0x06		"Black Gate" shape
+0x07		"Serpent Isle" shape
+0x08		Banner Music
+0x09		Font
+0x0A		"Setup" shape
+0x0B		"Play Introduction" shape
+0x0C		"Full Screen" shape
+0x0D		"Cheating" shape
+0x0E		"Ok" shape
+0x0F		"Cancel" shape
+0x10		Mouse pointers
+0x11		"Exit" shape
+0x12		"Play First Scene" shape
+0x13		Extra shapes for Credits
+0x14		"Midi conversion"
+0x15		"SFX conversion"
+0x16		"Palette Fades"

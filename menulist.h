@@ -80,7 +80,7 @@ private:
 public:
 	MenuList(): selected(false), selection(0) { entries = new std::vector<MenuObject*>(); }
 	~MenuList();
-	void add_entry(MenuObject *entry) { entries->push_back(entry); }
+	int add_entry(MenuObject *entry) { entries->push_back(entry); return (entries->size()-1);}
 	void paint(Game_window *gwin);
 	int handle_events(Game_window *gwin, Mouse *mouse);
 	int get_selection() { return selection; }
