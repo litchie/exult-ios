@@ -45,6 +45,7 @@ class Npc_actor;
  *	Sizes:
  */
 const int tilesize = 8;			// A tile (shape) is 8x8 pixels.
+const int tiles_per_chunk = 16;		// A chunk is 16x16 tiles.
 const int chunksize = 16 * 8;		// A chunk has 16 8x8 shapes.
 const int num_chunks = 12*16;		// Total # of chunks in each dir.
 
@@ -231,6 +232,34 @@ public:
 	};
 
 /*
+ *	Data cached for a chunk to speed up processing, but which doesn't need
+ *	to be saved to disk:
+ */
+class Chunk_cache
+	{
+	unsigned char setup_done;	// Already setup.
+	unsigned short blocked[256];	// For each tile, a bit for each lift
+					//   level if it's blocked by an obj.
+	friend class Chunk_object_list;
+	Chunk_cache();			// Create empty one.
+	~Chunk_cache();
+					// Set blocked region.
+	void set_blocked(int startx, int starty, int endx, int endy,
+						int lift, int ztiles);
+					// Set up with chunk's data.
+	void setup(Game_window *gwin, int cx, int cy, 
+						Chunk_object_list *chunk);
+					// Set blocked tile's bits.
+	void set_blocked_tile(int tx, int ty, int lift, int ztiles)
+		{
+		blocked[ty*tiles_per_chunk + tx] |= 
+						((1 << ztiles) - 1) << lift;
+		}
+					// Is a spot occupied?
+	int is_blocked(int lift, int tilex, int tiley, int& new_lift);
+	};
+
+/*
  *	Game objects are stored in a list for each chunk, sorted from top-to-
  *	bottom, left-to-right.
  */
@@ -241,6 +270,8 @@ class Chunk_object_list
 	Game_object *objects;		// ->first in ordered list.
 	Npc_actor *npcs;		// List of NPC's in this chunk.
 					//   (Managed by Npc_actor class.)
+	Chunk_cache *cache;		// Data for chunks near player.
+			// +++++Might cache/redo this egg stuff+++++
 	Egg_object **egg_objects;	// ->eggs in chunk.
 	int num_eggs;
 	unsigned char eggs[256];	// For each (x,y), index of egg in
@@ -275,9 +306,25 @@ public:
 					// Return next object.
 	Game_object *get_next(Game_object *obj)
 		{ return obj->next; }
+					// Get/create cache.
+	Chunk_cache *need_cache()
+		{ 
+		return cache ? cache 
+				: (cache = new Chunk_cache()); 
+		}
+	void setup_cache(Game_window *gwin, int cx, int cy)
+		{ 
+		if (!cache || !cache->setup_done)
+			need_cache()->setup(gwin, cx, cy, this);
+		}
+					// Set blocked region.
+	void set_blocked(int startx, int starty, int endx, int endy,
+							int lift, int ztiles)
+		{ need_cache()->set_blocked(startx, starty, endx, endy,
+							lift, ztiles); }
 					// Is a spot occupied?
-	int is_occupied(Vga_file& shapes, Game_object *dont_count,
-					int at_lift, int at_sx, int at_sy);
+	int is_blocked(int lift, int tilex, int tiley, int& new_lift)
+		{ return cache->is_blocked(lift, tilex, tiley, new_lift); }
 	};
 
 /*

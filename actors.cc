@@ -152,6 +152,15 @@ void Main_actor::handle_event
 	int frame;
 	if (next_frame(curtime, cx, cy, sx, sy, frame))
 		{
+		Chunk_object_list *olist = gwin->get_objects(cx, cy);
+		olist->setup_cache(gwin, cx, cy);	//++++++++++++++++
+//++++++++TESTING Remove the above!!!!!!!+++++++++++++++++++++++++++++
+		int new_lift;		// Might climb/descend.
+		if (olist->is_blocked(get_lift(), cx, cy, new_lift))
+			{
+			stop();
+			return;
+			}
 					// Add back to queue for next time.
 		gwin->get_tqueue()->add(curtime + frame_time,
 							this, udata);
@@ -173,9 +182,9 @@ void Main_actor::handle_event
 		int old_cx = get_cx(), old_cy = get_cy();
 					// Get old rectangle.
 		Rectangle oldrect = gwin->get_shape_rect(this);
-		Chunk_object_list *olist = gwin->get_objects(cx, cy);
 					// Move it.
 		move(cx, cy, olist, sx, sy, frame);
+		set_lift(new_lift);
 				// Near an egg?
 		Egg_object *egg = olist->find_egg(sx, sy);
 		if (egg)
