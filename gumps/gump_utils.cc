@@ -91,7 +91,7 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 						event.button.y / scale_factor);
 		else if (event.button.button == 3 && Game_window::get_game_window()->get_mouse3rd() && rightclick) {
 			rightclick = false;
-			return 0;
+			if (Game_window::get_game_window()->get_gump_man()->can_right_click_close()) return 0;
 		}
 		break;
 	case SDL_MOUSEMOTION:

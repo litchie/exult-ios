@@ -41,8 +41,13 @@
 
 
 Gump_manager::Gump_manager()
-	: open_gumps(0), non_persistent_count(0)
+	: open_gumps(0), non_persistent_count(0), right_click_close(true)
 {
+	std::string str;
+	config->value("config/gameplay/right_click_closes_gumps", str, "yes");
+	if (str == "no")
+		right_click_close = false;
+	config->set("config/gameplay/right_click_closes_gumps", str, true);
 }
 
 
@@ -71,15 +76,17 @@ bool Gump_manager::showing_gumps(bool no_pers) const
 
 Gump *Gump_manager::find_gump
 	(
-	int x, int y			// Pos. on screen.
+	int x, int y,			// Pos. on screen.
+	bool pers				// Persistent?
 	)
 {
 	Gump_list *gmp;
 	Gump *found = 0;		// We want last found in chain.
 	for (gmp = open_gumps; gmp; gmp = gmp->next)
 	{
-		if (gmp->gump->has_point(x,y))
-			found = gmp->gump;
+		Gump *gump = gmp->gump;
+		if (gump->has_point(x,y) && (pers || !gump->is_persistent()))
+			found = gump;
 	}
 	return (found);
 }

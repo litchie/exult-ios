@@ -29,13 +29,14 @@ class GameplayOptions_gump : public Modal_gump
 	UNREPLICATABLE_CLASS_I(GameplayOptions_gump,Modal_gump(0,0,0,0));
 
  private:
-	Gump_button* buttons[11];
+	Gump_button* buttons[12];
 
 	int facestats;
 	int fastmouse;
 	int mouse3rd;
 	int walk_after_teleport;
 	int doubleclick;
+	int rightclick_close;
 	int cheats;
 	int paperdolls;
 	int text_bg;
