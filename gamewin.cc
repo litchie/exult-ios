@@ -77,6 +77,7 @@ Game_window::Game_window
 	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
 	    special_light(0),
 	    dragging(0), dragging_save(0),
+	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    skip_lift(16), paint_eggs(0), debug(0)
 	{
 	game_window = this;		// Set static ->.
@@ -2614,6 +2615,52 @@ void Game_window::schedule_npcs
 	for (int i = 1; i < num_npcs; i++)
 		((Npc_actor *) npcs[i])->update_schedule(this, hour3);
 	paint();			// Repaint all.
+	}
+
+/*
+ *	Handle theft.
+ */
+
+void Game_window::theft
+	(
+	)
+	{
+					// See if in a new location.
+	int cx = main_actor->get_cx(), cy = main_actor->get_cy();
+	if (cx != theft_cx || cy != theft_cy)
+		{
+		theft_cx = cx;
+		theft_cy = cy;
+		theft_warnings = 0;
+		}
+	Vector npcs;			// See if someone is nearby.
+	int cnt = main_actor->find_nearby(npcs, -359, 12, 8);
+	Npc_actor *closest_npc = 0;
+	int best_dist = 5000;
+	for (int i = 0; i < cnt; i++)
+		{
+		Npc_actor *npc = (Npc_actor *) npcs.get(i);
+		int dist = npc->distance(main_actor);
+		if (dist < best_dist && Fast_pathfinder_client::is_grabable(
+			npc->get_abs_tile_coord(),
+			main_actor->get_abs_tile_coord()))
+			{
+			closest_npc = npc;
+			best_dist = dist;
+			}
+		}
+	if (!closest_npc)
+		return;			// Didn't get caught.
+	theft_warnings++;
+	if (theft_warnings < 3 + rand()%3)
+		{			// Just a warning this time.
+		closest_npc->say(first_theft, last_theft);
+		return;
+		}
+	closest_npc->say(first_call_guards, last_call_guards);
+					// +++++Show guard running up.
+	usecode->call_usecode(0x625, main_actor, 
+					Usecode_machine::double_click);
 	}
 
 /*

@@ -345,3 +345,4 @@ cout << "Dropping object at (" << tx << ", " << ty << ", " << lift
 		}
 	return (0);
 	}
+
