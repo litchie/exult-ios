@@ -1704,6 +1704,7 @@ USECODE_INTRINSIC(set_schedule_type)
 	// Looks like 15=wait here, 11=go home, 0=train/fight... This is the
 	// 'bNum' field in schedules.
 	Game_object *obj = get_item(parms[0]);
+//++++++++++++++++If av, set for all party members?
 	if (obj)
 		obj->set_schedule_type(parms[1].get_int_value());
 	return(no_ret);
@@ -2548,7 +2549,7 @@ struct
 	USECODE_INTRINSIC_PTR(earthquake),	// 0x59
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b     Armageddon (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5c
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5c  ++++Extinguish(lightsource)?
 	USECODE_INTRINSIC_PTR(run_endgame),	// 0x5d  +++++CauseBlackout (ucdump.c)
 	USECODE_INTRINSIC_PTR(get_array_size),	// 0x5e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5f
