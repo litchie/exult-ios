@@ -14,5 +14,4 @@ Makefile.in
 *.bsc
 Debug
 Release
-resource.h
 exconfig.lib
