@@ -142,6 +142,7 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/collar.shp \
 	data/bg/hoods.shp \
 	data/bg/musket.shp \
+	data/bg/custom_sword.shp \
 	data/bg/flx.in
 
 
