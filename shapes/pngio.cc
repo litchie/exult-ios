@@ -188,7 +188,10 @@ int Export_png8
 	unsigned char *pixels,		// ->pixels to write.
 	unsigned char *palette,		// ->palette,
 					//   each entry 3 bytes (RGB).
-	int pal_size			// # entries in palette.
+	int pal_size,			// # entries in palette,
+	bool transp_to_0		// If true, rotate palette so the
+					//   transparent index is 0.  This
+					//   fixes a bug in the Gimp.
 	)
 	{
 					// Open file.
@@ -215,28 +218,44 @@ int Export_png8
 	png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_PALETTE,
 			PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
 						PNG_FILTER_TYPE_DEFAULT);
+	if (transp_index == 0)
+		transp_to_0 = false;	// Don't need to rotate if already 0.
 	png_color pngpal[256];		// Set palette.
+	int rot = transp_to_0 ? (pal_size - transp_index) : 0;
 	for (int i = 0; i < pal_size; i++)
 		{
-		pngpal[i].red = palette[3*i];
-		pngpal[i].green = palette[3*i + 1];
-		pngpal[i].blue = palette[3*i + 2];
+		int desti = (i + rot)%pal_size;
+		pngpal[desti].red = palette[3*i];
+		pngpal[desti].green = palette[3*i + 1];
+		pngpal[desti].blue = palette[3*i + 2];
 		}
 	png_set_PLTE(png, info, &pngpal[0], pal_size);
 	png_set_oFFs(png, info, xoff, yoff, PNG_OFFSET_PIXEL);
 	if (transp_index >= 0 && transp_index < 256)
 		{
+		int tindex = transp_to_0 ? 0 : transp_index;
 		png_byte trans[256];	// Only desired index is transparent.
-		memset(&trans[0], 255, transp_index);
-		trans[(png_byte) transp_index] = 0;
-		png_set_tRNS(png, info, &trans[0], transp_index + 1, 0);
+		memset(&trans[0], 255, tindex);
+		trans[(png_byte) tindex] = 0;
+		png_set_tRNS(png, info, &trans[0], tindex + 1, 0);
 		}
 					// Write out info.
 	png_write_info(png, info);
 	png_bytep rowptr;		// Write out rows.
 	int r;
 	for (r = 0, rowptr = pixels; r < height; r++, rowptr += rowbytes)
-		png_write_row(png, rowptr);
+		{
+		if (!transp_to_0)		// Normal?
+			png_write_row(png, rowptr);
+		else
+			{
+			unsigned char *tbuf = new unsigned char[rowbytes];
+			for (int i = 0; i < rowbytes; i++)
+				tbuf[i] = (rowptr[i] + rot)%pal_size;
+			png_write_row(png, &tbuf[0]);
+			delete [] tbuf;
+			}
+		}
 	png_write_end(png, 0);		// Done.
 					// Clean up.
 	png_destroy_write_struct(&png, &info);

@@ -442,7 +442,7 @@ static void Write_frame
 		}
 					// Write out to the .png.
 	if (!Export_png8(fullname, transp, w, h, w, xoff, yoff, img.get_bits(),
-					palette, 256))
+					palette, 256, true))
 		throw file_write_exception(fullname);
 	delete fullname;
 	}
