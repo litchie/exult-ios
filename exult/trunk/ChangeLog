@@ -1,3 +1,6 @@
+2001-09-01  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* actors.cc: fixed divisions by zero
+
 2001-08-31  Willem Jan Palenstijn  <wjpalenstijn@users.sourceforge.net>
 	* actors.*, intrinsics.cc: fixed Erethian dropping steaks, by not
 	having monsters created by create_new_object get equipment

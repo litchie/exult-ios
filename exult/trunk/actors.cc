@@ -2641,7 +2641,10 @@ void Actor::mend_hourly
 	int hp = properties[(int) health];
 	if (maxhp > 0 && hp < maxhp)
 		{
-		hp += 1 + rand()%(maxhp/3);
+		if (maxhp >= 3)  
+			hp += 1 + rand()%(maxhp/3);
+		else
+			hp += 1;
 		if (hp > maxhp)
 			hp = maxhp;
 		properties[(int) health] = hp;
@@ -2653,7 +2656,10 @@ void Actor::mend_hourly
 	int curmana = properties[(int) mana];
 	if (maxmana > 0 && curmana < maxmana)
 		{
-		curmana += 1 + rand()%(maxmana/3);
+		if (maxmana >= 3)	
+			curmana += 1 + rand()%(maxmana/3);
+		else
+			curmana += 1;
 		properties[(int) mana] = curmana <= maxmana ? curmana 
 								: maxmana;
 		}
