@@ -72,6 +72,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef WIN32
 #include "servewin32.h"
+#include "cheat.h"
 #endif
 
 using std::cout;
@@ -384,7 +385,7 @@ void Server_delay
 #else
 	if (listen_socket == -1) return;
 
-	if (GetLastError() == ERROR_BROKEN_PIPE) {
+	if (Exult_server::is_broken()) {
 		std::cout << "Client disconneted." << endl;
 		Exult_server::disconnect_from_client();
 		Exult_server::setup_connect();
@@ -394,7 +395,11 @@ void Server_delay
 	SleepEx(20, TRUE);
 
 	if (client_socket == -1) {
-		if (!Exult_server::try_connect_to_client()) return;
+		// If 9x, only do this in map edit mode
+		if (Exult_server::is_win9x() && !cheat.in_map_editor()) return;
+
+		std::string servename = get_system_path("<STATIC>/");
+		if (!Exult_server::try_connect_to_client(servename.c_str())) return;
 		else client_socket = 1;
 		std::cout << "Connected to client" << endl;
 	}
@@ -402,6 +407,12 @@ void Server_delay
 	if (Exult_server::peek_pipe() > 0)
 		Handle_client_message(client_socket);
 		
+	if (Exult_server::is_broken()) {
+		if (Exult_server::notify_connection_lost()) std::cout << "Client disconneted." << endl;
+		Exult_server::disconnect_from_client();
+		Exult_server::setup_connect();
+		client_socket = -1;
+	}
 #endif
 
 	}
