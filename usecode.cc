@@ -2270,7 +2270,8 @@ USECODE_INTRINSIC(sit_down)
 	if (!chair)
 		return(no_ret);
 	Vector vec;			// See if someone already there.
-	int cnt = chair->find_nearby(vec, -359, 1, 0, -359, -359);
+	int cnt = chair->find_nearby(vec, -359, 1, 0, 8);
+	cnt += chair->find_nearby(vec, -359, 1, 0, 4);
 	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *obj = (Game_object *) vec.get(i);
@@ -2777,6 +2778,19 @@ USECODE_INTRINSIC(in_usecode)
 	return Usecode_value(Scheduled_usecode::find(obj) != 0);
 }
 
+USECODE_INTRINSIC(attack_avatar)
+{
+	// Attack thieving Avatar.
+	Vector npcs;			// See if someone is nearby.
+	int cnt = gwin->get_main_actor()->find_nearby(npcs, -359, 12, 8);
+	for (int i = 0; i < cnt; i++)
+		{
+		Npc_actor *npc = (Npc_actor *) npcs.get(i);
+		npc->set_opponent(gwin->get_main_actor());
+		}
+	return no_ret;
+}
+
 USECODE_INTRINSIC(path_run_usecode)
 {
 	// exec(loc(x,y,z)?, usecode#, itemref, eventid).
@@ -3181,7 +3195,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(in_usecode),	// 0x79
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7b ++++Another sprite animation?
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7c
+	USECODE_INTRINSIC_PTR(attack_avatar),	// 0x7c
 	USECODE_INTRINSIC_PTR(path_run_usecode),	// 0x7d
 	USECODE_INTRINSIC_PTR(close_gumps),	// 0x7e
 	USECODE_INTRINSIC_PTR(item_say),	// 0x7f ItemSay in gump.
