@@ -64,8 +64,8 @@ protected:
 	void start_battle();		// Play music at start of battle.
 	virtual void find_opponents();
 	Actor *find_protected_attacker();// Find attacker of protected member.
-	Actor *find_foe(int mode);	// Find a new opponent.
-	Actor *find_foe();
+	Game_object *find_foe(int mode);// Find a new opponent.
+	Game_object *find_foe();
 	void approach_foe();		// Approach foe.
 	void start_strike();
 	void run_away();

@@ -183,14 +183,18 @@ Actor *Combat_schedule::find_protected_attacker
  *	Output:	Opponent that was found.
  */
 
-Actor *Combat_schedule::find_foe
+Game_object *Combat_schedule::find_foe
 	(
 	int mode			// Mode to use.
 	)
 	{
 	cout << "'" << npc->get_name() << "' is looking for a foe" << endl;
 	if (opponents.empty())	// No more from last scan?
+		{
 		find_opponents();	// Find all nearby.
+		if (practice_target)	// For dueling.
+			return practice_target;
+		}
 	Actor *new_opponent = 0;
 //	Slist_iterator next(opponents);	// For going through list.
 	switch ((Actor::Attack_mode) mode)
@@ -269,7 +273,7 @@ Actor *Combat_schedule::find_foe
  *	Output:	Opponent that was found.
  */
 
-inline Actor *Combat_schedule::find_foe
+inline Game_object *Combat_schedule::find_foe
 	(
 	)
 	{
@@ -316,7 +320,7 @@ void Combat_schedule::approach_foe
 		bool retry_ok = false;
 		if (npc->get_attack_mode() != Actor::manual)
 			{
-			Actor *closest = find_foe(Actor::nearest);
+			Game_object *closest = find_foe(Actor::nearest);
 			if (closest && closest != opponent)
 				{
 				opponent = closest;
@@ -450,8 +454,11 @@ void Combat_schedule::start_strike
 			!Ammo_info::is_in_family(aobj->get_shapenum(), 
 								ammo_shape)))
 			{		// Out of ammo.
-			Swap_weapons(npc);
-			Combat_schedule::set_weapon();
+			if (npc->get_schedule_type() != Schedule::duel)
+				{
+				Swap_weapons(npc);
+				Combat_schedule::set_weapon();
+				}
 			state = approach;
 			npc->set_target(0);
 			npc->start(200, 500);
@@ -535,6 +542,8 @@ void Combat_schedule::set_weapon
 	int points;
 	Weapon_info *info = npc->get_weapon(points, weapon_shape);
 	if (!info &&			// No weapon?  Look in inventory.
+					// But not if dueling.
+	    npc->get_schedule_type() != Schedule::duel &&
 	    state != wait_return)	// And not waiting for boomerang.
 		{
 		npc->ready_best_weapon();
@@ -605,15 +614,11 @@ static int Use_ammo
 	int actual_ammo = aobj->get_shapenum();
 	if (!Ammo_info::is_in_family(actual_ammo, ammo))
 		return 0;
-					// Duelists don't use up ammo.
-	if (npc->get_schedule_type() != Schedule::duel)
-		{
-		npc->remove(aobj);		// Remove all.
-		int quant = aobj->get_quantity();
-		aobj->modify_quantity(-1);	// Reduce amount.
-		if (quant > 1)			// Still some left?  Put back.
-			npc->add_readied(aobj, Actor::ammo);
-		}
+	npc->remove(aobj);		// Remove all.
+	int quant = aobj->get_quantity();
+	aobj->modify_quantity(-1);	// Reduce amount.
+	if (quant > 1)			// Still some left?  Put back.
+		npc->add_readied(aobj, Actor::ammo);
 					// Use actual shape unless a different
 					//   projectile was specified.
 	return ammo == proj ? actual_ammo : proj;
@@ -887,6 +892,46 @@ Duel_schedule::Duel_schedule
 	}
 
 /*
+ *	Ready a bow-and-arrows.
+ */
+
+void Ready_duel_weapon
+	(
+	Actor *npc,
+	int wshape,			// Weapon shape.
+	int ashape			// Ammo shape, or -1.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Game_object *weap = npc->get_readied(Actor::lhand);
+	if (!weap || weap->get_shapenum() != wshape)
+		{			// Need a bow.
+		Game_object *newweap = 
+			npc->find_item(wshape, c_any_qual, c_any_framenum);
+		if (newweap)		// Have it?
+			newweap->remove_this(1);
+		else			// Create new one.
+			newweap = gwin->create_ireg_object(wshape, 0);
+		if (weap)		// Remove old item.
+			weap->remove_this(1);
+		npc->add(newweap, 1);	// Should go in correct spot.
+		if (weap)
+			npc->add(weap, 1);
+		}
+	if (ashape == -1)		// No ammo needed.
+		return;
+					// Now provide 1-3 arrows.
+	Game_object *aobj = npc->get_readied(Actor::ammo);
+	if (aobj)
+		aobj->remove_this();	// Toss current ammo.
+	Game_object *arrows = gwin->create_ireg_object(ashape, 0);
+	int extra = rand()%3;		// Add 1 or 2.
+	if (extra)
+		arrows->modify_quantity(extra);
+	npc->add(arrows, 1);		// Should go to right spot.
+	}
+
+/*
  *	Find dueling opponents.
  */
 
@@ -895,12 +940,23 @@ void Duel_schedule::find_opponents
 	)
 	{
 	opponents.clear();
-	if (projectile_range > 2)	// First look for practice targets.
-					// Archery target:
+	attacks = 0;
+	practice_target = 0;
+	int r = rand()%3;
+	if (r == 0)			// First look for practice targets.
+		{			// Archery target:
 		practice_target = npc->find_closest(735);
-	else				// Fencing dummy:
-		practice_target = npc->find_closest(860);
-	if (practice_target && !(rand()%4))
+		if (practice_target)	// Need bow-and-arrows.
+			Ready_duel_weapon(npc, 597, 722);
+		}
+	if (!practice_target)		// Fencing dummy or dueling opponent.
+		{
+		Ready_duel_weapon(npc, 602, -1);
+		if (r == 1)
+			practice_target = npc->find_closest(860);
+		}
+	Combat_schedule::set_weapon();
+	if (practice_target)
 		{
 		npc->set_target(practice_target);
 		return;			// Just use that.
@@ -919,9 +975,6 @@ void Duel_schedule::find_opponents
 			else
 				opponents.push_front(opp);
 		}
-	if (opponents.empty() && practice_target)
-					// No duelists?  Use dummy.
-		npc->set_target(practice_target);
 	}
 
 /*
@@ -933,7 +986,21 @@ void Duel_schedule::now_what
 	)
 	{
 	if (state == strike || state == fire)
+		{
 		attacks++;
+					// Practice target full?
+		if (practice_target && practice_target->get_shapenum() == 735
+			&& practice_target->get_framenum() > 0 &&
+				practice_target->get_framenum()%3 == 0)
+			{
+			Game_window *gwin = Game_window::get_game_window();
+			attacks = 0;	// Break off.
+					//++++++Should walk there.
+			gwin->add_dirty(practice_target);
+			practice_target->set_frame(0);
+			gwin->add_dirty(practice_target);
+			}
+		}
 	else
 		{
 		Combat_schedule::now_what();

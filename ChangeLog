@@ -1,3 +1,8 @@
+2001-12-23  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/objs.cc: Show arrows hitting target.
+	* combat.cc: Duelists equip proper weapon and attack targets.
+
 2001-12-22  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* npcnear.cc: Sleeping monsters shouldn't attack until awakened.

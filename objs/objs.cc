@@ -1810,8 +1810,17 @@ Game_object *Game_object::attacked
 			// marked already detonating powderkegs with quality
 			if (get_quality()==0) {
 				Tile_coord pos = get_tile();
-				gwin->add_effect(new Explosion_effect(pos, this));
+				gwin->add_effect(new Explosion_effect(pos, 
+									this));
 			}
+		}
+					// Arrow hitting practice targt?
+		else if (shnum == 735 && ammo_shape == 722) {
+			int newframe = !frnum ? (3*(rand()%8) + 1)
+					: ((frnum%3) != 0 ? frnum + 1 : frnum);
+			gwin->add_dirty(this);
+			set_frame(newframe);
+			gwin->add_dirty(this);
 		}
 #if 0
 		else if (shnum == 522 && frnum < 2) { // locked normal chest
