@@ -26,10 +26,10 @@
 #include <dirent.h>
 #include <unistd.h>
 
-#include <string.h>
+#include <cstring>
 
 #include <gtk/gtk.h>	// gtk-config --cflags
-#include <stdio.h>
+#include <cstdio>
 
 static char *folder[] =
 {

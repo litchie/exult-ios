@@ -36,7 +36,7 @@ private:
 	Vga_file		*ifile;
 	Vga_file		*vgafile;	// Main 'shapes.vga'.
 	Vga_file		*facefile;	// 'faces.vga'.
-	ifstream		*chunkfile;	// 'u7chunks'.
+	std::ifstream		*chunkfile;	// 'u7chunks'.
 	char			**names;
 	Object_browser		*browser;
 	unsigned char 		*palbuf;
