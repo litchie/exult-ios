@@ -294,7 +294,8 @@ void ActionTryKeys(int *params)
 		Actor *act = party[i];
 		Game_object_vector keys;		// Get keys.
 		if (act->get_objects(keys, 641, qual, c_any_framenum)) {
-			Put_click(x, y);
+			// intercept the click_on_item call made by the key-usecode
+			gwin->get_usecode()->intercept_click_on_item(obj);
 			keys[0]->activate(gwin->get_usecode());
 			return;
 		}

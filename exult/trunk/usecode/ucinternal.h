@@ -359,6 +359,8 @@ class Usecode_internal : public Usecode_machine
 					// Call desired function.
 	int call_usecode_function(int id, int event, int stack_elems);
 	void link_party();		// Set party's id's.
+
+	Game_object *intercept_item;
 public:
 	friend class Usecode_script;
 	Usecode_internal(Game_window *gw);
@@ -370,7 +372,10 @@ public:
 							Usecode_events event);
 	virtual void write();		// Write out 'gamedat/usecode.dat'.
 	virtual void read();		// Reat in 'gamedat/usecode.dat'.
-	};
+
+	virtual void intercept_click_on_item(Game_object *obj) { intercept_item = obj; }
+
+};
 
 
 #endif
