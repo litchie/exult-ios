@@ -1,9 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="28 Octobre 2001(GMT)">
+<readme title="Exult" changed="06 November 2001(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="06112001">
+			<header>- 06 November 2001</header>
+			<body>
+				<ul>
+				<li>a lot of spelling checked and corrected.</li>
+				<li><ref1 target="exult_config"/> added &lt;fps&gt; and &lt;walk_after_teleport&gt;
+					setting.</li>
+				<li><ref1 target="wave_sfx"/> I mentioned issues with SI but never elaborated. Now I did.</li>
+				<li><ref1 target="savemenu"/> added information on using wheelmice.</li>
+				<li><ref1 target="gameplay_gump"/> more of those.</li>
+				</ul>
+			</body>
+		</sub>	
 		<sub name="28102001">
-			<header>- 28 Octobre 2001</header>
+			<header>- 28 October 2001</header>
 			<body>
 				<ul>
 				<li><ref2 target="Changes to the Documentation"/> introduced. Don't know why 
@@ -84,7 +97,7 @@
 			<body>
 				<para>
 					<Exult/> keeps a configuration file. You can specify where your Ultima 7
-					installation is, whether you want full-screen graphics, or windowed, and
+					installation is, whether you want fullscreen graphics, or windowed, and
 					midi devices and midi settings. Some of these options can be set from the
 					<strong>Setup</strong> menu when you run <Exult/> or via the Game menu.
 				</para>
@@ -111,7 +124,8 @@
 				<configdesc>
 					<line>&lt;config&gt;</line>
 					<line>&lt;disk&gt;
-						<comment>**see <ref target="path_config"/> for pathsettings</comment></line>
+						<comment>**see <ref target="path_config"/> for pathsettings
+						</comment></line>
 					<line>&lt;data_path&gt;</line>
 					<line>data</line>
 					<line>&lt;/data_path&gt;</line>
@@ -126,12 +140,13 @@
 					<line>&lt;keys&gt;</line>
 					<line>(default)
 						<comment>**configure custom keybindings or leave the (default)
-						- see <ref target="exult_keys"/></comment></line>
+						- see <ref target="exult_keys"/>
+						</comment></line>
 					<line>&lt;/keys&gt;</line>
 					<line>&lt;waves&gt;</line>
 					<line>./data/jmsfx.flx
-						<comment>**optional setting see <ref target="wave_sfx"/> for 
-						configuration</comment></line>
+						<comment>**optional setting see <ref target="wave_sfx"/> for configuration
+						</comment></line>
 					<line>&lt;/waves&gt;</line>
 					<line>&lt;/blackgate&gt;</line>
 					<line>&lt;serpentisle&gt;</line>
@@ -143,8 +158,8 @@
 					<line>&lt;/keys&gt;</line>
 					<line>&lt;waves&gt;</line>
 					<line>./data/jmsisfx.flx
-						<comment>**optional setting see <ref target="wave_sfx"/> for 
-						configuration</comment></line>
+						<comment>**optional setting see <ref target="wave_sfx"/> for configuration
+						</comment></line>
 					<line>&lt;/waves&gt;</line>
 					<line>&lt;/serpentisle&gt;</line>
 					<line>&lt;/game&gt;</line>
@@ -154,85 +169,106 @@
 					<line>&lt;usecode&gt;</line>
 					<line>no
 						<comment>**options are yes/no/verbose. This is used to trace the 
-						executed Usecode (you shouldn't need this unless you are a programmer).</comment></line>
+						executed Usecode (you shouldn't need this unless you are a programmer).
+						</comment></line>
 					<line>&lt;/usecode&gt;</line>
 					<line>&lt;/trace&gt;</line>
 					<line>&lt;/debug&gt;</line>
 					<line>&lt;gameplay&gt;</line>
 					<line>&lt;double_click_closes_gumps&gt;</line>
 					<line>yes
-						<comment>**doesn't need an explanation, right?</comment></line>
+						<comment>**doesn't need an explanation, right?
+						</comment></line>
 					<line>&lt;double_click_closes_gumps&gt;</line>
 					<line>&lt;cheat&gt;</line>
 					<line>yes
-						<comment>**enable/disable cheats for that</comment></line>
+						<comment>**enable/disable cheats for that
+						</comment></line>
 					<line>&lt;/cheat&gt;</line>
 					<line>&lt;skip_intro&gt;</line>
 					<line>no
 						<comment>**this skips the intro in BG when you started a new game; Iolo talks to
-						Peter, the Avatar appears, Iolo talks to you, the mayor talks to you and so on.</comment></line>
+						Peter, the Avatar appears, Iolo talks to you, the mayor talks to you and so on.
+						</comment></line>
 					<line>&lt;/skip_intro&gt;</line>
 					<line>&lt;skip_splash&gt;</line>
 					<line>no
 						<comment>**this skips the splash screen, the intro before you get to the
-						game menu, disabling it brings you straight to the game menu</comment></line>
+						game menu, disabling it brings you straight to the game menu
+						</comment></line>
 					<line>&lt;/skip_splash&gt;</line>
 					<line>&lt;facestats&gt;</line>
 					<line>0
-						<comment>activates the status faces and the position on the screen.
-						-1 disable,0 right, 1 middle, 2 right.</comment></line>
+						<comment>**activates the status faces and the position on the screen.
+						-1 disable,0 right, 1 middle, 2 right.
+						</comment></line>
 					<line>&lt;/facestats&gt;</line>
 					<line>&lt;mouse3rd&gt;</line>
 					<line>no
-						<comment>yes enables using of the middle mouse button.</comment></line>
+						<comment>**yes enables using of the middle mouse button.
+						</comment></line>
 					<line>&lt;/mouse3rd&gt;</line>
 					<line>&lt;fastmouse&gt;</line>
 					<line>no
-						<comment>yes enables faster cursor movement in fullscreen mode.</comment></line>
+						<comment>**yes enables faster cursor movement in fullscreen mode.
+						</comment></line>
 					<line>&lt;/fastmouse&gt;</line>
 					<line>&lt;bg_paperdolls&gt;</line>
 					<line>no
-						<comment>yes enables SI style paperdolls in BG.</comment></line>
+						<comment>**yes enables SI style paperdolls in BG.
+						</comment></line>
 					<line>&lt;/bg_paperdolls&gt;</line>
+					<line>&lt;walk_after_teleport&gt;</line>
+					<line>no
+						<comment>**when set to no you stop after walking onto a teleporter.
+						</comment></line>
+					<line>&lt;/walk_after_teleport&gt;</line>
 					<line>&lt;/gameplay&gt;</line>
 					<line>&lt;audio&gt;</line>
 					<line>&lt;enabled&gt;</line>
 					<line>yes
 						<comment>**enable/disable all audio - this takes precedence over the 
 						other audio settings (you can change this in game via
-						<key>Esc</key> - the setting is saved)</comment></line>
+						<key>Esc</key> - the setting is saved)
+						</comment></line>
 					<line>&lt;/enabled&gt;</line>
 					<line>&lt;effects&gt;</line>
 					<line>&lt;enabled&gt;</line>
 					<line>yes
 						<comment>**enable/disable sound effects (you can change this in game via
-						<key>Esc</key> - the setting is saved)</comment></line>
+						<key>Esc</key> - the setting is saved)
+						</comment></line>
 					<line>&lt;/enabled&gt;</line>
 					<line>&lt;/effects&gt;</line>
 					<line>&lt;midi&gt;</line>
 					<line>&lt;enabled&gt;</line>
 					<line>yes
 						<comment>**enable/disable MIDI effects (you can change this in game via
-						<key>Esc</key> - the setting is saved)</comment></line>
+						<key>Esc</key> - the setting is saved)
+						</comment></line>
 					<line>&lt;/enabled&gt;</line>
 					<line>&lt;convert&gt;</line>
 					<line>gm
-						<comment>**see <ref target="music"/></comment></line>
+						<comment>**see <ref target="music"/>
+						</comment></line>
 					<line>&lt;/convert&gt;</line>
 					<line>&lt;volume_curve&gt;</line>
    					<line>1.000000
-   						<comment>**set volume (kind of at least, best don't change)</comment></line>
+   						<comment>**set volume (kind of at least, best don't change)
+   						</comment></line>
    					<line>&lt;/volume_curve&gt;</line>
    					<line>&lt;win32_device&gt;</line>
    					<line>-1
-   						<comment>**choose the Windows MIDI Device. See <ref target="win32_device"/></comment></line>
+   						<comment>**choose the Windows MIDI Device. See <ref target="win32_device"/>
+   						</comment></line>
    					<line>&lt;/win32_device&gt;</line>
 					<line>&lt;/midi&gt;</line>
 					<line>&lt;speech&gt;</line>
 					<line>&lt;enabled&gt;</line>
 					<line>yes
 						<comment>**enable/disable speech (you can change this in game via
-						<key>Esc</key> - the setting is saved)</comment></line>
+						<key>Esc</key> - the setting is saved)
+						</comment></line>
 					<line>&lt;/enabled&gt;</line>
 					<line>&lt;/speech&gt;</line>
 					<line>&lt;/audio&gt;</line>
@@ -240,7 +276,8 @@
 					<line>&lt;width&gt;</line>
 					<line>320
 						<comment>**here you choose your resolution, it can be as big as your
-						monitor allows. 320x200 is the resolution of the original.</comment></line>
+						monitor allows. 320x200 is the resolution of the original.
+						</comment></line>
 					<line>&lt;/width&gt;</line>
 					<line>&lt;height&gt;</line>
 					<line>200</line>
@@ -248,22 +285,27 @@
 					<line>&lt;scale&gt;</line>
 					<line>2
 						<comment>**2 enables / 1 disables scaling, some scalers support higher values.
-						See <ref target="scaler"/>.</comment></line>
+						See <ref target="scaler"/>.
+						</comment></line>
 					<line>&lt;/scale&gt;</line>
 					<line>&lt;fullscreen&gt;</line>
 					<line>yes
-						<comment>**do you want to play fullscreen?</comment></line>
+						<comment>**do you want to play fullscreen?
+						</comment></line>
 					<line>&lt;/fullscreen&gt;</line>
 					<line>&lt;disable_fades&gt;</line>
 					<line>no
-						<comment>**"no" enables fading between different menu points</comment></line>
+						<comment>**"no" enables fading between different menu points
+						</comment></line>
 					<line>&lt;/disable_fades&gt;</line>
 					<line>&lt;scale_method&gt;</line>
 					<line>SuperEagle
-						<comment>**choose different scalers here - see <ref target="scaler"/></comment></line>
+						<comment>**choose different scalers here - see <ref target="scaler"/>
+						</comment></line>
 					<line>&lt;/scale_method&gt;</line>
 					<line>&lt;gamma&gt;
-						<comment>**set gamma levels to adjust brightness, same as +/- in game</comment></line>
+						<comment>**set gamma levels to adjust brightness, same as +/- in game
+						</comment></line>
 					<line>&lt;red&gt;</line>
    					<line>1</line>
    					<line>&lt;/red&gt;</line>
@@ -274,6 +316,11 @@
    					<line>1</line>
    					<line>&lt;/blue&gt;</line>
   					<line>&lt;/gamma&gt;</line>
+  					<line>&lt;fps&gt;</line>
+   					<line>10
+   						<comment>**Speed setting. Might help when the game seems too slow or too fast.
+   						</comment></line>
+   					<line>&lt;/fps&gt;</line>
 					<line>&lt;/video&gt;</line>
 					<line>&lt;/config&gt;</line>
 				</configdesc>
@@ -444,7 +491,9 @@
 					You have to set a path to the sfx pack in the waves settings in exult.cfg 
 					(see <ref target="exult_config"/>). You have to download separate packs for 
 					each game as order of the sfx in BG and SI varies a bit and otherwise will 
-					sound odd. However there is a little issue with sfx playback in SI.
+					sound odd. However there is a little issue with sfx playback in SI. In combat
+					the sfx may be a little wrong as we still haven't figured out all the data in
+					the 'weapons.dat'.
 				</para>
 				<para>
 					Note that configuring your soundfonts is not needed for digital wave sfx.
@@ -648,7 +697,7 @@
 					<keydesc name="l">Decrement skiplift</keydesc>
 					<keydesc name="Alt-h">Hackmover (you can move all objects around and it 
 									disables weight check</keydesc>
-					<keydesc name="Ctrl-Alt-m">Toggle Map editor (useful for <Studio/>)</keydesc>
+					<keydesc name="Ctrl-Alt-m">Toggle Map editor (useful for Exult Studio)</keydesc>
 					<keydesc name="Ctrl-m">Get 100 gold coins</keydesc>
 					<keydesc name="Alt-Shift-m">Play previous song</keydesc>
 					<keydesc name="Alt-m">Play next song</keydesc>
@@ -686,6 +735,8 @@
 				<para>
 					This on is pretty straightforward. You can load and save a game, delete a game and 
 					view some information of a savegame on the right side (a screenshot and some stats).<br/>
+					If you have a wheelmouse you can scroll one line up/down by using the wheel. Pressing 
+					<key>Alt</key> while using the wheel scrolls by pages.<br/>
 					Pressing <strong>Cancel</strong> exits the Load/Save options.
 				</para>
 			</body>
@@ -746,6 +797,16 @@
 					<li><strong>Status Bars</strong><br/>
 						You can either disable the status bars or choose its position on 
 						the bottom of the screen (left, middle, right).</li>
+					<li><strong>Text Background</strong><br/>
+						shows a tinted background behind text in conversations to make it easier to read.
+						Either disable it or choose between the colours purple, orange, light gray, green, 
+						yellow,pale blue, dark green, red, bright white, dark gray and white.</li>
+					<li><strong>Paperdolls</strong><br/>
+						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls 
+						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
+					<li><strong>Walk after teleport</strong><br/>
+						only available in <strong>Serpent Isle</strong>. The normal behavior is that 
+						you stop walking after you have been teleported. This enables walking on.</li>
 					<li><strong>Fast Mouse</strong><br/>
 						makes the mouse cursor move faster in fullscreen modes. Enable or disable it.</li>
 					<li><strong>Use middle mouse button</strong><br/>
@@ -756,18 +817,13 @@
 						The escape function is also available during most other actions like selecting 
 						a target or conversations. Enable or disable it.</li>
 					<li><strong>Doubleclick closes gumps</strong><br/>
-						not implemented into the Gameplay Options yet, but can be enabled or disabled by 
-						editing the exult.cfg - see <ref1 target="exult_config"/>.</li>
-					<li><strong>Paperdolls</strong><br/>
-						only available in <strong>Black Gate</strong>. Enables or disable Paperdolls 
-						(inventory screen) in the style of <strong>Serpent Isle</strong>.</li>
+						pretty straightforward, right?</li>
 					<li><strong>Cheats</strong><br/>
 						Enables or disables all the cheats that we implemented in <Exult/>. 
 						See <ref1 target="exult_cheats"/> what those cheats are.</li>
-					<li><strong>Text Background</strong><br/>
-						shows a tinted background behind text in conversations to make it easier to read.
-						Either disable it or choose between the colours purple, orange, light grey, green, 
-						yellow,pale blue, dark green. red, bright white, dark grey and white.</li>
+					<li><strong>Speed</strong><br/>
+						if <Exult/> seems too fast lower this setting. If it seems to sluggish raising 
+						this setting may help.</li>
 					<li><strong>OK/Cancel</strong><br/>
 						Ok accepts your changes, Cancel discards your changes.</li>
 				</ul>
