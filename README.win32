@@ -29,7 +29,7 @@ To build in Windows using MinGW
 
 Download MinGW from:
 http://prdownloads.sourceforge.net/mingw/gcc-3_1-core-20020516-1.tar.gz
-http://prdownloads.sourceforge.net/mingw/bunutils-2_12_90-20020518-1.tar.gz
+http://prdownloads.sourceforge.net/mingw/binutils-2_12_90-20020518-1.tar.gz
 http://prdownloads.sourceforge.net/mingw/w32api-1.4-2.tar.gz
 http://prdownloads.sourceforge.net/mingw/mingw-runtime-2.0-20020430.tar.gz
 http://prdownloads.sourceforge.net/mingw/make-3.79.1-20010722.tar.gz
@@ -40,7 +40,7 @@ Create a directory called mingw in the root directory of drive
 The mingw packages must be installed in the following order!
 Extract gcc-3_1-core-20020516-1.tar.gz to the mingw directory
 (ie C:\mingw\ )
-Extract binutils-2_12_90-info-html.tar.gz to the mingw directory (Overwrite any existing files)
+Extract binutils-2_12_90-20020518-1.tar.gz to the mingw directory (Overwrite any existing files)
 (ie C:\mingw\ )
 Extract w32api-1.4-2.tar.gz in root directory of drive (Overwrite any existing files)
 (ie C:\ )
