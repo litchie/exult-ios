@@ -23,11 +23,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <fstream>
-#include <cstring>
-#include <iomanip>
-#include <iostream>
-#include <cstdlib>
+#ifdef __DECCXX
+  #include "../alpha_kludges.h"
+#else
+  #include <fstream>
+  #include <cstring>
+  #include <iomanip>
+  #include <iostream>
+  #include <cstdlib>
+#endif
 #include "useval.h"
 #include "gump_utils.h"
 

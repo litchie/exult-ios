@@ -17,10 +17,14 @@
 #ifndef DATA_H
 #define DATA_H
 
-#include <cstdio>
-#include <cstring>
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <cstdio>
+#  include <cstring>
+#endif
 #ifdef MACOS
-  #include <cassert>
+#  include <cassert>
 #endif
 #include <fstream>
 #include "U7file.h"
@@ -34,17 +38,17 @@ public:
 	virtual ~DataSource() {};
 	
 	virtual unsigned int read1() =0;
-	virtual unsigned int read2() =0;
-	virtual unsigned int read2high() =0;
-	virtual unsigned int read4() =0;
-	virtual unsigned int read4high() =0;
+	virtual uint16 read2() =0;
+	virtual uint16 read2high() =0;
+	virtual uint32 read4() =0;
+	virtual uint32 read4high() =0;
 	virtual void read(char *, int) =0;
 	
 	virtual void write1(unsigned int) =0;
-	virtual void write2(unsigned int) =0;
-	virtual void write2high(unsigned int) =0;
-	virtual void write4(unsigned int) =0;
-	virtual void write4high(unsigned int) =0;
+	virtual void write2(uint16) =0;
+	virtual void write2high(uint16) =0;
+	virtual void write4(uint32) =0;
+	virtual void write4high(uint32) =0;
 	virtual void write(char *, int) =0;
 	
 	virtual void seek(unsigned int) =0;
@@ -78,40 +82,40 @@ public:
 		return (b0);
 	};
 	
-	virtual unsigned int read2()
+	virtual uint16 read2()
 	{
 		unsigned char b0, b1;
 		in->get((char&) b0);
 		in->get((char&) b1);
-		return (b0 + (b1 << 8));
+		return (b0 | (b1 << 8));
 	};
 	
-	virtual unsigned int read2high()
+	virtual uint16 read2high()
 	{
 		unsigned char b0, b1;
 		in->get((char&) b1);
 		in->get((char&) b0);
-		return (b0 + (b1 << 8));
+		return (b0 | (b1 << 8));
 	};
 	
-	virtual unsigned int read4()
+	virtual uint32 read4()
 	{
 		unsigned char b0, b1, b2, b3;
 		in->get((char&) b0);
 		in->get((char&) b1);
 		in->get((char&) b2);
 		in->get((char&) b3);
-		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
-	virtual unsigned int read4high()
+	virtual uint32 read4high()
 	{
 		unsigned char b0, b1, b2, b3;
 		in->get((char&) b3);
 		in->get((char&) b2);
 		in->get((char&) b1);
 		in->get((char&) b0);
-		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
 	void read(char *b, int len) {
@@ -123,19 +127,19 @@ public:
 		out->put((char) (val&0xff));
 	};
 	
-	virtual void write2(unsigned int val)
+	virtual void write2(uint16 val)
 	{
 		out->put((char) (val&0xff));
 		out->put((char) ((val>>8)&0xff));
 	};
 
-	virtual void write2high(unsigned int val)
+	virtual void write2high(uint16 val)
 	{
 		out->put((char) ((val>>8)&0xff));
 		out->put((char) (val&0xff));
 	};
 
-	virtual void write4(unsigned int val)
+	virtual void write4(uint32 val)
 	{
 		out->put((char) (val&0xff));
 		out->put((char) ((val>>8)&0xff));
@@ -143,7 +147,7 @@ public:
 		out->put((char) ((val>>24)&0xff));
 	};
 
-	virtual void write4high(unsigned int val)
+	virtual void write4high(uint32 val)
 	{
 		out->put((char) ((val>>24)&0xff));
 		out->put((char) ((val>>16)&0xff));
@@ -192,40 +196,40 @@ public:
 		return (b0);
 	};
 	
-	virtual unsigned int read2()
+	virtual uint16 read2()
 	{
 		unsigned char b0, b1;
 		b0 = fgetc(f);
 		b1 = fgetc(f);
-		return (b0 + (b1 << 8));
+		return (b0 | (b1 << 8));
 	};
 	
-	virtual unsigned int read2high()
+	virtual uint16 read2high()
 	{
 		unsigned char b0, b1;
 		b1 = fgetc(f);
 		b0 = fgetc(f);
-		return (b0 + (b1 << 8));
+		return (b0 | (b1 << 8));
 	};
 	
-	virtual unsigned int read4()
+	virtual uint32 read4()
 	{
 		unsigned char b0, b1, b2, b3;
 		b0 = fgetc(f);
 		b1 = fgetc(f);
 		b2 = fgetc(f);
 		b3 = fgetc(f);
-		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
-	virtual unsigned int read4high()
+	virtual uint32 read4high()
 	{
 		unsigned char b0, b1, b2, b3;
 		b3 = fgetc(f);
 		b2 = fgetc(f);
 		b1 = fgetc(f);
 		b0 = fgetc(f);
-		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
 	void read(char *b, int len) {
@@ -237,19 +241,19 @@ public:
 		fputc((char) (val&0xff),f);
 	};
 	
-	virtual void write2(unsigned int val)
+	virtual void write2(uint16 val)
 	{
 		fputc((char) (val&0xff),f);
 		fputc((char) ((val>>8)&0xff),f);
 	};
 	
-	virtual void write2high(unsigned int val)
+	virtual void write2high(uint16 val)
 	{
 		fputc((char) ((val>>8)&0xff),f);
 		fputc((char) (val&0xff),f);
 	};
 	
-	virtual void write4(unsigned int val)
+	virtual void write4(uint32 val)
 	{
 		fputc((char) (val&0xff),f);
 		fputc((char) ((val>>8)&0xff),f);
@@ -257,7 +261,7 @@ public:
 		fputc((char) ((val>>24)&0xff),f);
 	};
 
-	virtual void write4high(unsigned int val)
+	virtual void write4high(uint32 val)
 	{
 		fputc((char) ((val>>24)&0xff),f);
 		fputc((char) ((val>>16)&0xff),f);
@@ -313,40 +317,40 @@ public:
 		return (b0);
 	};
 	
-	virtual unsigned int read2()
+	virtual uint16 read2()
 	{
 		unsigned char b0, b1;
 		b0 = (unsigned char)*buf_ptr++;
 		b1 = (unsigned char)*buf_ptr++;
-		return (b0 + (b1 << 8));
+		return (b0 | (b1 << 8));
 	};
 	
-	virtual unsigned int read2high()
+	virtual uint16 read2high()
 	{
 		unsigned char b0, b1;
 		b1 = (unsigned char)*buf_ptr++;
 		b0 = (unsigned char)*buf_ptr++;
-		return (b0 + (b1 << 8));
+		return (b0 | (b1 << 8));
 	};
 	
-	virtual unsigned int read4()
+	virtual uint32 read4()
 	{
 		unsigned char b0, b1, b2, b3;
 		b0 = (unsigned char)*buf_ptr++;
 		b1 = (unsigned char)*buf_ptr++;
 		b2 = (unsigned char)*buf_ptr++;
 		b3 = (unsigned char)*buf_ptr++;
-		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
-	virtual unsigned int read4high()
+	virtual uint32 read4high()
 	{
 		unsigned char b0, b1, b2, b3;
 		b3 = (unsigned char)*buf_ptr++;
 		b2 = (unsigned char)*buf_ptr++;
 		b1 = (unsigned char)*buf_ptr++;
 		b0 = (unsigned char)*buf_ptr++;
-		return (b0 + (b1<<8) + (b2<<16) + (b3<<24));
+		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
 	void read(char *b, int len) {
@@ -359,20 +363,20 @@ public:
 		*buf_ptr++ = val & 0xff;
 	};
 	
-	virtual void write2(unsigned int val)
+	virtual void write2(uint16 val)
 	{
 		*buf_ptr++ = val & 0xff;
 		*buf_ptr++ = (val>>8) & 0xff;
 	};
 
-	virtual void write2high(unsigned int val)
+	virtual void write2high(uint16 val)
 	{
 		*buf_ptr++ = (val>>8) & 0xff;
 		*buf_ptr++ = val & 0xff;
 	};
 
 	
-	virtual void write4(unsigned int val)
+	virtual void write4(uint32 val)
 	{
 		*buf_ptr++ = val & 0xff;
 		*buf_ptr++ = (val>>8) & 0xff;
@@ -380,7 +384,7 @@ public:
 		*buf_ptr++ = (val>>24)&0xff;
 	};
 	
-	virtual void write4high(unsigned int val)
+	virtual void write4high(uint32 val)
 	{
 		*buf_ptr++ = (val>>24)&0xff;
 		*buf_ptr++ = (val>>16)&0xff;

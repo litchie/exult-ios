@@ -16,6 +16,7 @@ exult_SOURCES =	\
 	actors.cc	\
 	actors.h	\
 	alloc.cc	\
+	alpha_kludges.h	\
 	args.cc		\
 	args.h		\
 	autoarray.h	\
@@ -94,6 +95,7 @@ exult_DEPENDENCIES = $(ICON_FILE) $(EXULTLIBS)
 
 EXTRA_DIST = 	\
 	README.win32 \
+	README.Alpha \
 	Makefile.win32 \
 	Makefile.be \
 	exult.spec

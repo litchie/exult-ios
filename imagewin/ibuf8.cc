@@ -25,7 +25,9 @@ Boston, MA  02111-1307, USA.
 */
 
 #include "ibuf8.h"
-#include <string>
+#ifndef __DECCXX
+#  include <string>
+#endif
 
 /*
  *	Copy an area of the image within itself.

@@ -23,10 +23,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <iostream>			/* Debugging. */
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <iostream>			/* Debugging. */
+#  include <cstdlib>
+#  include <cstring>
+#endif
 #include <algorithm>		/* swap. */
-#include <cstdlib>
-#include <cstring>
 #include "gamewin.h"
 #include "actors.h"
 #include "imagewin.h"
@@ -472,7 +476,7 @@ void Actor::start
 		{
 		if (delay)
 			gwin->get_tqueue()->remove(this);
-		unsigned long curtime = SDL_GetTicks();
+		uint32 curtime = SDL_GetTicks();
 		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
 		}
 	}
@@ -583,7 +587,7 @@ void Actor::follow
 				}
 			}
 		}
-	unsigned long curtime = SDL_GetTicks();
+	uint32 curtime = SDL_GetTicks();
 	int dist2lead;
 	if ((((dist2lead = pos.distance(leaderpos)) >= 8 &&
 						curtime >= next_path_time) ||
@@ -611,7 +615,7 @@ void Actor::follow
  *	Get information about a tile that an actor is about to step onto.
  */
 
-#ifndef BEOS
+#if !defined(BEOS) && !defined(__DECCXX)
 inline
 #endif
 void Actor::get_tile_info
@@ -1090,9 +1094,9 @@ void Actor::set_flag
 		return;
 		
 	if (flag >= 0 && flag < 32)
-		flags |= ((unsigned long) 1 << flag);
+		flags |= ((uint32) 1 << flag);
 	else if (flag >= 32 && flag < 64)
-		flags2 |= ((unsigned long) 1 << (flag-32));
+		flags2 |= ((uint32) 1 << (flag-32));
 	Game_window *gwin = Game_window::get_game_window();
 					// Check sched. to avoid waking
 					//   Penumbra.
@@ -1129,7 +1133,7 @@ void Actor::set_siflag
 	)
 	{
 	if (flag >= 0 && flag < 32)
-		siflags |= ((unsigned long) 1 << flag);
+		siflags |= ((uint32) 1 << flag);
 
 	set_actor_shape();
 	}
@@ -1140,7 +1144,7 @@ void Actor::set_type_flag
 	)
 	{
 	if (flag >= 0 && flag < 16)
-		type_flags |= ((unsigned long) 1 << flag);
+		type_flags |= ((uint32) 1 << flag);
 
 	set_actor_shape();
 	}
@@ -1156,9 +1160,9 @@ void Actor::clear_flag
 	{
 //	cout << "Clear flag for NPC " << get_npc_num() << " = " << flag << endl;
 	if (flag >= 0 && flag < 32)
-		flags &= ~((unsigned long) 1 << flag);
+		flags &= ~((uint32) 1 << flag);
 	else if (flag >= 32 && flag < 64)
-		flags2 &= ~((unsigned long) 1 << (flag-32));
+		flags2 &= ~((uint32) 1 << (flag-32));
 	if (flag == invisible)		// Restore normal palette.
 		Game_window::get_game_window()->set_palette();
 	else if (flag == asleep && schedule_type == Schedule::sleep)
@@ -1172,7 +1176,7 @@ void Actor::clear_siflag
 	)
 	{
 	if (flag >= 0 && flag < 32)
-		siflags &= ~((unsigned long) 1 << flag);
+		siflags &= ~((uint32) 1 << flag);
 
 	set_actor_shape();
 	}
@@ -1183,7 +1187,7 @@ void Actor::clear_type_flag
 	)
 	{
 	if (flag >= 0 && flag < 16)
-		type_flags &= ~((unsigned long) 1 << flag);
+		type_flags &= ~((uint32) 1 << flag);
 
 	set_actor_shape();
 	}
@@ -1197,7 +1201,7 @@ int Actor::get_siflag
 	int flag
 	) const
 	{
-	return (flag >= 0 && flag < 32) ? (siflags & ((unsigned long) 1 << flag))
+	return (flag >= 0 && flag < 32) ? (siflags & ((uint32) 1 << flag))
 			!= 0 : 0;
 	}
 
@@ -1206,7 +1210,7 @@ int Actor::get_type_flag
 	int flag
 	) const
 	{
-	return (flag >= 0 && flag < 16) ? (type_flags & ((unsigned long) 1 << flag))
+	return (flag >= 0 && flag < 16) ? (type_flags & ((uint32) 1 << flag))
 			!= 0 : 0;
 	}
 /*
@@ -2199,7 +2203,7 @@ void Npc_actor::paint
 		gwin->get_tqueue()->remove(this);
 					// Force schedule->now_what().
 					// DO NOT call now_what here!!!
-		unsigned long curtime = SDL_GetTicks();
+		uint32 curtime = SDL_GetTicks();
 		gwin->get_tqueue()->add(curtime, this, (long) gwin);
 		set_action(new Null_action());
 		}
@@ -2410,7 +2414,7 @@ void Dead_body::link
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	unsigned long cur_hour = gwin->get_total_hours();
+	uint32 cur_hour = gwin->get_total_hours();
 	if (npc_num >= 0)		// Can be resurrected?  Give 3 days.
 		decay_hour = cur_hour + 72;
 	else				// Else give it several hours.

@@ -26,6 +26,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_IREGOBJS
 #define INCL_IREGOBJS	1
 
+#ifdef MACOS
+#  include "exult_types.h"
+#else
+#  include "../exult_types.h"
+#endif
 #include "objs.h"
 
 /*
@@ -54,7 +59,7 @@ public:
 		{  }
 	virtual ~Ireg_game_object()
 		{  }
-	void set_flags(unsigned long f)	// For initialization.
+	void set_flags(uint32 f)	// For initialization.
 		{ flags = f; }
 					// Create a copy.
 	virtual Game_object *clone() const
@@ -73,23 +78,23 @@ public:
 	virtual void set_flag(int flag)
 		{
 		if (flag >= 0 && flag < 32)
-			flags |= ((unsigned long) 1 << flag);
+			flags |= ((uint32) 1 << flag);
 		else if (flag >= 32 && flag < 64)
-			flags2 |= ((unsigned long) 1 << (flag-32));
+			flags2 |= ((uint32) 1 << (flag-32));
 		}
 	virtual void clear_flag(int flag)
 		{
 		if (flag >= 0 && flag < 32)
-			flags &= ~((unsigned long) 1 << flag);
+			flags &= ~((uint32) 1 << flag);
 		else if (flag >= 32 && flag < 64)
-			flags2 &= ~((unsigned long) 1 << (flag-32));
+			flags2 &= ~((uint32) 1 << (flag-32));
 		}
 	virtual int get_flag(int flag) const
 		{
 		if (flag >= 0 && flag < 32)
-			return flags & ((unsigned long) 1 << flag);
+			return flags & ((uint32) 1 << flag);
 		else if (flag >= 32 && flag < 64)
-			return flags2 & ((unsigned long) 1 << (flag-32));
+			return flags2 & ((uint32) 1 << (flag-32));
 		return 0;
 		}
 					// Write out to IREG file.

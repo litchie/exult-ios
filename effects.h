@@ -152,7 +152,7 @@ public:
 class Weather_effect : public Special_effect
 	{
 protected:
-	unsigned long stop_time;	// Time in 1/1000 secs. to stop.
+	uint32 stop_time;	// Time in 1/1000 secs. to stop.
 public:
 	Weather_effect(int duration, int delay = 0);
 	virtual ~Weather_effect()
@@ -235,7 +235,7 @@ class Cloud
 	short deltax, deltay;		// How to move.
 	int count;			// Counts down to 0.
 	int max_count;
-	unsigned long start_time;	// When to start.
+	uint32 start_time;	// When to start.
 	static int randcnt;		// For generating random times.
 	void set_start_pos(Shape_frame *shape, int w, int h, int& x, int& y);
 public:

@@ -29,9 +29,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fstream>
 #include <iostream>
 #ifdef MACOS
-  #include <cassert>
+#  include <cassert>
+#  include "exult_types.h"
+#else
+#  include "../exult_types.h"
 #endif
-
 #include "autoarray.h"
 #include "imagebuf.h"
 
@@ -63,8 +65,8 @@ public:
 	Shape_frame() : data(0)
 		{  }
 					// Read in shape/frame.
-	unsigned char read(DataSource& shapes, unsigned long shapeoff,
-					unsigned long shapelen, int frnum);
+	unsigned char read(DataSource& shapes, uint32 shapeoff,
+					uint32 shapelen, int frnum);
 					// Paint.
 	void paint_rle(Image_buffer8 *win, int xoff, int yoff);
 	void paint(Image_buffer8 *win, int xoff, int yoff);

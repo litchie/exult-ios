@@ -22,11 +22,15 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <fstream>
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <cctype>
+#  include <cstdio>
+#  include <cstdlib>
+#  include <cstring>
+#  include <fstream>
+#endif
 #include <map>
 #ifdef MACOS
   #include <stat.h>

@@ -19,7 +19,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 
-#include <cerrno>
+#ifdef __DECCXX
+#  include "alpha_kludges.h"
+#else
+#  include <cerrno>
+#endif
 #include <stdexcept>
 #include <string>
 
@@ -33,8 +37,9 @@ class	exult_exception : public std::exception {
 public:
 	exult_exception (const char *what_arg): what_ (what_arg), errno_(errno) {  }	
 	exult_exception (const std::string& what_arg): what_ (what_arg), errno_(errno) {  }
-	const char *what(void) const { return what_.c_str(); }
+	const char *what() const { return what_.c_str(); }
 	int get_errno(void) const { return errno_; }
+	virtual ~exult_exception () throw() {}
 };
 
 
