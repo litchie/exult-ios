@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="24 October 2002 (GMT)">
+<faqs title="Exult" changed="03 November 2002(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="03112002">
+			<header>- 03 November 2002</header>
+			<body>
+				<para>
+					Version number of actual version of <Exult/> is now 1.00!
+				</para>
+			</body>
+		</sub>
 		<sub name="24102002">
 			<header>- 24 October 2002</header>
 			<body>
@@ -194,7 +202,7 @@
 			    	1.1.x (unstable) snapshot.
 			    </para>
 			    <para>
-					The 1.0.x branch will become our 1.0 release soon, hopefully, and we will mainly 
+					The 1.0.x branch has developed into our 1.0 release and we will mainly 
 					be fixing any remaining bugs in this branch. We recommend using the 1.0.x 
 					snapshots for playing and testing Exult. 
 				</para>
@@ -224,16 +232,12 @@
 			<header>What is the latest version of <Exult/>?</header>
 			<body>
 				<para>
-					The current official release is V0.99.1 RC 2 (Release Candidate 2).
+					The current official release is V1.00.
 					See also <ref target="whereis_exult"/>
 					to learn where to get the latest version.
 				</para>
 				<para>
 					To find out which version you are running, press <key>v</key> while in game.
-				</para>
-				<para>
-					And if you are wondering about our strange version numbering, we can't help you as 
-					we have no clue about it as well.
 				</para>
 			</body>
 		</sub>
@@ -542,8 +546,8 @@
 					<em>SPOILER ALERT</em> 
 				</para>
 				<para>
-					I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of 
-					souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice.<br/>
+					"I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of 
+					souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice."<br/>
 					The solution to this is that Rowenna and Trent are standing too far apart. When you 
 					reunited the pair you initiated the conversation with Trent from too far away 
 					(this happens when you run at a higher resolution than the original one).<br/>
@@ -789,7 +793,7 @@
 						BG/SI. Please see <ref1 target="party_formation"/>.</li>
 					<li>The way the Avatar and the companions walk. Is it 2 frames or 3 frames?
 						This has been changed a lot as this was disputed almost every four weeks.
-						Fianlly it works like the original and the Avatar uses two frames and the 
+						Finally it works like the original and the Avatar uses two frames and the 
 						companions use three frames.</li>
 					<li>Combat works differently. We don't have any hard data or formulae
 						that tell us how combat worked in BG/SI, so Dr.Code put something
