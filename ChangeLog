@@ -1,3 +1,8 @@
+2001-10-20  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* schedule.cc (Schedule): Longer delays for 'street maintenance'
+	to avoid slowdowns.
+
 2001-10-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actions.cc (If_else_path_actor_action): Reset speed after being
