@@ -1767,13 +1767,15 @@ Game_object *Game_object::attacked
 
 		if (shnum == 432 || shnum == 433) // doors
 			{
-			if (get_quality() == 0) // only 'normal' doors
+			if (get_quality()==0 || weapon_shape==704)
+				// only 'normal' doors (or powderkeg)
 				if (frnum != 3 && frnum < 7) // no magic-locked or steel doors
 					hp = 6;
 			}
 		else if (shnum == 270 || shnum == 376) // more doors
 			{
-			if (get_quality() == 0) // only 'normal' doors
+			if (get_quality()==0 || weapon_shape==704)
+				// only 'normal' doors (or powderkeg)
 				if (frnum < 3 || (frnum >= 8 && frnum <= 10) ||
 					(frnum >= 16 && frnum <= 18)) // no magic or steel doors
 					hp = 6;
@@ -1781,10 +1783,15 @@ Game_object *Game_object::attacked
 					// Serpent statue at end of SI:
 		else if (shnum == 743 && Game::get_game_type() == SERPENT_ISLE)
 			hp = 1;
+		else if (shnum == 704 && weapon_shape == 704) { // Powder keg...
+			// cause chain reaction here
+			// need to mark already detonating powderkegs somehow (use qual.?)
+		}
 #if 0
-		else if (shnum == 522 && frnum < 2) // locked normal chest
+		else if (shnum == 522 && frnum < 2) { // locked normal chest
 			if (get_quality() == 0 || get_quality() == 255)
 				hp = 6;
+		}
 #endif
 
 	}
