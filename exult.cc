@@ -64,6 +64,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "barge.h"
 #include "cheat.h"
 #include "exultmenu.h"
+#include "keys.h"
 
 
 using std::atof;
@@ -77,6 +78,7 @@ using std::string;
 using std::vector;
 
 Configuration *config;
+KeyBinder *keybinder;
 Cheat cheat;
 
 /*
@@ -86,11 +88,6 @@ Game_window *gwin = 0;
 static string data_path;
 unsigned char quitting_time = 0;	// 1 = Time to quit, 2 = Restart.
 int scale = 0;				// 1 if scaling X2.
-
-// FIX ME - altkeys should be in a new file, maybe events.cc or keyboard.cc or so
-unsigned int altkeys = 0;	// SDL doesn't seem to handle ALT
-					//   right, so we'll keep track.
-					// 1/6, 1/10, 1/20 frame rates.
 
 bool intrinsic_trace = false;		// Do we trace Usecode-intrinsics?
 bool usecode_trace = false;		// Do we trace Usecode-instruction?
@@ -128,26 +125,13 @@ static class Xdnd *xdnd = 0;
 int exult_main(void);
 static void Init();
 static int Play();
-static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl, Uint16 unicode);
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
-static void Try_key(Game_window *);
 void increase_resolution (void);
 void decrease_resolution (void);
 int find_resolution(int w, int h, int s);
 bool get_play_intro (void);
 void set_play_intro (bool);
-void toggle_fullscreen (void);
-void quick_save (void);
-void quick_restore (void);
-void toggle_combat (void);
-void target_mode (void);
-void gump_next_inventory (void);
-void gump_next_stats (void);
-void gump_file (void);
 void make_screenshot (bool silent = false);
-void show_about (void);
-void show_help (void);
-void show_cheat_help (void);
 void change_gamma (bool down);
 static void Drop_dragged_shape(int shape, int frame, int x, int y);
 
@@ -345,8 +329,6 @@ static void Init
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
 
-	SDL_EnableUNICODE(1);	// Activate unicode translation for keypresses
-	
 	int w, h, sc;
 
 
@@ -373,8 +355,9 @@ static void Init
 	exit(0);
 #endif
 
-
-
+	// create keybinder with default bindings from exult.flx
+	keybinder = new KeyBinder;
+	keybinder->LoadDefaults();
 
 	// Default resolution is 320x200 with 2x scaling
 	w = 320;
@@ -412,7 +395,6 @@ static void Init
 	Game::create_game(mygame);
 
 	string yn;
-
 	gwin->init_files();
 					// Skip splash screen?
 	config->value("config/gameplay/skip_splash", yn, "no");
@@ -577,7 +559,7 @@ static void Handle_events
  *	Set mouse and speed.
  */
 
-inline void Set_mouse_and_speed
+void Set_mouse_and_speed
 	(
 	int mousex, int mousey		// Physical mouse location.
 	)
@@ -758,29 +740,7 @@ static void Handle_event
 		Okay_to_quit();
 		break;
 	case SDL_KEYDOWN:		// Keystroke.
-		Handle_keystroke(event.key.keysym.sym,
-			event.key.keysym.mod & KMOD_SHIFT,
-#ifdef MACOS
-			(event.key.keysym.mod & KMOD_META),
-#else
-			(event.key.keysym.mod & KMOD_ALT) || altkeys,
-#endif
-			event.key.keysym.mod & KMOD_CTRL,
-			event.key.keysym.unicode);
-		break;
-	case SDL_KEYUP:			// Key released.
-		switch (event.key.keysym.sym)
-			{
-		case SDLK_RALT:		// Right alt.
-		case SDLK_RMETA:
-			altkeys &= ~1;	// Clear flag.
-			break;
-		case SDLK_LALT:
-		case SDLK_LMETA:
-			altkeys &= ~2;
-			break;
-		default: break;
-			}
+		keybinder->HandleEvent(event);
 		break;
 #ifdef XWIN
 	case SDL_SYSWMEVENT:
@@ -809,306 +769,6 @@ static void Handle_event
 		}
 	}
 
-/*
- *	Get the i'th party member, with the 0'th being the Avatar.
- */
-
-static Actor *Get_party_member
-	(
-	int num				// 0=avatar.
-	)
-	{
-	int npc_num = 0;	 	// Default to Avatar
-	if (num > 0)
-		npc_num = gwin->get_usecode()->get_party_member(num - 1);
-	return gwin->get_npc(npc_num);
-	}
-
-/*
- *	Handle a keystroke.
- */
-
-static void Handle_keystroke
-	(
-	SDLKey sym,
-	int shift,
-        int alt,
-	int ctrl,
-	Uint16 unicode
-	)
-	{
-	switch (sym)
-		{
-	case SDLK_RALT:			// Right alt.
-	case SDLK_RMETA:
-		altkeys |= 1;		// Set flag.
-		break;
-	case SDLK_LALT:
-	case SDLK_LMETA:
-		altkeys |= 2;
-		break;
-	case SDLK_PLUS:
-	case SDLK_KP_PLUS:
-		if(alt && !ctrl) {		// Alt-+ : Increase resolution
-			increase_resolution();
-
-		} else if (!alt && !ctrl) {	// + : Brighten
-			change_gamma(false);
-		}
-		break;
-	case SDLK_MINUS:
-	case SDLK_KP_MINUS:
-		if(alt && !ctrl) {		// Alt-- : Decrease resolution
-			decrease_resolution();
-
-		} else if (!alt && !ctrl) {	// - : Darken
-			change_gamma(true);
-		}
-		break;
-	case SDLK_ESCAPE:
-		if (!alt && !ctrl) {		// ESC : close gumps or quit
-			if (gwin->get_mode() == Game_window::gump)
-				gwin->end_gump_mode();
-			else			// For now, quit.
-				Okay_to_quit();
-		}
-		break;
-	case SDLK_RIGHT:
-		if (cheat() && !alt && !ctrl) {
-			for (int i = 16; i; i--)
-				gwin->view_right();
-		}
-		break;
-	case SDLK_LEFT:
-		if (cheat() && !alt && !ctrl) {
-			for (int i = 16; i; i--)
-				gwin->view_left();
-		}
-		break;
-	case SDLK_DOWN:
-		if (cheat() && !alt && !ctrl) {
-			for (int i = 16; i; i--)
-				gwin->view_down();
-		}
-		break;
-	case SDLK_UP:
-		if (cheat() && !alt && !ctrl) {
-			for (int i = 16; i; i--)
-				gwin->view_up();
-		}
-		break;
-	case SDLK_HOME:
-		if (cheat() && !alt && !ctrl) {	// Home : center screen on avatar
-			gwin->center_view(gwin->get_main_actor()->get_abs_tile_coord());
-			gwin->paint();
-		}
-		break;
-	case SDLK_F4:
-		if (!alt && !ctrl) {		// F4 : Toggle fullscreen mode
-			toggle_fullscreen();
-		}
-		break;
-	case SDLK_F10:
-		if (cheat() && !alt && !ctrl) {	// F10 : show endgame
-			game->end_game(shift==0);
-			gwin->set_palette(0);
-			gwin->paint();
-			gwin->fade_palette (50, 1, 0);
-		}
-		break;
-	case SDLK_F11:				// F11 : show SI intro 
-		if (cheat() && !alt && !ctrl && Game::get_game_type() == SERPENT_ISLE) {
-			game->set_jive();
-			game->play_intro();
-			game->clear_jive();
-			gwin->set_palette(0);
-			gwin->paint();
-			gwin->fade_palette (50, 1, 0);
-		}
-		break;
-	default:
-		if ((unicode & 0xFF80) == 0)
-		{
-		int chr = (unicode & 0x7f);
-		if (chr < 0x20)		// Control char?  Branch on orig.
-			chr = (int) sym;
-		switch (chr)
-			{
-			case '1':
-				if(!ctrl && alt) {		// Alt-1 : Sound Testser
-					cheat.sound_tester();
-				}
-				break;
-			case 'b':
-				if(ctrl && !alt) {		// Ctrl-b : Shape browser
-					cheat.shape_browser();
-
-				} else if (!alt && !ctrl) {	// b : Open spellbook.
-					gwin->activate_item(761);
-				}
-				break;
-			case 'c':
-				if (ctrl && !alt) {		// Ctrl-c : Create last shape viewed.
-					cheat.create_last_shape();
-
-				} else if (!ctrl && !alt) {	// c : Combat mode
-					toggle_combat();
-				}
-				break;
-			case 'd':
-				if (ctrl && !alt) {		// Ctrl-d : delete what mouse is on.
-					cheat.delete_object();
-				}
-				break;
-			case 'e':
-				if (!alt && !ctrl) {		// e : toggle eggs display
-					cheat.toggle_eggs();
-				}
-				break;
-			case 'f':
-				if (!ctrl && !alt) {		// f : Feed food.
-					gwin->activate_item(377);	// +++++Black gate.
-				}
-				break;
-			case 'g':
-				if (alt && !ctrl) {		// Alt-g : toggle god-mode
-					cheat.toggle_god();
-
-				} else if (!ctrl && !alt) {	// g :  Change Avatars gender
-					cheat.change_gender();
-				}
-				break;
-			case 'h':
-				if (!alt && !ctrl) {		// h : help
-					show_help();
-				
-				} else if (ctrl && !alt) {	// Ctrl-h : cheat help
-					show_cheat_help();
-				} else if (ctrl && alt) {	// Ctrl-Alt-h : heal party
-					cheat.heal_party();
-				}
-				break;
-			case 'i':
-				if (alt && !ctrl) {    		// Alt-i : infravision
-					cheat.toggle_infravision();
-
-				} else if (!alt && !ctrl) {	// i : show inventory
-					gump_next_inventory();
-				}
-				break;
-			case 'k':
-				if (!alt && !ctrl) {		// k : find key
-					Try_key(gwin);
-				}
-				break;
-			case 'l':
-				if(!alt && !ctrl) {		// l : decrement skip_lift
-					cheat.dec_skip_lift();
-				} else if (!alt && ctrl) {	// Ctrl-l : level up party
-					cheat.levelup_party();
-				}
-				break;
-			case 'm':
-				if (ctrl && alt) {  		// Ctrl-Alt-m : map editor mode
-					cheat.toggle_map_editor();
-
-				} else if (ctrl && !alt) {	// Ctrl-m : 100 gold coins
-					cheat.create_coins();
-
-				} else if (alt && !ctrl) {	// Alt-m : next song
-								// Shift-Alt-m : previous song
-					static int mnum = 0;
-					if (shift && mnum > 0)
-						Audio::get_ptr()->start_music(--mnum, 0);
-					else
-						Audio::get_ptr()->start_music(mnum++, 0);
-
-				} else if (!alt && !ctrl) {	// m : Show map.
-					gwin->activate_item(178);	//++++Black gate.
-				}
-				break;
-			case 'n':
-				if (alt && !ctrl) {		// Alt-n : Toggle Naked flag
-					cheat.toggle_naked();
-				}
-				break;
-			case 'p':
-				if (alt && !ctrl) {		// Alt-p : Toggle Petra mode
-					cheat.toggle_Petra();
-
-				} else if (!alt && ctrl) {	// Ctrl-p : Rerender screen
-					gwin->paint();
-				} else if (!alt && !ctrl) {	// p : use lockpick
-					gwin->activate_item(627);
-				}
-				break;
-		#ifdef MACOS
-			case 'q':
-				if (alt && !ctrl) {		// Mac only: Cmd-Q : Quit
-					Okay_to_quit();
-				}
-				break;
-		#endif
-			case 'r':
-				if (ctrl && !alt) {		// Ctrl-r : Restore from 'gamedat'
-					quick_restore();
-				}
-				break;
-			case 's':
-				if (ctrl && alt) {		// Ctrl-Alt-s : Screenshot
-					make_screenshot();
-
-				} else if (ctrl && !alt) {	// Ctrl-s : Save to 'gamedat'
-					quick_save();
-
-				} else if (alt && !ctrl) {	// Alt-s : Change skin color
-					cheat.change_skin();
-
-				} else if (!alt && !ctrl) { 	// s : save/restore gump
-					gump_file();
-				}
-				break;
-			case 't':
-				if (ctrl && alt) {		// Ctrl-Alt-t : map teleport
-					cheat.map_teleport();
-
-				} else if (ctrl && !alt) {	// Ctrl-t :  Fake next time change.
-					cheat.fake_time_period();
-
-				} else if (alt && !ctrl) { 	// Alt-t : Teleport to cursor
-					cheat.cursor_teleport();
-
-				} else if (!alt && !ctrl) {	// t : Target mode.
-					target_mode();
-				}
-				break;
-			case 'v':
-				if(!ctrl && !alt) {
-					show_about();
-				}
-				break;
-			case 'w':
-				if (alt && !ctrl) {  		// Alt-w : toggle archwizard mode
-					cheat.toggle_wizard();
-
-				} else if (!alt && !ctrl) {	// w : Activate watch.
-					gwin->activate_item(159);	// ++++Blackgate.
-				}
-				break;
-			case 'x':
-				if (alt && !ctrl) {		// Alt-x : quit
-					Okay_to_quit();
-				}
-				break;
-			case 'z':
-				if (!alt && !ctrl) { 		// z : Show stats
-					gump_next_stats();
-				}
-				break;
-			}
-		}
-	}
-}
 
 /*
  *	Wait for a click, or optionally, a kbd. chr.
@@ -1179,21 +839,6 @@ static int Get_click
 				}
 				break;
 				}
-			case SDL_KEYUP:
-				switch (event.key.keysym.sym)
-					{
-				case SDLK_RALT:		// Right alt.
-				case SDLK_RMETA:
-					altkeys &= ~1;	// Clear flag.
-					break;
-				case SDLK_LALT:
-				case SDLK_LMETA:
-					altkeys &= ~2;
-					break;
-				default:
-					break;
-					}
-				break;
 				}
 		Mouse::mouse->show();		// Turn on mouse.
 
@@ -1281,43 +926,6 @@ void Wait_for_arrival
 
 	}
 
-/*
- *	look for a key to unlock a door or chest.
- */
-
-static void Try_key
-	(
-	Game_window *gwin
-	)
-	{
-	int x, y;
-	if (!Get_click(x, y, Mouse::greenselect))
-		return;
-					// Look for obj. in open gump.
-	Gump *gump = gwin->find_gump(x, y);
-	Game_object *obj;
-	if (gump)
-		obj = gump->find_object(x, y);
-	else				// Search rest of world.
-		obj = gwin->find_object(x, y);
-	if (!obj)
-		return;
-	int qual = obj->get_quality();	// Key quality should match.
-	Actor *party[10];		// Get ->party members.
-	int party_cnt = gwin->get_party(&party[0], 1);
-	for (int i = 0; i < party_cnt; i++)
-		{
-		Actor *act = party[i];
-		Game_object_vector keys;		// Get keys.
-		if (act->get_objects(keys, 641, qual, c_any_framenum))
-			{
-			keys[0]->activate(gwin->get_usecode());
-			return;
-			}
-		}
-	Mouse::mouse->flash_shape(Mouse::redx);	// Nothing matched.
-	}
-	
 int get_resolution (void)
 {
 	return current_res;
@@ -1395,101 +1003,6 @@ void set_play_1st_scene (bool play)
 	config->set("config/gameplay/skip_intro", play?"no":"yes", true);
 }
 
-void toggle_fullscreen (void)
-{
-	gwin->get_win()->toggle_fullscreen();
-	gwin->paint();
-}
-
-void quick_restore (void)
-{
-	try
-	{
-		gwin->read();
-	}
-	catch(...)
-	{
-		gwin->center_text("Restoring game failed!");
-		return;
-	}
-	gwin->center_text("Game restored");
-	gwin->paint();
-}
-
-void quick_save (void)
-{
-	try
-	{
-		gwin->write();
-	}
-	catch(...)
-	{
-		gwin->center_text("Saving game failed!");
-		return;
-	}
-	gwin->center_text("Game saved");
-}
-
-void toggle_combat (void)
-{
-	gwin->toggle_combat();
-	gwin->paint();
-	int mx, my;			// Update mouse.
-	SDL_GetMouseState(&mx, &my);
-	Set_mouse_and_speed(mx, my);
-}
-
-void target_mode (void)
-{
-	int x, y;
-	if (!Get_click(x, y, Mouse::greenselect))
-		return;
-	gwin->double_clicked(x, y);
-	if (gwin->get_mode() == Game_window::gump)
-		Mouse::mouse->set_shape(Mouse::hand);
-}
-
-void gump_next_inventory (void)
-{
-	static int inventory_page = -1;
-
-	if (gwin->get_mode() != Game_window::gump)
-		inventory_page = -1;
-	if(inventory_page<gwin->get_usecode()->get_party_count())
-		++inventory_page;
-	else
-		inventory_page = 0;
-	Actor *actor = Get_party_member(inventory_page);
-	if (actor)
-		actor->activate(gwin->get_usecode());
-	if (gwin->get_mode() == Game_window::gump)
-		Mouse::mouse->set_shape(Mouse::hand);
-}
-
-void gump_next_stats (void)
-{
-	static int stats_page = -1;
-
-	if (gwin->get_mode() != Game_window::gump)
-		stats_page = -1;
-	if (stats_page < gwin->get_usecode()->get_party_count())
-		++stats_page;
-	else
-		stats_page = 0;
-	Actor *actor = Get_party_member(stats_page);
-	if (actor)
-		gwin->show_gump(actor, game->get_shape("gumps/statsdisplay"));
-	if (gwin->get_mode() == Game_window::gump)
-		Mouse::mouse->set_shape(Mouse::hand);
-}
-
-void gump_file (void)
-{
-	File_gump *fileio = new File_gump();
-	Do_Modal_gump(fileio, Mouse::hand);
-	delete fileio;
-}
-
 void make_screenshot (bool silent)
 {
 	char fn[15];
@@ -1520,105 +1033,6 @@ void make_screenshot (bool silent)
 			if (!silent) gwin->center_text("Screenshot failed");
 		}
 	}	
-}
-
-void show_about (void)
-{
-	Scroll_gump *scroll;
-	scroll = new Scroll_gump();
-
-	scroll->add_text("Exult V"VERSION"\n");
-	scroll->add_text("(C) 1999-2000 Exult Team\n\n");
-	scroll->add_text("Available under the terms of the ");
-	scroll->add_text("GNU General Public License\n\n");
-	scroll->add_text("http://exult.sourceforge.net\n");
-
-	scroll->paint(gwin);
-	do
-	{
-		int x, y;
-		Get_click(x,y, Mouse::hand);
-	} while (scroll->show_next_page(gwin));
-	gwin->paint();
-	delete scroll;
-}
-
-void show_help (void)
-{
-	Scroll_gump *scroll;
-	scroll = new Scroll_gump();
-
-	scroll->add_text("Keyboard commands\n");
-	scroll->add_text("+/- - Change brightness\n"
-			"c - Combat mode\n"
-			"f - Use food\n"
-			"h - Show keyboard commands\n"
-			"ctrl-h - Show cheat commands\n"
-			"i - Show inventory\n"
-			"k - Try keys\n"
-			"m - Show map\n"
-			"p - Use lockpick\n"
-			"ctrl-p - Repaint screen\n"
-			"ctrl-s - Quick Save\n"
-			"ctrl-alt-s - Screenshot\n"
-			"ctrl-r - Quick Restore\n"
-			"s - Show save box\n"
-			"v - About box\n"
-			"w - Use watch\n"
-			"F4 - Toggle fullscreen\n");
-
-	scroll->paint(gwin);
-	do
-	{
-		int x, y;
-		Get_click(x,y, Mouse::hand);
-	} while (scroll->show_next_page(gwin));
-	gwin->paint();
-	delete scroll;
-}
-
-void show_cheat_help (void)
-{
-	Scroll_gump *scroll;
-	scroll = new Scroll_gump();
-
-	scroll->add_text("Cheat commands\n");
-	scroll->add_text("Arrow keys - scroll map\n"
-			"Home - recenter map\n"
-			"alt-+/- - Switch resolution\n"
-			"ctrl-1 - Sound Tester\n"
-			"ctrl-b - Shape Browser\n"
-			"ctrl-c - Create Object\n"
-			"ctrl-d - Delete Object\n"
-			"e - Toggle Egg display\n"
-			"alt-g - Toggle God Mode\n"
-			"g - Change Avatar gender\n"
-			"ctrl-alt-h - Heal party\n"
-			"alt-i - Toggle infravision\n"
-			"ctrl-l - Level up party\n"
-			"ctrl-m - Get 100 gold coins\n"
-			"ctrl-alt-m - Toggle Map-Editor mode\n"
-			"ctrl-t - Next time period\n"
-			"alt-t  - Teleport\n"
-			"ctrl-alt-t - Map Teleport\n"
-			"alt-w - Toggle Archwizard mode\n");
-
-	if(Game::get_game_type() == SERPENT_ISLE)
-	{
-		scroll->add_text("SI-only keys\n");
-		scroll->add_text("alt-n - Toggle Naked flag\n"
-				"alt-p - Toggle Petra mode\n"
-				"alt-s - Change skin color\n");
-	}
-
-	scroll->paint(gwin);
-	do
-	{
-		int x, y;
-		Get_click(x,y, Mouse::hand);
-	} while (scroll->show_next_page(gwin));
-	gwin->paint();
-	delete scroll;
 }
 
 void change_gamma (bool down)
@@ -1682,4 +1096,3 @@ static void Drop_dragged_shape
 		}
 	}
 #endif
-

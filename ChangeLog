@@ -1,3 +1,11 @@
+2001-02-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* keys.cc/h, keyactions.cc/h: dynamic keybinder implemented
+	* exult.cc,game.cc: use dynamic keybinder
+	* data/default.key, data/flx.in: default keybindings
+	* Makefile.*: build keybinder
+	* menulist.cc: removed some debug output
+	* cheat.cc/h: added some new functions
+
 2001-02-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Fixed bug where monsters weren't attacking.

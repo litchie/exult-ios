@@ -32,6 +32,7 @@
 #include "gamewin.h"
 #include "mouse.h"
 #include "palette.h"
+#include "keys.h"
 
 using std::cout;
 using std::endl;
@@ -44,6 +45,7 @@ using std::string;
 
 Game *game = 0;
 extern Configuration *config;
+extern KeyBinder *keybinder;
 static Exult_Game game_type = BLACK_GATE;
 extern void make_screenshot(bool silent = false);
 
@@ -117,7 +119,7 @@ char *Game::get_game_identity(const char *savename)
 Game *Game::create_game(Exult_Game mygame)
 {
 	// Choose the startup path
-	string data_directory;
+	string data_directory, keyfilename;
 	string gametitle;
 	
 	switch(mygame) {
@@ -159,6 +161,13 @@ Game *Game::create_game(Exult_Game mygame)
 	default:
 		game = 0;
 	}
+
+	d = "config/disk/game/"+gametitle+"/keys";
+	config->value(d.c_str(),keyfilename,"(default)");
+	if (keyfilename == "(default)")
+	  config->set(d.c_str(), keyfilename, true);
+	else
+	  keybinder->LoadFromFile(keyfilename.c_str());
 
 	delete[] static_identity;
 	return game;

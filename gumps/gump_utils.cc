@@ -39,8 +39,6 @@ using std::toupper;
 extern Game_window *gwin;	// from exult.cc - FIX ME!!!
 extern unsigned char quitting_time;	// from exult.cc - FIX ME!!!
 extern int scale;	// from exult.cc - FIX ME!!!
-extern unsigned int altkeys;	// from exult.cc - FIX ME!!!
-
 
 /*
  *	Verify user wants to quit.
@@ -101,20 +99,6 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
 						? toupper(chr) : chr);
 			break;
 		}
-	case SDL_KEYUP:			// Watch for ALT keys released.
-		switch (event.key.keysym.sym)
-		{
-		case SDLK_RALT:		// Right alt.
-		case SDLK_RMETA:
-			altkeys &= ~1;	// Clear flag.
-			break;
-		case SDLK_LALT:
-		case SDLK_LMETA:
-			altkeys &= ~2;
-			break;
-		default: break;
-		}
-		break;
 	}
 	return (1);
 }

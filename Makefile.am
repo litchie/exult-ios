@@ -50,6 +50,10 @@ exult_SOURCES =	\
 	gamewin.cc	\
 	gamewin.h	\
 	gamma.h		\
+	keys.cc		\
+	keys.h		\
+	keyactions.cc	\
+	keyactions.h	\
 	lists.h		\
 	menulist.cc	\
 	menulist.h	\
