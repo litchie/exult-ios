@@ -1,0 +1,22 @@
+Here we have the basic audio engine.
+
+What we have so far is an effective audio mixer, and VOC decoder.
+Note that VOC decoding is partially customised to Exult, and
+the U7 data files. Samples are doubled and expanded to two channels,
+and some bytes are cut off each end to eliminate harsh clicking
+sounds.
+
+The midi section is going to grow the most. Currently we support
+AWE-based cards. Or, to be more precise, we support any card
+that already produces listenable MIDI music through kmidi or
+'playmidi -e'.
+
+The next stage is either:
+
+a) Load the instrument patches onto AWE cards. I've been given
+   some information on that, which I will attribute as soon as
+   I've dug up the fellow's name :)
+b) Attempt the synthesis myself, probably by carving up timidity
+   or some similar tool and hacking on it until I've bent it to
+   my evil will.
+

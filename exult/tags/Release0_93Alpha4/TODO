@@ -1,0 +1,27 @@
+Rewrite Event Loop
+==================
+
+We need one and only one event loop (maybe defined in an event class), with
+methods for adding callbacks, etc.
+Look at GTK+'s event loop code and mimic that.
+
+What happens in the Exult event loop ?
+
+	Handle mouse motion
+	Handle mouse clicks
+	Handle keypresses
+	Handle configure events
+	Rotate palettes
+	
+Garbage Collection
+==================
+
+We need to tag all shapes with a timestamp when they are displayed. Then we 
+can have a task which is executed at regular intervals which invalidates
+shapes which haven't been accessed in a while. Other more intelligent
+mechanisms are welcome, though.
+
+Development Environment
+=======================
+
+Yeah, yeah...

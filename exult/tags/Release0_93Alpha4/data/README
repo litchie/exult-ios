@@ -1,0 +1,30 @@
+This file describes the contents of the "exult.flx" file.
+It is a very good idea to add things, rather than change them, because this
+would require substantial changes to the code.
+
+Entry		File
+0x00		"Exult Quotes" shape
+0x01		"Exult Credits" shape
+0x02		Quotes
+0x03		Credits
+0x04		Exult Logo shape
+0x05		Exult Palette 0
+0x06		"Black Gate" shape
+0x07		"Serpent Isle" shape
+0x08		Banner Music
+0x09		Font
+0x0A		"Setup" shape
+0x0B		"Play Introduction" shape
+0x0C		"Full Screen" shape
+0x0D		"Cheating" shape
+0x0E		"Ok" shape
+0x0F		"Cancel" shape
+0x10		Mouse pointers
+0x11		"Exit" shape
+0x12		"Play First Scene" shape
+0x13		Extra shapes for Credits
+0x14		"Midi conversion"
+0x15		"SFX conversion"
+0x16		"Palette Fades"
+0x17		defaultkeys.txt
+0x18		"Scaling Method" shape

@@ -1,0 +1,10 @@
+Makefile.in
+Makefile
+*.o
+*~
+*.a
+playflic
+*.la
+*.lo
+.deps
+.libs

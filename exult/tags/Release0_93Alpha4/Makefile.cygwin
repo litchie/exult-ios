@@ -1,0 +1,229 @@
+# Exult makefile for use in Windows with mingw32 and cygwin
+# It may require a little tweaking. (paths)
+
+# Where is Ultima 7 installed
+U7PATH=C:/Ultima7
+
+# Base of the exult source
+SRC=.
+VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs
+
+### Modify these paths
+SDL_INCLUDES=-I$(SRC)/sdl/include
+SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
+
+# NOTE: make's builtin implicit rules are used for .cc => .o
+# mingw32 automatically defines WIN32
+CPPFLAGS=-mno-cygwin -DWIN32 -DVERSION=\"0.93alpha4\" -DEXULT_DATADIR=\"data\" -DDEBUG \
+	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/files \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf \
+	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
+	$(SDL_INCLUDES)
+
+# NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
+CXXFLAGS=-mno-cygwin -O2 -include mingw_kludges.h
+
+CXX=g++
+
+LFLAGS=-mno-cygwin -mwindows
+LIBS=-lmingw32 $(SDL_LIBS) -lwinmm
+
+EXEC=exult.exe
+MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
+	args.o bggame.o browser.o cheat.o  \
+	combat.o delobjs.o dir.o drag.o effects.o exult.o exultmenu.o \
+	game.o gameclk.o gamedat.o gamerend.o gamewin.o keys.o keyactions.o \
+	menulist.o mouse.o npcnear.o npctime.o palette.o \
+	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
+	exultico.o cheat_screen.o
+# unused: npctest.o
+
+PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
+
+CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
+# unused: xmain.o
+
+MIDI_DRV_OBJS=win_midiout.o
+# unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o win_MCI.o
+
+AUDIO_OBJS=Audio.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
+# unused: test.o u7audiotool.o
+
+FLIC_OBJS=playfli.o
+
+FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o
+
+GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
+	gump_utils.o  Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
+	Paperdoll_gump_info.o Scroll_gump.o Sign_gump.o  Slider_gump.o \
+	Spellbook_gump.o Stats_gump.o Text_gump.o  Yesno_gump.o \
+	Gamemenu_gump.o Newfile_gump.o Gump_ToggleButton.o \
+	AudioOptions_gump.o Face_button.o CombatStats_gump.o \
+	Jawbone_gump.o
+
+IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
+	savepcx.o
+
+SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o
+
+OBJS_OBJS=animate.o barge.o chunks.o contain.o egg.o iregobjs.o objs.o \
+	spellbook.o virstone.o jawbone.o
+
+USECODE_OBJS=ucmachine.o ucsched.o intrinsics.o useval.o conversation.o \
+	keyring.o
+
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
+
+EXULT_FLX_OBJECTS = \
+	data/exult_quotes.shp \
+	data/exult_credits.shp \
+	data/quotes.txt \
+	data/credits.txt \
+	data/exult_logo.shp \
+	data/exult0.pal \
+	data/black_gate.shp \
+	data/serpent_isle.shp \
+	data/meditown.mid \
+	data/font.shp \
+	data/setup.shp \
+	data/play_intro.shp \
+	data/full_screen.shp \
+	data/cheating.shp \
+	data/ok.shp \
+	data/cancel.shp \
+	data/pointers.shp \
+	data/exit.shp \
+	data/play_1st_scene.shp \
+	data/extras.shp \
+	data/midi_conversion.shp \
+	data/sfx_conversion.shp \
+	data/palette_fades.shp \
+	data/savegump.shp \
+	data/sav_load.shp \
+	data/sav_save.shp \
+	data/sav_delete.shp \
+	data/sav_cancel.shp \
+	data/sav_downdown.shp \
+	data/sav_down.shp \
+	data/sav_up.shp \
+	data/sav_upup.shp \
+	data/sav_slider.shp \
+	data/sav_selected.shp \
+	data/gamemenu.shp \
+	data/gam_loadsave.shp \
+	data/gam_audio.shp \
+	data/gam_video.shp \
+	data/gam_gameplay.shp \
+	data/gam_quitmenu.shp \
+	data/gam_quit.shp \
+	data/audiooptions.shp \
+	data/aud_enabled.shp \
+	data/aud_conversion.shp \
+	data/aud_cancel.shp \
+	data/aud_ok.shp \
+	data/flx.in
+
+EXULT_BG_FLX_OBJECTS = \
+	data/bg/hoe_of_destruction.shp \
+	data/bg/caddellite_helmet.shp \
+	data/bg/great_dagger.shp \
+	data/bg/magic_boomerang.shp \
+	data/bg/gorget.shp \
+	data/bg/magicgorget.shp \
+	data/bg/cleaver.shp \
+	data/bg/faces.shp \
+	data/bg/faces2.shp \
+	data/bg/amulets.shp \
+	data/bg/bgfiredoom.shp \
+	data/bg/fellowshipstaff.shp \
+	data/bg/BGmap.shp \
+	data/bg/defaultkeys.txt \
+	data/bg/flx.in
+
+EXULT_SI_FLX_OBJECTS = \
+	data/si/SImap.shp \
+	data/si/defaultkeys.txt \
+	data/si/flx.in
+
+$(EXEC) : $(OBJS) data/exult.flx data/exult_bg.flx data/exult_si.flx
+	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
+
+tools/expack.exe : tools/expack.o $(FILE_OBJS) 
+	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) -mconsole
+
+data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
+	tools/expack.exe -i data/flx.in
+
+data/exult_bg.flx: tools/expack.exe $(EXULT_BG_FLX_OBJECTS)
+	tools/expack.exe -i data/bg/flx.in
+
+data/exult_si.flx: tools/expack.exe $(EXULT_SI_FLX_OBJECTS)
+	tools/expack.exe -i data/si/flx.in
+
+exultico.o: win32/exultico.rc win32/exult.ico
+	windres win32/exultico.rc exultico.o
+
+tools/mklink.exe : tools/mklink.o
+	$(CXX) $(LFLAGS) -o tools/mklink.exe tools/mklink.o -mconsole
+
+tools/rip.exe : tools/rip.o
+	$(CXX) $(LFLAGS) -o tools/rip.exe tools/rip.o -mconsole
+
+tools/shp2pcx.exe : tools/shp2pcx.o
+	$(CXX) $(LFLAGS) $(SDL_INCLUDES) -o tools/shp2pcx.exe tools/shp2pcx.o -mconsole
+
+tools/splitshp.exe : tools/splitshp.o
+	$(CXX) $(LFLAGS) -o tools/splitshp.exe tools/splitshp.o -mconsole
+
+tools/ucdump.exe : tools/ucdump.o
+	$(CXX) $(LFLAGS) -o tools/ucdump.exe tools/ucdump.o -mconsole
+
+tools/wud.exe : tools/wud.o tools/uctools.h usecode/bgintrinsics.h usecode/siintrinsics.h 
+	$(CXX) $(LFLAGS) -o tools/wud.exe tools/wud.o -mconsole
+
+tools/wuc.exe : tools/wuc.o
+	$(CXX) $(LFLAGS) -o tools/wuc.exe tools/wuc.o -mconsole
+
+# This should work with the Cygwin rm
+clean:
+	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx data/exult_bg.flx data/exult_si.flx
+
+install: $(EXEC)
+	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
+	mkdir -p $(U7PATH)/data
+	cp data/exult.flx  $(U7PATH)/data/exult.flx
+	cp data/exult_bg.flx $(U7PATH)/data/exult_bg.flx
+	cp data/exult_si.flx $(U7PATH)/data/exult_si.flx
+
+tools:  tools/expack.exe tools/mklink.exe tools/rip.exe tools/shp2pcx.exe tools/splitshp.exe tools/ucdump.exe tools/wuc.exe tools/wud.exe
+
+toolsclean:
+	rm -f tools/mklink.o tools/mklink.exe
+	rm -f tools/rip.o tools/rip.exe
+	rm -f tools/shp2pcx.o tools/shp2pcx.exe
+	rm -f tools/splitshp.o tools/splitshp.exe
+	rm -f tools/ucdump.o tools/ucdump.exe
+	rm -f tools/wuc.o tools/wuc.exe
+	rm -f tools/wud.o tools/wud.exe
+
+toolsinstall: tools
+	mkdir -p $(U7PATH)/tools
+	strip tools/expack.exe -o $(U7PATH)/tools/expack.exe
+	strip tools/mklink.exe -o $(U7PATH)/tools/mklink.exe
+	strip tools/rip.exe -o $(U7PATH)/tools/rip.exe
+	strip tools/shp2pcx.exe -o $(U7PATH)/tools/shp2pcx.exe
+	strip tools/splitshp.exe -o $(U7PATH)/tools/splitshp.exe
+	strip tools/ucdump.exe -o $(U7PATH)/tools/ucdump.exe
+	strip tools/wuc.exe -o $(U7PATH)/tools/wuc.exe
+	strip tools/wud.exe -o $(U7PATH)/tools/wud.exe
+
+all: $(EXEC) tools
+
+allclean: clean toolsclean
+
+allinstall: install toolsinstall
+
+run:
+	start $(EXEC)
+
+

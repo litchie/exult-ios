@@ -1,0 +1,457 @@
+%{
+/**
+ **	Ucparse.y - Usecode parser.
+ **
+ **	Written: 12/30/2000 - JSF
+ **/
+
+/*
+Copyright (C) 2000 The Exult Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+#include <iostream.h>
+#include <stdlib.h>
+#include <string.h>
+#include <vector>
+
+#include "ucfun.h"
+#include "ucexpr.h"
+#include "ucstmt.h"
+#include "opcodes.h"
+
+using std::strcpy;
+using std::strcat;
+using std::strlen;
+
+void yyerror(char *);
+extern int yylex();
+
+#define YYERROR_VERBOSE 1
+
+std::vector<Uc_function *> functions;	// THIS is what we produce.
+
+static Uc_function *function = 0;	// Current function being parsed.
+
+%}
+
+%union
+	{
+	class Uc_var_symbol *var;
+	class Uc_expression *expr;
+	class Uc_call_expression *funcall;
+	class Uc_function_symbol *funsym;
+	class Uc_statement *stmt;
+	class std::vector<char *> *strvec;
+	class Uc_block_statement *block;
+	class Uc_arrayloop_statement *arrayloop;
+	class Uc_array_expression *exprlist;
+	int intval;
+	char *strval;
+	}
+
+/*
+ *	Keywords:
+ */
+%token IF ELSE RETURN WHILE FOR IN WITH TO EXTERN
+%token VAR STRING
+%token SAY MESSAGE EVENT FLAG ITEM UCTRUE UCFALSE
+
+/*
+ *	Other tokens:
+ */
+%token <strval> STRING_LITERAL IDENTIFIER
+%token <intval> INT_LITERAL
+
+/*
+ *	Handle if-then-else conflict.
+ */
+%left IF
+%right ELSE
+
+/*
+ *	Expression precedence rules:
+ */
+%left AND OR
+%left EQUALS NEQUALS LTEQUALS GTEQUALS '<' '>' IN
+%left '-' '+'
+%left '*' '/' '%'
+%left NOT
+
+/*
+ *	Production types:
+ */
+%type <expr> expression primary
+%type <intval> opt_int
+%type <var> declared_var
+%type <funsym> function_proto function_decl
+%type <strvec> identifier_list opt_identifier_list
+%type <stmt> statement assignment_statement if_statement while_statement
+%type <stmt> statement_block return_statement function_call_statement
+%type <stmt> array_loop_statement var_decl var_decl_list declaration
+%type <block> statement_list
+%type <arrayloop> start_array_loop
+%type <exprlist> opt_expression_list expression_list
+%type <funcall> function_call
+
+%%
+
+design:
+	design global_decl
+	| global_decl
+	;
+
+global_decl:
+	function
+	| function_decl
+		{
+		if (!Uc_function::add_global_function_symbol($1))
+			delete $1;
+		}
+	;
+
+function:
+	function_proto 
+		{ function = new Uc_function($1); }
+		statement_block
+		{ 
+		function->set_statement($3);
+		functions.push_back(function);
+		}
+	;
+
+					/* Opt_int assigns function #. */
+function_proto:
+	IDENTIFIER opt_int '(' opt_identifier_list ')'
+		{
+		$$ = new Uc_function_symbol($1, $2, *$4);
+		delete $4;		// A copy was made.
+		}
+	;
+
+opt_int:
+	INT_LITERAL
+	|				/* Empty. */
+		{ $$ = -1; }
+	;
+
+statement_block:
+	'{' 
+		{ function->push_scope(); }
+	statement_list '}'
+		{
+		$$ = $3;
+		function->pop_scope();
+		}
+	;
+
+statement_list:
+	statement_list statement
+		{
+		if ($2)
+			$$->add($2); 
+		}
+	|				/* Empty. */
+		{ $$ = new Uc_block_statement(); }
+	;
+
+statement:
+	declaration
+	| assignment_statement
+	| if_statement
+	| while_statement
+	| array_loop_statement
+	| function_call_statement
+	| return_statement
+	| statement_block
+	| SAY ';'
+		{ $$ = new Uc_say_statement(); }
+	| MESSAGE '(' expression ')' ';'
+		{ $$ = new Uc_message_statement($3); }
+	| ';'				/* Null statement */
+		{ $$ = 0; }
+	;
+
+declaration:
+	VAR var_decl_list ';'
+		{ $$ = $2; }
+	| STRING string_decl_list ';'
+		{ $$ = 0; }
+	| function_decl
+		{
+		if (!function->add_function_symbol($1))
+			delete $1;
+		$$ = 0;
+		}
+	;
+
+var_decl_list:
+	var_decl_list ',' var_decl
+		{
+		if (!$3)
+			$$ = $1;
+		else if (!$1)
+			$$ = $3;
+		else			/* Both nonzero.  Need a list. */
+			{
+			Uc_block_statement *b = 
+				dynamic_cast<Uc_block_statement *>($1);
+			if (!b)
+				{
+				b = new Uc_block_statement();
+				b->add($1);
+				}
+			b->add($3);
+			$$ = b;
+			}
+		}
+	| var_decl
+		{ $$ = $1; }
+	;
+
+var_decl:
+	IDENTIFIER
+		{ 
+		function->add_symbol($1); 
+		$$ = 0;
+		}
+	| IDENTIFIER '=' expression
+		{
+		Uc_var_symbol *var = function->add_symbol($1);
+		$$ = new Uc_assignment_statement(
+				new Uc_var_expression(var), $3);
+		}
+	;
+
+string_decl_list:
+	string_decl_list ',' string_decl
+	| string_decl
+	;
+
+string_decl:
+	IDENTIFIER '=' STRING_LITERAL 
+		{
+		function->add_string_symbol($1, $3);
+		}
+	;
+
+function_decl:
+	EXTERN function_proto ';'
+		{ $$ = $2; }
+	;
+
+assignment_statement:
+	expression '=' expression ';'
+		{ $$ = new Uc_assignment_statement($1, $3); }
+	;
+
+if_statement:
+	IF '(' expression ')' statement %prec IF
+		{ $$ = new Uc_if_statement($3, $5, 0); }
+	| IF '(' expression ')' statement ELSE statement
+		{ $$ = new Uc_if_statement($3, $5, $7); }
+	;
+
+while_statement:
+	WHILE '(' expression ')' statement
+		{ $$ = new Uc_while_statement($3, $5); }
+	;
+
+array_loop_statement:
+	start_array_loop ')' statement
+		{
+		$1->set_statement($3);
+		$1->finish(function);
+		function->pop_scope();
+		}
+	| start_array_loop WITH IDENTIFIER 
+		{ $1->set_index(function->add_symbol($3)); }
+					')' statement
+		{
+		$1->set_statement($6);
+		$1->finish(function);
+		function->pop_scope();
+		}
+	| start_array_loop WITH IDENTIFIER 
+		{ $1->set_index(function->add_symbol($3)); }
+				TO IDENTIFIER 
+		{ $1->set_array_size(function->add_symbol($6)); }
+						')' statement
+		{
+		$1->set_statement($9);
+		function->pop_scope();
+		}
+	;
+
+start_array_loop:
+	start_for IDENTIFIER IN declared_var
+		{
+		Uc_var_symbol *var = function->add_symbol($2);
+		$$ = new Uc_arrayloop_statement(var, $4);
+		}
+	;
+
+start_for:
+	FOR '('
+		{ function->push_scope(); }
+	;
+
+function_call_statement:
+	function_call ';'
+		{ $$ = new Uc_call_statement($1);  }
+	;
+
+return_statement:
+	RETURN expression ';'
+		{ $$ = new Uc_return_statement($2); }
+	| RETURN ';'
+		{ $$ = new Uc_return_statement(); }
+	;
+
+expression:
+	primary
+		{ $$ = $1; }
+	| expression '+' expression
+		{ $$ = new Uc_binary_expression(UC_ADD, $1, $3); }
+	| expression '-' expression
+		{ $$ = new Uc_binary_expression(UC_SUB, $1, $3); }
+	| expression '*' expression
+		{ $$ = new Uc_binary_expression(UC_MUL, $1, $3); }
+	| expression '/' expression
+		{ $$ = new Uc_binary_expression(UC_DIV, $1, $3); }
+	| expression '%' expression
+		{ $$ = new Uc_binary_expression(UC_MOD, $1, $3); }
+	| expression EQUALS expression
+		{ $$ = new Uc_binary_expression(UC_CMPEQ, $1, $3); }
+	| expression NEQUALS expression
+		{ $$ = new Uc_binary_expression(UC_CMPNE, $1, $3); }
+	| expression '<' expression
+		{ $$ = new Uc_binary_expression(UC_CMPL, $1, $3); }
+	| expression LTEQUALS expression
+		{ $$ = new Uc_binary_expression(UC_CMPLE, $1, $3); }
+	| expression '>' expression
+		{ $$ = new Uc_binary_expression(UC_CMPG, $1, $3); }
+	| expression GTEQUALS expression
+		{ $$ = new Uc_binary_expression(UC_CMPGE, $1, $3); }
+	| expression AND expression
+		{ $$ = new Uc_binary_expression(UC_AND, $1, $3); }
+	| expression OR expression
+		{ $$ = new Uc_binary_expression(UC_OR, $1, $3); }
+	| expression IN expression	/* Value in array. */
+		{ $$ = new Uc_binary_expression(UC_IN, $1, $3); }
+	| '-' primary
+		{ $$ = new Uc_binary_expression(UC_SUB,
+				new Uc_int_expression(0), $2); }
+	| NOT primary
+		{ $$ = new Uc_unary_expression(UC_NOT, $2); }
+	| '[' expression_list ']'	/* Concat. into an array. */
+		{ $$ = $2; }
+	| STRING_LITERAL
+		{ $$ = new Uc_string_expression(function->add_string($1)); }
+	;
+
+opt_expression_list:
+	expression_list
+	|
+		{ $$ = new Uc_array_expression(); }
+	;
+
+expression_list:
+	expression_list ',' expression
+		{ $$->add($3); }
+	| expression
+		{
+		$$ = new Uc_array_expression();
+		$$->add($1);
+		}
+	;
+
+primary:
+	INT_LITERAL
+		{ $$ = new Uc_int_expression($1); }
+	| declared_var
+		{ $$ = new Uc_var_expression($1); }
+	| declared_var '[' expression ']'
+		{ $$ = new Uc_arrayelem_expression($1, $3); }
+	| FLAG '[' INT_LITERAL ']'
+		{ $$ = new Uc_flag_expression($3); }
+	| function_call
+		{ $$ = $1; }
+	| UCTRUE
+		{ $$ = new Uc_bool_expression(true); }
+	| UCFALSE
+		{ $$ = new Uc_bool_expression(false); }
+	| EVENT
+		{ $$ = new Uc_event_expression(); }
+	| ITEM
+		{ $$ = new Uc_item_expression(); }
+	| '(' expression ')'
+		{ $$ = $2; }
+	;
+
+function_call:
+	IDENTIFIER '(' opt_expression_list ')'
+		{ 
+		Uc_symbol *sym = function->search_up($1);
+		if (!sym)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' not declared", $1);
+			yyerror(buf);
+			$$ = 0;
+			}
+		else
+			$$ = new Uc_call_expression(sym, $3, function);
+		}
+	;
+
+opt_identifier_list:
+	identifier_list
+	|
+		{ $$ = new std::vector<char *>; }
+	;
+
+identifier_list:
+	identifier_list ',' IDENTIFIER
+		{ $1->push_back($3); }
+	| IDENTIFIER
+		{
+		$$ = new std::vector<char *>;
+		$$->push_back($1);
+		}
+	;
+
+declared_var:
+	IDENTIFIER
+		{
+		Uc_var_symbol *var = dynamic_cast<Uc_var_symbol *>
+					(function->search_up($1));
+		if (!var)
+			{
+			char buf[150];
+			sprintf(buf, "'%s' not declared", $1);
+			yyerror(buf);
+			var = function->add_symbol($1);
+			}
+		$$ = var;
+		}
+	;
+
+%%
+

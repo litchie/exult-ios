@@ -1,0 +1,103 @@
+Exult Midi Music and SFX Info
+=============================
+
+Exult Version: 0.90 Alpha 1
+File Revision: 1
+Last Updated: Friday December 1st 2000
+
+
+Basic Information
+-----------------
+
+Midi in Exult is played by firstly loading a file and passing it to the XMIDI
+class for instrument mapping conversion. This is so the MT32 mapped music files
+from the original Ultima 7 and Serpent Isle will be playable on modern General
+Midi and General Midi/GS supporting sound cards.
+
+Certain considerations must be made, however, as some options are device
+specific. These are listed below in the section "Patch Conversion Information".
+
+Currently only two version of Exult support SFX. They are Windows and Linux
+using the Timidity_binary midi driver.
+
+See the section "Technical Information" for more information on Exult midi
+drivers and the XMIDI class.
+
+
+Patch Conversions Information
+-----------------------------
+
+Exult gives users various option for converting Music and Midi Sound Effects.
+Currently the only way to set the options is via manually editing the config
+file. Note, the options are case sensitive and all options must be lowercase.
+
+For music there are the options: gm (default), gs, gs127, gs127drum and none.
+
+For SFX there are the options: gs (default) and none.
+
+Below is a description of all the modes:
+
+
+gm - This will convert the MT32 patches to standard General Midi patches.
+     Conversion is fairly accurate but some instruments may be different.
+     This is only a valid option for Music conversion.
+
+gs - This will convert the MT32 patches to their equivilant GS patches. This
+     will be a more accurate conversion that straight gm since more of the 
+     MT32 patches are in the GS set. However, not all midi devices will
+     support this mode. This option is valid for either Music or SFX
+     conversion.
+
+gs127 - This option is for midi devices that have a MT32 patch bank installed
+        in Bank 127. Some GS implimentation have this, some don't. Only use
+        this if you know that you have a MT32 implimentation on Bank 127.
+
+none (music) - This option will output the music with nothing changed. Because
+               the mapping will be for MT32s you should only use this option if
+               you have a MT32 compatible device or you have replaced the
+               music.
+
+none (sfx) - This option will output the sfx with some patches in the standard
+             GS set and also some as MT32 patches on Bank 127. It is the same
+             as the gs127 option.
+
+The order of music conversion quality is:
+1) none
+2) gs127
+3) gs
+4) gm
+
+However, none shouldn't really be used there is currently no equivilant SFX
+conversion option. In the future however, sampled SFX will become avaliable,
+removing the need for MIDI SFX.
+
+The order of sfx conversion quality is:
+1) none/gs127
+2) gs
+
+
+NOTE: Currently the conversion to GS and GS127 is not finished and the notes
+are only mapped to General Midi.
+
+
+Abilities and Limitations
+-------------------------
+
+Due to the way the class was constructed input can be in either .mid, .rmi or
+the Miles Sound System .xmi format. There are no limitations to they types of
+.mid and .rmi supported. They can be Type 0, 1 and the rarely seen type 2. The
+loading routine is also fairly lineient of errorneous XMIDI files that do not
+have correct XMIDI headers.
+
+During the development of the XMIDI class it was found that certain .xmi files
+in Serpent Isle had the first patch changes after the first note. The
+converter will attempt to correct these errors. However it may cause problems
+with some midi files. Currently this can not be disabled and may change in the
+future.
+
+
+Technical Information
+---------------------
+
+This section is only intended for programmers and is currently unfinished.
+
