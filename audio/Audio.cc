@@ -138,8 +138,8 @@ static	void resample(uint8 *sourcedata,uint8 **destdata,size_t sourcelen,size_t 
 	// This is really Breshenham's line-drawing algorithm in
 	// a false nose, and clutching a crude smoothing loop.
 
-	float	f=wanted_rate/current_rate;
-	*destlen = (unsigned int) ((sourcelen*f)+1);
+	float	ratio= ((float) wanted_rate)/((float) current_rate);
+	*destlen = (unsigned int) ((sourcelen*ratio)+1);
 	if(!*destlen||current_rate==wanted_rate)
 		{
 		// Least work
@@ -152,7 +152,7 @@ static	void resample(uint8 *sourcedata,uint8 **destdata,size_t sourcelen,size_t 
 	size_t last=0;
 	for(size_t i=0;i<sourcelen;i++)
 		{
-		size_t pos = (size_t) (i*f);
+		size_t pos = (size_t) (i*ratio);
 		assert(pos<=*destlen);
 		(*destdata)[pos]=sourcedata[i];
 		// Interpolate if need be
@@ -243,7 +243,10 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 				cout << "Chunk length appears to be " << l << endl;
 #endif
 				sample_rate=1000000/(256-(old_data[4+data_offset]&0xff));
-
+				cerr << "Original sample_rate is " <<
+					sample_rate << ", hw rate is "
+						<< actual.freq << endl;
+#if 0	/* +++No longer needed, as resample() is fixed. */
 				if(!truthful_)
 					{
 					// BG and SI use different sample
@@ -254,6 +257,7 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 					if(sample_rate==11111)
 						sample_rate=11025;	// Assume 11111 is a lie.
 					}
+#endif
 #if DEBUG
 				cout << "Sample rate ("<< sample_rate<<") = _real_rate"<<endl;
 				cout << "compression type " << (old_data[5+data_offset]&0xff) << endl;
@@ -284,25 +288,12 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 
 		if(chunk_length==0)
 			break;
-#if 0
-		// Quick rendering to stereo
-		// Halve the frequency while we're at it
-		l-=(TRAILING_VOC_SLOP+LEADING_VOC_SLOP);
-		uint8 *stereo_data=new uint8[l*4];
-		for(size_t i=LEADING_VOC_SLOP,j=0;i<l+LEADING_VOC_SLOP;i++)
-			{
-			stereo_data[j++]=old_data[i];
-			stereo_data[j++]=old_data[i];
-			stereo_data[j++]=old_data[i];
-			stereo_data[j++]=old_data[i];
-			}
-		l*=4;
-#else
 		// Resample to the current rate
 		uint8 *new_data;
 		size_t new_len;
 		l-=(TRAILING_VOC_SLOP+LEADING_VOC_SLOP);
-		resample(old_data+LEADING_VOC_SLOP,&new_data,l,&new_len,sample_rate,actual.freq);
+		resample(old_data+LEADING_VOC_SLOP,&new_data,l,&new_len,
+						sample_rate,actual.freq);
 		l=new_len;
 		cerr << "Have " << l << " bytes of resampled data" << endl;
 
@@ -315,7 +306,6 @@ uint8 *Audio::convert_VOC(uint8 *old_data,uint32 &visible_len)
 			}
 		l*=4; // because it's 16bit
 		delete [] new_data;
-#endif
 
 		Chunk	c;
 		c.data=(uint8 *)stereo_data;
