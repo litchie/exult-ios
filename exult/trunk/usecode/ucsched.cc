@@ -442,6 +442,8 @@ void Usecode_script::handle_event
 			Usecode_value& val = code->get_elem(++i);
 					// It may be 0x3x.
 			step(usecode, val.get_int_value()&7);
+			//+++++Might be a 2nd parm, diff in altitude.
+			// ++++++++++Investigate.
 			break;
 			}
 		case music:		// Unknown.
