@@ -1,3 +1,6 @@
+2001-08-04  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* game.cc: fixed 'return to menu' after 'start new game' bug
+
 2001-08-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/intrinsics.cc: Barge flag for SI fixed.
