@@ -32,7 +32,13 @@ class DataSource;
 
 class Flex : public U7file
 {
+public:
+	enum Flex_vers {
+		orig = 0,
+		exult_v2 = 1
+	};
 protected:
+	static const unsigned short EXULT_FLEX_MAGIC2 = 0x0000cc00;
 	char	title[80];
 	uint32	magic1;
 	uint32	count;
@@ -61,12 +67,15 @@ public:
 			std::memcpy(padding,f.padding,sizeof(padding));
 			return *this;
 		}
-		
-   virtual uint32	number_of_objects(void) { return object_list.size(); };
-   virtual	char *	retrieve(uint32 objnum,std::size_t &len); // To a memory block
+
+	Flex_vers get_vers() const;
+	virtual uint32	number_of_objects(void) { return object_list.size(); };
+					// To a memory block
+   	virtual	char *	retrieve(uint32 objnum,std::size_t &len); 
 	virtual const char *get_archive_type() { return "FLEX"; };
 					// Write header for a Flex file.
-	static void write_header(DataSource* out, const char *title, int count);
+	static void write_header(DataSource* out, const char *title, int count,
+						Flex_vers vers = orig);
 
 	static bool is_flex(DataSource *in);
 	static bool is_flex(const char *fname);

@@ -52,6 +52,12 @@ Flex::Flex(const string &n) : U7file(n)
 	IndexFlexFile();
 }
 
+Flex::Flex_vers Flex::get_vers() const
+{
+	return (magic2&~0xff) == EXULT_FLEX_MAGIC2 ? 
+		(Flex_vers) (magic2&0xff) : orig;
+}
+
 void	Flex::IndexFlexFile(void)
 {
 	FILE	*fp;
@@ -114,7 +120,8 @@ void Flex::write_header
 	(
 	DataSource* out,			// File to write to.
 	const char *title,
-	int count			// # entries.
+	int count,			// # entries.
+	Flex_vers vers
 	)
 	{
 	char titlebuf[0x50];		// Use savename for title.
@@ -123,7 +130,10 @@ void Flex::write_header
 	out->write(titlebuf, sizeof(titlebuf));
 	out->write4(0xFFFF1A00);	// Magic number.
 	out->write4(count);
-	out->write4(0x000000CC);	// 2nd magic number.
+	if (vers == orig)		// 2nd magic #:  use for version.
+		out->write4(0x000000CC);
+	else
+		out->write4(EXULT_FLEX_MAGIC2 + (int) vers);
 	long pos = out->getPos();		// Fill to data (past table at 0x80).
 	long fill = 0x80 + 8*count - pos;
 	while (fill--)
