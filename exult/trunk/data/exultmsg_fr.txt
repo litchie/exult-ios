@@ -1,18 +1,18 @@
 # These messages are used in the Exult engine, and follow the
 # game-specific ones.
-2800:Remets cette chaise à sa place !
-2801:Voleur !!
-2802:Sale rascal !!
-2803:C'est pas drôle !
-2804:Qui a déplacé ma chaise ??
-2805:On dirait que tu vas bien.
-2806:Tout va bien ?
-2807:Un dessert ?
-2808:Bon appétit !
-2809:Spécialité de la maison !
-2810:Avatar ! Retiens-toi !
-2811:Tu vois bien que le lit est occupé !
-2812:La personne dans ce lit n'a pas l'air de vouloir de compagnie.
-2813:Tu ne me perdras pas si facilement !
-2814:Ah, te voila !
-2815:Trouvé !
+0x500:Remets cette chaise à sa place !
+0x501:Voleur !!
+0x502:Sale rascal !!
+0x503:C'est pas drôle !
+0x504:Qui a déplacé ma chaise ??
+0x505:On dirait que tu vas bien.
+0x506:Tout va bien ?
+0x507:Un dessert ?
+0x508:Bon appétit !
+0x509:Spécialité de la maison !
+0x50a:Avatar ! Retiens-toi !
+0x50b:Tu vois bien que le lit est occupé !
+0x50c:La personne dans ce lit n'a pas l'air de vouloir de compagnie.
+0x50d:Tu ne me perdras pas si facilement !
+0x50e:Ah, te voila !
+0x50f:Trouvé !

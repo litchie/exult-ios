@@ -1,18 +1,18 @@
 # These messages are used in the Exult engine, and follow the
 # game-specific ones.
-2800:Put that chair back!
-2801:Thief!!
-2802:Thou scoundrel!!
-2803:Not funny!
-2804:Who moved my chair??
-2805:You look like you're doing fine.
-2806:Everything okay?
-2807:Ready for dessert?
-2808:Enjoy!
-2809:Specialty of the house!
-2810:Avatar!  Please restrain thyself!
-2811:Hast thou noticed that this bed is occupied?
-2812:The resident of this bed may not be desirouth of company at the moment.
-2813:Thou shan't lose me so easily!
-2814:Ah, there thou art!
-2815:Found ye!
+0x500:Put that chair back!
+0x501:Thief!!
+0x502:Thou scoundrel!!
+0x503:Not funny!
+0x504:Who moved my chair??
+0x505:You look like you're doing fine.
+0x506:Everything okay?
+0x507:Ready for dessert?
+0x508:Enjoy!
+0x509:Specialty of the house!
+0x50a:Avatar!  Please restrain thyself!
+0x50b:Hast thou noticed that this bed is occupied?
+0x50c:The resident of this bed may not be desirouth of company at the moment.
+0x50d:Thou shan't lose me so easily!
+0x50e:Ah, there thou art!
+0x50f:Found ye!
