@@ -65,9 +65,6 @@ class Game_window
 	Palette *pal;
 public:
 	enum Game_mode {		// Can be in different modes.
-		splash,			// Splash screen.
-		menu,			// Menu screen
-		quotes,			// Quotes scroller
 		normal,			// Normal game-play.
 		conversation,		// Talking.
 		gump			// Showing open container(s).

@@ -163,7 +163,7 @@ Game_window::Game_window
 	(
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
-	    win(0), usecode(0), mode(splash), combat(false),
+	    win(0), usecode(0), mode(normal), combat(false),
             tqueue(new Time_queue()), clock(tqueue),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0),
@@ -1455,15 +1455,16 @@ void Game_window::read
 	
 	try
 	{
-		usecode->read();		// Usecode.dat (party, global flags).
+		usecode->read();	// Usecode.dat (party, global flags).
 
-		if (Game::get_game_type() == SERPENT_ISLE)
-			usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
-
-		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-			main_actor->clear_flag(Obj_flags::dont_render);
-		else
-			main_actor->set_flag(Obj_flags::dont_render);
+		if (Game::get_game_type() == BLACK_GATE)
+			{
+			if (usecode->get_global_flag(
+					Usecode_machine::did_first_scene))
+				main_actor->clear_flag(Obj_flags::dont_render);
+			else
+				main_actor->set_flag(Obj_flags::dont_render);
+			}
 	}
 	catch(...)
 	{
@@ -1986,6 +1987,10 @@ void Game_window::start_actor_along_path
 	    main_actor->get_schedule_type() == Schedule::sleep ||
 	    moving_barge)		// For now, don't do barges.
 		return;			// Zzzzz....
+					// Animation in progress?
+	if (main_actor->get_siflag(Actor::dont_move) ||
+	    main_actor->Actor::get_flag(Obj_flags::dont_render))
+		return;
 	teleported = 0;
 	int lift = main_actor->get_lift();
 	int liftpixels = 4*lift;	// Figure abs. tile.
@@ -2565,6 +2570,10 @@ void Game_window::double_clicked
 	int x, int y			// Coords in window.
 	)
 	{
+					// Animation in progress?
+	if (main_actor->get_siflag(Actor::dont_move) ||
+	    main_actor->Actor::get_flag(Obj_flags::dont_render))
+		return;
 					// Nothing going on?
 	if (!Scheduled_usecode::get_count())
 		removed->flush();	// Flush removed objects.
@@ -2993,21 +3002,21 @@ void Game_window::setup_game
 					// Skip intro. scene?
 		config->value("config/gameplay/skip_intro", yn, "no");
 		if (yn == "yes")
-			usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
+			usecode->set_global_flag(
+				Usecode_machine::did_first_scene, 1);
 
 					// Have Trinsic password?
-		config->value("config/gameplay/have_trinsic_password", yn, "no");
+		config->value("config/gameplay/have_trinsic_password", yn, 
+								"no");
 		if (yn == "yes")
 			usecode->set_global_flag(
-					Usecode_machine::have_trinsic_password, 1);
+				Usecode_machine::have_trinsic_password, 1);
 					// Should Avatar be visible?
 		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
 			main_actor->clear_flag(Obj_flags::dont_render);
 		else
 			main_actor->set_flag(Obj_flags::dont_render);
 	}
-	else
-		usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
 
 	faded_out = 0;
 	clock.set_palette();		// Set palette for time-of-day.

@@ -305,7 +305,7 @@ int exult_main(void)
 }
 
 
-static int Filter_intro_events(const SDL_Event *event);
+//static int Filter_intro_events(const SDL_Event *event);
 static void Handle_events(unsigned char *stop);
 static void Handle_event(SDL_Event& event);
 
@@ -399,7 +399,7 @@ static void Init
 		game->play_intro();
 	game->show_menu();
 	gwin->set_mode(Game_window::normal);
-	SDL_SetEventFilter(Filter_intro_events);
+//	SDL_SetEventFilter(Filter_intro_events);
 	gwin->setup_game();		// This will start the scene.
 					// Get scale factor for mouse.
 	if (gwin->get_win())
@@ -448,13 +448,13 @@ cerr.flush();
 /*
  *	Statics used below:
  */
-static bool show_mouse = false;		// display mouse in main loop?
+static bool show_mouse = true;		// display mouse in main loop?
 static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
 const int slow_speed = 166, medium_speed = 100, fast_speed = 50;
 static int avatar_speed = slow_speed;	// Avatar speed (frame delay in
 					//    1/1000 secs.)
-
+#if 0
 /*
  *	Filter out events during the intro. sequence.
  */
@@ -489,6 +489,7 @@ static int Filter_intro_events
 		}
 	return (1);
 	}
+#endif
 
 /*
  *	Handle events until a flag is set.
@@ -611,7 +612,8 @@ void Set_mouse_and_speed
 	}
 
 /*
- *	Handle an event.  This should work for all platforms.
+ *	Handle an event.  This should work for all platforms, and should only
+ *	be called in 'normal' and 'gump' modes.
  */
 
 static void Handle_event
@@ -625,9 +627,6 @@ static void Handle_event
 	switch (event.type)
 		{
 	case SDL_MOUSEBUTTONDOWN:
-		if (gwin->get_mode() != Game_window::normal &&
-		    gwin->get_mode() != Game_window::gump)
-			break;
 		if (event.button.button == 1)
 			{
 			dragging = gwin->start_dragging(
@@ -638,7 +637,7 @@ static void Handle_event
 					// Move sprite toward mouse
 					//  when right button pressed.
 		if (event.button.button == 3 && 
-		    gwin->get_mode() == Game_window::normal)
+		    gwin->get_mode() != Game_window::gump)
 			{		// Try removing old queue entry.
 			gwin->get_tqueue()->remove(gwin->get_main_actor());
 			gwin->start_actor(event.button.x >> scale, 
@@ -648,11 +647,6 @@ static void Handle_event
 	case SDL_MOUSEBUTTONUP:
 		if (event.button.button == 3)
 			{
-#if 0
-			if (gwin->get_mode() != Game_window::normal &&
-			    gwin->get_mode() != Game_window::gump)
-				break;
-#endif
 			uint32 curtime = SDL_GetTicks();
 					// Last click within .5 secs?
 			if (curtime - last_b3_click < 500)
@@ -691,13 +685,11 @@ static void Handle_event
 		break;
 	case SDL_MOUSEMOTION:
 		{
-		Mouse::mouse->move(event.motion.x >> scale, event.motion.y >> scale);
-		if (gwin->get_mode() == Game_window::normal)
+		Mouse::mouse->move(event.motion.x >> scale, 
+						event.motion.y >> scale);
+		if (gwin->get_mode() != Game_window::gump)
 			Set_mouse_and_speed(event.motion.x, event.motion.y);
 		Mouse::mouse_update = true;	// Need to blit mouse.
-		if (gwin->get_mode() != Game_window::normal &&
-		    gwin->get_mode() != Game_window::gump)
-			break;
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
 			dragged = gwin->drag(event.motion.x >> scale, 
@@ -732,10 +724,12 @@ static void Handle_event
 			else
 				gwin->lose_focus();
 			}
+#if 0
 		if (event.active.state & SDL_APPACTIVE)
 					// Became active.
 			if (event.active.gain)
 				gwin->init_actors();
+#endif
 		break;
 #if 0
 	case ConfigureNotify:		// Resize.
