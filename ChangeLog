@@ -1,3 +1,6 @@
+2001-12-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* shapes/vgafile.cc: fixed broken debugging output
+
 2001-12-14  Tristan Tarrant <nadir@users.sourceforge.net>
 	* bggame.cc, sigame.cc: new game displays correctly in spanish
 
@@ -13,6 +16,7 @@
 
 	* combat.cc (Duel_schedule): Look for practice targets.
 
+>>>>>>> 1.1226
 2001-12-13  Patrick Burke <takhisisii@yahoo.com.au>
 	* usecode/ucxt/src/opcodes.cc: Included a 'fix' for undeclared __STRING
 	under solaris.
