@@ -1136,7 +1136,7 @@ static void Drop_dragged_shape
 	else
 		newobj = new Ifix_game_object(shape, frame, 0, 0, 0);
 					// First see if it's a gump.
-	Gump *on_gump = ireg ? gwin->find_gump(x, y) : 0;
+	Gump *on_gump = ireg ? gwin->get_gump_man()->find_gump(x, y) : 0;
 	if (on_gump)
 		{
 		if (!on_gump->add(newobj, x, y, x, y))

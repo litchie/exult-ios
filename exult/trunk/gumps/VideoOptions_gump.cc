@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Gump_button.h"
 #include "Gump_ToggleButton.h"
 #include "gamewin.h"
-#include "data/exult_flx.h"
+#include "exult_flx.h"
 
 using std::cerr;
 using std::endl;

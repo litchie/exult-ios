@@ -1,6 +1,6 @@
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin \
-		-I$(srcdir)/../shapes -I$(srcdir)/../objs -I$(srcdir)/../audio \
-		-I$(srcdir)/../conf -I$(srcdir)/../usecode \
+		-I$(srcdir)/../shapes -I$(srcdir)/../objs -I$(srcdir)/../audio\
+		-I$(srcdir)/../conf -I$(srcdir)/../usecode -I$(srcdir)/../data\
 	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libgumps.la

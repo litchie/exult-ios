@@ -1,5 +1,5 @@
 INCLUDES = -I$(srcdir) -I$(srcdir)/imagewin -I$(srcdir)/shapes \
-	-I$(srcdir)/server \
+	-I$(srcdir)/server -I$(srcdir)/data \
 	-I$(srcdir)/objs -I$(srcdir)/conf -I$(srcdir)/files -I$(srcdir)/gumps \
 	-I$(srcdir)/audio -I$(srcdir)/pathfinder -I$(srcdir)/usecode \
 	$(SDL_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) \
@@ -7,7 +7,7 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/imagewin -I$(srcdir)/shapes \
 
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(DEBUG_FLAGS) $(CXXFLAGS) $(LDFLAGS) -o $(EXE_TARGET)
 
-SUBDIRS = audio pathfinder files gumps conf flic tools data docs desktop \
+SUBDIRS = audio pathfinder files conf flic tools data gumps docs desktop \
 	shapes imagewin usecode objs server mapedit
 
 bin_PROGRAMS = exult
@@ -81,7 +81,7 @@ exult_SOURCES =	\
 	schedule.h	\
 	segfile.cc	\
 	segfile.h	\
-	shapeid.o	\
+	shapeid.cc	\
 	shapeid.h	\
 	sigame.cc	\
 	tiles.h		\
