@@ -12,6 +12,12 @@ down		scroll_down
 home		center_screen
 
 Del		delete_selected
+Ctrl-right	move_selected	 1  0  0
+Ctrl-left	move_selected	-1  0  0
+Ctrl-down	move_selected	 0  1  0
+Ctrl-up		move_selected	 0 -1  0
+Ctrl-pageup	move_selected	 0  0  1
+Ctrl-pagedown	move_selected	 0  0 -1
 
 F2		cheat_screen
 F3		map_teleport
