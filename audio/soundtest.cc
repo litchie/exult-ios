@@ -15,7 +15,7 @@
  */
 
 #include "../alpha_kludges.h"
-
+#include "SDL_events.h"
 #include "gamewin.h"
 #include "Audio.h"
 #include "soundtest.h"
@@ -23,7 +23,6 @@
 #include "mouse.h"
 #include "font.h"
 
-#include "SDL_events.h"
  
 SoundTester::SoundTester() : song(0), sfx(0), voice(0), active(0), repeat(true)
 	{

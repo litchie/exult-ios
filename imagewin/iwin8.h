@@ -29,10 +29,13 @@ Boston, MA  02111-1307, USA.
 
 #include "imagewin.h"
 #include "ibuf8.h"
+#include "SDL_types.h"
 
-struct SDL_Color;
+//typedef struct SDL_Color SDL_Color;
 
 template <class T> class GammaTable;
+
+struct SDL_Color;
 
 /*
  *	Here's an 8-bit color-depth window (faster than the generic).

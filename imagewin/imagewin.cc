@@ -40,6 +40,7 @@ Boston, MA  02111-1307, USA.
 #  include "../exult_types.h"
 #endif
 
+#include "SDL_video.h"
 #include "SDL_error.h"
 
 bool SavePCX_RW (SDL_Surface *saveme, SDL_RWops *dst, bool freedst);
@@ -283,3 +284,10 @@ bool Image_window::screenshot(SDL_RWops *dst)
 		return SavePCX_RW(surface, dst, true);
 	}
 }
+
+void Image_window::set_title(const char *title)
+{
+	SDL_WM_SetCaption(title, 0);
+}
+
+

@@ -27,8 +27,11 @@ Boston, MA  02111-1307, USA.
 #ifndef INCL_IMAGEWIN
 #define INCL_IMAGEWIN	1
 
-#include "SDL_video.h"
+//#include "SDL_video.h"
 #include "imagebuf.h"
+
+struct SDL_Surface;
+struct SDL_RWops;
 
 /*
  *	Here's the top-level class to use for image buffers.  Image_window
@@ -74,10 +77,8 @@ public:
 	int is_visible(int x, int y, int w, int h)
 		{ return ibuf->is_visible(x, y, w, h); }
 					// Set title.
-	void set_title(const char *title)
-		{
-		SDL_WM_SetCaption(title, 0);
-		}
+	void set_title(const char *title);
+
 	Image_buffer *get_ibuf()
 		{ return ibuf; }
 	int get_width()

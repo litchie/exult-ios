@@ -16,9 +16,9 @@
 
 #include "alpha_kludges.h"
 
+#include "menulist.h"
 #include "font.h"
 #include "gamewin.h"
-#include "menulist.h"
 #include "mouse.h"
 #include "rect.h"
 

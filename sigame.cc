@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
 #endif
+
+#include "SDL_events.h"
 #include "files/U7file.h"
 #include "flic/playfli.h"
 #include "gamewin.h"
@@ -31,8 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "font.h"
 #include "txtscroll.h"
 #include "exult_types.h"
-
-#include "SDL_events.h"
 
 using std::cout;
 using std::endl;
