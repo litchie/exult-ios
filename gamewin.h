@@ -57,7 +57,7 @@ public:
 		};
 private:
 	Usecode_machine *usecode;	// Drives game plot.
-	Game_mode mode;			// Mode we'er in.
+	Game_mode mode;			// Mode we're in.
 	Time_queue *tqueue;		// Time-based queue.
 	Game_clock clock;		// Keeps track of time.
 	Npc_proximity_handler *npc_prox;// Handles nearby NPC's.
@@ -103,6 +103,7 @@ private:
 	Image_buffer *dragging_save;	// Image below dragged object.
 					// Open a U7 file.
 	int u7open(ifstream& in, char *fname, int dont_abort = 0);
+	void clear_world();		// Clear out world's contents.
 public:
 	int skip_lift;			// Skip objects with lift > 0.
 	int paint_eggs;

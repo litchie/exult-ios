@@ -355,8 +355,7 @@ public:
 		  volume_used(0), last_object(0)
 		{  }
 	Container_game_object() : volume_used(0), last_object(0) {  }
-	virtual ~Container_game_object()
-		{  }
+	virtual ~Container_game_object();
 	Game_object *get_last_object()
 		{ return last_object; }
 	Game_object *get_first_object()	// Get first inside.
@@ -585,6 +584,7 @@ class Chunk_object_list
 public:
 	friend class Npc_actor;
 	Chunk_object_list(int chunkx, int chunky);
+	~Chunk_object_list();		// Delete everything in chunk.
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add an egg.
 	void remove(Game_object *obj);	// Remove an object.

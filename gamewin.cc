@@ -149,6 +149,7 @@ Game_window::~Game_window
 	(
 	)
 	{
+	clear_world();			// Delete all objects, chunks.
 	delete win;
 	delete dragging_save;
 	delete [] conv_choices;
@@ -223,6 +224,32 @@ int Game_window::u7open
 		else
 			abort("Can't open '%s'.", fname);
 	return (1);
+	}
+
+/*
+ *	Clear out world's contents.  Should be used during a 'restore'.
+ */
+
+void Game_window::clear_world
+	(
+	)
+	{
+	delete tqueue;			// Want a fresh queue.
+	tqueue = new Time_queue();
+	clear_dirty();
+					// Delete all chunks (& their objs).
+	for (int y = 0; y < num_chunks; y++)
+		for (int x = 0; x < num_chunks; x++)
+			{
+			delete objects[x][y];
+			objects[x][y] = 0;
+			}
+	main_actor = 0;
+	num_npcs = num_npcs1 = 0;
+	delete [] npcs;			// NPC's already deleted above.
+		//++++++++Clear monsters list when we have it.
+					// Clear 'read' flags.
+	memset((char *) schunk_read, 0, sizeof(schunk_read));
 	}
 
 /*
@@ -1132,6 +1159,7 @@ void Game_window::stop_actor
 	paint();	// ++++++Necessary?
 	}
 
+#if 0
 /*
  *	Find a "roof" in the given chunk.
  *
@@ -1155,6 +1183,7 @@ int Game_window::find_roof
 	return (0);
 #endif
 	}
+#endif
 
 /*
  *	Find the highest gump that the mouse cursor is on.
