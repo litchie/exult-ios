@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapelst.h"
 #include "vgafile.h"
 #include "ibuf8.h"
-#include "U7file.h"
+#include "Flex.h"
 
 /*
  *	Blit onto screen.
@@ -65,12 +65,17 @@ void Shape_chooser::select
 	{
 	selected = new_sel;
 	int shapenum = info[selected].shapenum;
-//	char *sname = ifile->get_shape_name(shapenum);
 					// Remove prev. selection msg.
 	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	char buf[150];			// Show new selection.
-	g_snprintf(buf, sizeof(buf), "Selected shape %d, frame %d",
+	g_snprintf(buf, sizeof(buf), "Shape %d/%d",
 			shapenum, info[selected].framenum);
+	if (names && names[shapenum])
+		{
+		int len = strlen(buf);
+		g_snprintf(buf + len, sizeof(buf) - len, 
+						":  '%s'", names[shapenum]);
+		}
 	gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
 	}
 
@@ -253,9 +258,11 @@ cout << "Scrolled to " << adj->value << '\n';
 Shape_chooser::Shape_chooser
 	(
 	Vga_file *i,			// Where they're kept.
+	char **nms,			// Shape names, or null.
 	GtkWidget *box,			// Where to put this.
 	int w, int h			// Dimensions.
-	) : ifile(i), iwin(0), shapenum0(0), framenum0(0), palette(0),
+	) : ifile(i), names(nms),
+		iwin(0), shapenum0(0), framenum0(0), palette(0),
 		info(0), info_cnt(0), selected(-1), sel_changed(0)
 	{
 	U7object pal("static/palettes.flx", 0);
@@ -348,6 +355,7 @@ void Shape_chooser::unselect
 //++++++++++++Testing:
 
 Vga_file *ifile = 0;
+char **names = 0;
 GtkWidget *topwin = 0;
 Shape_chooser *chooser = 0;
 
@@ -360,6 +368,11 @@ int Quit
 	)
 	{
 	delete chooser;
+	int num_shapes = ifile->get_num_shapes();
+	delete ifile;
+	for (int i = 0; i < num_shapes; i++)
+		delete names[i];
+	delete [] names;
 	gtk_exit(0);
 	return (FALSE);			// Shouldn't get here.
 	}
@@ -381,6 +394,14 @@ int main
 		cerr << "Error opening image file 'shapes.vga'.\n";
 		return (1);
 		}
+					// Read in shape names.
+	int num_names = ifile->get_num_shapes();
+	names = new char *[num_names];
+	Flex *items = new Flex("static/text.flx");
+	size_t len;
+	for (int i = 0; i < num_names; i++)
+		names[i] = items->retrieve(i, len);
+	delete items;
 	gtk_init(&argc, &argv);
 	gdk_rgb_init();
 					// Create top-level window.
@@ -397,7 +418,7 @@ int main
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(topwin), vbox);
 	gtk_widget_show(vbox);
-	chooser = new Shape_chooser(ifile, vbox, 400, 64);
+	chooser = new Shape_chooser(ifile, names, vbox, 400, 64);
 	gtk_widget_show(topwin);	// Show top window.
 	gtk_main();
 	return (0);
