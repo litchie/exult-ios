@@ -138,7 +138,7 @@
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x62 UNUSED
 	USECODE_INTRINSIC_PTR(resurrect),	// Guess	// 0x63
 	USECODE_INTRINSIC_PTR(UNKNOWN),			// 0x64
-	USECODE_INTRINSIC_PTR(UNKNOWN),			// 0x65 Maybe get_npc#(body)
+	USECODE_INTRINSIC_PTR(get_body_npc),			// 0x65
 	USECODE_INTRINSIC_PTR(add_spell),			// 0x66
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x67 Remove all spells????
 	USECODE_INTRINSIC_PTR(sprite_effect),			// 0x68

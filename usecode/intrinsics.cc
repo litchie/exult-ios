@@ -1247,6 +1247,14 @@ USECODE_INTRINSIC(resurrect)
 	return Usecode_value(actor);
 }
 
+USECODE_INTRINSIC(get_body_npc)
+{
+	// get_body_npc(body).  Returns npc # (negative).
+	Game_object *obj = get_item(parms[0]);
+	int num = obj ? obj->get_live_npc_num() : -1;
+	return Usecode_value(num > 0 ? -num : 0);
+}
+
 USECODE_INTRINSIC(add_spell)
 {
 	// add_spell(spell# (0-71), ??, spoolbook).

@@ -78,11 +78,11 @@ int Container_game_object::add
 	if (obj->get_shapenum() == get_shapenum())
 		return (0);		// Can't put a bag in a bag.
 	int objvol = obj->get_volume();
-	int maxvol;			// Note:  NPC's have 0 volume.
 	if (!dont_check)
-		{
-		if ((maxvol = get_max_volume()) > 0 &&
-						objvol + volume_used > maxvol)
+		{			// Note:  NPC's have 0 volume.
+		int maxvol = get_max_volume();
+//		if (maxvol > 0 &&
+		if (objvol + volume_used > maxvol)
 			return (0);	// Doesn't fit.
 		Game_object *parent = this;
 		do			// Watch for snake eating itself.
