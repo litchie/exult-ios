@@ -1337,7 +1337,7 @@ Game_object *Game_map::locate_shape
 		}
 	while (!obj)			// Not found yet?
 		{
-		cx++;			// Next chunk.
+		cx += dir;		// Next chunk.
 		if (cx == stop)		// Past (either) end?
 			{
 			cy += dir;

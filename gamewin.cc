@@ -776,16 +776,25 @@ bool Game_window::locate_shape
 					// Get (first) selected object.
 	const std::vector<Game_object *>& sel = cheat.get_selected();
 	Game_object *start = sel.size() ? sel[0] : 0;
+	char msg[80];
+	snprintf(msg, sizeof(msg), "Searching for shape %d", shapenum);
+	center_text(msg);
+	paint();
+	show();
 	Game_object *obj = map->locate_shape(shapenum, upwards, start);
 	if (!obj)
+		{
+		center_text("Not found");
 		return false;		// Not found.
+		}
+	remove_text_effects();
 	cheat.clear_selected();		// Select obj.
 	cheat.append_selected(obj);
 					//++++++++Got to show it.
 	Game_object *owner = obj->get_outermost(); //+++++TESTING
 	if (owner != obj)
 		cheat.append_selected(owner);
-	center_view(owner->get_tile());	//++++Testing.
+	center_view(owner->get_tile());
 	return true;
 	}
 
