@@ -1,3 +1,12 @@
+2001-12-07  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* objs/chunks.cc: Found a case where it's BAD to use an iterator,
+	since the vector can change.  This fixes a memory-corruption crash.
+
+	* actors.cc: If no body for dead NPC, put items on ground.
+	* usecode/ucinternal.cc,objs/egg.cc:  Do_speech() plays speech if
+	possible, else calls Usecode function to display text.
+
 2001-12-06  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* drag.cc: Use old lift when activating eggs object was moved away
