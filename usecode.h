@@ -219,9 +219,9 @@ class Usecode_machine
 	void set_item_frame(Usecode_value& item_arg, Usecode_value& frame_arg);
 	int get_item_shape(Usecode_value& item_arg);
 	int get_item_frame(Usecode_value& item_arg);
-	int npc_in_party(int npc);
-	void add_to_party(int npc);
-	void remove_from_party(int npc);
+	int npc_in_party(Game_object *npc);
+	void add_to_party(Game_object *npc);
+	void remove_from_party(Game_object *npc);
 	Usecode_value get_party();
 	void item_say(Usecode_value& objval, Usecode_value& strval);
 	void exec_array(Usecode_value& objval, Usecode_value& arrayval);

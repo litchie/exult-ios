@@ -478,12 +478,15 @@ int Usecode_machine::get_item_frame
 
 int Usecode_machine::npc_in_party
 	(
-	int npc				// NPC #.
+	Game_object *npc
 	)
 	{
+	if (!npc)
+		return (0);
+	int npcnum = npc->get_npc_num();
 cout << "Is npc " << npc << " in party?  ";
 	for (int i = 0; i < PARTY_MAX; i++)
-		if (party[i] == npc)
+		if (party[i] == npcnum)
 			{
 			cout << "Yes\n";
 			return (1);
@@ -498,17 +501,17 @@ cout << "Is npc " << npc << " in party?  ";
 
 void Usecode_machine::add_to_party
 	(
-	int npc
+	Game_object *npc
 	)
 	{
-	if (party_count == PARTY_MAX || npc_in_party(npc))
+	if (!npc || party_count == PARTY_MAX || npc_in_party(npc))
 		return;			// Can't add.
 	for (int i = 0; i < PARTY_MAX; i++)
 		if (party[i] == 0)	// Find empty spot.
 			{
-			party[i] = npc;
+			party[i] = npc->get_npc_num();
 			party_count++;
-cout << "NPC " << npc << " added to party.\n";
+cout << "NPC " << npc->get_npc_num() << " added to party.\n";
 			break;
 			}
 	}
@@ -519,11 +522,14 @@ cout << "NPC " << npc << " added to party.\n";
 
 void Usecode_machine::remove_from_party
 	(
-	int npc
+	Game_object *npc
 	)
 	{
+	if (!npc)
+		return;
+	int npcnum = npc->get_npc_num();
 	for (int i = 0; i < PARTY_MAX; i++)
-		if (party[i] == npc)
+		if (party[i] == npcnum)
 			{
 			party[i] = 0;
 			party_count--;
@@ -544,6 +550,7 @@ Usecode_value Usecode_machine::get_party
 	for (int i = 0; i < PARTY_MAX && num_added < party_count; i++)
 		if (party[i] != 0)
 			{
+//++++Should this be -npcnum, or ->npc?
 			Usecode_value val(party[i]);
 			arr.put_elem(num_added, val);
 			}
@@ -790,10 +797,10 @@ Usecode_value Usecode_machine::call_intrinsic
 		//+++++++++++++++++++++
 		break;
 	case 0x1e:			// NPC joins party.
-		add_to_party(-parms[0].get_int_value());
+		add_to_party(get_item(parms[0].get_int_value()));
 		break;
 	case 0x1f:			// NPC leaves party.
-		remove_from_party(-parms[0].get_int_value());
+		remove_from_party(get_item(parms[0].get_int_value()));
 		break;
 	case 0x20:			// Get NPC prop (item, prop_id).
 					//   (9 is food level).
@@ -848,7 +855,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		break;
 	case 0x2f:			// NPC in party? (item).
 		return (Usecode_value(npc_in_party(
-					parms[0].get_int_value())));
+					get_item(parms[0].get_int_value()))));
 	case 0x32:			// Display sign (gump #, text).
 		//+++++++++++++
 		Unhandled(intrinsic, num_parms, parms);
