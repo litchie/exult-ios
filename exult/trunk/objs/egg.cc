@@ -121,11 +121,10 @@ void Missile_launcher::handle_event
 
 void Egglike_game_object::paint
 	(
-	Game_window *gwin
 	)
 	{
 	if(gwin->paint_eggs)
-		Game_object::paint(gwin);
+		Game_object::paint();
 	}
 
 /*
@@ -369,10 +368,9 @@ int Egg_object::is_active
 
 void Egg_object::paint
 	(
-	Game_window *gwin
 	)
 	{
-	Egglike_game_object::paint(gwin);
+	Egglike_game_object::paint();
 					// Make sure launcher is active.
 	if (launcher && !launcher->in_queue())
 		gwin->get_tqueue()->add(0L, launcher, 0);
@@ -936,12 +934,11 @@ Animated_egg_object::~Animated_egg_object()
 
 void Animated_egg_object::paint
 	(
-	Game_window *gwin
 	)
 	{
 	if (animator)
 		animator->want_animation();	// Be sure animation is on.
-	Ireg_game_object::paint(gwin);	// Always paint these.
+	Ireg_game_object::paint();	// Always paint these.
 	}
 
 /*
@@ -1141,9 +1138,9 @@ void Mirror_object::set_area()
 	else  area = Rectangle(t.tx-3 , t.ty-1, 6, 6);
 }
 
-void Mirror_object::paint(Game_window *gwin)
+void Mirror_object::paint()
 {
-	Ireg_game_object::paint(gwin);	// Always paint these.
+	Ireg_game_object::paint();	// Always paint these.
 }
 
 /*

@@ -1476,7 +1476,6 @@ void Actor::set_schedule_and_loc (int new_schedule_type, Tile_coord dest,
 
 void Actor::paint
 	(
-	Game_window *gwin
 	)
 	{
 	if (!(flags & (1L << Obj_flags::dont_render)) ||
@@ -1489,7 +1488,7 @@ void Actor::paint
 		else 
 			paint_shape(xoff, yoff);
 
-		paint_weapon(gwin);
+		paint_weapon();
 		if (hit)		// Want a momentary red outline.
 			gwin->paint_outline(xoff, yoff, get_shape(),
 								HIT_PIXEL);
@@ -1513,7 +1512,6 @@ void Actor::paint
  */
 void Actor::paint_weapon
 	(
-	Game_window *gwin
 	)
 	{
 	int weapon_x, weapon_y, weapon_frame;
@@ -3768,10 +3766,9 @@ void Npc_actor::update_schedule
 
 void Npc_actor::paint
 	(
-	Game_window *gwin
 	)
 	{
-	Actor::paint(gwin);		// Draw on screen.
+	Actor::paint();			// Draw on screen.
 	if (dormant && schedule)	// Resume schedule.
 		{
 		dormant = false;	// But clear out old entries first.??

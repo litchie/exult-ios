@@ -253,9 +253,8 @@ void Effects_manager::paint
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_instance();
 	for (Special_effect *txt = effects; txt; txt = txt->next)
-		txt->paint(gwin);
+		txt->paint();
 	}
 
 /*
@@ -264,7 +263,6 @@ void Effects_manager::paint
 
 void Special_effect::paint
 	(
-	Game_window *
 	)
 	{
 	}
@@ -367,7 +365,6 @@ void Sprites_effect::handle_event
 
 void Sprites_effect::paint
 	(
-	Game_window *gwin
 	)
 	{
 	if (sprite.get_framenum() >= frames)
@@ -667,7 +664,6 @@ void Projectile_effect::handle_event
 
 void Projectile_effect::paint
 	(
-	Game_window *gwin
 	)
 	{
 	if (pos.tx == -1 || sprite.get_framenum() == -1)
@@ -774,7 +770,6 @@ void Death_vortex::handle_event
 
 void Death_vortex::paint
 	(
-	Game_window *gwin
 	)
 	{
 	int liftpix = pos.tz*c_tilesize/2;
@@ -904,7 +899,6 @@ void Text_effect::handle_event
 
 void Text_effect::paint
 	(
-	Game_window *gwin
 	)
 	{
 	const char *ptr = msg.c_str();
@@ -1079,7 +1073,6 @@ void Rain_effect::handle_event
 
 void Rain_effect::paint
 	(
-	Game_window *gwin
 	)
 	{
 	if (gwin->is_main_actor_inside() || gwin->get_gump_man()->showing_gumps(true))
@@ -1345,9 +1338,9 @@ cout << "Cloud: start_time = " << start_time << endl;
 
 void Cloud::paint
 	(
-	Game_window *gwin
 	)
 	{
+	Game_window *gwin = Game_window::get_instance();
 	if (count > 0)			// Might not have been started.
 		cloud.paint_shape(wx - gwin->get_scrolltx()*c_tilesize, 
 			wy - gwin->get_scrollty()*c_tilesize);
@@ -1422,12 +1415,11 @@ void Clouds_effect::handle_event
 
 void Clouds_effect::paint
 	(
-	Game_window *gwin
 	)
 	{
 	if (!gwin->is_main_actor_inside() && !gwin->get_gump_man()->showing_gumps(true))
 		for (int i = 0; i < num_clouds; i++)
-			clouds[i]->paint(gwin);
+			clouds[i]->paint();
 	}
 
 /*

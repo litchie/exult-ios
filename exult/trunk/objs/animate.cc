@@ -606,11 +606,10 @@ Animated_object::~Animated_object
 
 void Animated_object::paint
 	(
-	Game_window *gwin
 	)
 	{
 	animator->want_animation();	// Be sure animation is on.
-	Game_object::paint(gwin);
+	Game_object::paint();
 	}
 
 /*
@@ -645,11 +644,10 @@ Animated_ireg_object::~Animated_ireg_object
 
 void Animated_ireg_object::paint
 	(
-	Game_window *gwin
 	)
 	{
 	animator->want_animation();	// Be sure animation is on.
-	Ireg_game_object::paint(gwin);
+	Ireg_game_object::paint();
 	}
 
 /*
@@ -705,11 +703,10 @@ Animated_ifix_object::~Animated_ifix_object
 
 void Animated_ifix_object::paint
 	(
-	Game_window *gwin
 	)
 	{
 	animator->want_animation();	// Be sure animation is on.
-	Ifix_game_object::paint(gwin);
+	Ifix_game_object::paint();
 	}
 
 /*
