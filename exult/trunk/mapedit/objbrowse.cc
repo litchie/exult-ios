@@ -37,11 +37,6 @@ void Object_browser::set_background_color(guint32)
 {
 }
 
-bool Object_browser::closing(bool can_cancel)
-{
-	return true;			// Default:  Okay to close.
-}
-
 GtkWidget *Object_browser::get_widget() 
 {
 	return widget;
