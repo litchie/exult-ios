@@ -26,6 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "spells.h"
 #include "gamewin.h"
 
+const int REAGANTS = 842;		// Shape #.
+
 /*
  *	Defines in 'gumps.vga':
  */
@@ -36,19 +38,42 @@ const int LEFTPAGE = 44;		// At top-left of left page.
 const int RIGHTPAGE = 45;		// At top-right of right page.
 
 /*
- *	Flags for required reagants: ++++++++Should match frame #'s.
+ *	Flags for required reagants.  Bits match shape #.
  */
 const int bp = 1;			// Black pearl.
-const int mr = 2;			// Mandrake root.
-const int sa = 4;			// Sulphuras ash.
-const int ss = 8;			// Spider silk.
-const int bm = 16;			// Blood moss.
-const int ga = 32;			// Garlic.
-const int gi = 64;			// Ginseng.
-const int ns = 128;			// Nightshade.
+const int bm = 2;			// Blood moss.
+const int ns = 4;			// Nightshade.
+const int mr = 8;			// Mandrake root.
+const int gr = 16;			// Garlic.
+const int gn = 32;			// Ginseng.
+const int ss = 64;			// Spider silk.
+const int sa = 128;			// Sulphuras ash.
 unsigned char Spellbook_gump::reagants[9*8] = {
 	0, 0, 0, 0, 0, 0, 0, 0,		// Linear spells require no reagants.
-	0};  //++++++++++++++++++++++++++++++
+					// Circle 1:
+	gr|gn, gr|gn|mr, gr|gn, ns|ss, gr|ss, sa|ss, sa, ns,
+					// Circle 2:
+	bm|sa, bp|mr, bp|sa, mr|sa, gr|gn|mr, gr|gn|sa, bp|bm|mr,
+							bm|ns|mr|sa|bp|ss,
+					// Circle 3:
+	gr|ns|sa, gr|gn|ss, ns|ss, ns|mr, ns|bm|bp, gr|gn|mr|sa,
+						bp|ns|ss, ns|mr|bm,
+					// Circle 4:
+	ss|mr, bp|sa|mr, mr|bp|bm, gr|mr|ns|sa, mr|bp|bm, bm|sa,
+						bm|mr|ns|ss|sa, bm|sa,
+					// Circle 5:
+	bp|ns|ss, mr|gr|bm, gr|bp|sa|ss, bm|bp|mr|sa, bp|ss|sa,
+						gr|gn|mr|ss, bm|ns, gn|ns|ss,
+					// Circle 6:
+	gr|mr|ns, sa|ss|bm|gn|ns|mr, bp|mr|ss|sa, sa|bp|bm, mr|ns|sa|bm,
+						ns|ss|bp, gn|ss|bp, bm|sa|mr,
+					// Circle 7:
+	mr|ss, bp|ns|sa, bm|bp|mr|ss|sa, bp|mr|ss|sa, bm|mr|ns|sa,
+					bp|ns|ss|mr, bp|gn|mr, gr|gn|mr|sa,
+					// Circle 8:
+	bp|bm|gr|gn|mr|ns|ss|sa, bm|mr|ns|sa, bp|bm|mr|ns, bm|gr|gn|mr|ns,
+				gr|gn|ss|sa, bm|gr|mr, bp|mr|ns, bm|gr|mr
+	};
 
 /*
  *	Get shape, frame for a given spell #.  There are 8 shapes, each
@@ -154,16 +179,12 @@ void Spellbook_gump::set_avail
 	int i;				// Init.
 	for (i = 0; i < 9*8; i++)
 		avail[i] = 0;
-	Game_object *owner = book;	// Get book's top owner.
-	Game_object *above;
-	while ((above = owner->get_owner()) != 0)
-		owner = above;
-	if (owner == book)
+	if (book_owner == book)
 		return;			// Nobody owns it.
 	int reagant_counts[8];		// Count reagants.
 	int r;
-	for (r = 0; r < 8; r++)		// Count, by frame.++++++Verify.
-		reagant_counts[r] = owner->count_objects(842, r);
+	for (r = 0; r < 8; r++)		// Count, by frame (frame==bit#).
+		reagant_counts[r] = book_owner->count_objects(REAGANTS, r);
 	for (i = 0; i < 9*8; i++)	// Now figure what's available.
 		{
 		avail[i] = 10000;	// 'infinite'.
@@ -187,6 +208,11 @@ Spellbook_gump::Spellbook_gump
 	{
 					// Where to paint page marks:
 	const int lpagex = 38, rpagex = 142, lrpagey = 25;
+	book_owner = book;		// Get book's top owner.
+	Game_object *above;
+	while ((above = book_owner->get_owner()) != 0)
+		book_owner = above;
+	set_avail();			// Figure spell counts.
 	Game_window *gwin = Game_window::get_game_window();
 	if (book->bookmark >= 0)	// Set to bookmarked page.
 		page = Get_circle(book->bookmark);
@@ -239,11 +265,21 @@ void Spellbook_gump::do_spell
 	int spell
 	)
 	{
-	if (spells[spell])
+	if (spells[spell] && avail[spell])
 		{
 		Game_window *gwin = Game_window::get_game_window();
 		gwin->get_usecode()->call_usecode(Get_usecode(spell),
 			gwin->get_main_actor(), Usecode_machine::double_click);
+					// Figure what we used.
+		unsigned char flags = reagants[spell];
+					// Go through bits.
+		for (int r = 0; flags; r++, flags = flags >> 1)
+					// Remove 1 of each required reagant.
+			if (flags&1)
+				book_owner->remove_quantity(1, REAGANTS,
+								-359, r);
+		set_avail();		// Refigure available spells.
+		gwin->paint();		// Just repaint everything.
 		}
 	}
 
@@ -331,6 +367,7 @@ void Spellbook_gump::paint
 	Game_window *gwin
 	)
 	{
+	const int numx = -16, numy = -7;// Where to draw numbers on spells.
 	Gump_object::paint(gwin);	// Paint outside & checkmark.
 	if (page > 0)			// Not the first?
 		paint_button(gwin, leftpage);
@@ -339,7 +376,17 @@ void Spellbook_gump::paint
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Paint spells.
 		if (spells[spindex + s])
-			paint_button(gwin, spells[spindex + s]);
+			{
+			Gump_button *spell = spells[spindex + s];
+			paint_button(gwin, spell);
+			int num = avail[spindex + s];
+			char text[6];
+			sprintf(text, "%d", num);
+			if (num > 0 && num < 1000)
+				gwin->paint_text(2, text,
+					x + spell->x + numx,
+					y + spell->y + numy);
+			}
 	if (book->bookmark >= 0 &&	// Bookmark?
 	    book->bookmark/8 == page)
 		{

@@ -647,6 +647,13 @@ int Game_object::lt
 		return (1);
 	if (!z2 && atz2 <= atz1)	// It's below us?
 		return (0);
+#if 0					// Below 2nd?
+	if (atz1 < atz2 && atz1 + z1 <= atz2 + z2)
+		return (1);
+					// Above 2nd?
+	else if (atz2 < atz1 && atz2 + z2 <= atz1 + z1)
+		return (0);
+#endif
 					// Handle intersecting objects.
 	if (atx1 == atx2 &&		// Watch for paintings on NS walls.
 	    x1 == x2)
@@ -1588,7 +1595,7 @@ int Container_game_object::count_objects
 			total += quant;
 			}
 					// Count recursively.
-		total += obj->count_objects(shapenum);
+		total += obj->count_objects(shapenum, framenum);
 		}
 	while (obj != last_object);
 	return (total);
@@ -1937,7 +1944,8 @@ int Chunk_cache::is_blocked
 	if (tflags & (((1<<height) - 1) << lift))		
 		{
 		new_lift = lift + 1;	// Maybe we can step up.
-		if (new_lift > 15 || (tflags & (1<<new_lift)))
+		if (new_lift > 15 || 
+		    (tflags & (((1<<height) - 1) << new_lift)))
 			return (1);	// Nope, next lift is blocked.
 		else
 			return (0);
