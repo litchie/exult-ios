@@ -1781,7 +1781,10 @@ void Game_window::remove_weather_effects
 		{
 		Special_effect *next = each->next;
 		if (each->is_weather())
+			{
+			tqueue->remove(each);
 			remove_effect(each);
+			}
 		each = next;
 		}
 	set_all_dirty();

@@ -41,7 +41,8 @@ Actor::Actor
 	    attack_mode(nearest), schedule(0), dormant(1), two_handed(0),
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
 	    light_sources(0),
-	    usecode_dir(0), flags(0), action(0), frame_time(0)
+	    usecode_dir(0), flags(0), action(0), frame_time(0),
+	    next_path_time(0)
 	{
 	init();				// Clear rest of stuff.
 	unsigned locx = Read1(nfile);	// Get chunk/tile coords.
@@ -186,7 +187,8 @@ Npc_actor::Npc_actor
 	istream& nfile,			// 'npc.dat', generally.
 	int num,			// NPC #.
 	int has_usecode			// 1 if a 'type1' NPC.
-	) : Actor(nfile, num, has_usecode), nearby(0), num_schedules(0), 
+	) : Actor(nfile, num, has_usecode), nearby(0),
+		num_schedules(0), 
 		schedules(0), alignment(0)
 	{
 	Chunk_object_list *olist = Game_window::get_game_window()->
