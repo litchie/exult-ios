@@ -711,7 +711,7 @@ void	Audio::build_speech_vector(void)
  */
 int	Audio::play_sound_effect (int num, int volume, int dir, int repeat)
 {
-	if (!audio_enabled || !effects_enabled) return 0;
+	if (!audio_enabled || !effects_enabled) return -1;
 
 	// Where sort of sfx are we using????
 	if (sfx_file != 0)		// Digital .wav's?
@@ -720,7 +720,7 @@ int	Audio::play_sound_effect (int num, int volume, int dir, int repeat)
 	else if (midi != 0) 
 		midi->start_sound_effect(num);
 #endif
-	return 0;
+	return -1;
 }
 
 /*

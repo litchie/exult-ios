@@ -1,3 +1,6 @@
+2002-06-13 Simon Quinn <email@simonquinn.co.uk>
+	* Fixed sound crashing on startup and in-game when sound was disabled
+
 2002-06-13  Ryan Nunn  <triforce@merlin.net.au>
 	* exult.cc, audio/xmidi.cc : Getting around some problems with (our)
 	  snprintf not supporting floating point types.
