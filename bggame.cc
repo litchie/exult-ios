@@ -42,7 +42,7 @@ bool wait_delay_cycle(int ms)
 		delay = ms;
 		loops = 1;
 	} else {
-		delay = 20;
+		delay = 10;
 		loops = ms/delay;
 	}
 	for(int i=0; i<loops; i++) {
@@ -192,7 +192,6 @@ void BG_Game::play_intro()
 	pal.load("<STATIC>/intropal.dat",4);
 	pal.fade_in(30);
 
-#if 0
 	if(wait_delay(1500)) {
 		pal.fade_out(30);
 		return;
@@ -256,7 +255,7 @@ void BG_Game::play_intro()
 		pal.fade_out(30);
 		return;	
 	}
-#endif
+
 	// The main man :)
 	play_midi(2);
 	pal.load("<STATIC>/intropal.dat",2);
