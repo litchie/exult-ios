@@ -41,6 +41,8 @@ public:
 			index = 1;
 		return frames[index];
 		}
+	void decrement(int& index) const
+		{ if (--index <= 0) index = num_frames - 1; }
 					// Find frame, masking off rotation.
 					// Rets. 0 if not found.
 	int find_unrotated(unsigned char frame)

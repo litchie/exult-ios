@@ -303,16 +303,18 @@ void Follow_avatar_schedule::now_what
 		next_path_time = SDL_GetTicks() + 1000;
 		return;
 		}
-	if (pos.distance(goal) <= 3)
-		return;			// Already close enough!
-#ifdef DEBUG
-	cout << npc->get_name() << " at distance " << dist2lead 
-				<< " trying to catch up." << endl;
-#endif
 					// Get his speed.
 	int speed = av->get_frame_time();
 	if (!speed)			// Avatar stopped?
 		speed = gwin->get_std_delay();
+	if (pos.distance(goal) <= 3)
+		return;			// Already close enough!
+#if 0
+#ifdef DEBUG
+	cout << npc->get_name() << " at distance " << dist2lead 
+				<< " trying to catch up." << endl;
+#endif
+#endif
 					// Succeed if within 3 tiles of goal.
 	if (npc->walk_path_to_tile(goal, speed - speed/4, 0, 3, 1))
 		return;			// Success.
