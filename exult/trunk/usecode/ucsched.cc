@@ -198,43 +198,18 @@ void Usecode_script::clear
 	}
 
 inline void Usecode_script::activate_egg(Usecode_internal *usecode,
-				     Game_object *e, int type)
+				     Game_object *e)
 {
-	if (e && e->is_egg() && (type == -1 || 
-			((Egg_object *) e)->get_type() == type))
+	if (!e || !e->is_egg())
+		return;
+	int type = ((Egg_object *) e)->get_type();
+					// Guess:  Only certain types:
+	if (type == Egg_object::monster || type == Egg_object::button ||
+	    type == Egg_object::missile)
 		((Egg_object *) e)->activate(usecode,
 			usecode->gwin->get_main_actor(), 1);
 }
 
-#if 0
-/*
- *	Execute eggs.
- */
-
-void Usecode_script::activate_eggs
-	(
-	Usecode_internal *usecode
-	)
-	{
-	int size = objval.get_array_size();
-	if (!size)			// Not an array?
-		{
-		activate_egg(usecode, obj, -1);
-		return;
-		}
-	int i;
-	for (i = 0; i < size; i++)	// First do monsters.
-		{
-		activate_egg(usecode, usecode->get_item(objval.get_elem(i)),
-						(int) Egg_object::monster);
-		Usecode_value z((Game_object*) NULL);
-		objval.put_elem(i, z);
-		}
-	for (i = 0; i < size; i++)	// Do the rest.
-		activate_egg(usecode, usecode->get_item(objval.get_elem(i)),
-									-1);
-	}
-#endif
 
 /*
  *	Execute an array of usecode, generally one instruction per tick.
@@ -352,8 +327,7 @@ void Usecode_script::handle_event
 					code->get_elem(++i).get_int_value());
 			break;
 		case egg:		// Guessing:  activate egg.
-			activate_egg(usecode, obj, -1);
-//			activate_eggs(usecode);
+			activate_egg(usecode, obj);
 			break;
 		case next_frame_max:	// Stop at last frame.
 			{
