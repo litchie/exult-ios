@@ -2321,6 +2321,10 @@ void Npc_actor::remove_this
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
+	set_action(0);
+	delete schedule;
+	schedule = 0;
+	gwin->get_tqueue()->remove(this);// Remove from time queue.
 					// Store old chunk list.
 	Chunk_object_list *olist = gwin->get_objects_safely(
 							get_cx(), get_cy());
