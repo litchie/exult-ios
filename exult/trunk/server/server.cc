@@ -290,13 +290,15 @@ static void Handle_client_message
 		break;
 		}
 	case Exult_server::terrain_editing_mode:
-		{
-		int onoff = Read2(ptr);
-		if ((onoff != 0) != (gwin->skip_lift == 0))
-			{		// skip_lift==0 <==> terrain-editing.
-			gwin->skip_lift = onoff ? 0 : 16;
-			gwin->set_all_dirty();
-			}
+		{			// 1=on, 0=off, -1=undo.
+		int onoff = (short) Read2(ptr);
+					// skip_lift==0 <==> terrain-editing.
+		gwin->skip_lift = onoff == 1 ? 0 : 16;
+		if (onoff == 0)		// End/commit.
+			gwin->get_map()->commit_terrain_edits();
+		else if (onoff == -1)
+			gwin->get_map()->abort_terrain_edits();
+		gwin->set_all_dirty();
 		break;
 		}
 	case Exult_server::set_edit_shape:

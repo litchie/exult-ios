@@ -1128,3 +1128,46 @@ bool Game_map::insert_terrain
 	return true;
 	}
 
+/*
+ *	Commit edits made to terrain chunks.
+ */
+
+void Game_map::commit_terrain_edits
+	(
+	)
+	{
+	int num_terrains = chunk_terrains.size();
+					// Create list of flags.
+	unsigned char *ters = new unsigned char[num_terrains];
+	memset(ters, 0, num_terrains);
+					// Commit edits.
+	for (int i = 0; i < num_terrains; i++)
+		if (chunk_terrains[i] && chunk_terrains[i]->commit_edits())
+			ters[i] = 1;
+					// Update terrain map.
+	for (int cy = 0; cy < c_num_chunks; cy++)
+		for (int cx = 0; cx < c_num_chunks; cx++)
+			{
+			Map_chunk *chunk = objects[cx][cy];
+			if (chunk && ters[terrain_map[cx][cy]] != 0)
+					// Reload objects.
+				chunk->set_terrain(chunk->get_terrain());
+			}
+	delete [] ters;
+	}
+
+/*
+ *	Abort edits made to terrain chunks.
+ */
+
+void Game_map::abort_terrain_edits
+	(
+	)
+	{
+	int num_terrains = chunk_terrains.size();
+					// Abort edits.
+	for (int i = 0; i < num_terrains; i++)
+		if (chunk_terrains[i])
+			chunk_terrains[i]->abort_edits();
+	}
+
