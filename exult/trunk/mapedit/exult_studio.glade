@@ -2,6 +2,7 @@
 <!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
 
 <glade-interface>
+<requires lib="gnome"/>
 
 <widget class="GtkFileSelection" id="file_selection">
   <property name="border_width">10</property>
@@ -6659,7 +6660,7 @@ Coordinates</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkButton" id="button11">
+	    <widget class="GtkButton" id="npc_cancel_btn">
 	      <property name="visible">True</property>
 	      <property name="can_default">True</property>
 	      <property name="can_focus">True</property>

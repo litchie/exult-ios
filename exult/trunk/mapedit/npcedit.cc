@@ -310,9 +310,10 @@ void ExultStudio::open_npc_window
 		}
 					// Init. npc address to null.
 	gtk_object_set_user_data(GTK_OBJECT(npcwin), 0);
-					// Make 'apply' sensitive.
-	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
-						"npc_apply_btn"), true);
+					// Make 'apply', 'cancel' sensitive.
+	set_sensitive("npc_apply_btn", true);
+	set_sensitive("npc_cancel_btn", true);
+	remove_statusbar("npc_status", npc_ctx, npc_status_id);
 	if (data)
 		{
 		if (!init_npc_window(data, datalen))
@@ -432,14 +433,14 @@ void ExultStudio::init_new_npc
 	npc_num = first_unused;
 	set_entry("npc_num_entry", npc_num, true, false);
 			// Usually, usecode = 0x400 + num.
-	set_entry("npc_usecode_entry", 0x400 + npc_num, true);
+	set_entry("npc_usecode_entry", 0x400 + npc_num, true,
+				npc_num >=256 ? true : false);
 			// Usually, face = npc_num.
 	set_npc_face(npc_num, 0);
 	set_entry("npc_name_entry", "");
 	set_entry("npc_ident_entry", 0);
 	set_entry("npc_shape", -1);
 	set_entry("npc_frame", 0);
-	set_entry("npc_usecode_entry", 0, true);
 	set_optmenu("npc_attack_mode", 0);
 	set_optmenu("npc_alignment", 0);
 					// Clear flag buttons.
@@ -514,7 +515,8 @@ int ExultStudio::init_npc_window
 	set_entry("npc_frame", frame);
 	set_npc_face(face, 0);
 					// Usecode #.
-	set_entry("npc_usecode_entry", usecode, true);
+	set_entry("npc_usecode_entry", usecode, true,
+					npc_num >= 256 ? true : false);
 					// Combat:
 	set_optmenu("npc_attack_mode", attack_mode);
 	set_optmenu("npc_alignment", alignment);
@@ -570,8 +572,9 @@ static void Npc_response
 	void * /* client */
 	)
 	{
+	ExultStudio *studio = ExultStudio::get_instance();
 	if (id == Exult_server::user_responded)
-		ExultStudio::get_instance()->close_npc_window();
+		studio->close_npc_window();
 	//+++++cancel??
 	}
 
@@ -605,6 +608,12 @@ int ExultStudio::save_npc_window
 	unsigned long oflags = 0;	// Object flags.
 	unsigned long siflags = 0;	// Extra flags for SI.
 	unsigned long type_flags = 0;	// Movement flags.
+
+	if (shape < 0 || shape >= vgafile->get_ifile()->get_num_shapes())
+		{
+		EStudio::Alert("You must set a valid shape #.");
+		return 0;
+		}
 					// Set flag buttons.
 	GtkTable *ftable = GTK_TABLE(
 			glade_xml_get_widget(app_xml, "npc_flags_table"));
@@ -650,11 +659,11 @@ int ExultStudio::save_npc_window
 	cout << "Sent npc data to server" << endl;
 	if (!addr)
 		{
-		set_statusbar("npc_status", npc_ctx,
+		npc_status_id = set_statusbar("npc_status", npc_ctx,
 					"Click on map at place to insert npc");
 					// Make 'apply' insensitive.
-		gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
-						"npc_apply_btn"), false);
+		set_sensitive("npc_apply_btn", false);
+		set_sensitive("npc_cancel_btn", false);
 		waiting_for_server = Npc_response;
 		return 1;		// Leave window open.
 		}

@@ -79,6 +79,7 @@ private:
 	GtkWidget		*npcwin;
 	Shape_draw		*npc_draw, *npc_face_draw;
 	int			npc_ctx;
+	guint			npc_status_id;
 					// Object editor:
 	GtkWidget		*objwin;
 	Shape_draw		*obj_draw;
@@ -254,7 +255,8 @@ public:
 	void set_entry(char *name, int val, bool hex = false,
 						bool sensitive = true);
 	void set_entry(char *name, const char *val, bool sensitive = true);
-	void set_statusbar(char *name, int context, char *msg);
+	guint set_statusbar(char *name, int context, char *msg);
+	void remove_statusbar(char *name, int context, guint msgid);
 	void set_button(char *name, const char *text);
 	void set_visible(char *name, bool vis);
 	void set_sensitive(char *name, bool vis);
