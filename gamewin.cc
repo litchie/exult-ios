@@ -2003,7 +2003,8 @@ void Game_window::start_actor_alt
 			}
 	}
 
-	const int delta = 8*c_tilesize;	// Trying to avoid 'chicken dance'.
+	const int delta = 8*c_tilesize;// Bigger # here avoids jerkiness,
+					//   but causes probs. with followers.
 	switch (dir)
 		{
 		case north:

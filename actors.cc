@@ -700,13 +700,13 @@ void Actor::follow
 	if (Actor::is_dead())
 		return;			// Not when dead.
 	int delay = 0;
-					// How close to aim for.
-	int dist = 3 + Actor::get_party_id()/3;
+	int dist;			// How close to aim for.
 	Tile_coord leaderpos = leader->get_abs_tile_coord();
 	Tile_coord pos = get_abs_tile_coord();
 	Tile_coord goal;
 	if (leader->is_moving())	// Figure where to aim.
 		{			// Aim for leader's dest.
+		dist = 2 + Actor::get_party_id()/3;
 		goal = leader->get_dest();
 		goal.tx = Approach(pos.tx, goal.tx, dist);
 		goal.ty = Approach(pos.ty, goal.ty, dist);
@@ -715,17 +715,26 @@ void Actor::follow
 		{
 		goal = leaderpos;	// Aim for leader.
 //		cout << "Follow:  Leader is stopped" << endl;
-		goal.tx += 1 - rand()%3;// Jiggle a bit.
-		goal.ty += 1 - rand()%3;
+		int id = Actor::get_party_id();
+		static int xoffs[10] = {-1, 1, -2, 2, -3, 3, -4, 4, -5, 5},
+			   yoffs[10] = {1, -1, 2, -2, 3, -3, 4, -4, 5, -5};
+		goal.tx += xoffs[id] + 1 - rand()%3;
+		goal.ty += yoffs[id] + 1 - rand()%3;
+		dist = 1;
 		}
 					// Already aiming along a path?
-	if (is_moving() && action && action->following_smart_path() /* &&
-					goal.distance(get_dest()) <= 3 */ )
+	if (is_moving() && action && action->following_smart_path() &&
+					// And leader moving, or dest ~= goal?
+		(leader->is_moving() || goal.distance(get_dest()) <= 5))
 		return;
 					// Tiles to goal.
 	int goaldist = goal.distance(pos);
 	if (goaldist < dist)		// Already close enough?
+		{
+		if (!leader->is_moving())
+			stop();
 		return;
+		}
 					// Is leader following a path?
 	bool leaderpath = leader->action && 
 				leader->action->following_smart_path();
@@ -745,7 +754,9 @@ void Actor::follow
 		speed -= 20;		// Speed up if too far.
 					// Get window rect. in tiles.
 	Rectangle wrect = gwin->get_win_tile_rect();
-	if (goaldist > wrect.w + wrect.w/2 &&	// Getting kind of far away?
+	int dist2lead = pos.distance(leaderpos);
+					// Getting kind of far away?
+	if (dist2lead > wrect.w + wrect.w/2 &&
 	    get_party_id() >= 0 &&	// And a member of the party.
 	    !leaderpath)		// But leader is not following path.
 		{			// Approach, or teleport.
@@ -766,9 +777,7 @@ void Actor::follow
 			}
 		}
 	uint32 curtime = SDL_GetTicks();
-	int dist2lead;
-	if ((((dist2lead = pos.distance(leaderpos)) >= 5 &&
-						curtime >= next_path_time) ||
+	if (((dist2lead >= 5 && curtime >= next_path_time) ||
 	     (dist2lead >= 4 && !leader->is_moving()) || leaderpath) && 
 	      get_party_id() >= 0 && 
 	      (!is_moving() || !action || !action->following_smart_path()))
