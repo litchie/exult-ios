@@ -278,6 +278,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(is_pc_female);
 	USECODE_INTRINSIC_DECL(armageddon);
 	USECODE_INTRINSIC_DECL(halt_scheduled);
+	USECODE_INTRINSIC_DECL(lightning);
 	USECODE_INTRINSIC_DECL(get_array_size);
 	USECODE_INTRINSIC_DECL(mark_virtue_stone);
 	USECODE_INTRINSIC_DECL(recall_virtue_stone);
