@@ -805,7 +805,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Ankh
 	{     955,  0,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     0 },
 	// Fellowship
-	{     955,  1,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     1 },
+	{     955,  1,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     4 },
 	// White Heart
 	{     955,  2,       Actor::neck,   OT_Normal,  false, exultbg_flx,   9,     0 },
 	// Amulet of Protection???
