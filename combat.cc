@@ -540,9 +540,12 @@ void Combat_schedule::set_weapon
 	)
 	{
 	int points;
+	Game_window *gwin = Game_window::get_game_window();
 	Weapon_info *info = npc->get_weapon(points, weapon_shape);
 	if (!info &&			// No weapon?  Look in inventory.
-					// But not if dueling.
+					// But not if dragging.
+	    !gwin->get_gump_man()->gump_mode() &&
+					// And not if dueling.
 	    npc->get_schedule_type() != Schedule::duel &&
 	    state != wait_return)	// And not waiting for boomerang.
 		{
