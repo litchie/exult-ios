@@ -170,6 +170,9 @@ public:
 	virtual void handle_event(unsigned long curtime, long udata);
 	void get_followers();		// Get party to follow.
 	virtual int walk();		// Walk towards a direction.
+					// Update chunks after NPC moved.
+	void switched_chunks(Chunk_object_list *olist,
+					Chunk_object_list *nlist);
 	};
 
 /*
@@ -250,6 +253,17 @@ public:
 	};
 
 /*
+ *	Loiter within a rectangle.
+ */
+class Loiter_schedule : public Schedule
+	{
+	Tile_coord center;		// Center of rectangle.
+public:
+	Loiter_schedule(Npc_actor *n);
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	An NPC schedule change:
  */
 class Schedule_change
@@ -285,6 +299,7 @@ class Npc_actor : public Actor
 	unsigned char nearby;		// Queued as a 'nearby' NPC.  This is
 					//   to avoid being added twice.
 	unsigned char dormant;		// I.e., off-screen.
+	unsigned char no_climbing;	// For horses, etc.
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	unsigned char num_schedules;	// # entries below.
 	Schedule *schedule;		// Current schedule.
@@ -301,6 +316,8 @@ public:
 		{ nearby = 0; }
 	int is_nearby()
 		{ return nearby != 0; }
+	void set_no_climbing()
+		{ no_climbing = 1; }
 					// Set schedule list.
 	void set_schedules(Schedule_change *list, int cnt)
 		{

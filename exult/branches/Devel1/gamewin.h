@@ -77,7 +77,7 @@ private:
 	ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
-	Actor *main_actor;		// Main sprite to move around.
+	Main_actor *main_actor;		// Main sprite to move around.
 	unsigned char main_actor_inside;// 1 if actor is in a building.
 	int num_npcs;			// Number of NPC's.
 	Actor **npcs;			// List of NPC's + the Avatar.

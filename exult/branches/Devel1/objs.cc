@@ -596,7 +596,7 @@ Egg_object::Egg_object
 	{
 	type = itype&0xf;
 	criteria = (itype & (7<<4)) >> 4;
-	distance = (itype >> 10) & 0x1f;
+	distance = ((itype >> 10) - 1) & 0x1f;
 	distance++;			// I think this is right.
 	unsigned char noct = (itype >> 7) & 1;
 	unsigned char do_once = (itype >> 8) & 1;
@@ -1198,9 +1198,8 @@ void Chunk_cache::add_egg
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-					// Get absolute tile coords.
-	int tx = chunk->get_cx()*tiles_per_chunk + egg->get_tx(), 
-	    ty = chunk->get_cy()*tiles_per_chunk + egg->get_ty();
+	int tx, ty, tz;			// Get absolute tile coords.
+	egg->get_abs_tile(tx, ty, tz);
 	int dist = egg->get_distance();
 					// Set up rect. with abs. tile range.
 	Rectangle tiles(tx - dist, ty - dist, 2*dist + 1, 2*dist + 1);

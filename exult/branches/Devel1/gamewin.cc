@@ -809,6 +809,8 @@ void Game_window::paint_chunk_objects
 		{
 		skip_lift = main_actor->get_lift() + 
 		  shapes.get_info(main_actor->get_shapenum()).get_3d_height();
+					// Round up to nearest 5.
+		skip_lift = ((skip_lift + 4)/5)*5;
 		}
 					// +++++Clear flag.
 	for (obj = olist->get_first(); obj; obj = olist->get_next(obj))

@@ -127,6 +127,8 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 			npc_actor->switched_chunks(0, olist);
 			npc_actor->set_schedule_type(schedtype);
 			}
+		else if (main_actor)
+			main_actor->switched_chunks(0, olist);
 					// Set attributes.
 		actor->set_property((int) Actor::strength, strength);
 		actor->set_property((int) Actor::dexterity, dexterity);
