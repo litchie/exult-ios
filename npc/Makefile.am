@@ -29,3 +29,7 @@ clean:
 	-rm -f *.o *.a
 
 
+rebuild_master_dependencies:
+	makedepend -f Makefile.am -Y $(CXXFLAGS) -I. -- *.cc
+
+
