@@ -140,7 +140,7 @@ void GL_texshape::paint
 	glPushMatrix();
 					// Convert to tile position.
 	float x = static_cast<float>(px);
-	float y = static_cast<float>(py);
+	float y = static_cast<float>(py) + texsize;
 	if (frame)
 		{
 		x += frame->get_xright() - (int) texsize;

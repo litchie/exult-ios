@@ -578,7 +578,7 @@ unsigned char *Image_buffer8::rgba
 				(static_cast<uint32>(pal[3*pix + 2]) << 8) +
 				   0xff;	// Alpha = opaque.
 #else
-				(static_cast<uint32>(pal[3*pix])<<0) +
+				(static_cast<uint32>(pal[3*pix + 0])<<0) +
 				(static_cast<uint32>(pal[3*pix + 1]) << 8) +
 				(static_cast<uint32>(pal[3*pix + 2]) << 16) +
 					// Alpha = opaque.
