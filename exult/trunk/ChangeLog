@@ -1,3 +1,7 @@
+2004-06-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* shapes/vgafile.*: removed limit of 255 frames in a shape.
+	  (Note that this does not remove the limit in ShapeID)
+
 2004-06-27    <jeff@mini.nerble.net>
 
 	* actorio.cc: NPC's get saved/restored on proper map.

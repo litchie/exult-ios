@@ -96,7 +96,7 @@ public:
 	static unsigned char *encode_rle(unsigned char *pixels, int w, int h,
 					int xoff, int yoff, int& datalen);
 					// Read in shape/frame.
-	unsigned char read(DataSource* shapes, uint32 shapeoff,
+	unsigned int read(DataSource* shapes, uint32 shapeoff,
 					uint32 shapelen, int frnum);
 					// Paint into given buffer.
 	void paint_rle(Image_buffer8 *win, int px, int py);
@@ -151,8 +151,8 @@ class Shape
 	{
 protected:
 	Shape_frame **frames;		// List of ->'s to frames.
-	unsigned char frames_size;	// Size of 'frames' (incl. reflects).
-	unsigned char num_frames;	// # of frames (not counting reflects).
+	unsigned int frames_size;	// Size of 'frames' (incl. reflects).
+	unsigned int num_frames;	// # of frames (not counting reflects).
 					// Create reflected frame.
 	Shape_frame *reflect(DataSource* shapes, int shnum, int frnum);
 	void enlarge(int newsize);	// Increase 'frames'.
