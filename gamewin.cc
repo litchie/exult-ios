@@ -863,7 +863,20 @@ void Game_window::paint_splash
 		set_palette("static/intropal.dat",4,1);
 		SDL_Delay(1500);
 		set_palette("static/intropal.dat",4,-1);
+	
+		Vga_file menushapes(MAINSHP_FLX);
+		
+		paint_shape(x,y,menushapes.get_shape(0x2,0));
+		set_palette("static/intropal.dat",0,1);
+		
+		paint_shape(x+120,y+110,menushapes.get_shape(0x4,0));
+		paint_shape(x+120,y+120,menushapes.get_shape(0x5,0));
+		paint_shape(x+120,y+130,menushapes.get_shape(0x8,0));
+		paint_shape(x+120,y+140,menushapes.get_shape(0x6,0));
+		SDL_Delay(1500);
+		
 		win->fill8(0,get_width(),get_height(),0,0);
+
 	}
 
 /*
@@ -2085,6 +2098,12 @@ void Game_window::play_flic(const char *archive, int index)
 
 void Game_window::end_game() 
 	{
+		// Clear screen
+		win->fill8(0,get_width(),get_height(),0,0);
+		// Start endgame music.
+		// It should actually play endscore.xmi, but we can't
+		// handle XMIs yet... :-(
+		audio->start_music(40,false);
 		play_flic(ENDGAME,0);
 		play_flic(ENDGAME,1);
 		play_flic(ENDGAME,2);

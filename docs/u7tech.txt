@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.7 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.8 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -327,16 +327,16 @@ FONTS.VGA:    flex file with fonts
 TEXT.FLX:     flex file with lots of string (name of shape, quotes, cheat texts)
 PALETTES.FLX: flex file with palettes
 MAINSHP.FLX:  flex file with various objects used in main menu
-Content for Black Gate/Forge of Virtue
+Content for Black Gate/Forge of Virtue - palette from INTROPAL.DAT
   $0        shape (male face)
   $1        shape (female face)
-  $2        shape (main screen)
+  $2        shape (main screen)			0
   $3        font
-  $4        shape ("view introduction")
-  $5        shape ("start new game")
-  $6        shape ("view credits")
-  $7        shape ("return to menu")
-  $8        shape ("journey onward")
+  $4        shape ("view introduction")		0
+  $5        shape ("start new game")		0
+  $6        shape ("view credits")		0
+  $7        shape ("return to menu")		0
+  $8        shape ("journey onward")		0
   $9        font
   $A        shape ("sex:")
   $B        shape ("male/female")
