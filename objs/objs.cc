@@ -1059,6 +1059,7 @@ string Game_object::get_name
 				name = item_names[0x5fc];
 			else
 				name = item_names[shnum];
+			break;
 		case 0x128:			// Rings
 			name = item_names[0x5b8 + frnum];
 			break;
@@ -1191,7 +1192,6 @@ string Game_object::get_name
 			else
 				name = item_names[shnum];
 			break;
-			// not sure
 		default:
 			name = item_names[shnum];
 			break;
