@@ -95,6 +95,18 @@ Starting with version 0.12, Exult uses the multiplatform library SDL by Sam
 Lantinga of LokiGames.  SDL provides low-level graphics, timing and sound
 capabilities, so a Windows (or Be or Mac) port should be much easier now.
 
+Unusual library dependencies
+============================
+
+   Some of you may have SDL or other libraries that have been compiled with
+unusual or inappropriate dynamic link paths. This typically affects linking
+with the X11 libraries. You can add:
+        --x-libraries=/usr/X11R6/lib
+
+(or whatever your X11 library path is) to the configure command-line to get
+around this problem.
+
+
 Version 0.10 has a "usecode" interpreter.  The "usecode" file is a compiled
 script that drives the plot and conversations of the game.  My interpreter is
 missing many of the builtin functions which are not yet known, so things do
