@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
+#ifdef XWIN
 
 #include "KMIDI.h"
 
@@ -30,7 +31,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "Configuration.h"
 extern	Configuration	*config;
-
 
 
 #if HAVE_LIBKMIDI
@@ -131,3 +131,4 @@ const	char *KMIDI::copyright(void)
 	
 #endif // HAVE_LIBKMIDI
 
+#endif // XWIN

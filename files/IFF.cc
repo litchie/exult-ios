@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <iostream>
 
 // For ntohl and friends
-#ifndef WIN32
+#ifdef XWIN
 #include <netinet/in.h>
 #else
 
@@ -40,7 +40,6 @@ long ntohl(long x) {
   return ((x & 0xFF) << 24) | ((x & 0xFF00) << 8) |
     ((x & 0xFF0000) >> 8) | ((x & 0xFF000000) >> 24);
 }
-
 
 #endif
 
