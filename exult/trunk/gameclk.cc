@@ -75,7 +75,7 @@ void Game_clock::set_time_palette
 	else if (hour < 6)
 		new_palette = PALETTE_DAWN;
 	else if (hour < 19)
-		new_palette = PALETTE_DAY;
+		new_palette = storm <= 0 ? PALETTE_DAY : PALETTE_DUSK;
 	else if (hour < 21)
 		new_palette = PALETTE_DUSK;
 	else
@@ -118,6 +118,19 @@ void Game_clock::set_light_source_level
 	{
 	light_source_level = lev;
 	set_time_palette();
+	}
+
+/*
+ *	Storm ending/starting.
+ */
+
+void Game_clock::set_storm
+	(
+	bool onoff
+	)
+	{
+	storm += (onoff ? 1 : -1);
+	set_time_palette();		// Update palette.
 	}
 
 /*
