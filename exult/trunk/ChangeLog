@@ -1,3 +1,7 @@
+2001-03-25  Ryan Nunn <triforce@merlin.net.au>
+	* Makefile.cygwin, Makefile.win32: Some changes for the tools. Also
+	  fixed expack writing output to text files when using Makefile.cygwin.
+
 2001-03-25  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* SI - Added 'camera_actor' to Game_window, and a usecode

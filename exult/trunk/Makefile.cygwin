@@ -114,7 +114,7 @@ $(EXEC) : $(OBJS) data/exult.flx data/exult_bg.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
 tools/expack.exe : tools/expack.o $(FILE_OBJS) 
-	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) $(LIBS)
+	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) -mconsole
 
 data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
 	tools/expack.exe -i data/flx.in
@@ -142,7 +142,7 @@ tools/wuc.exe : tools/wuc.o
 
 # This should work with the Cygwin rm
 clean:
-	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx data/exult_bg.flx tools/wuc.exe tools/wud.exe tools/ucdump.exe tools/mklink.exe tools/rip.exe
+	rm -f $(OBJS) tools/expack.o $(EXEC) tools/expack.exe data/exult.flx data/exult_bg.flx 
 
 install: $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
@@ -153,15 +153,27 @@ install: $(EXEC)
 
 tools:  tools/expack.exe tools/wuc.exe tools/wud.exe tools/ucdump.exe tools/mklink.exe tools/rip.exe
 
+toolsclean:
+	rm -f tools/wuc.o tools/wuc.exe
+	rm -f tools/wud.o tools/wud.exe
+	rm -f tools/ucdump.o tools/ucdump.exe
+	rm -f tools/mklink.o tools/mklink.exe
+	rm -f tools/rip.o tools/rip.exe
+
 toolsinstall: tools
 	mkdir -p $(U7PATH)/tools
-	strip tools/expack.exe tools/wuc.exe tools/wud.exe tools/ucdump.exe tools/mklink.exe tools/rip.exe
-	cp tools/expack.exe $(U7PATH)/tools/expack.exe
-	cp tools/mklink.exe $(U7PATH)/tools/mklink.exe
-	cp tools/rip.exe $(U7PATH)/tools/rip.exe
-	cp tools/ucdump.exe $(U7PATH)/tools/ucdump.exe
-	cp tools/wuc.exe $(U7PATH)/tools/wuc.exe
-	cp tools/wud.exe $(U7PATH)/tools/wud.exe
+	strip tools/expack.exe -o $(U7PATH)/tools/expack.exe
+	strip tools/mklink.exe -o $(U7PATH)/tools/mklink.exe
+	strip tools/rip.exe -o $(U7PATH)/tools/rip.exe
+	strip tools/ucdump.exe -o $(U7PATH)/tools/ucdump.exe
+	strip tools/wuc.exe -o $(U7PATH)/tools/wuc.exe
+	strip tools/wud.exe -o $(U7PATH)/tools/wud.exe
+
+all: $(EXEC) tools
+
+allclean: clean toolsclean
+
+allinstall: install toolsinstall
 
 run:
 	start $(EXEC)
