@@ -156,14 +156,22 @@ string get_system_path(const string &path)
 #endif
 	switch_slashes(new_path);
 #ifdef WIN32
-	int num_chars = GetShortPathName(new_path.c_str(), NULL, 0);
-	if (num_chars > 0) {
-		char *short_path = new char [num_chars+1];
-		GetShortPathName(new_path.c_str(), short_path, num_chars+1);
-		new_path = short_path;
-		delete [] short_path;
+	pos = path.find('*');
+	pos2 = path.find('?');
+	string::size_type pos3 = path.find(' ');
+	// pos and pos2 will equal each other if neither is found
+	// and we'll only convert to short if a space is found
+	// really, we don't need to do this, but hey, you never know
+	if (pos == pos2 && pos3 != string::npos) {
+		int num_chars = GetShortPathName(new_path.c_str(), NULL, 0);
+		if (num_chars > 0) {
+			char *short_path = new char [num_chars+1];
+			GetShortPathName(new_path.c_str(), short_path, num_chars+1);
+			new_path = short_path;
+			delete [] short_path;
+		}
+		//else std::cerr << "Warning unable to get short path for: " << new_path << std::endl;
 	}
-	//else std::cerr << "Warning unable to get short path for: " << new_path << std::endl;
 #endif
 	return new_path;
 }
