@@ -477,7 +477,7 @@ void Game_window::read_saveinfo(DataSource *in,
 		SaveGame_Details *&details,
 		SaveGame_Party *& party)
 {
-	int j, i;
+	int i;
 	details = new SaveGame_Details;
 
 	// This order must match struct SaveGame_Details
