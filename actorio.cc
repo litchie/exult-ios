@@ -75,7 +75,7 @@ Actor::Actor
 	int iflag2 = Read2(nfile);	// Another inventory flag.
 
 	// Read first set of flags
-	int rflags = Read2(nfile);
+	const int rflags = Read2(nfile);
 	
 	if ((rflags >> 0x7) & 1) set_flag (Actor::asleep);
 	if ((rflags >> 0x8) & 1) set_flag (Actor::charmed);
