@@ -17,6 +17,7 @@
 #ifndef MENU_LIST_H
 #define MENU_LIST_H
 
+#include <string>
 #include <vector>
 #include "SDL_events.h"
 

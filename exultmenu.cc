@@ -16,13 +16,13 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "menulist.h"
 #include "exultmenu.h"
 #include "mouse.h"
 #include "gamewin.h"
 #include "ibuf8.h"
 #include "game.h"
 #include "Audio.h"
-#include "menulist.h"
 #include "font.h"
 #include "cheat.h"
 #include "Configuration.h"

@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream>
 
+#include "SDL_mouse.h"
 #include "cheat.h"
 #include "gamewin.h"
 #include "Configuration.h"
@@ -28,8 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "browser.h"
 #include "soundtest.h"
-
-#include "SDL_mouse.h"
 
 using std::cout;
 using std::endl;

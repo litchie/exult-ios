@@ -20,6 +20,7 @@
 #  include <cstdlib>
 #  include <unistd.h>
 #endif
+#include "menulist.h"
 #include "Audio.h"
 #include "Configuration.h"
 #include "databuf.h"
@@ -29,7 +30,6 @@
 #include "font.h"
 #include "game.h"
 #include "gamewin.h"
-#include "menulist.h"
 #include "mouse.h"
 #include "palette.h"
 

@@ -29,6 +29,7 @@ Boston, MA  02111-1307, USA.
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #endif
+#include "SDL_video.h"
 #include "iwin8.h"
 #ifdef MACOS
 #  include "exult_types.h"
@@ -38,7 +39,6 @@ Boston, MA  02111-1307, USA.
 #	include "../gamma.h"
 #endif
 
-#include "SDL_video.h"
 
 using std::memmove;
 
@@ -47,7 +47,7 @@ GammaTable<uint8> Image_window8::GammaBlue(256);
 GammaTable<uint8> Image_window8::GammaGreen(256);
 
 Image_window8::Image_window8(unsigned int w, unsigned int h, 
-				int scl = 1, bool fs)
+				int scl, bool fs)
 	: Image_window(new Image_buffer8(w, h, (Image_buffer *) 0), 
 	  scl, fs)
 {
