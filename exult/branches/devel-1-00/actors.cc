@@ -2681,7 +2681,7 @@ Weapon_info *Actor::get_weapon
 	int& shape
 	)
 	{
-	points = 0;
+	points = 1;			// Bare hands = 1.
 	Weapon_info *winf = 0;
 	Game_window *gwin = Game_window::get_game_window();
 	Game_object *weapon = spots[static_cast<int>(lhand)];
