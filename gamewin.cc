@@ -33,6 +33,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   #include <sys/stat.h>
 #endif
 #include "gamewin.h"
+#include "game.h"
 #include "egg.h"
 #include "animate.h"
 #include "items.h"
@@ -774,6 +775,9 @@ void Game_window::read_ireg_objects
 			else
 				obj = new Ireg_game_object(
 				   entry[2], entry[3], tilex, tiley, lift);
+				   
+			obj->set_low_lift (entry[4] & 0xF);
+			obj->set_high_shape (entry[3] >> 7);
 			}
 		else if (entlen == 12)	// Container?
 			{
@@ -873,8 +877,30 @@ void Game_window::init_actors
 	)
 	{
 	if (main_actor)			// Already done?
+	{
+		Game::clear_avname();
+		Game::clear_avsex();
+		Game::clear_avskin();
 		return;
+	}
 	read_npcs();			// Read in all U7 NPC's.
+
+	// Was a name, sex or skincolor set in Game
+
+	bool	changed = false;
+
+	
+	if (Game::get_avsex() == 0 || Game::get_avsex() == 1 || Game::get_avname()
+			|| (Game::get_avskin() >= 0 && Game::get_avskin() <= 2))
+		changed = true;
+
+	Game::clear_avname();
+	Game::clear_avsex();
+	Game::clear_avskin();
+
+	// Update gamedat if there was a change
+	if (changed) write_npcs();
+
 	}
 	
 /*
@@ -957,6 +983,7 @@ int Game_window::read
 		return (0);
 	end_gump_mode();		// Kill gumps, and paint new data.
 	read_npcs();			// Read in NPC's, monsters.
+	
 	if (!usecode->read())		// Usecode.dat (party, global flags).
 		return (0);
 	clock.set_palette();		// Set palette for time-of-day.
@@ -1812,7 +1839,9 @@ void Game_window::show_items
 		obj->get_abs_tile(tx, ty, tz);
 		cout << "tx = " << tx << ", ty = " << ty << ", tz = " <<
 			tz << ", quality = " <<
-			obj->get_quality() << endl;
+			obj->get_quality() << ", low lift = " <<
+			obj->get_low_lift() << ", high shape = " <<
+			obj->get_high_shape () << endl;
 		cout << "Volume = " << info.get_volume() << endl;
 		cout << "obj = " << (void *) obj << endl;
 		}
@@ -2071,6 +2100,7 @@ void Game_window::show_face
 	int frame
 	)
 	{
+	
 	const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
 	mode = conversation;		// Make sure mode is set right.
 	if (num_faces == max_faces)
@@ -2219,8 +2249,35 @@ void Game_window::show_avatar_choices
 	int x = 0, y = 0;		// Keep track of coords. in box.
 	int height = get_text_height(0);
 	int space_width = get_text_width(0, "   ");
+
+
 					// Get main actor's portrait.
-	Shape_frame *face = faces.get_shape(main_actor->get_face_shapenum());
+	int shape = main_actor->get_face_shapenum();
+	int frame;
+
+	if (main_actor->get_siflag(Actor::petra)) // Petra
+	{
+//		shape =
+		frame = 0;
+	}
+	else if (main_actor->get_skin_color() == 0) // WH
+	{
+		frame = 1 - main_actor->get_type_flag(Actor::tf_sex);
+	}
+	else if (main_actor->get_skin_color() == 1) // BN
+	{
+		frame = 3 - main_actor->get_type_flag(Actor::tf_sex);
+	}
+	else if (main_actor->get_skin_color() == 2) // BK
+	{
+		frame = 5 - main_actor->get_type_flag(Actor::tf_sex);
+	}
+	else // None
+	{
+		frame = main_actor->get_type_flag(Actor::tf_sex);
+	}
+
+	Shape_frame *face = faces.get_shape(shape, frame);
 					// Get last one shown.
 	Npc_face_info *prev = num_faces ? face_info[num_faces - 1] : 0;
 	int fx = prev ? prev->face_rect.x + prev->face_rect.w + 4 : 16;
@@ -2328,6 +2385,31 @@ void Game_window::show_gump
 	int shapenum			// Shape # in 'gumps.vga'.
 	)
 	{
+	// overinde for avatar
+	if (obj->get_npc_num() == 0)
+	{
+		if (main_actor->get_siflag(Actor::petra)) // Petra
+		{
+//			shapenum =
+		}
+		else if (main_actor->get_skin_color() == 0) // WH
+		{
+//			shapenum =;
+		}
+		else if (main_actor->get_skin_color() == 1) // BN
+		{
+//			shapenum =;
+		}
+		else if (main_actor->get_skin_color() == 2) // BK
+		{
+//			shapenum= ;
+		}
+		else // None
+		{
+			shapenum += main_actor->get_type_flag(Actor::tf_sex);
+		}
+	}
+	
 	static int cnt = 0;		// For staggering them.
 	Gump_object *gmp;		// See if already open.
 	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
