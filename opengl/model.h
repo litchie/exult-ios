@@ -108,11 +108,18 @@ public:
  */
 class Face
 	{
+	Material *material;		// Material to apply.
 public:
 	int vertex_indices[3];		// Indices into vertex list.
 	int texture_indices[3];		// Texture indices.
 					// Return (non-unit) normal.
 	Vector3 normal(vector<Vector3>& vertices) const;
+	Face() : material(0)
+		{  }
+	Material *get_material() const
+		{ return material; }
+	void set_material(Material *m)
+		{ material = m; }
 	};
 
 /*
@@ -121,13 +128,12 @@ public:
 class Object3d
 	{
 	string name;			// Object's name.
-	Material *material;		// Material in model's list.
 	vector<Vector3> vertices;	// All vertices.
 	vector<Vector3> normals;	// Normal vector to each vertex.
 	vector<Vector2> tex_vertices;	// Texture coords.
 	vector<Face> faces;		// All faces.
 public:
-	Object3d() : material(0)
+	Object3d()
 		{  }
 	~Object3d();
 	void init_vertices(int cnt)	// Init. to given size.
@@ -142,6 +148,8 @@ public:
 		{ return tex_vertices[i]; }
 	void init_faces(int cnt)
 		{ faces.resize(cnt); }
+	int faces_size() const
+		{ return faces.size(); }
 	Face& get_face(int i)
 		{ return faces[i]; }
 	const char *get_name()
@@ -150,10 +158,6 @@ public:
 		{ return !name.empty(); }
 	void set_name(const char *nm)
 		{ name = nm; }
-	Material *get_material()
-		{ return material; }
-	void set_material(Material *m)
-		{ material = m; }
 	void compute_normals();		// Create normals after all vertices 
 					//   and faces have been added.
 					// OPENGL methods:

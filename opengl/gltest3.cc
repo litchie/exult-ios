@@ -86,7 +86,7 @@ void InitGL
 
 #if 1
 					// Ambient light.
-	static GLfloat ambient[] = {.5, .5, .5, 1.0};
+	static GLfloat ambient[] = {.7, .7, .7, 1.0};
 	glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
 					// A diffuse light source.
 	static GLfloat diffuse[] = {1, 1, 1, 1.0};
@@ -119,15 +119,11 @@ void Render
 	GLfloat pos[4];
 	pos[0] = (high.x + low.x)/2;
 	pos[1] = (high.y + low.y)/2;
-	pos[2] = 2*(high.z + 2);
+	pos[2] = 3*(high.z + 2);
 	pos[3] = 1.0;
 	glLightfv(GL_LIGHT1, GL_POSITION, pos);
 
-//	glTranslatef(-center.x, -center.y + 6, -center.z - 20);
-//	glTranslatef(-center.x, -center.y + 16, -center.z);
 	glRotatef(22.5, 1, 0, 0);
-//	glScalef(.1, .1, .1);
-//	glScalef(.5, .5, .5);
 	model.render();			// Show model.
 	SDL_GL_SwapBuffers();		// Blit.
 	}
