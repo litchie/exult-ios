@@ -41,7 +41,7 @@
 
 
 Gump_manager::Gump_manager()
-	: open_gumps(0), dbl_click_close_gump(false)
+	: open_gumps(0), non_persistent_count(0), dbl_click_close_gump(false)
 {
 	// Check if user wants U8-style gump closing (i.e., on double click)
 	config->value("config/gameplay/double_click_closes_gumps", dbl_click_close_gump);
@@ -140,6 +140,8 @@ void Gump_manager::add_gump(Gump *gump)
 		while (last->next) last = last->next;
 		last->next = g;
 	}
+	if (!gump->is_persistent())	// Count 'gump mode' gumps.
+		non_persistent_count++;
 }
 
 /*
@@ -181,6 +183,8 @@ bool Gump_manager::remove_gump(Gump *gump)
 			else
 				return true;
 		}
+		if (!gump->is_persistent())	// Count 'gump mode' gumps.
+			non_persistent_count--;
 	}
 
 	return false;
@@ -311,6 +315,7 @@ void Gump_manager::close_all_gumps
 		else
 			prev = gump;
 	}
+	non_persistent_count = 0;
 	gwin->get_npc_prox()->wait(4);		// Delay "barking" for 4 secs.
 	if (removed) gwin->paint();
 }

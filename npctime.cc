@@ -125,6 +125,23 @@ public:
 	};
 
 /*
+ *	Might timer.
+ */
+class Npc_might_timer : public Npc_timer
+	{
+	uint32 end_time;		// Time when it wears off.
+public:
+	Npc_might_timer(Npc_timer_list *l) : Npc_timer(l)
+		{			// Lasts 60-120 seconds..
+		end_time = Game::get_ticks() + 60000 + rand()%60000;
+		}
+	virtual ~Npc_might_timer()
+		{ list->might = 0; }
+					// Handle events:
+	void handle_event(unsigned long curtime, long udata);
+	};
+
+/*
  *	Delete list.
  */
 
@@ -137,6 +154,7 @@ Npc_timer_list::~Npc_timer_list
 	delete sleep;
 	delete invisibility;
 	delete protection;
+	delete might;
 	}
 
 /*
@@ -201,6 +219,20 @@ void Npc_timer_list::start_protection
 	if (protection)			// Remove old one.
 		delete protection;
 	protection = new Npc_protection_timer(this);
+	}
+
+
+/*
+ *	Start might.
+ */
+
+void Npc_timer_list::start_might
+	(
+	)
+	{
+	if (might)			// Remove old one.
+		delete might;
+	might = new Npc_might_timer(this);
 	}
 
 /*
@@ -455,5 +487,27 @@ void Npc_protection_timer::handle_event
 		}
 					// Check again in 2 secs.
 	gwin->get_tqueue()->add(curtime + 2000, this, 0L);
+	}
+
+/*
+ *	Might wore off.
+ */
+
+void Npc_might_timer::handle_event
+	(
+	unsigned long curtime, 
+	long udata
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Actor *npc = list->npc;
+	if (curtime >= end_time ||	// Long enough?  Or cleared.
+	    npc->get_flag(Obj_flags::might) == 0)
+		{
+		npc->clear_flag(Obj_flags::might);
+		delete this;
+		}
+	else				// Check again in 10 secs.
+		gwin->get_tqueue()->add(curtime + 10000, this, 0L);
 	}
 

@@ -2050,6 +2050,8 @@ void Actor::set_flag
 		need_timers()->start_poison();
 	if (flag == Obj_flags::protection)
 		need_timers()->start_protection();
+	if (flag == Obj_flags::might)
+		need_timers()->start_might();
 	if (flag == Obj_flags::invisible)
 		{
 		need_timers()->start_invisibility();
@@ -2723,10 +2725,15 @@ bool Actor::figure_hit_points
 		return false;		// No harm can be done.
 
 	int attacker_level = attacker ? attacker->get_level() : 4;
+					// Double stats if 'mighty'.
+	int attmighty = (attacker && attacker->get_flag(Obj_flags::might)) 
+							? 2 : 1;
+	int mighty = get_flag(Obj_flags::might) ? 2 : 1;
 	int prob = 40 + attacker_level + (attacker ?
 			(attacker->get_property(static_cast<int>(combat)) +
-		attacker->get_property(static_cast<int>(dexterity))) : 20) -
-			get_property(static_cast<int>(dexterity)) +
+		attacker->get_property(static_cast<int>(dexterity))*attmighty) 
+								: 20) -
+			get_property(static_cast<int>(dexterity))*mighty +
 			wpoints - armor;
 	if (get_flag(Obj_flags::protection))// Defender is protected?
 		prob -= (40 + rand()%20);
@@ -2738,9 +2745,10 @@ bool Actor::figure_hit_points
 		return false;		// Missed.
 					// +++++Do special atts. too.
 					// Compute hit points to lose.
-	int hp = (attacker ? attacker->get_property(
-		static_cast<int>(strength))/4 : 2) + (rand()%attacker_level) +
-			wpoints - armor;
+	int attacker_str = attacker ? 
+	    (attacker->get_property(static_cast<int>(strength))*attmighty)/4 
+									: 2;
+	int hp = attacker_str + (rand()%attacker_level) + wpoints - armor;
 	if (hp < 1)
 		hp = 1;
 	int sfx;			// Play 'hit' sfx.

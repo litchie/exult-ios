@@ -38,6 +38,7 @@ class  Gump_manager
 
 	Gump_list	*open_gumps;
 	bool		dbl_click_close_gump;
+	int		non_persistent_count;		// So we can test for 'gump mode' quickly.
 public:
 	void add_gump(Gump *gump);			// Add a single gump to screen
 	void add_gump(Game_object *obj, int shapenum);	// Show a gump for object obj
@@ -47,6 +48,8 @@ public:
 	void close_all_gumps(bool pers = false);	// Close all gumps
 
 	bool showing_gumps(bool no_pers = false) const;	// Are gumps showing?
+	bool gump_mode() const				// Fast check.
+		{ return non_persistent_count > 0; }
 
 	Gump *find_gump(int x, int y);			// Find gump x,y is in
 	Gump *find_gump(Game_object *obj);		// Find gump that object is in
