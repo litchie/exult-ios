@@ -46,6 +46,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Audio audio;
 
+#define MOUSE 1
+
 /*
  *	Globals:
  */
@@ -94,7 +96,8 @@ int main
 #endif
 		gwin->set_chunk_offsets(64, 136);
 	mouse = new Mouse(gwin);
-#if 0	/* To turn off hardware mouse. */
+	mouse->set_shape(Mouse::hand);
+#ifdef MOUSE
 	SDL_ShowCursor(0);
 #endif
 	struct stat sbuf;		// Create gamedat files 1st time.
@@ -297,12 +300,21 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 		{
 #ifdef MOUSE
 		mouse->move(event.motion.x, event.motion.y);
-#if 0	/* Try this next. */
-		int ax, ay;		// Get Avatar screen location.
-		gwin->get_shape_location(gwin->get_main_actor(), ax, ay);
-		mouse->set_short_arrow(Get_direction(event.motion.y - ay,
-							event.motion.x - ax));
-#endif
+		if (gwin->get_main_actor())
+			{
+			int ax, ay;	// Get Avatar screen location.
+			gwin->get_shape_location(gwin->get_main_actor(), 
+								ax, ay);
+			int dy = ay - event.motion.y, dx = event.motion.x - ax;
+			Direction dir = Get_direction(dy, dx);
+			int dist = dy*dy + dx*dx;
+			if (dist < 48*48)
+				mouse->set_short_arrow(dir);
+			else if (dist < 180*180)
+				mouse->set_medium_arrow(dir);
+			else
+				mouse->set_long_arrow(dir);
+			}
 		gwin->set_painted();	// We'll need to blit.
 #endif
 		if (gwin->get_mode() != Game_window::normal &&
