@@ -31,6 +31,7 @@ class Usecode_machine;
 class Conversation;
 class Keyring;
 class Game_object;
+class Actor;
 
 #include "exceptions.h"
 
@@ -48,6 +49,8 @@ protected:
 	Keyring* keyring;
 	int party[8];			// NPC #'s of party members.
 	int party_count;		// # of NPC's in party.
+	int dead_party[16];		// NPC #'s of dead party members.
+	int dead_party_count;
 
 	Conversation *conv;		// Handles conversations
 public:
@@ -85,6 +88,13 @@ public:
 		{ return party_count; }
 	int get_party_member(int i)	// Get npc# of i'th party member.
 		{ return party[i]; }
+	int get_dead_party_count()	// Same for dead party members.
+		{ return dead_party_count; }
+	int get_dead_party_member(int i)
+		{ return dead_party[i]; }
+					// Update status of NPC that died or
+					//   was resurrected.
+	virtual void update_party_status(Actor *npc) = 0;
 	int in_usecode()		// Currently in a usecode function?
 		{ return call_depth > 0; }
 	Keyring* getKeyring() const { return keyring; }
