@@ -2,6 +2,8 @@ VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SR
 $(SRC)/gumps:$(SRC)/imagewin:$(SRC)/objs:$(SRC)/pathfinder:$(SRC)/shapes:$(SRC)/server:$(SRC)/tools: \
 $(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src
 
+VERSION=1.1.0cvs
+
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	args.o bggame.o browser.o cheat.o  \
 	combat.o delobjs.o devgame.o \
@@ -198,5 +200,28 @@ head2data.test:
 	head2data data/u7bgintrinsics.data data/u7siintrinsics.data
 
 all: $(EXEC)
+
+# The name for the directory used for depenency tracking
+DEPDIR := .deps
+
+# Default (dumb) compile & dependcy rules
+#.cc.o:
+#	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+
+# If you use GCC, disable the above and enable this for intelligent
+# dependency tracking. 
+.cc.o:
+	$(MKDIR) $(*D)/$(DEPDIR)
+	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2" $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
+	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
+	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
+
+# If you even have GCC 3.x, you can use this build rule, which is safer; the above
+# rule can get you into a bad state if you Ctrl-C it in the wrong moment.
+#.cc.o:
+#	$(MKDIR) $(*D)/$(DEPDIR)
+#	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d",-MQ,"$@",-MP $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+
 
 
