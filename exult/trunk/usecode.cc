@@ -3119,6 +3119,7 @@ int Usecode_machine::run
 	{
 	call_depth++;
 	int abort = 0;			// Flag if ABRT executed.
+	unsigned char *catch_ip = 0;	// IP for catching an ABRT.
 #if DEBUG
 	if (debug >= 0)
 		printf("Running usecode %04x with event %d\n", fun->id, event);
@@ -3165,11 +3166,13 @@ int Usecode_machine::run
 #endif
 		switch (opcode)
 			{
-		case 0x04:		// Jump if done with function.
+		case 0x04:		// CATCH - Catch 'ABRT'.
 			offset = (short) Read2(ip);
+			catch_ip = ip + offset;
+					// ++++++Not sure if this is needed:
 			if (set_ret_value || !answers.answers.size() || abort)
 				{
-				ip += offset;
+				ip = catch_ip;
 				user_choice = 0;
 				}
 			break;
@@ -3187,8 +3190,9 @@ int Usecode_machine::run
 			break;
 		case 0x07:		// Guessing CMPS.
 			{		// Skip out if ABRT in effect.
+				//+++++Still necessary?  Try with Dell:nothing.
 				// ++++Trying set_ret_value:  7/24/00
-			if (abort || set_ret_value || !get_user_choice())
+			if (/* abort || */ set_ret_value || !get_user_choice())
 				user_choice = "";
 			int cnt = Read2(ip);	// # strings.
 			offset = (short) Read2(ip);
@@ -3353,7 +3357,11 @@ int Usecode_machine::run
 			offset = Read2(ip);
 			if (!call_usecode_function(externals[2*offset] + 
 					256*externals[2*offset + 1], event))
+				{	// Catch ABRT.
 				abort = 1;
+				if (catch_ip)	//++++++If 0?? exit???
+					ip = catch_ip;
+				}
 			break;
 		case 0x25:		// RET.
 					// Experimenting...
@@ -3490,14 +3498,15 @@ int Usecode_machine::run
 		case 0x3e:		// PUSH ITEMREF.
 			pushi((long) caller_item);
 			break;
-		case 0x3f:		// Guessing some kind of return.
-					// Experimenting... ABRT.
+		case 0x3f:		// ABRT - Really like a 'throw'.
 			show_pending_text();
 			ip = endp;
-			sp = save_sp;		// Restore stack.
+			sp = save_sp;	// Restore stack.
 			abort = 1;
 			break;
-		case 0x40:		// Unknown.
+		case 0x40:		// CATCH jmps here.
+			abort = 0;	// ++++Experiment 7/26/00.
+			catch_ip = 0;
 			break;
 		case 0x42:		// PUSHF.
 			offset = Read2(ip);
@@ -3535,7 +3544,11 @@ int Usecode_machine::run
 			push(ival);
 			offset = Read2(ip);
 			if (!call_usecode_function(offset, event))
+				{	// Catch ABRT.
 				abort = 1;
+				if (catch_ip)	//++++++If 0?? exit???
+					ip = catch_ip;
+				}
 			caller_item = prev_item;
 			break;
 			}
