@@ -276,3 +276,20 @@ void Shapes_vga_file::init()
 
 	info.set_size(num_shapes);
 }
+
+/*
+ *	Make a spot for a new shape, and delete frames in existing shape.
+ *
+ *	Output:	->shape, or 0 if invalid shapenum.
+ */
+
+Shape *Shapes_vga_file::new_shape
+	(
+	int shapenum
+	)
+	{
+	Shape *newshape = Vga_file::new_shape(shapenum);
+	if (newshape && shapenum >= info.size())
+		info.set_size(shapenum + 1);
+	return newshape;
+	}

@@ -49,6 +49,7 @@ public:
 					// Read additional data files.
 	void read_info(bool bg, bool editing = false);
 	void write_info(bool bg);	// Write them back out.
+	virtual Shape *new_shape(int shapenum);	
 	Shape_info& get_info(int shapenum)
 	{
 #if 0	/* This can go away.  Done in Shape_manager::read_shape_info().	*/

@@ -285,7 +285,8 @@ public:
 		get_shape(shapenum, 0);	// Force it into memory.
 		return shapes[shapenum].num_frames;
 		}
-	Shape *new_shape(int shapenum);	// Create new shape (or del old).
+					// Create new shape (or del old).
+	virtual Shape *new_shape(int shapenum);	
 	};
 	
 #endif	/* VGAFILE_H */

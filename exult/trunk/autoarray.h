@@ -73,7 +73,7 @@ public:
 		if(a.data_)
 			{
 			data_=new T[a.size_];
-			memcpy(data_,a.data_,a.size_);
+			memcpy(data_,a.data_,a.size_*sizeof(T));
 			size_=a.size_;
 			}
 		}
@@ -87,18 +87,23 @@ public:
 		if(a.data_)
 			{
 			data_=new T[a.size_];
-			memcpy(data_,a.data_,a.size_);
+			memcpy(data_,a.data_,a.size_*sizeof(T));
 			size_=a.size_;
 			}
 		return *this;
 		}
+	std::size_t size() const
+		{ return size_; }
 	void set_size(std::size_t new_size)
 		{
+		T *new_data = new T[new_size];
 		if(data_)
 			{
+			int cpy = size_ < new_size ? size_ : new_size;
+			memcpy(new_data, data_, cpy*sizeof(T));
 			delete [] data_;
 			}
-		data_=new T[new_size];
+		data_ = new_data;
 		size_=new_size;
 		}
 	};
