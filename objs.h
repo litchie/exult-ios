@@ -149,6 +149,11 @@ public:
 				shape_pos((tilex << 4) + tiley),
 				lift(lft), quality(0), cx(255), cy(255)
 		{  }
+					// Copy constructor.
+	Game_object(Game_object& obj2)
+		: ShapeID(obj2), shape_pos(obj2.shape_pos), lift(obj2.lift),
+		  quality(obj2.quality), cx(obj2.cx), cy(obj2.cy)
+		{  }
 	Game_object() : ShapeID()	// Create fake entry.
 		{  }
 	virtual ~Game_object()
@@ -225,6 +230,8 @@ public:
 	virtual int get_schedule_type()	// Return NPC schedule.
 		{ return 11; }		// Loiter.
 	virtual char *get_name();
+	virtual Game_object *clone()	// Create a copy.
+		{ return new Game_object(*this); }
 	virtual void remove();		// Remove/delete this object.
 	virtual void set_property(int prop, int val)
 		{  }
@@ -253,7 +260,7 @@ public:
 						int framenum = -359)
 		{ return 0; }
 					// Add an object.
-	virtual int add(Game_object *obj)
+	virtual int add(Game_object *obj, int dont_check = 0)
 		{ return 0; }
 	virtual int add_quantity(int delta, int shapenum, int qual,
 					int framenum, int dontcreate = 0)
@@ -287,8 +294,14 @@ public:
 		: Game_object(shapenum, framenum, tilex, tiley, lft),
 						owner(0)
 		{  }
+					// Copy constructor.
+	Ireg_game_object(Ireg_game_object& obj2)
+		: Game_object(obj2), owner(0)
+		{  }
 	Ireg_game_object() : owner(0)	// Create fake entry.
 		{  }
+	virtual Game_object *clone()	// Create a copy.
+		{ return new Ireg_game_object(*this); }
 	virtual void remove();		// Remove/delete this object.
 	virtual Container_game_object *get_owner()
 		{ return owner; }
@@ -312,7 +325,7 @@ public:
 		: Ireg_game_object(l, h, shapex, shapey, lft),
 		  last_object(0), volume_used(0)
 		{  }
-	Container_game_object() : last_object(0) {  }
+	Container_game_object() : last_object(0), volume_used(0) {  }
 	void remove(Game_object *obj);
 	Game_object *get_last_object()
 		{ return last_object; }
@@ -324,7 +337,7 @@ public:
 	int has_room(Game_object *obj)	// Room for this object?
 		{ return obj->get_volume() + volume_used <= get_volume(); }
 					// Add an object.
-	virtual int add(Game_object *obj);
+	virtual int add(Game_object *obj, int dont_check = 0);
 					// Add/remove quantities of objs.
 	virtual int add_quantity(int delta, int shapenum, int qual,
 					int framenum, int dontcreate = 0);
@@ -356,10 +369,12 @@ public:
 				unsigned int shapey, unsigned int lft = 0)
 		: Ireg_game_object(l, h, shapex, shapey, lft)
 		{  }
+#if 0
 	Barge_object() : Ireg_game_object()
 		{  }
+#endif
 					// Add an object.
-	virtual int add(Game_object *obj);
+	virtual int add(Game_object *obj, int dont_check = 0);
 					// Render.
 	virtual void paint(Game_window *gwin);
 	};
@@ -390,26 +405,6 @@ public:
 		{ return get_abs_tile_coord() + 
 					Tile_coord(-deltax, -deltay, 0); }
 	};
-
-#if 0	/* ++++Going away. */
-/*
- *	A light source.  We'll try animated by playing with its translucent
- *	pixels.
- */
-class Lightsource_object : public Ireg_game_object, public Time_sensitive
-	{
-	unsigned char trans;		// 1 to use translucency on next frame.
-	unsigned char animating;	// 1 if animation turned on.
-public:
-	Lightsource_object(unsigned char l, unsigned char h, 
-				unsigned int shapex,
-				unsigned int shapey, unsigned int lft = 0);
-					// Render.
-	virtual void paint(Game_window *gwin);
-					// For Time_sensitive:
-	virtual void handle_event(unsigned long time, long udata);
-	};
-#endif
 
 /*
  *	An "egg" is a special object that activates under certain
