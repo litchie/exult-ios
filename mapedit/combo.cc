@@ -62,7 +62,7 @@ void ExultStudio::open_combo_window
 	}
 
 /*
- *	Callbacks for "Combo" creation window.
+ *	Callbacks for "Combo" editor window.
  */
 C_EXPORT gint on_combo_draw_expose_event
 	(
@@ -97,33 +97,52 @@ C_EXPORT void
 on_combo_locx_changed			(GtkSpinButton *button,
 					 gpointer	  user_data)
 {
-//+++++++	ExultStudio::get_instance()->set_edit_lift(
-//+++++++			gtk_spin_button_get_value_as_int(button));
+	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	combo->set_position();
 }
 
 C_EXPORT void
 on_combo_locy_changed			(GtkSpinButton *button,
 					 gpointer	  user_data)
 {
-//+++++++	ExultStudio::get_instance()->set_edit_lift(
-//+++++++			gtk_spin_button_get_value_as_int(button));
+	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	combo->set_position();
 }
 
 C_EXPORT void
 on_combo_locz_changed			(GtkSpinButton *button,
 					 gpointer	  user_data)
 {
-//+++++++	ExultStudio::get_instance()->set_edit_lift(
-//+++++++			gtk_spin_button_get_value_as_int(button));
+	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	combo->set_position();
 }
 
 C_EXPORT void
 on_combo_order_changed			(GtkSpinButton *button,
 					 gpointer	  user_data)
 {
-//+++++++	ExultStudio::get_instance()->set_edit_lift(
-//+++++++			gtk_spin_button_get_value_as_int(button));
+	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(button))));
+	combo->set_order();
 }
+
+/*
+ *	Mouse events in draw area.
+ */
+C_EXPORT gint on_combo_draw_button_press_event
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventButton *event,
+	gpointer data			// ->Chunk_chooser.
+	)
+	{
+	Combo_editor *combo = (Combo_editor *) gtk_object_get_user_data(
+		GTK_OBJECT(gtk_widget_get_toplevel(GTK_WIDGET(widget))));
+	return combo->mouse_press(event);
+	}
 
 /*
  *	Create empty combo.
@@ -209,15 +228,53 @@ void Combo::draw
 					// Figure relative tile.
 		int mtx = m->tx - starttx,
 		    mty = m->ty - startty;
+					// Hot spot:
 		int x = mtx*c_tilesize - lft,
 		    y = mty*c_tilesize - lft;
-		draw->draw_shape(m->shapenum, m->framenum, x, y);
+		Shape_frame *shape = shapes_file->get_shape(m->shapenum,
+								m->framenum);
+		if (!shape)
+			continue;
+					// But draw_shape uses top-left.
+		x -= shape->get_xleft();
+		y -= shape->get_yabove();
+		draw->draw_shape(shape, x, y);
 		if (it - members.begin() == selected)
 					// Outline selected.
 					// FOR NOW, use color #1 ++++++++
 			draw->draw_shape_outline(m->shapenum, m->framenum,
 						x, y, 1);
 		}
+	}
+
+/*
+ *	Find last member in list that contains a mouse point.
+ *
+ *	Output:	Index of member found, or -1 if none.
+ */
+
+int Combo::find
+	(
+	int mx, int my			// Mouse position in draw area.
+	)
+	{
+	int cnt = members.size();
+	for (int i = cnt - 1; i >= 0; i--)
+		{
+		Combo_member *m = members[i];
+					// Figure pixels up-left for lift.
+		int lft = m->tz*(c_tilesize/2);
+					// Figure relative tile.
+		int mtx = m->tx - starttx,
+		    mty = m->ty - startty;
+		int x = mtx*c_tilesize - lft,
+		    y = mty*c_tilesize - lft;
+		Shape_frame *frame = shapes_file->get_shape(
+						m->shapenum, m->framenum);
+		if (frame && frame->has_point(mx - x, my - y))
+			return i;
+		}
+	return -1;
 	}
 
 /*
@@ -230,7 +287,7 @@ Combo_editor::Combo_editor
 	unsigned char *palbuf		// Palette for drawing shapes.
 	) : Shape_draw(svga, palbuf, glade_xml_get_widget(
 		ExultStudio::get_instance()->get_xml(), "combo_draw")),
-	    selected(-1)
+	    selected(-1), setting_controls(false)
 	{
 	static bool first = true;
 	combo = new Combo(svga);
@@ -245,9 +302,9 @@ Combo_editor::Combo_editor
 		first = false;
 		}
 			//++++++++++Testing:
-	combo->add(3, 3, 0, 162, 0);
-	combo->add(5, 5, 0, 161, 0);
-	selected = 1;
+	combo->add(5, 5, 0, 162, 0);
+	combo->add(7, 7, 0, 161, 0);
+	set_controls();
 	}
 
 /*
@@ -301,3 +358,104 @@ void Combo_editor::render
 	combo->draw(this, selected);	// Draw shapes.
 	Shape_draw::show(area->x, area->y, area->width, area->height);
 	}
+
+/*
+ *	Set controls according to what's selected.
+ */
+
+void Combo_editor::set_controls
+	(
+	)
+	{
+	setting_controls = true;	// Avoid updating.
+	ExultStudio *studio = ExultStudio::get_instance();
+	Combo_member *m = combo->get(selected);
+	if (!m)				// None selected?
+		{
+		studio->set_spin("combo_locx", 0, false);
+		studio->set_spin("combo_locy", 0, false);
+		studio->set_spin("combo_locz", 0, false);
+		studio->set_spin("combo_order", 0, false);
+		}
+	else
+		{
+		int draww = draw->allocation.width,
+		    drawh = draw->allocation.height;
+		studio->set_sensitive("combo_locx", true);
+		studio->set_spin("combo_locx", m->tx - combo->starttx,
+							0, draww/c_tilesize);
+		studio->set_sensitive("combo_locy", true);
+		studio->set_spin("combo_locy", m->ty - combo->startty,
+							0, drawh/c_tilesize);
+		studio->set_sensitive("combo_locz", true);
+		studio->set_spin("combo_locz", m->tz, 0, 15);
+		studio->set_sensitive("combo_order", true);
+		studio->set_spin("combo_order", selected, 0,
+						combo->members.size() - 1);
+		}
+	setting_controls = false;
+	}
+
+/*
+ *	Handle a mouse-press event.
+ */
+
+gint Combo_editor::mouse_press
+	(
+	GdkEventButton *event
+	)
+	{
+	if (event->button != 1)
+		return FALSE;		// Handling left-click.
+					// Get mouse position, draw dims.
+	int mx = (int) event->x, my = (int) event->y;
+	selected = combo->find(mx, my);	// Find it (or -1 if not found).
+	set_controls();
+	render();
+	return TRUE;
+	}
+
+/*
+ *	Move the selected item within the order.
+ */
+
+void Combo_editor::set_order
+	(
+	)
+	{
+	if (setting_controls || selected < 0)
+		return;
+	ExultStudio *studio = ExultStudio::get_instance();
+	int newi = studio->get_spin("combo_order");
+	if (selected == newi)
+		return;			// Already correct.
+	int dir = newi > selected ? 1 : -1;
+	while (newi != selected)
+		{
+		Combo_member *tmp = combo->members[selected + dir];
+		combo->members[selected + dir] = combo->members[selected];
+		combo->members[selected] = tmp;
+		selected += dir;
+		}
+	render();
+	}
+
+/*
+ *	Move the selected item to the desired position in the spin buttons.
+ */
+
+void Combo_editor::set_position
+	(
+	)
+	{
+	Combo_member *m = combo->get(selected);
+	if (!m || setting_controls)
+		return;
+	ExultStudio *studio = ExultStudio::get_instance();
+	m->tx = combo->starttx + studio->get_spin("combo_locx");
+	m->ty = combo->startty + studio->get_spin("combo_locy");
+	m->tz = studio->get_spin("combo_locz");
+	render();
+	}
+
+

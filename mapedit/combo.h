@@ -40,6 +40,7 @@ class Combo_member
 	int shapenum, framenum;		// Object in shapes.vga.
 public:
 	friend class Combo;
+	friend class Combo_editor;
 	Combo_member(int x, int y, int z, int sh, int fr)
 		: tx(x), ty(y), tz(z), shapenum(sh), framenum(fr)
 		{  }
@@ -57,13 +58,17 @@ class Combo
 	int starttx, startty;		// Offset represented by top-left.
 	int xtiles, ytiles, ztiles;	// Dimensions.
 public:
+	friend class Combo_editor;
 	Combo(Shapes_vga_file *svga);
 	~Combo();
+	Combo_member *get(int i)
+		{ return i >= 0 && i < members.size() ? members[i] : 0; }
 					// Add a new object.
 	void add(int tx, int ty, int tz, int shnum, int frnum);
 	void remove(int i);		// Remove object #i.
 					// Paint shapes in drawing area.
 	void draw(Shape_draw *draw, int selected = -1);
+	int find(int mx, int my);	// Find at mouse position.
 	};
 
 /*
@@ -74,15 +79,17 @@ class Combo_editor : public Shape_draw
 	GtkWidget *win;			// Main window.
 	Combo *combo;			// Combo being edited.
 	int selected;			// Index of selected item in combo.
+	bool setting_controls;		// To avoid callbacks when setting.
 public:
 	Combo_editor(Shapes_vga_file *svga, unsigned char *palbuf);
 	~Combo_editor();
 	void show(bool tf);		// Show/hide.
 	void render(GdkRectangle *area = 0);
+	void set_controls();		// Set controls to selected entry.
 					// Handle mouse.
 	gint mouse_press(GdkEventButton *event);
-	gint mouse_release(GdkEventButton *event);
-	gint mouse_motion(GdkEventMotion *event);
+	void set_order();		// Set selected to desired order.
+	void set_position();		// Set selected to desired position.
 	};
 
 #endif	/* INCL_COMBO_H */
