@@ -139,8 +139,7 @@ bool SI_Game::new_game(Vga_file &shapes)
 		do {
 			win->fill8(0,gwin->get_width(),90,0,menuy);
 			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
-			gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0xA, selected==1?1:0));
-//			gwin->paint_shape(topx+50,menuy+25,shapes.get_shape(0x16+sex,0));
+			gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0x19, selected==1?1:0));
 			gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(0x16+sex,0));
 			gwin->paint_shape(topx+10,topy+180,shapes.get_shape(0x8,selected==2?1:0));
 			gwin->paint_shape(centerx+10,topy+180,shapes.get_shape(0x7,selected==3?1:0));
