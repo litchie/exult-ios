@@ -85,6 +85,7 @@ class Game_object : public ShapeID
 	Game_object *next, *prev;	// ->next in chunk list or container.
 	Vector dependencies;		// Objects which must be painted before
 					//   this can be rendered.
+	Vector dependors;		// Objects which must be painted after.
 	static unsigned char rotate[8];	// For getting rotated frame #.
 public:
 	unsigned long render_seq;	// Render sequence #.
@@ -227,24 +228,10 @@ public:
 	virtual void move(int newtx, int newty, int newlift);
 	void move(Tile_coord t)
 		{ move(t.tx, t.ty, t.tz); }
-#if 0
-					// Move and change shape/frame.
-	void move(Chunk_object_list *old_chunk,
-			Chunk_object_list *new_chunk, 
-			int new_sx, int new_sy, int new_frame, 
-			int new_lift = -1);
-#endif
 	int get_dependency_count()	// Get objs. to paint first.
 		{ return dependencies.get_cnt(); }
 	Game_object *get_dependency(int i)
 		{ return (Game_object *) dependencies.get(i); }
-					// Remove a dependency.
-	void remove_dependency(Game_object *obj2)
-		{
-		int i = dependencies.find(obj2);
-		if (i >= 0)
-			dependencies.put(i, 0);
-		}
 	void clear_dependencies();	// Remove all dependencies.
 					// Find nearby objects.
 	static int find_nearby(Vector& vec, Tile_coord pos,
