@@ -75,16 +75,17 @@ public:
 class MenuList {
 private:
 	std::vector<MenuObject*> *entries;
-	int selected;
+	int selection;
+	bool selected;
 public:
-	MenuList(): selected(-1) { entries = new std::vector<MenuObject*>(); }
+	MenuList(): selected(false), selection(1) { entries = new std::vector<MenuObject*>(); }
 	~MenuList();
 	void add_entry(MenuObject *entry) { entries->push_back(entry); }
 	void paint(Game_window *gwin);
 	int handle_events(Game_window *gwin, Mouse *mouse);
-	int get_selected() { return selected; }
-	void set_selected(int sel);
-	bool set_selected(int x, int y);
+	int get_selection() { return selection; }
+	void set_selection(int sel);
+	void set_selection(int x, int y);
 };
 
 #endif
