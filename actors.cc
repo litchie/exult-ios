@@ -79,9 +79,16 @@ void Actor::activate
 	Usecode_machine *umachine
 	)
 	{
-					// In gump mode?
-	if (Game_window::get_game_window()->get_mode() == Game_window::gump)
-		Container_game_object::activate(umachine);
+	Game_window *gwin = Game_window::get_game_window();
+					// In gump mode?  Or Avatar?
+	if (!npc_num)			// Avatar?
+		gwin->show_gump(this, 57);	// ++++58 if female.
+	else if (gwin->get_mode() == Game_window::gump)
+		{			// Show companions' pictures.
+					// +++++Check for companions.
+		if (npc_num <= 10)
+			gwin->show_gump(this, 58 + npc_num);
+		}
 	else if (usecode == -1)
 		umachine->call_usecode(get_shapenum(), this,
 				Usecode_machine::double_click);

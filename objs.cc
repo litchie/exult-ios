@@ -178,7 +178,7 @@ void Container_game_object::activate
 		{
 	case 416:			// Chest of drawers.
 		gwin->show_gump(this, 27);
-		break;
+		return;
 	case 800:			// Chest.
 		gwin->show_gump(this, 22);	// ???Guessing.
 		return;
@@ -445,6 +445,8 @@ Chunk_object_list::Chunk_object_list
 
 /*
  *	Add a game object to a chunk's list.
+ *
+ *	Newobj's cx and cy fields are set to this chunk.
  */
 
 void Chunk_object_list::add
@@ -504,7 +506,8 @@ void Chunk_object_list::add_egg
 	}
 
 /*
- *	Remove a game object from this list.
+ *	Remove a game object from this list.  The object's cx and cy fields
+ *	are left set to this chunk.
  */
 
 void Chunk_object_list::remove
@@ -514,7 +517,6 @@ void Chunk_object_list::remove
 	{
 	if (cache)			// Remove from cache.
 		cache->update_object(this, remove, 0);
-	remove->cx = remove->cy = 255;	// Set to invalid chunk.
 	if (remove == objects)		// First one?
 		{
 		objects = remove->next;

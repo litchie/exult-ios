@@ -18,7 +18,7 @@ class Game_clock : public Time_sensitive
 	short hour, minute;		// Time (0-23, 0-59).
 	int day;			// Keep track of days played.
 public:
-	Game_clock(Time_queue *tq) : tqueue(tq), hour(12), minute(0), day(0)
+	Game_clock(Time_queue *tq) : tqueue(tq), hour(6), minute(0), day(0)
 		{  }
 	int get_hour()
 		{ return hour; }
