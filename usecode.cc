@@ -323,13 +323,31 @@ void Usecode_machine::say_string
 	(
 	)
 	{
-	if (string)
+	user_choice = 0;		// Clear user's response.
+	if (!string)
+		return;
+					// Make sure prev. text was seen.
+	if (gwin->is_npc_text_pending())
+		click_to_continue();
+	char *str = string;
+	while (*str)			// Look for stopping points ("~~").
 		{
-		gwin->show_npc_message(string);
+		char *eol = str;
+		while ((eol = strchr(str, '~')) != 0)
+			if (eol[1] == '~')
+				break;
+		if (!eol)		// Not found?
+			{
+			gwin->show_npc_message(str);
+			break;
+			}
+		*eol = 0;
+		gwin->show_npc_message(str);
+		click_to_continue();
+		str = eol + 2;
 		}
 	delete string;
 	string = 0;
-	user_choice = 0;		// Clear user's response.
 	}
 
 /*
@@ -358,6 +376,8 @@ void Usecode_machine::show_npc_face
 	Usecode_value& arg2		// Frame.
 	)
 	{
+	if (gwin->is_npc_text_pending())
+		click_to_continue();
 	int shape = -arg1.get_int_value();
 	int frame = arg2.get_int_value();
 	gwin->show_face(shape, frame);
@@ -373,8 +393,8 @@ void Usecode_machine::remove_npc_face
 	Usecode_value& arg1		// Shape (NPC #).
 	)
 	{
-	//++++++++
-	click_to_continue();
+	if (gwin->is_npc_text_pending())
+		click_to_continue();
 	int shape = -arg1.get_int_value();
 	gwin->remove_face(shape);
 	cout << "Remove face " << shape << '\n';
@@ -600,10 +620,20 @@ Usecode_value Usecode_machine::call_intrinsic
 			delete answer_stack[--saved_answers];
 			}
 		break;
-	case 0xb:			// Show choices and wait for click.
+	case 0xa:			// Show choices & return string.
 		{
 		user_choice = 0;
+		get_user_choice();
+		char *choice = user_choice;
+		user_choice = 0;
+cout << "Choice = " << choice << '\n';
+		return choice;
+		}
+	case 0xb:			// Show choices and wait for click.
+		{			// Return index (1-n) of choice.
+		user_choice = 0;
 		Usecode_value val(get_user_choice() + 1);
+		user_choice = 0;
 		return val;
 		}
 	case 0xc:			// Ask for # (min, max, step, default).
@@ -925,7 +955,6 @@ void Usecode_machine::run
 	int num_externs = Read2(ip);	// # of external refs. following.
 	unsigned char *externals = ip;	// Save -> to them.
 	ip += 2*num_externs;		// ->actual bytecode.
-	unsigned char said_string = 0;	// Flag set when NPC msg. shown.
 	int offset;			// Gets offset parm.
 	int sval;			// Get value from top-of-stack.
 	unsigned char *code = ip;	// Save for debugging.
@@ -1067,9 +1096,12 @@ void Usecode_machine::run
 			push(locals[offset]);
 			break;
 		case 0x22:		// CMPEQ.
-			sval = popi();
-			pushi(sval == popi());
+			{
+			Usecode_value val1 = pop();
+			Usecode_value val2 = pop();
+			pushi(val1 == val2);
 			break;
+			}
 		case 0x24:		// CALL.
 			offset = Read2(ip);
 			call_usecode_function(externals[2*offset] + 
@@ -1177,7 +1209,6 @@ void Usecode_machine::run
 			ip = endp;
 			break;
 		case 0x33:		// SAY.
-			said_string = 1;
 			say_string();
 			break;
 		case 0x38:		// CALLIS.
@@ -1198,7 +1229,7 @@ void Usecode_machine::run
 			break;
 		case 0x3f:		// Guessing some kind of return.
 					// Experimenting...
-			if (said_string)
+			if (gwin->is_npc_text_pending())
 				click_to_continue();	
 			ip = endp;
 			sp = save_sp;		// Restore stack.
