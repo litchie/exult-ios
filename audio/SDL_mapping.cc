@@ -22,36 +22,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "SDL_mapping.h"
 
+void (*SDL::Delay)(Uint32)=::SDL_Delay;
+void (*SDL::PauseAudio)(int)=::SDL_PauseAudio;
 
-void SDL::Delay(Uint32 ms) { SDL_Delay(ms); };
-
-void SDL::PauseAudio(bool pause) { SDL_PauseAudio(pause); };
-
-void SDL::UnlockAudio(void) { SDL_UnlockAudio(); };
-
-void SDL::LockAudio(void) { SDL_LockAudio(); };
-
-void SDL::MixAudio(Uint8 *dst, Uint8 *src, Uint32 len,int vol)
-{
-	SDL_MixAudio(dst,src,len,vol);
-}
-
-void SDL::CloseAudio(void)
-{
-	SDL_CloseAudio();
-}
-
-
-int SDL::OpenAudio(SDL_AudioSpec *desired, SDL_AudioSpec *obtained)
-{
-	return SDL_OpenAudio(desired,obtained);
-}
-
+void (*SDL::UnlockAudio)(void)=::SDL_UnlockAudio;
+void (*SDL::LockAudio)(void)=::SDL_LockAudio;
+void (*SDL::MixAudio)(Uint8 *dst, Uint8 *src, Uint32 len,int)=::SDL_MixAudio;
+void (*SDL::CloseAudio)(void)=::SDL_CloseAudio;
+int (*SDL::OpenAudio)(SDL_AudioSpec *desired, SDL_AudioSpec *obtained)=::SDL_OpenAudio;
 
 
 // Thread functions
-SDL::Thread *SDL::CreateThread(int (*fn)(void *), void *data)
-{
-	return SDL_CreateThread(fn,data);
-}
+SDL::Thread *(*SDL::CreateThread)(int (*fn)(void *), void *data)=::SDL_CreateThread;
 
