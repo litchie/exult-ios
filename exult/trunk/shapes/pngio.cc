@@ -111,6 +111,13 @@ int Import_png8
 		pal_size = 0;
 		palette = 0;
 		}
+	int i;
+	for (i = 0; i < pal_size; i++)
+		{
+		palette[3*i] = pngpal[i].red;
+		palette[3*i + 1] = pngpal[i].green;
+		palette[3*i + 2] = pngpal[i].blue;
+		}
 	png_int_32 pngxoff, pngyoff;	// Get offsets.
 	int utype;
 	if (png_get_oFFs(png, info, &pngxoff, &pngyoff, &utype) &&
@@ -121,17 +128,10 @@ int Import_png8
 		}
 	else
 		xoff = yoff = 0;
-	int i;
-	for (i = 0; i < pal_size; i++)
-		{
-		palette[3*i] = pngpal[i].red;
-		palette[3*i + 1] = pngpal[i].green;
-		palette[3*i + 2] = pngpal[i].blue;
-		}
 	png_bytep trans;		// Get transparency info.
 	int num_trans;
 	png_color_16p trans_values;
-	if (transp_index < 0 || transp_index > 255 ||
+	if (transp_index < 0 || transp_index > 255 || pal_size == 0 ||
 	    !png_get_tRNS(png, info, &trans, &num_trans, &trans_values))
 		num_trans = 0;
 					// Get updated info.
@@ -145,13 +145,23 @@ int Import_png8
 	for (r = 0, rowptr = image; r < height; r++, rowptr += rowbytes)
 		png_read_rows(png, &rowptr, 0, 1);
 	png_read_end(png, info);	// Get the rest.
+					// Point past end of data.
+	unsigned char *endptr = pixels + height*rowbytes;
 	for (i = 0; i < num_trans; i++)	// Convert transparent pixels.
 		{
-		unsigned char *endptr = pixels + height*rowbytes;
-		for (unsigned char *ptr = pixels; ptr;
-			ptr = (unsigned char *) memchr(ptr, trans[i], 
-							endptr - ptr))
-			*ptr++ = transp_index;
+		if (trans[i] != 0)	// Only accept fully transparent ones.
+			continue;
+					// Update data.
+		for (unsigned char *ptr = pixels; ptr != endptr; ptr++)
+			if (*ptr == i)
+				*ptr = transp_index;
+					// We'll remove i from the palette.
+			else if (*ptr > i)
+				*ptr = *ptr - 1;
+		if (i < pal_size - 1)	// Remove trans. color from palette.
+			memmove(palette + 3*i, palette + 3*(i + 1),
+					3*pal_size - 3*(i + 1));
+		pal_size--;
 		}
 					// Clean up.
 	png_destroy_read_struct(&png, &info, 0);
@@ -216,9 +226,10 @@ int Export_png8
 	png_set_oFFs(png, info, xoff, yoff, PNG_OFFSET_PIXEL);
 	if (transp_index >= 0 && transp_index < 256)
 		{
-		png_byte trans = (png_byte) transp_index;
-		png_color_16 trans_values;
-		png_set_tRNS(png, info, &trans, 1, &trans_values);
+		png_byte trans[256];	// Only desired index is transparent.
+		memset(&trans[0], 255, transp_index);
+		trans[(png_byte) transp_index] = 0;
+		png_set_tRNS(png, info, &trans[0], transp_index + 1, 0);
 		}
 					// Write out info.
 	png_write_info(png, info);

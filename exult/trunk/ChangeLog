@@ -1,3 +1,8 @@
+2002-02-22  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* shapes/pngio.cc: Rewrote transparency handling; still trying to 
+	get it right.
+
 2002-02-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* imagewin/ibuf8.cc: used memcpy() on Solaris for ibuf8::copy8
 
