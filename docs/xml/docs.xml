@@ -194,7 +194,7 @@
 							</configtag>
 							<configtag name="music_path">
 							data/music
-							<comment>**optional. Location of digital music. See also <ref target="music"/></comment>
+							<comment>**optional. Location of digital music. See also <ref target="digital_music"/></comment>
 							</configtag>
 							<configtag name="game">
 								<configtag name="blackgate">
