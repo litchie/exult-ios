@@ -265,7 +265,7 @@ void Loiter_schedule::now_what
 Sleep_schedule::Sleep_schedule
 	(
 	Actor *n
-	) : Schedule(n)
+	) : Schedule(n), bed(0)
 	{
 	floorloc.tx = -1;		// Set to invalid loc.
 	}
@@ -283,7 +283,7 @@ void Sleep_schedule::now_what
 		return;			// Already sleeping.
 					// Find closest EW or NS bed.
 	static int bedshapes[2] = {696, 1011};
-	Game_object *bed = npc->find_closest(bedshapes, 2);
+	bed = npc->find_closest(bedshapes, 2);
 	if (!bed)
 		{			// Just lie down at current spot.
 		Game_window *gwin = Game_window::get_game_window();
@@ -314,16 +314,14 @@ void Sleep_schedule::ending
 	{
 	if (new_type == (int) wait)	// Needed for Skara Brae.
 		return;			// ++++Does this leave NPC's stuck?++++
-					// Locate free spot.
-	for (int dist = 1; dist < 8 && floorloc.tx == -1; dist++)
-		floorloc = npc->find_unblocked_tile(dist, 4);
+	if (bed)			// Locate free spot.
+		for (int dist = 1; dist < 8 && floorloc.tx == -1; dist++)
+			floorloc = npc->find_unblocked_tile(dist, 4);
 	if (floorloc.tx >= 0)		// Get back on floor.
-		{
 		npc->move(floorloc);
-		npc->set_frame(Actor::standing);
-		Game_window *gwin = Game_window::get_game_window();
-		gwin->set_all_dirty();	// Update all, since Av. stands up.
-		}
+	npc->set_frame(Actor::standing);
+	Game_window *gwin = Game_window::get_game_window();
+	gwin->set_all_dirty();		// Update all, since Av. stands up.
 	}
 
 /*
