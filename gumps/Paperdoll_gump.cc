@@ -504,14 +504,15 @@ void Paperdoll_gump::paint_object
 {
 	Game_object *obj = container->get_readied(spot);
 	if (!obj) return;
-	
+
+	int old_it = itemtype;
 	if (itemtype == -1) itemtype = spot;
 	
 	Paperdoll_item *item = GetItemInfo (obj->get_shapenum(), obj->get_framenum(), itemtype);
 	if (!item || item->frame == -1 || item->shape == -1)
 	{
-		if (itemtype != -1 || checkspot != -1) return;
-		
+		if (old_it != -1 || checkspot != -1) return;
+
 		//if (!obj->get_cx() && !obj->get_cy())
 		set_to_spot(obj, spot);
 	
@@ -902,12 +903,13 @@ Game_object * Paperdoll_gump::check_object
 	Game_object *obj = container->get_readied(spot);
 	if (!obj) return NULL;
 	
+	int old_it = itemtype;
 	if (itemtype == -1) itemtype = spot;
 	
 	Paperdoll_item *item = GetItemInfo (obj->get_shapenum(), obj->get_framenum(), itemtype);
 	if (!item || item->frame == -1 || item->shape == -1)
 	{
-		if (itemtype != -1  || checkspot != -1) return 0;
+		if (old_it != -1  || checkspot != -1) return 0;
 		
 		if (!obj->get_cx() && !obj->get_cy()) set_to_spot(obj, spot);
 		
