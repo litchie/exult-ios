@@ -100,12 +100,18 @@ int get_label(void)
 	return(word);
 }
 
-void check_label_16(int label)
+void check_jump_label_16(int label)
 {
-	if (label < -65536 || label > 65535) {
+	if (label < -32768 || label > 32767)
 		printf("Warning: offset too big for 16 bit at label %s!\n", curlabel);
-	}
 }
+
+void check_data_label_16(int label)
+{
+	if (label > 65535)
+		printf("Warning: offset too big for 16 bit at label %s!\n", curlabel);
+}
+
 
 void read_token(FILE *fi)
 {
