@@ -1,0 +1,7 @@
+#pragma precompile_target "ExultHeaders"
+
+#undef DEBUG
+
+#pragma once on
+
+#include "ExultHeaders.cc"
