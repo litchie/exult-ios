@@ -597,14 +597,14 @@ void Game_window::get_ireg_objects
 
 /*
  *	Read a list of ireg objects.  They are either placed in the desired
- *	game chunk, or added to their container (not yet implemented+++++).
+ *	game chunk, or added to their container.
  */
 
 void Game_window::read_ireg_objects
 	(
 	ifstream& ireg,			// File to read from.
 	int scx, int scy,		// Abs. chunk coords. of superchunk.
-	void *container			// Container, or NULL.+++++++later
+	Container_game_object *container// Container, or null.
 	)
 	{
 	int entlen;			// Gets entry length.
@@ -626,33 +626,43 @@ void Game_window::read_ireg_objects
 		ireg.read(entry, entlen);
 		int cx = entry[0] >> 4; // Get chunk indices within schunk.
 		int cy = entry[1] >> 4;
-					// Get shape #'s.
+					// Get coord. #'s where shape goes.
 		int shapex = entry[0] & 0xf;
 		int shapey = entry[1] & 0xf;
+					// Get shape #.
+		int shapeid = entry[2]+256*(entry[3]&3);
 		unsigned int lift, quality, type;
-		if (entlen == 6)	// Simple entry?
+		Game_object *obj;
+		if (shapeid == 275)	// An "egg"?
+			obj = create_egg(entry);
+		else if (entlen == 6)	// Simple entry?
 			{
 			type = 0;
-			lift = entry[4];
+			lift = entry[4] >> 4;
 			quality = entry[5];
+			obj = new Game_object(
+				entry[2], entry[3], shapex, shapey, lift);
 			}
 		else if (entlen == 12)	// Container?
 			{
 			type = entry[4] + (entry[5]<<8);
-			lift = entry[9];
+			lift = entry[9] >> 4;
 			quality = 0;
-			}
-		lift = lift >> 4;
-					// Create obj.
-		Game_object *obj = new Game_object(
+			Container_game_object *cobj = 
+				new Container_game_object(
 				entry[2], entry[3], shapex, shapey, lift);
+					// Read container's objects.
+			read_ireg_objects(ireg, scx, scy, cobj);
+			obj = cobj;
+			}
 		obj->set_quality(quality);
 		if (!container)
 			get_objects(scx + cx, scy + cy)->add(obj);
-		if (type)		// Read container objects.
-			read_ireg_objects(ireg, scx, scy, obj);
+		else
+			container->add(obj);
 #if 0	/* Not sure about this yet. */
 		if (entlen == 12 &&	// Container?
+					// Not an egg or ??.
 		    !(entry[2]==0x13 && ((entry[3]&3)==1)) &&
 		    !(entry[2]==0xc1 && entry[3]==3))
 					// Skip contents
@@ -661,6 +671,34 @@ void Game_window::read_ireg_objects
 #endif
 		rlecount++;		//++++++++++++++++++++DEBUGGING
 		}
+	}
+
+/*
+ *	Create an "egg".
+ */
+
+Game_object *Game_window::create_egg
+	(
+	unsigned char *entry		// 1-byte ireg entry.
+	)
+	{
+	unsigned short type = entry[4] + (entry[5]<<8);
+	int prob = entry[6];		// Probability (1-100).
+	int data1 = entry[7] + 256*entry[8];
+	int lift = entry[9] >> 4;
+	int data2 = entry[10] + 256*entry[11];
+					// Get egg info. (debugging).
+	unsigned char egg_type = type&0xf;
+	unsigned char criteria = (type & (7<<4)) >> 4;
+	unsigned char nocturnal = (type >> 7) & 1;
+	unsigned char once = (type >> 8) & 1;
+	unsigned char hatched = (type >> 9) & 1;
+	unsigned short distance = (type & (0x1f << 10)) >> 10;
+	unsigned char auto_reset = (type >> 15) & 1;
+
+	return new Egg_object(entry[2], entry[3], 
+		entry[0]&0xf, entry[1]&0xf, lift, egg_type, prob,
+		data1, data2);
 	}
 
 /*
