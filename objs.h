@@ -305,6 +305,9 @@ public:
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
 		{ return get_abs_tile_coord(); }
+					// Under attack.
+	virtual void attacked(Actor *attacker)
+		{  }
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out)
 		{  }
@@ -386,6 +389,11 @@ public:
 				unsigned int shapex,
 				unsigned int shapey, unsigned int lft = 0)
 		: Ireg_game_object(l, h, shapex, shapey, lft),
+		  volume_used(0), last_object(0)
+		{  }
+	Container_game_object(int shapenum, int framenum, unsigned int tilex, 
+				unsigned int tiley, unsigned int lft = 0)
+		: Ireg_game_object(shapenum, framenum, tilex, tiley, lft),
 		  volume_used(0), last_object(0)
 		{  }
 	Container_game_object() : volume_used(0), last_object(0) {  }

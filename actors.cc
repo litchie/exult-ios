@@ -732,6 +732,47 @@ void Actor::change_member_shape
 	}
 
 /*
+ *	Being attacked.
+ */
+
+void Actor::attacked
+	(
+	Actor *attacker
+	)
+	{
+	die();				// +++++++Wimp.
+	}
+
+/*
+ *	We're dead.  We're removed from the world, but not deleted.
+ */
+
+void Actor::die
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	properties[(int) health] = -50;
+	gwin->add_dirty(this);		// Want to repaint area.
+					// Get location.
+	Tile_coord pos = get_abs_tile_coord();
+	remove_this(1);			// Remove (but don't delete this).
+	int shnum = 400;		// +++++Figure out correct shape.
+	int frnum = 0;			// +++++
+					// Put body here.
+	Container_game_object *body = new Container_game_object(
+							shnum, frnum, 0, 0);
+	body->move(pos);
+	Game_object *item;		// Move all the items.
+	while ((item = get_first_object()) != 0)
+		{
+		remove(item);
+		body->add(item, 1);	// Always succeed at adding.
+		}
+	gwin->add_dirty(body);
+	}
+
+/*
  *	Handle a time event (for animation).
  */
 
