@@ -73,6 +73,23 @@ void Npc_proximity_handler::remove
 	}
 
 /*
+ *	Is this a Black Gate (Skara Brae) ghost, or Penumbra?
+ */
+
+bool Bg_dont_wake
+	(
+	Game_window *gwin,
+	Actor *npc
+	)
+	{
+	int num;
+	return (Game::get_game_type() == BLACK_GATE &&
+		(gwin->get_info(npc).has_translucency() ||
+					// Horace or Penumbra?
+		 (num = npc->Actor::get_npc_num()) == 141 || num == 150));
+	}
+
+/*
  *	Run proximity usecode function for the NPC now.
  */
 
@@ -102,6 +119,7 @@ void Npc_proximity_handler::handle_event
 					// But not under a sleep spell?
 	    !npc->get_flag(Obj_flags::asleep) &&
 	    gwin->is_main_actor_inside() &&
+	    !Bg_dont_wake(gwin, npc) &&
 	    npc->distance(gwin->get_main_actor()) < 6 && rand()%3 != 0)
 		{
 					// Trick:  Stand, but stay in
