@@ -1252,6 +1252,8 @@ void Game_window::show_items
 			cout << "Object is TRANSPARENT\n";
 		if (info.is_light_source())
 			cout << "Object is LIGHT_SOURCE\n";
+		if (info.is_door())
+			cout << "Object is a DOOR\n";
 #endif
 		}
 	else				// Obj==0

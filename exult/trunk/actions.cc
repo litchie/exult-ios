@@ -62,18 +62,21 @@ int Actor_pathfinder_client::get_step_cost
 	Chunk_object_list *olist = gwin->get_objects(cx, cy);
 	int tx = to.tx%tiles_per_chunk;	// Get tile within chunk.
 	int ty = to.ty%tiles_per_chunk;
+	int cost = 1;
 	olist->setup_cache();		// Make sure cache is valid.
 	int new_lift;			// Might climb/descend.
 					// For now, assume height=3.
 	if (olist->is_blocked(3, to.tz, tx, ty, new_lift))
 		{			// Blocked, but check for a door.
 		Game_object *block = Game_object::find_blocking(to);
+		if (!block)
+			return -1;
 		Shape_info& info = gwin->get_info(block);
 		if (!info.is_door())
 			return -1;
 		new_lift = to.tz;	// We can open doors.
+		cost++;			// But try to avoid them.
 		}
-	int cost = 1;
 	if (new_lift != to.tz)
 		{
 		cost++;

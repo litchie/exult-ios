@@ -708,9 +708,11 @@ void Patrol_schedule::now_what
 			}
 		if (!path)
 			{
+#if 0
 			cout << "Couldn't find patrol path " << pathnum
 				<< " for obj. shape " << npc->get_shapenum()
 								<< '\n';
+#endif
 					// Wiggle a bit.
 			Tile_coord pos = npc->get_abs_tile_coord();
 			Tile_coord delta = Tile_coord(rand()%3 - 1,
@@ -821,7 +823,7 @@ void Walk_to_schedule::now_what
 		npc->set_schedule_type(new_schedule);
 		return;
 		}
-	if (legs >= 3 || retries >= 3)	// Trying too hard?
+	if (legs >= 4 || retries >= 2)	// Trying too hard?
 		{			// Going to jump there.
 		npc->move(dest.tx, dest.ty, dest.tz);
 		npc->set_schedule_type(new_schedule);
@@ -837,9 +839,7 @@ void Walk_to_schedule::now_what
 	if (!screen.has_point(dest.tx, dest.ty))
 		{
 		Tile_coord cur = npc->get_abs_tile_coord();
-#if 0
 		if (!screen.has_point(cur.tx, cur.ty))
-#endif
 			{		// Force teleport on next tick.
 			retries = 100;
 			npc->walk_to_tile(dest, 200, 100);
@@ -847,9 +847,11 @@ void Walk_to_schedule::now_what
 			}
 				// ++++Want to just walk off screen?
 		}
+	cout << "Finding path to schedule for " << npc->get_name() << '\n';
 					// Create path to dest.
 	if (!npc->walk_path_to_tile(dest))
 		{			// Wait 1/3 sec., then try again.
+		cout << "Failed to find path for " << npc->get_name() << '\n';
 		npc->walk_to_tile(dest, 200, 300);
 		retries++;		// Failed.  Try again next tick.
 		}
