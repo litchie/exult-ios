@@ -1165,6 +1165,8 @@ int ExultStudio::prompt
 	return prompt_choice;
 	}
 
+namespace EStudio {
+
 /*
  *	Same as ExultStudio::prompt, but as a routine.
  */
@@ -1195,6 +1197,7 @@ void Alert
 	Prompt(fullmsg, "Okay");
 	g_free(fullmsg);
 	}
+} // namespace EStudio
 
 /*
  *	'Preferences' window events.

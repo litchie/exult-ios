@@ -55,6 +55,8 @@ using	std::ostream;
 using	std::ofstream;
 using	std::setw;
 using	std::ifstream;
+using	EStudio::Prompt;
+using	EStudio::Alert;
 
 inline void Palette_edit::show
 	(
