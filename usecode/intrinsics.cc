@@ -2374,7 +2374,7 @@ USECODE_INTRINSIC(approach_avatar)
 	// Approach_avatar(npc, ?, ?).
 	// Actor we want to move
 	Actor *actor = as_actor(get_item(parms[0]));
-	if (!actor)
+	if (!actor || actor->is_dead())
 		return Usecode_value(0);
 					// Approach, and wait_for_arrival().
 	if (!actor->approach_another(gwin->get_main_actor(), true))
