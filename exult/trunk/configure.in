@@ -604,6 +604,16 @@ else
 	have_libglade=no
 fi
 
+# Freetype2 (optional, used in ExultStudio, shapes/fontgen.cc)
+AC_PATH_PROG(FT2CONFIG, freetype-config)
+if test -n "$FT2CONFIG"; then
+	AC_DEFINE(HAVE_FREETYPE2)
+	FREETYPE2_LIBS=`freetype-config --libs`
+	AC_SUBST(FREETYPE2_LIBS)
+	FREETYPE2_INCLUDES=`freetype-config --cflags`
+	AC_SUBST(FREETYPE2_INCLUDES)
+fi
+
 # exult-studio
 AC_ARG_ENABLE(exult-studio, [  --enable-exult-studio   Build Exult Studio [default no]],,enable_exult_studio=no)
 AC_MSG_CHECKING(whether to build Exult Studio)

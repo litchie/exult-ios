@@ -58,6 +58,9 @@
 /* Do we have gtk development files? */
 #undef HAVE_GTK
 
+/* Is freetype2 available? */
+#undef HAVE_FREETYPE2
+
 /* Do we have zlib? (for compressed savegames) */
 #undef HAVE_ZIP_SUPPORT
 
