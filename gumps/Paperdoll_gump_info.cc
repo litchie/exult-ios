@@ -1088,9 +1088,9 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Cleaver
 	{     614, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,        EXULT_BG_FLX_CLEAVER_SHP,     0 },
 	{     614, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,        EXULT_BG_FLX_CLEAVER_SHP,     1 },
-	// Knives **NEEDS ART**
-	{     615, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     -1,     0 },
-	{     615, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     -1,     1 },
+	// Knives
+	{     615, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_KNIFE_SHP,     0 },
+	{     615, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_KNIFE_SHP,     1 },
 	// Whip
 	{     622, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,    115,     0 },
 	{     622, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,    115,     1 },

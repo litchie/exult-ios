@@ -50,7 +50,7 @@ Great dagger		561		Willem Jan
 Star bursts		565		-
 Main gauche		591		-		(left & right hand)
 Cleaver			614		Adam
-Knives			615		-
+Knives			615		Willem Jan
 Custom sword		635		-		(using Dragon Slayer)
 Hoe of destruction	548		Tristan
 Firedoom staff		553		Adam
