@@ -1,3 +1,6 @@
+2002-03-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* docs/usecode32.txt: attempt at specs for 32 bit usecode
+
 2002-03-15  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* shapes/vgafile.{cc,h}:  New methods for constructing, modifying 
