@@ -11,7 +11,8 @@
 using namespace Exult3d;
 
 /*
- *	Return the (non-unit) normal to this face, with right-handed orientation.
+ *	Return the (non-unit) normal to this face, with right-handed 
+ *	orientation.
  */
 Vector3 Face::normal
 	(

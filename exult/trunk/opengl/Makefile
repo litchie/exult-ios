@@ -6,7 +6,7 @@ LIBS  = -L../shapes/.libs -lshapes -lpng -lz -lGL -lGLU `sdl-config --libs`
 .cc.o:
 	$(CC) $(CPPFLAGS) $(CXXFLAGS) -c $<
 
-all:	gltest1 gltest2
+all:	gltest1 gltest2 gltest3
 
 gltest1: gltest1.o
 	$(CC) $(CXXFLAGS) -o gltest1 $< $(LIBS)
@@ -14,8 +14,8 @@ gltest1: gltest1.o
 gltest2: gltest2.o
 	$(CC) $(CXXFLAGS) -o gltest2 $< $(LIBS)
 
-gltest3: gltest3.o model3ds.o model.o
-	$(CC) $(CXXFLAGS) -o $@ $^ $(LIBS)
+gltest3: gltest3.o model3ds.o modelgl.o model.o
+	$(CC) $(CXXFLAGS) -o $@ $^ $(LIBS) -lSDL_image
 
 clean:
 	@echo Cleaning up...
