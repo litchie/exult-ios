@@ -112,13 +112,16 @@ public:
 		fly = 0,
 		swim = 1,
 		walk = 2,
-		ethereal = 3		// Can walk through walls.
+		ethereal = 3,		// Can walk through walls.
+		no_body = 4		// Don't create body.
 					// 5:  gazer, hook only.
 //Don't think so magic_only = 7,	// Can only be hurt by magic weapons.
 					// 8:  bat only.
 //		slow = 9		// E.g., slime, corpser.
 					// 10:  skeleton only.
 		};
+	bool has_no_body() const	// No dead body?
+		{ return (flags>>no_body)&1; }
 	};
 
 

@@ -338,6 +338,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(remove_npc_face0);
 	USECODE_INTRINSIC_DECL(remove_npc_face1);
 	USECODE_INTRINSIC_DECL(set_conversation_slot);
+	USECODE_INTRINSIC_DECL(init_conversation);
 	USECODE_INTRINSIC_DECL(set_new_schedules);
 	USECODE_INTRINSIC_DECL(revert_schedule);
 	USECODE_INTRINSIC_DECL(run_schedule);

@@ -194,7 +194,7 @@
 
 	USECODE_INTRINSIC_PTR(remove_item),			// 0x84 - Known
 
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x85
+	USECODE_INTRINSIC_PTR(init_conversation),		// 0x85 ??
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x86
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x87++++ Increments experience??
 	USECODE_INTRINSIC_PTR(is_readied),			// 0x88

@@ -960,6 +960,7 @@ Usecode_value Usecode_internal::add_party_items
 					// Create and place.
 		Game_object *newobj = gwin->create_ireg_object(
 					info, shapenum, framenum, 0, 0, 0);
+		newobj->set_flag(Obj_flags::okay_to_take);
 		newobj->move(pos);
 		todo--;
 		if (todo > 0)		// Create quantity if possible.
