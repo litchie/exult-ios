@@ -48,6 +48,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gumps.h"
 #include "effects.h"
 #include "args.h"
+#include "titles.h"
 
 
 Audio *audio;
@@ -283,15 +284,15 @@ static void Init
 			Usecode_machine::have_trinsic_password, 1);
 					// Skip splash screen?
 	config->value("config/gameplay/skip_splash", yn, "no");
+	Titles titles;
 	if(yn == "no") {
 		gwin->set_mode(Game_window::splash);
-		SDL_SetEventFilter(Filter_splash_events);
-		gwin->paint_splash();
-	} else {
-		gwin->set_mode(Game_window::normal);
-		SDL_SetEventFilter(Filter_intro_events);
-		gwin->setup_game();		// This will start the scene.
+		titles.play_intro();
 	}
+	titles.show_menu();
+	gwin->set_mode(Game_window::normal);
+	SDL_SetEventFilter(Filter_intro_events);
+	gwin->setup_game();		// This will start the scene.
 	}
 
 /*
@@ -983,7 +984,10 @@ static void Handle_keystroke
 		gwin->paint();
 		break;
 	case SDLK_F10:
-		gwin->end_game();
+		{
+			Titles titles;
+			titles.end_game(true);
+		}
 		break;
 	default:
 		break;

@@ -91,7 +91,8 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 {
 	bool	no_device=true;
 
-	add_midi_bank(ADLIBMUS);
+	add_midi_bank(MAINMUS);
+	add_midi_bank(INTROMUS);
 
 	// instrument_patches=AccessTableFile(XMIDI_MT);
 	string	s;

@@ -1,3 +1,20 @@
+2000-07-13  Tristan Tarrant  <tarrant_tristan@emc.com>
+
+	* palette.cc, palette.h: New files which handle palette functions. 
+	Now it is possible to use palettes from different data files.
+	* exult.spec.in: simple spec file for creating RPM packages
+	* titles.cc, titles.h: Moved intro, endgame and other bits and pieces
+	in here. Introduction is nearly complete. 
+	* flic/playfli.cc: Center flic on display
+	* exult.cc: rearchitected the way the intro stuff is done
+	* gamewin.cc: expunged most of the palette and intro junk. Some more 
+	cleanups required however.
+	* audio/Audio.h, audio/Audio.cc: allow bank choice in start_music
+	* audio/Midi.cc: include another MIDI bank (the intro music).
+	* fnames.h: Added intro music data file
+	* usecode.cc: changed endgame invocation
+	* .cvsignore: updated
+
 2000-07-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Starting support for projectile weapons.

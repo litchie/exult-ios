@@ -54,6 +54,8 @@ exult_SOURCES =	\
 	npcnear.h	\
 	objs.cc		\
 	objs.h		\
+	palette.cc	\
+	palette.h	\
 	paths.cc	\
 	paths.h		\
 	readnpcs.cc	\
@@ -69,6 +71,8 @@ exult_SOURCES =	\
 	spells.cc	\
 	spells.h	\
 	tiles.h		\
+	titles.cc	\
+	titles.h	\
 	tqueue.cc	\
 	tqueue.h	\
 	usecode.cc	\
@@ -94,4 +98,5 @@ exult_LDADD = 			\
 EXTRA_DIST = 	\
 	README.win32 \
 	Makefile.win32 \
-	Makefile.be
+	Makefile.be \
+	exult.spec

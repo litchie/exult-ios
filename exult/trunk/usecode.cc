@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "Audio.h"
 #include "useval.h"
+#include "titles.h"
 #include <iomanip>
 #ifdef XWIN
 #include <signal.h>
@@ -2236,7 +2237,8 @@ USECODE_INTRINSIC(halt_scheduled)
 
 USECODE_INTRINSIC(run_endgame)
 {
-	gwin->end_game();
+	Titles titles;
+	titles.end_game(true);
 	return(no_ret);
 }
 

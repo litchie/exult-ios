@@ -347,10 +347,10 @@ bool	Audio::playing(void)
 }
 
 
-void	Audio::start_music(int num,bool repetition)
+void	Audio::start_music(int num,bool repetition, int bank)
 {
 	if(midi)
-		midi->start_music(num,repetition);
+		midi->start_music(num,repetition,bank);
 }
 
 #if 0	// Unused
