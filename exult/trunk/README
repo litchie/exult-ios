@@ -1,22 +1,20 @@
-ExultDocumentation 
+Exult - Documentation 
 
-last changed: 25 November 2001(GMT)
+last changed: 07 January 2002(GMT)
 ------------------------------------
 The latest version of this document can be found here
-
 0. Changes to the Documentation
-0.1. - 25 November 2001
-0.2. - 06 November 2001
-0.3. - 28 October 2001
-
+0.1. - 07 January 2002
+0.2. - 25 November 2001
+0.3. - 06 November 2001
+0.4. - 28 October 2001
 1. Introduction
 1.1. What is Exult?
-
 2. Configurations
 2.1. Installation
 2.2. Settings in exult.cfg
 2.3. Path-Settings
-
+2.4. Command line options
 3. Audio
 3.1. Music
 3.2. Abilities and limitations of the music engine
@@ -24,16 +22,13 @@ The latest version of this document can be found here
 3.4. Digital Wave Sound Effects
 3.5. Speech
 3.6. Turn off Audio
-
 4. Video
 4.1. Resolution
 4.2. Scaler
-
 5. Movement and Keys
 5.1. Movement
 5.2. Keyboard commands
 5.3. Cheat keys
-
 6. Game Menu
 6.1. Access to the Game menu
 6.2. Load/Save Game
@@ -42,7 +37,6 @@ The latest version of this document can be found here
 6.5. Gameplay Options
 6.6. Quit to Menu
 6.7. Quit
-
 7. OS specific notes
 7.1. Error Log
 8. Credits and Contact
@@ -52,19 +46,25 @@ The latest version of this document can be found here
 ------------------------------------
 0. Changes to the Documentation
  
-0.1. - 25 November 2001
-  * 2.2. Settings in exult.cfg added <save_compression_level> to zip up savegames, <waves> no longer needs path set if in data dir. 
-  * 4.2. Scaler updated link To Derek Liauw's scaler page. 
-  * 3.4. Digital Wave Sound Effects no longer needs paths for sfx pack (if in data dir). 
+0.1. - 07 January 2002
+  * 2.2. Settings in exult.cfg added <force_wavout> and <looping>. 
+  * 2.4. Command line options Some parameters for whoever dares to use them. 
+  * 6.4. Audio Options looping added. 
+  * 6.6. Quit to Menu removed in snapshots. 
  
-0.2. - 06 November 2001
+0.2. - 25 November 2001
+  * 2.2. Settings in exult.cfg added <save_compression_level> to zip up savegames, <waves> no longer needs path set if in data dir. 
+  * 3.4. Digital Wave Sound Effects no longer needs paths for sfx pack (if in data dir). 
+  * 4.2. Scaler updated link To Derek Liauw's scaler page. 
+ 
+0.3. - 06 November 2001
   * a lot of spelling checked and corrected. 
   * 2.2. Settings in exult.cfg added <fps> and <walk_after_teleport> setting. 
   * 3.4. Digital Wave Sound Effects I mentioned issues with SI but never elaborated. Now I did. 
   * 6.2. Load/Save Game added information on using wheelmice. 
   * 6.5. Gameplay Options more of those. 
  
-0.3. - 28 October 2001
+0.4. - 28 October 2001
   * 0. Changes to the Documentation introduced. Don't know why I didn't add this from the beginning. 
   * 2.2. Settings in exult.cfg added more gameplay options. 
   * 5.1. Movement added comment on how to activate right mouse button on MacOS. 
@@ -180,6 +180,9 @@ no   **when set to no you stop after walking onto a teleporter.
 <enabled>
 yes   **enable/disable all audio - this takes precedence over the other audio settings (you can change this in game via 'Esc' - the setting is saved) 
 </enabled>
+<force_waveout>
+no   **yes forces Exult to use waveout instead of directsound. This may fix problems some people have with Exult and sound in Windows (it's a Windows-only option) 
+</enabled>
 <effects>
 <enabled>
 yes   **enable/disable sound effects (you can change this in game via 'Esc' - the setting is saved) 
@@ -198,6 +201,9 @@ gm   **see 3.1.
 <win32_device>
 -1   **choose the Windows MIDI Device. See 3.3. 
 </win32_device>
+<looping>
+Yes   **No disables muisc looping. See 6.4. 
+</looping>
 </midi>
 <speech>
 <enabled>
@@ -274,6 +280,26 @@ blackgate
 </disk>
 
 You can either use the relative (./blackgate) or absolute (c:\ultima\blackgate) path to point to the correct directory. 
+ 
+2.4. Command line options
+Exult offers some "hidden" command line options: 
+  * -h or --help
+Shows all the command line parameters in stderr (stderr.txt on Windows systems) 
+  * -v or --version
+Shows version information in stderr 
+  * --bg
+Starts the game with the Black Gate menu 
+  * --si
+Starts the game with the Serpent Isle menu 
+  * --nocrc
+Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data dir aren't the same it got compiled with. This parameter lets the game start nethertheless. Don't try this if you don't know what you are doing. 
+  * --buildmap x
+x = 0 shows all roofs, x = 2 pops them all.
+You have to specify the game first (Example: exult --bg buildmap 0).
+Builds the map of the game specified.The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) 
+  * --game gamename
+Unused yet. Loads a game specified in exult.cfg when there are other games made with Exult Studio. 
+
 ------------------------------------
 3. Audio
  
@@ -500,6 +526,8 @@ choose between None, GM, GS, GS127.
 alters the way the midi is played. Enable or disable to hear if you like it. 
   * Chorus
 the same as Reverb 
+  * Looping
+Disable restores the (broken) way the original handeled the music looping flag. 
   * SFX
 Enable or disable digital sound effects. 
   * Speech Options
@@ -531,6 +559,8 @@ Ok accepts your changes, Cancel discards your changes.
  
 6.6. Quit to Menu
 This is not implemented yet and just quits Exult. When it eventually works you will be back to the Exult menu where you choose which game you want to play. It is actually more difficult to implement than it sounds so don't expect it too soon. 
+
+In snapshots after the Beta 1 release this option is no longer availlable. 
  
 6.7. Quit
 Exits Exult. 
@@ -558,4 +588,6 @@ will send both stderr and stdout to the file named "log".
 You can contact the Exult team and/or get more information from:
 http://exult.sourceforge.net/ or
 http://sourceforge.net/projects/exult/
+
+
 ------------------------------------
