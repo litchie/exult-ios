@@ -94,7 +94,9 @@ int Path_walking_actor_action::handle_event
 	Tile_coord tile;
 	if (blocked)
 		{
+#if DEBUG
 cout << "Actor " << actor->get_name() << " blocked.  Retrying." << endl;
+#endif
 		if (actor->step(blocked_tile, blocked_frame))
 			{		// Successful?
 			blocked = 0;

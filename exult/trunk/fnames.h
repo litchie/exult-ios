@@ -36,7 +36,7 @@
 #define NPC_DAT		"gamedat/npc.dat"
 #define MONSNPCS	"gamedat/monsnpcs.dat"
 #define USEDAT		"gamedat/usecode.dat"
-#define FLAGINIT	"gamedat/flaginit.dat"
+#define FLAGINIT	"gamedat/flaginit"
 #define GWINDAT		"gamedat/gamewin.dat"
 #define SCHEDULE_DAT	"static/schedule.dat"
 #define SHPDIMS_DAT	"static/shpdims.dat"
