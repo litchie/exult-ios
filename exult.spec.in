@@ -162,3 +162,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/exult/estudio/new/shapes.vga
 %{_datadir}/exult/estudio/new/sprites.vga
 %{_datadir}/exult/estudio/new/text.flx
+%{_datadir}/exult/estudio/new/fonts.vga
+%{_datadir}/exult/estudio/new/pointers.shp
