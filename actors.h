@@ -498,6 +498,7 @@ class Dead_body : public Container_game_object
 					// Links for 'in_world' list.
 	Dead_body *next_body, *prev_body;
 	void link();			// Add to list & set decay hour.
+	void unlink();
 public:
 	Dead_body(int shapenum, int framenum, unsigned int tilex, 
 		unsigned int tiley, unsigned int lft, int n, bool decble)

@@ -376,6 +376,8 @@ USECODE_INTRINSIC(add_to_party)
 		return no_ret;		// Can't add.
 	npc->set_party_id(party_count);
 	npc->set_flag (Obj_flags::in_party);
+					// We can take items.
+	npc->set_flag_recursively(Obj_flags::okay_to_take);
 	party[party_count++] = npc->get_npc_num();
 	npc->set_schedule_type(Schedule::follow_avatar);
 // cout << "NPC " << npc->get_npc_num() << " added to party." << endl;
@@ -654,9 +656,8 @@ USECODE_INTRINSIC(get_cont_items)
 USECODE_INTRINSIC(remove_party_items)
 {
 	// Remove items(quantity, item, ??quality?? (-359), frame(-359), T/F).
-	Usecode_value u(remove_party_items(parms[0], parms[1], parms[2],
-						parms[3], parms[4]));
-	return(u);
+	return remove_party_items(parms[0], parms[1], parms[2],
+						parms[3], parms[4]);
 }
 
 USECODE_INTRINSIC(add_party_items)

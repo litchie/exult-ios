@@ -817,10 +817,10 @@ Usecode_value Usecode_machine::get_objects
 /*
  *	Remove a quantity of an item from the party.
  *
- *	Output:	1 if successful, else 0.
+ *	Output:	1 (or the object) if successful, else 0.
  */
 
-int Usecode_machine::remove_party_items
+Usecode_value Usecode_machine::remove_party_items
 	(
 	Usecode_value& quantval,	// Quantity to remove.
 	Usecode_value& shapeval,	// Shape.
@@ -830,15 +830,23 @@ int Usecode_machine::remove_party_items
 	)
 	{
 	int quantity = quantval.need_int_value();
-	if (quantity == -359 && Game::get_game_type() == SERPENT_ISLE)
-		quantity = 1;		// Guessing.  Got to remove something.
-	Usecode_value all(-357);	// See if they exist.
-	Usecode_value avail = count_objects(all, shapeval, qualval, frameval);
-	if (avail.get_int_value() < quantity)
-		return 0;
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int quality = qualval.get_int_value();
+	if (quantity == -359 && Game::get_game_type() == SERPENT_ISLE)
+		{			// Special case. (Check party??)
+		Game_object *obj = gwin->get_main_actor()->find_item(
+				shapenum, quality, framenum);
+		if (!obj)
+			return Usecode_value(0);
+		gwin->delete_object(obj);// Schedule for deletion.
+					// But return it anyway!!
+		return Usecode_value(obj);
+		}
+	Usecode_value all(-357);	// See if they exist.
+	Usecode_value avail = count_objects(all, shapeval, qualval, frameval);
+	if (avail.get_int_value() < quantity)
+		return Usecode_value(0);
 					// Look through whole party.
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
@@ -849,7 +857,7 @@ int Usecode_machine::remove_party_items
 			quantity = obj->remove_quantity(quantity, shapenum,
 							quality, framenum);
 		}
-	return (quantity == 0);
+	return Usecode_value(quantity == 0);
 	}
 
 /*
@@ -2099,6 +2107,8 @@ void Usecode_machine::link_party
 			{
 			npc->set_party_id(i);
 			npc->set_schedule_type(Schedule::follow_avatar);
+					// We can use all his/her items.
+			npc->set_flag_recursively(Obj_flags::okay_to_take);
 			}
 		}
 	}

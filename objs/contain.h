@@ -93,6 +93,7 @@ public:
 					// Under attack.
 	virtual Game_object *attacked(Actor *attacker, int weapon_shape = 0,
 					int ammo_shape = 0);
+	virtual void set_flag_recursively(int flag);
 					// Write out to IREG file.
 	virtual void write_ireg(std::ostream& out);
 					// Write contents in IREG format.
