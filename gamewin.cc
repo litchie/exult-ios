@@ -2269,6 +2269,24 @@ void Game_window::add_effect
 	}
 
 /*
+ *	Remove a given object's text effect.
+ */
+
+void Game_window::remove_text_effect
+	(
+	Game_object *item		// Item text was added for.
+	)
+	{
+	for (Special_effect *each = effects; each; each = each->next)
+		if (each->is_text(item))
+			{		// Found it.
+			tqueue->remove(each);
+			remove_effect(each);
+			return;
+			}
+	}
+
+/*
  *	Remove a text item/sprite from the chain and delete it.
  *	Note:  It better not still be in the time queue.
  */

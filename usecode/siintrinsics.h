@@ -107,7 +107,7 @@
 
 	
 	USECODE_INTRINSIC_PTR(item_say),			// 0x4d
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0x4e
+	USECODE_INTRINSIC_PTR(clear_item_say),			// 0x4e
 
 	USECODE_INTRINSIC_PTR(projectile_effect),		// 0x4f
 	USECODE_INTRINSIC_PTR(get_lift),			// 0x50
