@@ -218,21 +218,49 @@ gint Shape_chooser::mouse_press
 			}
 	return (TRUE);
 	}
-#if 0
+
 /*
  *	Someone wants the selected shape.
  */
 
-gint Shape_chooser::selection_get
+void Shape_chooser::selection_get
 	(
 	GtkWidget *widget,		// The view window.
-	GdkEventButton *event,
+	GtkSelectionData *seldata,	// Fill this in.
+	guint info,
+	guint time,
 	gpointer data			// ->Shape_chooser.
 	)
 	{
+	cout << "In SELECTION_GET" << endl;
 	Shape_chooser *chooser = (Shape_chooser *) data;
-+++++++++++++++????
-#endif
+	if (chooser->selected < 0 || info != U7_TARGET_SHAPEID)
+		return;			// Not sure about this.
+	guchar buf[30];
+	int file = U7_SHAPE_SHAPES;	// +++++For now.
+	Shape_info& shinfo = chooser->info[chooser->selected];
+	int len = Store_u7_shapeid(buf, file, shinfo.shapenum, 
+							shinfo.framenum);
+	gtk_selection_data_set(seldata,
+			gdk_atom_intern(U7_TARGET_SHAPEID_NAME, 0),
+                                				8, buf, len);
+	}
+
+/*
+ *	Another app. has claimed the selection.
+ */
+
+gint Shape_chooser::selection_clear
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventSelection *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+//	Shape_chooser *chooser = (Shape_chooser *) data;
+	cout << "SELECTION_CLEAR" << endl;
+	return TRUE;
+	}
 
 /*
  *	Mouse motion.  This starts a drag for drag-and-drop.
@@ -359,8 +387,11 @@ Shape_chooser::Shape_chooser
 	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
 				GTK_SIGNAL_FUNC(Drag_begin), this);
 	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
-				GTK_SIGNAL_FUNC(Mouse_drag_motion), NULL);
-
+				GTK_SIGNAL_FUNC(Mouse_drag_motion), this);
+	gtk_signal_connect (GTK_OBJECT(draw), "selection_get",
+				GTK_SIGNAL_FUNC(selection_get), this);
+	gtk_signal_connect (GTK_OBJECT(draw), "selection_clear_event",
+				GTK_SIGNAL_FUNC(selection_clear), this);
 	gtk_container_add (GTK_CONTAINER (frame), draw);
 	gtk_drawing_area_size(GTK_DRAWING_AREA(draw), w, h);
 	gtk_widget_show(draw);
