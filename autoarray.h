@@ -5,7 +5,7 @@ template<class T>
 class autoarray
 	{
 private:
-	size_t	size_;
+	std::size_t	size_;
 	T *data_;
 public:
 	class range_error : public std::exception
@@ -17,9 +17,9 @@ public:
 		};
 	autoarray() : size_(0), data_(0) 
 		{  }
-	autoarray(size_t n) : size_(n),data_(n?new T[n]:0)
+	autoarray(std::size_t n) : size_(n),data_(n?new T[n]:0)
 		{  }
-	T &operator[](size_t i)	 throw(range_error)
+	T &operator[](std::size_t i)	 throw(range_error)
 		{
 		if(i>=size_)
 			throw range_error("out of bounds");
@@ -56,7 +56,7 @@ public:
 			}
 		return *this;
 		}
-	void set_size(size_t new_size)
+	void set_size(std::size_t new_size)
 		{
 		if(data_)
 			{

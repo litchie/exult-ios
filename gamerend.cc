@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "actors.h"
 #include "objiter.h"
-#include "gumps.h"
+#include "Gump.h"
 #include "effects.h"
 
 /*
@@ -123,7 +123,7 @@ void Game_window::paint
 	win->set_clip(x, y, w, h);	// Clip to this area.
 	int light_sources = paint_map(x, y, w, h);
 					// Draw gumps.
-	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
+	for (Gump *gmp = open_gumps; gmp; gmp = gmp->get_next())
 		gmp->paint(this);
 					// Draw text, sprites.
 	for (Special_effect *txt = effects; txt; txt = txt->next)

@@ -37,7 +37,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "fnames.h"
 #include "ucmachine.h"
 #include "npcnear.h"
-#include "spells.h"
 #include "effects.h"
 #include "segfile.h"
 #include "Audio.h"
@@ -54,6 +53,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Astar.h"
 #include "objiter.h"
 #include "mouse.h"
+
+#include "Actor_Gump.h"
+#include "Paperdoll_Gump.h"
+#include "Spellbook_gump.h"
+#include "Stats_Gump.h"
 
 using std::cerr;
 using std::cout;
@@ -500,7 +504,7 @@ void Game_window::show_game_location
 
 Rectangle Game_window::get_gump_rect
 	(
-	Gump_object *gump
+	Gump *gump
 	)
 	{
 	Shape_frame *s = get_gump_shape (gump->get_shapenum(), gump->get_framenum(), gump->is_paperdoll());
@@ -1703,13 +1707,13 @@ void Game_window::activate_item
  *	Output:	->gump, or null if none.
  */
 
-Gump_object *Game_window::find_gump
+Gump *Game_window::find_gump
 	(
 	int x, int y			// Pos. on screen.
 	)
 	{
-	Gump_object *gmp;
-	Gump_object *found = 0;		// We want last found in chain.
+	Gump *gmp;
+	Gump *found = 0;		// We want last found in chain.
 	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
 		{
 		Rectangle box = get_gump_rect(gmp);
@@ -1730,7 +1734,7 @@ Gump_object *Game_window::find_gump
  *	Find gump containing a given object.
  */
 
-Gump_object *Game_window::find_gump
+Gump *Game_window::find_gump
 	(
 	Game_object *obj
 	)
@@ -1740,7 +1744,7 @@ Gump_object *Game_window::find_gump
 	if (!owner)
 		return (0);
 					// Look for container's gump.
-	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
+	for (Gump *gmp = open_gumps; gmp; gmp = gmp->get_next())
 		if (gmp->get_container() == owner)
 			return (gmp);
 	return (0);
@@ -1854,7 +1858,7 @@ void Game_window::show_items
 	)
 	{
 					// Look for obj. in open gump.
-	Gump_object *gump = find_gump(x, y);
+	Gump *gump = find_gump(x, y);
 	Game_object *obj;		// What we find.
 	if (gump)
 		obj = gump->find_object(x, y);
@@ -2078,7 +2082,7 @@ void Game_window::double_clicked
 	{
 	extern Mouse *mouse;
 					// Look for obj. in open gump.
-	Gump_object *gump = find_gump(x, y);
+	Gump *gump = find_gump(x, y);
 	Game_object *obj;
 	if (gump)
 		{			// Find object in gump.
@@ -2525,7 +2529,7 @@ void Game_window::show_gump
 		shapenum += main_actor->get_type_flag(Actor::tf_sex);
 		
 	static int cnt = 0;		// For staggering them.
-	Gump_object *gmp;		// See if already open.
+	Gump *gmp;		// See if already open.
 	for (gmp = open_gumps; gmp; gmp = gmp->get_next())
 		if (gmp->get_owner() == obj &&
 		    gmp->get_shapenum() == shapenum)
@@ -2553,18 +2557,18 @@ void Game_window::show_gump
 		x = get_width()/10;
 		y = get_width()/10;
 		}
-	Gump_object *new_gump = paperdoll == 2 ?
-				new Paperdoll_gump_object(
+	Gump *new_gump = paperdoll == 2 ?
+				new Paperdoll_gump(
 					(Container_game_object *) obj, x, y, obj->get_npc_num())
 			: paperdoll ?
-				new Actor_gump_object(
+				new Actor_gump(
 					(Container_game_object *) obj, x, y, shapenum)
 			: shapenum == game->get_shape("gumps/statsdisplay") ?
-				new Stats_gump_object(
+				new Stats_gump(
 					(Container_game_object *) obj, x, y)
 			: shapenum == game->get_shape("gumps/spellbook") ?
 				new Spellbook_gump((Spellbook_object *) obj)
-			: new Gump_object((Container_game_object *) obj, 
+			: new Gump((Container_game_object *) obj, 
 							x, y, shapenum);
 					// Paint new one last.
 	new_gump->append_to_chain(open_gumps);
@@ -2586,7 +2590,7 @@ void Game_window::end_gump_mode
 	int had_gumps = (open_gumps != 0);
 	while (open_gumps)		// Remove all gumps.
 		{
-		Gump_object *gmp = open_gumps;
+		Gump *gmp = open_gumps;
 		open_gumps = gmp->get_next();
 		delete gmp;
 		}
@@ -2603,7 +2607,7 @@ void Game_window::end_gump_mode
 
 void Game_window::remove_gump
 	(
-	Gump_object *gump
+	Gump *gump
 	)
 	{
 	gump->remove_from_chain(open_gumps);

@@ -48,7 +48,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 #include "Configuration.h"
 #include "mouse.h"
-#include "gumps.h"
+#include "gump_utils.h"
+#include "File_gump.h"
+#include "Scroll_gump.h"
 #include "effects.h"
 #include "args.h"
 #include "game.h"
@@ -72,6 +74,11 @@ static string data_path;
 unsigned char quitting_time = 0;	// 1 = Time to quit, 2 = Restart.
 Mouse *mouse = 0;
 int scale = 0;				// 1 if scaling X2.
+
+// FIX ME - altkeys should be in a new file, maybe events.cc or keyboard.cc or so
+unsigned int altkeys = 0;	// SDL doesn't seem to handle ALT
+					//   right, so we'll keep track.
+					// 1/6, 1/10, 1/20 frame rates.
 
 bool intrinsic_trace = false;		// Do we trace Usecode-intrinsics?
 bool usecode_trace = false;		// Do we trace Usecode-instruction?
@@ -104,7 +111,6 @@ static void Init();
 static int Play();
 static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl, Uint16 unicode);
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *chr = 0);
-int Modal_gump(Modal_gump_object *, Mouse::Mouse_shapes);
 static void Try_key(Game_window *);
 void increase_resolution (void);
 void decrease_resolution (void);
@@ -391,34 +397,7 @@ static int Play()
 	return (0);
 }
 
-/*
- *	Delay between animations.
- */
 
-inline void Delay
-	(
-	)
-	{
-#ifdef XWIN
-	X_Delay();
-#else					/* May use this for Linux too. */
-	SDL_Delay(20);			// Try 1/50 second.
-#endif
-	}
-
-/*
- *	Verify user wants to quit.
- *
- *	Output:	1 to quit.
- */
-static int Okay_to_quit
-	(
-	)
-	{
-	if (Yesno_gump_object::ask("Do you really want to quit?"))
-		quitting_time = 1;
-	return quitting_time;
-	}
 
 /*
  *	Statics used below:
@@ -426,10 +405,8 @@ static int Okay_to_quit
 static bool show_mouse = false;		// display mouse in main loop?
 static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
+// FIX ME - mouse_update should be in class Mouse
 static bool mouse_update = 0;		// Mouse moved/changed.
-static unsigned int altkeys = 0;	// SDL doesn't seem to handle ALT
-					//   right, so we'll keep track.
-					// 1/6, 1/10, 1/20 frame rates.
 const int slow_speed = 166, medium_speed = 100, fast_speed = 50;
 static int avatar_speed = slow_speed;	// Avatar speed (frame delay in
 					//    1/1000 secs.)
@@ -1186,144 +1163,6 @@ void Wait_for_arrival
 	}
 
 /*
- *	Wait for a click.
- *
- *	Output:	0 if user hit ESC.
- */
-static int Handle_gump_event
-	(
-	Modal_gump_object *gump,
-	SDL_Event& event
-	)
-	{
-	switch (event.type)
-		{
-	case SDL_MOUSEBUTTONDOWN:
-cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
-	 << ", " <<	((event.button.y>>scale) - gump->get_y()) << ")"<<endl;
-		if (event.button.button == 1)
-			gump->mouse_down(event.button.x >> scale, 
-						event.button.y >> scale);
-		break;
-	case SDL_MOUSEBUTTONUP:
-		if (event.button.button == 1)
-			gump->mouse_up(event.button.x >> scale,
-						event.button.y >> scale);
-		break;
-	case SDL_MOUSEMOTION:
-		mouse->move(event.motion.x >> scale, event.motion.y >> scale);
-		mouse_update = true;
-					// Dragging with left button?
-		if (event.motion.state & SDL_BUTTON(1))
-			gump->mouse_drag(event.motion.x >> scale,
-						event.motion.y >> scale);
-		break;
-	case SDL_QUIT:
-		if (Okay_to_quit())
-			return (0);
-	case SDL_KEYDOWN:
-		{
-		if (event.key.keysym.sym == SDLK_ESCAPE)
-			return (0);
-		int chr = event.key.keysym.sym;
-		gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
-					? toupper(chr) : chr);
-		break;
-		}
-	case SDL_KEYUP:			// Watch for ALT keys released.
-		switch (event.key.keysym.sym)
-			{
-		case SDLK_RALT:		// Right alt.
-		case SDLK_RMETA:
-			altkeys &= ~1;	// Clear flag.
-			break;
-		case SDLK_LALT:
-		case SDLK_LMETA:
-			altkeys &= ~2;
-			break;
-		default: break;
-			}
-		break;
-		}
-	return (1);
-	}
-
-/*
- *	Handle a modal gump, like the range slider or the save box, until
- *	the gump self-destructs.
- *
- *	Output:	0 if user hit ESC.
- */
-
-int Modal_gump
-	(
-	Modal_gump_object *gump,	// What the user interacts with.
-	Mouse::Mouse_shapes shape	// Mouse shape to use.
-	)
-	{
-	Mouse::Mouse_shapes saveshape = mouse->get_shape();
-	if (shape != Mouse::dontchange)
-		mouse->set_shape(shape);
-	gwin->show(1);
-	int escaped = 0;
-					// Get area to repaint when done.
-	Rectangle box = gwin->get_gump_rect(gump);
-	box.enlarge(2);
-	box = gwin->clip_to_win(box);
-					// Create buffer to backup background.
-	Image_buffer *back = gwin->get_win()->create_buffer(box.w, box.h);
-	mouse->hide();			// Turn off mouse.
-					// Save background.
-	gwin->get_win()->get(back, box.x, box.y);
-	gump->paint(gwin);		// Paint gump.
-	mouse->show();
-	gwin->show();
-	do
-		{
-		Delay();		// Wait a fraction of a second.
-		mouse->hide();		// Turn off mouse.
-		mouse_update = false;
-		SDL_Event event;
-		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
-			escaped = !Handle_gump_event(gump, event);
-		mouse->show();		// Re-display mouse.
-		if (!gwin->show() &&	// Blit to screen if necessary.
-		    mouse_update)	// If not, did mouse change?
-			mouse->blit_dirty();
-		}
-	while (!gump->is_done() && !escaped);
-	mouse->hide();
-					// Restore background.
-	gwin->get_win()->put(back, box.x, box.y);
-	delete back;
-	mouse->set_shape(saveshape);
-					// Leave mouse off.
-	gwin->show(1);
-	return (!escaped);
-	}
-
-/*
- *	Prompt for a numeric value using a slider.
- *
- *	Output:	Value, or 0 if user hit ESC.
- */
-
-int Prompt_for_number
-	(
-	int minval, int maxval,		// Range.
-	int step,
-	int defval			// Default to start with.
-	)
-	{
-	Slider_gump_object *slider = new Slider_gump_object(minval, maxval,
-							step, defval);
-	int ok = Modal_gump(slider, Mouse::hand);
-	int ret = !ok ? 0 : slider->get_val();
-	delete slider;
-	return (ret);
-	}
-
-/*
  *	look for a key to unlock a door or chest.
  */
 
@@ -1336,7 +1175,7 @@ static void Try_key
 	if (!Get_click(x, y, Mouse::greenselect))
 		return;
 					// Look for obj. in open gump.
-	Gump_object *gump = gwin->find_gump(x, y);
+	Gump *gump = gwin->find_gump(x, y);
 	Game_object *obj;
 	if (gump)
 		obj = gump->find_object(x, y);
@@ -1491,7 +1330,8 @@ void target_mode (void)
 		mouse->set_shape(Mouse::hand);
 }
 
-void gump_next_inventory (void) {
+void gump_next_inventory (void)
+{
 	static int inventory_page = -1;
 
 	if (gwin->get_mode() != Game_window::gump)
@@ -1507,7 +1347,8 @@ void gump_next_inventory (void) {
 		mouse->set_shape(Mouse::hand);
 }
 
-void gump_next_stats (void) {
+void gump_next_stats (void)
+{
 	static int stats_page = -1;
 
 	if (gwin->get_mode() != Game_window::gump)
@@ -1523,13 +1364,15 @@ void gump_next_stats (void) {
 		mouse->set_shape(Mouse::hand);
 }
 
-void gump_file (void) {
-	File_gump_object *fileio = new File_gump_object();
-	Modal_gump(fileio, Mouse::hand);
+void gump_file (void)
+{
+	File_gump *fileio = new File_gump();
+	Do_Modal_gump(fileio, Mouse::hand);
 	delete fileio;
 }
 
-void show_about (void) {
+void show_about (void)
+{
 	Scroll_gump *scroll;
 	scroll = new Scroll_gump();
 
@@ -1548,7 +1391,8 @@ void show_about (void) {
 	delete scroll;
 }
 
-void show_help (void) {
+void show_help (void)
+{
 	Scroll_gump *scroll;
 	scroll = new Scroll_gump();
 

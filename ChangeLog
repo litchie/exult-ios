@@ -1,3 +1,10 @@
+2000-11-29  Max Horn  <max@quendi.de>
+	* gumps/*: split up gumps.cc/h and spells.cc/h into separate files
+	* autoarray.h: std:: changes
+	* game.h: made sure this file can be included before gamewin.h (previously, you would get errors)
+	* exult.cc: moved some gump-related stuff to gumps/gump_utils.cc/h
+	* various: adapted to gumps changes
+
 2000-11-28  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode/*: split up usecode.cc/h into separate files
 	* configure.in, Makefile.am: changed to reflect this
