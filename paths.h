@@ -52,6 +52,21 @@ public:
 	};
 
 /*
+ *	Same as Actor_pathfinder_client, but allows success at given
+ *	distance.
+ */
+class Actor_pathfinder_dist_client : public Actor_pathfinder_client
+	{
+	int dist;			// Distance for success.
+public:
+	Actor_pathfinder_dist_client(int d = 0, int mf = 1 << 5) 
+		: Actor_pathfinder_client(mf), dist(d)
+		{  }
+					// Is tile at the goal?
+	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
+	};
+
+/*
  *	This client succeeds when the path makes it to just one X/Y coord.
  *	It assumes that a -1 was placed in the coord. that we should ignore.
  */
