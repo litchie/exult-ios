@@ -26,6 +26,49 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define OBJSERIAL_H	1
 
 #include <string>
+#include "utils.h"
+
+class Serial_out
+	{
+	unsigned char *& buf;
+public:
+	Serial_out(unsigned char *& b) : buf(b)
+		{  }
+	Serial_out& operator<<(int v)
+		{ Write4(buf, v); return *this; }
+	Serial_out& operator<<(unsigned long v)
+		{ Write4(buf, v); return *this; }
+	Serial_out& operator<<(short v)
+		{ Write2(buf, v); return *this; }
+	Serial_out& operator<<(bool v)
+		{ *buf++ = (v ? 1 : 0); return *this; }
+	Serial_out& operator<<(unsigned char c)
+		{ *buf++ = c; return *this; }
+	Serial_out& operator<<(std::string& s);
+	};
+
+/*
+ *	Decode.
+ */
+class Serial_in
+	{
+	unsigned char *& buf;
+public:
+	Serial_in(unsigned char *& b) : buf(b)
+		{  }
+	Serial_in& operator<<(int& v)
+		{ v = Read4(buf); return *this; }
+	Serial_in& operator<<(unsigned long& v)
+		{ v = Read4(buf); return *this; }
+	Serial_in& operator<<(short& v)
+		{ v = Read2(buf); return *this; }
+	Serial_in& operator<<(bool &v)
+		{ v = *buf++ ? true : false; return *this; }
+	Serial_in& operator<<(unsigned char &c)
+		{ c = *buf++; return *this; }
+	Serial_in& operator<<(std::string& s);
+	};
+
 
 extern int Object_out
 	(
