@@ -68,8 +68,8 @@ Game_window::Game_window
 	(
 	int width, int height, int scale		// Window dimensions.
 	) : 
-	    usecode(new Usecode_machine(this)),mode(splash), combat(0),
-            tqueue(new Time_queue()), clock(tqueue), win(0),
+	    win(0), usecode(new Usecode_machine(this)),mode(splash), combat(0),
+            tqueue(new Time_queue()), clock(tqueue),
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0), num_faces(0), last_face_shown(-1),
 	    conv_choices(0), render_seq(0), painted(0), focus(1), shapes(),
@@ -1586,7 +1586,11 @@ void Game_window::start_actor
 		main_actor->walk_to_tile(tx, ty, lift, speed, 0);
 		main_actor->get_followers();
 		*/
-
+					// Set schedule.
+		int sched = main_actor->get_schedule_type();
+		if (sched != Schedule::follow_avatar &&
+						sched != Schedule::combat)
+			main_actor->set_schedule_type(Schedule::follow_avatar);
 		// Going to use the alternative function for this at the moment
 		start_actor_alt (winx, winy, speed);
 		}

@@ -247,7 +247,8 @@ public:
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
 					// Set new schedule.
-	virtual void set_schedule_type(int new_schedule_type);
+	virtual void set_schedule_type(int new_schedule_type, 
+						Schedule *newsched = 0);
 	virtual int get_schedule_type() const
 		{ return schedule_type; }
 					// Render.

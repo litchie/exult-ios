@@ -277,13 +277,13 @@ static Shape_file *load_extra_font(const char *archive, int index, int skip)
 	char	*buffer;
 	size_t	len;
 	if (!s_in.retrieve (&buffer, len))
-		return false;
+		return 0;
 		
 	FILE	*tmpfile = fopen ("endfont.tmp", "wb");
 	
 	if(!tmpfile) {
 		delete [] buffer;
-		return false;
+		return 0;
 	}
 	
 	fwrite (buffer+skip, len-skip, 1, tmpfile);

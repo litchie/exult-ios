@@ -327,7 +327,7 @@ void Sit_schedule::now_what
 	}
 
 /*
- *	Set up action.  Used in usecode too.
+ *	Set up action.
  */
 
 void Sit_schedule::set_action
@@ -356,26 +356,6 @@ void Sit_schedule::set_action
 	Actor_action *act = new Frames_actor_action(frames, sizeof(frames));
 					// Walk there, then sit.
 	set_action_sequence(actor, chairloc, act);
-#if 0
-	Tile_coord actloc = actor->get_abs_tile_coord();
-					// Put NPC in front of chair.
-					// Already there?
-	if (actloc.distance(chairloc) <= 1)
-		actor->move(chairloc.tx, chairloc.ty, chairloc.tz);
-	else
-		{			// Walk to chair.
-		Actor_action *w = new Path_walking_actor_action(new Astar());
-		Actor_action *w2 = w->walk_to_tile(actloc, chairloc);
-		if (w2 != w)
-			delete w;
-		if (!w2)		// Failed?
-			actor->move(chairloc.tx, chairloc.ty, chairloc.tz);
-		else			// Walk there, then sit.
-			act = new Sequence_actor_action(w2, act);
-		}
-	actor->set_action(act);
-	actor->start();			// Get into time queue.
-#endif
 	}
 
 /*
