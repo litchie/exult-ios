@@ -207,6 +207,10 @@ bool	Configuration::read_config_file(const char *n)
         // For now, just read file from current directory
 	filename=n;
 #endif
+#ifdef BEOS
+	// get home dir or something... (find out how first)
+        filename=n;
+#endif
 	FILE	*fp=fopen(filename.c_str(),"r");
 	if(!fp)
 		return false;
