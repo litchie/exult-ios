@@ -1,3 +1,7 @@
+2002-02-05  Max Horn  <max@quendi.de>
+
+	* server/servemsg.cc: changed to fix building over here
+
 2002-02-03  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/shapelst.cc: Optional 'Frames' view shows all the frames
