@@ -1,3 +1,8 @@
+2001-10-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* drag.cc: Fixed another world-wrapping crash.
+	* ucsched.cc:  Only activate 3 kinds of eggs.
+
 2001-10-02  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/objs.cc (public): Handle more SI books.

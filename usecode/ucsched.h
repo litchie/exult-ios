@@ -62,8 +62,7 @@ public:
 	void add(int *vals, int cnt);
 	Usecode_script& operator<<(int v)
 		{ add(v); return *this; }
-	inline void activate_egg(Usecode_internal *usecode, 
-				 Game_object *e, int type);
+	inline void activate_egg(Usecode_internal *usecode,  Game_object *e);
 
 	static int get_count()
 		{ return count; }
@@ -71,10 +70,6 @@ public:
 	static Usecode_script *find(Game_object *srch, 
 					Usecode_script *last_found = 0);
 	static void clear();		// Delete all.
-#if 0
-					// Activate itemref eggs.
-	void activate_eggs(Usecode_internal *usecode);
-#endif
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Move object in given direction.
 	void step(Usecode_internal *usecode, int dir);
