@@ -69,6 +69,19 @@ public:
 	};
 
 /*
+ *	Animate by going through frames, but only do the lower frames once.
+ */
+class Field_frame_animator : public Animator
+	{
+	unsigned char frames;		// # of frames.
+	unsigned char recycle;		// # of frame to recycle at.
+public:
+	Field_frame_animator(Game_object *o, int rcy);
+					// For Time_sensitive:
+	virtual void handle_event(unsigned long time, long udata);
+	};
+
+/*
  *	Animate by wiggling.
  */
 class Wiggle_animator : public Animator

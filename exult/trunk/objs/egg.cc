@@ -704,7 +704,17 @@ Animated_egg_object::Animated_egg_object
 	unsigned char ty
 	) : Egg_object(shapenum, framenum, tilex, tiley, lft, ty)
 	{
-	animator = new Frame_animator(this, 1); 
+	int recycle = 0;		// Frame to begin new cycles after 1st.
+	switch (type)
+		{
+	case poison_field:
+		recycle = 6; break;
+	case sleep_field:
+		recycle = 1; break;
+	case fire_field:
+		recycle = 8; break;
+		}
+	animator = new Field_frame_animator(this, recycle); 
 	}
 
 /*
