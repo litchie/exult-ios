@@ -45,6 +45,7 @@ class ShapeID
 	{
 	short shapenum;			// Shape #.
 	unsigned char framenum;		// Frame # within shape.
+	unsigned char has_trans;
 	ShapeFile shapefile;
 	Shape_frame *shape;
 
@@ -53,11 +54,12 @@ class ShapeID
 public:
 					// Create from map data.
 	ShapeID(unsigned char l, unsigned char h) 
-		: shapenum(l + 256*(h&0x3)), framenum(h >> 2),
+		: shapenum(l + 256*(h&0x3)), framenum(h >> 2), has_trans(false),
 			shapefile(SF_SHAPES_VGA), shape(0)
 		{  }
 					// Read from buffer & incr. ptr.
-	ShapeID(unsigned char *& data) : shapefile(SF_SHAPES_VGA), shape(0)
+	ShapeID(unsigned char *& data)
+		: has_trans(false), shapefile(SF_SHAPES_VGA), shape(0)
 		{
 		unsigned char l = *data++;
 		unsigned char h = *data++;
@@ -65,7 +67,7 @@ public:
 		framenum = h >> 2;
 		}
 					// Create "end-of-list"/invalid entry.
-	ShapeID() : shapenum(-1), shapefile(SF_SHAPES_VGA), shape(0)
+	ShapeID() : shapenum(-1), has_trans(false), shapefile(SF_SHAPES_VGA), shape(0)
 		{  }
 
 					// End-of-list or invalid?
@@ -82,6 +84,8 @@ public:
 		{ return shapefile; }
 	inline Shape_frame *get_shape()
 		{ return (shape!=0)?shape:cache_shape(); }
+	inline bool is_translucent()
+		{ if (shape==0) cache_shape(); return has_trans!=0; }
 					// Set to given shape.
 	void set_shape(int shnum, int frnum)
 		{
