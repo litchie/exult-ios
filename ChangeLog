@@ -1,4 +1,7 @@
-2001-07-21 Ryan Nunn <triforce@merlin.net.au>
+2001-07-30 Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* various: made it compile on Linux again
+	
+2001-07-30 Ryan Nunn <triforce@merlin.net.au>
 
 	*.* :
 

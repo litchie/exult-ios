@@ -35,7 +35,7 @@
 #include "mouse.h"
 #include "palette.h"
 #include "keys.h"
-#include "data/exult_flx.h"
+#include "exult_flx.h"
 
 using std::cout;
 using std::endl;

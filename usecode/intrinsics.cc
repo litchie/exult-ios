@@ -42,7 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actions.h"
 #include "keyring.h"
 #include "cheat.h"
-#include "gump_manager.h"
+#include "Gump_manager.h"
 
 using std::cerr;
 using std::cout;
