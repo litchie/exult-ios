@@ -45,6 +45,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 #include "files/U7file.h"
 #include "flic/playfli.h"
+#include "Configuration.h"
 					// THE game window:
 Game_window *Game_window::game_window = 0;
 
@@ -1058,8 +1059,12 @@ void Game_window::paint
 	
 	if (mode == splash)
 		{
+		extern Configuration * config;
+		string	skip_splash;
+		config->value("config/gameplay/skip_splash", skip_splash, "no");
+		if(skip_splash == "no")
 			paint_splash();
-			return;
+		return;
 		}
 	int light_sources = 0;		// Count light sources found.
 	int scrolltx = get_scrolltx(), scrollty = get_scrollty();

@@ -504,17 +504,27 @@ static void Handle_event
 			int dist = dy*dy + dx*dx;
 			if (dist < 48*48)
 				{
-				mouse->set_short_arrow(dir);
+				if(gwin->in_combat())
+					mouse->set_short_combat_arrow(dir);
+				else
+					mouse->set_short_arrow(dir);
 				avatar_speed = slow_speed;
 				}
 			else if (dist < 180*180)
 				{
-				mouse->set_medium_arrow(dir);
+				if(gwin->in_combat())
+					mouse->set_medium_combat_arrow(dir);
+				else
+					mouse->set_medium_arrow(dir);
 				avatar_speed = medium_speed;
 				}
 			else
 				{
-				mouse->set_long_arrow(dir);
+				// No long arrow in combat: use medium
+				if(gwin->in_combat())
+					mouse->set_medium_combat_arrow(dir);
+				else
+					mouse->set_long_arrow(dir);
 				avatar_speed = fast_speed;
 				}
 			}

@@ -31,6 +31,9 @@ short Mouse::short_arrows[8] = {8, 9, 10, 11, 12, 13, 14, 15};
 short Mouse::med_arrows[8] = {16, 17, 18, 19, 20, 21, 22, 23};
 short Mouse::long_arrows[8] = {24, 25, 26, 27, 28, 29, 30, 31};
 
+short Mouse::short_combat_arrows[8] = {32, 33, 34, 35, 36, 37, 38, 39};
+short Mouse::med_combat_arrows[8] = {40, 41, 42, 43, 44, 45, 46, 47};
+
 /*
  *	Create.
  */
