@@ -1,3 +1,8 @@
+2001-03-11  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* data/cleaver.shp: more art from Adam Delman.
+	* data/flx.in, Paperdoll_gump_info.cc, data/Makefile.am: added cleaver
+	* data/gorget.shp, data/magicgorget.shp: updated
+
 2001-03-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Digital sound effects (from .wav's in a Flex file).
