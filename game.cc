@@ -38,6 +38,7 @@
 #include "game.h"
 #include "bggame.h"
 #include "sigame.h"
+#include "devgame.h"
 #include "gamewin.h"
 #include "keys.h"
 #include "mouse.h"
@@ -53,6 +54,7 @@ using std::string;
 using std::snprintf;
 
 bool Game::new_game_flag = false;
+bool Game::editing_flag = false;
 Game *game = 0;
 Exult_Game Game::game_type = BLACK_GATE;
 
@@ -153,7 +155,9 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 	add_system_path("<STATIC>", static_dir.c_str());
 	add_system_path("<GAMEDAT>", gamedat_dir.c_str());
 	add_system_path("<SAVEGAME>", data_directory.c_str());
-
+					// See if map-editing.
+	d = "config/disk/game/"+gametitle+"/editing";
+	config->value(d.c_str(), editing_flag, false);
 					// A patch directory is optional.
 	d = "config/disk/game/"+gametitle+"/patch";
 	string patch_directory;
@@ -163,13 +167,17 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 
 	// Discover the game we are running (BG, SI, ...)
 	// We do this, because we don't really trust config :-)
-	char *static_identity = get_game_identity(INITGAME);
+	if (game_type != EXULT_DEVEL_GAME) {
+		char *static_identity = get_game_identity(INITGAME);
 
-	if((!strcmp(static_identity,"ULTIMA7"))||(!strcmp(static_identity,"FORGE")))
-                game_type = BLACK_GATE;
-        else if((!strcmp(static_identity,"SERPENT ISLE"))||(!strcmp(static_identity,"SILVER SEED")))
-                game_type = SERPENT_ISLE;
-	
+		if((!strcmp(static_identity,"ULTIMA7"))||
+		   (!strcmp(static_identity,"FORGE")))
+                	game_type = BLACK_GATE;
+        	else if((!strcmp(static_identity,"SERPENT ISLE"))||
+			(!strcmp(static_identity,"SILVER SEED")))
+	                game_type = SERPENT_ISLE;
+		delete[] static_identity;
+	}
 	switch(game_type) {
 	case BLACK_GATE:
 		cout << "Starting a BLACK GATE game" << endl;
@@ -181,14 +189,12 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		break;
 	case EXULT_DEVEL_GAME:
 		cout << "Starting '" << gametitle << "' game" << endl;
-//		game = new DEV_Game();	// Got to write this.
-		game = 0;			// ++++++++FOR NOW
+		game = new DEV_Game();
 		break;
 	default:
 		game = 0;
 	}
 
-	delete[] static_identity;
 	return game;
 }
 

@@ -2831,7 +2831,7 @@ void Game_window::setup_load_palette()
         plasma_start_color = BG_PLASMA_START_COLOR;
         plasma_cycle_range = BG_PLASMA_CYCLE_RANGE;
     }
-	else if (Game::get_game_type()==SERPENT_ISLE)
+	else // Default:  if (Game::get_game_type()==SERPENT_ISLE)
     {
         plasma_start_color = SI_PLASMA_START_COLOR;
         plasma_cycle_range = SI_PLASMA_CYCLE_RANGE;
