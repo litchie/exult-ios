@@ -28,8 +28,6 @@ class Spellbook_object;
  */
 class Spelltype_gump : public Gump
 	{
-protected:
-	void perform_spell(int spell);	// Close gump/perform spell.
 public:
 	Spelltype_gump(int shnum) : Gump(0, shnum) {  }
 	virtual ~Spelltype_gump() {  }
@@ -44,12 +42,9 @@ public:
  */
 class Spellbook_gump : public Spelltype_gump
 	{
-					// Reagents needed for each spell:
-	static unsigned short bg_reagents[9*8], si_reagents[9*8];
-	unsigned short *reagents;	// ->appropriate table.
+	int page;			// Starting with 0 (= circle #).
 	short avail[9*8];		// For each spell, # which the
 					//   available reagents make possible.
-	int page;			// Starting with 0 (= circle #).
 	Spellbook_object *book;		// Book this shows.
 	Game_object *book_owner;	// Top-owner of book.
 					// Page turners:
