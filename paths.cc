@@ -286,6 +286,8 @@ int Offscreen_pathfinder_client::get_step_cost
 	)
 	{
 	int cost = Actor_pathfinder_client::get_step_cost(from, to);
+	if (cost == -1)
+		return cost;
 	if (best.tx != -1)		// Penalize for moving away from best.
 		{
 		if ((to.tx - from.tx)*(best.tx - from.tx) < 0)
