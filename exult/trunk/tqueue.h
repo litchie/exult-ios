@@ -64,34 +64,6 @@ class Time_queue
 
 	// Activate head + any others due.
 	void activate0(unsigned long curtime);
-#if 0
-	void add_freed(Queue_entry *ent)
-		{
-		return;
-		ent->next = free_entries;
-		free_entries = ent;
-		}		
-	void remove_head()		// Remove head of chain.
-		{
-		Queue_entry *ent = head;
-		if (head == head->next)
-			head = 0;
-		else
-			{
-			head->prev->next = head->next;
-			head->next->prev = head->prev;
-			head = head->next;
-			}
-		add_freed(ent);		// Add to free list.
-		}
-					// Remove non-head.
-	void remove_non_head(Queue_entry *ent)
-		{
-		ent->prev->next = ent->next;
-		ent->next->prev = ent->prev;
-		add_freed(ent);
-		}
-#endif
 public:
 	friend class Time_queue_iterator;
 	// Time_queue() : head(0), free_entries(0)

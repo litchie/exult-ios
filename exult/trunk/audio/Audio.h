@@ -88,9 +88,10 @@ public:
   MyMidiPlayer *get_midi() {return midi;}
 #endif
 
+	SDL_AudioSpec actual;
 private:
 	Uint8 * convert_VOC(Uint8 *,unsigned int &);
-	SDL_AudioSpec wanted,actual;
+	SDL_AudioSpec wanted;
 	MyMidiPlayer	*midi;
 
 	void build_speech_vector(void);
