@@ -1,3 +1,7 @@
+2003-03-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* imagewin/scale.cc,etc.: Added Andrea Mazzoleni "Scale2X" scaler.
+
 2003-02-28  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamerend.cc (using): Draw modal gumps after text.

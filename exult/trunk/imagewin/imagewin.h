@@ -60,10 +60,11 @@ public:
 		SaI = 4,
 		SuperEagle = 5,
 		Super2xSaI = 6,
-		OpenGL = 7,
+		Scale2x = 7,
+		OpenGL = 8,
 
 		NoScaler = -1,
-		NumScalers = 8
+		NumScalers = 9
 	};
 #else
 	enum ScalerType {
@@ -74,10 +75,11 @@ public:
 		SaI = 4,
 		SuperEagle = 5,
 		Super2xSaI = 6,
-		OpenGL = 7,
+		Scale2x = 7,
+		OpenGL = 8,
 
 		NoScaler = -1,
-		NumScalers = 7 // no OpenGL. (But leave it in the enum.)
+		NumScalers = 8 // no OpenGL. (But leave it in the enum.)
 };
 #endif
 
@@ -119,6 +121,7 @@ protected:
 	void show_scaled8to32_SuperEagle(int x, int y, int w, int h);	
 	void show_scaled_point(int x, int y, int w, int h);
 	void show_scaled_interlace(int x, int y, int w, int h);
+	void show_scale2x_noblur(int x, int y, int w, int h);
 	void show_scaled8to16_BilinearPlus(int x, int y, int w, int h);
 	void show_scaled8to555_BilinearPlus(int x, int y, int w, int h);
 	void show_scaled8to565_BilinearPlus(int x, int y, int w, int h);

@@ -579,6 +579,8 @@ The scalers also work with higher resolutions than 320x200. To change the scalin
 * Bilinear bilinear interpolation to smooth the result. Slower, but looks better. Only 2x.
 * Point simple but very fast scaler. Only duplicates pixels, no fancy interpolation. Can be used for arbitrary integer scales (2x, 3x, 4x...).
 * Interlaced identical to point except that it skips every other line to be even faster
+* Scale2x by Andrea Mazzoleni.  This is a non-blurring scaler that looks good without soaking up a lot of CPU sycles.
+
 
 The scalers by Derek Liauw are slower but look much better. Try out yourself which one you like most.
 More information on the excellent scaling engines by Derek Liauw is available at http://elektron.its.tudelft.nl/~dalikifa/.
