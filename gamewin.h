@@ -193,17 +193,17 @@ public:
 		
 	void set_window_size(int w, int h, int s, int sclr);
 	void abort(const char *msg, ...);	// Fatal error.
-	bool get_mouse3rd()
+	bool get_mouse3rd() const
 		{ return mouse3rd; }
 	void set_mouse3rd(bool m)
 		{ mouse3rd = m; }
-	bool get_fastmouse()
+	bool get_fastmouse() const
 		{ return get_win()->is_fullscreen() ? fastmouse : false; }
 	void set_fastmouse(bool f)
 		{ fastmouse = f; }
-	int get_width()
+	int get_width() const
 		{ return win->get_width(); }
-	int get_height()
+	int get_height() const
 		{ return win->get_height(); }
 	inline int get_scrolltx() const		// Get window offsets in tiles.
 		{ return scrolltx; }
