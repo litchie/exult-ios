@@ -342,9 +342,13 @@ void Usecode_internal::say_string
 	char *str = String;
 	while (*str)			// Look for stopping points ("~~").
 		{
-		char *eol = str;
-		while ((eol = strchr(str, '~')) != 0)
-			break;
+		if (*str == '*')	// Just gets an extra click.
+			{
+			click_to_continue();
+			str++;
+			continue;
+			}
+		char *eol = strchr(str, '~');
 		if (!eol)		// Not found?
 			{
 			conv->show_npc_message(str);

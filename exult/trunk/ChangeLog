@@ -1,3 +1,12 @@
+2001-12-04  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/intrinsics.cc: Force created NPC's to start with neutral
+	alignment.
+	* usecode/ucinternal.cc (Usecode_function): Handle '*' in
+	conversations to fix blank lines in 'Cosmo'.
+	* effects.cc (Text_effect): Replace '@' with '"' instead of
+	removing it.
+
 2001-12-05  Patrick Burke  <takhisisii@yahoo.com.au>
         * usecode/ucxt : Removed a bug, added support for 'callis' and 'calli'
 

@@ -615,6 +615,11 @@ void Text_effect::init
 	add_dirty();			// Force first paint.
 					// Start immediately.
 	gwin->get_tqueue()->add(Game::get_ticks(), this, 0L);
+	if (msg[0] == '@')
+		msg[0] = '"';
+	int len = msg.size();
+	if (msg[len - 1] == '@')
+		msg[len - 1] = '"';
 	}
 
 /*
@@ -684,11 +689,7 @@ void Text_effect::paint
 	)
 	{
 	const char *ptr = msg.c_str();
-	if (*ptr == '@')
-		ptr++;
 	int len = strlen(ptr);
-	if (ptr[len - 1] == '@')
-		len--;
 	gwin->paint_text(0, ptr, len, 
 		(pos.tx - gwin->get_scrolltx())*c_tilesize,
 				(pos.ty - gwin->get_scrollty())*c_tilesize);
