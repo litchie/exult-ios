@@ -811,6 +811,40 @@ void Loiter_schedule::now_what
 	}
 
 /*
+ *	Open door that's blocking the NPC, after checking that it's closed.
+ */
+
+void Walk_to_schedule::open_door
+	(
+	Game_object *door
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(door);
+					// Get door's footprint.
+	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
+					// Get its location.
+	Tile_coord doortile = door->get_abs_tile_coord();
+	Tile_coord before, after;	// Want tiles to both sides.
+	if (xtiles > ytiles)		// Horizontal footprint?
+		{
+		before = doortile + Tile_coord(-xtiles, 0, 0);
+		after = doortile + Tile_coord(1, 0, 0);
+		}
+	else				// Vertical footprint.
+		{
+		before = doortile + Tile_coord(0, -ytiles, 0);
+		after = doortile + Tile_coord(0, 1, 0);
+		}
+	if (!Chunk_object_list::is_blocked(before) ||
+	    !Chunk_object_list::is_blocked(after))
+		return;			// Looks like it's not closed.
+					// ++++++Move away from door++++
+					// Open it.
+	door->activate(gwin->get_usecode());
+	}
+
+/*
  *	Create schedule for walking to the next schedule's destination.
  */
 
@@ -837,25 +871,11 @@ void Walk_to_schedule::now_what
 		npc->set_schedule_type(new_schedule);
 		return;
 		}
-	if (legs >= 4 || retries >= 2)	// Trying too hard?
+	if (legs >= 8 || retries >= 2)	// Trying too hard?
 		{			// Going to jump there.
 		npc->move(dest.tx, dest.ty, dest.tz);
 		npc->set_schedule_type(new_schedule);
 		return;
-		}
-					// Looks like we're blocked?
-	if (legs > 0 && !retries &&
-	    npc->get_abs_tile_coord().distance(blocked) == 1)
-		{			// A door?
-		Game_object *bobj = Game_object::find_blocking(blocked);
-		if (bobj && gwin->get_info(bobj).is_door())
-			{		// Try to open it.
-/*	Want to look at where NPC is rel. to door's footprint, and move him
-	out of the way first.
- */
-			cout << "Got to open door.\n";
-			bobj->activate(gwin->get_usecode());
-			}
 		}
 					// Get screen rect. in tiles.
 	Rectangle screen(gwin->get_chunkx()*tiles_per_chunk,
@@ -875,9 +895,18 @@ void Walk_to_schedule::now_what
 			}
 				// ++++Want to just walk off screen?
 		}
+	Game_object *bobj;		// Blocked by a door?
+	if (legs > 0 && !retries &&
+	    npc->get_abs_tile_coord().distance(blocked) == 1 &&
+	    (bobj = Game_object::find_blocking(blocked)) != 0 &&
+	    gwin->get_info(bobj).is_door())
+					// Try to open it.
+			open_door(bobj);
+
 	cout << "Finding path to schedule for " << npc->get_name() << '\n';
-					// Create path to dest.
-	if (!npc->walk_path_to_tile(dest))
+					// Create path to dest., delaying
+					//   0 to 2 seconds.
+	if (!npc->walk_path_to_tile(dest, 200, rand()%2000))
 		{			// Wait 1/3 sec., then try again.
 		cout << "Failed to find path for " << npc->get_name() << '\n';
 		npc->walk_to_tile(dest, 200, 300);

@@ -357,6 +357,8 @@ class Walk_to_schedule : public Schedule
 	int new_schedule;		// Schedule to set when we get there.
 	int retries;			// # failures at finding path.
 	int legs;			// # times restarted walk.
+					// Open door blocking NPC.
+	void open_door(Game_object *door);
 public:
 	Walk_to_schedule(Npc_actor *n, Tile_coord d, int new_sched);
 	virtual void now_what();	// Now what should NPC do?
