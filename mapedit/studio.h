@@ -77,6 +77,7 @@ private:
 						bool sensitive = true);
 	void set_entry(char *name, const char *val, bool sensitive = true);
 	void set_statusbar(char *name, int context, char *msg);
+	void set_visible(char *name, bool vis);
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();
@@ -129,6 +130,8 @@ public:
 	void set_npc_face(int shape, int frame);
 	static void schedule_btn_clicked(GtkWidget *btn, gpointer data);
 					// Shapes:
+	void init_shape_notebook(Shape_info& info, GtkWidget *book, 
+							int shnum, int frnum);
 	void open_shape_window(int shnum, int frnum, Vga_file *ifile,
 					char *shname, Shape_info *info = 0);
 	void close_shape_window();
