@@ -51,6 +51,8 @@ AC_PROG_CC
 AC_REQUIRE([AC_PROG_CPP])
 AC_PROG_CPP
 AC_PROG_INSTALL
+AM_PROG_LEX
+AC_PROG_YACC
 
 echo "Wondering what our windowing system is... "
 
@@ -287,7 +289,8 @@ if test x$CC = xgcc; then
 fi     
       
 
-AC_OUTPUT(Makefile \
+AC_OUTPUT(exult.spec \
+Makefile \
 audio/Makefile \
 audio/midi_drivers/Makefile \
 conf/Makefile \
