@@ -697,9 +697,13 @@ int Barge_object::step
 		{
 		move_type = MOVE_SWIM;
 					// Hawk's boat gets grounded in SI.
-					// +++++Any other boats in SI????
 		if (Game::get_game_type() == SERPENT_ISLE)
-			move_type |= MOVE_WALK;
+			{
+			int sx = cur.tx/c_tiles_per_schunk,
+			    sy = cur.ty/c_tiles_per_schunk;
+			if (sx == 8 && sy == 9)	// Hawk's ship.
+				move_type |= MOVE_WALK;
+			}
 		}
 	else move_type = MOVE_WALK;
        	if (Map_chunk::is_blocked(get_xtiles(), get_ytiles(), 
