@@ -1,5 +1,6 @@
 2004-02-10  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/hawk.shp: hawk paperdoll art
+	* gumps/Paperdoll_gump.cc: fixed dropping items in BG belt slots
 
 2004-02-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/death_scythe.shp: death scythe paperdoll art

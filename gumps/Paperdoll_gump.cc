@@ -157,15 +157,17 @@ int Paperdoll_gump::find_closest
 	{
 		if (Game::get_game_type() == BLACK_GATE && i > Actor::shield_spot)
 			continue;
-		else if (Game::get_game_type() == BLACK_GATE && i == Actor::shield_spot)
-			spot = Actor::belt;
-		else if (Game::get_game_type() == BLACK_GATE && i == Actor::back2h_spot)
-			spot = Actor::belt;
-		else
-			spot = i;
+
+		spot = i;
 
 		int dx = mx - coords_hot[spot*2], dy = my - coords_hot[spot*2+1];
 		long dsquared = dx*dx + dy*dy;
+
+		// map some SI spots to the BG belt
+		if (GAME_BG && i == Actor::shield_spot)
+			spot = Actor::belt;
+		else if (GAME_BG && i == Actor::back2h_spot)
+			spot = Actor::belt;
 
 		// Better than prev and free if required.?
 		if (dsquared < closest_squared && !(only_empty && container->get_readied(spot)))
