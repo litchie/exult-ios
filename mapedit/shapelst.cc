@@ -285,7 +285,8 @@ static int Get_max_height
 	int maxh = 0;
 	for (int i = 0; i < cnt; i++)
 		{
-		int ht = shape->get_frame(i)->get_height();
+		Shape_frame *frame = shape->get_frame(i);
+		int ht =  frame ? frame->get_height() : -1;
 		if (ht > maxh)
 			maxh = ht;
 		}
@@ -363,6 +364,11 @@ void Shape_chooser::render_frames
 			if (x >= winw - 1)	// Past right edge?
 				break;
 			Shape_frame *frame = shape->get_frame(framenum);
+			if (!frame)
+				{
+				sw = sh = 0;
+				continue;
+				}
 			sh = frame->get_height();
 			sw = frame->get_width();
 			if (x < 0 && x + sw < sw/2)
