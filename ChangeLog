@@ -1,5 +1,13 @@
 2000-11-16  Tristan Tarrant <nadir@users.sourceforge.net>
 
+	* files/databuf: Implemented an ExultDataSource which encapsulates
+	all actions needed to create a BufferDataSource from a U7object
+	* mouse.h, mouse.cc: Allow the use of a different shape file
+	* exult.cc, game.cc, game.h, menulist.cc, menulist.h: Make use of 
+	the above to have a mouse pointer in the menus
+
+2000-11-16  Tristan Tarrant <nadir@users.sourceforge.net>
+
 	* menulist.cc: fixed usage of vector
 	* Makefile.win32, Makefile.cygwin:  updated by Travis Howell
 

@@ -33,6 +33,7 @@
 class Game_window;
 class Image_window8;
 class Palette;
+class Mouse;
 
 struct str_int_pair
 {
@@ -47,6 +48,7 @@ private:
 	Palette pal;
 	int topx, topy, centerx, centery, menuy;
 	void calc_win();
+	Mouse *menu_mouse;
 public:
 	ExultMenu(Game_window *gw);
 	~ExultMenu();
@@ -58,6 +60,7 @@ class Game {
 private:
 	hash_map<const char*, int, hashstr, eqstr> shapes;
 	hash_map<const char*, str_int_pair, hashstr, eqstr> resources;
+	Mouse *menu_mouse;
 protected:
 	int topx, topy, centerx, centery;
 	Vga_file menushapes;

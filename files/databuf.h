@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <fstream>
+#include "U7file.h"
 
 typedef char * charptr;
 
@@ -287,7 +288,7 @@ public:
 
 class BufferDataSource: public DataSource
 {
-private:
+protected:
 	unsigned char *buf, *buf_ptr;
 	unsigned int size;
 public:
@@ -396,6 +397,22 @@ public:
 	virtual unsigned int getPos() { return (buf_ptr-buf); };
 	
 	unsigned char *getPtr() { return buf_ptr; };
+};
+
+class ExultDataSource: public BufferDataSource {
+public:
+	ExultDataSource(const char *fname, int index):
+		BufferDataSource(0,0)
+	{
+		U7object obj(fname, index);
+		obj.retrieve((char **)&buf, size);
+		buf_ptr = buf;
+	};
+	
+	~ExultDataSource()
+	{
+		delete[] buf;
+	}
 };
 
 #endif

@@ -17,13 +17,19 @@
 #include "font.h"
 #include "gamewin.h"
 #include "menulist.h"
+#include "mouse.h"
 
 MenuEntry::MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos)
 {
 	frame_on = on;
 	frame_off = off;
+	int max_width = on->get_width()>off->get_width()?on->get_width():off->get_width();
+	int max_height = on->get_height()>off->get_height()?on->get_height():off->get_height();
 	x = xpos;
-	y = ypos;
+	y1 = y = ypos;
+	x1 = xpos-max_width/2;
+	x2 = x1+max_width;
+	y2 = y1+max_height;
 	selected = false;
 }	
 
@@ -39,7 +45,8 @@ void MenuEntry::paint(Game_window *gwin)
 
 bool MenuEntry::handle_event(SDL_Event& event)
 {
-	return(event.key.keysym.sym == SDLK_RETURN);
+	return(event.key.keysym.sym == SDLK_RETURN ||
+	       event.type == SDL_MOUSEBUTTONUP);
 }
 
 
@@ -47,8 +54,13 @@ MenuChoice::MenuChoice(Shape_frame *on, Shape_frame *off, int xpos, int ypos, Fo
 {
 	frame_on = on;
 	frame_off = off;
+	int max_width = on->get_width()>off->get_width()?on->get_width():off->get_width();
+	int max_height = on->get_height()>off->get_height()?on->get_height():off->get_height();
 	x = xpos;
-	y = ypos;
+	x1 = x-max_width;
+	y1 = y = ypos;
+	x2 = x1 + max_width;
+	y2 = y1 + max_height;
 	selected = false;
 	choice = -1;
 	font = fnt;
@@ -61,6 +73,7 @@ void MenuChoice::add_choice(char *s)
 	choices->push_back(std::string(s));
 	int len = font->get_text_width(s);
 	max_choice_width = (len>max_choice_width)?len:max_choice_width;
+	x2 = x+32+max_choice_width;
 }
 
 void MenuChoice::paint(Game_window *gwin)
@@ -79,7 +92,11 @@ void MenuChoice::paint(Game_window *gwin)
 
 bool MenuChoice::handle_event(SDL_Event& event)
 {
-	switch(event.key.keysym.sym) {
+	if(event.type==SDL_MOUSEBUTTONUP) {
+		choice++;
+		if(choice>=choices->size())
+			choice = 0;
+	} else switch(event.key.keysym.sym) {
 	case SDLK_LEFT:
 		choice--;
 		if(choice<0)
@@ -120,24 +137,68 @@ void MenuList::set_selected(int sel)
 	entry->set_selected(true);
 }
 
-int MenuList::handle_events(Game_window *gwin)
+bool MenuList::set_selected(int x, int y)
+{
+	MenuObject *entry;
+	// Skip everything if it's the same
+	if(selected>=0) {
+		entry = (*entries)[selected];
+		if(entry->is_mouse_over(x, y))
+			return false;
+		else
+			entry->set_selected(false);
+		selected = -1;
+	}
+	
+	for(int i=0; i<entries->size(); i++) {
+		entry = (*entries)[i];
+		if(entry->is_mouse_over(x, y)) {
+			entry->set_selected(true);
+			selected = i;
+			return true;
+		}
+	}
+	return true;
+}
+
+int MenuList::handle_events(Game_window *gwin, Mouse *mouse)
 {
 	int count = entries->size();
 	bool exit_loop = false;
 	bool redraw = true;
+	int scale = gwin->get_win()->get_scale() == 2 ? 1 : 0;
 	SDL_Event event;
+	mouse->show();
 	do {
 		if (redraw) {
+			mouse->hide();
 			for(int i=0; i<count; i++) {
 				MenuObject *entry = (*entries)[i];
 				entry->paint(gwin);
 			}
 			gwin->get_win()->show();
+			mouse->show();
+			mouse->blit_dirty();
 			redraw = false;
 		}
 		SDL_WaitEvent(&event);
-		if(event.type==SDL_KEYDOWN) {
+		if(event.type==SDL_MOUSEMOTION) {
+			mouse->hide();
+			mouse->move(event.motion.x >> scale, 
+					event.motion.y >> scale);
+			redraw = set_selected(event.motion.x >> scale, 
+					event.motion.y >> scale); 
+			mouse->show();
+			mouse->blit_dirty();
+		} else if(event.type==SDL_MOUSEBUTTONUP) {
+			if(selected>=0) {
+				MenuObject *entry = (*entries)[selected];
+				exit_loop = entry->handle_event(event);
+				redraw = true;
+			}
+		} else if(event.type==SDL_KEYDOWN) {
 		        redraw = true;
+		        mouse->hide();
 			switch(event.key.keysym.sym) {
 			case SDLK_x:
 				if(event.key.keysym.mod & KMOD_ALT) {
@@ -158,12 +219,17 @@ int MenuList::handle_events(Game_window *gwin)
 				continue;
 			default:
 				{
-					MenuObject *entry = (*entries)[selected];
-					exit_loop = entry->handle_event(event);
+					if(selected>=0) {
+						MenuObject *entry = (*entries)[selected];
+						exit_loop = entry->handle_event(event);
+					}
 				}
 				break;
 			}
+			mouse->show();
+			mouse->blit_dirty();
 		}
 	} while(!exit_loop);
+	mouse->hide();
 	return selected;
 }
