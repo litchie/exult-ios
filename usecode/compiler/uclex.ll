@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucparse.h"
 #include "ucloc.h"
 
+extern std::vector<char *> include_dirs;	// -I directories.
+
 /*
  *	Want a stack of files for implementing '#include'.
  */
@@ -107,6 +109,15 @@ static void Include
 	locstack.push_back(new Uc_location());
 	bufstack.push_back(YY_CURRENT_BUFFER);
 	yyin = fopen(name, "r");
+					// Look in -I list if not found here.
+	for (std::vector<char *>::const_iterator it = include_dirs.begin();
+				!yyin && it != include_dirs.end(); ++it)
+		{
+		string path(*it);
+		path += '/';
+		path += name;
+		yyin = fopen(path.c_str(), "r");
+		}
 	if (!yyin)
 		{
 		sprintf(msg, "Can't open '%s'", name);
