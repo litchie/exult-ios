@@ -420,6 +420,7 @@ Actor::Actor
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
 	) : Container_game_object(), name(nm),usecode(uc), 
+	    usecode_assigned(false),
 	    npc_num(num), face_num(num), party_id(-1), shape_save(-1), 
 	    oppressor(-1), target(0), attack_mode(nearest),
 	    schedule_type(static_cast<int>(Schedule::loiter)), schedule(0),
@@ -1796,6 +1797,8 @@ void Actor::update_from_studio
 		npc->set_shape(shape, frame);
 		npc->add_dirty(gwin);
 		npc->usecode = usecode;
+		npc->usecode_assigned = true;
+		npc->set_npc_name(name.c_str());
 		}
 	npc->face_num = face;
 	npc->set_ident(ident);

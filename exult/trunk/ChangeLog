@@ -1,3 +1,11 @@
+2002-04-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/eggedit.cc: Now sets teleport data1 correctly.
+	* objs/egg.cc (Egg_object): When receiving update from EStudio,
+	set quality.  Also figure frame in all cases.
+	* actors.cc,actorio.cc: Set/read 'assigned_usecode_flag'.
+	* actors.cc: Update NPC name from EStudio.
+
 2002-04-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* shapes/vgafile.cc (Shape_frame): Highlight bottom of object when

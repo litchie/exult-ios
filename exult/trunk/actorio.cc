@@ -74,6 +74,16 @@ void Actor::read
 	set_frame(shnum >> 10);
 	
 	int iflag1 = Read2(nfile);	// Inventory flag.
+					// We're going to use these bits.
+					// iflag1:0 == has_contents.
+					// iflag1:1 == sched. usecode follows,
+					//   possibly empty.
+					// iflag1:2 == usecode # assigned by
+					//   ES, so always use it.
+	bool read_sched_usecode = !fix_first && (iflag1&2);
+	if (!fix_first && (iflag1&4))
+		usecode_assigned = true;
+
 	int schunk = Read1(nfile);	// Superchunk #.
 	Read1(nfile);			// Skip next byte.
 	int usefun = Read2(nfile);	// Get usecode function #.
@@ -85,7 +95,8 @@ void Actor::read
 	if (npc_num >= 0 && npc_num < 256)
 		usecode = 0x400 + npc_num;
 					// Watch for new NPC's added.
-	else if ((!has_usecode && usecode != 0x400 + npc_num) ||
+	else if ((!has_usecode && !usecode_assigned && 
+						usecode != 0x400 + npc_num) ||
 	    usecode == 0xfff)
 		usecode = -1;		// Let's try this.
 					// Guessing:  !!  (Want to get signed.)
@@ -99,6 +110,7 @@ void Actor::read
 //^^^^^^^^^I think this (iflag2), if 0, means this NPC should not be
 //   created.   Need to check with the original BG & SI.
 
+	bool has_contents = fix_first ? (iflag1 && iflag2) : (iflag1&1);
 	// Read first set of flags
 	const int rflags = Read2(nfile);
 	
@@ -366,15 +378,9 @@ void Actor::read
 					// Get abs. chunk. coords. of schunk.
 	int scy = 16*(schunk/12);
 	int scx = 16*(schunk%12);
-					// We're going to use these bits.
-					// iflag1:0 == has_contents.
-					// iflag1:1 == sched. usecode follows,
-					//   possibly empty.
-	bool has_contents = fix_first ? (iflag1 && iflag2) : (iflag1&1);
 	if (has_contents)		// Inventory?  Read.
 		gwin->get_map()->read_ireg_objects(nfile, scx, scy, this);
-	if (!fix_first &&		// Read in scheduled usecode.
-	    (iflag1&2))
+	if (read_sched_usecode)		// Read in scheduled usecode.
 		gwin->get_map()->read_special_ireg(nfile, this);
 	int cx = locx >> 4;		// Get chunk indices within schunk.
 	int cy = locy >> 4;
@@ -446,8 +452,12 @@ void Actor::write
 					// Bit0 = has_contents (our use).
 					// Bit1 = our savegame, with sched.
 					//   usecode script following this.
+					// iflag1:2 == usecode # assigned by
+					//   ES, so always use it.
 	int iflag1 = objects.is_empty() ? 0 : 1;
 	iflag1 |= 2;			// We're always doing write_scheduled()
+	if (usecode_assigned)		// # assigned by EStudio?
+		iflag1 |= 4;		// Set bit 2.
 	Write2(nfile, iflag1);
 			// Superchunk #.
 	nfile.put((get_cy()/16)*12 + get_cx()/16);
