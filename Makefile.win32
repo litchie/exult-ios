@@ -19,7 +19,7 @@ CPPFLAGS=-DVERSION=\"0.94cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/gumps -I$(SRC)/objs \
 	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder \
-	-I$(SRC)/usecode -I$(SRC)/data $(SDL_INCLUDES) 
+	-I$(SRC)/usecode -I$(SRC)/data $(SDL_INCLUDES) -DHAVE_SNPRINTF
 
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
 CXXFLAGS=-O2 -mwindows -Wno-long-long -include mingw_kludges.h
