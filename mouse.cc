@@ -311,11 +311,13 @@ void Mouse::set_speed_cursor()
 	for( Actor_queue::const_iterator it = nearby.begin(); it != nearby.end(); ++it ) {
 		Actor *actor = *it;
 
-		if( actor->get_alignment() >= Npc_actor::hostile && 
+		if( !actor->is_dead() &&
+			actor->get_alignment() >= Npc_actor::hostile && 
 		    actor->get_schedule_type() == Schedule::combat && 
-		    static_cast<Combat_schedule*>(actor->get_schedule())->
-						has_started_battle() &&
-		    !actor->is_dead() ) {
+			dynamic_cast<Combat_schedule*>(actor->get_schedule()) &&
+			dynamic_cast<Combat_schedule*>(actor->get_schedule())->
+						has_started_battle())
+		{
 			/* TODO- I think invisibles still trigger the
 			 * slowdown, verify this. */
 			nearby_hostile = true;

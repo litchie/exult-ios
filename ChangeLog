@@ -1,4 +1,7 @@
 2004-02-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mouse.cc: fixed dead actors causing movement slowdowns and/or crashes
+
+2004-02-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* objs/chunks.cc: fix crash after activating eggs and teleporting
 	* data/bg/pants.shp: use correct pants (by servus)
 
