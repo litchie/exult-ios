@@ -62,15 +62,20 @@ using std::cout;
 using std::endl;
 using std::ifstream;
 using std::ios;
+using std::localtime;
 using std::memset;
 using std::ofstream;
 using std::ostream;
 using std::size_t;
 using std::snprintf;
 using std::strchr;
+using std::strcmp;
 using std::strcpy;
 using std::strlen;
 using std::strncpy;
+using std::time_t;
+using std::tm;
+using std::time_t;
 
 /*
  *	Write out the gamedat directory from a saved game.
@@ -359,7 +364,7 @@ void Game_window::write_saveinfo()
 	details.game_minute = clock.get_minute();
 
 	time_t t = std::time(0);
-	struct tm *timeinfo = std::localtime (&t);	
+	struct tm *timeinfo = localtime (&t);	
 
 	details.real_day = timeinfo->tm_mday;
 	details.real_hour = timeinfo->tm_hour;

@@ -1,3 +1,7 @@
+2001-04-22  Max Horn  <max@quendi.de>
+	* lots of namespace std:: changes, made it compile on MacOS again
+	  (still need to implement U7ListFiles)
+
 2001-04-22  Ryan Nunn <triforce@merlin.net.au>
 	* gumps/Newfile_gump.* : Changed Date format display.
 
