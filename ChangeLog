@@ -1,4 +1,7 @@
 2001-01-11  Max Horn  <max@quendi.de>
+	* contains.cc: added #include "files/utils.h"
+
+2001-01-11  Max Horn  <max@quendi.de>
 	* hash_utils.h: contains hash_set/hash_map stuff
 	* files/utils.h: moved hash related stuff to hash_utils.h
 	* bodies.cc: #include hash_utils.h instead of files/utils.h
