@@ -438,7 +438,7 @@ bool Dragging_info::drop
 	Gump *on_gump = gumpman->find_gump(x, y);
 					// Don't prompt if within same gump.
 	if (quantity > 1 && (!on_gump || on_gump != gump))
-		quantity = gumpman->Prompt_for_number(0, quantity, 
+		quantity = gumpman->prompt_for_number(0, quantity, 
 														   1, quantity);
 	if (quantity <= 0)
 		return false;

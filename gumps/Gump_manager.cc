@@ -22,6 +22,9 @@
 #  include <config.h>
 #endif
 
+#include "SDL_events.h"
+#include "SDL_keyboard.h"
+
 #include "Configuration.h"
 #include "exult.h"
 #include "Gump.h"
@@ -386,7 +389,7 @@ void Gump_manager::paint()
  *
  *	Output:	1 to quit.
  */
-int Gump_manager::Okay_to_quit()
+int Gump_manager::okay_to_quit()
 {
 	if (Yesno_gump::ask("Do you really want to quit?"))
 		quitting_time = QUIT_TIME_YES;
@@ -394,7 +397,7 @@ int Gump_manager::Okay_to_quit()
 }
 
 
-int Gump_manager::Handle_Modal_gump_event
+int Gump_manager::handle_modal_gump_event
 	(
 	Modal_gump *gump,
 	SDL_Event& event
@@ -415,9 +418,10 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 		if (event.button.button == 1)
 			gump->mouse_down(event.button.x / scale_factor, 
 						event.button.y / scale_factor);
-		else if (event.button.button == 2 && gwin->get_mouse3rd())
-			gump->key_down(SDLK_RETURN, event);
-		else if (event.button.button == 3)
+		else if (event.button.button == 2 && gwin->get_mouse3rd()) {
+			gump->key_down(SDLK_RETURN);
+			gump->text_input(SDLK_RETURN, SDLK_RETURN);
+		} else if (event.button.button == 3)
 			rightclick = true;
 		else if (event.button.button == 4) // mousewheel up
 			gump->mousewheel_up();
@@ -442,7 +446,7 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 						event.motion.y / scale_factor);
 		break;
 	case SDL_QUIT:
-		if (Okay_to_quit())
+		if (okay_to_quit())
 			return (0);
 	case SDL_KEYDOWN:
 		{
@@ -456,8 +460,14 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
 			}
 
 			int chr = event.key.keysym.sym;
+#if 0
 			gump->key_down((event.key.keysym.mod & KMOD_SHIFT)
 						? toupper(chr) : chr, event);
+#else
+			gump->key_down(event.key.keysym.sym);
+			gump->text_input(event.key.keysym.sym, event.key.keysym.unicode);
+#endif
+
 			break;
 		}
 	}
@@ -471,12 +481,15 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x / scale_factor) - gump->ge
  *	Output:	0 if user hit ESC.
  */
 
-int Gump_manager::Do_Modal_gump
+int Gump_manager::do_modal_gump
 	(
 	Modal_gump *gump,	// What the user interacts with.
 	Mouse::Mouse_shapes shape	// Mouse shape to use.
 	)
 {
+	SDL_EnableUNICODE(1); // enable unicode translation for text input
+
+
 	//	Game_window *gwin = Game_window::get_instance();
 
 	// maybe make this selective? it's nice for menus, but annoying for sliders
@@ -506,7 +519,7 @@ int Gump_manager::Do_Modal_gump
 		Mouse::mouse_update = false;
 		SDL_Event event;
 		while (!escaped && !gump->is_done() && SDL_PollEvent(&event))
-			escaped = !Handle_Modal_gump_event(gump, event);
+			escaped = !handle_modal_gump_event(gump, event);
 		Mouse::mouse->show();		// Re-display mouse.
 		if (!gwin->show() &&	// Blit to screen if necessary.
 		    Mouse::mouse_update)	// If not, did mouse change?
@@ -521,6 +534,9 @@ int Gump_manager::Do_Modal_gump
 	Mouse::mouse->set_shape(saveshape);
 					// Leave mouse off.
 	gwin->show(true);
+
+	SDL_EnableUNICODE(0);
+
 	return (!escaped);
 }
 
@@ -531,7 +547,7 @@ int Gump_manager::Do_Modal_gump
  *	Output:	Value, or 0 if user hit ESC.
  */
 
-int Gump_manager::Prompt_for_number
+int Gump_manager::prompt_for_number
 	(
 	int minval, int maxval,		// Range.
 	int step,
@@ -540,7 +556,7 @@ int Gump_manager::Prompt_for_number
 {
 	Slider_gump *slider = new Slider_gump(minval, maxval,
 							step, defval);
-	int ok = Do_Modal_gump(slider, Mouse::hand);
+	int ok = do_modal_gump(slider, Mouse::hand);
 	int ret = !ok ? 0 : slider->get_val();
 	delete slider;
 	return (ret);
@@ -551,7 +567,7 @@ int Gump_manager::Prompt_for_number
  *	Show a number.
  */
 
-void Gump_manager::Paint_num
+void Gump_manager::paint_num
 	(
 	int num,
 	int x,				// Coord. of right edge of #.
