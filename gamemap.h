@@ -125,9 +125,9 @@ public:
 		{ return chunk_terrains.size(); }
 					// Set new terrain chunk.
 	void set_chunk_terrain(int cx, int cy, int chunknum);
+	char *get_mapped_name(char *from, char *to);
 					// Get ifixxxx/iregxx name.
-	static char *get_schunk_file_name(char *prefix,
-						int schunk, char *fname);
+	char *get_schunk_file_name(char *prefix, int schunk, char *fname);
 	void write_static();		// Write to 'static' directory.
 					// Write (static) map objects.
 	void write_ifix_objects(int schunk);

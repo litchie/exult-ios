@@ -724,7 +724,7 @@ USECODE_INTRINSIC(play_music)
 					(parms[0].get_int_value()>>8)&0x01);
 					// Show notes.
 		Game_object *obj = get_item(parms[1]);
-		if (obj)
+		if (obj && !obj->is_pos_invalid())
 			gwin->get_effects()->add_effect(
 				new Sprites_effect(24, obj, 0, 0, -2, -2));
 		}
@@ -2379,7 +2379,7 @@ USECODE_INTRINSIC(play_sound_effect2)
 	Game_object *obj = get_item(parms[1]);
 	int volume = SDL_MIX_MAXVOLUME;	// Set volume based on distance.
 	int dir = 0;
-	if (obj)
+	if (obj && !obj->is_pos_invalid())
 		{
 		Tile_coord apos = gwin->get_main_actor()->get_tile();
 		Tile_coord opos = obj->get_tile();

@@ -705,6 +705,7 @@ void Usecode_internal::set_item_frame
 					// (Don't mess up rotated frames.)
 	if ((frame&0xf) < item->get_num_frames())
 		{
+#if 0	/* ++++ 1/31/04 (jsf) This shouldn't be needed anymore. */
 		if (item->get_owner())	// Inside a container?
 			{
 			item->set_frame(frame);
@@ -713,6 +714,7 @@ void Usecode_internal::set_item_frame
 				gwin->set_all_dirty();
 			}
 		else
+#endif
 			item->change_frame(frame);
 		}
 	gwin->set_painted();		// Make sure paint gets done.
@@ -727,6 +729,7 @@ void Usecode_internal::add_dirty
 	Game_object *obj
 	)
 	{
+#if 0	/* ++++ 1/31/04 (jsf) This shouldn't be needed anymore. */
 	if (obj->get_owner())		// Inside a container?
 		{			// Paint gump if open.
 		Gump *gump = gumpman->find_gump(obj);
@@ -734,6 +737,7 @@ void Usecode_internal::add_dirty
 			gwin->add_dirty(gump->get_shape_rect(obj));
 		}
 	else
+#endif
 		gwin->add_dirty(obj);
 	}
 

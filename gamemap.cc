@@ -141,16 +141,18 @@ void Game_map::init
 	(
 	)
 	{
+	char fname[128];
+
 	if (chunks)
 		delete chunks;
 	chunks = new ifstream;
 	int num_chunk_terrains;
 	bool patch_exists = is_system_path_defined("<PATCH>");
-	if (patch_exists && U7exists(PATCH_U7CHUNKS))
-		U7open(*chunks, PATCH_U7CHUNKS);
+	if (patch_exists && U7exists(get_mapped_name(PATCH_U7CHUNKS, fname)))
+		U7open(*chunks, fname);
 	else try
 		{
-		U7open(*chunks, U7CHUNKS);
+		U7open(*chunks, get_mapped_name(U7CHUNKS, fname));
 		}
 	catch(const file_exception & f)
 		{
@@ -158,12 +160,12 @@ void Game_map::init
 		    !patch_exists)	// But only if patch exists.
 			throw f;
 		ofstream ochunks;	// Create one in 'patch'.
-		U7open(ochunks, PATCH_U7CHUNKS);
+		U7open(ochunks, get_mapped_name(PATCH_U7CHUNKS, fname));
 		unsigned char buf[16*16*2];	
 		memset(&buf[0], 0, sizeof(buf));
 		ochunks.write((char *) buf, sizeof(buf));
 		ochunks.close();
-		U7open(*chunks, PATCH_U7CHUNKS);
+		U7open(*chunks, fname);
 		}
 					// Get to end so we can get length.
 	chunks->seekg(0, ios::end);
@@ -175,11 +177,12 @@ void Game_map::init
 	read_all_terrain = map_modified = false;
 	std::ifstream u7map;		// Read in map.
 	bool nomap = false;
-	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_U7MAP))
-		U7open(u7map, PATCH_U7MAP);
+	if (is_system_path_defined("<PATCH>") && 
+			U7exists(get_mapped_name(PATCH_U7MAP, fname)))
+		U7open(u7map, fname);
 	else try 
 		{
-		U7open(u7map, U7MAP);
+		U7open(u7map, get_mapped_name(U7MAP, fname));
 		}
 	catch(const file_exception & f)
 		{
@@ -351,6 +354,36 @@ void Game_map::set_chunk_terrain
 	}
 
 /*
+ *	Store a file name with the map directory before it; ie,
+ *		Store_mapped_name("<GAMEDAT>/ireg, 3, to) will store
+ *			"<GAMEDAT>/map03/ireg".
+ */
+
+char *Game_map::get_mapped_name
+	(
+	char *from, 
+	char *to
+	)
+	{
+	if (num == 0)
+		strcpy(to, from);	// Default map.
+	else
+		{
+		char *sep = strrchr(from, '/');
+		assert(sep != 0);
+		int len = sep - from;
+		memcpy(to, from, len);	// Copy dir.
+		strcpy(to + 1, MULTIMAP_DIR);
+		len = strlen(to);
+		to[len] = '0' + num/16;
+		int lb = num%16;
+		to[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
+		strcat(to + len + 2, sep);
+		}
+	return to;
+	}
+
+/*
  *	Get the name of an ireg or ifix file.
  *
  *	Output:	->fname, where name is stored.
@@ -363,7 +396,7 @@ char *Game_map::get_schunk_file_name
 	char *fname			// Name is stored here.
 	)
 	{
-	strcpy(fname, prefix);
+	get_mapped_name(prefix, fname);
 	int len = strlen(fname);
 	fname[len] = '0' + schunk/16;
 	int lb = schunk%16;
@@ -380,6 +413,7 @@ void Game_map::write_static
 	(
 	)
 	{
+	char fname[128];
 	U7mkdir("<PATCH>", 0755);		// Create dir if not already there. Don't
 									// use PATCHDAT define cause it has a
 									// trailing slash
@@ -399,7 +433,7 @@ void Game_map::write_static
 		get_all_terrain();	// IMPORTANT:  Get all in memory.
 		ofstream ochunks;	// Open file for chunks data.
 					// This truncates the file.
-		U7open(ochunks, PATCH_U7CHUNKS);
+		U7open(ochunks, get_mapped_name(PATCH_U7CHUNKS, fname));
 		for (i = 0; i < cnt; i++)
 			{
 			Chunk_terrain *ter = chunk_terrains[i];
@@ -422,7 +456,7 @@ void Game_map::write_static
 		ochunks.close();
 		}
 	std::ofstream u7map;		// Write out map.
-	U7open(u7map, PATCH_U7MAP);
+	U7open(u7map, get_mapped_name(PATCH_U7MAP, fname));
 	for (schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
 		{
 		int scy = 16*(schunk/12);// Get abs. chunk coords.
