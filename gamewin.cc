@@ -81,9 +81,6 @@ Game_window::Game_window
 		"Can't read shape data (tfa.dat, wgtvol.dat, shpdims.dat).");
 					// Create window.
 	win = new Image_window(width, height); //<- error in timer
-
-					// Get 12-point font.
-	font12 = win->open_font(AVATAR_TTF, 12);
 					// Set title.
 	win->set_title("Exult Ultima7 Engine");
 
@@ -106,7 +103,6 @@ Game_window::~Game_window
 	(
 	)
 	{
-	win->close_font(font12);
 	delete win;
 	delete dragging_save;
 	delete [] conv_choices;
@@ -216,32 +212,6 @@ void Game_window::paint_shape
 	else
 					// Get compressed data.
 		paint_rle_shape(*shape, xoff, yoff);
-	}
-
-/*
- *	Paint text using font from "fonts.vga".
- *
- *	Output:	Width in pixels of what was painted.
- */
-
-int Game_window::paint_text
-	(
-	int xoff, int yoff, 		// Upper-left corner.
-	char *text, 
-	int fontnum			// 0-9.
-	)
-	{
-	int x = xoff;
-	Shape_frame *shape;		// Gets each glyph.
-	while (*text)
-		{
-		shape = fonts.get_shape(fontnum, (int) *text++);
-		if (!shape)
-			continue;
-		paint_rle_shape(*shape, x, yoff + shape->get_yabove());
-		x += shape->get_width();
-		}
-	return (x - xoff);
 	}
 
 /*
@@ -702,20 +672,13 @@ void Game_window::paint
 			for (xoff = startx, cx = start_chunkx; 
 				cx < stop_chunkx; xoff += chunksize, cx++)
 				paint_chunk_objects(lift, cx, cy, xoff, yoff);
-	static Font_face *font = 0;
-	if (!font)
-#ifdef XWIN
-		font = win->open_font(AVATAR_TTF, 24);
-#else
-		font = win->open_font(AVATAR_TTF, 14);
-#endif
-	if (mode == intro && font != 0)
+	if (mode == intro && win->ready())
 		{
 		int x = 15, y = 15;
 		int w = get_width() - x, h = get_height() - y;
 		char buf[512];
-		sprintf(buf, "Welcome to EXULT V 0.%02d,\na free RPG game engine.\n\nCopyright 2000 J. S. Freedman\n              and Dancer Vesperman\n\nGraphics and audio remain\n the property of Origin Systems\n\nText rendered by FreeType", RELNUM);
-		win->draw_text_box(font, buf, 
+		sprintf(buf, "Welcome to EXULT V 0.%02d,\na free RPG game engine.\n\nCopyright 2000 J. S. Freedman\n              and Dancer Vesperman\n\nGraphics and audio remain\n the property of Origin Systems", RELNUM);
+		paint_text_box(7, buf, 
 				x, y, 600 < w ? 600 : w, 400 < h ? 400 : h);
 		}
 					// Draw text.
@@ -743,7 +706,7 @@ void Game_window::paint_text_object
 	int len = strlen(msg);
 	if (msg[len - 1] == '@')
 		len--;
-	win->draw_text(font12, msg, len,
+	paint_text(2, msg, len,
 			(txt->cx - chunkx)*chunksize + txt->sx*tilesize,
 		        (txt->cy - chunky)*chunksize + txt->sy*tilesize);
 	painted = 1;
@@ -1161,8 +1124,8 @@ void Game_window::add_text
 	Text_object *txt = new Text_object(msg,
 		chunkx + x/chunksize, chunky + y/chunksize,
 		(x%chunksize)/tilesize, (y%chunksize)/tilesize,
-				8 + win->get_text_width(font12, msg),
-				8 + win->get_text_height(font12));
+				8 + get_text_width(2, msg),
+				8 + get_text_height(2));
 	paint_text_object(txt);		// Draw it.
 	txt->next = texts;		// Insert into chain.
 	txt->prev = 0;
@@ -1317,7 +1280,7 @@ void Game_window::show_face
 					// Get screen rectangle.
 		Rectangle sbox = get_win_rect();
 					// Get text height.
-		int text_height = win->get_text_height(font12);
+		int text_height = get_text_height(0);
 					// Figure starting y-coord.
 		int starty = prev ? prev->text_rect.y + prev->text_rect.h +
 					2*text_height : 16;
@@ -1383,8 +1346,7 @@ void Game_window::show_npc_message
 	Npc_face_info *info = face_info[last_face_shown];
 	Rectangle& box = info->text_rect;
 	paint(box);			// Clear what was there before.
-	win->draw_text_box(font12, msg, box.x, box.y,
-					box.w, box.h);
+	paint_text_box(0, msg, box.x, box.y, box.w, box.h);
 	info->text_pending = 1;
 	painted = 1;
 	show();
@@ -1418,8 +1380,8 @@ void Game_window::show_avatar_choices
 					// Get screen rectangle.
 	Rectangle sbox = get_win_rect();
 	int x = 0, y = 0;		// Keep track of coords. in box.
-	int height = win->get_text_height(font12);
-	int space_width = win->get_text_width(font12, "   ");
+	int height = get_text_height(0);
+	int space_width = get_text_width(0, "   ");
 					// Get main actor's portrait.
 	Shape_frame *face = faces.get_shape(main_actor->get_face_shapenum());
 
@@ -1442,7 +1404,7 @@ void Game_window::show_avatar_choices
 	for (int i = 0; i < num_choices; i++)
 		{
 		char *text = choices[i];
-		int width = win->get_text_width(font12, text);
+		int width = get_text_width(0, text);
 		if (x > 0 && x + width > tbox.w)
 			{		// Start a new line.
 			x = 0;
@@ -1451,7 +1413,7 @@ void Game_window::show_avatar_choices
 					// Store info.
 		conv_choices[i] = Rectangle(tbox.x + x, tbox.y + y,
 					width, height);
-		win->draw_text(font12, text, tbox.x + x, tbox.y + y);
+		paint_text(0, text, tbox.x + x, tbox.y + y);
 		x += width + space_width;
 		}
 					// Terminate the list.

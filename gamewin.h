@@ -30,7 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Gump_object;
 class Gump_button;
-class Font_face;
 class Slist;
 class Usecode_machine;
 class Actor;
@@ -45,7 +44,6 @@ class Game_window
 	{
 	static Game_window *game_window;// There's just one.
 	Image_window *win;		// Window to display into.
-	Font_face *font12;		// 12-point "avatar.ttf" font.
 public:
 	enum Game_mode {		// Can be in different modes.
 		intro,			// Splash screen.
@@ -260,8 +258,6 @@ public:
 		if (shape)
 			paint_shape(xoff, yoff, shape);
 		}
-					// Paint text using "fonts.vga".
-	int paint_text(int xoff, int yoff, char *text, int fontnum);
 					// Read encoded show into window.
 					// Read encoded show into window.
 	void paint_rle_shape(Shape_frame& shape, int xoff, int yoff);
@@ -354,6 +350,17 @@ public:
 	int start_dragging(int x, int y);
 	void drag(int x, int y);	// During dragging.
 	void drop_dragged(int x, int y, int moved);// Done dragging.
+					// Paint text using "fonts.vga".
+	void paint_text_box(int fontnum, char *text, int x, int y, int w, 
+								int h);
+	int paint_text(int fontnum, char *text, int xoff, int yoff);
+	int paint_text(int fontnum, char *text, int textlen, 
+							int xoff, int yoff);
+					// Get text width.
+	int get_text_width(int fontnum, char *text);
+	int get_text_width(int fontnum, char *text, int textlen);
+					// Get text height.
+	int get_text_height(int fontnum);
 private:
 	void drop(int x, int y);
 	int drop_at_lift(int at_lift);
