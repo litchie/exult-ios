@@ -2297,7 +2297,7 @@ USECODE_INTRINSIC(get_timer)
 {
 	int tnum = parms[0].get_int_value();
 	int ret;
-	if (tnum >= 0 && tnum < sizeof(timers)/sizeof(timers[0]))
+	if (tnum >= 0 && tnum < (int)(sizeof(timers)/sizeof(timers[0])))
 		ret = gwin->get_total_hours() - timers[tnum];
 	else
 		{
@@ -2310,7 +2310,7 @@ USECODE_INTRINSIC(get_timer)
 USECODE_INTRINSIC(set_timer)
 {
 	int tnum = parms[0].get_int_value();
-	if (tnum >= 0 && tnum < sizeof(timers)/sizeof(timers[0]))
+	if (tnum >= 0 && tnum < (int)(sizeof(timers)/sizeof(timers[0])))
 		timers[tnum] = gwin->get_total_hours();
 	else
 		cerr << "Attempt to use invalid timer " << tnum << endl;
@@ -3478,7 +3478,7 @@ int Usecode_machine::write
 	for (size_t i = 0; i < sizeof(party)/sizeof(party[0]); i++)
 		Write2(out, party[i]);
 					// Timers.
-	for (int t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
+	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		Write4(out, timers[t]);
 	out.flush();
 	return out.good();
@@ -3507,7 +3507,7 @@ int Usecode_machine::read
 	link_party();
 	int result = in.good();		// ++++Just added timers.
 					// Timers.
-	for (int t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
+	for (size_t t = 0; t < sizeof(timers)/sizeof(timers[0]); t++)
 		timers[t] = Read4(in);
 	return result;
 	}
