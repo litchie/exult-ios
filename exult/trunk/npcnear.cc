@@ -70,7 +70,7 @@ void Npc_proximity_handler::handle_event
 	)
 	{
 	Npc_actor *npc = (Npc_actor *) udata;
-	int extra_delay = 3000;		// For next time.
+	int extra_delay = 5;		// For next time.
 					// See if still on visible screen.
 	Rectangle tiles = gwin->get_win_tile_rect().enlarge(10);
 	int tx, ty, tz;
@@ -82,13 +82,16 @@ void Npc_proximity_handler::handle_event
 		return;
 		}
 					// Sleep schedule?
-	if (npc->get_schedule_type() == (int) Schedule::sleep &&
+	if (npc->get_schedule() &&
+	    npc->get_schedule_type() == (int) Schedule::sleep &&
 					// But not under a sleep spell?
 	    !npc->get_flag(Obj_flags::asleep) &&
 	    gwin->is_main_actor_inside() &&
 	    npc->distance(gwin->get_main_actor()) < 6 && rand()%3 != 0)
 		{
-		npc->set_schedule_type(Schedule::stand);
+					// Trick:  Stand, but stay in
+					//   sleep_schedule.
+		npc->get_schedule()->ending((int) Schedule::stand);
 		npc->say(first_awakened, last_awakened);
 		}
 					// Hostile monster?  ATTACK!
