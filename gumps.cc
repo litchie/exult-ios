@@ -31,6 +31,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 short Actor_gump_object::diskx = 122, Actor_gump_object::disky = 132;
 short Actor_gump_object::heartx = 122, Actor_gump_object::hearty = 114;
+short Stats_gump_object::textx = 112;
+short Stats_gump_object::texty[10] = {17, 26, 35, 46, 55, 67, 76, 86,
+							95, 104};
 
 /*
  *	Is a given screen point on this button?
@@ -575,4 +578,25 @@ void Stats_gump_object::paint
 	gwin->paint_gump(x, y, get_shapenum(), get_framenum());
 					// Paint red "checkmark".
 	paint_button(gwin, check_button);
+	Actor *act = get_actor();	// Show statistics.
+	char buf[20];
+	const int font = 2;
+  	sprintf(buf, "%d", act->get_property(Actor::strength));
+	gwin->paint_text(x + textx, y + texty[0], buf, font);
+  	sprintf(buf, "%d", act->get_property(Actor::dexterity));
+	gwin->paint_text(x + textx, y + texty[1], buf, font);
+  	sprintf(buf, "%d", act->get_property(Actor::intelligence));
+	gwin->paint_text(x + textx, y + texty[2], buf, font);
+  	sprintf(buf, "%d", act->get_property(Actor::combat));
+	gwin->paint_text(x + textx, y + texty[3], buf, font);
+  	sprintf(buf, "%d", act->get_property(Actor::magic));
+	gwin->paint_text(x + textx, y + texty[4], buf, font);
+  	sprintf(buf, "%d", act->get_property(Actor::health));
+	gwin->paint_text(x + textx, y + texty[5], buf, font);
+  	sprintf(buf, "%d", act->get_property(Actor::mana));
+	gwin->paint_text(x + textx, y + texty[6], buf, font);
+	//++++Experience?
+	//++++Level?
+  	sprintf(buf, "%d", act->get_property(Actor::training));
+	gwin->paint_text(x + textx, y + texty[9], buf, font);
 	}

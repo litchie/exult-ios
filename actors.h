@@ -43,18 +43,6 @@ class Actor : public Sprite
 	int usecode;			// # of usecode function.
 	int npc_num;			// # in Game_window::npcs list, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
-	enum Item_properties {		// Trying to figure them out:
-		strength = 0,		// Or is max_health 0????
-		dexterity = 1,
-		intelligence = 2,
-		health = 3,
-		combat = 4,
-		mana = 5,
-		magic = 6,		// Max. mana.
-		experience = 7,		// Training points.
-		quests = 8,		// ??Always gets passed a constant.??
-		food_level = 9
-		};
 protected:
 	unsigned long flags;		// 32 flags used in 'usecode'.
 	enum Item_flags {		// Bit #'s of flags:
@@ -65,6 +53,18 @@ public:
 	Actor(char *nm, int shapenum, int num = -1, int uc = -1);
 	~Actor()
 		{ delete name; }
+	enum Item_properties {		// Trying to figure out properties.
+		strength = 0,		// Or is max_health 0????
+		dexterity = 1,
+		intelligence = 2,
+		health = 3,
+		combat = 4,
+		mana = 5,
+		magic = 6,		// Max. mana.
+		training = 7,		// Training points.
+		quests = 8,		// ??Always gets passed a constant.??
+		food_level = 9
+		};
 	int get_face_shapenum()		// Get "portrait" shape #.
 		{ return npc_num; }	// It's the NPC's #.
 	int get_usecode()
