@@ -1,4 +1,3 @@
-
 <misc>
 	<size_type>
 		<short> 2 </>
@@ -9,9 +8,12 @@
 		<offset> 2 </>
 		<long> 4 </>
 		<byte> 1 </>
+		<dataoffset32> 4 </>
+		<offset32> 4 </>
 	</>
 	<offset_munge>
 		<offset/>
+		<offset32/>
 	</>
 </>
 
