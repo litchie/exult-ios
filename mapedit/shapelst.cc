@@ -93,6 +93,21 @@ static GtkWidget *Create_browser_popup
 	}
 
 /*
+ *	Callback for when a shape is dropped on our draw area.
+ */
+
+static void Shape_dropped_here
+	(
+	int file,			// U7_SHAPE_SHAPES.
+	int shape,
+	int frame,
+	void *udata
+	)
+	{
+	((Shape_chooser *) udata)->shape_dropped_here(file, shape, frame);
+	}
+					// Schedule names.
+/*
  *	Blit onto screen.
  */
 
@@ -197,9 +212,13 @@ void Shape_chooser::render
 	int curr_y = 0;
 	int row_h = 0;
 	int rows = 0;			// Count rows.
-	for (int shapenum = shapenum0; 
-			shapenum<num_shapes && curr_y + 36 < winh; shapenum++)
+	int total_cnt = get_count();
+	int index;			// This is shapenum if there's no
+					//   filter (group).
+	for (int index = index0; 
+			index < total_cnt && curr_y + 36 < winh; index++)
 		{
+		int shapenum = group ? (*group)[index] : index;
 		int framenum = shapenum == selshape ? selframe : framenum0;
 		Shape_frame *shape = ifile->get_shape(shapenum, framenum);
 		if(shape)
@@ -256,6 +275,8 @@ gint Shape_chooser::configure
 	chooser->Shape_draw::configure(widget);
 	chooser->render();
 	chooser->adjust_scrollbar();	// Figure new scroll amounts.
+					// If shape is dropped here:
+	chooser->enable_drop(Shape_dropped_here, chooser);
 	return (TRUE);
 	}
 
@@ -527,10 +548,11 @@ void Shape_chooser::scroll
 	int newindex			// Abs. index of leftmost to show.
 	)
 	{
-	if (shapenum0 < newindex)	// Going forwards?
-		shapenum0 = newindex < num_shapes ? newindex : num_shapes;
-	else if (shapenum0 > newindex)	// Backwards?
-		shapenum0 = newindex >= 0 ? newindex : 0;
+	int total = get_count();
+	if (index0 < newindex)	// Going forwards?
+		index0 = newindex < total ? newindex : total;
+	else if (index0 > newindex)	// Backwards?
+		index0 = newindex >= 0 ? newindex : 0;
 	render();
 	show();
 	}
@@ -544,6 +566,7 @@ void Shape_chooser::adjust_scrollbar
 	)
 	{	
 	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(shape_scroll));
+	adj->upper = get_count();	// This may change for the group.
 	adj->step_increment = num_per_row ? num_per_row : 1;
 	adj->page_increment = info_cnt;
 	adj->page_size = info_cnt;
@@ -592,6 +615,38 @@ cout << "Frame changed to " << adj->value << '\n';
 	}
 
 /*
+ *	Handle a shape dropped on our draw area.
+ */
+
+void Shape_chooser::shape_dropped_here
+	(
+	int file,			// U7_SHAPE_SHAPES.
+	int shape,
+	int frame
+	)
+	{
+					// Got to be from same file type.
+	if (ifile->get_u7drag_type() == file && group != 0)
+		{			// Add to group.
+		group->add(shape);
+		// adjust_scrollbar();
+		render();
+		show();
+		}
+	}
+
+/*
+ *	Get # shapes we can display.
+ */
+
+int Shape_chooser::get_count
+	(
+	)
+	{
+	return group ? group->size() : num_shapes;
+	}
+
+/*
  *	Search for an entry.
  */
 
@@ -603,13 +658,18 @@ void Shape_chooser::search
 	{
 	if (!names)
 		return;			// In future, maybe find shape #?
+	int total = get_count();
+	if (!total)
+		return;			// Empty.
 					// Start with selection, or top.
-	int start = info[selected >= 0 ? selected : 0].shapenum + dir;
-	int stop = dir == -1 ? -1 : num_shapes;
+	int start = index0 + (selected >= 0 ? selected : 0) + dir;
+//	int start = info[selected >= 0 ? selected : 0].shapenum + dir;
+	int stop = dir == -1 ? -1 : total;
 	int i;
 	for (i = start; i != stop; i += dir)
 		{
-		if (strstr(names[i], srch))
+		int shnum = group ? (*group)[i] : i;
+		if (strstr(names[shnum], srch))
 			break;		// Found it.
 		}
 	if (i == stop)
@@ -741,9 +801,10 @@ Shape_chooser::Shape_chooser
 	(
 	Vga_file *i,			// Where they're kept.
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
-	int w, int h			// Dimensions.
+	int w, int h,			// Dimensions.
+	Shape_group *g
 	) : Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
-		shapes_file(0), group(0), shapenum0(0), framenum0(0),
+		shapes_file(0), group(g), index0(0), framenum0(0),
 		info(0), info_cnt(0), num_per_row(0), 
 		selected(-1), sel_changed(0)
 	{
@@ -799,7 +860,7 @@ Shape_chooser::Shape_chooser
 	gtk_widget_show(draw);
 					// Want a scrollbar for the shapes.
 	GtkObject *shape_adj = gtk_adjustment_new(0, 0, 
-				num_shapes, 1, 
+				get_count(), 1, 
 				4, 1.0);
 	shape_scroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(shape_adj));
 					// Update window when it stops.
