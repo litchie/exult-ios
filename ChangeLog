@@ -1,3 +1,10 @@
+2001-11-24 Max Horn <max@quendi.de>
+	* bggame.cc, combat.cc, gamedat.cc: removed unused declarations
+	* files/utils.c: fixed stat() to simply do a call through (buf may legally be 0)
+	* files/zip.c, files/unzip.c: ANSIfied, removing K&R cruft
+	* mac/mac_autoconfig.h: updated
+	* objs/iregobjs.h, objs/objs.h: removed unused clone() method
+
 2001-11-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Audio.h: the other is_track_playing didn't check if midi==NULL either
 

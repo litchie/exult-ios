@@ -228,7 +228,7 @@ Actor *Combat_schedule::find_foe
 		}
 	case Actor::nearest:
 		{
-		int dist, best_dist = 4*c_tiles_per_chunk;
+		int best_dist = 4*c_tiles_per_chunk;
 		for (Actor_queue::const_iterator it = opponents.begin(); 
 						it != opponents.end(); ++it)
 			{

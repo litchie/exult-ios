@@ -1500,7 +1500,6 @@ bool BG_Game::new_game(Vga_file &shapes)
 	char *shape_buf = faces_u7o.retrieve(shapesize);
 	BufferDataSource faces_ds(shape_buf, shapesize);
 	Shape_file faces_shape(&faces_ds);
-	Shape_frame *sf;
 
 	const int max_name_len = 16;
 	char npc_name[max_name_len+1];
