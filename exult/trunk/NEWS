@@ -9,6 +9,8 @@
 		Exult's data files have a CRC now, so it is easier to 
 		detect a mismatch between them and the main executable
 
+		SI's intro and ending are complete
+
 		Music looping is user-configurable
 
 		Tons of bugfixes (see ChangeLog for details)
