@@ -154,6 +154,9 @@ public:
 					// Import/export from file selector.
 	static void export_frame(char *fname, gpointer user_data);
 	static void import_frame(char *fname, gpointer user_data);
+	void new_frame();		// Add/del.
+	void new_shape();
+	void del_frame();
 					// Give dragged shape.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
 		GtkSelectionData *data, guint info, guint time, gpointer data);
