@@ -23,6 +23,11 @@ using namespace Exult3d;
 #define VERSION       0x0002		// .3ds file version.
 #define EDITKEYFRAME  0xB000		// Hheader for all the key frame info.
 
+//>------ color types
+#define COLOR24	      0x0011
+#define COLORLIN24    0x0012		// Gamma-corrected.
+
+
 //>------ sub defines of OBJECTINFO
 #define MATERIAL	  0xAFFF	// The stored the texture info.
 #define OBJECT		  0x4000	// Faces, vertices, etc...
@@ -272,14 +277,15 @@ static int Read_material_chunk
 		case MATAMBIENT:	//+++++++Unsure.  Fall through.
 		case MATDIFFUSE:	// Color.
 			{
-			assert(len - read >= 3);
+			int cid, clen;	// Color subchunk.
+			read += Get_chunk_header(in, cid, clen);
 			unsigned char c[3];
 			in.read(c, 3);
 			read += 3;
 			mat->set_color(&c[0]);
-			// ++++++There are more bytes.  For now:
-			in.seekg(len - read, ios::cur);	//+++++++
-			read = len;	//++++++skip to end.
+					// Skip others.
+			in.seekg(len - read, ios::cur);
+			read = len;
 			break;
 			}
 		case MATMAP:		// Parent of texture info.
@@ -351,6 +357,8 @@ static int Read_object_chunk
 			read += Read_faces_chunk(in, len, obj);
 			break;
 		case OBJECT_MATERIAL:
+//+++++This should be part of Read_faces_chunk(), and there is a list of faces
+// that the material applies to.
 			read += Read_object_material_chunk(model, 
 								in, len, obj);
 			break;
@@ -471,7 +479,9 @@ static int Read_object_material_chunk
 	int top_read = CHUNK_HEADER_LENGTH;
 	string name;			// Read material name.
 	top_read += Get_string(in, name);
-	obj->set_material(model->find_material(name.c_str()));
+	if (!obj->get_material())	//+++++FOR NOW.  Material really
+//+++++ applies to the list of faces that follow.
+		obj->set_material(model->find_material(name.c_str()));
 					// Skip the rest.
 	in.seekg(top_len - top_read, ios::cur);
 	top_read = top_len;

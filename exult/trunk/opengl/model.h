@@ -132,6 +132,8 @@ public:
 		{ return !name.empty(); }
 	void set_name(const char *nm)
 		{ name = nm; }
+	Material *get_material()
+		{ return material; }
 	void set_material(Material *m)
 		{ material = m; }
 	void compute_normals();		// Create normals after all vertices 
