@@ -249,7 +249,6 @@ void BG_Game::play_intro()
 	backup = backup2 = backup3 = 0;
 	cbackup = cbackup2 = cbackup3 = 0;
 	noise = plasma = 0;
-#if 0
 	// Lord British presents...  (sh. 0x11)
 	pal.load("<STATIC>/intropal.dat",3);
 	gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
@@ -333,7 +332,7 @@ void BG_Game::play_intro()
 
 	// Enter guardian
 	//TODO: reduce sudden facial movements in speech
-#endif
+
 	play_midi(2);
 	// create buffers containing a blue 'plasma' screen and noise
 	noise = win->create_buffer(gwin->get_width(),
