@@ -655,7 +655,7 @@ public:
 	static int is_blocked(Tile_coord& tile, int height = 1);
 					// Check for > 1x1 object.
 	static int is_blocked(int xtiles, int ytiles, int ztiles,
-					Tile_coord from, Tile_coord to);
+				Tile_coord from, Tile_coord to, int& terrain);
 					// Set area within egg's influence.
 	void set_egged(Egg_object *egg, Rectangle& tiles, int add)
 		{ need_cache()->set_egged(egg, tiles, add); }

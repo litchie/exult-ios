@@ -56,7 +56,7 @@ void Titles::play_intro()
 		// Lord British presents...
 		pal.load("static/intropal.dat",3);
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
-		char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
+		const char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
 				"Willem Jan Palenstijn, Tristan Tarrant,", 
 				"Max Horn, Coder Infidel, Ryan Nunn",
 				"Driven by the Exult game engine V" VERSION };
@@ -396,7 +396,7 @@ void Titles::end_game(bool success)
 		audio->play (buffer+8, size-8, false);
 		delete [] buffer;
 
-		char 	*message = "No.  You must not!";
+		const char 	*message = "No.  You must not!";
 		int	height = gwin->get_height() - gwin->get_text_height(ENDGAME_FONT2) * 2;
 		int	width = (gwin->get_width() - gwin->get_text_width(ENDGAME_FONT2,message)) / 2;
 
@@ -531,7 +531,7 @@ void Titles::end_game(bool success)
 		fli3.info (&finfo);
 		
 		int	m;
-		char *txt_screen0[] = {
+		const char *txt_screen0[] = {
 			"Avatar! You think you have won>",
 			"Think again! You are unable to",
 			"leavee britannia, whereas I am free",
@@ -577,7 +577,7 @@ void Titles::end_game(bool success)
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
 
-		char *txt_screen1[] = {
+		const char *txt_screen1[] = {
 			"In the months following the climactic",
 			"battle at The Black Gate, Britannia",
 			"is set upon the long road to recovery",
@@ -622,7 +622,7 @@ void Titles::end_game(bool success)
 		// Paint backgound black
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
-		char *txt_screen2[] = {
+		const char *txt_screen2[] = {
 			"The frustration you feel at having been",
 			"stranded in Britannia is somewhat",
 			"alleviated by the satisfaction that you",
@@ -666,7 +666,7 @@ void Titles::end_game(bool success)
 		// Paint backgound black
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
-		char *txt_screen3[] = {
+		const char *txt_screen3[] = {
 			"And although you are, at the moment,",
 			"helpless to do anything about",
 			"The Guardian's final threat,",
@@ -709,7 +709,7 @@ void Titles::end_game(bool success)
 		// Paint backgound black
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
-		char *txt_screen4[] = {
+		const char *txt_screen4[] = {
 			"That is another story...", 
 			"one that will take you",
 			"to a place called",
