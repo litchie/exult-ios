@@ -265,10 +265,10 @@ static int Check_mask
 	int mask
 	)
 	{
-	if (mask == 4)			// Party members.
-		return (obj->get_party_id() >= 0 || 
-					obj == gwin->get_main_actor());
-	if (mask == 8)			// All NPCs.
+	if (mask == 4 ||		// Seems to also be all NPC's.
+// 1Feb01		return (obj->get_party_id() >= 0 || 
+//					obj == gwin->get_main_actor());
+	    mask == 8)			// All NPCs.
 		{
 		if (obj->is_monster())
 			return 1;
