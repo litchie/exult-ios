@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "shapefile.h"
 #include "shapedraw.h"
+#include "shapevga.h"
 
 using std::cout;
 using std::endl;
@@ -76,6 +77,18 @@ C_EXPORT void on_obj_cancel_clicked
 	}
 
 /*
+ *	Rotate frame (clockwise).
+ */
+C_EXPORT void on_obj_rotate_clicked
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	ExultStudio::get_instance()->rotate_obj();
+	}
+
+/*
  *	Object window's close button.
  */
 C_EXPORT gboolean on_obj_window_delete_event
@@ -115,7 +128,19 @@ C_EXPORT gboolean on_obj_shape_changed
 	gpointer user_data
 	)
 	{
-	ExultStudio::get_instance()->show_obj_shape();
+	ExultStudio *studio = ExultStudio::get_instance();
+	int shnum = studio->get_num_entry("obj_shape");
+	int frnum = studio->get_num_entry("obj_frame");
+	int nframes = 
+		studio->get_vgafile()->get_ifile()->get_num_frames(shnum);
+	int xfrnum = frnum&31;		// Look at unrotated value.
+	int newfrnum = xfrnum >= nframes ? 0 : frnum;
+	if (newfrnum != frnum)
+		{
+		studio->set_spin("obj_frame", newfrnum);
+		return TRUE;
+		}
+	studio->show_obj_shape();
 	return TRUE;
 	}
 
@@ -253,7 +278,7 @@ int ExultStudio::init_obj_window
 		GtkAdjustment *adj = gtk_spin_button_get_adjustment(
 						GTK_SPIN_BUTTON(btn));
 		int nframes = vgafile->get_ifile()->get_num_frames(shape);
-		adj->upper = nframes - 1;
+		adj->upper = (nframes - 1)|32;	// So we can rotate.
 		gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
 		}		
 	return 1;
@@ -292,6 +317,27 @@ int ExultStudio::save_obj_window
 		}
 	cout << "Sent object data to server" << endl;
 	return 1;
+	}
+
+/*
+ *	Rotate obj. frame 90 degrees clockwise.
+ */
+
+void ExultStudio::rotate_obj
+	(
+	)
+	{
+	int shnum = get_num_entry("obj_shape");
+	int frnum = get_num_entry("obj_frame");
+	if (shnum <= 0)
+		return;
+	Shapes_vga_file *shfile = (Shapes_vga_file *) vgafile->get_ifile();
+					// Make sure data's been read in.
+	shfile->read_info(false, true);//+++++BG?
+	Shape_info& info = shfile->get_info(shnum);
+	frnum = info.get_rotated_frame(frnum, 1);
+	set_spin("obj_frame", frnum);
+	show_obj_shape();
 	}
 
 /*

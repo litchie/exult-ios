@@ -285,3 +285,30 @@ void Shape_info::set_weapon_offset
 	weapon_offsets[frame*2] = x;
 	weapon_offsets[frame*2 + 1] = y;
 	}
+
+/*
+ *	Get rotated frame (algorithmically).
+ */
+
+int Shape_info::get_rotated_frame
+	(
+	int curframe,
+	int quads			// 1=90, 2=180, 3=270.
+	)
+	{
+	if (is_barge_part())		// Piece of a barge?
+		switch (quads)
+			{
+		case 1:
+			return (curframe^32)^((curframe&32) ? 3 : 1);
+		case 2:
+			return curframe^2;
+		case 3:
+			return (curframe^32)^((curframe&32) ? 1 : 3);
+		default:
+			return curframe;
+			}
+	else
+					// Reflect.  Bit 32==horizontal.
+		return curframe ^ ((quads%2)<<5);
+	}

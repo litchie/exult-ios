@@ -189,6 +189,7 @@ public:
 	void close_obj_window();
 	int init_obj_window(unsigned char *data, int datalen);
 	int save_obj_window();
+	void rotate_obj();
 	void show_obj_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_obj_shape(int shape, int frame);
 					// Barges:
