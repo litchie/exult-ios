@@ -269,7 +269,7 @@ Exult_Game ExultMenu::run()
 		pal.apply();
 		while(!wait_delay(200))
 			;	
-		std::exit(1);
+		throw quit_exception(1);
 
 	}
 	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", EXULT_FLX_MEDITOWN_MID);
@@ -322,7 +322,7 @@ Exult_Game ExultMenu::run()
 		case -1: // Exit
 			pal.fade_out(c_fade_out_time);
 			Audio::get_ptr()->stop_music();
-			std::exit(0);
+			throw quit_exception();
 		case 0: // Black Gate
 			pal.fade_out(c_fade_out_time);
 			sel_game = BLACK_GATE;

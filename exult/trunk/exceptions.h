@@ -42,6 +42,18 @@ public:
 
 
 /*
+ *  A quit exception can be thrown to quit the program
+ */
+
+class quit_exception : public exult_exception
+{
+	int result_;
+public:
+	quit_exception (int result = 0): exult_exception ("Quit"), result_(result) {  }
+	int get_result(void) const { return result_; }
+};
+
+/*
  *  Classes which should not be replicatable throw an replication_exception
  */
 
@@ -65,27 +77,34 @@ public:
  *  File errors
  */
 
-class	file_open_exception : public exult_exception {
-	static const std::string  prefix_;
+class file_exception : public exult_exception
+{
 public:
-	file_open_exception (const std::string& file): exult_exception("Error opening file "+file) {  }
+	file_exception (const char *what_arg): exult_exception (what_arg) {  }	
+	file_exception (const std::string& what_arg): exult_exception (what_arg) {  }
 };
 
-class	file_write_exception : public exult_exception {
+class	file_open_exception : public file_exception {
 	static const std::string  prefix_;
 public:
-	file_write_exception(const std::string& file): exult_exception("Error writing to file "+file) {  }
+	file_open_exception (const std::string& file): file_exception("Error opening file "+file) {  }
 };
 
-class	file_read_exception : public exult_exception {
+class	file_write_exception : public file_exception {
 	static const std::string  prefix_;
 public:
-	file_read_exception(const std::string& file): exult_exception("Error reading from file "+file) {  }
+	file_write_exception(const std::string& file): file_exception("Error writing to file "+file) {  }
 };
 
-class	wrong_file_type_exception : public exult_exception {
+class	file_read_exception : public file_exception {
+	static const std::string  prefix_;
 public:
-	wrong_file_type_exception (const std::string& file, const std::string& type): exult_exception("File "+file+"is not of type "+type) {  }
+	file_read_exception(const std::string& file): file_exception("Error reading from file "+file) {  }
+};
+
+class	wrong_file_type_exception : public file_exception {
+public:
+	wrong_file_type_exception (const std::string& file, const std::string& type): file_exception("File "+file+"is not of type "+type) {  }
 };
 
 
