@@ -141,6 +141,8 @@ void Shape_chooser::render
 		x += sw + border;
 		info_cnt++;
 		}
+	if (selected == -1)
+		gtk_drag_source_unset(draw);
 	if (selected != prev_selected && sel_changed)
 		(*sel_changed)();	// Tell client if sel. removed.
 	}
@@ -205,11 +207,21 @@ gint Shape_chooser::mouse_press
 	)
 	{
 	Shape_chooser *chooser = (Shape_chooser *) data;
+	int old_selected = chooser->selected;
 					// Search through entries.
 	for (int i = 0; i < chooser->info_cnt; i++)
 		if (chooser->info[i].box.has_point(
 					(int) event->x, (int) event->y))
 			{		// Found the box?
+			if (i == old_selected)
+				return TRUE;
+					// Indicate we can dra.
+			GtkTargetEntry tents[1];
+			tents[0].target = U7_TARGET_SHAPEID_NAME;
+			tents[0].flags = 0;
+			tents[0].info = U7_TARGET_SHAPEID;
+			gtk_drag_source_set (chooser->draw, 
+				GDK_BUTTON1_MASK, tents, 1,GDK_ACTION_DEFAULT);
 			chooser->selected = i;
 			chooser->render();
 			chooser->show();
@@ -423,13 +435,6 @@ Shape_chooser::Shape_chooser
 	gtk_widget_show(frame);
 	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
 	draw = gtk_drawing_area_new();	// Create drawing area window.
-	GtkTargetEntry tents[1];	// Indicate what we'll drag.
-	tents[0].target = U7_TARGET_SHAPEID_NAME;
-	tents[0].flags = 0;
-	tents[0].info = U7_TARGET_SHAPEID;
-	gtk_drag_source_set (draw, GDK_BUTTON1_MASK, tents, 1,
-						GDK_ACTION_DEFAULT);
-//+++++++Maybe don't need to catch mouse actions???
 					// Indicate the events we want.
 	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
 		| /* GDK_POINTER_MOTION_MASK | */ GDK_POINTER_MOTION_HINT_MASK |
@@ -501,6 +506,7 @@ void Shape_chooser::unselect
 	if (selected >= 0)
 		{
 		selected = -1;
+		gtk_drag_source_unset(draw);
 		render();
 		show();
 		if (sel_changed)	// Tell client.
