@@ -2,7 +2,7 @@
  *	ibuf8.cc - 8-bit image buffer.
  *
  *  Copyright (C) 1998-1999  Jeffrey S. Freedman
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -214,6 +214,8 @@ void Image_buffer8::copy8
 					// Constrain to window's space.
 	if (!clip(srcx, srcy, srcw, srch, destx, desty))
 		return;
+
+#ifndef __sparc__
 	uint32 *to = (uint32*) (bits + desty*line_width + destx);
 	uint32 *from = (uint32*) (src_pixels + srcy*src_width + srcx);
 	int to_next = line_width - srcw;// # pixels to next line.
@@ -241,6 +243,15 @@ void Image_buffer8::copy8
 		to = (uint32*) (to8+to_next);
 		from = (uint32*) (from8+from_next);
 	}
+#else
+	uint8 *to = bits + desty*line_width + destx;
+	uint8 *from = src_pixels + srcy*src_width + srcx;
+	while (srch--) {
+		std::memcpy(to, from, srcw);
+		from += src_width;
+		to += line_width; 
+	}
+#endif
 }
 
 /*
