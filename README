@@ -155,6 +155,10 @@ Note: yes means enabled, no means disabled
     data
 				**see 2.3. for pathsettings
     </data_path>
+    <music_path>
+    data/music
+				**optional. Location of digital music. See also 3.4.
+    </music_path>
     <game>
       <blackgate>
         <title>
@@ -230,6 +234,10 @@ Note: yes means enabled, no means disabled
 				**options are yes/no. Used to trace intrinsics.
 				(You shouldn't need this unless you are a programmer.)
       </intrinsics>
+      <combat>
+      no
+				**options are yes/no. If enabled, show combat messages.
+      </combat>
     </trace>
   </debug>
   <gameplay>
@@ -392,7 +400,7 @@ Note: yes means enabled, no means disabled
 				**do you want to play full screen?
     </fullscreen>
     <disable_fades>
-    no 
+    no
 				**"no" enables fading between different menu points
     </disable_fades>
     <scale_method>
@@ -439,7 +447,7 @@ The other is a little more complicated but appeals to control freaks like me: Ma
       </blackgate>
       <serpentisle>
         <title>
-        serpentisle 
+        serpentisle
         </title>
         <path>
         ./serpentisle
@@ -468,7 +476,7 @@ My recommendations and example for BG (for SI use the same syntax) are:
     <game>
       <blackgate>
         <title>
-        blackgate 
+        blackgate
         </title>
         <path>
         ./blackgate
@@ -480,7 +488,7 @@ My recommendations and example for BG (for SI use the same syntax) are:
         ./blackgate/static
         </static_path>
         <gamedat_path>
-        ./blackgate/gamedat
+        ./blackgate/gamedat 
         </gamedat_path>
       </blackgate>
 

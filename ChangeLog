@@ -1,3 +1,9 @@
+2004-01-27 Dominik Reichardt <dominus@users.sourceforge.net>
+	* docs/xml/docs.xml,faq.xml: updated
+	* docs/ReadMe.html, Faq.html: updated
+	* FAQ, ReadMe: updated
+	* README.MacOSX: added compile instructions as discussed ages ago on the forum
+
 2004-01-26  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: update version to 1.1.9rc1, adjust copyright dates
 	* configure.ac: remove --enable-usecode-debugger configure option

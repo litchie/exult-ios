@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="12 December 2003(GMT)">
+<faqs title="Exult" changed="27 January 2004(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="27012004">
+			<header>- 27 January 2004</header>
+			<body>
+				<ul>
+				<li><ref1 target="latest_version"/> 1.1.9rc1 now.</li>
+				<li><ref1 target="known_issues"/> Items descriptions in SI-only work now.</li>
+				<li><ref1 target="xenka_sacrifice"/> added.</li>
+				<li><ref1 target="serpent_staff"/> Willem fixed this.</li>				
+				</ul>
+			</body>
+		</sub>
 		<sub name="12122003">
 			<header>- 12 December 2003</header>
 			<body>
@@ -36,7 +47,7 @@
 			<header>Exult Version</header>
 			<body>
 				<para>
-					This documentation is for the 1.1beta3 version of <Exult/>.
+					This documentation is for the 1.1.9rc1 version of <Exult/>.
 					If you have another <Exult/> version, its documentation can be found where you installed the release.
 				</para>
 			</body>
@@ -203,7 +214,7 @@
 			<header>What is the latest version of <Exult/>?</header>
 			<body>
 				<para>
-					The current official release is V1.1beta3
+					The current official release is V1.1.9rc1
 					See also <ref target="whereis_exult"/>
 					to learn where to get the latest version.
 				</para>
@@ -750,7 +761,6 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
-					<li>Some item descriptions will be wrong if you have SI without SS.</li>
 					<li>There might be a bug when you have any of the games installed in a
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>
@@ -915,6 +925,22 @@
 				</para>
 			</body>
 		</sub>
+		<sub name="xenka_sacrifice">
+			<header>Why won't Xenka speak about sacrifice (SI)</header>
+			<body>
+				<para>
+					For Xenka to speak about sacrifice some parts of the game need to have been played
+					correctly. The sacrifice conversation option will only turn up if:
+				</para>
+				<ul>
+					<li>you have returned the amulet to the Gwani <strong>AND</strong></li>
+					<li>you have spoken with the Chaos Hierophant <strong>AND</strong></li>
+					<li>you have picked up the Serpent Staff from its proper location
+					(see <ref target="serpent_staff"/>) <strong>AND</strong></li>
+					<li>you have not yet healed the Chaos Serpent</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="serpent_staff">
 			<header>An important note about the Serpent Staff (SI)</header>
 			<body>
@@ -924,6 +950,11 @@
 					possession.<br/>
 					Unfortunately the game also demands that you get the staff properly. For that I
 					recommend to get it without cheating and to stand right next to it.
+				</para>
+				<para>
+					Just picking it up and not transfering it to the inventory at once, but instead 
+					putting it on the ground again could break later plot. Willem coded a workaround
+					in <Exult/> so the problem might disappear.
 				</para>
 			</body>
 		</sub>
