@@ -1,6 +1,7 @@
 2000-12-01  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc: Ctrl-P: repaint screen, P: use lockpick
 	* configure.in: added -Wno-long-long as default option
+	* actors.cc: small fix for God mode. (some monsters have zero str.??)
 
 2000-12-02  Ryan Nunn  <triforce@merlin.net.au>
 	* added audio/soundtest.cc
