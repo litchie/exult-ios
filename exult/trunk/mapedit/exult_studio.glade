@@ -418,6 +418,36 @@
 
 	  <widget>
 	    <class>GtkMenuItem</class>
+	    <name>properties1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_properties1_activate</handler>
+	      <last_modification_time>Thu, 13 Jun 2002 00:59:01 GMT</last_modification_time>
+	    </signal>
+	    <label>Properties...</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>basic_properties1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>on_basic_properties1_activate</handler>
+	      <last_modification_time>Thu, 13 Jun 2002 00:59:01 GMT</last_modification_time>
+	    </signal>
+	    <label>Basic properties...</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>separator6</name>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
 	    <name>open_egg</name>
 	    <signal>
 	      <name>activate</name>
