@@ -12,7 +12,7 @@ protected:
 	std::string	filename;
 public:
 	U7file() {};
-	U7file(const char *name) : filename(name) {};
+	U7file(const std::string &name) : filename(name) {};
 	U7file(const U7file &f) : filename(f.filename)
 		{  }
 	U7file &operator=(const U7file &u) { filename=u.filename; return *this; }
