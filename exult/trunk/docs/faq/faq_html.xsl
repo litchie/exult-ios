@@ -6,7 +6,7 @@
 <xsl:output method="xml"
 	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
 	doctype-system="DTD/xhtml1-transitional.dtd"
-	indent="yes"/>
+	indent="no"/>
 
 <!-- Keys -->
 <xsl:key name="faq_ref" match="faq" use="@name"/>
@@ -218,6 +218,7 @@
 	<p><xsl:apply-templates/></p>
 </xsl:template>
 
+
 <xsl:template match="key">
 	'<font color="maroon"><xsl:value-of select="."/></font>'
 </xsl:template>
@@ -236,7 +237,9 @@
 </xsl:template>
 
 <xsl:template match="em">
-	<b><i><xsl:apply-templates/></i></b>
+ <b><i><font size="+1">
+<xsl:apply-templates/>
+</font></i></b> 
 </xsl:template>
 
 <!-- Key Command Templates -->
@@ -289,7 +292,11 @@
 
 
 <xsl:template match="comment">
-	<td rowspan="2"><xsl:apply-templates/></td>
+	<td rowspan="2">
+		<xsl:apply-templates/>
+	</td>
 </xsl:template>
+
+
 
 </xsl:stylesheet>
