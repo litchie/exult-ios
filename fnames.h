@@ -65,11 +65,15 @@
 #define MIDITMPFILE     "u7midi"
 #define MIDISFXFILE     "u7sfx"
 #define SAVENAME	"<SAVEGAME>/exult%02d%s.sav"
+#define SAVENAME2	"<SAVEGAME>/exult*%s.sav"
 #define INTROSND	"<STATIC>/introsnd.dat"
 #define ARMOR		"<STATIC>/armor.dat"
 #define WEAPONS		"<STATIC>/weapons.dat"
 #define AMMO		"<STATIC>/ammo.dat"
 #define PAPERDOL	"<STATIC>/paperdol.vga"
+
+#define GSCRNSHOT	"<GAMEDAT>/scrnshot.shp"
+#define GSAVEINFO	"<GAMEDAT>/saveinfo.dat"
 
 #define NUM_FONTS	(20)
 

@@ -33,6 +33,7 @@
 #include "cheat.h"
 #include "ucmachine.h"
 #include "Audio.h"
+#include "Gamemenu_gump.h"
 
 extern void increase_resolution();
 extern void decrease_resolution();
@@ -74,6 +75,14 @@ void ActionFileGump(int *params)
   File_gump *fileio = new File_gump();
   Do_Modal_gump(fileio, Mouse::hand);
   delete fileio;
+}
+
+// { ActionMenuGump, 0, "GameMenu", true, false, NONE },
+void ActionMenuGump(int *params)
+{
+  Gamemenu_gump *gmenu = new Gamemenu_gump();
+  Do_Modal_gump(gmenu, Mouse::hand);
+  delete gmenu;
 }
 
 //  { ActionQuicksave, 0, "Quick-save", true, false, NONE },

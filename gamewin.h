@@ -52,6 +52,8 @@ class Special_effect;
 class Time_queue;
 class Usecode_machine;
 class Deleted_objects;
+class SaveGame_Details;
+class SaveGame_Party;
 
 /*
  *	The main game window:
@@ -468,13 +470,25 @@ public:
 	Egg_object *create_egg(unsigned char *entry, bool animated);
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
-	void write();			// Write out to 'gamedat'.
+	void write();// Write out to 'gamedat'.
 	void read();			// Read in 'gamedat'.
 	void write_gwin();		// Write gamedat/gamewin.dat.
 	void read_gwin();		// Read gamedat/gamewin.dat.
 	void write_map();		// Write map data to 'static'.
 	void init_actors();		// Place actors in the world.
 	void init_files();		// Load all files
+
+	// From Gamedat
+	void get_saveinfo( Shape_file *&map,
+			SaveGame_Details *&details,
+			SaveGame_Party *& party);
+	// From Savegame
+	void get_saveinfo(int num, char *&name,
+			Shape_file *&map,
+			SaveGame_Details *&details,
+			SaveGame_Party *& party);
+	void write_saveinfo();		// Write the save info to gamedat
+
 	void clear_dirty()		// Clear dirty rectangle.
 		{ dirty.w = 0; }
 					// Paint scene at given tile.

@@ -71,8 +71,9 @@ struct Action {
   { ActionAbout, "About Exult", true, false, NONE },
   { ActionHelp, "List keys", true, false, NONE },
   { ActionCloseGumps, "Close gumps", false, false, NONE },
-
   { ActionScreenshot, "Take screenshot", true, false, NONE },
+  { ActionMenuGump, "Game Menu", false, false, NONE },
+
   { ActionRepaint, "Repaint screen", false, false, NONE },
   { ActionResIncrease, "Increase resolution", true, true, NONE },
   { ActionResDecrease, "Decrease resolution", true, true, NONE },
@@ -189,6 +190,7 @@ const struct {
   {"HELP",                  ACTION_HELP},         
   {"CLOSE_GUMPS",           ACTION_CLOSE_GUMPS},         
   {"SCREENSHOT",            ACTION_SCREENSHOT},         
+  {"GAME_MENU",             ACTION_GAME_MENU},         
 
   {"REPAINT",               ACTION_REPAINT},         
   {"RESOLUTION_INCREASE",   ACTION_RESOLUTION_INCREASE},         

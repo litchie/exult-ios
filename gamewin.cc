@@ -733,7 +733,12 @@ Rectangle Game_window::get_gump_rect
 	Gump *gump
 	)
 {
-	Shape_frame *s = get_gump_shape (gump->get_shapenum(), gump->get_framenum(), gump->is_paperdoll());
+	Shape_frame *s;
+
+	if (gump->get_shapefile() == GSF_EXULT_FLX)
+		s = get_exult_shape(gump->get_shapenum(), gump->get_framenum());
+	else
+		s = get_gump_shape (gump->get_shapenum(), gump->get_framenum(), gump->is_paperdoll());
 		
 	return Rectangle(gump->get_x() - s->xleft, 
 			gump->get_y() - s->yabove,
@@ -1412,6 +1417,7 @@ void Game_window::write
 	write_npcs();		// Write out npc.dat.
 	usecode->write();	// Usecode.dat (party, global flags).
 	write_gwin();		// Write our data.
+	write_saveinfo();
 	}
 
 /*
@@ -2101,7 +2107,11 @@ Gump *Game_window::find_gump
 		Rectangle box = get_gump_rect(gmp);
 		if (box.has_point(x, y))
 			{		// Check the shape itself.
-			Shape_frame *s = get_gump_shape (gmp->get_shapenum(),
+			Shape_frame *s;
+			if (gmp->get_shapefile() == GSF_EXULT_FLX)
+				s = get_exult_shape(gmp->get_shapenum(), gmp->get_framenum());
+			else
+				s = get_gump_shape (gmp->get_shapenum(),
 						gmp->get_framenum(),
 						gmp->is_paperdoll());
 
