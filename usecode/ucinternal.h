@@ -254,6 +254,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(display_map);
 	USECODE_INTRINSIC_DECL(si_display_map);
 	USECODE_INTRINSIC_DECL(kill_npc);
+	USECODE_INTRINSIC_DECL(roll_to_win);
 	USECODE_INTRINSIC_DECL(set_attack_mode);
 	USECODE_INTRINSIC_DECL(get_attack_mode);
 	USECODE_INTRINSIC_DECL(set_opponent);

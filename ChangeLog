@@ -1,3 +1,8 @@
+2001-08-12  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/intrinsics.cc: Roll_to_win() intrinsic added.
+	Flash_mouse() improved (I think).
+
 2001-08-11  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/chunks.cc (Map_chunk): Fixed yet-another world-wrap crash.
