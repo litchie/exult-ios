@@ -1343,9 +1343,10 @@ USECODE_INTRINSIC(recall_virtue_stone)
 	Virtue_stone_object *vs = dynamic_cast<Virtue_stone_object *> (obj);
 	if (vs)
 		{
+		gwin->end_gump_mode();
 					// Pick it up if necessary.
 		Game_object *owner = obj->get_outermost();
-		if (!npc_in_party(owner))
+		if (owner != gwin->get_main_actor() && !npc_in_party(owner))
 			{		// Go through whole party.
 			obj->remove_this(1);
 			Usecode_value party = get_party();
