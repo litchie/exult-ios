@@ -87,7 +87,7 @@ short Body_lookup::bg_table[] = {	// BLACK GATE.
   463, 400, 21, 			// x female fighter.
   464, 400, 22, 			// X paladin
   465, 414, 18, 			// x Iolo.
-  466, 414, 12, 			// x Lord British
+  466, 414, 13, 			// x Lord British
   467, 400, 24, 			// X chuck jester
   468, 400, 25, 			// x male entertainer.
   469, 400, 26, 			// x female entertainer.
