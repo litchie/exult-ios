@@ -307,21 +307,16 @@ public:
 	inline Actor *get_npc(long npc_num) const
 		{ return (npc_num >= 0 && npc_num < npcs.size()) ? 
 				npcs[npc_num] : 0; }
-	int add_npc(Actor *npc)		// Add new one & return #.
-		{ return npcs.append(npc); }
 	void set_body(int npc_num, Game_object *body)
 		{ bodies.put(npc_num, body); }
 	Game_object *get_body(int npc_num)
 		{ return bodies[npc_num]; }
 	inline bool was_teleported()
 		{ return teleported; }
-#if 0
-	Egg_object *get_path_egg(int q)	// Get path egg by quality.
-		{ return q < path_eggs.size() ? path_eggs[q] : 0; }
-	void add_path_egg(Egg_object *egg);
-#endif
 	int get_num_npcs()
 		{ return npcs.size(); }
+	int get_unused_npc();		// Find first unused NPC #.
+	void add_npc(Actor *npc, int num);	// Add new one.
 	int get_num_shapes()
 		{ return shapes.get_num_shapes(); }
  	int get_num_faces() 

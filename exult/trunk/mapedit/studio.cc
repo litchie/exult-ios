@@ -1067,10 +1067,10 @@ bool ExultStudio::need_to_save
 		int len = Exult_server::Receive_data(server_socket, 
 						id, data, sizeof(data));
 		unsigned char *ptr = &data[0];
-		int vers, npcs, edlift, hdlift, edmode;
+		int vers, edlift, hdlift, edmode;
 		bool editing, grid, mod;
 		if (id == Exult_server::info &&
-		    Game_info_in(data, len, vers, npcs, edlift, hdlift, 
+		    Game_info_in(data, len, vers, edlift, hdlift, 
 						editing, grid, mod, edmode) &&
 		    mod == true)
 			return true;
@@ -2258,9 +2258,9 @@ void ExultStudio::info_received
 	int len
 	)
 	{
-	int vers, npcs, edlift, hdlift, edmode;
+	int vers, edlift, hdlift, edmode;
 	bool editing, grid, mod;
-	Game_info_in(data, len, vers, npcs, edlift, hdlift, 
+	Game_info_in(data, len, vers, edlift, hdlift, 
 					editing, grid, mod, edmode);
 	if (vers != Exult_server::version)
 		{			// Wrong version of Exult.
