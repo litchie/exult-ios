@@ -1430,6 +1430,7 @@ void Game_window::read
 	(
 	)
 	{
+	Audio::get_ptr()->cancel_streams();
 	clear_world();			// Wipe clean.
 	read_gwin();		// Read our data.
 					// DON'T do anything that might paint()
