@@ -98,6 +98,7 @@ public:
 							int weap = 0);
 					// For missile traps:
 	Projectile_effect(Tile_coord s, Tile_coord d, int shnum);
+	Projectile_effect(Tile_coord s, Game_object *to, int shnum);
 	~Projectile_effect();
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);

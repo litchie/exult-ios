@@ -131,6 +131,8 @@ void Projectile_effect::init
 		int dir = Get_dir16(s, d);
 		frame_num = 8 + dir;
 		}
+	else if (frames == 1)
+		frame_num == 0;
 	else
 		frame_num = -1;		// We just won't show it.
 					// Start immediately.
@@ -166,6 +168,20 @@ Projectile_effect::Projectile_effect
 	) : attacker(0), target(0), shape_num(shnum), weapon(0), frame_num(0)
 	{
 	init(s, d);
+	}
+
+/* 
+ *	Another used by missile eggs.
+ */
+
+Projectile_effect::Projectile_effect
+	(
+	Tile_coord s,			// Start here.
+	Game_object *to,		// End here, 'attack' it with shape.
+	int shnum			// Projectile shape
+	) : attacker(0), target(to), shape_num(shnum), weapon(0), frame_num(0)
+	{
+	init(s, to->get_abs_tile_coord());
 	}
 
 /*
