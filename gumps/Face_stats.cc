@@ -91,7 +91,7 @@ void Stat_bar::paint
 {
 	Gump_button::paint(gwin);
 
-	int width =  (val * 32) / (max_val);
+	int width =  (val * 32) / (max_val ? max_val : 1);
 
 	if (width > 0)
 	{
