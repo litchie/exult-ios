@@ -122,10 +122,21 @@ public:
 		strncpy(text, newtxt ? newtxt : "", max_size);
 		length = strlen(text);
 		}
+	int get_cursor()
+		{ return cursor; }
+	void set_cursor(int pos)	// Set cursor (safely).
+		{
+		if (pos >= 0 && pos <= length)
+			{
+			cursor = pos;
+			paint();
+			}
+		}
 	void paint();			// Paint.
 					// Handle mouse click.
 	int mouse_clicked(Game_window *gwin, int mx, int my);
 	void insert(int chr);		// Insert a character.
+	int delete_left();		// Delete char. to left of cursor.
 	void lose_focus();
 	};
 
@@ -322,6 +333,26 @@ void Gump_text::insert
 	length++;
 	text[length] = 0;
 	paint();
+	}
+
+/*
+ *	Delete the character to the left of the cursor.
+ *
+ *	Output:	1 if successful.
+ */
+
+int Gump_text::delete_left
+	(
+	)
+	{
+	if (!focus || !cursor)		// Can't do it.
+		return (0);
+	if (cursor < length)		// Shift text left.
+		memmove(text + cursor - 1, text + cursor, length - cursor);
+	text[--length] = 0;		// 0-delimit.
+	cursor--;
+	paint();
+	return (1);
 	}
 
 /*
@@ -1696,7 +1727,7 @@ void File_gump_object::mouse_up
 	}
 
 /*
- *	Handle ASCII character typed.
+ *	Handle character that was typed.
  */
 
 void File_gump_object::key_down
@@ -1704,12 +1735,43 @@ void File_gump_object::key_down
 	int chr
 	)
 	{
-	if (chr < ' ')
-		return;			// For now, ignore these.
-	if (focus)			// Text field?
+	if (!focus)			// Text field?
+		return;
+	switch (chr)
+		{
+	case SDLK_BACKSPACE:
+		if (focus->delete_left())
+			{		// Can't restore now.
+			delete buttons[0];
+			buttons[0] = 0;
+			}
+		if (!focus->get_length())
+			{		// Last char.?
+			delete buttons[0];
+			delete buttons[1];
+			buttons[0] = buttons[1] = 0;
+			paint(Game_window::get_game_window());
+			}
+		return;
+	case SDLK_LEFT:
+		focus->set_cursor(focus->get_cursor() - 1);
+		return;
+	case SDLK_RIGHT:
+		focus->set_cursor(focus->get_cursor() + 1);
+		return;
+	case SDLK_HOME:
+		focus->set_cursor(0);
+		return;
+	case SDLK_END:
+		focus->set_cursor(focus->get_length());
+		return;
+		}
+	if (isascii(chr))
 		{
 		int old_length = focus->get_length();
 		focus->insert(chr);
+		delete buttons[0];	// Can't load now.
+		buttons[0] = 0;
 					// Added first character?  Need 
 					//   'Save' button.
 		if (!old_length && focus->get_length() && !buttons[1])
