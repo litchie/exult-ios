@@ -275,28 +275,6 @@ static int Filter_intro_events(const SDL_Event *event);
 static void Handle_events(unsigned char *stop);
 static void Handle_event(SDL_Event& event);
 
-#ifdef XWIN
-static Display *display = 0;
-static int xfd = -1;			// X connection #.
-
-/*
- *	Here's a somewhat better way to delay in X:
- */
-inline void X_Delay
-	(
-	)
-	{
-	fd_set rfds;
-	struct timeval timer;
-	timer.tv_sec = 0;
-	timer.tv_usec = 50000;		// Try 1/50 second.
-	FD_ZERO(&rfds);
-	FD_SET(xfd, &rfds);
-					// Wait for timeout or event.
-	select(xfd + 1, &rfds, 0, 0, &timer);
-	}
-#endif
-
 /*
  *	Initialize and create main window.
  */

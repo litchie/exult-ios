@@ -19,6 +19,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _GUMPS_H_
 #define _GUMPS_H_
 
+#ifdef XWIN  /* Only needed in XWIN. */
+#include <sys/time.h>
+#endif
+
 #include "mouse.h"
 
 class Modal_gump;
@@ -67,7 +71,20 @@ inline void Delay
 	)
 {
 #ifdef XWIN
-	X_Delay();
+	/*
+	 *	Here's a somewhat better way to delay in X:
+	 */
+	static Display *display = 0;
+	static int xfd = -1;			// X connection #.
+
+	fd_set rfds;
+	struct timeval timer;
+	timer.tv_sec = 0;
+	timer.tv_usec = 50000;		// Try 1/50 second.
+	FD_ZERO(&rfds);
+	FD_SET(xfd, &rfds);
+					// Wait for timeout or event.
+	select(xfd + 1, &rfds, 0, 0, &timer);
 #else					/* May use this for Linux too. */
 	SDL_Delay(20);			// Try 1/50 second.
 #endif
