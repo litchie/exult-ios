@@ -1,5 +1,7 @@
 2001-07-15  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamewin.cc: read() now calls setup_game(), removing some
+	duplicated code.
 	* EStudio: Show 'face' and allow setting by dropping from
 	shape-browser.
 	* EStudio: Stop time when map-editing.
