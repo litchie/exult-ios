@@ -570,7 +570,8 @@ class Monster_info
 	unsigned char combat;
 	unsigned char armor;
 	unsigned short flags;		// Defined below.
-	unsigned char equip_offset;	// Offset in 'equip.dat'.
+	unsigned char equip_offset;	// Offset in 'equip.dat' (1 based;
+					//   if 0, there's none.)
 public:
 	Monster_info() {  }
 					// Done by Game_window:
