@@ -1636,8 +1636,8 @@ void Chunk_cache::activate_eggs
 Chunk_object_list::Chunk_object_list
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
-	) : objects(0), roof(0), npcs(0),
-	    cache(0), cx(chunkx), cy(chunky)
+	) : objects(0), npcs(0), cache(0), roof(0),
+	    cx(chunkx), cy(chunky)
 	{
 	}
 

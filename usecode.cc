@@ -2612,8 +2612,9 @@ Usecode_machine::Usecode_machine
 	(
 	istream& file,
 	Game_window *gw
-	) : String(0), gwin(gw), call_depth(0), caller_item(0), book(0),
-	    last_created(0), stack(new Usecode_value[1024]), user_choice(0)
+	) : gwin(gw), call_depth(0), book(0), caller_item(0),
+	    last_created(0), user_choice(0), String(0),
+	    stack(new Usecode_value[1024])
 	{
 	sp = stack;
 					// Clear global flags.

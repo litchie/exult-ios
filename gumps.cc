@@ -588,7 +588,7 @@ Gump_object::Gump_object
 	Container_game_object *cont,	// Container it represents.
 	int initx, int inity, 		// Coords. on screen.
 	int shnum			// Shape #.
-	) : container(cont), x(initx), y(inity), ShapeID(shnum, 0)
+	) : ShapeID(shnum, 0), container(cont), x(initx), y(inity)
 	{
 	initialize();
 	}
@@ -601,7 +601,7 @@ Gump_object::Gump_object
 	(
 	Container_game_object *cont,	// Container it represents.
 	int shnum			// Shape #.
-	) : container(cont), ShapeID(shnum, 0)
+	) : ShapeID(shnum, 0), container(cont)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Shape_frame *shape = gwin->get_gump_shape(shnum, 0);
@@ -1096,7 +1096,7 @@ Sign_gump::Sign_gump
 	(
 	int shapenum,
 	int nlines			// # of text lines.
-	) : num_lines(nlines), Gump_object(0, shapenum)
+	) : Gump_object(0, shapenum), num_lines(nlines)
 	{
 	lines = new char *[num_lines];
 	for (int i = 0; i < num_lines; i++)
@@ -1339,8 +1339,8 @@ Slider_gump_object::Slider_gump_object
 	int step,			// Amt. to change by.
 	int defval			// Default value.
 	) : Modal_gump_object(0, SLIDER),
-	    val(defval), min_val(mival), max_val(mxval), step_val(step),
-	    dragging(0), prev_dragx(0)
+	    min_val(mival), max_val(mxval), step_val(step),
+	    val(defval), dragging(0), prev_dragx(0)
 	{
 cout << "Slider:  " << min_val << " to " << max_val << " by " << step << '\n';
 	left_arrow = new Slider_gump_button(this, leftbtnx, btny, SLIDERLEFT);
