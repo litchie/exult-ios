@@ -70,7 +70,10 @@ void Game_window::read_npcs
 	{
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
 		if (i >= skip && i < 256)
+			{
 			npcs[i]->remove_this(1);
+			npcs[i]->set_schedule_type(Schedule::wait);
+			}
 		else
 			npcs[i]->restore_schedule();
 		CYCLE_RED_PLASMA();

@@ -194,6 +194,8 @@ public:
 		{ delete [] frames; }
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
+	int get_index()
+		{ return index; }
 	};
 
 /*
