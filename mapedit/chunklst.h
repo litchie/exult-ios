@@ -56,12 +56,14 @@ class Chunk_info
 class Chunk_chooser: public Object_browser, public Shape_draw
 	{
 	std::istream& chunkfile;	// Where chunks are read from (each is
-					//   256 shape ID's = 512 bytes).
+					//   256 shape ID's (2 or 3 bytes).
 	GtkWidget *sbar;		// Status bar.
 	guint sbar_sel;			// Status bar context for selection.
 	int num_chunks;			// Total # of chunks.
 					// List of chunks we've read in.
 	std::vector<unsigned char *> chunklist;
+	int chunksz;			// # bytes/chunk.
+	int headersz;			// # bytes in header.
 	Chunk_info *info;		// An entry for each chunk drawn.
 	int info_cnt;			// # entries in info.
 	int locate_cx, locate_cy;	// Last chunk found by 'locate'.
