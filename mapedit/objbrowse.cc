@@ -4,7 +4,7 @@
 
 #include "objbrowse.h"
 
-Object_browser::Object_browser()
+Object_browser::Object_browser(Shape_group *grp) : group(grp)
 {
 	widget = 0;
 }

@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "exceptions.h"
 #include "studio.h"
+#include "shapelst.h"
 #include "shapefile.h"
 
 using std::vector;
@@ -376,11 +377,17 @@ void ExultStudio::del_group
 	if (list)			// Selection?
 		{
 		int row = (int) list->data;
-		string msg("Delete ");
-		msg += groups->get((int) list->data)->get_name();
-		msg += "?";
-		int choice = prompt2(msg.c_str(), "Yes", "No");
-	//++++++++++
+		Shape_group *grp = groups->get(row);
+		string msg("Delete group '");
+		msg += grp->get_name();
+		msg += "'?";
+		int choice = prompt(msg.c_str(), "Yes", "No");
+		if (choice == 0)	// Yes?
+			{
+			groups->remove(row, true);
+			gtk_clist_remove(clist, row);
+			//+++++++What about open windows for the group??
+			}
 		}
 	}
 
@@ -469,6 +476,7 @@ void ExultStudio::open_group_window
 	gtk_signal_connect (GTK_OBJECT(grpwin), "delete_event",
                       GTK_SIGNAL_FUNC (on_group_window_delete_event),
                       this);
+	group_windows.push_back(GTK_WINDOW(grpwin));
 	gtk_widget_show(grpwin);
 	}
 
@@ -481,6 +489,16 @@ void ExultStudio::close_group_window
 	GtkWidget *grpwin
 	)
 	{
+					// Remove from list.
+	for (vector<GtkWindow*>::iterator it = group_windows.begin();
+					it != group_windows.end(); ++it)
+		{
+		if (*it == GTK_WINDOW(grpwin))
+			{
+			group_windows.erase(it);
+			break;
+			}
+		}
 	GladeXML *xml = (GladeXML *) gtk_object_get_data(GTK_OBJECT(grpwin), 
 							"xml");
 	Object_browser *chooser = (Object_browser *) gtk_object_get_data(
@@ -507,5 +525,28 @@ void ExultStudio::save_groups
 		Shape_group_file *gfile = info->get_groups();
 		if (gfile && gfile->is_modified())
 			gfile->write();
+		}
+	}
+
+/*
+ *	Update all windows showing a given group.
+ */
+
+void ExultStudio::update_group_windows
+	(
+	Shape_group *grp
+	)
+	{
+	for (vector<GtkWindow*>::const_iterator it = group_windows.begin();
+					it != group_windows.end(); ++it)
+		{
+		Object_browser *chooser = (Object_browser *) 
+			gtk_object_get_data(GTK_OBJECT(*it), "browser");
+		if (chooser->get_group() == grp)
+			{		// A match?
+//++++Crashes			gtk_signal_emit_by_name(
+//				GTK_OBJECT(chooser->get_widget()), 
+//							"expose_event");
+			}
 		}
 	}

@@ -23,16 +23,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 //#include <glade/glade.h>
 
+class Shape_group;
+
 class Object_browser {
 private:
 	GtkWidget *widget;
 protected:
+	Shape_group *group;		// Non-null to use filter.
 	void set_widget(GtkWidget *w);
 public:
-	Object_browser();
+	Object_browser(Shape_group *grp = 0);
 	virtual ~Object_browser();
 	
 	GtkWidget *get_widget();
+	Shape_group *get_group()
+		{ return group; }
 	virtual bool server_response(int id, unsigned char *data, int datalen);
 	virtual void end_terrain_editing();
 };
