@@ -17,6 +17,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+//
+// Old Win32 MIDI driver. Changes required in Exult.cc, Midi.cc and Midi.h to use this
+//
+
 #ifndef _MIDI_driver_win_MCI_h_
 #define _MIDI_driver_win_MCI_h_
 
@@ -37,7 +41,7 @@ class	Windows_MCI : virtual public MidiAbstract
 {
 public:
   virtual void start_track(const char *,bool repeat);
-  virtual void start_track(midi_event *evntlist, int ppqn, bool repeat) { }
+//virtual void start_track(midi_event *evntlist, int ppqn, bool repeat);
   virtual void stop_track(void);
   virtual bool is_playing(void);
   virtual const char *copyright(void);
