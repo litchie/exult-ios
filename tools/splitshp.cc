@@ -98,7 +98,7 @@ void write4(FILE *f, unsigned int b)
 
 char* framefilename(char * shapefilename, int frame)
 {
-	char *fn = new char[strlen(shapefilename)+4];  //_xx\0
+	char *fn = new char[strlen(shapefilename)+5];  //_xxx\0
 	char *dot = strrchr(shapefilename, '.');
 #ifdef WIN32
 	char *slash = strrchr(shapefilename, '\\');
@@ -113,8 +113,8 @@ char* framefilename(char * shapefilename, int frame)
 		dotpos = dot - shapefilename;
 
 	memcpy(fn, shapefilename, dotpos);
-	sprintf(fn + dotpos, "_%02i", frame);
-	strcpy(fn + dotpos + 3, shapefilename + dotpos);
+	sprintf(fn + dotpos, "_%03i", frame);
+	strcpy(fn + dotpos + 4, shapefilename + dotpos);
 
 	return fn;
 }
