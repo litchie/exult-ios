@@ -54,14 +54,18 @@ class Chunk_terrain
 public:
 					// Create from 16x16x2 data:
 	Chunk_terrain(unsigned char *data);
+					// Copy-constructor:
+	Chunk_terrain(const Chunk_terrain& c2);
 	~Chunk_terrain();
 	void add_client()
 		{ num_clients++; }
 	void remove_client()
 		{ num_clients--; }
+					// Less-than c2 (for STL Map)?
+	bool operator<(const Chunk_terrain& c2) const;
 					// Get tile's shape ID.
 	ShapeID get_flat(int tilex, int tiley) const
-		{ return flats[16*tiley + tilex]; }
+		{ return shapes[16*tiley + tilex]; }
 	Image_buffer8 *get_rendered_flats(bool in_dungeon)
 		{
 		if (render_queue != this)// Not already first in queue?
