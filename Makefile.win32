@@ -216,7 +216,13 @@ install: $(EXEC)
 	copy data\exult_bg.flx $(U7PATH)\data
 	copy data\exult_si.flx $(U7PATH)\data
 
-dist:   install
+dist:   $(EXEC)
+	if not exist $(U7PATH)\Exult md $(U7PATH)\Exult
+	strip $(EXEC) -o $(U7PATH)\\Exult\$(EXEC)
+	if not exist $(U7PATH)\Exult\Data md $(U7PATH)\Exult\Data
+	copy data\exult.flx $(U7PATH)\Exult\Data\exult.flx
+	copy data\exult_bg.flx $(U7PATH)\Exult\Data\exult_bg.flx
+	copy data\exult_si.flx $(U7PATH)\Exult\Data\exult_si.flx
 	copy AUTHORS $(U7PATH)\Exult\AUTHORS.txt
 	copy ChangeLog $(U7PATH)\Exult\ChangeLog.txt
 	copy COPYING $(U7PATH)\Exult\COPYING.txt
