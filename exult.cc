@@ -333,7 +333,8 @@ int exult_main(const char *runpath)
 
 	// Check CRCs of our .flx files
 	bool crc_ok = true;
-	if (crc32_syspath("<DATA>/exult.flx") != EXULT_FLX_CRC32) {
+	uint32 crc = crc32_syspath("<DATA>/exult.flx");
+	if (crc != EXULT_FLX_CRC32) {
 		crc_ok = false;
 		cerr << "exult.flx has a wrong checksum!" << endl;
 	}
@@ -361,7 +362,7 @@ int exult_main(const char *runpath)
 			 << endl
 			 << "(Note: if you modified the .flx files yourself, "
 			 << "you can skip this check" << endl
-			 << "by passing the -nocrc parameter.)" << endl;
+			 << "by passing the --nocrc parameter.)" << endl;
 		
 		return 1;
 	}

@@ -447,9 +447,8 @@ int main(int argc, char **argv)
 			flex.close();
 
 			uint32 crc32val = crc32_syspath(fname);
-
 			header << std::endl << "#define\t" << hprefix << "_CRC32\t0x";
-			header << std::hex << crc32val << std::dec << "L" << std::endl;
+			header << std::hex << crc32val << std::dec << "U" << std::endl;
 
 			header << std::endl << "#endif" << std::endl << std::endl;
 			header.close();

@@ -40,6 +40,7 @@ class Locator
 	int drag_relx, drag_rely;	// Mouse pos. rel to view box.
 	int send_location_timer;	// For sending new loc. to Exult.
 	void send_location();		// Send location/size to Exult.
+	void query_location();
 	static gint delayed_send_location(gpointer data);
 					// Set view to mouse location.
 	void goto_mouse(int mx, int my, bool delay_send = false);
