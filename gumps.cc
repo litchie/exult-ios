@@ -1282,10 +1282,8 @@ void Stats_gump_object::paint
 		attsx += Show_atts(gwin, x + attsx, y + attsy, PROTECTED);
 	if (act->get_flag(Actor::cursed))
 		attsx += Show_atts(gwin, x + attsx, y + attsy, CURSED);
-#if 0	/* ++++Need to figure out which flag. */
 	if (act->get_flag(Actor::paralyzed))
 		attsx += Show_atts(gwin, x + attsx, y + attsy, PARALYZED);
-#endif
 	}
 
 /*
