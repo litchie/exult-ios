@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "paths.h"
 #include "Astar.h"
+#include "Zombie.h"
 #include "gamewin.h"
 #include "actors.h"
 
@@ -253,6 +254,29 @@ int Fast_pathfinder_client::is_grabable
 	   Game_window::get_game_window()->get_main_actor()->get_type_flags());
 	Astar path;
 	return path.NewPath(from, to, &client);
+	}
+
+/*
+ *	Check for an unblocked straight path.
+ *	NOTE1:  This really has nothing to do with Fast_pathfinder_client.
+ *	NOTE2:	This version doesn't check the z-coord at all.
+ */
+
+int Fast_pathfinder_client::is_straight_path
+	(
+	Tile_coord from,		// From this spot.
+	Tile_coord to			// To this spot.
+	)
+	{
+	to.tz = from.tz;		// ++++++For now.
+	Zombie path;
+	if (!path.NewPath(from, to, 0))	// Should always succeed.
+		return 0;
+	Tile_coord t;			// Check each tile.
+	while (path.GetNextStep(t))
+		if (t != from && t != to && Chunk_object_list::is_blocked(t))
+			return 0;	// Blocked.
+	return 1;			// Looks okay.
 	}
 
 /*
