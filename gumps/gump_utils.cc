@@ -88,7 +88,7 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
 		break;
 	case SDL_MOUSEMOTION:
 		mouse->move(event.motion.x >> scale, event.motion.y >> scale);
-//		mouse_update = true;
+		mouse_update = true;
 					// Dragging with left button?
 		if (event.motion.state & SDL_BUTTON(1))
 			gump->mouse_drag(event.motion.x >> scale,
