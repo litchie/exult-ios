@@ -73,6 +73,7 @@ bool	MyMidiPlayer::add_midi_bank(const char *bankname)
 #include "midi_drivers/KMIDI.h"
 #include "midi_drivers/forked_player.h"
 #include "midi_drivers/win_MCI.h"
+#include "midi_drivers/be_midi.h"
 
 MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 {
@@ -104,7 +105,15 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
                 cerr << midi_device->copyright() << endl;
                 }
 #endif
+#ifdef BEOS
+	if(no_device)
+		{
+		midi_device=new Be_midi();
 
+		no_device=false;
+		cerr << midi_device->copyright() << endl;
+		}
+#endif
 #ifdef XWIN
 	if(no_device)
 		{

@@ -35,7 +35,7 @@ PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o xmldump.o xmlparse.o
 # unused: xmain.o
 MIDI_DRV_OBJS=win_MCI.o
-# unused: KMIDI.o Timidity_binary.o forked_player.o
+# unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o
 AUDIO_OBJS=Audio.o Midi.o Mixer.o SDL_mapping.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 FLIC_OBJS=playfli.o
