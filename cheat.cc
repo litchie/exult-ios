@@ -532,7 +532,7 @@ void Cheat::set_grabbed_actor (Actor *actor) const {
 void Cheat::clear_this_grabbed_actor(Actor *actor) const {
 	if (!enabled||!cscreen) return;
 
-	return cscreen->ClearThisGrabbedActor(actor);
+	cscreen->ClearThisGrabbedActor(actor);
 }
 
 void Cheat::toggle_number_npcs (void) {
