@@ -1,3 +1,21 @@
+/*
+Copyright (C) 2000  Dancer A.L Vesperman
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
 #if __GNUG__ >= 2
 #  pragma implementation
 #endif
@@ -41,7 +59,7 @@ Mixer::~Mixer()
 void fill_audio(void *udata, Uint8 *stream, int len)
  {
 	 extern	Audio	audio;
-	cerr << "fill_audio: " << len << endl;
+	// cerr << "fill_audio: " << len << endl;
 	 audio.mixer->fill_audio_func(udata,stream,len);
 }
 
@@ -57,17 +75,19 @@ void	Mixer::advance(void)
 
 void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 {
-	cout << "fill_audio_func: " << len << endl;
+	// cout << "fill_audio_func: " << len << endl;
 	advance();
 	if(buffers.begin()->num_samples==0)
 		{
+#if DEBUG
 		cout << "No more audio data" << endl;
-		SDL_PauseAudio(1);
+#endif
+		SDL::PauseAudio(1);
 		return;
 		}
 	if((unsigned)len>buffers.front().length)
 		len=buffers.front().length;
-	SDL_MixAudio(stream, buffers.begin()->buffer, len, SDL_MIX_MAXVOLUME);
+	SDL::MixAudio(stream, buffers.begin()->buffer, len, SDL_MIX_MAXVOLUME);
 }
 
 void	Mixer::play(Uint8 *sound_data,Uint32 len)
@@ -89,15 +109,15 @@ void	Mixer::play(Uint8 *sound_data,Uint32 len)
 			rlen=len-offset;
 		else
 			rlen=buffer_length;
-		SDL_MixAudio(it->buffer,sound_data+offset,rlen,SDL_MIX_MAXVOLUME);
+		SDL::MixAudio(it->buffer,sound_data+offset,rlen,SDL_MIX_MAXVOLUME);
 		++it->num_samples;
 		if(it->length<rlen)
 			it->length=rlen;
 		++it;
 		}
 		
-	SDL_PauseAudio(0);
-	SDL_UnlockAudio();
+	SDL::PauseAudio(0);
+	SDL::UnlockAudio();
 	
 }
 
