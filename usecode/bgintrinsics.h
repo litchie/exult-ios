@@ -94,7 +94,7 @@
 	USECODE_INTRINSIC_PTR(summon),	// 0x47     SummonCreature (ucdump.c)
 	USECODE_INTRINSIC_PTR(display_map),	// 0x48
 	USECODE_INTRINSIC_PTR(kill_npc),// 0x49
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4a ??(strength, egg-quality)
+	USECODE_INTRINSIC_PTR(roll_to_win),	// 0x4a
 	USECODE_INTRINSIC_PTR(set_attack_mode),	// 0x4b
 	USECODE_INTRINSIC_PTR(set_opponent),	// 0x4c
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d     CloneNPC (ucdump.c)
@@ -142,13 +142,13 @@
 	USECODE_INTRINSIC_PTR(nap_time),	// 0x77
 	USECODE_INTRINSIC_PTR(advance_time),	// 0x78
 	USECODE_INTRINSIC_PTR(in_usecode),	// 0x79
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x7a call_guards? (to hound?).
 	USECODE_INTRINSIC_PTR(npc_sprite_effect),// 0x7b
 	USECODE_INTRINSIC_PTR(attack_avatar),	// 0x7c
 	USECODE_INTRINSIC_PTR(path_run_usecode),	// 0x7d
 	USECODE_INTRINSIC_PTR(close_gumps),	// 0x7e
 	USECODE_INTRINSIC_PTR(item_say),	// 0x7f ItemSay in gump.
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80 ++++Open_gump(item)???
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80 ++++Close_gump(item)???
 	USECODE_INTRINSIC_PTR(in_gump_mode),	// 0x81
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x82
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x83
@@ -159,13 +159,14 @@
 	USECODE_INTRINSIC_PTR(get_item_flag),	// 0x88
 	USECODE_INTRINSIC_PTR(set_item_flag),	// 0x89
 	USECODE_INTRINSIC_PTR(clear_item_flag),	// 0x8a
-	USECODE_INTRINSIC_PTR(run_usecode),	// 0x8b 
+	USECODE_INTRINSIC_PTR(run_usecode),	// 0x8b +++++++Function to run
+// if path-walking is blocked.
 	USECODE_INTRINSIC_PTR(fade_palette),	// 0x8c 
 	USECODE_INTRINSIC_PTR(get_party_list2),	// 0x8d
 	USECODE_INTRINSIC_PTR(in_combat),	// 0x8e
 	USECODE_INTRINSIC_PTR(start_speech),	// 0x8f Same as 0x74?
 	USECODE_INTRINSIC_PTR(is_water),	// 0x90
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x91 ++++ reset_conv_face???
 	USECODE_INTRINSIC_PTR(center_view),	// 0x92
 	USECODE_INTRINSIC_PTR(get_dead_party),	// 0x93
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x94    SetupOrrery (ucdump.c)

@@ -1171,6 +1171,14 @@ USECODE_INTRINSIC(kill_npc)
 	return (no_ret);
 }
 
+USECODE_INTRINSIC(roll_to_win)
+{
+	// roll_to_win(attackpts, defendpts)
+	int attack = parms[0].get_int_value();
+	int defend = parms[1].get_int_value();
+	return Usecode_value((int) Actor::roll_to_win(attack, defend));
+}
+
 USECODE_INTRINSIC(set_attack_mode)
 {
 	// set_attack_mode(npc, mode).
@@ -1549,9 +1557,24 @@ USECODE_INTRINSIC(get_speech_track)
 
 USECODE_INTRINSIC(flash_mouse)
 {
-	// flash_mouse(??No: mouse_shape).
-	Mouse::mouse->flash_shape(Mouse::redx);
-//			(Mouse_shapes) parms[0].get_int_value());
+	// flash_mouse(code)
+	Mouse::Mouse_shapes shape;
+	switch (parms[0].need_int_value())
+		{
+	case 2:
+		shape = Mouse::outofrange; break;
+	case 3:
+		shape = Mouse::outofammo; break;
+	case 4:
+		shape = Mouse::tooheavy; break;
+	case 5:
+		shape = Mouse::wontfit; break;
+	case 0:
+	case 1:
+	default:
+		shape = Mouse::redx; break;
+		}
+	Mouse::mouse->flash_shape(shape);
 	return (no_ret);
 }
 
