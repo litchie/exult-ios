@@ -1449,6 +1449,7 @@ USECODE_INTRINSIC(explode)
 	Game_object *exp = get_item(parms[1]);
 	if (!exp)
 		return Usecode_value(0);
+	exp = exp->get_owner();		// Use container if it's in one.
 	Tile_coord pos = exp->get_tile();
 					// Sprite 1,4,5 look like explosions.
 	gwin->get_effects()->add_effect(new Explosion_effect(pos, exp));
