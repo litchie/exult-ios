@@ -734,16 +734,10 @@ static void Handle_keystroke
 	case SDLK_UP:
 		gwin->view_up();
 		break;
-
-//#ifdef WIN32
-	case SDLK_RETURN:
-/* Why doesn't SDL detect alt properly? Ctrl does work, btw. */
-//		if (alt) {
-			gwin->get_win()->toggle_fullscreen();
-			gwin->paint();
-//                }
+	case SDLK_F4:
+		gwin->get_win()->toggle_fullscreen();
+		gwin->paint();
 		break;
-//#endif
 	}
 }
 
