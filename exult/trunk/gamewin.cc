@@ -77,6 +77,7 @@
 #include "virstone.h"
 #include "mappatch.h"
 #include "version.h"
+#include "drag.h"
 
 using std::cerr;
 using std::cout;
@@ -188,8 +189,7 @@ Game_window::Game_window
 	    palette(-1), brightness(100), user_brightness(100), 
 	    faded_out(false), fades_enabled(true),
 	    special_light(0), last_restore_hour(6),
-	    dragging(0), dragging_gump(0),
-	    dragging_button(0), dragging_save(0),
+	    dragging(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    background_noise(new Background_noise(this)),
 	    bg_paperdolls_allowed(false), bg_paperdolls(false),
@@ -281,7 +281,7 @@ Game_window::~Game_window
 	delete background_noise;
 	delete tqueue;
 	delete win;
-	delete dragging_save;
+	delete dragging;
 	delete pal;
 	delete usecode;
 	delete removed;
@@ -2160,6 +2160,17 @@ void Game_window::view_up
 	    ((scrolltx + (w + c_tilesize - 1)/c_tilesize)/c_tiles_per_chunk)%
 							c_num_chunks,
 							INCR_CHUNK(new_tcy));
+	}
+
+/*
+ *	Get gump being dragged.
+ */
+
+Gump *Game_window::get_dragging_gump
+	(
+	)
+	{
+	return dragging ? dragging->gump : 0;
 	}
 
 /*

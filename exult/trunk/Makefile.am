@@ -38,6 +38,7 @@ exult_SOURCES =	\
 	dir.cc		\
 	dir.h		\
 	drag.cc		\
+	drag.h		\
 	effects.cc	\
 	effects.h	\
 	exceptions.h	\

@@ -24,6 +24,7 @@
 
 #include <iostream>	/* Debugging */
 #include "gamewin.h"
+#include "drag.h"
 #include "Gump_button.h"
 #include "Gump.h"
 #include "mouse.h"
@@ -40,71 +41,140 @@ using std::cout;
 using std::endl;
 
 /*
- *	Begin a possible drag when the mouse button is depressed.  Also detect
- *	if the 'close' checkmark on a gump is being depressed.
- *
- *	Output:	true iff object selected for dragging
+ *	Begin a possible drag.
  */
 
-bool Game_window::start_dragging
+Dragging_info::Dragging_info
 	(
-	int x, int y			// Position in window.
-	)
+	int x, int y			// Mouse position.
+	) : obj(0), gump(0), button(0), old_pos(-1, -1, -1),
+	    old_foot(0, 0, 0, 0), quantity(0),
+	    readied_index(-1), mousex(x), mousey(y), rect(0, 0, 0, 0),
+	    save(0), okay(false)
 	{
-	dragging = 0;
-	dragging_gump = 0;
-	dragging_button = 0;
-	dragging_readied_index = -1;
-	dragging_mousex = x;
-	dragging_mousey = y;
-	dragging_rect = Rectangle(0, 0, 0, 0);
-	delete dragging_save;
-	dragging_save = 0;
+	Game_window *gwin = Game_window::get_game_window();
 					// First see if it's a gump.
-	dragging_gump = gump_man->find_gump(x, y);
-	if (dragging_gump)
+	gump = gwin->get_gump_man()->find_gump(x, y);
+	if (gump)
 		{
-		dragging = dragging_gump->find_object(x, y);
-		if (dragging)
-			dragging_gump->get_shape_location(dragging,
-					dragging_paintx, dragging_painty);
-		else if ((dragging_button = 
-				dragging_gump->on_button(this, x, y)) != 0)
+		obj = gump->find_object(x, y);
+		if (obj)
+			gump->get_shape_location(obj,
+					paintx, painty);
+		else if ((button = gump->on_button(gwin, x, y)) != 0)
 			{
-			dragging_gump = 0;
-			if (!dragging_button->is_draggable())
-			{
-				dragging_button = 0;
-				return false;
-			}
-			dragging_button->push(this);
+			gump = 0;
+			if (!button->is_draggable())
+				return;
+			button->push(gwin);
 					// Pushed button, so make noise.
 			Audio::get_ptr()->play_sound_effect(
 					Audio::game_sfx(96));
-			painted = true;
+			gwin->set_painted();
 			}
-		else if (dragging_gump->is_draggable())
+		else if (gump->is_draggable())
 			{		// Dragging whole gump.
-			dragging_paintx = dragging_gump->get_x();
-			dragging_painty = dragging_gump->get_y();
-cout << "(x,y) rel. to gump is (" << (x-dragging_paintx) << ", " <<
-		(y-dragging_painty) << ")"<<endl;
+			paintx = gump->get_x();
+			painty = gump->get_y();
+	cout << "(x,y) rel. to gump is (" << (x-paintx) << ", " <<
+					(y-painty) << ")"<<endl;
 			}
-		else // the gump isn't draggable
-			{
-			dragging_gump = 0;
-			return false;
-			}
+		else 			// the gump isn't draggable
+			return;
 		}
-	else if (!dragging)		// Not found in gump?
+	else				// Not found in gump?
 		{
-		dragging = find_object(x, y);
-		if (!dragging)
-			return (false);
+		obj = gwin->find_object(x, y);
+		if (!obj)
+			return;
 					// Get coord. where painted.
-		get_shape_location(dragging, dragging_paintx, dragging_painty);
+		gwin->get_shape_location(obj, paintx, painty);
+		old_pos = obj->get_tile();
+		old_foot = obj->get_footprint();
 		}
-	return (true);
+	if (obj)
+		quantity = obj->get_quantity();
+	okay = true;
+	}
+
+/*
+ *	Delete dragging info.
+ */
+
+Dragging_info::~Dragging_info
+	(
+	)
+	{
+	delete save;
+	}
+
+/*
+ *	First motion.
+ *
+ *	Output:	false if failed.
+ */
+
+bool Dragging_info::start
+	(
+	int x, int y			// Mouse position.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (x - mousex <= 2 && mousex - x <= 2 &&
+	    y - mousey <= 2 && mousey - y <= 2)
+		return (false);		// Wait for greater motion.
+	if (obj)
+		{			// Don't want to move walls.
+		if (!cheat.in_hack_mover() && !obj->is_dragable())
+			{
+			Mouse::mouse->flash_shape(Mouse::tooheavy);
+			obj = 0;
+			return (false);
+			}
+		Game_object *owner = obj->get_outermost();
+		if (owner == obj)
+			{
+		    	if (!cheat.in_hack_mover() && 
+				!Fast_pathfinder_client::is_grabable(
+				   gwin->get_main_actor()->get_tile(), 
+							obj->get_tile()))
+				{
+				Mouse::mouse->flash_shape(Mouse::blocked);
+				obj = 0;
+				return (false);
+				}
+			}
+		else			// Inside something else?  Set lift.
+			obj->set_lift(owner->get_lift());
+		}
+					// Store original pos. on screen.
+	rect = gump ? (obj ? gump->get_shape_rect(obj) : gump->get_dirty())
+					: gwin->get_shape_rect(obj);
+	if (gump)			// Remove from actual position.
+		if (obj)
+			{
+			Container_game_object *owner = gump->get_container();
+			if (owner)
+				readied_index = owner->find_readied(obj);
+			gump->remove(obj);
+			}
+		else
+			gwin->get_gump_man()->remove_gump(gump);
+	else {			// +++++Really should remove_this(1),
+		gwin->get_chunk(old_pos.tx/c_tiles_per_chunk,
+				old_pos.ty/c_tiles_per_chunk)->remove(obj);
+	}
+					// Make a little bigger.
+	int pad = obj ? 8 : 12;
+	rect.x -= pad;		
+	rect.y -= pad;
+	rect.w += 2*pad;
+	rect.h += 2*pad;
+	Rectangle crect = gwin->clip_to_win(rect);
+	gwin->paint(crect);		// Paint over obj's. area.
+					// Create buffer to backup background.
+	save = gwin->get_win()->create_buffer(rect.w, rect.h);
+	return true;
 	}
 
 /*
@@ -113,97 +183,39 @@ cout << "(x,y) rel. to gump is (" << (x-dragging_paintx) << ", " <<
  *	Output:	true iff movement started/continued.
  */
 
-bool Game_window::drag
+bool Dragging_info::moved
 	(
 	int x, int y			// Mouse pos. in window.
 	)
 	{
-	if (!dragging && !dragging_gump)
+	if (!obj && !gump)
 		return (false);
-	if (dragging_rect.w == 0)
-		{			// First motion.
-		if (x - dragging_mousex <= 2 && dragging_mousex - x <= 2 &&
-		    y - dragging_mousey <= 2 && dragging_mousey - y <= 2)
-			return (false);	// Wait for greater motion.
-		if (dragging)
-			{		// Don't want to move walls.
-			if (!cheat.in_hack_mover() && !dragging->is_dragable())	
-				{
-				Mouse::mouse->flash_shape(Mouse::tooheavy);
-				dragging = 0;
-				return (false);
-				}
-			Game_object *owner = dragging->get_outermost();
-			if (owner == dragging)
-				{
-			    	if (!cheat.in_hack_mover() && 
-					!Fast_pathfinder_client::is_grabable(
-					   main_actor->get_tile(),
-					   dragging->get_tile()))
-					{
-					Mouse::mouse->flash_shape(Mouse::blocked);
-					dragging = 0;
-					return (false);
-					}
-				}
-			else		// Inside something else?  Set lift.
-				dragging->set_lift(owner->get_lift());
-			}
-					// Store original pos. on screen.
-		dragging_rect = dragging_gump ?
-			(dragging ? dragging_gump->get_shape_rect(dragging)
-				  : dragging_gump->get_dirty())
-			: get_shape_rect(dragging);
-					// Remove from actual position.
-		if (dragging_gump)
-			if (dragging)
-				{
-				Container_game_object *owner = 
-					dragging_gump->get_container();
-				if (owner)
-					dragging_readied_index = 
-						owner->find_readied(dragging);
-				dragging_gump->remove(dragging);
-				}
-			else
-				gump_man->remove_gump(dragging_gump);
-		else {			// +++++Really should remove_this(1),
-					//   but then have to save cx,cy.
-			get_chunk(dragging->get_cx(), 
-				dragging->get_cy())->remove(dragging);
-		}
-					// Make a little bigger.
-		int pad = dragging ? 8 : 12;
-		dragging_rect.x -= pad;		
-		dragging_rect.y -= pad;
-		dragging_rect.w += 2*pad;
-		dragging_rect.h += 2*pad;
-		Rectangle rect = clip_to_win(dragging_rect);
-		paint(rect);		// Paint over obj's. area.
-					// Create buffer to backup background.
-		dragging_save = win->create_buffer(dragging_rect.w,
-							dragging_rect.h);
+	Game_window *gwin = Game_window::get_game_window();
+	if (rect.w == 0)
+		{
+		if (!start(x, y))
+			return false;
 		}
 	else				// Not first time?  Restore beneath.
-		win->put(dragging_save, dragging_rect.x, dragging_rect.y);
-	int deltax = x - dragging_mousex, deltay = y - dragging_mousey;
-	dragging_mousex = x;
-	dragging_mousey = y;
+		gwin->get_win()->put(save, rect.x, rect.y);
+	int deltax = x - mousex, deltay = y - mousey;
+	mousex = x;
+	mousey = y;
 					// Shift to new position.
-	dragging_rect.shift(deltax, deltay);
+	rect.shift(deltax, deltay);
 					// Save background.
-	win->get(dragging_save, dragging_rect.x, dragging_rect.y);
-	dragging_paintx += deltax;
-	dragging_painty += deltay;
-	if (dragging)
-		paint_shape(dragging_paintx, dragging_painty, dragging->get_shape(),
-			dragging->is_translucent());
-	else				// Dragging whole gump.
+	gwin->get_win()->get(save, rect.x, rect.y);
+	paintx += deltax;
+	painty += deltay;
+	if (obj)
+		gwin->paint_shape(paintx, painty, obj->get_shape(),
+						obj->is_translucent());
+	else				// Obj whole gump.
 		{
-		dragging_gump->set_pos(dragging_paintx, dragging_painty);
-		dragging_gump->paint(this);
+		gump->set_pos(paintx, painty);
+		gump->paint(gwin);
 		}
-	painted = true;
+	gwin->set_painted();
 	return (true);
 	}
 
@@ -211,48 +223,37 @@ bool Game_window::drag
  *	Mouse was released, so drop object. 
  *      Return true iff the dropping mouseclick has been handled. 
  *		(by buttonpress, drag)
- *	Output:	MUST set dragging = 0 and dragging_gump = 0.
  */
 
-bool Game_window::drop_dragged
+bool Dragging_info::mouse_up
 	(
 	int x, int y,			// Mouse pos.
 	bool moved			// has mouse moved from starting pos?
 	)
 	{
 	bool handled = moved;
-
-	if (dragging_button)
+	Game_window *gwin = Game_window::get_game_window();
+	if (button)
 		{
-		dragging_button->unpush(this);
-		if (dragging_button->on_button(this, x, y))
+		button->unpush(gwin);
+		if (button->on_button(gwin, x, y))
 					// Clicked on button.
-			dragging_button->activate(this);
-		dragging_button = 0;
+			button->activate(gwin);
 		handled = true;
 		}
-	else if (!dragging)		// Only dragging a gump?
+	else if (!obj)			// Only dragging a gump?
 		{
-		if (!dragging_gump)
+		if (!gump)
 			return handled;
 		if (!moved)		// A click just raises it to the top.
-			gump_man->remove_gump(dragging_gump);
-		gump_man->add_gump(dragging_gump);
+			gwin->get_gump_man()->remove_gump(gump);
+		gwin->get_gump_man()->add_gump(gump);
 		}
 	else if (!moved)		// For now, if not moved, leave it.
-		{
-		dragging = 0;
-		dragging_gump = 0;
 		return handled;
-		}
-	else
-		drop(x, y);		// Drop it.
-	dragging = 0;
-	dragging_gump = 0;
-	delete dragging_save;
-	dragging_save = 0;
-	paint();
-
+	else if (!drop(x, y))		// Drop it.
+		put_back();		// Wasn't (all) moved.
+	gwin->paint();
 	return handled;
 	}
 
@@ -287,136 +288,189 @@ static bool Check_weight
 	}
 
 /*
- *	Drop at given position.
+ *	Put back object where it came from.
  */
 
-void Game_window::drop
+void Dragging_info::put_back
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (gump)			// Put back remaining/orig. piece.
+					// And don't check for volume!
+		gump->add(obj, -2, -2, -2, -2, true);
+	else
+		gwin->get_chunk(old_pos.tx/c_tiles_per_chunk,
+				old_pos.ty/c_tiles_per_chunk)->add(obj);
+	obj = 0;			// Just to be safe.
+	}
+
+/*
+ *	Drop at given position.
+ *
+ *	Output:	False if put_back() should be called.
+ */
+
+bool Dragging_info::drop
 	(
 	int x, int y			// Mouse position.
 	)
 	{
 	extern int Prompt_for_number(int, int, int, int);
+	Game_window *gwin = Game_window::get_game_window();
 					// Get orig. loc. info.
-	int oldcx = dragging->get_cx(), oldcy = dragging->get_cy();
-	int oldtx = oldcx*c_tiles_per_chunk + dragging->get_tx(),
-	    oldty = oldcy*c_tiles_per_chunk + dragging->get_ty(),
-	    oldtz = dragging->get_lift();
-	bool dropped = false;			// 1 when dropped.
+	int oldcx = old_pos.tx/c_tiles_per_chunk, 
+	    oldcy = old_pos.ty/c_tiles_per_chunk;
 	bool dropped_in_something = false;	// For detecting theft.
-	Game_object *to_drop = dragging;// If quantity, split it off.
+	Game_object *to_drop = obj;	// If quantity, split it off.
 					// Being liberal about taking stuff:
 	int okay_to_move = to_drop->get_flag(Obj_flags::okay_to_take);
-					// Save original footprint.
-	Rectangle old_foot(0, 0, 0, 0);
-	if (!dragging_gump)		// Get old footprint, top in world.
-		old_foot = dragging->get_footprint();
-	int old_top = dragging->get_lift() + 
-					get_info(dragging).get_3d_height();
+	int old_top = old_pos.tz + gwin->get_info(obj).get_3d_height();
 					// First see if it's a gump.
-	Gump *on_gump = gump_man->find_gump(x, y);
-					// Check for quantity.
-	int dragging_quantity = dragging->get_quantity();
+	Gump *on_gump = gwin->get_gump_man()->find_gump(x, y);
 					// Don't prompt if within same gump.
-	if (dragging_quantity == 1 || (on_gump && on_gump == dragging_gump) ||
-	      (dragging_quantity = Prompt_for_number(0, 
-			dragging_quantity, 1, dragging_quantity)) > 0)
+	if (quantity > 1 && (!on_gump || on_gump != gump))
+		quantity = Prompt_for_number(0, quantity, 1, quantity);
+	if (quantity <= 0)
+		return false;
+	if (quantity < obj->get_quantity())
+		{			// Need to drop a copy.
+		to_drop = gwin->create_ireg_object(
+				obj->get_shapenum(), obj->get_framenum());
+		to_drop->modify_quantity(quantity - 1);
+		}
+	if (on_gump)			// Dropping on a gump?
 		{
-		if (dragging_quantity < dragging->get_quantity())
-			{		// Need to drop a copy.
-			to_drop = new Ireg_game_object(to_drop->get_shapenum(),
-					to_drop->get_framenum(), 0, 0, 0);
-			to_drop->modify_quantity(dragging_quantity - 1);
-			}
-		if (on_gump)		// Dropping on a gump?
+		if (!Check_weight(gwin, to_drop, on_gump->get_container()))
+			return false;
+		if (!on_gump->add(to_drop, x, y, paintx, painty))
 			{
-			if (Check_weight(this, to_drop, 
-						on_gump->get_container()) &&
-			    !(dropped = on_gump->add(to_drop, x, y,
-					dragging_paintx, dragging_painty) != 0))
-				Mouse::mouse->flash_shape(Mouse::wontfit);
+			Mouse::mouse->flash_shape(Mouse::wontfit);
+			return false;
 			}
-		else
-			{		// Was it dropped on something?
-			int max_lift = cheat.in_hack_mover() ? 13 :
-						main_actor->get_lift() + 4;
-			int lift;
-			Game_object *found = find_object(x, y);
-			bool heavy = 0;
-			if (found && found != dragging &&
-			    !(heavy = !Check_weight(this, to_drop, found)) &&
-			    found->drop(to_drop))
+		}
+	else
+		{			// Was it dropped on something?
+		int max_lift = cheat.in_hack_mover() ? 13 :
+					gwin->get_main_actor()->get_lift() + 4;
+		int lift;
+		Game_object *found = gwin->find_object(x, y);
+		bool dropped = false;	// 1 when dropped.
+		if (found && found != obj)
+			{
+			if (!Check_weight(gwin, to_drop, found))
+				return false;
+			if (found->drop(to_drop))
 				dropped = dropped_in_something = true;
 					// Try to place on 'found'.
-			else if (found && !heavy && 
-				(lift = found->get_lift() +
-				get_info(found).get_3d_height()) <= max_lift &&
-				drop_at_lift(to_drop, dragging_paintx,
-						      dragging_painty, lift))
-				dropped = true;
-			else if (!heavy)
-				{	// Find where to drop it.
-				Game_object *outer = dragging->get_outermost();
-				for (lift = outer->get_lift(); 
+			else if ((lift = found->get_lift() +
+				     gwin->get_info(found).get_3d_height()) <= 
+								max_lift)
+				dropped = gwin->drop_at_lift(to_drop, 
+							paintx, painty, lift);
+			}
+					// Find where to drop it.
+		for (lift = obj->get_outermost()->get_lift(); 
 					!dropped && lift <= max_lift; lift++)
-					dropped = drop_at_lift(to_drop, 
-						dragging_paintx, 
-						dragging_painty, lift);
-				if (!dropped)
-					{
-					Mouse::mouse->flash_shape(
-							Mouse::blocked);
-					Audio::get_ptr()->play_sound_effect(
-							Audio::game_sfx(76));
-					}
-				}
-			}
-		}
-	if (dropped)			// Successful?
-		{
-		if (!dragging_gump)	// Do eggs where it came from.
-			get_chunk(oldcx, oldcy)->activate_eggs(dragging,
-			    oldtx, oldty, oldtz, oldtx, oldty);
-		else if (dragging_readied_index >= 0)
-					// Do 'unreadied' usecode.
-			dragging_gump->get_container()->call_readied_usecode(
-				this, dragging_readied_index, dragging,
-					Usecode_machine::unreadied);
-					// Check for theft.
-		if (on_gump)		// Do 'readied' usecode.
+			dropped = gwin->drop_at_lift(to_drop, paintx, 
+								painty, lift);
+		if (!dropped)
 			{
-			Container_game_object *owner = 
-				on_gump->get_container();
-			int index = owner ? owner->find_readied(dragging) : -1;
-			if (index >= 0)
-				owner->call_readied_usecode(this, index,
-					dragging, Usecode_machine::readied);
+			Mouse::mouse->flash_shape(Mouse::blocked);
+			Audio::get_ptr()->play_sound_effect(
+							Audio::game_sfx(76));
+			return false;
 			}
-					// On a barge?
-		Barge_object *barge = get_moving_barge();
-		if (barge)
-			barge->gather();// Refigure what's on barge.
-		if (!okay_to_move && !cheat.in_hack_mover() &&
-		    (dragging_gump != on_gump || dropped_in_something ||
-					// Moving:
-		     (!dragging_gump &&
-		      to_drop->get_tile().distance(
-					Tile_coord(oldtx, oldty, oldtz)) > 2)))
-			theft();			
-		if (to_drop == dragging)// Whole thing?
-			{		// Watch for stuff on top of it.
-			if (old_foot.w > 0)
-				Map_chunk::gravity(old_foot, old_top);
-			return;		// All done.
-			}
-		else			// Subtract quantity moved.
-			dragging->modify_quantity(-dragging_quantity);
 		}
-	if (dragging_gump)		// Put back remaining/orig. piece.
-					// And don't check for volume!
-		dragging_gump->add(dragging, -2, -2, -2, -2, true);
-	else
-		get_chunk(dragging->get_cx(), 
-				dragging->get_cy())->add(dragging);
+	if (!gump)			// Do eggs where it came from.
+		gwin->get_chunk(oldcx, oldcy)->activate_eggs(obj,
+			    old_pos.tx, old_pos.ty, old_pos.tz, 
+					old_pos.tx, old_pos.ty);
+	else if (readied_index >= 0)
+					// Do 'unreadied' usecode.
+		gump->get_container()->call_readied_usecode(
+			gwin, readied_index, obj, Usecode_machine::unreadied);
+	if (on_gump)			// Do 'readied' usecode.
+		{
+		Container_game_object *owner = on_gump->get_container();
+		int index = owner ? owner->find_readied(obj) : -1;
+		if (index >= 0)
+			owner->call_readied_usecode(gwin, index,
+					obj, Usecode_machine::readied);
+		}
+					// On a barge?
+	Barge_object *barge = gwin->get_moving_barge();
+	if (barge)
+		barge->gather();	// Refigure what's on barge.
+					// Check for theft.
+	if (!okay_to_move && !cheat.in_hack_mover() &&
+		    (gump != on_gump || dropped_in_something ||
+					// Moving:
+		     (!gump && to_drop->get_tile().distance(old_pos) > 2)))
+		gwin->theft();			
+	if (to_drop == obj)		// Whole thing?
+		{			// Watch for stuff on top of it.
+		if (old_foot.w > 0)
+			Map_chunk::gravity(old_foot, old_top);
+		return true;		// All done.
+		}
+					// Subtract quantity moved.
+	obj->modify_quantity(-quantity);
+	return false;			// Put back the rest.
+	}
+
+/*
+ *	Begin a possible drag when the mouse button is depressed.  Also detect
+ *	if the 'close' checkmark on a gump is being depressed.
+ *
+ *	Output:	true iff object selected for dragging
+ */
+
+bool Game_window::start_dragging
+	(
+	int x, int y			// Position in window.
+	)
+	{
+	delete dragging;
+	dragging = new Dragging_info(x, y);
+	if (dragging->okay)
+		return (true);		// Success, so far.
+	delete dragging;
+	dragging = 0;
+	}
+
+/*
+ *	Mouse moved while dragging.
+ */
+
+bool Game_window::drag
+	(
+	int x, int y			// Mouse position in window.
+	)
+	{
+	return dragging ? dragging->moved(x, y) : false;
+	}
+
+
+/*
+ *	Mouse was released, so drop object. 
+ *      Return true iff the dropping mouseclick has been handled. 
+ *		(by buttonpress, drag)
+ *	Output:	MUST set dragging = 0.
+ */
+
+bool Game_window::drop_dragged
+	(
+	int x, int y,			// Mouse pos.
+	bool moved			// has mouse moved from starting pos?
+	)
+	{
+	if (!dragging)
+		return false;
+	bool handled = dragging->mouse_up(x, y, moved);
+	delete dragging;
+	dragging = 0;
+	return handled;
 	}
 
 /*
