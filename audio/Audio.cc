@@ -498,7 +498,7 @@ Audio	*Audio::get_ptr(void)
 {
 	if(!self)
 		{
-		self=new Audio();
+		new Audio();
 		self->Init(44100,2);
 		}
 

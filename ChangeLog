@@ -1,4 +1,7 @@
 2000-11-24  Dancer Vesperman <dancer@users.sourceforge.net>
+	* audio/Audio.cc: Remove a redundant assignment
+
+2000-11-24  Dancer Vesperman <dancer@users.sourceforge.net>
 	* Adjust the initial window size for ProducerConsumerBufs
 
 2000-11-24  Dancer Vesperman <dancer@users.sourceforge.net>
