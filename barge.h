@@ -39,7 +39,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	int perm_count;			// Counts permanent parts of barge,
 					//   which proceed those placed on it.
 	unsigned char xtiles, ytiles;	// Tiles covered (when vertical).
-	unsigned char horizontal;	// Flag:  1 if horizontal.
+	unsigned char dir;		// Direction: 0=N, 1=E, 2=S, 3=W.
 	unsigned char complete;		// Flag:  all members have been read.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   not moving.
@@ -49,18 +49,18 @@ class Barge_object : public Container_game_object, public Time_sensitive
 public:
 	Barge_object(unsigned char l, unsigned char h, 
 		unsigned int shapex, unsigned int shapey, unsigned int lft,
-			int xt, int yt, int horiz)
+			int xt, int yt, int d)
 		: Container_game_object(l, h, shapex, shapey, lft),
 			perm_count(0),
-			xtiles(xt), ytiles(yt), horizontal(horiz),
+			xtiles(xt), ytiles(yt), dir(d),
 			complete(0), frame_time(0), path(0)
 		{  }
 	int is_moving()
 		{ return frame_time > 0; }
 	int get_xtiles()		// Dims., depending on direction.
-		{ return horizontal ? ytiles : xtiles; }
+		{ return (dir&1) ? ytiles : xtiles; }
 	int get_ytiles()
-		{ return horizontal ? xtiles : ytiles; }
+		{ return (dir&1) ? xtiles : ytiles; }
 	virtual ~Barge_object();
 	void gather();			// Gather up objects on barge.
 					// Start rolling/sailing.
