@@ -42,6 +42,7 @@
 #include "drag.h"
 #include "effects.h"
 #include "chunks.h"
+#include "objiter.h"
 
 #ifdef USE_EXULTSTUDIO  /* Only needed for exult studio. */
 #include "server.h"
@@ -82,6 +83,8 @@ Cheat::Cheat() {
 
 	browser = NULL;
 	tester = NULL;
+	chunksel_left = chunksel_top = c_num_chunks;
+	chunksel_right = chunksel_bottom = -1;
 }
 
 Cheat::~Cheat() {
@@ -210,7 +213,25 @@ void Cheat::toggle_tile_grid (void) {
 	gwin->set_all_dirty();
 }
 
+void Cheat::set_edit_mode(Map_editor_mode md) { 
+	edit_mode = md;
+	if (edit_mode != select_chunks) {
+		clear_chunksel();
+		gwin->set_all_dirty();
+	}
+}
+
 void Cheat::clear_chunksel(void) {
+	if (chunksel_right >= 0 && chunksel_bottom >= 0) {
+		int startx = chunksel_left, stopx = chunksel_right + 1;
+		int starty = chunksel_top, stopy = chunksel_bottom + 1;
+		for (int cy = starty; cy != stopy; cy = INCR_CHUNK(cy))
+			for (int cx = startx; cx != stopx; 
+							cx = INCR_CHUNK(cx)) {
+				Map_chunk *chunk = gmap->get_chunk(cx, cy);
+				chunk->set_selected(false);
+			}
+	}
 	chunksel_left = chunksel_top = c_num_chunks;
 	chunksel_right = chunksel_bottom = -1;
 }
@@ -227,6 +248,76 @@ void Cheat::add_chunksel(Map_chunk *chunk, bool extend) {
 	if (cy > chunksel_bottom)
 		chunksel_bottom = cy;
 	// ++++++++LATER:  Handle extend.
+}
+
+/*	Move a given chunk. */
+void Cheat::move_chunk(Map_chunk *chunk, int dx, int dy) {
+					// Figure dest. with wrapping.
+	int tox = (chunk->get_cx() + dx + c_num_chunks)%c_num_chunks;
+	int toy = (chunk->get_cy() + dy + c_num_chunks)%c_num_chunks;
+	Map_chunk *tochunk = gmap->get_chunk(tox, toy);
+	Game_object_vector tmplist;	// Delete objs. in 'tochunk'.
+	Game_object *obj;
+
+	{				// Iterator needs its own scope.
+		Object_iterator toiter(tochunk->get_objects());
+		while ((obj = toiter.get_next()) != 0)
+			if (!obj->as_npc())
+				tmplist.push_back(obj);
+	}
+	for (Game_object_vector::const_iterator it=tmplist.begin(); 
+						it!=tmplist.end(); ++it)
+		(*it)->remove_this();
+	tmplist.clear();
+					// Copy terrain into new chunk.
+	tochunk->set_terrain(chunk->get_terrain());
+	{
+		Object_iterator fromiter(chunk->get_objects());
+		while ((obj = fromiter.get_next()) != 0)
+			if (!obj->as_terrain())
+				tmplist.push_back(obj);
+	}
+	dx *= c_tiles_per_chunk;
+	dy *= c_tiles_per_chunk;
+	for (Game_object_vector::const_iterator it=tmplist.begin(); 
+						it!=tmplist.end(); ++it) {
+		obj = *it;
+		Tile_coord t = obj->get_tile();
+		// Got to move objects legally.
+		obj->move((t.tx + dx + c_num_tiles)%c_num_tiles,
+			  (t.ty + dy + c_num_tiles)%c_num_tiles, t.tz);
+	}
+					// For now, set terrain to #0.
+	chunk->set_terrain(gmap->get_terrain(0));
+	chunk->set_selected(false);
+	tochunk->set_selected(true);
+}
+
+/*	Move all the selected chunks. */
+void Cheat::move_selected_chunks(int dx, int dy) {
+	int startx, stopx, dirx, starty, stopy, diry;
+
+	if (dx <= 0) {
+		startx = chunksel_left; stopx = chunksel_right + 1; dirx = 1;
+	} else {
+		startx = chunksel_right; stopx = chunksel_left - 1; dirx = -1;
+	}
+	if (dy <= 0) {
+		starty = chunksel_top; stopy = chunksel_bottom + 1; diry = 1;
+	} else {
+		starty = chunksel_bottom; stopy = chunksel_top - 1; diry = -1;
+	}
+	for (int cy = starty; cy != stopy; cy += diry)
+		for (int cx = startx; cx != stopx; cx += dirx) {
+			Map_chunk *chunk = gmap->get_chunk(cx, cy);
+			if (chunk->is_selected())
+				move_chunk(chunk, dx, dy);
+		}
+	gwin->set_all_dirty();
+	chunksel_left = (chunksel_left + dx + c_num_chunks)%c_num_chunks;
+	chunksel_right = (chunksel_right + dx + c_num_chunks)%c_num_chunks;
+	chunksel_top = (chunksel_top + dy + c_num_chunks)%c_num_chunks;
+	chunksel_bottom = (chunksel_bottom + dy + c_num_chunks)%c_num_chunks;
 }
 
 void Cheat::set_edit_lift(int lift) {
@@ -481,7 +572,7 @@ void Cheat::delete_selected() {
  *	Move the selected objects by given #tiles.  Objects inside another are
  *	treated as being at the location of their owner.
  */
-void Cheat::move_selected(int dx, int dy, int dz) {
+void Cheat::move_selected_objs(int dx, int dy, int dz) {
 	if (selected.empty())
 		return;			// Nothing to do.
 	std::vector<Tile_coord> tiles;	// Store locations here.
@@ -520,6 +611,14 @@ void Cheat::move_selected(int dx, int dy, int dz) {
 		(*it)->move(newtx, newty, newtz);
 		}
 	}
+
+/*	Move selected objects/chunks. */
+void Cheat::move_selected(int dx, int dy, int dz) {
+	if (edit_mode == select_chunks)
+		move_selected_chunks(dx, dy);
+	else
+		move_selected_objs(dx, dy, dz);
+}
 
 /*
  *	Want lowest, southmost, then eastmost first.
