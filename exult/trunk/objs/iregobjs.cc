@@ -38,6 +38,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::ostream;
 
 /*
+ *	Get chunk coords, or 255.
+ */
+inline int Game_object::get_cxi() const
+	{ return chunk ? chunk->cx : 255; }
+inline int Game_object::get_cyi() const
+	{ return chunk ? chunk->cy : 255; }
+
+/*
  *	Paint at given spot in world.
  */
 
@@ -108,6 +116,30 @@ int Ireg_game_object::is_dragable
 	{
 					// 0 weight means 'too heavy'.
 	return get_info().get_weight() > 0;
+	}
+
+/*
+ *	Write the common IREG data for an entry.
+ */
+
+void Ireg_game_object::write_common_ireg
+	(
+	unsigned char *buf		// 4-byte buffer to be filled.
+	)
+	{
+	if (owner)
+		{			// Coords within gump.
+		buf[0] = get_tx();
+		buf[1] = get_ty();
+		}
+	else				// Coords on map.
+		{
+		buf[0] = ((get_cxi()%16) << 4) | get_tx();
+		buf[1] = ((get_cyi()%16) << 4) | get_ty();
+		}
+	int shapenum = get_shapenum(), framenum = get_framenum();
+	buf[2] = shapenum&0xff;
+	buf[3] = ((shapenum>>8)&3) | (framenum<<2);
 	}
 
 /*
