@@ -153,9 +153,12 @@ void Container_game_object::change_member_shape
 
 static int Add2keyring
 	(
-	int qual
+	int qual,
+	int framenum
 	)
 	{
+	if (framenum >=21 && framenum <= 23)
+		return 0;		// Fire, ice, blackrock in SI.
 	Keyring *ring = 
 		Game_window::get_instance()->get_usecode()->getKeyring();
 					// Valid quality & not already there?
@@ -268,7 +271,7 @@ int Container_game_object::add_quantity
 					// Adding key to SI keyring?
 			else if (GAME_SI && shapenum == 641 &&
 				 obj->get_shapenum() == 485 && delta == 1)
-				delta -= Add2keyring(qual);
+				delta -= Add2keyring(qual, framenum);
 			}
 		next.reset();			// Now try recursively.
 		while ((obj = next.get_next()) != 0)
