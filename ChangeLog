@@ -1,5 +1,6 @@
 2001-07-16  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Spellbook_gump.cc: added missing reagents, corrected order
+	* various: s/reagants/reagents/
 
 2001-07-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* exult.cc: palette-cycle 244-247 too
