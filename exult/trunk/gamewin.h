@@ -125,6 +125,8 @@ public:
 		{ return clock.get_hour(); }
 	int get_minute()
 		{ return clock.get_minute(); }
+	void fake_next_period()		// For debugging.
+		{ clock.fake_next_period(); }
 					// Get/create objs. list for a chunk.
 	Chunk_object_list *get_objects(int cx, int cy)
 		{
