@@ -6,11 +6,12 @@
  **/
 
 #include "fontvga.h"
-#include <ctype.h>
+#include <cctype>
 #include "ibuf8.h"
 
 using std::cout;
 using std::endl;
+using std::isspace;
 using std::string;
 
 /*

@@ -41,7 +41,6 @@ using std::rand;
 int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 Barge_object *Get_barge	(Game_object *obj);
 void Wait_for_arrival(Actor *actor);
-extern Mouse *mouse;
 extern unsigned char quitting_time;
 extern Usecode_value no_ret;
 
@@ -1246,7 +1245,7 @@ USECODE_INTRINSIC(get_speech_track)
 USECODE_INTRINSIC(flash_mouse)
 {
 	// flash_mouse(mouse_shape).
-	mouse->flash_shape((Mouse::Mouse_shapes) parms[0].get_int_value());
+	Mouse::mouse->flash_shape((Mouse::Mouse_shapes) parms[0].get_int_value());
 	return (no_ret);
 }
 

@@ -14,8 +14,8 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 #include "exult_types.h"
 #include "files/U7file.h"
 #include "gamewin.h"
@@ -23,7 +23,11 @@
 #include "font.h"
 #include "game.h"
 
+using std::atoi;
+using std::strchr;
 using std::string;
+using std::strlen;
+using std::strncmp;
 using std::vector;
 
 TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp)

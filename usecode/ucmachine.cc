@@ -79,7 +79,6 @@ using std::vector;
 
 extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape, char *key = 0);
 extern	bool intrinsic_trace,usecode_trace,usecode_debugging;
-extern Mouse *mouse;
 
 #if USECODE_DEBUGGER
 std::vector<int> intrinsic_breakpoints;

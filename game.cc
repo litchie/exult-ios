@@ -14,7 +14,7 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <unistd.h>
 #include "files/U7file.h"
 #include "flic/playfli.h"
@@ -32,7 +32,11 @@
 
 using std::cout;
 using std::endl;
+using std::exit;
 using std::ifstream;
+using std::strcmp;
+using std::strcpy;
+using std::strncmp;
 using std::string;
 
 Game *game = 0;

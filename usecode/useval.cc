@@ -24,20 +24,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include <fstream>
-#include <string.h>
+#include <cstring>
 #include <iomanip>
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include "useval.h"
 #include "gump_utils.h"
 
 using std::cout;
 using std::endl;
-using std::ostream;
 using std::dec;
 using std::hex;
+using std::ostream;
 using std::setfill;
 using std::setw;
+using std::strcmp;
 
 
 /*

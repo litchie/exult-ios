@@ -26,10 +26,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <io.h>
 #endif
 
-#include <fstream.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <fstream>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #if (defined(XWIN) || defined(BEOS))
 #include <sys/stat.h>
@@ -46,8 +46,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::ifstream;
 using std::ios;
+using std::memset;
+using std::ofstream;
 using std::ostream;
+using std::strchr;
+using std::strcpy;
+using std::strlen;
+using std::strncpy;
 
 /*
  *	Write out the gamedat directory from a saved game.

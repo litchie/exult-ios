@@ -16,11 +16,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <string.h>
+#include <cstring>
 
 #include "gamewin.h"
 #include "Text_gump.h"
 
+using std::strchr;
+using std::strcpy;
+using std::strlen;
 
 /*
  *	Add to the text.

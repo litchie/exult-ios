@@ -25,13 +25,14 @@ Boston, MA  02111-1307, USA.
 */
 
 #include "imagewin.h"
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
 #include <iostream>
 #include <string>
 
 using std::cout;
 using std::endl;
+using std::exit;
 
 /*
  *	Get best depth.  Returns bits/pixel.

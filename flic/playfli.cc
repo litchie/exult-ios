@@ -26,13 +26,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../autoconfig.h"
 #endif
 
-#include <string.h>
+#include <cstring>
 #include <iostream.h>
 #include "databuf.h"
 #include "playfli.h"
 #include "utils.h"
 
 using std::ifstream;
+using std::memset;
 
 playfli::playfli(const char *fli_name)
 {

@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern	Configuration *config;
 
 #include <cstdio>
-#include <stdlib.h>
+#include <cstdlib>
 #include <unistd.h>
 
 #define	TRAILING_VOC_SLOP 32
@@ -50,7 +50,11 @@ extern	Configuration *config;
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::exit;
+using std::memcpy;
+using std::memset;
 using std::string;
+using std::strncmp;
 using std::vector;
 
 
