@@ -1283,6 +1283,7 @@ static	void	Usecode_TraceReturn(Usecode_value &v)
 	cout << dec << endl;
 }
 
+#if 0	/* Not used at the moment. */
 static void Unhandled
 	(
 	int intrinsic,
@@ -1292,6 +1293,7 @@ static void Unhandled
 	{
 	Usecode_Trace("UNKNOWN",intrinsic,num_parms,parms);
 	}
+#endif
 
 static Usecode_value	no_ret;
 
@@ -1723,6 +1725,40 @@ USECODE_INTRINSIC(count_objects)
 	return(u);
 }
 
+USECODE_INTRINSIC(take_from_owner)
+{
+	// Take_from_owner(container(-357=party), shapenum, qual?? (-359=any), 
+	//						frame??(-359=any)).
+	// Remove object and return it.
+	int oval  = parms[0].get_int_value(),
+	    shnum = parms[1].get_int_value(),
+	    qual  = parms[2].get_int_value(),
+	    frnum = parms[3].get_int_value();
+	if (oval != -357)		// Not the whole party?
+		{
+		Game_object *obj = get_item(parms[0]);
+		if (!obj)
+			return Usecode_value(0);
+		Game_object *f = obj->remove_and_return(shnum, qual, frnum);
+		return Usecode_value((long) f);
+		}
+					// Look through whole party.
+	Usecode_value party = get_party();
+	int cnt = party.get_array_size();
+	for (int i = 0; i < cnt; i++)
+		{
+		Game_object *obj = get_item(party.get_elem(i));
+		if (obj)
+			{
+			Game_object *f = obj->remove_and_return(shnum, qual,
+									frnum);
+			if (f)
+				return Usecode_value((long) f);
+			}
+		}
+	return Usecode_value(0);
+}
+
 USECODE_INTRINSIC(get_cont_items)
 {
         // Get cont. items(container, shape, qual, frame).
@@ -2067,13 +2103,8 @@ USECODE_INTRINSIC(run_usecode)
 		cout << "\nRun_usecode:  first walk to (" << dx << ", " <<
 				dy << ", " << dz << ")\n";
 		if (!gwin->get_main_actor()->walk_path_to_tile(dest))
-#if 0 /* ++++Should do this:  return 0 if failure occurs. */
-			{		// Need brackets.
+					// Failed to find path.  Return 0.
 			return(u);
-			}
-#endif
-					// +++++For now, never fail:
-			gwin->get_main_actor()->walk_to_tile(dx, dy, dz);
 		}
 	else
 		{	//++++++Not sure about this.
@@ -2094,7 +2125,7 @@ USECODE_INTRINSIC(run_usecode)
 USECODE_INTRINSIC(direction_from)
 {
 	// ?Direction from parm[0] -> parm[1].
-	// Rets. 0-7.  Is 0 north?
+	// Rets. 0-7, with 0 = North, 1 = Northeast, etc.
 	// Same as 0x1a??
 	Usecode_value u=find_direction(parms[0], parms[1]);
 	return(u);
@@ -2211,8 +2242,7 @@ struct
 	USECODE_INTRINSIC_PTR(update_last_created), // 0x26
 	USECODE_INTRINSIC_PTR(get_npc_name), // 0x27
 	USECODE_INTRINSIC_PTR(count_objects), // 0x28
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x29 ++++++++++++++
-	// take_from_npc(npc, itemshape, -359 (qual?), -359 (frame?))??
+	USECODE_INTRINSIC_PTR(take_from_owner), // 0x29
 	USECODE_INTRINSIC_PTR(get_cont_items), // 0x2a
 	USECODE_INTRINSIC_PTR(remove_party_items), // 0x2b
 	USECODE_INTRINSIC_PTR(add_party_items), // 0x2c

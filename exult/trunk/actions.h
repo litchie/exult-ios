@@ -38,9 +38,11 @@ class PathFinder;
 class Actor_action
 	{
 public:
+	virtual ~Actor_action() { }
 					// Handle time event.
 	virtual int handle_event(Actor *actor) = 0;
-	virtual void stop(Actor *actor) = 0;	// Stop moving.
+	virtual void stop(Actor *actor)	// Stop moving.
+		{  }
 					// Set simple path to destination.
 	virtual Actor_action *walk_to_tile(Tile_coord src, Tile_coord dest);
 	};
@@ -55,12 +57,30 @@ class Path_walking_actor_action : public Actor_action
 	int frame_index;		// Index within frame sequence.
 public:
 	Path_walking_actor_action(PathFinder *p);
-	~Path_walking_actor_action();
+	virtual ~Path_walking_actor_action();
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
 	virtual void stop(Actor *actor);// Stop moving.
 					// Set simple path to destination.
 	virtual Actor_action *walk_to_tile(Tile_coord src, Tile_coord dest);
+	};
+
+/*
+ *	Go through a series of frames.
+ */
+class Frames_actor_action
+	{
+	char *frames;			// List to go through (a -1 means to
+					//   leave frame alone.)
+	int cnt;			// Size of list.
+	int index;			// Index for next.
+	int speed;			// Frame delay in 1/1000 secs.
+public:
+	Frames_actor_action(char *f, int c, int spd = 200);
+	virtual ~Frames_actor_action()
+		{ delete [] frames; }
+					// Handle time event.
+	virtual int handle_event(Actor *actor);
 	};
 
 /*
@@ -73,11 +93,9 @@ class Sequence_actor_action : public Actor_action
 public:
 	Sequence_actor_action(Actor_action **act) : actions(act), index(0)
 		{  }
-	~Sequence_actor_action();
+	virtual ~Sequence_actor_action();
 					// Handle time event.
 	virtual int handle_event(Actor *actor);
-	virtual void stop(Actor *actor)	// Stop moving.
-		{  }
 	};
 
 #endif	/* INCL_ACTIONS */
