@@ -27,7 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "utils.h"
 
-#if 0	/* +++++++++++++Finish later. */
 /*
  *	Read in actor from a given file.
  */
@@ -35,17 +34,19 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Actor::Actor
 	(
 	istream& nfile,			// 'npc.dat', generally.
-	int num,			// NPC #.
+	int num,			// NPC #, or -1.
 	int has_usecode			// 1 if a 'type1' NPC.
 	) : Container_game_object(), npc_num(num), party_id(-1),
 	    frame_time(0),
-	    usecode(uc), flags(0), action(0), usecode_dir(0), two_handed(0)
+	    flags(0), action(0), usecode_dir(0), two_handed(0)
 	{
 	init();				// Clear rest of stuff.
 	unsigned locx = Read1(nfile);	// Get chunk/tile coords.
 	unsigned locy = Read1(nfile);
-					// Read & set shape #.
-	set_shapenum(Read2(nfile) & 0x3f);
+					// Read & set shape #, frame #.
+	unsigned short shnum = Read2(nfile);
+	set_shape(shnum & 0x3f);
+	set_frame(shnum >> 10);
 	int iflag1 = Read2(nfile);	// Inventory flag.
 	int schunk = Read1(nfile);	// Superchunk #.
 	Read1(nfile);			// Skip next byte.
@@ -63,11 +64,11 @@ Actor::Actor
 	int strength_val = Read1(nfile);
 	set_property((int) Actor::strength, strength_val);
 					// Hits = strength, I think.
-	actor->set_property((int) Actor::health, strength_val);
+	set_property((int) Actor::health, strength_val);
 	set_property((int) Actor::dexterity, Read1(nfile));
 	set_property((int) Actor::intelligence, Read1(nfile));
 	set_property((int) Actor::combat, Read1(nfile));
-	int schedtype = Read1(nfile);
+	schedule_type = Read1(nfile);
 	nfile.seekg(4, ios::cur); 	//??
 	int mana_val = Read1(nfile);	// ??
 	set_property((int) Actor::mana, mana_val);
@@ -82,29 +83,19 @@ Actor::Actor
 	namebuf[16] = 0;		// Be sure it's 0-delimited.
 	name = strdup(namebuf);		// Store copy of it.
 	Game_window *gwin = Game_window::get_game_window();
-	if (iflag1 && iflag2)		// Inventory?  Read.
-		gwin->read_ireg_objects(nfile, scx, scy, this);
 					// Get abs. chunk. coords. of schunk.
 	int scy = 16*(schunk/12);
 	int scx = 16*(schunk%12);
+	if (iflag1 && iflag2)		// Inventory?  Read.
+		gwin->read_ireg_objects(nfile, scx, scy, this);
 	int cx = locx >> 4;		// Get chunk indices within schunk.
 	int cy = locy >> 4;
 					// Get tile #'s.
 	int tilex = locx & 0xf;
 	int tiley = locy & 0xf;
-+++++++++++++++++++++++++++++++++++++++++
-	Chunk_object_list *olist = get_objects(scx + cx, scy + cy);
-		actor->move(0, scx + cx, scy + cy, olist,
-				tilex, tiley, (shape[1]>>2) & 0x1f, lift);
-					// Put in chunk's NPC list.
-		if (npc_actor)
-			{
-			npc_actor->switched_chunks(0, olist);
-			npc_actor->set_schedule_type(schedtype);
-			}
-		else if (main_actor)
-			main_actor->switched_chunks(0, olist);
-					// Set attributes.
+	Chunk_object_list *olist = gwin->get_objects(scx + cx, scy + cy);
+					// Put into chunk list.
+	move(0, scx + cx, scy + cy, olist, tilex, tiley, -1, -1);
 #if 0
 cout << i << " Creating " << namebuf << ", shape = " << 
 	actor->get_shapenum() <<
@@ -114,7 +105,6 @@ cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 	<< lift << '\n';
 #endif
 	}
-#endif
 
 /*
  *	Write out to given file.
@@ -167,3 +157,50 @@ void Actor::write
 	nfile.write(namebuf, 16);
 	write_contents(nfile);		// Write what he holds.
 	}
+
+/*
+ *	Read in main actor from a given file.
+ */
+
+Main_actor::Main_actor
+	(
+	istream& nfile,			// 'npc.dat', generally.
+	int num,			// NPC #.
+	int has_usecode			// 1 if a 'type1' NPC.
+	) : Actor(nfile, num, has_usecode)
+	{
+	Chunk_object_list *olist = Game_window::get_game_window()->
+				get_objects(get_cx(), get_cy());
+	switched_chunks(0, olist);
+	}
+
+/*
+ *	Read in npc actor from a given file.
+ */
+
+Npc_actor::Npc_actor
+	(
+	istream& nfile,			// 'npc.dat', generally.
+	int num,			// NPC #.
+	int has_usecode			// 1 if a 'type1' NPC.
+	) : Actor(nfile, num, has_usecode)
+	{
+	Chunk_object_list *olist = Game_window::get_game_window()->
+				get_objects(get_cx(), get_cy());
+	switched_chunks(0, olist);	// Put in chunk's NPC list.
+	}
+
+/*
+ *	Read in monster actor from a given file.
+ */
+
+Monster_actor::Monster_actor
+	(
+	istream& nfile,			// 'monster.dat', generally.
+	int num,			// MONSTER #.
+	int has_usecode			// 1 if a 'type1' MONSTER.
+	) : Npc_actor(nfile, num, has_usecode)
+	{
+	}
+
+

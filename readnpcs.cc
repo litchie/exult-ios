@@ -39,11 +39,17 @@ void Game_window::read_npcs
 	{
 	ifstream nfile;
 	u7open(nfile, NPC_DAT);
-	num_npcs1 = Read2(nfile);		// Get counts.
+	num_npcs1 = Read2(nfile);	// Get counts.
 	int cnt2 = Read2(nfile);
 	num_npcs = num_npcs1 + cnt2;
 	npcs = new Actor *[num_npcs];
 	int i;
+#if 0	/* +++++New way. Activate when tested. */
+					// Create main actor.
+	npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
+	for (i = 1; i < num_npcs; i++)	// Create the rest.
+		npcs[1] = new Npc_actor(nfile, i, i < num_npcs1);
+#else	/* +++++Old way. */
 	for (i = 0; i < num_npcs; i++)
 		{
 					// Get chunk/tile coords.
@@ -152,19 +158,23 @@ cout << "Chunk coords are (" << scx + cx << ", " << scy + cy << "), lift is "
 		if (iflag1 && iflag2)	// Inventory?  Read (but ignore++++).
 			read_ireg_objects(nfile, scx, scy, actor);
 		}
+#endif
 	read_schedules();		// Now get their schedules.
-	ifstream mfile;			// Now get monsters.
-	u7open(mfile, MONSTERS);
-	num_monsters = Read1(mfile);	// Get count.
-					// Create list, and read it in.
-	monster_info = new Monster_info[num_monsters];
-	unsigned char monster[25];
-	for (i = 0; i < num_monsters; i++)
+	if (!monster_info)		// Might be a 'restore'.
 		{
-		int shape = Read2(mfile);
-		mfile.read(monster, 23);// Get the rest.
-		monster_info[i].set(shape, monster[0], monster[1],
+		ifstream mfile;		// Now get monster info.
+		u7open(mfile, MONSTERS);
+		num_monsters = Read1(mfile);
+					// Create list, and read it in.
+		monster_info = new Monster_info[num_monsters];
+		unsigned char monster[25];
+		for (i = 0; i < num_monsters; i++)
+			{
+			int shape = Read2(mfile);
+			mfile.read(monster, 23);// Get the rest.
+			monster_info[i].set(shape, monster[0], monster[1],
 				monster[2], monster[3], monster[4]);
+			}
 		}
 	}
 
