@@ -428,6 +428,130 @@ cout << "Frame changed to " << adj->value << '\n';
 	}
 
 /*
+ *	Search for an entry.
+ */
+
+void Shape_chooser::search
+	(
+	char *srch,			// What to search for.
+	int dir				// 1 or -1.
+	)
+	{
+	if (!names)
+		return;			// In future, maybe find shape #?
+					// Start with selection, or top.
+	int start = info[selected >= 0 ? selected : 0].shapenum + dir;
+	int stop = dir == -1 ? -1 : num_shapes;
+	int i;
+	for (i = start; i != stop; i += dir)
+		{
+		if (strstr(names[i], srch))
+			break;		// Found it.
+		}
+	if (i == stop)
+		return;			// Not found.
+	scroll(i);
+	select(0);			// It's at top.
+	GtkAdjustment *adj = gtk_range_get_adjustment(GTK_RANGE(shape_scroll));
+	gtk_adjustment_set_value(adj, info[0].shapenum);
+	show();
+	}
+
+/*
+ *	Callbacks for 'search' buttons:
+ */
+extern "C" void
+on_find_shape_down_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Shape_chooser *chooser = (Shape_chooser *) user_data;
+	chooser->search(gtk_entry_get_text(
+			GTK_ENTRY(chooser->get_find_text())), 1);
+}
+extern "C" void
+on_find_shape_up_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Shape_chooser *chooser = (Shape_chooser *) user_data;
+	chooser->search(gtk_entry_get_text(
+			GTK_ENTRY(chooser->get_find_text())), -1);
+}
+
+/*
+ *	Create box with 'find' and 'history' controls.
+ */
+
+GtkWidget *Shape_chooser::create_search_controls
+	(
+	)
+	{
+	GtkWidget *frame = gtk_frame_new (NULL);
+	gtk_widget_show(frame);
+
+	GtkWidget *hbox1 = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox1);
+	gtk_container_add (GTK_CONTAINER (frame), hbox1);
+
+	GtkWidget *hbox2 = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
+
+	GtkWidget *label1 = gtk_label_new ("Find:");
+	gtk_widget_show (label1);
+	gtk_box_pack_start (GTK_BOX (hbox2), label1, FALSE, FALSE, 0);
+	gtk_misc_set_padding (GTK_MISC (label1), 4, 0);
+
+	find_text = gtk_entry_new ();
+	gtk_widget_show (find_text);
+	gtk_box_pack_start (GTK_BOX (hbox2), find_text, FALSE, FALSE, 0);
+	gtk_widget_set_usize (find_text, 110, -2);
+
+	GtkWidget *hbuttonbox1 = gtk_hbutton_box_new ();
+	gtk_widget_show (hbuttonbox1);
+	gtk_box_pack_start (GTK_BOX (hbox2), hbuttonbox1, FALSE, FALSE, 0);
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox1), 
+							GTK_BUTTONBOX_START);
+	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox1), 0);
+//	gtk_button_box_set_child_ipadding (GTK_BUTTON_BOX(hbuttonbox1), 0, -1);
+
+	GtkWidget *find_shape_down = gtk_button_new_with_label ("Down");
+	gtk_widget_show (find_shape_down);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox1), find_shape_down);
+	GTK_WIDGET_SET_FLAGS (find_shape_down, GTK_CAN_DEFAULT);
+
+	GtkWidget *find_shape_up = gtk_button_new_with_label ("Up");
+	gtk_widget_show (find_shape_up);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox1), find_shape_up);
+	GTK_WIDGET_SET_FLAGS (find_shape_up, GTK_CAN_DEFAULT);
+#if 0
+	GtkWidget *hbox3 = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox3);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox3, FALSE, FALSE, 0);
+
+	GtkWidget *label2 = gtk_label_new ("History:");
+	gtk_widget_show (label2);
+	gtk_box_pack_start (GTK_BOX (hbox3), label2, FALSE, FALSE, 0);
+	gtk_misc_set_padding (GTK_MISC (label2), 4, 0);
+
+	GtkWidget *combo1 = gtk_combo_new ();
+	gtk_widget_show (combo1);
+	gtk_box_pack_start (GTK_BOX (hbox3), combo1, TRUE, TRUE, 0);
+
+	GtkWidget *history_combo = GTK_COMBO (combo1)->entry;
+	gtk_widget_show (history_combo);
+	gtk_widget_set_usize (history_combo, 120, -2);
+#endif
+
+	gtk_signal_connect (GTK_OBJECT (find_shape_down), "clicked",
+                      GTK_SIGNAL_FUNC (on_find_shape_down_clicked),
+                      this);
+	gtk_signal_connect (GTK_OBJECT (find_shape_up), "clicked",
+                      GTK_SIGNAL_FUNC (on_find_shape_up_clicked),
+                      this);
+	return frame;
+	}
+
+/*
  *	Create the list.
  */
 
@@ -436,7 +560,7 @@ Shape_chooser::Shape_chooser
 	Vga_file *i,			// Where they're kept.
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h			// Dimensions.
-	) : Shape_draw(i, palbuf, gtk_drawing_area_new()),
+	) : Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
 		shapenum0(0),
 		info(0), info_cnt(0), num_per_row(0), 
 		selected(-1), sel_changed(0)
@@ -454,7 +578,7 @@ Shape_chooser::Shape_chooser
 	GtkWidget *hbox = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
-	
+
 					// A frame looks nice.
 	GtkWidget *frame = gtk_frame_new(NULL);
 	gtk_frame_set_shadow_type(GTK_FRAME(frame), GTK_SHADOW_IN);
@@ -522,6 +646,10 @@ Shape_chooser::Shape_chooser
 					GTK_SIGNAL_FUNC(frame_changed), this);
 	gtk_box_pack_start(GTK_BOX(hbox1), fspin, FALSE, FALSE, 0);
 	gtk_widget_show(fspin);
+
+					// Add search controls to bottom.
+	gtk_box_pack_start(GTK_BOX(vbox), create_search_controls(),
+						FALSE, FALSE, 0);
 	}
 
 /*
