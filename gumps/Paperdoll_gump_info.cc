@@ -801,23 +801,23 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// RINGS
 
 	// Invisibilty Ring
-	{     296, 0,      Actor::lfinger,   OT_Normal,   true,   120,     0,      2,   4 },
-	{     296, 0,      Actor::rfinger,   OT_Normal,   true,   120,     1,      3,   5 },
+	{     296, 0,      Actor::lfinger,   OT_Normal,  false,   120,     0,      2,   4 },
+	{     296, 0,      Actor::rfinger,   OT_Normal,  false,   120,     1,      3,   5 },
 	// Ring of Protection
-	{     297, 0,      Actor::lfinger,   OT_Normal,   true,   148,     0,      2,   4  },
-	{     297, 0,      Actor::rfinger,   OT_Normal,   true,   148,     1,      3,   5 },
+	{     297, 0,      Actor::lfinger,   OT_Normal,  false,   148,     0,      2,   4  },
+	{     297, 0,      Actor::rfinger,   OT_Normal,  false,   148,     1,      3,   5 },
 	// Ring of Regeneration
-	{     298, 0,      Actor::lfinger,   OT_Normal,   true,   122,     0,      2,   4 },
-	{     298, 0,      Actor::rfinger,   OT_Normal,   true,   122,     1,      3,   5 },
+	{     298, 0,      Actor::lfinger,   OT_Normal,  false,   122,     0,      2,   4 },
+	{     298, 0,      Actor::rfinger,   OT_Normal,  false,   122,     1,      3,   5 },
 	// Wedding Ring
-	{     295, 0,      Actor::lfinger,   OT_Normal,   true,   147,     0,      2,   4 },
-	{     295, 0,      Actor::rfinger,   OT_Normal,   true,   147,     1,      3,   5 },
+	{     295, 0,      Actor::lfinger,   OT_Normal,  false,   147,     0,      2,   4 },
+	{     295, 0,      Actor::rfinger,   OT_Normal,  false,   147,     1,      3,   5 },
 	// Ring
-	{     640, -1,      Actor::lfinger,   OT_Normal,   true,   147,     0,      2,   4 },
-	{     640, -1,      Actor::rfinger,   OT_Normal,   true,   147,     1,      3,   5 },
+	{     640, -1,     Actor::lfinger,   OT_Normal,  false,   147,     0,      2,   4 },
+	{     640, -1,     Actor::rfinger,   OT_Normal,  false,   147,     1,      3,   5 },
 	// Ethereal Ring
-	{     759, -1,      Actor::lfinger,   OT_Normal,   true,   148,     0,      2,   4 },
-	{     759, -1,      Actor::rfinger,   OT_Normal,   true,   148,     1,      3,   5 },
+	{     759, -1,     Actor::lfinger,   OT_Normal,  false,   148,     0,      2,   4 },
+	{     759, -1,     Actor::rfinger,   OT_Normal,  false,   148,     1,      3,   5 },
 
 
 	// BOOTS
