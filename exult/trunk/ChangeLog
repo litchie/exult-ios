@@ -1,3 +1,8 @@
+2001-05-05  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Working on server.  It's now polled in the main loop
+	(Server_delay()) in XWIN builds.  (Doesn't do anything useful yet.)
+
 2001-05-03  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* exult.cc: Chnaged from "X-windows Ultima 7 map browser" to 

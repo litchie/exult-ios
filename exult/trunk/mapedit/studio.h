@@ -34,6 +34,7 @@ private:
 	char			**names;
 	Object_browser		*browser;
 	GtkWidget		*eggwin;// Egg window.
+	int			server_socket;
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();
@@ -51,6 +52,7 @@ public:
 	void open_egg_window();
 	void close_egg_window();
 	void run();
+	void connect_to_server();
 };
 
 #endif

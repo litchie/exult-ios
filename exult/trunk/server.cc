@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/un.h>
 #include <stdio.h>
 
+#include "server.h"
 #include "config.h"
 #include "utils.h"
 
@@ -54,7 +55,7 @@ inline void Set_highest_fd
 	(
 	)
 	{
-	int highest_fd = xfd;		// Figure highest to listen to.
+	highest_fd = xfd;		// Figure highest to listen to.
 	if (listen_socket > highest_fd)
 		highest_fd = listen_socket;
 	if (client_socket > highest_fd)
@@ -118,12 +119,40 @@ void Server_close
 
 static void Handle_client_message
 	(
-	int fd				// Socket to client.
+	int& fd				// Socket to client.  May be closed.
 	)
 	{
-	char buf[256];
-	int len = read(fd, buf, sizeof(buf));
+	unsigned char buf[256];		// +++++We should buffer reads.
+	int len = read(fd, buf, 1);	// Get magic.
 	cerr << "Client message read: " << len << " bytes" << endl;
+	if (!len)			// Closed?
+		{
+		close(fd);
+		fd = -1;
+		Set_highest_fd();
+		return;
+		}
+	if (len == -1)			// Nothing available?
+		return;
+	if (buf[0] != Exult_server::magic)
+		{
+		cout << "Bad magic read" << endl;
+		return;
+		}
+	if (read(fd, buf, 3) != 3)
+		{
+		cout << "Couldn't read length+type" << endl;
+		return;
+		}
+	int datalen = buf[0] | (buf[1]<<8);
+	int type = buf[2];		// Message type.
+	if (datalen > Exult_server::maxlength)
+		{
+		cout << "Length " << datalen << " exceeds max" << endl;
+		//+++++++++Eat the chars.
+		return;
+		}
+	datalen = read(fd, buf, datalen);// Read data.
 	//+++++++++++
 	}
 
@@ -150,7 +179,7 @@ void Server_delay
 					// Wait for timeout or event.
 	if (select(highest_fd, &rfds, 0, 0, &timer) > 0)
 		{			// Something's come in.
-		if (FD_ISSET(listen_socket, &rfds))
+		if (listen_socket >= 0 && FD_ISSET(listen_socket, &rfds))
 			{		// New client connection.
 					// For now, just one at a time.
 			if (client_socket >= 0)
@@ -158,9 +187,12 @@ void Server_delay
 			client_socket = accept(listen_socket, 0, 0);
 			cout << "Accept returned client_socket = " <<
 							client_socket << endl;
+					// Non-blocking.
+			fcntl(client_socket, F_SETFL, 
+				fcntl(client_socket, F_GETFL) | O_NONBLOCK);
 			Set_highest_fd();
 			}
-		if (FD_ISSET(client_socket, &rfds))
+		if (client_socket >= 0 && FD_ISSET(client_socket, &rfds))
 			Handle_client_message(client_socket);
 		}
 	}
