@@ -15,10 +15,10 @@
 UCData::UCData() : _noconf(false), _rawops(false),
                    _autocomment(false), _uselesscomment(false),
                    _verbose(false), _ucdebug(false),
-                   _basic(false),
-                   _mode(MODE_NONE), _game(GAME_BG),
+                   _basic(false), _game(GAME_BG),
                    _output_list(false), _output_asm(false),
-                   _output_ucz(false), _mode_all(false), _mode_dis(false),
+                   _output_ucz(false), _output_flag(false),
+                   _mode_all(false), _mode_dis(false),
                    _search_opcode(-1),
                    _search_intrinsic(-1),
                    _search_func(-1)
@@ -37,25 +37,24 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 	/* Parse command line */
 	for(unsigned int i=1; i<argc; i++)
 	{
-		if     (strcmp(argv[i], "-si" )==0)  _game    = GAME_SI;
-		else if(strcmp(argv[i], "-bg" )==0)  _game    = GAME_BG;
+		if     (strcmp(argv[i], "-si" )==0) _game    = GAME_SI;
+		else if(strcmp(argv[i], "-bg" )==0) _game    = GAME_BG;
 
-		else if(strcmp(argv[i], "-a"  )==0)  { _mode  = MODE_ALL; _mode_all=true; }
-		else if(strcmp(argv[i], "-f"  )==0)  _mode    = MODE_FLAG_DUMP;
-//		else if(strcmp(argv[i], "-c"  )==0)  _mode    = MODE_OPCODE_SCAN; // Opcode scan mode
+		else if(strcmp(argv[i], "-a"  )==0) { _mode_all=true; }
 
-		else if(strcmp(argv[i], "-nc" )==0)  _noconf  = true;
-		else if(strcmp(argv[i], "-ro" )==0)  _rawops  = true;
-		else if(strcmp(argv[i], "-ac" )==0)  _autocomment = true;
-		else if(strcmp(argv[i], "-uc" )==0)  _uselesscomment = true;
-		else if(strcmp(argv[i], "-v"  )==0)  _verbose = true;
-		else if(strcmp(argv[i], "-dbg")==0)  _ucdebug = true;
-		else if(strcmp(argv[i], "-b"  )==0)  _basic = true;
+		else if(strcmp(argv[i], "-nc" )==0) _noconf  = true;
+		else if(strcmp(argv[i], "-ro" )==0) _rawops  = true;
+		else if(strcmp(argv[i], "-ac" )==0) _autocomment = true;
+		else if(strcmp(argv[i], "-uc" )==0) _uselesscomment = true;
+		else if(strcmp(argv[i], "-v"  )==0) _verbose = true;
+		else if(strcmp(argv[i], "-dbg")==0) _ucdebug = true;
+		else if(strcmp(argv[i], "-b"  )==0) _basic = true;
 
-		else if(strcmp(argv[i], "-fl" )==0)  _output_list = true;
-		else if(strcmp(argv[i], "-fa" )==0)  _output_asm  = true;
-		else if(strcmp(argv[i], "-fz" )==0)  _output_ucz  = true;
-		else if(strcmp(argv[i], "-fs" )==0)  _output_ucz  = true;
+		else if(strcmp(argv[i], "-fl" )==0) _output_list = true;
+		else if(strcmp(argv[i], "-fa" )==0) _output_asm  = true;
+		else if(strcmp(argv[i], "-fz" )==0) _output_ucz  = true;
+		else if(strcmp(argv[i], "-fs" )==0) _output_ucz  = true;
+		else if(strcmp(argv[i], "-ff" )==0) _output_flag = true;
 
 		else if(argv[i][0] != '-')
 		{
@@ -68,7 +67,6 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 			else
 			{
 				if(verbose()) cout << "Disassembling Function: " << _search_func << endl;
-				_mode = MODE_DISASSEMBLY;
 				_mode_dis = true;
 			}
 		}
@@ -115,27 +113,16 @@ void UCData::disassamble()
 			_foundfunc=true;
 			bool _func_printed=false; // to test if we've actually printed a function ouput
 
+			if(output_list())
+			{
+				_funcs[i]->output_list(cout, i, ucdebug());
+				_func_printed=true;
+			}
+			
 			if(output_ucz())
 			{
 				_funcs[i]->parse_ucs(_funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), _basic);
 				_funcs[i]->output_ucs(cout, _funcmap, ((_game == GAME_SI) ? si_uc_intrinsics : bg_uc_intrinsics), uselesscomment());
-				_func_printed=true;
-			}
-
-			if(output_list())
-			{
-			    cout << "#" << setbase(10) << setw(4) << i << setbase(16) << ": "
-			         << (_funcs[i]->_return_var ? '&' : ' ')
-			         << setw(4) << _funcs[i]->_funcid   << "H  "
-			         << setw(8) << _funcs[i]->_offset   << "  "
-			         << setw(4) << _funcs[i]->_funcsize << "  "
-			         << setw(4) << _funcs[i]->_datasize << "  "
-			         << setw(4) << _funcs[i]->codesize() << "  ";
-				
-			    if(ucdebug())
-					cout << _funcs[i]->_data.find(0)->second;
-			
-			    cout << endl;
 				_func_printed=true;
 			}
 
@@ -153,27 +140,35 @@ void UCData::disassamble()
 		printf("Functions: %d\n", _funcs.size());
 	}
 
-//	if(uc.mode()==MODE_OPCODE_SEARCH)
-//		output_flags(funcs);
-
 	if(output_list())
 	  cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
-
 }
 
-void UCData::dump_flags()
+/* FIXME: Need to remove the hard coded opcode numbers (0x42 and 0x43) and replace them
+	with 'variables' in the opcodes.txt file, that signify if it's a pop/push and a flag */
+void UCData::dump_flags(ostream &o)
 {
+	if(!(game_bg() || game_si()))
+	{
+		cout << "This option only works for U7:BG and U7:SI" << endl;
+		return;
+	}
   load_funcs();
 
   // don't need to delete "flags" the pointers are already owned.
-  vector<FlagData *> flags;
+  vector<FlagData> flags;
 
   // *BLEH* ugly!
-  for(unsigned int i=0; i<_funcs.size(); i++)
-    for(unsigned int j=0; j<_funcs[i]->_flagcount.size(); j++)
-      flags.push_back(_funcs[i]->_flagcount[j]);
-
-  cout << "Number of flags found: " << setbase(10) << flags.size() << endl;
+  for(vector<UCFunc *>::iterator func=_funcs.begin(); func!=_funcs.end(); func++)
+    for(vector<UCc>::iterator op=(*func)->_opcodes.begin(); op!=(*func)->_opcodes.end(); op++)
+    {
+    	if(op->_id==0x42)
+    		flags.push_back(FlagData((*func)->_funcid, op->_offset, op->_params_parsed[0], FlagData::GETFLAG));
+		else if(op->_id==0x43)
+    		flags.push_back(FlagData((*func)->_funcid, op->_offset, op->_params_parsed[0], FlagData::SETFLAG));
+	}
+		
+	o << "Number of flags found: " << setbase(10) << flags.size() << endl << endl;
 
   // output per function
   {
@@ -183,20 +178,20 @@ void UCData::dump_flags()
     int currfunc = -1;
     for(unsigned int i=0; i<flags.size(); i++)
     {
-      if(currfunc!=flags[i]->func())
+      if(currfunc!=flags[i].func())
       {
-        cout << "Function: " << setw(4) << flags[i]->func() << endl;
-        currfunc=flags[i]->func();
+        cout << "Function: " << setw(4) << flags[i].func() << endl;
+        currfunc=flags[i].func();
         cout << "              flag  offset" << endl;
       }
 
       cout << "        ";
-      if(flags[i]->access()==FlagData::GETFLAG)
+      if(flags[i].access()==FlagData::GETFLAG)
         cout << "push  ";
-      else if(flags[i]->access()==FlagData::SETFLAG)
+      else if(flags[i].access()==FlagData::SETFLAG)
         cout << "pop   ";
-      cout << setw(4) << flags[i]->flag()   << "  "
-           << setw(4) << flags[i]->offset() << endl;
+      cout << setw(4) << flags[i].flag()   << "  "
+           << setw(4) << flags[i].offset() << endl;
     }
   }
   // output per flag
@@ -207,44 +202,23 @@ void UCData::dump_flags()
     unsigned int currflag = (unsigned int)-1;
     for(unsigned int i=0; i<flags.size(); i++)
     {
-      if(currflag!=flags[i]->flag())
+      if(currflag!=flags[i].flag())
       {
-        cout << "Flag: " << setw(4) << flags[i]->flag() << endl;
-        currflag=flags[i]->flag();
+        cout << "Flag: " << setw(4) << flags[i].flag() << endl;
+        currflag=flags[i].flag();
         cout << "              func  offset" << endl;
       }
 
       cout << "        ";
-      if(flags[i]->access()==FlagData::GETFLAG)
+      if(flags[i].access()==FlagData::GETFLAG)
         cout << "push  ";
-      else if(flags[i]->access()==FlagData::SETFLAG)
+      else if(flags[i].access()==FlagData::SETFLAG)
         cout << "pop   ";
-      cout << setw(4) << flags[i]->func()   << "  "
-           << setw(4) << flags[i]->offset() << endl;
+      cout << setw(4) << flags[i].func()   << "  "
+           << setw(4) << flags[i].offset() << endl;
     }
   }
   // don't need to delete "flags" the pointers are already owned.
-}
-
-void UCData::list_funcs()
-{
-  load_funcs();
-
-/*  if( ( ( uc._search_func == -1 ) || (uc.mode()==MODE_OPCODE_SCAN) )
-     && ( uc._search_opcode == -1 ) && ( uc._search_intrinsic == -1 ) )*/
-    cout << "Function     offset    size  data  code" << endl;
-
-  for(unsigned int i=0; i<_funcs.size(); i++)
-  {
-    cout << "#" << setbase(10) << setw(3) << i << setbase(16) << ": "
-         << setw(4) << _funcs[i]->_funcid   << "H  "
-         << setw(8) << _funcs[i]->_offset   << "  "
-         << setw(4) << _funcs[i]->_funcsize << "  "
-         << setw(4) << _funcs[i]->_datasize << "  "
-         << setw(4) << _funcs[i]->codesize() << "  "
-         << endl;
-  }
-  cout << endl << "Functions: " << setbase(10) << _funcs.size() << setbase(16) << endl;
 }
 
 void UCData::file_open(const string &filename)
@@ -252,7 +226,6 @@ void UCData::file_open(const string &filename)
 	/* Open a usecode file */
 	U7open(_file, filename.c_str(), false);
 }
-
 
 void UCData::load_funcs()
 {
