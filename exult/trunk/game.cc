@@ -141,6 +141,7 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 {
 	// Choose the startup path
 	string data_directory, keyfilename;
+	string static_dir, gamedat_dir, savegame_dir;
 	
 	switch(mygame) {
 	case EXULT_DEVEL_GAME:
@@ -162,12 +163,23 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 	if(data_directory==".") config->set(d.c_str(),data_directory,true);
 
 	cout << "setting game directories to: " << data_directory << endl;
-	string static_dir = data_directory + "/static";
-	string gamedat_dir = data_directory + "/gamedat";
+	
+	d = "config/disk/game/" + gametitle + "/static_path";
+	string deflt = data_directory + "/static";
+	config->value(d.c_str(), static_dir, deflt.c_str());
+
+	d = "config/disk/game/" + gametitle + "/gamedat_path";
+	deflt = data_directory + "/gamedat";
+	config->value(d.c_str(), gamedat_dir, deflt.c_str());
+
+	d = "config/disk/game/" + gametitle + "/savegame_path";
+	config->value(d.c_str(), savegame_dir, data_directory.c_str());
+	if (savegame_dir == data_directory)
+		config->set(d.c_str(), savegame_dir, true);
 	
 	add_system_path("<STATIC>", static_dir.c_str());
 	add_system_path("<GAMEDAT>", gamedat_dir.c_str());
-	add_system_path("<SAVEGAME>", data_directory.c_str());
+	add_system_path("<SAVEGAME>", savegame_dir.c_str());
 					// See if map-editing.
 	d = "config/disk/game/"+gametitle+"/editing";
 	config->value(d.c_str(), editing_flag, false);
