@@ -77,6 +77,8 @@ public:
 	Tile_coord get_center()
 		{ return center; }
 	virtual ~Barge_object();
+	void set_to_gather()		// Require 'gather' on next move.
+		{ gathered = false; }
 	void gather();			// Gather up objects on barge.
 	void face_direction(int ndir);	// Face dir. (0-7).
 					// Start rolling/sailing.

@@ -1,3 +1,8 @@
+2002-05-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucinternal.cc: After executing Usecode, tell barge to
+	refigure what's on it.
+
 2002-05-10  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs.h,etc:  Added Terrain_game_object class for a bit of cleanup.

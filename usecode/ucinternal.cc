@@ -2260,6 +2260,9 @@ int Usecode_internal::call_usecode
 		conv->init_faces();	// Remove them.
 		gwin->set_all_dirty();	// Force repaint.
 		}
+	Barge_object *barge = gwin->get_moving_barge();
+	if (barge)
+		barge->set_to_gather();	// Refigure what's on barge.
 	return ret;
 	}
 
