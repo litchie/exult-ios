@@ -213,6 +213,33 @@ void ExultStudio::init_equip_window
 		}
 	}
 
+#if 0
+
+/*
+ *	Store the fields to a given record.
+ */
+
+void ExultStudio::save_equip_window
+	(
+	)
+	{
+	int recnum = get_spin("equip_recnum");
+					// Get the record.
+	Equip_record& rec = Monster_info::get_equip(recnum - 1);
+					// Go through rows.
+	for (int row = 0; row < 10; row++)
+		{
+		Equip_element& elem = rec.get(row);
+		Equip_row_widgets& widgets = equip_rows[row];
+		elem.set(gtk_spin_button_get_value(
+					GTK_SPIN_BUTTON(widgets.shape)), 
+			 gtk_spin_button_get_value(
+					GTK_SPIN_BUTTON(widgets.chance)),
+			 gtk_spin_button_get_value(
+					GTK_SPIN_BUTTON(widgets.count)));
+		}
+	}
+#endif
 /*
  *	Open the equip-editing window.
  */
@@ -474,7 +501,157 @@ void ExultStudio::init_shape_notebook
 		}
 	gtk_widget_show(book);
 	}
+#if 0
+/*
+ *	Save the shape-editing notebook.
+ */
 
+void ExultStudio::save_shape_notebook
+	(
+	Shape_info& info,
+	GtkWidget *book,		// The notebook.
+	int shnum,			// Shape #.
+	int frnum			// Frame #.
+	)
+	{
+	static int classes[] = {0, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14};
+	int shclass = classes[get_optmenu("shinfo_shape_class")];
+					classes[shclass] : 0);
+	int xtiles = get_spin("shinfo_xtiles");
+	int ytiles = get_spin("shinfo_ytiles");
+	int ztiles = set_spin("shinfo_ztiles");
+	int spot = get_optment("shinfo_ready_spot");
+	if (spot == 18)			// LR hand.
+		spot = 100;
+	int weight = get_spin("shinfo_weight");
+	int volume = get_spin("shinfo_volume");
+	unsigned char wx = get_spin("shinfo_wihx"),
+		      wy = get_spin("shinfo_wihy");
+					// Bunch of flags:
+	info.set_sfx(get_toggle("shinfo_sfx_check"));
+	info.set_strange_movement(get_toggle("shinfo_strange_check"));
+	info.set_animated(get_toggle("shinfo_animated_check"));
+	info.set_solid(get_toggle("shinfo_solid_check"));
+	info.set_water(get_toggle("shinfo_water_check"));
+	info.set_poisonous(get_toggle("shinfo_poison_check"));
+	info.set_field(get_toggle("shinfo_field_check"));
+	info.set_door(get_toggle("shinfo_door_check"));
+	info.set_barge_part(get_toggle("shinfo_barge_check"));
+	info.set_transparent(get_toggle("shinfo_transp_check"));
+	info.set_light_source(get_toggle("shinfo_light_check"));
+	info.set_translucency(get_toggle("shinfo_transl_check"));
+	info.set_obstacle(get_toggle("shinfo_obstaclex_check"), 
+			get_toggle("shinfo_obstacley_check"));
+	info.set_occludes(get_toggle("shinfo_occludes_check"));
+					// Extras.
+++++++++++++++++++
+	Weapon_info *winfo = info.get_weapon_info();
+	set_toggle("shinfo_weapon_check", winfo != 0);
+	set_visible("shinfo_weapon_box", winfo != 0);
+	if (winfo)			// Setup weapon page.
+		{
+		set_spin("shinfo_weapon_damage", winfo->get_damage());
+		set_spin("shinfo_weapon_range", winfo->get_range());
+		set_optmenu("shinfo_weapon_type", winfo->get_damage_type());
+		int ammo = winfo->get_ammo_consumed();
+		int ammo_use = ammo > 0 ? 0 :
+			winfo->uses_charges() ? 2 :
+			winfo->is_thrown() ? 3 : 1;	// 1 == "None".
+		set_optmenu("shinfo_weapon_ammo", ammo_use);
+		set_spin("shinfo_weapon_ammo_shape", ammo, ammo > 0);
+		set_spin("shinfo_weapon_proj", winfo->get_projectile());
+		set_optmenu("shinfo_weapon_uses", winfo->get_uses());
+		set_spin("shinfo_weapon_sfx", winfo->get_sfx());
+		set_spin("shinfo_weapon_hitsfx", winfo->get_hitsfx());
+					// Show usecode in hex.
+		set_entry("shinfo_weapon_uc", winfo->get_usecode(), true);
+		static char *powers[] = {
+					"shinfo_weapon_pow0",
+					"shinfo_weapon_pow1",
+					"shinfo_weapon_pow2",
+					"shinfo_weapon_pow3",
+					"shinfo_weapon_pow4",
+					"shinfo_weapon_pow5" };
+		set_bit_toggles(&powers[0], 
+			sizeof(powers)/sizeof(powers[0]), winfo->get_powers());
+					// 'Explode'???
+		set_toggle("shinfo_weapon_returns", winfo->returns());
+		}
+	Ammo_info *ainfo = info.get_ammo_info();
+	set_toggle("shinfo_ammo_check", ainfo != 0);
+	set_visible("shinfo_ammo_box", ainfo != 0);
+	if (ainfo)			// Setup ammo page.
+		{
+		set_spin("shinfo_ammo_damage", ainfo->get_damage());
+		set_spin("shinfo_ammo_family", ainfo->get_family_shape());
+		set_optmenu("shinfo_ammo_type", ainfo->get_damage());
+		static char *powers[] = {
+					"shinfo_ammo_pow0",
+					"shinfo_ammo_pow1",
+					"shinfo_ammo_pow2",
+					"shinfo_ammo_pow3",
+					"shinfo_ammo_pow4",
+					"shinfo_ammo_pow5" };
+		set_bit_toggles(&powers[0], 
+			sizeof(powers)/sizeof(powers[0]), ainfo->get_powers());
+					// 'Explode'???
+		}
+	Armor_info *arinfo = info.get_armor_info();
+	set_toggle("shinfo_armor_check", arinfo != 0);
+	set_visible("shinfo_armor_box", arinfo != 0);
+	if (arinfo)			// Setup armor page.
+		{
+		static char *immun[] = {"shinfo_armor_immun0",
+					"shinfo_armor_immun1",
+					"shinfo_armor_immun2",
+					"shinfo_armor_immun3" };
+		set_spin("shinfo_armor_value", arinfo->get_prot());
+		set_bit_toggles(&immun[0], 
+			sizeof(immun)/sizeof(immun[0]), arinfo->get_immune());
+		}
+	Monster_info *minfo = info.get_monster_info();
+	set_toggle("shinfo_monster_check", minfo != 0);
+	set_visible("shinfo_monster_box", minfo != 0);
+	if (minfo)			// Setup monster page.
+		{
+		set_spin("shinfo_monster_str", minfo->get_strength());
+		set_spin("shinfo_monster_dex", minfo->get_dexterity());
+		set_spin("shinfo_monster_intel", minfo->get_intelligence());
+		set_spin("shinfo_monster_cmb", minfo->get_combat());
+		set_spin("shinfo_monster_armor", minfo->get_armor());
+		set_spin("shinfo_monster_wpn", minfo->get_weapon());
+		set_spin("shinfo_monster_reach", minfo->get_reach());
+		set_spin("shinfo_monster_equip", minfo->get_equip_offset());
+		set_optmenu("shinfo_monster_align", minfo->get_alignment());
+		static char *vuln[] = {	"shinfo_monster_vuln0",
+					"shinfo_monster_vuln1",
+					"shinfo_monster_vuln2",
+					"shinfo_monster_vuln3" };
+		static char *immun[] = {"shinfo_monster_immun0",
+					"shinfo_monster_immun1",
+					"shinfo_monster_immun2",
+					"shinfo_monster_immun3" };
+		set_bit_toggles(&vuln[0], sizeof(vuln)/sizeof(vuln[0]),
+						minfo->get_vulnerable());
+		set_bit_toggles(&immun[0], 
+			sizeof(immun)/sizeof(immun[0]), minfo->get_immune());
+		set_toggle("shinfo_monster_splits", minfo->splits());
+		set_toggle("shinfo_monster_cant_die", minfo->cant_die());
+		set_toggle("shinfo_monster_cant_yell", minfo->cant_yell());
+		set_toggle("shinfo_monster_cant_bleed", minfo->cant_bleed());
+		set_toggle("shinfo_monster_poison_safe",
+						minfo->poison_safe());
+		static char *flags[] = {"shinfo_monster_flag0",
+					"shinfo_monster_flag1",
+					"shinfo_monster_flag2",
+					"shinfo_monster_flag3",
+					"shinfo_monster_flag4" };
+		set_bit_toggles(&flags[0],
+			sizeof(flags)/sizeof(flags[0]), minfo->get_flags());
+		}
+	gtk_widget_show(book);
+	}
+#endif
 /*
  *	Open the shape-editing window.
  */
