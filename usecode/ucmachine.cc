@@ -1545,44 +1545,9 @@ int Usecode_machine::run
 			break;
 		case 0x09:		// ADD.
 			{
-			char buf[300];
 			Usecode_value v2 = pop();
 			Usecode_value v1 = pop();
-			Usecode_value sum(0);
-			if (v1.get_type() == Usecode_value::int_type)
-				{
-				if (v2.get_type() == Usecode_value::int_type)
-					sum = Usecode_value(v1.get_int_value()
-							+ v2.get_int_value());
-				else if (v2.get_type() == 
-						Usecode_value::string_type)
-					{
-					snprintf(buf, 300, "%ld%s", 
-						v1.get_int_value(),
-						v2.get_str_value());
-					sum = Usecode_value(buf);
-					}
-				}
-			else if (v1.get_type() == Usecode_value::string_type)
-				{
-				if (v2.get_type() == Usecode_value::int_type)
-					{
-					snprintf(buf, 300, "%s%ld", 
-							v1.get_str_value(),
-							v2.get_int_value());
-					sum = Usecode_value(buf);
-					}
-				else if (v2.get_type() == 
-						Usecode_value::string_type)
-					{
-					snprintf(buf, 300, "%s%s", 
-							v1.get_str_value(),
-							v2.get_str_value());
-					sum = Usecode_value(buf);
-					}
-				else
-					sum = v1;
-				}
+			Usecode_value sum = v1 + v2;
 			push(sum);
 			break;
 			}
@@ -1809,10 +1774,12 @@ int Usecode_machine::run
 				append_string(str);
 			else		// Convert integer.
 				{
-				char buf[20];
-				snprintf(buf, 20, "%ld",
+				if (locals[offset].get_int_value() != 0) {
+					char buf[20];
+					snprintf(buf, 20, "%ld",
 					locals[offset].get_int_value());
-				append_string(buf);
+					append_string(buf);
+				}
 				}
 			break;
 			}

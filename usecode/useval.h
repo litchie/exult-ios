@@ -82,6 +82,8 @@ public:
 	inline Usecode_value(const Usecode_value& v2)
 		: type(int_type)
 		{ *this = v2; }
+
+	Usecode_value operator+(const Usecode_value& v2);
 					// Comparator.
 	void	push_back(int);
 	int operator==(const Usecode_value& v2);
