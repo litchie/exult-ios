@@ -184,7 +184,8 @@ void Game_window::init_files()
 		for (int i = 0; i < nxforms; i++)
 			if (!xf.read_segment(i, xforms[nxforms - 1 - i], len))
 				abort("Error reading %s.", XFORMTBL);
-
+		if (!xf.read_segment(2, invis_xform, len))
+			abort("Error reading %s.", XFORMTBL);
 		unsigned long timer = SDL_GetTicks();
 		srand(timer);			// Use time to seed rand. generator.
 						// Force clock to start.

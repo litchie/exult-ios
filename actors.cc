@@ -731,12 +731,17 @@ void Actor::paint
 	{
 	if (!(flags & (1L << dont_render)))
 		{
-		Container_game_object::paint(gwin);
+		int xoff, yoff;
+		gwin->get_shape_location(this, xoff, yoff);
+		if (flags & (1L << invisible))
+			gwin->paint_invisible(xoff, yoff, get_shapenum(),
+							get_framenum());
+		else
+			gwin->paint_shape(xoff, yoff, get_shapenum(),
+							get_framenum());
 		paint_weapon(gwin);
 		if (flags & ((1L<<protection) | (1L << poisoned)))
 			{
-			int xoff, yoff;
-			gwin->get_shape_location(this, xoff, yoff);
 			if (flags & (1L << poisoned))
 				gwin->paint_poison_outline(xoff, yoff,
 					get_shapenum(), get_framenum());
@@ -797,15 +802,15 @@ void Actor::paint_weapon
 			weapon_frame |= 32;
 		}
 		// Paint the weapon shape using the actor's coordinates
-		int tx, ty, tz;
-		get_abs_tile(tx, ty, tz);
-		int liftpix = 4*tz;
-		gwin->paint_shape(
-			(tx + 1 - gwin->get_scrolltx())*tilesize
-				- 1 - liftpix - actor_x + weapon_x,
-			(ty + 1 - gwin->get_scrollty())*tilesize
-				- 1 - liftpix - actor_y + weapon_y,
-			weapon->get_shapenum(), weapon_frame);
+		int xoff, yoff;
+		gwin->get_shape_location(this, xoff, yoff);
+		xoff += -actor_x + weapon_x;
+		yoff += -actor_y + weapon_y;
+		int shnum = weapon->get_shapenum();
+		if (flags & (1L<<invisible))
+			gwin->paint_invisible(xoff, yoff, shnum, weapon_frame);
+		else
+			gwin->paint_shape(xoff, yoff, shnum, weapon_frame);
 		}
 	}
 

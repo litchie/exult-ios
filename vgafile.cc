@@ -470,6 +470,53 @@ void Shape_frame::paint_rle_translucent
 	}
 
 /*
+ *	Paint a shape purely by translating the pixels it occupies.  This is
+ *	used for invisible NPC's.
+ */
+
+void Shape_frame::paint_rle_transformed
+	(
+	Image_buffer8 *win,		// Buffer to paint in.
+	int xoff, int yoff,		// Where to show in iwin.
+	Xform_palette xform		// Use to transform pixels.
+	)
+	{
+	int w = get_width(), h = get_height();
+	if (w >= 8 || h >= 8)		// Big enough to check?  Off screen?
+		if (!win->is_visible(xoff - xleft, 
+						yoff - yabove, w, h))
+			return;
+	BufferDataSource in((char *)data,0);
+	int scanlen;
+	while ((scanlen = in.read2()) != 0)
+		{
+					// Get length of scan line.
+		int encoded = scanlen&1;// Is it encoded?
+		scanlen = scanlen>>1;
+		short scanx = in.read2();
+		short scany = in.read2();
+		if (!encoded)		// Raw data?
+			{		// (Note: 1st parm is ignored).
+			win->fill_line_translucent8(0, scanlen,
+					xoff + scanx, yoff + scany, xform);
+			in.skip(scanlen);
+			continue;
+			}
+		for (int b = 0; b < scanlen; )
+			{
+			unsigned char bcnt = in.read1();
+					// Repeat next char. if odd.
+			int repeat = bcnt&1;
+			bcnt = bcnt>>1; // Get count.
+			in.skip(repeat ? 1 : bcnt);
+			win->fill_line_translucent8(0, bcnt,
+				xoff + scanx + b, yoff + scany, xform);
+			b += bcnt;
+			}
+		}
+	}
+
+/*
  *	Paint outline around a shape.
  */
 

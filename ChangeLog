@@ -1,7 +1,11 @@
+2000-10-08  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Show invisible NPC's as shadows.
+	* Added primitive 'xform' support to shape browser.
+
 2000-10-07  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Working on invisibiliy and protection flags.
-
 	* Worked a 'sleep' flag.  Poppy field now works.
 
 2000-10-05  Jeff Freedman  <jeff@amy.nerble.net>
