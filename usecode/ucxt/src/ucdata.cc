@@ -149,9 +149,9 @@ void UCData::open_usecode(const string &filename)
 		return;
 }
 
-void UCData::disassamble(const char **func_table)
+void UCData::disassamble()
 {
-	load_funcs(func_table);
+	load_funcs();
 
 	cout << "Looking for function number " << setw(8) << _search_func << endl << endl;
 
@@ -167,7 +167,7 @@ void UCData::disassamble(const char **func_table)
 			_foundfunc=true;
 			if(output_ucs())
 				output_ucfunc(_funcid, _funcs[i]->_data, _funcs[i]->_num_args, _funcs[i]->_num_locals, _funcs[i]->_externs,
-				              _funcs[i]->_opcodes, func_table);
+				              _funcs[i]->_opcodes);
 			else if(output_list())
 			{
 		    cout << "#" << setbase(10) << setw(3) << i << setbase(16) << ": "
@@ -200,25 +200,25 @@ void UCData::disassamble(const char **func_table)
 	dump_unknown_intrinsics();
 }
 
-void UCData::disassamble_all(const char ** func_table)
+void UCData::disassamble_all()
 {
   cout << "Loading Funcs..." << endl;
-  load_funcs(func_table);
+  load_funcs();
   cout << "Funcs Loaded..." << endl;
 
   for(unsigned int i=0; i<_funcs.size(); i++)
   {
     cout << "Outputting " << i << endl;
     output_ucfunc(_funcs[i]->_funcid, _funcs[i]->_data, _funcs[i]->_num_args, _funcs[i]->_num_locals, _funcs[i]->_externs,
-                  _funcs[i]->_opcodes, func_table);
+                  _funcs[i]->_opcodes);
     cout << "Outputted " << i << endl;
   }
 
 }
 
-void UCData::dump_flags(const char **func_table)
+void UCData::dump_flags()
 {
-  load_funcs(func_table);
+  load_funcs();
 
   // don't need to delete "flags" the pointers are already owned.
   vector<FlagData *> flags;
@@ -281,9 +281,9 @@ void UCData::dump_flags(const char **func_table)
   // don't need to delete "flags" the pointers are already owned.
 }
 
-void UCData::list_funcs(const char **func_table)
+void UCData::list_funcs()
 {
-  load_funcs(func_table);
+  load_funcs();
 
 /*  if( ( ( uc._search_func == -1 ) || (uc.mode()==MODE_OPCODE_SCAN) )
      && ( uc._search_opcode == -1 ) && ( uc._search_intrinsic == -1 ) )*/
@@ -309,7 +309,7 @@ void UCData::file_open(const string &filename)
 }
 
 
-void UCData::load_funcs(const char **func_table)
+void UCData::load_funcs()
 {
 	bool eof=false;
 	while( !eof )

@@ -106,28 +106,22 @@ int main(int argc, char** argv)
 
 	open_usecode_file(uc, config);
 	
-	/* Embedded function table pointer
-	   TODO: set to bg_func_table or si_func_table depending on the command line
-	*/
-	const char** func_table = bg_func_table;
-//  int func_table_size = sizeof(bg_func_table);
-
 
 	if     (uc.mode_dis() || uc.mode_all())
 	{
-		uc.disassamble(func_table);
+		uc.disassamble();
 	}
 	else if( uc.mode() == MODE_DISASSEMBLE_ALL )
 	{
-		uc.disassamble_all(func_table);
+		uc.disassamble_all();
 	}
 	else if( uc.mode() == MODE_FLAG_DUMP )
 	{
-		uc.dump_flags(func_table);
+		uc.dump_flags();
 	}
 	else if( uc.mode() == MODE_ALL )
 	{
-		uc.list_funcs(func_table);
+		uc.list_funcs();
 	}
 
 	// now we clean up the <ick>y ness from before
