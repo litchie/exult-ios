@@ -105,12 +105,20 @@ int main(int argc, char **argv)
 					
 					// Read the output file name
 					respfile.getline(temp, 1024);
+
+					// Fix endline problem on win32
+					for (int i = std::strlen(temp)-1; temp[i] < ' '; i--) temp[i] = 0;
+
 					strcpy(fname, path_prefix);
 					strcat(fname, temp);
 					
 					while(!respfile.eof()) {
 						respfile.getline(temp, 1024);
 						if(strlen(temp)>0) {
+
+							// Endline on win32
+							for (int i = std::strlen(temp)-1; temp[i] < ' '; i--) temp[i] = 0;
+
 							char temp2[1024];
 							strcpy(temp2, path_prefix);
 							strcat(temp2, temp);
