@@ -26,8 +26,11 @@ void Npc_proximity_handler::add
 	int additional_secs		// More secs. to wait.
 	)
 	{
-					// Wait between 3 & 10 secs.
-	int msecs = (rand() % 10000) + 3000;
+	int msecs;			// Hostile?  Wait 0-4 secs.
+	if (npc->get_alignment() >= Npc_actor::hostile)
+		msecs = rand() % 4000;
+	else				// Wait between 3 & 10 secs.
+		msecs = (rand() % 10000) + 3000;
 	unsigned long newtime = curtime + msecs;
 	newtime += 1000*additional_secs;
 	gwin->get_tqueue()->add(newtime, this, (long) npc);
@@ -46,7 +49,7 @@ void Npc_proximity_handler::handle_event
 	Npc_actor *npc = (Npc_actor *) udata;
 	int extra_delay = 0;		// For next time.
 					// See if still on visible screen.
-	Rectangle tiles = gwin->get_win_tile_rect().enlarge(1);
+	Rectangle tiles = gwin->get_win_tile_rect().enlarge(4);
 	int tx, ty, tz;
 	npc->get_abs_tile(tx, ty, tz);
 	if (!tiles.has_point(tx, ty) ||	// No longer visible?
@@ -64,6 +67,12 @@ void Npc_proximity_handler::handle_event
 		{
 		npc->set_schedule_type(Schedule::stand);
 		npc->say(first_awakened, last_awakened);
+		}
+					// Hostile?  ATTACK!
+	else if (npc->get_alignment() >= Npc_actor::hostile &&
+		npc->get_schedule_type() != (int) Schedule::combat)
+		{
+		npc->set_schedule_type(Schedule::combat);
 		}
 					// Do it 50% of the time.
 	else if (!(curtime < wait_until) && rand()%2 == 1)

@@ -2351,6 +2351,16 @@ USECODE_INTRINSIC(get_equipment_list)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(restart_game)
+{
+	// Think it's 'restart game'.  
+	// Happens if you die before leaving trinsic.
+	// +++++++Got to set a flag that's looked at higher up.  Too deeply
+	//        nested to restart here.
+	cout << "Got to restart game." << endl;
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(start_speech)
 {
 	// Start_speech(num).  Also sets speech_track.
@@ -2740,7 +2750,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x70
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x71
 	USECODE_INTRINSIC_PTR(get_equipment_list),	// 0x72
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x73
+	USECODE_INTRINSIC_PTR(restart_game),	// 0x73
 	USECODE_INTRINSIC_PTR(start_speech),	// 0x74
 	USECODE_INTRINSIC_PTR(run_endgame),	// 0x75 StartEndGame (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x76     FireCannon (ucdump.c)
