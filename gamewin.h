@@ -161,6 +161,11 @@ public:
 		}
 	Chunk_object_list *get_objects(Game_object *obj)
 		{ return get_objects(obj->get_cx(), obj->get_cy()); }
+	Chunk_object_list *get_objects_safely(int cx, int cy)
+		{
+		return (cx >= 0 && cx < num_chunks && 
+		        cy >= 0 && cy < num_chunks ? get_objects(cx, cy) : 0);
+		}
 	inline Actor *get_main_actor() const
 		{ return main_actor; }
 	int set_above_main_actor(int inside, int lift)
