@@ -150,6 +150,8 @@ class Shape_info
 	unsigned char xtiles, ytiles, ztiles;
 	unsigned char weight, volume;	// From "wgtvol.dat".
 	unsigned char shpdims[2];	// From "shpdims.dat".
+	unsigned char ready_type;	// From "ready.dat":  where item can
+					//   be worn.
 	void set_tfa_data()		// Set fields from tfa.
 		{
 		xtiles = 1 + (tfa[2]&7);
@@ -158,7 +160,8 @@ class Shape_info
 		}
 public:
 	friend class Shapes_vga_file;	// Class that reads in data.
-	Shape_info() : xtiles(0), ytiles(0), ztiles(0), weight(0), volume(0)
+	Shape_info() : xtiles(0), ytiles(0), ztiles(0), weight(0), volume(0),
+		ready_type(0)
 		{ tfa[0] = tfa[1] = tfa[2] = shpdims[0] = shpdims[1] = 0; }
 	int get_weight()		// Get weight, volume.
 		{ return weight; }
@@ -215,7 +218,8 @@ public:
 		};
 	Shape_class get_shape_class()
 		{ return (Shape_class) (tfa[1]&15); }
-
+	unsigned char get_ready_type()
+		{ return ready_type; }
 	};
 
 /*

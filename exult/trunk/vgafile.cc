@@ -571,6 +571,17 @@ int Shapes_vga_file::read_info
 		tfa.read(&info[i].tfa[0], 3);
 		info[i].set_tfa_data();
 		}
+	ifstream ready;
+	if (!U7open(ready, READY))
+		return (0);
+	int cnt = Read1(ready);		// Get # entries.
+	for (int i = 0; i < cnt; i++)
+		{
+		unsigned short shapenum = Read2(ready);
+		unsigned char type = Read1(ready);
+		info[shapenum].ready_type = type;
+		ready.seekg(6, ios::cur);// Skip 9 bytes.
+		}
 	return (1);
 	}
 
