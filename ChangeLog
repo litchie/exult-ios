@@ -1,3 +1,9 @@
+2001-07-11  Ryan Nunn <triforce@merlin.net.au>
+	* objs/chunks.cc : Added shapes 394 and 941 as mountain types for
+	  dungeon checking in Serpent Isle. Removed the per Superchuck dungeon
+	  hack for Knights Test and Silver Seed quest. This should fix all the
+	  dungeon rendering errors in SI.
+
 2001-07-11  Tristan Tarrant <nadir@users.sourceforge.net>
 	* mapedit/Makefile.am: add stuff needed for exult_studio.glade. It is
 	  now installed in the right place and included in the dist.
