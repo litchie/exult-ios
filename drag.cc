@@ -371,7 +371,7 @@ bool Dragging_info::drop_on_map
 	)
 	{
 	int max_lift = cheat.in_hack_mover() ? 13 :
-					gwin->get_main_actor()->get_lift() + 4;
+					gwin->get_main_actor()->get_lift() + 5;
 					// Drop where we last painted it.
 	int posx = paintx, posy = painty;
 	if (posx == -1000)		// Unless we never painted.
@@ -390,6 +390,13 @@ bool Dragging_info::drop_on_map
 		else if ((lift = found->get_lift() +
 			     found->get_info().get_3d_height()) <= max_lift)
 			dropped = gwin->drop_at_lift(to_drop,posx, posy, lift);
+		else
+			{		// Too high.
+			Mouse::mouse->flash_shape(Mouse::redx);
+			Audio::get_ptr()->play_sound_effect(
+							Audio::game_sfx(76));
+			return false;
+			}
 		}
 					// Find where to drop it.
 	for (lift = old_lift; !dropped && lift <= max_lift; lift++)
