@@ -1663,7 +1663,7 @@ void Game_window::end_intro
 		mode = normal;
 		audio.start_speech(31,false);
 		SDL_Delay(500);
-		audio.start_music(35);
+		audio.start_music(35,0);
 #if 0	/* Too irritating at start of game. */
 					// Want to run proximity usecode on
 					//   the visible ones.

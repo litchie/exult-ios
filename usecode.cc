@@ -1199,7 +1199,7 @@ Usecode_value Usecode_machine::call_intrinsic
 		cout << "1: " << ((parms[1].get_int_value()>>8)&0xff) << " " <<  ((parms[1].get_int_value())&0xff) << endl;
 		(parms[1].get_int_value()&0xff);
 #endif
-		audio.start_music(parms[0].get_int_value()&0xff);
+		audio.start_music(parms[0].get_int_value()&0xff,(parms[0].get_int_value()>>8)&0xff);
 		break;
 	case 0x2f:			// NPC in party? (item).
 		return (Usecode_value(npc_in_party(
