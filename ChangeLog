@@ -1,3 +1,7 @@
+2002-02-24  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* exult.cc: Single-click also sets tile when terrain-editing.
+
 2002-02-22  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* shapes/pngio.cc: Rewrote transparency handling; still trying to 

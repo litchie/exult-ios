@@ -707,7 +707,9 @@ static void Handle_event
 #ifdef USE_EXULTSTUDIO			// Shift-click means 'paint'.
 			if (cheat.in_map_editor() && 
 			    cheat.get_edit_shape() >= 0 &&
-			    		(SDL_GetModState() & KMOD_SHIFT))
+					// But always if terrain-editing.
+			    (gwin->skip_lift == 0 ||
+					(SDL_GetModState() & KMOD_SHIFT)))
 				{
 				Drop_dragged_shape(cheat.get_edit_shape(),
 					cheat.get_edit_frame(),
