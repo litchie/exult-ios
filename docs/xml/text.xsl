@@ -22,6 +22,25 @@
 
 
 <!-- Faq Templates -->
+<xsl:template name="TOC">
+	<xsl:for-each select="section">
+		<xsl:number level="multiple" 
+					count="section" 
+					format="1. "
+					value="position() -1"/>
+		<xsl:value-of select="@title"/><xsl:text>&#xA;</xsl:text>
+		<xsl:for-each select="sub">
+			<xsl:number level="multiple"
+						count="section|sub"
+						format="1."
+						value="count(ancestor::section/preceding-sibling::section)"/>
+			<xsl:number format="1. "/>
+			<xsl:apply-templates select="header"/><xsl:text>&#xA;</xsl:text>
+		</xsl:for-each>
+		<xsl:text>&#xA;</xsl:text>
+	</xsl:for-each>
+</xsl:template>
+
 <xsl:template match="faqs">
 	<xsl:value-of select="@title"/>
 	<xsl:text>F.A.Q. (frequently asked questions)&#xA;</xsl:text>
@@ -32,22 +51,7 @@
 	<xsl:text>&#xA;&#xA;</xsl:text>
 
 	<!-- BEGIN TOC -->
-	<xsl:for-each select="section">
-		<xsl:number level="multiple" 
-					count="section" 
-					format="1. "
-					value="position() -1"/>
-		<xsl:value-of select="@title"/><xsl:text>&#xA;</xsl:text>
-		<xsl:for-each select="sub">
-			<xsl:number level="multiple" 
-						count="section|sub" 
-						format="1."
-						value="count(ancestor::section/preceding-sibling::section)"/>
-			<xsl:number format="1. "/>
-			<xsl:apply-templates select="header"/><xsl:text>&#xA;</xsl:text>
-		</xsl:for-each>
-		<xsl:text>&#xA;</xsl:text>
-	</xsl:for-each>
+	<xsl:call-template name="TOC"/>
 	<!-- END TOC -->
 
 	<!-- BEGIN CONTENT -->
@@ -64,22 +68,7 @@
 	<xsl:text>&#xA;&#xA;</xsl:text>	
 
 	<!-- BEGIN TOC -->
-	<xsl:for-each select="section">
-		<xsl:number level="multiple" 
-					count="section" 
-					format="1. "
-					value="position() -1"/>					
-		<xsl:value-of select="@title"/><xsl:text>&#xA;</xsl:text>
-		<xsl:for-each select="sub">
-			<xsl:number level="multiple" 
-						count="section|sub" 
-						format="1."
-						value="count(ancestor::section/preceding-sibling::section)"/>
-			<xsl:number format="1. "/>												
-			<xsl:apply-templates select="header"/><xsl:text>&#xA;</xsl:text>
-		</xsl:for-each>
-		<xsl:text>&#xA;</xsl:text>
-	</xsl:for-each>
+	<xsl:call-template name="TOC"/>
 	<!-- END TOC -->
 
 	<!-- BEGIN CONTENT -->

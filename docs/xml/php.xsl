@@ -14,16 +14,7 @@
 
 
 <!-- FAQ Templates -->
-<xsl:template match="faqs">
-<test>
-	<p>last changed: <xsl:value-of select="@changed"/></p>
-	<hr/>
-	<p>
-		A text only version can be found <a href="http://exult.sourceforge.net/faq.txt">here</a> 
-	</p>
-	<br/>
-	
-	<!-- BEGIN TOC -->
+<xsl:template name="TOC">
 	<xsl:for-each select="section">
 		<p>
 		<a href="#{generate-id(key('section_ref',@title))}">
@@ -47,6 +38,20 @@
 		</xsl:for-each>
 		</p>
 	</xsl:for-each>
+</xsl:template>
+
+
+<xsl:template match="faqs">
+<test>
+	<p>last changed: <xsl:value-of select="@changed"/></p>
+	<hr/>
+	<p>
+		A text only version can be found <a href="http://exult.sourceforge.net/faq.txt">here</a> 
+	</p>
+	<br/>
+	
+	<!-- BEGIN TOC -->
+	<xsl:call-template name="TOC"/>
 	<!-- END TOC -->
 	
 	<!-- BEGIN CONTENT -->
@@ -63,29 +68,7 @@
 	<br/>
 	
 	<!-- BEGIN TOC -->
-	<xsl:for-each select="section">
-		<p>
-		<a href="#{generate-id(key('section_ref',@title))}">
-			<xsl:number level="multiple"
-						count="section"
-						format="1. "
-						value="position() -1"/>
-				<xsl:value-of select="@title"/>
-		</a>
-		<br/>
-		<xsl:for-each select="sub">
-			<a href="#{generate-id(key('sub_ref',@name))}">
-				<xsl:number level="multiple"
-							count="section|sub"
-							format="1."
-							value="count(ancestor::section/preceding-sibling::section)"/>									
-				<xsl:number format="1. "/>
-				<xsl:apply-templates select="header"/>
-			</a>
-			<br/>
-		</xsl:for-each>
-		</p>
-	</xsl:for-each>
+	<xsl:call-template name="TOC"/>
 	<!-- END TOC -->
 	
 	<!-- BEGIN CONTENT -->
