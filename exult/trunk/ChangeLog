@@ -1,3 +1,19 @@
+2002-08-07  Ryan Nunn  <triforce@merlin.net.au>
+	* cheat_screen.cc : Added missing tqueue header.
+
+	* exultmenu.cc, audio/Midi.cc, audio/xmidi.h, 
+	  gumps/AudioOptions_gump.cc : Added 'Music Conversion' option to
+	  enable the FM Synth. Requires a restart of Exult once it has been
+	  set in order for it to work.
+
+	* gamewin.cc : Removed screen offset test that wasn't meant to be
+	  committed
+
+	* msvcstuff/*.*, audio/midi_drivers/win_midiout.cc : Doing some tests
+	  compiling Exult using UNICODE
+
+	* files/*.* : Some initial changes for PocketPC support
+
 2002-08-06  Ryan Nunn  <triforce@merlin.net.au>
 	* midi_drivers/fmopl*.* : Emulatled FM Synth. Compiling in by defining
 	  USE_FMOPL_MIDI. Makefiles will probably need updating. Has a 'dual'

@@ -40,11 +40,11 @@ RSC=rc.exe
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "..\"
-# PROP Intermediate_Dir "Release"
+# PROP Intermediate_Dir "ReleaseNI"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GX /Zi /O1 /Ob0 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /I "..\tools" /FI"msvc_kludges.h" /D "NDEBUG" /D "_CONSOLE" /D "EXULT" /D "WIN32" /D "_MBCS" /D "USING_PRECOMPILED_HEADER" /Yu"msvc_kludges.h" /FD /TP /c
+# ADD CPP /nologo /G6 /MD /W3 /GX /Zi /O1 /Ob0 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /I "..\server" /I "..\Headers" /I "..\tools" /FI"msvc_kludges.h" /D "NDEBUG" /D "_CONSOLE" /D "EXULT" /D "WIN32" /D "_MBCS" /Yu"msvc_kludges.h" /FD /TP /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
@@ -328,6 +328,78 @@ SOURCE=..\audio\midi_drivers\win_MCI.cc
 
 # End Source File
 # End Group
+# Begin Group "Audio h"
+
+# PROP Default_Filter ""
+# Begin Group "Audio h unused"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\audio\midi_drivers\amiga_midi.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\midi_drivers\be_midi.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\midi_drivers\forked_player.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\midi_drivers\KMIDI.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\midi_drivers\mac_midi.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\midi_drivers\Timidity_binary.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\midi_drivers\win_MCI.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=..\audio\Audio.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\conv.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\Midi.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\Mixer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\pcb.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\SDL_mapping.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\soundtest.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\midi_drivers\win_midiout.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\audio\xmidi.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\audio\Audio.cc
@@ -396,6 +468,18 @@ SOURCE=..\audio\xmidi.cc
 # Begin Group "conf"
 
 # PROP Default_Filter ""
+# Begin Group "conf h"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\conf\Configuration.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\conf\XMLEntity.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\conf\Configuration.cc
@@ -408,6 +492,214 @@ SOURCE=..\conf\XMLEntity.cc
 # Begin Group "Exult"
 
 # PROP Default_Filter ""
+# Begin Group "Exult h"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\acconfig.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\actions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\actors.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\alpha_kludges.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\args.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\autoarray.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\bggame.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\browser.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\cheat.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\cheat_screen.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\combat.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\delobjs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\devgame.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\dir.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\drag.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\effects.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\exceptions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\exult.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\exult_constants.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\exult_types.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\exultmenu.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\fnames.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\frameseq.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\game.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gameclk.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gamemap.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\gamewin.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\headers\gamma.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\hash_utils.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\keyactions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\keys.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\lists.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\menulist.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\monsters.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\mouse.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\npcnear.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\npctime.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\palette.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\paths.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\ready.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\rect.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\schedule.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\segfile.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapeid.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\sigame.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\tiles.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\tqueue.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\txtscroll.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\vec.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\version.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\windrag.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\actions.cc
@@ -572,6 +864,46 @@ SOURCE=..\windrag.cc
 # Begin Group "Files"
 
 # PROP Default_Filter ""
+# Begin Group "files h"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\files\crc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\databuf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\Flat.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\Flex.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\IFF.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\listfiles.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\Table.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\U7file.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\utils.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\files\crc.cc
@@ -608,6 +940,14 @@ SOURCE=..\files\utils.cc
 # Begin Group "flic"
 
 # PROP Default_Filter ""
+# Begin Group "flic h"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\flic\playfli.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\flic\playfli.cc
@@ -864,6 +1204,34 @@ SOURCE=..\gumps\Yesno_gump.cc
 # Begin Group "imagewin"
 
 # PROP Default_Filter ""
+# Begin Group "imagewin h"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\imagewin\ibuf16.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\imagewin\ibuf8.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\imagewin\imagebuf.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\imagewin\imagewin.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\imagewin\iwin8.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\imagewin\scale.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\imagewin\ibuf16.cc
@@ -921,559 +1289,6 @@ SOURCE=..\imagewin\scale.cc
 # Begin Group "objs"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\objs\animate.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\barge.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\chunks.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\chunkter.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\contain.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\egg.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\iregobjs.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\jawbone.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\mappatch.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\objiter.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\objnames.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\Objs.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\spellbook.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\objs\virstone.cc
-# End Source File
-# End Group
-# Begin Group "pathfinder"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\pathfinder\Astar.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\pathfinder\path.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\pathfinder\PathFinder.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\pathfinder\Zombie.cc
-# End Source File
-# End Group
-# Begin Group "shapes"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\shapes\bodies.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapes\font.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapes\fontvga.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapes\glshape.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapes\items.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapes\monstinf.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapes\shapeinf.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapes\shapevga.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapes\u7drag.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapes\vgafile.cc
-# End Source File
-# End Group
-# Begin Group "usecode"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\usecode\conversation.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\usecode\intrinsics.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\usecode\keyring.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\usecode\stackframe.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\usecode\ucdisasm.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\usecode\ucfunction.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\usecode\ucinternal.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\usecode\ucmachine.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\usecode\ucsched.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\usecode\useval.cc
-# End Source File
-# End Group
-# Begin Group "Server"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\server\objserial.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\server\servemsg.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\server\server.cc
-# End Source File
-# Begin Source File
-
-SOURCE=..\server\servewin32.cc
-# End Source File
-# End Group
-# End Group
-# Begin Group "Header Files"
-
-# PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Group "Audio h"
-
-# PROP Default_Filter ""
-# Begin Group "Audio h unused"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\audio\midi_drivers\amiga_midi.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\midi_drivers\be_midi.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\midi_drivers\forked_player.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\midi_drivers\KMIDI.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\midi_drivers\mac_midi.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\midi_drivers\Timidity_binary.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\midi_drivers\win_MCI.h
-# End Source File
-# End Group
-# Begin Source File
-
-SOURCE=..\audio\Audio.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\conv.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\Midi.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\Mixer.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\pcb.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\SDL_mapping.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\soundtest.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\midi_drivers\win_midiout.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\audio\xmidi.h
-# End Source File
-# End Group
-# Begin Group "conf h"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\conf\Configuration.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\conf\XMLEntity.h
-# End Source File
-# End Group
-# Begin Group "Exult h"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\acconfig.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\actions.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\actors.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\alpha_kludges.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\args.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\autoarray.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\bggame.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\browser.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\cheat.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\cheat_screen.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\combat.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\delobjs.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\dir.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\effects.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\exceptions.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\exult.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\exult_constants.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\exult_types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\exultmenu.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\fnames.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\frameseq.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\game.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\gameclk.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\gamemap.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\gamewin.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\headers\gamma.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\hash_utils.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\keyactions.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\keys.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\lists.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\menulist.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\monsters.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\mouse.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\npcnear.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\npctime.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\palette.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\paths.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\ready.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\rect.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\schedule.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\segfile.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\shapeid.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\sigame.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\tiles.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\tqueue.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\txtscroll.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\vec.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\version.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\windrag.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\xdrag.h
-# End Source File
-# End Group
-# Begin Group "files h"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\files\crc.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\databuf.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\Flat.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\Flex.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\IFF.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\listfiles.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\Table.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\U7file.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\utils.h
-# End Source File
-# End Group
-# Begin Group "flic h"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\flic\playfli.h
-# End Source File
-# End Group
-# Begin Group "imagewin h"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\imagewin\ibuf16.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\imagewin\ibuf8.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\imagewin\imagebuf.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\imagewin\imagewin.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\imagewin\iwin8.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\imagewin\scale.h
-# End Source File
-# End Group
 # Begin Group "objs h"
 
 # PROP Default_Filter ""
@@ -1550,6 +1365,66 @@ SOURCE=..\objs\spellbook.h
 SOURCE=..\objs\virstone.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\objs\animate.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\barge.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\chunks.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\chunkter.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\contain.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\egg.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\iregobjs.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\jawbone.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\mappatch.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\objiter.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\objnames.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\Objs.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\spellbook.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\objs\virstone.cc
+# End Source File
+# End Group
+# Begin Group "pathfinder"
+
+# PROP Default_Filter ""
 # Begin Group "pathfinder h"
 
 # PROP Default_Filter ""
@@ -1566,6 +1441,26 @@ SOURCE=..\pathfinder\PathFinder.h
 SOURCE=..\pathfinder\Zombie.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\pathfinder\Astar.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\path.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\PathFinder.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\pathfinder\Zombie.cc
+# End Source File
+# End Group
+# Begin Group "shapes"
+
+# PROP Default_Filter ""
 # Begin Group "shapes h"
 
 # PROP Default_Filter ""
@@ -1606,6 +1501,50 @@ SOURCE=..\shapes\u7drag.h
 SOURCE=..\shapes\vgafile.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\shapes\bodies.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\font.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\fontvga.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\glshape.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\items.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\monstinf.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\shapeinf.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\shapevga.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\u7drag.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\shapes\vgafile.cc
+# End Source File
+# End Group
+# Begin Group "usecode"
+
+# PROP Default_Filter ""
 # Begin Group "usecode h"
 
 # PROP Default_Filter ""
@@ -1646,6 +1585,50 @@ SOURCE=..\usecode\ucscriptop.h
 SOURCE=..\usecode\useval.h
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\usecode\conversation.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\intrinsics.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\keyring.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\stackframe.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\ucdisasm.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\ucfunction.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\ucinternal.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\ucmachine.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\ucsched.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\usecode\useval.cc
+# End Source File
+# End Group
+# Begin Group "Server"
+
+# PROP Default_Filter ""
 # Begin Group "server h"
 
 # PROP Default_Filter ""
@@ -1668,15 +1651,28 @@ SOURCE=..\server\servewin32.h
 # End Group
 # Begin Source File
 
+SOURCE=..\server\objserial.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\servemsg.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\server.cc
+# End Source File
+# Begin Source File
+
+SOURCE=..\server\servewin32.cc
+# End Source File
+# End Group
+# End Group
+# Begin Group "Header Files"
+
+# PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
 SOURCE=..\headers\common_types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\devgame.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\drag.h
 # End Source File
 # Begin Source File
 

@@ -334,13 +334,13 @@ inline void Write4s(std::ostream& out, sint32 val)
 	Write4(out, static_cast<uint32>(val));
 }
 
-void U7open
+bool U7open
 	(
 	std::ifstream& in,			// Input stream to open.
 	const char *fname,			// May be converted to upper-case.
 	bool is_text = false			// Should the file be opened in text mode
 	);
-void U7open
+bool U7open
 	(
 	std::ofstream& out,			// Output stream to open.
 	const char *fname,			// May be converted to upper-case.
@@ -370,6 +370,9 @@ int U7mkdir(
 	int mode
 	);
 
+// These are not supported in WinCE (PocketPC) for now
+#ifndef UNDER_CE
+
 int U7chdir(
 	const char *dirname
 	);
@@ -379,6 +382,8 @@ void U7copy
 	const char *src,
 	const char *dest
 	);
+
+#endif //UNDER_CE
 
 bool is_system_path_defined(const std::string& key);
 void store_system_paths();

@@ -186,16 +186,22 @@ void AudioOptions_gump::build_buttons()
 
 void AudioOptions_gump::build_midi_buttons()
 {
-	std::string* midi_conversiontext = new std::string[5];
+#ifdef USE_FMOPL_MIDI
+	static const int mct_array_size = 6;
+#endif
+	std::string* midi_conversiontext = new std::string[mct_array_size];
 	midi_conversiontext[0] = "None";
 	midi_conversiontext[1] = "GM";
 	midi_conversiontext[2] = "GS";
 	midi_conversiontext[3] = "GS127";
 	midi_conversiontext[4] = "Digital";
+#ifdef USE_FMOPL_MIDI
+	midi_conversiontext[5] = "FMSynth";
+#endif
 
 	// midi conversion
 	buttons[2] = new AudioTextToggle(this, midi_conversiontext, 
-									 colx[2], rowy[3], 59, midi_conversion, 5);
+									 colx[2], rowy[3], 59, midi_conversion, mct_array_size);
 	// reverb on/off
 	buttons[3] = new AudioEnabledToggle(this, colx[2], rowy[4], midi_reverb);
 	// chorus on/off
@@ -244,6 +250,10 @@ void AudioOptions_gump::load_settings()
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GS;
 		else if (s == "digital")
 			midi_conversion = XMIDI_CONVERT_OGG;
+#ifdef USE_FMOPL_MIDI
+		else if (s == "fmsynth")
+			midi_conversion = XMIDI_CONVERT_FMSYNTH;
+#endif
 		else
 			midi_conversion = XMIDI_CONVERT_MT32_TO_GM;
 
@@ -327,6 +337,11 @@ void AudioOptions_gump::save_settings()
 		case XMIDI_CONVERT_OGG:
 			config->set("config/audio/midi/convert","digital",true);
 			break;
+#ifdef USE_FMOPL_MIDI
+		case XMIDI_CONVERT_FMSYNTH:
+			config->set("config/audio/midi/convert","fmsynth",true);
+			break;
+#endif
 		default:
 			config->set("config/audio/midi/convert","gm",true);
 			break;

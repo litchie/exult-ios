@@ -835,8 +835,9 @@ void Game_window::set_scrolls
 	scroll_bounds.w = scroll_bounds.h = 2;
 	scroll_bounds.x = scrolltx + 
 			(get_width()/c_tilesize - scroll_bounds.w)/2;
+	// OFFSET HERE
 	scroll_bounds.y = scrollty + 
-			((get_height()-40)/c_tilesize - scroll_bounds.h)/2;
+			((get_height())/c_tilesize - scroll_bounds.h)/2;
 
 	Barge_object *old_active_barge = moving_barge;
 	map->read_map_data();		// This pulls in objects.
@@ -870,7 +871,8 @@ void Game_window::set_scrolls
 	)
 	{
 					// Figure in tiles.
-	int tw = get_width()/c_tilesize, th = (get_height()-40)/c_tilesize;
+		// OFFSET HERE
+	int tw = get_width()/c_tilesize, th = (get_height())/c_tilesize;
 	set_scrolls(DECR_TILE(cent.tx, tw/2), DECR_TILE(cent.ty, th/2));
 	}
 

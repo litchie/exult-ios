@@ -375,6 +375,11 @@ void MyMidiPlayer::set_music_conversion(int conv)
 	case XMIDI_CONVERT_OGG:
 		config->set("config/audio/midi/convert","digital",true);
 		break;
+#ifdef USE_FMOPL_MIDI
+	case XMIDI_CONVERT_FMSYNTH:
+		config->set("config/audio/midi/convert","fmsynth",true);
+		break;
+#endif
 	default:
 		config->set("config/audio/midi/convert","gm",true);
 		break;
@@ -436,6 +441,10 @@ bool MyMidiPlayer::init_device(void)
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS127;
 	else if (s == "digital")
 		music_conversion = XMIDI_CONVERT_OGG;
+#ifdef USE_FMOPL_MIDI
+	else if (s == "fmsynth")
+		music_conversion = XMIDI_CONVERT_FMSYNTH;
+#endif
 	else if (s == "gs127drum")
 	{
 		music_conversion = XMIDI_CONVERT_MT32_TO_GS;
@@ -485,8 +494,12 @@ bool MyMidiPlayer::init_device(void)
 	else
 	{
 #ifdef USE_FMOPL_MIDI
-	TRY_MIDI_DRIVER(FMOpl_Midi)
+	if (music_conversion == XMIDI_CONVERT_FMSYNTH) {
+		TRY_MIDI_DRIVER(FMOpl_Midi)
+	}
 #endif
+	if (!midi_device && music_conversion == XMIDI_CONVERT_FMSYNTH) 
+		music_conversion = XMIDI_CONVERT_MT32_TO_GM;
 #ifdef WIN32
 	TRY_MIDI_DRIVER(Windows_MidiOut)
 #endif
@@ -507,6 +520,9 @@ bool MyMidiPlayer::init_device(void)
 #endif
 #if defined(__MORPHOS__) || defined(AMIGA)
   TRY_MIDI_DRIVER(AmigaMIDI)
+#endif
+#ifdef USE_FMOPL_MIDI
+	TRY_MIDI_DRIVER(FMOpl_Midi)
 #endif
 	}
 
