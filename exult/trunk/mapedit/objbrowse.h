@@ -62,4 +62,14 @@ public:
 	void add_group_submenu(GtkWidget *popup);
 };
 
+					// File-selector utility:
+					// Callback for file-selector 'ok':
+typedef void (*File_sel_okay_fun)(char *, gpointer);
+GtkFileSelection *Create_file_selection
+	(
+	char *title,
+	File_sel_okay_fun ok_handler,
+	gpointer user_data
+	);
+
 #endif

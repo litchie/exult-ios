@@ -105,3 +105,50 @@ void Object_browser::add_group_submenu
 			}
 		}
 	}
+
+/*
+ *	Okay clicked in file-selector.
+ */
+
+void File_selector_ok
+	(
+	GtkButton *btn,
+	gpointer user_data
+	)
+	{
+	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_widget_get_toplevel(
+					GTK_WIDGET(btn)));
+	char *fname = gtk_file_selection_get_filename(fsel);
+	File_sel_okay_fun fun = (File_sel_okay_fun)
+				gtk_object_get_user_data(GTK_OBJECT(fsel));
+	if (fname && *fname && fun)
+		(*fun)(fname, user_data);
+	}
+
+/*
+ *	Create a modal file selector.
+ */
+
+GtkFileSelection *Create_file_selection
+	(
+	char *title,
+	File_sel_okay_fun ok_handler,
+	gpointer user_data
+	)
+	{
+	GtkFileSelection *fsel = GTK_FILE_SELECTION(gtk_file_selection_new(
+								title));
+	gtk_window_set_modal(GTK_WINDOW(fsel), true);
+	gtk_object_set_user_data(GTK_OBJECT(fsel), ok_handler);
+	gtk_signal_connect(GTK_OBJECT(fsel->ok_button), "clicked",
+			GTK_SIGNAL_FUNC(File_selector_ok), user_data);
+					// Destroy when done.
+	gtk_signal_connect_object(GTK_OBJECT(fsel->ok_button), "clicked",
+				GTK_SIGNAL_FUNC(gtk_widget_destroy), 
+						GTK_OBJECT(fsel));
+	gtk_signal_connect_object(GTK_OBJECT(fsel->cancel_button), "clicked",
+				GTK_SIGNAL_FUNC(gtk_widget_destroy), 
+						GTK_OBJECT(fsel));
+	return fsel;
+	}	
+
