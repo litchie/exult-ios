@@ -88,6 +88,9 @@
 \C<Mark.Siewert@t-online.de>
 \CExult Studio for Windows
 
+\CSimon Quinn
+\C<simonquinn@users.sourceforge.net>
+\CAudio enhancements
 
 \COTHER CONTRIBUTORS
 

@@ -70,7 +70,8 @@ u7shp$(EXEEXT): u7shp.c
 	gimptool --build $<
 
 EXTRA_DIST=	\
-	exult_studio.glade
+	exult_studio.glade \
+	logo.xpm
 
 if GIMP_PLUGIN
 install-exec-local:

@@ -101,9 +101,7 @@ exult_SOURCES =	\
 	version.cc	\
 	version.h	\
 	xdrag.cc	\
-	xdrag.h		\
-	windrag.cc	\
-	windrag.h
+	xdrag.h
 
 EXULTLIBS = \
 	pathfinder/libpathfinder.la		\
@@ -142,10 +140,12 @@ EXTRA_DIST = 	\
 	Makefile.win32 \
 	Makefile.be \
 	Makefile.cygwin \
-	Makefile.mingw \
+	Makefile.studio.mingw \
 	Makefile.MorphOS \
 	Info.plist.in \
 	exult.spec \
+	windrag.cc	\
+	windrag.h \
 	win32/exult.ico \
 	win32/exultico.rc \
 	win32/exultstudio.ico \
