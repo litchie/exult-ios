@@ -136,7 +136,7 @@ public:
 		: Gump_button(par, shapenum, px, py, SF_EXULT_FLX)
 	{ }
 					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 };
 
 class Newfile_Textbutton : public Text_button
@@ -146,7 +146,7 @@ public:
 		: Text_button(par, text, px, py, width)
 	{ }
 
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 };
 
 /*
@@ -155,7 +155,6 @@ public:
 
 void Newfile_button::activate
 	(
-	Game_window *gwin
 	)
 {
 	int shapenum = get_shapenum();
@@ -169,7 +168,7 @@ void Newfile_button::activate
 		((Newfile_gump *) parent)->scroll_page(-1);
 }
 
-void Newfile_Textbutton::activate(Game_window *gwin)
+void Newfile_Textbutton::activate()
 {
 	if (text == loadtext)
 		((Newfile_gump *) parent)->load();
@@ -178,7 +177,7 @@ void Newfile_Textbutton::activate(Game_window *gwin)
 	else if (text == deletetext)
 		((Newfile_gump *) parent)->delete_file();
 	else if (text == canceltext)
-		parent->close(gwin);
+		parent->close();
 }
 
 /*
@@ -277,7 +276,7 @@ void Newfile_gump::load()
 	//Reread save game details (quick save gets overwritten)
 	//FreeSaveGameDetails();
 	//LoadSaveGameDetails();
-	//paint(gwin);
+	//paint();
 	//gwin->set_painted();
 }
 
@@ -578,10 +577,10 @@ void Newfile_gump::mouse_down
 {
 	slide_start = -1;
 
-	pushed = Gump::on_button(gwin, mx, my);
+	pushed = Gump::on_button(mx, my);
 				// Try buttons at bottom.
 	if (!pushed) for (size_t i = 0; i < sizeof(buttons)/sizeof(buttons[0]); i++)
-		if (buttons[i] && buttons[i]->on_button(gwin, mx, my))
+		if (buttons[i] && buttons[i]->on_button(mx, my))
 		{
 			pushed = buttons[i];
 			break;
@@ -589,7 +588,7 @@ void Newfile_gump::mouse_down
 
 	if (pushed)			// On a button?
 	{
-		pushed->push(gwin);
+		pushed->push();
 		return;
 	}
 
@@ -737,9 +736,9 @@ void Newfile_gump::mouse_up
 
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush(gwin);
-		if (pushed->on_button(gwin, mx, my))
-			pushed->activate(gwin);
+		pushed->unpush();
+		if (pushed->on_button(mx, my))
+			pushed->activate();
 		pushed = 0;
 	}
 }
@@ -825,11 +824,11 @@ void Newfile_gump::key_down
 	case SDLK_RETURN:		// If only 'Save', do it.
 		if (!buttons[0] && buttons[1])
 		{
-			buttons[1]->push(gwin);
+			buttons[1]->push();
 			gwin->show(1);
-			buttons[1]->unpush(gwin);
+			buttons[1]->unpush();
 			gwin->show(1);
-			buttons[1]->activate(gwin);
+			buttons[1]->activate();
 		}
 		update_details = true;
 		break;

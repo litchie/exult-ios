@@ -37,10 +37,10 @@ public:
 	Text_button(Gump *p, std::string str, int x, int y, int w = 0, int h = 0);
 	virtual void paint();
 
-	virtual int on_widget(Game_window *gwin, int mx, int my);
+	virtual int on_widget(int mx, int my);
 
-	virtual int on_button(Game_window *gwin, int mx, int my)
-	{ return on_widget (gwin, mx, my); }
+	virtual int on_button(int mx, int my)
+	{ return on_widget (mx, my); }
 	
 };
 

@@ -63,7 +63,7 @@ public:
 	virtual void select_spell(int spell);	// Set bookmark.
 	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?
-	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
+	virtual Gump_button *on_button(int mx, int my);
 					// Paint button.
 	virtual void paint_button(Gump_button *btn);
 					// Paint it and its contents.
@@ -86,7 +86,7 @@ public:
 		{  }
 	virtual Game_object *get_owner();// Get object this belongs to.
 					// Is a given point on a button?
-	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
+	virtual Gump_button *on_button(int mx, int my);
 					// Paint button.
 	virtual void paint_button(Gump_button *btn);
 					// Paint it and its contents.

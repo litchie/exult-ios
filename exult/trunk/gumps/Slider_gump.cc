@@ -54,7 +54,7 @@ public:
 		: Gump_button(par, shapenum, px, py)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 };
 
 /*
@@ -63,7 +63,6 @@ public:
 
 void Slider_button::activate
 	(
-	Game_window *gwin
 	)
 {
 	((Slider_gump *) parent)->clicked_arrow(this);
@@ -181,7 +180,7 @@ void Slider_gump::paint
 					// Paint slider diamond.
 	diamond.paint_shape(x + diamondx, y + diamondy);
 					// Print value.
-  	Paint_num(gwin, val, x + textx, y + texty);
+  	Paint_num(val, x + textx, y + texty);
 	gwin->set_painted();
 }
 
@@ -195,18 +194,18 @@ void Slider_gump::mouse_down
 	)
 {
 	dragging = 0;
-	Gump_button *btn = Gump::on_button(gwin, mx, my);
+	Gump_button *btn = Gump::on_button(mx, my);
 	if (btn)
 		pushed = btn;
-	else if (left_arrow->on_button(gwin, mx, my))
+	else if (left_arrow->on_button(mx, my))
 		pushed = left_arrow;
-	else if (right_arrow->on_button(gwin, mx, my))
+	else if (right_arrow->on_button(mx, my))
 		pushed = right_arrow;
 	else
 		pushed = 0;
 	if (pushed)
 	{
-		pushed->push(gwin);
+		pushed->push();
 		return;
 	}
 					// See if on diamond.
@@ -252,9 +251,9 @@ void Slider_gump::mouse_up
 	}
 	if (!pushed)
 		return;
-	pushed->unpush(gwin);
-	if (pushed->on_button(gwin, mx, my))
-		pushed->activate(gwin);
+	pushed->unpush();
+	if (pushed->on_button(mx, my))
+		pushed->activate();
 	pushed = 0;
 }
 

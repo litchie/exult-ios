@@ -51,11 +51,11 @@ short Stats_gump::texty[10] = {17, 26, 35, 46, 55, 67, 76, 86,
 
 static int Show_atts
 	(
-	Game_window *gwin,
 	int x, int y,			// Pos. on screen.
 	int framenum
 	)
 {
+	Game_window *gwin = Game_window::get_instance();
 	ShapeID sid(game->get_shape("gumps/statatts"), framenum, SF_GUMPS_VGA);
 	Shape_frame *s = sid.get_shape();
 	gwin->paint_shape(x + s->get_xleft(),
@@ -104,40 +104,40 @@ void Stats_gump::paint
 	std::string nm = act->get_name();
 	gwin->paint_text(2, nm.c_str(), x + namex +
 		(namew - gwin->get_text_width(2, nm.c_str()))/2, y + namey);
-	Paint_num(gwin, act->get_property(Actor::strength),
+	Paint_num(act->get_property(Actor::strength),
 						x + textx, y + texty[0]);
-	Paint_num(gwin, act->get_property(Actor::dexterity),
+	Paint_num(act->get_property(Actor::dexterity),
 						x + textx, y + texty[1]);
-	Paint_num(gwin, act->get_property(Actor::intelligence),
+	Paint_num(act->get_property(Actor::intelligence),
 						x + textx, y + texty[2]);
-  	Paint_num(gwin, act->get_property(Actor::combat),
+  	Paint_num(act->get_property(Actor::combat),
 						x + textx, y + texty[3]);
-  	Paint_num(gwin, act->get_property(Actor::magic),
+  	Paint_num(act->get_property(Actor::magic),
 						x + textx, y + texty[4]);
-  	Paint_num(gwin, act->get_property(Actor::health),
+  	Paint_num(act->get_property(Actor::health),
 						x + textx, y + texty[5]);
-  	Paint_num(gwin, act->get_property(Actor::mana),
+  	Paint_num(act->get_property(Actor::mana),
 						x + textx, y + texty[6]);
-  	Paint_num(gwin, act->get_property(Actor::exp),
+  	Paint_num(act->get_property(Actor::exp),
 						x + textx, y + texty[7]);
-	Paint_num(gwin, act->get_level(), x + textx, y + texty[8]);
-  	Paint_num(gwin, act->get_property(Actor::training),
+	Paint_num(act->get_level(), x + textx, y + texty[8]);
+  	Paint_num(act->get_property(Actor::training),
 						x + textx, y + texty[9]);
 					// Now show atts. at bottom.
 	const int attsy = 130, attsx0 = 29;
 	int attsx = attsx0;
 	if (act->get_flag(Obj_flags::asleep))
-		attsx += Show_atts(gwin, x + attsx, y + attsy, ASLEEP);
+		attsx += Show_atts(x + attsx, y + attsy, ASLEEP);
 	if (act->get_flag(Obj_flags::poisoned))
-		attsx += Show_atts(gwin, x + attsx, y + attsy, POISONED);
+		attsx += Show_atts(x + attsx, y + attsy, POISONED);
 	if (act->get_flag(Obj_flags::charmed))
-		attsx += Show_atts(gwin, x + attsx, y + attsy, CHARMED);
+		attsx += Show_atts(x + attsx, y + attsy, CHARMED);
 	if (act->get_property((int) Actor::food_level) <= 4)
-		attsx += Show_atts(gwin, x + attsx, y + attsy, HUNGRY);
+		attsx += Show_atts(x + attsx, y + attsy, HUNGRY);
 	if (act->get_flag(Obj_flags::protection))
-		attsx += Show_atts(gwin, x + attsx, y + attsy, PROTECTED);
+		attsx += Show_atts(x + attsx, y + attsy, PROTECTED);
 	if (act->get_flag(Obj_flags::cursed))
-		attsx += Show_atts(gwin, x + attsx, y + attsy, CURSED);
+		attsx += Show_atts(x + attsx, y + attsy, CURSED);
 	if (act->get_flag(Obj_flags::paralyzed))
-		attsx += Show_atts(gwin, x + attsx, y + attsy, PARALYZED);
+		attsx += Show_atts(x + attsx, y + attsy, PARALYZED);
 }

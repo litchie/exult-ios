@@ -82,12 +82,12 @@ Dragging_info::Dragging_info
 		if (obj)
 			gump->get_shape_location(obj,
 					paintx, painty);
-		else if ((button = gump->on_button(gwin, x, y)) != 0)
+		else if ((button = gump->on_button(x, y)) != 0)
 			{
 			gump = 0;
 			if (!button->is_draggable())
 				return;
-			button->push(gwin);
+			button->push();
 					// Pushed button, so make noise.
 			Audio::get_ptr()->play_sound_effect(
 					Audio::game_sfx(96));
@@ -256,10 +256,10 @@ bool Dragging_info::drop
 	Game_window *gwin = Game_window::get_instance();
 	if (button)
 		{
-		button->unpush(gwin);
-		if (button->on_button(gwin, x, y))
+		button->unpush();
+		if (button->on_button(x, y))
 					// Clicked on button.
-			button->activate(gwin);
+			button->activate();
 		handled = true;
 		}
 	else if (!obj)			// Only dragging a gump?

@@ -265,24 +265,23 @@ Paperdoll_gump::~Paperdoll_gump
 
 Gump_button *Paperdoll_gump::on_button
 	(
-	Game_window *gwin,
 	int mx, int my			// Point in window.
 	)
 {
-	Gump_button *btn = Gump::on_button(gwin, mx, my);
+	Gump_button *btn = Gump::on_button(mx, my);
 	if (btn)
 		return btn;
-	else if (heart_button && heart_button->on_button(gwin, mx, my))
+	else if (heart_button && heart_button->on_button(mx, my))
 		return heart_button;
-	else if (disk_button && disk_button->on_button(gwin, mx, my))
+	else if (disk_button && disk_button->on_button(mx, my))
 		return disk_button;
-	else if (combat_button && combat_button->on_button(gwin, mx, my))
+	else if (combat_button && combat_button->on_button(mx, my))
 		return combat_button;
-	else if (cstats_button && cstats_button->on_button(gwin, mx, my))
+	else if (cstats_button && cstats_button->on_button(mx, my))
 		return cstats_button;
-	else if (halo_button && halo_button->on_button(gwin, mx, my))
+	else if (halo_button && halo_button->on_button(mx, my))
 		return halo_button;
-	else if (cmode_button && cmode_button->on_button(gwin, mx, my))
+	else if (cmode_button && cmode_button->on_button(mx, my))
 		return cmode_button;
 	return 0;
 }

@@ -53,7 +53,7 @@ public:
 		  isyes(yes)
 		{  }
 					// What to do when 'clicked':
-	virtual void activate(Game_window *gwin);
+	virtual void activate();
 };
 
 
@@ -63,7 +63,6 @@ public:
 
 void Yesno_button::activate
 	(
-	Game_window *gwin
 	)
 {
 	((Yesno_gump *) parent)->set_answer(isyes);
@@ -125,16 +124,16 @@ void Yesno_gump::mouse_down
 	)
 {
 					// Check buttons.
-	if (yes_button->on_button(gwin, mx, my))
+	if (yes_button->on_button(mx, my))
 		pushed = yes_button;
-	else if (no_button->on_button(gwin, mx, my))
+	else if (no_button->on_button(mx, my))
 		pushed = no_button;
 	else
 	{
 		pushed = 0;
 		return;
 	}
-	pushed->push(gwin);		// Show it.
+	pushed->push();		// Show it.
 }
 
 /*
@@ -148,9 +147,9 @@ void Yesno_gump::mouse_up
 {
 	if (pushed)			// Pushing a button?
 	{
-		pushed->unpush(gwin);
-		if (pushed->on_button(gwin, mx, my))
-			pushed->activate(gwin);
+		pushed->unpush();
+		if (pushed->on_button(mx, my))
+			pushed->activate();
 		pushed = 0;
 	}
 }

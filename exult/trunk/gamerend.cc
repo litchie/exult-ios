@@ -397,7 +397,7 @@ void Game_window::paint_dirty()
 {
 	// Update the gumps before painting, unless in dont_move mode (may change dirty area)
     if (!main_actor_dont_move())
-        gump_man->update_gumps(this);
+        gump_man->update_gumps();
 
 	Rectangle box = clip_to_win(dirty);
 	if (box.w > 0 && box.h > 0)

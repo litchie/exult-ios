@@ -343,11 +343,11 @@ bool Gump_manager::double_clicked
 		obj = gump->find_object(x, y);
 		if (!obj)		// Maybe it's a spell.
 		{
-		 	Gump_button *btn = gump->on_button(gwin, x, y);
-			if (btn) btn->double_clicked(gwin, x, y);
+		 	Gump_button *btn = gump->on_button(x, y);
+			if (btn) btn->double_clicked(x, y);
 			else if (gwin->get_double_click_closes_gumps())
 			{
-				gump->close(gwin);
+				gump->close();
 				gwin->paint();
 			}
 		}
@@ -360,10 +360,10 @@ bool Gump_manager::double_clicked
 /*
  *	Update the gumps
  */
-void Gump_manager::update_gumps(Game_window *gwin)
+void Gump_manager::update_gumps()
 {
 	for (Gump_list *gmp = open_gumps; gmp; gmp = gmp->next)
-		gmp->gump->update_gump(gwin);
+		gmp->gump->update_gump();
 }
 
 /*
