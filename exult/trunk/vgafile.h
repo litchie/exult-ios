@@ -105,6 +105,12 @@ public:
 		{
 		return (shapes[shapenum].get(file, shapenum, framenum));
 		}
+					// Get # frames for a shape.
+	int get_num_frames(int shapenum)
+		{
+		get_shape(shapenum, 0);	// Force it into memory.
+		return shapes[shapenum].num_frames;
+		}
 	unsigned char *dims;	//+++++++++++++Debugging.
 	};
 
