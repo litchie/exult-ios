@@ -960,7 +960,7 @@ inline void Raindrop::paint
 	(
 	Image_window8 *iwin,		// Where to draw.
 	int scrolltx, int scrollty,	// Tile at top-left corner.
-	Xform_palette xform		// Transform array.
+	Xform_palette& xform		// Transform array.
 	)
 	{
 	uint32 ascrollx = scrolltx*(uint32)c_tilesize,
@@ -982,7 +982,7 @@ inline void Raindrop::next
 	(
 	Image_window8 *iwin,		// Where to draw.	
 	int scrolltx, int scrollty,	// Tile at top-left corner.
-	Xform_palette xform,		// Transform array.
+	Xform_palette& xform,		// Transform array.
 	int w, int h			// Dims. of window.
 	)
 	{
@@ -1021,7 +1021,7 @@ inline void Raindrop::next_random
 	(
 	Image_window8 *iwin,		// Where to draw.	
 	int scrolltx, int scrollty,	// Tile at top-left corner.
-	Xform_palette xform,		// Transform array.
+	Xform_palette& xform,		// Transform array.
 	int w, int h			// Dims. of window.
 	)
 	{
@@ -1057,7 +1057,7 @@ void Rain_effect::handle_event
 		Image_window8 *win = gwin->get_win();
 		int w = win->get_width(), h = win->get_height();
 					// Get transform table.
-		Xform_palette xform = sman->get_xform(8);//++++Experiment.
+		Xform_palette& xform = sman->get_xform(8);//++++Experiment.
 		int scrolltx = gwin->get_scrolltx(),
 		    scrollty = gwin->get_scrollty();
 					// Move drops.
@@ -1085,7 +1085,7 @@ void Rain_effect::paint
 	if (gwin->is_main_actor_inside() || gumpman->showing_gumps(true))
 		return;			// Inside.
 					// Get transform table.
-	Xform_palette xform = sman->get_xform(8);//++++Experiment.
+	Xform_palette& xform = sman->get_xform(8);//++++Experiment.
 	int scrolltx = gwin->get_scrolltx(),
 	    scrollty = gwin->get_scrollty();
 	Image_window8 *win = gwin->get_win();
@@ -1216,7 +1216,7 @@ void Sparkle_effect::handle_event
 		Image_window8 *win = gwin->get_win();
 		int w = win->get_width(), h = win->get_height();
 					// Get transform table.
-		Xform_palette xform = sman->get_xform(8);
+		Xform_palette& xform = sman->get_xform(8);
 		int scrolltx = gwin->get_scrolltx(),
 		    scrollty = gwin->get_scrollty();
 					// Move drops to random spots.

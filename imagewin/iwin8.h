@@ -90,7 +90,7 @@ public:
 				first_translucent, last_translucent, xforms); }
 					// Apply translucency to a line.
 	void fill_line_translucent8(unsigned char val,
-			int srcw, int destx, int desty, Xform_palette xform)
+			int srcw, int destx, int desty, Xform_palette& xform)
 		{ ib8->Image_buffer8::fill_line_translucent8(val, 
 					srcw, destx, desty, xform); }
 					// Copy rect. with transp. color.

@@ -27,6 +27,7 @@
 #include "tiles.h"
 #include "singles.h"
 
+class Xform_palette;
 class PathFinder;
 class Game_object;
 class Game_window;
@@ -232,12 +233,12 @@ public:
 	Raindrop() : oldpix(0xff), yperx(1), ax(-1), ay(-1)
 		{  }
 	void paint(Image_window8 *iwin, int scrolltx, int scrollty,
-						unsigned char *xform);
+						Xform_palette& xform);
 					// Move to next position.
 	void next(Image_window8 *iwin, int scrolltx, int scrollty,
-					unsigned char *xform, int w, int h);
+					Xform_palette& xform, int w, int h);
 	void next_random(Image_window8 *iwin, int scrolltx, int scrollty,
-					unsigned char *xform, int w, int h);
+					Xform_palette& xform, int w, int h);
 	};	
 
 /*

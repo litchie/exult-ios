@@ -156,32 +156,38 @@ void Shape_manager::load
 		}
 					// Get translucency tables.
 	std::size_t len, nxforms = sizeof(xforms)/sizeof(xforms[0]);
+					// RGBA blend colors:
+	static unsigned char blends[4*11] = {
+			36,10,48,128, 24,10,4,128, 25,27,29,192, 
+			17,33,7,128, 63,52,12,64, 7,13,63,128,
+			2,17,0,128, 63,2,2,128, 65,61,62,128, 
+			14,10,8,128, 49,48,46,128};
+	for (int i = 0; i < nxforms; i++)
+		xforms[i].set_color(blends[4*i], blends[4*i+1],
+					blends[4*i+2], blends[4*i+3]);
 	if (U7exists(XFORMTBL))
 		{			// Read in translucency tables.
 		Segment_file xf(XFORMTBL);
 		for (int i = 0; i < nxforms; i++)
-			xforms[nxforms - 1 - i] = (uint8*)xf.retrieve(i, len);
+			{
+			uint8 *data = (uint8*)xf.retrieve(i, len);
+			memcpy(xforms[nxforms - 1 - i].colors, data,
+						sizeof(xforms[0].colors));
+			delete data;
+			}
 		}
 	else				// Create algorithmically.
 		{
 		gwin->get_pal()->load(PALETTES_FLX, 0);
-					// RGB blend colors:
-		static unsigned char blends[3*11] = {
-			36,10,48, 24,10,4, 25,27,29, 17,33,7, 63,52,12, 
-			7,13,63,
-			2,17,0, 63,2,2, 65,61,62, 14,10,8, 49,48,46};
-		static int alphas[11] = {128, 128, 192, 128, 64, 128,
-					128, 128, 128, 128, 128};
 		for (int i = 0; i < nxforms; i++)
 			{
-			xforms[i] = new unsigned char[256];
-			gwin->get_pal()->create_trans_table(blends[3*i],
-				blends[3*i+1], blends[3*i+2],
-				alphas[i], xforms[i]);
+			gwin->get_pal()->create_trans_table(xforms[i].r,
+				xforms[i].g, xforms[i].b,
+				xforms[i].a, xforms[i].colors);
 			}
 		}
 
-	invis_xform = xforms[nxforms - 1 - 2];   // ->entry 2.
+	invis_xform = &xforms[nxforms - 1 - 2];   // ->entry 2.
 	}
 
 /*
@@ -224,9 +230,11 @@ void Shape_manager::reload_shapes
 Shape_manager::~Shape_manager()
 	{
 	delete fonts;
+#if 0	/* +++No longer needed. */
 	int nxforms = sizeof(xforms)/sizeof(xforms[0]);
 	for (int i = 0; i < nxforms; i++)
 		delete [] xforms[nxforms - 1 - i];
+#endif
 	assert(this == instance);
 	instance = 0;
 	}

@@ -101,7 +101,7 @@ public:
 	void paint_rle_translucent(Image_buffer8 *win, int px, int py,
 					Xform_palette *xforms, int xfcnt);
 	void paint_rle_transformed(Image_buffer8 *win, int px, int py,
-					Xform_palette xform);
+					Xform_palette& xform);
 	void paint_rle_outline(Image_buffer8 *win, int px, int py,
 							unsigned char color);
 					// Paint to screen.
@@ -114,7 +114,7 @@ public:
 					Xform_palette *xforms, int xfcnt)
 		{ GLRENDER  paint_rle_translucent(
 					scrwin, px, py, xforms, xfcnt); }
-	void paint_rle_transformed(int px, int py, Xform_palette xform)
+	void paint_rle_transformed(int px, int py, Xform_palette& xform)
 		{ GLRENDER  paint_rle_transformed(scrwin, px, py, xform); }
 	void paint_rle_outline(int px, int py, unsigned char color)
 		{ GLOUTLINE  paint_rle_outline(scrwin, px, py, color); }
