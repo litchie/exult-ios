@@ -42,7 +42,6 @@ class Shape_draw
 	{
 protected:
 	Vga_file *ifile;		// Where the shapes come from.
-	char **names;			// Names of shapes (or null).
 	GtkWidget *draw;		// GTK draw area to display them in.
 	GdkGC *drawgc;			// For drawing in 'draw'.
 	Image_buffer8 *iwin;		// What we render into.
@@ -60,8 +59,6 @@ public:
 		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
 	void draw_shape(Shape_frame *shape, int x, int y);
 	void draw_shape_centered(int shapenum, int framenum);
-	void set_shape_names(char **nms)
-		{ names = nms; }
 	virtual void render();		// Update what gets shown.
 	void set_background_color(guint32 c);
 					// Configure when created/resized.
