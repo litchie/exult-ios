@@ -30,7 +30,7 @@ Don't forget to activate the cross-compiling environment before any cross-compil
 ./autogen.sh should work on its own
 ./configure should be passed in the following manner:
 
-NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar ./configure --prefix=/opt/QtPalmtop  --disable-tools  --enable-debug arm-embeddex-linux-gnu
+NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar ./configure --prefix=/opt/QtPalmtop  --disable-tools  --enable-debug arm-zaurus-linux-gnu
 (it's all on one line)
 
 Exult uses some tools for its compilation. Of course, those tools get compiled by the ARM cross compiler so it won't work on your platform. Make sure you put a hand on expack (compiled for your platform) before any work.
