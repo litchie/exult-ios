@@ -3379,6 +3379,9 @@ void Usecode_machine::link_party
 		{
 		Actor *npc = gwin->get_npc(party[i]);
 		if (npc)
+			{
 			npc->set_party_id(i);
+			npc->set_schedule_type(Schedule::follow_avatar);
+			}
 		}
 	}
