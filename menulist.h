@@ -21,18 +21,48 @@
 
 class Game_window;
 class Shape_frame;
+class Font;
 
-class MenuEntry {
-private:
+class MenuObject {
+public:
 	Shape_frame *frame_on, *frame_off;
 	int x, y, width, height;
 	bool selected;
-public:
-	MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos) :
-		frame_on(on), frame_off(off), x(xpos), y(ypos), selected(false) { }
-	void paint(Game_window *gwin);
+
+	MenuObject() { };
+	virtual ~MenuObject() { }
+	
 	void set_selected(bool sel) { selected = sel; }
 	bool is_selected() { return selected; }
+	
+	virtual void paint(Game_window *gwin) =0;
+	virtual bool handle_event(SDL_Event& event) =0;
+};
+
+class MenuEntry: public MenuObject {
+public:
+	MenuEntry(Shape_frame *on, Shape_frame *off, int xpos, int ypos);
+	virtual ~MenuEntry() { }
+
+	virtual void paint(Game_window *gwin);
+	virtual bool handle_event(SDL_Event& event);
+};
+
+class MenuChoice: public MenuObject {
+private:
+	Vector *choices;
+	int choice;
+	Font *font;
+	int max_choice_width;
+public:
+	MenuChoice(Shape_frame *on, Shape_frame *off, int xpos, int ypos, Font *fnt);
+	virtual ~MenuChoice() { delete choices; }
+	void add_choice(char *s);
+	int get_choice() { return choice; }
+	void set_choice(int c) { choice = c; }
+	
+	virtual void paint(Game_window *gwin);
+	virtual bool handle_event(SDL_Event& event);
 };
 
 class MenuList {
@@ -42,7 +72,7 @@ private:
 public:
 	MenuList(): selected(-1) { entries = new Vector(); }
 	~MenuList();
-	void add_entry(MenuEntry *entry) { entries->append(entry); }
+	void add_entry(MenuObject *entry) { entries->append(entry); }
 	void paint(Game_window *gwin);
 	int handle_events(Game_window *gwin);
 	int get_selected() { return selected; }

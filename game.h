@@ -32,11 +32,26 @@
 
 class Game_window;
 class Image_window8;
+class Palette;
 
 struct str_int_pair
 {
 	char *str;
 	int  num;
+};
+
+class ExultMenu {
+private:
+	Game_window *gwin;
+	Vga_file exult_flx;
+	Palette pal;
+	int topx, topy, centerx, centery, menuy;
+	void calc_win();
+public:
+	ExultMenu(Game_window *gw);
+	~ExultMenu();
+	Exult_Game run();
+	void setup();
 };
 
 class Game {
