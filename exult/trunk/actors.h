@@ -76,6 +76,7 @@ private:
 	const static char attack_frames2[4];
 					// Draw weapon in hand
 	void paint_weapon(Game_window *gwin);
+	int figure_weapon_pos(int& weapon_x, int& weapon_y, int& weapon_frame);
 protected:
 	unsigned char schedule_type;	// Schedule type (Schedule_type).
 	Schedule *schedule;		// Current schedule.
@@ -104,7 +105,8 @@ protected:
 					// Move and change frame.
 	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
-	void add_dirty(Game_window *gwin);// Force repaint of area taken.
+					// Force repaint of area taken.
+	int add_dirty(Game_window *gwin, int figure_rect = 0);
 					// Read from file.
 	Actor(istream& nfile, int num, int has_usecode);
 public:
