@@ -1,5 +1,6 @@
 2001-03-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/faces2.shp: the rest of the faces by Philip G.
+	* data/cleaver.shp: updated cleaver
 	* gumps/Paperdoll_gump_info.cc, data/flx.in, Makefile*: include art
 
 2001-03-16  Ryan Nunn <triforce@merlin.net.au>
