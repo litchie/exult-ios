@@ -67,6 +67,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::vector;
+using std::ofstream;
 
 ExultStudio *ExultStudio::self = 0;
 Configuration *config = 0;
