@@ -310,7 +310,7 @@ void U7open
 	do {
 		try {
 			in.open(name.c_str(), mode);		// Try to open
-		} catch (std::exception &e)
+		} catch (std::exception &)
 		{}
 		if (in.good())
 			return; // found it!
