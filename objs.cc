@@ -2067,6 +2067,20 @@ void Chunk_object_list::add_egg
 	}
 
 /*
+ *	Remove an egg.
+ */
+
+void Chunk_object_list::remove_egg
+	(
+	Egg_object *egg
+	)
+	{
+	remove(egg);			// Remove it normally.
+	if (cache)			// Remove from cache.
+		cache->update_egg(this, egg, 0);
+	}
+
+/*
  *	Remove a game object from this list.  The object's cx and cy fields
  *	are left set to this chunk.
  */
