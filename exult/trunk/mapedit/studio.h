@@ -205,6 +205,7 @@ public:
 	void close_equip_window();
 	void show_equip_shape(Equip_row_widgets *eq,
 			int x = 0, int y = 0, int w = -1, int h = -1);
+	void set_shape_notebook_frame(int frnum);
 	void init_shape_notebook(Shape_info& info, GtkWidget *book, 
 							int shnum, int frnum);
 	void save_shape_notebook(Shape_info& info, int shnum, int frnum);
