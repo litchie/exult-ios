@@ -1,3 +1,12 @@
+2001-12-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/*.shp, Makefile.*, flx.in: removed text button shapes
+	* gumps/Enabled_button.*: Text button for picking enabled/disabled
+	* AudioOptions_gump.cc, VideoOptions_gump.cc, GameplayOptions_gump.cc, Newfile_gump.cc: use Text_button instead of text button shapes.
+	* VideoOptions_gump.cc: added support for custom resolutions
+	* GameplayOptions_gump.cc: added support for custom framerates	
+	* Gump_ToggleTextButton.h: minor bug fix
+	* Makefile.am: removed --all-static from link line
+
 2001-12-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* mapedit/u7shp.c: use new and improved palette in gimp plugin
 

@@ -81,7 +81,7 @@ int main(int argc, char **argv)
 
   fclose(fp);
 
-  for (c1 = 0; c1 < 256; c1++) {
+  for (c1 = 255; c1 >= 0; c1--) {
     /*    printf("%i: %i %i %i\n", c1, pal[c1*3], pal[c1*3+1], pal[c1*3+2]);*/
     if (!unique(c1)) {
       printf("colour %i not unique\n", c1);
@@ -134,8 +134,8 @@ int main(int argc, char **argv)
 	}
       }
       if (!found) {
-	printf("oops... ran out of colours... this shouldn't have happened\n");
-	exit(1);
+		printf("oops... ran out of colours... this shouldn't have happened\n");
+		exit(1);
       }
     }
   }

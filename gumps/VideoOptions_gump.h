@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _VIDEOOPTIONS_GUMP_H
 
 #include "Modal_gump.h"
+#include <string>
 
 class Gump_button;
 
@@ -36,6 +37,9 @@ class VideoOptions_gump : public Modal_gump
 	int fullscreen;
 
 	int old_resolution;
+
+	std::string *restext;
+	int num_resolutions;
 
  public:
 	VideoOptions_gump();

@@ -48,7 +48,7 @@ GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	Gamemenu_gump.o Newfile_gump.o Gump_ToggleButton.o \
 	AudioOptions_gump.o Face_button.o CombatStats_gump.o \
 	Jawbone_gump.o VideoOptions_gump.o Face_stats.o Gump_manager.o \
-	Text_button.o GameplayOptions_gump.o
+	Text_button.o GameplayOptions_gump.o Enabled_button.o
 IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o
 SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o \
@@ -85,29 +85,20 @@ EXULT_FLX_OBJECTS = \
 	data/midi_conversion.shp \
 	data/sfx_conversion.shp \
 	data/palette_fades.shp \
+	data/scaling_method.shp \
 	data/savegump.shp \
-	data/sav_load.shp \
-	data/sav_save.shp \
-	data/sav_delete.shp \
-	data/sav_cancel.shp \
 	data/sav_downdown.shp \
 	data/sav_down.shp \
 	data/sav_up.shp \
 	data/sav_upup.shp \
 	data/sav_slider.shp \
 	data/sav_selected.shp \
+	data/gameplayoptions.shp \
 	data/gamemenu.shp \
-	data/gam_loadsave.shp \
-	data/gam_audio.shp \
-	data/gam_video.shp \
-	data/gam_gameplay.shp \
-	data/gam_quitmenu.shp \
-	data/gam_quit.shp \
 	data/audiooptions.shp \
-	data/aud_enabled.shp \
-	data/aud_conversion.shp \
-	data/aud_cancel.shp \
-	data/aud_ok.shp \
+	data/videooptions.shp \
+	data/hp_bar.shp \
+	data/sfx_icon.shp
 	data/flx.in
 
 EXULT_BG_FLX_OBJECTS = \
@@ -132,6 +123,8 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/shamino_face.shp \
 	data/bg/greaves.shp \
 	data/bg/spiked_shield.shp \
+	data/bg/mr_faces.shp \
+	data/bg/mr_intro.shp \
 	data/bg/flx.in
 
 EXULT_SI_FLX_OBJECTS = \
