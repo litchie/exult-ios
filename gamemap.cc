@@ -85,7 +85,7 @@ Map_chunk *Game_map::create_chunk
 	int cx, int cy
 	)
 	{
-	return (objects[cx][cy] = new Map_chunk(cx, cy));
+	return (objects[cx][cy] = new Map_chunk(this, cx, cy));
 	}
 
 /*
@@ -112,8 +112,9 @@ Chunk_terrain *Game_map::read_terrain
 
 Game_map::Game_map
 	(
+	int n
 	) : 
-            chunk_terrains(0), read_all_terrain(false), 
+            num(n), chunk_terrains(0), read_all_terrain(false), 
 	    map_modified(false),
 	    map_patches(new Map_patch_collection), chunks(0)
 	{
