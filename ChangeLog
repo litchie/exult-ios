@@ -1,3 +1,14 @@
+2002-06-24  Ryan Nunn  <triforce@merlin.net.au>
+	* actors.cc : Fixed a problem with gloves not using both fingers in BG.
+	* actors.cc, gumps/Gump_manager.cc : Fixed a problem where using a
+	  Female avatar in BG with ye olde style inventories would stop the 'I'
+	  key from working
+	* actors.h, gumps/Actor_gump.cc : Blue lines are now removed when two
+	  handed or two fingered item equiped in BG with ye olde style
+	  inventories
+	* msvcstuff/Exult.dsp : Updated to remove RTTI compile option since
+	  dynamic casts are no longer used.
+
 2002-06-22  Ryan Nunn  <triforce@merlin.net.au>
 	* actors.cc : Fixed a problem when reusing a variable name. Using the
 	  other variable with the same name and an initializer of the new one
