@@ -66,4 +66,5 @@ exult_LDADD = 			\
 	$(SDL_LIBS) $(KMID_LIBS) $(SYSLIBS)
 
 EXTRA_DIST = 	\
-	README.win32
+	README.win32 \
+	Makefile.win32
