@@ -617,7 +617,7 @@ struct uint64 {
 	uint64() : low(0), high(0) { }
 	uint64(uint32 i) : low(i), high(0) { }
 	uint64(uint32 h, uint32 l) : low(l), high(h) { }
-	uint64(uint64 &i) : low(i.low), high(i.high) { }
+	uint64(const uint64 &i) : low(i.low), high(i.high) { }
 
 	inline void addlow(uint32 l) {
 		uint32 mid = (low >> 16);

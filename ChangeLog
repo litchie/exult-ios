@@ -1,3 +1,7 @@
+2002-02-10  Darke  <darkwpaw@users.sourceforge.net>
+	* audio/xmidi.cc: Fixed const.
+	* mapedit/studio.cc: Fixed namespaces.
+
 2002-02-09  Ryan Nunn  <triforce@merlin.net.au>
 	* usecode/intrinsics.cc, usecode/siintrinsics.h, usecode/ucinternal.h :
 	  Fixed skin colour problem in sex scenes.
