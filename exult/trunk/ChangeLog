@@ -1,6 +1,7 @@
 2001-07-31  Max Horn <max@quendi.de>
 	* files/utils.cc: worked arround bug in mkdir() on OS X/Darwin
 
+2001-07-31  Tristan Tarrant <nadir@users.sourceforge.net>
 	* game.h, bggame.cc, sigame.cc: add methods for discovering valid
 	  path settings.
 	* exultmenu.cc: show only valid game entries in menu or warning if 
