@@ -1,5 +1,7 @@
 2001-03-10  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* npcnear.cc: Monster in 'wait' schedule shouldn't attack.  Fixes
+	problem with 1st mage in Test of Courage.
 	* Audio:  For Win32, changed desired sample rate from 44100 to
 	22050.   This stops (at least on my machine) the freeze upon exit.
 
