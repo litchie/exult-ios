@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 class Uc_expression;
 class Uc_call_expression;
+class Uc_array_expression;
 class Uc_function;
 class Uc_var_symbol;
 
@@ -155,24 +156,25 @@ public:
 	};
 
 /*
- *	Print current message on screen (in conversation).
+ *	Add string to current message (for conversations).
  */
-class Uc_say_statement : public Uc_statement
+class Uc_message_statement : public Uc_statement
 	{
+	Uc_array_expression *msgs;
 public:
-	Uc_say_statement() {  }
+	Uc_message_statement(Uc_array_expression *m) : msgs(m) {  }
 					// Generate code.
 	virtual void gen(std::ostream& out, Uc_function *fun);
 	};
 
 /*
- *	Add string to current message (for conversations).
+ *	Print message on screen (in conversation).
  */
-class Uc_message_statement : public Uc_statement
+class Uc_say_statement : public Uc_message_statement
 	{
-	Uc_expression *msg;
 public:
-	Uc_message_statement(Uc_expression *m) : msg(m) {  }
+	Uc_say_statement(Uc_array_expression *m) : Uc_message_statement(m) 
+		{  }
 					// Generate code.
 	virtual void gen(std::ostream& out, Uc_function *fun);
 	};
