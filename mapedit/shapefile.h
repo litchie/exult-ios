@@ -39,6 +39,7 @@ class Shape_group;
  */
 class Shape_file_info
 	{
+	std::string basename;		// Base filename.
 	std::string pathname;		// Full pathname.
 	Vga_file *ifile;		// Contains the images.
 	std::ifstream *file;		// For 'chunks'; ifile is NULL.
@@ -46,11 +47,13 @@ class Shape_file_info
 public:
 	friend class Shape_file_set;
 					// We will own ifile and groups.
-	Shape_file_info(const char *nm, Vga_file *i, std::ifstream *f,
-							Shape_group_file *g)
-		: pathname(nm), ifile(i), file(f), groups(g)
+	Shape_file_info(const char *bnm, const char *pnm, Vga_file *i, 
+					std::ifstream *f, Shape_group_file *g)
+		: basename(bnm), pathname(pnm), ifile(i), file(f), groups(g)
 		{  }
 	~Shape_file_info();
+	const char *get_basename()
+		{ return basename.c_str(); }
 	const char *get_pathname()
 		{ return pathname.c_str(); }
 	Vga_file *get_ifile()

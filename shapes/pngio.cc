@@ -42,7 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 int Import_png8
 	(
-	char *pngname,
+	const char *pngname,
 	int transp_index,		// If 0-255, replace any transp. color
 					//   with this.
 	int& width, int& height,	// Image dimensions returned.
@@ -178,7 +178,7 @@ int Import_png8
 
 int Export_png8
 	(
-	char *pngname,
+	const char *pngname,
 	int transp_index,		// If 0-255, this is the transp. index.
 	int width, int height,		// Image dimensions.
 	int rowbytes,			// # bytes/row.  (Should be

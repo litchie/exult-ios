@@ -36,6 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <gdk/gdkx.h>
 #endif
 #include <glib.h>
+#include <stdlib.h>
 #include "shapelst.h"
 #include "shapevga.h"
 #include "ibuf8.h"
@@ -44,33 +45,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "studio.h"
 #include "utils.h"
 #include "shapegroup.h"
+#include "shapefile.h"
+#include "pngio.h"
 
 using std::cout;
 using std::endl;
 using std::strlen;
-
-/*
- *	Set up popup menu for shape browser.
- *
- *	Output:	->popup menu created.
- */
-
-static GtkWidget *Create_browser_popup
-	(
-	Shape_chooser *chooser
-	)
-	{
-					// Create popup menu.
-	GtkWidget *popup = gtk_menu_new();
-	GtkWidget *mitem = gtk_menu_item_new_with_label("Info...");
-	gtk_widget_show(mitem);
-	gtk_menu_append(GTK_MENU(popup), mitem);
-	gtk_signal_connect (GTK_OBJECT (mitem), "activate",
-			GTK_SIGNAL_FUNC(
-		Shape_chooser::on_shapes_popup_info_activate), chooser);
-	chooser->add_group_submenu(popup);
-	return popup;
-	}
 
 /*
  *	Callback for when a shape is dropped on our draw area.
@@ -679,18 +659,11 @@ gint Shape_chooser::mouse_press
 	if (chooser->selected == old_selected && old_selected >= 0)
 		{			// Same square.  Check for dbl-click.
 		if (((GdkEvent *) event)->type == GDK_2BUTTON_PRESS)
-			chooser->edit_shape();
+			chooser->edit_shape_info();
 		}
 	if (event->button == 3 && chooser->selected >= 0)
-		{
-					// Clean out old.
-		if (chooser->popup)
-			gtk_widget_destroy(chooser->popup);
-		GtkWidget *popup = Create_browser_popup(chooser);
-		chooser->popup = popup;
-		gtk_menu_popup(GTK_MENU(popup), 0, 0, 0, 0, event->button,
-							event->time);
-		}
+		gtk_menu_popup(GTK_MENU(chooser->create_popup()), 
+				0, 0, 0, 0, event->button, event->time);
 	return (TRUE);
 	}
 
@@ -698,7 +671,7 @@ gint Shape_chooser::mouse_press
  *	Bring up the shape-info editor for the selected shape.
  */
 
-void Shape_chooser::edit_shape
+void Shape_chooser::edit_shape_info
 	(
 	)
 	{
@@ -713,6 +686,62 @@ void Shape_chooser::edit_shape
 		}
 	studio->open_shape_window(shnum, frnum, ifile,
 					names ? names[shnum] : 0, info);
+	}
+
+/*
+ *	Bring up the user's image-editor for the selected shape.
+ */
+
+void Shape_chooser::edit_shape
+	(
+	)
+	{
+	ExultStudio *studio = ExultStudio::get_instance();
+	int shnum = info[selected].shapenum,
+	    frnum = info[selected].framenum;
+	string filestr("<GAME>");	// Set up filename.
+	filestr += "/itmp";		// "Image tmp" directory.
+	U7mkdir(filestr.c_str(), 0755);	// Create if not already there.
+					// Create name from file,shape,frame.
+	char *ext = g_strdup_printf("/%s.s%d_f%d.png",
+				file_info->get_basename(), shnum, frnum);
+	filestr += ext;
+	g_free(ext);
+	cout << "Writing image '" << filestr.c_str() << "'" << endl;
+	Shape_frame *frame = ifile->get_shape(shnum, frnum);
+	int w = frame->get_width(), h = frame->get_height();
+	Image_buffer8 img(w, h);	// Render into a buffer.
+	const unsigned char transp = 255;
+	img.fill8(transp);		// Fill with transparent pixel.
+	frame->paint(&img, frame->get_xleft(), frame->get_yabove());
+	int xoff = 0, yoff = 0;
+	if (frame->is_rle())
+		{
+		xoff = -frame->get_xright();
+		yoff = -frame->get_ybelow();
+		}
+	unsigned char pal[3*256];	// Set up palette.
+	for (int i = 0; i < 256; i++)
+		{
+		pal[3*i] = (palette->colors[i]>>16)&0xff;
+		pal[3*i + 1] = (palette->colors[i]>>8)&0xff;
+		pal[3*i + 2] = palette->colors[i]&0xff;
+		}
+	const char *fname = filestr.c_str();
+					// Write out to the .png.
+	if (!Export_png8(fname, transp, w, h, w, xoff, yoff, img.get_bits(),
+					&pal[0], 256))
+		{
+		string msg("Error creating file:  ");
+		msg += fname;
+		studio->prompt(msg.c_str(), "Continue");
+		return;
+		}
+	string cmd(studio->get_image_editor());
+	cmd += ' ';
+	cmd += fname;
+	system(cmd.c_str());
+	//+++++++FINISH  Got to store this info somewhere and monitor file.
 	}
 
 /*
@@ -990,6 +1019,15 @@ void Shape_chooser::on_shapes_popup_info_activate
 	((Shape_chooser *) udata)->edit_shape();
 	}
 
+void Shape_chooser::on_shapes_popup_edit_activate
+	(
+	GtkMenuItem *item,
+	gpointer udata
+	)
+	{
+	((Shape_chooser *) udata)->edit_shape_info();
+	}
+
 /*
  *	Handle a shape dropped on our draw area.
  */
@@ -1097,6 +1135,34 @@ on_find_shape_key			(GtkEntry	*entry,
 
 
 /*
+ *	Set up popup menu for shape browser.
+ */
+
+GtkWidget *Shape_chooser::create_popup
+	(
+	)
+	{
+	if (popup)			// Clean out old.
+		gtk_widget_destroy(popup);
+	popup = gtk_menu_new();		// Create popup menu.
+	GtkWidget *mitem = gtk_menu_item_new_with_label("Info...");
+	gtk_widget_show(mitem);
+	gtk_menu_append(GTK_MENU(popup), mitem);
+	gtk_signal_connect (GTK_OBJECT (mitem), "activate",
+		GTK_SIGNAL_FUNC(on_shapes_popup_info_activate), this);
+	add_group_submenu(popup);
+	if (selected >= 0 &&		// Add editing choices.
+	    ExultStudio::get_instance()->get_image_editor())
+		{
+		mitem = gtk_menu_item_new_with_label("Edit...");
+		gtk_widget_show(mitem);
+		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+			GTK_SIGNAL_FUNC(on_shapes_popup_edit_activate), this);
+		}
+	return popup;
+	}
+
+/*
  *	Create box with 'find' and 'history' controls.
  */
 
@@ -1182,8 +1248,9 @@ Shape_chooser::Shape_chooser
 	Vga_file *i,			// Where they're kept.
 	unsigned char *palbuf,		// Palette, 3*256 bytes (rgb triples).
 	int w, int h,			// Dimensions.
-	Shape_group *g
-	) : Object_browser(g),
+	Shape_group *g,
+	Shape_file_info *fi
+	) : Object_browser(g, fi),
 		Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
 		shapes_file(0), index0(0), framenum0(0),
 		info(0), info_cnt(0), row0(0), nrows(0),

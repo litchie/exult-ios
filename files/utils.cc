@@ -438,7 +438,6 @@ int U7mkdir
 	)
 {
 	string name = get_system_path(dirname);
-	cerr << "creating dir: " << name;
 #if (defined(MACOSX) || defined(BEOS))
 	// remove any trailing slashes
 	string::size_type pos = name.find_last_not_of('/');

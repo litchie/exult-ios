@@ -6,7 +6,8 @@
 #include "shapegroup.h"
 #include "studio.h"
 
-Object_browser::Object_browser(Shape_group *grp) : group(grp), popup(0),
+Object_browser::Object_browser(Shape_group *grp, Shape_file_info *fi) 
+	: group(grp), file_info(fi), popup(0),
 	selected(-1)
 {
 	widget = 0;

@@ -92,10 +92,11 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void vscroll(int newindex);	// Scroll.
 	void adjust_vscrollbar();	// Set new scroll amounts.
 	void adjust_hscrollbar(int newmax);
+	GtkWidget *create_popup();	// Popup menu.
 	GtkWidget *create_search_controls();
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
-					Shape_group *g = 0);
+				Shape_group *g = 0, Shape_file_info *fi = 0);
 	virtual ~Shape_chooser();
 	void set_shapes_file(Shapes_vga_file *sh)
 		{ shapes_file = sh; }	
@@ -130,7 +131,8 @@ public:
 					// Handle mouse press.
 	static gint mouse_press(GtkWidget *widget, GdkEventButton *event,
 							gpointer data);
-	void edit_shape();		// Edit selected shape.
+	void edit_shape_info();		// Edit selected shape's info.
+	void edit_shape();		// Edit selected shape-frame.
 					// Give dragged shape.
 	static void drag_data_get(GtkWidget *widget, GdkDragContext *context,
 		GtkSelectionData *data, guint info, guint time, gpointer data);
@@ -152,6 +154,8 @@ public:
 #endif
 					// Menu items:
 	static void on_shapes_popup_info_activate(
+					GtkMenuItem *item, gpointer udata);
+	static void on_shapes_popup_edit_activate(
 					GtkMenuItem *item, gpointer udata);
 	};
 
