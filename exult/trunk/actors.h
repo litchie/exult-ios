@@ -208,6 +208,8 @@ public:
 	void start(int speed = 250, int delay = 0);
 	void stop();			// Stop animation.
 	void follow(Actor *leader);	// Follow the leader.
+					// Set combat opponent.
+	void set_opponent(Game_object *obj);
 					// Find where to put object.
 	int find_best_spot(Game_object *obj);
 					// Set new schedule.

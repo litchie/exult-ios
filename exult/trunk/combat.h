@@ -47,7 +47,7 @@ class Combat_schedule : public Schedule
 		stunned = 5		// Just been hit.
 		} state;
 	Slist opponents;		// Possible opponents.
-	Actor *opponent;		// Current opponent.
+	Game_object *opponent;		// Current opponent.
 	int max_reach;			// Max. weapon reach in tiles.
 	unsigned char yelled;		// Yell when first opponent targeted.
 	int failures;			// # failures to find opponent.
@@ -64,6 +64,8 @@ public:
 			max_reach(1), yelled(0), failures(0)
 		{  }
 	virtual void now_what();	// Npc calls this when it's done
+					// Set opponent in combat.
+	virtual void set_opponent(Game_object *obj);
 	};
 
 #endif
