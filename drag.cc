@@ -403,10 +403,24 @@ bool Game_window::drop_at_lift
 	int lift;			// Can we put it here?
 	Shape_info& info = shapes.get_info(to_drop->get_shapenum());
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
-					// Allow drop up to 5.
+	int max_drop, move_flags;
+	if (cheat.in_map_editor())
+		{
+		max_drop = at_lift - cheat.get_edit_lift();
+//		max_drop = max_drop < 0 ? 0 : max_drop;
+		if (max_drop < 0)	// Below lift we're editing?
+			return false;
+		move_flags = MOVE_FLY|MOVE_MAPEDIT;
+		}
+	else
+		{			// Allow drop up to 5.
+		max_drop = 5;
+		move_flags = MOVE_FLY;
+		}
 	if (!Map_chunk::is_blocked(info.get_3d_height(), at_lift,
 		tx - xtiles + 1, ty - ytiles + 1, xtiles, ytiles, 
-			lift, MOVE_FLY, 5) && (cheat.in_hack_mover() ||
+			lift, move_flags, max_drop) && 
+	   (cheat.in_hack_mover() ||
 					// Check for path to location.
 	    Fast_pathfinder_client::is_grabable(
 		main_actor->get_abs_tile_coord(), Tile_coord(tx, ty, lift))))

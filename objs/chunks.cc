@@ -410,13 +410,18 @@ int Chunk_cache::is_blocked
 					// See if going down if not levitating.
 		new_lift =  (move_flags & MOVE_NODROP) ? lift :
 				get_highest_blocked(lift, tflags) + 1;
+					// Don't allow fall of > max_drop.
+		if (lift - new_lift > max_drop)
+			{		// Map-editing?  Suspend in air there.
+			if (move_flags & MOVE_MAPEDIT)
+				new_lift = lift - max_drop;
+			else
+				return 1;
+			}
 		new_high = get_lowest_blocked (new_lift, tflags);
 	
 		// Make sure that where we want to go is tall enough for us
 		if (new_high != -1 && new_high < (new_lift + height)) return 1;
-	
-					// Don't allow fall of > max_drop.
-		if (lift - new_lift > max_drop) return 1;
 		}
 		
 	

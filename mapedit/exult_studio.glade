@@ -260,15 +260,122 @@
 	</child>
 
 	<widget>
-	  <class>GtkToggleButton</class>
-	  <name>play_button</name>
-	  <signal>
-	    <name>clicked</name>
-	    <handler>on_play_button_clicked</handler>
-	    <last_modification_time>Sun, 15 Jul 2001 16:17:23 GMT</last_modification_time>
-	  </signal>
-	  <label>Play/test game</label>
-	  <active>False</active>
+	  <class>GtkHBox</class>
+	  <name>hbox9</name>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+
+	  <widget>
+	    <class>GtkToggleButton</class>
+	    <name>play_button</name>
+	    <border_width>4</border_width>
+	    <signal>
+	      <name>clicked</name>
+	      <handler>on_play_button_clicked</handler>
+	      <last_modification_time>Sun, 15 Jul 2001 16:17:23 GMT</last_modification_time>
+	    </signal>
+	    <label>Play/test game</label>
+	    <active>False</active>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>frame50</name>
+	    <border_width>2</border_width>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkCheckButton</class>
+	      <name>tile_grid_button</name>
+	      <border_width>4</border_width>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>on_tile_grid_button_toggled</handler>
+		<last_modification_time>Fri, 20 Jul 2001 17:26:25 GMT</last_modification_time>
+	      </signal>
+	      <label>Tile grid</label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkFrame</class>
+	    <name>frame49</name>
+	    <border_width>2</border_width>
+	    <label_xalign>0</label_xalign>
+	    <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkHBox</class>
+	      <name>hbox10</name>
+	      <border_width>4</border_width>
+	      <homogeneous>False</homogeneous>
+	      <spacing>0</spacing>
+
+	      <widget>
+		<class>GtkLabel</class>
+		<name>label39</name>
+		<label>Edit lift:  </label>
+		<justify>GTK_JUSTIFY_CENTER</justify>
+		<wrap>False</wrap>
+		<xalign>0.5</xalign>
+		<yalign>0.5</yalign>
+		<xpad>0</xpad>
+		<ypad>0</ypad>
+		<child>
+		  <padding>0</padding>
+		  <expand>False</expand>
+		  <fill>False</fill>
+		</child>
+	      </widget>
+
+	      <widget>
+		<class>GtkSpinButton</class>
+		<name>edit_lift_spin</name>
+		<can_focus>True</can_focus>
+		<signal>
+		  <name>changed</name>
+		  <handler>on_edit_lift_spin_changed</handler>
+		  <last_modification_time>Fri, 20 Jul 2001 17:26:14 GMT</last_modification_time>
+		</signal>
+		<climb_rate>1</climb_rate>
+		<digits>0</digits>
+		<numeric>False</numeric>
+		<update_policy>GTK_UPDATE_ALWAYS</update_policy>
+		<snap>False</snap>
+		<wrap>False</wrap>
+		<value>0</value>
+		<lower>0</lower>
+		<upper>13</upper>
+		<step>1</step>
+		<page>4</page>
+		<page_size>4</page_size>
+		<child>
+		  <padding>2</padding>
+		  <expand>True</expand>
+		  <fill>True</fill>
+		</child>
+	      </widget>
+	    </widget>
+	  </widget>
 	</widget>
       </widget>
 
