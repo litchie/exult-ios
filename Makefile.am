@@ -116,11 +116,27 @@ EXTRA_DIST = 	\
 	FAQ \
 	README.win32 \
 	README.Alpha \
+	README.BeOS \
+	README.MacOS \
 	Makefile.win32 \
 	Makefile.be \
 	Makefile.cygwin \
 	alpha_kludges.h mingw_kludges.h \
-	exult.spec
+	exult.spec \
+	win32/exult.ico \
+	win32/exultico.rc \
+	beos/exult.rsrc \
+	mac/exult_icon.rsrc.bin \
+	mac/ExultMac.mcp.xml.sit \
+	mac/exult_version.rsrc.bin \
+	mac/mac_autoconfig.h \
+	mac/mac_prefix.h \
+	debian/changelog \
+	debian/control \
+	debian/copyright \
+	debian/dirs \
+	debian/README.debian \
+	debian/rules
 
 win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
 	-mkdir win32
