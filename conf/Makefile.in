@@ -63,6 +63,7 @@ AS = @AS@
 CC = @CC@
 CPP = @CPP@
 CXX = @CXX@
+DEBUG_FLAGS = @DEBUG_FLAGS@
 DLLTOOL = @DLLTOOL@
 EXEEXT = @EXEEXT@
 FREETYPE_DIR = @FREETYPE_DIR@
@@ -85,7 +86,7 @@ VERSION = @VERSION@
 WINDOWING_SYSTEM = @WINDOWING_SYSTEM@
 
 AUTOMAKE_OPTIONS = foreign
-CXXFLAGS =  $(INCDIRS) -Wall  $(WINDOWING_SYSTEM)
+CXXFLAGS =  $(INCDIRS) -Wall  $(WINDOWING_SYSTEM) $(DEBUG_FLAGS)
 
 OFILES = xmlparse.o xmldump.o XMLEntity.o Configuration.o
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs

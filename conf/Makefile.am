@@ -4,6 +4,7 @@ all-local:	libconf.a
 
 CXXFLAGS += $(INCDIRS) -Wall 
 CXXFLAGS += $(WINDOWING_SYSTEM)
+CXXFLAGS += $(DEBUG_FLAGS)
 
 
 

@@ -54,13 +54,13 @@ void	Configuration::value(const char *key,int &n,int defaultvalue)
 // This function does not make sense here. It should be in XMLEntity
 static	void	xmlassign(XMLnode *walk,string &key,string &value)
 {
-		cout << "xmlassign(" << key << "," << value << ")"<<endl;
+		// cout << "xmlassign(" << key << "," << value << ")"<<endl;
 		if(key.find('/')==string::npos)
 			{
 			// Must refer to me.
 			if(walk->entity.id==key)
 				{
-				cout << "self-assign" << endl;
+				// cout << "self-assign" << endl;
 				walk->entity.content=value;
 				return;
 				}
@@ -85,7 +85,7 @@ static	void	xmlassign(XMLnode *walk,string &key,string &value)
 		XMLnode t;
 		t.entity.id=k2;
 		walk->nodelist.push_back(t);
-		cout << "New node " << k2 << endl;
+		// cout << "New node " << k2 << endl;
 		vector<XMLnode>::reverse_iterator rit=walk->nodelist.rbegin();
 		xmlassign(&*rit,k,value);
 		return;
