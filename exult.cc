@@ -25,7 +25,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <stdlib.h>
 
-#ifdef HAVE_SYS_TIME_H
+// #ifdef HAVE_SYS_TIME_H
+#ifdef XWIN  /* Only needed in XWIN. */
 #include <sys/time.h>
 #endif
 #ifdef MACOS
