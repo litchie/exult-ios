@@ -84,7 +84,8 @@ public:
 					// Our own:
 		fire_field = 128,
 		sleep_field = 129,
-		poison_field = 130
+		poison_field = 130,
+		caltrops_field = 131
 		};
 	enum Egg_flag_shifts {
 		nocturnal = 0,

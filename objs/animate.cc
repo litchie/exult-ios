@@ -269,12 +269,16 @@ void Frame_animator::handle_event
 		Object_sfx::play(obj, sfxnum, true);
 		return;
 		}
-	int framenum;
+	int framenum = obj->get_framenum();
 	if (ireg)			// For IREG, increment frames.
 		switch (obj->get_shapenum())
 			{
 		case 284:		// Sundial is a special case.
 			framenum = gwin->get_hour(); 
+			break;
+		case 768:		// Energy field.  Stop at top.
+			if (framenum < frames - 1)
+				framenum++;
 			break;
 		case 289:		// Fire (SI).
 		case 326:		// Fountain (SI).
@@ -282,12 +286,11 @@ void Frame_animator::handle_event
 		case 655:		// Planets (SI). (Groups of 6).
 		case 695:		// Grandfather clock (SI).
 		case 992:		// Burning urn (SI).
-			framenum = obj->get_framenum();
 					// 0-5 face one way, 6-11 the other.
 			framenum = (framenum + 1)%6 + 6*(framenum/6);
 			break;
 		default:
-			framenum = obj->get_framenum() + 1;
+			framenum++;
 			break;
 			}
 	else				// Want fixed shapes synchronized.

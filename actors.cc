@@ -1583,6 +1583,13 @@ void Actor::reduce_health
 					// Flash red if Avatar badly hurt.
 		if (rand()%2)
 			gwin->flash_palette_red();
+	Game_object_vector vec;		// Create blood.
+	const int blood = 912;
+	if (delta >= 3 && rand()%2 && find_nearby(vec, blood, 1, 0) < 2)
+		{			// Create blood where actor stands.
+		Game_object *bobj = gwin->create_ireg_object(blood, 0);
+		bobj->move(get_abs_tile_coord());
+		}
 	if (Actor::is_dying())
 		{
 		if (Game::get_game_type() == SERPENT_ISLE && usecode >= 0)
