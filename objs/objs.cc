@@ -1317,16 +1317,10 @@ int Game_object::lt
 		return (1);
 	if (!inf2.zs && inf2.tz <= inf1.tz)	// It's below us?
 		return (0);
-#if 0					// Below 2nd?
-	if (inf1.tz < inf2.tz && inf1.tz + inf1.zs <= inf2.tz + inf2.zs)
-		return (1);
-					// Above 2nd?
-	else if (inf2.tz < inf1.tz && inf2.tz + inf2.zs <= inf1.tz + inf1.zs)
-		return (0);
-#endif
 					// Handle intersecting objects.
 	if (inf1.tx == inf2.tx &&	// Watch for paintings on NS walls.
-	    inf1.xs == inf2.xs)
+//	    inf1.xs == inf2.xs)
+	    inf1.xs >= inf2.xs)		// Also pillar/button in SI.
 		if (inf1.ys < inf2.ys)	// Take narrower 2nd.
 			return (0);
 		else if (inf2.ys > inf1.ys)
@@ -1335,7 +1329,6 @@ int Game_object::lt
 			return (0);
 		else if (inf1.zs > inf2.zs)
 			return (1);
-#if 1	/* +++++Added 8/14/00: */
 					// Item on table?
 	if (inf1.zs > 1 && inf2.tz == inf1.tz + inf1.zs - 1 &&
 	    inf2.tx - inf2.xs >= inf1.tx - inf1.xs && inf2.tx <= inf1.tx &&
@@ -1345,7 +1338,6 @@ int Game_object::lt
 	    inf1.tx - inf1.xs >= inf2.tx - inf2.xs && inf1.tx <= inf2.tx &&
 	    inf1.ty - inf1.ys >= inf2.ty - inf2.ys && inf1.ty <= inf2.ty)
 		return 0;
-#endif
 					// If x's overlap, see if in front.
 	if ((inf1.tx > inf2.tx - inf2.xs && inf1.tx <= inf2.tx) ||
 	    (inf2.tx > inf1.tx - inf1.xs && inf2.tx <= inf1.tx))
