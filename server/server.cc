@@ -431,9 +431,13 @@ static void Handle_client_message
 		break;
 	case Exult_server::edit_selected:
 		{
+		unsigned char basic = *ptr;
 		const Game_object_vector& sel = cheat.get_selected();
 		if (!sel.empty())
-			sel.back()->edit();
+			if (basic)		// Basic obj. props?
+				sel.back()->Game_object::edit();
+			else
+				sel.back()->edit();
 		break;
 		}
 #ifdef USECODE_DEBUGGER

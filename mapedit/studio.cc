@@ -233,6 +233,24 @@ on_paste1_activate                       (GtkMenuItem     *menuitem,
 }
 
 C_EXPORT void
+on_properties1_activate                (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	unsigned char o = 0;		// 0=npc/egg properties.
+	ExultStudio::get_instance()->send_to_server(
+				Exult_server::edit_selected, &o, 1);
+}
+
+C_EXPORT void
+on_basic_properties1_activate          (GtkMenuItem     *menuitem,
+                                        gpointer         user_data)
+{
+	unsigned char o = 1;		// 1=basic object properties.
+	ExultStudio::get_instance()->send_to_server(
+				Exult_server::edit_selected, &o, 1);
+}
+
+C_EXPORT void
 on_move1_activate	               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
@@ -2305,5 +2323,7 @@ void ExultStudio::set_edit_menu
 	set_sensitive("cut1", sel);
 	set_sensitive("copy1", sel);
 	set_sensitive("paste1", clip);
+	set_sensitive("properties1", sel);
+	set_sensitive("basic_properties1", sel);
 	}
 
