@@ -377,9 +377,10 @@ void U7copy
 	const char *dest
 	);
 
-bool is_system_path_defined(const char *path);
+bool is_system_path_defined(const string& key);
 void store_system_paths();
 void reset_system_paths();
+void clear_system_path(const string& key);
 void add_system_path(const std::string& key, const std::string& value);
 std::string get_system_path(const std::string &path);
 

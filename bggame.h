@@ -38,7 +38,7 @@ public:
 	virtual int  get_start_tile_y()
 		{ return (136*c_tiles_per_chunk); }
 	virtual void show_journey_failed();
-	static bool is_installed(const char *path);
+	static bool is_installed();
 
 private:
 	Vga_file shapes;

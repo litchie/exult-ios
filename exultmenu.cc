@@ -229,11 +229,9 @@ void ExultMenu::setup()
 Exult_Game ExultMenu::run()
 {
 	Font *font = fontManager.get_font("CREDITS_FONT");
-	std::string bg_dir, si_dir;
-	config->value("config/disk/game/blackgate/path",bg_dir,".");
-	config->value("config/disk/game/serpentisle/path",si_dir,".");
-	bool bg_installed = BG_Game::is_installed(bg_dir.c_str());
-	bool si_installed = SI_Game::is_installed(si_dir.c_str());
+	// Check for the games in the designated directories.
+	bool bg_installed = BG_Game::is_installed();
+	bool si_installed = SI_Game::is_installed();
 
 	if(!bg_installed && !si_installed) {
 		pal.load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
