@@ -1,3 +1,6 @@
+2001-11-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* objs.cc, msvcstuff/find_nearby.h: fixed crash in SI cheat room
+
 2001-11-26  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Changed version to 0.96beta1.
