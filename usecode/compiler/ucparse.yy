@@ -248,7 +248,7 @@ primary:
 	INT_LITERAL
 		{ $$ = new Uc_int_expression($1); }
 	| declared_var
-		{ $$ = 0; /* ++++++ */ }
+		{ $$ = new Uc_var_expression($1); }
 	| declared_var '[' expression ']'
 		{ $$ = 0; /* ++++++ */ }
 	| function_call
@@ -290,6 +290,7 @@ declared_var:
 			}
 		$$ = var;
 		}
+	;
 
 %%
 
