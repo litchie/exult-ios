@@ -151,6 +151,7 @@ void Game_window::restore_gamedat
 	U7remove (GNEWGAMEVER);
 	U7remove (GEXULTVER);
 	U7remove (KEYRINGDAT);
+	U7remove (NOTEBOOKXML);
 
 	cout.flush();
 
@@ -226,7 +227,7 @@ static const char *bgsavefiles[] = {
 	NPC_DAT,	MONSNPCS,
 	USEVARS,	USEDAT,
 	FLAGINIT,	GWINDAT,
-	GSCHEDULE
+	GSCHEDULE,	NOTEBOOKXML
 	};
 static const int bgnumsavefiles = sizeof(bgsavefiles)/sizeof(bgsavefiles[0]);
 
@@ -237,7 +238,8 @@ static const char *sisavefiles[] = {
 	NPC_DAT,	MONSNPCS,
 	USEVARS,	USEDAT,
 	FLAGINIT,	GWINDAT,
-	GSCHEDULE,	KEYRINGDAT
+	GSCHEDULE,	KEYRINGDAT,
+	NOTEBOOKXML
 	};
 static const int sinumsavefiles = sizeof(sisavefiles)/sizeof(sisavefiles[0]);
 
@@ -961,6 +963,7 @@ bool Game_window::restore_gamedat_zip
 	U7remove (GNEWGAMEVER);
 	U7remove (GEXULTVER);
 	U7remove (KEYRINGDAT);
+	U7remove (NOTEBOOKXML);
 
 	cout.flush();
 

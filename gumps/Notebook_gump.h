@@ -69,6 +69,7 @@ public:
 	virtual Gump_button *on_button(int mx, int my);
 	virtual void paint();		// Paint it and its contents.
 	virtual bool handle_kbd_event(void *ev);
+	static void write();		// Write it out to gamedat.
 };
 
 #endif
