@@ -296,13 +296,11 @@ void Dragging_info::put_back
 	(
 	)
 	{
-	Game_window *gwin = Game_window::get_game_window();
 	if (gump)			// Put back remaining/orig. piece.
 					// And don't check for volume!
 		gump->add(obj, -2, -2, -2, -2, true);
 	else
-		gwin->get_chunk(old_pos.tx/c_tiles_per_chunk,
-				old_pos.ty/c_tiles_per_chunk)->add(obj);
+		obj->move(old_pos);
 	obj = 0;			// Just to be safe.
 	}
 
