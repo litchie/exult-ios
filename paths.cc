@@ -380,8 +380,11 @@ int Fast_pathfinder_client::get_step_cost
 	int ty = to.ty%c_tiles_per_chunk;
 	olist->setup_cache();		// Make sure cache is valid.
 	int new_lift;			// Might climb/descend.
-					// For now, look at 1 tile's height.
-	if (olist->is_blocked(1, to.tz, tx, ty, new_lift, get_move_flags()))
+					// For now, look at 1 tile's height,
+					//   and step up/down 2 (needed for SI
+					//   Crystal Ball).
+	if (olist->is_blocked(1, to.tz, tx, ty, new_lift, get_move_flags(), 
+									2, 2))
 		{
 #if 0	/* +++++Lets you get to things in locked rooms! */
 		int i;			// Look upwards a bit.
