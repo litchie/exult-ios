@@ -33,7 +33,7 @@ using std::isspace;
  *	2 = small black (as in zstats).
  *	3 = runes.
  *	4 = tiny black, used in books.
- *	5 = little white.
+ *	5 = little white, glowing, for spellbooks.
  *	6 = runes.
  *	7 = normal red.
  *	8 = Serpentine (books)
@@ -50,7 +50,7 @@ using std::isspace;
  */
 //static int hlead[NUM_FONTS] = {-1, 0, 1, 0, 1, 0, 0, -1, 0, 0};
 // For scrolls (12/6/00):
-static int hlead[NUM_FONTS] = {-2, -1, 0, -1, 0, -1, -1, -2, -1, -1, 0, 0};
+static int hlead[NUM_FONTS] = {-2, -1, 0, -1, 0, 0, -1, -2, -1, -1, 0, 0};
 /*
  *	Initialize.
  */

@@ -395,11 +395,13 @@ void Spellbook_gump::paint
 		{
 			Gump_button *spell = spells[spindex + s];
 			paint_button(spell);
+			if (page == 0)	// No quantities for 1st circle.
+				continue;
 			int num = avail[spindex + s];
 			char text[6];
 			if (num > 0 && num < 1000)
 				{
-				snprintf(text, 6, "%d", num);
+				snprintf(text, 6, "%d", num < 100 ? num : 99);
 				sman->paint_text(5, text,
 					x + spell->x + numx -
 						sman->get_text_width(4, text),
@@ -440,10 +442,11 @@ void Spellbook_gump::paint
 	}
 	if (turning_page)		// Animate turning page.
 		{
+		const int TPXOFF = 5, TPYOFF = 3;
 		ShapeID shape(TURNINGPAGE, turning_frame, SF_GUMPS_VGA);
 		Shape_frame *fr = shape.get_shape();
-		int spritex = x + object_area.x + fr->get_xleft() + 4;
-		int spritey = y + fr->get_yabove();
+		int spritex = x + object_area.x + fr->get_xleft() + TPXOFF;
+		int spritey = y + fr->get_yabove() + TPYOFF;
 		shape.paint_shape(spritex, spritey);
 		turning_frame += turning_page;
 		if (turning_frame < 0 || turning_frame >= 
