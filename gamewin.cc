@@ -706,6 +706,7 @@ void Game_window::clear_world
 	bodies.resize(0);
 	moving_barge = 0;		// Get out of barge mode.
 	special_light = 0;		// Clear out light spells.
+	effects->remove_all_effects(false);
 	}
 
 /*
