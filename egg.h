@@ -94,7 +94,9 @@ public:
 		avatar_far = 3,		// Avatar steps outside area.
 		avatar_footpad = 4,	// Avatar must step on it.
 		party_footpad = 5,
-		something_on = 6	// Something placed on/near it??
+		something_on = 6,	// Something placed on/near it.
+		external_criteria = 7	// Appears on Isle of Avatar.  Guessing
+					//   these set off all nearby.
 		};
 					// Create from ireg. data.
 	Egg_object(unsigned char l, unsigned char h, unsigned int shapex,

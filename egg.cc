@@ -145,7 +145,12 @@ void Egg_object::set_area
 		{
 		int width = 2*distance;
 		if (distance <= 1)	// Small?
+			{
 			width++;
+					// More guesswork:
+			if (criteria == external_criteria)
+				width += 2;
+			}
 		area = Rectangle(tx - distance, ty - distance, 
 					width, width);
 		break;
@@ -208,6 +213,7 @@ int Egg_object::is_active
 			area.has_point(tx, ty) && tz == get_lift() &&
 					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
+	case external_criteria:		// For now, just guessing.
 		return obj == gwin->get_main_actor() && tz == get_lift() &&
 			area.has_point(tx, ty) &&
 					!area.has_point(from_tx, from_ty);
@@ -403,9 +409,27 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		default:
 			cout << "Egg not actioned" << endl;
                 }
+					// Taking a guess:
+	if (criteria == external_criteria)
+		{			// Look for nearby eggs.
+		Vector eggs;
+		int cnt = find_nearby(eggs, get_shapenum(), 8, 0);
+		for (int i = 0; i < cnt; i++)
+			{
+			Egg_object *egg = (Egg_object *) eggs.get(i);
+			if (egg != this &&
+			    egg->criteria == external_criteria &&
+			    !(egg->flags & ((1<<hatched)|(1<<auto_reset))))
+				{	// Just do the 1st.
+				egg->activate(umachine, obj, 0);
+				break;
+				}
+			}
+		}
 	if (flags & (1 << (int) once))
 		remove_this();		// All done, so go away.
-	else if (criteria == cached_in && solid_area && (type != usecode || Game::get_game_type() == SERPENT_ISLE))
+	else if (criteria == cached_in && solid_area && 
+		(type != usecode || Game::get_game_type() == SERPENT_ISLE))
 		{			// Replace solid area with outline.
 		Chunk_object_list *chk = gwin->get_objects(get_cx(), get_cy());
 		chk->remove_egg(this);	// Remove from chunk.
