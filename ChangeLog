@@ -1,3 +1,6 @@
+2003-08-25  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* schedule.cc: don't create special potions in lab schedule
+
 2003-08-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/ucsched.cc, usecode/ucscriptop.h, actors.cc:  Schedule
