@@ -73,6 +73,7 @@ int scale = 0;				// 1 if scaling X2.
 bool    cheat=true;			// Enable cheating keys
 bool	god_mode = false;
 bool    wizard_mode = false;
+bool	hack_mover = false;
 bool	usecode_trace=false;		// Do we trace Usecode-intrinsics?
 #if USECODE_DEBUGGER
 bool	usecode_debugging=false;	// Do we enable the usecode debugger?
@@ -876,6 +877,7 @@ static void Handle_keystroke
 				"  alt-g - Toggle God Mode\n"
 				"  g - Change Avatar gender\n"
 				"  ctrl-m - Get 100 gold coins\n"
+				"  ctrl-alt-m - Toggle hack-mover\n"
 				"  alt-n  - Toggle Naked flag (SI)\n"
 				"  alt-p  - Toggle Petra mode (SI)\n"
 				"  alt-s - Change skin color (SI)\n"
@@ -923,7 +925,13 @@ static void Handle_keystroke
 		gwin->paint();
 		break;
 	case SDLK_m:
-		if (ctrl&&cheat) {	// CTRL-m:  get 100 gold coins!
+		if (ctrl && alt && cheat) {  //ctrl-alt-m: hack mover
+			hack_mover = !hack_mover;
+			if (hack_mover)
+				gwin->center_text("Hack-mover Enabled");
+			else
+				gwin->center_text("Hack-mover Disabled");			
+		} else if (ctrl && cheat) {	// CTRL-m:  get 100 gold coins!
 			gwin->get_main_actor()->add_quantity(100, 644);
 			gwin->center_text("Added 100 gold coins");
 			break;
