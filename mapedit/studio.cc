@@ -61,6 +61,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objserial.h"
 #include "exceptions.h"
 #include "logo.xpm"
+#include "fnames.h"
 
 using std::cerr;
 using std::cout;
@@ -585,6 +586,18 @@ Shape_group_file *ExultStudio::get_cur_groups
 	}
 
 /*
+ *	Test for a directory 'slash' or colon.
+ */
+
+inline bool Is_dir_marker
+	(
+	char c
+	)
+	{
+	return (c == '/' || c == '\\' || c == ':');
+	}
+
+/*
  *	New game directory was chosen.
  */
 
@@ -601,6 +614,24 @@ void ExultStudio::create_new_game
 	char *dir			// Directory for new game.
 	)
 	{
+					// Take basename as game name.
+	const char *eptr = dir + strlen(dir) - 1;
+	while (eptr >= dir && Is_dir_marker(*eptr))
+		eptr--;
+	eptr++;
+	const char *ptr = eptr - 1;
+	for ( ; ptr >= dir; ptr--)
+		if (Is_dir_marker(*ptr))
+			{
+			ptr++;
+			break;
+			}
+	if (ptr < dir || eptr - ptr <= 0)
+		{
+		EStudio::Alert("Can't find base game name in '%s'", dir);
+		return;
+		}
+	string game(ptr, eptr - ptr);
 	string dirstr(dir);
 	string static_path = dirstr + "/static";
 	if (U7exists(static_path))
@@ -618,7 +649,37 @@ void ExultStudio::create_new_game
 	U7mkdir(static_path.c_str(), 0755);
 	string patch_path = dirstr + "/patch";
 	U7mkdir(patch_path.c_str(), 0755);
-	//+++++++Copy files into static.
+					// Set .exult.cfg.
+	string d("config/disk/game/");
+	string gameconfig = d + game;
+	d = gameconfig + "/path";
+	config->set(d.c_str(), dirstr, false);
+	d = gameconfig + "/patch";
+	config->set(d.c_str(), patch_path, false);
+	d = gameconfig + "/editing";	// We are editing.
+	config->set(d.c_str(), true, true);
+	string esdir;			// Get dir. for new files.
+	config->value("config/disk/data_path", esdir, EXULT_DATADIR);
+	esdir += "/estudio/new";
+	DIR *dirrd = opendir(esdir.c_str());
+	if (!dirrd)
+		EStudio::Alert("'%s' for initial data files not found",
+								esdir.c_str());
+	else
+		{
+		struct dirent *entry;
+		while(entry=readdir(dirrd)) 
+			{
+			char *fname = entry->d_name;
+			int flen = strlen(fname);
+					// Ignore case of extension.
+			if(!strcmp(fname, ".") || !strcmp(fname,".."))
+				continue;
+			//+++++++Copy files into static.
+			cout << "New file:  " << fname << endl;
+			}
+		closedir(dirrd);
+		}
 	set_game_path(dir);		// Open as current game.
 	}
 
@@ -811,7 +872,7 @@ void ExultStudio::set_game_path(const char *gamepath)
 	vgafile = open_shape_file("shapes.vga");
 	facefile = open_shape_file("faces.vga");
 					// Read in shape names.
-	int num_shapes = vgafile->get_ifile()->get_num_shapes();
+	int num_shapes = vgafile ? vgafile->get_ifile()->get_num_shapes() : 0;
 	names = new char *[num_shapes];
 	char *txtname = g_strdup_printf("%s%s", static_path, "text.flx");
 	if (U7exists(txtname))
