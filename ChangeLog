@@ -1,3 +1,8 @@
+2000-11-08  Tristan Tarrant <nadir@users.sourceforge.net>
+
+	* configure.in, tools/Makefile.am: only build the GIMP plugin if we
+	  have GIMP > 1.1.26
+
 2000-11-07  Tristan Tarrant <nadir@users.sourceforge.net>
 
 	* configure.in: try harder to find ligimp/gimp.h

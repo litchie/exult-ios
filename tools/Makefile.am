@@ -6,7 +6,7 @@ else
 UCC=
 endif
 
-if HAVE_GIMPTOOL
+if HAVE_GIMP
 GIMP_PLUGINS=u7shpload
 else
 GIMP_PLUGINS=
@@ -50,7 +50,7 @@ ucc: uccparse.o
 u7shpload: u7shpload.c
 	gimptool --build $<
 
-if HAVE_GIMPTOOL
+if HAVE_GIMP
 install-exec-local:
 	gimptool --install-admin-bin u7shpload
 endif
