@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _NOTEBOOK_GUMP_H_
 
 #include "Gump.h"
+#include "font.h"
 #include <vector>
 
 using std::vector;
@@ -64,11 +65,12 @@ class Notebook_gump : public Gump
 					// Indexed by page#/2:
 	static vector<Notebook_top_left> page_info;
 	static bool initialized;
-	int curpage;			// Page # of current top-left.
+	int curpage;			// Current page # (from 0).
+	Cursor_info cursor;		// Cursor loc. within current page.
 					// Page turners:
 	Gump_button *leftpage, *rightpage;
 
-	int paint_page(Rectangle box, One_note *note, int start);
+	int paint_page(Rectangle box, One_note *note, int start, int pagenum);
 public:
 	Notebook_gump();
 	~Notebook_gump();

@@ -24,6 +24,15 @@ class Shape_file;
 class DataSource;
 
 /*
+ *	Cursor info.
+ */
+struct Cursor_info
+{
+	int offset;			// Loc. within text.
+	int x, y;			// Loc. of top-left of cursor in win.
+};
+
+/*
  *	A single font:
  */
 class Font
@@ -46,7 +55,8 @@ public:
 					// Text rendering:
 	int paint_text_box(Image_buffer8 *win,  
 		const char *text, int x, int y, int w, 
-		int h, int vert_lead = 0, int pbreak = 0);
+		int h, int vert_lead = 0, int pbreak = 0,
+		Cursor_info *cursor = 0);
 	int paint_text(Image_buffer8 *win,  
 		const char *text, int xoff, int yoff);
 	int paint_text(Image_buffer8 *win,  
