@@ -1141,8 +1141,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     557, -1,      Actor::lhand,   OT_Double,  false, SF_PAPERDOL_VGA,     53,     0 },
 	{     557, -1,Actor::back2h_spot,   OT_Double,  false, SF_PAPERDOL_VGA,     53,     1 },
 	// Death Scythe **NEEDS ART**
-	{     562, -1,      Actor::lhand,    OT_Staff,  false, SF_PAPERDOL_VGA,     93,     0 },
-	{     562, -1,Actor::back2h_spot,    OT_Staff,  false, SF_PAPERDOL_VGA,     93,     1 },
+	{     562, -1,      Actor::lhand,    OT_Staff,  false, SF_GAME_FLX,     EXULT_BG_FLX_DEATH_SCYTHE_SHP,     0 },
+	{     562, -1,Actor::back2h_spot,    OT_Staff,  false, SF_GAME_FLX,    EXULT_BG_FLX_DEATH_SCYTHE_SHP,     1 },
 	// Pitchfork
 	{     589, -1,      Actor::lhand,    OT_Staff,  false, SF_PAPERDOL_VGA,     84,     0 },
 	{     589, -1,Actor::back2h_spot,    OT_Staff,  false, SF_PAPERDOL_VGA,     84,     1 },
