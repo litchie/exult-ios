@@ -1,3 +1,6 @@
+2001-11-15  Tristan Tarrant <nadir@users.sourceforge.net>
+	* exult.cc: search for data file under the executable's directory too
+
 2001-11-14  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* schedule.cc (public): Avoid standing while in Sit_schedule.
