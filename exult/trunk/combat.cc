@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "paths.h"
 #include "Astar.h"
 #include "actions.h"
+#include "items.h"
 
 /*
  *	Find monsters in given chunk.
@@ -178,6 +179,17 @@ void Combat_schedule::approach_foe
 	(
 	)
 	{
+	if (!opponent && !(opponent = find_foe()))
+		{
+#if 0	/* ++++Try this. */
+		if (npc->get_party_id() >= 0)
+			{
+			Game_window *gwin = Game_window::get_game_window();
+			npc->follow(gwin->get_main_actor());
+			}
+#endif
+		return;			// No one left to fight.
+		}
 	Actor::Attack_mode mode = npc->get_attack_mode();
 	Tile_coord pos = npc->get_abs_tile_coord();
 					// Time to run?
@@ -193,8 +205,6 @@ void Combat_schedule::approach_foe
 		npc->walk_path_to_tile(pos, 100, 0);
 		return;
 		}
-	if (!opponent && !(opponent = find_foe()))
-		return;			// No one left to fight.
 	// +++++npc->get_weapon_range(mindist, max_reach);
 	PathFinder *path = new Astar();
 	Fast_pathfinder_client cost(max_reach);
@@ -209,10 +219,29 @@ void Combat_schedule::approach_foe
 			return;
 			}
 		}
+	if (!yelled++)			// First time (or 256th)?
+		npc->say(first_to_battle, last_to_battle);
 					// Walk there, but don't retry if
 					//   blocked.
 	npc->set_action(new Path_walking_actor_action(path, 0));
 	npc->start(200, 0);		// Start walking.
+	}
+
+/*
+ *	Begin a strike at the opponent.
+ */
+
+void Combat_schedule::start_strike
+	(
+	)
+	{
+	state = strike;
+	cout << npc->get_name() << " attacks " << opponent->get_name() << endl;
+	int dir = npc->get_direction(opponent);
+	char frames[12];		// Get frames to show.
+	int cnt = npc->get_attack_frames(dir, frames);
+	npc->set_action(new Frames_actor_action(frames, cnt));
+	npc->start();			// Get back into time queue.
 	}
 
 /*
@@ -225,25 +254,26 @@ void Combat_schedule::now_what
 	{
 	if (npc->get_attack_mode() == Actor::manual)
 		return;
-	if (opponent)			// Check if opponent still breathes.
-		if (opponent->is_dead_npc())
-			{
-			opponent = 0;
-			state = approach;
-			}
-		else if (npc->distance(opponent) <= max_reach)
-			{		// For now, let's just strike.
-//+++++Want to animate.			state = strike;
-			cout << npc->get_name() << " attacks " <<
-					opponent->get_name() << endl;
-			opponent->attacked(npc);	//++++For now.
-			npc->start(200, 500);	//+++++
-			return;			//+++++
-			}
-	switch (state)
+					// Check if opponent still breathes.
+	if (opponent && opponent->is_dead_npc())
+		{
+		opponent = 0;
+		state = approach;
+		}
+	switch (state)			// Note:  state's action has finished.
 		{
 	case approach:
-		approach_foe();
+		if (opponent && npc->distance(opponent) <= max_reach)
+					// Close enough.  ++++Need to parry??
+			start_strike();	// Start strike animation, for now.
+		else
+			approach_foe();
+		break;
+	case strike:			// He hasn't moved away?
+		if (npc->distance(opponent) <= max_reach)
+			opponent->attacked(npc);
+		state = approach;
+		npc->start(200);	// Back into queue.
 		break;
 	default:
 		break;

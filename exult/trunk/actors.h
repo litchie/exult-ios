@@ -66,6 +66,10 @@ private:
 	Attack_mode attack_mode;
 					// A frame sequence for each dir.:
 	static Frames_sequence *frames[8];
+					// Frames for 1-handed attack:
+	const static char attack_frames1[4];
+					// Frames for 2-handed attack:	
+	const static char attack_frames2[4];
 					// Draw weapon in hand
 	void paint_weapon(Game_window *gwin);
 protected:
@@ -92,6 +96,8 @@ public:
 					// Get frame seq. for given dir.
 	static Frames_sequence *get_frames(int dir)
 		{ return frames[dir]; }
+					// Get attack frames.
+	int get_attack_frames(int dir, char *frames) const;
 					// Spots where items are carried.
 	enum Spots {			// Index of each spot, starting at
 					//   upper, rt., going clkwise.

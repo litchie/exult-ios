@@ -38,6 +38,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+const char Actor::attack_frames1[4] = {3, 4, 5, 6};
+const char Actor::attack_frames2[4] = {3, 7, 8, 9};
 Equip_record *Monster_info::equip = 0;
 int Monster_info::equip_cnt = 0;
 Monster_actor *Monster_actor::in_world = 0;
@@ -90,6 +92,35 @@ Actor::~Actor
 	delete name;
 	delete action;
 	}
+
+/*
+ *	Get sequence of frames for an attack.
+ *
+ *	Output:	# of frames stored.
+ */
+
+int Actor::get_attack_frames
+	(
+	int dir,			// 0-7 (as in dir.h).
+	char *frames			// Frames stored here.
+	) const
+	{
+	const char *which;
+	int cnt;
+	if (two_handed)
+		{
+		which = attack_frames2;
+		cnt = sizeof(attack_frames2);
+		}
+	else
+		{
+		which = attack_frames1;
+		cnt = sizeof(attack_frames1);
+		}
+	for (int i = 0; i < cnt; i++)	// Copy frames with correct dir.
+		*frames++ = get_dir_framenum(dir, *which++);
+	return (cnt);
+	}		
 
 /*
  *	Set default set of frames.
@@ -312,9 +343,7 @@ void Actor::follow
 		if (pixels > gwin->get_width() + 16)
 			{
 			move(goal.tx, goal.ty, goal.tz);
-			Rectangle box = gwin->get_shape_rect(this);
-			gwin->add_text("Thou shan't lose me so easily!", 
-							box.x, box.y);
+			say("Thou shan't lose me so easily!");
 			gwin->paint();
 			return;
 			}
@@ -837,12 +866,8 @@ int Actor::figure_hit_points
 	properties[(int) health] -= hp;	// Subtract from health.
 	if (oldhealth >= maxhealth/2 && properties[(int) health] <
 					maxhealth/2 && rand()%3 != 0)
-		{			// A little oomph.
-		Game_window *gwin = Game_window::get_game_window();
-		Rectangle box = gwin->get_shape_rect(this);
-		int which = rand()%(last_ouch - first_ouch + 1);
-		gwin->add_text(item_names[first_ouch + which], box.x, box.y);
-		}
+					// A little oomph.
+		say(first_ouch, last_ouch);
 	cout << "Attack damage was " << hp << " hit points, leaving " << 
 		properties[(int) health] << " remaining" << endl;
 	return hp;
