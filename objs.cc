@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "objs.h"
 #include "vgafile.h"
+#include "usecode.h"
+#include <string.h>
 
 #if !(defined(XWIN) || defined(DOS)) 	// WIN32
 void gettimeofday(timeval* tv, int x) {
@@ -36,14 +38,16 @@ void gettimeofday(timeval* tv, int x) {
 #endif
 
 /*
- *	The default usecode function for a shape is the shape # (I think).
+ *	Run usecode when double-clicked.
  */
 
-int Game_object::get_usecode
+void Game_object::activate
 	(
+	Usecode_machine *umachine
 	)
 	{
-	return (get_shapenum());
+	umachine->call_usecode(get_shapenum(), this,
+				Usecode_machine::double_click);
 	}
 
 /*
@@ -56,6 +60,33 @@ char *Game_object::get_name
 	{
 	extern char *item_names[];
 	return item_names[get_shapenum()];
+	}
+
+/*
+ *	Run usecode when double-clicked or when activated by proximity.
+ */
+
+void Egg_object::activate
+	(
+	Usecode_machine *umachine
+	)
+	{
+cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
+		", distance = " << (int) distance << '\n';
+	if (type == (int) usecode)	// Data2 is the usecode function.
+		umachine->call_usecode(data2, this,
+					Usecode_machine::proximity);
+	}
+
+/*
+ *	Create list for a given chunk.
+ */
+
+Chunk_object_list::Chunk_object_list
+	(
+	) : objects(0), roof(0), egg_objects(0), num_eggs(0)
+	{
+	memset((char *) &eggs[0], 0xff, sizeof(eggs));
 	}
 
 /*

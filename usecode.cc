@@ -717,6 +717,23 @@ Usecode_value Usecode_machine::call_intrinsic
 	}
 
 /*
+ *	Wait for user to click.  (Mainly for testing).
+ */
+
+void Usecode_machine::click_to_continue
+	(
+	)
+	{
+	Answers save_answers;		// Save answers list.
+	save_answers = answers;
+	answers.num_answers = 0;
+	answers.add_answer("Continue");
+	get_user_choice();
+	user_choice = 0;		// Clear it.
+	answers = save_answers;
+	}
+
+/*
  *	Get user's choice from among the possible responses.
  *
  *	Output:	User choice is set, with choice # returned.
@@ -1110,6 +1127,8 @@ void Usecode_machine::run
 			pushi((long) caller_item);
 			break;
 		case 0x3f:		// Guessing some kind of return.
+					// Experimenting...
+			click_to_continue();	
 			ip = endp;
 			sp = save_sp;		// Restore stack.
 			break;
