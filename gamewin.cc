@@ -1019,11 +1019,12 @@ void Game_window::paint
 	if (!win->ready())
 		return;
 	win->set_clip(x, y, w, h);	// Clip to this area.
-	
+#if 0	/* ++++Now called from exult.cc. */
 	if (mode == splash) {
 		paint_splash();
 		return;
 	}
+#endif
 	int light_sources = 0;		// Count light sources found.
 	int scrolltx = get_scrolltx(), scrollty = get_scrollty();
 					// Get chunks to start with, starting

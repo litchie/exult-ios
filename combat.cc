@@ -329,10 +329,15 @@ void Combat_schedule::now_what
 	if (Need_new_opponent(gwin, opponent))
 		{
 		opponent = 0;
-		state = approach;
+		if (state != initial)
+			state = approach;
 		}
 	switch (state)			// Note:  state's action has finished.
 		{
+	case initial:			// Way far away (50 tiles)?
+		if (npc->distance(gwin->get_main_actor()) > 50)
+			return;		// Just go dormant.
+		state = approach;	// FALL THROUGH.
 	case approach:
 		if (opponent && Get_tiles(npc).enlarge(max_reach).intersects(
 						Get_tiles(opponent)))

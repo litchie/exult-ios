@@ -1501,7 +1501,8 @@ int Npc_actor::step
 					// Move it.
 	move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
 					// Offscreen, but not in party?
-	if (!gwin->add_dirty(this) && Npc_actor::get_party_id() < 0)
+	if (!gwin->add_dirty(this) && Npc_actor::get_party_id() < 0 &&
+	    get_schedule_type() != Schedule::talk)
 		{			// No longer on screen.
 		stop();
 		dormant = 1;

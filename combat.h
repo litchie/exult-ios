@@ -39,13 +39,14 @@ class Combat_schedule : public Schedule
 	{
 	enum Phase			// We'll be a finite-state-machine.
 		{
-		approach = 0,		// Approaching a foe to attack.
-		retreat = 1,		// Avoiding a foe.
-		flee = 2,		// Run away!
-		strike = 3,		// In the process of striking.
-		parry = 4,		// In the process of parrying a blow.
-		stunned = 5,		// Just been hit.
-		fire = 6		// In process of firing range weapon.
+		initial = 0,		// Just constructed.
+		approach = 1,		// Approaching a foe to attack.
+		retreat = 2,		// Avoiding a foe.
+		flee = 3,		// Run away!
+		strike = 4,		// In the process of striking.
+		fire = 5,		// In process of firing range weapon.
+		parry = 6,		// In the process of parrying a blow.
+		stunned = 7		// Just been hit.
 		} state;
 	Schedule_types prev_schedule;	// Before going into combat.
 	Slist opponents;		// Possible opponents.
@@ -67,7 +68,7 @@ class Combat_schedule : public Schedule
 	void set_weapon_info();		// Set 'max_reach' of weapon.
 public:
 	Combat_schedule(Actor *n, Schedule_types prev_sched) 
-		: Schedule(n), state(approach), prev_schedule(prev_sched),
+		: Schedule(n), state(initial), prev_schedule(prev_sched),
 			opponent(0), weapon_shape(0),
 			max_reach(1), ammo_shape(0), yelled(0), failures(0)
 		{ set_weapon_info(); }
