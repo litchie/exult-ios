@@ -3120,25 +3120,27 @@ void Npc_actor::remove_schedule (int time)
 {
 	int i;
 
-	for (i = 0; i < num_schedules; i++) if (schedules[i].get_time() == time) break;
-	
+	for (i = 0; i < num_schedules; i++) 
+		if (schedules[i].get_time() == time) break;
 	if (i != num_schedules)	// Found it
 	{
+		int todel = i;
 		Tile_coord tile;
 		Schedule_change *scheds = new Schedule_change[num_schedules-1];
 
-		for (i = 0; i < num_schedules; i++)
+		for (i = 0; i < todel; i++)
 		{
-			if (schedules[i].get_time() == time) break;
-
 			tile = schedules[i].get_pos();
-			scheds[i].set(tile.tx, tile.ty, schedules[i].get_type(), schedules[i].get_time());
+			scheds[i].set(tile.tx, tile.ty, 
+			    schedules[i].get_type(), schedules[i].get_time());
 		}
 
-		for (; i < num_schedules; i++)
+		for (; i < num_schedules - 1; i++)
 		{
-			tile = schedules[i-1].get_pos();
-			scheds[i].set(tile.tx, tile.ty, schedules[i-1].get_type(), schedules[i-1].get_time());
+			tile = schedules[i+1].get_pos();
+			scheds[i].set(tile.tx, tile.ty, 
+					schedules[i+1].get_type(), 
+					schedules[i+1].get_time());
 		}
 
 		set_schedules(scheds, num_schedules-1);

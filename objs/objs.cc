@@ -1470,7 +1470,12 @@ int Game_object::compare
 	Compare_ranges(inf1.zbot, inf1.ztop, inf2.zbot, inf2.ztop,
 							zcmp, zover);
 	if (!xcmp && !ycmp && !zcmp)
-		return 0;
+		return 0;		// Equal.
+	if (xover & yover & zover)	// Complete overlap?
+		if (!inf1.zs)		// Flat one is always drawn first.
+			return -1;
+		else if (!inf2.zs)
+			return 1;
 	if (xcmp >= 0 && ycmp >= 0 && zcmp >= 0)
 		return 1;		// GTE in all dimensions.
 	if (xcmp <= 0 && ycmp <= 0 && zcmp <= 0)
