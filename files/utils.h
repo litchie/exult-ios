@@ -50,7 +50,10 @@ inline uint8 Read1 (std::istream &in)
 
 inline uint16 Read2 (std::istream &in)
 {
-	return static_cast<uint16>(in.get() | (in.get() << 8));
+	uint16 val = 0;
+	val |= static_cast<uint16>(in.get());
+	val |= static_cast<uint16>(in.get()<<8);
+	return val;
 }
 
 /*
@@ -90,7 +93,10 @@ inline uint16 Read2
 
 inline uint16 Read2high (std::istream &in)
 {
-	return static_cast<uint16>((in.get() << 8) | in.get());
+	uint16 val = 0;
+	val |= static_cast<uint16>(in.get()<<8);
+	val |= static_cast<uint16>(in.get());
+	return val;
 }
 
 /*
@@ -130,7 +136,12 @@ inline uint16 Read2high
 
 inline uint32 Read4 (std::istream &in)
 {
-	return static_cast<uint32>(in.get() | (in.get()<<8) | (in.get()<<16) | (in.get()<<24));
+	uint32 val = 0;
+	val |= static_cast<uint32>(in.get());
+	val |= static_cast<uint32>(in.get()<<8);
+	val |= static_cast<uint32>(in.get()<<16);
+	val |= static_cast<uint32>(in.get()<<24);
+	return val;
 }
 
 /*
@@ -173,7 +184,12 @@ inline uint32 Read4
 
 inline uint32 Read4high (std::istream &in)
 {
-	return static_cast<uint32>((in.get()<<24) | (in.get()<<16) | (in.get()<<8) | in.get());
+	uint32 val = 0;
+	val |= static_cast<uint32>(in.get()<<24);
+	val |= static_cast<uint32>(in.get()<<16);
+	val |= static_cast<uint32>(in.get()<<8);
+	val |= static_cast<uint32>(in.get());
+	return val;
 }
 
 /*
