@@ -44,6 +44,9 @@ enum Exult_Game {
 	SERPENT_ISLE
 };
 
+#define GAME_BG (Game::get_game_type() == BLACK_GATE)
+#define GAME_SI (Game::get_game_type() == SERPENT_ISLE)
+
 class Game {
 private:
 	static bool new_game_flag;
