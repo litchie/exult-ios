@@ -667,6 +667,21 @@ static void shape_showcase(
 	}
 
 /*
+ *	Get the i'th party member, with the 0'th being the Avatar.
+ */
+
+static Actor *Get_party_member
+	(
+	int num				// 0=avatar.
+	)
+	{
+	int npc_num = 0;	 	// Default to Avatar
+	if (num > 0)
+		npc_num = gwin->get_usecode()->get_party_member(num - 1);
+	return gwin->get_npc(npc_num);
+	}
+
+/*
  *	Handle a keystroke.
  */
 
@@ -681,7 +696,7 @@ static void Handle_keystroke
 	static int current_shape = 0, current_frame = 0, current_file = 0;
 	Vga_file *vga_file;
 	
-	static int inventory_page = -1;
+	static int inventory_page = -1, stats_page = -1;
 	int stepping = 1;
 	
 	if(alt)
@@ -709,21 +724,36 @@ static void Handle_keystroke
 		Breakpoint();
 		break;
 	case SDLK_i:
+		{
 		// Show Inventory
 		if (gwin->get_mode() != Game_window::gump)
-			inventory_page = -1;
-		if(inventory_page<gwin->get_usecode()->get_party_count()) {
+			inventory_page = stats_page = -1;
+		if(inventory_page<gwin->get_usecode()->get_party_count())
 			++inventory_page;
-			int npc_num = 0; // Default to Avatar
-			if(inventory_page>0)
-				npc_num = gwin->get_usecode()->
-					get_party_member(inventory_page-1);
-			Actor *actor = gwin->get_npc(npc_num);
+		else
+			inventory_page = 0;
+		Actor *actor = Get_party_member(inventory_page);
+		if (actor)
 			actor->activate(gwin->get_usecode());
-			if (gwin->get_mode() == Game_window::gump)
-				mouse->set_shape(Mouse::hand);
-		}
+		if (gwin->get_mode() == Game_window::gump)
+			mouse->set_shape(Mouse::hand);
 		break;
+		}
+	case SDLK_z:			// Show stats.
+		{
+		if (gwin->get_mode() != Game_window::gump)
+			stats_page = -1;
+		if (stats_page < gwin->get_usecode()->get_party_count())
+			++stats_page;
+		else
+			stats_page = 0;
+		Actor *actor = Get_party_member(stats_page);
+		if (actor)
+			gwin->show_gump(actor, STATSDISPLAY);
+		if (gwin->get_mode() == Game_window::gump)
+			mouse->set_shape(Mouse::hand);
+		break;
+		}
 	case SDLK_c:
 		gwin->toggle_combat();	// Go into combat mode
 		gwin->paint();
@@ -754,7 +784,7 @@ static void Handle_keystroke
 		quitting_time = 1;
 		break;
 	case SDLK_ESCAPE:		// ESC key.
-		inventory_page = -1;
+		inventory_page = stats_page = -1;
 		if (gwin->get_mode() == Game_window::gump)
 			gwin->end_gump_mode();
 		else			// For now, quit.
