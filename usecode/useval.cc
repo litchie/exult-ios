@@ -353,7 +353,7 @@ int Usecode_value::add_values
 
 void Usecode_value::print
 	(
-	ostream& out
+	 ostream& out, bool shortformat
 	)
 	{
 	switch ((Val_type) type)
@@ -373,12 +373,17 @@ void Usecode_value::print
 	case array_type:
 		{
 		out << "[ ";
-		for (int i = 0; value.array[i].type != end_of_array_type; i++)
-			{
-			if (i)
-				out << ", ";
-			value.array[i].print(out);
+		int i;
+		for (i = 0; value.array[i].type != end_of_array_type; i++) {
+			if (!shortformat || i < 2) {
+				if (i)
+					out << ", ";
+				
+				value.array[i].print(out);
 			}
+		}
+		if (shortformat && i > 2)
+			out << ", ... (size " << i << ")";
 		out << " ]";
 		}
 		break;

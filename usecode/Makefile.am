@@ -1,6 +1,6 @@
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../imagewin \
-		-I$(srcdir)/../shapes -I$(srcdir)/../objs -I$(srcdir)/../audio \
-		-I$(srcdir)/../gumps \
+		-I$(srcdir)/../shapes -I$(srcdir)/../objs -I$(srcdir)/../audio\
+		-I$(srcdir)/../gumps -I$(srcdir)/../tools \
 	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 SUBDIRS = compiler # Compile errors: ucxt
@@ -23,6 +23,7 @@ libusecode_la_SOURCES = \
 	conversation.cc \
 	conversation.h	\
 	keyring.cc	\
-	keyring.h
+	keyring.h	\
+	ucdisasm.cc
 
 CLEANFILES = *~

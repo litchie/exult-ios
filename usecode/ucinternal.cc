@@ -86,7 +86,8 @@ using std::vector;
 
 // External globals..
 
-extern	bool intrinsic_trace,usecode_trace,usecode_debugging;
+extern bool intrinsic_trace,usecode_debugging;
+extern int usecode_trace;
 
 #if USECODE_DEBUGGER
 std::vector<int> intrinsic_breakpoints;
@@ -1569,13 +1570,20 @@ int Usecode_internal::run
 #ifdef DEBUG
 		if (usecode_trace)
 			{
+
 			int curip = ip - 1 - code;
-//			printf("SP = %d, IP = %04x, op = %02x\n", sp - stack,
-//						curip, opcode);
-			cout << "SP = " << sp - stack << ", IP = " << hex << curip
-				 << ", op = "<< opcode << dec << endl;
+
+			if (usecode_trace == 2) {
+				uc_trace_disasm(locals, num_locals, (uint8*)data, 
+								(uint8*)externals, (uint8*)code, ip-1);
+			} else {
+				cout << "SP = " << sp - stack << ", IP = " << hex << curip
+					 << ", op = "<< opcode << dec << endl;
+			}
+
 			if (ucbp_fun == fun->id && ucbp_ip == curip)
 				cout << "At breakpoint" << endl;
+				
 			cout.flush();
 			}
 #endif
@@ -1744,10 +1752,17 @@ int Usecode_internal::run
 			break;
 			}
 		case 0x24:		// CALL.
+			{
 			offset = Read2(ip);
-			if (!call_usecode_function(externals[2*offset] + 
-					256*externals[2*offset + 1], event,
-					sp - save_sp))
+			int result = call_usecode_function(externals[2*offset] + 
+							256*externals[2*offset + 1], event,
+							sp - save_sp);
+#ifdef DEBUG
+			// This follows the "RETurning (retvalue) from usecode xxxx"
+			cout << "...back into usecode " << hex << setw(4) << 
+				setfill((char)0x30) << fun->id << dec << setfill(' ') << endl;
+#endif
+			if (!result)
 				{	// Catch ABRT.
 				abort = 1;
 #if 0
@@ -1760,6 +1775,7 @@ int Usecode_internal::run
 					ip = endp;
 					}
 				}
+			}
 			break;
 		case 0x25:		// RET.
 					// Experimenting...

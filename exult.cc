@@ -87,7 +87,8 @@ Game_window *gwin = 0;
 quitting_time_enum quitting_time = QUIT_TIME_NO;
 
 bool intrinsic_trace = false;		// Do we trace Usecode-intrinsics?
-bool usecode_trace = false;		// Do we trace Usecode-instruction?
+int usecode_trace = 0;		// Do we trace Usecode-instructions?
+							// 0 = no, 1 = short, 2 = long
 
 const std::string c_empty_string;
 
@@ -297,7 +298,14 @@ int exult_main(void)
 	config->value("config/debug/trace/intrinsics",intrinsic_trace);
 
 	// Enable tracing of UC-instructions?
-	config->value("config/debug/trace/usecode", usecode_trace);
+	string uctrace;
+	config->value("config/debug/trace/usecode", uctrace, "no");
+	if (uctrace == "yes")
+		usecode_trace = 1;
+	else if (uctrace == "verbose")
+		usecode_trace = 2;
+	else
+		usecode_trace = 0;
 
 
 #if USECODE_DEBUGGER

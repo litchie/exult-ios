@@ -1,3 +1,11 @@
+2001-09-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* tools/uctools.h, tools/wud.c: some small changes to wud's output
+	* usecode/ucdisasm.cc, usecode/ucinternal.*: usecode trace disassembler
+	* usecode/useval.*: added a short output format for long arrays
+	* exult.cc: set "config/debug/tracing/usecode" to "verbose" to enable
+	the new (painfully verbose) usecode instruction trace mode.
+	(only works when DEBUG is defined)
+
 2001-09-21  Ryan Nunn <triforce@merlin.net.au>
 	* msvcstuff/.cvsignore : Fixed some problems added more files
 	* msvcstuff/Exult.dsw : Forgot to re-add this ages ago.
