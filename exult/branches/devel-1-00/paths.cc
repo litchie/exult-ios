@@ -468,7 +468,8 @@ int Fast_pathfinder_client::is_straight_path
 	if (!path.NewPath(from, to, 0))	// Should always succeed.
 		return 0;
 	Tile_coord t;			// Check each tile.
-	while (path.GetNextStep(t))
+	bool done;
+	while (path.GetNextStep(t, done))
 		if (t != from && t != to && Map_chunk::is_blocked(t))
 			return 0;	// Blocked.
 	return 1;			// Looks okay.
