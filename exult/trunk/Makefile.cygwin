@@ -16,7 +16,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 # mingw32 automatically defines WIN32
 CPPFLAGS=-mno-cygwin -DWIN32 -DVERSION=\"0.95cvs\" -DEXULT_DATADIR=\"data\" -DDEBUG \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/files \
-	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/data -I($SRC)/tools \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/data -I$(SRC)/tools \
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
 	$(SDL_CFLAGS) -DHAVE_SNPRINTF
 
@@ -74,7 +74,7 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 	spellbook.o virstone.o jawbone.o
 
 USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o useval.o \
-	conversation.o keyring.o
+	conversation.o keyring.o ucdisasm.o
 
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
 

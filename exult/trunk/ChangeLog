@@ -1,5 +1,6 @@
 2001-09-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Makefile.*: fixed include paths in alternate makefiles
+	* Makefile.*: build ucdisasm.cc
 
 2001-09-22  Jeff Freedman  <jeff@amy.nerble.net>
 
