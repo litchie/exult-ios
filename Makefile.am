@@ -156,6 +156,8 @@ win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
 
 CLEANFILES = *~
 
+if MACOSX
+
 bundle_name = Exult.app
 
 Exult_app: ${EXE_TARGET}
@@ -167,5 +169,7 @@ Exult_app: ${EXE_TARGET}
 	$(INSTALL_DATA) macosx/exult.icns $(bundle_name)/Contents/Resources/
 
 install-exec-local: Exult_app
-	mkdir -p /Applications/
-	cp -r $< /Applications/
+	mkdir -p $(DESTDIR)/Applications/
+	cp -r $< $(DESTDIR)/Applications/
+
+endif
