@@ -13,12 +13,45 @@
 
 static UINT CF_EXULT = RegisterClipboardFormat("ExultData");
 
+// Statics
+
+void Windnd::CreateStudioDropDest(Windnd *& windnd, HWND &hWnd,
+				  Drop_shape_handler_fun shapefun,
+				  Drop_chunk_handler_fun cfun,
+				  Drop_shape_handler_fun facefun,
+				  void *udata)
+{
+	hWnd = GetActiveWindow();
+	windnd = new Windnd(hWnd, shapefun, cfun, facefun, udata);
+	if (FAILED(RegisterDragDrop(hWnd, windnd))) {
+		std::cout << "Something's wrong with OLE2 ..." << std::endl;
+	}
+}
+
+void Windnd::DestroyStudioDropDest(Windnd *& windnd, HWND &hWnd)
+{
+	RevokeDragDrop(hWnd);
+	delete windnd;
+	windnd = 0;
+	hWnd = 0;
+}
+
 // IDropTarget implementation
 
 Windnd::Windnd(HWND hgwnd,	Drop_shape_handler_fun shapefun,
 	       Drop_chunk_handler_fun cfun
 	       )
-	       :gamewin(hgwnd), shape_handler(shapefun), chunk_handler(cfun)
+	       :gamewin(hgwnd), shape_handler(shapefun), chunk_handler(cfun),
+			face_handler(0), udata(0)
+{
+	m_cRef = 1;
+};
+
+Windnd::Windnd(HWND hgwnd,	Drop_shape_handler_fun shapefun,
+	       Drop_chunk_handler_fun cfun, Drop_shape_handler_fun ffun, void *d
+	       )
+	       :gamewin(hgwnd), shape_handler(shapefun), chunk_handler(cfun),
+			face_handler(ffun), udata(d)
 {
 	m_cRef = 1;
 };
@@ -74,6 +107,7 @@ Windnd::DragOver(DWORD grfKeyState,
 		 DWORD * pdwEffect)
 {
 	*pdwEffect = DROPEFFECT_COPY;
+	// Todo 
 	return S_OK;
 };
 
@@ -137,13 +171,16 @@ void Windnd::do_handle_drop(windragdata *data)
 	if (data->id == U7_TARGET_SHAPEID) {
 		int file,shape,frame;
 		Get_u7_shapeid(data->data, file, shape, frame);
-		if (file == U7_SHAPE_SHAPES)
-			// For now, just allow "shapes.vga".
-			(*shape_handler)(shape, frame, pnt->x, pnt->y);
+		if (file == U7_SHAPE_SHAPES) {
+			if (shape_handler) (*shape_handler)(shape, frame, pnt->x, pnt->y, udata);
+		}
+		else if (file == U7_SHAPE_FACES) {
+			if (face_handler) (*face_handler)(shape, frame, pnt->x, pnt->y, udata);
+		}
 	} else if (data->id == U7_TARGET_CHUNKID) {
 		int chunknum;
 		Get_u7_chunkid(data->data, chunknum);
-		(*chunk_handler)(chunknum, pnt->x, pnt->y);
+		if (chunk_handler) (*chunk_handler)(chunknum, pnt->x, pnt->y, udata);
 	}
 	
 	delete pnt;

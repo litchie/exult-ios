@@ -172,6 +172,7 @@ unsigned char *Chunk_chooser::get_chunk
 	int datalen;
 	if (!studio->send_to_server(Exult_server::send_terrain, 
 							buf, ptr - buf) ||
+		!Exult_server::wait_for_response(server_socket, 100) ||
 		(datalen = Exult_server::Receive_data(server_socket, 
 						id, buf, sizeof(buf))) == -1 ||
 		id != Exult_server::send_terrain ||

@@ -133,6 +133,17 @@ static void Egg_monster_dropped
 		((ExultStudio *) udata)->set_egg_monster(shape, frame);
 	}
 
+#ifdef WIN32
+
+static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data)
+{
+	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;
+
+	Egg_monster_dropped(U7_SHAPE_SHAPES, shape, frame, data);
+}
+
+#endif
+
 /*
  *	Open the egg-editing window.
  */
@@ -143,8 +154,10 @@ void ExultStudio::open_egg_window
 	int datalen
 	)
 	{
+	bool first_time = false;
 	if (!eggwin)			// First time?
 		{
+		first_time = true;
 		eggwin = glade_xml_get_widget( app_xml, "egg_window" );
 		if (vgafile && palbuf)
 			{
@@ -166,6 +179,11 @@ void ExultStudio::open_egg_window
 		if (!init_egg_window(data, datalen))
 			return;
 	gtk_widget_show(eggwin);
+
+#ifdef WIN32
+	if (first_time || !eggdnd)
+		Windnd::CreateStudioDropDest(eggdnd, egghwnd, Drop_dragged_shape, NULL, NULL, (void*) this);
+#endif
 	}
 
 /*
@@ -176,8 +194,12 @@ void ExultStudio::close_egg_window
 	(
 	)
 	{
-	if (eggwin)
+	if (eggwin) {
 		gtk_widget_hide(eggwin);
+#ifdef WIN32
+		Windnd::DestroyStudioDropDest(eggdnd, egghwnd);
+#endif
+	}
 	}
 
 /*

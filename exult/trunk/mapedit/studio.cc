@@ -32,15 +32,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 #include <errno.h>
 
-#ifdef WIN32
-#include <getopt.h>
-#endif
-
 #include <cstdio>			/* These are for sockets. */
 #ifdef WIN32
+#include <getopt.h>
 #include <windows.h>
 #include <getopt.h>
 #include <ole2.h>
+#include "servewin32.h"
 #else
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -291,10 +289,17 @@ ExultStudio::~ExultStudio()
 	delete chunkfile;
 //Shouldn't be done here	gtk_widget_destroy( app );
 	gtk_object_unref( GTK_OBJECT( app_xml ) );
+#ifndef WIN32
 	if (server_input_tag >= 0)
 		gdk_input_remove(server_input_tag);
 	if (server_socket >= 0)
 		close(server_socket);
+#else
+	if (server_input_tag >= 0)
+		gtk_timeout_remove(server_input_tag);
+	if (server_socket >= 0)
+		Exult_server::disconnect_from_server();
+#endif
 	self = 0;
 }
 
@@ -981,6 +986,7 @@ bool ExultStudio::send_to_server
  *	Input from server is available.
  */
 
+#ifndef WIN32
 static void Read_from_server
 	(
 	gpointer data,			// ->ExultStudio.
@@ -991,11 +997,43 @@ static void Read_from_server
 	ExultStudio *studio = (ExultStudio *) data;
 	studio->read_from_server();
 	}
+#else
+static gint Read_from_server
+	(
+	gpointer data			// ->ExultStudio.
+	)
+	{
+	ExultStudio *studio = (ExultStudio *) data;
+	studio->read_from_server();
+	return TRUE;
+	}
+#endif
+
+gint Do_Drop_Callback(gpointer data);
 
 void ExultStudio::read_from_server
 	(
 	)
 	{
+#ifdef WIN32
+	// Nothing
+	int len = Exult_server::peek_pipe();
+
+	//Do_Drop_Callback(&len);
+
+	if (len == -1)  {
+		cout << "Disconnected from server" << endl;
+		gtk_timeout_remove(server_input_tag);
+		Exult_server::disconnect_from_server();
+		server_input_tag = -1;
+		server_socket = -1;
+				// Try again every 4 secs.
+		gtk_timeout_add(4000, Reconnect, this);
+
+		return;
+	}
+	if (len < 1) return;
+#endif
 	unsigned char data[Exult_server::maxlength];
 	Exult_server::Msg_type id;
 	int datalen = Exult_server::Receive_data(server_socket, id, data,
@@ -1005,7 +1043,12 @@ void ExultStudio::read_from_server
 		cout << "Error reading from server" << endl;
 		if (server_socket == -1)// Socket closed?
 			{
+#ifndef WIN32
 			gdk_input_remove(server_input_tag);
+#else
+			gtk_timeout_remove(server_input_tag);
+			Exult_server::disconnect_from_server();
+#endif
 			server_input_tag = -1;
 					// Try again every 4 secs.
 			gtk_timeout_add(4000, Reconnect, this);
@@ -1051,9 +1094,9 @@ bool ExultStudio::connect_to_server
 	(
 	)
 	{
-#ifndef WIN32
 	if (!static_path)
 		return false;		// No place to go.
+#ifndef WIN32
 	if (server_socket >= 0)		// Close existing socket.
 		{
 		close(server_socket);
@@ -1102,7 +1145,19 @@ bool ExultStudio::connect_to_server
 		cout << "Connected to server" << endl;
 		return true;
 		}
+#else
+		// Close existing socket.
+	if (server_socket != -1) Exult_server::disconnect_from_server();
+	if (server_input_tag != -1) gtk_timeout_remove(server_input_tag);
+	server_socket = server_input_tag = -1;
+
+	if (Exult_server::try_connect_to_server(static_path) > 0) {
+		server_input_tag = gtk_timeout_add(50, Read_from_server, this);
+		cout << "Connected to server" << endl;
+		return true;
+	}
 #endif
+	return false;
 	}
 
 

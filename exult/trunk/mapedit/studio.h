@@ -35,6 +35,11 @@ typedef void (*Msg_callback)(Exult_server::Msg_type id,
 #ifndef WIN32
 #define C_EXPORT extern "C"
 #else
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#include "windrag.h"
 #define C_EXPORT extern "C" __declspec(dllexport)
 #endif
 
@@ -66,6 +71,18 @@ private:
 	GtkWidget		*shapewin;
 	Shape_draw		*shape_draw;
 	GtkWidget		*equipwin;
+
+	// For Win32 DND
+#ifdef WIN32
+	HWND			egghwnd;
+	Windnd			*eggdnd;
+	HWND			npchwnd;
+	Windnd			*npcdnd;
+	HWND			objhwnd;
+	Windnd			*objdnd;
+	HWND			shphwnd;
+	Windnd			*shpdnd;
+#endif
 					// Server data.
 	int			server_socket;
 	gint			server_input_tag;

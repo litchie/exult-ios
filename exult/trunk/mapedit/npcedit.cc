@@ -33,6 +33,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_constants.h"
 #include "utils.h"
 
+#ifdef WIN32
+#include "windrag.h"
+#endif
+
 using	std::cout;
 using	std::endl;
 /*
@@ -250,15 +254,36 @@ static bool Get_schedule_line
  *	Open the npc-editing window.
  */
 
+#ifdef WIN32
+
+static void Drop_dragged_shape(int shape, int frame, int x, int y, void *data)
+{
+	cout << "Dropped a shape: " << shape << "," << frame << " " << data << endl;
+
+	Npc_shape_dropped(U7_SHAPE_SHAPES, shape, frame, data);
+}
+
+static void Drop_dragged_face(int shape, int frame, int x, int y, void *data)
+{
+	cout << "Dropped a face: " << shape << "," << frame << " " << data << endl;
+
+	Npc_face_dropped(U7_SHAPE_FACES, shape, frame, data);
+}
+
+#endif
+
 void ExultStudio::open_npc_window
 	(
 	unsigned char *data,		// Serialized npc, or null.
 	int datalen
 	)
 	{
+	bool first_time = false;
 	if (!npcwin)			// First time?
 		{
+		first_time = true;
 		npcwin = glade_xml_get_widget( app_xml, "npc_window" );
+
 		if (vgafile && palbuf)
 			{
 			npc_draw = new Shape_draw(vgafile, palbuf,
@@ -276,6 +301,7 @@ void ExultStudio::open_npc_window
 				app_xml, "npc_status")), "Npc Editor");
 		for (int i = 0; i < 24/3; i++)	// Init. schedules' user_data.
 			Set_schedule_line(app_xml, i, -1, 0, 0, 0);
+
 		}
 					// Init. npc address to null.
 	gtk_object_set_user_data(GTK_OBJECT(npcwin), 0);
@@ -294,6 +320,7 @@ void ExultStudio::open_npc_window
 			{		// Should get immediate answer.
 			unsigned char data[Exult_server::maxlength];
 			Exult_server::Msg_type id;
+			Exult_server::wait_for_response(server_socket, 100);
 			int len = Exult_server::Receive_data(server_socket, 
 						id, data, sizeof(data));
 			unsigned char *ptr = &data[0];
@@ -305,6 +332,11 @@ void ExultStudio::open_npc_window
 			}
 		}
 	gtk_widget_show(npcwin);
+#ifdef WIN32
+	if (first_time || !npcdnd)
+		Windnd::CreateStudioDropDest(npcdnd, npchwnd, Drop_dragged_shape, NULL, Drop_dragged_face, (void*) this);
+
+#endif
 	}
 
 /*
@@ -315,8 +347,12 @@ void ExultStudio::close_npc_window
 	(
 	)
 	{
-	if (npcwin)
+	if (npcwin) {
 		gtk_widget_hide(npcwin);
+#ifdef WIN32
+		Windnd::DestroyStudioDropDest(npcdnd, npchwnd);
+#endif
+	}
 	}
 
 /*

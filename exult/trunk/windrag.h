@@ -3,8 +3,8 @@
 
 #include <ole2.h>
 
-typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y);
-typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y);
+typedef void (*Drop_shape_handler_fun)(int shape, int frame, int x, int y, void *udata);
+typedef void (*Drop_chunk_handler_fun)(int chunk, int x, int y, void *udata);
 
 // A usefull structure for Winstudioobj
 struct windragdata {
@@ -22,12 +22,17 @@ private:
 
 	DWORD m_cRef;
 
+	void *udata;
+
 	Drop_shape_handler_fun shape_handler;
 	Drop_chunk_handler_fun chunk_handler;
+	Drop_shape_handler_fun face_handler;
 
 public:
 	Windnd(HWND hgwnd, 	Drop_shape_handler_fun shapefun,
 	Drop_chunk_handler_fun cfun);
+	Windnd(HWND hgwnd, 	Drop_shape_handler_fun shapefun,
+	Drop_chunk_handler_fun cfun, Drop_shape_handler_fun facefun, void *d);
 	~Windnd();
 
 	STDMETHOD(QueryInterface)(REFIID iid, void ** ppvObject);
@@ -49,7 +54,15 @@ public:
 
 	bool is_valid(IDataObject * pDataObject);
     void do_handle_drop(windragdata *data);
-	};
+
+	static void CreateStudioDropDest(Windnd *& windnd, HWND &hWnd,
+					Drop_shape_handler_fun shapefun,
+					Drop_chunk_handler_fun cfun,
+					Drop_shape_handler_fun facefun,
+					void *udata);
+
+	static void DestroyStudioDropDest(Windnd *& windnd, HWND &hWnd);
+};
 
 /*
  * The IDropSource implementation
