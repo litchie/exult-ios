@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Configuration.h"
 #include "mouse.h"
 #include "gumps.h"
+#include "args.h"
 
 Audio *audio;
 Configuration *config;
@@ -81,6 +82,29 @@ int main
 	char *argv[]
 	)
 	{
+	bool	needhelp=false;
+	string	gamename;
+        Args    parameters;
+
+	// Declare everything from the commandline that we're interested in.
+        parameters.declare("-h",&needhelp,true);
+        parameters.declare("--help",&needhelp,true);
+        parameters.declare("/?",&needhelp,true);
+        parameters.declare("/h",&needhelp,true);
+        parameters.declare("-game",&gamename,"default");
+
+	// Process the args
+        parameters.process(argc,argv);
+
+	if(needhelp)
+		{
+		cerr << "Usage: exult [--help|-h|/?|/h] [-game GAMENAME] " << endl <<
+			"--help\t\tShow this information" << endl <<
+			"-game GAMENAME\tSet the game data name to play" << endl <<
+			"\t(refer to the documentation)" << endl;
+		exit(1);
+		}
+
 	cout << "Exult V0." << RELNUM << 
 				".  Copyright (C) 2000 J. S. Freedman and Dancer Vesperman\n";
 	cout << "Low level graphics use the 'SDL' library.\n";
@@ -89,13 +113,33 @@ int main
 	config->read_config_file(USER_CONFIGURATION_FILE);
 	audio = new Audio;
 
-	string	data_directory, tracing;
-	config->value("config/disk/u7path",data_directory,".");
+	{
+	// Select the data directory
+	string	data_directory;
+	vector<string> vs=config->listkeys("config/disk/game",1);
+	if(vs.size()==0)
+		{
+		// Convert from the older format
+		config->value("config/disk/u7path",data_directory,".");
+		config->set("config/disk/game/blackgate",data_directory,true);
+		string	s("blackgate");
+		vs.push_back(s);
+		}
+	if(gamename=="default")
+		{
+		// If the user didn't specify, start up the first game we can find.
+		gamename=vs[0];
+		}
+	string d("config/disk/game/");
+	d+=gamename;
+	config->value(d.c_str(),data_directory,".");
 	if(data_directory==".")
-		config->set("config/disk/u7path",data_directory,true);
+		config->set("config/disk/blackgate",data_directory,true);
 	cout << "chdir to " << data_directory << endl;
 	chdir(data_directory.c_str());
+	}
 
+	string	tracing;
 	config->value("config/debug/trace/intrinsics",tracing,"no");
 	if(tracing=="yes")
 		usecode_trace=true;	// Enable tracing of intrinsics

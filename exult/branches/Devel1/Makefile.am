@@ -2,12 +2,12 @@ AUTOMAKE_OPTIONS=foreign
 
 SUBDIRS=$(TOP_LEVEL_SUBDIRS)
 
-OBJECTS = actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o \
+OBJECTS = args.o actors.o imagewin.o objs.o exult.o gamewin.o drag.o gumps.o \
 	actions.o gametxt.o \
 	vgafile.o segfile.o utils.o readnpcs.o gamedat.o usecode.o npcnear.o \
 	tqueue.o gameclk.o mouse.o items.o lists.o vec.o
 
-HFILES = acconfig.h actions.h actors.h autoconfig.h fnames.h gameclk.h \
+HFILES = args.h acconfig.h actions.h actors.h autoconfig.h fnames.h gameclk.h \
 	gamewin.h gumps.h \
 	imagewin.h items.h lists.h mouse.h npcnear.h objs.h segfile.h \
 	tqueue.h usecode.h utils.h vec.h vgafile.h
@@ -70,6 +70,7 @@ libtool: $(LIBTOOL_DEPS)
 
 # dependencies
 
+args.o: args.h
 actors.o: actors.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h
 drag.o: drag.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h gumps.h mouse.h
 exult.o: exult.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h audio/Audio.h autoconfig.h audio/SDL_mapping.h audio/Flex.h audio/common.h audio/Mixer.h audio/Midi.h audio/Table.h conf/Configuration.h conf/XMLEntity.h mouse.h
