@@ -60,7 +60,9 @@
 	<xsl:text>&#xA;</xsl:text>
 	<xsl:text>--------------------------------------------------------------------------------&#xA;</xsl:text>
 	<xsl:text>&#xA;</xsl:text>
-	<xsl:number format="1. "/><xsl:value-of select="@title"/>
+	<xsl:number format="1. "
+				value="position() -1"/>
+	<xsl:value-of select="@title"/>
 	<xsl:text>&#xA;</xsl:text>
 	<xsl:apply-templates select="faq"/>
 </xsl:template>
@@ -71,7 +73,9 @@
 	<xsl:variable name = "num_idx">
 		<xsl:number level="multiple"
 					count="section|faq"
-					format="1.1 "/>
+					format="1."
+					value="count(ancestor::section/preceding-sibling::section)"/>									
+		<xsl:number format="1. "/>
 	</xsl:variable> 
 	<xsl:value-of select="$num_idx"/><xsl:apply-templates select="question"/>
 	<xsl:text>&#xA;</xsl:text>
