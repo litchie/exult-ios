@@ -1,3 +1,6 @@
+2001-10-25  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* credits.txt: added Oblivious as an artist
+
 2001-10-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* combat.cc: Only auto-set hostile NPC's into combat mode (not
