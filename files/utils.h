@@ -304,6 +304,11 @@ inline void Write4
 	*out++ = (val>>24)&0xff;
 	}
 
+inline void Write4s(std::ostream& out, sint32 val)
+{
+	Write4(out, (uint32)val);
+}
+
 void U7open
 	(
 	std::ifstream& in,			// Input stream to open.
