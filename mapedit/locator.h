@@ -35,6 +35,7 @@ class Locator
 	GdkGC *drawgc;			// For drawing in 'draw'.
 	GtkAdjustment *hadj, *vadj;	// For horiz., vert. scales.
 	int tx, ty, txs, tys, scale;	// Current Exult win. info. in tiles.
+	void send_location();		// Send location/size to Exult.
 public:
 	Locator();
 	~Locator();
