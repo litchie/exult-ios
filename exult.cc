@@ -693,11 +693,11 @@ static void Handle_keystroke
 		current_frame = 0;
 		vga_file = gwin->get_shape_file_data(current_file);
 		if (!shift) {
-			++current_shape;
+			current_shape += alt ? 20 : 1;
 			if(current_shape>=vga_file->get_num_shapes())
 				current_shape = 0;
 		} else {
-			--current_shape;
+			current_shape -= alt ? 20 : 1;
 			if(current_shape<0)
 				current_shape = vga_file->get_num_shapes()-1;
 		}
