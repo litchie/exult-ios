@@ -1,3 +1,10 @@
+2001-11-29  Tristan Tarrant <nadir@users.sourceforge.net>
+	* exult.spec.in: allow setting of bindir and datadir, build exult 
+	only (will be fixed with the addition of subpackages), added README.1ST,
+	optimizer flags should be set for CXXFLAGS too
+	* mapedit/Makefile.am: paltest and shapetest are non-installable
+	* TODO.xml: updated
+
 2001-11-28  Max Horn  <max@quendi.de>
 
 	* Info.plist.in: removed some unnecessary crap
