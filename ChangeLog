@@ -1,3 +1,6 @@
+2004-06-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* mapedit/Makefile.am, ucxt/data/Makefile.am: fixed makefile problems
+
 2004-06-07  Ryan Nunn  <colourles@users.sourceforge.net>
 	* msvcstuff/Exult.vcproj: Fixing compiling
 
