@@ -511,7 +511,6 @@ void Main_actor::get_followers
  *	Step onto an adjacent tile.
  *
  *	Output:	Delay for next frame, or 0 to stop.
- *		Dormant is set if off screen.
  */
 
 int Main_actor::step
@@ -819,27 +818,13 @@ void Walk_to_schedule::now_what
 	Game_window *gwin = Game_window::get_game_window();
 	if (npc->get_abs_tile_coord().distance(dest) <= 3)
 		{			// Close enough!
-					// Careful!  We're deleting ourself.
-		int newsched = new_schedule;
-		npc->set_schedule_type(newsched);
+		npc->set_schedule_type(new_schedule);
 		return;
 		}
 	if (legs >= 3 || retries >= 3)	// Trying too hard?
 		{			// Going to jump there.
-					// Store old chunk list.
-		Chunk_object_list *olist = gwin->get_objects(
-						npc->get_cx(), npc->get_cy());
-		int cx = dest.tx/tiles_per_chunk, cy = dest.ty/tiles_per_chunk,
-		    tx = dest.tx%tiles_per_chunk, ty = dest.ty%tiles_per_chunk;
-		Chunk_object_list *nlist = gwin->get_objects(cx, cy);
-		gwin->add_dirty(npc);	// Want to repaint old area.
-					// Move it.
-		npc->move(olist, cx, cy, nlist, tx, ty, -1);
-		gwin->add_dirty(npc);	// And repaint new area.
-		if (nlist != olist)
-			npc->switched_chunks(olist, nlist);
-		int newsched = new_schedule;
-		npc->set_schedule_type(newsched);
+		npc->move(dest.tx, dest.ty, dest.tz);
+		npc->set_schedule_type(new_schedule);
 		return;
 		}
 					// Get screen rect. in tiles.
@@ -847,7 +832,7 @@ void Walk_to_schedule::now_what
 			gwin->get_chunky()*tiles_per_chunk,
 			1 + gwin->get_width()/tilesize,
 			1 + gwin->get_height()/tilesize);
-	screen.enlarge(16);		// Enlarge by a chunk in all dirs.
+	screen.enlarge(4);		// Enlarge in all dirs.
 					// Destination off the screen?
 	if (!screen.has_point(dest.tx, dest.ty))
 		{
@@ -873,6 +858,17 @@ void Walk_to_schedule::now_what
 		legs++;
 		retries = 0;
 		}
+	}
+
+/*
+ *	Don't go dormant when walking to a schedule.
+ */
+
+void Walk_to_schedule::im_dormant
+	(
+	)
+	{
+	Walk_to_schedule::now_what();	// Get there by any means.
 	}
 
 /*
@@ -1029,8 +1025,11 @@ void Npc_actor::handle_event
 		else
 			{
 			set_action(0);
-			if (!dormant && schedule)
-				schedule->now_what();
+			if (schedule)
+				if (dormant)
+					schedule->im_dormant();
+				else
+					schedule->now_what();
 			}
 		}
 	}
@@ -1070,8 +1069,6 @@ int Npc_actor::step
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
 					// Move it.
 	move(olist, cx, cy, nlist, tx, ty, frame, new_lift);
-	if (olist != nlist)		// In new chunk?
-		switched_chunks(olist, nlist);
 	if (!gwin->add_dirty(this))
 		{			// No longer on screen.
 		stop();
@@ -1124,7 +1121,6 @@ void Npc_actor::follow
 	if (!speed)			// Not moving?
 		speed = 125;
 	speed += 10 - rand()%50;	// Let's try varying it a bit.
-#if 1
 	if (goaldist > 32 &&		// Getting kind of far away?
 	    get_party_id() >= 0)	// And a member of the party.
 		{			// Teleport.
@@ -1132,13 +1128,7 @@ void Npc_actor::follow
 		Game_window *gwin = Game_window::get_game_window();
 		if (pixels > gwin->get_width() + 16)
 			{
-			Chunk_object_list *oldchunk = gwin->get_objects(
-				get_cx(), get_cy());
 			move(newtx, newty, goal.tz);
-			Chunk_object_list *newchunk = gwin->get_objects(
-				get_cx(), get_cy());
-			if (oldchunk != newchunk)
-				switched_chunks(oldchunk, newchunk);
 			Rectangle box = gwin->get_shape_rect(this);
 			gwin->add_text("Thou shan't lose me so easily!", 
 							box.x, box.y);
@@ -1146,7 +1136,6 @@ void Npc_actor::follow
 			return;
 			}
 		}
-#endif
 	walk_to_tile(newtx, newty, goal.tz, speed);
 	}
 
@@ -1183,6 +1172,29 @@ void Npc_actor::switched_chunks
 		next = nlist->npcs;
 		nlist->npcs = this;
 		}
+	}
+
+/*
+ *	Move (teleport) to a new spot.
+ */
+
+void Npc_actor::move
+	(
+	int newtx, 
+	int newty, 
+	int newlift
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Store old chunk list.
+	Chunk_object_list *olist = gwin->get_objects(get_cx(), get_cy());
+	gwin->add_dirty(this);		// Want to repaint old area.
+					// Move it.
+	Game_object::move(newtx, newty, newlift);
+	gwin->add_dirty(this);		// And repaint new area.
+	Chunk_object_list *nlist = gwin->get_objects(get_cx(), get_cy());
+	if (nlist != olist)
+		switched_chunks(olist, nlist);
 	}
 
 /*
@@ -1305,8 +1317,6 @@ int Monster_actor::step
 	Chunk_object_list *olist = gwin->get_objects(old_cx, old_cy);
 					// Move it.
 	move(olist, cx, cy, nlist, tx, ty, frame, -1);
-	if (olist != nlist)		// In new chunk?
-		switched_chunks(olist, nlist);
 	if (!gwin->add_dirty(this))
 		{			// No longer on screen.
 		stop();
@@ -1337,8 +1347,6 @@ Npc_actor *Monster_info::create
 	Game_window *gwin = Game_window::get_game_window();
 	Chunk_object_list *olist = gwin->get_objects(chunkx, chunky);
 	monster->move(0, chunkx, chunky, olist, tilex, tiley, 0, lift);
-					// Put in chunk's NPC list.
-	monster->switched_chunks(0, olist);
 					// ++++++For now:
 	monster->set_schedule_type(Schedule::loiter);
 	return (monster);
