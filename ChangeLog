@@ -1,3 +1,6 @@
+2000-11-24  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* drag.cc,exult.cc,gamewin.h: fixed gump buttons passing clicks to underlying items
+
 2000-11-24  Max Horn  <max@quendi.de>
 	* objs.cc: added find_nearby_eggs() and find_nearby_actors()
 	* changed various locations to use these methods instead of find_nearby()
