@@ -3,7 +3,7 @@
 
 # Base of the exult source
 SRC=.
-VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs
+VPATH=$(SRC):$(SRC)/files:$(SRC)/gumps:$(SRC)/pathfinder:$(SRC)/flic:$(SRC)/conf:$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/imagewin:$(SRC)/usecode:$(SRC)/shapes:$(SRC)/objs:$(SRC)/files/zip
 
 VERSION=0.95cvs
 
@@ -12,6 +12,7 @@ SDL_CFLAGS=-I/boot/develop/tools/gnupro/include/SDL
 SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL
 
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
+	-DHAVE_ZIP_SUPPORT -I$(SRC)/files/zip \
 	-I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/data -I$(SRC)/tools \
 	-I$(SRC)/files -I$(SRC) -I$(SRC)/audio -I$(SRC)/conf \
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode \
@@ -19,7 +20,7 @@ CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
 CXXFLAGS=-O2 -Wall
 
 LFLAGS=
-LIBS=$(SDL_LIBS) -lmidi -lbe
+LIBS=$(SDL_LIBS) -lmidi -lbe -lz
 
 EXEC=exult
 MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
@@ -39,6 +40,7 @@ AUDIO_OBJS=Audio.o conv.o Midi.o Mixer.o SDL_mapping.o pcb.o xmidi.o soundtest.o
 # unused: test.o u7audiotool.o
 FLIC_OBJS=playfli.o
 FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o
+FILE_ZIP_OBJS=zip.o unzip.o
 GUMPS_OBJS= Actor_gump.o  Book_gump.o  File_gump.o  Gump.o  Gump_button.o \
 	gump_utils.o  Gump_widget.o  misc_buttons.o  Paperdoll_gump.o  \
 	Paperdoll_gump_info.o Scroll_gump.o Sign_gump.o  Slider_gump.o \
@@ -57,7 +59,7 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 # unused: test.o
 USECODE_OBJS=ucinternal.o ucmachine.o ucsched.o intrinsics.o useval.o \
 	conversation.o keyring.o ucdisasm.o
-OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(FILE_ZIP_OBJS)
 
 EXULT_FLX_OBJECTS = \
 	data/exult_quotes.shp \
