@@ -113,15 +113,11 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 	// Make aliases to the current game's paths.
 	string system_path_tag(gametitle);
 	to_uppercase(system_path_tag);
-	add_system_path("<STATIC>",
-		get_system_path("<" + system_path_tag + "_STATIC>"));
-	add_system_path("<GAMEDAT>",
-		get_system_path("<" + system_path_tag + "_GAMEDAT>"));
-	add_system_path("<SAVEGAME>",
-		get_system_path("<" + system_path_tag + "_SAVEGAME>"));
+	clone_system_path("<STATIC>", "<" + system_path_tag + "_STATIC>");
+	clone_system_path("<GAMEDAT>", "<" + system_path_tag + "_GAMEDAT>");
+	clone_system_path("<SAVEGAME>", "<" + system_path_tag + "_SAVEGAME>");
 	if (is_system_path_defined("<" + system_path_tag + "_PATCH>"))
-		add_system_path("<PATCH>",
-						get_system_path("<" + system_path_tag + "_PATCH>"));
+		clone_system_path("<PATCH>", "<" + system_path_tag + "_PATCH>");
 	else
 		clear_system_path("<PATCH>");
 
