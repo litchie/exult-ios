@@ -480,8 +480,7 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	) : Fast_pathfinder_client(dist), destbox(dest.tx, dest.ty, 0, 0)
 	{
 	intelligence = npc->get_property(Actor::intelligence);
-	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info1 = gwin->get_info(npc);
+	Shape_info& info1 = npc->get_info();
 	axtiles = info1.get_3d_xtiles();
 	aytiles = info1.get_3d_ytiles();
 	aztiles = info1.get_3d_height();
@@ -501,15 +500,14 @@ Monster_pathfinder_client::Monster_pathfinder_client
 	) : Fast_pathfinder_client(reach), destbox(0, 0, 0, 0)
 	{
 	intelligence = attacker->get_property(Actor::intelligence);
-	Game_window *gwin = Game_window::get_instance();
-	Shape_info& info1 = gwin->get_info(attacker);
+	Shape_info& info1 = attacker->get_info();
 	axtiles = info1.get_3d_xtiles();
 	aytiles = info1.get_3d_ytiles();
 	aztiles = info1.get_3d_height();
 	if (!opponent)
 		return;			// Means this isn't usable.
 	set_move_flags(attacker->get_type_flags());
-	Shape_info& info2 = gwin->get_info(opponent);
+	Shape_info& info2 = opponent->get_info();
 	Tile_coord opos = opponent->get_tile();
 	int oxtiles = info2.get_3d_xtiles(), oytiles = info2.get_3d_ytiles();
 	destbox = Rectangle(opos.tx - oxtiles + 1, opos.ty - oytiles + 1,

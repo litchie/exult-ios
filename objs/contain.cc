@@ -97,8 +97,7 @@ bool Container_game_object::add
 
 	if (combine)			// Should we try to combine?
 		{
-		Game_window *gwin = Game_window::get_instance();
-		Shape_info& info = gwin->get_info(obj->get_shapenum());
+		Shape_info& info = obj->get_info();
 		int quant = obj->get_quantity();
 					// Combine, but don't add.
 		int newquant = add_quantity(quant, obj->get_shapenum(),

@@ -294,7 +294,7 @@ void Barge_object::gather
 			if (obj->is_egg()) // don't pick up eggs
 				continue;
 			Tile_coord t = obj->get_tile();
-			Shape_info& info = gwin->get_info(obj);
+			Shape_info& info = obj->get_info();
 					// Above barge, within 5-tiles up?
 			if (foot.has_point(t.tx, t.ty) &&
 			    t.tz + info.get_3d_height() > lift && 
@@ -325,7 +325,7 @@ void Barge_object::gather
 			boat = 0;
 		else
 			{
-			Shape_info& info = gwin->get_info(flat.get_shapenum());
+			Shape_info& info = flat.get_info();
 			boat = info.is_water();
 			}
 		}
@@ -460,7 +460,7 @@ void Barge_object::turn_right
 		{
 		Game_object *obj = get_object(i);
 		int frame = obj->get_framenum();
-		Shape_info& info = gwin->get_info(obj);
+		Shape_info& info = obj->get_info();
 		positions[i] = Rotate90r(gwin, obj, info.get_3d_xtiles(frame),
 					info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);	// Remove object from world.
@@ -495,7 +495,7 @@ void Barge_object::turn_left
 		{
 		Game_object *obj = get_object(i);
 		int frame = obj->get_framenum();
-		Shape_info& info = gwin->get_info(obj);
+		Shape_info& info = obj->get_info();
 		positions[i] = Rotate90l(gwin, obj, info.get_3d_xtiles(frame),
 					info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);	// Remove object from world.
@@ -527,7 +527,7 @@ void Barge_object::turn_around
 		{
 		Game_object *obj = get_object(i);
 		int frame = obj->get_framenum();
-		Shape_info& info = gwin->get_info(obj);
+		Shape_info& info = obj->get_info();
 		positions[i] = Rotate180(gwin, obj, info.get_3d_xtiles(frame),
 					info.get_3d_ytiles(frame), center);
 		obj->remove_this(1);	// Remove object from world.

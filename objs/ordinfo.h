@@ -64,11 +64,11 @@ public:
 					// Create from scratch.
 	Ordering_info(Game_window *gwin, Game_object *obj)
 		: area(gwin->get_shape_rect(obj)),
-		  info(gwin->get_shapes().get_info(obj->get_shapenum()))
+		  info(obj->get_info())
 		{ init(obj); }
 	Ordering_info(Game_window *gwin, Game_object *obj, Rectangle& a)
 		: area(a),
-		  info(gwin->get_shapes().get_info(obj->get_shapenum()))
+		  info(obj->get_info())
 		{ init(obj); }
 	};
 

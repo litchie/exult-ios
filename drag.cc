@@ -394,8 +394,7 @@ bool Dragging_info::drop_on_map
 			dropped = possible_theft = true;
 					// Try to place on 'found'.
 		else if ((lift = found->get_lift() +
-			     gwin->get_info(found).get_3d_height()) <= 
-								max_lift)
+			     found->get_info().get_3d_height()) <= max_lift)
 			dropped = gwin->drop_at_lift(to_drop,posx, posy, lift);
 		}
 					// Find where to drop it.
@@ -435,7 +434,7 @@ bool Dragging_info::drop
 	Game_object *to_drop = obj;	// If quantity, split it off.
 					// Being liberal about taking stuff:
 	int okay_to_move = to_drop->get_flag(Obj_flags::okay_to_take);
-	int old_top = old_pos.tz + gwin->get_info(obj).get_3d_height();
+	int old_top = old_pos.tz + obj->get_info().get_3d_height();
 					// First see if it's a gump.
 	Gump *on_gump = gwin->get_gump_man()->find_gump(x, y);
 					// Don't prompt if within same gump.
@@ -566,7 +565,7 @@ bool Game_window::drop_at_lift
 	int cy = ty/c_tiles_per_chunk;
 	Map_chunk *chunk = get_chunk(cx, cy);
 	int lift;			// Can we put it here?
-	Shape_info& info = shapes.get_info(to_drop->get_shapenum());
+	Shape_info& info = to_drop->get_info();
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
 	int max_drop, move_flags;
 	if (cheat.in_map_editor())
