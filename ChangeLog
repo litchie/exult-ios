@@ -1,3 +1,6 @@
+2001-11-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Newfile_gump.cc: reset 'filename' in FreeSaveGameDetails
+
 2001-11-24 Ryan Nunn <triforce@merlin.net.au>
 	* version.* : Windows stuff and std namespace stuff.
 
