@@ -23,8 +23,6 @@ exult_studio_SOURCES = \
 	combo.cc \
 	combo.h \
 	compile.cc \
-	dirbrowser.cc \
-	dirbrowser.h \
 	eggedit.cc \
 	execbox.h \
 	execbox.cc \
