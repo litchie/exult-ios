@@ -851,7 +851,7 @@ int Pickup_actor_action::handle_event
 		cnt++;
 		break;
 	case 1:				// Bend down.
-		frnum = actor->get_dir_framenum(dir, Actor::to_sit_frame);
+		frnum = actor->get_dir_framenum(dir, Actor::bow_frame);
 		cnt++;
 		if (pickup)
 			{
