@@ -533,7 +533,7 @@ void Shape_frame::paint_rle_transformed
 	(
 	Image_buffer8 *win,		// Buffer to paint in.
 	int xoff, int yoff,		// Where to show in iwin.
-	Xform_palette xform		// Use to transform pixels.
+	Xform_palette& xform		// Use to transform pixels.
 	)
 	{
 	assert(rle);

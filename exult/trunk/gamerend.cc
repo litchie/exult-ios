@@ -117,7 +117,7 @@ inline void Paint_chunk_outline
 static void Paint_grid
 	(
 	Game_window *gwin,
-	Xform_palette xform		// For transparency.
+	Xform_palette& xform		// For transparency.
 	)
 	{
 	Image_window8 *win = gwin->get_win();
