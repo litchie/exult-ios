@@ -44,7 +44,6 @@ class Usecode_machine : public Game_singletons
 	{
 	UNREPLICATABLE_CLASS(Usecode_machine);
 protected:
-	int call_depth;			// How far deep we are.
 	unsigned char gflags[1024];	// Global flags.
 	Keyring* keyring;
 	int party[8];			// NPC #'s of party members.
@@ -97,8 +96,7 @@ public:
 	virtual void update_party_status(Actor *npc) = 0;
 					// Start speech, or show text.
 	virtual void do_speech(int num) = 0;
-	int in_usecode()		// Currently in a usecode function?
-		{ return call_depth > 0; }
+	virtual int in_usecode() = 0;	// Currently in a usecode function?
 	Keyring* getKeyring() const { return keyring; }
 					// Call desired function.
 	virtual int call_usecode(int id, Game_object *obj, 
