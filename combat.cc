@@ -778,7 +778,7 @@ void Combat_schedule::now_what
 	default:
 		break;
 		}
-	if (failures > 5 && npc != gwin->get_main_actor())
+	if (failures > 5 && npc != gwin->get_camera_actor())
 		{			// Too many failures.  Give up for now.
 		cout << npc->get_name() << " is giving up" << endl;
 		if (npc->get_party_id() >= 0)

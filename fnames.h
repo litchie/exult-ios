@@ -39,6 +39,7 @@
 #define SHAPES_VGA	"<STATIC>/shapes.vga"
 #define PATCH_SHAPES	"<PATCH>/shapes.vga"
 #define FACES_VGA	"<STATIC>/faces.vga"
+#define PATCH_FACES	"<PATCH>/faces.vga"
 #define GUMPS_VGA	"<STATIC>/gumps.vga"
 #define FONTS_VGA	"<STATIC>/fonts.vga"
 #define SPRITES_VGA     "<STATIC>/sprites.vga"

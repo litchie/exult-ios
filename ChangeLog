@@ -1,5 +1,8 @@
 2001-10-20  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* combat.cc (Combat_schedule): Camera actor should never give up.
+	* keyactions.cc: HOME should center around 'camera_actor'.
+
 	* schedule.cc (Schedule): Longer delays for 'street maintenance'
 	to avoid slowdowns.
 

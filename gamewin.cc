@@ -325,7 +325,7 @@ void Game_window::init_files(bool cycle)
 	cout << "Loading " << gamedata << "..." << endl;
 	gameflx.load(gamedata);
 	CYCLE_RED_PLASMA();
-	faces.load(FACES_VGA);
+	faces.load(FACES_VGA, PATCH_FACES);
 	CYCLE_RED_PLASMA();
 	gumps.load(GUMPS_VGA);
 	CYCLE_RED_PLASMA();
