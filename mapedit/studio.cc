@@ -1345,7 +1345,8 @@ void ExultStudio::show_unused_shapes
 		"The following shapes were not found.\n", pos);
 	Insert_text(ed,
 		"Note that some may be created by usecode (script)\n\n", pos);
-	for (int i = 0x96; i < nshapes; i++)	// Ignore flats (<0x96).
+	// Ignore flats (<0x96).
+	for (int i = c_first_obj_shape; i < nshapes; i++)
 		if (!(data[i/8]&(1<<(i%8))))
 			{
 			const char *nm = get_shape_name(i);

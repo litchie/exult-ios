@@ -170,7 +170,8 @@ static void Obj_shape_dropped
 	void *udata
 	)
 	{
-	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < 1024)
+	if (file == U7_SHAPE_SHAPES && 
+				shape >= c_first_obj_shape && shape < 1024)
 		((ExultStudio *) udata)->set_obj_shape(shape, frame);
 	}
 
@@ -265,7 +266,8 @@ int ExultStudio::init_obj_window
 //	set_entry("obj_shape", shape);
 //	set_entry("obj_frame", frame);
 //	set_entry("obj_quality", quality);
-	set_spin("obj_shape", shape);
+	// Only allow real objects, not 8x8 flats.
+	set_spin("obj_shape", shape, c_first_obj_shape, 8096);
 	set_spin("obj_frame", frame);
 	set_spin("obj_quality", quality);
 	set_spin("obj_x", tx);		// Position.

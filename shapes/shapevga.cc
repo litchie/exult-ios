@@ -94,7 +94,8 @@ void Shapes_vga_file::read_info
 	// Starts at 0x96'th shape.
 	ifstream shpdims;
 	if (U7open2(shpdims, patch_name(PATCH_SHPDIMS), SHPDIMS, editing))
-		for (i = 0x96; i < num_shapes && !shpdims.eof(); i++)
+		for (i = c_first_obj_shape; 
+					i < num_shapes && !shpdims.eof(); i++)
 			{
 			shpdims.get((char&) info[i].shpdims[0]);
 			shpdims.get((char&) info[i].shpdims[1]);
