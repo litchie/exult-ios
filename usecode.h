@@ -103,6 +103,8 @@ public:
 	int operator==(const Usecode_value& v2);
 	int get_array_size()		// Get size of array.
 		{ return type == (int) array_type ? count_array(*this) : 0; }
+	int is_array()
+		{ return type == (int) array_type; }
 	unsigned int get_int_value()	// Get integer value.
 		{ return (type == (int) int_type ? value.intval : 0); }
 					// Get string value.
@@ -224,13 +226,14 @@ class Usecode_machine
 	void remove_from_party(Game_object *npc);
 	Usecode_value get_party();
 	void item_say(Usecode_value& objval, Usecode_value& strval);
-	void exec_array(Usecode_value& objval, Usecode_value& arrayval);
+	void exec_array(Usecode_value& objval, Usecode_value& arrayval,
+								int delay);
 
 	/*
 	 *	Other private methods:
 	 */
 					// Call instrinsic function.
-	Usecode_value call_intrinsic(int intrinsic, int num_parms);
+	Usecode_value call_intrinsic(int event, int intrinsic, int num_parms);
 	void click_to_continue();	// Wait for user to click.
 	char *get_user_choice();	// Get user's choice.
 	int get_user_choice_num();
@@ -246,16 +249,18 @@ public:
 	enum Usecode_events {
 		npc_proximity = 0,
 		double_click = 1,
-		game_start = 2,		// Definitely guessing.
+		internal_exec = 2,	// Internal call via intr. 1 or 2.
+//+++		game_start = 2,		// Definitely guessing.
 		egg_proximity = 3
 		};
 					// Call desired function.
 	int call_usecode(int id, Game_object *obj, Usecode_events event)
 		{
+		Game_object *prev_item = caller_item;
 		caller_item = obj;
 		Usecode_value parm(0);	// They all seem to take 1 parm.
 		int ret = call_usecode_function(id, event, &parm);
-		caller_item = 0;
+		caller_item = prev_item;
 		return ret;
 		}
 	};

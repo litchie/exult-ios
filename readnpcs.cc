@@ -91,7 +91,8 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		Chunk_object_list *olist = get_objects(scx + cx, scy + cy);
 		actor->move(scx + cx, scy + cy, olist,
 				shapex, shapey, (shape[1]>>2) & 0x1f, lift);
-		if (npc_actor)		// Put in chunk's NPC list.
+					// Put in chunk's NPC list.
+		if (npc_actor)
 			npc_actor->switched_chunks(0, olist);
 #if 0
 cout << i << " Creating " << namebuf << ", shape = " << 
