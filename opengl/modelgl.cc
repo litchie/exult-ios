@@ -100,6 +100,15 @@ void Object3d::render
 		glMaterialfv(GL_FRONT, GL_DIFFUSE,
 					material->colors[Material::diffuse]);
 		}
+	else
+		{
+		static float a[] = {.2, .2, .2, 1.0};
+		static float d[] = {.8, .8, .8, 1.0};
+		static float s[] = {0, 0, 0, 1.0};
+		glMaterialfv(GL_FRONT, GL_AMBIENT, a);
+		glMaterialfv(GL_FRONT, GL_DIFFUSE, d);
+		glMaterialfv(GL_FRONT, GL_SPECULAR, s);
+		}
 					// Go through faces.
 	for (vector<Face>::const_iterator faceit = faces.begin();
 					faceit != faces.end(); ++faceit)
