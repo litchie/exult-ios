@@ -262,9 +262,7 @@ void ActionInventory(int *params)
 	
 	Actor *actor = Get_party_member(inventory_page);
 	if (actor) {
-//		if (inventory_page > 0) // If companion, force gump-mode
-//			gwin->set_mode(Game_window::gump);
-		actor->activate(gwin->get_usecode());
+		actor->activate(gwin->get_usecode(), 1, true); //force showing inv.
 	}
 
 	if (gwin->showing_gumps())

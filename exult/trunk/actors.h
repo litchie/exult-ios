@@ -298,7 +298,8 @@ public:
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.
-	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual void activate(Usecode_machine *umachine, int event = 1, 
+				bool force_party_inv = false);
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 	virtual std::string get_name() const;
