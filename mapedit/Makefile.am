@@ -53,9 +53,9 @@ noinst_PROGRAMS = $(GIMP_PLUGINS)
 
 exult_studio_LDADD = \
 	../conf/libconf.la		\
-	../files/libu7file.la		\
 	../imagewin/libimagewin.la	\
 	../shapes/libshapes.la 		\
+	../files/libu7file.la		\
 	../server/libserver.la		\
 	-lpng $(FREETYPE2_LIBS) $(SYSLIBS) $(x_libraries) $(GLADE_LIBS)
 

@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "u7drag.h"
 #include "shapefile.h"
 #include "shapedraw.h"
+#include "items.h"
 
 using	std::cout;
 using	std::endl;
@@ -935,10 +936,7 @@ void ExultStudio::save_shape_window
 			oldname = "";
 		if (strcmp(nm, oldname) != 0)
 			{		// Name changed.
-			if (shnum >= names.size())
-				names.resize(shnum + 1);
-			delete names[shnum];
-			names[shnum] = nm ? newstrdup(nm) : 0;
+			Set_item_name(shnum, nm);
 			shape_names_modified = true;
 			}
 		}
