@@ -39,8 +39,6 @@ public:
 	virtual int get_step_cost(Tile_coord from, Tile_coord& to);
 					// Estimate cost between two points.
 	virtual int estimate_cost(Tile_coord& from, Tile_coord& to);
-					// Is tile at the goal?
-	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
 	};
 
 /*
@@ -126,20 +124,6 @@ int Actor_pathfinder_client::estimate_cost
 		smaller = dx;
 		}
 	return (2*larger + smaller);	// Straight = 2, diag = 3.
-	}
-
-/*
- *	Is tile at goal?
- */
-
-int Actor_pathfinder_client::at_goal
-	(
-	Tile_coord& tile,
-	Tile_coord& goal
-	)
-	{
-	return (tile.tx == goal.tx && tile.ty == goal.ty &&
-		(goal.tz == -1 || tile.tz == goal.tz));
 	}
 
 /*

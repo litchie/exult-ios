@@ -13,12 +13,14 @@
 class Pathfinder_client
 	{
 public:
+					// Figure when to give up.
+	virtual int get_max_cost(int cost_to_goal);
 					// Figure cost for a single step.
 	virtual int get_step_cost(Tile_coord from, Tile_coord& to) = 0;
 					// Estimate cost between two points.
 	virtual int estimate_cost(Tile_coord& from, Tile_coord& to) = 0;
 					// Is tile at the goal?
-	virtual int at_goal(Tile_coord& tile, Tile_coord& goal) = 0;
+	virtual int at_goal(Tile_coord& tile, Tile_coord& goal);
 	};
 
 /*
