@@ -39,6 +39,9 @@ void Setup_item_names (std::ifstream& items, std::ifstream& msgs);
  */
 const int first_move_aside = 0x400;	// For guards when blocked.
 const int last_move_aside = 0x402;
+const int first_waiter_ask = 0x41b, last_waiter_ask = 0x41f;
+const int first_more_food = 0x420, last_more_food = 0x424;
+const int first_munch = 0x425, last_munch = 0x428;
 const int first_ouch = 0x429;
 const int last_ouch = 0x42c;
 const int first_need_help = 0x430;
@@ -71,6 +74,10 @@ const int last_awakened = 0x49a;
 
 //	Messages in exultmsg.txt:
 const int first_chair_thief = 2800, last_chair_thief = 2804;
+const int first_waiter_banter = 2805, last_waiter_banter = 2807;
+const int first_waiter_serve = 2808, last_waiter_serve = 2809;
+const int first_bed_occupied = 2810, num_bed_occupied = 3;
+const int first_catchup = 2813, last_catchup = 2815;
 
 #endif
 
