@@ -732,6 +732,52 @@ void Actor::change_member_shape
 	}
 
 /*
+ *	Get total value of armor being worn.
+ */
+
+int Actor::get_armor_points
+	(
+	)
+	{
+	int points = 0;
+	static enum Spots aspots[] = {neck, torso, lfinger, rfinger, head,
+					legs, feet};
+	const int num_armor_spots = sizeof(aspots)/sizeof(aspots[0]);
+	Game_window *gwin = Game_window::get_game_window();
+	for (int i = 0; i < num_armor_spots; i++)
+		{
+		Game_object *armor = spots[(int) aspots[i]];
+		if (armor)
+			points += gwin->get_info(armor).get_armor();
+		}
+	return points;
+	}
+
+/*
+ *	Get weapon value.
+ */
+
+int Actor::get_weapon_points
+	(
+	)
+	{
+	int points = 0;
+	Game_window *gwin = Game_window::get_game_window();
+	Game_object *weapon = spots[(int) lhand];
+	if (weapon)
+		points = gwin->get_info(weapon).get_weapon();
+					// Try both hands.
+	weapon = spots[(int) rhand];
+	if (weapon)
+		{
+		int rpoints = gwin->get_info(weapon).get_weapon();
+		if (rpoints > points)
+			points = rpoints;
+		}
+	return points;
+	}
+
+/*
  *	Being attacked.
  */
 
@@ -740,6 +786,10 @@ void Actor::attacked
 	Actor *attacker
 	)
 	{
+#if 0	/* +++++Test it. */
+	int armor = get_armor_points();
+	int weapon = attacker->get_weapon_points();
+#endif
 	die();				// +++++++Wimp.
 	}
 
@@ -1259,6 +1309,22 @@ int Monster_actor::is_blocked
 	}
 
 /*
+ *	Set ->info.
+ */
+
+void Monster_actor::set_info
+	(
+	Monster_info *i			// May be 0.
+	)
+	{
+	if (!i)
+					// Not set?  Look it up.
+		i = Game_window::get_game_window()->get_monster_info(
+							get_shapenum());
+	info = i;
+	}
+
+/*
  *	Delete.
  */
 
@@ -1347,8 +1413,40 @@ int Monster_actor::add
 	int dont_check			// 1 to skip volume check.
 	)
 	{
+	if (Npc_actor::add(obj, 1))	// Try to add to 'readied' spot.
+		return (1);		// Successful.
 					// Just add anything.
 	return Container_game_object::add(obj, 1);
+	}
+
+/*
+ *	Get total value of armor being worn.
+ */
+
+int Monster_actor::get_armor_points
+	(
+	)
+	{
+	Monster_info *inf = get_info();
+					// Kind of guessing here.
+	return Actor::get_armor_points() + (inf ? inf->armor : 0);
+	}
+
+/*
+ *	Get weapon value.
+ */
+
+int Monster_actor::get_weapon_points
+	(
+	)
+	{
+	Monster_info *inf = get_info();
+					// Kind of guessing here.
+	int points = Actor::get_weapon_points();
+	if (!points)			// No readied weapon?
+		return inf ? inf->weapon : 0;
+	else
+		return points;
 	}
 
 /*
@@ -1363,6 +1461,7 @@ Monster_actor *Monster_info::create
 	)
 	{
 	Monster_actor *monster = new Monster_actor(0, shapenum);
+	monster->set_info(this);
 	monster->set_property(Actor::strength, strength);
 	monster->set_property(Actor::dexterity, dexterity);
 	monster->set_property(Actor::intelligence, intelligence);

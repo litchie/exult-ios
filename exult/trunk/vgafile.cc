@@ -600,6 +600,19 @@ int Shapes_vga_file::read_info
 		info[shapenum].ready_type = type;
 		ready.seekg(6, ios::cur);// Skip 9 bytes.
 		}
+#if 0	/* ++++Uncomment when tested. */
+	ifstream armor;
+	if (!U7open(armor, ARMOR))
+		return (0);
+	cnt = Read1(armor);
+	for (int i = 0; i < cnt; i++)
+		{
+		unsigned short shapenum = Read2(armor);
+		unsigned char points = Read1(armor);
+		info[shapenum].armor = points;
+		armor.seekg(7, ios::cur);// Skip 7 bytes.
+		}
+#endif
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;
 	unsigned short offsets[1024];

@@ -51,7 +51,7 @@ byte: dexterity (multiplied by 4?)
 byte: intelligence (multiplied by 4?)
 byte: combat_skill (multiplied by 4?)
 byte: armour (I am doubtful about this one)
-byte: unknown (always in the range [0,7])
+byte: unknown (always in the range [0,7])  jsf - Guessing weapon.
 byte: unknown (probably flags)
 int16: ability flags
   bit 0: can fly

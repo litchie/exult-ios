@@ -56,6 +56,8 @@
 #define MIDITMPFILE     "u7midi"
 #define SAVENAME	"game%02d.u7"
 #define INTROSND	"static/introsnd.dat"
+#define ARMOR		"static/armor.dat"
+#define WEAPONS		"static/weapons.dat"
 
 #endif
 
