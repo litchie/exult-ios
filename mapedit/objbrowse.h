@@ -16,39 +16,22 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef STUDIO_H
+#ifndef OBJBROWSE_H
+#define OBJBROWSE_H
 
 #include <gtk/gtk.h>
 #include <glade/glade.h>
-#include "shapelst.h"
-#include "paledit.h"
-#include "vgafile.h"
 
-class ExultStudio {
+class Object_browser {
 private:
-	GtkWidget		*app;
-	GladeXML		*app_xml;
-	char 			*static_path;
-	static ExultStudio	*self;
-	Vga_file		*ifile;
-	char			**names;
-	Object_browser		*browser;
-
+	GtkWidget *widget;
+protected:
+	void set_widget(GtkWidget *w);
 public:
-	ExultStudio(int argc, char **argv);
-	~ExultStudio();
+	Object_browser();
+	virtual ~Object_browser();
 	
-	static ExultStudio *get_instance()
-		{ return self; }
-
-	void set_browser(const char *name, Object_browser *obj);
-
-	void choose_static_path();
-	Object_browser  *create_shape_browser(const char *fname);
-	void delete_shape_browser();
-	Object_browser  *create_palette_browser(const char *fname);
-	void set_static_path(const char *path);
-	void run();
+	GtkWidget *get_widget();
 };
 
 #endif

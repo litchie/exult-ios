@@ -26,12 +26,13 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include "objbrowse.h"
 #include "rect.h"
 
 /*
  *	Show a palette.
  */
-class Palette_edit
+class Palette_edit: public Object_browser
 	{
 	guchar *image;			// Holds data to render.
 	int width, height;		// Dimensions of image.
@@ -56,7 +57,7 @@ class Palette_edit
 	static void color_okay(GtkWidget *widget, gpointer data);
 	void double_clicked();		// Handle double-click on a color.
 public:
-	Palette_edit(guint32 *colors, GtkWidget *box, int w, int h);
+	Palette_edit(guint32 *colors, int w, int h);
 	~Palette_edit();
 					// Turn off selection.
 	void unselect(bool need_render = true);
