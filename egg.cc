@@ -402,7 +402,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 	((flags & (1<<(int)hatched)) != 0) <<
 	", areset = " <<
 	((flags & (1<<(int)auto_reset)) != 0) << ", data1 = " << data1
-		<< ", data2 = " << data2 << '\n';
+		<< ", data2 = " << data2 << endl;
 #endif
 	int roll = must ? 0 : 1 + rand()%100;
 	if (roll > probability)
