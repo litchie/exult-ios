@@ -31,10 +31,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <vector>
 #include "SDL_mapping.h"
 #include <SDL_audio.h>
-#include "Flex.h"
-#include "Table.h"
 #include "Mixer.h"
 
+#include <string>
 
 //---- MidiAbstract -----------------------------------------------------------
 
@@ -68,8 +67,6 @@ public:
 private:
 	void    kmidi_start_track(int num,int repeats=0);
 	vector<string>	midi_bank;
-	vector<Flex> midi_tracks;
-	Table instrument_patches;
 	int	current_track;
 	MidiAbstract	*midi_device;
 
