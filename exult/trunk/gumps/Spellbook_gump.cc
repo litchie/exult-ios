@@ -110,6 +110,64 @@ void Page_button::activate
 	}
 
 /*
+ *	The bookmark.
+ */
+class Bookmark_button : public Gump_button
+	{
+public:
+	Bookmark_button(Gump *par)
+		: Gump_button(par, BOOKMARK, 0, 0)
+		{  }
+	void set();			// Call this to set properly.
+					// What to do when 'clicked':
+	virtual void activate();
+	virtual void push() {}
+	virtual void unpush() {}
+	};
+
+/*
+ *	Set position and frame.
+ */
+
+void Bookmark_button::set
+	(
+	)
+	{
+	Spellbook_gump *sgump = (Spellbook_gump *) parent;
+	Rectangle& object_area = sgump->object_area;
+	int spwidth = sgump->spwidth;	// Spell width.
+	Spellbook_object *book = sgump->book;
+	int page = sgump->page;		// Page (circle) we're on.
+	int bmpage = book->bookmark/8;	// Bookmark's page.
+	int s = book->bookmark%8;	// Get # within circle.
+					// Which side for bookmark?
+	bool left = bmpage == page ? (s < 4) : bmpage < page;
+					// Figure coords.
+	x = left ? object_area.x + spwidth/2
+		: object_area.x + object_area.w - spwidth/2 - 2;
+	Shape_frame *bshape = get_shape();
+	x += bshape->get_xleft();
+	y = object_area.y - 14 + bshape->get_yabove();
+	set_frame(bmpage == page ? (1 + s%4) : 0);
+	}
+
+/*
+ *	Handle click.
+ */
+
+void Bookmark_button::activate
+	(
+	)
+	{
+
+	Spellbook_gump *sgump = (Spellbook_gump *) parent;
+	int bmpage = sgump->book->bookmark/8;	// Bookmark's page.
+					// On a different, valid page?
+	if (bmpage >= 0 && bmpage != sgump->page)
+		sgump->change_page(bmpage - sgump->page);
+	}
+
+/*
  *	A spell button.
  */
 class Spell_button : public Gump_button
@@ -206,11 +264,13 @@ Spellbook_gump::Spellbook_gump
 	if (book->bookmark >= 0)	// Set to bookmarked page.
 		page = Get_circle(book->bookmark);
 	leftpage = new Page_button(this, lpagex, lrpagey, 0);
-	rightpage = new Page_button(this, rpagex, lrpagey, 1);
+ 	rightpage = new Page_button(this, rpagex, lrpagey, 1);
+	bookmark = new Bookmark_button(this);
 					// Get dims. of a spell.
 	Shape_frame *spshape = ShapeID(SPELLS, 0, SF_GUMPS_VGA).get_shape();
 	spwidth = spshape->get_width();
 	spheight = spshape->get_height();
+	bookmark->set();		// Set to correct position, frame.
 	int vertspace = (object_area.h - 4*spheight)/4;
 	int spells0 = SPELLS;
 	for (int c = 0; c < 9; c++)	// Add each spell.
@@ -246,6 +306,7 @@ Spellbook_gump::~Spellbook_gump
 {
 	delete leftpage;
 	delete rightpage;
+	delete bookmark;
 	for (int i = 0; i < 9*8; i++)
 		delete spells[i];
 }
@@ -303,7 +364,10 @@ void Spellbook_gump::change_page
 	for (int i = 0; i < nframes; i++)	// Animate.
 		{
 		if (i == nframes/2)
+			{
 			page += delta;	// Change page halfway through.
+			bookmark->set();// Update bookmark for new page.
+			}
 		gwin->add_dirty(get_rect());
 		gwin->paint_dirty();
 		gwin->show();
@@ -324,6 +388,7 @@ void Spellbook_gump::select_spell
 	if (spells[spell])
 	{
 		book->bookmark = spell;
+		bookmark->set();	// Update bookmark's position/frame.
 		paint();
 	}
 }
@@ -354,6 +419,8 @@ Gump_button *Spellbook_gump::on_button
 		return leftpage;
 	else if (rightpage->on_button(mx, my))
 		return rightpage;
+	else if (bookmark->on_button(mx, my))
+		return bookmark;
 	int spindex = page*8;		// Index into list.
 	for (int s = 0; s < 8; s++)	// Check spells.
 	{
@@ -431,21 +498,7 @@ void Spellbook_gump::paint
 			(44 - sman->get_text_width(4, circ))/2, y + 20);
 	}
 	if (book->bookmark >= 0)	// Bookmark?
-	{
-		int bmpage = book->bookmark/8;	// Bookmark's page.
-		int s = book->bookmark%8;// Get # within circle.
-					// Which side for bookmark?
-		bool left = bmpage == page ? (s < 4) : bmpage < page;
-		int bx = left ? object_area.x + spwidth/2
-			: object_area.x + object_area.w - spwidth/2 - 2;
-					// On visible page?
-		int frame = bmpage == page ? (1 + s%4) : 0;
-		ShapeID bm(BOOKMARK, frame, SF_GUMPS_VGA);
-		Shape_frame *bshape = bm.get_shape();
-		bx += bshape->get_xleft();
-		int by = object_area.y - 14 + bshape->get_yabove();
-		bm.paint_shape(x + bx, y + by);
-	}
+		paint_button(bookmark);
 	if (turning_page)		// Animate turning page.
 		{
 		const int TPXOFF = 5, TPYOFF = 3;
