@@ -89,6 +89,11 @@ public:
 void VideoOptions_gump::close(Game_window* gwin)
 {
 	save_settings();
+
+	// have to repaint everything in case resolution changed
+	if (!want_restore_background())
+		gwin->set_all_dirty();
+
 	done = 1;
 }
 
@@ -99,8 +104,10 @@ void VideoOptions_gump::cancel()
 
 void VideoOptions_gump::toggle(Gump_button* btn, int state)
 {
-	if(btn==buttons[0])	
+	if(btn==buttons[0]) {
+		restore_background = false;
 		resolution = state;
+	}
 	else if(btn==buttons[1])
 		scaling = state;
 	else if(btn==buttons[2])
