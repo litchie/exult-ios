@@ -30,7 +30,6 @@ exult_SOURCES =	\
 	gumps.h		\
 	imagewin.cc	\
 	imagewin.h	\
-	imagwin.h	\
 	items.cc	\
 	items.h		\
 	lists.cc	\
