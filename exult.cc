@@ -155,7 +155,7 @@ static class Windnd *windnd = 0;
 static int exult_main(const char *);
 static void Init();
 static int Play();
-static int Get_click(int& x, int& y, char *chr, bool drag_ok);
+static int Get_click(int& x, int& y, char *chr, bool drag_ok, Paintable *p);
 static int find_resolution(int w, int h, int s);
 static void set_resolution (int new_res, bool save);
 #ifdef USE_EXULTSTUDIO
@@ -1136,7 +1136,8 @@ static int Get_click
 	(
 	int& x, int& y,
 	char *chr,			// Char. returned if not null.
-	bool drag_ok			// Okay to drag/close while here.
+	bool drag_ok,			// Okay to drag/close while here.
+	Paintable *paint		// Paint this each cycle if OpenGL.
 	)
 	{
 	dragging = false;		// Init.
@@ -1243,6 +1244,12 @@ static int Get_click
 						gwin->lose_focus();
 					}
 				}
+		if (GL_manager::get_instance())
+			{
+			gwin->paint();
+			if (paint)
+				paint->paint();
+			}
 		Mouse::mouse->show();		// Turn on mouse.
 
 		if (!gwin->show() &&	// Blit to screen if necessary.
@@ -1264,7 +1271,8 @@ int Get_click
 	int& x, int& y,			// Location returned (if not ESC).
 	Mouse::Mouse_shapes shape,	// Mouse shape to use.
 	char *chr,			// Char. returned if not null.
-	bool drag_ok			// Okay to drag/close while here.
+	bool drag_ok,			// Okay to drag/close while here.
+	Paintable *paint		// Paint this over everything else.
 	)
 	{
 	if (chr)
@@ -1272,9 +1280,11 @@ int Get_click
 	Mouse::Mouse_shapes saveshape = Mouse::mouse->get_shape();
 	if (shape != Mouse::dontchange)
 		Mouse::mouse->set_shape(shape);
+	if (paint)
+		paint->paint();
 	Mouse::mouse->show();
 	gwin->show(1);			// Want to see new mouse.
-	int ret = Get_click(x, y, chr, drag_ok);
+	int ret = Get_click(x, y, chr, drag_ok, paint);
 	Mouse::mouse->set_shape(saveshape);
 	return (ret);
 	}

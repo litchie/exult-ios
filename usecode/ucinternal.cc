@@ -470,7 +470,8 @@ void Usecode_internal::show_pending_text
 	if (book)			// Book mode?
 		{
 		int x, y;
-		while (book->show_next_page() && Get_click(x, y, Mouse::hand))
+		while (book->show_next_page() && 
+				Get_click(x, y, Mouse::hand, 0, false, book))
 			;
 		gwin->paint();
 		}
