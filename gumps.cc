@@ -234,19 +234,19 @@ Rectangle Gump_object::get_shape_rect
 	}
 
 /*
- *	Find objects a screen point is on.
+ *	Find object a screen point is on.
  *
- *	Output:	# of objects stored, last one being the highest.
+ *	Output:	Object found, or null.
  */
 
-int Gump_object::find_objects
+Game_object *Gump_object::find_object
 	(
 	Game_window *gwin,
-	int mx, int my,			// Mouse pos. on screen.
-	Game_object **list		// Objects found are stored here.
+	int mx, int my			// Mouse pos. on screen.
 	)
 	{
 	int cnt = 0;
+	Game_object *list[100];
 	Game_object *last_object = container->get_last_object();
 	if (!last_object)
 		return (0);
@@ -259,7 +259,8 @@ int Gump_object::find_objects
 			list[cnt++] = obj;
 		}
 	while (obj != last_object);
-	return (cnt);
+					// ++++++Return top item.
+	return (cnt ? list[cnt - 1] : 0);
 	}
 
 /*

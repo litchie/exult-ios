@@ -765,16 +765,15 @@ Usecode_value Usecode_machine::click_on_item
 	int x, y;
 	if (!Get_click(x, y, Mouse::greenselect))
 		return Usecode_value(0);
-	Game_object *found[100];	// See what was clicked on.
-	int cnt;
 					// Look for obj. in open gump.
 	Gump_object *gump = gwin->find_gump(x, y);
+	Game_object *obj;
 	if (gump)
-		cnt = gump->find_objects(gwin, x, y, found);
+		obj = gump->find_object(gwin, x, y);
 	else				// Search rest of world.
-		cnt = gwin->find_objects(x, y, found);
-	if (cnt)
-		return Usecode_value((long) found[cnt - 1]);
+		obj = gwin->find_object(x, y);
+	if (obj)
+		return Usecode_value((long) obj);
 	else
 		return Usecode_value(0);
 	}

@@ -1007,29 +1007,39 @@ Gump_object *Game_window::find_gump
 	}
 
 /*
- *	Find objects that can be selected, dragged, or activated.
- *	The last one in the list is the 'highest' in terms of lift, with
- *	objects visible in a 'gump' the highest.
+ *	Find the top object that can be selected, dragged, or activated.
+ *	The one returned is the 'highest'.
  *
- *	Output:	# of objects stored.
+ *	Output:	->object, or null if none.
  */
 
-int Game_window::find_objects
+Game_object *Game_window::find_object
 	(
-	int x, int y,			// Pos. on screen.
-	Game_object **list		// Objects found are stored here.
+	int x, int y			// Pos. on screen.
 	)
 	{
 cout << "Clicked at tile (" << chunkx*tiles_per_chunk + x/tilesize << ", " <<
 		chunky*tiles_per_chunk + y/tilesize << ")\n";
+	Game_object *found[100];
 	int cnt = 0;
 	int actor_lift = main_actor->get_lift();
 	int start = actor_lift > 0 ? -1 : 0;
+	int not_above = skip_lift;
+					// If inside, figure height above
+	if (main_actor_inside)		//   actor's head.
+		not_above = main_actor->get_lift() + 
+		  shapes.get_info(main_actor->get_shapenum()).get_3d_height();
 					// See what was clicked on.
-	for (int lift = start; lift < 4; lift++)
-		cnt += find_objects(actor_lift + lift, x, y, &list[cnt]);
-//+++++++++Look in gumps.
-	return (cnt);
+	for (int lift = start + actor_lift; lift < not_above; lift++)
+		cnt += find_objects(lift, x, y, &found[cnt]);
+	if (!cnt)
+		return (0);		// Nothing found.
+					// Find 'best' one.
+	Game_object *obj = found[cnt - 1];
+	for (int i = 0; i < cnt - 1; i++)
+		if (obj->lt(*found[i]) == 1)
+			obj = found[i];
+	return (obj);
 	}
 
 /*
@@ -1045,7 +1055,6 @@ int Game_window::find_objects
 	Game_object **list		// Objects found are stored here.
 	)
 	{
-//	cout << "Find_objects:	mouse is at (" << x << ',' << y << ")\n";
 					// Figure chunk #'s.
 	int start_cx = chunkx + (x + 4*lift)/chunksize;
 	int start_cy = chunky + (y + 4*lift)/chunksize;
@@ -1100,18 +1109,15 @@ void Game_window::show_items
 	int x, int y			// Coords. in window.
 	)
 	{
-	Game_object *found[100];	// See what was clicked on.
-	int cnt;
 					// Look for obj. in open gump.
 	Gump_object *gump = find_gump(x, y);
+	Game_object *obj;		// What we find.
 	if (gump)
-		cnt = gump->find_objects(this, x, y, found);
+		obj = gump->find_object(this, x, y);
 	else				// Search rest of world.
-		cnt = find_objects(x, y, found);
-					// Just do top item.
-	if (cnt)
+		obj = find_object(x, y);
+	if (obj)
 		{
-		Game_object *obj = found[cnt - 1];
 					// Show name.
 		char *item_name = obj->get_name();
 		if (item_name)
@@ -1219,19 +1225,16 @@ void Game_window::double_clicked
 	int x, int y			// Coords in window.
 	)
 	{
-	Game_object *found[100];	// See what was clicked on.
-	int cnt;
 					// Look for obj. in open gump.
 	Gump_object *gump = find_gump(x, y);
+	Game_object *obj;
 	if (gump)
-		cnt = gump->find_objects(this, x, y, found);
+		obj = gump->find_object(this, x, y);
 	else				// Search rest of world.
-		cnt = find_objects(x, y, found);
-//	cout << cnt << " objects found.\n";
+		obj = find_object(x, y);
 	remove_all_text();		// Remove text msgs. from screen.
-	for (int i = 0; i < cnt; i++)	// Go through them.
+	if (obj)
 		{
-		Game_object *obj = found[i];
 cout << "Object name is " << obj->get_name() << '\n';
 		init_faces();		// Be sure face list is empty.
 		obj->activate(usecode);
