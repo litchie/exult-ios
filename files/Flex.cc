@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 
+#define	DEBUGFLEX 1
 
 #include "Flex.h"
 
@@ -54,7 +55,10 @@ void	Flex::IndexFlexFile(void)
 	fread(&ret.count,sizeof(uint32),1,fp);
 	fread(&ret.magic2,sizeof(uint32),1,fp);
 	if(magic1!=0xffff1a00UL)
+		{
+		cerr << "Magic number is not a flex file" << endl;
 		throw 0;	// Not a flex file
+		}
 	for(int i=0;i<9;i++)
 		fread(&ret.padding[i],sizeof(uint32),1,fp);
 #if DEBUGFLEX
@@ -77,8 +81,30 @@ void	Flex::IndexFlexFile(void)
 	fclose(fp);
 }
 
-int     Flex::retrieve(int objnum,char **,size_t *len)
-{ return 0; }
+int     Flex::retrieve(int objnum,char **buf,size_t *len)
+{
+	*buf=0;
+	*len=0;
+	if((unsigned)objnum>=object_list.size())
+		{
+		cerr << "objnum too large in read_object()" << endl;
+		return 0;
+		}
+	FILE	*fp=fopen(filename.c_str(),"rb");
+	if(!fp)
+		{
+		cerr << "File open failed in read_object" << endl;
+		return 0;
+		}
+	fseek(fp,object_list[objnum].offset,SEEK_SET);
+	size_t length=object_list[objnum].size;
+	char	*ret=new char[length];
+	fread(ret,length,1,fp);
+	fclose(fp);
+	*buf=ret;
+	*len=length;
+	return 1;
+}
 
 int     Flex::retrieve(int objnum,const char *)
 { return 0; }
