@@ -77,6 +77,7 @@ public:
 	void add(uint32 t, Time_sensitive *obj, long ud);
 					// Remove object's entry.
 	int remove(Time_sensitive *obj);
+	int remove(Time_sensitive *obj, long udata);
 	int find(Time_sensitive *obj);	// Find an entry.
 					// Activate entries that are 'due'.
 	inline void activate(uint32 curtime)

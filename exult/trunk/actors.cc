@@ -2946,6 +2946,7 @@ void Npc_actor::remove_this
 	schedule = 0;
 	num_schedules = 0;
 	gwin->get_tqueue()->remove(this);// Remove from time queue.
+	gwin->remove_nearby_npc(this);	// Remove from nearby list.
 					// Store old chunk list.
 	Chunk_object_list *olist = gwin->get_objects_safely(
 							get_cx(), get_cy());

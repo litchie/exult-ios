@@ -556,6 +556,7 @@ public:
 	void remove_gump(Gump *gump);
 					// Add npc to 'nearby' list.
 	void add_nearby_npc(Npc_actor *npc);
+	void remove_nearby_npc(Npc_actor *npc);
 					// Track npcs in range of chunks.
 	void add_nearby_npcs(int from_cx, int from_cy,
 						int stop_cx, int stop_cy);

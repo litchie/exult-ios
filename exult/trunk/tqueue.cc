@@ -112,6 +112,33 @@ int Time_queue::remove
 	}
 
 /*
+ *	Remove first entry containing a given object and data.
+ *
+ *	Output:	1 if found, else 0.
+ */
+
+int Time_queue::remove
+	(
+	Time_sensitive *obj,
+	long udata
+	)
+	{
+	if(data.size()==0)
+		return 0;
+	for(Temporal_sequence::iterator it=data.begin();
+		it!=data.end(); ++it)
+		{
+		if(it->handler==obj && it->udata == udata)
+			{
+			obj->queue_cnt--;
+			data.erase(it);
+			return 1;
+			}
+		}
+	return (0);			// Not found.
+	}
+
+/*
  *	See if a given entry is in the queue.
  *
  *	Output:	1 if found, else 0.

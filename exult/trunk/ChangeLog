@@ -1,6 +1,7 @@
 2001-02-24  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Fixed weapon bug (throwing non-throwable weapons) and a few others.
+	* Remove NPC's from 'nearby' list when they're deleted.
 
 2001-02-24 Dancer Vesperman <dancer@users.sourceforge.net>
 	* SDL 1.1 allows us to selectively initialise and terminate
