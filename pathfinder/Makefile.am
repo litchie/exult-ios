@@ -7,6 +7,9 @@ CXXFLAGS += $(WINDOWING_SYSTEM)
 CXXFLAGS += $(DEBUG_FLAGS)
 
 
+INCLUDES += -I..
+INCLUDES += $(SDL_INCLUDES)
+
 
 
 OFILES=	PathFinder.o Astar.o Zombie.o

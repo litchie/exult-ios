@@ -78,7 +78,7 @@ protected:
 public:
 	friend class Image_buffer8;
 	friend class Image_buffer16;
-	~Image_buffer_base()
+	virtual ~Image_buffer_base()
 		{
 		delete bits;		// In case Image_window didn't.
 		}
@@ -469,7 +469,7 @@ class Image_window : public Image_buffer
 	void free_surface();		// Free it.
 public:
 	Image_window(unsigned int w, unsigned int h);
-	~Image_window();
+	virtual ~Image_window();
 	unsigned int get_width()	// Get dims.
 		{ return ibuf->width; }
 	unsigned int get_height()
