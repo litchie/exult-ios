@@ -1,5 +1,6 @@
 2002-07-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/greentop.shp: new paperdoll art. Thanks sbx!
+	* usecode/ucxt/Makefile.am: fixed --disable-tools
 
 2002-07-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Spellbook_gump.cc: fixed up offsets; fixed NULL shape error
