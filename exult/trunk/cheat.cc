@@ -552,6 +552,30 @@ void Cheat::cut(bool copy)
 	}
 
 /*
+ *	Create an object as moveable (IREG) or fixed.
+ *	++++++++Goes away when we have obj->clone()++++++++++
+ */
+
+static Game_object *Create_object
+	(
+	Game_window *gwin,
+	int shape, int frame		// What to create.
+	)
+	{
+	Shape_info& info = gwin->get_info(shape);
+	int sclass = info.get_shape_class();
+					// Is it an ireg (changeable) obj?
+	bool ireg = (sclass != Shape_info::unusable &&
+		sclass != Shape_info::building);
+	Game_object *newobj;
+	if (ireg)
+		newobj = gwin->create_ireg_object(info, shape, frame, 0, 0, 0);
+	else
+		newobj = new Ifix_game_object(shape, frame, 0, 0, 0);
+	return newobj;
+	}
+
+/*
  *	Paste selection.
  */
 void Cheat::paste
@@ -576,7 +600,7 @@ void Cheat::paste
 		int x = mx + (t.tx - hot.tx)*c_tilesize - liftpix,
 		    y = my + (t.ty - hot.ty)*c_tilesize - liftpix;
 					// +++++Use clone().
-		obj = gwin->create_ireg_object(obj->get_shapenum(),
+		obj = Create_object(gwin, obj->get_shapenum(),
 						obj->get_framenum());
 		bool ok = false;
 		if (on_gump)
