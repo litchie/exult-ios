@@ -41,6 +41,7 @@ void ActionFullscreen(int* params);
 void ActionUseItem(int* params);
 void ActionUseFood(int*params);
 void ActionCombat(int* params);
+void ActionCombatPause(int* params);
 void ActionTarget(int* params);
 void ActionInventory(int* params);
 void ActionTryKeys(int* params);
