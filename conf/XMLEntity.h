@@ -47,6 +47,7 @@ public:
 	XMLEntity	entity;
 	vector<XMLnode>	nodelist;
 	string	&reference(string &,bool &);
+	XMLnode *subtree(string &);
 	XMLnode();
 	~XMLnode();
 	};
