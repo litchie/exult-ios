@@ -2135,8 +2135,8 @@ int Chunk_cache::is_blocked
 		}
 					// See if we're going down.
 	new_lift = get_highest_blocked(lift, tflags) + 1;
-					// Don't allow fall of > 2.
-	return (lift - new_lift > 2 ? 1 : 0);
+					// Don't allow fall of > 1.
+	return (lift - new_lift > 1 ? 1 : 0);
 	}
 
 /*
