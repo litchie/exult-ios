@@ -58,7 +58,7 @@ void Npc_proximity_handler::add
 		msecs = (rand() % 4000) + 2000;
 	unsigned long newtime = curtime + msecs;
 	newtime += 1000*additional_secs;
-	gwin->get_tqueue()->add(newtime, this, (long) npc);
+	gwin->get_tqueue()->add(newtime, this, reinterpret_cast<long>(npc));
 	}
 
 /*
@@ -71,7 +71,7 @@ void Npc_proximity_handler::remove
 	)
 	{
 	npc->clear_nearby();
-	gwin->get_tqueue()->remove(this, (long) npc); 
+	gwin->get_tqueue()->remove(this, reinterpret_cast<long>(npc)); 
 	}
 
 /*

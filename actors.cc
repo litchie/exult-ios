@@ -685,7 +685,7 @@ void Actor::start
 			gwin->get_tqueue()->remove(this);
 
 		uint32 curtime = Game::get_ticks();
-		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
+		gwin->get_tqueue()->add(curtime + delay, this, reinterpret_cast<long>(gwin));
 		}
 	}
 
@@ -3468,7 +3468,7 @@ void Npc_actor::paint
 					// Force schedule->now_what() in .5secs
 					// DO NOT call now_what here!!!
 		uint32 curtime = Game::get_ticks();
-		gwin->get_tqueue()->add(curtime + 500, this, (long) gwin);
+		gwin->get_tqueue()->add(curtime + 500, this, reinterpret_cast<long>(gwin));
 		}
 	if (!nearby)			// Make sure we're in 'nearby' list.
 		gwin->add_nearby_npc(this);
