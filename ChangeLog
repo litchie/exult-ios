@@ -1,3 +1,6 @@
+2001-01-14  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc: added some (disabled) code to create a full 600Mb world map for U7
+
 2001-01-13  Max Horn  <max@quendi.de>
 	* bggame.cc: some minor changes to make more similiar to sigame.cc
 	* sigame.cc: brought SI_Game::new_game up-to-date with its BG_Game counterpart
