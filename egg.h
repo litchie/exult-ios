@@ -40,9 +40,9 @@ class Egg_object : public Game_object
 protected:
 	unsigned char type;		// One of the below types.
 	unsigned char probability;	// 1-100, chance of egg activating.
-	unsigned char criteria;		// How it's activated.  See below.
-	unsigned char distance;		// Distance for activation (0-31).
-	unsigned char flags;		// Formed from below flags.
+	unsigned char criteria:3;	// How it's activated.  See below.
+	unsigned distance:6;		// Distance for activation (0-31).
+	unsigned flags:4;		// Formed from below flags.
 	unsigned short data1, data2;	// More data, depending on type.
 	Rectangle area;			// Active area.
 	unsigned char solid_area;	// 1 if area is solid, 0 if outline.
