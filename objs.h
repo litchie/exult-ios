@@ -270,6 +270,10 @@ public:
 	virtual int get_flag(int flag) { return 0; }
 	virtual int get_npc_num()	// Get its ID (1-num_npcs).
 		{ return 0; }
+	virtual int get_party_id()	// Get/set index within party.
+		{ return -1; }
+	virtual void set_party_id(int i)
+		{  }
 	virtual int is_egg()		// An egg?
 		{ return 0; }
 					// Count contained objs.
@@ -685,6 +689,8 @@ public:
 		Frames_sequence *seq = frames[(int) dir];
 		return seq != 0 ? seq->get_resting() : -1;
 		}
+	int get_frame_time()		// Return frame time if moving.
+		{ return is_moving() ? frame_time : 0; }
 					// Move to new chunk, shape coords.
 	void move(int new_cx, int new_cy, Chunk_object_list *new_chunk, 
 			int new_sx, int new_sy, int new_frame, 
