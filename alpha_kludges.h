@@ -36,7 +36,6 @@
 /*------------------------*/
 #if defined(__DECCXX) && defined(__linux__)
 
-#define ALPHA_LINUX_CXX
 #undef HAVE_HASH_MAP
 #undef HAVE_HASH_SET
 #undef DONT_HAVE_HASH_MAP
@@ -99,8 +98,9 @@ namespace std{
 //using std::strcmp;
 //using std::FILE;
 
-
-#endif /* __DECCXX */
+#else
+#error "alpha_kludges.h should not have been included!"
+#endif /* !__DECCXX && Linux*/
 
 #endif /* !ALPHA_KLUDGES_H */
 

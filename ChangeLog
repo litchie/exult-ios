@@ -1,3 +1,9 @@
+2001-02-07  Christoph Reichenbach  <jameson@linuxgames.com>
+	* files/utils.h: #ifndef'd inclusion of iosfwd
+	* shapes/items.h: #ifndef'd inclusion of iosfwd
+	* actorio.cc: Fixed "subscript out of range" problem
+	* configure.in: Added check for DEC CXX on Alpha/Linux
+
 2001-02-06  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.be, exult_types.h, actors.cc: building on BeOS again
 
@@ -36,8 +42,9 @@
 2001-02-06  Christoph Reichenbach  <jameson@linuxgames.com>
 	* vast amount of files: "Fixed" alpha_kludges.h includes. I'll get
 	nightmares from the sheer ugliness I introduced again.
-	
 	* actorio.cc: Fixed typo (?) in line 296: Game::Game::get_avname()
+	* exult.cc (Init): Added a "friendly" error message if loading the
+	keybinder defaults failed
 
 2001-02-05  Jeff Freedman  <jeff@amy.nerble.net>
 	* combat.cc: Glass sword self-destructs.

@@ -246,7 +246,7 @@ Actor::Actor
 	set_property((int) Actor::food_level, food_read);
 	nfile.seekg(7, ios::cur);
 
-	char namebuf[17];
+	char namebuf[18];
 	nfile.read(namebuf, 16);
 	
 	for (int i = 0; i < 16; i++)
