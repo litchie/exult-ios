@@ -1,3 +1,12 @@
+2000-11-22  Tristan Tarrant <nadir@users.sourceforge.net>
+
+	* data/extras.shp, data/midi_conversion.shp, data/sfx_conversion.shp: 
+	  new shapes
+	* data/Makefile.am, tools/expack.cc, data/README,
+	  Makefile.cygwin, Makefile.win32, Makefile.be: update all
+	  known references to shape list for exult.flx...
+	* game.cc: use new shapes
+
 2000-11-22  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode.cc:  0x58 in scheduled uc means 'play sound effect'.

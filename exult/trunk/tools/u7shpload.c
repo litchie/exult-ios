@@ -416,7 +416,8 @@ static gint32 load_image (gchar *filename)
 				offsetX = read2(fp);
 				offsetY = read2(fp);
 				pixptr = frame->pixels+(offsetY*frame->width+offsetX)*2;
-				g_assert(pixptr<eod);
+				if(pixptr<frame->pixels)
+					pixptr = frame->pixels;
 				if(slice_type) {	// Compressed
 					while(slice_length>0) {
 						block = read1(fp);
@@ -446,8 +447,6 @@ static gint32 load_image (gchar *filename)
 					}
 				}
 			}
-				printf("shape=%d w=%d h=%d pixptr=%d eod=%d\n", i, 
-					frame->width, frame->height, pixptr, eod);
 		}
 	}
 	image_ID = gimp_image_new (max_width, max_height, GIMP_INDEXED);

@@ -79,7 +79,10 @@ public:
 	void	stop_music();
 	
 	bool	add_midi_bank(const char *s);
-
+	void	set_music_conversion(int conv);
+	int	get_music_conversion() { return music_conversion; }
+	void	set_effects_conversion(int conv);
+	int	get_effects_conversion() { return effects_conversion; }
 
 private:
 	MyMidiPlayer(const MyMidiPlayer &m) ; // Cannot call

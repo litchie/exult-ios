@@ -84,9 +84,7 @@ public:
 //	static	const	int	persecond=2;
 //	static	const	int	buffering_unit=1024;
 
-#ifdef WIN32
-  MyMidiPlayer *get_midi() {return midi;}
-#endif
+	MyMidiPlayer *get_midi() {return midi;}
 
 	SDL_AudioSpec actual;
 private:
