@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Usecode.cc - Interpreter for usecode.
  **
  **	Written: 8/12/99 - JSF
@@ -622,15 +623,14 @@ Usecode_value Usecode_machine::call_intrinsic
 	case 0xa:			// Show choices & return string.
 		{
 		user_choice = 0;
-		get_user_choice();
-		char *choice = user_choice;
+		char *choice = get_user_choice();
 		user_choice = 0;
 		return choice;
 		}
 	case 0xb:			// Show choices and wait for click.
 		{			// Return index (1-n) of choice.
 		user_choice = 0;
-		Usecode_value val(get_user_choice() + 1);
+		Usecode_value val(get_user_choice_num() + 1);
 		user_choice = 0;
 		return val;
 		}
@@ -834,9 +834,27 @@ void Usecode_machine::click_to_continue
 	save_answers = answers;
 	answers.num_answers = 0;
 	answers.add_answer("Continue");
-	get_user_choice();
+	get_user_choice_num();
 	user_choice = 0;		// Clear it.
 	answers = save_answers;
+	}
+
+/*
+ *	Get user's choice from among the possible responses.
+ *
+ *	Output:	->user choice string.
+ *		0 if no possible choices or user quit.
+ */
+
+char *Usecode_machine::get_user_choice
+	(
+	)
+	{
+	if (!answers.num_answers)
+		return (0);		// Shouldn't happen.
+	if (!user_choice)		// May have already been done.
+		get_user_choice_num();
+	return (user_choice);
 	}
 
 /*
@@ -846,42 +864,27 @@ void Usecode_machine::click_to_continue
  *		-1 if no possible choices.
  */
 
-int Usecode_machine::get_user_choice
+int Usecode_machine::get_user_choice_num
 	(
 	)
 	{
-	if (!answers.num_answers)
-		return (-1);		// Shouldn't happen.
-	if (!user_choice)		// May have already been done.
-		{
-		cout << "Choose: ";	// TESTING.
-		for (int i = 0; i < answers.num_answers; i++)
-			cout << ' ' << answers.answers[i] << '(' << i << ") ";
-		gwin->show_avatar_choices(answers.num_answers, 
-						answers.answers);
-		extern void Handle_events(unsigned char *); //++++For now.
-		choice_made = 0;
-					// Handle events until response made.
-		Handle_events(&choice_made);
-		}
-	return (user_choice_num);	// Return choice #.
-	}
-
-/*
- *	User chose a response.
- */
-
-void Usecode_machine::chose_response
-	(
-	int response
-	)
-	{
-	if (response >= 0 && response < answers.num_answers)
-		{
-		user_choice = answers.answers[response];
-		user_choice_num = response;
-		choice_made = 1;	// Return from event loop.
-		}
+	user_choice = 0;
+	cout << "Choose: ";		// TESTING.
+	for (int i = 0; i < answers.num_answers; i++)
+		cout << ' ' << answers.answers[i] << '(' << i << ") ";
+	gwin->show_avatar_choices(answers.num_answers, answers.answers);
+	extern int Get_click(int& x, int& y);
+	int x, y;			// Get click.
+	int choice_num;
+	do
+		if (!Get_click(x, y))
+			return (-1);
+					// Wait for valid choice.
+	while ((choice_num = gwin->conversation_choice(x, y)) < 0 ||
+		choice_num >= answers.num_answers);
+					// Store ->answer string.
+	user_choice = answers.answers[choice_num];
+	return (choice_num);		// Return choice #.
 	}
 
 /*
@@ -999,7 +1002,8 @@ void Usecode_machine::run
 			break;
 		case 0x07:		// Guessing CMPS.
 			{
-			get_user_choice();
+			if (!get_user_choice())
+				user_choice = "";
 			int cnt = Read2(ip);	// # strings.
 			offset = (short) Read2(ip);
 			while (cnt-- && strcmp(pops(), user_choice) != 0)

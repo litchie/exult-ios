@@ -296,7 +296,7 @@ public:
 					// Show what Avatar can say.
 	void show_avatar_choices(int num_choices, char **choices);
 					// User clicked on a choice.
-	void conversation_choice(int x, int y);
+	int conversation_choice(int x, int y);
 					// Queue up npcs in range of chunks.
 	void add_nearby_npcs(int from_cx, int from_cy,
 						int stop_cx, int stop_cy);
