@@ -439,6 +439,8 @@ public:
 	virtual int get_weapon_points();	
 	virtual int is_monster()
 		{ return 1; }
+	virtual void die();		// We're dead.
+	void write(ostream& nfile);	// Write out (to 'monsnpc.dat').
 	};
 
 /*
