@@ -159,27 +159,6 @@ void Game_window::paint
 	}
 
 /*
- *	Paint a flat tile.
- */
-
-inline void Game_window::paint_tile
-	(
-	Chunk_object_list *olist,
-	int tilex, int tiley,		// Tile within chunk.
-	int xoff, int yoff		// Offset of chunk within window.
-	)
-	{
-	ShapeID id = olist->get_flat(tilex, tiley);
-	if (!id.is_invalid())
-		{			// Draw flat.
-		Shape_frame *shape = get_shape(id);
-		win->copy8(shape->data, c_tilesize, c_tilesize, 
-					xoff + tilex*c_tilesize,
-					yoff + tiley*c_tilesize);
-		}
-	}
-
-/*
  *	Figure offsets on screen.
  */
 
@@ -216,10 +195,9 @@ void Game_window::paint_chunk_flats
 	Figure_screen_offsets(cx, cy, get_scrolltx(), get_scrollty(),
 						xoff, yoff);
 	Chunk_object_list *olist = get_objects(cx, cy);
-					// Go through array of tiles.
-	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
-		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
-			paint_tile(olist, tilex, tiley, xoff, yoff);
+					// Paint flat tiles.
+	Image_buffer8 *cflats = olist->get_rendered_flats(false);
+	win->copy8(cflats->get_bits(), c_chunksize, c_chunksize, xoff, yoff);
 
 	Flat_object_iterator next(olist);// Now do flat RLE objects.
 	Game_object *obj;
@@ -246,15 +224,9 @@ void Game_window::paint_dungeon_chunk_flats
 		win->fill8(0, w, w, xoff, yoff);
 		return;
 		}
-					// Go through array of tiles.
-	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
-		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
-			if (olist->in_dungeon(tilex, tiley))
-				paint_tile(olist, tilex, tiley, xoff, yoff);
-			else		// Paint black if outside dungeon.
-				win->fill8(0, c_tilesize, c_tilesize, 
-					xoff + tilex*c_tilesize,
-					yoff + tiley*c_tilesize);
+					// Paint flat tiles.
+	Image_buffer8 *cflats = olist->get_rendered_flats(true);
+	win->copy8(cflats->get_bits(), c_chunksize, c_chunksize, xoff, yoff);
 
 	Flat_object_iterator next(olist);// Now do flat RLE objects.
 	Game_object *obj;

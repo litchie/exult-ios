@@ -3169,7 +3169,6 @@ void Game_window::plasma(int w, int h, int x, int y, int startc, int endc)
 	}
 }
 
-	/* +++++++++Working on this: */
 /*
  *	Chunk caching emulation:  swap out chunks which are now at least
  *	3 chunks away.
@@ -3226,6 +3225,8 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 				(old_minx + x)%c_num_chunks,
 				(old_miny + y)%c_num_chunks);
 			if (!list) continue;
+					// Free pre-rendered landscape.
+			list->free_rendered_flats();
 			Object_iterator it(list->get_objects());
 			Game_object *each;
 			while ((each = it.get_next()) != 0)

@@ -39,8 +39,7 @@ class Chunk_object_list;
 class Egg_object;
 class Game_object;
 class Npc_actor;
-
-class Npc_actor;
+class Image_buffer8;
 
 /*
  *	Data cached for a chunk to speed up processing, but which doesn't need
@@ -131,6 +130,9 @@ class Chunk_object_list
 	Npc_actor *npcs;		// List of NPC's in this chunk.
 					//   (Managed by Npc_actor class.)
 	Chunk_cache *cache;		// Data for chunks near player.
+	Image_buffer8 *rendered_flats;	// Flats rendered for entire chunk.
+					//   Kept only for nearby chunks.
+	bool rendered_dungeon;		// True if rendered_flats in dungeon.
 	unsigned char roof;		// 1 if a roof present.
 	unsigned char light_sources;	// # light sources in chunk.
 	unsigned char cx, cy;		// Absolute chunk coords. of this.
@@ -139,6 +141,9 @@ class Chunk_object_list
 					class Ordering_info& newinfo);
 	static Chunk_object_list *add_outside_dependencies(int cx,
 		int cy, Game_object *newobj, class Ordering_info& newinfo);
+					// Create rendered_flats.
+	void paint_tile(int tilex, int tiley);
+	Image_buffer8 *render_flats(bool in_dungeon);
 public:
 	friend class Npc_actor;
 	Chunk_object_list(int chunkx, int chunky);
@@ -170,6 +175,12 @@ public:
 		{ flats[16*tiley + tilex] = id; }
 	ShapeID get_flat(int tilex, int tiley) const
 		{ return flats[16*tiley + tilex]; }
+	Image_buffer8 *get_rendered_flats(bool in_dungeon)
+		{
+		return rendered_flats && rendered_dungeon == in_dungeon 
+			? rendered_flats : render_flats(in_dungeon);
+		}
+	void free_rendered_flats();
 					// Write out to chunk.
 	void write_flats(unsigned char *chunk_data);
 					// Get/create cache.
