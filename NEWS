@@ -7,6 +7,10 @@
 
 		Return to menu option in BG and SI game menus
 
+		Detect incorrect/incomplete path settings in the configuration
+		file and show only valid entries (BG/SI) in the main menu.
+		If neither game is available, a warning is displayed.
+
 		Video Options in-game menu
 
 		Text/speech synch in BG intro

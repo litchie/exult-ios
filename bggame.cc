@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL_events.h"
 
 #include "files/U7file.h"
+#include "files/utils.h"
 #include "flic/playfli.h"
 #include "gamewin.h"
 #include "Audio.h"
@@ -1383,4 +1384,13 @@ bool BG_Game::new_game(Vga_file &shapes)
 	win->fill8(0,gwin->get_width(),90,0,menuy);
 
 	return ok;
+}
+
+bool BG_Game::is_installed(const char *path)
+{
+	char buf[2048];
+	strcpy(buf, path);
+	strcat(buf, "/static/endgame.dat");
+	cout << "is_installed: " << buf << endl;
+	return U7exists(buf);
 }

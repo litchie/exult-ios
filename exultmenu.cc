@@ -246,6 +246,30 @@ void ExultMenu::setup()
 
 Exult_Game ExultMenu::run()
 {
+	Font *font = fontManager.get_font("CREDITS_FONT");
+	string bg_dir, si_dir;
+	config->value("config/disk/game/blackgate/path",bg_dir,".");
+	config->value("config/disk/game/serpentisle/path",si_dir,".");
+	bool bg_installed = BG_Game::is_installed(bg_dir.c_str());
+	bool si_installed = SI_Game::is_installed(si_dir.c_str());
+
+	if(!bg_installed && !si_installed) {
+		pal.load("<DATA>/exult.flx",EXULT_FLX_EXULT0_PAL);
+		font->center_text(gwin->get_win()->get_ib8(),
+				  centerx, topy+20, "WARNING");
+		font->center_text(gwin->get_win()->get_ib8(),
+				  centerx, topy+40, "Could not find the data files for either");
+		font->center_text(gwin->get_win()->get_ib8(),
+				  centerx, topy+50, "\"The Black Gate\" or \"Serpent Isle\".");
+		font->center_text(gwin->get_win()->get_ib8(),
+				  centerx, topy+60, "Please edit the configuration file");
+		font->center_text(gwin->get_win()->get_ib8(),
+				  centerx, topy+70, "and restart Exult");
+		pal.apply();
+		while(!wait_delay(200));	
+		exit(1);
+
+	}
 	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", EXULT_FLX_MEDITOWN_MID);
 	XMIDI midfile(midi_data, XMIDI_CONVERT_NOCONVERSION);
 	Audio::get_ptr()->start_music(&midfile, true);
@@ -268,24 +292,30 @@ Exult_Game ExultMenu::run()
 		EXULT_FLX_EXIT_SHP 
 	};
 	int num_choices = sizeof(menuchoices)/sizeof(int);
+	int *menuentries = new int[num_choices];
+	int entries = 0;
 	
-	int ypos = menuy-24;	
+	int ypos = menuy-24;
 	for(int i=0; i<num_choices; i++) {
-		menu->add_entry(new MenuEntry(exult_flx.get_shape(menuchoices[i],1),
-					      exult_flx.get_shape(menuchoices[i],0),
-					      centerx, ypos));
-		ypos += exult_flx.get_shape(menuchoices[i],0)->get_height()+2;
+		if((i==0 && bg_installed)||(i==1 && si_installed)||i>1) {
+			menu->add_entry(new MenuEntry(exult_flx.get_shape(menuchoices[i],1),
+						      exult_flx.get_shape(menuchoices[i],0),
+						      centerx, ypos));
+			ypos += exult_flx.get_shape(menuchoices[i],0)->get_height()+2;
+			menuentries[entries++]=i;
+		}
 		if(i<2)
 			ypos+=5;
 	}
 	menu->set_selection(0);
 	Exult_Game sel_game = NONE;
-	Font *font = fontManager.get_font("CREDITS_FONT");
+	
 	do {
 		gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 1));
 		font->draw_text(gwin->get_win()->get_ib8(), 
 					topx+320-font->get_text_width(VERSION), topy+190, VERSION);
-		switch(menu->handle_events(gwin, menu_mouse)) {
+		int choice = menu->handle_events(gwin, menu_mouse);
+		switch(choice<0?choice:menuentries[choice]) {
 		case 5:
 		case -1: // Exit
 			pal.fade_out(c_fade_out_time);
@@ -330,6 +360,7 @@ Exult_Game ExultMenu::run()
 			break;
 		}
 	} while(sel_game==NONE);
+	delete[] menuentries;
 	delete menu;
 	
 	gwin->clear_screen(true);
