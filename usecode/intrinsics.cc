@@ -404,14 +404,9 @@ USECODE_INTRINSIC(set_schedule_type)
 USECODE_INTRINSIC(add_to_party)
 {
 	// NPC joins party.
-	Game_object *npc = get_item(parms[0]);
-	if (!npc || party_count == PARTY_MAX || npc_in_party(npc))
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (!add_to_party(npc))
 		return no_ret;		// Can't add.
-	npc->set_party_id(party_count);
-	npc->set_flag (Obj_flags::in_party);
-					// We can take items.
-	npc->set_flag_recursively(Obj_flags::okay_to_take);
-	party[party_count++] = npc->get_npc_num();
 	npc->set_schedule_type(Schedule::follow_avatar);
 // cout << "NPC " << npc->get_npc_num() << " added to party." << endl;
 	return no_ret;
@@ -421,28 +416,7 @@ USECODE_INTRINSIC(remove_from_party)
 {
 	// NPC leaves party.
 	Game_object *npc = get_item(parms[0]);
-	if (!npc)
-		return no_ret;
-	int id = npc->get_party_id();
-	if (id == -1)			// Not in party?
-		return no_ret;
-	if (party[id] != npc->get_npc_num())
-		{
-		cout << "Party mismatch!!" << endl;
-		return no_ret;
-		}
-					// Shift the rest down.
-	for (int i = id + 1; i < party_count; i++)
-		{
-		Actor *npc2 = gwin->get_npc(party[i]);
-		if (npc2)
-			npc2->set_party_id(i - 1);
-		party[i - 1] = party[i];
-		}
-	npc->clear_flag (Obj_flags::in_party);
-	party_count--;
-	party[party_count] = 0;
-	npc->set_party_id(-1);
+	remove_from_party(as_actor(npc));
 	return no_ret;
 }
 
@@ -2229,13 +2203,16 @@ USECODE_INTRINSIC(center_view)
 USECODE_INTRINSIC(get_dead_party)
 {
 	// Return list of dead companions' bodies.
-	Dead_body *list[10];
-	int cnt = Dead_body::find_dead_companions(list);
-	Usecode_value ret(cnt, 0);
-	for (int i = 0; i < cnt; i++)
+	Usecode_value ret(dead_party_count, 0);
+	for (int i = 0; i < dead_party_count; i++)
 		{
-		Usecode_value v(list[i]);
-		ret.put_elem(i, v);
+		Game_object *body = gwin->get_body(dead_party[i]);
+					// Body within 50 tiles (a guess)?
+		if (body && body->distance(gwin->get_main_actor()) < 50)
+			{
+			Usecode_value v(body);
+			ret.put_elem(i, v);
+			}
 		}
 	return ret;
 }

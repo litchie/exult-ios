@@ -2759,7 +2759,9 @@ void Actor::die
 		gwin->add_dirty(body);
 		}
 	add_dirty(gwin);		// Want to repaint area.
-	delete_contents();      // remove what's left of inventory
+	delete_contents();		// remove what's left of inventory
+					// Move party member to 'dead' list.
+	gwin->get_usecode()->update_party_status(this);
 	remove_this(1);			// Remove (but don't delete this).
 	set_invalid();
 	}
@@ -2831,6 +2833,8 @@ Actor *Actor::resurrect
 					// Restore health to max.
 	properties[(int) health] = properties[(int) strength];
 	Actor::clear_flag(Obj_flags::dead);
+					// Restore to party if possible.
+	gwin->get_usecode()->update_party_status(this);
 	return (this);
 	}
 
@@ -3673,34 +3677,6 @@ Dead_body::~Dead_body
 	(
 	)
 	{
-	}
-
-/*
- *	Find all dead companions' bodies.
- *
- *	Output:	# found.  ->bodies returned in 'list'.
- */
-
-int Dead_body::find_dead_companions
-	(
-	Dead_body *list[]		// List with at least 8 spots.
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-	Actor *party[8];
-	int cnt = gwin->get_party(party);// Get companions.
-	int found = 0;
-	for (int i = 0; i < cnt; i++)
-		{
-		int npc_num = party[i]->get_npc_num();
-		if (npc_num > 0)
-			{
-			list[found] = (Dead_body *) gwin->get_body(npc_num);
-			if (list[found])
-				found++;
-			}
-		}
-	return found;
 	}
 
 /*

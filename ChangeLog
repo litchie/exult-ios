@@ -1,3 +1,8 @@
+2001-10-01  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/intrinsics.cc,etc:  Separate dead_party list for dead
+	companions.
+
 2001-09-30  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/intrinsics.cc: Offsets in obj_sprite_effect() are negated.
