@@ -3137,6 +3137,10 @@ void Game_window::setup_game
 			main_actor->set_flag(Obj_flags::dont_render);
 	}
 
+	Actor *party[9];
+	int cnt = get_party(party, 1);	// Get entire party.
+	for (int i = 0; i < cnt; i++)	// Init. rings.
+		party[i]->init_readied();
 	faded_out = 0;
 	clock.set_palette();		// Set palette for time-of-day.
 	set_all_dirty();		// Force entire repaint.
