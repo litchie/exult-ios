@@ -1,3 +1,10 @@
+2005-01-23    <jeff@mini.nerble.net>
+
+	* game.cc (Game): Command-line option --write-xml causes game
+	config. to be written to 'patch/exultgame.xml'.
+	(Game): If 'patch/exultgame.xml' exists, Exult uses that instead
+	of manually adding resources.
+
 2005-01-16    <jeff@mini.nerble.net>
 
 	* shapes/font.cc: Don't skip linefeeds when handling spaces.

@@ -32,6 +32,7 @@ class Game_window;
 class Image_window8;
 class Image_buffer8;
 class Mouse;
+class Configuration;
 
 struct str_int_pair
 {
@@ -65,6 +66,7 @@ private:
 #endif
 	shapes_map shapes;
 	rsc_map resources;
+	Configuration *xml;		/* Shapes/resources from XML file. */
 	Mouse *menu_mouse;
 	static std::string gametitle;
 	static unsigned int ticks;
@@ -121,6 +123,7 @@ public:
 	void add_resource(const char *name, const char *str, int num);
 	str_int_pair get_resource(const char *name);
 	void write_game_xml();
+	bool read_game_xml(const char *name1 = 0);
 
 	bool show_menu(bool skip = false);
 	void journey_failed_text();
