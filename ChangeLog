@@ -1,5 +1,6 @@
 2000-12-12  Willem Jan Palnestijn <palenstijn@wanadoo.nl>
 	* mapedit/.cvsignore: added
+	* .cvsignore: added u7midi
 
 2000-12-11  Max Horn  <max@quendi.de>
 	* lots-o-files: applied some of the changes from Christoph Reichenbach <jameson@linuxgames.com>
