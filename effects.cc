@@ -199,7 +199,7 @@ void Explosion_effect::handle_event
 	}
 	if (frnum == frames/4) {
 		// this was in ~Explosion_effect before
-		if (explode)
+		if (explode && !explode->is_pos_invalid())
 			{
 				Game_window::get_game_window()->add_dirty(explode);
 				explode->remove_this();
