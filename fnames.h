@@ -42,7 +42,8 @@
 #define U7SPEECH	"static/u7speech.spc"
 #define XFORMTBL       	"static/xform.tbl"
 
-#else
+#endif
+#ifdef WIN32
 
 #define GAMEDAT		"gamedat\\"
 #define SHAPES_VGA	"static\\shapes.vga"
