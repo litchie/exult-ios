@@ -169,6 +169,7 @@ dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(limits.h sys/time.h unistd.h)
+AC_CHECK_HEADERS(sys/types.h sys/socket.h netdb.h)
 AC_LANG_CPLUSPLUS
 AC_CHECK_ALPHA_LINUX_CXX
 AC_CHECK_HEADERS(hash_map hash_set)
@@ -178,6 +179,28 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_HEADER_TIME
 AC_STRUCT_TM
+
+AC_MSG_CHECKING(for getaddrinfo())
+AC_TRY_COMPILE([
+#if HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#if HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+#if HAVE_NETDB_H
+#include <sys/socket.h>
+#endif
+],
+[
+	getaddrinfo(0,0,0,0);
+],
+  ac_cv_func_getaddrinfo=yes,
+  ac_cv_func_getaddrinfo=no)
+AC_MSG_RESULT($ac_cv_func_getaddrinfo)
+if test x$ac_cv_func_getaddrinfo = xyes ; then
+	AC_DEFINE(HAVE_GETADDRINFO)
+fi
 
 AC_MSG_CHECKING(for mkstemp())
 AC_TRY_COMPILE([
