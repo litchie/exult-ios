@@ -1,3 +1,12 @@
+2001-08-10  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Got to set flag 0x10 even if in SI, since it gets
+	tested in Usecode.
+	* actors.cc,intrinsics.cc:  Update_forced_schedule() caused Iolo
+	bug in Purity Test; disabled.
+	* ucsched.cc,ucscriptop.h: Usecode2 script for fixing Zorkhas 
+	Bridge crash.
+
 2001-08-10  Dominik Reichardt <gigdr@tesionmail.de>
 	* FAQ and docs/faq/exult_faq.xml: updated FAQ
 	* docs/faq/faq_text.xsl: link to html FAQ updated 

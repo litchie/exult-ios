@@ -1313,7 +1313,8 @@ void Actor::paint
 	Game_window *gwin
 	)
 	{
-	if (!(flags & (1L << Obj_flags::dont_render)))
+	if (!(flags & (1L << Obj_flags::dont_render)) ||
+	    Game::get_game_type() == SERPENT_ISLE)
 		{
 		int xoff, yoff;
 		gwin->get_shape_location(this, xoff, yoff);
@@ -1823,10 +1824,7 @@ void Actor::set_flag
 
 	// Hack :)
 	if (flag == Obj_flags::dont_render && Game::get_game_type() == SERPENT_ISLE)
-	{
 		set_siflag(dont_move);
-		return;
-	}
 
 	if (flag >= 0 && flag < 32)
 		flags |= ((uint32) 1 << flag);
@@ -1895,10 +1893,7 @@ void Actor::clear_flag
 	{
 //	cout << "Clear flag for NPC " << get_npc_num() << " = " << flag << endl;
 	if (flag == Obj_flags::dont_render && Game::get_game_type() == SERPENT_ISLE)
-	{
 		clear_siflag(dont_move);
-		return;
-	}
 	if (flag >= 0 && flag < 32)
 		flags &= ~((uint32) 1 << flag);
 	else if (flag >= 32 && flag < 64)
@@ -3255,9 +3250,10 @@ void Npc_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
+#if 0	/* ++++Causes Iolo bug in Fire&Ice test. */
 	if (update_forced_schedule())
 		return;
-
+#endif
 	if (!action)			// Not doing anything?
 		{
 		if (schedule)
