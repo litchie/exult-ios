@@ -3780,36 +3780,27 @@ Monster_actor *Monster_info::create
 					// Usecode = shape.
 	Monster_actor *monster = new Monster_actor("", shapenum, -1, shapenum);
 	monster->set_info(this);
-	if (align != -1)
-		monster->set_alignment(align);
-
-	cout << monster->get_name() << " flags ";
-	
+	monster->set_alignment(align == (int) Actor::neutral 
+							? alignment : align);
 	// Movement flags
 	if ((flags >> fly)&1)
 	{
-		cout << "fly ";
 		monster->set_type_flag(Actor::tf_fly);
 	}
 	if ((flags >> swim)&1)
 	{
-		cout << "swim ";
 		monster->set_type_flag(Actor::tf_swim);
 	}
 	if ((flags >> walk)&1)
 	{
-		cout << "walk ";
 		monster->set_type_flag(Actor::tf_walk);
 	}
 	if ((flags >> ethereal)&1)
 	{
-		cout << "ethereal ";
 		monster->set_type_flag(Actor::tf_ethereal);
 	}
-	
-	cout << endl;
-	
 					// Seems like the #'s are x4.
+//++++++Fix after puting in ::read()+++++++++++++++
 	monster->set_property(Actor::strength, strength/4);
 					// Max. health = strength.
 	monster->set_property(Actor::health, strength/4);
