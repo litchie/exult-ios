@@ -251,6 +251,46 @@ void GL_manager::resized
 	}
 
 /*
+ *	Paint an image directly.
+ *	NOTE:  On my voodoo3, this works in software mode but doesn't show up
+ *	with hardware acceleration.  The Red Book implies that it will do
+ *	automatic conversion to the hardware, but I guess this isn't so.
+ */
+
+static void Paint_image
+	(
+	Shape_frame *frame,
+	int px, int py,			// 'Pixel' position from top-left.
+	unsigned char *pal,		// 3*256 bytes (rgb).
+	int scale			// Scale factor.
+	)
+	{
+					// Convert to tile position.
+	float x = static_cast<float>(px);
+	float y = static_cast<float>(py);
+	x -= frame->get_xleft();
+	y += frame->get_ybelow();
+					// Game y-coord goes down from top.
+	y = -y;
+	x *= scale;
+	y *= scale;
+	x /= c_tilesize;
+	y /= c_tilesize;
+	int w = frame->get_width(), h = frame->get_height();
+					// Render frame.
+	Image_buffer8 buf8(w, h);
+	buf8.fill8(transp);		// Fill with transparent value.
+	frame->paint(&buf8, frame->get_xleft(), frame->get_yabove());
+					// Convert to rgba.
+	unsigned char *pixels = buf8.rgba(pal, transp);
+	glRasterPos2f(x, y);
+	glPixelZoom(scale, scale);
+	glDrawPixels(buf8.get_width(), buf8.get_height(), 
+					GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	delete pixels;
+	}
+
+/*
  *	Paint a shape.
  */
 
@@ -263,6 +303,11 @@ void GL_manager::paint
 	GL_texshape *tex = frame->glshape;
 	if (!tex)			// Need to create texture?
 		{
+		if (frame->get_width() > 256 || frame->get_height() > 256)
+			{		// Too big?  Just paint it now.
+			Paint_image(frame, px, py, palette, scale);
+			return;
+			}
 		frame->glshape = tex = new GL_texshape(frame, palette);
 		num_shapes++;
 		//++++++When 'too many', we'll free LRU here.
