@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="24 July 2002(GMT)">
+<faqs title="Exult" changed="11 September 2002(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="11092002">
+			<header>- 11 September 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="what_platforms"/> changed location of Zaurus package.</li>
+				<li><ref1 target="party_formation"/> rewrote that a bit.</li>
+				<li><ref1 target="great_hierophant"/> not an issue with Exult actually.</li>
+				<li><ref1 target="known_issues"/> drawing order is messed up.</li>				
+				</ul>
+			</body>
+		</sub>
 		<sub name="24072002">
 			<header>- 24 July 2002</header>
 			<body>
@@ -99,7 +110,7 @@
 			<header>But isn't <Pentagram/> some kind of <Exult/> for U8?</header>
 			<body>
 				<para>
-					<Pentagram/> is a pet project by some members of the <Exult/>team (currently mostly
+					<Pentagram/> is a pet project by some members of the <Exult/> team (currently mostly
 					Willem, Colourless, Fingolfin and Darke). It is a <strong>map and shapes viewer</strong>
 					and nothing more (although the team does indeed invest some time to disassemble the Usecode
 					of U8). It isn't meant to be something similar to <Exult/>. It is rather a clever plan
@@ -232,10 +243,10 @@
 				 <para>
 					Recently Artaxerxes started working on a port for 
 					<extref target="http://www.myzaurus.com/">Zaurus</extref>, a Linux/ARM based PDA.
-					You can already move around and hold conversations. Pictures of the Zaurus running
-					SI can be found at 
+					It is already fully playable (Artaxerxes played through SI). Pictures of the Zaurus 
+					running SI can be found at 
 					<extref target="http://exult.sourceforge.net/images/screenshots/zaurus/"/> and an 
-					IPK package at <extref target="http://artaxerxes_2.tripod.com/exult_0.2_arm.ipk"/>.
+					IPK package at <extref target="http://exult.sourceforge.net/download.php"/>.
 				 </para>
 			</body>
 		</sub>
@@ -276,7 +287,7 @@
 			<body>
 				<para>
 					You can play through the Black Gate/Forge of Virtue without cheating and
-					plotholes.<br/>
+					plot holes.<br/>
 					And since Beta1 the same is true for Serpent Isle/Silver Seed.
 				</para>
 			</body>
@@ -285,7 +296,7 @@
 			<header>How about Serpent Isle?</header>
 			<body>
 				<para>
-					Serpent Isle is now playable without cheating and plotholes. Two members of the team
+					Serpent Isle is now playable without cheating and plot holes. Two members of the team
 					have already finished the game with <Exult/>.
 				</para>
 				<para>
@@ -316,10 +327,10 @@
 			</body>
 		</sub>
 		<sub name="old_savegames">
-			<header>Do savegames from the original work in <Exult/>?</header>
+			<header>Do save games from the original work in <Exult/>?</header>
 			<body>
 				<para>
-					Savegames that were made with the original Ultima 7 or U7Run don't work
+					Save games that were made with the original Ultima 7 or U7Run don't work
 					with <Exult/>. You have to start a new game when you begin playing with <Exult/>.
 					Sorry!
 				</para>
@@ -331,7 +342,7 @@
 				<para>
 					<em>Don't!</em> You may be able to find it on the net but it would be
 					pirating the game and the <Exult/> team doesn't support pirates. Look for
-					the Ultima Collection in stores or on Ebay (<extref target="http://www.ebay.com"/>).
+					the Ultima Collection in stores or on EBay (<extref target="http://www.ebay.com"/>).
 				</para>
 				<para>
 					<em>Don't</em> ask the team for copies. <em>Don't</em> ask on the forum for copies,
@@ -346,8 +357,8 @@
 			<header>Where do I find a walkthrough?</header>
 			<body>
 				<para>
-					If you need help with the game itself, like walktrhoughs, hints, location of
-					Npcs items take a look at the following sites:
+					If you need help with the game itself, like walkthroughs, hints, location of
+					NPCs items take a look at the following sites:
 				</para>
 				<ul>
 					<li><extref target="http://members.aol.com/UltimaWrld/ultima07.html"/><br/>
@@ -384,8 +395,8 @@
 			<body>
 				<para>
 					To sail a ship in BG you naturally need to have the deed to this ship in your party.
-					Then doubleclick on the sail of the ship and your party moves aboard it and sits down.
-					Once they are all seated, doubleclick the gangplank to close it. Now doubleclick on 
+					Then double-click on the sail of the ship and your party moves aboard it and sits down.
+					Once they are all seated, double-click the gangplank to close it. Now double-click on 
 					the sail once more to have it unfold. You should be able to move the ship then.
 				</para>
 			</body>
@@ -416,8 +427,11 @@
 			<body>				
 				<para>
 					In <Exult/> the party (the Avatar and his companions) move quite differently than
-					they do in the original. This is actually not a bug but a disliking of the old
-					style. Recently Jeff changed this a bit but it still is not the same as the original.
+					they do in the original. The problem is that this was controlled by the original 
+					executable. Changing the formation now is not as easy as it sounds as the party
+					formation has effects on other game internals. Changing it to be more like the original
+					may force us to replay the whole game to make sure we didn't introduce new bugs.
+					Recently Jeff changed this a bit but it still is not the same as the original.
 				</para>
 				<cite name="Jeff">
 					It's not a bug, it's a feature! I like it that way.  Everyone is sensitive to
@@ -436,7 +450,7 @@
 				</para>
 				<para>
 					<em>Please do not play further</em> at this point. You should restore to an earlier
-					savegame, no matter how much game time you loose. Your game must have gotten
+					save game, no matter how much game time you loose. Your game must have gotten
 					corrupted and when you play on with it you will most likely experience even more
 					serious problems.
 				</para>
@@ -450,9 +464,9 @@
 					engine that runs the ancient Ultima 7 it still requires a fast computer.
 				</para>
 				<para>
-					Seriously, if the game runs choppy for you, try the speed seeting in the Gameoptions
+					Seriously, if the game runs choppy for you, try the speed setting in the Game Options
 					menu and if that doesn't help also play with the original resolution (320x200),
-					try a different scaler or disable scaling alltogether.
+					try a different scaler or disable scaling altogether.
 				</para>
 			</body>
 		</sub>
@@ -479,7 +493,7 @@
 			<body>
 				<para>
 					Music is played via midi but the sfx (sound effects) and speech are
-					played via wave. Midi and Wave volume are set up seperately in the settings
+					played via wave. Midi and Wave volume are set up separately in the settings
 					of your Operating System and not by <Exult/>.
 				</para>
 			</body>
@@ -488,11 +502,11 @@
 			<header>Why does my monitor stay black when I try to run <Exult/>?</header>
 			<body>
 				<para>
-					The most common reason for this is that you try to run Exult fullscreen in a
+					The most common reason for this is that you try to run Exult full screen in a
 					resolution that isn't supported by either your monitor or your graphics card.
 					Edit your exult.cfg (see <extref doc="docs" target="exult_config"/>) to disable
-					fullscreen. If Exult now runs fine in a window you have to select a different 
-					resolution (also editable in exult.cfg) to run it fullscreen.<br/>
+					full screen. If Exult now runs fine in a window you have to select a different 
+					resolution (also editable in exult.cfg) to run it full screen.<br/>
 					If it still doesn't run contact us.
 				</para>
 			</body>
@@ -513,8 +527,24 @@
 					The pikeman that lets you enter the list field in Monitor sometimes disappears due
 					to a bug in the game (even the original).<br/>
 					This bug occurs when you enter the banquet scene of Monitor. To avoid this bug, we 
-					recommend, that you approach the banquet hall from the right and/or doubleclick the
+					recommend, that you approach the banquet hall from the right and/or double-click the
 					entrance door to the hall when the party is standing very close to it. 
+				</para>
+			</body>
+		</sub>
+		<sub name="great_hierophant">
+			<header>Why can't I summon the Great Hierophant (SI)?</header>
+			<body>
+				<para>
+					If you follow some walkthrough you might find that your summoning of the
+					Great Hierophant doesn't work. This is a problem with the walkthrough. You
+					need to have a personal item of the Great Hierophant in your inventory, namely
+					the Serpent Staff.
+				</para>
+				<para>
+					If possible not just play following the walkthrough but go out and explore 
+					Serpent Isle. It's hard to imagine someone could miss the cave to the east of 
+					Monitor...
 				</para>
 			</body>
 		</sub>
@@ -526,54 +556,54 @@
 				<li>Many more keyboard shortcuts than the original had. Including in BG the
 					<key>k</key> key that checks if you have the right key for a lock in your
 					inventory. The list of keys can be found in the Documentation.</li>
-				<li>A new worked over Game menu. This menu is explained in detail in the
+				<li>A new worked over Game Options menu. This menu is explained in detail in the
 					<extref target="docs.php">Documentation</extref> and many of the following
 					improvements  and Video/Audio options can be accessed via this menu. Open
-					this Game Menu by pressing <key>Esc</key> in the game.</li>
+					this Game Options Menu by pressing <key>Esc</key> in the game.</li>
 				<li>SI style paperdoll (inventory screen) in BG. Very impressive. For this you
 					need to have Serpent Isle installed on your hard drive and you must set the
 					path to it in exult.cfg (see the Documentation) and activate it in the
-					Gameplay Options<br/>
+					Gameplay Options<br/>.
 					This new inventory screen acts sometimes a little buggy, so if an item seems
-					to have disappeared disable the paperdolls in the Game Options.</li>
-				<li>A beautiful new savegame box. This allows you much more savegames than
-					the original (you should run out of disc space before you run out of savegame
+					to have disappeared disable the paperdolls in the Gameplay Options.</li>
+				<li>A beautiful new save game box. This allows you much more save games than
+					the original (you should run out of disc space before you run out of save game
 					slots), shows a screenshot of the location you saved at, the members of your
 					party, your stats, game time and the date you actually saved. The save game
 					box is opened either via the game menu or the <key>s</key> key.</li>
 				<li>Face status bars at the bottom of the screen that show your health (and that
-					of your party members) as well as your mana. Doubleclicking on the face opens
-					the inventory and doubleclicking on the bars shows the status screen.</li>
+					of your party members) as well as your mana. Double-clicking on the face opens
+					the inventory and double-clicking on the bars shows the status screen.</li>
 				<li>Middle mouse button support. In the normal game, the middle mouse button
 					activates the target-function (which could also be accomplished by pressing
 					't'). for modal gumps, the middle mouse acts as 'return', the right button
 					as 'escape', so you can now for example accept the default slider value by
 					just pressing the middle button. The escape function is also available
 					during most other actions like selecting a target or conversations.</li>
-				<li>Wheelmouse support. If you have a wheelmouse some features are auto-enabled
+				<li>Wheel mouse support. If you have a wheel mouse some features are auto-enabled
 					in <Exult/>.<br/>
 					In slider gumps (e.g. how much gold you want to
 					drop), scrolling the mouse up/down, moves the slider either left or right.
 					Holding down <key>Alt</key> while using the wheel scrolls 10 steps.<br/>
-					The savegame menu scrolls one line, while pressing <key>Alt</key> it scrolls
+					The save game menu scrolls one line, while pressing <key>Alt</key> it scrolls
 					pages.<br/>
 					You can also scroll the map of the game up or down and while pressing
 					<key>Alt</key>  you scroll left or right.</li>
-				<li>Fast Mouse which makes the mouse cursor move faster in fullscreen mode.</li>
+				<li>Fast Mouse which makes the mouse cursor move faster in full screen mode.</li>
 				<li>Multiracial Avatar in BG. As with the paperdoll support you need to have SI
 					installed and the path set in exult.cfg.</li>
 				<li>Higher resolutions than the original. You can set the resolution as high as
 					your computer supports. But there are some issues with it and it is considered
 					cheating.</li>
-				<li>Compressed savegames. Since Beta1 <Exult/> compresses savegames by default as
-					zip files. They are still labeled *.sav and have the savegame name in the zip
+				<li>Compressed save games. Since Beta1 <Exult/> compresses save games by default as
+					zip files. They are still labeled *.sav and have the save game name in the zip
 					comment.</li>
 				</ul>
 			</body>
 		</sub>
 		<sub name="paperdoll_issues">
 			<header>
-				Are there issues with the SI style pardoll in BG?
+				Are there issues with the SI style paperdoll in BG?
 			</header>
 			<body>
 				<para>
@@ -606,16 +636,15 @@
 					are several things to do (though I wonder why you'd want to do that):
 				</para>
 				<ul>
-				<li>make custom keybindings files (see <extref target="docs.php">Documentation</extref>)
+				<li>make custom key bindings files (see <extref target="docs.php">Documentation</extref>)
 					in which you disable all the keys that were not in the original for Black Gate and
 					Serpents Isle.<br/>
 					Since the Alpha 4 release you have to assign <key>s</key> to old_file_gump
-					to enable the old savegame menu (the line in your custom keybindings file should look
+					to enable the old save game menu (the line in your custom key bindings file should look
 					like: S old_file_gump)</li>
 				<li>Edit the exult.cfg file to point to those custom keys.</li>
 				<li>Disable SI-style paperdolls for BG in exult.cfg (see the documentation for that).</li>
-				<li>Alternatively click on the disk icon and disable the paperdolls in the Gameplay
-					Options.</li>
+				<li>Alternatively click on the disk icon and disable the paperdolls in the Gameplay Options.</li>
 				<li>Edit the exult.cfg to use the resolution of 320x200, to run in full screen and
 					disable scalers.</li>
 				<li>The disc icon in the Avatar paperdoll opens the new game menu. As of now this cannot
@@ -648,7 +677,7 @@
 			<header>Bugs</header>
 			<body>
 				<para>
-					To see a list of open bugs and bugreports go to
+					To see a list of open bugs and bug reports go to
 					<extref target="http://sourceforge.net/bugs/?group_id=2335"/>
 				</para>
 			</body>
@@ -665,9 +694,9 @@
 					<extref target="http://exult.sourceforge.net/download.php">snapshot</extref>.
 					If the bug still occurs make sure that no one else already reported the bug
 					(in the bug tracker).</li>
-				<li>If you are not a Sourceforge member please include your e-mail address. This is
-					important so we can get back to you. If you are a Sourceforge member please log in
-					before submitting a bug. If you are a member of Sourceforge you will also get notified
+				<li>If you are not a SourceForge member please include your e-mail address. This is
+					important so we can get back to you. If you are a SourceForge member please log in
+					before submitting a bug. If you are a member of SourceForge you will also get notified
 					of follow ups on your bug automatically by E-mail.</li>
 				<li>Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae
 					don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more
@@ -676,10 +705,10 @@
 				<li>Include information on what version of <Exult/> you are using. You should have used
 					the latest snapshot but please tell us the date of the snapshot.</li>
 				<li>State which Operating System you use (Windows 9X, Linux, ...).</li>
-				<li>Please include a savegame (use common sense if it is really needed). You will find
+				<li>Please include a save game (use common sense if it is really needed). You will find
 					those in the game directories you put in the exult.cfg. They are called exult**bg.sav
-					(** is a number) for BG and exult**si.sav for SI. You can look up the filename int the
-					savegame dialog as well (to the right, above the party members). As some parts of the game
+					(** is a number) for BG and exult**si.sav for SI. You can look up the filename in the
+					save game dialog as well (to the right, above the party members). As some parts of the game
 					may require you to complete other quests or stuff before you get to the bug you want to
 					report it's much easier for the team to look at the problem (speeds the process up a bit
 					as they are much more likely you take a look at the problem this way).<br/>
@@ -689,16 +718,16 @@
 				<li><em>One</em> bug per subject please.</li>
 				</ol>
 				<para>
-					<strong>Note</strong> for attaching savegames SourceForge requires users to be 
-					registered. Therefor we strongly advice users to register with SF.<br/>
-					Any bug report that requires a savegame will most likely be 
-					<strong>tagged invalid</strong> if we don't receive a savegame after we requested it.
+					<strong>Note</strong> for attaching save games SourceForge requires users to be 
+					registered. Therefore we strongly advice users to register with SF.<br/>
+					Any bug report that requires a save game will most likely be 
+					<strong>tagged invalid</strong> if we don't receive a save game after we requested it.
 				</para>
 				<para>
 					You can also use our
 					<extref target="http://exult.sourceforge.net/forum/">forum</extref>
 					to report bugs. But if you do please follow the guidelines mentioned above (you can't
-					include a savegame of course). Though be aware that bugs submitted to the bug tracker
+					include a save game of course). Though be aware that bugs submitted to the bug tracker
 					are more likely to get attention than bugs submitted to the forum.
 				</para>
 				<para>
@@ -730,7 +759,7 @@
 						This has been changed a lot as this is disputed almost every four weeks.
 						Currently <Exult/> is coded using 2 frames.</li>
 					<li>Combat works differently. We don't have any hard data or formulae
-						that tell us how combat worked in BG/SI, so DrCode put something
+						that tell us how combat worked in BG/SI, so Dr.Code put something
 						together. If you have any information you've worked out related to
 						this, please tell either the forum or the exult-general mailing list.<br/>
 						Recently Jeff added an option to change the combat difficulty in exult.cfg.
@@ -749,6 +778,9 @@
 			<header>Known Issues</header>
 			<body>
 				<ul>
+					<li>Recent changes to the drawing method have screwed it up. This involves
+						the drawing order when opening/closing some doors and the save game gump 
+						still showing after a reload.</li>
 					<li>There might be a bug when you have any of the games installed in a 
 						path with spaces in it (see <extref doc="docs" target="path_config"/>).</li>
 					<li>Stealing and killing innocent NPCs doesn't work yet like it does in the original</li>
@@ -790,7 +822,7 @@
 					<li>There is a bug/incompatibility with the flex bundled Linux distributions
 						(RH7.0, for example) that breaks compilation. Upgrading to a more recent version
 						of flex should fix it.</li>
-					<li>Ater compiling yourself remember to copy the exult*.flx files from the data dir in
+					<li>After compiling yourself remember to copy the exult*.flx files from the data dir in
 						the source to the <Exult/> data dir you chose in exult.cfg. This applies only if
 						you don't use "make install"</li>
 				</ul>
@@ -821,7 +853,7 @@
 				</para>
 				<para>
 					Or go to the Ultima Dragons homepage <extref target="http://www.udic.org"/> and find your
-					way from there (this is an online Ultima fanclub)
+					way from there (this is an online Ultima fan club)
 				</para>
 				<para>
 					Some <Exult/> developers like to hang out on IRC on irc.openprojects.net, 
@@ -853,7 +885,7 @@
 					<li><Exult/> homepage at <extref target="http://exult.sourceforge.net/"/></li>
 					<li>Daily code snapshot at <extref target="http://exult.sourceforge.net/download.php"/></li>
 					<li>Message board at <extref target="http://exult.sourceforge.net/forum/"/></li>
-					<li>Bugreports to <extref target="http://sourceforge.net/bugs/?group_id=2335"/></li>
+					<li>Bug reports to <extref target="http://sourceforge.net/bugs/?group_id=2335"/></li>
 				</ul>
 			</body>
 		</sub>
