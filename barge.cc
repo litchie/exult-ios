@@ -28,6 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "actors.h"
 #include "Zombie.h"
 #include "citerate.h"
+#include "dir.h"
 
 /*
  *	Rotate a point 90 degrees to the right around a point.
@@ -93,6 +94,7 @@ inline Tile_coord Rotate90r
 	(
 	Game_window *gwin,
 	Game_object *obj,
+	int xtiles, int ytiles,		// Object dimensions.
 	Tile_coord c			// Rotate around this.
 	)
 	{
@@ -101,8 +103,8 @@ inline Tile_coord Rotate90r
 	Shape_info& info = gwin->get_info(obj);
 					// New hotspot is what used to be the
 					//   upper-right corner.
-	r.tx += info.get_3d_ytiles() - 1;
-	r.ty -= info.get_3d_xtiles();
+	r.tx += ytiles - 1;
+	r.ty -= xtiles;
 	return r;
 	}
 
@@ -134,16 +136,16 @@ inline Tile_coord Rotate180
 	(
 	Game_window *gwin,
 	Game_object *obj,
+	int xtiles, int ytiles,		// Object dimensions.
 	Tile_coord c			// Rotate around this.
 	)
 	{
 					// Rotate hot spot.
 	Tile_coord r = Rotate180(obj->get_abs_tile_coord(), c);
-	Shape_info& info = gwin->get_info(obj);
 					// New hotspot is what used to be the
 					//   upper-left corner.
-	r.tx += info.get_3d_xtiles() - 2;
-	r.ty -= info.get_3d_ytiles();
+	r.tx += xtiles - 2;
+	r.ty -= ytiles;
 	return r;
 	}
 
@@ -210,6 +212,28 @@ void Barge_object::gather
 	}
 
 /*
+ *	Finish up moving all the objects by adding them back and deleting the
+ *	saved list of positions.
+ */
+
+void Barge_object::finish_move
+	(
+	Tile_coord *positions		// New positions.  Deleted when done.
+	)
+	{
+	int cnt = objects.get_cnt();	// We'll move each object.
+	for (int i = 0; i < cnt; i++)	// Now add them back in new location.
+		{
+		Game_object *obj = get_object(i);
+		if (i < perm_count)	// Restore us as owner.
+			obj->set_owner(this);
+		obj->move(positions[i]);
+		}
+	delete [] positions;
+	}
+
+
+/*
  *	Travel towards a given tile.
  */
 
@@ -226,11 +250,63 @@ void Barge_object::travel_to_tile
 		{
 		frame_time = speed;
 		Game_window *gwin = Game_window::get_game_window();
+					// Figure new direction.
+		Tile_coord cur = get_abs_tile_coord();
+		int ndir = Get_direction4(cur.ty - dest.ty, dest.tx - cur.tx);
+		ndir /= 2;		// Convert to 0-3.
+		switch ((4 + ndir - dir)%4)
+			{
+		case 1:			// Rotate 90 degrees right.
+			turn_right();
+			break;
+		case 2:			// +++++
+		case 3:			// +++++
+		default:
+			break;
+			}
 		if (!in_queue())	// Not already in queue?
 			gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
 		}
 	else
 		frame_time = 0;		// Not moving.
+	}
+
+/*
+ *	Turn 90 degrees to the right.
+ */
+
+void Barge_object::turn_right
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Get center to rotate around.
+	Tile_coord center = get_abs_tile_coord();
+	center.tx -= xtiles/2;
+	center.ty -= ytiles/2;
+	//+++++++Need to check for blocked squares.
+					// Move the barge itself.
+	Game_object::move(Rotate90r(gwin, this, xtiles, ytiles, center));
+	int tmp = xtiles;		// Swap dims.
+	xtiles = ytiles;
+	ytiles = tmp;
+	dir = (dir + 1)%4;		// Increment direction.
+	int cnt = objects.get_cnt();	// We'll move each object.
+					// But 1st, remove & save new pos.
+	Tile_coord *positions = new Tile_coord[cnt];
+	int i;
+	for (i = 0; i < cnt; i++)
+		{
+		Game_object *obj = get_object(i);
+		Shape_info& info = gwin->get_info(obj);
+		positions[i] = Rotate90r(gwin, obj, info.get_3d_xtiles(),
+						info.get_3d_ytiles(), center);
+		obj->remove_this(1);	// Remove object from world.
+					// Set to rotated frame.
+		obj->set_frame(obj->get_rotated_frame(1));
+		obj->set_invalid();	// So it gets added back right.
+		}
+	finish_move(positions);		// Add back & del. positions.
 	}
 
 /*
@@ -283,65 +359,8 @@ void Barge_object::move
 		obj->remove_this(1);	// Remove object from world.
 		obj->set_invalid();	// So it gets added back right.
 		}
-	for (i = 0; i < cnt; i++)	// Now add them back in new location.
-		{
-		Game_object *obj = get_object(i);
-		if (i < perm_count)	// Restore us as owner.
-			obj->set_owner(this);
-					// Move each object same distance.
-//+++++Way too simplistic.  May have to change orientation, animate frame.
-		obj->move(positions[i]);
-		}
-	delete [] positions;
+	finish_move(positions);		// Add back & del. positions.
 	}
-
-#if 0	/* +++++Working on these. */
-
-/*
- *	Turn 90 degrees to the right.
- */
-
-void Barge_object::turn_right
-	(
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-					// Get center to rotate around.
-	Tile_coord center = get_abs_tile_coord();
-	center.tx -= xtiles/2;
-	center.ty += ytiles/2;
-++++++++++++++++++++++++++++++++++
-
-					// Move the barge itself.
-	Game_object::move(newtx, newty, newlift);
-					// Get deltas.
-	int dx = newtx - old.tx, dy = newty - old.ty, dz = newlift - old.tz;
-	int cnt = objects.get_cnt();	// We'll move each object.
-					// But 1st, remove & save new pos.
-	Tile_coord *positions = new Tile_coord[cnt];
-	int i;
-	for (i = 0; i < cnt; i++)
-		{
-		Game_object *obj = get_object(i);
-		int ox, oy, oz;
-		obj->get_abs_tile(ox, oy, oz);
-		positions[i] = Rotate90r(gwin, obj, center);
-		obj->remove_this(1);	// Remove object from world.
-		obj->set_invalid();	// So it gets added back right.
-		}
-	for (i = 0; i < cnt; i++)	// Now add them back in new location.
-		{
-		Game_object *obj = get_object(i);
-		if (i < perm_count)	// Restore us as owner.
-			obj->set_owner(this);
-					// Move each object same distance.
-//+++++Way too simplistic.  May have to change orientation, animate frame.
-		obj->move(positions[i]);
-		}
-	delete [] positions;
-	}
-
-#endif
 
 /*
  *	Remove an object.

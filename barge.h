@@ -47,6 +47,8 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	PathFinder *path;		// For traveling.
 	Game_object *get_object(int i)
 		{ return (Game_object *) objects.get(i); }
+					// Finish up move/rotate operation.
+	void finish_move(Tile_coord *positions);
 public:
 	Barge_object(unsigned char l, unsigned char h, 
 		unsigned int shapex, unsigned int shapey, unsigned int lft,
@@ -66,6 +68,7 @@ public:
 	void gather();			// Gather up objects on barge.
 					// Start rolling/sailing.
 	void travel_to_tile(Tile_coord dest, int speed);
+	void turn_right();		// Turn 90 degrees right.
 	void stop()			// Stop moving.
 		{ frame_time = 0; }
 					// For Time_sensitive:
