@@ -232,11 +232,17 @@ void SI_Game::play_intro()
 
 		
 		// Castle Outside
-		// No sound... yet, can't decode it :(
 
 		// Start Music
 		Audio::get_ptr()->start_music ("<STATIC>/r_sintro.xmi", 0, false);
 
+		// Thunder, note we use the buffer again later so it's not freed here
+		if (speech)
+		{
+			U7object voc_thunder("<STATIC>/intro.dat", 15);
+			buffer = (uint8 *) voc_thunder.retrieve(size);
+			Audio::get_ptr()->play (buffer+8, size-8, false);
+		}
 
 		U7object flic("<STATIC>/intro.dat", 1);
 		fli_b = flic.retrieve(flisize);
@@ -294,6 +300,12 @@ void SI_Game::play_intro()
 				for (i = 0; i < num+1; i++)
 					fli1.play(win, i, i, next);
 
+			// Thunder again, we free the buffer here 
+			if (speech && j == 5) { 
+				Audio::get_ptr()->play (buffer+8, size-8, false);
+				FORGET_ARRAY(buffer);
+			}
+
 			prev = num;
 			next += 75;
 			win->show();
@@ -339,6 +351,8 @@ void SI_Game::play_intro()
 		if (wait_delay (0))
 			throw UserBreakException();
 
+		// Do this! Prevents palette corruption
+		gwin->clear_screen(true);
 
 		// Guard walks in
 		U7object flic2("<STATIC>/intro.dat", 2);
@@ -487,6 +501,9 @@ void SI_Game::play_intro()
 
 		FORGET_ARRAY(fli_b);
 
+		// Do this! Prevents palette corruption
+		gwin->clear_screen(true);
+
 		// Scroll opens
 		U7object flic3("<STATIC>/intro.dat", 3);
 		fli_b = flic3.retrieve(flisize);
@@ -533,6 +550,8 @@ void SI_Game::play_intro()
 
 		FORGET_ARRAY(fli_b);
 
+		// Do this! Prevents palette corruption
+		gwin->clear_screen(true);
 
 		// Big G speaks
 		U7object flic4("<STATIC>/intro.dat", 4);
@@ -642,6 +661,9 @@ void SI_Game::play_intro()
 		FORGET_ARRAY(shape_buf);
 		FORGET_ARRAY(fli_b);
 		
+		// Do this! Prevents palette corruption
+		gwin->clear_screen(true);
+
 		// Tis LBs's Worst fear
 		U7object flic5("<STATIC>/intro.dat", 5);
 		fli_b = flic5.retrieve(flisize);
@@ -692,6 +714,8 @@ void SI_Game::play_intro()
 
 		FORGET_ARRAY(fli_b);
 
+		// Do this! Prevents palette corruption
+		gwin->clear_screen(true);
 
 		// Boat 1
 		U7object flic6("<STATIC>/intro.dat", 6);
@@ -710,6 +734,8 @@ void SI_Game::play_intro()
 
 		FORGET_ARRAY(fli_b);
 
+		// Do this! Prevents palette corruption
+		gwin->clear_screen(true);
 
 		// Boat 2
 		U7object flic7("<STATIC>/intro.dat", 7);
@@ -733,6 +759,8 @@ void SI_Game::play_intro()
 
 		FORGET_ARRAY(fli_b);
 
+		// Do this! Prevents palette corruption
+		gwin->clear_screen(true);
 
 		// Ultima VII Part 2
 		U7object flic8("<STATIC>/intro.dat", 8);
@@ -770,6 +798,7 @@ void SI_Game::play_intro()
 	{
 		FORGET_ARRAY(shape_buf);
 		FORGET_ARRAY(fli_b);
+		FORGET_ARRAY(buffer);
 	}
 	
 	// Fade out the palette...
