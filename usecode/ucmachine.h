@@ -97,6 +97,9 @@ public:
 	void init_conversation();
 	int get_num_faces_on_screen() const;
 
+	// intercept the next click_on_item intrinsic
+	virtual void intercept_click_on_item(Game_object *obj) = 0;
+
 	};
 
 #endif	/* INCL_USECODE */

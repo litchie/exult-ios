@@ -1352,7 +1352,7 @@ Usecode_internal::Usecode_internal
 	) : Usecode_machine(gw), cur_function(0),
 	    book(0), caller_item(0),
 	    last_created(0), user_choice(0), saved_pos(-1, -1, -1),
-	    String(0), stack(new Usecode_value[1024])
+	    String(0), stack(new Usecode_value[1024]), intercept_item(0)
 	{
 	ifstream file;                // Read in usecode.
         U7open(file, USECODE);
