@@ -70,13 +70,15 @@ void Server_init
 	(
 	)
 	{
-	listen_socket = socket(PF_LOCAL, SOCK_SEQPACKET, 0);
+	listen_socket = socket(PF_LOCAL, SOCK_STREAM, 0);
 	if (listen_socket < 0)
-		cerr << "Failed to open map-editor socket" << endl;
+		perror("Failed to open map-editor socket");
 	else 
 		{
 					// Get location of socket file.
 		string servename = get_system_path("<GAMEDAT>/exultserver");
+					// Make sure it isn't there.
+		unlink(servename.c_str());
 		struct sockaddr_un addr;
 		addr.sun_family = AF_UNIX;
 		strcpy(addr.sun_path, servename.c_str());
@@ -84,15 +86,30 @@ void Server_init
 		      sizeof(addr.sun_family) + strlen(addr.sun_path)) == -1 ||
 		    listen(listen_socket, 1) == -1)
 			{
-			perror("Bind or listen failed");
+			perror("Bind or listen on socket failed");
 			close(listen_socket);
 			listen_socket = -1;
 			}
 		else			// Set to be non-blocking.
+			{
+			cout << "Listening on socket " << listen_socket
+								<< endl;
 			fcntl(listen_socket, F_SETFL, 
 				fcntl(listen_socket, F_GETFL) | O_NONBLOCK);
+			}
 		}
 	Set_highest_fd();
+	}
+
+/*
+ *	Close the server.
+ */
+
+void Server_close
+	(
+	)
+	{
+	// unlink socket file+++++++
 	}
 
 /*
@@ -133,12 +150,14 @@ void Server_delay
 					// Wait for timeout or event.
 	if (select(highest_fd, &rfds, 0, 0, &timer) > 0)
 		{			// Something's come in.
-		if (FD_ISSET(listen_socket, &rfds)
+		if (FD_ISSET(listen_socket, &rfds))
 			{		// New client connection.
 					// For now, just one at a time.
 			if (client_socket >= 0)
 				close(client_socket);
 			client_socket = accept(listen_socket, 0, 0);
+			cout << "Accept returned client_socket = " <<
+							client_socket << endl;
 			Set_highest_fd();
 			}
 		if (FD_ISSET(client_socket, &rfds))
