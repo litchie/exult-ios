@@ -61,3 +61,7 @@
 
 \C"A young person..."
 \L- Willem Jan
+
+\C"BTW I don't stack kids anymore,"
+\C"I now put them into a queue."
+\L- Max on #exult
