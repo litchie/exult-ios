@@ -67,7 +67,7 @@
 \CPorting to Alpha
 
 
-\CRuediger Hans 
+\CRuediger Hanke
 \C<tomjoad@muenster.de>
 \CPorting to MorphOS/AmigaOS
 
