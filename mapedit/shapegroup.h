@@ -37,10 +37,15 @@ class Shape_group : std::vector<int>		// Not public on purpose.
 	{
 	std::string name;		// What this group is called.
 	Shape_group_file *file;		// Where this comes from.
+	int builtin;			// -1 if not builtin, 0-14 if
+					//  a Shape_info::Shape_class, 100-103
+					//  if Special_builtin.
 public:
 	friend class Shape_group_file;
-	Shape_group(const char *nm, Shape_group_file *f);
+	Shape_group(const char *nm, Shape_group_file *f, int built = -1);
 	~Shape_group() {  }
+	bool is_builtin() const
+		{ return builtin != -1; }
 	Shape_group_file *get_file()
 		{ return file; }
 	const char *get_name() const
@@ -54,6 +59,12 @@ public:
 	void del(int i);
 	void swap(int i);		// Swap entries i and i+1.
 	void add(int id);		// Add ID, checking for duplicate 1st.
+	enum Special_builtin {
+		ammo_group = 100,
+		armour_group,
+		monsters_group,
+		weapons_group
+		};
 	};
 
 /*
