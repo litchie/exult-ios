@@ -1447,8 +1447,11 @@ bool Game_window::init_gamedat(bool create)
 	if (create)
 		{
 		cout << "Creating 'gamedat' files."<<endl;
-		restore_gamedat(INITGAME);
-
+		if (is_system_path_defined("<PATCH>") && 
+						U7exists(PATCH_INITGAME))
+			restore_gamedat(PATCH_INITGAME);
+		else
+			restore_gamedat(INITGAME);
 		}
 	else if (!U7exists(U7NBUF_DAT) && !U7exists(NPC_DAT))
 		{
@@ -1536,6 +1539,10 @@ void Game_window::read
 	catch(...)
 	{
 	}
+	Actor *party[9];
+	int cnt = get_party(party, 1);	// Get entire party.
+	for (int i = 0; i < cnt; i++)	// Init. rings.
+		party[i]->init_readied();
 	faded_out = 0;
 	time_stopped = 0;
 	clock.set_palette();		// Set palette for time-of-day.
@@ -1606,7 +1613,9 @@ void Game_window::read_gwin
 	}
 
 /*
- *	Write out map data (IFIXxx, U7CHUNKS, U7MAP) to static.
+ *	Write out map data (IFIXxx, U7CHUNKS, U7MAP) to static, and also
+ *	save 'gamedat' to <PATCH>/initgame.dat.
+ *
  *	Note:  This is for map-editing.
  *
  *	Output:	Errors are reported.
@@ -1659,6 +1668,8 @@ void Game_window::write_map
 	if (!u7map.good())
 		throw file_write_exception(U7MAP);
 	u7map.close();
+	write();			// Write out to 'gamedat' too.
+	save_gamedat(PATCH_INITGAME, "Saved map");
 	}
 
 /*

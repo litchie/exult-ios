@@ -385,7 +385,7 @@ Actor::Actor
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
 	) : Container_game_object(), name(nm),usecode(uc), 
-	    npc_num(num), party_id(-1), shape_save(-1), 
+	    npc_num(num), face_num(num), party_id(-1), shape_save(-1), 
 	    oppressor(-1), target(0), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(true),
 	    dead(false), hit(false), combat_protected(false), alignment(0),
@@ -1574,6 +1574,7 @@ void Actor::update_from_studio
 			return;
 			}
 		npc->npc_num = gwin->add_npc(npc);
+		npc->face_num = 49;	//++++++Testing.  Add to GUI.
 		if (npc->npc_num != npc_num)
 			cerr << "New NPC was assigned a different #" << endl;
 		if (client_socket >= 0)
@@ -1994,6 +1995,22 @@ inline void Call_readied_usecode
 		}
 	}
 
+/*
+ *	Should be called after actors and usecode are initialized.
+ */
+
+void Actor::init_readied
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (spots[lfinger])
+		Call_readied_usecode(gwin, this, spots[lfinger],
+						Usecode_machine::readied);
+	if (spots[rfinger])
+		Call_readied_usecode(gwin, this, spots[rfinger],
+						Usecode_machine::readied);
+	}
 
 /*
  *	Remove an object.
