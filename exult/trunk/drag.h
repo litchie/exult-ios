@@ -57,6 +57,7 @@ public:
 	Dragging_info(int x, int y);	// Create for given mouse position.
 	~Dragging_info();
 	bool moved(int x, int y);	// Mouse moved.
+	void paint();			// Paint object being dragged.
 					// Mouse button released.
 	bool drop(int x, int y, bool moved);
 	};

@@ -212,15 +212,30 @@ bool Dragging_info::moved
 		}
 	else				// Not first time?  Restore beneath.
 		gwin->get_win()->put(save, rect.x, rect.y);
+	gwin->set_painted();
 	int deltax = x - mousex, deltay = y - mousey;
 	mousex = x;
 	mousey = y;
 					// Shift to new position.
 	rect.shift(deltax, deltay);
-					// Save background.
-	gwin->get_win()->get(save, rect.x, rect.y);
 	paintx += deltax;
 	painty += deltay;
+	if (gump && !obj)			// Dragging a gump?
+		gump->set_pos(paintx, painty);
+	gwin->add_dirty(gwin->clip_to_win(rect));
+	return (true);
+	}
+
+/*
+ *	Paint object being moved.
+ */
+
+void Dragging_info::paint
+	(
+	)
+	{
+	if (save)			// Save background.
+		gwin->get_win()->get(save, rect.x, rect.y);
 	if (obj)
 		{
 		if (obj->get_flag(Obj_flags::invisible))
@@ -228,13 +243,10 @@ bool Dragging_info::moved
 		else
 			obj->paint_shape(paintx, painty);
 		}
-	else				// Obj whole gump.
+	else if (gump)
 		{
-		gump->set_pos(paintx, painty);
 		gump->paint();
 		}
-	gwin->set_painted();
-	return (true);
 	}
 
 /*
@@ -270,6 +282,8 @@ bool Dragging_info::drop
 		return handled;
 	else if (!drop(x, y))		// Drop it.
 		put_back();		// Wasn't (all) moved.
+	obj = 0;			// Clear so we don't paint them.
+	gump = 0;
 	gwin->paint();
 	return handled;
 	}

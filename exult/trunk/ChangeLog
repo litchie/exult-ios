@@ -1,3 +1,7 @@
+2002-07-21  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* drag.cc,gamerend.cc:  Dragging_info::paint() added.
+
 2002-07-20  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mouse.cc,font.cc,etc.:  More things kind-of work in OpenGL
