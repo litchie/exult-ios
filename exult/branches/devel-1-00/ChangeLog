@@ -1,5 +1,6 @@
 2002-06-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ucxt/src/ucfunc.cc: fixed compile error if HAVE_SSTREAM defined
+	* data/bg/*, gumps/Paperdoll_gump_info.cc: new art by Oblivious
 
 2002-06-19  Jeff Freedman  <jeff@amy.nerble.net>
 
