@@ -1549,13 +1549,16 @@ int Main_actor::step
 					// In a new chunk?
 	if (olist != nlist)
 		switched_chunks(olist, nlist);
-
-	if (gwin->set_above_main_actor (nlist->is_roof (tx, ty, new_lift)))
+	int inside = nlist->is_roof (tx, ty, new_lift);
+	if (gwin->set_above_main_actor (inside))
 		{
 		gwin->set_in_dungeon(nlist->has_dungeon() &&
-				nlist->in_dungeon(tx, ty));
+					nlist->in_dungeon(tx, ty));
 		gwin->set_all_dirty();
 		}
+	else if (inside && gwin->set_in_dungeon(nlist->has_dungeon() &&
+				nlist->in_dungeon(tx, ty)))
+		gwin->set_all_dirty();
 					// Near an egg?  (Do this last, since
 					//   it may teleport.)
 	nlist->activate_eggs(this, t.tx, t.ty, new_lift, 
