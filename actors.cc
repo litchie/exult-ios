@@ -1524,32 +1524,38 @@ void Main_actor::die
 	}
 
 /*
- *	Get the shapenum based on skin color and sex
+ *	Get the shapenum based on skin color, sex, naked flag ans  petra flag
  */
-int Main_actor::get_shapenum() const
+int Actor::get_shapenum() const
 {
-	if (get_siflag (Actor::petra))
+	if (get_npc_num() == 0)
 	{
-		return 658;
-	}
-	else if (get_skin_color() == 0) // WH
-	{
-		return 1028+get_type_flag(Actor::tf_sex);
-	}
-	else if (get_skin_color() == 1) // BN
-	{
-		return 1026+get_type_flag(Actor::tf_sex);
-	}
-	else if (get_skin_color() == 2) // BK
-	{
-		return 1024+get_type_flag(Actor::tf_sex);
-	}
-	else if (get_type_flag(Actor::tf_sex))
-	{
-		return 989;
+		if (get_siflag (Actor::petra))
+		{
+			return 658;
+		}
+		else if (get_skin_color() == 0) // WH
+		{
+			return 1028+get_type_flag(Actor::tf_sex)+6*get_siflag(Actor::naked);
+		}
+		else if (get_skin_color() == 1) // BN
+		{
+			return 1026+get_type_flag(Actor::tf_sex)+6*get_siflag(Actor::naked);
+		}
+		else if (get_skin_color() == 2) // BK
+		{
+			return 1024+get_type_flag(Actor::tf_sex)+6*get_siflag(Actor::naked);
+		}
+		else if (get_type_flag(Actor::tf_sex))
+		{
+			return 989;
+		}
+
+		return 721;//ShapeID::get_shapenum();
 	}
 
-	return 721;//ShapeID::get_shapenum();
+	return ShapeID::get_shapenum();
+
 }
 
 /*

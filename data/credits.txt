@@ -1,26 +1,90 @@
 \CEXULT ACKNOWLEDGEMENTS
 
-\CCoding Team
 
-\CJeff S. Freedman <jeff@simutech.com>|\RThe man who started it all: from map browser|\Rto usecode interpreter, animation & combat.|\RHe's the leader !
 
-\CDancer Vesperman <dancer@zeor.simegen.com>|\RMusic, sounds, XML configuration, Usecode stuff...|\Rwhat more could you possibly ask for ?
+\CTHE CODING TEAM
 
-\CWillem Jan Palenstijn <palenstijn@wanadoo.nl>|\RPorting to obscure OSs (Windows) and less|\Robscure ones (BeOS)
 
-\CTristan Tarrant <nadir@users.sourceforge.net>|\RIntro, ending, menus, autoconf/automake, makes|\Rsure that everyone follows CVS conventions...
+\CJeff S. Freedman <jeff@simutech.com>
+\CThe man who started it all: from map browser
+\Cto usecode interpreter, animation & combat.
+\CHe's the leader !
 
-\CMax Horn <max@quendi.de>|\RPorting to MacOS
 
-\CCoder Infidel <coder_infidel@hotmail.com>|\RHunter of lost info in U7's data files,|\Rweapon animations, bits of combat.
+\CDancer Vesperman <dancer@zeor.simegen.com>
+\CMusic, sounds, XML configuration, Usecode stuff...
+\Cwhat more could you possibly ask for ?
 
-\COther Contributors
 
-\CGary Thompson|\CMatthias Ho|\CMichael A. Cornelius|\CTroy Forrest|\CByun DongHo|\CMaxim Shatskih|\CJakob Shonberg|\CWouter Dijkslag|\COlivier Marcoux
+\CWillem Jan Palenstijn <palenstijn@wanadoo.nl>
+\CPorting to obscure OSs (Windows) and less
+\Cobscure ones (BeOS)
 
-\CThanks
 
-\CSourceForge & VA Linux|\CFor making it easy to code together.
-\CJackchaos.com|\CFor hosting the Exult message board
-\CTravis Howell|\CFor making daily Windows binaries
-\CSam Lantinga|\CAuthor of SDL, for making porting easier
+\CTristan Tarrant <nadir@users.sourceforge.net>
+\CIntro, ending, menus, autoconf/automake, makes
+\Csure that everyone follows CVS conventions...
+
+
+\CMax Horn <max@quendi.de>
+\CPorting to MacOS
+
+
+\CCoder Infidel <coder_infidel@hotmail.com>
+\CHunter of lost info in U7's data files,
+\Cweapon animations, bits of combat.
+
+
+\CRyan "Colourless" Nunn <triforce@merlin.net.au>
+\CXMIDI meister, endings, SI intro, roof removalist,
+\CNPC flag IO, Avatar identity
+
+
+
+\COTHER CONTRIBUTORS
+
+
+\CGary Thompson
+
+\CMatthias Ho
+
+\CMichael A. Cornelius
+
+\CTroy Forrest
+
+\CByun DongHo
+
+\CMaxim Shatskih
+
+\CJakob Shonberg
+
+\CWouter Dijkslag
+
+\COlivier Marcoux
+
+
+
+\CTHANKS
+
+
+\CSourceForge & VA Linux
+\CFor making it easy to code together.
+
+\CJackchaos.com
+\CFor hosting the Exult message board
+
+\CTravis Howell
+\CFor making daily Windows binaries
+
+\CSam Lantinga
+\CAuthor of SDL, for making porting easier
+
+
+\Cand...
+
+
+\CORIGIN Systems Inc,
+\CRichard Garriot,
+\CWarren Spector
+\Cand the Ultima VII & Serpent Isle teams
+\Cfor making these great games in the first place

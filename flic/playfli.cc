@@ -52,6 +52,7 @@ void playfli::initfli()
     fli_depth = fli_data->read2();
     fli_flags = fli_data->read2();
     fli_speed = fli_data->read2();
+    fli_buf =  NULL; 
     fli_data->skip(110);
     streampos = streamstart = fli_data->getPos();
     frame = 0;
@@ -89,6 +90,8 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
     int xoffset=(win->get_width()-fli_width)/2;
     int yoffset=(win->get_height()-fli_height)/2;
     bool dont_show = false;
+
+    if (!fli_buf && win) fli_buf = win->create_buffer (fli_width, fli_height);
 
     // Set up last frame
     if (first_frame == last_frame) dont_show = true;
@@ -152,7 +155,7 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 			  for (int line = 0; line < change_lines; line++)
 			    {
 				int packets = fli_data->read1();
-				int pixpos = xoffset;
+				int pixpos = 0;
 				for (int p_count = 0; p_count < packets;
 				     p_count++)
 				  {
@@ -163,12 +166,12 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 					{
 					    unsigned char data = fli_data->read1();
 					    memset(pixbuf, data, -size_count);
-					    win->copy8(pixbuf,-size_count,1,pixpos,skip_lines+line+yoffset);
+					    if (fli_buf) fli_buf->copy8(pixbuf,-size_count,1,pixpos,skip_lines+line);
 					    pixpos -= size_count;
 					    
 				        } else {
 					    fli_data->read((char*)pixbuf, size_count);
-					    win->copy8(pixbuf,size_count,1,pixpos, skip_lines+line+yoffset);
+					    if (fli_buf) fli_buf->copy8(pixbuf,size_count,1,pixpos, skip_lines+line);
 					    pixpos += size_count;
 					}
 				  }
@@ -197,9 +200,9 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 					pixpos -= size_count;
 				    }
 			      }
-				if(win && frame >= first_frame)
-                                   win->copy8(pixbuf,fli_width,1,xoffset,line+yoffset);
+                              if (fli_buf) fli_buf->copy8(pixbuf,fli_width,1,0,line);
 			}
+
 		      break;
 		  case 16:
 		      fli_data->skip(fli_width * fli_height);
@@ -215,8 +218,10 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 	  if (frame < first_frame)
 		  continue;
 
-	  while (SDL_GetTicks() < ticks)
-	  	;
+          if(win && fli_buf) win->put (fli_buf, xoffset, yoffset);
+
+	  while (SDL_GetTicks() < ticks);
+	  
 	  ticks += fli_speed*10;
 
 	  if(win && !dont_show)
@@ -229,5 +234,6 @@ int playfli::play(Image_window *win, int first_frame, int last_frame, unsigned l
 
 playfli::~playfli()
 {
+	if (fli_buf) delete fli_buf;
 	delete fli_data;
 }

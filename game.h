@@ -44,6 +44,7 @@ private:
 protected:
 	int topx, topy, centerx, centery;
 	Vga_file menushapes;
+	bool	jive;
 public:
 	Game_window *gwin;
 	Image_window8 *win;
@@ -93,6 +94,8 @@ public:
 	void scroll_text(vector<char *> *text);
 	int center_text(int font, const char *s, int x, int y);
 	void show_menu();
+	void set_jive () {jive = true;}
+	void clear_jive () {jive = false;}
 	};
 
 class BG_Game: public Game

@@ -39,8 +39,17 @@ FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o
 # unused: test.o
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS)
 
-$(EXEC) : Makefile $(OBJS)
+$(EXEC) : Makefile data/credits.h data/quotes.h $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
+
+data/credits.h: data/credits.txt tools/txt2cc.exe
+	tools/txt2cc data/credits.txt data/credits.h get_exult_credits
+
+data/quotes.h: data/quotes.txt tools/txt2cc.exe
+	tools/txt2cc data/quotes.txt data/quotes.h get_exult_quotes
+
+tools/txt2cc.exe : tools/txt2cc.o $(FILE_OBJS) utils.o 
+	$(CXX) $(LFLAGS) -o tools/txt2cc.exe tools/txt2cc.o utils.o $(FILE_OBJS) $(LIBS)
 
 Makefile: Makefile.be
 	cp Makefile.be Makefile
