@@ -375,7 +375,7 @@ void Game_window::drop
 		{
 		if (!dragging_gump)	// Do eggs where it came from.
 			get_chunk(oldcx, oldcy)->activate_eggs(dragging,
-			    oldtx, oldty, dragging->get_lift(), oldtx, oldty);
+			    oldtx, oldty, oldtz, oldtx, oldty);
 		else if (dragging_readied_index >= 0)
 					// Do 'unreadied' usecode.
 			dragging_gump->get_container()->call_readied_usecode(
