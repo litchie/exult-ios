@@ -240,10 +240,6 @@
 	  <name>browser_box</name>
 	  <homogeneous>False</homogeneous>
 	  <spacing>0</spacing>
-
-	  <widget>
-	    <class>Placeholder</class>
-	  </widget>
 	</widget>
       </widget>
     </widget>
