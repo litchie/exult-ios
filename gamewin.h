@@ -615,6 +615,7 @@ public:
 					// Update NPCs' schedules.
 	void schedule_npcs(int hour3, int backwards = 0);
 	void theft();			// Handle thievery.
+	void attack_avatar(int num_guards = 0);
 	void get_focus();		// Get/lose focus.
 	void lose_focus();
 	inline bool have_focus() const
