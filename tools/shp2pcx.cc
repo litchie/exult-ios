@@ -22,9 +22,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "SDL/SDL_byteorder.h"
 #include <iostream>
-#include <cstdio>
-#include <cstring>
-#include <string>
+
+#ifndef ALPHA_LINUX_CXX
+#  include <cstdio>
+#  include <cstring>
+#  include <string>
+#endif
 
 #include "exult_types.h"
 
