@@ -217,6 +217,12 @@ se		return SE;
 			yylval.strval[strlen(yylval.strval) - 1] = 0;
 			return STRING_LITERAL;
 			}
+\"[^"]*\"\*		{
+					// Remove ending quote and asterisk.
+			yylval.strval = strdup(yytext + 1);
+			yylval.strval[strlen(yylval.strval) - 2] = 0;
+			return STRING_PREFIX;
+			}
 [0-9]+			{
 			yylval.intval = atoi(yytext);
 			return INT_LITERAL;
