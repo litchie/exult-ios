@@ -123,10 +123,18 @@ public:
 	void	set_audio_enabled(bool ena);
 	bool	can_sfx(const std::string &game) const;
 
-	ProducerConsumerBuf	*Create_Audio_Stream(uint32 id) { return !mixer?0:mixer->Create_Audio_Stream(id); }
-	void    Destroy_Audio_Stream(uint32 id) { if(mixer) mixer->Destroy_Audio_Stream(id); }
-	bool	is_playing(uint32 id) { return !mixer?0:mixer->is_playing(id); }
-	bool	is_track_playing(int num) { return midi->is_track_playing(num); }
+	ProducerConsumerBuf	*Create_Audio_Stream(uint32 id) {
+		return !mixer?0:mixer->Create_Audio_Stream(id);
+	}
+	void    Destroy_Audio_Stream(uint32 id) {
+		if(mixer) mixer->Destroy_Audio_Stream(id);
+	}
+	bool	is_playing(uint32 id) {
+		return !mixer?0:mixer->is_playing(id);
+	}
+	bool	is_track_playing(int num) { 
+		return midi && midi->is_track_playing(num);
+	}
 
 //	static	const	unsigned int	ringsize=3000;
 //	static	const	int	samplerate=11025;
