@@ -58,8 +58,8 @@ void Titles::play_intro()
 		gwin->paint_shape(topx,topy,shapes.get_shape(0x11,0));
 		char *txt_msg[] = { "& Jeff Freedman, Dancer Vesperman,", 
 							"Willem Jan Palenstijn, Tristan Tarrant,", 
-							"Max Horn",
-							"Driven by the Exult game engine" };
+							"Max Horn, Coder Infidel",
+							"Driven by the Exult game engine V" VERSION };
 		for(int i=0; i<3; i++) {
 			gwin->paint_text(0, txt_msg[i], centerx-gwin->get_text_width(0, txt_msg[i])/2, centery+50+15*i);
 		}
