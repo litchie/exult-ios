@@ -189,46 +189,19 @@ public:
 	};
 
 /*
- *	A spot on an Actor gump:
- */
-class Actor_gump_spot
-	{
-	friend class Actor_gump_object;
-	Game_object *obj;		// Object that is here.
-	Actor_gump_spot() : obj(0)
-		{  }
-	};
-
-/*
  *	A rectangular area showing a character and his/her possessions:
  */
 class Actor_gump_object : public Gump_object
 	{
 	Heart_gump_button *heart_button;// For bringing up stats.
 	Disk_gump_button *disk_button;	// For bringing up 'save' box.
-//+++++++Move this info to Actor!!
-	Actor_gump_spot spots[12];	// Where things can go.
-	static short coords[24];	// Coords. of where to draw things.
+	static short coords[24];	// Coords. of where to draw things,
+					//   indexed by spot # (0-11).
 	static int spotx(int i) { return coords[2*i]; }
 	static int spoty(int i) { return coords[2*i + 1]; }
-	enum Spots {			// Index of each spot, starting at
-					//   upper, rt., going clkwise.
-		head = 0,
-		chest = 1,
-		belt = 2,
-		lhand = 3,
-		lfinger = 4,
-		legs = 5,
-		feet = 6,
-		rfinger = 7,
-		rhand = 8,
-		arms = 9,
-		neck = 10,
-		back = 11
-		};
 					// Find index of closest spot.
 	int find_closest(int mx, int my, int only_empty = 0);
-	void add_to_spot(Game_object *obj, int index);
+	void set_to_spot(Game_object *obj, int index);
 	static short diskx, disky;	// Where to show 'diskette' button.
 	static short heartx, hearty;	// Where to show 'stats' button.
 public:
@@ -243,7 +216,6 @@ public:
 	virtual Gump_button *on_button(Game_window *gwin, int mx, int my);
 					// Add object.
 	virtual int add(Game_object *obj, int mx = -1, int my = -1);
-	virtual void remove(Game_object *obj);
 					// Paint it and its contents.
 	virtual void paint(Game_window *gwin);
 	};

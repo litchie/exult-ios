@@ -30,6 +30,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "imagewin.h"
 #include "usecode.h"
 #include "actions.h"
+#include "ready.h"
 
 /*
  *	Create character.
@@ -42,12 +43,14 @@ Actor::Actor
 	int num,			// NPC # from npc.dat.
 	int uc				// Usecode #.
 	) : Sprite(shapenum), npc_num(num), party_id(-1),
-	    usecode(uc), flags(0), action(0), usecode_dir(0)
+	    usecode(uc), flags(0), action(0), usecode_dir(0), two_handed(0)
 	{
 	set_default_frames();
 	name = nm == 0 ? 0 : strdup(nm);
 	for (int i = 0; i < sizeof(properties)/sizeof(properties[0]); i++)
 		properties[i] = 0;
+	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+		spots[i] = 0;
 	}
 
 /*
@@ -133,6 +136,73 @@ void Actor::walk_to_point
 	if (!is_walking())
 		set_action(new Walking_actor_action());
 	start(destx, desty, speed, 0);
+	}
+
+/*
+ *	Find index of spot where an object is readied.
+ *
+ *	Output:	Index, or -1 if not found.
+ */
+
+int Actor::find_spot
+	(
+	Game_object *obj
+	)
+	{
+	for (int i = 0; i < sizeof(spots)/sizeof(spots[0]); i++)
+		if (spots[i] == obj)
+			return (i);
+	return (-1);
+	}
+
+/*
+ *	Find the best spot where an item may be readied.
+ *
+ *	Output:	Index, or -1 if none found.
+ */
+
+int Actor::find_best_spot
+	(
+	Game_object *obj
+	)
+	{
+	Shape_info& info = 
+		Game_window::get_game_window()->get_shapes().get_info(
+							obj->get_shapenum());
+	if (info.get_shape_class() == Shape_info::container)
+		return !spots[back] ? back : free_hand();
+	Ready_type type = (Ready_type) info.get_ready_type();
+	switch (type)
+		{
+	case spell:
+	case other_spell:
+	case one_handed_weapon:
+	case tongs:
+		return free_hand();
+	case neck_armor:
+		return !spots[neck] ? neck : free_hand();
+	case torso_armor:
+		return !spots[torso] ? torso : free_hand();
+	case ring:
+		return !spots[lfinger] ? lfinger : 
+			(!spots[rfinger] ? rfinger : free_hand());
+	case ammunition:		// ++++++++Check U7.
+		return free_hand();
+	case head_armor:
+		return !spots[head] ? head : free_hand();
+	case leg_armor:
+		return !spots[legs] ? legs : free_hand();
+	case foot_armor:
+		return !spots[feet] ? feet : free_hand();
+	case two_handed_weapon:
+		return (!spots[lhand] && !spots[rhand]) ? lrhand : -1;
+	case gloves:
+		return !spots[arms] ? arms : free_hand();
+					// ++++++What about belt?
+	case other:
+	default:
+		return free_hand();
+		}
 	}
 
 /*
@@ -223,6 +293,95 @@ int Actor::get_flag
 	{
 	return (flag >= 0 && flag < 32) ? (flags & ((unsigned long) 1 << flag))
 			!= 0 : 0;
+	}
+
+/*
+ *	Remove an object.
+ */
+
+void Actor::remove
+	(
+	Game_object *obj
+	)
+	{
+	Container_game_object::remove(obj);
+	int index = find_spot(obj);	// Remove from spot.
+	if (index >= 0)
+		{
+		spots[index] = 0;
+		if (index == rhand || index == lhand)
+			two_handed = 0;
+		}
+	}
+
+/*
+ *	Add an object.
+ *
+ *	Output:	1, meaning object is completely contained in this,
+ *		0 if not enough space.
+ */
+
+int Actor::add
+	(
+	Game_object *obj,
+	int dont_check			// 1 to skip volume check.
+	)
+	{
+	int index = find_best_spot(obj);// Where should it go?
+	if (index < 0)			// No free spot?  Look for a bag.
+		{
+		if (spots[back] && spots[back]->drop(obj))
+			return (1);
+		if (spots[lhand] && spots[lhand]->drop(obj))
+			return (1);
+		if (spots[rhand] && spots[rhand]->drop(obj))
+			return (1);
+		return (0);
+		}
+					// Add to ourself.
+	if (!Container_game_object::add(obj, dont_check))
+		return (0);
+	if (index == lrhand)		// Two-handed?
+		{
+		two_handed = 1;
+		index = rhand;
+		}
+	spots[index] = obj;		// Store in correct spot.
+	return (1);
+	}
+
+/*
+ *	Add to given spot.
+ *
+ *	Output:	1 if successful, else 0.
+ */
+
+int Actor::add_readied
+	(
+	Game_object *obj,
+	int index			// Spot #.
+	)
+	{
+	if (index < 0 || index >= sizeof(spots)/sizeof(spots[0]))
+		return (0);		// Out of range.
+	if (spots[index])		// Already something there?
+					// Try to drop into it.
+		return (spots[index]->drop(obj));
+					// Get best place it should go.
+	int best_index = find_best_spot(obj);
+	if (best_index == -1)		// No place?
+		return (0);
+	if (index == best_index || (!two_handed &&
+			(index == lhand || index == rhand)))
+		{			// Okay.
+		if (!Container_game_object::add(obj))
+			return (0);	// No room, or too heavy.
+		spots[index] = obj;
+		if (best_index == lrhand)
+			two_handed = 1;	// Must be a two-handed weapon.
+		return (1);
+		}
+	return (0);
 	}
 
 /*
