@@ -49,7 +49,8 @@ using std::cout;
 using std::endl;
 
 Gump_manager::Gump_manager()
-	: open_gumps(0), non_persistent_count(0), modal_gump_count(0), right_click_close(true), dont_pause_game(false)
+	: open_gumps(0), non_persistent_count(0), modal_gump_count(0), 
+	  right_click_close(true), dont_pause_game(false), kbd_focus(0)
 {
 	std::string str;
 	config->value("config/gameplay/right_click_closes_gumps", str, "yes");
@@ -149,6 +150,7 @@ void Gump_manager::add_gump(Gump *gump)
 {
 	Gump_list *g = new Gump_list(gump);
 
+	kbd_focus = gump->can_handle_kbd() ? gump : 0;
 	if (!open_gumps)
 		open_gumps = g;		// First one.
 	else
@@ -181,6 +183,8 @@ bool Gump_manager::close_gump(Gump *gump)
 
 bool Gump_manager::remove_gump(Gump *gump)
 {
+	if (gump == kbd_focus)
+		kbd_focus = 0;
 	if (open_gumps)
 	{
 		if (open_gumps->gump == gump)
@@ -250,13 +254,14 @@ void Gump_manager::add_gump
 			break;
 
 	if (gmp)			// Found it?
-	{			// Move it to end.
+	{				// Move it to end.
+		Gump *gump = gmp->gump;
 		if (gmp->next)
 		{
-			Gump *gump = gmp->gump;
 			remove_gump(gump);
 			add_gump(gump);
-		}
+		} else
+			kbd_focus = gump->can_handle_kbd() ? gump : 0;
 		gwin->paint();
 		return;
 	}
@@ -346,6 +351,7 @@ void Gump_manager::close_all_gumps
 			prev = gump;
 	}
 	non_persistent_count = 0;
+	kbd_focus = 0;
 	gwin->get_npc_prox()->wait(4);		// Delay "barking" for 4 secs.
 	if (removed) gwin->paint();
 }
@@ -381,6 +387,13 @@ bool Gump_manager::double_clicked
 
 	return false;
 }
+
+/*
+ *	Send kbd. event to gump that has focus.
+ *	Output:	true if handled here.
+ */
+bool Gump_manager::handle_kbd_event(void *ev)
+	{ return kbd_focus ? kbd_focus->handle_kbd_event(ev) : false; }
 
 /*
  *	Update the gumps

@@ -45,12 +45,14 @@ protected:
 	Rectangle object_area;		// Area to paint objects in, rel. to
 					// Where the 'checkmark' goes.
 	Checkmark_button *check_button;
+	bool handles_kbd;		// Kbd can be handled by gump.
 	void set_object_area(Rectangle area, int checkx = 8, int checky = 64);
 public:
 	Gump(Container_game_object *cont, int initx, int inity, int shnum,
-								ShapeFile shfile = SF_GUMPS_VGA);
+					ShapeFile shfile = SF_GUMPS_VGA);
 					// Create centered.
-	Gump(Container_game_object *cont, int shnum, ShapeFile shfile = SF_GUMPS_VGA);
+	Gump(Container_game_object *cont, int shnum, 
+					ShapeFile shfile = SF_GUMPS_VGA);
 	virtual ~Gump();
 	int get_x()			// Get coords.
 		{ return x; }
@@ -66,6 +68,8 @@ public:
 		{ return container; }
 	virtual Container_game_object *find_actor(int mx, int my)
 		{ return 0; }
+	bool can_handle_kbd() const
+		{ return handles_kbd; }
 	inline Container_game_object *get_cont_or_actor(int mx, int my)
 	{
 		Container_game_object *ret = find_actor(mx, my);
@@ -103,7 +107,8 @@ public:
 
 	virtual bool has_point(int x, int y);
 	virtual Rectangle get_rect();
-
+	virtual bool handle_kbd_event(void *ev)
+		{ return false; }
 };
 
 /*

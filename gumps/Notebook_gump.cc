@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "exult_flx.h"
 #include "game.h"
 #include "gamewin.h"
+#include "SDL_events.h"
 
 vector<One_note *> Notebook_gump::notes;
 bool Notebook_gump::initialized = false;	// Set when read in.
@@ -111,6 +112,7 @@ Notebook_gump::Notebook_gump
 	(
 	) : Gump(0, EXULT_FLX_NOTEBOOK_SHP, SF_EXULT_FLX), curpage(0)
 	{
+	handles_kbd = true;
 	cursor.offset = 0;
 					// (Obj. area doesn't matter.)
 	set_object_area(Rectangle(36, 10, 100, 100), 7, 40);
@@ -316,3 +318,21 @@ void Notebook_gump::paint
 	page_info[nxt].notenum = curnote;
 	page_info[nxt].offset = offset;
 }
+
+/*
+ *	Handle keystroke.
+ */
+bool Notebook_gump::handle_kbd_event
+	(
+	void *vev
+	)
+	{
+	SDL_Event& ev = *(SDL_Event *)vev;
+	int chr = ev.key.keysym.sym, uchr = ev.key.keysym.unicode;
+
+	if (ev.type != SDL_KEYDOWN && ev.type != SDL_KEYUP)
+		return false;
+	// ++++++Finish.
+	std::cout << "Notebook chr: " << chr << std::endl;
+	return true;
+	}
