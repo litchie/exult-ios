@@ -397,7 +397,7 @@ void Kid_games_schedule::now_what
 	else				// No more kids?  Search.
 		{
 		Vector vec;
-		int cnt = npc->find_nearby(vec, -359, 16, 0);
+		int cnt = npc->find_nearby(vec, -359, 16, 8);
 		for (int i = 0; i < cnt; i++)
 			{
 			Actor *act = (Actor *) vec.get(i);
@@ -594,7 +594,7 @@ void Sleep_schedule::ending
 		int frnum = bed->get_framenum();
 		Vector occ;		// Unless there's another occupant.
 		if (frnum >= 4 && frnum <= 16 && !(frnum%2) &&
-				bed->find_nearby(occ, -359, 0, 0) < 2)
+				bed->find_nearby(occ, -359, 0, 8) < 2)
 			bed->set_frame(frnum - 1);
 		}
 	if (floorloc.tx >= 0)		// Get back on floor.
@@ -719,7 +719,7 @@ void Waiter_schedule::get_customer
 	if (!customer)			// Got to search?
 		{
 		Vector vec;		// Look within 32 tiles;
-		int cnt = npc->find_nearby(vec, -359, 32, 0);
+		int cnt = npc->find_nearby(vec, -359, 32, 8);
 		for (int i = 0; i < cnt; i++)
 			{		// Filter them.
 			Actor *npc = (Actor *) vec.get(i);
