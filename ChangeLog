@@ -1,6 +1,9 @@
 2004-01-17  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* files/utils.cc: make sure path_map contains no invalid/empty entries
 	* audio/Audio.cc: use Mix_GetError after Mix_OpenAudio
+	* fmopldrv.cc: don't crash if u7voice.flx not found
+	* exult.cc: always load BG/SI paths
+	* shapeid.cc: use SERPENTISLE_STATIC instead of SERPENT_STATIC
 
 2004-01-10    <jeff@mini.nerble.net>
 

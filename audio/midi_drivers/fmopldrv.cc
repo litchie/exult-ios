@@ -1,7 +1,7 @@
 /* 
  * Copyright (C) 2001  Ludvig Strigeus
  * Copyright (C) 2001/2002 The ScummVM project
- * Copyright (C) 2002 The Exult Team
+ * Copyright (C) 2002-2004 The Exult Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopldrv.cc,v 1.4 2003/07/05 01:51:55 jsf Exp $
+ * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/Attic/fmopldrv.cc,v 1.5 2004/01/17 15:08:04 wjpalenstijn Exp $
  */
 
 /*
@@ -861,7 +861,11 @@ void OplDriver::LoadMT32Bank(bool force_xmidi)
 	LoadXMIDIBank("<SOUND>/music.flx");
 #else
 	if (GAME_BG && !force_xmidi) {
-		LoadU7VBank("<STATIC>/u7voice.flx");
+		const char* u7vfn = "<STATIC>/u7voice.flx";
+		if (!U7exists(u7vfn)) {
+			u7vfn = "<BLACKGATE_STATIC>/u7voice.flx";
+		}
+		LoadU7VBank(u7vfn);
 	}
 	else {
 		LoadXMIDIBank("<STATIC>/xmidi.ad");
@@ -887,7 +891,8 @@ void OplDriver::LoadXMIDIBank(const char *fn)
 	FILE *xmidi_ad = U7open (fn, "rb");
 
 	if (!xmidi_ad) {
-		std::cerr << "Couldn't open " << fn << std::endl;
+		std::cerr << "Warning: couldn't open " << get_system_path(fn)
+				  << std::endl;
 		return;
 	}
 
@@ -1005,7 +1010,15 @@ void OplDriver::LoadU7VBank(const char *fn)
 {
 #ifndef PENTAGRAM
 
-	Flex *f = new Flex(fn);
+	Flex *f;
+	try {
+		f = new Flex(fn);
+	}
+	catch(file_open_exception &) {
+		std::cerr << "Warning: couldn't open " << get_system_path(fn)
+				  << std::endl;
+		return;
+	}
 
 	COUT ("Reading " << fn);
 	std::size_t size;

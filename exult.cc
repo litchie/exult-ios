@@ -172,6 +172,8 @@ static void Drop_dragged_combo(int cnt, U7_combo_data *combo,
 static void BuildGameMap();
 static void Handle_events();
 static void Handle_event(SDL_Event& event);
+static void get_game_paths(const string &gametitle);
+
 
 
 /*
@@ -432,11 +434,8 @@ int exult_main(const char *runpath)
 		vs.push_back(s);
 	}
 
-	// This is for Serpent Isle Paperdolls in Black Gate
-	string	serp_static;
-	config->value("config/disk/game/serpentisle/path",serp_static,".");
-	serp_static += "/static";
-	add_system_path("<SERPENT_STATIC>", serp_static.c_str());
+	get_game_paths("blackgate");
+	get_game_paths("serpentisle");
 
 	// Enable tracing of intrinsics?
 	config->value("config/debug/trace/intrinsics",intrinsic_trace);
@@ -497,7 +496,7 @@ int exult_main(const char *runpath)
  *	per-game system_path entries, which are then used later once the
  *	game is selected.
  */
-void get_game_paths(const string &gametitle)
+static void get_game_paths(const string &gametitle)
 {
 	std::string data_directory, static_dir, gamedat_dir, savegame_dir,
 		default_dir, system_path_tag(to_uppercase(gametitle)),
@@ -651,15 +650,11 @@ static void Init
 	// Figure out all the games' paths, before we store them.  That
 	// way, we don't have to recalculate them if we come back to the
 	// main menu and make another selection.
-	if (arg_gamename == "default") {
-		// We're going to the menu, so just load the two default
-		// games.
-		get_game_paths("blackgate");
-		get_game_paths("serpentisle");
-	} else
+	if (arg_gamename != "default") {
 		// The user gave us a game title, so load that one's
 		// paths.
 		get_game_paths(arg_gamename);
+	}
 
 	store_system_paths();
 
