@@ -526,7 +526,7 @@ void Chunk_object_list::add_dependencies
 	)
 	{
 	Game_object *obj;		// Figure dependencies.
-	Nonflat_object_iterator next(objects, first_nonflat);
+	Nonflat_object_iterator next(this);
 	while ((obj = next.get_next()) != 0)
 		{
 		//cout << "Here " << __LINE__ << " " << obj << endl;
