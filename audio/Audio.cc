@@ -384,3 +384,12 @@ void	Audio::build_speech_vector(void)
 	speech_tracks=AccessFlexFile(U7SPEECH);
 }
 
+void	Audio::set_external_signal(int fh)
+{
+	mixer->set_auxilliary_audio(fh);
+}
+
+void	Audio::terminate_external_signal(void)
+{
+	mixer->set_auxilliary_audio(-1);
+}

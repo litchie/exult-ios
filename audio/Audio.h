@@ -56,6 +56,8 @@ public:
 	void	start_music(int num,int repetition);
 	void	start_speech(int num,bool wait=false);
 	void	start_speech(Flex *f,int num,bool wait=false);
+	void	set_external_signal(int);
+	void	terminate_external_signal(void);
 
 	static	const	unsigned int	ringsize=3000;
 //	static	const	int	samplerate=11025;
