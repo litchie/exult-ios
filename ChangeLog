@@ -1,3 +1,8 @@
+2002-02-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* mapedit/paledit.*,etc: Import/export palettes (in text format).
+	Save palette file in 'patch'.
+
 2002-02-10  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* files/Flex.*,gamedat.cc,mapedit/shapegroup.cc:  Flex_writer

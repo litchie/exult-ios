@@ -38,13 +38,14 @@ class U7object;
  */
 class Palette_edit: public Object_browser
 	{
-	char *file;			// Full filename.
+	char *basename;			// Base filename.
 	guchar *image;			// Holds data to render.
 	int width, height;		// Dimensions of image.
 	GtkWidget *draw;		// GTK draw area to display them in.
 	GdkGC *drawgc;			// For drawing in 'draw'.
 	vector<GdkRgbCmap*> palettes;	// The palettes to display.
 	int cur_pal;			// Index of current palette.
+	bool modified;
 	GtkColorSelectionDialog *colorsel;// Open color selector.
 	GtkWidget *sbar;		// Status bar.
 	GtkAdjustment *palnum_adj;	// Spin btn. for palette #.
@@ -67,11 +68,14 @@ class Palette_edit: public Object_browser
 	GtkWidget *create_controls();	// Controls at bottom of browser.
 	void setup();			// Setup box.
 public:
-	Palette_edit(const char *fullname);
+	Palette_edit(const char *bname);
 	~Palette_edit();
 	void show_palette(int palnum);	// Show desired palette.
 					// Turn off selection.
 	void unselect(bool need_render = true);
+					// About to close this browser.
+	virtual bool closing(bool can_cancel = false);
+	void save();			// Write them out.
 					// Configure when created/resized.
 	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
 							gpointer data);

@@ -32,6 +32,11 @@ void Object_browser::end_terrain_editing()
 {
 }
 
+bool Object_browser::closing(bool can_cancel)
+{
+	return true;			// Default:  Okay to close.
+}
+
 GtkWidget *Object_browser::get_widget() 
 {
 	return widget;
