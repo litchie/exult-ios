@@ -308,8 +308,10 @@ public:
 		}
 	~A_star_queue()
 		{
+#if 0	/* +++++Should work, but hangs on Linux. */
 		for(Lookup_set::iterator X = lookup.begin(); X != lookup.end(); ++X)
 			delete *X;
+#endif
 		lookup.clear();		// Remove all nodes.
 		}
 	void add_back(Search_node *nd)	// Add an existing node back to 'open'.

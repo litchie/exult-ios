@@ -1,3 +1,11 @@
+2001-02-08  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Release 0.91Alpha2!
+	* Commented out 'ucxt' in usecode/Makefile.am, since it was
+	getting compile errors.
+	* Commented out memory fix in path.cc, until we figure out why it
+	causes hangs.
+
 2001-02-08  Max Horn  <max@quendi.de>
 	* pathfinder/path.cc: fixed memory leak in A_star_queue destructor
 	* files/utils.cc: added two missing std:: prefixes
