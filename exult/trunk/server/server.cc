@@ -60,6 +60,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "egg.h"
 #include "actors.h"
 #include "gamewin.h"
+#include "cheat.h"
 
 using std::cout;
 using std::cerr;
@@ -206,6 +207,14 @@ static void Handle_client_message
 	case Exult_server::write_map:
 		gwin->write_map();	// Send feedback?+++++
 		break;
+	case Exult_server::map_editing_mode:
+		{
+		unsigned char *ptr = &data[0];
+		int onoff = Read2(ptr);
+		if ((onoff != 0) != cheat.in_map_editor())
+			cheat.toggle_map_editor();
+		break;
+		}
 		}
 	}
 

@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "studio.h"
 #include "dirbrowser.h"
 #include "servemsg.h"
+#include "utils.h"
 
 ExultStudio *ExultStudio::self = 0;
 
@@ -92,6 +93,13 @@ on_save_map_menu_activate              (GtkMenuItem     *menuitem,
 	ExultStudio::get_instance()->write_map();
 }
 
+extern "C" void
+on_play_button_clicked			(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	ExultStudio::get_instance()->set_play(
+				gtk_toggle_button_get_active(button));
+}
 
 void on_choose_directory               (gchar *dir)
 {
@@ -422,6 +430,23 @@ void ExultStudio::write_map
 	)
 	{
 	if (Send_data(server_socket, Exult_server::write_map) == -1)
+		cerr << "Error sending to server" << endl;
+	}
+
+/*
+ *	Tell Exult to start/stop playing.
+ */
+
+void ExultStudio::set_play
+	(
+	gboolean play			// True to play, false to edit.
+	)
+	{
+	unsigned char data[Exult_server::maxlength];
+	unsigned char *ptr = &data[0];
+	Write2(ptr, play ? 0 : 1);	// Map_edit = !play.
+	if (Send_data(server_socket, Exult_server::map_editing_mode,
+						data, ptr - data) == -1)
 		cerr << "Error sending to server" << endl;
 	}
 

@@ -132,6 +132,8 @@ void Cheat::toggle_map_editor (void) {
 	if (map_editor)
 		{
 			gwin->center_text("Map Editor Mode Enabled");
+					// Stop time.
+			gwin->set_time_stopped(-1);
 #ifdef XWIN			/* Launch ExultStudio! */
 			if (!gwin->paint_eggs)	// Show eggs too.
 				{
@@ -162,7 +164,11 @@ void Cheat::toggle_map_editor (void) {
 #endif
 		}
 	else
-		gwin->center_text("Map Editor Mode Disabled");			
+		{
+		gwin->center_text("Map Editor Mode Disabled");
+					// Stop time-stop.
+		gwin->set_time_stopped(0);
+		}
 }
 
 void Cheat::toggle_infravision (void) {
