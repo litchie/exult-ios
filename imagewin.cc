@@ -615,6 +615,9 @@ Image_buffer::Image_buffer
 	int dpth			// Color depth (bits/pixel).
 	)
 	{
+#if 1	/* +++++Let's see what SDL can do. */
+	ibuf = new Image_buffer8(w, h);
+#else
 	switch (dpth)			// What depth?
 		{
 	case 8: 
@@ -622,8 +625,7 @@ Image_buffer::Image_buffer
 		break;
 	case 15:
 	case 16:
-		ibuf = new Image_buffer8(w, h);
-//++++++		ibuf = new Image_buffer16(w, h, dpth);
+		ibuf = new Image_buffer16(w, h, dpth);
 		break;
 	case 32:
 		cout << "Ouch. No 32 bit support. Try a 16 bit or an 8 bit display" << endl;
@@ -631,6 +633,7 @@ Image_buffer::Image_buffer
 	default:
 		ibuf = 0;		// Later.
 		}
+#endif
 	}
 
 /*
