@@ -1,7 +1,7 @@
 /*
  *	mouse.cc - Mouse pointers.
  *
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ bool Mouse::mouse_update = false;
 Mouse::Mouse
 	(
 	Game_window *gw			// Where to draw.
-	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0),avatar_speed(slow_speed)
+	) : gwin(gw), iwin(gwin->get_win()),backup(0),box(0,0,0,0),dirty(0,0,0,0), cur_framenum(0),cur(0),avatar_speed(slow_speed)
 {
 	SDL_GetMouseState(&mousex, &mousey);
 	mousex /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
@@ -67,7 +67,7 @@ Mouse::Mouse
 	(
 	Game_window *gw,		// Where to draw.
 	DataSource &shapes
-	) : gwin(gw), iwin(gwin->get_win()),backup(0),cur_framenum(0),cur(0),avatar_speed(slow_speed) 
+	) : gwin(gw), iwin(gwin->get_win()),backup(0),box(0,0,0,0),dirty(0,0,0,0),cur_framenum(0),cur(0),avatar_speed(slow_speed) 
 {
 	SDL_GetMouseState(&mousex, &mousey);
 	mousex /= gwin->get_fastmouse() ? 1 : iwin->get_scale();
