@@ -222,10 +222,10 @@ ProducerConsumerBuf	*Mixer::Create_Audio_Stream(uint32 id)
 		{
 		buf = streams[i];
 		buf->init(id);
+		SDL::PauseAudio(0);	// Enable filling.
 		cerr << "Create_Audio_Stream:  " << i << endl;
 		}
 	stream_unlock();
-	SDL::PauseAudio(0);		// Enable filling.
 	SDL::UnlockAudio();
 	return buf;
 }

@@ -1,4 +1,4 @@
-??/??/??	v??
+??/??/??	v0.92 alpha 3
 
 		Savegame names have been changed to exultXXbg.sav for the
 		Black Gate, and exultXXsi.sav for the Serpent Isle.
@@ -24,6 +24,9 @@
 		NPC Numbers cheat (Ctrl-N). When enabled, clicking an a NPC
 		will display their number instead of their name.
 
+		More NPC schedules (sew, lab-work, etc.) implemented.
+
+		Many bugs (especially combat/weapons) fixed.
 
 02/08/01	v0.91 alpha 2
 
