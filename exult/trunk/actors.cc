@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "egg.h"
 #include "bodies.h"
 #include "Audio.h"
+#include "npctime.h"
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 const char Actor::attack_frames1[4] = {3, 4, 5, 6};
@@ -49,6 +50,19 @@ Equip_record *Monster_info::equip = 0;
 int Monster_info::equip_cnt = 0;
 Monster_actor *Monster_actor::in_world = 0;
 int Monster_actor::in_world_cnt = 0;
+
+/*
+ *	Get/create timers.
+ */
+
+Npc_timer_list *Actor::need_timers
+	(
+	)
+	{
+	if (!timers)
+		timers = new Npc_timer_list(this);
+	return timers;
+	}
 
 /*
  *	Initialize.
@@ -140,8 +154,8 @@ Actor::Actor
 	    npc_num(num), party_id(-1), attack_mode(nearest),
 	    schedule_type((int) Schedule::loiter), schedule(0), dormant(1),
 	    two_handed(0), two_fingered(false), light_sources(0),
-	    usecode_dir(0), siflags(0), type_flags(0), action(0), frame_time(0),
-	    next_path_time(0)
+	    usecode_dir(0), siflags(0), type_flags(0), action(0), 
+	    frame_time(0), next_path_time(0), timers(0)
 	{
 	set_shape(shapenum, 0); 
 	init();
@@ -156,6 +170,7 @@ Actor::~Actor
 	)
 	{
 	delete action;
+	delete timers;
 	}
 
 /*
@@ -173,6 +188,8 @@ void Actor::use_food
 		{
 		if (rand()%4)
 			say(first_starving, first_starving + 2);
+		if (food < 0)		// Set timer for damage.
+			need_timers()->start_hunger();
 		}
 	else if (food <= 4)
 		{
@@ -793,6 +810,8 @@ void Actor::set_flag
 		flags |= ((unsigned long) 1 << flag);
 	if (flag == asleep)
 		set_schedule_type(Schedule::sleep);
+	if (flag == poisoned)
+		need_timers()->start_poison();
 	}
 
 void Actor::set_siflag
@@ -827,6 +846,8 @@ void Actor::clear_flag
 		flags &= ~((unsigned long) 1 << flag);
 	if (flag == asleep)
 		set_schedule_type(Schedule::stand);
+	else if (flag == poisoned)
+		need_timers()->end_poison();
 	}
 
 void Actor::clear_siflag

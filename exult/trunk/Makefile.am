@@ -60,6 +60,8 @@ exult_SOURCES =	\
 	mouse.h		\
 	npcnear.cc	\
 	npcnear.h	\
+	npctime.cc	\
+	npctime.h	\
 	objiter.h	\
 	objs.cc		\
 	objs.h		\
