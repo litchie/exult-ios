@@ -30,6 +30,7 @@
 #include "opcodes.h"
 
 #if 0
+	#define DEBUG_INDENT
 	#define DEBUG_PARSE
 	#define DEBUG_PARSE2
 	#define DEBUG_PARSE2a
@@ -37,6 +38,7 @@
 	#define DEBUG_PRINT
 	#define DEBUG_READ_PAIR(X, Y) cout << '\t' << X << '\t' << Y << endl;
 #else
+	#undef DEBUG_INDENT
 	#undef DEBUG_PARSE
 	#undef DEBUG_PARSE2
 	#undef DEBUG_READ
@@ -60,7 +62,7 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 
 inline ostream &tab_indent(const unsigned int indent, ostream &o)
 {
-	#ifdef DEBUG_PARSE2
+	#ifdef DEBUG_INDENT
 	o << indent;
 	#endif
 	
@@ -611,6 +613,8 @@ void ucc_parse_parambytes(UCc &ucop, const UCOpcodeData &otd)
 	
 	for(vector<pair<unsigned int, bool> >::const_iterator s=otd.param_sizes.begin(); s!=otd.param_sizes.end(); ++s)
 	{
+		//cout << ucop._id << '\t' << ucop._params.size() << endl;
+		
 		assert(first<ucop._params.size());
 		
 		unsigned int ssize=s->first;

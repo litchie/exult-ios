@@ -1,3 +1,8 @@
+2002-01-19  Patrick Burke  <takhisisii@yahoo.com.au>
+	* conf/*: Optimised XMLEntity::searchpairs.
+	* usecode/ucxt: Changed from using opcodes.txt to u7opcodes.data,
+	which is opcodes.txt with conf/ based formatting.
+
 2002-01-18  Ryan Nunn  <triforce@merlin.net.au>
 	* actors.cc, conf/XMLEntity.cc, server/objserial.cc,
 	  objs/egg.cc, exult.cc : MSVCisms
