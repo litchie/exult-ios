@@ -73,6 +73,7 @@ private:
 	Vga_file faces;			// "faces.vga" file.
 	Vga_file gumps;			// "gumps.vga" - open chests, bags.
 	Vga_file fonts;			// "fonts.vga" file.
+	Vga_file sprites;		// "sprites.vga" file.
 	ifstream u7map;			// "u7map" file.
 	Xform_palette xforms[11];	// Transforms translucent colors
 					//   0xf4 through 0xfe.
@@ -99,6 +100,7 @@ private:
 	int u7open(ifstream& in, char *fname, int dont_abort = 0);
 public:
 	int skip_lift;			// Skip objects with lift > 0.
+	int paint_eggs;
 	int debug;
 	Game_window(int width = 0, int height = 0);
 	~Game_window();
@@ -173,6 +175,8 @@ public:
 		{ return gumps.get_num_shapes(); }
 	int get_num_fonts()
 		{ return fonts.get_num_shapes(); }
+	int get_num_sprites()
+		{ return sprites.get_num_shapes(); }
 	void set_mode(Game_mode md)
 		{ mode = md; }
 	Game_mode get_mode()
@@ -214,6 +218,8 @@ public:
 					// Get # frames in a shape.
 	int get_shape_num_frames(int shapenum)
 		{ return shapes.get_num_frames(shapenum); }
+	int get_sprite_num_frames(int shapenum)
+		{ return sprites.get_num_frames(shapenum); }
 					// Get screen area used by object.
 	Rectangle get_shape_rect(Game_object *obj)
 		{
@@ -282,6 +288,12 @@ public:
 	void paint_gump(int xoff, int yoff, int shapenum, int framenum)
 		{
 		Shape_frame *shape = gumps.get_shape(shapenum, framenum);
+		if (shape)
+			paint_shape(xoff, yoff, shape);
+		}
+	void paint_sprite(int xoff, int yoff, int shapenum, int framenum)
+		{
+		Shape_frame *shape = sprites.get_shape(shapenum, framenum);
 		if (shape)
 			paint_shape(xoff, yoff, shape);
 		}

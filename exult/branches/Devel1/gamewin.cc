@@ -49,7 +49,7 @@ Game_window::Game_window
 	int width, int height		// Window dimensions.
 	) : chunkx(0), chunky(0), painted(0), focus(1),
 	    palette(-1), brightness(100), 
-	    skip_lift(16), debug(0),
+	    skip_lift(16), debug(0), paint_eggs(1),
 	    tqueue(new Time_queue()), clock(tqueue),
 		npc_prox(new Npc_proximity_handler(this)),
 	    main_actor(0),
@@ -57,7 +57,7 @@ Game_window::Game_window
 	    open_gumps(0),
 	    main_actor_inside(0), mode(splash), npcs(0),
 	    shapes(), dragging(0), dragging_save(0),
-	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA)
+	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA), sprites(SPRITES_VGA)
 	{
 	game_window = this;		// Set static ->.
 	if (!shapes.is_good())
@@ -68,6 +68,8 @@ Game_window::Game_window
 		abort("Can't open 'gumps.vga' file.");
 	if (!fonts.is_good())
 		abort("Can't open 'fonts.vga' file.");
+	if (!sprites.is_good())
+		abort("Can't open 'sprites.vga' file.");
 	u7open(chunks, U7CHUNKS);
 	u7open(u7map, U7MAP);
 	ifstream ucfile;		// Read in usecode.
@@ -1386,8 +1388,8 @@ void Game_window::show_face
 		actbox = info->face_rect;
 					// Draw whom we're talking to.
 					// Put a black box w/ white bdr.
-	win->fill8(1, actbox.w + 4, actbox.h + 4, actbox.x - 2, actbox.y - 2);
-	win->fill8(0, actbox.w, actbox.h, actbox.x, actbox.y);
+	//win->fill8(1, actbox.w + 4, actbox.h + 4, actbox.x - 2, actbox.y - 2);
+	//win->fill8(0, actbox.w, actbox.h, actbox.x, actbox.y);
 	paint_shape(actbox.x + actbox.w - 2, 
 			actbox.y + actbox.h - 2, face);
 	}
@@ -1486,8 +1488,8 @@ void Game_window::show_avatar_choices
 	Rectangle mbox(16, sbox.h - face->get_height() - 3*height,
 //npc_text_rect.y + npc_text_rect.h + 6*height,
 			face->get_width() + 4, face->get_height() + 4);
-	win->fill8(1, mbox.w + 4, mbox.h + 4, mbox.x - 2, mbox.y - 2);
-	win->fill8(0, mbox.w, mbox.h, mbox.x, mbox.y);
+	//win->fill8(1, mbox.w + 4, mbox.h + 4, mbox.x - 2, mbox.y - 2);
+	//win->fill8(0, mbox.w, mbox.h, mbox.x, mbox.y);
 					// Draw portrait.
 	paint_shape(mbox.x + mbox.w - 2, 
 				mbox.y + mbox.h - face->ybelow - 2, 

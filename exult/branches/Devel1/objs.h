@@ -468,6 +468,8 @@ public:
 	int is_active()			// Can it be activated?
 		{ return !(flags & (1 << (int) hatched)); }
 	int within_distance(int abs_tx, int abs_ty);
+					// Render.
+	virtual void paint(Game_window *gwin);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
 	virtual int is_egg()		// An egg?

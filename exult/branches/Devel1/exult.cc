@@ -495,6 +495,7 @@ static void Handle_keystroke
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = -1, gump_frame = 0;
 	static int font_cnt = -1, font_frame = 0;
+	static int sprite_cnt = -1, sprite_frame = 0;
 	switch (sym)
 		{
 	case SDLK_PLUS:			// Brighten.
@@ -539,6 +540,10 @@ static void Handle_keystroke
 	case SDLK_p:			// Rerender image.
 		gwin->paint();
 		break;
+	case SDLK_e:
+		gwin->paint_eggs = 1-gwin->paint_eggs;
+		gwin->paint();
+		break;
 	case SDLK_s:		// Show next shape.
 		if (!shift) {
 #if 1
@@ -570,8 +575,45 @@ static void Handle_keystroke
 		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
 		break;
 		}
+	case SDLK_o:
+	    if(shift) {
+		++sprite_frame;
+		if(sprite_frame==gwin->get_sprite_num_frames(sprite_cnt))
+		    sprite_frame = 0;
+	    } else {
+		sprite_frame = 0;
+		if (++sprite_cnt == gwin->get_num_sprites())
+		    sprite_cnt = 0;
+		/*if(sprite_cnt==22)
+		    ++sprite_cnt;*/
+		sprite_cnt=22;
+	    }
+	  cout << "Painting sprite " << sprite_cnt << "/" << gwin->get_num_sprites() << '\n';
+	  cout << "Frames = " << gwin->get_sprite_num_frames(sprite_cnt) << '\n';
+	  gwin->paint();
+	  gwin->paint_sprite(gwin->get_width()/2, gwin->get_height()/2,
+			   sprite_cnt, sprite_frame);
+	  break;       
+	case SDLK_g:
+	  gump_frame = 0;
+	  if (++gump_cnt == gwin->get_num_gumps())
+	    gump_cnt = 0;
+	  cout << "Painting gump " << gump_cnt << '\n';
+	  gwin->paint();
+	  gwin->paint_gump(gwin->get_width()/2, gwin->get_height()/2, 
+			   gump_cnt, gump_frame);
+	  break;
 	case SDLK_f:			// Show next frame.
-		cout << "Frame # " << ++shape_frame << '\n';
+		if(!shift) {
+			++shape_frame;
+			if(shape_frame >= gwin->get_shape_num_frames(shape_cnt))
+				shape_frame=0;
+		} else {
+			--shape_frame;
+			if(shape_frame<0)
+				shape_frame = gwin->get_shape_num_frames(shape_cnt)-1;
+		}
+		cout << "Frame # " << shape_frame << "/" << gwin->get_shape_num_frames(shape_cnt) << '\n';
 		gwin->paint();
 #if 1
 		gwin->paint_shape(200, 200, shape_cnt, shape_frame);
