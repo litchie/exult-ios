@@ -28,15 +28,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <cstdio>
 #include <iostream>
 
-Table	AccessTableFile(const char *name)
+void	Table::IndexTableFile(void)
 {
-	Table	ret;
+	Table	&ret=*this;
 	FILE	*fp;
-	ret.filename=name;
-	fp=fopen(name,"rb");
+	fp=fopen(ret.filename.c_str(),"rb");
 	if(!fp)
 		{
-		return ret;
+		throw 0;
+		return;
 		}
 	unsigned int i=0;
 	while(1)
@@ -53,9 +53,10 @@ Table	AccessTableFile(const char *name)
 		i++;
 		}
 	fclose(fp);
-	return ret;
+	return;
 }
 
+#if 0
 char	*Table::read_object(int objnum,uint32 &length)
 {
 	if((unsigned)objnum>=object_list.size())
@@ -79,3 +80,4 @@ char	*Table::read_object(int objnum,uint32 &length)
 	fclose(fp);
 	return ret;
 }
+#endif

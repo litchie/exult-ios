@@ -25,12 +25,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <vector>
 #include <string>
-#include "common.h"
+#include "U7file.h"
+#include "common_types.h"
 
 
-struct	Table
+class	Table : public	virtual	U7file
 	{
-	string	filename;
+protected:
 	struct Reference
 		{
 		uint32 offset;
@@ -38,7 +39,16 @@ struct	Table
 		Reference() : offset(0),size(0) {};
 		};
 	vector<Reference> object_list;
-	char *read_object(int objnum,uint32 &length);
+public:
+	Table(const char *name);
+	Table(const string &name);
+
+        virtual int     number_of_objects(const char *) { return object_list.size(); };
+        virtual int     retrieve(const char *,int objnum,char *,size_t *len); // To a memory block
+        virtual int     retrieve(const char *,int objnum,const char *);       // To a file
+private:
+	void IndexTableFile(void);
+	Table();
 	};
 
 extern Table AccessTableFile(const char *);
