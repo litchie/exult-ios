@@ -97,7 +97,7 @@
 	USECODE_INTRINSIC_PTR(roll_to_win),	// 0x4a
 	USECODE_INTRINSIC_PTR(set_attack_mode),	// 0x4b
 	USECODE_INTRINSIC_PTR(set_opponent),	// 0x4c
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d     CloneNPC (ucdump.c)
+	USECODE_INTRINSIC_PTR(clone),	// 0x4d     CloneNPC (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e UNUSED
 	USECODE_INTRINSIC_PTR(display_area), // 0x4f// ShowCrystalBall(ucdump)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50     ShowWizardEye (ucdump.c)

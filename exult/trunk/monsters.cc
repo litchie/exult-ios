@@ -144,10 +144,8 @@ Monster_actor *Monster_actor::create
 Monster_actor *Monster_actor::create
 	(
 	int shnum,			// Shape to use.
-	int chunkx, int chunky,		// Chunk to place it in, or 255's to
-					//   not place in world yet.
-	int tilex, int tiley,		// Tile within chunk.
-	int lift,			// Lift.
+	Tile_coord pos,			// Where to place it.  If pos.tx < 0,
+					//   it's not placed in the world.
 	int sched,			// Schedule type.
 	int align,			// Alignment.
 	bool temporary,
@@ -189,8 +187,8 @@ Monster_actor *Monster_actor::create
 	// Set temporary
 	if (temporary) monster->set_flag (Obj_flags::is_temporary);
 	monster->set_invalid();		// Place in world.
-	monster->move(chunkx*c_tiles_per_chunk + tilex,
-		      chunky*c_tiles_per_chunk + tiley, lift);
+	if (pos.tx >= 0)
+		monster->move(pos.tx, pos.ty, pos.tz);
 	if (equipment) {
 					// Get equipment.
 		int equip_offset = inf->equip_offset;
@@ -199,7 +197,8 @@ Monster_actor *Monster_actor::create
 		{
 			Equip_record& rec = equip[equip_offset - 1];
 			for (size_t i = 0;
-				 i < sizeof(equip->elements)/sizeof(equip->elements[0]);
+				 i < sizeof(equip->elements)/sizeof(
+							equip->elements[0]);
 				 i++)
 			{		// Give equipment.
 				Equip_element& elem = rec.elements[i];
@@ -208,8 +207,9 @@ Monster_actor *Monster_actor::create
 					continue;// You lose.
 				int frnum = (elem.shapenum == 377) ? 
 					Find_monster_food(shnum) : 0;
-				monster->create_quantity(elem.quantity, elem.shapenum, 
-										 c_any_qual, frnum, temporary);
+				monster->create_quantity(elem.quantity, 
+						elem.shapenum, c_any_qual, 
+							frnum, temporary);
 			}
 		}
 	}

@@ -474,9 +474,8 @@ USECODE_INTRINSIC(create_new_object)
 					// (Wait sched. added for FOV.)
 		// don't add equipment (Erethian's transform sequence)
 		Monster_actor *monster = Monster_actor::create(shapenum,
-			255, 255, 0, 0, 0,
-			Schedule::wait, (int) Actor::neutral,
-							true, false);
+			Tile_coord(-1, -1, -1), Schedule::wait, 
+					(int) Actor::neutral, true, false);
 		gwin->add_dirty(monster);
 		gwin->add_nearby_npc(monster);
 		gwin->show();
@@ -1083,18 +1082,10 @@ USECODE_INTRINSIC(summon)
 	Tile_coord dest = Map_chunk::find_spot(start, 5, shapenum, 0, 1,
 			-1, gwin->is_main_actor_inside() ?
 				Map_chunk::inside : Map_chunk::outside);
-#if 0	/* +++Old way */
-	Tile_coord dest(-1, -1, -1);	// Look outwards for free spot.
-	for (int i = 0; dest.tx == -1 && i < 5; i++)
-		dest = Game_object::find_unblocked_tile(start, i);
-#endif
 	if (dest.tx == -1)
 		return Usecode_value(0);
-	Monster_actor *monst = Monster_actor::create(shapenum,
-		dest.tx/c_tiles_per_chunk,
-		dest.ty/c_tiles_per_chunk, dest.tx%c_tiles_per_chunk,
-		dest.ty%c_tiles_per_chunk, dest.tz,
-		Schedule::combat, Actor::friendly);
+	Monster_actor *monst = Monster_actor::create(shapenum, dest,
+					Schedule::combat, Actor::friendly);
 	return Usecode_value(monst);
 }
 
@@ -1214,6 +1205,19 @@ USECODE_INTRINSIC(set_opponent)
 	if (npc && opponent)
 		npc->set_target(opponent);
 	return (no_ret);
+}
+
+USECODE_INTRINSIC(clone)
+{
+	// clone(npc)
+	Actor *npc = as_actor(get_item(parms[0]));
+	if (npc)
+		{
+		npc->set_alignment(Actor::friendly);
+		npc->set_schedule_type(Schedule::combat);
+		return Usecode_value(npc->clone());
+		}
+	return Usecode_value(0);
 }
 
 USECODE_INTRINSIC(get_oppressor)

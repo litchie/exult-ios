@@ -3102,7 +3102,7 @@ void Game_window::theft
 					// Show guard running up.
 					// Create it off-screen.
 	Monster_actor *guard = Monster_actor::create(0x3b2,
-		main_actor->get_cx() + 8, main_actor->get_cy() + 8, 0, 0, 0);
+		main_actor->get_abs_tile_coord() + Tile_coord(128, 128, 0));
 	add_nearby_npc(guard);
 	Tile_coord actloc = main_actor->get_abs_tile_coord();
 	Tile_coord dest = Map_chunk::find_spot(actloc, 5, 
@@ -3136,8 +3136,8 @@ void Game_window::attack_avatar
 		{
 					// Create it off-screen.
 		Monster_actor *guard = Monster_actor::create(0x3b2,
-			main_actor->get_cx() + 8, 
-			main_actor->get_cy() + 8, 0, 0, 0);
+			main_actor->get_abs_tile_coord() + 
+						Tile_coord(128, 128, 0));
 		add_nearby_npc(guard);
 		guard->set_target(main_actor, true);
 		guard->approach_another(main_actor);
