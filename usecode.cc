@@ -900,12 +900,21 @@ static Barge_object *Get_barge
 	Game_object *obj
 	)
 	{
+#if 0
 					// Check for piece of barge.
 	Game_object *owner = obj->get_owner();
 	if (owner)
 		return dynamic_cast<Barge_object *> (owner);
 	obj = obj->find_beneath();	// Maybe it's sitting on a barge.
 	return (obj ? Get_barge(obj) : 0);
+#else
+	int barge_shape = 961;
+	Game_object *found = obj->find_closest(&barge_shape, 1);
+	if (found)
+		return dynamic_cast<Barge_object *> (found);
+	else
+		return 0;
+#endif
 	}
 
 /*
@@ -947,14 +956,25 @@ Usecode_value Usecode_machine::find_nearby
 	Usecode_value& mval		// Some kind of mask?
 	)
 	{
-	Game_object *obj = get_item(objval);
-	//++++++++parm[0] may be a location (tx, ty, tz,...).
-	if (!obj)
-		return Usecode_value(0, 0);
 	Vector vec;			// Gets list.
-	int cnt = obj->find_nearby(vec, shapeval.get_int_value(),
+	int cnt;
+					// It might be (tx, ty, tz).
+	int arraysize = objval.get_array_size();
+	if (arraysize >= 3 && objval.get_elem(0).get_int_value() < num_tiles)
+		cnt = Game_object::find_nearby(vec,
+			Tile_coord(objval.get_elem(0).get_int_value(),
+				   objval.get_elem(1).get_int_value(),
+				   objval.get_elem(2).get_int_value()),
+			shapeval.get_int_value(),
 			qval.get_int_value(), mval.get_int_value());
-
+	else
+		{
+		Game_object *obj = get_item(objval);
+		if (!obj)
+			return Usecode_value(0, 0);
+		cnt = obj->find_nearby(vec, shapeval.get_int_value(),
+			qval.get_int_value(), mval.get_int_value());
+		}
 	Usecode_value nearby(cnt, 0);	// Create return array.
 	for (int i = 0; i < cnt; i++)
 		{

@@ -226,7 +226,7 @@ void Game_object::clear_dependencies
 	}
 
 /*
- *	Find nearby objects.
+ *	Find objects near a given position.
  *
  *	Output:	# found, appended to vec.
  */
@@ -234,6 +234,7 @@ void Game_object::clear_dependencies
 int Game_object::find_nearby
 	(
 	Vector& vec,			// Objects appended to this.
+	Tile_coord pos,			// Look near this point.
 	int shapenum,			// Shape to look for.  -1=any,
 					//   -359=any NPC.
 	int quality,			// +++Not used/understood.
@@ -242,10 +243,8 @@ int Game_object::find_nearby
 	{
 	int vecsize = vec.get_cnt();
 	Game_window *gwin = Game_window::get_game_window();
-	int atx, aty, atz;		// Get abs. tile coords.
-	get_abs_tile(atx, aty, atz);
 	const int delta = 16;		// Let's try 16 tiles each dir.
-	Rectangle tiles(atx - delta, aty - delta, 2*delta, 2*delta);
+	Rectangle tiles(pos.tx - delta, pos.ty - delta, 2*delta, 2*delta);
 					// Stay within world.
 	Rectangle world(0, 0, num_chunks*tiles_per_chunk, 
 						num_chunks*tiles_per_chunk);
@@ -380,7 +379,7 @@ Game_object *Game_object::find_blocking
 		}
 	return (0);
 	}
-
+#if 0	/* ++++++Not used. */
 /*
  *	Find the highest object beneath this one's hot spot.  For now, we
  *	just look in the one chunk.
@@ -424,6 +423,7 @@ Game_object *Game_object::find_beneath
 		}
 	return (found);
 	}
+#endif
 
 /*
  *	Is this a closed door?

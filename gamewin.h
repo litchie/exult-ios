@@ -187,8 +187,7 @@ public:
 		}
 	inline Barge_object *get_moving_barge() const
 		{ return moving_barge; }
-	inline void set_moving_barge(Barge_object *b)
-		{ moving_barge = b; }
+	void set_moving_barge(Barge_object *b);
 	inline Actor *get_main_actor() const
 		{ return main_actor; }
 	int set_above_main_actor(int inside, int lift)
