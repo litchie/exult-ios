@@ -742,6 +742,8 @@ Egg_object::Egg_object
 	unsigned char ar = (itype >> 15) & 1;
 	flags = (noct << nocturnal) + (do_once << once) +
 			(htch << hatched) + (ar << auto_reset);
+	if (type == usecode || type == teleport || type == path)
+		set_quality(data1&0xff);
 	}
 
 /*
