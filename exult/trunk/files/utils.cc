@@ -486,7 +486,7 @@ void U7remove
 /*
  *	Open a "static" game file by first looking in <PATCH>, then
  *	<STATIC>.
- *	Output: 0 if couldn't open.
+ *	Output: 0 if couldn't open.  We do NOT throw exceptions.
  */
 
 bool U7open_static
@@ -499,11 +499,17 @@ bool U7open_static
 	string name;
 
 	name = string("<PATCH>/") + fname;
-	if (U7open(in, name.c_str(), is_text))
-		return true;
+	try {
+		if (U7open(in, name.c_str(), is_text))
+			return true;
+	} catch (std::exception &)
+	{}
 	name = string("<STATIC>/") + fname;
-	if (U7open(in, name.c_str(), is_text))
-		return true;
+	try {
+		if (U7open(in, name.c_str(), is_text))
+			return true;
+	} catch (std::exception &)
+	{}
 	return false;
 	}
 
