@@ -1615,32 +1615,6 @@ void ExultStudio::set_button
 	}
 
 /*
- *	Add a menu item to a menu.
- *
- *	Output:	Menu item.
- */
-
-GtkWidget *ExultStudio::add_menu_item
-	(
-	GtkWidget *menu,		// Menu to add to.
-	const char *label,		// What to put.  NULL for separator.
-	GtkSignalFunc func,		// Handle menu choice.
-	gpointer func_data		// Data passed to func().
-	)
-	{
-	GtkWidget *mitem = label ? gtk_menu_item_new_with_label(label) :
-				gtk_menu_item_new();
-	gtk_widget_show(mitem);
-	gtk_menu_append(GTK_MENU(menu), mitem);
-	if (!label)			// Want separator?
-		gtk_widget_set_sensitive(mitem, FALSE);
-	if (func)			// Function?
-		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
-				GTK_SIGNAL_FUNC(func), func_data);
-	return mitem;
-	}
-
-/*
  *	Show/hide a widget.
  */
 
@@ -1789,6 +1763,54 @@ void Alert
 	Prompt(fullmsg, "Okay");
 	g_free(fullmsg);
 	}
+
+/*
+ *	Add a menu item to a menu.
+ *
+ *	Output:	Menu item.
+ */
+
+GtkWidget *Add_menu_item
+	(
+	GtkWidget *menu,		// Menu to add to.
+	const char *label,		// What to put.  NULL for separator.
+	GtkSignalFunc func,		// Handle menu choice.
+	gpointer func_data		// Data passed to func().
+	)
+	{
+	GtkWidget *mitem = label ? gtk_menu_item_new_with_label(label) :
+				gtk_menu_item_new();
+	gtk_widget_show(mitem);
+	gtk_menu_append(GTK_MENU(menu), mitem);
+	if (!label)			// Want separator?
+		gtk_widget_set_sensitive(mitem, FALSE);
+	if (func)			// Function?
+		gtk_signal_connect(GTK_OBJECT(mitem), "activate",
+				GTK_SIGNAL_FUNC(func), func_data);
+	return mitem;
+	}
+
+/*
+ *	Create an arrow button.
+ */
+
+GtkWidget *Create_arrow_button
+	(
+	GtkArrowType dir,		// Direction.
+	GtkSignalFunc clicked,		// Call this when clicked.
+	gpointer func_data		// Passed to 'clicked'.
+	)
+	{
+	GtkWidget *btn = gtk_button_new();
+	gtk_widget_show(btn);
+	GTK_WIDGET_SET_FLAGS(btn, GTK_CAN_DEFAULT);
+	GtkWidget *arrow = gtk_arrow_new(dir, GTK_SHADOW_OUT);
+	gtk_widget_show(arrow);
+	gtk_container_add(GTK_CONTAINER(btn), arrow);
+	gtk_signal_connect(GTK_OBJECT(btn), "clicked", clicked, func_data);
+	return btn;
+	}
+
 } // namespace EStudio
 
 /*
