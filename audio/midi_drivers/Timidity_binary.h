@@ -61,6 +61,7 @@ private:
 	SDL_Thread	*my_thread;
 	SDL_Thread	*sfx_thread;
 	string	filename;
+	bool	do_repeat;
 	string	sfxname;
 	UNREPLICATABLE_CLASS(Timidity_binary);
 };

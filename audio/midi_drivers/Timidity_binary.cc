@@ -131,7 +131,10 @@ void	Timidity_binary::player(void)
 	audiostream->id=Timidity_binary_magic;
 	char nbuf[32];
 	sprintf(nbuf,"%ul",Audio::get_ptr()->actual.freq);
-	string	s="timidity -Oru8S -id -s ";
+	string	s="timidity -Oru8S -id";
+	if(do_repeat)
+		s+="l";
+	s+=" -s ";
 	s+=nbuf;
 	s+=" -o- ";
 	s+=newfilename;
@@ -155,6 +158,7 @@ void	Timidity_binary::player(void)
 	unlink(newfilename.c_str());
 	audiostream->end_production();
 	audiostream=0;
+	cerr << "Timidity cleaned up" << endl;
 }
 
 void	Timidity_binary::sfxplayer(void)
@@ -254,6 +258,7 @@ void	Timidity_binary::start_track(const char *name,bool repeat)
 	cerr << "Starting to play " << name << endl;
 #endif
 	filename=name;
+	do_repeat=repeat;
 	my_thread=SDL_CreateThread(sub_process,this);
 }
 
