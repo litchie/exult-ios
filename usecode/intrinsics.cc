@@ -1164,6 +1164,27 @@ USECODE_INTRINSIC(is_pc_female)
 	return(u);
 }
 
+USECODE_INTRINSIC(armageddon)
+{
+	int cnt = gwin->get_num_npcs();
+	Rectangle screen = gwin->get_win_tile_rect();
+	for (int i = 1; i < cnt; i++)	// Most everyone dies.
+		{			// Leave LB, Batlin, Hook.
+		Actor *npc = gwin->get_npc(i);
+		if (npc && i != 26 && i != 23 && npc->get_shapenum() != 506 &&
+		    !npc->is_dead_npc())
+			{
+			char *text[] = {"Aiiiieee!", "Noooo!", "#!?*#%!"};
+			const int numtext = sizeof(text)/sizeof(text[0]);
+			Tile_coord loc = npc->get_abs_tile_coord();
+			if (screen.has_point(loc.tx, loc.ty))
+				npc->say(text[rand()%numtext]);
+			npc->die();
+			}
+		}
+	return no_ret;
+}
+
 USECODE_INTRINSIC(halt_scheduled)
 {
 	// Halt_scheduled(item)

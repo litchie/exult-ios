@@ -3,22 +3,16 @@
 
 <project>
   <name>ExultStudio</name>
-  <program_name>exultstudio</program_name>
   <directory></directory>
   <source_directory>.</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
   <language>C</language>
-  <gnome_support>False</gnome_support>
   <gettext_support>False</gettext_support>
-  <output_main_file>False</output_main_file>
-  <output_support_files>False</output_support_files>
-  <output_build_files>False</output_build_files>
+  <use_widget_names>False</use_widget_names>
   <main_source_file>xx_interface.cc</main_source_file>
   <main_header_file>xx_interface.h</main_header_file>
   <handler_source_file>xx_callbacks.cc</handler_source_file>
   <handler_header_file>xx_callbacks.h</handler_header_file>
-  <support_source_file>studio_support.cc</support_source_file>
-  <support_header_file>studio_support.h</support_header_file>
 </project>
 
 <widget>
@@ -28,11 +22,10 @@
   <title>Select File</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
+  <show_file_op_buttons>True</show_file_op_buttons>
   <allow_shrink>False</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
-  <show_file_op_buttons>True</show_file_op_buttons>
 
   <widget>
     <class>GtkButton</class>
@@ -59,9 +52,6 @@
   <title>ExultStudio</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
-  <modal>False</modal>
-  <default_width>600</default_width>
-  <default_height>300</default_height>
   <allow_shrink>False</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
@@ -75,7 +65,6 @@
     <widget>
       <class>GtkMenuBar</class>
       <name>menu_bar</name>
-      <shadow_type>GTK_SHADOW_OUT</shadow_type>
       <child>
 	<padding>0</padding>
 	<expand>False</expand>
@@ -127,14 +116,13 @@
     <widget>
       <class>GtkHPaned</class>
       <name>hpaned1</name>
-      <handle_size>10</handle_size>
-      <gutter_size>6</gutter_size>
-      <position>200</position>
       <child>
 	<padding>0</padding>
 	<expand>True</expand>
 	<fill>True</fill>
       </child>
+      <handle_size>10</handle_size>
+      <gutter_size>6</gutter_size>
 
       <widget>
 	<class>GtkScrolledWindow</class>
@@ -143,10 +131,6 @@
 	<vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
 	<hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
 	<vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
-	<child>
-	  <shrink>True</shrink>
-	  <resize>False</resize>
-	</child>
 
 	<widget>
 	  <class>GtkCTree</class>
@@ -169,7 +153,6 @@
 	    <name>label11</name>
 	    <label>Files</label>
 	    <justify>GTK_JUSTIFY_CENTER</justify>
-	    <wrap>False</wrap>
 	    <xalign>0.5</xalign>
 	    <yalign>0.5</yalign>
 	    <xpad>0</xpad>
@@ -183,10 +166,6 @@
 	<name>browser_frame</name>
 	<label_xalign>0</label_xalign>
 	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
-	<child>
-	  <shrink>True</shrink>
-	  <resize>True</resize>
-	</child>
 
 	<widget>
 	  <class>GtkVBox</class>
