@@ -49,7 +49,15 @@ rm -f libtool ltmain.sh missing mkinstalldirs install-sh
 rm -f autoconfig.h.in
 rm -f config.status aclocal.m4
 rm -f `find . -name 'Makefile.in'`
-rm -f `find . -name 'Makefile'`
+rm -f audio/midi_drivers/Makefile audio/Makefile conf/Makefile data/Makefile \
+      debian/Makefile desktop/Makefile docs/Makefile files/zip/Makefile \
+      files/Makefile flic/Makefile gumps/Makefile imagewin/Makefile \
+      mapedit/Makefile objs/Makefile pathfinder/Makefile server/Makefile \
+      shapes/Makefile tools/Makefile usecode/compiler/Makefile \
+      usecode/ucxt/Docs/Makefile usecode/ucxt/data/Makefile \
+      usecode/ucxt/include/Makefile usecode/ucxt/src/Makefile \
+      usecode/ucxt/Makefile usecode/Makefile Makefile
+
 
 # touch the configure.ac file to force rebuilding configure
 touch configure.ac
