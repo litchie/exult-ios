@@ -417,53 +417,7 @@ static Shape_file *load_extra_font(const char *archive, int index, int skip)
 	return shapes;
 }
 
-bool Game_window::setup_endgame_fonts ()
-{
-	static bool setup_done = false;
-
-	if(setup_done)
-		return true;
-	for (int i = 0; i < 4; i++) {
-		extra_fonts[i] = load_extra_font(ENDGAME, i+3, 8);
-		if (!extra_fonts[i]->get_num_frames())
-			return false;
-	}
-
-	hlead[ENDGAME_FONT1] = 0;
-	hlead[ENDGAME_FONT2] = 0;
-	hlead[ENDGAME_FONT3] = 0;
-	hlead[ENDGAME_FONT4] = 0;
-	setup_done = true;
-	return true;
-}
-
-bool Game_window::setup_siintro_fonts ()
-{
-	static bool setup_done = false;
-
-	if(setup_done)
-		return true;
-	
-	extra_fonts[SIINTRO_FONT1-EXTRA_FONTS] = load_extra_font("<STATIC>/intro.dat", 14, 8);
-	if (!extra_fonts[SIINTRO_FONT1-EXTRA_FONTS]->get_num_frames()) {
-			cerr << "Error loading intro font" << endl;
-			return false;
-	}
-
-	hlead[SIINTRO_FONT1] = 0;
-	setup_done = true;
-	return true;
-}
-
 Shape_frame *Game_window::font_get_shape (int fontnum, int framenum)
 {
-	if (fontnum >= EXTRA_FONTS) {
-#if DEBUG
-		if (!extra_fonts[fontnum-EXTRA_FONTS])
-			cerr << "FATAL! Font " << fontnum << " not loaded!" << endl;
-#endif
-		return extra_fonts[fontnum-EXTRA_FONTS]->get_frame (framenum);
-	}
-	
 	return fonts.get_shape(fontnum, framenum);
 }
