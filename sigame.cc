@@ -798,22 +798,391 @@ void SI_Game::show_journey_failed()
 	gwin->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	journey_failed_text();
 }
-	
-void SI_Game::end_game(bool success) 
-	{
-		size_t	flisize;
-		char	*fli_b;
 
-		Audio::get_ptr()->start_music ("<STATIC>/r_send.xmi", 0, false);
-		
-		for(int i=9; i<14; i++) {
-			U7object flic("<STATIC>/intro.dat", i);
-			fli_b = flic.retrieve(flisize);
-			playfli fli1(fli_b+8, flisize-8);
-			fli1.play(win);
-			FORGET_ARRAY(fli_b);
+/*
+ *	ExCineLite
+ */
+
+// ExCineEvent
+struct ExCineEvent {
+	uint32			time;	// Time to start, In MS
+	char			*file;
+	int			index;
+
+	virtual bool	play_it(Image_window *win, int time) = 0;		// Return true if screen updated
+
+	bool can_play() { return file != 0; }
+
+	ExCineEvent(uint32 t, char*f, int i) :
+		time(t), file(f), index(i)  { }
+
+	virtual ~ExCineEvent() { }
+};
+
+//
+// ExCineFlic
+//
+
+struct ExCineFlic : public ExCineEvent {
+private:
+	int	start;		// First frame to play
+	int	count;		// Number of frames
+	bool	repeat;		// Repeat?
+	int	cur;		// Frame currently being displayed (note, it's not the actual frame)
+	int	speed;		// Speed of playback (ms per frame)
+
+	// Data info
+	U7object	*flic_obj;
+	size_t		size;
+	char		*buffer;
+	playfli		*player;
+
+public:
+	virtual bool	play_it(Image_window *win, int t);
+
+	void		load_flic(void);
+	void		free_flic(void);
+
+	void		fade_out(int cycles);
+
+	ExCineFlic(uint32 time, char *file, int i, int s, int c, bool r, int spd) :
+		ExCineEvent(time, file, i), start(s), count(c), repeat(r), cur(-1), speed(spd),
+		flic_obj(0), size(0), buffer(0), player(0) { }
+
+	ExCineFlic(uint32 time) : ExCineEvent(time, 0, 0), start(0), count(0),
+				repeat(false), cur(0), speed(0),
+				flic_obj(0), size(0), buffer(0), player(0) { }
+
+	virtual ~ExCineFlic() {
+		free_flic();
+	}
+};
+
+void ExCineFlic::load_flic()
+{
+	free_flic();
+
+	if (file) COUT("Loading " << file << ":" << index);
+
+	flic_obj = new U7object(file, index);
+
+	buffer = flic_obj->retrieve(size);
+
+	player = new playfli(buffer+8, size-8);
+	player->info();
+}
+
+void ExCineFlic::free_flic()
+{
+	if (file) COUT("Freeing " << file << ":" << index);
+
+	FORGET_OBJECT(player);
+	FORGET_ARRAY(buffer);
+	size = 0;
+	FORGET_OBJECT(flic_obj);
+}
+
+bool	ExCineFlic::play_it(Image_window *win, int t)
+{
+	if (t < time) return false;
+
+	if (cur+1 < count || repeat) {
+
+		// Only advance frame if we can
+		int time_next = time + (cur+1) * speed;
+		if (time_next <= t) {
+			cur++;
+
+			// The actual frame number
+			int actual = start + (cur%count);
+
+			player->play(win, actual, actual, 0);
+
+			return true;
 		}
 	}
+
+	player->put_buffer(win);
+
+	return false;
+}
+
+void ExCineFlic::fade_out(int cycles)
+{
+	if (player) player->get_palette()->fade_out(cycles);
+}
+
+//
+// ExCineVoc
+//
+
+struct ExCineVoc : public ExCineEvent {
+private:
+	bool		played;
+
+public:
+	virtual bool	play_it(Image_window *win, int t);
+
+	ExCineVoc(uint32 time, char *f, int index) :
+		ExCineEvent(time, file, index), played(false) { }
+
+	virtual ~ExCineVoc() { }
+};
+
+bool ExCineVoc::play_it(Image_window *win, int t)
+{
+	size_t	size;
+	U7object voc("<STATIC>/intro.dat", index);
+	uint8 *buffer = (uint8 *) voc.retrieve (size);
+	Audio::get_ptr()->play (buffer+8, size-8, false);
+	FORGET_ARRAY(buffer);
+	played = true;
+
+	return false;
+}
+
+//
+// Serpent Isle Endgame
+//
+void SI_Game::end_game(bool success) 
+{
+	int	next = 0;
+	size_t	flisize;
+	char	*fli_b;
+	uint8	*buffer;
+	size_t	size;
+	size_t	shapesize;
+	int	i,j;
+	Font	*font = fontManager.get_font("MENU_FONT");
+	Font	*sifont = fontManager.get_font("SIINTRO_FONT");
+
+	bool speech = Audio::get_ptr()->is_speech_enabled();
+
+	gwin->clear_screen(true);
+	
+
+/* Endgame General Timings (in ms)
+
+      0 - Avatar floating right
+   6350 - Begin Serpent Swirling
+  10850 - Serpent Comes on screen
+  14643 - Balanced, and "there we are done"
+  17281 - "balance is restored"
+  21300 - "serpent isle"
+  22900 - "briatnnia"
+  24300 - "your earth"
+  26000 - "the entire universe"
+  28600 - "all are phased"
+  31600 - Avatar floating right, "worry not about your friend dupre"
+  35100 - "he is one with us"
+  37000 - "and content"
+  39800 - "good bye avatar"
+  42040 - "we thank you"
+  48550 - "well well well avatar"
+  48900 - Avatar floating left
+  51750 - "You have managed to thawt me one again"
+  55500 - "by restoring balance..."
+  62500 - floating far, "but now here you are"
+  64500 - "poised at the edge of eternity"
+  67000 - "where would you go?"
+  70250 - floating left, "back to britannia?"
+  72159 - "to earth?"
+  74750 - "perhaps you would join me.."
+  75500 - big g's hand
+  78000 - "we do have a score to settle"
+
+Flic Index
+9 = Avfloat
+10 = snake1
+11 = snake2
+12 = avfar
+13 = xavgrab
+
+Frame count : 61
+Width :       320
+Height :      200
+Depth :       8
+Speed :       5
+
+Frame count : 156
+Width :       320
+Height :      200
+Depth :       8
+Speed :       8
+
+Frame count : 4
+Width :       320
+Height :      200
+Depth :       8
+Speed :       10
+
+Frame count : 61
+Width :       320
+Height :      200
+Depth :       8
+Speed :       5
+
+Frame count : 121
+Width :       320
+Height :      200
+Depth :       8
+Speed :       5
+
+Sound Index
+22 = "there we are done, balance is restored"
+23 = "serpent isle...."
+24 = "goodbye avatar..."
+25 = "well well well avatar..."
+26 = "by restoring balance..."
+27 = "but now here you are..."
+28 = "back to britannia..."
+29 = "perhaps you..."
+
+
+      0 - Repeat 9
+   6350 - Play 10
+  14643 - Repeat 10, Play 22
+  21300 - Play 23
+  31600 - Repeat 9
+  39800 - Repeat 11, Play 24
+  48550 - Play 25
+  48900 - Repeat 13
+  55500 - Play 26
+  62500 - Repeat 12, play 27
+  70250 - Play 13, play 28
+  72159 - "to earth?"
+  74750 - play 29
+  75500 - big g's hand
+  78000 - "we do have a score to settle"
+
+*/
+
+	// Flic List
+	ExCineFlic flics[] = {
+		ExCineFlic(0, "<STATIC>/intro.dat", 9, 0, 61, true, 75),
+		ExCineFlic(6350, "<STATIC>/intro.dat", 10, 0, 156, false, 95),
+		ExCineFlic(21170, "<STATIC>/intro.dat", 9, 0, 61, true, 75),
+		ExCineFlic(39800, "<STATIC>/intro.dat", 11, 0, 4, true, 75),
+		ExCineFlic(48900, "<STATIC>/intro.dat", 13, 0, 61, true, 75),
+		ExCineFlic(62500, "<STATIC>/intro.dat", 12, 0, 61, true, 75),
+		ExCineFlic(70250, "<STATIC>/intro.dat", 13, 0, 121, false, 75),
+		ExCineFlic(82300)
+	};
+	int last_flic = 7;
+	int cur_flic = -1;
+	ExCineFlic *flic = 0;
+	ExCineFlic *pal_flic = 0;
+
+	// Voc List
+	ExCineVoc vocs[] = {
+		ExCineVoc(14700, "<STATIC>/intro.dat", 22),
+		ExCineVoc(21300, "<STATIC>/intro.dat", 23),
+		ExCineVoc(39800, "<STATIC>/intro.dat", 24),
+		ExCineVoc(47700, "<STATIC>/intro.dat", 25),
+		ExCineVoc(55400, "<STATIC>/intro.dat", 26),
+		ExCineVoc(62500, "<STATIC>/intro.dat", 27),
+		ExCineVoc(70250, "<STATIC>/intro.dat", 28),
+		ExCineVoc(74750, "<STATIC>/intro.dat", 29)
+	};
+	int last_voc = 7;
+	int cur_voc = -1;
+
+	// Stop previous music
+	Audio::get_ptr()->stop_music();
+
+	// Start the music
+	Audio::get_ptr()->start_music ("<STATIC>/r_send.xmi", 0, false);
+
+	int start_time = SDL_GetTicks();
+
+	while (1) {
+
+		int time = SDL_GetTicks() - start_time;
+
+		// Need to go to the next flic?
+		if (cur_flic < last_flic && flics[cur_flic+1].time <= time) {
+
+			bool next_play = flics[cur_flic+1].can_play();
+
+			// Can play the new one, don't need the old one anymore
+			if(next_play) {
+				// Free it
+				if (flic) flic->free_flic();
+
+				// Free the palette too, if we need to
+				if (pal_flic && pal_flic != flic)
+					pal_flic->free_flic();
+
+				pal_flic = 0;
+			}
+			// Set palette to prev if required
+			else if (flic && flic->can_play()) {
+				pal_flic = flic;
+			}
+			// Previous flic didn't have a palette, so free it anyway
+			else if (flic) {
+				flic->free_flic();
+			}
+			
+			cur_flic++;
+			flic = flics+cur_flic;
+
+			if (next_play) {
+				// Clear the screen to prevent palette corruption
+				gwin->clear_screen(true);
+
+				// Load the flic, and set pal_flic
+				(pal_flic = flic)->load_flic();
+			}
+			else COUT("Teminator ");
+			COUT("Flic at time: " << flic->time);
+		}
+
+		// Need to go to the next voc?
+		if (cur_voc < last_voc && vocs[cur_voc+1].time <= time) {
+			cur_voc++;
+			ExCineVoc *voc = vocs+cur_voc;
+
+			// Just play it!
+			voc->play_it(NULL, time);
+			//else COUT("Teminator ");
+			COUT("voc at time: " << voc->time);
+			
+		}
+
+		// We've finished
+		if (cur_flic == last_flic && cur_voc == last_voc) {
+			// Do a fade out
+			if (pal_flic && pal_flic->can_play()) pal_flic->fade_out(100);
+
+			COUT("Finished!" << std::endl);
+			break;
+		}
+
+		// Play the flic if possible
+
+		bool updated = false;
+
+		if (flic->can_play()) updated = flic->play_it(win, time);
+
+		if (updated) win->show();
+
+		if (wait_delay (0)) {
+
+			// Do a quick fade out
+			if (pal_flic && pal_flic->can_play()) pal_flic->fade_out(20);
+			break;
+		}
+	}
+
+	gwin->clear_screen(true);
+
+	// Stop all sounds
+	Audio::get_ptr()->cancel_streams();
+
+	// Stop music
+	Audio::get_ptr()->stop_music();
+}
 
 void SI_Game::show_quotes()
 	{

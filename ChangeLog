@@ -1,3 +1,11 @@
+2002-01-28  Ryan Nunn  <triforce@merlin.net.au>
+	* sigame.cc : Reworking SI endgame. Now has correct timing and speech.
+	  Text message for when speech is disabled is yet to be included.
+	* audio/Audio.cc : Needed to add unknown voc chunk type '5' for some
+	  vocs in SI endgame. Just assuming it is silence for now.
+	* flic/playfli.* : Added a 'put_buffer' method to copy the current
+	  contents of a flics ImageBuffer to an ImageWindow
+
 2002-01-28  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* tools/wuc.c, wud.c, rip.c: fixed bugs, made wuc compatible with wud
 

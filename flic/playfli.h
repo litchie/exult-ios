@@ -56,6 +56,7 @@ class playfli {
     ~playfli();
     void info(fliinfo *fi = NULL);
     int play(Image_window *win, int first_frame = 0, int last_frame = -1, unsigned long ticks = 0, int brightness = 100);
+    void put_buffer(Image_window *win);
     inline Palette *get_palette () { return palette; }
  private:
     void initfli();
