@@ -3,6 +3,8 @@
 
 # Where is Ultima 7 installed
 U7PATH=C:/Ultima7
+#Only used for snapshots
+TOOLSPATH=C:/U7Tools
 
 CC=gcc
 # Base of the exult source
@@ -303,19 +305,35 @@ toolsinstall: tools
 	strip wud.exe -o $(U7PATH)/tools/wud.exe
 	strip ucxt.exe -o $(U7PATH)/ucxt.exe
 	strip ucc.exe -o $(U7PATH)/tools/ucc.exe
-	mkdir -p $(U7PATH)/tools/data
+	mkdir -p $(U7PATH)/data
 	cp usecode/ucxt/data/events.data $(U7PATH)/data/events.data
 	cp usecode/ucxt/data/flags.data $(U7PATH)/data/flags.data
 	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/data/opcodes.txt
 	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data/u7misc.data 
 
-toolsdist: toolsinstall
-	cp tools/expack.txt $(U7PATH)/tools/expack.txt
-	cp tools/intrins1.txt $(U7PATH)/tools/intrins1.txt
-	cp tools/intrins2.txt $(U7PATH)/tools/intrins2.txt
-	cp tools/u7bgflag.txt $(U7PATH)/tools/u7bgflag.txt
-	cp tools/u7siflag.txt $(U7PATH)/tools/u7siflag.txt
-	cp tools/ucformat.txt $(U7PATH)/tools/ucformat.txt
+toolsdist: tools
+	mkdir -p $(U7PATH)/tools
+	strip expack.exe -o $(TOOLSPATH)/tools/expack.exe
+	strip mklink.exe -o $(TOOLSPATH)/tools/mklink.exe
+	strip rip.exe -o $(TOOLSPATH)/tools/rip.exe
+	strip shp2pcx.exe -o $(TOOLSPATH)/tools/shp2pcx.exe
+	strip splitshp.exe -o $(TOOLSPATH)/tools/splitshp.exe
+	strip ucdump.exe -o $(TOOLSPATH)/tools/ucdump.exe
+	strip wuc.exe -o $(TOOLSPATH)/tools/wuc.exe
+	strip wud.exe -o $(TOOLSPATH)/tools/wud.exe
+	strip ucxt.exe -o $(TOOLSPATH)/ucxt.exe
+	strip ucc.exe -o $(TOOLSPATH)/tools/ucc.exe
+	mkdir -p $(TOOLSPATH)/data
+	cp usecode/ucxt/data/events.data $(TOOLSPATH)/data/events.data
+	cp usecode/ucxt/data/flags.data $(TOOLSPATH)/data/flags.data
+	cp usecode/ucxt/data/opcodes.txt $(TOOLSPATH)/data/opcodes.txt
+	cp usecode/ucxt/data/u7misc.data $(TOOLSPATH)/data/u7misc.data 
+	cp tools/expack.txt $(TOOLSPATH)/tools/expack.txt
+	cp tools/intrins1.txt $(TOOLSPATH)/tools/intrins1.txt
+	cp tools/intrins2.txt $(TOOLSPATH)/tools/intrins2.txt
+	cp tools/u7bgflag.txt $(TOOLSPATH)/tools/u7bgflag.txt
+	cp tools/u7siflag.txt $(TOOLSPATH)/tools/u7siflag.txt
+	cp tools/ucformat.txt $(TOOLSPATH)/tools/ucformat.txt
 	u2d $(U7PATH)/tools/expack.txt $(U7PATH)/tools/intrins1.txt $(U7PATH)/tools/intrins2.txt $(U7PATH)/tools/u7bgflag.txt $(U7PATH)/tools/u7siflag.txt $(U7PATH)/tools/ucformat.txt
 
 all: $(EXEC) tools
