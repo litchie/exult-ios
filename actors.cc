@@ -1194,7 +1194,7 @@ int Actor::figure_hit_points
 	)
 	{
 	if (npc_num == 0 && no_damage)
-		return;
+		return 0;
 
 	Game_window *gwin = Game_window::get_game_window();
 	int armor = get_armor_points();
