@@ -72,8 +72,8 @@ public:
 	virtual Game_object *get_readied(int index) const
 		{ return 0; }
 					// Add/remove quantities of objs.
-	virtual int add_quantity(int delta, int shapenum, int qual = -359,
-				int framenum = -359, int dontcreate = 0);
+	virtual int add_quantity(int delta, int shapenum, int qual = c_any_qual,
+				int framenum = c_any_framenum, int dontcreate = 0);
 	virtual int create_quantity(int delta, int shapenum, int qual,
 							int framenum);
 	virtual int remove_quantity(int delta, int shapenum, int qual,
@@ -85,8 +85,8 @@ public:
 					// Drop another onto this.
 	virtual int drop(Game_object *obj);
 					// Count contained objs.
-	virtual int count_objects(int shapenum, int qual = -359,
-							int framenum = -359);
+	virtual int count_objects(int shapenum, int qual = c_any_qual,
+							int framenum = c_any_framenum);
 					// Get contained objs.
 	virtual int get_objects(Game_object_vector& vec, int shapenum, int qual,
 						int framenum);

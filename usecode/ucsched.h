@@ -23,9 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucmachine.h"
 #include "useval.h"
 #include "tqueue.h"
-#include "objs.h"
 #include "egg.h"
-//#include "gamewin.h"
 #include "actors.h"
 
 /*

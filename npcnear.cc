@@ -66,7 +66,7 @@ void Npc_proximity_handler::handle_event
 					// Sleep schedule?
 	if (npc->get_schedule_type() == (int) Schedule::sleep &&
 					// But not under a sleep spell?
-	    !npc->get_flag(Actor::asleep) &&
+	    !npc->get_flag(Obj_flags::asleep) &&
 	    gwin->is_main_actor_inside() &&
 	    npc->distance(gwin->get_main_actor()) < 6 && rand()%3 != 0)
 		{

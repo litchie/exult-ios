@@ -24,7 +24,7 @@ class Npc_timer : public Time_sensitive
 	{
 protected:
 	Npc_timer_list *list;		// Where NPC stores ->this.
-	unsigned long get_minute();	// Get game minutes.
+	uint32 get_minute();	// Get game minutes.
 public:
 	Npc_timer(Npc_timer_list *l, int start_delay = 0);
 	virtual ~Npc_timer();
@@ -35,13 +35,13 @@ public:
  */
 class Npc_hunger_timer : public Npc_timer
 	{
-	unsigned long last_time;	// Last game minute when penalized.
+	uint32 last_time;	// Last game minute when penalized.
 public:
 	Npc_hunger_timer(Npc_timer_list *l) : Npc_timer(l, 5000)
 		{ last_time = get_minute(); }
 	virtual ~Npc_hunger_timer();
 					// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(uint32 curtime, long udata);
 	};
 
 /*
@@ -49,12 +49,12 @@ public:
  */
 class Npc_poison_timer : public Npc_timer
 	{
-	unsigned long end_time;		// Time when it wears off.
+	uint32 end_time;		// Time when it wears off.
 public:
 	Npc_poison_timer(Npc_timer_list *l);
 	virtual ~Npc_poison_timer();
 					// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(uint32 curtime, long udata);
 	};
 
 /*
@@ -62,7 +62,7 @@ public:
  */
 class Npc_sleep_timer : public Npc_timer
 	{
-	unsigned long end_time;		// Time when it wears off.
+	uint32 end_time;		// Time when it wears off.
 public:
 	Npc_sleep_timer(Npc_timer_list *l) : Npc_timer(l)
 		{			// Lasts 5-10 seconds..
@@ -71,7 +71,7 @@ public:
 	virtual ~Npc_sleep_timer()
 		{ list->sleep = 0; }
 					// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(uint32 curtime, long udata);
 	};
 
 /*
@@ -79,7 +79,7 @@ public:
  */
 class Npc_invisibility_timer : public Npc_timer
 	{
-	unsigned long end_time;		// Time when it wears off.
+	uint32 end_time;		// Time when it wears off.
 public:
 	Npc_invisibility_timer(Npc_timer_list *l) : Npc_timer(l)
 		{			// Lasts 10-20 seconds..
@@ -88,7 +88,7 @@ public:
 	virtual ~Npc_invisibility_timer()
 		{ list->invisibility = 0; }
 					// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(uint32 curtime, long udata);
 	};
 
 /*
@@ -96,7 +96,7 @@ public:
  */
 class Npc_protection_timer : public Npc_timer
 	{
-	unsigned long end_time;		// Time when it wears off.
+	uint32 end_time;		// Time when it wears off.
 public:
 	Npc_protection_timer(Npc_timer_list *l) : Npc_timer(l)
 		{			// Lasts 10-20 seconds..
@@ -105,7 +105,7 @@ public:
 	virtual ~Npc_protection_timer()
 		{ list->protection = 0; }
 					// Handle events:
-	void handle_event(unsigned long curtime, long udata);
+	void handle_event(uint32 curtime, long udata);
 	};
 
 /*
@@ -191,7 +191,7 @@ void Npc_timer_list::start_protection
  *	Get game minute from start.
  */
 
-unsigned long Npc_timer::get_minute
+uint32 Npc_timer::get_minute
 	(
 	)
 	{
@@ -245,7 +245,7 @@ Npc_hunger_timer::~Npc_hunger_timer
 
 void Npc_hunger_timer::handle_event
 	(
-	unsigned long curtime, 
+	uint32 curtime, 
 	long udata
 	)
 	{
@@ -259,7 +259,7 @@ void Npc_hunger_timer::handle_event
 		delete this;
 		return;
 		}
-	unsigned long minute = get_minute();
+	uint32 minute = get_minute();
 					// Once/hour.
 	if (minute >= last_time + 60)
 		{
@@ -305,16 +305,16 @@ Npc_poison_timer::~Npc_poison_timer
 
 void Npc_poison_timer::handle_event
 	(
-	unsigned long curtime, 
+	uint32 curtime, 
 	long udata
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||	// Long enough?  Or cured?
-	    npc->get_flag(Actor::poisoned) == 0)
+	    npc->get_flag(Obj_flags::poisoned) == 0)
 		{
-		npc->clear_flag(Actor::poisoned);
+		npc->clear_flag(Obj_flags::poisoned);
 		delete this;
 		return;
 		}
@@ -335,19 +335,19 @@ void Npc_poison_timer::handle_event
 
 void Npc_sleep_timer::handle_event
 	(
-	unsigned long curtime, 
+	uint32 curtime, 
 	long udata
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	Actor *npc = list->npc;
 	if (curtime >= end_time ||	// Long enough?  Or cured?
-	    npc->get_flag(Actor::asleep) == 0)
+	    npc->get_flag(Obj_flags::asleep) == 0)
 		{
 					// Avoid waking Penumbra.
 		if (npc->get_schedule_type() != Schedule::sleep)
 			{
-			npc->clear_flag(Actor::asleep);
+			npc->clear_flag(Obj_flags::asleep);
 			int frnum = npc->get_framenum();
 			if ((frnum&0xf) == Actor::sleep_frame)
 				{	// Stand up.
@@ -389,7 +389,7 @@ inline int Wearing_ring
 
 void Npc_invisibility_timer::handle_event
 	(
-	unsigned long curtime, 
+	uint32 curtime, 
 	long udata
 	)
 	{
@@ -401,9 +401,9 @@ void Npc_invisibility_timer::handle_event
 		return;
 		}
 	if (curtime >= end_time ||	// Long enough?  Or cleared.
-	    npc->get_flag(Actor::invisible) == 0)
+	    npc->get_flag(Obj_flags::invisible) == 0)
 		{
-		npc->clear_flag(Actor::invisible);
+		npc->clear_flag(Obj_flags::invisible);
 		gwin->add_dirty(npc);
 		delete this;
 		return;
@@ -418,7 +418,7 @@ void Npc_invisibility_timer::handle_event
 
 void Npc_protection_timer::handle_event
 	(
-	unsigned long curtime, 
+	uint32 curtime, 
 	long udata
 	)
 	{
@@ -430,9 +430,9 @@ void Npc_protection_timer::handle_event
 		return;
 		}
 	if (curtime >= end_time ||	// Long enough?  Or cleared.
-	    npc->get_flag(Actor::protection) == 0)
+	    npc->get_flag(Obj_flags::protection) == 0)
 		{
-		npc->clear_flag(Actor::protection);
+		npc->clear_flag(Obj_flags::protection);
 		gwin->add_dirty(npc);
 		delete this;
 		return;

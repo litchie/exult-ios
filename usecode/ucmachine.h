@@ -40,9 +40,19 @@ class Usecode_machine;
 class Conversation;
 class Usecode_value;
 
+#ifdef MACOS
+// With Metrowerks Codewarrior, we *have* to include useval.h, otherwise this will fail to compile:
+// ...
+// 	typedef Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(
+//		int event,int intrinsic,int num_parms,Usecode_value parms[12]);
+// ...
+// This might be a problem on other compilers besides CodeWarrior (thoug it works with gcc 2.95)
+// This is *not* a bug in CW! It is a "feature" of g++ that it can work without!
+#include "useval.h"
+#endif
+
 #include "exceptions.h"
 #include "tiles.h"
-#include "utils.h"
 #include "vec.h"	// Includes STL vector.
 #include <string>	// STL string
 

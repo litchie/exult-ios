@@ -25,8 +25,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "mouse.h"
 #include "game.h"
 
-using std::vector;
+using std::cout;
+using std::endl;
+using std::strcpy;
 using std::string;
+using std::vector;
 
 //TODO: show_face & show_avatar_choices seem to share code?
 //TODO: show_avatar_choices shouldn't first convert to char**, probably
@@ -155,7 +158,7 @@ void Conversation::show_face(int shape, int frame)
       	gwin->set_mode(Game_window::conversation);
 
 	// Petra?
-	if (shape == 28 && main_actor->get_flag(Actor::petra)) {
+	if (shape == 28 && main_actor->get_flag(Obj_flags::petra)) {
 		shape = main_actor->get_face_shapenum();
 		if (main_actor->get_skin_color() == 0) // WH
 		{
@@ -335,7 +338,7 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 	int shape = main_actor->get_face_shapenum();
 	int frame;
 
-	if (main_actor->get_flag(Actor::petra)) // Petra
+	if (main_actor->get_flag(Obj_flags::petra)) // Petra
 	{
 		shape = 28;
 		frame = 0;

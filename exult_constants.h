@@ -22,14 +22,31 @@
 /*
  *	Sizes:
  */
-const int tilesize = 8;			// A tile (shape) is 8x8 pixels.
-const int tiles_per_chunk = 16;		// A chunk is 16x16 tiles.
-const int chunksize = 16 * 8;		// A chunk has 16 8x8 shapes.
-const int num_chunks = 12*16;		// Total # of chunks in each dir.
-const int chunks_per_schunk = 16;	// # chunks in each superchunk.
-const int tiles_per_schunk = 16*16;	// # tiles in each superchunk.
+const int c_tilesize = 8;			// A tile (shape) is 8x8 pixels.
+const int c_tiles_per_chunk = 16;		// A chunk is 16x16 tiles.
+const int c_chunksize = 16 * 8;		// A chunk has 16 8x8 shapes.
+const int c_num_chunks = 12*16;		// Total # of chunks in each dir.
+const int c_chunks_per_schunk = 16;	// # chunks in each superchunk.
+const int c_tiles_per_schunk = 16*16;	// # tiles in each superchunk.
 					// Total # tiles in each dir.:
-const int num_tiles = tiles_per_chunk*num_chunks;
+const int c_num_tiles = c_tiles_per_chunk*c_num_chunks;
+
+const int c_fade_in_time = 30;	// Time for fade in
+const int c_fade_out_time = 30;	// Time for fade out
+
+const int c_any_shapenum = -359;
+const int c_any_qual = -359;
+const int c_any_framenum = -359;
+
+
+#define MOVE_NODROP (1<<3)
+#define MOVE_FLY (1<<4)
+#define MOVE_LEVITATE (MOVE_FLY|MOVE_NODROP)
+#define	MOVE_WALK (1<<5)
+#define MOVE_SWIM (1<<6)
+#define	MOVE_ALL_TERRAIN ((1<<5)|(1<<6))
+#define MOVE_ETHEREAL (1<<7)
+#define MOVE_ALL (MOVE_FLY|MOVE_WALK|MOVE_SWIM|MOVE_ETHEREAL)
 
 
 #endif

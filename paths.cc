@@ -43,7 +43,7 @@ int Actor_pathfinder_client::get_max_cost
 	int max_cost = 3*cost_to_goal;
 	Game_window *gwin = Game_window::get_game_window();
 					// Do at least 2 screens width.
-	int min_max_cost = (gwin->get_width()/tilesize)*2*2;
+	int min_max_cost = (gwin->get_width()/c_tilesize)*2*2;
 	return max_cost > min_max_cost ? max_cost : min_max_cost;
 	}
 
@@ -62,10 +62,10 @@ int Actor_pathfinder_client::get_step_cost
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	int cx = to.tx/tiles_per_chunk, cy = to.ty/tiles_per_chunk;
+	int cx = to.tx/c_tiles_per_chunk, cy = to.ty/c_tiles_per_chunk;
 	Chunk_object_list *olist = gwin->get_objects(cx, cy);
-	int tx = to.tx%tiles_per_chunk;	// Get tile within chunk.
-	int ty = to.ty%tiles_per_chunk;
+	int tx = to.tx%c_tiles_per_chunk;	// Get tile within chunk.
+	int ty = to.ty%c_tiles_per_chunk;
 	int cost = 1;
 	olist->setup_cache();		// Make sure cache is valid.
 	int water, poison;		// Get tile info.
@@ -258,10 +258,10 @@ int Fast_pathfinder_client::get_step_cost
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	int cx = to.tx/tiles_per_chunk, cy = to.ty/tiles_per_chunk;
+	int cx = to.tx/c_tiles_per_chunk, cy = to.ty/c_tiles_per_chunk;
 	Chunk_object_list *olist = gwin->get_objects(cx, cy);
-	int tx = to.tx%tiles_per_chunk;	// Get tile within chunk.
-	int ty = to.ty%tiles_per_chunk;
+	int tx = to.tx%c_tiles_per_chunk;	// Get tile within chunk.
+	int ty = to.ty%c_tiles_per_chunk;
 	olist->setup_cache();		// Make sure cache is valid.
 	int new_lift;			// Might climb/descend.
 					// For now, look at 1 tile's height.

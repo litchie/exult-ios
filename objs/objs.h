@@ -6,7 +6,7 @@
  **/
 
 /*
-Copyright (C) 1998  Jeffrey S. Freedman
+Copyright (C) 2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,8 +23,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef INCL_OBJS
-#define INCL_OBJS	1
+#ifndef OBJS_H
+#define OBJS_H
 
 #ifdef WIN32
 #define Rectangle RECTX
@@ -36,32 +36,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include "../exult_types.h"
 #endif
 #include <string>	// STL string
-#include "shapeid.h"
+#include "exult_constants.h"
+#include "flags.h"
 #include "rect.h"
-#include "vec.h"
+#include "shapeid.h"
 #include "tqueue.h"
 #include "tiles.h"
-#include "exult_constants.h"
+#include "vec.h"
 
-class Usecode_machine;
-class Vga_file;
-class Game_window;
-class Npc_actor;
-class Rectangle;
+#include "objlist.h"
+
+class Actor;
 class Container_game_object;
 class Egg_object;
+class Game_window;
+class Npc_actor;
 class PathFinder;
-class Actor;
+class Rectangle;
 class Schedule;
+class Usecode_machine;
+class Vga_file;
 
-#define MOVE_NODROP (1<<3)
-#define MOVE_FLY (1<<4)
-#define MOVE_LEVITATE (MOVE_FLY|MOVE_NODROP)
-#define	MOVE_WALK (1<<5)
-#define MOVE_SWIM (1<<6)
-#define	MOVE_ALL_TERRAIN ((1<<5)|(1<<6))
-#define MOVE_ETHEREAL (1<<7)
-#define MOVE_ALL (MOVE_FLY|MOVE_WALK|MOVE_SWIM|MOVE_ETHEREAL)
+template<class T>
+class T_Object_list;
 
 
 /*
@@ -88,9 +85,10 @@ protected:
 	int attack_object(Game_window *gwin, Actor *attacker, int weapon_shape,
 							int ammo_shape);
 public:
-	friend class Object_list;
-	friend class Object_iterator;
-	friend class Object_iterator_backwards;
+	friend class T_Object_list<Game_object *>;
+	friend class T_Object_iterator<Game_object *>;
+	friend class T_Flat_object_iterator<Game_object *>;
+	friend class T_Object_iterator_backwards<Game_object *>;
 	friend class Chunk_object_list;
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
@@ -112,27 +110,6 @@ public:
 		{  }
 	virtual ~Game_object()
 		{  }
-	enum Item_flags {		// Bit #'s of flags:
-		invisible = 0,
-		asleep = 1,
-		charmed = 2,
-		cursed = 3,
-		paralyzed = 7,
-		poisoned = 8,
-		protection = 9,
-		on_moving_barge = 10,	// ??Guessing.
-		okay_to_take = 11,	// Okay to take??
-		tremor = 12,		// ??Earthquake??
-		dancing = 15,		// ??Not sure.
-		dont_render = 16,	// Completely invisible.
-		okay_to_move = 18,	// ??Guess: for Usecode-created items.
-		okay_to_land = 21,	// Used for flying-carpet.
-		confused = 25,		// ??Guessing.
-		in_motion = 26,		// ??Guessing (cart, boat)??
-		met = 28,			// Has the npc been met
-		// Flags > 31
-		petra = 35			// Guess
-		};
 	int get_tx() const		// Get tile (0-15) within chunk.
 		{ return (shape_pos >> 4) & 0xf; }
 	int get_ty() const
@@ -140,15 +117,15 @@ public:
 	int get_lift() const
 		{ return lift; }
 	int get_worldx() const		// Get x-coord. within world.
-		{ return cx*chunksize + get_tx()*tilesize; }
+		{ return cx*c_chunksize + get_tx()*c_tilesize; }
 	int get_worldy() const		// Get y-coord. within world.
-		{ return cy*chunksize + get_ty()*tilesize; }
+		{ return cy*c_chunksize + get_ty()*c_tilesize; }
 					// Get location in abs. tiles.
 	void get_abs_tile(int& atx, int& aty, int& atz) const
 		{
 		atz = get_lift();
-		atx = cx*tiles_per_chunk + get_tx();
-		aty = cy*tiles_per_chunk + get_ty();
+		atx = cx*c_tiles_per_chunk + get_tx();
+		aty = cy*c_tiles_per_chunk + get_ty();
 		}
 					// Same thing.
 	Tile_coord get_abs_tile_coord() const
@@ -214,12 +191,12 @@ public:
 	template<class T>
 	static int find_nearby_static(Exult_vector<T*>& vec, Tile_coord pos,
 			int shapenum, int delta, int mask, 
-			int qual = -359, int framenum = -359);
+			int qual = c_any_qual, int framenum = c_any_framenum);
 
 #define HDR_DECLARE_FIND_NEARBY(decl_type) \
 	static int find_nearby(decl_type vec, Tile_coord pos, \
 			int shapenum, int delta, int mask,  \
-			int qual = -359, int framenum = -359)
+			int qual = c_any_qual, int framenum = c_any_framenum)
 
 	HDR_DECLARE_FIND_NEARBY(Egg_vector&);
 	HDR_DECLARE_FIND_NEARBY(Actor_vector&);
@@ -231,13 +208,13 @@ public:
 	template<class T>
 	static int find_nearby(Exult_vector<T*>& vec, Tile_coord pos,
 			int shapenum, int delta, int mask, 
-			int qual = -359, int framenum = -359);
+			int qual = c_any_qual, int framenum = c_any_framenum);
 #endif
 
 	int find_nearby_actors(Actor_vector& vec, int shapenum, int delta) const;
 	int find_nearby_eggs(Egg_vector& vec, int shapenum, int delta) const;
 	int find_nearby(Game_object_vector& vec, int shapenum, int delta, int mask,
-			int qual = -359, int framenum = -359) const;
+			int qual = c_any_qual, int framenum = c_any_framenum) const;
 
 	Game_object *find_closest(int *shapenums, int num_shapes);
 					// Find nearby unblocked tile.
@@ -320,8 +297,8 @@ public:
 	virtual int is_egg() const	// An egg?
 		{ return 0; }
 					// Count contained objs.
-	virtual int count_objects(int shapenum, int qual = -359,
-							int framenum = -359)
+	virtual int count_objects(int shapenum, int qual = c_any_qual,
+							int framenum = c_any_framenum)
 		{ return 0; }
 					// Get contained objs.
 	virtual int get_objects(Game_object_vector& vec, int shapenum, int qual,
@@ -330,8 +307,8 @@ public:
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0)
 		{ return 0; }
-	virtual int add_quantity(int delta, int shapenum, int qual = -359,
-				int framenum = -359, int dontcreate = 0)
+	virtual int add_quantity(int delta, int shapenum, int qual = c_any_qual,
+				int framenum = c_any_framenum, int dontcreate = 0)
 		{ return delta; }
 	virtual int create_quantity(int delta, int shapenum, int qual,
 								int framenum)
@@ -372,71 +349,6 @@ public:
 	virtual int get_low_lift() const { return -1; }
 	virtual void set_low_lift(int l) { }
 
-	};
-
-/*
- *	A list of objects chained together with the 'next' and 'prev'
- *	fields:
- */
-class Object_list
-	{
-	Game_object *first;		// ->first in (circular) chain.
-	unsigned short iter_count;	// # of iterators.
-public:
-	friend class Object_iterator;
-	friend class Flat_object_iterator;
-	friend class Object_iterator_backwards;
-	Object_list(Game_object *f = 0) : first(f), iter_count(0)
-		{  }
-	~Object_list();
-	void report_problem();		// Message if iterators exist.
-	int is_empty()
-		{ return first == 0; }
-	void add_iterator()
-		{ iter_count++; }
-	void remove_iterator()
-		{ iter_count--; }
-	Game_object *get_first()
-		{ return first; }
-					// Insert at head of chain.
-	void insert(Game_object *nobj)
-		{
-		if (iter_count)
-			report_problem();
-		if (!first)		// First one.
-			nobj->next = nobj->prev = nobj;
-		else
-			{
-			nobj->next = first;
-			nobj->prev = first->prev;
-			first->prev->next = nobj;
-			first->prev = nobj;
-			}
-		first = nobj;
-		}
-					// Insert before given obj.
-	void insert_before(Game_object *nobj, Game_object *before)
-		{
-		if (iter_count)
-			report_problem();
-		nobj->next = before;
-		nobj->prev = before->prev;
-		before->prev->next = nobj;
-		before->prev = nobj;
-		first = before == first ? nobj : first;
-		}
-					// Append.
-	void append(Game_object *nobj)
-		{ insert(nobj); first = nobj->next; }
-	void remove(Game_object *dobj)
-		{
-		if (iter_count)
-			report_problem();
-		if (dobj == first)
-			first = dobj->next != first ? dobj->next : 0;
-		dobj->next->prev = dobj->prev;
-		dobj->prev->next = dobj->next;
-		}
 	};
 
 #endif

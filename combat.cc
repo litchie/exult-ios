@@ -58,7 +58,7 @@ void Combat_schedule::find_opponents
 		int cnt = gwin->get_party(party, 1);
 		for (int i = 0; i < cnt; i++)
 					// But ignore invisible ones.
-			if (!party[i]->get_flag(Actor::invisible))
+			if (!party[i]->get_flag(Obj_flags::invisible))
 				opponents.push(party[i]);
 		return;
 	}
@@ -151,7 +151,7 @@ Actor *Combat_schedule::find_foe
 		}
 		case Actor::nearest:
 		{
-			int dist, best_dist = 4*tiles_per_chunk;
+			int dist, best_dist = 4*c_tiles_per_chunk;
 			for (Actor_queue::const_iterator it = opponents.begin(); it != opponents.end(); ++it)
 			{
 				Actor *opp = *it;
@@ -384,7 +384,7 @@ inline int Need_new_opponent
 					// Nonexistent or dead?
 	if (!opponent || opponent->is_dead_npc() ||
 					// Or invisible?
-	    opponent->get_flag(Game_object::invisible))
+	    opponent->get_flag(Obj_flags::invisible))
 		return 1;
 					// See if off screen.
 	Tile_coord t = opponent->get_abs_tile_coord();
@@ -447,7 +447,7 @@ void Combat_schedule::now_what
 	Game_window *gwin = Game_window::get_game_window();
 	if (npc->get_attack_mode() == Actor::manual)
 		return;
-	if (npc->get_flag(Actor::asleep))
+	if (npc->get_flag(Obj_flags::asleep))
 		{
 		npc->start(200, 1000);	// Check again in a second.
 		return;
@@ -578,7 +578,7 @@ void Duel_schedule::find_opponents
 	{
 	opponents.clear();
 	Actor_vector vec;			// Find all nearby NPC's.
-	npc->find_nearby_actors(vec, -359, 24);
+	npc->find_nearby_actors(vec, c_any_shapenum, 24);
 	for (Actor_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Actor *opp = *it;

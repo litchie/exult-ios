@@ -410,7 +410,7 @@ void Kid_games_schedule::now_what
 	else				// No more kids?  Search.
 	{
 		Actor_vector vec;
-		npc->find_nearby_actors(vec, -359, 16);
+		npc->find_nearby_actors(vec, c_any_shapenum, 16);
 		for (Actor_vector::const_iterator it = vec.begin();
 						it != vec.end(); ++it)
 		{
@@ -608,7 +608,7 @@ void Sleep_schedule::ending
 		int frnum = bed->get_framenum();
 		Actor_vector occ;		// Unless there's another occupant.
 		if (frnum >= 4 && frnum <= 16 && !(frnum%2) &&
-				bed->find_nearby_actors(occ, -359, 0) < 2)
+				bed->find_nearby_actors(occ, c_any_shapenum, 0) < 2)
 			bed->set_frame(frnum - 1);
 		}
 	if (floorloc.tx >= 0)		// Get back on floor.
@@ -732,7 +732,7 @@ void Waiter_schedule::get_customer
 	if (customers.empty())			// Got to search?
 	{
 		Actor_vector vec;		// Look within 32 tiles;
-		npc->find_nearby_actors(vec, -359, 32);
+		npc->find_nearby_actors(vec, c_any_shapenum, 32);
 		for (Actor_vector::const_iterator it = vec.begin();
 							it != vec.end(); ++it)
 		{		// Filter them.
@@ -1169,7 +1169,7 @@ Tile_coord Schedule_change::get_pos() const
 	    cy = 16*(superchunk/12) + y/16,
 	    tx = x%16,
 	    ty = y%16;
-	return Tile_coord(cx*tiles_per_chunk + tx, cy*tiles_per_chunk + ty, 0);
+	return Tile_coord(cx*c_tiles_per_chunk + tx, cy*c_tiles_per_chunk + ty, 0);
 	}
 
 

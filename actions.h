@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "tiles.h"
 
 class Actor;
+class Game_object;
 class Tile_coord;
 class PathFinder;
 

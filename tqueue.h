@@ -13,6 +13,8 @@
 #include <vector>
 #include <list>
 
+#include "exult_types.h"
+
 
 
 /*
@@ -28,7 +30,7 @@ public:
 	virtual ~Time_sensitive();
 	int in_queue()
 		{ return queue_cnt > 0; }
-	virtual void handle_event(unsigned long curtime, long udata) = 0;
+	virtual void handle_event(uint32 curtime, long udata) = 0;
 	};
 
 class Time_queue;
@@ -42,8 +44,8 @@ class Queue_entry
 	// Queue_entry *next, *prev;	// Next, prev. in queue.
 	Time_sensitive *handler;	// Object to activate.
 	long udata;			// Data to pass to handler.
-	unsigned long time;			// Time when this is due.
-	inline void set(unsigned long t, Time_sensitive *h, long ud)
+	uint32 time;			// Time when this is due.
+	inline void set(uint32 t, Time_sensitive *h, long ud)
 		{
 		time = t;
 		handler = h;
@@ -63,7 +65,7 @@ class Time_queue
 	Temporal_sequence data;
 
 	// Activate head + any others due.
-	void activate0(unsigned long curtime);
+	void activate0(uint32 curtime);
 public:
 	friend class Time_queue_iterator;
 	// Time_queue() : head(0), free_entries(0)
@@ -71,12 +73,12 @@ public:
 		{  }
 	void clear();			// Remove all entries.
 					// Add an entry.
-	void add(unsigned long t, Time_sensitive *obj, long ud);
+	void add(uint32 t, Time_sensitive *obj, long ud);
 					// Remove object's entry.
 	int remove(Time_sensitive *obj);
 	int find(Time_sensitive *obj);	// Find an entry.
 					// Activate entries that are 'due'.
-	inline void activate(unsigned long curtime)
+	inline void activate(uint32 curtime)
 		{
 		// if (head && !(curtime < head->time))
 		if (data.size() && !(curtime < data.front().time))

@@ -273,7 +273,7 @@ void Barge_object::gather
 		{
 		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
 		Game_object *obj;
-		Object_iterator next(chunk);
+		Object_iterator next(chunk->get_objects());
 		while ((obj = next.get_next()) != 0)
 			{		// Look at each object.
 			if (obj == this)
@@ -293,9 +293,9 @@ void Barge_object::gather
 	if (boat == -1)			// Test for boat the first time.
 		{
 		Chunk_object_list *chunk = gwin->get_objects(
-			center.tx/tiles_per_chunk, center.ty/tiles_per_chunk);
-		ShapeID flat = chunk->get_flat(center.tx%tiles_per_chunk,
-						center.ty%tiles_per_chunk);
+			center.tx/c_tiles_per_chunk, center.ty/c_tiles_per_chunk);
+		ShapeID flat = chunk->get_flat(center.tx%c_tiles_per_chunk,
+						center.ty%c_tiles_per_chunk);
 		if (flat.is_invalid())
 			boat = 0;
 		else
@@ -317,7 +317,7 @@ void Barge_object::add_dirty
 	{
 	int x, y;			// Get lower-right corner.
 	gwin->get_shape_location(this, x, y);
-	int w = xtiles*tilesize, h = ytiles*tilesize;
+	int w = xtiles*c_tilesize, h = ytiles*c_tilesize;
 	Rectangle box(x - w, y - h, w, h);
 	box.enlarge(10);		// Make it a bit bigger.
 	if (dir%2)			// Horizontal?  Stretch.

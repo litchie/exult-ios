@@ -62,9 +62,9 @@ void Game_window::read_npcs
 					// Create main actor.
 	npcs[0] = main_actor = new Main_actor(nfile, 0, 0);
 	if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-		main_actor->clear_flag(Actor::dont_render);
+		main_actor->clear_flag(Obj_flags::dont_render);
 	else
-		main_actor->set_flag(Actor::dont_render);
+		main_actor->set_flag(Obj_flags::dont_render);
 	int i;
 	for (i = 1; i < num_npcs; i++)	// Create the rest.
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
