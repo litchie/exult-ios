@@ -30,10 +30,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "databuf.h"
 
 // Conversion types for Midi files
-#define XMIDI_CONVERT_NOCOVERSION	0
+#define XMIDI_CONVERT_NOCONVERSION	0
 #define XMIDI_CONVERT_MT32_TO_GM	1
 #define XMIDI_CONVERT_MT32_TO_GS	2
-#define XMIDI_CONVERT_GSMT_TO_GS	0
+#define XMIDI_CONVERT_GSMT_TO_GS	3
 
 struct midi_event
 {
@@ -61,16 +61,17 @@ protected:
 	midi_descriptor	info;
 
 private:
-	midi_event		**events;
-	signed short	*timing;
+	midi_event			**events;
+	signed short		*timing;
 
-	midi_event		*list;
-	midi_event		*current;
+	midi_event			*list;
+	midi_event			*current;
 	
 	const static char	mt32asgm[128];
 	const static char	mt32asgs[256];
-	int				convert_from_mt32;
-	bool			*fixed;
+	bool 				bank127[16];
+	int					convert_type;
+	bool				*fixed;
 
 public:
 	XMIDI(DataSource *source, int pconvert);
