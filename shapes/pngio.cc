@@ -136,7 +136,7 @@ int Import_png8
 	return (1);
 	}
 
-#if 0	/* ++++++ Not done. */
+
 /*
  *	Write out an 8-bit .png file.  
  *
@@ -149,7 +149,7 @@ int Export_png8
 	int width, int height,		// Image dimensions.
 	int rowbytes,			// # bytes/row.  (Should be
 					//   width.)
-	int& xoff, int& yoff,		// (X,Y) offsets from top-left of
+	int xoff, int yoff,		// (X,Y) offsets from top-left of
 					//   image.
 	unsigned char *pixels,		// ->pixels to write.
 	unsigned char *palette,		// ->palette,
@@ -161,16 +161,8 @@ int Export_png8
 	FILE *fp = fopen(pngname, "wb");
 	if (!fp)
 		return (0);
-++++++++++++++++++++++++++++++++
-	unsigned char sigbuf[4];		// Make sure it's a .png.
-	if (fread(sigbuf, 1, sizeof(sigbuf), fp) != sizeof(sigbuf) ||
-	    png_sig_cmp(sigbuf, 0, sizeof(sigbuf)))
-		{
-		fclose(fp);
-		return (0);
-		}
 					// Initialize.
-	png_structp png = png_create_read_struct(PNG_LIBPNG_VER_STRING,
+	png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING,
 						0, 0, 0);
 	if (!png)
 		{
@@ -181,54 +173,35 @@ int Export_png8
 	png_infop info = png_create_info_struct(png);
 	if (setjmp(png->jmpbuf))	// Handle errors.
 		{
-		png_destroy_read_struct(&png, &info, 0);
+		png_destroy_write_struct(&png, &info);
 		fclose(fp);
 		return (0);
 		}
 	png_init_io(png, fp);		// Init. for reading.
-					// Indicate we already read something.
-	png_set_sig_bytes(png, sizeof(sigbuf));
-	png_read_info(png, info);	// Read in image info.
-	unsigned long w, h;
-	int depth, color, interlace;
-	png_get_IHDR(png, info, &w, &h, &depth, &color,
-		&interlace, 0, 0);
-	width = (int) w;
-	height = (int) h;
-	if (color != PNG_COLOR_TYPE_PALETTE)
-		{
-		png_destroy_read_struct(&png, &info, 0);
-		fclose(fp);
-		return (0);
-		}
-	if (depth < 8)
-		png_set_packing(png);
-	png_colorp pngpal;		// Get palette.
-	png_get_PLTE(png, info, &pngpal, &pal_size);
-	palette = new unsigned char[3*pal_size];
+	png_set_IHDR(png, info, width, height, 8, PNG_COLOR_TYPE_PALETTE,
+			PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
+						PNG_FILTER_TYPE_DEFAULT);
+	png_color pngpal[256];		// Set palette.
 	for (int i = 0; i < pal_size; i++)
 		{
-		palette[3*i] = pngpal[i].red;
-		palette[3*i + 1] = pngpal[i].green;
-		palette[3*i + 2] = pngpal[i].blue;
+		pngpal[i].red = palette[3*i];
+		pngpal[i].green = palette[3*i + 1];
+		pngpal[i].blue = palette[3*i + 2];
 		}
-					// Get updated info.
-	png_read_update_info(png, info);
-					// Allocate pixel buffer.
-	rowbytes = png_get_rowbytes(png, info);
-	png_bytep image = new png_byte[height*rowbytes];
-	pixels = image;			// Return ->.
-	png_bytep rowptr;		// Read in rows.
+	png_set_PLTE(png, info, &pngpal[0], pal_size);
+	png_set_oFFs(png, info, xoff, yoff, PNG_OFFSET_PIXEL);
+					// Write out info.
+	png_write_info(png, info);
+	png_bytep rowptr;		// Write out rows.
 	int r;
-	for (r = 0, rowptr = image; r < height; r++, rowptr += rowbytes)
-		png_read_rows(png, &rowptr, 0, 1);
-	png_read_end(png, info);	// Get the rest.
+	for (r = 0, rowptr = pixels; r < height; r++, rowptr += rowbytes)
+		png_write_row(png, rowptr);
+	png_write_end(png, 0);		// Done.
 					// Clean up.
-	png_destroy_read_struct(&png, &info, 0);
+	png_destroy_write_struct(&png, &info);
 	fclose(fp);
 	return (1);
 	}
-#endif
 
 #if 0	/* ++++++ Returns 32-bit data. */
 /*
