@@ -1,3 +1,6 @@
+2002-06-06 Simon Quinn <email@simonquinn.co.uk>
+	* Recorded Exult title music in OGG pack and implemented in code
+
 2002-06-03 Simon Quinn <email@simonquinn.co.uk>
 	* Play different SFX track at night and crickets
 	* Add config option <audio/disablepause> to toggle the pausing of
