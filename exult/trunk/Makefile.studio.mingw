@@ -30,8 +30,7 @@ INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
 
 CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO -DHAVE_SNPRINTF -DHAVE_PNG_H -DHAVE_FREETYPE2 $(INCLUDES)
 
-# NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
-CXXFLAGS= -O2 -fnative-struct -fvtable-thunks -include mingw_kludges.h
+CXXFLAGS= -O2 -fnative-struct -fvtable-thunks -Dsnprintf=_snprintf
 CXX=g++
 
 CFLAGS=-fnative-struct -fvtable-thunks
