@@ -267,9 +267,9 @@ void Egg_object::set_area
 	default:
 		{
 		int width = 2*distance;
+		width++;		// Added 8/1/01.
 		if (distance <= 1)	// Small?
 			{
-			width++;
 					// More guesswork:
 			if (criteria == external_criteria)
 				width += 2;

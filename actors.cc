@@ -1985,6 +1985,7 @@ inline void Call_readied_usecode
 	{
 	if (index != Actor::rfinger && index != Actor::lfinger && 
 	    index != Actor::belt &&
+	    index != Actor::neck &&
 	    index != Actor::head && index != Actor::hands2_spot &&
 	    index != Actor::lhand && index != Actor::rhand)
 		return;
@@ -2024,6 +2025,9 @@ void Actor::init_readied
 	if (spots[belt])
 		Call_readied_usecode(gwin, this, belt, spots[belt],
 						Usecode_machine::readied);
+	if (spots[neck])
+		Call_readied_usecode(gwin, this, neck, spots[neck],
+						Usecode_machine::readied);
 	if (spots[head])
 		Call_readied_usecode(gwin, this, head, spots[head],
 						Usecode_machine::readied);
@@ -2049,7 +2053,9 @@ void Actor::remove
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int index = Actor::find_readied(obj);	// Remove from spot.
-	Call_readied_usecode(gwin, this, index,
+					// Don't call if doing this from UC.
+	if (!gwin->get_usecode()->in_usecode())
+		Call_readied_usecode(gwin, this, index,
 					obj, Usecode_machine::unreadied);
 	Container_game_object::remove(obj);
 	if (index >= 0)
