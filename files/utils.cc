@@ -112,6 +112,31 @@ void to_uppercase
 	}
 }
 
+/*
+ *	Vonvert just the last part of a filename to uppercase.
+ */
+
+void base_to_uppercase
+	(
+	string& str
+	)
+{
+					// Go backwards.
+	for(string::reverse_iterator X = str.rbegin(); X != str.rend(); ++X)
+		{
+					// Stop at separator.
+		if (*X == '/' || *X == '\\' || *X == ':')
+			break;
+#if (defined(BEOS) || defined(OPENBSD) || defined(CYGWIN))
+		if ((*X >= 'a') && (*X <= 'z')) *X -= 32;
+#else
+		*X = std::toupper(*X);
+#endif         
+	}
+}
+
+
+
 static void switch_slashes(
 	string & name
 	)
@@ -189,13 +214,16 @@ void U7open
 	// problems when re-using stream objects
 	in.clear();
 	in.open(name.c_str(), mode);		// Try to open original name.
-	if (!in.good())			// No good?  Try upper-case.
-	{
-		to_uppercase(name);
-		in.open(name.c_str(), mode);
-		if (!in.good())
-			throw file_open_exception(name);
-	}
+	if (in.good())
+		return;
+	base_to_uppercase(name);		// No good?  Try upper-case.
+	in.open(name.c_str(), mode);
+	if (in.good())
+		return;
+	to_uppercase(name);
+	in.open(name.c_str(), mode);
+	if (!in.good())
+		throw file_open_exception(name);
 }
 
 #ifdef ALPHA_LINUX_CXX
@@ -243,13 +271,16 @@ void U7open
 	out.clear();
 
 	out.open(name.c_str(), mode);		// Try to open original name.
-	if (!out.good())		// No good?  Try upper-case.
-	{
-		to_uppercase(name);
-		out.open(name.c_str(), mode);
-		if (!out.good())
-			throw file_open_exception(name);
-	}
+	if (out.good())
+		return;
+	base_to_uppercase(name);		// No good?  Try upper-case.
+	out.open(name.c_str(), mode);
+	if (out.good())
+		return;
+	to_uppercase(name);
+	out.open(name.c_str(), mode);
+	if (!out.good())
+		throw file_open_exception(name);
 }
 
 #ifdef ALPHA_LINUX_CXX
@@ -282,11 +313,15 @@ std::FILE* U7open
 	string name = get_system_path(fname);
 
 	std::FILE *f = std::fopen(name.c_str(), mode);
-	if (!f)				// No good?  Try upper-case.
-	{
-		to_uppercase(name);
-		f = std::fopen(name.c_str(), mode);
-	}
+	if (f)
+		return (f);
+					// No good?  Try upper-case.
+	base_to_uppercase(name);
+	f = std::fopen(name.c_str(), mode);
+	if (f)
+		return (f);
+	to_uppercase(name);
+	f = std::fopen(name.c_str(), mode);
 	if (!f)
 		throw file_open_exception(name);
 	return (f);
@@ -322,11 +357,14 @@ int U7exists
 	string name = get_system_path(fname);
 	
 	exists = (stat(name.c_str(), &sbuf) == 0);
-	if( !exists )
-	{
-		to_uppercase(name);
-		exists = (stat(name.c_str(), &sbuf) == 0);
-	}
+	if( exists )
+		return exists;
+	base_to_uppercase(name);
+	exists = (stat(name.c_str(), &sbuf) == 0);
+	if (exists)
+		return exists;
+	to_uppercase(name);
+	exists = (stat(name.c_str(), &sbuf) == 0);
 	return exists;
 }
 

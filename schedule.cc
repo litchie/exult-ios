@@ -85,6 +85,7 @@ int Schedule::try_street_maintenance
 	{
 					// What to look for:
 	static int night[] = {322, 372, 889};
+	static int sinight[] = {290, 291, 889};
 	static int day[] = {290, 291, 526};
 
 	if (npc->Actor::get_npc_num() <= 0)
@@ -92,10 +93,11 @@ int Schedule::try_street_maintenance
 	int *shapes;
 	Game_window *gwin = Game_window::get_game_window();
 	int hour = gwin->get_hour();
+	bool bg = (Game::get_game_type() == BLACK_GATE);
 	if (hour >= 9 && hour < 18)
 		shapes = &day[0];
 	else if (hour >= 18 || hour < 6)
-		shapes = &night[0];
+		shapes = bg ? &night[0] : &sinight[0];
 	else
 		return 0;		// Dusk or dawn.
 	Tile_coord npcpos = npc->get_abs_tile_coord();
@@ -115,10 +117,18 @@ int Schedule::try_street_maintenance
 		int j;
 		for (j = 0; j < cnt; j++)
 			{
+			Game_object *obj = objs[j];
+			int shnum = obj->get_shapenum();
+			if (!bg &&	// Serpent isle?  Shutters?
+			    (shnum == 290 || shnum == 291))
+					// Want closed during day.
+				if ((shapes == day) !=
+					(obj->get_framenum() <= 3))
+					continue;
 			if ((pact = Path_walking_actor_action::create_path(
-			    npcpos, objs[j]->get_abs_tile_coord(), cost)) != 0)
+			    npcpos, obj->get_abs_tile_coord(), cost)) != 0)
 				{
-				found = objs[j];
+				found = obj;
 				break;
 				}
 			}
@@ -140,7 +150,8 @@ Street_maintenance_schedule::Street_maintenance_schedule
 	Actor *n, 
 	Actor_action *p, 
 	Game_object *o
-	) : Schedule(n), paction(p), obj(o), shapenum(o->get_shapenum())
+	) : Schedule(n), paction(p), obj(o), shapenum(o->get_shapenum()),
+				framenum(o->get_framenum())
 	{
 	}
 
@@ -162,7 +173,7 @@ void Street_maintenance_schedule::now_what
 		return;
 		}
 	if (npc->distance(obj) == 1 &&	// We're there.
-	    obj->get_shapenum() == shapenum)
+	    obj->get_shapenum() == shapenum && obj->get_framenum() == framenum)
 		{
 		cout << npc->get_name() << 
 			" about to perform street maintenance" << endl;
@@ -182,9 +193,18 @@ void Street_maintenance_schedule::now_what
 		case 372:
 			npc->say(first_close_shutters, last_close_shutters);
 			break;
-		case 290:		// Open shutters.
+		case 290:		// Open shutters (or both for SI).
 		case 291:
-			npc->say(first_open_shutters, last_open_shutters);
+			if (Game::get_game_type() == BLACK_GATE)
+				npc->say(first_open_shutters, 
+							last_open_shutters);
+			else		// SI.
+				if (framenum <= 3)
+					npc->say(first_open_shutters, 
+							last_open_shutters);
+				else
+					npc->say(first_close_shutters, 
+							last_close_shutters);
 			break;
 		case 889:		// Turn on lamp.
 			npc->say(first_lamp_on, last_lamp_on);
@@ -193,6 +213,7 @@ void Street_maintenance_schedule::now_what
 			npc->say(lamp_off, lamp_off);
 			break;
 			}
+		shapenum = 0;		// Don't want to repeat.
 		return;
 		}
 	cout << npc->get_name() << 

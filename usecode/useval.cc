@@ -178,12 +178,26 @@ int Usecode_value::operator==
 			: v2.type == array_type &&
 					!value.intval && !v2.get_array_size();
 	else if (type == pointer_type)	// Might be ptr==0.
-		return (v2.type == pointer_type || v2.type == int_type) && 
-						(value.ptr == v2.value.ptr);
+		{			// Or ptr == array.  Test elem. 0.
+		if (v2.type == pointer_type || v2.type == int_type)
+			return (value.ptr == v2.value.ptr);
+		else if (v2.type == array_type && v2.get_array_size())
+			{
+			const Usecode_value& val2 = v2.value.array[0];
+			return value.ptr == val2.value.ptr;
+			}
+		else
+			return 0;
+		}
 	else if (type == array_type)
 		{
 		if (v2.type == int_type)
 			return !get_array_size() && !v2.get_int_value();
+		else if (v2.type == pointer_type && get_array_size())
+			{
+			Usecode_value& v = get_elem(0);
+			return v2.value.ptr == v.value.ptr;
+			}
 		return 0;		// +++++Should we compare arrays.
 		}
 	else if (type == string_type)

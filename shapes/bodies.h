@@ -31,7 +31,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 class Body_lookup
 	{
-	static short table[];		// Table of values.
+	static short bg_table[];	// Tables of values.
+	static short si_table[];
 public:
 	static int find(int liveshape, int& deadshape, int& deadframe);
 	};
