@@ -81,7 +81,8 @@ private:
 	int brightness;			// Palette brightness.
 					// Dragging info:
 	Game_object *dragging;		// What's being dragged.
-	int dragging_cx, dragging_cy;	// Object's original chunk coords.
+	Gump_object *dragging_gump;
+	int dragging_cx, dragging_cy;	// Object's original chunk/gump coords.
 					// Last mouse, paint positions:
 	int dragging_mousex, dragging_mousey, dragging_paintx, dragging_painty;
 	Rectangle dragging_rect;	// Rectangle to repaint.
@@ -209,8 +210,10 @@ public:
 			s->get_height()
 			);
 		}
-					// Get location of object's origin
+					// Get screen area of a gump.
 					//   for painting it.
+	Rectangle get_gump_rect(Gump_object *gump);
+					// Get screen loc. of object.
 	void get_shape_location(Game_object *obj, int& x, int& y)
 		{
 		x = (obj->get_cx() - chunkx)*chunksize +
@@ -296,6 +299,8 @@ public:
 	void start_actor(int winx, int winy);
 	void stop_actor();		// Stop moving the actor.
 	int find_roof(int cx, int cy);	// Find a "roof" in given chunk.
+					// Find gump (x, y) is in.
+	Gump_object *find_gump(int x, int y);
 					// Find objects that (x,y) is in.
 	int find_objects(int x, int y, Game_object **list);
 	int find_objects(int lift, int x, int y, Game_object **list);

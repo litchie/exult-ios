@@ -25,6 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>	/* Debugging */
 #include "gamewin.h"
+#include "gumps.h"
 
 /*
  *	Begin a possible drag when the mouse button is depressed.
@@ -38,20 +39,41 @@ int Game_window::start_dragging
 	)
 	{
 	dragging = 0;
+	dragging_gump = 0;
 	Game_object *found[100];	// See what was clicked on.
-	int cnt = find_objects(x, y, found);
-	if (!cnt)
-		return (0);
-	dragging = found[cnt - 1];	// Store object.
-	if (!dragging->is_dragable())	// Don't want to move walls.
+	int cnt;
+					// First see if it's a gump.
+	dragging_gump = find_gump(x, y);
+	if (dragging_gump)
 		{
-		dragging = 0;
-		return (0);
+cout << "Dragging_gump != 0\n";
+		cnt = dragging_gump->find_objects(this, x, y, found);
+		if (cnt)
+			{
+			dragging = found[cnt - 1];
+			dragging_gump->get_shape_location(dragging,
+					dragging_paintx, dragging_painty);
+			}
+		//++++Just drag gump.
+		}
+	if (!dragging)			// Not found in gump?
+		{
+		dragging_gump = 0;	//+++++++
+		cnt = find_objects(x, y, found);
+		if (!cnt)
+			return (0);
+		dragging = found[cnt - 1];
+					// Don't want to move walls.
+		if (!dragging->is_dragable())	
+			{
+			dragging = 0;
+			return (0);
+			}
+					// Get coord. where painted.
+		get_shape_location(dragging, dragging_paintx, dragging_painty);
 		}
 	dragging_mousex = x;
 	dragging_mousey = y;
-					// Get coord. where painted.
-	get_shape_location(dragging, dragging_paintx, dragging_painty);
 	dragging_cx = dragging->get_cx();
 	dragging_cy = dragging->get_cy();
 	dragging_rect = Rectangle(0, 0, 0, 0);
@@ -73,13 +95,19 @@ void Game_window::drag
 	if (dragging_rect.w == 0)
 		{			// First motion.
 					// Store original pos. on screen.
-		dragging_rect = get_shape_rect(dragging);
+		dragging_rect = dragging_gump ?
+			dragging_gump->get_shape_rect(dragging)
+			: get_shape_rect(dragging);
 		dragging_rect.x -= pad;	// Make a little bigger.
 		dragging_rect.y -= pad;
 		dragging_rect.w += 2*pad;
 		dragging_rect.h += 2*pad;
 					// Remove from actual position.
-		get_objects(dragging_cx, dragging_cy)->remove(dragging);
+		if (dragging_gump)
+			dragging_gump->remove(dragging);
+		else
+			get_objects(dragging_cx, dragging_cy)->remove(
+								dragging);
 		}
 	win->set_clip(0, 0, get_width(), get_height());
 	Rectangle rect = clip_to_win(dragging_rect);
@@ -108,12 +136,23 @@ void Game_window::drop_dragged
 	if (!dragging)
 		return;
 	drag(x, y);			// Get object to mouse pos.
+					// First see if it's a gump.
+	Gump_object *on_gump = find_gump(x, y);
+	if (on_gump)
+		{
+		on_gump->add(dragging);
+		dragging = 0;
+		dragging_gump = 0;
+		paint();
+		return;
+		}
 	Game_object *found[100];	// Was it dropped on something?
 	int cnt = find_objects(x, y, found);
 	for (int i = cnt - 1; i >= 0; i--)
 		if (found[i]->drop(dragging))
 			{
 			dragging = 0;
+			dragging_gump = 0;
 			paint();
 			return;
 			}
@@ -124,8 +163,14 @@ void Game_window::drop_dragged
 		if (drop(lift))
 			break;
 	if (lift == max_lift)		// Couldn't drop?  Put it back.
-		get_objects(dragging_cx, dragging_cy)->add(dragging);
+		{
+		if (dragging_gump)
+			dragging_gump->add(dragging);
+		else
+			get_objects(dragging_cx, dragging_cy)->add(dragging);
+		}
 	dragging = 0;
+	dragging_gump = 0;
 	paint();
 	}
 
