@@ -101,7 +101,7 @@ public:
 		{ return type == (int) array_type; }
 	bool is_int() const
 		{ return type == (int) int_type; }
-	unsigned int get_int_value() const	// Get integer value.
+	long get_int_value() const	// Get integer value.
 		{ return (type == (int) int_type ? value.intval : 0); }
 					// Get string value.
 	const char *get_str_value() const

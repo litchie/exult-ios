@@ -454,7 +454,7 @@ protected:
 	unsigned char animating;	// 1 if animation turned on.
 	void start_animation();
 public:
-	Animator(Game_object *o) : obj(o), animating(0), deltax(0), deltay(0)
+	Animator(Game_object *o) : obj(o), deltax(0), deltay(0), animating(0)
 		{  }
 	~Animator();
 	void want_animation()		// Want animation on.

@@ -2281,8 +2281,10 @@ USECODE_INTRINSIC(is_not_blocked)
 	Tile_coord tile(pval.get_elem(0).get_int_value(),
 			pval.get_elem(1).get_int_value(),
 			pval.get_elem(2).get_int_value());
-	int shapenum = parms[1].get_int_value(),
-	    framenum = parms[2].get_int_value();
+	int shapenum = parms[1].get_int_value();
+#if 0					// Unused
+	int framenum = parms[2].get_int_value();
+#endif
 					// Find out about given shape.
 	Shape_info& info = gwin->get_info(shapenum);
 	int new_lift;
@@ -2741,7 +2743,7 @@ int Usecode_machine::get_user_choice_num
 			return (-1);
 					// Wait for valid choice.
 	while ((choice_num = gwin->conversation_choice(x, y)) < 0 ||
-		choice_num >= answers.answers.size());
+		choice_num >= (int)answers.answers.size());
 					// Store ->answer string.
 	user_choice = answers.answers[choice_num].c_str();
 	return (choice_num);		// Return choice #.
@@ -2756,9 +2758,8 @@ Usecode_machine::Usecode_machine
 	istream& file,
 	Game_window *gw
 	) : gwin(gw), call_depth(0), book(0), caller_item(0),
-	    last_created(0), user_choice(0), String(0),
-	    removed(new Deleted_objects()),
-	    stack(new Usecode_value[1024])
+	    last_created(0), removed(new Deleted_objects()), user_choice(0),
+	    String(0), stack(new Usecode_value[1024])
 	{
 	sp = stack;
 					// Clear global flags.
@@ -2924,7 +2925,7 @@ void Usecode_machine::run
 				else if (v2.get_type() == 
 						Usecode_value::string_type)
 					{
-					sprintf(buf, "%d%s", 
+					sprintf(buf, "%ld%s", 
 						v1.get_int_value(),
 						v2.get_str_value());
 					sum = Usecode_value(buf);
@@ -2934,7 +2935,7 @@ void Usecode_machine::run
 				{
 				if (v2.get_type() == Usecode_value::int_type)
 					{
-					sprintf(buf, "%s%d", 
+					sprintf(buf, "%s%ld", 
 							v1.get_str_value(),
 							v2.get_int_value());
 					sum = Usecode_value(buf);
@@ -3137,7 +3138,7 @@ void Usecode_machine::run
 			else		// Convert integer.
 				{
 				char buf[20];
-				sprintf(buf, "%d",
+				sprintf(buf, "%ld",
 					locals[offset].get_int_value());
 				append_string(buf);
 				}
