@@ -29,6 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vgafile.h"
 #include "ibuf8.h"
 #include "Flex.h"
+#include "u7drag.h"
 
 /*
  *	Blit onto screen.
@@ -217,6 +218,62 @@ gint Shape_chooser::mouse_press
 			}
 	return (TRUE);
 	}
+#if 0
+/*
+ *	Someone wants the selected shape.
+ */
+
+gint Shape_chooser::selection_get
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventButton *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	Shape_chooser *chooser = (Shape_chooser *) data;
++++++++++++++++????
+#endif
+
+/*
+ *	Mouse motion.  This starts a drag for drag-and-drop.
+ */
+
+gint Mouse_drag_motion
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventButton *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	Shape_chooser *chooser = (Shape_chooser *) data;
+	cout << "In MOUSE_DRAG_MOTION" << endl;
+	GtkTargetEntry tents[1];	// Indicate what we'll drag.
+	tents[0].target = U7_TARGET_SHAPEID_NAME;
+	tents[0].flags = 0;
+	tents[0].info = U7_TARGET_SHAPEID;
+	GtkTargetList *targets = gtk_target_list_new(tents, 
+					sizeof(tents)/sizeof(tents[0]));
+	gtk_drag_begin(widget, targets, GDK_ACTION_DEFAULT, 
+				event->button, (GdkEvent *) event);
+	gtk_target_list_unref(targets);
+	return TRUE;
+	}
+
+/*
+ *	Beginning of a drag.
+ */
+
+gint Drag_begin
+	(
+	GtkWidget *widget,		// The view window.
+	GdkEventButton *event,
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	Shape_chooser *chooser = (Shape_chooser *) data;
+	cout << "In DRAG_BEGIN" << endl;
+	return TRUE;
+	}
 
 /*
  *	Scroll to a new shape/frame.
@@ -286,7 +343,9 @@ Shape_chooser::Shape_chooser
 	gtk_box_pack_start(GTK_BOX(vbox), frame, TRUE, TRUE, 0);
 	draw = gtk_drawing_area_new();	// Create drawing area window.
 					// Indicate the events we want.
-	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK);
+	gtk_widget_set_events(draw, GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK
+		| /* GDK_POINTER_MOTION_MASK | */ GDK_POINTER_MOTION_HINT_MASK |
+		GDK_BUTTON1_MOTION_MASK);
 					// Set "configure" handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "configure_event",
 				GTK_SIGNAL_FUNC(configure), this);
@@ -296,6 +355,12 @@ Shape_chooser::Shape_chooser
 					// Set mouse click handler.
 	gtk_signal_connect(GTK_OBJECT(draw), "button_press_event",
 				GTK_SIGNAL_FUNC(mouse_press), this);
+					// Mouse motion.
+	gtk_signal_connect(GTK_OBJECT(draw), "drag_begin",
+				GTK_SIGNAL_FUNC(Drag_begin), this);
+	gtk_signal_connect(GTK_OBJECT(draw), "motion_notify_event",
+				GTK_SIGNAL_FUNC(Mouse_drag_motion), NULL);
+
 	gtk_container_add (GTK_CONTAINER (frame), draw);
 	gtk_drawing_area_size(GTK_DRAWING_AREA(draw), w, h);
 	gtk_widget_show(draw);

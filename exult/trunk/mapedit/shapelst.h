@@ -99,6 +99,10 @@ public:
 					// Handle mouse press.
 	static gint mouse_press(GtkWidget *widget, GdkEventButton *event,
 							gpointer data);
+	static gint selection_get(GtkWidget *widget, GtkSelectionData *data,
+						guint info, guint time);
+//	static gint mouse_motion(GtkWidget *widget, GdkEventButton *event,
+//							gpointer data);
 					// Handle scrollbar.
 	static void scrolled(GtkAdjustment *adj, gpointer data);
 	};
