@@ -88,7 +88,7 @@ else
 	AUDIO_INCLUDES="-Iaudio"
 	EXE_TARGET="exult.exe"
 	disable_kmid="yes"
-	SYSLIBS="-Lconf -lconf -lpathfinder -Lfiles -lu7file"
+	SYSLIBS="-Lconf -lconf -lpathfinder -Lfiles -lu7file -Lflic -lflic"
 fi
 
 dnl Just for record-keeping

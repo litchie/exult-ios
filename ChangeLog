@@ -1,6 +1,7 @@
 2000-05-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* usecode.cc: defined __STRING if not yet defined (e.g. in mingw32)
-
+	* configure.in: added flic library to windows section
+	
 2000-05-16  Tristan Tarrant  <tarrant_tristan@emc.com>
 
 	* gamewin.cc: Load correct palettes for intro. Implement palette fade 
