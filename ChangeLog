@@ -1,3 +1,8 @@
+2001-10-13  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* effects.cc (Projectile_effect): More sprites implemented for
+	various projectiles (like swordstrike).
+
 2001-10-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: Helm of Light provides warmth
 	* files/utils.cc: fixed BeOS trailing slash mkdir bug
