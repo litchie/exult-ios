@@ -1,3 +1,8 @@
+2002-01-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* exult.cc: Init. map for BuildGameMap().
+	* game.h,game.cc,exult.cc:  Prepare for newly-developed games.
+
 2002-01-06  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* args.cc: fixed bug with missing arguments
 	* exult.cc: more minor commandline syntax changes/fixes
