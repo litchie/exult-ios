@@ -176,7 +176,7 @@ void U7open
 {
 #ifdef MACOS
 	std::ios_base::openmode mode = std::ios::in;
-	if (!is_text) mode |= ios::binary;
+	if (!is_text) mode |= std::ios::binary;
 #elif defined(XWIN)
 	int mode = ios::in;
 #else
@@ -226,7 +226,7 @@ void U7open
 {
 #ifdef MACOS
 	std::ios_base::openmode mode = std::ios::out | std::ios::trunc;
-	if (!is_text) mode |= ios::binary;
+	if (!is_text) mode |= std::ios::binary;
 #elif defined(XWIN)
 	int mode = ios::out | ios::trunc;
 #else
