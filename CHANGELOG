@@ -1,4 +1,4 @@
-3/12/00:	Improved midi support using the timidity binary an patchsets
+4/12/00:	Improved midi support using the timidity binary and patchsets
 		under linux.
 
 		Earthquakes!
@@ -11,8 +11,12 @@
 
 		Lighting and transparency.
 
-		Better USECODE support. Also speed, compilation and debugging
-		improvements.
+		Better USECODE support. You can solve the Trinsic murder, and
+		then answer the mayor's copy-protection questions to get the
+		password.  Also speed, compilation and debugging improvements.
+
+		Improved inventory support.  You can buy items, and feed
+		Iolo.
 
 		Better support for building win32 targets.
 
