@@ -68,7 +68,8 @@ Actor::Actor
 	int uc				// Usecode #.
 	) : Container_game_object(), npc_num(num), party_id(-1),
 	    schedule_type((int) Schedule::loiter), frame_time(0),
-	    usecode(uc), flags(0), action(0), usecode_dir(0), two_handed(0)
+	    usecode(uc), flags(0), action(0), usecode_dir(0), two_handed(0),
+	    two_fingered(false)
 	{
 	name = nm == 0 ? 0 : strdup(nm);
 	set_shape(shapenum, 0); 
@@ -249,10 +250,9 @@ int Actor::find_best_spot
 	case torso_armor:
 		return !spots[torso] ? torso : free_hand();
 	case ring:
-		return !spots[lfinger] ? lfinger : 
-			(!spots[rfinger] ? rfinger : free_hand());
+		return (free_finger() != -1 ? free_finger() : free_hand());
 	case ammunition:		// ++++++++Check U7.
-		return free_hand();
+		return !spots[ammo] ? ammo : free_hand();
 	case head_armor:
 		return !spots[head] ? head : free_hand();
 	case leg_armor:
@@ -262,7 +262,8 @@ int Actor::find_best_spot
 	case two_handed_weapon:
 		return (!spots[lhand] && !spots[rhand]) ? lrhand : -1;
 	case gloves:
-		return !spots[arms] ? arms : free_hand();
+		// Gloves occupy both finger spots
+		return (!spots[lfinger] && !spots[rfinger]) ? lrfinger : free_hand();
 					// ++++++What about belt?
 	case other:
 	default:
@@ -390,6 +391,8 @@ void Actor::remove
 		spots[index] = 0;
 		if (index == rhand || index == lhand)
 			two_handed = 0;
+		if (index == rfinger || index == lfinger)
+			two_fingered = 0;
 		}
 	}
 
@@ -423,7 +426,12 @@ int Actor::add
 	if (index == lrhand)		// Two-handed?
 		{
 		two_handed = 1;
-		index = rhand;
+		index = lhand;
+		}
+	if (index == lrfinger)		// Gloves?
+		{
+		two_fingered = 1;
+		index = lfinger;
 		}
 	spots[index] = obj;		// Store in correct spot.
 	obj->cx = obj->cy = 0;		// Clear coords. (set by gump).
@@ -460,6 +468,8 @@ int Actor::add_readied
 		obj->cx = obj->cy = 0;	// Clear coords. (set by gump).
 		if (best_index == lrhand)
 			two_handed = 1;	// Must be a two-handed weapon.
+		if (best_index == lrfinger)
+			two_fingered = 1;	// Must be gloves
 		return (1);
 		}
 	return (0);
