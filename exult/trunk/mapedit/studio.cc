@@ -301,12 +301,25 @@ on_main_window_quit                    (GtkMenuItem     *menuitem,
 	if (ExultStudio::get_instance()->okay_to_close())
 		gtk_main_quit();
 }
+/*
+ *	Main window got focus.
+ */
+C_EXPORT gboolean on_main_window_focus_in_event
+	(
+	GtkWidget *widget,
+	GdkEventFocus *event,
+	gpointer user_data
+	)
+	{
+	Shape_chooser::check_editing_files();
+	return TRUE;
+	}
 
 
 
 
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
-	names(0), glade_path(0), exiting(false), shape_info_modified(false),
+	names(0), glade_path(0), shape_info_modified(false),
 	vgafile(0), facefile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
 	static_path(0), image_editor(0), default_game(0), background_color(0),
@@ -430,7 +443,6 @@ ExultStudio::~ExultStudio()
 #endif
 					// Store main window size.
 	int w = app->allocation.width, h = app->allocation.height;
-	exiting = true;
 					// Finish up external edits.
 	Shape_chooser::clear_editing_files();
 	config->set("config/estudio/main/width", w, true);

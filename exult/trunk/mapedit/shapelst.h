@@ -154,7 +154,8 @@ public:
 	void edit_shape(int tiles = 0, bool bycols = false);
 					// Deal with list of files being edited
 					//   by an external prog. (Gimp).
-	static gint check_editing_files(gpointer data = 0);
+	static gint check_editing_files(gpointer data);
+	static gint check_editing_files();
 	static void read_back_edited(Editing_file *ed);
 	static void clear_editing_files();
 					// Import/export from file selector.
