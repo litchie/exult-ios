@@ -205,9 +205,9 @@ class UCFunc
 		           _codeoffset(0), _num_args(0), _num_locals(0), _num_externs(0),
 		           return_var(false), debugging_info(false), debugging_offset(0) {};
 
-		void output_list(std::ostream &o, unsigned int funcno, const UCOptions &options);
+		bool output_list(std::ostream &o, unsigned int funcno, const UCOptions &options);
 		
-		void output_ucs(std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options);
+		bool output_ucs(std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options);
 		std::ostream &output_ucs_funcname(std::ostream &o, const FuncMap &funcmap,
                                     unsigned int funcid,
                                     unsigned int numargs, bool return_var);
@@ -223,7 +223,12 @@ class UCFunc
 		                               const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics);
 		void parse_ucs_pass3(std::vector<GotoSet> &gotoset, const std::map<unsigned int, std::string> &intrinsics);
 
-		void output_tt(std::ostream &o);
+		bool output_asm(std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options);
+		void output_asm_data(std::ostream &o);
+		void output_asm_opcode(std::ostream &o, const FuncMap &funcmap, const std::vector<UCOpcodeData> &optab, const std::map<unsigned int, std::string> &intrinsics, const UCc &op, const UCOptions &options);
+		void output_raw_opcodes(std::ostream &o, const UCc &op);
+		
+		bool output_tt(std::ostream &o);
 //	private:
 	
 		std::vector<GotoSet> gotoset;
@@ -261,7 +266,6 @@ class UCFunc
 
 void readbin_U7UCFunc(std::ifstream &f, UCFunc &ucf, const UCOptions &options);
 void readbin_U8UCFunc(std::ifstream &f, UCFunc &ucf);
-void print_asm(UCFunc &ucf, std::ostream &o, const FuncMap &funcmap, const std::map<unsigned int, std::string> &intrinsics, const UCOptions &options);
 
 #endif
 
