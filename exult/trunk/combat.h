@@ -47,6 +47,7 @@ protected:
 		} state;
 	Schedule_types prev_schedule;	// Before going into combat.
 	Actor_queue opponents;		// Possible opponents.
+	Game_object *practice_target;	// Only for duel schedule.
 	int weapon_shape;		// Weapon's shape in shapes.vga.
 	int ammo_shape;			// If required, else 0.
 	int projectile_shape;		// For shooting, else 0.
