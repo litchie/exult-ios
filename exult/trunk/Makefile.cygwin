@@ -134,6 +134,7 @@ install: $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)
 	mkdir -p $(U7PATH)/data
 	cp data/exult.flx  $(U7PATH)/data/exult.flx
+	cp data/exult_bg.flx $(U7PATH)/data/exult_bg.flx
 	cp data/midisfx.flx  $(U7PATH)/data/midisfx.flx
 
 run:
