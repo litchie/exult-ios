@@ -197,11 +197,13 @@ int U7open
 	const char *fname			// May be converted to upper-case.
 	);
 
+#ifdef BUFSIZ	/* Kludgy, but I don't want to include stdio.h all the time.*/
 std::FILE* U7open
 	(
 	const char *fname,			// May be converted to upper-case.
 	const char *mode			// File access mode.
 	);
+#endif
 
 int Log2
 	(
