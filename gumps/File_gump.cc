@@ -80,8 +80,8 @@ class Sound_button : public Gump_button
 public:
 	Sound_button(Gump *par, int px, int py, int shapenum,
 								bool enabled)
-		: Gump_button(par, shapenum, px, py)
-		{  }
+	  : Gump_button(par, shapenum, px, py)
+		{ pushed = enabled; }
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
 };
