@@ -405,6 +405,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	midi_event *patch = NULL;
 	midi_event *vol = NULL;
 	midi_event *pan = NULL;
+	midi_event *bank = NULL;
 
 	midi_event *prev = NULL;
 	
@@ -437,6 +438,15 @@ void XMIDI::MovePatchVolAndPan (int channel)
 
 			current = prev;
 		}
+		else if (!bank && (current->status >> 4) == 0xB && current->data[0] == 0 && (current->status & 0xF) == channel)
+		{
+			bank = current;
+
+			if (prev) prev->next = bank->next;
+			else list = bank->next;
+
+			current = prev;
+		}
 		else
 			prev = current;
 
@@ -447,7 +457,7 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	}
 
 	// Got none of them, do nothing
-	if (!vol && !patch && !pan) return;
+	if (!patch) return;
 
 	if (!patch)
 	{
@@ -472,6 +482,20 @@ void XMIDI::MovePatchVolAndPan (int channel)
 		vol->buffer = NULL;
 	}
 
+	if (bank && (bank->time > patch->time+PATCH_VOL_PAN_BIAS || bank->time < patch->time-PATCH_VOL_PAN_BIAS))
+	{
+		bank = NULL;
+	}
+	if (!bank)
+	{
+		bank = new midi_event;
+		bank->status = channel + 0xB0;
+		bank->data[0] = 0;
+		bank->data[1] = 0;
+		bank->len = 0;
+		bank->buffer = NULL;
+	}
+
 	if (pan && (pan->time > patch->time+PATCH_VOL_PAN_BIAS || pan->time < patch->time-PATCH_VOL_PAN_BIAS))
 	{
 		pan = NULL;
@@ -490,11 +514,13 @@ void XMIDI::MovePatchVolAndPan (int channel)
 	vol->time = 0;
 	pan->time = 0;
 	patch->time = 0;
+	bank->time = 0;
 	
+	bank->next = vol;
 	vol->next = pan;
 	pan->next = patch;
 	patch->next = list;
-	list = vol;
+	list = bank;
 }
 
 // DuplicateAndMerge
@@ -599,7 +625,7 @@ void XMIDI::DuplicateAndMerge (int num)
 // size 2 is dual data byte
 // size 3 is XMI Note on
 // Returns bytes converted
-
+#if 0
 static const char *event_type[] = 
 {
 	"note off",
@@ -612,7 +638,7 @@ static const char *event_type[] =
 	"NME"
 };
 
-void *load_global_timbre(FILE *GTL, int bank, int patch)
+static void *load_global_timbre(FILE *GTL, int bank, int patch)
 {
    unsigned char *timb_ptr;
    static unsigned len;
@@ -661,6 +687,7 @@ int timbre[16] = {
 	0,0,0,0,
 	0,0,0,0
 };
+#endif 
 
 int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource *source, const int size)
 {
@@ -676,7 +703,7 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 	if (((status >> 4) == 0xC) && convert_from_mt32) 
 		current->data[0] = mt32asgm[current->data[0]];
 
-#if 0
+#if 0	// This was just for a test, when working with the SFX
 	if ((status >> 4) == 0xC && timbre[(status&0xF)])
 	{
 		FILE *tfile = U7open ("c:/uc/serpent/static/xmidi.mt", "rb");
@@ -700,8 +727,8 @@ int XMIDI::ConvertEvent (const int time, const unsigned char status, DataSource 
 	current->data[1] = source->read1();
 
 	// XMIDI Bank change
-	if ((status >> 4) == 0xB && current->data[0] == 114)
-		timbre[(status&0xF)]=current->data[1];
+//	if ((status >> 4) == 0xB && current->data[0] == 114)
+//		timbre[(status&0xF)]=current->data[1];
 
 	if (size == 2)
 		return 2;
@@ -744,42 +771,56 @@ int XMIDI::ConvertSystemMessage (const int time, const unsigned char status, Dat
 	return i+current->len;
 }
 
-// XMIDI to List
-// Returns PPQN
-int XMIDI::ConvertEVNTtoList (DataSource *source)
+// XMIDI and Midi to List
+// Returns XMIDI PPQN
+int XMIDI::ConvertFiletoList (DataSource *source, const bool is_xmi)
 {
 	int 		time = 0;
-	uint32 		delta;
+	uint32 		data;
 	int		end = 0;
 	int		tempo = 500000;
 	int		tempo_set = 0;
 	uint32		status;
+	int		play_size = 2;
+	
+	if (is_xmi) play_size = 3;
 	
 	while (!end && source->getPos() < source->getSize())
 	{
-		GetVLQ2 (source, delta);
-		time += delta*3;
 
-		status = source->read1();
+		if (!is_xmi)
+		{
+			GetVLQ (source, data);
+			time += data;
+
+			data = source->read1();
+		
+			if (data >= 0x80)
+			{
+				status = data;
+			}
+			else
+				source->skip (-1);
+		}	
+		else
+		{
+			GetVLQ2 (source, data);
+			time += data*3;
+
+			status = source->read1();
+		}
 		
 		switch (status >> 4)
 		{
-			// Note Off
-			case 0x8:
-			cerr << "Note off is not valid in XMIDI" << endl;
-			DeleteEventList (list);
-			list = NULL;
-			return 0;
-			
 			
 			// Note On
 			case 0x9:
-			ConvertEvent (time, status, source, 3);
+			ConvertEvent (time, status, source, play_size);
 			break;
 
 			// 2 byte data
-			// Aftertouch, Controller and Pitch Wheel
-			case 0xA: case 0xB: case 0xE:
+			// Note off, Aftertouch, Controller and Pitch Wheel
+			case 0x8: case 0xA: case 0xB: case 0xE:
 			ConvertEvent (time, status, source, 2);
 			break;
 			
@@ -809,7 +850,7 @@ int XMIDI::ConvertEVNTtoList (DataSource *source)
 					tempo *= 3;
 					tempo_set = 1;
 				}
-				else if (data == 0x51 && tempo_set) // Skip any other tempo changes
+				else if (data == 0x51 && tempo_set && is_xmi) // Skip any other tempo changes
 				{
 					GetVLQ (source, data);
 					source->skip(data);
@@ -829,64 +870,6 @@ int XMIDI::ConvertEVNTtoList (DataSource *source)
 	}
 	return (tempo*3)/25000;
 }
-
-// MIDI to List
-// Returns 0 if failed
-int XMIDI::ConvertMTrktoList (DataSource *source)
-{
-	int time = 0;
-	int end = 0;
-	unsigned char	status = 0;
-	uint32		data;
-	
-	// This is now safe!! Yeah!
-	while (!end && source->getPos() < source->getSize())
-	{
-		GetVLQ (source, data);
-		time += data;
-
-		data = source->read1();
-		
-		if (data >= 0x80)
-		{
-			status = data;
-		}
-		else
-			source->skip (-1);
-	
-		switch (status >> 4)
-		{
-			// 2 byte data
-			// Note Off, Note On, Aftertouch, Controller and Pitch Wheel
-			case 0x8: case 0x9: case 0xA: case 0xB: case 0xE:
-			ConvertEvent (time, status, source, 2);
-			break;
-			
-
-			// 1 byte data
-			// Program Change and Channel Pressure
-			case 0xC: case 0xD:
-			ConvertEvent (time, status, source, 1);
-			break;
-			
-
-			// SysEx
-			case 0xF:
-			data = source->read1();
-			if (status == 0xFF && data == 0x2F) // End of data
-				end = 1;
-			source->skip(-1);
-			ConvertSystemMessage (time, status, source);
-			break;
-
-			default:
-			break;
-		}
-
-	}
-	return 1;
-}
-
 
 // Converts and event list to a MTrk
 // Returns bytes of the array
@@ -1023,7 +1006,7 @@ int XMIDI::ExtractTracksFromXmi (DataSource *source)
 		int begin = source->getPos ();
 		
 		// Convert it
-		if (!(ppqn = ConvertEVNTtoList (source)))
+		if (!(ppqn = ConvertFiletoList (source, true)))
 		{
 			cerr << "Unable to convert data" << endl;
 			break;
@@ -1065,7 +1048,7 @@ int XMIDI::ExtractTracksFromMid (DataSource *source)
 		int begin = source->getPos ();
 
 		// Convert it
-		if (!ConvertMTrktoList (source))
+		if (!ConvertFiletoList (source, false))
 		{
 			cerr << "Unable to convert data" << endl;
 			break;
