@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../fnames.h"
 
 #include "Configuration.h"
-extern	Configuration	config;
+extern	Configuration	*config;
 
 
 void    MyMidiPlayer::start_track(int num,int repeats,int bank)
@@ -90,7 +90,7 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 
 	instrument_patches=AccessTableFile(XMIDI_MT);
 	string	s;
-	config.value("config/audio/midi/enabled",s,"---");
+	config->value("config/audio/midi/enabled",s,"---");
 	if(s=="---")
 		{
 		cout << "Config does not specify MIDI. Assuming yes" << endl;
@@ -101,7 +101,7 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 		cout << "Config says no midi. MIDI disabled" << endl;
 		no_device=false;
 		}
-	config.set("config/audio/midi/enabled",s,true);
+	config->set("config/audio/midi/enabled",s,true);
 
 	if(no_device)
 		{

@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "../fnames.h"
 
 #include "Configuration.h"
-extern	Configuration config;
+extern	Configuration *config;
 
 #include <cstdio>
 #include <unistd.h>
@@ -205,7 +205,7 @@ Uint8 *Audio::convert_VOC(Uint8 *old_data,unsigned int &visible_len)
 void	Audio::play(Uint8 *sound_data,Uint32 len,bool wait)
 {
 	string s;
-	config.value("config/audio/speech/enabled",s,"yes");
+	config->value("config/audio/speech/enabled",s,"yes");
 	if(s=="no")
 		return;
 	bool	own_audio_data=false;
