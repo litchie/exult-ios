@@ -235,14 +235,22 @@ void Shape_group_file::write
 
 static int Get_tree_row
 	(
+	GtkTreePath *path
+	)
+	{
+	gchar *str = gtk_tree_path_to_string(path);
+	int row = atoi(str);
+	g_free(str);
+	return row;
+	}
+static int Get_tree_row
+	(
 	GtkTreeModel *model,
 	GtkTreeIter *iter		// Position we want.
 	)
 	{
 	GtkTreePath *path = gtk_tree_model_get_path(model, iter);
-	gchar *str = gtk_tree_path_to_string(path);
-	int row = atoi(str);
-	g_free(str);
+	int row = Get_tree_row(path);
 	gtk_tree_path_free(path);
 	return row;
 	}
@@ -286,6 +294,7 @@ on_group_list_cursor_changed		(GtkTreeView	*tview)
 	ExultStudio::get_instance()->setup_group_controls();
 }
 
+#if 0
 C_EXPORT void
 on_group_list_row_move			(GtkCList	*clist,
 					 gint		src_row,
@@ -293,6 +302,28 @@ on_group_list_row_move			(GtkCList	*clist,
 					 gpointer	 user_data)
 {
 	ExultStudio::get_instance()->move_group(src_row, dest_row);
+}
+#endif
+
+void
+on_group_list_row_inserted		(GtkTreeModel *model,
+					 GtkTreePath *path,
+					 GtkTreeIter *iter,
+					 gpointer user_data)
+{
+cout << "In row_inserted.  Row = " << Get_tree_row(model, iter) << endl;
+	ExultStudio *studio = ExultStudio::get_instance();
+	//+++++FINISH.
+}
+
+void
+on_group_list_row_deleted		(GtkTreeModel *model,
+					 GtkTreePath *path,
+					 gpointer user_data)
+{
+cout << "In row_deleted.  Row = " << Get_tree_row(path) << endl;
+	ExultStudio *studio = ExultStudio::get_instance();
+	//+++++FINISH.
 }
 
 C_EXPORT void
@@ -348,6 +379,10 @@ void ExultStudio::setup_groups
 		GtkTreeViewColumn *column = gtk_tree_view_get_column(tview, 
 							col_offset - 1);
 		gtk_tree_view_column_set_clickable(column, TRUE);
+		g_signal_connect(G_OBJECT(model), "row-inserted",
+			GTK_SIGNAL_FUNC(on_group_list_row_inserted), this);
+		g_signal_connect(G_OBJECT(model), "row-deleted",
+			GTK_SIGNAL_FUNC(on_group_list_row_deleted), this);
 		}
 	else
 		model = GTK_TREE_STORE(oldmod);
@@ -625,7 +660,7 @@ void ExultStudio::close_group_window
 			GTK_OBJECT(grpwin), "browser");
 	delete chooser;
 	gtk_widget_destroy(grpwin);
-	gtk_object_destroy(GTK_OBJECT(xml));
+	g_object_unref(G_OBJECT(xml));
 	}
 
 /*
