@@ -917,11 +917,11 @@ void Game_window::init_actors
 bool Game_window::init_gamedat(bool create)
 	{
 	struct stat sbuf;		// Create gamedat files 1st time.
-	if (create)// ||((stat(U7NBUF_DAT, &sbuf) != 0 &&
-	//    stat(NPC_DAT, &sbuf) != 0)))
+	if (create)
 		{
 		cout << "Creating 'gamedat' files."<<endl;
 		restore_gamedat(INITGAME);
+
 		}
 	else if (stat(U7NBUF_DAT, &sbuf) != 0 && stat(NPC_DAT, &sbuf) != 0)
 		{
@@ -941,9 +941,6 @@ bool Game_window::init_gamedat(bool create)
 			char *static_identity = get_game_identity(INITGAME);
 			if(strcmp(static_identity, gamedat_identity))
 				{
-					//cout << "Creating 'gamedat' files."<<endl;
-					//restore_gamedat(INITGAME);
-					//created = true;
 					delete [] static_identity;
 					return false;
 				}
@@ -995,7 +992,14 @@ int Game_window::read
 	read_npcs();			// Read in NPC's, monsters.
 	
 	if (!usecode->read())		// Usecode.dat (party, global flags).
-		return (0);
+	{
+
+		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
+			main_actor->clear_flag(Actor::dont_render);
+		else
+			main_actor->set_flag(Actor::dont_render);
+	}
+
 	clock.set_palette();		// Set palette for time-of-day.
 	set_all_dirty();		// Force entire repaint.
 	return (1);
@@ -2596,7 +2600,19 @@ void Game_window::setup_game
 		
 	init_actors();		// Set up actors if not already done.
 				// This also sets up initial 
-				//   schedules and positions.
+				// schedules and positions.
+
+	if (usecode->read())	// Read the usecode flags
+	{
+		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
+			main_actor->clear_flag(Actor::dont_render);
+		else
+			main_actor->set_flag(Actor::dont_render);
+	}
+
+	clock.set_palette();		// Set palette for time-of-day.
+	set_all_dirty();		// Force entire repaint.
+
 	paint();
 	audio->cancel_raw();
 	audio->cancel_streams();
