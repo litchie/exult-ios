@@ -467,6 +467,7 @@ void Palette_edit::palnum_changed
 	ed->show_palette(newnum);
 	ed->render();
 	ed->show();
+	ed->enable_controls();
 	}
 
 /*
@@ -531,28 +532,17 @@ GtkWidget *Palette_edit::create_controls
 					// Create main box.
 	GtkWidget *topframe = gtk_frame_new (NULL);
 	gtk_widget_show(topframe);
+	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
+	gtk_widget_show(vbox);
+	gtk_container_add (GTK_CONTAINER (topframe), vbox);
+
 	GtkWidget *hbox0 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox0);
-	gtk_container_add (GTK_CONTAINER (topframe), hbox0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox0, TRUE, TRUE, 2);
 	/*
-	 *	The 'Palette' controls.
+	 *	The 'Edit' controls.
 	 */
-	GtkWidget *frame = gtk_frame_new ("Palette #");
-	gtk_widget_show(frame);
-	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
-					// A spin button for palette#.
-	palnum_adj = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 
-				palettes.size() - 1, 1,
-				2, 2));
-	GtkWidget *spin = gtk_spin_button_new(palnum_adj, 1, 0);
-	gtk_signal_connect(GTK_OBJECT(palnum_adj), "value_changed",
-					GTK_SIGNAL_FUNC(palnum_changed), this);
-	gtk_container_add (GTK_CONTAINER (frame), spin);
-	gtk_widget_show(spin);
-	/*
-	 *	The 'Insert' controls.
-	 */
-	frame = gtk_frame_new ("Insert");
+	GtkWidget *frame = gtk_frame_new ("Edit");
 	gtk_widget_show(frame);
 	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
 	GtkWidget *hbuttonbox = gtk_hbutton_box_new ();
@@ -562,24 +552,23 @@ GtkWidget *Palette_edit::create_controls
 							GTK_BUTTONBOX_START);
 	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
 
-	GtkWidget *insert_new = gtk_button_new_with_label ("New");
-	gtk_widget_show (insert_new);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_new);
-	GTK_WIDGET_SET_FLAGS (insert_new, GTK_CAN_DEFAULT);
+	insert_btn = gtk_button_new_with_label ("New");
+	gtk_widget_show (insert_btn);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_btn);
+	GTK_WIDGET_SET_FLAGS (insert_btn, GTK_CAN_DEFAULT);
 
-	GtkWidget *insert_dup = gtk_button_new_with_label ("Dup");
-	gtk_widget_show (insert_dup);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_dup);
-	GTK_WIDGET_SET_FLAGS (insert_dup, GTK_CAN_DEFAULT);
+	remove_btn = gtk_button_new_with_label ("Remove");
+	gtk_widget_show (remove_btn);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), remove_btn);
+	GTK_WIDGET_SET_FLAGS (remove_btn, GTK_CAN_DEFAULT);
 #if 0
-	gtk_signal_connect (GTK_OBJECT (insert_new), "clicked",
-			GTK_SIGNAL_FUNC (on_insert_new_clicked),
+	gtk_signal_connect (GTK_OBJECT (insert_btn), "clicked",
+			GTK_SIGNAL_FUNC (on_insert_btn_clicked),
 			this);
-	gtk_signal_connect (GTK_OBJECT (insert_dup), "clicked",
-			GTK_SIGNAL_FUNC (on_insert_dup_clicked),
+	gtk_signal_connect (GTK_OBJECT (remove_btn), "clicked",
+			GTK_SIGNAL_FUNC (on_remove_btn_clicked),
 			this);
 #endif
-#if 0
 	/*
 	 *	The 'Move' controls.
 	 */
@@ -593,20 +582,21 @@ GtkWidget *Palette_edit::create_controls
 							GTK_BUTTONBOX_START);
 	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
 
-	move_chunk_down = gtk_button_new_with_label ("Down");
-	gtk_widget_show (move_chunk_down);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_down);
-	GTK_WIDGET_SET_FLAGS (move_chunk_down, GTK_CAN_DEFAULT);
+	down_btn = gtk_button_new_with_label ("Down");
+	gtk_widget_show (down_btn);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), down_btn);
+	GTK_WIDGET_SET_FLAGS (down_btn, GTK_CAN_DEFAULT);
 
-	move_chunk_up = gtk_button_new_with_label ("Up");
-	gtk_widget_show (move_chunk_up);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), move_chunk_up);
-	GTK_WIDGET_SET_FLAGS (move_chunk_up, GTK_CAN_DEFAULT);
-	gtk_signal_connect (GTK_OBJECT (move_chunk_down), "clicked",
-			GTK_SIGNAL_FUNC (on_move_chunk_down_clicked),
+	up_btn = gtk_button_new_with_label ("Up");
+	gtk_widget_show (up_btn);
+	gtk_container_add (GTK_CONTAINER (hbuttonbox), up_btn);
+	GTK_WIDGET_SET_FLAGS (up_btn, GTK_CAN_DEFAULT);
+#if 0
+	gtk_signal_connect (GTK_OBJECT (down_btn), "clicked",
+			GTK_SIGNAL_FUNC (on_down_btn_clicked),
 			this);
-	gtk_signal_connect (GTK_OBJECT (move_chunk_up), "clicked",
-			GTK_SIGNAL_FUNC (on_move_chunk_up_clicked),
+	gtk_signal_connect (GTK_OBJECT (up_btn), "clicked",
+			GTK_SIGNAL_FUNC (on_up_btn_clicked),
 			this);
 #endif
 	/*
@@ -638,6 +628,30 @@ GtkWidget *Palette_edit::create_controls
 			GTK_SIGNAL_FUNC (on_exportbtn_clicked),
 			this);
 	return topframe;
+	}
+
+/*
+ *	Enable/disable controls after changes.
+ */
+
+void Palette_edit::enable_controls
+	(
+	)
+	{
+					// Can't delete last one.
+	gtk_widget_set_sensitive(remove_btn, selected >= 0 &&
+					palettes.size() > 1);
+	if (selected == -1)		// No selection.
+		{
+		gtk_widget_set_sensitive(down_btn, false);
+		gtk_widget_set_sensitive(up_btn, false);
+		}
+	else
+		{
+		gtk_widget_set_sensitive(down_btn,
+					selected < palettes.size() - 1);
+		gtk_widget_set_sensitive(up_btn, selected > 0);
+		}
 	}
 
 /*
@@ -686,10 +700,28 @@ void Palette_edit::setup
 	sbar_sel = gtk_statusbar_get_context_id(GTK_STATUSBAR(sbar),
 							"selection");
 					// At the bottom, status bar & frame:
-	gtk_box_pack_start(GTK_BOX(vbox), sbar, FALSE, FALSE, 0);
-					// Add search/edit controls to bottom.
+	GtkWidget *hbox1 = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0);
+	gtk_widget_show(hbox1);
+	gtk_box_pack_start(GTK_BOX(hbox1), sbar, TRUE, TRUE, 0);
+					// Palette # to right of sbar.
+	GtkWidget *label = gtk_label_new("Palette #:");
+	gtk_box_pack_start(GTK_BOX(hbox1), label, FALSE, FALSE, 4);
+	gtk_widget_show(label);
+					// A spin button for palette#.
+	palnum_adj = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 
+				palettes.size() - 1, 1,
+				2, 2));
+	GtkWidget *spin = gtk_spin_button_new(palnum_adj, 1, 0);
+	gtk_signal_connect(GTK_OBJECT(palnum_adj), "value_changed",
+					GTK_SIGNAL_FUNC(palnum_changed), this);
+	gtk_box_pack_start(GTK_BOX(hbox1), spin, FALSE, FALSE, 0);
+	gtk_widget_show(spin);
+
+					// Add edit controls to bottom.
 	gtk_box_pack_start(GTK_BOX(vbox), create_controls(), FALSE, FALSE, 0);
 	gtk_widget_show(sbar);
+	enable_controls();
 	}
 
 /*
@@ -701,7 +733,7 @@ Palette_edit::Palette_edit
 	const char *bname		// Base filename.
 	) : image(0), width(0), height(0),
 		colorsel(0), modified(false),
-		selected(-1), basename(g_strdup(bname))
+		basename(g_strdup(bname)), cur_pal(0)
 	{
 	const char *file = 0;
 	string fname("<PATCH>/");	// First try 'patch' directory.
@@ -714,23 +746,31 @@ Palette_edit::Palette_edit
 		fname += basename;
 		file = fname.c_str();
 		}
-	U7object pal(file, 0);
-	int count = U7exists(file) ? pal.number_of_objects() : 0;
-	palettes.resize(count);		// Set size of list.
-	cur_pal = count > 0 ? 0 : -1;
-	for (int pnum = 0; pnum < count; pnum++)
-		{
-		U7object pal(file, pnum);
-		size_t len;
-		unsigned char *buf;	// this may throw an exception
-		buf = (unsigned char *) pal.retrieve(len);
-		assert(len = 3*256);
+	if (!U7exists(file))		// File non-existent?
+		{			// Create 1 blank palette.
 		guint32 colors[256];
-		for (int i = 0; i < 256; i++)
-			colors[i] = (buf[3*i]<<16)*4 + (buf[3*i+1]<<8)*4 + 
-							buf[3*i+2]*4;
-		palettes[pnum] = gdk_rgb_cmap_new(colors, 256);
-		delete buf;
+		memset(&colors[0], 0, sizeof(colors));
+		palettes.push_back(gdk_rgb_cmap_new(colors, 256));
+		}
+	else
+		{
+		U7object pal(file, 0);
+		int count = pal.number_of_objects();
+		palettes.resize(count);	// Set size of list.
+		for (int pnum = 0; pnum < count; pnum++)
+			{
+			U7object pal(file, pnum);
+			size_t len;
+			unsigned char *buf;	// this may throw an exception
+			buf = (unsigned char *) pal.retrieve(len);
+			assert(len = 3*256);
+			guint32 colors[256];
+			for (int i = 0; i < 256; i++)
+				colors[i] = (buf[3*i]<<16)*4 + 
+					(buf[3*i+1]<<8)*4 + buf[3*i+2]*4;
+			palettes[pnum] = gdk_rgb_cmap_new(colors, 256);
+			delete buf;
+			}
 		}
 	setup();
 	}
@@ -855,6 +895,7 @@ void Palette_edit::save
 		if (cnt == 1)
 			Write_palette(out, palettes[0]);
 		out.close();
+		return;
 		}
 	Flex_writer flex(out, "Exult palettes", cnt);
 	for (int i = 0; i < cnt; i++)
