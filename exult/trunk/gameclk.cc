@@ -29,7 +29,7 @@ void Game_clock::set_time_palette
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int new_palette;
-	if (in_dungeon || hour < 5)
+	if (gwin->is_in_dungeon() || hour < 5)
 		new_palette = PALETTE_NIGHT;
 	else if (hour < 6)
 		new_palette = PALETTE_DAWN;
@@ -47,6 +47,9 @@ void Game_clock::set_time_palette
 		else if (new_palette == PALETTE_DUSK)
 			new_palette = PALETTE_DAWN;
 		}
+	if (gwin->get_mode() == Game_window::gump &&
+					new_palette == PALETTE_NIGHT)
+		new_palette = PALETTE_DAWN;
 	gwin->set_palette(new_palette);
 	}
 
@@ -88,19 +91,6 @@ void Game_clock::check_hunger
 	int cnt = gwin->get_party(party, 1);
 	for (int i = 0; i < cnt; i++)
 		party[i]->use_food();
-	}
-
-/*
- *	Update palette according to whether we're in a dungeon.
- */
-
-void Game_clock::set_in_dungeon
-	(
-	int tf				// 1 if yes, else 0.
- 	)
-	{
-	in_dungeon = tf;
-	set_time_palette();
 	}
 
 /*
