@@ -32,7 +32,7 @@ class Palette
 public:
 		Palette();
 		~Palette();
-		void apply();
+		void apply(bool repaint=true);
 		void load(const char *fname, int index,
 				const char *xfname = 0, int xindex = -1);
 		void set_brightness(int bright);
