@@ -200,6 +200,8 @@ public:
 	virtual void mouse_drag(int mx, int my);
 	virtual void key_down(int chr);	// Character typed.
 
+	virtual void mousewheel_up();
+	virtual void mousewheel_down();
 };
 
 #endif //NEWFILE_GUMP_H
