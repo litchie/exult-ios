@@ -768,10 +768,8 @@ Lightning_effect::~Lightning_effect
 	(
 	)
 	{
-	if (save_brightness > 0 &&	// Be sure palette is restored.
-	    save_brightness < 300)
-		Game_window::get_game_window()->set_palette(
-						-1, save_brightness);
+	if (flashing)			// Be sure palette is restored.
+		Game_window::get_game_window()->set_palette();
 	}
 
 /*
@@ -787,13 +785,11 @@ void Lightning_effect::handle_event
 	Game_window *gwin = Game_window::get_game_window();
 	int r = rand();			// Get a random #.
 	int delay = 100;		// Delay for next time.
-	if (save_brightness > 0)	// Just turned white?  Restore.
+	if (flashing)			// Just turned white?  Restore.
 		{
-		if (save_brightness < 300)
-			gwin->set_palette(-1, save_brightness);
-		save_brightness = -1;
+		gwin->set_palette();
+		flashing = false;
 		active = false;
-//		gwin->show(1);
 		if (curtime >= stop_time)
 			{		// Time to stop.
 			gwin->remove_effect(this);
@@ -809,9 +805,8 @@ void Lightning_effect::handle_event
 					// Play thunder.
 		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(62));
 		active = true;
-		save_brightness = gwin->get_brightness();
-		gwin->set_palette(-1, 800);
-//No longer needed...		gwin->show(1);
+		flashing = true;
+		gwin->set_palette(10);	// +++++Define this somewhere!
 		delay = (1 + r%2)*25;
 		}
 	gwin->get_tqueue()->add(curtime + delay, this, udata);

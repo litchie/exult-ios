@@ -232,10 +232,10 @@ public:
 class Lightning_effect : public Weather_effect
 	{
 	static int active;		// Just want one at a time.
-	int save_brightness;		// Palette brightness.
+	bool flashing;			// Lightning palette is set.
 	friend class Storm_effect;
 	Lightning_effect(int duration, int delay = 0) 
-		: Weather_effect(duration, delay, -1), save_brightness(-1)
+		: Weather_effect(duration, delay, -1), flashing(false)
 		{ }
 public:
 	~Lightning_effect();
