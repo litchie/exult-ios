@@ -12109,6 +12109,8 @@ Random
 	  <widget>
 	    <class>GtkDrawingArea</class>
 	    <name>combo_draw</name>
+	    <width>256</width>
+	    <height>256</height>
 	    <signal>
 	      <name>expose_event</name>
 	      <handler>on_combo_draw_expose_event</handler>

@@ -290,8 +290,8 @@ void Combo::add
 	members.push_back(memb);
 					// Figure visible top-left tile, with
 					//   1 to spare.
-	int vtx = tx - xtiles - 1 - (tz + ztiles + 1)/2, 
-	    vty = ty - ytiles - 1 - (tz + ztiles + 1)/2;
+	int vtx = tx - xtiles - 2 - (tz + ztiles + 1)/2, 
+	    vty = ty - ytiles - 2 - (tz + ztiles + 1)/2;
 	if (vtx < starttx)		// Adjust our starting point.
 		starttx = vtx;
 	if (vty < startty)
@@ -689,6 +689,17 @@ void Combo_editor::set_position
 	}
 
 /*
+ *	Get # shapes we can display.
+ */
+
+int Combo_chooser::get_count
+	(
+	)
+	{
+	return group ? group->size() : combos.size();
+	}
+
+/*
  *	Add an object/shape picked from Exult.
  */
 
@@ -870,7 +881,7 @@ void Combo_chooser::render
 	int index = index0;
 					// We'll always show 128x128.
 	const int combow = 128, comboh = 128;
-	int total_cnt = combos.size();
+	int total_cnt = get_count();
 	int y = border;
 					// Show bottom if at least 1/2 vis.
 	while (index < total_cnt && y + comboh/2 + border <= winh)
@@ -1031,41 +1042,12 @@ gint Combo_chooser::drag_begin
 					// Get ->combo.
 	int num = chooser->info[chooser->selected].num;
 	Combo *combo = chooser->combos[num];
-#if 0	/* ++++++++++ */
-	int w = shape->get_width(), h = shape->get_height(),
-		xright = shape->get_xright(), ybelow = shape->get_ybelow();
-	Image_buffer8 tbuf(w, h);	// Create buffer to render to.
-	tbuf.fill8(0xff);		// Fill with 'transparent' pixel.
-	unsigned char *tbits = tbuf.get_bits();
-	shape->paint(&tbuf, w - 1 - xright, h - 1 - ybelow);
-					// Put shape on a pixmap.
-	GdkPixmap *pixmap = gdk_pixmap_new(widget->window, w, h, -1);
-	gdk_draw_indexed_image(pixmap, chooser->drawgc, 0, 0, w, h,
-			GDK_RGB_DITHER_NORMAL, tbits,
-			tbuf.get_line_width(), chooser->palette);
-	int mask_stride = (w + 7)/8;	// Round up to nearest byte.
-	char *mdata = new char[mask_stride*h];
-	for (int y = 0; y < h; y++)	// Do each row.
-					// Do each byte.
-		for (int b = 0; b < mask_stride; b++)
-			{
-			char bits = 0;
-			unsigned char *vals = tbits + y*w + b*8;
-			for (int i = 0; i < 8; i++)
-				if (vals[i] != 0xff)
-					bits |= (1<<i);
-			mdata[y*mask_stride + b] = bits;
-			}
-	GdkBitmap *mask = gdk_bitmap_create_from_data(widget->window,
-							mdata, w, h);
-	delete mdata;
-					// This will be the shape dragged.
-	gtk_drag_set_icon_pixmap(context,
-			gdk_window_get_colormap(widget->window), pixmap, mask,
-					w - 2 - xright, h - 2 - ybelow);
-	gdk_pixmap_unref(pixmap);
-	gdk_bitmap_unref(mask);
-#endif
+					// Show 'hot' member as icon.
+	Combo_member *hot = combo->members[combo->hot_index];
+	Shape_frame *shape = combo->shapes_file->get_shape(hot->shapenum,
+							hot->framenum);
+	if (shape)
+		chooser->set_drag_icon(context, shape);
 	return TRUE;
 	}
 
