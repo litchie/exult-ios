@@ -765,6 +765,7 @@ void Cheat::create_last_shape (void) const {
 	if(browser->get_shape(current_shape, current_frame)) {
 		Game_object *obj = gwin->get_map()->create_ireg_object(
 					current_shape, current_frame);
+		obj->set_flag(Obj_flags::okay_to_take);
 		Tile_coord t = 	Map_chunk::find_spot(
 			gwin->get_main_actor()->get_tile(), 4, obj, 2);
 		if (t.tx != -1) {
