@@ -110,6 +110,7 @@
 #define AMMO		"<STATIC>/ammo.dat"
 #define PATCH_AMMO	"<PATCH>/ammo.dat"
 #define PAPERDOL	"<STATIC>/paperdol.vga"
+#define PATCH_PAPERDOL	"<PATCH>/paperdol.vga"
 #define OCCLUDE		"<STATIC>/occlude.dat"
 #define PATCH_OCCLUDE	"<PATCH>/occlude.dat"
 
