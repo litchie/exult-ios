@@ -543,8 +543,8 @@ void Chunk_cache::activate_eggs
 Map_chunk::Map_chunk
 	(
 	int chunkx, int chunky		// Absolute chunk coords.
-	) : objects(0), terrain(0), first_nonflat(0), dungeon_levels(0),
-	    npcs(0), cache(0), roof(0), light_sources(0),
+	) : objects(0), terrain(0), first_nonflat(0), ice_dungeon(0x00),
+	    dungeon_levels(0), npcs(0), cache(0), roof(0), light_sources(0),
 	    cx(chunkx), cy(chunky), from_below(0), from_right(0),
 	    from_below_right(0)
 	{
@@ -1285,6 +1285,24 @@ void Map_chunk::setup_dungeon_levels
 				shnum == 182 || shnum == 180 || shnum == 324 || 
 				(shnum == 941 && Game::get_game_type() == SERPENT_ISLE))
 		{
+			Rectangle area = each->get_footprint();
+
+					// Go through interesected chunks.
+			Chunk_intersect_iterator next_chunk(area);
+			Rectangle tiles;// Rel. tiles.
+			int cx, cy;
+			while (next_chunk.get_next(tiles, cx, cy))
+				gwin->get_chunk(cx, cy)->add_dungeon_levels(
+								tiles, each->get_lift());
+		}			// Ice Dungeon Pieces in SI
+		else if (Game::get_game_type() == SERPENT_ISLE && (
+			shnum == 436 || shnum == 437 || shnum == 444 ||
+			shnum == 448  || shnum == 466 || shnum == 477))
+		{
+			// HACK ALERT! This gets 320x200 to work, but it is a hack
+			// This is not exactly accurate.
+			ice_dungeon |= 1 << ( (each->get_tx()>>3) + 2*(each->get_ty()>>3) );
+
 			Rectangle area = each->get_footprint();
 
 					// Go through interesected chunks.

@@ -153,7 +153,7 @@ int Game_window::paint_map
 
 	/// Dungeon Blackness (but disable in map editor mode)
 	if (in_dungeon >= skip_above_actor && !cheat.in_map_editor())
-		paint_blackness (start_chunkx, start_chunky, stop_chunkx, stop_chunky);
+		paint_blackness (start_chunkx, start_chunky, stop_chunkx, stop_chunky, ice_dungeon?73:0);
 
 	if (cheat.in_map_editor() && cheat.show_tile_grid())
 		{			// Paint grid at edit height.
@@ -317,10 +317,11 @@ void Game_window::paint_dirty()
  *	black them all out at the same time.
  */
 
-void Game_window::paint_blackness(int start_chunkx, int start_chunky, int stop_chunkx, int stop_chunky)
+void Game_window::paint_blackness(int start_chunkx, int start_chunky, int stop_chunkx, int stop_chunky, int index)
 {
 	// Calculate the offset due to the lift (4x the lift).
-	const int off = skip_above_actor << 2;//in_dungeon << 2;
+	//const int off = skip_above_actor << 2;//in_dungeon << 2;
+	const int off = in_dungeon << 2;
 
 	// For each chunk that might be renderable
 	for (int cy = start_chunky; cy != stop_chunky; cy = INCR_CHUNK(cy))
@@ -357,7 +358,7 @@ void Game_window::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 					else if (w)
 					{
 						// Draw blackness
-						win->fill8(0, w, c_tilesize, x, y);	
+						win->fill8(index, w, c_tilesize, x, y);	
 
 						// Set the start of the area to the next tile
 						x += w + c_tilesize;
@@ -375,7 +376,7 @@ void Game_window::paint_blackness(int start_chunkx, int start_chunky, int stop_c
 				}
 
 				// If we have an area, paint it.
-				if (w) win->fill8(0, w, c_tilesize, x, y);
+				if (w) win->fill8(index, w, c_tilesize, x, y);
 
 				// Increment the y coord for the next line
 				y += c_tilesize;

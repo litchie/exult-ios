@@ -132,6 +132,7 @@ class Map_chunk
 					// Counts of overlapping objects from
 					//    chunks below, to right.
 	unsigned char from_below, from_right, from_below_right;
+	unsigned char ice_dungeon;	// For SI, chunk split into 4 quadrants
 	unsigned char *dungeon_levels;	// A 'dungeon' level value for each tile (4 bit).
 	Npc_actor *npcs;		// List of NPC's in this chunk.
 					//   (Managed by Npc_actor class.)
@@ -240,16 +241,23 @@ public:
 	static void try_all_eggs(Game_object *obj, int tx, int ty, int tz,
 						int from_tx, int from_ty);
 	void setup_dungeon_levels();	// Set up after IFIX objs. read.
-	int has_dungeon()		// Any tiles within dungeon?
+	inline int has_dungeon()		// Any tiles within dungeon?
 		{ return dungeon_levels != 0; }
 
 					// NOTE:  The following should only be
 					//   called if has_dungeon()==1.
-	int is_dungeon(int tx, int ty)	// Is object within dungeon? (returns height)
+	inline int is_dungeon(int tx, int ty)	// Is object within dungeon? (returns height)
 		{
 		int tnum = ty*c_tiles_per_chunk + tx;
 		return tnum%2? dungeon_levels[tnum/2] >> 4: dungeon_levels[tnum/2] & 0xF;
 		}
+					// Is the dungeon an ICE dungeon.NOTE: This is a
+					// Hack and splits the chunk into 4 parts. Only if
+	inline bool is_ice_dungeon(int tx, int ty) // all 4 are ice, will we have an ice dungeon
+		{
+		return ice_dungeon == 0x0F;//0 != ((ice_dungeon >> ( (tx>>3) + 2*(ty>>3) ) )&1);
+		}
+
 
 	};
 
