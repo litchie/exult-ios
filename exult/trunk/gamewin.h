@@ -267,9 +267,6 @@ public:
 	void view_up();			// Move view up.
 					// Repaint sprite after moving it.
 	void repaint_sprite(Sprite *sprite, Rectangle& oldrect);
-#if 0
-	void animate(timeval& time);	// Do animation at given time.
-#endif
 					// Start moving actor.
 	void start_actor(int winx, int winy);
 	void stop_actor();		// Stop moving the actor.

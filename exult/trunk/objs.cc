@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Objs.cc - Game objects.
  **
  **	Written: 10/1/98 - JSF
@@ -26,16 +27,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "usecode.h"
 #include <string.h>
-
-#if !(defined(XWIN) || defined(DOS)) 	// WIN32
-void gettimeofday(timeval* tv, int x) {
-  _SYSTEMTIME ST;
-
-  GetSystemTime(&ST);
-  tv->tv_sec = ST.wSecond + 60* (ST.wMinute + 60 * ST.wHour);
-  tv->tv_usec = ST.wMilliseconds * 1000; //can't get Microseconds (yet)
-}
-#endif
 
 /*
  *	Run usecode when double-clicked.
@@ -259,7 +250,7 @@ void Sprite::start
 	Game_window *gwin,		// Game window.
 	unsigned long destx,		// Move towards pt. within world.
 	unsigned long desty,
-	int speed			// # microsecs. between frames.
+	int speed			// # millisecs. between frames.
 	)
 	{
 	if (!in_world())
@@ -269,8 +260,7 @@ void Sprite::start
 					//  northeast, etc. too.
 	if (!is_moving())		// Not already moving?
 		{			// Start immediately.
-		timeval curtime;
-		gettimeofday(&curtime, 0);
+		unsigned long curtime = SDL_GetTicks();
 		gwin->get_tqueue()->add(curtime, this, (long) gwin);
 		}
 	curx = get_worldx();		// Get current coords.
@@ -329,7 +319,7 @@ void Sprite::start
 
 int Sprite::next_frame
 	(
-	timeval& time,			// Current time.
+	unsigned long time,		// Current time.
 	int& new_cx, int& new_cy,	// New chunk coords. returned.
 	int& new_sx, int& new_sy,	// New shape coords. returned.
 	int& next_frame			// Next frame # returned.
@@ -371,7 +361,7 @@ int Sprite::next_frame
 
 void Sprite::handle_event
 	(
-	timeval curtime,		// Current time of day.
+	unsigned long curtime,		// Current time of day.
 	long udata			// Ignored.
 	)
 	{
@@ -381,7 +371,7 @@ void Sprite::handle_event
 	if (next_frame(curtime, cx, cy, sx, sy, frame))
 		{
 					// Add back to queue for next time.
-		gwin->get_tqueue()->add(Add_usecs(curtime, frame_time),
+		gwin->get_tqueue()->add(curtime + frame_time,
 							this, udata);
 					// Get old rectangle.
 		Rectangle oldrect = gwin->get_shape_rect(this);
@@ -398,7 +388,7 @@ void Sprite::handle_event
 
 void Text_object::handle_event
 	(
-	timeval curtime,		// Current time of day.
+	unsigned long curtime,		// Current time of day.
 	long udata			// Ignored.
 	)
 	{

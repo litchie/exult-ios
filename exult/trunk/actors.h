@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Actors.h - Game actors.
  **
  **	Written: 11/3/98 - JSF
@@ -77,7 +78,7 @@ public:
 		: Actor(nm, shapenum, num, uc)
 		{  }
 					// For Time_sensitive:
-	virtual void handle_event(timeval curtime, long udata);
+	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
 /*
@@ -159,7 +160,7 @@ public:
 	virtual int get_schedule()
 		{ return schedule; }
 					// For Time_sensitive:
-	virtual void handle_event(timeval curtime, long udata);
+	virtual void handle_event(unsigned long curtime, long udata);
 					// Update chunks after NPC moved.
 	void switched_chunks(Chunk_object_list *olist,
 					Chunk_object_list *nlist);
@@ -170,14 +171,14 @@ public:
  */
 class Area_actor : public Npc_actor
 	{
-	timeval next_change;		// When to change motion.
+	unsigned long next_change;	// When to change motion.
 public:
 	Area_actor(char *nm, int shapenum, int fshape = -1) : Npc_actor(nm, shapenum, fshape)
 		{
 		next_change.tv_sec = next_change.tv_usec = 0;
 		}
 					// Figure next frame location.
-	virtual int next_frame(timeval& time,
+	virtual int next_frame(unsigned long time,
 		int& new_cx, int& new_cy, int& new_sx, int& new_sy,
 		int& new_frame);
 	};

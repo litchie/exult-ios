@@ -1,5 +1,5 @@
-// -*-mode: Fundamental; tab-width: 8; -*-
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Exult.cc - X-windows Ultima7 map browser.
  **
  **	Written: 7/22/98 - JSF
@@ -32,7 +32,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef __WIN32
 
 #include <sys/time.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -80,6 +79,7 @@ int main
 	{
 	cout << "Exult V0.11.  Copyright (C) 2000 J. S. Freedman\n";
 	cout << "Text rendering done using the 'FreeType' font engine.\n";
+	cout << "Low level graphics use the 'SDL' library.\n";
 	Init();				// Create main window.
 #if 0	/* Make this an option. */
 	if (argc > 2)			// Specify chunkx, chunky on cmndline.
@@ -163,11 +163,11 @@ void Handle_events
 		while (!*stop && SDL_PollEvent(&event))
 			Handle_event(event);
 					// Get current time.
-		gettimeofday(&timer, 0);
+		unsigned long ticks = SDL_GetTicks();
 					// Animate unless modal or dormant.
 		if (gwin->have_focus() && gwin->get_mode() == 
 							Game_window::normal)
-			gwin->get_tqueue()->activate(timer);
+			gwin->get_tqueue()->activate(ticks);
 		gwin->show();		// Blit to screen if necessary.
 		}
 	}
@@ -223,18 +223,15 @@ static void Handle_event
 					event.button.x, event.button.y);
 				break;
 				}
-			timeval curtime;
-			gettimeofday(&curtime, 0);
-			unsigned long msecs = curtime.tv_sec*1000 +
-				curtime.tv_usec/1000;
+			unsigned long curtime = SDL_GetTicks();
 					// Last click within .5 secs?
-			if (msecs - last_b1_click < 500)
+			if (curtime - last_b1_click < 500)
 				{
 				gwin->double_clicked(event.button.x, 
 							event.button.y);
 				break;
 				}
-			last_b1_click = msecs;
+			last_b1_click = curtime;
 					// Identify item(s) clicked on.
 			gwin->show_items(event.button.x, event.button.y);
 			}
@@ -380,7 +377,7 @@ HINSTANCE g_hInstance;
 
 LONG APIENTRY Handle_event (HWND, UINT, UINT, LONG);
 
-void gettimeofday(timeval* tv, int x); //in objs.cpp
+void gXXXXettimeofday(timeval* tv, int x); //in objs.cpp
 
 UINT TimerID;
 
@@ -554,7 +551,7 @@ LONG APIENTRY Handle_event (HWND hWnd, UINT Message, UINT wParam, LONG lParam) {
 
     case WM_TIMER: //timer event
 		  struct timeval TVAL;
-		  gettimeofday(&TVAL,0);
+		  gXXXXettimeofday(&TVAL,0);
 		gwin->get_tqueue()->activate(timer);
       gwin->show();
       break;

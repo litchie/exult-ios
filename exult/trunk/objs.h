@@ -27,11 +27,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #if (defined(DOS) || defined(XWIN))
 
-#include <sys/time.h>
-
 #else
 
-#include <winsock.h>
 #define Rectangle RECTX
 
 #endif
@@ -329,23 +326,6 @@ public:
 	};
 
 /*
- *	Figure time passed in microseconds (so only call this for short
- *	differences).
- */
-inline long Time_passed
-	(
-	timeval &to,
-	timeval &from
-	)
-	{
-	return to.tv_sec >= from.tv_sec ? (to.tv_sec - from.tv_sec)*1000000
-						+ (to.tv_usec - from.tv_usec)
-					// Watch for midnight.
-			: ((24*60*60 - from.tv_sec) + to.tv_sec)*1000000
-						+ (to.tv_usec - from.tv_usec);
-	}
-
-/*
  *	A sprite is a game object which can change shape and move around.
  */
 class Sprite : public Container_game_object, public Time_sensitive
@@ -370,7 +350,7 @@ class Sprite : public Container_game_object, public Time_sensitive
 	Frames_sequence *frames_seq;	// ->sequence of frames to display.
 	int frame_index;		// Index into frames_seq.
 protected:
-	int frame_time;			// Time between frames in microsecs.
+	int frame_time;			// Time between frames in msecs.
 public:
 	Sprite(int shapenum);
 	int in_world()			// Do we really exist?
@@ -426,11 +406,11 @@ public:
 		return 1;
 		}
 					// Figure next frame location.
-	virtual int next_frame(timeval& time,
+	virtual int next_frame(unsigned long time,
 		int& new_cx, int& new_cy, int& new_sx, int& new_sy,
 		int& new_frame);
 					// For Time_sensitive:
-	virtual void handle_event(timeval curtime, long udata);
+	virtual void handle_event(unsigned long time, long udata);
 	};
 
 /*
@@ -492,7 +472,7 @@ public:
 		  width(w), height(h)
 		{  }
 					// At timeout, remove from screen.
-	virtual void handle_event(timeval curtime, long udata);
+	virtual void handle_event(unsigned long curtime, long udata);
 	};
 
 #endif

@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Npcnear.h - At random times, run proximity usecode funs. on nearby
  **		NPC's.
  **
@@ -20,18 +21,17 @@ class Npc_actor;
 class Npc_proximity_handler : public Time_sensitive
 	{
 	Game_window *gwin;
-	timeval wait_until;		// Skip running usecodes until past.
+	unsigned long wait_until;	// Skip running usecodes until past.
 public:
 	Npc_proximity_handler(Game_window *gw) : gwin(gw)
 		{
-		wait_until.tv_sec = 0;
-		wait_until.tv_usec = 0;
+		wait_until = 0;
 		}
 					// Add npc to queue.
-	void add(timeval curtime, Npc_actor *npc,
+	void add(unsigned long curtime, Npc_actor *npc,
 					int additional_secs = 0);
 					// Run usecode function.
-	void handle_event(timeval curtime, long udata);
+	void handle_event(unsigned long curtime, long udata);
 					// Wait before running more funs.
 	void wait(int secs);
 	};
