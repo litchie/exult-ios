@@ -381,8 +381,9 @@ void Game_window::clear_world
 	(
 	)
 	{
-	delete tqueue;			// Want a fresh queue.
-	tqueue = new Time_queue();
+//	delete tqueue;			// Want a fresh queue.
+//	tqueue = new Time_queue();
+	tqueue->clear();		// Remove all entries.
 	clear_dirty();
 					// Delete all chunks (& their objs).
 	for (int y = 0; y < num_chunks; y++)
@@ -1148,6 +1149,8 @@ int Game_window::read_gwin
 	clock.set_day(Read2(gin));
 	clock.set_hour(Read2(gin));
 	clock.set_minute(Read2(gin));
+	if (!clock.in_queue())		// Be sure clock is running.
+		tqueue->add(SDL_GetTicks(), &clock, (long) this);
 	int okay = gin.good();		// Next ones were added recently.
 	special_light = Read4(gin);
 	if (!gin.good())
