@@ -41,6 +41,7 @@
 #include "Gump.h"
 #include "drag.h"
 #include "effects.h"
+#include "chunks.h"
 
 #ifdef USE_EXULTSTUDIO  /* Only needed for exult studio. */
 #include "server.h"
@@ -762,10 +763,15 @@ void Cheat::create_last_shape (void) const {
 	int current_shape = 0;
 	int current_frame = 0;
 	if(browser->get_shape(current_shape, current_frame)) {
-		gwin->get_main_actor()->add(
-			gwin->get_map()->create_ireg_object(
-					current_shape, current_frame), 1);
-		eman->center_text("Object created");
+		Game_object *obj = gwin->get_map()->create_ireg_object(
+					current_shape, current_frame);
+		Tile_coord t = 	Map_chunk::find_spot(
+			gwin->get_main_actor()->get_tile(), 4, obj, 2);
+		if (t.tx != -1) {
+			obj->move(t);
+			eman->center_text("Object created");
+		} else
+			eman->center_text("No room");
 	} else
 		eman->center_text("Can only create from 'shapes.vga'");
 }
