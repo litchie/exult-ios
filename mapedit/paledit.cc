@@ -351,6 +351,10 @@ gint Palette_edit::mouse_press
 	)
 	{
 	Palette_edit *paled = (Palette_edit *) data;
+
+    if (event->button == 4 || event->button == 5) // mouse wheel
+        return (TRUE);
+
 	if (paled->colorsel)
 		return (TRUE);		// Already editing a color.
 	int old_selected = paled->selected;
