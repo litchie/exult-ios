@@ -68,11 +68,18 @@ void Shape_chooser::select
 	{
 	selected = new_sel;
 	int shapenum = info[selected].shapenum;
+					// Update spin-button value, range.
+	gtk_widget_set_sensitive(fspin, true);
+	gtk_adjustment_set_value(frame_adj, info[selected].framenum);
+	int nframes = ifile->get_num_frames(shapenum);
+	frame_adj->upper = nframes - 1;
+	gtk_adjustment_changed(frame_adj);
+	gtk_widget_set_sensitive(fspin, true);
 					// Remove prev. selection msg.
 	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	char buf[150];			// Show new selection.
-	g_snprintf(buf, sizeof(buf), "Shape %d/%d",
-			shapenum, info[selected].framenum);
+	g_snprintf(buf, sizeof(buf), "Shape %d (%d frames)",
+						shapenum, nframes);
 	if (names && names[shapenum])
 		{
 		int len = strlen(buf);
@@ -92,18 +99,17 @@ void Shape_chooser::render
 	{
 	const int border = 4;		// Border at bottom, sides.
 					// Look for selected frame.
-	int selshape = -1, selframe = -1;
-	int prev_selected = selected;
-	if (selected >= 0)
+	int selshape = -1, selframe = -1, new_selected = -1;
+	if (selected >= 0)		// Save selection info.
 		{
 		selshape = info[selected].shapenum;
 		selframe = info[selected].framenum;
-		selected = -1;		// Got to find it again.
 		}
 					// Remove "selected" message.
 	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
 	delete [] info;			// Delete old info. list.
-	int shapenum = shapenum0, framenum = framenum0;
+	int shapenum = shapenum0;
+	int framenum = 0;
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width, winh = draw->allocation.height;
 					// Provide more than enough room.
@@ -112,7 +118,7 @@ void Shape_chooser::render
 	iwin->fill8(0);			// ++++Which color?
 	int x = 0;
 					// Get first shape.
-	Shape_frame *shape = ifile->get_shape(shapenum, framenum);
+	Shape_frame *shape = ifile->get_shape(shapenum, 0);
 	int sw;
 	info_cnt = 0;			// Count them.
 	while (shape && x + (sw = shape->get_width()) <= winw)
@@ -129,22 +135,20 @@ void Shape_chooser::render
 			}
 					// Store info. about where drawn.
 		info[info_cnt].set(shapenum, framenum, x, sy, sw, sh);
-		if (shapenum == selshape && framenum == selframe)
+		if (shapenum == selshape)
 					// Found the selected shape.
-			select(info_cnt);
-					// Get next.
-//		shape = ifile->get_next_frame(shapenum, framenum);
-		shapenum++;		// ++++For now, just next shape.
-		framenum = 0;
+			new_selected = info_cnt;
+		shapenum++;		// Next shape.
+		framenum = shapenum == selshape ? selframe : 0;
 		shape = shapenum >= num_shapes ? 0 
 				: ifile->get_shape(shapenum, framenum);
 		x += sw + border;
 		info_cnt++;
 		}
-	if (selected == -1)
-		gtk_drag_source_unset(draw);
-	if (selected != prev_selected && sel_changed)
-		(*sel_changed)();	// Tell client if sel. removed.
+	if (new_selected == -1)
+		unselect(false);
+	else
+		select(new_selected);
 	}
 
 /*
@@ -283,34 +287,6 @@ gint Shape_chooser::selection_clear
 	return TRUE;
 	}
 
-#if 0
-/*
- *	Mouse motion.  This starts a drag for drag-and-drop.
- *	++++++++Goes away???
- */
-
-gint Mouse_drag_motion
-	(
-	GtkWidget *widget,		// The view window.
-	GdkEventButton *event,
-	gpointer data			// ->Shape_chooser.
-	)
-	{
-	Shape_chooser *chooser = (Shape_chooser *) data;
-	cout << "In MOUSE_DRAG_MOTION" << endl;
-	GtkTargetEntry tents[1];	// Indicate what we'll drag.
-	tents[0].target = U7_TARGET_SHAPEID_NAME;
-	tents[0].flags = 0;
-	tents[0].info = U7_TARGET_SHAPEID;
-	GtkTargetList *targets = gtk_target_list_new(tents, 
-					sizeof(tents)/sizeof(tents[0]));
-	gtk_drag_begin(widget, targets, GDK_ACTION_DEFAULT, 
-				event->button, (GdkEvent *) event);
-	gtk_target_list_unref(targets);
-	return TRUE;
-	}
-#endif
-
 /*
  *	Beginning of a drag.
  */
@@ -402,6 +378,31 @@ cout << "Scrolled to " << adj->value << '\n';
 	}
 
 /*
+ *	Handle a change to the 'frame' spin button.
+ */
+
+void Shape_chooser::frame_changed
+	(
+	GtkAdjustment *adj,		// The adjustment.
+	gpointer data			// ->Shape_chooser.
+	)
+	{
+	Shape_chooser *chooser = (Shape_chooser *) data;
+cout << "Frame changed to " << adj->value << '\n';
+	gint newframe = (gint) adj->value;
+	if (chooser->selected >= 0)
+		{
+		Shape_info& shinfo = chooser->info[chooser->selected];
+		int nframes = chooser->ifile->get_num_frames(shinfo.shapenum);
+		if (newframe >= nframes)	// Just checking
+			return;
+		shinfo.framenum = newframe;
+		chooser->render();
+		chooser->show();
+		}
+	}
+
+/*
  *	Create the list.
  */
 
@@ -412,7 +413,7 @@ Shape_chooser::Shape_chooser
 	GtkWidget *box,			// Where to put this.
 	int w, int h			// Dimensions.
 	) : ifile(i), names(nms),
-		iwin(0), shapenum0(0), framenum0(0), palette(0),
+		iwin(0), shapenum0(0), palette(0),
 		info(0), info_cnt(0), selected(-1), sel_changed(0)
 	{
 	U7object pal("static/palettes.flx", 0);
@@ -463,7 +464,7 @@ Shape_chooser::Shape_chooser
 					// Want a scrollbar for the shapes.
 	GtkObject *shape_adj = gtk_adjustment_new(0, 0, 
 				num_shapes, 1, 
-				1 + num_shapes/10, 1.0);
+				4, 1.0);
 	GtkWidget *shape_scroll = gtk_hscrollbar_new(
 					GTK_ADJUSTMENT(shape_adj));
 					// Update window when it stops.
@@ -488,11 +489,13 @@ Shape_chooser::Shape_chooser
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
 	gtk_widget_show(label);
 					// Finally, a spin button for frame#.
-	GtkObject *frame_adj = gtk_adjustment_new(0, 0, 
+	frame_adj = GTK_ADJUSTMENT(gtk_adjustment_new(0, 0, 
 				16, 1, 
-				4, 1.0);
-	GtkWidget *fspin = gtk_spin_button_new(GTK_ADJUSTMENT(frame_adj), 
+				4, 1.0));
+	fspin = gtk_spin_button_new(GTK_ADJUSTMENT(frame_adj), 
 									1, 0);
+	gtk_signal_connect(GTK_OBJECT(frame_adj), "value_changed",
+					GTK_SIGNAL_FUNC(frame_changed), this);
 	gtk_box_pack_start(GTK_BOX(hbox), fspin, FALSE, FALSE, 0);
 	gtk_widget_show(fspin);
 	}
@@ -516,14 +519,21 @@ Shape_chooser::~Shape_chooser
 
 void Shape_chooser::unselect
 	(
+	bool need_render			// 1 to render and show.
 	)
 	{
 	if (selected >= 0)
 		{
 		selected = -1;
+					// Update spin button for frame #.
+		gtk_adjustment_set_value(frame_adj, 0);
+		gtk_widget_set_sensitive(fspin, false);
 		gtk_drag_source_unset(draw);
-		render();
-		show();
+		if (need_render)
+			{
+			render();
+			show();
+			}
 		if (sel_changed)	// Tell client.
 			(*sel_changed)();
 		}
