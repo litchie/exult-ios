@@ -178,6 +178,7 @@ static int SI_get_frame
 
 /*
  *	Show a "face" on the screen.  Npc_text_rect is also set.
+ *	If shape < 0, an empty space is shown.
  */
 
 void Conversation::show_face(int shape, int frame, int slot)
@@ -205,7 +206,14 @@ void Conversation::show_face(int shape, int frame, int slot)
 					// Get screen dims.
 	int screenw = gwin->get_width(), screenh = gwin->get_height();
 					// Get character's portrait.
-	Shape_frame *face = gwin->get_face(shape, frame);
+	Shape_frame *face = shape >= 0 ? gwin->get_face(shape, frame) : 0;
+	int face_w = 32, face_h = 32, face_xleft = 0, face_yabove = 0;
+	if (face)
+		{
+		face_w = face->get_width(); face_h = face->get_height();
+		face_xleft = face->get_xleft();
+		face_yabove = face->get_yabove();
+		}
 	Npc_face_info *info = 0;
 	Rectangle actbox;		// Gets box where face goes.
 					// See if already on screen.
@@ -245,13 +253,13 @@ void Conversation::show_face(int shape, int frame, int slot)
 			if (starty < prev->face_rect.y + prev->face_rect.h)
 				starty = prev->face_rect.y + prev->face_rect.h;
 			starty += 2*text_height;
-			if (starty + face->get_height() > screenh - 1)
-				starty = screenh - face->get_height() - 1;
+			if (starty + face_h > screenh - 1)
+				starty = screenh - face_h - 1;
 			}
 		else
 			starty = 1;
 		actbox = gwin->clip_to_win(Rectangle(8, starty,
-			face->get_width() + 4, face->get_height() + 4));
+			face_w + 4, face_h + 4));
 		info->face_rect = actbox;
 					// This is where NPC text will go.
 		info->text_rect = gwin->clip_to_win(Rectangle(
@@ -269,8 +277,8 @@ void Conversation::show_face(int shape, int frame, int slot)
 	gwin->get_win()->set_clip(0, 0, screenw, screenh);
 					// Draw whom we're talking to, using
 					//   translucency.
-	gwin->paint_shape(actbox.x + face->get_xleft(),
-			actbox.y + face->get_yabove(), face, 1);
+	gwin->paint_shape(actbox.x + face_xleft,
+			actbox.y + face_yabove, face, 1);
 	gwin->get_win()->clear_clip();
 	}
 
