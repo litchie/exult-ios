@@ -218,7 +218,7 @@ void Scheduled_usecode::activate_eggs
 		{
 		activate_egg(usecode, usecode->get_item(objval.get_elem(i)),
 						(int) Egg_object::monster);
-		Usecode_value z(0);
+		Usecode_value z((Game_object*) NULL);
 		objval.put_elem(i, z);
 		}
 	for (i = 0; i < size; i++)	// Do the rest.
@@ -581,6 +581,11 @@ void Usecode_machine::append_string
 			stack_error(1);
 		return *--sp; 
 		}
+	inline void Usecode_machine::pushref(Game_object *obj)
+		{
+		Usecode_value v(obj);
+		push(v);
+		} 
 	inline void Usecode_machine::pushi(long val)		// Push/pop integers.
 		{
 		Usecode_value v(val);
@@ -611,10 +616,14 @@ Game_object *Usecode_machine::get_item
 	{
 					// If array, take 1st element.
 	Usecode_value& elemval = itemref.get_elem(0);
+
+	if (elemval.is_ptr())
+		return elemval.get_ptr_value();
+
 	long val = elemval.get_int_value();
 	if (!val)
-		return (0);
-	Game_object *obj = 0;
+		return NULL;
+	Game_object *obj = NULL;
 	if (val == -356)		// Avatar.
 		return gwin->get_main_actor();
 	if (val < 0 && val > -356)
@@ -630,7 +639,7 @@ Game_object *Usecode_machine::get_item
 		else
 			return 0;	// Can't be an object.
 		}
-	return obj ? obj : (val < -356 || val > 0x1000) ? (Game_object *) val : 0;
+	return obj;
 	}
 
 /*
@@ -993,7 +1002,7 @@ Usecode_value Usecode_machine::get_party
 	{
 	Usecode_value arr(1 + party_count, 0);
 					// Add avatar.
-	Usecode_value aval((long) gwin->get_main_actor());
+	Usecode_value aval(gwin->get_main_actor());
 	arr.put_elem(0, aval);	
 	int num_added = 1;
 	for (int i = 0; i < party_count; i++)
@@ -1001,7 +1010,7 @@ Usecode_value Usecode_machine::get_party
 		Game_object *obj = gwin->get_npc(party[i]);
 		if (!obj)
 			continue;
-		Usecode_value val((long) obj);
+		Usecode_value val(obj);
 		arr.put_elem(num_added++, val);
 		}
 	// cout << "Party:  "; arr.print(cout); cout << endl;
@@ -1103,7 +1112,7 @@ Usecode_value Usecode_machine::find_nearby
 	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *each = *it;
-		Usecode_value val((long) each);
+		Usecode_value val(each);
 		nearby.put_elem(i++, val);
 		}
 	return (nearby);
@@ -1122,7 +1131,7 @@ Usecode_value Usecode_machine::find_nearest
 	{
 	Game_object *obj = get_item(objval);
 	if (!obj)
-		return Usecode_value(0);
+		return Usecode_value((Game_object*) NULL);
 	GOVector vec;			// Gets list.
 	obj = obj->get_outermost();	// Might be inside something.
 	int dist = distval.get_int_value();
@@ -1148,7 +1157,7 @@ Usecode_value Usecode_machine::find_nearest
 			closest = each;
 			}
 		}
-	return Usecode_value((long) closest);
+	return Usecode_value(closest);
 	}
 
 /*
@@ -1219,7 +1228,7 @@ Usecode_value Usecode_machine::get_objects
 	{
 	Game_object *obj = get_item(objval);
 	if (!obj)
-		return Usecode_value(0);
+		return Usecode_value((Game_object*) NULL);
 	int shapenum = shapeval.get_int_value();
 	int framenum = frameval.get_int_value();
 	int qual = qualval.get_int_value();
@@ -1232,7 +1241,7 @@ Usecode_value Usecode_machine::get_objects
 	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *each = *it;
-		Usecode_value val((long) each);
+		Usecode_value val(each);
 		within.put_elem(i++, val);
 		}
 	return (within);
@@ -1297,7 +1306,7 @@ Usecode_value Usecode_machine::add_party_items
 					// Look through whole party.
 	Usecode_value party = get_party();
 	int cnt = party.get_array_size();
-	Usecode_value result(0);
+	Usecode_value result((Game_object*) NULL);  // +++++ Itemref or integer?
 	for (int i = 0; i < cnt && quantity > 0; i++)
 		{
 		Game_object *obj = get_item(party.get_elem(i));
@@ -1370,7 +1379,7 @@ Usecode_value Usecode_machine::click_on_item
 		if (obj)		// Found object?  Use its coords.
 			obj->get_abs_tile(tx, ty, tz);
 		}
-	Usecode_value oval((long) obj);	// Ret. array with obj as 1st elem.
+	Usecode_value oval(obj);	// Ret. array with obj as 1st elem.
 	Usecode_value ret(4, &oval);
 	Usecode_value xval(tx), yval(ty), zval(tz);
 	ret.put_elem(1, xval);
@@ -1723,13 +1732,13 @@ USECODE_INTRINSIC(get_npc_object)
 		Usecode_value ret(sz, 0);
 		for (int i = 0; i < sz; i++)
 			{
-			Usecode_value elem((long) get_item(v.get_elem(i)));
+			Usecode_value elem(get_item(v.get_elem(i)));
 			ret.put_elem(i, elem);
 			}
 		return ret;
 		}
 	Game_object *obj = get_item(parms[0]);
-	Usecode_value u((long) obj);
+	Usecode_value u(obj);
 	return(u);
 }
 
@@ -1792,7 +1801,7 @@ USECODE_INTRINSIC(set_npc_prop)
 USECODE_INTRINSIC(get_avatar_ref)
 {
 	// Guessing it's Avatar's itemref.
-	Usecode_value u((long) gwin->get_main_actor());
+	Usecode_value u(gwin->get_main_actor());
 	return(u);
 }
 
@@ -1848,7 +1857,7 @@ USECODE_INTRINSIC(create_new_object)
 		gwin->add_nearby_npc(monster);
 		gwin->show();
 		last_created = monster;
-		return Usecode_value((long) monster);
+		return Usecode_value(monster);
 	}
 	else
 	{
@@ -1872,7 +1881,7 @@ USECODE_INTRINSIC(create_new_object)
 		chunk->add(obj);
 	gwin->show();
 	last_created = obj;
-	Usecode_value u((long) obj);
+	Usecode_value u(obj);
 	return(u);
 }
 
@@ -1881,7 +1890,7 @@ USECODE_INTRINSIC(set_last_created)
 	// Take itemref, sets last_created to it.
 	Game_object *obj = get_item(parms[0]);
 	last_created = obj;
-	Usecode_value u((long) obj);
+	Usecode_value u(obj);
 	return(u);
 }
 
@@ -1892,7 +1901,7 @@ USECODE_INTRINSIC(update_last_created)
 	//   ??guessing??
 	if (!last_created)
 		{
-		Usecode_value u(0);
+		Usecode_value u((Game_object*) NULL);
 		return(u);
 		}
 	Usecode_value& arr = parms[0];
@@ -1959,9 +1968,9 @@ USECODE_INTRINSIC(find_in_owner)
 		{
 		Game_object *obj = get_item(parms[0]);
 		if (!obj)
-			return Usecode_value(0);
+			return Usecode_value((Game_object*) NULL);
 		Game_object *f = obj->find_item(shnum, qual, frnum);
-		return Usecode_value((long) f);
+		return Usecode_value(f);
 		}
 					// Look through whole party.
 	Usecode_value party = get_party();
@@ -1973,10 +1982,10 @@ USECODE_INTRINSIC(find_in_owner)
 			{
 			Game_object *f = obj->find_item(shnum, qual, frnum);
 			if (f)
-				return Usecode_value((long) f);
+				return Usecode_value(f);
 			}
 		}
-	return Usecode_value(0);
+	return Usecode_value((Game_object*) NULL);
 }
 
 USECODE_INTRINSIC(get_cont_items)
@@ -2035,7 +2044,7 @@ USECODE_INTRINSIC(npc_nearby)
 USECODE_INTRINSIC(find_nearby_avatar)
 {
 	// Find objs. with given shape near Avatar?
-	Usecode_value av((long) gwin->get_main_actor());
+	Usecode_value av(gwin->get_main_actor());
 	Usecode_value dist(64), mask(0);
 	Usecode_value u(find_nearby(av, parms[0], dist, mask));
 	return(u);
@@ -2051,7 +2060,7 @@ USECODE_INTRINSIC(is_npc)
 #if DEBUG
 		cerr << "is_npc: get_item returned a NULL pointer" << endl;
 #endif
-		Usecode_value u(0);
+		Usecode_value u((Game_object*) NULL);
 		return(u);
 		}
 	Usecode_value u(obj == gwin->get_main_actor() ||
@@ -2300,7 +2309,7 @@ USECODE_INTRINSIC(summon)
 	if (info)
 		{
 		//+++++++Create monster & find free spot near Avatar.
-		// return Usecode_value((long) monst);
+		// return Usecode_value(monst);
 		}
 	return Usecode_value(0);
 }
@@ -2408,11 +2417,11 @@ USECODE_INTRINSIC(resurrect)
 	Game_object *body = get_item(parms[0]);
 	int npc_num = body ? body->get_live_npc_num() : -1;
 	if (npc_num < 0)
-		return Usecode_value(0);
+		return Usecode_value((Game_object*) NULL);
 	Actor *actor = gwin->get_npc(npc_num);
 	if (actor)
 		actor = actor->resurrect((Dead_body *) body);
-	return Usecode_value((long) actor);
+	return Usecode_value(actor);
 }
 
 USECODE_INTRINSIC(add_spell)
@@ -2479,8 +2488,8 @@ USECODE_INTRINSIC(get_barge)
 
 	Game_object *obj = get_item(parms[0]);
 	if (!obj)
-		return Usecode_value(0);
-	return Usecode_value((long) Get_barge(obj));
+		return Usecode_value((Game_object*) NULL);
+	return Usecode_value(Get_barge(obj));
 }
 
 USECODE_INTRINSIC(earthquake)
@@ -2640,9 +2649,9 @@ USECODE_INTRINSIC(get_container)
 {
 	// Takes itemref, returns container.
 	Game_object *obj = get_item(parms[0]);
-	Usecode_value u(0);
+	Usecode_value u((Game_object *) NULL);
 	if (obj)
-		u = Usecode_value((long) obj->get_owner());
+		u = Usecode_value(obj->get_owner());
 	return(u);
 }
 
@@ -3018,7 +3027,7 @@ USECODE_INTRINSIC(get_dead_party)
 	Usecode_value ret(cnt, 0);
 	for (int i = 0; i < cnt; i++)
 		{
-		Usecode_value v((long) list[i]);
+		Usecode_value v(list[i]);
 		ret.put_elem(i, v);
 		}
 	return ret;
@@ -4332,7 +4341,7 @@ int Usecode_machine::run
 			call_intrinsic(event, offset, sval);
 			break;
 		case 0x3e:		// PUSH ITEMREF.
-			pushi((long) caller_item);
+			pushref(caller_item);
 			break;
 		case 0x3f:		// ABRT - Really like a 'throw'.
 			show_pending_text();

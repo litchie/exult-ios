@@ -40,7 +40,7 @@ int Usecode_value::count_array
 	)
 	{
 	int i;
-	for (i = 0; val.value.array[i].type != (int) end_of_array_type; i++)
+	for (i = 0; val.value.array[i].type != end_of_array_type; i++)
 		;
 	return (i);
 	}
@@ -52,9 +52,9 @@ int Usecode_value::count_array
 
 Usecode_value::~Usecode_value()
 {
-	if (type == (unsigned char) array_type)
+	if (type == array_type)
 		delete [] value.array;
-	else if (type == (unsigned char) string_type)
+	else if (type == string_type)
 		delete value.str;
 }
 
@@ -69,24 +69,25 @@ Usecode_value& Usecode_value::operator=
 	{
 	if (&v2 == this)
 		return *this;
-	if (type == (int) array_type)
+	if (type == array_type)
 		delete [] value.array;
-	else if (type == (int) string_type)
+	else if (type == string_type)
 		delete value.str;
 	type = v2.type;			// Assign new values.
-	if (type == (int) int_type)
+	if (type == int_type)
 		value.intval = v2.value.intval;
-	else if (type == (int) string_type)
+	else if (type == pointer_type)
+		value.ptr = v2.value.ptr;
+	else if (type == string_type)
 		value.str = v2.value.str ? strdup(v2.value.str) : 0;
-	else if (type == (int) array_type)
+	else if (type == array_type)
 		{
                 int tempsize = 1+count_array(v2);
 		value.array = new Usecode_value[tempsize];
 		int i = 0;
 		do
 			value.array[i] = v2.value.array[i];
-		while (value.array[i++].type != 
-					(int) end_of_array_type);
+		while (value.array[i++].type != end_of_array_type);
 		}
 	return *this;
 	}
@@ -98,7 +99,7 @@ Usecode_value& Usecode_value::operator=
 Usecode_value::Usecode_value
 	(
 	const char *s
-	) : type((unsigned char) string_type)
+	) : type(string_type)
 	{
 	value.str = s ? strdup(s) : 0; 
 	}
@@ -114,7 +115,7 @@ int Usecode_value::resize
 	int new_size
 	)
 	{
-	if (type != (int) array_type)	// Turn it into an array.
+	if (type != array_type)	// Turn it into an array.
 		{
 		Usecode_value elem(*this);
 		*this = Usecode_value(new_size, &elem);
@@ -124,7 +125,7 @@ int Usecode_value::resize
 	if (new_size == size)
 		return (1);		// Nothing to do.
 	Usecode_value *newvals = new Usecode_value[new_size + 1];
-	newvals[new_size].type = (unsigned char) end_of_array_type;
+	newvals[new_size].type = end_of_array_type;
 					// Move old values over.
 	int cnt = new_size < size ? new_size : size;
 	for (int i = 0; i < cnt; i++)
@@ -157,19 +158,22 @@ int Usecode_value::operator==
 	if (v2.type != type)
 		return (0);		// Wrong type.
 #endif
-	if (type == (int) int_type)
+	if (type == int_type)
 		return v2.type == int_type ?
 					(value.intval == v2.value.intval)
 					// Okay if 0==empty array.
 			: v2.type == array_type &&
 					!value.intval && !v2.get_array_size();
+	else if (type == pointer_type)
+		return (v2.type == pointer_type) && (value.ptr == v2.value.ptr);
+			
 	else if (type == array_type)
 		{
 		if (v2.type == int_type)
 			return !get_array_size() && !v2.get_int_value();
 		return 0;		// +++++Should we compare arrays.
 		}
-	else if (type == (int) string_type)
+	else if (type == string_type)
 		return (v2.type == string_type &&
 					strcmp(value.str, v2.value.str) == 0);
 	else
@@ -190,7 +194,7 @@ int Usecode_value::find_elem
 	if (type != array_type)
 		return (-1);		// Not an array.
 	int i;
-	for (i = 0; value.array[i].type != (int) end_of_array_type; i++)
+	for (i = 0; value.array[i].type != end_of_array_type; i++)
 		if (value.array[i] == val)
 			return (i);
 	return (-1);
@@ -277,13 +281,17 @@ void Usecode_value::print
 		out << (value.intval&0xffff);
 		cout << dec;
 		break;
+	case pointer_type:
+		cout << hex << setfill((char)0x30) << setw(8);
+		out << (long)value.ptr;
+		cout << dec;
+		break;
 	case string_type:
 		out << '"' << value.str << '"'; break;
 	case array_type:
 		{
 		out << "[ ";
-		for (int i = 0; value.array[i].type != (int) end_of_array_type;
-									i++)
+		for (int i = 0; value.array[i].type != end_of_array_type; i++)
 			{
 			if (i)
 				out << ", ";
