@@ -446,7 +446,7 @@ int Usecode_value::save
 	int buflen
 	)
 	{
-	unsigned char *ptr = buf;
+	uint8 *ptr = buf;
 	switch ((Val_type) type)
 		{
 	case int_type:
@@ -488,7 +488,7 @@ bool Usecode_value::restore
 	int buflen
 	)
 	{
-	unsigned char *ptr = buf;
+	uint8 *ptr = buf;
 	type = (Val_type) *ptr++;
 	switch (type)
 		{
