@@ -72,6 +72,20 @@ case "$host_os" in
 		SYSLIBS="-L/usr/X11R6/lib -lX11 -lXext -lXxf86vm -lXxf86dga"
 		EXE_TARGET="exult"
 		;;
+	darwin*)
+		dnl We have a problem here: both MacOS X and Darwin report the same
+		dnl signature "powerpc-apple-darwin*" - so we have to do more to
+		dnl distinguish them. Plain Darwin will propably use X-Windows; and it
+		dnl is of course lacking Carbon. For now I am lazy and do not add 
+		dnl proper detection code.
+		
+		WINDOWING_SYSTEM="-DCOCOA"
+		AC_DEFINE(MACOSX)
+		AC_MSG_RESULT(Cocoa (MacOS X))
+		SYSLIBS="-L/usr/local/lib -lstdc++ -lSDL -framework Carbon"
+		CFLAGS="$CFLAGS -F/System/Library/Frameworks/Carbon.framework"
+		EXE_TARGET="exult"
+		;;
 	*)
 		EXE_TARGET="exult"
 		WINDOWING_SYSTEM="-DXWIN"

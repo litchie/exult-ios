@@ -20,7 +20,8 @@ confregress_SOURCES =	\
 
 confregress_LDADD =	\
 	libconf.la	\
-	../files/libu7file.la 
+	../files/libu7file.la	\
+	$(SYSLIBS)
 
 EXTRA_DIST = 		\
 	config.xml	\

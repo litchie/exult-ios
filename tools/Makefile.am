@@ -15,7 +15,8 @@ expack_SOURCES = \
 	expack.cc
 
 expack_LDADD = \
-	../files/libu7file.la
+	../files/libu7file.la \
+	$(SYSLIBS)
 
 wuc_SOURCES = \
 	wuc.c \
@@ -30,6 +31,9 @@ rip_SOURCES = rip.c
 ucdump_SOURCES = ucdump.c
 
 shp2pcx_SOURCES = shp2pcx.cc
+
+shp2pcx_LDADD = \
+	$(SYSLIBS)
 
 ucc_SOURCES = \
 	ucclex.l \
