@@ -1586,7 +1586,7 @@ int Container_game_object::remove_quantity
 		{
 		next = obj->get_next();	// Might be deleting obj.
 		if (obj->get_shapenum() == shapenum &&
-		    (qual == -359 || obj->get_quality() == qual) ||
+		    (qual == -359 || obj->get_quality() == qual) &&
 		    (framenum == -359 || obj->get_framenum() == framenum))
 			delta = -obj->modify_quantity(-delta);
 					// Still there?
