@@ -2143,6 +2143,15 @@ USECODE_INTRINSIC(book_mode)
 	return(no_ret);
 }
 
+USECODE_INTRINSIC(get_barge)
+{
+	// get_barge(obj) - returns barge object is part of or lying on.
+
+	Game_object *obj = get_item(parms[0]);
+	Game_object *owner = obj ? obj->get_owner() : 0;
+	return Usecode_value((long) dynamic_cast<Barge_object *> (owner));
+}
+
 USECODE_INTRINSIC(earthquake)
 {
 	int len = parms[0].get_int_value();
@@ -2601,8 +2610,7 @@ struct Usecode_machine::IntrinsicTableEntry
                            // StopTime (ucdump.c)
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x57 ++++?Light_source(time)?
                            //CauseLight (ucdump.c)
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x58 ++++Get_barge(item):  Rets.
-					// barge item is on.
+	USECODE_INTRINSIC_PTR(get_barge),// 0x58
 	USECODE_INTRINSIC_PTR(earthquake),	// 0x59
 	USECODE_INTRINSIC_PTR(is_pc_female),	// 0x5a
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x5b     Armageddon (ucdump.c)
