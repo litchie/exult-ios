@@ -1,3 +1,8 @@
+2002-06-24  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Commented out add_nearby_npcs().  I think it's not
+	needed anymore.
+
 2002-06-24  Ryan Nunn  <triforce@merlin.net.au>
 	* ChangeLog : Added comment that was meant for this branch, but I
 	  accidently put in the other branch
