@@ -487,7 +487,8 @@ static void Handle_events
 		Delay();		// Wait a fraction of a second.
 #endif
 		// Mouse scale factor
-		int scale = gwin->get_fastmouse() ? 1 : gwin->get_win()->get_scale();
+		int scale = gwin->get_fastmouse() ? 1 : 
+						gwin->get_win()->get_scale();
 
 		Mouse::mouse->hide();		// Turn off mouse.
 		Mouse::mouse_update = false;
@@ -515,10 +516,7 @@ static void Handle_events
 			    !gwin->was_teleported())
 				{
 				int ms = SDL_GetMouseState(&x, &y);
-				if ((SDL_BUTTON(3) & ms) &&
-				    (Game::get_game_type() == SERPENT_ISLE ||
-					gwin->get_usecode()->get_global_flag(
-					   Usecode_machine::did_first_scene)))
+				if (SDL_BUTTON(3) & ms)
 					gwin->start_actor(x/scale, y/scale, 
 						Mouse::mouse->avatar_speed);
 				}
@@ -527,8 +525,10 @@ static void Handle_events
 		if (show_mouse)
 			Mouse::mouse->show();	// Re-display mouse.
 
-					// Rotate less often if scaling and not paletized.
-		int rot_speed = 100 << (gwin->get_win()->is_palettized()||scale==1?0:1);
+					// Rotate less often if scaling and 
+					//   not paletized.
+		int rot_speed = 100 << (gwin->get_win()->is_palettized() ||
+								scale==1?0:1);
 		if (ticks > last_rotate + rot_speed)
 			{		// (Blits in simulated 8-bit mode.)
 			gwin->get_win()->rotate_colors(0xf8, 4, 0);
@@ -536,7 +536,8 @@ static void Handle_events
 			gwin->get_win()->rotate_colors(0xf0, 4, 0);
 			gwin->get_win()->rotate_colors(0xe8, 8, 0);
 			gwin->get_win()->rotate_colors(0xe0, 8, 1);
-			while (ticks > last_rotate + rot_speed) last_rotate += rot_speed;
+			while (ticks > last_rotate + rot_speed) 
+				last_rotate += rot_speed;
 					// Non palettized needs explicit blit.
 			if (!gwin->get_win()->is_palettized())
 				gwin->set_painted();

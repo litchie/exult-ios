@@ -228,6 +228,7 @@ void Mouse::set_speed_cursor()
     {
         cursor = hand;
     }
+#if 0	/* Can no longer move in gump mode. */
     else if (gump_man->showing_gumps())
     {
     	Gump *gump = gump_man->find_gump(mousex, mousey);
@@ -235,7 +236,10 @@ void Mouse::set_speed_cursor()
         if (gump && !gump->no_handcursor())
             cursor = hand;
     }
-    
+#else
+    else if (gump_man->gump_mode())	// A fast check.
+	cursor = hand;
+#endif    
     if (cursor == dontchange)
     {
         Barge_object *barge = gwin->get_moving_barge();
