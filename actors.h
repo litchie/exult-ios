@@ -415,7 +415,7 @@ public:
 	void movef(Chunk_object_list *old_chunk, Chunk_object_list *new_chunk, 
 		int new_sx, int new_sy, int new_frame, int new_lift);
 					// Update schedule for new 3-hour time.
-	void update_schedule(Game_window *gwin, int hour3);
+	void update_schedule(Game_window *gwin, int hour3, int backwards = 0);
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.

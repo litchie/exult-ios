@@ -1,3 +1,8 @@
+2000-11-03  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamewin.cc: Look backwards for closest schedule change when
+	clock is incremented more than a tick.
+
 2000-11-02  Tristan Tarrant  <nadir@users.sourceforge.net>
 
 	* tools/u7shpload.c: Require latest gimp include files (>=1.1.26)
