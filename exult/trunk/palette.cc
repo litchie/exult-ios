@@ -31,6 +31,7 @@ Palette::Palette()
 	{
 		win = Game_window::get_game_window()->get_win();
 		brightness = 100;
+		max_val = 63;
 	}
 
 Palette::~Palette()
@@ -39,10 +40,9 @@ Palette::~Palette()
 	
 void Palette::apply()
 	{
-		win->set_palette(pal1, 63, brightness);
+		win->set_palette(pal1, max_val, brightness);
 		win->show();
 	}
-	
 /*
  *	Returns 0 if file not found.
  */
@@ -144,7 +144,7 @@ void Palette::fade_in(int cycles)
 			for (int i = 0; i <= cycles; i++) {
 			        for(int c=0; c < 768; c++)
 				        fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
-				win->set_palette(fade_pal, 63);
+				win->set_palette(fade_pal, 63, brightness);
 								// Frame skipping on slow systems
 				if (i == cycles || ticks >= SDL_GetTicks() ||
 							!Game_window::get_game_window()->get_frame_skipping())
@@ -154,7 +154,7 @@ void Palette::fade_in(int cycles)
 				ticks+= 20;
 			}
 		} else {
-		        win->set_palette(pal1, 63);
+		        win->set_palette(pal1, max_val, brightness);
 			win->show();
 		}
 	}
@@ -167,7 +167,7 @@ void Palette::fade_out(int cycles)
 		        for (int i = cycles; i >= 0; i--) {
 			        for(int c=0; c < 768; c++)
 				        fade_pal[c] = ((pal1[c]-pal2[c])*i)/cycles+pal2[c];
-				win->set_palette(fade_pal, 63);
+				win->set_palette(fade_pal, 63, brightness);
 								// Frame skipping on slow systems
 				if (i == 0 || ticks >= SDL_GetTicks() ||
 							 !Game_window::get_game_window()->get_frame_skipping())
@@ -177,10 +177,10 @@ void Palette::fade_out(int cycles)
 				ticks+= 20;
 			}
 		} else {
-		        win->set_palette(pal1, 63);
+		        win->set_palette(pal1, max_val, brightness);
 			win->show();
 		}
-	        win->set_palette(pal1, 63);
+	        win->set_palette(pal1, max_val, brightness);
 	}
 
 //	Find index (0-255) of closest color (r,g,b < 64).
@@ -214,3 +214,22 @@ void Palette::set_color(int nr, int r, int g, int b) {
 	pal1[nr*3+1] = g;
 	pal1[nr*3+2] = b;
 }
+
+void Palette::set_palette(unsigned char palnew[768]) {
+	memcpy(pal1,palnew,768);
+	memset(pal2,0,768);
+}
+
+void Palette::set_max_val(int max)
+{
+	max_val = max;
+}
+
+int Palette::get_max_val()
+{
+	return max_val;
+}
+void Palette::update()
+{
+	win->set_palette(pal1, max_val, brightness);
+}	

@@ -334,8 +334,8 @@ void Paperdoll_gump::paint
 	paint_object      (gwin, box, info, Actor::rhand,       rhandx, rhandy);
 
 // if debugging show usecode container
-#ifdef DEBUG
-	paint_object      (gwin, box, info, Actor::ucont_spot,  0,      0,     0, Actor::special_spot);
+#ifdef SHOW_USECODE_CONTAINER
+	paint_object      (gwin, box, info, Actor::ucont_spot,  0,      0 );
 #endif
 
 
@@ -613,8 +613,8 @@ Game_object * Paperdoll_gump::find_object
 	Game_object *obj;
 
 // if debugging show usecode container
-#ifdef DEBUG
-	if (obj = check_object      (gwin, mx, my, info, Actor::ucont_spot,  0,      0,      0, Actor::special_spot))
+#ifdef SHOW_USECODE_CONTAINER
+	if (obj = check_object      (gwin, mx, my, info, Actor::ucont_spot,  0,      0 ))
 		return obj;
 #endif
 	

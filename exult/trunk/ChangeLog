@@ -1,3 +1,20 @@
+2001-01-10  Ryan Nunn <triforce@merlin.net.au>
+	* gamma.h : Gamma Table Class
+	* Makefile.am : Added gamma.h
+	* Makefile.Win32 : Fixed 'Clean'
+	* bggame.cc : Faster Fades in Endgame
+	* effects.* : Attempting to prevent 2 lighting effects from occuring at the
+	  same time.
+	* exult.cc : + and - now do gamma correction.
+	* palette.* : New methods so palette class could be used by Flics
+	* audio/xmidi.* : Now uses Gamma Table Class
+	* flic/playfli.* : Changes to use Palette class and methods to get the
+	  palette
+	* gumps/Paperdoll_gump : Some fixes. Defining SHOW_USECODE_CONTAINER will
+	  show the usecode container as a backpack in the upperleft.
+	* imagewin/iwin8.* : Three Channel Gamma Correction ability added
+	* objs/contain.h : Gump for usecode container.
+
 2001-01-09  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* audio/audio.cc, audio/Mixer.cc: experimental audio-buffer fix
 

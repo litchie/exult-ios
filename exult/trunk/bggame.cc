@@ -771,7 +771,7 @@ void BG_Game::end_game(bool success)
 	for (i = 0; i < 240; i++)
 	{
 		next = fli1.play(win, 0, 1, next);
-		if (wait_delay (10))
+		if (wait_delay (0))
 		{
 			gwin->clear_screen();
 			delete [] fli_b[0];
@@ -784,7 +784,7 @@ void BG_Game::end_game(bool success)
 	for (i = 1; i < 150; i++)
 	{
 		next = fli1.play(win, i, i+1, next);
-		if (wait_delay (10))
+		if (wait_delay (0))
 		{
 			gwin->clear_screen();
 			delete [] buffer;
@@ -810,7 +810,7 @@ void BG_Game::end_game(bool success)
 		endfont2->draw_text(ibuf, width, height, message);
 		
 		win->show();
-		if (wait_delay (10))
+		if (wait_delay (0))
 		{
 			gwin->clear_screen();
 			delete [] fli_b[0];
@@ -832,13 +832,13 @@ void BG_Game::end_game(bool success)
 	message = "Damn you Avatar!  Damn you!";
 	width = (gwin->get_width() - endfont2->get_text_width(message)) / 2;
 
-	for (i = 0; i < 320; i++)
+	for (i = 0; i < 100; i++)
 	{
 		next = fli2.play(win, i, i, next);
 		endfont2->draw_text(ibuf, width, height, message);
 		
 		win->show();
-		if (wait_delay (10))
+		if (wait_delay (0))
 		{
 			gwin->clear_screen();
 			delete [] fli_b[0];
@@ -848,11 +848,20 @@ void BG_Game::end_game(bool success)
 		}
 	}
 
-	for (i = 1000 + next; i > next; )
+
+	Palette *pal = fli2.get_palette();
+	next = SDL_GetTicks();
+	for (i = 1000 + next; next < i; next += 10)
 	{
-		next = fli2.play(win, -1, -1, next, (next-i)/-10);
-		win->show ();
-		if (wait_delay (10))
+		// Speed related frame skipping detection
+		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
+		while (SDL_GetTicks() < next);
+		if (!skip_frame)
+		{
+			pal->set_brightness ((i - next) / 10);
+			pal->apply();
+		}
+		if (wait_delay (0))
 		{
 			gwin->clear_screen();
 			delete [] fli_b[0];
@@ -909,7 +918,7 @@ void BG_Game::end_game(bool success)
 	// Fade in for 1 sec (50 cycles)
 	gwin->fade_palette (50, 1, 0);
 
-	// Display text for 3 seonds
+	// Display text for approx 3 seonds
 	for (i = 0; i < 30; i++)
 	{
 		if (wait_delay (100))
@@ -924,14 +933,21 @@ void BG_Game::end_game(bool success)
 
 	// Fade out for 1 sec (50 cycles)
 	gwin->fade_palette (50, 0, 0);
-	
-	// Now for the final flic
 
-	next = 0;
-	for (i = 0; i <= 200; i+=7)
+	next = fli3.play(win, 0, 0, next);
+	pal = fli3.get_palette();
+	next = SDL_GetTicks();
+	for (i = 1000 + next; next < i; next += 10)
 	{
-		next = fli3.play(win, 0, 1, next, i/2);
-		if (wait_delay (10))
+		// Speed related frame skipping detection
+		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
+		while (SDL_GetTicks() < next);
+		if (!skip_frame)
+		{
+			pal->set_brightness (100 - (i-next) / 10);
+			pal->apply();
+		}
+		if (wait_delay (0))
 		{
 			gwin->clear_screen();
 			delete [] fli_b[0];
@@ -940,7 +956,7 @@ void BG_Game::end_game(bool success)
 			return;
 		}
 	}
-
+	
 	buffer = (uint8 *) speech3.retrieve(size);
 	Audio::get_ptr()->play (buffer+8, size-8, false);
 	delete [] buffer;
@@ -960,7 +976,8 @@ void BG_Game::end_game(bool success)
 
 	starty = (gwin->get_height() - endfont3->get_text_height()*8)/2;
 
-	for (i = next+29000; i > next; )
+	next = SDL_GetTicks();
+	for (i = next+28000; i > next; )
 	{
 		for (j = 0; j < finfo.frames; j++)
 		{
@@ -981,10 +998,18 @@ void BG_Game::end_game(bool success)
 	}
 
 	
-	for (i = 200; i > 0; i-=7)
+	next = SDL_GetTicks();
+	for (i = 1000 + next; next < i; next += 10)
 	{
-		next = fli3.play(win, 0, 0, next, i/2);
-		if (wait_delay (10))
+		// Speed related frame skipping detection
+		int skip_frame = Game_window::get_game_window()->get_frame_skipping() && SDL_GetTicks() >= next;
+		while (SDL_GetTicks() < next);
+		if (!skip_frame)
+		{
+			pal->set_brightness ((i - next) / 10);
+			pal->apply();
+		}
+		if (wait_delay (0))
 		{
 			gwin->clear_screen();
 			delete [] fli_b[0];
