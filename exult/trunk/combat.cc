@@ -46,7 +46,7 @@ void Combat_schedule::find_opponents
 	{
 	opponents.clear();
 	Game_window *gwin = Game_window::get_game_window();
-	if (npc->get_alignment() == Npc_actor::hostile)
+	if (npc->get_alignment() >= Npc_actor::hostile)
 		{
 		Actor *party[9];
 		int cnt = gwin->get_party(party, 1);
@@ -61,7 +61,7 @@ void Combat_schedule::find_opponents
 	Actor *actor;
 	Slist_iterator next(nearby);
 	while ((actor = (Actor *) next()) != 0)
-		if (actor->get_alignment() == Npc_actor::hostile &&
+		if (actor->get_alignment() >= Npc_actor::hostile &&
 		    !actor->is_dead_npc())
 			{
 			opponents.append(actor);

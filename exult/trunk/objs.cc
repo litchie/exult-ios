@@ -294,7 +294,7 @@ int Game_object::find_nearby
 					//   -359=any.
 	int delta,			// # tiles to look in each direction.
 	int mask,			// Guessing+++:
-					//   4 == party members only.
+					//   4 == party members only???
 					//   8 == all NPC's.
 					//  16 == egg or barge.
 					//  32 == monsters? 
@@ -304,6 +304,8 @@ int Game_object::find_nearby
 	{
 	if (delta < 0)			// +++++Until we check all old callers.
 		delta = 24;
+	if (shapenum > 0 && mask == 4)	// Ignore mask=4 if shape given!
+		mask = 0;
 	int vecsize = vec.get_cnt();
 	Game_window *gwin = Game_window::get_game_window();
 	Rectangle tiles(pos.tx - delta, pos.ty - delta, 1 + 2*delta, 1 + 
