@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "items.h"
 #include "dir.h"
 #include "ordinfo.h"
+#include "game.h"
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
 #  include <cstdio>
@@ -674,16 +675,6 @@ void Game_object::activate
 		usefun = 0x638;
 	umachine->call_usecode(usefun, this,
 			(Usecode_machine::Usecode_events) event);
-#if 0	/* ++++I don't think this does any good. */
-	if (Game::get_game_type() != BLACK_GATE)
-		return;
-	Vector barges;			// Look for nearby barge.
-	if (!find_nearby(barges, 961, 16, 0))
-		return;
-					// Special usecode for barge pieces:
-	umachine->call_usecode(0x634, this, 
-				(Usecode_machine::Usecode_events) event);
-#endif
 	}
 
 /*
@@ -799,6 +790,7 @@ string Game_object::get_name
 	string display_name;
 	int shnum = get_shapenum();
 	int frnum = get_framenum();
+	bool si = Game::get_game_type() == SERPENT_ISLE;
 	switch (shnum)			// Some special cases!
 		{
 	case 0x34a:			// Reagants.
@@ -811,10 +803,10 @@ string Game_object::get_name
 			name = item_names[0x508 + frnum];
 		break;
 	case 0x179:			// Food items.
-		name = item_names[0x50b + frnum];
+		name = item_names[0x50b + (si ? 5 : 0) + frnum];
 		break;
 	case 0x2a3:			// Desk item.
-		name = item_names[0x52d + frnum];
+		name = item_names[0x52d + (si ? 5 : 0) + frnum];
 		break;
 	default:
 		name = item_names[shnum];

@@ -66,6 +66,7 @@ protected:
 public:
     void	Init(void);
     void	Init(int _samplerate,int _channels);
+    void	Init_sfx(void);
     ~Audio();
 	static	Audio	*get_ptr(void);
 	Mixer	*mixer;
