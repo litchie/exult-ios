@@ -707,6 +707,34 @@ void Shape::enlarge
 	}
 
 /*
+ *	Resize list.
+ */
+
+void Shape::resize
+	(
+	int newsize
+	)
+	{
+	if (newsize == frames_size)
+		return;
+	if (newsize > frames_size)
+		enlarge(newsize);	// Growing.
+	else
+		{			// Shrinking.
+		Shape_frame **newframes = new Shape_frame *[newsize];
+		int i;
+		for (i = 0; i < newsize; i++)
+			newframes[i] = frames[i];
+					// Delete past new end.
+		for ( ; i < frames_size; i++)
+			delete frames[i];
+		frames_size = newsize;
+		delete [] frames;
+		frames = newframes;
+		}
+	}
+
+/*
  *	Call this to set num_frames, frames_size and create 'frames' list.
  */
 
