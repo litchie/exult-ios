@@ -3132,6 +3132,7 @@ Shape_file* Game_window::create_mini_screenshot()
 		fr->ybelow = 59;
 		fr->create_rle(img, 96, 60);
 		fr->rle = 1;
+		delete [] img;
 
 		sh = new Shape_file(fr);
 	}
