@@ -98,9 +98,29 @@ int main
 	return (Play());
 	}
 
+static void Handle_events(unsigned char *stop);
 static void Handle_event(SDL_Event& event);
+
 #ifdef XWIN
 static Display *display = 0;
+static int xfd = -1;			// X connection #.
+
+/*
+ *	Here's a somewhat better way to delay in X:
+ */
+inline void X_Delay
+	(
+	)
+	{
+	fd_set rfds;
+	struct timeval timer;
+	timer.tv_sec = 0;
+	timer.tv_usec = 20000;		// Try 1/50 second.
+	FD_ZERO(&rfds);
+	FD_SET(xfd, &rfds);
+					// Wait for timeout or event.
+	select(xfd + 1, &rfds, 0, 0, &timer);
+	}
 #endif
 
 /*
@@ -120,6 +140,7 @@ static void Init
 #ifdef XWIN
 	SDL_GetWMInfo(&info);
 	display = info.info.x11.display;
+	xfd = ConnectionNumber(display);
 	int screen_num = DefaultScreen(display);
 	unsigned int display_width = DisplayWidth(display, screen_num);
 	unsigned int display_height = DisplayHeight(display, screen_num);
@@ -136,35 +157,46 @@ static void Init
 	}
 
 /*
+ *	Play game.
+ */
+
+static int Play()
+	{
+	Handle_events(&quitting_time);
+	delete gwin;
+	return (0);
+	}
+
+/*
+ *	Delay between animations.
+ */
+
+inline void Delay
+	(
+	)
+	{
+#ifdef XWIN
+	X_Delay();
+#else					/* May use this for Linux too. */
+	SDL_Delay(20);			// Try 1/50 second.
+#endif
+	}
+
+/*
  *	Handle events until a flag is set.
  */
 
-void Handle_events
+static void Handle_events
 	(
 	unsigned char *stop
 	)
 	{
-#ifdef XWIN
-					// Get connection number.
-	int xfd = ConnectionNumber(display);
-#endif
 	/*
 	 *	Main event loop.
 	 */
 	while (!*stop)
 		{
-#ifdef XWIN
-		fd_set rfds;		// Want a timer.
-		struct timeval timer;
-		timer.tv_sec = 0;
-		timer.tv_usec = 20000;	// Try 1/50 second.
-		FD_ZERO(&rfds);
-		FD_SET(xfd, &rfds);
-					// Wait for timeout or event.
-		select(xfd + 1, &rfds, 0, 0, &timer);
-#else					/* May use this for Linux too. */
-		SDL_Delay(20);		// Try 1/50 second.
-#endif
+		Delay();		// Wait a fraction of a second.
 		SDL_Event event;
 		while (!*stop && SDL_PollEvent(&event))
 			Handle_event(event);
@@ -176,17 +208,6 @@ void Handle_events
 			gwin->get_tqueue()->activate(ticks);
 		gwin->show();		// Blit to screen if necessary.
 		}
-	}
-
-/*
- *	Play game.
- */
-
-static int Play()
-	{
-	Handle_events(&quitting_time);
-	delete gwin;
-	return (0);
 	}
 
 /*
@@ -223,12 +244,6 @@ static void Handle_event
 			}
 		else if (event.button.button == 1)
 			{
-			if (gwin->get_mode() == Game_window::conversation)
-				{	// In a conversation.
-				gwin->conversation_choice(
-					event.button.x, event.button.y);
-				break;
-				}
 			unsigned long curtime = SDL_GetTicks();
 					// Last click within .5 secs?
 			if (curtime - last_b1_click < 500)
@@ -245,7 +260,7 @@ static void Handle_event
 	case SDL_MOUSEMOTION:		// Moving with right button down.
 		if (gwin->get_mode() != Game_window::normal)
 			break;
-		if (event.motion.state != 0)
+		if (event.button.button == 3 && event.motion.state != 0)
 			gwin->start_actor(event.motion.x, event.motion.y);
 		break;
 	case SDL_ACTIVEEVENT:
@@ -371,6 +386,45 @@ static void Handle_keystroke
 		gwin->view_up();
 		break;
 		}
+	}
+
+/*
+ *	Get a click.
+ *
+ *	Output:	0 if user hit ESC.
+ */
+
+int Get_click
+	(
+	int& x, int& y			// Location returned (if not ESC).
+	)
+	{
+	while (1)
+		{
+		Delay();		// Wait a fraction of a second.
+		SDL_Event event;
+		while (SDL_PollEvent(&event))
+			switch (event.type)
+				{
+			case SDL_MOUSEBUTTONUP:
+				if (event.button.button == 1)
+					{
+					x = event.button.x;
+					y = event.button.y;
+					return (1);
+					}
+				break;
+			case SDL_QUIT:
+				quitting_time = 1;
+				return (0);
+			case SDL_KEYDOWN:
+				if (event.key.keysym.sym == SDLK_ESCAPE)
+					return (0);
+				break;
+				}
+		gwin->show();		// Blit to screen if necessary.
+		}
+	return (0);			// Shouldn't get here.
 	}
 
 
