@@ -314,9 +314,19 @@ public:
 		}
 	~A_star_queue()
 		{
-#if 0	/* +++++Should work, but hangs on Linux. */
-		for(Lookup_set::iterator X = lookup.begin(); X != lookup.end(); ++X)
-			delete *X;
+#if 1	
+	/* 
+	This _should_ work, but might hang some hash_set implementations.
+	The problem is that on deleting the Search_node, the hash_set can
+	no longer properly evaluate the hash value (since the hash function
+	dereferences the Search_node* stored). This might cause an endless
+	loop.
+	*/
+		for(Lookup_set::iterator X = lookup.begin(); X != lookup.end();) {
+			Search_node *sn = *X;
+			X++;
+			delete sn; // only delete this _after_ iterating
+}
 #endif
 		lookup.clear();		// Remove all nodes.
 		}
