@@ -935,6 +935,44 @@ void Actor::change_member_shape
 	}
 
 /*
+ *	Step aside to a free tile.
+ *
+ *	Output:	1 if successful, else 0.
+ */
+
+int Actor::move_aside
+	(
+	int dir				// Direction to avoid (0-7).
+	)
+	{
+	static short offset[16] = {-1,0, -1,1, 1,0, 1,-1, 0,-1,
+					-1,-1, -1,0, -1,1 };
+	Tile_coord cur = get_abs_tile_coord();
+	int opp = (dir + 4)%8;		// Don't go in opposite dir. either.
+	Tile_coord to(-1, -1, -1);
+	int i;
+	for (i = 0; i < 8; i++)		// Go through directions.
+		if (i == dir || i == opp)
+			continue;	// Don't go that way.
+		else
+			{
+			to = cur + Tile_coord(offset[2*i], offset[2*i + 1],
+									0);
+					// Assume height = 3.
+			if (!Chunk_object_list::is_blocked(to, 3))
+				break;
+			}
+	int stepdir = i;		// This is the direction.
+	if (to.tx < 0)			// Failed?
+		return (0);
+	Game_window *gwin = Game_window::get_game_window();
+					// Step, and face direction.
+	step(to, get_dir_framenum(stepdir, (int) Actor::standing));
+	Tile_coord newpos = get_abs_tile_coord();
+	return (newpos.tx == to.tx && newpos.ty == to.ty);
+	}
+
+/*
  *	Get total value of armor being worn.
  */
 
@@ -1226,9 +1264,15 @@ int Main_actor::step
 	int water, poison;		// Get tile info.
 	get_tile_info(gwin, nlist, tx, ty, water, poison);
 	int new_lift;			// Might climb/descend.
-					// Just assume height==3.
-	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift) ||
-	    (water && new_lift == 0))
+	Game_object *block;		// Just assume height==3.
+	if (nlist->is_blocked(3, old_lift, tx, ty, new_lift) &&
+	   (!(block = Game_object::find_blocking(t)) || block == this
+	                     || !block->move_aside(get_direction(block))))
+		{
+		stop();
+		return (0);
+		}
+	if (water && new_lift == 0)
 		{
 		stop();
 		return (0);
