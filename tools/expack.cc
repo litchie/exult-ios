@@ -19,7 +19,7 @@ void set_mode(Arch_mode &mode, Arch_mode new_mode)
 
 long get_file_size(char *fname)
 {
-	FILE *fp = fopen (fname, "rb");
+	FILE *fp = U7open (fname, "rb");
 	if (!fp) {
 		cerr << "Could not open file " << fname << endl;
 		exit(1);
@@ -30,7 +30,42 @@ long get_file_size(char *fname)
 	return len;
 }
 
+#ifdef MACOS
+int mac_main(int argc, char **argv);
+
+int main()
+{
+	const	mac_argc = 19;
+	char	*mac_argv[mac_argc] =
+		{
+			"expack",
+			"-c",
+			"data/exult.flx",
+			"data/exult_quotes.shp",
+			"data/exult_credits.shp",
+			"data/quotes.txt",
+			"data/credits.txt",
+			"data/exult_logo.shp",
+			"data/exult0.pal",
+			"data/black_gate.shp",
+			"data/serpent_isle.shp",
+			"data/meditown.mid",
+			"data/font.shp",
+			"data/setup.shp",
+			"data/play_intro.shp",
+			"data/full_screen.shp",
+			"data/cheating.shp",
+			"data/ok.shp",
+			"data/cancel.shp"
+		};
+	mac_main( mac_argc, mac_argv );
+}
+
+
+int mac_main(int argc, char **argv)
+#else
 int main(int argc, char **argv)
+#endif
 {
 	Arch_mode mode = NONE;
 	char *fname = 0;
