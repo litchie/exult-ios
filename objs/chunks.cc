@@ -732,18 +732,20 @@ int Chunk_object_list::is_blocked
 	Game_window *gwin = Game_window::get_game_window();
 	int tx, ty;
 	new_lift = 0;
-	int stopy = starty + ytiles, stopx = startx + xtiles;
-	for (ty = starty; ty < stopy; ty++)
+	int stopy = (starty + ytiles)%c_num_tiles, 
+	    stopx = (startx + xtiles)%c_num_tiles;
+	for (ty = starty; ty != stopy; ty = INCR_TILE(ty))
 		{			// Get y chunk, tile-in-chunk.
 		int cy = ty/c_tiles_per_chunk, rty = ty%c_tiles_per_chunk;
-		for (tx = startx; tx < stopx; tx++)
+		for (tx = startx; tx != stopx; tx = INCR_TILE(tx))
 			{
 			int this_lift;
 			Chunk_object_list *olist = gwin->get_objects(
 					tx/c_tiles_per_chunk, cy);
 			olist->setup_cache();
-			if (olist->is_blocked(height, lift, tx%c_tiles_per_chunk,
-						rty, this_lift, move_flags, max_drop))
+			if (olist->is_blocked(height, lift, 
+				tx%c_tiles_per_chunk,
+				rty, this_lift, move_flags, max_drop))
 				return (1);
 					// Take highest one.
 			new_lift = this_lift > new_lift ?
@@ -807,40 +809,48 @@ int Chunk_object_list::is_blocked
 					//   above/below.
 	int horizy0, horizy1;		// Get y-coords of vert. block
 					//   to right/left.
-	horizx0 = to.tx + 1 - xtiles;
+					// !Watch for wrapping.
+	horizx0 = (to.tx + 1 - xtiles + c_num_tiles)%c_num_tiles;
 	horizx1 = to.tx;
-	if (to.tx >= from.tx)		// Moving right?
-		{
-		vertx0 = from.tx + 1;	// Start to right of hot spot.
-		vertx1 = to.tx;		// End at dest.
+	if (Tile_coord::gte(to.tx, from.tx))		// Moving right?
+		{			// Start to right of hot spot.
+		vertx0 = INCR_TILE(from.tx);
+		vertx1 = INCR_TILE(to.tx);	// Stop past dest.
 		}
 	else				// Moving left?
 		{
-		vertx0 = to.tx + 1 - xtiles;
-		vertx1 = from.tx - xtiles;
+		vertx0 = (to.tx + 1 - xtiles + c_num_tiles)%c_num_tiles;
+		vertx1 = (from.tx + 1 - xtiles + c_num_tiles)%c_num_tiles;
 		}
-	verty0 = to.ty + 1 - ytiles;
-	verty1 = to.ty;
-	if (to.ty >= from.ty)		// Moving down?
-		{
-		horizy0 = from.ty + 1;	// Start below hot spot.
-		horizy1 = to.ty;	// End at dest.
-		if (to.ty != from.ty)
-			verty1--;	// Includes bottom of vert. area.
+	verty0 = (to.ty + 1 - ytiles + c_num_tiles)%c_num_tiles;
+	verty1 = INCR_TILE(to.ty);
+	if (Tile_coord::gte(to.ty, from.ty))		// Moving down?
+		{			// Start below hot spot.
+		horizy0 = INCR_TILE(from.ty);	
+		horizy1 = INCR_TILE(to.ty);	// End past dest.
+		if (to.ty != from.ty)	// Includes bottom of vert. area.
+			verty1 = DECR_TILE(verty1);
 		}
 	else				// Moving up?
 		{
-		horizy0 = to.ty + 1 - ytiles;
-		horizy1 = from.ty - ytiles;
-		verty0++;		// Includes top of vert. area.
+		horizy0 = (to.ty + 1 - ytiles + c_num_tiles)%c_num_tiles;
+		horizy1 = (from.ty + 1 - ytiles + c_num_tiles)%c_num_tiles;
+					// Includes top of vert. area.
+		verty0 = INCR_TILE(verty0);
 		}
 	int x, y;			// Go through horiz. part.
 	int new_lift = from.tz;
 	int new_lift0 = -1;		// All lift changes must be same.
-	for (y = horizy0; y <= horizy1; y++)
+#if DEBUG
+	assert(Tile_coord::gte(horizy1, horizy0));
+	assert(Tile_coord::gte(horizx1, horizx0));
+	assert(Tile_coord::gte(verty1, verty0));
+	assert(Tile_coord::gte(vertx1, vertx0));
+#endif
+	for (y = horizy0; y != horizy1; y = INCR_TILE(y))
 		{			// Get y chunk, tile-in-chunk.
 		int cy = y/c_tiles_per_chunk, rty = y%c_tiles_per_chunk;
-		for (x = horizx0; x <= horizx1; x++)
+		for (x = horizx0; x != horizx1; x = INCR_TILE(x))
 			{
 			Chunk_object_list *olist = gwin->get_objects(
 					x/c_tiles_per_chunk, cy);
@@ -857,10 +867,10 @@ int Chunk_object_list::is_blocked
 			}
 		}
 					// Do vert. block.
-	for (x = vertx0; x <= vertx1; x++)
+	for (x = vertx0; x != vertx1; x = INCR_TILE(x))
 		{			// Get x chunk, tile-in-chunk.
 		int cx = x/c_tiles_per_chunk, rtx = x%c_tiles_per_chunk;
-		for (y = verty0; y <= verty1; y++)
+		for (y = verty0; y != verty1; y = INCR_TILE(y))
 			{
 			Chunk_object_list *olist = gwin->get_objects(
 					cx, y/c_tiles_per_chunk);

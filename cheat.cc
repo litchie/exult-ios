@@ -299,6 +299,9 @@ void Cheat::map_teleport (void) const {
   
   tx = ((xx - correctx - (border + x - map->get_xleft()))*worldsize) / (map->get_width() - 2*border + correctscale);
   ty = ((yy - correcty - (border + y - map->get_yabove()))*worldsize) / (map->get_height() - 2*border + correctscale);
+					// World-wrapping.
+  tx = (tx + c_num_tiles)%c_num_tiles;
+  ty = (ty + c_num_tiles)%c_num_tiles;
   cout << "Teleporting to " << tx << "," << ty << "!" << endl;
   Tile_coord t(tx,ty,0);
   gwin->teleport_party(t);

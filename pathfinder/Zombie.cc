@@ -43,8 +43,12 @@ int Zombie::NewPath(Tile_coord s, Tile_coord d, Pathfinder_client *)
 		}		
 	if (deltax < -c_num_tiles/2)	// Wrapping round the world?
 		deltax += c_num_tiles;
+	else if (deltax > c_num_tiles/2)
+		deltax -= c_num_tiles;
 	if (deltay < -c_num_tiles/2)
 		deltay += c_num_tiles;
+	else if (deltay > c_num_tiles/2)
+		deltay -= c_num_tiles;
 	unsigned int abs_deltax, abs_deltay;
 	int x_dir, y_dir;
 	if (deltay >= 0)		// Figure directions.
