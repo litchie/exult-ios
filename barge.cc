@@ -30,13 +30,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "citerate.h"
 
 /*
- *	Rotate 90 degrees to the right around a point.
+ *	Rotate a point 90 degrees to the right around a point.
  *
  *	In cartesian coords with 'c' as center, the rule is:
  *		(newx, newy) = (oldy, -oldx)
  */
 
-inline Tile_coord rotate90r
+inline Tile_coord Rotate90r
 	(
 	Tile_coord t,			// Tile to move.
 	Tile_coord c			// Center to rotate around.
@@ -48,13 +48,13 @@ inline Tile_coord rotate90r
 	}
 
 /*
- *	Rotate 90 degrees to the left around a point.
+ *	Rotate a point 90 degrees to the left around a point.
  *
  *	In cartesian coords with 'c' as center, the rule is:
  *		(newx, newy) = (-oldy, oldx)
  */
 
-inline Tile_coord rotate90l
+inline Tile_coord Rotate90l
 	(
 	Tile_coord t,			// Tile to move.
 	Tile_coord c			// Center to rotate around.
@@ -66,13 +66,13 @@ inline Tile_coord rotate90l
 	}
 
 /*
- *	Rotate 180 degrees around a point.
+ *	Rotate a point 180 degrees around a point.
  *
  *	In cartesian coords with 'c' as center, the rule is:
  *		(newx, newy) = (-oldx, -oldy)
  */
 
-inline Tile_coord rotate180
+inline Tile_coord Rotate180
 	(
 	Tile_coord t,			// Tile to move.
 	Tile_coord c			// Center to rotate around.
@@ -81,6 +81,70 @@ inline Tile_coord rotate180
 					// Get cart. coords. rel. to center.
 	int rx = t.tx - c.tx, ry = c.ty - t.ty;
 	return Tile_coord(c.tx - rx, c.ty + ry, t.tz);
+	}
+
+/*
+ *	Figure tile where an object will be if it's rotated 90 degrees around
+ *	a point counterclockwise, assuming its 'hot spot' 
+ *	is at its lower-right corner.
+ */
+
+inline Tile_coord Rotate90r
+	(
+	Game_window *gwin,
+	Game_object *obj,
+	Tile_coord c			// Rotate around this.
+	)
+	{
+					// Rotate hot spot.
+	Tile_coord r = Rotate90r(obj->get_abs_tile_coord(), c);
+	Shape_info& info = gwin->get_info(obj);
+					// New hotspot is what used to be the
+					//   upper-right corner.
+	r.tx += info.get_3d_ytiles() - 1;
+	r.ty -= info.get_3d_xtiles();
+	return r;
+	}
+
+/*
+ *	Figure tile where an object will be if it's rotated 90 degrees around
+ *	a point, assuming its 'hot spot' is at its lower-right corner.
+ */
+
+inline Tile_coord Rotate90l
+	(
+	Game_window *gwin,
+	Game_object *obj,
+	Tile_coord c			// Rotate around this.
+	)
+	{
+					// Rotate hot spot.
+	Tile_coord r = Rotate90l(obj->get_abs_tile_coord(), c);
+					// New hot-spot is old lower-left.
+	r.tx--;
+	return r;
+	}
+
+/*
+ *	Figure tile where an object will be if it's rotated 180 degrees around
+ *	a point, assuming its 'hot spot' is at its lower-right corner.
+ */
+
+inline Tile_coord Rotate180
+	(
+	Game_window *gwin,
+	Game_object *obj,
+	Tile_coord c			// Rotate around this.
+	)
+	{
+					// Rotate hot spot.
+	Tile_coord r = Rotate180(obj->get_abs_tile_coord(), c);
+	Shape_info& info = gwin->get_info(obj);
+					// New hotspot is what used to be the
+					//   upper-left corner.
+	r.tx += info.get_3d_xtiles() - 2;
+	r.ty -= info.get_3d_ytiles();
+	return r;
 	}
 
 /*
@@ -231,6 +295,54 @@ void Barge_object::move
 	delete [] positions;
 	}
 
+#if 0	/* +++++Working on these. */
+
+/*
+ *	Turn 90 degrees to the right.
+ */
+
+void Barge_object::turn_right
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Get center to rotate around.
+	Tile_coord center = get_abs_tile_coord();
+	center.tx -= xtiles/2;
+	center.ty += ytiles/2;
+++++++++++++++++++++++++++++++++++
+
+					// Move the barge itself.
+	Game_object::move(newtx, newty, newlift);
+					// Get deltas.
+	int dx = newtx - old.tx, dy = newty - old.ty, dz = newlift - old.tz;
+	int cnt = objects.get_cnt();	// We'll move each object.
+					// But 1st, remove & save new pos.
+	Tile_coord *positions = new Tile_coord[cnt];
+	int i;
+	for (i = 0; i < cnt; i++)
+		{
+		Game_object *obj = get_object(i);
+		int ox, oy, oz;
+		obj->get_abs_tile(ox, oy, oz);
+		positions[i] = Rotate90r(gwin, obj, center);
+		obj->remove_this(1);	// Remove object from world.
+		obj->set_invalid();	// So it gets added back right.
+		}
+	for (i = 0; i < cnt; i++)	// Now add them back in new location.
+		{
+		Game_object *obj = get_object(i);
+		if (i < perm_count)	// Restore us as owner.
+			obj->set_owner(this);
+					// Move each object same distance.
+//+++++Way too simplistic.  May have to change orientation, animate frame.
+		obj->move(positions[i]);
+		}
+	delete [] positions;
+	}
+
+#endif
+
 /*
  *	Remove an object.
  */
@@ -257,7 +369,7 @@ int Barge_object::add
 	)
 	{
 	objects.append(obj);		// Add to list.
-#if 0
+#if 0	/* ++++Rake & bucket are showing up as cart's members! */
 	if (!complete)			// Permanent member?
 		{
 		perm_count++;
