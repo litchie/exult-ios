@@ -1,0 +1,25 @@
+\CEXULT ACKNOWLEDGEMENTS
+
+\CCoding Team
+
+\CJeff S. Freedman <jeff@simutech.com>|\RThe man who started it all: from map browser|\Rto usecode interpreter, animation & combat.|\RHe's the leader !
+
+\CDancer Vesperman <dancer@zeor.simegen.com>|\RMusic, sounds, XML configuration, Usecode stuff...|\Rwhat more could you possibly ask for ?
+
+\CWillem Jan Palenstijn <palenstijn@wanadoo.nl>|\RPorting to obscure OSs (Windows) and less|\Robscure ones (BeOS)
+
+\CTristan Tarrant <nadir@users.sourceforge.net>|\RIntro, ending, menus, autoconf/automake, makes|\Rsure that everyone follows CVS conventions...
+
+\CMax Horn <max@quendi.de>|\RPorting to MacOS
+
+\CCoder Infidel <coder_infidel@hotmail.com>|\RHunter of lost info in U7's data files,|\Rweapon animations, bits of combat.
+
+\COther Contributors
+
+\CGary Thompson|\CMatthias Ho|\CMichael A. Cornelius|\CTroy Forrest|\CByun DongHo|\CMaxim Shatskih|\CJakob Shonberg|\CWouter Dijkslag|\COlivier Marcoux
+
+\CThanks
+
+\CSourceForge & VA Linux|\CFor making it easy to code together.
+\CJackchaos.com|\CFor hosting the Exult message board
+\CTravis Howell|\CFor making daily Windows binaries
