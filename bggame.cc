@@ -1097,6 +1097,7 @@ void BG_Game::end_game(bool success)
 		}
 		if (do_break) break;
 
+		pal->set_brightness(80);	// Set readable brightness
 		// Text message 1
 
 		// Paint backgound black
@@ -1213,6 +1214,7 @@ void BG_Game::end_game(bool success)
 
 		// Text Screen 1
 
+		pal->set_brightness(80);	// Set readable brightness
 		// Paint backgound black
 		win->fill8(0,gwin->get_width(),gwin->get_height(),0,0);
 
