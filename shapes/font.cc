@@ -121,6 +121,7 @@ int Font::paint_text_box
 			curx = x;
 			text++;
 			cur_line++;
+			cury += height;
 			if (cur_line >= max_lines)
 				break;	// No more room.
 			continue;
@@ -138,13 +139,19 @@ int Font::paint_text_box
 					w = space_width;
 				int nsp = w/space_width;
 				lines[cur_line].append(nsp, ' ');
+				if (coff > text - start &&
+				    coff < wrd - start)
+					{
+					cursor->x = curx + 
+					    (coff-(text-start))*space_width;
+					cursor->y = cury;
+					}
 				curx += nsp*space_width;
 				}
 			text = wrd;
 			break;
 			}
 			}
-
 		if (cur_line >= max_lines)
 			break;
 					// Pass word & get its width.
@@ -154,10 +161,16 @@ int Font::paint_text_box
 			{		// Word-wrap.
 			curx = x;
 			cur_line++;
+			cury += height;
 			if (cur_line >= max_lines)
 				break;	// No more room.
 			}
-
+		if (coff >= text - start && coff < ewrd - start)
+			{
+			cursor->x = curx + get_text_width(text, 
+						(coff-(text-start)));
+			cursor->y = cury;
+			}
 					// Store word.
 		lines[cur_line].append(text, ewrd - text);
 		curx += width;
@@ -177,7 +190,7 @@ int Font::paint_text_box
 		text = Pass_space(last_punct_end);
 	else
 		last_punct_line = -1;
-					// Render text.
+	cury = y;			// Render text.
 	for (int i = 0; i <= cur_line; i++)
 		{
 		const char *str = lines[i].data();
@@ -470,7 +483,8 @@ int Font::get_text_width
 	int width = 0;
 	if (font_shapes)
 		while (textlen--) {
-			Shape_frame* shape =font_shapes->get_frame((unsigned char)*text++);
+			Shape_frame* shape =font_shapes->get_frame(
+						(unsigned char)*text++);
 			if (shape)
 				width += shape->get_width() + hor_lead;
 		}
@@ -501,6 +515,115 @@ int Font::get_text_baseline
 	{
 	//Shape_frame *A = font_shapes->get_frame('A');
 	return highest;
+	}
+
+/*
+ *	Find cursor location within text, given (x,y) screen coords.
+ *	Note:  This has to match paint_text_box().
+ *
+ *	Output:	Offset in text if found.
+ *		If not found, -offset of end of text there was room to paint.
+ */
+
+int Font::find_cursor
+	(
+	const char *text,
+	int x, int y,			// Top-left corner of box.
+	int w, int h,			// Dimensions.
+	int cx, int cy,			// Mouse loc. to find.
+	int vert_lead			// Extra spacing between lines.
+	)
+	{
+	const char *start = text;	// Remember the start.
+	int endx = x + w;		// Figure where to stop.
+	int curx = x, cury = y;
+	int height = get_text_height() + vert_lead + ver_lead;
+	int space_width = get_text_width(" ", 1);
+	int max_lines = h/height;	// # lines that can be shown.
+	int cur_line = 0;
+	int chr;
+
+	while ((chr = *text) != 0)
+		{
+		switch (chr)		// Special cases.
+			{
+		case '\n':		// Next line.
+			if (cy >= cury && cy < cury + height &&
+			    cx >= curx && cx < x + w)
+				return text - start;
+			++text;
+			curx = x;
+			cur_line++;
+			cury += height;
+			if (cur_line >= max_lines)
+				break;	// No more room.
+			continue;
+		case '\r':		//??
+			++text;
+			continue;
+		case ' ':		// Space.
+		case '\t':
+			if (cy >= cury && cy < cury + height &&
+			    cx >= curx && cx < curx + space_width)
+				return text - start;
+			++text;
+			curx += space_width;
+			continue;
+			}
+		if (cur_line >= max_lines)
+			break;
+					// Pass word & get its width.
+		const char *ewrd = Pass_word(text);
+		int width = get_text_width(text, ewrd - text);
+		if (curx + width - hor_lead > endx)
+			{		// Word-wrap.
+			curx = x;
+			cur_line++;
+			cury += height;
+			if (cur_line >= max_lines)
+				break;	// No more room.
+			}
+		if (cy >= cury && cy < cury + height &&
+		    cx >= curx && cx < curx + width)
+			{
+			int woff = find_xcursor(text, ewrd - text, cx - curx);
+			if (woff >= 0)
+				return (text - start) + woff;
+			}
+		curx += width;
+		text = ewrd;		// Continue past the word.
+		}
+	return -(text - start);		// Failed, so indicate where we are.
+	}
+
+/*
+ *	Find an x-coord. within a piece of text.
+ *
+ *	Output:	Offset if found, else -1.
+ */
+
+int Font::find_xcursor
+	(
+	const char *text,
+	int textlen,			// Length of text.
+	int cx				// Loc. to find.
+	)
+	{
+	const char *start = text;
+	int curx = 0;
+	while (textlen--) 
+		{
+		Shape_frame* shape =font_shapes->get_frame(
+						(unsigned char)*text++);
+		if (shape)
+			{
+			int w = shape->get_width() + hor_lead;
+			if (cx >= curx && cx < curx + w)
+				return (text - 1) - start;
+			curx += w;
+			}
+		}
+	return -1;
 	}
 
 Font::Font(): font_shapes(0), font_data(0), font_buf(0), orig_font_buf(0)

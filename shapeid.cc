@@ -297,6 +297,11 @@ int Shape_manager::get_text_height(int fontnum)
 int Shape_manager::get_text_baseline(int fontnum)
 	{ return fonts->get_text_baseline(fontnum); }
 
+int Shape_manager::find_cursor(int fontnum, const char *text, int x, int y, 
+				int w, int h, int cx, int cy, int vert_lead)
+	{ return fonts->find_cursor(fontnum, text, x, y, w, h, cx, cy,
+							vert_lead); }
+
 Font *Shape_manager::get_font(int fontnum)
 	{ return fonts->get_font(fontnum); }
 

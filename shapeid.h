@@ -140,6 +140,8 @@ public:
 					// Get text height, baseline.
 	int get_text_height(int fontnum);
 	int get_text_baseline(int fontnum);
+	int find_cursor(int fontnum, const char *text, int x, int y, 
+				int w, int h, int cx, int cy, int vert_lead);
 	Font *get_font(int fontnum);
 	};
 
