@@ -151,7 +151,8 @@ Explosion_effect::Explosion_effect
 	Tile_coord apos = gwin->get_main_actor()->get_abs_tile_coord();
 	int dir = Get_direction16(apos.ty - p.ty, p.tx - apos.tx);
 					// Max. volume, with stereo position.
-	Audio::get_ptr()->play_sound_effect(9, SDL_MIX_MAXVOLUME, dir);
+	Audio::get_ptr()->play_sound_effect(
+		Audio::game_sfx(9), SDL_MIX_MAXVOLUME, dir);
 	}
 
 
@@ -774,7 +775,7 @@ void Lightning_effect::handle_event
 	else if (!gwin->is_in_dungeon() && !active)// Time to flash.
 		{
 					// Play thunder.
-		Audio::get_ptr()->play_sound_effect(62);
+		Audio::get_ptr()->play_sound_effect(Audio::game_sfx(62));
 		active = true;
 		save_brightness = gwin->get_brightness();
 		gwin->set_palette(-1, 400);

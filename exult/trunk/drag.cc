@@ -74,7 +74,8 @@ bool Game_window::start_dragging
 			dragging_gump = 0;
 			dragging_button->push(this);
 					// Pushed button, so make noise.
-			Audio::get_ptr()->play_sound_effect(96);
+			Audio::get_ptr()->play_sound_effect(
+					Audio::game_sfx(96));
 			painted = true;
 			}
 		else
@@ -342,7 +343,7 @@ void Game_window::drop
 					Mouse::mouse->flash_shape(
 							Mouse::blocked);
 					Audio::get_ptr()->play_sound_effect(
-									76);
+							Audio::game_sfx(76));
 					}
 				}
 			}
