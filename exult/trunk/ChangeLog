@@ -1,3 +1,6 @@
+2002-06-27  Max Horn  <max@quendi.de>
+	* objs/objiter.cc: Fixed compilation with CodeWarrior 7 (MacOS Classic)
+
 2002-06-26  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
 
 	* objs/*:  Removed umachine parm. from activate() methods.
