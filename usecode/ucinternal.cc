@@ -486,18 +486,21 @@ void Usecode_internal::set_item_shape
 
 /*
  *	Set an item's frame.
- *	+++++Modified to just set_dirty on Nov22,2000
  */
 
 void Usecode_internal::set_item_frame
 	(
 	Game_object *item,
 	int frame,
-	int check_empty			// If 1, don't set empty frame.
+	int check_empty,		// If 1, don't set empty frame.
+	int set_rotated			// Set 'rotated' bit to one in 'frame'.
 	)
 	{
 	if (!item)
 		return;
+					// +++Added 9/16/2001:
+	if (!set_rotated)		// Leave bit alone?
+		frame = (item->get_framenum()&32)|(frame&31);
 	if (frame == item->get_framenum())
 		return;			// Already set to that.
 					// Check for empty frame.
@@ -524,7 +527,6 @@ void Usecode_internal::set_item_frame
 			}
 		}
 	gwin->set_painted();		// Make sure paint gets done.
-//	gwin->show();
 	}
 
 /*

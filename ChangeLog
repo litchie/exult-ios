@@ -1,3 +1,7 @@
+2001-09-17  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/*:  Set_item_frame_rot() added.
+
 2001-09-16  Ryan Nunn <triforce@merlin.net.au>
 	* audio/xmidi.cc : Fixed compiling errors.
 	* bggame.cc : Change the butterfly sequence to use 32 bit ints for
