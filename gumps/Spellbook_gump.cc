@@ -153,10 +153,10 @@ class Spell_button : public Gump_button
 	{
 	int spell;			// Spell # (0 - 71).
 public:
-	Spell_button(Gump *par, int px, int py, int sp, int first = SPELLS)
-		: Gump_button(par, first + sp%8, px, py), spell(sp)
+	Spell_button(Gump *par, int px, int py, int sp, int shnum, int frnum)
+		: Gump_button(par, shnum, px, py), spell(sp)
 		{
-		framenum = sp/8;	// Frame # is circle.
+		framenum = frnum;	// Frame # is circle.
 		}
 					// What to do when 'clicked':
 	virtual void activate(Game_window *gwin);
@@ -247,14 +247,18 @@ Spellbook_gump::Spellbook_gump
 		unsigned char cflags = book->circles[c];
 		for (int s = 0; s < 8; s++)
 			if ((cflags & (1<<s)) || cheat.in_wizard_mode())
-				spells[spindex + s] = new Spell_button(this,
+				{
+				int spnum = spindex + s;
+				spells[spnum] = new Spell_button(this,
 					s < 4 ? object_area.x +
 						spshape->get_xleft()
 					: object_area.x + object_area.w - 
 						spshape->get_xright(),
 					object_area.y + spshape->get_yabove() +
 						(spheight + vertspace)*(s%4),
-							spindex + s);
+					spnum,
+					SPELLS + spnum%8, spnum/8);
+				}
 			else
 				spells[spindex + s] = 0;
 	}
@@ -466,12 +470,13 @@ Spellscroll_gump::Spellscroll_gump
 	Shape_frame *spshape = gwin->get_gump_shape(SCROLLSPELLS, 0);
 	spwidth = spshape->get_width();
 	spheight = spshape->get_height();
-	int spellnum = scroll->get_quality() - 1;
+	int spellnum = scroll->get_quality();
 	if (spellnum >= 0 && spellnum < 8*9)
 		spell = new Spell_button(this, 
 				object_area.x + 4 + spshape->get_xleft(), 
 				object_area.y + 4 + spshape->get_yabove(), 
-				spellnum, SCROLLSPELLS);
+				spellnum, SCROLLSPELLS + spellnum/8,
+				spellnum%8);
 	}
 
 /*

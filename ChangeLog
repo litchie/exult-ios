@@ -1,3 +1,7 @@
+2001-04-25  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Spell-scrolls implemented for SI.
+
 2001-04-23  Ryan Nunn  <triforce@merlin.net.au>
 	* ChangeLog : Fixed Dancer's small date typo... 2001-04-32 :)
 	* keys.*, keyactions.* : Key action "newfile_gump" to activate the new
