@@ -1099,7 +1099,10 @@ int Game_object::get_weight
 	int wt = quant *
 		Game_window::get_game_window()->get_info(this).get_weight();
 	int shnum = get_shapenum();	// Special case:  reagents, coins.
-	if (shnum == 842 || shnum == 644)
+	if (shnum == 842 || shnum == 644 || 
+	    (Game::get_game_type() == SERPENT_ISLE &&
+					// Monetari/guilders/filari:
+	     (shnum == 951 || shnum == 952 || shnum == 948)))
 		wt /= 10;
 	return wt;
 	}
