@@ -806,7 +806,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     955,  0,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     0 },
 	// Fellowship
 	{     955,  1,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     1 },
-	// White Heart??? **NEEDS ART**
+	// White Heart???
 	{     955,  2,       Actor::neck,   OT_Normal,  false, exult_flx,    34,     0 },
 	// Amulet of Protection???
 	{     955,  3,       Actor::neck,   OT_Normal,  false, paperdoll,     0,     3 },
@@ -1093,8 +1093,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     548, -1,      Actor::lhand,    OT_Staff,  false, exult_flx,    25,     0 },
 	{     548, -1,Actor::back2h_spot,    OT_Staff,  false, exult_flx,    25,     1 },
 	// Firedoom Staff **NEEDS ART** (is blue fire, needs red fire)
-	{     553, -1,      Actor::lhand,    OT_Staff,  false, paperdoll,    43,     0 },
-	{     553, -1,Actor::back2h_spot,    OT_Staff,  false, paperdoll,    43,     1 },
+	{     553, -1,      Actor::lhand,    OT_Staff,  false, exult_flx,    35,     0 },
+	{     553, -1,Actor::back2h_spot,    OT_Staff,  false, exult_flx,    35,     1 },
 	// Jugganaught Hammer
 	{     557, -1,      Actor::lhand,   OT_Double,  false, paperdoll,    53,     0 },
 	{     557, -1,Actor::back2h_spot,   OT_Double,  false, paperdoll,    53,     1 },
