@@ -1771,94 +1771,56 @@ Game_object *Game_window::find_object
 cout << "Clicked at tile (" << get_scrolltx() + x/c_tilesize << ", " <<
 		get_scrollty() + y/c_tilesize << ")"<<endl;
 #endif
-
- 
-	Game_object_vector found;
-	
-	int cnt = 0;
-	int actor_lift = main_actor->get_lift();
-//					// Look downward at most one 'floor'.
-//	int start = actor_lift >= 5 ?  actor_lift - 5 : 0;
-	int start = 0;
 	int not_above = skip_lift;
 	if (skip_above_actor < not_above)
 		not_above = skip_above_actor;
-					// See what was clicked on.
-	for (int lift = start; lift < not_above; lift++)
-		cnt += find_objects(lift, x, y, found);
-	if (!cnt)
-		return (0);		// Nothing found.
-					// Find 'best' one.
-	Game_object *obj = found[cnt - 1];
-					// Try to avoid 'transparent' objs.
-	int trans = obj->get_info().is_transparent();
-	Game_object_vector::iterator it;
-	for (it = found.begin(); it != found.end(); ++it)
-		if (obj->lt(*(*it)) == 1 || trans)
-			{
-			int ftrans = (*it)->get_info().is_transparent();
-			if (!ftrans || trans)
-				{
-				obj = *it;
-				trans = ftrans;
-				}
-			}
-	return (obj);
-	}
-
-/*
- *	Find objects at a given position on the screen with a given lift.
- *
- *	Output: # of objects, stored in list.
- */
-
-int Game_window::find_objects
-	(
-	int lift,			// Look for objs. with this lift.
-	int x, int y,			// Pos. on screen.
-	Game_object_vector& list	// Objects found are appended here.
-	)
-{
 					// Figure chunk #'s.
-	int start_cx = ((get_scrolltx() + 
-		(x + 4*lift)/c_tilesize)/c_tiles_per_chunk)%c_num_chunks;
-	int start_cy = ((get_scrollty() + 
-		(y + 4*lift)/c_tilesize)/c_tiles_per_chunk)%c_num_chunks;
-	Game_object *obj;
-	int cnt = 0;			// Count # found.
+	int start_cx = ((scrolltx + 
+		x/c_tilesize)/c_tiles_per_chunk)%c_num_chunks;
+	int start_cy = ((scrollty + 
+		y/c_tilesize)/c_tiles_per_chunk)%c_num_chunks;
 					// Check 1 chunk down & right too.
-	for (int ycnt = 0; ycnt < 2; ycnt++)
-	{
-		int cy = (start_cy + ycnt)%c_num_chunks;
-		for (int xcnt = 0; xcnt < 2; xcnt++)
+	int stop_cx = (2 + (scrolltx + 
+		(x + 4*not_above)/c_tilesize)/c_tiles_per_chunk)%c_num_chunks;
+	int stop_cy = (2 + (scrollty + 
+		(y + 4*not_above)/c_tilesize)/c_tiles_per_chunk)%c_num_chunks;
+
+	Game_object *best = 0;		// Find 'best' one.
+	bool trans = true;		// Try to avoid 'transparent' objs.
+					// Go through them.
+	for (int cy = start_cy; cy != stop_cy; cy = INCR_CHUNK(cy))
+	for (int cx = start_cx; cx != stop_cx; cx = INCR_CHUNK(cx))
 		{
-			int cx = (start_cx + xcnt)%c_num_chunks;
-			Map_chunk *olist = map->get_chunk(cx, cy);
-			if (!olist)
-				continue;
-			Object_iterator next(olist->get_objects());
-			while ((obj = next.get_next()) != 0)
+		Map_chunk *olist = map->get_chunk(cx, cy);
+		if (!olist)
+			continue;
+		Object_iterator next(olist->get_objects());
+		Game_object *obj;
+		while ((obj = next.get_next()) != 0)
 			{
-				if (obj->get_lift() != lift)
-					continue;
-				Rectangle r = get_shape_rect(obj);
-				if (!r.has_point(x, y) || 
-					// Don't find invisible eggs.
-						!obj->is_findable())
-					continue;
+			if (obj->get_lift() >= not_above ||
+			    !get_shape_rect(obj).has_point(x, y) || 
+			    !obj->is_findable())
+				continue;
 					// Check the shape itself.
-				Shape_frame *s = obj->get_shape();
-				int ox, oy;
-				get_shape_location(obj, ox, oy);
-				if (s->has_point(x - ox, y - oy)) {
-					list.push_back(obj);
-					++cnt;
+			Shape_frame *s = obj->get_shape();
+			int ox, oy;
+			get_shape_location(obj, ox, oy);
+			if (!s->has_point(x - ox, y - oy))
+				continue;
+			if (!best || best->lt(*obj) == 1 || trans)
+				{
+				bool ftrans = obj->get_info().is_transparent();
+				if (!ftrans || trans)
+					{
+					best = obj;
+					trans = ftrans;
+					}
 				}
 			}
 		}
+	return (best);
 	}
-	return (cnt);
-}
 
 /*
  *	Show the name of the item the mouse is clicked on.
