@@ -1,5 +1,8 @@
 2001-10-03  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* actors.cc,monstinf.cc:  poison_safe detected.
+	* audio/Audio.cc (Audio): Disable audio if device can't be opened.
+
 	* gamewin.cc: You can always read a sign.
 	* drag.cc: Fixed another world-wrapping crash.
 	* ucsched.cc:  Only activate 3 kinds of eggs.

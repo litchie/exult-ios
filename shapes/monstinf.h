@@ -89,6 +89,7 @@ class Monster_info
 	bool m_cant_die;
 	bool m_cant_yell;		// Can't yell during combat.
 	bool m_cant_bleed;
+	bool m_poison_safe;		// Can't be poisoned.
 public:
 	friend class Monster_actor;
 	Monster_info() {  }
@@ -108,6 +109,8 @@ public:
 		{ return m_cant_yell; }
 	bool cant_bleed() const
 		{ return m_cant_bleed; }
+	bool poison_safe() const
+		{ return m_poison_safe; }
 	enum Flags {
 		fly = 0,
 		swim = 1,

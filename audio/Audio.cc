@@ -202,8 +202,11 @@ void Audio::Init(int _samplerate,int _channels)
 
     /* Open the audio device, forcing the desired format */
 	if ( SDL::OpenAudio(&wanted, &actual) < 0 )
+		{
 		cerr << "Couldn't open audio: " << SDL_GetError() << endl;
-
+		audio_enabled = false;	// Prevent crashes.
+		return;
+		}
 	// Disable playing initially.
 	SDL_PauseAudio(1);
 
