@@ -441,14 +441,18 @@ static void Handle_events
 			if (gwin->have_focus() && !dragging)
 				gwin->get_tqueue()->activate(ticks);
 					// Show animation every 1/20 sec.
-			if (ticks > last_repaint + 50)
+			if (ticks > last_repaint + 50 ||
+					// This avoids jumpy walking:
+			    gwin->was_painted())
 				{
 				gwin->paint_dirty();
 				last_repaint = ticks;
 				rotate = 1;
 				int x, y;// Check for 'stuck' Avatar.
 //				if (!gwin->is_moving())
-				if ((gwin->get_moving_barge() && !gwin->is_moving()) || !gwin->get_moving_barge())
+				if ((gwin->get_moving_barge() && 
+					!gwin->is_moving()) || 
+						!gwin->get_moving_barge())
 					{
 					int ms = SDL_GetMouseState(&x, &y);
 					if ((SDL_BUTTON(3) & ms) &&
