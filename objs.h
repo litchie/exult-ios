@@ -93,23 +93,25 @@ class Game_object : public ShapeID
 	{
 	unsigned char shape_pos;	// (X,Y) of shape within chunk.
 	unsigned char lift;		// Raise by 4* this number.
+	short quality;			// Some sort of game attribute.
 	Game_object *next;		// ->next in chunk list.
 public:
 	friend class Chunk_object_list;
 	Game_object(unsigned char *ifix)// Create from ifix record.
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
-			  lift(ifix[1] & 0xf)
+			  lift(ifix[1] & 0xf), quality(0)
 		{  }
 					// Create from map chunk.
 	Game_object(unsigned char l, unsigned char h, unsigned int shapex,
 				unsigned int shapey)
-		: ShapeID(l, h), shape_pos((shapex << 4) + shapey), lift(0)
+		: ShapeID(l, h), shape_pos((shapex << 4) + shapey), lift(0),
+		  quality(0)
 		{  }
 					// Create from ireg. data.
 	Game_object(unsigned char l, unsigned char h, unsigned int shapex,
 				unsigned int shapey, unsigned int lft)
 		: ShapeID(l, h), shape_pos((shapex << 4) + shapey), 
-					lift(lft)
+					lift(lft), quality(0)
 		{  }
 	Game_object() : ShapeID()	// Create fake entry.
 		{  }
@@ -121,6 +123,10 @@ public:
 		{ return lift; }
 	void set_lift(int l)
 		{ lift = l; }
+	int get_quality()
+		{ return quality; }
+	void set_quality(int q)
+		{ quality = q; }
 					// Set shape coord. within chunk.
 	void set_shape_pos(unsigned int shapex, unsigned int shapey)
 		{ shape_pos = (shapex << 4) + shapey; }
