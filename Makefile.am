@@ -34,6 +34,7 @@ exult_SOURCES =	\
 	drag.cc		\
 	effects.cc	\
 	effects.h	\
+	exceptions.h	\
 	exult.cc	\
 	exultmenu.cc	\
 	exultmenu.h	\
@@ -50,6 +51,7 @@ exult_SOURCES =	\
 	gamewin.cc	\
 	gamewin.h	\
 	gamma.h		\
+	hash_utils.h	\
 	keys.cc		\
 	keys.h		\
 	keyactions.cc	\
@@ -105,6 +107,7 @@ exult_LDADD = 			\
 exult_DEPENDENCIES = $(ICON_FILE) $(EXULTLIBS)
 
 EXTRA_DIST = 	\
+	FAQ \
 	README.win32 \
 	README.Alpha \
 	Makefile.win32 \
