@@ -1,3 +1,6 @@
+2002-03-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* conf/Configuration.cc: only use std::isspace if it isn't a macro
+
 2002-03-08  Max Horn  <max@quendi.de>
 	* files/util.*, gumps/gump_util.*: moved newstrdup to files/util.cc
 	* audio/xmidi.cc, conf/Configuration.cc, conf/XMLEntity.cc, game.cc,
