@@ -94,6 +94,24 @@ void One_note::insert
 	}
 
 /*
+ *	Delete one character.
+ *
+ *	Output:	true if successful.
+ */
+
+bool One_note::del
+	(
+	int offset			// Delete to right of this.
+	)
+	{
+	if (offset >= textlen || offset < 0)
+		return false;
+	memmove(text + offset, text + offset + 1, textlen - offset);
+	--textlen;
+	return true;
+	}
+
+/*
  *	Get left/right text area.
  */
 
@@ -391,11 +409,36 @@ bool Notebook_gump::handle_kbd_event
 		return false;		// Shouldn't happen.
 	One_note *note = notes[page_info[curpage].notenum];
 	switch (chr) {
-	case SDLK_RETURN:		// If only 'Save', do it.
+	case SDLK_RETURN:
+		note->insert('\n', cursor.offset);
+		++cursor.offset;
+		paint();		// (Not very efficient...)
+		break;		
 	case SDLK_BACKSPACE:
+		if (note->del(cursor.offset - 1))
+			{
+			--cursor.offset;
+			paint();
+			}
+		break;
 	case SDLK_DELETE:
+		if (note->del(cursor.offset))
+			paint();
+		break;
 	case SDLK_LEFT:
+		if (cursor.offset)
+			{
+			--cursor.offset;
+			paint();
+			}
+		break;
 	case SDLK_RIGHT:
+		if (cursor.offset < note->textlen)
+			{
+			++cursor.offset;
+			paint();
+			}
+		break;
 	case SDLK_UP:
 	case SDLK_DOWN:
 	case SDLK_HOME:
@@ -403,7 +446,7 @@ bool Notebook_gump::handle_kbd_event
 		// ++++++Finish.
 		break;		
 	default:
-#if 0	/* +++++Got to enable unicode for this. */
+#if 1	/* Assumes unicode is enabled. */
 		if ((unicode & 0xFF80) == 0 )
 			chr = unicode & 0x7F;
 		else
