@@ -4,6 +4,9 @@
 2002-05-16  Ryan Nunn  <triforce@merlin.net.au>
 	* files/listfiles.cc, files/utils.cc : Fixing up Win32 U7ListFiles().
 
+2002-05-16  Simon Quinn <email@simonquinn.co.uk>
+	* gamewin.cc: fix nighttime SFX
+
 2002-05-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/contain.cc (Container_game_object): Auto-add keys to SI
