@@ -54,6 +54,7 @@ class Actor : public Container_game_object, public Time_sensitive
 	short npc_num;			// # in Game_window::npcs list, or -1.
 	short party_id;			// Index in party, or -1.
 	short properties[12];		// Properties set/used in 'usecode'.
+	short shape_save;		// Our old shape, or -1.
 public:
 	enum Attack_mode {		// Setting from gump.+++++Save/restore.
 		nearest = 0,
@@ -348,9 +349,13 @@ public:
 					// Don't write out to IREG file.
 	virtual void write_ireg(std::ostream& out)
 		{  }
-	void write(std::ostream& nfile);	// Write out (to 'npc.dat').
-	void set_actor_shape(); 	// Set shape based on sex and color and petra flag
-	
+	void write(std::ostream& nfile);		// Write out (to 'npc.dat').
+	void set_actor_shape(); 			// Set shape based on sex and skin color
+	void set_polymorph(int shape);			// Set a polymorph shape
+	void set_polymorph_defualt();			// Set the default shape
+	int get_polymorph () { return shape_save; }	// Get the polymorph shape
+	inline int get_shape_real()			// Get the non polymorph shape
+	{ return shape_save!=-1?shape_save:get_shapenum(); }
 	};
 
 /*

@@ -157,7 +157,10 @@ private:
 	Usecode_value add_party_items(Usecode_value& quantval,
 		Usecode_value& shapeval, Usecode_value& qualval,
 			Usecode_value& frameval, Usecode_value& flagval);
-	void add_cont_items(Usecode_value& container, Usecode_value& quantval,
+	Usecode_value add_cont_items(Usecode_value& container, Usecode_value& quantval,
+		Usecode_value& shapeval, Usecode_value& qualval,
+			Usecode_value& frameval, Usecode_value& flagval);
+	Usecode_value remove_cont_items(Usecode_value& container, Usecode_value& quantval,
 		Usecode_value& shapeval, Usecode_value& qualval,
 			Usecode_value& frameval, Usecode_value& flagval);
 
@@ -304,13 +307,15 @@ private:
 	USECODE_INTRINSIC_DECL(get_npc_id);
 	USECODE_INTRINSIC_DECL(set_npc_id);
 	USECODE_INTRINSIC_DECL(add_cont_items);
+	USECODE_INTRINSIC_DECL(remove_cont_items);
 					// Serpent Isle:
 	USECODE_INTRINSIC_DECL(si_path_run_usecode);
+	USECODE_INTRINSIC_DECL(error_message);
+	USECODE_INTRINSIC_DECL(set_polymorph);
 	USECODE_INTRINSIC_DECL(show_npc_face0);
 	USECODE_INTRINSIC_DECL(show_npc_face1);
 	USECODE_INTRINSIC_DECL(remove_last_face);
 	USECODE_INTRINSIC_DECL(set_conversation_slot);
-
 
 	/*
 	 *	Other private methods:

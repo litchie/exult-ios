@@ -848,10 +848,10 @@ Usecode_value Usecode_machine::add_party_items
 /*
  *	Add a quantity of an item to a container
  *
- *	Output:	None
+ *	Output:	Num created
  */
 
-void Usecode_machine::add_cont_items
+Usecode_value Usecode_machine::add_cont_items
 	(
 	Usecode_value& container,	// What do we add to
 	Usecode_value& quantval,	// Quantity to add.
@@ -867,7 +867,34 @@ void Usecode_machine::add_cont_items
 	unsigned int quality = (unsigned int) qualval.get_int_value();
 
 	Game_object *obj = get_item(container);
-	if (obj) obj->add_quantity(quantity, shapenum, quality, framenum);
+	if (obj) return Usecode_value (obj->add_quantity(quantity, shapenum, quality, framenum));
+	return Usecode_value(0);
+	}
+
+/*
+ *	Remove a quantity of an item to a container
+ *
+ *	Output:	Num removed
+ */
+
+Usecode_value Usecode_machine::remove_cont_items
+	(
+	Usecode_value& container,	// What do we add to
+	Usecode_value& quantval,	// Quantity to add.
+	Usecode_value& shapeval,	// Shape.
+	Usecode_value& qualval,		// Quality.
+	Usecode_value& frameval,	// Frame.
+	Usecode_value& flagval		// Flag??
+	)
+	{
+	int quantity = quantval.get_int_value();
+	int shapenum = shapeval.get_int_value();
+	int framenum = frameval.get_int_value();
+	unsigned int quality = (unsigned int) qualval.get_int_value();
+
+	Game_object *obj = get_item(container);
+	if (obj) return Usecode_value (obj->remove_quantity(quantity, shapenum, quality, framenum));
+	return Usecode_value(0);
 	}
 
 /*

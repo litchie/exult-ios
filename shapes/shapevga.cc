@@ -63,12 +63,6 @@ void Shapes_vga_file::read_info
 	for (int i = 0; i < num_shapes; i++)
 		{
 		tfa.read((char*)&info[i].tfa[0], 3);
-		if (i >= 1024 && i <= 1036)
-		{
-			info[i].tfa[0] = info[721].tfa[0];
-			info[i].tfa[1] = info[721].tfa[1];
-			info[i].tfa[2] = info[721].tfa[2];
-		}
 		info[i].set_tfa_data();
 		}
 	ifstream ready;

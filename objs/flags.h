@@ -27,6 +27,7 @@ namespace  Obj_flags
 		asleep = 1,
 		charmed = 2,
 		cursed = 3,
+		in_party = 6,		// Guess, appears to be correct
 		paralyzed = 7,
 		poisoned = 8,
 		protection = 9,

@@ -50,7 +50,7 @@ Actor::Actor
 	istream& nfile,			// 'npc.dat', generally.
 	int num,			// NPC #, or -1.
 	int has_usecode			// 1 if a 'type1' NPC.
-	) : Container_game_object(), npc_num(num), party_id(-1),
+	) : Container_game_object(), npc_num(num), party_id(-1), shape_save(-1),
 	    attack_mode(nearest), schedule(0), dormant(1), alignment(0),
 	    two_handed(0),
 	    two_fingered(0),		//+++++ Added this. Correct? -WJP
@@ -92,16 +92,17 @@ Actor::Actor
 	if ((rflags >> 0x7) & 1) set_flag (Obj_flags::asleep);
 	if ((rflags >> 0x8) & 1) set_flag (Obj_flags::charmed);
 	if ((rflags >> 0x9) & 1) set_flag (Obj_flags::cursed);
-	if ((rflags >> 0xD) & 1) set_flag (Obj_flags::poisoned);
+	if ((rflags >> 0xB) & 1) set_flag (Obj_flags::in_party);
 	if ((rflags >> 0xC) & 1) set_flag (Obj_flags::paralyzed);
+	if ((rflags >> 0xD) & 1) set_flag (Obj_flags::poisoned);
 	if ((rflags >> 0xE) & 1) set_flag (Obj_flags::protection);
 
 	// Guess
 	if ((rflags >> 0xA) & 1) set_flag (Obj_flags::on_moving_barge);
 	alignment = (rflags >> 3)&3;
 
-/*	Not used by exult
-	if ((rflags >> 0xB) & 1) set_flag (Obj_flags::in_party);
+
+	/*	Not used by exult
 	if ((rflags >> 0xF) & 1) set_flag (Obj_flags::dead);
 
 	Unknown in U7tech
@@ -114,16 +115,26 @@ Actor::Actor
 	// Strength (0-4), skin colour(5-6), freeze (7)
 	int strength_val = Read1(nfile);
 
-	set_property((int) Actor::strength, strength_val);
-	if (num == 0 && (Game::get_game_type() != BLACK_GATE))
+	if (Game::get_game_type() == BLACK_GATE)
 	{
-		if (Game::get_avskin() >= 0 && Game::get_avskin() <= 2)
-			set_skin_color (Game::get_avskin());
-		else
-			set_skin_color ((strength_val << 2) & 0x3);
+		set_property((int) Actor::strength, strength_val);
 	}
-	else set_skin_color (-1);
-	if ((strength_val << 7) & 1) set_siflag (Actor::freeze);
+	else
+	{
+		set_property((int) Actor::strength, strength_val & 0x1F);
+		
+		if (num == 0)
+		{
+			if (Game::get_avskin() >= 0 && Game::get_avskin() <= 2)
+				set_skin_color (Game::get_avskin());
+			else
+				set_skin_color ((strength_val << 2) & 0x3);
+		}
+		else 
+			set_skin_color (-1);
+
+		if ((strength_val << 7) & 1) set_siflag (Actor::freeze);
+	}
 	
 
 	// Dexterity
@@ -133,7 +144,7 @@ Actor::Actor
 	// Intelligence (0-4), read(5), Tournament (6), polymorph (7)
 	int intel_val = Read1(nfile);
 
-	set_property((int) Actor::intelligence, intel_val);
+	set_property((int) Actor::intelligence, intel_val & 0x1F);
 	if ((intel_val << 5) & 1) set_siflag (Actor::read);
 	if ((intel_val << 6) & 1) set_siflag (Actor::tournament);
 	if ((intel_val << 7) & 1) set_siflag (Actor::polymorph);
@@ -143,6 +154,8 @@ Actor::Actor
 	int combat_val = Read1(nfile);
 	set_property((int) Actor::combat, combat_val & 0x7F);
 	if ((combat_val << 7) & 1) set_flag (Obj_flags::petra);
+
+	set_polymorph_defualt();	// We now have enought info to set the polymorph shape
 
 	schedule_type = Read1(nfile);
 	nfile.seekg(1, ios::cur);	// Default attack mode
@@ -316,8 +329,15 @@ void Actor::write
 	)
 	{
 	unsigned char buf4[4];		// Write coords., shape, frame.
+
+	int old_shape = get_shapenum();	// Backup shape because we might change it
+	set_shape( get_shape_real() );	// Change the shape out non polymorph one
+	
 	Game_object::write_common_ireg(buf4);
 	nfile.write((char*)buf4, sizeof(buf4));
+
+	set_shape( old_shape );		// Revert the shape to what it was
+
 					// Inventory flag.
 	Write2(nfile, !objects.is_empty() ? 1 : 0);
 			// Superchunk #.
@@ -341,6 +361,7 @@ void Actor::write
 	if (get_flag (Obj_flags::asleep)) iout |= 1 << 0x7;
 	if (get_flag (Obj_flags::charmed)) iout |= 1 << 0x8;
 	if (get_flag (Obj_flags::cursed)) iout |= 1 << 0x9;
+	if (get_flag (Obj_flags::in_party)) iout |= 1 << 0xB;
 	if (get_flag (Obj_flags::paralyzed)) iout |= 1 << 0xC;
 	if (get_flag (Obj_flags::poisoned)) iout |= 1 << 0xD;
 	if (get_flag (Obj_flags::protection)) iout |= 1 << 0xE;
@@ -354,7 +375,7 @@ void Actor::write
 	
 					// Write char. attributes.
 	iout = get_property(Actor::strength);
-	if (Game::get_game_type() != BLACK_GATE) iout += (get_skin_color () & 3) << 5;
+	if (Game::get_game_type() != BLACK_GATE) iout |= (get_skin_color () & 3) << 5;
 	if (get_siflag (Actor::freeze)) iout |= 1 << 7;
 	nfile.put(iout);
 	

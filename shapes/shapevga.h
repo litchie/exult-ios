@@ -50,7 +50,8 @@ public:
 	virtual ~Shapes_vga_file();
 	void read_info();		// Read additional data files.
 	Shape_info& get_info(int shapenum)
-		{ return info[shapenum]; }
+	{ return shapenum>=1024&&shapenum%2?info[989]:
+		 shapenum>=1024?info[721]:info[shapenum]; }
 	};
 
 #endif
