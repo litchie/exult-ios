@@ -452,10 +452,10 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 #if DEBUG
 			cout << "Audio parameters might be: " << (data1&0xff) << " and " << ((data1>>8)&0x01) << endl;
 #endif
-			audio->start_music((data1)&0xff,(data1>>8)&0x01);
+			Audio::get_ptr()->start_music((data1)&0xff,(data1>>8)&0x01);
 			break;
 		case voice:
-			audio->start_speech((data1)&0xff);
+			Audio::get_ptr()->start_speech((data1)&0xff);
 			break;
 		case monster:		// Also creates other objects.
 			{

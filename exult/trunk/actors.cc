@@ -150,7 +150,7 @@ void Actor::ready_best_weapon
 	get_objects(vec, -359, -359, -359);
 	Game_object *best = 0;
 	int best_damage = -20;
-	Ready_type wtype;
+	Ready_type wtype=other;
 	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
@@ -2683,7 +2683,7 @@ void Monster_actor::die
 	if (creator)
 		creator->monster_gone();
 	creator = 0;
-	audio->start_music(VICTORY, 0);
+	Audio::get_ptr()->start_music(VICTORY, 0);
 					// Got to delete this somewhere, but
 					//   doing it here crashes.
 	in_world_cnt--;			// So... Decrement 'live' count here.

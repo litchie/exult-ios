@@ -50,6 +50,7 @@ using std::cerr;
 using std::endl;
 using std::list;
 using std::vector;
+static const int Mixer_Sample_Magic_Number=0x55443322;
 
 //---- Mixer ---------------------------------------------------------
 
@@ -69,17 +70,7 @@ Mixer::~Mixer()
 void fill_audio(void *udata, Uint8 *stream, int len)
  {
 	// cerr << "fill_audio: " << len << endl;
-	 audio->mixer->fill_audio_func(udata,stream,len);
-}
-
-void	Mixer::advance(void)
-{
-	MixBuffer m(buffers.front());
-	buffers.pop_front();
-	m.length=0;
-	m.num_samples=0;
-	memset(m.buffer,silence,buffer_length);
-	buffers.push_back(m);
+	 Audio::get_ptr()->mixer->fill_audio_func(udata,stream,len);
 }
 
 void	compress_audio_sample(Uint8 *buf,int len)
@@ -106,8 +97,7 @@ void	compress_audio_sample(Uint8 *buf,int len)
 
 void Mixer::cancel_raw(void)
 {
-	while(buffers.begin()->num_samples)
-		advance();
+	Audio::get_ptr()->Destroy_Audio_Stream(Mixer_Sample_Magic_Number);
 }
 
 void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
@@ -116,10 +106,8 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 	cout << "fill_audio_func: " << len << endl;
 	// cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
 #endif
-	advance();
-	// if(buffers.begin()->num_samples==0&&auxilliary_audio==-1)
 	stream_lock();
-	if(buffers.begin()->num_samples==0&&audio_streams.size()==0)
+	if(audio_streams.size()==0)
 		{
 #if DEBUG
 		cerr << "No more audio data" << endl;
@@ -128,7 +116,7 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 		stream_unlock();
 		return;
 		}
-	if(audio_streams.size()!=0)
+	else
 		{
 		int which=0;
 		vector<list<ProducerConsumerBuf *>::iterator> close_list;
@@ -136,6 +124,11 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 			it!=audio_streams.end();++it)
 				{
 				
+#ifdef NOT_YET
+				// The world is not ready for this yet
+				if((*it)->size()<buffer_length)
+					continue;
+#endif
 				Uint8	*temp_buffer=new Uint8[len];
 				int	ret=0;
 				size_t	sofar=0;
@@ -171,6 +164,7 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 				}
 		}
 	stream_unlock();
+#if 0
 	if(buffers.begin()->num_samples)
 		{
 #if 0
@@ -180,50 +174,21 @@ void Mixer::fill_audio_func(void *udata,Uint8 *stream,int len)
 			len=buffers.front().length;
 		SDL::MixAudio(stream, buffers.begin()->buffer, len, SDL_MIX_MAXVOLUME);
 		}
+#endif
 }
 
 void	Mixer::play(Uint8 *sound_data,Uint32 len)
 {
-	list<MixBuffer>::iterator it=buffers.begin();
-	size_t	offset,rlen;
-
-	len-=64;
-	++it;
-
-	for(size_t i=0;i<len/buffer_length+1;i++)
-		{
-		if(it==buffers.end())
-			{
-			continue;
-			}
-		offset=i*buffer_length;
-		if(offset+buffer_length>len)
-			rlen=len-offset;
-		else
-			rlen=buffer_length;
-		SDL::MixAudio(it->buffer,sound_data+offset,rlen,SDL_MIX_MAXVOLUME);
-		++it->num_samples;
-		if(it->length<rlen)
-			it->length=rlen;
-		++it;
-		}
-		
-	SDL::PauseAudio(0);
-	SDL::UnlockAudio();
-	
+	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
+	audiostream->id=Mixer_Sample_Magic_Number;
+	audiostream->produce(sound_data,len);
+	audiostream->end_production();
 }
 
-// Mixer::Mixer(Uint32 __buffer_size,Uint32 ringsize,Uint8 silence_value) : auxilliary_audio(-1)
 Mixer::Mixer(Uint32 __buffer_size,Uint32 ringsize,Uint8 silence_value) : audio_streams(),stream_mutex(SDL_CreateMutex())
 {
 	buffer_length=__buffer_size;
-	ring_size=ringsize;
 	silence=silence_value;
-	for(size_t i=0;i<ringsize;i++)
-		{
-		MixBuffer	tmp(buffer_length,silence);
-		buffers.push_back(tmp);
-		}
 }
 
 

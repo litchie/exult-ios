@@ -177,13 +177,13 @@ void Game::play_audio(const char *archive, int index)
 	U7object speech(archive, index);
 	// FIXME: should use a DataBuffer
 	speech.retrieve("speech.voc");
-	audio->playfile("speech.voc", false);
+	Audio::get_ptr()->playfile("speech.voc", false);
 }
 
 void Game::play_midi(int track,bool repeat)
 {
-	if (game_type == BLACK_GATE) audio->start_music(track,repeat,1);
-	else if (game_type == SERPENT_ISLE) audio->start_music(track,repeat,2);
+	if (game_type == BLACK_GATE) Audio::get_ptr()->start_music(track,repeat,1);
+	else if (game_type == SERPENT_ISLE) Audio::get_ptr()->start_music(track,repeat,2);
 }
 
 void Game::add_shape(const char *name, int shapenum) 
@@ -279,7 +279,7 @@ void Game::show_menu()
 	pal.fade_out(30);
 	delete menu;
 	gwin->clear_screen();
-	audio->stop_music();
+	Audio::get_ptr()->stop_music();
 	delete menu_mouse;
 }
 	
@@ -399,7 +399,7 @@ void ExultMenu::setup()
 	midiconv->add_choice("GS");
 	midiconv->add_choice("GS127");
 	midiconv->add_choice("GS127DRUM");
-	midiconv->set_choice(audio->get_midi()->get_music_conversion());
+	midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
 	menu.add_entry(midiconv);
 	
 	MenuChoice *sfxconv = new MenuChoice(exult_flx.get_shape(0x15,1),
@@ -407,7 +407,7 @@ void ExultMenu::setup()
 			      centerx, menuy-11, font);
 	sfxconv->add_choice("None");
 	sfxconv->add_choice("GS");
-	sfxconv->set_choice(audio->get_midi()->get_effects_conversion()==XMIDI_CONVERT_GS127_TO_GS?1:0);
+	sfxconv->set_choice(Audio::get_ptr()->get_midi()->get_effects_conversion()==XMIDI_CONVERT_GS127_TO_GS?1:0);
 	menu.add_entry(sfxconv);
 	
 	MenuChoice *playintro = new MenuChoice(exult_flx.get_shape(0x0B,1),
@@ -473,9 +473,9 @@ void ExultMenu::setup()
 			pal.fade_out(30);
 			gwin->clear_screen();
 			// Midi Conversion
-			audio->get_midi()->set_music_conversion(midiconv->get_choice());
+			Audio::get_ptr()->get_midi()->set_music_conversion(midiconv->get_choice());
 			// SFX Conversion
-			audio->get_midi()->set_effects_conversion(sfxconv->get_choice()==1?XMIDI_CONVERT_GS127_TO_GS:XMIDI_CONVERT_NOCONVERSION);
+			Audio::get_ptr()->get_midi()->set_effects_conversion(sfxconv->get_choice()==1?XMIDI_CONVERT_GS127_TO_GS:XMIDI_CONVERT_NOCONVERSION);
 			// Play Intro
 			set_play_intro(playintro->get_choice()==1);
 			// Play 1st scene
@@ -503,7 +503,7 @@ Exult_Game ExultMenu::run()
 {
 	ExultDataSource *midi_data = new ExultDataSource("<DATA>/exult.flx", 8);
 	XMIDI midfile(midi_data, XMIDI_CONVERT_NOCONVERSION);
-	audio->start_music(&midfile, true);
+	Audio::get_ptr()->start_music(&midfile, true);
 	
 	ExultDataSource mouse_data("<DATA>/exult.flx", 16);
 	menu_mouse = new Mouse(gwin, mouse_data);
@@ -573,7 +573,7 @@ Exult_Game ExultMenu::run()
 	delete menu;
 	
 	gwin->clear_screen();
-	audio->stop_music();
+	Audio::get_ptr()->stop_music();
 	delete menu_mouse;
 	delete midi_data;
 	return sel_game;

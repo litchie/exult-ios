@@ -61,7 +61,6 @@ using std::endl;
 using std::string;
 using std::vector;
 
-Audio *audio;
 Configuration *config;
 Cheat cheat;
 
@@ -295,8 +294,7 @@ static void Init
 	config->value("config/video/scale", scaleval, sc);
 	gwin = new Game_window(sw, sh, scaleval);
 	current_res = find_resolution(sw, sh, scaleval);
-	audio = new Audio;
-	audio->Init(44100,2);
+	Audio::get_ptr();
 
 #ifdef WIN32
 	//enable unknown (to SDL) window messages, including MM_MCINOTIFY
@@ -308,13 +306,7 @@ static void Init
 	ExultMenu exult_menu(gwin);
 	Exult_Game mygame = exult_menu.run();
 	Game::create_game(mygame);
-#if 0	
-	// Audio->Init has to be reimplemented so that new sample rates can be set
-	if (mygame == BLACK_GATE)
-		audio->Init(9615*2,2);
-	else if (mygame == SERPENT_ISLE)
-		audio->Init(11111*2,2);
-#endif
+
 	string yn;
 
 	gwin->init_files();
@@ -345,7 +337,8 @@ static int Play()
 	while (quitting_time == 2 && gwin->read());	// Restart.
 	delete gwin;
 	delete mouse;
-	delete audio;
+	delete Audio::get_ptr();	// Follow not this pointer, now, for
+					// that way lies madness.
 	delete config;
 	return (0);
 	}
@@ -694,7 +687,7 @@ static void Handle_event
 #if DEBUG
 			cerr << "MM_MCINOTIFY message received"<<endl;
 #endif
-			((Windows_MCI*)(audio->get_midi()))->callback(event.syswm.msg->wParam, 
+			((Windows_MCI*)(Audio::get_ptr()->get_midi()))->callback(event.syswm.msg->wParam, 
 							event.syswm.msg->hwnd);
 		}
 		break;
@@ -835,9 +828,9 @@ static void Handle_keystroke
 						// Shift-Alt-m : previous song
 			static int mnum = 0;
 			if (shift && mnum > 0)
-				audio->start_music(--mnum, 0);
+				Audio::get_ptr()->start_music(--mnum, 0);
 			else
-				audio->start_music(mnum++, 0);
+				Audio::get_ptr()->start_music(mnum++, 0);
 
 		} else if (!alt && !ctrl) {	// m : Show map.
 			gwin->activate_item(178);	//++++Black gate.

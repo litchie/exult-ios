@@ -137,7 +137,7 @@ void BG_Game::play_intro()
 		Palette pal;
 		Font *font = fontManager.get_font("MENU_FONT");
 
-		audio->stop_music();
+		Audio::get_ptr()->stop_music();
 
 		// Lord British presents...
 		pal.load("<STATIC>/intropal.dat",3);
@@ -284,7 +284,7 @@ void BG_Game::play_intro()
 		textobj.retrieve(&txt,txt_len);
 		txt_ptr = txt;
 		// Guardian speech
-		audio->playfile(INTROSND,false);
+		Audio::get_ptr()->playfile(INTROSND,false);
 		int txt_ypos = gwin->get_height()-gwin->get_text_height(0);
 		for(int i=0; i<14*40; i++) {
 			gwin->paint_shape(centerx,centery-30,shapes.get_shape(0x20,i % 10));
@@ -482,7 +482,7 @@ void BG_Game::end_game(bool success)
 		fli1.play(win, 0, 0, 0);
 		
 		// Start endgame music.
-		audio->start_music(ENDSCORE_XMI,1,false);
+		Audio::get_ptr()->start_music(ENDSCORE_XMI,1,false);
 		
 		for (i = 0; i < 240; i++)
 		{
@@ -511,7 +511,7 @@ void BG_Game::end_game(bool success)
 			}
 		}
 
-		audio->play (buffer+8, size-8, false);
+		Audio::get_ptr()->play (buffer+8, size-8, false);
 		delete [] buffer;
 		Font *endfont2 = fontManager.get_font("END2_FONT");
 		Font *endfont3 = fontManager.get_font("END3_FONT");
@@ -537,12 +537,12 @@ void BG_Game::end_game(bool success)
 		}
 
 		// Set new music
-		audio->start_music(ENDSCORE_XMI,2,false);
+		Audio::get_ptr()->start_music(ENDSCORE_XMI,2,false);
 		
 		// Set speech
 		speech2.retrieve (&buf, size);
 		buffer = (Uint8 *) buf;
-		audio->play (buffer+8, size-8, false);
+		Audio::get_ptr()->play (buffer+8, size-8, false);
 		delete [] buffer;
 
 		message = "Damn you Avatar!  Damn you!";
@@ -659,7 +659,7 @@ void BG_Game::end_game(bool success)
 
 		speech3.retrieve (&buf, size);
 		buffer = (Uint8 *) buf;
-		audio->play (buffer+8, size-8, false);
+		Audio::get_ptr()->play (buffer+8, size-8, false);
 		delete [] buffer;
 
 		playfli::fliinfo finfo;
