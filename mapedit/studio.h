@@ -67,6 +67,8 @@ public:
 	
 	static ExultStudio *get_instance()
 		{ return self; }
+	GladeXML *get_xml() 
+		{ return app_xml; }
 
 	void set_browser(const char *name, Object_browser *obj);
 
@@ -85,6 +87,8 @@ public:
 	void close_npc_window();
 	void show_npc_shape(int x = 0, int y = 0, int w = -1, int h = -1);
 	void set_npc_shape(int shape, int frame);
+	static void schedule_btn_clicked(GtkWidget *btn, gpointer data);
+
 	void run();
 	void read_from_server();
 	void connect_to_server();
