@@ -62,6 +62,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "virstone.h"
 #include "delobjs.h"
+#include "Flex.h"
 #include "ucsched.h"			/* Only used to flush objects. */
 
 #include "Actor_gump.h"
@@ -817,6 +818,92 @@ void Game_window::get_chunk_objects
 
 
 /*
+ *	Get the name of an ireg or ifix file.
+ *
+ *	Output:	->fname, where name is stored.
+ */
+
+char *Game_window::get_schunk_file_name
+	(
+	char *prefix,			// "ireg" or "ifix".
+	int schunk,			// Superchunk # (0-143).
+	char *fname			// Name is stored here.
+	)
+	{
+	strcpy(fname, prefix);
+	int len = strlen(fname);
+	fname[len] = '0' + schunk/16;
+	int lb = schunk%16;
+	fname[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
+	fname[len + 2] = 0;
+	return (fname);
+	}
+
+/*
+ *	Write out one of the "u7ifix" files, along with the given schunk in
+ *	the "chunks" file.
+ *
+ *	Output:	Errors reported.
+ */
+
+void Game_window::write_map_objects
+	(
+	ostream& ochunks,		// U7CHUNKS.
+	int schunk			// Superchunk # (0-143).
+	)
+	{
+	char fname[128];		// Set up name.
+	ofstream ifix;			// There it is.
+	U7open(ifix, get_schunk_file_name(U7IFIX, schunk, fname));
+					// +++++Use game title.
+	const int count = c_chunks_per_schunk*c_chunks_per_schunk;
+	Flex::write_header(ifix, "Exult",  count);
+	uint8 table[2*count*4];
+	uint8 *tptr = &table[0];
+	int scy = 16*(schunk/12);	// Get abs. chunk coords.
+	int scx = 16*(schunk%12);
+	u7map.seekg(schunk * 16*16*2);	// Get to desired chunk.
+					// Need to get actual chunk #'s.
+	unsigned char chunknums[16*16*2];
+	u7map.read((char*)chunknums, sizeof(chunknums));
+	unsigned char *chunknumsptr = &chunknums[0];
+					// Go through chunks.
+	for (int cy = 0; cy < 16; cy++)
+		for (int cx = 0; cx < 16; cx++)
+			{
+					// Store file position in table.
+			long start = ifix.tellp();
+			Write4(tptr, start);
+			unsigned char chunk_data[512];
+			Chunk_object_list *chunk = get_objects(scx + cx,
+							       scy + cy);
+					// Fill chunk with (flat) terrain.
+			chunk->write_flats(&chunk_data[0]);
+					// Restore original order (sort of).
+			Object_iterator_backwards next(chunk);
+			Game_object *obj;
+			while ((obj = next.get_next()) != 0)
+				obj->write_map(ifix, chunk_data);
+					// Write out chunk.
+			int chunk_num = Read2(chunknumsptr);
+			ochunks.seekp(chunk_num*512);
+			ochunks.write((char *) chunk_data, sizeof(chunk_data));
+					// Store IFIX data length.
+			Write4(tptr, ifix.tellp() - start);
+			}
+	ifix.seekp(0x80, ios::beg);	// Write table.
+	ifix.write((char*) &table[0], sizeof(table));
+	ifix.flush();
+	ochunks.flush();
+	int result = ifix.good();
+	if (!result)
+		throw file_write_exception(fname);
+	result = ochunks.good();
+	if (!result)
+		throw file_write_exception(U7CHUNKS);
+	}
+
+/*
  *	Read in the objects for a superchunk from one of the "u7ifix" files.
  */
 
@@ -826,14 +913,8 @@ void Game_window::get_ifix_objects
 	)
 	{
 	char fname[128];		// Set up name.
-	strcpy(fname, U7IFIX);
-	int len = strlen(fname);
-	fname[len] = '0' + schunk/16;
-	int lb = schunk%16;
-	fname[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
-	fname[len + 2] = 0;
 	ifstream ifix;			// There it is.
-	U7open(ifix, fname);
+	U7open(ifix, get_schunk_file_name(U7IFIX, schunk, fname));
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.
@@ -874,32 +955,11 @@ void Game_window::get_ifix_chunk_objects
 	Chunk_object_list *olist = get_objects(cx, cy);
 	for (int i = 0; i < cnt; i++, ent += 4)
 		{
-		Game_object *obj = new Game_object(ent);
+		Ifix_game_object *obj = new Ifix_game_object(ent);
 		olist->add(obj);
 		}
 	delete[] entries;		// Done with buffer.
 	olist->setup_dungeon_bits();	// Should have all dungeon pieces now.
-	}
-
-/*
- *	Get the name of an ireg file.
- *
- *	Output:	->fname, where name is stored.
- */
-
-char *Game_window::get_ireg_name
-	(
-	int schunk,			// Superchunk # (0-143).
-	char *fname			// Name is stored here.
-	)
-	{
-	strcpy(fname, U7IREG);
-	int len = strlen(fname);
-	fname[len] = '0' + schunk/16;
-	int lb = schunk%16;
-	fname[len + 1] = lb < 10 ? ('0' + lb) : ('a' + (lb - 10));
-	fname[len + 2] = 0;
-	return (fname);
 	}
 
 /*
@@ -915,7 +975,7 @@ void Game_window::write_ireg_objects
 	{
 	char fname[128];		// Set up name.
 	ofstream ireg;			// There it is.
-	U7open(ireg, get_ireg_name(schunk, fname));
+	U7open(ireg, get_schunk_file_name(U7IREG, schunk, fname));
 	int scy = 16*(schunk/12);	// Get abs. chunk coords.
 	int scx = 16*(schunk%12);
 					// Go through chunks.
@@ -951,7 +1011,7 @@ void Game_window::get_ireg_objects
 	ifstream ireg;			// There it is.
 	try
 	{
-		U7open(ireg, get_ireg_name(schunk, fname));
+		U7open(ireg, get_schunk_file_name(U7IREG, schunk, fname));
 	}
 	catch(...)
 	{
@@ -1436,6 +1496,31 @@ void Game_window::read_gwin
 	special_light = Read4(gin);
 	if (!gin.good())
 		special_light = 0;
+	}
+
+/*
+ *	Write out map data (IFIXxx, U7CHUNKS) to static.
+ *	Note:  This is for map-editing.
+ *	++++U7MAP??
+ *
+ *	Output:	Errors are reported.
+ */
+
+void Game_window::write_map
+	(
+	)
+	{
+	U7mkdir(STATICDAT, 0755);	// Create dir if not already there.
+		// ++++Okay to have this open twice?  Or should we close
+		// 'chunks', then reopen after writing?
+	ofstream ochunks;		// Open file for chunks data.
+	U7open(ochunks, U7CHUNKS);
+					// Write each superchunk to 'static'.
+	for (int schunk = 0; schunk < 12*12 - 1; schunk++)
+					// Only write what we've read.
+		if (schunk_read[schunk])
+			write_map_objects(ochunks, schunk);
+	ochunks.close();
 	}
 
 /*
@@ -2176,7 +2261,6 @@ void Game_window::show_items
 			obj->get_low_lift() << ", high shape = " <<
 			obj->get_high_shape () << ", okay_to_take = " <<
 			(int) obj->get_flag(Obj_flags::okay_to_take) << endl;
-		cout << "Volume = " << info.get_volume() << endl;
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))
 			cout << "ASLEEP" << endl;

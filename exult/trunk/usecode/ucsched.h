@@ -44,26 +44,7 @@ class Scheduled_usecode : public Time_sensitive
 	int no_halt;			// 1 to ignore halt().
 public:
 	Scheduled_usecode(Usecode_machine *usecode,
-				Usecode_value& oval, Usecode_value& aval)
-		: objval(oval), arrval(aval), i(0), frame_index(0), no_halt(0)
-		{
-		cnt = arrval.get_array_size();
-		obj = usecode->get_item(objval);
-		objpos = obj ? obj->get_abs_tile_coord() 
-				: Tile_coord(-1, -1, -1);
-					// Not an array?
-		if (!cnt && !arrval.is_array())
-			cnt = 1;	// Get_elem(0) works for non-arrays.
-		count++;		// Keep track of total.
-		next = first;		// Put in chain.
-		prev = 0;
-		if (first)
-			first->prev = this;
-		first = this;
-		int opval0 = arrval.get_elem(0).get_int_value();
-		if (opval0 == 0x23)	// PURE GUESS:
-			no_halt = 1;
-		}
+				Usecode_value& oval, Usecode_value& aval);
 					// Execute when due.
 	virtual ~Scheduled_usecode()
 		{

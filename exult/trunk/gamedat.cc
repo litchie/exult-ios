@@ -50,6 +50,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "utils.h"
 #include "gump_utils.h"
 #include "game.h"
+#include "Flex.h"
 
 using std::cerr;
 using std::cout;
@@ -216,22 +217,13 @@ void Game_window::save_gamedat
 	{
 	ofstream out;
 	U7open(out, fname);
-	char title[0x50];		// Use savename for title.
-	memset(title, 0, sizeof(title));
-	strncpy(title, savename, sizeof(title) - 1);
-	out.write(title, sizeof(title));
-	Write4(out, 0xFFFF1A00);	// Magic number.
 					// Doing all IREG's + what's listed.
 	int count = 12*12 + numsavefiles;
-	Write4(out, count);
-	Write4(out, 0x000000CC);	// 2nd magic number.
+					// Use samename for title.
+	Flex::write_header(out, savename, count);
 					// Create table.
 	unsigned char *table = new unsigned char[2*count*4];
 	uint8 *tptr = table;
-	long pos = out.tellp();		// Fill to data (past table at 0x80).
-	long fill = 0x80 + 8*count - pos;
-	while (fill--)
-		out.put((char) 0);
 	int i;				// Start with listed files.
 	for (i = 0; i < numsavefiles; i++)
 		{
@@ -244,7 +236,8 @@ void Game_window::save_gamedat
 		{
 		Write4(tptr, out.tellp());
 		char iname[80];
-		long len = Savefile(out, get_ireg_name(schunk, iname));
+		long len = Savefile(out, get_schunk_file_name(U7IREG,
+							schunk, iname));
 		Write4(tptr, len);
 		}
 	out.seekp(0x80, ios::beg);	// Write table.

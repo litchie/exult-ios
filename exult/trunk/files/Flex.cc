@@ -99,3 +99,28 @@ char *	Flex::retrieve(uint32 objnum, size_t &len)
 	
 	return buffer;
 }
+
+/*
+ *	Write out a FLEX header.  Note that this is a STATIC method.
+ */
+
+void Flex::write_header
+	(
+	ostream& out,			// File to write to.
+	const char *title,
+	int count			// # entries.
+	)
+	{
+	char titlebuf[0x50];		// Use savename for title.
+	memset(titlebuf, 0, sizeof(titlebuf));
+	strncpy(titlebuf, title, sizeof(titlebuf) - 1);
+	out.write(titlebuf, sizeof(titlebuf));
+	Write4(out, 0xFFFF1A00);	// Magic number.
+	Write4(out, count);
+	Write4(out, 0x000000CC);	// 2nd magic number.
+	long pos = out.tellp();		// Fill to data (past table at 0x80).
+	long fill = 0x80 + 8*count - pos;
+	while (fill--)
+		out.put((char) 0);
+	}
+

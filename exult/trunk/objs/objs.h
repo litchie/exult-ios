@@ -68,16 +68,18 @@ class T_Object_list;
  */
 class Game_object : public ShapeID
 	{
+protected:
 	unsigned char shape_pos;	// (X,Y) of shape within chunk.
 	unsigned char lift;		// Raise by 4* this number.
 	short quality;			// Some sort of game attribute.
+private:
 	Game_object *next, *prev;	// ->next in chunk list or container.
-	Game_object_vector dependencies;		// Objects which must be painted before
+	Game_object_vector dependencies;// Objects which must be painted before
 					//   this can be rendered.
-	Game_object_vector dependors;		// Objects which must be painted after.
+	Game_object_vector dependors;	// Objects which must be painted after.
 	static unsigned char rotate[8];	// For getting rotated frame #.
 public:
-	uint32 render_seq;	// Render sequence #.
+	uint32 render_seq;		// Render sequence #.
 protected:
 	unsigned char cx, cy;		// (Absolute) chunk coords., or if this
 					//   is in a container, coords. within
@@ -85,17 +87,18 @@ protected:
 					// Handle attack on an object.
 	int attack_object(Game_window *gwin, Actor *attacker, int weapon_shape,
 							int ammo_shape);
-public:
-	friend class T_Object_list<Game_object *>;
-	friend class T_Object_iterator<Game_object *>;
-	friend class T_Flat_object_iterator<Game_object *, Chunk_object_list *>;
-	friend class T_Object_iterator_backwards<Game_object *, Chunk_object_list *>;
-	friend class Chunk_object_list;
 					// Create from ifix record.
 	Game_object(unsigned char *ifix)
 			: ShapeID(ifix[2], ifix[3]), shape_pos(ifix[0]),
 			  lift(ifix[1] & 0xf), quality(0), cx(255), cy(255)
 		{  }
+public:
+	friend class T_Object_list<Game_object *>;
+	friend class T_Object_iterator<Game_object *>;
+	friend class T_Flat_object_iterator<Game_object *,Chunk_object_list *>;
+	friend class T_Object_iterator_backwards<Game_object *, 
+							Chunk_object_list *>;
+	friend class Chunk_object_list;
 	Game_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft = 0)
 		: ShapeID(shapenum, framenum),
@@ -340,6 +343,8 @@ public:
 					// Write out to IREG file.
 	virtual void write_ireg(std::ostream& out)
 		{  }
+					// Write out IFIX, CHUNKS.
+	virtual void write_map(std::ostream& ifix, unsigned char *chunk_data);
 	virtual void elements_read()	// Called when all member items read.
 		{  }
 					// Write common IREG data.
@@ -355,6 +360,18 @@ public:
 	virtual void reset_cached_in()
 		{ }
 
+	};
+
+/*
+ *	Object from an IFIXxx file.
+ */
+class Ifix_game_object : public Game_object
+	{
+public:
+					// Create from ifix record.
+	Ifix_game_object(unsigned char *ifix) : Game_object(ifix)
+		{  }
+	virtual void write_map(std::ostream& ifix, unsigned char *chunk_data);
 	};
 
 #endif

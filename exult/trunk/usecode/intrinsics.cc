@@ -1661,7 +1661,9 @@ USECODE_INTRINSIC(path_run_usecode)
 	//  if he can't get there (and return), 1 if he can.
 	Usecode_value ava(gwin->get_main_actor());
 	return Usecode_value(path_run_usecode(ava, parms[0], parms[1],
-				parms[2], parms[3]));
+				parms[2], parms[3],
+					// SI:  Look for free spot. (Guess).
+			Game::get_game_type() == SERPENT_ISLE));
 #if 0
 
 	Usecode_value u(0);
