@@ -174,7 +174,7 @@ int Actor::ready_ammo
 	int points;
 	Weapon_info *winf = Actor::get_weapon(points);
 	int ammo;
-	if (!winf || (ammo = winf->get_ammo()) == 0)
+	if (!winf || (ammo = winf->get_ammo_consumed()) == 0)
 		return 0;		// No weapon, or ammo not needed.
 					// See if already have ammo.
 	Game_object *aobj = get_readied(Actor::ammo);

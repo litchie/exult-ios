@@ -515,14 +515,14 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 				<< endl;
 			Shape_info& info = gwin->get_info(weapon);
 			Weapon_info *winf = info.get_weapon_info();
-			int ammo;
-			if (winf && winf->get_ammo())
-				ammo = winf->get_ammo();
+			int proj;
+			if (winf && winf->get_projectile())
+				proj = winf->get_projectile();
 			else
-				ammo = 856;// Fireball.  Shouldn't get here.
+				proj = 856;// Fireball.  Shouldn't get here.
 			if (!launcher)
 				launcher = new Missile_launcher(this, weapon,
-						ammo, dir, 1000*delay);
+						proj, dir, 1000*delay);
 			if (!launcher->in_queue())
 				gwin->get_tqueue()->add(0L, launcher, 0);
 			break;
