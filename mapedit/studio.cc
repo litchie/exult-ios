@@ -49,7 +49,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapelst.h"
 #include "paledit.h"
 #include "shapevga.h"
-#include "ibuf8.h"
 #include "Flex.h"
 #include "studio.h"
 #include "dirbrowser.h"
@@ -57,11 +56,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "u7drag.h"
 #include "shapegroup.h"
 #include "shapefile.h"
-#include "shapedraw.h"
-#include "paledit.h"
 #include "locator.h"
 #include "Configuration.h"
 #include "objserial.h"
+#include "exceptions.h"
 
 using std::cerr;
 using std::cout;
@@ -988,6 +986,53 @@ void ExultStudio::set_edit_mode
 	Write2(ptr, md);
 					//   haven't got an interface yet.
 	send_to_server(Exult_server::set_edit_mode, data, ptr - data);
+	}
+
+/*
+ *	Prompt for a new shape file name.
+ */
+
+void ExultStudio::new_shape_file
+	(
+	bool single			// Not a FLEX file.
+	)
+	{
+	GtkFileSelection *fsel = Create_file_selection(
+		single ? "Write new .shp file" : "Write new .vga file",
+			(File_sel_okay_fun) create_shape_file,
+							(gpointer) single);
+	gtk_file_selection_complete(fsel, single ? "*.shp" : "*.vga");
+	//++++++Default directory ('patch')???
+	gtk_widget_show(GTK_WIDGET(fsel));
+	}
+
+/*
+ *	Create a new shape/shapes file.
+ */
+
+void ExultStudio::create_shape_file
+	(
+	char *pathname,			// Full path.
+	gpointer udata			// 1 if NOT a FLEX file.
+	)
+	{
+					// Check for THE shapes file.
+	const int shlen = sizeof("shapes.vga") - 1;
+	bool flat = strcasecmp(pathname + strlen(pathname) - shlen, 
+							"shapes.vga") == 0;
+	const int w = 8, h = 8;
+	unsigned char pixels[w*h];	// Create an 8x8 shape.
+	int xleft = flat ? 8 : w - 1;
+	int yabove = flat ? 8 : h - 1;
+	memset(&pixels[0], 1, w*h);	// Just use color #1.
+	Shape *shape = new Shape(new Shape_frame(&pixels[0],
+			w, h, xleft, yabove, !flat));
+	try {				// Write file.
+		Shape_file_info::write_file(pathname, &shape, 1, (bool) udata);
+	}
+	catch (const exult_exception& e) {
+		EStudio::Alert(e.what());
+	}
 	}
 
 /*

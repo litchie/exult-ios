@@ -70,7 +70,7 @@ public:
 typedef void (*File_sel_okay_fun)(char *, gpointer);
 GtkFileSelection *Create_file_selection
 	(
-	char *title,
+	const char *title,
 	File_sel_okay_fun ok_handler,
 	gpointer user_data
 	);
