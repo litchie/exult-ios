@@ -1031,7 +1031,11 @@ Usecode_value Usecode_machine::find_nearby
 	Usecode_value& shapeval,	// Shape to find, or -1 for any,
 					//  -359 for any npc.
 	Usecode_value& distval,		// Distance in tiles?
-	Usecode_value& mval		// Some kind of mask?
+	Usecode_value& mval		// Some kind of mask?  Guessing:
+					//   4 == party members only.
+					//   8 == non-party NPC's only.
+					//  16 == something with eggs???
+					//  32 == monsters? invisible?
 	)
 	{
 	Vector vec;			// Gets list.
@@ -1040,7 +1044,7 @@ Usecode_value Usecode_machine::find_nearby
 	int arraysize = objval.get_array_size();
 	if (arraysize >= 3 && objval.get_elem(0).get_int_value() < num_tiles)
 		{
-					// Qual may be 4th.  5th is ???.
+					// Qual may be 4th.  5th is frame???.
 		int qual = arraysize == 5 ? objval.get_elem(3).get_int_value()
 							: -359;
 		cnt = Game_object::find_nearby(vec,
