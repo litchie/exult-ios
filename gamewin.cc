@@ -1124,7 +1124,8 @@ bool Game_window::init_gamedat(bool create)
 		if (Game::is_editing() && !U7exists(IDENTITY))
 			{
 			U7open(out, IDENTITY);
-			out << Game::get_gametitle().c_str() << endl;
+			std::string gametitlestr = Game::get_gametitle();
+			out << gametitlestr.c_str() << endl;
 			out.close();
 			}
 		U7open(out, GNEWGAMEVER);
@@ -1933,13 +1934,15 @@ void Game_window::show_items
 	    (npc->get_npc_num() > 0 || npc==main_actor))
 	{
 		char str[64];
+		std::string namestr = obj->get_name();
 		snprintf (str, 64, "(%i) %s", npc->get_npc_num(), 
-				  obj->get_name().c_str());
+				  namestr.c_str());
 		effects->add_text(str, obj);
 	}
 	else if (obj)
-		{			// Show name.
-		const char *objname = obj->get_name().c_str();
+	{			// Show name.
+		std::string namestr = obj->get_name();
+		const char *objname = namestr.c_str();
 		Actor *actor;		// Combat, and an NPC?
 		if (in_combat() && Combat::mode != Combat::original &&
 		    (actor = obj->as_actor()) != 0)

@@ -1,11 +1,14 @@
-2002-07-29  Aurelien Marchand  <artaxerxes@users.sourceforge.net>
+2003-07-31  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* gamewin.cc: fixed memory corruption issue breaking item descriptions
+
+2003-07-29  Aurelien Marchand  <artaxerxes@users.sourceforge.net>
 	* README.Qtopia: More accurate details.
 
-2002-07-25  Ryan Nunn  <colourles@users.sourceforge.net>
+2003-07-25  Ryan Nunn  <colourles@users.sourceforge.net>
 	* WinNT and Win2K are forced to use the Win9x style IPC that i wrote. 
 	  This should now meant that Exult Studio will now work.
 
-2002-07-22  Ryan Nunn  <colourles@users.sourceforge.net>
+2003-07-22  Ryan Nunn  <colourles@users.sourceforge.net>
 	* Minor changes to fix errors in MSVC
 	* Updating Win32 stuff for 1.1Beta1
 
