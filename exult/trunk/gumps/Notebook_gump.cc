@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 vector<One_note *> Notebook_gump::notes;
 bool Notebook_gump::initialized = false;	// Set when read in.
-vector<Notebook_top_left> Notebook_gump::page_info;
+vector<Notebook_top> Notebook_gump::page_info;
 
 /*
  *	Defines in 'gumps.vga':
@@ -59,6 +59,37 @@ void One_note::set
 	delete text;
 	text = txt;
 	textlen = text ? strlen(text) : 0;
+	textmax = text ? textlen + 1 : 0;
+	}
+
+/*
+ *	Insert one character.
+ */
+
+void One_note::insert
+	(
+	int chr,
+	int offset
+	)
+	{
+	if (textlen + 1 >= textmax)
+		{			// Need more space.
+		textmax = textmax ? (textmax + textmax/4 + 1) : 16;
+		char *newtext = new char[textmax];
+		memcpy(newtext, text, offset);
+		newtext[offset] = chr;
+		memcpy(newtext + offset + 1, text + offset, 
+					textlen + 1 - offset);
+		delete [] text;
+		text = newtext;
+		}
+	else
+		{
+		memmove(text + offset + 1, text + offset,
+					textlen + 1 - offset);
+		text[offset] = chr;
+		}
+	++textlen;
 	}
 
 /*
@@ -116,7 +147,7 @@ Notebook_gump::Notebook_gump
 	cursor.offset = 0;
 					// (Obj. area doesn't matter.)
 	set_object_area(Rectangle(36, 10, 100, 100), 7, 40);
-	page_info.push_back(Notebook_top_left(0, 0));
+	page_info.push_back(Notebook_top(0, 0));
 					// Where to paint page marks:
 	const int lpagex = 35, rpagex = 300, lrpagey = 12;
 	leftpage = new Notebook_page_button(this, lpagex, lrpagey, 0);
@@ -201,10 +232,10 @@ void Notebook_gump::change_page
 	int topleft = curpage & ~1;
 	if (delta > 0)
 		{
-		int nxt = curpage/2 + 1;
+		int nxt = topleft + 2;
 		if (nxt >= page_info.size())
 			return;
-		curpage = topleft + 2;
+		curpage = nxt;
 		cursor.offset = 0;
 		}
 	else if (delta < 0)
@@ -236,17 +267,18 @@ Gump_button *Notebook_gump::on_button
 		return leftpage;
 	else if (rightpage->on_button(mx, my))
 		return rightpage;
-	int curnote = page_info[curpage/2].notenum;
+	int topleft = curpage & ~1;
+	int curnote = page_info[topleft].notenum;
 	if (curnote < 0)
 		return 0;
-	int offset = page_info[curpage/2].offset;
+	int offset = page_info[topleft].offset;
 	Rectangle box = Get_text_area(false, offset == 0);	// Left page.
 	One_note *note = notes[curnote];
 	int coff = sman->find_cursor(font, note->text + offset, x + box.x,
 			y + box.y, box.w, box.h, mx, my, vlead);
 	if (coff >= 0)			// Found it?
 		{
-		curpage = curpage & ~1;
+		curpage = topleft;
 		cursor.offset = offset + coff;
 		paint();
 		}
@@ -284,12 +316,12 @@ void Notebook_gump::paint
 	Gump::paint();
 	if (curpage > 0)		// Not the first?
 		leftpage->paint();
-	int curnote = page_info[curpage/2].notenum;
+	int topleft = curpage & ~1;
+	int curnote = page_info[topleft].notenum;
 	if (curnote < 0)
 		return;
-	int offset = page_info[curpage/2].offset;
+	int offset = page_info[topleft].offset;
 	One_note *note = notes[curnote];
-	int topleft = curpage & ~1;
 					// Paint left page.
 	offset = paint_page(Get_text_area(false, offset == 0), 
 						note, offset, topleft);
@@ -301,6 +333,10 @@ void Notebook_gump::paint
 		note = notes[curnote];
 		offset = 0;
 		}
+	if (topleft + 1 >= page_info.size())	// Store right-page info.
+		page_info.resize(topleft + 2);
+	page_info[topleft + 1].notenum = curnote;
+	page_info[topleft + 1].offset = offset;
 					// Paint right page.
 	offset = paint_page(Get_text_area(true, offset == 0), 
 						note, offset, topleft + 1);
@@ -312,7 +348,7 @@ void Notebook_gump::paint
 		offset = 0;
 		}
 	rightpage->paint();
-	int nxt = curpage/2 + 1;	// For next pair of pages.
+	int nxt = topleft + 2;		// For next pair of pages.
 	if (nxt >= page_info.size())
 		page_info.resize(nxt + 1);
 	page_info[nxt].notenum = curnote;
@@ -328,10 +364,46 @@ bool Notebook_gump::handle_kbd_event
 	)
 	{
 	SDL_Event& ev = *(SDL_Event *)vev;
-	int chr = ev.key.keysym.sym, uchr = ev.key.keysym.unicode;
+	int chr = ev.key.keysym.sym, unicode = ev.key.keysym.unicode;
 
-	if (ev.type != SDL_KEYDOWN && ev.type != SDL_KEYUP)
+	if (ev.type == SDL_KEYUP)
+		return true;		// Ignoring key-up at present.
+	if (ev.type != SDL_KEYDOWN)
 		return false;
+	if (curpage >= page_info.size())
+		return false;		// Shouldn't happen.
+	One_note *note = notes[page_info[curpage].notenum];
+	switch (chr) {
+	case SDLK_RETURN:		// If only 'Save', do it.
+	case SDLK_BACKSPACE:
+	case SDLK_DELETE:
+	case SDLK_LEFT:
+	case SDLK_RIGHT:
+	case SDLK_UP:
+	case SDLK_DOWN:
+	case SDLK_HOME:
+	case SDLK_END:
+		// ++++++Finish.
+		break;		
+	default:
+#if 0	/* +++++Got to enable unicode for this. */
+		if ((unicode & 0xFF80) == 0 )
+			chr = unicode & 0x7F;
+		else
+			chr = 0;
+#else
+		if (ev.key.keysym.mod & KMOD_SHIFT)
+			chr = toupper(chr);
+#endif
+		if (chr < ' ')
+			return false;		// Ignore other special chars.
+		if (chr >= 256 || !isascii(chr))
+			return false;
+		note->insert(chr, cursor.offset);
+		++cursor.offset;
+		paint();		// (Not very efficient...)
+		break;		
+	}
 	// ++++++Finish.
 	std::cout << "Notebook chr: " << chr << std::endl;
 	return true;
