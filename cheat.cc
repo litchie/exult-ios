@@ -47,7 +47,7 @@ Cheat::~Cheat() {
 }
 
 void Cheat::init (void) {
-  string cheating;
+  std::string cheating;
 
   gwin = Game_window::get_game_window();
 
