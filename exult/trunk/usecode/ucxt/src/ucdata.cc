@@ -10,6 +10,7 @@
 #include <vector>
 #include "printucc.h"
 #include <algorithm>
+#include "opcodes.h"
 
 UCData::UCData()  : _search_opcode((unsigned long) -1),
                     _search_intrinsic((unsigned long) -1),
@@ -297,6 +298,7 @@ class UCFuncNew
 		unsigned short _num_locals;  // the number of local variables
 		unsigned short _num_externs; // the number of external function id's
 		vector<unsigned short> _externs; // the external function id's
+		vector<pair<unsigned short, pair<unsigned char, vector<unsigned char> > > > _usecode;
 /*
 
     unsigned int _argc; // number of function parameters
@@ -346,6 +348,16 @@ void UCData::load_funcs(const char **func_table)
 		assert(ucfunc->localc()==foo._num_locals);
 		#endif
 		
+		/*if(foo._funcid==_search_func)
+		{
+			cout << ucfunc->_code_offset << "\t" << foo._code_offset << endl;
+			cout << ucfunc->argc() << "\t" << foo._num_args << endl;
+			cout << ucfunc->localc() << "\t" << foo._num_locals << endl;
+			cout << ucfunc->_externs.size() << "\t" << foo._num_externs << endl;
+			for(unsigned int i=0; i<foo._num_externs; i++)
+				cout << "\tExtern: " << setw(4) << foo._externs[i] << endl;
+		}*/
+
 		_file.seekg(endpos, ios::beg);
 		
 //    if( ( ( uc.mode() != MODE_OPCODE_SEARCH ) && ( uc.mode() !=MODE_INTRINSIC_SEARCH ) ) || found )
@@ -365,6 +377,11 @@ void UCData::load_funcs(const char **func_table)
 inline unsigned short read_ushort(ifstream &f)
 {
   return ((unsigned short) ((unsigned int)f.get() + (((unsigned int)f.get()) << 8)));
+}
+
+inline unsigned char read_ubyte(ifstream &f)
+{
+  return (unsigned char)f.get();
 }
 
 void UCData::readbin_UCFunc(ifstream &f, UCFuncNew &ucf)
@@ -418,42 +435,55 @@ void UCData::readbin_UCFunc(ifstream &f, UCFuncNew &ucf)
 	{
 		streampos start_of_code_seg = f.tellg();
 		ucf._code_offset = f.tellg();
+
+		// get the number of arguments to the function
 		ucf._num_args = read_ushort(f);
+
+		// get the number of local variables
 		ucf._num_locals = read_ushort(f);
+
+		// get the number of external function numbers
 		ucf._num_externs = read_ushort(f);
 		
+		// load the external function numbers
+		for(unsigned int i=0; i<ucf._num_externs; i++)
+			ucf._externs.push_back(read_ushort(f));
+		
+		// ok, now to load the usecode
+		unsigned int code_offset=0;
+
+		unsigned int code_size = ucf._funcsize - ucf._datasize - ((3+ucf._num_externs) * SIZEOF_USHORT);
+		
+		//cout << "Code Size: " << code_size << endl;
+
+		while(code_offset<code_size)
+		{
+			pair<unsigned short, pair<unsigned char, vector<unsigned char> > > ucop;
+			
+			ucop.first = code_offset;
+
+			ucop.second.first = read_ubyte(f);
+      code_offset++;
+
+			UCOpcodeData &otd = opcode_table_data[ucop.second.first];
+
+			//cout << "O: " << setw(4) << ucop.first << "\t" << (unsigned int) ucop.second.first << endl;
+			//cout << "OP: " << otd.opcode << "\t" << otd.asm_nmo << "\t" << otd.ucs_nmo << endl;
+			//assert(((otd.asm_nmo.size()==0) && (otd.ucs_nmo.size()==0)));
+			for(unsigned int i=0; i<otd.num_bytes; i++)
+				ucop.second.second.push_back(read_ubyte(f));
+			//for(unsigned int i=0; i<otd.num_bytes; i++)
+			//	cout << "\t" << ucop.second.second[i] << endl;
+			code_offset+=otd.num_bytes;
+
+			ucf._usecode.push_back(ucop);
+		}
+		//if(i->asm_nmo!="" || i->ucs_nmo!="")
 	}
 /*
 
 {
-  long pos;
-//  unsigned short size;
-  unsigned short externsize;
-  unsigned short i;
-  unsigned short offset;
-  unsigned char* p;
-  unsigned char* pp;
-  unsigned char* pdata;
-  unsigned short* pextern;
-
-  pos = ftell();
-  unsigned int size = _funcsize - _datasize - SIZEOF_USHORT;
-  pp = p = (unsigned char *)malloc(size);
-  pdata = (unsigned char *)malloc(_datasize);
-  read_vbytes(pdata, _datasize);
-  _code_offset = ftell();
-
-  read_vbytes(p, size);
-  fseekbeg(pos);
-  // Print code segment header 
-  if( size < 3 * SIZEOF_USHORT )
-  {
-    printf("Code segment bad!\n");
-    free(p);
-    free(pdata);
-    return;
-  }
-  // Print argument counter 
+  // Print argument counter
   _argc = read_ushort(pp);
   pp += SIZEOF_USHORT;
   // Print locals counter  
@@ -492,6 +522,36 @@ void UCData::readbin_UCFunc(ifstream &f, UCFuncNew &ucf)
   }
   free(p);
   free(pdata);
+
+// top stuff
+  long pos;
+//  unsigned short size;
+  unsigned short externsize;
+  unsigned short i;
+  unsigned short offset;
+  unsigned char* p;
+  unsigned char* pp;
+  unsigned char* pdata;
+  unsigned short* pextern;
+
+  pos = ftell();
+  unsigned int size = _funcsize - _datasize - SIZEOF_USHORT;
+  pp = p = (unsigned char *)malloc(size);
+  pdata = (unsigned char *)malloc(_datasize);
+  read_vbytes(pdata, _datasize);
+  _code_offset = ftell();
+
+  read_vbytes(p, size);
+  fseekbeg(pos);
+  // Print code segment header
+  if( size < 3 * SIZEOF_USHORT )
+  {
+    printf("Code segment bad!\n");
+    free(p);
+    free(pdata);
+    return;
+  }
+///top stuff
 }
 
 

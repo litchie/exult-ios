@@ -7,8 +7,6 @@
 #include <set>
 #include <strstream>
 
-const unsigned int SIZEOF_USHORT = 2;
-
 const string VARNAME = "uvar";
 const string VARPREFIX = "var";
 const unsigned int ASM_DISP_STR_LEN=20;
