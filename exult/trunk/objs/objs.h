@@ -204,8 +204,10 @@ public:
 	Game_object *find_closest(int shapenum, int dist = 24)
 		{ return find_closest(&shapenum, 1, dist); }
 	Rectangle get_footprint();	// Get tile footprint.
+	bool blocks(Tile_coord tile);	// Do we block a given tile?
 					// Find object blocking given tile.
 	static Game_object *find_blocking(Tile_coord tile);
+	static Game_object *find_door(Tile_coord tile);
 	int is_closed_door() const;	// Checking for a closed door.
 	Game_object *get_outermost();	// Get top 'owner' of this object.
 	void say(const char *text);		// Put text up by item.
