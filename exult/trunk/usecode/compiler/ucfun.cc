@@ -214,8 +214,10 @@ int Uc_function::add_string
 	char *text
 	)
 	{
-					// NOTE:  We could search for an
-					//   existing string & return that!
+					// Search for an existing string.
+	map<string, int>::const_iterator exist = text_map.find(text);
+	if (exist != text_map.end())
+		return (*exist).second;
 	int offset = text_data_size;	// This is where it will go.
 	int textlen = strlen(text) + 1;	// Got to include ending null.
 	char *new_text_data = new char[text_data_size + textlen];
@@ -226,6 +228,7 @@ int Uc_function::add_string
 	delete text_data;
 	text_data = new_text_data;
 	text_data_size += textlen;
+	text_map[text] = offset;	// Store map entry.
 	return offset;
 	}
 
