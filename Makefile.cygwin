@@ -312,7 +312,8 @@ toolsinstall: tools
 	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data/u7misc.data 
 
 toolsdist: tools
-	mkdir -p $(U7PATH)/tools
+	mkdir -p $(TOOLSPATH)
+	mkdir -p $(TOOLSPATH)/tools
 	strip expack.exe -o $(TOOLSPATH)/tools/expack.exe
 	strip mklink.exe -o $(TOOLSPATH)/tools/mklink.exe
 	strip rip.exe -o $(TOOLSPATH)/tools/rip.exe
@@ -334,7 +335,8 @@ toolsdist: tools
 	cp tools/u7bgflag.txt $(TOOLSPATH)/tools/u7bgflag.txt
 	cp tools/u7siflag.txt $(TOOLSPATH)/tools/u7siflag.txt
 	cp tools/ucformat.txt $(TOOLSPATH)/tools/ucformat.txt
-	u2d $(U7PATH)/tools/expack.txt $(U7PATH)/tools/intrins1.txt $(U7PATH)/tools/intrins2.txt $(U7PATH)/tools/u7bgflag.txt $(U7PATH)/tools/u7siflag.txt $(U7PATH)/tools/ucformat.txt
+	u2d $(TOOLSPATH)/tools/expack.txt $(TOOLSPATH)/tools/intrins1.txt $(TOOLSPATH)/tools/intrins2.txt
+	u2d $(TOOLSPATH)/tools/u7bgflag.txt $(TOOLSPATH)/tools/u7siflag.txt $(TOOLSPATH)/tools/ucformat.txt
 
 all: $(EXEC) tools
 
