@@ -1,3 +1,9 @@
+2004-04-15    <jeff@mini.nerble.net>
+
+	* actors.cc (Npc_actor): Removed code to set initial schedules in
+	BG, since it sometimes caused former companions to wander off even
+	when you told them to "Wait here".
+
 2004-04-10    <jeff@mini.nerble.net>
 
 	* cheat_screen.cc: Implement 'party' flag in cheat screen.
