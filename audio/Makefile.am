@@ -14,7 +14,9 @@ libaudio_la_SOURCES =	\
 	SDL_mapping.cc	\
 	SDL_mapping.h	\
 	pcb.cc		\
-	pcb.h
+	pcb.h		\
+	xmidi.cc	\
+	xmidi.h
 
 EXTRA_DIST = 		\
 	README
