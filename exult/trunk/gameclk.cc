@@ -138,6 +138,19 @@ void Game_clock::check_hunger
 		party[i]->use_food();
 }
 
+static void Check_freezing
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+					// Avatar's flag applies to party.
+	bool freeze = gwin->get_main_actor()->get_flag(Obj_flags::freeze);
+	Actor *party[9];		// Get party + Avatar.
+	int cnt = gwin->get_party(party, 1);
+	for (int i = 0; i < cnt; i++)
+		party[i]->check_temperature(freeze);
+	}
+
 /*
  *	Increment clock.
  *
@@ -190,7 +203,11 @@ void Game_clock::handle_event
 	int hour_old = hour;
 				// Time stopped?  Don't advance.
 	if (!gwin->is_time_stopped())
+		{
 		minute += time_rate;
+		if (Game::get_game_type() == SERPENT_ISLE)
+			Check_freezing();
+		}
 
 	while (minute >= 60)	// advance to the correct hour (and day)
 	{
