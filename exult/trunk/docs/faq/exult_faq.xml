@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "faqs.dtd">
-<faqs title="Exult" changed="19 July 2001(GMT)">
+<faqs title="Exult" changed="10 August 2001(GMT)">
 	<section title="Changes to the FAQ">
-		<faq name="18072001">
+		<faq name="10082001">
+			<question>- 10 August 2001</question>
+			<answer>
+				<ul>
+				<li><ref1 target="origin_exult"/> noted praise from LB and Ken Demarest.</li>				
+				
+				<li><ref1 target="multiplayer"/> This gets asked quite often.</li>
+				<li><ref1 target="whatis_snapshot"/> added some more information.</li>
+				<li><ref1 target="compile_snapshot"/> made this gnereic for all the OS'.</li>
+				<li><ref1 target="what_platforms"/> added OSX.</li>
+				<li><ref1 target="addon_support"/> reported both as bug-free.</li>
+				<li><ref1 target="other_improvements"/> added the status bars.</li>				
+				<li><ref1 target="bug_report"/> not that anyone reads the FAQ anyway. But it should get
+					 all the alpha testers on the right track.</li>
+				</ul>	
+			</answer>
+		</faq>
+		<faq name="19072001">
 			<question>- 19 July 2001</question>
 			<answer>
 				<ul>
@@ -65,6 +82,11 @@
 					or negative response on the <Exult/> project. So far it seems that both Origin and 
 					EA have decided to ignore <Exult/>.
 				</para>
+				<para>
+					On the other hand former Origin employees contacted the team and congratulated the 
+					team on their effort. Most noticeable are Lord British himself and Ken Demarest 
+					(Programming Manager of Ultima 7)(hint:spell his name backwards).
+				</para>
 			</answer>
 		</faq>
 		<faq name="other_ultimas">
@@ -78,49 +100,60 @@
 					allready. 
 				</para>
 			</answer>
-		</faq>		
+		</faq>
+		<faq name="multiplayer">
+			<question>Will there be a multiplayer <Exult/>?</question>
+			<answer>
+				<para>
+					No.
+				</para>
+				<cite name="Jeff on the Forum">
+					The question is 'why?'. I continue working on <Exult/>, in large part, because 
+					nobody makes games like Ultima7 anymore. While I think a multi-player game 
+					would be technically interesting, I don't see the need. There are <em>lots</em> 
+					of them already, and many experienced people working on new ones.
+				</cite>
+				<para>
+					Note however that <Exult/> is open source. If you want a multiplayer U7 no one
+					holds you back to code it in. 
+				</para>
+			</answer>
+		</faq>
 		<faq name="whereis_exult">
 			<question>Where do I find <Exult/>?</question>
 			<answer>
 				<para>
 					The latest official version is found on <extref target="http://exult.sourceforge.net/"/><br/>
 					Daily snapshots of the Win32 binary and of the CVS source tree can be found at
-					<extref target="http://exult.on.openave.net/"/>
+					<extref target="http://exult.sourceforge.net/download.php"/>
 				</para>
 			</answer>
 		</faq>
 		<faq name="whatis_snapshot">
-			<question>What is a snapshot? Are these screen shots or what?</question>
+			<question>What is a snapshot? Are these screenshots or what?</question>
 			<answer>
+			    <para>
+			    	Bugs and not yet implemented features in <Exult/> get fixed almost daily in the code.
+			    	A release is very time consuming that's why there are so few.
+			    </para>	
 			    <para>
 					The snapshot is the newest source code of the program. It is updated almost
 					daily, sometimes twice a day. There is information on how to build your
-					own binary of the source but there is also the newest pre-compiled Windows binary.
+					own binary in the source but there is also the newest pre-compiled Windows binary.
+					If you there is no new one this means that either there were no changes to the code
+					or the source failed to compile.
+				</para>
+				<para>
+					Also this FAQ mainly addresses the snapshots as people use them and ask question.
 				</para>
 			</answer>
 		</faq>
-		<faq name="compile_linux_snapshot">
-			<question>How do I compile a source code snapshot under Linux?</question>
-			<answer>
-				<ol>
-					<li>Install the latest version of SDL (<extref target="http://www.libsdl.org"/>)</li>
-					<li>Extract the <Exult/> source code archive to ~/exult:<br/>
-						<kbd>unzip exult.zip -d ~</kbd></li>
-					<li>Create a fresh install of U7. I'll assume that you've installed U7 in ~/ultima7</li>
-					<li>Run autogen.sh to create a configure script, then compile <Exult/>:<br/>
-						<kbd>cd ~/exult; chmod u+x autogen.sh; ./autogen.sh; ./configure; make</kbd></li>
-					<li>Install <Exult/> and the <Exult/> data file:<br/>
-						<kbd>cp exult ~/ultima7; mkdir ~/ultima7/data; cp ./data/exult.flx ~/ultima7/data</kbd></li>
-					<li>Run <Exult/>:<br/>
-						<kbd>cd ~/ultima7; ./exult</kbd></li>
-				</ol>
-			</answer>
-		</faq>
-		<faq name="compile_win9x_snapshot">
-			<question>How do I compile a source code snapshot under Win 9x?</question>
+		<faq name="compile_snapshot">
+			<question>How do I compile a source code snapshot for my OS?</question>
 			<answer>
 				<para>
-					The source code snapshots contain a file called "README.win32" that explains everything.
+					The source code snapshots contain a file called "README.OS" (like Readme.win32, 
+					Readme.MacOS) that explains everything.
 				</para>
 			</answer>
 		</faq>
@@ -142,7 +175,7 @@
 				<para>
 					<Exult/> should be able to be compiled (with minor modifications) on
 					any platform that SDL supports. Right now the source can be compiled
-					in Linux/i386, Linux/Alpha, MacOS, OpenBSD, FreeBSD, Solaris, BeOS and 
+					in Linux/i386, Linux/Alpha, MacOS, OSX, OpenBSD, FreeBSD, Solaris, BeOS and 
 					Win32 (Windows 9x/ME/NT/2000).
 				</para>
 			</answer>
@@ -183,7 +216,7 @@
 			<answer>
 				<para>
 					The team is working on it. It is not yet fully playable but you can walk around,
-					talk to some people, finish some quests... Plotwise you will
+					talk to people, finish a lot of quests... Plotwise you will
 					get quite far but you certainly won't be able to play through it yet.
 				</para>
 				<para>
@@ -208,8 +241,8 @@
 			<question>Do the Add-Ons work?</question>
 			<answer>
 				<para>
-					"Forge of Virtue" (Add-On to Black Gate) is supported. Even though SI
-					is not yet fully running the same holds true for "The Silver Seed".
+					"Forge of Virtue" (Add-On to Black Gate) and the "The Silver Seed" 
+					(Add-On to Serpent Isle) are bug-free now.
 				</para>
 			</answer>
 		</faq>
@@ -319,13 +352,17 @@
 			<question>Any other improvements/features?</question>
 			<answer>
 				<para>
-					Since the Alpha 4 release a new game menu was added with an
-					improved sound settings box and a very much improved (<strong>awesome</strong>)
-					savegame box. This allows you much more savegames than the original (you should
-					run out of disc space before you run out of savegame slots), shows a screenshot of
-					the location you saved at, the members of your party, your stats, game time and the 
-					date you actually saved. The game menu is opened via <key>Esc</key> and the save
-					game box is opened either via the game menu or the <key>s</key> key.
+					Since the Alpha 4 release a new game menu was added with improved Audio and Video 
+					Options boxes (the Gameplay Options don't work yet) and a very much improved 
+					(<strong>awesome</strong>)savegame box. This allows you much more savegames than 
+					the original (you should run out of disc space before you run out of savegame slots), 
+					shows a screenshot of the location you saved at, the members of your party, your stats,
+					game time and the date you actually saved. The game menu is opened via <key>Esc</key> 
+					and the save game box is opened either via the game menu or the <key>s</key> key.
+				</para>
+				<para>
+					Post Alpha 4 the team added status bars to the game. Press <key>r</key> while playing 
+					to see it.
 				</para>
 				<para>
 					In <Exult/>, you can still move your party even if there is a box/body/stats
@@ -515,7 +552,7 @@
 			</answer>
 		</faq>
 	</section>
-  	<section title="Bugs, known issues, and not yet implemented features">
+  	<section title="Bugs, known issues and not yet implemented features">
 		<faq name="known_bugs">
 			<question>Bugs</question>
 			<answer>
@@ -523,6 +560,37 @@
 					To see a list of open bugs and bugreports go to
 					<extref target="http://sourceforge.net/bugs/?group_id=2335"/>
 				</para>
+			</answer>
+		</faq>
+		<faq name="bug_report">
+			<question>How do I submit a proper bug report?</question>
+			<answer>
+				<ol>
+				<li>Read the <extref target="http://exult.sourceforge.net/docs.php">Documentation</extref>
+					and this FAQ to see if that is not allready covered and you have all set up correctly.</li>
+				<li>Before you report a bug to the 
+					<extref target="http://sourceforge.net/bugs/?group_id=2335">bug tracker</extref> 
+					please try the latest <extref target="http://exult.sourceforge.net/download.php">snapshot</extref>.
+					If the bug still occurs make sure that no one else allready reported the bug.</li>
+				<li>If you are not a sourceforge member please include your e-mail address this is 
+					important so we can get back to you. If you are a sourceforge member please log in 
+					before submitting a bug.</li>
+				<li>Make sense in the topic! For example, if the problem is with Rowenna in Skara Brae 
+					don't just choose "Skara Brae" in the topic. "BG: Rowenna crashes game" makes more 
+					sense. Sadly the space for the topics is limited. Explain the topic in "Detailed 
+					Description".</li>
+				<li>State which Operating System you use (Windows 9X, Linux, ...).</li>
+				<li>Please include a savegame (use common sense if it is really needed). You will find 
+					those in the game directories you put in the exult.cfg. They are called exult**bg.sav 
+					(** is a number) for BG and exult**si.sav for SI. Zip it (important as Sourceforge 
+					seems to have a size limit). As some parts of the game may require you to complete 
+					other quests or stuff before you get to the bug you want to report it's much easier 
+					for the team to look at the problem (speeds the process up a bit as they are much more 
+					likely you take a look at the problem this way).</li>
+				</ol>
+				<para>
+					So if you want to have a bug fixed follow these steps!
+				</para>	
 			</answer>
 		</faq>
 		<faq name="known_issues">
@@ -548,33 +616,29 @@
 					<li>The speech in the intro is out of synch with the lips animations. But now it 
 						matches the speed of the text.</li>
 					<li>There are reported problems with digital sound effects or speech when 
-						using Vortex series sound cards under Win9x/ME. It's not sure if this 
-						is a driver or <Exult/> issue.</li>
+						using Vortex series sound cards (like the Diamond MX 300) under Win9x/ME. <Exult/>
+						is triggering a bug in the drivers. No workaround for now.</li>
 				</ul>
 			</answer>
 		</faq>
 		<faq name="not_yet_implemented">
 			<question>Not yet implemented</question>
 			<answer>
-				A few magic spells don't work yet.
+				<para>
+					A few magic spells don't work yet.
+				</para>
 			</answer>
 		</faq>
 	</section>
-
-	<section title="Questions and Answers, Bugreports">
+	<section title="Questions and Answers">
 		<faq name="howto_get_answers">
 			<question>
-				How can I get answers concerning Ultima 7/<Exult/>? 
-				Where should I send Bugreports?
+				How can I get answers concerning Ultima 7/<Exult/>?
 			</question>
 			<answer>
 				<para>
 					The best way to get answers to questions is to go to the Online discussion forum at:<br/>
 					<extref target="http://exult.sourceforge.net/forum/"/>
-				</para>
-				<para>
-					The best way to submit bugreports is to use Sourceforge's bug database at:<br/>
-					<extref target="http://sourceforge.net/bugs/?group_id=2335"/>
 				</para>
 				<para>
 					To get answers concerning Ultima 7 in general go to the Ultima newsgroup:<br/>
@@ -609,7 +673,7 @@
 			<answer>
 				<para>
 					<Exult/> homepage at <extref target="http://exult.sourceforge.net/"/><br/>
-					Daily code snapshot at <extref target="http://exult.on.openave.net/"/><br/>
+					Daily code snapshot at <extref target="http://exult.sourceforge.net/download.php"/><br/>
 					Message board at <extref target="http://exult.sourceforge.net/forum/"/><br/>
 					Bugreports to <extref target="http://sourceforge.net/bugs/?group_id=2335"/>
 				</para>
