@@ -419,6 +419,12 @@ void Actor::use_food
 	(
 	)
 	{
+	if (Game::get_game_type() == SERPENT_ISLE)
+		{			// Automatons don't eat.
+		int shnum = get_shapenum();
+		if (shnum == 658 || shnum == 734 || shnum == 747)
+			return;
+		}
 	int food = get_property((int) food_level);
 	food -= 3;			// 1 level/hour should do.
 	set_property((int) food_level, food);
