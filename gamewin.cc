@@ -1367,6 +1367,8 @@ bool Game_window::was_map_modified
 	(
 	)
 	{
+	if (Game_map::was_chunk_terrain_modified())
+		return true;
 	for (Exult_vector<Game_map*>::iterator it = maps.begin();
 							it != maps.end(); ++it)
 		{
