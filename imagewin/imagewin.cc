@@ -410,6 +410,7 @@ void Image_window::show
 	{
 	if (!ready())
 		return;
+
 	if (show_scaled)		// 2X scaling?
 		(this->*show_scaled)(0, 0, ibuf->width, ibuf->height);
 	else
@@ -427,6 +428,7 @@ void Image_window::show
 	{
 	if (!ready())
 		return;
+
 	int srcx = 0, srcy = 0;
 	if (!ibuf->clip(srcx, srcy, w, h, x, y))
 		return;
@@ -454,7 +456,7 @@ void Image_window::toggle_fullscreen() {
 		cout << "Switching to windowed mode."<<endl;
                 flags = surf->flags & ~SDL_FULLSCREEN;
         } else {
-		cout << "Switching to fullcsreen mode."<<endl;
+		cout << "Switching to fullscreen mode."<<endl;
                 flags = surf->flags | SDL_FULLSCREEN;
         }
 					// First see if it's allowed.
