@@ -94,6 +94,9 @@ int main
 #endif
 		gwin->set_chunk_offsets(64, 136);
 	mouse = new Mouse(gwin);
+#if 0	/* To turn off hardware mouse. */
+	SDL_ShowCursor(0);
+#endif
 	struct stat sbuf;		// Create gamedat files 1st time.
 	if (stat(U7NBUF_DAT, &sbuf) != 0 &&
 	    stat(NPC_DAT, &sbuf) != 0)
@@ -293,6 +296,11 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 	case SDL_MOUSEMOTION:
 #ifdef MOUSE
 		mouse->move(event.motion.x, event.motion.y);
+#if 0	/* Try this next. */
+		mouse->set_short_arrow(Get_direction(
+			event.motion.y - ???,
+			event.motion.x - ???));
+#endif
 		gwin->set_painted();	// We'll need to blit.
 #endif
 		if (gwin->get_mode() != Game_window::normal &&
@@ -313,7 +321,11 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 		if (event.active.state & SDL_APPMOUSEFOCUS)
 			{
 			if (event.active.gain)
-				mouse->set_location(0, 0); //++++Location.
+				{
+				int x, y;
+				SDL_GetMouseState(&x, &y);
+				mouse->set_location(x, y);
+				}
 			}
 #endif
 		if (event.active.state & SDL_APPINPUTFOCUS)
@@ -451,14 +463,13 @@ static void Handle_keystroke
 	}
 
 /*
- *	Get a click.
+ *	Wait for a click.
  *
  *	Output:	0 if user hit ESC.
  */
-
-int Get_click
+static int Get_click
 	(
-	int& x, int& y			// Location returned (if not ESC).
+	int& x, int& y
 	)
 	{
 	while (1)
@@ -503,6 +514,26 @@ int Get_click
 		gwin->show();		// Blit to screen if necessary.
 		}
 	return (0);			// Shouldn't get here.
+	}
+
+/*
+ *	Get a click.
+ *
+ *	Output:	0 if user hit ESC.
+ */
+
+int Get_click
+	(
+	int& x, int& y,			// Location returned (if not ESC).
+	Mouse::Mouse_shapes shape	// Mouse shape to use.
+	)
+	{
+	Mouse::Mouse_shapes saveshape = mouse->get_shape();
+	if (shape != Mouse::dontchange)
+		mouse->set_shape(shape);
+	int ret = Get_click(x, y);
+	mouse->set_shape(saveshape);
+	return (ret);
 	}
 
 #if 0

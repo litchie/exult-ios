@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SDL.h"
 #include "tqueue.h"
 #include "gumps.h"
+#include "mouse.h"
 #include <Audio.h>
 
 /*
@@ -755,10 +756,10 @@ Usecode_value Usecode_machine::click_on_item
 	(
 	)
 	{
-	extern int Get_click(int& x, int& y);
-	cout << "CLICK on an item.\n";	// ++++++++Got to show cursor.
+	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
+	cout << "CLICK on an item.\n";
 	int x, y;
-	if (!Get_click(x, y))
+	if (!Get_click(x, y, Mouse::greenselect))
 		return Usecode_value(0);
 	Game_object *found[100];	// See what was clicked on.
 	int cnt;
@@ -1288,11 +1289,11 @@ int Usecode_machine::get_user_choice_num
 //	for (int i = 0; i < answers.num_answers; i++)
 //		cout << ' ' << answers.answers[i] << '(' << i << ") ";
 	gwin->show_avatar_choices(answers.num_answers, answers.answers);
-	extern int Get_click(int& x, int& y);
+	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
 	int x, y;			// Get click.
 	int choice_num;
 	do
-		if (!Get_click(x, y))
+		if (!Get_click(x, y, Mouse::hand))
 			return (-1);
 					// Wait for valid choice.
 	while ((choice_num = gwin->conversation_choice(x, y)) < 0 ||
