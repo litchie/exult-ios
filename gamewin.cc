@@ -1401,7 +1401,13 @@ void Game_window::start_actor
 	int tx = get_scrolltx() + (winx + liftpixels)/tilesize,
 	    ty = get_scrollty() + (winy + liftpixels)/tilesize;
 	if (moving_barge)
-		moving_barge->travel_to_tile(Tile_coord(tx, ty, lift), speed);
+		{			// Want to move Avatar there.
+		Tile_coord atile = main_actor->get_abs_tile_coord(),
+			   btile = moving_barge->get_abs_tile_coord();
+		moving_barge->travel_to_tile(
+			Tile_coord(tx + btile.tx - atile.tx, 
+				   ty + btile.ty - atile.ty, btile.tz), speed);
+		}
 	else
 		{
 		main_actor->walk_to_tile(tx, ty, lift, speed, 0);

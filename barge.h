@@ -41,6 +41,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	unsigned char xtiles, ytiles;	// Tiles covered (when vertical).
 	unsigned char dir;		// Direction: 0=N, 1=E, 2=S, 3=W.
 	unsigned char complete;		// Flag:  all members have been read.
+	char boat;			// 1 if a boat, 0 if not; -1=untested.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   not moving.
 	PathFinder *path;		// For traveling.
@@ -53,7 +54,7 @@ public:
 		: Container_game_object(l, h, shapex, shapey, lft),
 			perm_count(0),
 			xtiles(xt), ytiles(yt), dir(d),
-			complete(0), frame_time(0), path(0)
+			complete(0), boat(-1), frame_time(0), path(0)
 		{  }
 	int is_moving()
 		{ return frame_time > 0; }
