@@ -652,17 +652,9 @@ static void Write_exult
 	char *palname			// Store palette with here if !0.
 	)
 	{
+	Shape shape(nframes);
 	char *fullname = new char[strlen(basename) + 30];
-	int frnum;
-					// Save starting position.
-	unsigned long startpos = out.tellp();
-	if (!flat)
-		{
-		Write4(out, 0);		// Place-holder for total length.
-					// Also for frame locations.
-		for (frnum = 0; frnum < nframes; frnum++)
-			Write4(out, 0);
-		}
+	int frnum;			// Read in frames.
 	for (frnum = 0; frnum < nframes; frnum++)
 		{
 		sprintf(fullname, "%s%02d.png", basename, frnum);
@@ -673,9 +665,10 @@ static void Write_exult
 		if (!Import_png8(fullname, 255, w, h, rowsize, xoff, yoff,
 						pixels, palette, palsize))
 			throw file_read_exception(fullname);
-		int datalen = h*rowsize;// Figure total #bytes.
+		int xleft, yabove;
 		if (flat)
 			{
+			xleft = yabove = 8;
 			if (w != 8 || h != 8 || rowsize != 8)
 				{
 				cerr << "Image in '" << fullname <<
@@ -683,41 +676,22 @@ static void Write_exult
 				exit(1);
 				}
 			}
-		else			// Encode.
+		else			// RLE. xoff,yoff are neg. from bottom.
 			{
-			int xright = -xoff, ybelow = -yoff;
-			int xleft = w - xright - 1,
-			    yabove = h - ybelow - 1;
-			unsigned char *rle = Shape_frame::encode_rle(pixels,
-						w, h, xleft, yabove, datalen);
-			delete pixels;
-			pixels = rle;
-					// Get position of frame.
-			unsigned long pos = out.tellp();
-			out.seekp(startpos + (frnum + 1)*4);
-			Write4(out, pos - startpos);	// Store pos.
-			out.seekp(pos);			// Get back.
-			Write2(out, xright);
-			Write2(out, xleft);
-			Write2(out, yabove);
-			Write2(out, ybelow);
+			xleft = w + xoff - 1;
+			yabove = h + yoff - 1;
 			}
-		out.write((const char*)pixels, datalen);	// The frame data.
+		shape.set_frame(new Shape_frame(pixels,
+					w, h, xleft, yabove, !flat), frnum);
 		delete pixels;
-		if (palname)
+		if (palname)		// Write palette for first frame.
 			{
 			Write_palettes(palname, palette, palsize);
 			palname = 0;
 			}
 		delete palette;
 		}
-	if (!flat)
-		{
-		unsigned long pos = out.tellp();// Ending position.
-		out.seekp(startpos);		// Store total length.
-		Write4(out, pos - startpos);
-		out.seekp(pos);			// And get back to end.
-		}
+	shape.write(out);		// Write them out.
 	delete fullname;
 	}
 
