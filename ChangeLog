@@ -1,3 +1,6 @@
+2001-05-02  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* gumps/gump_utils.cc: undo end_gump_mode with a modal gump
+
 2001-04-29  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/flx.in, Makefile.*, data/aud*.shp: audio options gump shapes
 	* Makefile.*, gumps/Gump_ToggleButton.*: a button which toggles 
