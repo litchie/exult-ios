@@ -1121,9 +1121,13 @@ USECODE_INTRINSIC(sit_down)
 	if (!npc)
 		return (no_ret);	// Doesn't look like an NPC.
 	Game_object *chair = get_item(parms[1]);
+	if (!chair)
+		return (no_ret);
+#if 0	/* ++++Makes it hard to seat party on boats. */
 					// See if someone already there.
-	if (!chair || Sit_schedule::is_occupied(chair, npc))
+	if (!Sit_schedule::is_occupied(chair, npc))
 		return(no_ret);
+#endif
 	npc->set_schedule_type(Schedule::sit, new Sit_schedule(npc, chair));
 	return(no_ret);
 }
