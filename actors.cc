@@ -1141,7 +1141,8 @@ void Actor::set_schedule_type
 			schedule = new Shy_schedule(this);
 			break;
 		case Schedule::lab:
-			break;		//+++++++
+			schedule = new Lab_schedule(this);
+			break;
 		case Schedule::thief:		// Just face north, for now.
 			gwin->add_dirty(this);
 			unready_weapon(lhand);	// For Krieg in Empath Abbey.

@@ -300,6 +300,31 @@ public:
 	};
 
 /*
+ *	Lab work.
+ */
+class Lab_schedule : public Schedule
+	{
+	Game_object_vector tables;
+	Game_object *chair;		// Chair to sit in.
+	Game_object *book;		// Book to read.
+	Game_object *cauldron;
+ 	enum {
+		start,
+		walk_to_cauldron,
+		use_cauldron,
+		sit_down,
+		read_book,
+		stand_up,
+		walk_to_table,
+		use_potion
+	} state;
+	void init();
+public:
+	Lab_schedule(Actor *n);
+	virtual void now_what();	// Now what should NPC do?
+	};
+
+/*
  *	Wait tables.
  */
 class Waiter_schedule : public Schedule
