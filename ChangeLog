@@ -1,5 +1,9 @@
 2002-05-30  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* gamemap.cc,gamewin.cc,etc:  Locate_shape() finds next/prev shape
+	in world.  Semi-working.
+	* combo.cc:  Added 'Find' controls.
+
 	* mapedit/objbrowse.cc (Object_browser): Adding a common
 	'create_controls()' method (partly done) for consistency.
 

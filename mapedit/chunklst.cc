@@ -845,10 +845,11 @@ GtkWidget *Chunk_chooser::create_popup
 	GtkWidget *mitem = Add_menu_item(popup, "New...");
 	GtkWidget *new_menu = gtk_menu_new();
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(mitem), new_menu);
-	Add_menu_item(new_menu, "Empty", GTK_SIGNAL_FUNC(on_insert_empty));
+	Add_menu_item(new_menu, "Empty", GTK_SIGNAL_FUNC(on_insert_empty), 
+									this);
 	if (selected >= 0)
 		Add_menu_item(new_menu, "Duplicate", 
-					GTK_SIGNAL_FUNC(on_insert_dup));
+					GTK_SIGNAL_FUNC(on_insert_dup), this);
 	return popup;
 	}
 
