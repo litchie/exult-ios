@@ -20,7 +20,7 @@
 	#include <config.h>
 #endif
 
-#include "opcodes.h"
+#include "ops.h"
 #include "files/utils.h"
 #include "exceptions.h"
 #include <cstdlib>

@@ -122,7 +122,7 @@ class UCNode
 		std::vector<UCNode *> nodelist;
 };
 
-#include "opcodes.h"
+#include "ops.h"
 
 class GotoSet
 {

@@ -1,6 +1,9 @@
 2002-06-08  Darke <darkepaw@users.sourceforge.net>
 	* usecode/ucxt/src/ucfunc.cc: Removed the 'fix' we needed for
 	strstreams.
+	
+	* usecode/ucxt/*: Updated a few things to avoid name collisions between
+	ucxt/include/opcodes.h and usecode/opcodes.h.
 
 2002-06-07  Jeff Freedman  <jeff@amy.nerble.net>
 

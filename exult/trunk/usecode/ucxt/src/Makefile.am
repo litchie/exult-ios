@@ -3,7 +3,7 @@ INCLUDES = -I$(srcdir)/../../../headers -I$(srcdir)/../include -I$(srcdir)/../..
 	-DEXULT_DATADIR=\"$(EXULT_DATADIR)\" $(WARNINGS)
 
 ucxt_SOURCES = \
-	opcodes.cc \
+	ops.cc \
 	ucdata.cc \
 	ucxt.cc \
 	ucfunc.cc
