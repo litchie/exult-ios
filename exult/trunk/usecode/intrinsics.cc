@@ -501,6 +501,10 @@ USECODE_INTRINSIC(create_new_object)
 		chunk->add(obj);
 	gwin->show();
 	last_created = obj;
+					// Kludge for fixing Buc's Den:
+	if (shapenum == 644 && Game::get_game_type() == BLACK_GATE &&
+	    cx >= 94 && cx <= 96 && cy >= 121 && cy <= 123)
+		obj->set_flag(Obj_flags::okay_to_take);
 	Usecode_value u(obj);
 	return(u);
 }
