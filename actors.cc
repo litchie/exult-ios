@@ -156,16 +156,8 @@ uint8 visible_frames[16] = {
 	Actor::strike2_frame };
 
 Frames_sequence *Actor::frames[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-//	Frame sequences.  This may be replaced by an algorithm.
-const char attack_frames1[4] = {3, 4, 5, 6};
-const char attack_frames2[4] = {3, 7, 8, 9};
-const char alligator_attack_frames[4] = {7, 8, 9};
 const char sea_serpent_attack_frames[] = {13, 12, 11, 0, 1, 2, 3, 11, 12, 
 								13, 14};
-const char reaper_attack_frames[] = {7, 8, 9};
-const char bee_attack_frames[] = {2, 9};
-const char drake_attack_frames[] = {3, 8, 9};
-const char scorpion_attack_frames[] = {7, 8, 9};
 // inline int Is_attack_frame(int i) { return i >= 3 && i <= 9; }
 inline int Is_attack_frame(int i) { return i == 6 || i == 9; }
 inline int Get_dir_from_frame(int i)
@@ -590,22 +582,23 @@ void Actor::check_temperature
 
 static void Get_weapon_frames
 	(
-	int weapon,			// Weapon shape.
+	int weapon,			// Weapon shape, or 0 for innate.
 	bool projectile,		// Shooting/throwing.
 	bool two_handed,		// Held in both hands.
 	char *frames			// Four frames stored here.
 	) 
 	{
 					// Frames for swinging.
-	const char swing_frames1[3] = {Actor::raise1_frame, 
+	static char swing_frames1[3] = {Actor::raise1_frame, 
 					Actor::reach1_frame,
 					Actor::strike1_frame};
-	const char swing_frames2[3] = {Actor::raise2_frame, 
+	static char swing_frames2[3] = {Actor::raise2_frame, 
 					Actor::reach2_frame,
 					Actor::strike2_frame};
 	unsigned char frame_flags;	// Get Actor_frame flags.
 	Weapon_info *winfo;
-	if ((winfo = ShapeID::get_info(weapon).get_weapon_info()) != 0)
+	if (weapon && 
+	    (winfo = ShapeID::get_info(weapon).get_weapon_info()) != 0)
 		frame_flags = winfo->get_actor_frames(projectile);
 	else				// Default to normal swing.
 		frame_flags = projectile ? 0 : Weapon_info::raise|
@@ -627,11 +620,9 @@ static void Get_weapon_frames
  *	Output:	# of frames stored.
  */
 
-#if 1	/* ++++++My new version. */
-//++++++Remove old attack_frames arrays near top of file.+++++++++++
 int Actor::get_attack_frames
 	(
-	int weapon,			// Weapon shape.
+	int weapon,			// Weapon shape, or 0 for innate.
 	bool projectile,		// Shooting/throwing.
 	int dir,			// 0-7 (as in dir.h).
 	char *frames			// Frames stored here.
@@ -669,64 +660,6 @@ int Actor::get_attack_frames
 		}
 	return (cnt);
 	}		
-
-#else	/* ++++++Old version.   To go away. */
-int Actor::get_attack_frames
-	(
-	int dir,			// 0-7 (as in dir.h).
-	char *frames			// Frames stored here.
-	) const
-	{
-	const char *which;
-	int cnt;
-	if (two_handed)
-		{
-		which = attack_frames2;
-		cnt = sizeof(attack_frames2);
-		}
-	else switch (get_shapenum())
-		{
-	case 492:			// Alligator.
-		which = alligator_attack_frames;
-		cnt = sizeof(alligator_attack_frames);
-		break;
-	case 494:			// Bee.
-		which = bee_attack_frames;
-		cnt = sizeof(bee_attack_frames);
-		break;
-	case 505:			// Drake.
-		which = drake_attack_frames;
-		cnt = sizeof(drake_attack_frames);
-		break;
-	case 524:			// Reaper.
-		which = reaper_attack_frames;
-		cnt = sizeof(reaper_attack_frames);
-		break;
-	case 525:			// Sea serpent.
-		which = sea_serpent_attack_frames;
-		cnt = sizeof(sea_serpent_attack_frames);
-		break;
-	case 529:			// Slimes.
-		return 0;		// None, I believe.
-	case 706:			// Scorpion.
-		which = scorpion_attack_frames;
-		cnt = sizeof(scorpion_attack_frames);
-		break;
-	default:
-		which = attack_frames1;
-		cnt = sizeof(attack_frames1);
-		break;
-		}
-					// Check for empty shape.
-	Shape_frame *shape = ShapeID(get_shapenum(), which[1], get_shapefile()).get_shape();
-	if (!shape || shape->is_empty())
-					// If empty, the other usually isn't.
-		which = two_handed ? attack_frames1 : attack_frames2;
-	for (int i = 0; i < cnt; i++)	// Copy frames with correct dir.
-		*frames++ = get_dir_framenum(dir, *which++);
-	return (cnt);
-	}		
-#endif
 
 /*
  *	Set default set of frames.
