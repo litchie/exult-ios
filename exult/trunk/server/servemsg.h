@@ -53,7 +53,8 @@ enum Msg_type
 	npc = 2,			// Editing an NPC.
 	user_responded = 3,		// User performed requested action.
 	cancel = 4,			// Cancel operation.
-	num_npcs = 5			// Get/return # of NPC's.
+	num_npcs = 5,			// Get/return # of NPC's.
+	write_map = 6			// Save map.
 	};
 
 // I/O routines:
