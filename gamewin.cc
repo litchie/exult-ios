@@ -192,8 +192,8 @@ Game_window::Game_window
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    background_noise(new Background_noise(this)),
 	    bg_paperdolls_allowed(false), bg_paperdolls(false),
-	    bg_multiracial_allowed(false),
-	    removed(new Deleted_objects()), 
+	    double_click_closes_gumps(false), bg_multiracial_allowed(false),
+	    walk_after_teleport(false), removed(new Deleted_objects()), 
 	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0),
 	    map_patches(new Map_patch_collection)
 #ifdef RED_PLASMA
@@ -217,10 +217,18 @@ Game_window::Game_window
 	if (str == "yes")
 		fastmouse = true;
 	config->set("config/gameplay/fastmouse", str, true);
-	config->value("config/gameplay/bg_paperdolls", str, "no");
+	config->value("config/gameplay/bg_paperdolls", str, "yes");
 	if (str == "yes")
 		bg_paperdolls = true;
 	config->set("config/gameplay/bg_paperdolls", str, true);
+	config->value("config/gameplay/double_click_closes_gumps", str, "no");
+	if (str == "yes")
+		double_click_closes_gumps = true;
+	config->set("config/gameplay/double_click_closes_gumps", str, true);
+	config->value("config/gameplay/walk_after_teleport", str, "no");
+	if (str == "yes")
+		walk_after_teleport = true;
+	config->set("config/gameplay/walk_after_teleport", str, true);
 	}
 
 void Game_window::set_window_size(int width, int height, int scale, int scaler)
@@ -2389,6 +2397,10 @@ void Game_window::teleport_party
 		Map_chunk::try_all_eggs(main_actor, t.tx, t.ty, t.tz,
 					oldpos.tx, oldpos.ty);
 	teleported = 1;
+	// generate mousemotion event
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+	SDL_WarpMouse(x, y);
 	}
 
 /*

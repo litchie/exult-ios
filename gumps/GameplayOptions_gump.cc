@@ -41,8 +41,8 @@ using std::cerr;
 using std::endl;
 using std::string;
 
-static const int rowy[] = { 5, 18, 31, 46, 57, 70, 83, 96, 109, 122, 146 };
-static const int colx[] = { 35, 50, 120, 127, 130 };
+static const int rowy[] = { 5, 18, 31, 44, 57, 70, 83, 96, 109, 122, 146 };
+static const int colx[] = { 35, 50, 120, 195, 192 };
 
 class GameplayOptions_button : public Gump_button {
 public:
@@ -114,19 +114,22 @@ void GameplayOptions_gump::toggle(Gump_button* btn, int state)
 		paperdolls = state;
 	else if (btn == buttons[6])
 		text_bg = state;
+	else if (btn == buttons[7])
+		walk_after_teleport = state;
 }
 
 void GameplayOptions_gump::build_buttons()
 {
-	
 	buttons[0] = new GameplayTextToggle (this, stats, colx[3], rowy[0], 59, facestats, 4);
-	buttons[1] = new GameplayToggle(this, colx[3], rowy[1], EXULT_FLX_AUD_ENABLED_SHP, fastmouse, 2);
-	buttons[2] = new GameplayToggle(this, colx[3], rowy[3], EXULT_FLX_AUD_ENABLED_SHP, mouse3rd, 2);
-//	buttons[3] = new GameplayToggle(this, colx[3], rowy[5], EXULT_FLX_AUD_ENABLED_SHP, doubleclick, 2);
+	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-21, rowy[1], 80, text_bg, 12);
+	if (GAME_BG)
+		buttons[5] = new GameplayToggle(this, colx[3], rowy[2], EXULT_FLX_AUD_ENABLED_SHP, paperdolls, 2);
+	else if (GAME_SI)
+		buttons[7] = new GameplayToggle(this, colx[3], rowy[2], EXULT_FLX_AUD_ENABLED_SHP, walk_after_teleport, 2);
+	buttons[1] = new GameplayToggle(this, colx[3], rowy[3], EXULT_FLX_AUD_ENABLED_SHP, fastmouse, 2);
+	buttons[2] = new GameplayToggle(this, colx[3], rowy[4], EXULT_FLX_AUD_ENABLED_SHP, mouse3rd, 2);
+	buttons[3] = new GameplayToggle(this, colx[3], rowy[5], EXULT_FLX_AUD_ENABLED_SHP, doubleclick, 2);
 	buttons[4] = new GameplayToggle(this, colx[3], rowy[7], EXULT_FLX_AUD_ENABLED_SHP, cheats, 2);
-	if GAME_BG
-		buttons[5] = new GameplayToggle(this, colx[3], rowy[6], EXULT_FLX_AUD_ENABLED_SHP, paperdolls, 2);
-	buttons[6] = new GameplayTextToggle (this, textbgcolor, colx[3]-20, rowy[9], 80, text_bg, 12);
 }
 
 void GameplayOptions_gump::load_settings()
@@ -134,17 +137,18 @@ void GameplayOptions_gump::load_settings()
 	Game_window *gwin = Game_window::get_game_window();
 	fastmouse = gwin->get_fastmouse();
 	mouse3rd = gwin->get_mouse3rd();
+	walk_after_teleport = gwin->get_walk_after_teleport();
 	cheats = cheat();
 	facestats = Face_stats::get_state() + 1;
 	doubleclick = 0;
 	paperdolls = false;
 	string pdolls;
 	paperdolls = gwin->get_bg_paperdolls();
-//	config->value("config/gameplay/double_click_closes_gumps", doubleclick);
+	doubleclick = gwin->get_double_click_closes_gumps();
 	text_bg = gwin->get_text_bg()+1;
 }
 
-GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_VIDEOOPTIONS_SHP, SF_EXULT_FLX)
+GameplayOptions_gump::GameplayOptions_gump() : Modal_gump(0, EXULT_FLX_GAMEPLAYOPTIONS_SHP, SF_EXULT_FLX)
 {
 	set_object_area(Rectangle(0, 0, 0, 0), 8, 162);//++++++ ???
 
@@ -201,11 +205,15 @@ void GameplayOptions_gump::save_settings()
 	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", true);
 	gwin->set_mouse3rd(mouse3rd);
 	config->set("config/gameplay/mouse3rd", mouse3rd ? "yes" : "no", true);
+	gwin->set_walk_after_teleport(walk_after_teleport);
+	config->set("config/gameplay/walk_after_teleport", walk_after_teleport ? "yes" : "no", true);
+	gwin->set_double_click_closes_gumps(doubleclick);
+	config->set("config/gameplay/double_click_closes_gumps", doubleclick ? "yes" : "no", true);
 	cheat.set_enabled(cheats);
 	while (facestats != Face_stats::get_state() + 1)
 		Face_stats::AdvanceState();
 	Face_stats::save_config(config);
-	if (Game::get_game_type() == BLACK_GATE && gwin->can_use_paperdolls())
+	if (GAME_BG && gwin->can_use_paperdolls())
 		gwin->set_bg_paperdolls(paperdolls);
 	config->set("config/gameplay/bg_paperdolls", paperdolls ? "yes" : "no", true);
 }
@@ -218,14 +226,15 @@ void GameplayOptions_gump::paint(Game_window* gwin)
 			buttons[i]->paint(gwin);
 
 	gwin->paint_text(2, "Status Bars:", x + colx[0], y + rowy[0] + 1);
-	gwin->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[1] + 1);
-	gwin->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[2] + 1);
-	gwin->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[4] + 1);
-	gwin->paint_text(2, "(not implemented yet)", x + colx[0], y + rowy[5] + 1);
-	if (Game::get_game_type() == BLACK_GATE)
-		gwin->paint_text(2, "Paperdolls:", x+ colx[0], y + rowy[6] + 1);
+	gwin->paint_text(2, "Text Background:", x + colx[0], y + rowy[1] + 1);
+	if (GAME_BG)
+		gwin->paint_text(2, "Paperdolls:", x + colx[0], y + rowy[2] + 1);
+	else if (GAME_SI)
+		gwin->paint_text(2, "Walk after Teleport:", x + colx[0], y + rowy[2] + 1);
+	gwin->paint_text(2, "Fast Mouse:", x + colx[0], y + rowy[3] + 1);
+	gwin->paint_text(2, "Use Middle Mouse Button:", x + colx[0], y + rowy[4] + 1);
+	gwin->paint_text(2, "Doubleclick closes Gumps:", x + colx[0], y + rowy[5] + 1);
 	gwin->paint_text(2, "Cheats:", x + colx[0], y + rowy[7] + 1);
-	gwin->paint_text(2, "Text Background:", x + colx[0], y + rowy[8] + 1);
 	gwin->set_painted();
 }
 
