@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_U7DRAG
 #define INCL_U7DRAG 1
 
-//	Target information:
+//	Target information for dragging a shape:
 #define U7_TARGET_SHAPEID_NAME "U7SHAPEID"
 #define U7_TARGET_SHAPEID 137
 
@@ -39,6 +39,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //	Store/get shapeid.
 int Store_u7_shapeid(unsigned char *data, int file, int shape, int frame);
 void Get_u7_shapeid(unsigned char *data, int& file, int& shape, int& frame);
+
+//	Target information for dragging a chunk:
+#define U7_TARGET_CHUNKID_NAME "U7CHUNKID"
+#define U7_TARGET_CHUNKID 138
+
+//	Store/get chunk #.
+int Store_u7_chunkid(unsigned char *data, int cnum);
+void Get_u7_chunkid(unsigned char *data, int& cnum);
 
 #endif
 
