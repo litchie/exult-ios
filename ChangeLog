@@ -1,3 +1,6 @@
+2005-02-14	Darke <darkepaw@users.sf.net>
+	* hash_utils.h: Hugely complex gcc4.0pre fixes.
+
 2005-01-23    <jeff@mini.nerble.net>
 
 	* game.cc (Game): Command-line option --write-xml causes game
