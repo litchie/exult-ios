@@ -37,6 +37,7 @@ extern char **misc_names;		// Frames, etc (0x500 - ).
 extern int num_misc_names;
 
 void Setup_text();
+void Free_text();
 void Write_text_file();
 void Set_item_name(int num, const char *name);
 

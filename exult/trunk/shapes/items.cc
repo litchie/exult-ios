@@ -40,11 +40,11 @@ using std::cerr;
 using std::endl;
 using std::vector;
 
-char **item_names;			// Names of U7 items.
+char **item_names = 0;			// Names of U7 items.
 int num_item_names = 0;
-char **text_msgs;			// Msgs. (0x400 - in text.flx).
+char **text_msgs = 0;			// Msgs. (0x400 - in text.flx).
 int num_text_msgs = 0;
-char **misc_names;			// Frames, etc (0x500 - in text.flx).
+char **misc_names = 0;			// Frames, etc (0x500 - in text.flx).
 int num_misc_names = 0;
 
 
@@ -78,17 +78,18 @@ static void Setup_item_names (ifstream& items, ifstream& msgs) {
 	if (msgs.good()) {		// Exult msgs. too?
 		first_msg = Read_text_msg_file(msgs, msglist);
 		if (first_msg >= 0) {
+			first_msg -= 0x400;
 			if (first_msg < num_text_msgs) {
 				cerr << "Exult msg. # " << first_msg <<
 					" conflicts with 'text.flx'" << endl;
 				first_msg = num_text_msgs;
 			}
-			total_msgs = msglist.size();
+			total_msgs = msglist.size() - 0x400;
 		} else
 			first_msg = num_text_msgs;
 	}
 	item_names = new char *[num_item_names];
-	text_msgs = new char *[total_msgs - 0x400];
+	text_msgs = new char *[total_msgs];
 	misc_names = new char *[num_misc_names];
 	int i;
 	for(i=0; i < flxcnt; i++) {
@@ -110,8 +111,8 @@ static void Setup_item_names (ifstream& items, ifstream& msgs) {
 #endif
 	}
 	for (i = first_msg; i < total_msgs; i++)
-		text_msgs[i - num_item_names] = msglist[i];
-	num_text_msgs = total_msgs - num_item_names;
+		text_msgs[i] = msglist[i + 0x400];
+	num_text_msgs = total_msgs;
 } 
 
 #define SHAPES_SECT 	"shapes"
@@ -165,6 +166,32 @@ void Setup_text()
 			U7open(exultmsg, EXULTMSG, true);
 		Setup_item_names(textflx, exultmsg);
 		}
+	}
+
+/*
+ *	Free memory.
+ */
+
+static void Free_text_list
+	(
+	char **& items,
+	int& num_items
+	)
+	{
+	for (int i = 0; i < num_items; ++i)
+		delete items[i];
+	delete [] items;
+	items = 0;
+	num_items = 0;
+	}
+
+void Free_text
+	(
+	)
+	{
+	Free_text_list(item_names, num_item_names);
+	Free_text_list(text_msgs, num_text_msgs);
+	Free_text_list(misc_names, num_misc_names);
 	}
 
 /*

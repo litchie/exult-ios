@@ -68,7 +68,6 @@ private:
 	Shape_file_info		*curfile;	// Current browser file info.
 	Shape_file_info		*vgafile;	// Main 'shapes.vga'.
 	Shape_file_info		*facefile;	// 'faces.vga'.
-	std::vector<char *>	names;
 	Object_browser		*browser;
 	unsigned char 		*palbuf;	// 3*256 rgb's, each 0-63.
 					// Egg editor:
@@ -123,8 +122,7 @@ public:
 		{ return server_socket; }
 	guint32 get_background_color() const
 		{ return background_color; }
-	char *get_shape_name(int shnum)
-		{ return shnum >= 0 && shnum < names.size() ?names[shnum] : 0;}
+	char *get_shape_name(int shnum);
 	const char *get_image_editor()
 		{ return image_editor; }
 	Shape_file_set *get_files()

@@ -60,6 +60,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "logo.xpm"
 #include "fnames.h"
 #include "execbox.h"
+#include "items.h"
 
 using std::cerr;
 using std::cout;
@@ -448,7 +449,7 @@ C_EXPORT gboolean on_main_window_focus_in_event
  */
 
 ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0), 
-	names(0), glade_path(0), shape_info_modified(false),
+	glade_path(0), shape_info_modified(false),
 	shape_names_modified(false),
 	vgafile(0), facefile(0), eggwin(0), 
 	server_socket(-1), server_input_tag(-1), 
@@ -486,11 +487,10 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 			break;
 			}
 	string dirstr, datastr;
+	config->value("config/disk/data_path", datastr, EXULT_DATADIR);
+	add_system_path("<DATA>", datastr);
 	if (!xmldir)
-		{
-		config->value("config/disk/data_path", datastr, EXULT_DATADIR);
 		xmldir = datastr.c_str();
-		}
 	string defgame;			// Default game name.
 	config->value("config/estudio/default_game", defgame, "blackgate");
 	default_game = g_strdup(defgame.c_str());
@@ -578,10 +578,7 @@ ExultStudio::~ExultStudio()
 	Shape_chooser::clear_editing_files();
 	config->set("config/estudio/main/width", w, true);
 	config->set("config/estudio/main/height", h, true);
-	int num_names = names.size();
-	for (int i = 0; i < num_names; i++)
-		delete names[i];
-	names.resize(0);
+	Free_text();
 	g_free(glade_path);
 	delete files;
 	files = 0;
@@ -714,6 +711,18 @@ Object_browser *ExultStudio::create_browser(const char *fname)
 	setup_groups();			// Set up 'groups' page.
 	return chooser;
 }
+
+/*
+ *	Get shape name.
+ */
+
+char *ExultStudio::get_shape_name
+	(
+	int shnum
+	)
+	{
+	return shnum >= 0 && shnum < num_item_names ? item_names[shnum] : 0;
+	}
 
 /*
  *	Get current groups.
@@ -922,30 +931,13 @@ void ExultStudio::set_game_path(const char *gamepath, const char *patchpath,
 	palbuf[3*255] = (background_color>>18)&0x3f;
 	palbuf[3*255 + 1] = (background_color>>10)&0x3f;
 	palbuf[3*255 + 2] = (background_color>>2)&0x3f;
-					// Delete old names.
-	int num_names = names.size();
-	for (int i = 0; i < num_names; i++)
-		delete names[i];
-	names.resize(0);
+	Free_text();			// Delete old names.
 	delete files;			// Close old shape files.
 	browser = 0;			// This was owned by 'files'.
 	files = new Shape_file_set();
 	vgafile = open_shape_file("shapes.vga");
 	facefile = open_shape_file("faces.vga");
-					// Read in shape names.
-	string txtname("<PATCH>/text.flx");
-	if (!U7exists(txtname.c_str()))
-		txtname = "<STATIC>/text.flx";
-	if (U7exists(txtname.c_str()))
-		{
-		Flex *items = new Flex(txtname.c_str());
-		int num_names = items->number_of_objects();
-		names.resize(num_names);
-		int i;
-		for (i = 0; i < num_names; i++)
-			names[i] = items->retrieve(i, len);
-		delete items;
-		}
+	Setup_text();			// Read in shape names.
 	setup_file_list();		// Set up file-list window.
 	set_browser("", 0);		// No browser.
 	connect_to_server();		// Connect to server with 'gamedat'.
@@ -1193,20 +1185,7 @@ void ExultStudio::write_shape_info
 	if (force || shape_names_modified)
 		{
 		shape_names_modified = false;
-		int cnt = names.size();
-		std::ofstream out;
-		U7open(out, "<PATCH>/text.flx");
-		Flex_writer writer(out, "Text created by ExultStudio", cnt);
-		for (int i = 0; i < cnt; i++)
-			{
-			char *str = names[i];
-			if (str)
-				out << str;
-			out.put((char) 0);	// 0-delimit.
-			writer.mark_section_done();
-			}
-		if (!writer.close())
-			EStudio::Alert("Error writing 'text.flx'");
+		Write_text_file();
 		}
 	}
 
