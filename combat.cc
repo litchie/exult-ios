@@ -388,7 +388,8 @@ inline Rectangle Get_tiles
 /*
  *	Use one unit of ammo.
  *
- *	Output:	0 if failed.
+ *	Output:	Actual ammo shape.
+ *		0 if failed.
  */
 
 static int Use_ammo
@@ -398,14 +399,17 @@ static int Use_ammo
 	)
 	{
 	Game_object *aobj = npc->get_readied(Actor::ammo);
-	if (!aobj || !Ammo_info::is_in_family(aobj->get_shapenum(), ammo))
+	if (!aobj)
+		return 0;
+	int actual_ammo = aobj->get_shapenum();
+	if (!Ammo_info::is_in_family(actual_ammo, ammo))
 		return 0;
 	npc->remove(aobj);		// Remove all.
 	int quant = aobj->get_quantity();
 	aobj->modify_quantity(-1);	// Reduce amount.
 	if (quant > 1)			// Still some left?  Put back.
 		npc->add_readied(aobj, Actor::ammo);
-	return 1;
+	return actual_ammo;
 	}
 
 /*
@@ -460,12 +464,16 @@ void Combat_schedule::now_what
 		npc->start(200);	// Back into queue.
 		break;
 	case fire:			// Range weapon.
-		if (!ammo_consumed || Use_ammo(npc, ammo_shape))
+		{
+		int ashape = !ammo_consumed ? ammo_shape
+					: Use_ammo(npc, ammo_shape);
+		if (ashape > 0)
 			gwin->add_effect(new Projectile_effect(npc, opponent,
-						ammo_shape, weapon_shape));
+						ashape, weapon_shape));
 		state = approach;
 		npc->start(200);	// Back into queue.
 		break;
+		}
 	default:
 		break;
 		}

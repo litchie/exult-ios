@@ -1519,6 +1519,10 @@ int Actor::figure_hit_points
 		}
 	else
 		winf = attacker->get_weapon(wpoints);
+					// Get bonus ammo points.
+	Ammo_info *ainf = Ammo_info::find(ammo_shape);
+	if (ainf)
+		wpoints += ainf->get_damage();
 	int usefun;			// See if there's usecode for it.
 	if (winf && (usefun = winf->get_usecode()) != 0)
 		gwin->get_usecode()->call_usecode(usefun, this,
