@@ -185,6 +185,7 @@ Explosion_effect::Explosion_effect
 	}
 }
 
+
 void Explosion_effect::handle_event
 	(
 	unsigned long curtime,		// Current time of day.
@@ -392,6 +393,7 @@ void Projectile_effect::handle_event
 					// Watch for teleporting away.
 					attacker->distance(target) < 50))
 			target->attacked(attacker, weapon, shape_num);
+		add_dirty(gwin);
 		pos.tx = -1;		// Signal we're done.
 		gwin->remove_effect(this);
 		return;

@@ -28,8 +28,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "shapeinf.h"
 #include "monstinf.h"
+#include "game.h"
 
 Ammo_table *Ammo_info::table = 0;
+
+#include "utils.h"
 
 #ifndef DONT_HAVE_HASH_MAP
 #if __GNUG__ > 2
@@ -45,6 +48,70 @@ using std::hash_map;
 #  include <map>
 #endif
 
+/*
+ *	Read in a weapon-info entry from 'weapons.dat'.
+ *
+ *	Output:	Shape # this entry describes.
+ */
+
+int Weapon_info::read
+	(
+	istream& in			// Read from here.
+	)
+	{
+	uint8 buf[21];			// Entry length.
+	in.read((char *) buf, sizeof(buf));
+	uint8 *ptr = buf;
+	int shapenum = Read2(ptr);	// Bytes 0-1.
+	ammo = Read2(ptr);		// This is ammo family, or a neg. #.
+					// Shape to strike with, or projectile
+					//   shape if shoot/throw.
+	projectile = Read2(ptr);
+#if 0
+		extern char **item_names;
+		cout << dec << "Weapon " << item_names[shapenum]
+			<< '(' << shapenum << ')' << endl;
+		cout << "ammoshape = " << ammoshape << ", projectile = " 
+				<< projectile
+				<< endl;
+#endif
+					// +++++Wonder what strike < 0 means.
+	if (projectile == shapenum || projectile < 0)
+		projectile = 0;		// Means no projectile thrown.
+	damage = *ptr++;
+	unsigned short flags0 = *ptr++;
+	m_explodes = (flags0>>1)&1;
+	range = *ptr++;
+	uses = (range>>1)&3;		// Throwable, etc.:
+	range = range>>3;
+	unsigned short unk1 = Read2(ptr);
+	special_atts = *ptr++;
+	*ptr++;				// Skip (0).
+	usecode = Read2(ptr);
+					// BG:  Subtract 1 from each sfx.
+	int sfx_delta = Game::get_game_type() == BLACK_GATE ? -1 : 0;
+	sfx = Read2(ptr) + sfx_delta;
+	hitsfx = Read2(ptr) + sfx_delta;
+					// Last 2 bytes unknown/unused.
+#if 0
+		cout << "Damage = " << damage << ", flags0 = " << hex
+			<< " 0x" << setfill('0') << 
+			setw(2) << flags0 << ", use = " << use <<
+			", range = " <<
+			hex << "0x" << range << hex << ", unk1 = " << setw(2)
+			<< "0x" << unk1 << endl;
+		cout << "Special flags = " << "0x" << special <<
+			", usecode = 0x" << usecode << endl;
+		cout << dec << "Sfx = " << usesfx << ", hitsfx = " <<
+				hitsfx << endl;
+		cout << "Unknown at end:  ";
+		for (int i = 0; i < sizeof(unk2); i++)
+			cout << setw(2) << setfill('0') <<
+						(short) unk2[i] << ' ';
+		cout << dec << endl << endl;
+#endif
+	return shapenum;
+	}
 
 /*
  *	For looking up ammo entries:

@@ -1,3 +1,8 @@
+2001-10-11  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* shapes/shapeinf.cc: Rewrote code to read from weapons.dat.
+	* combat.cc (Combat_schedule): More fixups for slimes.
+
 2001-10-11  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* effects.*: changed explosion effect to do damage in the middle of
 	the explosion instead of afterwards

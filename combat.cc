@@ -67,6 +67,22 @@ void Combat_schedule::start_battle
 	}
 
 /*
+ *	Off-screen?
+ */
+
+inline bool Off_screen
+	(
+	Game_window *gwin,
+	Game_object *npc
+	)
+	{
+					// See if off screen.
+	Tile_coord t = npc->get_abs_tile_coord();
+	Rectangle screen = gwin->get_win_tile_rect().enlarge(2);
+	return (!screen.has_point(t.tx, t.ty));
+	}
+
+/*
  *	Find nearby opponents in the 9 surrounding chunks.
  */
 
@@ -88,7 +104,8 @@ void Combat_schedule::find_opponents
 	}
 	Actor_queue nearby;			// Get all nearby NPC's.
 	gwin->get_nearby_npcs(nearby);
-	for (Actor_queue::const_iterator it = nearby.begin(); it != nearby.end(); ++it)
+	for (Actor_queue::const_iterator it = nearby.begin(); 
+						it != nearby.end(); ++it)
 	{
 		Actor *actor = *it;
 		if (actor->get_alignment() >= Npc_actor::hostile &&
@@ -272,7 +289,7 @@ void Combat_schedule::approach_foe
 	if (!opponent && !(opponent = find_foe()))
 		{
 		failures++;
-		npc->start(200, 200);	// Try again in 1/5 sec.
+		npc->start(200, 400);	// Try again in 2/5 sec.
 		return;			// No one left to fight.
 		}
 	npc->set_target(opponent);
@@ -346,7 +363,10 @@ void Combat_schedule::approach_foe
 					// Walk there, but don't retry if
 					//   blocked.
 	npc->set_action(new Path_walking_actor_action(path, 0));
-	npc->start(200, 0);		// Start walking.
+					// Start walking.  Delay a bit if
+					//   opponent is off-screen.
+	npc->start(gwin->get_std_delay(), Off_screen(gwin, opponent) ? 
+		5*gwin->get_std_delay() : gwin->get_std_delay());
 	}
 
 /*
@@ -545,22 +565,6 @@ void Combat_schedule::set_weapon_info
 	}
 
 /*
- *	Off-screen?
- */
-
-inline bool Off_screen
-	(
-	Game_window *gwin,
-	Game_object *npc
-	)
-	{
-					// See if off screen.
-	Tile_coord t = npc->get_abs_tile_coord();
-	Rectangle screen = gwin->get_win_tile_rect().enlarge(2);
-	return (!screen.has_point(t.tx, t.ty));
-	}
-
-/*
  *	See if we need a new opponent.
  */
 
@@ -712,7 +716,7 @@ void Combat_schedule::now_what
 		state = approach;
 					// Back into queue.++++Guessing delay.
 		npc->start(gwin->get_std_delay(), strange 
-			? gwin->get_std_delay() : 4*gwin->get_std_delay());
+			? 4*gwin->get_std_delay() : gwin->get_std_delay());
 		if (npc->get_footprint().enlarge(strike_range).intersects(
 					opponent->get_footprint()))
 			{
@@ -761,7 +765,8 @@ void Combat_schedule::now_what
 			gwin->add_effect(new Projectile_effect(npc, opponent,
 				ashape, weapon_shape));
 		state = approach;
-		npc->start(200);	// Back into queue.
+		npc->start(gwin->get_std_delay(), strange 
+			? 6*gwin->get_std_delay() : gwin->get_std_delay());
 		break;
 		}
 	default:
