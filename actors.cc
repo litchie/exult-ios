@@ -678,6 +678,19 @@ void Actor::set_action
 	}
 
 /*
+ *	Notify scheduler that an object it may be using has disappeared.
+ */
+
+void Actor::notify_object_gone
+	(
+	Game_object *obj
+	)
+	{
+	if (schedule)
+		schedule->notify_object_gone(obj);
+	}
+
+/*
  *	Get destination, or current spot if no destination.
  */
 

@@ -88,6 +88,10 @@ public:
 		{  }
 	virtual void set_weapon()	// Set weapon info.
 		{  }
+					// Notify that schedule's obj. has
+					//   been moved.
+	virtual void notify_object_gone(Game_object *obj)
+		{  }
 					// For Usecode intrinsic.
 	virtual int get_actual_type(Actor *npc);
 	};
@@ -420,6 +424,7 @@ public:
 	Bake_schedule(Actor *n);
 	virtual void now_what();
 	virtual void ending(int newtype);
+	virtual void notify_object_gone(Game_object *obj);
 };
 
 /*

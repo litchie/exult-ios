@@ -263,6 +263,8 @@ public:
 		{ return action; }
 					// Set new action.
 	void set_action(Actor_action *newact);
+					// Notify scheduler obj. disappeared.
+	void notify_object_gone(Game_object *obj);
 	Tile_coord get_dest();		// Get destination.
 					// Walk to a desired spot.
 	void walk_to_tile(Tile_coord dest, int speed = 250, int delay = 0);
