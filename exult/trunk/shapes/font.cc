@@ -21,8 +21,8 @@
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>
 #endif
-#include "files/U7file.h"
-#include "files/databuf.h"
+#include "U7file.h"
+#include "databuf.h"
 #include "font.h"
 #include "ibuf8.h"
 #include "vgafile.h"
