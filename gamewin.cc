@@ -2010,9 +2010,11 @@ void Game_window::show_face
 		}
 	else
 		actbox = info->face_rect;
+	win->set_clip(0, 0, get_width(), get_height());
 					// Draw whom we're talking to.
 	paint_shape(actbox.x + face->get_xleft(),
 			actbox.y + face->get_yabove(), face);
+	win->clear_clip();
 	}
 
 /*
@@ -2031,8 +2033,11 @@ void Game_window::remove_face
 	if (i == num_faces)
 		return;			// Not found.
 	Npc_face_info *info = face_info[i];
+#if 0
 	paint(info->face_rect.x - 8, info->face_rect.y - 8,
 		info->face_rect.w + 16, info->face_rect.h + 16);
+#endif
+	paint(info->face_rect);
 	paint(info->text_rect);
 	delete face_info[i];
 	face_info[i] = 0;
