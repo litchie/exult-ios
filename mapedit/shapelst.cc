@@ -754,7 +754,7 @@ gint Shape_chooser::mouse_press
 /*
  *	Handle a mouse button-release event.
  */
-gint Mouse_release
+static gint Mouse_release
 	(
 	GtkWidget *widget,		// The view window.
 	GdkEventButton *event,
