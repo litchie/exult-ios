@@ -220,10 +220,11 @@ void GameplayOptions_gump::load_settings()
 	doubleclick = gwin->get_double_click_closes_gumps();
 	text_bg = gwin->get_text_bg()+1;
 	int realframes = 1000/gwin->get_std_delay();
+	int i;
 
     frames = -1;
 	framerates[num_default_rates] = realframes;
-	for (int i=0; i < num_default_rates; i++) {
+	for (i=0; i < num_default_rates; i++) {
 		if (realframes == framerates[i]) {
 			frames = i;
 			break;
@@ -236,7 +237,7 @@ void GameplayOptions_gump::load_settings()
 		frames = num_default_rates;
 	}
 	frametext = new string[num_framerates];
-	for (int i=0; i < num_framerates; i++) {
+	for (i=0; i < num_framerates; i++) {
 		frametext[i] = framestring(framerates[i]);
 	}
 }

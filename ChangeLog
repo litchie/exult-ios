@@ -1,3 +1,9 @@
+2001-12-23  Ryan Nunn  <triforce@merlin.net.au>
+	* gumps/AudioOptions_gump.cc, gumps/GameplayOptions_gump.cc,
+	  gumps/VideoOptions_gump.cc : Errors, Errors, Errors
+	* msvcstuff/Exult.dsp : Adding Enabled_button.*
+	* msvcstuff/Exult_flx.dsp : Removing shapes.
+
 2001-12-23  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/objs.cc: Show arrows hitting target.

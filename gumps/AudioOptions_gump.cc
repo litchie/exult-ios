@@ -209,11 +209,11 @@ void AudioOptions_gump::build_sfx_buttons()
 {
 #ifdef ENABLE_MIDISFX
 	std::string* sfx_conversiontext = new std::string[2];
-	sfx_conversion[0] = "None";
-	sfx_conversion[2] = "GS";
+	sfx_conversiontext[0] = "None";
+	sfx_conversiontext[1] = "GS";
 
 	// sfx conversion
-	buttons[7] = new AudioTextToggle(this, sfx_conversion, colx[2], rowy[9],
+	buttons[7] = new AudioTextToggle(this, sfx_conversiontext, colx[2], rowy[9],
 									 59, sfx_conversion/4,2);
 #endif
 }
