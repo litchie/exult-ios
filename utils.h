@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define INCL_UTILS	1
 
 class ifstream;
+class ofstream;
 
 /*
  *	Read a 1-byte value.
@@ -104,6 +105,11 @@ inline void Write2
 int U7open
 	(
 	ifstream& in,			// Input stream to open.
+	char *fname			// May be converted to upper-case.
+	);
+int U7open
+	(
+	ofstream& out,			// Output stream to open.
 	char *fname			// May be converted to upper-case.
 	);
 
