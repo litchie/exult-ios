@@ -23,6 +23,9 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
 #include "chunkter.h"
 #include "gamewin.h"
 
@@ -44,7 +47,7 @@ void Chunk_terrain::insert_in_queue
 		render_queue_prev->render_queue_next = render_queue_next;
 		}
 	else
-		render_queue_size++;	// Adding, so increment count.
+		queue_size++;		// Adding, so increment count.
 	if (!render_queue)		// First?
 		render_queue_next = render_queue_prev = this;
 	else
@@ -111,7 +114,7 @@ Chunk_terrain::Chunk_terrain
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
 			{
 			ShapeID id(data[0], (unsigned char) (data[1]&0x7f));
-			flats[16*tiley + tilex] = id;
+			shapes[16*tiley + tilex] = id;
 			data += 2;
 			}
 	}
@@ -193,19 +196,19 @@ static int Figure_queue_size
 
 Image_buffer8 *Chunk_terrain::render_flats
 	(
-	bool in_dungeon
 	)
 	{
-	rendered_dungeon = in_dungeon;	// Save type of rendering.
 	if (!rendered_flats)
 		{
 		if (queue_size > Figure_queue_size())
 			{		// Grown too big.  Remove last.
 			Chunk_terrain *last = render_queue->render_queue_prev;
 			last->free_rendered_flats();
-			render_queue->render_queue_prev = render_queue_prev;
-			render_queue_prev->render_queue_next = render_queue;
-			render_queue_next = render_queue_prev = 0;
+			render_queue->render_queue_prev = 
+						last->render_queue_prev;
+			last->render_queue_prev->render_queue_next = 
+						render_queue;
+			last->render_queue_next = last->render_queue_prev = 0;
 			queue_size--;
 			}
 		rendered_flats = new Image_buffer8(c_chunksize, c_chunksize);
@@ -213,12 +216,7 @@ Image_buffer8 *Chunk_terrain::render_flats
 					// Go through array of tiles.
 	for (int tiley = 0; tiley < c_tiles_per_chunk; tiley++)
 		for (int tilex = 0; tilex < c_tiles_per_chunk; tilex++)
-			if (!in_dungeon || this->in_dungeon(tilex, tiley))
-				paint_tile(tilex, tiley);
-			else		// Paint black if outside dungeon.
-				rendered_flats->fill8(0, 
-					c_tilesize, c_tilesize, 
-					tilex*c_tilesize, tiley*c_tilesize);
+			paint_tile(tilex, tiley);
 	return rendered_flats;
 	}
 

@@ -13,6 +13,8 @@ libobjs_la_SOURCES = \
 	barge.h \
 	chunks.cc \
 	chunks.h \
+	chunkter.cc \
+	chunkter.h \
 	citerate.h \
 	contain.cc \
 	contain.h \

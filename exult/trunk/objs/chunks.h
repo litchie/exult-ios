@@ -34,12 +34,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapeid.h"
 #include "tiles.h"
 #include "vec.h"
+#include "chunkter.h"
 
 class Chunk_object_list;
 class Egg_object;
 class Game_object;
 class Npc_actor;
 class Image_buffer8;
+class Chunk_terrain;
 
 /*
  *	Data cached for a chunk to speed up processing, but which doesn't need
@@ -47,11 +49,10 @@ class Image_buffer8;
  */
 class Chunk_cache
 	{
-	Chunk_object_list	*obj_list;
+	Chunk_object_list *obj_list;
 	unsigned char setup_done;	// Already setup.
 	unsigned short blocked[256];	// For each tile, a bit for each lift
 					//   level if it's blocked by an obj.
-					// In the process of implementing:+++++
 	Egg_vector egg_objects;		// ->eggs which influence this chunk.
 	unsigned short eggs[256];	// Bit #i (0-14) set means that the
 					//   tile is within egg_object[i]'s
@@ -118,8 +119,7 @@ class Chunk_cache
  */
 class Chunk_object_list
 	{
-	ShapeID flats[256];		// Flat (non-RLE) shapes.  The unused
-					//   are "invalid" entries.
+	Chunk_terrain *terrain;		// Flat landscape tiles.
 	Object_list objects;		// ->first in list of all objs.  'Flat'
 					//   obs. (lift=0,ht=0) stored 1st.
 	Game_object *first_nonflat;	// ->first nonflat in 'objects'.
@@ -130,9 +130,6 @@ class Chunk_object_list
 	Npc_actor *npcs;		// List of NPC's in this chunk.
 					//   (Managed by Npc_actor class.)
 	Chunk_cache *cache;		// Data for chunks near player.
-	Image_buffer8 *rendered_flats;	// Flats rendered for entire chunk.
-					//   Kept only for nearby chunks.
-	bool rendered_dungeon;		// True if rendered_flats in dungeon.
 	unsigned char roof;		// 1 if a roof present.
 	unsigned char light_sources;	// # light sources in chunk.
 	unsigned char cx, cy;		// Absolute chunk coords. of this.
@@ -141,13 +138,11 @@ class Chunk_object_list
 					class Ordering_info& newinfo);
 	static Chunk_object_list *add_outside_dependencies(int cx,
 		int cy, Game_object *newobj, class Ordering_info& newinfo);
-					// Create rendered_flats.
-	void paint_tile(int tilex, int tiley);
-	Image_buffer8 *render_flats(bool in_dungeon);
 public:
 	friend class Npc_actor;
 	Chunk_object_list(int chunkx, int chunky);
 	~Chunk_object_list();		// Delete everything in chunk.
+	void set_terrain(Chunk_terrain *ter);
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add/remove an egg.
 	void remove_egg(Egg_object *egg);
@@ -170,18 +165,12 @@ public:
 		{ return npcs; }
 	int get_light_sources() const	// Get #lights.
 		{ return light_sources; }
-					// Set/get flat shape.
-	void set_flat(int tilex, int tiley, ShapeID id)
-		{ flats[16*tiley + tilex] = id; }
 	ShapeID get_flat(int tilex, int tiley) const
-		{ return flats[16*tiley + tilex]; }
-	Image_buffer8 *get_rendered_flats(bool in_dungeon)
-		{
-		return rendered_flats && rendered_dungeon == in_dungeon 
-			? rendered_flats : render_flats(in_dungeon);
-		}
-	void free_rendered_flats();
-					// Write out to chunk.
+		{ return terrain ? terrain->get_flat(tilex, tiley)
+					: ShapeID(); }
+	Image_buffer8 *get_rendered_flats()
+		{ return terrain ? terrain->get_rendered_flats() : 0; }
+					// Write out to chunk.++++++++??
 	void write_flats(unsigned char *chunk_data);
 					// Get/create cache.
 	Chunk_cache *need_cache()
