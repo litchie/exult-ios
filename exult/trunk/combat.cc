@@ -848,7 +848,7 @@ void Combat_schedule::now_what
 		else if (spellbook)
 			{		// Cast the spell.
 			ashape = 0;	// Just to be on the safe side...
-			if (!spellbook->do_spell(npc))
+			if (!spellbook->do_spell(npc, true))
 				Combat_schedule::set_weapon();
 			}
 		else			// Ammo required?
