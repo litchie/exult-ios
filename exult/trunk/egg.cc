@@ -41,12 +41,12 @@ Egg_object::Egg_object
 	unsigned char prob, 
 	short d1, short d2
 	) : Game_object(l, h, shapex, shapey, lft),
-	    probability(prob), data1(d1), data2(d2)
+	    probability(prob), data1(d1), data2(d2),
+	    area(Rectangle(0, 0, 0, 0))
 	{
 	type = itype&0xf;
 	criteria = (itype & (7<<4)) >> 4;
-	distance = ((itype >> 10) - 1) & 0x1f;
-	distance++;			// I think this is right.
+	distance = (itype >> 10) & 0x1f;
 	unsigned char noct = (itype >> 7) & 1;
 	unsigned char do_once = (itype >> 8) & 1;
 	unsigned char htch = (itype >> 9) & 1;
@@ -55,6 +55,63 @@ Egg_object::Egg_object
 			(htch << hatched) + (ar << auto_reset);
 	if (type == usecode || type == teleport || type == path)
 		set_quality(data1&0xff);
+	}
+
+/*
+ *	Set active area after being added to its chunk.
+ */
+
+void Egg_object::set_area
+	(
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int tx, ty, tz;			// Get absolute tile coords.
+	get_abs_tile(tx, ty, tz);
+					// Set up active area.
+	if (!distance || get_criteria() == avatar_footpad)
+		{
+		Shape_info& info = gwin->get_info(this);
+		int xtiles = info.get_3d_xtiles(), 
+		    ytiles = info.get_3d_ytiles();
+		area = Rectangle(tx - xtiles + 1, ty - ytiles + 1,
+							xtiles, ytiles);
+		}
+	else
+		area = Rectangle(tx - distance, ty - distance, 
+					2*distance + 1, 2*distance + 1);
+					// Don't go outside the world.
+	Rectangle world(0, 0, num_chunks*tiles_per_chunk,
+						num_chunks*tiles_per_chunk);
+	area = area.intersect(world);
+	}
+
+/*
+ *	Is the egg active when stepping onto a given spot?
+ */
+
+int Egg_object::is_active
+	(
+	int tx, int ty,			// Tile stepped onto.
+	int from_tx, int from_ty	// Tile stepped from.
+	)
+	{
+	if (flags & (1 << (int) hatched))
+		return (0);		// For now... Already hatched.
+	switch (get_criteria())
+		{
+	case avatar_footpad:
+	case party_footpad:
+		return area.has_point(tx, ty);
+	case avatar_far:		// New tile is outside, old is inside.
+		return !area.has_point(tx, ty) && 
+					area.has_point(from_tx, from_ty);
+	case avatar_near:		// New tile is in, old is out.
+	case party_near:
+	default:
+		return area.has_point(tx, ty) &&
+					!area.has_point(from_tx, from_ty);
+		}
 	}
 
 static	inline int	distance_between_points(int ax,int ay,int az,int bx,int by,int bz)
@@ -69,7 +126,7 @@ static	inline int	distance_between_points(int ax,int ay,int bx,int by)
 	return	(int)sqrt(dx*dx+dy*dy);
 }
 
-
+#if 0	/* +++++Going away. */
 /*
  *	Is a given tile within this egg's influence?
  */
@@ -92,6 +149,7 @@ int Egg_object::within_distance
 		}
 	return distance_between_points(abs_tx,abs_ty,egg_tx,egg_ty)<=distance;
 	}
+#endif
 
 /*
  *	Paint at given spot in world.

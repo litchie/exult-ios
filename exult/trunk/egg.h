@@ -44,6 +44,7 @@ protected:
 	unsigned char distance;		// Distance for activation (0-31).
 	unsigned char flags;		// Formed from below flags.
 	unsigned short data1, data2;	// More data, depending on type.
+	Rectangle area;			// Active area.
 public:
 	enum Egg_types {		// Types of eggs:
 		monster = 1,
@@ -64,7 +65,13 @@ public:
 		auto_reset = 3
 		};
 	enum Egg_criteria {
-		avatar_footpad = 4	// Avatar must step on it.
+		cached_in = 0,		// ???
+		party_near = 1,
+		avatar_near = 2,	// Avatar steps into area.
+		avatar_far = 3,		// Avatar steps outside area.
+		avatar_footpad = 4,	// Avatar must step on it.
+		party_footpad = 5,
+		something_on = 6	// Something placed on/near it??
 		};
 					// Create from ireg. data.
 	Egg_object(unsigned char l, unsigned char h, unsigned int shapex,
@@ -73,13 +80,18 @@ public:
 		unsigned char prob, short d1, short d2);
 	virtual ~Egg_object()
 		{  }
+	void set_area();		// Set up active area.
 	int get_distance() const
 		{ return distance; }
 	int get_criteria() const
 		{ return criteria; }
-	int is_active() const		// Can it be activated?
-		{ return !(flags & (1 << (int) hatched)); }
+					// Can it be activated?
+	int is_active(int tx, int ty, int from_tx, int from_ty);
+	Rectangle get_area() const	// Get active area.
+		{ return area; }
+#if 0	/* ++++Going away. Is_active() does the test. */
 	int within_distance(int abs_tx, int abs_ty) const;
+#endif
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Run usecode function.

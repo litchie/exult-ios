@@ -41,6 +41,7 @@ class Game_window;
 class Npc_actor;
 class Rectangle;
 class Container_game_object;
+class Egg_object;
 
 /*
  *	Sizes:
@@ -540,8 +541,6 @@ public:
 	};
 
 
-#include "egg.h"
-
 /*
  *	Data cached for a chunk to speed up processing, but which doesn't need
  *	to be saved to disk:
@@ -570,11 +569,9 @@ class Chunk_cache
 	void update_object(Chunk_object_list *chunk,
 						Game_object *obj, int add);
 					// Set area within egg's influence.
-	void set_egged(Egg_object *egg, Rectangle& tiles);
-					// Clear area within egg's influence.
-	void unset_egged(Egg_object *egg, Rectangle& tiles);
+	void set_egged(Egg_object *egg, Rectangle& tiles, int add);
 					// Add egg.
-	void add_egg(Chunk_object_list *chunk, Egg_object *egg);
+	void update_egg(Chunk_object_list *chunk, Egg_object *egg, int add);
 					// Set up with chunk's data.
 	void setup(Chunk_object_list *chunk);
 					// Set blocked tile's bits.
@@ -592,13 +589,15 @@ class Chunk_cache
 					// Is a spot occupied?
 	int is_blocked(int height, int lift, int tx, int ty, int& new_lift);
 					// Activate eggs nearby.
-	void activate_eggs(Chunk_object_list *chunk,
-				int tx, int ty, unsigned short eggbits);
-	void activate_eggs(Chunk_object_list *chunk, int tx, int ty)
+	void activate_eggs(Chunk_object_list *chunk, int tx, int ty, 
+			int from_tx, int from_ty, unsigned short eggbits);
+	void activate_eggs(Chunk_object_list *chunk, int tx, int ty,
+						int from_tx, int from_ty)
 		{
 		unsigned short eggbits = eggs[ty*tiles_per_chunk + tx];
 		if (eggbits)
-			activate_eggs(chunk, tx, ty, eggbits);
+			activate_eggs(chunk, tx, ty, 
+						from_tx, from_ty,  eggbits);
 		}
 	};
 
@@ -672,12 +671,10 @@ public:
 					// Check absolute tile.
 	static int is_blocked(Tile_coord& tile);
 					// Set area within egg's influence.
-	void set_egged(Egg_object *egg, Rectangle& tiles)
-		{ need_cache()->set_egged(egg, tiles); }
-	void unset_egged(Egg_object *egg, Rectangle& tiles)
-		{ need_cache()->unset_egged(egg, tiles); }
-	void activate_eggs(int tx, int ty)
-		{ need_cache()->activate_eggs(this, tx, ty); }
+	void set_egged(Egg_object *egg, Rectangle& tiles, int add)
+		{ need_cache()->set_egged(egg, tiles, add); }
+	void activate_eggs(int tx, int ty, int from_tx, int from_ty)
+		{ need_cache()->activate_eggs(this, tx, ty, from_tx, from_ty);}
 	};
 
 /*
@@ -784,51 +781,6 @@ public:					// Let's make it all public.
 	void enlarge(int delta)		// Add delta in each dir.
 		{ x -= delta; y -= delta; w += 2*delta; h += 2*delta; }
 	};
-
-#if 0	/* +++++May use this for eggs, blocking.   */
-/*
- *	Here's an iterator that takes a rectangle of tiles, and sequentially
- *	returns the interesection of that rectangle with each chunk that it
- *	touches.
- */
-class Chunk_intersect_iterator
-	{
-	Rectangle tiles;		// Original rect.
-					// Chunk #'s covered:
-	int firstcx, lastcx, lastcy;
-	int curcx, curcy;		// Next chunk to return.
-public:
-	Chunk_intersect_iterator(Rectangle t) : tiles(t),
-		  firstcx(t.x/tiles_per_chunk), curcy(t.y/tiles_per_chunk),
-		  lastcx((t.x + t.w - 1)/tiles_per_chunk),
-		  lastcy((t.y + t.h - 1)/tiles_per_chunk)
-		{
-		curcx = firstcx;
-		}
-					// Intersect is ranged within chunk.
-	int get_next(Rectangle& intersect, int& cx, int& cy)
-		{
-		if (curcx > lastcx)	// End of row?
-			if (curcy > lastcy)
-				return (0);
-			else
-				{
-				curcy++;
-				curcx = firstcx;
-				}
-		Rectangle cr(curcx*tiles_per_chunk, curcy*tiles_per_chunk,
-				tiles_per_chunk, tiles_per_chunk);
-					// Intersect given rect. with chunk.
-		intersect = cr.intersect(tiles);
-					// Make it 0-based rel. to chunk.
-		intersect.shift(-cr.x, -cr.y);
-		cx = curcx;
-		cy = curcy;
-		curcx++;
-		return (1);
-		}
-	};
-#endif
 
 /*
  *	Move an object, and possibly change its shape too.
