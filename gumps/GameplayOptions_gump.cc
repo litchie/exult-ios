@@ -220,20 +220,20 @@ void GameplayOptions_gump::save_settings()
 	int fps = 2*(frames + 1);
 	gwin->set_std_delay(1000/fps);
 	config->set("config/video/fps", fps, true);
-	gwin->set_fastmouse(fastmouse);
+	gwin->set_fastmouse(fastmouse!=false);
 	config->set("config/gameplay/fastmouse", fastmouse ? "yes" : "no", true);
-	gwin->set_mouse3rd(mouse3rd);
+	gwin->set_mouse3rd(mouse3rd!=false);
 	config->set("config/gameplay/mouse3rd", mouse3rd ? "yes" : "no", true);
-	gwin->set_walk_after_teleport(walk_after_teleport);
+	gwin->set_walk_after_teleport(walk_after_teleport!=false);
 	config->set("config/gameplay/walk_after_teleport", walk_after_teleport ? "yes" : "no", true);
-	gwin->set_double_click_closes_gumps(doubleclick);
+	gwin->set_double_click_closes_gumps(doubleclick!=false);
 	config->set("config/gameplay/double_click_closes_gumps", doubleclick ? "yes" : "no", true);
-	cheat.set_enabled(cheats);
+	cheat.set_enabled(cheats!=false);
 	while (facestats != Face_stats::get_state() + 1)
 		Face_stats::AdvanceState();
 	Face_stats::save_config(config);
 	if (GAME_BG && gwin->can_use_paperdolls())
-		gwin->set_bg_paperdolls(paperdolls);
+		gwin->set_bg_paperdolls(paperdolls!=false);
 	config->set("config/gameplay/bg_paperdolls", paperdolls ? "yes" : "no", true);
 }
 

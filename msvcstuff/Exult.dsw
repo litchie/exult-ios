@@ -41,6 +41,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name Exult_si_flx
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Zip
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -147,6 +150,18 @@ Package=<4>
 
 ###############################################################################
 
+Project: "Zip"=.\Zip.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "exconfig"=.\exconfig\exconfig.dsp - Package Owner=<4>
 
 Package=<5>
@@ -160,6 +175,18 @@ Package=<4>
 ###############################################################################
 
 Project: "expack"=.\expack.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "expack_zip"=.\expack_zip.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

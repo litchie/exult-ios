@@ -91,6 +91,9 @@ bool intrinsic_trace = false;		// Do we trace Usecode-intrinsics?
 int usecode_trace = 0;		// Do we trace Usecode-instructions?
 							// 0 = no, 1 = short, 2 = long
 
+// Save game compression level
+int save_compression = 1;
+
 const std::string c_empty_string;
 
 #if USECODE_DEBUGGER
@@ -309,6 +312,10 @@ int exult_main(void)
 	else
 		usecode_trace = 0;
 
+	// Save game compression level
+	config->value("config/disk/save_compression_level", save_compression, 1);
+	if (save_compression < 0 || save_compression > 2) save_compression = 1;
+	config->set("config/disk/save_compression_level", save_compression, true);
 
 #if USECODE_DEBUGGER
 	// Enable usecode debugger

@@ -1687,6 +1687,19 @@ void Game_window::write
 	(
 	)
 	{
+	// Lets just show a nice message on screen first
+
+	int width = get_width();
+	int centre_x  = width/2;
+	int height = get_height();
+	int centre_y = height/2;
+	int text_height = get_text_height(0);
+	int text_width = get_text_width(0, "Saving Game");
+
+	win->fill_translucent8(0, width, height, 0, 0, xforms[2]);
+	paint_text(0, "Saving Game", centre_x-text_width/2, centre_y-text_height);
+	show(true);
+
 					// Write each superchunk to Iregxx.
 	for (int schunk = 0; schunk < 12*12 - 1; schunk++)
 					// Only write what we've read.
@@ -3027,11 +3040,13 @@ void Game_window::add_nearby_npcs
 		for (int cx = from_cx; cx != stop_cx; cx = INCR_CHUNK(cx))
 			for (Npc_actor *npc = get_chunk(cx, cy)->get_npcs();
 						npc; npc = npc->get_next())
+				{
 				if (!npc->is_nearby())
 					{
 					npc->set_nearby();
 					npc_prox->add(curtime, npc);
 					}
+				}
 	}
 
 /*

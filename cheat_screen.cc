@@ -348,7 +348,7 @@ bool CheatScreen::SharedInput (char *input, int len, int &command, Cheat_Prompt 
 		{
 			activate = true;
 		}
-		else if(event.key.keysym.sym >= '0' && event.key.keysym.sym <= 'z')
+		else if((event.key.keysym.sym >= '0' && event.key.keysym.sym <= 'z') || event.key.keysym.sym == ' ')
 		{
 			int curlen = std::strlen(input);
 			char chr = event.key.keysym.sym;
@@ -1735,7 +1735,11 @@ void CheatScreen::FlagActivate (char *input, int &command, Cheat_Prompt &mode, A
 		if (i == -1) mode = CP_Canceled;
 		else if (i < 0) mode = CP_InvalidShape;
 		else if (i >= gwin->get_num_shapes()) mode = CP_InvalidShape;
-		else if (input[0] && (input[0] != '-' || input[1])) actor->set_polymorph(i);
+		else if (input[0] && (input[0] != '-' || input[1]))
+		{
+			actor->set_polymorph(i);
+			mode = CP_ShapeSet;
+		}
 
 		break;
 

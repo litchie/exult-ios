@@ -62,6 +62,9 @@ public:
 	virtual const char *get_archive_type() { return "FLEX"; };
 					// Write header for a Flex file.
 	static void write_header(std::ostream& out, const char *title, int count);
+
+	static bool is_flex(std::istream& in);
+	static bool is_flex(const char *fname);
 private:
 	Flex();	// No default constructor
 	void IndexFlexFile(void);
