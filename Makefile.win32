@@ -2,7 +2,7 @@
 # It may require a little tweaking. (paths)
 
 # Where is Ultima 7 installed
-U7PATH=C:\\Ultima7
+U7PATH=C:\\UC\\Ultima7
 
 # Base of the exult source (I'm building in a subdir called 'debug')
 SRC=.
@@ -85,7 +85,7 @@ $(EXEC) : $(OBJS) data/exult.flx
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
 tools/expack.exe : tools/expack.o $(FILE_OBJS) 
-	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) $(LIBS)
+	$(CXX) $(LFLAGS) -o tools/expack.exe tools/expack.o $(FILE_OBJS) $(LIBS) -mconsole
 
 data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
 	tools/expack -c data/exult.flx $(EXULT_FLX_OBJECTS)
@@ -93,8 +93,17 @@ data/exult.flx: tools/expack.exe $(EXULT_FLX_OBJECTS)
 exultico.o: win32/exultico.rc win32/exult.ico
 	windres win32/exultico.rc exultico.o
 
+tools/wud.exe : tools/wud.o tools/uctools.h usecode/bgintrinsics.h usecode/siintrinsics.h 
+	$(CXX) $(LFLAGS) -o tools/wud.exe tools/wud.o -mconsole
+
+tools/ucdump.exe : tools/ucdump.o
+	$(CXX) $(LFLAGS) -o tools/ucdump.exe tools/ucdump.o -mconsole
+
 clean:
-	del $(OBJS) tools\expack.exe $(EXEC) data\exult.flx
+	del $(OBJS)
+	del tools\expack.exe
+	del $(EXEC)
+	del data\exult.flx
 
 install: $(EXEC)
 	strip $(EXEC) -o  $(U7PATH)/$(EXEC)

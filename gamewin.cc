@@ -1191,10 +1191,13 @@ void Game_window::read
 	{
 		usecode->read();		// Usecode.dat (party, global flags).
 
-		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-			main_actor->clear_flag(Obj_flags::dont_render);
-		else
-			main_actor->set_flag(Obj_flags::dont_render);
+		if (Game::get_game_type() == BLACK_GATE)
+		{
+			if (usecode->get_global_flag(Usecode_machine::did_first_scene))
+				main_actor->clear_flag(Obj_flags::dont_render);
+			else
+				main_actor->set_flag(Obj_flags::dont_render);
+		}
 	}
 	catch(...)
 	{
@@ -2532,25 +2535,31 @@ void Game_window::setup_game
 
 	usecode->read();		// Read the usecode flags
 	string yn;			// Override from config. file.
-					// Skip intro. scene? Always if not BG
-	config->value("config/gameplay/skip_intro", yn, "no");
-	if ((yn == "yes") || (Game::get_game_type() != BLACK_GATE))
-		usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
+					// Skip intro. scene?
+	if (Game::get_game_type() == BLACK_GATE)
+	{
+		config->value("config/gameplay/skip_intro", yn, "no");
+		if ((yn == "yes"))
+			usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
 					// Have Trinsic password?
-	config->value("config/gameplay/have_trinsic_password", yn, "no");
-	if (yn == "yes")
-		usecode->set_global_flag(
-				Usecode_machine::have_trinsic_password, 1);
+		config->value("config/gameplay/have_trinsic_password", yn, "no");
+		if (yn == "yes")
+			usecode->set_global_flag(
+					Usecode_machine::have_trinsic_password, 1);
 					// Should Avatar be visible?
-	if (usecode->get_global_flag(Usecode_machine::did_first_scene))
-		main_actor->clear_flag(Obj_flags::dont_render);
+		if (usecode->get_global_flag(Usecode_machine::did_first_scene))
+			main_actor->clear_flag(Obj_flags::dont_render);
+		else
+			main_actor->set_flag(Obj_flags::dont_render);
+	}
 	else
-		main_actor->set_flag(Obj_flags::dont_render);
+	{
+		usecode->set_global_flag(Usecode_machine::did_first_scene, 1);
+	}
 
 	clock.set_palette();		// Set palette for time-of-day.
 	set_all_dirty();		// Force entire repaint.
 
-	paint();
 	Audio::get_ptr()->cancel_raw();
 	Audio::get_ptr()->cancel_streams();
 				// Want to activate first egg.
@@ -2559,6 +2568,7 @@ void Game_window::setup_game
 	olist->setup_cache();
 	Tile_coord t = main_actor->get_abs_tile_coord();
 	olist->activate_eggs(main_actor, t.tx, t.ty, t.tz, -1, -1);
+	paint();
 	}
 
 /*

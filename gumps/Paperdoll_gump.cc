@@ -271,7 +271,10 @@ void Paperdoll_gump::paint
 	paint_button(gwin, check_button);
 
 	// Get the information required about ourself
+	Actor *actor = dynamic_cast<Actor *> (container);
 	Paperdoll_npc *info = GetCharacterInfo (container->get_shapenum());
+	if (!info) info = GetCharacterInfo (actor->get_shape_real());
+	if (!info) info = Characters;
 
 	// Spots that are female/male specific
 	int	shieldx, shieldy,
