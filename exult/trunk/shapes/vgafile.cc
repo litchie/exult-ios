@@ -856,14 +856,14 @@ void Shape_file::load
 Vga_file::Vga_file
 	(
 	const char *nm			// Path to file.
-	) : num_shapes(0), shapes(0), shape_source(0)
+	) : shape_source(0), num_shapes(0), shapes(0)
 	{
 	load(nm);
 	}
 
 Vga_file::Vga_file
 	(
-	) : num_shapes(0), shapes(0), shape_source(0)
+	) : shape_source(0), num_shapes(0), shapes(0)
 	{
 		// Nothing to see here !!!
 	}

@@ -330,7 +330,7 @@ void Uc_call_expression::gen_value
 	if (!sym->gen_call(out, function, parms, return_value))
 		{
 		char buf[150];
-		sprintf(buf, "'%' isn't a function or intrinsic",
+		sprintf(buf, "'%s' isn't a function or intrinsic",
 						sym->get_name());
 		sym = 0;		// Avoid repeating error if in loop.
 		error(buf);

@@ -1,3 +1,6 @@
+2001-02-12  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* lots-of-files: fixed warnings
+
 2001-02-12  Ryan Nunn <triforce@merlin.net.au>
 	* exult.cc : <SAVEGAME> default set to "."
 	* fnames.h : SAVENAME change to "<SAVEGAME>/game%02d.u7"

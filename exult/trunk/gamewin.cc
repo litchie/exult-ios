@@ -103,17 +103,17 @@ Game_window::Game_window
 	    npc_prox(new Npc_proximity_handler(this)),
 	    effects(0), open_gumps(0),
 	    render_seq(0), painted(false), focus(true), 
-	    teleported(false), in_dungeon(false), 
-	    moving_barge(0), main_actor(0), skip_above_actor(31), fonts(0),
+	    teleported(false), in_dungeon(false), fonts(0),
+	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0),
 	    monster_info(0), 
 	    palette(-1), brightness(100), user_brightness(100), 
-	    faded_out(false),
+	    faded_out(false), fades_enabled(true),
 	    special_light(0), last_restore_hour(6),
 	    dragging(0), dragging_save(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
-	    skip_lift(16), paint_eggs(false), debug(0), fades_enabled(true),
-	    bg_paperdolls_allowed(false), bg_paperdolls(false)
+	    bg_paperdolls_allowed(false), bg_paperdolls(false),
+	    skip_lift(16), paint_eggs(false), debug(0)
 	{
 	game_window = this;		// Set static ->.
 

@@ -139,7 +139,7 @@ static bool save_image(SDL_Surface *surface, SDL_RWops *dst)
   Uint8 *pixels;
   Uint8 tmp;
   int width, height, pitch;
-  int colors, i;
+  int colors = 0, i;
   PCX_Header header;
 
   width = surface->w;
