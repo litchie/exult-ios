@@ -1,13 +1,14 @@
 Exult F.A.Q. (frequently asked questions)
-last changed: 11 September 2002(GMT)
+last changed: 24 October 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/faq.php
 
 
 0. Changes to the FAQ
-0.1. - 11 September 2002
-0.2. - 24 July 2002
-0.3. - 18 June 2002
+0.1. - 24 October 2002
+0.2. - 11 September 2002
+0.3. - 24 July 2002
+0.4. - 18 June 2002
 
 1. Introduction
 1.1. Why is it called Exult - what is the meaning of this name?
@@ -46,13 +47,14 @@ The latest version of this document can be found at http://exult.sourceforge.net
 3.11. Why is the music so much louder/softer than the sfx/speech?
 3.12. Why does my monitor stay black when I try to run Exult?
 3.13. Why can't I cast mark/recall on the Virtue Runes?
-3.14. Where is the pikeman that lets you train in Monitor (SI)?
-3.15. Why can't I summon the Great Hierophant (SI)?
-3.16. What are the improvements in Exult over the original Ultima 7?
-3.17. Are there issues with the SI style paperdoll in BG?
-3.18. How do I disable all improvements?
-3.19. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
-3.20. Why is Exult Studio not working with the RC2 or newer snapshots of Exult?
+3.14. Why can't I get the scrifice in Skara Brae to work?
+3.15. Where is the pikeman that lets you train in Monitor (SI)?
+3.16. Why can't I summon the Great Hierophant (SI)?
+3.17. What are the improvements in Exult over the original Ultima 7?
+3.18. Are there issues with the SI style paperdoll in BG?
+3.19. How do I disable all improvements?
+3.20. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.21. Why is Exult Studio not working with the RC2 or newer snapshots of Exult?
 
 4. Bugs, known issues and not yet implemented features
 4.1. Bugs
@@ -74,22 +76,29 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the FAQ
-0.1. - 11 September 2002
+0.1. - 24 October 2002
+* 3.7. What should I do when Exult keeps crashing when I try to save? Don't save on scripted scenes.
+* 3.14. Why can't I get the scrifice in Skara Brae to work? Some people still run into this problem.
+* 4.3. Broken by Design walking style revisited.
+
+
+
+0.2. - 11 September 2002
 * 1.12. On what platform does Exult run? changed location of Zaurus package.
 * 3.6. Why is the party formation different? rewrote that a bit.
-* 3.15. Why can't I summon the Great Hierophant (SI)? not an issue with Exult actually.
+* 3.16. Why can't I summon the Great Hierophant (SI)? not an issue with Exult actually.
 
 
 
-0.2. - 24 July 2002
+0.3. - 24 July 2002
 * 1.12. On what platform does Exult run? the Amiga port has been integrated ages ago and we have a Zaurus port now.
 * 4.5. Known Compile Issues makefile.cygwin no longer exists.
 
 
 
-0.3. - 18 June 2002
+0.4. - 18 June 2002
 * 1.9. Why are there now two different snapshots? same as on our main page, also some explanation for the different FAQ/Docs.
-* 3.20. Why is Exult Studio not working with the RC2 or newer snapshots of Exult?Exult Studio is no longer supported in RC2 and stable snapshots.
+* 3.21. Why is Exult Studio not working with the RC2 or newer snapshots of Exult?Exult Studio is no longer supported in RC2 and stable snapshots.
 * 4.2. How do I submit a proper bug report? SourceForge requires registration for attaching files.
 
 
@@ -247,6 +256,7 @@ It's not a bug, it's a feature! I like it that way. Everyone is sensitive to dif
 3.7. What should I do when Exult keeps crashing when I try to save?
 This is not normal behavior for Exult. Normally when you restart and "Journey Onward" Exult will actually restore to the point you saved.
 Please do not play further at this point. You should restore to an earlier save game, no matter how much game time you loose. Your game must have gotten corrupted and when you play on with it you will most likely experience even more serious problems.
+Please also avoid saving when a scripted sequence is running. Whenever you can't control the Avatar on your own a scripted scene is running and saving at this time will break the game on reloading.
 
 
 3.8. Why does the game run so choppy?
@@ -274,16 +284,21 @@ The most common reason for this is that you try to run Exult full screen in a re
 You never could do this in the original as well. You have to use the Virtue Stones that you find in the same building as the runes.
 
 
-3.14. Where is the pikeman that lets you train in Monitor (SI)?
+3.14. Why can't I get the scrifice in Skara Brae to work?
+SPOILER ALERT
+I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice. The solution to this is that Rowenna and Trent are standing too far apart. When you reunited the pair you initiated the conversation with Trent from too far away (this happens when you run at a higher resolution than the original one). Now you can either reload a game from before you reunited them or you have to hackmove Rowenna closer to Trent. After that the two will talk to you about sacrifice.
+
+
+3.15. Where is the pikeman that lets you train in Monitor (SI)?
 The pikeman that lets you enter the list field in Monitor sometimes disappears due to a bug in the game (even the original). This bug occurs when you enter the banquet scene of Monitor. To avoid this bug, we recommend, that you approach the banquet hall from the right and/or double-click the entrance door to the hall when the party is standing very close to it.
 
 
-3.15. Why can't I summon the Great Hierophant (SI)?
+3.16. Why can't I summon the Great Hierophant (SI)?
 If you follow some walkthrough you might find that your summoning of the Great Hierophant doesn't work. This is a problem with the walkthrough. You need to have a personal item of the Great Hierophant in your inventory, namely the Serpent Staff.
 If possible not just play following the walkthrough but go out and explore Serpent Isle. It's hard to imagine someone could miss the cave to the east of Monitor...
 
 
-3.16. What are the improvements in Exult over the original Ultima 7?
+3.17. What are the improvements in Exult over the original Ultima 7?
 * Many more keyboard shortcuts than the original had. Including in BG the 'k' key that checks if you have the right key for a lock in your inventory. The list of keys can be found in the Documentation.
 * A new worked over Game Options menu. This menu is explained in detail in the Documentation and many of the following improvements and Video/Audio options can be accessed via this menu. Open this Game Options Menu by pressing 'Esc' in the game.
 * SI style paperdoll (inventory screen) in BG. Very impressive. For this you need to have Serpent Isle installed on your hard drive and you must set the path to it in exult.cfg (see the Documentation) and activate it in the Gameplay Options . This new inventory screen acts sometimes a little buggy, so if an item seems to have disappeared disable the paperdolls in the Gameplay Options.
@@ -298,7 +313,7 @@ If possible not just play following the walkthrough but go out and explore Serpe
 
 
 
-3.17. Are there issues with the SI style paperdoll in BG?
+3.18. Are there issues with the SI style paperdoll in BG?
 There are some issues. The paperdoll in BG is still limited to the slots it had originally. That means:
 * You can either equip a pair of gauntlets or one/two rings.
 * The 'shield behind back', 'weapon behind back' and 'belt' slots are one and the same in BG. (So if you have a weapon on your back, you can't use your belt slot)
@@ -307,7 +322,7 @@ There are some issues. The paperdoll in BG is still limited to the slots it had 
 Sparks paperdoll looks very odd (Spark on steroids) as there is no paperdoll for kids in SI and we have to use the adult paperdoll. Unless someone draws heaps of art we can't do anything.
 
 
-3.18. How do I disable all improvements?
+3.19. How do I disable all improvements?
 To get an Ultima 7 that looks and behaves as close to the original as possible there are several things to do (though I wonder why you'd want to do that):
 * make custom key bindings files (see Documentation) in which you disable all the keys that were not in the original for Black Gate and Serpents Isle. Since the Alpha 4 release you have to assign 's' to old_file_gump to enable the old save game menu (the line in your custom key bindings file should look like: S old_file_gump)
 * Edit the exult.cfg file to point to those custom keys.
@@ -318,7 +333,7 @@ To get an Ultima 7 that looks and behaves as close to the original as possible t
 
 
 
-3.19. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
+3.20. I heard that Exult is meant to be a game engine. Can I make my own game with Exult?
 Work has begun on "Exult Studio" which is aimed to be an editor for all kinds of files that are used by Ultima 7. As of now there is already a Gimp plug-in to edit shapes.
 For much more information "Exult Studio" see exult_studio.txt.
 
@@ -326,7 +341,7 @@ Jeff:
 As for the future, my main plan is to add editing capabilities, with the long-range goal of writing an original RPG.
 
 
-3.20. Why is Exult Studio not working with the RC2 or newer snapshots of Exult?
+3.21. Why is Exult Studio not working with the RC2 or newer snapshots of Exult?
 Please see 1.9. for information on our two different branches. Exult Studio will no longer be supported in the 1.0.x (stable) branch. A lot of changes we will put into the unstable branch will directly concern Exult Studio.
 
 
@@ -357,7 +372,7 @@ So if you want to have a bug fixed follow these steps!
 Exult often behaves and works differently than the original Ultima 7. These behaviors are sometimes features that just differ from the way the original worked. Some are bugs that the development team consider to have almost no detrimental effect to the enjoyment/running of the game, but would require a large amount of time and effort to fix. Please don't bother the team about those as some of these will be fixed in the future, others will only be fixed when someone who thinks it should be done differently sits down and codes it. The following are such 'features' of Exult:
 * Birds and animals open doors and such, like the human and sentient creatures of Britannia do.
 * Party members don't walk lockstep with the Avatar like they do in BG/SI. Please see 3.6. Why is the party formation different?.
-* The way the Avatar and the companions walk. Is it 2 frames or 3 frames? This has been changed a lot as this is disputed almost every four weeks. Currently Exult is coded using 2 frames.
+* The way the Avatar and the companions walk. Is it 2 frames or 3 frames? This has been changed a lot as this was disputed almost every four weeks. Fianlly it works like the original and the Avatar uses two frames and the companions use three frames.
 * Combat works differently. We don't have any hard data or formulae that tell us how combat worked in BG/SI, so Dr.Code put something together. If you have any information you've worked out related to this, please tell either the forum or the exult-general mailing list. Recently Jeff added an option to change the combat difficulty in exult.cfg. See the ReadMe.txt.
 * Negative health and unconsciousness. Yes, it may look weird to have people walking around with negative health, but that's the way it currently works.
 * Some music loops endlessly in Exult. This is actually a correction of a bug in the original. We respects the midi looping flag as set by U7's original data files but the original didn't. Users who prefer the original (broken) are able to choose so in the Game menu.

@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE faqs SYSTEM "docs.dtd">
-<faqs title="Exult" changed="11 September 2002(GMT)">
+<faqs title="Exult" changed="24 October 2002(GMT)">
 	<section title="Changes to the FAQ">
+		<sub name="24102002">
+			<header>- 24 October 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="save_crash"/> Don't save on scripted scenes.</li>
+				<li><ref1 target="skarabrae_sacrifice"/> Some people still run into this problem.</li>
+				<li><ref1 target="by_design"/> walking style revisited.</li>
+				</ul>
+			</body>
+		</sub>
 		<sub name="11092002">
 			<header>- 11 September 2002</header>
 			<body>
@@ -454,6 +464,11 @@
 					corrupted and when you play on with it you will most likely experience even more
 					serious problems.
 				</para>
+				<para>
+					Please also avoid saving when a scripted sequence is running. Whenever you can't control
+					the Avatar on your own a scripted scene is running and saving at this time will break the 
+					game on reloading.
+				</para>
 			</body>
 		</sub>
 		<sub name="choppy_game">
@@ -517,6 +532,23 @@
 				<para>
 					You never could do this in the original as well. You have to use the
 					<strong>Virtue Stones</strong> that you find in the same building as the runes.
+				</para>
+			</body>
+		</sub>
+		<sub name="skarabrae_sacrifice">
+			<header>Why can't I get the scrifice in Skara Brae to work?</header>
+			<body>
+				<para>
+					<em>SPOILER ALERT</em> 
+				</para>
+				<para>
+					I'm trying to get Forsythe in Skara Brae to sacrifice himself to destroy the well of 
+					souls. But I can't seem to get Rowenna or Trent to talk to me about sacrifice.<br/>
+					The solution to this is that Rowenna and Trent are standing too far apart. When you 
+					reunited the pair you initiated the conversation with Trent from too far away 
+					(this happens when you run at a higher resolution than the original one).<br/>
+					Now you can either reload a game from before you reunited them or you have to hackmove 
+					Rowenna closer to Trent. After that the two will talk to you about sacrifice.
 				</para>
 			</body>
 		</sub>
@@ -770,8 +802,9 @@
 					<li>Party members don't walk lockstep with the Avatar like they do in
 						BG/SI. Please see <ref1 target="party_formation"/>.</li>
 					<li>The way the Avatar and the companions walk. Is it 2 frames or 3 frames?
-						This has been changed a lot as this is disputed almost every four weeks.
-						Currently <Exult/> is coded using 2 frames.</li>
+						This has been changed a lot as this was disputed almost every four weeks.
+						Fianlly it works like the original and the Avatar uses two frames and the 
+						companions use three frames.</li>
 					<li>Combat works differently. We don't have any hard data or formulae
 						that tell us how combat worked in BG/SI, so Dr.Code put something
 						together. If you have any information you've worked out related to
