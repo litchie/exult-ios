@@ -1,12 +1,13 @@
 *** EXULT 1.0 - READ CAREFULLY ***
 
-After more than three years since the first release by Jeff in September
+After more than four years since the first release by Jeff in September
 1998, Exult has finally reached a level of maturity and playbility which
 we believe warrants its release as an 1.0 version.
 What does the Exult Team mean by 1.0 ? We mean that you can play both
-"Ultima VII: The Black Gate" and "Ultima VII part 2: Serpent Isle" from
+"Ultima VII: The Black Gate" and "Ultima VII part 2: Serpent Isle" together
+with their respective add-ons "Forge of Virtue" and "Silver Seed" from
 beginning to end, with no plot holes. This does not mean the experience 
-is perfect: we are not aiming for a perfect replica of the originals
+is perfect: we are not aiming for a precise replica of the originals
 (use a low-end 486 with DOS 5.0, a SoundBlaster and a Roland MT-32 for
 that). There are many things where Exult behaves differently (party
 formation, combat, stealing, etc.) but we don't think these detract from
@@ -14,15 +15,14 @@ the fun and enjoyment of playing these great games. We've done our best
 to add improvements which we believe add to the game, and give it a more
 modern feel. Most of these can be disabled and enabled at will.
 
-During the Beta phase, no new features have been added to Exult (if we can
-help it :-), and we worked exclusively on stabilization and
-documentation. Now that we are been satisfied with stability on all platforms, we
-are ready to release Exult 1.0. Recently our development branched in two: a
-stable branch, to which only bugfixes will be applied, and from which
-subsequent 1.0.x releases will be made, and a development 1.1.x branch which
-will focus on new features and especially on getting ExultStudio and the
-other tools working. The differences between the two branches will be listed
-further down this file in the Appendix.
+During the Beta phase, no new features have been added to Exult and we worked 
+exclusively on stabilization and documentation. Now that we are satisfied 
+with stability on all platforms, we are releasing Exult 1.0. Exult development
+is currently branched in two: a stable branch, to which only bugfixes are 
+applied, and from which subsequent 1.0.x releases will be made, and a 
+development 1.1.x branch which focuses on new features and especially on 
+getting ExultStudio and the other tools working. The differences between the 
+two branches is listed further down this file in the Appendix.
 
 If you have used Exult before, you should really start new games for both 
 BG and SI as previous versions may have generated incorrect savegames. If 
