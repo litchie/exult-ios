@@ -30,3 +30,6 @@ clean:
 %.o : %.cc
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $<
 
+forked_player.o: forked_player.h ../Midi.h
+KMIDI.o: KMIDI.h ../Midi.h
+Timidity_binary.o: Timidity_binary.h ../Midi.h

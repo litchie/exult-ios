@@ -420,8 +420,29 @@ clean:
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 
-# Cheapass dependencies
-$(OBJECTS) : $(HFILES)
+# dependencies
+
+actors.o: actors.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h
+drag.o: drag.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h gumps.h mouse.h
+exult.o: exult.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h audio/Audio.h autoconfig.h audio/SDL_mapping.h audio/Flex.h audio/common.h audio/Mixer.h audio/Midi.h audio/Table.h conf/Configuration.h conf/XMLEntity.h mouse.h
+gameclk.o: gameclk.cc gameclk.h tqueue.h gamewin.h imagewin.h actors.h objs.h vec.h usecode.h vgafile.h fnames.h
+gamedat.o: gamedat.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h utils.h
+gametxt.o: gametxt.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h
+gamewin.o: gamewin.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h items.h utils.h npcnear.h gumps.h
+gumps.o: gumps.cc gumps.h objs.h vec.h usecode.h tqueue.h gamewin.h imagewin.h actors.h vgafile.h fnames.h gameclk.h
+imagewin.o: imagewin.cc imagewin.h conf/Configuration.h conf/XMLEntity.h
+items.o: items.cc items.h utils.h
+lists.o: lists.cc lists.h
+mouse.o: mouse.cc mouse.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h imagewin.h gamewin.h actors.h gameclk.h
+npcnear.o: npcnear.cc npcnear.h tqueue.h gamewin.h imagewin.h actors.h objs.h vec.h usecode.h vgafile.h fnames.h gameclk.h
+objs.o: objs.cc objs.h vec.h usecode.h tqueue.h gamewin.h imagewin.h actors.h vgafile.h fnames.h gameclk.h audio/Audio.h autoconfig.h audio/SDL_mapping.h audio/Flex.h audio/common.h audio/Mixer.h audio/Midi.h audio/Table.h
+readnpcs.o: readnpcs.cc gamewin.h imagewin.h actors.h objs.h vec.h usecode.h tqueue.h vgafile.h fnames.h gameclk.h utils.h
+segfile.o: segfile.cc segfile.h utils.h
+tqueue.o: tqueue.cc tqueue.h
+usecode.o: usecode.cc utils.h usecode.h gamewin.h imagewin.h actors.h objs.h vec.h tqueue.h vgafile.h fnames.h gameclk.h gumps.h mouse.h audio/Audio.h autoconfig.h audio/SDL_mapping.h audio/Flex.h audio/common.h audio/Mixer.h audio/Midi.h audio/Table.h
+utils.o: utils.cc
+vec.o: vec.cc vec.h
+vgafile.o: vgafile.cc vgafile.h fnames.h utils.h objs.h vec.h usecode.h tqueue.h
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
