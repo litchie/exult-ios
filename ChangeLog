@@ -1,3 +1,8 @@
+2002-02-20  Jeff Freedman  <jsf@usf-cf-x86-linux-1>
+
+	* shapes/vgafile.h (public): Public encode_rle() added.
+	* tools/ipack.cc:  Coding 'Create()'.
+
 2002-02-20  Ryan Nunn  <triforce@merlin.net.au>
 	* actors.cc : Fixing Serpent Isle change of portrait bug. Polymorphing 
 	  to 721 or 989 will now polymorph to the Avatar's actual shape.
