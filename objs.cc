@@ -572,78 +572,13 @@ void Animated_object::handle_event
 	if (animating)
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
 	}
-#if 0	/* +++++going away. */
-/*
- *	Create an animated object.
- */
-
-Lightsource_object::Lightsource_object
-	(
-	unsigned char l, unsigned char h, 
-	unsigned int shapex,
-	unsigned int shapey,
-	unsigned int lft
-	) : Ireg_game_object(l, h, shapex, shapey, lft), trans(0), animating(0)
-	{
-	}
-
-/*
- *	Render.
- */
-
-void Lightsource_object::paint
-	(
-	Game_window *gwin
-	)
-	{
-	int xoff = (cx - gwin->get_chunkx())*chunksize;
-	int yoff = (cy - gwin->get_chunky())*chunksize;
-	Shape_frame *shape = gwin->get_shape(get_shapenum(), get_framenum());
-					// Paint with/without translucency.
-	gwin->paint_shape(xoff + (1 + get_tx())*tilesize - 4*get_lift(),
-				yoff + (1 + get_ty())*tilesize - 4*get_lift(),
-								shape, trans);
-	trans = !trans;			// Toggle translucency.
-	if (!animating)			// Turn on animation.
-		{
-		gwin->get_tqueue()->add(SDL_GetTicks() + 100, 
-							this, (long) gwin);
-		animating = 1;
-		}
-	}
-
-/*
- *	Animation.
- */
-
-void Lightsource_object::handle_event
-	(
-	unsigned long curtime,		// Current time of day.
-	long udata			// Game window.
-	)
-	{
-	int delay = 100;		// Delay between frames.
-	Game_window *gwin = (Game_window *) udata;
-					// Get area we're taking.
-	Rectangle rect = gwin->get_shape_rect(this);
-	rect = gwin->clip_to_win(rect);
-	if (rect.w <= 0 || rect.h <= 0)	// No longer on screen?
-		{
-		animating = 0;
-		return;
-		}
-	gwin->add_dirty(rect);		// Paint.
-					// Add back to queue for next time.
-	if (animating)
-		gwin->get_tqueue()->add(curtime + delay, this, udata);
-	}
-#endif
 
 /*
  *	Create an egg from IREG data.
  */
 
-Egg_object::Egg_object(
+Egg_object::Egg_object
+	(
 	unsigned char l, unsigned char h, 
 	unsigned int shapex, unsigned int shapey, 
 	unsigned int lft, 
@@ -725,11 +660,12 @@ void Container_game_object::remove
 
 int Container_game_object::add
 	(
-	Game_object *obj
+	Game_object *obj,
+	int dont_check			// 1 to skip volume check.
 	)
 	{
-	int vol = get_volume();		// NPC's have volume 0.
-	if (vol)
+	int vol;			// Note:  NPC's have 0 volume.
+	if (!dont_check && (vol = get_volume()) > 0)
 		{
 		int objvol = obj->get_volume();
 		if (objvol + volume_used > vol)
@@ -1014,7 +950,8 @@ int Container_game_object::get_objects
 
 int Barge_object::add
 	(
-	Game_object *obj
+	Game_object *obj,
+	int dont_check
 	)
 	{
 	return (0);			//+++++++Later, dude.

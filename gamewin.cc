@@ -551,7 +551,8 @@ void Game_window::read_ireg_objects
 		else
 			continue;	// FOR NOW.
 		obj->set_quality(quality);
-		if (!container || !container->add(obj))
+					// Add, but skip volume check.
+		if (!container || !container->add(obj, 1))
 			get_objects(scx + cx, scy + cy)->add(obj);
 		}
 	}
