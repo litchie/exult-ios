@@ -1,5 +1,8 @@
 2002-02-17  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* exult.cc: Allow dragging and closing gumps when selecting with
+	the green cross-hair mouse. 
+
 	* objs/barge.cc (Barge_object): Recheck for boat in 'gather',
 	since it sometimes gets called before the boat is properly placed.
 

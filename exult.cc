@@ -920,30 +920,47 @@ static int Get_click
 			case SDL_MOUSEBUTTONDOWN:
 				if (event.button.button == 3)
 					rightclick = true;
+				else if (event.button.button == 1)
+					{
+					x = event.button.x / scale;
+					y = event.button.y / scale;
+					dragging = gwin->start_dragging(x, y);
+					dragged = false;
+					}
 				break;
 			case SDL_MOUSEBUTTONUP:
 				if (event.button.button == 1)
 					{
 					x = event.button.x / scale;
 					y = event.button.y / scale;
-					if (chr) *chr = 0;
-					return (1);
+					bool drg = dragging;
+					dragging = false;
+					if (!drg ||
+					    !gwin->drop_dragged(x, y, dragged))
+						{
+						if (chr) *chr = 0;
+						return (1);
+						}
 					}
-					// May have been moving before.
 				else if (event.button.button == 3) {
 					// Just stop.  Don't get followers!
 					gwin->get_main_actor()->stop();
-					if (gwin->get_mouse3rd() && rightclick) {
+					if (gwin->get_mouse3rd() && rightclick)						{
 						rightclick = false;
 						return 0;
 					}
 				}
 				break;
 			case SDL_MOUSEMOTION:
-				Mouse::mouse->move(event.motion.x / scale, 
-						event.motion.y / scale);
+				{
+				int mx = event.motion.x / scale,
+				    my = event.motion.y / scale;
+				Mouse::mouse->move(mx, my);
 				Mouse::mouse_update = true;
+				if (event.motion.state & SDL_BUTTON(1))
+					dragged = gwin->drag(mx, my);
 				break;
+				}
 			case SDL_KEYDOWN:
 				{
 				//+++++ convert to unicode first?
