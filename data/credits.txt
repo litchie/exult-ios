@@ -77,6 +77,8 @@
 \CSuperEagle scaler
 \CSuper2xSaI scaler
 
+\CAndrea Mazzoleni.
+\CScale2x non-blur scaler
 
 \CChristian Ohm
 \C<chr.ohm@gmx.net>
