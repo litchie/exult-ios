@@ -35,6 +35,8 @@ public:
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
 	// Return !0 if path found
+	PathFinder() : src(),dest()
+		{  }
 	virtual	int NewPath(Tile_coord s, Tile_coord d, 
 					Pathfinder_client *client)=0;
 	// Retrieve starting point (set by subclasses).

@@ -20,17 +20,18 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	__Astar_h_
 
 #include "PathFinder.h"
+#include <vector>
 
 
 class	Astar: public virtual PathFinder
 	{
-	Tile_coord *path;		// Coords. to goal.
+	vector<Tile_coord> path;		// Coords. to goal.
 	int pathlen;			// Length of path.
 	int dir;			// 1 or -1.
 	int stop;			// Index to stop at.
 	int next_index;			// Index of next tile to return.
 public:
-	Astar() : path(0), pathlen(0), next_index(0)
+	Astar() : PathFinder(),path(), pathlen(0), dir(0),stop(0),next_index(0)
 		{  }
 	// Find a path from sx,sy,sz to dx,dy,dz
 	// Return 0 if no path can be traced.
