@@ -2479,7 +2479,7 @@ void Game_window::call_guards
 		int dir = Get_direction(dest.ty - actloc.ty,
 						actloc.tx - dest.tx);
 					
-		char frames[2];		// Use frame for starting attack.
+		signed char frames[2];	// Use frame for starting attack.
 		frames[0] = guard->get_dir_framenum(dir, Actor::standing);
 		frames[1] = guard->get_dir_framenum(dir, 3);
 		Actor_action *action = new Sequence_actor_action(

@@ -147,7 +147,7 @@ public:
 class ShapeID : public Game_singletons
 	{
 	short shapenum;			// Shape #.
-	char framenum;			// Frame # within shape.
+	signed char framenum;		// Frame # within shape.
 	char has_trans;
 	ShapeFile shapefile;
 	Shape_frame *shape;
