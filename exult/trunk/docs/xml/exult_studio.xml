@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE studiodoc SYSTEM "docs.dtd">
-<studiodoc title="Exult" changed="22 May 2002(GMT)">
+<studiodoc title="Exult" changed="24 July 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="24072002">
+			<header>24 July 2002</header>
+			<body>
+				<ul>
+					<li><ref1 target="about_doc"/> You need a snasphot of the 1.1.x branch 
+						to work with <Studio/>.</li>
+					<li><ref1 target="installation"/> corrected link to <Studio/>.</li>
+					<li><ref1 target="file_menu"/> updated.</li>
+					<li><ref1 target="edit_menu"/> formerly known as Objects menu.</li>
+					<li><ref1 target="mode_menu"/> only three modes left.</li>
+					<li><ref1 target="shape_files"/> updated.</li>
+					<li><ref1 target="map_files"/> updated.</li>
+					<li><ref1 target="groups_files"/> updated.</li>
+					<li><ref1 target="shape_edit"/> updated.</li>
+					<li><ref1 target="win32_bugs"/> added.</li>				
+				</ul>
+			</body>
+		</sub>
 		<sub name="22052002">
 			<header>22 May 2002</header>
 			<body>
@@ -21,49 +39,6 @@
 					<li><ref1 target="shape_edit"/> "New Shape" also lets you add a font shape.</li>
 					<li><ref1 target="combo_edit"/> Combinations now do work fully.</li>
 				</ul>
-			</body>
-		</sub>
-		<sub name="06052002">
-			<header>06 May 2002</header>
-			<body>
-				<ul>
-					<li><ref1 target="command_line"/> -d option no longer exists.</li>
-					<li><ref1 target="mode_menu"/> more information on Pick- and Combo-mode.</li>
-					<li><section_ref target="Main Working Window"/> added (working title only).</li>
-					<li><ref1 target="can_do_atm"/> shift-clicking adds currently selected shape in 
-						any mode.</li>
-					<li><ref1 target="combo_edit"/> when it gets saved combos.flx gets used.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="03052002">
-			<header>03 May 2002</header>
-			<body>
-				<para>
-					This is the second draft of the <Studio/> documentation. 					
-				</para>
-				<ul>
-					<li><ref1 target="command_line"/> I had spaces between the commands and the options.</li>
-					<li><section_ref target="Menu Options"/> description of all the Menu Options.</li>
-					<li><ref1 target="can_do_atm"/> added warning on editing terrains.</li>
-					<li><ref1 target="egg_edit"/> added place holder for actual documentation.</li>
-					<li><ref1 target="npc_edit"/> added place holder for actual documentation.</li>
-					<li><ref1 target="combo_edit"/> the latest addition.</li>
-					<li><ref1 target="usecode_edit"/> link to latest patch and link to Pertex'
-						documentation.</li>
-					<li><ref1 target="what_next"/> 'scratched' the stuff I think got implemented.</li>
-				</ul>
-			</body>
-		</sub>
-		<sub name="07042002">
-			<header>07 April 2002</header>
-			<body>
-				<para>
-					This is the first draft of the <Studio/> documentation. So please bear with me. It
-					is by no means perfect and I ask you to send me all your comments on how to better
-					express some stuff or to point out what I just plain forgot. 
-					<extref target="mailto:gigdr@tesionmail.de">Dominus</extref>
-				</para>
 			</body>
 		</sub>
 	</section>			
@@ -98,7 +73,8 @@
 				</para>
 				<para>
 				Note that you also need an up to date (aka recent snapshot) version of <Exult/> to
-				have <Studio/> working properly.
+				have <Studio/> working properly. The snapshot has to be from the 1.1.x (unstable)
+				branch as <Studio/> is no longer supported in the 1.0.x branch.
 				</para>
 			</body>
 		</sub>
@@ -128,13 +104,14 @@
 			<body>
 				<ul>
 					<li>You need <Exult/> and you need to install it properly 
-						(see <extref doc="docs" target="installation"/>)</li>
+						(see <extref doc="docs" target="installation"/>). Also make sure that
+						you are using the latest snapshot of the 1.1.x branch of <Exult/>.</li>
 					<li>For U*ix platforms you need to build <Studio/> from the source avillable from our 
 						source snapshot at <extref target="http://exult.sourceforge.net/download.php"/>.<br/>
 						You will also need the GTK+ library installed as well as
 				<extref target="http://developer.gnome.org/doc/API/libglade/libglade.html">libglade</extref>.<br/></li>
 					<li>For Win32 platforms (Win9x,ME,2k,XP) you need to download 
-						<extref target="http://exult.sourceforge.net/snapshots/ExultStudio.exe"/>
+						<extref target="http://exult.sourceforge.net/snapshots/2.0/ExultStudio.exe"/>
 						and install it in the same directory where you installed <Exult/>.</li>
 				</ul>
 			</body>
@@ -267,7 +244,9 @@
 						This saves this changed info.<br/>
 						<strong>Groups</strong><br/>
 						You can "bundle" shapes of vga files into groups to make world building easier. 
-						These groups get saved with this option.</li>
+						These groups get saved with this option.<br/>
+						<strong>Combos</strong><br/>
+						This saves the combination files.</li>						
 					<li><strong>Reload...</strong><br/>
 						<strong>Map</strong><key>Ctrl+R</key><br/>
 						Reloads the map. All changes made since the last save get discarded.<br/>
@@ -296,14 +275,28 @@
 				</para>
 			</body>
 		</sub>
-		<sub name="objects_menu">
-			<header>Objects</header>
+		<sub name="edit_menu">
+			<header>Edit</header>
 			<body>
 				<ul>
-					<li><strong>Egg...</strong><br/>
+					<li><strong>Cut  </strong><key>Ctrl-X</key><br/>
+					Removes the selected object(s) and puts it into memory.</li>
+					<li><strong>Copy  </strong><key>Ctrl-C</key><br/>
+					Copies the selected object(s) into memory.</li>
+					<li><strong>Paste  </strong><key>Ctrl-V</key><br/>
+					Shows the crosshair cursor and copies the object(s) from the memory into the game
+					where you left click the crosshair.</li>
+					<li><strong>Properties...</strong><br/>
+					Shows the properties of the selected object. If more than one object is selected
+					it shows the properies of the last selected object.<br/>
+					Only NPCs and eggs show different properties than if you select Basic properties.</li>
+					<li><strong>Basic properties...</strong><br/>
+					Shows the properties of the selected object. If more than one object is selected
+					it shows the properies of the last selected object.</li>
+					<li><strong>Create egg...</strong><br/>
 					Create or edit eggs with this.
 					See <ref1 target="egg_edit"/> for more information (not yet there).</li>
-					<li><strong>NPC...</strong><br/>
+					<li><strong>Create NPC...</strong><br/>
 					Create or edit NPCs with this.
 					See <ref1 target="npc_edit"/> for more information (not yet there).</li>
 				</ul>
@@ -317,8 +310,11 @@
 				</para>
 				<ul>
 					<li><strong>Move</strong><br/>
-					This is the normal mode where you can drag things with the mouse, or single-click to 
-					identify objects.</li>
+					This is the normal mode where you can drag things with the mouse, or single-click 
+					to identify objects. In this mode you also select objects. A selected object is 
+					shwon with a red outline. To select more than one object hold down <key>Ctrl</key> 
+					while selecting. Move the selection <key>Ctrl-arrow</key> (x,y coordinates) and 
+					<key>Ctrl-page</key> keys (z coordinates).</li>
 					<li><strong>Paint</strong><br/>
 					a single-left-click inserts the last-selected shape from 'shapes.vga', and dragging 
 					with the left-button inserts that shape in every tile (so you'd probably only want 
@@ -329,13 +325,6 @@
 					<li><strong>Pick for Combo</strong><br/>
 					Picks objects for a new combo file. Double-left-click to add objects to the combo, 
 					single-left-click to identify object. See <ref1 target="combo_edit"/></li>
-					<li><strong>Select</strong><br/>
-					In this mode you can select objects and move the selection Ctrl-arrow (x,y coordinates)
-					and ctrl-page keys (z coordinates).</li>
-					<li><strong>Hide</strong><br/>
-					not yet implemented (?)</li>
-					<li><strong>Unhide</strong><br/>
-					not yet implemented (?)</li>
 				</ul>
 				<para>
 					Note that you can only drag objects in the game window when you are in "Move" mode.
@@ -349,8 +338,11 @@
 					<li><strong>Locator...</strong><key>Ctrl+L</key><br/>
 					shows where the current game window is within the entire map, and lets you move 
 					the view by double-clicking a location or by dragging the little box</li>
-					<li><strong>New Combo</strong><br/>
+					<li><strong>New Combo..</strong><br/>
 					Creates a new Combo file. See <ref1 target="combo_edit"/>.</li>
+					<li><strong>Unused shapes...</strong><br/>
+					Finds shapes in shapes.vga that are not used in the game. Have patience when doing 
+					this and treat the results with caution.</li>
 				</ul>
 			</body>
 		</sub>
@@ -361,7 +353,7 @@
 					<li><strong>Play</strong><br/>
 					This is the same as pressing <key>Alt+Ctrl+M</key> in Exult. It exits the Map Edit Mode
 					and lets you play the game. By pressing it again you enter Map Edit Mode again.</li>
-					<li><strong>Tile Grid</strong><br/>
+					<li><strong>Grid</strong><br/>
 					Shows a grid in the game window for better control on placing objects.</li>
 					<li><strong>Edit lift:</strong><br/>
 					Changes the lift of a selected object in the game window. Lift means the distance of
@@ -382,8 +374,19 @@
 				<para>
 					Once <Studio/> runs correctly , a tree of game files is displayed to the left of 
 					the main window, while the currently selected file is viewed in detail to the right. 
-					At the moment, the following types of files are supported.
+					The types of files <Studio/> supports are described next.
 				</para>
+				<para>
+					<strong>Right-clicking on the detailed view of any file gives these options</strong> 
+					(along with other options specific to the file):
+				</para>
+				<ul>
+					<li><strong>File...</strong><br/>
+						<strong>Save</strong><br/>
+						Saves all the changes you made to it without saving any other file.<br/>
+						<strong>Revert</strong><br/>
+						Discards all changes..</li>
+				</ul>
 			</body>
 		</sub>
 		<sub name="shape_files">
@@ -405,7 +408,7 @@
 					the find option to find shapes that have that name (e.g. in shapes.vga you can search 
 					for 'door' to find all shapes that have door frames). You can search down or up in the
 					selected file.
-				</para>
+				</para>				
 				<para>
 					Shape files also have a special right-click-menu. See <ref1 target="shape_edit"/>.
 				</para>
@@ -417,20 +420,26 @@
 				<para>
 					These files contain so called chunks that serve as templates in the final map. 
 					The chunks of the selected map file are shown in the right part of the main window.<br/>
-					When a chunk is selected you have some options:
+					When a chunk is selected you have two options below:
 				</para>
 				<ul>
 					<li><strong>Locate</strong><br/>
 						shows places in the <Exult/> game where that chunk is used.</li>
-					<li><strong>Insert</strong><br/>
-						<strong>New</strong><br/>
+					<li><strong>Move</strong><br/>
+						Moves a chunk in the chunk file. This does not effect the display on the map.</li>						
+				</ul>
+				<para>
+					Right clicking on a chunk gives you another two options 
+					(also the File-save/revert option):
+				</para>
+				<ul>
+					<li><strong>New...</strong><br/>
+						<strong>Empty</strong><br/>
 						Creates a new chunk. Drag the new chunk onto the game and edit it by dragging 
 						shapes on it.<br/>
-						<strong>Dupe</strong><br/>
+						<strong>Duplicate</strong><br/>
 						Duplicates a chunk. Drag the duplicate chunk onto the map to edit it.</li>
-					<li><strong>Move</strong><br/>
-						Moves a chunk in the chunk file. This does not effect the display on the map.</li>
-				</ul>	 
+				</ul>
 			</body>
 		</sub>
 		<sub name="palettes_files">
@@ -451,8 +460,11 @@
 						<strong>Import</strong><br/>
 						Overwrites the current palettes with palette text file.<br/>
 						<strong>Export</strong><br/>
-						Exports the current palette to a text file.</li>
-				</ul>	 
+						Exports the current palette to a text file.</li>						
+				</ul>
+				<para>
+					Right clicking on a chunk only gives you the default File-save/revert option.
+				</para>
 			</body>
 		</sub>
 		<sub name="groups_files">
@@ -482,8 +494,11 @@
 					<li><strong>Frames</strong><br/>						
 						shows all the frames of a shape next to each others.</li>
 					<li><strong>Find</strong><br/>						
-						Lets you search for a specified shape in the group.</li>	
-				</ul>	 
+						Lets you search for a specified shape in the group.</li>
+					<li><strong>Locate</strong><br/>						
+						Locates the selected shape inside the game. It locates only the shape not a 
+						specific frame.</li>
+				</ul>
 			</body>
 		</sub>
 	</section>
@@ -555,12 +570,12 @@
 					get some options of how to edit the shapes.
 				</para>
 				<ul>
+					<li><strong>Add to group...</strong><br/>
+						If you set up groups you can add shapes to them with this.</li>
 					<li><strong>Info...</strong><br/>
 						Displays the information of an object. You can change a lot of stuff there and 
 						caution is adviced. The information is saved by 
 						<ref1 target="file_menu">'Save all' or 'Save:Shape Info'</ref1>.</li>
-					<li><strong>Add to group...</strong><br/>
-						If you set up groups you can add shapes to them with this.</li>
 					<li><strong>Edit...</strong>:<br/>
 						Brings up your image-editor on the chosen frame.  When you save 
 						in the image-editor, ES will read the changes back within 5 seconds.  This is 
@@ -593,6 +608,20 @@
 					open the file with an image editor of your liking and then save it, ES doesn't 
 					read the changes back.
 				</para>
+				<para>
+					Below the display windows you have the following options:
+				</para>
+				<ul>
+					<li><strong>Frame:</strong><br/>						
+						select the frame displayed.</li>
+					<li><strong>Frames</strong><br/>						
+						shows all the frames of a shape next to each others.</li>
+					<li><strong>Find</strong><br/>						
+						Lets you search for a specified shape in the group.</li>
+					<li><strong>Locate</strong><br/>						
+						Locates the selected shape inside the game. It locates only the shape not a 
+						specific frame.</li>
+				</ul>
 			</body>
 		</sub>
 		<sub name="egg_edit">
@@ -800,11 +829,28 @@
 				</para>
 				<ul>
 				<li><Studio/>needs to be able to automatically create palettes 1-n from palette 0 
-					using the code from ipack. </li>
+					using the code from ipack.</li>
 				<li>It will also be very nice to have a Usecode debugger someday as well 
 					(Willem is actually working on it).</li>
    				<li>A 'flags' editor for viewing and editing the global Usecode flags by name.</li>
 				<li>A 'barge' editor for creating things like ships and carts.</li>
+				</ul>
+			</body>
+		</sub>
+		<sub name="win32_bugs">
+			<header>Known Bugs with the Win32 port</header>
+			<body>
+				<para>
+					<Studio/> is of course far from perfect and the Win32 port still has some bugs:
+				</para>
+				<ul>
+				<li>Windows NT4 and Windows 2k don't work at the moment as there is some strange
+					connection problem between <Exult/> and <Studio/>. We have not yet been able
+					to figure out the problem.</li>
+				<li>If you start <Studio/> from an SI game <Studio/> defaults to the BG data files.
+					You have to change the game dir manually from the files menu.</li>
+   				<li>When you change the game directory you can't select a different drive than the one
+   					<Studio/> is running from.</li>
 				</ul>
 			</body>
 		</sub>
