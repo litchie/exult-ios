@@ -930,7 +930,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 		Font *font = fontManager.get_font("MENU_FONT");
 		
 		char npc_name[17];
-		char disp_name[10];
+		char disp_name[18];
 		int max_len = 16;
 		npc_name[0] = 0;
 		int sex = 0;
