@@ -158,6 +158,8 @@ Shape_file_set::~Shape_file_set
 
 /*
  *	Create a new 'Shape_file_info', or return existing one.
+ *
+ *	Output: ->file info, or 0 if error.
  */
 
 Shape_file_info *Shape_file_set::create
@@ -175,7 +177,8 @@ Shape_file_info *Shape_file_set::create
 		fullstr = "<STATIC>/";
 		fullstr += basename;
 		fullname = fullstr.c_str();
-		assert(U7exists(fullname));
+		if (!U7exists(fullname))
+			return 0;
 		}
 	for (vector<Shape_file_info *>::iterator it = files.begin(); 
 					it != files.end(); ++it)

@@ -148,7 +148,8 @@ public:
 	void set_edit_lift(int lift);
 	void set_edit_terrain(gboolean terrain);
 	void set_edit_mode(int md);
-					// New shape files:
+					// Open/create shape files:
+	Shape_file_info *open_shape_file(const char *fname);
 	void new_shape_file(bool single);
 	static void create_shape_file(char *nm, gpointer udata);
 					// Groups:
