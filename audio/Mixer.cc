@@ -191,7 +191,7 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 		memset(temp_buffer,silence,len);
 		while((len-sofar))
 		{
-			ret=buf->consume((char*)temp_buffer+sofar,len-sofar);
+			ret=buf->consume(reinterpret_cast<char*>(temp_buffer+sofar),len-sofar);
 			if(ret<=0)
 				break;
 			sofar+=ret;
@@ -210,7 +210,7 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 		// Propably an endianess problem?
 		int dir = buf->get_dir();
 		if (dir != 0 && dir != 8 && format == AUDIO_S16SYS && len%4 == 0)
-			modify_stereo16((sint16 *) temp_buffer, len/4, dir);
+			modify_stereo16(reinterpret_cast<sint16 *>(temp_buffer), len/4, dir);
 
 		SDL::MixAudio(stream, temp_buffer, len, buf->get_volume());
 	}
