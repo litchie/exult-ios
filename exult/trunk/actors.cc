@@ -74,10 +74,10 @@ void Actor::set_default_frames
 					// These are rough guesses.
 	static unsigned char 	north_frames[3] = {0, 1, 2},
 				south_frames[3] = {16, 17, 18},
-//				east_frames[3] = {3, 4, 5},
-				east_frames[3] = {7, 8, 9},
-//				west_frames[3] = {19, 20, 21};
-				west_frames[3] = {23, 24, 25};
+//				east_frames[3] = {7, 8, 9},
+				east_frames[3] = {48, 49, 50},
+//				west_frames[3] = {23, 24, 25};
+				west_frames[3] = {32, 33, 34};
 	set_frame_sequence(north, 3, north_frames);
 	set_frame_sequence(south, 3, south_frames);
 	set_frame_sequence(east, 3, east_frames);

@@ -155,6 +155,16 @@ public:
 	27-29	Lying down S.
 	30	Hands raised, S.
 	31	Hands outstretched, S.
+
+These were contributed by a user:
+0-2: walking
+3-9: attacking
+10: sitting
+11: beginning to sit down
+12: kneeling
+13: sleeping
+14-15: casting spells
+
  */
 
 /*

@@ -42,6 +42,9 @@ class Shape_frame
 	short xright;			// Extent to right.
 	short yabove;			// Extent above origin.
 	short ybelow;			// Extent below origin.
+	Shape_frame *reflect();		// Create new frame, reflected.
+					// Create RLE data & store in frame.
+	void create_rle(unsigned char *pixels, int w, int h);
 					// Create from RLE entry.
 	void get_rle_shape(ifstream& shapes, long filepos, long len);
 public:
