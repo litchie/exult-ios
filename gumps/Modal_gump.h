@@ -56,8 +56,10 @@ public:
 	virtual void mousewheel_up() { }
 	virtual void mouse_drag(int mx, int my)
 		{  }
-	virtual void key_down(int chr, SDL_Event& ev) // Character typed.
+	virtual void key_down(int chr) // Key pressed
 		{  }
+	virtual void text_input(int chr, int unicode) // Character typed (unicode)
+		{ }
 };
 
 #endif

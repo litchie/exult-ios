@@ -1089,7 +1089,7 @@ static void Handle_event
 		break;
 #endif
 	case SDL_QUIT:
-		gwin->get_gump_man()->Okay_to_quit();
+		gwin->get_gump_man()->okay_to_quit();
 		break;
 	case SDL_KEYDOWN:		// Keystroke.
 		if (!dragging)		// ESC while dragging causes crashes.

@@ -25,9 +25,6 @@
 #  include <ctime>
 #endif 
 
-#include "SDL_events.h"
-#include "SDL_keyboard.h"
-
 #include "exult_flx.h"
 
 #include "Audio.h"
@@ -220,8 +217,6 @@ Newfile_gump::Newfile_gump
 	buttons[7] = new Newfile_button(this, btn_cols[4], btn_rows[4], EXULT_FLX_SAV_DOWNDOWN_SHP);
 
 	LoadSaveGameDetails();
-
-	SDL_EnableUNICODE(1); // enable unicode translation for text input
 }
 
 /*
@@ -239,8 +234,6 @@ Newfile_gump::~Newfile_gump
 
 	FreeSaveGameDetails();
 
-	SDL_EnableUNICODE(0); // disable unicode translation again
-	
 	delete back;
 }
 
@@ -265,7 +258,7 @@ void Newfile_gump::load()
 	done = true;
 	restored = 1;
 	
-	// Since we just loaded a new game, we don't want Do_Modal_gump to restore the background.
+	// Since we just loaded a new game, we don't want do_modal_gump to restore the background.
 	restore_background = false;
 
 	// Reset Selection
@@ -812,7 +805,7 @@ void Newfile_gump::mouse_drag
  *	Handle character that was typed.
  */
 
-void Newfile_gump::key_down(int chr, SDL_Event& event)
+void Newfile_gump::text_input(int chr, int unicode)
 {
 	bool update_details = false;
 	int repaint = false;
@@ -890,13 +883,10 @@ void Newfile_gump::key_down(int chr, SDL_Event& event)
 
 	default:
 
-		if (event.type == SDL_KEYDOWN) {
-			int unicode = event.key.keysym.unicode;
-			if ((unicode & 0xFF80) == 0 )
-				chr = unicode & 0x7F;
-			else
-				chr = 0;
-		}
+		if ((unicode & 0xFF80) == 0 )
+			chr = unicode & 0x7F;
+		else
+			chr = 0;
 
 		if (chr < ' ')
 			return;			// Ignore other special chars.

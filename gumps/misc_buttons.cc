@@ -87,7 +87,7 @@ void Disk_button::activate
 	)
 {
 	Gamemenu_gump *menu = new Gamemenu_gump();
-	gumpman->Do_Modal_gump(menu, Mouse::hand);
+	gumpman->do_modal_gump(menu, Mouse::hand);
 	delete menu;
 }
 

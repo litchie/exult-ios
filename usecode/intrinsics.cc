@@ -196,7 +196,7 @@ USECODE_INTRINSIC(select_from_menu2)
 USECODE_INTRINSIC(input_numeric_value)
 {
 	// Ask for # (min, max, step, default).
-	Usecode_value ret(gumpman->Prompt_for_number(
+	Usecode_value ret(gumpman->prompt_for_number(
 		parms[0].get_int_value(), parms[1].get_int_value(),
 		parms[2].get_int_value(), parms[3].get_int_value()));
 	conv->clear_text_pending();	// Answered a question.

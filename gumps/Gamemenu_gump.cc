@@ -109,11 +109,11 @@ void Gamemenu_gump::loadsave()
 {
 	//File_gump *fileio = new File_gump();
 	Newfile_gump *fileio = new Newfile_gump();
-	gumpman->Do_Modal_gump(fileio, Mouse::hand);
+	gumpman->do_modal_gump(fileio, Mouse::hand);
 	if (fileio->restored_game())
 	{
 		done = true;
-		// Since we just loaded a new game, we don't want Do_Modal_gump to restore the background.
+		// Since we just loaded a new game, we don't want do_modal_gump to restore the background.
 		restore_background = false;
 	}
 	delete fileio;
@@ -122,7 +122,7 @@ void Gamemenu_gump::loadsave()
 void Gamemenu_gump::video_options()
 {
 	VideoOptions_gump *vid_opts = new VideoOptions_gump();
-	gumpman->Do_Modal_gump(vid_opts, Mouse::hand);
+	gumpman->do_modal_gump(vid_opts, Mouse::hand);
 
 	if (!vid_opts->want_restore_background()) {
 		// resolution could have changed, so recenter & repaint menu.
@@ -138,14 +138,14 @@ void Gamemenu_gump::video_options()
 void Gamemenu_gump::audio_options()
 {
 	AudioOptions_gump *aud_opts = new AudioOptions_gump();
-	gumpman->Do_Modal_gump(aud_opts, Mouse::hand);
+	gumpman->do_modal_gump(aud_opts, Mouse::hand);
 	delete aud_opts;
 }
 
 void Gamemenu_gump::gameplay_options()
 {
 	GameplayOptions_gump *gp_opts = new GameplayOptions_gump();
-	gumpman->Do_Modal_gump(gp_opts, Mouse::hand);
+	gumpman->do_modal_gump(gp_opts, Mouse::hand);
 	delete gp_opts;
 }
 

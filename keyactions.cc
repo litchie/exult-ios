@@ -61,14 +61,14 @@ static Actor *Get_party_member
 //  { ActionQuit, 0, "Quit", true, false, NONE },
 void ActionQuit(int *params)
 {
-	Game_window::get_instance()->get_gump_man()->Okay_to_quit();
+	Game_window::get_instance()->get_gump_man()->okay_to_quit();
 }
 
 // { ActionOldFileGump, 0, "Save/restore", true, false, NONE },
 void ActionOldFileGump(int *params)
 {
 	File_gump *fileio = new File_gump();
-	Game_window::get_instance()->get_gump_man()->Do_Modal_gump(fileio, 
+	Game_window::get_instance()->get_gump_man()->do_modal_gump(fileio, 
 															   Mouse::hand);
 	delete fileio;
 }
@@ -77,7 +77,7 @@ void ActionOldFileGump(int *params)
 void ActionMenuGump(int *params)
 {
 	Gamemenu_gump *gmenu = new Gamemenu_gump();
-	Game_window::get_instance()->get_gump_man()->Do_Modal_gump(gmenu,
+	Game_window::get_instance()->get_gump_man()->do_modal_gump(gmenu,
 															   Mouse::hand);
 	delete gmenu;
 }
@@ -86,7 +86,7 @@ void ActionMenuGump(int *params)
 void ActionFileGump(int *params)
 {
 	Newfile_gump *fileio = new Newfile_gump();
-	Game_window::get_instance()->get_gump_man()->Do_Modal_gump(fileio,
+	Game_window::get_instance()->get_gump_man()->do_modal_gump(fileio,
 															   Mouse::hand);
 	delete fileio;
 }
