@@ -1,11 +1,5 @@
-/**	-*-mode: Fundamental; tab-width: 8; -*-
- **
- **	Gumps.cc - Open containers and their contents.
- **
- **	Written: 3/4/2000 - JSF
- **/
 /*
-Copyright (C) 2000  Jeffrey S. Freedman
+Copyright (C) 2000 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

@@ -40,7 +40,7 @@ void Text_gump::add_text
 	if (textlen)			// Copy over old.
 		strcpy(newtext, text);
 	strcpy(newtext + textlen, str);	// Append new.
-	delete text;
+	delete [] text;
 	text = newtext;
 	textlen += slen;
 }

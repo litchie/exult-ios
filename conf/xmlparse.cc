@@ -25,59 +25,60 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "XMLEntity.h"
 #include <iostream>
 
+using std::string;
 
-static	void	trim(std::string &s)
+static	void	trim(string &s)
 {
 	// Clean off leading whitespace
 	while(s.length()&&s[0]<=32)
-		{
+	{
 		s=s.substr(1);
-		}
+	}
 	// Clean off trailing whitespace
 	while(s.length()&&s[s.length()-1]<=32)
-		{
+	{
 		s.erase(s.length()-1);
-		}
+	}
 }
 
-static	bool	grab_entity(std::string &s,std::size_t &pos,const char *ent)
+static	string	entity_decode(string &s,std::size_t &pos)
 {
-	std::string	t(s.substr(pos));
-	if(t.find(ent)==0)
-		{
-		pos+=std::strlen(ent)+1;
-		return true;
-		}
-	return false;
+	std::size_t			old_pos = pos;
+	string::size_type	entity_name_len = s.find_last_not_of("; \t\r\n", pos) -pos ;
+	string				entity_name = s.substr(pos+1, entity_name_len);
+	
+	pos += entity_name_len + 2;
+	
+	if(s == "amp")
+		return string("&");
+	else
+	if(s == "apos")
+		return string("'");
+	else
+	if(s == "quot")
+		return string("\"");
+	else
+	if(s == "lt")
+		return string("<");
+	else
+	if(s == "gt")
+		return string(">");
+	
+	return s.substr(old_pos, entity_name_len+2);
 }
 
-static	std::string	entity_decode(std::string &s,std::size_t &pos)
-{
-	// This is ugly and slow
-	++pos;	// Advance past amp
-	if(grab_entity(s,pos,"amp"))
-		return std::string("&");
-	else
-	if(grab_entity(s,pos,"gt"))
-		return std::string(">");
-	else
-	if(grab_entity(s,pos,"lt"))
-		return std::string("<");
-	return std::string("&");
-}
-
-void	xmlparse(std::string &s,std::size_t &pos,XMLnode *x)
+void	xmlparse(string &s,std::size_t &pos,XMLnode *x)
 {
 	bool	intag=true;
 	while(pos<s.length())
-		{
+	{
 		switch(s[pos])
-			{
+		{
 			case '<':
-				{
+			{
 				// New tag?
 				if(s[pos+1]=='/')
-					{
+				{
 					// No. Close tag.
 					while(s[pos]!='>')
 						pos++;
@@ -85,20 +86,20 @@ void	xmlparse(std::string &s,std::size_t &pos,XMLnode *x)
 					trim(x->entity.content);
 //					cout << "End of entity(1) '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
 					return;
-					}
+				}
 				XMLnode *t = new XMLnode;
 				++pos;
 				xmlparse(s,pos,t);
 				x->nodelist.push_back(t);
 				break;
-				}
+			}
 			case '>':
 				// End of tag
 				if(s[pos-1]=='/')
-					{
+				{
 					++pos;
 					return; // An empty tag
-					}
+				}
 				++pos; intag=false; if(s[pos]<32) ++pos;
 				break;
 			case '&':
@@ -108,11 +109,11 @@ void	xmlparse(std::string &s,std::size_t &pos,XMLnode *x)
 				if(intag)
 					x->entity.id+=s[pos++];
 				else
-					{
+				{
 					x->entity.content+=s[pos++];
-					}
-			}
+				}
 		}
+	}
 	trim(x->entity.content);
 //	cout << "End of entity(2) '"<<x->entity.id <<"' ("<<x->entity.content<<")"<<endl;
 }
