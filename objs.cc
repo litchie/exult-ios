@@ -2272,41 +2272,6 @@ int Sprite::next_frame
 	return (1);
 	}
 #endif
-/*
- *	Create a text object.
- */
-
-Text_object::Text_object
-	(
-	const char *m, 			// A copy is made.
-	int t_x, int t_y, 		// Abs. tile coords.
-	int w, int h
-	) : msg(strdup(m)), tx(t_x), ty(t_y), width(w), height(h)
-	{
-	}
-
-/*
- *	Remove from screen.
- */
-
-void Text_object::handle_event
-	(
-	unsigned long curtime,		// Current time of day.
-	long udata			// Ignored.
-	)
-	{
-	Game_window *gwin = (Game_window *) udata;
-					// Repaint slightly bigger rectangle.
-	Rectangle rect((tx - gwin->get_scrolltx() - 1)*tilesize,
-		       (ty - gwin->get_scrollty() - 1)*tilesize,
-			width + 2*tilesize, height + 2*tilesize);
-					// Intersect with screen.
-	rect = gwin->clip_to_win(rect);
-	gwin->remove_text(this);	// Remove & delete this.
-	if (rect.w > 0 && rect.h > 0)	// Watch for negatives.
-		gwin->paint(rect.x, rect.y, rect.w, rect.h);
-
-	}
 
 /*
  *	Return the direction for a given slope (0-7).

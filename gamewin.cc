@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "usecode.h"
 #include "npcnear.h"
 #include "gumps.h"
+#include "effects.h"
 #include "segfile.h"
 #include "Audio.h"
 #include "files/U7file.h"
@@ -997,8 +998,8 @@ void Game_window::paint
 	for (Gump_object *gmp = open_gumps; gmp; gmp = gmp->get_next())
 		gmp->paint(this);
 					// Draw text.
-	for (Text_object *txt = texts; txt; txt = txt->next)
-		paint_text_object(txt);
+	for (Text_effect *txt = texts; txt; txt = txt->next)
+		paint_Text_effect(txt);
 	win->clear_clip();
 					// Complete repaint?
 	if (!x && !y && w == get_width() && h == get_height() && main_actor)
@@ -1018,9 +1019,9 @@ void Game_window::paint
  *	Paint a text object.
  */
 
-void Game_window::paint_text_object
+void Game_window::paint_Text_effect
 	(
-	Text_object *txt
+	Text_effect *txt
 	)
 	{
 	const char *msg = txt->msg;
@@ -1539,11 +1540,11 @@ void Game_window::add_text
 	int x, int y			// Pixel coord. on screen.
 	)
 	{
-	Text_object *txt = new Text_object(msg,
+	Text_effect *txt = new Text_effect(msg,
 		get_scrolltx() + x/tilesize, get_scrollty() + y/tilesize,
 				8 + get_text_width(0, msg),
 				8 + get_text_height(0));
-	paint_text_object(txt);		// Draw it.
+	paint_Text_effect(txt);		// Draw it.
 	txt->next = texts;		// Insert into chain.
 	txt->prev = 0;
 	if (txt->next)
@@ -1561,7 +1562,7 @@ void Game_window::add_text
 
 void Game_window::remove_text
 	(
-	Text_object *txt
+	Text_effect *txt
 	)
 	{
 	if (txt->next)
