@@ -130,12 +130,19 @@ void Get_u7_chunkid
 int Store_u7_comboid
 	(
 	unsigned char *data, 
+	int xtiles, int ytiles,		// Footprint in tiles.
+	int tiles_right,		// Tiles to right of hot-spot.
+	int tiles_below,		// Tiles below hot-spot.
 	int cnt, 			// # members.
 	U7_combo_data *ents		// The members, with locs. relative to
 					//   hot-spot.
 	)
 	{
 	unsigned char *ptr = data;
+	Write2(ptr, xtiles);
+	Write2(ptr, ytiles);
+	Write2(ptr, tiles_right);
+	Write2(ptr, tiles_below);
 	Write2(ptr, cnt);
 	for (int i = 0; i < cnt; i++)
 		{
@@ -158,11 +165,18 @@ int Store_u7_comboid
 void Get_u7_comboid
 	(
 	unsigned char *data, 
+	int& xtiles, int& ytiles,	// Footprint in tiles.
+	int& tiles_right,		// Tiles to right of hot-spot.
+	int& tiles_below,		// Tiles below hot-spot.
 	int& cnt, 
 	U7_combo_data *& ents
 	)
 	{
 	unsigned char *ptr = data;
+	xtiles = Read2(ptr);
+	ytiles = Read2(ptr);
+	tiles_right = Read2(ptr);
+	tiles_below = Read2(ptr);
 	cnt = Read2(ptr);
 	ents = new U7_combo_data[cnt];
 	for (int i = 0; i < cnt; i++)

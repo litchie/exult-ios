@@ -68,14 +68,16 @@ Xdnd::Xdnd
 	Window xw,			// Window-manager window.
 	Window xgw,			// Game's display window in xw.
 	Move_shape_handler_fun movefun,
+	Move_combo_handler_fun movecmbfun,
 	Drop_shape_handler_fun shapefun,
 	Drop_chunk_handler_fun cfun,
 	Drop_combo_handler_fun cmbfun
 	) : display(d), xwmwin(xw), xgamewin(xgw),
 		num_types(0), lastx(-1), lasty(-1),
 		file(-1), shape(-1), frame(-1), chunknum(-1), 
-		combo_cnt(-1), combo(0),
-		data_valid(false), move_handler(movefun),
+		combo_cnt(-1), combo(0), combo_xtiles(0), combo_ytiles(0),
+		data_valid(false), move_shape_handler(movefun),
+		move_combo_handler(movecmbfun),
 		shape_handler(shapefun), chunk_handler(cfun),
 		combo_handler(cmbfun)
 	{
@@ -191,7 +193,12 @@ void Xdnd::client_msg
 			XConvertSelection(display, xdnd_selection, 
 				drag_types[i], xdnd_selection, xwmwin, time);
 		else if (file == U7_SHAPE_SHAPES)
-			(*move_handler)(shape, frame, x,y, lastx, lasty, true);
+			(*move_shape_handler)(shape, frame, x,y, 
+							lastx, lasty, true);
+		else if (combo_cnt > 0)
+			(*move_combo_handler)(combo_xtiles, combo_ytiles,
+				combo_tiles_right, combo_tiles_below,
+						x, y, lastx, lasty, true);
 		lastx = x;
 		lasty = y;
 		}
@@ -246,6 +253,7 @@ void Xdnd::select_msg
 	file = shape = frame = -1;	// Invalidate old data.
 	chunknum = -1;
 	combo_cnt = -1;
+	combo_xtiles = combo_ytiles = 0;
 	delete combo;
 	combo = 0;
 	Atom type = None;		// Get data.
@@ -272,7 +280,11 @@ void Xdnd::select_msg
 		}
 	else if (sev.target == comboid_atom)
 		{
-		Get_u7_comboid(data, combo_cnt, combo);
+		Get_u7_comboid(data, combo_xtiles, combo_ytiles,
+		    combo_tiles_right, combo_tiles_below, combo_cnt, combo);
+cout << "Combo: xtiles=" << combo_xtiles << ", ytiles=" << combo_ytiles <<
+	", tiles_right=" << combo_tiles_right << ", tiles_below=" <<
+					combo_tiles_below << endl;
 		data_valid = true;
 		}
 	XFree(data);

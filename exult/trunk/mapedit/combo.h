@@ -48,6 +48,8 @@ public:
 	Combo_member(short x, short y, short z, short sh, short fr)
 		: tx(x), ty(y), tz(z), shapenum(sh), framenum(fr)
 		{  }
+					// Return which makes better hot-spot.
+	friend int hot_spot_compare(Combo_member& c0, Combo_member& c1);
 	};
 
 /*
