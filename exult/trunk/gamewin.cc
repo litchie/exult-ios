@@ -1743,7 +1743,8 @@ void Game_window::teleport_party
 					//   step back to where you came from.
 	moving_barge = 0;		// Calling 'done()' could be risky...
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
-	set_all_dirty();
+	center_view(t);			// Bring pos. into view, and insure all
+					//   objs. exist.
 
 	int cnt = party_man->get_count();
 	for (int i = 0; i < cnt; i++)
@@ -1761,7 +1762,6 @@ void Game_window::teleport_party
 				person->move(t1);
 			}
 		}
-	center_view(t);			// Bring pos. into view.
 	main_actor->get_followers();
 	if (!skip_eggs)			// Check all eggs around new spot.
 		Map_chunk::try_all_eggs(main_actor, t.tx, t.ty, t.tz,
