@@ -131,10 +131,14 @@ int Actor_pathfinder_client::estimate_cost
 	)
 	{
 	int dx = to.tx - from.tx;
-	if (dx < 0)
+	if (dx < -c_num_tiles/2)	// Wrap around the world.
+		dx += c_num_tiles;
+	else if (dx < 0)
 		dx = -dx;
 	int dy = to.ty - from.ty;
-	if (dy < 0)
+	if (dy < -c_num_tiles/2)
+		dy += c_num_tiles;
+	else if (dy < 0)
 		dy = -dy;
 	int larger, smaller;		// Start with larger.
 	if (dy <= dx)
@@ -176,14 +180,22 @@ int Onecoord_pathfinder_client::estimate_cost
 	if (to.tx == -1)		// Just care about Y?
 		{			// Cost = 2/tile.
 		int dy = to.ty - from.ty;
-		return (2*(dy < 0 ? -dy : dy));
+		if (dy < -c_num_tiles/2)
+			dy += c_num_tiles;
+		else if (dy < 0)
+			dy = -dy;
+		return (2*dy);
 		}
 	else if (to.ty == -1)
 		{
 		int dx = to.tx - from.tx;
-		return (2*(dx < 0 ? -dx : dx));
+		if (dx < -c_num_tiles/2)
+			dx += c_num_tiles;
+		else if (dx < 0)
+			dx = -dx;
+		return (2*dx);
 		}
-	else				// Should get here.
+	else				// Shouldn't get here.
 		return Actor_pathfinder_client::estimate_cost(from, to);
 	}
 
@@ -224,6 +236,7 @@ int Offscreen_pathfinder_client::estimate_cost
 	Tile_coord& to			// Should be the goal.
 	)
 	{
+//++++++World-wrapping here????
 	int dx = from.tx - screen.x;	// Figure shortest dist.
 	int dx1 = screen.x + screen.w - from.tx;
 	if (dx1 < dx)
@@ -317,7 +330,7 @@ int Fast_pathfinder_client::estimate_cost
 	Tile_coord& to
 	)
 	{
-	return from.distance(to);
+	return from.distance(to);	// Distance() does world-wrapping.
 	}
 
 /*

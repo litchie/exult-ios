@@ -26,6 +26,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef INCL_TILES
 #define INCL_TILES	1
 
+#include "exult_constants.h"
+
 /*
  *	A 3D tile coordinate:
  */
@@ -45,16 +47,22 @@ public:
 		{
 		int dy = t2.ty - ty;
 		int dx = t2.tx - tx;
-		if (dy < 0)		// Just take longer abs. value.
+		if (dy < -c_num_tiles/2)// World-wrapping.
+			dy += c_num_tiles;
+		else if (dy < 0)	// Just take longer abs. value.
 			dy = -dy;
-		if (dx < 0)
+		if (dx < -c_num_tiles/2)
+			dx += c_num_tiles;
+		else if (dx < 0)
 			dx = -dx;
 		return (dy > dx ? dy : dx);
 		}
 					// Get neighbor in given dir (0-7).
 	inline Tile_coord get_neighbor(int dir)
-		{ return Tile_coord(tx + neighbors[2*dir],
-					ty + neighbors[2*dir + 1], tz); }
+		{ return Tile_coord(
+			(tx + neighbors[2*dir] + c_num_tiles)%c_num_tiles,
+			(ty + neighbors[2*dir + 1] + c_num_tiles)%c_num_tiles,
+								 tz); }
 	};
 					// Add two coords.
 inline Tile_coord operator+(Tile_coord a, Tile_coord b)

@@ -1,3 +1,7 @@
+2001-04-17  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* First pass at world-wrapping.  (Doesn't work yet!)
+
 2001-04-18  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* Makefile.cygwin: Travis' changes
 

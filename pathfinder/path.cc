@@ -65,14 +65,15 @@ public:
 					// Get next neighbor.
 	int operator()(Tile_coord& newt)
 		{
-		while (index < 8)
+		if (index < 8)
 			{
 			newt = Tile_coord(tile.tx + coords[2*index],
 				tile.ty + coords[2*index + 1], tile.tz);
 			index++;
-			if (newt.tx >= 0 && newt.tx < c_num_tiles &&
-			    newt.ty >= 0 && newt.ty < c_num_tiles)
-				return (1);
+					// Handle world-wrapping.
+			newt.tx = (newt.tx + c_num_tiles)%c_num_tiles;
+			newt.ty = (newt.ty + c_num_tiles)%c_num_tiles;
+			return (1);
 			}
 		return (0);
 		}
