@@ -1,4 +1,9 @@
 2001-11-09  Ryan Nunn  <triforce@merlin.net.au>
+	* gumps/Newfile_gump.* : Added "File" field to Save game info display.
+	  Fixed crash on delete.
+	* audio/midi_drivers/win32_midiout.cc : Not much
+
+2001-11-09  Ryan Nunn  <triforce@merlin.net.au>
 	* actorio.cc, combat.cc, gameclk.cc, gumps/GameplayOptions_gump.cc :
 	  Fixed up some bool warnings.
 	* cheat_screen.cc : Can put spaces in names and added feedback after
