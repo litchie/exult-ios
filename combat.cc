@@ -250,8 +250,10 @@ void Combat_schedule::approach_foe
 		if (!opponent || !path->NewPath(
 				pos, opponent->get_abs_tile_coord(), &cost))
 			{
-			delete path;	// Really failed.  Try again in .5 sec.
-			npc->start(200, 500);
+			delete path;	// Really failed.  Try again in 
+					//  .5 - 2 secs.
+			npc->start(200, failures < 20 ? 500 : 
+					failures < 50 ? 1000 : 2000);
 			failures++;
 			return;
 			}

@@ -1600,6 +1600,8 @@ void Actor::reduce_health
 				usecode, this, Usecode_machine::died) != -1;
 					// No longer killable.  Time to die.
 			if (!execed ||
+					// For now, check for special cases:
+			   usecode == 0x175 ||	// Mummy
 			   (was_killable && !get_flag(Obj_flags::si_killable)))
 				die();
 					// Else restore health.
@@ -2978,11 +2980,10 @@ void Npc_actor::paint
 		{
 		dormant = false;	// But clear out old entries first.??
 		gwin->get_tqueue()->remove(this);
-					// Force schedule->now_what().
+					// Force schedule->now_what() in .5secs
 					// DO NOT call now_what here!!!
 		uint32 curtime = SDL_GetTicks();
-		gwin->get_tqueue()->add(curtime, this, (long) gwin);
-// Causes crashes.		set_action(new Null_action());
+		gwin->get_tqueue()->add(curtime + 500, this, (long) gwin);
 		}
 	if (!nearby)			// Make sure we're in 'nearby' list.
 		gwin->add_nearby_npc(this);
@@ -3152,7 +3153,7 @@ void Npc_actor::switched_chunks
 	Chunk_object_list *nlist	// New chunk, or null.
 	)
 	{
-	if (olist)			// Remove from old list.
+	if (olist && olist->npcs)	// Remove from old list.
 		{
 		if (this == olist->npcs)
 			olist->npcs = next;
