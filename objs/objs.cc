@@ -983,8 +983,7 @@ string Game_object::get_name
 
 
 	} else if (Game::get_game_type() == SERPENT_ISLE) {
-		//TODO: yourself, oilskin, broken glass, throne
-		//TODO: Dave, >= text.flx nr. 1540
+		//TODO: yourself, misc. checks/fixes
 		
 		switch (shnum)			// More special cases!
 		{
@@ -1071,8 +1070,76 @@ string Game_object::get_name
 			else if (frnum >= 24)
 				name = item_names[0x63e + (frnum%2)];
 			break;
+		case 0x12f:
+			if (frnum >= 10 && frnum <= 14)
+				name = item_names[0x60b];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x135:        // fallen tree
+			if (frnum == 2)
+				name = item_names[0x635]; // large skull
+			else
+				name = item_names[shnum];
+			break;
+		case 0x141:         // reeds
+			if (frnum == 11)
+				name = item_names[0x61c]; // crucifix
+			else
+				name = item_names[shnum];
+			break;
+		case 0x14a:         // serpent rune
+			if (frnum < 8)
+				name = item_names[0x607]; // stones
+			else
+				name = item_names[shnum];
+			break;
+		case 0x150:         // light source
+			name = item_names[0x646 + frnum];
+			break;
+		case 0x152:         // lit light source
+			{
+				string tmp = item_names[0x657]; // lit
+				tmp += item_names[0x646 + frnum];
+				return tmp;
+			}
+			break;
+		case 0x172:         // floor
+			// TODO: CHECK!
+			if (frnum == 19)
+				name = item_names[0x60e]; // wall
+			else
+				name = item_names[shnum];
+			break;
 		case 0x179:			// Food items
 			name = item_names[0x510 + frnum];
+			break;
+		case 0x17a:         // fence
+			if (frnum == 3 || (frnum > 7 && frnum < 12))
+				name = item_names[0x60e]; // wall
+			else
+				name = item_names[shnum];
+			break;
+		case 0x17f:         // magic helm
+			if (frnum == 1)
+				name = item_names[0x614]; // helm of courage
+			else
+				name = item_names[shnum];
+			break;
+		case 0x194:         // food
+			name = item_names[0x640 + frnum];
+			break;
+		case 0x19f:         // garbage
+			if (frnum > 20 && frnum < 24)
+				name = item_names[0x60f]; // skull
+			else
+				name = item_names[shnum];
+			break;
+		case 0x1ba:         // fireplace
+			if (frnum == 2)
+				name = item_names[0x620]; // wooden post
+			else
+				name = item_names[shnum];
 			break;
 		case 0x1bd:			// Soul prisms
 			name = item_names[0x56b + frnum];
@@ -1083,11 +1150,62 @@ string Game_object::get_name
 		case 0x1d3:			// Magic plants
 			name = item_names[0x581 + frnum/2];
 			break;
-		case 0x1df:      // claw + gwani amulet
+		case 0x1db:         // wall of lights
+			// TODO: CHECK
+			if (frnum == 10)
+				name = item_names[0x683]; // wall
+			else
+				name = item_names[shnum];
+			break;
+		case 0x1df:         // claw + gwani amulet
 			name = item_names[0x5f8 + frnum/2];
+			break;
+		case 0x1e3:         // rug
+			// TODO: CHECK
+			if (frnum >= 2)
+				name = item_names[0x608]; // meditation mat
+			else
+				name = item_names[shnum];
+			break;
+		case 0x1f9:         // magic lens
+			if (frnum == 2)
+				name = item_names[0x615]; // lens of translating
+			else
+				name = item_names[shnum];
+			break;
+		case 0x201:         // floor
+			if (frnum == 5)
+				name = item_names[0x60d]; // bookshelf
+			else
+				name = item_names[shnum];
+			break;
+		case 0x206:         // glass counter top
+			if (frnum == 26)
+				name = item_names[0x682]; // table
+			else
+				name = item_names[shnum];
+			break;
+		case 0x207:         // Moon's Eye
+			if (frnum == 1)
+				name = item_names[0x616]; // crystal ball
+			else
+				name = item_names[shnum];
+			break;
+		case 0x21a:         // fence
+			if (frnum == 3 || (frnum > 7 && frnum < 12))
+				name = item_names[0x60e]; // wall
+			else
+				name = item_names[shnum];
 			break;
 		case 0x21e:			// Crested Helmets
 			name = item_names[0x5a3 + frnum];
+			break;
+		case 0x220:         // broken column
+			// TODO: CHECK
+			if (frnum == 14)
+				name = item_names[0x611]; // pillar of purity
+			else
+				name = item_names[shnum];
 			break;
 		case 0x241:			// Nests
 			if (frnum < 6)
@@ -1098,7 +1216,7 @@ string Game_object::get_name
 		case 0x24b:			// Boots
 			name = item_names[0x59c + frnum];
 			break;
-		case 0x258:        // Bottles
+		case 0x268:        // Bottles
 			switch (frnum) {
 			case 1:
 				name = item_names[0x5f2]; // wine decanter
@@ -1122,18 +1240,131 @@ string Game_object::get_name
 				name = item_names[shnum];
 			}
 			break;
+		case 0x281:         // key
+			switch (frnum) {
+			case 21:
+				name = item_names[0x630]; // key of fire
+				break;
+			case 22:
+				name = item_names[0x631]; // key of ice
+				break;
+			case 23:
+				name = item_names[0x62f]; // blackrock key
+				break;
+			default:
+				name = item_names[shnum];
+			}
+			break;
+		case 0x288:         // sleeping powder
+			if (frnum >= 2)
+				name = item_names[0x65c - 2 + frnum];
+			else
+				name = item_names[shnum];
+			break;
 		case 0x289:			// Artifacts
 			name = item_names[0x573 + frnum];
 			break;
 		case 0x28a:			// Sextants
 			name = item_names[0x531 - frnum];
 			break;
+		case 0x290:         // wine press
+			if (frnum == 1)
+				name = item_names[0x634]; // wine vat
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2a1:         // strange plant
+			if (frnum > 8)
+				name = item_names[0x62c]; // snowy plant
+			else
+				name = item_names[shnum];
+			break;
 		case 0x2a3:			// Desk items
 			name = item_names[0x532 + frnum];
+			break;
+		case 0x2a5:         // stockings
+			if (frnum < 2)
+				name = item_names[0x62a + frnum];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2af:         // pillar
+			if (frnum == 11)
+				name = item_names[0x611]; // pillar of purity
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2b0:         // serpent carving
+			if (frnum > 1)
+				name = item_names[0x621 - 1 + (frnum/2)];
+			else
+				name = item_names[shnum];
 			break;
 		case 0x2b4:			// Lute
 			if (frnum == 2)
 				name = item_names[0x5be];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2b5:        // whistle
+			// TODO: CHECK
+			if (frnum == 4 || frnum == 5)
+				name = item_names[0x618]; // bone whistle
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2b8:        // bed
+			if (frnum == 1)
+				name = item_names[0x5da]; // stone bier
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2cd:        // plate
+			if (frnum == 9)
+				name = item_names[0x61a]; // platter of replenishment
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2ce:        // pedestal
+			if (frnum == 8)
+				name = item_names[0x619]; // blackrock obelisk
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2d7:        // Dream Crystal
+			// TODO: CHECK
+			if (frnum == 1)
+				name = item_names[0x659]; // dream crystal
+			else if (frnum == 2)
+				name = item_names[0x65a]; // mirror rock
+			else if (frnum >= 3)
+				name = item_names[0x65b]; // icy column
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2d8:        // Force_Wall
+			// TODO: CHECK
+			if (frnum > 0)
+				name = item_names[0x683]; // wall
+			else
+				name = item_names[shnum];
+			break;
+		case 0x2f4:        // caltrops
+			if (frnum == 2 || frnum == 3)
+				name = item_names[0x5fb]; // broken glass
+			else
+				name = item_names[shnum];
+			break;
+		case 0x313:        // lever
+			if (frnum == 8 || frnum == 9)
+				name = item_names[0x613]; // button
+			else
+				name = item_names[shnum];
+			break;
+		case 0x314:        // switch
+			// TODO: CHECK 10, 11
+			if (frnum >= 6 && frnum <= 9)
+				name = item_names[0x613]; // button
 			else
 				name = item_names[shnum];
 			break;
@@ -1165,30 +1396,124 @@ string Game_object::get_name
 		case 0x34a:			// Reagents
 			name = item_names[0x500 + frnum];
 			break;
+		case 0x35f:         // kitchen items
+			name = item_names[0x66b + frnum];
+			break;
+		case 0x365:         // wall
+			if (frnum == 11)
+				name = item_names[0x610]; // spirit wall
+			else
+				name = item_names[shnum];
+			break;
+		case 0x36c:         // sliding door
+			if (frnum >= 10 && frnum <= 14)
+				name = item_names[0x60b]; // iris door
+			else
+				name = item_names[shnum];
+			break;
 		case 0x377:			// More rings
 			name = item_names[0x5bc + frnum];
 			break;
-		case 0x390:         // Acid
+		case 0x37a:         // table
+			if (frnum == 6)
+				name = item_names[0x62e]; // torture table
+			else
+				name = item_names[shnum];
+			break;
+		case 0x390:         // blood
 			if (frnum == 24)
-				name = item_names[0x5de];
+				name = item_names[0x5de]; // acid
 			else if (frnum < 4)
-				name = item_names[0x390];
+				name = item_names[0x390]; // blood
 			else
 				name = 0;
+			break;
+		case 0x392:         // urn
+			// TODO: umm... x's ashes?.. should be interesting
+			name = item_names[shnum];
+			break;
+		case 0x397:         // bookshelf
+			if (frnum == 6)
+				name = item_names[0x60a]; // slate mantle
+			else
+				name = item_names[shnum];
+			break;
+		case 0x39f:         // serpent slot
+			if (frnum >= 4 && frnum <= 7)
+				name = item_names[0x61e]; // slotted serpent
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3a7:         // sliding door
+			if (frnum == 2)
+				name = item_names[0x60b]; // iris door
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3a8:         // sliding door
+			if (frnum == 2)
+				name = item_names[0x60b]; // iris door
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3b0:         // pot
+			if (frnum == 5)
+				name = item_names[0x61b]; // cuspidor
+			else
+				name = item_names[shnum];
 			break;
 		case 0x3bb:			// Amulets
 			name = item_names[0x5ae + frnum];
 			break;
-		case 0x3ec:			// Helmets
+		case 0x3d1:         // fur pelt
+			if (frnum == 0 || frnum == 8)
+				name = item_names[0x61f]; // leopard rug
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3e5:         // spent light source
+			{
+				string tmp = item_names[0x658]; // spent
+				tmp += item_names[0x646 + frnum];
+				return tmp;
+			}
+			break;
+		case 0x3e6:         // statue
+			if (frnum <= 3)
+				name = item_names[0x628 + (frnum/2)];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3e7:         // plant
+			name = item_names[0x65f + frnum];
+			break;
+		case 0x3ea:         // table
+			if (frnum == 1)
+				name = item_names[0x62d]; // embalming table
+			else
+				name = item_names[shnum];
+			break;
+ 		case 0x3ec:			// Helmets
 			name = item_names[0x5a6 + frnum];
 			break;
 		case 0x3f3:			// Beds
+			// TODO: CHECK
 			if (frnum >= 1 && frnum <= 4)
 				name = item_names[0x5da + frnum - 1];
 			else if (frnum == 5)
 				name = item_names[0x5dd];
 			else if (frnum == 6)
 				name = item_names[0x5da];
+			else
+				name = item_names[shnum];
+			break;
+		case 0x3f8:         // floor
+			if (frnum == 20 || frnum == 21)
+				name = item_names[0x623]; // symbol of balance
+			else if (frnum == 22)
+				name = item_names[0x624]; // symbol of order
+			else if (frnum == 23)
+				name = item_names[0x625]; // symbol of chaos
 			else
 				name = item_names[shnum];
 			break;
