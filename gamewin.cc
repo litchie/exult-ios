@@ -968,8 +968,8 @@ void Game_window::set_camera_actor
 	    (camera_actor->get_cx() != main_actor->get_cx() ||
 	     camera_actor->get_cy() != main_actor->get_cy()))
 	    				// Cache out temp. objects.
-		emulate_cache(camera_actor->get_cx(), camera_actor->get_cy(),
-			main_actor->get_cx(), main_actor->get_cy());
+		emulate_cache(camera_actor->get_chunk(),
+						main_actor->get_chunk());
 	camera_actor = a;
 	Tile_coord t = a->get_tile();
 	set_scrolls(t);			// Set scrolling around position,
@@ -1797,6 +1797,7 @@ void Game_window::teleport_party
 	int i, cnt = party_man->get_count();
 	if (new_map != -1)
 		{			// Remove all from old map.
+#if 0
 		main_actor->remove_this(true);
 		for (i = 0; i < cnt; i++)
 			{
@@ -1806,6 +1807,7 @@ void Game_window::teleport_party
 			    person->get_schedule_type() != Schedule::wait)
 				person->remove_this(true);
 			}
+#endif
 		set_map(new_map);
 		}
 	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
@@ -2729,53 +2731,62 @@ void Game_window::plasma(int w, int h, int x, int y, int startc, int endc)
  *	Chunk caching emulation:  swap out chunks which are now at least
  *	3 chunks away.
  */
-void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
+void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist)
 {
-	if (oldx == -1 || oldy == -1)
+	if (!olist)
 		return;			// Seems like there's nothing to do.
 					// Cancel weather from eggs that are
 					//   far away.
 	effects->remove_weather_effects(120);
+	int newx = nlist->get_cx(), newy = nlist->get_cy(),
+	    oldx = olist->get_cx(), oldy = nlist->get_cy();
+	Game_map *omap = olist->get_map(), *nmap = nlist->get_map();
 					// Cancel scripts 4 chunks from this.
 	Usecode_script::purge(Tile_coord(newx*c_tiles_per_chunk,
 			newy*c_tiles_per_chunk, 0), 4*c_tiles_per_chunk);
 	int nearby[5][5];		// Chunks within 3.
-	// Set to 0
-	// No casting _should_ be necessary at this point.
-	// Who needs this?
-	memset(reinterpret_cast<char*>(nearby), 0, sizeof(nearby));
+	int x, y;
 					// Figure old range.
 	int old_minx = c_num_chunks + oldx - 2, 
 	    old_maxx = c_num_chunks + oldx + 2;
 	int old_miny = c_num_chunks + oldy - 2, 
 	    old_maxy = c_num_chunks + oldy + 2;
-					// Figure new range.
-	int new_minx = c_num_chunks + newx - 2, 
-	    new_maxx = c_num_chunks + newx + 2;
-	int new_miny = c_num_chunks + newy - 2, 
-	    new_maxy = c_num_chunks + newy + 2;
-	// Now we write what we are now near
-	int x, y;
-	for (y = new_miny; y <= new_maxy; y++) 
+	if (nlist == olist)		// Same map?
 		{
-		if (y > old_maxy)
-			break;		// Beyond the end.
-		int dy = y - old_miny;
-		if (dy < 0)
-			continue;
-		assert(dy < 5);
-		for (x = new_minx; x <= new_maxx; x++)
+		// Set to 0
+		// No casting _should_ be necessary at this point.
+		// Who needs this?
+		memset(reinterpret_cast<char*>(nearby), 0, sizeof(nearby));
+					// Figure new range.
+		int new_minx = c_num_chunks + newx - 2, 
+		    new_maxx = c_num_chunks + newx + 2;
+		int new_miny = c_num_chunks + newy - 2, 
+		    new_maxy = c_num_chunks + newy + 2;
+		// Now we write what we are now near
+		for (y = new_miny; y <= new_maxy; y++) 
 			{
-			if (x > old_maxx)
-				break;
-			int dx = x - old_minx;
-			if (dx >= 0)
+			if (y > old_maxy)
+				break;		// Beyond the end.
+			int dy = y - old_miny;
+			if (dy < 0)
+				continue;
+			assert(dy < 5);
+			for (x = new_minx; x <= new_maxx; x++)
 				{
-				assert(dx < 5);
-				nearby[dx][dy] = 1;
+				if (x > old_maxx)
+					break;
+				int dx = x - old_minx;
+				if (dx >= 0)
+					{
+					assert(dx < 5);
+					nearby[dx][dy] = 1;
+					}
 				}
 			}
 		}
+	else				// New map, so cache out all of old.
+		memset(reinterpret_cast<char*>(nearby), 1, sizeof(nearby));
+
 	// Swap out chunks no longer nearby (0).
 	Game_object_vector removes;
 	for (y = 0; y < 5; y++)
@@ -2783,7 +2794,7 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 			{
 			if (nearby[x][y] != 0)
 				continue;
-			Map_chunk *list = map->get_chunk_safely(
+			Map_chunk *list = omap->get_chunk_safely(
 				(old_minx + x)%c_num_chunks,
 				(old_miny + y)%c_num_chunks);
 			if (!list) continue;
@@ -2810,10 +2821,12 @@ void Game_window::emulate_cache(int oldx, int oldy, int newx, int newy)
 		(*it)->remove_this(0);
 		}
 
-		get_map()->cache_out(newx, newy);
-
+	if (omap == nmap)
+		omap->cache_out(newx, newy);
+	else					// Going to new map?
+		omap->cache_out(-1, -1);	// Cache out whole of old map.
 		// Could cause some problems
-		removed->flush();
+	removed->flush();
 	}
 
 // Tests to see if a move goes out of range of the actors superchunk
