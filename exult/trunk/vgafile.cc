@@ -838,8 +838,9 @@ int Shapes_vga_file::read_info
 		{
 		unsigned short shapenum = Read2(weapon);
 		/* short unknown = */ Read2(weapon);
-		unsigned short ammoshape = Read2(weapon);
-		if (ammoshape == shapenum)
+		short ammoshape = Read2(weapon);
+					// +++++Wonder what ammo < 0 means.
+		if (ammoshape == shapenum || ammoshape < 0)
 			ammoshape = 0;
 		int damage = Read1(weapon);
 #if 0
