@@ -86,34 +86,31 @@ void ExultMenu::setup()
 	palfades->set_choice(gwin->get_fades_enabled()?1:0);
 	menu.add_entry(palfades);
 
-	MenuChoice *midiconv = new MenuChoice(exult_flx.get_shape(0x14,1),
-					      exult_flx.get_shape(0x14,0),
-					      centerx, menuy-22, font);
-	  midiconv->add_choice("None");
+	MenuChoice *midiconv = 0, *sfxconv = 0;
+
+
 	if (Audio::get_ptr()->get_midi()) {
+	  midiconv = new MenuChoice(exult_flx.get_shape(0x14,1),
+				  exult_flx.get_shape(0x14,0),
+				  centerx, menuy-22, font);
+	  midiconv->add_choice("None");
+
 	  midiconv->add_choice("GM");
 	  midiconv->add_choice("GS");
 	  midiconv->add_choice("GS127");
 	  midiconv->add_choice("GS127DRUM");
 	  midiconv->set_choice(Audio::get_ptr()->get_midi()->get_music_conversion());
-	} else {
-	  midiconv->set_choice(0);
-	}
-	menu.add_entry(midiconv);
+	  menu.add_entry(midiconv);
 	
-	MenuChoice *sfxconv = new MenuChoice(exult_flx.get_shape(0x15,1),
+	  MenuChoice *sfxconv = new MenuChoice(exult_flx.get_shape(0x15,1),
 					     exult_flx.get_shape(0x15,0),
 					     centerx, menuy-11, font);
-	sfxconv->add_choice("None");
-        if (Audio::get_ptr()->get_midi()) {
+	  sfxconv->add_choice("None");
 	  sfxconv->add_choice("GS");
 	  sfxconv->set_choice(Audio::get_ptr()->get_midi()->get_effects_conversion()==XMIDI_CONVERT_GS127_TO_GS?1:0);
-	} else {
-	  sfxconv->set_choice(0);
+
+	  menu.add_entry(sfxconv);
 	}
-
-	menu.add_entry(sfxconv);
-
 	
 	MenuChoice *playintro = new MenuChoice(exult_flx.get_shape(0x0B,1),
 			      exult_flx.get_shape(0x0B,0),
@@ -198,10 +195,14 @@ void ExultMenu::setup()
 			config->set("config/video/disable_fades",gwin->get_fades_enabled()?"no":"yes",true);
 
 			if (Audio::get_ptr()->get_midi()) {
-			  // Midi Conversion
-			  Audio::get_ptr()->get_midi()->set_music_conversion(midiconv->get_choice());
+			  if (midiconv) {
+			    // Midi Conversion
+			    Audio::get_ptr()->get_midi()->set_music_conversion(midiconv->get_choice());
+			  }
+			  if (sfxconv) {
 			  // SFX Conversion
-			  Audio::get_ptr()->get_midi()->set_effects_conversion(sfxconv->get_choice()==1?XMIDI_CONVERT_GS127_TO_GS:XMIDI_CONVERT_NOCONVERSION);
+			    Audio::get_ptr()->get_midi()->set_effects_conversion(sfxconv->get_choice()==1?XMIDI_CONVERT_GS127_TO_GS:XMIDI_CONVERT_NOCONVERSION);
+			  }
 			}
 			// Play Intro
 			set_play_intro(playintro->get_choice()==1);
