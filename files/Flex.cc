@@ -157,4 +157,69 @@ bool Flex::is_flex(const char *fname)
 	return is;
 }
 
+/*
+ *	Start writing out a new Flex file.
+ */
+
+Flex_writer::Flex_writer
+	(
+	ofstream& o,			// Where to write.
+	const char *title,		// Flex title.
+	int cnt				// #entries we'll write.
+	) : out(&o), count(cnt), index(0)
+	{
+					// Write out header.
+	Flex::write_header(*out, title, count);
+					// Create table.
+	tptr = table = new uint8[2*count*4];
+	cur_start = out->tellp();	// Store start of 1st entry.
+	}
+
+/*
+ *	Clean up.
+ */
+
+Flex_writer::~Flex_writer
+	(
+	)
+	{
+	close();
+	}
+
+/*
+ *	Call this when done writing out a section.
+ */
+
+void Flex_writer::mark_section_done
+	(
+	)
+	{
+	long pos = out->tellp();	// Location past end of section.
+	Write4(tptr, cur_start);	// Store start of section.
+	Write4(tptr, pos - cur_start);	// Store length.
+	cur_start = pos;
+	}
+
+/*
+ *	All done.
+ *
+ *	Output:	False if error.
+ */
+
+bool Flex_writer::close
+	(
+	)
+	{
+	if (!table)
+		return true;		// Already done.
+	out->seekp(0x80, ios::beg);	// Write table.
+	out->write(reinterpret_cast<char*>(table), 2*count*4);
+	out->flush();
+	bool ok = out->good();
+	out->close();
+	delete table;
+	table = 0;
+	return ok;
+	}
+
 #endif // PENTAGRAM

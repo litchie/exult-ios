@@ -185,19 +185,15 @@ void Shape_group_file::write
 	std::string patchname = "<PATCH>/" + name;
 	U7open(out, patchname.c_str());
 	int cnt = groups.size();	// # groups.
-	Flex::write_header(out, "ExultStudio shape groups", cnt);
-	unsigned char *table = new unsigned char[2*cnt*4];
-	uint8 *tptr = table;
+	Flex_writer gfile(out, "ExultStudio shape groups", cnt);
 	int i;				// Write each group.
 	for (i = 0; i < cnt; i++)
 		{
-		Write4(tptr, out.tellp());
 		Shape_group *grp = groups[i];
 		const char *nm = grp->get_name();
 		int sz = grp->size();
 					// Name, #entries, entries(2-bytes).
 		long len = strlen(nm) + 1 + 2 + 2*sz;
-		Write4(tptr, len);
 		unsigned char *buf = new unsigned char[len];
 		strcpy((char *) buf, nm);
 		unsigned char *ptr = buf + strlen(nm) + 1;
@@ -206,17 +202,14 @@ void Shape_group_file::write
 						it != grp->end(); it++)
 			Write2(ptr, *it);
 		assert(ptr - buf == len);
-		out.write(reinterpret_cast<char *>(buf), len);	// Write out to file.
+					// Write out to file.
+		out.write(reinterpret_cast<char *>(buf), len);
 		delete buf;
+		gfile.mark_section_done();
 		}
-	out.seekp(0x80, ios::beg);	// Write table.
-	out.write(reinterpret_cast<char*>(table), 2*cnt*4);
-	delete [] table;
-	out.flush();
-	bool result = out.good();
+	bool result = gfile.close();
 	if (!result)			// ++++Better error system needed??
 		throw file_write_exception(patchname.c_str());
-	out.close();
 	modified = false;
 	}
 
