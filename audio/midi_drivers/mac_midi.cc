@@ -27,9 +27,6 @@
 
 #include "mac_midi.h"
 
-#include <TextUtils.h>
-
-
 using std::cout;
 using std::endl;
 using std::malloc;
@@ -37,7 +34,6 @@ using std::free;
 using std::realloc;
 using std::memset;
 
-static Handle BuildTuneSequence(midi_event *evntlist);
 static UInt32 *BuildTuneHeader(int part_poly_max[32], int part_to_inst[32], int numParts);
 
 
