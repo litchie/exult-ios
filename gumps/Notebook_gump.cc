@@ -575,21 +575,21 @@ void Notebook_gump::next_page
 
 /*
  *	See if on last/first line of current page.
+ *	Note:	These assume paint() was done, so cursor is correct.
  */
 
 bool Notebook_gump::on_last_page_line
 	(
 	)
 	{
-	int notenum = page_info[curpage].notenum;
-	One_note *note = notes[notenum];
-	char *txt = note->text + cursor.offset;
-	char *eol = strchr(txt, '\n');
-	if (!eol)
-		return true;
-	return (curpage < page_info.size() - 1 && 
-	    page_info[curpage + 1].notenum == notenum &&
-	    (eol + 1) - note->text >= page_info[curpage + 1].offset);
+	return cursor.line == cursor.nlines - 1;
+	}
+
+bool Notebook_gump::on_first_page_line
+	(
+	)
+	{
+	return cursor.line == 0;
 	}
 
 /*
@@ -630,20 +630,28 @@ void Notebook_gump::up_arrow
 	(
 	)
 	{
+	Notebook_top &pinfo = page_info[curpage];
 	int ht = sman->get_text_height(font);
-	int offset = page_info[curpage].offset;
-	Rectangle box = Get_text_area(curpage%2, offset == 0);
-	box.shift(x, y);		// Window coords.
-	int mx = box.x + updnx + 1, my = cursor.y - ht/2;
-	if (my < box.y)			// Above top.
+	int offset = pinfo.offset;
+	int notenum = pinfo.notenum;
+	if (on_first_page_line())	// Above top.
 		{
 		if (!curpage)
 			return;
 		prev_page();
-		up_arrow();
-		return;
+		Notebook_top &pinfo2 = page_info[curpage];
+		notenum = pinfo2.notenum;
+		if (pinfo.notenum == notenum)	// Same note?
+			cursor.offset = offset - 1;
+		else
+			cursor.offset = notes[notenum]->textlen;
+		paint();
+		offset = pinfo2.offset;
+		cursor.y += ht/2;		// Past bottom line.
 		}
-	int notenum = page_info[curpage].notenum;
+	Rectangle box = Get_text_area(curpage%2, offset == 0);
+	box.shift(x, y);		// Window coords.
+	int mx = box.x + updnx + 1, my = cursor.y - ht/2;
 	One_note *note = notes[notenum];
 	int coff = sman->find_cursor(font, note->text + offset, box.x,
 				box.y, box.w, box.h, mx, my, vlead);

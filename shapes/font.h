@@ -24,12 +24,16 @@ class Shape_file;
 class DataSource;
 
 /*
- *	Cursor info.
+ *	Cursor info. filled in by paint_text_box.
  */
 struct Cursor_info
 {
 	int offset;			// Loc. within text.
 	int x, y;			// Loc. of top-left of cursor in win.
+	int line;			// Line # of cursor.
+	int nlines;			// Total # lines printed.
+	void set_found(int cx, int cy, int l)
+		{ x = cx; y = cy; line = l; }
 };
 
 /*
