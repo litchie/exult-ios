@@ -197,7 +197,7 @@ class UCFunc
 		void parse_ucs_pass1a(vector<UCNode *> &nodes);
 		void parse_ucs_pass2a(vector<GotoSet> &gotoset, const FuncMap &funcmap);
 		vector<UCc *> parse_ucs_pass2b(vector<pair<UCc *, bool> >::reverse_iterator current,
-		                               vector<pair<UCc *, bool> >::reverse_iterator end,
+//		                               vector<pair<UCc *, bool> >::reverse_iterator end,
 		                               vector<pair<UCc *, bool> > &vec, unsigned int opsneeded,
 		                               const FuncMap &funcmap);
 

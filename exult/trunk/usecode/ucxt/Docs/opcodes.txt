@@ -54,7 +54,7 @@ TODO: To be done...
 Display the Avatar's conversation options and ask for the user's input.
 It jumps to {offset} if there is no conversation answers available.
 
-> 0x05	JNE	"jne\t%1"	"\t\t\t;"	"jne(%p1)"	2	{offset}	1	0	0
+> 0x05	JNE	"jne\t%1"	"\t\t\t;"	"if(!%p1) goto labelFunc_%1;"	2	{offset}	1	0	0
 
 Pops a value from the stack, tests if it's false, if it's false jumps to
 the relative {offset}.
@@ -273,7 +273,7 @@ book, whatever). Has the side effect of clearing the string register.
 
 > 0x37	NULL	"null"	"\t\t\t;"	"null()"	0	{}	0	0	0
 
-> 0x38	CALLIS	"callis\t%1@%b2"	"\t\t\t;"	"callis()"	3	{short,byte}	0xFE 1	0
+> 0x38	CALLIS	"callis\t%1@%b2"	"\t\t\t;"	"callis(%1, %p,)"	3	{short,byte}	0xFE 1	0
 
 Calls the intrinsic {short} with {byte} number of parameters popped from the
 stack passed to it. Eg: if you were calling intrinsic 23 (short) with 3 (byte)
@@ -285,7 +285,7 @@ The intrinsic called will return a value on the stack.
 
 The intrinsic called also has the same "event" flag as the caller function.
 
-> 0x39	CALLI	"calli\t%1@%b2"	"\t\t\t;"	"calli()"	3	{short,byte}	0xFE	0	0
+> 0x39	CALLI	"calli\t%1@%b2"	"\t\t\t;"	"calli(%1, %p,)"	3	{short,byte}	0xFE	0	0
 
 Same as opcode CALLIS (0x38), except no return value.
 
