@@ -6,7 +6,6 @@ U7PATH=C:/Ultima7
 # Only used for snapshots
 STUDIOPATH=C:/Studio
 
-CC=gcc
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
 
@@ -27,8 +26,10 @@ CPPFLAGS= -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTST
 
 # NOTE: if not using MinGW32 remove "-include mingw_kludges.h"
 CXXFLAGS= -O2 -fnative-struct -fvtable-thunks -include mingw_kludges.h
-
 CXX=g++
+
+CFLAGS=-fnative-struct -fvtable-thunks
+CC=gcc
 
 LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) -liberty -lole32 -lpng -luuid -lz -mwindows
 EXEC=exult_studio.exe
@@ -62,7 +63,7 @@ exultstudioico.o: $(SRC)/win32/exultstudioico.rc $(SRC)/win32/exultstudio.ico
 	windres --include-dir $(SRC)/win32 $(SRC)/win32/exultstudioico.rc $@
 
 u7shp.exe : u7shp.o
-	$(CXX) -o u7shp.exe u7shp.o $(GTK_LIBS) -lgimp -lgimpui -mconsole
+	$(CXX) -o u7shp.exe u7shp.o $(GTK_LIBS) -lgimp -lgimpui -mwindows
 
 allclean:
 	rm -f $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
