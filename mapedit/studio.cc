@@ -148,6 +148,14 @@ on_edit_lift_spin_changed		(GtkSpinButton *button,
 				gtk_spin_button_get_value_as_int(button));
 }
 
+extern "C" void
+on_edit_terrain_button_toggled		(GtkToggleButton *button,
+					 gpointer	  user_data)
+{
+	ExultStudio::get_instance()->set_edit_terrain(
+				gtk_toggle_button_get_active(button));
+}
+
 void on_choose_directory               (gchar *dir)
 {
 	ExultStudio::get_instance()->set_static_path(dir);
@@ -584,6 +592,24 @@ void ExultStudio::set_edit_lift
 	unsigned char *ptr = &data[0];
 	Write2(ptr, lift);
 	send_to_server(Exult_server::edit_lift, data, ptr - data);
+	}
+
+/*
+ *	Tell Exult to enter/leave 'terrain-edit' mode.
+ */
+
+void ExultStudio::set_edit_terrain
+	(
+	gboolean terrain		// True/false
+	)
+	{
+	unsigned char data[Exult_server::maxlength];
+	unsigned char *ptr = &data[0];
+	Write2(ptr, terrain ? 1 : 0);	// NOTE:  Pass -1 to abort.  But I
+					//   haven't got an interface yet.
+	send_to_server(Exult_server::terrain_editing_mode, data, ptr - data);
+	if (browser && !terrain)
+		browser->end_terrain_editing();
 	}
 
 /*

@@ -779,10 +779,6 @@ Chunk_chooser::~Chunk_chooser
  *	Output:	true if handled here.
  */
 
-/*
- *	Server response from 'locate'.
- */
-
 bool Chunk_chooser::server_response
 	(
 	int id,
@@ -809,6 +805,24 @@ bool Chunk_chooser::server_response
 	default:
 		return false;
 		}
+	}
+
+/*
+ *	Done with terrain editing.
+ */
+
+void Chunk_chooser::end_terrain_editing
+	(
+	)
+	{
+					// Clear out cache of chunks.
+	for (int i = 0; i < num_chunks; i++)
+		{
+		delete chunklist[i];
+		chunklist[i] = 0;
+		}
+	render();
+	show();
 	}
 
 /*

@@ -294,10 +294,15 @@ static void Handle_client_message
 		int onoff = (short) Read2(ptr);
 					// skip_lift==0 <==> terrain-editing.
 		gwin->skip_lift = onoff == 1 ? 0 : 16;
+		static char *msgs[3] = {"Terrain-Editing Aborted",
+					"Terrain-Editing Done",
+					"Terrain-Editing Enabled"};
 		if (onoff == 0)		// End/commit.
 			gwin->get_map()->commit_terrain_edits();
 		else if (onoff == -1)
 			gwin->get_map()->abort_terrain_edits();
+		if (onoff >= -1 && onoff <= 1)
+			gwin->center_text(msgs[onoff + 1]);
 		gwin->set_all_dirty();
 		break;
 		}

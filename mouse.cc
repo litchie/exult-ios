@@ -240,6 +240,8 @@ void Mouse::set_speed_cursor()
     else if (gump_man->gump_mode())	// A fast check.
 	cursor = hand;
 #endif    
+    else if (gwin->skip_lift == 0)	// Terrain-editing.
+	cursor = hand;
     if (cursor == dontchange)
     {
         Barge_object *barge = gwin->get_moving_barge();
