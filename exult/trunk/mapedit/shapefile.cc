@@ -33,6 +33,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapelst.h"
 #include "chunklst.h"
 #include "utils.h"
+#include "Flex.h"
+#include "exceptions.h"
 
 using std::vector;
 using std::string;
@@ -82,6 +84,39 @@ Object_browser *Shape_file_info::create_browser
 	}
 
 /*
+ *	Write out if modified.  May throw exception.
+ */
+
+void Shape_file_info::flush
+	(
+	)
+	{
+	if (!modified || !ifile)
+		return;
+	modified = false;
+	int nshapes = ifile->get_num_shapes();
+	string filestr("<PATCH>/");	// Always write to 'patch'.
+	filestr += basename;
+	int shnum;			// First read all entries.
+	Shape **shapes = new Shape *[nshapes];
+	for (shnum = 0; shnum < nshapes; shnum++)
+		shapes[shnum] = ifile->extract_shape(shnum);
+	ofstream out;
+	const char *imagename = filestr.c_str();
+	U7open(out, imagename);		// May throw exception.
+	Flex_writer writer(out, "Written by ExultStudio", nshapes);
+					// Write all out.
+	for (shnum = 0; shnum < nshapes; shnum++)
+		{
+		shapes[shnum]->write(out);
+		writer.mark_section_done();
+		}
+	delete [] shapes;
+	if (!writer.close())
+		throw file_write_exception(imagename);
+	}
+
+/*
  *	Delete set's entries.
  */
 
@@ -89,6 +124,7 @@ Shape_file_set::~Shape_file_set
 	(
 	)
 	{
+	flush();			// Do any writing needed.
 	for (vector<Shape_file_info *>::iterator it = files.begin(); 
 					it != files.end(); ++it)
 		delete (*it);
@@ -154,3 +190,17 @@ Shape_file_info *Shape_file_set::create
 	files.push_back(fi);
 	return fi;
 	}
+
+/*
+ *	Write any modified image files.
+ */
+
+void Shape_file_set::flush
+	(
+	)
+	{
+	for (vector<Shape_file_info *>::iterator it = files.begin(); 
+					it != files.end(); ++it)
+		(*it)->flush();
+	}
+

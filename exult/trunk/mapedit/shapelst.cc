@@ -56,6 +56,7 @@ using std::strlen;
 using std::string;
 
 std::vector<Editing_file*> Shape_chooser::editing_files;
+int Shape_chooser::check_editing_timer = -1;
 
 /*
  *	Here's a description of a file being edited by an external program
@@ -772,6 +773,9 @@ void Shape_chooser::edit_shape
 	cmd += fname;
 	cmd += '&';			// Background.  WIN32?????+++++++
 	system(cmd.c_str());
+	if (check_editing_timer == -1)	// Monitor files every 6 seconds.
+		check_editing_timer = gtk_timeout_add(6000,
+				Shape_chooser::check_editing_files, 0L);
 	}
 
 /*
@@ -779,10 +783,12 @@ void Shape_chooser::edit_shape
  *	have changed.
  */
 
-void Shape_chooser::check_editing_files
+gint Shape_chooser::check_editing_files
 	(
+	gpointer
 	)
 	{
+	bool modified = false;
 	for (std::vector<Editing_file*>::iterator it = editing_files.begin();
 				it != editing_files.end(); it++)
 		{
@@ -798,7 +804,15 @@ void Shape_chooser::check_editing_files
 			continue;	// Still not changed.
 		ed->mtime = fs.st_mtime;
 		import_shape(ed);
+		modified = true;	// Did one.
 		}
+	if (modified)			// Write out changed files.
+		{
+		ExultStudio *studio = ExultStudio::get_instance();
+		studio->get_files()->flush();
+		//+++++++++Update windows???
+		}
+	return 1;			// Continue timeouts.
 	}
 
 /*
@@ -850,7 +864,7 @@ void Shape_chooser::import_shape
 	shape->set_frame(new Shape_frame(pixels,
 			w, h, xleft, yabove, !flat), ed->framenum);
 	delete pixels;
-	//+++++++Mark finfo as modified.  Got to write it out somewhere.
+	finfo->set_modified();
 	}
 
 /*
@@ -869,6 +883,9 @@ void Shape_chooser::clear_editing_files
 		unlink(ed->pathname.c_str());
 		delete ed;
 		}
+	if (check_editing_timer != -1)
+		gtk_timeout_remove(check_editing_timer);
+	check_editing_timer = -1;
 	}
 
 /*

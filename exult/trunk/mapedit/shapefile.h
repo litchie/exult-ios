@@ -44,12 +44,14 @@ class Shape_file_info
 	Vga_file *ifile;		// Contains the images.
 	std::ifstream *file;		// For 'chunks'; ifile is NULL.
 	Shape_group_file *groups;	// Groups within ifile.
+	bool modified;			// Ifile was modified.
 public:
 	friend class Shape_file_set;
 					// We will own ifile and groups.
 	Shape_file_info(const char *bnm, const char *pnm, Vga_file *i, 
 					std::ifstream *f, Shape_group_file *g)
-		: basename(bnm), pathname(pnm), ifile(i), file(f), groups(g)
+		: basename(bnm), pathname(pnm), ifile(i), file(f), groups(g),
+		  modified(false)
 		{  }
 	~Shape_file_info();
 	const char *get_basename()
@@ -62,8 +64,11 @@ public:
 		{ return file; }
 	Shape_group_file *get_groups()
 		{ return groups; }
+	void set_modified()
+		{ modified = true; }
 	Object_browser *create_browser(Shape_file_info *vgafile, char **names,
 				unsigned char *palbuf, Shape_group *g = 0);
+	void flush();			// Write if modified.
 	};
 
 /*
@@ -81,6 +86,7 @@ public:
 		{ return files.size(); }
 	Shape_file_info *operator[](int i)
 		{ return files[i]; }
+	void flush();			// Write if modified.
 	};
 
 #endif
