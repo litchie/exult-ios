@@ -1,4 +1,7 @@
 2001-11-21 Ryan Nunn <triforce@merlin.net.au>
+	* Makefile.am: Yes I did kill something (backslashes vs slashes)
+
+2001-11-21 Ryan Nunn <triforce@merlin.net.au>
 	* README.win32: Typo
 
 2001-11-21 Ryan Nunn <triforce@merlin.net.au>

@@ -171,14 +171,14 @@ EXTRA_DIST = 	\
 	msvcstuff/wuc.dsp \
 	msvcstuff/wud.dsp \
 	msvcstuff/Zip.dsp \
-	msvcstuff/exconfig\exconfig.cpp \
-	msvcstuff/exconfig\exconfig.def \
-	msvcstuff/exconfig\exconfig.dsp \
-	msvcstuff/exconfig\exconfig.h \
-	msvcstuff/exconfig\exconfig.rc \
-	msvcstuff/exconfig\resource.h \
-	msvcstuff/exconfig\StdAfx.cpp \
-	msvcstuff/exconfig\StdAfx.h
+	msvcstuff/exconfig/exconfig.cpp \
+	msvcstuff/exconfig/exconfig.def \
+	msvcstuff/exconfig/exconfig.dsp \
+	msvcstuff/exconfig/exconfig.h \
+	msvcstuff/exconfig/exconfig.rc \
+	msvcstuff/exconfig/resource.h \
+	msvcstuff/exconfig/StdAfx.cpp \
+	msvcstuff/exconfig/StdAfx.h
 
 win32/exultico.o: $(srcdir)/win32/exultico.rc $(srcdir)/win32/exult.ico
 	-mkdir win32
