@@ -1,3 +1,9 @@
+2002-06-07  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* ucinternal.cc:  Fixed a couple compile errors if UC debugging
+	isn't enabled.
+	* Audio/*:  A couple headers needed to be included.
+
 2002-06-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* */Makefile.am: cleaning up distro stuff
 	* exult.spec.in: fixed
