@@ -174,7 +174,7 @@ Game_window::Game_window
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    background_noise(new Background_noise(this)),
 	    bg_paperdolls_allowed(false), bg_paperdolls(false),
-	    skip_lift(16), paint_eggs(false), debug(0)
+	    skip_lift(16), paint_eggs(false), debug(0), camera_actor(0)
 	{
 	game_window = this;		// Set static ->.
 
@@ -537,6 +537,7 @@ void Game_window::clear_world
 	Monster_actor::delete_all();	// To be safe, del. any still around.
 	Dead_body::delete_all();
 	main_actor = 0;
+	camera_actor = 0;
 	num_npcs = num_npcs1 = 0;
 	theft_cx = theft_cy = -1;
 	combat = 0;
@@ -549,19 +550,19 @@ void Game_window::clear_world
 	}
 
 /*
- *	Center view around a given tile.  This is called during a 'restore'
- *	to init. stuff as well.
+ *	Set the scroll position so that a given tile is centered.  (Used by
+ *	center_view.)
  */
 
-void Game_window::center_view
+void Game_window::set_scrolls
 	(
-	Tile_coord t
+	Tile_coord cent			// Want center here.
 	)
 	{
 					// Figure in tiles.
 	int tw = get_width()/c_tilesize, th = get_height()/c_tilesize;
-	scrolltx = t.tx - tw/2;
-	scrollty = t.ty - th/2;
+	scrolltx = cent.tx - tw/2;
+	scrollty = cent.ty - th/2;
 	if (scrolltx < 0)
 		scrolltx = 0;
 	if (scrollty < 0)
@@ -580,6 +581,19 @@ void Game_window::center_view
 		moving_barge = 0;
 		set_moving_barge(b);
 		}
+	}
+
+/*
+ *	Center view around a given tile.  This is called during a 'restore'
+ *	to init. stuff as well.
+ */
+
+void Game_window::center_view
+	(
+	Tile_coord t
+	)
+	{
+	set_scrolls(t);
 					// Set where to skip rendering.
 	int cx = main_actor->get_cx(), cy = main_actor->get_cy();	
 	Chunk_object_list *nlist = get_objects(cx, cy);
@@ -593,6 +607,21 @@ void Game_window::center_view
 	add_nearby_npcs(scrolltx/c_tiles_per_chunk, scrollty/c_tiles_per_chunk,
 		(scrolltx + get_width()/c_tilesize)/c_tiles_per_chunk,
 		(scrollty + get_height()/c_tilesize)/c_tiles_per_chunk);
+	}
+
+/*
+ *	Set actor to center view around.
+ */
+
+void Game_window::set_camera_actor
+	(
+	Actor *a
+	)
+	{
+	camera_actor = a;
+	Tile_coord t = a->get_abs_tile_coord();
+	set_scrolls(t);			// Set scrolling around position,
+					//   and read in map there.
 	}
 
 /*
@@ -2895,8 +2924,8 @@ void Game_window::emulate_swapout (int scx, int scy)
 // Tests to see if a move goes out of range of the actors superchunk
 bool Game_window::emulate_is_move_allowed(int tx, int ty)
 {
-	int ax = get_main_actor()->get_cx() / c_chunks_per_schunk;
-	int ay = get_main_actor()->get_cy() / c_chunks_per_schunk;
+	int ax = camera_actor->get_cx() / c_chunks_per_schunk;
+	int ay = camera_actor->get_cy() / c_chunks_per_schunk;
 	tx /= c_tiles_per_schunk;
 	ty /= c_tiles_per_schunk;
 
