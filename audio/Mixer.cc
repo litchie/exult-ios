@@ -55,16 +55,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 using std::cerr;
 using std::endl;
-using std::list;
 using std::memcpy;
 using std::memset;
 using std::vector;
 
-static const int Mixer_Sample_Magic_Number=0x55443322;
 //---- Mixer ---------------------------------------------------------
 
-Mixer::Mixer(uint32 __buffer_size,uint32 channels, uint8 silence_value) : audio_streams(),stream_mutex(SDL_CreateMutex())
+Mixer::Mixer(Audio *a, uint32 __buffer_size,uint32 channels, 
+	uint8 silence_value) : audio(a), stream_mutex(SDL_CreateMutex())
 {
+	for (int i = 0; i < MAX_AUDIO_STREAMS; i++)
+		streams[i] = new ProducerConsumerBuf();
 	buffer_length=__buffer_size;
 	silence=silence_value;
 	
@@ -75,10 +76,10 @@ Mixer::Mixer(uint32 __buffer_size,uint32 channels, uint8 silence_value) : audio_
 Mixer::~Mixer()
 {
 	delete [] temp_buffer;
+	for (int i = 0; i < MAX_AUDIO_STREAMS; i++)
+		delete streams[i];
 	SDL_DestroyMutex(stream_mutex);
 }
-
-
 
 
  /* The audio function callback takes the following parameters:
@@ -116,11 +117,6 @@ void	compress_audio_sample(uint8 *buf,int len)
 #endif
 }
 
-void Mixer::cancel_raw(void)
-{
-	Audio::get_ptr()->Destroy_Audio_Stream(Mixer_Sample_Magic_Number);
-}
-
 void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 {
 #ifdef MACOS
@@ -145,77 +141,51 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 		                // keep on the safe side we check anyway...
 	}
 	stream_lock();
-	if(audio_streams.size()==0)
+	int active_cnt=0;
+	for (int i = 0; i < MAX_AUDIO_STREAMS; i++)
 	{
-#if DEBUG && !defined(MACOS)
-		cerr << "No more audio data" << endl;
-#endif
-		SDL::PauseAudio(1);
-		stream_unlock();
-		return;
-	}
-	else
-	{
-		int which=0;
-		vector<pcb_list::iterator> close_list;
-		for(pcb_list::iterator it=audio_streams.begin();
-			it!=audio_streams.end();++it)
+		ProducerConsumerBuf *buf = streams[i];
+		if (!buf->is_active())
+			continue;
+		int	ret=0;
+		size_t	sofar=0;
+		memset(temp_buffer,silence,len);
+		while((len-sofar))
 		{
-				
-#ifdef NOT_YET
-			// The world is not ready for this yet
-			if((*it)->size()<buffer_length)
-				continue;
-#endif
-			int	ret=0;
-			size_t	sofar=0;
-			memset(temp_buffer,silence,len);
-			while((len-sofar))
-			{
-				ret=(*it)->consume((char*)temp_buffer+sofar,len-sofar);
-				if(ret<=0)
-					break;
-				sofar+=ret;
-			}
+			ret=buf->consume((char*)temp_buffer+sofar,len-sofar);
+			if(ret<=0)
+				break;
+			sofar+=ret;
+		}
 #if 0 && !defined(MACOS)
-			cerr << "(" << which <<"/"<<audio_streams.size()<< ")" << " Mixing auxilliary data " ;
-			cerr << sofar << " of " << (*it)->size() << endl;
+		cerr << "(" << active_cnt <<"/"<<audio_streams.size()<< ")" << 
+						" Mixing auxilliary data " ;
+		cerr << sofar << " of " << (*it)->size() << endl;
 #endif
-			if(len-sofar&&ret==-1)
-			{
-				// perror("consume");
-				// delete the entry
-				close_list.push_back(it);
-				continue;
-			}
-			compress_audio_sample(temp_buffer,len);
-			SDL::MixAudio(stream, temp_buffer, len, SDL_MIX_MAXVOLUME);
-			++which;
-		}
-		for(vector<pcb_list::iterator>::iterator it=close_list.begin();it!=close_list.end();++it)
+		if(len-sofar&&ret==-1)
 		{
-			(**it)->end_consumption();
-			audio_streams.erase(*it);
+			// perror("consume");
+			// delete the entry
+			buf->end_consumption();
+			continue;
 		}
+		compress_audio_sample(temp_buffer,len);
+		SDL::MixAudio(stream, temp_buffer, len, SDL_MIX_MAXVOLUME);
+		++active_cnt;
 	}
+	if (!active_cnt)		// Nothing found?
+		SDL::PauseAudio(1);	// Stop asking.
 	stream_unlock();
-#if 0
-	if(buffers.begin()->num_samples)
-	{
-#if 0 && !defined(MACOS)
-		cerr << "Mixing sample data" << endl;
-#endif
-		if((unsigned)len>buffers.front().length)
-			len=buffers.front().length;
-		SDL::MixAudio(stream, buffers.begin()->buffer, len, SDL_MIX_MAXVOLUME);
-	}
-#endif
 }
 
 void	Mixer::play(uint8 *sound_data,uint32 len)
 {
-	ProducerConsumerBuf *audiostream=Audio::get_ptr()->Create_Audio_Stream();
-	audiostream->id=Mixer_Sample_Magic_Number;
+	ProducerConsumerBuf *audiostream=Create_Audio_Stream();
+	if (!audiostream)
+		{
+		cerr << "All audio streams in use" << endl;
+		return;
+		}
 	audiostream->produce(sound_data,len);
 	audiostream->end_production();
 }
@@ -234,70 +204,53 @@ void	Mixer::set_auxilliary_audio(int fh)
 
 ProducerConsumerBuf	*Mixer::Create_Audio_Stream(void)
 {
-	ProducerConsumerBuf	*pcb=new ProducerConsumerBuf;
-
+	ProducerConsumerBuf *buf = 0;
 	SDL::PauseAudio(1);
 	stream_lock();
 #if DEBUG
 	cerr << "Create_Audio_Stream()" << endl;
 #endif
-	audio_streams.push_back(pcb);
+	int i;				// Find an inactive stream.
+	for (i = 0; i < MAX_AUDIO_STREAMS && streams[i]->is_active(); i++)
+		;
+	if (i < MAX_AUDIO_STREAMS)
+		{
+		buf = streams[i];
+		buf->init();
+		cerr << "Create_Audio_Stream:  " << i << endl;
+		}
 	stream_unlock();
 	SDL::PauseAudio(0);
 	SDL::UnlockAudio();
-	return pcb;
+	return buf;
 }
 
 void	Mixer::Destroy_Audio_Stream(uint32 id)
 {
-	if(id==0)
-		return;	// We don't honour id 0
+	if(id >= MAX_AUDIO_STREAMS || id < 0)
+		return;
+	cerr << "Destroy_Audio_Stream:  " << id << endl;
 	SDL::PauseAudio(1);
 	stream_lock();
-	for(pcb_list::iterator it=audio_streams.begin();
-		it!=audio_streams.end();++it)
-			{
-			ProducerConsumerBuf *p=*it;
-			if(p->id==id)
-				{
-				p->end_consumption();
-				audio_streams.erase(it);
-				break;
-				}
-			}
+	streams[id]->end_consumption();
 	stream_unlock();
 	SDL::PauseAudio(0);
 }
 
 bool	Mixer::is_playing(uint32 id)
 {
-	if(id==0)
-		return false; // We don't honor id 0
 	stream_lock();
-	for(pcb_list::iterator it=audio_streams.begin();
-		it!=audio_streams.end();++it)
-			{
-			ProducerConsumerBuf *p=*it;
-			if(p->id==id)
-				{
-				stream_unlock();
-				return true;
-				}
-			}
+	bool result = (id < MAX_AUDIO_STREAMS && id >= 0 && 
+						streams[id]->is_active());
 	stream_unlock();
-	return false;
+	return result;
 }
 
 void Mixer::cancel_streams(void)
 {
 	stream_lock();
-	for(pcb_list::iterator it=audio_streams.begin();
-		it!=audio_streams.end();++it)
-			{
-			ProducerConsumerBuf *p=*it;
-			p->end_consumption();
-			}
-	audio_streams.clear();
+	for (int i = 0; i < MAX_AUDIO_STREAMS; i++)
+		streams[i]->end_consumption();
 	stream_unlock();
 }
 

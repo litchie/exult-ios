@@ -24,23 +24,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma interface
 #endif
 
-#include <list>
 #include "SDL_mapping.h"
 #include "pcb.h"
 #include "exult_types.h"
 
+class Audio;
+
 //---- Mixer -----------------------------------------------------------
+
+#define MAX_AUDIO_STREAMS  6
 
 class Mixer 
 {
 private:
-	typedef std::list<ProducerConsumerBuf *>	pcb_list;
+	ProducerConsumerBuf *streams[MAX_AUDIO_STREAMS];
 	Mixer(const Mixer &m);	// Cannot call me
-	pcb_list	audio_streams;
 	uint8*		temp_buffer;
+	Audio *audio;
 public:
 	//Mixer();
-	Mixer(uint32, uint32, uint8);
+	Mixer(Audio*, uint32, uint32, uint8);
 	//Mixer(size_t ringsize,size_t bufferlength);
 	~Mixer();
 
@@ -49,7 +52,6 @@ public:
 	SDL_mutex	*stream_mutex;
 	void	stream_lock(void) { SDL_mutexP(stream_mutex); };
 	void	stream_unlock(void) { SDL_mutexV(stream_mutex); };
-	void	cancel_raw(void);
 	void fill_audio_func(void *, uint8 *, int);
 	void play(uint8 *, uint32);
 	ProducerConsumerBuf *Create_Audio_Stream(void);
