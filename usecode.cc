@@ -1161,7 +1161,7 @@ Usecode_value Usecode_machine::add_party_items
 	(
 	Usecode_value& quantval,	// Quantity to add.
 	Usecode_value& shapeval,	// Shape.
-	Usecode_value& qualval,		// Quality??
+	Usecode_value& qualval,		// Quality.
 	Usecode_value& frameval,	// Frame.
 	Usecode_value& flagval		// Flag??
 	)
@@ -1195,9 +1195,9 @@ Usecode_value Usecode_machine::add_party_items
 	}
 
 /*
- *	Have the user choose an object with the mouse.
+ *	Have the user choose an object/spot with the mouse.
  *
- *	Output:	Ref. to item, or 0.
+ *	Output:	4-elem array:  (Ref. to item, or 0; tx, ty, tz)
  */
 
 Usecode_value Usecode_machine::click_on_item
@@ -1208,18 +1208,28 @@ Usecode_value Usecode_machine::click_on_item
 	int x, y;
 	if (!Get_click(x, y, Mouse::greenselect))
 		return Usecode_value(0);
+					// Get abs. tile coords. clicked on.
+	int tx = gwin->get_chunkx()*tiles_per_chunk + x/tilesize;
+	int ty = gwin->get_chunky()*tiles_per_chunk + y/tilesize;
+	int tz = 0;
 					// Look for obj. in open gump.
 	Gump_object *gump = gwin->find_gump(x, y);
 	Game_object *obj;
 	if (gump)
 		obj = gump->find_object(x, y);
 	else				// Search rest of world.
+		{
 		obj = gwin->find_object(x, y);
-	if (obj)
-		return Usecode_value((long) obj);
-	else
-		return Usecode_value(0);
-//++++++++++++Should return array(obj, tx, ty, tz).
+		if (obj)		// Found object?  Use its coords.
+			obj->get_abs_tile(tx, ty, tz);
+		}
+	Usecode_value oval((long) obj);	// Ret. array with obj as 1st elem.
+	Usecode_value ret(4, &oval);
+	Usecode_value xval(tx), yval(ty), zval(tz);
+	ret.put_elem(1, xval);
+	ret.put_elem(2, yval);
+	ret.put_elem(3, zval);
+	return (ret);
 	}
 
 /*

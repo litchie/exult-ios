@@ -862,6 +862,8 @@ int Container_game_object::create_quantity
 			delete newobj;
 			break;
 			}
+		if (qual != -359)	// Set desired quality.
+			newobj->set_quality(qual);
 		todo--; delta--;
 		if (todo > 0)
 			{
