@@ -166,7 +166,7 @@ void Scheduled_usecode::handle_event
 			{		// Loop(offset, cnt).
 			Usecode_value& cntval = arrval.get_elem(i + 2);
 			int cnt = cntval.get_int_value();
-			if (cnt <= 0)
+			if (cnt <= (Game::get_game_type() == SERPENT_ISLE ? 1 : 0))
 					// Done.
 				i += 2;
 			else
