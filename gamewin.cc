@@ -581,6 +581,14 @@ void Game_window::set_scrolls
 		moving_barge = 0;
 		set_moving_barge(b);
 		}
+					// Set where to skip rendering.
+	int cx = camera_actor->get_cx(), cy = camera_actor->get_cy();	
+	Chunk_object_list *nlist = get_objects(cx, cy);
+	nlist->setup_cache();					 
+	int tx = camera_actor->get_tx(), ty = camera_actor->get_ty();
+	set_above_main_actor(nlist->is_roof (tx, ty,
+						camera_actor->get_lift()));
+	set_in_dungeon(nlist->has_dungeon() && nlist->in_dungeon(tx, ty));
 	}
 
 /*
@@ -594,14 +602,6 @@ void Game_window::center_view
 	)
 	{
 	set_scrolls(t);
-					// Set where to skip rendering.
-	int cx = main_actor->get_cx(), cy = main_actor->get_cy();	
-	Chunk_object_list *nlist = get_objects(cx, cy);
-	nlist->setup_cache();					 
-	int tx = main_actor->get_tx(), ty = main_actor->get_ty();
-	set_above_main_actor(nlist->is_roof (tx, ty,
-						main_actor->get_lift()));
-	set_in_dungeon(nlist->has_dungeon() && nlist->in_dungeon(tx, ty));
 	paint();
 					// See who's nearby.
 	add_nearby_npcs(scrolltx/c_tiles_per_chunk, scrollty/c_tiles_per_chunk,
