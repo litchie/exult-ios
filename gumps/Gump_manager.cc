@@ -42,6 +42,9 @@
 #include "gump_utils.h"
 #include "Slider_gump.h"
 
+using std::cout;
+using std::endl;
+
 Gump_manager::Gump_manager()
 	: open_gumps(0), non_persistent_count(0), right_click_close(true)
 {
