@@ -389,6 +389,10 @@ const int slow_speed = 166, medium_speed = 100, fast_speed = 50;
 static int avatar_speed = slow_speed;	// Avatar speed (frame delay in
 					//    1/1000 secs.)
 
+#ifdef XWIN
+static Display *display = 0;
+#endif
+
 /*
  *	Filter out events during the intro. sequence.
  */
