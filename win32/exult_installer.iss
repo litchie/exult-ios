@@ -248,13 +248,19 @@ function NextButtonClick(CurPageID: Integer): Boolean;
 var
   iBGVerified: Integer;
   iSIVerified: Integer;
+  sDir : string;
 begin
 
   if CurPageID = DataDirPage.ID then begin
 
-      iBGVerified := VerifyBGDirectory ( BGEdit.Text );
-      iSIVerified := VerifySIDirectory ( SIEdit.Text );
-      
+      sDir := BGEdit.Text;
+      if Length(sDir) > 0 then begin iBGVerified := VerifyBGDirectory ( sDir );
+      end else iBGVerified := 0;
+
+      sDir := SIEdit.Text;
+      if Length(sDir) > 0 then begin iSIVerified := VerifySIDirectory ( sDir );
+      end else iSIVerified := 0;
+
       if (iBGVerified = 0) AND (iSIVerified = 0) then begin
         if MsgBox ('Warning: No valid game installations found. Do you wish to continue?', mbError, MB_YESNO or MB_DEFBUTTON2) = IDYES then begin
           Result := True;

@@ -35,6 +35,7 @@ protected:
 	static class Palette *pal;
 	static class Gump_manager *gumpman;
 	static class Party_manager *partyman;
+	friend class Game_window;
 public:
 	static void init(Game_window *g);
 	};
