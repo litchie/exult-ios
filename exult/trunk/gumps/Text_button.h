@@ -34,7 +34,7 @@ protected:
 	void init();
 
 public:
-	Text_button(Gump *p, std::string str, int x, int y, int w = 0, int h = 0);
+	Text_button(Gump *p, const std::string &str, int x, int y, int w = 0, int h = 0);
 	virtual void paint();
 
 	virtual int on_widget(int mx, int my);

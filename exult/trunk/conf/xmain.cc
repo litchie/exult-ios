@@ -21,10 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 
-#if __GNUG__ >= 2
-#  pragma implementation
-#endif
-
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
 #endif

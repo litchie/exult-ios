@@ -20,10 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _MIDI_driver_Mixer_MidiOut_h_
 #define _MIDI_driver_Mixer_MidiOut_h_
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma interface
-#endif
-
 #include "Midi.h"
 
 class	Mixer_MidiOut : virtual public MidiAbstract

@@ -28,8 +28,6 @@
 #include "font.h"
 #include "tqueue.h"
 
-using std::snprintf;
-
 SoundTester::SoundTester() : song(0), sfx(0), voice(0), active(0), repeat(true)
 	{
 	}

@@ -38,7 +38,6 @@
 
 using std::cerr;
 using std::endl;
-using std::string;
 
 static const int rowy[] = { 5,  
 			    19, 29, 41, 53, 65, 77,  
@@ -52,7 +51,7 @@ static const char* canceltext = "CANCEL";
 
 class AudioOptions_button : public Text_button {
 public:
-	AudioOptions_button(Gump *par, string text, int px, int py)
+	AudioOptions_button(Gump *par, const std::string &text, int px, int py)
 		: Text_button(par, text, px, py, 59, 11)
 		{  }
 					// What to do when 'clicked':
@@ -179,7 +178,7 @@ void AudioOptions_gump::build_buttons()
 			build_sfx_buttons();
 
 		// speech on/off
-		buttons[8] =new AudioEnabledToggle(this,colx[2],rowy[11],
+		buttons[8] = new AudioEnabledToggle(this,colx[2],rowy[11],
 										   speech_enabled);
 	}
 }
@@ -228,7 +227,7 @@ void AudioOptions_gump::build_sfx_buttons()
 
 void AudioOptions_gump::load_settings()
 {
-	string s;
+	std::string s;
 	audio_enabled = (Audio::get_ptr()->is_audio_enabled() ? 1 : 0);
 	midi_enabled = (Audio::get_ptr()->is_music_enabled() ? 1 : 0);
 	sfx_enabled = (Audio::get_ptr()->are_effects_enabled() ? 1 : 0);

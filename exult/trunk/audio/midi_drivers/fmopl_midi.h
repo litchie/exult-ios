@@ -30,10 +30,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //#define OPL_NUM_SAMPLES_PER_PASS	392
 #define	OPL_TICK_MULTIPLIER			15
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma interface
-#endif
-
 #include "Midi.h"
 #include "exceptions.h"
 #include "SDL_thread.h"

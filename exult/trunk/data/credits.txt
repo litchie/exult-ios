@@ -142,7 +142,7 @@
 \CFor making it easy to code together.
 
 \CJackchaos.com
-\CFor hosting the Exult message board
+\CFor hosting the old Exult message board
 
 \CTravis "Kirben" Howell
 \CFor making daily Windows binaries

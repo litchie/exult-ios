@@ -1,3 +1,11 @@
+2002-10-07  Max Horn  <max@quendi.de>
+
+	* data/credits.txt: Jackchaos.com hosted the old forum
+	* several files: got rid of #pragma implementation/interface - it didn't
+	  help us much anyway but triggered a compiler error on MacOS X
+	* many files: get rid of using std::snprintf - according to the standard,
+	  snprintf is *not* in namespace std
+
 2002-09-29  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* usecode/intrinsics.cc: Get_distance() looks at owners of objs.
