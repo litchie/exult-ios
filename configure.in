@@ -38,6 +38,7 @@ SYSLIBS=""
 ICON_FILE=""
 EXE_TARGET="exult$EXEEXT"
 EXULT_DATADIR="$datadir/exult"
+ARCH=""
 
 # determine windowing system from 'host'
 AC_MSG_CHECKING("windowing system")
@@ -94,12 +95,15 @@ case "$host_os" in
 		SYSLIBS="-lstdc++ -framework QuickTime"
 		CXXFLAGS="$CXXFLAGS -fpascal-strings"
 		EXULT_DATADIR="data"
+		ARCH=macosx
 		;;
 	*)
 		WINDOWING_SYSTEM="-DXWIN"
 		AC_MSG_RESULT(not sure... guessing X11)
 		;;
 esac
+
+AM_CONDITIONAL(MACOSX, test $ARCH = macosx)
 
 # ---------------------------------------------------------------------
 # Compilers and other tools
