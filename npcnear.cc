@@ -128,6 +128,8 @@ void Npc_proximity_handler::handle_event
 					//   sleep_schedule.
 		npc->get_schedule()->ending(Schedule::stand);
 		npc->say(first_awakened, last_awakened);
+		npc->start(0, 10000);	// In 10 seconds, go back to sleep.
+		extra_delay = 11;	// And don't run Usecode while up.
 		}
 					// Hostile monster?  ATTACK!
 	else if (npc->get_alignment() == Npc_actor::hostile &&
