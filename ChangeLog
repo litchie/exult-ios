@@ -1,6 +1,8 @@
 2000-11-12  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* egg.cc (Egg_object): Must be on or above egg.
+	(Egg_object): Commented out code which I think is wrong.
+
 	* Fixed crash in Vesper (Gargoyle inn).
 
 2000-11-10  Jeff Freedman  <jeff@amy.nerble.net>

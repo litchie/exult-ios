@@ -323,7 +323,7 @@ int Egg_object::is_active
 			(deltaz == 0 || deltaz == 1) &&
 					!area.has_point(from_tx, from_ty);
 	case avatar_near:		// New tile is in, old is out.
-	case external_criteria:		// For now, just guessing.
+/*	case external_criteria:		// For now, just guessing.  */
 		return obj == gwin->get_main_actor() && 
 			(deltaz == 0 || deltaz == 1 ||
 				(type == missile && tz/5 == get_lift()/5)) &&
@@ -349,6 +349,7 @@ int Egg_object::is_active
 		return obj != gwin->get_main_actor() && 
 			tz >= get_lift() && deltaz <= 3 &&
 			area.has_point(tx, ty) && obj->get_npc_num() <= 0;
+	case external_criteria:
 	default:
 		return 0;
 		}
@@ -416,6 +417,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 					// Flag it as done if not auto-reset.
 		flags |= (1 << (int) hatched);
 	Game_window *gwin = Game_window::get_game_window();
+#if 0	/* +++++Almost sure this block should go away. */
 					// Taking a guess:
 	if (criteria == external_criteria && !(flags & (1 << (int) once)))
 		{			// Look for nearby eggs.
@@ -439,6 +441,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 		if (best)
 			best->activate(umachine, obj, 0);
 		}
+#endif
 	switch(type)
 		{
 		case jukebox:
@@ -568,7 +571,7 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			{
 			int dist = data1&0xff;
 			Vector eggs;
-			int cnt = find_nearby(eggs, get_shapenum(), dist, 16);
+			int cnt = find_nearby(eggs, 275, dist, 16);
 			for (int i = 0; i < cnt; i++)
 				{
 				Egg_object *egg = (Egg_object *) eggs.get(i);
