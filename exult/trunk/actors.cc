@@ -526,7 +526,8 @@ void Actor::set_schedule_type
 	if (schedule)
 		schedule->ending();	// Finish up old if necessary.
 					// Save old for a moment.
-	Schedule::Schedule_types old_schedule = schedule_type;
+	Schedule::Schedule_types old_schedule = (Schedule::Schedule_types)
+								schedule_type;
 	schedule_type = new_schedule_type;
 	delete schedule;		// Done with the old.
 	schedule = 0;
@@ -1606,80 +1607,14 @@ int Monster_actor::is_blocked
 	int destx, int desty		// Square we want to move to.
 	)
 	{
-	int tx, ty, lift;		// Get current position.
-	get_abs_tile(tx, ty, lift);
 	Game_window *gwin = Game_window::get_game_window();
 	Shape_info& info = gwin->get_info(this);
 					// Get dim. in tiles.
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
-	int height = info.get_3d_height();
-	int vertx0, vertx1;		// Get x-coords. of vert. block
-					//   to right/left.
-	int horizx0, horizx1;		// Get x-coords of horiz. block
-					//   above/below.
-	int verty0, verty1;		// Get y-coords of horiz. block
-					//   above/below.
-	int horizy0, horizy1;		// Get y-coords of vert. block
-					//   to right/left.
-	horizx0 = destx + 1 - xtiles;
-	horizx1 = destx;
-	if (destx >= tx)		// Moving right?
-		{
-		vertx0 = tx + 1;	// Start to right of hot spot.
-		vertx1 = destx;		// End at dest.
-		}
-	else				// Moving left?
-		{
-		vertx0 = destx + 1 - xtiles;
-		vertx1 = tx - xtiles;
-		}
-	verty0 = desty + 1 - ytiles;
-	verty1 = desty;
-	if (desty >= ty)		// Moving down?
-		{
-		horizy0 = ty + 1;	// Start below hot spot.
-		horizy1 = desty;	// End at dest.
-		verty1--;		// Includes bottom of vert. area.
-		}
-	else				// Moving up?
-		{
-		horizy0 = desty + 1 - ytiles;
-		horizy1 = ty - ytiles;
-		verty0++;		// Includes top of vert. area.
-		}
-	int x, y;			// Go through horiz. part.
-	for (y = horizy0; y <= horizy1; y++)
-		{			// Get y chunk, tile-in-chunk.
-		int cy = y/tiles_per_chunk, rty = y%tiles_per_chunk;
-		for (x = horizx0; x <= horizx1; x++)
-			{
-			int new_lift;
-			Chunk_object_list *olist = gwin->get_objects(
-					x/tiles_per_chunk, cy);
-			olist->setup_cache();
-			if (olist->is_blocked(height, lift, x%tiles_per_chunk,
-							rty, new_lift) ||
-			    new_lift != lift)
-				return (1);
-			}
-		}
-					// Do vert. block.
-	for (x = vertx0; x <= vertx1; x++)
-		{			// Get x chunk, tile-in-chunk.
-		int cx = x/tiles_per_chunk, rtx = x%tiles_per_chunk;
-		for (y = verty0; y <= verty1; y++)
-			{
-			int new_lift;
-			Chunk_object_list *olist = gwin->get_objects(
-					cx, y/tiles_per_chunk);
-			olist->setup_cache();
-			if (olist->is_blocked(height, lift, rtx,
-					y%tiles_per_chunk, new_lift) ||
-			    new_lift != lift)
-				return (1);
-			}
-		}
-	return (0);			// All clear.
+	int ztiles = info.get_3d_height();
+	Tile_coord cur = get_abs_tile_coord();
+	return Chunk_object_list::is_blocked(xtiles, ytiles, ztiles,
+			cur, Tile_coord(destx, desty, cur.tz));
 	}
 
 /*

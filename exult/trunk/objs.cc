@@ -2282,6 +2282,90 @@ int Chunk_object_list::is_blocked
 	return (0);
 	}
 
+/*
+ *	This one is used to see if an object of dims. possibly > 1X1 can
+ *	step onto an adjacent square.  For now, changes in lift aren't
+ *	allowed.
+ */
+
+int Chunk_object_list::is_blocked
+	(
+					// Object dims:
+	int xtiles, int ytiles, int ztiles,
+	Tile_coord from,		// Stepping from here.
+	Tile_coord to			// Stepping to here.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	int vertx0, vertx1;		// Get x-coords. of vert. block
+					//   to right/left.
+	int horizx0, horizx1;		// Get x-coords of horiz. block
+					//   above/below.
+	int verty0, verty1;		// Get y-coords of horiz. block
+					//   above/below.
+	int horizy0, horizy1;		// Get y-coords of vert. block
+					//   to right/left.
+	horizx0 = to.tx + 1 - xtiles;
+	horizx1 = to.tx;
+	if (to.tx >= from.tx)		// Moving right?
+		{
+		vertx0 = from.tx + 1;	// Start to right of hot spot.
+		vertx1 = to.tx;		// End at dest.
+		}
+	else				// Moving left?
+		{
+		vertx0 = to.tx + 1 - xtiles;
+		vertx1 = from.tx - xtiles;
+		}
+	verty0 = to.ty + 1 - ytiles;
+	verty1 = to.ty;
+	if (to.ty >= from.ty)		// Moving down?
+		{
+		horizy0 = from.ty + 1;	// Start below hot spot.
+		horizy1 = to.ty;	// End at dest.
+		verty1--;		// Includes bottom of vert. area.
+		}
+	else				// Moving up?
+		{
+		horizy0 = to.ty + 1 - ytiles;
+		horizy1 = from.ty - ytiles;
+		verty0++;		// Includes top of vert. area.
+		}
+	int x, y;			// Go through horiz. part.
+	for (y = horizy0; y <= horizy1; y++)
+		{			// Get y chunk, tile-in-chunk.
+		int cy = y/tiles_per_chunk, rty = y%tiles_per_chunk;
+		for (x = horizx0; x <= horizx1; x++)
+			{
+			int new_lift;
+			Chunk_object_list *olist = gwin->get_objects(
+					x/tiles_per_chunk, cy);
+			olist->setup_cache();
+			if (olist->is_blocked(ztiles, from.tz, 
+					x%tiles_per_chunk, rty, new_lift) ||
+			    new_lift != from.tz)
+				return (1);
+			}
+		}
+					// Do vert. block.
+	for (x = vertx0; x <= vertx1; x++)
+		{			// Get x chunk, tile-in-chunk.
+		int cx = x/tiles_per_chunk, rtx = x%tiles_per_chunk;
+		for (y = verty0; y <= verty1; y++)
+			{
+			int new_lift;
+			Chunk_object_list *olist = gwin->get_objects(
+					cx, y/tiles_per_chunk);
+			olist->setup_cache();
+			if (olist->is_blocked(ztiles, from.tz, rtx,
+					y%tiles_per_chunk, new_lift) ||
+			    new_lift != from.tz)
+				return (1);
+			}
+		}
+	return (0);			// All clear.
+	}
+
 #if 0	/* +++++ May use this for pathfinding. */
 /*
  *	Find a closed door occupying a given tile 

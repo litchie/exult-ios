@@ -214,11 +214,13 @@ void Combat_schedule::approach_foe
 		}
 	// +++++npc->get_weapon_range(mindist, max_reach);
 	PathFinder *path = new Astar();
-	Fast_pathfinder_client cost(max_reach);
+					// Try this for now:
+	Monster_pathfinder_client cost(npc, max_reach, opponent);
 	if (!path->NewPath(pos, opponent->get_abs_tile_coord(), &cost))
 		{			// Failed?  Try nearest opponent.
 		failures++;
 		opponent = find_foe(Actor::nearest);
+		Monster_pathfinder_client cost(npc, max_reach, opponent);
 		if (!opponent || !path->NewPath(
 				pos, opponent->get_abs_tile_coord(), &cost))
 			{
@@ -277,6 +279,23 @@ inline int Need_new_opponent
 	}
 
 /*
+ *	Get rectangle in tiles.
+ */
+
+inline Rectangle Get_tiles
+	(
+	Game_object *obj
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(obj);
+					// Get lower-right corner pos.
+	Tile_coord pos = obj->get_abs_tile_coord();
+	int w = info.get_3d_xtiles(), h = info.get_3d_ytiles();
+	return Rectangle(pos.tx - w + 1, pos.ty - h + 1, w, h);
+	}
+
+/*
  *	Previous action is finished.
  */
 
@@ -296,14 +315,18 @@ void Combat_schedule::now_what
 	switch (state)			// Note:  state's action has finished.
 		{
 	case approach:
-		if (opponent && npc->distance(opponent) <= max_reach)
+		if (opponent && Get_tiles(npc).enlarge(max_reach).intersects(
+						Get_tiles(opponent)))
+//		if (opponent && npc->distance(opponent) <= max_reach)
 					// Close enough.  ++++Need to parry??
 			start_strike();	// Start strike animation, for now.
 		else
 			approach_foe();
 		break;
 	case strike:			// He hasn't moved away?
-		if (npc->distance(opponent) <= max_reach)
+		if (Get_tiles(npc).enlarge(max_reach).intersects(
+						Get_tiles(opponent)))
+//+++old way		if (npc->distance(opponent) <= max_reach)
 			{
 			int dir = npc->get_direction(opponent);
 			opponent->attacked(npc);
