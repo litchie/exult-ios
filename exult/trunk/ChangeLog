@@ -1,3 +1,6 @@
+2001-07-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* Makefile.win32, README.win32: Travis' changes for latest mingw
+
 2001-07-27  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* Fixed Usecode bug I caused with change to get_elem().
