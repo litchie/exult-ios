@@ -2401,7 +2401,7 @@ void Game_window::theft
 		else if (dist < closest_dist)
 			{
 			closest_npc = npc;
-			closest_dist + dist;
+			closest_dist = dist;
 			}
 		}
 	if (!witness)
