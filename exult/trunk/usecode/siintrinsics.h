@@ -268,7 +268,7 @@
 	USECODE_INTRINSIC_PTR(get_readied),	// Guess	// 0xbe
 //	USECODE_INTRINSIC_PTR(add_removed_npc),			// 0xbf
 	USECODE_INTRINSIC_PTR(approach_avatar),			// 0xbf
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xc0
+	USECODE_INTRINSIC_PTR(set_barge_dir),			// 0xc0
 	USECODE_INTRINSIC_PTR(si_path_run_usecode),		// 0xc1
 	USECODE_INTRINSIC_PTR(is_on_keyring),		// 0xc2
 	USECODE_INTRINSIC_PTR(add_to_keyring),		// 0xc3
