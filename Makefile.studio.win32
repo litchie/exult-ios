@@ -2,10 +2,10 @@
 # The shell IS required! 
 
 # Where is Exult Studio will be installed. 
-U7PATH=C:/Ultima7
+U7PATH=C:\\Ultima7
 # Only used for snapshots
-STUDIOPATH=C:/Studio
-TOOLSPATH=C:/GimpPlugin
+STUDIOPATH=C:\\Studio
+TOOLSPATH=C:\\GimpPlugin
 
 SRC=.
 VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs:$(SRC)/conf
@@ -77,32 +77,32 @@ clean:
 	del $(OBJS) $(EXP_FILE) $(EXEC) u7shp.exe u7shp.o
 
 install: $(EXEC)
-	mkdir -p $(U7PATH)
-	strip $(EXEC) -o $(U7PATH)/$(EXEC)
-	mkdir -p $(U7PATH)\data
-	cp mapedit/exult_studio.glade $(U7PATH)/data
+	if not exist $(U7PATH) md $(U7PATH)
+	strip $(EXEC) -o $(U7PATH)\\$(EXEC)
+	if not exist $(U7PATH)\data md $(U7PATH)\data
+	copy mapedit\exult_studio.glade $(U7PATH)\data
 
 tools: u7shp.exe
 
 toolsdist: tools
-	mkdir -p $(TOOLSPATH)
-	strip u7shp.exe -o $(TOOLSPATH)/u7shp.exe
-	cp mapedit/gimpwin32.txt $(TOOLSPATH)
+	if not exist $(TOOLSPATH) md $(TOOLSPATH)
+	strip u7shp.exe -o $(TOOLSPATH)\\u7shp.exe
+	cp mapedit\gimpwin32.txt $(TOOLSPATH)
 	u2d $(TOOLSPATH)/*.txt
 
 dist: $(EXEC)
-	mkdir -p $(STUDIOPATH)
-	strip $(EXEC) -o  $(STUDIOPATH)/$(EXEC)
-	mkdir -p $(STUDIOPATH)/data
-	cp docs/exult_studio.txt $(STUDIOPATH)
-	cp mapedit/exult_studio.glade $(STUDIOPATH)/data
-	mkdir -p $(STUDIOPATH)/data/estudio
-	mkdir -p $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/combos.flx $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/faces.vga $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/gumps.vga $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/palettes.flx $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/shapes.vga $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/sprites.vga $(STUDIOPATH)/data/estudio/new
-	cp data/estudio/new/text.flx $(STUDIOPATH)/data/estudio/new
+	if not exist $(STUDIOPATH) md $(STUDIOPATH)
+	strip $(EXEC) -o  $(STUDIOPATH)\\$(EXEC)
+	if not exist $(STUDIOPATH)\data md $(STUDIOPATH)\data
+	copy docs\exult_studio.txt $(STUDIOPATH)
+	copy mapedit\exult_studio.glade $(STUDIOPATH)\data
+	if not exist $(STUDIOPATH)\data\estudio md $(STUDIOPATH)\data\estudio
+	if not exist $(STUDIOPATH)\data\estudio\new md $(STUDIOPATH)\data\estudio\new
+	copy data/estudio\new\combos.flx $(STUDIOPATH)\data\estudio\new
+	copy data/estudio\new\faces.vga $(STUDIOPATH)\data\estudio\new
+	copy data/estudio\new\gumps.vga $(STUDIOPATH)\data\estudio\new
+	copy data/estudio\new\palettes.flx $(STUDIOPATH)\data\estudio\new
+	copy data/estudio\new\shapes.vga $(STUDIOPATH)\data\estudio\new
+	copy data/estudio\new\sprites.vga $(STUDIOPATH)\data\estudio\new
+	copy data/estudio\new\text.flx $(STUDIOPATH)\data\estudio\new
 	u2d $(STUDIOPATH)/*.txt
