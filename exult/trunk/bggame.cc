@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "databuf.h"
 #include "font.h"
 #include "txtscroll.h"
+#include "SDL_events.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cctype>

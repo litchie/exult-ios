@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "delobjs.h"
 #include "animate.h"
 #include "vec.h"
-#include "SDL.h"
 #include "tqueue.h"
 #include "Gump.h"
 #include "Text_gump.h"

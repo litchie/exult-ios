@@ -23,6 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "misc_buttons.h"
 #include "Slider_gump.h"
 
+#include "SDL_events.h"
+
 using std::cout;
 using std::endl;
 

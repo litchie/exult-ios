@@ -18,6 +18,8 @@
 #include "schedule.h"
 #include "items.h"
 
+#include "SDL_timer.h"
+
 using std::rand;
 
 /*
