@@ -47,7 +47,7 @@ class Shape_frame
 	short yabove;			// Extent above origin.
 	short ybelow;			// Extent below origin.
 					// Create from RLE entry.
-	void get_rle_shape(ifstream& shapes, long filepos);
+	void get_rle_shape(ifstream& shapes, long filepos, long len);
 public:
 	friend class Game_window;
 	Shape_frame() : data(0)

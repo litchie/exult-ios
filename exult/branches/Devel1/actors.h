@@ -256,6 +256,7 @@ class Npc_actor : public Actor
 	unsigned char num_schedules;	// # entries below.
 	Schedule *schedule;		// Current schedule.
 	Schedule_change *schedules;	// List of schedule changes.
+	short allignment;		// 'Feelings' towards Avatar.
 public:
 	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
 	~Npc_actor();
@@ -274,6 +275,10 @@ public:
 		schedules = list;
 		num_schedules = cnt;
 		}
+	virtual int get_allignment()	// Get/set 'allignment'.
+		{ return allignment; }
+	virtual void set_allignment(short a)
+		{ allignment = a; }
 					// Update schedule for new 3-hour time.
 	void update_schedule(Game_window *gwin, int hour3);
 					// Set new schedule.

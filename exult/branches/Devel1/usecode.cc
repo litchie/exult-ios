@@ -681,6 +681,7 @@ void Usecode_machine::set_item_shape
 		return;
 					// Figure area to repaint.
 	Rectangle rect = gwin->get_shape_rect(item);
+					// +++++++What if in a container?
 	Chunk_object_list *chunk = gwin->get_objects(item);
 	chunk->remove(item);		// Remove and add to update cache.
 	item->set_shape(shape);
@@ -1379,6 +1380,15 @@ USECODE_INTRINSIC(get_object_position)
 	USECODE_RETURN(arr);
 }
 
+USECODE_INTRINSIC(get_distance)
+	// Distance from parm[0] -> parm[1].  Guessing how it's computed.
+	Game_object *obj0 = get_item(parms[0]);
+	Game_object *obj1 = get_item(parms[1]);
+	Usecode_value u((obj0 && obj1) ? obj0->get_abs_tile_coord().distance(
+					obj1->get_abs_tile_coord()) : 0);
+	USECODE_RETURN(u);
+}
+
 USECODE_INTRINSIC(find_direction)
 	// Direction from parm[0] -> parm[1].
 	// Rets. 0-7.  Is 0 east?
@@ -1476,10 +1486,11 @@ USECODE_INTRINSIC(create_new_object)
 	USECODE_RETURN(u);
 }
 
-USECODE_INTRINSIC(mystery_1)
-	// Take itemref, rets. flag.
-	//++++++++++++++++++
-	Usecode_value u(1); //????
+USECODE_INTRINSIC(set_last_created)
+	// Take itemref, sets last_created to it.
+	Game_object *obj = get_item(parms[0]);
+	last_created = obj;
+	Usecode_value u((long) obj);
 	USECODE_RETURN(u);
 }
 
@@ -1607,6 +1618,19 @@ USECODE_INTRINSIC(find_nearby)
 	USECODE_RETURN(u);
 }
 
+USECODE_INTRINSIC(give_last_created)
+	// Think it's give_last_created_to_npc(npc).
+	Game_object *npc = get_item(parms[0]);
+	int ret = 0;
+	if (npc && last_created)
+		{			// Remove, but don't delete, last.
+		last_created->remove(1);
+		ret = npc->add(last_created);
+		}
+	Usecode_value u(ret);
+	USECODE_RETURN(u);
+}
+
 USECODE_INTRINSIC(game_hour)
 	// Return. game time hour (0-23).
 	Usecode_value u(gwin->get_hour());
@@ -1637,6 +1661,22 @@ USECODE_INTRINSIC(part_of_day)
 	// Return 3-hour # (0-7, 0=midnight).
 	Usecode_value u(gwin->get_hour()/3);
 	USECODE_RETURN(u);
+}
+
+USECODE_INTRINSIC(get_allignment)
+	// Get npc's allignment.
+	Game_object *obj = get_item(parms[0]);
+	Usecode_value u(obj ? obj->get_allignment() : 0);
+	USECODE_RETURN(u);
+}
+
+USECODE_INTRINSIC(set_allignment)
+	// Set npc's allignment.
+	// 2,3==bad towards Ava. 0==good.
+	Game_object *obj = get_item(parms[0]);
+	if (obj)
+		obj->set_allignment(parms[1].get_int_value());
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_INTRINSIC(item_say)
@@ -1836,7 +1876,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(count_npc_inventory), // 0x16
 	USECODE_INTRINSIC_PTR(set_npc_inventory_count), // 0x17
 	USECODE_INTRINSIC_PTR(get_object_position), // 0x18
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x19 ++++++Distance(item1, item2).
+	USECODE_INTRINSIC_PTR(get_distance), // 0x19
 	USECODE_INTRINSIC_PTR(find_direction), // 0x1a
 	USECODE_INTRINSIC_PTR(get_npc_object), // 0x1b
 	USECODE_INTRINSIC_PTR(get_schedule_type), // 0x1c
@@ -1848,8 +1888,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(get_avatar_ref), // 0x22
 	USECODE_INTRINSIC_PTR(get_party_list), // 0x23
 	USECODE_INTRINSIC_PTR(create_new_object), // 0x24
-	USECODE_INTRINSIC_PTR(mystery_1), // 0x25 ++++++ Set last_created=item
-	// Looks like set_last_created(item).  Rets 1 if successful?
+	USECODE_INTRINSIC_PTR(set_last_created), // 0x25 
 	USECODE_INTRINSIC_PTR(update_last_created), // 0x26
 	USECODE_INTRINSIC_PTR(get_npc_name), // 0x27
 	USECODE_INTRINSIC_PTR(count_objects), // 0x28
@@ -1867,16 +1906,14 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(click_on_item), // 0x33
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x34 UNUSED
 	USECODE_INTRINSIC_PTR(find_nearby), // 0x35
-	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x36 ++++++Think it's 
-	// give_last_created(to_npc).  Rets. 0 if no room in inventory.
+	USECODE_INTRINSIC_PTR(give_last_created), // 0x36
 	USECODE_INTRINSIC_PTR(UNKNOWN), // 0x37 +++++++It is is_dead(npc).
 	USECODE_INTRINSIC_PTR(game_hour), // 0x38
 	USECODE_INTRINSIC_PTR(game_minute), // 0x39
 	USECODE_INTRINSIC_PTR(get_npc_number),	// 0x3a
 	USECODE_INTRINSIC_PTR(part_of_day),	// 0x3b
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3c+++++get_allignment(npc)?
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3d+++++set_allignment(npc, newval)
-	// 2,3==bad towards Ava. 0==good.
+	USECODE_INTRINSIC_PTR(get_allignment),	// 0x3c
+	USECODE_INTRINSIC_PTR(set_allignment),	// 0x3d
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3e
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x3f
 	USECODE_INTRINSIC_PTR(item_say),	// 0x40
