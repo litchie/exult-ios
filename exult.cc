@@ -92,7 +92,7 @@ int main
 	cout << "Low level graphics use the 'SDL' library.\n";
 
 	config.read_config_file(USER_CONFIGURATION_FILE);
-	string	data_directory,tracing;
+	string	data_directory, tracing;
 	config.value("config/disk/u7path",data_directory,".");
 	if(data_directory==".")
 		config.set("config/disk/u7path",data_directory,true);
@@ -125,6 +125,8 @@ int main
 	return (Play());
 	}
 
+static int Filter_intro_events(const SDL_Event *event);
+static int Filter_splash_events(const SDL_Event *event);
 static void Handle_events(unsigned char *stop);
 static void Handle_event(SDL_Event& event);
 
@@ -167,6 +169,8 @@ static void Init
 	audio.Init(9615*2,2);
 	SDL_SysWMinfo info;		// Get system info.
 	SDL_VERSION(&info.version);
+					// Ignore clicks until splash done.
+	SDL_SetEventFilter(Filter_splash_events);
 #ifdef XWIN
 	SDL_GetWMInfo(&info);
 	display = info.info.x11.display;
@@ -184,6 +188,10 @@ static void Init
 #else
 	gwin = new Game_window(640, 480);
 #endif
+	string skip_intro;		// Skip intro. scene?
+	config.value("gameplay/skip_intro", skip_intro, "yes");
+	gwin->get_usecode()->set_global_flag(
+		Usecode_machine::did_first_scene, skip_intro == "yes");
 	}
 
 /*
@@ -214,11 +222,58 @@ inline void Delay
 	}
 
 /*
+ *	Filter out events during the splash screen.
+ */
+static int Filter_splash_events
+	(
+	const SDL_Event *event
+	)
+	{
+	switch (event->type)
+		{
+	case SDL_MOUSEBUTTONDOWN:
+	case SDL_KEYDOWN:
+		return 0;
+	case SDL_MOUSEBUTTONUP:
+	case SDL_KEYUP:
+					// Now handle intro. scene.
+		SDL_SetEventFilter(Filter_intro_events);
+		return 0;
+		}
+	return (1);
+	}
+
+/*
+ *	Filter out events during the intro. sequence.
+ */
+static int Filter_intro_events
+	(
+	const SDL_Event *event
+	)
+	{
+	gwin->end_splash();		// This will start the scene.
+	if (gwin->get_usecode()->get_global_flag(
+					Usecode_machine::did_first_scene))
+		{
+		SDL_SetEventFilter(0);	// Intro. is done.
+		return 1;
+		}
+	switch (event->type)
+		{
+	case SDL_MOUSEBUTTONUP:
+	case SDL_MOUSEBUTTONDOWN:
+	case SDL_KEYDOWN:
+	case SDL_KEYUP:
+		return 0;		// The intro. is running.
+		}
+	return (1);
+	}
+
+/*
  *	Statics used below:
  */
 static int dragging = 0;		// Object or gump being moved.
 static int dragged = 0;			// Flag for when obj. moved.
-
 
 /*
  *	Handle events until a flag is set.
@@ -285,7 +340,6 @@ static void Handle_event
 	switch (event.type)
 		{
 	case SDL_MOUSEBUTTONDOWN:
-		gwin->end_intro();
 		if (gwin->get_mode() != Game_window::normal &&
 		    gwin->get_mode() != Game_window::gump)
 			break;
@@ -425,7 +479,6 @@ static void Handle_keystroke
 	static int face_cnt = -1, face_frame = 0;
 	static int gump_cnt = -1, gump_frame = 0;
 	static int font_cnt = -1, font_frame = 0;
-	gwin->end_intro();
 	switch (sym)
 		{
 	case SDLK_PLUS:			// Brighten.

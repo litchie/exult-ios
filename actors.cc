@@ -87,6 +87,19 @@ void Actor::walk_to_tile
 	}
 
 /*
+ *	Render.
+ */
+
+void Actor::paint
+	(
+	Game_window *gwin
+	)
+	{
+	if (!(flags & (1L << dont_render)))
+		Sprite::paint(gwin);
+	}
+
+/*
  *	Run usecode when double-clicked.
  */
 
@@ -209,7 +222,7 @@ void Main_actor::handle_event
 		Rectangle oldrect = gwin->get_shape_rect(this);
 					// Move it.
 		move(cx, cy, olist, sx, sy, frame, new_lift);
-				// Near an egg?
+					// Near an egg?
 		olist->activate_eggs(sx, sy);
 		int inside;		// See if moved inside/outside.
 					// In a new chunk?

@@ -56,7 +56,7 @@ Game_window::Game_window
 	    main_actor(0),
 	    conv_choices(0), texts(0), num_faces(0), last_face_shown(-1),
 	    open_gumps(0),
-	    main_actor_inside(0), mode(intro), npcs(0),
+	    main_actor_inside(0), mode(splash), npcs(0),
 	    shapes(), dragging(0), dragging_save(0),
 	    faces(FACES_VGA), gumps(GUMPS_VGA), fonts(FONTS_VGA)
 	{
@@ -708,7 +708,7 @@ void Game_window::paint
 	for (cy = start_chunky; cy < stop_chunky; cy++)
 		for (cx = start_chunkx; cx < stop_chunkx; cx++)
 			paint_chunk_objects(-1, cx, cy, 0);
-	if (mode == intro && win->ready())
+	if (mode == splash && win->ready())
 		{
 		int x = 15, y = 15;
 		int w = get_width() - x, h = get_height() - y;
@@ -1665,33 +1665,27 @@ void Game_window::get_focus
 	}
 
 /*
- *	End intro.
+ *	Get out of splash screen.
  */
 
-void Game_window::end_intro
+void Game_window::end_splash
 	(
 	)
 	{
-	if (mode == intro)
+	if (mode == splash)
 		{
 		mode = normal;
 		init_actors();		// Set up actors if not already done.
 		paint();
-					// Start with Iolo.
-		// mode = conversation;
-		// ++++++Test for 1st egg here?
-		paint();
-		mode = normal;
+					// Want to activate first egg.
+		Chunk_object_list *olist = get_objects(
+				main_actor->get_cx(), main_actor->get_cy());
+		olist->setup_cache();
+		olist->activate_eggs(main_actor->get_tx(), 
+						main_actor->get_ty());
 		audio.start_speech(31,false);
 		SDL_Delay(500);
 		audio.start_music(35,0);
-#if 0	/* Too irritating at start of game. */
-					// Want to run proximity usecode on
-					//   the visible ones.
-		add_nearby_npcs(chunkx, chunky, 
-			chunkx + (get_width() + chunksize - 1)/chunksize,
-			chunky + (get_height() + chunksize - 1)/chunksize);
-#endif
 //+++++not here		schedule_npcs(2);	//++++++Test??
 		}
 	}
