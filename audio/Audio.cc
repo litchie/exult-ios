@@ -23,8 +23,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Audio.h"
 
 #include "SDL_mapping.h"
-#include "../fnames.h"
-#include "../files/U7file.h"
+#include "fnames.h"
+#include "U7file.h"
 
 #include "Configuration.h"
 extern	Configuration *config;

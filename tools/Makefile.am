@@ -1,4 +1,4 @@
-INCLUDES = -I. $(DEBUG_FLAGS) $(CPPFLAGS) -DRELNUM=$(RELNUM)
+INCLUDES = -I. -I../files $(DEBUG_FLAGS) $(CPPFLAGS) -DRELNUM=$(RELNUM) 
 
 if LEXYACC
 UCC= ucc
@@ -6,7 +6,13 @@ else
 UCC=
 endif
 
-noinst_PROGRAMS = wuc wud mklink rip ucdump $(UCC)
+noinst_PROGRAMS = expack wuc wud mklink rip ucdump $(UCC)
+
+expack_SOURCES = \
+	expack.cc
+
+expack_LDADD = \
+	../files/libu7file.la
 
 wuc_SOURCES = \
 	wuc.c \
