@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.18 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.19 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -670,6 +670,7 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   data1     = quality, quantity
   data2     = resist, flags
   quality   = byte (00:no key 01:Dead NPC 02..F9:matching key FA..FF:trap)
+              Exult: qual=2 for bodies of killed monsters
   quantity  = byte (00 or 01 or npc#-$80 if corpse can become NPC)
   resist    = byte (attack/lockpicking resistance points)
   flags     = byte [b0:invisible

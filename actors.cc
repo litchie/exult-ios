@@ -1701,9 +1701,11 @@ void Actor::die
 		}
 					// Put body here.
 	Dead_body *body = new Dead_body(shnum, frnum, 0, 0, 0, 
-						npc_num > 0 ? npc_num : -1);
+					npc_num > 0 ? npc_num : -1, 1);
 	if (body->Dead_body::get_live_npc_num() != -1)
 		body->set_quality(1);	// Flag for dead body of NPC.
+	else
+		body->set_quality(2);	// Set to decay.
 	body->move(pos);
 	body->set_flag(okay_to_take);	// Okay to take its contents.
 	Game_object *item;		// Move all the items.
@@ -2417,6 +2419,8 @@ Dead_body::~Dead_body
 	(
 	)
 	{
+	if (!decayable)
+		return;
 					// Remove from chain.
 	if (next_body)
 		next_body->prev_body = prev_body;

@@ -874,14 +874,17 @@ void Game_window::read_ireg_objects
 			else if (quality == 1 && entry[8] >= 0x80)
 				obj = new Dead_body(
 				    shnum, frnum, tilex, tiley, lift,
-							entry[8] - 0x80);
+							entry[8] - 0x80, 1);
 			else if (Is_body(shnum))
-				{
-				if (clock.get_total_hours() - last_restore_hour
+				{	// Qual==2 for monsters killed.
+				int decay = (quality == 2);
+				if (decay &&
+				    clock.get_total_hours() - last_restore_hour
 								> 3)
 					continue;// Body decayed.
 				obj = new Dead_body(
-				    shnum, frnum, tilex, tiley, lift,-1);
+				    shnum, frnum, tilex, tiley, lift,
+								-1, decay);
 				}
 			else
 				obj = new Container_game_object(
