@@ -121,7 +121,7 @@ void	Mixer::play(Uint8 *sound_data,Uint32 len)
 	
 }
 
-Mixer::Mixer(Uint32 __buffer_size,Uint32 ringsize,Uint8 silence_value)
+Mixer::Mixer(Uint32 __buffer_size,Uint32 ringsize,Uint8 silence_value) : auxilliary_audio(-1)
 {
 	buffer_length=__buffer_size;
 	ring_size=ringsize;
