@@ -82,7 +82,7 @@ void Timidity_binary::music_complete_callback(void)
 
 bool	Timidity_binary::is_playing(void)
 {
-	return Mix_PlayingMusic();
+	return Mix_PlayingMusic()!=0;
 }
 
 void	Timidity_binary::start_track(XMIDIEventList *event_list,bool repeat)

@@ -386,11 +386,11 @@ SOURCE=..\audio\Midi.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\audio\soundtest.cc
+SOURCE=..\audio\midi_drivers\mixer_midiout.cc
 # End Source File
 # Begin Source File
 
-SOURCE=..\audio\midi_drivers\win_midiout.cc
+SOURCE=..\audio\soundtest.cc
 # End Source File
 # Begin Source File
 
@@ -1094,11 +1094,11 @@ SOURCE=..\audio\Midi.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\audio\soundtest.h
+SOURCE=..\audio\midi_drivers\mixer_midiout.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\audio\midi_drivers\win_midiout.h
+SOURCE=..\audio\soundtest.h
 # End Source File
 # Begin Source File
 
