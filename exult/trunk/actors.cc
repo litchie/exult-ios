@@ -355,6 +355,39 @@ int Actor::add_dirty
 	}
 
 /*
+ *	See if it's blocked when trying to move to a new tile.
+ *
+ *	Output: 1 if so, else 0.
+ */
+
+int Actor::is_blocked
+	(
+	Tile_coord& t			// Tz possibly updated.
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_info(this);
+					// Get dim. in tiles.
+	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
+	int ztiles = info.get_3d_height();
+	if (xtiles == 1 && ytiles == 1)	// Simple case?
+		{
+		Map_chunk *nlist = gwin->get_chunk(t.tx/c_tiles_per_chunk,
+						   t.ty/c_tiles_per_chunk);
+		nlist->setup_cache();
+		int new_lift;
+		int blocked = nlist->is_blocked(ztiles, t.tz,
+			t.tx%c_tiles_per_chunk, t.ty%c_tiles_per_chunk,
+					new_lift, get_type_flags());
+		t.tz = new_lift;
+		return blocked;
+		}
+	Tile_coord cur = get_abs_tile_coord();
+	return Map_chunk::is_blocked(xtiles, ytiles, ztiles,
+			cur, t, get_type_flags());
+	}
+
+/*
  *	Move an object, and possibly change its shape too.
  */
 inline void Actor::movef
@@ -2884,24 +2917,20 @@ int Main_actor::step
 	int old_lift = get_lift();
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
-	int new_lift;			// Might climb/descend.
 	Game_object *block;
-	int ht = gwin->get_info(this).get_3d_height();
-	if (nlist->is_blocked(ht, old_lift, tx, ty, new_lift, 
-							get_type_flags()) &&
+	if (is_blocked(t) &&
 	   (!(block = Game_object::find_blocking(t)) || block == this ||
 					// Try to get blocker to move aside.
 	        !block->move_aside(this, get_direction(block)) ||
 					// (May have swapped places.)
 		(t != get_abs_tile_coord() &&
 					// If okay, try one last time.
-   		 nlist->is_blocked(3, old_lift, tx, ty, new_lift, 
-							get_type_flags()))))
+		 is_blocked(t))))
 		{
 		stop();
 		return (0);
 		}
-	if (poison && new_lift == 0)
+	if (poison && t.tz == 0)
 		Actor::set_flag((int) Obj_flags::poisoned);
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
@@ -2910,12 +2939,12 @@ int Main_actor::step
 	Map_chunk *olist = gwin->get_chunk(get_cx(), get_cy());
 	Tile_coord oldtile = get_abs_tile_coord();
 					// Move it.
-	Actor::movef(olist, nlist, tx, ty, frame, new_lift);
+	Actor::movef(olist, nlist, tx, ty, frame, t.tz);
 	add_dirty(gwin, 1);		// Set to update new.
 					// In a new chunk?
 	if (olist != nlist)
 		switched_chunks(olist, nlist);
-	int roof_height = nlist->is_roof (tx, ty, new_lift);
+	int roof_height = nlist->is_roof (tx, ty, t.tz);
 	if (gwin->set_above_main_actor (roof_height))
 		{
 		gwin->set_in_dungeon(nlist->has_dungeon()?
@@ -2927,7 +2956,7 @@ int Main_actor::step
 		gwin->set_all_dirty();
 					// Near an egg?  (Do this last, since
 					//   it may teleport.)
-	nlist->activate_eggs(this, t.tx, t.ty, new_lift, 
+	nlist->activate_eggs(this, t.tx, t.ty, t.tz,
 						oldtile.tx, oldtile.ty);
 	return (1);
 	}
@@ -3521,13 +3550,9 @@ int Npc_actor::step
 		stop();
 		return (0);
 		}
-	nlist->setup_cache();		// Setup cache if necessary.
 	int water, poison;		// Get tile info.
 	get_tile_info(this, gwin, nlist, tx, ty, water, poison);
-	int new_lift;			// Might climb/descend.
-	int ht = gwin->get_info(this).get_3d_height();
-	if (nlist->is_blocked(ht, get_lift(), tx, ty, new_lift, 
-							get_type_flags()))
+	if (is_blocked(t))
 		{
 		if (schedule)		// Tell scheduler.
 			schedule->set_blocked(t);
@@ -3537,7 +3562,7 @@ int Npc_actor::step
 			dormant = true;	// Go dormant.
 		return (0);		// Done.
 		}
-	if (poison && new_lift == 0)
+	if (poison && t.tz == 0)
 		Actor::set_flag((int) Obj_flags::poisoned);
 					// Check for scrolling.
 	gwin->scroll_if_needed(this, t);
@@ -3545,7 +3570,7 @@ int Npc_actor::step
 					// Get old chunk.
 	Map_chunk *olist = gwin->get_chunk(old_cx, old_cy);
 					// Move it.
-	movef(olist, nlist, tx, ty, frame, new_lift);
+	movef(olist, nlist, tx, ty, frame, t.tz);
 					// Offscreen, but not in party?
 	if (!add_dirty(gwin, 1) && Npc_actor::get_party_id() < 0 &&
 					// And > a screenful away?
@@ -3687,28 +3712,6 @@ int Dead_body::get_live_npc_num
 	)
 	{
 	return npc_num;
-	}
-
-/*
- *	See if it's blocked when trying to move to a new tile.
- *	And don't allow climbing/descending, at least for now.
- *
- *	Output: 1 if so, else 0.
- */
-
-int Monster_actor::is_blocked
-	(
-	Tile_coord& t			// Tz possibly updated.
-	)
-	{
-	Game_window *gwin = Game_window::get_game_window();
-	Shape_info& info = gwin->get_info(this);
-					// Get dim. in tiles.
-	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
-	int ztiles = info.get_3d_height();
-	Tile_coord cur = get_abs_tile_coord();
-	return Map_chunk::is_blocked(xtiles, ytiles, ztiles,
-			cur, t, get_type_flags());
 	}
 
 /*

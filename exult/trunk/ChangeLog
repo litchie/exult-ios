@@ -1,3 +1,7 @@
+2001-09-30  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Actor::is_blocked() is used for all, not just monsters.
+
 2001-09-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* actors.cc: try harder to avoid putting objects in the actor-container
 	itself
