@@ -1,3 +1,7 @@
+2003-10-17  Ryan Nunn  <colourles@users.sourceforge.net>
+	* gamemap.cc : Fixing cacheout bug that was causing the SI post 
+	  Frigidazzi trial item chest problem among other possible problems.
+
 2003-10-07  Ryan Nunn  <colourles@users.sourceforge.net>
 	* usecode/intrinsics.cc : Doing what needs doing (std)
 
