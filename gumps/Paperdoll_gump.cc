@@ -69,7 +69,7 @@ short Paperdoll_gump::coords[36] = {
 };
 short Paperdoll_gump::coords_blue[36] = {
 	76, 20,		/* head */	64, 27,		/* back */
-	92,  61,	/* belt */	30, 58,		/* lhand */
+	84, 61,		/* belt */	30, 58,		/* lhand */
 	55, 62,		/* lfinger */	80, 80,		/* legs */
 	84, 105,	/* feet */	90, 50,		/* rfinger */
 	68, 50,		/* rhand */	83, 43,		/* torso */
@@ -508,15 +508,15 @@ void Paperdoll_gump::paint
 
 void Paperdoll_gump::paint_object 
 	(
-	Game_window *gwin,
-	const Rectangle &box,
-	Paperdoll_npc *info,
-	int spot,
-	int sx, int sy,
-	int frame,
-	int itemtype,
-	int checkspot,
-	int checktype
+	Game_window *gwin,		// gwin
+	const Rectangle &box,		// box
+	Paperdoll_npc *info,		// info
+	int spot,			// Actor::belt
+	int sx, int sy,			// back2x, back2y
+	int frame,			// 0
+	int itemtype,			// Actor::back2h_spot
+	int checkspot,			// -1
+	int checktype			// -1
 	)
 {
 	Game_object *obj = container->get_readied(spot);
@@ -528,9 +528,9 @@ void Paperdoll_gump::paint_object
 	Paperdoll_item *item = GetItemInfo (obj->get_shapenum(), obj->get_framenum(), itemtype);
 	if (!item || item->frame == -1 || item->shape == -1)
 	{
-		if (old_it != -1 || checkspot != -1) return;
+		if ((old_it != -1 && !item)|| checkspot != -1) return;
+		//if (!obj->get_cx() && !obj->get_cy()) return;
 
-		//if (!obj->get_cx() && !obj->get_cy())
 		set_to_spot(obj, spot);
 	
 		if (Game::get_game_type() == BLACK_GATE)
@@ -550,7 +550,7 @@ void Paperdoll_gump::paint_object
 
 		gwin->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy(), 
 			obj->get_shapenum(), obj->get_framenum());
-			
+
 		return;
 	}
 	else if (checkspot != -1)
@@ -950,7 +950,7 @@ Game_object * Paperdoll_gump::check_object
 	Paperdoll_item *item = GetItemInfo (obj->get_shapenum(), obj->get_framenum(), itemtype);
 	if (!item || item->frame == -1 || item->shape == -1)
 	{
-		if (old_it != -1  || checkspot != -1) return 0;
+		if ((old_it != -1 &&!item) || checkspot != -1) return 0;
 		
 		if (!obj->get_cx() && !obj->get_cy()) set_to_spot(obj, spot);
 		

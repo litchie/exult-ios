@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "egg.h"
 #include "chunks.h"
 #include "schedule.h"
+#include "objiter.h"
 
 using std::ios;
 using std::cout;
@@ -550,3 +551,56 @@ void Monster_actor::write
 		return;
 	Actor::write(nfile);		// Now write.
 	}
+
+/*
+ *	Write Inventory
+ */
+
+/*
+ *	Write contents (if there is any).
+ */
+
+void Actor::write_contents
+	(
+	ostream& out
+	)
+{
+	if (!objects.is_empty())	// Now write out what's inside.
+	{
+		const int num_spots = (int)(sizeof(spots)/sizeof(spots[0]));
+		sint8 i;
+
+		for (i = 0; i < num_spots; ++i)
+		{
+			// Spot Increment
+			if (spots[i])
+			{
+				// Write 2 byte index id
+				out.put(0x02);
+				Write2 (out, (uint8) i);
+				spots[i]->write_ireg(out);
+			}
+		}
+
+		Game_object *obj;
+		Object_iterator next(objects);
+
+		while ((obj = next.get_next()) != 0)
+		{
+			for (i = 0; i < num_spots; ++i)
+				if (spots[i] == obj)
+					break;
+
+			if (i == num_spots)
+			{
+				// Write 2 byte index id (-1 = no slot)
+				i = -1;
+				out.put(0x02);
+				Write2 (out, (uint8) i);
+				obj->write_ireg(out);
+			}
+		}
+		out.put(0x01);		// A 01 terminates the list.
+	}
+}
+

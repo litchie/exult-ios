@@ -1137,14 +1137,27 @@ void Game_window::read_ireg_objects
 	)
 	{
 	int entlen;			// Gets entry length.
+	sint8 index_id = -1;
 					// Go through entries.
 	while (((entlen = Read1(ireg), ireg.good())))
 		{
+
+		// Skip 0's & ends of containers.
+
 		if (!entlen || entlen == 1)
+		{
 			if (container)
 				return;	// Skip 0's & ends of containers.
 			else
 				continue;
+		}
+		// Detect the 2 byte index id
+		else if (entlen == 2)
+		{
+			index_id = (sint8) Read2 (ireg);
+			continue;
+		}
+
 					// Get copy of flags.
 		unsigned long oflags = flags;
 		if (entlen != 6 && entlen != 12 && entlen != 18)
@@ -1171,10 +1184,6 @@ void Game_window::read_ireg_objects
 		int is_egg = 0;		// Fields are eggs.
 					// An "egg"?
 		
-		if (shnum == 486 && Game::get_game_type() == SERPENT_ISLE)
-		{
-			cerr << "Usecode Container. Entlen = " << entlen << endl;
-		}
 		if (info.get_shape_class() == Shape_info::hatchable)
 			{
 			int anim = info.is_animated() ||
@@ -1277,15 +1286,21 @@ void Game_window::read_ireg_objects
 		obj->set_quality(quality);
 		obj->set_flags(oflags);
 					// Add, but skip volume check.
-		if (!container || !container->add(obj, 1))
-			{
-			Chunk_object_list *chunk = get_objects(
-					scx + cx, scy + cy);
-			if (is_egg)
-				chunk->add_egg((Egg_object *) obj);
-			else
-				chunk->add(obj);
-			}
+
+		if (container)
+		{
+			if (index_id != -1 && container->add_readied(obj, index_id, 1, 1))
+				continue;
+			else if (container->add(obj, 1))
+				continue;
+		}
+
+		Chunk_object_list *chunk = get_objects(
+				scx + cx, scy + cy);
+		if (is_egg)
+			chunk->add_egg((Egg_object *) obj);
+		else
+			chunk->add(obj);
 		}
 	}
 

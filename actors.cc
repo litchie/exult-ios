@@ -901,7 +901,7 @@ int Actor::find_best_spot
 			else if (!two_handed && !spots[rhand] && Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), rhand))
 				return rhand;
 						
-			// Ok, no spot found, now check for free hand
+			// Ok, no spot found, now check for generic free hand
 			if (free_hand() != -1) return free_hand();
 				
 			// Still, no spot found, lastly check for secondary places
@@ -2050,7 +2050,9 @@ static int Belt_okay
 int Actor::add_readied
 	(
 	Game_object *obj,
-	int index			// Spot #.
+	int index,			// Spot #.
+	int dont_check,
+	int force_pos
 	)
 {
 
@@ -2071,44 +2073,47 @@ int Actor::add_readied
 #endif //DEBUG
 
 	// If it's a two handed weapon and put on a rhand, change it to lhand
+	// Belt check first
 	if (best_index == lrhand && index == rhand)
 		index = lhand;
 	else if (best_index == lrfinger && index == rfinger)
 		index = lfinger;
-	else if (Game::get_game_type() == SERPENT_ISLE && index != best_index)
+	else if (index != best_index)
 	{
 		Shape_info& info =  Game_window::get_game_window()->get_info(obj);
-		Ready_type_SI type = (Ready_type_SI) info.get_ready_type();
+		const Ready_type type = (Ready_type) info.get_ready_type();
+		const Ready_type_SI type_si = (Ready_type_SI) type;
 
-		// Can it go where we want? If so set best index to this
-		// Otherwise set this to best index
-		if (Paperdoll_gump::IsObjectAllowed (obj->get_shapenum(), obj->get_framenum(), index) && index != lhand && index != rhand)
- 			best_index = index;
-		else if (best_index == lrhand)
-			index = lhand;
-		else if (best_index == lrfinger)
-			index = lfinger;
-		else if (type != spell_si && type != other_spell_si)
-			index = best_index;
-	}
-	else if (Game::get_game_type() == BLACK_GATE && index != best_index)
-	{
-		Shape_info& info =  Game_window::get_game_window()->get_info(obj);
-		Ready_type type = (Ready_type) info.get_ready_type();
+		bool wep2h = false;
+		if (Game::get_game_type() == SERPENT_ISLE && type_si == two_handed_si)
+			wep2h = true;
+		else if (Game::get_game_type() == BLACK_GATE && type == two_handed_weapon)
+			wep2h = true;
 
 		// Can it go where we want? If so set best index to this
 		// Otherwise set this to best index
 		if (Paperdoll_gump::IsObjectAllowed (
-			obj->get_shapenum(), obj->get_framenum(), index) ||
-					// ANYTHING can be held in a hand.
-				 index == lhand || index == rhand)
+				obj->get_shapenum(), obj->get_framenum(), index) ||
+				(index == lhand && !two_handed && !(wep2h && spots[rhand])) || (index == rhand && !two_handed && !wep2h))
  			best_index = index;
-		else if (best_index == lrhand)
+		// BG Check for 2H Wep Back Spot
+		else if ( Game::get_game_type() == BLACK_GATE && index == belt &&
+				Paperdoll_gump::IsObjectAllowed(obj->get_shapenum(), obj->get_framenum(), back2h_spot))
+			best_index = index;
+		// BG Check for Shield Spot
+		else if ( Game::get_game_type() == BLACK_GATE && index == belt &&
+				Paperdoll_gump::IsObjectAllowed(obj->get_shapenum(), obj->get_framenum(), shield_spot))
+			best_index = index;
+		else if (best_index == lrhand && !force_pos)
 			index = lhand;
-		else if (best_index == lrfinger)
+		else if (best_index == lrfinger && !force_pos)
 			index = lfinger;
-		else if (type != spell && type != other_spell)
+		else if (type_si != spell_si && type_si != other_spell_si && !force_pos && Game::get_game_type() == SERPENT_ISLE)
 			index = best_index;
+		else if (type != spell && type != other_spell && !force_pos && Game::get_game_type() == BLACK_GATE)
+			index = best_index;
+		else if (force_pos)
+			best_index = index;
 	}
 
 #ifdef DEBUG
@@ -2119,6 +2124,8 @@ int Actor::add_readied
 	if (index == best_index
 		|| (!two_handed && index == lhand)
 		|| (!two_handed && index == rhand && best_index != lrhand)
+		|| (!two_fingered && index == lfinger)
+		|| (!two_fingered && index == rfinger && best_index != lrfinger)
 		|| (index == belt && Belt_okay(obj)))
 	{			// Okay.
 		if (!Container_game_object::add(obj))
@@ -2130,7 +2137,7 @@ int Actor::add_readied
 		if (best_index == lrfinger)
 			two_fingered = true;	// Must be gloves
 		Game_window *gwin = Game_window::get_game_window();
-		if (index == lfinger || index == rfinger)
+		if (!dont_check && (index == lfinger || index == rfinger))
 			Call_readied_usecode(gwin, this, 
 						obj,Usecode_machine::readied);
 		if (gwin->get_info(obj).is_light_source())
