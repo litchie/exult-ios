@@ -52,7 +52,12 @@ void GL_texshape::create
 	assert(pal != 0);
 					// Convert to rgba.
 	unsigned char *pixels = src->rgba(pal, transp);
-	glGenTextures(1, &texture);	// Generate (empty) texture.
+//+++++TESTING
+// memset(pixels, 255, texsize*texsize*4);
+//++++++
+	GLuint tex;
+	glGenTextures(1, &tex);		// Generate (empty) texture.
+	texture = tex;
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texsize, texsize, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, pixels);
@@ -99,11 +104,12 @@ GL_texshape::GL_texshape
 	(
 	Image_buffer8 *src,		// Must be square.
 	unsigned char *pal		// 3*256 bytes (rgb).
-	) : frame(f), lru_next(0), lru_prev(0)
+	) : frame(0), lru_next(0), lru_prev(0)
 	{
 	int w = src->get_width(), h = src->get_height();
 	assert (w == h);
 	assert ((1<<Log2(w)) == w);
+	texsize = w;
 	create(src, pal);
 	}
 
@@ -133,19 +139,37 @@ void GL_texshape::paint
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	glPushMatrix();
 					// Convert to tile position.
-	float x = static_cast<float>(px + frame->get_xright() - texsize);
+	float x = static_cast<float>(px);
+	float y = static_cast<float>(py);
+	if (frame)
+		{
+		x += frame->get_xright() - (int) texsize;
+		y += frame->get_ybelow() - (int) texsize;
+		}
 					// Game y-coord goes down from top.
-	float y = -static_cast<float>(py + frame->get_ybelow() - texsize);
-	float w = texsize, h = texsize;
+	y = -y;
+	x /= c_tilesize;
+	y /= c_tilesize;
+	float w = static_cast<float>(texsize)/c_tilesize, 
+	      h = static_cast<float>(texsize)/c_tilesize;
 	glTranslatef(x, y, 0);
 					// Choose texture.
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBegin(GL_QUADS);
 		{
+#if 0
+//++++++TESTING
+		glColor3f(1,.5, 0);	// Orange.
+		glVertex3f(0, 0, 0);
+		glVertex3f(0, 1, 0);
+		glVertex3f(1, 1, 0);
+		glVertex3f(1, 0, 0);
+#else
 		glTexCoord2f(0, 0);		glVertex3f(0, 0, 0);
 		glTexCoord2f(0, 1);		glVertex3f(0, h, 0);
 		glTexCoord2f(1, 1);		glVertex3f(w, h, 0);
 		glTexCoord2f(1, 0);		glVertex3f(w, 0, 0);
+#endif
 		}
 	glEnd();
 	glPopMatrix();
@@ -169,6 +193,7 @@ GL_manager::GL_manager
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);	// ??
 	glEnable(GL_BLEND);		// !These two calls do the trick.
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_TEXTURE_2D);	// Enable texture-mapping.
 	}
 
 /*
@@ -186,6 +211,7 @@ GL_manager::~GL_manager
 		delete shapes;
 		shapes = next;
 		}
+	delete palette;
 	instance = 0;
 	}
 
@@ -205,6 +231,8 @@ void GL_manager::resized
 	glOrtho(0, new_width/c_tilesize, -new_height/c_tilesize, 0, 1, -16);
 	glMatrixMode(GL_MODELVIEW);	// Use model-view matrix from now on.
 	glLoadIdentity();
+					// Clear screen & depth buffer.
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 /*

@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "shapeid.h"
 
 class Image_buffer8;
-class GL_shape;
+class GL_texshape;
 
 /*
  *	The flat landscape, 16x16 tiles:
@@ -43,7 +43,7 @@ class Chunk_terrain : public Game_singletons
 	int num_clients;		// # of Chunk's that point to us.
 	bool modified;			// Changed (by map-editor).
 	Image_buffer8 *rendered_flats;	// Flats rendered for entire chunk.
-	GL_shape *glflats;		// OpenGL texture from rendered_flats.
+	GL_texshape *glflats;		// OpenGL texture from rendered_flats.
 					// Most-recently used circular queue
 					//   for rendered_flats:
 	static Chunk_terrain *render_queue;
@@ -94,7 +94,7 @@ public:
 		return rendered_flats
 			? rendered_flats : render_flats();
 		}
-	GL_shape *get_glflats()
+	GL_texshape *get_glflats()
 		{ get_rendered_flats();  return glflats; }
 	void render_all(int cx, int cy);// Render (in terrain-editing mode).
 					// Write out to chunk.

@@ -256,7 +256,35 @@ void Background_noise::handle_event
 	gwin->get_tqueue()->add(curtime + delay, this, udata);
 }
 
-//
+/*
+ *	Set/unset opengl mode.
+ */
+
+static void Set_opengl
+	(
+	Image_window8 *win,
+	Palette *pal
+	)
+	{
+#ifdef HAVE_OPENGL
+	delete GL_manager::get_instance();
+	if (win->get_scaler() == Image_window::OpenGL)
+		{
+		GL_manager *glman = new GL_manager();
+					// This should be elsewhere, I think:
+		unsigned char *newpal = new unsigned char[768];
+		for (int i = 0; i < 256; i++)
+			{
+			newpal[3*i] = pal->get_red(i);
+			newpal[3*i+1] = pal->get_green(i);
+			newpal[3*i+2] = pal->get_blue(i);
+			}
+		glman->set_palette(newpal);
+		glman->resized(win->get_width(), win->get_height());
+		}
+#endif
+	}
+
 /*
  *	Create game window.
  */
@@ -331,6 +359,7 @@ void Game_window::set_window_size(int width, int height, int scale, int scaler)
 		fullscreen=true;
 	config->set("config/video/fullscreen",fullscreenstr,true);
 	win = new Image_window8(width, height, scale, fullscreen, scaler);
+	Set_opengl(win, pal);
 	win->set_title("Exult Ultima7 Engine");
 	shape_man->set_ibuf(win->get_ib8());
 }
@@ -668,6 +697,7 @@ void Game_window::resized
 	)
 	{			
 	win->resized(neww, newh, newsc, newsclr);
+	Set_opengl(win, pal);
 	// Do the following only if in game (not for menus)
 	if(usecode) {
 		center_view(get_main_actor()->get_tile());
