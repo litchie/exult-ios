@@ -493,11 +493,13 @@ int Game_object::find_nearby_eggs
 	(
 	Egg_vector& vec,
 	int shapenum,
-	int delta
+	int delta,
+	int qual,
+	int frnum
 	) const
 	{
 	return Game_object::find_nearby (vec, get_tile(), shapenum,
-						delta, 16, c_any_qual, c_any_framenum);
+					delta, 16, qual, frnum);
 	}
 
 int Game_object::find_nearby_actors
