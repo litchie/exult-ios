@@ -959,6 +959,7 @@ void Usecode_machine::remove_from_party
 		}
 	party_count--;
 	party[party_count] = 0;
+	npc->set_party_id(-1);
 	}
 
 /*
