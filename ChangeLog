@@ -1,3 +1,6 @@
+2003-08-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* intrinsics.cc: fix crash in get_npc_name
+
 2003-08-27  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamemap.cc: enable WANT_MAP_CACHE_OUT permanently
 
