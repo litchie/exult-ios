@@ -3,6 +3,11 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns="http://www.w3.org/1999/xhtml">
 
+<!-- FIX ME - <br> is translated but then immediatly filtered out again.
+ |   Furthermore, indention of list entries etc. is not done at all. We should
+ |   fix this somehow, but how?
+ +-->
+
 
 <xsl:strip-space elements="*"/>
 <xsl:output
@@ -13,6 +18,7 @@
 <!-- Keys -->
 <xsl:key name="faq_ref" match="faq" use="@name"/>
 <xsl:key name="section_ref" match="section" use="@title"/>
+
 
 
 <!-- Templates -->
@@ -32,13 +38,13 @@
 					format="1. "
 					value="position() -1"/>
 		<xsl:value-of select="@title"/><xsl:text>&#xA;</xsl:text>
-	<xsl:for-each select="faq">
-		<xsl:number level="multiple" 
-					count="section|faq" 
-					format="1."
-					value="count(ancestor::section/preceding-sibling::section)"/>
-		<xsl:number format="1. "/>
-		<xsl:apply-templates select="question"/><xsl:text>&#xA;</xsl:text>
+		<xsl:for-each select="faq">
+			<xsl:number level="multiple" 
+						count="section|faq" 
+						format="1."
+						value="count(ancestor::section/preceding-sibling::section)"/>
+			<xsl:number format="1. "/>
+			<xsl:apply-templates select="question"/><xsl:text>&#xA;</xsl:text>
 		</xsl:for-each>
 		<xsl:text>&#xA;</xsl:text>
 	</xsl:for-each>
@@ -75,17 +81,25 @@
 
 
 <xsl:template match="question">
+	<!-- In order to do proper formatting, we have to apply a little trick -
+	 |   we first store the result tree fragment (RTF) in a variable, then
+	 |   we can apply normalize-space to this variable. Nifty, hu? ;)
+	 +-->
+	<xsl:variable name = "spaced_text">
 		<xsl:apply-templates/>
-<!-- normalize-space -->
+	</xsl:variable> 
+	<xsl:value-of select="normalize-space($spaced_text)"/>
 </xsl:template>
 
 
 <xsl:template match="answer">
-		<xsl:apply-templates/>
+	<xsl:apply-templates/>
 </xsl:template>
 
 
+<!--=========================-->
 <!-- Internal Link Templates -->
+<!--=========================-->
 <xsl:template match="ref">
 	<xsl:choose>
 		<xsl:when test="count(child::node())>0">
@@ -130,17 +144,62 @@
 </xsl:template>
 
 
+<!--================-->
 <!-- Misc Templates -->
-<xsl:template match="Exult">
-	<xsl:text>Exult</xsl:text>
+<!--================-->
+
+<xsl:template match="para">
+	<!-- Same trick as in the question template -->
+	<xsl:variable name = "data">
+		<xsl:apply-templates/>
+	</xsl:variable> 
+	<xsl:value-of select="normalize-space($data)"/>
+	<xsl:text>&#xA;</xsl:text>
 </xsl:template>
 
 
 <xsl:template match="cite">
-		<p>
-		<xsl:value-of select="@name"/>:<br/>
-		<cite><xsl:value-of select="."/></cite>
-		</p>
+	<xsl:if test="position()!=1">
+		<xsl:text>&#xA;</xsl:text>
+	</xsl:if>
+	<xsl:value-of select="@name"/><xsl:text>:&#xA;</xsl:text>
+	<!-- Same trick as in the question template -->
+	<xsl:variable name = "data">
+		<xsl:apply-templates/>
+	</xsl:variable> 
+	<xsl:value-of select="normalize-space($data)"/>
+	<xsl:text>&#xA;</xsl:text>
+</xsl:template>
+
+
+<xsl:template match="ol">
+	<xsl:for-each select="li">
+		<xsl:text></xsl:text>
+		<xsl:number format="1. "/>
+		<xsl:variable name = "data">
+			<xsl:apply-templates/>
+		</xsl:variable> 
+		<xsl:value-of select="normalize-space($data)"/>
+		<xsl:text>&#xA;</xsl:text>
+	</xsl:for-each>
+	<xsl:text>&#xA;</xsl:text>
+</xsl:template>
+
+<xsl:template match="ul">
+	<xsl:for-each select="li">
+		<xsl:text>* </xsl:text>
+		<xsl:variable name = "data">
+			<xsl:apply-templates/>
+		</xsl:variable> 
+		<xsl:value-of select="normalize-space($data)"/>
+		<xsl:text>&#xA;</xsl:text>
+	</xsl:for-each>
+	<xsl:text>&#xA;</xsl:text>
+</xsl:template>
+
+
+<xsl:template match="br">
+	<xsl:text>&#xA;</xsl:text>
 </xsl:template>
 
 
@@ -149,20 +208,14 @@
 </xsl:template>
 
 
-<xsl:template match="para">
-	<xsl:variable name = "data">
-		<xsl:apply-templates/>
-	</xsl:variable> 
-	<xsl:value-of select="$data"/>
-	<xsl:text>&#xA;</xsl:text>
-</xsl:template>
-
-<xsl:template match="br">
-	<xsl:text>&#xA;</xsl:text>
+<xsl:template match="Exult">
+	<xsl:text>Exult</xsl:text>
 </xsl:template>
 
 
+<!--=======================-->
 <!-- Key Command Templates -->
+<!--=======================-->
 <xsl:template match="keytable">
 	<table border="0" cellpadding="0" cellspacing="2" width="80%">
 		<tr>
@@ -186,7 +239,9 @@
 </xsl:template>
 
 
+<!--========================-->
 <!-- Config Table Templates -->
+<!--========================-->
 <xsl:template match="configdesc">
 	<table border="0" cellpadding="0" cellspacing="0">
 		<xsl:apply-templates select="line"/>
@@ -213,13 +268,6 @@
 		<xsl:value-of select="."/>
 	</td>
 </xsl:template>
-
-
-<!-- 
-<xsl:template match="text()">
-	<xsl:value-of select="."/>
-</xsl:template>
--->
 
 <!-- Clone template. Allows one to use any XHTML in the source file -->
 <!-- 
