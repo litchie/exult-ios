@@ -24,25 +24,46 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <stdio.h>
 #include <fstream>
-#include <hash_map>
 #include <cctype>
 #if defined(MACOS)
   #include <stat.h>
+  #include <hashmap.h>
 #else
   #include <sys/stat.h>
+  #include <hash_map>
 #endif
 
 #include "utils.h"
 
 
 // Ugly hack for supporting different paths
-struct eqcharstr
+
+/*
+ *	Hash function for strings:
+ */
+struct hashstr
+{
+	long operator() (const char *str) const
+	{
+		static const unsigned long m = 4294967291u;
+		unsigned long result = 0;
+		for (; *str != '\0'; ++str)
+			result = ((result << 8) + *str) % m;
+		return long(result);
+	}
+};
+
+/*
+ *	For testing if two strings match:
+ */
+struct eqstr
 {
 	bool operator()(const char* s1, const char* s2) const {
 		return strcmp(s1, s2) == 0;
 	}
 };
-static hash_map<const char*, const char*, hash<const char*>, eqcharstr> path_map;
+
+static hash_map<const char*, const char*, hashstr, eqstr> path_map;
 
 void add_system_path(const char *key, const char *value)
 {
