@@ -81,6 +81,7 @@
   - Avatar & NPC approaching to some distance??? - 9 in SI
  - hex coords to sextant coords - ( x - 933 ) / 10, ( y - 1134 ) / 10
 */
+#define HAVE_CONFIG_H
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -102,6 +103,9 @@
 #include "ucdata.h"
 #include "ucfunc.h"
 
+// include xml configuration stuff
+#include "conf/Configuration.h"
+
 //#define DEBUG(x) x
 #define DEBUG(x)
 
@@ -109,13 +113,16 @@
 /* Functions */
 void usage();
 void output_flags(const vector<UCFunc *> &funcs);
+void load_usecode_file(UCData &uc);
 
 int main(int argc, char** argv)
 {
 	/* Preset to no match */
 	UCData uc;
 
-	cout << "Ultima 7 usecode disassembler v0.6.1" << endl << endl;
+	cout << "Ultima 7 usecode disassembler v0.6.1" << endl
+	     << "    compiled with " << PACKAGE << " " << VERSION << endl
+	     << endl;
 	
 	// Tends to make life easier
 	cout << setfill('0') << setbase(16);
@@ -128,44 +135,28 @@ int main(int argc, char** argv)
 	
 	uc.parse_params(argc, argv);
 
+	// ICK! Don't try this at home kids...
+	// done because for some reason it started crashing upon piping or redirection to file... vierd.
+	// yes, it's a hack to fix an eldritch bug I can't find... it seems appropriate
+	ofstream outputstream;
+	streambuf *coutbuf;
+	if(uc.output_redirect().size())
+	{
+		outputstream.open(uc.output_redirect().c_str(), ios::out);
+		if(outputstream.fail())
+		{
+			cout << "error. failed to open " << uc.output_redirect() << " for writing. exiting." << endl;
+			exit(1);
+		}
+		coutbuf = cout.rdbuf();
+		cout.rdbuf(outputstream.rdbuf());
+	}
+	
 	if( uc.mode() == MODE_NONE )
 		usage();
 
-	uc.open_usecode("usecode");
+	load_usecode_file(uc);
 	
-	/* TODO: Need to integrate the exult.cfg xml configration path stuff in here... this works otherwise */
-	if(uc.fail())
-	{
-		if(uc.game()==GAME_BG)
-		{
-			if(uc.fail())
-				uc.open_usecode("usecode.bg");
-			if(uc.fail())
-				uc.open_usecode("ultima7/static/usecode");
-			if(uc.fail())
-				uc.open_usecode("ULTIMA7/STATIC/USECODE");
-		}
-		else if(uc.game()==GAME_SI)
-		{
-			if(uc.fail())
-				uc.open_usecode("usecode.si");
-			if(uc.fail())
-				uc.open_usecode("serpent/static/usecode");
-			if(uc.fail())
-				uc.open_usecode("SERPENT/STATIC/USECODE");
-		}
-		else
-		{
-			cerr << "Error: uc.game() was not set to GAME_U7 or GAME_SI this can't happen" << endl;
-			assert(false); return 1; // just incase someone decides to compile without asserts;
-		}
-		
-		if(uc.fail())
-		{
-			cout << "Failed to locate usecode file. Exiting." << endl;
-			return 1;
-		}
-	}
 	/* Embedded function table pointer
 	   TODO: set to bg_func_table or si_func_table depending on the command line
 	*/
@@ -191,6 +182,11 @@ int main(int argc, char** argv)
 	}
 //	if( ( ( uc.mode() == MODE_DISASSEMBLY ) || ( uc.mode() == MODE_OPCODE_SEARCH ) ) && !found )
 
+	// now we clean up the <ick>y ness from before
+	if(uc.output_redirect().size())
+	{
+		cout.rdbuf(coutbuf);
+	}
 	return 0;
 }
 
@@ -198,15 +194,164 @@ int main(int argc, char** argv)
 void usage()
 {
   cout << "Usage:" << endl
-       << "\tucxt [-bg | -si] -l - prints list of all present functions" << endl
+       << "\tucxt [-v] [-nc] [-bg | -si] [-ofile] -l" << endl
+       << "\t\t- prints list of all functions" << endl
 //       << "\tucdump -c - scans the whole usecode file for unknown opcodes" << endl
 //       << "\tucdump -o <hex number> - prints list of functions which use "
 //       << "the given opcode" << endl
 //       << "\tucdump -i <hex number> - prints list of functions which use "
 //       << "the given intrinsic function\n" << endl
 //       << "\tucxt -f - prints list of all flags x functions" << endl
-       << "\tucxt [-bg | -si] <hex number> - disassembles single function to stdout" << endl;
+       << "\tucxt [-v] [-nc] [-bg | -si] [-ofile] <hex number>" << endl
+       << "\t\t- disassembles single function to stdout" << endl
+       << endl
+       << "\t-nc\t- don't look for exult's .xml config file" << endl
+       << "\t-bg\t- select the black gate usecode file" << endl
+       << "\t-si\t- select the serpent isle usecode file" << endl
+       << "\t-v \t- turns on verbose output mode" << endl
+       << "\t-ofile\t- output to the specified file" << endl;
   exit(1);
 }
 
+void load_usecode_file(UCData &uc)
+{
+	Configuration config;
+	
+	if(uc.noconf() == false)
+	{
+		if(uc.verbose()) cout << "Loading exult configuration file..." << endl;
+		if(config.read_config_file("exult.cfg") == false)
+		{
+			cout << "Failed to locate exult.cfg. Run exult before running ucxt or use the -nc switch. Exiting." << endl;
+			exit(1);
+		}
+	}
+	
+	string bgpath;
+	if(uc.noconf() == false) config.value("config/disk/game/blackgate/path", bgpath);
+	string sipath;
+	if(uc.noconf() == false) config.value("config/disk/game/serpentisle/path", sipath);
+	
+	/* ok, to find the usecode file we search: (where $PATH=bgpath or sipath)
+		$PATH/static/usecode
+		$PATH/STATIC/usecode
+		$PATH/static/USECODE
+		$PATH/STATIC/USECODE
+		./ultima7/static/usecode || ./serpent/static/usecode
+		./ultima7/STATIC/usecode || ./serpent/STATIC/usecode
+		./ultima7/static/USECODE || ./serpent/static/USECODE
+		./ultima7/STATIC/USECODE || ./serpent/STATIC/USECODE
+		./ULTIMA7/static/usecode || ./SERPENT/static/usecode
+		./ULTIMA7/STATIC/usecode || ./SERPENT/STATIC/usecode
+		./ULTIMA7/static/USECODE || ./SERPENT/static/USECODE
+		./ULTIMA7/STATIC/USECODE || ./SERPENT/STATIC/USECODE
+		./static/usecode
+		./STATIC/usecode
+		./static/USECODE
+		./STATIC/USECODE
+		./usecode.bg || ./usecode.si
+		./USECODE
+		./usecode
+		
+		Anything I'm missing? <queryfluff>
+	*/
+	
+	/* The capitilisation configurations: (yes, going overkill, typos are BAD!) */
+	
+	string mucc_sl("static");
+	string mucc_sc("STATIC");
+	string mucc_ul("usecode");
+	string mucc_uc("USECODE");
+	string mucc_bgl("ultima7");
+	string mucc_bgc("ULTIMA7");
+	string mucc_sil("serpent");
+	string mucc_sic("SERPENT");
+	
+	/* The four mysitcal usecode configurations: */
+	
+	string mucc_ll(string("/") + mucc_sl + "/" + mucc_ul);
+	string mucc_cl(string("/") + mucc_sc + "/" + mucc_ul);
+	string mucc_lc(string("/") + mucc_sl + "/" + mucc_uc);
+	string mucc_cc(string("/") + mucc_sc + "/" + mucc_uc);
+	
+	string path, ucspecial, mucc_u7l, mucc_u7c;
+	if(uc.game()==GAME_BG)
+	{
+		if(uc.verbose()) cout << "Configuring for bg." << endl;
+		path      = bgpath;
+		ucspecial = "usecode.bg";
+		mucc_u7l  = mucc_bgl;
+		mucc_u7c  = mucc_bgc;
+	}
+	else if(uc.game()==GAME_SI)
+	{
+		if(uc.verbose()) cout << "Configuring for si." << endl;
+		path      = sipath;
+		ucspecial = "usecode.si";
+		mucc_u7l  = mucc_sil;
+		mucc_u7c  = mucc_sic;
+	}
+	else
+	{
+		cerr << "Error: uc.game() was not set to GAME_U7 or GAME_SI this can't happen" << endl;
+		assert(false); exit(1); // just incase someone decides to compile without asserts;
+	}
+	
+	// an icky exception chain for those who don't use .exult.cfg
+	if(uc.noconf()==false)
+	{
+		uc.open_usecode(path + mucc_ll);
+		if(uc.fail())
+			uc.open_usecode(path + mucc_cl);
+		if(uc.fail())
+			uc.open_usecode(path + mucc_lc);
+		if(uc.fail())
+			uc.open_usecode(path + mucc_cc);
+		if(uc.fail())
+			uc.open_usecode(mucc_u7l + mucc_ll);
+	}
+	else
+		uc.open_usecode(mucc_u7l + mucc_ll);
+		
+	if(uc.fail())
+		uc.open_usecode(mucc_u7l + mucc_cl);
+	if(uc.fail())
+		uc.open_usecode(mucc_u7l + mucc_lc);
+	if(uc.fail())
+		uc.open_usecode(mucc_u7l + mucc_cc);
+	if(uc.fail())
+		uc.open_usecode(mucc_u7c + mucc_ll);
+	if(uc.fail())
+		uc.open_usecode(mucc_u7c + mucc_cl);
+	if(uc.fail())
+		uc.open_usecode(mucc_u7c + mucc_lc);
+	if(uc.fail())
+		uc.open_usecode(mucc_u7c + mucc_cc);
+	if(uc.fail())
+		uc.open_usecode(mucc_ll);
+	if(uc.fail())
+		uc.open_usecode(mucc_cl);
+	if(uc.fail())
+		uc.open_usecode(mucc_lc);
+	if(uc.fail())
+		uc.open_usecode(mucc_cc);
+	if(uc.fail())
+		uc.open_usecode(ucspecial);
+	if(uc.fail())
+		uc.open_usecode(mucc_uc);
+	if(uc.fail())
+		uc.open_usecode(mucc_ul);
+	// if we get through all this, usecode can't be installed anywhere sane
+	if(uc.fail())
+	{
+		cout << "Error. Could not find usecode file. Exiting." << endl;
+		exit(1);
+	}
+	
+	if(uc.fail())
+	{
+		cout << "Failed to locate usecode file. Exiting." << endl;
+		exit(1);
+	}
+}
 

@@ -129,7 +129,7 @@ class UCFunc
     unsigned short datasize() const { return _datasize; };
     unsigned short codesize() const { return _funcsize - _datasize; };
 
-  private:
+//  private:
     unsigned short read_ushort();
     unsigned short read_ushort(const unsigned char *buff);
     void read_vchars(char *buffer, const unsigned long nobytes);
