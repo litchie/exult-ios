@@ -23,7 +23,10 @@
 #define HAVE_OPENGL
 #define FUDGE_SAMPLE_RATES
 #define USE_FMOPL_MIDI
-#define WANT_MAP_CACHE_OUT
+#define WANT_MAP_CACHE_OUT	1
+
+// No GDI
+#define NOGDI
 
 // Settings for debug builds
 #ifndef NDEBUG
@@ -40,7 +43,7 @@
 #endif
 
 // Yeah, lets do unicode compiles
-#define UNICODE
+//#define UNICODE
 
 // Don't need everything in the windows headers
 #define WIN32_LEAN_AND_MEAN
@@ -99,7 +102,7 @@ namespace std {
 	
 	// Win32 doesn't have snprintf as such. It's got _snprintf, 
 	// but it's in stdio. I'll make my own using _vsnprintf 
-#if 1
+#if 0
 	inline int snprintf(char *out, size_t len, const char *format, ...)
 	{
 		va_list	argptr;
@@ -107,6 +110,12 @@ namespace std {
 		int ret = ::_vsnprintf (out, len, format, argptr);
 		va_end (argptr);
 		return ret;
+	}
+#elif 1
+	__declspec(naked) static int __cdecl snprintf(char *out, size_t len, const char *format, ...)
+	{
+		using ::_snprintf;
+		__asm jmp _snprintf;
 	}
 #else
 
