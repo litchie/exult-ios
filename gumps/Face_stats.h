@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef PARTY_PORTRAIT_H
 #define PARTY_PORTRAIT_H
 
+#include "Configuration.h"
 #include "Gump.h"
 
 class Actor;
@@ -70,6 +71,8 @@ public:
 	static void CreateGump();
 	static void RemoveGump();
 	static void AdvanceState();
+	static void save_config(Configuration *config);
+	static void load_config(Configuration *config);
 };
 
 

@@ -1,9 +1,15 @@
 ??/??/01	v?.??
 
-		Colourless' amazing stats display.
+		Colourless' amazing stats display (press "r" to toggle the 
+		various modes)
 
 		Lots of work on performance improvements (faster scalers,
 		faster renderer, etc.)
+
+		Near-perfect dungeon renderer
+
+		Lots of work on MacOS by Fingolfin (both Classic and MacOS X),
+		including MIDI support.
 
 		Return to menu option in BG and SI game menus
 
@@ -11,9 +17,10 @@
 		file and show only valid entries (BG/SI) in the main menu.
 		If neither game is available, a warning is displayed.
 
-		Video Options in-game menu
+		Video Options in-game menu (still incomplete)
 
-		Text/speech synch in BG intro
+		Text/speech synch in BG intro and near-perfect butterfly 
+		animation
 
 		Support for scale > 2 in Point and Interlaced scalers
 
