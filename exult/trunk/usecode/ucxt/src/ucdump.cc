@@ -13,8 +13,6 @@
 
 /* TODO:
 	* cmps() doesn't have a jump target set, the jump target list of opcodes is static and needs to be fixed.
-	* Escape characters (double quotes (")) in string data for -fz.
-	* Add 'full text' output in addition to the short text output for text strings.
 */
 
 #ifdef HAVE_CONFIG_H

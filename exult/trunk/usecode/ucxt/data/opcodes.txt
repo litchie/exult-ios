@@ -164,11 +164,11 @@ As CMPNE, except using the "not equal to" comparison (!=).
 
 > 0x1B	NULL	"null"	""	"null()"	0	{}	0	0	0	0
 
-> 0x1C	ADDSI	"addsi\t%1H"	"\t\t\t; %t1"	"UcMessage(\"%t1\")"	2	{dataoffset}	0	0	0	0
+> 0x1C	ADDSI	"addsi\t%1H"	"\t\t\t; %tc1"	"UcMessage(\"%t1\")"	2	{dataoffset}	0	0	0	0
 
 Appends a string from the data segment {dataoffset} to the string register.
 
-> 0x1D	PUSHS	"pushs\t%1H"	"\t\t\t; %t1"	"\"%t1\""	2	{dataoffset}	0	1	0	0
+> 0x1D	PUSHS	"pushs\t%1H"	"\t\t\t; %tc1"	"\"%t1\""	2	{dataoffset}	0	1	0	0
 
 Pushes the string at {dataoffset} onto the stack.
 
