@@ -286,6 +286,41 @@ int U7ListFiles(const std::string pathMask, FileList& files)
 	return 0;
 }
 
+#elif defined(__MORPHOS__) || defined(AMIGA)
+
+#include <proto/dos.h>
+
+static struct AnchorPath ap __attribute__((aligned(4)));
+
+int U7ListFiles(const std::string mask, FileList& files)
+{
+  string path(get_system_path(mask));
+  char   buffer[ 256 ];
+  size_t pos;
+
+  // convert MS-DOS jokers to AmigaDOS wildcards
+  while( (pos = path.find( '*' )) != string::npos )
+	  path.replace( pos, 1, "#?" );
+
+  if( ParsePattern( path.c_str(), buffer, sizeof( buffer ) ) != -1 )
+  {
+	  LONG error = MatchFirst( buffer, &ap );
+
+	  while( error == DOSFALSE )
+	  {
+		  char *filename = (char *)malloc( strlen( ap.ap_Info.fib_FileName )+1 );
+		  strcpy( filename, ap.ap_Info.fib_FileName );
+		  files.push_back( filename );
+		  error = MatchNext( &ap );
+	  }
+
+	  MatchEnd( &ap );
+  }
+  else
+	  cout << "ParsePattern() failed." << endl;
+
+  return 0;
+}
 
 
 #else	// This system has glob.h

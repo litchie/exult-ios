@@ -22,22 +22,9 @@
 #  include <config.h>
 #endif
 
-#ifndef DONT_HAVE_HASH_SET
-#if __GNUG__ > 2
-#  include <ext/hash_set>
-using std::hash_set;
-#else
-#  include <hash_set>
-#endif
-#  ifdef MACOS
-  using Metrowerks::hash_set;
-#  endif
-#else
-#  include <set>
-#endif /* !HAVE_HASH_SET */
-
 #include <iostream>
 
+#include "hash_utils.h"
 #include "PathFinder.h"
 #include "exult_constants.h"
 #include "vec.h"

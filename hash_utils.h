@@ -24,9 +24,13 @@
 #ifdef DONT_HAVE_HASH_MAP
 #  include <map>
 #else
-#if __GNUC__ > 2
+#if HAVE_EXT_HASH_MAP
 #  include <ext/hash_map>
+#  if (defined(__GNUC__) && (__GNUC__ == 3) && ( __GNUC_MINOR__ > 0))
+using __gnu_cxx::hash_map;
+#  else
 using std::hash_map;
+#  endif
 #else
 #  include <hash_map>
 #endif
@@ -38,9 +42,9 @@ using std::hash_map;
 #ifdef DONT_HAVE_HASH_SET
 #  include <set>
 #else
-#if __GNUG__ > 2
+#if HAVE_EXT_HASH_SET
 #  include <ext/hash_set>
-using std::hash_set;
+using __gnu_cxx::hash_set;
 #else
 #  include <hash_set>
 #endif
