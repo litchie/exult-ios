@@ -125,10 +125,40 @@ static long Get_number
 	}
 
 /*
+ *	Return the next token, or quit with an error.
+ *
+ *	Output:	->copy of token.
+ */
+
+static char *Get_token
+	(
+	int linenum,			// For printing errors.
+	char *ptr,			// Where to start looking.
+	char *& endptr			// ->past token returned.
+	)
+	{
+	ptr = Skip_space(ptr + 7);
+	endptr = Find_space(ptr);
+	if (endptr == ptr)
+		{
+		cerr << "Line #" << linenum <<
+				":  Expecting a name" << endl;
+		exit(1);
+		}
+	char sav = *endptr;
+	*endptr = 0;
+	char *token = strdup(ptr);
+	*endptr = sav;
+	return token;
+	}
+
+/*
  *	Read in script, with the following format:
  *		Max. text length is 1024.
  *		A line beginning with a '#' is a comment.
  *		'archive imgfile' specifies name of the image archive.
+ *		'palette palfile' specifies the palette file (which, if a
+ *			Flex, contains palette in entry 0).
  *		'nnn/fff:filename' indicates shape #nnn will consist of fff
  *			frames in files "filename-iii.png", where iii is the
  *			frame #.
@@ -140,6 +170,7 @@ static void Read_script
 	(
 	istream& in,
 	char *& imagename,		// Archive name returned.
+	char *& palname,		// Palette name returned.
 	Shape_specs& specs		// Shape specs. returned here.
 	)
 	{
@@ -164,27 +195,18 @@ static void Read_script
 		char *ptr = Skip_space(&buf[0]);
 		if (*ptr == '#')
 			continue;	// Comment.
+		char *endptr;
 		if (strncmp(ptr, "archive", 7) == 0)
 			{		// Archive name.
-			if (imagename)
-				{
-				cerr << "Line #" << linenum << 
-					":  Imagename already given" << endl;
-				exit(1);
-				}
-			ptr = Skip_space(ptr + 7);
-			char *endptr = Find_space(ptr);
-			if (endptr == ptr)
-				{
-				cerr << "Line #" << linenum <<
-					":  No archive name given" << endl;
-				exit(1);
-				}
-			*endptr = 0;
-			imagename = strdup(ptr);
+			imagename = Get_token(linenum, ptr, endptr);
 			continue;
 			}
-		char *endptr;		// Get shape# in decimal, hex, or oct.
+		if (strncmp(ptr, "palette", 7) == 0)
+			{
+			palname = Get_token(linenum, ptr, endptr);
+			continue;
+			}
+					// Get shape# in decimal, hex, or oct.
 		long shnum = Get_number(linenum, "Shape # missing",
 								ptr, endptr);
 		if (*endptr != '/')
@@ -229,22 +251,23 @@ static void Write_frame
 	(
 	char *basename,			// Base filename to write.
 	int frnum,			// Frame #.
-	Shape_frame *frame		// What to write.
+	Shape_frame *frame,		// What to write.
+	unsigned char *palette		// 3*256 bytes.
 	)
 	{
 	assert(frame != 0);
 	char *fullname = new char[strlen(basename) + 30];
-	sprintf(fullname, "%s_%02d.png", basename, frnum);
+	sprintf(fullname, "%s%02d.png", basename, frnum);
 	cout << "Writing " << fullname << endl;
 	int w = frame->get_width(), h = frame->get_height();
 	int xoff = frame->get_xleft(), yoff = frame->get_yabove();
 	Image_buffer8 img(w, h);	// Render into a buffer.
 	frame->paint(&img, xoff, yoff);
-	unsigned char palette[3*256] = {0,0,0};	//+++++++++++++++
-	int palsize = 256;		// +++++++++++++++++
 					// Write out to the .png.
+//+++++++++
+//	xoff = yoff = 0;
 	if (!Export_png8(fullname, w, h, w, xoff, yoff, img.get_bits(),
-					palette, palsize))
+					palette, 256))
 		throw file_write_exception(fullname);
 	delete fullname;
 	}
@@ -262,15 +285,19 @@ static void Write_exult
 	)
 	{
 	char *fullname = new char[strlen(basename) + 30];
+	int frnum;
 					// Save starting position.
 	unsigned long startpos = out.tellp();
-	Write4(out, 0);			// Place-holder for total length.
-	int frnum;			// Also for frame locations.
-	for (frnum = 0; frnum < nframes; frnum++)
-		Write4(out, 0);
+	if (!flat)
+		{
+		Write4(out, 0);		// Place-holder for total length.
+					// Also for frame locations.
+		for (frnum = 0; frnum < nframes; frnum++)
+			Write4(out, 0);
+		}
 	for (frnum = 0; frnum < nframes; frnum++)
 		{
-		sprintf(fullname, "%s_%02d.png", basename, frnum);
+		sprintf(fullname, "%s%02d.png", basename, frnum);
 		cout << "Reading " << fullname << endl;
 		int w, h, rowsize, xoff, yoff, palsize;
 		unsigned char *pixels, *palette;
@@ -280,7 +307,7 @@ static void Write_exult
 		int datalen = h*rowsize;// Figure total #bytes.
 		if (flat)
 			{
-			if (w != 8 || h != 8)
+			if (w != 8 || h != 8 || rowsize != 8)
 				{
 				cerr << "Image in '" << fullname <<
 					"' is not flat" << endl;
@@ -293,24 +320,27 @@ static void Write_exult
 						w, h, xoff, yoff, datalen);
 			delete pixels;
 			pixels = rle;
-			}
 					// Get position of frame.
-		unsigned long pos = out.tellp();
-		out.seekp(startpos + (frnum + 1)*4);
-		Write4(out, pos - startpos);	// Store pos.
-		out.seekp(pos);		// Get back.
-		Write2(out, w - xoff - 1);	// Xright.
-		Write2(out, xoff);		// Xleft.
-		Write2(out, yoff);		// Yabove.
-		Write2(out, h - yoff - 1);	// Ybelow.
+			unsigned long pos = out.tellp();
+			out.seekp(startpos + (frnum + 1)*4);
+			Write4(out, pos - startpos);	// Store pos.
+			out.seekp(pos);			// Get back.
+			Write2(out, w - xoff - 1);	// Xright.
+			Write2(out, xoff);		// Xleft.
+			Write2(out, yoff);		// Yabove.
+			Write2(out, h - yoff - 1);	// Ybelow.
+			}
 		out.write(pixels, datalen);	// The frame data.
 		delete pixels;
 		delete palette;		//+++++++Save this in palettes.flx???
 		}
-	unsigned long pos = out.tellp();// Ending position.
-	out.seekp(startpos);		// Store total length.
-	Write4(out, pos - startpos);
-	out.seekp(pos);			// And get back to end.
+	if (!flat)
+		{
+		unsigned long pos = out.tellp();// Ending position.
+		out.seekp(startpos);		// Store total length.
+		Write4(out, pos - startpos);
+		out.seekp(pos);			// And get back to end.
+		}
 	delete fullname;
 	}
 
@@ -348,9 +378,16 @@ static void Create
 static void Extract
 	(
 	char *imagename,		// Image archive name.
+	char *palname,			// Palettes file (palettes.flx).
 	Shape_specs& specs		// List of things to extract.
 	)
 	{
+	U7object pal(palname, 0);	// Get palette 0.
+	size_t len;
+	unsigned char *palbuf = (unsigned char *)
+		pal.retrieve(len);	// This may throw an exception
+	for (int i = 0; i < len; i++)	// Turn into full bytes.
+		palbuf[i] *= 4;		// Exult palette vals are 0-63.
 	Vga_file ifile(imagename);	// May throw an exception.
 	for (Shape_specs::const_iterator it = specs.begin();
 						it != specs.end();  ++it)
@@ -374,8 +411,9 @@ static void Extract
 				" doesn't match actual count (" << nframes <<
 				")" << endl;
 		for (int f = 0; f < nframes; f++)
-			Write_frame(basename, f, shape->get_frame(f));
+			Write_frame(basename, f, shape->get_frame(f), palbuf);
 		}
+	delete palbuf;
 	}
 
 /*
@@ -401,7 +439,7 @@ int main
 	if (argc < 3 || argv[1][0] != '-')
 		Usage();		// (Exits.)
 	char *scriptname = argv[2];
-	char *imagename = 0;
+	char *imagename = 0, *palname = 0;
 	Shape_specs specs;		// Shape specs. stored here.
 	ifstream specin;
 	try {
@@ -410,7 +448,17 @@ int main
 		cerr << e.what() << endl;
 		exit(1);
 	}
-	Read_script(specin, imagename, specs);
+	Read_script(specin, imagename, palname, specs);
+	if (!imagename)
+		{
+		cerr << "No archive name (i.e., 'shapes.vga') given" << endl;
+		exit(1);
+		}
+	if (!palname)
+		{
+		cerr << "No palette name (i.e., 'palettes.flx') given" << endl;
+		exit(1);
+		}
 	specin.close();
 	switch (argv[1][1])		// Which function?
 		{
@@ -424,7 +472,7 @@ int main
 		break;
 	case 'x':			// Extract .png files.
 		try {
-			Extract(imagename, specs);
+			Extract(imagename, palname, specs);
 		} catch (exult_exception& e){
 			cerr << e.what() << endl;
 			exit(1);
