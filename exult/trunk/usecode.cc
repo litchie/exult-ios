@@ -443,7 +443,6 @@ void Usecode_machine::show_npc_face
 	int shape = npc->get_face_shapenum();
 	int frame = arg2.get_int_value();
 	gwin->show_face(shape, frame);
-	cout << "Show face " << shape << '\n';
 	}
 
 /*
@@ -459,7 +458,6 @@ void Usecode_machine::remove_npc_face
 		click_to_continue();
 	int shape = -arg1.get_int_value();
 	gwin->remove_face(shape);
-	cout << "Remove face " << shape << '\n';
 	}
 
 /*
@@ -474,7 +472,7 @@ void Usecode_machine::set_item_shape
 	{
 	int val = item_arg.get_int_value();
 	int shape = shape_arg.get_int_value();
-	cout << "Set_item_shape: " << val << ", " << shape << '\n';
+	// cout << "Set_item_shape: " << val << ", " << shape << '\n';
 	Game_object *item = get_item(val);
 	if (!item)
 		return;
@@ -505,8 +503,8 @@ void Usecode_machine::set_item_frame
 	if (!item)
 		return;
 	int frame = frame_arg.get_int_value();
-	cout << "Set_item_frame: " << item->get_shapenum() 
-					<< ", " << frame << '\n';
+	// cout << "Set_item_frame: " << item->get_shapenum() 
+	//				<< ", " << frame << '\n';
 	if (frame < gwin->get_shape_num_frames(item->get_shapenum()))
 		item->set_frame(frame);
 					// Figure area to repaint.
@@ -580,14 +578,14 @@ int Usecode_machine::npc_in_party
 	if (!npc || !party_count)
 		return (0);
 	int npcnum = npc->get_npc_num();
-cout << "Is npc " << npc << " in party?  ";
+// cout << "Is npc " << npc << " in party?  ";
 	for (int i = 0; i < PARTY_MAX; i++)
 		if (party[i] == npcnum)
 			{
-			cout << "Yes\n";
+			// cout << "Yes\n";
 			return (1);
 			}
-	cout << "No\n";
+	// cout << "No\n";
 	return (0);
 	}
 
@@ -607,7 +605,7 @@ void Usecode_machine::add_to_party
 			{
 			party[i] = npc->get_npc_num();
 			party_count++;
-cout << "NPC " << npc->get_npc_num() << " added to party.\n";
+// cout << "NPC " << npc->get_npc_num() << " added to party.\n";
 			break;
 			}
 	}
@@ -655,7 +653,7 @@ Usecode_value Usecode_machine::get_party
 			Usecode_value val((long) obj);
 			arr.put_elem(num_added, val);
 			}
-	cout << "Party:  "; arr.print(cout); cout << '\n';
+	// cout << "Party:  "; arr.print(cout); cout << '\n';
 	return arr;
 	}
 
@@ -698,7 +696,7 @@ Usecode_value Usecode_machine::find_nearby
 	Vector vec;			// Gets list.
 	int cnt = obj->find_nearby(vec, shapeval.get_int_value(),
 			qval.get_int_value(), mval.get_int_value());
-	cout << "Nearby objects found:  " << cnt << '\n';
+
 	Usecode_value nearby(cnt, 0);	// Create return array.
 	for (int i = 0; i < cnt; i++)
 		{
@@ -781,7 +779,8 @@ Usecode_value Usecode_machine::get_objects
 	int shapenum = shapeval.get_int_value();
 	Vector vec;			// Gets list.
 	int cnt = obj->get_objects(vec, shapenum);
-	cout << "Container objects found:  " << cnt << '\n';
+
+//	cout << "Container objects found:  " << cnt << '\n';
 	Usecode_value within(cnt, 0);	// Create return array.
 	for (int i = 0; i < cnt; i++)
 		{
@@ -803,7 +802,7 @@ Usecode_value Usecode_machine::click_on_item
 	)
 	{
 	extern int Get_click(int& x, int& y, Mouse::Mouse_shapes shape);
-	cout << "CLICK on an item.\n";
+	// cout << "CLICK on an item.\n";
 	int x, y;
 	if (!Get_click(x, y, Mouse::greenselect))
 		return Usecode_value(0);
@@ -1281,7 +1280,7 @@ USECODE_FUNCTION(remove_items)
 USECODE_FUNCTION(add_items)
 	// Add items(num, item, ??, ??, T/F).
 	//++++++++++
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(play_music)
@@ -1307,7 +1306,7 @@ USECODE_FUNCTION(display_runes)
 	// Display sign (gump #, text).
 	//+++++++++++++
 	// Render text into runes for signs, tombstones, plaques and the like
-	return no_ret;
+	USECODE_RETURN(no_ret);
 }
 
 USECODE_FUNCTION(click_on_item)
@@ -1340,7 +1339,10 @@ USECODE_FUNCTION(get_npc_number)
 	//   avatar).
 	Game_object *obj = get_item(parms[0].get_int_value());
 	if (obj == gwin->get_main_actor())
-		return Usecode_value(-356);
+		{
+		Usecode_value u(-356);
+		USECODE_RETURN(u);
+		}
 	int npc = obj ? obj->get_npc_num() : 0;
 	Usecode_value u(-npc);
 	USECODE_RETURN(u);
