@@ -28,6 +28,8 @@
 
 #ifdef MACOS
 #define EXULT_DATADIR	"data"
+#elif defined(MACOSX)
+#define EXULT_DATADIR	exult_datadir
 #endif
 
 /*
