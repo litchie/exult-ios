@@ -1,3 +1,12 @@
+2001-11-14  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* schedule.cc (public): Avoid standing while in Sit_schedule.
+
+2001-11-13  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* usecode/ucinternal.cc (Usecode_function): A ShapeID needed to
+	have shapefile set.  Fixes BG multi-race animation scenes.
+
 2001-11-12  Tristan Tarrant <nadir@users.sourceforge.net>
 	* NEWS: updated
 	* acinclude.m4, config.guess, config.sub, missing, mkinstalldirs,
