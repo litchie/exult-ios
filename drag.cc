@@ -153,6 +153,7 @@ bool Dragging_info::start
 			Mouse::mouse->flash_shape(Mouse::tooheavy);
 			obj = 0;
 			gump = 0;
+			okay = false;
 			return (false);
 			}
 		Game_object *owner = obj->get_outermost();
@@ -165,6 +166,7 @@ bool Dragging_info::start
 				{
 				Mouse::mouse->flash_shape(Mouse::blocked);
 				obj = 0;
+				okay = false;
 				return (false);
 				}
 			}
@@ -235,6 +237,8 @@ void Dragging_info::paint
 	(
 	)
 	{
+	if (!rect.w)			// Not moved enough yet?
+		return;
 	if (save)			// Save background.
 		gwin->get_win()->get(save, rect.x, rect.y);
 	if (obj)
