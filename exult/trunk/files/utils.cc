@@ -375,7 +375,7 @@ std::FILE* U7open
 {
 	std::FILE* f;
 	string name = get_system_path(fname);
-
+	
 	int uppercasecount = 0;
 	do {
 		f = std::fopen(name.c_str(), mode); // Try to open
