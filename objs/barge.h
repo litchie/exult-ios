@@ -43,7 +43,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	bool gathered;			// Items on barge have been gathered.
 	bool ice_raft;			// For Serpent Isle.
 	bool first_step;		// So first motion can just be 1 tile.
-	char boat;			// 1 if a boat, 0 if not; -1=untested.
+	signed char boat;		// 1 if a boat, 0 if not; -1=untested.
 	int frame_time;			// Time between frames in msecs.  0 if
 					//   not moving.
 	PathFinder *path;		// For traveling.

@@ -161,7 +161,7 @@ uint8 visible_frames[16] = {
 
 Frames_sequence *Actor::avatar_frames[4] = {0, 0, 0, 0};
 Frames_sequence *Actor::npc_frames[4] = {0, 0, 0, 0};
-const char sea_serpent_attack_frames[] = {13, 12, 11, 0, 1, 2, 3, 11, 12, 
+const signed char sea_serpent_attack_frames[] = {13, 12, 11, 0, 1, 2, 3, 11, 12, 
 								13, 14};
 // inline int Is_attack_frame(int i) { return i >= 3 && i <= 9; }
 inline int Is_attack_frame(int i) { return i == 6 || i == 9; }
@@ -591,16 +591,16 @@ static void Get_weapon_frames
 	int weapon,			// Weapon shape, or 0 for innate.
 	bool projectile,		// Shooting/throwing.
 	bool two_handed,		// Held in both hands.
-	char *frames			// Four frames stored here.
+	signed char *frames		// Four frames stored here.
 	) 
 	{
 					// Frames for swinging.
-	static char swing_frames1[3] = {Actor::raise1_frame, 
-					Actor::reach1_frame,
-					Actor::strike1_frame};
-	static char swing_frames2[3] = {Actor::raise2_frame, 
-					Actor::reach2_frame,
-					Actor::strike2_frame};
+	static signed char swing_frames1[3] = {Actor::raise1_frame, 
+					       Actor::reach1_frame,
+					       Actor::strike1_frame};
+	static signed char swing_frames2[3] = {Actor::raise2_frame, 
+					       Actor::reach2_frame,
+					       Actor::strike2_frame};
 	unsigned char frame_flags;	// Get Actor_frame flags.
 	Weapon_info *winfo;
 	if (weapon && 
@@ -610,7 +610,7 @@ static void Get_weapon_frames
 		frame_flags = projectile ? 0 : Weapon_info::raise|
 							Weapon_info::reach;
 					// Use frames for weapon type.
-	const char *swing_frames = two_handed ? swing_frames2 : swing_frames1;
+	const signed char *swing_frames = two_handed ? swing_frames2 : swing_frames1;
 	frames[0] = Actor::ready_frame;
 					// Do 'swing' frames.
 	frames[1] = (frame_flags&Weapon_info::raise) ? swing_frames[0]
@@ -631,11 +631,11 @@ int Actor::get_attack_frames
 	int weapon,			// Weapon shape, or 0 for innate.
 	bool projectile,		// Shooting/throwing.
 	int dir,			// 0-7 (as in dir.h).
-	char *frames			// Frames stored here.
+	signed char *frames			// Frames stored here.
 	) const
 	{
-	char baseframes[4];
-	const char *which = baseframes;
+	signed char baseframes[4];
+	const signed char *which = baseframes;
 	int cnt = 4;
 	switch (get_shapenum())		// Special cases.
 		{
