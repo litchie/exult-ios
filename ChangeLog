@@ -1,3 +1,7 @@
+2002-03-20  Ryan Nunn  <triforce@merlin.net.au>
+	* bggame.cc : Fixing problems with overlapping text in German create
+	  new game screen.
+
 2002-03-18  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* mapedit/shapelst.cc: Import/export frames.  Also put in WIN32
@@ -3378,6 +3382,7 @@
 	* cheat.cc: use real maps for the teleport cheat
 	* intrinsics.cc, cheat.cc: tweaked map markers
 
+
 2001-06-15  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gamewin.cc: Emulate_swapout() now does chunks 3 or more away.
@@ -5873,6 +5878,7 @@
 	to the NPC.  Removed old logic from gameclk.cc.
 
 2000-09-03  Jeff Freedman  <jeff@amy.nerble.net>
+
 
 	* actors.cc (Npc_actor): Skip schedule actions if NPC is in a
 	chunk that hasn't yet been read in fully.

@@ -1519,11 +1519,16 @@ bool BG_Game::new_game(Vga_file &shapes)
 		{
 			win->fill8(0,gwin->get_width(),90,0,menuy);
 			gwin->paint_shape(topx+10,menuy+10,shapes.get_shape(0xC, selected==0?1:0));
-			gwin->paint_shape(topx+10,menuy+25,shapes.get_shape(0xA, selected==1?1:0));
+
+			Shape_frame *sex_shape = shapes.get_shape(0xA, selected==1?1:0);
+			gwin->paint_shape(topx+10,menuy+25,sex_shape);
+			int sex_width = sex_shape->get_width()+10;
+			if (sex_width > 35) sex_width += 25; 
+			else sex_width = 60;
 
 			if (si_installed)
 			{
-				gwin->paint_shape(topx+60,menuy+25,shapes.get_shape(0xB,sex%2));
+				gwin->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex%2));
 
 				if (sex >= 2)
 				{
@@ -1534,7 +1539,7 @@ bool BG_Game::new_game(Vga_file &shapes)
 			}
 			else
 			{
-				gwin->paint_shape(topx+60,menuy+25,shapes.get_shape(0xB,sex));
+				gwin->paint_shape(topx+sex_width,menuy+25,shapes.get_shape(0xB,sex));
 				gwin->paint_shape(topx+250,menuy+10,shapes.get_shape(sex,0));
 			}
 
