@@ -244,6 +244,18 @@
 		<label>_Groups</label>
 		<right_justify>False</right_justify>
 	      </widget>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>combos1</name>
+		<signal>
+		  <name>activate</name>
+		  <handler>on_save_combos1_activate</handler>
+		  <last_modification_time>Sun, 19 May 2002 19:32:22 GMT</last_modification_time>
+		</signal>
+		<label>_Combos</label>
+		<right_justify>False</right_justify>
+	      </widget>
 	    </widget>
 	  </widget>
 

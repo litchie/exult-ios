@@ -64,6 +64,8 @@ class Combo
 	short starttx, startty;		// Offset represented by top-left.
 	std::string name;		// Name given by user.
 	Rectangle tilefoot;		// Footprint in tiles.
+					// Get footprint of given member.
+	Rectangle get_member_footprint(int i);
 public:
 	friend class Combo_editor;
 	friend class Combo_chooser;

@@ -210,6 +210,8 @@ public:
 					// Map locator.
 	void open_locator_window();
 	void open_combo_window();	// Combo-object editor.
+	void save_combos();
+
 	void run();
 	bool send_to_server(Exult_server::Msg_type id,
 				unsigned char *data = 0, int datalen = 0);
