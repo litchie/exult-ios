@@ -1359,6 +1359,9 @@ static void Move_dragged_shape
 	int scale = gwin->get_win()->get_scale();
 	x /= scale;			// Watch for scaled window.
 	y /= scale;
+	int lift = cheat.get_edit_lift();
+	x += lift*4 - 1;		// Take lift into account, round.
+	y += lift*4 - 1;
 	int tx = x/c_tilesize;		// Figure tile on ground.
 	int ty = y/c_tilesize;
 	Shape_info& info = gwin->get_info(shape);
@@ -1369,6 +1372,8 @@ static void Move_dragged_shape
 		{
 		prevx /= scale;
 		prevy /= scale;
+		prevx += lift*4 - 1;	// Take lift into account, round.
+		prevy += lift*4 - 1;
 		int ptx = prevx/c_tilesize, pty = prevy/c_tilesize;
 		if (tx == ptx && ty == pty)
 			return;		// Will be in same tile.
@@ -1473,8 +1478,11 @@ static void Drop_dragged_shape
 		for (int lift = edit_lift; lift <= 11; lift++)
 			if (gwin->drop_at_lift(newobj, x, y, lift))
 				{	// Success.
-				gwin->get_map()->set_ifix_modified(
-					newobj->get_cx(), newobj->get_cy());
+				if (!ireg)
+					gwin->get_map()->set_ifix_modified(
+					   newobj->get_cx(), newobj->get_cy());
+				gwin->set_all_dirty();	// For now, until we
+					//    clear out grid we're painting.
 				return;
 				}
 		delete newobj;	// Failed.
