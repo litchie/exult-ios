@@ -579,6 +579,40 @@ Game_object *Usecode_machine::get_item
 	}
 
 /*
+ *	Make sure pending text has been seen.
+ */
+
+void Usecode_machine::show_pending_text
+	(
+	)
+	{
+	if (book)			// Book mode?
+		{
+		int x, y;
+		while (book->show_next_page(gwin) && 
+						Get_click(x, y, Mouse::hand))
+			;
+		}
+					// Normal conversation:
+	else if (gwin->is_npc_text_pending())
+		click_to_continue();
+	}
+
+/*
+ *	Show book or scroll text.
+ */
+
+void Usecode_machine::show_book
+	(
+	)
+	{
+	char *str = String;
+	book->add_text(str);
+	delete String;
+	String = 0;
+	}
+
+/*
  *	Say the current string and empty it.
  */
 
@@ -589,9 +623,12 @@ void Usecode_machine::say_string
 	user_choice = 0;		// Clear user's response.
 	if (!String)
 		return;
-					// Make sure prev. text was seen.
-	if (gwin->is_npc_text_pending())
-		click_to_continue();
+	show_pending_text();		// Make sure prev. text was seen.
+	if (book)			// Displaying a book?
+		{
+		show_book();
+		return;
+		}
 	char *str = String;
 	while (*str)			// Look for stopping points ("~~").
 		{
@@ -640,8 +677,7 @@ void Usecode_machine::show_npc_face
 	Usecode_value& arg2		// Frame.
 	)
 	{
-	if (gwin->is_npc_text_pending())
-		click_to_continue();
+	show_pending_text();
 	Actor *npc = (Actor *) get_item(arg1);
 	if (!npc)
 		return;
@@ -660,8 +696,7 @@ void Usecode_machine::remove_npc_face
 	Usecode_value& arg1		// Shape (NPC #).
 	)
 	{
-	if (gwin->is_npc_text_pending())
-		click_to_continue();
+	show_pending_text();
 	int shape = -arg1.get_int_value();
 	gwin->remove_face(shape);
 	}
@@ -1739,6 +1774,17 @@ USECODE_INTRINSIC(display_map)
 	USECODE_RETURN(no_ret);
 }
 
+USECODE_INTRINSIC(book_mode)
+	// Display book or scroll.
+	Text_gump *gump;
+	if (parms[0].get_int_value() == 797)
+		gump = new Scroll_gump();
+	else
+		gump = new Book_gump();
+	set_book(gump);
+	USECODE_RETURN(no_ret);
+}
+
 USECODE_INTRINSIC(earthquake)
 	int len = parms[0].get_int_value();
 	Earthquake *quake = new Earthquake(gwin, len);
@@ -1965,7 +2011,7 @@ UsecodeIntrinsicFn intrinsic_table[]=
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x53
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x54
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x55 ++++Book_mode(itemref).
+	USECODE_INTRINSIC_PTR(book_mode),// 0x55
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x56 ++++Something to do with time.
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x57 ++++?Light_source(time)?
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x58 ++++Get_barge(item):  Rets.
@@ -2198,6 +2244,19 @@ void Usecode_machine::click_to_continue
 	}
 
 /*
+ *	Set book/scroll to display.
+ */
+
+void Usecode_machine::set_book
+	(
+	Text_gump *b			// Book/scroll.
+	)
+	{
+	delete book;
+	book = b;
+	}
+
+/*
  *	Get user's choice from among the possible responses.
  *
  *	Output:	->user choice string.
@@ -2252,7 +2311,7 @@ Usecode_machine::Usecode_machine
 	(
 	istream& file,
 	Game_window *gw
-	) : String(0), gwin(gw), call_depth(0), caller_item(0),
+	) : String(0), gwin(gw), call_depth(0), caller_item(0), book(0),
 	    last_created(0), stack(new Usecode_value[1024]), user_choice(0)
 	{
 	sp = stack;
@@ -2300,6 +2359,7 @@ Usecode_machine::~Usecode_machine
 		delete slot;
 		}
 	delete funs;
+	delete book;
 	}
 
 #if DEBUG
@@ -2552,8 +2612,7 @@ void Usecode_machine::run
 			break;
 		case 0x25:		// RET.
 					// Experimenting...
-			if (gwin->is_npc_text_pending())
-				click_to_continue();	
+			show_pending_text();
 			sp = save_sp;		// Restore stack.
 			ip = endp;	// End the loop.
 			break;
@@ -2672,8 +2731,7 @@ void Usecode_machine::run
 			break;
 		case 0x3f:		// Guessing some kind of return.
 					// Experimenting...
-			if (gwin->is_npc_text_pending())
-				click_to_continue();	
+			show_pending_text();
 			ip = endp;
 			sp = save_sp;		// Restore stack.
 			break;

@@ -1,4 +1,5 @@
-/**
+/**	-*-mode: Fundamental; tab-width: 8; -*-
+ **
  **	Gametxt.cc - Text-drawing methods for Game_window.
  **
  **	Written: 3/19/2000 - JSF
@@ -73,9 +74,12 @@ static char *Pass_word
  *		\n	New line.
  *		space	Word break.
  *		tab	Treated like a space for now.
+ *
+ *	Output:	If out of room, -offset of end of text painted.
+ *		Else height of text painted.
  */
 
-void Game_window::paint_text_box
+int Game_window::paint_text_box
 	(
 	int fontnum,			// Font # from fonts.vga (0-9).
 	char *text,
@@ -83,11 +87,12 @@ void Game_window::paint_text_box
 	int w, int h			// Dimensions.
 	)
 	{
+	char *start = text;		// Remember the start.
 	win->set_clip(x, y, w, h);
 	int endx = x + w, endy = y + h;	// Figure where to stop.
 	int curx = x, cury = y;
 	int height = get_text_height(fontnum);
-	while (*text)			// Go through it.
+	while (*text)
 		{
 		char *wrd;		// ->start of word.
 		switch (*text)		// Special cases.
@@ -96,6 +101,8 @@ void Game_window::paint_text_box
 			curx = x;
 			cury += height;
 			text++;
+			if (cury + height > endy)
+				break;	// No more room.
 			continue;
 		case ' ':		// Space.
 		case '\t':
@@ -114,12 +121,18 @@ void Game_window::paint_text_box
 			{		// Word-wrap.
 			curx = x;
 			cury += height;
+			if (cury + height > endy)
+				break;	// No more room.
 			}
 					// Draw word.
 		curx += paint_text(fontnum, text, ewrd - text, curx, cury);
 		text = ewrd;		// Continue past the word.
 		}
 	win->clear_clip();
+	if (*text)			// Out of room?
+		return -(text - start);	// Return -offset of end.
+	else
+		return (cury - y);	// Else return height.
 	}
 
 /*
