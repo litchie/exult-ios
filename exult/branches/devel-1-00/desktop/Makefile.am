@@ -1,8 +1,8 @@
 if GNOME_INSTALLED
-gnomeappicondir = $(GNOMEDATADIR)/pixmaps
+gnomeappicondir = $(datadir)/pixmaps
 gnomeappicon_DATA = exult.png
 
-gnomeappdir = $(GNOMEDATADIR)/gnome/apps/Games
+gnomeappdir = $(datadir)/gnome/apps/Games
 gnomeapp_DATA = exult.desktop
 endif
 
