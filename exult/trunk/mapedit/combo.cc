@@ -36,7 +36,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ibuf8.h"
 #include "objserial.h"
 #include "shapegroup.h"
-#include "Flex.h"
 #include "u7drag.h"
 
 using std::cout;
