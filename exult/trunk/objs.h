@@ -287,6 +287,8 @@ public:
 		}
 	int get_distance()
 		{ return distance; }
+	int is_active()			// Can it be activated?
+		{ return !(flags & (1 << (int) hatched)); }
 	int within_distance(int abs_tx, int abs_ty);
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine);
@@ -364,11 +366,6 @@ class Chunk_object_list
 	Npc_actor *npcs;		// List of NPC's in this chunk.
 					//   (Managed by Npc_actor class.)
 	Chunk_cache *cache;		// Data for chunks near player.
-			// +++++Might cache/redo this egg stuff+++++
-	Egg_object **egg_objects;	// ->eggs in chunk.
-	int num_eggs;
-	unsigned char eggs[256];	// For each (x,y), index of egg in
-					//  egg_objects, or -1 if no egg there.
 	unsigned char roof;		// 1 if a roof present.
 	unsigned char cx, cy;		// Absolute chunk coords. of this.
 public:
@@ -377,11 +374,6 @@ public:
 	void add(Game_object *obj);	// Add an object.
 	void add_egg(Egg_object *egg);	// Add an egg.
 	void remove(Game_object *obj);	// Remove an object.
-	Egg_object *find_egg(int sx, int sy) //+++++Redo to use distance+++++
-		{
-		unsigned char index = eggs[sy*16 + sx];
-		return (index < num_eggs ? egg_objects[index] : 0);
-		}
 	int is_roof()			// Is there a roof?
 		{ return roof; }
 	int get_cx()
