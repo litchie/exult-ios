@@ -334,6 +334,7 @@ private:
 	USECODE_INTRINSIC_DECL(revert_schedule);
 	USECODE_INTRINSIC_DECL(run_schedule);
 	USECODE_INTRINSIC_DECL(add_removed_npc);
+	USECODE_INTRINSIC_DECL(a_or_an);
 
 	/*
 	 *	Other private methods:

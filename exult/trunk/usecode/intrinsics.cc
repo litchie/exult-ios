@@ -2283,3 +2283,15 @@ USECODE_INTRINSIC(add_removed_npc)
 
 	return (Usecode_value(false));
 }
+
+USECODE_INTRINSIC(a_or_an)
+{
+	// a_or_an (word)
+	// return a/an depending on 'word'
+
+	if (strchr("aeiouyAEIOUY", (parms[0].get_str_value())[0]) == 0)
+		return (Usecode_value("a"));
+	else
+		return (Usecode_value("an"));
+
+}
