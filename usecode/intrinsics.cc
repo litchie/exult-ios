@@ -1235,7 +1235,7 @@ USECODE_INTRINSIC(kill_npc)
 	Game_object *item = get_item(parms[0]);
 	Actor *npc = as_actor(item);
 	if (npc)
-		npc->die();
+		npc->die(0);
 	return (no_ret);
 }
 
@@ -1533,7 +1533,7 @@ USECODE_INTRINSIC(armageddon)
 			Tile_coord loc = npc->get_tile();
 			if (screen.has_point(loc.tx, loc.ty))
 				npc->say(text[rand()%numtext]);
-			npc->die();
+			npc->die(0);
 			}
 		}
 	Actor_vector vec;		// Get any monsters nearby.
@@ -1542,8 +1542,8 @@ USECODE_INTRINSIC(armageddon)
 									++it)
 		{
 		Actor *act = *it;
-		if (act->is_monster())
-			act->die();
+		if (act->is_monster())	// Assume only Avatar can cast this.
+			act->die(gwin->get_main_actor());
 		}
 	gwin->armageddon = true;
 	return no_ret;

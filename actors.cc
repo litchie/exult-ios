@@ -2092,7 +2092,7 @@ bool Actor::reduce_health
 				}
 			}
 		else
-			die();
+			die(attacker);
 		defeated = defeated || is_dead();
 		}
 	else if (val < 0 && !get_flag(Obj_flags::asleep) &&
@@ -3053,6 +3053,7 @@ static int Is_draco
 
 void Actor::die
 	(
+	Actor * /* attacker */
 	)
 	{
 					// Get location.
@@ -3461,6 +3462,7 @@ void Main_actor::move
 
 void Main_actor::die
 	(
+	Actor * /* attacker */
 	)
 	{
 	if (gwin->in_combat())

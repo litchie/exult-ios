@@ -259,8 +259,7 @@ public:
 		{ return 0; }
 					// Add an object.
 	virtual bool add(Game_object *obj, bool dont_check = false,
-							bool combine = false)
-		{ return false; }
+							bool combine = false);
 					// Add to NPC 'ready' spot.
 	virtual int add_readied(Game_object *obj, int index, int dont_check = 0, int force_pos = 0)
 		{ return add(obj, dont_check!=0); }
