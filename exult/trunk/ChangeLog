@@ -1,3 +1,6 @@
+2004-03-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* exult.spec.in: new desktop/ file locations
+
 2004-02-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* various: updated to 1.1.10rc2
 

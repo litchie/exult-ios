@@ -126,9 +126,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/exult/exult_si.flx
 %{_datadir}/exult/exult.flx
 %{_datadir}/exult/midisfx.flx
-%{_datadir}/pixmaps/exult.png
+%{_datadir}/icons/exult.png
 %{_mandir}/man6/exult.6.gz
-%{_datadir}/gnome/apps/Games/exult.desktop
+%{_datadir}/applications/exult.desktop
 
 
 %files tools
