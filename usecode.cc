@@ -2275,8 +2275,9 @@ USECODE_INTRINSIC(sit_down)
 	if (!chair)
 		return(no_ret);
 	Vector vec;			// See if someone already there.
-	int cnt = chair->find_nearby(vec, -359, 1, 0, 8);
-	cnt += chair->find_nearby(vec, -359, 1, 0, 4);
+//	int cnt = chair->find_nearby(vec, -359, 1, 0, 8);
+//	cnt += chair->find_nearby(vec, -359, 1, 0, 4);
+	int cnt = chair->find_nearby(vec, -359, 1, 8);
 	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *obj = (Game_object *) vec.get(i);
@@ -2789,8 +2790,10 @@ USECODE_INTRINSIC(attack_avatar)
 	int cnt = gwin->get_main_actor()->find_nearby(npcs, -359, 12, 8);
 	for (int i = 0; i < cnt; i++)
 		{
-		Npc_actor *npc = (Npc_actor *) npcs.get(i);
-		npc->set_opponent(gwin->get_main_actor());
+		Actor *npc = (Actor *) npcs.get(i);
+		if (!npc->is_monster() && npc != gwin->get_main_actor() &&
+		    npc->get_party_id() <= 0)
+			npc->set_opponent(gwin->get_main_actor());
 		}
 	return no_ret;
 }
