@@ -304,7 +304,8 @@ Game_window::Game_window
 	int width, int height, int scale, int scaler		// Window dimensions.
 	) : 
 	    win(0), map(new Game_map()), pal(0),
-	    usecode(0), combat(false), armageddon(false),
+	    usecode(0), combat(false), armageddon(false), 
+	    walk_in_formation(false),
             tqueue(new Time_queue()), time_stopped(0),
 	    std_delay(c_std_delay),
 	    npc_prox(new Npc_proximity_handler(this)),
@@ -377,8 +378,13 @@ Game_window::Game_window
 
 	config->value("config/gameplay/allow_double_right_move", str, "yes");
 	allow_double_right_move = str == "yes";
-	config->set("config/gameplay/allow_double_right_move", allow_double_right_move?"yes":"no", true);
-
+	config->set("config/gameplay/allow_double_right_move", 
+				allow_double_right_move?"yes":"no", true);
+					// New 'formation' walking?
+	config->value("config/gameplay/formation", str, "no");
+	walk_in_formation = (str == "yes");
+	config->set("config/gameplay/formation", walk_in_formation?"yes":"no",
+								true);
 	}
 
 /*
@@ -1607,7 +1613,10 @@ void Game_window::start_actor_alt
 	tx = (tx + c_num_tiles)%c_num_tiles;
 	ty = (ty + c_num_tiles)%c_num_tiles;
 	main_actor->walk_to_tile(tx, ty, lift, speed, 0);
-	main_actor->get_followers();
+	if (walk_in_formation && main_actor->get_action())
+		main_actor->get_action()->set_get_party(true);
+	else				// "Traditional" Exult walk:-)
+		main_actor->get_followers();
 	}
 
 /*
@@ -1704,8 +1713,9 @@ void Game_window::stop_actor
 		{
 		main_actor->stop();	// Stop and set resting state.
 //		paint();	// ++++++Necessary?
-		if (!gump_man->gump_mode() || gump_man->gumps_dont_pause_game())
-			main_actor->get_followers();
+		if (!gump_man->gump_mode() ||gump_man->gumps_dont_pause_game())
+			if (!walk_in_formation)	// FOR NOW.
+				main_actor->get_followers();
 		}
 	}
 

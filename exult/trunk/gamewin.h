@@ -151,6 +151,7 @@ public:
 					//   means 'terrain-editing' mode.
 	bool paint_eggs;
 	bool armageddon;		// Spell was cast.
+	bool walk_in_formation;		// Use Party_manager for walking.
 	int debug;
 	/*
 	 *	Class maintenance:

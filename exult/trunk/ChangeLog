@@ -1,3 +1,8 @@
+2003-04-12  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* party.cc,gamewin.cc:  Experimental (and half-done) code to have
+	the party walk in formation.
+
 2003-04-09  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* party.h,party.cc,etc:  Moved party handler to new file/class,
