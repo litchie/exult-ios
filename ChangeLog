@@ -1,3 +1,15 @@
+2002-02-22  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamemap.cc (Game_map): Always look through all the terrains to
+	see if one needs to be saved when map-editing.
+	* gamewin.cc: Okay to double-click without pathfinding if map-editing.
+	* gamedat.cc: If editing, it's okay if gamedat files don't exist
+	when saving.
+	* usecode/ucinternal.cc: Assume newly-developed games will have a
+	keyring.
+	* tools/ipack.cc,shapes/pngio.cc: Get transparency from .png when
+	adding to the .vga file.
+
 2002-02-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* Makefile.am: directory order again. tools depends on shapes&imagewin
 

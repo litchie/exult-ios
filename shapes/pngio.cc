@@ -43,11 +43,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 int Import_png8
 	(
 	char *pngname,
+	int transp_index,		// If 0-255, replace any transp. color
+					//   with this.
 	int& width, int& height,	// Image dimensions returned.
 	int& rowbytes,			// # bytes/row returned.  (Should be
 					//   width.)
 	int& xoff, int& yoff,		// (X,Y) offsets from top-left of
-					//   image returned.  (-1, -1) if not
+					//   image returned.  (0,0) if not
 					//   specified in file.
 	unsigned char *& pixels,	// ->(allocated) pixels returned.
 	unsigned char *& palette,	// ->(allocated) palette returned,
@@ -118,13 +120,20 @@ int Import_png8
 		yoff = pngyoff;
 		}
 	else
-		xoff = yoff = -1;
-	for (int i = 0; i < pal_size; i++)
+		xoff = yoff = 0;
+	int i;
+	for (i = 0; i < pal_size; i++)
 		{
 		palette[3*i] = pngpal[i].red;
 		palette[3*i + 1] = pngpal[i].green;
 		palette[3*i + 2] = pngpal[i].blue;
 		}
+	png_bytep trans;		// Get transparency info.
+	int num_trans;
+	png_color_16p trans_values;
+	if (transp_index < 0 || transp_index > 255 ||
+	    !png_get_tRNS(png, info, &trans, &num_trans, &trans_values))
+		num_trans = 0;
 					// Get updated info.
 	png_read_update_info(png, info);
 					// Allocate pixel buffer.
@@ -136,6 +145,14 @@ int Import_png8
 	for (r = 0, rowptr = image; r < height; r++, rowptr += rowbytes)
 		png_read_rows(png, &rowptr, 0, 1);
 	png_read_end(png, info);	// Get the rest.
+	for (i = 0; i < num_trans; i++)	// Convert transparent pixels.
+		{
+		unsigned char *endptr = pixels + height*rowbytes;
+		for (unsigned char *ptr = pixels; ptr;
+			ptr = (unsigned char *) memchr(ptr, trans[i], 
+							endptr - ptr))
+			*ptr++ = transp_index;
+		}
 					// Clean up.
 	png_destroy_read_struct(&png, &info, 0);
 	fclose(fp);
@@ -152,6 +169,7 @@ int Import_png8
 int Export_png8
 	(
 	char *pngname,
+	int transp_index,		// If 0-255, this is the transp. index.
 	int width, int height,		// Image dimensions.
 	int rowbytes,			// # bytes/row.  (Should be
 					//   width.)
@@ -196,6 +214,12 @@ int Export_png8
 		}
 	png_set_PLTE(png, info, &pngpal[0], pal_size);
 	png_set_oFFs(png, info, xoff, yoff, PNG_OFFSET_PIXEL);
+	if (transp_index >= 0 && transp_index < 256)
+		{
+		png_byte trans = (png_byte) transp_index;
+		png_color_16 trans_values;
+		png_set_tRNS(png, info, &trans, 1, &trans_values);
+		}
 					// Write out info.
 	png_write_info(png, info);
 	png_bytep rowptr;		// Write out rows.
