@@ -1,3 +1,7 @@
+2001-11-06  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* actors.cc: Drop ammo or throwing-weapon on ground if it misses.
+
 2001-11-06  Dominik Reichardt <gigdr@tesionmail.de>
 	* added docs/xml: updated faq.xml and docs.xml
 	* Faq, Readme updated
