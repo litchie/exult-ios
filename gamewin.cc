@@ -279,7 +279,7 @@ Game_window::Game_window
 	    moving_barge(0), main_actor(0), skip_above_actor(31),
 	    npcs(0), bodies(0), mouse3rd(false), fastmouse(false),
             text_bg(false), 
-	    special_light(0), last_restore_hour(6),
+	    special_light(0),
 	    dragging(0),
 	    theft_warnings(0), theft_cx(255), theft_cy(255),
 	    background_noise(new Background_noise(this)),
@@ -782,22 +782,6 @@ void Game_window::resized
 	}
 
 /*
- *	Set the scroll boundaries.
- */
-
-void Game_window::set_scroll_bounds
-	(
-	)
-	{
-					// Let's try 2x2 tiles.
-	scroll_bounds.w = scroll_bounds.h = 2;
-	scroll_bounds.x = scrolltx + 
-			(get_width()/c_tilesize - scroll_bounds.w)/2;
-	scroll_bounds.y = scrollty + 
-			(get_height()/c_tilesize - scroll_bounds.h)/2;
-	}
-
-/*
  *	Clear out world's contents.  Should be used during a 'restore'.
  */
 
@@ -908,7 +892,14 @@ void Game_window::set_scrolls
 	{
 	scrolltx = newscrolltx;
 	scrollty = newscrollty;
-	set_scroll_bounds();		// Set scroll-control.
+					// Set scroll box.
+					// Let's try 2x2 tiles.
+	scroll_bounds.w = scroll_bounds.h = 2;
+	scroll_bounds.x = scrolltx + 
+			(get_width()/c_tilesize - scroll_bounds.w)/2;
+	scroll_bounds.y = scrollty + 
+			(get_height()/c_tilesize - scroll_bounds.h)/2;
+
 	Barge_object *old_active_barge = moving_barge;
 	map->read_map_data();		// This pulls in objects.
 					// Found active barge?
@@ -1349,7 +1340,6 @@ void Game_window::read_gwin
 	clock.set_day(gin.read2());
 	clock.set_hour(gin.read2());
 	clock.set_minute(gin.read2());
-	last_restore_hour = clock.get_total_hours();
 	if (!clock.in_queue())		// Be sure clock is running.
 		tqueue->add(Game::get_ticks(), &clock, reinterpret_cast<long>(this));
 	if (!gin_stream.good())		// Next ones were added recently.
