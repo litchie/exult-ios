@@ -235,16 +235,19 @@ void Main_actor::handle_event
 	long udata			// Ignored.
 	)
 	{
+	Game_window *gwin = Game_window::get_game_window();
 	if (action)			// Doing anything?
 		{			// Do what we should.
 		int delay = action->handle_event(this);
 		if (delay)		// Keep going with same action.
-			Game_window::get_game_window()->get_tqueue()->add(
+			gwin->get_tqueue()->add(
 					curtime + delay, this, udata);
 		else
 			set_action(0);
 		}
-	get_followers();		// Get party to follow.
+					// Not doing an animation?
+	if (!gwin->get_usecode()->in_usecode())
+		get_followers();	// Get party to follow.
 	}
 
 /*

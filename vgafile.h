@@ -174,32 +174,48 @@ public:
 		{ return tfa[i]; }
 	int is_animated()
 		{ return (tfa[0] & (1<<2)) != 0; }
-	int is_light_source()
-		{ return (tfa[2] & (1<<6)) != 0; }
-	int is_transparent()		// ??
-		{ return (tfa[1] & (1<<7)) != 0; }
-	int has_translucency()
-		{ return (tfa[2] & (1<<7)) != 0; }
 	int is_solid()			// Guessing.  Means can't walk through.
 		{ return (tfa[0] & (1<<3)) != 0; }
+	int is_water()			// Guessing.
+		{ return (tfa[0] & (1<<4)) != 0; }
+	int is_poisonous()		// Swamps.
+		{ return (tfa[1] & (1<<4)) != 0; }
+	int is_door()
+		{ return (tfa[1] & (1<<5)) != 0; }
+	int is_barge_part()
+		{ return (tfa[1] & (1<<6)) != 0; }
+	int is_transparent()		// ??
+		{ return (tfa[1] & (1<<7)) != 0; }
+	int is_light_source()
+		{ return (tfa[2] & (1<<6)) != 0; }
+	int has_translucency()
+		{ return (tfa[2] & (1<<7)) != 0; }
 	int is_xobstacle()		// Obstacle in x-dir.???
 		{ return (shpdims[1] & 1) != 0; }
 	int is_yobstacle()		// Obstacle in y-dir.???
 		{ return (shpdims[0] & 1) != 0; }
 	/*
-	 *	TFA[1][b0-b6] seems to indicate object types:
+	 *	TFA[1][b0-b3] seems to indicate object types:
 	 *	+++++++Just guessing for now.
+	 */
 	enum Shape_class {
-		bed = 2,		// Also water trough.
-		quantity = 3,		// Can have more than 1:  coins, arrs.
-		shutters = 4,		// Also mirrors.
-		wearable = 5,		// Includes wieldable weapons, food,
+		unusable = 0,		// Trees.
+		has_quality = 2,
+		has_quantity = 3,	// Can have more than 1:  coins, arrs.
+//		shutters = 4,		// Also mirrors.
+//		wearable = 5,		// Includes wieldable weapons, food,
 					//   table, curtain??
 		container = 6,		// Includes NPC's.
-		egg = 7,
-		window = 14,
-		door = 34
-	*/
+		hatchable = 7,		// Eggs, traps, moongates.
+		spellbook = 8,
+		barge = 9,
+		virtue_stone = 11,
+					// 12, 13 for some NPC's.
+		building = 14		// Roof, window, mountain.
+		};
+	Shape_class get_shape_class()
+		{ return (Shape_class) (tfa[1]&15); }
+
 	};
 
 /*

@@ -35,6 +35,11 @@ static int Has_quantity
 	int shnum			// Shape number.
 	)
 	{
+#if 1
+	Game_window *gwin = Game_window::get_game_window();
+	Shape_info& info = gwin->get_shapes().get_info(shnum);
+	return info.get_shape_class() == Shape_info::has_quantity;
+#else
 	switch (shnum)
 		{
 	case 417:			// Magic bolts.
@@ -65,6 +70,7 @@ static int Has_quantity
 	default:
 		return 0;
 		}
+#endif
 	}
 
 const int MAX_QUANTITY = 0x7f;		// Highest quantity possible.
