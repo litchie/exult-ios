@@ -1,4 +1,7 @@
 2002-06-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* autogen.sh: always include /usr/local/share/aclocal if it exists
+
+2002-06-08  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/Makefile.am: add estudio/new files to dist/data
 	* exult.spec.in: add estudio/new files to studio rpm
 
