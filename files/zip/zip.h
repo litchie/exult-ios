@@ -15,7 +15,7 @@
    THIS IS AN ALPHA VERSION. AT THIS STAGE OF DEVELOPPEMENT, SOMES API OR STRUCTURE
    CAN CHANGE IN FUTURE VERSION !!
    I WAIT FEEDBACK at mail info@winimage.com
-   Visit also http://www.winimage.com/zLibDll/zip.htm for evolution
+   Visit also http://www.winimage.com/zLibDll/unzip.html for evolution
 
    Condition of use and distribution are the same than zlib :
 
