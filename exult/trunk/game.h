@@ -75,6 +75,7 @@ public:
 	virtual bool new_game(Vga_file &shapes) =0;
 	virtual int  get_start_tile_x() =0;
 	virtual int  get_start_tile_y() =0;
+	virtual void show_journey_failed() = 0;
 	
 	void clear_screen();
 	void refresh_screen();
@@ -94,6 +95,7 @@ public:
 	void scroll_text(vector<char *> *text);
 	int center_text(int font, const char *s, int x, int y);
 	void show_menu();
+	void journey_failed_text();
 	void set_jive () {jive = true;}
 	void clear_jive () {jive = false;}
 	};
@@ -114,6 +116,7 @@ public:
 		{ return (64*tiles_per_chunk); }
 	virtual int  get_start_tile_y()
 		{ return (136*tiles_per_chunk); }
+	virtual void show_journey_failed();
 	};
 
 class SI_Game: public Game
@@ -132,6 +135,7 @@ public:
 		{ return (25*tiles_per_chunk); }
 	virtual int  get_start_tile_y()
 		{ return (155*tiles_per_chunk); }
+	virtual void show_journey_failed();
 	};
 	
 #endif

@@ -561,7 +561,7 @@ private:
 	void drop(int x, int y);
 	int drop_at_lift(Game_object *to_drop, int at_lift);
 public:
-	bool init_gamedat(bool force); // Initialize gamedat directory
+	bool init_gamedat(bool create); // Initialize gamedat directory
 	void restore_gamedat(const char *fname);// Explode a savegame into "gamedat".
 	void restore_gamedat(int num);
 					// Save "gamedat".

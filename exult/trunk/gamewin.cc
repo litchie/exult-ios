@@ -914,16 +914,18 @@ void Game_window::init_actors
  *
  */
 
-bool Game_window::init_gamedat(bool force)
+bool Game_window::init_gamedat(bool create)
 	{
-	bool created = false;
 	struct stat sbuf;		// Create gamedat files 1st time.
-	if (force ||((stat(U7NBUF_DAT, &sbuf) != 0 &&
-	    stat(NPC_DAT, &sbuf) != 0)))
+	if (create)// ||((stat(U7NBUF_DAT, &sbuf) != 0 &&
+	//    stat(NPC_DAT, &sbuf) != 0)))
 		{
 		cout << "Creating 'gamedat' files."<<endl;
 		restore_gamedat(INITGAME);
-		created = true;
+		}
+	else if (stat(U7NBUF_DAT, &sbuf) != 0 && stat(NPC_DAT, &sbuf) != 0)
+		{
+		return false;
 		}
 	else
 		{
@@ -939,16 +941,18 @@ bool Game_window::init_gamedat(bool force)
 			char *static_identity = get_game_identity(INITGAME);
 			if(strcmp(static_identity, gamedat_identity))
 				{
-					cout << "Creating 'gamedat' files."<<endl;
-					restore_gamedat(INITGAME);
-					created = true;
+					//cout << "Creating 'gamedat' files."<<endl;
+					//restore_gamedat(INITGAME);
+					//created = true;
+					delete [] static_identity;
+					return false;
 				}
 			delete [] static_identity;
 			read_gwin();	// Read in 'gamewin.dat' to set clock,
 					//   scroll coords.
 		}
 	read_save_names();		// Read in saved-game names.	
-	return created;
+	return true;
 	}
 
 

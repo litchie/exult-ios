@@ -357,7 +357,12 @@ void Game::show_menu()
 			case 2: // Journey Onwards
 				created = gwin->init_gamedat(false);
 				if(!created)
+				{
+					show_journey_failed();
+					top_menu();
+					selected = 1;
 					break;
+				}
 				// else fall through
 			case 1: // New Game
 				if(!created) {
@@ -401,6 +406,13 @@ void Game::show_menu()
 		audio->stop_music();
 	}
 	
+void Game::journey_failed_text()
+{
+	center_text(MAINSHP_FONT1, "You must start a new game first.", centerx, centery+30);
+	pal.fade_in(50);
+	while (!wait_delay(10));
+	pal.fade_out(50);
+}
 	
 const char *Game::get_avname ()
 {
