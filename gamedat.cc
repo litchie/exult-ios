@@ -49,6 +49,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "utils.h"
 #include "gump_utils.h"
+#include "game.h"
 
 using std::cerr;
 using std::cout;
@@ -146,7 +147,8 @@ void Game_window::restore_gamedat
 	)
 	{
 	char fname[50];			// Set up name.
-	snprintf(fname, 50, SAVENAME, num);
+	snprintf(fname, 50, SAVENAME, num, 
+		Game::get_game_type() == BLACK_GATE ? "bg" : "si");
 	restore_gamedat(fname);
 	}
 
@@ -267,7 +269,8 @@ void Game_window::save_gamedat
 	)
 	{
 	char fname[50];			// Set up name.
-	snprintf(fname, 50, SAVENAME, num);
+	snprintf(fname, 50, SAVENAME, num,
+		Game::get_game_type() == BLACK_GATE ? "bg" : "si");
 	save_gamedat(fname, savename);
 	delete [] save_names[num];	// Update name
 	save_names[num] = newstrdup(savename);
@@ -283,7 +286,8 @@ void Game_window::read_save_names
 	for (size_t i = 0; i < sizeof(save_names)/sizeof(save_names[0]); i++)
 	{
 		char fname[50];		// Set up name.
-		snprintf(fname, 50, SAVENAME, i);
+		snprintf(fname, 50, SAVENAME, i,
+			Game::get_game_type() == BLACK_GATE ? "bg" : "si");
 		ifstream in;
 		try
 		{

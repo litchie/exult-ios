@@ -3,6 +3,7 @@
 	* shp2pcx.cc: output origin
 	* defaultkeys.txt: re-added change_skin
 	* tools/.cvsignore: added shp2pcx, removed u7shp
+	* fnames.h, gamedat.cc: changed savegame names to exultXXbg/si.sav
 
 2001-03-10  Jeff Freedman  <jeff@amy.nerble.net>
 

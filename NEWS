@@ -1,5 +1,10 @@
 ??/??/??	v??
 
+		Savegame names have been changed to exultXXbg.sav for the
+		Black Gate, and exultXXsi.sav for the Serpent Isle.
+		(The savegames themselves have not changed, so you can rename
+		them to make them work again.)
+
 		Multiple scalers can now be used. Use config/video/scale_method
 		set to either "2xSaI", "bilinear", "point", "interlaced".
 		"2xSaI" is the new scaler, "bilinear" is the old one, "point"
