@@ -1,3 +1,4 @@
+// -*-mode: Fundamental; tab-width: 8; -*-
 /**
  **	Exult.cc - X-windows Ultima7 map browser.
  **
@@ -35,12 +36,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sys/stat.h>
 #include <unistd.h>
 
-#else
-
-#include <windows.h>
-//#include <windowsx.h>
-#include <stdio.h>  //remove
-
 #endif
 
 #include "gamewin.h"
@@ -73,8 +68,6 @@ static void Breakpoint
 	return;
 	}
 
-#ifndef __WIN32	  //Windows needs a WinMain, not main
-
 /*
  *	Main program.
  */
@@ -104,12 +97,10 @@ int main
 	return (Play());
 	}
 
-#endif	//!__WIN32
-
+static void Handle_event(SDL_Event& event);
 #ifdef XWIN
-
-static void Handle_event();
 static Display *display = 0;
+#endif
 
 /*
  *	Initialize and create main window.
@@ -118,13 +109,14 @@ static void Init
 	(
 	)
 	{
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) < 0)
 		{
 		cerr << "Unable to initialize SDL: " << SDL_GetError() << '\n';
 		exit(-1);
 		}
 	SDL_SysWMinfo info;		// Get system info.
 	SDL_VERSION(&info.version);
+#ifdef XWIN
 	SDL_GetWMInfo(&info);
 	display = info.info.x11.display;
 	int screen_num = DefaultScreen(display);
@@ -132,6 +124,9 @@ static void Init
 	unsigned int display_height = DisplayHeight(display, screen_num);
 					// Make window 1/2 size of screen.
 	gwin = new Game_window(display_width/2, display_height/2);
+#else
+	gwin = new Game_window(640, 480);
+#endif
 	}
 
 /*
@@ -143,13 +138,16 @@ void Handle_events
 	unsigned char *stop
 	)
 	{
+#ifdef XWIN
 					// Get connection number.
 	int xfd = ConnectionNumber(display);
+#endif
 	/*
 	 *	Main event loop.
 	 */
 	while (!*stop)
 		{
+#ifdef XWIN
 		fd_set rfds;		// Want a timer.
 		struct timeval timer;
 		timer.tv_sec = 0;
@@ -158,8 +156,12 @@ void Handle_events
 		FD_SET(xfd, &rfds);
 					// Wait for timeout or event.
 		select(xfd + 1, &rfds, 0, 0, &timer);
-		while (!*stop && SDL_PollEvent(0))
-			Handle_event();
+#else					/* May use this for Linux too. */
+		SDL_Delay(20);		// Try 1/50 second.
+#endif
+		SDL_Event event;
+		while (!*stop && SDL_PollEvent(&event))
+			Handle_event(event);
 					// Get current time.
 		gettimeofday(&timer, 0);
 					// Animate unless modal or dormant.
@@ -169,7 +171,6 @@ void Handle_events
 		gwin->show();		// Blit to screen if necessary.
 		}
 	}
-#endif	/* XWIN */
 
 /*
  *	Play game.
@@ -188,17 +189,13 @@ static int Play()
 
 static void Handle_event
 	(
+	SDL_Event& event
 	)
 	{
 					// For detecting double-clicks.
 	static unsigned long last_b1_click = 0;
-	SDL_Event event;
-	Window root, win;		// Get window ID's.
-	int rootx, rooty, winx, winy;	// Get positions.
 	unsigned int mask;
 	char keybuf[10];
-	if (!SDL_PollEvent(&event))	// Get event.
-		return;			// Some kind of error.
 //cout << "Event " << (int) event.type << " received\n";
 	switch (event.type)
 		{
@@ -374,7 +371,9 @@ static void Handle_keystroke
 	}
 
 
-#ifdef __WIN32
+#if 0
+// The old win32 code.
+//#ifdef __WIN32
 
 UINT g_nCmdShow;
 HINSTANCE g_hInstance;
