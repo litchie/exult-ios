@@ -1,3 +1,8 @@
+2001-12-19  Patrick Burke <takhisisii@yahoo.com.au>
+	* usecode/ucxt/*: Added fixes for cygwin compatibility.
+	* conf/Configuration.h: Added a 'return' in the call to read_config_file
+	that I missed.
+
 2001-12-18  Patrick Burke <takhisisii@yahoo.com.au>
 	* usecode/ucxt/*: Added 'long' type handling for opcodes.txt.
 	Optomised USECODE file reading to increase speed.

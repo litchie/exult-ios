@@ -55,7 +55,7 @@ void init_usecodetables(const Configuration &config, bool noconf, bool verbose)
 	// just to handle if people are going to compile with makefile.unix, unsupported, but occasionally useful
 	#ifdef HAVE_CONFIG_H
 	if(noconf == false) config.value("config/ucxt/root", ucxtroot, EXULT_DATADIR);
-	#elif
+	#else
 	if(noconf == false) config.value("config/ucxt/root", ucxtroot, "data/");
 	#endif
 	
