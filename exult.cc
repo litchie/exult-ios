@@ -50,7 +50,6 @@ Audio audio;
  */
 Game_window *gwin = 0;
 unsigned char quitting_time = 0;	// Time to quit.
-Audio audio(9615,1);
 
 /*
  *	Local functions:
