@@ -1144,31 +1144,6 @@ void Combo_chooser::scrolled
 /*
  *	Callbacks for controls:
  */
-#if 0
-C_EXPORT void
-on_insert_combo_new_clicked            (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	Combo_chooser *chooser = (Combo_chooser *) user_data;
-	chooser->insert(false);
-}
-#endif
-
-C_EXPORT void
-on_move_combo_down_clicked            (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	Combo_chooser *chooser = (Combo_chooser *) user_data;
-	chooser->move(false);
-}
-C_EXPORT void
-on_move_combo_up_clicked              (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	Combo_chooser *chooser = (Combo_chooser *) user_data;
-	chooser->move(true);
-}
-
 /*
  *	Keystroke in draw-area.
  */
@@ -1193,78 +1168,6 @@ on_combo_key_press			(GtkEntry	*entry,
 }
 
 /*
- *	Create box with 'move' controls.
- */
-
-GtkWidget *Combo_chooser::create_controls
-	(
-	)
-	{
-	GtkWidget *frame;		// Gets each frame.
-					// Create main box.
-	GtkWidget *topframe = gtk_frame_new (NULL);
-	gtk_widget_show(topframe);
-	GtkWidget *hbox0 = gtk_hbox_new(FALSE, 0);
-	gtk_widget_show(hbox0);
-	gtk_container_add (GTK_CONTAINER (topframe), hbox0);
-#if 0	/* +++++Thinking about it */
-	/*
-	 *	The 'New/Delete' controls.
-	 */
-	frame = gtk_frame_new ("Edit");
-	gtk_widget_show(frame);
-	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
-	GtkWidget *hbuttonbox = gtk_hbutton_box_new();
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (hbuttonbox), 
-							GTK_BUTTONBOX_START);
-	gtk_button_box_set_spacing (GTK_BUTTON_BOX (hbuttonbox), 0);
-	gtk_widget_show (hbuttonbox);
-	gtk_container_add (GTK_CONTAINER (frame), hbuttonbox);
-
-	GtkWidget *insert_combo_new = gtk_button_new_with_label ("New");
-	gtk_widget_show (insert_combo_new);
-	gtk_container_add (GTK_CONTAINER (hbuttonbox), insert_combo_new);
-	GTK_WIDGET_SET_FLAGS (insert_combo_new, GTK_CAN_DEFAULT);
-	gtk_signal_connect (GTK_OBJECT (insert_combo_new), "clicked",
-			GTK_SIGNAL_FUNC (on_insert_combo_new_clicked),
-			this);
-#endif
-	/*
-	 *	The 'Move' controls.
-	 */
-	frame = gtk_frame_new ("Move");
-	gtk_widget_show(frame);
-	gtk_box_pack_start (GTK_BOX (hbox0), frame, FALSE, FALSE, 2);
-	GtkWidget *bbox = gtk_hbox_new(TRUE, 0);
-	gtk_widget_show (bbox);
-	gtk_container_add (GTK_CONTAINER (frame), bbox);
-
-	move_combo_down = gtk_button_new();
-	gtk_widget_show (move_combo_down);
-	gtk_box_pack_start (GTK_BOX (bbox), move_combo_down, FALSE, FALSE, 0);
-	GTK_WIDGET_SET_FLAGS (move_combo_down, GTK_CAN_DEFAULT);
-	GtkWidget *arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
-	gtk_widget_show(arrow);
-	gtk_container_add(GTK_CONTAINER(move_combo_down), arrow);
-
-	move_combo_up = gtk_button_new();
-	gtk_widget_show (move_combo_up);
-	gtk_box_pack_start (GTK_BOX (bbox), move_combo_up, FALSE, FALSE, 0);
-	GTK_WIDGET_SET_FLAGS (move_combo_up, GTK_CAN_DEFAULT);
-	arrow = gtk_arrow_new(GTK_ARROW_UP, GTK_SHADOW_OUT);
-	gtk_widget_show(arrow);
-	gtk_container_add(GTK_CONTAINER(move_combo_up), arrow);
-	gtk_signal_connect (GTK_OBJECT (move_combo_down), "clicked",
-			GTK_SIGNAL_FUNC (on_move_combo_down_clicked),
-			this);
-	gtk_signal_connect (GTK_OBJECT (move_combo_up), "clicked",
-			GTK_SIGNAL_FUNC (on_move_combo_up_clicked),
-			this);
-
-	return topframe;
-	}
-
-/*
  *	Enable/disable controls after selection changed.
  */
 
@@ -1276,16 +1179,16 @@ void Combo_chooser::enable_controls
 		{
 		if (!group)
 			{
-			gtk_widget_set_sensitive(move_combo_down, false);
-			gtk_widget_set_sensitive(move_combo_up, false);
+			gtk_widget_set_sensitive(move_down, false);
+			gtk_widget_set_sensitive(move_up, false);
 			}
 		return;
 		}
 	if (!group)
 		{
-		gtk_widget_set_sensitive(move_combo_down, 
+		gtk_widget_set_sensitive(move_down, 
 				info[selected].num < combos.size() - 1);
-		gtk_widget_set_sensitive(move_combo_up, 
+		gtk_widget_set_sensitive(move_up, 
 					info[selected].num > 0);
 		}
 	}
@@ -1381,7 +1284,9 @@ Combo_chooser::Combo_chooser
 	gtk_box_pack_start(GTK_BOX(hbox1), sbar, TRUE, TRUE, 0);
 	gtk_widget_show(sbar);
 					// Add controls to bottom.
-	gtk_box_pack_start(GTK_BOX(vbox), create_controls(), FALSE, FALSE, 0);
+					// +++++Maybe add FIND controls?
+	gtk_box_pack_start(GTK_BOX(vbox), 
+		create_controls(move_controls), FALSE, FALSE, 0);
 	}
 
 /*

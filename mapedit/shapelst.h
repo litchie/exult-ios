@@ -66,7 +66,6 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	GtkWidget *fspin;		// Spin button for frame #.
 	GtkWidget *shape_vscroll;	// Vertical scrollbar.
 	GtkWidget *shape_hscroll;	// Horizontal scrollbar.
-	GtkWidget *find_text;		// For searching.
 	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
 	int index0;			// Index of top-leftmost in
 					//   displayed list.
@@ -104,7 +103,6 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void adjust_vscrollbar();	// Set new scroll amounts.
 	void adjust_hscrollbar(int newmax);
 	virtual GtkWidget *create_popup();	// Popup menu.
-	GtkWidget *create_search_controls();
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
 				Shape_group *g = 0, Shape_file_info *fi = 0);
@@ -115,7 +113,7 @@ public:
 		{ framenum0 = f; }
 	void shape_dropped_here(int file, int shapenum, int framenum);
 	int get_count();		// Get # shapes we can display.
-	void search(char *srch, int dir);
+	virtual void search(char *srch, int dir);
 					// Turn off selection.
 	void unselect(bool need_render = true);
 	int is_selected()		// Is a shape selected?
@@ -131,8 +129,6 @@ public:
 		framenum = info[selected].framenum;
 		return (1);
 		}
-	GtkWidget *get_find_text()	// Get 'find' text widget.
-		{ return find_text; }
 					// Configure when created/resized.
 	static gint configure(GtkWidget *widget, GdkEventConfigure *event,
 							gpointer data);

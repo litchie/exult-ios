@@ -59,7 +59,6 @@ using std::string;
 using EStudio::Prompt;
 using EStudio::Alert;
 using EStudio::Add_menu_item;
-using EStudio::Create_arrow_button;
 
 std::vector<Editing_file*> Shape_chooser::editing_files;
 int Shape_chooser::check_editing_timer = -1;
@@ -2060,40 +2059,6 @@ void Shape_chooser::search
 	show();
 	}
 
-/*
- *	Callbacks for 'search' buttons:
- */
-C_EXPORT void
-on_find_shape_down_clicked             (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	Shape_chooser *chooser = (Shape_chooser *) user_data;
-	chooser->search(gtk_entry_get_text(
-			GTK_ENTRY(chooser->get_find_text())), 1);
-}
-C_EXPORT void
-on_find_shape_up_clicked               (GtkButton       *button,
-                                        gpointer         user_data)
-{
-	Shape_chooser *chooser = (Shape_chooser *) user_data;
-	chooser->search(gtk_entry_get_text(
-			GTK_ENTRY(chooser->get_find_text())), -1);
-}
-C_EXPORT gboolean
-on_find_shape_key			(GtkEntry	*entry,
-					 GdkEventKey	*event,
-					 gpointer	 user_data)
-{
-	if (event->keyval == GDK_Return)
-		{
-		Shape_chooser *chooser = (Shape_chooser *) user_data;
-		chooser->search(gtk_entry_get_text(
-			GTK_ENTRY(chooser->get_find_text())), 1);
-		return TRUE;
-		}
-	return FALSE;			// Let parent handle it.
-}
-
 
 /*
  *	Set up popup menu for shape browser.
@@ -2141,6 +2106,43 @@ GtkWidget *Shape_chooser::create_popup
 	return popup;
 	}
 
+#if 0	/* ++++++Going away */
+/*
+ *	Callbacks for 'search' buttons:
+ */
+C_EXPORT void
+on_find_shape_down_clicked             (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Shape_chooser *chooser = (Shape_chooser *) user_data;
+	chooser->search(gtk_entry_get_text(
+			GTK_ENTRY(chooser->get_find_text())), 1);
+}
+C_EXPORT void
+on_find_shape_up_clicked               (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Shape_chooser *chooser = (Shape_chooser *) user_data;
+	chooser->search(gtk_entry_get_text(
+			GTK_ENTRY(chooser->get_find_text())), -1);
+}
+C_EXPORT gboolean
+on_find_shape_key			(GtkEntry	*entry,
+					 GdkEventKey	*event,
+					 gpointer	 user_data)
+{
+	if (event->keyval == GDK_Return)
+		{
+		Shape_chooser *chooser = (Shape_chooser *) user_data;
+		chooser->search(gtk_entry_get_text(
+			GTK_ENTRY(chooser->get_find_text())), 1);
+		return TRUE;
+		}
+	return FALSE;			// Let parent handle it.
+}
+
++++++++++++++++Going away.
+
 /*
  *	Create box with 'find' and 'history' controls.
  */
@@ -2182,6 +2184,7 @@ GtkWidget *Shape_chooser::create_search_controls
 		      this);
 	return topframe;
 	}
+#endif
 
 /*
  *	Create the list.
@@ -2195,7 +2198,7 @@ Shape_chooser::Shape_chooser
 	Shape_group *g,
 	Shape_file_info *fi
 	) : Object_browser(g, fi),
-		Shape_draw(i, palbuf, gtk_drawing_area_new()), find_text(0),
+		Shape_draw(i, palbuf, gtk_drawing_area_new()),
 		shapes_file(0), index0(0), framenum0(0),
 		info(0), info_cnt(0), row0(0), nrows(0),
 		sel_changed(0), frames_mode(false), hoffset(0)
@@ -2312,7 +2315,8 @@ Shape_chooser::Shape_chooser
 	gtk_signal_connect(GTK_OBJECT(allframes), "toggled",
 				GTK_SIGNAL_FUNC(all_frames_toggled), this);
 					// Add search controls to bottom.
-	gtk_box_pack_start(GTK_BOX(vbox), create_search_controls(),
+	gtk_box_pack_start(GTK_BOX(vbox), 
+		create_controls(find_controls | locate_controls),
 						FALSE, FALSE, 0);
 	}
 
