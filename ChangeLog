@@ -1,3 +1,7 @@
+2001-02-07  Max Horn  <max@quendi.de>
+	* tools/expack.cc: change all uses of strcpy/strcat to strncpy/strncat
+	  and also did some namespace std:: fixing
+
 2001-02-07  Ryan Nunn <triforce@merlin.net.au>
 	* tools/expack.cc : Finally fixed the Win32 End of Line problem. 
 
