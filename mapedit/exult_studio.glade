@@ -336,7 +336,6 @@
 	    <label>Move</label>
 	    <active>True</active>
 	    <always_show_toggle>True</always_show_toggle>
-	    <group>mouse_mode</group>
 	  </widget>
 
 	  <widget>
@@ -350,7 +349,6 @@
 	    <label>Paint</label>
 	    <active>False</active>
 	    <always_show_toggle>True</always_show_toggle>
-	    <group>mouse_mode</group>
 	  </widget>
 
 	  <widget>
@@ -364,7 +362,6 @@
 	    <label>Select</label>
 	    <active>False</active>
 	    <always_show_toggle>True</always_show_toggle>
-	    <group>mouse_mode</group>
 	  </widget>
 
 	  <widget>
@@ -378,7 +375,6 @@
 	    <label>Hide</label>
 	    <active>False</active>
 	    <always_show_toggle>True</always_show_toggle>
-	    <group>mouse_mode</group>
 	  </widget>
 
 	  <widget>

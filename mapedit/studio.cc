@@ -176,28 +176,32 @@ on_move1_activate	               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
 					// NOTE:  modes are defined in cheat.h.
-	ExultStudio::get_instance()->set_edit_mode(0);
+	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
+		ExultStudio::get_instance()->set_edit_mode(0);
 }
 
 C_EXPORT void
 on_paint1_activate	               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ExultStudio::get_instance()->set_edit_mode(1);
+	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
+		ExultStudio::get_instance()->set_edit_mode(1);
 }
 
 C_EXPORT void
 on_select1_activate	               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ExultStudio::get_instance()->set_edit_mode(2);
+	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
+		ExultStudio::get_instance()->set_edit_mode(2);
 }
 
 C_EXPORT void
 on_hide1_activate	               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-	ExultStudio::get_instance()->set_edit_mode(3);
+	if (GTK_CHECK_MENU_ITEM(menuitem)->active)
+		ExultStudio::get_instance()->set_edit_mode(3);
 }
 
 C_EXPORT void
@@ -383,6 +387,19 @@ ExultStudio::ExultStudio(int argc, char **argv): files(0), curfile(0),
 #ifdef WIN32
     OleInitialize(NULL);
 #endif
+					// Init. 'Mode' menu, since Glade
+					//   doesn't seem to do it right.
+	static char *names[4] = {"move1", "paint1", "select1", "hide1"};
+	GSList *group = NULL;
+	for (int i = 0; i <= 3; i++)
+		{
+		GtkWidget *item = glade_xml_get_widget(app_xml, names[i]);
+		gtk_radio_menu_item_set_group(GTK_RADIO_MENU_ITEM(item),
+								group);
+		group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(item));
+		gtk_check_menu_item_set_active(
+				GTK_CHECK_MENU_ITEM(item), i == 0);
+		}
 }
 
 ExultStudio::~ExultStudio()
