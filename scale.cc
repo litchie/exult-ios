@@ -22,7 +22,7 @@ inline void Interp_horiz
 	Source_pixel pix0 = *from++;
 	Source_pixel pix1 = *from;
 	manip.copy(*to++, pix0);
-	unsigned short r0, r1, g0, g1, b0, b1;
+	unsigned int r0, r1, g0, g1, b0, b1;
 	manip.split_source(pix0, r0, g0, b0);
 	manip.split_source(pix1, r1, g1, b1);
 	*to++ = manip.rgb((r0 + r1)/2, (g0 + g1)/2, (b0 + b1)/2);
