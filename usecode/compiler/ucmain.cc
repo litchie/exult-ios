@@ -24,9 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <stdio.h>
 #include <string>
-
-extern int uc_line_num;			// Counts lines.
-extern string uc_source;		// Source filename.
+#include "ucloc.h"
 
 /*
  *	MAIN.
@@ -40,16 +38,18 @@ int main
 	{
 	extern int yyparse();
 	extern FILE *yyin;
+	char *src;
 	if (argc > 1)
 		{
-		uc_source = argv[1];
+		src = argv[1];
 		yyin = fopen(argv[1], "r");
 		}
 	else
 		{
-		uc_source = "<stdin>";
+		src = "<stdin>";
 		yyin = stdin;
 		}
+	Uc_location::set_cur(src, 0);
 #if 0
 //++++TESTING
 	int tok;
@@ -69,5 +69,5 @@ void yyerror
 	char *s
 	)
 	{
-	cout << uc_source << ':' << uc_line_num + 1 << ": " << s << endl;
+	Uc_location::yyerror(s);
 	}
