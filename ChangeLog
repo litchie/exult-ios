@@ -1,4 +1,7 @@
 2000-11-24  Dancer Vesperman <dancer@users.sourceforge.net>
+	* Adjust the initial window size for ProducerConsumerBufs
+
+2000-11-24  Dancer Vesperman <dancer@users.sourceforge.net>
 	* GLOBAL: Eliminate the global audio pointer.
 	* Complete conversion of audio subsystem to self-initialising, self-managing singleton object
 	* Update all audio references.
