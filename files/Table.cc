@@ -24,10 +24,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
 #include "Table.h"
-#include "utils.h"
 
 #include <cstdio>
 #include <iostream>
+#include "utils.h"
 
 using std::string;
 using std::vector;
