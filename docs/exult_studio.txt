@@ -1,11 +1,12 @@
 Exult Studio Documentation
-last changed: 07 April 2002(GMT)
+last changed: 03 May 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/studio.php
 
 
 0. Changes to the Documentation
-0.1. 07 April 2002
+0.1. 03 May 2002
+0.2. 07 April 2002
 
 1. Introduction
 1.1. What is Exult Studio?
@@ -17,27 +18,49 @@ The latest version of this document can be found at http://exult.sourceforge.net
 2.3. Settings in exult.cfg.
 2.4. Command line options
 
-3. Editing a Game
-3.1. Description
-3.2. What you can do at the moment
-3.3. The shape editor
-3.4. Custom Usecode
+3. Menu Options
+3.1. File
+3.2. Objects
+3.3. Mode
+3.4. Tools
+3.5. Tool bar
 
-4. Miscellaneous
-4.1. Other tools that might be usefull
-4.2. Porting Exult Studio to other platforms
-4.3. About this client/server stuff?
-4.4. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
-4.5. What's next?
+4. Editing a Game
+4.1. Description
+4.2. What you can do at the moment
+4.3. The shape editor
+4.4. Creating/editing Eggs
+4.5. Creating/editing NPCs
+4.6. Creating Combination files
+4.7. Custom Usecode
 
-5. Credits
-5.1. Thanks
+5. Miscellaneous
+5.1. Other tools that might be useful
+5.2. Porting Exult Studio to other platforms
+5.3. About this client/server stuff?
+5.4. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
+5.5. What's next?
+
+6. Credits
+6.1. Thanks
 
 
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. 07 April 2002
+0.1. 03 May 2002
+This is the second draft of the Exult Studio documentation.
+
+2.4. Command line options I had spaces between the commands and the options.
+3. Menu Options description of all the Menu Options.
+4.2. What you can do at the moment added warning on editing terrains.
+4.4. Creating/editing Eggs added place holder for actual documentation.
+4.5. Creating/editing NPCs added place holder for actual documentation.
+4.6. Creating Combination files the latest addition.
+4.7. Custom Usecode link to latest patch and link to Pertex'documentation.
+5.5. What's next? 'scratched' the stuff I think got implemented.
+
+0.2. 07 April 2002
 This is the first draft of the Exult Studio documentation. So please bear with me. It is by no means perfect and I ask you to send me all your comments on how to better express some stuff or to point out what I just plain forgot. Dominus
 
 
@@ -65,7 +88,7 @@ Along with the terms explained in ReadMe.txt there are some more terms that need
 
 2. Configurations
 2.1. Installation
-* You need Exult and you need to install it properly (see ReadMe.txt
+* You need Exult and you need to install it properly (see ReadMe.txt)
 * For U*ix platforms you need to build Exult Studio from the source avillable from our source snapshot at http://exult.sourceforge.net/download.php. You will also need the GTK+ library installed as well as libglade.
 * For Win32 platforms (Win9x,ME,2k,XP) you need to download http://exult.sourceforge.net/snapshots/ExultStudio.exe and install it in the same directory where you installed Exult.
 
@@ -110,7 +133,7 @@ gamename
 </default_game>
 <image_editor>
 gimp-remote -n
-						** command that calls the image editor. Only usefull on U*ix 
+						** command that calls the image editor. Only useful on U*ix 
 						platforms for now.
 						
 </image_editor>
@@ -126,24 +149,73 @@ gimp-remote -n
 
 2.4. Command line options
 Exult Studio offers some "hidden" command line options:
-* -g GAMENAME specifies GAMENAME and Exult Studio will read the game base directory from exult.cfg. GAMENAME can be choosen from the games specified in <game> part of exult.cfg.
-* -d DIRECTORY specifies DIRECTORY as the game base directory.
-* -x DIRECTORY tells exult_studio to look in DIRECTORY for its user-interface specification (exult_studio.glade). This option is only useful to developers who want to edit exult_studio.glade themselves.
+* -gGAMENAME specifies GAMENAME and Exult Studio will read the game base directory from exult.cfg. GAMENAME can be choosen from the games specified in <game> part of exult.cfg.
+* -dDIRECTORY specifies DIRECTORY as the game base directory.
+* -xDIRECTORY tells exult_studio to look in DIRECTORY for its user-interface specification (exult_studio.glade). This option is only useful to developers who want to edit exult_studio.glade themselves.
 
 
 
 
 --------------------------------------------------------------------------------
 
-3. Editing a Game
-3.1. Description
+3. Menu Options
+3.1. File
+* New Game... This lets you begin the work on a new game. Jeff wrote an extensive description of how to use this and how it works. See New Game manual.
+* Open Game... Choose the Game directory of the game you want to edit.
+* Save all 'Ctrl+S' Saves map, shape infos and groups you edited (see below).
+* New... Shapes file... Lets you choose the directory where you want to create a new vga file and requires you to enter a name for it (e.g. mygame.vga). Single shape file... Lets you choose the directory where you want to create a new shape file and requires you to enter a name for it (e.g. mygame.shp).
+* Save... Map Saves the map of the edited game. Shape info When you right click a shape in a vga file you can change the info of the shape. This saves this changed info. Groups You can "bundle" shapes of vga files into groups to make world building easier. These groups get saved with this option.
+* Reload... Map 'Ctrl+R' Reloads the map. All changes made since the last save get discarded. Usecode Very useful when you edit the usecode of a game or add new usecode to an existing game. Normally this would require a restart of Exult.
+* Connect Connects Exult and Exult Studio if one of them had to be restarted.
+* Preferences Image Editor Command: This executes the chosen image editor when you want to edit a shape when you right click it. Image-Edit Filetype: Choose which filetype gets executed with the above cosen image editor. Default Game Name: Choose the game Exult Studio opens by default. Use the name specified in exult.cfg. Shape List Background: Sometimes the default black background may make certain shapes hard to see. Choose a different background colour here.
+* Exit 'Ctrl+Q' Exits Exult Studio.
+
+Note that the default location for saving and creation of new files is the STATIC directory of a game if there is no PATCH directory specified. See 4.2. What you can do at the moment.
+
+
+3.2. Objects
+* Egg... Create or edit eggs with this. See 4.4. Creating/editing Eggs for more information (not yet there).
+* NPC... Create or edit NPCs with this. See 4.5. Creating/editing NPCs for more information (not yet there).
+
+
+
+3.3. Mode
+It describes how the mouse behaves inside Exult when map-editing.
+* Move This is the normal mode where you can drag things with the mouse, or single-click to identify objects.
+* Paint a single-left-click inserts the last-selected shape from 'shapes.vga', and dragging with the left-button inserts that shape in every tile (so you'd probably only want to do this with 8x8 flat shapes). Also, in 'Paint' mode, the footprint at ground level is shown (though this may be changed in the future).
+* Pick for Combo Picks objects for a new combo file. See 4.6. Creating Combination files
+* Select not yet implemented (?)
+* Hide not yet implemented (?)
+* Unhide not yet implemented (?)
+
+
+
+3.4. Tools
+* Locator... 'Ctrl+L' shows where the current game window is within the entire map, and lets you move the view by double-clicking a location or by dragging the little box
+* New Combo Creates a new Combo file. See 4.6. Creating Combination files.
+
+
+
+3.5. Tool bar
+* Play Game This is the same as pressing 'Alt+Ctrl+M' in Exult. It exits the Map Edit Mode and lets you play the game. By pressing it again you enter Map Edit Mode again.
+* Tile Grid Shows a grid in the game window for better control on placing objects.
+* Edit lift: Changes the lift of a selected object in the game window. Lift means the distance of an object from the ground.
+* Edit terrain See 4.2. What you can do at the moment. Note that a terrain is used in multiple instances of the map and changing it in one place changes it in all the others as well.
+
+
+
+
+--------------------------------------------------------------------------------
+
+4. Editing a Game
+4.1. Description
 Once Exult Studio runs correctly , a tree of game files is displayed to the left of the main window, while the currently selected file is viewed in detail to the right. At the moment, the following types of files are supported:
 * Shape files Shapes are the basic graphical elements of the game. Each shape has one or more frames that typically represent different states or angles of the same thing. E.g. a button shape could have frames for pressed, and released; a character could have frames depicting her sitting, standing up facing one way, or another, swinging a punch, etc. When a shape file is selected, the right part of the main window will show frame zero of the shapes contained therein. Shapes can be selected by clicking, which will show there number, number of frames, and name if known. Other frames can be viewed by changing the frame number.
 * Map files These files contain so called chunks that serve as templates in the final map. The chunks of the selected map file are shown to the right of the main window.
 
 
 
-3.2. What you can do at the moment
+4.2. What you can do at the moment
 With the latest source you can
 * browse shapes in the main window.
 * drag a shape from the shape browser to Exult, and that object will be placed in the game.
@@ -153,7 +225,7 @@ With the latest source you can
 * edit an NPC by double-clicking on it, and also create a new NPC using the pull-down menu. Attributes, flags, and schedules can all be viewed and modified.
 * can edit other objects' position and quality by double-clicking on them.
 * browse the 'u7chunks' file, and drag them into Exult to change the terrain. In this browser, you can also create new terrains and modify their order.
-* edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit terrain" checkbox in Exult Studio. This is a special mode where dragging with the left mouse button 'paints' the currently-selected shape (generally one of the flat tiles near the top of the shapes browser). Note that a 'terrain' is generally used in multiple places in the map.
+* edit a 'terrain' (stored in 'u7chunks') by clicking the "Edit terrain" checkbox in Exult Studio. This is a special mode where dragging with the left mouse button 'paints' the currently-selected shape (generally one of the flat tiles near the top of the shapes browser). Note that a 'terrain' is generally used in multiple places in the mapand changing it in one place changes it in all the others as well.
 * save the map using ExultStudio's "File-Save map" pulldown. In order to avoid writing over files inadvertantly, the files that would normally go into the 'static' directory, will, instead, go into a 'patch' directory that you specify in your 'exult.cfg' file. Here's an example for editing BG:
 
 <game>
@@ -172,7 +244,7 @@ blackgate
 Exult will also read files from 'patch' if it exists on starting a new game.
 
 
-3.3. The shape editor
+4.3. The shape editor
 When you right click on a shape in the Shape browser (e.g. Files-Shapes.vga) you get some options of how to edit the shapes.
 * Edit...: Brings up your image-editor on the chosen frame. When you save in the image-editor, ES will read the changes back within 5 seconds. This is especially convenient if you have 'gimp-remote', as it will open a window for the frame in an already-running gimp.
 * Edit tiled: This is only for 'flat' (8x8) shapes. It forms an image from all the frames and brings it up in the image-editor. This is really handy for making lots of terrain frames like grass. A dialog lets you choose the dimensions.
@@ -183,30 +255,43 @@ When you right click on a shape in the Shape browser (e.g. Files-Shapes.vga) you
 Note:Edit... doesn't work on Windows system. It stores the sahpe as PNG file in GAMEDIR/itmp/ (e.g. blackgate/itmp). If you manually open the file with an image editor of your liking and then save it, ES doesn't read the changes back.
 
 
-3.4. Custom Usecode
+4.4. Creating/editing Eggs
+sorry, not documented yet (very extensive work). But make sure you resize the egg-window to show all the possible eggs. To know what 'egg' means, see ReadMe.txt.
+
+
+4.5. Creating/editing NPCs
+sorry, not documented yet (very extensive work).
+
+
+4.6. Creating Combination files
+Create 'combination shapes', like a fence or an entire roof by selecting "Tools-New Combo" (see 3.4.). It's about half-done. To see what's there, choose the 'Combo pick' choice in the 'Modes' menu, and an empty window should pop up. In the game window, double-click a group of objects, and they should appear in the window. You can then select an object there and tweak its position. Nothing gets saved yet.
+
+
+4.7. Custom Usecode
 As hinted at (see ReadMe.txt) Usecode is actually what runs Ultima 7 and therefore any game created with Exult Studio. As of yet we do not have a Usecode editor/debugger. So writing your own Usecode is not that easy.
-For an example of how Usecode may look like download our experimental patch for BG at http://prdownloads.sourceforge.net/exult/bgpatch3.zip. In that zip you'll find a readme.txt which tells you how to run it. You will also see two files called usecode.uc and usecode.
-Usecode is the usecode script that will help you understand our usecode language. When you run ucc (see 4.1. with that file (e.g. "ucc usecode.uc" you will get a file called usecode.uco. Rename usecode.uco to usecode and you will have the actual usecode that can be run with exult.
+For an example of how Usecode may look like download our experimental patch for BG at http://exult.sourceforge.net/snapshots/patch.zip. In that zip you'll find a readme.txt which tells you how to run it. You will also see two files called usecode.uc and usecode.
+Usecode.uc is the usecode script that will help you understand our usecode language. When you run ucc (see 5.1.) with that file (e.g. "ucc -o usecode usecode.uc") you will get the file called usecode. This file 'usecode' should be the same as the one in the zip file.
+Someone does have to write extensive documentation for this but I (Dominus) am not really up for that task. Pertex has written some documentation at http://www.sophen.de/exult/ that might be able help you.
 
 
 
 --------------------------------------------------------------------------------
 
-4. Miscellaneous
-4.1. Other tools that might be usefull
-In the process of creating Exult the team came up with some usefull tools that might help in editing/making a game. These can be built from the Exult source or you can download the Windows binary snapshot. The source and binary snapshot can be found at http://exult.sourceforge.net/download.php. The tools are:
+5. Miscellaneous
+5.1. Other tools that might be useful
+In the process of creating Exult the team came up with some useful tools that might help in editing/making a game. These can be built from the Exult source or you can download the Windows binary snapshot. The source and binary snapshot can be found at http://exult.sourceforge.net/download.php. The tools are:
 * expack: lets you extract and create Flex files. See manual.
 * ipack: a tool for creating and updating Exult and U7 image archives, such as 'shapes.vga'. See manual.
 * shp2pcx: converts all frames contained in a Shape file into PCX-format image files. See manual.
 * splitshp: can be used to combine frames of a Shape file into one file, or split a Shape file into its component frames. See manual.
 * textpack: can be used edit text flex files. See manual.
-* ucc: can be used to create custom usecode (see 3.4..
+* ucc: can be used to create custom usecode (see 4.7.).
 * The GIMP Plug-in: can be used for editing shapes in the GIMP. Handles multiframe Shape files. See http://www.gimp.org for inormation on the GIMP.
 * Photoshop Plug-in: can be used for editing shapes in Photoshop. Can't handle multiframe Shape files. And also can't handle indexed images with Alpha correctly.
 
 
 
-4.2. Porting Exult Studio to other platforms
+5.2. Porting Exult Studio to other platforms
 Currently Exult Studio runs on U*ix and Windows platforms. First it only ran on U*ix but with some effort by Colourless, Kirben and Mark Siewert it was succesfully ported to Win32.
 A port to other platforms depends on when someone volunteers to do the work :-) There are three issues:
 * GTK has to be ported to the platform.
@@ -215,15 +300,15 @@ A port to other platforms depends on when someone volunteers to do the work :-) 
 
 
 
-4.3. About this client/server stuff?
+5.3. About this client/server stuff?
 A map-editor needs to provide the ability to display the game, place objects on the map, and move objects around. That functionality is already in Exult, and it makes sense to reuse it. So we could have made Exult a part of Exult Studio. However, Exult is already a huge program, and is getting unwieldy to work on.
 With this architecture, Exult Studio can have all the messy code for displaying/editing dialog boxes, while Exult only needs a little bit of work to handle requests.
 Also, I (Jeff) wanted to get a little experience programming with sockets:-)
 
 
-4.4. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
+5.4. About this 'terrain-editing' stuff and why you can't just drag objects to where you want.
 This confused me too, and I originally planned on doing away with it. But do a little arithmetic: U7's world has 3072x3072 tiles; that's over 9 million that need to be set. My guess is that they came up with the idea behind 'u7chunks' to save artists time and to give the map a consistent look.
-The basic idea is that each 'chunk' of flat terrain, 16x16 tiles, is stored in 'u7chunks', and is indexed by its position in this file (0, 1, 2, .... The 'u7map' file specifies, for each 'chunk' in the U7 map, which of the terrains is to be used. Since the entire map has 192x192 chunks, or a total of 36,864, and since 'u7chunks' has 3072 entries, each terrain is shared an average of over 10 times. When you go into map-editing mode in Exult, the numbers displayed are the indices from 'u7chunks'.
+The basic idea is that each 'chunk' of flat terrain, 16x16 tiles, is stored in 'u7chunks', and is indexed by its position in this file (0, 1, 2, ...). The 'u7map' file specifies, for each 'chunk' in the U7 map, which of the terrains is to be used. Since the entire map has 192x192 chunks, or a total of 36,864, and since 'u7chunks' has 3072 entries, each terrain is shared an average of over 10 times. When you go into map-editing mode in Exult, the numbers displayed are the indices from 'u7chunks'.
 So here are the three sorts of scenery that you can see and edit:
 1. The 'terrain' (flat landscape, rocks, shrubs, and first-story buildings) specified in 'u7chunks' and 'u7map'.
 2. Other non-moveable objects (second-floor structures, trees) specified in the 'ifixnn' files.
@@ -233,11 +318,9 @@ The challenge of writing a map-editor is keeping the above straight, and reading
 For a more detailed explanation, see Gary Thompson's paper, 'u7edit.txt' in our 'docs' directory.
 
 
-4.5. What's next?
+5.5. What's next?
 The next things to be implemented are:
-* The main menu needs a 'Save' that saves all the various files. Right now, saving is an inconsistent mess.
 * Exult Studioneeds to be able to automatically create palettes 1-n from palette 0 using the code from ipack.
-* A way to to create an entirely new game. This is a fairly big issue, since it involves having Exult run when many of its files don't yet exist (this is currently in progress).
 * It will also be very nice to have a Usecode debugger someday as well (Willem is actually working on it).
 * A 'flags' editor for viewing and editing the global Usecode flags by name.
 * A 'barge' editor for creating things like ships and carts.
@@ -247,8 +330,8 @@ The next things to be implemented are:
 
 --------------------------------------------------------------------------------
 
-5. Credits
-5.1. Thanks
+6. Credits
+6.1. Thanks
 * Colourless, Kirben and Mark Siewart invested a lot of effort to port Exult Studio to Win32.
 
 
