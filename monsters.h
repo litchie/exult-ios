@@ -30,11 +30,11 @@
 class Monster_actor : public Npc_actor
 	{
 	static Monster_actor *in_world;	// All monsters in the world.
-	static int in_world_cnt;	// # in list.
 					// Links for 'in_world' list.
 	Monster_actor *next_monster, *prev_monster;
 	Animator *animator;		// For wounded men.
-	void init();			// For constructors.
+	void link_in();			// Add to in_world list.
+	void link_out();		// Remove from list.
 public:
 	Monster_actor(const std::string &nm, int shapenum, int num = -1, 
 							int uc = -1);
@@ -49,17 +49,19 @@ public:
 		{ return in_world; }
 	Monster_actor *get_next_in_world()
 		{ return next_monster; }
-	static int get_num_in_world()
-		{ return in_world_cnt; }
 	static void delete_all();	// Delete all monsters.
 	static void give_up()		// For file errors only!
-		{ in_world = 0; in_world_cnt = 0; }
+		{ in_world = 0; }
 	virtual int move_aside(Actor* for_actor, int dir)
 		{ return 0; }		// Monsters don't move aside.
 					// Render.
 	virtual void paint(Game_window *gwin);
 					// Step onto an (adjacent) tile.
 	virtual int step(Tile_coord t, int frame);
+					// Remove/delete this object.
+	virtual void remove_this(int nodel = 0);
+					// Move to new abs. location.
+	virtual void move(int newtx, int newty, int newlift);
 					// Add an object.
 	virtual int add(Game_object *obj, int dont_check = 0);
 	virtual int get_armor_points();	// Get total armor value.
