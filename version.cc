@@ -133,13 +133,13 @@ void getVersionInfo(std::ostream& out)
   #endif
  #endif
 
-	// MSC
+	// Microsoft C/C++ Compiler (used by MSVC)
 #elif (defined(_MSC_FULL_VER))
-	out << "MSC, version: " << (_MSC_FULL_VER/1000000) << "."
+	out << "Microsoft C/C++ Compiler, version: " << (_MSC_FULL_VER/1000000) << "."
 				<< ((_MSC_FULL_VER/10000)%100) << "."
 				<< (_MSC_FULL_VER%10000);
 #elif (defined(_MSC_VER))
-	out << "MSC, version: " << (_MSC_VER/100) << "." << (_MSC_VER%100);
+	out << "Microsoft C/C++ Compiler, version: " << (_MSC_VER/100) << "." << (_MSC_VER%100);
 
 	// Metrowerks CodeWarrior
 #elif (defined(__MWERKS__))
@@ -215,7 +215,6 @@ void getVersionInfo(std::ostream& out)
 
 		out << " Version " << info.dwMajorVersion << "." << info.dwMinorVersion << " Build " << LOWORD(info.dwBuildNumber&0xFFFF) << std::endl;
 	}
-	out << "Win32" << endl;
 #elif (defined(MACOSX))
 	out << "Mac OS X" << endl;
 #elif (defined(MACOS))
