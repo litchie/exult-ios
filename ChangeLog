@@ -5,6 +5,7 @@
 	* schedule.cc:  Patrol schedule:  Look for path after executing
 	Usecode, and keep going after sitting.  This fixes Freedom bug
 	where the automaton doesn't talk to you upon arrival.
+	* schedule: Don't follow Avatar if paralyzed.
 
 2002-09-14  Jeff Freedman  <jeff@amy.nerble.net>
 
