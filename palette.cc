@@ -27,6 +27,7 @@
 #include "gamewin.h"
 #include "palette.h"
 #include "ibuf8.h"
+#include "utils.h"
 
 #include "SDL_timer.h"
 
@@ -57,10 +58,26 @@ void Palette::apply(bool repaint)
  */
 void Palette::load(const char *fname, int index, const char *xfname, int xindex)
 	{
-	U7object pal(fname, index);
 	size_t len;
-	char *buf;
-	buf = pal.retrieve(len);	// this may throw an exception
+	char *buf = 0;
+	if (strncmp(fname, STATICDAT, sizeof(STATICDAT) - 1) == 0 &&
+					is_system_path_defined("<PATCH>"))
+		{			// Check in "patch" dir. first.
+		string pname(PATCHDAT);
+		pname += fname + sizeof(STATICDAT) - 1;
+		U7object pal(pname.c_str(), index);
+		try {
+			buf = pal.retrieve(len);
+		}
+		catch (exult_exception& e) {
+			buf = 0;
+		}
+		}
+	if (!buf)			// Not in patch.
+		{
+		U7object pal(fname, index);
+		buf = pal.retrieve(len);// this may throw an exception
+		}
 	if(len==768) {	// Simple palette
 		if (xindex >= 0) {	// Get xform table.
 			U7object xform(xfname, xindex);

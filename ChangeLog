@@ -1,3 +1,9 @@
+2002-03-28  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* shapes/vgafile.{cc,h}:  Vga_file class can now read single-shape
+	files (i.e., 'pointers.shp').
+	* palette.cc (Palette): Check patch dir. before static.
+
 2002-03-24  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* gamewin.cc: also display name when showing NPC numbers
 	* gamedat.cc: delete newgame.ver, exult.ver when loading zipped saves
