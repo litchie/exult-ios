@@ -134,7 +134,7 @@ void Chunk_chooser::render
 	info = new Chunk_info[256];
 	info_cnt = 0;			// Count them.
 					// Clear window first.
-	iwin->fill8(0);			// ++++Which color?
+	iwin->fill8(255);		// Background color.
 	int index = index0;
 					// 16x16 tiles, each 8x8 pixels.
 	const int chunkw = 128, chunkh = 128;
@@ -876,11 +876,13 @@ Chunk_chooser::Chunk_chooser
 	chunkfile.seekg(0, std::ios::end);	// Figure total #chunks.
 	num_chunks = chunkfile.tellg()/(c_tiles_per_chunk*c_tiles_per_chunk*2);
 	chunklist.resize(num_chunks);	// Init. list of ->'s to chunks.
+#if 0	/* Done in shapedraw.cc */
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
 		colors[i] = (palbuf[3*i]<<16)*4 + (palbuf[3*i+1]<<8)*4 + 
 							palbuf[3*i+2]*4;
 	palette = gdk_rgb_cmap_new(colors, 256);
+#endif
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	set_widget(vbox); // This is our "widget"

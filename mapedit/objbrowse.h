@@ -52,6 +52,7 @@ public:
 		{ return -1; }
 	virtual bool server_response(int id, unsigned char *data, int datalen);
 	virtual void end_terrain_editing();
+	virtual void set_background_color(guint32 c);
 					// About to close this browser.
 	virtual bool closing(bool can_cancel = false);
 					// Menu items:

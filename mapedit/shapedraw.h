@@ -64,6 +64,7 @@ public:
 	void set_shape_names(char **nms)
 		{ names = nms; }
 	virtual void render();		// Update what gets shown.
+	void set_background_color(guint32 c);
 					// Configure when created/resized.
 	void configure(GtkWidget *widget);
 	void configure()
