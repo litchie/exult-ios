@@ -29,15 +29,15 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  include <cctype>
 #endif
 
-// #ifdef HAVE_SYS_TIME_H
-#ifdef XWIN  /* Only needed in XWIN. */
-#include <sys/time.h>
-#include "u7drag.h"
-#endif
 #include <unistd.h>
 
 #include "SDL.h"
 #include "SDL_syswm.h"
+
+#ifdef XWIN  /* Only needed in XWIN. */
+#include <sys/time.h>
+#include "xdrag.h"
+#endif
 
 #ifdef WIN32
 #include <mmsystem.h>   //for MM_MCINOTIFY message
@@ -110,30 +110,9 @@ int num_res = sizeof(res_list)/sizeof(struct resolution);
 int current_res = 0;
 
 #ifdef XWIN
-int xfd = -1;			// X connection #.
-static Display *display = 0;
-static Window xwin = 0;
-static Window xwmwin = 0;		// Get WM window.
-static Atom shapeid_atom = 0;		// For drag-and-drop.
-static Atom xdnd_aware = 0;		// For XdndAware.
-static Atom xdnd_enter = 0;
-static Atom xdnd_leave = 0;
-static Atom xdnd_position = 0;
-static Atom xdnd_drop = 0;
-static Atom xdnd_status = 0;
-static Atom xdnd_copy = 0;
-static Atom xdnd_ask = 0;
-static Atom xdnd_typelist = 0;
-static Atom xdnd_selection = 0;
-static unsigned long xdnd_version = 3;
+int xfd = 0;			// X connection #.
+static class Xdnd *xdnd = 0;
 
-const int max_types = 15;
-static int num_types = 0;
-static Atom drag_types[max_types];	// Data type atoms source can supply.
-static int lastx, lasty;		// Last mouse pos. during drag.
-
-static void Xclient_msg(XClientMessageEvent& cev);
-static void Xselect_msg(XSelectionEvent& sev);
 #endif
 
 
@@ -163,6 +142,7 @@ void make_screenshot (void);
 void show_about (void);
 void show_help (void);
 void show_cheat_help (void);
+static void Drop_dragged_shape(int shape, int frame, int x, int y);
 
 /*
  *	A handy breakpoint.
@@ -332,7 +312,8 @@ static void Init
 	SDL_SysWMinfo info;		// Get system info.
         SDL_GetWMInfo(&info);
 #ifdef XWIN
-        display = info.info.x11.display;
+					// Want drag-and-drop events.
+	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
 	SDL_ShowCursor(0);
 	SDL_VERSION(&info.version);
@@ -386,29 +367,9 @@ static void Init
 		scale = Log2( gwin->get_win()->get_scale() );
 #ifdef XWIN
         SDL_GetWMInfo(&info);
-        display = info.info.x11.display;
-	xwmwin = info.info.x11.wmwindow;
-	xwin = info.info.x11.window;
-        xfd = ConnectionNumber(display);
-					// Get target for drag-and-drop.
-	shapeid_atom = XInternAtom(display, U7_TARGET_SHAPEID_NAME, 0);
-					// Atom for Xdnd protocol:
-	xdnd_aware = XInternAtom(display, "XdndAware", 0);
-	xdnd_enter = XInternAtom(display, "XdndEnter", 0);
-	xdnd_leave = XInternAtom(display, "XdndLeave", 0);
-	xdnd_position = XInternAtom(display, "XdndPosition", 0);
-	xdnd_drop = XInternAtom(display, "XdndDrop", 0);
-	xdnd_status = XInternAtom(display, "XdndStatus", 0);
-	xdnd_copy = XInternAtom(display, "XdndActionCopy", 0);
-	xdnd_ask = XInternAtom(display, "XdndActionAsk", 0);
-	xdnd_typelist = XInternAtom(display, "XdndTypeList", 0);
-	xdnd_selection = XInternAtom(display, "XdndSelection", 0);
-					// Want drag-and-drop events.
-	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
-					// Create XdndAware property.
-	if (xwmwin)
-		XChangeProperty(display, xwmwin, xdnd_aware, XA_ATOM, 32,
-			PropModeReplace, (unsigned char *) &xdnd_version, 1);
+        xfd = ConnectionNumber(info.info.x11.display);
+	xdnd = new Xdnd(info.info.x11.display, info.info.x11.wmwindow,
+				info.info.x11.window, Drop_dragged_shape);
 #endif
 }
 
@@ -754,9 +715,9 @@ static void Handle_event
 		{
 		XEvent& ev = event.syswm.msg->event.xevent;
 		if (ev.type == ClientMessage)
-			Xclient_msg((XClientMessageEvent&) ev);
+			xdnd->client_msg((XClientMessageEvent&) ev);
 		else if (ev.type == SelectionNotify)
-			Xselect_msg((XSelectionEvent&) ev);
+			xdnd->select_msg((XSelectionEvent&) ev);
 		break;
 		}
 #endif
@@ -1567,186 +1528,49 @@ void show_cheat_help (void)
 }
 
 #ifdef XWIN
-
 /*
- *	Handle drag-and-drop.
+ *	Drop a shape dragged from a shape-chooser via drag-and-drop.  Dnd is
+ *	only supported under X for now.
  */
 
-static void Xclient_msg
+static void Drop_dragged_shape
 	(
-	XClientMessageEvent& cev	// Message received.
+	int shape, int frame,		// What to create.
+	int x, int y			// Mouse coords. within window.
 	)
 	{
-	static Atom u7shapeid_atom = 0;
-	if (!u7shapeid_atom)		// ++++Maybe do them all here???
-		u7shapeid_atom = XInternAtom(display, 
-						U7_TARGET_SHAPEID_NAME, 0);
-	cout << "Xwin client msg. received." << endl;
-	char *nm = XGetAtomName(display, cev.message_type);
-	if (nm)
-		cout << "Type = " << nm << endl;
-	XEvent xev;			// Return event.
-	xev.xclient.type = ClientMessage;
-	Window drag_win = cev.data.l[0];// Where drag comes from.
-	xev.xclient.format = 32;
-	xev.xclient.window = drag_win;
-	xev.xclient.data.l[0] = xwmwin;
-	if (cev.message_type == xdnd_enter)
-		{
-		if (cev.data.l[1]&1)	// More than 3 types?
-			{
-			Atom type;
-			int format;
-			unsigned long nitems, after;
-			Atom *data;
-			XGetWindowProperty(display, drag_win,
-				xdnd_typelist, 0, 65536,
-				false, XA_ATOM, &type, &format, &nitems,
-			  	&after, (unsigned char **)&data);
-			if (format != 32 || type != XA_ATOM)
-				return;	// No good.
-			if (nitems > max_types)
-				nitems = max_types;
-			for (num_types = 0; num_types < nitems; num_types++)
-				drag_types[num_types] = data[num_types];
-			}
-		else
-			{
-			num_types = 0;
-			for (int i = 0; i < 3; i++)
-				if (cev.data.l[2+i])
-					drag_types[num_types++] = 
-							cev.data.l[2+i];
-			cout << "num_types = " << num_types << endl;
-			}
-		}
-	else if (cev.message_type == xdnd_position)
-		{
-		int i;			// For now, just do shapeid.
-		for (i = 0; i < num_types; i++)
-			if (drag_types[i] == u7shapeid_atom)
-				break;
-		xev.xclient.message_type = xdnd_status;
-					// Flags??:  3=good, 0=can't accept.
-		xev.xclient.data.l[1] = i < num_types ? 3 : 0;
-					// I think next 2 should be a rect.??
-		xev.xclient.data.l[2] = 0;
-		xev.xclient.data.l[3] = 0;
-		xev.xclient.data.l[4] = xdnd_copy;
-		XSendEvent(display, drag_win, false, 0, &xev);
-					// Save mouse position.
-		lastx = (cev.data.l[2]>>16)&0xffff;
-		lasty = cev.data.l[2]&0xffff;
-		}
-	else if (cev.message_type == xdnd_leave)
-		num_types = 0;		// Clear list.
-	else if (cev.message_type == xdnd_drop)
-		{
-		int i;			// For now, just do shapeid.
-		for (i = 0; i < num_types; i++)
-			if (drag_types[i] == u7shapeid_atom)
-				break;
-		bool okay = i < num_types;
-		num_types = 0;
-		if (!okay)
-			return;
-					// Get timestamp.
-		unsigned long time = cev.data.l[2];
-					// Tell owner we want it.
-		XConvertSelection(display, xdnd_selection, u7shapeid_atom,
-			xdnd_selection, xwmwin, time);
-		}
-	}
-
-/*
- *	Get a window's screen coords.
- */
-
-static void Get_window_coords
-	(
-	Window win,
-	int &sx, int& sy		// Coords. returned.
-	)
-	{
-	Window root, parent;		// Get parent window.
-	Window *children;
-	unsigned int nchildren;
-	XQueryTree(display, win, &root, &parent, &children, &nchildren);
-	if (children)
-		XFree(children);
-	if (parent && parent != root)	// Recurse on parent.
-		Get_window_coords(parent, sx, sy);
-	else
-		sx = sy = 0;
-	XWindowAttributes atts;		// Get position within parent.
-	XGetWindowAttributes(display, win, &atts);
-	sx += atts.x;
-	sy += atts.y;
-	}
-
-/*
- *	Get the selection and paste it in.
- */
-
-static void Xselect_msg
-	(
-	XSelectionEvent& sev
-	)
-	{
-	static Atom u7shapeid_atom = 0;
-	if (!u7shapeid_atom)
-		u7shapeid_atom = XInternAtom(display, 
-						U7_TARGET_SHAPEID_NAME, 0);
-	cout << "SelectionEvent received with target type: " <<
-		XGetAtomName(display, sev.target) << endl;
-	if (sev.selection != xdnd_selection || sev.target != u7shapeid_atom ||
-	    sev.property == None)
-		return;			// Wrong type.
-	Atom type = None;		// Get data.
-	int format;
-	unsigned long nitems, after;
-	unsigned char *data;		
-	if (XGetWindowProperty(display, sev.requestor, sev.property,
-		      0, 65000, False, AnyPropertyType,
-		      &type, &format, &nitems, &after, &data) != Success)
-		{
-		cout << "Error in getting selection" << endl;
-		return;
-		}
-	int file, shape, frame;		// Get shape info.
-	Get_u7_shapeid(data, file, shape, frame);
-	XFree(data);
-	if (file == U7_SHAPE_SHAPES)	// For now, just allow "shapes.vga".
-		{
-		int x, y;		// Figure relative pos. within window.
-		Get_window_coords(xwin, x, y);
-		x = (lastx - x) >> scale;
-		y = (lasty - y) >> scale;
-		cout << "Last drag pos: (" << x << ", " << y <<
-						')' << endl;
-		cout << "Create shape (" << shape << '/' << frame << ')' <<
+	if (!cheat.in_hack_mover())	// Get into editing mode.
+		cheat.toggle_hack_mover();
+	x = (x >> scale);		// Watch for scaled window.
+	y = (y >> scale);
+	cout << "Last drag pos: (" << x << ", " << y << ')' << endl;
+	cout << "Create shape (" << shape << '/' << frame << ')' <<
 								endl;
-					// +++++For now:  Create object.
-		Game_object *newobj = gwin->create_ireg_object(
-			gwin->get_info(shape), shape, frame, 0, 0, 0);
+					// Create object.
+	Shape_info& info = gwin->get_info(shape);
+	int sclass = info.get_shape_class();
+					// Is it an ireg (changeable) obj?
+	bool ireg = (sclass != Shape_info::unusable &&
+		     sclass != Shape_info::building);
+	Game_object *newobj = ireg ? gwin->create_ireg_object(
+						info, shape, frame, 0, 0, 0)
+			: new Game_object(shape, frame, 0, 0, 0);
 					// First see if it's a gump.
-		Gump *on_gump = gwin->find_gump(x, y);
-		if (on_gump)
-			{
-			if (!on_gump->add(newobj, x, y, x, y))
-				delete newobj;
-			else
-				on_gump->paint(gwin);
-			}
-		else			// Try to drop at increasing hts.
-			{
-			for (int lift = 0; lift <= 11; lift++)
-				if (gwin->drop_at_lift(newobj, x, y, lift))
-					return;
-			delete newobj;	// Failed.
-			}
+	Gump *on_gump = gwin->find_gump(x, y);
+	if (on_gump)
+		{
+		if (!on_gump->add(newobj, x, y, x, y))
+			delete newobj;
+		else
+			on_gump->paint(gwin);
+		}
+	else				// Try to drop at increasing hts.
+		{
+		for (int lift = 0; lift <= 11; lift++)
+			if (gwin->drop_at_lift(newobj, x, y, lift))
+				return;
+		delete newobj;	// Failed.
 		}
 	}
-
-
 #endif
+
