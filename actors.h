@@ -533,7 +533,7 @@ public:
 	virtual void switched_chunks(Map_chunk *olist,
 					Map_chunk *nlist);
 					// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift);
+	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 	virtual void die(Actor *attacker);		// We're dead.
 	};
 
@@ -584,7 +584,7 @@ public:
 	virtual void switched_chunks(Map_chunk *olist,
 					Map_chunk *nlist);
 					// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift);
+	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 
 	virtual Npc_actor *as_npc() { return this; }
 	};

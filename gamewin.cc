@@ -1815,7 +1815,7 @@ void Game_window::teleport_party
 	(
 	Tile_coord t,			// Where to go.
 	bool skip_eggs,			// Don't activate eggs at dest.
-	int new_map			// New map #, or -1 for same map.
+	int newmap			// New map #, or -1 for same map.
 	)
 	{
 	Tile_coord oldpos = main_actor->get_tile();
@@ -1823,22 +1823,9 @@ void Game_window::teleport_party
 					//   step back to where you came from.
 	moving_barge = 0;		// Calling 'done()' could be risky...
 	int i, cnt = party_man->get_count();
-	if (new_map != -1)
-		{			// Remove all from old map.
-#if 0
-		main_actor->remove_this(true);
-		for (i = 0; i < cnt; i++)
-			{
-			int party_member=party_man->get_member(i);
-			Actor *person = get_npc(party_member);
-			if (person && !person->is_dead() && 
-			    person->get_schedule_type() != Schedule::wait)
-				person->remove_this(true);
-			}
-#endif
-		set_map(new_map);
-		}
-	main_actor->move(t.tx, t.ty, t.tz);	// Move Avatar.
+	if (newmap != -1)
+		set_map(newmap);
+	main_actor->move(t.tx, t.ty, t.tz, newmap);	// Move Avatar.
 	center_view(t);			// Bring pos. into view, and insure all
 					//   objs. exist.
 
@@ -1854,7 +1841,7 @@ void Game_window::teleport_party
 				person->get_shapenum(), person->get_framenum(),
 									1);
 			if (t1.tx != -1)
-				person->move(t1);
+				person->move(t1, newmap);
 			}
 		}
 	main_actor->get_followers();

@@ -162,9 +162,9 @@ public:
 					// Get direction (NPC) is facing.
 	int get_dir_facing() const;
 					// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift);
-	void move(Tile_coord t)
-		{ move(t.tx, t.ty, t.tz); }
+	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
+	void move(Tile_coord t, int newmap = -1)
+		{ move(t.tx, t.ty, t.tz, newmap); }
 	void change_frame(int frnum);	// Change frame & set to repaint.
 					// Swap positions.
 	int swap_positions(Game_object *obj2);
@@ -342,7 +342,7 @@ public:
 		: Game_object(shapenum, framenum, tilex, tiley, lft)
 		{  }
 					// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift);
+	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
 	virtual void paint_terrain() {  }

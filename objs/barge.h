@@ -55,7 +55,7 @@ class Barge_object : public Container_game_object, public Time_sensitive
 	int okay_to_rotate(Tile_coord pos);
 	void add_dirty();
 					// Finish up move/rotate operation.
-	void finish_move(Tile_coord *positions);
+	void finish_move(Tile_coord *positions, int newmap = -1);
 public:
 	Barge_object(int shapenum, int framenum,
 		unsigned int shapex, unsigned int shapey, unsigned int lft,
@@ -94,7 +94,7 @@ public:
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long curtime, long udata);
 					// Move to new abs. location.
-	virtual void move(int newtx, int newty, int newlift);
+	virtual void move(int newtx, int newty, int newlift, int newmap = -1);
 					// Remove an object.
 	virtual void remove(Game_object *obj);
 					// Add an object.

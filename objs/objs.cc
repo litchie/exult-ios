@@ -299,12 +299,15 @@ void Game_object::move
 	(
 	int newtx, 
 	int newty, 
-	int newlift
+	int newlift,
+	int newmap
 	)
 	{
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
-	Map_chunk *newchunk = gmap->get_chunk_safely(newcx, newcy);
+	Game_map *objmap = newmap >= 0 ? gwin->get_map(newmap) :
+				(chunk ? chunk->get_map() : gmap);
+	Map_chunk *newchunk = objmap->get_chunk_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
 	Map_chunk *oldchunk = chunk;	// Remove from old.
@@ -1360,10 +1363,11 @@ void Ifix_game_object::move
 	(
 	int newtx, 
 	int newty, 
-	int newlift
+	int newlift,
+	int newmap
 	)
 	{
-	Game_object::move(newtx, newty, newlift);
+	Game_object::move(newtx, newty, newlift, newmap);
 	if (chunk)			// Mark superchunk as 'modified'.
 		{
 		int cx = chunk->get_cx(), cy = chunk->get_cy();

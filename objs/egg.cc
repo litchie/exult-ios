@@ -839,12 +839,15 @@ void Egg_object::move
 	(
 	int newtx, 
 	int newty, 
-	int newlift
+	int newlift,
+	int newmap
 	)
 	{
 					// Figure new chunk.
 	int newcx = newtx/c_tiles_per_chunk, newcy = newty/c_tiles_per_chunk;
-	Map_chunk *newchunk = gmap->get_chunk_safely(newcx, newcy);
+	Game_map *eggmap = newmap >= 0 ? gwin->get_map(newmap) :
+				(chunk ? chunk->get_map() : gmap);
+	Map_chunk *newchunk = eggmap->get_chunk_safely(newcx, newcy);
 	if (!newchunk)
 		return;			// Bad loc.
 	remove_this(1);			// Remove from old.
