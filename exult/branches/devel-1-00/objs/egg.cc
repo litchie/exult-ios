@@ -592,7 +592,8 @@ void Egg_object::activate
 	(
 	Usecode_machine *umachine,
 	Game_object *obj,		// Object (actor) that came near it.
-	int must			// If 1, skip dice roll.
+	bool must			// If 1, skip dice roll & execute
+					//   usecode eggs immediately.
 	)
 	{
 #ifdef DEBUG
@@ -1023,7 +1024,7 @@ void Field_object::activate
 	(
 	Usecode_machine *umachine,
 	Game_object *obj,		// Object (actor) that came near it.
-	int /* must */			// If 1, skip dice roll.
+	bool /* must */			// If 1, skip dice roll.
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
@@ -1063,7 +1064,8 @@ void Mirror_object::activate(Usecode_machine *umachine, int event)
 	Ireg_game_object::activate(umachine, event);
 }
 
-void Mirror_object::activate(Usecode_machine *umachine, Game_object *obj, int must)
+void Mirror_object::activate(Usecode_machine *umachine, Game_object *obj, 
+							bool must)
 {
 	// These are broken, so dont touch
 	if ((get_framenum()%3) == 2)  return;
