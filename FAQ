@@ -114,7 +114,6 @@ An html version can be found at http://exult.sourceforge.net/faq.shtml
 "4.9 Can I make my own game with Exult?" point to new section "Exult Studio" 
 "5.1 Exult Studio" added this new section by Jeff. 
 "6.2 Known Issues" added bug with taken seats in Fellowship meetings and problem with SI sfx playback 
-"6.3 Not yet implemented" noted that all magic spells in BG work but not in SI 
  
 
 --------------------------------------------------------------------------------
@@ -137,7 +136,8 @@ I'd like to point out that "exult" is also an English verb that means "to rejoic
  
   
 1.3. Is Exult free ? 
-Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exult's components you are required to make them freely available in turn when you make this modified Exult publicly availlable. 
+Exult is more than free: it's Free (notice the caps). Exult is released under the GNU GPL (General Public License). This means that the source code for Exult is freely available and you can do whatever you want with it. However, if you make modifications to any of Exult's components and publicly redistribute your work you are required to make the source freely available in turn. Obviously the Exult team would be very grateful if any modifications you make are contributed back to the main code, so that everyone can benefit from them. If you want to work on Exult just send an e-mail to the team.
+More information on the GNU GPL at http://www.gnu.org/copyleft/gpl.html. 
  
   
 1.4. Where do I find Exult? 
@@ -150,7 +150,7 @@ The snapshot is the newest source code of the program. It is updated almost dail
  
   
 1.6. How do I compile a source code snapshot under Linux? 
-Install the latest version of SDL (http://www.libsdl.org/)
+Install the latest version of SDL (http://www.libsdl.org) 
 Extract the Exult source code archive to ~/exult:
 unzip exult.zip -d ~ 
 Create a fresh install of U7. I'll assume that you've installed U7 in ~/ultima7 
@@ -192,7 +192,9 @@ V0.91 Alpha2 adds fixes for the french version, which should work now. No work h
  
   
 2.3. How about Serpent Isle? 
-The team is working on it. It is not yet fully playable but you can walk around, talk to some people... Paperdolls are working now and plotwise you will get quite far but you certainly won't be able to play through it yet. 
+The team is working on it. It is not yet fully playable but you can walk around, talk to some people, finish some quests... Plotwise you will get quite far but you certainly won't be able to play through it yet. 
+
+Old quotes on this topic from the time when SI wasn't playable at all in Exult. 
 
 Colourless:
 I can't say much about the what will happen except that a completely working Serpent Isle will be an annoying task to complete. It is close to BG in some ways, but very different in others. 
@@ -215,7 +217,7 @@ Savegames that were made with the original Ultima 7 or U7Run don't work with Exu
  
   
 2.7. Where do I find Ultima 7 on the net to download? 
-Don't! You may be able to find it on the net but it would be pirating the game and the Exult team doesn't support pirates. Look for the Ultima Collection in stores or on Ebay (http://www.ebay.com/). 
+Don't! You may be able to find it on the net but it would be pirating the game and the Exult team doesn't support pirates. Look for the Ultima Collection in stores or on Ebay (http://www.ebay.com). 
 
 Don't ask the team for copies. 
  
@@ -380,7 +382,7 @@ blackgate
 </game> 
 </disk> 
 
-You can either use the relative (./blackgate) or absolute (c:\Ultima\blackgate) path to point to the correct directory. 
+You can either use the relative (./blackgate) or absolute (c:\ultima\blackgate) path to point to the correct directory. 
 
 Word of advice: Don't copy the files from the one game into the directory of the other. 
  
@@ -427,7 +429,7 @@ Within the game you can use the 'Alt +' and 'Alt -' to switch resolution. The ga
  
   
 3.8. Is Exult case sensitive? 
-Case sensitiveness is a slight problem with Exult when you are not using the Windows port. Exult tries lower and uppercase versions, and reports the error after trying the last (ie. uppercase) filename. If the "static" directory and the files within are uppercase you might run into problems. Better make sure that all these are lowercase. When unzipping the Ultima files from a zip in Linux you can set it to extract in lowercase with the "-L" switch (e.g. 'unzip -L ultima7.zip'). 
+Case sensitiveness is a slight problem with Exult when you are not using the Windows port. Exult tries lower and uppercase versions, and reports the error after trying the last (ie. uppercase) filename. If the "static" directory and the files within are uppercase you might run into problems. Better make sure that all these are lowercase. When unzipping the Ultima files from a zip in Linux you can set it to extract in lowercase with the "-L" switch (e.g. 'unzip -L ultima7.zip'). In the lates snapshots this should be fixed. 
  
 
 --------------------------------------------------------------------------------
@@ -627,7 +629,7 @@ In Fellowship meetings some NPCs appear not to attend these though they should a
  
   
 6.3. Not yet implemented 
-Maybe a few magic spells that don't work in SI but spells in BG are working properly. 
+A few magic spells don't work yet. 
 
 --------------------------------------------------------------------------------
 7. Questions and Answers, Bugreports 
@@ -681,4 +683,3 @@ Thanks go to Matt0 who really got me thinking about doing this FAQ (though he ju
 Problems with Exult or this webpage? Contact us (exult-general@lists.sourceforge.net). 
  
 Last modified: 07 June 2001(GMT) 
- 
