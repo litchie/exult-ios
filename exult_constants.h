@@ -68,7 +68,7 @@ extern const std::string c_empty_string;
 #define DECR_TILE(x) ((x - 1 + c_num_tiles)%c_num_tiles)
 
 // Debug
-#if DEBUG
+#ifdef DEBUG
 #  define COUT(x)		std::cout << x << std::endl; std::cout.flush()
 #  define CERR(x)		std::cerr << x << std::endl; std::cerr.flush()
 #else

@@ -59,7 +59,7 @@ static char av_name[17] = "";
 static int av_sex = -1;
 static int av_skin = -1;
 
-std::string Game::gametitle = "";
+std::string Game::gametitle;
 
 Game::Game() : menushapes(MAINSHP_FLX)
 {	
@@ -130,12 +130,10 @@ Game *Game::create_game(Exult_Game mygame)
 	string data_directory, keyfilename;
 	
 	switch(mygame) {
-	case BLACK_GATE:
-		gametitle = "blackgate";
-		break;
 	case SERPENT_ISLE:
 		gametitle = "serpentisle";
 		break;
+	case BLACK_GATE:
 	default:
 		gametitle = "blackgate";
 		break;
