@@ -108,9 +108,9 @@ LINK32=link.exe
 # ADD LINK32 SDLMain.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.991 /subsystem:windows /pdb:none /machine:I386 /nodefaultlib:"libc.lib"
 # SUBTRACT LINK32 /debug
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
-TargetPath=\UC\exult\Exult.exe
+TargetPath=\UC\exult-devel-1-00\Exult.exe
 TargetName=Exult
-InputPath=\UC\exult\Exult.exe
+InputPath=\UC\exult-devel-1-00\Exult.exe
 SOURCE="$(InputPath)"
 
 "$(EXULT_INSTALL_PATH)\$(TargetName).exe" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -145,9 +145,9 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib.lib /nologo /version:0.991 /subsystem:console /debug /machine:I386 /nodefaultlib:"libc.lib" /pdbtype:sept
 # SUBTRACT LINK32 /incremental:no /map
 # Begin Custom Build - copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe
-TargetPath=\UC\exult\Exult.exe
+TargetPath=\UC\exult-devel-1-00\Exult.exe
 TargetName=Exult
-InputPath=\UC\exult\Exult.exe
+InputPath=\UC\exult-devel-1-00\Exult.exe
 SOURCE="$(InputPath)"
 
 "$(EXULT_INSTALL_PATH)\$(TargetName).exe" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
@@ -1091,11 +1091,23 @@ SOURCE=..\combat.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\headers\common_types.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\delobjs.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\devgame.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\dir.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\drag.h
 # End Source File
 # Begin Source File
 
@@ -1104,6 +1116,10 @@ SOURCE=..\effects.h
 # Begin Source File
 
 SOURCE=..\exceptions.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\headers\exceptions.h
 # End Source File
 # Begin Source File
 
@@ -1148,6 +1164,10 @@ SOURCE=..\gamewin.h
 # Begin Source File
 
 SOURCE=..\gamma.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\headers\gamma.h
 # End Source File
 # Begin Source File
 
@@ -1283,7 +1303,15 @@ SOURCE=..\files\U7file.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\files\zip\unzip.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\files\utils.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\files\zip\zip.h
 # End Source File
 # End Group
 # Begin Group "flic h"
@@ -1483,6 +1511,10 @@ SOURCE=..\objs\egg.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\find_nearby.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\objs\flags.h
 # End Source File
 # Begin Source File
@@ -1640,18 +1672,6 @@ SOURCE=..\server\servewin32.h
 # End Group
 # Begin Source File
 
-SOURCE=..\headers\common_types.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\devgame.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\drag.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\data\exult_bg_flx.h
 # End Source File
 # Begin Source File
@@ -1666,14 +1686,6 @@ SOURCE=..\data\exult_si_flx.h
 
 SOURCE=..\tools\uctools.h
 # End Source File
-# Begin Source File
-
-SOURCE=..\files\zip\unzip.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\files\zip\zip.h
-# End Source File
 # End Group
 # Begin Group "Resource Files"
 
@@ -1685,17 +1697,13 @@ SOURCE=..\win32\exult.ico
 # Begin Source File
 
 SOURCE=..\win32\exultico.rc
-# ADD BASE RSC /l 0xc09 /i "\UC\exult\win32"
-# ADD RSC /l 0xc09 /i "\UC\exult\win32" /i "..\win32"
+# ADD BASE RSC /l 0xc09 /i "\UC\exult-devel-1-00\win32" /i "\UC\exult\win32"
+# ADD RSC /l 0xc09 /i "\UC\exult-devel-1-00\win32" /i "\UC\exult\win32" /i "..\win32"
 # End Source File
 # End Group
 # Begin Group "MSVC Kludges"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\find_nearby.h
-# End Source File
 # Begin Source File
 
 SOURCE=.\msvc_kludges.cc
