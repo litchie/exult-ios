@@ -545,9 +545,10 @@ Animated_object::Animated_object
 	unsigned char l, unsigned char h, 
 	unsigned int shapex,
 	unsigned int shapey,
-	unsigned int lft
+	unsigned int lft,
+	unsigned char ir		// 1 if from/to Ireg file.
 	) : Game_object(l, h, shapex, shapey, lft),
-		animating(0), deltax(0), deltay(0)
+		animating(0), deltax(0), deltay(0), ireg(ir)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int shapenum = get_shapenum();
@@ -563,9 +564,10 @@ Animated_object::Animated_object
 	int shapenum, 
 	int framenum, 
 	unsigned int tilex, unsigned int tiley, 
-	unsigned int lft
+	unsigned int lft,
+	unsigned char ir		// 1 if from/to Ireg file.
 	) : Game_object(shapenum, framenum, tilex, tiley, lft),
-		animating(0), deltax(0), deltay(0)
+		animating(0), deltax(0), deltay(0), ireg(ir)
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	frames = gwin->get_shape_num_frames(shapenum);
@@ -625,20 +627,14 @@ void Animated_object::handle_event
 		return;
 		}
 	if (frames > 1)			// Going through frames?
-		{
+		{		
 		int framenum;
-					// Experiment:  A non-flat shape?
-/*		if (get_shapenum() >= 0x96)
-			{		// Get next frame.
+		if (ireg)		// +++Another experiment -JSF
 			framenum = get_framenum() + 1;
-			if (framenum >= frames)	// End of cycle?
-				framenum = 0;
-			}
-		else			// Want flat shapes synchronized.
-*/			{		// Testing -WJP
-			framenum = (curtime / 100) % frames;
-			}
-		set_frame(framenum);	// Set new frame.
+		else			// Want fixed shapes synchronized.
+					// Testing -WJP
+			framenum = (curtime / 100);
+		set_frame(framenum % frames);
 		}
 	else
 		{
@@ -656,6 +652,23 @@ void Animated_object::handle_event
 					// Add back to queue for next time.
 	if (animating)
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
+	}
+
+/*
+ *	Write out.  (Same as Ireg_game_object::write_ireg().)
+ */
+
+void Animated_object::write_ireg
+	(
+	ostream& out
+	)
+	{
+	if (!ireg)
+		return;			// Not from an Ireg file.
+	unsigned char buf[7];		// 6-byte entry + length-byte.
+	buf[0] = 6;
+	write_common_ireg(&buf[1]);
+	out.write(buf, sizeof(buf));
 	}
 
 /*

@@ -57,7 +57,7 @@ bool	usecode_trace=false;	// Do we trace Usecode-intrinsics?
  */
 static void Init();
 static int Play();
-static void Handle_keystroke(SDLKey ch, int shift, int alt);
+static void Handle_keystroke(SDLKey ch, int shift, int alt, int ctrl);
 
 
 /*
@@ -528,7 +528,8 @@ cout << "Mouse down at (" << event.button.x << ", " <<
 	case SDL_KEYDOWN:			// Keystroke.
 		Handle_keystroke(event.key.keysym.sym,
 			event.key.keysym.mod & KMOD_SHIFT,
-			event.key.keysym.mod & KMOD_ALT);
+			event.key.keysym.mod & KMOD_ALT,
+			event.key.keysym.mod & KMOD_CTRL);
 		break;
 		}
 	}
@@ -573,7 +574,8 @@ static void Handle_keystroke
 	(
 	SDLKey sym,
 	int shift,
-        int alt
+        int alt,
+	int ctrl
 	)
 	{
 	static int current_shape = 0, current_frame = 0, current_file = 0;
@@ -680,7 +682,14 @@ static void Handle_keystroke
 		}
 		shape_showcase(current_file, current_shape, current_frame);
 		break;
-	case SDLK_s:		// Show next shape.
+	case SDLK_s:
+		if (ctrl)		// Save to 'gamedat'.
+			{
+			if (gwin->write())
+				cout << "Save to 'gamedat' successful\n";
+			break;
+			}
+					// Show next shape.
 		current_frame = 0;
 		vga_file = gwin->get_shape_file_data(current_file);
 		if (!shift) {

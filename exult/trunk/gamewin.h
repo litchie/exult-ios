@@ -155,8 +155,8 @@ public:
 		{ return main_actor; }
 	int check_main_actor_inside()	// See if main actor moved in/out-side.
 		{
-		if (main_actor_inside != find_roof(main_actor->get_cx(),
-						main_actor->get_cy()))
+		if (main_actor_inside != get_objects(main_actor->get_cx(),
+					main_actor->get_cy())->is_roof())
 			{
 			main_actor_inside = !main_actor_inside;
 			return 1;
@@ -332,6 +332,7 @@ public:
 	Egg_object *create_egg(unsigned char *entry);
 					// Get all superchunk objects.
 	void get_superchunk_objects(int schunk);
+	int write();			// Write out to 'gamedat'.
 	void init_actors();		// Place actors in the world.
 					// Paint area of image.
 	void paint(int x, int y, int w, int h);
@@ -384,8 +385,7 @@ public:
 	void view_up();			// Move view up.
 					// Start moving actor.
 	void start_actor(int winx, int winy);
-	void stop_actor();		// Stop moving the actor.
-	int find_roof(int cx, int cy);	// Find a "roof" in given chunk.
+	void stop_actor();		// Stop main actor.
 					// Find gump (x, y) is in.
 	Gump_object *find_gump(int x, int y);
 					// Find gump object is in.
