@@ -165,7 +165,7 @@ void Game_clock::increment
 
 void Game_clock::handle_event
 	(
-	uint32 curtime,		// Current time of day.
+	unsigned long curtime,		// Current time of day.
 	long udata			// ->game window.
 	)
 	{

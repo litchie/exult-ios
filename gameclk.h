@@ -57,7 +57,7 @@ public:
 			set_light_source_level(lev);
 		}
 	void increment(int num_minutes);// Increment clock.
-	virtual void handle_event(uint32 curtime, long udata);
+	virtual void handle_event(unsigned long curtime, long udata);
 	void fake_next_period();	// For debugging.
 	};
 
