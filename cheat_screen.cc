@@ -365,7 +365,7 @@ void CheatScreen::NormalDisplay ()
 	int	x, y, z;
 	gwin->get_main_actor()->get_abs_tile(x, y, z);
 
-	font->paint_text_fixedwidth(ibuf, "Colourless' Advacned Option Cheat Screen", 0, 0, 8);
+	font->paint_text_fixedwidth(ibuf, "Colourless' Advanced Option Cheat Screen", 0, 0, 8);
 
 	if (Game::get_game_type() == BLACK_GATE)
 		std::snprintf (buf, 512, "Running \"Ultima 7: The Black Gate\"");
