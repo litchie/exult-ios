@@ -261,10 +261,12 @@ void Locator::render
 	gdk_draw_rectangle(draw->window, drawgc, TRUE, area->x, area->y,
 					area->width, area->height);
 					// Show superchunks with dotted lines.
+#if 0
 	gdk_gc_set_line_attributes(drawgc, 1, GDK_LINE_ON_OFF_DASH, 
 					GDK_CAP_BUTT, GDK_JOIN_BEVEL);
+#endif
 					// Paint in light grey.
-	gdk_rgb_gc_set_foreground(drawgc, 0xe0e0e0);
+	gdk_rgb_gc_set_foreground(drawgc, 0xc0c0c0);
 	int i;
 	int cur = 0;			// Cur. pixel.
 					// First the rows.
@@ -281,9 +283,11 @@ void Locator::render
 		cur += colwd;
 		gdk_draw_line(draw->window, drawgc, cur, 0, cur, drawh);
 		}
+#if 0
 					// Back to solid lines for loc. box.
 	gdk_gc_set_line_attributes(drawgc, 1, GDK_LINE_SOLID, 
 					GDK_CAP_BUTT, GDK_JOIN_BEVEL);
+#endif
 					// Figure where to draw box.
 	int cx = tx/c_tiles_per_chunk, cy = ty/c_tiles_per_chunk;
 	int x = (cx*draww)/c_num_chunks,
@@ -401,6 +405,7 @@ void Locator::goto_mouse
 	int mx, int my			// Pixel coords. in draw area.
 	)
 	{
+	GdkRectangle oldbox = viewbox;	// Old location of box.
 	int oldtx = tx, oldty = ty;
 					// Set tx,ty here so hscrolled() &
 					//   vscrolled() don't send to Exult.
@@ -411,12 +416,27 @@ void Locator::goto_mouse
 		cx = c_num_chunks - 2;
 	if (cy > c_num_chunks - 2)
 		cy = c_num_chunks - 2;
+	tx = cx*c_tiles_per_chunk;
+	ty = cy*c_tiles_per_chunk;
 					// Update scrolls.
 	gtk_adjustment_set_value(hadj, cx);
 	gtk_adjustment_set_value(vadj, cy);
 					// Now we just send it once.
 	if (tx != oldtx || ty != oldty)
-		send_location();	// +++Maybe need render() here too.
+		{
+		send_location();
+		GdkRectangle newbox;	// Figure dirty rectangle;
+		GdkRectangle dirty;
+		newbox.x = (cx*draw->allocation.width)/c_num_chunks,
+	    	newbox.y = (cy*draw->allocation.height)/c_num_chunks;
+		newbox.width = oldbox.width;
+		newbox.height = oldbox.height;
+		gdk_rectangle_union(&oldbox, &newbox, &dirty);
+					// Expand a bit.
+		dirty.x -= 4; dirty.y -= 4; 
+		dirty.width += 8; dirty.height += 8;
+		render(&dirty);
+		}
 	}
 
 /*
