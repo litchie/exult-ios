@@ -1,3 +1,10 @@
+2001-12-05  Ryan Nunn <triforce@merlin.net.au>
+	* gamewin.cc, objs/egg.cc, objs/egg.h : Polishing Mirrors
+	* Actors.cc : NPC Actors can now kind of activate eggs (only when 
+	  stepping). A more global solution is required to all types of Actors
+	  will activate fields and mirrors when they move.
+	* ChangeLog : Fixing the date on Patrick's last addition
+
 2001-12-05  Tristan Tarrant <nadir@users.sourceforge.net>
 	* mapedit/Makefile.am: define EXULT_DATADIR when compiling exult_studio
 	* mapedit/studio.cc: look for glade file in xmldir, EXULT_DATADIR and
@@ -18,7 +25,7 @@
 	* effects.cc (Text_effect): Replace '@' with '"' instead of
 	removing it.
 
-2001-12-05  Patrick Burke  <takhisisii@yahoo.com.au>
+2001-12-04  Patrick Burke  <takhisisii@yahoo.com.au>
         * usecode/ucxt : Removed a bug, added support for 'callis' and 'calli'
 
 2001-12-04  Ryan Nunn <triforce@merlin.net.au>
