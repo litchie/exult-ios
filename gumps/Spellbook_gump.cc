@@ -26,7 +26,6 @@
 #include "Gump_button.h"
 #include "items.h"
 #include "mouse.h"
-#include "ucmachine.h"
 #include "Spellbook_gump.h"
 #include "spellbook.h"
 #include "game.h"
@@ -40,9 +39,6 @@ using std::snprintf;
 
 
 const int REAGENTS = 842;		// Shape #.
-
-static inline int Get_circle(int spell);
-static inline int Get_usecode(int spell);
 
 /*
  *	Defines in 'gumps.vga':
@@ -62,73 +58,10 @@ static inline int Get_usecode(int spell);
 #define CIRCLENUM (GAME_BG ? 0x545 : 0x552)
 
 /*
- *	Flags for required reagents.  Bits match shape #.
+ *	Get circle, given a spell #.
  */
-const int bp = 1;			// Black pearl.
-const int bm = 2;			// Blood moss.
-const int ns = 4;			// Nightshade.
-const int mr = 8;			// Mandrake root.
-const int gr = 16;			// Garlic.
-const int gn = 32;			// Ginseng.
-const int ss = 64;			// Spider silk.
-const int sa = 128;			// Sulphuras ash.
-const int bs = 256;			// Blood spawn.
-const int sc = 512;			// Serpent scales.
-const int wh = 1024;			// Worm's hart.
-const int NREAGENTS = 11;		// Total #.
-					// Black Gate:
-unsigned short Spellbook_gump::bg_reagents[9*8] = {
-	0, 0, 0, 0, 0, 0, 0, 0,		// Linear spells require no reagents.
-					// Circle 1:
-	gr|gn|mr, gr|gn, ns|ss, gr|ss, sa|ss, sa, ns, gr|gn,
-					// Circle 2:
-	bm|sa, bp|mr, bp|sa, mr|sa, gr|gn|mr, gr|gn|sa, bp|bm|mr,
-							bm|ns|mr|sa|bp|ss,
-					// Circle 3:
-	gr|ns|sa, gr|gn|ss, ns|ss, ns|mr, ns|bm|bp, gr|gn|mr|sa,
-						bp|ns|ss, ns|mr|bm,
-					// Circle 4:
-	ss|mr, bp|sa|mr, mr|bp|bm, gr|mr|ns|sa, mr|bp|bm, bm|sa,
-						bm|mr|ns|ss|sa, bm|sa,
-					// Circle 5:
-	bp|ns|ss, mr|gr|bm, gr|bp|sa|ss, bm|bp|mr|sa, bp|ss|sa,
-						gr|gn|mr|ss, bm|ns, gn|ns|ss,
-					// Circle 6:
-	gr|mr|ns, sa|ss|bm|gn|ns|mr, bp|mr|ss|sa, sa|bp|bm, mr|ns|sa|bm,
-						ns|ss|bp, gn|ss|bp, bm|sa|mr,
-					// Circle 7:
-	mr|ss, bp|ns|sa, bm|bp|mr|ss|sa, bp|mr|ss|sa, bm|mr|ns|sa,
-					bp|ns|ss|mr, bp|gn|mr, gr|gn|mr|sa,
-					// Circle 8:
-	bp|bm|gr|gn|mr|ns|ss|sa, bm|mr|ns|sa, bp|bm|mr|ns, bm|gr|gn|mr|ns,
-				gr|gn|ss|sa, bm|gr|mr, bp|mr|ns, bm|gr|mr
-	};
-					// Serpent Isle:
-unsigned short Spellbook_gump::si_reagents[9*8] = {
-					// Circle 1:
-	gr|gn|mr, gr|gn, ns|ss, gr|ss, sa|ss, sa, ns, bp|bm|mr,
-					// Circle 2:
-	gr|gn, bm|sa, ns|sa, bp|sa|wh, mr|sa, gr|gn|ss, gr|gn|mr, gr|gn|sa,
-					// Circle 3:
-	gr|gn|wh,gr|ns|sa, bp|mr, bp|gr, gr|gn|mr|sa, ns|ss, bp|ns|ss, bp|mr|sa|sa,
-					// Circle 4:
-	bm|mr, gr|ss, mr|sa, sa|bm|gr|mr|ss|sc, gr|mr|ns|sa, bm|sa, bp|ss, bm|sa,
-					// Circle 5:
-	mr|ss, bp|gr|ss|sa, bm|bp|mr|sa, gr|gn|mr|ss, bm|ns, gn|ns|ss, sa|bm|mr|ns|ss, 
-					bp|gr|mr|sa,
-					// Circle 6:
-	bp|ns|ss, gr|mr|ns, gr|mr|ns, bp|wh|ss|sa, bp|wh|mr|ss|sa, 
-					bm|bp|wh|sa, bm|gn|sa, mr|sa|ss|sc,
-					// Circle 7:
-	bp|mr|ss|sa, bm|mr|ns|sa, gr|gn, bp|gn|mr, bm|ns|sa, gr|gn|mr|ss, 
-						bp|bm|mr|ss, bp|mr|sa,
-					// Circle 8:
-	wh|ss, bs|bp|ns|sa, bm|bp|mr|ss|sa, bm|bp|mr, bm|gr|ss|wh|sc, 
-				bm|bp|gr|ss|wh|sc, gr|mr|sa, bp|bs|mr|ns,
-					// Circle 9:
-	bm|mr|ns|sa, bm|bs|gr|gn|mr|ns, bp|bm|mr|ns, bm|bs|bp|ns|sa, 
-			bp|gr|mr|ss|sa, bm|gr|mr|ss, bm|gr|mr, ns|sa|wh|sc
-	};
+inline int Get_circle(int spell)
+	{ return spell/8; }
 
 /*
  *	Get shape, frame for a given spell #.  There are 8 shapes, each
@@ -146,34 +79,6 @@ inline int Get_spell_gump_shape
 	shape = spell%8;
 	frame = spell/8;
 	return (1);
-	}
-
-/*
- *	Get circle, given a spell #.
- */
-inline int Get_circle(int spell)
-	{ return spell/8; }
-
-/*
- *	Get usecode function for a given spell:
- */
-int Get_usecode(int spell)
-	{ return 0x640 + spell; }
-
-/*
- *	Perform a spell and close this gump.
- */
-void Spelltype_gump::perform_spell
-	(
-	int spell
-	)
-	{
-	close();			// We've just been deleted!
-	gwin->paint();
-	gwin->show();
-	Actor *ava = gwin->get_main_actor();
-	ucmachine->call_usecode(Get_usecode(spell),
-					ava, Usecode_machine::double_click);
 	}
 
 /*
@@ -247,32 +152,6 @@ void Spell_button::double_clicked
 	}
 
 /*
- *	Test for Ring of Reagants.
- */
-
-static bool Has_ring
-	(
-	Game_object *npcobj
-	)
-	{
-	if (Game::get_game_type() == SERPENT_ISLE)
-		{
-		Actor *npc = npcobj->as_actor();
-		if (!npc)
-			return false;
-		Game_object *obj = npc->get_readied(Actor::lfinger);
-		if (obj && obj->get_shapenum() == 0x128 &&
-						obj->get_framenum() == 3)
-			return true;
-		obj = npc->get_readied(Actor::rfinger);
-		if (obj && obj->get_shapenum() == 0x128 &&
-						obj->get_framenum() == 3)
-			return true;
-		}
-	return false;
-	}
-
-/*
  *	Figure the availability of the spells.
  */
 
@@ -290,7 +169,7 @@ void Spellbook_gump::set_avail
 	for (r = 0; r < NREAGENTS; r++)	// Count, by frame (frame==bit#).
 		reagent_counts[r] = book_owner->count_objects(
 						REAGENTS, c_any_qual, r);
-	bool has_ring = Has_ring(book_owner);
+	bool has_ring = book->has_ring(gwin->get_main_actor());
 	for (i = 0; i < 9*8; i++)	// Now figure what's available.
 	{
 		if (has_ring)
@@ -299,7 +178,7 @@ void Spellbook_gump::set_avail
 			continue;
 			}
 		avail[i] = 10000;	// 'infinite'.
-		unsigned short flags = reagents[i];
+		unsigned short flags = book->reagents[i];
 					// Go through bits.
 		for (r = 0; flags; r++, flags = flags >> 1)
 					// Take min. of req. reagent counts.
@@ -323,8 +202,6 @@ Spellbook_gump::Spellbook_gump
 	const int lpagex = 38, rpagex = 142, lrpagey = 25;
 					// Get book's top owner.
 	book_owner = book->get_outermost();
-					// Point to reagent table.
-	reagents = GAME_SI ? si_reagents : bg_reagents;
 	set_avail();			// Figure spell counts.
 	if (book->bookmark >= 0)	// Set to bookmarked page.
 		page = Get_circle(book->bookmark);
@@ -382,34 +259,17 @@ void Spellbook_gump::do_spell
 	int spell
 	)
 {
-	if ((spells[spell] && avail[spell]) || cheat.in_wizard_mode())
-	{
-		int circle = spell/8;	// Figure/subtract mana.
-		if (cheat.in_wizard_mode())
-			circle = 0;
-		int mana = gwin->get_main_actor()->get_property(Actor::mana);
-		int level = gwin->get_main_actor()->get_level();
-		if ((mana < circle) || (level < circle))
-			// Not enough mana or not yet at required level?
+	if (!book->can_do_spell(gwin->get_main_actor(), spell))
+		Mouse::mouse->flash_shape(Mouse::redx);
+	else
 		{
-			Mouse::mouse->flash_shape(Mouse::redx);
-			return;
+		Spellbook_object *save_book = book;
+		close();		// We've just been deleted!
+		gwin->paint();
+		gwin->show();
+					// Don't need to check again.
+		save_book->do_spell(gwin->get_main_actor(), spell, true);
 		}
-		gwin->get_main_actor()->set_property(Actor::mana, mana-circle);
-					// Figure what we used.
-		unsigned short flags = reagents[spell];
-
-		if (!cheat.in_wizard_mode() && !Has_ring(book_owner))
-		{
-					// Go through bits.
-			for (int r = 0; flags; r++, flags = flags >> 1)
-					// Remove 1 of each required reagent.
-				if (flags&1)
-					book_owner->remove_quantity(1, 
-						REAGENTS, c_any_qual, r);
-		}
-		perform_spell(spell);	// Deletes ourself!
-	}
 }
 
 /*
@@ -606,7 +466,10 @@ void Spellscroll_gump::do_spell
 	{
 	scroll->remove_this();		// Scroll is gone.
 	scroll = 0;
-	perform_spell(spellnum);	// Deletes ourself!
+	close();			// We've just been deleted!
+	gwin->paint();
+	gwin->show();
+	Spellbook_object::execute_spell(gwin->get_main_actor(), spellnum);
 	}
 
 /*
