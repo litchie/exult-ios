@@ -1,3 +1,7 @@
+2000-07-18  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Flying carpet rotates correctly.
+
 2000-07-17  Tristan Tarrant  <tarrant_tristan@emc.com>
 	
 	* *: Moved utils.* here where it should have been all along.

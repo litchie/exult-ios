@@ -102,8 +102,7 @@ inline Tile_coord Rotate90r
 	Tile_coord r = Rotate90r(obj->get_abs_tile_coord(), c);
 					// New hotspot is what used to be the
 					//   upper-right corner.
-	r.tx += ytiles - 1;
-	r.ty++;
+	r.tx += ytiles;
 	return r;
 	}
 
@@ -116,13 +115,15 @@ inline Tile_coord Rotate90l
 	(
 	Game_window *gwin,
 	Game_object *obj,
+	int xtiles, int ytiles,		// Object dimensions.
 	Tile_coord c			// Rotate around this.
 	)
 	{
 					// Rotate hot spot.
 	Tile_coord r = Rotate90l(obj->get_abs_tile_coord(), c);
 					// New hot-spot is old lower-left.
-	r.tx--;
+	r.tx;
+	r.ty += xtiles;
 	return r;
 	}
 
@@ -143,8 +144,8 @@ inline Tile_coord Rotate180
 	Tile_coord r = Rotate180(obj->get_abs_tile_coord(), c);
 					// New hotspot is what used to be the
 					//   upper-left corner.
-	r.tx += xtiles - 2;
-	r.ty -= ytiles;
+	r.tx += xtiles;
+	r.ty += ytiles;
 	return r;
 	}
 
@@ -236,7 +237,7 @@ void Barge_object::add_dirty
 	gwin->get_shape_location(this, x, y);
 	int w = xtiles*tilesize, h = ytiles*tilesize;
 	Rectangle box(x - w, y - h, w, h);
-	box.enlarge(6);			// Make it a bit bigger.
+	box.enlarge(15);		// Make it a bit bigger.
 	box = gwin->clip_to_win(box);	// Intersect with screen.
 	gwin->add_dirty(box);
 	}
@@ -260,6 +261,9 @@ void Barge_object::finish_move
 		obj->move(positions[i]);
 		}
 	delete [] positions;
+	Game_window *gwin = Game_window::get_game_window();
+					// Check for scrolling.
+	gwin->scroll_if_needed(gwin->get_main_actor()->get_abs_tile_coord());
 	}
 
 
@@ -298,8 +302,12 @@ void Barge_object::travel_to_tile
 		default:
 			break;
 			}
+#if 0	/* ++++Testing */
+		frame_time = 0;
+#else
 		if (!in_queue())	// Not already in queue?
 			gwin->get_tqueue()->add(SDL_GetTicks(), this, 0L);
+#endif
 		}
 	else
 		frame_time = 0;		// Not moving.
@@ -358,7 +366,7 @@ void Barge_object::turn_left
 	center.ty -= ytiles/2;
 	//+++++++Need to check for blocked squares.
 					// Move the barge itself.
-	Tile_coord rot = Rotate90l(gwin, this, center);
+	Tile_coord rot = Rotate90l(gwin, this, xtiles, ytiles, center);
 	Game_object::move(rot.tx, rot.ty, rot.tz);
 	swap_dims();			// Exchange xtiles, ytiles.
 	dir = (dir + 3)%4;		// Increment direction.
@@ -368,7 +376,9 @@ void Barge_object::turn_left
 	for (int i = 0; i < cnt; i++)
 		{
 		Game_object *obj = get_object(i);
-		positions[i] = Rotate90l(gwin, obj, center);
+		Shape_info& info = gwin->get_info(obj);
+		positions[i] = Rotate90l(gwin, obj, info.get_3d_xtiles(),
+						info.get_3d_ytiles(), center);
 		obj->remove_this(1);	// Remove object from world.
 					// Set to rotated frame.
 		obj->set_frame(obj->get_rotated_frame(3));
@@ -551,9 +561,6 @@ int Barge_object::step
 		return (0);		// Done.
 		}
 	move(t.tx, t.ty, t.tz);		// Move it & its objects.
-	Game_window *gwin = Game_window::get_game_window();
-					// Check for scrolling.
-	gwin->scroll_if_needed(gwin->get_main_actor()->get_abs_tile_coord());
 	return (1);			// Add back to queue for next time.
 	}
 
