@@ -322,20 +322,15 @@ void Cheat::map_teleport (void) const {
 	int tx, ty, z, xx, yy;
 	gwin->get_main_actor()->get_abs_tile(tx, ty, z);
   
-	// these may need some tweaking for SI
 	const int worldsize = c_tiles_per_chunk * c_num_chunks;
-#if 0
-	int border = (Game::get_game_type()==SERPENT_ISLE ? 12 : 5);
-	int correction = (Game::get_game_type()==SERPENT_ISLE ? 0 : 1);
-	int correctx = (Game::get_game_type()==SERPENT_ISLE ? 9 : 0);
-	int correcty = (Game::get_game_type()==SERPENT_ISLE ? 0 : 0);
-	int correctscale = (Game::get_game_type()==SERPENT_ISLE ? 10 : 0);
-#else
-	int border=2, correction=0, correctx=0, correcty=0, correctscale=0;
-#endif
+	int border=2;
 
-	xx = ((tx * (map->get_width() - border*2 + correctscale)) / worldsize) + (border + x - map->get_xleft()) + correction + correctx;
-	yy = ((ty * (map->get_height() - border*2 + correctscale)) / worldsize) + (border + y - map->get_yabove()) + correction + correcty;
+	xx = ((tx * (map->get_width() - border*2)) / worldsize);
+	yy = ((ty * (map->get_height() - border*2)) / worldsize);
+
+
+	xx += x - map->get_xleft() + border;
+	yy += y - map->get_yabove() + border;
 	gwin->get_win()->fill8(255, 1, 5, xx, yy - 2);
 	gwin->get_win()->fill8(255, 5, 1, xx - 2, yy);
   
@@ -344,9 +339,13 @@ void Cheat::map_teleport (void) const {
 		gwin->paint();
 		return;
 	}
-  
-	tx = ((xx - correctx - (border + x - map->get_xleft()))*worldsize) / (map->get_width() - 2*border + correctscale) + c_tiles_per_chunk/2;
-	ty = ((yy - correcty - (border + y - map->get_yabove()))*worldsize) / (map->get_height() - 2*border + correctscale) + c_tiles_per_chunk/2;
+
+	xx -= x - map->get_xleft() + border;
+	yy -= y - map->get_yabove() + border;
+
+	tx = (int)((xx + 0.5)*worldsize) / (map->get_width() - 2*border);
+	ty = (int)((yy + 0.5)*worldsize) / (map->get_height() - 2*border);
+
 	// World-wrapping.
 	tx = (tx + c_num_tiles)%c_num_tiles;
 	ty = (ty + c_num_tiles)%c_num_tiles;
