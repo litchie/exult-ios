@@ -26,9 +26,9 @@ FREETYPE2_INCLUDES = `pkg-config --cflags freetype2`
 # If this doesn't work, insert output of 'pkg-config --libs freetype2' manually
 FREETYPE2_LIBS = `pkg-config --libs freetype2`
 
-# If this doesn't work, insert output of 'pkg-config --cflags gimp-2.0' manually
+# If this doesn't work, insert output of 'pkg-config --cflags gimpui-2.0' manually
 GIMP_INCLUDES = `pkg-config --cflags gimpui-2.0`
-# If this doesn't work, insert output of 'pkg-config --libs gimp-2.0' manually
+# If this doesn't work, insert output of 'pkg-config --libs gimpui-2.0' manually
 GIMP_LIBS = `pkg-config --libs gimpui-2.0`
 
 INCLUDES= -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
