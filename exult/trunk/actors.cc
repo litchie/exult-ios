@@ -24,9 +24,27 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <iostream.h>			/* Debugging. */
 #include <stdlib.h>
+#include <string.h>
 #include "actors.h"
 #include "convers.h"
 #include "imagewin.h"
+
+/*
+ *	Create character.
+ */
+
+Actor::Actor
+	(
+	char *nm, 
+	int shapenum, 
+	int fshape,
+	int uc				// Usecode #.
+	) : Sprite(shapenum), face_shapenum(fshape), usecode(uc)
+	{
+	next = prev = this;
+	set_default_frames();
+	name = nm == 0 ? 0 : strdup(nm);
+	}
 
 /*
  *	Set default set of frames.
@@ -51,6 +69,43 @@ void Actor::set_default_frames
 	}
 
 /*
+ *	Get usecode function to run.
+ */
+
+int Actor::get_usecode
+	(
+	)
+	{
+	return usecode;
+	}
+
+/*
+ *	Get name.
+ */
+
+char *Actor::get_name
+	(
+	)
+	{
+	return name ? name : Game_object::get_name();
+	}
+
+/*
+ *	Create NPC.
+ */
+
+Npc_actor::Npc_actor
+	(
+	char *nm, 			// Name.  A copy is made.
+	int shapenum, 
+	int fshape, 
+	int uc
+	) : Actor(nm, shapenum, fshape, uc)
+		
+	{
+	}
+
+/*
  *	Kill an actor.
  */
 
@@ -58,17 +113,6 @@ Npc_actor::~Npc_actor
 	(
 	)
 	{
-	}
-
-/*
- *	Get usecode function to run.
- */
-
-int Npc_actor::get_usecode
-	(
-	)
-	{
-	return usecode;
 	}
 
 /*

@@ -35,15 +35,14 @@ class Image_window;
 class Actor : public Sprite
 	{
 	Actor *next, *prev;		// Next, prev. in vicinity.
+	char *name;			// Its name.
+	int usecode;			// # of usecode function.
 	int face_shapenum;		// Portrait shape #, or -1.
 public:
 	void set_default_frames();	// Set usual frame sequence.
-	Actor(int shapenum, int fshape = -1) : Sprite(shapenum),
-					face_shapenum(fshape)
-		{
-		next = prev = this;
-		set_default_frames();
-		}
+	Actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
+	~Actor()
+		{ delete name; }
 	int get_face_shapenum()		// Get "portrait" shape #.
 		{ return face_shapenum; }
 	void add_after_this(Actor *a)	// Add another actor after this.
@@ -58,18 +57,8 @@ public:
 		}
 	Actor *get_next()
 		{ return next; }			
-	};
-
-/*
- *	Here's a sentence that you can click on to send to an NCP:
- */
-class Npc_sentence
-	{
-public:
-	Npc_sentence() : id(0), loc()
-		{  }
-	Rectangle loc;			// Location on screen.
-	int id;				// Sentence ID #.
+	virtual int get_usecode();	// Get usecode function to run.
+	virtual char *get_name();
 	};
 
 /*
@@ -77,14 +66,9 @@ public:
  */
 class Npc_actor : public Actor
 	{
-	int usecode;			// # of usecode function.
 public:
-	Npc_actor(int shapenum, int fshape = -1, int uc = -1)
-			: Actor(shapenum, fshape),
-				usecode(uc)
-		{  }
+	Npc_actor(char *nm, int shapenum, int fshape = -1, int uc = -1);
 	~Npc_actor();
-	virtual int get_usecode();	// Get usecode function to run.
 	};
 
 /*
@@ -94,7 +78,7 @@ class Area_actor : public Npc_actor
 	{
 	timeval next_change;		// When to change motion.
 public:
-	Area_actor(int shapenum, int fshape = -1) : Npc_actor(shapenum, fshape)
+	Area_actor(char *nm, int shapenum, int fshape = -1) : Npc_actor(nm, shapenum, fshape)
 		{
 		next_change.tv_sec = next_change.tv_usec = 0;
 		}

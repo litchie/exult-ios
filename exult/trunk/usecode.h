@@ -146,6 +146,8 @@ class Usecode_machine
 	Usecode_function *funs[max_funs];// List of functions.+++++Hash table.
 	int num_funs;			// # in list.
 	unsigned char gflags[1024];	// Global flags.
+	int party[8];			// NPC #'s of party members.
+	int party_count;		// # of NPC's in party.
 	Game_object *caller_item;	// Item this is being called on.
 	char *user_choice;		// String user clicked on.
 	char *string;			// The single string register.
@@ -199,6 +201,10 @@ class Usecode_machine
 	void set_item_frame(Usecode_value& item_arg, Usecode_value& frame_arg);
 	int get_item_shape(Usecode_value& item_arg);
 	int get_item_frame(Usecode_value& item_arg);
+	int npc_in_party(int npc);
+	void add_to_party(int npc);
+	void remove_from_party(int npc);
+	Usecode_value get_party();
 	/*
 	 *	Other private methods:
 	 */
