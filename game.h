@@ -24,7 +24,11 @@
 #endif
 #include <string>
 #include <vector>
-#include "files/utils.h"
+#ifdef MACOS
+  #include "utils.h"
+#else
+  #include "files/utils.h"
+#endif
 
 class Game_window;
 class Image_window8;
