@@ -1428,9 +1428,11 @@ inline void Compare_ranges
 		else if (from1 > from2)
 			cmp = 1;
 		else if (to1 - from1 < to2 - from2)
-			cmp = -1;
-		else if (to1 - from1 > to2 - from2)
+//			cmp = -1;
 			cmp = 1;
+		else if (to1 - from1 > to2 - from2)
+//			cmp = 1;
+			cmp = -1;
 		else
 			cmp = 0;
 		}
@@ -1469,7 +1471,7 @@ int Game_object::compare
 							zcmp, zover);
 	if (xcmp >= 0 && ycmp >= 0 && zcmp >= 0)
 		return 1;		// GTE in all dimensions.
-#if 1	/* Seems to work so far... */
+#if 0	/* Fix above means this isn't needed, I think */
 					// Experiment to fix tapestries in
 					//   Fawn, LB's castle:
 	if (xover && yover && zover && inf1.tz == inf2.tz)
