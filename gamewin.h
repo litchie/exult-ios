@@ -102,6 +102,7 @@ private:
 #endif
 	int palette;			// Palette #.
 	int brightness;			// Palette brightness.
+	int user_brightness;		// User's setting for brightness.
 	unsigned char faded_out;	// 1 if faded palette to black.
 	Rectangle dirty;		// Dirty rectangle.
 	char *save_names[10];		// Names of saved games.
@@ -444,7 +445,9 @@ public:
 		{ return brightness; }
 					// Set palette from Flex
 	void set_palette(const char *fname, int res, int fade=0);
-	void brighten(int per);		// Brighten/darken by percentage.
+	void brighten(int per);		// Brighten/darken by percentage for
+					//   the user.
+	void restore_users_brightness();// Restore to user's setting.
 	void view_right();		// Move view 1 chunk to right.
 	void view_left();		// Move view left by 1 chunk.
 	void view_down();		// Move view down.

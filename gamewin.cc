@@ -69,7 +69,7 @@ Game_window::Game_window
 	    monster_info(0), 
 	    scrolltx(64*tiles_per_chunk), 
 	    scrollty(136*tiles_per_chunk), 	// Start in Trinsic (BG).
-	    palette(-1), brightness(100), faded_out(0),
+	    palette(-1), brightness(100), user_brightness(100), faded_out(0),
 	    dragging(0), dragging_save(0),
 	    skip_lift(16), paint_eggs(1), debug(0)
 	{
@@ -1395,7 +1395,7 @@ void Game_window::set_palette
 	}
 
 /*
- *	Brighten/darken palette.
+ *	Brighten/darken palette for the user.
  */
 
 void Game_window::brighten
@@ -1406,18 +1406,25 @@ void Game_window::brighten
 	int new_brightness = brightness + per;
 	if (new_brightness < 20)	// Have a min.
 		new_brightness = 20;
+	user_brightness = new_brightness;
 	set_palette(palette, new_brightness);
 //	paint();	++++Not needed since we're always 8-bit now.
 	}
 
 /*
+ *	Restore brightness to user's setting.
+ */
+
+void Game_window::restore_users_brightness
+	(
+	)
+	{
+	set_palette(-1, user_brightness);
+	}
+
+/*
  *	Shift view by one tile.
  */
-#if 0
-// +++++++++++++++++ Got to shift the dirty rectangle list in all 4 of
-these functions.
-+++++++++++++++++++++++++
-#endif
 
 void Game_window::view_right
 	(
