@@ -1,3 +1,6 @@
+2000-05-18  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc, win_MCI.cc: preliminary work on Windows Midi repeats
+
 2000-05-18  Jeff Freedman  <jeff@patches.simutech.com>
 
 	* Save/restore working as of last night.
