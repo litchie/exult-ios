@@ -272,8 +272,11 @@ Exult_Game ExultMenu::run()
 	}
 	menu->set_selection(0);
 	Exult_Game sel_game = NONE;
+	Font *font = fontManager.get_font("CREDITS_FONT");
 	do {
 		gwin->paint_shape(topx,topy,exult_flx.get_shape(4, 1));
+		font->draw_text(gwin->get_win()->get_ib8(), 
+					topx+320-font->get_text_width(VERSION), topy+190, VERSION);
 		switch(menu->handle_events(gwin, menu_mouse)) {
 		case 5:
 		case -1: // Exit
