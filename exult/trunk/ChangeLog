@@ -1,3 +1,7 @@
+2004-06-27    <jeff@mini.nerble.net>
+
+	* actorio.cc: NPC's get saved/restored on proper map.
+
 2004-06-26    <jeff@mini.nerble.net>
 
 	* Merged in multiple-map support.
