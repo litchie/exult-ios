@@ -46,6 +46,17 @@ private:
 	gint			server_input_tag;
 	unsigned char 		*palbuf;
 	Msg_callback		waiting_for_server;
+					// GTK/Glade utils:
+	bool get_toggle(char *name);
+	void set_toggle(char *name, bool val);
+	int get_optmenu(char *name);
+	void set_optmenu(char *name, int val);
+	int get_spin(char *name);
+	void set_spin(char *name, int val, bool sensitive = true);
+	int get_num_entry(char *name);
+	void set_entry(char *name, int val, bool hex = false,
+						bool sensitive = false);
+	void set_statusbar(char *name, int context, char *msg);
 public:
 	ExultStudio(int argc, char **argv);
 	~ExultStudio();

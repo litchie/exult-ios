@@ -36,12 +36,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "vgafile.h"
 #include "ibuf8.h"
 #include "Flex.h"
-#include "u7drag.h"
 #include "studio.h"
 #include "dirbrowser.h"
 #include "servemsg.h"
-#include "objserial.h"
-#include "exult_constants.h"
 
 ExultStudio *ExultStudio::self = 0;
 
@@ -106,87 +103,6 @@ extern "C" void on_main_window_destroy_event
 	gtk_main_quit();
 	}
 
-/*
- *	Open egg window.
- */
-
-extern "C" void on_open_egg_activate
-	(
-	GtkMenuItem     *menuitem,
-        gpointer         user_data
-	)
-	{
-	ExultStudio *studio = ExultStudio::get_instance();
-	studio->open_egg_window();
-	}
-
-/*
- *	Egg window's Apply button.
- */
-extern "C" void on_egg_apply_btn_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
-	ExultStudio::get_instance()->save_egg_window();
-	}
-
-/*
- *	Egg window's Cancel button.
- */
-extern "C" void on_egg_cancel_btn_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
-	ExultStudio::get_instance()->close_egg_window();
-	}
-
-/*
- *	Egg window's close button.
- */
-extern "C" gboolean on_egg_window_delete_event
-	(
-	GtkWidget *widget,
-	GdkEvent *event,
-	gpointer user_data
-	)
-	{
-	ExultStudio::get_instance()->close_egg_window();
-	return TRUE;
-	}
-
-/*
- *	Draw shape in egg 'monster' area.
- */
-extern "C" gboolean on_egg_monster_draw_expose_event
-	(
-	GtkWidget *widget,		// The view window.
-	GdkEventExpose *event,
-	gpointer data			// ->Shape_chooser.
-	)
-	{
-	ExultStudio::get_instance()->show_egg_monster(
-		event->area.x, event->area.y, event->area.width,
-							event->area.height);
-	return (TRUE);
-	}
-
-/*
- *	Monster shape # lost focus, so update shape displayed.
- */
-extern "C" gboolean on_monst_shape_focus_out_event
-	(
-	GtkWidget *widget,
-	GdkEventFocus *event,
-	gpointer user_data
-	)
-	{
-	ExultStudio::get_instance()->show_egg_monster();
-	return TRUE;
-	}
 
 
 ExultStudio::ExultStudio(int argc, char **argv): ifile(0), names(0),
@@ -455,75 +371,11 @@ void ExultStudio::set_static_path(const char *path)
 }
 
 /*
- *	Callback for when a shape is dropped on the Egg 'monster' area.
- */
-
-static void Egg_monster_dropped
-	(
-	int file,			// U7_SHAPE_SHAPES.
-	int shape,
-	int frame,
-	void *udata
-	)
-	{
-	if (file == U7_SHAPE_SHAPES && shape >= 0 && shape < 1024)
-		((ExultStudio *) udata)->set_egg_monster(shape, frame);
-	}
-
-/*
- *	Open the egg-editing window.
- */
-
-void ExultStudio::open_egg_window
-	(
-	unsigned char *data,		// Serialized egg, or null.
-	int datalen
-	)
-	{
-	if (!eggwin)			// First time?
-		{
-		eggwin = glade_xml_get_widget( app_xml, "egg_window" );
-		if (vgafile && palbuf)
-			{
-			egg_monster_draw = new Shape_draw(vgafile, palbuf,
-			    glade_xml_get_widget(app_xml, "egg_monster_draw"));
-			egg_monster_draw->enable_drop(Egg_monster_dropped,
-								this);
-			}
-		egg_ctx = gtk_statusbar_get_context_id(
-			GTK_STATUSBAR(glade_xml_get_widget(
-				app_xml, "egg_status")), "Egg Editor");
-		}
-					// Init. egg address to null.
-	gtk_object_set_user_data(GTK_OBJECT(eggwin), 0);
-					// Make 'apply' sensitive.
-	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
-						"egg_apply_btn"), true);
-	if (data)
-		if (!init_egg_window(data, datalen))
-			return;
-	gtk_widget_show(eggwin);
-	}
-
-/*
- *	Close the egg-editing window.
- */
-
-void ExultStudio::close_egg_window
-	(
-	)
-	{
-	if (eggwin)
-		gtk_widget_hide(eggwin);
-	}
-
-/*
  *	Get value of a toggle button (false if not found).
  */
 
-static bool Get_toggle
+bool ExultStudio::get_toggle
 	(
-	GladeXML *app_xml,
 	char *name
 	)
 	{
@@ -535,9 +387,8 @@ static bool Get_toggle
  *	Find and set a toggle/checkbox button.
  */
 
-static void Set_toggle
+void ExultStudio::set_toggle
 	(
-	GladeXML *app_xml,
 	char *name,
 	bool val
 	)
@@ -551,9 +402,8 @@ static void Set_toggle
  *	Get value of option-menu button (-1 if unsuccessful).
  */
 
-static int Get_optmenu
+int ExultStudio::get_optmenu
 	(
-	GladeXML *app_xml,
 	char *name
 	)
 	{
@@ -569,9 +419,8 @@ static int Get_optmenu
  *	Find and set an option-menu button.
  */
 
-static void Set_optmenu
+void ExultStudio::set_optmenu
 	(
-	GladeXML *app_xml,
 	char *name,
 	int val
 	)
@@ -585,9 +434,8 @@ static void Set_optmenu
  *	Get value of spin button (-1 if unsuccessful).
  */
 
-static int Get_spin
+int ExultStudio::get_spin
 	(
-	GladeXML *app_xml,
 	char *name
 	)
 	{
@@ -600,12 +448,11 @@ static int Get_spin
  *	Find and set a spin button.
  */
 
-static void Set_spin
+void ExultStudio::set_spin
 	(
-	GladeXML *app_xml,
 	char *name,
 	int val,
-	bool sensitive = true
+	bool sensitive
 	)
 	{
 	GtkWidget *btn = glade_xml_get_widget(app_xml, name);
@@ -622,9 +469,8 @@ static void Set_spin
  *	Output:	Number, or -1 if not found.
  */
 
-static int Get_num_entry
+int ExultStudio::get_num_entry
 	(
-	GladeXML *app_xml,
 	char *name
 	)
 	{
@@ -646,13 +492,12 @@ static int Get_num_entry
  *	Find and set a text field to a number.
  */
 
-static void Set_entry
+void ExultStudio::set_entry
 	(
-	GladeXML *app_xml,
 	char *name,
 	int val,
-	bool hex = false,
-	bool sensitive = true
+	bool hex,
+	bool sensitive
 	)
 	{
 	GtkWidget *field = glade_xml_get_widget(app_xml, name);
@@ -670,9 +515,8 @@ static void Set_entry
  *	Set statusbar.
  */
 
-static void Set_statusbar
+void ExultStudio::set_statusbar
 	(
-	GladeXML *app_xml,
 	char *name,
 	int context,
 	char *msg
@@ -681,381 +525,6 @@ static void Set_statusbar
 	GtkWidget *sbar = glade_xml_get_widget(app_xml, name);
 	if (sbar)
 		gtk_statusbar_push(GTK_STATUSBAR(sbar), context, msg);
-	}
-
-/*
- *	Init. the egg editor with data from Exult.
- *
- *	Output:	0 if error (reported).
- */
-
-int ExultStudio::init_egg_window
-	(
-	unsigned char *data,
-	int datalen
-	)
-	{
-	unsigned long addr;
-	int tx, ty, tz;
-	int shape, frame;
-	int type;
-	int criteria;
-	int probability;
-	int distance;
-	bool nocturnal, once, hatched, auto_reset;
-	int data1, data2;
-	if (!Egg_object_in(data, datalen, addr, tx, ty, tz, shape, frame,
-		type, criteria, probability, distance, 
-		nocturnal, once, hatched, auto_reset,
-		data1, data2))
-		{
-		cout << "Error decoding egg" << endl;
-		return 0;
-		}
-					// Store address with window.
-	gtk_object_set_user_data(GTK_OBJECT(eggwin), (gpointer) addr);
-	GtkWidget *notebook = glade_xml_get_widget(app_xml, "notebook1");
-	if (notebook)			// 1st is monster (1).
-		gtk_notebook_set_page(GTK_NOTEBOOK(notebook), type - 1);
-	Set_spin(app_xml, "probability", probability);
-	Set_spin(app_xml, "distance", distance);
-	Set_optmenu(app_xml, "criteria", criteria);
-	Set_toggle(app_xml, "nocturnal", nocturnal);
-	Set_toggle(app_xml, "once", once);
-	Set_toggle(app_xml, "hatched", hatched);
-	Set_toggle(app_xml, "autoreset", auto_reset);
-	switch (type)			// Set notebook page.
-		{
-	case 1:				// Monster:
-		{
-		int shnum = data2&1023, frnum = data2>>10;
-		Set_entry(app_xml, "monst_shape", shnum);
-		Set_entry(app_xml, "monst_frame", frnum);
-		Set_optmenu(app_xml, "monst_schedule", data1>>8);
-		Set_optmenu(app_xml, "monst_align", data1&3);
-		Set_spin(app_xml, "monst_count", (data1&0xff)>>2);
-		break;
-		}
-	case 2:				// Jukebox:
-		Set_spin(app_xml, "juke_song", data1&0xff);
-		Set_toggle(app_xml, "juke_cont", (data1>>8)&0x01);
-		break;
-	case 3:				// Sound effect:
-		break;			// +++++++Later!
-	case 4:				// Voice:
-		Set_spin(app_xml, "speech_number", data1&0xff);
-		break;
-	case 5:				// Usecode:
-		Set_entry(app_xml, "usecode_number", data2, true);
-		Set_spin(app_xml, "usecode_quality", data1&0xff);
-		break;
-	case 6:				// Missile:
-		Set_entry(app_xml, "missile_shape", data1); 
-		Set_optmenu(app_xml, "missile_dir", data2&0xff);
-		Set_spin(app_xml, "missile_delay", data2>>8);
-		break;
-	case 7:				// Teleport:
-		{
-		int qual = data1&0xff;
-		if (qual == 255)
-			{
-			Set_toggle(app_xml, "teleport_coord", true);
-			int schunk = data1 >> 8;
-			Set_entry(app_xml, "teleport_x",
-				(schunk%12)*c_tiles_per_schunk +(data2&0xff),
-								true);
-			Set_entry(app_xml, "teleport_y",
-				(schunk/12)*c_tiles_per_schunk +(data2>>8),
-								true);
-			Set_spin(app_xml, "teleport_eggnum", 0, false);
-			}
-		else			// Egg #.
-			{
-			Set_toggle(app_xml, "teleport_coord", false);
-			Set_entry(app_xml, "teleport_x", 0, false, false);
-			Set_entry(app_xml, "teleport_y", 0, false, false);
-			Set_spin(app_xml, "teleport_eggnum", qual);
-			}
-		break;
-		}
-	case 8:				// Weather:
-		Set_optmenu(app_xml, "weather_type", data1&0xff); 
-		Set_spin(app_xml, "weather_length", data1>>8);
-		break;
-	case 9:				// Path:
-		Set_spin(app_xml, "pathegg_num", data1&0xff);
-		break;
-	case 10:			// Button:
-		Set_spin(app_xml, "btnegg_distance", data1&0xff);
-		break;
-	default:
-		break;
-		}
-	return 1;
-	}
-
-/*
- *	Callback for when user clicked where egg should be inserted.
- */
-
-static void Egg_response
-	(
-	int id,
-	unsigned char *data,
-	int datalen
-	)
-	{
-	Exult_server::Msg_type mid = (Exult_server::Msg_type) id;
-	if (mid == Exult_server::user_responded)
-		ExultStudio::get_instance()->close_egg_window();
-	//+++++cancel??
-	}
-
-/*
- *	Send updated egg info. back to Exult.
- *
- *	Output:	0 if error (reported).
- */
-
-int ExultStudio::save_egg_window
-	(
-	)
-	{
-	cout << "In save_egg_window()" << endl;
-	unsigned char data[Exult_server::maxlength];
-					// Get egg (null if creating new).
-	unsigned long addr = (unsigned long) gtk_object_get_user_data(
-							GTK_OBJECT(eggwin));
-	int tx = -1, ty = -1, tz = -1;	// +++++For now.
-	int shape = -1, frame = -1;	// For now.
-	int type = -1;
-	GtkWidget *notebook = glade_xml_get_widget(app_xml, "notebook1");
-	if (notebook)			// 1st is monster (1).
-		type = 1 + gtk_notebook_get_current_page(
-						GTK_NOTEBOOK(notebook));
-	else
-		{
-		cout << "Can't find notebook widget" << endl;
-		return 0;
-		}
-	int criteria = Get_optmenu(app_xml, "criteria");
-	int probability = Get_spin(app_xml, "probability");
-	int distance = Get_spin(app_xml, "distance");
-	bool nocturnal = Get_toggle(app_xml, "nocturnal"),
-		once = Get_toggle(app_xml, "once"),
-		hatched = Get_toggle(app_xml, "hatched"), 
-		auto_reset = Get_toggle(app_xml, "autoreset");
-	int data1 = -1, data2 = -1;
-	switch (type)			// Set notebook page.
-		{
-	case 1:				// Monster:
-		data2 = (Get_num_entry(app_xml, "monst_shape")&1023) +
-			(Get_num_entry(app_xml, "monst_frame")<<10);
-		data1 = (Get_optmenu(app_xml, "monst_schedule")<<8) +
-			(Get_optmenu(app_xml, "monst_align")&3) +
-			(Get_spin(app_xml, "monst_count")<<2);
-		break;
-	case 2:				// Jukebox:
-		data1 = (Get_spin(app_xml, "juke_song")&0xff) +
-			(Get_toggle(app_xml, "juke_cont")<<8);
-		break;
-	case 3:				// Sound effect:
-		break;			// +++++++Later!
-	case 4:				// Voice:
-		data1 = Get_spin(app_xml, "speech_number")&0xff;
-		break;
-	case 5:				// Usecode:
-		data2 = Get_num_entry(app_xml, "usecode_number");
-		data1 = Get_spin(app_xml, "usecode_quality")&0xff;
-		break;
-	case 6:				// Missile:
-		data1 = Get_num_entry(app_xml, "missile_shape");
-		data2 = (Get_optmenu(app_xml, "missile_dir")&0xff) +
-			(Get_spin(app_xml, "missile_delay")<<8);
-		break;
-	case 7:				// Teleport:
-		if (Get_toggle(app_xml, "teleport_coord"))
-			{		// Abs. coords.
-			int tx = Get_num_entry(app_xml, "teleport_x"),
-			    ty = Get_num_entry(app_xml, "teleport_y");
-			data2 = (tx&0xff) + ((ty&0xff)<<8);
-			int sx = tx/c_tiles_per_schunk,
-			    sy = ty/c_tiles_per_schunk;
-			data1 = 255 + (sy*12 + sx);
-			}
-		else			// Egg #.
-			data1 = Get_spin(app_xml, "teleport_eggnum")&0xff;
-		break;
-	case 8:				// Weather:
-		data1 = (Get_optmenu(app_xml, "weather_type")&0xff) +
-			(Get_spin(app_xml, "weather_length")<<8);
-		break;
-	case 9:				// Path:
-		data1 = Get_spin(app_xml, "pathegg_num")&0xff;
-		break;
-	case 10:			// Button:
-		data1 = Get_spin(app_xml, "btnegg_distance")&0xff;
-		break;
-	default:
-		cout << "Unknown egg type" << endl;
-		return 0;
-		}
-	if (Egg_object_out(server_socket, addr, tx, ty, tz,
-		shape, frame, type, criteria, probability, distance,
-		nocturnal, once, hatched, auto_reset, data1, data2) == -1)
-		{
-		cout << "Error sending egg data to server" <<endl;
-		return 0;
-		}
-	cout << "Sent egg data to server" << endl;
-	if (!addr)
-		{
-		Set_statusbar(app_xml, "egg_status", egg_ctx,
-					"Click on map at place to insert egg");
-					// Make 'apply' insensitive.
-		gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
-						"egg_apply_btn"), false);
-		waiting_for_server = Egg_response;
-		return 1;		// Leave window open.
-		}
-	close_egg_window();
-	return 1;
-	}
-
-/*
- *	Paint the shape in the egg 'monster' notebook page.
- */
-
-void ExultStudio::show_egg_monster
-	(
-	int x, int y, int w, int h	// Rectangle. w=-1 to show all.
-	)
-	{
-	if (!egg_monster_draw)
-		return;
-	egg_monster_draw->configure();
-					// Yes, this is kind of redundant...
-	int shnum = Get_num_entry(app_xml, "monst_shape");
-	int frnum = Get_num_entry(app_xml, "monst_frame");
-	egg_monster_draw->draw_shape_centered(shnum, frnum);
-	if (w != -1)
-		egg_monster_draw->show(x, y, w, h);
-	else
-		egg_monster_draw->show();
-	}
-
-/*
- *	Set egg monster shape.
- */
-
-void ExultStudio::set_egg_monster
-	(
-	int shape,
-	int frame
-	)
-	{
-	Set_entry(app_xml, "monst_shape", shape);
-	Set_entry(app_xml, "monst_frame", frame);
-	show_egg_monster();
-	}
-
-/*
- *	Open npc window.
- */
-
-extern "C" void on_open_npc_activate
-	(
-	GtkMenuItem     *menuitem,
-        gpointer         user_data
-	)
-	{
-	ExultStudio *studio = ExultStudio::get_instance();
-	studio->open_npc_window();
-	}
-
-/*
- *	Npc window's Apply button.
- */
-extern "C" void on_npc_apply_btn_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
-//++++++++	ExultStudio::get_instance()->save_npc_window();
-	}
-
-/*
- *	Npc window's Cancel button.
- */
-extern "C" void on_npc_cancel_btn_clicked
-	(
-	GtkButton *btn,
-	gpointer user_data
-	)
-	{
-	ExultStudio::get_instance()->close_npc_window();
-	}
-
-/*
- *	Npc window's close button.
- */
-extern "C" gboolean on_npc_window_delete_event
-	(
-	GtkWidget *widget,
-	GdkEvent *event,
-	gpointer user_data
-	)
-	{
-	ExultStudio::get_instance()->close_npc_window();
-	return TRUE;
-	}
-
-/*
- *	Open the npc-editing window.
- */
-
-void ExultStudio::open_npc_window
-	(
-	unsigned char *data,		// Serialized npc, or null.
-	int datalen
-	)
-	{
-	if (!npcwin)			// First time?
-		{
-		npcwin = glade_xml_get_widget( app_xml, "npc_window" );
-		if (vgafile && palbuf)
-			{
-//			npc_monster_draw = new Shape_draw(vgafile, palbuf,
-//			    glade_xml_get_widget(app_xml, "npc_monster_draw"));
-//			npc_monster_draw->enable_drop(Npc_monster_dropped,
-//								this);
-			}
-		npc_ctx = gtk_statusbar_get_context_id(
-			GTK_STATUSBAR(glade_xml_get_widget(
-				app_xml, "npc_status")), "Npc Editor");
-		}
-					// Init. npc address to null.
-	gtk_object_set_user_data(GTK_OBJECT(npcwin), 0);
-					// Make 'apply' sensitive.
-	gtk_widget_set_sensitive(glade_xml_get_widget(app_xml, 
-						"npc_apply_btn"), true);
-//	if (data)
-//		if (!init_npc_window(data, datalen))
-//			return;
-	gtk_widget_show(npcwin);
-	}
-
-/*
- *	Close the npc-editing window.
- */
-
-void ExultStudio::close_npc_window
-	(
-	)
-	{
-	if (npcwin)
-		gtk_widget_hide(npcwin);
 	}
 
 

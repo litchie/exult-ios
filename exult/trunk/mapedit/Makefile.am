@@ -31,6 +31,8 @@ paltest_SOURCES = paltest.cc
 exult_studio_SOURCES = \
 	dirbrowser.cc \
 	dirbrowser.h \
+	eggedit.cc \
+	npcedit.cc \
 	studio.cc \
 	studio.h \
 	exult_studio.cc
