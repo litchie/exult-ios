@@ -1467,10 +1467,11 @@ void Actor::reduce_health
 		if (Game::get_game_type() == SERPENT_ISLE && usecode >= 0)
 			{
 			bool was_killable = get_flag(Obj_flags::si_killable);
-			gwin->get_usecode()->call_usecode(usecode, this,
-							Usecode_machine::died);
+			int execed = gwin->get_usecode()->call_usecode(
+				usecode, this, Usecode_machine::died) != -1;
 					// No longer killable.  Time to die.
-			if (was_killable && !get_flag(Obj_flags::si_killable))
+			if (!execed ||
+			   (was_killable && !get_flag(Obj_flags::si_killable)))
 				die();
 					// Else restore health.
 			else if (get_property((int) health) < 1)
