@@ -1973,7 +1973,7 @@ void Game_window::show_items
 			return;
 		}
 	Shape_info& info = shapes.get_info(shnum);
-#if 0
+#if 1
 	cout << "TFA[1][0-6]= " << (((int) info.get_tfa(1))&127) << endl;
 	cout << "TFA[0][0-1]= " << (((int) info.get_tfa(0)&3)) << endl;
 	cout << "TFA[0][3-4]= " << (((int) (info.get_tfa(0)>>3)&3)) << endl;
@@ -2263,7 +2263,8 @@ void Game_window::show_face
 			frame = main_actor->get_type_flag(Actor::tf_sex);
 		}
 	}
-
+					// Get screen dims.
+	int screenw = get_width(), screenh = get_height();
 					// Get character's portrait.
 	Shape_frame *face = faces.get_shape(shape, frame);
 	Npc_face_info *info = 0;
@@ -2294,6 +2295,8 @@ void Game_window::show_face
 			if (starty < prev->face_rect.y + prev->face_rect.h)
 				starty = prev->face_rect.y + prev->face_rect.h;
 			starty += 2*text_height;
+			if (starty + face->get_height() > screenh - 1)
+				starty = screenh - face->get_height() - 1;
 			}
 		else
 			starty = 1;
@@ -2309,7 +2312,7 @@ void Game_window::show_face
 		}
 	else
 		actbox = info->face_rect;
-	win->set_clip(0, 0, get_width(), get_height());
+	win->set_clip(0, 0, screenw, screenh);
 					// Draw whom we're talking to.
 	paint_shape(actbox.x + face->get_xleft(),
 			actbox.y + face->get_yabove(), face);
