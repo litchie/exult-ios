@@ -1,3 +1,6 @@
+2001-07-20  Tristan Tarrant <nadir@users.sourceforge.net>
+	* exultmenu.cc: use the expack-generated EXULT_FLX_* constants
+
 2001-07-20  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* objs.cc: allowing destroying of debris (Silver Seed)
 
