@@ -445,6 +445,17 @@ static void Handle_client_message
 		cheat.set_edit_chunknum((short) Read2(ptr));
 		break;
 
+	case Exult_server::game_pos:
+		{
+		Tile_coord pos = gwin->get_main_actor()->get_tile();
+		Write2(ptr, pos.tx);
+		Write2(ptr, pos.ty);
+		Write2(ptr, pos.tz);
+		Exult_server::Send_data(client_socket, 
+			Exult_server::game_pos, data, ptr - data);
+		break;
+		}
+
 #ifdef USECODE_DEBUGGER
 	case Exult_server::usecode_debugging:
 		Handle_debug_message(&data[0], datalen);
