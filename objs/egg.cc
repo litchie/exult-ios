@@ -416,6 +416,7 @@ void Egg_object::update_from_studio
 	int datalen
 	)
 	{
+#ifdef XWIN
 	unsigned long addr;
 	int tx, ty, tz;
 	int shape, frame;
@@ -460,6 +461,7 @@ void Egg_object::update_from_studio
 	chunk->remove_egg(egg);		// Got to add it back.
 	chunk->add_egg(egg);
 	cout << "Egg updated" << endl;
+#endif
 	}
 
 /*
