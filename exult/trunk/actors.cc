@@ -1734,22 +1734,32 @@ void Actor::set_property
 	if (prop == health && ((party_id != -1) || (npc_num == 0)) && 
 		cheat.in_god_mode() && val < properties[prop])
 		return;
-	if (prop >= 0 && prop < 12)
+	switch ((Item_properties) prop)
 		{
-		if (prop == (int) exp)
-			{		// Experience?  Check for new level.
-			int old_level = get_level();
-			properties[(int) exp] = (short) val;
-			int delta = get_level() - old_level;
-			if (delta > 0)
-				properties[(int) training] += 3*delta;
-			}
-		else
-			properties[prop] = (short) val;
-		Game_window *gwin = Game_window::get_game_window();
-		if (gwin->get_gump_man()->showing_gumps())
-			gwin->set_all_dirty();
+	case exp:
+		{			// Experience?  Check for new level.
+		int old_level = get_level();
+		properties[(int) exp] = (short) val;
+		int delta = get_level() - old_level;
+		if (delta > 0)
+			properties[(int) training] += 3*delta;
+		break;
 		}
+	case food_level:
+		if (val > 36)		// Looks like max. in usecode.
+			val = 36;
+		else if (val < 0)
+			val = 0;
+		properties[prop] = (short) val;
+		break;
+	default:
+		if (prop >= 0 && prop < 12)
+			properties[prop] = (short) val;
+		break;
+		}
+	Game_window *gwin = Game_window::get_game_window();
+	if (gwin->get_gump_man()->showing_gumps())
+		gwin->set_all_dirty();
 	}
 
 /*
