@@ -179,6 +179,52 @@ int Game_object::drop
 	return (0);
 	}
 
+#if 0	/* +++++For new rendering scheme.+++++++*/
+/*
+ *	Should this object be rendered before obj2?
+ */
+int Game_object::lt
+	(
+	Game_object& obj2
+	)
+	{
+	Shapes_vga_file& shapes = Game_window::get_game_window()->get_shapes();
+	Shape_info& info1 = shapes.get_info(get_shapenum()),
+		    info2 = shapes.get_info(obj2.get_shapenum());
+					// Get absolute tile positions.
+	int atx1, aty1, atz1, atx2, aty2, atz2;
+	get_abs_tile(atx1, aty1, atz1);
+	obj2.get_abs_tile(atx2, aty2, atz2);
+	if (atz1 != atz2)		// Is one obj. on top of another?
+		{
+		int z1 = info1.get_3d_height(), z2 = info2.get_3d_height();
+		if (atz1 + z1 <= atz2)
+			return (1);	// It's above us.
+		if (atz2 + z2 <= atz1)
+			return (0);	// We're above.
+		}
+	if (atx1 != atx2)		// Is one obj. to right of the other?
+		{
+		int x1 = info1.get_3d_xtiles(), x2 = info2.get_3d_xtiles();
+		if (atx1 <= atx2 - x2)
+			return (1);	// Obj2 is to right of us.
+		if (atx2 <= atx1 - x1)
+			return (0);	// We're to the right.
+		}
+	if (aty1 != aty2)		// Is one obj. in front of the other?
+		{
+		int y1 = info1.get_3d_ytiles(), y2 = info2.get_3d_ytiles();
+		if (aty1 <= aty2 - y2)
+			return (1);	// Obj2 is in front.
+		if (aty2 <= aty1 - y1)
+			return (0);	// We're in front.
+		}
+	cout << "Couldn't compare objects in 'lt()'\n";
+	return (0);
+	}
+
+#endif
+
 /*
  *	Can this be dragged?
  */

@@ -33,7 +33,7 @@ Exult can now play the Guardian's sound-bites through SDL, and it's own
 internal mixer. No configuration or tuning of this is available in this
 release
 
-midi
+MIDI
 ----
 MIDI audio is available for a small subset of people.
 What you need:
@@ -76,33 +76,21 @@ Please see his "readme.w95" file.
 Version 0.08 has greatly improved object identification, thanks to
 contributor Tristan Tarrant.
 
-Although I'm designing Exult under X, I want it to be as portable as possible
-to other platforms and graphics systems (like SVGALIB and GGI).  This is why
-I've gone to the trouble of doing the text rendering using FreeType, since it's
-already highly portable and completely graphics-system independent.
-
 This program is based on the work of Gary Thompson, Maxim Shatskih,
 Jakob Shonberg, and Wouter Dijkslag in uncovering the format of the Ultima 7 
 data files.
 
 Requirements:	Ultima7 must be installed and visible.  The "exult" executable
 		should be placed in the top-level u7 directory (where "static"
-		appears as a subdirectory).  You also need "avatar.ttf" in the
-		same directory as "exult".
+		appears as a subdirectory).
 
 		Your X display must be in 8-bit or 16-bit color.
 		(24-bit is left as an exercise to the user :-)).
 
-Installation:	On a RedHat Linux system, just type
+Installation:	On a RedHat Linux system, just type './configure', then
 		'make' in the directory where you unpacked "exult".  On other
 		systems, I'm afraid you'll have to modify the "makefile" by
-		hand.  Then copy "exult" and "avatar.ttf" to your Ultima7
-		directory.  Starting with version 0.04, you also need to have
-		the "FreeType" library installed on your system when you build
-		"Exult".
-
-		A binary built on a SuSE 6.1 x86 system is included, static-
-		ally linked as much as possible.
+		hand.  Then copy "exult" to your Ultima7 directory.
 
 Caveats:	The program is a memory hog.  Really makes me appreciate
 		Origin's accomplishment in making it run under DOS.
