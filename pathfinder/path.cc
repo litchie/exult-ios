@@ -238,7 +238,7 @@ public:
 	size_t operator() (const Search_node *a) const
 		{
 		const Tile_coord t = a->get_tile();
-		return ((t.tz << 16) + (t.ty << 8) + t.tx);
+		return ((t.tz << 24) + (t.ty << 12) + t.tx);
 		}
 	};
 
@@ -266,9 +266,11 @@ public:
      	bool operator() (const Search_node *a, const Search_node *b) const
      		{
 			Tile_coord ta = a->get_tile(), tb = b->get_tile();
-			int apos = ta.tx << 16, bpos = tb.tx << 16;
-			apos |= ta.ty;
-			bpos |= tb.ty;
+			uint32 apos = ta.tx << 16, bpos = tb.tx << 16;
+			apos |= ta.ty << 4;
+			bpos |= tb.ty << 4;
+			apos |= ta.tz;
+			bpos |= tb.tz;
 			/* Because #(short x short) is <= #int, we can define an injective projection,
 			** which is all we need. */
 			return apos < bpos;
