@@ -56,7 +56,7 @@ using std::hash_map;
 
 int Weapon_info::read
 	(
-	istream& in			// Read from here.
+	std::istream& in			// Read from here.
 	)
 	{
 	uint8 buf[21];			// Entry length.
