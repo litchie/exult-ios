@@ -281,7 +281,7 @@ void Spellbook_gump::set_avail
 	{
 		if (has_ring)
 			{
-			avail[i] = 99;
+			avail[i] = 10000;
 			continue;
 			}
 		avail[i] = 10000;	// 'infinite'.
@@ -511,12 +511,24 @@ void Spellbook_gump::paint
 			paint_button(gwin, spell);
 			int num = avail[spindex + s];
 			char text[6];
-			snprintf(text, 6, "%d", num);
 			if (num > 0 && num < 1000)
+				{
+				snprintf(text, 6, "%d", num);
 				gwin->paint_text(4, text,
 					x + spell->x + numx -
 						gwin->get_text_width(4, text),
 					y + spell->y + numy);
+				}
+			else if (num >= 1000)	// Fake an 'infinity'.
+				{
+				strcpy(text, "oo");
+				int px = x + spell->x + numx -
+						gwin->get_text_width(4, text);
+				gwin->paint_text(4, text + 1, px,
+					y + spell->y + numy);
+				gwin->paint_text(4, text + 1, px + 3,
+					y + spell->y + numy);
+				}
 		}
 	if (page > 0 ||			// Paint circle.
 	    Game::get_game_type() == SERPENT_ISLE)
