@@ -259,15 +259,21 @@ void Game_window::drop
 			}
 		else
 			{		// Was it dropped on something?
+			int max_lift = main_actor->get_lift() + 4;
+			int lift;
 			Game_object *found = find_object(x, y);
 			if (found && found != dragging && found->drop(to_drop))
 				dropped = 1;
+					// Try to place on 'found'.
+			else if (found && (lift = found->get_lift() +
+				get_info(found).get_3d_height()) <= max_lift &&
+				drop_at_lift(to_drop, lift))
+				dropped = 1;
 			else
 				{	// Find where to drop it.
-				int max_lift = main_actor->get_lift() + 4;
 				Game_object *outer = dragging->get_outermost();
-				for (int lift = outer->get_lift(); 
-					!dropped && lift < max_lift; lift++)
+				for (lift = outer->get_lift(); 
+					!dropped && lift <= max_lift; lift++)
 					dropped = drop_at_lift(to_drop, lift);
 				if (!dropped)
 					mouse->flash_shape(Mouse::blocked);
