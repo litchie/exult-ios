@@ -935,8 +935,6 @@ int Actor::move_aside
 	int dir				// Direction to avoid (0-7).
 	)
 	{
-	static short offset[16] = {-1,0, -1,1, 1,0, 1,-1, 0,-1,
-					-1,-1, -1,0, -1,1 };
 	Tile_coord cur = get_abs_tile_coord();
 	int opp = (dir + 4)%8;		// Don't go in opposite dir. either.
 	Tile_coord to(-1, -1, -1);
@@ -946,8 +944,7 @@ int Actor::move_aside
 			continue;	// Don't go that way.
 		else
 			{
-			to = cur + Tile_coord(offset[2*i], offset[2*i + 1],
-									0);
+			to = cur.get_neighbor(i);
 					// Assume height = 3.
 			if (!Chunk_object_list::is_blocked(to, 3))
 				break;
