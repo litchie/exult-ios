@@ -14,7 +14,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 # mingw32 automatically defines WIN32
 CPPFLAGS=-DVERSION=\\\"0.90alpha1\\\" -DEXULT_DATADIR=\\\"data\\\" -g3 -DDEBUG -DAUTOCONFIGURED -DNO_INTRO -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/gumps \
-	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/:$(SRC)/usecode \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/usecode \
 	$(SDL_INCLUDES)
 
 CXXFLAGS=-g -mwindows -Wall -pedantic -Wno-long-long

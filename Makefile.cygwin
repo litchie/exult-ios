@@ -13,7 +13,7 @@ SDL_LIBS=-L$(SRC)/sdl/lib -lSDLmain -lSDL
 # NOTE: make's builtin implicit rules are used for .cc => .o
 # mingw32 automatically defines WIN32
 CPPFLAGS=-DVERSION=\"0.90alpha1\" -DEXULT_DATADIR=\"data\" -g3 -DDEBUG -DAUTOCONFIGURED -DNO_INTRO -I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/files \
-	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/gumps -I$(SRC)/pathfinder -I$(SRC)/:$(SRC)/usecode \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/gumps -I$(SRC)/pathfinder -I$(SRC)/usecode \
 	$(SDL_INCLUDES)
 
 CXXFLAGS=-mwindows -O2 -finline-functions -funroll-loops -funroll-all-loops -fstrict-aliasing

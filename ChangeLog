@@ -1,3 +1,7 @@
+2000-11-29  Max Horn  <max@quendi.de>
+	* Makefile.be/win32/cygwin: fixed to properly support new dirs gumps/, shapes/, usecode/
+	* shapes/shapevga.cc: added some using std:: to make it compile on MacOS
+
 2000-11-29  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* audio/midi_drivers/Timidity_binary.*: support repeat of songs
 
