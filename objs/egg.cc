@@ -811,11 +811,16 @@ void Egg_object::remove_this
          )
 	{
 	Game_window *gwin = Game_window::get_game_window();
-         Map_chunk *chunk = gwin->get_chunk_safely(cx, cy);
-	 if (chunk)
+	if (get_owner())		// Watch for this.
+		get_owner()->remove(this);
+	else
 		{
-		gwin->add_dirty(this);	// (Make's ::move() simpler.).
-		chunk->remove_egg(this);
+		Map_chunk *chunk = gwin->get_chunk_safely(cx, cy);
+	 	if (chunk)
+			{
+			gwin->add_dirty(this);	// (Make's ::move() simpler.).
+			chunk->remove_egg(this);
+			}
 		}
 	 if (!nodel)
 		 gwin->delete_object(this);
