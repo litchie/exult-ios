@@ -2747,7 +2747,8 @@ void Game_window::double_clicked
 			toggle_combat();
 					// Being a bully?
 			if (obj->get_npc_num() > 0 && obj->get_alignment() ==
-							Actor::friendly)
+							Actor::friendly &&
+			   Game::get_game_type() == BLACK_GATE)
 				attack_avatar(1 + rand()%3);
 			return;
 			}

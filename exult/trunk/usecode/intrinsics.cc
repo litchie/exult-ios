@@ -1855,6 +1855,12 @@ USECODE_INTRINSIC(get_item_flag)
 					//   blocked gangplank. What is it?????
 	else if (fnum == 0x18 && Game::get_game_type() == BLACK_GATE)
 		return Usecode_value(1);
+					// ++++Think 4==dead, at least in SI.
+	else if (fnum == 4 && Game::get_game_type() == SERPENT_ISLE)
+		{
+		Actor *a = as_actor(obj);
+		return Usecode_value(a ? a->is_dead() : 0);
+		}
 	Usecode_value u(obj->get_flag(fnum) != 0);
 	return(u);
 }
