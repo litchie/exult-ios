@@ -29,6 +29,21 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "objs.h"
 
 /*
+ *	+++++Debugging
+ */
+inline void Check_file
+	(
+	ifstream& shapes
+	)
+	{
+	if (!shapes.good())
+		{
+		cout << "VGA file is bad!\n";
+		shapes.clear();
+		}
+	}
+
+/*
  *	Read in a desired shape.
  *
  *	Output:	# of frames.
@@ -46,6 +61,7 @@ unsigned char Shape_frame::read
 	rle = 0;
 					// Get to actual shape.
 	shapes.seekg(shapeoff);
+	Check_file(shapes);
 	unsigned long datalen = Read4(shapes);
 	unsigned long hdrlen = Read4(shapes);
 	if (datalen == shapelen)
@@ -57,19 +73,21 @@ unsigned char Shape_frame::read
 		unsigned long frameoff, framelen;
 		if (framenum == 0)
 			{
-			frameoff = hdrlen + 8;
-			framelen = (Read4(shapes) - 8) - frameoff;
+			frameoff = hdrlen;
+			framelen = nframes > 1 ? Read4(shapes) - frameoff :
+						datalen - frameoff;
 			}
 		else
 			{
 			shapes.seekg((framenum - 1) * 4, ios::cur);
-			frameoff = 8 + Read4(shapes);
+			frameoff = Read4(shapes);
 					// Last frame?
-			if (framenum == nframes - 1)	//++++++Check this:
-				framelen = (shapeoff + 4 + datalen) - frameoff;
+			if (framenum == nframes - 1)
+				framelen = datalen - frameoff;
 			else
-				framelen = (Read4(shapes) - 8) - frameoff;
+				framelen = Read4(shapes) - frameoff;
 			}
+		Check_file(shapes);
 					// Get compressed data.
 		get_rle_shape(shapes, shapeoff + frameoff, framelen);
 					// Return # frames.
@@ -80,6 +98,7 @@ unsigned char Shape_frame::read
 	shapes.seekg(shapeoff + framenum*64);
 	data = new unsigned char[64];	// Read in 8x8 pixels.
 	shapes.read((char *) data, 64);
+	Check_file(shapes);
 	return (shapelen/64);		// That's how many frames.
 	}
 
@@ -94,13 +113,17 @@ void Shape_frame::get_rle_shape
 	long len			// Length of frame data.
 	)
 	{
-	shapes.seekg(filepos - 8);	// Get to extents.
+	shapes.seekg(filepos);		// Get to extents.
+	Check_file(shapes);
 	xright = Read2(shapes);
 	xleft = Read2(shapes);
 	yabove = Read2(shapes);
 	ybelow = Read2(shapes);
-	data = new unsigned char[len];	// Allocate and read data.
+	data = new unsigned char[len + 2];	// Allocate and read data.
 	shapes.read(data, len);
+	Check_file(shapes);
+	data[len] = 0;			// 0-delimit.
+	data[len + 1] = 0;
 	rle = 1;
 	}
 
@@ -167,7 +190,13 @@ Shape_frame *Shape::read
 	shapeoff = Read4(shapes);
 	unsigned long shapelen = Read4(shapes);
 					// Read it in and get frame count.
-	num_frames = frame->read(shapes, shapeoff, shapelen, framenum);
+	int nframes = frame->read(shapes, shapeoff, shapelen, framenum);
+	if (!num_frames)		// 1st time?
+		num_frames = nframes;
+#if 0
+	else if (nframes != num_frames)	// DEBUGGING.
+		cout << "New num_frames??\n";
+#endif
 	return store_frame(frame, framenum);
 	}
 
