@@ -2350,6 +2350,8 @@ void Game_window::show_items
 		cout << "obj = " << (void *) obj << endl;
 		if (obj->get_flag(Obj_flags::asleep))
 			cout << "ASLEEP" << endl;
+		if (obj->is_egg())	// Show egg info. here.
+			((Egg_object *)obj)->print_debug();
 		}
 	else				// Obj==0
 		{

@@ -544,6 +544,32 @@ static void Set_spin
 	}
 
 /*
+ *	Get number from a text field.
+ *
+ *	Output:	Number, or -1 if not found.
+ */
+
+static int Get_num_entry
+	(
+	GladeXML *app_xml,
+	char *name
+	)
+	{
+	GtkWidget *field = glade_xml_get_widget(app_xml, name);
+	if (!field)
+		return -1;
+	char *txt = gtk_entry_get_text(GTK_ENTRY(field));
+	if (!txt)
+		return -1;
+	while (*txt == ' ')
+		txt++;			// Skip space.
+	if (txt[0] == '0' && txt[1] == 'x')
+		return strtol(txt + 2, 0, 16);	// Hex.
+	else
+		return atoi(txt);
+	}
+
+/*
  *	Find and set a text field to a number.
  */
 
@@ -614,7 +640,7 @@ int ExultStudio::init_egg_window
 		Set_entry(app_xml, "monst_shape", data2&1023);
 		Set_entry(app_xml, "monst_frame", data2>>10);
 		Set_optmenu(app_xml, "monst_schedule", data1>>8);
-		Set_optmenu(app_xml, "monst_aligh", data1&3);
+		Set_optmenu(app_xml, "monst_align", data1&3);
 		Set_spin(app_xml, "monst_count", (data1&0xff)>>2);
 		break;
 	case 2:				// Jukebox:
@@ -696,6 +722,11 @@ int ExultStudio::save_egg_window
 	if (notebook)			// 1st is monster (1).
 		type = 1 + gtk_notebook_get_current_page(
 						GTK_NOTEBOOK(notebook));
+	else
+		{
+		cout << "Can't find notebook widget" << endl;
+		return 0;
+		}
 	int criteria = Get_optmenu(app_xml, "criteria");
 	int probability = Get_spin(app_xml, "probability");
 	int distance = Get_spin(app_xml, "distance");
@@ -703,9 +734,71 @@ int ExultStudio::save_egg_window
 		once = Get_toggle(app_xml, "once"),
 		hatched = Get_toggle(app_xml, "hatched"), 
 		auto_reset = Get_toggle(app_xml, "autoreset");
-	int data1, data2;
-// Finish++++++++++++++++
-	return 0;
+	int data1 = -1, data2 = -1;
+	switch (type)			// Set notebook page.
+		{
+	case 1:				// Monster:
+		data2 = (Get_num_entry(app_xml, "monst_shape")&1023) +
+			(Get_num_entry(app_xml, "monst_frame")<<10);
+		data1 = (Get_optmenu(app_xml, "monst_schedule")<<8) +
+			(Get_optmenu(app_xml, "monst_align")&3) +
+			(Get_spin(app_xml, "monst_count")<<2);
+		break;
+	case 2:				// Jukebox:
+		data1 = (Get_spin(app_xml, "juke_song")&0xff) +
+			(Get_toggle(app_xml, "juke_cont")<<8);
+		break;
+	case 3:				// Sound effect:
+		break;			// +++++++Later!
+	case 4:				// Voice:
+		data1 = Get_spin(app_xml, "speech_number")&0xff;
+		break;
+	case 5:				// Usecode:
+		data2 = Get_num_entry(app_xml, "usecode_number");
+		data1 = Get_spin(app_xml, "usecode_quality")&0xff;
+		break;
+	case 6:				// Missile:
+		data1 = Get_num_entry(app_xml, "missile_shape");
+		data2 = (Get_optmenu(app_xml, "missile_dir")&0xff) +
+			(Get_spin(app_xml, "missile_delay")<<8);
+		break;
+	case 7:				// Teleport:
+		if (Get_toggle(app_xml, "teleport_coord"))
+			{		// Abs. coords.
+			int tx = Get_num_entry(app_xml, "teleport_x"),
+			    ty = Get_num_entry(app_xml, "teleport_y");
+			data2 = (tx&0xff) + ((ty&0xff)<<8);
+			int sx = tx/c_tiles_per_schunk,
+			    sy = ty/c_tiles_per_schunk;
+			data1 = 255 + (sy*12 + sx);
+			}
+		else			// Egg #.
+			data1 = Get_spin(app_xml, "teleport_eggnum")&0xff;
+		break;
+	case 8:				// Weather:
+		data1 = (Get_optmenu(app_xml, "weather_type")&0xff) +
+			(Get_spin(app_xml, "weather_length")<<8);
+		break;
+	case 9:				// Path:
+		data1 = Get_spin(app_xml, "pathegg_num")&0xff;
+		break;
+	case 10:			// Button:
+		data1 = Get_spin(app_xml, "btnegg_distance")&0xff;
+		break;
+	default:
+		cout << "Unknown egg type" << endl;
+		return 0;
+		}
+	if (!Egg_object_out(server_socket, addr, tx, ty, tz,
+			shape, frame, type, criteria, probability, distance,
+			nocturnal, once, hatched, auto_reset, data1, data2))
+		{
+		cout << "Error sending egg data to server" <<endl;
+		return 0;
+		}
+	cout << "Sent egg data to server" << endl;
+	close_egg_window();
+	return 1;
 	}
 
 void ExultStudio::run()

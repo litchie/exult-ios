@@ -1,4 +1,4 @@
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files  \
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../files -I$(srcdir)/../objs \
 	$(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS)
 
 noinst_LTLIBRARIES = libserver.la
