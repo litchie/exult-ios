@@ -21,7 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <gtk/gtk.h>
 #include <glade/glade.h>
 #include <vector>
-#include "paledit.h"
 #include "vgafile.h"
 #include "servemsg.h"
 
@@ -32,6 +31,8 @@ class Shape_file_set;
 class Shape_file_info;
 class Shape_group_file;
 class Shape_draw;
+class Object_browser;
+class Shape_group;
 					// Callback for msgs.
 typedef void (*Msg_callback)(Exult_server::Msg_type id, 
 			unsigned char *data, int datalen, void *client);
