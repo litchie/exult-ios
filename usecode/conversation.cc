@@ -59,7 +59,7 @@ class Npc_face_info {
 };
 
 Conversation::Conversation() :
-  num_faces(0), last_face_shown(0), conv_choices(0)
+  num_faces(0), last_face_shown(0), conv_choices(0), avatar_face(0,0,0,0)
 {
 
   const int max_faces = sizeof(face_info)/sizeof(face_info[0]);
@@ -547,7 +547,8 @@ void Conversation::show_avatar_choices()
 
 void Conversation::clear_avatar_choices()
 {
-	gwin->paint(avatar_face);
+	gwin->paint(avatar_face);	// Paint over face and answers.
+	avatar_face.w = 0;
 }
 
 
@@ -577,7 +578,8 @@ void Conversation::paint
 	(
 	)
 	{
-	show_avatar_choices();
+	if (avatar_face.w)		// Choices?
+		show_avatar_choices();
 	paint_faces(true);
 	}
 
