@@ -161,6 +161,32 @@ vector<string> str2vec(const string &s)
 	return vs;
 }
 
+void map_type_size(const vector<string> &param_types, vector<pair<unsigned int, bool> > &param_sizes)
+{
+	for(vector<string>::const_iterator s=param_types.begin(); s!=param_types.end(); ++s)
+	{
+		unsigned int ssize=0;
+		bool offset_munge=false;
+		// all these are two bytes
+		if(*s=="short")           ssize=2;
+		else if(*s=="flag")       ssize=2;
+		else if(*s=="extoffset")  ssize=2;
+		else if(*s=="dataoffset") ssize=2;
+		else if(*s=="varoffset")  ssize=2;
+		else if(*s=="offset")     { ssize=2; offset_munge=true; }
+		else if(*s=="long")       ssize=4;
+		// and the single one byte type
+		else if(*s=="byte")       ssize=1;
+		else
+		{
+			cout << "error: data type '" << *s << "' is not defined. exiting." << endl;
+			exit(1);
+		}
+		assert(ssize!=0);
+		param_sizes.push_back(pair<unsigned int, bool>(ssize, offset_munge));
+	}
+}
+
 /*vector<string> str2vec(const string &s)
 {
 	vector<string> vs; // the resulting strings
