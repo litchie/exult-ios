@@ -73,10 +73,10 @@ void	test1(void)
 	cout << "Returned from reference, \"" << test_enabled << "\". Got '" << r << "'" << endl;
 	assert(r=="yes");
 
-	/*std::string test_debug("config/debugging/");
-	config.value(test_debug, r, "--nil--");
-	cout << "Returned from reference, \"" << test_debug << "\". Got '" << r << "'" << endl;
-	assert(r=="yes");*/
+	std::string test_spaces("config/disk/u7path_with_spaces");
+	config.value(test_spaces, r, "--nil--");
+	cout << "Returned from reference, \"" << test_spaces << "\". Got '" << r << "'" << endl;
+	assert(r=="d:\\ultima series\\ultima vii - the serpent isle");
 	
 	config.set("config/something/something/else", "wibble", false);
 

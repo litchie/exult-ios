@@ -23,16 +23,24 @@
 #include "exult_constants.h"
 #include "Configuration.h"
 #include "exceptions.h"
+#include "utils.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstdio>
 #endif
 #include <iostream>
 #include <fstream>
+
 #ifdef HAVE_SSTREAM
-#include <sstream>
+	#include <sstream>
+	using std::ostringstream;
+#else
+	#include <strstream>
+	using std::ends;
+	using std::ostrstream;
+	typedef ostrstream ostringstream;
+	// NOTE: strstreams need to be 'ends' terminated, whilst strstreams don't.
 #endif
-#include "utils.h"
 
 
 using std::atoi;
@@ -165,27 +173,18 @@ bool	Configuration::read_config_file(const string input_filename, const string r
 	if(ifile.fail())
 		return false;
 
-#ifdef HAVE_SSTREAM
-	std::ostringstream sbuf;
+	ostringstream sbuf;
 
 	// copies the entire contents of the input file into sbuf
-	sbuf << ifile.rdbuf() << std::ends;
-
+	sbuf << ifile.rdbuf();
+	
+	#ifndef HAVE_SSTREAM
+	sbuf << ends;
+	#endif
+	
 	ifile.close();
 	read_config_string(sbuf.str());
-#else
-	std::string	sbuf, line;
 	
-	// copies the entire contents of the input file into sbuf
-        ifile >> line;
-	while (ifile.good())
-	{
-	    sbuf += line + "\n";
-	    ifile >> line;
-	}
-	ifile.close();
-	read_config_string(sbuf);
-#endif
 	is_file=true;
 	return true;
 }

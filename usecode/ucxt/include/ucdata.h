@@ -46,15 +46,7 @@ class UCData
 		std::string output_redirect() const { return _output_redirect; };
 		std::string input_usecode_file() const { return _input_usecode_file; };
 		
-/*		bool output_list()  const { return _output_list; };
-		bool output_asm()   const { return _output_asm;  };
-		bool output_ucz()   const { return _output_ucz;  };
-		bool output_flag()  const { return _output_flag; };
-		
-		bool mode_all()     const { return _mode_all;    };
-		bool mode_dis()     const { return _mode_dis;    };*/
-		
-		bool fail()         const { return _file.fail(); };
+		bool fail() const { return _file.fail(); };
 	
 		const std::map<unsigned short, UCFuncSet> &funcmap() { return _funcmap; };	
 		
@@ -87,8 +79,6 @@ class UCData
 		long _search_opcode;
 		long _search_intrinsic;
 		std::vector<unsigned int> search_funcs;
-
-		//UCOptions options;
 };
 
 #endif
