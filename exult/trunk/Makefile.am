@@ -56,6 +56,8 @@ exult_SOURCES =	\
 	tqueue.h	\
 	usecode.cc	\
 	usecode.h	\
+	useval.cc	\
+	useval.h	\
 	utils.cc	\
 	utils.h		\
 	vec.cc		\

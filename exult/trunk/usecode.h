@@ -40,99 +40,16 @@ class Text_gump;
 class Vector;
 class Deleted_objects;
 class Actor;
+class Usecode_value;
 
 #include "tiles.h"
 #include <vector>	// STL container
 #include <deque>	// STL container
 #include <string>	// STL string
 
+
 #define	USECODE_INTRINSIC(NAME)	Usecode_value	Usecode_machine::UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
 #define	USECODE_INTRINSIC_DECL(NAME)	Usecode_value	UI_ ## NAME ## (int event,int intrinsic,int num_parms,Usecode_value parms[12])
-
-/*
- *	A value that we store can be an integer, string, or array.
- */
-class Usecode_value
-	{
-public:
-	enum Val_type			// The types:
-		{
-		int_type = 0,
-		string_type = 1,	// Allocated string.
-		array_type = 2,
-		end_of_array_type = 3	// Marks end of array.
-		};
-private:
-	unsigned char type;		// Type stored here.
-	union
-		{
-		long intval;
-		const char *str;
-		Usecode_value *array;
-		} value;
-					// Count array elements.
-	static int count_array(const Usecode_value& val);
-public:
-	inline Usecode_value() : type((unsigned char) int_type)
-		{ value.intval = 0; }
-	inline Usecode_value(int ival) : type((unsigned char) int_type)
-		{ value.intval = ival; }
-	Usecode_value(const char *s);
-					// Create array with 1st element.
-	Usecode_value(int size, Usecode_value *elem0) 
-			: type((unsigned char) array_type)
-		{
-		value.array = new Usecode_value[size + 1];
-		value.array[size].type = (unsigned char) end_of_array_type;
-		if (elem0)
-			value.array[0] = *elem0;
-		}
-	~Usecode_value();
-	Usecode_value &operator=(const Usecode_value& v2);
-					// Copy ctor.
-	inline Usecode_value(const Usecode_value& v2) : type((unsigned char) int_type)
-		{ *this = v2; }
-					// Comparator.
-	int operator==(const Usecode_value& v2);
-	inline Val_type get_type() const
-		{ return (Val_type) type; }
-	int get_array_size() const		// Get size of array.
-		{ return type == (int) array_type ? count_array(*this) : 0; }
-	bool is_array() const
-		{ return type == (int) array_type; }
-	bool is_int() const
-		{ return type == (int) int_type; }
-	long get_int_value() const	// Get integer value.
-		{ return (type == (int) int_type ? value.intval : 0); }
-					// Get string value.
-	const char *get_str_value() const
-		{ return (type == (int) string_type ? value.str : 0); }
-					// Add array element. (No checking!)
-	void put_elem(int i, Usecode_value& val)
-		{ value.array[i] = val; }
-					// Get an array element, or *this.
-	inline Usecode_value& get_elem(int i)
-		{
-		return type == (int) array_type ? value.array[i] : *this;
-		}
-	inline bool is_false() const			// Represents a FALSE value?
-		{
-		return is_int() ? value.intval == 0
-				: is_array() ? value.array[0].type == 
-					(int) end_of_array_type : 0;
-		}
-	inline bool is_true() const
-		{ return !is_false(); }
-
-	int resize(int new_size);	// Resize array.
-					// Look in array for given value.
-	int find_elem(const Usecode_value& val);
-					// Concat. to end of this array.
-	Usecode_value& concat(Usecode_value& val2);
-					// Add value(s) to an array.
-	int add_values(int index, Usecode_value& val2);
-	void print(ostream& out);	// Print in ASCII.
-	};
 
 /*
  *	A single function:
@@ -194,30 +111,12 @@ class Usecode_machine
 	Usecode_value *stack;		// Stack.
 	Usecode_value *sp;		// Stack ptr.  Grows upwards.
 	void stack_error(int under);
-	inline void push(Usecode_value& val)	// Push/pop stack.
-		{ *sp++ = val; }
-	inline Usecode_value pop()		// +++++Watch for too many str. copies.
-		{ 
-		if (sp <= stack)
-			stack_error(1);
-		return *--sp; 
-		}
-	inline void pushi(long val)		// Push/pop integers.
-		{
-		Usecode_value v(val);
-		push(v);
-		}
-	inline int popi()
-		{
-		Usecode_value val = pop();
-		return (val.get_int_value());
-		}
+	void push(Usecode_value& val);	// Push/pop stack.
+	Usecode_value pop();
+	void pushi(long val);		// Push/pop integers.
+	int popi();
 					// Push/pop strings.
-	inline void pushs(char *s)
-		{
-		Usecode_value val(s);
-		push(val);
-		}
+	void pushs(char *s);
 	Answers answers;		// What user can click on.
 	deque< Answers > answer_stack;
 					// Get ->obj. from 'itemref'.
@@ -229,7 +128,6 @@ class Usecode_machine
 	/*
 	 *	Built-in usecode functions:
 	 */
-public:
 	typedef Usecode_value (Usecode_machine::*UsecodeIntrinsicFn)(
 		int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 
@@ -269,6 +167,11 @@ public:
          *	Embedded intrinsics
 	 */
 
+	static struct IntrinsicTableEntry
+		{
+		UsecodeIntrinsicFn	func;
+		const char *name;
+		} intrinsic_table[];
 	Usecode_value	Execute_Intrinsic(UsecodeIntrinsicFn func,const char *name,int event,int intrinsic,int num_parms,Usecode_value parms[12]);
 	USECODE_INTRINSIC_DECL(NOP);
 	USECODE_INTRINSIC_DECL(UNKNOWN);
@@ -367,9 +270,6 @@ public:
 	USECODE_INTRINSIC_DECL(fade_palette);
 	USECODE_INTRINSIC_DECL(get_party_list2);
 
-
-
-
 	/*
 	 *	Other private methods:
 	 */
@@ -412,20 +312,7 @@ public:
 	int in_usecode()		// Currently in a usecode function?
 		{ return call_depth > 0; }
 					// Call desired function.
-	int call_usecode(int id, Game_object *obj, Usecode_events event)
-		{
-					// Avoid these when already execing.
-		if (call_depth && event == npc_proximity)
-			return (0);
-		Game_object *prev_item = caller_item;
-		caller_item = obj;
-		answers.clear();
-		Usecode_value parm(0);	// They all seem to take 1 parm.
-		int ret = call_usecode_function(id, event, &parm);
-		set_book(0);
-		caller_item = prev_item;
-		return ret;
-		}
+	int call_usecode(int id, Game_object *obj, Usecode_events event);
 	int write();			// Write out 'gamedat/usecode.dat'.
 	int read();			// Reat in 'gamedat/usecode.dat'.
 	void link_party();		// Set party's id's.
