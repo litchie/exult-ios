@@ -1089,6 +1089,8 @@ void ExultStudio::setup_file_list() {
 #if 0	/* Skip this until we can do something with these files. */
 	add_to_tree(model, "FLEX Files", "*.flx", FlexArchive);
 #endif
+					// Expand all entries.
+	gtk_tree_view_expand_all(GTK_TREE_VIEW(file_list));
 	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(file_list), TRUE);
 	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(file_list)), GTK_SELECTION_SINGLE);
 }
