@@ -1874,12 +1874,6 @@ USECODE_INTRINSIC(run_usecode)
 	if (obj && Game::get_game_type() == SERPENT_ISLE &&
 	    Scheduled_usecode::find(obj))	// Usecode scheduled?
 		return no_ret;
-#else
-					// ++++++To fix tattooing in SI, since
-					// there's something we don't under-
-					// stand about this.+++++++++
-	if (ucfun == 0x28c && Game::get_game_type() == SERPENT_ISLE)
-		return no_ret;
 #endif
 	if (obj)
 		call_usecode(ucfun, obj, 

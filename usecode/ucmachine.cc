@@ -1387,21 +1387,11 @@ Usecode_machine::~Usecode_machine
 	int num_slots = sizeof(funs)/sizeof(funs[0]);
 	for (int i = 0; i < num_slots; i++)
 		{
-#if 0
-		Vector *slot = (Vector *) funs->get(i);
-		if (!slot)
-			continue;
-		int cnt = slot->get_cnt();
-		for (int j = 0; j < cnt; j++)
-			delete (Usecode_function *) slot->get(j);
-		delete slot;
-#endif
 		vector<Usecode_function*>& slot = funs[i];
 		int cnt = slot.size();
 		for (int j = 0; j < cnt; j++)
 			delete slot[j];
 		}
-//	delete funs;
 	delete book;
 	}
 

@@ -73,19 +73,25 @@ void Container_game_object::remove
 int Container_game_object::add
 	(
 	Game_object *obj,
-	int dont_check			// 1 to skip volume check.
+	int dont_check			// 1 to skip volume/recursion check.
 	)
 	{
 	if (obj->get_shapenum() == get_shapenum())
 		return (0);		// Can't put a bag in a bag.
+	int objvol = obj->get_volume();
 	int maxvol;			// Note:  NPC's have 0 volume.
-	if (!dont_check && (maxvol = get_max_volume()) > 0)
+	if (!dont_check)
 		{
-		int objvol = obj->get_volume();
-		if (objvol + volume_used > maxvol)
+		if ((maxvol = get_max_volume()) > 0 &&
+						objvol + volume_used > maxvol)
 			return (0);	// Doesn't fit.
-		volume_used += objvol;
+		Game_object *parent = this;
+		do			// Watch for snake eating itself.
+			if (obj == parent)
+				return 0;
+		while ((parent = parent->get_owner()) != 0);
 		}
+	volume_used += objvol;
 	obj->set_owner(this);		// Set us as the owner.
 	objects.append(obj);		// Append to chain.
 					// Guessing:
