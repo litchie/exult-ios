@@ -1,3 +1,7 @@
+2001-01-05  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* exult.cc: ugly temporary hack to fix compiler error.
+	* ready.h, actors.h: removed warnings
+
 2001-01-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* shapes/font.cc: applied Frederic Wagner's french-version patch
 

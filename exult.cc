@@ -32,7 +32,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <unistd.h>
 
 #include "SDL.h"
+
+#define Font _XFont_
 #include "SDL_syswm.h"
+#undef Font
 
 #ifdef XWIN  /* Only needed in XWIN. */
 #include <sys/time.h>
@@ -43,7 +46,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <mmsystem.h>   //for MM_MCINOTIFY message
 #include "audio/midi_drivers/win_MCI.h"
 #endif
-
 
 #include "gamewin.h"
 #include "actors.h"
@@ -60,6 +62,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "game.h"
 #include "barge.h"
 #include "cheat.h"
+
 
 using std::cerr;
 using std::cout;
