@@ -33,6 +33,7 @@
 #include "vgafile.h"
 #include "gameclk.h"
 #include "schedule.h"
+#include "ucmachine.h"
 
 extern void make_screenshot(bool silent=false);
 
@@ -225,6 +226,10 @@ void CheatScreen::SharedPrompt (char *input, const Cheat_Prompt &mode)
 
 		case CP_Lift:
 		font->paint_text_fixedwidth(ibuf, "Enter Lift. (-1 to cancel.)", 0, maxy-9, 8);
+		break;
+
+		case CP_GFlagNum:
+		font->paint_text_fixedwidth(ibuf, "Enter Global Flag 0-1023. (-1 to cancel.)", 0, maxy-9, 8);
 		break;
 
 
@@ -457,6 +462,9 @@ void CheatScreen::NormalMenu ()
 	// Create Item
 	font->paint_text_fixedwidth(ibuf, "[C]reate Item", 160, maxy-81, 8);
 
+	// Global Flag Modify
+	font->paint_text_fixedwidth(ibuf, "[F]lag Modifier", 160, maxy-72, 8);
+
 	// eXit
 	font->paint_text_fixedwidth(ibuf, "[X]it", 160, maxy-36, 8);
 
@@ -530,6 +538,14 @@ void CheatScreen::NormalActivate (char *input, int &command, Cheat_Prompt &mode)
 		mode = CP_NotAvail;
 		break;
 
+		// Global Flag Editor
+		case 'f':
+		if (npc < -1) mode = CP_InvalidValue;
+		else if (npc > 1023) mode = CP_InvalidValue;
+		else if (npc == -1 || !input[0]) mode = CP_Canceled;
+		else mode = GlobalFlagLoop(npc);
+		break;
+
 		// Paperdolls
 		case 'p':
 		if (Game::get_game_type() == BLACK_GATE && gwin->can_use_paperdolls())
@@ -585,6 +601,11 @@ bool CheatScreen::NormalCheck (char *input, int &command, Cheat_Prompt &mode, bo
 		// NPC Tool
 		case 'n':
 		mode = CP_ChooseNPC;
+		break;
+
+		// Global Flag Editor
+		case 'f':
+		mode = CP_GFlagNum;
 		break;
 
 		// X and Escape leave
@@ -716,6 +737,151 @@ CheatScreen::Cheat_Prompt CheatScreen::TimeSetLoop ()
 	return CP_ClockSet;
 }
 
+
+//
+// Global Flags
+//
+
+CheatScreen::Cheat_Prompt CheatScreen::GlobalFlagLoop (int num)
+{
+	bool looping = true;
+
+	// This is for the prompt message
+	Cheat_Prompt mode = CP_Command;
+
+	// This is the command
+	char input[17];
+	int i;
+	int command;
+	bool activate = false;
+	char	buf[512];
+		
+	for (i = 0; i < 17; i++) input[i] = 0;
+
+	Usecode_machine *usecode = Game_window::get_game_window()->get_usecode();
+
+	while (looping)
+	{
+		gwin->clear_screen();
+
+
+		NormalDisplay();
+
+
+		// First the info
+		std::snprintf (buf, 512, "Global Flag %i", num);
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-99, 8);
+
+		std::snprintf (buf, 512, "Flag is %s", usecode->get_global_flag(num)?"SET":"UNSET");
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-90, 8);
+
+
+		// Now the Menu Column
+		if (!usecode->get_global_flag(num)) font->paint_text_fixedwidth(ibuf, "[S]et Flag", 160, maxy-99, 8);
+		else font->paint_text_fixedwidth(ibuf, "[U]nset Flag", 160, maxy-99, 8);
+
+		// Change Flag
+		font->paint_text_fixedwidth(ibuf, "[*] Change Flag", 0, maxy-72, 8);
+		if (num > 0 && num < 1023) font->paint_text_fixedwidth(ibuf, "[+-] Scroll Flags", 0, maxy-63, 8);
+		else if (num == 0) font->paint_text_fixedwidth(ibuf, "[+] Scroll Flags", 0, maxy-63, 8);
+		else font->paint_text_fixedwidth(ibuf, "[-] Scroll Flags", 0, maxy-63, 8);
+
+		font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy-36, 8);
+
+		// Finally the Prompt...
+		SharedPrompt(input, mode);
+
+		// Draw it!
+		pal.apply();
+
+		// Check to see if we need to change menus
+		if (activate)
+		{
+			if (command == '-')		// Decrement
+			{
+				num--;
+				if (num < 0) num = 0;
+			}
+			else if (command == '+')	// Increment
+			{
+				num++;
+				if (num > 1023) num = 1023;
+			}
+			else if (command == '*')	// Change Flag
+			{
+				i = std::atoi(input);
+				if (i < -1 || i > 1023) mode = CP_InvalidValue;
+				else if (i == -1) mode = CP_Canceled;
+				else if (input[0]) num = i;
+			}
+			else if (command == 's')	// Set
+			{
+				usecode->set_global_flag(num, 1);
+			}
+			else if (command == 'u')	// Unset
+			{
+				usecode->set_global_flag(num, 0);
+			}
+
+			for (i = 0; i < 17; i++) input[i] = 0;
+			mode = CP_Command;
+			command = 0;
+			activate = false;
+			continue;			
+		}
+
+		if (SharedInput (input, 17, command, mode, activate))
+		{
+			switch(command)
+			{
+				// Simple commands
+				case 's':	// Set Flag
+				case 'u':	// Unset flag
+				input[0] = command;
+				activate = true;
+				break;
+
+				// Decrement
+				case SDLK_KP_MINUS:
+				case '-':
+				command = '-';
+				input[0] = command;
+				activate = true;
+				break;
+
+				// Increment
+				case SDLK_KP_PLUS:
+				case '=':
+				command = '+';
+				input[0] = command;
+				activate = true;
+				break;
+
+				// * Change Flag
+				case SDLK_KP_MULTIPLY:
+				case '8':
+				command = '*';
+				input[0] = 0;
+				mode = CP_GFlagNum;
+				break;
+
+				// X and Escape leave
+				case SDLK_ESCAPE:
+				case 'x':
+				input[0] = command;
+				looping = false;
+				break;
+
+				default:
+				mode = CP_InvalidCom;
+				input[0] = command;
+				command = 0;
+				break;
+			}
+		}
+	}
+	return CP_Command;
+}
 
 //
 // NPCs
@@ -904,7 +1070,7 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		break;
 
 		case 's':	// stats
-		mode = CP_NotAvail;
+		StatLoop(actor);
 		break;
 
 		case 't':	// Target
@@ -916,11 +1082,13 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		break;
 
 		case 'e':	// Experience
-		mode = CP_NotAvail;
+		if (i < 0) mode = CP_InvalidNPC;
+		else actor->set_property (Actor::exp, i);
 		break;
 
 		case '`':	// Training Points
-		mode = CP_NotAvail;
+		if (i < 0) mode = CP_InvalidNPC;
+		else actor->set_property (Actor::training, i);
 		break;
 
 		case 'c':	// Change shape
@@ -1821,6 +1989,189 @@ bool CheatScreen::BusinessCheck (char *input, int &command, Cheat_Prompt &mode, 
 		default:
 		command = 0;
 		mode = CP_InvalidCom;
+		break;
+	}
+
+	return true;
+}
+
+//
+// NPC Stats
+//
+
+void CheatScreen::StatLoop (Actor *actor)
+{
+	int num = actor->get_npc_num();
+	bool looping = true;
+
+	// This is for the prompt message
+	Cheat_Prompt mode = CP_Command;
+
+	// This is the command
+	char input[17];
+	int i;
+	int command;
+	bool activate = false;
+		
+	for (i = 0; i < 17; i++) input[i] = 0;
+
+	while (looping)
+	{
+		gwin->clear_screen();
+
+		// First the display
+		NPCDisplay(actor, num);
+
+		// Now the Menu Column
+		StatMenu(actor);
+
+		// Finally the Prompt...
+		SharedPrompt(input, mode);
+
+		// Draw it!
+		pal.apply();
+
+		// Check to see if we need to change menus
+		if (activate)
+		{
+			StatActivate(input, command, mode, actor);
+			activate = false;
+			continue;			
+		}
+
+		if (SharedInput (input, 17, command, mode, activate))
+			looping = StatCheck(input, command, mode, activate, actor);
+	}
+}
+
+void CheatScreen::StatMenu (Actor *actor)
+{
+	char	buf[512];
+
+	// Left Column
+
+	// Dexterity
+	std::snprintf (buf, 512, "[D]exterity....%3i", actor->get_property(Actor::dexterity));
+	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-108, 8);
+
+	// Food Level
+	std::snprintf (buf, 512, "[F]ood Level...%3i", actor->get_property(Actor::food_level));
+	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-99, 8);
+
+	// Intelligence
+	std::snprintf (buf, 512, "[I]ntellicence.%3i", actor->get_property(Actor::intelligence));
+	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-90, 8);
+
+	// Strength
+	std::snprintf (buf, 512, "[S]trength.....%3i", actor->get_property(Actor::strength));
+	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-81, 8);
+
+	// Combat Skill
+	std::snprintf (buf, 512, "[C]ombat Skill.%3i", actor->get_property(Actor::combat));
+	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-72, 8);
+
+	// Hit Points
+	std::snprintf (buf, 512, "[H]it Points...%3i", actor->get_property(Actor::health));
+	font->paint_text_fixedwidth(ibuf, buf, 0, maxy-63, 8);
+
+	// Magic - Avatar Only
+	if (!actor->get_npc_num())
+	{
+		// Magic Points
+		std::snprintf (buf, 512, "[M]agic Points.%3i", actor->get_property(Actor::magic));
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-54, 8);
+
+		// Mana
+		std::snprintf (buf, 512, "[V]ana Level...%3i", actor->get_property(Actor::mana));
+		font->paint_text_fixedwidth(ibuf, buf, 0, maxy-45, 8);
+	}
+
+	// Exit
+	font->paint_text_fixedwidth(ibuf, "[X]it", 0, maxy-36, 8);
+
+
+}
+
+void CheatScreen::StatActivate (char *input, int &command, Cheat_Prompt &mode, Actor *actor)
+{
+	int i = std::atoi(input);
+
+	mode = CP_Command;
+	switch (command)
+	{
+		case 'd':	// Dexterity
+		actor->set_property(Actor::dexterity, i);
+		break;
+		
+		case 'f':	// Food Level
+		actor->set_property(Actor::food_level, i);
+		break;
+		
+		case 'i':	// Intelligence
+		actor->set_property(Actor::intelligence, i);
+		break;
+		
+		case 's':	// Strength
+		actor->set_property(Actor::strength, i);
+		break;
+		
+		case 'c':	// Combat Points
+		actor->set_property(Actor::combat, i);
+		break;
+		
+		case 'h':	// Hit Points
+		actor->set_property(Actor::health, i);
+		break;
+		
+		case 'm':	// Magic
+		actor->set_property(Actor::magic, i);
+		break;
+		
+		case 'v':	// [V]ana
+		actor->set_property(Actor::mana, i);
+		break;
+		
+
+		default:
+		break;
+	}
+	for (i = 0; i < 17; i++) input[i] = 0;
+	command = 0;
+}
+
+// Checks the input
+bool CheatScreen::StatCheck (char *input, int &command, Cheat_Prompt &mode, bool &activate, Actor *actor)
+{
+	switch(command)
+	{
+		// Everyone
+		case 'd':	// Dexterity
+		case 'f':	// Food Level
+		case 'i':	// Intelligence
+		case 's':	// Strength
+		case 'c':	// Combat Points
+		case 'h':	// Hit Points
+		input[0] = 0;
+		mode = CP_EnterValue;
+		break;
+
+		// Avatar Only
+		case 'm':	// Magic
+		case 'v':	// [V]ana
+		if (actor->get_npc_num()) command = 0;
+		else mode = CP_EnterValue;
+		input[0] = 0;
+		break;
+
+		// X and Escape leave
+		case SDLK_ESCAPE:
+		case 'x':
+		input[0] = command;
+		return false;
+
+		// Unknown
+		default:
+		command = 0;
 		break;
 	}
 

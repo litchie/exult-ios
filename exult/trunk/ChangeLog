@@ -1,3 +1,7 @@
+2001-06-17  Ryan Nunn <triforce@merlin.net.au>
+	* cheat_screen.cc : Added global flag modifier. Enabled NPC Experience,
+	  training, and general stat modifying.
+
 2001-06-17  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* gumps/Jawbone_gump.*: gump for the Serpent Jawbone
 	* gamewin.cc, gumps/Gump.cc, objs/contain.cc: use new gump
