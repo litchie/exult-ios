@@ -31,7 +31,6 @@ namespace std {
 using ::snprintf;
 }
 #else
-using std::snprintf;
 #endif
 
 #include "gamewin.h"

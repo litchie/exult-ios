@@ -47,7 +47,6 @@ namespace std {
 using ::snprintf;
 }
 #else
-using std::snprintf;
 #endif
 
 /*

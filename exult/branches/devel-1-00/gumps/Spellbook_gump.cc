@@ -36,7 +36,6 @@
 #  include <cstdio>
 #endif
 
-using std::snprintf;
 
 
 const int REAGENTS = 842;		// Shape #.

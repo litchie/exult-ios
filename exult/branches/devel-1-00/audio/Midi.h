@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2002  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,10 +18,6 @@
 
 #ifndef _MIDI_H_
 #define _MIDI_H_
-
-#if (_GNUG__ >= 2) && (!defined WIN32)
-#  pragma interface
-#endif
 
 #include <vector>
 #ifndef WIN32

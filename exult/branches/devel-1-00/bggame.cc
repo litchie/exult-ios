@@ -48,7 +48,6 @@ using std::rand;
 using std::strchr;
 using std::strlen;
 using std::toupper;
-using std::snprintf;
 
 enum
 {

@@ -20,10 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _MIDI_driver_Timidity_binary_h_
 #define _MIDI_driver_Timidity_binary_h_
 
-#if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma interface
-#endif
-
 #include <vector>
 #include <sys/types.h>
 #include "Flex.h"

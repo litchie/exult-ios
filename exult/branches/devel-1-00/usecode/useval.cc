@@ -44,7 +44,6 @@ using std::memcpy;
 using std::ostream;
 using std::setfill;
 using std::setw;
-using std::snprintf;
 using std::strcmp;
 using std::strlen;
 

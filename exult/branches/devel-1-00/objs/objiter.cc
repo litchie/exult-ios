@@ -30,30 +30,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "gamewin.h"
 #include "chunks.h"
 
-#ifdef _MSC_VER
-#pragma optimize("t", off)
-#endif
-
-// Make linker happy.
-
-void DummY()
-	{
-	Object_list dummylist;
-	Recursive_object_iterator dummy(dummylist);
-	Recursive_object_iterator_backwards dummyb(dummylist);
-	Recursive_object_iterator dum2((Game_object *)0);
-	Recursive_object_iterator_backwards dum2b((Game_object *)0);
-
-	dummy.get_next();
-	dummyb.get_next();
-	}
-
 /*
  *	Create to start after/before a given object within a chunk.
  */
 
 template<class D> 
-D_Recursive_object_iterator<D>::D_Recursive_object_iterator<D>
+D_Recursive_object_iterator<D>::D_Recursive_object_iterator
 	(
 	Game_object *start		// Start here.
 	) : elems(Game_window::get_game_window()->get_chunk(

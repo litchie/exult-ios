@@ -1,3 +1,8 @@
+2002-10-10  Max Horn  <max@quendi.de>
+
+	* synced with my recent (and some not so recent) changes to HEAD CVS:
+	all of these are there to get exult to compile on MacOS X again
+
 2002-09-29  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* actions.cc,pathfinder/*:  Integrated changes from 1.1x to fix
