@@ -2298,7 +2298,8 @@ struct
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4c
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4d
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4e
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4f
+	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x4f ++++called when you dbl-click
+				on FoV gem. (gift from LB) display area???
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x50
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x51
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x52
@@ -2703,7 +2704,7 @@ void Usecode_machine::run
 		{
 		int opcode = *ip++;
 #if DEBUG
-		if (debug >= 2)
+//		if (debug >= 2)
 			printf("SP = %d, IP = %04x, op = %02x\n", sp - stack,
 						ip - 1 - code, opcode);
 #endif
