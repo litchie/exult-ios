@@ -287,6 +287,7 @@ toolsclean:
 	del tools\wud.o tools\wud.exe 
 	del $(UCXT_OBJS) usecode\ucxt\src\ucxt.exe
 	del $(UCC_OBJS) usecode\compiler\ucc.exe ucparse.cc ucparse.h uclex.cc
+	del $(CONFREGRESS_OBJS) conf\confregress.exe
 
 toolsinstall: tools
 	if not exist $(U7PATH)\tools md $(U7PATH)\tools
