@@ -113,10 +113,10 @@ Explosion_effect::~Explosion_effect
 		explode->remove_this();
 		}
 	GOVector vec;			// Find objects near explosion.
-	int cnt = Game_object::find_nearby(vec, pos, -359, 3, 0);
-	for (int i = 0; i < cnt; i++)
+	Game_object::find_nearby(vec, pos, -359, 3, 0);
+	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Game_object *obj = vec.at(i);
+		Game_object *obj = *it;
 		obj->attacked(0, 704, 0);
 		}
 	}

@@ -213,7 +213,7 @@ public:
 	int get_dependency_count()	// Get objs. to paint first.
 		{ return dependencies.size(); }
 	Game_object *get_dependency(int i)
-		{ return dependencies.at(i); }
+		{ return dependencies[i]; }
 	void clear_dependencies();	// Remove all dependencies.
 					// Find nearby objects.
 	static int find_nearby(GOVector& vec, Tile_coord pos,

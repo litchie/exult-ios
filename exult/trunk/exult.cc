@@ -1297,8 +1297,7 @@ static void Try_key
 		GOVector keys;		// Get keys.
 		if (act->get_objects(keys, 641, qual, -359))
 			{
-			((Game_object *) keys.at(0))->activate(
-						gwin->get_usecode());
+			keys[0]->activate(gwin->get_usecode());
 			return;
 			}
 		}

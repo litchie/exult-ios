@@ -571,10 +571,11 @@ cout << "Egg type is " << (int) type << ", prob = " << (int) probability <<
 			{
 			int dist = data1&0xff;
 			GOVector eggs;
-			int cnt = find_nearby(eggs, 275, dist, 16);
-			for (int i = 0; i < cnt; i++)
+			find_nearby(eggs, 275, dist, 16);
+			for (GOVector::const_iterator it = eggs.begin();
+					it != eggs.end(); ++it)
 				{
-				Egg_object *egg = (Egg_object *) eggs.at(i);
+				Egg_object *egg = (Egg_object *) *it;
 				if (egg != this &&
 				    egg->criteria == external_criteria)
 					egg->activate(umachine, obj, 0);

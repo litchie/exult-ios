@@ -104,11 +104,11 @@ int Actor::ready_ammo
 	if (aobj && Ammo_info::is_in_family(aobj->get_shapenum(), ammo))
 		return 1;		// Already readied.
 	GOVector vec(50);		// Get list of all possessions.
-	int cnt = get_objects(vec, -359, -359, -359);
+	get_objects(vec, -359, -359, -359);
 	Game_object *found = 0;
-	for (int i = 0; i < cnt && !found; i++)
+	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Game_object *obj = vec.at(i);
+		Game_object *obj = *it;
 		if (Ammo_info::is_in_family(obj->get_shapenum(), ammo))
 			found = obj;
 		}
@@ -139,13 +139,13 @@ void Actor::ready_best_weapon
 		}
 	Game_window *gwin = Game_window::get_game_window();
 	GOVector vec(50);		// Get list of all possessions.
-	int cnt = get_objects(vec, -359, -359, -359);
+	get_objects(vec, -359, -359, -359);
 	Game_object *best = 0;
 	int best_damage = -20;
 	Ready_type wtype;
-	for (int i = 0; i < cnt; i++)
+	for (GOVector::const_iterator it = vec.begin(); it != vec.end(); ++it)
 		{
-		Game_object *obj = vec.at(i);
+		Game_object *obj = *it;
 		Shape_info& info = gwin->get_info(obj);
 		Weapon_info *winf = info.get_weapon_info();
 		if (!winf)
@@ -1719,9 +1719,9 @@ void Actor::die
 			tooheavy.push_back(item);
 		}
 					// Put the heavy ones back.
-	int cnt = tooheavy.size();
-	for (int i = 0; i < cnt; i++)
-		add( tooheavy.at(i), 1);
+	for (GOVector::const_iterator it = tooheavy.begin(); 
+						it != tooheavy.end(); ++it)
+		add(*it, 1);
 	gwin->add_dirty(body);
 	}
 
