@@ -1,4 +1,9 @@
 2001-01-12  Ryan Nunn <triforce@merlin.net.au>
+	* usecode/ucmachine.cc : add_cont_items returns num not added.
+	  remove_cont_items changed to return num removed. These changes now
+	  properly remove and add items during the initial SI teleport storm.
+
+2001-01-12  Ryan Nunn <triforce@merlin.net.au>
 	* Added Serpent Isle intrinsics set_polymorph (b3), remove_cont_items (37)
 	  and error_message (40).
 	* Added full support for polymorph mode for Serpent Isle NPCs.

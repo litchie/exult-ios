@@ -893,7 +893,7 @@ Usecode_value Usecode_machine::remove_cont_items
 	unsigned int quality = (unsigned int) qualval.get_int_value();
 
 	Game_object *obj = get_item(container);
-	if (obj) return Usecode_value (obj->remove_quantity(quantity, shapenum, quality, framenum));
+	if (obj) return Usecode_value (quantity - obj->remove_quantity(quantity, shapenum, quality, framenum));
 	return Usecode_value(0);
 	}
 
@@ -1316,7 +1316,7 @@ Usecode_machine::~Usecode_machine
 	}
 
 #if DEBUG
-int debug = 0;				// 2 for more stuff.
+int debug = 2;				// 2 for more stuff.
 static int ucbp_fun = -1, ucbp_ip = -1;	// Breakpoint.
 void Setbreak(int fun, int ip)
 	{ ucbp_fun = fun; ucbp_ip = ip; }
