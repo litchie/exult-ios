@@ -620,8 +620,10 @@ void Image_window::opengl_set_clip
 	int w, int h
 	)
 	{
+#if 0
 	glEnable(GL_SCISSOR_TEST);
 	glScissor(x*scale, (ibuf->height - y - h)*scale, w*scale, h*scale);
+#endif
 	}
 #endif
 

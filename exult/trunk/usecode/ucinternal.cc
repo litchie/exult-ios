@@ -1524,7 +1524,7 @@ Usecode_value Usecode_internal::call_intrinsic
 	}
 
 /*
- *	Wait for user to click.  (Mainly for testing).
+ *	Wait for user to click inside a conversation.
  */
 
 void Usecode_internal::click_to_continue
@@ -1534,7 +1534,7 @@ void Usecode_internal::click_to_continue
 	int xx, yy;
 	char c;
 	if (!gwin->get_pal()->is_faded_out())// If black screen, skip!
-		Get_click(xx, yy, Mouse::hand, &c);
+		Get_click(xx, yy, Mouse::hand, &c, false, conv);
 	conv->clear_text_pending();
 	//	user_choice = 0;		// Clear it.
 	}
@@ -1591,7 +1591,7 @@ int Usecode_internal::get_user_choice_num
 	do
 		{
 		char chr;		// Allow '1', '2', etc.
-		int result=Get_click(x, y, Mouse::hand, &chr);
+		int result=Get_click(x, y, Mouse::hand, &chr, false, conv);
 		if (result<=0) {	// ESC pressed, select 'bye' if poss.
 			choice_num = conv->locate_answer("bye");
 		} else if (chr) {		// key pressed

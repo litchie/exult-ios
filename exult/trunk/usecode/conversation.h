@@ -21,6 +21,7 @@
 
 #include "rect.h"
 #include "singles.h"
+#include "shapeid.h"
 #include <deque>
 #include <vector>
 #include <string>
@@ -29,7 +30,7 @@ class Npc_face_info;
 class Usecode_value;
 class Game_window;
 
-class Conversation : public Game_singletons {
+class Conversation : public Game_singletons, public Paintable{
  public:
   Conversation();
   ~Conversation();
@@ -60,7 +61,8 @@ class Conversation : public Game_singletons {
   void clear_avatar_choices();
   int conversation_choice(int x, int y);
   void set_slot(int i) { last_face_shown = i; }	// SI.
-  void paint();				// Paint entire conversation.
+  virtual void paint();			// Paint entire conversation.
+  void paint_faces(bool text = false);
 
   void add_answer(Usecode_value& val);
   void remove_answer(Usecode_value& val);

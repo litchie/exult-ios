@@ -24,8 +24,8 @@
 #endif
 
 #include "ucmachine.h"
-#include "conversation.h"
 #include "keyring.h"
+#include "conversation.h"
 
 
 Usecode_machine::Usecode_machine
