@@ -650,7 +650,7 @@ int Actor::find_best_spot
 		{
 	case spell:
 	case other_spell:
-	case one_handed_weapon:
+	case one_handed_weapon:			// Also includes shields.
 	case tongs:
 		{
 		int spot = free_hand();
@@ -1435,7 +1435,7 @@ int Actor::get_armor_points
 	{
 	int points = 0;
 	static enum Spots aspots[] = {neck, torso, lfinger, rfinger, head,
-					legs, feet};
+					rhand, legs, feet};
 	const int num_armor_spots = sizeof(aspots)/sizeof(aspots[0]);
 	Game_window *gwin = Game_window::get_game_window();
 	for (int i = 0; i < num_armor_spots; i++)
