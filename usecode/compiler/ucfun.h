@@ -59,6 +59,8 @@ class Uc_function
 	std::map<std::string, Uc_label *> labels;
 	char *text_data;		// All strings.
 	int text_data_size;
+					// Map string to its offset.
+	std::map<std::string, int> text_map;
 	Uc_statement *statement;	// Statement(s) in function.
 
 	int reloffset; // relative offset of the code being generated
