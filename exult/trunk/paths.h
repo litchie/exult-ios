@@ -41,6 +41,8 @@ class Actor_pathfinder_client : public Pathfinder_client
 public:
 	Actor_pathfinder_client(int mf = 1 << 5)
 		{ set_move_flags(mf); }
+					// Figure when to give up.
+	virtual int get_max_cost(int cost_to_goal);
 					// Figure cost for a single step.
 	virtual int get_step_cost(Tile_coord from, Tile_coord& to);
 					// Estimate cost between two points.

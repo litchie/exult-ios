@@ -636,6 +636,9 @@ void Actor::set_schedule_type
 		case Schedule::sit:
 			schedule = new Sit_schedule(this);
 			break;
+		case Schedule::waiter:
+			schedule = new Waiter_schedule(this);
+			break;
 		case Schedule::patrol:
 			schedule = new Patrol_schedule(this);
 			break;
