@@ -1,3 +1,6 @@
+2001-01-10  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
+	* files/utils.cc: always #include <unistd.h> (not just on MacOS)
+
 2001-01-10  Max Horn  <max@quendi.de>
 	* autoarray.h: added check for access to negative indices
 	* game.cc: changed to use U7chdir instead of chdir
