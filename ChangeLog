@@ -1,5 +1,5 @@
 2001-06-16  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
-	* usecode/compiler/Makefile.am: only clean uclex.cc/ucparse.cc on maintainer-clean
+	* usecode/compiler/Makefile.am: only clean uclex.cc/ucparse.cc on maintainer-clean (thanks to Robert Bihlmeyer)
 
 2001-06-15  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* data/exult_si.flx, data/si/*: new data file (exult_si.flx)
