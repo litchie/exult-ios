@@ -1,3 +1,7 @@
+2000-12-13  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Adding drag-and-drop support (but not working yet).
+
 2000-12-13  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* drag.cc: fixed 'hack-moving monsters crash' bug
 	re-center screen when hack-moving yourself,
