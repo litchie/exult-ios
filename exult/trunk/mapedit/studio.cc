@@ -876,9 +876,13 @@ void ExultStudio::read_from_server
 	case Exult_server::swap_terrain:
 	case Exult_server::insert_terrain:
 		if (waiting_for_server)	// Send msg. to callback.
+			{
 			waiting_for_server(id, data, datalen, waiting_client);
-		waiting_for_server = 0;
-		waiting_client = 0;
+			waiting_for_server = 0;
+			waiting_client = 0;
+			}
+		else if (browser)
+			browser->server_response((int) id, data, datalen);
 		break;
 		}
 	}

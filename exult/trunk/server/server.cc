@@ -269,7 +269,7 @@ static void Handle_client_message
 		}
 	case Exult_server::insert_terrain:
 		{
-		int tnum = Read2(ptr);
+		int tnum = (short) Read2(ptr);
 		bool dup = *ptr++ ? true : false;
 		bool okay = gwin->get_map()->insert_terrain(tnum, dup);
 		*ptr++ = okay ? 1 : 0;

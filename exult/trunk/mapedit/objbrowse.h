@@ -33,6 +33,7 @@ public:
 	virtual ~Object_browser();
 	
 	GtkWidget *get_widget();
+	virtual bool server_response(int id, unsigned char *data, int datalen);
 };
 
 #endif

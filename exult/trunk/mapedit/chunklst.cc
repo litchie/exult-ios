@@ -80,6 +80,7 @@ void Chunk_chooser::select
 	)
 	{
 	selected = new_sel;
+	enable_controls();
 	int chunknum = info[selected].num;
 					// Remove prev. selection msg.
 //	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
@@ -111,7 +112,6 @@ void Chunk_chooser::render
 					// Clear window first.
 	iwin->fill8(0);			// ++++Which color?
 	int chunknum = chunknum0;
-	chunkfile.seekg(chunknum*512);	// Get to first chunk.
 					// 16x16 tiles, each 8x8 pixels.
 	const int chunkw = 128, chunkh = 128;
 	int y = border;
@@ -122,7 +122,7 @@ void Chunk_chooser::render
 			{
 			iwin->set_clip(x, y, chunkw, chunkh);
 //			iwin->set_clip(0, 0, winw, winh);
-			render_chunk(x, y);
+			render_chunk(chunknum, x, y);
 			iwin->clear_clip();
 					// Store info. about where drawn.
 			info[info_cnt].set(chunknum, x, y, chunkw, chunkh);
@@ -142,18 +142,38 @@ void Chunk_chooser::render
 	}
 
 /*
- *	Render one chunk.  Assumes chunkfile is already set at correct spot
- *	to read.
+ *	Read in desired chunk if not already read.
+ *
+ *	Output:	->chunk, stored in chunklist.
+ */
+
+unsigned char *Chunk_chooser::get_chunk
+	(
+	int chunknum
+	)
+	{
+	unsigned char *data = chunklist[chunknum];
+	if (data)
+		return data;		// Already have it.
+	data = new unsigned char[512];
+	chunklist[chunknum] = data;
+	chunkfile.seekg(chunknum*512);
+	chunkfile.read(data, 512);
+	return data;
+	}
+
+
+/*
+ *	Render one chunk.
  */
 
 void Chunk_chooser::render_chunk
 	(
+	int chunknum,			// # to render.
 	int xoff, int yoff		// Where to draw it in iwin.
 	)
 	{
-	unsigned char buf[512];
-	chunkfile.read(reinterpret_cast<char *>(buf), 512);
-	unsigned char *data = &buf[0];
+	unsigned char *data = get_chunk(chunknum);
 	int y = c_tilesize;
 	for (int ty = 0; ty < c_tiles_per_chunk; ty++, y += c_tilesize)
 		{
@@ -247,7 +267,6 @@ gint Chunk_chooser::mouse_press
 			chooser->selected = i;
 			chooser->locate_cx = chooser->locate_cy = -1;
 			chooser->render();
-			chooser->enable_controls();
 			chooser->show();
 					// Tell client.
 			if (chooser->sel_changed)
@@ -414,6 +433,35 @@ on_loc_chunk_up_clicked               (GtkButton       *button,
 	chooser->locate(true);
 }
 
+extern "C" void
+on_insert_chunk_new_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Chunk_chooser *chooser = (Chunk_chooser *) user_data;
+	chooser->insert(false);
+}
+extern "C" void
+on_insert_chunk_dup_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Chunk_chooser *chooser = (Chunk_chooser *) user_data;
+	chooser->insert(true);
+}
+
+extern "C" void
+on_move_chunk_down_clicked            (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Chunk_chooser *chooser = (Chunk_chooser *) user_data;
+	chooser->move(false);
+}
+extern "C" void
+on_move_chunk_up_clicked              (GtkButton       *button,
+                                        gpointer         user_data)
+{
+	Chunk_chooser *chooser = (Chunk_chooser *) user_data;
+	chooser->move(true);
+}
 /*
  *	Create box with 'find' and 'edit' controls.
  */
@@ -501,6 +549,18 @@ GtkWidget *Chunk_chooser::create_controls
 	gtk_signal_connect (GTK_OBJECT (loc_chunk_up), "clicked",
                       GTK_SIGNAL_FUNC (on_loc_chunk_up_clicked),
                       this);
+	gtk_signal_connect (GTK_OBJECT (insert_chunk_new), "clicked",
+			GTK_SIGNAL_FUNC (on_insert_chunk_new_clicked),
+			this);
+	gtk_signal_connect (GTK_OBJECT (insert_chunk_dup), "clicked",
+			GTK_SIGNAL_FUNC (on_insert_chunk_dup_clicked),
+			this);
+	gtk_signal_connect (GTK_OBJECT (move_chunk_down), "clicked",
+			GTK_SIGNAL_FUNC (on_move_chunk_down_clicked),
+			this);
+	gtk_signal_connect (GTK_OBJECT (move_chunk_up), "clicked",
+			GTK_SIGNAL_FUNC (on_move_chunk_up_clicked),
+			this);
 	return topframe;
 	}
 
@@ -546,6 +606,7 @@ Chunk_chooser::Chunk_chooser
 	{
 	chunkfile.seekg(0, std::ios::end);	// Figure total #chunks.
 	num_chunks = chunkfile.tellg()/(c_tiles_per_chunk*c_tiles_per_chunk*2);
+	chunklist.resize(num_chunks);	// Init. list of ->'s to chunks.
 	guint32 colors[256];
 	for (int i = 0; i < 256; i++)
 		colors[i] = (palbuf[3*i]<<16)*4 + (palbuf[3*i+1]<<8)*4 + 
@@ -628,8 +689,44 @@ Chunk_chooser::~Chunk_chooser
 	{
 	gtk_widget_destroy(get_widget());
 	delete [] info;
+	int i;
+	for (i = 0; i < num_chunks; i++)// Delete all the chunks.
+		delete chunklist[i];
 	}
-	
+
+/*
+ *	Handle response from server.
+ *
+ *	Output:	true if handled here.
+ */
+
+/*
+ *	Server response from 'locate'.
+ */
+
+bool Chunk_chooser::server_response
+	(
+	int id,
+	unsigned char *data,
+	int datalen
+	)
+	{
+	switch ((Exult_server::Msg_type) id)
+		{
+	case Exult_server::locate_terrain:
+		locate_response(data, datalen);
+		return true;
+	case Exult_server::insert_terrain:
+		insert_response(data, datalen);
+		return true;
+	case Exult_server::swap_terrain:
+		swap_response(data, datalen);
+		return true;
+	default:
+		return false;
+		}
+	}
+
 /*
  *	Unselect.
  */
@@ -664,27 +761,6 @@ void Chunk_chooser::unselect
 	}
 
 /*
- *	Server response from 'locate'.
- */
-
-static void Locate_response
-	(
-	Exult_server::Msg_type id,
-	unsigned char *data,
-	int datalen,
-	void *client
-	)
-	{
-	if (id != Exult_server::locate_terrain)
-		{
-		cout << "Locate_response:  received wrong id " << (int) id
-								<< endl;
-		return;
-		}
-	((Chunk_chooser *) client)->locate_response(data, datalen);
-	}
-
-/*
  *	Locate terrain on game map.
  */
 
@@ -703,10 +779,8 @@ void Chunk_chooser::locate
 	Write2(ptr, locate_cy);
 	*ptr++ = upwards ? 1 : 0;
 	ExultStudio *studio = ExultStudio::get_instance();
-	if (!studio->send_to_server(
-			Exult_server::locate_terrain, data, ptr - data))
-		return;			// Failed to send data.
-	studio->set_response_callback(Locate_response, this);
+	studio->send_to_server(
+			Exult_server::locate_terrain, data, ptr - data);
 	}
 
 /*
@@ -735,3 +809,118 @@ void Chunk_chooser::locate_response
 		}
 	}
 
+/*
+ *	Insert a new chunk terrain into the list.
+ */
+
+void Chunk_chooser::insert
+	(
+	bool dup
+	)
+	{
+	if (dup && selected < 0)
+		return;			// Shouldn't happen.
+	unsigned char data[Exult_server::maxlength];
+	unsigned char *ptr = &data[0];
+	int tnum = selected >= 0 ? info[selected].num : -1;
+	Write2(ptr, tnum);
+	*ptr++ = dup ? 1 : 0;
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->send_to_server(
+			Exult_server::insert_terrain, data, ptr - data);
+	}
+
+/*
+ *	Response from server to an 'insert'.
+ */
+
+void Chunk_chooser::insert_response
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+	unsigned char *ptr = data;
+	int tnum = (short) Read2(ptr);
+	bool dup = *ptr++ ? true : false;
+	bool okay = *ptr ? true : false;
+	if (!*ptr)
+		cout << "Terrain insert failed." << endl;
+	else
+		{			// Insert in our list.
+		unsigned char *data = new unsigned char[512];
+		if (dup && tnum >= 0 && tnum < num_chunks && chunklist[tnum])
+			memcpy(data, chunklist[tnum], 512);
+		else
+			memset(data, 0, 512);
+		if (tnum >= 0 && tnum < num_chunks - 1)
+			chunklist.insert(chunklist.begin() + tnum + 1, data);
+		else			// If -1, append to end.
+			chunklist.push_back(data);
+		num_chunks++;
+		render();
+		show();
+		}
+	}
+
+/*
+ *	Move currently-selected chunk up or down.
+ */
+
+void Chunk_chooser::move
+	(
+	bool upwards
+	)
+	{
+	if (selected < 0 || (selected == 0 && upwards))
+		return;			// Shouldn't happen.
+	unsigned char data[Exult_server::maxlength];
+	unsigned char *ptr = &data[0];
+	int tnum = info[selected].num;
+	if (upwards)			// Going to swap tnum & tnum+1.
+		tnum--;
+	Write2(ptr, tnum);
+	ExultStudio *studio = ExultStudio::get_instance();
+	studio->send_to_server(
+			Exult_server::swap_terrain, data, ptr - data);
+	}
+
+/*
+ *	Response from server to a 'swap'.
+ */
+
+void Chunk_chooser::swap_response
+	(
+	unsigned char *data,
+	int datalen
+	)
+	{
+	unsigned char *ptr = data;
+	int tnum = (short) Read2(ptr);
+	bool okay = *ptr ? true : false;
+	if (!*ptr)
+		cout << "Terrain insert failed." << endl;
+	else if (tnum >= 0 && tnum < num_chunks - 1)
+		{
+		unsigned char *tmp = get_chunk(tnum);
+		chunklist[tnum] = get_chunk(tnum + 1);
+		chunklist[tnum + 1] = tmp;
+		if (selected >= 0)	// Update selected.
+			{
+			if (info[selected].num == tnum)
+				{
+				if (selected < info_cnt - 1)
+					select(selected + 1);
+				//+++++Else want to scroll down.
+				}
+			else if (info[selected].num == tnum + 1)
+				{
+				if (selected > 0)
+					select(selected - 1);
+				// +++++Else want to scroll up.
+				}
+			}
+		render();
+		show();
+		}
+	}

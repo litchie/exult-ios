@@ -25,6 +25,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <vector>
 #include "objbrowse.h"
 #include "rect.h"
 #include "shapedraw.h"
@@ -59,6 +60,8 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 	guint sbar_sel;			// Status bar context for selection.
 	GtkWidget *chunk_scroll;	// Vertical scrollbar.
 	int num_chunks;			// Total # of chunks.
+					// List of chunks we've read in.
+	vector<unsigned char *> chunklist;
 	int chunknum0;			// Chunk # of leftmost in
 					//   displayed list.
 	Chunk_info *info;		// An entry for each chunk drawn.
@@ -75,7 +78,8 @@ class Chunk_chooser: public Object_browser, public Shape_draw
 		{ show(0, 0, draw->allocation.width, draw->allocation.height);}
 	void select(int new_sel);	// Show new selection.
 	virtual void render();		// Draw list.
-	void render_chunk(int xoff, int yoff);
+	unsigned char *get_chunk(int chunknum);
+	void render_chunk(int chunknum, int xoff, int yoff);
 	void scroll(int newindex);	// Scroll.
 	GtkWidget *create_controls();
 	void enable_controls();		// Enable/disable controls after sel.
@@ -84,6 +88,7 @@ public:
 	Chunk_chooser(Vga_file *i, std::istream& cfile, unsigned char *palbuf, 
 							int w, int h);
 	virtual ~Chunk_chooser();
+	virtual bool server_response(int id, unsigned char *data, int datalen);
 	
 					// Turn off selection.
 	void unselect(bool need_render = true);
@@ -114,6 +119,10 @@ public:
 	static void scrolled(GtkAdjustment *adj, gpointer data);
 	void locate(bool upwards);	// Locate terrain on game map.
 	void locate_response(unsigned char *data, int datalen);
+	void insert(bool dup);		// Insert new chunk.
+	void insert_response(unsigned char *data, int datalen);
+	void move(bool upwards);	// Move current selected chunk.
+	void swap_response(unsigned char *data, int datalen);
 	};
 
 #endif
