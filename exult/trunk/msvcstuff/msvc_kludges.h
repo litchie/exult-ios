@@ -20,6 +20,7 @@
 #define SIZEOF_INT 4
 #define DONT_HAVE_HASH_SET
 #define DONT_HAVE_HASH_MAP
+#define HAVE_OPENGL
 
 // Settings for debug builds
 #ifndef NDEBUG

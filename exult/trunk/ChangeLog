@@ -1,3 +1,12 @@
+2002-07-22  Ryan Nunn <triforc@merlin.net.au>
+	* gumps/Gump_manager.cc, gumps/Spellbook_gump.cc, usecode/ucinternal.cc:
+	  std stuff.
+	* msvcstuff/Exult.dsp, msvcstuff/msvc_kludges.h : Just enabled OpenGL
+	  for myself.
+	* shapes/glshape.cc : Disabled Depth Writing and Testing (see inline
+	  note). Enabled Texture Clamping (vs wrapping) to clean up the output
+	  a bit. Added a note about Alpha Blending (no code change though).
+
 2002-07-22  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* glshape.h: dummy GL_manager class
 	* exult.cc, gamewin.cc, mouse.h: include glshape.h
