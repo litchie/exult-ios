@@ -521,6 +521,31 @@ Usecode_value Usecode_machine::get_party
 	}
 
 /*
+ *	Put text near an item.
+ */
+
+void Usecode_machine::item_say
+	(
+	Usecode_value& objval,
+	Usecode_value& strval
+	)
+	{
+	Game_object *obj = get_item(objval.get_int_value());
+	char *str = strval.get_str_value();
+	if (obj && str && *str)
+		{
+		int cx, cy;		// Need chunk coords.
+		if (!obj->get_chunk(cx, cy))
+			{		// Unknown?  Use main char.
+			obj = gwin->get_main_actor();
+			obj->get_chunk(cx, cy);
+			}
+		Rectangle box = gwin->get_shape_rect(obj, cx, cy);
+		gwin->add_text(str, box.x, box.y);
+		}
+	}
+
+/*
  *	Call an intrinsic function.
  */
 
@@ -598,7 +623,6 @@ Usecode_value Usecode_machine::call_intrinsic
 			high = tmp;
 			}
 		int val = (rand() % (high - low + 1)) + low;
-cout << "Rand. value = " << val << '\n';
 		return (Usecode_value(val));
 		}
 	case 0x11:			// Get item shape.
@@ -708,15 +732,8 @@ cout << "Rand. value = " << val << '\n';
 		return Usecode_value(gwin->get_minute());
 		break;
 	case 0x40:			// Show str. near item (item, str).
-		{
-		//+++++++++
-		Game_object *obj = get_item(parms[0].get_int_value());
-		char *str = parms[1].get_str_value();
-		if (obj)
-			cout << "Say '" << str << "' near '" << 
-				obj->get_name() << "'\n";
+		item_say(parms[0], parms[1]);
 		break;
-		}
 	case 0x48:			// Display map.
 		//++++++++++++
 		break;

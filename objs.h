@@ -147,6 +147,9 @@ public:
 	virtual void activate(Usecode_machine *umachine);
 	virtual int get_schedule()	// Return NPC schedule.
 		{ return 11; }		// Loiter.
+					// Return chunk coords.
+	virtual int get_chunk(int &cxret, int& cyret)
+		{ return 0; }		// We don't know them.
 	virtual char *get_name();
 	virtual void set_property(int prop, int val)
 		{  }
@@ -415,6 +418,13 @@ public:
 					// Start moving.
 	void start(Game_window *gwin,
 			unsigned long destx, unsigned long desty, int speed);
+					// Return chunk coords.
+	virtual int get_chunk(int &cxret, int& cyret)
+		{
+		cxret = cx;
+		cyret = cy;
+		return 1;
+		}
 					// Figure next frame location.
 	virtual int next_frame(timeval& time,
 		int& new_cx, int& new_cy, int& new_sx, int& new_sy,

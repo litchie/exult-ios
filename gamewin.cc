@@ -1256,26 +1256,36 @@ void Game_window::show_items
 					// Stagger if more than 1.
 			int tx = x + i*win->get_text_width(font12, " ");
 			int ty = y + i*win->get_text_height(font12);
-			Text_object *txt = new Text_object(item_name,
-				chunkx + tx/chunksize, chunky + ty/chunksize,
-				(tx%chunksize)/tilesize,
-				(ty%chunksize)/tilesize,
-				8 + win->get_text_width(font12, item_name),
-				8 + win->get_text_height(font12));
-					// Draw it.
-			paint_text(txt);
-					// Insert into chain.
-			txt->next = texts->next;
-			txt->prev = 0;
-			if (txt->next)
-				txt->next->prev = txt;
-			texts = txt;
-			timeval curval;	// Show for a couple seconds.
-			gettimeofday(&curval, 0);
-			curval.tv_sec += 2;
-			tqueue->add(curval, txt, (long) this);
+			add_text(item_name, tx, ty);
 			}
 		}
+	}
+
+/*
+ *	Add a text object at a given spot.
+ */
+
+void Game_window::add_text
+	(
+	char *msg,
+	int x, int y			// Pixel coord. on screen.
+	)
+	{
+	Text_object *txt = new Text_object(msg,
+		chunkx + x/chunksize, chunky + y/chunksize,
+		(x%chunksize)/tilesize, (y%chunksize)/tilesize,
+				8 + win->get_text_width(font12, msg),
+				8 + win->get_text_height(font12));
+	paint_text(txt);		// Draw it.
+	txt->next = texts->next;	// Insert into chain.
+	txt->prev = 0;
+	if (txt->next)
+		txt->next->prev = txt;
+	texts = txt;
+	timeval curval;			// Show for a couple seconds.
+	gettimeofday(&curval, 0);
+	curval.tv_sec += 2;
+	tqueue->add(curval, txt, (long) this);
 	}
 
 /*

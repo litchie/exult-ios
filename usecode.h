@@ -225,6 +225,8 @@ class Usecode_machine
 	void add_to_party(int npc);
 	void remove_from_party(int npc);
 	Usecode_value get_party();
+	void item_say(Usecode_value& objval, Usecode_value& strval);
+
 	/*
 	 *	Other private methods:
 	 */
