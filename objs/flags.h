@@ -42,6 +42,7 @@ namespace  Obj_flags
 		in_motion = 26,		// ??Guessing (cart, boat)??
 		met = 28,			// Has the npc been met
 		// Flags > 31
+		tattooed = 33,			// Guess (SI).
 		petra = 35			// Guess
 	};
 }

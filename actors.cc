@@ -3125,6 +3125,16 @@ void Dead_body::decay
 					// Get those that are due.
 	while (in_world && in_world->decay_hour <= hour)
 		{
+					// In something?
+		if (in_world->get_owner())
+			{		// Don't delete.  Add back.
+			Dead_body *obj = in_world;
+			if (obj->next_body)
+				obj->next_body->prev_body = 0;
+			in_world = obj->next_body;
+			obj->link();	// Try again later.
+			continue;
+			}
 		gwin->add_dirty(in_world);
 		in_world->remove_this();
 		}

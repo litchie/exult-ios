@@ -388,19 +388,6 @@ Audio::Audio() : truthful_(false),speech_enabled(true), music_enabled(true),
 	music_enabled = (s!="no");
 	config->value("config/audio/effects/enabled",s,"---");
 	effects_enabled = (s!="no");
-					// Collection of .wav's?
-	string gametitle = Game::get_game_type() == BLACK_GATE ?
-		"blackgate" : "serpentisle";
-	string d = "config/disk/game/" + gametitle + "/waves";
-	config->value(d.c_str(), s, "---");
-	if (s != "---")
-		{
-		cerr << "Digital SFX's file specified: " << s << endl;
-		if (!U7exists(s.c_str()))
-			cerr << "... but file not found" << endl;
-		else
-			sfx_file = new Flex(s);
-		}
 
 	midi = 0; mixer = 0;
 }
@@ -464,6 +451,26 @@ void Audio::Init(int _samplerate,int _channels)
 	cout << "Audio initialisation OK" << endl;
 #endif
 }
+
+void	Audio::Init_sfx()
+	{
+	if (sfx_file)
+		return;			// Already done.
+					// Collection of .wav's?
+	string gametitle = Game::get_game_type() == BLACK_GATE ?
+		"blackgate" : "serpentisle";
+	string s;
+	string d = "config/disk/game/" + gametitle + "/waves";
+	config->value(d.c_str(), s, "---");
+	if (s != "---")
+		{
+		cerr << "Digital SFX's file specified: " << s << endl;
+		if (!U7exists(s.c_str()))
+			cerr << "... but file not found" << endl;
+		else
+			sfx_file = new Flex(s);
+		}
+	}
 
 void	Audio::playfile(const char *fname,bool wait)
 {
