@@ -50,7 +50,7 @@ IMAGEWIN_OBJS=imagebuf.o imagewin.o iwin8.o ibuf8.o ibuf16.o imagescl.o \
 	savepcx.o
 SHAPES_OBJS=bodies.o items.o shapeinf.o shapevga.o vgafile.o font.o fontvga.o
 OBJS_OBJS=animate.o barge.o chunks.o contain.o egg.o iregobjs.o objs.o \
-	spellbook.o virstone.o
+	spellbook.o virstone.o jawbone.o
 # unused: test.o
 USECODE_OBJS=ucmachine.o ucsched.o intrinsics.o useval.o conversation.o
 OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS)
