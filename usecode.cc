@@ -1864,6 +1864,7 @@ USECODE_INTRINSIC(run_endgame)
 
 USECODE_INTRINSIC(get_array_size)
 	Usecode_value u(parms[0].get_array_size());
+					// ++++++++Return 1 if not an array?
 	USECODE_RETURN(u);
 }
 
