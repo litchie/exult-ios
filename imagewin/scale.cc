@@ -1279,7 +1279,7 @@ void Scale2x_noblur
 )
 {
 	dest += srcy*2*dline_pixels + srcx*2;
-	unsigned char *dest0 = dest, *dest1 = dest + 2*dline_pixels;
+	unsigned char *dest0 = dest, *dest1 = dest + dline_pixels;
 					// ->current row.
 	const unsigned char *src1 = src + srcy*sline_pixels + srcx;
 	const unsigned char *src0 = src1 - sline_pixels;	// ->prev. row.
@@ -1356,7 +1356,7 @@ void Scale2x_noblur
 			src0 -= sline_pixels;
 		limit_x += sline_pixels;
 		dest0 = dest1;
-		dest1 += 2*dline_pixels;
+		dest1 += dline_pixels;
 		}
 }
 
