@@ -281,6 +281,7 @@ class Sit_schedule : public Schedule
 public:
 	Sit_schedule(Actor *n, Game_object *ch = 0);
 	virtual void now_what();	// Now what should NPC do?
+	static bool is_occupied(Game_object *chairobj, Actor *actor);
 	static bool set_action(Actor *actor, Game_object *chairobj = 0,
 					int delay = 0);
 	};

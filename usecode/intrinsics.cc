@@ -1064,16 +1064,9 @@ USECODE_INTRINSIC(sit_down)
 	if (!npc)
 		return (no_ret);	// Doesn't look like an NPC.
 	Game_object *chair = get_item(parms[1]);
-	if (!chair)
+					// See if someone already there.
+	if (!chair || Sit_schedule::is_occupied(chair, npc))
 		return(no_ret);
-	Game_object_vector vec;			// See if someone already there.
-	chair->find_nearby(vec, c_any_shapenum, 1, 8);
-	for (Game_object_vector::const_iterator it = vec.begin(); it != vec.end(); ++it)
-		{
-		Game_object *obj = *it;
-		if ((obj->get_framenum()&0xf) == Actor::sit_frame)
-			return no_ret;	// Occupied.
-		}
 	npc->set_schedule_type(Schedule::sit, new Sit_schedule(npc, chair));
 	return(no_ret);
 }
