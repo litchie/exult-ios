@@ -1076,7 +1076,7 @@ int Game_window::find_objects
 				{
 				if (obj->get_lift() != lift)
 					continue;
-				Rectangle r = get_shape_rect(obj, cx, cy);
+				Rectangle r = get_shape_rect(obj);
 				if (r.has_point(x, y))
 					list[cnt++] = obj;
 				}
