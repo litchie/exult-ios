@@ -1,12 +1,12 @@
 /**	-*-mode: Fundamental; tab-width: 8; -*-
 **
- **	Handle access to one of the xxx.vga files.
+ **	Shapeinf.h: Info. about shapes read from various 'static' data files.
  **
  **	Written: 4/29/99 - JSF
  **/
 
-#ifndef INCL_VGAFILE
-#define INCL_VGAFILE	1
+#ifndef INCL_SHAPEINF
+#define INCL_SHAPEINF	1
 
 /*
 Copyright (C) 1998  Jeffrey S. Freedman
@@ -26,174 +26,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#include <fstream>
-#include <iostream>
-#ifdef MACOS
-  #include <cassert>
-#endif
-#include "fnames.h"
-#include "autoarray.h"
-
-class DataSource;
-class StreamDataSource;
-class Shape;
-class Image_buffer8;
-
-/*
- *	A shape from "shapes.vga":
- */
-class Shape_frame
-	{
-	unsigned char rle;		// 1 if run-length encoded.
-	unsigned char *data;		// The actual data.
-	short xleft;			// Extent to left of origin.
-	short xright;			// Extent to right.
-	short yabove;			// Extent above origin.
-	short ybelow;			// Extent below origin.
-	Shape_frame *reflect();		// Create new frame, reflected.
-					// Create RLE data & store in frame.
-	void create_rle(unsigned char *pixels, int w, int h);
-					// Create from RLE entry.
-	void get_rle_shape(DataSource& shapes, long filepos, long len);
-	
-public:
-	friend class Game_window;
-	friend class Shape;
-	Shape_frame() : data(0)
-		{  }
-					// Read in shape/frame.
-	unsigned char read(DataSource& shapes, unsigned long shapeoff,
-					unsigned long shapelen, int frnum);
-					// Paint.
-	void paint_rle(Image_buffer8 *win, int xoff, int yoff);
-	void paint_rle_translucent(Image_buffer8 *win, int xoff, int yoff,
-					Xform_palette *xforms, int xfcnt);
-	void paint_rle_transformed(Image_buffer8 *win, int xoff, int yoff,
-					Xform_palette xform);
-	void paint_rle_outline(Image_buffer8 *win, int xoff, int yoff,
-							unsigned char color);
-	int has_point(int x, int y);	// Is a point within the shape?
-	int get_width() const		// Get dimensions.
-		{ return xleft + xright + 1; }
-	int get_height() const
-		{ return yabove + ybelow + 1; }
-	int get_xleft()
-		{ return xleft; }
-	int get_xright()
-		{ return xright; }
-	int get_yabove()
-		{ return yabove; }
-	int get_ybelow()
-		{ return ybelow; }
-	int is_empty()
-		{ return data[0] == 0 && data[1] == 0; }
-	virtual ~Shape_frame()
-		{ delete [] data; }
-	};
-
-/*
- *	A shape from a .vga file consists of one of more frames.
- */
-class Shape
-	{
-protected:
-	Shape_frame **frames;		// List of ->'s to frames.
-	unsigned char num_frames;	// # of frames.
-					// Create reflected frame.
-	Shape_frame *reflect(DataSource& shapes, int shnum, int frnum);
-	void create_frames_list(int nframes);
-					// Read in shape/frame.
-	Shape_frame *read(DataSource& shapes, int shnum, int frnum);
-					// Store shape that was read.
-	Shape_frame *store_frame(Shape_frame *frame, int framenum);
-public:
-	friend class Vga_file;
-	
-	Shape() : frames(0), num_frames(0)
-		{  }
-	virtual ~Shape();
-	Shape_frame *get(DataSource& shapes, int shnum, int frnum)
-		{ 
-		return (frames && frnum < num_frames && frames[frnum]) ? 
-			frames[frnum] : read(shapes, shnum, frnum); 
-		}
-	int get_num_frames()
-		{ return num_frames; }
-	Shape_frame *get_frame(int framenum)
-		{ return framenum < num_frames ? frames[framenum] : 0; }
-	};
-
-/*
- *	A shape file just has one shape with multiple frames.  They're all
- *	read in during construction.
- */
-class Shape_file : public Shape
-	{
-public:
-	Shape_file(const char *nm);
-	Shape_file(DataSource& shape_source);
-	Shape_file();
-	virtual ~Shape_file() {}
-	void load(const char *nm);
-	void load(DataSource& shape_source);
-	};
-
-/*
- *	A class for accessing any .vga file:
- */
-class Vga_file
-	{
-	std::ifstream file;
-	DataSource *shape_source;
-protected:
-	int num_shapes;			// Total # of shapes.
-	Shape *shapes;			// List of ->'s to shapes' lists
-public:
-	Vga_file(const char *nm);
-	Vga_file();
-	void load(const char *nm);
-	virtual ~Vga_file();
-	int get_num_shapes()
-		{ return num_shapes; }
-	int is_good()
-		{ return (num_shapes != 0); }
-					// Get shape.
-	Shape_frame *get_shape(int shapenum, int framenum = 0)
-		{
-		assert(shapes!=0);	// Because if shapes is NULL
-					// here, we won't die on the dereference
-					// but we will return rubbish.
-		// I've put this assert in _before_ you know...
-		// So this isn't the first time we've had trouble here
-		Shape_frame *r=(shapes[shapenum].get(*shape_source, shapenum, framenum));
-		if(!r)
-			{
-#if DEBUG
-				std::cerr << "get_shape(" <<
-					shapenum << "," <<
-					framenum << ") -> NULL" << std::endl;
-#endif
-			}
-		return r;
-		}
-		
-	Shape *extract_shape(int shapenum)
-		{
-		assert(shapes!=0);
-		// Load all frames into memory
-		int count = get_num_frames(shapenum);
-		for(int i=1; i<count; i++)
-			get_shape(shapenum, i);
-		return &shapes[shapenum];
-		}
-					// Get # frames for a shape.
-	int get_num_frames(int shapenum)
-		{
-		get_shape(shapenum, 0);	// Force it into memory.
-		return shapes[shapenum].num_frames;
-		}
-	};
-	
 /*
  *	Specific information about weapons from 'weapons.dat':
  *	MAYBE:  Move this and ammo. to separate source file(s).
@@ -249,6 +81,8 @@ public:
 		{ return family_shape; }
 	int get_damage()
 		{ return damage; }
+	static void create();		// Create table.
+	static void insert(int shnum, Ammo_info& ent);
 	static Ammo_info *find(int shnum);// Find given ammo's entry.
 					// Is given shape in desired family.
 	static int is_in_family(int shnum, int family)
@@ -378,23 +212,6 @@ public:
 			y = weapon_offsets[frame * 2 + 1];
 			}
 		}
-	};
-
-/*
- *	The "shapes.vga" file:
- */
-class Shapes_vga_file : public Vga_file
-	{
-	autoarray<Shape_info> info;	// Extra info. about each shape.
-	Shape_info zinfo;		// A fake one (all 0's).
-public:
-	Shapes_vga_file() : info()
-		{  }
-	void init() { load(SHAPES_VGA); info.set_size(num_shapes); }
-	virtual ~Shapes_vga_file();
-	void read_info();		// Read additional data files.
-	Shape_info& get_info(int shapenum)
-		{ return info[shapenum]; }
 	};
 
 #endif

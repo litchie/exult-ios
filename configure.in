@@ -437,4 +437,5 @@ data/Makefile \
 docs/Makefile \
 desktop/Makefile \
 imagewin/Makefile \
+shapes/Makefile \
 usecode/Makefile )
