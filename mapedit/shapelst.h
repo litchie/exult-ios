@@ -51,6 +51,7 @@ class Shape_info
  */
 class Shape_chooser
 	{
+	GtkWidget *chooser;
 	Vga_file *ifile;		// Where the shapes come from.
 	int num_shapes;			// Total # shapes in ifile.
 	char **names;			// Names of shapes (or null).
@@ -76,8 +77,11 @@ class Shape_chooser
 	void render();			// Draw list.
 	void scroll(int newindex);	// Scroll.
 public:
-	Shape_chooser(Vga_file *i, char **nms, GtkWidget *box, int w, int h);
+	Shape_chooser(Vga_file *i, char **nms, int w, int h);
 	~Shape_chooser();
+	
+	GtkWidget *get_widget() 
+		{ return chooser; }
 					// Turn off selection.
 	void unselect(bool need_render = true);
 	int is_selected()		// Is a shape selected?
