@@ -121,12 +121,21 @@ void Mixer::cancel_raw(void)
 
 void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 {
-#if 0
+#ifdef MACOS
+	// WARNING WARNING WARNING
+	// On MacOS, this function is called at *interrupt* time! That means several
+	// functions are forbiden, including the following:
+	// * new, delete, malloc, free etc.
+	// * I/O like using cerr/cout, fputc etc.
+	// * more!
+#endif
+
+#if 0 && !defined(MACOS)
 	cout << "fill_audio_func: " << len << endl;
 	// cout << "fill_audio_func(aux): " << auxilliary_audio << endl;
 #endif
 	if( len > buffer_length ) {
-#if DEBUG
+#if DEBUG && !defined(MACOS)
 		cerr << "Audio callback length too big! (" << len << ">" 
 		     << buffer_length << ")" << endl;
 #endif
@@ -136,7 +145,7 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 	stream_lock();
 	if(audio_streams.size()==0)
 	{
-#if DEBUG
+#if DEBUG && !defined(MACOS)
 		cerr << "No more audio data" << endl;
 #endif
 		SDL::PauseAudio(1);
@@ -166,7 +175,7 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 					break;
 				sofar+=ret;
 			}
-#if 0
+#if 0 && !defined(MACOS)
 			cerr << "(" << which <<"/"<<audio_streams.size()<< ")" << " Mixing auxilliary data " ;
 			cerr << sofar << " of " << (*it)->size() << endl;
 #endif
@@ -191,7 +200,7 @@ void Mixer::fill_audio_func(void *udata,uint8 *stream,int len)
 #if 0
 	if(buffers.begin()->num_samples)
 	{
-#if 0
+#if 0 && !defined(MACOS)
 		cerr << "Mixing sample data" << endl;
 #endif
 		if((unsigned)len>buffers.front().length)

@@ -6,7 +6,7 @@
  **/
 
 /*
-Copyright (C) 2000  Jeffrey S. Freedman
+Copyright (C) 2000-2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,18 +23,33 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifndef INCL_DELOBJS
-#define INCL_DELOBJS	1
+#ifndef DELOBJS_H
+#define DELOBJS_H	1
 
-#ifdef MACOS
-  #include <hashset.h>
+#ifdef DONT_HAVE_HASH_SET
+#  include <set>
 #else
-#  ifndef DONT_HAVE_HASH_SET
-#    include <hash_set>
-#  else
-#    include <set>
+#  include <hash_set>
+#  ifdef MACOS
+	using Metrowerks::hash_set;
 #  endif
 #endif
+
+#ifdef DONT_HAVE_HASH_SET
+
+/*
+ *	"Less than" relation for objects
+ */
+class Less_objs
+	{
+public:
+     bool operator() (const Game_object *a, const Game_object *b) const
+     	{
+			return a < b;
+		}
+	};
+
+#else
 
 /*
  *	Hash function for game objects:
@@ -58,31 +73,21 @@ public:
 		}
 	};
 
-/*
- *	"Less than" relation for objects
- */
-class Less_objs
-	{
-public:
-     bool operator() (const Game_object *a, const Game_object *b) const
-     	{
-			return a < b;
-		}
-	};
+#endif
 
 
 /*
  *	A pool of removed game objects, waiting to be deleted:
  */
 #ifndef DONT_HAVE_HASH_SET
-class Deleted_objects : public std::hash_set<Game_object *, Hash_objs, Equal_objs>
+class Deleted_objects : public hash_set<Game_object *, Hash_objs, Equal_objs>
 #else
 class Deleted_objects : public std::set<Game_object *, Less_objs>
 #endif
 	{
 public:
 #ifndef DONT_HAVE_HASH_SET
-	Deleted_objects() : std::hash_set<Game_object *, Hash_objs, Equal_objs> (1013)
+	Deleted_objects() : hash_set<Game_object *, Hash_objs, Equal_objs> (1013)
 #else
 	Deleted_objects() : std::set<Game_object *, Less_objs> ()
 #endif
@@ -93,4 +98,4 @@ public:
 		{ flush(); }
 	};
 
-#endif
+#endif	/* DELOBJS_H */

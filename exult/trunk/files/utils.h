@@ -6,7 +6,7 @@
  **/
 
 /*
-Copyright (C) 1998  Jeffrey S. Freedman
+Copyright (C) 2000-2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -38,48 +38,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 #include <string>
 
-#ifdef HAVE_HASH_MAP
-#  include <hash_map>
-#  ifdef MACOS
-    using Metrowerks::hash_map;
-#  endif
-#endif
 #include "exult_types.h"
 
-
-/*
- *	Hash function for strings:
- */
-struct hashstr
-{
-	long operator() (const char *str) const
-	{
-		const uint32 m = 4294967291u;
-		uint32 result = 0;
-		for (; *str != '\0'; ++str)
-			result = ((result << 8) + *str) % m;
-		return long(result);
-	}
-};
-
-/*
- *	For testing if two strings match:
- */
-struct eqstr
-{
-	bool operator()(const char* s1, const char* s2) const {
-		return std::strcmp(s1, s2) == 0;
-	}
-};
-
-/*
- *	For testing if a string is "less" than another:
- */
-struct ltstr {
-	bool operator()(const char* s1, const char* s2) const {
-		return (std::strcmp(s1, s2) < 0);
-	}
-};
 
 /*
  *	Read a 1-byte value.
@@ -392,4 +352,4 @@ int Log2
 
 void add_system_path(const std::string& key, const std::string& value);
 
-#endif
+#endif	/* _UTILS_H_ */

@@ -31,13 +31,13 @@ Ammo_table *Ammo_info::table = 0;
 
 #ifndef DONT_HAVE_HASH_MAP
 #  include <hash_map>
+#  ifdef MACOS
+	using Metrowerks::hash_map;
+#  endif
 #else
 #  include <map>
 #endif
 
-#ifdef MACOS
-  using Metrowerks::hash_map;
-#endif
 
 /*
  *	For looking up ammo entries:

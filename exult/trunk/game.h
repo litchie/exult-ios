@@ -1,41 +1,33 @@
 /*
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
+Copyright (C) 2000-2001 The Exult Team
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
  
 #ifndef GAME_H
 #define GAME_H
 
 #include "alpha_kludges.h"
 
-#ifndef DONT_HAVE_HASH_MAP
-#  include <hash_map>
-#else
-#  include <map>
-#endif
 #include <string>
 #include <vector>
-#ifdef MACOS
-  using Metrowerks::hash_map;
-#endif
 
-#include "utils.h"
+#include "hash_utils.h"
 #include "exult_constants.h"
 #include "palette.h"
 #include "vgafile.h"
-
-extern const int c_tiles_per_chunk;
 
 class Game_window;
 class Image_window8;

@@ -4,8 +4,9 @@
  **
  **	Written: 2/4/00 - JSF
  **/
+
 /*
-Copyright (C) 2000  Jeffrey S. Freedman
+Copyright (C) 2000-2001 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
