@@ -66,6 +66,7 @@ clean:
 
 
 install: $(EXEC)
+	if not exist $(U7PATH) md $(U7PATH)
 	strip $(EXEC) -o $(U7PATH)\\$(EXEC)
 	if not exist $(U7PATH)\data md $(U7PATH)\data
 	copy data\exult.flx $(U7PATH)\data
@@ -73,6 +74,7 @@ install: $(EXEC)
 	copy data\exult_si.flx $(U7PATH)\data
 
 dist:   $(EXEC)
+	if not exist $(U7PATH) md $(U7PATH)
 	if not exist $(U7PATH)\Exult md $(U7PATH)\Exult
 	strip $(EXEC) -o $(U7PATH)\\Exult\$(EXEC)
 	if not exist $(U7PATH)\Exult\Data md $(U7PATH)\Exult\Data
@@ -118,6 +120,7 @@ toolsclean:
 	del head2data.o head2data.exe data\u7bgintrinsics.data data\u7siintrinsics.data
 
 toolsinstall: tools
+	if not exist $(U7PATH) md $(U7PATH)
 	if not exist $(U7PATH)\tools md $(U7PATH)\tools
 	strip expack.exe -o $(U7PATH)\tools\expack.exe
 	strip cmanip.exe -o $(U7PATH)\tools\cmanip.exe
