@@ -39,6 +39,7 @@
 #  include <cstring>
 #  include <cstdio>
 #endif
+#include <algorithm>       // STL function things
 
 #ifdef USE_EXULTSTUDIO
 #include "cheat.h"
@@ -508,6 +509,51 @@ int Game_object::find_nearby
 	{
 	return Game_object::find_nearby(vec, get_abs_tile_coord(), shapenum,
 					delta, mask, qual, framenum);
+	}
+
+/*
+ *	For sorting closest to a given spot.
+ */
+class Object_closest_sorter
+	{
+	Tile_coord pos;			// Pos. to get closest to.
+public:
+	Object_closest_sorter(Tile_coord p) : pos(p)
+		{  }
+	bool operator()(const Game_object *o1, const Game_object *o2)
+		{
+		Tile_coord t1 = o1->get_abs_tile_coord(),
+			   t2 = o2->get_abs_tile_coord();
+		return t1.distance(pos) < t2.distance(pos);
+		}
+	};
+
+/*
+ *	Find the closest nearby objects with a shape in a given list.
+ *
+ *	Output:	->closest object, or 0 if none found.
+ */
+
+Game_object *Game_object::find_closest
+	(
+	Game_object_vector& vec,	// List returned here, closest 1st.
+	int *shapenums,			// Shapes to look for. 
+					//   c_any_shapenum=any NPC.
+	int num_shapes,			// Size of shapenums.
+	int dist			// Distance to look (tiles).
+	)
+	{
+	int i;
+	for (i = 0; i < num_shapes; i++)
+					// 0xb0 mask finds anything.
+		find_nearby(vec, shapenums[i], dist, 0xb0);
+	int cnt = vec.size();
+	if (!cnt)
+		return (0);
+	if (cnt > 1)
+		std::sort(vec.begin(), vec.end(), 
+				Object_closest_sorter(get_abs_tile_coord()));
+	return *(vec.begin());
 	}
 
 /*

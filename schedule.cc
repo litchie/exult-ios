@@ -305,16 +305,11 @@ void Eat_at_inn_schedule::now_what
 	int frnum = npc->get_framenum();
 	if ((frnum&0xf) != Actor::sit_frame)
 		{			// First have to sit down.
-		static int chairs[] = {873,292};
-		Game_object *chair = npc->find_closest(chairs, 
-					sizeof(chairs)/sizeof(chairs[0]));
-		if (!chair)
+		if (!Sit_schedule::set_action(npc))
 			{		// Try again in a while.
-			npc->start(250, 20000);
+			npc->start(250, 5000);
 			return;
 			}
-		Sit_schedule::set_action(npc, chair);
-		return;
 		}
 	Game_window *gwin = Game_window::get_game_window();
 	Game_object_vector foods;			// Food nearby?
@@ -419,9 +414,12 @@ void Patrol_schedule::now_what
 		case 2:			// Pause.
 			break;		//++++++++
 		case 3:			// Sit.
-			Sit_schedule::set_action(npc, 0);
-			dir = 0;	// Flag sitting.
-			return;
+			if (Sit_schedule::set_action(npc))
+				{
+				dir = 0;	// Flag sitting.
+				return;
+				}
+			break;
 		case 4:			// Kneel at tombstone.+++++++
 		case 5:			// Kneel+++++++++++
 		case 6:			// Loiter.++++++
@@ -1049,32 +1047,102 @@ void Sit_schedule::now_what
 					Usecode_machine::double_click);
 		return;
 		}
-	static int chairs[] = {873,292};
-	if (!chair)			// Find chair if not given.
-		if (!(chair = npc->find_closest(chairs, 
-					sizeof(chairs)/sizeof(chairs[0]))))
-			return;
 					// Wait a while if we got up.
-	set_action(npc, chair, sat ? (4000 + rand()%3000) : 0);
-	sat = true;
+	if (!set_action(npc, chair, sat ? (4000 + rand()%3000) : 0))
+		npc->start(200, 5000);	// Failed?  Try again later.
+	else
+		sat = true;
+	}
+
+/*
+ *	Action to sit in the chair NPC is in front of.
+ */
+
+class Sit_actor_action : public Frames_actor_action
+	{
+	Tile_coord chairloc;		// Actually where NPC sits.
+	char frames[2];
+	char *init(Game_object *chairobj, Actor *actor)
+		{
+		chairloc = chairobj->get_abs_tile_coord();
+					// Frame 0 faces N, 1 E, etc.
+		int dir = 2*(chairobj->get_framenum()%4);
+		frames[0] = actor->get_dir_framenum(dir, Actor::to_sit_frame);
+		frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
+		return frames;
+		}
+public:
+	Sit_actor_action(Game_object *o, Actor *actor) : 
+			chairloc(o->get_abs_tile_coord()),
+			Frames_actor_action(init(o, actor), 2)
+		{  }
+	static bool is_occupied(Tile_coord chairloc, Actor *actor)
+		{
+		Game_object_vector occ;	// See if occupied.
+		if (Game_object::find_nearby(occ, chairloc, 
+							c_any_shapenum, 1, 8))
+			for (Game_object_vector::const_iterator it = 
+					occ.begin(); it != occ.end(); ++it)
+				{
+				Game_object *npc = *it;
+				if (npc == actor)
+					continue;
+				int frnum = npc->get_framenum() & 15;
+				if (frnum == Actor::sit_frame ||
+				    frnum == Actor::to_sit_frame)
+					return true;
+				}
+		return false;
+		}
+					// Handle time event.
+	virtual int handle_event(Actor *actor);
+	};
+
+/*
+ *	Show frame for sitting down.
+ */
+
+int Sit_actor_action::handle_event
+	(
+	Actor *actor
+	)
+	{
+	if (get_index() == 0 &&		// First time?
+	    is_occupied(chairloc, actor))
+		return 0;		// Abort.
+	return Frames_actor_action::handle_event(actor);
 	}
 
 /*
  *	Set up action.
+ *
+ *	Output:	false if couldn't find a free chair.
  */
 
-void Sit_schedule::set_action
+bool Sit_schedule::set_action
 	(
 	Actor *actor,
 	Game_object *chairobj,		// May be 0 to find it.
 	int delay			// Msecs. to delay.
 	)
 	{
-	static int chairs[] = {873,292};
+	static int chairshapes[] = {873,292};
+	Game_object_vector chairs;
 	if (!chairobj)			// Find chair if not given.
-		if (!(chairobj = actor->find_closest(chairs, 
-					sizeof(chairs)/sizeof(chairs[0]))))
-			return;
+		{
+		actor->find_closest(chairs, chairshapes,
+					sizeof(chairs)/sizeof(chairs[0]));
+		for (Game_object_vector::const_iterator it = chairs.begin();
+						it != chairs.end(); ++it)
+			if (!Sit_actor_action::is_occupied(
+					(*it)->get_abs_tile_coord(), actor))
+				{	// Found an unused one.
+				chairobj = *it;
+				break;
+				}
+		if (!chairobj)
+			return false;
+		}
 	Tile_coord chairloc = chairobj->get_abs_tile_coord();
 	switch (chairobj->get_framenum()%4)
 		{			// Figure where to sit.
@@ -1087,23 +1155,10 @@ void Sit_schedule::set_action
 	case 3:				// West.
 		chairloc.tx--; break;
 		}
-	Game_object_vector occ;		// See if occupied.
-	if (Game_object::find_nearby(occ, chairloc, c_any_shapenum, 0, 8))
-		for (Game_object_vector::const_iterator it = occ.begin(); 
-						it != occ.end(); ++it)
-			if (*it != actor)
-				{	// Occupied.  Into queue for a sec.
-				actor->start(250, 1000);
-				return;
-				}
-	char frames[2];
-					// Frame 0 faces N, 1 E, etc.
-	int dir = 2*(chairobj->get_framenum()%4);
-	frames[0] = actor->get_dir_framenum(dir, Actor::to_sit_frame);
-	frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
-	Actor_action *act = new Frames_actor_action(frames, sizeof(frames));
+	Actor_action *act = new Sit_actor_action(chairobj, actor);
 					// Walk there, then sit.
 	set_action_sequence(actor, chairloc, act, false, delay);
+	return true;
 	}
 
 /*
@@ -1335,13 +1390,10 @@ void Lab_schedule::now_what
 		break;
 		}
 	case sit_down:
-		if (!chair)
+		if (!chair || !Sit_schedule::set_action(npc, chair, 200))
 			state = start;
 		else
-			{
-			Sit_schedule::set_action(npc, chair, 200);
 			state = read_book;
-			}
 		break;
 	case read_book:
 		{
@@ -1778,12 +1830,11 @@ void Sew_schedule::now_what
 		}
 	case sit_at_wheel:
 		chair = npc->find_closest(873);
-		if (!chair) {
+		if (!chair || !Sit_schedule::set_action(npc, chair, 200)) {
 			// uh-oh... try again in a few seconds
 			npc->start(250, 2500);
 			return;
 		}
-		Sit_schedule::set_action(npc, chair, 200);
 		state = spin_wool;
 		break;
 	case spin_wool:			// Cycle spinning wheel 8 times.
