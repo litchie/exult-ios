@@ -50,19 +50,14 @@ int Game_window::start_dragging
 	dragging_rect = Rectangle(0, 0, 0, 0);
 	delete dragging_save;
 	dragging_save = 0;
-	Game_object *found[100];	// See what was clicked on.
-	int cnt;
 					// First see if it's a gump.
 	dragging_gump = find_gump(x, y);
 	if (dragging_gump)
 		{
-		cnt = dragging_gump->find_objects(this, x, y, found);
-		if (cnt)
-			{
-			dragging = found[cnt - 1];
+		dragging = dragging_gump->find_object(this, x, y);
+		if (dragging)
 			dragging_gump->get_shape_location(dragging,
 					dragging_paintx, dragging_painty);
-			}
 		else if ((dragging_gump_button = 
 				dragging_gump->on_button(this, x, y)) != 0)
 			{
@@ -80,10 +75,9 @@ cout << "(x,y) rel. to gump is (" << (x-dragging_paintx) << ", " <<
 		}
 	else if (!dragging)		// Not found in gump?
 		{
-		cnt = find_objects(x, y, found);
-		if (!cnt)
+		dragging = find_object(x, y);
+		if (!dragging)
 			return (0);
-		dragging = found[cnt - 1];
 					// Get coord. where painted.
 		get_shape_location(dragging, dragging_paintx, dragging_painty);
 		}
@@ -228,11 +222,9 @@ void Game_window::drop
 		}
 	else
 		{			// Was it dropped on something?
-		Game_object *found[100];
-		int cnt = find_objects(x, y, found);
-		for (int i = cnt - 1; i >= 0; i--)
-			if (found[i]->drop(dragging))
-				return;
+		Game_object *found = find_object(x, y);
+		if (found && found->drop(dragging))
+			return;
 					// Find where to drop it.
 		int max_lift = main_actor->get_lift() + 4;
 		int lift;
