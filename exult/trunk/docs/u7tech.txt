@@ -1,4 +1,4 @@
-**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.15 $ ****
+**** TECHNICAL REFERENCE AND INTERNAL FORMATS OF ULTIMA7 FILES $Revision: 1.16 $ ****
 
 This is a list of all the U7 files I have studied while developing U7Wizard.
 You will find in here technical descriptions of format and content of the
@@ -657,6 +657,11 @@ U7IREGnn    = same meaning as U7IFIX but for game items (different format)
   for inside items: (item in content)
   XY        = referent of the parent container
   referent  = int16 (offset of the data inside U7IBUF.DAT)
+
+  virtue stones have length 0xc, with:
+  entry[4] = tilex  (cx,tx)
+  entry[5] = tiley  (cy,ty)
+  entry[6] = superchunk #.
 
   for containers:
   type      = referent of the first item in the container (0000 if empty)
