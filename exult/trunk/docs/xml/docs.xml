@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="07 January 2002(GMT)">
+<readme title="Exult" changed="07 March 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="07032002">
+			<header>- 07 March 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> added &lt;combat&gt;&lt;difficulty&gt; and  
+					&lt;right_click_closes_gumps&gt;.</li>
+				<li><ref1 target="command_line"/> buildmap requires <Exult/> to run in windowed mode.</li>
+				<li><ref1 target="scaler"/> BillinearPlus.</li>
+				<li><ref1 target="gameplay_gump"/> Right click closes Gump added.</li>				
+				</ul>
+			</body>
+		</sub>
 		<sub name="07012002">
 			<header>- 07 January 2002</header>
 			<body>
@@ -23,33 +35,6 @@
 				<li><ref1 target="wave_sfx"/> no longer needs paths for sfx pack (if in data dir).</li>				
 				<li><ref1 target="scaler"/> updated link To Derek Liauw's scaler page.</li>
 				</ul>
-			</body>
-		</sub>
-		<sub name="06112001">
-			<header>- 06 November 2001</header>
-			<body>
-				<ul>
-				<li>a lot of spelling checked and corrected.</li>
-				<li><ref1 target="exult_config"/> added &lt;fps&gt; and &lt;walk_after_teleport&gt;
-					setting.</li>
-				<li><ref1 target="wave_sfx"/> I mentioned issues with SI but never elaborated. Now I did.</li>
-				<li><ref1 target="savemenu"/> added information on using wheelmice.</li>
-				<li><ref1 target="gameplay_gump"/> more of those.</li>
-				</ul>
-			</body>
-		</sub>	
-		<sub name="28102001">
-			<header>- 28 October 2001</header>
-			<body>
-				<ul>
-				<li><ref2 target="Changes to the Documentation"/> introduced. Don't know why 
-					I didn't add this from the beginning.</li>
-				<li><ref1 target="exult_config"/> added more gameplay options.</li>
-				<li><ref1 target="movement"/> added comment on how to activate right mouse 
-					button on MacOS.</li>
-				<li><ref1 target="exult_keys"/> added <key>g</key> for Abacus.</li>
-				<li><ref2 target="Game Menu"/> added to help people on how to use it.</li>				
-				</ul>	
 			</body>
 		</sub>
 	</section>			
@@ -205,10 +190,15 @@
 					<line>&lt;/debug&gt;</line>
 					<line>&lt;gameplay&gt;</line>
 					<line>&lt;double_click_closes_gumps&gt;</line>
-					<line>yes
+					<line>no
 						<comment>**doesn't need an explanation, right?
 						</comment></line>
 					<line>&lt;double_click_closes_gumps&gt;</line>
+					<line>&lt;right_click_closes_gumps&gt;</line>
+					<line>no
+						<comment>**same as above
+						</comment></line>
+					<line>&lt;right_click_closes_gumps&gt;</line>
 					<line>&lt;cheat&gt;</line>
 					<line>yes
 						<comment>**enable/disable cheats for that
@@ -252,6 +242,14 @@
 						<comment>**when set to no you stop after walking onto a teleporter.
 						</comment></line>
 					<line>&lt;/walk_after_teleport&gt;</line>
+					<line>&lt;combat&gt;</line>
+					<line>&lt;difficulty&gt;</line>
+					<line>0
+						<comment>**0 is default, negative values make combat easier, positive makes it 
+						harder. It affects the chance of a hit, and the HP's lost if a hit occurs.
+						</comment></line>
+					<line>&lt;/difficulty&gt;</line>
+					<line>&lt;/combat&gt;</line>						
 					<line>&lt;/gameplay&gt;</line>
 					<line>&lt;audio&gt;</line>
 					<line>&lt;enabled&gt;</line>
@@ -441,7 +439,9 @@
 						You have to specify the game first (Example: exult --bg buildmap 0).<br/>						
 						Builds the map of the game specified.The map is <strong>huge</strong> and in pcx 
 						format, you will need a lot of ram to even look at this map once it is build 
-						(and even that requires a lot of patience)</li>
+						(and even that requires a lot of patience)<br/>
+						<Exult/> is required to be run in windowed mode and you get the best map if you 
+						started a new game before you build the map.</li>
 					<li>--game gamename<br/>
 						Unused yet. Loads a game specified in exult.cfg when there are other games made
 						with <Studio/>.</li>
@@ -656,11 +656,13 @@
 					<li><strong>SuperEagle</strong> by Derek Liauw. Only 2x.</li>
 					<li><strong>Super2xSai</strong> by Derek Liauw. Only 2x.</li>
 					<li><strong>2xSaI</strong> by Derek Liauw. Only 2x.</li>
-					<li><strong>bilinear</strong> bilinear interpolation to smooth the result. 
+					<li><strong>BilinearPlus</strong> same as <strong>Bilinear</strong> 
+						and it may even be a bit faster..</li>
+					<li><strong>Bilinear</strong> bilinear interpolation to smooth the result. 
 						Slower, but looks better. Only 2x.</li>
-					<li><strong>point</strong> simple but very fast scaler. Only duplicates pixels, no 
+					<li><strong>Point</strong> simple but very fast scaler. Only duplicates pixels, no 
 						fancy interpolation. Can be used for arbitrary integer scales (2x, 3x, 4x...).</li>
-					<li><strong>interlaced</strong> identical to <strong>point</strong> except that 
+					<li><strong>Interlaced</strong> identical to <strong>point</strong> except that 
 						it skips every other line to be even faster</li>
 				</ul>
 				<para>
@@ -905,6 +907,8 @@
 						a target or conversations. Enable or disable it.</li>
 					<li><strong>Doubleclick closes gumps</strong><br/>
 						pretty straightforward, right?</li>
+					<li><strong>Right click closes gumps</strong><br/>
+						the same but different.</li>
 					<li><strong>Cheats</strong><br/>
 						Enables or disables all the cheats that we implemented in <Exult/>. 
 						See <ref1 target="exult_cheats"/> what those cheats are.</li>

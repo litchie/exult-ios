@@ -170,6 +170,14 @@
 	</xsl:choose>
 </xsl:template>
 
+<!-- External Link Template to link between the FAQ/Readme -->
+<xsl:template match="extref1">
+	<a><xsl:text>FAQ.txt</xsl:text></a>
+</xsl:template>
+
+<xsl:template match="extref2">
+	<a><xsl:text>ReadMe.txt</xsl:text></a>
+</xsl:template>
 
 <!--================-->
 <!-- Misc Templates -->

@@ -1,3 +1,11 @@
+2002-03-08  Dominik Reichardt <gigdr@tesionmail.de>
+	* FAQ,ReadMe updated
+	* docs/FAQ.html and ReadMe.html updated
+	* docs/xml: makefile, makefile.win32 renames docs.html to ReadMe.html
+	* docs/xml: faq.xml, docs.xml updated
+	* docs/xml: *.xsl, docs.dtd with extref1,extref2 you can link 
+	  between the FAQ and Documentation
+
 2002-03-07  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* ucinternal.cc: also set quality when creating items on ground
 
@@ -5572,6 +5580,8 @@
 2000-11-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* vgafile.cc, combat.cc:  Look up ammo family.
+
+
 	* actors.cc: Ready ammo. automatically.
 
 2000-11-04  Willem Jan Palenstijn <palenstijn@wanadoo.nl>

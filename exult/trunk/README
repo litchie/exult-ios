@@ -1,14 +1,13 @@
 ExultDocumentation
-last changed: 07 January 2002(GMT)
+last changed: 07 March 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 07 January 2002
-0.2. - 25 November 2001
-0.3. - 06 November 2001
-0.4. - 28 October 2001
+0.1. - 07 March 2002
+0.2. - 07 January 2002
+0.3. - 25 November 2001
 
 1. Introduction
 1.1. What is Exult?
@@ -56,7 +55,15 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 07 January 2002
+0.1. - 07 March 2002
+* 2.2. Settings in exult.cfg added <combat><difficulty> and <right_click_closes_gumps>.
+* 2.4. Command line options buildmap requires Exult to run in windowed mode.
+* 4.2. Scaler BillinearPlus.
+* 6.5. Gameplay Options Right click closes Gump added.
+
+
+
+0.2. - 07 January 2002
 * 2.2. Settings in exult.cfg added <force_wavout> and <looping>.
 * 2.4. Command line options Some parameters for whoever dares to use them.
 * 6.4. Audio Options looping added.
@@ -64,28 +71,10 @@ The latest version of this document can be found at http://exult.sourceforge.net
 
 
 
-0.2. - 25 November 2001
+0.3. - 25 November 2001
 * 2.2. Settings in exult.cfg added <save_compression_level> to zip up savegames, <waves> no longer needs path set if in data dir.
 * 3.4. Digital Wave Sound Effects no longer needs paths for sfx pack (if in data dir).
 * 4.2. Scaler updated link To Derek Liauw's scaler page.
-
-
-
-0.3. - 06 November 2001
-* a lot of spelling checked and corrected.
-* 2.2. Settings in exult.cfg added <fps> and <walk_after_teleport> setting.
-* 3.4. Digital Wave Sound Effects I mentioned issues with SI but never elaborated. Now I did.
-* 6.2. Load/Save Game added information on using wheelmice.
-* 6.5. Gameplay Options more of those.
-
-
-
-0.4. - 28 October 2001
-* 0. Changes to the Documentation introduced. Don't know why I didn't add this from the beginning.
-* 2.2. Settings in exult.cfg added more gameplay options.
-* 5.1. Movement added comment on how to activate right mouse button on MacOS.
-* 5.2. Keyboard commands added 'g' for Abacus.
-* 6. Game Menu added to help people on how to use it.
 
 
 
@@ -179,10 +168,15 @@ no
 </debug>
 <gameplay>
 <double_click_closes_gumps>
-yes
+no
 						**doesn't need an explanation, right?
 						
 <double_click_closes_gumps>
+<right_click_closes_gumps>
+no
+						**same as above
+						
+<right_click_closes_gumps>
 <cheat>
 yes
 						**enable/disable cheats for that
@@ -226,6 +220,14 @@ no
 						**when set to no you stop after walking onto a teleporter.
 						
 </walk_after_teleport>
+<combat>
+<difficulty>
+0
+						**0 is default, negative values make combat easier, positive makes it 
+						harder. It affects the chance of a hit, and the HP's lost if a hit occurs.
+						
+</difficulty>
+</combat>
 </gameplay>
 <audio>
 <enabled>
@@ -370,7 +372,7 @@ Exult offers some "hidden" command line options:
 * --bg Starts the game with the Black Gate menu
 * --si Starts the game with the Serpent Isle menu
 * --nocrc Recently we added a crc check that Exult doesn't start when the exult*.flx files in the data dir aren't the same it got compiled with. This parameter lets the game start nethertheless. Don't try this if you don't know what you are doing.
-* --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg buildmap 0). Builds the map of the game specified.The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience)
+* --buildmap x x = 0 shows all roofs, x = 2 pops them all. You have to specify the game first (Example: exult --bg buildmap 0). Builds the map of the game specified.The map is huge and in pcx format, you will need a lot of ram to even look at this map once it is build (and even that requires a lot of patience) Exult is required to be run in windowed mode and you get the best map if you started a new game before you build the map.
 * --game gamename Unused yet. Loads a game specified in exult.cfg when there are other games made with Exult Studio.
 
 
@@ -452,9 +454,10 @@ The scalers also work with higher resolutions than 320x200. To change the scalin
 * SuperEagle by Derek Liauw. Only 2x.
 * Super2xSai by Derek Liauw. Only 2x.
 * 2xSaI by Derek Liauw. Only 2x.
-* bilinear bilinear interpolation to smooth the result. Slower, but looks better. Only 2x.
-* point simple but very fast scaler. Only duplicates pixels, no fancy interpolation. Can be used for arbitrary integer scales (2x, 3x, 4x...).
-* interlaced identical to point except that it skips every other line to be even faster
+* BilinearPlus same as Bilinear and it may even be a bit faster..
+* Bilinear bilinear interpolation to smooth the result. Slower, but looks better. Only 2x.
+* Point simple but very fast scaler. Only duplicates pixels, no fancy interpolation. Can be used for arbitrary integer scales (2x, 3x, 4x...).
+* Interlaced identical to point except that it skips every other line to be even faster
 
 The scalers by Derek Liauw are slower but look much better. Try out yourself which one you like most.
 More information on the excellent scaling engines by Derek Liauw is available at http://elektron.its.tudelft.nl/~dalikifa/.
@@ -601,6 +604,7 @@ Look at 3. Audio to see explanation on the settings.
 * Fast Mouse makes the mouse cursor move faster in fullscreen modes. Enable or disable it.
 * Use middle mouse button In the normal game, the middle mouse button activates the target-function (which could also be accomplished by pressing 't' ). For modal gumps, the middle mouse acts as 'return', the right button as 'escape', so you can now for example accept the default slider value by just pressing the middle button. The escape function is also available during most other actions like selecting a target or conversations. Enable or disable it.
 * Doubleclick closes gumps pretty straightforward, right?
+* Right click closes gumps the same but different.
 * Cheats Enables or disables all the cheats that we implemented in Exult. See 5.3. Cheat keys what those cheats are.
 * Speed if Exult seems too fast lower this setting. If it seems to sluggish raising this setting may help.
 * OK/Cancel Ok accepts your changes, Cancel discards your changes.
