@@ -139,6 +139,8 @@ public:
 	bool swap_terrains(int tnum);	// Swap adjacent terrain #'s.
 					// Insert new terrain after 'tnum'.
 	bool insert_terrain(int tnum, bool dup = false);
+	void commit_terrain_edits();	// End terrain-editing mode.
+	void abort_terrain_edits();
 	};
 
 #endif

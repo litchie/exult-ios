@@ -1,3 +1,7 @@
+2002-01-02  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* gamemap.cc,objs/chunkter.cc:  Commit/abort terrain edits.
+
 2002-01-02  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* usecode/compiler/*: added support for labels and goto, added support for optional 'var' keywords in function prototypes for ucxt compatibility.
 	* usecode/ucxt/data/opcodes.txt: ucc compatibility
