@@ -1,3 +1,6 @@
+2003-11-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* cheat_screen.cc: don't show unimplemented options
+
 2003-11-12  Ryan Nunn  <colourles@users.sourceforge.net>
 	* tools/u7voice2syx.cc : Small tool that will convert various files 
 	  ("u7voice.flx" BG, "u7intro.tim" BG, and "mainmenu.tim" SI) into syx 
