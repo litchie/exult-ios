@@ -21,8 +21,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #  pragma implementation
 #endif
 
-//#ifndef WIN32
-
 #include "Midi.h"
 
 #include <unistd.h>
@@ -41,23 +39,17 @@ void    MyMidiPlayer::start_track(int num,int repeats,int bank)
   #endif
 	U7object	track(midi_bank[bank].c_str(),num);
 
-	//!!! Needs to be cleaned up.
-#ifndef WIN32
-	if(!track.retrieve("/tmp/u7midi"))
-		return;
-#else
-	if(!track.retrieve("u7midi"))
+	if (!midi_device)
 	        return;
-#endif
 
-	if(!midi_device)
-		return;
-
-#ifndef WIN32
-	midi_device->start_track("/tmp/u7midi",repeats);
-#else
-	midi_device->start_track("u7midi",repeats);
+#ifdef WIN32
+	//stop track before writing to temp. file
+	midi_device->stop_track();
 #endif
+	if(!track.retrieve(MIDITMPFILE))
+	        return;
+
+	midi_device->start_track(MIDITMPFILE,repeats);
 }
 
 void	MyMidiPlayer::start_music(int num,int repeats,int bank)
@@ -111,7 +103,7 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
                 no_device=false;
                 cerr << midi_device->copyright() << endl;
                 }
-#endif
+#else
 
 	if(no_device)
 		{
@@ -155,7 +147,8 @@ MyMidiPlayer::MyMidiPlayer()	: current_track(-1),midi_device(0)
 			no_device=true;
 			}
 		}
-	
+#endif
+
 	if(no_device)
 		{
 		midi_device=0;
@@ -168,5 +161,3 @@ MyMidiPlayer::~MyMidiPlayer()
 	if(midi_device&&midi_device->is_playing())
 		midi_device->stop_track();
 }
-
-//#endif
