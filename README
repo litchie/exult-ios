@@ -1,13 +1,14 @@
 Exult Documentation
-last changed: 05 June 2002(GMT)
+last changed: 18 June 2002(GMT)
 
 The latest version of this document can be found at http://exult.sourceforge.net/docs.php
 
 
 0. Changes to the Documentation
-0.1. - 05 June 2002
-0.2. - 22 May 2002
-0.3. - 19 May 2002
+0.1. - 18 June 2002
+0.2. - 05 June 2002
+0.3. - 22 May 2002
+0.4. - 19 May 2002
 
 1. Introduction
 1.1. What is Exult?
@@ -23,10 +24,11 @@ The latest version of this document can be found at http://exult.sourceforge.net
 3.1. Music
 3.2. Abilities and limitations of the music engine
 3.3. Windows MIDI Mapper
-3.4. Digital Wave Sound Effects
-3.5. Speech
-3.6. Turn off Audio
-3.7. Linux and Audio
+3.4. Digital Music
+3.5. Digital Wave Sound Effects
+3.6. Speech
+3.7. Turn off Audio
+3.8. Linux and Audio
 
 4. Video
 4.1. Resolution
@@ -57,20 +59,29 @@ The latest version of this document can be found at http://exult.sourceforge.net
 --------------------------------------------------------------------------------
 
 0. Changes to the Documentation
-0.1. - 05 June 2002
+0.1. - 18 June 2002
+* 2.2. Settings in exult.cfg added disablepause for digital music.
+* 3.1. Music You can play Music either through MIDI or Digital Music.
+* 3.4. Digital Music Digital Music now works and is documented.
+* 3.8. Linux and Audio timidity.cfg needs to be where the exult executable is.
+* 5.2. Keyboard commands 'Ctrl+c' is now used for "copy" and 'Insert' for create object.
+
+
+
+0.2. - 05 June 2002
 * 5.1. Movement no keyboard movement.
 * 5.2. Keyboard commands added cut/paste selection keys..
 
 
 
-0.2. - 22 May 2002
-* 3.7. Linux and Audio after some discussion we rephrased this a bit.
+0.3. - 22 May 2002
+* 3.8. Linux and Audio after some discussion we rephrased this a bit.
 
 
 
-0.3. - 19 May 2002
-* 3.4. Digital Wave Sound Effects added selection move keys.
-* 3.7. Linux and Audio we advice using ALSA instead of OSS.
+0.4. - 19 May 2002
+* 3.5. Digital Wave Sound Effects added selection move keys.
+* 3.8. Linux and Audio we advice using ALSA instead of OSS.
 * 5.3. Cheat keys added selection move keys.
 
 
@@ -280,6 +291,12 @@ yes
 						Esc - the setting is saved)
 						
 </enabled>
+<disablepause>
+no
+						**enable/disable the pausing of SFX and digital music when the
+						game pauses (e.g. not the focused window). MIDI music is currently not paused. 
+						
+</disablepause>
 <force_waveout>
 no
 						**yes forces Exult to use waveout instead of directsound. This may
@@ -449,19 +466,15 @@ Exult offers some "hidden" command line options:
 
 3. Audio
 3.1. Music
-Midi in Exult is played by firstly loading a file and passing it to the XMIDI class for instrument mapping conversion. This is so the MT32 mapped music files from the original Ultima 7 and Serpent Isle will be playable on modern General Midi and General Midi/GS supporting sound cards. You can change the way the music sounds via the setup or ingame menu or the exult.cfg file.
-Exult gives users various option for converting Music and Midi Sound Effects. Currently the only way to set the options is via manually editing the config file. Note, the options are case sensitive and all options must be lowercase. Below is a description of all the modes:
-* gm This will convert the MT32 patches to standard General Midi patches. Conversion is fairly accurate but some instruments may be different.
-* gs This will convert the MT32 patches to their equivalent GS patches. This will be a more accurate conversion that straight gm since more of the MT32 patches are in the GS set. However, not all midi devices will support this mode.
-* gs127 This option is for midi devices that have a MT32 patch bank installed in Bank 127. Some GS implementation have this, some don't. Only use this if you know that you have a MT32 implementation on Bank 127.
+There are two ways that music is played in Exult. One is using MIDI, which plays the music through any GM MIDI device, Timidity can be used in Linux. The other is Digital Music encoded into OGG (similar to MP3) which was recorded directly from a Roland MT-32. The MIDI files are converted on-the-fly from the original Ultima 7 MT-32 files to General Midi format so that they will be playable on modern General Midi and General Midi/GS supporting sound cards.
+The options for changing the Music format are in the opening Exult menu Setup screen or in the actual game's audio options. The following settings can be used (in order of music conversion quality):
+* Digital Digital Music plays the OGG files which must be located in the Exult data/music directory. This does not use MIDI but plays the music digitally through any soundcard.
 * none This option will output the music with nothing changed. Because the mapping will be for MT32s you should only use this option if you have a MT32 compatible device or you have replaced the music.
+* gs127 This option is for midi devices that have a MT32 patch bank installed in Bank 127. Some GS implementation have this, some don't. Only use this if you know that you have a MT32 implementation on Bank 127.
+* gs This will convert the MT32 patches to their equivalent GS patches. This will be a more accurate conversion that straight gm since more of the MT32 patches are in the GS set. However, not all midi devices will support this mode.
+* gm This will convert the MT32 patches to standard General Midi patches. Conversion is fairly accurate but some instruments may be different.
 
 The order of music conversion quality is:
-1. none (shouldn't really be used, though)
-2. gs127
-3. gs
-4. gm
-
 NOTE: Currently the conversion to GS and GS127 is not finished and the notes are only mapped to General Midi.
 
 
@@ -481,7 +494,11 @@ By default Exult uses the Microsoft MIDI-Mapper (which uses the device you choos
 with the device you want to use.
 
 
-3.4. Digital Wave Sound Effects
+3.4. Digital Music
+Exult needs the Digital Music pack to play Digital Music in the game. The music pack contains music for both Black Gate and Serpent Isle, encoded in high quality OGG format. Simon Quinn recorded the current Digital Music pack on an original Roland MT-32 and with this you will experience the music as it would be heard with the original game. The Digital Music pack can be downloaded from http://exult.sourceforge.net/download.php, the files are called U7MusicOGG_1of2.zip and U7MusicOGG_2of2.zip. Instructions of how to install these files are in the ZIP files themselves (they need to be extracted into the Exult/data/music directory). Digital Music should work on any platform that supports digital sound and does not use any MIDI, so it is also a good option for platforms with no MIDI support. Additionally, Digital Music supports a number of background atmospheric SFX tracks that are played when no music is playing. These consist of wind, bird etc effects outside and other sound effects when inside a dungeon. These SFX tracks are not available when using MIDI as they play Roland MT-32 specific voices that cannot be mapped to GM/GS. These SFX tracks do not play when the music is switched off.
+
+
+3.5. Digital Wave Sound Effects
 Exult needs the so called sfx packs to enable sound effects for Ultima 7. You have to download separate packs for each game as order of the sfx in BG and SI varies a bit and otherwise will sound odd. However there is a little issue with sfx playback in SI: In combat the sfx may be a little wrong as we still haven't figured out all the data in the 'weapons.dat'. Also Exult doesn't yet playback all the sfx that the orignal did.
 Note that configuring your soundfonts is not needed for digital wave sfx.
 We curently have two soundpacks for each game. Joseph Morris recorded the original SoundBlaster sfx and Simon Quinn recorded the Roland MT32 sfx. You can find them on our download page at http://exult.sourceforge.net/download.php.
@@ -498,15 +515,16 @@ jmsisfx.flx
 </serpentisle>
 
 
-3.5. Speech
+3.6. Speech
 Exult can play the Ultima VII's speech through SDL, and its own internal mixer. Configuration is managed through Exult's configuration file.
 
 
-3.6. Turn off Audio
-Press 'Esc' to turn on/off Music, Speech and SoundFX or change the settings in exult.cfg - see 2.2..
+3.7. Turn off Audio
+Press 'Esc' to turn on/off Music, Speech and SoundFX via the in-game menu or change the settings in exult.cfg - see 2.2..
 
 
-3.7. Linux and Audio
+3.8. Linux and Audio
+If you want to use the MIDI music option in Exult and use Timidity to play the MIDI, the timidity.cfg file must go into the same directory as the Exult executable, otherwise Timidity will not work.
 Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably with the Soundblaster Live. Therefore we advice our users to install ALSA (Advanced Linux Sound Architecture) found at http://www.alsa-project.org. ALSA is going to replace OSS in the upcoming stable (2.6) Kernel anyway. We are sorry for this.
 
 
@@ -558,6 +576,7 @@ Default keyboard commands
 +/- : Change brightness (you may have to use the keypad)
 F4 : Toggle fullscreen
 Ctrl-x : Cut selected object (when in Map Edit mode)
+Ctrl-c : Copy selected object (when in Map Edit mode)
 Ctrl-v : Paste selected object (when in Map Edit mode)
 b : Use spellbook
 c : Combat mode
@@ -609,7 +628,7 @@ F3 : Map teleport
 F10 : Show endgame
 F11 : SI: Play alternate intro
 Ctrl-b : Shape browser
-Ctrl-c : Create object
+Insert : Create object (that is chosen in  the shape browser)
 Ctrl-d : Delete object
 e : Toggle egg display
 Alt-g : Toggle God mode
@@ -662,7 +681,7 @@ In this option screen you are able to determine how Exult displays the game.
 Look at 3. Audio to see explanation on the settings.
 * Audio Enable or disable all Audio in Exult.
 * Music Enable or disable music.
-* Conversion choose between None, GM, GS, GS127.
+* Conversion choose between Digital, None, GM, GS, GS127.
 * Reverb alters the way the midi is played. Enable or disable to hear if you like it.
 * Chorus the same as Reverb
 * Looping Disable restores the (broken) way the original handeled the music looping flag.

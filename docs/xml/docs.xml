@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE readme SYSTEM "docs.dtd">
-<readme title="Exult" changed="05 June 2002(GMT)">
+<readme title="Exult" changed="18 June 2002(GMT)">
 	<section title="Changes to the Documentation">
+		<sub name="18062002">
+			<header>- 18 June 2002</header>
+			<body>
+				<ul>
+				<li><ref1 target="exult_config"/> added disablepause for digital music.</li>
+				<li><ref1 target="music"/> You can play Music either through MIDI or Digital Music.</li>
+				<li><ref1 target="digital_music"/> Digital Music now works and is documented.</li>
+				<li><ref1 target="linux_alsa"/> timidity.cfg needs to be where the exult executable is.</li>
+				<li><ref1 target="exult_keys"/> <key>Ctrl+c</key> is now used for "copy" and 
+					<key>Insert</key> for create object.</li>		
+				</ul>
+			</body>
+		</sub>
 		<sub name="05062002">
 			<header>- 05 June 2002</header>
 			<body>
@@ -327,6 +340,12 @@
 						<key>Esc</key> - the setting is saved)
 						</comment></line>
 					<line>&lt;/enabled&gt;</line>
+					<line>&lt;disablepause&gt;</line>
+					<line>no
+						<comment>**enable/disable the pausing of SFX and digital music when the
+						game pauses (e.g. not the focused window). MIDI music is currently not paused. 
+						</comment></line>
+					<line>&lt;/disablepause&gt;</line>
 					<line>&lt;force_waveout&gt;</line>
 					<line>no
 						<comment>**yes forces Exult to use waveout instead of directsound. This may
@@ -557,47 +576,45 @@
 			<header>Music</header>
 			<body>
 				<para>
-					Midi in <Exult/> is played by firstly loading a file and passing it to the XMIDI
-					class for instrument mapping conversion. This is so the MT32 mapped music files
-					from the original Ultima 7 and Serpent Isle will be playable on modern General
-					Midi and General Midi/GS supporting sound cards.
-					You can change the way the music sounds via the setup or ingame menu or the 
-					exult.cfg file.
+					There are two ways that music is played in Exult. One is using MIDI, which plays the 
+					music through any GM MIDI device, Timidity can be used in Linux.  The other is 
+					Digital Music encoded into OGG (similar to MP3) which was recorded directly from a 
+					Roland MT-32.<br/>
+					The MIDI files are converted on-the-fly from the original Ultima 7 
+					MT-32 files to General Midi format so that they will be playable on modern General 
+					Midi and General Midi/GS supporting sound cards. 
 				</para>
 				<para>
-					<Exult/> gives users various option for converting Music and Midi Sound Effects.
-					Currently the only way to set the options is via manually editing the config
-					file. Note, the options are case sensitive and all options must be lowercase.<br/>
-					Below is a description of all the modes:
+					The options for changing the Music format are in the opening Exult menu Setup screen 
+					or in the actual game's audio options. 
+					The following settings can be used (in order of music conversion quality):
 				</para>
 				<ul>
-					<li><strong>gm</strong><br/>
-						This will convert the MT32 patches to standard General Midi patches.
-     					Conversion is fairly accurate but some instruments may be different.</li>
+      				<li><strong>Digital</strong><br/>
+        				Digital Music plays the OGG files which must be located in the Exult data/music 
+        				directory. This does not use MIDI but plays the music digitally through 
+        				any soundcard.</li>
+      				<li><strong>none</strong><br/>
+        				This option will output the music with nothing changed. Because
+               			the mapping will be for MT32s you should only use this option if
+               			you have a MT32 compatible device or you have replaced the
+               			music.</li>
+      				<li><strong>gs127</strong><br/>
+     					This option is for midi devices that have a MT32 patch bank installed
+        				in Bank 127. Some GS implementation have this, some don't. Only use
+        				this if you know that you have a MT32 implementation on Bank 127.</li>
      				<li><strong>gs</strong><br/>
      					This will convert the MT32 patches to their equivalent GS patches. This
      					will be a more accurate conversion that straight gm since more of the 
      					MT32 patches are in the GS set. However, not all midi devices will
      					support this mode.</li>
-     				<li><strong>gs127</strong><br/>
-     					This option is for midi devices that have a MT32 patch bank installed
-        				in Bank 127. Some GS implementation have this, some don't. Only use
-        				this if you know that you have a MT32 implementation on Bank 127.</li>
-        			<li><strong>none</strong><br/>
-        				This option will output the music with nothing changed. Because
-               			the mapping will be for MT32s you should only use this option if
-               			you have a MT32 compatible device or you have replaced the
-               			music.</li>
+					<li><strong>gm</strong><br/>
+						This will convert the MT32 patches to standard General Midi patches.
+     					Conversion is fairly accurate but some instruments may be different.</li>
 				</ul>
 				<para>
 					The order of music conversion quality is:
 				</para>
-				<ol>
-					<li><strong>none</strong> (shouldn't really be used, though)</li>
-					<li><strong>gs127</strong></li>
-					<li><strong>gs</strong></li>
-					<li><strong>gm</strong></li>
-				</ol>
 				<para>
 					<strong>NOTE:</strong> Currently the conversion to GS and GS127 is not finished and 
 					the notes are only mapped to General Midi.
@@ -660,6 +677,30 @@
 				</para>
 			</body>
 		</sub>
+	<sub name="digital_music">
+		<header>Digital Music</header>
+			<body>
+				<para>
+					<Exult/> needs the Digital Music pack to play Digital Music in the game. The music 
+					pack contains music for both Black Gate and Serpent Isle, encoded in high quality 
+					OGG format. Simon Quinn recorded the current Digital Music pack on an original 
+					Roland MT-32 and with this you will experience the music as it would be heard with 
+					the original game.<br/>
+					The Digital Music pack can be downloaded from 
+					<extref target="http://exult.sourceforge.net/download.php"/>, the files are called 
+					U7MusicOGG_1of2.zip and U7MusicOGG_2of2.zip.  Instructions of how to install these 
+					files are in the ZIP files themselves (they need to be extracted into the 
+					Exult/data/music directory).<br/>
+					Digital Music should work on any platform that supports digital sound and does not 
+					use any MIDI, so it is also a good option for platforms with no MIDI support.
+					Additionally, Digital Music supports a number of background atmospheric SFX tracks 
+					that are played when no music is playing. These consist of wind, bird etc effects 
+					outside and other sound effects when inside a dungeon. These SFX tracks are not 
+					available when using MIDI as they play Roland MT-32 specific voices that cannot 
+					be mapped to GM/GS. These SFX tracks do not play when the music is switched off.
+				</para>
+			</body>
+		</sub>
 	<sub name="wave_sfx">
 		<header>Digital Wave Sound Effects</header>
 			<body>
@@ -714,14 +755,19 @@
 			<body>
 				<para>
 					Press <key>Esc</key> to turn
-					on/off Music, Speech and SoundFX or change the settings in exult.cfg 
-					- see <ref target="exult_config"/>.
+					on/off Music, Speech and SoundFX via the in-game menu or change the settings in 
+					exult.cfg - see <ref target="exult_config"/>.
 				</para>
 			</body>
 		</sub>
 		<sub name="linux_alsa">
 			<header>Linux and Audio</header>
 			<body>
+				<para>
+					If you want to use the MIDI music option in Exult and use Timidity to play the 
+					MIDI, the timidity.cfg file must go into the same directory as the Exult executable, 
+					otherwise Timidity will not work. 
+				</para>
 				<para>
 					Apparently Exult has some problem with the sound drivers in the 2.4 kernel, notably
  					with the Soundblaster Live.<br/>
@@ -835,6 +881,7 @@
 					<keydesc name="+/-">Change brightness (you may have to use the keypad)</keydesc>
 					<keydesc name="F4">Toggle fullscreen</keydesc>
 					<keydesc name="Ctrl-x">Cut selected object (when in Map Edit mode)</keydesc>
+					<keydesc name="Ctrl-c">Copy selected object (when in Map Edit mode)</keydesc>
 					<keydesc name="Ctrl-v">Paste selected object (when in Map Edit mode)</keydesc>
 					<keydesc name="b">Use spellbook</keydesc>
 					<keydesc name="c">Combat mode</keydesc>
@@ -896,7 +943,7 @@
 					<keydesc name="F10">Show endgame</keydesc>
 					<keydesc name="F11">SI: Play alternate intro</keydesc>
 					<keydesc name="Ctrl-b">Shape browser</keydesc>
-					<keydesc name="Ctrl-c">Create object</keydesc>
+					<keydesc name="Insert">Create object (that is chosen in  the shape browser)</keydesc>
 					<keydesc name="Ctrl-d">Delete object</keydesc>
 					<keydesc name="e">Toggle egg display</keydesc>
 					<keydesc name="Alt-g">Toggle God mode</keydesc>
@@ -983,7 +1030,7 @@
 					<li><strong>Music</strong><br/>
 						Enable or disable music.</li>
 					<li><strong>Conversion</strong><br/>
-						choose between None, GM, GS, GS127.</li>
+						choose between Digital, None, GM, GS, GS127.</li>
 					<li><strong>Reverb</strong><br/>
 					 	alters the way the midi is played. Enable or disable to hear if you like it.</li>
 					<li><strong>Chorus</strong><br/>
