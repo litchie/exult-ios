@@ -27,6 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <string.h>
 #include <iomanip>
 #include <iostream>
+#include <stdlib.h>
 #include "useval.h"
 
 using std::cout;
@@ -63,7 +64,7 @@ Usecode_value::~Usecode_value()
 	if (type == array_type)
 		delete [] value.array;
 	else if (type == string_type)
-		delete value.str;
+		free((void*)value.str);
 }
 
 /*
@@ -80,7 +81,7 @@ Usecode_value& Usecode_value::operator=
 	if (type == array_type)
 		delete [] value.array;
 	else if (type == string_type)
-		delete value.str;
+		free((void*)value.str);
 	type = v2.type;			// Assign new values.
 	if (type == int_type)
 		value.intval = v2.value.intval;

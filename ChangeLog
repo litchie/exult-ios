@@ -1,3 +1,8 @@
+2000-11-26  Max Horn  <max@quendi.de>
+	* effects.cc, gamedat.cc, gumps.cc, imagewin.h, usecode.cc, useval.cc: fixed incorrect uses of delete/delete[]
+	* txtscroll.cc: TextScroller::text change to vector of std::strings
+	* effects.cc: Text_effect::msg changed to std::string
+
 2000-11-25  Willem Jan Palenstijn <palenstijn@wanadoo.nl>
 	* configure.in: fixed most (hopefully all) configure options
 

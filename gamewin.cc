@@ -2470,7 +2470,7 @@ void Game_window::show_avatar_choices
 		{
 		delete [] result[i];
 		}
-	delete result;
+	delete [] result;
 	}
 
 

@@ -23,6 +23,7 @@
 #include "font.h"
 #include "game.h"
 
+using std::string;
 using std::vector;
 
 TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp)
@@ -42,7 +43,7 @@ TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp
 	ptr = txt;
 	end = ptr+len;
 
-	text = new vector<char *>();
+	text = new vector<string>();
 	while(ptr<end) {
 		char *start = ptr;
 		ptr = strchr(ptr, LF);
@@ -51,7 +52,7 @@ TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp
 				*(ptr-1) = 0;
 			else
 				*ptr = 0;
-			text->push_back(strdup(start));
+			text->push_back(string(start));
 			ptr += 1;
 		} else
 			break;
@@ -61,8 +62,6 @@ TextScroller::TextScroller(const char *archive, int index, Font *fnt, Shape *shp
 
 TextScroller::~TextScroller()
 {
-	for(uint32 i=0; i<text->size(); i++)
-		delete [] (*text)[i];
 	delete text;
 }
 
@@ -76,8 +75,8 @@ int TextScroller::show_line(Game_window *gwin, int left, int right, int y, int i
 	// \R	 right aligned to left center line
 	// |	 carriage return (stay on same line)
 	// #xxx	 display character with number xxx
-	
-	char *ptr = (*text)[index];
+	string str = (*text)[index];
+	const char * ptr = str.c_str();
 	char *txt = new char[strlen(ptr)+1];
 	
 	char *txtptr = txt;

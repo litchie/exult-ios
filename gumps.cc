@@ -22,6 +22,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
+#include <stdlib.h>
 #include "gumps.h"
 #include "gamewin.h"
 #include "actors.h"
@@ -2220,7 +2221,7 @@ Yesno_gump_object::~Yesno_gump_object
 	{
 	delete yes_button;
 	delete no_button;
-	delete text;
+	free((void*)text);
 	}
 
 /*

@@ -17,6 +17,7 @@
 #ifndef TEXT_SCROLLER_H
 #define TEXT_SCROLLER_H
 
+#include <string>
 #include <vector>
 
 class Game_window;
@@ -28,7 +29,7 @@ class TextScroller {
 private:
 	Font *font;
 	Shape *shapes;
-	std::vector<char *> *text;
+	std::vector<std::string> *text;
 public:
 	TextScroller(const char *archive, int index, Font *fnt, Shape *shp);
 	~TextScroller();
