@@ -123,6 +123,8 @@ exult_LDADD = \
 exult_DEPENDENCIES = $(ICON_FILE) $(EXULTLIBS)
 
 EXTRA_DIST = 	\
+	README.1ST \
+	README \
 	FAQ \
 	README.win32 \
 	README.axp \
