@@ -62,7 +62,9 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 		usefun &= 0xfff;
 		if (i >= cnt1)		// Type2?
 			usefun = -1;	// Let's try this.
-		nfile.seekg(4, ios::cur);// Skip 4 bytes.
+					// Guessing:  !!
+		int food_level = Read1(nfile);
+		nfile.seekg(3, ios::cur);// Skip 3 bytes.
 					// Another inventory flag.
 		int iflag2 = Read2(nfile);
 					// Skip next 2.
@@ -125,16 +127,17 @@ cout << "cnt1 = " << cnt1 << ", cnt2 = " << cnt2 << '\n';
 			npc_actor->set_schedule_type(schedtype);
 			}
 					// Set attributes.
-	actor->set_property((int) Actor::strength, strength);
-	actor->set_property((int) Actor::dexterity, dexterity);
-	actor->set_property((int) Actor::intelligence, intelligence);
+		actor->set_property((int) Actor::strength, strength);
+		actor->set_property((int) Actor::dexterity, dexterity);
+		actor->set_property((int) Actor::intelligence, intelligence);
 					// Hits = strength, I think.
-	actor->set_property((int) Actor::health, strength);
-	actor->set_property((int) Actor::combat, combat);
-	actor->set_property((int) Actor::mana, mana);
-	actor->set_property((int) Actor::magic, mana);
-	actor->set_property((int) Actor::exp, exp);
-	actor->set_property((int) Actor::training, train);
+		actor->set_property((int) Actor::health, strength);
+		actor->set_property((int) Actor::combat, combat);
+		actor->set_property((int) Actor::mana, mana);
+		actor->set_property((int) Actor::magic, mana);
+		actor->set_property((int) Actor::exp, exp);
+		actor->set_property((int) Actor::training, train);
+		actor->set_property((int) Actor::food_level, food_level);
 #if 0
 cout << i << " Creating " << namebuf << ", shape = " << 
 	actor->get_shapenum() <<

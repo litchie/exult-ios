@@ -183,6 +183,16 @@ public:
 		{ return (shpdims[1] & 1) != 0; }
 	int is_yobstacle()		// Obstacle in y-dir.???
 		{ return (shpdims[0] & 1) != 0; }
+	/*
+	 *	TFA[1][b0-b2] seems to indicate object types:
+	 *	+++++++Just guessing for now.
+	enum Shape_class {
+		
+		quantity = 3,		// Can have more than 1:  coins, arrs.
+		wearable = 5,		// Includes wieldable weapons, food??
+		container = 6,		// Includes NPC's.
+		egg = 7
+	*/
 	};
 
 /*
