@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef USE_FMOPL_MIDI
 
 #if (__GNUG__ >= 2) && (!defined WIN32)
-#  pragma interface
+#  pragma implementation
 #endif
 
 #include <string>
@@ -60,10 +60,6 @@ using std::string;
 using std::cout;
 using std::cerr;
 using std::endl;
-
-// Must have at least 6000 samples before we hook
-#define HOOK_FILL_LIMIT		6000
-#define BACKWARDS_TIME_HACK	((HOOK_FILL_LIMIT/2)*1000)/22050)
 
 class RingBuffer16
 {

@@ -187,7 +187,9 @@ void AudioOptions_gump::build_buttons()
 void AudioOptions_gump::build_midi_buttons()
 {
 #ifdef USE_FMOPL_MIDI
-	static const int mct_array_size = 6;
+	const int mct_array_size = 6;
+#else
+	const int mct_array_size = 5;
 #endif
 	std::string* midi_conversiontext = new std::string[mct_array_size];
 	midi_conversiontext[0] = "None";
