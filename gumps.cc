@@ -297,7 +297,7 @@ int Gump_text::mouse_clicked
 	{
 	if (!on_widget(gwin, mx, my))	// Not in our area?
 		return (0);
-	mx -= textx;			// Get pt. rel. to text area.
+	mx -= textx + parent->get_x();	// Get pt. rel. to text area.
 	if (!focus)			// Gaining focus?
 		{
 		focus = 1;		// We have focus now.
@@ -434,8 +434,10 @@ void Disk_gump_button::activate
 					// Did user restore a game?
 	int restored = fileio->restored_game();
 	delete fileio;
+#if 0
 	if (restored)
 		parent->close(gwin);	// If so, close gump.
+#endif
 	}
 
 /*
@@ -1888,9 +1890,9 @@ void Yesno_gump_object::key_down
 	int chr
 	)
 	{
-	if (chr == 'y' || chr == 'Y')
+	if (chr == 'y' || chr == 'Y' || chr == SDLK_RETURN)
 		set_answer(1);
-	else if (chr == 'n' || chr == 'N')
+	else if (chr == 'n' || chr == 'N' || chr == SDLK_ESCAPE)
 		set_answer(0);
 	}
 
