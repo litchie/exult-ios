@@ -838,7 +838,7 @@ int Container_game_object::create_quantity
 	int todo = delta < roomfor ? delta : roomfor;
 	while (todo)			// Create them here first.
 		{
-		Game_object *newobj = new Game_object(shapenum, framenum,
+		Game_object *newobj = new Ireg_game_object(shapenum, framenum,
 								0, 0, 0);
 		if (!add(newobj))
 			{
@@ -1509,7 +1509,7 @@ void Sprite::start
 	frame_time = speed;
 	Direction dir;			// Gets compass direction.++++++Get
 					//  northeast, etc. too.
-	if (!is_moving())		// Not already moving?
+	if (!is_walking())		// Not already moving?
 		{			// Start.
 		unsigned long curtime = SDL_GetTicks();
 		gwin->get_tqueue()->add(curtime + delay, this, (long) gwin);
@@ -1601,7 +1601,7 @@ int Sprite::next_frame
 	int& next_frame			// Next frame # returned.
 	)
 	{
-	if (!is_moving())
+	if (!is_walking())
 		return (0);
 					// Figure change in faster axis.
 	int new_major = major_frame_incr;

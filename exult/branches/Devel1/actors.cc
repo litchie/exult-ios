@@ -112,7 +112,8 @@ void Actor::walk_to_tile
 	{
 	Game_window *gwin = Game_window::get_game_window();
 	int liftpixels = tz*4;
-	set_action(new Walking_actor_action());
+	if (!is_walking())
+		set_action(new Walking_actor_action());
 	start(((unsigned long) tx + 1)*tilesize - liftpixels,
 	      ((unsigned long) ty + 1)*tilesize - liftpixels, speed, delay);
 	}
@@ -129,7 +130,7 @@ void Actor::walk_to_point
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	if (!is_moving())
+	if (!is_walking())
 		set_action(new Walking_actor_action());
 	start(destx, desty, speed, 0);
 	}
@@ -259,7 +260,8 @@ void Main_actor::get_followers
 	int cnt = uc->get_party_count();
 	for (int i = 0; i < cnt; i++)
 		{
-		Npc_actor *npc = (Npc_actor *) gwin->get_npc(i);
+		Npc_actor *npc = (Npc_actor *) gwin->get_npc(
+						uc->get_party_member(i));
 		if (npc)
 			npc->follow(this);
 		}
@@ -650,7 +652,8 @@ void Npc_actor::follow
 	Actor *leader
 	)
 	{
-	const int dist = 5;		// How close to aim for.
+					// How close to aim for.
+	int dist = 2 + Npc_actor::get_party_id()/3;
 	Tile_coord goal = leader->get_abs_tile_coord();
 	Tile_coord pos = get_abs_tile_coord();
 	if (goal.distance(pos) < dist)	// Already close enough?
@@ -658,11 +661,13 @@ void Npc_actor::follow
 					// Figure where to aim.
 	int newtx = Approach(pos.tx, goal.tx, dist);
 	int newty = Approach(pos.ty, goal.ty, dist);
+	newtx += 1 - rand()%3;		// Jiggle a bit.
+	newty += 1 - rand()%3;
 					// Get his speed.
 	int speed = leader->get_frame_time();
 	if (!speed)			// Not moving?
 		speed = 125;
-	speed += 20 - rand()%50;	// Let's try varying it a bit.
+	speed += 10 - rand()%50;	// Let's try varying it a bit.
 	walk_to_tile(newtx, newty, goal.tz, speed);
 	}
 
@@ -746,7 +751,7 @@ int Area_actor::next_frame
 	if (time < next_change)
 		return (Actor::next_frame(new_cx, new_cy,
 						new_sx, new_sy, next_frame));
-	if (is_moving())
+	if (is_walking())
 		{
 		stop();
 		new_cx = get_cx();

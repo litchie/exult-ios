@@ -2540,6 +2540,9 @@ void Usecode_machine::run
 					256*externals[2*offset + 1]);
 			break;
 		case 0x25:		// RET.
+					// Experimenting...
+			if (gwin->is_npc_text_pending())
+				click_to_continue();	
 			sp = save_sp;		// Restore stack.
 			ip = endp;	// End the loop.
 			break;
