@@ -1639,7 +1639,7 @@ Game_object *Actor::attacked
 	if (attacker && attacker->get_schedule_type() == Schedule::duel)
 		return this;			// Just play-fighting.
 	figure_hit_points(attacker, weapon_shape, ammo_shape);
-	if (is_dead_npc())
+	if (attacker && is_dead_npc())
 		{
 					// Experience gained = strength???
 		int expval = get_property((int) strength);
