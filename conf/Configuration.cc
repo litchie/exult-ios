@@ -41,27 +41,27 @@ using std::endl;
 using std::snprintf;
 using std::string;
 
-void	Configuration::value(const char *key,std::string &ret,const char *defaultvalue) const
+void	Configuration::value(const string key,std::string &ret,const char *defaultvalue) const
 {
-	const XMLnode *sub=xmltree->subtree(string(key));
+	const XMLnode *sub=xmltree->subtree(key);
 	if(sub)
 		ret = sub->value();
 	else
 		ret = defaultvalue;
 }
 
-void	Configuration::value(const char *key,bool &ret,bool defaultvalue) const
+void	Configuration::value(const string key,bool &ret,bool defaultvalue) const
 {
-	const XMLnode *sub=xmltree->subtree(string(key));
+	const XMLnode *sub=xmltree->subtree(key);
 	if(sub)
 		ret = (to_uppercase(sub->value()) == "YES");
 	else
 		ret = defaultvalue;
 }
 
-void	Configuration::value(const char *key,int &ret,int defaultvalue) const
+void	Configuration::value(const string key,int &ret,int defaultvalue) const
 {
-	const XMLnode *sub=xmltree->subtree(string(key));
+	const XMLnode *sub=xmltree->subtree(key);
 	if(sub)
 		ret = atoi(sub->value().c_str());
 	else
@@ -116,7 +116,7 @@ bool	Configuration::read_config_string(const std::string &s)
 	return true;
 }
 
-bool	Configuration::read_config_file(const string &input_filename)
+bool	Configuration::read_config_file(const string input_filename)
 {
 	clear();
 	
@@ -227,4 +227,24 @@ std::vector<std::string>	Configuration::listkeys(const char *key,bool longformat
 	std::string s(key);
 	return listkeys(s,longformat);
 }
+
+void Configuration::clear(std::string new_root)
+{
+	delete xmltree;
+	if(new_root.size())
+		rootname=new_root;
+	xmltree = new XMLnode(rootname);
+}
+
+void Configuration::getpairs(KeyTypeList &ktl, const string basekey)
+{
+	/*if(basekey.size()==0)
+		xmltree->selectpairs(ktl, string());
+	else*/
+	xmltree->searchpairs(ktl, basekey, string(), 0);
+}
+
+
+
+
 
