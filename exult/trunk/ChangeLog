@@ -1,3 +1,8 @@
+2000-06-07  Jeff Freedman  <jeff@amy.nerble.net>
+
+	* Rewrote egg handling.
+	* VERY simple combat.  (1 hit = death!)
+
 2000-06-08  Coder Infidel  <coder_infidel@hotmail.com>
 
 	* actors.cc: Fixed warning
