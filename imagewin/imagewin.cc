@@ -53,6 +53,7 @@ using std::endl;
 using std::exit;
 
 // This is all the names of the scalers. It needs to match the ScalerType enum
+#ifdef HAVE_OPENGL
 const char *Image_window::ScalerNames[] =  {
 		"Point",
 		"Interlaced",
@@ -64,6 +65,18 @@ const char *Image_window::ScalerNames[] =  {
 		"OpenGL",
 		0
 };
+#else
+const char *Image_window::ScalerNames[] =  {
+		"Point",
+		"Interlaced",
+		"Bilinear",
+		"BilinearPlus",
+		"2xSaI",
+		"SuperEagle",
+		"Super2xSaI",
+		0
+};
+#endif
 
 Image_window::ScalerType Image_window::get_scaler_for_name(const std::string &scaler)
 {
