@@ -100,9 +100,14 @@ int main
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(topwin), vbox);
 	gtk_widget_show(vbox);
-	chooser = new Shape_chooser(ifile, 400, 64);
+	U7object pal("static/palettes.flx", 0);
+	unsigned char *palbuf;		// this may throw an exception
+	palbuf = (unsigned char *) pal.retrieve(len);
+	chooser = new Shape_chooser(ifile, palbuf, 400, 64);
+	delete [] palbuf;
 	chooser->set_shape_names(names);
-	gtk_box_pack_start(GTK_BOX(vbox), chooser->get_widget(), TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), 
+					chooser->get_widget(), TRUE, TRUE, 0);
 	gtk_widget_show(topwin);	// Show top window.
 	gtk_main();
 	return (0);
