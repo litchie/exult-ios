@@ -1,5 +1,6 @@
 2002-03-23  Willem Jan Palenstijn  <wjpalenstijn@users.sourceforge.net>
 	* usecode/conversation.cc: removed some debugging output
+	* audio/Audio.cc, files/Flex.cc: added newline at end of file
 
 2002-03-23  Jeff Freedman  <jeff@amy.nerble.net>
 
