@@ -193,6 +193,9 @@ static bool arg_edit_mode = false;	// Start up ExultStudio.
 static bool dragging = false;		// Object or gump being moved.
 static bool dragged = false;		// Flag for when obj. moved.
 static bool right_on_gump = false;	// Right clicked on gump?
+static int show_items_x = 0, show_items_y = 0;
+static int show_items_time = 0;
+static bool show_items_clicked = false;
 
 /*
  *	A handy breakpoint.
@@ -930,6 +933,13 @@ static void Handle_events
 				gwin->get_main_actor()->resting(50);
 			}
 
+		// handle delayed showing of clicked items (wait for possible dblclick)
+		if (show_items_clicked && ticks > show_items_time)
+		{
+			gwin->show_items(show_items_x, show_items_y, false);
+			show_items_clicked = false;
+		}
+
 					// Show animation every 1/20 sec.
 		if (ticks > last_repaint + 50 || gwin->was_painted())
 					// This avoids jumpy walking:
@@ -1110,15 +1120,21 @@ static void Handle_event
 				dragging = dragged = false;
 				gwin->double_clicked(x, y);
 				Mouse::mouse->set_speed_cursor();
+				show_items_clicked = false;
 				break;
 				}
 			if (!dragging || !dragged)
 				last_b1_click = curtime;
 
 			if (!click_handled) {
-					// Identify item(s) clicked on.
-				gwin->show_items(x, y, 
-					(SDL_GetModState() & KMOD_CTRL) != 0);
+				// Identify item(s) clicked on.
+				if (cheat.in_map_editor()) {
+					gwin->show_items(x,y,(SDL_GetModState() & KMOD_CTRL) != 0);
+				} else {
+					show_items_x = x; show_items_y = y;
+					show_items_time = curtime + 500;
+					show_items_clicked = true;
+				}
 			}
 			dragging = dragged = false;
 			}
