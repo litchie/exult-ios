@@ -1,3 +1,7 @@
+2001-11-05  Dominik Reichardt <gigdr@tesionmail.de>
+	* docs/xml/docs.xml,faq.xml spell checked. Will update webpages when I add
+	add all the new options in the gameplay options (later this week).
+
 2001-11-04  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* gumps/GameplayOptions_gump.cc (GameplayOptions_gump): Added
