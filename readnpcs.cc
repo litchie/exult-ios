@@ -75,10 +75,7 @@ void Game_window::read_npcs
 		{
 		npcs[i] = new Npc_actor(nfile, i, i < num_npcs1);
 		if (i >= skip && i < 256)
-			{
-			npcs[i]->remove_this();
-			npcs[i] = 0;
-			}
+			npcs[i]->remove_this(1);
 		else
 			npcs[i]->restore_schedule();
 		}
