@@ -302,7 +302,6 @@ public:
 			{
 			lock();
 			size_t	n=Buffer.size();
-			unlock();
 			if(n>MAX_PCB_SIZE)
 				{
 				unlock();
@@ -336,7 +335,8 @@ public:
 		producing=false;
 		if(!consuming)
 			delete this;
-		unlock();
+		else
+			unlock();
 		}
 	void	end_consumption(void)
 		{
