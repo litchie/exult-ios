@@ -304,34 +304,24 @@ void Game_window::save_gamedat
 					// Doing all IREG's + what's listed.
 	int count = 12*12 + numsavefiles;
 					// Use samename for title.
-	Flex::write_header(out, savename, count);
-					// Create table.
-	unsigned char *table = new unsigned char[2*count*4];
-	uint8 *tptr = table;
+	Flex_writer flex(out, savename, count);
 	int i;				// Start with listed files.
 	for (i = 0; i < numsavefiles; i++)
 		{
-		Write4(tptr, out.tellp());
-		long len = Savefile(out, savefiles[i]);
-		Write4(tptr, len);
+		Savefile(out, savefiles[i]);
+		flex.mark_section_done();
 		}
 					// Now the Ireg's.
 	for (int schunk = 0; schunk < 12*12; schunk++, i++)
 		{
-		Write4(tptr, out.tellp());
 		char iname[80];
-		long len = Savefile(out, map->get_schunk_file_name(U7IREG,
+		Savefile(out, map->get_schunk_file_name(U7IREG,
 							schunk, iname));
-		Write4(tptr, len);
+		flex.mark_section_done();
 		}
-	out.seekp(0x80, ios::beg);	// Write table.
-	out.write(reinterpret_cast<char*>(table), 2*count*4);
-	delete [] table;
-	out.flush();
-	bool result = out.good();
+	bool result = flex.close();	// Write it all out.
 	if (!result)			// ++++Better error system needed??
 		throw file_write_exception(fname);
-	out.close();
 	}
 
 /*

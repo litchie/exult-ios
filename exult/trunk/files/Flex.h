@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <vector>
 #include <string>
+#include <iosfwd>
 #include "common_types.h"
 #include "U7file.h"
 
@@ -71,6 +72,24 @@ private:
 	Flex();	// No default constructor
 	void IndexFlexFile(void);
 };
+
+/*
+ *	This is for writing out a whole Flex file.
+ */
+class Flex_writer
+	{
+	std::ofstream *out;		// What we're writing to.
+	int count;			// # entries.
+	int index;			// Current index.
+	long cur_start;			// Start of cur. entry being written.
+	uint8 *table;			// Table of offsets & lengths.
+	uint8 *tptr;			// ->into table.
+public:
+	Flex_writer(std::ofstream& o, const char *title, int cnt);
+	~Flex_writer();
+	void mark_section_done();	// Finished writing out a section.
+	bool close();			// All done.
+	};
 
 #endif // PENTAGRAM
 
