@@ -40,8 +40,9 @@ class Cheat
   void finish_init (void);
   enum Map_editor_mode {
 	move = 0,			// Normal dragging.
-	paint = 1,			// Left-mouse dragging paints.
-	combo_pick = 2			// Left-click adds item to combo.
+	paint = 1,			// Left-mouse dragging paints shapes.
+	paint_chunks = 2,		// Left-dragging paints whole chunks.
+	combo_pick = 3			// Left-click adds item to combo.
   };
 private:
   Game_window *gwin;
@@ -57,6 +58,7 @@ private:
   Map_editor_mode edit_mode;
   int  edit_lift;
   int  edit_shape, edit_frame;		// What to 'paint' with.
+  int  edit_chunknum;			// For painting with chunks.
   Game_object_vector selected;		// Selected objects (map-editing).
   Game_object_vector clipboard;		// Cut/copy/paste objects.
   bool infravision;
@@ -93,6 +95,7 @@ public:
   void set_edit_mode(Map_editor_mode md) { edit_mode = md; }
   void set_edit_lift(int lift);
   void set_edit_shape(int sh, int fr);
+  void set_edit_chunknum(int chnum) { edit_chunknum = chnum; }
   void set_map_editor (bool map) { map_editor = map; }
   void toggle_infravision (void);
   void set_infravision (bool infra) { infravision = infra; }

@@ -72,7 +72,7 @@ Cheat::Cheat() {
 	tile_grid = false;
 	edit_mode = move;
 	edit_lift = 0;
-	edit_shape = edit_frame = 0;
+	edit_shape = edit_frame = edit_chunknum = 0;
 	infravision = false;
 	pickpocket = false;
 	grab_actor = true;
