@@ -1,5 +1,9 @@
 2001-09-30  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* usecode/intrinsics.cc: Offsets in obj_sprite_effect() are negated.
+	* usecode/bgintrinsics.h, etc: npc_sprite_effect() becomes
+	obj_sprite_effect().
+	* readnpcs.cc: Skip all the extra trappers.
 	* actors.cc: Actor::is_blocked() is used for all, not just monsters.
 
 2001-09-29  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>

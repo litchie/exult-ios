@@ -1365,15 +1365,16 @@ USECODE_INTRINSIC(sprite_effect)
 	return(no_ret);
 }
 
-USECODE_INTRINSIC(npc_sprite_effect)
+USECODE_INTRINSIC(obj_sprite_effect)
 {
-	// npc_sprite_effect(npc, sprite#, xoff, yoff, dx, dy, frame, length??)
-	Actor *npc = as_actor(get_item(parms[0]));
-	if (npc)
+	// obj_sprite_effect(obj, sprite#, -xoff, -yoff, dx, dy, 
+	//						frame, length??)
+	Game_object *obj = get_item(parms[0]);
+	if (obj)
 					// ++++++Pass frame, length+++++++
 		gwin->add_effect(new Sprites_effect(parms[1].get_int_value(),
-			npc,
-			parms[2].get_int_value(), parms[3].get_int_value(),
+			obj,
+			-parms[2].get_int_value(), -parms[3].get_int_value(),
 			parms[4].get_int_value(), parms[5].get_int_value()));
 	return(no_ret);
 }
