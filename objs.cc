@@ -229,14 +229,16 @@ int Game_object::find_nearby
 	Tile_coord pos,			// Look near this point.
 	int shapenum,			// Shape to look for.  -1=any,
 					//   -359=any NPC.
-	int quality,			// +++Not used/understood.
+	int delta,			// # tiles to look in each direction.
 	int mask			// +++Same here.
 	)
 	{
+	if (delta < 0)			// +++++Until we check all old callers.
+		delta = 24;
 	int vecsize = vec.get_cnt();
 	Game_window *gwin = Game_window::get_game_window();
-	const int delta = 24;		// Let's try 24 tiles each dir.
-	Rectangle tiles(pos.tx - delta, pos.ty - delta, 2*delta, 2*delta);
+	Rectangle tiles(pos.tx - delta, pos.ty - delta, 1 + 2*delta, 1 + 
+								2*delta);
 					// Stay within world.
 	Rectangle world(0, 0, num_chunks*tiles_per_chunk, 
 						num_chunks*tiles_per_chunk);
