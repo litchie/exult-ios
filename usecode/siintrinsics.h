@@ -54,7 +54,7 @@
 	USECODE_INTRINSIC_PTR(die_roll),			// 0x17
 	USECODE_INTRINSIC_PTR(get_item_shape),			// 0x18
 	
-	USECODE_INTRINSIC_PTR(get_item_shape),			// 0x19
+	USECODE_INTRINSIC_PTR(get_item_usability),		// 0x19
 	USECODE_INTRINSIC_PTR(get_item_frame),			// 0x1a
 	USECODE_INTRINSIC_PTR(set_item_frame),			// 0x1b
 	USECODE_INTRINSIC_PTR(get_item_quality),		// 0x1c
@@ -251,7 +251,7 @@
 	USECODE_INTRINSIC_PTR(set_camera),			// 0xae
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xaf UNUSED
 	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb0 UNUSED
-	USECODE_INTRINSIC_PTR(UNKNOWN),				// 0xb1
+	USECODE_INTRINSIC_PTR(telekenesis),			// 0xb1
 	USECODE_INTRINSIC_PTR(a_or_an),				// 0xb2 Return correct article for argument ('a' or 'an')
 	USECODE_INTRINSIC_PTR(set_polymorph),		// 0xb3 Set Polymorph
 	USECODE_INTRINSIC_PTR(revert_schedule),		// 0xb4 Reverts to static schedule
