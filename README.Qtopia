@@ -1,0 +1,88 @@
+HOW TO COMPILE EXULT FOR A QTOPIA PLATFORM
+By Artaxerxes (artaxerxes2@iname.com)
+
+note: I'll mostly discuss the Sharp Zaurus SL5500, although I believe any Qtopia platform would do. Let me know otherwise.
+
+Steps:
+1- Get the SDL compiled for the ARM platform AND for the platform on which you will cross-compile
+2- Get all the cross-compiling environment up and running
+3- Get the CVS source from exult
+4- Modify the source where mentioned herein
+5- Compile, strip (don't forget that) and copy to the PDA
+6- Run and enjoy
+
+Steps 1, 2, 3 will not be discussed here. However here are the link you need to know:
+1- SDL: http://www.libsdl.org/cvs.php
+2- Cross-compiling: http://www.zauruszone.farplanet.net/howtos/linux_compiler_setup_howto.shtml
+3- Exult: http://exult.sf.net/
+
+CHANGES TO APPLY TO THE SOURCE CODE
+
+shapes/monstinf.cc:
+------------------
+replace every occurence of the word "arm" into "armur" (2 occurences)
+
+shapes/monsting.h:
+-----------------
+replace every occurence of the word "arm" into "armur" (1 occurence)
+
+shapes/fontgen.cc:
+-----------------
+add the following
+#undef HAVE_FREETYPE2
+
+just before 
+#ifdef HAVE_FREETYPE2
+
+to get:
+
+#undef HAVE_FREETYPE2
+#ifdef HAVE_FREETYPE2
+
+imagewin/ibuf8.cc:
+------------------
+change the
+#ifndef __SPARC__ 
+
+with
+#if 0 (line 218)
+
+sdl-config:
+----------
+make sure the -Dmain=SDL_main is _REMOVED_
+
+
+COMPILATION CAVEATS
+Don't forget to activate the cross-compiling environment before any cross-compiling work!
+( $ source ~/dev-arm-qpe.sh )
+
+./autogen.sh should work on its own
+./configure should be passed in the following manner:
+
+NM=arm-linux-nm LD=arm-linux-ld CC=arm-linux-gcc CXX=arm-linux-g++ RANLIB=arm-linux-ranlib AR=arm-linux-ar ./configure --disable-exult-studio-support --disable-exult-studio --disable-gimp-plugin --disable-timidity --disable-kmid --disable-sdltest --disable-tools --prefix=/opt/QtPalmtop  --enable-debug
+(it's all on one line)
+
+Exult uses some tools for its compilation. Of course, those tools get compiled by the ARM cross compiler so it won't work on your platform. Make sure you put a hand on expack (compiled for your platform) before any work.
+
+At some point, it should fail during the making of exult.o. Just compile it ba hand with the following:
+arm-linux-g++ -DHAVE_CONFIG_H -I. -I. -I. -I. -I./headers -I./imagewin -I./shapes       -I./server -I./data    -I./objs -I./conf -I./files -I./gumps   -I./audio -I./pathfinder -I./usecode    -I/opt/Qtopia/sharp//include -I/opt/Qtopia/sharp//include/SDL -D_REENTRANT -Dmain=SDL_main  -DXWIN     -g -Wno-long-long  -DEXULT_DATADIR=\"/opt/QtPalmtop/share/exult\"    -g -O2 -c exult.cc -DDISABLE_X11 -DQWS
+
+(note that -DDISABLE_X11 and -DQWS are added at the end)
+
+It is useless to do a "make install".
+
+Don't forget to strip your binary (it should be around 30MB now). The stripped binary is around 2 or 3 MB big.
+$ pwd 
+/path/to/exult/sources
+$ /opt/Embeddix/tools/arm-linux/bin/strip exult
+
+Copy the binary to the PDA with the method you prefer. Don't forget to copy the exult.flx, exult_bg.flx, exult_si.flx to the PDA also. They should go to the /opt/QtPalmtop/data/ directory.
+
+Launch exult, edit the ~/.exult.cfg created so that it points to where your BG or SI data files are and restart exult!
+
+Congratulations, you are running Exult on your PDA!
+
+Artaxerxes
+artaxerxes2@iname.com
+
+DISCLAIMER: this is just an overall indication of the steps to follow. As far as I know, I'm not missing any point. If I do, let me know. I claim no responsabilities for any damage, trouble, distress, frustration caused by cross-compiling exult.

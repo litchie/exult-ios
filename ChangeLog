@@ -1,3 +1,7 @@
+2002-07-22  Dominik Reichardt  <dominus@users.sourceforge.net>
+	* README.Qtopia : added instructions by Artaxerxes on how
+	  to compile Exult for the Zaurus PDA.
+
 2002-07-22  Tristan Tarrant  <nadir@users.sourceforge.net>
 	* exult.cc: pass key releases to the action handler too
 	* keyactions.*: added ActionWalk* functions
