@@ -377,6 +377,8 @@ public:
 					// Add to NPC 'ready' spot.
 	virtual int add_readied(Game_object *obj, int index)
 		{ return add(obj); }
+					// Change member shape.
+	virtual void change_member_shape(Game_object *obj, int newshape);
 					// Find object's spot.
 	virtual int find_readied(Game_object *obj)
 		{ return -1; }

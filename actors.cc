@@ -521,6 +521,24 @@ int Actor::find_readied
 	}
 
 /*
+ *	Change shape of a member.
+ */
+
+void Actor::change_member_shape
+	(
+	Game_object *obj,
+	int newshape
+	)
+	{
+	Game_window *gwin = Game_window::get_game_window();
+	if (gwin->get_info(obj).is_light_source())
+		light_sources--;
+	Container_game_object::change_member_shape(obj, newshape);
+	if (gwin->get_info(obj).is_light_source())
+		light_sources++;
+	}
+
+/*
  *	Handle a time event (for animation).
  */
 
@@ -927,10 +945,18 @@ void Sit_schedule::set_action
 	Game_object *chairobj
 	)
 	{
+#if 0	/* +++++No. */
+					// Get chair info.
+	Shape_info& info = Game_window::get_game_window()->get_info(chairobj);
+	Tile_coord chairloc = chairobj->get_abs_tile_coord();
+					// +++++++Walk path to chair?
+					// Put NPC on top of chair.
+	actor->move(chairloc.tx, chairloc.ty, 
+				chairloc.tz + 1);
+#endif
+	char frames[2];
 					// Frame 0 faces N, 1 E, etc.
 	int dir = 2*(chairobj->get_framenum()%4);
-					// +++++++Walk path to chair?
-	char frames[2];
 	frames[0] = actor->get_dir_framenum(dir, Actor::to_sit_frame);
 	frames[1] = actor->get_dir_framenum(dir, Actor::sit_frame);
 	actor->set_action(new Frames_actor_action(frames, sizeof(frames)));
@@ -1199,6 +1225,8 @@ void Npc_actor::set_schedule_type
 	case Schedule::sleep:
 		schedule = new Sleep_schedule(this);
 		break;
+	case Schedule::eat:		// For now.
+	case Schedule::eat_at_inn:	// For now.
 	case Schedule::sit:
 		schedule = new Sit_schedule(this);
 		break;
