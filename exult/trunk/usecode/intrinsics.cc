@@ -1387,7 +1387,11 @@ USECODE_INTRINSIC(resurrect)
 		return Usecode_value((Game_object*) NULL);
 	Actor *actor = gwin->get_npc(npc_num);
 	if (actor)
-		actor = actor->resurrect((Dead_body *) body);
+		{			// Want to resurrect after returning.
+		Usecode_script *scr = new Usecode_script(body);
+		(*scr) << Ucscript::resurrect;
+		scr->start();
+		}
 	return Usecode_value(actor);
 }
 
