@@ -106,6 +106,7 @@ string get_system_path(const string &path)
 {
 	string new_path;
 	string::size_type pos;
+	string::size_type pos2;
 	
 #if defined(__MORPHOS__) || defined(AMIGA)
   pos = path.find( "../" );
@@ -118,10 +119,12 @@ string get_system_path(const string &path)
   if( pos != string::npos )
 	  new_path = new_path.substr( 0, pos )+new_path.substr( pos+2 );
 
-  pos = new_path.find('/');
+  pos = new_path.find('>');
+  pos2 = new_path.find('<');
   // If there is no separator, return the path as is
-  if(pos != string::npos)
+  if(pos != string::npos && pos2 == 0)
   {
+	  pos += 1;
 	  // See if we can translate this prefix
 	  string new_prefix(path_map[new_path.substr(0, pos).c_str()]);
 
@@ -130,12 +133,15 @@ string get_system_path(const string &path)
 		  new_path = new_prefix + new_path.substr(pos);
   }
 #else
-	pos = path.find('/');
+	pos = path.find('>');
+	pos2 = path.find('<');
 	// If there is no separator, return the path as is
-	if(pos == string::npos)
+	if(pos == string::npos || pos2 != 0) {
 		new_path = path;
+	}
 	else
 	{
+		pos += 1;
 		// See if we can translate this prefix
 		string new_prefix(path_map[path.substr(0, pos).c_str()]);
 
@@ -156,6 +162,7 @@ string get_system_path(const string &path)
 		new_path = short_path;
 		delete [] short_path;
 	}
+	//else std::cerr << "Warning unable to get short path for: " << new_path << std::endl;
 #endif
 	return new_path;
 }
