@@ -945,6 +945,21 @@ void ExultStudio::set_visible
 		}
 	}
 
+/*
+ *	Enable/disable a widget.
+ */
+
+void ExultStudio::set_sensitive
+	(
+	char *name,
+	bool tf
+	)
+	{
+	GtkWidget *widg = glade_xml_get_widget(app_xml, name);
+	if (widg)
+		gtk_widget_set_sensitive(widg, tf);
+	}
+
 
 void ExultStudio::run()
 {
