@@ -786,16 +786,8 @@ void Game_window::read_ireg_objects
 			type = 0;
 			lift = entry[4] >> 4;
 			quality = entry[5];
-			if (info.is_animated())
-				obj = new Animated_ireg_object(
-				   shnum, frnum, tilex, tiley, lift);
-			else if (shnum == 607)
-				obj = new Egglike_game_object(
-				   shnum, frnum, tilex, tiley, lift);
-			else
-				obj = new Ireg_game_object(
-				   shnum, frnum, tilex, tiley, lift);
-				   
+			obj = create_ireg_object(info, shnum, frnum,
+							tilex, tiley, lift);
 			obj->set_low_lift (entry[4] & 0xF);
 			obj->set_high_shape (entry[3] >> 7);
 			}
@@ -854,6 +846,40 @@ void Game_window::read_ireg_objects
 		if (!container || !container->add(obj, 1))
 			get_objects(scx + cx, scy + cy)->add(obj);
 		}
+	}
+
+/*
+ *	Create non-container IREG objects.
+ */
+
+Ireg_game_object *Game_window::create_ireg_object
+	(
+	Shape_info& info,		// Info. about shape.
+	int shnum, int frnum,		// Shape, frame.
+	int tilex, int tiley,		// Tile within chunk.
+	int lift			// Desired lift.
+	)
+	{
+	if (info.is_field())		// (These are all animated.)
+		{			// Check shapes.
+		if (shnum == 895)	// Fire.
+			return new Field_object(shnum, frnum, tilex, tiley,
+					lift, Egg_object::fire_field);
+		else if (shnum == 900)	// Poison.
+			return new Field_object(shnum, frnum, tilex, tiley,
+					lift, Egg_object::poison_field);
+		else if (shnum == 902)	// Sleep.
+			return new Field_object(shnum, frnum, tilex, tiley,
+					lift, Egg_object::sleep_field);
+		}
+	if (info.is_animated())
+		return new Animated_ireg_object(
+				   shnum, frnum, tilex, tiley, lift);
+	if (shnum == 607)		// Path.
+		return new Egglike_game_object(
+					shnum, frnum, tilex, tiley, lift);
+	else
+		return new Ireg_game_object(shnum, frnum, tilex, tiley, lift);
 	}
 
 /*

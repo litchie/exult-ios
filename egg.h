@@ -129,7 +129,7 @@ public:
 		{ return solid_area; }
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
-	void activate(Usecode_machine *umachine, Game_object *obj,
+	virtual void activate(Usecode_machine *umachine, Game_object *obj,
 							int must = 0);
 					// Remove/delete this object.
 	virtual void remove_this(int nodel = 0);
@@ -154,9 +154,7 @@ public:
 		unsigned char prob, short d1, short d2);
 	Animated_egg_object(int shapenum, int framenum, unsigned int tilex, 
 				unsigned int tiley, unsigned int lft,
-				unsigned char ty)
-		: Egg_object(shapenum, framenum, tilex, tiley, lft, ty)
-		{  }
+				unsigned char ty);
 	virtual ~Animated_egg_object();
 					// Render.
 	virtual void paint(Game_window *gwin);
@@ -179,8 +177,11 @@ public:
 		: Animated_egg_object(shapenum, framenum, tilex, tiley,
 							lft, ty)
 		{  }
+	void field_effect(Actor *actor);// Apply field.
 					// Run usecode function.
 	virtual void activate(Usecode_machine *umachine, int event = 1);
+	virtual void activate(Usecode_machine *umachine, Game_object *obj,
+							int must = 0);
 					// Write out to IREG file.
 	virtual void write_ireg(ostream& out);
 	};

@@ -267,7 +267,9 @@ public:
 		{ return (tfa[0] & (1<<3)) != 0; }
 	int is_water()			// Guessing.
 		{ return (tfa[0] & (1<<4)) != 0; }
-	int is_poisonous()		// Swamps.
+	int is_poisonous()		// Swamps.  Applies to tiles.
+		{ return (tfa[1] & (1<<4)) != 0; }
+	int is_field()			// Applies to Game_objects??
 		{ return (tfa[1] & (1<<4)) != 0; }
 	int is_door()
 		{ return (tfa[1] & (1<<5)) != 0; }
