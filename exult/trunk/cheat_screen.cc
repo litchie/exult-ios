@@ -468,8 +468,7 @@ void CheatScreen::NormalLoop ()
 void CheatScreen::NormalDisplay ()
 {
 	char	buf[512];
-	int	x, y, z;
-	gwin->get_main_actor()->get_abs_tile(x, y, z);
+	Tile_coord t = gwin->get_main_actor()->get_tile();
 
 	font->paint_text_fixedwidth(ibuf, "Colourless' Advanced Option Cheat Screen", 0, 0, 8);
 
@@ -494,10 +493,12 @@ void CheatScreen::NormalDisplay ()
 			clock->get_day());
 	font->paint_text_fixedwidth(ibuf, buf, 0, 45, 8);
 
-	std::snprintf (buf, 512, "Coords in hex (%04x, %04x, %02x)", x, y, z);
+	std::snprintf (buf, 512, "Coords in hex (%04x, %04x, %02x)", 
+							t.tx, t.ty, t.tz);
 	font->paint_text_fixedwidth(ibuf, buf, 0, 63, 8);
 
-	std::snprintf (buf, 512, "Coords in dec (%04i, %04i, %02i)", x, y, z);
+	std::snprintf (buf, 512, "Coords in dec (%04i, %04i, %02i)",
+							t.tx, t.ty, t.tz);
 	font->paint_text_fixedwidth(ibuf, buf, 0, 72, 8);
 
 }
@@ -1040,8 +1041,7 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 	char	buf[512];
 	if (actor)
 	{
-		int	x, y, z, t;
-		actor->get_abs_tile(x, y, z);
+		Tile_coord t = actor->get_tile();
 	
 		// Paint the actors shape
 		Shape_frame *shape = actor->get_shape();
@@ -1051,7 +1051,8 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 		std::snprintf (buf, 512, "NPC %i - %s", num, actor->get_npc_name().c_str());
 		font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
 
-		std::snprintf (buf, 512, "Loc (%04i, %04i, %02i)", x, y, z);
+		std::snprintf (buf, 512, "Loc (%04i, %04i, %02i)", 
+							t.tx, t.ty, t.tz);
 		font->paint_text_fixedwidth(ibuf, buf, 0, 9, 8);
 
 		std::snprintf (buf, 512, "Shape %04i:%02i  %s", actor->get_shapenum(), actor->get_framenum(), actor->get_flag(Obj_flags::met)?"Met":"Not Met");
@@ -1193,7 +1194,7 @@ void CheatScreen::NPCActivate (char *input, int &command, Cheat_Prompt &mode, Ac
 		break;
 
 		case '\'':	// Teleport
-		Game_window::get_game_window()->teleport_party(actor->get_abs_tile_coord());
+		Game_window::get_game_window()->teleport_party(actor->get_tile());
 		break;
 
 
@@ -1933,14 +1934,13 @@ void CheatScreen::BusinessLoop (Actor *actor)
 void CheatScreen::BusinessDisplay (Actor *actor)
 {
 	char	buf[512];
-	int	x, y, z;
-	actor->get_abs_tile(x, y, z);
+	Tile_coord t = actor->get_tile();
 
 	// Now the info
 	std::snprintf (buf, 512, "NPC %i - %s", actor->get_npc_num(), actor->get_npc_name().c_str());
 	font->paint_text_fixedwidth(ibuf, buf, 0, 0, 8);
 
-	std::snprintf (buf, 512, "Loc (%04i, %04i, %02i)", x, y, z);
+	std::snprintf (buf, 512, "Loc (%04i, %04i, %02i)", t.tx, t.ty, t.tz);
 	font->paint_text_fixedwidth(ibuf, buf, 0, 8, 8);
 
 	std::snprintf (buf, 512, "Current Activity:  %2i - %s", actor->get_schedule_type(), schedules[actor->get_schedule_type()]);

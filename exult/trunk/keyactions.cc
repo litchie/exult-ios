@@ -429,7 +429,7 @@ void ActionScrollDown(int *params)
 void ActionCenter(int *params)
 {
 	Game_window *gwin = Game_window::get_game_window();
-	gwin->center_view(gwin->get_camera_actor()->get_abs_tile_coord());
+	gwin->center_view(gwin->get_camera_actor()->get_tile());
 	gwin->paint();
 }
 

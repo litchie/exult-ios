@@ -1131,7 +1131,7 @@ Tile_coord Map_chunk::find_spot
 	Find_spot_where where		// Inside/outside.
 	)
 	{
-	Tile_coord t2 = obj->get_abs_tile_coord();
+	Tile_coord t2 = obj->get_tile();
 					// Get direction from pos. to object.
 	int dir = (int) Get_direction(pos.ty - t2.ty, t2.tx - pos.tx);
 	return find_spot(pos, dist, obj->get_shapenum(), obj->get_framenum(),
@@ -1193,7 +1193,7 @@ void Map_chunk::try_all_eggs
 		return;
 	norecurse++;
 	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord pos = obj->get_abs_tile_coord();
+	Tile_coord pos = obj->get_tile();
 	const int dist = 32;		// See if this works okay.
 	Rectangle area(pos.tx - dist, pos.ty - dist, 2*dist, 2*dist);
 					// Go through interesected chunks.
@@ -1325,7 +1325,7 @@ void Map_chunk::gravity
 			if (!obj->is_dragable() && 
 						!gwin->get_info(obj).is_npc())
 				continue;
-			Tile_coord t = obj->get_abs_tile_coord();
+			Tile_coord t = obj->get_tile();
 					// Get footprint.
 			Rectangle foot = obj->get_footprint();
 					// Above area?
@@ -1343,7 +1343,7 @@ void Map_chunk::gravity
 	for (it = dropped.begin(); it != dropped.end(); ++it)
 		{
 		Game_object *obj = *it;
-		Tile_coord t = obj->get_abs_tile_coord();
+		Tile_coord t = obj->get_tile();
 					// Get footprint.
 		Rectangle foot = obj->get_footprint();
 					// Let drop as far as possible.

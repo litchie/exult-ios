@@ -248,7 +248,7 @@ void Usecode_script::purge
 		{
 		next = each->next;	// Get next in case we delete 'each'.
 		if (each->obj && 
-		    each->obj->get_outermost()->get_abs_tile_coord().distance(
+		    each->obj->get_outermost()->get_tile().distance(
 								spot) > dist)
 			{		// Force it to halt.
 			each->no_halt = false;
@@ -368,7 +368,7 @@ void Usecode_script::handle_event
 			break;
 		case rise:		// (For flying carpet.
 			{
-			Tile_coord t = obj->get_abs_tile_coord();
+			Tile_coord t = obj->get_tile();
 			if (t.tz < 10)
 				t.tz++;
 			obj->move(t);
@@ -376,7 +376,7 @@ void Usecode_script::handle_event
 			}
 		case descend:
 			{
-			Tile_coord t = obj->get_abs_tile_coord();
+			Tile_coord t = obj->get_tile();
 			if (t.tz > 0)
 				t.tz--;
 			obj->move(t);
@@ -562,7 +562,7 @@ void Usecode_script::step
 		Frames_sequence *frames = act->get_frames(dir);
 					// Get frame (updates frame_index).
 		frame = frames->get_next(frame_index);
-		Tile_coord tile = obj->get_abs_tile_coord().get_neighbor(dir);
+		Tile_coord tile = obj->get_tile().get_neighbor(dir);
 		obj->step(tile, frame);
 		}
 	else if ((barge = dynamic_cast<Barge_object *> (obj)) != 0)
@@ -570,7 +570,7 @@ void Usecode_script::step
 		barge->face_direction(dir);
 		for (int i = 0; i < 4; i++)
 			{
-			Tile_coord t = obj->get_abs_tile_coord().get_neighbor(
+			Tile_coord t = obj->get_tile().get_neighbor(
 									dir);
 			obj->step(t, 0);
 			}

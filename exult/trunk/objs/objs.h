@@ -109,28 +109,15 @@ public:
 		{ return shape_pos & 0xf; }
 	int get_lift() const
 		{ return lift; }
-	int get_worldx() const		// Get x-coord. within world.
-		{ return cx*c_chunksize + get_tx()*c_tilesize; }
-	int get_worldy() const		// Get y-coord. within world.
-		{ return cy*c_chunksize + get_ty()*c_tilesize; }
-					// Get location in abs. tiles.
-	void get_abs_tile(int& atx, int& aty, int& atz) const
+	Tile_coord get_tile() const	// Get location in abs. tiles.
 		{
-		atz = get_lift();
-		atx = cx*c_tiles_per_chunk + get_tx();
-		aty = cy*c_tiles_per_chunk + get_ty();
-		}
-					// Same thing.
-	Tile_coord get_abs_tile_coord() const
-		{
-		int x, y, z;
-		get_abs_tile(x, y, z);
-		return Tile_coord(x, y, z);
+		return Tile_coord(cx*c_tiles_per_chunk + get_tx(),
+				cy*c_tiles_per_chunk + get_ty(), lift);
 		}
 					// Get distance to another object.
 	int distance(Game_object *o2) const
-		{ return get_abs_tile_coord().distance(
-					o2->get_abs_tile_coord()); }
+		{ return get_tile().distance(
+					o2->get_tile()); }
 					// Get direction to another object.
 	int get_direction(Game_object *o2) const;
 	int get_direction(Tile_coord t2) const;
@@ -240,7 +227,7 @@ public:
 				const int move_flags = MOVE_WALK);
 	Tile_coord find_unblocked_tile(int dist, int height = 1,
 				const int move_flags = MOVE_WALK)
-		{ return find_unblocked_tile(get_abs_tile_coord(), dist, 
+		{ return find_unblocked_tile(get_tile(), dist, 
 						height, move_flags); }
 #endif
 	Rectangle get_footprint();	// Get tile footprint.
@@ -345,7 +332,7 @@ public:
 		{ return 0; }
 					// Get coord. where this was placed.
 	virtual Tile_coord get_original_tile_coord() const
-		{ return get_abs_tile_coord(); }
+		{ return get_tile(); }
 					// Move out of the way.
 	virtual int move_aside(Actor *for_actor, int dir)
 		{ return 0; }		// For now.

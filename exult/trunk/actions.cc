@@ -105,7 +105,7 @@ Actor_action *Actor_action::create_action_sequence
 	)
 	{
 	Actor_action *act = when_there;
-	Tile_coord actloc = actor->get_abs_tile_coord();
+	Tile_coord actloc = actor->get_tile();
 	if (from_off_screen)
 		actloc.tx = actloc.ty = -1;
 	if (dest != actloc)		// Get to destination.
@@ -241,7 +241,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 		reached_end = true;	// Did it.
 		return (0);
 		}
-	Tile_coord cur = actor->get_abs_tile_coord();
+	Tile_coord cur = actor->get_tile();
 	int newdir = static_cast<int>(Get_direction4(cur.ty - tile.ty, tile.tx - cur.tx));
 	Frames_sequence *frames = actor->get_frames(newdir);
 	if (!frame_index)		// First time?  Init.
@@ -257,7 +257,7 @@ std::cout << "Actor " << actor->get_name() << " blocked.  Retrying." << std::end
 	else if (actor->step(tile, frame))	// Successful.
 		return speed;
 					// Blocked by a door?
-	if (actor->get_abs_tile_coord().distance(tile) == 1)
+	if (actor->get_tile().distance(tile) == 1)
 					// +++++Check for intelligence?
 		{
 		Game_object *door = Game_object::find_blocking(tile);
@@ -294,7 +294,7 @@ int Path_walking_actor_action::open_door
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord cur = actor->get_abs_tile_coord();
+	Tile_coord cur = actor->get_tile();
 					// Get door's footprint in tiles.
 	Rectangle foot = door->get_footprint();
 					// Open it, but kludge quality to
@@ -479,7 +479,7 @@ If_else_path_actor_action::If_else_path_actor_action
 		succeeded(false), failed(false), done(false),
 		success(s), failure(f)
 	{
-	if (!walk_to_tile(actor, actor->get_abs_tile_coord(), dest))
+	if (!walk_to_tile(actor, actor->get_tile(), dest))
 		{
 		done = failed = true;
 		}
@@ -582,7 +582,7 @@ int Move_actor_action::handle_event
 	Actor *actor
 	)
 	{
-	if (dest.tx < 0 || actor->get_abs_tile_coord() == dest)
+	if (dest.tx < 0 || actor->get_tile() == dest)
 		return (0);		// Done.
 	actor->move(dest);		// Zip right there.
 	Game_window *gwin = Game_window::get_game_window();
@@ -784,7 +784,7 @@ int Object_animate_actor_action::handle_event
  */
 Pickup_actor_action::Pickup_actor_action(Game_object *o, int spd)
 	: obj(o), pickup(1), speed(spd), cnt(0), 
-	  objpos(obj->get_abs_tile_coord()), dir(0)
+	  objpos(obj->get_tile()), dir(0)
 	{
 	}
 					// To put down an object:
@@ -847,7 +847,7 @@ Face_pos_actor_action::Face_pos_actor_action(Tile_coord p, int spd)
 	}
 Face_pos_actor_action::Face_pos_actor_action(Game_object *o, int spd)
 	: speed(spd),
-	  pos(o->get_abs_tile_coord())
+	  pos(o->get_tile())
 	{
 	}
 

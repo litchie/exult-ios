@@ -80,7 +80,7 @@ void Missile_launcher::handle_event
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord src = egg->get_abs_tile_coord();
+	Tile_coord src = egg->get_tile();
 					// Is egg off the screen?
 	if (!gwin->get_win_tile_rect().has_point(src.tx, src.ty))
 		return;			// Return w'out adding back to queue.
@@ -104,7 +104,7 @@ void Missile_launcher::handle_event
 					// Find one we can hit.
 		for (int i = n; !proj && cnt; cnt--, i = (i + 1)%psize)
 			if (Fast_pathfinder_client::is_straight_path(src,
-					party[i]->get_abs_tile_coord()))
+					party[i]->get_tile()))
 				proj = new Projectile_effect(
 					src, party[i], shapenum, weapon);
 		}
@@ -242,12 +242,11 @@ void Egg_object::set_area
 		return;
 		}
 	Game_window *gwin = Game_window::get_game_window();
-	int tx, ty, tz;			// Get absolute tile coords.
-	get_abs_tile(tx, ty, tz);
+	Tile_coord t = get_tile();	// Get absolute tile coords.
 	switch (criteria)		// Set up active area.
 		{
 	case cached_in:			// Make it really large.
-		area = Rectangle(tx - 32, ty - 32, 64, 64);
+		area = Rectangle(t.tx - 32, t.ty - 32, 64, 64);
 		break;
 	case avatar_footpad:
 	case party_footpad:
@@ -255,12 +254,12 @@ void Egg_object::set_area
 		Shape_info& info = gwin->get_info(this);
 		int xtiles = info.get_3d_xtiles(), 
 		    ytiles = info.get_3d_ytiles();
-		area = Rectangle(tx - xtiles + 1, ty - ytiles + 1,
+		area = Rectangle(t.tx - xtiles + 1, t.ty - ytiles + 1,
 							xtiles, ytiles);
 		break;
 		}
 	case avatar_far:		// Make it 1 tile bigger each dir.
-		area = Rectangle(tx - distance - 1, ty - distance - 1, 
+		area = Rectangle(t.tx - distance - 1, t.ty - distance - 1, 
 					2*distance + 3, 2*distance + 3);
 		break;
 	default:
@@ -273,7 +272,7 @@ void Egg_object::set_area
 			if (criteria == external_criteria)
 				width += 2;
 			}
-		area = Rectangle(tx - distance, ty - distance, 
+		area = Rectangle(t.tx - distance, t.ty - distance, 
 					width, width);
 		break;
 		}
@@ -395,7 +394,7 @@ void Egg_object::activate
 	    cheat.in_map_editor())
 		{
 		editing = 0;
-		Tile_coord t = get_abs_tile_coord();
+		Tile_coord t = get_tile();
 		unsigned long addr = (unsigned long) this;
 		if (Egg_object_out(client_socket, addr, t.tx, t.ty, t.tz,
 			get_shapenum(), get_framenum(), 
@@ -528,7 +527,7 @@ static void Create_monster
 	)
 	{
 	Tile_coord dest = Map_chunk::find_spot(
-				egg->get_abs_tile_coord(), 5, shnum, 0, 1);
+				egg->get_tile(), 5, shnum, 0, 1);
 	if (dest.tx != -1)
 		{
 		Monster_actor *monster = Monster_actor::create(shnum, dest,
@@ -661,7 +660,7 @@ void Egg_object::activate
 				Egg_object *path =
 					gwin->get_path_egg(get_quality());
 				if (path)
-					pos = path->get_abs_tile_coord();
+					pos = path->get_tile();
 				}
 			cout << "Should teleport to (" << pos.tx << ", " <<
 					pos.ty << ')' << endl;

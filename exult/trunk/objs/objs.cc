@@ -77,8 +77,8 @@ int Game_object::get_direction
 	Game_object *o2
 	) const
 	{
-	Tile_coord t1 = get_abs_tile_coord();
-	Tile_coord t2 = o2->get_abs_tile_coord();
+	Tile_coord t1 = get_tile();
+	Tile_coord t2 = o2->get_tile();
 					// Treat as cartesian coords.
 	return (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
 	}
@@ -92,7 +92,7 @@ int Game_object::get_direction
 	Tile_coord t2
 	) const
 	{
-	Tile_coord t1 = get_abs_tile_coord();
+	Tile_coord t1 = get_tile();
 					// Treat as cartesian coords.
 	return (int) Get_direction(t1.ty - t2.ty, t2.tx - t1.tx);
 	}
@@ -278,8 +278,8 @@ int Game_object::swap_positions
 	if (inf1.get_3d_xtiles() != inf2.get_3d_xtiles() ||
 	    inf1.get_3d_ytiles() != inf2.get_3d_ytiles())
 		return 0;		// Not the same size.
-	Tile_coord p1 = get_abs_tile_coord();
-	Tile_coord p2 = obj2->get_abs_tile_coord();
+	Tile_coord p1 = get_tile();
+	Tile_coord p2 = obj2->get_tile();
 	remove_this(1);			// Remove (but don't delete) each.
 	set_invalid();
 	obj2->remove_this(1);
@@ -445,9 +445,8 @@ int Game_object::find_nearby
 					continue;
 				if (!Check_mask(gwin, obj, mask))
 					continue;
-				int tx, ty, tz;
-				obj->get_abs_tile(tx, ty, tz);
-				if (tiles.has_point(tx, ty))
+				Tile_coord t = obj->get_tile();
+				if (tiles.has_point(t.tx, t.ty))
 					vec.push_back(dynamic_cast<T*>(obj));
 				}
 			}
@@ -491,7 +490,7 @@ int Game_object::find_nearby_eggs
 	int delta
 	) const
 	{
-	return Game_object::find_nearby (vec, get_abs_tile_coord(), shapenum,
+	return Game_object::find_nearby (vec, get_tile(), shapenum,
 						delta, 16, c_any_qual, c_any_framenum);
 	}
 
@@ -502,7 +501,7 @@ int Game_object::find_nearby_actors
 	int delta
 	) const
 	{
-	return Game_object::find_nearby(vec, get_abs_tile_coord(), shapenum,
+	return Game_object::find_nearby(vec, get_tile(), shapenum,
 						delta, 8, c_any_qual, c_any_framenum);
 	}
 
@@ -516,7 +515,7 @@ int Game_object::find_nearby
 	int framenum
 	) const
 	{
-	return Game_object::find_nearby(vec, get_abs_tile_coord(), shapenum,
+	return Game_object::find_nearby(vec, get_tile(), shapenum,
 					delta, mask, qual, framenum);
 	}
 
@@ -531,8 +530,8 @@ public:
 		{  }
 	bool operator()(const Game_object *o1, const Game_object *o2)
 		{
-		Tile_coord t1 = o1->get_abs_tile_coord(),
-			   t2 = o2->get_abs_tile_coord();
+		Tile_coord t1 = o1->get_tile(),
+			   t2 = o2->get_tile();
 		return t1.distance(pos) < t2.distance(pos);
 		}
 	};
@@ -561,7 +560,7 @@ Game_object *Game_object::find_closest
 		return (0);
 	if (cnt > 1)
 		std::sort(vec.begin(), vec.end(), 
-				Object_closest_sorter(get_abs_tile_coord()));
+				Object_closest_sorter(get_tile()));
 	return *(vec.begin());
 	}
 
@@ -590,12 +589,12 @@ Game_object *Game_object::find_closest
 	Game_object *closest = 0;	// Get closest.
 	int best_dist = 10000;		// In tiles.
 					// Get our location.
-	Tile_coord loc = get_abs_tile_coord();
+	Tile_coord loc = get_tile();
 	for (Game_object_vector::const_iterator it = vec.begin();
 						it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
-		int dist = obj->get_abs_tile_coord().distance(loc);
+		int dist = obj->get_tile().distance(loc);
 		if (dist < best_dist)
 			{
 			closest = obj;
@@ -651,7 +650,7 @@ Rectangle Game_object::get_footprint
 	int frame = get_framenum();
 	int xtiles = info.get_3d_xtiles(frame);
 	int ytiles = info.get_3d_ytiles(frame);
-	Tile_coord t = get_abs_tile_coord();
+	Tile_coord t = get_tile();
 	Rectangle foot((t.tx - xtiles + 1 + c_num_tiles)%c_num_tiles, 
 		       (t.ty - ytiles + 1 + c_num_tiles)%c_num_tiles, 
 							xtiles, ytiles);
@@ -676,9 +675,9 @@ Game_object *Game_object::find_blocking
 	Object_iterator next(chunk->get_objects());
 	while ((obj = next.get_next()) != 0)
 		{
-		int tx, ty, tz;		// Get object's coords.
-		obj->get_abs_tile(tx, ty, tz);
-		if (tx < tile.tx || ty < tile.ty || tz > tile.tz)
+					// Get object's coords.
+		Tile_coord t = obj->get_tile();
+		if (t.tx < tile.tx || t.ty < tile.ty || t.tz > tile.tz)
 			continue;	// Out of range.
 		Shape_info& info = gwin->get_info(obj);
 		int ztiles = info.get_3d_height(); 
@@ -686,9 +685,9 @@ Game_object *Game_object::find_blocking
 			continue;	// Skip if not an obstacle.
 					// Occupies desired tile?
 		int frame = obj->get_framenum();
-		if (tile.tx > tx - info.get_3d_xtiles(frame) &&
-		    tile.ty > ty - info.get_3d_ytiles(frame) &&
-		    tile.tz < tz + ztiles)
+		if (tile.tx > t.tx - info.get_3d_xtiles(frame) &&
+		    tile.ty > t.ty - info.get_3d_ytiles(frame) &&
+		    tile.tz < t.tz + ztiles)
 			return (obj);	// Found it.
 		}
 	return (0);
@@ -709,7 +708,7 @@ int Game_object::is_closed_door
 					// Get door's footprint.
 	int xtiles = info.get_3d_xtiles(), ytiles = info.get_3d_ytiles();
 					// Get its location.
-	Tile_coord doortile = get_abs_tile_coord();
+	Tile_coord doortile = get_tile();
 	Tile_coord before, after;	// Want tiles to both sides.
 	if (xtiles > ytiles)		// Horizontal footprint?
 		{
@@ -829,7 +828,7 @@ bool Game_object::edit
 	    cheat.in_map_editor())
 		{
 		editing = 0;
-		Tile_coord t = get_abs_tile_coord();
+		Tile_coord t = get_tile();
 		unsigned long addr = (unsigned long) this;
 		std::string name = get_name();
 		if (Object_out(client_socket, addr, t.tx, t.ty, t.tz,
@@ -880,9 +879,9 @@ void Game_object::update_from_studio
 	obj->set_shape(shape, frame);
 	gwin->add_dirty(obj);
 	obj->set_quality(quality);
-	int oldtx, oldty, oldtz;	// See if it moved.
-	obj->get_abs_tile(oldtx, oldty, oldtz);
-	if (oldtx != tx || oldty != ty || oldtz != tz)
+					// See if it moved.
+	Tile_coord oldt = obj->get_tile();
+	if (oldt.tx != tx || oldt.ty != ty || oldt.tz != tz)
 		obj->move(tx, ty, tz);
 	cout << "Object updated" << endl;
 #endif
@@ -1799,7 +1798,7 @@ Game_object *Game_object::attacked
 
 			// marked already detonating powderkegs with quality
 			if (get_quality()==0) {
-				Tile_coord pos = get_abs_tile_coord();
+				Tile_coord pos = get_tile();
 				gwin->add_effect(new Explosion_effect(pos, this));
 			}
 		}

@@ -105,9 +105,8 @@ void Npc_proximity_handler::handle_event
 	int extra_delay = 5;		// For next time.
 					// See if still on visible screen.
 	Rectangle tiles = gwin->get_win_tile_rect().enlarge(10);
-	int tx, ty, tz;
-	npc->get_abs_tile(tx, ty, tz);
-	if (!tiles.has_point(tx, ty) ||	// No longer visible?
+	Tile_coord t = npc->get_tile();
+	if (!tiles.has_point(t.tx, t.ty) ||	// No longer visible?
 	    npc->is_dead())		// Or no longer living?
 		{
 		npc->clear_nearby();

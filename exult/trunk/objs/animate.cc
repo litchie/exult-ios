@@ -79,8 +79,8 @@ void Object_sfx::set_obj
 	)
 	{
 	Game_window *gwin = Game_window::get_game_window();
-	Tile_coord apos = gwin->get_main_actor()->get_abs_tile_coord();
-	Tile_coord opos = o->get_abs_tile_coord();
+	Tile_coord apos = gwin->get_main_actor()->get_tile();
+	Tile_coord opos = o->get_tile();
 	bool active = sfx.is_active();
 	int new_distance = apos.distance(opos);
 	if (active && new_distance >= distance && o != obj)
@@ -527,15 +527,14 @@ void Wiggle_animator::handle_event
 		animating = 0;
 		return;
 		}
-	int tx, ty, tz;			// Get current position.
-	obj->get_abs_tile(tx, ty, tz);
+	Tile_coord t = obj->get_tile();	// Get current position.
 	int newdx = rand()%3;
 	int newdy = rand()%3;
-	tx += -deltax + newdx;
-	ty += -deltay + newdy;
+	t.tx += -deltax + newdx;
+	t.ty += -deltay + newdy;
 	deltax = newdx;
 	deltay = newdy;
-	obj->Game_object::move(tx, ty, tz);
+	obj->Game_object::move(t.tx, t.ty, t.tz);
 					// Add back to queue for next time.
 	if (animating)
 		gwin->get_tqueue()->add(curtime + delay, this, udata);
