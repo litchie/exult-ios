@@ -270,16 +270,6 @@ static void Init
 #endif //WIN32
 
 	string yn;
-					// Skip splash screen?
-	config->value("config/gameplay/skip_splash", yn, "no");
-	if(yn == "no") {
-		gwin->set_mode(Game_window::splash);
-		SDL_SetEventFilter(Filter_splash_events);
-	} else {
-		gwin->set_mode(Game_window::normal);
-		SDL_SetEventFilter(Filter_intro_events);
-		gwin->setup_game();		// This will start the scene.
-	}
 					// Skip intro. scene?
 	config->value("config/gameplay/skip_intro", yn, "no");
 	if (yn == "yes")
@@ -290,6 +280,16 @@ static void Init
 	if (yn == "yes")
 		gwin->get_usecode()->set_global_flag(
 			Usecode_machine::have_trinsic_password, 1);
+					// Skip splash screen?
+	config->value("config/gameplay/skip_splash", yn, "no");
+	if(yn == "no") {
+		gwin->set_mode(Game_window::splash);
+		SDL_SetEventFilter(Filter_splash_events);
+	} else {
+		gwin->set_mode(Game_window::normal);
+		SDL_SetEventFilter(Filter_intro_events);
+		gwin->setup_game();		// This will start the scene.
+	}
 	}
 
 /*
@@ -319,6 +319,20 @@ inline void Delay
 #else					/* May use this for Linux too. */
 	SDL_Delay(20);			// Try 1/50 second.
 #endif
+	}
+
+/*
+ *	Verify user wants to quit.
+ *
+ *	Output:	1 to quit.
+ */
+static int Okay_to_quit
+	(
+	)
+	{
+	if (Yesno_gump_object::ask("Do you really want to quit?"))
+		quitting_time = 1;
+	return quitting_time;
 	}
 
 /*
@@ -611,7 +625,7 @@ static void Handle_event
 		break;
 #endif
 	case SDL_QUIT:
-		quitting_time = 1;
+		Okay_to_quit();
 		break;
 	case SDL_KEYDOWN:		// Keystroke.
 		Handle_keystroke(event.key.keysym.sym,
@@ -792,17 +806,12 @@ static void Handle_keystroke
 			15, 15, 300, 400);
 		break;
 		}
-	case SDLK_q:
-		quitting_time = 1;
-		break;
 	case SDLK_ESCAPE:		// ESC key.
 		inventory_page = stats_page = -1;
 		if (gwin->get_mode() == Game_window::gump)
 			gwin->end_gump_mode();
 		else			// For now, quit.
-			if (Yesno_gump_object::ask(
-					"Do you really want to quit?"))
-				quitting_time = 1;
+			Okay_to_quit();
 		break;
 	case SDLK_m:			// Show next mouse cursor.
 		{
@@ -905,9 +914,8 @@ static void Handle_keystroke
 			}
 		break;
 	case SDLK_x:			// Alt-x means quit.
-		if (alt && Yesno_gump_object::ask(
-						"Do you really want to quit?"))
-			quitting_time = 1;
+		if (alt)
+			Okay_to_quit();
 		break;
 	case SDLK_PAGEUP:
 		current_shape=0;
@@ -990,9 +998,11 @@ static int Get_click
 				mouse_update = 1;
 #endif
 				break;
+#if 0
 			case SDL_QUIT:
-				quitting_time = 1;
-				return (0);
+				if (Okay_to_quit())
+					return (0);
+#endif
 			case SDL_KEYDOWN:
 				{
 				int c = event.key.keysym.sym;
@@ -1133,8 +1143,8 @@ cout << "(x,y) rel. to gump is (" << ((event.button.x>>scale) - gump->get_x())
 						event.motion.y >> scale);
 		break;
 	case SDL_QUIT:
-		quitting_time = 1;
-		return (0);
+		if (Okay_to_quit())
+			return (0);
 	case SDL_KEYDOWN:
 		{
 		if (event.key.keysym.sym == SDLK_ESCAPE)
