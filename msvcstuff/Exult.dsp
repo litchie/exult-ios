@@ -46,7 +46,7 @@ RSC=rc.exe
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /TP /c
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
-# ADD RSC /l 0xc09 /d "NDEBUG"
+# ADD RSC /l 0x409 /i "..\\" /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo /o"Release\Exult.bsc"
@@ -71,7 +71,7 @@ LINK32=link.exe
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
 # ADD CPP /nologo /G6 /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /FI"msvc_kludges.h" /D "_DEBUG" /D "DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /GZ /TP /c
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
-# ADD RSC /l 0xc09 /d "_DEBUG"
+# ADD RSC /l 0x409 /i "..\\" /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo /o"debug\Exult.bsc"
@@ -97,7 +97,7 @@ LINK32=link.exe
 # ADD BASE CPP /nologo /G6 /MD /W3 /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /Yu"msvc_kludges.h" /FD /TP /c
 # ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /FI"msvc_kludges.h" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /TP /c
 # ADD BASE RSC /l 0xc09 /d "NDEBUG"
-# ADD RSC /l 0xc09 /d "NDEBUG"
+# ADD RSC /l 0x409 /i "..\\" /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo /o"Release\Exult.bsc"
@@ -134,7 +134,7 @@ SOURCE="$(InputPath)"
 # ADD BASE CPP /nologo /G6 /MTd /W3 /Gm /GX /ZI /Od /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\SDL-1.2.0\include" /I "..\Audio" /I "..\Audio\MIDI_drivers" /FI"msvc_kludges.h" /D "_DEBUG" /D "DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /GZ /TP /c
 # ADD CPP /nologo /G6 /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\\" /I "..\Gumps" /I "..\conf" /I "..\files" /I "..\filc" /I "..\imagewin" /I "..\objs" /I "..\pathfinder" /I "..\shapes" /I "..\usecode" /I "..\MSVCStuff" /I "..\Audio" /I "..\Audio\MIDI_drivers" /I "..\data" /FI"msvc_kludges.h" /D "_DEBUG" /D "DEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "EXULT" /FR /Yu"msvc_kludges.h" /FD /GZ /TP /c
 # ADD BASE RSC /l 0xc09 /d "_DEBUG"
-# ADD RSC /l 0xc09 /d "_DEBUG"
+# ADD RSC /l 0x409 /i "..\\" /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo /o"debug\Exult.bsc"
@@ -990,6 +990,10 @@ SOURCE=..\usecode\ucsched.cc
 SOURCE=..\usecode\useval.cc
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=..\win32\exultico.rc
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -1657,15 +1661,7 @@ SOURCE=..\data\exult_si_flx.h
 # PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # Begin Source File
 
-SOURCE=.\exult.ico
-# End Source File
-# Begin Source File
-
 SOURCE=..\win32\exult.ico
-# End Source File
-# Begin Source File
-
-SOURCE=.\exult.rc
 # End Source File
 # End Group
 # Begin Group "MSVC Kludges"

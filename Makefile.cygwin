@@ -193,7 +193,7 @@ $(EXULT_SI_FLX): tools/expack.exe $(EXULT_SI_FLX_OBJECTS)
 	tools/expack.exe -i data/si/flx.in
 
 exultico.o: win32/exultico.rc win32/exult.ico
-	windres win32/exultico.rc exultico.o
+	windres --include-dir win32 win32/exultico.rc exultico.o
 
 tools/mklink.exe : tools/mklink.o
 	$(CXX) $(LFLAGS) -o tools/mklink.exe tools/mklink.o -mconsole
