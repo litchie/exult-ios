@@ -114,7 +114,9 @@ static opcode_desc opcode_table[] =
 	{ "push\teventid", 0, 0 },				// 48
 	{ NULL, 0, 0 },						// 49
 	{ "arra", 0, 0 },					// 4a
-	{ "pop\teventid", 0, 0 }					// 4b
+	{ "pop\teventid", 0, 0 },					// 4b
+	{ "line",2,IMMED },					// 4c
+	{ "func",4,DATA_STRING }			// 4d
 };
 
 
