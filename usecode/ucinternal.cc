@@ -1000,23 +1000,19 @@ Usecode_value Usecode_internal::remove_cont_items
 static Tile_coord Find_unblocked
 	(
 	Tile_coord dest,		// Where to go.
+	int ht,				// Height of obj. that needs space.
 	int src_tz			// Current lift.
 	)
 	{
-	Tile_coord start = dest;
-	dest.tx = -1;			// Start at desired position.
-	dest = Game_object::find_unblocked_tile(start, 0);
-	if (dest.tx != -1)
-		return dest;		// Okay.
-	int dest_tz = start.tz;
-	start.tz = src_tz;		// Now try at source height.
-	dest = Game_object::find_unblocked_tile(start, 0);
-	if (dest.tx != -1)
-		return dest;		// Okay.
-	start.tz = dest_tz;
-					// Look outwards.
-	for (int i = 1; dest.tx == -1 && i < 3; i++)
-		dest = Game_object::find_unblocked_tile(start, i);
+	Tile_coord start = dest, startz = dest;
+	startz.tz = src_tz;		// This one is at source height.
+	dest.tx = -1;
+	for (int i = 0; dest.tx == -1 && i < 3; i++)
+		{			// First at given level.
+		dest = Game_object::find_unblocked_tile(start, i, ht);
+		if (dest.tx == -1)	// Then at source level.
+			dest = Game_object::find_unblocked_tile(startz, i, ht);
+		}
 	if (dest.tx == -1)
 		return start;
 	else
@@ -1043,6 +1039,7 @@ int Usecode_internal::path_run_usecode
 	Actor *npc = as_actor(get_item(npcval));
 	if (!npc)
 		return 0;
+	path_npc = npc;
 	int usefun = useval.get_elem0().get_int_value();
 	Game_object *obj = get_item(itemval);
 	int sz = locval.get_array_size();
@@ -1059,7 +1056,8 @@ int Usecode_internal::path_run_usecode
 		dest.tz = 0;
 	if (find_free)
 		{
-		dest = Find_unblocked(dest, src.tz);
+		int ht = gwin->get_info(npc).get_3d_height();
+		dest = Find_unblocked(dest, ht, src.tz);
 		if (usefun == 0x60a &&	// ++++Added 7/21/01 to fix Iron
 		    src.distance(dest) <= 1)
 			return 1;	// Maiden loop in SI.  Kludge+++++++
@@ -1411,7 +1409,8 @@ Usecode_internal::Usecode_internal
 	Game_window *gw
 	) : Usecode_machine(gw), cur_function(0),
 	    book(0), caller_item(0),
-	    last_created(0), user_choice(0), saved_pos(-1, -1, -1),
+	    last_created(0), path_npc(0), user_choice(0), 
+	    saved_pos(-1, -1, -1),
 	    String(0), stack(new Usecode_value[1024]), intercept_item(0)
 	{
 	ifstream file;                // Read in usecode.
