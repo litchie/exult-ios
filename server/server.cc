@@ -56,7 +56,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <netdb.h>
 #endif
 
+#ifndef WIN32
 #include <sys/un.h>
+#endif
 
 #include "server.h"
 #include "servemsg.h"
@@ -107,6 +109,7 @@ void Server_init
 	(
 	)
 	{
+#ifndef WIN32
 	// Get location of socket file.
 	std::string servename = get_system_path("<GAMEDAT>/exultserver");
 	// Make sure it isn't there.
@@ -165,6 +168,7 @@ void Server_init
 #endif
 		}
 	Set_highest_fd();
+#endif
 	}
 
 /*
@@ -175,6 +179,7 @@ void Server_close
 	(
 	)
 	{
+#ifndef WIN32
 	// unlink socket file+++++++
 	}
 
@@ -313,6 +318,7 @@ static void Handle_client_message
 		cheat.set_edit_shape(shnum, frnum);
 		}
 		}
+#endif
 	}
 
 /*
@@ -324,6 +330,7 @@ void Server_delay
 	(
 	)
 	{
+#ifndef WIN32
 	extern int xfd;
 	fd_set rfds;
 	struct timeval timer;
@@ -359,6 +366,7 @@ void Server_delay
 				Set_highest_fd();
 			}
 		}
+#endif
 	}
 
 #endif

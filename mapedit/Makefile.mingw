@@ -1,22 +1,22 @@
-# Exult Studio makefile for use in Windows with mingw 1.0
+# Exult Studio makefile for use in Windows with mingw 1.0 or later and Cygwin shell
 # Where is Exult Studio will be installed
 STUDIOPATH=C:/Studio
 
 SRC=..
-VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server
+VPATH=$(SRC):$(SRC)/files:$(SRC)/shapes:$(SRC)/imagewin:$(SRC)/mapedit:$(SRC)/server:$(SRC)/objs
 
-# If this doesn't work, insert output of 'gtk-config --cflags' manually
-GTK_INCLUDES = `gtk-config --cflags`
-# If this doesn't work, insert output of 'gtk-config --libs' manually
-GTK_LIBS = `gtk-config --libs`
+# If this doesn't work, insert output manually
+GTK_INCLUDES = `pkg-config --cflags gtk+-1.3-win32-production`
+# If this doesn't work, insert output manually
+GTK_LIBS = `pkg-config --libs gtk+-1.3-win32-production`
 
-# If this doesn't work, insert output of 'libglade-config --cflags' manually
-LIBGLADE_INCLUDES = `libglade-config --cflags`
-# If this doesn't work, insert output of 'libglade-config --libs' manually
-LIBGLADE_LIBS = `libglade-config --libs`
+# If this doesn't work, insert output manually
+LIBGLADE_INCLUDES = `pkg-config --cflags libglade-0.17`
+# If this doesn't work, insert output manually
+LIBGLADE_LIBS = `pkg-config --libs libglade-0.17`
 
 INCLUDES = -I$(SRC) -I$(SRC)/shapes -I$(SRC)/mapedit -I$(SRC)/imagewin \
-	-I$(SRC)/files -I$(SRC)/server $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
+	-I$(SRC)/files -I$(SRC)/server -I$(SRC)/objs $(GTK_INCLUDES) $(LIBGLADE_INCLUDES)
 
 CPPFLAGS = -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DEXULT_DATADIR=\"data\" -DUSE_EXULTSTUDIO $(INCLUDES)
 
@@ -24,25 +24,27 @@ CXXFLAGS = -fnative-struct
 
 CXX=g++
 
-LFLAGS=-lmingw32 -liberty -mwindows
-LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS)
+LIBS=$(GTK_LIBS) $(LIBGLADE_LIBS) -liberty
 EXEC=exult_studio.exe
 
 SERVER_OBJS=objserial.o servemsg.o server.o
 
 MAPEDIT_OBJS=chunklst.o dirbrowser.o eggedit.o exult_studio.o npcedit.o objbrowse.o objedit.o paledit.o  \
-	shapedraw.o shapelst.o studio.o
+	shapedraw.o shapeedit.o shapelst.o studio.o
 
 FILES_OBJS=Flat.o Flex.o IFF.o listfiles.o Table.o U7file.o utils.o
 
 IMAGEWIN_OBJS=ibuf8.o imagebuf.o
 
-SHAPES_OBJS=font.o fontvga.o items.o monstinf.o u7drag.o vgafile.o
+SHAPES_OBJS=font.o fontvga.o items.o monstinf.o shapeinf.o shapevga.o u7drag.o vgafile.o
 
 OBJS=$(MAPEDIT_OBJS) $(FILES_OBJS) $(IMAGEWIN_OBJS) $(SHAPES_OBJS) $(SERVER_OBJS)
 
 $(EXEC): $(OBJS)
-	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
+	$(CXX) -o $@ $(OBJS) $(LIBS)
+
+clean:
+	rm -f $(OBJS) $(EXEC)
 
 install: $(EXEC)
 	mkdir -p $(STUDIOPATH)
