@@ -1935,6 +1935,7 @@ USECODE_INTRINSIC(is_water)
 
 USECODE_INTRINSIC(run_endgame)
 {
+	Audio::get_ptr()->stop_sound_effects();
 	game->end_game(parms[0].get_int_value() != 0);
 	// If successful enable menu entry and play credits afterwards
 	if(parms[0].get_int_value() != 0) {
