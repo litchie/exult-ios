@@ -27,10 +27,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Shape_frame *ShapeID::cache_shape()
 {
 	Game_window *gwin = Game_window::get_game_window();
+	has_trans = 0;
 
 	switch (shapefile) {
 	case SF_SHAPES_VGA:
 		shape = gwin->get_shape(shapenum, framenum);
+		has_trans = gwin->get_shapes().get_info(shapenum).has_translucency();
 		break;
 	case SF_GUMPS_VGA:
 		shape = gwin->get_gump_shape (shapenum, framenum);

@@ -397,8 +397,8 @@ public:
 					sizeof(xforms)/sizeof(xforms[0]));
 		}
 
-	inline void paint_shape(int xoff, int yoff, ShapeID &shape, int translucent = 0)
-		{ paint_shape(xoff, yoff, shape.get_shape(), translucent); }
+	inline void paint_shape(int xoff, int yoff, ShapeID &shape)
+		{ paint_shape(xoff, yoff, shape.get_shape(), shape.is_translucent()); }
 
 	void paint_shape(int xoff, int yoff, int shapenum, int framenum)
 		{

@@ -40,7 +40,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 Paperdoll_gump::Paperdoll_npc Paperdoll_gump::Characters[] = {
 
-	// Shp, fmale, bsh, bf, hds, hf, hh, ash, af, a2, as
+	// Shp, fmale,                   bsh, bf, hds, hf, hh, ash, af, a2, as
 	
 	// Avatar Female White
 	{ 1029,  true, SF_PAPERDOL_VGA,   13,  0,   4,  0,  1,   7,  0,  2,  4 },
@@ -613,7 +613,7 @@ Paperdoll_gump::Paperdoll_npc Paperdoll_gump::Characters_BG[] = {
 	// Avatar Female White
 	{  989,  true, SF_GAME_FLX,      13,  0, EXULT_BG_FLX_FEM_AV_FACE_SHP,
 	                                               0,  1,   7,  0,  2,  4 },
-		// Avatar Male White
+	// Avatar Male White
 	{  721, false, SF_GAME_FLX,      14,  0, EXULT_BG_FLX_MALE_AV_FACE_SHP,
 	                                               0,  1,   7,  1,  3,  5 },
 	// Iolo
@@ -643,6 +643,9 @@ Paperdoll_gump::Paperdoll_npc Paperdoll_gump::Characters_BG[] = {
 	// Spark
 	{  489, false, SF_GAME_FLX,      14,  0, EXULT_BG_FLX_FACES2_SHP,  
 	                                               4,  5,   7,  1,  3,  5 },
+	// Female Ghost/Rowena
+	{  299,  true, SF_GAME_FLX,      13,  0, EXULT_BG_FLX_FEM_AV_FACE_SHP,
+	                                               2,  1,   7,  0,  2,  4 },
 
 
 	// For Pick pocket mode
@@ -665,8 +668,6 @@ Paperdoll_gump::Paperdoll_npc Paperdoll_gump::Characters_BG[] = {
 	{  259, false, SF_PAPERDOL_VGA,  14,  0, 158,  0,  1,   7,  1,  3,  5 },
 	// Townsman
 	{  259, false, SF_PAPERDOL_VGA,  14,  0, 158,  0,  1,   7,  1,  3,  5 },
-	// Ghost
-	{  299,  true, SF_PAPERDOL_VGA,  13,  3, 137,  0,  1, 136,  0,  2,  4 },
 	// Blacksmith
 	{  304, false, SF_PAPERDOL_VGA,  14,  3, 145,  0,  1, 146,  1,  3,  5 },
 	// Ghost

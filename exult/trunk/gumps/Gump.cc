@@ -333,7 +333,7 @@ void Gump::paint
 			}
 		}
 		gwin->paint_shape(box.x + obj->get_cx(),box.y + obj->get_cy(), 
-				shape);
+				*obj);
 		obj = obj->get_next();
 	}
 }

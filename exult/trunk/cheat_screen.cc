@@ -961,7 +961,7 @@ void CheatScreen::NPCDisplay (Actor *actor, int &num)
 	
 		// Paint the actors shape
 		Shape_frame *shape = actor->get_shape();
-		if (shape) gwin->paint_shape (shape->get_xright()+240, shape->get_yabove(), shape); 
+		if (shape) gwin->paint_shape (shape->get_xright()+240, shape->get_yabove(), *actor); 
 
 		// Now the info
 		std::snprintf (buf, 512, "NPC %i - %s", actor->get_npc_num(), actor->get_npc_name().c_str());
