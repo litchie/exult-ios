@@ -149,39 +149,48 @@ void Usecode_internal::append_string
 	else
 		String = strcpy(newstr, str);
 	}
-					// Push/pop stack.
-	inline void Usecode_internal::push(Usecode_value& val)
-		{ *sp++ = val; }
-	inline Usecode_value Usecode_internal::pop()
-		{ 
-		if (sp <= stack)
-			{		// Happens in SI #0x939
+
+// Push/pop stack.
+inline void Usecode_internal::push(Usecode_value& val)
+{
+	*sp++ = val;
+}
+
+inline Usecode_value Usecode_internal::pop()
+{ 
+	if (sp <= stack)
+		{		// Happens in SI #0x939
 			cerr << "Stack underflow" << endl;
 			return Usecode_value(0);
-			}
-		return *--sp; 
 		}
-	inline void Usecode_internal::pushref(Game_object *obj)
-		{
-		Usecode_value v(obj);
-		push(v);
-		} 
-	inline void Usecode_internal::pushi(long val)		// Push/pop integers.
-		{
-		Usecode_value v(val);
-		push(v);
-		}
-	inline int Usecode_internal::popi()
-		{
-		Usecode_value val = pop();
-		return val.need_int_value();
-		}
-					// Push/pop strings.
-	inline void Usecode_internal::pushs(char *s)
-		{
-		Usecode_value val(s);
-		push(val);
-		}
+	return *--sp; 
+}
+
+inline void Usecode_internal::pushref(Game_object *obj)
+{
+	Usecode_value v(obj);
+	push(v);
+} 
+
+inline void Usecode_internal::pushi(long val)		// Push/pop integers.
+{
+	Usecode_value v(val);
+	push(v);
+}
+
+inline int Usecode_internal::popi()
+{
+	Usecode_value val = pop();
+	return val.need_int_value();
+}
+
+// Push/pop strings.
+inline void Usecode_internal::pushs(char *s)
+{
+	Usecode_value val(s);
+	push(val);
+}
+
 /*
  *	Get a game object from an "itemref", which might be the actual
  *	pointer, or might be -(npc number).
