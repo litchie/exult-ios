@@ -180,16 +180,17 @@ int Container_game_object::create_quantity
 	int framenum			// Frame.
 	)
 	{
+	Shape_info& shp_info=Game_window::get_game_window()->get_info(shapenum);
 					// Get volume of 1 object.
-	int objvol = Game_window::get_game_window()->get_info(
-			shapenum).get_volume();
+	int objvol = shp_info.get_volume();
 	int maxvol = get_max_volume();	// 0 means anything (NPC's?).
 	int roomfor = maxvol && objvol ? (maxvol - volume_used)/objvol : 20000;
 	int todo = delta < roomfor ? delta : roomfor;
 	while (todo)			// Create them here first.
 		{
-		Game_object *newobj = new Ireg_game_object(shapenum, framenum,
-								0, 0, 0);
+		Game_object *newobj = Game_window::get_game_window()->
+			create_ireg_object(shp_info, shapenum, framenum,0,0,0);
+
 		if (!add(newobj))
 			{
 			delete newobj;
