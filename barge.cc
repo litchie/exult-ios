@@ -130,6 +130,19 @@ void Barge_object::gather
 				objects.append(obj);
 			}
 		}
+	if (boat == -1)			// Test for boat the first time.
+		{
+					// Test landscape under hot-spot.
+		Chunk_object_list *chunk = gwin->get_objects(cx, cy);
+		ShapeID flat = chunk->get_flat(get_tx(), get_ty());
+		if (flat.is_invalid())
+			boat = 0;
+		else
+			{
+			Shape_info& info = gwin->get_info(flat.get_shapenum());
+			boat = info.is_water();
+			}
+		}
 	}
 
 /*

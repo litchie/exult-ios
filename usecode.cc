@@ -223,6 +223,10 @@ void Scheduled_usecode::handle_event
 		case 0x2d:		// Remove itemref.
 			usecode->remove_item(obj);
 			break;
+#if 0
+		case 0x39:		// Rise?  (For flying carpet.
+		case 0x38:		// Descend?
+#endif
 		case 0x46:
 			{		// Set frame.
 			Usecode_value& fval = arrval.get_elem(++i);
@@ -2305,6 +2309,12 @@ USECODE_INTRINSIC(flash_mouse)
 	return (no_ret);
 }
 
+USECODE_INTRINSIC(okay_to_fly)
+{
+	// Only used once, in usecode for magic-carpet.
+	return Usecode_value(1);
+}
+
 USECODE_INTRINSIC(get_container)
 {
 	// Takes itemref, returns container.
@@ -2472,6 +2482,10 @@ USECODE_INTRINSIC(get_npc_flag)
 		if (!gwin->get_moving_barge() || !(barge = Get_barge(obj)))
 			return Usecode_value(0);
 		return Usecode_value(barge == gwin->get_moving_barge());
+		}
+	else if (fnum == (int) Actor::okay_to_land)
+		{			// Okay to land flying carpet?
+		return Usecode_value(1);//+++++++++++++++
 		}
 	Usecode_value u(obj->get_flag(fnum));
 	return(u);
@@ -2703,7 +2717,7 @@ struct Usecode_machine::IntrinsicTableEntry
 	USECODE_INTRINSIC_PTR(flash_mouse),	// 0x6a
 	USECODE_INTRINSIC_PTR(get_item_frame),	// 0x6b Guessing++++
 	USECODE_INTRINSIC_PTR(set_item_frame),	// 0x6c Guessing++++
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x6d
+	USECODE_INTRINSIC_PTR(okay_to_fly),	// 0x6d
 	USECODE_INTRINSIC_PTR(get_container),	// 0x6e
 	USECODE_INTRINSIC_PTR(remove_item),	// 0x6f
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x70
@@ -3336,11 +3350,22 @@ void Usecode_machine::run
 			ip = endp;	// End the loop.
 			break;
 		case 0x2d:		// Set return value (SETR).
+#if 1
 					// But 1st takes precedence.
 			if (!set_ret_value)
 				ret_value = pop();
 			set_ret_value = 1;
 			break;
+#else	/* +++++Try this: */
+			{
+			Usecode_value r = pop();
+					// But 1st takes precedence.
+			if (!set_ret_value)
+				ret_value = r;
+			set_ret_value = 1;
+			break;
+			}
+#endif
 		case 0x2e:		// Looks like a loop.
 			if (*ip++ != 2)
 				cout << "2nd byte in loop isn't a 2!"<<endl;
