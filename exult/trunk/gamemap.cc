@@ -96,9 +96,14 @@ Chunk_terrain *Game_map::read_terrain
 	)
 	{
 	assert(chunk_num >= 0 && chunk_num < chunk_terrains.size());
-	chunks->seekg(chunk_num * 512);
 	unsigned char buf[16*16*2];	
-	chunks->read(reinterpret_cast<char*>(buf), sizeof(buf));
+	if (chunks)			// NULL if map-editing 1st time.
+		{
+		chunks->seekg(chunk_num * 512);
+		chunks->read(reinterpret_cast<char*>(buf), sizeof(buf));
+		}
+	else
+		memset(&buf[0], 0, sizeof(buf));
 	Chunk_terrain *ter = new Chunk_terrain(&buf[0]);
 	chunk_terrains.put(chunk_num, ter);
 	return ter;
@@ -113,7 +118,7 @@ Game_map::Game_map
 	) : 
             chunk_terrains(0), read_all_terrain(false), 
 	    modified_terrain(false),
-	    map_patches(new Map_patch_collection), chunks(new ifstream)
+	    map_patches(new Map_patch_collection), chunks(0)
 	{
 	}
 
@@ -138,26 +143,55 @@ void Game_map::init
 	(
 	)
 	{
+	if (chunks)
+		delete chunks;
+	chunks = new ifstream;
+	int num_chunk_terrains;
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_U7CHUNKS))
 		U7open(*chunks, PATCH_U7CHUNKS);
-	else
+	else try
+		{
 		U7open(*chunks, U7CHUNKS);
-	chunks->seekg(0, ios::end);	// Get to end so we can get length.
+		}
+	catch(const file_exception & f)
+		{
+		if (!Game::is_editing())	// Ok if map-editing.
+			throw f;
+		delete chunks;
+		chunks = 0;
+		num_chunk_terrains = 1;	// We'll create 1st one.
+		}
+	if (chunks)			// Have it?
+		{			// Get to end so we can get length.
+		chunks->seekg(0, ios::end);
 					// 2 bytes/tile.
-	int num_chunk_terrains = chunks->tellg()/
+		num_chunk_terrains = chunks->tellg()/
 				(c_tiles_per_chunk*c_tiles_per_chunk*2);
+		}
 					// Resize list to hold all.
 	chunk_terrains.resize(num_chunk_terrains);
 	read_all_terrain = modified_terrain = false;
 	std::ifstream u7map;		// Read in map.
+	bool nomap = false;
 	if (is_system_path_defined("<PATCH>") && U7exists(PATCH_U7MAP))
 		U7open(u7map, PATCH_U7MAP);
-	else
+	else try 
+		{
 		U7open(u7map, U7MAP);
+		}
+	catch(const file_exception & f)
+		{
+		if (!Game::is_editing())	// Ok if map-editing.
+			throw f;
+		nomap = true;
+		}
 	for (int schunk = 0; schunk < c_num_schunks*c_num_schunks; schunk++)
 	{			// Read in the chunk #'s.
 		unsigned char buf[16*16*2];
-		u7map.read(reinterpret_cast<char *>(buf), sizeof(buf));
+		if (nomap)
+			memset(&buf[0], 0, sizeof(buf));
+		else
+			u7map.read(reinterpret_cast<char *>(buf), sizeof(buf));
 		int scy = 16*(schunk/12);// Get abs. chunk coords.
 		int scx = 16*(schunk%12);
 		uint8 *mapdata = buf;
@@ -195,7 +229,8 @@ void Game_map::clear
 	for (int i = 0; i < cnt; i++)
 		delete chunk_terrains[i];
 	chunk_terrains.resize(0);
-	chunks->close();
+	delete chunks;			// Close 'u7chunks'.
+	chunks = 0;
 					// Clear 'read' flags.
 	memset(reinterpret_cast<char*>(schunk_read), 0, sizeof(schunk_read));
 	memset(reinterpret_cast<char*>(schunk_modified), 0, 
