@@ -1,3 +1,6 @@
+2001-08-19  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* gamewin.*, exult.cc: fixed -buildmap option
+
 2001-08-19  Jeff Freedman  <jeff@amy.nerble.net>
 
 	* objs/chunks.cc: Enabled new render compare() method.  Time to hide.
