@@ -1,5 +1,7 @@
 2001-02-24  Jeff Freedman  <jeff@amy.nerble.net>
 
+	* Npc_actor::handle_event always looks for schedule.
+	* Vesper provisioner bug fixed.
 	* Fixed weapon bug (throwing non-throwable weapons) and a few others.
 	* Remove NPC's from 'nearby' list when they're deleted.
 
