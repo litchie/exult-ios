@@ -243,14 +243,12 @@ void Mouse::set_speed_cursor()
 #endif
     else if (cheat.in_map_editor()) 
     {
-    	if (gwin->skip_lift == 0)	// Terrain-editing.++++May change.
-		cursor = short_combat_arrows[4];	// Short S red arrow.
-	else switch (cheat.get_edit_mode())
+	switch (cheat.get_edit_mode())
 	{
 	case Cheat::move:
 	    cursor = hand; break;
 	case Cheat::paint:
-	    cursor = short_combat_arrows[4]; break;
+	    cursor = short_combat_arrows[4]; break;	// Short S red arrow.
 	case Cheat::select:
 	    cursor = short_arrows[7]; break;		// Short NW green.
 	case Cheat::hide:
