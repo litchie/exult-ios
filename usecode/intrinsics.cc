@@ -562,11 +562,11 @@ USECODE_INTRINSIC(update_last_created)
 		}
 	Usecode_value& arr = parms[0];
 	int sz = arr.get_array_size();
-	if (sz == 3)
+	if (sz == 3 || sz == 2)
 		{
 		Tile_coord dest(arr.get_elem(0).get_int_value(),
 			  arr.get_elem(1).get_int_value(),
-			  arr.get_elem(2).get_int_value());
+			  sz == 3 ? arr.get_elem(2).get_int_value() : 0);
 		Tile_coord pos = dest;
 					// Skip 'blocked' check if it looks
 					//   structural. (For SI maze).
