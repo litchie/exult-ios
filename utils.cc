@@ -69,7 +69,7 @@ static char *Switch_slash(
 int U7open
 	(
 	ifstream& in,			// Input stream to open.
-	char *fname			// May be converted to upper-case.
+	const char *fname			// May be converted to upper-case.
 	)
 	{
 #ifndef XWIN
@@ -102,7 +102,7 @@ int U7open
 int U7open
 	(
 	ofstream& out,			// Output stream to open.
-	char *fname			// May be converted to upper-case.
+	const char *fname			// May be converted to upper-case.
 	)
 	{
 #ifndef XWIN
