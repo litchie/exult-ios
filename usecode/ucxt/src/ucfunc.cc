@@ -86,7 +86,7 @@ void UCFunc::output_ucs_data(ostream &o, const FuncMap &funcmap, const map<unsig
 	{
 		// we don't want to output the first "jump" (the start of the function)
 		if(i!=gotoset.begin())
-			tab_indent(indent++, o) << setbase(16) << "label" << setw(4) << _funcid << "_" << setw(4) << i->offset() << ":" << endl;
+			tab_indent(indent++, o) << setbase(16) << "labelFunc" << setw(4) << _funcid << "_" << setw(4) << i->offset() << ":" << endl;
 
 		for(GotoSet::iterator j=(*i)().begin(); j!=(*i)().end(); j++)
 		{
@@ -1249,6 +1249,9 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 		bool special_call(false); // FIXME: <sigh> temporary exception handling for call (0x24)
 		
 		char c = asmstr[i];
+		
+		width = 4; // with defaults to 4
+		
 		switch(c)
 		{
 			case '\\':
@@ -1326,12 +1329,20 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 					else if(c=='f')
 					{
 						i++; c = asmstr[i];
-						unsigned int t = charnum2uint(c);
 						
-						assert(ucf._externs.size()>=t);
-						assert(t!=0);
-						assert(op._params_parsed.size()>=1);
-						str << "Func" << setw(4) << ucf._externs[op._params_parsed[t-1]];
+						if(c=='*')
+						{
+							str << "Func" << setw(4) << ucf._funcid;
+						}
+						else
+						{
+							unsigned int t = charnum2uint(c);
+							
+							assert(ucf._externs.size()>=t);
+							assert(t!=0);
+							assert(op._params_parsed.size()>=1);
+							str << "Func" << setw(4) << ucf._externs[op._params_parsed[t-1]];
+						}
 						break;
 					}
 					// if it's the character representation of a text data string we want
@@ -1365,8 +1376,6 @@ string demunge_ocstring(UCFunc &ucf, const FuncMap &funcmap, const string &asmst
 						}
 						break;
 					}
-					// width defaults to 4 if it's not specified
-					else            width=4;
 					
 					if(special_call!=true)
 					{

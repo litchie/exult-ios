@@ -35,6 +35,7 @@ class UCData
 		
  		void mode(const unsigned int mode) { _mode=mode; };
 		string output_redirect() const { return _output_redirect; };
+		string input_usecode_file() const { return _input_usecode_file; };
 		
 		bool noconf()      const { return _noconf;      };
 		bool rawops()      const { return _rawops;      };
@@ -84,6 +85,7 @@ class UCData
 		bool _mode_dis;
 		
 		string _output_redirect;
+		string _input_usecode_file;
 		
 		unsigned short _funcid;
 		

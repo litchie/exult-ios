@@ -74,6 +74,11 @@ void UCData::parse_params(const unsigned int argc, char **argv)
 			_output_redirect = string(argv[i]).substr(2, string(argv[i]).size()-2);
 			if(verbose()) cout << "Outputting to filename: " << _output_redirect << endl;
 		}
+		else if((string(argv[i]).size()>2) && string(argv[i]).substr(0, 2)=="-i")
+		{
+			_input_usecode_file = string(argv[i]).substr(2, string(argv[i]).size()-2);
+			if(verbose()) cout << "Inputting from file: " << _input_usecode_file << endl;
+		}
 		else
 		{
 			cout << "unsupported parameter " << argv[i] << " detected. countinuing." << endl;

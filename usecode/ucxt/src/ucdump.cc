@@ -13,6 +13,7 @@
 
 /* TODO:
 	* cmps() doesn't have a jump target set, the jump target list of opcodes is static and needs to be fixed.
+	* jmp(): "if(!%p1) goto labelFunc_%1;" Need to alter it to find a way to access the 'current' function number.
 */
 
 #ifdef HAVE_CONFIG_H
@@ -198,7 +199,9 @@ void open_usecode_file(UCData &uc, const Configuration &config)
 	}
 	
 	// an icky exception chain for those who don't use .exult.cfg
-	if(uc.noconf()==false)
+	if(uc.input_usecode_file().size())
+		uc.open_usecode(uc.input_usecode_file());
+	else if(uc.noconf()==false)
 	{
 		uc.open_usecode(path + mucc_ll);
 		if(uc.fail())
@@ -269,6 +272,7 @@ void usage()
 	     << "\t\t-nc\t- don't look for exult's .xml config file" << endl
 	     << "\t\t-v \t- turns on verbose output mode" << endl
 	     << "\t\t-ofile\t- output to the specified file" << endl
+	     << "\t\t-ifile\t- load the usecode file specified by the filename" << endl
 	     << "\t\t-ro\t- output the raw opcodes in addition to the -f format" << endl
 	     << "\t\t-ac\t- output an automatically generated comment" << endl
 	     << "\t\t-uc\t- output an automatically generated useless comment" << endl
