@@ -2416,7 +2416,7 @@ int Usecode_internal::run()
 				break;
 			case 0x42:		// PUSHF.
 				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= 1024) {
+				if (offset < 0 || offset >= sizeof(gflags)) {
 					FLAG_ERROR(offset);
 					pushi(0);
 				}
@@ -2424,7 +2424,7 @@ int Usecode_internal::run()
 				break;
 			case 0x43:		// POPF.
 				offset = Read2(frame->ip);
-				if (offset < 0 || offset >= 1024) {
+				if (offset < 0 || offset >= sizeof(gflags)) {
 					FLAG_ERROR(offset);
 				}
 				gflags[offset] = (unsigned char) popi();
@@ -2721,7 +2721,13 @@ void Usecode_internal::read
 	try
 	{
 		U7open(in, FLAGINIT);	// Read global flags.
-		in.read((char*)gflags, sizeof(gflags));
+		in.seekg(0, ios::end);	// Get filesize.
+		int filesize = in.tellg();
+		in.seekg(0, ios::beg);
+		if (filesize > sizeof(gflags))
+			filesize = sizeof(gflags);
+		memset(&gflags[0], 0, sizeof(gflags));
+		in.read((char*)gflags, filesize);
 		in.close();
 	} catch(exult_exception &e) {
 		if (!Game::is_editing())

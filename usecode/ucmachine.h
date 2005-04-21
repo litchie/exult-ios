@@ -44,7 +44,7 @@ class Usecode_machine : public Game_singletons
 	{
 	UNREPLICATABLE_CLASS(Usecode_machine);
 protected:
-	unsigned char gflags[1024];	// Global flags.
+	unsigned char gflags[2048];	// Global flags.
 	Keyring* keyring;
 	Conversation *conv;		// Handles conversations
 public:
