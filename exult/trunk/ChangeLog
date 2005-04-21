@@ -1,3 +1,9 @@
+2005-04-20    <jeff@mini.nerble.net>
+
+	* usecode/ucinternal.cc: Increase max. # of global flags to 2048.
+	* usecode/compiler/ucmain.cc: Look up include dir from UCC_INCLUDE
+	env. var.
+
 2005-03-27    <jeff@mini.nerble.net>
 
 	* cheat.cc (Cheat): Ctrl-arrow keys will move entire chunks when

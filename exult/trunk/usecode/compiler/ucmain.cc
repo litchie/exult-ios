@@ -82,6 +82,9 @@ int main
 			ty = Uc_function::si;
 			break;
 			}
+	char *env = getenv("UCC_INCLUDE");
+	if (env)
+		include_dirs.push_back(env);
 	if (optind < argc)		// Filename?
 		{
 		src = argv[optind];
