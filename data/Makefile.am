@@ -127,7 +127,7 @@ CLEANFILES = exult.flx exult_bg.flx exult_si.flx *~
 
 EXTRA_DIST = flx.in $(EXULT_FLX_OBJECTS) $(EXULT_BG_FLX_OBJECTS) \
 	$(EXULT_SI_FLX_OBJECTS) $(ESTUDIO_NEW_FILES) midisfx.flx \
-	exultmsg.txt
+	exultmsg.txt bginclude.uc
 
 exult.flx: $(EXULT_FLX_OBJECTS)
 	../tools/expack -i $(srcdir)/flx.in
