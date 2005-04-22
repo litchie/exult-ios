@@ -911,7 +911,7 @@ Nadir 0x56C ()
 					wait 1;		frame 12;
 					wait 2;		frame 11;
 					wait 1;		frame 0;
-					wait 1;		call 0x568; //++++++
+					wait 1;		call Amy;
 					}
 			}
 	case "FAQ" (remove):
