@@ -34,6 +34,7 @@ using std::vector;
 class Uc_symbol;
 class Uc_var_symbol;
 class Uc_function;
+class Uc_function_symbol;
 
 /*
  *	Base class for expressions.
@@ -78,6 +79,20 @@ public:
 	virtual int get_string_offset();// Get offset in text_data.
 	virtual Uc_var_symbol *need_var(vector<char>& , Uc_function *)
 		{ return var; }
+	};
+
+/*
+ *	A function name, as used in a script.
+ */
+class Uc_fun_name_expression : public Uc_expression
+	{
+	Uc_function_symbol *fun;
+public:
+					// Use current location.
+	Uc_fun_name_expression(Uc_function_symbol *f) : fun(f)
+		{  }
+					// Gen. code to put result on stack.
+	virtual void gen_value(vector<char>& out);
 	};
 
 /*
