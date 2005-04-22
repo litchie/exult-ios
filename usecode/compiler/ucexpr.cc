@@ -155,6 +155,19 @@ void Uc_var_expression::gen_assign
  *	Generate code to evaluate expression and leave result on stack.
  */
 
+void Uc_fun_name_expression::gen_value
+	(
+	vector<char>& out
+	)
+	{
+	out.push_back((char) UC_PUSHI);
+	Write2(out, fun->get_usecode_num());
+	}
+
+/*
+ *	Generate code to evaluate expression and leave result on stack.
+ */
+
 void Uc_arrayelem_expression::gen_value
 	(
 	vector<char>& out

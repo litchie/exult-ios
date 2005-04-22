@@ -116,7 +116,7 @@ static int enum_val = -1;		// Keeps track of enum elements.
  *	Production types:
  */
 %type <expr> expression primary declared_var_value opt_script_delay item
-%type <expr> script_command
+%type <expr> script_command start_call
 %type <intval> opt_int eventid direction int_literal converse_options
 %type <intval> opt_original
 %type <sym> declared_sym
@@ -569,11 +569,15 @@ script_command:
 		{ $$ = new Uc_int_expression(Ucscript::step_n + $2); }
 	| MUSIC expression ';'
 		{ $$ = Create_array(Ucscript::music, $2); }
-	| CALL expression ';'
-		{ $$ = Create_array(Ucscript::usecode, $2); }
-	| CALL expression ',' eventid ';'
-		{ $$ = Create_array(Ucscript::usecode2, $2, 
-				new Uc_int_expression($4)); }
+	| start_call ';'
+		{ $$ = Create_array(Ucscript::usecode, $1); 
+		  Uc_function_symbol::set_in_script(false); 
+		}
+	| start_call ',' eventid ';'
+		{ $$ = Create_array(Ucscript::usecode2, $1, 
+				new Uc_int_expression($3));
+		  Uc_function_symbol::set_in_script(false);
+		}
 	| SPEECH expression ';'
 		{ $$ = Create_array(Ucscript::speech, $2); }
 	| SFX expression ';'
@@ -584,6 +588,11 @@ script_command:
 		{ $$ = Create_array(Ucscript::hit, $2); }
 	| '{' script_command_list '}'
 		{ $$ = $2; }
+	;
+
+start_call:
+	CALL {Uc_function_symbol::set_in_script(true);} expression
+		{ $$ = $3; }
 	;
 
 direction:

@@ -170,6 +170,7 @@ public:
  */
 class Uc_function_symbol : public Uc_symbol
 	{
+	static bool in_script;		// Means we can use in CALL xxx.
 	static int last_num;		// Last 'usecode_num', so we can
 					//   assign automatically.
 public:
@@ -190,6 +191,10 @@ public:
 		{ return usecode_num; }
 	int get_num_parms()
 		{ return parms.size(); }
+	static void set_in_script(bool tf)
+		{ in_script = tf; }
+					// Return var/int expression.
+	virtual Uc_expression *create_expression();
 					// Generate function/procedure call.
 	virtual int gen_call(vector<char>& out, Uc_function *fun, bool orig,
 		Uc_expression *item, Uc_array_expression *parms, 
