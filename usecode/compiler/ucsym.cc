@@ -344,9 +344,9 @@ int Uc_function_symbol::gen_call
 	int parmcnt = 0;
 					// Want to push parm. values.
 	const std::vector<Uc_expression *>& exprs = aparms->get_exprs();
-					// Push forwards, so #0 pops last.
-	for (std::vector<Uc_expression *>::const_iterator it = exprs.begin(); 
-						it != exprs.end(); it++)
+					// Push backwards, so #0 pops first.
+	for (std::vector<Uc_expression *>::const_reverse_iterator it = 
+			exprs.rbegin(); it != exprs.rend(); it++)
 		{
 		Uc_expression *expr = *it;
 		expr->gen_value(out);
