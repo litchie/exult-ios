@@ -68,8 +68,9 @@ Uc_function::Uc_function
 		}
 #endif
 	const std::vector<char *>& parms = proto->get_parms();
-	for (std::vector<char *>::const_iterator it = parms.begin();
-				it != parms.end(); it++)
+	// Add backwards.
+	for (std::vector<char *>::const_reverse_iterator it = parms.rbegin();
+				it != parms.rend(); it++)
 		add_symbol(*it);
 	num_parms = num_locals;		// Set counts.
 	num_locals = 0;
