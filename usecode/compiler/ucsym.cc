@@ -37,7 +37,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 using std::strcmp;
 
 int Uc_function_symbol::last_num = -1;
-bool Uc_function_symbol::in_script = false;
 Uc_function_symbol::Sym_nums Uc_function_symbol::nums_used;
 
 /*
@@ -322,7 +321,7 @@ Uc_expression *Uc_function_symbol::create_expression
 	(
 	)
 	{
-	return in_script ? new Uc_fun_name_expression(this) : 0;
+	return new Uc_fun_name_expression(this);
 	}
 
 /*
