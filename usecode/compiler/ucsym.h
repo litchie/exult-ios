@@ -180,7 +180,9 @@ private:
 					// Note:  offset = Usecode fun. #.
 	std::vector<char *> parms;	// Parameters.
 	int usecode_num;		// Usecode function #.
+	bool externed;
 public:
+	friend class Uc_scope;
 	Uc_function_symbol(char *nm, int num, std::vector<char *>& p);
 	static Uc_function_symbol *create(char *nm, int num, 
 						std::vector<char *>& p);
@@ -190,6 +192,8 @@ public:
 		{ return usecode_num; }
 	int get_num_parms()
 		{ return parms.size(); }
+	void set_externed()
+		{ externed = true; }
 					// Return var/int expression.
 	virtual Uc_expression *create_expression();
 					// Generate function/procedure call.

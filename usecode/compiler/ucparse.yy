@@ -361,7 +361,7 @@ string_decl:
 
 function_decl:
 	EXTERN function_proto ';'
-		{ $$ = $2; }
+		{ $$ = $2; $$->set_externed(); }
 	;
 
 assignment_statement:
