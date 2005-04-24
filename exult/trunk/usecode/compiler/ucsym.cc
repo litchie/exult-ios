@@ -453,12 +453,25 @@ int Uc_scope::add_function_symbol
 		sprintf(buf, "'%s' already declared", nm);
 		Uc_location::yyerror(buf);
 		}
-	else if (fun->get_usecode_num() != fun2->get_usecode_num() ||
-		fun->get_num_parms() != fun2->get_num_parms())
+	else if (fun->get_num_parms() != fun2->get_num_parms())
 		{
 		sprintf(buf, "Decl. of '%s' doesn't match previous decl", nm);
 		Uc_location::yyerror(buf);
 		}
+	else if (fun->usecode_num != fun2->usecode_num)
+		{
+		if (fun2->externed || fun->externed)
+			{
+			if (Uc_function_symbol::last_num == fun->usecode_num)
+				--Uc_function_symbol::last_num;
+			}
+		else
+			{
+			sprintf(buf, "Decl. of '%s' has different usecode #.",
+									nm);
+			Uc_location::yyerror(buf);
+			}
+		}			
 	return 0;
 	}
 
