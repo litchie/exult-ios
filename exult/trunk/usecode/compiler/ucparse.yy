@@ -570,14 +570,10 @@ script_command:
 	| MUSIC expression ';'
 		{ $$ = Create_array(Ucscript::music, $2); }
 	| start_call ';'
-		{ $$ = Create_array(Ucscript::usecode, $1); 
-		  Uc_function_symbol::set_in_script(false); 
-		}
+		{ $$ = Create_array(Ucscript::usecode, $1); }
 	| start_call ',' eventid ';'
 		{ $$ = Create_array(Ucscript::usecode2, $1, 
-				new Uc_int_expression($3));
-		  Uc_function_symbol::set_in_script(false);
-		}
+				new Uc_int_expression($3)); }
 	| SPEECH expression ';'
 		{ $$ = Create_array(Ucscript::speech, $2); }
 	| SFX expression ';'
@@ -591,8 +587,8 @@ script_command:
 	;
 
 start_call:
-	CALL {Uc_function_symbol::set_in_script(true);} expression
-		{ $$ = $3; }
+	CALL expression
+		{ $$ = $2; }
 	;
 
 direction:
@@ -708,7 +704,7 @@ expression:
 				new Uc_int_expression(0), $2); }
 	| NOT primary
 		{ $$ = new Uc_unary_expression(UC_NOT, $2); }
-	| '[' expression_list ']'	/* Concat. into an array. */
+	| '[' opt_expression_list ']'	/* Concat. into an array. */
 		{ $$ = $2; }
 	| STRING_LITERAL
 		{ $$ = new Uc_string_expression(function->add_string($1)); }
