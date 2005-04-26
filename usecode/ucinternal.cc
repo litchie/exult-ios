@@ -2734,6 +2734,8 @@ void Usecode_internal::read
 			throw e;
 		memset(&gflags[0], 0, sizeof(gflags));
 	}
+
+	clear_usevars(); // first clear all statics
 	try
 	{
 		U7open(in, USEVARS);
@@ -2742,7 +2744,6 @@ void Usecode_internal::read
 	}
 	catch(exult_exception &e) {
 		;			// Okay if this doesn't exist.
-					// ++++Maybe we should clear them all.
 	}
 	try
 	{
@@ -2812,6 +2813,18 @@ void Usecode_internal::read_usevars
 		}
 	delete [] buf;
 	}
+
+void Usecode_internal::clear_usevars()
+{
+	statics.clear();
+	for (int i = 0; i < 16; ++i) {
+		vector<Usecode_function*>& slot = funs[i];
+		for (unsigned int j = 0; j < slot.size(); ++j) {
+			Usecode_function* fun = slot[j];
+			if (fun) fun->statics.clear();
+		}
+	}
+}
 
 #ifdef USECODE_DEBUGGER
 
