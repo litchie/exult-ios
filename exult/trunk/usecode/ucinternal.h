@@ -358,6 +358,7 @@ class Usecode_internal : public Usecode_machine
 	void set_book(Text_gump *b);	// Set book/scroll to display.
 	const char *get_user_choice();	// Get user's choice.
 	int get_user_choice_num();
+	void clear_usevars();
 	void read_usevars(std::istream& in);	// Read static variables.
 
 	Game_object *intercept_item;
