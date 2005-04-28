@@ -79,6 +79,9 @@ int Read_text_msg_file
 			}
 		if (!buf[0])
 			continue;	// Empty line.
+		unsigned int len = strlen(buf);
+		if (buf[len-1] == '\r') buf[len-1] = 0; // strip possible CR from end
+
 		char *ptr = &buf[0];
 		if (section)
 			{
