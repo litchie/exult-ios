@@ -149,13 +149,13 @@ void Setup_text()
 	if (is_patch && U7exists(PATCH_TEXTMSGS))
 		{
 		ifstream txtfile;
-		U7open(txtfile, PATCH_TEXTMSGS);
+		U7open(txtfile, PATCH_TEXTMSGS, true);
 		Setup_text(txtfile);
 		}
 	else if (U7exists(TEXTMSGS))
 		{
 		ifstream txtfile;
-		U7open(txtfile, TEXTMSGS);
+		U7open(txtfile, TEXTMSGS, true);
 		Setup_text(txtfile);
 		}
 	else 
