@@ -1,7 +1,7 @@
 /*
  *	drag.cc - Dragging objects in Game_window.
  *
- *  Copyright (C) 2000-2001  The Exult Team
+ *  Copyright (C) 2000-2005  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -386,11 +386,13 @@ bool Dragging_info::drop_on_gump
 	Gump *on_gump			// Gump to drop it on.
 	)
 	{
-	Game_object *owner_obj = on_gump->get_owner()->get_outermost();
+	Game_object *owner_obj = on_gump->get_owner();
+	if (owner_obj) owner_obj = owner_obj->get_outermost();
 	Main_actor *main_actor = gwin->get_main_actor(); 
 	// Check the range
-	if (!cheat.in_hack_mover() && !Fast_pathfinder_client::is_grabable(
-			main_actor->get_tile(), owner_obj->get_tile()))
+	if (owner_obj && !cheat.in_hack_mover() &&
+		!Fast_pathfinder_client::is_grabable(main_actor->get_tile(),
+											 owner_obj->get_tile()))
 		{	  		// Object was not grabable
 		Mouse::mouse->flash_shape(Mouse::outofrange);
 		return false;

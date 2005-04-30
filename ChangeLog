@@ -1,3 +1,6 @@
+2005-04-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* drag.cc: check if gump's owner exists before using it
+
 2005-04-28  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* files/msgfile.cc, shapes/items.cc: strip CR's from end of line
 
