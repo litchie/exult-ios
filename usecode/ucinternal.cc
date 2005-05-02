@@ -143,22 +143,36 @@ void Usecode_internal::stack_trace(ostream& out)
 	} while (true);
 }
 
-bool Usecode_internal::call_function(int funcid,
-									 int eventid,
-									 Game_object *caller,
-									 bool entrypoint, bool orig)
+Usecode_function *Usecode_internal::find_function(int funcid)
 {
+	Usecode_function *fun;
 	// locate function
-	vector<Usecode_function*>& slot = funs[funcid/0x100];
-	size_t index = funcid%0x100;
-	Usecode_function *fun = index < slot.size() ? slot[index] : 0;
+	int slotnum = funcid/0x100;
+	if (slotnum >= funs.size())
+		fun = 0;
+	else
+		{
+		Funs256& slot = funs[slotnum];
+		size_t index = funcid%0x100;
+		fun = index < slot.size() ? slot[index] : 0;
+		}
 	if (!fun)
 	{
 #ifdef DEBUG
 		cout << "Usecode " << funcid << " not found." << endl;
 #endif
-		return false;
 	}
+	return fun;
+}
+
+bool Usecode_internal::call_function(int funcid,
+					 int eventid,
+					 Game_object *caller,
+					 bool entrypoint, bool orig)
+{
+	Usecode_function *fun = find_function(funcid);
+	if (!fun)
+		return false;
 	if (orig)
 		if (!(fun = fun->orig))
 		{
@@ -1690,7 +1704,10 @@ void Usecode_internal::read_usecode
 	while (file.tellg() < size)
 		{
 		Usecode_function *fun = new Usecode_function(file);
-		Exult_vector<Usecode_function *> & vec = funs[fun->id/0x100];
+		int slotnum = fun->id/0x100;
+		if (slotnum >= funs.size())
+			funs.resize(slotnum < 10 ? 10 : slotnum + 1);
+		Funs256& vec = funs[slotnum];
 		int i = fun->id%0x100;
 		if (i < vec.size() && vec[i])
 			{		// Already have one there.
@@ -1724,10 +1741,10 @@ Usecode_internal::~Usecode_internal
 	{
 	delete [] stack;
 	delete [] String;
-	int num_slots = sizeof(funs)/sizeof(funs[0]);
+	int num_slots = funs.size();
 	for (int i = 0; i < num_slots; i++)
 		{
-		vector<Usecode_function*>& slot = funs[i];
+		Funs256& slot = funs[i];
 		int cnt = slot.size();
 		for (int j = 0; j < cnt; j++)
 			delete slot[j];
@@ -2678,12 +2695,12 @@ void Usecode_internal::write
 	for (it = statics.begin(); it != statics.end(); ++it)
 		Write_useval(out, *it);
 					// Now do the local statics.
-	int num_slots = sizeof(funs)/sizeof(funs[0]);
+	int num_slots = funs.size();
 	for (i = 0; i < num_slots; i++)
 		{
-		vector<Usecode_function*>& slot = funs[i];
-		for (std::vector<Usecode_function*>::iterator fit = slot.begin();
-						fit != slot.end(); ++fit)
+		Funs256& slot = funs[i];
+		for (std::vector<Usecode_function*>::iterator fit = 
+					slot.begin(); fit != slot.end(); ++fit)
 			{
 			Usecode_function *fun = *fit;
 			if (!fun || fun->statics.empty())
@@ -2799,14 +2816,9 @@ void Usecode_internal::read_usevars
 	while (ptr < ebuf && (funid = Read4(ptr)) != 0xffffffffU)
 		{
 		int cnt = Read4(ptr);
-		vector<Usecode_function*>& slot = funs[funid/0x100];
-		size_t index = funid%0x100;
-		Usecode_function *fun = index < slot.size() ? slot[index] : 0;
+		Usecode_function *fun = find_function(funid);
 		if (!fun)
-			{
-			cerr << "Usecode " << funid << " not found" << endl;
 			continue;
-			}
 		fun->statics.resize(cnt);
 		for (i = 0; i < cnt; i++)
 			fun->statics[i].restore(ptr, ebuf - ptr);
