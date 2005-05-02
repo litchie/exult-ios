@@ -129,6 +129,7 @@ toolsinstall: tools
 	cp usecode/ucxt/data/opcodes.txt $(U7PATH)/data
 	cp usecode/ucxt/data/u7opcodes.data $(U7PATH)/data
 	cp usecode/ucxt/data/u7misc.data $(U7PATH)/data
+	cp data/bginclude.uc $(U7PATH)/data
 	cp data/u7bgintrinsics.data $(U7PATH)/data
 	cp data/u7siintrinsics.data $(U7PATH)/data
 	cp SDL/lib/SDL.dll $(U7PATH)/tools
@@ -157,6 +158,7 @@ toolsdist: tools
 	cp usecode/ucxt/data/opcodes.txt $(TOOLSPATH)/data
 	cp usecode/ucxt/data/u7opcodes.data $(TOOLSPATH)/data
 	cp usecode/ucxt/data/u7misc.data $(TOOLSPATH)/data
+	cp data/bginclude.uc $(TOOLSPATH)/data
 	cp data/u7bgintrinsics.data $(TOOLSPATH)/data
 	cp data/u7siintrinsics.data $(TOOLSPATH)/data
 	cp tools/expack.txt $(TOOLSPATH)/tools
