@@ -68,7 +68,8 @@ class Usecode_internal : public Usecode_machine
 	{
 					// I'th entry contains funs for ID's
 					//    256*i + n.
-	Exult_vector<Usecode_function*> funs[16];
+	typedef Exult_vector<Usecode_function*> Funs256;
+	Exult_vector<Funs256> funs;
 	Exult_vector<Usecode_value> statics;	// Global persistent vars.
 	std::deque<Stack_frame*> call_stack; // the call stack
 	Stack_frame *frame;		// One intrinsic uses this for now...
@@ -360,6 +361,7 @@ class Usecode_internal : public Usecode_machine
 	int get_user_choice_num();
 	void clear_usevars();
 	void read_usevars(std::istream& in);	// Read static variables.
+	Usecode_function *find_function(int funcid);
 
 	Game_object *intercept_item;
 	Game_object *temp_to_be_deleted;
