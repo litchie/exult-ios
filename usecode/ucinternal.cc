@@ -2829,7 +2829,8 @@ void Usecode_internal::read_usevars
 void Usecode_internal::clear_usevars()
 {
 	statics.clear();
-	for (int i = 0; i < 16; ++i) {
+	int nslots = funs.size();
+	for (int i = 0; i < nslots; ++i) {
 		vector<Usecode_function*>& slot = funs[i];
 		for (unsigned int j = 0; j < slot.size(); ++j) {
 			Usecode_function* fun = slot[j];
