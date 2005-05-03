@@ -37,6 +37,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "ucstmt.h"
 #include "opcodes.h"
 #include "ucscriptop.h"
+#include "ucfunids.h"
 
 using std::strcpy;
 using std::strcat;
@@ -80,7 +81,7 @@ static int enum_val = -1;		// Keeps track of enum elements.
 %token IF ELSE RETURN WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
-%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL
+%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM
 
 /*
  *	Script keywords:
@@ -811,6 +812,8 @@ identifier_list:
 
 int_literal:				/* A const. integer value.	*/
 	INT_LITERAL
+	| SHAPENUM '(' INT_LITERAL ')'
+		{ $$ = UC_SHAPEFUN($3); }
 	| declared_sym
 		{
 		Uc_const_int_symbol *sym = 

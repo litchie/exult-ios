@@ -1,3 +1,8 @@
+2005-05-02    <jeff@mini.nerble.net>
+
+	* usecode/ucfunids.h,etc: Added Usecode support for shape #'s >=
+	0x400.  In the usecode compiler use "shape#(n)" for the function #.
+
 2005-04-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* drag.cc: check if gump's owner exists before using it
 
