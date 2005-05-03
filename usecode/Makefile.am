@@ -36,6 +36,7 @@ libusecode_la_SOURCES = \
 	ucserial.h	\
 	ucserial.cc	\
 	ucfunction.h	\
-	ucfunction.cc
+	ucfunction.cc	\
+	ucfunids.h
 
 CLEANFILES = *~

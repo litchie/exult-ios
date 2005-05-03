@@ -38,6 +38,7 @@
 #include "Gump_manager.h"
 #include "effects.h"
 #include "databuf.h"
+#include "ucfunids.h"
 
 #ifndef ALPHA_LINUX_CXX
 #  include <cstring>
@@ -770,7 +771,7 @@ void Game_object::activate
 	{
 	if (edit())
 		return;			// Map-editing.
-	int usefun = get_shapenum();
+	int usefun = UC_SHAPEFUN(get_shapenum());
 					// Serpent Isle spell scrolls:
 	if (usefun == 0x2cb && Game::get_game_type() == SERPENT_ISLE)
 		{
