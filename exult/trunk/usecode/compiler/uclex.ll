@@ -208,6 +208,7 @@ gflags		return FLAG;
 item		return ITEM;
 goto		return GOTO;
 ".original"	return ORIGINAL;
+"shape#"	return SHAPENUM;
 
 					/* Script commands. */
 continue	return CONTINUE;
