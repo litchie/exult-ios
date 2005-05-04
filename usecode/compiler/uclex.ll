@@ -211,6 +211,8 @@ goto		return GOTO;
 "shape#"	return SHAPENUM;
 
 					/* Script commands. */
+finish		return FINISH;
+resurrect	return RESURRECT;
 continue	return CONTINUE;
 repeat		return REPEAT;
 nop		return NOP;

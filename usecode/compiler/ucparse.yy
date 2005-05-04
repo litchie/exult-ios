@@ -89,6 +89,7 @@ static int enum_val = -1;		// Keeps track of enum elements.
 					/* Script commands. */
 %token CONTINUE REPEAT NOP NOHALT WAIT REMOVE RISE DESCEND FRAME HATCH
 %token NEXT PREVIOUS CYCLE STEP MUSIC CALL SPEECH SFX FACE HIT HOURS ACTOR
+%token FINISH RESURRECT
 %token NORTH SOUTH EAST WEST NE NW SE SW
 
 /*
@@ -520,7 +521,11 @@ script_command_list:
 	;
 
 script_command:
-	CONTINUE ';'			/* Continue script without painting. */
+	FINISH ';'
+		{ $$ = new Uc_int_expression(Ucscript::finish); }
+	| RESURRECT ';'
+		{ $$ = new Uc_int_expression(Ucscript::resurrect); }
+	| CONTINUE ';'			/* Continue script without painting. */
 		{ $$ = new Uc_int_expression(Ucscript::cont); }
 	| REPEAT expression script_command  ';'
 		{
