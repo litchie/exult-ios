@@ -919,9 +919,9 @@ void ExultStudio::open_shape_window
 //	set_spin("shinfo_num_frames", nframes);
 					// Show xright, ybelow.
 	Shape_frame *shape = ifile->get_shape(shnum, frnum);
-	set_spin("shinfo_originx", shape->get_xright(), 0,
+	set_spin("shinfo_originx", shape->get_xright(), -shape->get_width(),
 							shape->get_width());
-	set_spin("shinfo_originy", shape->get_ybelow(), 0, 
+	set_spin("shinfo_originy", shape->get_ybelow(), -shape->get_height(),
 							shape->get_height());
 					// Get info. notebook.
 	GtkWidget *notebook = glade_xml_get_widget(app_xml, "shinfo_notebook");
