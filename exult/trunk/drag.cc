@@ -685,13 +685,13 @@ int Game_window::drop_at_lift
 	to_drop->move(tx, ty, lift);
 	Rectangle rect = get_shape_rect(to_drop);
 					// Avoid dropping behind walls.
-	if (Is_inaccessible(this, to_drop, rect.x, rect.y) &&
+	if (Is_inaccessible(this, to_drop, rect.x + 2, rect.y + 2) &&
 	    Is_inaccessible(this, to_drop, 
-				rect.x + rect.w - 1, rect.y) &&
+				rect.x + rect.w - 3, rect.y + 2) &&
 	    Is_inaccessible(this, to_drop, 
-				rect.x, rect.y + rect.h - 1) &&
+				rect.x + 2, rect.y + rect.h - 3) &&
 	    Is_inaccessible(this, to_drop, 
-				rect.x + rect.w - 1, rect.y + rect.h - 1))
+				rect.x + rect.w - 3, rect.y + rect.h - 3))
 		{
 		to_drop->remove_this(true);
 		return -1;
