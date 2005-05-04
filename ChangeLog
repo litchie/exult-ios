@@ -1,3 +1,7 @@
+2005-05-03    <jeff@mini.nerble.net>
+
+	* usecode/intrinsics.cc: Added 'close_gump()' intrinsic.
+
 2005-05-02    <jeff@mini.nerble.net>
 
 	* usecode/ucfunids.h,etc: Added Usecode support for shape #'s >=
