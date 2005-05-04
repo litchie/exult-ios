@@ -2048,6 +2048,22 @@ USECODE_INTRINSIC(path_run_usecode)
 			Game::get_game_type() == SERPENT_ISLE));
 }
 
+USECODE_INTRINSIC(close_gump)
+	// close_gump(container)
+{
+	if (!gwin->is_dragging())	// NOT while dragging stuff.
+		{
+		Game_object *obj = get_item(parms[0]);
+		Gump *gump = gumpman->find_gump(obj, c_any_shapenum);
+		if (gump)
+			{
+			gumpman->close_gump(gump);
+			gwin->set_all_dirty();
+			}
+		}
+	return(no_ret);
+}
+
 USECODE_INTRINSIC(close_gumps)
 {
 	if (!gwin->is_dragging())	// NOT while dragging stuff.

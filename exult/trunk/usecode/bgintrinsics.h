@@ -148,7 +148,7 @@
 	USECODE_INTRINSIC_PTR(path_run_usecode),	// 0x7d
 	USECODE_INTRINSIC_PTR(close_gumps),	// 0x7e
 	USECODE_INTRINSIC_PTR(item_say),	// 0x7f ItemSay in gump.
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x80 ++++Close_gump(item)???
+	USECODE_INTRINSIC_PTR(close_gump),	// 0x80
 	USECODE_INTRINSIC_PTR(in_gump_mode),	// 0x81
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x82
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x83

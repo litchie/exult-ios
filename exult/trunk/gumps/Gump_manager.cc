@@ -131,13 +131,14 @@ Gump *Gump_manager::find_gump
 Gump *Gump_manager::find_gump
 	(
 	Game_object *owner,
-	int shapenum
+	int shapenum			// May be c_any_shapenum
 	)
 {
 	Gump_list *gmp;			// See if already open.
 	for (gmp = open_gumps; gmp; gmp = gmp->next)
 		if (gmp->gump->get_owner() == owner &&
-		    gmp->gump->get_shapenum() == shapenum)
+		    (shapenum == c_any_shapenum ||
+		     gmp->gump->get_shapenum() == shapenum))
 			return gmp->gump;
 	return (0);
 }
