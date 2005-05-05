@@ -1,3 +1,8 @@
+2005-05-04    <jeff@mini.nerble.net>
+
+	* usecode/bgintrinsics.h: Added several SI usecode intrinsics for
+	use in BG mods.
+
 2005-05-03    <jeff@mini.nerble.net>
 
 	* usecode/intrinsics.cc: Added 'close_gump()' intrinsic.
