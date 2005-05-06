@@ -1,3 +1,8 @@
+2005-05-05    <jeff@mini.nerble.net>
+
+	* usecode/intrinsics.cc: Implemented set_orrery using information
+	discovered by Marzo Torres.
+
 2005-05-04    <jeff@mini.nerble.net>
 
 	* usecode/bgintrinsics.h: Added several SI usecode intrinsics for

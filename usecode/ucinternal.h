@@ -273,6 +273,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(recall_virtue_stone);
 	USECODE_INTRINSIC_DECL(apply_damage);
 	USECODE_INTRINSIC_DECL(is_pc_inside);
+	USECODE_INTRINSIC_DECL(set_orrery);
 	USECODE_INTRINSIC_DECL(get_timer);
 	USECODE_INTRINSIC_DECL(set_timer);
 	USECODE_INTRINSIC_DECL(wearing_fellowship);
