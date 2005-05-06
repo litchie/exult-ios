@@ -119,7 +119,7 @@
 	USECODE_INTRINSIC_PTR(recall_virtue_stone),	// 0x60
 	USECODE_INTRINSIC_PTR(apply_damage),	// 0x61
 	USECODE_INTRINSIC_PTR(is_pc_inside),	// 0x62
-	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x63     SetOrreryState (ucdump.c)
+	USECODE_INTRINSIC_PTR(set_orrery),	// 0x63
 	USECODE_INTRINSIC_PTR(UNKNOWN),	// 0x64     UNUSED
 	USECODE_INTRINSIC_PTR(get_timer),	// 0x65
 	USECODE_INTRINSIC_PTR(set_timer),	// 0x66
