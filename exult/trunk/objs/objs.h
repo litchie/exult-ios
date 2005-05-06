@@ -190,10 +190,17 @@ public:
 
 	Game_object *find_closest(Game_object_vector& vec,
 				int *shapenums, int num_shapes, int dist = 24);
+	static Game_object *find_closest(Tile_coord pos, 
+			int *shapenums, int num_shapes, int dist = 24);
 	Game_object *find_closest(int *shapenums, int num_shapes, 
-							int dist = 24);
+							int dist = 24)
+		{ return find_closest(get_tile(), shapenums, 
+							num_shapes, dist); }
 	Game_object *find_closest(int shapenum, int dist = 24)
 		{ return find_closest(&shapenum, 1, dist); }
+	static Game_object *find_closest(Tile_coord pos, int shapenum,
+						int dist = 24)
+		{ return find_closest(pos, &shapenum, 1, dist); }
 	Rectangle get_footprint();	// Get tile footprint.
 	bool blocks(Tile_coord tile);	// Do we block a given tile?
 					// Find object blocking given tile.

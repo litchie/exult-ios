@@ -530,6 +530,7 @@ Game_object *Game_object::find_closest
 
 Game_object *Game_object::find_closest
 	(
+	Tile_coord pos,			// Where to look from.
 	int *shapenums,			// Shapes to look for. 
 					//   c_any_shapenum=any NPC.
 	int num_shapes,			// Size of shapenums.
@@ -540,19 +541,18 @@ Game_object *Game_object::find_closest
 	int i;
 	for (i = 0; i < num_shapes; i++)
 					// 0xb0 mask finds anything.
-		find_nearby(vec, shapenums[i], dist, 0xb0);
+		find_nearby(vec, pos, shapenums[i], dist, 0xb0);
 	int cnt = vec.size();
 	if (!cnt)
 		return (0);
 	Game_object *closest = 0;	// Get closest.
 	int best_dist = 10000;		// In tiles.
 					// Get our location.
-	Tile_coord loc = get_tile();
 	for (Game_object_vector::const_iterator it = vec.begin();
 						it != vec.end(); ++it)
 		{
 		Game_object *obj = *it;
-		int dist = obj->get_tile().distance(loc);
+		int dist = obj->get_tile().distance(pos);
 		if (dist < best_dist)
 			{
 			closest = obj;
