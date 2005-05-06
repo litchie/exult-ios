@@ -126,6 +126,8 @@
 
 \CRobert Bihlmeyer
 
+\CMarzo Sette Torres Junior
+
 
 \CARTISTS
 
@@ -140,7 +142,6 @@
 \CWishStone Dragon
 
 \CSam Matthews
-
 
 \CTHANKS
 
