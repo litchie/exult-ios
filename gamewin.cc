@@ -2735,7 +2735,7 @@ void Game_window::emulate_cache(Map_chunk *olist, Map_chunk *nlist)
 					//   far away.
 	effects->remove_weather_effects(120);
 	int newx = nlist->get_cx(), newy = nlist->get_cy(),
-	    oldx = olist->get_cx(), oldy = nlist->get_cy();
+	    oldx = olist->get_cx(), oldy = olist->get_cy();
 	Game_map *omap = olist->get_map(), *nmap = nlist->get_map();
 					// Cancel scripts 4 chunks from this.
 	Usecode_script::purge(Tile_coord(newx*c_tiles_per_chunk,
