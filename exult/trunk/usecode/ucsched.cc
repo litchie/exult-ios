@@ -443,6 +443,15 @@ int Usecode_script::exec
 		case egg:		// Guessing:  activate egg.
 			activate_egg(usecode, obj);
 			break;
+		case set_egg:		// Set_egg(criteria, dist).
+			{
+			int crit = code->get_elem(++i).get_int_value();
+			int dist = code->get_elem(++i).get_int_value();
+			Egg_object *egg = obj->as_egg();
+			if (egg)
+				egg->set(crit, dist);
+			break;
+			}
 		case next_frame_max:	// Stop at last frame.
 			{
 			int nframes = obj->get_num_frames();

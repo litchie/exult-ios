@@ -49,6 +49,7 @@ enum Ucscript_ops
 	rise =		0x39,		// Incr. lift.
 	frame =		0x46,		// Set_frame(frnum).
 	egg = 		0x48,		// Activate egg.
+	set_egg =	0x49,		// Set egg's criteria, distance.
 	next_frame_max =0x4d,		// Next frame, but stop at max.
 	next_frame =	0x4e,		// Next frame, but wrap.
 	prev_frame_min =0x4f,		// Prev frame, but stop at 0.
