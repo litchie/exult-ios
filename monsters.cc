@@ -260,7 +260,13 @@ Monster_actor *Monster_actor::create
 					continue;// You lose.
 				int frnum = (elem.shapenum == 377) ? 
 					Find_monster_food(shnum) : 0;
-				monster->create_quantity(elem.quantity, 
+				if (ShapeID::get_info(elem.shapenum).
+								has_quality())
+					monster->create_quantity(1, 
+						elem.shapenum, elem.quantity,
+						frnum, temporary);
+				else
+					monster->create_quantity(elem.quantity,
 						elem.shapenum, c_any_qual, 
 							frnum, temporary);
 			}
