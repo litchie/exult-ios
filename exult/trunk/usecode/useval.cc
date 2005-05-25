@@ -464,7 +464,7 @@ int Usecode_value::save
 		if (buflen < 5)
 			return -1;
 		*ptr++ = type;
-		Write4(ptr, (int)value.ptr);
+		Write4(ptr, 0);
 		break;
 	case string_type:
 		{
@@ -525,7 +525,8 @@ bool Usecode_value::restore
 	case pointer_type:
 		if (buflen < 5)
 			return false;
-		value.ptr = (Game_object*)Read4(ptr); //DON'T dereference this pointer!
+		Read4(ptr);
+		value.ptr = 0; //DON'T dereference this pointer!
 		// Maybe add a new type "serialized_pointer" to prevent "accidents"?
 		return true;
 	case string_type:
