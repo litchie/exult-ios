@@ -521,6 +521,11 @@ int Approach_actor_action::handle_event
 		return 0;
 	if (++cur_step == check_step)	// Time to check.
 		{
+#ifdef DEBUG
+		cout << actor->get_name() << 
+			" approach: Checking dest_obj. pos" <<
+					endl;
+#endif
 		if (dest_obj->get_tile().distance(orig_dest_pos) > 2)
 			return 0;	// Moved too much, so stop.
 					// Figure next check.
