@@ -148,6 +148,7 @@ class Usecode_internal : public Usecode_machine
 	Usecode_value remove_cont_items(Usecode_value& container, Usecode_value& quantval,
 		Usecode_value& shapeval, Usecode_value& qualval,
 			Usecode_value& frameval, Usecode_value& flagval);
+	Game_object *create_object(int shapenum, bool equip);
 
 	int path_run_usecode(Usecode_value& npcval, Usecode_value& locval,
 		Usecode_value& useval, Usecode_value& itemval,

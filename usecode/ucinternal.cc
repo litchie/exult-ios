@@ -44,6 +44,7 @@
 #include "Audio.h"
 #include "animate.h"
 #include "barge.h"
+#include "bodies.h"
 #include "chunks.h"
 #include "conversation.h"
 #include "exult.h"
@@ -51,6 +52,7 @@
 #include "gamewin.h"
 #include "gamemap.h"
 #include "keyring.h"
+#include "monsters.h"
 #include "mouse.h"
 #include "schedule.h"
 #include "tqueue.h"
@@ -1297,6 +1299,53 @@ Usecode_value Usecode_internal::remove_cont_items
 	return Usecode_value(0);
 	}
 
+/*
+ *	Create a new object and push it onto the last_created stack.
+ */
+
+Game_object *Usecode_internal::create_object
+	(
+	int shapenum,
+	bool equip			// Equip monsters.
+	)
+	{
+	Game_object *obj;		// Create to be written to Ireg.
+	Shape_info& info = ShapeID::get_info(shapenum);
+	modified_map = true;
+					// +++Not sure if 1st test is needed.
+	if (info.get_monster_info() || info.is_npc())
+	{
+					// (Wait sched. added for FOV.)
+		// don't add equipment (Erethian's transform sequence)
+		Monster_actor *monster = Monster_actor::create(shapenum,
+			Tile_coord(-1, -1, -1), Schedule::wait, 
+					(int) Actor::neutral, true, equip);
+					// FORCE it to be neutral (dec04,01).
+		monster->set_alignment((int) Actor::neutral);
+		gwin->add_dirty(monster);
+		gwin->add_nearby_npc(monster);
+		gwin->show();
+		last_created.push_back(monster);
+		return monster;
+	}
+	else
+	{
+		if (Is_body(shapenum))
+		{
+			obj = new Dead_body(shapenum, 0, 0, 0, 0, -1);
+		}
+		else
+		{
+			obj = gmap->create_ireg_object(shapenum, 0);
+					// Be liberal about taking stuff.
+			obj->set_flag(Obj_flags::okay_to_take);
+		}
+	}
+	obj->set_invalid();		// Not in world yet.
+	obj->set_flag(Obj_flags::okay_to_take);
+	last_created.push_back(obj);
+	return obj;
+	}
 
 /*
  *	Have an NPC walk somewhere and then execute usecode.
