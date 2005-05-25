@@ -28,7 +28,6 @@
 #include "Sign_gump.h"
 #include "items.h"
 #include "barge.h"
-#include "bodies.h"
 #include "cheat.h"
 #include "chunks.h"
 #include "conversation.h"
@@ -47,8 +46,8 @@
 #include "ucsched.h"
 #include "useval.h"
 #include "virstone.h"
-#include "monsters.h"
 #include "egg.h"
+#include "monsters.h"
 #include "monstinf.h"
 #include "actions.h"
 #include "ucscriptop.h"
@@ -470,45 +469,9 @@ USECODE_INTRINSIC(get_party_list)
 
 USECODE_INTRINSIC(create_new_object)
 {
-	// create_new_object(shapenum).   Stores it in 'last_created' (which
-	//   maybe should be a stack.
+	// create_new_object(shapenum).   Stores it in 'last_created'.
 	int shapenum = parms[0].get_int_value();
-
-	Game_object *obj;		// Create to be written to Ireg.
-	Shape_info& info = ShapeID::get_info(shapenum);
-	modified_map = true;
-					// +++Not sure if 1st test is needed.
-	if (info.get_monster_info() || info.is_npc())
-	{
-					// (Wait sched. added for FOV.)
-		// don't add equipment (Erethian's transform sequence)
-		Monster_actor *monster = Monster_actor::create(shapenum,
-			Tile_coord(-1, -1, -1), Schedule::wait, 
-					(int) Actor::neutral, true, false);
-					// FORCE it to be neutral (dec04,01).
-		monster->set_alignment((int) Actor::neutral);
-		gwin->add_dirty(monster);
-		gwin->add_nearby_npc(monster);
-		gwin->show();
-		last_created.push_back(monster);
-		return Usecode_value(monster);
-	}
-	else
-	{
-		if (Is_body(shapenum))
-		{
-			obj = new Dead_body(shapenum, 0, 0, 0, 0, -1);
-		}
-		else
-		{
-			obj = gmap->create_ireg_object(shapenum, 0);
-					// Be liberal about taking stuff.
-			obj->set_flag(Obj_flags::okay_to_take);
-		}
-	}
-	obj->set_invalid();		// Not in world yet.
-	obj->set_flag(Obj_flags::okay_to_take);
-	last_created.push_back(obj);
+	Game_object *obj = create_object(shapenum, false);
 	Usecode_value u(obj);
 	return(u);
 }
@@ -516,11 +479,15 @@ USECODE_INTRINSIC(create_new_object)
 USECODE_INTRINSIC(create_new_object2)
 {
 	// create_new_object(shapenum, loc).
-	Usecode_value ret = UI_create_new_object(event, intrinsic, 1, parms);
-	if (ret == 0)
-		return ret;		// Failed.
-	UI_update_last_created(event, intrinsic, 1, &parms[1]);
-	return ret;
+	// Pretty sure this is for creating monsters with equipment!
+
+	int shapenum = parms[0].get_int_value();
+	// Create, and equip if monster.
+	Game_object *obj = create_object(shapenum, true);
+	if (obj)
+		UI_update_last_created(event, intrinsic, 1, &parms[1]);
+	Usecode_value u(obj);
+	return u;
 }
 
 USECODE_INTRINSIC(set_last_created)
