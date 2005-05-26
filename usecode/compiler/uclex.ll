@@ -207,6 +207,7 @@ event		return EVENT;
 gflags		return FLAG;
 item		return ITEM;
 goto		return GOTO;
+abort		return ABORT;
 ".original"	return ORIGINAL;
 "shape#"	return SHAPENUM;
 
@@ -223,6 +224,7 @@ rise		return RISE;
 descent		return DESCEND;
 frame		return FRAME;
 hatch		return HATCH;
+setegg		return SETEGG;
 next		return NEXT;
 previous	return PREVIOUS;
 cycle		return CYCLE;

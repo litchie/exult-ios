@@ -589,3 +589,16 @@ void Uc_call_statement::gen
 	{
 	function_call->gen_value(out);	// (We set 'no_return'.)
 	}
+
+/*
+ *	Generate code.
+ */
+
+void Uc_opcode_statement::gen
+	(
+	vector<char>& out,
+	Uc_function *fun
+	)
+	{
+	out.push_back((char) opcode);
+	}
