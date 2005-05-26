@@ -223,7 +223,7 @@ statement:
 	| MESSAGE '(' opt_expression_list ')' ';'
 		{ $$ = new Uc_message_statement($3); }
 	| answer_statement
-	| ABORT
+	| ABORT ';'
 		{ $$ = new Uc_opcode_statement(UC_ABRT); }
 	| ';'				/* Null statement */
 		{ $$ = 0; }
