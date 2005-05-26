@@ -119,8 +119,7 @@ public:
 		{ return criteria; }
 	int get_type() const
 		{ return type; }
-	void set(int crit, int dist)
-		{ criteria = crit; distance = dist; }
+	void set(int crit, int dist);
 					// Can it be activated?
 	virtual int is_active(Game_object *obj,
 			int tx, int ty, int tz, int from_tx, int from_ty);
