@@ -81,7 +81,7 @@ static int enum_val = -1;		// Keeps track of enum elements.
 %token IF ELSE RETURN WHILE FOR UCC_IN WITH TO EXTERN BREAK GOTO CASE
 %token VAR UCC_INT UCC_CONST STRING ENUM
 %token CONVERSE SAY MESSAGE RESPONSE EVENT FLAG ITEM UCTRUE UCFALSE REMOVE
-%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM
+%token ADD HIDE SCRIPT AFTER TICKS STATIC_ ORIGINAL SHAPENUM ABORT
 
 /*
  *	Script keywords:
@@ -89,7 +89,7 @@ static int enum_val = -1;		// Keeps track of enum elements.
 					/* Script commands. */
 %token CONTINUE REPEAT NOP NOHALT WAIT REMOVE RISE DESCEND FRAME HATCH
 %token NEXT PREVIOUS CYCLE STEP MUSIC CALL SPEECH SFX FACE HIT HOURS ACTOR
-%token FINISH RESURRECT
+%token FINISH RESURRECT SETEGG
 %token NORTH SOUTH EAST WEST NE NW SE SW
 
 /*
@@ -223,6 +223,8 @@ statement:
 	| MESSAGE '(' opt_expression_list ')' ';'
 		{ $$ = new Uc_message_statement($3); }
 	| answer_statement
+	| ABORT
+		{ $$ = new Uc_opcode_statement(UC_ABRT); }
 	| ';'				/* Null statement */
 		{ $$ = 0; }
 	;
@@ -559,6 +561,8 @@ script_command:
 		{ $$ = new Uc_int_expression(0x61 + ($3 & 15)); }
 	| HATCH ';'			/* Assumes item is an egg. */
 		{ $$ = new Uc_int_expression(Ucscript::egg); }
+	| SETEGG expression ',' expression ';'
+		{ $$ = Create_array(Ucscript::set_egg, $2, $4); }
 	| NEXT FRAME ';'		/* Next, but stop at last. */
 		{ $$ = new Uc_int_expression(Ucscript::next_frame_max); }
 	| NEXT FRAME CYCLE ';'		/* Next, or back to 0. */

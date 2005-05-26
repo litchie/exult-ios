@@ -283,4 +283,17 @@ public:
 	virtual void gen(std::vector<char>& out, Uc_function *fun);
 	};
 
+/*
+ *	Statement that just represents a single opcode.
+ */
+class Uc_opcode_statement : public Uc_statement
+	{
+	int opcode;
+public:
+	Uc_opcode_statement(int op) : opcode(op)
+		{  }
+					// Generate code.
+	virtual void gen(std::vector<char>& out, Uc_function *fun);
+	};
+
 #endif
