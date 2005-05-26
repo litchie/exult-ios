@@ -286,6 +286,29 @@ void Egg_object::set_area
 	}
 
 /*
+ *	Change the criteria and distance. 
+ */
+
+void Egg_object::set
+	(
+	int crit, 
+	int dist
+	)
+	{ 
+	Map_chunk *echunk = get_chunk();
+	echunk->remove_egg(this);	// Got to add it back.
+	criteria = crit;
+	distance = dist; 
+	echunk->add_egg(this);
+	if (criteria == external_criteria && launcher)	// Cancel trap.
+		{
+		gwin->get_tqueue()->remove(launcher);
+		delete launcher;
+		launcher = 0;
+		}
+	}
+
+/*
  *	Is the egg active when stepping onto a given spot, or placing an obj.
  *	on the spot?
  */
