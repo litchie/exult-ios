@@ -545,7 +545,8 @@ inline bool Is_step_okay
 	Tile_coord to			// Tile to step to.
 	)
 	{
-	if (npc->is_blocked(to))	// (To.tz is updated.)
+	if (npc->is_pos_invalid() ||
+	    npc->is_blocked(to))	// (To.tz is updated.)
 		return false;
 	int difftz = to.tz - leader->get_lift();
 	difftz *= difftz;		// Deltaz squared.
