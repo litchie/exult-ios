@@ -50,13 +50,15 @@ class Npc_face_info {
   ShapeID shape;
   int face_num;			// NPC's face shape #.
   //int frame;
-  bool text_pending;	// Text has been written, but user
-  //   has not yet been prompted.
+  bool text_pending;		// Text has been written, but user
+			  	//   has not yet been prompted.
   Rectangle face_rect;		// Rectangle where face is shown.
   Rectangle text_rect;		// Rectangle NPC statement is shown in.
+  bool large_face;		// Guardian, snake.
   int last_text_height;		// Height of last text painted.
   string cur_text;		// Current text being shown.
-  Npc_face_info(ShapeID &sid, int num) : shape(sid), face_num(num), text_pending(0)
+  Npc_face_info(ShapeID &sid, int num) : shape(sid), face_num(num), 
+		text_pending(0), large_face(false)
   {  }
 };
 
@@ -286,9 +288,12 @@ void Conversation::show_face(int shape, int frame, int slot)
 			screenw - fbox.x - fbox.w - 6, 4*text_height));
 					// No room?  (Serpent?)
 		if (info->text_rect.w < 16 || info->text_rect.h < 16)
-					// Show in lower center.
-			info->text_rect = Rectangle(screenw/4, screenh/2,
-						screenw/2, screenh/4);
+			{		// Show in lower center.
+			int x = screenw/5, y = 3*(screenh/4);
+			info->text_rect = Rectangle(x, y,
+				screenw-(2*x), screenh - y - 4);
+			info->large_face = true;
+			}
 		info->last_text_height = info->text_rect.h;
 		}
 	gwin->get_win()->set_clip(0, 0, screenw, screenh);
@@ -352,20 +357,21 @@ void Conversation::show_npc_message(const char *msg)
 	if (last_face_shown == -1)
 		return;
 	Npc_face_info *info = face_info[last_face_shown];
+	int font = info->large_face ? 7 : 0;	// Use red for Guardian, snake.
 	info->cur_text = "";
 	Rectangle& box = info->text_rect;
 //	gwin->paint(box);		// Clear what was there before.
 //	paint_faces();
 	gwin->paint();
 	int height;			// Break at punctuation.
-	while ((height = sman->paint_text_box(0, msg, box.x,box.y,box.w,box.h, 
-								-1, 1, gwin->get_text_bg())) < 0)
+	/* NOTE:  The original centers text for Guardian, snake.	*/
+	while ((height = sman->paint_text_box(font, msg, box.x, box.y,
+				box.w,box.h, -1, 1, gwin->get_text_bg())) < 0)
 		{			// More to do?
 		info->cur_text = string(msg, -height);
 		int x, y; char c;
 		gwin->paint();		// Paint scenery beneath.
 		Get_click(x, y, Mouse::hand, &c, false, this);
-//		gwin->paint(box);	// Clear area again.
 		gwin->paint();
 		msg += -height;
 		}
