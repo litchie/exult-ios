@@ -326,9 +326,11 @@ Sprites_effect::Sprites_effect
 	int num,			// Index.
 	Tile_coord p,			// Position within world.
 	int dx, int dy,			// Add to offset for each frame.
-	int delay			// Delay (msecs) before starting.
-	) : sprite(num, 0, SF_SPRITES_VGA), item(0), pos(p), xoff(0), yoff(0),
-						deltax(dx), deltay(dy)
+	int delay,			// Delay (msecs) before starting.
+	int frm,			// Starting frame.
+	int rps				// Reps, or <0 to go through frames.
+	) : sprite(num, frm, SF_SPRITES_VGA), item(0), pos(p), 
+			xoff(0), yoff(0), deltax(dx), deltay(dy), reps(rps)
 	{
 	Game_window *gwin = Game_window::get_instance();
 	frames = sprite.get_num_frames();
@@ -345,9 +347,11 @@ Sprites_effect::Sprites_effect
 	int num,			// Index.
 	Game_object *it,		// Item to put effect by.
 	int xf, int yf,			// Offset from actor in pixels.
-	int dx, int dy			// Add to offset on each frame.
-	) : sprite(num, 0, SF_SPRITES_VGA), item(it), xoff(xf), 
-					yoff(yf), deltax(dx), deltay(dy)
+	int dx, int dy,			// Add to offset on each frame.
+	int frm,			// Starting frame.
+	int rps				// Reps, or <0 to go through frames.
+	) : sprite(num, frm, SF_SPRITES_VGA), item(it), xoff(xf), 
+			yoff(yf), deltax(dx), deltay(dy), reps(rps)
 	{
 	pos = item->get_tile();
 	Game_window *gwin = Game_window::get_instance();
@@ -390,7 +394,7 @@ void Sprites_effect::handle_event
 	Game_window *gwin = Game_window::get_instance();
 	int delay = gwin->get_std_delay();// Delay between frames.  Needs to
 					//   match usecode animations.
-	if (frame_num == frames)	// At end?
+	if (!reps || (reps < 0 && frame_num == frames))	// At end?
 		{			// Remove & delete this.
 		eman->remove_effect(this);
 		gwin->set_all_dirty();
@@ -403,6 +407,11 @@ void Sprites_effect::handle_event
 	xoff += deltax;			// Add deltas.
 	yoff += deltay;
 	frame_num++;			// Next frame.
+	if (reps > 0)			// Given a count?
+		{
+		--reps;
+		frame_num %= frames;
+		}
 	add_dirty(frame_num);		// Want to paint new frame.
 	sprite.set_frame(frame_num);
 					// Add back to queue for next time.

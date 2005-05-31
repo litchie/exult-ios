@@ -100,12 +100,13 @@ protected:
 	Tile_coord pos;			// Position within world.
 	int xoff, yoff;			// Offset from position in pixels.
 	int deltax, deltay;		// Add to xoff, yoff on each frame.
+	int reps;			// Repetitions, or -1.
 	void add_dirty(int frnum);
 public:
 	Sprites_effect(int num, Tile_coord p, int dx = 0, int dy = 0, 
-							int delay = 0);
+			int delay = 0, int frm = 0, int rps = -1);
 	Sprites_effect(int num, Game_object *it, 
-					int xf, int yf, int dx, int dy);
+		int xf, int yf, int dx, int dy, int frm = 0, int rps = -1);
 					// For Time_sensitive:
 	virtual void handle_event(unsigned long time, long udata);
 					// Render.
