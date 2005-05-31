@@ -598,7 +598,7 @@ void Usecode_internal::show_npc_face
 	)
 	{
 	show_pending_text();
-	Actor *npc = as_actor(get_item(arg1));
+	Actor *npc = as_actor(get_item(arg1)), *iact = 0;
 	if (!npc)
 		return;
 	int shape = npc->get_face_shapenum();
@@ -610,8 +610,11 @@ void Usecode_internal::show_npc_face
 		}
 	else if (Game::get_game_type() == SERPENT_ISLE)
 		{			// Special case: Nightmare Smith.
-		if (npc->get_npc_num() == 296)
-			shape = -1;
+					//   (But don't mess up Guardian.)
+		if (npc->get_npc_num() == 296 && this->frame->caller_item &&
+		    (iact = this->frame->caller_item->as_actor()) != 0 &&
+		    iact->get_npc_num() == 277)
+			shape = 277;
 		}
 	if (!conv->get_num_faces_on_screen())
 		gwin->get_effects()->remove_text_effects();

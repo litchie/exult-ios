@@ -615,6 +615,16 @@ USECODE_INTRINSIC(find_object)
 			return Usecode_value(vec.front());
 		}
 	int oval  = parms[0].get_int_value();
+	if (oval == -359)		// Find on map (?)
+		{
+		Game_object_vector vec;
+		Rectangle scr = gwin->get_win_tile_rect();
+		Game_object::find_nearby(vec,
+			Tile_coord(scr.x + scr.w/2, scr.y + scr.h/2, 0),
+			shnum, scr.h/2, 0, qual, frnum);
+		return vec.empty() ? Usecode_value((Game_object*)NULL)
+				   : Usecode_value(vec[0]);
+		}
 	if (oval != -357)		// Not the whole party?
 		{			// Find inside owner.
 		Game_object *obj = get_item(parms[0]);
