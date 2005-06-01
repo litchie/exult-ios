@@ -629,7 +629,9 @@ void Conversation::paint_faces
 		if (text)		// Show text too?
 			{
 			Rectangle& box = finfo->text_rect;
-			sman->paint_text_box(0, finfo->cur_text.c_str(), 
+					// Use red for Guardian, snake.
+			int font = finfo->large_face ? 7 : 0;
+			sman->paint_text_box(font, finfo->cur_text.c_str(), 
 				box.x,box.y,box.w,box.h, -1, 1, 
 							gwin->get_text_bg());
 			}
