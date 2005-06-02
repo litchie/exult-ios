@@ -389,7 +389,7 @@ bool Notebook_gump::paint_page
 	cursor.offset -= offset;
 	int endoff = sman->paint_text_box(font, str, x + box.x,
 			y + box.y, box.w, box.h, vlead,
-			0, -1, find_cursor? &cursor : 0);
+			false, false, -1, find_cursor? &cursor : 0);
 	cursor.offset += offset;
 	if (endoff > 0)			// All painted?
 		{			// Value returned is height.

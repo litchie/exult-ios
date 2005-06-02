@@ -129,8 +129,8 @@ public:
 
 					// Paint text using "fonts.vga".
 	int paint_text_box(int fontnum, const char *text, int x, int y, int w, 
-		int h, int vert_lead = 0, int pbreak = 0, int shading = -1,
-		Cursor_info *cursor = 0);
+		int h, int vert_lead = 0, bool pbreak = false,
+		bool center = false, int shading = -1,Cursor_info *cursor = 0);
 	int paint_text(int fontnum, const char *text, int xoff, int yoff);
 	int paint_text(int fontnum, const char *text, int textlen, 
 							int xoff, int yoff);

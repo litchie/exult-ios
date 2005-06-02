@@ -366,7 +366,8 @@ void Conversation::show_npc_message(const char *msg)
 	int height;			// Break at punctuation.
 	/* NOTE:  The original centers text for Guardian, snake.	*/
 	while ((height = sman->paint_text_box(font, msg, box.x, box.y,
-				box.w,box.h, -1, 1, gwin->get_text_bg())) < 0)
+		box.w,box.h, -1, true, info->large_face, 
+						gwin->get_text_bg())) < 0)
 		{			// More to do?
 		info->cur_text = string(msg, -height);
 		int x, y; char c;
@@ -528,7 +529,8 @@ void Conversation::show_avatar_choices(int num_choices,	char **choices)
 		conv_choices[i] = conv_choices[i].intersect(sbox);
 		avatar_face = avatar_face.add(conv_choices[i]);
 		sman->paint_text_box(0, text, tbox.x + x, tbox.y + y,
-			width + space_width, height, 0, 0, gwin->get_text_bg());
+			width + space_width, height, 0, false, false, 
+			gwin->get_text_bg());
 		x += width + space_width;
 		}
 	avatar_face.enlarge(6);		// Encloses entire area.
@@ -632,8 +634,8 @@ void Conversation::paint_faces
 					// Use red for Guardian, snake.
 			int font = finfo->large_face ? 7 : 0;
 			sman->paint_text_box(font, finfo->cur_text.c_str(), 
-				box.x,box.y,box.w,box.h, -1, 1, 
-							gwin->get_text_bg());
+				box.x,box.y,box.w,box.h, -1, true, 
+				finfo->large_face, gwin->get_text_bg());
 			}
 		}
 	}
