@@ -41,9 +41,10 @@ public:
 					// Text rendering:
 	int paint_text_box(Image_buffer8 *win, int fontnum, 
 		const char *text, int x, int y, int w, int h, 
-		int vert_lead = 0, int pbreak = 0, Cursor_info *cursor = 0)
+		int vert_lead = 0, bool pbreak = false, bool center = false,
+						Cursor_info *cursor = 0)
 		{ return fonts[fontnum].paint_text_box(win, text, x, y, w, h,
-						vert_lead, pbreak, cursor); }
+				vert_lead, pbreak, center, cursor); }
 	int paint_text(Image_buffer8 *win, int fontnum, 
 		const char *text, int xoff, int yoff)
 		{ return fonts[fontnum].paint_text(win, text, xoff, yoff); }

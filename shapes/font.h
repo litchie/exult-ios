@@ -59,8 +59,8 @@ public:
 					// Text rendering:
 	int paint_text_box(Image_buffer8 *win,  
 		const char *text, int x, int y, int w, 
-		int h, int vert_lead = 0, int pbreak = 0,
-		Cursor_info *cursor = 0);
+		int h, int vert_lead = 0, bool pbreak = false,
+		bool center = false, Cursor_info *cursor = 0);
 	int paint_text(Image_buffer8 *win,  
 		const char *text, int xoff, int yoff);
 	int paint_text(Image_buffer8 *win,  
