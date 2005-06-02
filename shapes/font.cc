@@ -95,7 +95,8 @@ int Font::paint_text_box
 	int x, int y,			// Top-left corner of box.
 	int w, int h,			// Dimensions.
 	int vert_lead,			// Extra spacing between lines.
-	int pbreak,			// End at punctuation.
+	bool pbreak,			// End at punctuation.
+	bool center,			// Center each line.
 	Cursor_info *cursor		// We set x, y if not NULL.
 	)
 	{
@@ -204,11 +205,14 @@ int Font::paint_text_box
 	cury = y;			// Render text.
 	for (int i = 0; i <= cur_line; i++)
 		{
-		const char *str = lines[i].data();
+		const char *str = lines[i].c_str();
 		int len = lines[i].length();
 		if (i == last_punct_line)
 			len = last_punct_offset;
-		paint_text(win, str, len, x, cury);
+		if (center)
+			center_text(win, x + w/2, cury, str);
+		else
+			paint_text(win, str, len, x, cury);
 		cury += height;
 		if (i == last_punct_line)
 			break;
