@@ -185,9 +185,9 @@ void Shapes_vga_file::read_info
 		}
 	// Load data about drawing the weapon in an actor's hand
 	ifstream wihh;
-	unsigned short offsets[1024];
+	unsigned short offsets[2048];
 	if (U7open2(wihh, patch_name(PATCH_WIHH), WIHH, editing))
-		cnt = num_shapes <= 1024 ? num_shapes : 1024;
+		cnt = num_shapes;// <= 1024 ? num_shapes : 1024;
 	else
 		cnt = 0;
 	for (i = 0; i < cnt; i++)
