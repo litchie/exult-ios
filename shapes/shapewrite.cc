@@ -148,7 +148,7 @@ void Shapes_vga_file::write_info
 		if (info[i].weapon_offsets == 0)
 			Write2(wihh, 0);// None for this shape.
 		else			// Write where it will go.
-			Write2(wihh, 2*1024 + 64*(cnt++));
+			Write2(wihh, 2*num_shapes + 64*(cnt++));
 	for (i = 0; i < num_shapes; i++)
 		if (info[i].weapon_offsets)
 				// There are two bytes per frame: 64 total
