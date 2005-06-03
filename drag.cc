@@ -691,7 +691,9 @@ int Game_window::drop_at_lift
 	    Is_inaccessible(this, to_drop, 
 				rect.x + 2, rect.y + rect.h - 3) &&
 	    Is_inaccessible(this, to_drop, 
-				rect.x + rect.w - 3, rect.y + rect.h - 3))
+				rect.x + rect.w - 3, rect.y + rect.h - 3) &&
+		Is_inaccessible(this, to_drop, 
+				rect.x + (rect.w >> 1), rect.y + (rect.h >> 1)))
 		{
 		to_drop->remove_this(true);
 		return -1;
