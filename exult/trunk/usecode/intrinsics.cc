@@ -1816,28 +1816,59 @@ USECODE_INTRINSIC(reduce_health)
 static int Get_spot(int ucspot)
 	{
 	int spot;
-	switch (ucspot)
+	if (GAME_SI)
 		{
-	case 1:
-		spot = Actor::lhand; break;
-	case 2:
-		spot = Actor::rhand; break;
-	case 3:
-		spot = Actor::neck; break;
-	case 5:
-		spot = Actor::hands2_spot; break;
-	case 6:
-		spot = Actor::lfinger; break;
-	case 7:
-		spot = Actor::rfinger; break;
-	case 9:
-		spot = Actor::head; break; 
-	case 11:
-		spot = Actor::belt; break;
-	default:
-		cerr << "Readied: spot #" << ucspot <<
+		switch (ucspot)
+			{
+		case 1:
+			spot = Actor::lhand; break;
+		case 2:
+			spot = Actor::rhand; break;
+		case 3:				/* YES */
+			spot = Actor::neck; break;
+		case 5:				/* YES (gauntlets) */
+			spot = Actor::hands2_spot; break;
+		case 7:				/* YES */
+			spot = Actor::lfinger; break;
+		case 8:				/* YES */
+			spot = Actor::rfinger; break;
+		case 9:
+			spot = Actor::head; break; 
+		case 11:			/* YES */
+			spot = Actor::belt; break;
+		default:
+			cerr << "Readied: spot #" << ucspot <<
 						" not known yet" << endl;
-		spot = -1;
+			spot = -1;
+			break;
+			}
+		}
+	else	/* BG */
+		{
+		switch (ucspot)
+			{
+		case 1:
+			spot = Actor::lhand; break;
+		case 2:
+			spot = Actor::rhand; break;
+		case 3:				/* UNSURE */
+			spot = Actor::neck; break;
+		case 5:
+			spot = Actor::hands2_spot; break;
+		case 6:
+			spot = Actor::lfinger; break;
+		case 7:
+			spot = Actor::rfinger; break;
+		case 9:
+			spot = Actor::head; break; 
+		case 11:			/* UNSURE */
+			spot = Actor::belt; break;
+		default:
+			cerr << "Readied: spot #" << ucspot <<
+						" not known yet" << endl;
+			spot = -1;
+			break;
+			}
 		}
 	return spot;
 	}
@@ -1912,6 +1943,40 @@ USECODE_INTRINSIC(start_speech)
 		okay = Audio::get_ptr()->start_speech(speech_track);
 	if (!okay)			// Failed?  Clear faces.  (Fixes SI).
 		init_conversation();
+	if (GAME_SI)
+		{			// Show guardian, serpent.
+		int face = 0;
+		if (speech_track < 21)	// Serpent?
+			{
+			Actor *ava = gwin->get_main_actor();
+			face = 300;	// Translucent.
+					// Wearing serpent ring?
+			Game_object *obj = ava->get_readied(Actor::lfinger);
+			if (obj && obj->get_shapenum() == 0x377 &&
+					obj->get_framenum() == 1)
+				face = 295;	// Solid.
+			else if ((obj = ava->get_readied(Actor::rfinger))!=0 &&
+					obj->get_shapenum() == 0x377 &&
+					obj->get_framenum() == 1)
+				face = 295;	// Solid.
+			}
+		else if (speech_track < 23)
+			face = 296;		// Batlin.
+		else if (speech_track < 25)
+			face = 256;		// Goblin?
+		else if (speech_track == 25)
+			face = 293;		// Chaos serpent.
+		else if (speech_track == 26)
+			face = 294;		// Order serpent.
+		if (face > 0)
+			{
+			Usecode_value sh(face), fr(0);
+			show_npc_face(sh, fr);
+			int x, y;		// Wait for click.
+			Get_click(x, y, Mouse::hand);
+			remove_npc_face(sh);
+			}
+		}
 	return(Usecode_value(okay ? 1 : 0));
 }
 
