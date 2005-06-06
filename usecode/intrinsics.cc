@@ -1943,7 +1943,7 @@ USECODE_INTRINSIC(start_speech)
 		okay = Audio::get_ptr()->start_speech(speech_track);
 	if (!okay)			// Failed?  Clear faces.  (Fixes SI).
 		init_conversation();
-	if (GAME_SI)
+	else if (GAME_SI)
 		{			// Show guardian, serpent.
 		int face = 0;
 		if (speech_track < 21)	// Serpent?
