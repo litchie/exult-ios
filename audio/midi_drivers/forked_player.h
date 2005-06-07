@@ -41,6 +41,10 @@ class	forked_player	:	public FileMidiDriver
 public:
 	const static MidiDriverDesc* getDesc() { return &desc; }
 
+	virtual int		open();
+	virtual void	close();
+
+
 	virtual void	start_track(const char *name,bool repeat,int vol);
 	virtual void	stop_track(void);
 	virtual	bool	is_playing(void);
