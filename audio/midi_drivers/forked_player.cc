@@ -43,9 +43,10 @@ static  void    playFJmidifile(const char *name)
 	execlp("playmidi","playmidi","-v","-v","-e",name,0);
 }
 
-int forked_player::init();
+int forked_player::open()
 {
 	forked_job = -1;
+	return 0;
 }
 
 void forked_player::close()
@@ -105,7 +106,7 @@ const char	*forked_player::get_temp_name()
 	if (name == 0) {
 		name = new char[19];
 		strcpy(name, "/tmp/u7midi_XXXXXX");
-		close(mkstemp(name));
+		::close(mkstemp(name));
 		// TODO: delete this file on exit
 	}
 
