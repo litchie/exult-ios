@@ -770,6 +770,8 @@ Info.plist
 Makefile
 audio/Makefile
 audio/midi_drivers/Makefile
+audio/midi_drivers/timidity/Makefile
+audio/midi_drivers/mt32emu/Makefile
 conf/Makefile
 files/Makefile
 files/zip/Makefile
