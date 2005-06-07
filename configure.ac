@@ -181,12 +181,12 @@ AC_TRY_RUN([
 
 # ---------------------------------------------------------------------
 # Check sizes of integer types.
-# Cross-compiling sizes set to 2,4,4,8. (May need to be changed...)
 # ---------------------------------------------------------------------
-AC_CHECK_SIZEOF(short, 2)
-AC_CHECK_SIZEOF(int, 4)
-AC_CHECK_SIZEOF(long, 4)
-AC_CHECK_SIZEOF(long long, 8)
+AC_CHECK_SIZEOF(short)
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(long long)
+AC_CHECK_SIZEOF(int*)
 
 # ---------------------------------------------------------------------
 # Checks for header files.
