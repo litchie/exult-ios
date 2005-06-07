@@ -51,6 +51,8 @@ Game_clock *Game_singletons::gclock = 0;
 Palette *Game_singletons::pal = 0;
 Gump_manager *Game_singletons::gumpman = 0;
 Party_manager *Game_singletons::partyman = 0;
+class FileSystem *Game_singletons::pent_filesys = 0;
+
 void Game_singletons::init
 	(
 	Game_window *g
@@ -171,7 +173,7 @@ void Shape_manager::load
 		}
 	files[SF_SPRITES_VGA].load(SPRITES_VGA, PATCH_SPRITES);
 	files[SF_FACES_VGA].load(FACES_VGA, PATCH_FACES);
-	files[SF_EXULT_FLX].load("<DATA>/exult.flx");
+	files[SF_EXULT_FLX].load(EXULT_FLX);
 	read_shape_info();
 	const char* gamedata = game->get_resource("files/gameflx").str;
 	std::cout << "Loading " << gamedata << "..." << std::endl;

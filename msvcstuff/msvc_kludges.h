@@ -14,16 +14,19 @@
 #define HAVE_SSTREAM 1
 
 // Firstly some things that need to be defined
-#define VERSION "1.2"
+#define VERSION "1.4.01cvs"
 #define EXULT_DATADIR "data/"
 #define SIZEOF_SHORT 2
 #define SIZEOF_INT 4
 #define SIZEOF_LONG 4
+#define SIZEOF_INTP 4
 #define DONT_HAVE_HASH_SET
 #define DONT_HAVE_HASH_MAP
 //#define HAVE_OPENGL
 //#define FUDGE_SAMPLE_RATES
 #define USE_FMOPL_MIDI
+#define USE_MT32EMU_MIDI
+#define USE_TIMIDITY_MIDI
 
 #ifndef WIN32
 #error WTF!
@@ -281,11 +284,6 @@ using std::getline;
 #include "../usecode/ucsched.h"
 #include "../usecode/ucscriptop.h"
 #include "../usecode/useval.h"
-#include "../audio/Audio.h"
-#include "../audio/conv.h"
-#include "../audio/Midi.h"
-#include "../audio/soundtest.h"
-#include "../audio/xmidi.h"
 #include "../gumps/Actor_gump.h"
 #include "../gumps/AudioOptions_gump.h"
 #include "../gumps/Book_gump.h"

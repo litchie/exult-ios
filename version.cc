@@ -71,10 +71,28 @@ void getVersionInfo(std::ostream& out)
 	out << "DEBUG";
 #endif
 
-#ifdef HAVE_TIMIDITY_BIN
+#ifdef USE_TIMIDITY_MIDI
 	if (!firstoption) out << ", "; 
 	firstoption = false;
-	out << "HAVE_TIMIDITY_BIN";
+	out << "USE_TIMIDITY_MIDI";
+#endif
+
+#ifdef USE_FMOPL_MIDI
+	if (!firstoption) out << ", "; 
+	firstoption = false;
+	out << "USE_FMOPL_MIDI";
+#endif
+
+#ifdef USE_MT32EMU_MIDI
+	if (!firstoption) out << ", "; 
+	firstoption = false;
+	out << "USE_MT32EMU_MIDI";
+#endif
+
+#ifdef USE_ALSA_MIDI
+	if (!firstoption) out << ", "; 
+	firstoption = false;
+	out << "USE_ALSA_MIDI";
 #endif
 
 #ifdef USE_EXULTSTUDIO

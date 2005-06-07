@@ -116,7 +116,6 @@ public:
 
 	void play_flic(const char *archive, int index);
 	void play_audio(const char *archive, int index);
-	void play_midi(int track, bool repeat = false);
 	
 	void add_shape(const char *name, int shapenum);
 	int get_shape(const char *name);

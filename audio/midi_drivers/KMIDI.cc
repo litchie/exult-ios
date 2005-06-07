@@ -16,13 +16,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-#ifdef XWIN
-
+#include "pent_include.h"
 #include "KMIDI.h"
+
+#ifdef USE_LIBK_MIDI
 
 #ifndef ALPHA_LINUX_CXX
 #  include <unistd.h>
@@ -34,7 +31,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 extern	Configuration	*config;
 
 
-#if HAVE_LIBKMIDI
+const MidiDriver::MidiDriverDesc KMIDI::desc = 
+		MidiDriver::MidiDriverDesc ("KMIDI", createInstance);
+
 
 int	kmidi_device_selection(void)
 {
@@ -54,13 +53,13 @@ int	kmidi_device_selection(void)
 	return atoi(s.c_str());
 }
 
-KMIDI::KMIDI()
+int KMIDI::init()
 {
 	cerr << "libkmid initialisation..." << endl;
 	if(KMidSimpleAPI::kMidInit())
 		{
 		cerr << "failed. Falling back..." << endl;
-		throw 0;
+		return 1;
 		}
 
 	// This is probably not right for anyone but me
@@ -72,7 +71,7 @@ KMIDI::KMIDI()
 	if(devnum==-1)
 		{
 		// kmidi is disabled
-		throw 0;
+		return 2;
 		}
 	if(devnum==-2)
 		{
@@ -83,7 +82,7 @@ KMIDI::KMIDI()
 			// User disabled kmidi
 			devnum=-2;
 			config->set("config/audio/midi/kmidi/device",devnum,true);
-			throw 0;
+			return 3;
 			}
 		}
 	kMidSetDevice(devnum);
@@ -91,17 +90,16 @@ KMIDI::KMIDI()
 		{
 		config->set("config/audio/midi/kmidi/device",devnum,true);
 		}
+
+	return 0;
 }
 
-KMIDI::~KMIDI()
+void KMIDI::close()
 {}
 
 
-void	KMIDI::start_track(XMIDIEventList *event_list,bool repeat)
+void	KMIDI::start_track(const char *name,bool repeat,int vol)
 {
-	const char *name = MIDITMPFILE;
-	event_list->Write(name);
-
 	if(is_playing())
 		stop_track();
 	repeat_=repeat;
@@ -128,11 +126,4 @@ bool	KMIDI::is_playing(void)
 	return KMidSimpleAPI::kMidIsPlaying();
 }
 
-const	char *KMIDI::copyright(void)
-{
-	return KMidSimpleAPI::kMidCopyright();
-}
-	
-#endif // HAVE_LIBKMIDI
-
-#endif // XWIN
+#endif // USE_LIBK_MIDI

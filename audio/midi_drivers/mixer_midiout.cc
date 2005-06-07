@@ -16,9 +16,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include "pent_include.h"
+#include "mixer_midiout.h"
+
+#ifdef USE_MIXER_MIDI
 
 //#ifndef ALPHA_LINUX_CXX
 //#  include <unistd.h>
@@ -28,14 +29,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //#  include <fcntl.h>
 //#endif
 
-#include <iostream>
+#include "SDL_mixer.h"
 
+#include <iostream>
+#include <cstdio>
+
+#ifdef PENTAGRAM_IN_EXULT
 #include "fnames.h"
+#include "utils.h"
+#endif
 
 using std::cerr;
 using std::endl;
 
-#include "mixer_midiout.h"
+#include "XMidiEventList.h"
 
 static Mix_Music *mixermusic;
 
@@ -43,20 +50,33 @@ static Mix_Music *mixermusic;
 // Woohoo. This is easy with SDL_mixer! :)
 //
 
+const MidiDriver::MidiDriverDesc Mixer_MidiOut::desc = 
+		MidiDriver::MidiDriverDesc ("Mixer", createInstance);
+
+
 Mixer_MidiOut::Mixer_MidiOut() 
 {
-	//Point to music finish cleanup code
-	Mix_HookMusicFinished(music_complete_callback);
 }
 
 Mixer_MidiOut::~Mixer_MidiOut()
 {
-	// Stop any current player
-	stop_track();
-	stop_sfx();
 }
 
-void Mixer_MidiOut::stop_track(void)
+int Mixer_MidiOut::open()
+{
+	//Point to music finish cleanup code
+	Mix_HookMusicFinished(music_complete_callback);
+	return 0;
+}
+
+void Mixer_MidiOut::close()
+{
+	// Stop any current player
+	stop_track();
+	Mix_HookMusicFinished(NULL);
+}
+
+void Mixer_MidiOut::stop_track()
 {
 	Mix_HaltMusic();
 	if(mixermusic)
@@ -76,37 +96,24 @@ void Mixer_MidiOut::music_complete_callback(void)
 	}
 }
 
-bool	Mixer_MidiOut::is_playing(void)
+bool	Mixer_MidiOut::is_playing()
 {
 	return Mix_PlayingMusic()!=0;
 }
 
-void	Mixer_MidiOut::start_track(XMIDIEventList *event_list,bool repeat)
+void	Mixer_MidiOut::start_track(const char *filename, bool repeat, int vol)
 {
-	const char *name = MIDITMPFILE;
-	event_list->Write(name);
-
 #if DEBUG
 	cerr << "Starting midi sequence with Mixer_MidiOut" << endl;
 #endif
-	stop_track();
-
-	mixermusic = Mix_LoadMUS(name);
+	mixermusic = Mix_LoadMUS(filename);
 	Mix_PlayMusic(mixermusic, repeat);
-	Mix_VolumeMusic(MIX_MAX_VOLUME);	//Balance volume with other music types
+	Mix_VolumeMusic((vol*(MIX_MAX_VOLUME-50))/255);	
 }
 
-void	Mixer_MidiOut::start_sfx(XMIDIEventList *event_list)
+void Mixer_MidiOut::set_volume(int vol)
 {
-//Defunct?
+	Mix_VolumeMusic((vol*(MIX_MAX_VOLUME-50))/255);	
 }
 
-void	Mixer_MidiOut::stop_sfx(void)
-{
-//Defunct?
-}
-
-const	char *Mixer_MidiOut::copyright(void)
-{
-	return "Internal SDL_mixer midi out";
-}
+#endif // USE_MIXER_MIDIOUT

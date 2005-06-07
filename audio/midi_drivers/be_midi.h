@@ -22,18 +22,24 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef BEOS
 
-#include "Midi.h"
+#define USE_BEOS_MIDI
+
+#include "FileMidiDriver.h"
 #include <be/midi/Midi.h>   //name clash; MidiSynthFile.h includes Exult's Midi.h 'accidently'
 #include <be/midi/MidiSynthFile.h>
 
-class	Be_midi : virtual public MidiAbstract
+class	Be_midi : public FileMidiDriver
 {
+	const static MidiDriverDesc	desc;
+	static MidiDriver *createInstance() {
+		return new Be_midi();
+	}
 public:
-  virtual void start_track(XMIDIEventList *,bool repeat);
-//virtual void start_sfx(XMIDIEventList *);
+	const static MidiDriverDesc* getDesc() { return &desc; }
+
+  virtual void start_track(const char *name,bool repeat,int vol);
   virtual void stop_track(void);
   virtual bool is_playing(void);
-  virtual const char *copyright(void);
 
   Be_midi();
   virtual ~Be_midi();

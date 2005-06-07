@@ -83,6 +83,7 @@
 #include "palette.h"
 #include "glshape.h"
 #include "combat_opts.h"
+#include "U7file.h"
 
 #include "exult_flx.h"
 #include "exult_bg_flx.h"
@@ -354,13 +355,13 @@ int exult_main(const char *runpath)
 	// Setup virtual directories
 	config->value("config/disk/data_path",data_path,EXULT_DATADIR);
 	add_system_path("<DATA>", data_path);
-	if (!U7exists("<DATA>/exult.flx"))
+	if (!U7exists(EXULT_FLX))
 	{
 		add_system_path("<DATA>", EXULT_DATADIR);
-		if (!U7exists("<DATA>/exult.flx"))
+		if (!U7exists(EXULT_FLX))
 		{
 			add_system_path("<DATA>", "data");
-			if(!U7exists("<DATA>/exult.flx"))
+			if(!U7exists(EXULT_FLX))
 			{
 				char *sep = std::strrchr(runpath,'/');
 				if (!sep) sep = std::strrchr(runpath,'\\');
@@ -371,7 +372,7 @@ int exult_main(const char *runpath)
 				std::strcat(dpath,"data");
 				cerr << "dpath = " << dpath << endl;
 				add_system_path("<DATA>",dpath);
-				if(!U7exists("<DATA>/exult.flx"))
+				if(!U7exists(EXULT_FLX))
 				{
 					// We've tried them all...
 					cerr << "Could not find 'exult.flx' anywhere." << endl;	
@@ -401,7 +402,7 @@ int exult_main(const char *runpath)
 
 	// Check CRCs of our .flx files
 	bool crc_ok = true;
-	uint32 crc = crc32_syspath("<DATA>/exult.flx");
+	uint32 crc = crc32_syspath(EXULT_FLX);
 	if (crc != EXULT_FLX_CRC32) {
 		crc_ok = false;
 		cerr << "exult.flx has a wrong checksum!" << endl;
@@ -751,19 +752,39 @@ static void Init
 		}
 		Game::create_game(mygame, title);
 
-		Audio::get_ptr()->Init_sfx();
-		
+		Audio *audio = Audio::get_ptr();
+		MyMidiPlayer *midi = 0;
+
+		if (audio) {
+			Audio::get_ptr()->Init_sfx();
+			midi = audio->get_midi();
+		}
+
 		Setup_text();
 
 					// Skip splash screen?
 		bool skip_splash;
 		config->value("config/gameplay/skip_splash", skip_splash);
-		if(!skip_splash && 
-					// Skip intro. if devel. game.
-		   (Game::get_game_type() != EXULT_DEVEL_GAME ||
-					U7exists("<STATIC>/intro.dat")))
+
+		if(!skip_splash && (Game::get_game_type() != EXULT_DEVEL_GAME || U7exists("<STATIC>/intro.dat"))) {
+			if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
 			game->play_intro();
+		}
+
+		if (midi) {
+			if (arg_nomenu)
+				midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
+			else
+				midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_MAINMENU);
+		}
 	} while(!game->show_menu(arg_nomenu));
+
+	Audio *audio = Audio::get_ptr();
+	if (audio) {
+		MyMidiPlayer *midi = audio->get_midi();
+		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GAME);
+	}
+
 	gwin->init_files();
 	gwin->read_gwin();
 	gwin->setup_game(arg_edit_mode);	// This will start the scene.

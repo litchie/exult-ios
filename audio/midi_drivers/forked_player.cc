@@ -16,13 +16,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include "pent_include.h"
+#include "forked_player.h"
 
-
-#ifdef XWIN
-
+#ifdef USE_FORKED_PLAYER_MIDI
 
 #ifndef ALPHA_LINUX_CXX
 #  include <csignal>
@@ -32,11 +29,13 @@
 #include "Configuration.h"
 #include "exult.h"
 #include "fnames.h"
-#include "forked_player.h"
 #include <iostream>
 
 using std::cerr;
 using std::endl;
+
+const MidiDriver::MidiDriverDesc forked_player::desc = 
+		MidiDriver::MidiDriverDesc ("Forked", createInstance);
 
 // NB: This function doesn't return unless execlp fails!
 static  void    playFJmidifile(const char *name)
@@ -44,19 +43,21 @@ static  void    playFJmidifile(const char *name)
 	execlp("playmidi","playmidi","-v","-v","-e",name,0);
 }
 
-forked_player::forked_player() : forked_job(-1)
-{}
+int forked_player::init();
+{
+	forked_job = -1;
+}
+
+void forked_player::close()
+{
+	stop_track();
+}
 
 void	forked_player::stop_track(void)
 {
 	if(forked_job!=-1)
 		kill(forked_job,SIGKILL);
 	forked_job=-1;
-}
-
-forked_player::~forked_player(void)
-{
-	stop_track();
 }
 
 bool	forked_player::is_playing(void)
@@ -72,18 +73,9 @@ bool	forked_player::is_playing(void)
 }
 
 
-void	forked_player::start_track(XMIDIEventList *event_list,bool repeat)
+void	forked_player::start_track(const char *filename,bool repeat,int vol)
 {
-	static char *name = 0;
-
-	if (name == 0) {
-		name = new char[19];
-		strcpy(name, "/tmp/u7midi_XXXXXX");
-		close(mkstemp(name));
-		// TODO: delete this file on exit
-	}
-
-	event_list->Write(name);
+	const char *name = forked_player::get_temp_name();
 
 	repeat_=repeat;
 #if DEBUG
@@ -106,9 +98,19 @@ void	forked_player::start_track(XMIDIEventList *event_list,bool repeat)
 	}
 }
 
-const	char *forked_player::copyright(void)
+const char	*forked_player::get_temp_name()
 {
-	return "Internal cheapass forked midi player";
+	static char *name = 0;
+
+	if (name == 0) {
+		name = new char[19];
+		strcpy(name, "/tmp/u7midi_XXXXXX");
+		close(mkstemp(name));
+		// TODO: delete this file on exit
+	}
+
+	return name;
 }
 
-#endif // XWIN
+
+#endif // USE_FORKED_PLAYER_MIDI

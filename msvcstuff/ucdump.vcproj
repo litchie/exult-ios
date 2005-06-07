@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug Install|Win32"
-			OutputDirectory=".\..\tools"
+			OutputDirectory=".."
 			IntermediateDirectory=".\ucdump_debug"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -36,16 +36,16 @@
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="Installing $(InputName).exe"
+				Description="Installing $(TargetFileName)"
 				CommandLine="if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;
-copy $(InputPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
+copy &quot;$(TargetPath)&quot; &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 "
-				Outputs="$(EXULT_INSTALL_PATH)\tools\$(InputName).exe"/>
+				Outputs="$(EXULT_INSTALL_PATH)\tools\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\..\tools/ucdump.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
@@ -71,7 +71,7 @@ copy $(InputPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\..\tools"
+			OutputDirectory=".."
 			IntermediateDirectory=".\ucdump_release"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -106,7 +106,7 @@ copy $(InputPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\..\tools/ucdump.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				ProgramDatabaseFile=".\..\tools/ucdump.pdb"
@@ -131,7 +131,7 @@ copy $(InputPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\..\tools"
+			OutputDirectory=".."
 			IntermediateDirectory=".\ucdump_debug"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -159,7 +159,7 @@ copy $(InputPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\..\tools/ucdump.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
@@ -185,7 +185,7 @@ copy $(InputPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 		</Configuration>
 		<Configuration
 			Name="Release Install|Win32"
-			OutputDirectory=".\..\tools"
+			OutputDirectory=".."
 			IntermediateDirectory=".\ucdump_release"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -217,16 +217,16 @@ copy $(InputPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="Installing $(InputName).exe"
+				Description="Installing $(TargetFileName)"
 				CommandLine="if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;
-copy $(InputPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
+copy &quot;$(TargetPath)&quot; &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 "
-				Outputs="$(EXULT_INSTALL_PATH)\tools\$(InputName).exe"/>
+				Outputs="$(EXULT_INSTALL_PATH)\tools\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\..\tools/ucdump.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				ProgramDatabaseFile=".\..\tools/ucdump.pdb"

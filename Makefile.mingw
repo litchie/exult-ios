@@ -31,7 +31,7 @@ EXTRA_OPTIONS=
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DEXULT_DATADIR=\"data\" \
 	-DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -I$(SRC)/imagewin -I$(SRC)/shapes \
 	-I$(SRC)/files -I$(SRC)/files/zip -I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/tools \
-	-I$(SRC) -I$(SRC)/audio -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
+	-I$(SRC) -I$(SRC)/audio -I$(SRC)/audio/midi_drivers -I$(SRC)/conf -I$(SRC)/pathfinder -I$(SRC)/headers \
 	-I$(SRC)/usecode -I$(SRC)/usecode/ucxt/include -I$(SRC)/usecode/compiler -I$(SRC)/data -I$(SRC)/server \
 	$(SDL_CFLAGS) -DUSE_EXULTSTUDIO -DHAVE_PNG_H $(ZIP_CFLAGS) $(EXTRA_OPTIONS)
 
@@ -44,10 +44,8 @@ LIBS=-lmingw32 $(SDL_LIBS) $(ZIP_LIBS) -lwinmm -lole32 -luuid -mwindows
 EXEC=Exult.exe
 EXEEXT=.exe
 
-MIDI_DRV_OBJS=fmopl.o fmopl_midi.o fmopldrv.o win_midiout.o
-# unused: KMIDI.o Timidity_binary.o forked_player.o be_midi.o 
 SERVER_OBJS=objserial.o servemsg.o server.o servewin32.o
-OBJS	= exultico.o
+ICON_OBJS=exultico.o
 
 include Makefile.common
 

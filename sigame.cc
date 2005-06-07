@@ -117,7 +117,7 @@ SI_Game::SI_Game()
 		add_resource("files/shapes/3", "<STATIC>/sprites.vga", 0);
 		add_resource("files/shapes/4", MAINSHP_FLX, 0);
 		add_resource("files/shapes/5", "<STATIC>/paperdol.vga", 0);
-		add_resource("files/shapes/6", "<DATA>/exult.flx", 0);
+		add_resource("files/shapes/6", EXULT_FLX, 0);
 		add_resource("files/shapes/7", "<STATIC>/fonts.vga", 0);
 
 		add_resource("files/gameflx", "<DATA>/exult_si.flx", 0);
@@ -178,6 +178,13 @@ static int get_frame (void)
 
 void SI_Game::play_intro()
 {
+	Audio *audio = Audio::get_ptr();
+	if (audio) {
+		audio->stop_music();
+		MyMidiPlayer *midi = audio->get_midi();
+		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
+	}
+
 	int	next = 0;
 	size_t	flisize;
 	char	*fli_b = 0;
@@ -193,8 +200,6 @@ void SI_Game::play_intro()
 
 	gwin->clear_screen(true);
 	
-	Audio::get_ptr()->stop_music();
-
 	// Lord British presents...
 	try
 	{
@@ -242,10 +247,7 @@ void SI_Game::play_intro()
 		// Start Music
 		Audio *audio = Audio::get_ptr();
 		if (audio) {
-			const char *fn = "<STATIC>/r_sintro.xmi";
-			MyMidiPlayer *midi = audio->get_midi();
-			if (midi && midi->is_fm_synth()) fn = "<STATIC>/a_sintro.xmi";
-			audio->start_music (fn, 0, false);
+			audio->start_music (R_SINTRO, 0, false);
 		}
 
 		// Thunder, note we use the buffer again later so it's not freed here
@@ -782,7 +784,7 @@ void SI_Game::play_intro()
 
 void SI_Game::top_menu()
 {
-	play_midi(28, true);
+	Audio::get_ptr()->start_music(28,true,MAINSHP_FLX);
 	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	pal->load(MAINSHP_FLX,26);
 	pal->fade_in(60);	
@@ -942,6 +944,13 @@ bool ExCineVoc::play_it(Image_window *win, int t)
 //
 void SI_Game::end_game(bool success) 
 {
+	Audio *audio = Audio::get_ptr();
+	if (audio) {
+		audio->stop_music();
+		MyMidiPlayer *midi = audio->get_midi();
+		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
+	}
+
 	int	next = 0;
 
 	Font	*font = fontManager.get_font("MENU_FONT");
@@ -1078,18 +1087,10 @@ Sound Index
 	int last_voc = 7;
 	int cur_voc = -1;
 
-	// Stop previous music
-	Audio::get_ptr()->stop_music();
-
 	// Start the music
-	Audio *audio = Audio::get_ptr();
 	if (audio) {
-		const char *fn = "<STATIC>/r_send.xmi";
-		MyMidiPlayer *midi = audio->get_midi();
-		if (midi && midi->is_fm_synth()) fn = "<STATIC>/a_send.xmi";
-		audio->start_music (fn, 0, false);
+		audio->start_music (R_SEND, 0, false);
 	}
-
 
 	int start_time = SDL_GetTicks();
 
@@ -1176,15 +1177,15 @@ Sound Index
 	gwin->clear_screen(true);
 
 	// Stop all sounds
-	Audio::get_ptr()->cancel_streams();
-
-	// Stop music
-	Audio::get_ptr()->stop_music();
+	if (audio) {
+		audio->cancel_streams();
+		audio->stop_music();
+	}
 }
 
 void SI_Game::show_quotes()
 	{
-		play_midi(32);
+		Audio::get_ptr()->start_music(32,false,MAINSHP_FLX);
 		TextScroller quotes(MAINSHP_FLX, 0x10, 
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)
@@ -1194,7 +1195,7 @@ void SI_Game::show_quotes()
 
 void SI_Game::show_credits()
 	{
-		play_midi(30);
+		Audio::get_ptr()->start_music(30,false,MAINSHP_FLX);
 		TextScroller credits(MAINSHP_FLX, 0x0E, 
 			     fontManager.get_font("MENU_FONT"),
 			     menushapes.extract_shape(0x14)

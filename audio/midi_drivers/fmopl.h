@@ -1,6 +1,7 @@
-/* ScummVM - Scumm Interpreter
+/*
  * Copyright (C) 1999/2000 Tatsuyuki Satoh
  * Copyright (C) 2001/2002 The ScummVM project
+ * Copyright (C) 2003 The Pentagram Team
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -16,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/fmopl.h,v 1.1 2002/08/06 18:10:31 colourles Exp $
+ * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/fmopl.h,v 1.2 2005/06/07 09:55:36 colourles Exp $
  *
  * LGPL licensed version of MAMEs fmopl (V0.37a modified) by
  * Tatsuyuki Satoh. Included from LGPL'ed AdPlug.
@@ -27,13 +28,35 @@
 
 #ifdef USE_FMOPL_MIDI
 
-#include "common_types.h"
+namespace FMOpl_Pentagram {
 
 typedef void (*OPL_TIMERHANDLER)(int channel,double interval_Sec);
 typedef void (*OPL_IRQHANDLER)(int param,int irq);
 typedef void (*OPL_UPDATEHANDLER)(int param,int min_interval_us);
 
 #define OPL_TYPE_WAVESEL   0x01  /* waveform select    */
+
+// Modulation Registers
+#define INDEX_AVEKM_M	0
+#define INDEX_KSLTL_M	2
+#define INDEX_AD_M		4
+#define INDEX_SR_M		6
+#define INDEX_WAVE_M	8
+
+// Carrier Registers
+#define INDEX_AVEKM_C	1
+#define INDEX_KSLTL_C	3
+#define INDEX_AD_C		5
+#define INDEX_SR_C		7
+#define INDEX_WAVE_C	9
+
+#define INDEX_FB_C		10
+#define INDEX_PERC		11
+
+#define CHP_CHAN		0
+#define CHP_NOTE		1
+#define CHP_COUNTER		2
+#define CHP_VEL			3
 
 /* Saving is necessary for member of the 'R' mark for suspend/resume */
 /* ---------- OPL one of slot  ---------- */
@@ -83,6 +106,7 @@ typedef struct fm_opl_channel {
 	uint32  fc;			/* Freq. Increment base				*/
 	uint32  ksl_base;		/* KeyScaleLevel Base step			*/
 	uint8 keyon;		/* key on/off flag					*/
+	uint8 PAN;			/* pan								*/
 } OPL_CH;
 
 /* OPL state */
@@ -165,8 +189,12 @@ int OPLWrite(FM_OPL *OPL,int a,int v);
 unsigned char OPLRead(FM_OPL *OPL,int a);
 int OPLTimerOver(FM_OPL *OPL,int c);
 void OPLWriteReg(FM_OPL *OPL, int r, int v);
-void YM3812UpdateOne(FM_OPL *OPL, sint16 *buffer, int length);
+void OPLSetPan(FM_OPL *OPL,int c, int pan);
 
+void YM3812UpdateOne_Mono(FM_OPL *OPL, sint16 *buffer, int length);
+void YM3812UpdateOne_Stereo(FM_OPL *OPL, sint16 *buffer, int length);
+
+};
 
 #endif //USE_FMOPL_MIDI
 

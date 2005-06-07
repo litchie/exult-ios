@@ -39,6 +39,7 @@
 #include "ucscriptop.h"
 #include "ucsched.h"
 #include "Gump_manager.h"
+#include "databuf.h"
 
 #ifdef USE_EXULTSTUDIO
 #include "server.h"

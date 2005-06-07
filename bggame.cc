@@ -132,7 +132,7 @@ BG_Game::BG_Game()
 		add_resource("files/shapes/4", MAINSHP_FLX, 0);
 		add_resource("files/shapes/5", "<STATIC>/endshape.flx", 0);
 		add_resource("files/shapes/6", "<STATIC>/fonts.vga", 0);
-		add_resource("files/shapes/7", "<DATA>/exult.flx", 0);
+		add_resource("files/shapes/7", EXULT_FLX, 0);
 		add_resource("files/shapes/8", "<DATA>/exult_bg.flx", 0);
 
 		add_resource("files/gameflx", "<DATA>/exult_bg.flx", 0);
@@ -218,9 +218,14 @@ class UserSkipException : public UserBreakException
 
 void BG_Game::play_intro()
 {
-	gwin->clear_screen(true);
+	Audio *audio = Audio::get_ptr();
+	if (audio) {
+		audio->stop_music();
+		MyMidiPlayer *midi = audio->get_midi();
+		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_INTRO);
+	}
 
-	Audio::get_ptr()->stop_music();
+	gwin->clear_screen(true);
 
 	// TODO: check/fix other resolutions
 
@@ -384,7 +389,7 @@ void BG_Game::scene_butterfly()
 		backup = win->create_buffer(butterfly->get_width(), butterfly->get_height());
 		
 		// Start playing the birdsongs while still faded out
-		play_midi(bird_song_midi);
+		Audio::get_ptr()->start_music(bird_song_midi,false,INTROMUS);
 
 		// trees with "Ultima VII" on top of 'em
 		sman->paint_shape(topx,topy,shapes.get_shape(trees_shp,0));
@@ -494,7 +499,7 @@ void BG_Game::scene_guardian()
 		int i;
 
 		// Start background music
-		play_midi(guardian_midi);
+		Audio::get_ptr()->start_music(guardian_midi,false,INTROMUS);
 		
 		// create buffer containing a blue 'plasma' screen
 		plasma = win->create_buffer(gwin->get_width(),
@@ -761,7 +766,7 @@ void BG_Game::scene_desk()
 
 	try
 	{
-		play_midi(home_song_midi);
+		Audio::get_ptr()->start_music(home_song_midi,false,INTROMUS);
 		
 		gwin->clear_screen();
 		pal->load("<STATIC>/intropal.dat",1);
@@ -925,7 +930,7 @@ void BG_Game::scene_moongate()
 
 void BG_Game::top_menu()
 {
-	play_midi(menu_midi, true);
+	Audio::get_ptr()->start_music(menu_midi,true,INTROMUS);
 		
 	sman->paint_shape(topx,topy,menushapes.get_shape(0x2,0));
 	pal->load("<STATIC>/intropal.dat",0);
@@ -975,6 +980,13 @@ void BG_Game::end_game(bool success)
 		return;
 	}
 
+	Audio *audio = Audio::get_ptr();
+	MyMidiPlayer *midi = 0;
+	if (audio) {
+		audio->stop_music();
+		midi = audio->get_midi();
+		if (midi) midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_ENDGAME);
+	}
 	// Audio buffer
 	size_t	size;
 	uint8	*buffer;
@@ -1016,17 +1028,8 @@ void BG_Game::end_game(bool success)
 	fli1.play(win, 0, 0, 0);
 	
 	// Start endgame music.
-	Audio *audio = Audio::get_ptr();
-	int music_offset = 0;
-	if (audio) {
-		MyMidiPlayer *midi = audio->get_midi();
-		if (midi) {
-			midi->load_patches(true);
-			if (midi->is_fm_synth()) music_offset = 2;
-		}
-		audio->start_music(ENDSCORE_XMI,1+music_offset,false);
-	}
-	
+	if (midi) midi->start_music(ENDSCORE_XMI,1,false);
+
 	// A little hack
 	bool do_break = false;
 	do {
@@ -1066,7 +1069,7 @@ void BG_Game::end_game(bool success)
 		if (do_break) break;
 
 		// Set new music
-		if (audio) audio->start_music(ENDSCORE_XMI,2+music_offset,false);
+		if (midi) midi->start_music(ENDSCORE_XMI,2,false);
 
 		// Set speech
 		
@@ -1312,10 +1315,14 @@ void BG_Game::end_game(bool success)
 	}
 	while (0);
 
+	if (midi) {
+		midi->stop_music();
+		midi->set_timbre_lib(MyMidiPlayer::TIMBRE_LIB_GAME);
+	}
+
 	if (audio) {
 		audio->stop_music();
 		MyMidiPlayer *midi = audio->get_midi();
-		if (midi) midi->load_patches(false);
 	}
 
 	gwin->clear_screen(true);
@@ -1327,7 +1334,7 @@ void BG_Game::end_game(bool success)
 
 void BG_Game::show_quotes()
 {
-	play_midi(quotes_midi);
+	Audio::get_ptr()->start_music(quotes_midi,false,INTROMUS);
 	TextScroller quotes(MAINSHP_FLX, 0x10, 
 			fontManager.get_font("MENU_FONT"),
 			menushapes.extract_shape(0x14)
@@ -1339,8 +1346,7 @@ void BG_Game::show_quotes()
 
 void BG_Game::show_credits()
 {
-	
-	play_midi(credits_midi);
+	Audio::get_ptr()->start_music(credits_midi,false,INTROMUS);
 	TextScroller credits(MAINSHP_FLX, 0x0E, 
 			fontManager.get_font("MENU_FONT"),
 			menushapes.extract_shape(0x14)

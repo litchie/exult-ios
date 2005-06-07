@@ -1,0 +1,48 @@
+EXEC=Exult.exe
+EXEEXT=.exe
+
+!include Makefile.common
+
+
+# Exult.flx
+build_ex : $(EXULT_FLX)
+
+install_ex : $(EXULT_FLX)
+	copy data\exult.flx "$(EXULT_INSTALL_PATH)\data"
+	
+clean_ex :
+	del $(EXULT_FLX:/=\)
+
+rebuild_ex : clean_ex build_ex
+
+reinstall_ex : clean_exe install_ex
+
+
+# exult_bg.flx
+build_bg : $(EXULT_BG_FLX)
+
+install_bg : $(EXULT_BG_FLX)
+	copy data\exult_bg.flx "$(EXULT_INSTALL_PATH)\data"
+	
+clean_bg :
+	del $(EXULT_BG_FLX:/=\)
+
+rebuild_bg : clean_bg build_bg
+
+reinstall_bg : clean_bg install_bg
+
+
+# exult_si.flx
+build_si : $(EXULT_SI_FLX)
+
+install_si : $(EXULT_SI_FLX)
+	copy data\exult_si.flx "$(EXULT_INSTALL_PATH)\data"
+
+clean_si :
+	del $(EXULT_SI_FLX:/=\)
+
+rebuild_si : clean_si build_si
+
+reinst_si : clean_si install_si
+
+

@@ -42,14 +42,14 @@ public:
 	virtual uint16 read2high() =0;
 	virtual uint32 read4() =0;
 	virtual uint32 read4high() =0;
-	virtual void read(char *, int) =0;
+	virtual void read(void *, int) =0;
 	
 	virtual void write1(uint32) =0;
 	virtual void write2(uint16) =0;
 	virtual void write2high(uint16) =0;
 	virtual void write4(uint32) =0;
 	virtual void write4high(uint32) =0;
-	virtual void write(char *, int) =0;
+	virtual void write(void *, int) =0;
 	
 	virtual void seek(unsigned int) =0;
 	virtual void skip(int) =0;
@@ -62,7 +62,7 @@ public:
 
 class StreamDataSource: public DataSource
 {
-private:
+protected:
 	std::ifstream *in;
 	std::ofstream *out;
 public:
@@ -88,7 +88,7 @@ public:
 	
 	virtual uint32 read4high()  { return Read4high(*in); };
 	
-	void read(char *b, int len) { in->read(b, len); };
+	void read(void *b, int len) { in->read(reinterpret_cast<char*>(b), len); };
 	
 	virtual void write1(uint32 val)      { Write1(*out, val); };
 	
@@ -100,7 +100,7 @@ public:
 
 	virtual void write4high(uint32 val)  { Write4high(*out, val); };
 
-	virtual void write(char *b, int len) { out->write(b, len); };
+	virtual void write(void *b, int len) { out->write(reinterpret_cast<char*>(b), len); };
 	
 	virtual void seek(unsigned int pos)
 	{
@@ -108,7 +108,11 @@ public:
 		else out->seekp(pos);
 	};
 
-	virtual void skip(int pos) { in->seekg(pos, std::ios::cur); };
+	virtual void skip(int pos) 
+	{ 
+		if (in) in->seekg(pos, std::ios::cur); 
+		else out->seekp(pos, std::ios::cur); 
+	};
 	
 	virtual unsigned int getSize()
 	{
@@ -198,7 +202,7 @@ public:
 		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
-	void read(char *b, int len) {
+	void read(void *b, int len) {
 		fread(b, 1, len, f);
 	};
 	
@@ -235,7 +239,7 @@ public:
 		fputc(static_cast<char>(val&0xff),f);
 	};
 
-	virtual void write(char *b, int len)
+	virtual void write(void *b, int len)
 	{
 		fwrite(b, 1, len, f);
 	};
@@ -271,11 +275,12 @@ protected:
 	unsigned char *buf_ptr;
 	std::size_t size;
 public:
-	BufferDataSource(char *data, unsigned int len)
+	BufferDataSource(const void *data, unsigned int len)
 	{
 		// data can be NULL if len is also 0
 		assert(data!=0 || len==0);
-		buf = buf_ptr = reinterpret_cast<unsigned char*>(data);
+		buf = reinterpret_cast<const unsigned char*>(data);
+		buf_ptr = const_cast<unsigned char*>(buf);
 		size = len;
 	};
 	
@@ -339,7 +344,7 @@ public:
 		return (b0 | (b1<<8) | (b2<<16) | (b3<<24));
 	};
 	
-	void read(char *b, int len) {
+	void read(void *b, int len) {
 		std::memcpy(b, buf_ptr, len);
 		buf_ptr += len;
 	};
@@ -378,7 +383,7 @@ public:
 		*buf_ptr++ = val & 0xff;
 	};
 
-	virtual void write(char *b, int len)
+	virtual void write(void *b, int len)
 	{
 		std::memcpy(buf_ptr, b, len);
 		buf_ptr += len;

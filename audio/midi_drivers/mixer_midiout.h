@@ -20,21 +20,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _MIDI_driver_Mixer_MidiOut_h_
 #define _MIDI_driver_Mixer_MidiOut_h_
 
-#include "Midi.h"
+//#define USE_MIXER_MIDI
+#ifdef USE_MIXER_MIDI
 
-class	Mixer_MidiOut : virtual public MidiAbstract
+#include "FileMidiDriver.h"
+
+class	Mixer_MidiOut : public FileMidiDriver
 {
+	const static MidiDriverDesc	desc;
+	static MidiDriver *createInstance() {
+		return new Mixer_MidiOut();
+	}
 public:
-	virtual void	start_track(XMIDIEventList *, bool repeat);
-	virtual void	start_sfx(XMIDIEventList *);
-	virtual void	stop_track(void);
-	virtual void	stop_sfx(void);
-	virtual	bool	is_playing(void);
-	virtual const	char *copyright(void);
+	const static MidiDriverDesc* getDesc() { return &desc; }
+
+	// FileMidiDriver Implementation
+	virtual int			open();
+	virtual void		close();
+	virtual void		start_track(const char *filename, bool repeat, int vol);
+	virtual void		stop_track();
+	virtual bool		is_playing();
+	virtual void		set_volume(int vol);
 
 	static void music_complete_callback(void);
 
 	Mixer_MidiOut();
 	virtual ~Mixer_MidiOut();
 };
+#endif //USE_MIXER_MIDI
+
 #endif //_MIDI_driver_Mixer_MidiOut_h_

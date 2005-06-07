@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.00"
-	Name="Exult_flx"
+	Name="Exult_flx.h"
 	SccProjectName=""
 	SccLocalPath=""
 	Keyword="MakeFileProj">
@@ -20,10 +20,13 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="$(SolutionDir)\buildflx.bat ..\data"
-				ReBuildCommandLine="$(SolutionDir)\buildflx.bat ..\data "
-				CleanCommandLine="del ..\data\exult_flx.h ..\data\exult.flx"
-				Output="..\data\exult_flx.h;..\data\exult.flx"/>
+				BuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data build_ex /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data rebuild_ex /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"/>
 		</Configuration>
 		<Configuration
 			Name="Debug Install|Win32"
@@ -34,10 +37,13 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data . ..\data\exult.flx data"
-				ReBuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data . ..\data\exult.flx data "
-				CleanCommandLine="del ..\data\exult_flx.h ..\data\exult.flx"
-				Output="..\data\exult_flx.h;..\data\exult.flx"/>
+				BuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data install_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data reinstall_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -48,10 +54,13 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="$(SolutionDir)\buildflx.bat ..\data"
-				ReBuildCommandLine="$(SolutionDir)\buildflx.bat ..\data "
-				CleanCommandLine="del ..\data\exult_flx.h ..\data\exult.flx"
-				Output="..\data\exult_flx.h;..\data\exult.flx"/>
+				BuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data build_ex /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data rebuild_ex /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"/>
 		</Configuration>
 		<Configuration
 			Name="Release Install|Win32"
@@ -62,10 +71,13 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data . ..\data\exult.flx data"
-				ReBuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data . ..\data\exult.flx data "
-				CleanCommandLine="del ..\data\exult_flx.h ..\data\exult.flx"
-				Output="..\data\exult_flx.h;..\data\exult.flx"/>
+				BuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data install_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data reinstall_ex /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data clean_ex /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_flx.h"/>
 		</Configuration>
 	</Configurations>
 	<Files>

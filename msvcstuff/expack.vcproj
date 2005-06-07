@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release Install|Win32"
-			OutputDirectory=".\..\tools"
+			OutputDirectory=".."
 			IntermediateDirectory=".\expack_release"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -48,21 +48,16 @@
 				ForcedIncludeFiles="msvc_kludges.h"/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="Installing $(InputName).exe and Creating buildflx_inst.bat"
-				CommandLine="echo cd &quot;%%1&quot; &gt;  $(SolutionDir)\buildflx_inst.bat
-echo $(TargetPath) -i flx.in &gt;&gt; $(SolutionDir)\buildflx_inst.bat
-echo @if not exist &quot;$(EXULT_INSTALL_PATH)\%%4&quot; md &quot;$(EXULT_INSTALL_PATH)\%%4&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
-echo cd &quot;%%2&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
-echo copy &quot;%%3&quot; &quot;$(EXULT_INSTALL_PATH)\%%4&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
-if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;
-copy $(TargetPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
+				Description="Installing $(TargetFileName)"
+				CommandLine="if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;
+copy &quot;$(TargetPath)&quot; &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 "
-				Outputs="buildflx_inst.bat;$(EXULT_INSTALL_PATH)\tools\$(InputName).exe"/>
+				Outputs="$(EXULT_INSTALL_PATH)\tools\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\..\tools/expack.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				ProgramDatabaseFile=".\..\tools/expack.pdb"
@@ -87,7 +82,7 @@ copy $(TargetPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\..\tools"
+			OutputDirectory=".."
 			IntermediateDirectory=".\expack_release"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -131,7 +126,7 @@ echo $(TargetPath) -i flx.in &gt;&gt; $(SolutionDir)\buildflx.bat
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\..\tools/expack.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				ProgramDatabaseFile=".\..\tools/expack.pdb"
@@ -156,7 +151,7 @@ echo $(TargetPath) -i flx.in &gt;&gt; $(SolutionDir)\buildflx.bat
 		</Configuration>
 		<Configuration
 			Name="Debug Install|Win32"
-			OutputDirectory=".\..\tools"
+			OutputDirectory=".."
 			IntermediateDirectory=".\expack_debug"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -183,21 +178,16 @@ echo $(TargetPath) -i flx.in &gt;&gt; $(SolutionDir)\buildflx.bat
 				ForcedIncludeFiles="msvc_kludges.h"/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="Installing $(InputName).exe and Creating buildflx_inst.bat"
-				CommandLine="echo cd &quot;%%1&quot; &gt;  $(SolutionDir)\buildflx_inst.bat
-echo $(TargetPath) -i flx.in &gt;&gt; $(SolutionDir)\buildflx_inst.bat
-echo @if not exist &quot;$(EXULT_INSTALL_PATH)\%%4&quot; md &quot;$(EXULT_INSTALL_PATH)\%%4&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
-echo cd &quot;%%2&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
-echo copy &quot;%%3&quot; &quot;$(EXULT_INSTALL_PATH)\%%4&quot; &gt;&gt; $(SolutionDir)\buildflx_inst.bat
-if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;
-copy $(TargetPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
+				Description="Installing $(TargetFileName)"
+				CommandLine="if not exist &quot;$(EXULT_INSTALL_PATH)\tools&quot; md &quot;$(EXULT_INSTALL_PATH)\tools&quot;
+copy &quot;$(TargetPath)&quot; &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 "
-				Outputs="buildflx_inst.bat;$(EXULT_INSTALL_PATH)\tools\$(InputName).exe"/>
+				Outputs="$(EXULT_INSTALL_PATH)\tools\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\..\tools/expack.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
@@ -223,7 +213,7 @@ copy $(TargetPath) &quot;$(EXULT_INSTALL_PATH)\tools&quot;
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\..\tools"
+			OutputDirectory=".."
 			IntermediateDirectory=".\expack_debug"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -259,7 +249,7 @@ echo $(TargetPath) -i flx.in &gt;&gt; $(SolutionDir)\buildflx.bat
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile=".\..\tools/expack.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"

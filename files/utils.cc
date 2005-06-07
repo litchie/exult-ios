@@ -170,7 +170,8 @@ string get_system_path(const string &path)
 	switch_slashes(new_path);
 #ifdef WIN32
 	if (*(new_path.end()-1) == '/' || *(new_path.end()-1) == '\\') {
-		std::cerr << "Trailing slash in path: \"" << new_path << "\"" << std::endl << "...compensating, but go complain to Colourless anyway" << std::endl;
+		//std::cerr << "Trailing slash in path: \"" << new_path << "\"" << std::endl << "...compensating, but go complain to Colourless anyway" << std::endl;
+		std::cerr << "Warning, trailing slash in path: \"" << new_path << "\"" << std::endl;
 		new_path += '.';
 	}
 #ifdef NO_WIN32_PATH_SPACES

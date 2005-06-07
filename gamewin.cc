@@ -158,7 +158,7 @@ void Background_noise::handle_event
 			currentstate = 1;
 
 	MyMidiPlayer *player = Audio::get_ptr()->get_midi();
-	if (player && player->get_output_driver_type() == MIDI_DRIVER_OGG)
+	if (player && player->get_ogg_enabled())
 	{
 		delay = 1500;	//Quickly get back to this function check
 		//We've got OGG so play the background SFX tracks
@@ -208,7 +208,7 @@ void Background_noise::handle_event
 						laststate = 1;
 					}
 				}
-				Audio::get_ptr()->start_music(tracknum,1);
+				Audio::get_ptr()->start_music(tracknum,true);
 			}
 		}
 	}

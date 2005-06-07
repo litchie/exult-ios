@@ -689,8 +689,7 @@ USECODE_INTRINSIC(play_music)
 		Audio::get_ptr()->cancel_streams();	// Stop playing.
 	else
 		{
-		Audio::get_ptr()->start_music(track, 
-					(parms[0].get_int_value()>>8)&0x01);
+		Audio::get_ptr()->start_music(track, (parms[0].get_int_value()>>8)&0x01);
 					// Show notes.
 		Game_object *obj = get_item(parms[1]);
 		if (obj && !obj->is_pos_invalid())
