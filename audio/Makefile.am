@@ -1,6 +1,6 @@
 INCLUDES = -I$(srcdir)/../headers -I$(srcdir)/.. -I$(srcdir)/../imagewin -I$(srcdir)/../shapes \
 		-I$(srcdir)/../objs -I$(srcdir)/../files -I$(srcdir)/../gumps \
-		-I$(srcdir)/../conf \
+		-I$(srcdir)/../conf -I$(srcdir)/midi_drivers \
  $(SDL_CFLAGS) $(KMID_INCLUDES) $(INCDIRS) $(WINDOWING_SYSTEM) $(DEBUG_FLAGS) $(CPPFLAGS) -I../files -I../conf
 
 SUBDIRS = midi_drivers
@@ -14,8 +14,6 @@ libaudio_la_SOURCES =	\
 	Midi.h		\
 	conv.cc		\
 	conv.h		\
-	xmidi.cc	\
-	xmidi.h		\
 	soundtest.cc	\
 	soundtest.h	\
 	convmusic.h
