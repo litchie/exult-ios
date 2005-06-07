@@ -16,11 +16,10 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
+#include "pent_include.h"
+#include "amiga_midi.h"
 
-#if defined(__MORPHOS__) || defined( AMIGA )
+#ifdef USE_AMIGA_MIDI
 
 #define NO_PPCINLINE_STDARG
 #include <proto/exec.h>
@@ -28,11 +27,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // "Remove" has been defined as a macro in ppcinline/exec.h and it will clash with a
 // definition in xmidi.h so I better undefine this here.
 #undef Remove
-#include "amiga_midi.h"
 #include "Configuration.h"
 extern	Configuration	*config;
 
-AmigaMIDI::AmigaMIDI()
+const MidiDriver::MidiDriverDesc AmigaMIDI::desc = 
+		MidiDriver::MidiDriverDesc ("Amiga", createInstance);
+
+int AmigaMIDI::open()
 {
 	int amUnit = 0;
 
@@ -51,16 +52,18 @@ AmigaMIDI::AmigaMIDI()
 		{
 			amMidiRequest->amr_Version = 1;
 			if( !OpenDevice( "amidi.device", amUnit, (struct IORequest *)amMidiRequest, 0 ) )
-				return;
+				return 0;
 			DeleteIORequest( amMidiRequest );
 			amMidiRequest = NULL;
 		}
 		DeleteMsgPort( amMsgPort );
 		amMsgPort = NULL;
 	}
+
+	return 1;
 }
 
-AmigaMIDI::~AmigaMIDI(void)
+void AmigaMIDI::close()
 {
 	stop_track();
 	if( amMidiRequest )
@@ -95,12 +98,11 @@ bool AmigaMIDI::is_playing(void)
 }
 
 
-void AmigaMIDI::start_track(XMIDIEventList *event_list,bool repeat)
+void AmigaMIDI::start_track(const char * /*filename*/,bool repeat,int /*vol*/)
 {
 	if( amMidiRequest )
 	{
 		const static char *name = "T:u7midi";
-		event_list->Write(name);
 		
 		stop_track();
 
@@ -113,14 +115,11 @@ void AmigaMIDI::start_track(XMIDIEventList *event_list,bool repeat)
 	}
 }
 
-const	char *AmigaMIDI::copyright(void)
+const char *AmigaMIDI::get_temp_name()
 {
-#ifdef __MORPHOS__
-  return "MorphOS AMIDI MIDI player";
-#else
-  return "AmigaOS AMIDI MIDI player";
-#endif
+	return "T:u7midi";
 }
 
-#endif
+#endif // USE_AMIGA_MIDI
+
 

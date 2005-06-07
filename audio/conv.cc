@@ -16,9 +16,11 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "conv.h"
+
 // sfx with ??? are converted to sfx #135 so you can tell
 // it's wrong. Some I suspect to be something so it's not set 135
-int bgconv[] = {
+const int bgconv[] = {
 	12,			//Bow Twang 
 	0,			//Missile ??
 	9,			//Blade    

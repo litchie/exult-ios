@@ -318,17 +318,39 @@ AC_CHECK_LIB(SDL_mixer, Mix_QuickLoad_RAW,
 # ---------------------------------------------------------------------
 
 # Timidity MIDI driver
-AC_MSG_CHECKING(whether to enable timidity)
-AC_ARG_ENABLE(timidity, [  --enable-timidity       Use timidity [default yes]],,enable_timidity=yes)
-if test x$enable_timidity = xyes; then
+AC_ARG_ENABLE(timidity_midi,      [[  --disable-timidity-midi Disable built-in timidity midi]],,enable_timidity_midi=yes)
+AC_ARG_WITH(timidity,             [[  --with-timidity=path    path to timidity.cfg (optional)]],,)
+AC_MSG_CHECKING(if we want to use timidity midi)
+if test x$enable_timidity_midi = xyes; then
 	AC_MSG_RESULT(yes)
-	AC_CHECK_PROG(HAVE_TIMIDITY_BIN, timidity, found it, not found)
-	if test "$HAVE_TIMIDITY_BIN" = "found it"; then
-		AC_DEFINE(HAVE_TIMIDITY_BIN, 1, [Have timidity binary])
+	AC_DEFINE(USE_TIMIDITY_MIDI, 1, [Enable timidity midi])
+
+	if test x$with_timidity != x; then
+		if test ! -d $with_timidity; then
+			with_timidity=`echo "$with_timidity" | sed 's/timidity.cfg//'`
+		fi
+		AC_DEFINE_UNQUOTED(DEFAULT_TIMIDITY_PATH, "$with_timidity", [Default timidity path])
 	fi
 else
 	AC_MSG_RESULT(no)
 fi
+
+# ALSO Midi driver
+AC_CHECK_HEADER(alsa/asoundlib.h, HAVEALSA=yes, HAVEALSA=no)
+AC_ARG_ENABLE(alsa,[[  --disable-alsa          Disable ALSA midi support]],,enable_alsa=yes)
+AC_MSG_CHECKING(if we want to use ALSA midi)
+if test x$HAVEALSA = xyes; then
+	if test x$enable_alsa = xyes; then
+		AC_MSG_RESULT(yes)
+		AC_DEFINE(USE_ALSA_MIDI, 1, [Enable ALSA midi])
+		LIBS="$LIBS -lasound"
+	else
+		AC_MSG_RESULT(no)
+	fi
+else
+	AC_MSG_RESULT([no; libasound not found])
+fi
+
 
 # zipped savegame support
 

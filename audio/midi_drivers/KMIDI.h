@@ -20,30 +20,37 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _MIDI_driver_KMIDI_h_
 #define _MIDI_driver_KMIDI_h_
 
+#ifdef XWIN
 #if HAVE_LIBKMIDI
+#define USE_LIBK_MIDI
 
 #include <vector>
 #include "Flex.h"
 #include "Table.h"
-#include "Midi.h"
+#include "FileMidiDriver.h"
 
 #include <libkmid.h>
 
 
-class	KMIDI	: virtual public MidiAbstract
+class	KMIDI	: public FileMidiDriver
 {
 	bool	repeat_;
+
+	const static MidiDriverDesc	desc;
+	static MidiDriver *createInstance() {
+		return new KMIDI();
+	}
 public:
-	virtual void	start_track(XMIDIEventList *, bool repeat);
-//	virtual void	start_sfx(XMIDIEventList *);
+	const static MidiDriverDesc* getDesc() { return &desc; }
+
+	virtual void	start_track(const char *name,bool repeat,int vol);
 	virtual void	stop_track(void);
 	virtual	bool	is_playing(void);
-	virtual const	char *copyright(void);
 
 	KMIDI();
 	virtual ~KMIDI();
 };
 #endif
-
+#endif
 
 #endif	// Multiple inclusion protector

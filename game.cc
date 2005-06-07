@@ -174,14 +174,6 @@ Game *Game::create_game(Exult_Game mygame, const char *title)
 		std::cout << "Patch   : none" << std::endl;
 	std::cout << std::endl;
 
-	// This should probably go elsewhere
-	Audio *audio = Audio::get_ptr();
-
-	if (audio) {
-		MyMidiPlayer *midi = audio->get_midi();
-		if (midi) midi->load_patches();
-	}
-
 	return game;
 }
 
@@ -203,12 +195,6 @@ void Game::play_audio(const char *archive, int index)
 	// FIXME: should use a DataBuffer
 	speech.retrieve("speech.voc");
 	Audio::get_ptr()->playfile("speech.voc", false);
-}
-
-void Game::play_midi(int track,bool repeat)
-{
-	if (game_type == BLACK_GATE) Audio::get_ptr()->start_music(track,repeat,1);
-	else if (game_type == SERPENT_ISLE) Audio::get_ptr()->start_music(track,repeat,2);
 }
 
 const char *xml_root = "Game_config";
@@ -342,7 +328,7 @@ bool Game::show_menu(bool skip)
 	int num_choices = sizeof(menuchoices)/sizeof(int);
 	int *menuentries = new int[num_choices];
 	
-	Vga_file exult_flx("<DATA>/exult.flx");
+	Vga_file exult_flx(EXULT_FLX);
 	char npc_name[16];
 	snprintf(npc_name, 16, "Exult");
 	bool play = false;

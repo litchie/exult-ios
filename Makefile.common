@@ -1,7 +1,7 @@
 VPATH=$(SRC):$(SRC)/audio:$(SRC)/audio/midi_drivers:$(SRC)/conf:$(SRC)/data:$(SRC)/files:$(SRC)/files/zip:$(SRC)/flic: \
 $(SRC)/gumps:$(SRC)/imagewin:$(SRC)/mapedit/tools/mockup:$(SRC)/mapedit/tools/smooth:$(SRC)/objs:$(SRC)/pathfinder: \
 $(SRC)/shapes:$(SRC)/server:$(SRC)/tools:$(SRC)/usecode:$(SRC)/usecode/compiler:$(SRC)/usecode/ucxt:$(SRC)/usecode/ucxt/src: \
-$(SRC)/win32
+$(SRC)/win32:$(SRC)/audio/midi_drivers/timidity:$(SRC)/audio/midi_drivers/mt32emu
 
 VERSION=1.4.01cvs
 
@@ -14,7 +14,7 @@ MAIN_OBJS=actions.o actorio.o actors.o alloc.o \
 	menulist.o monsters.o mouse.o npcnear.o npctime.o palette.o \
 	party.o \
 	paths.o readnpcs.o schedule.o segfile.o sigame.o tqueue.o txtscroll.o \
-	exultico.o cheat_screen.o shapeid.o version.o windrag.o
+	exultico.o cheat_screen.o shapeid.o version.o windrag.o istring.o
 # unused: npctest.o
 
 PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
@@ -22,13 +22,26 @@ PATH_OBJS=Astar.o PathFinder.o Zombie.o path.o
 CONF_OBJS=Configuration.o XMLEntity.o
 # unused: xmain.o
 
-AUDIO_OBJS=Audio.o conv.o Midi.o xmidi.o soundtest.o $(MIDI_DRV_OBJS)
+TIMIDITY_OBJS=timidity.o timidity_common.o timidity_controls.o timidity_filter.o \
+	timidity_instrum.o timidity_mix.o timidity_output.o timidity_playmidi.o \
+	timidity_readmidi.o timidity_resample.o timidity_sdl_a.o timidity_sdl_c.o \
+	timidity_tables.o
+
+MT32EMU_OBJS=freeverb.o i386.o mt32_file.o part.o partial.o partialManager.o synth.o tables.o
+
+# Note we now always compile all midi drivers
+MIDI_DRV_OBJS=ALSAMidiDriver.o amiga_midi.o be_midi.o CoreAudioMidiDriver.o \
+	FileMidiDriver.o fmopl.o FMOplMidiDriver.o forked_player.o KMIDI.o \
+	LowLevelMidiDriver.o MidiDriver.o mixer_midiout.o MT32EmuMidiDriver.o \
+	TimidityMidiDriver.o UnixSeqMidiDriver.o WindowsMidiDriver.o \
+	XMidiEventList.o XMidiFile.o XMidiSequence.o $(TIMIDITY_OBJS) $(MT32EMU_OBJS) 
+
+AUDIO_OBJS=Audio.o conv.o Midi.o soundtest.o $(MIDI_DRV_OBJS)
 # unused: test.o u7audiotool.o
 
 FLIC_OBJS=playfli.o
 
-FILE_OBJS+=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o \
-	msgfile.o
+FILE_OBJS=U7file.o Flex.o IFF.o Table.o Flat.o utils.o listfiles.o crc.o msgfile.o
 
 # Zipfile support objs
 ZIP_OBJS=zip.o unzip.o
@@ -56,7 +69,7 @@ OBJS_OBJS=animate.o barge.o chunks.o chunkter.o \
 USECODE_OBJS=stackframe.o ucfunction.o ucinternal.o ucmachine.o ucsched.o intrinsics.o \
 	useval.o conversation.o keyring.o ucdisasm.o
 
-OBJS+=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS)
+OBJS=$(MAIN_OBJS) $(PATH_OBJS) $(CONF_OBJS) $(AUDIO_OBJS) $(FLIC_OBJS) $(FILE_OBJS) $(GUMPS_OBJS) $(OBJS_OBJS) $(SHAPES_OBJS) $(IMAGEWIN_OBJS) $(USECODE_OBJS) $(ZIP_OBJS) $(SERVER_OBJS) $(ICON_OBJS)
 
 EXULT_FLX = data/exult.flx data/exult_flx.h
 EXULT_FLX_OBJECTS = \
@@ -98,6 +111,8 @@ EXULT_FLX_OBJECTS = \
 	data/videooptions.shp \
 	data/hp_bar.shp \
 	data/sfx_icon.shp \
+	data/notebook.shp \
+	data/mtgm.mid \
 	data/flx.in
 
 EXULT_BG_FLX = data/exult_bg.flx data/exult_bg_flx.h
@@ -160,7 +175,7 @@ $(EXEC) : $(FLEXES) $(OBJS)
 	$(CXX) $(LFLAGS) -o $@ $(OBJS) $(LIBS)
 
 expack$(EXEEXT) : expack.o $(FILE_OBJS) 
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) expack.o $(FILE_OBJS)
 
 $(EXULT_FLX): expack$(EXEEXT) $(EXULT_FLX_OBJECTS)
 	expack$(EXEEXT) -i data/flx.in
@@ -172,49 +187,49 @@ $(EXULT_SI_FLX): expack$(EXEEXT) $(EXULT_SI_FLX_OBJECTS)
 	expack$(EXEEXT) -i data/si/flx.in
 
 cmanip$(EXEEXT) : cmanip.o $(CONF_OBJS) $(FILE_OBJS)
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) cmanip.o $(CONF_OBJS) $(FILE_OBJS)
 
 IPACK_OBJS=ipack.o U7file.o Flex.o IFF.o Table.o Flat.o utils.o imagebuf.o ibuf8.o ibuf16.o vgafile.o pngio.o
 
 ipack$(EXEEXT) : $(IPACK_OBJS)
-	$(CXX) $(LFLAGS) -o $(@) $+ -lpng -lz
+	$(CXX) $(LFLAGS) -o $(@) $(IPACK_OBJS) -lpng -lz
 
 mklink$(EXEEXT) : mklink.o
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) mklink.o
 
 mockup$(EXEEXT): main.o
-	$(CC) $(LFLAGS) -o $(@) $+ $(SDL_IMAGE_LIBS)
+	$(CC) $(LFLAGS) -o $(@) main.o $(SDL_IMAGE_LIBS)
 
 rip$(EXEEXT) : rip.o
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) rip.o
 
 SMOOTH_OBJS=config.o image.o linked.o param.o plugin.o smooth.o
 
 smooth$(EXEEXT) : $(SMOOTH_OBJS)
-	$(CC) $(LFLAGS) -o $(@) $+ $(SDL_IMAGE_LIBS)
+	$(CC) $(LFLAGS) -o $(@) $(SMOOTH_OBJS) $(SDL_IMAGE_LIBS)
 
 shp2pcx$(EXEEXT) : shp2pcx.o
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) shp2pcx.o
 
 splitshp$(EXEEXT) : splitshp.o
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) splitshp.o
 
 textpack$(EXEEXT) : textpack.o $(FILE_OBJS)
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) textpack.o $(FILE_OBJS)
 
 u7voice2syx$(EXEEXT) : u7voice2syx.o $(FILE_OBJS)
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) u7voice2syx.o $(FILE_OBJS)
 
 wud$(EXEEXT) : wud.o uctools.h bgintrinsics.h siintrinsics.h 
 	$(CXX) $(LFLAGS) -o $(@) wud.o
 
 wuc$(EXEEXT) : wuc.o
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) wuc.o
 
 UCC_OBJS=ucparse.o uclex.o ucmain.o ucexpr.o ucfun.o ucloc.o ucstmt.o ucsym.o
 
 ucc$(EXEEXT) : $(UCC_OBJS)
-	$(CXX) $(LFLAGS) -o $(@) $+ -liberty
+	$(CXX) $(LFLAGS) -o $(@) $(UCC_OBJS) -liberty
 
 ucparse.cc:  
 	bison -d usecode/compiler/ucparse.yy -o ucparse.c
@@ -227,15 +242,15 @@ uclex.cc:
 UCXT_OBJS=$(CONF_OBJS) utils.o ucdata.o ucxt.o ucfunc.o ops.o
 
 ucxt$(EXEEXT) : $(UCXT_OBJS)
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) $(UCXT_OBJS)
 
 CONFREGRESS_OBJS=$(CONF_OBJS) xmain.o utils.o
 
 confregress$(EXEEXT)  : $(CONFREGRESS_OBJS)
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) $(CONFREGRESS_OBJS)
 
 head2data$(EXEEXT) : head2data.o $(FILE_OBJS)
-	$(CXX) $(LFLAGS) -o $(@) $+
+	$(CXX) $(LFLAGS) -o $(@) head2data.o $(FILE_OBJS)
 
 head2data.test: 
 	head2data data/u7bgintrinsics.data data/u7siintrinsics.data

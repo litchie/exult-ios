@@ -20,30 +20,38 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _MIDI_driver_forked_player_h_
 #define _MIDI_driver_forked_player_h_
 
+#ifdef XWIN
+#define USE_FORKED_PLAYER_MIDI
+
 #include <vector>
 #include <sys/types.h>
 #include "Flex.h"
 #include "Table.h"
-#include "Midi.h"
-#if HAVE_LIBKMIDI
-#include <libkmid.h>
-#endif
+#include "FileMidiDriver.h"
 
 
-class	forked_player	:	virtual public MidiAbstract
+class	forked_player	:	public FileMidiDriver
 {
 	bool	repeat_;
+
+	const static MidiDriverDesc	desc;
+	static MidiDriver *createInstance() {
+		return new forked_player();
+	}
 public:
-	virtual void	start_track(XMIDIEventList *, bool repeat);
-//	virtual void	start_sfx(XMIDIEventList *);
+	const static MidiDriverDesc* getDesc() { return &desc; }
+
+	virtual void	start_track(const char *name,bool repeat,int vol);
 	virtual void	stop_track(void);
 	virtual	bool	is_playing(void);
-	virtual const	char *copyright(void);
+	virtual const char	*get_temp_name();
 
 	forked_player();
 	virtual ~forked_player();
 private:
 	pid_t	forked_job;
 };
+
+#endif
 
 #endif

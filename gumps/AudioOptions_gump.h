@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _AUDIOOPTIONS_GUMP_H
 
 #include "Modal_gump.h"
+#include <string>
 
 class Gump_button;
 
@@ -33,6 +34,7 @@ class AudioOptions_gump : public Modal_gump
 	int audio_enabled;
 	int midi_enabled;
 	int midi_conversion;
+	int midi_ogg_enabled;
 	int midi_driver;
 	int midi_reverb_chorus;
 	int midi_looping;
