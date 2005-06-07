@@ -11,7 +11,7 @@ SDL_LIBS=-L/boot/develop/tools/gnupro/lib -lSDLmain -lSDL -lSDL_mixer
 CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBEOS -DDEBUG -DEXULT_DATADIR=\"data\" \
 	-DHAVE_ZIP_SUPPORT -I$(SRC)/files/zip \
 	-I$(SRC)/imagewin -I$(SRC)/shapes -I$(SRC)/data -I$(SRC)/tools \
-	-I$(SRC)/files -I$(SRC) -I$(SRC)/audio -I$(SRC)/conf \
+	-I$(SRC)/files -I$(SRC) -I$(SRC)/audio -I$(SRC)/audio/midi_drivers -I$(SRC)/conf \
 	-I$(SRC)/gumps -I$(SRC)/objs -I$(SRC)/pathfinder -I$(SRC)/usecode
 	-I$(SRC)/headers -DHAVE_SNPRINTF $(SDL_CFLAGS)
 CXXFLAGS=-O2 -Wall
@@ -20,9 +20,6 @@ LFLAGS=
 LIBS=$(SDL_LIBS) -lmidi -lbe -lz
 
 EXEC=exult
-
-MIDI_DRV_OBJS=be_midi.o
-# unused: KMIDI.o Timidity_binary.o forked_player.o win_MCI.o
 
 include Makefile.common
 

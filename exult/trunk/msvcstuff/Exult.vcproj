@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release Install|Win32"
-			OutputDirectory=".\.."
+			OutputDirectory=".."
 			IntermediateDirectory=".\Release"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -29,7 +29,7 @@
 				EnableFiberSafeOptimizations="FALSE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
 				PreprocessorDefinitions="NDEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
 				StringPooling="TRUE"
 				ExceptionHandling="TRUE"
@@ -48,20 +48,20 @@
 				ForcedIncludeFiles="msvc_kludges.h"/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe"
+				Description="Installing $(TargetFileName)"
 				CommandLine="copy $(TargetPath) $(EXULT_INSTALL_PATH)
 "
-				Outputs="$(EXULT_INSTALL_PATH)\$(TargetName).exe"/>
+				Outputs="$(EXULT_INSTALL_PATH)\$(TargetFileName)"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib"
-				OutputFile="..\Exult.exe"
+				AdditionalDependencies="SDLMain.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				IgnoreDefaultLibraryNames="msvcrt.lib;msvcrtd.lib"
-				SubSystem="2"/>
+				SubSystem="1"/>
 			<Tool
 				Name="VCMIDLTool"
 				TypeLibraryName=".\../Exult.tlb"/>
@@ -82,7 +82,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\.."
+			OutputDirectory=".."
 			IntermediateDirectory=".\DebugNI"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -92,7 +92,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
 				PreprocessorDefinitions="_DEBUG,DEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -115,7 +115,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib"
-				OutputFile="..\Exult.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -143,7 +143,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\.."
+			OutputDirectory=".."
 			IntermediateDirectory=".\ReleaseNI"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -160,7 +160,7 @@
 				EnableFiberSafeOptimizations="FALSE"
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
-				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
 				PreprocessorDefinitions="NDEBUG,_CONSOLE,EXULT,WIN32"
 				StringPooling="TRUE"
 				ExceptionHandling="TRUE"
@@ -182,7 +182,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="SDLMain.lib odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib"
-				OutputFile="..\Exult.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -210,7 +210,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug Install|Win32"
-			OutputDirectory=".\.."
+			OutputDirectory=".."
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -220,7 +220,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
-				AdditionalIncludeDirectories="..\,..\Gumps,..\conf,..\files,..\filc,..\imagewin,..\objs,..\pathfinder,..\shapes,..\usecode,..\MSVCStuff,..\Audio,..\Audio\MIDI_drivers,..\data,..\server,..\Headers,..\tools"
+				AdditionalIncludeDirectories="..\;..\Gumps;..\conf;..\files;..\filc;..\imagewin;..\objs;..\pathfinder;..\shapes;..\usecode;..\MSVCStuff;..\Audio;..\Audio\midi_drivers;..\data;..\server;..\Headers;..\tools"
 				PreprocessorDefinitions="_DEBUG,DEBUG,_CONSOLE,EXULT,WIN32,USING_PRECOMPILED_HEADER"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -239,7 +239,7 @@
 				ForcedIncludeFiles="msvc_kludges.h"/>
 			<Tool
 				Name="VCCustomBuildTool"
-				Description="copying $(TargetPath) to $(EXULT_INSTALL_PATH)\$(TargetName).exe"
+				Description="Installing $(TargetFileName)"
 				CommandLine="copy $(TargetPath) $(EXULT_INSTALL_PATH)
 "
 				Outputs="$(EXULT_INSTALL_PATH)\$(TargetName).exe"/>
@@ -247,7 +247,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib SDL.lib winmm.lib zlib_libcmt.lib SDL_mixer.lib opengl32.lib SDLmain.lib"
-				OutputFile="..\Exult.exe"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				Version="1.1"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -291,198 +291,8 @@
 					RelativePath="..\audio\conv.cc">
 				</File>
 				<File
-					RelativePath="..\audio\midi_drivers\fmopl.cc">
-				</File>
-				<File
-					RelativePath="..\audio\midi_drivers\fmopl.h">
-				</File>
-				<File
-					RelativePath="..\audio\midi_drivers\fmopl_midi.cc">
-				</File>
-				<File
-					RelativePath="..\audio\midi_drivers\fmopl_midi.h">
-				</File>
-				<File
-					RelativePath="..\audio\midi_drivers\fmopldrv.cc">
-				</File>
-				<File
-					RelativePath="..\audio\midi_drivers\fmopldrv.h">
-				</File>
-				<File
 					RelativePath="..\audio\soundtest.cc">
 				</File>
-				<File
-					RelativePath="..\audio\midi_drivers\win_midiout.cc">
-				</File>
-				<File
-					RelativePath="..\audio\xmidi.cc">
-				</File>
-				<Filter
-					Name="Audio Unused"
-					Filter="">
-					<File
-						RelativePath="..\audio\midi_drivers\KMIDI.cc">
-						<FileConfiguration
-							Name="Release Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\audio\midi_drivers\Timidity_binary.cc">
-						<FileConfiguration
-							Name="Release Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\audio\midi_drivers\amiga_midi.cc">
-						<FileConfiguration
-							Name="Release Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\audio\midi_drivers\be_midi.cc">
-						<FileConfiguration
-							Name="Release Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\audio\midi_drivers\forked_player.cc">
-						<FileConfiguration
-							Name="Release Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\audio\midi_drivers\mac_midi.cc">
-						<FileConfiguration
-							Name="Release Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug Install|Win32"
-							ExcludedFromBuild="TRUE">
-							<Tool
-								Name="VCCLCompilerTool"/>
-						</FileConfiguration>
-					</File>
-				</Filter>
 				<Filter
 					Name="Audio h"
 					Filter="">
@@ -502,41 +312,282 @@
 						RelativePath="..\audio\conv.h">
 					</File>
 					<File
+						RelativePath="..\audio\convmusic.h">
+					</File>
+					<File
 						RelativePath="..\audio\pcb.h">
 					</File>
 					<File
 						RelativePath="..\audio\soundtest.h">
 					</File>
+				</Filter>
+				<Filter
+					Name="Midi"
+					Filter="">
 					<File
-						RelativePath="..\audio\midi_drivers\win_midiout.h">
+						RelativePath="..\audio\midi_drivers\XMidiEvent.h">
 					</File>
 					<File
-						RelativePath="..\audio\xmidi.h">
+						RelativePath="..\audio\midi_drivers\XMidiEventList.cpp">
+					</File>
+					<File
+						RelativePath="..\audio\midi_drivers\XMidiEventList.h">
+					</File>
+					<File
+						RelativePath="..\audio\midi_drivers\XMidiFile.cpp">
+					</File>
+					<File
+						RelativePath="..\audio\midi_drivers\XMidiFile.h">
+					</File>
+					<File
+						RelativePath="..\audio\midi_drivers\XMidiNoteStack.h">
+					</File>
+					<File
+						RelativePath="..\audio\midi_drivers\XMidiSequence.cpp">
+					</File>
+					<File
+						RelativePath="..\audio\midi_drivers\XMidiSequence.h">
+					</File>
+					<File
+						RelativePath="..\audio\midi_drivers\XMidiSequenceHandler.h">
 					</File>
 					<Filter
-						Name="Audio h unused"
+						Name="Midi Drivers"
 						Filter="">
 						<File
-							RelativePath="..\audio\midi_drivers\KMIDI.h">
+							RelativePath="..\audio\midi_drivers\ALSAMidiDriver.cpp">
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\Timidity_binary.h">
+							RelativePath="..\audio\midi_drivers\ALSAMidiDriver.h">
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\amiga_midi.h">
+							RelativePath="..\audio\midi_drivers\CoreAudioMidiDriver.cpp">
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\be_midi.h">
+							RelativePath="..\audio\midi_drivers\CoreAudioMidiDriver.h">
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\forked_player.h">
+							RelativePath="..\audio\midi_drivers\FMOplMidiDriver.cpp">
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\mac_midi.h">
+							RelativePath="..\audio\midi_drivers\FMOplMidiDriver.h">
 						</File>
 						<File
-							RelativePath="..\audio\midi_drivers\win_MCI.h">
+							RelativePath="..\audio\midi_drivers\FileMidiDriver.cpp">
 						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\FileMidiDriver.h">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\LowLevelMidiDriver.cpp">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\LowLevelMidiDriver.h">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\MT32EmuMidiDriver.cpp">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\MT32EmuMidiDriver.h">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\MidiDriver.cpp">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\MidiDriver.h">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\TimidityMidiDriver.cpp">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\TimidityMidiDriver.h">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\UnixSeqMidiDriver.cpp">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\UnixSeqMidiDriver.h">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\WindowsMidiDriver.cpp">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\WindowsMidiDriver.h">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\fmopl.cpp">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\fmopl.h">
+						</File>
+						<Filter
+							Name="Legacy midi Drivers"
+							Filter="">
+							<File
+								RelativePath="..\audio\midi_drivers\KMIDI.cc">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\KMIDI.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\amiga_midi.cc">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\amiga_midi.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\be_midi.cc">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\be_midi.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\forked_player.cc">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\forked_player.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mixer_midiout.cc">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mixer_midiout.h">
+							</File>
+						</Filter>
+						<Filter
+							Name="mt32emu"
+							Filter="">
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\freeverb.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\freeverb.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\i386.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\i386.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\mt32_file.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\mt32_file.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\mt32emu.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\part.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\part.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\partial.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\partial.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\partialManager.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\partialManager.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\structures.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\synth.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\synth.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\tables.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\mt32emu\tables.h">
+							</File>
+						</Filter>
+						<Filter
+							Name="Timidity"
+							Filter="">
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_common.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_common.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_controls.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_controls.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_filter.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_filter.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_instrum.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_instrum.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_mix.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_mix.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_output.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_output.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_playmidi.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_playmidi.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_readmidi.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_readmidi.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_resample.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_resample.h">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_sdl_a.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_sdl_c.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_tables.cpp">
+							</File>
+							<File
+								RelativePath="..\audio\midi_drivers\timidity\timidity_tables.h">
+							</File>
+						</Filter>
 					</Filter>
 				</Filter>
 			</Filter>
@@ -1512,6 +1563,15 @@
 				RelativePath="..\data\exult_si_flx.h">
 			</File>
 			<File
+				RelativePath="..\istring.cc">
+			</File>
+			<File
+				RelativePath="..\istring.h">
+			</File>
+			<File
+				RelativePath="..\headers\pent_include.h">
+			</File>
+			<File
 				RelativePath="..\tools\uctools.h">
 			</File>
 			<File
@@ -1618,9 +1678,6 @@
 				RelativePath="..\Makefile.MorphOS">
 			</File>
 			<File
-				RelativePath="..\imagewin\Makefile.am">
-			</File>
-			<File
 				RelativePath="..\Makefile.be">
 			</File>
 			<File
@@ -1636,10 +1693,10 @@
 				RelativePath="..\NEWS">
 			</File>
 			<File
-				RelativePath="..\README">
+				RelativePath="..\conf\README">
 			</File>
 			<File
-				RelativePath="..\conf\README">
+				RelativePath="..\README">
 			</File>
 			<File
 				RelativePath="..\README.1ST">
@@ -1747,13 +1804,13 @@
 				<File
 					RelativePath="..\usecode\Makefile.am">
 				</File>
+				<File
+					RelativePath="..\imagewin\Makefile.am">
+				</File>
 			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\combat_opts.h">
-		</File>
-		<File
-			RelativePath="..\audio\convmusic.h">
 		</File>
 		<File
 			RelativePath="..\headers\exceptions.h">

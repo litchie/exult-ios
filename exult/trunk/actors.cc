@@ -1551,6 +1551,7 @@ int Actor::get_effective_alignment
 	case unknown_align:
 		return neutral;
 		}
+	return neutral;
 	}
 
 /*

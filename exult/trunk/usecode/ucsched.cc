@@ -500,8 +500,7 @@ int Usecode_script::exec
 		case music:		// Unknown.
 			{
 			Usecode_value& val = code->get_elem(++i);
-			Audio::get_ptr()->start_music(val.get_int_value(),
-									false);
+			Audio::get_ptr()->start_music(val.get_int_value(), false);
 			break;
 			}
 		case Ucscript::usecode:	// Call?

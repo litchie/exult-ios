@@ -20,65 +20,15 @@
 #define _MIDI_H_
 
 #include <vector>
-#ifndef WIN32
-//#include "Mixer.h"
-#endif
-#include "xmidi.h"
-
-// The 'types' of midi drivers
-enum MidiDriverType {
-	MIDI_DRIVER_NORMAL	= 0,	// We are outputting using Normal Midi Drivers
-	MIDI_DRIVER_OGG,			// We are outputting using Oggs
-
-#ifdef USE_FMOPL_MIDI
-	MIDI_DRIVER_FMSYNTH,		// We are outputting using FM Synth Driver
-#endif
-
-#ifdef USE_MT32EMU_MIDI
-	MIDI_DRIVER_MT32EMU,		// We are outputting using MT32EMU Driver (Ha, you'll never see this!)
-#endif
-
-	NUM_MIDI_DRIVER_TYPES		// Count of midi drivers
-};
-
+#include <string>
 
 #include "SDL_mixer.h"
 
-#include <string>
+#include "common_types.h"
 
-//---- MidiAbstract -----------------------------------------------------------
+#include "fnames.h"
 
-class	MidiAbstract
-{
-public:
-	virtual void start_track(XMIDIEventList *, bool repeat) = 0;
-	virtual void start_sfx(XMIDIEventList *) { }
-	
-	virtual void	stop_track(void)=0;
-	virtual void	stop_sfx(void) { };
-	virtual	bool	is_playing(void)=0;
-	virtual	const	char *copyright(void)=0;
-
-	virtual void load_patches(bool force_xmidi) { }
-	virtual bool is_fm_synth() { return false; }
-	virtual bool use_gs127() { return false; }
-
-	MidiAbstract() {};
-	virtual	~MidiAbstract() {};
-};
-
-//Pseudo device, used purely to create the OGG_MIDI class with something
-class	OGG_MIDI : virtual public MidiAbstract
-{
-	static void		music_complete_callback(void);
-public:
-	OGG_MIDI();
-	virtual	~OGG_MIDI();
-	virtual void	start_track(XMIDIEventList *, bool repeat);
-	virtual void	stop_track(void);
-	virtual	bool	is_playing(void);
-	virtual const	char *copyright(void);
-};
+class MidiDriver;
 
 //---- MyMidiPlayer -----------------------------------------------------------
 
@@ -86,54 +36,75 @@ class	MyMidiPlayer
 {
 public:
 
+	enum TimberLibrary {
+		TIMBRE_LIB_GM		= 0,	// General Midi/GS output mode
+		TIMBRE_LIB_INTRO	= 1,	// Intro
+		TIMBRE_LIB_MAINMENU	= 2,	// Main Menu
+		TIMBRE_LIB_GAME		= 3,	// In Game
+		TIMBRE_LIB_ENDGAME	= 4		// Endgame
+	};
+
+
 	MyMidiPlayer();
 	~MyMidiPlayer();
-	MyMidiPlayer(const char *flexfile);
-	void	start_music(int num,bool continuous=false,int bank=0);
-	void	start_music(const char *fname,int num,bool continuous=false);
-	void	start_track(int num,bool continuous=false,int bank=0);
-	void	start_track(const char *fname,int num,bool continuous=false);
-	void	start_track(XMIDIEventList *eventlist, bool continuous=false);
-	void	start_sound_effect(int num);
-	void	stop_sound_effects();
-	void	load_patches(bool force_xmidi=false) { if (midi_device) midi_device->load_patches(force_xmidi); }
 
-	void	stop_music();
+	void			start_music(int num,bool continuous=false,std::string flex=MAINMUS);
+	void			start_music(std::string fname,int num,bool continuous=false);
+	void			stop_music();
+
+	bool			is_track_playing(int num);
+	int				get_current_track();
+	int				is_repeating() { return repeating; }
 	
-	bool	add_midi_bank(const char *s);
-	void	set_music_conversion(int conv);
-	int		get_music_conversion() { return music_conversion; }
-	void	set_effects_conversion(int conv);
-	int		get_effects_conversion() { return effects_conversion; }
-
-	int		get_output_driver_type() { return output_driver_type; }
-	void	set_output_driver_type(int);
-
-	inline bool	is_track_playing(int num) { 
-		return midi_device && current_track==num && midi_device->is_playing();
-	}
-	inline int	get_current_track() { return (midi_device!=0)&&midi_device->is_playing()?current_track:-1; }
-	inline int	is_repeating() { return repeating; }
-
-	bool is_fm_synth() { return midi_device?midi_device->is_fm_synth():false; }
-
+	void			set_timbre_lib(TimberLibrary lib);
+	TimberLibrary	get_timbre_lib() { return timbre_lib; }
 	
+	void			set_midi_driver(std::string desired_driver, bool use_oggs);
+	std::string		get_midi_driver() { return midi_driver_name; }
+	bool			get_ogg_enabled() { return ogg_enabled; }
+
+	void			set_music_conversion(int conv);
+	int				get_music_conversion() { return music_conversion; }
+
+#ifdef ENABLE_MIDISFX
+	void			start_sound_effect(int num);
+	void			stop_sound_effects();
+
+	void			set_effects_conversion(int conv);
+	int				get_effects_conversion() { return effects_conversion; }
+#endif
+
 private:
 
 	MyMidiPlayer(const MyMidiPlayer &m) ; // Cannot call
 	MyMidiPlayer &operator=(const MyMidiPlayer &); // Cannot call
-	void    kmidi_start_track(int num,bool continuous=false);
-	std::vector<std::string>	midi_bank;
-	int	current_track;
-	bool	repeating;
-	MidiAbstract	*midi_device;
-	bool	initialized;
 
-	bool	init_device(void);
+	bool			repeating;
+	int				current_track;
 
-	int		music_conversion;
-	int		effects_conversion;
-	int		output_driver_type;
+	std::string		midi_driver_name;
+	MidiDriver *	midi_driver;
+	bool			initialized;
+	bool			init_device(void);
+	static void		sdl_music_hook(void *udata, uint8 *stream, int len);
+
+
+	TimberLibrary	timbre_lib;
+	std::string		timbre_lib_filename;
+	int				timbre_lib_index;
+	int				timbre_lib_game;
+	int				music_conversion;
+	int				effects_conversion;
+	void			load_timbres();
+	int				setup_timbre_for_track(std::string &str);
+	
+	// Ogg Stuff
+	bool			ogg_enabled;
+	Mix_Music		*oggmusic;
+
+	bool			ogg_play_track(std::string filename, int num, bool repeat);
+	bool			ogg_is_playing();
+	void			ogg_stop_track();
 };
 
 #endif

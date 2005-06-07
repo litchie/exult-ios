@@ -1,7 +1,8 @@
 INCLUDES = -I$(srcdir) -I$(srcdir)/headers -I$(srcdir)/imagewin -I$(srcdir)/shapes \
 	-I$(srcdir)/server -I$(srcdir)/data \
 	-I$(srcdir)/objs -I$(srcdir)/conf -I$(srcdir)/files -I$(srcdir)/gumps \
-	-I$(srcdir)/audio -I$(srcdir)/pathfinder -I$(srcdir)/usecode \
+	-I$(srcdir)/audio -I$(srcdir)/audio/midi_drivers -I$(srcdir)/pathfinder \
+	-I$(srcdir)/usecode \
 	$(SDL_CFLAGS) $(INCDIRS) $(WINDOWING_SYSTEM) \
 	$(DEBUG_FLAGS) $(CPPFLAGS) -DEXULT_DATADIR=\"$(EXULT_DATADIR)\"
 
@@ -65,6 +66,8 @@ exult_SOURCES =	\
 	gamewin.cc	\
 	gamewin.h	\
 	hash_utils.h	\
+	istring.cc	\
+	istring.h	\
 	keys.cc		\
 	keys.h		\
 	keyactions.cc	\
@@ -113,6 +116,8 @@ EXULTLIBS = \
 	pathfinder/libpathfinder.la		\
 	audio/libaudio.la	\
 	audio/midi_drivers/libmididrv.la	\
+	audio/midi_drivers/timidity/libtimidity.la	\
+	audio/midi_drivers/mt32emu/libmt32emu.la	\
 	flic/libflic.la		\
 	conf/libconf.la		\
 	imagewin/libimagewin.la	\
@@ -195,6 +200,7 @@ EXTRA_DIST = 	\
 	headers/common_types.h \
 	headers/exceptions.h \
 	headers/gamma.h	\
+	headers/pent_include.h \
 	server/servewin32.cc \
 	server/servewin32.h
 

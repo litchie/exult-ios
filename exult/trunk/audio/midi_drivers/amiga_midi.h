@@ -20,19 +20,25 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _MIDI_driver_amiga_midi_h_
 
 #if defined( AMIGA ) || defined( __MORPHOS__ )
+#define USE_AMIGA_MIDI
 
-#include "Midi.h"
+#include "FileMidiDriver.h"
 
 #include <exec/ports.h>
 #include <devices/amidi.h>
 
-class	AmigaMIDI : virtual public MidiAbstract
+class	AmigaMIDI : public FileMidiDriver
 {
-	public:
+	const static MidiDriverDesc	desc;
+	static MidiDriver *createInstance() {
+		return new AmigaMIDI();
+	}
+public:
+	const static MidiDriverDesc* getDesc() { return &desc; }
+
 		virtual void start_track(XMIDIEventList *,bool repeat);
 		virtual void stop_track(void);
 		virtual bool is_playing(void);
-		virtual const char *copyright(void);
 
 		AmigaMIDI();
 		virtual ~AmigaMIDI();

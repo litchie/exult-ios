@@ -752,13 +752,13 @@ void ActionPlayMusic(int *params)
 	static int mnum = 0;
 
 	if (params[0] == -1) {
-		Audio::get_ptr()->start_music(mnum++, 0);
+		Audio::get_ptr()->start_music(mnum++, false);
 	} else if (params[0] == -2) {
 		if (mnum > 0)
-			Audio::get_ptr()->start_music(--mnum, 0);
+			Audio::get_ptr()->start_music(--mnum, false);
 	} else {
 		mnum = params[0];
-		Audio::get_ptr()->start_music(mnum, 0);
+		Audio::get_ptr()->start_music(mnum, false);
 	}
 }
 

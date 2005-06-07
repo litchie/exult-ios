@@ -1,3 +1,35 @@
+2005-06-07  Ryan Nunn  <colourles@users.sourceforge.net>
+	* headers/pent_include.h : Header for 'seemlessly' integrating
+	  Pentagram code into Exult
+	* istring.* : Pentagram::istring class
+	* autoconf.in : Added ALSA midi option (from Pentagram) and updated 
+	  Timidty code to be the same as Pentagram.
+	* Makefiles : Hopefully updated to a working state for all platforms
+	
+	* New Midi System using the Pentagram code. 
+	* Big changes to the way music is handled internally
+	* OGG Vorbis support no longer replaces Midi support
+	* MT32 Sysex is now supported
+	* Added All Pentagram Midi Drivers
+	* Added 'mt32emu' Midi Driver. Needs USE_MT32EMU_MIDI defined, and 
+	  needs files "MT32_CONTROL.ROM" and "MT32_PCM.ROM" to be placed
+	  in the Exult data directory to work (where the files are needed
+	  might be changed). This is not compiled by default.
+	* Removed some midi drivers.
+	* Attempted to update midi drivers so they will compile
+	* The "none" Midi Conversion option is now "mt32" and is used to 
+	  specify that the device should be treated as a real mt32 device.
+	  Effect: No patch conversion and will send sysex
+	* New Midi Conversion option "fakemt32" to specify the device as a 
+	  device is not a real mt32, but uses mt32 patches.
+	  Effect: No patch conversion and will NOT send sysex
+	* New config key "config/audio/midi/use_oggs" to specify if to use
+	  ogg vorbis digital music
+	* Audio options gump modified. 'Midi Conversion' option changed to
+	  'Device Type'
+	* And probably countless other things too that i can't remember at 
+	  this time
+	  
 2005-06-05    <jeff@mini.nerble.net>
 
 	* usecode/intrinsics.cc: Show Guardian, Serpent faces when speech

@@ -89,6 +89,7 @@
 #define MAINMUS_AD		"<STATIC>/adlibmus.dat"
 #define INTROMUS	"<STATIC>/intrordm.dat"
 #define INTROMUS_AD	"<STATIC>/introadm.dat"
+#define	XMIDI_AD	"<STATIC>/xmidi.ad"
 #define	XMIDI_MT	"<STATIC>/xmidi.mt"
 #define U7SPEECH	"<STATIC>/u7speech.spc"
 #define SISPEECH	"<STATIC>/sispeech.spc"
@@ -131,6 +132,16 @@
 
 #define TEXTMSGS	"<STATIC>/textmsg.txt"
 #define PATCH_TEXTMSGS	"<PATCH>/textmsg.txt"
+
+#define R_SINTRO "<STATIC>/r_sintro.xmi"
+#define A_SINTRO "<STATIC>/a_sintro.xmi"
+#define R_SEND "<STATIC>/r_send.xmi"
+#define A_SEND "<STATIC>/a_send.xmi"
+
+#define U7VOICE_FLX  "<STATIC>/u7voice.flx"
+#define MAINMENU_TIM "<STATIC>/mainmenu.tim"
+
+#define EXULT_FLX "<DATA>/exult.flx"
 
 #define AUTONOTES	"autonotes.txt"
 

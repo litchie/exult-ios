@@ -150,7 +150,7 @@ void SoundTester::test_sound()
 				if (active == 0)
 				{
 					audio->stop_music();
-					audio->start_music (song, repeat, 0);
+					audio->start_music (song, repeat);
 				}
 				else if (active == 1)
 				{

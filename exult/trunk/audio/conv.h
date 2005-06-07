@@ -19,6 +19,6 @@
 #ifndef CONV_H
 #define CONV_H
 
-extern int bgconv[];
+extern const int bgconv[];
 
 #endif

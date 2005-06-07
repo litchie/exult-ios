@@ -16,22 +16,29 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
-
-//BEOS-specific code
-#ifdef BEOS
-
+#include "pent_include.h"
 #include "be_midi.h"
+
+#ifdef USE_BEOS_MIDI
+
 #include "fnames.h"
 
 #include <string.h>
 #include <stdio.h>
 
-Be_midi::Be_midi()
+const MidiDriver::MidiDriverDesc Be_midi::desc = 
+		MidiDriver::MidiDriverDesc ("Be_midi", createInstance);
+
+
+int Be_midi::open()
 {
   FileOpen = false;
+  return 0;
+}
+
+void Be_midi::close()
+{
+  stop_track();
 }
 
 void Be_midi::stop_track(void)
@@ -40,11 +47,6 @@ void Be_midi::stop_track(void)
     midiSynthFile.UnloadFile();
     FileOpen = false;
   }
-}
-
-Be_midi::~Be_midi(void)
-{
-  stop_track();
 }
 
 bool	Be_midi::is_playing(void)
@@ -56,11 +58,8 @@ bool	Be_midi::is_playing(void)
 }
 
 
-void Be_midi::start_track(XMIDIEventList *event_list,bool repeat)
+void Be_midi::start_track(const char *name,bool repeat,int vol)
 {
-	const char *name = MIDITMPFILE;
-	event_list->Write(name);
-
 #if DEBUG
   cerr << "Stopping any running track" << endl;
 #endif
@@ -83,10 +82,5 @@ void Be_midi::start_track(XMIDIEventList *event_list,bool repeat)
   midiSynthFile.Start();
 }
 
-const	char *Be_midi::copyright(void)
-{
-  return "Internal BeOS MIDI player";
-}
+#endif // USE_BEOS_MIDI
 
-
-#endif

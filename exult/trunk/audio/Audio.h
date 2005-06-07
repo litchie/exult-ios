@@ -53,7 +53,7 @@ class Audio
 private:
 	UNREPLICATABLE_CLASS(Audio);
 	static	Audio	*self;
-	static	int *bg2si_sfxs;	// Converts BG sfx's to SI sfx's.
+	static	const int *bg2si_sfxs;	// Converts BG sfx's to SI sfx's.
 	bool truthful_;
 	bool speech_enabled, music_enabled, effects_enabled;
 	bool allow_music_looping;
@@ -99,10 +99,9 @@ public:
 	void	play(uint8 *sound_data,uint32 len,bool);
 	void	playfile(const char *,bool);
 	bool	playing(void);
-	void	start_music(int num,bool continuous,int bank=0);
-	void	start_music(const char *fname,int num,bool continuous);
-	void	start_music(XMIDIEventList *midfile,bool continuous);
-	void	start_music_combat(Combat_song song,bool continuous,int bank=0);
+	void	start_music(int num,bool continuous=false,std::string flex=MAINMUS);
+	void	start_music(std::string fname,int num,bool continuous=false);
+	void	start_music_combat(Combat_song song,bool continuous);
 	void	stop_music();
 	int		play_sound_effect (int num, int volume = SDL_MIX_MAXVOLUME,
 					int dir = 0, int repeat = 0);

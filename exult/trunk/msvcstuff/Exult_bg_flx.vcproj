@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.00"
-	Name="Exult_bg_flx"
+	Name="Exult_bg_flx.h"
 	SccProjectName=""
 	SccLocalPath=""
 	Keyword="MakeFileProj">
@@ -20,10 +20,13 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\bg"
-				ReBuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\bg "
-				CleanCommandLine="del ..\data\exult_bg_flx.h ..\data\exult_bg.flx"
-				Output="..\data\exult_bg_flx.h;..\data\exult_bg.flx"/>
+				BuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
@@ -34,10 +37,13 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\bg"
-				ReBuildCommandLine="$(SolutionDir)\buildflx.bat ..\data\bg "
-				CleanCommandLine="del ..\data\exult_bg_flx.h ..\data\exult_bg.flx"
-				Output="..\data\exult_bg_flx.h;..\data\exult_bg.flx"/>
+				BuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data build_bg /NOLOGO"
+				ReBuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data rebuild_bg /NOLOGO"
+				CleanCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"/>
 		</Configuration>
 		<Configuration
 			Name="Release Install|Win32"
@@ -48,10 +54,13 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data"
-				ReBuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data "
-				CleanCommandLine="del ..\data\exult_bg_flx.h ..\data\exult_bg.flx"
-				Output="..\data\exult_bg_flx.h;..\data\exult_bg.flx"/>
+				BuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data install_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data reinstall_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"/>
 		</Configuration>
 		<Configuration
 			Name="Debug Install|Win32"
@@ -62,10 +71,13 @@
 			ATLMinimizesCRunTimeLibraryUsage="FALSE">
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data"
-				ReBuildCommandLine="$(SolutionDir)\buildflx_inst.bat ..\data\bg .. ..\data\exult_bg.flx data "
-				CleanCommandLine="del ..\data\exult_bg_flx.h ..\data\exult_bg.flx"
-				Output="..\data\exult_bg_flx.h;..\data\exult_bg.flx"/>
+				BuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data install_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				ReBuildCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data reinstall_bg /NOLOGO EXULT_INSTALL_PATH=&quot;$(EXULT_INSTALL_PATH)&quot;"
+				CleanCommandLine="cd $(solutionDir)\..
+nmake /f $(solutionDir)Makefile.data clean_bg /NOLOGO"
+				Output="$(SolutionDir)\..\data\exult_bg_flx.h"/>
 		</Configuration>
 	</Configurations>
 	<Files>

@@ -33,6 +33,9 @@ typedef int16 sint16;
 typedef int32 sint32;
 
 #else
+//
+// {s,u}int{8,16,32,ptr}
+//
 
 #ifndef EX_TYPE_INT8
 #  define EX_TYPE_INT8 char /* guaranteed by ISO */
@@ -44,7 +47,7 @@ typedef int32 sint32;
 #  elif (SIZEOF_INT == 2)
 #    define EX_TYPE_INT16 int
 #  else
-#    error "Please make sure a 16 bit type is provided by exult_types.h"
+#    error "Please make sure a 16 bit type is provided by common_types.h"
 #  endif
 #endif /* !EX_TYPE_INT16 */
 
@@ -57,10 +60,21 @@ typedef int32 sint32;
 #  elif (SIZEOF_LONG_LONG == 4)
 #    define EX_TYPE_INT32 long long
 #  else
-#    error "Please make sure a 32 bit type is provided by exult_types.h"
+#    error "Please make sure a 32 bit type is provided by common_types.h"
 #  endif
 #endif /* !EX_TYPE_INT32 */
 
+#ifndef EX_TYPE_INTPTR
+#  if (SIZEOF_INTP == SIZEOF_INT)
+#    define EX_TYPE_INTPTR int
+#  elif (SIZEOF_INTP == SIZEOF_LONG)
+#    define EX_TYPE_INTPTR long
+#  elif (SIZEOF_INTP == SIZEOF_LONG_LONG)
+#    define EX_TYPE_INTPTR long long
+#  else
+#    error "Size of pointer type not equal to int, long or long long"
+#  endif
+#endif
 
 typedef	unsigned EX_TYPE_INT8	uint8;
 typedef	unsigned EX_TYPE_INT16	uint16;
@@ -70,6 +84,8 @@ typedef	signed EX_TYPE_INT8		sint8;
 typedef	signed EX_TYPE_INT16	sint16;
 typedef	signed EX_TYPE_INT32	sint32;
 
+typedef unsigned EX_TYPE_INTPTR uintptr;
+typedef signed EX_TYPE_INTPTR sintptr;
 
 #endif //BeOS
 
