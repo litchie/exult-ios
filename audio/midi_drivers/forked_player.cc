@@ -43,6 +43,14 @@ static  void    playFJmidifile(const char *name)
 	execlp("playmidi","playmidi","-v","-v","-e",name,0);
 }
 
+forked_player::forked_player() : forked_job(-1), repeat_(false)
+{}
+
+forked_player::~forked_player(void)
+{
+      stop_track();
+}
+
 int forked_player::open()
 {
 	forked_job = -1;
