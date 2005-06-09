@@ -63,6 +63,8 @@ enum Ucscript_ops
 	face_dir =	0x59,		// Face_dir(dir), dir=0-7, 0=north.
 	npc_frame =	0x61,		// 61-70:  Set frame, but w/ cur. dir.
 	hit =		0x78,		// Hit(hps, ??).  Item attacked.
+	attack = 	0x7a,		// Attack using vals from
+					//   set_to_attack intrinsic.
 	/*
 	 *	These are (I think) not in the original: 
 	 */
