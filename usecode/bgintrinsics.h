@@ -85,7 +85,7 @@
 	USECODE_INTRINSIC_PTR(move_object),	// 0x3e
 	USECODE_INTRINSIC_PTR(remove_npc),	// 0x3f
 	USECODE_INTRINSIC_PTR(item_say),	// 0x40
-	USECODE_INTRINSIC_PTR(projectile_effect),	// 0x41
+	USECODE_INTRINSIC_PTR(set_to_attack),	// 0x41
 	USECODE_INTRINSIC_PTR(get_lift),	// 0x42
 	USECODE_INTRINSIC_PTR(set_lift),	// 0x43
 	USECODE_INTRINSIC_PTR(get_weather),	// 0x44

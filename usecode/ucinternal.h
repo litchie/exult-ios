@@ -234,7 +234,7 @@ class Usecode_internal : public Usecode_machine
 	USECODE_INTRINSIC_DECL(remove_npc);
 	USECODE_INTRINSIC_DECL(item_say);
 	USECODE_INTRINSIC_DECL(clear_item_say);
-	USECODE_INTRINSIC_DECL(projectile_effect);
+	USECODE_INTRINSIC_DECL(set_to_attack);
 	USECODE_INTRINSIC_DECL(get_lift);
 	USECODE_INTRINSIC_DECL(set_lift);
 	USECODE_INTRINSIC_DECL(get_weather);

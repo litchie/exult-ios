@@ -455,7 +455,8 @@ Actor::Actor
 	    dormant(true), hit(false), combat_protected(false), 
 	    user_set_attack(false), alignment(0),
 	    two_handed(false), two_fingered(false), light_sources(0),
-	    usecode_dir(0), siflags(0), type_flags(0), ident(0),
+	    usecode_dir(0), usecode_target(0), usecode_weapon(0),
+	    siflags(0), type_flags(0), ident(0),
 	    skin_color(-1), action(0), 
 	    frame_time(0), step_index(0), timers(0),
 	    weapon_rect(0, 0, 0, 0), rest_time(0)
@@ -2486,6 +2487,44 @@ void Actor::call_readied_usecode
 			ucmachine->call_usecode(obj->get_shapenum(),
 			    obj, (Usecode_machine::Usecode_events) eventid);
 		}
+	}
+
+/*
+ *	Attack using the usecode_target and usecode_weapon fields set by
+ *	the 'set_to_attack' intrinsic.
+ *	Note:	I think this is only for weapons that fire (jsf).
+ */
+
+void Actor::usecode_attack
+	(
+	)
+	{
+	if (!usecode_target)
+		return;
+	Shape_info& info = ShapeID::get_info(usecode_weapon);
+	Weapon_info *winfo = info.get_weapon_info();
+	Game_object *trg = usecode_target;
+	usecode_target = 0;
+	if (!winfo)
+		return;
+	int projectile_shape = winfo->get_projectile();
+	int ammo_shape = winfo->get_ammo_consumed();
+	// Not sure if we need all these.
+	bool uses_charges = winfo->uses_charges() && info.has_quality();
+	int strike_range = winfo->get_striking_range();
+	int projectile_range = winfo->get_projectile_range();
+	bool returns = winfo->returns();
+	bool is_thrown = winfo->is_thrown();
+	if (uses_charges || projectile_shape)
+		ammo_shape = projectile_shape;
+	else if (winfo->get_uses() == 3)
+		ammo_shape = usecode_weapon;
+	// ++++TODO:  Check for ammo, and decr. ammo/charges.
+	// Maybe use Use_ammo in combat.cc
+	if (ammo_shape)
+		gwin->get_effects()->add_effect(
+				new Projectile_effect(this, trg,
+					ammo_shape, usecode_weapon));
 	}
 
 /*

@@ -235,6 +235,7 @@ speech		return SPEECH;
 sfx		return SFX;
 face		return FACE;
 hit		return HIT;
+attack		return ATTACK;
 actor		return ACTOR;
 
 north		return NORTH;
