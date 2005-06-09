@@ -102,6 +102,10 @@ protected:
 	bool two_fingered;		// Carrying gauntlets (both fingers)
 	unsigned char light_sources;	// # of light sources readied.
 	unsigned char usecode_dir;	// Direction (0-7) for usecode anim.
+	// These 2 are set by the Usecode function 'set_to_attack':
+	Game_object *usecode_target;
+	int usecode_weapon;
+
 	unsigned siflags:32;	// 32 flags used in 'usecode'.
 	unsigned type_flags:32;	// 32 flags used in movement among other things
 
@@ -143,7 +147,7 @@ public:
 		{ return step_index; }
 					// Get attack frames.
 	int get_attack_frames(int weapon, bool projectile,
-						int dir, signed char *frames) const;
+				int dir, signed char *frames) const;
 	enum Alignment {		// Describes alignment field.
 		neutral = 0,
 		friendly = 1,
@@ -418,6 +422,9 @@ public:
 		{ usecode_dir = d&7; }
 	int get_usecode_dir() const
 		{ return usecode_dir; }
+	void set_usecode_to_attack(Game_object *t, int w)
+		{ usecode_target = t; usecode_weapon = w; }
+	void usecode_attack();
 	virtual Actor *as_actor()	// An actor?
 		{ return this; }
 	void init_readied();		// Call Usecode to init. readied objs.

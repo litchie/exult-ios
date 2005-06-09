@@ -571,6 +571,13 @@ int Usecode_script::exec
 				act->reduce_health(hps.get_int_value());
 			break;
 			}
+		case attack:		// Finish 'set_to_attack()'.
+			{
+			Actor *act = usecode->as_actor(obj);
+			if (act)
+				act->usecode_attack();
+			break;
+			}
 		case resurrect:
 			{
 			Dead_body *body = (Dead_body *) obj;

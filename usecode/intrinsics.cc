@@ -1020,22 +1020,17 @@ USECODE_INTRINSIC(clear_item_say)
 	return(no_ret);
 }
 
-USECODE_INTRINSIC(projectile_effect)
+USECODE_INTRINSIC(set_to_attack)
 {
-	// animate(fromitem, toitem, anim_shape_in_shapesdotvga).
+	// set_to_attack(fromnpc, toitem, anim_shape_in_shapesdotvga).
 	// ???? When it reaches toitem, toitem is 'attacked' by anim_shape.
 	//   Returns??}
-	Game_object *from = get_item(parms[0]),
-		    *to = get_item(parms[1]);
+	Actor *from = as_actor(get_item(parms[0]));
+	Game_object *to = get_item(parms[1]);
 	if (!from || !to)
 		return Usecode_value(0);
-	Actor *attacker = as_actor(from);
-	if (!attacker)
-		return Usecode_value(0);
 	int shnum = parms[2].get_int_value();
-	gwin->get_effects()->add_effect(
-				new Projectile_effect(attacker, to, shnum));
-
+	from->set_usecode_to_attack(to, shnum);
 	return Usecode_value(0);	// Not sure what this should be.
 }
 
