@@ -2515,12 +2515,36 @@ void Actor::usecode_attack
 	int projectile_range = winfo->get_projectile_range();
 	bool returns = winfo->returns();
 	bool is_thrown = winfo->is_thrown();
-	if (uses_charges || projectile_shape)
+	if (ammo_shape)
+		{
+		if (!(ammo_shape = Combat_schedule::use_ammo(this, ammo_shape,
+							projectile_shape)))
+			{
+			Mouse::mouse->flash_shape(Mouse::outofammo);
+			return;
+			}
+		}
+	else if (uses_charges)
+		{
+		Game_object *weapon = spots[static_cast<int>(lhand)];
+		if (!weapon || weapon->get_shapenum() != usecode_weapon ||
+					!weapon->get_quality())
+			{
+			weapon = spots[static_cast<int>(rhand)];
+			if (!weapon || weapon->get_shapenum() != usecode_weapon||
+					!weapon->get_quality())
+				{
+				Mouse::mouse->flash_shape(Mouse::outofammo);
+				return;
+				}
+			}
+		weapon->set_quality(weapon->get_quality() - 1);
+		ammo_shape = projectile_shape;
+		}
+	else if (projectile_shape)
 		ammo_shape = projectile_shape;
 	else if (winfo->get_uses() == 3)
 		ammo_shape = usecode_weapon;
-	// ++++TODO:  Check for ammo, and decr. ammo/charges.
-	// Maybe use Use_ammo in combat.cc
 	if (ammo_shape)
 		gwin->get_effects()->add_effect(
 				new Projectile_effect(this, trg,
