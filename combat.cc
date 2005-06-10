@@ -819,13 +819,13 @@ inline int Need_new_opponent
 	}
 
 /*
- *	Use one unit of ammo.
+ *	Use one unit of ammo.  NOTE:  static method.
  *
  *	Output:	Actual ammo shape.
  *		0 if failed.
  */
 
-static int Use_ammo
+int Combat_schedule::use_ammo
 	(
 	Actor *npc,
 	int ammo,			// Ammo family shape.
@@ -1005,7 +1005,7 @@ void Combat_schedule::now_what
 			ashape = pshape;
 			}
 		else			// Ammo required?
-			ashape = ashape ? Use_ammo(npc, ashape, pshape)
+			ashape = ashape ? use_ammo(npc, ashape, pshape)
 				: (pshape ? pshape : wshape);
 		if (ashape > 0)
 			gwin->get_effects()->add_effect(
