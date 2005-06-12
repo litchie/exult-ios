@@ -1,4 +1,7 @@
 2005-06-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/bg/faces2.shp: new Sentri face by Berty Zhang
+
+2005-06-12  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* audio/midi_drivers/various: compilation fixes, sync with pentagram
 
 2005-06-07  Ryan Nunn  <colourles@users.sourceforge.net>

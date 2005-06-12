@@ -6,8 +6,8 @@ NPCs:
 Name			shape		Artist
 
 Jaana			490		Oblivious
-Sentri			462		Philip Gottschalk
-Julia			454		Philip
+Julia			454		Philip Gottschalk
+Sentri			462		Philip, modified by Berty Zhang
 Katrina			452		Philip
 Tseramed		460		Philip
 Spark			489		Philip
@@ -59,3 +59,4 @@ Musket			278		Sam
 Musket ammo		581		WishStone Dragon
 Fire wand		630		Willem Jan
 Avatar costume		838		-
+Lightning whip		549		- (wrong colour)
