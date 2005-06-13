@@ -34,7 +34,7 @@ Brown/orange dress	249/1		sbx
 Blue dress		249/2		sbx
 Dark-brown hood		444/0		Sam
 Light-brown hood	444/1		Sam
-Caddellite helmet	638/0		Willem Jan
+Caddellite helmet	638/0		Crysta
 Greaves			353		Oblivious
 Brown pants		738/0,1		Sam
 Green pants		738/2,4		Sam
@@ -45,8 +45,8 @@ Magic boomerang		550		Willem Jan
 Fire sword		551		Oblivious
 Hawk			555		Willem Jan
 Great dagger		561		Willem Jan
-Star bursts		565		Willem Jan	(still need in-hand)
-Main gauche		591		-		(left & right hand)
+Star bursts		565		Crysta
+Main gauche		591		Crysta
 Cleaver			614		Adam
 Knives			615		Willem Jan
 Custom sword		635		Willem Jan
@@ -60,3 +60,5 @@ Musket ammo		581		WishStone Dragon
 Fire wand		630		Willem Jan
 Avatar costume		838		-
 Lightning whip		549		- (wrong colour)
+Magic helmet		383		Crysta
+Throwing axe		593		Crysta

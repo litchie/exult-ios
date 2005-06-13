@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2000-2002 The Exult Team
+Copyright (C) 2000-2005 The Exult Team
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -905,8 +905,8 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 
 	// HELMS
 
-	// Magic (shape is different)
-	{     383, 0,        Actor::head,     OT_Helm,   true, SF_PAPERDOL_VGA,     74,     0 },
+	// Magic
+	{     383, 0,        Actor::head,     OT_Helm,   true, SF_GAME_FLX,       EXULT_BG_FLX_MAGIC_HELMET_SHP,     0 },
 	// Hood
 	{     444, 0,        Actor::head,     OT_Helm,   true, SF_GAME_FLX,       EXULT_BG_FLX_HOODS_SHP,     0 },
 	// Hood
@@ -1049,24 +1049,25 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// Poisoned Dagger
 	{     564, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     36,     0 },
 	{     564, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     36,     1 },
-	// Star Bursts **NEEDS ART**
-	{     565, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     -1,     0 },
-	{     565, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_STARBURST_SHP,     1 },
+	// Star Bursts
+	{     565, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,     EXULT_BG_FLX_STARBURST_SHP,     0 },
+	{     565, -1,       Actor::belt,   OT_Single,  true,  SF_GAME_FLX,     EXULT_BG_FLX_STARBURST_SHP,     1 },
 	// Sword of Defense
 	{     567, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,    110,     0 },
 	{     567, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,    110,     1 },
 	// Club
 	{     590, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     29,     0 },
 	{     590, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     29,     1 },
-	// Main Gauche **NEEDS ART**
-	{     591, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,    107,     0 },
-	{     591, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,    107,     1 },
+	// Main Gauche
+	{     591, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,    EXULT_BG_FLX_MAIN_GAUCHE_SHP,     0 },
+	{     591, -1,      Actor::rhand,   OT_Single,  false, SF_GAME_FLX,    EXULT_BG_FLX_MAIN_GAUCHE_SHP,     1 },
+	{     591, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,    EXULT_BG_FLX_MAIN_GAUCHE_SHP,     2 },
 	// Spear
 	{     592, -1,      Actor::lhand,    OT_Staff,  false, SF_PAPERDOL_VGA,    103,     0 },
 	{     592, -1,Actor::back2h_spot,    OT_Staff,  false, SF_PAPERDOL_VGA,    103,     1 },
 	// Throwing Axe
-	{     593, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,    111,     0 },
-	{     593, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,    111,     1 },
+	{     593, -1,      Actor::lhand,   OT_Single,  false, SF_GAME_FLX,    EXULT_BG_FLX_THROWING_AXE_SHP,     0 },
+	{     593, -1,       Actor::belt,   OT_Single,  false, SF_GAME_FLX,    EXULT_BG_FLX_THROWING_AXE_SHP,     1 },
 	// Dagger
 	{     594, -1,      Actor::lhand,   OT_Single,  false, SF_PAPERDOL_VGA,     35,     0 },
 	{     594, -1,       Actor::belt,   OT_Single,  false, SF_PAPERDOL_VGA,     35,     1 },
