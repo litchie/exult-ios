@@ -26,6 +26,7 @@
 #include "iwin8.h"
 #include "vgafile.h"
 #include "glshape.h"
+#include "gamewin.h"
 
 /*
  *	Handle custom mouse pointers.
