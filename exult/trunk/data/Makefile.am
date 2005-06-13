@@ -42,6 +42,7 @@ EXULT_FLX_OBJECTS = \
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in			\
 	bg/hoe_of_destruction.shp	\
+	bg/caddellite_helmet.shp	\
 	bg/magic_boomerang.shp		\
 	bg/great_dagger.shp		\
 	bg/gorget.shp			\
