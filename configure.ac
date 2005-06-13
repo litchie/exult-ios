@@ -317,7 +317,7 @@ AC_CHECK_LIB(SDL_mixer, Mix_QuickLoad_RAW,
 # Optional components
 # ---------------------------------------------------------------------
 
-# Timidity MIDI driver
+# Timidity midi driver
 AC_ARG_ENABLE(timidity_midi,      [[  --disable-timidity-midi Disable built-in timidity midi]],,enable_timidity_midi=yes)
 AC_ARG_WITH(timidity,             [[  --with-timidity=path    path to timidity.cfg (optional)]],,)
 AC_MSG_CHECKING(if we want to use timidity midi)
@@ -335,9 +335,9 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-# ALSO Midi driver
+# ALSA midi driver
 AC_CHECK_HEADER(alsa/asoundlib.h, HAVEALSA=yes, HAVEALSA=no)
-AC_ARG_ENABLE(alsa,[[  --disable-alsa          Disable ALSA midi support]],,enable_alsa=yes)
+AC_ARG_ENABLE(alsa,    [[  --disable-alsa          Disable ALSA midi support]],,enable_alsa=yes)
 AC_MSG_CHECKING(if we want to use ALSA midi)
 if test x$HAVEALSA = xyes; then
 	if test x$enable_alsa = xyes; then
@@ -349,6 +349,32 @@ if test x$HAVEALSA = xyes; then
 	fi
 else
 	AC_MSG_RESULT([no; libasound not found])
+fi
+
+# fluidsynth midi driver
+AC_CHECK_HEADER(fluidsynth.h, HAVEFLUIDSYNTH=yes, HAVEFLUIDSYNTH=no)
+AC_ARG_ENABLE(fluidsynth,[[  --disable-fluidsynth    Disable fluidsynth midi support]],,enable_fluidsynth=yes)
+AC_MSG_CHECKING(if we want to use fluidsynth midi)
+if test x$HAVEFLUIDSYNTH = xyes; then
+        if test x$enable_fluidsynth = xyes; then
+                AC_MSG_RESULT(yes)
+                AC_DEFINE(USE_FLUIDSYNTH_MIDI, 1, [Enable fluidsynth midi])
+                LIBS="$LIBS -lfluidsynth"
+        else
+                AC_MSG_RESULT(no)
+        fi
+else
+        AC_MSG_RESULT([no; fluidsynth.h not found])
+fi
+
+# mt32emu midi driver
+AC_ARG_ENABLE(mt32emu, [[  --enable-mt32emu        Enable built-in mt32emu support]],,enable_mt32emu=no)
+AC_MSG_CHECKING(if we should build mt32emu)
+if test x$enable_mt32emu = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(USE_MT32EMU_MIDI, 1, [Enable mt32emu])
+else
+	AC_MSG_RESULT(no)
 fi
 
 
