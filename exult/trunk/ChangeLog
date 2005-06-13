@@ -1,5 +1,6 @@
 2005-06-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/various: new art by 'Crysta the Elf'
+	* sigame.cc, bggame.cc: use constants from headers instead of fixed numbers
 
 2005-06-13  Ryan Nunn  <colourles@users.sourceforge.net>
 	* audio/midi/TimidityMidiDriver.cpp : Report Timidity Error messages

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2004  The Exult Team
+ *  Copyright (C) 2000-2005  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -137,7 +137,7 @@ BG_Game::BG_Game()
 
 		add_resource("files/gameflx", "<DATA>/exult_bg.flx", 0);
 
-		add_resource("config/defaultkeys", "<DATA>/exult_bg.flx", 13);
+		add_resource("config/defaultkeys", "<DATA>/exult_bg.flx", EXULT_BG_FLX_DEFAULTKEYS_TXT);
 
 		add_resource("palettes/count", 0, 18);
 		add_resource("palettes/0", PALETTES_FLX, 0);

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2000-2004  The Exult Team
+ *  Copyright (C) 2000-2005  The Exult Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@
 #include "mappatch.h"
 #include "shapeid.h"
 #include "items.h"
+#include "data/exult_si_flx.h"
 
 #ifndef UNDER_CE
 using std::cout;
@@ -122,7 +123,7 @@ SI_Game::SI_Game()
 
 		add_resource("files/gameflx", "<DATA>/exult_si.flx", 0);
 	
-		add_resource("config/defaultkeys", "<DATA>/exult_si.flx", 1);
+		add_resource("config/defaultkeys", "<DATA>/exult_si.flx", EXULT_SI_FLX_DEFAULTKEYS_TXT);
 
 		add_resource("palettes/count", 0, 14);
 		add_resource("palettes/0", PALETTES_FLX, 0);
