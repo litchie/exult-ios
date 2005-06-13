@@ -834,11 +834,11 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	// AMULETS and COLLARS
 
 	// Leather Collar
-	{     582,  0,       Actor::neck,   OT_Normal,  true,  SF_GAME_FLX,        EXULT_BG_FLX_COLLAR_SHP,     0 },
+	{     582,  0,       Actor::neck,   OT_Normal,  true,  SF_GAME_FLX,        EXULT_BG_FLX_GORGET_SHP,     4 },
 	// Gorget
 	{     586,  0,       Actor::neck,   OT_Normal,  true,  SF_GAME_FLX,        EXULT_BG_FLX_GORGET_SHP,     0 },
 	// Magic Gorget
-	{     843,  0,       Actor::neck,   OT_Normal,  true,  SF_GAME_FLX,        EXULT_BG_FLX_MAGICGORGET_SHP,     0 },
+	{     843,  0,       Actor::neck,   OT_Normal,  true,  SF_GAME_FLX,        EXULT_BG_FLX_GORGET_SHP,     2 },
 	// Ankh
 	{     955,  0,       Actor::neck,   OT_Normal,  false, SF_GAME_FLX,        EXULT_BG_FLX_AMULETS_SHP,     5 },
 	// Fellowship
