@@ -379,6 +379,12 @@
 							RelativePath="..\audio\midi_drivers\FileMidiDriver.h">
 						</File>
 						<File
+							RelativePath="..\audio\midi_drivers\FluidSynthMidiDriver.cpp">
+						</File>
+						<File
+							RelativePath="..\audio\midi_drivers\FluidSynthMidiDriver.h">
+						</File>
+						<File
 							RelativePath="..\audio\midi_drivers\LowLevelMidiDriver.cpp">
 						</File>
 						<File
@@ -1693,10 +1699,10 @@
 				RelativePath="..\NEWS">
 			</File>
 			<File
-				RelativePath="..\conf\README">
+				RelativePath="..\README">
 			</File>
 			<File
-				RelativePath="..\README">
+				RelativePath="..\conf\README">
 			</File>
 			<File
 				RelativePath="..\README.1ST">
