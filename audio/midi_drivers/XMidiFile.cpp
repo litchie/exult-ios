@@ -1808,7 +1808,7 @@ int XMidiFile::ExtractTracksFromU7V (IDataSource *source)
 
 	source->seek(0);
 	uint32 num_timbres = source->read1();
-	std::cout << num_timbres << " custom timbres..." << std::endl;
+	pout << num_timbres << " custom timbres..." << std::endl;
 
 	if (source->getSize() != 247*num_timbres+1) {
 		perr << "File size didn't match timbre count. Wont convert." << std::endl;

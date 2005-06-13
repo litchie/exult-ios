@@ -17,8 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- *
- * $Header: /data/exult/cvs2svn/cvs/exult/audio/midi_drivers/FMOplMidiDriver.cpp,v 1.1 2005/06/07 09:55:35 colourles Exp $
  */
 
 #include "pent_include.h"
