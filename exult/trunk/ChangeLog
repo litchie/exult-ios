@@ -1,3 +1,11 @@
+2005-06-13  Ryan Nunn  <colourles@users.sourceforge.net>
+	* audio/midi/TimidityMidiDriver.cpp : Report Timidity Error messages
+	  if initiliaztion fails
+	* audio/midi_drivers/FluidSynthMidiDriver.*, 
+	  audio/midi_drivers/Makefile.am, audio/midi_drivers/MidiDriver.cpp : 
+	  New FluidSynthMidiDriver borrowed from ScummVM. Needs FluidSynth to 
+	  work (obviously). Define USE_FLUIDSYNTH_MIDI to compile it in.
+	  
 2005-06-13  Tristan Tarrant <nadir@users.sourceforge.net>
 	* mouse.h: include gamewin.h
 	* audio/midi_drivers/Makefile.am: add include path so it can find flags.h
