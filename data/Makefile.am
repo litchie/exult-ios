@@ -42,11 +42,9 @@ EXULT_FLX_OBJECTS = \
 EXULT_BG_FLX_OBJECTS = \
 	bg/flx.in			\
 	bg/hoe_of_destruction.shp	\
-	bg/caddellite_helmet.shp	\
 	bg/magic_boomerang.shp		\
 	bg/great_dagger.shp		\
 	bg/gorget.shp			\
-	bg/magicgorget.shp		\
 	bg/cleaver.shp			\
 	bg/faces.shp			\
 	bg/faces2.shp			\
@@ -80,10 +78,12 @@ EXULT_BG_FLX_OBJECTS = \
 	bg/shoes.shp			\
 	bg/triple_xbow.shp		\
 	bg/pants.shp			\
-	bg/collar.shp			\
 	bg/hoods.shp			\
 	bg/musket.shp			\
-	bg/custom_sword.shp
+	bg/custom_sword.shp		\
+	bg/main_gauche.shp		\
+	bg/magic_helmet.shp		\
+	bg/throwing_axe.shp
 
 EXULT_SI_FLX_OBJECTS = \
 	si/flx.in			\
