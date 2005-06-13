@@ -1,3 +1,6 @@
+2005-06-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/bg/various: new art by 'Crysta the Elf'
+
 2005-06-13  Ryan Nunn  <colourles@users.sourceforge.net>
 	* audio/midi/TimidityMidiDriver.cpp : Report Timidity Error messages
 	  if initiliaztion fails
