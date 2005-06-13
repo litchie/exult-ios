@@ -45,7 +45,9 @@ libmididrv_la_SOURCES =	\
 	XMidiNoteStack.h	\
 	XMidiSequence.cpp	\
 	XMidiSequence.h		\
-	XMidiSequenceHandler.h
+	XMidiSequenceHandler.h	\
+	FluidSynthMidiDriver.cpp	\
+	FluidSynthMidiDriver.h
 
 EXTRA_DIST = 		\
 	README
