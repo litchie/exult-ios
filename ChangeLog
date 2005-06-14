@@ -1,3 +1,6 @@
+2005-06-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* sigame.cc, bggame.cc: more constants from flex headers
+
 2005-06-13  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/various: new art by 'Crysta the Elf'
 	* sigame.cc, bggame.cc: use constants from headers instead of fixed numbers
