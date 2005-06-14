@@ -122,7 +122,6 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/great_dagger.shp \
 	data/bg/magic_boomerang.shp \
 	data/bg/gorget.shp \
-	data/bg/magicgorget.shp \
 	data/bg/cleaver.shp \
 	data/bg/faces.shp \
 	data/bg/faces2.shp \
@@ -156,10 +155,12 @@ EXULT_BG_FLX_OBJECTS = \
 	data/bg/shoes.shp \
 	data/bg/triple_xbow.shp \
 	data/bg/pants.shp \
-	data/bg/collar.shp \
 	data/bg/hoods.shp \
 	data/bg/musket.shp \
 	data/bg/custom_sword.shp \
+	data/bg/main_gauche.shp \
+	data/bg/magic_helmet.shp \
+	data/bg/throwing_axe.shp \
 	data/bg/flx.in
 
 
