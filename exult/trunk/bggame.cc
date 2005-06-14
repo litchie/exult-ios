@@ -122,7 +122,7 @@ BG_Game::BG_Game()
 		add_shape("gumps/body", 53);
 
 		add_shape("sprites/map", 22);
-		add_shape("sprites/cheatmap", 12);
+		add_shape("sprites/cheatmap", EXULT_BG_FLX_BGMAP_SHP);
 
 		add_resource("files/shapes/count", 0, 9);
 		add_resource("files/shapes/0", "<STATIC>/shapes.vga", 0);

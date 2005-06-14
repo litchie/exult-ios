@@ -104,7 +104,7 @@ SI_Game::SI_Game()
 		add_shape("gumps/cstats/6",63);
 
 		add_shape("sprites/map", 22);
-		add_shape("sprites/cheatmap", 0);
+		add_shape("sprites/cheatmap", EXULT_SI_FLX_SIMAP_SHP);
 
 		// Need to be done
 		add_shape("gumps/spell_scroll",65);
