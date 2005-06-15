@@ -1,6 +1,7 @@
 2005-06-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* audio/Midi.cc: fix crash on exit when midi is disabled
 	* data/bg/faces.shp: new Julia face by Berty Zhang
+	* data/bg/gorget.shp: updated gorgets/collars by Crysta
 
 2005-06-15  Ryan Nunn  <colourles@users.sourceforge.net>
 	* game.cc : Set 'game_type' to NONE when in the Exult Menu
