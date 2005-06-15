@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define LLMD_MSG_PAUSE					3
 #define LLMD_MSG_SET_VOLUME				4
 #define LLMD_MSG_SET_SPEED				5
+#define LLMD_MSG_PRECACHE_TIMBRES		6
 
 // These are only used by thread
 #define LLMD_MSG_THREAD_INIT			-1	
@@ -171,6 +172,7 @@ int LowLevelMidiDriver::initMidiDriver(uint32 samp_rate, bool is_stereo)
 	sample_rate = samp_rate;
 	stereo = is_stereo;
 	uploading_timbres = false;
+	next_sysex = 0;
 
 	// Zero the memory
 	std::memset(mt32_patch_banks,0,sizeof(mt32_patch_banks[0])*128);
@@ -747,6 +749,34 @@ bool LowLevelMidiDriver::playSequences ()
 				}
 				break;
 
+				// Attempt to load first 64 timbres into memory
+			case LLMD_MSG_PRECACHE_TIMBRES:
+				{
+					int count = 0;
+
+					for (int bank = 0; bank < 128; bank++)
+					{
+						if (mt32_timbre_banks[bank]) for (int timbre = 0; timbre < 128; timbre++)
+						{
+							if (mt32_timbre_banks[bank][timbre])
+							{
+								uploadTimbre(bank,timbre);
+								count++;
+
+								if (count == 64) break;
+							}
+						}
+						if (count == 64) break;
+					}
+
+					if (mt32_patch_banks[0]) for (int patch = 0; patch < 128; patch++)
+					{
+						if (mt32_patch_banks[0][patch] && mt32_patch_banks[0][patch]->timbre_bank >= 2)
+							setPatchBank(0,patch);
+					}
+				}
+				break;
+
 				// Uh we have no idea what it is
 			default:
 				break;
@@ -880,7 +910,11 @@ void LowLevelMidiDriver::sequenceSendSysEx(uint16 sequence_id, uint8 status, con
 	}
 
 	// Just send it
+
+	int ticks = SDL_GetTicks();
+	if (next_sysex > ticks) SDL_Delay(next_sysex-ticks); // Wait till we think the buffer is empty
 	send_sysex(status,msg,length);
+	next_sysex = SDL_GetTicks() + 40;
 }
 
 uint32 LowLevelMidiDriver::getTickCount(uint16 sequence_id)
@@ -1124,7 +1158,7 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 	else if (type == TIMBRE_LIBRARY_SYX_FILE)
 		xmidi = new XMidiFile(ds,XMIDIFILE_HINT_SYX_FILE);
 	else if (type == TIMBRE_LIBRARY_XMIDI_FILE)
-		xmidi = new XMidiFile(ds,XMIDIFILE_CONVERT_NOCONVERSION);
+		xmidi = new XMidiFile(ds,XMIDIFILE_HINT_SYSEX_IN_MID);
 	else if (type == TIMBRE_LIBRARY_XMIDI_MT)
 	{
 		loadXMidiTimbreLibrary(ds);
@@ -1154,10 +1188,33 @@ void LowLevelMidiDriver::loadTimbreLibrary(IDataSource *ds, TimbreLibraryType ty
 	message.data.play.branch = 0;
 	sendComMessage(message);
 
-	message.type = LLMD_MSG_SET_SPEED;
-	message.sequence = 3;
-	message.data.speed.percentage = 1000;
-	sendComMessage(message);
+	if (type == TIMBRE_LIBRARY_XMIDI_FILE) 
+	{
+		message.type = LLMD_MSG_SET_SPEED;
+		message.sequence = 3;
+		message.data.speed.percentage = 400;
+		sendComMessage(message);
+	}
+
+	// If we want to precache
+	if (1) {
+		waitTillNoComMessages();
+		
+		bool is_playing = true;
+
+		do {
+			lockComMessage();
+			is_playing = playing[3];
+			unlockComMessage();
+
+			if (is_playing) yield();
+		} while (is_playing);
+		uploading_timbres = false;
+
+		pout << "Precaching Timbres" << std::endl;
+		ComMessage precache(LLMD_MSG_PRECACHE_TIMBRES);
+		sendComMessage(precache);
+	}
 }
 
 void LowLevelMidiDriver::extractTimbreLibrary(XMidiEventList *eventlist)
@@ -1303,7 +1360,11 @@ void LowLevelMidiDriver::sendMT32SystemMessage(uint32 address_base, uint16 addre
 	sysex_buffer[sysex_data_start+len+1] = 0xF7;
 
 	// Just send it
+
+	int ticks = SDL_GetTicks();
+	if (next_sysex > ticks) SDL_Delay(next_sysex-ticks);	// Wait till we think the buffer is empty
 	send_sysex(0xF0,sysex_buffer,sysex_data_start+len+2);
+	next_sysex = SDL_GetTicks() + 40;
 }
 
 void LowLevelMidiDriver::setPatchBank(int bank, int patch)

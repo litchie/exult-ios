@@ -59,7 +59,7 @@ using std::string;
 bool Game::new_game_flag = false;
 bool Game::editing_flag = false;
 Game *game = 0;
-Exult_Game Game::game_type = BLACK_GATE;
+Exult_Game Game::game_type = NONE;
 bool Game::expansion = false;
 
 static char av_name[17] = "";
@@ -90,6 +90,7 @@ Game::Game() : menushapes(), xml(0)
 
 Game::~Game()
 {
+	game_type = NONE;
 }
 
 Game *Game::create_game(Exult_Game mygame, const char *title)
