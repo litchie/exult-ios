@@ -621,7 +621,7 @@ MyMidiPlayer::MyMidiPlayer()	: repeating(false),current_track(-1),
 MyMidiPlayer::~MyMidiPlayer()
 {
 	ogg_stop_track();
-	midi_driver->destroyMidiDriver();
+	if (midi_driver) midi_driver->destroyMidiDriver();
 	Mix_HookMusic(NULL,NULL);
 	delete midi_driver;
 }
