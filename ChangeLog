@@ -1,3 +1,10 @@
+2005-06-15  Ryan Nunn  <colourles@users.sourceforge.net>
+	* game.cc : Set 'game_type' to NONE when in the Exult Menu
+	* audio/midi_drivers/XMidiSequence.cpp, audio/midi_drivers/XMidiFile.*,
+	  audio/midi_drivers/LowLevelMidiDriver.* : Improvements and fixes for 
+	  when using Exult with a Real MT32 (avoiding Buffer Overflows and 
+	  pauses)
+
 2005-06-14  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* sigame.cc, bggame.cc: more constants from flex headers
 
