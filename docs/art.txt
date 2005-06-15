@@ -6,9 +6,9 @@ NPCs:
 Name			shape		Artist
 
 Jaana			490		Oblivious
-Julia			454		Philip Gottschalk
+Katrina			452		Philip Gottschalk
+Julia			454		Philip, modified by Berty Zhang
 Sentri			462		Philip, modified by Berty Zhang
-Katrina			452		Philip
 Tseramed		460		Philip
 Spark			489		Philip
 
