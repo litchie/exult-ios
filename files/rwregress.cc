@@ -4,13 +4,13 @@
 #endif
 
 #include <iostream>
-#include <strstream>
+#include <sstream>
 #include <cassert>
 #include "utils.h"
 
 using std::cout;
 using std::endl;
-using std::istrstream;
+using std::istringstream;
 
 const char *ss_data = "A BC DE FGHI JKLM NO\0";
 
@@ -78,7 +78,7 @@ void speedtest()
 
 int main(int argc, char *argv[])
 {
-	istrstream iss(ss_data);
+	istringstream iss(ss_data);
 	
 	uint8 outread1 = Read1(iss);
 	cout << static_cast<char>(outread1) << endl;
