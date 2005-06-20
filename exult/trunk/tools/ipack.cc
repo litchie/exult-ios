@@ -81,6 +81,40 @@ public:
 typedef vector<Shape_spec> Shape_specs;
 
 /*
+ *	Add all shapes to 'specs'.
+ */
+
+static void Get_all_shapes
+	(
+	char *imagename,		// Archive name returned.
+	char *basename,
+	Shape_specs& specs		// Shape specs. returned here.
+	)
+	{
+	int namelen = strlen(basename) + strlen("SSSS_") + 1;
+	Vga_file ifile;
+	try {
+		ifile.load(imagename);	// May throw an exception.
+	} catch (exult_exception& e){
+		cerr << e.what() << endl;
+		exit(1);
+	}
+	int nshapes = ifile.get_num_shapes();
+	specs.resize(nshapes);
+	for (int i = 0; i < nshapes; ++i)
+		{
+		int nframes = ifile.get_num_frames(i);
+		if (!nframes)
+			continue;
+		char *shapename = new char[namelen];
+		sprintf(shapename, "%s%04d_", basename, i);
+		specs[i].flat = false;
+		specs[i].nframes = nframes;
+		specs[i].filename = shapename;
+		}
+	}
+
+/*
  *	Skip white space.
  */
 
@@ -187,7 +221,7 @@ static char *Get_token
  *		'palette palfile' specifies the palette file (which, if a
  *			Flex, contains palette in entry 0).
  *		'nnn/fff:filename' indicates shape #nnn will consist of fff
- *			frames in files "filename-iii.png", where iii is the
+ *			frames in files "filenameii.png", where ii is the
  *			frame #.
  *		'nnn/fff:filename(cc across)' indicates filename is a .png
  *			consisting of 8x8 flat tiles, to be taken rowwise with
@@ -197,6 +231,9 @@ static char *Get_token
  *			with each column having rr rows.
  *		Filename may be followed by 'flat' to indicate 8x8 non-RLE
  *			shape.
+ *		'all:filename' indicates that all shapes/frames should be
+ *			extracted into "filenamessss_ii.png", where ssss
+ *			is the shape# and ii is the frame#.
  */
 
 static void Read_script
@@ -238,6 +275,27 @@ static void Read_script
 			{
 			palname = Get_token(linenum, ptr, endptr);
 			continue;
+			}
+		if (strncmp(ptr, "all:", 4) == 0)
+			{
+			if (!imagename)
+				{
+				cerr << "Line #" << linenum <<
+				":  Archive name not given before 'all'"
+								<< endl;
+				exit(1);
+				}
+			ptr = Skip_space(ptr + 4);
+			endptr = Find_space(ptr);
+			if (endptr == ptr)
+				{
+				cerr << "Line #" << linenum <<
+					":  Missing filename" << endl;
+				exit(1);
+				}
+			*endptr = 0;
+			Get_all_shapes(imagename, ptr, specs);
+			return;
 			}
 					// Get shape# in decimal, hex, or oct.
 		long shnum = Get_number(linenum, "Shape # missing",
