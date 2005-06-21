@@ -1,5 +1,9 @@
+2005-06-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* data/bg/spiked_shield.shp: fixed transparency, added back by Crysta
+
 2005-06-16  Tristan Tarrant <nadir@users.sourceforge.net>
-	* files/rwregress.cc: removed use of deprecated strstream and used sstream instead
+	* files/rwregress.cc: removed use of deprecated strstream and
+	  used sstream instead
 
 2005-06-15  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* audio/Midi.cc: fix crash on exit when midi is disabled
