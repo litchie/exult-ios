@@ -1005,7 +1005,7 @@ Paperdoll_gump::Paperdoll_item Paperdoll_gump::Items_BG[] =
 	{     572, -1, Actor::shield_spot,   OT_Shield,  false, SF_PAPERDOL_VGA,     99,     0 },
 	// Spiked
 	{     578, -1,       Actor::rhand,   OT_Shield,  false, SF_GAME_FLX,        EXULT_BG_FLX_SPIKED_SHIELD_SHP,     0 },
-	{     578, -1, Actor::shield_spot,   OT_Shield,  false, SF_PAPERDOL_VGA,     99,     0 },
+	{     578, -1, Actor::shield_spot,   OT_Shield,  false, SF_GAME_FLX,        EXULT_BG_FLX_SPIKED_SHIELD_SHP,     1 },
 	// Kite
 	{     609, -1,       Actor::rhand,   OT_Shield,  false, SF_PAPERDOL_VGA,     37,     0 },
 	{     609, -1, Actor::shield_spot,   OT_Shield,  false, SF_PAPERDOL_VGA,     99,     0 },
