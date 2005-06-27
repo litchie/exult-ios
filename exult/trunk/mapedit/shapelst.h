@@ -104,7 +104,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	virtual void render();		// Draw list.
 	virtual void set_background_color(guint32 c)
 		{ Shape_draw::set_background_color(c); }
-	virtual void setup_info();
+	virtual void setup_info(bool savepos = true);
 	void setup_shapes_info();
 	void setup_frames_info();
 	void scroll_to_frame();		// Scroll so sel. frame is visible.

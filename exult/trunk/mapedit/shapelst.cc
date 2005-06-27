@@ -266,8 +266,10 @@ static int Get_x_offset
 
 void Shape_chooser::setup_info
 	(
+	bool savepos			// Try to keep current position.
 	)
 	{
+	int oldind = rows[row0].index0;
 	info.resize(0);
 	rows.resize(0);
 	row0 = row0_voffset = 0;
@@ -282,6 +284,8 @@ void Shape_chooser::setup_info
 	else
 		setup_shapes_info();
 	setup_vscrollbar();
+	if (savepos)
+		goto_index(oldind);
 	}
 
 /*
@@ -488,9 +492,7 @@ gint Shape_chooser::configure
 		{
 		config_width = event->width;
 		config_height = event->height;
-		int i0 = rows[row0].index0;	// Get back to where we were.
-		setup_info();
-		goto_index(i0);		// Now goto where we were.
+		setup_info(true);
 		render();
 		update_statusbar();
 		}
@@ -1313,6 +1315,8 @@ void Shape_chooser::new_frame
 	Object_browser *browser = studio->get_browser();
 	if (browser)
 		{			// Repaint main window.
+		if (frames_mode)
+			browser->setup_info(true);
 		browser->render();
 		browser->show();
 		}
@@ -1556,9 +1560,7 @@ void Shape_chooser::create_new_shape
 	Object_browser *browser = studio->get_browser();
 	if (browser)
 		{			// Repaint main window.
-		int i0 = rows[row0].index0;	// Get back to where we were.
-		setup_info();
-		goto_index(i0);		// Now goto where we were.
+		browser->setup_info(true);
 		browser->render();
 		browser->show();
 		}
@@ -1868,11 +1870,7 @@ void Shape_chooser::all_frames_toggled
 		gtk_widget_show(chooser->hscroll);
 	else
 		gtk_widget_hide(chooser->hscroll);
-					// Make selection visible.
-	int indx = chooser->selected >= 0 ? chooser->selected
-				: chooser->rows[chooser->row0].index0;
-	chooser->setup_info();
-	chooser->goto_index(indx);
+	chooser->setup_info(true);
 	}
 
 /*
