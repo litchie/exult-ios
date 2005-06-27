@@ -61,7 +61,7 @@ public:
 		{ return find_text; }
 	virtual void load()		// Load from file data.
 		{  }
-	virtual void setup_info()
+	virtual void setup_info(bool savepos = true)
 		{  }
 	virtual void render() = 0;
 					// Blit onto screen.
