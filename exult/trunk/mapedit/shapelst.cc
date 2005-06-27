@@ -1556,6 +1556,9 @@ void Shape_chooser::create_new_shape
 	Object_browser *browser = studio->get_browser();
 	if (browser)
 		{			// Repaint main window.
+		int i0 = rows[row0].index0;	// Get back to where we were.
+		setup_info();
+		goto_index(i0);		// Now goto where we were.
 		browser->render();
 		browser->show();
 		}
