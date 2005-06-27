@@ -901,6 +901,7 @@ void ExultStudio::update_group_windows
 			gtk_object_get_data(GTK_OBJECT(*it), "browser");
 		if (!grp || chooser->get_group() == grp)
 			{		// A match?
+			chooser->setup_info();
 			chooser->render();
 			chooser->show();
 			}

@@ -1,3 +1,8 @@
+2005-06-26    <jeff@mini.nerble.net>
+
+	* mapedit/shapelst.cc,etc:  Rewrote shape-browser renderer so
+	scrolling works correctly.
+
 2005-06-21  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
 	* data/bg/spiked_shield.shp: fixed transparency, added back by Crysta
 
