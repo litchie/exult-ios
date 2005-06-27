@@ -2082,7 +2082,7 @@ void Shape_chooser::search
 	int stop = dir == -1 ? -1 : (int) info.size();
 	for (i = start; i != stop; i += dir)
 		{
-		int shnum = group ? (*group)[i] : i;
+		int shnum = info[i].shapenum;
 		char *nm = studio->get_shape_name(shnum);
 		if (nm && search_name(nm, srch))
 			break;		// Found it.
