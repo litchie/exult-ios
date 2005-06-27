@@ -1870,7 +1870,10 @@ void Shape_chooser::all_frames_toggled
 		gtk_widget_show(chooser->hscroll);
 	else
 		gtk_widget_hide(chooser->hscroll);
-	chooser->setup_info(true);
+	// The old index is no longer valid.  We really need to get back to
+	//   the same shape # as before.
+	chooser->selected = -1;
+	chooser->setup_info();
 	}
 
 /*
