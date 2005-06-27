@@ -122,7 +122,7 @@ void Shape_chooser::show
 		Rectangle b = info[selected].box;
 					// Draw yellow box.
 		gdk_draw_rectangle(draw->window, drawgc, FALSE, 
-							b.x, b.y, b.w, b.h);
+			b.x - hoffset, b.y - voffset, b.w, b.h);
 		}
 	}
 
@@ -168,19 +168,7 @@ void Shape_chooser::select
 	frame_adj->upper = nframes - 1;
 	gtk_adjustment_changed(frame_adj);
 	gtk_widget_set_sensitive(fspin, true);
-					// Remove prev. selection msg.
-//	gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
-	char buf[150];			// Show new selection.
-	g_snprintf(buf, sizeof(buf), "Shape %d (%d frames)",
-						shapenum, nframes);
-	ExultStudio *studio = ExultStudio::get_instance();
-	if (shapes_file && studio->get_shape_name(shapenum))
-		{
-		int len = strlen(buf);
-		g_snprintf(buf + len, sizeof(buf) - len, 
-				":  '%s'", studio->get_shape_name(shapenum));
-		}
-	gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
+	update_statusbar();
 	}
 
 const int border = 4;			// Border at bottom, sides.
@@ -192,86 +180,41 @@ void Shape_chooser::render
 	(
 	)
 	{
-	if (frames_mode)
-		{
-		render_frames();
-		return;
-		}
-					// Look for selected frame.
-	int selshape = -1, selframe = -1, new_selected = -1;
-	if (selected >= 0)		// Save selection info.
-		{
-		selshape = info[selected].shapenum;
-		selframe = info[selected].framenum;
-		}
-					// Remove "selected" message.
-	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
-	delete [] info;			// Delete old info. list.
 					// Get drawing area dimensions.
 	gint winw = draw->allocation.width, winh = draw->allocation.height;
-					// Provide more than enough room.
-	info = new Shape_entry[1024];
 					// Clear window first.
 	iwin->fill8(255);		// Set to background_color.
-	int x = 0;
-	info_cnt = 0;			// Count them.
-	int curr_y = 0;
+	int curr_y = -row0_voffset;
 	int row_h = 0;
-	int row = row0;			// Row #.
 	int total_cnt = get_count();
 	int index;			// This is shapenum if there's no
 					//   filter (group).
-	for (int index = index0; index < total_cnt; index++)
+	for (int rownum = row0; curr_y  < winh && rownum < rows.size(); 
+								++rownum)
 		{
-		int shapenum = group ? (*group)[index] : index;
-		int framenum = shapenum == selshape ? selframe : framenum0;
-		Shape_frame *shape = ifile->get_shape(shapenum, framenum);
-		if(shape)
+		Shape_row& row = rows[rownum];
+		int cols = get_num_cols(rownum);
+		assert(cols >= 0);
+		for (int index = row.index0; cols; --cols, ++index)
 			{
-			int sh = shape->get_height(),
-			    sw = shape->get_width();
-			if (sh>row_h)
-				row_h = sh;
-					// Check if we've exceeded max width
-			if (x + sw > winw)
-				{	// Next line.
-				curr_y += row_h + border;
-				row_h = sh;
-				x = 0;
-				row++;
-				if (row == row_indices.size())
-					row_indices.push_back(index);
-				else if (row < row_indices.size())
-					row_indices[row] = index;
-				if (curr_y + 36 >= winh)
-					break;
-				}
-			int sy = curr_y+border;	// Get top y-coord.
-			shape->paint(iwin, x + shape->get_xleft(),
-						sy + shape->get_yabove());
-			if (sh > winh)
+			int shapenum = info[index].shapenum;
+			int framenum = info[index].framenum;
+			Shape_frame *shape = ifile->get_shape(shapenum, 
+								framenum);
+			if(shape)
 				{
-				sy += sh - winh;
-				sh = winh;
+				int sh = shape->get_height(),
+				    sw = shape->get_width();
+				int sx = info[index].box.x - hoffset;
+				int sy = info[index].box.y - voffset;
+				shape->paint(iwin, sx + shape->get_xleft(),
+						sy + shape->get_yabove());
+				last_shape = shapenum;
 				}
-					// Store info. about where drawn.
-			info[info_cnt].set(index,
-					shapenum, framenum, x, sy, sw, sh);
-			if (shapenum == selshape)
-						// Found the selected shape.
-				new_selected = info_cnt;
-			x += sw + border;
-			info_cnt++;
 			}
+		curr_y += rows[rownum].height;
 		}
-	nrows = row - row0;		// # rows shown.
-	nrows += (x > 0);		// Add partial row at end.
-	if (new_selected == -1)
-		unselect(false);
-	else
-		select(new_selected);
-	adjust_vscrollbar();		// Set new scroll values.
-}
+	}
 
 /*
  *	Get maximum shape height for all its frames.
@@ -318,33 +261,97 @@ static int Get_x_offset
 	}
 
 /*
- *	Render one shape per row, showing its frames from left to right.
+ *	Find where everything goes.
  */
 
-void Shape_chooser::render_frames
+void Shape_chooser::setup_info
 	(
 	)
 	{
-					// Get drawing area dimensions.
-	gint winw = draw->allocation.width, winh = draw->allocation.height;
-					// Look for selected frame.
-	int selshape = -1, selframe = -1, new_selected = -1;
+	info.resize(0);
+	rows.resize(0);
+	row0 = row0_voffset = 0;
+	last_shape = 0;
+	/* +++++NOTE:  index0 is always 0 for the shape browse.  It should
+		probably be removed from the base Obj_browser class	*/
+	index0 = 0;
+	voffset = 0;
+	total_height = 0;
+	if (frames_mode)
+		setup_frames_info();
+	else
+		setup_shapes_info();
+	setup_vscrollbar();
+	}
+
+/*
+ *	Setup info when not in 'frames' mode.
+ */
+
+void Shape_chooser::setup_shapes_info
+	(
+	)
+	{
+	int selshape = -1, selframe = -1;
 	if (selected >= 0)		// Save selection info.
 		{
 		selshape = info[selected].shapenum;
 		selframe = info[selected].framenum;
 		}
-					// Remove "selected" message.
-	//gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
-	delete [] info;			// Delete old info. list.
-	iwin->set_clip(0, 0, winw, winh);
-					// Provide more than enough room.
-	info = new Shape_entry[4048];	//++++++Pretty risky.  Use s vec!!!
-					// Clear window first.
-	iwin->fill8(255);		// Fill with background color.
-	info_cnt = 0;			// Count them.
+					// Get drawing area dimensions.
+	gint winw = draw->allocation.width;
+	int x = 0;
 	int curr_y = 0;
-	int row = row0;			// Row #.
+	int row_h = 0;
+	int total_cnt = get_count();
+	int index;			// This is shapenum if there's no
+					//   filter (group).
+	rows.resize(1);			// Start 1st row.
+	rows[0].index0 = 0;
+	rows[0].y = 0;
+	for (int index = 0; index < total_cnt; index++)
+		{
+		int shapenum = group ? (*group)[index] : index;
+		int framenum = shapenum == selshape ? selframe : framenum0;
+		Shape_frame *shape = ifile->get_shape(shapenum, framenum);
+		if(!shape)
+			continue;
+		int sh = shape->get_height(),
+		    sw = shape->get_width();
+				// Check if we've exceeded max width
+		if (x + sw > winw && x)		// But don't leave row empty.
+			{	// Next line.
+			rows.back().height = row_h + border;
+			curr_y += row_h + border;
+			row_h = 0;
+			x = 0;
+			rows.push_back(Shape_row());
+			rows.back().index0 = info.size();
+			rows.back().y = curr_y;
+			}
+		if (sh>row_h)
+			row_h = sh;
+		int sy = curr_y+border;	// Get top y-coord.
+				// Store info. about where drawn.
+		info.push_back(Shape_entry());
+		info.back().set(shapenum, framenum, x, sy, sw, sh);
+		x += sw + border;
+		}
+	rows.back().height = row_h + border;
+	total_height = curr_y + rows.back().height + border;
+	}
+
+/*
+ *	Setup one shape per row, showing its frames from left to right.
+ */
+
+void Shape_chooser::setup_frames_info
+	(
+	)
+	{
+					// Get drawing area dimensions.
+	gint winw = draw->allocation.width, winh = draw->allocation.height;
+	int curr_y = 0, maxw = 0;
 	int total_cnt = get_count();
 	int index;			// This is shapenum if there's no
 					//   filter (group).
@@ -357,13 +364,15 @@ void Shape_chooser::render_frames
 		if (!nframes)
 			continue;
 		int row_h = Get_max_height(shape);
-		int x = -hoffset;
+		rows.push_back(Shape_row());
+		rows.back().index0 = info.size();
+		rows.back().y = curr_y;
+		rows.back().height = row_h + border;
+		int x = 0;
 		int sw, sh;
 		for (int framenum = 0; framenum < nframes; framenum++,
 						x += sw + border)
 			{
-			if (x >= winw - 1)	// Past right edge?
-				break;
 			Shape_frame *frame = shape->get_frame(framenum);
 			if (!frame)
 				{
@@ -372,43 +381,19 @@ void Shape_chooser::render_frames
 				}
 			sh = frame->get_height();
 			sw = frame->get_width();
-			if (x < 0 && x + sw < sw/2)
-				continue;// Skip to left of hoffset.
 			int sy = curr_y+border;	// Get top y-coord.
-			frame->paint(iwin, x + frame->get_xleft(),
-						sy + frame->get_yabove());
-			if (sh > winh)
-				{
-				sy += sh - winh;
-				sh = winh;
-				}
 					// Store info. about where drawn.
-			info[info_cnt].set(index, 
-					shapenum, framenum, x, sy, sw, sh);
-			if (shapenum == selshape && framenum == selframe)
-						// Found the selected shape.
-				new_selected = info_cnt;
-			info_cnt++;
+			info.push_back(Shape_entry());
+			info.back().set(shapenum, framenum, x, sy, sw, sh);
 			}
+		if (x > maxw)
+			maxw = x;
 					// Next line.
 		curr_y += row_h + border;
-		x = 0;
-		if (row == row_indices.size())
-			row_indices.push_back(index);
-		else if (row < row_indices.size())
-			row_indices[row] = index;
-		row++;
-		if (curr_y + 36 >= winh)
-			break;
 		}
-	int nrows = row - row0;		// # rows shown.
-	if (new_selected == -1)
-		unselect(false);
-	else
-		select(new_selected);
-	iwin->clear_clip();
-	adjust_vscrollbar();		// Set new scroll values.
-}
+	total_height = curr_y + border;
+	setup_hscrollbar(maxw);
+	}
 
 /*
  *	Horizontally scroll so that the selected frame is visible (in frames
@@ -441,98 +426,41 @@ void Shape_chooser::scroll_to_frame
 	}
 
 /*
- *	Find start of next row.
- *
- *	Output:	Index of start of next row, or -1 if given is last.
- */
-
-int Shape_chooser::next_row
-	(
-	int start			// Index of row to start at.
-	)
-	{
-	int total_cnt = get_count();
-	if (frames_mode)		// Easy if 1 shape/row.
-		return start < total_cnt - 1 ? (start + 1) : -1;
-	int selshape = -1, selframe = -1;
-	if (selected >= 0)		// Save selection info.
-		{
-		selshape = info[selected].shapenum;
-		selframe = info[selected].framenum;
-		}
-	gint winw = draw->allocation.width;
-	int index = start;
-	int x = 0;
-	while (index < total_cnt)
-		{
-		int shapenum = group ? (*group)[index] : index;
-		int framenum = shapenum == selshape ? selframe : framenum0;
-		Shape_frame *shape = ifile->get_shape(shapenum, framenum);
-		if(shape)
-			{
-			int sw = shape->get_width();
-			if (x + sw > winw)
-				break;	// Done.
-			x += sw + border;
-			}
-		index++;
-		}
-	if (index == start)		// Always advance at least 1.
-		index++;
-	if (index == total_cnt)
-		return -1;		// Past end.
-	return index;
-	}	
-
-/*
  *	Scroll so a desired index is in view.
  */
 
 void Shape_chooser::goto_index
 	(
-	int index			// Desired index.
+	int index			// Desired index in 'info'.
 	)
 	{
-	int total = get_count();	// Total #entries.
-	if (!total)
-		return;			// Empty.
-	assert (index >= 0 && index < total);
-					// Get index past what's shown.
-	int last_index = index0 + (frames_mode ? nrows : info_cnt);
-	if (index < index0)		// Above current view?
+	if (index < 0 || index >= info.size())
+		return;			// Illegal index or empty chooser.
+	Shape_entry& inf = info[index];	// Already in view?
+	int midx = inf.box.x + inf.box.w/2;
+	int midy = inf.box.y + inf.box.h/2;
+	Rectangle winrect(hoffset, voffset, config_width, config_height);
+	if (winrect.has_point(midx, midy))
+		return;
+	int start = 0, count = rows.size();
+	while (count > 1)		// Binary search.
 		{
-		do
-			index0 = row_indices[--row0];
-		while (index < index0);
-		}
-	else if (index >= last_index && last_index > 0)
-		{			// Below current view.
-		do
+		int mid = start + count/2;
+		if (index < rows[mid].index0)
+			count = mid - start;
+		else
 			{
-			if (row0 < row_indices.size() - 1)
-				index0 = row_indices[++row0];
-			else
-				{
-				int i = next_row(index0);
-				if (i < 0)	// Past end.  Shouldn't happen.
-					break;
-				row_indices.push_back(i);
-				row0++;
-				index0 = i;
-				}
+			count = (start + count) - mid;
+			start = mid;
 			}
-		while (index0 < index);
-		if (index != index0)
-			row0--;		// We passed it.
-		index0 = row_indices[row0];
-		info_cnt = 0;
 		}
+	if (start < rows.size())
+		{
 					// Get to right spot again!
-	GtkAdjustment *adj = gtk_range_get_adjustment(
+		GtkAdjustment *adj = gtk_range_get_adjustment(
 						GTK_RANGE(vscroll));
-	if (row0 >= adj->value)		// Beyond apparent end?
-		adjust_vscrollbar();	// Needs updating.
-	gtk_adjustment_set_value(adj, row0);
+		gtk_adjustment_set_value(adj, rows[start].y);
+		}
 	}
 
 /*
@@ -558,16 +486,13 @@ gint Shape_chooser::configure
 					// Did the size change?
 	if (event->width != config_width || event->height != config_height)
 		{
-		row_indices.resize(1);	// Start over with row info.
-		row0 = 0;
-		info_cnt = 0;
-		int i0 = index0;	// Get back to where we were.
-		index0 = 0;
-		goto_index(i0);	// Now goto where we were.
-		render();		// This also adjusts scrollbar.
-		adjust_hscrollbar(-1);
 		config_width = event->width;
 		config_height = event->height;
+		int i0 = rows[row0].index0;	// Get back to where we were.
+		setup_info();
+		goto_index(i0);		// Now goto where we were.
+		render();
+		update_statusbar();
 		}
 	else
 		render();		// Same size?  Just render it.
@@ -670,18 +595,19 @@ gint Shape_chooser::mouse_press
 
 	if (event->button == 4) {
         	if (row0 > 0)
-            		scroll_vertical(row0-1);
+            		scroll_row_vertical(row0-1);
         	return(TRUE);
     	} else if (event->button == 5) {
-        	scroll_vertical(row0+1);
+        	scroll_row_vertical(row0+1);
         	return(TRUE);
 	}
-
-	int old_selected = selected;
+	int old_selected = selected, new_selected = -1;
 	int i;				// Search through entries.
-	for (i = 0; i < info_cnt; i++)
-		if (info[i].box.has_point(
-					(int) event->x, (int) event->y))
+	int infosz = info.size();
+	int absx = (int) event->x + hoffset, absy = (int) event->y + voffset;
+	for (i = rows[row0].index0; i < infosz; i++)
+		{
+		if (info[i].box.has_point(absx, absy))
 			{		// Found the box?
 					// Indicate we can drag.
 #ifdef WIN32
@@ -692,15 +618,21 @@ gint Shape_chooser::mouse_press
 // we are stuck.
 			win32_button = true;
 #endif
-			selected = i;
-			render();
-			show();
-					// Tell client.
-			if (sel_changed)
-				(*sel_changed)();
+			new_selected = i;
 			break;
 			}
-	if (i == info_cnt && event->button == 1)
+		else if (info[i].box.y - voffset >= config_height)
+			break;		// Past bottom of screen.
+		}
+	if (new_selected >= 0)
+		{
+		select(new_selected);
+		render();
+		show();
+		if (sel_changed)	// Tell client.
+			(*sel_changed)();
+		}
+	if (new_selected < 0 && event->button == 1)
 		unselect(true);		// No selection.
 	else if (selected == old_selected && old_selected >= 0)
 		{			// Same square.  Check for dbl-click.
@@ -1749,51 +1681,97 @@ gint Shape_chooser::drag_begin
  *	Scroll to a new shape/frame.
  */
 
-void Shape_chooser::scroll_vertical
+void Shape_chooser::scroll_row_vertical
 	(
-	int newindex			// Abs. index of row to show.
+	int newrow			// Abs. index of row to show.
 	)
 	{
-					// Already know where this is?
-	if (newindex < row_indices.size())
-		{
-		index0 = row_indices[newindex];
-		row0 = newindex;
-		}
-	else
-		{			// Start with last known row.
-		row0 = row_indices.size() - 1;
-		int index = row_indices[row0];
-		while (row0 < newindex && (index = next_row(index)) >= 0)
-			{
-			index0 = index;
-			row0++;
-			row_indices.push_back(index);
-			}
-		}
-	int total = get_count();
+	if (newrow >= rows.size())
+		return;
+	row0 = newrow;
+	row0_voffset = 0;
 	render();
 	show();
 	}
 
 /*
- *	Adjust vertical scroll amounts.
+ *	Scroll to new pixel offset.
  */
 
-void Shape_chooser::adjust_vscrollbar
+void Shape_chooser::scroll_vertical
+	(
+	int newoffset
+	)
+	{
+	int delta = newoffset - voffset;
+	while (delta > 0 && row0 < rows.size() - 1)
+		{			// Going down.
+		int rowh = rows[row0].height - row0_voffset;
+		if (delta < rowh)
+			{		// Part of current row.
+			voffset += delta;
+			row0_voffset += delta;
+			delta = 0;
+			}
+		else
+			{		// Go down to next row.
+			voffset += rowh;
+			delta -= rowh;
+			++row0;
+			row0_voffset = 0;
+			}
+		}
+	while (delta < 0)
+		{
+		if (-delta <= row0_voffset)
+			{
+			voffset += delta;
+			row0_voffset += delta;
+			delta = 0;
+			}
+		else if (row0_voffset)
+			{
+			voffset -= row0_voffset;
+			delta += row0_voffset;
+			row0_voffset = 0;
+			}
+		else
+			{
+			if (row0 <= 0)
+				break;
+			--row0;
+			row0_voffset = 0;
+			voffset -= rows[row0].height;
+			delta += rows[row0].height;
+			if (delta > 0)
+				{
+				row0_voffset = delta;
+				voffset += delta;
+				delta = 0;
+				}
+			}
+		}
+	render();
+	show();
+	update_statusbar();
+	}		
+
+/*
+ *	Adjust vertical scroll amounts after laying out shapes.
+ */
+
+void Shape_chooser::setup_vscrollbar
 	(
 	)
 	{	
 	GtkAdjustment *adj = gtk_range_get_adjustment(
 						GTK_RANGE(vscroll));
-	int known_rows = row_indices.size() - 1;
-	float num_per_row = known_rows > 0 ? 
-		((float) row_indices[known_rows])/known_rows : 1;
-					// This may change for the group.
-	adj->upper = 1 + get_count()/num_per_row;
-	adj->step_increment = 1;
-	adj->page_increment = nrows;
-	adj->page_size = nrows;
+	adj->value = 0;
+	adj->lower = 0;
+	adj->upper = total_height;
+	adj->step_increment = 16;	// +++++FOR NOW.
+	adj->page_increment = config_height;
+	adj->page_size = config_height;
 	gtk_signal_emit_by_name(GTK_OBJECT(adj), "changed");
 	}
 
@@ -1801,7 +1779,7 @@ void Shape_chooser::adjust_vscrollbar
  *	Adjust horizontal scroll amounts.
  */
 
-void Shape_chooser::adjust_hscrollbar
+void Shape_chooser::setup_hscrollbar
 	(
 	int newmax			// New max., or -1 to leave alone.
 	)
@@ -1840,7 +1818,7 @@ void Shape_chooser::hscrolled		// For horizontal scrollbar.
 	{
 	Shape_chooser *chooser = (Shape_chooser *) data;
 	chooser->hoffset = (gint) adj->value;
-	chooser->render_frames();
+	chooser->render();
 	chooser->show();
 	}
 
@@ -1887,16 +1865,11 @@ void Shape_chooser::all_frames_toggled
 		gtk_widget_show(chooser->hscroll);
 	else
 		gtk_widget_hide(chooser->hscroll);
-	chooser->row_indices.resize(1);	// Start over with row info.
-	chooser->row0 = 0;
-	chooser->info_cnt = 0;
 					// Make selection visible.
-	int indx = chooser->selected >= 0 ? 
-		chooser->info[chooser->selected].index : chooser->index0;
-	chooser->index0 = 0;
+	int indx = chooser->selected >= 0 ? chooser->selected
+				: chooser->rows[chooser->row0].index0;
+	chooser->setup_info();
 	chooser->goto_index(indx);
-//	chooser->render();
-//	chooser->show();
 	}
 
 /*
@@ -2059,10 +2032,10 @@ void Shape_chooser::search
 		return;			// Empty.
 	ExultStudio *studio = ExultStudio::get_instance();
 					// Start with selection, or top.
-	int start = selected >= 0 ? info[selected].index : index0;
+	int start = selected >= 0 ? selected : rows[row0].index0;
 	int i;
 	start += dir;
-	int stop = dir == -1 ? -1 : total;
+	int stop = dir == -1 ? -1 : (int) info.size();
 	for (i = start; i != stop; i += dir)
 		{
 		int shnum = group ? (*group)[i] : i;
@@ -2073,18 +2046,7 @@ void Shape_chooser::search
 	if (i == stop)
 		return;			// Not found.
 	goto_index(i);
-	int newsel;			// Get new selection index.
-	if (!frames_mode)		// Easy if showing 1 shape/spot.
-		newsel = i - row_indices[row0];
-	else
-		{
-		int shnum = group ? (*group)[i] : i;
-		for (newsel = 0; newsel < info_cnt &&
-				info[newsel].shapenum != shnum; newsel++)
-			;
-		}
-	if (newsel >= 0 && newsel < info_cnt)
-		select(newsel);
+	select(i);
 	show();
 	}
 
@@ -2168,11 +2130,11 @@ Shape_chooser::Shape_chooser
 	) : Object_browser(g, fi),
 		Shape_draw(i, palbuf, gtk_drawing_area_new()),
 		shapes_file(0), framenum0(0),
-		info(0), info_cnt(0), row0(0), nrows(0),
-		sel_changed(0), frames_mode(false), hoffset(0)
+		info(0), row0(0), rows(0),
+		row0_voffset(0), total_height(0), status_id(-1),
+		sel_changed(0), frames_mode(false), hoffset(0), voffset(0)
 	{
-	row_indices.reserve(40);
-	row_indices.push_back(0);	// First row is 0.
+	rows.reserve(40);
 					// Put things in a vert. box.
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 0);
 	set_widget(vbox); // This is our "widget"
@@ -2233,9 +2195,6 @@ Shape_chooser::Shape_chooser
 	GtkObject *shape_adj = gtk_adjustment_new(0, 0, 
 				get_count()/4, 1, 1, 1);
 	vscroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(shape_adj));
-					// Update window when it stops.
-	gtk_range_set_update_policy(GTK_RANGE(vscroll),
-					GTK_UPDATE_DELAYED);
 	gtk_box_pack_start(GTK_BOX(hbox), vscroll, FALSE, TRUE, 0);
 					// Set scrollbar handler.
 	gtk_signal_connect(GTK_OBJECT(shape_adj), "value_changed",
@@ -2244,9 +2203,6 @@ Shape_chooser::Shape_chooser
 					// Horizontal scrollbar.
 	shape_adj = gtk_adjustment_new(0, 0, 1600, 8, 16, 16);
 	hscroll = gtk_hscrollbar_new(GTK_ADJUSTMENT(shape_adj));
-					// Update window when it stops.
-	gtk_range_set_update_policy(GTK_RANGE(hscroll),
-					GTK_UPDATE_DELAYED);
 	gtk_box_pack_start(GTK_BOX(vbox), hscroll, FALSE, TRUE, 0);
 					// Set scrollbar handler.
 	gtk_signal_connect(GTK_OBJECT(shape_adj), "value_changed",
@@ -2296,7 +2252,6 @@ Shape_chooser::~Shape_chooser
 	)
 	{
 	gtk_widget_destroy(get_widget());
-	delete [] info;
 	}
 	
 /*
@@ -2322,14 +2277,45 @@ void Shape_chooser::unselect
 		if (sel_changed)	// Tell client.
 			(*sel_changed)();
 		}
-	char buf[150];			// Show new selection.
-	if (info_cnt > 0)
+	update_statusbar();
+	}
+
+/*
+ *	Show selection or range in window.
+ */
+
+void Shape_chooser::update_statusbar
+	(
+	)
+	{
+	char buf[150];
+	if (status_id >= 0)		// Remove prev. selection msg.
+		gtk_statusbar_remove(GTK_STATUSBAR(sbar), sbar_sel, status_id);
+	if (selected >= 0)
 		{
-//		gtk_statusbar_pop(GTK_STATUSBAR(sbar), sbar_sel);
-		g_snprintf(buf, sizeof(buf), "Shapes %d to %d",
-			info[0].shapenum, info[info_cnt - 1].shapenum);
-		gtk_statusbar_push(GTK_STATUSBAR(sbar), sbar_sel, buf);
+		int shapenum = info[selected].shapenum;
+		int nframes = ifile->get_num_frames(shapenum);
+		g_snprintf(buf, sizeof(buf), "Shape %d (%d frames)",
+						shapenum, nframes);
+		ExultStudio *studio = ExultStudio::get_instance();
+		if (shapes_file && studio->get_shape_name(shapenum))
+			{
+			int len = strlen(buf);
+			g_snprintf(buf + len, sizeof(buf) - len, 
+				":  '%s'", studio->get_shape_name(shapenum));
+			}
+		status_id = gtk_statusbar_push(GTK_STATUSBAR(sbar), 
+							sbar_sel, buf);
 		}
+	else if (!info.empty() && !group)
+		{
+		g_snprintf(buf, sizeof(buf), "Shapes %d to %d",
+			info[rows[row0].index0].shapenum, last_shape);
+		status_id = gtk_statusbar_push(GTK_STATUSBAR(sbar), 
+								sbar_sel, buf);
+		}
+	else
+		status_id = -1;
 	}
 
 
