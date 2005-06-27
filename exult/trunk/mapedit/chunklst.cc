@@ -888,9 +888,11 @@ Chunk_chooser::Chunk_chooser
 				num_chunks, 1, 
 				4, 1.0);
 	vscroll = gtk_vscrollbar_new(GTK_ADJUSTMENT(chunk_adj));
+#if 0
 					// Update window when it stops.
 	gtk_range_set_update_policy(GTK_RANGE(vscroll),
 					GTK_UPDATE_DELAYED);
+#endif
 	gtk_box_pack_start(GTK_BOX(hbox), vscroll, FALSE, TRUE, 0);
 					// Set scrollbar handler.
 	gtk_signal_connect(GTK_OBJECT(chunk_adj), "value_changed",

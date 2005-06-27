@@ -42,17 +42,29 @@ class Editing_file;
 class Shape_entry
 	{
 	friend class Shape_chooser;
-	int index;			// Index in list.  Equals shapenum if
-					//   not showing a 'group'.
-	int shapenum, framenum;		// The given shape/frame.
+	short shapenum, framenum;	// The given shape/frame.
 	Rectangle box;			// Box where drawn.
+public:
 	Shape_entry() {  }
-	void set(int ind, int shnum, int frnum, int rx, int ry, int rw, int rh)
+	void set(int shnum, int frnum, int rx, int ry, int rw, int rh)
 		{
-		index = ind;
-		shapenum = shnum; framenum = frnum;
+		shapenum = (short) shnum; framenum = (short) frnum;
 		box = Rectangle(rx, ry, rw, rh);
 		}
+	};
+
+/*
+ *	One row.
+ */
+class Shape_row
+	{
+	friend class Shape_chooser;
+	short height;			// In pixels.
+	long y;				// Absolute y-coord. in pixels.
+	int index0;			// Index of 1st Shape_entry in row.
+public:
+	Shape_row() : height(0)
+		{  }
 	};
 
 /*
@@ -66,14 +78,17 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	GtkWidget *fspin;		// Spin button for frame #.
 	GtkAdjustment *frame_adj;	// Adjustment for frame spin btn.
 	int framenum0;			// Default frame # to display.
-	Shape_entry *info;		// An entry for each shape drawn.
-	int info_cnt;			// # entries in info.
-	std::vector<short> row_indices;	// Index at start of each row.
+	std::vector<Shape_entry> info;	// Pos. of each shape/frame.
+	std::vector<Shape_row> rows;
 	int row0;			// Row # at top of window.
-	int nrows;			// Last #rows rendered.
+	int row0_voffset;		// Vert. pos. (in pixels) of top row.
+	long total_height;		// In pixels, for all rows.
+	int last_shape;			// Last shape visible in window.
 	bool frames_mode;		// Show all frames horizontally.
 	int hoffset;			// Horizontal offset in pixels (when in
 					//   frames_mode).
+	int voffset;			// Vertical offset in pixels.
+	int status_id;			// Statusbar msg. ID.
 	void (*sel_changed)();		// Called when selection changes.
 					// List of files being edited by an
 					//   external program (Gimp, etc.)
@@ -89,15 +104,17 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	virtual void render();		// Draw list.
 	virtual void set_background_color(guint32 c)
 		{ Shape_draw::set_background_color(c); }
-	void render_frames();		// Show all frames.
+	virtual void setup_info();
+	void setup_shapes_info();
+	void setup_frames_info();
 	void scroll_to_frame();		// Scroll so sel. frame is visible.
-	int next_row(int start);	// Down/up 1 row.
 	void goto_index(int index);	// Get desired index in view.
 	virtual int get_selected_id()
 		{ return selected < 0 ? -1 : info[selected].shapenum; }
+	void scroll_row_vertical(int newrow);
 	void scroll_vertical(int newindex);	// Scroll.
-	void adjust_vscrollbar();	// Set new scroll amounts.
-	void adjust_hscrollbar(int newmax);
+	void setup_vscrollbar();	// Set new scroll amounts.
+	void setup_hscrollbar(int newmax);
 	virtual GtkWidget *create_popup();	// Popup menu.
 public:
 	Shape_chooser(Vga_file *i, unsigned char *palbuf, int w, int h,
@@ -113,6 +130,7 @@ public:
 	virtual void locate(bool upwards);	// Locate shape on game map.
 					// Turn off selection.
 	void unselect(bool need_render = true);
+	void update_statusbar();
 	int is_selected()		// Is a shape selected?
 		{ return selected >= 0; }
 	void set_selected_callback(void (*fun)())
@@ -125,6 +143,11 @@ public:
 		shapenum = info[selected].shapenum;
 		framenum = info[selected].framenum;
 		return (1);
+		}
+	int get_num_cols(int rownum)
+		{ 
+		return  ((rownum < rows.size() - 1) ? rows[rownum + 1].index0
+				: info.size()) - rows[rownum].index0;
 		}
 					// Configure when created/resized.
 	gint configure(GdkEventConfigure *event);
