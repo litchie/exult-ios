@@ -468,6 +468,41 @@ void Shape_chooser::goto_index
 	}
 
 /*
+ *	Find an index (not necessarily the 1st) for a given shape #.
+ */
+
+int Shape_chooser::find_shape
+	(
+	int shnum
+	)
+	{
+	if (group)			// They're not ordered.
+		{
+		int cnt = info.size();
+		for (int i = 0; i < cnt; ++i)
+			if (info[i].shapenum == shnum)
+				return i;
+		return -1;
+		}
+	int start = 0, count = info.size();
+	while (count > 1)		// Binary search.
+		{
+		int mid = start + count/2;
+		if (shnum < info[mid].shapenum)
+			count = mid - start;
+		else
+			{
+			count = (start + count) - mid;
+			start = mid;
+			}
+		}
+	if (start < info.size())
+		return start;
+	else
+		return -1;
+	}
+
+/*
  *	Configure the viewing window.
  */
 
@@ -1870,10 +1905,15 @@ void Shape_chooser::all_frames_toggled
 		gtk_widget_show(chooser->hscroll);
 	else
 		gtk_widget_hide(chooser->hscroll);
-	// The old index is no longer valid.  We really need to get back to
-	//   the same shape # as before.
+	// The old index is no longer valid, so we need to remember the shape.
+	int indx = chooser->selected >= 0 ? chooser->selected
+					: chooser->rows[chooser->row0].index0;
+	int shnum = chooser->info[indx].shapenum;
 	chooser->selected = -1;
 	chooser->setup_info();
+	indx = chooser->find_shape(shnum);	
+	if (indx >= 0)			// Get back to given shape.
+		chooser->goto_index(indx);
 	}
 
 /*

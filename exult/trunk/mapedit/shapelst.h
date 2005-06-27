@@ -108,6 +108,7 @@ class Shape_chooser: public Object_browser, public Shape_draw
 	void setup_shapes_info();
 	void setup_frames_info();
 	void scroll_to_frame();		// Scroll so sel. frame is visible.
+	int find_shape(int shnum);	// Find index for given shape.
 	void goto_index(int index);	// Get desired index in view.
 	virtual int get_selected_id()
 		{ return selected < 0 ? -1 : info[selected].shapenum; }
