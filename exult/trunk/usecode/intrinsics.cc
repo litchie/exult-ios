@@ -2946,6 +2946,13 @@ USECODE_INTRINSIC(is_on_keyring)
 		return Usecode_value(false);
 }
 
+// parms[0] = quality of key to be removed
+USECODE_INTRINSIC(remove_from_keyring)
+{
+	bool ret = getKeyring()->removekey(parms[0].get_int_value());
+	return Usecode_value(ret);
+}
+
 USECODE_INTRINSIC(save_pos)
 {
 	// save_pos(item).

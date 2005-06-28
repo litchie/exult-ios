@@ -31,7 +31,7 @@ class Keyring {
 	void clear();            // remove all keys
 	void addkey(int qual);   // add key to keyring
 	bool checkkey(int qual); // is key on keyring?
-
+	bool removekey(int qual);// remove key.
  private:
 	std::set<int> keys;
 };
