@@ -74,9 +74,13 @@ int Weapon_info::read
 	unsigned char flags1 = *ptr++;
 	m_returns = (flags1&1);
 #if 0
-	unsigned char unk1 = *ptr++;	// Figured it out now... I think.
-	cout << "Unk1 = " << hex << "0x" << setfill('0') << setw(2) <<(int)unk1
-							<< endl;
+	// Testing if 'throwable'.  Looks like ammo==-3 => throwable UNLESS
+	//   uses == 0.
+	extern char **item_names;
+	if ((ammo == -3) != (uses == 1 || uses == 2))
+		cout << "Shape #" << shapenum << "(" << item_names[shapenum]
+			<< ") has ammo = " << ammo << " and uses = "
+			<< (int) uses << endl;
 #endif
 	actor_frames = (*ptr++)&15;
 	powers = *ptr++;

@@ -107,7 +107,8 @@ public:
 	bool uses_charges()
 		{ return ammo == -2; }
 	bool is_thrown() const
-		{ return ammo == -3; /* uses == 1 || uses == 2 || m_returns;*/}
+		// Figured this out from printing out values:
+		{ return ammo == -3 && uses != 0; }
 	bool returns() const
 		{ return m_returns; }
 	void set_returns(bool tf)
