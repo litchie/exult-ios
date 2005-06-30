@@ -394,7 +394,6 @@ void Usecode_value::print
 
 Usecode_value Usecode_value::operator+(const Usecode_value& v2)
 {
-	char buf[300];
 	Usecode_value& v1 = *this;
 	Usecode_value sum(0);
 
@@ -412,10 +411,13 @@ Usecode_value Usecode_value::operator+(const Usecode_value& v2)
 			sum = Usecode_value(v1.get_int_value()
 					+ v2.get_int_value());
 		} else if (v2.get_type() == Usecode_value::string_type) {
-			snprintf(buf, 300, "%ld%s", 
-					v1.get_int_value(),
-					v2.get_str_value());
+			unsigned int newlen = strlen(v2.get_str_value()) + 32;
+			char* buf = new char[newlen];
+			snprintf(buf, newlen, "%ld%s",
+					 v1.get_int_value(),
+					 v2.get_str_value());
 			sum = Usecode_value(buf);
+			delete[] buf;
 		} else {
 			sum = v1;
 		}
@@ -423,15 +425,22 @@ Usecode_value Usecode_value::operator+(const Usecode_value& v2)
 	else if (v1.get_type() == Usecode_value::string_type)
 	{
 		if (v2.get_type() == Usecode_value::int_type) {
-			snprintf(buf, 300, "%s%ld", 
+			unsigned int newlen = strlen(v1.get_str_value()) + 32;
+			char* buf = new char[newlen];
+			snprintf(buf, newlen, "%s%ld", 
 				v1.get_str_value(),
 				v2.get_int_value());
 			sum = Usecode_value(buf);
+			delete[] buf;
 		} else if (v2.get_type() == Usecode_value::string_type) {
-			snprintf(buf, 300, "%s%s", 
+			unsigned int newlen = strlen(v1.get_str_value()) +
+				strlen(v2.get_str_value()) + 32;
+			char* buf = new char[newlen];
+			snprintf(buf, newlen, "%s%s", 
 					v1.get_str_value(),
 					v2.get_str_value());
 			sum = Usecode_value(buf);
+			delete[] buf;
 		} else {
 			sum = v1;
 		}

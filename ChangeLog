@@ -1,3 +1,6 @@
+2005-06-30  Willem Jan Palenstijn <wjpalenstijn@users.sourceforge.net>
+	* usecode/useval.cc: fix truncated strings when concatenating
+
 2005-06-26    <jeff@mini.nerble.net>
 
 	* mapedit/shapelst.cc,etc:  Rewrote shape-browser renderer so
