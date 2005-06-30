@@ -455,7 +455,7 @@ int Usecode_script::exec
 		case next_frame_max:	// Stop at last frame.
 			{
 			int nframes = obj->get_num_frames();
-			if (obj->get_framenum() < nframes - 1)
+			if (obj->get_framenum()%32 < nframes - 1)
 				usecode->set_item_frame(obj,
 							1+obj->get_framenum());
 			break;
@@ -592,9 +592,8 @@ int Usecode_script::exec
 				{	// But don't show empty frames.
 				Actor *npc = obj->as_actor();
 				npc->clear_rest_time();
-				int v = obj->get_dir_framenum(
-					npc ? npc->get_usecode_dir() : 0, 
-					opcode - 0x61);
+				//Get the actor's actual facing:
+				int v = (obj->get_framenum()&48)|(opcode - 0x61);
 				usecode->set_item_frame(obj, v, 1, 1);
 				}
 			else if (opcode >= 0x30 && opcode < 0x38)
