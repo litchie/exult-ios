@@ -17,7 +17,7 @@ Miscelaneous fixes to Serpent Isle Usecode
 -----------------------
 Author: Marzo Sette Torres Junior
 e-mail: marzojr@taskmail.com.br
-version: 0.15
+version: 0.15.01
 
 	This document fixes a few of the Usecode bugs that plague Ultima VII: Serpent Isle.
 I have tested it *only* with Silver Seed installed; while it *might* work without the
@@ -135,7 +135,11 @@ the game, you will not see some of the fixes.
 	    
 6	Version history
 -------------------
-version: 0.15
+version: 0.15.01
+	- Fixed stupid bug I introduced while preventing Vibrate spell from dropping Usecode
+	  container (basically, the spell would only work correctly if used on the Avatar...)
+	- Switched version number to #.##.## format for greater flexibility in revisions.
+version: 0.15.00
 	- Reorganized file structure.
 	- Readme file had one omission: Basement of Temple of Tolerance was misidentified as
 	  being "Temple of Logic" by "Locate" spell.
